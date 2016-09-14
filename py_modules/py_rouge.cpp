@@ -1,26 +1,26 @@
 /**
  *-----------------------------------------------------------------------------
- * Title      : PGP Card Driver, Python Classes
+ * Title      : Python Classes
  * ----------------------------------------------------------------------------
- * File       : PyPgpCard.cpp
+ * File       : py_rouge.cpp
  * Author     : Ryan Herbst, rherbst@slac.stanford.edu
  * Created    : 2016-08-08
  * Last update: 2016-08-08
  * ----------------------------------------------------------------------------
  * Description:
- * PGP Card Container
+ * Python class wrapper
  * ----------------------------------------------------------------------------
- * This file is part of the PGP card driver. It is subject to 
+ * This file is part of the rouge software platform. It is subject to 
  * the license terms in the LICENSE.txt file found in the top-level directory 
  * of this distribution and at: 
  *    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
- * No part of the PGP card driver, including this file, may be 
+ * No part of the rouge software platform, including this file, may be 
  * copied, modified, propagated, or distributed except according to the terms 
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
 
-#include <PgpDriver.h>
+#include "PgpDriver.h"
 #include "PgpCard.h"
 #include "PgpData.h"
 #include "StreamSrc.h"
@@ -31,7 +31,7 @@
 #include <boost/python.hpp>
 using namespace boost::python;
 
-BOOST_PYTHON_MODULE(PyPgpCard)
+BOOST_PYTHON_MODULE(py_rouge)
 {
 
    PyEval_InitThreads();

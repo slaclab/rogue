@@ -27,6 +27,8 @@ BLD      := ./build
 OBJ      := ./.obj
 CFLAGS   := -Wall `$(PYTHON_CFG) --cflags`
 LFLAGS   := -lpthread -lboost_python `$(PYTHON_CFG) --ldflags`
+SHNAME   := rouge
+SHLIB    := librouge.so
 
 # Generic Sources
 LIB_DIR := $(PWD)/hardware $(PWD)/interfaces $(PWD)/protocols $(PWD)/utilities
@@ -34,7 +36,7 @@ LIB_SUB := $(foreach dir,$(LIB_DIR),$(shell find $(dir) -type d))
 LIB_SRC := $(foreach dir,$(LIB_SUB),$(wildcard $(dir)/*.cpp))
 LIB_HDR := $(foreach dir,$(LIB_SUB),$(wildcard $(dir)/*.h))
 LIB_OBJ := $(patsubst %.cpp,$(OBJ)/%.o,$(notdir $(LIB_SRC)))
-LIB_SHO := $(BLD)/rouge.so
+LIB_SHO := $(BLD)/$(SHLIB)
 CFLAGS  += $(foreach dir,$(LIB_SUB),-I$(dir))
 
 # Python library sources
@@ -70,6 +72,7 @@ list:
 # Object directory
 dir:
 	@test -d $(OBJ) || mkdir $(OBJ)
+	@test -d $(BLD) || mkdir $(BLD)
 
 # Clean
 clean:
@@ -89,13 +92,14 @@ $(LIB_SHO): $(LIB_OBJ)
 	@echo "Creating $@"; $(CC) -shared -W1,-soname,$@ $(LIB_OBJ) $(LFLAGS) -o $@
 
 # Compile Python Sources
-$(OBJ)/%.o: $(PYL_DIR)/%.cpp @echo "Compiling $@ from $<"; $(CC) -c $(CFLAGS) $(DEF) -o $@ $<
+$(OBJ)/%.o: $(PYL_DIR)/%.cpp 
+	@echo "Compiling $@ from $<"; $(CC) -c $(CFLAGS) $(DEF) -o $@ $<
 
 # Compile python shared libraries
 $(BLD)/%.so: $(OBJ)/%.o $(LIB_SHO)
-	@echo "Creating $@"; $(CC) -shared -W1,-soname,$@ $< $(LIB_SHO) -o $@
+	@echo "Creating $@"; $(CC) -shared -W1,-soname,$@ $< -l$(SHNAME) -L$(BLD) -o $@
 
 # Application sources
 $(BLD)/%: $(APP_DIR)/%.cpp $(LIB_SHO)
-	@echo "Compiling $@ from $<"; $(CC) $(CFLAGS) $(DEF) $(LFLAGS) $(LIB_SHO) -o $@ $<
+	@echo "Compiling $@ from $<"; $(CC) $(CFLAGS) $(DEF) $(LFLAGS) -l$(SHNAME) -L$(BLD) -o $@ $<
 

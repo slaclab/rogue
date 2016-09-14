@@ -2,7 +2,7 @@
  *-----------------------------------------------------------------------------
  * Title      : PGP Data Class
  * ----------------------------------------------------------------------------
- * File       : PgpCard.cpp
+ * File       : PgpData.cpp
  * Author     : Ryan Herbst, rherbst@slac.stanford.edu
  * Created    : 2016-08-08
  * Last update: 2016-08-08
@@ -10,11 +10,11 @@
  * Description:
  * PGP Data Class
  * ----------------------------------------------------------------------------
- * This file is part of the PGP card driver. It is subject to 
+ * This file is part of the rouge software platform. It is subject to 
  * the license terms in the LICENSE.txt file found in the top-level directory 
  * of this distribution and at: 
  *    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
- * No part of the PGP card driver, including this file, may be 
+ * No part of the rouge software platform, including this file, may be 
  * copied, modified, propagated, or distributed except according to the terms 
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------

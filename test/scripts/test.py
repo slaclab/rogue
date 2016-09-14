@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 
-import PyPgpCard
+import py_rouge
 import time
 
-class testDest(PyPgpCard.StreamDest):
+class testDest(py_rouge.StreamDest):
 
    def __init__(self):
-      PyPgpCard.StreamDest.__init__(self)
+      py_rouge.StreamDest.__init__(self)
       self.byteCnt = 0
       self.packCnt = 0
 
@@ -15,10 +15,10 @@ class testDest(PyPgpCard.StreamDest):
       self.packCnt += 1
       return(True)
 
-class blahDest(PyPgpCard.StreamDest):
+class blahDest(py_rouge.StreamDest):
 
    def __init__(self):
-      PyPgpCard.StreamDest.__init__(self)
+      py_rouge.StreamDest.__init__(self)
 
    def pushBuffer(self,data):
       print("Got data. size=%i" % (data.size))
@@ -27,17 +27,17 @@ class blahDest(PyPgpCard.StreamDest):
 
 tdest = testDest()
 
-pgpA = PyPgpCard.PgpCardStream()
+pgpA = py_rouge.PgpCardStream()
 pgpA.open("/dev/pgpcard_0",0,0)
 pgpA.setLoop(0,1)
 pgpA.setName("pgpA")
 
-psrc   = PyPgpCard.PrbsDataSrc(100000)
+psrc   = py_rouge.PrbsDataSrc(100000)
 psrc.setName("prbs")
 
-pdestA = PyPgpCard.PrbsDataDest()
-pdestB = PyPgpCard.PrbsDataDest()
-pdestC = PyPgpCard.PrbsDataDest()
+pdestA = py_rouge.PrbsDataDest()
+pdestB = py_rouge.PrbsDataDest()
+pdestC = py_rouge.PrbsDataDest()
 
 psrc.addDest(pgpA)
 psrc.addDest(pdestA)
@@ -48,13 +48,13 @@ pgpA.addDest(pdestC)
 pgpA.addDest(tdest)
 psrc.enable()
 
-pgpB = PyPgpCard.PgpCardStream()
+pgpB = py_rouge.PgpCardStream()
 pgpB.open("/dev/pgpcard_0",1,0)
 pgpB.setLoop(1,1)
 pgpB.setName("pgpB")
 
 bdest = blahDest()
-bsrc  = PyPgpCard.StreamSrc()
+bsrc  = py_rouge.StreamSrc()
 bsrc.setLaneVc(1,0)
 
 bsrc.addDest(pgpB)
