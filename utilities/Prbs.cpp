@@ -2,7 +2,7 @@
  *-----------------------------------------------------------------------------
  * Title         : PRBS Receive And Transmit Class
  * ----------------------------------------------------------------------------
- * File          : PrbsData.cpp
+ * File          : Prbs.cpp
  * Author        : Ryan Herbst <rherbst@slac.stanford.edu>
  * Created       : 08/11/2014
  * Last update   : 08/11/2014
@@ -19,12 +19,19 @@
  * contained in the LICENSE.txt file.
  *-----------------------------------------------------------------------------
 **/
-#include <PrbsData.h>
+#include <unistd.h>
 #include <stdarg.h>
-#include <stdlib.h>
-#include <stdio.h>
+#include <interfaces/stream/Slave.h>
+#include <interfaces/stream/Master.h>
+#include <interfaces/stream/Frame.h>
+#include <interfaces/stream/Buffer.h>
+#include <utilities/Prbs.h>
 
-PrbsData::PrbsData (uint32_t width, uint32_t tapCnt, ...) {
+namespace is = interfaces::stream;
+namespace ut = utilities;
+
+//! Creator with width and variable taps
+ut::Prbs::Prbs(uint32_t width, uint32_t tapCnt, ... ) {
    va_list a_list;
    uint32_t   x;
 
@@ -39,7 +46,8 @@ PrbsData::PrbsData (uint32_t width, uint32_t tapCnt, ...) {
    va_end(a_list);
 }
 
-PrbsData::PrbsData () {
+//! Creator with default taps and size
+ut::Prbs::Prbs() {
    _sequence = 0;
    _width    = 32;
    _tapCnt   = 4;
@@ -52,30 +60,79 @@ PrbsData::PrbsData () {
    _taps[3] = 31;
 }
 
-PrbsData::~PrbsData() {
+//! Deconstructor
+ut::Prbs::~Prbs() {
    free(_taps);
 }
 
-void PrbsData::genData ( const void *data, uint32_t size ) {
+uint32_t ut::Prbs::flfsr(uint32_t input) {
+   uint32_t bit = 0;
+   uint32_t x;
+
+   for (x=0; x < _tapCnt; x++) bit = bit ^ (input >> _taps[x]);
+
+   bit = bit & 1;
+
+   return ((input << 1) | bit);
+}
+
+//! Auto run data generation
+void ut::Prbs::enable(uint32_t size) {
+   //_tSize = size;
+
+   //boost::thread t{runThread};
+}
+
+//! Disable auto generation
+void ut::Prbs::disable() {
+
+
+}
+
+//! Generate a buffer. Called from master
+is::FramePtr ut::Prbs::acceptReq ( uint32_t size, bool zeroCopyEn) {
+   is::FramePtr ret;
+   is::BufferPtr buff;
+   uint8_t * data;
+
+   if ( (data = (uint8_t *)malloc(size)) == NULL ) return(ret);
+
+   buff = is::Buffer::create(getSlave(),data,0,size);
+   ret  = is::Frame::create(zeroCopyEn);
+
+   ret->appendBuffer(buff);
+   return(ret);
+}
+
+//! Return a buffer
+void ut::Prbs::retBuffer(uint8_t * data, uint32_t meta, uint32_t rawSize) {
+   printf("Deleteing prbs buffer\n");
+   free(data);
+}
+
+//! Generate a data frame
+void ut::Prbs::genFrame (uint32_t size) {
    uint32_t   word;
    uint32_t   value;
-   uint32_t * data32;
+   uint32_t   data32[2];
    uint16_t * data16;
 
-   data32 = (uint32_t *)data;
-   data16 = (uint16_t *)data;
+   is::FramePtr fr = reqFrame(size,true);
 
+   data16 = (uint16_t *)data32;
    value = _sequence;
 
    if ( _width == 16 ) {
       if ((( size % 2 ) != 0) || size < 6 ) return;
       data16[0] = _sequence & 0xFFFF;
       data16[1] = (size - 2) / 2;
+      fr->write(data16,0,4);
    }
    else if ( _width == 32 ) {
       if ((( size % 4 ) != 0) || size < 12 ) return;
       data32[0] = _sequence;
       data32[1] = (size - 4) / 4;
+      fr->write(data32,0,8);
    }
    else {
       fprintf(stderr,"Bad gen width = %i\n",_width);
@@ -84,32 +141,39 @@ void PrbsData::genData ( const void *data, uint32_t size ) {
 
    for (word = 2; word < size/(_width/8); word++) {
       value = flfsr(value);
-      if      ( _width == 16 ) data16[word] = value;
-      else if ( _width == 32 ) data32[word] = value;
+      if      ( _width == 16 ) fr->write(&value,2,word*2);
+      else if ( _width == 32 ) fr->write(&value,4,word*4);
    }
 
    if      ( _width == 16 ) _sequence = data16[0] + 1;
    else if ( _width == 32 ) _sequence = data32[0] + 1;
+
+   sendFrame(fr);
 }
 
-bool PrbsData::processData ( const void *data, uint32_t size ) {
+//! Accept a frame from master
+bool ut::Prbs::acceptFrame ( is::FramePtr frame ) {
    uint32_t   eventLength;
    uint32_t   expected;
    uint32_t   got;
    uint32_t   word;
    uint32_t   min;
-   uint32_t * data32;
+   uint32_t   data32[2];
    uint16_t * data16;
+   uint32_t   size;
 
-   data32 = (uint32_t *)data;
-   data16 = (uint16_t *)data;
+   data16 = (uint16_t *)data32;
+
+   size = frame->getPayload();
 
    if ( _width == 16 ) {
+      frame->read(data16,0,4);
       expected    = data16[0];
       eventLength = (data16[1] * 2) + 2;
       min         = 6;
    }
    else if ( _width == 32 ) {
+      frame->read(data16,0,8);
       expected    = data32[0];
       eventLength = (data32[1] * 4) + 4;
       min         = 12;
@@ -134,8 +198,8 @@ bool PrbsData::processData ( const void *data, uint32_t size ) {
    for (word = 2; word < size/(_width/8); word++) {
       expected = flfsr(expected);
 
-      if      ( _width == 16 ) got = data16[word];
-      else if ( _width == 32 ) got = data32[word];
+      if      ( _width == 16 ) frame->read(&got,word*2,2);
+      else if ( _width == 32 ) frame->read(&got,word*4,4);
       else got = 0;
 
       if (expected != got) {
@@ -144,17 +208,5 @@ bool PrbsData::processData ( const void *data, uint32_t size ) {
       }
    }
    return(true);
-}
-
-uint32_t PrbsData::flfsr(uint32_t input) {
-   uint32_t bit = 0;
-   uint32_t x;
-
-   for (x=0; x < _tapCnt; x++) bit = bit ^ (input >> _taps[x]);
-
-   bit = bit & 1;
-
-   //return (input >> 1) | (bit << _width);
-   return ((input << 1) | bit);
 }
 

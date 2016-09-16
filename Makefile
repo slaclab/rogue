@@ -25,19 +25,19 @@ CC       := g++
 DEF      :=
 BLD      := ./build
 OBJ      := ./.obj
-CFLAGS   := -Wall `$(PYTHON_CFG) --cflags`
+CFLAGS   := -Wall `$(PYTHON_CFG) --cflags` -I. -std=c++0x
 LFLAGS   := -lpthread -lboost_python `$(PYTHON_CFG) --ldflags`
 SHNAME   := rogue
 SHLIB    := librogue.so
 
 # Generic Sources
-LIB_DIR := $(PWD)/hardware $(PWD)/interfaces $(PWD)/protocols $(PWD)/utilities
+LIB_DIR := $(PWD)/interfaces $(PWD)/hardware $(PWD)/protocols $(PWD)/utilities
 LIB_SUB := $(foreach dir,$(LIB_DIR),$(shell find $(dir) -type d))
 LIB_SRC := $(foreach dir,$(LIB_SUB),$(wildcard $(dir)/*.cpp))
 LIB_HDR := $(foreach dir,$(LIB_SUB),$(wildcard $(dir)/*.h))
 LIB_OBJ := $(patsubst %.cpp,$(OBJ)/%.o,$(notdir $(LIB_SRC)))
 LIB_SHO := $(BLD)/$(SHLIB)
-CFLAGS  += $(foreach dir,$(LIB_SUB),-I$(dir))
+#CFLAGS  += $(foreach dir,$(LIB_SUB),-I$(dir))
 
 # Python library sources
 PYL_DIR := $(PWD)/py_modules

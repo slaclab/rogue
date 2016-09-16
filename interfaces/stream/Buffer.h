@@ -1,14 +1,15 @@
 /**
  *-----------------------------------------------------------------------------
- * Title      : Stream frame container
+ * Title      : Stream Buffer Container
  * ----------------------------------------------------------------------------
- * File       : StreamFrame.h
+ * File       : StreamBuffer.h
  * Author     : Ryan Herbst, rherbst@slac.stanford.edu
  * Created    : 2016-08-08
  * Last update: 2016-08-08
  * ----------------------------------------------------------------------------
  * Description:
  * Stream frame container
+ * Some concepts borrowed from CPSW by Till Strauman
  * ----------------------------------------------------------------------------
  * This file is part of the rogue software platform. It is subject to 
  * the license terms in the LICENSE.txt file found in the top-level directory 
@@ -19,59 +20,99 @@
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
-#ifndef __PGP_Data_H__
-#define __PGP_Data_H__
+#ifndef __INTERFACES_STREAM_BUFFER_H__
+#define __INTERFACES_STREAM_BUFFER_H__
 #include <stdint.h>
 
 #include <boost/python.hpp>
+namespace interfaces {
+   namespace stream {
 
-class PgpCard;
+      class Slave;
 
-//! Data Holder For PGP
-class StreamFrame {
-      PgpCard * card_;
-      void *    data_;
-      int32_t   index_;
-      uint32_t  maxSize_;
-   public:
+      //! Frame buffer
+      /*
+       * This class is a container for buffers which make up a frame.
+       * Each buffer within the frame has a reserved header area and a 
+       * payload.
+      */
+      class Buffer {
+            boost::shared_ptr<interfaces::stream::Slave> source_; //! Pointer to entity which allocated this buffer
 
-      //! Create a shared memory buffer
-      StreamFrame(PgpCard *card, uint32_t index, void *buff, uint32_t size);
-      ~StreamFrame();
+            uint8_t *  data_;     //! Pointer to raw data buffer. Raw pointer is used here!
+            uint32_t   meta_;     //! Meta data used to track this buffer by source
+            uint32_t   rawSize_;  //! Raw size of buffer
+            uint32_t   headRoom_; //! Header room of buffer
+            uint32_t   count_;    //! Data count including header
+            uint32_t   error_;    //! Error state
 
-      //! Return buffer
-      bool retBuffer();
+         public:
 
-      //! Write
-      bool write();
+            //! Class creation
+            /*
+             * Pass owner, raw data buffer, and meta data
+             */
+            static boost::shared_ptr<interfaces::stream::Buffer> create (
+                  boost::shared_ptr<interfaces::stream::Slave> source, 
+                     void * data, uint32_t meta, uint32_t rawSize);
 
-      //! Get data pointer
-      uint8_t * getData();
+            //! Create a buffer.
+            /*
+             * Pass owner, raw data buffer, and meta data
+             */
+            Buffer(boost::shared_ptr<interfaces::stream::Slave> source, void * data, uint32_t meta, uint32_t rawSize);
 
-      //! Get python buffer
-      boost::python::object getDataPy();
+            //! Destroy a buffer
+            /*
+             * Owner return buffer method is called
+             */
+            ~Buffer();
 
-      //! Get shared memory index
-      uint32_t getIndex();
+            //! Get raw data pointer
+            uint8_t * getRawData();
 
-      //! Get buffer max size
-      uint32_t getMaxSize();
+            //! Get payload data pointer
+            uint8_t * getPayloadData();
 
-      //! Lane for transmit / receive
-      uint32_t  lane;
+            //! Get meta data
+            uint32_t getMeta();
 
-      //! Lane for transmit / receive
-      uint32_t  vc;
+            //! Get raw size
+            uint32_t getRawSize();
 
-      //! Continue flag. This buffer is part of a larger frame
-      uint32_t  cont;
+            //! Get header space
+            uint32_t getHeadRoom();
 
-      //! Size for transmit / receive
-      uint32_t  size;
+            //! Get available size for payload
+            uint32_t getAvailable();
 
-      //! Error flags for receive
-      uint32_t  error;
-};
+            //! Get real payload size
+            uint32_t getPayload();
+
+            //! Get error state
+            uint32_t getError();
+
+            //! Set error state
+            void setError(uint32_t error);
+
+            //! Set size including header
+            void setSetSize(uint32_t size);
+
+            //! Set head room
+            void setHeadRoom(uint32_t offset);
+
+            //! Read up to count bytes from buffer, starting from offset.
+            uint32_t read  ( void *p, uint32_t offset, uint32_t count );
+
+            //! Write count bytes to frame, starting at offset
+            uint32_t write ( void *p, uint32_t offset, uint32_t count );
+
+      };
+
+      // Convienence
+      typedef boost::shared_ptr<interfaces::stream::Buffer> BufferPtr;
+   }
+}
 
 #endif
 

@@ -2,7 +2,7 @@
  *-----------------------------------------------------------------------------
  * Title         : PRBS Receive And Transmit Class
  * ----------------------------------------------------------------------------
- * File          : PrbsData.h
+ * File          : Prbs.h
  * Author        : Ryan Herbst <rherbst@slac.stanford.edu>
  * Created       : 08/11/2014
  * Last update   : 08/11/2014
@@ -19,31 +19,60 @@
  * contained in the LICENSE.txt file.
  *-----------------------------------------------------------------------------
 **/
-#ifndef __PRBS_DATA_H__
-#define __PRBS_DATA_H__
+#ifndef __UTILITIES_PRBS_H__
+#define __UTILITIES_PRBS_H__
 #include <stdint.h>
 
-// Main Class
-class PrbsData {
+namespace utilities {
 
-      uint32_t * _taps;
-      uint32_t   _tapCnt;
-      uint32_t   _width;
-      uint32_t   _sequence;
+   //! PRBS master / slave class
+   /*
+    * Engine can be used as either a master or slave. 
+    * Internal thread can en enabled for auto frame generation
+    */
+   class Prbs : public interfaces::stream::Slave, public interfaces::stream::Master {
+         uint32_t * _taps;
+         uint32_t   _tapCnt;
+         uint32_t   _width;
+         uint32_t   _sequence;
+         uint32_t   _tSize;
 
-      uint32_t flfsr(uint32_t input);
+         uint32_t flfsr(uint32_t input);
 
-   public:
+         //! Thread background
+         void runThread();
 
-      PrbsData(uint32_t width, uint32_t tapCnt, ... );
-      PrbsData();
-      ~PrbsData();
+      public:
 
-      void genData ( const void *data, uint32_t size );
+         //! Creator with width and variable taps
+         Prbs(uint32_t width, uint32_t tapCnt, ... );
 
-      bool processData ( const void *data, uint32_t size );
+         //! Creator with default taps and size
+         Prbs();
 
-};
+         //! Deconstructor
+         ~Prbs();
+
+         //! Generate a data frame
+         void genFrame (uint32_t size);
+
+         //! Auto run data generation
+         void enable(uint32_t size);
+
+         //! Disable auto generation
+         void disable();
+
+         //! Generate a buffer. Called from master
+         boost::shared_ptr<interfaces::stream::Frame>
+            acceptReq ( uint32_t size, bool zeroCopyEn);
+
+         //! Accept a frame from master
+         bool acceptFrame ( boost::shared_ptr<interfaces::stream::Frame> frame );
+
+         //! Return a buffer
+         void retBuffer(uint8_t * data, uint32_t meta, uint32_t rawSize);
+   };
+}
 
 #endif
 

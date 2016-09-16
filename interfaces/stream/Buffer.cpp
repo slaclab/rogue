@@ -1,14 +1,15 @@
 /**
  *-----------------------------------------------------------------------------
- * Title      : PGP Data Class
+ * Title      : Stream Buffer Container
  * ----------------------------------------------------------------------------
- * File       : PgpData.cpp
+ * File       : StreamBuffer.h
  * Author     : Ryan Herbst, rherbst@slac.stanford.edu
  * Created    : 2016-08-08
  * Last update: 2016-08-08
  * ----------------------------------------------------------------------------
  * Description:
- * PGP Data Class
+ * Stream frame container
+ * Some concepts borrowed from CPSW by Till Strauman
  * ----------------------------------------------------------------------------
  * This file is part of the rogue software platform. It is subject to 
  * the license terms in the LICENSE.txt file found in the top-level directory 
@@ -19,46 +20,138 @@
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
-#include "PgpCard.h"
-#include "PgpData.h"
 
-//! Create a shared memory buffer
-PgpData::PgpData(PgpCard *card, uint32_t index, void *buff, uint32_t size) {
-   card_    = card;
-   maxSize_ = size;
-   index_   = index;
-   data_    = buff;
+#include <interfaces/stream/Buffer.h>
+#include <interfaces/stream/Slave.h>
+#include <boost/make_shared.hpp>
+
+namespace is = interfaces::stream;
+
+//! Class creation
+/*
+ * Pass owner, raw data buffer, and meta data
+ */
+is::BufferPtr create ( is::SlavePtr source, void * data, uint32_t meta, uint32_t rawSize) {
+   is::BufferPtr buff = boost::make_shared<is::Buffer>(source,data,meta,rawSize);
+   return(buff);
 }
 
-PgpData::~PgpData() {
+//! Create a buffer.
+/*
+ * Pass owner, raw data buffer, and meta data
+ */
+is::Buffer::Buffer(is::SlavePtr source, void *data, uint32_t meta, uint32_t rawSize) {
+   source_   = source;
+   data_     = (uint8_t *)data;
+   meta_     = meta;
+   rawSize_  = rawSize;
+   headRoom_ = 0;
+   count_    = 0;
+   error_    = 0;
 }
 
-//! Return buffer
-bool PgpData::retBuffer() {
-   return(card_->retBuffer(this));
+//! Destroy a buffer
+/*
+ * Owner return buffer method is called
+ */
+is::Buffer::~Buffer() {
+   source_->retBuffer(data_,meta_,rawSize_);
 }
 
-//! Write
-bool PgpData::write() {
-   return(card_->write(this));
+//! Get raw data pointer
+uint8_t * is::Buffer::getRawData() {
+   return(data_);
 }
 
-//! Get data pointer
-uint8_t * PgpData::getData() { return((uint8_t *)data_); }
-
-//! Get python buffer
-boost::python::object PgpData::getDataPy() {
-   PyObject * pyBuf;
-   boost::python::object     ret;
-
-   pyBuf = PyBuffer_FromReadWriteMemory(data_,maxSize_);
-   ret = boost::python::object(boost::python::handle<>(pyBuf));
-   return(ret);
+//! Get payload data pointer
+uint8_t * is::Buffer::getPayloadData() {
+   return(data_ + headRoom_);
 }
 
-//! Get shared memory index
-uint32_t PgpData::getIndex() { return(index_); }
+//! Get meta data
+uint32_t is::Buffer::getMeta() {
+   return(meta_);
+}
 
-//! Get buffer max size
-uint32_t PgpData::getMaxSize() { return(maxSize_); }
+//! Get raw size
+uint32_t is::Buffer::getRawSize() {
+   return(rawSize_);
+}
+
+//! Get header space
+uint32_t is::Buffer::getHeadRoom() {
+   return(headRoom_);
+}
+
+//! Get available size for payload
+uint32_t is::Buffer::getAvailable() {
+   uint32_t temp;
+
+   temp = rawSize_ - count_;
+
+   if ( temp < headRoom_) return(0);
+   else return(temp - headRoom_);
+}
+
+//! Get real payload size
+uint32_t is::Buffer::getPayload() {
+   if ( count_ < headRoom_ ) return(0);
+   else return(count_ - headRoom_);
+}
+
+//! Get error state
+uint32_t is::Buffer::getError() {
+   return(error_);
+}
+
+//! Set error state
+void is::Buffer::setError(uint32_t error) {
+   error_ = error;
+}
+
+//! Set size including header
+void is::Buffer::setSetSize(uint32_t size) {
+   count_ = size;
+}
+
+//! Set head room
+void is::Buffer::setHeadRoom(uint32_t offset) {
+   headRoom_ = offset;
+}
+
+//! Read up to count bytes from buffer, starting from offset.
+uint32_t is::Buffer::read  ( void *p, uint32_t offset, uint32_t count ) {
+   uint32_t rcnt;
+
+   // No data in buffer
+   if ( count_ < headRoom_ ) return(0);
+
+   // Read offset is larger than payload
+   if ( offset >= (count_ - headRoom_) ) return(0);
+
+   // Adjust read count for payload size and offset
+   if ( count > ((count_ - headRoom_) - offset) ) 
+      rcnt = ((count_ - headRoom_) - offset);
+   else rcnt = count;
+
+   // Copy data
+   memcpy(p,data_+headRoom_+offset,rcnt);
+   return(rcnt);
+}
+
+//! Write count bytes to frame, starting at offset
+uint32_t is::Buffer::write ( void *p, uint32_t offset, uint32_t count ) {
+   uint32_t wcnt;
+
+   if ( offset >= (rawSize_ - headRoom_) ) return(0);
+
+   if ( count > ((rawSize_ - headRoom_) - offset)) 
+      wcnt = ((rawSize_ - headRoom_) - offset);
+   else wcnt = count;
+
+   // Set payload size to last write
+   count_ = offset + headRoom_ + wcnt;
+   memcpy(data_+headRoom_+offset,p,wcnt);
+   return(wcnt);
+}
 

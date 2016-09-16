@@ -1,14 +1,15 @@
 /**
  *-----------------------------------------------------------------------------
- * Title      : PGP Data Class
+ * Title      : Stream frame container
  * ----------------------------------------------------------------------------
- * File       : PgpData.h
+ * File       : Frame.h
  * Author     : Ryan Herbst, rherbst@slac.stanford.edu
  * Created    : 2016-08-08
  * Last update: 2016-08-08
  * ----------------------------------------------------------------------------
  * Description:
- * PGP Data Class
+ * Stream frame container
+ * Some concepts borrowed from CPSW by Till Strauman
  * ----------------------------------------------------------------------------
  * This file is part of the rogue software platform. It is subject to 
  * the license terms in the LICENSE.txt file found in the top-level directory 
@@ -19,59 +20,77 @@
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
-#ifndef __PGP_Data_H__
-#define __PGP_Data_H__
+#ifndef __INTERFACES_STREAM_FRAME_H__
+#define __INTERFACES_STREAM_FRAME_H__
 #include <stdint.h>
+#include <vector>
 
 #include <boost/python.hpp>
+namespace interfaces {
+   namespace stream {
 
-class PgpCard;
+      class Buffer;
 
-//! Data Holder For PGP
-class PgpData {
-      PgpCard * card_;
-      void *    data_;
-      int32_t   index_;
-      uint32_t  maxSize_;
-   public:
+      //! Frame container
+      /*
+       * This class is a container for a vector of buffers which make up a frame
+       * container. Each buffer within the frame has a reserved header area and a 
+       * payload. Calls to write and read take into account the header offset.
+      */
+      class Frame {
+            bool zeroCopy_; //! Buffer list is zero copy mode
+            std::vector<boost::shared_ptr<interfaces::stream::Buffer> > buffers_;  //! List of buffers which hold real data
 
-      //! Create a shared memory buffer
-      PgpData(PgpCard *card, uint32_t index, void *buff, uint32_t size);
-      ~PgpData();
+         public:
 
-      //! Return buffer
-      bool retBuffer();
+            //! Create an empty frame
+            static boost::shared_ptr<interfaces::stream::Frame> create(bool zeroCopy);
 
-      //! Write
-      bool write();
+            //! Create an empty frame
+            Frame(bool zeroCopy);
 
-      //! Get data pointer
-      uint8_t * getData();
+            //! Destroy a frame.
+            ~Frame();
 
-      //! Get python buffer
-      boost::python::object getDataPy();
+            //! Add a buffer to end of frame
+            void appendBuffer(boost::shared_ptr<interfaces::stream::Buffer> buff);
 
-      //! Get shared memory index
-      uint32_t getIndex();
+            //! Append frame to end. Passed frame is emptied.
+            void appendFrame(boost::shared_ptr<interfaces::stream::Frame> frame);
 
-      //! Get buffer max size
-      uint32_t getMaxSize();
+            //! Get buffer count
+            uint32_t getCount();
 
-      //! Lane for transmit / receive
-      uint32_t  lane;
+            //! Get buffer at index
+            boost::shared_ptr<interfaces::stream::Buffer> getBuffer(uint32_t index);
 
-      //! Lane for transmit / receive
-      uint32_t  vc;
+            //! Get zero copy state
+            bool getZeroCopy();
 
-      //! Continue flag. This buffer is part of a larger frame
-      uint32_t  cont;
+            //! Get total available capacity (not including header space)
+            uint32_t getAvailable();
 
-      //! Size for transmit / receive
-      uint32_t  size;
+            //! Get total real payload size (not including header space)
+            uint32_t getPayload();
 
-      //! Error flags for receive
-      uint32_t  error;
-};
+            //! Read up to count bytes from frame, starting from offset.
+            uint32_t read  ( void *p, uint32_t offset, uint32_t count );
+
+            //! Read up to count bytes from frame, starting from offset. Python version.
+            boost::python::object readPy ( uint32_t offset, uint32_t count );
+
+            //! Write count bytes to frame, starting at offset
+            uint32_t write ( void *p, uint32_t offset, uint32_t count );
+
+            //! Write count bytes to frame, starting at offset. Python Version
+            uint32_t writePy ( boost::python::object p, uint32_t offset);
+      };
+
+      // Convienence
+      typedef boost::shared_ptr<interfaces::stream::Frame> FramePtr;
+
+   }
+}
 
 #endif
 
