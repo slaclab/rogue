@@ -38,8 +38,12 @@ namespace interfaces {
        * payload. Calls to write and read take into account the header offset.
       */
       class Frame {
-            bool zeroCopy_; //! Buffer list is zero copy mode
-            std::vector<boost::shared_ptr<interfaces::stream::Buffer> > buffers_;  //! List of buffers which hold real data
+
+           //! Buffer list is zero copy mode
+            bool zeroCopy_;             
+            
+            //! List of buffers which hold real data
+            std::vector<boost::shared_ptr<interfaces::stream::Buffer> > buffers_;
 
          public:
 
