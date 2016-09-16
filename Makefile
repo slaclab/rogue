@@ -26,12 +26,13 @@ DEF      :=
 BLD      := ./build
 OBJ      := ./.obj
 CFLAGS   := -Wall `$(PYTHON_CFG) --cflags` -I. -std=c++0x
-LFLAGS   := -lpthread -lboost_python `$(PYTHON_CFG) --ldflags`
+LFLAGS   := -lboost_thread-mt -lboost_python `$(PYTHON_CFG) --ldflags`
 SHNAME   := rogue
 SHLIB    := librogue.so
 
 # Generic Sources
-LIB_DIR := $(PWD)/interfaces $(PWD)/hardware $(PWD)/protocols $(PWD)/utilities
+#LIB_DIR := $(PWD)/interfaces $(PWD)/hardware $(PWD)/protocols $(PWD)/utilities
+LIB_DIR := $(PWD)/interfaces $(PWD)/protocols $(PWD)/utilities
 LIB_SUB := $(foreach dir,$(LIB_DIR),$(shell find $(dir) -type d))
 LIB_SRC := $(foreach dir,$(LIB_SUB),$(wildcard $(dir)/*.cpp))
 LIB_HDR := $(foreach dir,$(LIB_SUB),$(wildcard $(dir)/*.h))
@@ -51,7 +52,8 @@ APP_SRC := $(wildcard $(APP_DIR)/*.cpp)
 APP_BIN := $(patsubst $(APP_DIR)/%.cpp,$(BLD)/%,$(APP_SRC))
 
 # Targets
-all: dir $(LIB_OBJ) $(LIB_SHO) $(PYL_OBJ) $(PYL_SHO) $(APP_BIN)
+#all: dir $(LIB_OBJ) $(LIB_SHO) $(PYL_OBJ) $(PYL_SHO) $(APP_BIN)
+all: dir $(LIB_OBJ) $(LIB_SHO) $(PYL_OBJ) $(PYL_SHO)
 
 # Test
 list:

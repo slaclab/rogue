@@ -9,7 +9,7 @@
  * ----------------------------------------------------------------------------
  * Description:
  * Stream frame container
- * Some concepts borrowed from CPSW by Till Strauman
+ * Some concepts borrowed from CPSW by Till Straumann
  * ----------------------------------------------------------------------------
  * This file is part of the rogue software platform. It is subject to 
  * the license terms in the LICENSE.txt file found in the top-level directory 
@@ -31,7 +31,7 @@ namespace is = interfaces::stream;
 /*
  * Pass owner, raw data buffer, and meta data
  */
-is::BufferPtr create ( is::SlavePtr source, void * data, uint32_t meta, uint32_t rawSize) {
+is::BufferPtr is::Buffer::create ( is::SlavePtr source, void * data, uint32_t meta, uint32_t rawSize) {
    is::BufferPtr buff = boost::make_shared<is::Buffer>(source,data,meta,rawSize);
    return(buff);
 }
@@ -65,7 +65,8 @@ uint8_t * is::Buffer::getRawData() {
 
 //! Get payload data pointer
 uint8_t * is::Buffer::getPayloadData() {
-   return(data_ + headRoom_);
+   if ( data_ == NULL ) return(NULL);
+   else return(data_ + headRoom_);
 }
 
 //! Get meta data
@@ -123,6 +124,9 @@ void is::Buffer::setHeadRoom(uint32_t offset) {
 uint32_t is::Buffer::read  ( void *p, uint32_t offset, uint32_t count ) {
    uint32_t rcnt;
 
+   // Empty buffer
+   if ( data_ == NULL ) return(0);
+
    // No data in buffer
    if ( count_ < headRoom_ ) return(0);
 
@@ -142,6 +146,9 @@ uint32_t is::Buffer::read  ( void *p, uint32_t offset, uint32_t count ) {
 //! Write count bytes to frame, starting at offset
 uint32_t is::Buffer::write ( void *p, uint32_t offset, uint32_t count ) {
    uint32_t wcnt;
+
+   // Empty buffer
+   if ( data_ == NULL ) return(0);
 
    if ( offset >= (rawSize_ - headRoom_) ) return(0);
 

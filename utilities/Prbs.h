@@ -22,6 +22,7 @@
 #ifndef __UTILITIES_PRBS_H__
 #define __UTILITIES_PRBS_H__
 #include <stdint.h>
+#include <boost/thread.hpp>
 
 namespace utilities {
 
@@ -31,18 +32,31 @@ namespace utilities {
     * Internal thread can en enabled for auto frame generation
     */
    class Prbs : public interfaces::stream::Slave, public interfaces::stream::Master {
-         uint32_t * _taps;
-         uint32_t   _tapCnt;
-         uint32_t   _width;
-         uint32_t   _sequence;
-         uint32_t   _tSize;
+         uint32_t * taps_;
+         uint32_t   tapCnt_;
+         uint32_t   width_;
+         uint32_t   sequence_;
+         uint32_t   txSize_;
+         uint32_t   errCount_;
+         uint32_t   totCount_;
+         uint32_t   totBytes_;
+         bool       enMessages_;
 
+         boost::thread* thread_;
+
+         //! Internal computation 
          uint32_t flfsr(uint32_t input);
 
          //! Thread background
          void runThread();
 
+         //! Reset state
+         void init(uint32_t width, uint32_t tapCnt);
+
       public:
+
+         //! Class creation
+         static boost::shared_ptr<utilities::Prbs> create ();
 
          //! Creator with width and variable taps
          Prbs(uint32_t width, uint32_t tapCnt, ... );
@@ -62,16 +76,27 @@ namespace utilities {
          //! Disable auto generation
          void disable();
 
-         //! Generate a buffer. Called from master
-         boost::shared_ptr<interfaces::stream::Frame>
-            acceptReq ( uint32_t size, bool zeroCopyEn);
+         //! Get errors
+         uint32_t getErrors();
+
+         //! Get rx/tx count
+         uint32_t getCount();
+
+         //! Get total bytes
+         uint32_t getBytes();
+
+         //! Reset counters
+         void resetCount();
+
+         //! Enable messages
+         void enMessages(bool state);
 
          //! Accept a frame from master
          bool acceptFrame ( boost::shared_ptr<interfaces::stream::Frame> frame );
-
-         //! Return a buffer
-         void retBuffer(uint8_t * data, uint32_t meta, uint32_t rawSize);
    };
+
+   // Convienence
+   typedef boost::shared_ptr<utilities::Prbs> PrbsPtr;
 }
 
 #endif

@@ -9,7 +9,7 @@
  * ----------------------------------------------------------------------------
  * Description:
  * Stream frame container
- * Some concepts borrowed from CPSW by Till Strauman
+ * Some concepts borrowed from CPSW by Till Straumann
  * ----------------------------------------------------------------------------
  * This file is part of the rogue software platform. It is subject to 
  * the license terms in the LICENSE.txt file found in the top-level directory 
@@ -77,13 +77,13 @@ namespace interfaces {
             uint32_t read  ( void *p, uint32_t offset, uint32_t count );
 
             //! Read up to count bytes from frame, starting from offset. Python version.
-            boost::python::object readPy ( uint32_t offset, uint32_t count );
+            boost::python::object readPy ();
 
             //! Write count bytes to frame, starting at offset
             uint32_t write ( void *p, uint32_t offset, uint32_t count );
 
             //! Write count bytes to frame, starting at offset. Python Version
-            uint32_t writePy ( boost::python::object p, uint32_t offset);
+            uint32_t writePy ( boost::python::object p );
       };
 
       // Convienence

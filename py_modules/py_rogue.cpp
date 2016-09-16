@@ -20,22 +20,67 @@
  * ----------------------------------------------------------------------------
 **/
 
-#include "PgpDriver.h"
-#include "PgpCard.h"
-#include "PgpData.h"
-#include "StreamSrc.h"
-#include "StreamDest.h"
-#include "PrbsDataSrc.h"
-#include "PrbsDataDest.h"
-#include "PgpCardStream.h"
+#include <interfaces/stream/Slave.h>
+#include <interfaces/stream/Master.h>
+#include <interfaces/stream/Frame.h>
 #include <boost/python.hpp>
+#include <utilities/Prbs.h>
+
 using namespace boost::python;
+namespace is = interfaces::stream;
 
 BOOST_PYTHON_MODULE(py_rogue)
 {
 
    PyEval_InitThreads();
 
+   /////////////////////////////////
+   // Interfaces
+   /////////////////////////////////
+
+   class_<is::Frame, is::FramePtr>("Frame",no_init)
+      .def("getAvailable", &is::Frame::getAvailable)
+      .def("getPayload",   &is::Frame::getPayload)
+      .def("read",         &is::Frame::readPy)
+      .def("write",        &is::Frame::writePy)
+   ;
+
+   class_<is::Master, is::MasterPtr>("Master",init<>())
+      .def("create",         &is::Master::create)
+      .staticmethod("create")
+      .def("setSlave",       &is::Master::setSlave)
+      .def("addSlave",       &is::Master::addSlave)
+      .def("reqFrame",       &is::Master::reqFrame)
+      .def("sendFrame",      &is::Master::sendFrame)
+   ;
+
+   class_<is::SlaveWrap, is::SlaveWrapPtr, boost::noncopyable>("Slave",init<>())
+      .def("create",         &is::Slave::create)
+      .staticmethod("create")
+      .def("acceptFrame",    &is::Slave::acceptFrame, &is::SlaveWrap::defAcceptFrame)
+   ;
+
+   /////////////////////////////////
+   // Utilities
+   /////////////////////////////////
+
+   class_<utilities::Prbs, bases<is::Master,is::Slave>, utilities::PrbsPtr >("Prbs",init<>())
+      .def("create",         &utilities::Prbs::create)
+      .staticmethod("create")
+      .def("genFrame",       &utilities::Prbs::genFrame)
+      .def("enable",         &utilities::Prbs::enable)
+      .def("disable",        &utilities::Prbs::disable)
+      .def("getErrors",      &utilities::Prbs::getErrors)
+      .def("getCount",       &utilities::Prbs::getCount)
+      .def("getBytes",       &utilities::Prbs::getBytes)
+      .def("resetCount",     &utilities::Prbs::resetCount)
+      .def("enMessages",     &utilities::Prbs::enMessages)
+   ;
+
+   implicitly_convertible<utilities::PrbsPtr, is::SlavePtr>();
+   implicitly_convertible<utilities::PrbsPtr, is::MasterPtr>();
+
+/*
    class_<PgpInfo,boost::noncopyable>("PgpInfo")
       .def_readwrite("serial",     &PgpInfo::serial)
       .def_readwrite("type",       &PgpInfo::type)
@@ -166,5 +211,8 @@ BOOST_PYTHON_MODULE(py_rogue)
    ;
 
    class_<PgpCardStream, bases<StreamSrc,StreamDest,PgpCard>, boost::noncopyable >("PgpCardStream",init<>());
+
+*/
+
 };
 

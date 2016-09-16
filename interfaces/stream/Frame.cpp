@@ -9,7 +9,7 @@
  * ----------------------------------------------------------------------------
  * Description:
  * Stream frame container
- * Some concepts borrowed from CPSW by Till Strauman
+ * Some concepts borrowed from CPSW by Till Straumann
  * ----------------------------------------------------------------------------
  * This file is part of the rogue software platform. It is subject to 
  * the license terms in the LICENSE.txt file found in the top-level directory 
@@ -23,12 +23,13 @@
 #include <interfaces/stream/Frame.h>
 #include <interfaces/stream/Buffer.h>
 #include <boost/make_shared.hpp>
+#include <boost/python.hpp>
 
 namespace is = interfaces::stream;
 
 
 //! Create an empty frame
-is::FramePtr create(bool zeroCopy) {
+is::FramePtr is::Frame::create(bool zeroCopy) {
    is::FramePtr frame = boost::make_shared<is::Frame>(zeroCopy);
    return(frame);
 }
@@ -92,7 +93,7 @@ uint32_t is::Frame::getPayload() {
 
    ret = 0;
    for (x=0; x < buffers_.size(); x++) 
-      ret += buffers_[x]->getAvailable();
+      ret += buffers_[x]->getPayload();
 
    return(ret);
 }
@@ -130,13 +131,33 @@ uint32_t is::Frame::read  ( void *p, uint32_t offset, uint32_t count ) {
 }
 
 //! Read up to count bytes from frame, starting from offset. Python version.
-boost::python::object is::Frame::readPy ( uint32_t offset, uint32_t count ) {
-   //PyObject * pyBuf;
-   //boost::python::object     ret;
+boost::python::object is::Frame::readPy () {
+   PyObject * pyObj;
+   Py_buffer  pyBuf;
+   uint8_t  * buff;
+   uint32_t   count;
 
-   //pyBuf = PyBuffer_FromReadWriteMemory(data_,maxSize_);
-   //ret = boost::python::object(boost::python::handle<>(pyBuf));
-   //return(ret);
+   boost::python::object ret;
+
+   count = getPayload();
+
+   pyObj = PyBuffer_New(count);
+
+   //if ( PyObject_GetBuffer(pyObj,&pyBuf,PyBUF_CONTIG) < 0 ) {
+   if ( PyObject_GetBuffer(pyObj,&pyBuf,PyBUF_SIMPLE) < 0 ) {
+      printf("Failed to map python read buffer\n");
+      //ret = boost::python::object(Py_None);
+   }
+   else {
+
+      buff = (uint8_t *)pyBuf.buf;
+
+      read(buff,0,count);
+      PyBuffer_Release(&pyBuf);
+
+      ret = boost::python::object(boost::python::handle<>(pyObj));
+   }
+   return(ret);
 }
 
 //! Write count bytes to frame, starting at offset
@@ -159,8 +180,8 @@ uint32_t is::Frame::write ( void *p, uint32_t offset, uint32_t count ) {
       // Attempt read with raw count and adjusted offset.
       // Buffer read will return zero if offset is larger than payload size
       else {
-         cnt += buff->read(p,(offset-currOff),count);
-         currOff += buff->getPayload();
+         cnt += buff->write(p,(offset-currOff),count);
+         currOff += buff->getAvailable();
       }
 
       // Read has reached requested count
@@ -171,14 +192,25 @@ uint32_t is::Frame::write ( void *p, uint32_t offset, uint32_t count ) {
    return(cnt);
 }
 
-//! Write count bytes to frame, starting at offset. Python Version
-uint32_t is::Frame::writePy ( boost::python::object p, uint32_t offset) {
-   //PyObject * pyBuf;
-   //boost::python::object     ret;
+//! Write python buffer to frame, starting at offset. Python Version
+uint32_t is::Frame::writePy ( boost::python::object p) {
+   PyObject * pyObj;
+   Py_buffer  pyBuf;
+   uint32_t   count;
+   uint8_t  * buff;
+   uint32_t   ret;
 
-   //pyBuf = PyBuffer_FromReadWriteMemory(data_,maxSize_);
-   //ret = boost::python::object(boost::python::handle<>(pyBuf));
-   //return(ret);
-   return(0);
+   pyObj = p.ptr();
+
+   if ( PyObject_GetBuffer(pyObj,&pyBuf,PyBUF_CONTIG) < 0 ) {
+      printf("Failed to map python write buffer\n");
+      return(0);
+   }
+
+   count = pyBuf.len;
+   buff = (uint8_t *)pyBuf.buf;
+   ret = write(buff,0,count);
+   PyBuffer_Release(&pyBuf);
+   return(ret);
 }
 

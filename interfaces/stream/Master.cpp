@@ -25,36 +25,39 @@
 #include <interfaces/stream/Frame.h>
 
 #include <boost/python.hpp>
+#include <boost/make_shared.hpp>
 
 namespace is = interfaces::stream;
+
+//! Class creation
+is::MasterPtr is::Master::create () {
+   is::MasterPtr msg = boost::make_shared<is::Master>();
+   return(msg);
+}
 
 //! Creator
 is::Master::Master() {}
 
 //! Destructor
 is::Master::~Master() {
+   primary_ = is::Slave::create();
    slaves_.clear();
 }
 
-//! Set frame slave
+//! Set primary slave, used for buffer request forwarding
+void is::Master::setSlave ( boost::shared_ptr<interfaces::stream::Slave> slave ) {
+   slaves_.push_back(slave);
+   primary_ = slave;
+}
+
+//! Add secondary slave
 void is::Master::addSlave ( is::SlavePtr slave ) {
    slaves_.push_back(slave);
 }
 
-//! Request frame from slave
-/*
- * An allocate command will be issued to each slave until one returns a buffer. 
- * If none return a buffer a null pointer will be returned.
- */
+//! Request frame from primary slave
 is::FramePtr is::Master::reqFrame ( uint32_t size, bool zeroCopyEn) {
-   uint32_t x;
-
-   is::FramePtr f;
-
-   for (x=0; x < slaves_.size(); x++)
-      if ( f = slaves_[x]->acceptReq(size,zeroCopyEn) ) break;
-
-   return(f);
+   return(primary_->acceptReq(size,zeroCopyEn));
 }
 
 //! Push frame to slaves

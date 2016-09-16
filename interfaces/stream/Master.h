@@ -40,9 +40,13 @@ namespace interfaces {
        * This class pushes frame data to a slave interface.
        */
       class Master {
+            boost::shared_ptr<interfaces::stream::Slave> primary_;
             std::vector<boost::shared_ptr<interfaces::stream::Slave> > slaves_;
 
          public:
+
+            //! Class creation
+            static boost::shared_ptr<interfaces::stream::Master> create ();
 
             //! Creator
             Master();
@@ -50,18 +54,20 @@ namespace interfaces {
             //! Destructor
             virtual ~Master();
 
-            //! Set frame slave
+            //! Set primary slave, used for buffer request forwarding
+            void setSlave ( boost::shared_ptr<interfaces::stream::Slave> slave );
+
+            //! Add secondary slave
             void addSlave ( boost::shared_ptr<interfaces::stream::Slave> slave );
 
             //! Get frame from slave
             /*
-             * An allocate command will be issued to each slave until one returns a buffer. 
-             * If none return a buffer a null pointer will be returned.
+             * An allocate command will be issued to the primary slave set with setSlave()
              */
             boost::shared_ptr<interfaces::stream::Frame>
                reqFrame ( uint32_t size, bool zeroCopyEn);
 
-            //! Push frame to slaves
+            //! Push frame to all slaves
             bool sendFrame ( boost::shared_ptr<interfaces::stream::Frame> frame );
       };
 

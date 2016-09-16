@@ -39,6 +39,9 @@ namespace interfaces {
       class Slave : public boost::enable_shared_from_this<interfaces::stream::Slave> {
          public:
 
+            //! Class creation
+            static boost::shared_ptr<interfaces::stream::Slave> create ();
+
             //! Creator
             Slave();
 
@@ -85,6 +88,7 @@ namespace interfaces {
 
       // Convienence
       typedef boost::shared_ptr<interfaces::stream::Slave> SlavePtr;
+      typedef boost::shared_ptr<interfaces::stream::SlaveWrap> SlaveWrapPtr;
    }
 }
 

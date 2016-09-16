@@ -26,88 +26,122 @@
 #include <interfaces/stream/Frame.h>
 #include <interfaces/stream/Buffer.h>
 #include <utilities/Prbs.h>
+#include <boost/make_shared.hpp>
 
 namespace is = interfaces::stream;
 namespace ut = utilities;
+
+//! Class creation
+ut::PrbsPtr ut::Prbs::create () {
+   ut::PrbsPtr p = boost::make_shared<ut::Prbs>();
+   return(p);
+}
 
 //! Creator with width and variable taps
 ut::Prbs::Prbs(uint32_t width, uint32_t tapCnt, ... ) {
    va_list a_list;
    uint32_t   x;
 
-   _sequence = 0;
-   _width    = width;
-   _tapCnt   = tapCnt;
-
-   _taps = (uint32_t *)malloc(sizeof(uint32_t)*_tapCnt);
+   init(width,tapCnt);
 
    va_start(a_list,tapCnt);
-   for(x=0; x < tapCnt; x++) _taps[x] = va_arg(a_list,uint32_t);
+   for(x=0; x < tapCnt; x++) taps_[x] = va_arg(a_list,uint32_t);
    va_end(a_list);
 }
 
 //! Creator with default taps and size
 ut::Prbs::Prbs() {
-   _sequence = 0;
-   _width    = 32;
-   _tapCnt   = 4;
+   init(32,4);
 
-   _taps = (uint32_t *)malloc(sizeof(uint32_t)*_tapCnt);
-
-   _taps[0] = 1;
-   _taps[1] = 2;
-   _taps[2] = 6;
-   _taps[3] = 31;
+   taps_[0] = 1;
+   taps_[1] = 2;
+   taps_[2] = 6;
+   taps_[3] = 31;
 }
 
 //! Deconstructor
 ut::Prbs::~Prbs() {
-   free(_taps);
+   free(taps_);
+}
+
+void ut::Prbs::init(uint32_t width, uint32_t tapCnt) {
+   sequence_   = 0;
+   width_      = width;
+   tapCnt_     = tapCnt;
+   errCount_   = 0;
+   totCount_   = 0;
+   totBytes_   = 0;
+   thread_     = NULL;
+   enMessages_ = false;
+
+   taps_ = (uint32_t *)malloc(sizeof(uint32_t)*tapCnt_);
 }
 
 uint32_t ut::Prbs::flfsr(uint32_t input) {
    uint32_t bit = 0;
    uint32_t x;
 
-   for (x=0; x < _tapCnt; x++) bit = bit ^ (input >> _taps[x]);
+   for (x=0; x < tapCnt_; x++) bit = bit ^ (input >> taps_[x]);
 
    bit = bit & 1;
 
    return ((input << 1) | bit);
 }
 
+//! Thread background
+void ut::Prbs::runThread() {
+   try {
+      while(1) {
+         genFrame(txSize_);
+         boost::this_thread::interruption_point();
+      }
+   } catch (boost::thread_interrupted&) {}
+}
+
 //! Auto run data generation
 void ut::Prbs::enable(uint32_t size) {
-   //_tSize = size;
-
-   //boost::thread t{runThread};
+   if ( thread_ == NULL ) {
+      txSize_ = size;
+      thread_ = new boost::thread(boost::bind(&Prbs::runThread, this));
+   }
 }
 
 //! Disable auto generation
 void ut::Prbs::disable() {
-
-
+   if ( thread_ != NULL ) {
+      thread_->interrupt();
+      thread_->join();
+      delete thread_;
+      thread_ = NULL;
+   }
 }
 
-//! Generate a buffer. Called from master
-is::FramePtr ut::Prbs::acceptReq ( uint32_t size, bool zeroCopyEn) {
-   is::FramePtr ret;
-   is::BufferPtr buff;
-   uint8_t * data;
-
-   if ( (data = (uint8_t *)malloc(size)) == NULL ) return(ret);
-
-   buff = is::Buffer::create(getSlave(),data,0,size);
-   ret  = is::Frame::create(zeroCopyEn);
-
-   ret->appendBuffer(buff);
-   return(ret);
+//! Get errors
+uint32_t ut::Prbs::getErrors() {
+   return(errCount_);
 }
 
-//! Return a buffer
-void ut::Prbs::retBuffer(uint8_t * data, uint32_t meta, uint32_t rawSize) {
-   printf("Deleteing prbs buffer\n");
-   free(data);
+//! Get rx/tx count
+uint32_t ut::Prbs::getCount() {
+   return(totCount_);
+}
+
+//! Get total bytes
+uint32_t ut::Prbs::getBytes() {
+   return(totBytes_);
+}
+
+//! Reset counters
+// Counters should really be locked!
+void ut::Prbs::resetCount() {
+   errCount_ = 0;
+   totCount_ = 0;
+   totBytes_ = 0;
+}
+
+//! Enable messages
+void ut::Prbs::enMessages(bool state) {
+   enMessages_ = state;
 }
 
 //! Generate a data frame
@@ -116,38 +150,42 @@ void ut::Prbs::genFrame (uint32_t size) {
    uint32_t   value;
    uint32_t   data32[2];
    uint16_t * data16;
+   uint32_t   cnt;
 
    is::FramePtr fr = reqFrame(size,true);
 
    data16 = (uint16_t *)data32;
-   value = _sequence;
+   value = sequence_;
+   cnt = 0;
 
-   if ( _width == 16 ) {
+   if ( width_ == 16 ) {
       if ((( size % 2 ) != 0) || size < 6 ) return;
-      data16[0] = _sequence & 0xFFFF;
+      data16[0] = sequence_ & 0xFFFF;
       data16[1] = (size - 2) / 2;
-      fr->write(data16,0,4);
+      cnt += fr->write(data16,0,4);
    }
-   else if ( _width == 32 ) {
+   else if ( width_ == 32 ) {
       if ((( size % 4 ) != 0) || size < 12 ) return;
-      data32[0] = _sequence;
+      data32[0] = sequence_;
       data32[1] = (size - 4) / 4;
-      fr->write(data32,0,8);
+      cnt += fr->write(data32,0,8);
    }
    else {
-      fprintf(stderr,"Bad gen width = %i\n",_width);
+      if ( enMessages_ ) fprintf(stderr,"Prbs::genFrame -> Bad gen width = %i\n",width_);
       return;
    }
 
-   for (word = 2; word < size/(_width/8); word++) {
+   for (word = 2; word < size/(width_/8); word++) {
       value = flfsr(value);
-      if      ( _width == 16 ) fr->write(&value,2,word*2);
-      else if ( _width == 32 ) fr->write(&value,4,word*4);
+      if      ( width_ == 16 ) cnt += fr->write(&value,word*2,2);
+      else if ( width_ == 32 ) cnt += fr->write(&value,word*4,4);
    }
 
-   if      ( _width == 16 ) _sequence = data16[0] + 1;
-   else if ( _width == 32 ) _sequence = data32[0] + 1;
+   if      ( width_ == 16 ) sequence_ = data16[0] + 1;
+   else if ( width_ == 32 ) sequence_ = data32[0] + 1;
 
+   totCount_++;
+   totBytes_ += size;
    sendFrame(fr);
 }
 
@@ -166,47 +204,58 @@ bool ut::Prbs::acceptFrame ( is::FramePtr frame ) {
 
    size = frame->getPayload();
 
-   if ( _width == 16 ) {
+   totCount_++;
+   totBytes_ += size;
+
+   if ( width_ == 16 ) {
       frame->read(data16,0,4);
       expected    = data16[0];
       eventLength = (data16[1] * 2) + 2;
       min         = 6;
    }
-   else if ( _width == 32 ) {
+   else if ( width_ == 32 ) {
       frame->read(data16,0,8);
       expected    = data32[0];
       eventLength = (data32[1] * 4) + 4;
       min         = 12;
    }
    else {
-      fprintf(stderr,"Bad process width = %i\n",_width);
+      if ( enMessages_ ) fprintf(stderr,"Prbs::acceptFrame -> Bad process width = %i\n",width_);
+      errCount_++;
       return(false);
    }
 
    if (size < min || eventLength != size) {
-      fprintf(stderr,"Bad size. exp=%i, min=%i, got=%i\n",eventLength,min,size);
+      if ( enMessages_ ) 
+         fprintf(stderr,"Prbs::acceptFrame -> Bad size. exp=%i, min=%i, got=%i, count=%i\n",eventLength,min,size,totCount_);
+      errCount_++;
       return(false);
    }
 
-   if ( _sequence != 0 && _sequence != expected ) {
-      fprintf(stderr,"Bad Sequence. exp=%i, got=%i\n",_sequence,expected);
-      _sequence = expected + 1;
+   if ( sequence_ != 0 && sequence_ != expected ) {
+      if ( enMessages_ ) 
+         fprintf(stderr,"Prbs::acceptFrame -> Bad Sequence. exp=%i, got=%i, count=%i\n",sequence_,expected,totCount_);
+      sequence_ = expected + 1;
+      errCount_++;
       return(false);
    }
-   _sequence = expected + 1;
+   sequence_ = expected + 1;
 
-   for (word = 2; word < size/(_width/8); word++) {
+   for (word = 2; word < size/(width_/8); word++) {
       expected = flfsr(expected);
 
-      if      ( _width == 16 ) frame->read(&got,word*2,2);
-      else if ( _width == 32 ) frame->read(&got,word*4,4);
+      if      ( width_ == 16 ) frame->read(&got,word*2,2);
+      else if ( width_ == 32 ) frame->read(&got,word*4,4);
       else got = 0;
 
       if (expected != got) {
-         fprintf(stderr,"Bad value at index %i. exp=0x%x, got=0x%x\n",word,expected,got);
+         if ( enMessages_ ) 
+            fprintf(stderr,"Prbs::acceptFrame -> Bad value at index %i. exp=0x%x, got=0x, count=%i%x\n",word,expected,got,totCount_);
+         errCount_++;
          return(false);
       }
    }
+
    return(true);
 }
 

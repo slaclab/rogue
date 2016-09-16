@@ -22,12 +22,22 @@
 #include <unistd.h>
 #include <interfaces/stream/Slave.h>
 #include <interfaces/stream/Master.h>
+#include <interfaces/stream/Buffer.h>
 #include <interfaces/stream/Frame.h>
+#include <boost/make_shared.hpp>
 
 namespace is = interfaces::stream;
 
+//! Class creation
+is::SlavePtr is::Slave::create () {
+   is::SlavePtr slv = boost::make_shared<is::Slave>();
+   return(slv);
+}
+
 //! Creator
-is::Slave::Slave() {}
+is::Slave::Slave() {
+   printf("Slave created %p\n",this);
+}
 
 //! Destructor
 is::Slave::~Slave() { }
@@ -38,8 +48,20 @@ is::Slave::~Slave() { }
  * Pass flag indicating if zero copy buffers are acceptable
  */
 is::FramePtr is::Slave::acceptReq ( uint32_t size, bool zeroCopyEn) {
-   is::FramePtr p;
-   return(p);
+   is::FramePtr ret;
+   is::BufferPtr buff;
+   uint8_t * data;
+
+   ret  = is::Frame::create(zeroCopyEn);
+
+   if ( (data = (uint8_t *)malloc(size)) == NULL ) return(ret);
+
+   buff = is::Buffer::create(getSlave(),data,0,size);
+   ret->appendBuffer(buff);
+
+   printf("Buffer allocated from %p\n",this);
+
+   return(ret);
 }
 
 //! Accept a frame from master
@@ -54,7 +76,10 @@ bool is::Slave::acceptFrame ( is::FramePtr frame ) {
 /*
  * Called when this instance is marked as owner of a Buffer entity
  */
-void retBuffer(uint8_t * data, uint32_t meta, uint32_t rawSize) {}
+void is::Slave::retBuffer(uint8_t * data, uint32_t meta, uint32_t rawSize) {
+   printf("Buffer freed in %p\n",this);
+   free(data);
+}
 
 //! Return instance as shared pointer
 is::SlavePtr is::Slave::getSlave() {
