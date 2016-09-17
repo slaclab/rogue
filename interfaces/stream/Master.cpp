@@ -4,8 +4,8 @@
  * ----------------------------------------------------------------------------
  * File       : Master.h
  * Author     : Ryan Herbst, rherbst@slac.stanford.edu
- * Created    : 2016-08-08
- * Last update: 2016-08-08
+ * Created    : 2016-09-16
+ * Last update: 2016-09-16
  * ----------------------------------------------------------------------------
  * Description:
  * Stream interface master

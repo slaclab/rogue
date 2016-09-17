@@ -4,8 +4,8 @@
  * ----------------------------------------------------------------------------
  * File       : Slave.cpp
  * Author     : Ryan Herbst, rherbst@slac.stanford.edu
- * Created    : 2016-08-08
- * Last update: 2016-08-08
+ * Created    : 2016-09-16
+ * Last update: 2016-09-16
  * ----------------------------------------------------------------------------
  * Description:
  * Stream interface slave
@@ -35,12 +35,19 @@ is::SlavePtr is::Slave::create () {
 }
 
 //! Creator
-is::Slave::Slave() {
-   printf("Slave created %p\n",this);
+is::Slave::Slave() { 
+   allocMeta_ = 0;
+   freeMeta_  = 0xFFFFFFFF;
+   totAlloc_  = 0;
 }
 
 //! Destructor
 is::Slave::~Slave() { }
+
+//! Get allocated memory
+uint64_t is::Slave::getAlloc() {
+   return(totAlloc_);
+}
 
 //! Generate a buffer. Called from master
 /*
@@ -48,18 +55,19 @@ is::Slave::~Slave() { }
  * Pass flag indicating if zero copy buffers are acceptable
  */
 is::FramePtr is::Slave::acceptReq ( uint32_t size, bool zeroCopyEn) {
-   is::FramePtr ret;
+   is::FramePtr  ret;
+   uint8_t *     data;
    is::BufferPtr buff;
-   uint8_t * data;
 
    ret  = is::Frame::create(zeroCopyEn);
 
    if ( (data = (uint8_t *)malloc(size)) == NULL ) return(ret);
 
-   buff = is::Buffer::create(getSlave(),data,0,size);
-   ret->appendBuffer(buff);
+   buff = is::Buffer::create(getSlave(),data,allocMeta_,size);
+   allocMeta_++;
+   totAlloc_ += size;
 
-   printf("Buffer allocated from %p\n",this);
+   ret->appendBuffer(buff);
 
    return(ret);
 }
@@ -77,8 +85,14 @@ bool is::Slave::acceptFrame ( is::FramePtr frame ) {
  * Called when this instance is marked as owner of a Buffer entity
  */
 void is::Slave::retBuffer(uint8_t * data, uint32_t meta, uint32_t rawSize) {
-   printf("Buffer freed in %p\n",this);
-   free(data);
+   if ( meta == freeMeta_ ) printf("Buffer return with duplicate meta\n");
+   freeMeta_ = meta;
+
+   if ( data != NULL ) {
+      free(data);
+      totAlloc_ -= rawSize;
+   }
+   else printf("Empty buffer returned\n");
 }
 
 //! Return instance as shared pointer
@@ -89,22 +103,26 @@ is::SlavePtr is::Slave::getSlave() {
 //! Accept frame
 bool is::SlaveWrap::acceptFrame ( is::FramePtr frame ) {
    bool ret;
+   bool found;
+
+   found = false;
+   ret   = false;
+
+   // Not sure if this is (and release) are ok if calling from python to python
+   // It appears we need to lock before calling get_override
+   PyGILState_STATE pyState = PyGILState_Ensure();
 
    if (boost::python::override pb = this->get_override("acceptFrame")) {
-
-      // Not sure if this is (and release) are ok if calling from python to python
-      PyGILState_STATE pyState = PyGILState_Ensure();
-
+      found = true;
       try {
          ret = pb(frame);
       } catch (...) {
          PyErr_Print();
-         ret = false;
       }
-
-      PyGILState_Release(pyState);
    }
-   else ret = is::Slave::acceptFrame(frame);
+   PyGILState_Release(pyState);
+
+   if ( ! found ) ret = is::Slave::acceptFrame(frame);
    return(ret);
 }
 
@@ -112,5 +130,4 @@ bool is::SlaveWrap::acceptFrame ( is::FramePtr frame ) {
 bool is::SlaveWrap::defAcceptFrame ( is::FramePtr frame ) {
    return(is::Slave::acceptFrame(frame));
 }
-
 

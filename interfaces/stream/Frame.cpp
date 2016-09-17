@@ -4,8 +4,8 @@
  * ----------------------------------------------------------------------------
  * File       : Frame.h
  * Author     : Ryan Herbst, rherbst@slac.stanford.edu
- * Created    : 2016-08-08
- * Last update: 2016-08-08
+ * Created    : 2016-09-16
+ * Last update: 2016-09-16
  * ----------------------------------------------------------------------------
  * Description:
  * Stream frame container
@@ -98,6 +98,26 @@ uint32_t is::Frame::getPayload() {
    return(ret);
 }
 
+//! Get flags
+uint32_t is::Frame::getFlags() {
+   return(flags_);
+}
+
+//! Set error state
+void is::Frame::setFlags(uint32_t flags) {
+   error_ = flags;
+}
+
+//! Get error state
+uint32_t is::Frame::getError() {
+   return(error_);
+}
+
+//! Set error state
+void is::Frame::setError(uint32_t error) {
+   error_ = error;
+}
+
 //! Read up to count bytes from frame, starting from offset.
 uint32_t is::Frame::read  ( void *p, uint32_t offset, uint32_t count ) {
    uint32_t currOff;
@@ -131,32 +151,27 @@ uint32_t is::Frame::read  ( void *p, uint32_t offset, uint32_t count ) {
 }
 
 //! Read up to count bytes from frame, starting from offset. Python version.
+// There must be a better way to do this without a copy in the middle.
+// This is causing a memory leak!
 boost::python::object is::Frame::readPy () {
-   PyObject * pyObj;
-   Py_buffer  pyBuf;
+   PyObject * pyBuf;
    uint8_t  * buff;
    uint32_t   count;
-
    boost::python::object ret;
 
    count = getPayload();
 
-   pyObj = PyBuffer_New(count);
-
-   //if ( PyObject_GetBuffer(pyObj,&pyBuf,PyBUF_CONTIG) < 0 ) {
-   if ( PyObject_GetBuffer(pyObj,&pyBuf,PyBUF_SIMPLE) < 0 ) {
-      printf("Failed to map python read buffer\n");
-      //ret = boost::python::object(Py_None);
+   if ( (buff = (uint8_t *)malloc(count)) == NULL ) {
+      pyBuf = Py_None;
    }
    else {
 
-      buff = (uint8_t *)pyBuf.buf;
+      read(buff,0,count); 
 
-      read(buff,0,count);
-      PyBuffer_Release(&pyBuf);
-
-      ret = boost::python::object(boost::python::handle<>(pyObj));
+      pyBuf = PyBuffer_FromReadWriteMemory(buff,count);
+      //free(buff);
    }
+   ret = boost::python::object(boost::python::handle<>(pyBuf));
    return(ret);
 }
 

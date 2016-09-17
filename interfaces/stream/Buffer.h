@@ -2,14 +2,17 @@
  *-----------------------------------------------------------------------------
  * Title      : Stream Buffer Container
  * ----------------------------------------------------------------------------
- * File       : StreamBuffer.h
+ * File       : Buffer.h
  * Author     : Ryan Herbst, rherbst@slac.stanford.edu
- * Created    : 2016-08-08
- * Last update: 2016-08-08
+ * Created    : 2016-09-16
+ * Last update: 2016-09-16
  * ----------------------------------------------------------------------------
  * Description:
  * Stream frame container
  * Some concepts borrowed from CPSW by Till Straumann
+ * TODO:
+ *    Add locking for thread safety. May not be needed since the source will
+ *    set things up once before handing off to the various threads.
  * ----------------------------------------------------------------------------
  * This file is part of the rogue software platform. It is subject to 
  * the license terms in the LICENSE.txt file found in the top-level directory 
@@ -34,17 +37,33 @@ namespace interfaces {
       /*
        * This class is a container for buffers which make up a frame.
        * Each buffer within the frame has a reserved header area and a 
-       * payload.
+       * payload. 
       */
       class Buffer {
-            boost::shared_ptr<interfaces::stream::Slave> source_; //! Pointer to entity which allocated this buffer
 
-            uint8_t *  data_;     //! Pointer to raw data buffer. Raw pointer is used here!
-            uint32_t   meta_;     //! Meta data used to track this buffer by source
-            uint32_t   rawSize_;  //! Raw size of buffer
-            uint32_t   headRoom_; //! Header room of buffer
-            uint32_t   count_;    //! Data count including header
-            uint32_t   error_;    //! Error state
+            //! Pointer to entity which allocated this buffer
+            boost::shared_ptr<interfaces::stream::Slave> source_; 
+
+            //! Pointer to raw data buffer. Raw pointer is used here!
+            uint8_t *  data_;
+
+            //! Meta data used to track this buffer by source
+            uint32_t   meta_;
+
+            //! Raw size of buffer
+            uint32_t   rawSize_;
+
+            //! Header room of buffer
+            uint32_t   headRoom_;
+
+            //! Data count including header
+            uint32_t   count_;
+
+            //! Interface specific flags
+            uint32_t   flags_;
+
+            //! Error state
+            uint32_t   error_;
 
          public:
 
@@ -88,6 +107,12 @@ namespace interfaces {
 
             //! Get real payload size
             uint32_t getPayload();
+
+            //! Get flags
+            uint32_t getFlags();
+
+            //! Set flags
+            void setFlags(uint32_t flags);
 
             //! Get error state
             uint32_t getError();

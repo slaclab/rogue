@@ -4,12 +4,15 @@
  * ----------------------------------------------------------------------------
  * File       : Frame.h
  * Author     : Ryan Herbst, rherbst@slac.stanford.edu
- * Created    : 2016-08-08
- * Last update: 2016-08-08
+ * Created    : 2016-09-16
+ * Last update: 2016-09-16
  * ----------------------------------------------------------------------------
  * Description:
  * Stream frame container
  * Some concepts borrowed from CPSW by Till Straumann
+ * TODO:
+ *    Add locking for thread safety. May not be needed since the source will
+ *    set things up once before handing off to the various threads.
  * ----------------------------------------------------------------------------
  * This file is part of the rogue software platform. It is subject to 
  * the license terms in the LICENSE.txt file found in the top-level directory 
@@ -36,12 +39,20 @@ namespace interfaces {
        * This class is a container for a vector of buffers which make up a frame
        * container. Each buffer within the frame has a reserved header area and a 
        * payload. Calls to write and read take into account the header offset.
+       * It is assumed only one thread will interact with a buffer. Buffers 
+       * are not thread safe.
       */
       class Frame {
 
-           //! Buffer list is zero copy mode
+            //! Buffer list is zero copy mode
             bool zeroCopy_;             
-            
+           
+            //! Interface specific flags
+            uint32_t flags_;
+
+            //! Error state
+            uint32_t error_;
+
             //! List of buffers which hold real data
             std::vector<boost::shared_ptr<interfaces::stream::Buffer> > buffers_;
 
@@ -76,6 +87,18 @@ namespace interfaces {
 
             //! Get total real payload size (not including header space)
             uint32_t getPayload();
+
+            //! Get flags
+            uint32_t getFlags();
+
+            //! Set flags
+            void setFlags(uint32_t flags);
+
+            //! Get error state
+            uint32_t getError();
+
+            //! Set error state
+            void setError(uint32_t error);
 
             //! Read up to count bytes from frame, starting from offset.
             uint32_t read  ( void *p, uint32_t offset, uint32_t count );

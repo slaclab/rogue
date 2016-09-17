@@ -4,11 +4,13 @@
  * ----------------------------------------------------------------------------
  * File          : Prbs.h
  * Author        : Ryan Herbst <rherbst@slac.stanford.edu>
- * Created       : 08/11/2014
- * Last update   : 08/11/2014
+ * Created       : 09/17/2016
+ * Last update   : 09/17/2016
  *-----------------------------------------------------------------------------
  * Description :
  *    Class used to generate and receive PRBS test data.
+ * TODO:
+ *    Add locks for thread safe updates of counters and tracking variables.
  *-----------------------------------------------------------------------------
  * This file is part of the rogue software platform. It is subject to 
  * the license terms in the LICENSE.txt file found in the top-level directory 

@@ -4,8 +4,8 @@
  * ----------------------------------------------------------------------------
  * File          : Prbs.cpp
  * Author        : Ryan Herbst <rherbst@slac.stanford.edu>
- * Created       : 08/11/2014
- * Last update   : 08/11/2014
+ * Created       : 09/17/2016
+ * Last update   : 09/17/2016
  *-----------------------------------------------------------------------------
  * Description :
  *    Class used to generate and receive PRBS test data.
@@ -154,6 +154,12 @@ void ut::Prbs::genFrame (uint32_t size) {
 
    is::FramePtr fr = reqFrame(size,true);
 
+   if (fr->getAvailable() == 0 ) {
+      if ( enMessages_ ) fprintf(stderr,"Prbs::genFrame -> Buffer allocation error, count=%i\n",totCount_);
+      errCount_++;
+      return;
+   }
+
    data16 = (uint16_t *)data32;
    value = sequence_;
    cnt = 0;
@@ -202,7 +208,21 @@ bool ut::Prbs::acceptFrame ( is::FramePtr frame ) {
 
    data16 = (uint16_t *)data32;
 
+   if ( width_ == 16 ) min = 6;
+   else if ( width_ == 32 ) min = 12;
+   else {
+      if ( enMessages_ ) fprintf(stderr,"Prbs::acceptFrame -> Bad process width = %i\n",width_);
+      errCount_++;
+      return(false);
+   }
+
    size = frame->getPayload();
+
+   if (size < min ) {
+      if ( enMessages_ ) fprintf(stderr,"Prbs::acceptFrame -> Min size violation size=%i, min=%in, count=%i",size,min,totCount_);
+      errCount_++;
+      return(false);
+   }
 
    totCount_++;
    totBytes_ += size;
@@ -211,23 +231,20 @@ bool ut::Prbs::acceptFrame ( is::FramePtr frame ) {
       frame->read(data16,0,4);
       expected    = data16[0];
       eventLength = (data16[1] * 2) + 2;
-      min         = 6;
    }
    else if ( width_ == 32 ) {
       frame->read(data16,0,8);
       expected    = data32[0];
       eventLength = (data32[1] * 4) + 4;
-      min         = 12;
    }
    else {
-      if ( enMessages_ ) fprintf(stderr,"Prbs::acceptFrame -> Bad process width = %i\n",width_);
-      errCount_++;
-      return(false);
+      expected    = 0;
+      eventLength = 0;
    }
 
    if (size < min || eventLength != size) {
       if ( enMessages_ ) 
-         fprintf(stderr,"Prbs::acceptFrame -> Bad size. exp=%i, min=%i, got=%i, count=%i\n",eventLength,min,size,totCount_);
+         fprintf(stderr,"Prbs::acceptFrame -> Bad size. exp=%i, got=%i, count=%i\n",eventLength,size,totCount_);
       errCount_++;
       return(false);
    }

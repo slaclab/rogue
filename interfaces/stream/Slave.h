@@ -4,11 +4,14 @@
  * ----------------------------------------------------------------------------
  * File       : Slave.h
  * Author     : Ryan Herbst, rherbst@slac.stanford.edu
- * Created    : 2016-08-08
- * Last update: 2016-08-08
+ * Created    : 2016-09-16
+ * Last update: 2016-09-16
  * ----------------------------------------------------------------------------
  * Description:
  * Stream interface slave
+ * TODO:
+ *    Add locking to meta and alloc increments. Multiple threads may perform
+ *    and allocation. 
  * ----------------------------------------------------------------------------
  * This file is part of the rogue software platform. It is subject to 
  * the license terms in the LICENSE.txt file found in the top-level directory 
@@ -37,6 +40,16 @@ namespace interfaces {
        * can accept frame allocation requests.
        */
       class Slave : public boost::enable_shared_from_this<interfaces::stream::Slave> {
+
+            //! Track buffer allocations
+            uint32_t allocMeta_;
+
+            //! Track buffer free
+            uint32_t freeMeta_;
+
+            //! Total memory allocated
+            uint64_t totAlloc_;
+
          public:
 
             //! Class creation
@@ -47,6 +60,9 @@ namespace interfaces {
 
             //! Destructor
             virtual ~Slave();
+
+            //! Get allocated memory
+            uint64_t getAlloc();
 
             //! Generate a buffer. Called from master
             /*

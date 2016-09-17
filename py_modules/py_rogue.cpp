@@ -43,6 +43,10 @@ BOOST_PYTHON_MODULE(py_rogue)
       .def("getPayload",   &is::Frame::getPayload)
       .def("read",         &is::Frame::readPy)
       .def("write",        &is::Frame::writePy)
+      .def("setError",     &is::Frame::setError)
+      .def("getError",     &is::Frame::getError)
+      .def("setFlags",     &is::Frame::setFlags)
+      .def("getFlags",     &is::Frame::getFlags)
    ;
 
    class_<is::Master, is::MasterPtr>("Master",init<>())
@@ -58,6 +62,7 @@ BOOST_PYTHON_MODULE(py_rogue)
       .def("create",         &is::Slave::create)
       .staticmethod("create")
       .def("acceptFrame",    &is::Slave::acceptFrame, &is::SlaveWrap::defAcceptFrame)
+      .def("getAlloc",       &is::Slave::getAlloc)
    ;
 
    /////////////////////////////////
@@ -79,6 +84,10 @@ BOOST_PYTHON_MODULE(py_rogue)
 
    implicitly_convertible<utilities::PrbsPtr, is::SlavePtr>();
    implicitly_convertible<utilities::PrbsPtr, is::MasterPtr>();
+
+   /////////////////////////////////
+   // PGP
+   /////////////////////////////////
 
 /*
    class_<PgpInfo,boost::noncopyable>("PgpInfo")
@@ -180,34 +189,6 @@ BOOST_PYTHON_MODULE(py_rogue)
       .def("setLoop",        &PgpCard::setLoop)
       .def("setData",        &PgpCard::setData)
       .def("sendOpCode",     &PgpCard::sendOpCode)
-   ;
-
-   class_<StreamSrc,boost::noncopyable>("StreamSrc",init<>())
-      .def("addDest",        &StreamSrc::addDest)
-      .def("setName",        &StreamSrc::setName)
-      .def("destGetBuffer",  &StreamSrc::destGetBuffer, return_value_policy<reference_existing_object>())
-      .def("destPushBuffer", &StreamSrc::destPushBuffer)
-      .def("setLaneVc",      &StreamSrc::setLaneVc)
-   ;
-
-   class_<StreamDestWrap, boost::noncopyable>("StreamDest",init<>()) 
-      .def("pushBuffer",     &StreamDest::pushBuffer, &StreamDestWrap::defPushBuffer)
-      .def("doLock",         &StreamDestWrap::doLock)
-   ;
-
-   class_<PrbsDataSrc, bases<StreamSrc>, boost::noncopyable >("PrbsDataSrc",init<uint32_t>())
-      .def("getCount",       &PrbsDataSrc::getCount)
-      .def("getBytes",       &PrbsDataSrc::getBytes)
-      .def("resetCount",     &PrbsDataSrc::resetCount)
-      .def("enable",         &PrbsDataSrc::enable)
-      .def("disable",        &PrbsDataSrc::disable)
-   ;
-
-   class_<PrbsDataDest, bases<StreamDest>, boost::noncopyable >("PrbsDataDest",init<>())
-      .def("getErrors",      &PrbsDataDest::getErrors)
-      .def("getCount",       &PrbsDataDest::getCount)
-      .def("getBytes",       &PrbsDataDest::getBytes)
-      .def("resetCount",     &PrbsDataDest::resetCount)
    ;
 
    class_<PgpCardStream, bases<StreamSrc,StreamDest,PgpCard>, boost::noncopyable >("PgpCardStream",init<>());

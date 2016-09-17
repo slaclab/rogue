@@ -2,10 +2,10 @@
  *-----------------------------------------------------------------------------
  * Title      : Stream Buffer Container
  * ----------------------------------------------------------------------------
- * File       : StreamBuffer.h
+ * File       : Buffer.h
  * Author     : Ryan Herbst, rherbst@slac.stanford.edu
- * Created    : 2016-08-08
- * Last update: 2016-08-08
+ * Created    : 2016-09-16
+ * Last update: 2016-09-16
  * ----------------------------------------------------------------------------
  * Description:
  * Stream frame container
@@ -56,6 +56,7 @@ is::Buffer::Buffer(is::SlavePtr source, void *data, uint32_t meta, uint32_t rawS
  */
 is::Buffer::~Buffer() {
    source_->retBuffer(data_,meta_,rawSize_);
+   data_ = NULL;
 }
 
 //! Get raw data pointer
@@ -98,6 +99,16 @@ uint32_t is::Buffer::getAvailable() {
 uint32_t is::Buffer::getPayload() {
    if ( count_ < headRoom_ ) return(0);
    else return(count_ - headRoom_);
+}
+
+//! Get flags
+uint32_t is::Buffer::getFlags() {
+   return(flags_);
+}
+
+//! Set error state
+void is::Buffer::setFlags(uint32_t flags) {
+   error_ = flags;
 }
 
 //! Get error state
