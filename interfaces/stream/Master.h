@@ -21,8 +21,8 @@
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
-#ifndef __INTERFACES_STREAM_MASTER_H__
-#define __INTERFACES_STREAM_MASTER_H__
+#ifndef __ROGUE_INTERFACES_STREAM_MASTER_H__
+#define __ROGUE_INTERFACES_STREAM_MASTER_H__
 #include <stdint.h>
 #include <stdio.h>
 #include <pthread.h>
@@ -31,52 +31,63 @@
 
 #include <boost/python.hpp>
 
-namespace interfaces {
-   namespace stream {
+namespace rogue {
+   namespace interfaces {
+      namespace stream {
 
-   class Slave;
-   class Frame;
+      class Slave;
+      class Frame;
 
-      //! Stream master class
-      /*
-       * This class pushes frame data to a slave interface.
-       */
-      class Master {
-            boost::shared_ptr<interfaces::stream::Slave> primary_;
-            std::vector<boost::shared_ptr<interfaces::stream::Slave> > slaves_;
+         //! Stream master class
+         /*
+          * This class pushes frame data to a slave interface.
+          */
+         class Master {
 
-         public:
+               //! Primary slave. Used for request forwards.
+               boost::shared_ptr<rogue::interfaces::stream::Slave> primary_;
 
-            //! Class creation
-            static boost::shared_ptr<interfaces::stream::Master> create ();
+               //! Vector of slaves
+               std::vector<boost::shared_ptr<rogue::interfaces::stream::Slave> > slaves_;
 
-            //! Creator
-            Master();
+            public:
 
-            //! Destructor
-            virtual ~Master();
+               //! Class creation
+               static boost::shared_ptr<rogue::interfaces::stream::Master> create ();
 
-            //! Set primary slave, used for buffer request forwarding
-            void setSlave ( boost::shared_ptr<interfaces::stream::Slave> slave );
+               //! Creator
+               Master();
 
-            //! Add secondary slave
-            void addSlave ( boost::shared_ptr<interfaces::stream::Slave> slave );
+               //! Destructor
+               virtual ~Master();
 
-            //! Get frame from slave
-            /*
-             * An allocate command will be issued to the primary slave set with setSlave()
-             */
-            boost::shared_ptr<interfaces::stream::Frame>
-               reqFrame ( uint32_t size, bool zeroCopyEn);
+               //! Set primary slave, used for buffer request forwarding
+               void setSlave ( boost::shared_ptr<rogue::interfaces::stream::Slave> slave );
 
-            //! Push frame to all slaves
-            bool sendFrame ( boost::shared_ptr<interfaces::stream::Frame> frame );
-      };
+               //! Add secondary slave
+               void addSlave ( boost::shared_ptr<rogue::interfaces::stream::Slave> slave );
 
-      // Convienence
-      typedef boost::shared_ptr<interfaces::stream::Master> MasterPtr;
+               //! Get frame from slave
+               /*
+                * An allocate command will be issued to the primary slave set with setSlave()
+                * Pass size and flag indicating if zero copy buffers are allowed
+                * Pass timeout in microseconds or zero to wait forever
+                */
+               boost::shared_ptr<rogue::interfaces::stream::Frame>
+                  reqFrame ( uint32_t size, bool zeroCopyEn, uint32_t timeout);
+
+               //! Push frame to all slaves
+               /*
+                * Pass timeout in microseconds or zero to wait forever
+                */
+               bool sendFrame ( boost::shared_ptr<rogue::interfaces::stream::Frame> frame,
+                                uint32_t timeout );
+         };
+
+         // Convienence
+         typedef boost::shared_ptr<rogue::interfaces::stream::Master> MasterPtr;
+      }
    }
 }
-
 #endif
 

@@ -12,6 +12,8 @@
  * TODO:
  *    Add locking to meta and alloc increments. Multiple threads may perform
  *    allocation. 
+ *    Create central memory pool allocator for proper allocate and free of
+ *    buffers and frames.
  * ----------------------------------------------------------------------------
  * This file is part of the rogue software platform. It is subject to 
  * the license terms in the LICENSE.txt file found in the top-level directory 
@@ -22,91 +24,126 @@
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
-#ifndef __INTERFACES_STREAM_SLAVE_H__
-#define __INTERFACES_STREAM_SLAVE_H__
+#ifndef __ROGUE_INTERFACES_STREAM_SLAVE_H__
+#define __ROGUE_INTERFACES_STREAM_SLAVE_H__
 #include <stdint.h>
 
 #include <boost/python.hpp>
 #include <boost/enable_shared_from_this.hpp>
 
-namespace interfaces {
-   namespace stream {
+namespace rogue {
+   namespace interfaces {
+      namespace stream {
 
-      class Frame;
+         class Frame;
+         class Buffer;
 
-      //! Stream slave class
-      /*
-       * The stream slave accepts stream data from a master. It also
-       * can accept frame allocation requests.
-       */
-      class Slave : public boost::enable_shared_from_this<interfaces::stream::Slave> {
+         //! Stream slave class
+         /*
+          * The stream slave accepts stream data from a master. It also
+          * can accept frame allocation requests.
+          */
+         class Slave : public boost::enable_shared_from_this<rogue::interfaces::stream::Slave> {
 
-            //! Track buffer allocations
-            uint32_t allocMeta_;
+               //! Track buffer allocations
+               uint32_t allocMeta_;
 
-            //! Track buffer free
-            uint32_t freeMeta_;
+               //! Track buffer free
+               uint32_t freeMeta_;
 
-            //! Total memory allocated
-            uint64_t totAlloc_;
+               //! Total memory allocated
+               uint32_t allocBytes_;
 
-         public:
+               //! Total buffers allocated
+               uint32_t allocCount_;
 
-            //! Class creation
-            static boost::shared_ptr<interfaces::stream::Slave> create ();
+            protected:
 
-            //! Creator
-            Slave();
+               //! Create a frame
+               /*
+                * Pass total size of frame. Zero for empty frame
+                * Pass per buffer size.
+                * If compact is set buffers are allocated based upon needed size.
+                * If compact is not set, all buffers are allocated with size = buffSize
+                * Pass zero copy flag
+                */
+               boost::shared_ptr<rogue::interfaces::stream::Frame> allocFrame ( uint32_t totSize, 
+                                                                                uint32_t buffSize,
+                                                                                bool compact,
+                                                                                bool zeroCopy );
 
-            //! Destructor
-            virtual ~Slave();
+               //! Create a frame
+               boost::shared_ptr<rogue::interfaces::stream::Buffer> allocBuffer ( uint32_t size );
+               
+               //! Get allocated memory
+               void adjAllocBytes(int32_t adj);
 
-            //! Get allocated memory
-            uint64_t getAlloc();
+               //! Get allocated count
+               void adjAllocCount(int32_t adj);
 
-            //! Generate a buffer. Called from master
-            /*
-             * Pass total size required.
-             * Pass flag indicating if zero copy buffers are acceptable
-             */
-            virtual boost::shared_ptr<interfaces::stream::Frame>
-               acceptReq ( uint32_t size, bool zeroCopyEn);
+            public:
 
-            //! Accept a frame from master
-            /* 
-             * Returns true on success
-             */
-            virtual bool acceptFrame ( boost::shared_ptr<interfaces::stream::Frame> frame );
+               //! Class creation
+               static boost::shared_ptr<rogue::interfaces::stream::Slave> create ();
 
-            //! Return a buffer
-            /*
-             * Called when this instance is marked as owner of a Buffer entity that is deleted.
-             */
-            virtual void retBuffer(uint8_t * data, uint32_t meta, uint32_t rawSize);
+               //! Creator
+               Slave();
 
-            //! Return instance as shared pointer
-            boost::shared_ptr<interfaces::stream::Slave> getSlave();
-      };
+               //! Destructor
+               virtual ~Slave();
 
-      //! Stream slave class, wrapper to enable pyton overload of virtual methods
-      class SlaveWrap : 
-         public interfaces::stream::Slave, 
-         public boost::python::wrapper<interfaces::stream::Slave> {
+               //! Get allocated memory
+               uint32_t getAllocBytes();
 
-         public:
+               //! Get allocated count
+               uint32_t getAllocCount();
 
-            //! Accept frame
-            bool acceptFrame ( boost::shared_ptr<interfaces::stream::Frame> frame );
+               //! Generate a Frame. Called from master
+               /*
+                * Pass total size required.
+                * Pass flag indicating if zero copy buffers are acceptable
+                * Pass timeout in microseconds or zero to wait forever
+                */
+               virtual boost::shared_ptr<rogue::interfaces::stream::Frame>
+                  acceptReq ( uint32_t size, bool zeroCopyEn, uint32_t timeout);
 
-            //! Default accept frame call
-            bool defAcceptFrame ( boost::shared_ptr<interfaces::stream::Frame> frame );
-      };
+               //! Accept a frame from master
+               /* 
+                * Returns true on success
+                * Pass timeout in microseconds or zero to wait forever
+                */
+               virtual bool acceptFrame ( boost::shared_ptr<rogue::interfaces::stream::Frame> frame, 
+                                          uint32_t timeout );
 
-      // Convienence
-      typedef boost::shared_ptr<interfaces::stream::Slave> SlavePtr;
-      typedef boost::shared_ptr<interfaces::stream::SlaveWrap> SlaveWrapPtr;
+               //! Return a buffer
+               /*
+                * Called when this instance is marked as owner of a Buffer entity that is deleted.
+                */
+               virtual void retBuffer(uint8_t * data, uint32_t meta, uint32_t rawSize);
+
+               //! Return instance as shared pointer
+               boost::shared_ptr<rogue::interfaces::stream::Slave> getSlave();
+         };
+
+         //! Stream slave class, wrapper to enable pyton overload of virtual methods
+         class SlaveWrap : 
+            public rogue::interfaces::stream::Slave, 
+            public boost::python::wrapper<rogue::interfaces::stream::Slave> {
+
+            public:
+
+               //! Accept frame
+               bool acceptFrame ( boost::shared_ptr<rogue::interfaces::stream::Frame> frame );
+
+               //! Default accept frame call
+               bool defAcceptFrame ( boost::shared_ptr<rogue::interfaces::stream::Frame> frame );
+         };
+
+         // Convienence
+         typedef boost::shared_ptr<rogue::interfaces::stream::Slave> SlavePtr;
+         typedef boost::shared_ptr<rogue::interfaces::stream::SlaveWrap> SlaveWrapPtr;
+      }
    }
 }
-
 #endif
 

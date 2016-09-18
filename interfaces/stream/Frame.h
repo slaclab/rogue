@@ -23,99 +23,108 @@
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
-#ifndef __INTERFACES_STREAM_FRAME_H__
-#define __INTERFACES_STREAM_FRAME_H__
+#ifndef __ROGUE_INTERFACES_STREAM_FRAME_H__
+#define __ROGUE_INTERFACES_STREAM_FRAME_H__
 #include <stdint.h>
 #include <vector>
 
 #include <boost/python.hpp>
-namespace interfaces {
-   namespace stream {
+namespace rogue {
+   namespace interfaces {
+      namespace stream {
 
-      class Buffer;
+         class Buffer;
 
-      //! Frame container
-      /*
-       * This class is a container for a vector of buffers which make up a frame
-       * container. Each buffer within the frame has a reserved header area and a 
-       * payload. Calls to write and read take into account the header offset.
-       * It is assumed only one thread will interact with a buffer. Buffers 
-       * are not thread safe.
-      */
-      class Frame {
+         //! Frame container
+         /*
+          * This class is a container for a vector of buffers which make up a frame
+          * container. Each buffer within the frame has a reserved header area and a 
+          * payload. Calls to write and read take into account the header offset.
+          * It is assumed only one thread will interact with a buffer. Buffers 
+          * are not thread safe.
+         */
+         class Frame {
 
-            //! Buffer list is zero copy mode
-            bool zeroCopy_;             
-           
-            //! Interface specific flags
-            uint32_t flags_;
+               //! Pointer to entity which allocated this buffer
+               boost::shared_ptr<rogue::interfaces::stream::Slave> source_; 
 
-            //! Error state
-            uint32_t error_;
+               //! Buffer list is zero copy mode
+               bool zeroCopy_;             
+              
+               //! Interface specific flags
+               uint32_t flags_;
 
-            //! List of buffers which hold real data
-            std::vector<boost::shared_ptr<interfaces::stream::Buffer> > buffers_;
+               //! Error state
+               uint32_t error_;
 
-         public:
+               //! List of buffers which hold real data
+               std::vector<boost::shared_ptr<rogue::interfaces::stream::Buffer> > buffers_;
 
-            //! Create an empty frame
-            static boost::shared_ptr<interfaces::stream::Frame> create(bool zeroCopy);
+            public:
 
-            //! Create an empty frame
-            Frame(bool zeroCopy);
+               //! Create an empty frame
+               /*
+                * Pass owner and zero copy status
+                */
+               static boost::shared_ptr<rogue::interfaces::stream::Frame> create(
+                     boost::shared_ptr<rogue::interfaces::stream::Slave> source, bool zeroCopy);
 
-            //! Destroy a frame.
-            ~Frame();
+               //! Create an empty frame
+               Frame(boost::shared_ptr<rogue::interfaces::stream::Slave> source, bool zeroCopy);
 
-            //! Add a buffer to end of frame
-            void appendBuffer(boost::shared_ptr<interfaces::stream::Buffer> buff);
+               //! Destroy a frame.
+               ~Frame();
 
-            //! Append frame to end. Passed frame is emptied.
-            void appendFrame(boost::shared_ptr<interfaces::stream::Frame> frame);
+               //! Add a buffer to end of frame
+               void appendBuffer(boost::shared_ptr<rogue::interfaces::stream::Buffer> buff);
 
-            //! Get buffer count
-            uint32_t getCount();
+               //! Append frame to end. Passed frame is emptied.
+               void appendFrame(boost::shared_ptr<rogue::interfaces::stream::Frame> frame);
 
-            //! Get buffer at index
-            boost::shared_ptr<interfaces::stream::Buffer> getBuffer(uint32_t index);
+               //! Get buffer count
+               uint32_t getCount();
 
-            //! Get zero copy state
-            bool getZeroCopy();
+               //! Get buffer at index
+               boost::shared_ptr<rogue::interfaces::stream::Buffer> getBuffer(uint32_t index);
 
-            //! Get total available capacity (not including header space)
-            uint32_t getAvailable();
+               //! Get zero copy state
+               bool getZeroCopy();
 
-            //! Get total real payload size (not including header space)
-            uint32_t getPayload();
+               //! Get total available capacity (not including header space)
+               uint32_t getAvailable();
 
-            //! Get flags
-            uint32_t getFlags();
+               //! Get total real payload size (not including header space)
+               uint32_t getPayload();
 
-            //! Set flags
-            void setFlags(uint32_t flags);
+               //! Get flags
+               uint32_t getFlags();
 
-            //! Get error state
-            uint32_t getError();
+               //! Set flags
+               void setFlags(uint32_t flags);
 
-            //! Set error state
-            void setError(uint32_t error);
+               //! Get error state
+               uint32_t getError();
 
-            //! Read up to count bytes from frame, starting from offset.
-            uint32_t read  ( void *p, uint32_t offset, uint32_t count );
+               //! Set error state
+               void setError(uint32_t error);
 
-            //! Read up to count bytes from frame, starting from offset. Python version.
-            uint32_t readPy ( boost::python::object p, uint32_t offset );
+               //! Read up to count bytes from frame, starting from offset.
+               uint32_t read  ( void *p, uint32_t offset, uint32_t count );
 
-            //! Write count bytes to frame, starting at offset
-            uint32_t write ( void *p, uint32_t offset, uint32_t count );
+               //! Read up to count bytes from frame, starting from offset. Python version.
+               uint32_t readPy ( boost::python::object p, uint32_t offset );
 
-            //! Write count bytes to frame, starting at offset. Python Version
-            uint32_t writePy ( boost::python::object p, uint32_t offset );
-      };
+               //! Write count bytes to frame, starting at offset
+               uint32_t write ( void *p, uint32_t offset, uint32_t count );
 
-      // Convienence
-      typedef boost::shared_ptr<interfaces::stream::Frame> FramePtr;
+               //! Write count bytes to frame, starting at offset. Python Version
+               uint32_t writePy ( boost::python::object p, uint32_t offset );
+         };
 
+         // Convienence
+         typedef boost::shared_ptr<rogue::interfaces::stream::Frame> FramePtr;
+
+      }
    }
 }
 

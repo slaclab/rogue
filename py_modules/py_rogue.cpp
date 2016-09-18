@@ -27,7 +27,8 @@
 #include <utilities/Prbs.h>
 
 using namespace boost::python;
-namespace is = interfaces::stream;
+namespace ris = rogue::interfaces::stream;
+namespace ru  = rogue::utilities;
 
 BOOST_PYTHON_MODULE(py_rogue)
 {
@@ -38,52 +39,52 @@ BOOST_PYTHON_MODULE(py_rogue)
    // Interfaces
    /////////////////////////////////
 
-   class_<is::Frame, is::FramePtr>("Frame",no_init)
-      .def("getAvailable", &is::Frame::getAvailable)
-      .def("getPayload",   &is::Frame::getPayload)
-      .def("read",         &is::Frame::readPy)
-      .def("write",        &is::Frame::writePy)
-      .def("setError",     &is::Frame::setError)
-      .def("getError",     &is::Frame::getError)
-      .def("setFlags",     &is::Frame::setFlags)
-      .def("getFlags",     &is::Frame::getFlags)
+   class_<ris::Frame, ris::FramePtr>("Frame",no_init)
+      .def("getAvailable", &ris::Frame::getAvailable)
+      .def("getPayload",   &ris::Frame::getPayload)
+      .def("read",         &ris::Frame::readPy)
+      .def("write",        &ris::Frame::writePy)
+      .def("setError",     &ris::Frame::setError)
+      .def("getError",     &ris::Frame::getError)
+      .def("setFlags",     &ris::Frame::setFlags)
+      .def("getFlags",     &ris::Frame::getFlags)
    ;
 
-   class_<is::Master, is::MasterPtr>("Master",init<>())
-      .def("create",         &is::Master::create)
+   class_<ris::Master, ris::MasterPtr>("Master",init<>())
+      .def("create",         &ris::Master::create)
       .staticmethod("create")
-      .def("setSlave",       &is::Master::setSlave)
-      .def("addSlave",       &is::Master::addSlave)
-      .def("reqFrame",       &is::Master::reqFrame)
-      .def("sendFrame",      &is::Master::sendFrame)
+      .def("setSlave",       &ris::Master::setSlave)
+      .def("addSlave",       &ris::Master::addSlave)
+      .def("reqFrame",       &ris::Master::reqFrame)
+      .def("sendFrame",      &ris::Master::sendFrame)
    ;
 
-   class_<is::SlaveWrap, is::SlaveWrapPtr, boost::noncopyable>("Slave",init<>())
-      .def("create",         &is::Slave::create)
+   class_<ris::SlaveWrap, ris::SlaveWrapPtr, boost::noncopyable>("Slave",init<>())
+      .def("create",         &ris::Slave::create)
       .staticmethod("create")
-      .def("acceptFrame",    &is::Slave::acceptFrame, &is::SlaveWrap::defAcceptFrame)
-      .def("getAlloc",       &is::Slave::getAlloc)
+      .def("acceptFrame",    &ris::Slave::acceptFrame, &ris::SlaveWrap::defAcceptFrame)
+      .def("getAlloc",       &ris::Slave::getAlloc)
    ;
 
    /////////////////////////////////
    // Utilities
    /////////////////////////////////
 
-   class_<utilities::Prbs, bases<is::Master,is::Slave>, utilities::PrbsPtr >("Prbs",init<>())
-      .def("create",         &utilities::Prbs::create)
+   class_<ru::Prbs, bases<ris::Master,ris::Slave>, ru::PrbsPtr >("Prbs",init<>())
+      .def("create",         &ru::Prbs::create)
       .staticmethod("create")
-      .def("genFrame",       &utilities::Prbs::genFrame)
-      .def("enable",         &utilities::Prbs::enable)
-      .def("disable",        &utilities::Prbs::disable)
-      .def("getErrors",      &utilities::Prbs::getErrors)
-      .def("getCount",       &utilities::Prbs::getCount)
-      .def("getBytes",       &utilities::Prbs::getBytes)
-      .def("resetCount",     &utilities::Prbs::resetCount)
-      .def("enMessages",     &utilities::Prbs::enMessages)
+      .def("genFrame",       &ru::Prbs::genFrame)
+      .def("enable",         &ru::Prbs::enable)
+      .def("disable",        &ru::Prbs::disable)
+      .def("getErrors",      &ru::Prbs::getErrors)
+      .def("getCount",       &ru::Prbs::getCount)
+      .def("getBytes",       &ru::Prbs::getBytes)
+      .def("resetCount",     &ru::Prbs::resetCount)
+      .def("enMessages",     &ru::Prbs::enMessages)
    ;
 
-   implicitly_convertible<utilities::PrbsPtr, is::SlavePtr>();
-   implicitly_convertible<utilities::PrbsPtr, is::MasterPtr>();
+   implicitly_convertible<ru::PrbsPtr, ris::SlavePtr>();
+   implicitly_convertible<ru::PrbsPtr, ris::MasterPtr>();
 
    /////////////////////////////////
    // PGP

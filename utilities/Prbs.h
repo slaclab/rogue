@@ -21,86 +21,88 @@
  * contained in the LICENSE.txt file.
  *-----------------------------------------------------------------------------
 **/
-#ifndef __UTILITIES_PRBS_H__
-#define __UTILITIES_PRBS_H__
+#ifndef __ROGUE_UTILITIES_PRBS_H__
+#define __ROGUE_UTILITIES_PRBS_H__
 #include <stdint.h>
 #include <boost/thread.hpp>
 
-namespace utilities {
+class rogue::interfaces::stream::Frame;
 
-   //! PRBS master / slave class
-   /*
-    * Engine can be used as either a master or slave. 
-    * Internal thread can en enabled for auto frame generation
-    */
-   class Prbs : public interfaces::stream::Slave, public interfaces::stream::Master {
-         uint32_t * taps_;
-         uint32_t   tapCnt_;
-         uint32_t   width_;
-         uint32_t   sequence_;
-         uint32_t   txSize_;
-         uint32_t   errCount_;
-         uint32_t   totCount_;
-         uint32_t   totBytes_;
-         bool       enMessages_;
+namespace rogue {
+   namespace utilities {
 
-         boost::thread* thread_;
+      //! PRBS master / slave class
+      /*
+       * Engine can be used as either a master or slave. 
+       * Internal thread can en enabled for auto frame generation
+       */
+      class Prbs : public rogue::interfaces::stream::Slave, public rogue::interfaces::stream::Master {
+            uint32_t * taps_;
+            uint32_t   tapCnt_;
+            uint32_t   width_;
+            uint32_t   sequence_;
+            uint32_t   txSize_;
+            uint32_t   errCount_;
+            uint32_t   totCount_;
+            uint32_t   totBytes_;
+            bool       enMessages_;
 
-         //! Internal computation 
-         uint32_t flfsr(uint32_t input);
+            boost::thread* thread_;
 
-         //! Thread background
-         void runThread();
+            //! Internal computation 
+            uint32_t flfsr(uint32_t input);
 
-         //! Reset state
-         void init(uint32_t width, uint32_t tapCnt);
+            //! Thread background
+            void runThread();
 
-      public:
+            //! Reset state
+            void init(uint32_t width, uint32_t tapCnt);
 
-         //! Class creation
-         static boost::shared_ptr<utilities::Prbs> create ();
+         public:
 
-         //! Creator with width and variable taps
-         Prbs(uint32_t width, uint32_t tapCnt, ... );
+            //! Class creation
+            static boost::shared_ptr<rogue::utilities::Prbs> create ();
 
-         //! Creator with default taps and size
-         Prbs();
+            //! Creator with width and variable taps
+            Prbs(uint32_t width, uint32_t tapCnt, ... );
 
-         //! Deconstructor
-         ~Prbs();
+            //! Creator with default taps and size
+            Prbs();
 
-         //! Generate a data frame
-         void genFrame (uint32_t size);
+            //! Deconstructor
+            ~Prbs();
 
-         //! Auto run data generation
-         void enable(uint32_t size);
+            //! Generate a data frame
+            void genFrame (uint32_t size);
 
-         //! Disable auto generation
-         void disable();
+            //! Auto run data generation
+            void enable(uint32_t size);
 
-         //! Get errors
-         uint32_t getErrors();
+            //! Disable auto generation
+            void disable();
 
-         //! Get rx/tx count
-         uint32_t getCount();
+            //! Get errors
+            uint32_t getErrors();
 
-         //! Get total bytes
-         uint32_t getBytes();
+            //! Get rx/tx count
+            uint32_t getCount();
 
-         //! Reset counters
-         void resetCount();
+            //! Get total bytes
+            uint32_t getBytes();
 
-         //! Enable messages
-         void enMessages(bool state);
+            //! Reset counters
+            void resetCount();
 
-         //! Accept a frame from master
-         bool acceptFrame ( boost::shared_ptr<interfaces::stream::Frame> frame );
-   };
+            //! Enable messages
+            void enMessages(bool state);
 
-   // Convienence
-   typedef boost::shared_ptr<utilities::Prbs> PrbsPtr;
+            //! Accept a frame from master
+            bool acceptFrame ( boost::shared_ptr<rogue::interfaces::stream::Frame> frame );
+      };
+
+      // Convienence
+      typedef boost::shared_ptr<rogue::utilities::Prbs> PrbsPtr;
+   }
 }
-
 #endif
-
 

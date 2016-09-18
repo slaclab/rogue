@@ -27,42 +27,42 @@
 #include <boost/python.hpp>
 #include <boost/make_shared.hpp>
 
-namespace is = interfaces::stream;
+namespace ris = rogue::interfaces::stream;
 
 //! Class creation
-is::MasterPtr is::Master::create () {
-   is::MasterPtr msg = boost::make_shared<is::Master>();
+ris::MasterPtr ris::Master::create () {
+   ris::MasterPtr msg = boost::make_shared<ris::Master>();
    return(msg);
 }
 
 //! Creator
-is::Master::Master() {
-   primary_ = is::Slave::create();
+ris::Master::Master() {
+   primary_ = ris::Slave::create();
 }
 
 //! Destructor
-is::Master::~Master() {
+ris::Master::~Master() {
    slaves_.clear();
 }
 
 //! Set primary slave, used for buffer request forwarding
-void is::Master::setSlave ( boost::shared_ptr<interfaces::stream::Slave> slave ) {
+void ris::Master::setSlave ( boost::shared_ptr<interfaces::stream::Slave> slave ) {
    slaves_.push_back(slave);
    primary_ = slave;
 }
 
 //! Add secondary slave
-void is::Master::addSlave ( is::SlavePtr slave ) {
+void ris::Master::addSlave ( ris::SlavePtr slave ) {
    slaves_.push_back(slave);
 }
 
 //! Request frame from primary slave
-is::FramePtr is::Master::reqFrame ( uint32_t size, bool zeroCopyEn) {
-   return(primary_->acceptReq(size,zeroCopyEn));
+ris::FramePtr ris::Master::reqFrame ( uint32_t size, bool zeroCopyEn, uint32_t timeout) {
+   return(primary_->acceptReq(size,zeroCopyEn,timeout));
 }
 
 //! Push frame to slaves
-bool is::Master::sendFrame ( FramePtr frame ) {
+bool ris::Master::sendFrame ( FramePtr frame, uint32_t timeout) {
    uint32_t x;
    bool     ret;
 
@@ -71,7 +71,7 @@ bool is::Master::sendFrame ( FramePtr frame ) {
    ret = true;
 
    for (x=0; x < slaves_.size(); x++) {
-      if ( slaves_[x]->acceptFrame(frame) == false ) ret = false;
+      if ( slaves_[x]->acceptFrame(frame,timeout) == false ) ret = false;
    }
 
    return(ret);

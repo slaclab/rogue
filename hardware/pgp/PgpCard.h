@@ -4,8 +4,8 @@
  * ----------------------------------------------------------------------------
  * File       : PgpCard.h
  * Author     : Ryan Herbst, rherbst@slac.stanford.edu
- * Created    : 2016-08-08
- * Last update: 2016-08-08
+ * Created    : 2017-09-17
+ * Last update: 2017-09-17
  * ----------------------------------------------------------------------------
  * Description:
  * PGP Card Class
@@ -19,95 +19,111 @@
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
-#ifndef __PGP_CARD_H__
-#define __PGP_CARD_H__
-#include <PgpDriver.h>
+#ifndef __ROGUE_HARDWARE_PGP_PGP_CARD_H__
+#define __ROGUE_HARDWARE_PGP_PGP_CARD_H__
+#include <hardware/pgp/PgpDriver.h>
 #include <stdint.h>
-#include <string.h>
-#include <string>
 
-#define MAX_PGP_LANE 7
-#define MAX_PGP_VC   3
+class rogue::interfaces::stream::Frame;
 
-class PgpData;
+namespace rogue {
+   namespace hardware {
+      namespace pgp {
 
-//! PGP Card class
-class PgpCard {
-      int32_t        fd_;
-      std::string    device_;
-      PgpInfo        pgpInfo_;
-      PciStatus      pciStatus_;
-      PgpStatus      pgpStatus_[MAX_PGP_LANE+1];
-      PgpEvrStatus   evrStatus_[MAX_PGP_LANE+1];
-      PgpEvrControl  evrControl_[MAX_PGP_LANE+1];
-      uint32_t       bCount_;
-      uint32_t       bSize_;
-      PgpData     ** buffers_;
-      void        ** rawBuff_;
+         //! PGP Card class
+         class PgpCard : public rogue::interfaces::stream::Master, 
+                         public rogue::interfaces::stream::Slave {
 
-   public:
+               //! PgpCard file descriptor
+               int32_t  fd_;
 
-      PgpCard();
-      ~PgpCard();
+               //! Open lane
+               uint32_t lane_;
 
-      //! Open the device write only
-      bool openWo ( std::string path );
+               //! Open VC
+               uint32_t vc_;
 
-      //! Open the device with read access on a specific lane/vc
-      bool open ( std::string path, uint32_t lane, uint32_t vc );
+               //! Number of buffers available for zero copy
+               uint32_t bCount_;
 
-      //! Open the device with read access for a passed mask 
-      virtual bool openMask ( std::string path, uint32_t mask );
+               //! Size of buffers in hardware
+               uint32_t bSize_;
 
-      //! Close the device
-      virtual void close();
+               //! Pointer to zero copy buffers
+               void  ** rawBuff_;
 
-      //! Allocate a buffer for write, with optional timeout in micro seconds
-      /*
-       * Returned buffer must be passed back using retBuffer() or write() calls
-       */
-      PgpData * getWriteBuffer(uint32_t timeout=0);
+            public:
 
-      //! Write
-      bool write(PgpData *buff);
+               //! Class creation
+               static boost::shared_ptr<hardware:PgpCard> create ();
 
-      //! Read with optional timeout in microseconds
-      /*
-       * Returned buffer must be passed back using retBuffer() call
-       * NULL returned on timeout.
-       */
-      PgpData * read(uint32_t timeout=0);
+               //! Creator
+               PgpCard();
 
-      //! Return buffer. from read() or getBuffer() call.
-      bool retBuffer(PgpData *buff);
+               //! Destructor
+               ~PgpCard();
 
-      //! Get card info. Do not deallocate memory.
-      struct PgpInfo * getInfo();
+               //! Open the device. Pass lane & vc.
+               bool open ( std::string path, uint32_t lane, uint32_t vc );
 
-      //! Get pci status. Do not deallocate memory.
-      struct PciStatus * getPciStatus();
+               //! Close the device
+               void close();
 
-      //! Get lane status. NULL for invalid lane. Do not deallocate memory.
-      struct PgpStatus * getLaneStatus(uint32_t lane);
+               //! Get card info.
+               boost::shared_ptr<rogue::hardware::pgp::Info> getInfo();
 
-      //! Get evr control for a lane. NULL for invalid lane. Do not deallocate memory.
-      struct PgpEvrControl * getEvrControl(uint32_t lane);
+               //! Get pci status.
+               boost::shared_ptr<rogue::hardware::pgp::PciStatus> getPciStatus();
 
-      //! Set evr control for a lane. Pass structure returned with getEvrControl.
-      bool setEvrControl(struct PgpEvrControl *evrControl);
+               //! Get status of open lane.
+               boost::shared_ptr<rogue::hardware::pgp::Status> getStatus();
 
-      //! Get evr status for a lane. NULL for invalid lane. Do not deallocate memory.
-      struct PgpEvrStatus * getEvrStatus(uint32_t lane);
+               //! Get evr control for open lane.
+               boost::shared_ptr<rogue::hardware::pgp::EvrControl> getEvrControl();
 
-      //! Set loopback
-      bool setLoop(uint32_t lane, bool enable);
+               //! Set evr control for open lane.
+               bool setEvrControl(boost::shared_ptr<rogue::hardware::pgp::EvrControl>);
 
-      //! Set lane data
-      bool setData(uint32_t lane, uint8_t data);
+               //! Get evr status for open lane.
+               boost::shared_ptr<rogue::hardware::pgp::EvrStatus> getEvrStatus();
 
-      //! Send an opcode
-      bool sendOpCode(uint8_t code);
+               //! Set loopback for open lane
+               bool setLoop(bool enable);
 
+               //! Set lane data for open lane
+               bool setData(uint8_t data);
+
+               //! Send an opcode
+               bool sendOpCode(uint8_t code);
+
+               //! Generate a buffer. Called from master
+               /*
+                * Pass total size required.
+                * Pass flag indicating if zero copy buffers are acceptable
+                * Pass timeout in microseconds or zero to wait forever
+                */
+               boost::shared_ptr<rogue::interfaces::stream::Frame>
+                  acceptReq ( uint32_t size, bool zeroCopyEn, uint32_t timeout);
+
+               //! Accept a frame from master
+               /* 
+                * Returns true on success
+                * Pass timeout in microseconds or zero to wait forever
+                */
+               bool acceptFrame ( boost::shared_ptr<rogue::interfaces::stream::Frame> frame, uint32_t timeout );
+
+               //! Return a buffer
+               /*
+                * Called when this instance is marked as owner of a Buffer entity that is deleted.
+                */
+               void retBuffer(uint8_t * data, uint32_t meta, uint32_t rawSize);
+         };
+
+         // Convienence
+         typedef boost::shared_ptr<rogue::hardware::pgp::PgpCard> PgpCardPtr;
+
+      }
+   }
 };
 
 #endif

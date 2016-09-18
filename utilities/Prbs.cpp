@@ -28,17 +28,17 @@
 #include <utilities/Prbs.h>
 #include <boost/make_shared.hpp>
 
-namespace is = interfaces::stream;
-namespace ut = utilities;
+namespace ris = rogue::interfaces::stream;
+namespace ru  = rogue::utilities;
 
 //! Class creation
-ut::PrbsPtr ut::Prbs::create () {
-   ut::PrbsPtr p = boost::make_shared<ut::Prbs>();
+ru::PrbsPtr ru::Prbs::create () {
+   ru::PrbsPtr p = boost::make_shared<ru::Prbs>();
    return(p);
 }
 
 //! Creator with width and variable taps
-ut::Prbs::Prbs(uint32_t width, uint32_t tapCnt, ... ) {
+ru::Prbs::Prbs(uint32_t width, uint32_t tapCnt, ... ) {
    va_list a_list;
    uint32_t   x;
 
@@ -50,7 +50,7 @@ ut::Prbs::Prbs(uint32_t width, uint32_t tapCnt, ... ) {
 }
 
 //! Creator with default taps and size
-ut::Prbs::Prbs() {
+ru::Prbs::Prbs() {
    init(32,4);
 
    taps_[0] = 1;
@@ -60,11 +60,11 @@ ut::Prbs::Prbs() {
 }
 
 //! Deconstructor
-ut::Prbs::~Prbs() {
+ru::Prbs::~Prbs() {
    free(taps_);
 }
 
-void ut::Prbs::init(uint32_t width, uint32_t tapCnt) {
+void ru::Prbs::init(uint32_t width, uint32_t tapCnt) {
    sequence_   = 0;
    width_      = width;
    tapCnt_     = tapCnt;
@@ -77,7 +77,7 @@ void ut::Prbs::init(uint32_t width, uint32_t tapCnt) {
    taps_ = (uint32_t *)malloc(sizeof(uint32_t)*tapCnt_);
 }
 
-uint32_t ut::Prbs::flfsr(uint32_t input) {
+uint32_t ru::Prbs::flfsr(uint32_t input) {
    uint32_t bit = 0;
    uint32_t x;
 
@@ -89,7 +89,7 @@ uint32_t ut::Prbs::flfsr(uint32_t input) {
 }
 
 //! Thread background
-void ut::Prbs::runThread() {
+void ru::Prbs::runThread() {
    try {
       while(1) {
          genFrame(txSize_);
@@ -99,7 +99,7 @@ void ut::Prbs::runThread() {
 }
 
 //! Auto run data generation
-void ut::Prbs::enable(uint32_t size) {
+void ru::Prbs::enable(uint32_t size) {
    if ( thread_ == NULL ) {
       txSize_ = size;
       thread_ = new boost::thread(boost::bind(&Prbs::runThread, this));
@@ -107,7 +107,7 @@ void ut::Prbs::enable(uint32_t size) {
 }
 
 //! Disable auto generation
-void ut::Prbs::disable() {
+void ru::Prbs::disable() {
    if ( thread_ != NULL ) {
       thread_->interrupt();
       thread_->join();
@@ -117,42 +117,42 @@ void ut::Prbs::disable() {
 }
 
 //! Get errors
-uint32_t ut::Prbs::getErrors() {
+uint32_t ru::Prbs::getErrors() {
    return(errCount_);
 }
 
 //! Get rx/tx count
-uint32_t ut::Prbs::getCount() {
+uint32_t ru::Prbs::getCount() {
    return(totCount_);
 }
 
 //! Get total bytes
-uint32_t ut::Prbs::getBytes() {
+uint32_t ru::Prbs::getBytes() {
    return(totBytes_);
 }
 
 //! Reset counters
 // Counters should really be locked!
-void ut::Prbs::resetCount() {
+void ru::Prbs::resetCount() {
    errCount_ = 0;
    totCount_ = 0;
    totBytes_ = 0;
 }
 
 //! Enable messages
-void ut::Prbs::enMessages(bool state) {
+void ru::Prbs::enMessages(bool state) {
    enMessages_ = state;
 }
 
 //! Generate a data frame
-void ut::Prbs::genFrame (uint32_t size) {
+void ru::Prbs::genFrame (uint32_t size) {
    uint32_t   word;
    uint32_t   value;
    uint32_t   data32[2];
    uint16_t * data16;
    uint32_t   cnt;
 
-   is::FramePtr fr = reqFrame(size,true);
+   ris::FramePtr fr = reqFrame(size,true);
 
    if (fr->getAvailable() == 0 ) {
       if ( enMessages_ ) fprintf(stderr,"Prbs::genFrame -> Buffer allocation error, count=%i\n",totCount_);
@@ -196,7 +196,7 @@ void ut::Prbs::genFrame (uint32_t size) {
 }
 
 //! Accept a frame from master
-bool ut::Prbs::acceptFrame ( is::FramePtr frame ) {
+bool ru::Prbs::acceptFrame ( ris::FramePtr frame ) {
    uint32_t   eventLength;
    uint32_t   expected;
    uint32_t   got;

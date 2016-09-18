@@ -26,57 +26,108 @@
 #include <interfaces/stream/Frame.h>
 #include <boost/make_shared.hpp>
 
-namespace is = interfaces::stream;
+namespace ris = rogue::interfaces::stream;
 
 //! Class creation
-is::SlavePtr is::Slave::create () {
-   is::SlavePtr slv = boost::make_shared<is::Slave>();
+ris::SlavePtr ris::Slave::create () {
+   ris::SlavePtr slv = boost::make_shared<ris::Slave>();
    return(slv);
 }
 
 //! Creator
-is::Slave::Slave() { 
-   allocMeta_ = 0;
-   freeMeta_  = 0xFFFFFFFF;
-   totAlloc_  = 0;
+ris::Slave::Slave() { 
+   allocMeta_  = 0;
+   freeMeta_   = 0xFFFFFFFF;
+   allocBytes_ = 0;
+   allocCount_ = 0;
 }
 
 //! Destructor
-is::Slave::~Slave() { }
+ris::Slave::~Slave() { }
 
 //! Get allocated memory
-uint64_t is::Slave::getAlloc() {
-   return(totAlloc_);
+uint64_t ris::Slave::getAllocBytes() {
+   return(allocBytes_);
 }
 
-//! Generate a buffer. Called from master
+//! Get allocated count
+uint64_t ris::Slave::getAllocCount() {
+   return(allocCount_);
+}
+
+//! Get allocated memory
+void adjAllocBytes(int32_t adj) {
+   allocBytes_ += adj;
+}
+
+//! Get allocated count
+void adjAllocCount(int32_t adj) {
+   allocCount_ += adj;
+}
+
+//! Create a frame
+// Frame container should be allocated from shared memory pool
+boost::shared_ptr<rogue::interfaces::stream::Frame> allocFrame ( uint32_t totSize, 
+                                                                 uint32_t buffSize,
+                                                                 bool compact,
+                                                                 bool zeroCopy ) {
+   ris::FramePtr  ret;
+   ris::BufferPtr buff;
+   uint32_t alloc;
+   uint32_t bSize;
+
+   ret  = ris::Frame::create(zeroCopy);
+   alloc = 0;
+
+   while ( alloc < totSize ) {
+
+      // Don't create larger buffers than we need if compact is set
+      if ( (compact == false) || ((totSize-alloc) > buffSize) ) bSize = buffSize;
+      else bSize = (totSize-alloc);
+
+      // Create buffer and append to frame
+      buff = allocBuffer(bSize);
+      alloc += bSize;
+      ret->appendBuffer(buff);
+   }
+
+   return(ret);
+}
+
+//! Create a buffer
+// Buffer container and raw data should be allocated from shared memory pool
+ris::BufferPtr ris::Slave::allocBuffer ( uint32_t size ) {
+   ris::BufferPtr buff;
+   uint8_t * data;
+
+   if ( (data = (uint8_t *)malloc(size)) != NULL ) adjAllocBytes(size);
+   else size = 0;
+
+   buff = ris::Buffer::create(getSlave(),data,allocMeta_,size);
+   adjAllocCount(1);
+
+   // Only use lower 16 bits of meta. 
+   // Upper 16 bits may have special meaning to sub-class
+   allocMeta_++;
+   allocMeta_ &= 0xFFFF;
+
+   return(buff);
+}
+
+//! Accept a frame request. Called from master
 /*
  * Pass total size required.
  * Pass flag indicating if zero copy buffers are acceptable
  */
-is::FramePtr is::Slave::acceptReq ( uint32_t size, bool zeroCopyEn) {
-   is::FramePtr  ret;
-   uint8_t *     data;
-   is::BufferPtr buff;
-
-   ret  = is::Frame::create(zeroCopyEn);
-
-   if ( (data = (uint8_t *)malloc(size)) == NULL ) return(ret);
-
-   buff = is::Buffer::create(getSlave(),data,allocMeta_,size);
-   allocMeta_++;
-   totAlloc_ += size;
-
-   ret->appendBuffer(buff);
-
-   return(ret);
+ris::FramePtr ris::Slave::acceptReq ( uint32_t size, bool zeroCopyEn, uint32_t timeout) {
+   return(allocFrame(size,size,false,false));
 }
 
 //! Accept a frame from master
 /* 
  * Returns true on success
  */
-bool is::Slave::acceptFrame ( is::FramePtr frame ) {
+bool ris::Slave::acceptFrame ( ris::FramePtr frame, uint32_t timeout ) {
    return(false);
 }
 
@@ -84,24 +135,25 @@ bool is::Slave::acceptFrame ( is::FramePtr frame ) {
 /*
  * Called when this instance is marked as owner of a Buffer entity
  */
-void is::Slave::retBuffer(uint8_t * data, uint32_t meta, uint32_t rawSize) {
+void ris::Slave::retBuffer(uint8_t * data, uint32_t meta, uint32_t rawSize) {
    if ( meta == freeMeta_ ) printf("Buffer return with duplicate meta\n");
    freeMeta_ = meta;
 
+   adjAllocCount(-1);
+
    if ( data != NULL ) {
       free(data);
-      totAlloc_ -= rawSize;
+      adjAllocBytes(-rawSize);
    }
-   else printf("Empty buffer returned\n");
 }
 
 //! Return instance as shared pointer
-is::SlavePtr is::Slave::getSlave() {
+ris::SlavePtr ris::Slave::getSlave() {
    return(shared_from_this());
 }
 
 //! Accept frame
-bool is::SlaveWrap::acceptFrame ( is::FramePtr frame ) {
+bool ris::SlaveWrap::acceptFrame ( ris::FramePtr frame ) {
    bool ret;
    bool found;
 
@@ -122,12 +174,12 @@ bool is::SlaveWrap::acceptFrame ( is::FramePtr frame ) {
    }
    PyGILState_Release(pyState);
 
-   if ( ! found ) ret = is::Slave::acceptFrame(frame);
+   if ( ! found ) ret = ris::Slave::acceptFrame(frame);
    return(ret);
 }
 
 //! Default accept frame call
-bool is::SlaveWrap::defAcceptFrame ( is::FramePtr frame ) {
-   return(is::Slave::acceptFrame(frame));
+bool ris::SlaveWrap::defAcceptFrame ( ris::FramePtr frame ) {
+   return(ris::Slave::acceptFrame(frame));
 }
 

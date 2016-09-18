@@ -25,57 +25,57 @@
 #include <boost/make_shared.hpp>
 #include <boost/python.hpp>
 
-namespace is = interfaces::stream;
-
+namespace ris = rogue::interfaces::stream;
 
 //! Create an empty frame
-is::FramePtr is::Frame::create(bool zeroCopy) {
-   is::FramePtr frame = boost::make_shared<is::Frame>(zeroCopy);
+ris::FramePtr ris::Frame::create(ris::SlavePtr source, bool zeroCopy) {
+   ris::FramePtr frame = boost::make_shared<ris::Frame>(source,zeroCopy);
    return(frame);
 }
 
 //! Create an empty frame
-is::Frame::Frame(bool zeroCopy) { 
+ris::Frame::Frame(ris::SlavePtr source, bool zeroCopy) { 
+   source_   = source;
    zeroCopy_ = zeroCopy;
 }
 
 //! Destroy a frame.
-is::Frame::~Frame() {
+ris::Frame::~Frame() {
    buffers_.clear();
 }
 
 //! Add a buffer to end of frame
-void is::Frame::appendBuffer(is::BufferPtr buff) {
+void ris::Frame::appendBuffer(ris::BufferPtr buff) {
    buffers_.push_back(buff);
 }
 
 //! Append frame to end.
-void is::Frame::appendFrame(is::FramePtr frame) {
+void ris::Frame::appendFrame(ris::FramePtr frame) {
    uint32_t x;
 
    for (x=0; x < frame->getCount(); x++) buffers_.push_back(frame->getBuffer(x));
 }
 
 //! Get buffer count
-uint32_t is::Frame::getCount() {
+uint32_t ris::Frame::getCount() {
    return(buffers_.size());
 }
 
 //! Get buffer at index
-is::BufferPtr is::Frame::getBuffer(uint32_t index) {
-   is::BufferPtr ret;
+ris::BufferPtr ris::Frame::getBuffer(uint32_t index) {
+   ris::BufferPtr ret;
 
    if ( index < buffers_.size() ) ret = buffers_[index];
    return(ret);
 }
 
 //! Get zero copy state
-bool is::Frame::getZeroCopy() {
+bool ris::Frame::getZeroCopy() {
    return(zeroCopy_);
 }
 
 //! Get total available capacity (not including header space)
-uint32_t is::Frame::getAvailable() {
+uint32_t ris::Frame::getAvailable() {
    uint32_t ret;
    uint32_t x;
 
@@ -87,7 +87,7 @@ uint32_t is::Frame::getAvailable() {
 }
 
 //! Get total real payload size (not including header space)
-uint32_t is::Frame::getPayload() {
+uint32_t ris::Frame::getPayload() {
    uint32_t ret;
    uint32_t x;
 
@@ -99,32 +99,32 @@ uint32_t is::Frame::getPayload() {
 }
 
 //! Get flags
-uint32_t is::Frame::getFlags() {
+uint32_t ris::Frame::getFlags() {
    return(flags_);
 }
 
 //! Set error state
-void is::Frame::setFlags(uint32_t flags) {
+void ris::Frame::setFlags(uint32_t flags) {
    error_ = flags;
 }
 
 //! Get error state
-uint32_t is::Frame::getError() {
+uint32_t ris::Frame::getError() {
    return(error_);
 }
 
 //! Set error state
-void is::Frame::setError(uint32_t error) {
+void ris::Frame::setError(uint32_t error) {
    error_ = error;
 }
 
 //! Read up to count bytes from frame, starting from offset.
-uint32_t is::Frame::read  ( void *p, uint32_t offset, uint32_t count ) {
+uint32_t ris::Frame::read  ( void *p, uint32_t offset, uint32_t count ) {
    uint32_t currOff;
    uint32_t x;
    uint32_t cnt;
    
-   is::BufferPtr buff;
+   ris::BufferPtr buff;
 
    currOff = 0; 
    cnt = 0;
@@ -151,7 +151,7 @@ uint32_t is::Frame::read  ( void *p, uint32_t offset, uint32_t count ) {
 }
 
 //! Read up to count bytes from frame, starting from offset. Python version.
-uint32_t is::Frame::readPy ( boost::python::object p, uint32_t offset ) {
+uint32_t ris::Frame::readPy ( boost::python::object p, uint32_t offset ) {
    Py_buffer  pyBuf;
    uint32_t   ret;
 
@@ -163,12 +163,12 @@ uint32_t is::Frame::readPy ( boost::python::object p, uint32_t offset ) {
 }
 
 //! Write count bytes to frame, starting at offset
-uint32_t is::Frame::write ( void *p, uint32_t offset, uint32_t count ) {
+uint32_t ris::Frame::write ( void *p, uint32_t offset, uint32_t count ) {
    uint32_t currOff;
    uint32_t x;
    uint32_t cnt;
    
-   is::BufferPtr buff;
+   ris::BufferPtr buff;
 
    currOff = 0; 
    cnt = 0;
@@ -195,7 +195,7 @@ uint32_t is::Frame::write ( void *p, uint32_t offset, uint32_t count ) {
 }
 
 //! Write python buffer to frame, starting at offset. Python Version
-uint32_t is::Frame::writePy ( boost::python::object p, uint32_t offset ) {
+uint32_t ris::Frame::writePy ( boost::python::object p, uint32_t offset ) {
    Py_buffer  pyBuf;
    uint32_t   ret;
 

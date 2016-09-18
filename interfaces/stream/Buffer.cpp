@@ -25,14 +25,14 @@
 #include <interfaces/stream/Slave.h>
 #include <boost/make_shared.hpp>
 
-namespace is = interfaces::stream;
+namespace ris = rogue::interfaces::stream;
 
 //! Class creation
 /*
  * Pass owner, raw data buffer, and meta data
  */
-is::BufferPtr is::Buffer::create ( is::SlavePtr source, void * data, uint32_t meta, uint32_t rawSize) {
-   is::BufferPtr buff = boost::make_shared<is::Buffer>(source,data,meta,rawSize);
+ris::BufferPtr ris::Buffer::create ( ris::SlavePtr source, void * data, uint32_t meta, uint32_t rawSize) {
+   ris::BufferPtr buff = boost::make_shared<ris::Buffer>(source,data,meta,rawSize);
    return(buff);
 }
 
@@ -40,7 +40,7 @@ is::BufferPtr is::Buffer::create ( is::SlavePtr source, void * data, uint32_t me
 /*
  * Pass owner, raw data buffer, and meta data
  */
-is::Buffer::Buffer(is::SlavePtr source, void *data, uint32_t meta, uint32_t rawSize) {
+ris::Buffer::Buffer(ris::SlavePtr source, void *data, uint32_t meta, uint32_t rawSize) {
    source_   = source;
    data_     = (uint8_t *)data;
    meta_     = meta;
@@ -54,39 +54,49 @@ is::Buffer::Buffer(is::SlavePtr source, void *data, uint32_t meta, uint32_t rawS
 /*
  * Owner return buffer method is called
  */
-is::Buffer::~Buffer() {
+ris::Buffer::~Buffer() {
    source_->retBuffer(data_,meta_,rawSize_);
    data_ = NULL;
 }
 
 //! Get raw data pointer
-uint8_t * is::Buffer::getRawData() {
+uint8_t * ris::Buffer::getRawData() {
    return(data_);
 }
 
 //! Get payload data pointer
-uint8_t * is::Buffer::getPayloadData() {
+uint8_t * ris::Buffer::getPayloadData() {
    if ( data_ == NULL ) return(NULL);
    else return(data_ + headRoom_);
 }
 
 //! Get meta data
-uint32_t is::Buffer::getMeta() {
+uint32_t ris::Buffer::getMeta() {
    return(meta_);
 }
 
+//! Set meta data
+void ris::Buffer::setMeta(uint32_t meta) {
+   meta_ = meta;
+}
+
 //! Get raw size
-uint32_t is::Buffer::getRawSize() {
+uint32_t ris::Buffer::getRawSize() {
    return(rawSize_);
 }
 
+//! Get buffer data count (payload + headroom)
+uint32_t ris::Buffer::getCount() {
+   return(rawCount_);
+}
+
 //! Get header space
-uint32_t is::Buffer::getHeadRoom() {
+uint32_t ris::Buffer::getHeadRoom() {
    return(headRoom_);
 }
 
 //! Get available size for payload
-uint32_t is::Buffer::getAvailable() {
+uint32_t ris::Buffer::getAvailable() {
    uint32_t temp;
 
    temp = rawSize_ - count_;
@@ -96,43 +106,43 @@ uint32_t is::Buffer::getAvailable() {
 }
 
 //! Get real payload size
-uint32_t is::Buffer::getPayload() {
+uint32_t ris::Buffer::getPayload() {
    if ( count_ < headRoom_ ) return(0);
    else return(count_ - headRoom_);
 }
 
 //! Get flags
-uint32_t is::Buffer::getFlags() {
+uint32_t ris::Buffer::getFlags() {
    return(flags_);
 }
 
 //! Set error state
-void is::Buffer::setFlags(uint32_t flags) {
+void ris::Buffer::setFlags(uint32_t flags) {
    error_ = flags;
 }
 
 //! Get error state
-uint32_t is::Buffer::getError() {
+uint32_t ris::Buffer::getError() {
    return(error_);
 }
 
 //! Set error state
-void is::Buffer::setError(uint32_t error) {
+void ris::Buffer::setError(uint32_t error) {
    error_ = error;
 }
 
 //! Set size including header
-void is::Buffer::setSetSize(uint32_t size) {
+void ris::Buffer::setSetSize(uint32_t size) {
    count_ = size;
 }
 
 //! Set head room
-void is::Buffer::setHeadRoom(uint32_t offset) {
+void ris::Buffer::setHeadRoom(uint32_t offset) {
    headRoom_ = offset;
 }
 
 //! Read up to count bytes from buffer, starting from offset.
-uint32_t is::Buffer::read  ( void *p, uint32_t offset, uint32_t count ) {
+uint32_t ris::Buffer::read  ( void *p, uint32_t offset, uint32_t count ) {
    uint32_t rcnt;
 
    // Empty buffer
@@ -155,7 +165,7 @@ uint32_t is::Buffer::read  ( void *p, uint32_t offset, uint32_t count ) {
 }
 
 //! Write count bytes to frame, starting at offset
-uint32_t is::Buffer::write ( void *p, uint32_t offset, uint32_t count ) {
+uint32_t ris::Buffer::write ( void *p, uint32_t offset, uint32_t count ) {
    uint32_t wcnt;
 
    // Empty buffer
