@@ -34,6 +34,7 @@ namespace rogue {
       namespace stream {
 
          class Buffer;
+         class Slave;
 
          //! Frame container
          /*

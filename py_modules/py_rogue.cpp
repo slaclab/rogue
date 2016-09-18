@@ -63,7 +63,8 @@ BOOST_PYTHON_MODULE(py_rogue)
       .def("create",         &ris::Slave::create)
       .staticmethod("create")
       .def("acceptFrame",    &ris::Slave::acceptFrame, &ris::SlaveWrap::defAcceptFrame)
-      .def("getAlloc",       &ris::Slave::getAlloc)
+      .def("getAllocCount",  &ris::Slave::getAllocCount)
+      .def("getAllocBytes",  &ris::Slave::getAllocBytes)
    ;
 
    /////////////////////////////////

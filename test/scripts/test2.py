@@ -10,7 +10,7 @@ class testSlave(py_rogue.Slave):
       self.byteCnt = 0
       self.packCnt = 0
 
-   def acceptFrame(self,frame):
+   def acceptFrame(self,frame,timeout):
       self.byteCnt += frame.getPayload()
       self.packCnt += 1
       p = bytearray(frame.getPayload())
@@ -41,16 +41,16 @@ while (True) :
    
    print("")
    print("  Src: Count %i, Bytes %i" % (prbsA.getCount(),prbsA.getBytes()))
-   print(" Dest: Count %i, Bytes %i, Alloc %i, Errors %i" % (prbsB.getCount(),prbsB.getBytes(),prbsB.getAlloc(),prbsB.getErrors()))
+   print(" Dest: Count %i, Bytes %i, Alloc %i, Errors %i" % (prbsB.getCount(),prbsB.getBytes(),prbsB.getAllocBytes(),prbsB.getErrors()))
    print("Test1: Count %i, Bytes %i" % (ts1.packCnt,ts1.byteCnt))
-   print("Test2: Count %i, Bytes %i, Alloc %i" % (ts2.packCnt,ts2.byteCnt,ts2.getAlloc()))
+   print("Test2: Count %i, Bytes %i, Alloc %i" % (ts2.packCnt,ts2.byteCnt,ts2.getAllocBytes()))
    print("")
    count += 1
 
-   f = tm.reqFrame(1000000,True)
+   f = tm.reqFrame(1000000,True,0)
    q = bytearray([10,20,30,40])
    f.write(q,0)
-   tm.sendFrame(f)
+   tm.sendFrame(f,0)
 
    time.sleep(1)
 

@@ -46,37 +46,35 @@ ris::Slave::Slave() {
 ris::Slave::~Slave() { }
 
 //! Get allocated memory
-uint64_t ris::Slave::getAllocBytes() {
+uint32_t ris::Slave::getAllocBytes() {
    return(allocBytes_);
 }
 
 //! Get allocated count
-uint64_t ris::Slave::getAllocCount() {
+uint32_t ris::Slave::getAllocCount() {
    return(allocCount_);
 }
 
 //! Get allocated memory
-void adjAllocBytes(int32_t adj) {
+void ris::Slave::adjAllocBytes(int32_t adj) {
    allocBytes_ += adj;
 }
 
 //! Get allocated count
-void adjAllocCount(int32_t adj) {
+void ris::Slave::adjAllocCount(int32_t adj) {
    allocCount_ += adj;
 }
 
 //! Create a frame
 // Frame container should be allocated from shared memory pool
-boost::shared_ptr<rogue::interfaces::stream::Frame> allocFrame ( uint32_t totSize, 
-                                                                 uint32_t buffSize,
-                                                                 bool compact,
-                                                                 bool zeroCopy ) {
+ris::FramePtr ris::Slave::allocFrame ( uint32_t totSize, uint32_t buffSize,
+                                       bool compact, bool zeroCopy ) {
    ris::FramePtr  ret;
    ris::BufferPtr buff;
    uint32_t alloc;
    uint32_t bSize;
 
-   ret  = ris::Frame::create(zeroCopy);
+   ret  = ris::Frame::create(getSlave(),zeroCopy);
    alloc = 0;
 
    while ( alloc < totSize ) {
@@ -153,7 +151,7 @@ ris::SlavePtr ris::Slave::getSlave() {
 }
 
 //! Accept frame
-bool ris::SlaveWrap::acceptFrame ( ris::FramePtr frame ) {
+bool ris::SlaveWrap::acceptFrame ( ris::FramePtr frame, uint32_t timeout ) {
    bool ret;
    bool found;
 
@@ -167,19 +165,19 @@ bool ris::SlaveWrap::acceptFrame ( ris::FramePtr frame ) {
    if (boost::python::override pb = this->get_override("acceptFrame")) {
       found = true;
       try {
-         ret = pb(frame);
+         ret = pb(frame,timeout);
       } catch (...) {
          PyErr_Print();
       }
    }
    PyGILState_Release(pyState);
 
-   if ( ! found ) ret = ris::Slave::acceptFrame(frame);
+   if ( ! found ) ret = ris::Slave::acceptFrame(frame,timeout);
    return(ret);
 }
 
 //! Default accept frame call
-bool ris::SlaveWrap::defAcceptFrame ( ris::FramePtr frame ) {
-   return(ris::Slave::acceptFrame(frame));
+bool ris::SlaveWrap::defAcceptFrame ( ris::FramePtr frame, uint32_t timeout ) {
+   return(ris::Slave::acceptFrame(frame,timeout));
 }
 

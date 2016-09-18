@@ -87,7 +87,7 @@ uint32_t ris::Buffer::getRawSize() {
 
 //! Get buffer data count (payload + headroom)
 uint32_t ris::Buffer::getCount() {
-   return(rawCount_);
+   return(count_);
 }
 
 //! Get header space

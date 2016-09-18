@@ -133,10 +133,10 @@ namespace rogue {
             public:
 
                //! Accept frame
-               bool acceptFrame ( boost::shared_ptr<rogue::interfaces::stream::Frame> frame );
+               bool acceptFrame ( boost::shared_ptr<rogue::interfaces::stream::Frame> frame, uint32_t timeout );
 
                //! Default accept frame call
-               bool defAcceptFrame ( boost::shared_ptr<rogue::interfaces::stream::Frame> frame );
+               bool defAcceptFrame ( boost::shared_ptr<rogue::interfaces::stream::Frame> frame, uint32_t timeout );
          };
 
          // Convienence

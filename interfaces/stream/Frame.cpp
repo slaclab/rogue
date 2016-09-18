@@ -22,6 +22,7 @@
 **/
 #include <interfaces/stream/Frame.h>
 #include <interfaces/stream/Buffer.h>
+#include <interfaces/stream/Slave.h>
 #include <boost/make_shared.hpp>
 #include <boost/python.hpp>
 

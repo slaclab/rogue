@@ -152,7 +152,7 @@ void ru::Prbs::genFrame (uint32_t size) {
    uint16_t * data16;
    uint32_t   cnt;
 
-   ris::FramePtr fr = reqFrame(size,true);
+   ris::FramePtr fr = reqFrame(size,true,0);
 
    if (fr->getAvailable() == 0 ) {
       if ( enMessages_ ) fprintf(stderr,"Prbs::genFrame -> Buffer allocation error, count=%i\n",totCount_);
@@ -192,11 +192,11 @@ void ru::Prbs::genFrame (uint32_t size) {
 
    totCount_++;
    totBytes_ += size;
-   sendFrame(fr);
+   sendFrame(fr,0);
 }
 
 //! Accept a frame from master
-bool ru::Prbs::acceptFrame ( ris::FramePtr frame ) {
+bool ru::Prbs::acceptFrame ( ris::FramePtr frame, uint32_t timeout ) {
    uint32_t   eventLength;
    uint32_t   expected;
    uint32_t   got;

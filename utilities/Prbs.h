@@ -26,8 +26,6 @@
 #include <stdint.h>
 #include <boost/thread.hpp>
 
-class rogue::interfaces::stream::Frame;
-
 namespace rogue {
    namespace utilities {
 
@@ -97,7 +95,7 @@ namespace rogue {
             void enMessages(bool state);
 
             //! Accept a frame from master
-            bool acceptFrame ( boost::shared_ptr<rogue::interfaces::stream::Frame> frame );
+            bool acceptFrame ( boost::shared_ptr<rogue::interfaces::stream::Frame> frame, uint32_t timeout );
       };
 
       // Convienence
