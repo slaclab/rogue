@@ -11,7 +11,7 @@
  * Stream interface slave
  * TODO:
  *    Add locking to meta and alloc increments. Multiple threads may perform
- *    and allocation. 
+ *    allocation. 
  * ----------------------------------------------------------------------------
  * This file is part of the rogue software platform. It is subject to 
  * the license terms in the LICENSE.txt file found in the top-level directory 

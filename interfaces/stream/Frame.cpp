@@ -151,27 +151,14 @@ uint32_t is::Frame::read  ( void *p, uint32_t offset, uint32_t count ) {
 }
 
 //! Read up to count bytes from frame, starting from offset. Python version.
-// There must be a better way to do this without a copy in the middle.
-// This is causing a memory leak!
-boost::python::object is::Frame::readPy () {
-   PyObject * pyBuf;
-   uint8_t  * buff;
-   uint32_t   count;
-   boost::python::object ret;
+uint32_t is::Frame::readPy ( boost::python::object p, uint32_t offset ) {
+   Py_buffer  pyBuf;
+   uint32_t   ret;
 
-   count = getPayload();
+   if ( PyObject_GetBuffer(p.ptr(),&pyBuf,PyBUF_SIMPLE) < 0 ) return(0);
 
-   if ( (buff = (uint8_t *)malloc(count)) == NULL ) {
-      pyBuf = Py_None;
-   }
-   else {
-
-      read(buff,0,count); 
-
-      pyBuf = PyBuffer_FromReadWriteMemory(buff,count);
-      //free(buff);
-   }
-   ret = boost::python::object(boost::python::handle<>(pyBuf));
+   ret = read(pyBuf.buf,offset,pyBuf.len);
+   PyBuffer_Release(&pyBuf);
    return(ret);
 }
 
@@ -208,23 +195,13 @@ uint32_t is::Frame::write ( void *p, uint32_t offset, uint32_t count ) {
 }
 
 //! Write python buffer to frame, starting at offset. Python Version
-uint32_t is::Frame::writePy ( boost::python::object p) {
-   PyObject * pyObj;
+uint32_t is::Frame::writePy ( boost::python::object p, uint32_t offset ) {
    Py_buffer  pyBuf;
-   uint32_t   count;
-   uint8_t  * buff;
    uint32_t   ret;
 
-   pyObj = p.ptr();
+   if ( PyObject_GetBuffer(p.ptr(),&pyBuf,PyBUF_CONTIG) < 0 ) return(0);
 
-   if ( PyObject_GetBuffer(pyObj,&pyBuf,PyBUF_CONTIG) < 0 ) {
-      printf("Failed to map python write buffer\n");
-      return(0);
-   }
-
-   count = pyBuf.len;
-   buff = (uint8_t *)pyBuf.buf;
-   ret = write(buff,0,count);
+   ret = write(pyBuf.buf,offset,pyBuf.len);
    PyBuffer_Release(&pyBuf);
    return(ret);
 }

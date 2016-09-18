@@ -104,13 +104,13 @@ namespace interfaces {
             uint32_t read  ( void *p, uint32_t offset, uint32_t count );
 
             //! Read up to count bytes from frame, starting from offset. Python version.
-            boost::python::object readPy ();
+            uint32_t readPy ( boost::python::object p, uint32_t offset );
 
             //! Write count bytes to frame, starting at offset
             uint32_t write ( void *p, uint32_t offset, uint32_t count );
 
             //! Write count bytes to frame, starting at offset. Python Version
-            uint32_t writePy ( boost::python::object p );
+            uint32_t writePy ( boost::python::object p, uint32_t offset );
       };
 
       // Convienence

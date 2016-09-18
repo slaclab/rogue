@@ -36,11 +36,12 @@ is::MasterPtr is::Master::create () {
 }
 
 //! Creator
-is::Master::Master() {}
+is::Master::Master() {
+   primary_ = is::Slave::create();
+}
 
 //! Destructor
 is::Master::~Master() {
-   primary_ = is::Slave::create();
    slaves_.clear();
 }
 
