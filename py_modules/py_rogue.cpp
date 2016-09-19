@@ -9,6 +9,8 @@
  * ----------------------------------------------------------------------------
  * Description:
  * Python class wrapper
+ * TODO:
+ *    Figure out how to map rogue namespaces into python properly
  * ----------------------------------------------------------------------------
  * This file is part of the rogue software platform. It is subject to 
  * the license terms in the LICENSE.txt file found in the top-level directory 
@@ -23,11 +25,19 @@
 #include <interfaces/stream/Slave.h>
 #include <interfaces/stream/Master.h>
 #include <interfaces/stream/Frame.h>
+#include <hardware/pgp/PgpCard.h>
+#include <hardware/pgp/Info.h>
+#include <hardware/pgp/Status.h>
+#include <hardware/pgp/PciStatus.h>
+#include <hardware/pgp/EvrStatus.h>
+#include <hardware/pgp/EvrControl.h>
+#include <hardware/pgp/EvrStatus.h>
 #include <boost/python.hpp>
 #include <utilities/Prbs.h>
 
 using namespace boost::python;
 namespace ris = rogue::interfaces::stream;
+namespace rhp = rogue::hardware::pgp;
 namespace ru  = rogue::utilities;
 
 BOOST_PYTHON_MODULE(py_rogue)
@@ -71,7 +81,7 @@ BOOST_PYTHON_MODULE(py_rogue)
    // Utilities
    /////////////////////////////////
 
-   class_<ru::Prbs, bases<ris::Master,ris::Slave>, ru::PrbsPtr >("Prbs",init<>())
+   class_<ru::Prbs, bases<ris::Master,ris::Slave>, ru::PrbsPtr, boost::noncopyable >("Prbs",init<>())
       .def("create",         &ru::Prbs::create)
       .staticmethod("create")
       .def("genFrame",       &ru::Prbs::genFrame)
@@ -91,111 +101,96 @@ BOOST_PYTHON_MODULE(py_rogue)
    // PGP
    /////////////////////////////////
 
-/*
-   class_<PgpInfo,boost::noncopyable>("PgpInfo")
-      .def_readwrite("serial",     &PgpInfo::serial)
-      .def_readwrite("type",       &PgpInfo::type)
-      .def_readwrite("version",    &PgpInfo::version)
-      .def_readwrite("laneMask",   &PgpInfo::laneMask)
-      .def_readwrite("vcPerMask",  &PgpInfo::vcPerMask)
-      .def_readwrite("pgpRate",    &PgpInfo::pgpRate)
-      .def_readwrite("promPrgEn",  &PgpInfo::promPrgEn)
-      .def_readwrite("evrSupport", &PgpInfo::evrSupport)
-      //.def_readwrite("buildStamp", &PgpInfo::buildStamp, 
-            //return_value_policy<copy_non_const_reference>())
+   class_<rhp::Info, rhp::InfoPtr>("Info",no_init)
+      .def("create",               &rhp::Info::create)
+      .staticmethod("create")
+      .def_readwrite("serial",     &rhp::Info::serial)
+      .def_readwrite("type",       &rhp::Info::type)
+      .def_readwrite("version",    &rhp::Info::version)
+      .def_readwrite("laneMask",   &rhp::Info::laneMask)
+      .def_readwrite("vcPerMask",  &rhp::Info::vcPerMask)
+      .def_readwrite("pgpRate",    &rhp::Info::pgpRate)
+      .def_readwrite("promPrgEn",  &rhp::Info::promPrgEn)
+      .def_readwrite("evrSupport", &rhp::Info::evrSupport)
+      .def("buildString",          &rhp::Info::buildString)
    ; 
-   
-   class_<PciStatus,boost::noncopyable>("PciStatus")
-      .def_readwrite("pciCommand",   &PciStatus::pciCommand)
-      .def_readwrite("pciStatus",    &PciStatus::pciStatus)
-      .def_readwrite("pciDCommand",  &PciStatus::pciDCommand)
-      .def_readwrite("pciDStatus",   &PciStatus::pciDStatus)
-      .def_readwrite("pciLCommand",  &PciStatus::pciLCommand)
-      .def_readwrite("pciLStatus",   &PciStatus::pciLStatus)
-      .def_readwrite("pciLinkState", &PciStatus::pciLinkState)
-      .def_readwrite("pciFunction",  &PciStatus::pciFunction)
-      .def_readwrite("pciDevice",    &PciStatus::pciDevice)
-      .def_readwrite("pciBus",       &PciStatus::pciBus)
-      .def_readwrite("pciLanes",     &PciStatus::pciLanes)
+
+   class_<rhp::PciStatus, rhp::PciStatusPtr>("PciStatus",no_init)
+      .def("create",                 &rhp::PciStatus::create)
+      .staticmethod("create")
+      .def_readwrite("pciCommand",   &rhp::PciStatus::pciCommand)
+      .def_readwrite("pciStatus",    &rhp::PciStatus::pciStatus)
+      .def_readwrite("pciDCommand",  &rhp::PciStatus::pciDCommand)
+      .def_readwrite("pciDStatus",   &rhp::PciStatus::pciDStatus)
+      .def_readwrite("pciLCommand",  &rhp::PciStatus::pciLCommand)
+      .def_readwrite("pciLStatus",   &rhp::PciStatus::pciLStatus)
+      .def_readwrite("pciLinkState", &rhp::PciStatus::pciLinkState)
+      .def_readwrite("pciFunction",  &rhp::PciStatus::pciFunction)
+      .def_readwrite("pciDevice",    &rhp::PciStatus::pciDevice)
+      .def_readwrite("pciBus",       &rhp::PciStatus::pciBus)
+      .def_readwrite("pciLanes",     &rhp::PciStatus::pciLanes)
    ; 
-   
-   class_<PgpStatus,boost::noncopyable>("PgpStatus")
-      .def_readwrite("lane",          &PgpStatus::lane)
-      .def_readwrite("loopBack",      &PgpStatus::loopBack)
-      .def_readwrite("locLinkReady",  &PgpStatus::locLinkReady)
-      .def_readwrite("remLinkReady",  &PgpStatus::remLinkReady)
-      .def_readwrite("rxReady",       &PgpStatus::rxReady)
-      .def_readwrite("txReady",       &PgpStatus::txReady)
-      .def_readwrite("rxCount",       &PgpStatus::rxCount)
-      .def_readwrite("cellErrCnt",    &PgpStatus::cellErrCnt)
-      .def_readwrite("linkDownCnt",   &PgpStatus::linkDownCnt)
-      .def_readwrite("linkErrCnt",    &PgpStatus::linkErrCnt)
-      .def_readwrite("fifoErr",       &PgpStatus::fifoErr)
-      .def_readwrite("remData",       &PgpStatus::remData)
-      .def_readwrite("remBuffStatus", &PgpStatus::remBuffStatus)
+
+   class_<rhp::Status, rhp::StatusPtr>("Status",no_init)
+      .def("create",                  &rhp::Status::create)
+      .staticmethod("create")
+      .def_readwrite("lane",          &rhp::Status::lane)
+      .def_readwrite("loopBack",      &rhp::Status::loopBack)
+      .def_readwrite("locLinkReady",  &rhp::Status::locLinkReady)
+      .def_readwrite("remLinkReady",  &rhp::Status::remLinkReady)
+      .def_readwrite("rxReady",       &rhp::Status::rxReady)
+      .def_readwrite("txReady",       &rhp::Status::txReady)
+      .def_readwrite("rxCount",       &rhp::Status::rxCount)
+      .def_readwrite("cellErrCnt",    &rhp::Status::cellErrCnt)
+      .def_readwrite("linkDownCnt",   &rhp::Status::linkDownCnt)
+      .def_readwrite("linkErrCnt",    &rhp::Status::linkErrCnt)
+      .def_readwrite("fifoErr",       &rhp::Status::fifoErr)
+      .def_readwrite("remData",       &rhp::Status::remData)
+      .def_readwrite("remBuffStatus", &rhp::Status::remBuffStatus)
    ;
 
-   class_<PgpEvrControl,boost::noncopyable>("PgpEvrControl")
-      .def_readwrite("lane",        &PgpEvrControl::lane)
-      .def_readwrite("evrEnable",   &PgpEvrControl::evrEnable)
-      .def_readwrite("laneRunMask", &PgpEvrControl::laneRunMask)
-      .def_readwrite("evrSyncEn",   &PgpEvrControl::evrSyncEn)
-      .def_readwrite("evrSyncSel",  &PgpEvrControl::evrSyncSel)
-      .def_readwrite("headerMask",  &PgpEvrControl::headerMask)
-      .def_readwrite("evrSyncWord", &PgpEvrControl::evrSyncWord)
-      .def_readwrite("runCode",     &PgpEvrControl::runCode)
-      .def_readwrite("runDelay",    &PgpEvrControl::runDelay)
-      .def_readwrite("acceptCode",  &PgpEvrControl::acceptCode)
-      .def_readwrite("acceptDelay", &PgpEvrControl::acceptDelay)
+   class_<rhp::EvrControl, rhp::EvrControlPtr >("EvrControl",no_init)
+      .def("create",                &rhp::EvrControl::create)
+      .staticmethod("create")
+      .def_readwrite("lane",        &rhp::EvrControl::lane)
+      .def_readwrite("evrEnable",   &rhp::EvrControl::evrEnable)
+      .def_readwrite("laneRunMask", &rhp::EvrControl::laneRunMask)
+      .def_readwrite("evrSyncEn",   &rhp::EvrControl::evrSyncEn)
+      .def_readwrite("evrSyncSel",  &rhp::EvrControl::evrSyncSel)
+      .def_readwrite("headerMask",  &rhp::EvrControl::headerMask)
+      .def_readwrite("evrSyncWord", &rhp::EvrControl::evrSyncWord)
+      .def_readwrite("runCode",     &rhp::EvrControl::runCode)
+      .def_readwrite("runDelay",    &rhp::EvrControl::runDelay)
+      .def_readwrite("acceptCode",  &rhp::EvrControl::acceptCode)
+      .def_readwrite("acceptDelay", &rhp::EvrControl::acceptDelay)
    ;
 
-   class_<PgpEvrStatus,boost::noncopyable>("PgpEvrStatus")
-      .def_readwrite("lane",          &PgpEvrStatus::lane)
-      .def_readwrite("linkErrors",    &PgpEvrStatus::linkErrors)
-      .def_readwrite("linkUp",        &PgpEvrStatus::linkUp)
-      .def_readwrite("runStatus",     &PgpEvrStatus::runStatus)
-      .def_readwrite("evrSeconds",    &PgpEvrStatus::evrSeconds)
-      .def_readwrite("runCounter",    &PgpEvrStatus::runCounter)
-      .def_readwrite("acceptCounter", &PgpEvrStatus::acceptCounter)
+   class_<rhp::EvrStatus, rhp::EvrStatusPtr >("EvrStatus",no_init)
+      .def("create",                  &rhp::EvrStatus::create)
+      .staticmethod("create")
+      .def_readwrite("lane",          &rhp::EvrStatus::lane)
+      .def_readwrite("linkErrors",    &rhp::EvrStatus::linkErrors)
+      .def_readwrite("linkUp",        &rhp::EvrStatus::linkUp)
+      .def_readwrite("runStatus",     &rhp::EvrStatus::runStatus)
+      .def_readwrite("evrSeconds",    &rhp::EvrStatus::evrSeconds)
+      .def_readwrite("runCounter",    &rhp::EvrStatus::runCounter)
+      .def_readwrite("acceptCounter", &rhp::EvrStatus::acceptCounter)
    ;
 
-   class_<PgpData,boost::noncopyable>("PgpData",no_init)
-      .def("retBuffer",  &PgpData::retBuffer)
-      .def("write",      &PgpData::write)
-      .def("getData",    &PgpData::getDataPy)
-      .def("getIndex",   &PgpData::getIndex)
-      .def("getMaxSize", &PgpData::getMaxSize)
-
-      .def_readwrite("lane",  &PgpData::lane)
-      .def_readwrite("vc",    &PgpData::vc)
-      .def_readwrite("cont",  &PgpData::cont)
-      .def_readwrite("size",  &PgpData::size)
-      .def_readwrite("error", &PgpData::error)
+   class_<rhp::PgpCard, bases<ris::Master,ris::Slave>, rhp::PgpCardPtr, boost::noncopyable >("PgpCard",init<>())
+      .def("create",         &rhp::PgpCard::create)
+      .staticmethod("create")
+      .def("open",           &rhp::PgpCard::open)
+      .def("close",          &rhp::PgpCard::close)
+      .def("getInfo",        &rhp::PgpCard::getInfo)
+      .def("getPciStatus",   &rhp::PgpCard::getPciStatus)
+      .def("getStatus",      &rhp::PgpCard::getStatus)
+      .def("getEvrControl",  &rhp::PgpCard::getEvrControl)
+      .def("setEvrControl",  &rhp::PgpCard::setEvrControl)
+      .def("getEvrStatus",   &rhp::PgpCard::getEvrStatus)
+      .def("setLoop",        &rhp::PgpCard::setLoop)
+      .def("setData",        &rhp::PgpCard::setData)
+      .def("sendOpCode",     &rhp::PgpCard::sendOpCode)
    ;
-
-   class_<PgpCard,boost::noncopyable>("PgpCard",init<>())
-      .def("openWo",         &PgpCard::openWo)
-      .def("open",           &PgpCard::open)
-      .def("openMask",       &PgpCard::openMask)
-      .def("close",          &PgpCard::close)
-      .def("getWriteBuffer", &PgpCard::getWriteBuffer, return_value_policy<reference_existing_object>())
-      .def("write",          &PgpCard::write)
-      .def("read",           &PgpCard::read, return_value_policy<reference_existing_object>())
-      .def("retBuffer",      &PgpCard::retBuffer)
-      .def("getInfo",        &PgpCard::getInfo, return_value_policy<reference_existing_object>())
-      .def("getPciStatus",   &PgpCard::getPciStatus, return_value_policy<reference_existing_object>())
-      .def("getLaneStatus",  &PgpCard::getLaneStatus, return_value_policy<reference_existing_object>())
-      .def("getEvrControl",  &PgpCard::getEvrControl, return_value_policy<reference_existing_object>())
-      .def("setEvrControl",  &PgpCard::setEvrControl)
-      .def("getEvrStatus",   &PgpCard::getEvrStatus, return_value_policy<reference_existing_object>())
-      .def("setLoop",        &PgpCard::setLoop)
-      .def("setData",        &PgpCard::setData)
-      .def("sendOpCode",     &PgpCard::sendOpCode)
-   ;
-
-   class_<PgpCardStream, bases<StreamSrc,StreamDest,PgpCard>, boost::noncopyable >("PgpCardStream",init<>());
-
-*/
-
 };
 

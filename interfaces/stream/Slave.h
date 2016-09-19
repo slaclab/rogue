@@ -10,8 +10,6 @@
  * Description:
  * Stream interface slave
  * TODO:
- *    Add locking to meta and alloc increments. Multiple threads may perform
- *    allocation. 
  *    Create central memory pool allocator for proper allocate and free of
  *    buffers and frames.
  * ----------------------------------------------------------------------------
@@ -30,6 +28,7 @@
 
 #include <boost/python.hpp>
 #include <boost/enable_shared_from_this.hpp>
+#include <boost/thread.hpp>
 
 namespace rogue {
    namespace interfaces {
@@ -44,6 +43,12 @@ namespace rogue {
           * can accept frame allocation requests.
           */
          class Slave : public boost::enable_shared_from_this<rogue::interfaces::stream::Slave> {
+
+               //! Meta mutex
+               boost::mutex metaMtx_;
+
+               //! Alloc mutex
+               boost::mutex allocMtx_;
 
                //! Track buffer allocations
                uint32_t allocMeta_;
@@ -67,19 +72,21 @@ namespace rogue {
                 * If compact is not set, all buffers are allocated with size = buffSize
                 * Pass zero copy flag
                 */
-               boost::shared_ptr<rogue::interfaces::stream::Frame> allocFrame ( uint32_t totSize, 
-                                                                                uint32_t buffSize,
-                                                                                bool compact,
-                                                                                bool zeroCopy );
+               boost::shared_ptr<rogue::interfaces::stream::Frame> createFrame ( uint32_t totSize, 
+                                                                                 uint32_t buffSize,
+                                                                                 bool compact,
+                                                                                 bool zeroCopy );
 
-               //! Create a frame
+               //! Allocate and Create a Buffer
                boost::shared_ptr<rogue::interfaces::stream::Buffer> allocBuffer ( uint32_t size );
-               
-               //! Get allocated memory
-               void adjAllocBytes(int32_t adj);
 
-               //! Get allocated count
-               void adjAllocCount(int32_t adj);
+               //! Create a Buffer with passed data
+               boost::shared_ptr<rogue::interfaces::stream::Buffer> createBuffer( void * data, 
+                                                                                  uint32_t meta, 
+                                                                                  uint32_t rawSize);
+
+               //! Delete a buffer
+               void deleteBuffer( uint32_t rawSize);
 
             public:
 
@@ -120,9 +127,6 @@ namespace rogue {
                 * Called when this instance is marked as owner of a Buffer entity that is deleted.
                 */
                virtual void retBuffer(uint8_t * data, uint32_t meta, uint32_t rawSize);
-
-               //! Return instance as shared pointer
-               boost::shared_ptr<rogue::interfaces::stream::Slave> getSlave();
          };
 
          //! Stream slave class, wrapper to enable pyton overload of virtual methods

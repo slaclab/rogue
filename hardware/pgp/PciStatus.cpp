@@ -20,12 +20,13 @@
  * ----------------------------------------------------------------------------
 **/
 #include <hardware/pgp/PciStatus.h>
+#include <boost/make_shared.hpp>
 
 namespace rhp = rogue::hardware::pgp;
 
 //! Create the info class with pointer
 rhp::PciStatusPtr rhp::PciStatus::create() {
-   rhp::PciStatus r = boost::make_shared<rhp::PciStatus>();
+   rhp::PciStatusPtr r = boost::make_shared<rhp::PciStatus>();
    return(r);
 }
 

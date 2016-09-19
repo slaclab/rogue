@@ -55,26 +55,16 @@ uint32_t ris::Slave::getAllocCount() {
    return(allocCount_);
 }
 
-//! Get allocated memory
-void ris::Slave::adjAllocBytes(int32_t adj) {
-   allocBytes_ += adj;
-}
-
-//! Get allocated count
-void ris::Slave::adjAllocCount(int32_t adj) {
-   allocCount_ += adj;
-}
-
 //! Create a frame
 // Frame container should be allocated from shared memory pool
-ris::FramePtr ris::Slave::allocFrame ( uint32_t totSize, uint32_t buffSize,
-                                       bool compact, bool zeroCopy ) {
+ris::FramePtr ris::Slave::createFrame ( uint32_t totSize, uint32_t buffSize,
+                                        bool compact, bool zeroCopy ) {
    ris::FramePtr  ret;
    ris::BufferPtr buff;
    uint32_t alloc;
    uint32_t bSize;
 
-   ret  = ris::Frame::create(getSlave(),zeroCopy);
+   ret  = ris::Frame::create(shared_from_this(),zeroCopy);
    alloc = 0;
 
    while ( alloc < totSize ) {
@@ -98,18 +88,41 @@ ris::BufferPtr ris::Slave::allocBuffer ( uint32_t size ) {
    ris::BufferPtr buff;
    uint8_t * data;
 
-   if ( (data = (uint8_t *)malloc(size)) != NULL ) adjAllocBytes(size);
-   else size = 0;
+   if ( (data = (uint8_t *)malloc(size)) == NULL ) size = 0;
 
-   buff = ris::Buffer::create(getSlave(),data,allocMeta_,size);
-   adjAllocCount(1);
+   metaMtx_.lock();
+
+   buff = createBuffer(data,allocMeta_,size);
 
    // Only use lower 16 bits of meta. 
    // Upper 16 bits may have special meaning to sub-class
    allocMeta_++;
    allocMeta_ &= 0xFFFF;
 
+   metaMtx_.unlock();
    return(buff);
+}
+
+
+//! Create a Buffer with passed data
+ris::BufferPtr ris::Slave::createBuffer( void * data, uint32_t meta, uint32_t rawSize) {
+   ris::BufferPtr buff;
+
+   buff = ris::Buffer::create(shared_from_this(),data,meta,rawSize);
+
+   allocMtx_.lock();
+   allocBytes_ += rawSize;
+   allocCount_++;
+   allocMtx_.unlock();
+   return(buff);
+}
+
+//! Delete a buffer
+void ris::Slave::deleteBuffer( uint32_t rawSize) {
+   allocMtx_.lock();
+   allocBytes_ -= rawSize;
+   allocCount_--;
+   allocMtx_.unlock();
 }
 
 //! Accept a frame request. Called from master
@@ -118,7 +131,7 @@ ris::BufferPtr ris::Slave::allocBuffer ( uint32_t size ) {
  * Pass flag indicating if zero copy buffers are acceptable
  */
 ris::FramePtr ris::Slave::acceptReq ( uint32_t size, bool zeroCopyEn, uint32_t timeout) {
-   return(allocFrame(size,size,false,false));
+   return(createFrame(size,size,false,false));
 }
 
 //! Accept a frame from master
@@ -134,20 +147,14 @@ bool ris::Slave::acceptFrame ( ris::FramePtr frame, uint32_t timeout ) {
  * Called when this instance is marked as owner of a Buffer entity
  */
 void ris::Slave::retBuffer(uint8_t * data, uint32_t meta, uint32_t rawSize) {
+
+   metaMtx_.lock();
    if ( meta == freeMeta_ ) printf("Buffer return with duplicate meta\n");
    freeMeta_ = meta;
+   metaMtx_.unlock();
 
-   adjAllocCount(-1);
-
-   if ( data != NULL ) {
-      free(data);
-      adjAllocBytes(-rawSize);
-   }
-}
-
-//! Return instance as shared pointer
-ris::SlavePtr ris::Slave::getSlave() {
-   return(shared_from_this());
+   if ( data != NULL ) free(data);
+   deleteBuffer(rawSize);
 }
 
 //! Accept frame

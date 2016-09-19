@@ -22,6 +22,7 @@
 #ifndef __ROGUE_HARDWARE_PGP_PCI_STATUS_H__
 #define __ROGUE_HARDWARE_PGP_PCI_STATUS_H__
 #include <hardware/pgp/PgpDriver.h>
+#include <boost/python.hpp>
 #include <stdint.h>
 
 namespace rogue {
@@ -29,7 +30,7 @@ namespace rogue {
       namespace pgp {
 
          //! Wrapper for PgpInfo class. 
-         class PciStatus : public PciStatus {
+         class PciStatus : public ::PciStatus {
             public:
 
                //! Create the info class with pointer
@@ -37,7 +38,7 @@ namespace rogue {
          };
 
          //! Convienence
-         typedef boost::smart_ptr<rogue::hardware::pgp::PciStatus> PciStatusPtr;
+         typedef boost::shared_ptr<rogue::hardware::pgp::PciStatus> PciStatusPtr;
       }
    }
 }

@@ -21,6 +21,7 @@
 **/
 
 #include <hardware/pgp/Info.h>
+#include <boost/make_shared.hpp>
 
 namespace rhp = rogue::hardware::pgp;
 

@@ -62,6 +62,11 @@ uint32_t ris::Frame::getCount() {
    return(buffers_.size());
 }
 
+//! Remove buffers from frame
+void ris::Frame::clear() {
+   buffers_.clear();
+}
+
 //! Get buffer at index
 ris::BufferPtr ris::Frame::getBuffer(uint32_t index) {
    ris::BufferPtr ret;

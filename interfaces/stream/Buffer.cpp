@@ -132,7 +132,7 @@ void ris::Buffer::setError(uint32_t error) {
 }
 
 //! Set size including header
-void ris::Buffer::setSetSize(uint32_t size) {
+void ris::Buffer::setSize(uint32_t size) {
    count_ = size;
 }
 

@@ -26,12 +26,15 @@
 #include <hardware/pgp/EvrStatus.h>
 #include <hardware/pgp/EvrControl.h>
 #include <interfaces/stream/Frame.h>
+#include <interfaces/stream/Buffer.h>
+#include <boost/make_shared.hpp>
 
 namespace rhp = rogue::hardware::pgp;
+namespace ris = rogue::interfaces::stream;
 
 //! Class creation
 rhp::PgpCardPtr rhp::PgpCard::create () {
-   rhp::PgpCardPtr r = boost::make_shared<rhp::PcpCard>();
+   rhp::PgpCardPtr r = boost::make_shared<rhp::PgpCard>();
    return(r);
 }
 
@@ -55,8 +58,10 @@ bool rhp::PgpCard::open ( std::string path, uint32_t lane, uint32_t vc ) {
    uint32_t mask;
 
    if ( fd_ > 0 ) return(false);
+   lane_ = lane;
+   vc_   = vc;
 
-   mask = (1 << ((lane*4) +vc));
+   mask = (1 << ((lane_*4) +vc_));
 
    if ( (fd_ = ::open(path.c_str(), O_RDWR)) < 0 ) return(false);
 
@@ -68,103 +73,128 @@ bool rhp::PgpCard::open ( std::string path, uint32_t lane, uint32_t vc ) {
    // Result may be that rawBuff_ = NULL
    rawBuff_ = pgpMapDma(fd_,&bCount_,&bSize_);
 
+   // Start read thread
+   thread_ = new boost::thread(boost::bind(&rhp::PgpCard::runThread, this));
+
    return(true);
 }
 
+//! Close the device
+void rhp::PgpCard::close() {
+
+   if ( fd_ < 0 ) return;
+
+   // Stop read thread
+   thread_->interrupt();
+   thread_->join();
+   delete thread_;
+   thread_ = NULL;
+
+   if ( rawBuff_ != NULL ) pgpUnMapDma(fd_, rawBuff_);
+   ::close(fd_);
+
+   fd_      = -1;
+   lane_    = 0;
+   vc_      = 0;
+   bCount_  = 0;
+   bSize_   = 0;
+   rawBuff_ = NULL;
+}
+
 //! Get card info.
-rhp::InfoPtr rph::PgpCard::getInfo() {
+rhp::InfoPtr rhp::PgpCard::getInfo() {
    rhp::InfoPtr r = rhp::Info::create();
 
-   if ( fd_ >= 0 ) pgpGetInfo(fd_,r->get());
+   if ( fd_ >= 0 ) pgpGetInfo(fd_,r.get());
    return(r);
 }
 
 //! Get pci status.
-rhp::PciStatusPtr rph::PgpCard::getPciStatus() {
+rhp::PciStatusPtr rhp::PgpCard::getPciStatus() {
    rhp::PciStatusPtr r = rhp::PciStatus::create();
 
-   if ( fd_ >= 0 ) pgpGetPciStatus(fd_,r->get());
+   if ( fd_ >= 0 ) pgpGetPci(fd_,r.get());
    return(r);
 }
 
 //! Get status of open lane.
-rhp::StatusPtr rph::PgpCard::getStatus() {
+rhp::StatusPtr rhp::PgpCard::getStatus() {
    rhp::StatusPtr r = rhp::Status::create();
 
-   if ( fd_ >= 0 ) pgpGetStatus(fd_,lane_,r->get());
+   if ( fd_ >= 0 ) pgpGetStatus(fd_,lane_,r.get());
    return(r);
 }
 
 //! Get evr control for open lane.
-rhp::EvrControlPtr rph::PgpCard::getEvrControl() {
+rhp::EvrControlPtr rhp::PgpCard::getEvrControl() {
    rhp::EvrControlPtr r = rhp::EvrControl::create();
 
-   if ( fd_ >= 0 ) pgpGetEvrControl(fd_,lane_,r->get());
+   if ( fd_ >= 0 ) pgpGetEvrControl(fd_,lane_,r.get());
    return(r);
 }
 
 //! Set evr control for open lane.
-bool rph::PgpCard::setEvrControl(rhp::EvrControlPtr) {
+bool rhp::PgpCard::setEvrControl(rhp::EvrControlPtr r) {
    if ( fd_ >= 0 ) return(false);
       
-   return(pgpSetEvrControl(fd_,lane_,r->get()) == 0);
+   return(pgpSetEvrControl(fd_,lane_,r.get()) == 0);
 }
 
 //! Get evr status for open lane.
-rhp::EvrStatusPtr rph::PgpCard::getEvrStatus() {
+rhp::EvrStatusPtr rhp::PgpCard::getEvrStatus() {
    rhp::EvrStatusPtr r = rhp::EvrStatus::create();
 
-   if ( fd_ >= 0 ) pgpGetEvrStatus(fd_,lane_,r->get());
+   if ( fd_ >= 0 ) pgpGetEvrStatus(fd_,lane_,r.get());
    return(r);
 }
 
 //! Set loopback for open lane
-bool rph::PgpCard::setLoop(bool enable) {
+bool rhp::PgpCard::setLoop(bool enable) {
    if ( fd_ < 0 ) return(false);
    return(pgpSetLoop(fd_,lane_,enable) >= 0);
 }
 
 //! Set lane data for open lane
-bool rph::PgpCard::setData(uint8_t data) {
+bool rhp::PgpCard::setData(uint8_t data) {
    if ( fd_ < 0 ) return(false);
    return(pgpSetData(fd_,lane_,data) >= 0);
 }
 
 //! Send an opcode
-bool rph::PgpCard::sendOpCode(uint8_t code) {
+bool rhp::PgpCard::sendOpCode(uint8_t code) {
    if ( fd_ < 0 ) return(false);
    return(pgpSendOpCode(fd_,code) >= 0);
 }
 
 //! Generate a buffer. Called from master
-ris::FramePtr rph::PgpCard::acceptReq ( uint32_t size, bool zeroCopyEn, uint32_t timeout) {
+ris::FramePtr rhp::PgpCard::acceptReq ( uint32_t size, bool zeroCopyEn, uint32_t timeout) {
    int32_t          res;
    fd_set           fds;
    struct timeval   tout;
    struct timeval * tpr;
    uint32_t         alloc;
-   uint32_t         req;
    ris::BufferPtr   buff;
    ris::FramePtr    frame;
 
-   if ( fd_ < 0 ) return(frame);
+   if ( fd_ < 0 ) return(createFrame(0,0,true,zeroCopyEn));
 
    // Zero copy is disabled. Allocate from memory.
    if ( zeroCopyEn == false || rawBuff_ == NULL ) {
-      frame = allocFrame(size,bSize_,true,false);
+      frame = createFrame(size,bSize_,true,false);
    }
 
    // Allocate zero copy buffers from driver
    else {
 
       // Create empty frame
-      frame = allocFrame(0,0,true,true,0);
+      frame = createFrame(0,0,true,true);
       alloc=0;
 
-      // Request may be returned in multiple buffers
+      // Request may be serviced with multiple buffers
       while ( alloc < size ) {
 
-         // Keep trying in select loop
+         // Keep trying since select call can fire 
+         // but getIndex fails because we did not win the buffer lock
          do {
 
             // Setup fds for select call
@@ -179,49 +209,54 @@ ris::FramePtr rph::PgpCard::acceptReq ( uint32_t size, bool zeroCopyEn, uint32_t
             }
             else tpr = NULL;
 
-            res = select(fd_+1,NULL,&fds,NULL,tpr);j
+            res = select(fd_+1,NULL,&fds,NULL,tpr);
             
-            // Timeout
+            // Timeout, empty frame and break
+            // Returned frame will have an available size of zero
             if ( res == 0 ) {
+               frame->clear();
+               break;
+            }
 
+            // Attempt to get index.
+            // return of less than 0 is a failure to get a buffer
             res = pgpGetIndex(fd_);
-
-         } while(res < 0);
-
-         // Adjust counters
-         adjAllocBytes(bSize_);
-         adjAllocCount(1);
-         alloc += bSize_;
+         }
+         while (res < 0);
 
          // Mark zero copy meta with bit 31 set, lower bits are index
-         buff = ris::Buffer::create(getSlave(),rawBuff_[res],0x80000000 | res,bSize_);
+         buff = createBuffer(rawBuff_[res],0x80000000 | res,bSize_);
          frame->appendBuffer(buff);
+         alloc += bSize_;
       }
    }
    return(frame);
 }
 
 //! Accept a frame from master
-bool rph::PgpCard::acceptFrame ( ris::FramePtr frame, uint32_t timeout ) {
+bool rhp::PgpCard::acceptFrame ( ris::FramePtr frame, uint32_t timeout ) {
    ris::BufferPtr buff;
-   uint32_t meta;
-   uint32_t x;
-   bool     ret;
-   uint32_t res;
-   uint32_t cont;
+   int32_t          res;
+   fd_set           fds;
+   struct timeval   tout;
+   struct timeval * tpr;
+   uint32_t         meta;
+   uint32_t         x;
+   bool             ret;
+   uint32_t         cont;
 
-   ret = false;
+   ret = true;
 
    // Device is closed
-   if ( fd < 0 ) return(false);
+   if ( fd_ < 0 ) return(false);
 
    // Go through each buffer in the frame
    for (x=0; x < frame->getCount(); x++) {
-      buff = getBuffer(x);
+      buff = frame->getBuffer(x);
 
       // Continue flag is set if this is not the last buffer
-      if ( x == (frame->getCount() - 1) ) cont = 1;
-      else cont = 0;
+      if ( x == (frame->getCount() - 1) ) cont = 0;
+      else cont = 1;
 
       // Get buffer meta field
       meta = buff->getMeta();
@@ -231,126 +266,153 @@ bool rph::PgpCard::acceptFrame ( ris::FramePtr frame, uint32_t timeout ) {
 
          // Buffer is not already stale as indicates by bit 30
          if ( (meta & 0x40000000) == 0 ) {
+
+            // Write by passing buffer index to driver
             res = pgpWriteIndex(fd_, meta & 0x3FFFFFFF, buff->getCount(), lane_, vc_, cont);
 
+            // Return of zero or less is an error
+            if ( res <= 0 ) ret = false;
+            
             // Mark buffer as stale
-            meta |= 0x40000000;
-            buff->setMeta(meta);
+            else {
+               meta |= 0x40000000;
+               buff->setMeta(meta);
+            }
          }
       }
 
-      // Write to pgp with buffer copy.
+      // Write to pgp with buffer copy in driver
       else {
 
+         // Keep trying since select call can fire 
+         // but write fails because we did not win the buffer lock
+         do {
 
+            // Setup fds for select call
+            FD_ZERO(&fds);
+            FD_SET(fd_,&fds);
 
+            // Setup select timeout
+            if ( timeout > 0 ) {
+               tout.tv_sec=timeout / 1000000;
+               tout.tv_usec=timeout % 1000000;
+               tpr = &tout;
+            }
+            else tpr = NULL;
 
+            res = select(fd_+1,NULL,&fds,NULL,tpr);
+            
+            // Timeout
+            // This is not good if it happens in the middle of a multiple
+            // buffer frame. Usually timeouts are bad anyway.
+            if ( res == 0 ) {
+               ret = false;
+               break;
+            }
 
+            // Write with buffer copy
+            res = pgpWrite(fd_, buff->getRawData(), buff->getCount(), lane_, vc_, cont);
 
-   if ( fd_ < 0 ) return(NULL);
-   if ( pgpWriteIndex(fd_, buff->getIndex(), buff->size, buff->lane, buff->vc, buff->cont) > 0 ) return(true);
-   else return(false);
+            // Error
+            if ( res < 0 ) {
+               ret = false;
+               break;
+            }
+         }
 
+         // Exit out if return flag was set false
+         while ( res == 0 && ret == true );
+      }
 
+      // Escape out of top for loop (buffer iteration) if an error occured.
+      if ( ret == false ) break;
+   }
+
+   return(ret);
 }
 
 //! Return a buffer
-void rph::PgpCard::retBuffer(uint8_t * data, uint32_t meta, uint32_t rawSize) {
+void rhp::PgpCard::retBuffer(uint8_t * data, uint32_t meta, uint32_t rawSize) {
 
    // Buffer is zero copy as indicated by bit 31
    if ( (meta & 0x80000000) != 0 ) {
 
       // Device is open and buffer is not stale
       // Bit 30 indicates buffer has already been returned to hardware
-      if ( (fd >= 0) && ((meta & 0x40000000) == 0) )
+      if ( (fd_ >= 0) && ((meta & 0x40000000) == 0) )
          pgpRetIndex(fd_,meta & 0x3FFFFFFF); // Return to hardware
 
-      // Adjust counters
-      adjAllocBytes(-rawSize);
-      adjAllocCount(-1);
+      deleteBuffer(rawSize);
    }
 
    // Buffer is allocated from Slave class
    else Slave::retBuffer(data,meta,rawSize);
 }
 
+//! Run thread
+void rhp::PgpCard::runThread() {
+   ris::BufferPtr buff;
+   ris::FramePtr  frame;
+   fd_set         fds;
+   int32_t        res;
+   uint32_t       error;
+   uint32_t       cont;
+   uint32_t       meta;
+   struct timeval tout;
 
+   // Preallocate empty frame
+   frame = createFrame(0,0,false,(rawBuff_ != NULL));
 
+   try {
+      while(1) {
 
+         // Setup fds for select call
+         FD_ZERO(&fds);
+         FD_SET(fd_,&fds);
 
+         // Setup select timeout
+         tout.tv_sec  = 0;
+         tout.tv_usec = 100;
 
+         // Select returns with available buffer
+         if ( select(fd_+1,&fds,NULL,NULL,&tout) > 0 ) {
 
+            // Zero copy buffers were not allocated
+            if ( rawBuff_ == NULL ) {
 
+               // Allocate a buffer
+               buff = allocBuffer(bSize_);
 
+               // Attempt read, lane and vc not needed since only one lane/vc is open
+               res = pgpRead(fd_, buff->getRawData(), buff->getRawSize(), NULL, NULL, &error, &cont);
+            }
 
+            // Zero copy read
+            else {
 
+               // Attempt read, lane and vc not needed since only one lane/vc is open
+               if ((res = pgpReadIndex(fd_, &meta, NULL, NULL, &error, &cont)) > 0) {
 
+                  // Allocate a buffer, Mark zero copy meta with bit 31 set, lower bits are index
+                  buff = createBuffer(rawBuff_[meta],0x80000000 | meta,bSize_);
+               }
+            }
 
+            // Read was successfull
+            if ( res > 0 ) {
+               buff->setSize(res);
+               buff->setError(error);
+               frame->setError(error | frame->getError());
+               frame->appendBuffer(buff);
 
-
-
-
-
-
-
-
-
-PgpData * PgpCard::read(uint32_t timeout) {
-   int32_t          res;
-   fd_set           fds;
-   struct timeval   tout;
-   struct timeval * tpr;
-   uint32_t         index;
-   uint32_t         lane; 
-   uint32_t         vc; 
-   uint32_t         error;
-   uint32_t         cont;
-   PgpData *        buff;
-
-   if ( fd_ < 0 ) return(NULL);
-
-   // Setup fds for select call
-   FD_ZERO(&fds);
-   FD_SET(fd_,&fds);
-
-   // Setup select timeout
-   if ( timeout > 0 ) {
-      tout.tv_sec=timeout / 1000000;
-      tout.tv_usec=timeout % 1000000;
-      tpr = &tout;
-   }
-   else tpr = NULL;
-
-   select(fd_+1,&fds,NULL,NULL,tpr);
-
-   res = pgpReadIndex(fd_, &index, &lane, &vc, &error, &cont);
-
-   if ( res <= 0 ) return(NULL);
-
-   buff = buffers_[index]; 
-
-   buff->lane  = lane;
-   buff->vc    = vc;
-   buff->cont  = cont;
-   buff->lane  = lane;
-   buff->size  = res;
-   buff->error = error;
-
-   return(buff);
+               // If continue flag is not set, push frame and get a new empty frame
+               if ( cont == 0 ) {
+                  sendFrame(frame,0);
+                  frame = createFrame(0,0,false,(rawBuff_ != NULL));
+               }
+            }
+         }
+      }
+   } catch (boost::thread_interrupted&) { }
 }
-
-
-//! Return buffer
-bool PgpCard::retBuffer(PgpData *buff) {
-   if ( fd_ < 0 ) return(false);
-   pgpRetIndex(fd_,buff->getIndex());
-   return(true);
-}
-
-
-
-
-
-
-
 

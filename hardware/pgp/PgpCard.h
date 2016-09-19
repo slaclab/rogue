@@ -9,6 +9,9 @@
  * ----------------------------------------------------------------------------
  * Description:
  * PGP Card Class
+ * TODO
+ *    Add lock in accept to make sure we can handle situation where close 
+ *    occurs while a frameAccept or frameRequest
  * ----------------------------------------------------------------------------
  * This file is part of the rogue software platform. It is subject to 
  * the license terms in the LICENSE.txt file found in the top-level directory 
@@ -21,14 +24,23 @@
 **/
 #ifndef __ROGUE_HARDWARE_PGP_PGP_CARD_H__
 #define __ROGUE_HARDWARE_PGP_PGP_CARD_H__
+#include <interfaces/stream/Master.h>
+#include <interfaces/stream/Slave.h>
 #include <hardware/pgp/PgpDriver.h>
+#include <boost/python.hpp>
+#include <boost/thread.hpp>
 #include <stdint.h>
 
-class rogue::interfaces::stream::Frame;
 
 namespace rogue {
    namespace hardware {
       namespace pgp {
+
+         class Info;
+         class Status;
+         class PciStatus;
+         class EvrStatus;
+         class EvrControl;
 
          //! PGP Card class
          class PgpCard : public rogue::interfaces::stream::Master, 
@@ -52,10 +64,15 @@ namespace rogue {
                //! Pointer to zero copy buffers
                void  ** rawBuff_;
 
+               boost::thread* thread_;
+
+               //! Thread background
+               void runThread();
+
             public:
 
                //! Class creation
-               static boost::shared_ptr<hardware:PgpCard> create ();
+               static boost::shared_ptr<rogue::hardware::pgp::PgpCard> create ();
 
                //! Creator
                PgpCard();
@@ -82,7 +99,7 @@ namespace rogue {
                boost::shared_ptr<rogue::hardware::pgp::EvrControl> getEvrControl();
 
                //! Set evr control for open lane.
-               bool setEvrControl(boost::shared_ptr<rogue::hardware::pgp::EvrControl>);
+               bool setEvrControl(boost::shared_ptr<rogue::hardware::pgp::EvrControl> r);
 
                //! Get evr status for open lane.
                boost::shared_ptr<rogue::hardware::pgp::EvrStatus> getEvrStatus();

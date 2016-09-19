@@ -3,83 +3,62 @@
 import py_rogue
 import time
 
-class testDest(py_rogue.StreamDest):
+class testSlave(py_rogue.Slave):
 
    def __init__(self):
-      py_rogue.StreamDest.__init__(self)
+      py_rogue.Slave.__init__(self)
       self.byteCnt = 0
       self.packCnt = 0
 
-   def pushBuffer(self,data):
-      self.byteCnt += data.size
+   def acceptFrame(self,frame,timeout):
+      self.byteCnt += frame.getPayload()
       self.packCnt += 1
+      p = bytearray(frame.getPayload())
+      frame.read(p,0);
+      if ( frame.getPayload() < 20 ):
+         print("Got size=%i Data: %s" % (len(p),"".join("%02x:" % b for b in p)))
       return(True)
 
-class blahDest(py_rogue.StreamDest):
-
-   def __init__(self):
-      py_rogue.StreamDest.__init__(self)
-
-   def pushBuffer(self,data):
-      print("Got data. size=%i" % (data.size))
-      print("")
-      return(True)
-
-tdest = testDest()
-
-pgpA = py_rogue.PgpCardStream()
+pgpA = py_rogue.PgpCard()
 pgpA.open("/dev/pgpcard_0",0,0)
-pgpA.setLoop(0,1)
-pgpA.setName("pgpA")
+pgpA.setLoop(1)
 
-psrc   = py_rogue.PrbsDataSrc(100000)
-psrc.setName("prbs")
+print("PGP Card Version: %x" % (pgpA.getInfo().version))
 
-pdestA = py_rogue.PrbsDataDest()
-pdestB = py_rogue.PrbsDataDest()
-pdestC = py_rogue.PrbsDataDest()
+prbsA = py_rogue.Prbs()
+prbsB = py_rogue.Prbs()
 
-psrc.addDest(pgpA)
-psrc.addDest(pdestA)
-psrc.setLaneVc(0,0)
+prbsA.setSlave(pgpA)
+pgpA.setSlave(prbsB)
 
-pgpA.addDest(pdestB)
-pgpA.addDest(pdestC)
-pgpA.addDest(tdest)
-psrc.enable()
+ts1 = testSlave()
+prbsA.addSlave(ts1)
 
-pgpB = py_rogue.PgpCardStream()
-pgpB.open("/dev/pgpcard_0",1,0)
-pgpB.setLoop(1,1)
-pgpB.setName("pgpB")
+#prbsA.enMessages(True)
+#prbsB.enMessages(True)
+prbsA.enable(1000)
 
-bdest = blahDest()
-bsrc  = py_rogue.StreamSrc()
-bsrc.setLaneVc(1,0)
+tm = py_rogue.Master()
+ts2 = testSlave()
+tm.setSlave(ts2)
 
-bsrc.addDest(pgpB)
-pgpB.addDest(bdest)
-size = 100
+count = 0
 
-lastCnt = 0
-lastTot = 0
 while (True) :
-   print("  Src: Count %i, Bytes %i" % (psrc.getCount(),psrc.getBytes()))
-   print("DestA: Count %i, Bytes %i, Errors %i" % (pdestA.getCount(),pdestA.getBytes(),pdestA.getErrors()))
-   print("DestB: Count %i, Bytes %i, Errors %i" % (pdestB.getCount(),pdestB.getBytes(),pdestB.getErrors()))
-   print("DestC: Count %i, Bytes %i, Errors %i" % (pdestC.getCount(),pdestC.getBytes(),pdestC.getErrors()))
-   print("Local: Count %i, Bytes %i" % (tdest.packCnt,tdest.byteCnt))
-
-   print("Rate: %i - BW %f Gbps" % ((pdestB.getCount() - lastCnt), (pdestB.getBytes() - lastTot)*8.0/1e9))
+   
    print("")
+   print("  PGP: Alloc Bytes %i, Count %i" % (pgpA.getAllocBytes(),pgpA.getAllocCount()))
+   print("  Src: Count %i, Bytes %i" % (prbsA.getCount(),prbsA.getBytes()))
+   print(" Dest: Count %i, Bytes %i, Alloc %i, Errors %i" % (prbsB.getCount(),prbsB.getBytes(),prbsB.getAllocBytes(),prbsB.getErrors()))
+   print("Test1: Count %i, Bytes %i" % (ts1.packCnt,ts1.byteCnt))
+   print("Test2: Count %i, Bytes %i, Alloc %i" % (ts2.packCnt,ts2.byteCnt,ts2.getAllocBytes()))
+   print("")
+   count += 1
 
-   buff = bsrc.destGetBuffer(100)
-   if ( buff ):
-      buff.size = size
-      bsrc.destPushBuffer(buff)
-      size += 4
+   f = tm.reqFrame(1000000,True,0)
+   q = bytearray([10,20,30,40])
+   f.write(q,0)
+   tm.sendFrame(f,0)
 
-   lastCnt = pdestB.getCount()
-   lastTot = pdestB.getBytes()
    time.sleep(1)
 

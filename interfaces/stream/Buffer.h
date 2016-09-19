@@ -129,7 +129,7 @@ namespace rogue {
                void setError(uint32_t error);
 
                //! Set size including header
-               void setSetSize(uint32_t size);
+               void setSize(uint32_t size);
 
                //! Set head room
                void setHeadRoom(uint32_t offset);

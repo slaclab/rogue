@@ -22,6 +22,7 @@
 #ifndef __ROGUE_HARDWARE_PGP_INFO_H__
 #define __ROGUE_HARDWARE_PGP_INFO_H__
 #include <hardware/pgp/PgpDriver.h>
+#include <boost/python.hpp>
 #include <stdint.h>
 
 namespace rogue {
@@ -40,7 +41,7 @@ namespace rogue {
          };
 
          //! Convienence
-         typedef boost::smart_ptr<rogue::hardware::pgp::Info> InfoPtr;
+         typedef boost::shared_ptr<rogue::hardware::pgp::Info> InfoPtr;
       }
    }
 }

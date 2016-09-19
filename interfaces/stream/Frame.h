@@ -85,6 +85,9 @@ namespace rogue {
                //! Get buffer count
                uint32_t getCount();
 
+               //! Remove buffers from frame
+               void clear();
+
                //! Get buffer at index
                boost::shared_ptr<rogue::interfaces::stream::Buffer> getBuffer(uint32_t index);
 

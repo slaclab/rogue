@@ -22,6 +22,7 @@
 #ifndef __ROGUE_HARDWARE_PGP_EVR_CONTROL_H__
 #define __ROGUE_HARDWARE_PGP_EVR_CONTROL_H__
 #include <hardware/pgp/PgpDriver.h>
+#include <boost/python.hpp>
 #include <stdint.h>
 
 namespace rogue {
@@ -38,7 +39,7 @@ namespace rogue {
          };
 
          //! Convienence
-         typedef boost::smart_ptr<rogue::hardware::pgp::EvrControl> EvrControlPtr;
+         typedef boost::shared_ptr<rogue::hardware::pgp::EvrControl> EvrControlPtr;
       }
    }
 }
