@@ -118,9 +118,6 @@ namespace rogue {
          // Convienence
          typedef boost::shared_ptr<rogue::interfaces::memory::Block> BlockPtr;
 
-         // Convienence
-         typedef std::vector<boost::shared_ptr<rogue::interfaces::memory::Block>> BlockVector;
-
       }
    }
 }
