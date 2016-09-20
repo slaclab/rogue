@@ -25,7 +25,7 @@ CC       := g++
 DEF      :=
 BLD      := ./build
 OBJ      := ./.obj
-CFLAGS   := -Wall `$(PYTHON_CFG) --cflags` -I. -std=c++0x
+CFLAGS   := -Wall `$(PYTHON_CFG) --cflags` -I. -std=c++0x -fPIC
 LFLAGS   := -lboost_thread-mt -lboost_python `$(PYTHON_CFG) --ldflags`
 SHNAME   := rogue
 SHLIB    := librogue.so
@@ -91,7 +91,7 @@ $(foreach dir,$(LIB_SUB),$(eval $(call def_lib_rules,$(dir))))
 
 # Compile Shared Library
 $(LIB_SHO): $(LIB_OBJ)
-	@echo "Creating $@"; $(CC) -shared -W1,-soname,$@ $(LIB_OBJ) $(LFLAGS) -o $@
+	@echo "Creating $@"; $(CC) -shared -Wl,-soname,$@ $(LIB_OBJ) $(LFLAGS) -o $@
 
 # Compile Python Sources
 $(OBJ)/%.o: $(PYL_DIR)/%.cpp 
@@ -99,7 +99,7 @@ $(OBJ)/%.o: $(PYL_DIR)/%.cpp
 
 # Compile python shared libraries
 $(BLD)/%.so: $(OBJ)/%.o $(LIB_SHO)
-	@echo "Creating $@"; $(CC) -shared -W1,-soname,$@ $< -l$(SHNAME) -L$(BLD) -o $@
+	@echo "Creating $@"; $(CC) -shared -Wl,-soname,$@ $< -l$(SHNAME) -L$(BLD) -o $@
 
 # Application sources
 $(BLD)/%: $(APP_DIR)/%.cpp $(LIB_SHO)
