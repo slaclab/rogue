@@ -9,8 +9,6 @@
  *-----------------------------------------------------------------------------
  * Description :
  *    Class used to generate and receive PRBS test data.
- * TODO:
- *    Add locks for thread safe updates of counters and tracking variables.
  *-----------------------------------------------------------------------------
  * This file is part of the rogue software platform. It is subject to 
  * the license terms in the LICENSE.txt file found in the top-level directory 
@@ -35,17 +33,66 @@ namespace rogue {
        * Internal thread can en enabled for auto frame generation
        */
       class Prbs : public rogue::interfaces::stream::Slave, public rogue::interfaces::stream::Master {
+
+            //! PRBS taps
             uint32_t * taps_;
+
+            //! PRBS tap count
             uint32_t   tapCnt_;
+
+            //! Data width in bytes
             uint32_t   width_;
-            uint32_t   sequence_;
-            uint32_t   txSize_;
-            uint32_t   errCount_;
-            uint32_t   totCount_;
-            uint32_t   totBytes_;
+
+            //! Data width in bytes
+            uint32_t   byteWidth_;
+
+            //! Min size
+            uint32_t   minSize_;
+
+            //! Message enable
             bool       enMessages_;
 
-            boost::thread* thread_;
+            //! RX Count Mutex
+            boost::mutex rxCountMtx_;
+
+            //! RX Mutex
+            boost::mutex rxSeqMtx_;
+
+            //! rx sequence tracking
+            uint32_t   rxSeq_;
+
+            //! RX Error count
+            uint32_t   rxErrCount_;
+
+            //! Rx count
+            uint32_t   rxCount_;
+
+            //! Rx bytes
+            uint32_t   rxBytes_;
+
+            //! TX Count Mutex
+            boost::mutex txCountMtx_;
+
+            //! TX Mutex
+            boost::mutex txSeqMtx_;
+
+            //! tx sequence tracking
+            uint32_t   txSeq_;
+
+            //! Transmit size
+            uint32_t   txSize_;
+
+            //! TX Error count
+            uint32_t   txErrCount_;
+
+            //! TX count
+            uint32_t   txCount_;
+
+            //! TX bytes
+            uint32_t   txBytes_;
+
+            //! TX thread
+            boost::thread* txThread_;
 
             //! Internal computation 
             uint32_t flfsr(uint32_t input);
@@ -53,8 +100,16 @@ namespace rogue {
             //! Thread background
             void runThread();
 
-            //! Reset state
+            //! Init state
             void init(uint32_t width, uint32_t tapCnt);
+
+            //! Read data with the appropriate width and set passed 32-bit integer pointer
+            uint32_t readSingle ( boost::shared_ptr<rogue::interfaces::stream::Frame> frame, 
+                                  uint32_t offset, uint32_t * value );
+
+            //! Write data with the appropriate width
+            uint32_t writeSingle ( boost::shared_ptr<rogue::interfaces::stream::Frame> frame, 
+                                   uint32_t offset, uint32_t value );
 
          public:
 
@@ -79,14 +134,23 @@ namespace rogue {
             //! Disable auto generation
             void disable();
 
-            //! Get errors
-            uint32_t getErrors();
+            //! Get rx errors
+            uint32_t getRxErrors();
 
-            //! Get rx/tx count
-            uint32_t getCount();
+            //! Get rx count
+            uint32_t getRxCount();
 
-            //! Get total bytes
-            uint32_t getBytes();
+            //! Get rx total bytes
+            uint32_t getRxBytes();
+
+            //! Get tx errors
+            uint32_t getTxErrors();
+
+            //! Get tx count
+            uint32_t getTxCount();
+
+            //! Get tx total bytes
+            uint32_t getTxBytes();
 
             //! Reset counters
             void resetCount();
