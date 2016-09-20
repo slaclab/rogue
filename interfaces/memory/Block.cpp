@@ -27,7 +27,7 @@
 namespace rim = rogue::interfaces::memory;
 
 //! Create a block, class creator
-rim::BlockPtr create (uint64_t address, uint32_t size ) {
+rim::BlockPtr rim::Block::create (uint64_t address, uint32_t size ) {
    rim::BlockPtr b = boost::make_shared<rim::Block>(address,size);
    return(b);
 }

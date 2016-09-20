@@ -26,7 +26,7 @@
 namespace rim = rogue::interfaces::memory;
 
 //! Create a block vector, class creator
-rim::BlockVectorPtr create () { 
+rim::BlockVectorPtr rim::BlockVector::create () { 
    rim::BlockVectorPtr b = boost::make_shared<rim::BlockVector>();
    return(b);
 }
