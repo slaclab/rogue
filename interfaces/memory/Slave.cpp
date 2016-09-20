@@ -20,12 +20,15 @@
  * ----------------------------------------------------------------------------
 **/
 #include <interfaces/memory/Slave.h>
+#include <boost/make_shared.hpp>
+#include <interfaces/memory/Block.h>
+#include <interfaces/memory/BlockVector.h>
 
 namespace rim = rogue::interfaces::memory;
 
 //! Create a slave container
-rim::SlavePtr create () {
-   rim::SlavePtr s = boost::make_shared<rim::Slave>() {
+rim::SlavePtr rim::Slave::create () {
+   rim::SlavePtr s = boost::make_shared<rim::Slave>();
    return(s);
 }
 
@@ -36,12 +39,75 @@ rim::Slave::Slave() { }
 rim::Slave::~Slave() { }
 
 //! Issue a set of write transactions
-bool rim::Slave::doWrite (BlockVector blocks) {
+bool rim::Slave::doWrite (rim::BlockVectorPtr blocks) {
    return(false);
 }
 
 //! Issue a set of read transactions
-bool rim::Slave::doRead  (BlockVector blocks) {
+bool rim::Slave::doRead  (rim::BlockVectorPtr blocks) {
    return(false);
 }
+
+//! Issue a set of write transactions
+bool rim::SlaveWrap::doWrite (rim::BlockVectorPtr blocks) {
+   bool ret;
+   bool found;
+
+   found = false;
+   ret   = false;
+
+   // Not sure if this is (and release) are ok if calling from python to python
+   // It appears we need to lock before calling get_override
+   PyGILState_STATE pyState = PyGILState_Ensure();
+
+   if (boost::python::override pb = this->get_override("doWrite")) {
+      found = true;
+      try {
+         ret = pb(blocks);
+      } catch (...) {
+         PyErr_Print();
+      }
+   }
+   PyGILState_Release(pyState);
+
+   if ( ! found ) ret = rim::Slave::doWrite(blocks);
+   return(ret);
+}
+
+//! Default doWite call
+bool rim::SlaveWrap::defDoWrite ( rim::BlockVectorPtr blocks ) {
+   return(rim::Slave::doWrite(blocks));
+}
+
+//! Issue a set of read transactions
+bool rim::SlaveWrap::doRead (rim::BlockVectorPtr blocks) {
+   bool ret;
+   bool found;
+
+   found = false;
+   ret   = false;
+
+   // Not sure if this is (and release) are ok if calling from python to python
+   // It appears we need to lock before calling get_override
+   PyGILState_STATE pyState = PyGILState_Ensure();
+
+   if (boost::python::override pb = this->get_override("doRead")) {
+      found = true;
+      try {
+         ret = pb(blocks);
+      } catch (...) {
+         PyErr_Print();
+      }
+   }
+   PyGILState_Release(pyState);
+
+   if ( ! found ) ret = rim::Slave::doRead(blocks);
+   return(ret);
+}
+
+//! Default accept frame call
+bool rim::SlaveWrap::defDoRead ( rim::BlockVectorPtr blocks ) {
+   return(rim::Slave::doRead(blocks));
+}
+
 

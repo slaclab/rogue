@@ -21,13 +21,16 @@
 **/
 #include <interfaces/memory/Master.h>
 #include <interfaces/memory/Slave.h>
+#include <interfaces/memory/Block.h>
+#include <interfaces/memory/BlockVector.h>
+#include <boost/make_shared.hpp>
 
 namespace rim = rogue::interfaces::memory;
 
 //! Create a slave container
-rim::MasterPtr create () {
-   rim::MasterPtr s = boost::make_shared<rim::Master>() {
-   return(s);
+rim::MasterPtr rim::Master::create () {
+   rim::MasterPtr m = boost::make_shared<rim::Master>();
+   return(m);
 }
 
 //! Create object
@@ -44,26 +47,26 @@ void rim::Master::setSlave ( boost::shared_ptr<interfaces::memory::Slave> slave 
 }
 
 //! Request a set of write transactions
-bool rim::Master::reqWrite (rim::BlockVector blocks) {
+bool rim::Master::reqWrite (rim::BlockVectorPtr blocks) {
    return(slave_->doWrite(blocks));
 }
 
 //! Request a single write transaction
 bool rim::Master::reqWriteSingle (rim::BlockPtr block) {
-   rim::BlockVector blocks;
-   blocks.push_back(block);
+   rim::BlockVectorPtr blocks;
+   blocks->append(block);
    return(slave_->doWrite(blocks));
 }
 
 //! Request a set of read transactions
-bool rim::Master::reqRead (rim::BlockVector blocks) {
+bool rim::Master::reqRead (rim::BlockVectorPtr blocks) {
    return(slave_->doRead(blocks));
 }
 
 //! Request a single read transaction
 bool rim::Master::reqReadSingle (rim::BlockPtr block) {
-   rim::BlockVector blocks;
-   blocks.push_back(block);
+   rim::BlockVectorPtr blocks;
+   blocks->append(block);
    return(slave_->doRead(blocks));
 }
 

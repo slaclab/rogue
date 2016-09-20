@@ -23,12 +23,14 @@
 #define __ROGUE_INTERFACES_MEMORY_SLAVE_H__
 #include <stdint.h>
 #include <vector>
-#include <interfaces/memory/Block.h>
 #include <boost/python.hpp>
 
 namespace rogue {
    namespace interfaces {
       namespace memory {
+
+         class Block;
+         class BlockVector;
 
          //! Slave container
          class Slave {
@@ -45,15 +47,36 @@ namespace rogue {
                ~Slave();
 
                //! Issue a set of write transactions
-               virtual bool doWrite (std::vector<boost::shared_ptr<rogue::interfaces::memory::Block>> blocks);
+               virtual bool doWrite (boost::shared_ptr<rogue::interfaces::memory::BlockVector> blocks);
 
                //! Issue a set of read transactions
-               virtual bool doRead  (std::vector<boost::shared_ptr<rogue::interfaces::memory::Block>> blocks);
+               virtual bool doRead  (boost::shared_ptr<rogue::interfaces::memory::BlockVector> blocks);
 
+         };
+
+         //! Slave class, wrapper to enable pyton overload of virtual methods
+         class SlaveWrap : 
+            public rogue::interfaces::memory::Slave, 
+            public boost::python::wrapper<rogue::interfaces::memory::Slave> {
+
+            public:
+
+               //! Issue a set of write transactions
+               bool doWrite (boost::shared_ptr<rogue::interfaces::memory::BlockVector> blocks);
+
+               //! Issue a set of read transactions
+               bool doRead  (boost::shared_ptr<rogue::interfaces::memory::BlockVector> blocks);
+
+               //! Issue a set of write transactions, default
+               bool defDoWrite (boost::shared_ptr<rogue::interfaces::memory::BlockVector> blocks);
+
+               //! Issue a set of read transactions, default
+               bool defDoRead  (boost::shared_ptr<rogue::interfaces::memory::BlockVector> blocks);
          };
 
          // Convienence
          typedef boost::shared_ptr<rogue::interfaces::memory::Slave> SlavePtr;
+         typedef boost::shared_ptr<rogue::interfaces::memory::SlaveWrap> SlaveWrapPtr;
 
       }
    }

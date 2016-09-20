@@ -23,7 +23,6 @@
 #define __ROGUE_INTERFACES_MEMORY_MASTER_H__
 #include <stdint.h>
 #include <vector>
-#include <interfaces/memory/Block.h>
 #include <boost/python.hpp>
 #include <boost/thread.hpp>
 
@@ -31,13 +30,15 @@ namespace rogue {
    namespace interfaces {
       namespace memory {
 
+         class Block;
+         class BlockVector;
          class Slave;
 
          //! Slave container
          class Master {
 
                //! Slave. Used for request forwards.
-               boost::shared_ptr<rogue::interfaces::stream::Slave> slave_;
+               boost::shared_ptr<rogue::interfaces::memory::Slave> slave_;
 
                //! Slave mutex
                boost::mutex slaveMtx_;
@@ -54,16 +55,16 @@ namespace rogue {
                ~Master();
 
                //! Set slave, used for memory access requests
-               void setSlave ( boost::shared_ptr<rogue::interfaces::stream::Slave> slave );
+               void setSlave ( boost::shared_ptr<rogue::interfaces::memory::Slave> slave );
 
                //! Request a set of write transactions
-               bool reqWrite (std::vector<boost::shared_ptr<rogue::interfaces::memory::Block>> blocks);
+               bool reqWrite ( boost::shared_ptr<rogue::interfaces::memory::BlockVector> blocks);
 
                //! Request a single write transaction
                bool reqWriteSingle (boost::shared_ptr<rogue::interfaces::memory::Block> block);
 
                //! Request a set of read transactions
-               bool reqRead (std::vector<boost::shared_ptr<rogue::interfaces::memory::Block>> blocks);
+               bool reqRead ( boost::shared_ptr<rogue::interfaces::memory::BlockVector> blocks);
 
                //! Request a single read transaction
                bool reqReadSingle (boost::shared_ptr<rogue::interfaces::memory::Block> block);
