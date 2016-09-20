@@ -9,8 +9,6 @@
  * ----------------------------------------------------------------------------
  * Description:
  * Stream interface master
- * TODO:
- *    addSlave and setSlave command should be locked.
  * ----------------------------------------------------------------------------
  * This file is part of the rogue software platform. It is subject to 
  * the license terms in the LICENSE.txt file found in the top-level directory 
@@ -30,6 +28,7 @@
 #include <vector>
 
 #include <boost/python.hpp>
+#include <boost/thread.hpp>
 
 namespace rogue {
    namespace interfaces {
@@ -49,6 +48,9 @@ namespace rogue {
 
                //! Vector of slaves
                std::vector<boost::shared_ptr<rogue::interfaces::stream::Slave> > slaves_;
+
+               //! Slave mutex
+               boost::mutex slaveMtx_;
 
             public:
 
