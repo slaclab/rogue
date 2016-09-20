@@ -55,7 +55,7 @@ namespace rogue {
             //! RX Count Mutex
             boost::mutex rxCountMtx_;
 
-            //! RX Mutex
+            //! RX Sequence Mutex
             boost::mutex rxSeqMtx_;
 
             //! rx sequence tracking
@@ -73,7 +73,7 @@ namespace rogue {
             //! TX Count Mutex
             boost::mutex txCountMtx_;
 
-            //! TX Mutex
+            //! TX Sequence Mutex
             boost::mutex txSeqMtx_;
 
             //! tx sequence tracking
