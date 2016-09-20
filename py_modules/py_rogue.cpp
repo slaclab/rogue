@@ -25,6 +25,7 @@
 #include <interfaces/stream/Slave.h>
 #include <interfaces/stream/Master.h>
 #include <interfaces/stream/Frame.h>
+#include <interfaces/memory/Block.h>
 #include <hardware/pgp/PgpCard.h>
 #include <hardware/pgp/Info.h>
 #include <hardware/pgp/Status.h>
@@ -37,6 +38,7 @@
 
 using namespace boost::python;
 namespace ris = rogue::interfaces::stream;
+namespace rim = rogue::interfaces::memory;
 namespace rhp = rogue::hardware::pgp;
 namespace ru  = rogue::utilities;
 
@@ -76,6 +78,25 @@ BOOST_PYTHON_MODULE(py_rogue)
       .def("getAllocCount",  &ris::Slave::getAllocCount)
       .def("getAllocBytes",  &ris::Slave::getAllocBytes)
    ;
+
+   class_<rim::Block, rim::BlockPtr, boost::noncopyable>("Block",init<uint32_t,uint32_t>())
+      .def("create",         &rim::Block::create)
+      .staticmethod("create")
+      .def("getAddress",     &rim::Block:: getAddress)
+      .def("getSize",        &rim::Block:: getSize)
+      .def("getData",        &rim::Block:: getDataPy)
+      .def("getError",       &rim::Block:: getError)
+      .def("setError",       &rim::Block:: setError)
+      .def("getStale",       &rim::Block:: getStale)
+      .def("setStale",       &rim::Block:: setStale)
+      .def("getUInt8",       &rim::Block:: getUInt8)
+      .def("setUInt8",       &rim::Block:: setUInt8)
+      .def("getUInt32",      &rim::Block:: getUInt32)
+      .def("setUInt32",      &rim::Block:: setUInt32)
+      .def("getBits",        &rim::Block:: getBits)
+      .def("setBits",        &rim::Block:: setBits)
+   ;
+
 
    /////////////////////////////////
    // Utilities
