@@ -12,6 +12,8 @@
  * to a memory interface. 
  * TODO
  *    Consider endian issues.
+ *
+ *    May want to have ability to lock block for overall access.
  * ----------------------------------------------------------------------------
  * This file is part of the rogue software platform. It is subject to 
  * the license terms in the LICENSE.txt file found in the top-level directory 
@@ -115,6 +117,9 @@ namespace rogue {
 
          // Convienence
          typedef boost::shared_ptr<rogue::interfaces::memory::Block> BlockPtr;
+
+         // Convienence
+         typedef std::vector<boost::shared_ptr<rogue::interfaces::memory::Block>> BlockVector;
 
       }
    }
