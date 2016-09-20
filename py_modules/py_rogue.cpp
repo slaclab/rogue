@@ -26,6 +26,9 @@
 #include <interfaces/stream/Master.h>
 #include <interfaces/stream/Frame.h>
 #include <interfaces/memory/Block.h>
+#include <interfaces/memory/BlockVector.h>
+#include <interfaces/memory/Slave.h>
+#include <interfaces/memory/Master.h>
 #include <hardware/pgp/PgpCard.h>
 #include <hardware/pgp/Info.h>
 #include <hardware/pgp/Status.h>
@@ -51,7 +54,7 @@ BOOST_PYTHON_MODULE(py_rogue)
    // Interfaces
    /////////////////////////////////
 
-   class_<ris::Frame, ris::FramePtr>("Frame",no_init)
+   class_<ris::Frame, ris::FramePtr, boost::noncopyable>("Frame",no_init)
       .def("getAvailable", &ris::Frame::getAvailable)
       .def("getPayload",   &ris::Frame::getPayload)
       .def("read",         &ris::Frame::readPy)
@@ -82,21 +85,46 @@ BOOST_PYTHON_MODULE(py_rogue)
    class_<rim::Block, rim::BlockPtr, boost::noncopyable>("Block",init<uint32_t,uint32_t>())
       .def("create",         &rim::Block::create)
       .staticmethod("create")
-      .def("getAddress",     &rim::Block:: getAddress)
-      .def("getSize",        &rim::Block:: getSize)
-      .def("getData",        &rim::Block:: getDataPy)
-      .def("getError",       &rim::Block:: getError)
-      .def("setError",       &rim::Block:: setError)
-      .def("getStale",       &rim::Block:: getStale)
-      .def("setStale",       &rim::Block:: setStale)
-      .def("getUInt8",       &rim::Block:: getUInt8)
-      .def("setUInt8",       &rim::Block:: setUInt8)
-      .def("getUInt32",      &rim::Block:: getUInt32)
-      .def("setUInt32",      &rim::Block:: setUInt32)
-      .def("getBits",        &rim::Block:: getBits)
-      .def("setBits",        &rim::Block:: setBits)
+      .def("getAddress",     &rim::Block::getAddress)
+      .def("getSize",        &rim::Block::getSize)
+      .def("getData",        &rim::Block::getDataPy)
+      .def("getError",       &rim::Block::getError)
+      .def("setError",       &rim::Block::setError)
+      .def("getStale",       &rim::Block::getStale)
+      .def("setStale",       &rim::Block::setStale)
+      .def("getUInt8",       &rim::Block::getUInt8)
+      .def("setUInt8",       &rim::Block::setUInt8)
+      .def("getUInt32",      &rim::Block::getUInt32)
+      .def("setUInt32",      &rim::Block::setUInt32)
+      .def("getBits",        &rim::Block::getBits)
+      .def("setBits",        &rim::Block::setBits)
    ;
 
+   class_<rim::BlockVector, rim::BlockVectorPtr, boost::noncopyable>("BlockVector",init<>())
+      .def("create",         &rim::BlockVector::create)
+      .staticmethod("create")
+      .def("clear",          &rim::BlockVector::clear)
+      .def("append",         &rim::BlockVector::append)
+      .def("count",          &rim::BlockVector::count)
+      .def("getBlock",       &rim::BlockVector::getBlock)
+   ;
+
+   class_<rim::Master, rim::MasterPtr, boost::noncopyable>("Master2",init<>())
+      .def("create",         &rim::Master::create)
+      .staticmethod("create")
+      .def("setSlave",       &rim::Master::setSlave)
+      .def("reqWrite",       &rim::Master::reqWrite)
+      .def("reqWriteSingle", &rim::Master::reqWriteSingle)
+      .def("reqRead",        &rim::Master::reqRead)
+      .def("reqReadSingle",  &rim::Master::reqReadSingle)
+   ;
+
+   class_<rim::SlaveWrap, rim::SlaveWrapPtr, boost::noncopyable>("Slave2",init<>())
+      .def("create",         &rim::Slave::create)
+      .staticmethod("create")
+      .def("doWrite",        &rim::Slave::doWrite, &rim::SlaveWrap::defDoWrite)
+      .def("doRead",         &rim::Slave::doRead,  &rim::SlaveWrap::defDoRead)
+   ;
 
    /////////////////////////////////
    // Utilities
