@@ -28,7 +28,8 @@ print("PGP Card Version: %x" % (pgpA.getInfo().version))
 prbsA = py_rogue.Prbs()
 prbsB = py_rogue.Prbs()
 
-prbsA.setSlave(pgpA)
+#prbsA.setSlave(pgpA)
+prbsA.setSlave(prbsB)
 pgpA.setSlave(prbsB)
 
 ts1 = testSlave()
@@ -48,8 +49,8 @@ while (True) :
    
    print("")
    print("  PGP: Alloc Bytes %i, Count %i" % (pgpA.getAllocBytes(),pgpA.getAllocCount()))
-   print("  Src: Count %i, Bytes %i" % (prbsA.getCount(),prbsA.getBytes()))
-   print(" Dest: Count %i, Bytes %i, Alloc %i, Errors %i" % (prbsB.getCount(),prbsB.getBytes(),prbsB.getAllocBytes(),prbsB.getErrors()))
+   print("  Src: Count %i, Bytes %i" % (prbsA.getTxCount(),prbsA.getTxBytes()))
+   print(" Dest: Count %i, Bytes %i, Alloc %i, Errors %i" % (prbsB.getRxCount(),prbsB.getRxBytes(),prbsB.getAllocBytes(),prbsB.getRxErrors()))
    print("Test1: Count %i, Bytes %i" % (ts1.packCnt,ts1.byteCnt))
    print("Test2: Count %i, Bytes %i, Alloc %i" % (ts2.packCnt,ts2.byteCnt,ts2.getAllocBytes()))
    print("")
