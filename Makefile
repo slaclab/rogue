@@ -24,9 +24,9 @@
 CC       := g++
 DEF      :=
 BLD      := $(PWD)/build
-CFLAGS   := -Wall `$(PYTHON_CFG) --cflags` -I$(PWD)/include -std=c++0x -fPIC
-#LFLAGS   := -lboost_thread-mt -lboost_python `$(PYTHON_CFG) --ldflags`
-LFLAGS   := -lboost_thread -lboost_python `$(PYTHON_CFG) --ldflags`
+#CFLAGS   := -Wall `$(PYTHON_CFG) --cflags` -I$(PWD)/include -std=c++0x -fPIC
+LFLAGS   := `$(PYTHON_CFG) --ldflags` -lboost_thread-mt -lboost_python -lboost_system
+LFLAGS   := `$(PYTHON_CFG) --ldflags` -lboost_thread -lboost_python -lboost_system
 SHNAME   := rogue
 SHLIB    := rogue.so
 
@@ -43,8 +43,8 @@ APP_CPP := $(wildcard $(APP_SRC)/*.cpp)
 APP_BIN := $(patsubst $(APP_SRC)/%.cpp,$(BLD)/%,$(APP_CPP))
 
 # Targets
-#all: $(LIB_OBJ) $(LIB_SHO) $(APP_BIN)
-all: $(LIB_OBJ) $(LIB_SHO)
+all: $(LIB_OBJ) $(LIB_SHO) $(APP_BIN)
+#all: $(LIB_OBJ) $(LIB_SHO)
 
 # Clean
 clean:
@@ -65,7 +65,9 @@ $(LIB_SHO): $(LIB_OBJ)
 	@echo "Creating $@"; $(CC) -shared -Wl,-soname,$(SHNAME) $(LIB_OBJ) $(LFLAGS) -o $@
 
 # Application sources
-$(BLD)/%: $(APP_DIR)/%.cpp $(LIB_SHO)
+$(BLD)/%: $(APP_SRC)/%.cpp $(LIB_SHO)
 	@test -d $(BLD) || mkdir $(BLD)
-	@echo "Compiling $@"; $(CC) $(CFLAGS) $(DEF) $(LFLAGS) -l$(SHNAME) -L$(BLD) -o $@ $<
+	@echo "Compiling $@"; $(CC) $(CFLAGS) $(DEF) $(LIB_OBJ) $(LFLAGS) -o $@ $<
 
+# Compile from shared does not work....
+#@echo "Compiling $@"; $(CC) $(CFLAGS) $(DEF) -l:$(SHLIB) -L$(BLD) $(LFLAGS) -o $@ $<
