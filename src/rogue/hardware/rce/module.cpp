@@ -21,6 +21,7 @@
 **/
 
 #include <rogue/hardware/rce/module.h>
+#include <rogue/hardware/rce/RceStream.h>
 #include <boost/python.hpp>
 
 namespace bp  = boost::python;
@@ -37,8 +38,7 @@ void rhr::setup_module() {
    // set the current scope to the new sub-module
    bp::scope io_scope = module;
 
-
-
+   rhr::RceStream::setup_python();
 
 }
 
