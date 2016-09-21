@@ -112,6 +112,23 @@ void rim::Block::setUInt8(uint32_t offset, uint8_t value) {
    mtx_.unlock();
 }
 
+//! Get uint16 at offset
+uint16_t rim::Block::getUInt16(uint32_t offset) {
+   if ( ((offset % 2) != 0) || (offset > (size_-2)) ) return(0);
+
+   return(((uint16_t *)data_)[offset/2]);
+}
+
+//! Set uint32  offset
+void rim::Block::setUInt16(uint32_t offset, uint16_t value) {
+   if ( ((offset % 2) != 0) || (offset > (size_-2)) ) return;
+
+   if ( offset > (size_-2) ) return;
+   mtx_.lock();
+   ((uint16_t *)data_)[offset/2] = value;
+   mtx_.unlock();
+}
+
 //! Get uint32 at offset
 uint32_t rim::Block::getUInt32(uint32_t offset) {
    if ( ((offset % 4) != 0) || (offset > (size_-4)) ) return(0);

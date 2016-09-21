@@ -2,7 +2,7 @@
  *-----------------------------------------------------------------------------
  * Title      : RCE Stream Class 
  * ----------------------------------------------------------------------------
- * File       : PgpCard.h
+ * File       : RceStream.h
  * Author     : Ryan Herbst, rherbst@slac.stanford.edu
  * Created    : 2017-09-17
  * Last update: 2017-09-17

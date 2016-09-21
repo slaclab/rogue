@@ -378,8 +378,8 @@ void ru::Prbs::setup_python() {
       .def("enMessages",     &ru::Prbs::enMessages)
    ;
 
-   bp::implicitly_convertible<ru::PrbsPtr, ris::SlavePtr>();
-   bp::implicitly_convertible<ru::PrbsPtr, ris::MasterPtr>();
+   //bp::implicitly_convertible<ru::PrbsPtr, ris::SlavePtr>();
+   //bp::implicitly_convertible<ru::PrbsPtr, ris::MasterPtr>();
 
 }
 

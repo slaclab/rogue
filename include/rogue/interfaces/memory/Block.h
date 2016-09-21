@@ -105,6 +105,12 @@ namespace rogue {
                //! Set uint8 at offset
                void setUInt8(uint32_t offset, uint8_t value);
 
+               //! Get uint16 at offset
+               uint16_t getUInt16(uint32_t offset);
+
+               //! Set uint16 at offset
+               void setUInt16(uint32_t offset, uint16_t value);
+
                //! Get uint32 at offset
                uint32_t getUInt32(uint32_t offset);
 

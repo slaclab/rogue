@@ -22,6 +22,7 @@
 
 #include <rogue/utilities/module.h>
 #include <rogue/utilities/Prbs.h>
+#include <rogue/utilities/PeekPoke.h>
 #include <rogue/interfaces/stream/Slave.h>
 #include <rogue/interfaces/stream/Master.h>
 #include <boost/python.hpp>
@@ -42,5 +43,6 @@ void ru::setup_module() {
    bp::scope io_scope = module;
 
    ru::Prbs::setup_python();
+   ru::PeekPoke::setup_python();
 }
 
