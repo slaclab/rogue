@@ -1,16 +1,14 @@
 /**
  *-----------------------------------------------------------------------------
- * Title      : Python Classes
+ * Title      : Python Package
  * ----------------------------------------------------------------------------
- * File       : py_rogue.cpp
+ * File       : package.cpp
  * Author     : Ryan Herbst, rherbst@slac.stanford.edu
  * Created    : 2016-08-08
  * Last update: 2016-08-08
  * ----------------------------------------------------------------------------
  * Description:
- * Python class wrapper
- * TODO:
- *    Figure out how to map rogue namespaces into python properly
+ * Python package setup
  * ----------------------------------------------------------------------------
  * This file is part of the rogue software platform. It is subject to 
  * the license terms in the LICENSE.txt file found in the top-level directory 
@@ -22,16 +20,20 @@
  * ----------------------------------------------------------------------------
 **/
 
-#include <interfaces/module.h>
-#include <hardware/module.h>
-#include <utilities/module.h>
 #include <boost/python.hpp>
+#include <rogue/interfaces/module.h>
+#include <rogue/hardware/module.h>
+#include <rogue/utilities/module.h>
+#include <rogue/protocols/module.h>
 
-BOOST_PYTHON_MODULE(rogue)
-{
+BOOST_PYTHON_MODULE(rogue) {
 
    PyEval_InitThreads();
 
+   rogue::interfaces::setup_module();
+   rogue::protocols::setup_module();
+   rogue::hardware::setup_module();
+   rogue::utilities::setup_module();
 
 };
 

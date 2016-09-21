@@ -1,0 +1,361 @@
+/**
+ *-----------------------------------------------------------------------------
+ * Title         : PRBS Receive And Transmit Class
+ * ----------------------------------------------------------------------------
+ * File          : Prbs.cpp
+ * Author        : Ryan Herbst <rherbst@slac.stanford.edu>
+ * Created       : 09/17/2016
+ * Last update   : 09/17/2016
+ *-----------------------------------------------------------------------------
+ * Description :
+ *    Class used to generate and receive PRBS test data.
+ *-----------------------------------------------------------------------------
+ * This file is part of the rogue software platform. It is subject to 
+ * the license terms in the LICENSE.txt file found in the top-level directory 
+ * of this distribution and at: 
+    * https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
+ * No part of the rogue software platform, including this file, may be 
+ * copied, modified, propagated, or distributed except according to the terms 
+ * contained in the LICENSE.txt file.
+ *-----------------------------------------------------------------------------
+**/
+#include <unistd.h>
+#include <stdarg.h>
+#include <rogue/interfaces/stream/Slave.h>
+#include <rogue/interfaces/stream/Master.h>
+#include <rogue/interfaces/stream/Frame.h>
+#include <rogue/interfaces/stream/Buffer.h>
+#include <rogue/utilities/Prbs.h>
+#include <boost/make_shared.hpp>
+
+namespace ris = rogue::interfaces::stream;
+namespace ru  = rogue::utilities;
+
+//! Class creation
+ru::PrbsPtr ru::Prbs::create () {
+   ru::PrbsPtr p = boost::make_shared<ru::Prbs>();
+   return(p);
+}
+
+//! Creator with width and variable taps
+ru::Prbs::Prbs(uint32_t width, uint32_t tapCnt, ... ) {
+   va_list a_list;
+   uint32_t   x;
+
+   init(width,tapCnt);
+
+   va_start(a_list,tapCnt);
+   for(x=0; x < tapCnt; x++) taps_[x] = va_arg(a_list,uint32_t);
+   va_end(a_list);
+}
+
+//! Creator with default taps and size
+ru::Prbs::Prbs() {
+   init(32,4);
+
+   taps_[0] = 1;
+   taps_[1] = 2;
+   taps_[2] = 6;
+   taps_[3] = 31;
+}
+
+//! Deconstructor
+ru::Prbs::~Prbs() {
+   free(taps_);
+}
+
+void ru::Prbs::init(uint32_t width, uint32_t tapCnt) {
+   txThread_   = NULL;
+   enMessages_ = false;
+   tapCnt_     = tapCnt;
+   rxSeq_      = 0;
+   rxErrCount_ = 0;
+   rxCount_    = 0;
+   rxBytes_    = 0;
+   txSeq_      = 0;
+   txSize_     = 0;
+   txErrCount_ = 0;
+   txCount_    = 0;
+   txBytes_    = 0;
+
+   if ( width == 16 ) {
+      width_     = 16;
+      byteWidth_ = 2;
+      minSize_   = 6;
+   }
+   else {
+      width_     = 32;
+      byteWidth_ = 4;
+      minSize_   = 12;
+   }
+
+   taps_ = (uint32_t *)malloc(sizeof(uint32_t)*tapCnt_);
+}
+
+uint32_t ru::Prbs::flfsr(uint32_t input) {
+   uint32_t bit = 0;
+   uint32_t x;
+   uint32_t ret;
+
+   for (x=0; x < tapCnt_; x++) bit = bit ^ (input >> taps_[x]);
+
+   bit = bit & 1;
+   ret = (input << 1) | bit;
+
+   if ( width_ == 16 ) ret &= 0xFFFF;
+   return (ret);
+}
+
+//! Thread background
+void ru::Prbs::runThread() {
+   try {
+      while(1) {
+         genFrame(txSize_);
+         boost::this_thread::interruption_point();
+      }
+   } catch (boost::thread_interrupted&) {}
+}
+
+//! Read data with the appropriate width and set passed 32-bit integer pointer
+uint32_t ru::Prbs::readSingle ( ris::FramePtr frame, uint32_t offset, uint32_t * value ) {
+   uint32_t data32;
+   uint16_t data16;
+   uint32_t ret;
+
+   if ( width_ == 16 ) {
+      ret = frame->read(&data16,offset,2);
+      *value = data16;
+   }
+   else {
+      ret = frame->read(&data32,offset,4);
+      *value = data32;
+   }
+   return(ret);
+}
+
+//! Write data with the appropriate width
+uint32_t ru::Prbs::writeSingle ( ris::FramePtr frame, uint32_t offset, uint32_t value ) {
+   uint32_t data32;
+   uint16_t data16;
+   uint32_t ret;
+
+   if ( width_ == 16 ) {
+      data16 = value & 0xFFFF;
+      ret = frame->write(&data16,offset,2);
+   }
+   else {
+      data32 = value;
+      ret = frame->write(&data32,offset,4);
+   }
+   return(ret);
+}
+
+//! Auto run data generation
+void ru::Prbs::enable(uint32_t size) {
+   if ( txThread_ == NULL ) {
+      txSize_ = size;
+      txThread_ = new boost::thread(boost::bind(&Prbs::runThread, this));
+   }
+}
+
+//! Disable auto generation
+void ru::Prbs::disable() {
+   if ( txThread_ != NULL ) {
+      txThread_->interrupt();
+      txThread_->join();
+      delete txThread_;
+      txThread_ = NULL;
+   }
+}
+
+//! Get RX errors
+uint32_t ru::Prbs::getRxErrors() {
+   return(rxErrCount_);
+}
+
+//! Get rx count
+uint32_t ru::Prbs::getRxCount() {
+   return(rxCount_);
+}
+
+//! Get rx bytes
+uint32_t ru::Prbs::getRxBytes() {
+   return(rxBytes_);
+}
+
+//! Get TX errors
+uint32_t ru::Prbs::getTxErrors() {
+   return(txErrCount_);
+}
+
+//! Get TX count
+uint32_t ru::Prbs::getTxCount() {
+   return(txCount_);
+}
+
+//! Get TX bytes
+uint32_t ru::Prbs::getTxBytes() {
+   return(txBytes_);
+}
+
+//! Reset counters
+// Counters should really be locked!
+void ru::Prbs::resetCount() {
+
+   txCountMtx_.lock();
+   txErrCount_ = 0;
+   txCount_    = 0;
+   txBytes_    = 0;
+   txCountMtx_.unlock();
+
+   rxCountMtx_.lock();
+   rxErrCount_ = 0;
+   rxCount_    = 0;
+   rxBytes_    = 0;
+   rxCountMtx_.unlock();
+
+}
+
+//! Enable messages
+void ru::Prbs::enMessages(bool state) {
+   enMessages_ = state;
+}
+
+//! Generate a data frame
+void ru::Prbs::genFrame (uint32_t size) {
+   uint32_t      cnt;
+   uint32_t      frSize;
+   uint32_t      value;
+   ris::FramePtr fr;
+
+   // Verify size first
+   if ((( size % byteWidth_ ) != 0) || size < minSize_ ) {
+      txCountMtx_.lock();
+      if ( enMessages_ ) 
+         printf("Prbs::genFrame -> Size violation size=%i, count=%i",size,txCount_);
+      txErrCount_++;
+      txCountMtx_.unlock();
+      return;
+   }
+
+   // Lock and update sequence
+   txSeqMtx_.lock();
+   value = txSeq_;
+   txSeq_++;
+   if ( width_ == 16 ) txSeq_ &= 0xFFFF;
+   txSeqMtx_.unlock();
+
+   // Get frame
+   fr = reqFrame(size,true,0);
+
+   // Frame allocation failed
+   if ( fr->getAvailable() < size ) {
+      txCountMtx_.lock();
+      txErrCount_++;
+      txCountMtx_.unlock();
+      return;
+   }
+
+   // First word is sequence
+   cnt = writeSingle(fr,0,value);
+
+   // Second word is size
+   frSize = (size - byteWidth_) / byteWidth_;
+   cnt += writeSingle(fr,cnt,frSize);
+
+   // Generate payload
+   while ( cnt < size ) {
+      value = flfsr(value);
+      cnt += writeSingle(fr,cnt,value);
+   }
+
+   // Update counters
+   txCountMtx_.lock();
+   txCount_++;
+   txBytes_ += size;
+   txCountMtx_.unlock();
+   sendFrame(fr,0);
+}
+
+//! Accept a frame from master
+bool ru::Prbs::acceptFrame ( ris::FramePtr frame, uint32_t timeout ) {
+   uint32_t   frSize;
+   uint32_t   frSeq;
+   uint32_t   curSeq;
+   uint32_t   size;
+   uint32_t   cnt;
+   uint32_t   expValue;
+   uint32_t   gotValue;
+
+   size = frame->getPayload();
+
+   // Verify size
+   if ((( size % byteWidth_ ) != 0) || size < minSize_ ) {
+      rxCountMtx_.lock();
+      if ( enMessages_ ) 
+         printf("Prbs::acceptFrame -> Size violation size=%i, count=%i",size,rxCount_);
+      rxErrCount_++;
+      rxCountMtx_.unlock();
+      return(false);
+   }
+
+   // Get sequence value
+   cnt = readSingle(frame,0,&frSeq);
+
+   // Update sequence
+   rxSeqMtx_.lock();
+   curSeq = rxSeq_;
+   rxSeq_ = frSeq + 1;
+   if ( width_ == 16 ) rxSeq_ &= 0xFFFF;
+   rxSeqMtx_.unlock();
+
+   // Get size
+   cnt += readSingle(frame,cnt,&frSize);
+   frSize = (frSize * byteWidth_) + byteWidth_;
+
+   // Check size
+   if ( frSize != size ) {
+      rxCountMtx_.lock();
+      if ( enMessages_ ) 
+         printf("Prbs::acceptFrame -> Bad size. exp=%i, got=%i, count=%i\n",frSize,size,rxCount_);
+      rxErrCount_++;
+      rxCountMtx_.unlock();
+      return(false);
+   }
+
+   // Check sequence, incoming frames with seq = 0 never cause errors and treated as a restart
+   if ( frSeq != 0 && frSeq != curSeq ) {
+      rxCountMtx_.lock();
+      if ( enMessages_ ) 
+         printf("Prbs::acceptFrame -> Bad Sequence. cur=%i, got=%i, count=%i\n",curSeq,frSeq,rxCount_);
+      rxErrCount_++;
+      rxCountMtx_.unlock();
+      return(false);
+   }
+   expValue = frSeq;
+
+   // Check payload
+   while ( cnt < size ) {
+      expValue = flfsr(expValue);
+
+      cnt += readSingle(frame,cnt,&gotValue);
+
+      if (expValue != gotValue) {
+         rxCountMtx_.lock();
+         if ( enMessages_ ) 
+            printf("Prbs::acceptFrame -> Bad value at index %i. exp=0x%x, got=0x, count=%i%x\n",
+                     (cnt-byteWidth_),expValue,gotValue,rxCount_);
+         rxErrCount_++;
+         rxCountMtx_.unlock();
+         return(false);
+      }
+   }
+
+   rxCountMtx_.lock();
+   rxCount_++;
+   rxBytes_ += size;
+   rxCountMtx_.unlock();
+
+   return(true);
+}
+

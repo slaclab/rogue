@@ -1,16 +1,14 @@
 /**
  *-----------------------------------------------------------------------------
- * Title      : Python Classes
+ * Title      : PGP Card Info Class
  * ----------------------------------------------------------------------------
- * File       : py_rogue.cpp
+ * File       : Info.cpp
  * Author     : Ryan Herbst, rherbst@slac.stanford.edu
- * Created    : 2016-08-08
- * Last update: 2016-08-08
+ * Created    : 2017-09-17
+ * Last update: 2017-09-17
  * ----------------------------------------------------------------------------
  * Description:
- * Python class wrapper
- * TODO:
- *    Figure out how to map rogue namespaces into python properly
+ * Wrapper for PgpInfo structure
  * ----------------------------------------------------------------------------
  * This file is part of the rogue software platform. It is subject to 
  * the license terms in the LICENSE.txt file found in the top-level directory 
@@ -22,16 +20,19 @@
  * ----------------------------------------------------------------------------
 **/
 
-#include <interfaces/module.h>
-#include <hardware/module.h>
-#include <utilities/module.h>
-#include <boost/python.hpp>
+#include <rogue/hardware/pgp/Info.h>
+#include <boost/make_shared.hpp>
 
-BOOST_PYTHON_MODULE(rogue)
-{
+namespace rhp = rogue::hardware::pgp;
 
-   PyEval_InitThreads();
+//! Create the info class with pointer
+rhp::InfoPtr rhp::Info::create() {
+   rhp::InfoPtr r = boost::make_shared<rhp::Info>();
+   return(r);
+}
 
-
-};
+//! Return buildstring in string format
+std::string rhp::Info::buildString() {
+   return(std::string(buildStamp));
+}
 

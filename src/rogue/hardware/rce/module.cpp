@@ -1,16 +1,14 @@
 /**
  *-----------------------------------------------------------------------------
- * Title      : Python Classes
+ * Title      : Python Module
  * ----------------------------------------------------------------------------
- * File       : py_rogue.cpp
+ * File       : module.cpp
  * Author     : Ryan Herbst, rherbst@slac.stanford.edu
  * Created    : 2016-08-08
  * Last update: 2016-08-08
  * ----------------------------------------------------------------------------
  * Description:
- * Python class wrapper
- * TODO:
- *    Figure out how to map rogue namespaces into python properly
+ * Python module setup
  * ----------------------------------------------------------------------------
  * This file is part of the rogue software platform. It is subject to 
  * the license terms in the LICENSE.txt file found in the top-level directory 
@@ -22,16 +20,25 @@
  * ----------------------------------------------------------------------------
 **/
 
-#include <interfaces/module.h>
-#include <hardware/module.h>
-#include <utilities/module.h>
+#include <rogue/hardware/rce/module.h>
 #include <boost/python.hpp>
 
-BOOST_PYTHON_MODULE(rogue)
-{
+namespace bp  = boost::python;
+namespace rhr = rogue::hardware::rce;
 
-   PyEval_InitThreads();
+void rhr::setup_module() {
+
+   // map the IO namespace to a sub-module
+   bp::object module(bp::handle<>(bp::borrowed(PyImport_AddModule("rogue.hardware.rce"))));
+
+   // make "from mypackage import class1" work
+   bp::scope().attr("rce") = module;
+
+   // set the current scope to the new sub-module
+   bp::scope io_scope = module;
 
 
-};
+
+
+}
 

@@ -1,16 +1,14 @@
 /**
  *-----------------------------------------------------------------------------
- * Title      : Python Classes
+ * Title      : PGP Card EVR Status Class
  * ----------------------------------------------------------------------------
- * File       : py_rogue.cpp
+ * File       : EvrStatus.h
  * Author     : Ryan Herbst, rherbst@slac.stanford.edu
- * Created    : 2016-08-08
- * Last update: 2016-08-08
+ * Created    : 2017-09-17
+ * Last update: 2017-09-17
  * ----------------------------------------------------------------------------
  * Description:
- * Python class wrapper
- * TODO:
- *    Figure out how to map rogue namespaces into python properly
+ * Wrapper for PgpEvrStatus structure
  * ----------------------------------------------------------------------------
  * This file is part of the rogue software platform. It is subject to 
  * the license terms in the LICENSE.txt file found in the top-level directory 
@@ -21,17 +19,30 @@
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
-
-#include <interfaces/module.h>
-#include <hardware/module.h>
-#include <utilities/module.h>
+#ifndef __ROGUE_HARDWARE_PGP_EVR_STATUS_H__
+#define __ROGUE_HARDWARE_PGP_EVR_STATUS_H__
+#include <rogue/hardware/pgp/PgpDriver.h>
 #include <boost/python.hpp>
+#include <stdint.h>
 
-BOOST_PYTHON_MODULE(rogue)
-{
+namespace rogue {
+   namespace hardware {
+      namespace pgp {
 
-   PyEval_InitThreads();
+         //! Wrapper for PgpInfo class. 
+         class EvrStatus : public PgpEvrStatus {
+            public:
 
+               //! Create the info class with pointer
+               static boost::shared_ptr<rogue::hardware::pgp::EvrStatus> create();
 
-};
+         };
+
+         //! Convienence
+         typedef boost::shared_ptr<rogue::hardware::pgp::EvrStatus> EvrStatusPtr;
+      }
+   }
+}
+
+#endif
 

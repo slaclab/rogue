@@ -1,16 +1,14 @@
 /**
  *-----------------------------------------------------------------------------
- * Title      : Python Classes
+ * Title      : PGP Card Pci Status Class
  * ----------------------------------------------------------------------------
- * File       : py_rogue.cpp
+ * File       : PciStatus.cpp
  * Author     : Ryan Herbst, rherbst@slac.stanford.edu
- * Created    : 2016-08-08
- * Last update: 2016-08-08
+ * Created    : 2017-09-17
+ * Last update: 2017-09-17
  * ----------------------------------------------------------------------------
  * Description:
- * Python class wrapper
- * TODO:
- *    Figure out how to map rogue namespaces into python properly
+ * Wrapper for PciStatus structure
  * ----------------------------------------------------------------------------
  * This file is part of the rogue software platform. It is subject to 
  * the license terms in the LICENSE.txt file found in the top-level directory 
@@ -21,17 +19,14 @@
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
+#include <rogue/hardware/pgp/PciStatus.h>
+#include <boost/make_shared.hpp>
 
-#include <interfaces/module.h>
-#include <hardware/module.h>
-#include <utilities/module.h>
-#include <boost/python.hpp>
+namespace rhp = rogue::hardware::pgp;
 
-BOOST_PYTHON_MODULE(rogue)
-{
-
-   PyEval_InitThreads();
-
-
-};
+//! Create the info class with pointer
+rhp::PciStatusPtr rhp::PciStatus::create() {
+   rhp::PciStatusPtr r = boost::make_shared<rhp::PciStatus>();
+   return(r);
+}
 
