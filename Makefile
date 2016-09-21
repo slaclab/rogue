@@ -24,9 +24,9 @@
 CC       := g++
 DEF      :=
 BLD      := $(PWD)/build
-#CFLAGS   := -Wall `$(PYTHON_CFG) --cflags` -I$(PWD)/include -std=c++0x -fPIC
+CFLAGS   := -Wall `$(PYTHON_CFG) --cflags` -I$(PWD)/include -std=c++0x -fPIC
 LFLAGS   := `$(PYTHON_CFG) --ldflags` -lboost_thread-mt -lboost_python -lboost_system
-LFLAGS   := `$(PYTHON_CFG) --ldflags` -lboost_thread -lboost_python -lboost_system
+#LFLAGS   := `$(PYTHON_CFG) --ldflags` -lboost_thread -lboost_python -lboost_system
 SHNAME   := rogue
 SHLIB    := rogue.so
 
