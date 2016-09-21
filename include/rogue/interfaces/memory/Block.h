@@ -66,6 +66,9 @@ namespace rogue {
                static boost::shared_ptr<rogue::interfaces::memory::Block> create (
                      uint64_t address, uint32_t size );
 
+               //! Setup class in python
+               static void setup_python();
+
                //! Create an block
                Block(uint64_t address, uint32_t size );
 

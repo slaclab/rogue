@@ -30,6 +30,7 @@
 
 namespace ris = rogue::interfaces::stream;
 namespace ru  = rogue::utilities;
+namespace bp  = boost::python;
 
 //! Class creation
 ru::PrbsPtr ru::Prbs::create () {
@@ -357,5 +358,28 @@ bool ru::Prbs::acceptFrame ( ris::FramePtr frame, uint32_t timeout ) {
    rxCountMtx_.unlock();
 
    return(true);
+}
+
+void ru::Prbs::setup_python() {
+
+   bp::class_<ru::Prbs, bp::bases<ris::Master,ris::Slave>, ru::PrbsPtr, boost::noncopyable >("Prbs",bp::init<>())
+      .def("create",         &ru::Prbs::create)
+      .staticmethod("create")
+      .def("genFrame",       &ru::Prbs::genFrame)
+      .def("enable",         &ru::Prbs::enable)
+      .def("disable",        &ru::Prbs::disable)
+      .def("getRxErrors",    &ru::Prbs::getRxErrors)
+      .def("getRxCount",     &ru::Prbs::getRxCount)
+      .def("getRxBytes",     &ru::Prbs::getRxBytes)
+      .def("getTxErrors",    &ru::Prbs::getTxErrors)
+      .def("getTxCount",     &ru::Prbs::getTxCount)
+      .def("getTxBytes",     &ru::Prbs::getTxBytes)
+      .def("resetCount",     &ru::Prbs::resetCount)
+      .def("enMessages",     &ru::Prbs::enMessages)
+   ;
+
+   bp::implicitly_convertible<ru::PrbsPtr, ris::SlavePtr>();
+   bp::implicitly_convertible<ru::PrbsPtr, ris::MasterPtr>();
+
 }
 

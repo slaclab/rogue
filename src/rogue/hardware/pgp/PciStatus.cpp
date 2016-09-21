@@ -23,6 +23,7 @@
 #include <boost/make_shared.hpp>
 
 namespace rhp = rogue::hardware::pgp;
+namespace bp  = boost::python;
 
 //! Create the info class with pointer
 rhp::PciStatusPtr rhp::PciStatus::create() {
@@ -30,3 +31,22 @@ rhp::PciStatusPtr rhp::PciStatus::create() {
    return(r);
 }
 
+void rhp::PciStatus::setup_python() {
+
+   bp::class_<rhp::PciStatus, rhp::PciStatusPtr>("PciStatus",bp::no_init)
+      .def("create",                 &rhp::PciStatus::create)
+      .staticmethod("create")
+      .def_readwrite("pciCommand",   &rhp::PciStatus::pciCommand)
+      .def_readwrite("pciStatus",    &rhp::PciStatus::pciStatus)
+      .def_readwrite("pciDCommand",  &rhp::PciStatus::pciDCommand)
+      .def_readwrite("pciDStatus",   &rhp::PciStatus::pciDStatus)
+      .def_readwrite("pciLCommand",  &rhp::PciStatus::pciLCommand)
+      .def_readwrite("pciLStatus",   &rhp::PciStatus::pciLStatus)
+      .def_readwrite("pciLinkState", &rhp::PciStatus::pciLinkState)
+      .def_readwrite("pciFunction",  &rhp::PciStatus::pciFunction)
+      .def_readwrite("pciDevice",    &rhp::PciStatus::pciDevice)
+      .def_readwrite("pciBus",       &rhp::PciStatus::pciBus)
+      .def_readwrite("pciLanes",     &rhp::PciStatus::pciLanes)
+   ; 
+
+}

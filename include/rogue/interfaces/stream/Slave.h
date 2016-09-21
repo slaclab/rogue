@@ -93,6 +93,9 @@ namespace rogue {
                //! Class creation
                static boost::shared_ptr<rogue::interfaces::stream::Slave> create ();
 
+               //! Setup class in python
+               static void setup_python();
+
                //! Creator
                Slave();
 

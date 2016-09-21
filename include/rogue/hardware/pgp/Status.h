@@ -36,6 +36,9 @@ namespace rogue {
                //! Create the info class with pointer
                static boost::shared_ptr<rogue::hardware::pgp::Status> create();
 
+               //! Setup class in python
+               static void setup_python();
+
          };
 
          //! Convienence

@@ -63,6 +63,9 @@ namespace rogue {
 
             public:
 
+               //! Setup class in python
+               static void setup_python();
+
                //! Create an empty frame
                /*
                 * Pass owner and zero copy status

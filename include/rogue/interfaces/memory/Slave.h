@@ -40,6 +40,9 @@ namespace rogue {
                //! Create a slave container
                static boost::shared_ptr<rogue::interfaces::memory::Slave> create ();
 
+               //! Setup class in python
+               static void setup_python();
+
                //! Create object
                Slave();
 

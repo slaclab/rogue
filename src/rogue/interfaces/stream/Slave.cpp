@@ -27,6 +27,7 @@
 #include <boost/make_shared.hpp>
 
 namespace ris = rogue::interfaces::stream;
+namespace bp  = boost::python;
 
 //! Class creation
 ris::SlavePtr ris::Slave::create () {
@@ -186,5 +187,16 @@ bool ris::SlaveWrap::acceptFrame ( ris::FramePtr frame, uint32_t timeout ) {
 //! Default accept frame call
 bool ris::SlaveWrap::defAcceptFrame ( ris::FramePtr frame, uint32_t timeout ) {
    return(ris::Slave::acceptFrame(frame,timeout));
+}
+
+void ris::Slave::setup_python() {
+
+   bp::class_<ris::SlaveWrap, ris::SlaveWrapPtr, boost::noncopyable>("Slave",bp::init<>())
+      .def("create",         &ris::Slave::create)
+      .staticmethod("create")
+      .def("acceptFrame",    &ris::Slave::acceptFrame, &ris::SlaveWrap::defAcceptFrame)
+      .def("getAllocCount",  &ris::Slave::getAllocCount)
+      .def("getAllocBytes",  &ris::Slave::getAllocBytes)
+   ;
 }
 

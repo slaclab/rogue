@@ -27,6 +27,7 @@
 #include <boost/python.hpp>
 
 namespace ris = rogue::interfaces::stream;
+namespace bp  = boost::python;
 
 //! Create an empty frame
 ris::FramePtr ris::Frame::create(ris::SlavePtr source, bool zeroCopy) {
@@ -210,5 +211,20 @@ uint32_t ris::Frame::writePy ( boost::python::object p, uint32_t offset ) {
    ret = write(pyBuf.buf,offset,pyBuf.len);
    PyBuffer_Release(&pyBuf);
    return(ret);
+}
+
+void ris::Frame::setup_python() {
+
+   bp::class_<ris::Frame, ris::FramePtr, boost::noncopyable>("Frame",bp::no_init)
+      .def("getAvailable", &ris::Frame::getAvailable)
+      .def("getPayload",   &ris::Frame::getPayload)
+      .def("read",         &ris::Frame::readPy)
+      .def("write",        &ris::Frame::writePy)
+      .def("setError",     &ris::Frame::setError)
+      .def("getError",     &ris::Frame::getError)
+      .def("setFlags",     &ris::Frame::setFlags)
+      .def("getFlags",     &ris::Frame::getFlags)
+   ;
+
 }
 

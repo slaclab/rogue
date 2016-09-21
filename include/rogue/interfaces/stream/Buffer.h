@@ -76,6 +76,9 @@ namespace rogue {
                      boost::shared_ptr<rogue::interfaces::stream::Slave> source, 
                         void * data, uint32_t meta, uint32_t rawSize);
 
+               //! Setup class in python
+               static void setup_python();
+
                //! Create a buffer.
                /*
                 * Pass owner, raw data buffer, and meta data

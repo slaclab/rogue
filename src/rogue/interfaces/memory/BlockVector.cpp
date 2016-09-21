@@ -24,6 +24,7 @@
 #include <boost/make_shared.hpp>
 
 namespace rim = rogue::interfaces::memory;
+namespace bp  = boost::python;
 
 //! Create a block vector, class creator
 rim::BlockVectorPtr rim::BlockVector::create () { 
@@ -69,5 +70,18 @@ rim::BlockPtr rim::BlockVector::getBlock(uint32_t idx) {
    if ( idx < blocks_.size() ) p = blocks_[idx];
    mtx_.unlock();
    return(p);
+}
+
+void rim::BlockVector::setup_python() {
+
+   bp::class_<rim::BlockVector, rim::BlockVectorPtr, boost::noncopyable>("BlockVector",bp::init<>())
+      .def("create",         &rim::BlockVector::create)
+      .staticmethod("create")
+      .def("clear",          &rim::BlockVector::clear)
+      .def("append",         &rim::BlockVector::append)
+      .def("count",          &rim::BlockVector::count)
+      .def("getBlock",       &rim::BlockVector::getBlock)
+   ;
+
 }
 

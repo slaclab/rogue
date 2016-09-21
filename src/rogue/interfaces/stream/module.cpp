@@ -21,6 +21,7 @@
 **/
 
 #include <rogue/interfaces/module.h>
+#include <rogue/interfaces/stream/Buffer.h>
 #include <rogue/interfaces/stream/Slave.h>
 #include <rogue/interfaces/stream/Master.h>
 #include <rogue/interfaces/stream/Frame.h>
@@ -41,32 +42,10 @@ void ris::setup_module() {
    // set the current scope to the new sub-module
    bp::scope io_scope = module;
 
-   bp::class_<ris::Frame, ris::FramePtr, boost::noncopyable>("Frame",bp::no_init)
-      .def("getAvailable", &ris::Frame::getAvailable)
-      .def("getPayload",   &ris::Frame::getPayload)
-      .def("read",         &ris::Frame::readPy)
-      .def("write",        &ris::Frame::writePy)
-      .def("setError",     &ris::Frame::setError)
-      .def("getError",     &ris::Frame::getError)
-      .def("setFlags",     &ris::Frame::setFlags)
-      .def("getFlags",     &ris::Frame::getFlags)
-   ;
+   ris::Buffer::setup_python();
+   ris::Frame::setup_python();
+   ris::Master::setup_python();
+   ris::Slave::setup_python();
 
-   bp::class_<ris::Master, ris::MasterPtr, boost::noncopyable>("Master",bp::init<>())
-      .def("create",         &ris::Master::create)
-      .staticmethod("create")
-      .def("setSlave",       &ris::Master::setSlave)
-      .def("addSlave",       &ris::Master::addSlave)
-      .def("reqFrame",       &ris::Master::reqFrame)
-      .def("sendFrame",      &ris::Master::sendFrame)
-   ;
-
-   bp::class_<ris::SlaveWrap, ris::SlaveWrapPtr, boost::noncopyable>("Slave",bp::init<>())
-      .def("create",         &ris::Slave::create)
-      .staticmethod("create")
-      .def("acceptFrame",    &ris::Slave::acceptFrame, &ris::SlaveWrap::defAcceptFrame)
-      .def("getAllocCount",  &ris::Slave::getAllocCount)
-      .def("getAllocBytes",  &ris::Slave::getAllocBytes)
-   ;
 }
 

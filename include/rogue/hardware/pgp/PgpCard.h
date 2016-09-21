@@ -74,6 +74,9 @@ namespace rogue {
                //! Class creation
                static boost::shared_ptr<rogue::hardware::pgp::PgpCard> create ();
 
+               //! Setup class in python
+               static void setup_python();
+
                //! Creator
                PgpCard();
 

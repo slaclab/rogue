@@ -31,6 +31,7 @@
 
 namespace rhp = rogue::hardware::pgp;
 namespace ris = rogue::interfaces::stream;
+namespace bp  = boost::python;
 
 //! Class creation
 rhp::PgpCardPtr rhp::PgpCard::create () {
@@ -414,5 +415,25 @@ void rhp::PgpCard::runThread() {
          }
       }
    } catch (boost::thread_interrupted&) { }
+}
+
+void rhp::PgpCard::setup_python () {
+
+   bp::class_<rhp::PgpCard, bp::bases<ris::Master,ris::Slave>, rhp::PgpCardPtr, boost::noncopyable >("PgpCard",bp::init<>())
+      .def("create",         &rhp::PgpCard::create)
+      .staticmethod("create")
+      .def("open",           &rhp::PgpCard::open)
+      .def("close",          &rhp::PgpCard::close)
+      .def("getInfo",        &rhp::PgpCard::getInfo)
+      .def("getPciStatus",   &rhp::PgpCard::getPciStatus)
+      .def("getStatus",      &rhp::PgpCard::getStatus)
+      .def("getEvrControl",  &rhp::PgpCard::getEvrControl)
+      .def("setEvrControl",  &rhp::PgpCard::setEvrControl)
+      .def("getEvrStatus",   &rhp::PgpCard::getEvrStatus)
+      .def("setLoop",        &rhp::PgpCard::setLoop)
+      .def("setData",        &rhp::PgpCard::setData)
+      .def("sendOpCode",     &rhp::PgpCard::sendOpCode)
+   ;
+
 }
 

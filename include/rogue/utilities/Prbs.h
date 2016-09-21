@@ -118,6 +118,9 @@ namespace rogue {
             //! Class creation
             static boost::shared_ptr<rogue::utilities::Prbs> create ();
 
+            //! Setup class in python
+            static void setup_python();
+
             //! Creator with width and variable taps
             Prbs(uint32_t width, uint32_t tapCnt, ... );
 

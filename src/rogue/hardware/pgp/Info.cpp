@@ -24,6 +24,7 @@
 #include <boost/make_shared.hpp>
 
 namespace rhp = rogue::hardware::pgp;
+namespace bp  = boost::python;
 
 //! Create the info class with pointer
 rhp::InfoPtr rhp::Info::create() {
@@ -34,5 +35,22 @@ rhp::InfoPtr rhp::Info::create() {
 //! Return buildstring in string format
 std::string rhp::Info::buildString() {
    return(std::string(buildStamp));
+}
+
+void rhp::Info::setup_python() {
+
+   bp::class_<rhp::Info, rhp::InfoPtr>("Info",bp::no_init)
+      .def("create",               &rhp::Info::create)
+      .staticmethod("create")
+      .def_readwrite("serial",     &rhp::Info::serial)
+      .def_readwrite("type",       &rhp::Info::type)
+      .def_readwrite("version",    &rhp::Info::version)
+      .def_readwrite("laneMask",   &rhp::Info::laneMask)
+      .def_readwrite("vcPerMask",  &rhp::Info::vcPerMask)
+      .def_readwrite("pgpRate",    &rhp::Info::pgpRate)
+      .def_readwrite("promPrgEn",  &rhp::Info::promPrgEn)
+      .def_readwrite("evrSupport", &rhp::Info::evrSupport)
+      .def("buildString",          &rhp::Info::buildString)
+   ; 
 }
 

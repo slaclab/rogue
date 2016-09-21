@@ -23,10 +23,27 @@
 #include <boost/make_shared.hpp>
 
 namespace rhp = rogue::hardware::pgp;
+namespace bp  = boost::python;
 
 //! Create the info class with pointer
 rhp::EvrStatusPtr rhp::EvrStatus::create() {
    rhp::EvrStatusPtr r = boost::make_shared<rhp::EvrStatus>();
    return(r);
+}
+
+void rhp::EvrStatus::setup_python () {
+
+   bp::class_<rhp::EvrStatus, rhp::EvrStatusPtr >("EvrStatus",bp::no_init)
+      .def("create",                  &rhp::EvrStatus::create)
+      .staticmethod("create")
+      .def_readwrite("lane",          &rhp::EvrStatus::lane)
+      .def_readwrite("linkErrors",    &rhp::EvrStatus::linkErrors)
+      .def_readwrite("linkUp",        &rhp::EvrStatus::linkUp)
+      .def_readwrite("runStatus",     &rhp::EvrStatus::runStatus)
+      .def_readwrite("evrSeconds",    &rhp::EvrStatus::evrSeconds)
+      .def_readwrite("runCounter",    &rhp::EvrStatus::runCounter)
+      .def_readwrite("acceptCounter", &rhp::EvrStatus::acceptCounter)
+   ;
+
 }
 

@@ -47,6 +47,9 @@ namespace rogue {
                //! Create a block vector, class creator
                static boost::shared_ptr<rogue::interfaces::memory::BlockVector> create ();
 
+               //! Setup class in python
+               static void setup_python();
+
                //! Create an block vector
                BlockVector();
 

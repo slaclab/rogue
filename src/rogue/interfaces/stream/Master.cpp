@@ -28,6 +28,7 @@
 #include <boost/make_shared.hpp>
 
 namespace ris = rogue::interfaces::stream;
+namespace bp  = boost::python;
 
 //! Class creation
 ris::MasterPtr ris::Master::create () {
@@ -86,5 +87,17 @@ bool ris::Master::sendFrame ( FramePtr frame, uint32_t timeout) {
    slaveMtx_.unlock();
 
    return(ret);
+}
+
+void ris::Master::setup_python() {
+
+   bp::class_<ris::Master, ris::MasterPtr, boost::noncopyable>("Master",bp::init<>())
+      .def("create",         &ris::Master::create)
+      .staticmethod("create")
+      .def("setSlave",       &ris::Master::setSlave)
+      .def("addSlave",       &ris::Master::addSlave)
+      .def("reqFrame",       &ris::Master::reqFrame)
+      .def("sendFrame",      &ris::Master::sendFrame)
+   ;
 }
 

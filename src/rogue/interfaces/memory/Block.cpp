@@ -25,6 +25,7 @@
 #include <boost/python.hpp>
 
 namespace rim = rogue::interfaces::memory;
+namespace bp  = boost::python;
 
 //! Create a block, class creator
 rim::BlockPtr rim::Block::create (uint64_t address, uint32_t size ) {
@@ -179,5 +180,27 @@ void rim::Block::setBits(uint32_t bitOffset, uint32_t bitCount, uint32_t value) 
          currByte++;
       }
    }
+}
+
+void rim::Block::setup_python() {
+
+   bp::class_<rim::Block, rim::BlockPtr, boost::noncopyable>("Block",bp::init<uint32_t,uint32_t>())
+      .def("create",         &rim::Block::create)
+      .staticmethod("create")
+      .def("getAddress",     &rim::Block::getAddress)
+      .def("getSize",        &rim::Block::getSize)
+      .def("getData",        &rim::Block::getDataPy)
+      .def("getError",       &rim::Block::getError)
+      .def("setError",       &rim::Block::setError)
+      .def("getStale",       &rim::Block::getStale)
+      .def("setStale",       &rim::Block::setStale)
+      .def("getUInt8",       &rim::Block::getUInt8)
+      .def("setUInt8",       &rim::Block::setUInt8)
+      .def("getUInt32",      &rim::Block::getUInt32)
+      .def("setUInt32",      &rim::Block::setUInt32)
+      .def("getBits",        &rim::Block::getBits)
+      .def("setBits",        &rim::Block::setBits)
+   ;
+
 }
 

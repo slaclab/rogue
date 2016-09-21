@@ -23,6 +23,7 @@
 #include <boost/make_shared.hpp>
 
 namespace rhp = rogue::hardware::pgp;
+namespace bp  = boost::python;
 
 //! Create the info class with pointer
 rhp::StatusPtr rhp::Status::create() {
@@ -30,3 +31,24 @@ rhp::StatusPtr rhp::Status::create() {
    return(r);
 }
 
+void rhp::Status::setup_python () {
+
+   bp::class_<rhp::Status, rhp::StatusPtr>("Status",bp::no_init)
+      .def("create",                  &rhp::Status::create)
+      .staticmethod("create")
+      .def_readwrite("lane",          &rhp::Status::lane)
+      .def_readwrite("loopBack",      &rhp::Status::loopBack)
+      .def_readwrite("locLinkReady",  &rhp::Status::locLinkReady)
+      .def_readwrite("remLinkReady",  &rhp::Status::remLinkReady)
+      .def_readwrite("rxReady",       &rhp::Status::rxReady)
+      .def_readwrite("txReady",       &rhp::Status::txReady)
+      .def_readwrite("rxCount",       &rhp::Status::rxCount)
+      .def_readwrite("cellErrCnt",    &rhp::Status::cellErrCnt)
+      .def_readwrite("linkDownCnt",   &rhp::Status::linkDownCnt)
+      .def_readwrite("linkErrCnt",    &rhp::Status::linkErrCnt)
+      .def_readwrite("fifoErr",       &rhp::Status::fifoErr)
+      .def_readwrite("remData",       &rhp::Status::remData)
+      .def_readwrite("remBuffStatus", &rhp::Status::remBuffStatus)
+   ;
+
+}

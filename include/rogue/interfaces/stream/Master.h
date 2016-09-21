@@ -57,6 +57,9 @@ namespace rogue {
                //! Class creation
                static boost::shared_ptr<rogue::interfaces::stream::Master> create ();
 
+               //! Setup class in python
+               static void setup_python();
+
                //! Creator
                Master();
 

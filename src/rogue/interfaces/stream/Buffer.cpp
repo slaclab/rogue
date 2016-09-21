@@ -183,3 +183,7 @@ uint32_t ris::Buffer::write ( void *p, uint32_t offset, uint32_t count ) {
    return(wcnt);
 }
 
+void ris::Buffer::setup_python() {
+   // Nothing to do
+}
+

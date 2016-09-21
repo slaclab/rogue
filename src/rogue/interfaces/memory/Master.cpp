@@ -26,6 +26,7 @@
 #include <boost/make_shared.hpp>
 
 namespace rim = rogue::interfaces::memory;
+namespace bp  = boost::python;
 
 //! Create a slave container
 rim::MasterPtr rim::Master::create () {
@@ -68,5 +69,18 @@ bool rim::Master::reqReadSingle (rim::BlockPtr block) {
    rim::BlockVectorPtr blocks;
    blocks->append(block);
    return(slave_->doRead(blocks));
+}
+
+void rim::Master::setup_python() {
+
+   bp::class_<rim::Master, rim::MasterPtr, boost::noncopyable>("Master",bp::init<>())
+      .def("create",         &rim::Master::create)
+      .staticmethod("create")
+      .def("setSlave",       &rim::Master::setSlave)
+      .def("reqWrite",       &rim::Master::reqWrite)
+      .def("reqWriteSingle", &rim::Master::reqWriteSingle)
+      .def("reqRead",        &rim::Master::reqRead)
+      .def("reqReadSingle",  &rim::Master::reqReadSingle)
+   ;
 }
 

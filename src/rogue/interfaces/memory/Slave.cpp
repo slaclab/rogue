@@ -25,6 +25,7 @@
 #include <boost/make_shared.hpp>
 
 namespace rim = rogue::interfaces::memory;
+namespace bp = boost::python;
 
 //! Create a slave container
 rim::SlavePtr rim::Slave::create () {
@@ -110,4 +111,14 @@ bool rim::SlaveWrap::defDoRead ( rim::BlockVectorPtr blocks ) {
    return(rim::Slave::doRead(blocks));
 }
 
+void rim::Slave::setup_python () {
+
+   bp::class_<rim::SlaveWrap, rim::SlaveWrapPtr, boost::noncopyable>("Slave",bp::init<>())
+      .def("create",         &rim::Slave::create)
+      .staticmethod("create")
+      .def("doWrite",        &rim::Slave::doWrite, &rim::SlaveWrap::defDoWrite)
+      .def("doRead",         &rim::Slave::doRead,  &rim::SlaveWrap::defDoRead)
+   ;
+
+}
 
