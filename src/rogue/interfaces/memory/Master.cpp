@@ -35,7 +35,9 @@ rim::MasterPtr rim::Master::create () {
 }
 
 //! Create object
-rim::Master::Master() { } 
+rim::Master::Master() { 
+   slave_ = rim::Slave::create();
+} 
 
 //! Destroy object
 rim::Master::~Master() { }
@@ -54,7 +56,7 @@ bool rim::Master::reqWrite (rim::BlockVectorPtr blocks) {
 
 //! Request a single write transaction
 bool rim::Master::reqWriteSingle (rim::BlockPtr block) {
-   rim::BlockVectorPtr blocks;
+   rim::BlockVectorPtr blocks = rim::BlockVector::create();
    blocks->append(block);
    return(slave_->doWrite(blocks));
 }
@@ -66,7 +68,7 @@ bool rim::Master::reqRead (rim::BlockVectorPtr blocks) {
 
 //! Request a single read transaction
 bool rim::Master::reqReadSingle (rim::BlockPtr block) {
-   rim::BlockVectorPtr blocks;
+   rim::BlockVectorPtr blocks = rim::BlockVector::create();
    blocks->append(block);
    return(slave_->doRead(blocks));
 }
