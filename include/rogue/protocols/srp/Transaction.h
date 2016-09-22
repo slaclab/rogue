@@ -47,8 +47,14 @@ namespace rogue {
                //! Block
                boost::shared_ptr<rogue::interfaces::memory::Block> block_;
 
-               //! Size of frame request
-               uint32_t size_;
+               //! Size of frame transmit
+               uint32_t txSize_;
+
+               //! Size of frame receive
+               uint32_t rxSize_;
+
+               //! Header
+               uint32_t header_[4];
 
                //! Write flag
                bool write_;
@@ -81,7 +87,7 @@ namespace rogue {
                //! Deconstructor
                ~Transaction();
 
-               //! Get frame size
+               //! Get tx frame size
                uint32_t getFrameSize();
 
                //! Get transacton index

@@ -45,7 +45,8 @@ uint32_t rps::Transaction::genIndex() {
 
 //! Virtual init function
 void rps::Transaction::init() {
-   size_ = 0;
+   txSize_ = 0;
+   rxSize_ = 0;
 }
 
 //! Generate request frame
@@ -74,6 +75,7 @@ rps::Transaction::Transaction(bool write, rim::BlockPtr block) {
    index_ = genIndex();
    block_ = block;
    write_ = write;
+   init();
 }
 
 //! Deconstructor
@@ -81,7 +83,7 @@ rps::Transaction::~Transaction() { }
 
 //! Get frame size
 uint32_t rps::Transaction::getFrameSize() {
-   return(size_);
+   return(txSize_);
 }
 
 //! Get transacton index
