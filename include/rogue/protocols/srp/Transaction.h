@@ -23,6 +23,8 @@
 #define __ROGUE_PROTOCOLS_SRP_TRANSACTION_H__
 #include <stdint.h>
 #include <boost/thread.hpp>
+#include <rogue/interfaces/memory/Block.h>
+#include <rogue/interfaces/stream/Frame.h>
 
 namespace rogue {
    namespace protocols {
@@ -31,32 +33,50 @@ namespace rogue {
          //! SRP Transaction
          class Transaction {
 
+            protected:
+
                //! Class instance counter
                static uint32_t tranIdx_;
 
                //! Class instance lock
-               boost::mutex tranIdxMtx_;
+               static boost::mutex tranIdxMtx_;
 
                //! Local index
                uint32_t index_;
                
-               //! SRP Version
-               uint32_t version_;
+               //! Block
+               boost::shared_ptr<rogue::interfaces::memory::Block> block_;
 
-               //! Associated bridge
-               rogue::hardware::rce::Bride bridge_;
+               //! Size of frame request
+               uint32_t size_;
+
+               //! Write flag
+               bool write_;
+
+               //! Class to acquire an index value
+               static uint32_t genIndex();
+
+               //! Virtual init function
+               virtual void init();
+
+               //! Generate request frame
+               virtual bool intGenFrame(boost::shared_ptr<rogue::interfaces::stream::Frame> frame);
+
+               //! Receive response frame
+               virtual bool intRecvFrame(boost::shared_ptr<rogue::interfaces::stream::Frame> frame);
 
             public:
 
                //! Class creation
-               static boost::shared_ptr<rogue::utilities::Transaction> create (
-                     uint32_t version, bool write, boost::shared_ptr<rogue::interfaces::memory::Block> block);
+               static boost::shared_ptr<rogue::protocols::srp::Transaction> create (
+                     bool write, boost::shared_ptr<rogue::interfaces::memory::Block> block);
 
                //! Setup class in python
                static void setup_python();
 
                //! Creator with version constant
-               Transaction(uint32_t version);
+               Transaction(
+                     bool write, boost::shared_ptr<rogue::interfaces::memory::Block> block);
 
                //! Deconstructor
                ~Transaction();
@@ -71,7 +91,7 @@ namespace rogue {
                bool genFrame(boost::shared_ptr<rogue::interfaces::stream::Frame> frame);
 
                //! Receive response frame
-               bool recvFrame(boost::shared_ptr<rogue::interfaces::stream::Frame frame);
+               bool recvFrame(boost::shared_ptr<rogue::interfaces::stream::Frame> frame);
 
          };
 

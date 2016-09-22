@@ -8,7 +8,7 @@
  * Last update   : 09/17/2016
  *-----------------------------------------------------------------------------
  * Description :
- *    Class used to generate and receive PRBS test data.
+ *    SRP bridge.
  *-----------------------------------------------------------------------------
  * This file is part of the rogue software platform. It is subject to 
  * the license terms in the LICENSE.txt file found in the top-level directory 
@@ -46,7 +46,7 @@ namespace rogue {
             public:
 
                //! Class creation
-               static boost::shared_ptr<rogue::utilities::Bridge> create (uint32_t version);
+               static boost::shared_ptr<rogue::protocols::srp::Bridge> create (uint32_t version);
 
                //! Setup class in python
                static void setup_python();
