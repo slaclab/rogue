@@ -2,7 +2,7 @@
  *-----------------------------------------------------------------------------
  * Title      : RCE Stream Class 
  * ----------------------------------------------------------------------------
- * File       : RceStream.h
+ * File       : AxiStream.h
  * Author     : Ryan Herbst, rherbst@slac.stanford.edu
  * Created    : 2017-09-17
  * Last update: 2017-09-17
@@ -19,7 +19,7 @@
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
-#include <rogue/hardware/rce/RceStream.h>
+#include <rogue/hardware/rce/AxiStream.h>
 #include <rogue/interfaces/stream/Frame.h>
 #include <rogue/interfaces/stream/Buffer.h>
 #include <boost/make_shared.hpp>
@@ -29,13 +29,13 @@ namespace ris = rogue::interfaces::stream;
 namespace bp  = boost::python;
 
 //! Class creation
-rhr::RceStreamPtr rhr::RceStream::create () {
-   rhr::RceStreamPtr r = boost::make_shared<rhr::RceStream>();
+rhr::AxiStreamPtr rhr::AxiStream::create () {
+   rhr::AxiStreamPtr r = boost::make_shared<rhr::AxiStream>();
    return(r);
 }
 
 //! Creator
-rhr::RceStream::RceStream() {
+rhr::AxiStream::AxiStream() {
    fd_      = -1;
    dest_    = 0;
    bCount_  = 0;
@@ -44,12 +44,12 @@ rhr::RceStream::RceStream() {
 }
 
 //! Destructor
-rhr::RceStream::~RceStream() {
+rhr::AxiStream::~AxiStream() {
    this->close();
 }
 
 //! Open the device. Pass destination.
-bool rhr::RceStream::open ( std::string path, uint32_t dest ) {
+bool rhr::AxiStream::open ( std::string path, uint32_t dest ) {
    uint32_t mask;
 
    if ( fd_ > 0 ) return(false);
@@ -68,13 +68,13 @@ bool rhr::RceStream::open ( std::string path, uint32_t dest ) {
    rawBuff_ = axisMapDma(fd_,&bCount_,&bSize_);
 
    // Start read thread
-   thread_ = new boost::thread(boost::bind(&rhr::RceStream::runThread, this));
+   thread_ = new boost::thread(boost::bind(&rhr::AxiStream::runThread, this));
 
    return(true);
 }
 
 //! Close the device
-void rhr::RceStream::close() {
+void rhr::AxiStream::close() {
 
    if ( fd_ < 0 ) return;
 
@@ -95,17 +95,17 @@ void rhr::RceStream::close() {
 }
 
 //! Enable SSI flags in first and last user fields
-void rhr::RceStream::enableSsi(bool enable) {
+void rhr::AxiStream::enableSsi(bool enable) {
    enSsi_ = enable;
 }
 
 //! Strobe ack line
-void rhr::RceStream::dmaAck() {
+void rhr::AxiStream::dmaAck() {
    if ( fd_ >= 0 ) axisReadAck(fd_);
 }
 
 //! Generate a buffer. Called from master
-ris::FramePtr rhr::RceStream::acceptReq ( uint32_t size, bool zeroCopyEn, uint32_t timeout) {
+ris::FramePtr rhr::AxiStream::acceptReq ( uint32_t size, bool zeroCopyEn, uint32_t timeout) {
    int32_t          res;
    fd_set           fds;
    struct timeval   tout;
@@ -172,7 +172,7 @@ ris::FramePtr rhr::RceStream::acceptReq ( uint32_t size, bool zeroCopyEn, uint32
 }
 
 //! Accept a frame from master
-bool rhr::RceStream::acceptFrame ( ris::FramePtr frame, uint32_t timeout ) {
+bool rhr::AxiStream::acceptFrame ( ris::FramePtr frame, uint32_t timeout ) {
    ris::BufferPtr buff;
    int32_t          res;
    fd_set           fds;
@@ -276,7 +276,7 @@ bool rhr::RceStream::acceptFrame ( ris::FramePtr frame, uint32_t timeout ) {
 }
 
 //! Return a buffer
-void rhr::RceStream::retBuffer(uint8_t * data, uint32_t meta, uint32_t rawSize) {
+void rhr::AxiStream::retBuffer(uint8_t * data, uint32_t meta, uint32_t rawSize) {
 
    // Buffer is zero copy as indicated by bit 31
    if ( (meta & 0x80000000) != 0 ) {
@@ -294,7 +294,7 @@ void rhr::RceStream::retBuffer(uint8_t * data, uint32_t meta, uint32_t rawSize) 
 }
 
 //! Run thread
-void rhr::RceStream::runThread() {
+void rhr::AxiStream::runThread() {
    ris::BufferPtr buff;
    ris::FramePtr  frame;
    fd_set         fds;
@@ -364,15 +364,15 @@ void rhr::RceStream::runThread() {
    } catch (boost::thread_interrupted&) { }
 }
 
-void rhr::RceStream::setup_python () {
+void rhr::AxiStream::setup_python () {
 
-   bp::class_<rhr::RceStream, bp::bases<ris::Master,ris::Slave>, rhr::RceStreamPtr, boost::noncopyable >("RceStream",bp::init<>())
-      .def("create",         &rhr::RceStream::create)
+   bp::class_<rhr::AxiStream, bp::bases<ris::Master,ris::Slave>, rhr::AxiStreamPtr, boost::noncopyable >("AxiStream",bp::init<>())
+      .def("create",         &rhr::AxiStream::create)
       .staticmethod("create")
-      .def("open",           &rhr::RceStream::open)
-      .def("close",          &rhr::RceStream::close)
-      .def("enableSsi",      &rhr::RceStream::enableSsi)
-      .def("dmaAck",         &rhr::RceStream::dmaAck)
+      .def("open",           &rhr::AxiStream::open)
+      .def("close",          &rhr::AxiStream::close)
+      .def("enableSsi",      &rhr::AxiStream::enableSsi)
+      .def("dmaAck",         &rhr::AxiStream::dmaAck)
    ;
 
 }

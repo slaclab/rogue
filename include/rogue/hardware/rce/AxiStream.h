@@ -2,7 +2,7 @@
  *-----------------------------------------------------------------------------
  * Title      : RCE Stream Class 
  * ----------------------------------------------------------------------------
- * File       : RceStream.h
+ * File       : AxiStream.h
  * Author     : Ryan Herbst, rherbst@slac.stanford.edu
  * Created    : 2017-09-17
  * Last update: 2017-09-17
@@ -22,8 +22,8 @@
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
-#ifndef __ROGUE_HARDWARE_RCE_RCE_STREAM_H__
-#define __ROGUE_HARDWARE_RCE_RCE_STREAM_H__
+#ifndef __ROGUE_HARDWARE_RCE_AXI_STREAM_H__
+#define __ROGUE_HARDWARE_RCE_AXI_STREAM_H__
 #include <rogue/interfaces/stream/Master.h>
 #include <rogue/interfaces/stream/Slave.h>
 #include <rogue/hardware/rce/AxisDriver.h>
@@ -36,7 +36,7 @@ namespace rogue {
       namespace rce {
 
          //! PGP Card class
-         class RceStream : public rogue::interfaces::stream::Master, 
+         class AxiStream : public rogue::interfaces::stream::Master, 
                            public rogue::interfaces::stream::Slave {
 
                //! PgpCard file descriptor
@@ -65,16 +65,16 @@ namespace rogue {
             public:
 
                //! Class creation
-               static boost::shared_ptr<rogue::hardware::rce::RceStream> create ();
+               static boost::shared_ptr<rogue::hardware::rce::AxiStream> create ();
 
                //! Setup class in python
                static void setup_python();
 
                //! Creator
-               RceStream();
+               AxiStream();
 
                //! Destructor
-               ~RceStream();
+               ~AxiStream();
 
                //! Open the device. Pass destination
                bool open ( std::string path, uint32_t dest );
@@ -116,7 +116,7 @@ namespace rogue {
          };
 
          // Convienence
-         typedef boost::shared_ptr<rogue::hardware::rce::RceStream> RceStreamPtr;
+         typedef boost::shared_ptr<rogue::hardware::rce::AxiStream> AxiStreamPtr;
 
       }
    }

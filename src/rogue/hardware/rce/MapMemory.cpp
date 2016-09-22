@@ -2,7 +2,7 @@
  *-----------------------------------------------------------------------------
  * Title      : RCE Memory Mapped Access
  * ----------------------------------------------------------------------------
- * File       : RceMemory.h
+ * File       : MapMemory.h
  * Author     : Ryan Herbst, rherbst@slac.stanford.edu
  * Created    : 2017-09-17
  * Last update: 2017-09-17
@@ -19,7 +19,7 @@
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
-#include <rogue/hardware/rce/RceMemory.h>
+#include <rogue/hardware/rce/MapMemory.h>
 #include <rogue/interfaces/memory/Block.h>
 #include <rogue/interfaces/memory/BlockVector.h>
 #include <boost/make_shared.hpp>
@@ -35,23 +35,23 @@ namespace rim = rogue::interfaces::memory;
 namespace bp  = boost::python;
 
 //! Class creation
-rhr::RceMemoryPtr rhr::RceMemory::create () {
-   rhr::RceMemoryPtr r = boost::make_shared<rhr::RceMemory>();
+rhr::MapMemoryPtr rhr::MapMemory::create () {
+   rhr::MapMemoryPtr r = boost::make_shared<rhr::MapMemory>();
    return(r);
 }
 
 //! Creator
-rhr::RceMemory::RceMemory() {
+rhr::MapMemory::MapMemory() {
    fd_      = -1;
 }
 
 //! Destructor
-rhr::RceMemory::~RceMemory() {
+rhr::MapMemory::~MapMemory() {
    this->close();
 }
 
 //! Open the device. Pass destination.
-bool rhr::RceMemory::open ( ) {
+bool rhr::MapMemory::open ( ) {
    bool ret;
 
    ret = true;
@@ -68,7 +68,7 @@ bool rhr::RceMemory::open ( ) {
 }
 
 //! Close the device
-void rhr::RceMemory::close() {
+void rhr::MapMemory::close() {
    uint32_t x;
 
    mapMtx_.lock();
@@ -84,8 +84,8 @@ void rhr::RceMemory::close() {
 }
 
 //! Add a memory space
-void rhr::RceMemory::addMap(uint32_t address, uint32_t size) {
-   rhr::RceMemoryMap map;
+void rhr::MapMemory::addMap(uint32_t address, uint32_t size) {
+   rhr::Map map;
 
    map.base = address;
    map.size = size;
@@ -104,7 +104,7 @@ void rhr::RceMemory::addMap(uint32_t address, uint32_t size) {
 }
 
 // Find matching address space, lock before use
-uint8_t * rhr::RceMemory::findSpace (uint32_t base, uint32_t size) {
+uint8_t * rhr::MapMemory::findSpace (uint32_t base, uint32_t size) {
    uint32_t x;
 
    for (x=0; x < maps_.size(); x++) {
@@ -116,7 +116,7 @@ uint8_t * rhr::RceMemory::findSpace (uint32_t base, uint32_t size) {
 }
 
 //! Issue a set of write transactions
-bool rhr::RceMemory::doWrite (boost::shared_ptr<rogue::interfaces::memory::BlockVector> blocks) {
+bool rhr::MapMemory::doWrite (boost::shared_ptr<rogue::interfaces::memory::BlockVector> blocks) {
    rim::BlockPtr b;
    uint8_t *     ptr;
    uint32_t      x;
@@ -140,7 +140,7 @@ bool rhr::RceMemory::doWrite (boost::shared_ptr<rogue::interfaces::memory::Block
 }
 
 //! Issue a set of read transactions
-bool rhr::RceMemory::doRead  (boost::shared_ptr<rogue::interfaces::memory::BlockVector> blocks) {
+bool rhr::MapMemory::doRead  (boost::shared_ptr<rogue::interfaces::memory::BlockVector> blocks) {
    rim::BlockPtr b;
    uint8_t *     ptr;
    uint32_t      x;
@@ -163,14 +163,14 @@ bool rhr::RceMemory::doRead  (boost::shared_ptr<rogue::interfaces::memory::Block
    return(ret);
 }
 
-void rhr::RceMemory::setup_python () {
+void rhr::MapMemory::setup_python () {
 
-   bp::class_<rhr::RceMemory, bp::bases<rim::Slave>, rhr::RceMemoryPtr, boost::noncopyable >("RceMemory",bp::init<>())
-      .def("create",         &rhr::RceMemory::create)
+   bp::class_<rhr::MapMemory, bp::bases<rim::Slave>, rhr::MapMemoryPtr, boost::noncopyable >("MapMemory",bp::init<>())
+      .def("create",         &rhr::MapMemory::create)
       .staticmethod("create")
-      .def("open",           &rhr::RceMemory::open)
-      .def("close",          &rhr::RceMemory::close)
-      .def("addMap",         &rhr::RceMemory::addMap)
+      .def("open",           &rhr::MapMemory::open)
+      .def("close",          &rhr::MapMemory::close)
+      .def("addMap",         &rhr::MapMemory::addMap)
    ;
 }
 

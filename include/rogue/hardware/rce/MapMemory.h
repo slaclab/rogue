@@ -2,7 +2,7 @@
  *-----------------------------------------------------------------------------
  * Title      : RCE Memory Mapped Access
  * ----------------------------------------------------------------------------
- * File       : RceMemory.h
+ * File       : MapMemory.h
  * Author     : Ryan Herbst, rherbst@slac.stanford.edu
  * Created    : 2017-09-17
  * Last update: 2017-09-17
@@ -19,8 +19,8 @@
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
-#ifndef __ROGUE_HARDWARE_RCE_RCE_MEMORY_H__
-#define __ROGUE_HARDWARE_RCE_RCE_MEMORY_H__
+#ifndef __ROGUE_HARDWARE_RCE_MAP_MEMORY_H__
+#define __ROGUE_HARDWARE_RCE_MAP_MEMORY_H__
 #include <rogue/interfaces/memory/Slave.h>
 #include <boost/python.hpp>
 #include <boost/thread.hpp>
@@ -31,7 +31,7 @@ namespace rogue {
       namespace rce {
 
          //! Memory space tracking
-         class RceMemoryMap {
+         class Map {
             public:
                uint32_t  base;
                uint32_t  size;
@@ -39,13 +39,13 @@ namespace rogue {
          };
 
          //! PGP Card class
-         class RceMemory : public rogue::interfaces::memory::Slave {
+         class MapMemory : public rogue::interfaces::memory::Slave {
 
-               //! RceMemory file descriptor
+               //! MapMemory file descriptor
                int32_t  fd_;
 
                //! Tracked mapped spaces
-               std::vector<rogue::hardware::rce::RceMemoryMap> maps_;
+               std::vector<rogue::hardware::rce::Map> maps_;
 
                //! Lock for vector access
                boost::mutex mapMtx_;
@@ -56,16 +56,16 @@ namespace rogue {
             public:
 
                //! Class creation
-               static boost::shared_ptr<rogue::hardware::rce::RceMemory> create ();
+               static boost::shared_ptr<rogue::hardware::rce::MapMemory> create ();
 
                //! Setup class in python
                static void setup_python();
 
                //! Creator
-               RceMemory();
+               MapMemory();
 
                //! Destructor
-               ~RceMemory();
+               ~MapMemory();
 
                //! Open the device.
                bool open ();
@@ -84,7 +84,7 @@ namespace rogue {
          };
 
          // Convienence
-         typedef boost::shared_ptr<rogue::hardware::rce::RceMemory> RceMemoryPtr;
+         typedef boost::shared_ptr<rogue::hardware::rce::MapMemory> MapMemoryPtr;
 
       }
    }
