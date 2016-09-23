@@ -17,7 +17,7 @@ class testSlave(rogue.interfaces.stream.Slave):
       self.packCnt += 1
       p = bytearray(frame.getPayload())
       frame.read(p,0);
-      if ( frame.getPayload() < 20 ):
+      if ( frame.getPayload() <= 100 ):
          print("Got size=%i Data: %s" % (len(p),"".join("%02x:" % b for b in p)))
       return(True)
 
@@ -45,6 +45,10 @@ tm = rogue.interfaces.stream.Master()
 ts2 = testSlave()
 tm.setSlave(ts2)
 
+prbsC = rogue.utilities.Prbs()
+ts3 = testSlave()
+prbsC.setSlave(ts3)
+
 count = 0
 
 while (True) :
@@ -62,6 +66,8 @@ while (True) :
    q = bytearray([10,20,30,40])
    f.write(q,0)
    tm.sendFrame(f,0)
+
+   prbsC.genFrame(100)
 
    time.sleep(1)
 

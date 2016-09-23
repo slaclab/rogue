@@ -20,28 +20,33 @@
  * ----------------------------------------------------------------------------
 **/
 
-#include <boost/python.hpp>
-#include <rogue/hardware/module.h>
-#include <rogue/hardware/pgp/module.h>
-#include <rogue/hardware/rce/module.h>
 #include <rogue/hardware/exo/module.h>
+#include <rogue/hardware/exo/Info.h>
+#include <rogue/hardware/exo/PciStatus.h>
+#include <rogue/hardware/exo/Tem.h>
+#include <rogue/hardware/exo/TemCmd.h>
+#include <rogue/hardware/exo/TemData.h>
+#include <boost/python.hpp>
 
 namespace bp  = boost::python;
+namespace rhe = rogue::hardware::exo;
 
-void rogue::hardware::setup_module() {
+void rhe::setup_module() {
 
    // map the IO namespace to a sub-module
-   bp::object module(bp::handle<>(bp::borrowed(PyImport_AddModule("rogue.hardware"))));
+   bp::object module(bp::handle<>(bp::borrowed(PyImport_AddModule("rogue.hardware.exo"))));
 
    // make "from mypackage import class1" work
-   bp::scope().attr("hardware") = module;
+   bp::scope().attr("exo") = module;
 
    // set the current scope to the new sub-module
    bp::scope io_scope = module;
 
-   rogue::hardware::pgp::setup_module();
-   rogue::hardware::rce::setup_module();
-   rogue::hardware::exo::setup_module();
+   rhe::Info::setup_python();
+   rhe::PciStatus::setup_python();
+   rhe::Tem::setup_python();
+   rhe::TemCmd::setup_python();
+   rhe::TemData::setup_python();
 
 }
 
