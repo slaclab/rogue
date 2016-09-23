@@ -52,6 +52,9 @@ namespace rogue {
                //! Setup class in python
                static void setup_python();
 
+               //! Get transaction id
+               static uint32_t extractTid (boost::shared_ptr<rogue::interfaces::stream::Frame> frame);
+
                //! Creator with version constant
                TransactionV0(bool write, boost::shared_ptr<rogue::interfaces::memory::Block> block);
 

@@ -44,13 +44,17 @@ rps::BridgePtr rps::Bridge::create (uint32_t version) {
 //! Setup class in python
 void rps::Bridge::setup_python() {
 
+   bp::class_<rps::Bridge, bp::bases<ris::Master,ris::Slave,rim::Slave>, 
+              rps::BridgePtr, boost::noncopyable >("Bridge",bp::init<uint32_t>())
+      .def("create",         &rps::Bridge::create)
+      .staticmethod("create")
+   ;
 
 }
 
 //! Creator with version constant
 rps::Bridge::Bridge(uint32_t version) {
-
-
+   version_ = version;
 }
 
 //! Deconstructor

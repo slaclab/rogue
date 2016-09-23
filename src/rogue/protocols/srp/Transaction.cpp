@@ -32,16 +32,11 @@ namespace rps = rogue::protocols::srp;
 namespace ris = rogue::interfaces::stream;
 namespace rim = rogue::interfaces::memory;
 
-//! Class to acquire an index value
-uint32_t rps::Transaction::genIndex() {
-   uint32_t index;
+// Init class counter
+uint32_t rps::Transaction::tranIdx_ = 0;
 
-   tranIdxMtx_.lock();
-   index = tranIdx_;
-   tranIdx_++;
-   tranIdxMtx_.unlock();
-   return(index);
-}
+//! Class instance lock
+boost::mutex rps::Transaction::tranIdxMtx_;
 
 //! Virtual init function
 void rps::Transaction::init() {
@@ -70,9 +65,17 @@ void rps::Transaction::setup_python() {
    // Nothing to do
 }
 
+//! Get transaction id
+uint32_t rps::Transaction::extractTid (ris::FramePtr frame) {
+   return(0);
+}
+
 //! Creator with version constant
 rps::Transaction::Transaction(bool write, rim::BlockPtr block) {
-   index_ = genIndex();
+   tranIdxMtx_.lock();
+   index_ = tranIdx_;
+   tranIdx_++;
+   tranIdxMtx_.unlock();
    block_ = block;
    write_ = write;
    init();

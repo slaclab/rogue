@@ -142,6 +142,16 @@ void rps::TransactionV3::setup_python() {
    // Nothing to do
 }
 
+//! Get transaction id
+uint32_t rps::TransactionV3::extractTid (ris::FramePtr frame) {
+   uint32_t tid;
+
+   if ( frame->getPayload() < 20 ) return(0);
+
+   frame->read(&tid,4,4);
+   return(tid);
+}
+
 //! Creator with version constant
 rps::TransactionV3::TransactionV3(bool write, rim::BlockPtr block) : Transaction(write,block) {
    // Nothing to do

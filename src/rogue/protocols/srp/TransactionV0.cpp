@@ -137,6 +137,16 @@ void rps::TransactionV0::setup_python() {
    // Nothing to do
 }
 
+//! Get transaction id
+uint32_t rps::TransactionV0::extractTid (ris::FramePtr frame) {
+   uint32_t tid;
+
+   if ( frame->getPayload() < 16 ) return(0);
+
+   frame->read(&tid,0,4);
+   return(tid);
+}
+
 //! Creator with version constant
 rps::TransactionV0::TransactionV0(bool write, rim::BlockPtr block) : Transaction(write,block) {
    // Nothing to do

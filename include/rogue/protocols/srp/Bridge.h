@@ -31,6 +31,10 @@ namespace rogue {
    namespace protocols {
       namespace srp {
 
+         class Transaction;
+         class TransactionV0;
+         class TransactionV3;
+
          //! SRP Bridge
          /*
           * Serves as an interface between memory accesses and streams
@@ -42,6 +46,22 @@ namespace rogue {
 
                //! SRP Version
                uint32_t version_;
+
+               //! Transaction map
+               std::map<uint32_t, boost::shared_ptr<rogue::protocols::srp::Transaction> > tranMap_;
+
+               //! Transaction map lock
+               boost::mutex tranMapMtx_;
+
+               //! Do a transaction
+               //boost::shared_ptr<rogue::protocols::srp::Transaction> 
+                  //addTransaction (boost::shared_ptr<rogue::interfaces::memory::Block> block);
+
+               //! Delete transaction by index
+               //void delTransaction(uint32_t index);
+
+               //! Get transaction by index
+               //boost::shared_ptr<rogue::protocols::srp::Transaction> getTransaction (uint32_t index);
 
             public:
 

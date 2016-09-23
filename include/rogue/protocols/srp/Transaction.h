@@ -33,13 +33,13 @@ namespace rogue {
          //! SRP Transaction
          class Transaction {
 
-            protected:
-
                //! Class instance counter
                static uint32_t tranIdx_;
 
                //! Class instance lock
                static boost::mutex tranIdxMtx_;
+
+            protected:
 
                //! Local index
                uint32_t index_;
@@ -59,9 +59,6 @@ namespace rogue {
                //! Write flag
                bool write_;
 
-               //! Class to acquire an index value
-               static uint32_t genIndex();
-
                //! Virtual init function
                virtual void init();
 
@@ -79,6 +76,9 @@ namespace rogue {
 
                //! Setup class in python
                static void setup_python();
+
+               //! Get transaction id
+               static uint32_t extractTid (boost::shared_ptr<rogue::interfaces::stream::Frame> frame);
 
                //! Creator with version constant
                Transaction(
@@ -103,6 +103,7 @@ namespace rogue {
 
          // Convienence
          typedef boost::shared_ptr<rogue::protocols::srp::Transaction> TransactionPtr;
+
       }
    }
 }
