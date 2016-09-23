@@ -48,6 +48,9 @@ namespace rogue {
                //! Pointer to data
                uint8_t * data_;
 
+               //! Space is posted write only
+               bool postedWrite_;
+
                //! Error state of last transaction
                /*
                 * The error field is interface specific
@@ -86,6 +89,12 @@ namespace rogue {
 
                //! Get pointer to raw data, python
                boost::python::object getDataPy();
+
+               //! Get posted write flag
+               bool getPostedWrite();
+
+               //! Set posted write flag
+               void setPostedWrite(bool flag);
 
                //! Get error state
                uint32_t getError();

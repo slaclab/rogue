@@ -41,10 +41,10 @@ void rps::TransactionV0::init() {
    }
 
    else {
-      rxSize = (block_->getSize() + 12; // 2 x 32 bits for header, 1 x 32 for tail
+      rxSize_ = (block_->getSize() + 12); // 2 x 32 bits for header, 1 x 32 for tail
 
-      if (write_) txSize = rxSize;
-      else txSize = 16;
+      if (write_) txSize_ = rxSize_;
+      else txSize_ = 16;
    }
 
    // First 32-bit value is context
@@ -59,8 +59,9 @@ void rps::TransactionV0::init() {
 bool rps::TransactionV0::intGenFrame(ris::FramePtr frame) {
    uint32_t value;
    uint32_t cnt;
+   uint32_t x;
 
-   if ( size_ == 0 || frame->getAvailable() != size_ ) {
+   if ( (txSize_ == 0) || (frame->getAvailable() != txSize_) ) {
       block_->setError(1);
       return(false);
    }
@@ -71,14 +72,14 @@ bool rps::TransactionV0::intGenFrame(ris::FramePtr frame) {
 
    // Write data
    if ( write_ ) {
-      for (x=0; x < size/4; x++) {
+      for (x=0; x < block_->getSize()/4; x++) {
          cnt += frame->write(block_->getData()+(x*4),cnt,4);
       }
    }
 
    // Read count
    else {
-      value = (block_->size()/4)-1;
+      value = (block_->getSize()/4)-1;
       cnt += frame->write(&value,cnt,4);
    }
 
@@ -94,8 +95,9 @@ bool rps::TransactionV0::intRecvFrame(ris::FramePtr frame) {
    uint32_t rxHeader[2];
    uint32_t cnt;
    uint32_t tail;
+   uint32_t x;
 
-   if ( frame->getPayload() < 16 ) return(false);
+   if ( frame->getPayload() < rxSize_ ) return(false);
 
    // Get header fields
    cnt  = frame->read(&(rxHeader[0]),0,4);
@@ -105,7 +107,7 @@ bool rps::TransactionV0::intRecvFrame(ris::FramePtr frame) {
    if ( (rxHeader[0] != header_[0]) || (rxHeader[1] != header_[1])) return(false);
 
    // Read tail
-   frame->read(&tail,frame->size-4,4);
+   frame->read(&tail,frame->getPayload()-4,4);
 
    // Tail shows error
    if ( tail != 0 ) {
@@ -115,7 +117,7 @@ bool rps::TransactionV0::intRecvFrame(ris::FramePtr frame) {
 
    // Copy payload if read
    if ( ! write_ ) {
-      for (x=0; x < size/4; x++) {
+      for (x=0; x < block_->getSize()/4; x++) {
          cnt += frame->read(block_->getData()+(x*4),cnt,4);
       }
    }

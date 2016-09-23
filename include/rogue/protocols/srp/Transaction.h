@@ -54,7 +54,7 @@ namespace rogue {
                uint32_t rxSize_;
 
                //! Header
-               uint32_t header_[4];
+               uint32_t header_[5];
 
                //! Write flag
                bool write_;

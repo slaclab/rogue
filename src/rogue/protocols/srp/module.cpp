@@ -24,8 +24,6 @@
 #include <rogue/protocols/srp/module.h>
 #include <rogue/protocols/srp/Transaction.h>
 #include <rogue/protocols/srp/TransactionV0.h>
-#include <rogue/protocols/srp/TransactionV1.h>
-#include <rogue/protocols/srp/TransactionV2.h>
 #include <rogue/protocols/srp/TransactionV3.h>
 
 namespace bp  = boost::python;
@@ -44,8 +42,6 @@ void rps::setup_module() {
 
    rps::Transaction::setup_python();
    rps::TransactionV0::setup_python();
-   rps::TransactionV1::setup_python();
-   rps::TransactionV2::setup_python();
    rps::TransactionV3::setup_python();
 
 }

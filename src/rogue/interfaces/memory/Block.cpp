@@ -35,10 +35,11 @@ rim::BlockPtr rim::Block::create (uint64_t address, uint32_t size ) {
 
 //! Create an block
 rim::Block::Block(uint64_t address, uint32_t size ) {
-   address_ = address;
-   size_    = size;
-   error_   = 0;
-   stale_   = 0;
+   address_     = address;
+   size_        = size;
+   error_       = 0;
+   stale_       = 0;
+   postedWrite_ = false;
 
    if ( (data_ = (uint8_t *)malloc(size)) == NULL ) {
       size_ = 0;
@@ -70,6 +71,16 @@ boost::python::object rim::Block::getDataPy() {
   PyObject* py_buf = PyBuffer_FromReadWriteMemory(data_, size_);
   boost::python::object retval = boost::python::object(boost::python::handle<>(py_buf));
   return retval;
+}
+
+//! Get posted write flag
+bool rim::Block::getPostedWrite() {
+   return(postedWrite_);
+}
+
+//! Set posted write flag
+void rim::Block::setPostedWrite(bool flag) {
+   postedWrite_ = flag;
 }
 
 //! Get error state
