@@ -62,6 +62,9 @@ namespace rogue {
                //! Total buffers allocated
                uint32_t allocCount_;
 
+               //! Debug control
+               uint32_t debug_;
+
             protected:
 
                //! Create a frame
@@ -101,6 +104,9 @@ namespace rogue {
 
                //! Destructor
                virtual ~Slave();
+
+               //! Set debug message size
+               void setDebug(uint32_t debug);
 
                //! Get allocated memory
                uint32_t getAllocBytes();

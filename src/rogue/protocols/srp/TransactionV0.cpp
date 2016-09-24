@@ -96,7 +96,7 @@ bool rps::TransactionV0::genFrame(ris::FramePtr frame) {
    uint32_t cnt;
    uint32_t x;
 
-   if ( (txSize_ == 0) || (frame->getAvailable() != txSize_) ) {
+   if ( (txSize_ == 0) || (frame->getAvailable() < txSize_) ) {
       block_->complete(1);
       return(false);
    }

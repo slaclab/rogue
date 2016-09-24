@@ -168,9 +168,11 @@ ris::FramePtr rhr::AxiStream::acceptReq ( uint32_t size, bool zeroCopyEn) {
          while (res < 0);
 
          // Mark zero copy meta with bit 31 set, lower bits are index
-         buff = createBuffer(rawBuff_[res],0x80000000 | res,bSize_);
-         frame->appendBuffer(buff);
-         alloc += bSize_;
+         if ( res >= 0 ) {
+            buff = createBuffer(rawBuff_[res],0x80000000 | res,bSize_);
+            frame->appendBuffer(buff);
+            alloc += bSize_;
+         }
       }
    }
    return(frame);

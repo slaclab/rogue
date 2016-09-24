@@ -12,7 +12,7 @@ class testSlave(rogue.interfaces.stream.Slave):
       self.byteCnt = 0
       self.packCnt = 0
 
-   def acceptFrame(self,frame,timeout):
+   def acceptFrame(self,frame):
       self.byteCnt += frame.getPayload()
       self.packCnt += 1
       p = bytearray(frame.getPayload())
@@ -47,7 +47,10 @@ tm.setSlave(ts2)
 
 prbsC = rogue.utilities.Prbs()
 ts3 = testSlave()
+slv = rogue.interfaces.stream.Slave()
+slv.setDebug(10)
 prbsC.setSlave(ts3)
+prbsC.addSlave(slv)
 
 count = 0
 
@@ -62,10 +65,10 @@ while (True) :
    print("")
    count += 1
 
-   f = tm.reqFrame(1000000,True,0)
+   f = tm.reqFrame(1000000,True)
    q = bytearray([10,20,30,40])
    f.write(q,0)
-   tm.sendFrame(f,0)
+   tm.sendFrame(f)
 
    prbsC.genFrame(100)
 

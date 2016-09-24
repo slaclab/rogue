@@ -9,7 +9,7 @@ class exoDataRx(rogue.interfaces.stream.Slave):
    def __init__(self):
       rogue.interfaces.stream.Slave.__init__(self)
 
-   def acceptFrame(self,frame,timeout):
+   def acceptFrame(self,frame):
       print("Got Data size=%i" % (frame.getPayload()))
       return(True)
 
@@ -29,7 +29,7 @@ class exoCmdRx(rogue.interfaces.stream.Slave):
          if (bcnt % 2): return(False)
       return(True)
 
-   def acceptFrame(self,frame,timeout):
+   def acceptFrame(self,frame):
       ba = bytearray(frame.getPayload())
       frame.read(ba,0)
       ia = [(ba[x] | (ba[x+1]<<8)) for x in range(0,len(ba),2)]
@@ -61,9 +61,9 @@ class exoCmdTx(rogue.interfaces.stream.Master):
       self.addParity(ba)
       ia = [(ba[x] | (ba[x+1]<<8)) for x in range(0,len(ba),2)]
       print("Gen size=%i Data:  %s" % (len(ba),"".join("%04x:" % i for i in ia)))
-      frame = self.reqFrame(len(ba),True,0)
+      frame = self.reqFrame(len(ba),True)
       frame.write(ba,0)
-      self.sendFrame(frame,0)
+      self.sendFrame(frame)
 
    def genHeader(self,write,modAddr,regAddr):
       ba = bytearray(8)

@@ -56,6 +56,7 @@ rim::Block::Block(uint64_t address, uint32_t size ) : Master () {
    if ( (data_ = (uint8_t *)malloc(size)) == NULL ) {
       size_ = 0;
    }
+   else memset(data_,0,size);
 }
 
 //! Destroy a block

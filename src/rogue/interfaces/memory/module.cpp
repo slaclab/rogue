@@ -40,9 +40,9 @@ void rim::setup_module() {
    // set the current scope to the new sub-module
    bp::scope io_scope = module;
 
-   rim::Block::setup_python(); 
    rim::Master::setup_python(); 
    rim::Slave::setup_python(); 
+   rim::Block::setup_python(); 
 
 }
 

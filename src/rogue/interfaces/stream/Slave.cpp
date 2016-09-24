@@ -41,10 +41,16 @@ ris::Slave::Slave() {
    freeMeta_   = 0xFFFFFFFF;
    allocBytes_ = 0;
    allocCount_ = 0;
+   debug_      = 0;
 }
 
 //! Destructor
 ris::Slave::~Slave() { }
+
+//! Set debug message size
+void ris::Slave::setDebug(uint32_t debug) {
+   debug_ = debug;
+}
 
 //! Get allocated memory
 uint32_t ris::Slave::getAllocBytes() {
@@ -140,6 +146,20 @@ ris::FramePtr ris::Slave::acceptReq ( uint32_t size, bool zeroCopyEn) {
  * Returns true on success
  */
 bool ris::Slave::acceptFrame ( ris::FramePtr frame ) {
+   uint32_t x;
+   uint8_t  val;
+
+   if ( debug_ > 0 ) {
+      printf("Slave: Got Size=%i, Data:\n",frame->getPayload());
+      printf("     ");
+      for (x=0; (x < debug_ && x < frame->getPayload()); x++) {
+         frame->read(&val,x,1);
+         printf(" 0x%.2x",val);
+         if (( (x+1) % 10 ) == 0) 
+            printf("\n     ");
+      }
+      if (( x % 10 ) != 0) printf("\n");
+   }
    return(false);
 }
 
@@ -194,6 +214,7 @@ void ris::Slave::setup_python() {
    bp::class_<ris::SlaveWrap, ris::SlaveWrapPtr, boost::noncopyable>("Slave",bp::init<>())
       .def("create",         &ris::Slave::create)
       .staticmethod("create")
+      .def("setDebug",       &ris::Slave::setDebug)
       .def("acceptFrame",    &ris::Slave::acceptFrame, &ris::SlaveWrap::defAcceptFrame)
       .def("getAllocCount",  &ris::Slave::getAllocCount)
       .def("getAllocBytes",  &ris::Slave::getAllocBytes)

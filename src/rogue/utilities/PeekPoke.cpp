@@ -54,9 +54,9 @@ ru::PeekPoke::~PeekPoke() {}
 bool ru::PeekPoke::poke ( uint32_t address, uint32_t value ) {
    adjAddress(0,address);
 
-   if ( getSize() == 8 ) setUInt8(0,value);
-   else if ( getSize() == 16 ) setUInt16(0,value);
-   else if ( getSize() == 32 ) setUInt32(0,value);
+   if ( getSize() == 1 ) setUInt8(0,value);
+   else if ( getSize() == 2 ) setUInt16(0,value);
+   else if ( getSize() == 4 ) setUInt32(0,value);
 
    doTransaction(true,false);
    return(waitComplete(1000));
@@ -72,9 +72,9 @@ uint32_t ru::PeekPoke::peek ( uint32_t address ) {
 
    doTransaction(false,false);
    if ( waitComplete(1000) && getError() == 0 ) {
-      if ( getSize() == 8 ) ret = getUInt8(0);
-      else if ( getSize() == 16 ) ret = getUInt16(0);
-      else if ( getSize() == 32 ) ret = getUInt32(0);
+      if ( getSize() == 1 ) ret = getUInt8(0);
+      else if ( getSize() == 2 ) ret = getUInt16(0);
+      else if ( getSize() == 4 ) ret = getUInt32(0);
    }
 
    return(ret);
