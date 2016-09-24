@@ -54,6 +54,9 @@ namespace rogue {
                //! Size of buffers in hardware
                uint32_t bSize_;
 
+               //! Timeout for frame transmits
+               uint32_t timeout_;
+
                //! Pointer to zero copy buffers
                void  ** rawBuff_;
 
@@ -82,6 +85,9 @@ namespace rogue {
                //! Close the device
                void close();
 
+               //! Set timeout for frame transmits in microseconds
+               void setTimeout(uint32_t timeout);
+
                //! Enable SSI flags in first and last user fields
                void enableSsi(bool enable);
 
@@ -96,17 +102,15 @@ namespace rogue {
                /*
                 * Pass total size required.
                 * Pass flag indicating if zero copy buffers are acceptable
-                * Pass timeout in microseconds or zero to wait forever
                 */
                boost::shared_ptr<rogue::interfaces::stream::Frame>
-                  acceptReq ( uint32_t size, bool zeroCopyEn, uint32_t timeout);
+                  acceptReq ( uint32_t size, bool zeroCopyEn );
 
                //! Accept a frame from master
                /* 
                 * Returns true on success
-                * Pass timeout in microseconds or zero to wait forever
                 */
-               bool acceptFrame ( boost::shared_ptr<rogue::interfaces::stream::Frame> frame, uint32_t timeout );
+               bool acceptFrame ( boost::shared_ptr<rogue::interfaces::stream::Frame> frame );
 
                //! Return a buffer
                /*

@@ -29,15 +29,24 @@
 #include <stdint.h>
 #include <vector>
 
+#include <rogue/interfaces/memory/Master.h>
 #include <boost/python.hpp>
 #include <boost/thread.hpp>
+#include <boost/enable_shared_from_this.hpp>
 
 namespace rogue {
    namespace interfaces {
       namespace memory {
 
          //! Transaction container
-         class Block {
+         class Block : public Master, 
+                       public boost::enable_shared_from_this<rogue::interfaces::memory::Block> {
+
+               //! Class instance counter
+               static uint32_t classIdx_;
+
+               //! Class instance lock
+               static boost::mutex classIdxMtx_;
 
                //! Address of memory block
                uint64_t address_;
@@ -45,11 +54,14 @@ namespace rogue {
                //! Size of memory block
                uint32_t size_;
 
+               //! Transaction is complete
+               bool complete_;
+
                //! Pointer to data
                uint8_t * data_;
 
-               //! Space is posted write only
-               bool postedWrite_;
+               //! Index
+               uint32_t index_;
 
                //! Error state of last transaction
                /*
@@ -78,23 +90,29 @@ namespace rogue {
                //! Destroy a block
                ~Block();
 
+               //! Get the global index
+               uint32_t getIndex();
+
                //! Get the address
                uint64_t getAddress();
 
+               //! Adjust the address
+               void adjAddress(uint64_t mask, uint64_t addr);
+
                //! Get the size
                uint32_t getSize();
+
+               //! Lock data access
+               void lockData();
+
+               //! UnLock data access
+               void unLockData();
 
                //! Get pointer to raw data
                uint8_t * getData();
 
                //! Get pointer to raw data, python
                boost::python::object getDataPy();
-
-               //! Get posted write flag
-               bool getPostedWrite();
-
-               //! Set posted write flag
-               void setPostedWrite(bool flag);
 
                //! Get error state
                uint32_t getError();
@@ -107,6 +125,15 @@ namespace rogue {
 
                //! Set stale state
                void setStale(bool stale);
+
+               //! Do Transaction
+               void doTransaction(bool write, bool posted);
+
+               //! Transaction complete, set by slave
+               void complete(uint32_t error);
+
+               //! Wait for completion
+               bool waitComplete (uint32_t timeout);
 
                //! Get uint8 at offset
                uint8_t getUInt8(uint32_t offset);
@@ -125,6 +152,12 @@ namespace rogue {
 
                //! Set uint32  offset
                void setUInt32(uint32_t offset, uint32_t value);
+
+               //! Get uint64 at offset
+               uint64_t getUInt64(uint32_t offset);
+
+               //! Set uint64  offset
+               void setUInt64(uint32_t offset, uint64_t value);
 
                //! Get arbitrary bit field at byte and bit offset
                uint32_t getBits(uint32_t bitOffset, uint32_t bitCount);

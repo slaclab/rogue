@@ -93,6 +93,11 @@ void rhe::Tem::close() {
    isData_  = false;
 }
 
+//! Set timeout for frame transmits in microseconds
+void rhe::Tem::setTimeout(uint32_t timeout) {
+   timeout_ = timeout;
+}
+
 //! Get card info.
 rhe::InfoPtr rhe::Tem::getInfo() {
    rhe::InfoPtr r = rhe::Info::create();
@@ -110,7 +115,7 @@ rhe::PciStatusPtr rhe::Tem::getPciStatus() {
 }
 
 //! Accept a frame from master
-bool rhe::Tem::acceptFrame ( ris::FramePtr frame, uint32_t timeout ) {
+bool rhe::Tem::acceptFrame ( ris::FramePtr frame ) {
    ris::BufferPtr   buff;
    int32_t          res;
    fd_set           fds;
@@ -134,9 +139,9 @@ bool rhe::Tem::acceptFrame ( ris::FramePtr frame, uint32_t timeout ) {
       FD_SET(fd_,&fds);
 
       // Setup select timeout
-      if ( timeout > 0 ) {
-         tout.tv_sec=timeout / 1000000;
-         tout.tv_usec=timeout % 1000000;
+      if ( timeout_ > 0 ) {
+         tout.tv_sec=timeout_ / 1000000;
+         tout.tv_usec=timeout_ % 1000000;
          tpr = &tout;
       }
       else tpr = NULL;
@@ -197,7 +202,7 @@ void rhe::Tem::runThread() {
             // Read was successfull
             if ( res > 0 ) {
                buff->setSize(res);
-               sendFrame(frame,0);
+               sendFrame(frame);
                frame.reset();
             }
          }

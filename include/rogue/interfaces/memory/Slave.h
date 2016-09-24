@@ -49,11 +49,9 @@ namespace rogue {
                //! Destroy object
                ~Slave();
 
-               //! Issue a set of write transactions
-               virtual bool doWrite (boost::shared_ptr<rogue::interfaces::memory::BlockVector> blocks);
-
-               //! Issue a set of read transactions
-               virtual bool doRead  (boost::shared_ptr<rogue::interfaces::memory::BlockVector> blocks);
+               //! Post a transaction
+               virtual void doTransaction(bool write, bool posted, 
+                     boost::shared_ptr<rogue::interfaces::memory::Block> block);
 
          };
 
@@ -64,17 +62,14 @@ namespace rogue {
 
             public:
 
-               //! Issue a set of write transactions
-               bool doWrite (boost::shared_ptr<rogue::interfaces::memory::BlockVector> blocks);
+               //! Post a transaction
+               void doTransaction(bool write_, bool posted_, 
+                    boost::shared_ptr<rogue::interfaces::memory::Block> block);
 
-               //! Issue a set of read transactions
-               bool doRead  (boost::shared_ptr<rogue::interfaces::memory::BlockVector> blocks);
+               //! Post a transaction
+               void defTransaction(bool write_, bool posted_, 
+                    boost::shared_ptr<rogue::interfaces::memory::Block> block);
 
-               //! Issue a set of write transactions, default
-               bool defDoWrite (boost::shared_ptr<rogue::interfaces::memory::BlockVector> blocks);
-
-               //! Issue a set of read transactions, default
-               bool defDoRead  (boost::shared_ptr<rogue::interfaces::memory::BlockVector> blocks);
          };
 
          // Convienence

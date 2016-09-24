@@ -33,17 +33,8 @@ namespace rogue {
          //! SRP Transaction
          class Transaction {
 
-               //! Class instance counter
-               static uint32_t tranIdx_;
-
-               //! Class instance lock
-               static boost::mutex tranIdxMtx_;
-
             protected:
 
-               //! Local index
-               uint32_t index_;
-               
                //! Block
                boost::shared_ptr<rogue::interfaces::memory::Block> block_;
 
@@ -59,45 +50,38 @@ namespace rogue {
                //! Write flag
                bool write_;
 
-               //! Virtual init function
-               virtual void init();
-
-               //! Generate request frame
-               virtual bool intGenFrame(boost::shared_ptr<rogue::interfaces::stream::Frame> frame);
-
-               //! Receive response frame
-               virtual bool intRecvFrame(boost::shared_ptr<rogue::interfaces::stream::Frame> frame);
+               //! Posted flag
+               bool posted_;
 
             public:
 
                //! Class creation
                static boost::shared_ptr<rogue::protocols::srp::Transaction> create (
-                     bool write, boost::shared_ptr<rogue::interfaces::memory::Block> block);
+                     boost::shared_ptr<rogue::interfaces::memory::Block> block);
 
                //! Setup class in python
                static void setup_python();
 
-               //! Get transaction id
+               //! Get transaction id from a frame
                static uint32_t extractTid (boost::shared_ptr<rogue::interfaces::stream::Frame> frame);
 
-               //! Creator with version constant
-               Transaction(
-                     bool write, boost::shared_ptr<rogue::interfaces::memory::Block> block);
+               //! Creator
+               Transaction(boost::shared_ptr<rogue::interfaces::memory::Block> block);
 
                //! Deconstructor
                ~Transaction();
 
-               //! Get tx frame size
-               uint32_t getFrameSize();
-
                //! Get transacton index
                uint32_t getIndex();
 
+               //! Setup a transaction, return required frame size
+               virtual uint32_t init(bool write, bool posted);
+
                //! Update frame with message data
-               bool genFrame(boost::shared_ptr<rogue::interfaces::stream::Frame> frame);
+               virtual bool genFrame(boost::shared_ptr<rogue::interfaces::stream::Frame> frame);
 
                //! Receive response frame
-               bool recvFrame(boost::shared_ptr<rogue::interfaces::stream::Frame> frame);
+               virtual bool recvFrame(boost::shared_ptr<rogue::interfaces::stream::Frame> frame);
 
          };
 

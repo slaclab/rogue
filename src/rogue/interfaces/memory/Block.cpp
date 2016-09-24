@@ -27,6 +27,12 @@
 namespace rim = rogue::interfaces::memory;
 namespace bp  = boost::python;
 
+// Init class counter
+uint32_t rim::Block::classIdx_ = 0;
+
+//! Class instance lock
+boost::mutex rim::Block::classIdxMtx_;
+
 //! Create a block, class creator
 rim::BlockPtr rim::Block::create (uint64_t address, uint32_t size ) {
    rim::BlockPtr b = boost::make_shared<rim::Block>(address,size);
@@ -34,12 +40,18 @@ rim::BlockPtr rim::Block::create (uint64_t address, uint32_t size ) {
 }
 
 //! Create an block
-rim::Block::Block(uint64_t address, uint32_t size ) {
+rim::Block::Block(uint64_t address, uint32_t size ) : Master () {
+   classIdxMtx_.lock();
+   if ( classIdx_ == 0 ) classIdx_ = 1;
+   index_ = classIdx_;
+   classIdx_++;
+   classIdxMtx_.unlock();
+
    address_     = address;
    size_        = size;
    error_       = 0;
    stale_       = 0;
-   postedWrite_ = false;
+   complete_    = true;
 
    if ( (data_ = (uint8_t *)malloc(size)) == NULL ) {
       size_ = 0;
@@ -51,14 +63,37 @@ rim::Block::~Block() {
    if ( data_ != NULL ) free(data_);
 }
 
+//! Get the global index
+uint32_t rim::Block::getIndex() {
+   return(index_);
+}
+
 //! Get the address
 uint64_t rim::Block::getAddress() {
    return(address_);
 }
 
+//! Adjust the address
+void rim::Block::adjAddress(uint64_t mask, uint64_t addr) {
+   mtx_.lock();
+   address_ &= mask;
+   address_ |= addr;
+   mtx_.unlock();
+}
+
 //! Get the size
 uint32_t rim::Block::getSize() {
    return(size_);
+}
+
+//! Lock data access
+void rim::Block::lockData() {
+   mtx_.lock();
+}
+
+//! UnLock data access
+void rim::Block::unLockData() {
+   mtx_.unlock();
 }
 
 //! Get pointer to raw data
@@ -71,16 +106,6 @@ boost::python::object rim::Block::getDataPy() {
   PyObject* py_buf = PyBuffer_FromReadWriteMemory(data_, size_);
   boost::python::object retval = boost::python::object(boost::python::handle<>(py_buf));
   return retval;
-}
-
-//! Get posted write flag
-bool rim::Block::getPostedWrite() {
-   return(postedWrite_);
-}
-
-//! Set posted write flag
-void rim::Block::setPostedWrite(bool flag) {
-   postedWrite_ = flag;
 }
 
 //! Get error state
@@ -107,6 +132,30 @@ void rim::Block::setStale(bool stale) {
    mtx_.unlock();
 }
 
+//! Do Transaction
+void rim::Block::doTransaction(bool write, bool posted) {
+   rim::BlockPtr p = shared_from_this();
+   reqTransaction(write,posted,p);
+}
+
+//! Transaction complete
+void rim::Block::complete(uint32_t error) {
+   mtx_.lock();
+   complete_ = true;
+   error_    = error;
+   if ( error == 0 ) stale_ = false;
+   mtx_.unlock();
+}
+
+//! Wait complete
+bool rim::Block::waitComplete(uint32_t timeout) {
+   while (!complete_ && timeout > 0) {
+      usleep(1);
+      timeout--;
+   }
+   return(complete_);
+}
+
 //! Get uint8 at offset
 // should throw exception here if range is off
 uint8_t rim::Block::getUInt8(uint32_t offset) {
@@ -120,6 +169,7 @@ void rim::Block::setUInt8(uint32_t offset, uint8_t value) {
    if ( offset >= size_ ) return;
    mtx_.lock();
    data_[offset] = value;
+   stale_ = true;
    mtx_.unlock();
 }
 
@@ -137,6 +187,7 @@ void rim::Block::setUInt16(uint32_t offset, uint16_t value) {
    if ( offset > (size_-2) ) return;
    mtx_.lock();
    ((uint16_t *)data_)[offset/2] = value;
+   stale_ = true;
    mtx_.unlock();
 }
 
@@ -154,6 +205,25 @@ void rim::Block::setUInt32(uint32_t offset, uint32_t value) {
    if ( offset > (size_-4) ) return;
    mtx_.lock();
    ((uint32_t *)data_)[offset/4] = value;
+   stale_ = true;
+   mtx_.unlock();
+}
+
+//! Get uint64 at offset
+uint64_t rim::Block::getUInt64(uint32_t offset) {
+   if ( ((offset % 4) != 0) || (offset > (size_-4)) ) return(0);
+
+   return(((uint64_t *)data_)[offset/8]);
+}
+
+//! Set uint64  offset
+void rim::Block::setUInt64(uint32_t offset, uint64_t value) {
+   if ( ((offset % 4) != 0) || (offset > (size_-4)) ) return;
+
+   if ( offset > (size_-4) ) return;
+   mtx_.lock();
+   ((uint64_t *)data_)[offset/8] = value;
+   stale_ = true;
    mtx_.unlock();
 }
 
@@ -208,24 +278,35 @@ void rim::Block::setBits(uint32_t bitOffset, uint32_t bitCount, uint32_t value) 
          currByte++;
       }
    }
+   stale_ = true;
+   mtx_.unlock();
 }
 
 void rim::Block::setup_python() {
 
-   bp::class_<rim::Block, rim::BlockPtr, boost::noncopyable>("Block",bp::init<uint32_t,uint32_t>())
+   bp::class_<rim::Block, bp::bases<rim::Master>, rim::BlockPtr, boost::noncopyable>("Block",bp::init<uint64_t,uint32_t>())
       .def("create",         &rim::Block::create)
       .staticmethod("create")
+      .def("getIndex",       &rim::Block::getIndex)
       .def("getAddress",     &rim::Block::getAddress)
+      .def("adjAddress",     &rim::Block::adjAddress)
       .def("getSize",        &rim::Block::getSize)
+      .def("lockData",       &rim::Block::lockData)
+      .def("unLockData",     &rim::Block::unLockData)
       .def("getData",        &rim::Block::getDataPy)
       .def("getError",       &rim::Block::getError)
       .def("setError",       &rim::Block::setError)
       .def("getStale",       &rim::Block::getStale)
       .def("setStale",       &rim::Block::setStale)
+      .def("doTransaction",  &rim::Block::doTransaction)
+      .def("complete",       &rim::Block::complete)
+      .def("waitComplete",   &rim::Block::waitComplete)
       .def("getUInt8",       &rim::Block::getUInt8)
       .def("setUInt8",       &rim::Block::setUInt8)
       .def("getUInt32",      &rim::Block::getUInt32)
       .def("setUInt32",      &rim::Block::setUInt32)
+      .def("getUInt64",      &rim::Block::getUInt64)
+      .def("setUInt64",      &rim::Block::setUInt64)
       .def("getBits",        &rim::Block::getBits)
       .def("setBits",        &rim::Block::setBits)
    ;

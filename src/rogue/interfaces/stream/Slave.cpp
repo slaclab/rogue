@@ -131,7 +131,7 @@ void ris::Slave::deleteBuffer( uint32_t rawSize) {
  * Pass total size required.
  * Pass flag indicating if zero copy buffers are acceptable
  */
-ris::FramePtr ris::Slave::acceptReq ( uint32_t size, bool zeroCopyEn, uint32_t timeout) {
+ris::FramePtr ris::Slave::acceptReq ( uint32_t size, bool zeroCopyEn) {
    return(createFrame(size,size,false,false));
 }
 
@@ -139,7 +139,7 @@ ris::FramePtr ris::Slave::acceptReq ( uint32_t size, bool zeroCopyEn, uint32_t t
 /* 
  * Returns true on success
  */
-bool ris::Slave::acceptFrame ( ris::FramePtr frame, uint32_t timeout ) {
+bool ris::Slave::acceptFrame ( ris::FramePtr frame ) {
    return(false);
 }
 
@@ -159,7 +159,7 @@ void ris::Slave::retBuffer(uint8_t * data, uint32_t meta, uint32_t rawSize) {
 }
 
 //! Accept frame
-bool ris::SlaveWrap::acceptFrame ( ris::FramePtr frame, uint32_t timeout ) {
+bool ris::SlaveWrap::acceptFrame ( ris::FramePtr frame ) {
    bool ret;
    bool found;
 
@@ -173,20 +173,20 @@ bool ris::SlaveWrap::acceptFrame ( ris::FramePtr frame, uint32_t timeout ) {
    if (boost::python::override pb = this->get_override("acceptFrame")) {
       found = true;
       try {
-         ret = pb(frame,timeout);
+         ret = pb(frame);
       } catch (...) {
          PyErr_Print();
       }
    }
    PyGILState_Release(pyState);
 
-   if ( ! found ) ret = ris::Slave::acceptFrame(frame,timeout);
+   if ( ! found ) ret = ris::Slave::acceptFrame(frame);
    return(ret);
 }
 
 //! Default accept frame call
-bool ris::SlaveWrap::defAcceptFrame ( ris::FramePtr frame, uint32_t timeout ) {
-   return(ris::Slave::acceptFrame(frame,timeout));
+bool ris::SlaveWrap::defAcceptFrame ( ris::FramePtr frame ) {
+   return(ris::Slave::acceptFrame(frame));
 }
 
 void ris::Slave::setup_python() {

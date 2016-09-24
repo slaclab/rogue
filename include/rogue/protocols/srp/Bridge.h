@@ -77,14 +77,12 @@ namespace rogue {
                //! Deconstructor
                ~Bridge();
 
-               //! Issue a set of write transactions
-               bool doWrite (boost::shared_ptr<rogue::interfaces::memory::BlockVector> blocks);
-
-               //! Issue a set of read transactions
-               bool doRead  (boost::shared_ptr<rogue::interfaces::memory::BlockVector> blocks);
+               //! Post a transaction
+               void doTransaction(bool write, bool posted, 
+                     boost::shared_ptr<rogue::interfaces::memory::Block> block);
 
                //! Accept a frame from master
-               bool acceptFrame ( boost::shared_ptr<rogue::interfaces::stream::Frame> frame, uint32_t timeout );
+               bool acceptFrame ( boost::shared_ptr<rogue::interfaces::stream::Frame> frame );
 
          };
 

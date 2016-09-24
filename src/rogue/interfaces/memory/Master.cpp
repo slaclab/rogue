@@ -22,7 +22,6 @@
 #include <rogue/interfaces/memory/Master.h>
 #include <rogue/interfaces/memory/Slave.h>
 #include <rogue/interfaces/memory/Block.h>
-#include <rogue/interfaces/memory/BlockVector.h>
 #include <boost/make_shared.hpp>
 
 namespace rim = rogue::interfaces::memory;
@@ -42,35 +41,29 @@ rim::Master::Master() {
 //! Destroy object
 rim::Master::~Master() { }
 
-//! Set primary slave, used for buffer request forwarding
-void rim::Master::setSlave ( boost::shared_ptr<interfaces::memory::Slave> slave ) {
+//! Set slave, used for buffer request forwarding
+void rim::Master::setSlave ( rim::SlavePtr slave ) {
    slaveMtx_.lock();
    slave_ = slave;
    slaveMtx_.unlock();
 }
 
-//! Request a set of write transactions
-bool rim::Master::reqWrite (rim::BlockVectorPtr blocks) {
-   return(slave_->doWrite(blocks));
+//! Get slave
+rim::SlavePtr rim::Master::getSlave () {
+   rim::SlavePtr p; 
+   slaveMtx_.lock();
+   p = slave_;
+   slaveMtx_.unlock();
+   return(p);
 }
 
-//! Request a single write transaction
-bool rim::Master::reqWriteSingle (rim::BlockPtr block) {
-   rim::BlockVectorPtr blocks = rim::BlockVector::create();
-   blocks->append(block);
-   return(slave_->doWrite(blocks));
-}
-
-//! Request a set of read transactions
-bool rim::Master::reqRead (rim::BlockVectorPtr blocks) {
-   return(slave_->doRead(blocks));
-}
-
-//! Request a single read transaction
-bool rim::Master::reqReadSingle (rim::BlockPtr block) {
-   rim::BlockVectorPtr blocks = rim::BlockVector::create();
-   blocks->append(block);
-   return(slave_->doRead(blocks));
+//! Post a transaction
+void rim::Master::reqTransaction(bool write, bool posted, rim::BlockPtr block) {
+   rim::SlavePtr p; 
+   slaveMtx_.lock();
+   p = slave_;
+   slaveMtx_.unlock();
+   p->doTransaction(write,posted,block);
 }
 
 void rim::Master::setup_python() {
@@ -79,10 +72,8 @@ void rim::Master::setup_python() {
       .def("create",         &rim::Master::create)
       .staticmethod("create")
       .def("setSlave",       &rim::Master::setSlave)
-      .def("reqWrite",       &rim::Master::reqWrite)
-      .def("reqWriteSingle", &rim::Master::reqWriteSingle)
-      .def("reqRead",        &rim::Master::reqRead)
-      .def("reqReadSingle",  &rim::Master::reqReadSingle)
+      .def("getSlave",       &rim::Master::getSlave)
+      .def("reqTransaction", &rim::Master::reqTransaction)
    ;
 }
 

@@ -22,7 +22,6 @@
 
 #include <rogue/interfaces/memory/module.h>
 #include <rogue/interfaces/memory/Block.h>
-#include <rogue/interfaces/memory/BlockVector.h>
 #include <rogue/interfaces/memory/Slave.h>
 #include <rogue/interfaces/memory/Master.h>
 #include <boost/python.hpp>
@@ -42,7 +41,6 @@ void rim::setup_module() {
    bp::scope io_scope = module;
 
    rim::Block::setup_python(); 
-   rim::BlockVector::setup_python(); 
    rim::Master::setup_python(); 
    rim::Slave::setup_python(); 
 

@@ -27,26 +27,17 @@ TODO
 
 Add locking to PgpCard and Prbs
 
-Locking of addSlave and setSlave in Master
-
 Proper memory allocation in Slave for Frame and Buffers. This includes allocating
 space for payload as well as the variables within the clases.
 
-Memory access interface
-
-Add namespaces to python
-
 Determine if setting GIL is ok when master and slave are both in python.
+
+Add exception throws in C++ code called from python for error cases.
 
 Add the following:
 
-protocols/srp
 protocols/rssi
 protocols/map
 protocols/packetizer
 protocols/udp
-protocols/exo -- Command messages for TEM
-
-hardware/rce
-hardware/exo
 

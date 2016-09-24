@@ -247,7 +247,7 @@ void ru::Prbs::genFrame (uint32_t size) {
    txSeqMtx_.unlock();
 
    // Get frame
-   fr = reqFrame(size,true,0);
+   fr = reqFrame(size,true);
 
    // Frame allocation failed
    if ( fr->getAvailable() < size ) {
@@ -275,11 +275,11 @@ void ru::Prbs::genFrame (uint32_t size) {
    txCount_++;
    txBytes_ += size;
    txCountMtx_.unlock();
-   sendFrame(fr,0);
+   sendFrame(fr);
 }
 
 //! Accept a frame from master
-bool ru::Prbs::acceptFrame ( ris::FramePtr frame, uint32_t timeout ) {
+bool ru::Prbs::acceptFrame ( ris::FramePtr frame ) {
    uint32_t   frSize;
    uint32_t   frSeq;
    uint32_t   curSeq;

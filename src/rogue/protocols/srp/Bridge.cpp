@@ -27,8 +27,10 @@
 #include <rogue/interfaces/stream/Frame.h>
 #include <rogue/interfaces/memory/Slave.h>
 #include <rogue/interfaces/memory/Block.h>
-#include <rogue/interfaces/memory/BlockVector.h>
 #include <rogue/protocols/srp/Bridge.h>
+#include <rogue/protocols/srp/Transaction.h>
+#include <rogue/protocols/srp/TransactionV0.h>
+#include <rogue/protocols/srp/TransactionV3.h>
 
 namespace bp = boost::python;
 namespace rps = rogue::protocols::srp;
@@ -60,25 +62,54 @@ rps::Bridge::Bridge(uint32_t version) {
 //! Deconstructor
 rps::Bridge::~Bridge() {}
 
-//! Issue a set of write transactions
-bool rps::Bridge::doWrite (rim::BlockVectorPtr blocks) {
+//! Post a transaction
+void rps::Bridge::doTransaction(bool write, bool posted, rim::BlockPtr block) {
+   uint32_t size;
+   rps::TransactionPtr tp;
+   ris::FramePtr frame;
 
-   return(false);
-}
+   tranMapMtx_.lock();
+   if ( tranMap_.find(block->getIndex()) != tranMap_.end() ) 
+      tp = tranMap_[block->getIndex()];
+   else {
 
-//! Issue a set of read transactions
-bool rps::Bridge::doRead  (rim::BlockVectorPtr blocks) {
+      if ( version_ == 0 )
+         tp = rps::TransactionV0::create(block);
+      else if ( version_ == 3 )
+         tp = rps::TransactionV3::create(block);
+      else
+         tp = rps::Transaction::create(block);
 
+      tranMap_[block->getIndex()] = tp;
+   }
+   tranMapMtx_.unlock();
 
-   return(false);
+   size = tp->init(write,posted);
+   frame = reqFrame(size,true);
+   if ( tp->genFrame(frame) ) sendFrame(frame);
 }
 
 //! Accept a frame from master
-bool rps::Bridge::acceptFrame ( ris::FramePtr frame, uint32_t timeout ) {
+bool rps::Bridge::acceptFrame ( ris::FramePtr frame ) {
+   rps::TransactionPtr tp;
+   uint32_t index;
 
+   if ( version_ == 0 )
+      index = rps::TransactionV0::extractTid(frame);
+   else if ( version_ == 3 )
+      index = rps::TransactionV3::extractTid(frame);
+   else
+      index = rps::Transaction::extractTid(frame);
 
+   tranMapMtx_.lock();
+   if ( tranMap_.find(index) != tranMap_.end() ) {
+      tp = tranMap_[index];
+      tranMapMtx_.unlock();
+   } else {
+      tranMapMtx_.unlock();
+      return(false);
+   }
 
-   return(false);
+   return(tp->recvFrame(frame));
 }
-
 

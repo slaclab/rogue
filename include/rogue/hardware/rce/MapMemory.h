@@ -76,11 +76,9 @@ namespace rogue {
                //! Add a memory space
                void addMap(uint32_t address, uint32_t size);
 
-               //! Issue a set of write transactions
-               bool doWrite (boost::shared_ptr<rogue::interfaces::memory::BlockVector> blocks);
-
-               //! Issue a set of read transactions
-               bool doRead  (boost::shared_ptr<rogue::interfaces::memory::BlockVector> blocks);
+               //! Post a transaction
+               void doTransaction(bool write, bool posted, 
+                     boost::shared_ptr<rogue::interfaces::memory::Block> block);
          };
 
          // Convienence

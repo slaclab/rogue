@@ -94,6 +94,11 @@ void rhr::AxiStream::close() {
    rawBuff_ = NULL;
 }
 
+//! Set timeout for frame transmits in microseconds
+void rhr::AxiStream::setTimeout(uint32_t timeout) {
+   timeout_ = timeout;
+}
+
 //! Enable SSI flags in first and last user fields
 void rhr::AxiStream::enableSsi(bool enable) {
    enSsi_ = enable;
@@ -105,7 +110,7 @@ void rhr::AxiStream::dmaAck() {
 }
 
 //! Generate a buffer. Called from master
-ris::FramePtr rhr::AxiStream::acceptReq ( uint32_t size, bool zeroCopyEn, uint32_t timeout) {
+ris::FramePtr rhr::AxiStream::acceptReq ( uint32_t size, bool zeroCopyEn) {
    int32_t          res;
    fd_set           fds;
    struct timeval   tout;
@@ -140,9 +145,9 @@ ris::FramePtr rhr::AxiStream::acceptReq ( uint32_t size, bool zeroCopyEn, uint32
             FD_SET(fd_,&fds);
 
             // Setup select timeout
-            if ( timeout > 0 ) {
-               tout.tv_sec=timeout / 1000000;
-               tout.tv_usec=timeout % 1000000;
+            if ( timeout_ > 0 ) {
+               tout.tv_sec=timeout_ / 1000000;
+               tout.tv_usec=timeout_ % 1000000;
                tpr = &tout;
             }
             else tpr = NULL;
@@ -172,7 +177,7 @@ ris::FramePtr rhr::AxiStream::acceptReq ( uint32_t size, bool zeroCopyEn, uint32
 }
 
 //! Accept a frame from master
-bool rhr::AxiStream::acceptFrame ( ris::FramePtr frame, uint32_t timeout ) {
+bool rhr::AxiStream::acceptFrame ( ris::FramePtr frame ) {
    ris::BufferPtr buff;
    int32_t          res;
    fd_set           fds;
@@ -237,9 +242,9 @@ bool rhr::AxiStream::acceptFrame ( ris::FramePtr frame, uint32_t timeout ) {
             FD_SET(fd_,&fds);
 
             // Setup select timeout
-            if ( timeout > 0 ) {
-               tout.tv_sec=timeout / 1000000;
-               tout.tv_usec=timeout % 1000000;
+            if ( timeout_ > 0 ) {
+               tout.tv_sec=timeout_ / 1000000;
+               tout.tv_usec=timeout_ % 1000000;
                tpr = &tout;
             }
             else tpr = NULL;
@@ -358,6 +363,8 @@ void rhr::AxiStream::runThread() {
                buff->setError(error);
                frame->setError(error | frame->getError());
                frame->appendBuffer(buff);
+               sendFrame(frame);
+               frame = createFrame(0,0,false,(rawBuff_ != NULL));
             }
          }
       }

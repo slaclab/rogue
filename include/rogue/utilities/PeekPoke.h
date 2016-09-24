@@ -23,17 +23,13 @@
 #define __ROGUE_UTILITIES_PEEK_POKE_H__
 #include <stdint.h>
 #include <boost/thread.hpp>
-#include <rogue/interfaces/memory/Master.h>
+#include <rogue/interfaces/memory/Block.h>
 
 namespace rogue {
    namespace utilities {
 
       //! Register access peek and poke
-      class PeekPoke : public rogue::interfaces::memory::Master {
-
-            //! Register size
-            uint32_t regSize_;
-
+      class PeekPoke : public rogue::interfaces::memory::Block {
          public:
 
             //! Class creation

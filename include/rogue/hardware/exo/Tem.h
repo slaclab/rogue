@@ -53,6 +53,9 @@ namespace rogue {
                //! Is data
                bool isData_;
 
+               //! Timeout for frame transmits
+               uint32_t timeout_;
+
             protected:
 
                //! Open the device. Pass data flag
@@ -75,6 +78,9 @@ namespace rogue {
                //! Close the device
                void close();
 
+               //! Set timeout for frame transmits in microseconds
+               void setTimeout(uint32_t timeout);
+
                //! Get card info.
                boost::shared_ptr<rogue::hardware::exo::Info> getInfo();
 
@@ -84,9 +90,8 @@ namespace rogue {
                //! Accept a frame from master
                /* 
                 * Returns true on success
-                * Pass timeout in microseconds or zero to wait forever
                 */
-               bool acceptFrame ( boost::shared_ptr<rogue::interfaces::stream::Frame> frame, uint32_t timeout );
+               bool acceptFrame ( boost::shared_ptr<rogue::interfaces::stream::Frame> frame );
          };
 
          // Convienence

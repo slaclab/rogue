@@ -112,18 +112,15 @@ namespace rogue {
                /*
                 * Pass total size required.
                 * Pass flag indicating if zero copy buffers are acceptable
-                * Pass timeout in microseconds or zero to wait forever
                 */
                virtual boost::shared_ptr<rogue::interfaces::stream::Frame>
-                  acceptReq ( uint32_t size, bool zeroCopyEn, uint32_t timeout);
+                  acceptReq ( uint32_t size, bool zeroCopyEn );
 
                //! Accept a frame from master
                /* 
                 * Returns true on success
-                * Pass timeout in microseconds or zero to wait forever
                 */
-               virtual bool acceptFrame ( boost::shared_ptr<rogue::interfaces::stream::Frame> frame, 
-                                          uint32_t timeout );
+               virtual bool acceptFrame ( boost::shared_ptr<rogue::interfaces::stream::Frame> frame );
 
                //! Return a buffer
                /*
@@ -140,10 +137,10 @@ namespace rogue {
             public:
 
                //! Accept frame
-               bool acceptFrame ( boost::shared_ptr<rogue::interfaces::stream::Frame> frame, uint32_t timeout );
+               bool acceptFrame ( boost::shared_ptr<rogue::interfaces::stream::Frame> frame );
 
                //! Default accept frame call
-               bool defAcceptFrame ( boost::shared_ptr<rogue::interfaces::stream::Frame> frame, uint32_t timeout );
+               bool defAcceptFrame ( boost::shared_ptr<rogue::interfaces::stream::Frame> frame );
          };
 
          // Convienence

@@ -54,6 +54,11 @@ rhp::PgpCard::~PgpCard() {
    this->close();
 }
 
+//! Set timeout for frame transmits in microseconds
+void rhp::PgpCard::setTimeout(uint32_t timeout) {
+   timeout_ = timeout;
+}
+
 //! Open the device. Pass lane & vc.
 bool rhp::PgpCard::open ( std::string path, uint32_t lane, uint32_t vc ) {
    uint32_t mask;
@@ -168,7 +173,7 @@ bool rhp::PgpCard::sendOpCode(uint8_t code) {
 }
 
 //! Generate a buffer. Called from master
-ris::FramePtr rhp::PgpCard::acceptReq ( uint32_t size, bool zeroCopyEn, uint32_t timeout) {
+ris::FramePtr rhp::PgpCard::acceptReq ( uint32_t size, bool zeroCopyEn ) {
    int32_t          res;
    fd_set           fds;
    struct timeval   tout;
@@ -203,9 +208,9 @@ ris::FramePtr rhp::PgpCard::acceptReq ( uint32_t size, bool zeroCopyEn, uint32_t
             FD_SET(fd_,&fds);
 
             // Setup select timeout
-            if ( timeout > 0 ) {
-               tout.tv_sec=timeout / 1000000;
-               tout.tv_usec=timeout % 1000000;
+            if ( timeout_ > 0 ) {
+               tout.tv_sec=timeout_ / 1000000;
+               tout.tv_usec=timeout_ % 1000000;
                tpr = &tout;
             }
             else tpr = NULL;
@@ -235,7 +240,7 @@ ris::FramePtr rhp::PgpCard::acceptReq ( uint32_t size, bool zeroCopyEn, uint32_t
 }
 
 //! Accept a frame from master
-bool rhp::PgpCard::acceptFrame ( ris::FramePtr frame, uint32_t timeout ) {
+bool rhp::PgpCard::acceptFrame ( ris::FramePtr frame ) {
    ris::BufferPtr buff;
    int32_t          res;
    fd_set           fds;
@@ -294,9 +299,9 @@ bool rhp::PgpCard::acceptFrame ( ris::FramePtr frame, uint32_t timeout ) {
             FD_SET(fd_,&fds);
 
             // Setup select timeout
-            if ( timeout > 0 ) {
-               tout.tv_sec=timeout / 1000000;
-               tout.tv_usec=timeout % 1000000;
+            if ( timeout_ > 0 ) {
+               tout.tv_sec=timeout_ / 1000000;
+               tout.tv_usec=timeout_ % 1000000;
                tpr = &tout;
             }
             else tpr = NULL;
@@ -408,7 +413,7 @@ void rhp::PgpCard::runThread() {
 
                // If continue flag is not set, push frame and get a new empty frame
                if ( cont == 0 ) {
-                  sendFrame(frame,0);
+                  sendFrame(frame);
                   frame = createFrame(0,0,false,(rawBuff_ != NULL));
                }
             }

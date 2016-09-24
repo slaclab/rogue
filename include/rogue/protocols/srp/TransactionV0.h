@@ -31,23 +31,11 @@ namespace rogue {
 
          //! SRP TransactionV0
          class TransactionV0 : public Transaction {
-
-            protected:
-
-               //! Virtual init function
-               void init();
-
-               //! Generate request frame
-               bool intGenFrame(boost::shared_ptr<rogue::interfaces::stream::Frame> frame);
-
-               //! Receive response frame
-               bool intRecvFrame(boost::shared_ptr<rogue::interfaces::stream::Frame> frame);
-
             public:
 
                //! Class creation
                static boost::shared_ptr<rogue::protocols::srp::TransactionV0> create (
-                     bool write, boost::shared_ptr<rogue::interfaces::memory::Block> block);
+                     boost::shared_ptr<rogue::interfaces::memory::Block> block);
 
                //! Setup class in python
                static void setup_python();
@@ -56,10 +44,19 @@ namespace rogue {
                static uint32_t extractTid (boost::shared_ptr<rogue::interfaces::stream::Frame> frame);
 
                //! Creator with version constant
-               TransactionV0(bool write, boost::shared_ptr<rogue::interfaces::memory::Block> block);
+               TransactionV0(boost::shared_ptr<rogue::interfaces::memory::Block> block);
 
                //! Deconstructor
                ~TransactionV0();
+
+               //! Virtual init function
+               uint32_t init(bool write, bool posted);
+
+               //! Generate request frame
+               bool genFrame(boost::shared_ptr<rogue::interfaces::stream::Frame> frame);
+
+               //! Receive response frame
+               bool recvFrame(boost::shared_ptr<rogue::interfaces::stream::Frame> frame);
 
          };
 

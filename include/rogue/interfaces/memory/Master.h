@@ -60,17 +60,12 @@ namespace rogue {
                //! Set slave, used for memory access requests
                void setSlave ( boost::shared_ptr<rogue::interfaces::memory::Slave> slave );
 
-               //! Request a set of write transactions
-               bool reqWrite ( boost::shared_ptr<rogue::interfaces::memory::BlockVector> blocks);
+               //! Get slave
+               boost::shared_ptr<rogue::interfaces::memory::Slave> getSlave();
 
-               //! Request a single write transaction
-               bool reqWriteSingle (boost::shared_ptr<rogue::interfaces::memory::Block> block);
-
-               //! Request a set of read transactions
-               bool reqRead ( boost::shared_ptr<rogue::interfaces::memory::BlockVector> blocks);
-
-               //! Request a single read transaction
-               bool reqReadSingle (boost::shared_ptr<rogue::interfaces::memory::Block> block);
+               //! Post a transaction
+               void reqTransaction(bool write, bool posted, 
+                     boost::shared_ptr<rogue::interfaces::memory::Block> block);
 
          };
 

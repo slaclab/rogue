@@ -21,7 +21,6 @@
 **/
 #include <rogue/hardware/rce/MapMemory.h>
 #include <rogue/interfaces/memory/Block.h>
-#include <rogue/interfaces/memory/BlockVector.h>
 #include <boost/make_shared.hpp>
 #include <stdio.h>
 #include <unistd.h>
@@ -115,52 +114,21 @@ uint8_t * rhr::MapMemory::findSpace (uint32_t base, uint32_t size) {
    return(NULL);
 }
 
-//! Issue a set of write transactions
-bool rhr::MapMemory::doWrite (boost::shared_ptr<rogue::interfaces::memory::BlockVector> blocks) {
-   rim::BlockPtr b;
-   uint8_t *     ptr;
-   uint32_t      x;
-   bool          ret;
+//! Post a transaction
+void rhr::MapMemory::doTransaction(bool write, bool posted, rim::BlockPtr block) { 
+   uint8_t * ptr;
 
-   ret = true;
-
-   for(x=0; x < blocks->count(); x++) {
-      b = blocks->getBlock(x);
-
-      if ((ptr = findSpace(b->getAddress(),b->getSize())) == NULL) {
-         ret = false;
-         b->setError(1);
-      }
-      else {
-         memcpy(ptr,b->getData(),b->getSize());
-         b->setStale(false);
-      }
+   if ((ptr = findSpace(block->getAddress(),block->getSize())) == NULL) {
+      block->complete(1);
    }
-   return(ret);
-}
-
-//! Issue a set of read transactions
-bool rhr::MapMemory::doRead  (boost::shared_ptr<rogue::interfaces::memory::BlockVector> blocks) {
-   rim::BlockPtr b;
-   uint8_t *     ptr;
-   uint32_t      x;
-   bool          ret;
-
-   ret = true;
-
-   for(x=0; x < blocks->count(); x++) {
-      b = blocks->getBlock(x);
-
-      if ((ptr = findSpace(b->getAddress(),b->getSize())) == NULL) {
-         ret = false;
-         b->setError(1);
-      }
-      else {
-         memcpy(b->getData(),ptr,b->getSize());
-         b->setStale(false);
-      }
+   else if (write) {
+      memcpy(ptr,block->getData(),block->getSize());
+      block->complete(0);
    }
-   return(ret);
+   else {
+      memcpy(block->getData(),ptr,block->getSize());
+      block->complete(0);
+   }
 }
 
 void rhr::MapMemory::setup_python () {

@@ -164,7 +164,7 @@ namespace rogue {
             void enMessages(bool state);
 
             //! Accept a frame from master
-            bool acceptFrame ( boost::shared_ptr<rogue::interfaces::stream::Frame> frame, uint32_t timeout );
+            bool acceptFrame ( boost::shared_ptr<rogue::interfaces::stream::Frame> frame );
       };
 
       // Convienence

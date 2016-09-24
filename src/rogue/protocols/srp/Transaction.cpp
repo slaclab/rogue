@@ -32,31 +32,9 @@ namespace rps = rogue::protocols::srp;
 namespace ris = rogue::interfaces::stream;
 namespace rim = rogue::interfaces::memory;
 
-// Init class counter
-uint32_t rps::Transaction::tranIdx_ = 0;
-
-//! Class instance lock
-boost::mutex rps::Transaction::tranIdxMtx_;
-
-//! Virtual init function
-void rps::Transaction::init() {
-   txSize_ = 0;
-   rxSize_ = 0;
-}
-
-//! Generate request frame
-bool rps::Transaction::intGenFrame(ris::FramePtr frame) {
-   return(false);
-}
-
-//! Receive response frame
-bool rps::Transaction::intRecvFrame(ris::FramePtr frame) {
-   return(false);
-}
-
 //! Class creation
-rps::TransactionPtr rps::Transaction::create (bool write, rim::BlockPtr block) {
-   rps::TransactionPtr t = boost::make_shared<rps::Transaction>(write,block);
+rps::TransactionPtr rps::Transaction::create (rim::BlockPtr block) {
+   rps::TransactionPtr t = boost::make_shared<rps::Transaction>(block);
    return(t);
 }
 
@@ -71,35 +49,35 @@ uint32_t rps::Transaction::extractTid (ris::FramePtr frame) {
 }
 
 //! Creator with version constant
-rps::Transaction::Transaction(bool write, rim::BlockPtr block) {
-   tranIdxMtx_.lock();
-   index_ = tranIdx_;
-   tranIdx_++;
-   tranIdxMtx_.unlock();
-   block_ = block;
-   write_ = write;
-   init();
+rps::Transaction::Transaction(rim::BlockPtr block) {
+   block_  = block;
+   txSize_ = 0;
+   rxSize_ = 0;
+   write_  = false;
+   posted_ = false;
+   memset(header_,0,20);
 }
 
 //! Deconstructor
 rps::Transaction::~Transaction() { }
 
-//! Get frame size
-uint32_t rps::Transaction::getFrameSize() {
-   return(txSize_);
-}
-
 //! Get transacton index
 uint32_t rps::Transaction::getIndex() {
-   return(index_);
+   return(block_->getIndex());
+}
+
+//! Init transaction, return required frame size
+uint32_t rps::Transaction::init(bool write, bool posted) {
+   return(0);
 }
 
 //! Update frame with message data
 bool rps::Transaction::genFrame(ris::FramePtr frame) {
-   return(intGenFrame(frame));
+   return(false);
 }
 
 //! Receive response frame
 bool rps::Transaction::recvFrame(ris::FramePtr frame) {
-   return(intRecvFrame(frame));
+   return(false);
 } 
+

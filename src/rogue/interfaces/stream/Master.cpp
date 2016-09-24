@@ -62,17 +62,17 @@ void ris::Master::addSlave ( ris::SlavePtr slave ) {
 }
 
 //! Request frame from primary slave
-ris::FramePtr ris::Master::reqFrame ( uint32_t size, bool zeroCopyEn, uint32_t timeout) {
+ris::FramePtr ris::Master::reqFrame ( uint32_t size, bool zeroCopyEn ) {
 
    slaveMtx_.lock();
    ris::SlavePtr p = primary_;
    slaveMtx_.unlock();
 
-   return(p->acceptReq(size,zeroCopyEn,timeout));
+   return(p->acceptReq(size,zeroCopyEn));
 }
 
 //! Push frame to slaves
-bool ris::Master::sendFrame ( FramePtr frame, uint32_t timeout) {
+bool ris::Master::sendFrame ( FramePtr frame) {
    uint32_t x;
    bool     ret;
 
@@ -82,7 +82,7 @@ bool ris::Master::sendFrame ( FramePtr frame, uint32_t timeout) {
    ret = true;
 
    for (x=0; x < slaves_.size(); x++) {
-      if ( slaves_[x]->acceptFrame(frame,timeout) == false ) ret = false;
+      if ( slaves_[x]->acceptFrame(frame) == false ) ret = false;
    }
    slaveMtx_.unlock();
 

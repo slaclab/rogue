@@ -76,17 +76,12 @@ namespace rogue {
                /*
                 * An allocate command will be issued to the primary slave set with setSlave()
                 * Pass size and flag indicating if zero copy buffers are allowed
-                * Pass timeout in microseconds or zero to wait forever
                 */
                boost::shared_ptr<rogue::interfaces::stream::Frame>
-                  reqFrame ( uint32_t size, bool zeroCopyEn, uint32_t timeout);
+                  reqFrame ( uint32_t size, bool zeroCopyEn);
 
                //! Push frame to all slaves
-               /*
-                * Pass timeout in microseconds or zero to wait forever
-                */
-               bool sendFrame ( boost::shared_ptr<rogue::interfaces::stream::Frame> frame,
-                                uint32_t timeout );
+               bool sendFrame ( boost::shared_ptr<rogue::interfaces::stream::Frame> frame );
          };
 
          // Convienence
