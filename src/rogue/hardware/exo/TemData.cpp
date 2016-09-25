@@ -38,24 +38,16 @@ rhe::TemDataPtr rhe::TemData::create () {
 }
 
 //! Creator
-rhe::TemData::TemData() : Tem() { }
+rhe::TemData::TemData() : Tem("/dev/temcard_0",false) { }
 
 //! Destructor
-rhe::TemData::~TemData() {
-   this->close();
-}
-
-//! Open the device. Pass lane & vc.
-bool rhe::TemData::open ( ) {
-   return(rhe::Tem::intOpen("/dev/temcard_0",false));
-}
+rhe::TemData::~TemData() { }
 
 void rhe::TemData::setup_python () {
 
    bp::class_<rhe::TemData, bp::bases<rhe::Tem>, rhe::TemDataPtr, boost::noncopyable >("TemData",bp::init<>())
       .def("create",         &rhe::TemData::create)
       .staticmethod("create")
-      .def("open",           &rhe::TemData::open)
    ;
 
 }

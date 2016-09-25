@@ -129,11 +129,11 @@ namespace rogue {
                //! Do Transaction
                void doTransaction(bool write, bool posted);
 
+               //! Wait for completion
+               void waitComplete (uint32_t timeout);
+
                //! Transaction complete, set by slave
                void complete(uint32_t error);
-
-               //! Wait for completion
-               bool waitComplete (uint32_t timeout);
 
                //! Get uint8 at offset
                uint8_t getUInt8(uint32_t offset);
@@ -164,6 +164,12 @@ namespace rogue {
 
                //! Set arbitrary bit field at byte and bit offset
                void setBits(uint32_t bitOffset, uint32_t bitCount, uint32_t value);
+
+               //! Get string
+               std::string getString();
+
+               //! Get string
+               void setString(std::string value);
          };
 
          // Convienence

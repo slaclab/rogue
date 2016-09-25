@@ -1,14 +1,14 @@
 /**
  *-----------------------------------------------------------------------------
- * Title      : EXO TEM Base Class
+ * Title      : Mask Exception
  * ----------------------------------------------------------------------------
- * File       : TemData.h
+ * File       : MaskException.h
  * Author     : Ryan Herbst, rherbst@slac.stanford.edu
  * Created    : 2017-09-17
  * Last update: 2017-09-17
  * ----------------------------------------------------------------------------
  * Description:
- * Class for interfacing to Tem Driver.
+ * Mask denied exception for Rogue
  * ----------------------------------------------------------------------------
  * This file is part of the rogue software platform. It is subject to 
  * the license terms in the LICENSE.txt file found in the top-level directory 
@@ -19,41 +19,26 @@
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
-#ifndef __ROGUE_HARDWARE_EXO_TEM_DATA_H__
-#define __ROGUE_HARDWARE_EXO_TEM_DATA_H__
-#include <rogue/hardware/exo/Tem.h>
+#ifndef __ROGUE_EXCEPTIONS_MASK_EXCEPTION_H__
+#define __ROGUE_EXCEPTIONS_MASK_EXCEPTION_H__
+#include <exception>
 #include <boost/python.hpp>
-#include <boost/thread.hpp>
 #include <stdint.h>
 
 namespace rogue {
-   namespace hardware {
-      namespace exo {
+   namespace exceptions {
 
-         //! PGP Card class
-         class TemData : public rogue::hardware::exo::Tem  {
-
-            public:
-
-               //! Class creation
-               static boost::shared_ptr<rogue::hardware::exo::TemData> create ();
-
-               //! Setup class in python
-               static void setup_python();
-
-               //! Creator
-               TemData();
-
-               //! Destructor
-               ~TemData();
-         };
-
-         // Convienence
-         typedef boost::shared_ptr<rogue::hardware::exo::TemData> TemDataPtr;
-
-      }
+      //! Mask exception
+      class MaskException : public std::exception {
+            char text_[100];
+         public:
+            MaskException ( uint32_t mask );
+            char const * what() const throw();
+            static void setup_python();
+            static void translate(MaskException const &e);
+      };
    }
-};
+}
 
 #endif
 

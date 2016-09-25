@@ -63,7 +63,8 @@ namespace rogue {
                uint32_t allocCount_;
 
                //! Debug control
-               uint32_t debug_;
+               uint32_t    debug_;
+               std::string name_;
 
             protected:
 
@@ -106,7 +107,7 @@ namespace rogue {
                virtual ~Slave();
 
                //! Set debug message size
-               void setDebug(uint32_t debug);
+               void setDebug(uint32_t debug, std::string name);
 
                //! Get allocated memory
                uint32_t getAllocBytes();
@@ -123,10 +124,7 @@ namespace rogue {
                   acceptReq ( uint32_t size, bool zeroCopyEn );
 
                //! Accept a frame from master
-               /* 
-                * Returns true on success
-                */
-               virtual bool acceptFrame ( boost::shared_ptr<rogue::interfaces::stream::Frame> frame );
+               virtual void acceptFrame ( boost::shared_ptr<rogue::interfaces::stream::Frame> frame );
 
                //! Return a buffer
                /*
@@ -143,10 +141,10 @@ namespace rogue {
             public:
 
                //! Accept frame
-               bool acceptFrame ( boost::shared_ptr<rogue::interfaces::stream::Frame> frame );
+               void acceptFrame ( boost::shared_ptr<rogue::interfaces::stream::Frame> frame );
 
                //! Default accept frame call
-               bool defAcceptFrame ( boost::shared_ptr<rogue::interfaces::stream::Frame> frame );
+               void defAcceptFrame ( boost::shared_ptr<rogue::interfaces::stream::Frame> frame );
          };
 
          // Convienence

@@ -81,7 +81,7 @@ namespace rogue {
                   reqFrame ( uint32_t size, bool zeroCopyEn);
 
                //! Push frame to all slaves
-               bool sendFrame ( boost::shared_ptr<rogue::interfaces::stream::Frame> frame );
+               void sendFrame ( boost::shared_ptr<rogue::interfaces::stream::Frame> frame );
          };
 
          // Convienence

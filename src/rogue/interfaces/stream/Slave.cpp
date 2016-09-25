@@ -20,13 +20,16 @@
  * ----------------------------------------------------------------------------
 **/
 #include <unistd.h>
+#include <string>
 #include <rogue/interfaces/stream/Slave.h>
 #include <rogue/interfaces/stream/Master.h>
 #include <rogue/interfaces/stream/Buffer.h>
 #include <rogue/interfaces/stream/Frame.h>
+#include <rogue/exceptions/AllocException.h>
 #include <boost/make_shared.hpp>
 
 namespace ris = rogue::interfaces::stream;
+namespace re  = rogue::exceptions;
 namespace bp  = boost::python;
 
 //! Class creation
@@ -48,7 +51,8 @@ ris::Slave::Slave() {
 ris::Slave::~Slave() { }
 
 //! Set debug message size
-void ris::Slave::setDebug(uint32_t debug) {
+void ris::Slave::setDebug(uint32_t debug, std::string name) {
+   name_  = name;
    debug_ = debug;
 }
 
@@ -95,7 +99,8 @@ ris::BufferPtr ris::Slave::allocBuffer ( uint32_t size ) {
    ris::BufferPtr buff;
    uint8_t * data;
 
-   if ( (data = (uint8_t *)malloc(size)) == NULL ) size = 0;
+   if ( (data = (uint8_t *)malloc(size)) == NULL ) 
+      throw(re::AllocException(size));
 
    metaMtx_.lock();
 
@@ -142,15 +147,12 @@ ris::FramePtr ris::Slave::acceptReq ( uint32_t size, bool zeroCopyEn) {
 }
 
 //! Accept a frame from master
-/* 
- * Returns true on success
- */
-bool ris::Slave::acceptFrame ( ris::FramePtr frame ) {
+void ris::Slave::acceptFrame ( ris::FramePtr frame ) {
    uint32_t x;
    uint8_t  val;
 
    if ( debug_ > 0 ) {
-      printf("Slave: Got Size=%i, Data:\n",frame->getPayload());
+      printf("%s: Got Size=%i, Data:\n",name_.c_str(),frame->getPayload());
       printf("     ");
       for (x=0; (x < debug_ && x < frame->getPayload()); x++) {
          frame->read(&val,x,1);
@@ -160,7 +162,6 @@ bool ris::Slave::acceptFrame ( ris::FramePtr frame ) {
       }
       if (( x % 10 ) != 0) printf("\n");
    }
-   return(false);
 }
 
 //! Return a buffer
@@ -179,12 +180,10 @@ void ris::Slave::retBuffer(uint8_t * data, uint32_t meta, uint32_t rawSize) {
 }
 
 //! Accept frame
-bool ris::SlaveWrap::acceptFrame ( ris::FramePtr frame ) {
-   bool ret;
+void ris::SlaveWrap::acceptFrame ( ris::FramePtr frame ) {
    bool found;
 
    found = false;
-   ret   = false;
 
    // Not sure if this is (and release) are ok if calling from python to python
    // It appears we need to lock before calling get_override
@@ -193,20 +192,19 @@ bool ris::SlaveWrap::acceptFrame ( ris::FramePtr frame ) {
    if (boost::python::override pb = this->get_override("acceptFrame")) {
       found = true;
       try {
-         ret = pb(frame);
+         pb(frame);
       } catch (...) {
          PyErr_Print();
       }
    }
    PyGILState_Release(pyState);
 
-   if ( ! found ) ret = ris::Slave::acceptFrame(frame);
-   return(ret);
+   if ( ! found ) ris::Slave::acceptFrame(frame);
 }
 
 //! Default accept frame call
-bool ris::SlaveWrap::defAcceptFrame ( ris::FramePtr frame ) {
-   return(ris::Slave::acceptFrame(frame));
+void ris::SlaveWrap::defAcceptFrame ( ris::FramePtr frame ) {
+   ris::Slave::acceptFrame(frame);
 }
 
 void ris::Slave::setup_python() {

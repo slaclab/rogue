@@ -56,7 +56,7 @@ namespace rogue {
                bool genFrame(boost::shared_ptr<rogue::interfaces::stream::Frame> frame);
 
                //! Receive response frame
-               bool recvFrame(boost::shared_ptr<rogue::interfaces::stream::Frame> frame);
+               void recvFrame(boost::shared_ptr<rogue::interfaces::stream::Frame> frame);
 
          };
 

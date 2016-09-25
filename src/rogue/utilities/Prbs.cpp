@@ -279,7 +279,7 @@ void ru::Prbs::genFrame (uint32_t size) {
 }
 
 //! Accept a frame from master
-bool ru::Prbs::acceptFrame ( ris::FramePtr frame ) {
+void ru::Prbs::acceptFrame ( ris::FramePtr frame ) {
    uint32_t   frSize;
    uint32_t   frSeq;
    uint32_t   curSeq;
@@ -297,7 +297,7 @@ bool ru::Prbs::acceptFrame ( ris::FramePtr frame ) {
          printf("Prbs::acceptFrame -> Size violation size=%i, count=%i",size,rxCount_);
       rxErrCount_++;
       rxCountMtx_.unlock();
-      return(false);
+      return;
    }
 
    // Get sequence value
@@ -321,7 +321,7 @@ bool ru::Prbs::acceptFrame ( ris::FramePtr frame ) {
          printf("Prbs::acceptFrame -> Bad size. exp=%i, got=%i, count=%i\n",frSize,size,rxCount_);
       rxErrCount_++;
       rxCountMtx_.unlock();
-      return(false);
+      return;
    }
 
    // Check sequence, incoming frames with seq = 0 never cause errors and treated as a restart
@@ -331,7 +331,7 @@ bool ru::Prbs::acceptFrame ( ris::FramePtr frame ) {
          printf("Prbs::acceptFrame -> Bad Sequence. cur=%i, got=%i, count=%i\n",curSeq,frSeq,rxCount_);
       rxErrCount_++;
       rxCountMtx_.unlock();
-      return(false);
+      return;
    }
    expValue = frSeq;
 
@@ -348,7 +348,7 @@ bool ru::Prbs::acceptFrame ( ris::FramePtr frame ) {
                      (cnt-byteWidth_),expValue,gotValue,rxCount_);
          rxErrCount_++;
          rxCountMtx_.unlock();
-         return(false);
+         return;
       }
    }
 
@@ -356,8 +356,6 @@ bool ru::Prbs::acceptFrame ( ris::FramePtr frame ) {
    rxCount_++;
    rxBytes_ += size;
    rxCountMtx_.unlock();
-
-   return(true);
 }
 
 void ru::Prbs::setup_python() {

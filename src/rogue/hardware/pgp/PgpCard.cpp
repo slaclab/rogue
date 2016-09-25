@@ -27,53 +27,38 @@
 #include <rogue/hardware/pgp/EvrControl.h>
 #include <rogue/interfaces/stream/Frame.h>
 #include <rogue/interfaces/stream/Buffer.h>
+#include <rogue/exceptions/OpenException.h>
+#include <rogue/exceptions/MaskException.h>
+#include <rogue/exceptions/WriteException.h>
+#include <rogue/exceptions/TimeoutException.h>
 #include <boost/make_shared.hpp>
 
 namespace rhp = rogue::hardware::pgp;
 namespace ris = rogue::interfaces::stream;
+namespace re  = rogue::exceptions;
 namespace bp  = boost::python;
 
 //! Class creation
-rhp::PgpCardPtr rhp::PgpCard::create () {
-   rhp::PgpCardPtr r = boost::make_shared<rhp::PgpCard>();
+rhp::PgpCardPtr rhp::PgpCard::create (std::string path, uint32_t lane, uint32_t vc) {
+   rhp::PgpCardPtr r = boost::make_shared<rhp::PgpCard>(path,lane,vc);
    return(r);
 }
 
 //! Creator
-rhp::PgpCard::PgpCard() {
-   fd_      = -1;
-   lane_    = 0;
-   vc_      = 0;
-   bCount_  = 0;
-   bSize_   = 0;
-   rawBuff_ = NULL;
-}
-
-//! Destructor
-rhp::PgpCard::~PgpCard() {
-   this->close();
-}
-
-//! Set timeout for frame transmits in microseconds
-void rhp::PgpCard::setTimeout(uint32_t timeout) {
-   timeout_ = timeout;
-}
-
-//! Open the device. Pass lane & vc.
-bool rhp::PgpCard::open ( std::string path, uint32_t lane, uint32_t vc ) {
+rhp::PgpCard::PgpCard ( std::string path, uint32_t lane, uint32_t vc ) {
    uint32_t mask;
 
-   if ( fd_ > 0 ) return(false);
    lane_ = lane;
    vc_   = vc;
 
    mask = (1 << ((lane_*4) +vc_));
 
-   if ( (fd_ = ::open(path.c_str(), O_RDWR)) < 0 ) return(false);
+   if ( (fd_ = ::open(path.c_str(), O_RDWR)) < 0 ) 
+      throw(re::OpenException(path.c_str()));
 
    if ( pgpSetMask(fd_,mask) < 0 ) {
       ::close(fd_);
-      return(false);
+      throw(re::MaskException(mask));
    }
 
    // Result may be that rawBuff_ = NULL
@@ -81,95 +66,75 @@ bool rhp::PgpCard::open ( std::string path, uint32_t lane, uint32_t vc ) {
 
    // Start read thread
    thread_ = new boost::thread(boost::bind(&rhp::PgpCard::runThread, this));
-
-   return(true);
 }
 
-//! Close the device
-void rhp::PgpCard::close() {
-
-   if ( fd_ < 0 ) return;
-
-   // Stop read thread
+//! Destructor
+rhp::PgpCard::~PgpCard() {
    thread_->interrupt();
    thread_->join();
-   delete thread_;
-   thread_ = NULL;
 
    if ( rawBuff_ != NULL ) pgpUnMapDma(fd_, rawBuff_);
    ::close(fd_);
+}
 
-   fd_      = -1;
-   lane_    = 0;
-   vc_      = 0;
-   bCount_  = 0;
-   bSize_   = 0;
-   rawBuff_ = NULL;
+//! Set timeout for frame transmits in microseconds
+void rhp::PgpCard::setTimeout(uint32_t timeout) {
+   timeout_ = timeout;
 }
 
 //! Get card info.
 rhp::InfoPtr rhp::PgpCard::getInfo() {
    rhp::InfoPtr r = rhp::Info::create();
-
-   if ( fd_ >= 0 ) pgpGetInfo(fd_,r.get());
+   pgpGetInfo(fd_,r.get());
    return(r);
 }
 
 //! Get pci status.
 rhp::PciStatusPtr rhp::PgpCard::getPciStatus() {
    rhp::PciStatusPtr r = rhp::PciStatus::create();
-
-   if ( fd_ >= 0 ) pgpGetPci(fd_,r.get());
+   pgpGetPci(fd_,r.get());
    return(r);
 }
 
 //! Get status of open lane.
 rhp::StatusPtr rhp::PgpCard::getStatus() {
    rhp::StatusPtr r = rhp::Status::create();
-
-   if ( fd_ >= 0 ) pgpGetStatus(fd_,lane_,r.get());
+   pgpGetStatus(fd_,lane_,r.get());
    return(r);
 }
 
 //! Get evr control for open lane.
 rhp::EvrControlPtr rhp::PgpCard::getEvrControl() {
    rhp::EvrControlPtr r = rhp::EvrControl::create();
-
-   if ( fd_ >= 0 ) pgpGetEvrControl(fd_,lane_,r.get());
+   pgpGetEvrControl(fd_,lane_,r.get());
    return(r);
 }
 
 //! Set evr control for open lane.
-bool rhp::PgpCard::setEvrControl(rhp::EvrControlPtr r) {
-   if ( fd_ >= 0 ) return(false);
-      
-   return(pgpSetEvrControl(fd_,lane_,r.get()) == 0);
+void rhp::PgpCard::setEvrControl(rhp::EvrControlPtr r) {
+   pgpSetEvrControl(fd_,lane_,r.get());
 }
 
 //! Get evr status for open lane.
 rhp::EvrStatusPtr rhp::PgpCard::getEvrStatus() {
    rhp::EvrStatusPtr r = rhp::EvrStatus::create();
-
-   if ( fd_ >= 0 ) pgpGetEvrStatus(fd_,lane_,r.get());
+   pgpGetEvrStatus(fd_,lane_,r.get());
    return(r);
 }
 
 //! Set loopback for open lane
-bool rhp::PgpCard::setLoop(bool enable) {
-   if ( fd_ < 0 ) return(false);
-   return(pgpSetLoop(fd_,lane_,enable) >= 0);
+void rhp::PgpCard::setLoop(bool enable) {
+   pgpSetLoop(fd_,lane_,enable);
 }
 
 //! Set lane data for open lane
-bool rhp::PgpCard::setData(uint8_t data) {
-   if ( fd_ < 0 ) return(false);
-   return(pgpSetData(fd_,lane_,data) >= 0);
+void rhp::PgpCard::setData(uint8_t data) {
+   pgpSetData(fd_,lane_,data);
 }
 
 //! Send an opcode
-bool rhp::PgpCard::sendOpCode(uint8_t code) {
-   if ( fd_ < 0 ) return(false);
-   return(pgpSendOpCode(fd_,code) >= 0);
+void rhp::PgpCard::sendOpCode(uint8_t code) {
+   pgpSendOpCode(fd_,code);
 }
 
 //! Generate a buffer. Called from master
@@ -181,8 +146,6 @@ ris::FramePtr rhp::PgpCard::acceptReq ( uint32_t size, bool zeroCopyEn ) {
    uint32_t         alloc;
    ris::BufferPtr   buff;
    ris::FramePtr    frame;
-
-   if ( fd_ < 0 ) return(createFrame(0,0,true,zeroCopyEn));
 
    // Zero copy is disabled. Allocate from memory.
    if ( zeroCopyEn == false || rawBuff_ == NULL ) {
@@ -196,8 +159,10 @@ ris::FramePtr rhp::PgpCard::acceptReq ( uint32_t size, bool zeroCopyEn ) {
       frame = createFrame(0,0,true,true);
       alloc=0;
 
+
       // Request may be serviced with multiple buffers
       while ( alloc < size ) {
+         mtx_.lock();
 
          // Keep trying since select call can fire 
          // but getIndex fails because we did not win the buffer lock
@@ -215,34 +180,28 @@ ris::FramePtr rhp::PgpCard::acceptReq ( uint32_t size, bool zeroCopyEn ) {
             }
             else tpr = NULL;
 
-            res = select(fd_+1,NULL,&fds,NULL,tpr);
-            
-            // Timeout, empty frame and break
-            // Returned frame will have an available size of zero
-            if ( res == 0 ) {
-               frame->clear();
-               break;
+            if ( (res = select(fd_+1,NULL,&fds,NULL,tpr)) == 0 ) {
+               mtx_.unlock();
+               throw(re::TimeoutException(timeout_));
             }
-
+            
             // Attempt to get index.
             // return of less than 0 is a failure to get a buffer
             res = pgpGetIndex(fd_);
          }
          while (res < 0);
+         mtx_.unlock();
 
-         // Mark zero copy meta with bit 31 set, lower bits are index
-         if ( res >= 0 ) {
-            buff = createBuffer(rawBuff_[res],0x80000000 | res,bSize_);
-            frame->appendBuffer(buff);
-            alloc += bSize_;
-         }
+         buff = createBuffer(rawBuff_[res],0x80000000 | res,bSize_);
+         frame->appendBuffer(buff);
+         alloc += bSize_;
       }
    }
    return(frame);
 }
 
 //! Accept a frame from master
-bool rhp::PgpCard::acceptFrame ( ris::FramePtr frame ) {
+void rhp::PgpCard::acceptFrame ( ris::FramePtr frame ) {
    ris::BufferPtr buff;
    int32_t          res;
    fd_set           fds;
@@ -250,13 +209,9 @@ bool rhp::PgpCard::acceptFrame ( ris::FramePtr frame ) {
    struct timeval * tpr;
    uint32_t         meta;
    uint32_t         x;
-   bool             ret;
    uint32_t         cont;
 
-   ret = true;
-
-   // Device is closed
-   if ( fd_ < 0 ) return(false);
+   mtx_.lock();
 
    // Go through each buffer in the frame
    for (x=0; x < frame->getCount(); x++) {
@@ -276,16 +231,14 @@ bool rhp::PgpCard::acceptFrame ( ris::FramePtr frame ) {
          if ( (meta & 0x40000000) == 0 ) {
 
             // Write by passing buffer index to driver
-            res = pgpWriteIndex(fd_, meta & 0x3FFFFFFF, buff->getCount(), lane_, vc_, cont);
-
-            // Return of zero or less is an error
-            if ( res <= 0 ) ret = false;
-            
-            // Mark buffer as stale
-            else {
-               meta |= 0x40000000;
-               buff->setMeta(meta);
+            if ( pgpWriteIndex(fd_, meta & 0x3FFFFFFF, buff->getCount(), lane_, vc_, cont) <= 0 ) {
+               mtx_.unlock();
+               throw(re::WriteException());
             }
+
+            // Mark buffer as stale
+            meta |= 0x40000000;
+            buff->setMeta(meta);
          }
       }
 
@@ -308,14 +261,9 @@ bool rhp::PgpCard::acceptFrame ( ris::FramePtr frame ) {
             }
             else tpr = NULL;
 
-            res = select(fd_+1,NULL,&fds,NULL,tpr);
-            
-            // Timeout
-            // This is not good if it happens in the middle of a multiple
-            // buffer frame. Usually timeouts are bad anyway.
-            if ( res == 0 ) {
-               ret = false;
-               break;
+            if ( (res = select(fd_+1,NULL,&fds,NULL,tpr)) == 0 ) {
+               mtx_.unlock();
+               throw(re::TimeoutException(timeout_));
             }
 
             // Write with buffer copy
@@ -323,20 +271,16 @@ bool rhp::PgpCard::acceptFrame ( ris::FramePtr frame ) {
 
             // Error
             if ( res < 0 ) {
-               ret = false;
-               break;
+               mtx_.unlock();
+               throw(re::WriteException());
             }
          }
 
          // Exit out if return flag was set false
-         while ( res == 0 && ret == true );
+         while ( res == 0 );
       }
-
-      // Escape out of top for loop (buffer iteration) if an error occured.
-      if ( ret == false ) break;
    }
-
-   return(ret);
+   mtx_.unlock();
 }
 
 //! Return a buffer
@@ -347,9 +291,11 @@ void rhp::PgpCard::retBuffer(uint8_t * data, uint32_t meta, uint32_t rawSize) {
 
       // Device is open and buffer is not stale
       // Bit 30 indicates buffer has already been returned to hardware
-      if ( (fd_ >= 0) && ((meta & 0x40000000) == 0) )
+      if ( (fd_ >= 0) && ((meta & 0x40000000) == 0) ) {
+         mtx_.lock();
          pgpRetIndex(fd_,meta & 0x3FFFFFFF); // Return to hardware
-
+         mtx_.unlock();
+      }
       deleteBuffer(rawSize);
    }
 
@@ -426,11 +372,9 @@ void rhp::PgpCard::runThread() {
 
 void rhp::PgpCard::setup_python () {
 
-   bp::class_<rhp::PgpCard, bp::bases<ris::Master,ris::Slave>, rhp::PgpCardPtr, boost::noncopyable >("PgpCard",bp::init<>())
+   bp::class_<rhp::PgpCard, bp::bases<ris::Master,ris::Slave>, rhp::PgpCardPtr, boost::noncopyable >("PgpCard",bp::init<std::string,uint32_t,uint32_t>())
       .def("create",         &rhp::PgpCard::create)
       .staticmethod("create")
-      .def("open",           &rhp::PgpCard::open)
-      .def("close",          &rhp::PgpCard::close)
       .def("getInfo",        &rhp::PgpCard::getInfo)
       .def("getPciStatus",   &rhp::PgpCard::getPciStatus)
       .def("getStatus",      &rhp::PgpCard::getStatus)

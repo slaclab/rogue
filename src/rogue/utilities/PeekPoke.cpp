@@ -71,7 +71,7 @@ uint32_t ru::PeekPoke::peek ( uint32_t address ) {
    ret = 0xFFFFFFFF;
 
    doTransaction(false,false);
-   if ( waitComplete(1000) && getError() == 0 ) {
+   if ( waitComplete(1000000) && getError() == 0 ) {
       if ( getSize() == 1 ) ret = getUInt8(0);
       else if ( getSize() == 2 ) ret = getUInt16(0);
       else if ( getSize() == 4 ) ret = getUInt32(0);

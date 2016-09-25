@@ -129,23 +129,23 @@ bool rps::TransactionV3::genFrame(ris::FramePtr frame) {
 }
 
 //! Receive response frame
-bool rps::TransactionV3::recvFrame(ris::FramePtr frame) {
+void rps::TransactionV3::recvFrame(ris::FramePtr frame) {
    uint32_t rxHeader[5];
    uint32_t cnt;
    uint32_t tail;
    uint32_t x;
 
-   if ( frame->getPayload() < rxSize_ ) return(false);
+   if ( frame->getPayload() < rxSize_ ) return;
 
    // Extract header
    cnt = 0;
    for (x=0; x < 5; x++) cnt += frame->read(&(rxHeader[x]),cnt,4);
 
    // Compare headers
-   if ( ((rxHeader[0] ^ header_[0]) & 0xFF00003F) != 0 ) return(false);
+   if ( ((rxHeader[0] ^ header_[0]) & 0xFF00003F) != 0 ) return;
 
    for (x=1; x < 5; x++) {
-      if ((rxHeader[x] ^ header_[x]) != 0 ) return(false);
+      if ((rxHeader[x] ^ header_[x]) != 0 ) return;
    }
 
    // Read tail
@@ -154,7 +154,7 @@ bool rps::TransactionV3::recvFrame(ris::FramePtr frame) {
    // Tail shows error
    if ( tail != 0 ) {
       block_->complete(tail);
-      return(false);
+      return;
    }
 
    // Copy payload if read
@@ -165,6 +165,5 @@ bool rps::TransactionV3::recvFrame(ris::FramePtr frame) {
    }
 
    block_->complete(0);
-   return(true); 
 }
 

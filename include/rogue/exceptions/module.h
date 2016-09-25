@@ -1,14 +1,14 @@
 /**
  *-----------------------------------------------------------------------------
- * Title      : EXO TEM Base Class
+ * Title      : Python Module
  * ----------------------------------------------------------------------------
- * File       : TemData.h
+ * File       : module.h
  * Author     : Ryan Herbst, rherbst@slac.stanford.edu
- * Created    : 2017-09-17
- * Last update: 2017-09-17
+ * Created    : 2016-08-08
+ * Last update: 2016-08-08
  * ----------------------------------------------------------------------------
  * Description:
- * Class for interfacing to Tem Driver.
+ * Python module setup
  * ----------------------------------------------------------------------------
  * This file is part of the rogue software platform. It is subject to 
  * the license terms in the LICENSE.txt file found in the top-level directory 
@@ -19,41 +19,14 @@
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
-#ifndef __ROGUE_HARDWARE_EXO_TEM_DATA_H__
-#define __ROGUE_HARDWARE_EXO_TEM_DATA_H__
-#include <rogue/hardware/exo/Tem.h>
-#include <boost/python.hpp>
-#include <boost/thread.hpp>
-#include <stdint.h>
+#ifndef __ROGUE_EXCEPTIONS_MODULE_H__
+#define __ROGUE_EXCEPTIONS_MODULE_H__
 
 namespace rogue {
-   namespace hardware {
-      namespace exo {
-
-         //! PGP Card class
-         class TemData : public rogue::hardware::exo::Tem  {
-
-            public:
-
-               //! Class creation
-               static boost::shared_ptr<rogue::hardware::exo::TemData> create ();
-
-               //! Setup class in python
-               static void setup_python();
-
-               //! Creator
-               TemData();
-
-               //! Destructor
-               ~TemData();
-         };
-
-         // Convienence
-         typedef boost::shared_ptr<rogue::hardware::exo::TemData> TemDataPtr;
-
-      }
+   namespace exceptions {
+      void setup_module();
    }
-};
+}
 
 #endif
 

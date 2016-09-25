@@ -38,25 +38,16 @@ rhe::TemCmdPtr rhe::TemCmd::create () {
 }
 
 //! Creator
-rhe::TemCmd::TemCmd() : Tem() { }
+rhe::TemCmd::TemCmd() : Tem("/dev/temcard_0",false) { }
 
 //! Destructor
-rhe::TemCmd::~TemCmd() {
-   this->close();
-}
-
-//! Open the device. Pass lane & vc.
-bool rhe::TemCmd::open ( ) {
-   return(rhe::Tem::intOpen("/dev/temcard_0",false));
-}
+rhe::TemCmd::~TemCmd() { }
 
 void rhe::TemCmd::setup_python () {
 
    bp::class_<rhe::TemCmd, bp::bases<rhe::Tem>, rhe::TemCmdPtr, boost::noncopyable >("TemCmd",bp::init<>())
       .def("create",         &rhe::TemCmd::create)
       .staticmethod("create")
-      .def("open",           &rhe::TemCmd::open)
    ;
-
 }
 

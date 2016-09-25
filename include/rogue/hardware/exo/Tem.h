@@ -9,9 +9,6 @@
  * ----------------------------------------------------------------------------
  * Description:
  * Class for interfacing to Tem Driver.
- * TODO
- *    Add lock in accept to make sure we can handle situation where close 
- *    occurs while a frameAccept or frameRequest
  * ----------------------------------------------------------------------------
  * This file is part of the rogue software platform. It is subject to 
  * the license terms in the LICENSE.txt file found in the top-level directory 
@@ -56,27 +53,22 @@ namespace rogue {
                //! Timeout for frame transmits
                uint32_t timeout_;
 
-            protected:
-
-               //! Open the device. Pass data flag
-               bool intOpen ( std::string path, bool data );
+               //! Locking mutex
+               boost::mutex mtx_;
 
             public:
 
                //! Class creation
-               static boost::shared_ptr<rogue::hardware::exo::Tem> create ();
+               static boost::shared_ptr<rogue::hardware::exo::Tem> create (std::string path, bool data);
 
                //! Setup class in python
                static void setup_python();
 
                //! Creator
-               Tem();
+               Tem(std::string path, bool data);
 
                //! Destructor
                ~Tem();
-
-               //! Close the device
-               void close();
 
                //! Set timeout for frame transmits in microseconds
                void setTimeout(uint32_t timeout);
@@ -88,10 +80,7 @@ namespace rogue {
                boost::shared_ptr<rogue::hardware::exo::PciStatus> getPciStatus();
 
                //! Accept a frame from master
-               /* 
-                * Returns true on success
-                */
-               bool acceptFrame ( boost::shared_ptr<rogue::interfaces::stream::Frame> frame );
+               void acceptFrame ( boost::shared_ptr<rogue::interfaces::stream::Frame> frame );
          };
 
          // Convienence

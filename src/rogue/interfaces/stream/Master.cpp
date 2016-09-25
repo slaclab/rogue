@@ -72,21 +72,16 @@ ris::FramePtr ris::Master::reqFrame ( uint32_t size, bool zeroCopyEn ) {
 }
 
 //! Push frame to slaves
-bool ris::Master::sendFrame ( FramePtr frame) {
+void ris::Master::sendFrame ( FramePtr frame) {
    uint32_t x;
-   bool     ret;
 
    slaveMtx_.lock();
-   if ( slaves_.size() == 0 ) return(false);
+   if ( slaves_.size() == 0 ) return;
 
-   ret = true;
+   for (x=0; x < slaves_.size(); x++) 
+      slaves_[x]->acceptFrame(frame);
 
-   for (x=0; x < slaves_.size(); x++) {
-      if ( slaves_[x]->acceptFrame(frame) == false ) ret = false;
-   }
    slaveMtx_.unlock();
-
-   return(ret);
 }
 
 void ris::Master::setup_python() {

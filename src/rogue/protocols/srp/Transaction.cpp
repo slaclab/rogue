@@ -77,7 +77,5 @@ bool rps::Transaction::genFrame(ris::FramePtr frame) {
 }
 
 //! Receive response frame
-bool rps::Transaction::recvFrame(ris::FramePtr frame) {
-   return(false);
-} 
+void rps::Transaction::recvFrame(ris::FramePtr frame) { } 
 

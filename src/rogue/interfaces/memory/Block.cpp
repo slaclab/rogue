@@ -21,10 +21,14 @@
  * ----------------------------------------------------------------------------
 **/
 #include <rogue/interfaces/memory/Block.h>
+#include <rogue/exceptions/AllocException.h>
+#include <rogue/exceptions/TimeoutException.h>
+#include <rogue/exceptions/MemoryException.h>
 #include <boost/make_shared.hpp>
 #include <boost/python.hpp>
 
 namespace rim = rogue::interfaces::memory;
+namespace re  = rogue::exceptions;
 namespace bp  = boost::python;
 
 // Init class counter
@@ -53,10 +57,10 @@ rim::Block::Block(uint64_t address, uint32_t size ) : Master () {
    stale_       = 0;
    complete_    = true;
 
-   if ( (data_ = (uint8_t *)malloc(size)) == NULL ) {
-      size_ = 0;
-   }
-   else memset(data_,0,size);
+   if ( (data_ = (uint8_t *)malloc(size)) == NULL ) 
+      throw(re::AllocException(size));
+   
+   memset(data_,0,size);
 }
 
 //! Destroy a block
@@ -135,8 +139,30 @@ void rim::Block::setStale(bool stale) {
 
 //! Do Transaction
 void rim::Block::doTransaction(bool write, bool posted) {
+   mtx_.lock();
+   complete_ = false;
+   error_ = 0;
+   mtx_.unlock();
+
    rim::BlockPtr p = shared_from_this();
    reqTransaction(write,posted,p);
+}
+
+//! Wait complete, throw exception?
+void rim::Block::waitComplete(uint32_t timeout) {
+   uint32_t tme;
+
+   tme = 0;
+   while ((complete_ == false) && (tme < timeout)) {
+      usleep(1);
+      tme++;
+   }
+
+   if ( complete_ == false ) 
+      throw(re::TimeoutException(timeout));
+
+   else if ( error_ != 0 )
+      throw(re::MemoryException(error_));
 }
 
 //! Transaction complete
@@ -146,15 +172,6 @@ void rim::Block::complete(uint32_t error) {
    error_    = error;
    if ( error == 0 ) stale_ = false;
    mtx_.unlock();
-}
-
-//! Wait complete
-bool rim::Block::waitComplete(uint32_t timeout) {
-   while (!complete_ && timeout > 0) {
-      usleep(1);
-      timeout--;
-   }
-   return(complete_);
 }
 
 //! Get uint8 at offset
@@ -236,6 +253,7 @@ uint32_t rim::Block::getBits(uint32_t bitOffset, uint32_t bitCount) {
    uint32_t cnt;
    uint32_t bit;
 
+   mtx_.lock();
    if ( (bitCount > 32) || (bitOffset/8) > (size_-(bitCount/8)) ) return(0);
 
    currByte = bitOffset / 8;
@@ -251,6 +269,7 @@ uint32_t rim::Block::getBits(uint32_t bitOffset, uint32_t bitCount) {
          currByte++;
       }
    }
+   mtx_.unlock();
    return(ret); 
 }
 
@@ -283,6 +302,22 @@ void rim::Block::setBits(uint32_t bitOffset, uint32_t bitCount, uint32_t value) 
    mtx_.unlock();
 }
 
+//! Get string
+std::string rim::Block::getString() {
+   mtx_.lock();
+   data_[size_-1] = 0; // to be safe
+   std::string ret((char *)data_);
+   mtx_.unlock();
+   return(ret);
+}
+
+//! Get string
+void rim::Block::setString(std::string value) {
+   mtx_.lock();
+   strncpy((char *)data_,value.c_str(),size_);
+   mtx_.unlock();
+}
+
 void rim::Block::setup_python() {
 
    bp::class_<rim::Block, bp::bases<rim::Master>, rim::BlockPtr, boost::noncopyable>("Block",bp::init<uint64_t,uint32_t>())
@@ -310,6 +345,8 @@ void rim::Block::setup_python() {
       .def("setUInt64",      &rim::Block::setUInt64)
       .def("getBits",        &rim::Block::getBits)
       .def("setBits",        &rim::Block::setBits)
+      .def("getString",      &rim::Block::getString)
+      .def("setString",      &rim::Block::setString)
    ;
 
 }

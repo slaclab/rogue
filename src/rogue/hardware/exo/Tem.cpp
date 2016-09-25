@@ -27,70 +27,53 @@
 #include <rogue/hardware/exo/PciStatus.h>
 #include <rogue/interfaces/stream/Frame.h>
 #include <rogue/interfaces/stream/Buffer.h>
+#include <rogue/exceptions/OpenException.h>
+#include <rogue/exceptions/WriteException.h>
+#include <rogue/exceptions/TimeoutException.h>
 #include <boost/make_shared.hpp>
 
 namespace rhe = rogue::hardware::exo;
 namespace ris = rogue::interfaces::stream;
+namespace re  = rogue::exceptions;
 namespace bp  = boost::python;
 
 //! Class creation
-rhe::TemPtr rhe::Tem::create () {
-   rhe::TemPtr r = boost::make_shared<rhe::Tem>();
+rhe::TemPtr rhe::Tem::create (std::string path, bool data) {
+   rhe::TemPtr r = boost::make_shared<rhe::Tem>(path,data);
    return(r);
 }
 
-//! Creator
-rhe::Tem::Tem() {
-   fd_      = -1;
-   isData_  = false;
-}
-
-//! Destructor
-rhe::Tem::~Tem() {
-   this->close();
-}
-
 //! Open the device. Pass lane & vc.
-bool rhe::Tem::intOpen ( std::string path, bool data ) {
-
-   if ( fd_ > 0 ) return(false);
+rhe::Tem::Tem(std::string path, bool data) {
    isData_ = data;
 
-   if ( (fd_ = ::open(path.c_str(), O_RDWR)) < 0 ) return(false);
+   if ( (fd_ = ::open(path.c_str(), O_RDWR)) < 0 )
+      throw(re::OpenException(path.c_str()));
 
    if ( isData_ ) {
       if ( temEnableDataRead(fd_) < 0 ) {
          ::close(fd_);
-         return(false);
+         throw(re::OpenException(path.c_str()));
       }
    } else {
       if ( temEnableCmdRead(fd_) < 0 ) {
          ::close(fd_);
-         return(false);
+         throw(re::OpenException(path.c_str()));
       }
    }
 
    // Start read thread
    thread_ = new boost::thread(boost::bind(&rhe::Tem::runThread, this));
-
-   return(true);
 }
 
 //! Close the device
-void rhe::Tem::close() {
-
-   if ( fd_ < 0 ) return;
+rhe::Tem::~Tem() {
 
    // Stop read thread
    thread_->interrupt();
    thread_->join();
-   delete thread_;
-   thread_ = NULL;
 
    ::close(fd_);
-
-   fd_      = -1;
-   isData_  = false;
 }
 
 //! Set timeout for frame transmits in microseconds
@@ -115,20 +98,16 @@ rhe::PciStatusPtr rhe::Tem::getPciStatus() {
 }
 
 //! Accept a frame from master
-bool rhe::Tem::acceptFrame ( ris::FramePtr frame ) {
+void rhe::Tem::acceptFrame ( ris::FramePtr frame ) {
    ris::BufferPtr   buff;
    int32_t          res;
    fd_set           fds;
    struct timeval   tout;
    struct timeval * tpr;
-   bool             ret;
-
-   ret = true;
-
-   // Device is closed or buffer is empty, writes not allowed for data
-   if ( (fd_ < 0) || isData_ || (frame->getPayload() == 0) ) return(false);
 
    buff = frame->getBuffer(0);
+
+   mtx_.lock();
 
    // Keep trying since select call can fire 
    // but write fails because we did not win the buffer lock
@@ -146,12 +125,9 @@ bool rhe::Tem::acceptFrame ( ris::FramePtr frame ) {
       }
       else tpr = NULL;
 
-      res = select(fd_+1,NULL,&fds,NULL,tpr);
-      
-      // Timeout
-      if ( res == 0 ) {
-         ret = false;
-         break;
+      if ( (res = select(fd_+1,NULL,&fds,NULL,tpr)) == 0 ) {
+         mtx_.unlock();
+         throw(re::TimeoutException(timeout_));
       }
 
       // Write
@@ -159,15 +135,14 @@ bool rhe::Tem::acceptFrame ( ris::FramePtr frame ) {
 
       // Error
       if ( res < 0 ) {
-         ret = false;
-         break;
+         mtx_.unlock();
+         throw(re::WriteException());
       }
    }
 
    // Exit out if return flag was set false
-   while ( res == 0 && ret == true );
-
-   return(ret);
+   while ( res == 0 );
+   mtx_.unlock();
 }
 
 //! Run thread
@@ -212,10 +187,9 @@ void rhe::Tem::runThread() {
 
 void rhe::Tem::setup_python () {
 
-   bp::class_<rhe::Tem, bp::bases<ris::Master,ris::Slave>, rhe::TemPtr, boost::noncopyable >("Tem",bp::init<>())
+   bp::class_<rhe::Tem, bp::bases<ris::Master,ris::Slave>, rhe::TemPtr, boost::noncopyable >("Tem",bp::init<std::string,bool>())
       .def("create",         &rhe::Tem::create)
       .staticmethod("create")
-      .def("close",          &rhe::Tem::close)
       .def("getInfo",        &rhe::Tem::getInfo)
       .def("getPciStatus",   &rhe::Tem::getPciStatus)
    ;

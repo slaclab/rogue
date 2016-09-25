@@ -69,11 +69,12 @@ uint32_t rps::TransactionV0::init(bool write, bool posted) {
    posted_ = posted;
 
    if ((block_->getSize() % 4) != 0 || block_->getSize() < 4) {
+      block_->complete(0x80000000);
       txSize_ = 0;
       rxSize_ = 0;
    }
-
    else {
+
       rxSize_ = (block_->getSize() + 12); // 2 x 32 bits for header, 1 x 32 for tail
 
       if (write_) txSize_ = rxSize_;
@@ -127,20 +128,20 @@ bool rps::TransactionV0::genFrame(ris::FramePtr frame) {
 }
 
 //! Receive response frame
-bool rps::TransactionV0::recvFrame(ris::FramePtr frame) {
+void rps::TransactionV0::recvFrame(ris::FramePtr frame) {
    uint32_t rxHeader[2];
    uint32_t cnt;
    uint32_t tail;
    uint32_t x;
 
-   if ( frame->getPayload() < rxSize_ ) return(false);
+   if ( frame->getPayload() < rxSize_ ) return;
 
    // Get header fields
    cnt  = frame->read(&(rxHeader[0]),0,4);
    cnt += frame->read(&(rxHeader[1]),cnt,4);
 
    // Header mismatch
-   if ( (rxHeader[0] != header_[0]) || (rxHeader[1] != header_[1])) return(false);
+   if ( (rxHeader[0] != header_[0]) || (rxHeader[1] != header_[1])) return;
 
    // Read tail
    frame->read(&tail,frame->getPayload()-4,4);
@@ -148,7 +149,7 @@ bool rps::TransactionV0::recvFrame(ris::FramePtr frame) {
    // Tail shows error
    if ( tail != 0 ) {
       block_->complete(tail);
-      return(false);
+      return;
    }
 
    // Copy payload if read
@@ -159,7 +160,6 @@ bool rps::TransactionV0::recvFrame(ris::FramePtr frame) {
    }
 
    block_->complete(0);
-   return(true); 
 }
 
 

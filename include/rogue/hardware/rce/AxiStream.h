@@ -9,9 +9,6 @@
  * ----------------------------------------------------------------------------
  * Description:
  * Class for interfacing to AxiStreamDriver on the RCE.
- * TODO
- *    Add lock in accept to make sure we can handle situation where close 
- *    occurs while a frameAccept or frameRequest
  * ----------------------------------------------------------------------------
  * This file is part of the rogue software platform. It is subject to 
  * the license terms in the LICENSE.txt file found in the top-level directory 
@@ -65,25 +62,22 @@ namespace rogue {
                //! Thread background
                void runThread();
 
+               //! Locking mutex
+               boost::mutex mtx_;
+
             public:
 
                //! Class creation
-               static boost::shared_ptr<rogue::hardware::rce::AxiStream> create ();
+               static boost::shared_ptr<rogue::hardware::rce::AxiStream> create (std::string path, uint32_t dest);
 
                //! Setup class in python
                static void setup_python();
 
                //! Creator
-               AxiStream();
+               AxiStream(std::string path, uint32_t dest);
 
                //! Destructor
                ~AxiStream();
-
-               //! Open the device. Pass destination
-               bool open ( std::string path, uint32_t dest );
-
-               //! Close the device
-               void close();
 
                //! Set timeout for frame transmits in microseconds
                void setTimeout(uint32_t timeout);
@@ -107,10 +101,7 @@ namespace rogue {
                   acceptReq ( uint32_t size, bool zeroCopyEn );
 
                //! Accept a frame from master
-               /* 
-                * Returns true on success
-                */
-               bool acceptFrame ( boost::shared_ptr<rogue::interfaces::stream::Frame> frame );
+               void acceptFrame ( boost::shared_ptr<rogue::interfaces::stream::Frame> frame );
 
                //! Return a buffer
                /*

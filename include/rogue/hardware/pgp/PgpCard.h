@@ -9,9 +9,6 @@
  * ----------------------------------------------------------------------------
  * Description:
  * PGP Card Class
- * TODO
- *    Add lock in accept to make sure we can handle situation where close 
- *    occurs while a frameAccept or frameRequest
  * ----------------------------------------------------------------------------
  * This file is part of the rogue software platform. It is subject to 
  * the license terms in the LICENSE.txt file found in the top-level directory 
@@ -72,25 +69,23 @@ namespace rogue {
                //! Thread background
                void runThread();
 
+               //! Locking mutex
+               boost::mutex mtx_;
+
             public:
 
                //! Class creation
-               static boost::shared_ptr<rogue::hardware::pgp::PgpCard> create ();
+               static boost::shared_ptr<rogue::hardware::pgp::PgpCard> 
+                  create (std::string path, uint32_t lane, uint32_t vc);
 
                //! Setup class in python
                static void setup_python();
 
                //! Creator
-               PgpCard();
+               PgpCard(std::string path, uint32_t lane, uint32_t vc);
 
                //! Destructor
                ~PgpCard();
-
-               //! Open the device. Pass lane & vc.
-               bool open ( std::string path, uint32_t lane, uint32_t vc );
-
-               //! Close the device
-               void close();
 
                //! Set timeout for frame transmits in microseconds
                void setTimeout(uint32_t timeout);
@@ -108,19 +103,19 @@ namespace rogue {
                boost::shared_ptr<rogue::hardware::pgp::EvrControl> getEvrControl();
 
                //! Set evr control for open lane.
-               bool setEvrControl(boost::shared_ptr<rogue::hardware::pgp::EvrControl> r);
+               void setEvrControl(boost::shared_ptr<rogue::hardware::pgp::EvrControl> r);
 
                //! Get evr status for open lane.
                boost::shared_ptr<rogue::hardware::pgp::EvrStatus> getEvrStatus();
 
                //! Set loopback for open lane
-               bool setLoop(bool enable);
+               void setLoop(bool enable);
 
                //! Set lane data for open lane
-               bool setData(uint8_t data);
+               void setData(uint8_t data);
 
                //! Send an opcode
-               bool sendOpCode(uint8_t code);
+               void sendOpCode(uint8_t code);
 
                //! Generate a buffer. Called from master
                /*
@@ -134,7 +129,7 @@ namespace rogue {
                /* 
                 * Returns true on success
                 */
-               bool acceptFrame ( boost::shared_ptr<rogue::interfaces::stream::Frame> frame );
+               void acceptFrame ( boost::shared_ptr<rogue::interfaces::stream::Frame> frame );
 
                //! Return a buffer
                /*

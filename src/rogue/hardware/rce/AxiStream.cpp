@@ -22,46 +22,36 @@
 #include <rogue/hardware/rce/AxiStream.h>
 #include <rogue/interfaces/stream/Frame.h>
 #include <rogue/interfaces/stream/Buffer.h>
+#include <rogue/exceptions/OpenException.h>
+#include <rogue/exceptions/MaskException.h>
+#include <rogue/exceptions/WriteException.h>
+#include <rogue/exceptions/TimeoutException.h>
 #include <boost/make_shared.hpp>
 
 namespace rhr = rogue::hardware::rce;
 namespace ris = rogue::interfaces::stream;
+namespace re  = rogue::exceptions;
 namespace bp  = boost::python;
 
 //! Class creation
-rhr::AxiStreamPtr rhr::AxiStream::create () {
-   rhr::AxiStreamPtr r = boost::make_shared<rhr::AxiStream>();
+rhr::AxiStreamPtr rhr::AxiStream::create (std::string path, uint32_t dest) {
+   rhr::AxiStreamPtr r = boost::make_shared<rhr::AxiStream>(path,dest);
    return(r);
 }
 
-//! Creator
-rhr::AxiStream::AxiStream() {
-   fd_      = -1;
-   dest_    = 0;
-   bCount_  = 0;
-   bSize_   = 0;
-   rawBuff_ = NULL;
-}
-
-//! Destructor
-rhr::AxiStream::~AxiStream() {
-   this->close();
-}
-
 //! Open the device. Pass destination.
-bool rhr::AxiStream::open ( std::string path, uint32_t dest ) {
+rhr::AxiStream::AxiStream ( std::string path, uint32_t dest ) {
    uint32_t mask;
 
-   if ( fd_ > 0 ) return(false);
-   dest = dest;
-
+   dest_ = dest;
    mask = (1 << dest_);
 
-   if ( (fd_ = ::open(path.c_str(), O_RDWR)) < 0 ) return(false);
+   if ( (fd_ = ::open(path.c_str(), O_RDWR)) < 0 )
+      throw(re::OpenException(path.c_str()));
 
    if ( axisSetMask(fd_,mask) < 0 ) {
       ::close(fd_);
-      return(false);
+      throw(re::MaskException(mask));
    }
 
    // Result may be that rawBuff_ = NULL
@@ -69,29 +59,17 @@ bool rhr::AxiStream::open ( std::string path, uint32_t dest ) {
 
    // Start read thread
    thread_ = new boost::thread(boost::bind(&rhr::AxiStream::runThread, this));
-
-   return(true);
 }
 
 //! Close the device
-void rhr::AxiStream::close() {
-
-   if ( fd_ < 0 ) return;
+rhr::AxiStream::~AxiStream() {
 
    // Stop read thread
    thread_->interrupt();
    thread_->join();
-   delete thread_;
-   thread_ = NULL;
 
    if ( rawBuff_ != NULL ) axisUnMapDma(fd_, rawBuff_);
    ::close(fd_);
-
-   fd_      = -1;
-   dest_    = 0;
-   bCount_  = 0;
-   bSize_   = 0;
-   rawBuff_ = NULL;
 }
 
 //! Set timeout for frame transmits in microseconds
@@ -119,8 +97,6 @@ ris::FramePtr rhr::AxiStream::acceptReq ( uint32_t size, bool zeroCopyEn) {
    ris::BufferPtr   buff;
    ris::FramePtr    frame;
 
-   if ( fd_ < 0 ) return(createFrame(0,0,true,zeroCopyEn));
-
    // Zero copy is disabled. Allocate from memory.
    if ( zeroCopyEn == false || rawBuff_ == NULL ) {
       frame = createFrame(size,bSize_,true,false);
@@ -135,6 +111,7 @@ ris::FramePtr rhr::AxiStream::acceptReq ( uint32_t size, bool zeroCopyEn) {
 
       // Request may be serviced with multiple buffers
       while ( alloc < size ) {
+         mtx_.lock();
 
          // Keep trying since select call can fire 
          // but getIndex fails because we did not win the buffer lock
@@ -152,13 +129,9 @@ ris::FramePtr rhr::AxiStream::acceptReq ( uint32_t size, bool zeroCopyEn) {
             }
             else tpr = NULL;
 
-            res = select(fd_+1,NULL,&fds,NULL,tpr);
-            
-            // Timeout, empty frame and break
-            // Returned frame will have an available size of zero
-            if ( res == 0 ) {
-               frame->clear();
-               break;
+            if ( (res = select(fd_+1,NULL,&fds,NULL,tpr)) == 0 ) {
+               mtx_.lock();
+               throw(re::TimeoutException(timeout_));
             }
 
             // Attempt to get index.
@@ -166,20 +139,19 @@ ris::FramePtr rhr::AxiStream::acceptReq ( uint32_t size, bool zeroCopyEn) {
             res = axisGetIndex(fd_);
          }
          while (res < 0);
+         mtx_.unlock();
 
          // Mark zero copy meta with bit 31 set, lower bits are index
-         if ( res >= 0 ) {
-            buff = createBuffer(rawBuff_[res],0x80000000 | res,bSize_);
-            frame->appendBuffer(buff);
-            alloc += bSize_;
-         }
+         buff = createBuffer(rawBuff_[res],0x80000000 | res,bSize_);
+         frame->appendBuffer(buff);
+         alloc += bSize_;
       }
    }
    return(frame);
 }
 
 //! Accept a frame from master
-bool rhr::AxiStream::acceptFrame ( ris::FramePtr frame ) {
+void rhr::AxiStream::acceptFrame ( ris::FramePtr frame ) {
    ris::BufferPtr buff;
    int32_t          res;
    fd_set           fds;
@@ -190,12 +162,8 @@ bool rhr::AxiStream::acceptFrame ( ris::FramePtr frame ) {
    uint32_t         flags;
    uint32_t         fuser;
    uint32_t         luser;
-   bool             ret;
 
-   ret = true;
-
-   // Device is closed
-   if ( fd_ < 0 ) return(false);
+   mtx_.lock();
 
    // Go through each buffer in the frame
    for (x=0; x < frame->getCount(); x++) {
@@ -219,16 +187,14 @@ bool rhr::AxiStream::acceptFrame ( ris::FramePtr frame ) {
          if ( (meta & 0x40000000) == 0 ) {
 
             // Write by passing buffer index to driver
-            res = axisWriteIndex(fd_, meta & 0x3FFFFFFF, buff->getCount(), fuser, luser, dest_);
-
-            // Return of zero or less is an error
-            if ( res <= 0 ) ret = false;
-            
-            // Mark buffer as stale
-            else {
-               meta |= 0x40000000;
-               buff->setMeta(meta);
+            if ( axisWriteIndex(fd_, meta & 0x3FFFFFFF, buff->getCount(), fuser, luser, dest_) <= 0 ) {
+               mtx_.unlock();
+               throw(re::WriteException());
             }
+
+            // Mark buffer as stale
+            meta |= 0x40000000;
+            buff->setMeta(meta);
          }
       }
 
@@ -251,14 +217,9 @@ bool rhr::AxiStream::acceptFrame ( ris::FramePtr frame ) {
             }
             else tpr = NULL;
 
-            res = select(fd_+1,NULL,&fds,NULL,tpr);
-            
-            // Timeout
-            // This is not good if it happens in the middle of a multiple
-            // buffer frame. Usually timeouts are bad anyway.
-            if ( res == 0 ) {
-               ret = false;
-               break;
+            if ( (res = select(fd_+1,NULL,&fds,NULL,tpr)) == 0 ) {
+               mtx_.unlock();
+               throw(re::TimeoutException(timeout_));
             }
 
             // Write with buffer copy
@@ -266,20 +227,16 @@ bool rhr::AxiStream::acceptFrame ( ris::FramePtr frame ) {
 
             // Error
             if ( res < 0 ) {
-               ret = false;
-               break;
+               mtx_.unlock();
+               throw(re::WriteException());
             }
          }
 
          // Exit out if return flag was set false
-         while ( res == 0 && ret == true );
+         while ( res == 0 );
       }
-
-      // Escape out of top for loop (buffer iteration) if an error occured.
-      if ( ret == false ) break;
    }
-
-   return(ret);
+   mtx_.unlock();
 }
 
 //! Return a buffer
@@ -290,8 +247,11 @@ void rhr::AxiStream::retBuffer(uint8_t * data, uint32_t meta, uint32_t rawSize) 
 
       // Device is open and buffer is not stale
       // Bit 30 indicates buffer has already been returned to hardware
-      if ( (fd_ >= 0) && ((meta & 0x40000000) == 0) )
+      if ( (fd_ >= 0) && ((meta & 0x40000000) == 0) ) {
+         mtx_.lock();
          axisRetIndex(fd_,meta & 0x3FFFFFFF); // Return to hardware
+         mtx_.unlock();
+      }
 
       deleteBuffer(rawSize);
    }
@@ -375,11 +335,9 @@ void rhr::AxiStream::runThread() {
 
 void rhr::AxiStream::setup_python () {
 
-   bp::class_<rhr::AxiStream, bp::bases<ris::Master,ris::Slave>, rhr::AxiStreamPtr, boost::noncopyable >("AxiStream",bp::init<>())
+   bp::class_<rhr::AxiStream, bp::bases<ris::Master,ris::Slave>, rhr::AxiStreamPtr, boost::noncopyable >("AxiStream",bp::init<std::string,uint32_t>())
       .def("create",         &rhr::AxiStream::create)
       .staticmethod("create")
-      .def("open",           &rhr::AxiStream::open)
-      .def("close",          &rhr::AxiStream::close)
       .def("enableSsi",      &rhr::AxiStream::enableSsi)
       .def("dmaAck",         &rhr::AxiStream::dmaAck)
    ;

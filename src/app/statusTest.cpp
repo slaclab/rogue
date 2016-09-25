@@ -7,9 +7,7 @@ namespace rhp = rogue::hardware::pgp;
 
 int main(int argc, char **argv) {
 
-   rhp::PgpCardPtr pgp = rhp::PgpCard::create();
-
-   pgp->open("/dev/pgpcard_0",0,0);
+   rhp::PgpCardPtr pgp = rhp::PgpCard::create("/dev/pgpcard_0",0,0);
 
    rhp::InfoPtr info = pgp->getInfo();
 

@@ -90,7 +90,7 @@ void rps::Bridge::doTransaction(bool write, bool posted, rim::BlockPtr block) {
 }
 
 //! Accept a frame from master
-bool rps::Bridge::acceptFrame ( ris::FramePtr frame ) {
+void rps::Bridge::acceptFrame ( ris::FramePtr frame ) {
    rps::TransactionPtr tp;
    uint32_t index;
 
@@ -107,9 +107,9 @@ bool rps::Bridge::acceptFrame ( ris::FramePtr frame ) {
       tranMapMtx_.unlock();
    } else {
       tranMapMtx_.unlock();
-      return(false);
+      return;
    }
 
-   return(tp->recvFrame(frame));
+   tp->recvFrame(frame);
 }
 

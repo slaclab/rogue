@@ -1,14 +1,14 @@
 /**
  *-----------------------------------------------------------------------------
- * Title      : EXO TEM Base Class
+ * Title      : Open Exception
  * ----------------------------------------------------------------------------
- * File       : TemData.h
+ * File       : OpenException.cpp
  * Author     : Ryan Herbst, rherbst@slac.stanford.edu
  * Created    : 2017-09-17
  * Last update: 2017-09-17
  * ----------------------------------------------------------------------------
  * Description:
- * Class for interfacing to Tem Driver.
+ * Open denied exception for Rogue
  * ----------------------------------------------------------------------------
  * This file is part of the rogue software platform. It is subject to 
  * the license terms in the LICENSE.txt file found in the top-level directory 
@@ -19,41 +19,25 @@
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
-#ifndef __ROGUE_HARDWARE_EXO_TEM_DATA_H__
-#define __ROGUE_HARDWARE_EXO_TEM_DATA_H__
-#include <rogue/hardware/exo/Tem.h>
-#include <boost/python.hpp>
-#include <boost/thread.hpp>
-#include <stdint.h>
+#include <rogue/exceptions/OpenException.h>
+namespace re = rogue::exceptions;
 
-namespace rogue {
-   namespace hardware {
-      namespace exo {
+re::OpenException::OpenException(char const *path) {
+   strcpy(text_,"Open Error: ");
+   strncat(text_,path,100-strlen(text_));
+}
 
-         //! PGP Card class
-         class TemData : public rogue::hardware::exo::Tem  {
+char const * re::OpenException::what() const throw() {
+   return(text_);
+}
 
-            public:
+void re::OpenException::setup_python() {
+   //register_exception_translator<my_exception>(&translate);
+}
 
-               //! Class creation
-               static boost::shared_ptr<rogue::hardware::exo::TemData> create ();
+void re::OpenException::translate(OpenException const &e) {
+    //PyErr_SetObject(OpenExceptionType, boost::python::object(e).ptr());
+    //PyErr_SetString(PyExc_RuntimeError, e.what());
+}
 
-               //! Setup class in python
-               static void setup_python();
-
-               //! Creator
-               TemData();
-
-               //! Destructor
-               ~TemData();
-         };
-
-         // Convienence
-         typedef boost::shared_ptr<rogue::hardware::exo::TemData> TemDataPtr;
-
-      }
-   }
-};
-
-#endif
 
