@@ -76,7 +76,6 @@ void ris::Master::sendFrame ( FramePtr frame) {
    uint32_t x;
 
    slaveMtx_.lock();
-   if ( slaves_.size() == 0 ) return;
 
    for (x=0; x < slaves_.size(); x++) 
       slaves_[x]->acceptFrame(frame);

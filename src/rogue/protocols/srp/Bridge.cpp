@@ -107,6 +107,7 @@ void rps::Bridge::acceptFrame ( ris::FramePtr frame ) {
       tranMapMtx_.unlock();
    } else {
       tranMapMtx_.unlock();
+      printf("Matching TID not found %i\n",index);
       return;
    }
 

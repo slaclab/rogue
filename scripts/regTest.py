@@ -61,55 +61,75 @@ genPrbs.setSlave(srp)
 prbsLength.setSlave(srp)
 
 # Post read transactions
+print("---------------------------------------------")
 fwVersion.doTransaction(False,False)
-fwVersion.waitComplete(10000)
-scratchpad.doTransaction(False,False)
-scratchpad.waitComplete(10000)
-deviceDna.doTransaction(False,False)
-deviceDna.waitComplete(10000)
-heartbeat.doTransaction(False,False)
-heartbeat.waitComplete(10000)
-buildstamp.doTransaction(False,False)
-buildstamp.waitComplete(10000)
-genPrbs.doTransaction(False,False)
-genPrbs.waitComplete(10000)
-prbsLength.doTransaction(False,False)
-prbsLength.waitComplete(10000)
-
-# Show results
-print("")
+fwVersion.waitComplete(100000)
 print("Fw Version: 0x%08x"  % ( fwVersion.getUInt32(0)))
+#time.sleep(1)
+print("---------------------------------------------")
+
+scratchpad.doTransaction(False,False)
+scratchpad.waitComplete(100000)
 print("Scratchpad: 0x%08x"  % ( scratchpad.getUInt32(0)))
+#time.sleep(1)
+print("---------------------------------------------")
+
+deviceDna.doTransaction(False,False)
+deviceDna.waitComplete(100000)
 print("DeviceDna:  0x%016x" % ( deviceDna.getUInt64(0)))
+#time.sleep(1)
+print("---------------------------------------------")
+
+heartbeat.doTransaction(False,False)
+heartbeat.waitComplete(100000)
 print("Heartbeat:  0x%08x"  % ( heartbeat.getUInt32(0)))
+#time.sleep(1)
+print("---------------------------------------------")
+
+buildstamp.doTransaction(False,False)
+buildstamp.waitComplete(100000)
 print("BuildStamp: %s"      % ( buildstamp.getString()))
+#time.sleep(1)
+print("---------------------------------------------")
+
+genPrbs.doTransaction(False,False)
+genPrbs.waitComplete(100000)
 print("GenPrbs:    0x%08x"  % ( genPrbs.getUInt32(0)))
+#time.sleep(1)
+print("---------------------------------------------")
+
+prbsLength.doTransaction(False,False)
+prbsLength.waitComplete(100000)
 print("PrbsLength: 0x%08x"  % ( prbsLength.getUInt32(0)))
 print("")
+#time.sleep(1)
+print("---------------------------------------------")
 
 # Set scratchpad
-print("Set scratchpad = 0x11111111")
-scratchpad.setUInt32(0,0x11111111)
-scratchpad.doTransaction(True,False) # Write
-scratchpad.waitComplete(10000)
-scratchpad.setUInt32(0,0x00000000) # test clear
-scratchpad.doTransaction(False,False) # Write
-scratchpad.waitComplete(10000)
-print("Scratchpad: 0x%08x" % ( scratchpad.getUInt32(0)))
-print("Set scratchpad = 0x22222222")
-scratchpad.setUInt32(0,0x22222222)
-scratchpad.doTransaction(True,False) # Write
-scratchpad.waitComplete(10000)
-scratchpad.setUInt32(0,0x00000000) # test clear
-scratchpad.doTransaction(False,False) # Write
-scratchpad.waitComplete(10000)
-print("Scratchpad: 0x%08x" % ( scratchpad.getUInt32(0)))
+#print("Set scratchpad = 0x11111111")
+#scratchpad.setUInt32(0,0x11111111)
+#scratchpad.doTransaction(True,False) # Write
+#scratchpad.waitComplete(10000)
+#scratchpad.setUInt32(0,0x00000000) # test clear
+#scratchpad.doTransaction(False,False) # Read
+#scratchpad.waitComplete(10000)
+#print("Scratchpad: 0x%08x" % ( scratchpad.getUInt32(0)))
+#print("Set scratchpad = 0x22222222")
+#scratchpad.setUInt32(0,0x22222222)
+#scratchpad.doTransaction(True,False) # Write
+#scratchpad.waitComplete(10000)
+#scratchpad.setUInt32(0,0x00000000) # test clear
+#scratchpad.doTransaction(False,False) # Read
+#scratchpad.waitComplete(10000)
+#print("Scratchpad: 0x%08x" % ( scratchpad.getUInt32(0)))
 
 # Wait a moment before connecting microblaze
+print("Enabling MB Debug")
 time.sleep(1)
 mbCon = mbDebug()
 pgpVc3.setSlave(mbCon)
 
+print("Entering Loop")
 while (True):
    time.sleep(5)
 

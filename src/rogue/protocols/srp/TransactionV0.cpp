@@ -141,7 +141,10 @@ void rps::TransactionV0::recvFrame(ris::FramePtr frame) {
    cnt += frame->read(&(rxHeader[1]),cnt,4);
 
    // Header mismatch
-   if ( (rxHeader[0] != header_[0]) || (rxHeader[1] != header_[1])) return;
+   if ( (rxHeader[0] != header_[0]) || (rxHeader[1] != header_[1])) {
+      printf("Header mismatch\n");
+      return;
+   }
 
    // Read tail
    frame->read(&tail,frame->getPayload()-4,4);
@@ -149,6 +152,7 @@ void rps::TransactionV0::recvFrame(ris::FramePtr frame) {
    // Tail shows error
    if ( tail != 0 ) {
       block_->complete(tail);
+      printf("Tail error\n");
       return;
    }
 
@@ -159,7 +163,7 @@ void rps::TransactionV0::recvFrame(ris::FramePtr frame) {
       }
    }
 
+   printf("Setting complete to block %i\n",block_->getIndex());
    block_->complete(0);
 }
-
 

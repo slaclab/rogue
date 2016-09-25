@@ -89,9 +89,6 @@ class exoCmdTx(rogue.interfaces.stream.Master):
 exoCmd  = rogue.hardware.exo.TemCmd()
 exoData = rogue.hardware.exo.TemData()
 
-exoCmd.open()
-exoData.open()
-
 print("Exo PCI Version = 0x%08x" % (exoCmd.getInfo().version))
 print("Exo PCI Build   = %s"     % (exoCmd.getInfo().buildString()))
 

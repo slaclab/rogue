@@ -21,8 +21,7 @@ class testSlave(rogue.interfaces.stream.Slave):
          print("Got size=%i Data: %s" % (len(p),"".join("%02x:" % b for b in p)))
       return(True)
 
-pgpA = rogue.hardware.pgp.PgpCard()
-pgpA.open("/dev/pgpcard_0",0,0)
+pgpA = rogue.hardware.pgp.PgpCard("/dev/pgpcard_0",0,0)
 pgpA.setLoop(1)
 
 print("PGP Card Version: %x" % (pgpA.getInfo().version))
