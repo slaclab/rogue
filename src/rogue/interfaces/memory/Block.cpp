@@ -151,13 +151,8 @@ void rim::Block::doTransaction(bool write, bool posted, uint32_t timeout) {
       boost::unique_lock<boost::mutex> lck = lockAndCheck(false);
       timeout_ = timeout;
       error_   = 0;
+      busy_    = true;
 
-      // If posted, don't set busy, clear stale
-      if ( write && posted ) {
-         busy_  = false;
-         stale_ = false;
-      } 
-      else busy_ = true;
    } // End scope of lck
 
    // Lock must be relased before this call because

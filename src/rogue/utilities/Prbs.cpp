@@ -314,8 +314,10 @@ void ru::Prbs::acceptFrame ( ris::FramePtr frame ) {
       return;
    }
 
-   // Check sequence, incoming frames with seq = 0 never cause errors and treated as a restart
-   if ( frSeq != 0 && frSeq != curSeq ) {
+   // Check sequence, 
+   // Accept any sequence if our local count is zero
+   // incoming frames with seq = 0 never cause errors and treated as a restart
+   if ( frSeq != 0 && curSeq != 0 && frSeq != curSeq ) {
       if ( enMessages_ ) 
          printf("Prbs::acceptFrame -> Bad Sequence. cur=%i, got=%i, count=%i\n",curSeq,frSeq,rxCount_);
       rxErrCount_++;

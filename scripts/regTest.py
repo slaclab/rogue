@@ -29,17 +29,8 @@ srp = rogue.protocols.srp.Bridge(0)
 srp.setSlave(pgpVc0)
 pgpVc0.setSlave(srp)
 
-probeA = rogue.interfaces.stream.Slave()
-probeA.setDebug(16,"SRP Rx")
-#pgpVc0.addSlave(probeA)
-
-probeB = rogue.interfaces.stream.Slave()
-probeB.setDebug(16,"SRP Tx")
-#srp.addSlave(probeB)
-
 # Connect Data
-dataRx = rogue.interfaces.stream.Slave()
-dataRx.setDebug(10,"Data")
+dataRx = rogue.utilities.Prbs()
 pgpVc1.setSlave(dataRx)
 
 # Create registers
@@ -48,7 +39,7 @@ scratchpad = rogue.interfaces.memory.Block(0x00004,4)
 deviceDna  = rogue.interfaces.memory.Block(0x00008,8)
 heartbeat  = rogue.interfaces.memory.Block(0x00024,4)
 buildstamp = rogue.interfaces.memory.Block(0x00800,256)
-genPrbs    = rogue.interfaces.memory.Block(0x30000,4)
+prbsCont   = rogue.interfaces.memory.Block(0x30000,4)
 prbsLength = rogue.interfaces.memory.Block(0x30004,4)
 
 # Connect to SRP
@@ -57,7 +48,7 @@ scratchpad.setSlave(srp)
 deviceDna.setSlave(srp)
 heartbeat.setSlave(srp)
 buildstamp.setSlave(srp)
-genPrbs.setSlave(srp)
+prbsCont.setSlave(srp)
 prbsLength.setSlave(srp)
 
 # Post read transactions
@@ -66,7 +57,7 @@ scratchpad.doTransaction(False,False,1000)
 deviceDna.doTransaction(False,False,1000)
 heartbeat.doTransaction(False,False,1000)
 buildstamp.doTransaction(False,False,1000)
-genPrbs.doTransaction(False,False,1000)
+prbsCont.doTransaction(False,False,1000)
 prbsLength.doTransaction(False,False,1000)
 
 # Print results
@@ -76,27 +67,30 @@ print("Scratchpad: 0x%08x"  % ( scratchpad.getUInt32(0)))
 print("DeviceDna:  0x%016x" % ( deviceDna.getUInt64(0)))
 print("Heartbeat:  0x%08x"  % ( heartbeat.getUInt32(0)))
 print("BuildStamp: %s"      % ( buildstamp.getString()))
-print("GenPrbs:    0x%08x"  % ( genPrbs.getUInt32(0)))
+print("PrbsCont:   0x%08x"  % ( prbsCont.getUInt32(0)))
 print("PrbsLength: 0x%08x"  % ( prbsLength.getUInt32(0)))
 print("")
 
 # Set scratchpad
-#print("Set scratchpad = 0x11111111")
-#scratchpad.setUInt32(0,0x11111111)
-#scratchpad.doTransaction(True,False) # Write
-#scratchpad.waitComplete(10000)
-#scratchpad.setUInt32(0,0x00000000) # test clear
-#scratchpad.doTransaction(False,False) # Read
-#scratchpad.waitComplete(10000)
-#print("Scratchpad: 0x%08x" % ( scratchpad.getUInt32(0)))
-#print("Set scratchpad = 0x22222222")
-#scratchpad.setUInt32(0,0x22222222)
-#scratchpad.doTransaction(True,False) # Write
-#scratchpad.waitComplete(10000)
-#scratchpad.setUInt32(0,0x00000000) # test clear
-#scratchpad.doTransaction(False,False) # Read
-#scratchpad.waitComplete(10000)
-#print("Scratchpad: 0x%08x" % ( scratchpad.getUInt32(0)))
+print("Set scratchpad = 0x11111111")
+scratchpad.setUInt32(0,0x11111111)
+scratchpad.doTransaction(True,False,1000) # Write
+scratchpad.setUInt32(0,0x00000000) # test clear
+scratchpad.doTransaction(False,False,1000) # Read
+print("Scratchpad: 0x%08x" % ( scratchpad.getUInt32(0)))
+print("Set scratchpad = 0x22222222")
+scratchpad.setUInt32(0,0x22222222)
+scratchpad.doTransaction(True,False,1000) # Write
+scratchpad.setUInt32(0,0x00000000) # test clear
+scratchpad.doTransaction(False,False,1000) # Read
+print("Scratchpad: 0x%08x" % ( scratchpad.getUInt32(0)))
+print("")
+
+# Setup PRBS
+prbsCont.setUInt32(0,0x01)
+prbsCont.doTransaction(True,False,1000)
+prbsLength.setUInt32(0,0x7F)
+prbsLength.doTransaction(True,False,1000)
 
 # Wait a moment before connecting microblaze
 print("Enabling MB Debug")
@@ -107,4 +101,8 @@ pgpVc3.setSlave(mbCon)
 print("Entering Loop")
 while (True):
    time.sleep(5)
+   print("Requesting prbs frame")
+   prbsCont.setUInt32(0,0x11)
+   prbsCont.doTransaction(True,False,1000)
+   print(" Prbs: Count %i, Bytes %i, Errors %i" % (dataRx.getRxCount(),dataRx.getRxBytes(),dataRx.getRxErrors()))
 
