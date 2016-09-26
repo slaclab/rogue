@@ -25,14 +25,10 @@ so that python and applications can find the shared libraries.
 TODO
 ------------------
 
-Add locking to PgpCard and Prbs
-
 Proper memory allocation in Slave for Frame and Buffers. This includes allocating
 space for payload as well as the variables within the clases.
 
 Determine if setting GIL is ok when master and slave are both in python.
-
-Add exception throws in C++ code called from python for error cases.
 
 Add the following:
 
