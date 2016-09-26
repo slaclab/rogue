@@ -69,7 +69,7 @@ uint32_t rps::TransactionV0::init(bool write, bool posted) {
    posted_ = posted;
 
    if ((block_->getSize() % 4) != 0 || block_->getSize() < 4) {
-      block_->complete(0x80000000);
+      block_->doneTransaction(0x80000000);
       txSize_ = 0;
       rxSize_ = 0;
    }
@@ -98,7 +98,7 @@ bool rps::TransactionV0::genFrame(ris::FramePtr frame) {
    uint32_t x;
 
    if ( (txSize_ == 0) || (frame->getAvailable() < txSize_) ) {
-      block_->complete(1);
+      block_->doneTransaction(1);
       return(false);
    }
 
@@ -123,7 +123,7 @@ bool rps::TransactionV0::genFrame(ris::FramePtr frame) {
    value = 0;
    cnt += frame->write(&value,cnt,4);
 
-   if ( posted_ ) block_->complete(0);
+   if ( posted_ ) block_->doneTransaction(0);
    return(true);
 }
 
@@ -151,7 +151,7 @@ void rps::TransactionV0::recvFrame(ris::FramePtr frame) {
 
    // Tail shows error
    if ( tail != 0 ) {
-      block_->complete(tail);
+      block_->doneTransaction(tail);
       printf("Tail error\n");
       return;
    }
@@ -163,7 +163,6 @@ void rps::TransactionV0::recvFrame(ris::FramePtr frame) {
       }
    }
 
-   printf("Setting complete to block %i\n",block_->getIndex());
-   block_->complete(0);
+   block_->doneTransaction(0);
 }
 

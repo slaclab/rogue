@@ -68,7 +68,8 @@ void rps::Bridge::doTransaction(bool write, bool posted, rim::BlockPtr block) {
    rps::TransactionPtr tp;
    ris::FramePtr frame;
 
-   tranMapMtx_.lock();
+   boost::lock_guard<boost::mutex> lock(tranMapMtx_);
+
    if ( tranMap_.find(block->getIndex()) != tranMap_.end() ) 
       tp = tranMap_[block->getIndex()];
    else {
@@ -82,7 +83,6 @@ void rps::Bridge::doTransaction(bool write, bool posted, rim::BlockPtr block) {
 
       tranMap_[block->getIndex()] = tp;
    }
-   tranMapMtx_.unlock();
 
    size = tp->init(write,posted);
    frame = reqFrame(size,true);
@@ -101,12 +101,11 @@ void rps::Bridge::acceptFrame ( ris::FramePtr frame ) {
    else
       index = rps::Transaction::extractTid(frame);
 
-   tranMapMtx_.lock();
+   boost::lock_guard<boost::mutex> lock(tranMapMtx_);
+
    if ( tranMap_.find(index) != tranMap_.end() ) {
       tp = tranMap_[index];
-      tranMapMtx_.unlock();
    } else {
-      tranMapMtx_.unlock();
       printf("Matching TID not found %i\n",index);
       return;
    }

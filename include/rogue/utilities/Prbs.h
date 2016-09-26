@@ -54,11 +54,8 @@ namespace rogue {
             //! Message enable
             bool       enMessages_;
 
-            //! RX Count Mutex
-            boost::mutex rxCountMtx_;
-
-            //! RX Sequence Mutex
-            boost::mutex rxSeqMtx_;
+            //! RX Count
+            boost::mutex rxMtx_;
 
             //! rx sequence tracking
             uint32_t   rxSeq_;
@@ -72,11 +69,8 @@ namespace rogue {
             //! Rx bytes
             uint32_t   rxBytes_;
 
-            //! TX Count Mutex
-            boost::mutex txCountMtx_;
-
-            //! TX Sequence Mutex
-            boost::mutex txSeqMtx_;
+            //! TX Mutex
+            boost::mutex txMtx_;
 
             //! tx sequence tracking
             uint32_t   txSeq_;

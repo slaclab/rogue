@@ -22,6 +22,8 @@
 **/
 #include <rogue/interfaces/memory/Block.h>
 #include <rogue/exceptions/AllocException.h>
+#include <rogue/exceptions/AlignException.h>
+#include <rogue/exceptions/BoundsException.h>
 #include <rogue/exceptions/TimeoutException.h>
 #include <rogue/exceptions/MemoryException.h>
 #include <boost/make_shared.hpp>
@@ -51,11 +53,12 @@ rim::Block::Block(uint64_t address, uint32_t size ) : Master () {
    classIdx_++;
    classIdxMtx_.unlock();
 
-   address_     = address;
-   size_        = size;
-   error_       = 0;
-   stale_       = 0;
-   complete_    = true;
+   address_ = address;
+   size_    = size;
+   timeout_ = 0;
+   error_   = 0;
+   stale_   = 0;
+   busy_    = false;
 
    if ( (data_ = (uint8_t *)malloc(size)) == NULL ) 
       throw(re::AllocException(size));
@@ -75,15 +78,15 @@ uint32_t rim::Block::getIndex() {
 
 //! Get the address
 uint64_t rim::Block::getAddress() {
+   boost::lock_guard<boost::mutex> lock(mtx_);
    return(address_);
 }
 
 //! Adjust the address
 void rim::Block::adjAddress(uint64_t mask, uint64_t addr) {
-   mtx_.lock();
+   boost::unique_lock<boost::mutex> lck = lockAndCheck(false);
    address_ &= mask;
    address_ |= addr;
-   mtx_.unlock();
 }
 
 //! Get the size
@@ -91,14 +94,16 @@ uint32_t rim::Block::getSize() {
    return(size_);
 }
 
-//! Lock data access
-void rim::Block::lockData() {
-   mtx_.lock();
+//! Get error state
+uint32_t rim::Block::getError() {
+   boost::unique_lock<boost::mutex> lck = lockAndCheck(false);
+   return(error_);
 }
 
-//! UnLock data access
-void rim::Block::unLockData() {
-   mtx_.unlock();
+//! Get stale state
+bool rim::Block::getStale() {
+   boost::unique_lock<boost::mutex> lck = lockAndCheck(false);
+   return(stale_);
 }
 
 //! Get pointer to raw data
@@ -113,136 +118,163 @@ boost::python::object rim::Block::getDataPy() {
   return retval;
 }
 
-//! Get error state
-uint32_t rim::Block::getError() {
-   return(error_);
-}
+//! Internal function to wait for busy = false and acquire lock
+/*
+ * Exception thrown on busy wait timeout
+ * Exception thrown if error flag is non-zero and errEnable is true
+ */
+boost::unique_lock<boost::mutex> rim::Block::lockAndCheck(bool errEnable) {
+   boost::unique_lock<boost::mutex> lock(mtx_);
 
-//! Set error state
-void rim::Block::setError(uint32_t error) {
-   mtx_.lock();
-   error_ = error;
-   mtx_.unlock();
-}
+   while(busy_) {
 
-//! Get stale state
-bool rim::Block::getStale() {
-   return(stale_);
-}
+      Py_BEGIN_ALLOW_THREADS;
+      if ( ! busyCond_.timed_wait(lock,boost::posix_time::microseconds(timeout_))) break;
+      Py_END_ALLOW_THREADS;
+   }
 
-//! Set stale state
-void rim::Block::setStale(bool stale) {
-   mtx_.lock();
-   stale_ = stale;
-   mtx_.unlock();
+   // Timeout if busy is set
+   if ( busy_ ) {
+      busy_ = false;
+      throw(re::TimeoutException(timeout_));
+   }
+
+   // Throw error if enabled and error is nonzero
+   if ( errEnable && (error_ != 0) ) throw(re::MemoryException(error_));
+
+   return(lock);
 }
 
 //! Do Transaction
-void rim::Block::doTransaction(bool write, bool posted) {
-   mtx_.lock();
-   complete_ = false;
-   error_ = 0;
-   mtx_.unlock();
+void rim::Block::doTransaction(bool write, bool posted, uint32_t timeout) {
+   { // Begin scope of lck
+      boost::unique_lock<boost::mutex> lck = lockAndCheck(false);
+      timeout_ = timeout;
+      error_   = 0;
 
-   rim::BlockPtr p = shared_from_this();
-   reqTransaction(write,posted,p);
-}
+      // If posted, don't set busy, clear stale
+      if ( write && posted ) {
+         busy_  = false;
+         stale_ = false;
+      } 
+      else busy_ = true;
+   } // End scope of lck
 
-//! Wait complete, throw exception?
-void rim::Block::waitComplete(uint32_t timeout) {
-   uint32_t tme;
-
-   tme = 0;
-   while ((complete_ == false) && (tme < timeout)) {
-      usleep(1);
-      tme++;
-   }
-
-   if ( complete_ == false ) 
-      throw(re::TimeoutException(timeout));
-
-   else if ( error_ != 0 )
-      throw(re::MemoryException(error_));
+   // Lock must be relased before this call because
+   // complete() call can come directly as a result
+   reqTransaction(write,posted,shared_from_this());
 }
 
 //! Transaction complete
-void rim::Block::complete(uint32_t error) {
-   mtx_.lock();
-   complete_ = true;
-   error_    = error;
-   if ( error == 0 ) stale_ = false;
-   mtx_.unlock();
+void rim::Block::doneTransaction(uint32_t error) {
+   { // Begin scope of lck
+
+      boost::lock_guard<boost::mutex> lck(mtx_); // Will succeedd if busy is set
+      if ( busy_ == false ) return; // Transaction was not active,
+                                    // message was received after timeout.
+      busy_  = false;
+      error_ = error;
+      if ( error == 0 ) stale_ = false;
+
+   } // End scope of lck
+   busyCond_.notify_one();
 }
 
 //! Get uint8 at offset
-// should throw exception here if range is off
 uint8_t rim::Block::getUInt8(uint32_t offset) {
-   if ( offset >= size_ ) return(0);
+   if ( offset >= size_ ) 
+      throw(re::BoundsException(offset,size_));
+
+   boost::unique_lock<boost::mutex> lck = lockAndCheck(true);
    return(data_[offset]);
 }
 
 //! Set uint8 at offset
-// should throw exception here if range is off
 void rim::Block::setUInt8(uint32_t offset, uint8_t value) {
-   if ( offset >= size_ ) return;
-   mtx_.lock();
+   if ( offset >= size_ ) 
+      throw(re::BoundsException(offset,size_));
+
+   boost::unique_lock<boost::mutex> lck = lockAndCheck(false);
    data_[offset] = value;
    stale_ = true;
-   mtx_.unlock();
 }
 
 //! Get uint16 at offset
 uint16_t rim::Block::getUInt16(uint32_t offset) {
-   if ( ((offset % 2) != 0) || (offset > (size_-2)) ) return(0);
+   if ( (offset % 2) != 0 )
+      throw(re::AlignException(offset,2));
 
+   if ( offset > (size_-2) )
+      throw(re::BoundsException(offset+2,size_));
+
+   boost::unique_lock<boost::mutex> lck = lockAndCheck(true);
    return(((uint16_t *)data_)[offset/2]);
 }
 
 //! Set uint32  offset
 void rim::Block::setUInt16(uint32_t offset, uint16_t value) {
-   if ( ((offset % 2) != 0) || (offset > (size_-2)) ) return;
+   if ( (offset % 2) != 0 )
+      throw(re::AlignException(offset,2));
 
-   if ( offset > (size_-2) ) return;
-   mtx_.lock();
+   if ( offset > (size_-2) )
+      throw(re::BoundsException(offset+2,size_));
+
+   boost::unique_lock<boost::mutex> lck = lockAndCheck(false);
+
    ((uint16_t *)data_)[offset/2] = value;
    stale_ = true;
-   mtx_.unlock();
 }
 
 //! Get uint32 at offset
 uint32_t rim::Block::getUInt32(uint32_t offset) {
-   if ( ((offset % 4) != 0) || (offset > (size_-4)) ) return(0);
+   if ( (offset % 4) != 0 )
+      throw(re::AlignException(offset,4));
 
+   if ( offset > (size_-4) )
+      throw(re::BoundsException(offset+4,size_));
+
+   boost::unique_lock<boost::mutex> lck = lockAndCheck(true);
    return(((uint32_t *)data_)[offset/4]);
 }
 
 //! Set uint32  offset
 void rim::Block::setUInt32(uint32_t offset, uint32_t value) {
-   if ( ((offset % 4) != 0) || (offset > (size_-4)) ) return;
+   if ( (offset % 4) != 0 )
+      throw(re::AlignException(offset,4));
 
-   if ( offset > (size_-4) ) return;
-   mtx_.lock();
+   if ( offset > (size_-4) )
+      throw(re::BoundsException(offset+4,size_));
+
+   boost::unique_lock<boost::mutex> lck = lockAndCheck(false);
+
    ((uint32_t *)data_)[offset/4] = value;
    stale_ = true;
-   mtx_.unlock();
 }
 
 //! Get uint64 at offset
 uint64_t rim::Block::getUInt64(uint32_t offset) {
-   if ( ((offset % 4) != 0) || (offset > (size_-4)) ) return(0);
+   if ( (offset % 8) != 0 )
+      throw(re::AlignException(offset,8));
 
+   if ( offset > (size_-8) )
+      throw(re::BoundsException(offset+8,size_));
+
+   boost::unique_lock<boost::mutex> lck = lockAndCheck(true);
    return(((uint64_t *)data_)[offset/8]);
 }
 
 //! Set uint64  offset
 void rim::Block::setUInt64(uint32_t offset, uint64_t value) {
-   if ( ((offset % 4) != 0) || (offset > (size_-4)) ) return;
+   if ( (offset % 8) != 0 )
+      throw(re::AlignException(offset,8));
 
-   if ( offset > (size_-4) ) return;
-   mtx_.lock();
+   if ( offset > (size_-8) )
+      throw(re::BoundsException(offset+8,size_));
+
+   boost::unique_lock<boost::mutex> lck = lockAndCheck(false);
+
    ((uint64_t *)data_)[offset/8] = value;
    stale_ = true;
-   mtx_.unlock();
 }
 
 //! Get arbitrary bit field at byte and bit offset
@@ -253,8 +285,12 @@ uint32_t rim::Block::getBits(uint32_t bitOffset, uint32_t bitCount) {
    uint32_t cnt;
    uint32_t bit;
 
-   mtx_.lock();
-   if ( (bitCount > 32) || (bitOffset/8) > (size_-(bitCount/8)) ) return(0);
+   if ( bitCount > 32 ) throw(re::BoundsException(bitCount,32));
+
+   if ( bitOffset > ((size_*8)-bitCount) )
+      throw(re::BoundsException(bitOffset,(size_*8)-bitCount));
+
+   boost::unique_lock<boost::mutex> lck = lockAndCheck(true);
 
    currByte = bitOffset / 8;
    currBit  = bitOffset % 8;
@@ -269,7 +305,6 @@ uint32_t rim::Block::getBits(uint32_t bitOffset, uint32_t bitCount) {
          currByte++;
       }
    }
-   mtx_.unlock();
    return(ret); 
 }
 
@@ -280,9 +315,12 @@ void rim::Block::setBits(uint32_t bitOffset, uint32_t bitCount, uint32_t value) 
    uint32_t cnt;
    uint32_t bit;
 
-   if ( (bitCount > 32) || (bitOffset/8) > (size_-(bitCount/8)) ) return;
+   if ( bitCount > 32 ) throw(re::BoundsException(bitCount,32));
 
-   mtx_.lock();
+   if ( bitOffset > ((size_*8)-bitCount) )
+      throw(re::BoundsException(bitOffset,(size_*8)-bitCount));
+
+   boost::unique_lock<boost::mutex> lck = lockAndCheck(false);
 
    currByte = bitOffset / 8;
    currBit  = bitOffset % 8;
@@ -298,55 +336,49 @@ void rim::Block::setBits(uint32_t bitOffset, uint32_t bitCount, uint32_t value) 
          currByte++;
       }
    }
-   stale_ = true;
-   mtx_.unlock();
 }
 
 //! Get string
 std::string rim::Block::getString() {
-   mtx_.lock();
+   boost::unique_lock<boost::mutex> lck = lockAndCheck(true);
+
    data_[size_-1] = 0; // to be safe
-   std::string ret((char *)data_);
-   mtx_.unlock();
-   return(ret);
+   return(std::string((char *)data_));
 }
 
-//! Get string
+//! Set string
 void rim::Block::setString(std::string value) {
-   mtx_.lock();
-   strncpy((char *)data_,value.c_str(),size_);
-   mtx_.unlock();
+   if ( value.length() > size_ ) 
+      throw(re::BoundsException(value.length(),size_));
+
+   boost::unique_lock<boost::mutex> lck = lockAndCheck(false);
+   strcpy((char *)data_,value.c_str());
 }
 
 void rim::Block::setup_python() {
 
    bp::class_<rim::Block, bp::bases<rim::Master>, rim::BlockPtr, boost::noncopyable>("Block",bp::init<uint64_t,uint32_t>())
-      .def("create",         &rim::Block::create)
+      .def("create",          &rim::Block::create)
       .staticmethod("create")
-      .def("getIndex",       &rim::Block::getIndex)
-      .def("getAddress",     &rim::Block::getAddress)
-      .def("adjAddress",     &rim::Block::adjAddress)
-      .def("getSize",        &rim::Block::getSize)
-      .def("lockData",       &rim::Block::lockData)
-      .def("unLockData",     &rim::Block::unLockData)
-      .def("getData",        &rim::Block::getDataPy)
-      .def("getError",       &rim::Block::getError)
-      .def("setError",       &rim::Block::setError)
-      .def("getStale",       &rim::Block::getStale)
-      .def("setStale",       &rim::Block::setStale)
-      .def("doTransaction",  &rim::Block::doTransaction)
-      .def("complete",       &rim::Block::complete)
-      .def("waitComplete",   &rim::Block::waitComplete)
-      .def("getUInt8",       &rim::Block::getUInt8)
-      .def("setUInt8",       &rim::Block::setUInt8)
-      .def("getUInt32",      &rim::Block::getUInt32)
-      .def("setUInt32",      &rim::Block::setUInt32)
-      .def("getUInt64",      &rim::Block::getUInt64)
-      .def("setUInt64",      &rim::Block::setUInt64)
-      .def("getBits",        &rim::Block::getBits)
-      .def("setBits",        &rim::Block::setBits)
-      .def("getString",      &rim::Block::getString)
-      .def("setString",      &rim::Block::setString)
+      .def("getIndex",        &rim::Block::getIndex)
+      .def("getAddress",      &rim::Block::getAddress)
+      .def("adjAddress",      &rim::Block::adjAddress)
+      .def("getSize",         &rim::Block::getSize)
+      .def("getError",        &rim::Block::getError)
+      .def("getStale",        &rim::Block::getStale)
+      .def("getData",         &rim::Block::getDataPy)
+      .def("doTransaction",   &rim::Block::doTransaction)
+      .def("doneTransaction", &rim::Block::doneTransaction)
+      .def("getUInt8",        &rim::Block::getUInt8)
+      .def("setUInt8",        &rim::Block::setUInt8)
+      .def("getUInt32",       &rim::Block::getUInt32)
+      .def("setUInt32",       &rim::Block::setUInt32)
+      .def("getUInt64",       &rim::Block::getUInt64)
+      .def("setUInt64",       &rim::Block::setUInt64)
+      .def("getBits",         &rim::Block::getBits)
+      .def("setBits",         &rim::Block::setBits)
+      .def("getString",       &rim::Block::getString)
+      .def("setString",       &rim::Block::setString)
    ;
 
 }

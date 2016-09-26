@@ -58,8 +58,8 @@ bool ru::PeekPoke::poke ( uint32_t address, uint32_t value ) {
    else if ( getSize() == 2 ) setUInt16(0,value);
    else if ( getSize() == 4 ) setUInt32(0,value);
 
-   doTransaction(true,false);
-   return(waitComplete(1000));
+   doTransaction(true,false,1000000);
+   return(getError());
 }
 
 //! Peek. Read from an address
@@ -70,12 +70,10 @@ uint32_t ru::PeekPoke::peek ( uint32_t address ) {
 
    ret = 0xFFFFFFFF;
 
-   doTransaction(false,false);
-   if ( waitComplete(1000000) && getError() == 0 ) {
-      if ( getSize() == 1 ) ret = getUInt8(0);
-      else if ( getSize() == 2 ) ret = getUInt16(0);
-      else if ( getSize() == 4 ) ret = getUInt32(0);
-   }
+   doTransaction(false,false,1000000);
+   if ( getSize() == 1 ) ret = getUInt8(0);
+   else if ( getSize() == 2 ) ret = getUInt16(0);
+   else if ( getSize() == 4 ) ret = getUInt32(0);
 
    return(ret);
 }

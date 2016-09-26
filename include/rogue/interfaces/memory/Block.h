@@ -48,14 +48,14 @@ namespace rogue {
                //! Class instance lock
                static boost::mutex classIdxMtx_;
 
+               //! Transaction timeout
+               uint32_t timeout_;
+
                //! Address of memory block
                uint64_t address_;
 
                //! Size of memory block
                uint32_t size_;
-
-               //! Transaction is complete
-               bool complete_;
 
                //! Pointer to data
                uint8_t * data_;
@@ -70,10 +70,19 @@ namespace rogue {
                uint32_t error_;
 
                //! Stale state of memory space
-               uint32_t stale_;
+               bool stale_;
 
-               //! Locking mutex
+               //! Main class mutex
                boost::mutex mtx_;
+
+               //! Transaction is busy
+               bool busy_;
+
+               //! Busy condition
+               boost::condition_variable busyCond_;
+
+               //! Internal function to wait for busy = false and acquire lock
+               boost::unique_lock<boost::mutex> lockAndCheck(bool errEnable);
 
             public:
 
@@ -102,38 +111,46 @@ namespace rogue {
                //! Get the size
                uint32_t getSize();
 
-               //! Lock data access
-               void lockData();
-
-               //! UnLock data access
-               void unLockData();
-
-               //! Get pointer to raw data
-               uint8_t * getData();
-
-               //! Get pointer to raw data, python
-               boost::python::object getDataPy();
-
                //! Get error state
                uint32_t getError();
-
-               //! Set error state
-               void setError(uint32_t error);
 
                //! Get stale state
                bool getStale();
 
-               //! Set stale state
-               void setStale(bool stale);
+               //////////////////////////////////////
+               // Transaction Methods
+               //////////////////////////////////////
+
+               //! Get pointer to raw data
+               /*
+                * This direct access method is used only by slave sub-classes
+                * to update data during transaction. This access is unlocked and
+                * only occurs when busy is set.
+                */
+               uint8_t * getData();
+
+               //! Get pointer to raw data, python version
+               /*
+                * This direct access method is used only by slave sub-classes
+                * to update data during transaction. This access is unlocked and
+                * only occurs when busy is set. 
+                */
+               boost::python::object getDataPy();
 
                //! Do Transaction
-               void doTransaction(bool write, bool posted);
-
-               //! Wait for completion
-               void waitComplete (uint32_t timeout);
+               /*
+                * Write set to true for write transactions.
+                * posted set to true if transaction is posted for writes
+                * Pass optiona timeout in uSeconds
+                */
+               void doTransaction(bool write, bool posted, uint32_t timeout);
 
                //! Transaction complete, set by slave
-               void complete(uint32_t error);
+               void doneTransaction(uint32_t error);
+
+               //////////////////////////////////////
+               // Access Methods
+               //////////////////////////////////////
 
                //! Get uint8 at offset
                uint8_t getUInt8(uint32_t offset);
@@ -168,7 +185,7 @@ namespace rogue {
                //! Get string
                std::string getString();
 
-               //! Get string
+               //! Set string
                void setString(std::string value);
          };
 

@@ -105,13 +105,14 @@ ris::FramePtr rhr::AxiStream::acceptReq ( uint32_t size, bool zeroCopyEn) {
    // Allocate zero copy buffers from driver
    else {
 
+      boost::lock_guard<boost::mutex> lock(mtx_);
+
       // Create empty frame
       frame = createFrame(0,0,true,true);
       alloc=0;
 
       // Request may be serviced with multiple buffers
       while ( alloc < size ) {
-         mtx_.lock();
 
          // Keep trying since select call can fire 
          // but getIndex fails because we did not win the buffer lock
@@ -129,17 +130,14 @@ ris::FramePtr rhr::AxiStream::acceptReq ( uint32_t size, bool zeroCopyEn) {
             }
             else tpr = NULL;
 
-            if ( (res = select(fd_+1,NULL,&fds,NULL,tpr)) == 0 ) {
-               mtx_.lock();
+            if ( (res = select(fd_+1,NULL,&fds,NULL,tpr)) == 0 ) 
                throw(re::TimeoutException(timeout_));
-            }
 
             // Attempt to get index.
             // return of less than 0 is a failure to get a buffer
             res = axisGetIndex(fd_);
          }
          while (res < 0);
-         mtx_.unlock();
 
          // Mark zero copy meta with bit 31 set, lower bits are index
          buff = createBuffer(rawBuff_[res],0x80000000 | res,bSize_);
@@ -163,7 +161,7 @@ void rhr::AxiStream::acceptFrame ( ris::FramePtr frame ) {
    uint32_t         fuser;
    uint32_t         luser;
 
-   mtx_.lock();
+   boost::lock_guard<boost::mutex> lock(mtx_);
 
    // Go through each buffer in the frame
    for (x=0; x < frame->getCount(); x++) {
@@ -187,10 +185,8 @@ void rhr::AxiStream::acceptFrame ( ris::FramePtr frame ) {
          if ( (meta & 0x40000000) == 0 ) {
 
             // Write by passing buffer index to driver
-            if ( axisWriteIndex(fd_, meta & 0x3FFFFFFF, buff->getCount(), fuser, luser, dest_) <= 0 ) {
-               mtx_.unlock();
+            if ( axisWriteIndex(fd_, meta & 0x3FFFFFFF, buff->getCount(), fuser, luser, dest_) <= 0 ) 
                throw(re::WriteException());
-            }
 
             // Mark buffer as stale
             meta |= 0x40000000;
@@ -217,26 +213,20 @@ void rhr::AxiStream::acceptFrame ( ris::FramePtr frame ) {
             }
             else tpr = NULL;
 
-            if ( (res = select(fd_+1,NULL,&fds,NULL,tpr)) == 0 ) {
-               mtx_.unlock();
+            if ( (res = select(fd_+1,NULL,&fds,NULL,tpr)) == 0 ) 
                throw(re::TimeoutException(timeout_));
-            }
 
             // Write with buffer copy
             res = axisWrite(fd_, buff->getRawData(), buff->getCount(), fuser, luser, dest_);
 
             // Error
-            if ( res < 0 ) {
-               mtx_.unlock();
-               throw(re::WriteException());
-            }
+            if ( res < 0 ) throw(re::WriteException());
          }
 
          // Exit out if return flag was set false
          while ( res == 0 );
       }
    }
-   mtx_.unlock();
 }
 
 //! Return a buffer
@@ -244,13 +234,12 @@ void rhr::AxiStream::retBuffer(uint8_t * data, uint32_t meta, uint32_t rawSize) 
 
    // Buffer is zero copy as indicated by bit 31
    if ( (meta & 0x80000000) != 0 ) {
+      boost::lock_guard<boost::mutex> lock(mtx_);
 
       // Device is open and buffer is not stale
       // Bit 30 indicates buffer has already been returned to hardware
       if ( (fd_ >= 0) && ((meta & 0x40000000) == 0) ) {
-         mtx_.lock();
          axisRetIndex(fd_,meta & 0x3FFFFFFF); // Return to hardware
-         mtx_.unlock();
       }
 
       deleteBuffer(rawSize);

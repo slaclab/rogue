@@ -105,9 +105,9 @@ void rhe::Tem::acceptFrame ( ris::FramePtr frame ) {
    struct timeval   tout;
    struct timeval * tpr;
 
-   buff = frame->getBuffer(0);
+   boost::lock_guard<boost::mutex> lock(mtx_);
 
-   mtx_.lock();
+   buff = frame->getBuffer(0);
 
    // Keep trying since select call can fire 
    // but write fails because we did not win the buffer lock
@@ -125,24 +125,18 @@ void rhe::Tem::acceptFrame ( ris::FramePtr frame ) {
       }
       else tpr = NULL;
 
-      if ( (res = select(fd_+1,NULL,&fds,NULL,tpr)) == 0 ) {
-         mtx_.unlock();
+      if ( (res = select(fd_+1,NULL,&fds,NULL,tpr)) == 0 ) 
          throw(re::TimeoutException(timeout_));
-      }
 
       // Write
       res = temWriteCmd(fd_, buff->getRawData(), buff->getCount());
 
       // Error
-      if ( res < 0 ) {
-         mtx_.unlock();
-         throw(re::WriteException());
-      }
+      if ( res < 0 ) throw(re::WriteException());
    }
 
    // Exit out if return flag was set false
    while ( res == 0 );
-   mtx_.unlock();
 }
 
 //! Run thread

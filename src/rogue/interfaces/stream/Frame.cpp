@@ -23,10 +23,13 @@
 #include <rogue/interfaces/stream/Frame.h>
 #include <rogue/interfaces/stream/Buffer.h>
 #include <rogue/interfaces/stream/Slave.h>
+#include <rogue/exceptions/BoundsException.h>
+#include <rogue/exceptions/BufferException.h>
 #include <boost/make_shared.hpp>
 #include <boost/python.hpp>
 
 namespace ris = rogue::interfaces::stream;
+namespace re  = rogue::exceptions;
 namespace bp  = boost::python;
 
 //! Create an empty frame
@@ -125,7 +128,7 @@ void ris::Frame::setError(uint32_t error) {
    error_ = error;
 }
 
-//! Read up to count bytes from frame, starting from offset.
+//! Read count bytes from frame, starting from offset.
 uint32_t ris::Frame::read  ( void *p, uint32_t offset, uint32_t count ) {
    uint32_t currOff;
    uint32_t x;
@@ -150,23 +153,23 @@ uint32_t ris::Frame::read  ( void *p, uint32_t offset, uint32_t count ) {
       }
 
       // Read has reached requested count
-      if (cnt == count) return(cnt);
+      if (cnt == count) return(count);
    }
 
-   // We read less than desired
-   return(cnt);
+   // Count error if we got here
+   throw(re::BoundsException(count,cnt));
+   return(count);
 }
 
 //! Read up to count bytes from frame, starting from offset. Python version.
-uint32_t ris::Frame::readPy ( boost::python::object p, uint32_t offset ) {
+void ris::Frame::readPy ( boost::python::object p, uint32_t offset ) {
    Py_buffer  pyBuf;
-   uint32_t   ret;
 
-   if ( PyObject_GetBuffer(p.ptr(),&pyBuf,PyBUF_SIMPLE) < 0 ) return(0);
+   if ( PyObject_GetBuffer(p.ptr(),&pyBuf,PyBUF_SIMPLE) < 0 ) 
+      throw(re::BufferException());
 
-   ret = read(pyBuf.buf,offset,pyBuf.len);
+   read(pyBuf.buf,offset,pyBuf.len);
    PyBuffer_Release(&pyBuf);
-   return(ret);
 }
 
 //! Write count bytes to frame, starting at offset
@@ -194,23 +197,23 @@ uint32_t ris::Frame::write ( void *p, uint32_t offset, uint32_t count ) {
       }
 
       // Read has reached requested count
-      if (cnt == count) return(cnt);
+      if (cnt == count) return(count);
    }
 
-   // We read less than desired
-   return(cnt);
+   // Count error if we got here
+   throw(re::BoundsException(count,cnt));
+   return(count);
 }
 
 //! Write python buffer to frame, starting at offset. Python Version
-uint32_t ris::Frame::writePy ( boost::python::object p, uint32_t offset ) {
+void ris::Frame::writePy ( boost::python::object p, uint32_t offset ) {
    Py_buffer  pyBuf;
-   uint32_t   ret;
 
-   if ( PyObject_GetBuffer(p.ptr(),&pyBuf,PyBUF_CONTIG) < 0 ) return(0);
+   if ( PyObject_GetBuffer(p.ptr(),&pyBuf,PyBUF_CONTIG) < 0 )
+      throw(re::BufferException());
 
-   ret = write(pyBuf.buf,offset,pyBuf.len);
+   write(pyBuf.buf,offset,pyBuf.len);
    PyBuffer_Release(&pyBuf);
-   return(ret);
 }
 
 void ris::Frame::setup_python() {

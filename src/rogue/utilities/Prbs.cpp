@@ -203,17 +203,17 @@ uint32_t ru::Prbs::getTxBytes() {
 // Counters should really be locked!
 void ru::Prbs::resetCount() {
 
-   txCountMtx_.lock();
+   txMtx_.lock();
    txErrCount_ = 0;
    txCount_    = 0;
    txBytes_    = 0;
-   txCountMtx_.unlock();
+   txMtx_.unlock();
 
-   rxCountMtx_.lock();
+   rxMtx_.lock();
    rxErrCount_ = 0;
    rxCount_    = 0;
    rxBytes_    = 0;
-   rxCountMtx_.unlock();
+   rxMtx_.unlock();
 
 }
 
@@ -229,31 +229,27 @@ void ru::Prbs::genFrame (uint32_t size) {
    uint32_t      value;
    ris::FramePtr fr;
 
+   boost::lock_guard<boost::mutex> lock(txMtx_);
+
    // Verify size first
    if ((( size % byteWidth_ ) != 0) || size < minSize_ ) {
-      txCountMtx_.lock();
       if ( enMessages_ ) 
          printf("Prbs::genFrame -> Size violation size=%i, count=%i",size,txCount_);
       txErrCount_++;
-      txCountMtx_.unlock();
       return;
    }
 
    // Lock and update sequence
-   txSeqMtx_.lock();
    value = txSeq_;
    txSeq_++;
    if ( width_ == 16 ) txSeq_ &= 0xFFFF;
-   txSeqMtx_.unlock();
 
    // Get frame
    fr = reqFrame(size,true);
 
    // Frame allocation failed
    if ( fr->getAvailable() < size ) {
-      txCountMtx_.lock();
       txErrCount_++;
-      txCountMtx_.unlock();
       return;
    }
 
@@ -271,10 +267,8 @@ void ru::Prbs::genFrame (uint32_t size) {
    }
 
    // Update counters
-   txCountMtx_.lock();
    txCount_++;
    txBytes_ += size;
-   txCountMtx_.unlock();
    sendFrame(fr);
 }
 
@@ -288,15 +282,15 @@ void ru::Prbs::acceptFrame ( ris::FramePtr frame ) {
    uint32_t   expValue;
    uint32_t   gotValue;
 
+   boost::lock_guard<boost::mutex> lock(rxMtx_);
+
    size = frame->getPayload();
 
    // Verify size
    if ((( size % byteWidth_ ) != 0) || size < minSize_ ) {
-      rxCountMtx_.lock();
       if ( enMessages_ ) 
          printf("Prbs::acceptFrame -> Size violation size=%i, count=%i",size,rxCount_);
       rxErrCount_++;
-      rxCountMtx_.unlock();
       return;
    }
 
@@ -304,11 +298,9 @@ void ru::Prbs::acceptFrame ( ris::FramePtr frame ) {
    cnt = readSingle(frame,0,&frSeq);
 
    // Update sequence
-   rxSeqMtx_.lock();
    curSeq = rxSeq_;
    rxSeq_ = frSeq + 1;
    if ( width_ == 16 ) rxSeq_ &= 0xFFFF;
-   rxSeqMtx_.unlock();
 
    // Get size
    cnt += readSingle(frame,cnt,&frSize);
@@ -316,21 +308,17 @@ void ru::Prbs::acceptFrame ( ris::FramePtr frame ) {
 
    // Check size
    if ( frSize != size ) {
-      rxCountMtx_.lock();
       if ( enMessages_ ) 
          printf("Prbs::acceptFrame -> Bad size. exp=%i, got=%i, count=%i\n",frSize,size,rxCount_);
       rxErrCount_++;
-      rxCountMtx_.unlock();
       return;
    }
 
    // Check sequence, incoming frames with seq = 0 never cause errors and treated as a restart
    if ( frSeq != 0 && frSeq != curSeq ) {
-      rxCountMtx_.lock();
       if ( enMessages_ ) 
          printf("Prbs::acceptFrame -> Bad Sequence. cur=%i, got=%i, count=%i\n",curSeq,frSeq,rxCount_);
       rxErrCount_++;
-      rxCountMtx_.unlock();
       return;
    }
    expValue = frSeq;
@@ -342,20 +330,16 @@ void ru::Prbs::acceptFrame ( ris::FramePtr frame ) {
       cnt += readSingle(frame,cnt,&gotValue);
 
       if (expValue != gotValue) {
-         rxCountMtx_.lock();
          if ( enMessages_ ) 
             printf("Prbs::acceptFrame -> Bad value at index %i. exp=0x%x, got=0x, count=%i%x\n",
                      (cnt-byteWidth_),expValue,gotValue,rxCount_);
          rxErrCount_++;
-         rxCountMtx_.unlock();
          return;
       }
    }
 
-   rxCountMtx_.lock();
    rxCount_++;
    rxBytes_ += size;
-   rxCountMtx_.unlock();
 }
 
 void ru::Prbs::setup_python() {

@@ -109,7 +109,7 @@ bool rps::TransactionV3::genFrame(ris::FramePtr frame) {
    uint32_t x;
 
    if ( (txSize_ == 0) || (frame->getAvailable() < txSize_) ) {
-      block_->complete(1);
+      block_->doneTransaction(1);
       return(false);
    }
 
@@ -124,7 +124,7 @@ bool rps::TransactionV3::genFrame(ris::FramePtr frame) {
       }
    }
 
-   if ( posted_ ) block_->complete(0);
+   if ( posted_ ) block_->doneTransaction(0);
    return(true);
 }
 
@@ -153,7 +153,7 @@ void rps::TransactionV3::recvFrame(ris::FramePtr frame) {
 
    // Tail shows error
    if ( tail != 0 ) {
-      block_->complete(tail);
+      block_->doneTransaction(tail);
       return;
    }
 
@@ -164,6 +164,6 @@ void rps::TransactionV3::recvFrame(ris::FramePtr frame) {
       }
    }
 
-   block_->complete(0);
+   block_->doneTransaction(0);
 }
 

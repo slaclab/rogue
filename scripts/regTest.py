@@ -31,7 +31,7 @@ pgpVc0.setSlave(srp)
 
 probeA = rogue.interfaces.stream.Slave()
 probeA.setDebug(16,"SRP Rx")
-pgpVc0.addSlave(probeA)
+#pgpVc0.addSlave(probeA)
 
 probeB = rogue.interfaces.stream.Slave()
 probeB.setDebug(16,"SRP Tx")
@@ -61,49 +61,24 @@ genPrbs.setSlave(srp)
 prbsLength.setSlave(srp)
 
 # Post read transactions
-print("---------------------------------------------")
-fwVersion.doTransaction(False,False)
-fwVersion.waitComplete(100000)
+fwVersion.doTransaction(False,False,1000)
+scratchpad.doTransaction(False,False,1000)
+deviceDna.doTransaction(False,False,1000)
+heartbeat.doTransaction(False,False,1000)
+buildstamp.doTransaction(False,False,1000)
+genPrbs.doTransaction(False,False,1000)
+prbsLength.doTransaction(False,False,1000)
+
+# Print results
+print("")
 print("Fw Version: 0x%08x"  % ( fwVersion.getUInt32(0)))
-#time.sleep(1)
-print("---------------------------------------------")
-
-scratchpad.doTransaction(False,False)
-scratchpad.waitComplete(100000)
 print("Scratchpad: 0x%08x"  % ( scratchpad.getUInt32(0)))
-#time.sleep(1)
-print("---------------------------------------------")
-
-deviceDna.doTransaction(False,False)
-deviceDna.waitComplete(100000)
 print("DeviceDna:  0x%016x" % ( deviceDna.getUInt64(0)))
-#time.sleep(1)
-print("---------------------------------------------")
-
-heartbeat.doTransaction(False,False)
-heartbeat.waitComplete(100000)
 print("Heartbeat:  0x%08x"  % ( heartbeat.getUInt32(0)))
-#time.sleep(1)
-print("---------------------------------------------")
-
-buildstamp.doTransaction(False,False)
-buildstamp.waitComplete(100000)
 print("BuildStamp: %s"      % ( buildstamp.getString()))
-#time.sleep(1)
-print("---------------------------------------------")
-
-genPrbs.doTransaction(False,False)
-genPrbs.waitComplete(100000)
 print("GenPrbs:    0x%08x"  % ( genPrbs.getUInt32(0)))
-#time.sleep(1)
-print("---------------------------------------------")
-
-prbsLength.doTransaction(False,False)
-prbsLength.waitComplete(100000)
 print("PrbsLength: 0x%08x"  % ( prbsLength.getUInt32(0)))
 print("")
-#time.sleep(1)
-print("---------------------------------------------")
 
 # Set scratchpad
 #print("Set scratchpad = 0x11111111")

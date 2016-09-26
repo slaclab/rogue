@@ -50,7 +50,7 @@ namespace rogue {
                //! Lock for vector access
                boost::mutex mapMtx_;
 
-               // Find matching address space, lock before use
+               // Find matching address space
                uint8_t * findSpace (uint32_t base, uint32_t size);
 
             public:
@@ -66,12 +66,6 @@ namespace rogue {
 
                //! Destructor
                ~MapMemory();
-
-               //! Open the device.
-               bool open ();
-
-               //! Close the device
-               void close();
 
                //! Add a memory space
                void addMap(uint32_t address, uint32_t size);

@@ -102,16 +102,15 @@ ris::BufferPtr ris::Slave::allocBuffer ( uint32_t size ) {
    if ( (data = (uint8_t *)malloc(size)) == NULL ) 
       throw(re::AllocException(size));
 
-   metaMtx_.lock();
-
    buff = createBuffer(data,allocMeta_,size);
+
+   boost::lock_guard<boost::mutex> lock(metaMtx_);
 
    // Only use lower 16 bits of meta. 
    // Upper 16 bits may have special meaning to sub-class
    allocMeta_++;
    allocMeta_ &= 0xFFFF;
 
-   metaMtx_.unlock();
    return(buff);
 }
 
@@ -120,21 +119,20 @@ ris::BufferPtr ris::Slave::allocBuffer ( uint32_t size ) {
 ris::BufferPtr ris::Slave::createBuffer( void * data, uint32_t meta, uint32_t rawSize) {
    ris::BufferPtr buff;
 
+   boost::lock_guard<boost::mutex> lock(metaMtx_);
+
    buff = ris::Buffer::create(shared_from_this(),data,meta,rawSize);
 
-   allocMtx_.lock();
    allocBytes_ += rawSize;
    allocCount_++;
-   allocMtx_.unlock();
    return(buff);
 }
 
 //! Delete a buffer
 void ris::Slave::deleteBuffer( uint32_t rawSize) {
-   allocMtx_.lock();
+   boost::lock_guard<boost::mutex> lock(metaMtx_);
    allocBytes_ -= rawSize;
    allocCount_--;
-   allocMtx_.unlock();
 }
 
 //! Accept a frame request. Called from master
@@ -169,14 +167,13 @@ void ris::Slave::acceptFrame ( ris::FramePtr frame ) {
  * Called when this instance is marked as owner of a Buffer entity
  */
 void ris::Slave::retBuffer(uint8_t * data, uint32_t meta, uint32_t rawSize) {
-
-   metaMtx_.lock();
+   boost::lock_guard<boost::mutex> lock(metaMtx_);
    if ( meta == freeMeta_ ) printf("Buffer return with duplicate meta\n");
    freeMeta_ = meta;
-   metaMtx_.unlock();
 
    if ( data != NULL ) free(data);
-   deleteBuffer(rawSize);
+   allocBytes_ -= rawSize;
+   allocCount_--;
 }
 
 //! Accept frame

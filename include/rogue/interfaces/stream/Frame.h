@@ -13,6 +13,8 @@
  * TODO:
  *    Add locking for thread safety. May not be needed since the source will
  *    set things up once before handing off to the various threads.
+ *
+ *    Add exceptions for boundary conditions.
  * ----------------------------------------------------------------------------
  * This file is part of the rogue software platform. It is subject to 
  * the license terms in the LICENSE.txt file found in the top-level directory 
@@ -115,17 +117,17 @@ namespace rogue {
                //! Set error state
                void setError(uint32_t error);
 
-               //! Read up to count bytes from frame, starting from offset.
+               //! Read count bytes from frame, starting from offset.
                uint32_t read  ( void *p, uint32_t offset, uint32_t count );
 
-               //! Read up to count bytes from frame, starting from offset. Python version.
-               uint32_t readPy ( boost::python::object p, uint32_t offset );
+               //! Read count bytes from frame, starting from offset. Python version.
+               void readPy ( boost::python::object p, uint32_t offset );
 
                //! Write count bytes to frame, starting at offset
                uint32_t write ( void *p, uint32_t offset, uint32_t count );
 
                //! Write count bytes to frame, starting at offset. Python Version
-               uint32_t writePy ( boost::python::object p, uint32_t offset );
+               void writePy ( boost::python::object p, uint32_t offset );
          };
 
          // Convienence

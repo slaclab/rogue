@@ -43,27 +43,20 @@ rim::Master::~Master() { }
 
 //! Set slave, used for buffer request forwarding
 void rim::Master::setSlave ( rim::SlavePtr slave ) {
-   slaveMtx_.lock();
+   boost::lock_guard<boost::mutex> lock(slaveMtx_);
    slave_ = slave;
-   slaveMtx_.unlock();
 }
 
 //! Get slave
 rim::SlavePtr rim::Master::getSlave () {
-   rim::SlavePtr p; 
-   slaveMtx_.lock();
-   p = slave_;
-   slaveMtx_.unlock();
-   return(p);
+   boost::lock_guard<boost::mutex> lock(slaveMtx_);
+   return(slave_);
 }
 
 //! Post a transaction
 void rim::Master::reqTransaction(bool write, bool posted, rim::BlockPtr block) {
-   rim::SlavePtr p; 
-   slaveMtx_.lock();
-   p = slave_;
-   slaveMtx_.unlock();
-   p->doTransaction(write,posted,block);
+   boost::lock_guard<boost::mutex> lock(slaveMtx_);
+   slave_->doTransaction(write,posted,block);
 }
 
 void rim::Master::setup_python() {
