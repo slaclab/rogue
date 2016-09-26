@@ -46,7 +46,7 @@ APP_BIN := $(patsubst $(APP_SRC)/%.cpp,$(BLD)/%,$(APP_CPP))
 all: $(LIB_OBJ) $(LIB_SHO) $(APP_BIN)
 
 # Doxygen
-doc:
+docs:
 	cd doc; doxygen
 
 # Clean

@@ -28,6 +28,8 @@
 namespace rogue {
    namespace exceptions {
 
+      extern PyObject * allocExceptionObj;
+
       //! Alloc exception
       class AllocException : public std::exception {
             char text_[100];

@@ -13,8 +13,6 @@
  * TODO:
  *    Add locking for thread safety. May not be needed since the source will
  *    set things up once before handing off to the various threads.
- *
- *    Add exceptions for boundary conditions.
  * ----------------------------------------------------------------------------
  * This file is part of the rogue software platform. It is subject to 
  * the license terms in the LICENSE.txt file found in the top-level directory 

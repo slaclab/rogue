@@ -28,6 +28,8 @@
 namespace rogue {
    namespace exceptions {
 
+      extern PyObject * alignExceptionObj;
+
       //! Align exception
       class AlignException : public std::exception {
             char text_[100];

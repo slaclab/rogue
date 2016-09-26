@@ -28,6 +28,8 @@
 namespace rogue {
    namespace exceptions {
 
+      extern PyObject * timeoutExceptionObj;
+
       //! Timeout exception
       class TimeoutException : public std::exception {
             char text_[100];

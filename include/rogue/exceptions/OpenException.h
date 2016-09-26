@@ -28,11 +28,13 @@
 namespace rogue {
    namespace exceptions {
 
+      extern PyObject * openExceptionObj;
+
       //! Open exception
       class OpenException : public std::exception {
             char text_[100];
          public:
-            OpenException ( char const *path );
+            OpenException ( std::string path );
             char const * what() const throw();
             static void setup_python();
             static void translate(OpenException const &e);

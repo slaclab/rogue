@@ -28,6 +28,8 @@
 namespace rogue {
    namespace exceptions {
 
+      extern PyObject * maskExceptionObj;
+
       //! Mask exception
       class MaskException : public std::exception {
             char text_[100];

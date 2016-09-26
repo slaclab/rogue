@@ -16,7 +16,6 @@ class mbDebug(rogue.interfaces.stream.Slave):
       frame.read(p,0)
       print("-------- Microblaze Console --------")
       print(p.decode("utf-8"))
-      return False
 
 pgpVc0 = rogue.hardware.pgp.PgpCard("/dev/pgpcard_0",0,0)
 pgpVc1 = rogue.hardware.pgp.PgpCard("/dev/pgpcard_0",0,1)
@@ -52,7 +51,7 @@ prbsCont.setSlave(srp)
 prbsLength.setSlave(srp)
 
 # Post read transactions
-fwVersion.doTransaction(False,False,1000)
+fwVersion.doTransaction(False,False,1)
 scratchpad.doTransaction(False,False,1000)
 deviceDna.doTransaction(False,False,1000)
 heartbeat.doTransaction(False,False,1000)
@@ -72,18 +71,18 @@ print("PrbsLength: 0x%08x"  % ( prbsLength.getUInt32(0)))
 print("")
 
 # Set scratchpad
-print("Set scratchpad = 0x11111111")
+print("Set scratchpad: 0x11111111")
 scratchpad.setUInt32(0,0x11111111)
 scratchpad.doTransaction(True,False,1000) # Write
 scratchpad.setUInt32(0,0x00000000) # test clear
 scratchpad.doTransaction(False,False,1000) # Read
-print("Scratchpad: 0x%08x" % ( scratchpad.getUInt32(0)))
-print("Set scratchpad = 0x22222222")
+print("Get Scratchpad: 0x%08x" % ( scratchpad.getUInt32(0)))
+print("Set scratchpad: 0x22222222")
 scratchpad.setUInt32(0,0x22222222)
 scratchpad.doTransaction(True,False,1000) # Write
 scratchpad.setUInt32(0,0x00000000) # test clear
 scratchpad.doTransaction(False,False,1000) # Read
-print("Scratchpad: 0x%08x" % ( scratchpad.getUInt32(0)))
+print("Get Scratchpad: 0x%08x" % ( scratchpad.getUInt32(0)))
 print("")
 
 # Setup PRBS
@@ -100,9 +99,10 @@ pgpVc3.setSlave(mbCon)
 
 print("Entering Loop")
 while (True):
-   time.sleep(5)
-   print("Requesting prbs frame")
+   time.sleep(1)
    prbsCont.setUInt32(0,0x11)
    prbsCont.doTransaction(True,False,1000)
+   print("-------- PRBS Status ---------------")
    print(" Prbs: Count %i, Bytes %i, Errors %i" % (dataRx.getRxCount(),dataRx.getRxBytes(),dataRx.getRxErrors()))
+   print("")
 

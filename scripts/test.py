@@ -19,7 +19,6 @@ class testSlave(rogue.interfaces.stream.Slave):
       frame.read(p,0);
       if ( frame.getPayload() <= 100 ):
          print("Got size=%i Data: %s" % (len(p),"".join("%02x:" % b for b in p)))
-      return(True)
 
 pgpA = rogue.hardware.pgp.PgpCard("/dev/pgpcard_0",0,0)
 pgpA.setLoop(1)

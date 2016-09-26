@@ -28,6 +28,8 @@
 namespace rogue {
    namespace exceptions {
 
+      extern PyObject * boundsExceptionObj;
+
       //! Bounds exception
       class BoundsException : public std::exception {
             char text_[100];

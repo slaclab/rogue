@@ -20,7 +20,11 @@
  * ----------------------------------------------------------------------------
 **/
 #include <rogue/exceptions/TimeoutException.h>
+
 namespace re = rogue::exceptions;
+namespace bp = boost::python;
+
+PyObject * re::timeoutExceptionObj = 0;
 
 re::TimeoutException::TimeoutException(uint32_t time) {
    sprintf(text_,"Timeout after %i microseconds",time);
@@ -31,11 +35,22 @@ char const * re::TimeoutException::what() const throw() {
 }
 
 void re::TimeoutException::setup_python() {
-   //register_exception_translator<my_exception>(&translate);
+   bp::class_<re::TimeoutException>("TimeoutException",bp::init<uint32_t>());
+
+   PyObject * typeObj = PyErr_NewException((char *)"rogue.exceptions.TimeoutException", PyExc_Exception, 0);
+   bp::scope().attr("TimeoutException") = bp::handle<>(bp::borrowed(typeObj));
+
+   re::timeoutExceptionObj = typeObj;
+
+   bp::register_exception_translator<re::TimeoutException>(&re::TimeoutException::translate);
 }
 
 void re::TimeoutException::translate(TimeoutException const &e) {
-    //PyErr_SetObject(TimeoutExceptionType, boost::python::object(e).ptr());
-    //PyErr_SetString(PyExc_RuntimeError, e.what());
+   bp::object exc(e); // wrap the C++ exception
+
+   bp::object exc_t(bp::handle<>(bp::borrowed(re::timeoutExceptionObj)));
+   exc_t.attr("cause") = exc; // add the wrapped exception to the Python exception
+
+   PyErr_SetString(re::timeoutExceptionObj, e.what());
 }
 

@@ -21,6 +21,9 @@
 **/
 #include <rogue/exceptions/AllocException.h>
 namespace re = rogue::exceptions;
+namespace bp = boost::python;
+
+PyObject * re::allocExceptionObj = 0;
 
 re::AllocException::AllocException(uint32_t size) {
    sprintf(text_,"Failed To Alloc %i Bytes",size);
@@ -31,11 +34,21 @@ char const * re::AllocException::what() const throw() {
 }
 
 void re::AllocException::setup_python() {
-   //register_exception_translator<my_exception>(&translate);
+   bp::class_<re::AllocException>("AllocException",bp::init<uint32_t>());
+
+   PyObject * typeObj = PyErr_NewException((char *)"rogue.exceptions.AllocException", PyExc_Exception, 0);
+   bp::scope().attr("AllocException") = bp::handle<>(bp::borrowed(typeObj));
+
+   re::allocExceptionObj = typeObj;
+
+   bp::register_exception_translator<re::AllocException>(&re::AllocException::translate);
 }
 
 void re::AllocException::translate(AllocException const &e) {
-    //PyErr_SetObject(AllocExceptionType, boost::python::object(e).ptr());
-    //PyErr_SetString(PyExc_RuntimeError, e.what());
-}
+   bp::object exc(e); // wrap the C++ exception
 
+   bp::object exc_t(bp::handle<>(bp::borrowed(re::allocExceptionObj)));
+   exc_t.attr("cause") = exc; // add the wrapped exception to the Python exception
+
+   PyErr_SetString(re::allocExceptionObj, e.what());
+}

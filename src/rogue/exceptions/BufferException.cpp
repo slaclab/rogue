@@ -21,6 +21,9 @@
 **/
 #include <rogue/exceptions/BufferException.h>
 namespace re = rogue::exceptions;
+namespace bp = boost::python;
+
+PyObject * re::bufferExceptionObj = 0;
 
 re::BufferException::BufferException() {
    sprintf(text_,"Python Buffer Error");
@@ -31,11 +34,21 @@ char const * re::BufferException::what() const throw() {
 }
 
 void re::BufferException::setup_python() {
-   //register_exception_translator<my_exception>(&translate);
+   bp::class_<re::BufferException>("BufferException",bp::init<>());
+
+   PyObject * typeObj = PyErr_NewException((char *)"rogue.exceptions.BufferException", PyExc_Exception, 0);
+   bp::scope().attr("BufferException") = bp::handle<>(bp::borrowed(typeObj));
+
+   re::bufferExceptionObj = typeObj;
+
+   bp::register_exception_translator<re::BufferException>(&re::BufferException::translate);
 }
 
 void re::BufferException::translate(BufferException const &e) {
-    //PyErr_SetObject(BufferExceptionType, boost::python::object(e).ptr());
-    //PyErr_SetString(PyExc_RuntimeError, e.what());
-}
+   bp::object exc(e); // wrap the C++ exception
 
+   bp::object exc_t(bp::handle<>(bp::borrowed(re::bufferExceptionObj)));
+   exc_t.attr("cause") = exc; // add the wrapped exception to the Python exception
+
+   PyErr_SetString(re::bufferExceptionObj, e.what());
+}

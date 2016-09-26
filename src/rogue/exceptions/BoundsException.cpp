@@ -21,6 +21,9 @@
 **/
 #include <rogue/exceptions/BoundsException.h>
 namespace re = rogue::exceptions;
+namespace bp = boost::python;
+
+PyObject * re::boundsExceptionObj = 0;
 
 re::BoundsException::BoundsException (uint32_t req, uint32_t size) {
    sprintf(text_,"Out of bounds. Access %i, Size %i",req,size);
@@ -31,11 +34,21 @@ char const * re::BoundsException::what() const throw() {
 }
 
 void re::BoundsException::setup_python() {
-   //register_exception_translator<my_exception>(&translate);
+   bp::class_<re::BoundsException>("BoundsException",bp::init<uint32_t,uint32_t>());
+
+   PyObject * typeObj = PyErr_NewException((char *)"rogue.exceptions.BoundsException", PyExc_Exception, 0);
+   bp::scope().attr("BoundsException") = bp::handle<>(bp::borrowed(typeObj));
+
+   re::boundsExceptionObj = typeObj;
+
+   bp::register_exception_translator<re::BoundsException>(&re::BoundsException::translate);
 }
 
 void re::BoundsException::translate(BoundsException const &e) {
-    //PyErr_SetObject(BoundsExceptionType, boost::python::object(e).ptr());
-    //PyErr_SetString(PyExc_RuntimeError, e.what());
-}
+   bp::object exc(e); // wrap the C++ exception
 
+   bp::object exc_t(bp::handle<>(bp::borrowed(re::boundsExceptionObj)));
+   exc_t.attr("cause") = exc; // add the wrapped exception to the Python exception
+
+   PyErr_SetString(re::boundsExceptionObj, e.what());
+}

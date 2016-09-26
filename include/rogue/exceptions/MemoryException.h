@@ -28,6 +28,8 @@
 namespace rogue {
    namespace exceptions {
 
+      extern PyObject * memoryExceptionObj;
+
       //! Memory exception
       class MemoryException : public std::exception {
             char text_[100];

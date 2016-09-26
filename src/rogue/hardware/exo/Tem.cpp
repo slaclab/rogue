@@ -9,9 +9,6 @@
  * ----------------------------------------------------------------------------
  * Description:
  * Class for interfacing to Tem Driver.
- * TODO
- *    Add lock in accept to make sure we can handle situation where close 
- *    occurs while a frameAccept or frameRequest
  * ----------------------------------------------------------------------------
  * This file is part of the rogue software platform. It is subject to 
  * the license terms in the LICENSE.txt file found in the top-level directory 

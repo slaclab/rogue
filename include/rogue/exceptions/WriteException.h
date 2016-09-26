@@ -28,6 +28,8 @@
 namespace rogue {
    namespace exceptions {
 
+      extern PyObject * writeExceptionObj;
+
       //! Write exception
       class WriteException : public std::exception {
             char text_[100];

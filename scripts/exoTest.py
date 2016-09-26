@@ -11,7 +11,6 @@ class exoDataRx(rogue.interfaces.stream.Slave):
 
    def acceptFrame(self,frame):
       print("Got Data size=%i" % (frame.getPayload()))
-      return(True)
 
 class exoCmdRx(rogue.interfaces.stream.Slave):
 
@@ -40,7 +39,6 @@ class exoCmdRx(rogue.interfaces.stream.Slave):
       data    = ba[4] | (ba[2]<<8) | ((ba[5] << 16) & 0x3F0000) | ((ba[3] << 22) & 0xFC00000)
 
       print("ModAddr=0x%02x, RegAddr=0x%02x, Data=0x%08x, Parity=%i" % (modAddr,regAddr,data,self.checkParity(ba)))
-      return(True)
 
 class exoCmdTx(rogue.interfaces.stream.Master):
 

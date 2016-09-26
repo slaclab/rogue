@@ -21,6 +21,9 @@
 **/
 #include <rogue/exceptions/AlignException.h>
 namespace re = rogue::exceptions;
+namespace bp = boost::python;
+
+PyObject * re::alignExceptionObj = 0;
 
 re::AlignException::AlignException (uint32_t index, uint32_t size) {
    sprintf(text_,"Alignment error. Index %i, Size %i",index,size);
@@ -31,11 +34,21 @@ char const * re::AlignException::what() const throw() {
 }
 
 void re::AlignException::setup_python() {
-   //register_exception_translator<my_exception>(&translate);
+   bp::class_<re::AlignException>("AlignException",bp::init<uint32_t,uint32_t>());
+
+   PyObject * typeObj = PyErr_NewException((char *)"rogue.exceptions.AlignException", PyExc_Exception, 0);
+   bp::scope().attr("AlignException") = bp::handle<>(bp::borrowed(typeObj));
+
+   re::alignExceptionObj = typeObj;
+
+   bp::register_exception_translator<re::AlignException>(&re::AlignException::translate);
 }
 
 void re::AlignException::translate(AlignException const &e) {
-    //PyErr_SetObject(AlignExceptionType, boost::python::object(e).ptr());
-    //PyErr_SetString(PyExc_RuntimeError, e.what());
-}
+   bp::object exc(e); // wrap the C++ exception
 
+   bp::object exc_t(bp::handle<>(bp::borrowed(re::alignExceptionObj)));
+   exc_t.attr("cause") = exc; // add the wrapped exception to the Python exception
+
+   PyErr_SetString(re::alignExceptionObj, e.what());
+}

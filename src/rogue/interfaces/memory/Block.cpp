@@ -124,12 +124,14 @@ boost::python::object rim::Block::getDataPy() {
  * Exception thrown if error flag is non-zero and errEnable is true
  */
 boost::unique_lock<boost::mutex> rim::Block::lockAndCheck(bool errEnable) {
+   bool ret;
+
    boost::unique_lock<boost::mutex> lock(mtx_);
 
-   while(busy_) {
-
-      Py_BEGIN_ALLOW_THREADS;
-      if ( ! busyCond_.timed_wait(lock,boost::posix_time::microseconds(timeout_))) break;
+   ret = true;
+   while(busy_ && ret ) {
+      Py_BEGIN_ALLOW_THREADS; // Allow python to keep running while waiting
+      ret = busyCond_.timed_wait(lock,boost::posix_time::microseconds(timeout_));
       Py_END_ALLOW_THREADS;
    }
 

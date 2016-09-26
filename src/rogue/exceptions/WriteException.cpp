@@ -21,6 +21,9 @@
 **/
 #include <rogue/exceptions/WriteException.h>
 namespace re = rogue::exceptions;
+namespace bp = boost::python;
+
+PyObject * re::writeExceptionObj = 0;
 
 re::WriteException::WriteException() {
    sprintf(text_,"Write failed");
@@ -31,11 +34,21 @@ char const * re::WriteException::what() const throw() {
 }
 
 void re::WriteException::setup_python() {
-   //register_exception_translator<my_exception>(&translate);
+   bp::class_<re::WriteException>("WriteException",bp::init<>());
+
+   PyObject * typeObj = PyErr_NewException((char *)"rogue.exceptions.WriteException", PyExc_Exception, 0);
+   bp::scope().attr("WriteException") = bp::handle<>(bp::borrowed(typeObj));
+
+   re::writeExceptionObj = typeObj;
+
+   bp::register_exception_translator<re::WriteException>(&re::WriteException::translate);
 }
 
 void re::WriteException::translate(WriteException const &e) {
-    //PyErr_SetObject(WriteExceptionType, boost::python::object(e).ptr());
-    //PyErr_SetString(PyExc_RuntimeError, e.what());
-}
+   bp::object exc(e); // wrap the C++ exception
 
+   bp::object exc_t(bp::handle<>(bp::borrowed(re::writeExceptionObj)));
+   exc_t.attr("cause") = exc; // add the wrapped exception to the Python exception
+
+   PyErr_SetString(re::writeExceptionObj, e.what());
+}

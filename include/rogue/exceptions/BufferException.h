@@ -28,6 +28,8 @@
 namespace rogue {
    namespace exceptions {
 
+      extern PyObject * bufferExceptionObj;
+
       //! Buffer exception
       class BufferException : public std::exception {
             char text_[100];

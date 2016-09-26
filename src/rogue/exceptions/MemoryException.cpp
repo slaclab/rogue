@@ -21,6 +21,9 @@
 **/
 #include <rogue/exceptions/MemoryException.h>
 namespace re = rogue::exceptions;
+namespace bp = boost::python;
+
+PyObject * re::memoryExceptionObj = 0;
 
 re::MemoryException::MemoryException(uint32_t error) {
    sprintf(text_,"Memory error detected: 0x%x",error);
@@ -31,11 +34,21 @@ char const * re::MemoryException::what() const throw() {
 }
 
 void re::MemoryException::setup_python() {
-   //register_exception_translator<my_exception>(&translate);
+   bp::class_<re::MemoryException>("MemoryException",bp::init<uint32_t>());
+
+   PyObject * typeObj = PyErr_NewException((char *)"rogue.exceptions.MemoryException", PyExc_Exception, 0);
+   bp::scope().attr("MemoryException") = bp::handle<>(bp::borrowed(typeObj));
+
+   re::memoryExceptionObj = typeObj;
+
+   bp::register_exception_translator<re::MemoryException>(&re::MemoryException::translate);
 }
 
 void re::MemoryException::translate(MemoryException const &e) {
-    //PyErr_SetObject(MemoryExceptionType, boost::python::object(e).ptr());
-    //PyErr_SetString(PyExc_RuntimeError, e.what());
-}
+   bp::object exc(e); // wrap the C++ exception
 
+   bp::object exc_t(bp::handle<>(bp::borrowed(re::memoryExceptionObj)));
+   exc_t.attr("cause") = exc; // add the wrapped exception to the Python exception
+
+   PyErr_SetString(re::memoryExceptionObj, e.what());
+}

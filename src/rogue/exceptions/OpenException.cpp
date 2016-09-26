@@ -21,10 +21,13 @@
 **/
 #include <rogue/exceptions/OpenException.h>
 namespace re = rogue::exceptions;
+namespace bp = boost::python;
 
-re::OpenException::OpenException(char const *path) {
+PyObject * re::openExceptionObj = 0;
+
+re::OpenException::OpenException(std::string path) {
    strcpy(text_,"Open Error: ");
-   strncat(text_,path,100-strlen(text_));
+   strncat(text_,path.c_str(),100-strlen(text_));
 }
 
 char const * re::OpenException::what() const throw() {
@@ -32,12 +35,21 @@ char const * re::OpenException::what() const throw() {
 }
 
 void re::OpenException::setup_python() {
-   //register_exception_translator<my_exception>(&translate);
+   bp::class_<re::OpenException>("OpenException",bp::init<std::string>());
+
+   PyObject * typeObj = PyErr_NewException((char *)"rogue.exceptions.OpenException", PyExc_Exception, 0);
+   bp::scope().attr("OpenException") = bp::handle<>(bp::borrowed(typeObj));
+
+   re::openExceptionObj = typeObj;
+
+   bp::register_exception_translator<re::OpenException>(&re::OpenException::translate);
 }
 
 void re::OpenException::translate(OpenException const &e) {
-    //PyErr_SetObject(OpenExceptionType, boost::python::object(e).ptr());
-    //PyErr_SetString(PyExc_RuntimeError, e.what());
+   bp::object exc(e); // wrap the C++ exception
+
+   bp::object exc_t(bp::handle<>(bp::borrowed(re::openExceptionObj)));
+   exc_t.attr("cause") = exc; // add the wrapped exception to the Python exception
+
+   PyErr_SetString(re::openExceptionObj, e.what());
 }
-
-
