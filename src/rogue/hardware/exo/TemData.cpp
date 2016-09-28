@@ -35,7 +35,7 @@ rhe::TemDataPtr rhe::TemData::create () {
 }
 
 //! Creator
-rhe::TemData::TemData() : Tem("/dev/temcard_0",false) { }
+rhe::TemData::TemData() : Tem("/dev/temcard_0",true) { }
 
 //! Destructor
 rhe::TemData::~TemData() { }

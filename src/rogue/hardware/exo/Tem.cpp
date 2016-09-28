@@ -51,12 +51,12 @@ rhe::Tem::Tem(std::string path, bool data) {
    if ( isData_ ) {
       if ( temEnableDataRead(fd_) < 0 ) {
          ::close(fd_);
-         throw(re::OpenException("Tem::Temp",path.c_str(),0));
+         throw(re::OpenException("Tem::Temp",path.c_str(),2));
       }
    } else {
       if ( temEnableCmdRead(fd_) < 0 ) {
          ::close(fd_);
-         throw(re::OpenException("Tem::Temp",path.c_str(),0));
+         throw(re::OpenException("Tem::Temp",path.c_str(),1));
       }
    }
 
