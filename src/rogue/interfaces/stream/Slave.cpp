@@ -9,6 +9,8 @@
  * ----------------------------------------------------------------------------
  * Description:
  * Stream interface slave
+ *    The function calls in this are a mess! create buffer, allocate buffer, etc
+ *    need to be reworked.
  * ----------------------------------------------------------------------------
  * This file is part of the rogue software platform. It is subject to 
  * the license terms in the LICENSE.txt file found in the top-level directory 
@@ -26,6 +28,7 @@
 #include <rogue/interfaces/stream/Buffer.h>
 #include <rogue/interfaces/stream/Frame.h>
 #include <rogue/exceptions/AllocationException.h>
+#include <rogue/exceptions/GeneralException.h>
 #include <boost/make_shared.hpp>
 
 namespace ris = rogue::interfaces::stream;
@@ -66,7 +69,7 @@ uint32_t ris::Slave::getAllocCount() {
    return(allocCount_);
 }
 
-//! Create a frame
+//! Create a frame and allocate buffers
 // Frame container should be allocated from shared memory pool
 ris::FramePtr ris::Slave::createFrame ( uint32_t totSize, uint32_t buffSize,
                                         bool compact, bool zeroCopy ) {
@@ -93,25 +96,27 @@ ris::FramePtr ris::Slave::createFrame ( uint32_t totSize, uint32_t buffSize,
    return(ret);
 }
 
-//! Create a buffer
+//! Allocate a buffer passed size
 // Buffer container and raw data should be allocated from shared memory pool
 ris::BufferPtr ris::Slave::allocBuffer ( uint32_t size ) {
-   ris::BufferPtr buff;
    uint8_t * data;
+   uint32_t  meta;
 
    if ( (data = (uint8_t *)malloc(size)) == NULL ) 
-      throw(re::AllocationException(size));
+      throw(re::AllocationException("Slave::allocBuffer",size));
 
-   buff = createBuffer(data,allocMeta_,size);
+   // Temporary lock to get meta
+   {
+      boost::lock_guard<boost::mutex> lock(mtx_);
 
-   boost::lock_guard<boost::mutex> lock(metaMtx_);
+      // Only use lower 24 bits of meta. 
+      // Upper 8 bits may have special meaning to sub-class
+      meta = allocMeta_;
+      allocMeta_++;
+      allocMeta_ &= 0xFFFFFF;
+   }
 
-   // Only use lower 16 bits of meta. 
-   // Upper 16 bits may have special meaning to sub-class
-   allocMeta_++;
-   allocMeta_ &= 0xFFFF;
-
-   return(buff);
+   return(createBuffer(data,meta,size));
 }
 
 
@@ -119,7 +124,7 @@ ris::BufferPtr ris::Slave::allocBuffer ( uint32_t size ) {
 ris::BufferPtr ris::Slave::createBuffer( void * data, uint32_t meta, uint32_t rawSize) {
    ris::BufferPtr buff;
 
-   boost::lock_guard<boost::mutex> lock(metaMtx_);
+   boost::lock_guard<boost::mutex> lock(mtx_);
 
    buff = ris::Buffer::create(shared_from_this(),data,meta,rawSize);
 
@@ -128,9 +133,9 @@ ris::BufferPtr ris::Slave::createBuffer( void * data, uint32_t meta, uint32_t ra
    return(buff);
 }
 
-//! Delete a buffer
+//! Track buffer deletion
 void ris::Slave::deleteBuffer( uint32_t rawSize) {
-   boost::lock_guard<boost::mutex> lock(metaMtx_);
+   boost::lock_guard<boost::mutex> lock(mtx_);
    allocBytes_ -= rawSize;
    allocCount_--;
 }
@@ -167,8 +172,9 @@ void ris::Slave::acceptFrame ( ris::FramePtr frame ) {
  * Called when this instance is marked as owner of a Buffer entity
  */
 void ris::Slave::retBuffer(uint8_t * data, uint32_t meta, uint32_t rawSize) {
-   boost::lock_guard<boost::mutex> lock(metaMtx_);
-   if ( meta == freeMeta_ ) printf("Buffer return with duplicate meta\n");
+   boost::lock_guard<boost::mutex> lock(mtx_);
+   if ( meta == freeMeta_ ) 
+      throw(re::GeneralException("Slave::retBuffer","Buffer return with duplicate meta"));
    freeMeta_ = meta;
 
    if ( data != NULL ) free(data);

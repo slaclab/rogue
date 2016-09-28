@@ -25,8 +25,8 @@ namespace bp = boost::python;
 
 PyObject * re::generalExceptionObj = 0;
 
-re::GeneralException::GeneralException(std::string text) {
-   sprintf(text_,"General Error: %s",text.c_str());
+re::GeneralException::GeneralException(std::string src,std::string text) {
+   sprintf(text_,"%s: General Error: %s",src.c_str(),text.c_str());
 }
 
 char const * re::GeneralException::what() const throw() {
@@ -34,7 +34,7 @@ char const * re::GeneralException::what() const throw() {
 }
 
 void re::GeneralException::setup_python() {
-   bp::class_<re::GeneralException>("GeneralException",bp::init<std::string>());
+   bp::class_<re::GeneralException>("GeneralException",bp::init<std::string,std::string>());
 
    PyObject * typeObj = PyErr_NewException((char *)"rogue.exceptions.GeneralException", PyExc_Exception, 0);
    bp::scope().attr("GeneralException") = bp::handle<>(bp::borrowed(typeObj));

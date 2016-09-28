@@ -37,7 +37,7 @@ namespace rogue {
       class AllocationException : public std::exception {
             char text_[100];
          public:
-            AllocationException ( uint32_t size );
+            AllocationException (std::string src, uint32_t size );
             char const * what() const throw();
             static void setup_python();
             static void translate(AllocationException const &e);

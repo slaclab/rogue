@@ -38,7 +38,7 @@ namespace rogue {
       class GeneralException : public std::exception {
             char text_[100];
          public:
-            GeneralException (std::string text);
+            GeneralException (std::string src,std::string text);
             char const * what() const throw();
             static void setup_python();
             static void translate(GeneralException const &e);

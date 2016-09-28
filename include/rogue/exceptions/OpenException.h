@@ -39,7 +39,7 @@ namespace rogue {
       class OpenException : public std::exception {
             char text_[100];
          public:
-            OpenException ( std::string path, uint32_t mask );
+            OpenException (std::string src, std::string path, uint32_t mask );
             char const * what() const throw();
             static void setup_python();
             static void translate(OpenException const &e);

@@ -25,8 +25,8 @@ namespace bp = boost::python;
 
 PyObject * re::alignmentExceptionObj = 0;
 
-re::AlignmentException::AlignmentException (uint32_t index, uint32_t size) {
-   sprintf(text_,"Alignmentment error. Index %i, Alignment %i",index,size);
+re::AlignmentException::AlignmentException (std::string src, uint32_t index, uint32_t size) {
+   sprintf(text_,"%s: Alignmentment error. Index %i, Alignment %i",src.c_str(),index,size);
 }
 
 char const * re::AlignmentException::what() const throw() {
@@ -34,7 +34,7 @@ char const * re::AlignmentException::what() const throw() {
 }
 
 void re::AlignmentException::setup_python() {
-   bp::class_<re::AlignmentException>("AlignmentException",bp::init<uint32_t,uint32_t>());
+   bp::class_<re::AlignmentException>("AlignmentException",bp::init<std::string,uint32_t,uint32_t>());
 
    PyObject * typeObj = PyErr_NewException((char *)"rogue.exceptions.AlignmentException", PyExc_Exception, 0);
    bp::scope().attr("AlignmentException") = bp::handle<>(bp::borrowed(typeObj));

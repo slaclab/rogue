@@ -38,7 +38,7 @@ namespace rogue {
       class AlignmentException : public std::exception {
             char text_[100];
          public:
-            AlignmentException (uint32_t index, uint32_t size);
+            AlignmentException (std::string src, uint32_t index, uint32_t size);
             char const * what() const throw();
             static void setup_python();
             static void translate(AlignmentException const &e);

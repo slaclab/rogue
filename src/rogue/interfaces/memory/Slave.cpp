@@ -45,7 +45,7 @@ rim::MasterPtr rim::Slave::getMaster(uint32_t index) {
    boost::lock_guard<boost::mutex> lock(masterMapMtx_);
 
    if ( masterMap_.find(index) != masterMap_.end() ) return(masterMap_[index]);
-   else throw(re::GeneralException("Memory Master Not Linked To Slave"));
+   else throw(re::GeneralException("Slave::getMaster","Memory Master Not Linked To Slave"));
 }
 
 //! Return true if master is valid

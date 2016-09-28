@@ -44,11 +44,8 @@ namespace rogue {
           */
          class Slave : public boost::enable_shared_from_this<rogue::interfaces::stream::Slave> {
 
-               //! Meta mutex
-               boost::mutex metaMtx_;
-
-               //! Alloc mutex
-               boost::mutex allocMtx_;
+               //! Mutex
+               boost::mutex mtx_;
 
                //! Track buffer allocations
                uint32_t allocMeta_;

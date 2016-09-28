@@ -25,8 +25,8 @@ namespace bp = boost::python;
 
 PyObject * re::boundaryExceptionObj = 0;
 
-re::BoundaryException::BoundaryException (uint32_t req, uint32_t size) {
-   sprintf(text_,"Boundary Error. Access %i, Size %i",req,size);
+re::BoundaryException::BoundaryException (std::string src, uint32_t req, uint32_t size) {
+   sprintf(text_,"%s: Boundary Error. Access %i, Size %i",src.c_str(),req,size);
 }
 
 char const * re::BoundaryException::what() const throw() {
@@ -34,7 +34,7 @@ char const * re::BoundaryException::what() const throw() {
 }
 
 void re::BoundaryException::setup_python() {
-   bp::class_<re::BoundaryException>("BoundaryException",bp::init<uint32_t,uint32_t>());
+   bp::class_<re::BoundaryException>("BoundaryException",bp::init<std::string,uint32_t,uint32_t>());
 
    PyObject * typeObj = PyErr_NewException((char *)"rogue.exceptions.BoundaryException", PyExc_Exception, 0);
    bp::scope().attr("BoundaryException") = bp::handle<>(bp::borrowed(typeObj));

@@ -20,7 +20,7 @@ class testSlave(rogue.interfaces.stream.Slave):
       if ( frame.getPayload() <= 20 ):
          print("Got size=%i Data: %s" % (len(p),"".join("%02x:" % b for b in p)))
 
-pgpA = rogue.hardware.pgp.PgpCard("/dev/pgpcard_0",0,0)
+pgpA = rogue.hardware.pgp.PgpCard("/dev/pgpcard_0",3,0)
 pgpA.setLoop(1)
 
 print("PGP Card Version: %x" % (pgpA.getInfo().version))
@@ -28,15 +28,12 @@ print("PGP Card Version: %x" % (pgpA.getInfo().version))
 prbsA = rogue.utilities.Prbs()
 prbsB = rogue.utilities.Prbs()
 
-#prbsA.setSlave(pgpA)
-prbsA.setSlave(prbsB)
+prbsA.setSlave(pgpA)
 pgpA.setSlave(prbsB)
 
 ts1 = testSlave()
 prbsA.addSlave(ts1)
 
-#prbsA.enMessages(True)
-#prbsB.enMessages(True)
 prbsA.enable(1000)
 
 tm = rogue.interfaces.stream.Master()

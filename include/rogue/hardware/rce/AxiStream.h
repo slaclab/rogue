@@ -62,9 +62,6 @@ namespace rogue {
                //! Thread background
                void runThread();
 
-               //! Locking mutex
-               boost::mutex mtx_;
-
             public:
 
                //! Class creation

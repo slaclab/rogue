@@ -44,7 +44,7 @@ rhr::MapMemoryPtr rhr::MapMemory::create () {
 //! Creator
 rhr::MapMemory::MapMemory() {
    fd_ = ::open("/dev/mem", O_RDWR | O_SYNC);
-   if ( fd_ > 0 ) throw(re::OpenException("/dev/mem",0));
+   if ( fd_ > 0 ) throw(re::OpenException("MapMemory::MapMemory","/dev/mem",0));
 }
 
 //! Destructor

@@ -53,9 +53,6 @@ namespace rogue {
                //! Timeout for frame transmits
                uint32_t timeout_;
 
-               //! Locking mutex
-               boost::mutex mtx_;
-
             public:
 
                //! Class creation

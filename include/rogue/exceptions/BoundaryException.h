@@ -38,7 +38,7 @@ namespace rogue {
       class BoundaryException : public std::exception {
             char text_[100];
          public:
-            BoundaryException (uint32_t req, uint32_t size);
+            BoundaryException (std::string src,uint32_t req, uint32_t size);
             char const * what() const throw();
             static void setup_python();
             static void translate(BoundaryException const &e);

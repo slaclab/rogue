@@ -25,11 +25,11 @@ namespace bp = boost::python;
 
 PyObject * re::openExceptionObj = 0;
 
-re::OpenException::OpenException(std::string path, uint32_t mask) {
+re::OpenException::OpenException(std::string src, std::string path, uint32_t mask) {
    if ( mask == 0 )
-      sprintf(text_,"Error opening %s",path.c_str());
+      sprintf(text_,"%s: Error opening %s",src.c_str(),path.c_str());
    else 
-      sprintf(text_,"Error opening %s with mask 0x%x",path.c_str(),mask);
+      sprintf(text_,"%s: Error opening %s with mask 0x%x",src.c_str(),path.c_str(),mask);
 }
 
 char const * re::OpenException::what() const throw() {
@@ -37,7 +37,7 @@ char const * re::OpenException::what() const throw() {
 }
 
 void re::OpenException::setup_python() {
-   bp::class_<re::OpenException>("OpenException",bp::init<std::string,uint32_t>());
+   bp::class_<re::OpenException>("OpenException",bp::init<std::string,std::string,uint32_t>());
 
    PyObject * typeObj = PyErr_NewException((char *)"rogue.exceptions.OpenException", PyExc_Exception, 0);
    bp::scope().attr("OpenException") = bp::handle<>(bp::borrowed(typeObj));

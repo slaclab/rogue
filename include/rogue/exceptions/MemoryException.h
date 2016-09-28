@@ -37,7 +37,7 @@ namespace rogue {
       class MemoryException : public std::exception {
             char text_[100];
          public:
-            MemoryException ( uint32_t error );
+            MemoryException (std::string src, uint32_t error );
             char const * what() const throw();
             static void setup_python();
             static void translate(MemoryException const &e);

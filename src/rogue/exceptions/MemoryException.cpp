@@ -25,8 +25,8 @@ namespace bp = boost::python;
 
 PyObject * re::memoryExceptionObj = 0;
 
-re::MemoryException::MemoryException(uint32_t error) {
-   sprintf(text_,"Memory access error detected: 0x%x",error);
+re::MemoryException::MemoryException(std::string src, uint32_t error) {
+   sprintf(text_,"%s: Memory access error detected: 0x%x",src.c_str(),error);
 }
 
 char const * re::MemoryException::what() const throw() {
@@ -34,7 +34,7 @@ char const * re::MemoryException::what() const throw() {
 }
 
 void re::MemoryException::setup_python() {
-   bp::class_<re::MemoryException>("MemoryException",bp::init<uint32_t>());
+   bp::class_<re::MemoryException>("MemoryException",bp::init<std::string,uint32_t>());
 
    PyObject * typeObj = PyErr_NewException((char *)"rogue.exceptions.MemoryException", PyExc_Exception, 0);
    bp::scope().attr("MemoryException") = bp::handle<>(bp::borrowed(typeObj));

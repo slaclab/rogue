@@ -25,8 +25,8 @@ namespace bp = boost::python;
 
 PyObject * re::allocationExceptionObj = 0;
 
-re::AllocationException::AllocationException(uint32_t size) {
-   sprintf(text_,"Failed To Allocate %i Bytes",size);
+re::AllocationException::AllocationException(std::string src, uint32_t size) {
+   sprintf(text_,"%s: Failed To Allocate %i Bytes",src.c_str(),size);
 }
 
 char const * re::AllocationException::what() const throw() {
@@ -34,7 +34,7 @@ char const * re::AllocationException::what() const throw() {
 }
 
 void re::AllocationException::setup_python() {
-   bp::class_<re::AllocationException>("AllocationException",bp::init<uint32_t>());
+   bp::class_<re::AllocationException>("AllocationException",bp::init<std::string,uint32_t>());
 
    PyObject * typeObj = PyErr_NewException((char *)"rogue.exceptions.AllocationException", PyExc_Exception, 0);
    bp::scope().attr("AllocationException") = bp::handle<>(bp::borrowed(typeObj));

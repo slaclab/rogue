@@ -47,18 +47,19 @@ rhp::PgpCardPtr rhp::PgpCard::create (std::string path, uint32_t lane, uint32_t 
 rhp::PgpCard::PgpCard ( std::string path, uint32_t lane, uint32_t vc ) {
    uint32_t mask;
 
-   lane_    = lane;
-   vc_      = vc;
-   timeout_ = 1000000;
+   lane_       = lane;
+   vc_         = vc;
+   timeout_    = 10000000;
+   zeroCopyEn_ = true;
 
    mask = (1 << ((lane_*4) +vc_));
 
    if ( (fd_ = ::open(path.c_str(), O_RDWR)) < 0 ) 
-      throw(re::OpenException(path.c_str(),mask));
+      throw(re::OpenException("PgpCard::PgpCard",path.c_str(),mask));
 
    if ( pgpSetMask(fd_,mask) < 0 ) {
       ::close(fd_);
-      throw(re::OpenException(path.c_str(),mask));
+      throw(re::OpenException("PgpCard::PgpCard",path.c_str(),mask));
    }
 
    // Result may be that rawBuff_ = NULL
@@ -81,6 +82,11 @@ rhp::PgpCard::~PgpCard() {
 void rhp::PgpCard::setTimeout(uint32_t timeout) {
    if ( timeout == 0 ) timeout_ = 1;
    else timeout_ = timeout;
+}
+
+//! Enable / disable zero copy
+void rhp::PgpCard::setZeroCopyEn(bool state) {
+   zeroCopyEn_ = state;
 }
 
 //! Get card info.
@@ -148,14 +154,12 @@ ris::FramePtr rhp::PgpCard::acceptReq ( uint32_t size, bool zeroCopyEn ) {
    ris::FramePtr    frame;
 
    // Zero copy is disabled. Allocate from memory.
-   if ( zeroCopyEn == false || rawBuff_ == NULL ) {
+   if ( zeroCopyEn_ == false || zeroCopyEn == false || rawBuff_ == NULL ) {
       frame = createFrame(size,bSize_,true,false);
    }
 
    // Allocate zero copy buffers from driver
    else {
-
-      boost::lock_guard<boost::mutex> lock(mtx_);
 
       // Create empty frame
       frame = createFrame(0,0,true,true);
@@ -177,7 +181,7 @@ ris::FramePtr rhp::PgpCard::acceptReq ( uint32_t size, bool zeroCopyEn ) {
             tout.tv_usec=timeout_ % 1000000;
 
             if ( (res = select(fd_+1,NULL,&fds,NULL,&tout)) == 0 ) 
-               throw(re::TimeoutException(timeout_));
+               throw(re::TimeoutException("PgpCard::acceptReq",timeout_));
             
             // Attempt to get index.
             // return of less than 0 is a failure to get a buffer
@@ -203,8 +207,6 @@ void rhp::PgpCard::acceptFrame ( ris::FramePtr frame ) {
    uint32_t         x;
    uint32_t         cont;
 
-   boost::lock_guard<boost::mutex> lock(mtx_);
-
    // Go through each buffer in the frame
    for (x=0; x < frame->getCount(); x++) {
       buff = frame->getBuffer(x);
@@ -224,7 +226,7 @@ void rhp::PgpCard::acceptFrame ( ris::FramePtr frame ) {
 
             // Write by passing buffer index to driver
             if ( pgpWriteIndex(fd_, meta & 0x3FFFFFFF, buff->getCount(), lane_, vc_, cont) <= 0 ) 
-               throw(re::GeneralException("PGP Write Call Failed"));
+               throw(re::GeneralException("PgpCard::acceptFrame","PGP Write Call Failed"));
 
             // Mark buffer as stale
             meta |= 0x40000000;
@@ -248,13 +250,13 @@ void rhp::PgpCard::acceptFrame ( ris::FramePtr frame ) {
             tout.tv_usec=timeout_ % 1000000;
 
             if ( (res = select(fd_+1,NULL,&fds,NULL,&tout)) == 0 ) 
-               throw(re::TimeoutException(timeout_));
+               throw(re::TimeoutException("PgpCard::acceptFrame",timeout_));
 
             // Write with buffer copy
             res = pgpWrite(fd_, buff->getRawData(), buff->getCount(), lane_, vc_, cont);
 
             // Error
-            if ( res < 0 ) throw(re::GeneralException("PGP Write Call Failed"));
+            if ( res < 0 ) throw(re::GeneralException("PgpCard::acceptFrame","PGP Write Call Failed"));
          }
 
          // Exit out if return flag was set false
@@ -268,7 +270,6 @@ void rhp::PgpCard::retBuffer(uint8_t * data, uint32_t meta, uint32_t rawSize) {
 
    // Buffer is zero copy as indicated by bit 31
    if ( (meta & 0x80000000) != 0 ) {
-      boost::lock_guard<boost::mutex> lock(mtx_);
 
       // Device is open and buffer is not stale
       // Bit 30 indicates buffer has already been returned to hardware
@@ -297,6 +298,7 @@ void rhp::PgpCard::runThread() {
    frame = createFrame(0,0,false,(rawBuff_ != NULL));
 
    try {
+
       while(1) {
 
          // Setup fds for select call
@@ -310,8 +312,8 @@ void rhp::PgpCard::runThread() {
          // Select returns with available buffer
          if ( select(fd_+1,&fds,NULL,NULL,&tout) > 0 ) {
 
-            // Zero copy buffers were not allocated
-            if ( rawBuff_ == NULL ) {
+            // Zero copy buffers were not allocated or zero copy is disabled
+            if ( zeroCopyEn_ == false || rawBuff_ == NULL ) {
 
                // Allocate a buffer
                buff = allocBuffer(bSize_);
@@ -363,6 +365,7 @@ void rhp::PgpCard::setup_python () {
       .def("setLoop",        &rhp::PgpCard::setLoop)
       .def("setData",        &rhp::PgpCard::setData)
       .def("sendOpCode",     &rhp::PgpCard::sendOpCode)
+      .def("setZeroCopyEn",  &rhp::PgpCard::setZeroCopyEn)
    ;
 
    bp::implicitly_convertible<rhp::PgpCardPtr, ris::MasterPtr>();

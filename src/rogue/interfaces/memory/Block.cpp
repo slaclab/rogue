@@ -49,7 +49,7 @@ rim::Block::Block(uint64_t address, uint32_t size ) : Master () {
    busy_    = false;
 
    if ( (data_ = (uint8_t *)malloc(size)) == NULL ) 
-      throw(re::AllocationException(size));
+      throw(re::AllocationException("Block::Block",size));
    
    memset(data_,0,size);
 }
@@ -116,11 +116,11 @@ boost::unique_lock<boost::mutex> rim::Block::lockAndCheck(bool errEnable) {
    // Timeout if busy is set
    if ( busy_ ) {
       busy_ = false;
-      throw(re::TimeoutException(timeout_));
+      throw(re::TimeoutException("Block::lockAndCheck",timeout_));
    }
 
    // Throw error if enabled and error is nonzero
-   if ( errEnable && (error_ != 0) ) throw(re::MemoryException(error_));
+   if ( errEnable && (error_ != 0) ) throw(re::MemoryException("Block::lockAndCheck",error_));
 
    return(lock);
 }
@@ -185,7 +185,7 @@ void rim::Block::doneTransaction(uint32_t error) {
 //! Set to master from slave, called by slave
 void rim::Block::setData(void *data, uint32_t offset, uint32_t size) {
    if ( (offset+size) > size_ ) 
-      throw(re::BoundaryException(offset+size,size_));
+      throw(re::BoundaryException("Block::setData",offset+size,size_));
 
    boost::lock_guard<boost::mutex> lck(mtx_); // Will succeedd if busy is set
    memcpy(((uint8_t *)data_)+offset,data,size);
@@ -194,7 +194,7 @@ void rim::Block::setData(void *data, uint32_t offset, uint32_t size) {
 //! Get from master to slave, called by slave
 void rim::Block::getData(void *data, uint32_t offset, uint32_t size) {
    if ( (offset+size) > size_ ) 
-      throw(re::BoundaryException(offset+size,size_));
+      throw(re::BoundaryException("Block::getData",offset+size,size_));
 
    boost::lock_guard<boost::mutex> lck(mtx_); // Will succeedd if busy is set
    memcpy(data,((uint8_t *)data_)+offset,size);
@@ -203,7 +203,7 @@ void rim::Block::getData(void *data, uint32_t offset, uint32_t size) {
 //! Get uint8 at offset
 uint8_t rim::Block::getUInt8(uint32_t offset) {
    if ( offset >= size_ ) 
-      throw(re::BoundaryException(offset,size_));
+      throw(re::BoundaryException("Block::getUInt8",offset,size_));
 
    boost::unique_lock<boost::mutex> lck = lockAndCheck(true);
    return(data_[offset]);
@@ -212,7 +212,7 @@ uint8_t rim::Block::getUInt8(uint32_t offset) {
 //! Set uint8 at offset
 void rim::Block::setUInt8(uint32_t offset, uint8_t value) {
    if ( offset >= size_ ) 
-      throw(re::BoundaryException(offset,size_));
+      throw(re::BoundaryException("Block::setUInt8",offset,size_));
 
    boost::unique_lock<boost::mutex> lck = lockAndCheck(false);
    data_[offset] = value;
@@ -222,10 +222,10 @@ void rim::Block::setUInt8(uint32_t offset, uint8_t value) {
 //! Get uint16 at offset
 uint16_t rim::Block::getUInt16(uint32_t offset) {
    if ( (offset % 2) != 0 )
-      throw(re::AlignmentException(offset,2));
+      throw(re::AlignmentException("Block::getUInt16",offset,2));
 
    if ( offset > (size_-2) )
-      throw(re::BoundaryException(offset+2,size_));
+      throw(re::BoundaryException("Block::getUInt16",offset+2,size_));
 
    boost::unique_lock<boost::mutex> lck = lockAndCheck(true);
    return(((uint16_t *)data_)[offset/2]);
@@ -234,10 +234,10 @@ uint16_t rim::Block::getUInt16(uint32_t offset) {
 //! Set uint32  offset
 void rim::Block::setUInt16(uint32_t offset, uint16_t value) {
    if ( (offset % 2) != 0 )
-      throw(re::AlignmentException(offset,2));
+      throw(re::AlignmentException("Block::setUInt16",offset,2));
 
    if ( offset > (size_-2) )
-      throw(re::BoundaryException(offset+2,size_));
+      throw(re::BoundaryException("Block::setUInt16",offset+2,size_));
 
    boost::unique_lock<boost::mutex> lck = lockAndCheck(false);
 
@@ -248,10 +248,10 @@ void rim::Block::setUInt16(uint32_t offset, uint16_t value) {
 //! Get uint32 at offset
 uint32_t rim::Block::getUInt32(uint32_t offset) {
    if ( (offset % 4) != 0 )
-      throw(re::AlignmentException(offset,4));
+      throw(re::AlignmentException("Block::getUInt32",offset,4));
 
    if ( offset > (size_-4) )
-      throw(re::BoundaryException(offset+4,size_));
+      throw(re::BoundaryException("Block::getUInt32",offset+4,size_));
 
    boost::unique_lock<boost::mutex> lck = lockAndCheck(true);
    return(((uint32_t *)data_)[offset/4]);
@@ -260,10 +260,10 @@ uint32_t rim::Block::getUInt32(uint32_t offset) {
 //! Set uint32  offset
 void rim::Block::setUInt32(uint32_t offset, uint32_t value) {
    if ( (offset % 4) != 0 )
-      throw(re::AlignmentException(offset,4));
+      throw(re::AlignmentException("Block::setUInt32",offset,4));
 
    if ( offset > (size_-4) )
-      throw(re::BoundaryException(offset+4,size_));
+      throw(re::BoundaryException("Block::setUInt32",offset+4,size_));
 
    boost::unique_lock<boost::mutex> lck = lockAndCheck(false);
 
@@ -274,10 +274,10 @@ void rim::Block::setUInt32(uint32_t offset, uint32_t value) {
 //! Get uint64 at offset
 uint64_t rim::Block::getUInt64(uint32_t offset) {
    if ( (offset % 8) != 0 )
-      throw(re::AlignmentException(offset,8));
+      throw(re::AlignmentException("Block::getUInt64",offset,8));
 
    if ( offset > (size_-8) )
-      throw(re::BoundaryException(offset+8,size_));
+      throw(re::BoundaryException("Block::getUInt64",offset+8,size_));
 
    boost::unique_lock<boost::mutex> lck = lockAndCheck(true);
    return(((uint64_t *)data_)[offset/8]);
@@ -286,10 +286,10 @@ uint64_t rim::Block::getUInt64(uint32_t offset) {
 //! Set uint64  offset
 void rim::Block::setUInt64(uint32_t offset, uint64_t value) {
    if ( (offset % 8) != 0 )
-      throw(re::AlignmentException(offset,8));
+      throw(re::AlignmentException("Block::setUInt64",offset,8));
 
    if ( offset > (size_-8) )
-      throw(re::BoundaryException(offset+8,size_));
+      throw(re::BoundaryException("Block::setUInt64",offset+8,size_));
 
    boost::unique_lock<boost::mutex> lck = lockAndCheck(false);
 
@@ -305,10 +305,10 @@ uint32_t rim::Block::getBits(uint32_t bitOffset, uint32_t bitCount) {
    uint32_t cnt;
    uint32_t bit;
 
-   if ( bitCount > 32 ) throw(re::BoundaryException(bitCount,32));
+   if ( bitCount > 32 ) throw(re::BoundaryException("Block::getBits",bitCount,32));
 
    if ( bitOffset > ((size_*8)-bitCount) )
-      throw(re::BoundaryException(bitOffset,(size_*8)-bitCount));
+      throw(re::BoundaryException("Block::getBits",bitOffset,(size_*8)-bitCount));
 
    boost::unique_lock<boost::mutex> lck = lockAndCheck(true);
 
@@ -335,10 +335,10 @@ void rim::Block::setBits(uint32_t bitOffset, uint32_t bitCount, uint32_t value) 
    uint32_t cnt;
    uint32_t bit;
 
-   if ( bitCount > 32 ) throw(re::BoundaryException(bitCount,32));
+   if ( bitCount > 32 ) throw(re::BoundaryException("Block::setBits",bitCount,32));
 
    if ( bitOffset > ((size_*8)-bitCount) )
-      throw(re::BoundaryException(bitOffset,(size_*8)-bitCount));
+      throw(re::BoundaryException("Block::setBits",bitOffset,(size_*8)-bitCount));
 
    boost::unique_lock<boost::mutex> lck = lockAndCheck(false);
 
@@ -369,7 +369,7 @@ std::string rim::Block::getString() {
 //! Set string
 void rim::Block::setString(std::string value) {
    if ( value.length() > size_ ) 
-      throw(re::BoundaryException(value.length(),size_));
+      throw(re::BoundaryException("Block::setString",value.length(),size_));
 
    boost::unique_lock<boost::mutex> lck = lockAndCheck(false);
    strcpy((char *)data_,value.c_str());

@@ -69,8 +69,8 @@ namespace rogue {
                //! Thread background
                void runThread();
 
-               //! Locking mutex
-               boost::mutex mtx_;
+               //! Enable zero copy
+               bool zeroCopyEn_;
 
             public:
 
@@ -89,6 +89,9 @@ namespace rogue {
 
                //! Set timeout for frame transmits in microseconds
                void setTimeout(uint32_t timeout);
+
+               //! Enable / disable zero copy
+               void setZeroCopyEn(bool state);
 
                //! Get card info.
                boost::shared_ptr<rogue::hardware::pgp::Info> getInfo();

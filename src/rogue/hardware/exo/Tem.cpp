@@ -46,17 +46,17 @@ rhe::Tem::Tem(std::string path, bool data) {
    timeout_ = 1000000;
 
    if ( (fd_ = ::open(path.c_str(), O_RDWR)) < 0 )
-      throw(re::OpenException(path.c_str(),0));
+      throw(re::OpenException("Tem::Temp",path.c_str(),0));
 
    if ( isData_ ) {
       if ( temEnableDataRead(fd_) < 0 ) {
          ::close(fd_);
-         throw(re::OpenException(path.c_str(),0));
+         throw(re::OpenException("Tem::Temp",path.c_str(),0));
       }
    } else {
       if ( temEnableCmdRead(fd_) < 0 ) {
          ::close(fd_);
-         throw(re::OpenException(path.c_str(),0));
+         throw(re::OpenException("Tem::Temp",path.c_str(),0));
       }
    }
 
@@ -103,8 +103,6 @@ void rhe::Tem::acceptFrame ( ris::FramePtr frame ) {
    fd_set           fds;
    struct timeval   tout;
 
-   boost::lock_guard<boost::mutex> lock(mtx_);
-
    buff = frame->getBuffer(0);
 
    // Keep trying since select call can fire 
@@ -120,13 +118,13 @@ void rhe::Tem::acceptFrame ( ris::FramePtr frame ) {
       tout.tv_usec=timeout_ % 1000000;
 
       if ( (res = select(fd_+1,NULL,&fds,NULL,&tout)) == 0 ) 
-         throw(re::TimeoutException(timeout_));
+         throw(re::TimeoutException("Tem::acceptFrame",timeout_));
 
       // Write
       res = temWriteCmd(fd_, buff->getRawData(), buff->getCount());
 
       // Error
-      if ( res < 0 ) throw(re::GeneralException("Tem Write Call Failed"));
+      if ( res < 0 ) throw(re::GeneralException("Tem::acceptFrame","Tem Write Call Failed"));
    }
 
    // Exit out if return flag was set false

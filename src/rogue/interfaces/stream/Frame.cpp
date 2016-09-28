@@ -76,7 +76,7 @@ ris::BufferPtr ris::Frame::getBuffer(uint32_t index) {
    ris::BufferPtr ret;
 
    if ( index < buffers_.size() ) ret = buffers_[index];
-   else throw(re::BoundaryException(index,buffers_.size()));
+   else throw(re::BoundaryException("Frame::getBuffer",index,buffers_.size()));
 
    return(ret);
 }
@@ -146,7 +146,7 @@ void ris::Frame::readPy ( boost::python::object p, uint32_t offset ) {
    Py_buffer  pyBuf;
 
    if ( PyObject_GetBuffer(p.ptr(),&pyBuf,PyBUF_SIMPLE) < 0 ) 
-      throw(re::GeneralException("Python Buffer Error In Frame"));
+      throw(re::GeneralException("Frame::readPy","Python Buffer Error In Frame"));
 
    read(pyBuf.buf,offset,pyBuf.len);
    PyBuffer_Release(&pyBuf);
@@ -168,7 +168,7 @@ void ris::Frame::writePy ( boost::python::object p, uint32_t offset ) {
    Py_buffer  pyBuf;
 
    if ( PyObject_GetBuffer(p.ptr(),&pyBuf,PyBUF_CONTIG) < 0 )
-      throw(re::GeneralException("Python Buffer Error In Frame"));
+      throw(re::GeneralException("Frame::writePy","Python Buffer Error In Frame"));
 
    write(pyBuf.buf,offset,pyBuf.len);
    PyBuffer_Release(&pyBuf);
@@ -211,7 +211,7 @@ ris::FrameIteratorPtr ris::Frame::startWrite(uint32_t offset, uint32_t size) {
       buff->setSize(buff->getRawSize());
    }
 
-   if ( iter->index_ == buffers_.size() ) throw(re::BoundaryException(offset,total));
+   if ( iter->index_ == buffers_.size() ) throw(re::BoundaryException("Frame::startWrite",offset,total));
 
    // Raw pointer
    iter->data_ = buff->getPayloadData() + iter->offset_;
@@ -242,7 +242,7 @@ bool ris::Frame::nextWrite(ris::FrameIteratorPtr iter) {
 
    // Sanity check before getting next buffer
    if ( ++iter->index_ == buffers_.size() ) 
-      throw(re::BoundaryException(iter->index_,buffers_.size()));
+      throw(re::BoundaryException("Frame::nextWrite",iter->index_,buffers_.size()));
 
    // Next buffer
    buff = buffers_[iter->index_];
@@ -297,7 +297,7 @@ ris::FrameIteratorPtr ris::Frame::startRead(uint32_t offset, uint32_t size) {
       else iter->offset_ -= temp;
    }
 
-   if ( iter->index_ == buffers_.size() ) throw(re::BoundaryException(offset,total));
+   if ( iter->index_ == buffers_.size() ) throw(re::BoundaryException("Frame::startRead",offset,total));
 
    // Raw pointer
    iter->data_ = buff->getPayloadData() + iter->offset_;
@@ -322,7 +322,7 @@ bool ris::Frame::nextRead(ris::FrameIteratorPtr iter) {
 
    // Sanity check before getting next buffer
    if ( ++iter->index_ == buffers_.size() ) 
-      throw(re::BoundaryException(iter->index_,buffers_.size()));
+      throw(re::BoundaryException("Frame::nextRead",iter->index_,buffers_.size()));
 
    // Next buffer
    buff = buffers_[iter->index_];
