@@ -44,7 +44,7 @@ rhr::MapMemoryPtr rhr::MapMemory::create () {
 //! Creator
 rhr::MapMemory::MapMemory() {
    fd_ = ::open("/dev/mem", O_RDWR | O_SYNC);
-   if ( fd_ > 0 ) throw(re::OpenException("/dev/mem"));
+   if ( fd_ > 0 ) throw(re::OpenException("/dev/mem",0));
 }
 
 //! Destructor
@@ -89,28 +89,33 @@ uint8_t * rhr::MapMemory::findSpace (uint32_t base, uint32_t size) {
 }
 
 //! Post a transaction
-void rhr::MapMemory::doTransaction(bool write, bool posted, rim::BlockPtr block) { 
+void rhr::MapMemory::doTransaction(uint32_t index, uint64_t address, uint32_t size, bool write, bool posted) {
    uint8_t * ptr;
 
-   if ((ptr = findSpace(block->getAddress(),block->getSize())) == NULL) {
-      block->doneTransaction(1);
-   }
-   else if (write) {
-      memcpy(ptr,block->getData(),block->getSize());
-      block->doneTransaction(0);
+   rim::MasterPtr m = getMaster(index);
+
+   if ((ptr = findSpace(address,size)) == NULL) {
+      m->doneTransaction(1);
    }
    else {
-      memcpy(block->getData(),ptr,block->getSize());
-      block->doneTransaction(0);
+
+      rim::MasterPtr m = getMaster(index);
+
+      if (write) m->getData(ptr,0,size);
+      else m->setData(ptr,0,size);
+
+      m->doneTransaction(0);
    }
 }
 
 void rhr::MapMemory::setup_python () {
 
-   bp::class_<rhr::MapMemory, bp::bases<rim::Slave>, rhr::MapMemoryPtr, boost::noncopyable >("MapMemory",bp::init<>())
+   bp::class_<rhr::MapMemory, rhr::MapMemoryPtr, bp::bases<rim::Slave>, boost::noncopyable >("MapMemory",bp::init<>())
       .def("create",         &rhr::MapMemory::create)
       .staticmethod("create")
       .def("addMap",         &rhr::MapMemory::addMap)
    ;
+
+   bp::implicitly_convertible<rhr::MapMemoryPtr, rim::SlavePtr>();
 }
 

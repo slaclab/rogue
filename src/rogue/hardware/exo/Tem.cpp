@@ -25,7 +25,7 @@
 #include <rogue/interfaces/stream/Frame.h>
 #include <rogue/interfaces/stream/Buffer.h>
 #include <rogue/exceptions/OpenException.h>
-#include <rogue/exceptions/WriteException.h>
+#include <rogue/exceptions/GeneralException.h>
 #include <rogue/exceptions/TimeoutException.h>
 #include <boost/make_shared.hpp>
 
@@ -42,20 +42,21 @@ rhe::TemPtr rhe::Tem::create (std::string path, bool data) {
 
 //! Open the device. Pass lane & vc.
 rhe::Tem::Tem(std::string path, bool data) {
-   isData_ = data;
+   isData_  = data;
+   timeout_ = 1000000;
 
    if ( (fd_ = ::open(path.c_str(), O_RDWR)) < 0 )
-      throw(re::OpenException(path.c_str()));
+      throw(re::OpenException(path.c_str(),0));
 
    if ( isData_ ) {
       if ( temEnableDataRead(fd_) < 0 ) {
          ::close(fd_);
-         throw(re::OpenException(path.c_str()));
+         throw(re::OpenException(path.c_str(),0));
       }
    } else {
       if ( temEnableCmdRead(fd_) < 0 ) {
          ::close(fd_);
-         throw(re::OpenException(path.c_str()));
+         throw(re::OpenException(path.c_str(),0));
       }
    }
 
@@ -75,7 +76,8 @@ rhe::Tem::~Tem() {
 
 //! Set timeout for frame transmits in microseconds
 void rhe::Tem::setTimeout(uint32_t timeout) {
-   timeout_ = timeout;
+   if ( timeout == 0 ) timeout_ = 1;
+   else timeout_ = timeout;
 }
 
 //! Get card info.
@@ -100,7 +102,6 @@ void rhe::Tem::acceptFrame ( ris::FramePtr frame ) {
    int32_t          res;
    fd_set           fds;
    struct timeval   tout;
-   struct timeval * tpr;
 
    boost::lock_guard<boost::mutex> lock(mtx_);
 
@@ -115,21 +116,17 @@ void rhe::Tem::acceptFrame ( ris::FramePtr frame ) {
       FD_SET(fd_,&fds);
 
       // Setup select timeout
-      if ( timeout_ > 0 ) {
-         tout.tv_sec=timeout_ / 1000000;
-         tout.tv_usec=timeout_ % 1000000;
-         tpr = &tout;
-      }
-      else tpr = NULL;
+      tout.tv_sec=timeout_ / 1000000;
+      tout.tv_usec=timeout_ % 1000000;
 
-      if ( (res = select(fd_+1,NULL,&fds,NULL,tpr)) == 0 ) 
+      if ( (res = select(fd_+1,NULL,&fds,NULL,&tout)) == 0 ) 
          throw(re::TimeoutException(timeout_));
 
       // Write
       res = temWriteCmd(fd_, buff->getRawData(), buff->getCount());
 
       // Error
-      if ( res < 0 ) throw(re::WriteException());
+      if ( res < 0 ) throw(re::GeneralException("Tem Write Call Failed"));
    }
 
    // Exit out if return flag was set false
@@ -178,12 +175,14 @@ void rhe::Tem::runThread() {
 
 void rhe::Tem::setup_python () {
 
-   bp::class_<rhe::Tem, bp::bases<ris::Master,ris::Slave>, rhe::TemPtr, boost::noncopyable >("Tem",bp::init<std::string,bool>())
+   bp::class_<rhe::Tem, rhe::TemPtr, bp::bases<ris::Master,ris::Slave>, boost::noncopyable >("Tem",bp::init<std::string,bool>())
       .def("create",         &rhe::Tem::create)
       .staticmethod("create")
       .def("getInfo",        &rhe::Tem::getInfo)
       .def("getPciStatus",   &rhe::Tem::getPciStatus)
    ;
 
+   bp::implicitly_convertible<rhe::TemPtr, ris::MasterPtr>();
+   bp::implicitly_convertible<rhe::TemPtr, ris::SlavePtr>();
 }
 

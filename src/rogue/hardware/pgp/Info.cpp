@@ -40,17 +40,15 @@ std::string rhp::Info::buildString() {
 void rhp::Info::setup_python() {
 
    bp::class_<rhp::Info, rhp::InfoPtr>("Info",bp::no_init)
-      .def("create",               &rhp::Info::create)
-      .staticmethod("create")
-      .def_readwrite("serial",     &rhp::Info::serial)
-      .def_readwrite("type",       &rhp::Info::type)
-      .def_readwrite("version",    &rhp::Info::version)
-      .def_readwrite("laneMask",   &rhp::Info::laneMask)
-      .def_readwrite("vcPerMask",  &rhp::Info::vcPerMask)
-      .def_readwrite("pgpRate",    &rhp::Info::pgpRate)
-      .def_readwrite("promPrgEn",  &rhp::Info::promPrgEn)
-      .def_readwrite("evrSupport", &rhp::Info::evrSupport)
-      .def("buildString",          &rhp::Info::buildString)
+      .def_readonly("serial",     &rhp::Info::serial)
+      .def_readonly("type",       &rhp::Info::type)
+      .def_readonly("version",    &rhp::Info::version)
+      .def_readonly("laneMask",   &rhp::Info::laneMask)
+      .def_readonly("vcPerMask",  &rhp::Info::vcPerMask)
+      .def_readonly("pgpRate",    &rhp::Info::pgpRate)
+      .def_readonly("promPrgEn",  &rhp::Info::promPrgEn)
+      .def_readonly("evrSupport", &rhp::Info::evrSupport)
+      .def("buildString",         &rhp::Info::buildString)
    ; 
 }
 

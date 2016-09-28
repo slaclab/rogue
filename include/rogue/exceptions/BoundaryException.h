@@ -1,14 +1,14 @@
 /**
  *-----------------------------------------------------------------------------
- * Title      : Alloc Exception
+ * Title      : Boundary Exception
  * ----------------------------------------------------------------------------
- * File       : AllocException.h
+ * File       : BoundaryException.h
  * Author     : Ryan Herbst, rherbst@slac.stanford.edu
  * Created    : 2017-09-17
  * Last update: 2017-09-17
  * ----------------------------------------------------------------------------
  * Description:
- * Alloc denied exception for Rogue
+ * Boundary denied exception for Rogue
  * ----------------------------------------------------------------------------
  * This file is part of the rogue software platform. It is subject to 
  * the license terms in the LICENSE.txt file found in the top-level directory 
@@ -19,8 +19,8 @@
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
-#ifndef __ROGUE_EXCEPTIONS_ALLOC_EXCEPTION_H__
-#define __ROGUE_EXCEPTIONS_ALLOC_EXCEPTION_H__
+#ifndef __ROGUE_EXCEPTIONS_BOUNDARY_EXCEPTION_H__
+#define __ROGUE_EXCEPTIONS_BOUNDARY_EXCEPTION_H__
 #include <exception>
 #include <boost/python.hpp>
 #include <stdint.h>
@@ -28,16 +28,20 @@
 namespace rogue {
    namespace exceptions {
 
-      extern PyObject * allocExceptionObj;
+      extern PyObject * boundaryExceptionObj;
 
-      //! Alloc exception
-      class AllocException : public std::exception {
+      //! Boundary exception
+      /*
+       * Called when an access request to a block of memory of frame is
+       * out of bounds for the given size.
+       */
+      class BoundaryException : public std::exception {
             char text_[100];
          public:
-            AllocException ( uint32_t size );
+            BoundaryException (uint32_t req, uint32_t size);
             char const * what() const throw();
             static void setup_python();
-            static void translate(AllocException const &e);
+            static void translate(BoundaryException const &e);
       };
    }
 }

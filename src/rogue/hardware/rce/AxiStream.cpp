@@ -23,8 +23,7 @@
 #include <rogue/interfaces/stream/Frame.h>
 #include <rogue/interfaces/stream/Buffer.h>
 #include <rogue/exceptions/OpenException.h>
-#include <rogue/exceptions/MaskException.h>
-#include <rogue/exceptions/WriteException.h>
+#include <rogue/exceptions/GeneralException.h>
 #include <rogue/exceptions/TimeoutException.h>
 #include <boost/make_shared.hpp>
 
@@ -43,15 +42,16 @@ rhr::AxiStreamPtr rhr::AxiStream::create (std::string path, uint32_t dest) {
 rhr::AxiStream::AxiStream ( std::string path, uint32_t dest ) {
    uint32_t mask;
 
-   dest_ = dest;
-   mask = (1 << dest_);
+   timeout_ = 1000000;
+   dest_    = dest;
+   mask     = (1 << dest_);
 
    if ( (fd_ = ::open(path.c_str(), O_RDWR)) < 0 )
-      throw(re::OpenException(path.c_str()));
+      throw(re::OpenException(path.c_str(),mask));
 
    if ( axisSetMask(fd_,mask) < 0 ) {
       ::close(fd_);
-      throw(re::MaskException(mask));
+      throw(re::OpenException(path.c_str(),mask));
    }
 
    // Result may be that rawBuff_ = NULL
@@ -74,7 +74,8 @@ rhr::AxiStream::~AxiStream() {
 
 //! Set timeout for frame transmits in microseconds
 void rhr::AxiStream::setTimeout(uint32_t timeout) {
-   timeout_ = timeout;
+   if ( timeout == 0 ) timeout_ = 1;
+   else timeout_ = timeout;
 }
 
 //! Enable SSI flags in first and last user fields
@@ -92,7 +93,6 @@ ris::FramePtr rhr::AxiStream::acceptReq ( uint32_t size, bool zeroCopyEn) {
    int32_t          res;
    fd_set           fds;
    struct timeval   tout;
-   struct timeval * tpr;
    uint32_t         alloc;
    ris::BufferPtr   buff;
    ris::FramePtr    frame;
@@ -123,14 +123,10 @@ ris::FramePtr rhr::AxiStream::acceptReq ( uint32_t size, bool zeroCopyEn) {
             FD_SET(fd_,&fds);
 
             // Setup select timeout
-            if ( timeout_ > 0 ) {
-               tout.tv_sec=timeout_ / 1000000;
-               tout.tv_usec=timeout_ % 1000000;
-               tpr = &tout;
-            }
-            else tpr = NULL;
+            tout.tv_sec=timeout_ / 1000000;
+            tout.tv_usec=timeout_ % 1000000;
 
-            if ( (res = select(fd_+1,NULL,&fds,NULL,tpr)) == 0 ) 
+            if ( (res = select(fd_+1,NULL,&fds,NULL,&tout)) == 0 ) 
                throw(re::TimeoutException(timeout_));
 
             // Attempt to get index.
@@ -154,7 +150,6 @@ void rhr::AxiStream::acceptFrame ( ris::FramePtr frame ) {
    int32_t          res;
    fd_set           fds;
    struct timeval   tout;
-   struct timeval * tpr;
    uint32_t         meta;
    uint32_t         x;
    uint32_t         flags;
@@ -186,7 +181,7 @@ void rhr::AxiStream::acceptFrame ( ris::FramePtr frame ) {
 
             // Write by passing buffer index to driver
             if ( axisWriteIndex(fd_, meta & 0x3FFFFFFF, buff->getCount(), fuser, luser, dest_) <= 0 ) 
-               throw(re::WriteException());
+               throw(re::GeneralException("AXIS Write Call Failed"));
 
             // Mark buffer as stale
             meta |= 0x40000000;
@@ -206,21 +201,17 @@ void rhr::AxiStream::acceptFrame ( ris::FramePtr frame ) {
             FD_SET(fd_,&fds);
 
             // Setup select timeout
-            if ( timeout_ > 0 ) {
-               tout.tv_sec=timeout_ / 1000000;
-               tout.tv_usec=timeout_ % 1000000;
-               tpr = &tout;
-            }
-            else tpr = NULL;
+            tout.tv_sec=timeout_ / 1000000;
+            tout.tv_usec=timeout_ % 1000000;
 
-            if ( (res = select(fd_+1,NULL,&fds,NULL,tpr)) == 0 ) 
+            if ( (res = select(fd_+1,NULL,&fds,NULL,&tout)) == 0 ) 
                throw(re::TimeoutException(timeout_));
 
             // Write with buffer copy
             res = axisWrite(fd_, buff->getRawData(), buff->getCount(), fuser, luser, dest_);
 
             // Error
-            if ( res < 0 ) throw(re::WriteException());
+            if ( res < 0 ) throw(re::GeneralException("AXIS Write Call Failed"));
          }
 
          // Exit out if return flag was set false
@@ -324,12 +315,14 @@ void rhr::AxiStream::runThread() {
 
 void rhr::AxiStream::setup_python () {
 
-   bp::class_<rhr::AxiStream, bp::bases<ris::Master,ris::Slave>, rhr::AxiStreamPtr, boost::noncopyable >("AxiStream",bp::init<std::string,uint32_t>())
+   bp::class_<rhr::AxiStream, rhr::AxiStreamPtr, bp::bases<ris::Master,ris::Slave>, boost::noncopyable >("AxiStream",bp::init<std::string,uint32_t>())
       .def("create",         &rhr::AxiStream::create)
       .staticmethod("create")
       .def("enableSsi",      &rhr::AxiStream::enableSsi)
       .def("dmaAck",         &rhr::AxiStream::dmaAck)
    ;
 
+   bp::implicitly_convertible<rhr::AxiStreamPtr, ris::MasterPtr>();
+   bp::implicitly_convertible<rhr::AxiStreamPtr, ris::SlavePtr>();
 }
 

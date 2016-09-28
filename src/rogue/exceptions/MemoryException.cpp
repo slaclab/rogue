@@ -26,7 +26,7 @@ namespace bp = boost::python;
 PyObject * re::memoryExceptionObj = 0;
 
 re::MemoryException::MemoryException(uint32_t error) {
-   sprintf(text_,"Memory error detected: 0x%x",error);
+   sprintf(text_,"Memory access error detected: 0x%x",error);
 }
 
 char const * re::MemoryException::what() const throw() {

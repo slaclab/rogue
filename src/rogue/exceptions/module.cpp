@@ -21,12 +21,14 @@
 **/
 
 #include <rogue/exceptions/module.h>
-#include <rogue/exceptions/AllocException.h>
-#include <rogue/exceptions/MaskException.h>
+
+#include <rogue/exceptions/AlignmentException.h>
+#include <rogue/exceptions/AllocationException.h>
+#include <rogue/exceptions/BoundaryException.h>
+#include <rogue/exceptions/GeneralException.h>
+#include <rogue/exceptions/MemoryException.h>
 #include <rogue/exceptions/OpenException.h>
 #include <rogue/exceptions/TimeoutException.h>
-#include <rogue/exceptions/WriteException.h>
-#include <rogue/exceptions/MemoryException.h>
 #include <boost/python.hpp>
 
 namespace bp  = boost::python;
@@ -43,11 +45,12 @@ void re::setup_module() {
    // set the current scope to the new sub-module
    bp::scope io_scope = module;
 
-   re::AllocException::setup_python();
-   re::MaskException::setup_python();
+   re::AlignmentException::setup_python();
+   re::AllocationException::setup_python();
+   re::BoundaryException::setup_python();
+   re::GeneralException::setup_python();
+   re::MemoryException::setup_python();
    re::OpenException::setup_python();
    re::TimeoutException::setup_python();
-   re::WriteException::setup_python();
-   re::MemoryException::setup_python();
 }
 

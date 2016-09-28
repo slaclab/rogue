@@ -34,9 +34,7 @@ rhp::EvrControlPtr rhp::EvrControl::create() {
 void rhp::EvrControl::setup_python () {
 
    bp::class_<rhp::EvrControl, rhp::EvrControlPtr >("EvrControl",bp::no_init)
-      .def("create",                &rhp::EvrControl::create)
-      .staticmethod("create")
-      .def_readwrite("lane",        &rhp::EvrControl::lane)
+      .def_readonly ("lane",        &rhp::EvrControl::lane)
       .def_readwrite("evrEnable",   &rhp::EvrControl::evrEnable)
       .def_readwrite("laneRunMask", &rhp::EvrControl::laneRunMask)
       .def_readwrite("evrSyncEn",   &rhp::EvrControl::evrSyncEn)

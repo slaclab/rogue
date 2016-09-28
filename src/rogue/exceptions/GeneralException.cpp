@@ -1,14 +1,14 @@
 /**
  *-----------------------------------------------------------------------------
- * Title      : Write Exception
+ * Title      : General Exception
  * ----------------------------------------------------------------------------
- * File       : WriteException.cpp
+ * File       : GeneralException.cpp
  * Author     : Ryan Herbst, rherbst@slac.stanford.edu
  * Created    : 2017-09-17
  * Last update: 2017-09-17
  * ----------------------------------------------------------------------------
  * Description:
- * Write denied exception for Rogue
+ * General denied exception for Rogue
  * ----------------------------------------------------------------------------
  * This file is part of the rogue software platform. It is subject to 
  * the license terms in the LICENSE.txt file found in the top-level directory 
@@ -19,36 +19,36 @@
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
-#include <rogue/exceptions/WriteException.h>
+#include <rogue/exceptions/GeneralException.h>
 namespace re = rogue::exceptions;
 namespace bp = boost::python;
 
-PyObject * re::writeExceptionObj = 0;
+PyObject * re::generalExceptionObj = 0;
 
-re::WriteException::WriteException() {
-   sprintf(text_,"Write failed");
+re::GeneralException::GeneralException(std::string text) {
+   sprintf(text_,"General Error: %s",text.c_str());
 }
 
-char const * re::WriteException::what() const throw() {
+char const * re::GeneralException::what() const throw() {
    return(text_);
 }
 
-void re::WriteException::setup_python() {
-   bp::class_<re::WriteException>("WriteException",bp::init<>());
+void re::GeneralException::setup_python() {
+   bp::class_<re::GeneralException>("GeneralException",bp::init<std::string>());
 
-   PyObject * typeObj = PyErr_NewException((char *)"rogue.exceptions.WriteException", PyExc_Exception, 0);
-   bp::scope().attr("WriteException") = bp::handle<>(bp::borrowed(typeObj));
+   PyObject * typeObj = PyErr_NewException((char *)"rogue.exceptions.GeneralException", PyExc_Exception, 0);
+   bp::scope().attr("GeneralException") = bp::handle<>(bp::borrowed(typeObj));
 
-   re::writeExceptionObj = typeObj;
+   re::generalExceptionObj = typeObj;
 
-   bp::register_exception_translator<re::WriteException>(&re::WriteException::translate);
+   bp::register_exception_translator<re::GeneralException>(&re::GeneralException::translate);
 }
 
-void re::WriteException::translate(WriteException const &e) {
+void re::GeneralException::translate(GeneralException const &e) {
    bp::object exc(e); // wrap the C++ exception
 
-   bp::object exc_t(bp::handle<>(bp::borrowed(re::writeExceptionObj)));
+   bp::object exc_t(bp::handle<>(bp::borrowed(re::generalExceptionObj)));
    exc_t.attr("cause") = exc; // add the wrapped exception to the Python exception
 
-   PyErr_SetString(re::writeExceptionObj, e.what());
+   PyErr_SetString(re::generalExceptionObj, e.what());
 }

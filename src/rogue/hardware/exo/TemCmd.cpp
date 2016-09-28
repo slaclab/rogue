@@ -42,9 +42,12 @@ rhe::TemCmd::~TemCmd() { }
 
 void rhe::TemCmd::setup_python () {
 
-   bp::class_<rhe::TemCmd, bp::bases<rhe::Tem>, rhe::TemCmdPtr, boost::noncopyable >("TemCmd",bp::init<>())
+   bp::class_<rhe::TemCmd, rhe::TemCmdPtr, bp::bases<rhe::Tem>, boost::noncopyable >("TemCmd",bp::init<>())
       .def("create",         &rhe::TemCmd::create)
       .staticmethod("create")
    ;
+
+   bp::implicitly_convertible<rhe::TemCmdPtr, rhe::TemPtr>();
+
 }
 

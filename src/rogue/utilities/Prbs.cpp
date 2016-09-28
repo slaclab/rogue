@@ -346,7 +346,7 @@ void ru::Prbs::acceptFrame ( ris::FramePtr frame ) {
 
 void ru::Prbs::setup_python() {
 
-   bp::class_<ru::Prbs, bp::bases<ris::Master,ris::Slave>, ru::PrbsPtr, boost::noncopyable >("Prbs",bp::init<>())
+   bp::class_<ru::Prbs, ru::PrbsPtr, bp::bases<ris::Master,ris::Slave>, boost::noncopyable >("Prbs",bp::init<>())
       .def("create",         &ru::Prbs::create)
       .staticmethod("create")
       .def("genFrame",       &ru::Prbs::genFrame)
@@ -362,8 +362,8 @@ void ru::Prbs::setup_python() {
       .def("enMessages",     &ru::Prbs::enMessages)
    ;
 
-   //bp::implicitly_convertible<ru::PrbsPtr, ris::SlavePtr>();
-   //bp::implicitly_convertible<ru::PrbsPtr, ris::MasterPtr>();
+   bp::implicitly_convertible<ru::PrbsPtr, ris::SlavePtr>();
+   bp::implicitly_convertible<ru::PrbsPtr, ris::MasterPtr>();
 
 }
 

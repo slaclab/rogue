@@ -41,11 +41,9 @@ std::string rhe::Info::buildString() {
 void rhe::Info::setup_python() {
 
    bp::class_<rhe::Info, rhe::InfoPtr>("Info",bp::no_init)
-      .def("create",               &rhe::Info::create)
-      .staticmethod("create")
-      .def_readwrite("version",    &rhe::Info::version)
-      .def_readwrite("promPrgEn",  &rhe::Info::promPrgEn)
-      .def("buildString",          &rhe::Info::buildString)
+      .def_readonly("version",    &rhe::Info::version)
+      .def_readonly("promPrgEn",  &rhe::Info::promPrgEn)
+      .def("buildString",         &rhe::Info::buildString)
    ; 
 }
 

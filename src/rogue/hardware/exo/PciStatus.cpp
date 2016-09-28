@@ -34,19 +34,17 @@ rhe::PciStatusPtr rhe::PciStatus::create() {
 void rhe::PciStatus::setup_python() {
 
    bp::class_<rhe::PciStatus, rhe::PciStatusPtr>("PciStatus",bp::no_init)
-      .def("create",                 &rhe::PciStatus::create)
-      .staticmethod("create")
-      .def_readwrite("pciCommand",   &rhe::PciStatus::pciCommand)
-      .def_readwrite("pciStatus",    &rhe::PciStatus::pciStatus)
-      .def_readwrite("pciDCommand",  &rhe::PciStatus::pciDCommand)
-      .def_readwrite("pciDStatus",   &rhe::PciStatus::pciDStatus)
-      .def_readwrite("pciLCommand",  &rhe::PciStatus::pciLCommand)
-      .def_readwrite("pciLStatus",   &rhe::PciStatus::pciLStatus)
-      .def_readwrite("pciLinkState", &rhe::PciStatus::pciLinkState)
-      .def_readwrite("pciFunction",  &rhe::PciStatus::pciFunction)
-      .def_readwrite("pciDevice",    &rhe::PciStatus::pciDevice)
-      .def_readwrite("pciBus",       &rhe::PciStatus::pciBus)
-      .def_readwrite("pciLanes",     &rhe::PciStatus::pciLanes)
+      .def_readonly("pciCommand",   &rhe::PciStatus::pciCommand)
+      .def_readonly("pciStatus",    &rhe::PciStatus::pciStatus)
+      .def_readonly("pciDCommand",  &rhe::PciStatus::pciDCommand)
+      .def_readonly("pciDStatus",   &rhe::PciStatus::pciDStatus)
+      .def_readonly("pciLCommand",  &rhe::PciStatus::pciLCommand)
+      .def_readonly("pciLStatus",   &rhe::PciStatus::pciLStatus)
+      .def_readonly("pciLinkState", &rhe::PciStatus::pciLinkState)
+      .def_readonly("pciFunction",  &rhe::PciStatus::pciFunction)
+      .def_readonly("pciDevice",    &rhe::PciStatus::pciDevice)
+      .def_readonly("pciBus",       &rhe::PciStatus::pciBus)
+      .def_readonly("pciLanes",     &rhe::PciStatus::pciLanes)
    ; 
 
 }

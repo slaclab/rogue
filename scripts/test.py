@@ -17,7 +17,7 @@ class testSlave(rogue.interfaces.stream.Slave):
       self.packCnt += 1
       p = bytearray(frame.getPayload())
       frame.read(p,0);
-      if ( frame.getPayload() <= 100 ):
+      if ( frame.getPayload() <= 20 ):
          print("Got size=%i Data: %s" % (len(p),"".join("%02x:" % b for b in p)))
 
 pgpA = rogue.hardware.pgp.PgpCard("/dev/pgpcard_0",0,0)
@@ -46,14 +46,14 @@ tm.setSlave(ts2)
 prbsC = rogue.utilities.Prbs()
 ts3 = testSlave()
 slv = rogue.interfaces.stream.Slave()
-slv.setDebug(10)
+slv.setDebug(10,"Debug")
 prbsC.setSlave(ts3)
 prbsC.addSlave(slv)
 
 count = 0
 
 while (True) :
-   
+
    print("")
    print("  PGP: Alloc Bytes %i, Count %i" % (pgpA.getAllocBytes(),pgpA.getAllocCount()))
    print("  Src: Count %i, Bytes %i" % (prbsA.getTxCount(),prbsA.getTxBytes()))

@@ -1,14 +1,14 @@
 /**
  *-----------------------------------------------------------------------------
- * Title         : SLAC Register Protocol (SRP) V3 Transaction
+ * Title         : SLAC Register Protocol (SRP) SrpV3
  * ----------------------------------------------------------------------------
- * File          : TransactionV3.h
+ * File          : SrpV3.h
  * Author        : Ryan Herbst <rherbst@slac.stanford.edu>
  * Created       : 09/17/2016
  * Last update   : 09/17/2016
  *-----------------------------------------------------------------------------
  * Description :
- *    Class to track a transaction
+ *    SRP Version 3
  *-----------------------------------------------------------------------------
  * This file is part of the rogue software platform. It is subject to 
  * the license terms in the LICENSE.txt file found in the top-level directory 
@@ -19,52 +19,54 @@
  * contained in the LICENSE.txt file.
  *-----------------------------------------------------------------------------
 **/
-#ifndef __ROGUE_PROTOCOLS_SRP_TRANSACTION_V3_H__
-#define __ROGUE_PROTOCOLS_SRP_TRANSACTION_V3_H__
-#include <rogue/protocols/srp/Transaction.h>
+#ifndef __ROGUE_PROTOCOLS_SRP_SRPV3_H__
+#define __ROGUE_PROTOCOLS_SRP_SRPV3_H__
 #include <stdint.h>
 #include <boost/thread.hpp>
+#include <rogue/interfaces/stream/Master.h>
+#include <rogue/interfaces/stream/Slave.h>
+#include <rogue/interfaces/memory/Slave.h>
 
 namespace rogue {
    namespace protocols {
       namespace srp {
 
-         //! SRP TransactionV3
-         class TransactionV3 : public Transaction {
+         //! SRP SrpV3
+         /*
+          * Serves as an interface between memory accesses and streams
+          * carying the SRP protocol. 
+          */
+         class SrpV3 : public rogue::interfaces::stream::Master,
+                       public rogue::interfaces::stream::Slave,
+                       public rogue::interfaces::memory::Slave {
+
             public:
 
                //! Class creation
-               static boost::shared_ptr<rogue::protocols::srp::TransactionV3> create (
-                     boost::shared_ptr<rogue::interfaces::memory::Block> block);
+               static boost::shared_ptr<rogue::protocols::srp::SrpV3> create ();
 
                //! Setup class in python
                static void setup_python();
 
-               //! Get transaction id
-               static uint32_t extractTid (boost::shared_ptr<rogue::interfaces::stream::Frame> frame);
-
-               //! Creator with version constant
-               TransactionV3(boost::shared_ptr<rogue::interfaces::memory::Block> block);
+               //! Creator
+               SrpV3();
 
                //! Deconstructor
-               ~TransactionV3();
+               ~SrpV3();
 
-               //! Virtual init function
-               uint32_t init(bool write, bool posted);
+               //! Post a transaction. Master will call this method with the access attributes.
+               virtual void doTransaction(boost::shared_ptr<rogue::interfaces::memory::Master> master,
+                                          uint64_t address, uint32_t size, bool write, bool posted);
 
-               //! Generate request frame
-               bool genFrame(boost::shared_ptr<rogue::interfaces::stream::Frame> frame);
-
-               //! Receive response frame
-               void recvFrame(boost::shared_ptr<rogue::interfaces::stream::Frame> frame);
+               //! Accept a frame from master
+               void acceptFrame ( boost::shared_ptr<rogue::interfaces::stream::Frame> frame );
 
          };
 
          // Convienence
-         typedef boost::shared_ptr<rogue::protocols::srp::TransactionV3> TransactionV3Ptr;
+         typedef boost::shared_ptr<rogue::protocols::srp::SrpV3> SrpV3Ptr;
       }
    }
 }
-
 #endif
 

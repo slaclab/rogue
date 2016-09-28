@@ -31,10 +31,15 @@ namespace rogue {
       extern PyObject * openExceptionObj;
 
       //! Open exception
+      /*
+       * Called when the system fails to open a file or
+       * device interface. Mask is passed as non zero
+       * for interfaces that open with a mask value
+       */
       class OpenException : public std::exception {
             char text_[100];
          public:
-            OpenException ( std::string path );
+            OpenException ( std::string path, uint32_t mask );
             char const * what() const throw();
             static void setup_python();
             static void translate(OpenException const &e);

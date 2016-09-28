@@ -23,6 +23,7 @@
 #define __ROGUE_INTERFACES_MEMORY_MASTER_H__
 #include <stdint.h>
 #include <vector>
+#include <boost/enable_shared_from_this.hpp>
 #include <boost/python.hpp>
 #include <boost/thread.hpp>
 
@@ -30,18 +31,33 @@ namespace rogue {
    namespace interfaces {
       namespace memory {
 
-         class Block;
-         class BlockVector;
          class Slave;
 
          //! Slave container
-         class Master {
+         class Master : public boost::enable_shared_from_this<rogue::interfaces::memory::Master> {
+
+               //! Class instance counter
+               static uint32_t classIdx_;
+
+               //! Class instance lock
+               static boost::mutex classIdxMtx_;
 
                //! Slave. Used for request forwards.
                boost::shared_ptr<rogue::interfaces::memory::Slave> slave_;
 
                //! Slave mutex
                boost::mutex slaveMtx_;
+
+               //! Index
+               uint32_t index_;
+
+            protected:
+
+               //! Get slave
+               boost::shared_ptr<rogue::interfaces::memory::Slave> getSlave();
+
+               //! Post a transaction, called locally, forwarded to slave
+               void reqTransaction(uint64_t address, uint32_t size, bool write, bool posted);
 
             public:
 
@@ -50,6 +66,9 @@ namespace rogue {
 
                //! Setup class in python
                static void setup_python();
+
+               //! Get index
+               uint32_t getIndex();
 
                //! Create object
                Master();
@@ -60,12 +79,14 @@ namespace rogue {
                //! Set slave, used for memory access requests
                void setSlave ( boost::shared_ptr<rogue::interfaces::memory::Slave> slave );
 
-               //! Get slave
-               boost::shared_ptr<rogue::interfaces::memory::Slave> getSlave();
+               //! Transaction complete, called by slave when transaction is complete, error passed
+               virtual void doneTransaction(uint32_t error);
 
-               //! Post a transaction
-               void reqTransaction(bool write, bool posted, 
-                     boost::shared_ptr<rogue::interfaces::memory::Block> block);
+               //! Set to master from slave, called by slave to push data into master.
+               virtual void setData(void *data, uint32_t offset, uint32_t size);
+
+               //! Get from master to slave, called by slave to pull data from mater.
+               virtual void getData(void *data, uint32_t offset, uint32_t size);
 
          };
 

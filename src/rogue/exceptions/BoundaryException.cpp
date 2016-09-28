@@ -1,14 +1,14 @@
 /**
  *-----------------------------------------------------------------------------
- * Title      : Buffer Exception
+ * Title      : Boundary Exception
  * ----------------------------------------------------------------------------
- * File       : BufferException.cpp
+ * File       : BoundaryException.cpp
  * Author     : Ryan Herbst, rherbst@slac.stanford.edu
  * Created    : 2017-09-17
  * Last update: 2017-09-17
  * ----------------------------------------------------------------------------
  * Description:
- * Buffer denied exception for Rogue
+ * Boundary denied exception for Rogue
  * ----------------------------------------------------------------------------
  * This file is part of the rogue software platform. It is subject to 
  * the license terms in the LICENSE.txt file found in the top-level directory 
@@ -19,36 +19,36 @@
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
-#include <rogue/exceptions/BufferException.h>
+#include <rogue/exceptions/BoundaryException.h>
 namespace re = rogue::exceptions;
 namespace bp = boost::python;
 
-PyObject * re::bufferExceptionObj = 0;
+PyObject * re::boundaryExceptionObj = 0;
 
-re::BufferException::BufferException() {
-   sprintf(text_,"Python Buffer Error");
+re::BoundaryException::BoundaryException (uint32_t req, uint32_t size) {
+   sprintf(text_,"Boundary Error. Access %i, Size %i",req,size);
 }
 
-char const * re::BufferException::what() const throw() {
+char const * re::BoundaryException::what() const throw() {
    return(text_);
 }
 
-void re::BufferException::setup_python() {
-   bp::class_<re::BufferException>("BufferException",bp::init<>());
+void re::BoundaryException::setup_python() {
+   bp::class_<re::BoundaryException>("BoundaryException",bp::init<uint32_t,uint32_t>());
 
-   PyObject * typeObj = PyErr_NewException((char *)"rogue.exceptions.BufferException", PyExc_Exception, 0);
-   bp::scope().attr("BufferException") = bp::handle<>(bp::borrowed(typeObj));
+   PyObject * typeObj = PyErr_NewException((char *)"rogue.exceptions.BoundaryException", PyExc_Exception, 0);
+   bp::scope().attr("BoundaryException") = bp::handle<>(bp::borrowed(typeObj));
 
-   re::bufferExceptionObj = typeObj;
+   re::boundaryExceptionObj = typeObj;
 
-   bp::register_exception_translator<re::BufferException>(&re::BufferException::translate);
+   bp::register_exception_translator<re::BoundaryException>(&re::BoundaryException::translate);
 }
 
-void re::BufferException::translate(BufferException const &e) {
+void re::BoundaryException::translate(BoundaryException const &e) {
    bp::object exc(e); // wrap the C++ exception
 
-   bp::object exc_t(bp::handle<>(bp::borrowed(re::bufferExceptionObj)));
+   bp::object exc_t(bp::handle<>(bp::borrowed(re::boundaryExceptionObj)));
    exc_t.attr("cause") = exc; // add the wrapped exception to the Python exception
 
-   PyErr_SetString(re::bufferExceptionObj, e.what());
+   PyErr_SetString(re::boundaryExceptionObj, e.what());
 }

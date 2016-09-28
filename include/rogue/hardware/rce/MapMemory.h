@@ -71,8 +71,7 @@ namespace rogue {
                void addMap(uint32_t address, uint32_t size);
 
                //! Post a transaction
-               void doTransaction(bool write, bool posted, 
-                     boost::shared_ptr<rogue::interfaces::memory::Block> block);
+               void doTransaction(uint32_t index, uint64_t address, uint32_t size, bool write, bool posted);
          };
 
          // Convienence

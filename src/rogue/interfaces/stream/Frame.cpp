@@ -23,8 +23,8 @@
 #include <rogue/interfaces/stream/Frame.h>
 #include <rogue/interfaces/stream/Buffer.h>
 #include <rogue/interfaces/stream/Slave.h>
-#include <rogue/exceptions/BoundsException.h>
-#include <rogue/exceptions/BufferException.h>
+#include <rogue/exceptions/BoundaryException.h>
+#include <rogue/exceptions/GeneralException.h>
 #include <boost/make_shared.hpp>
 #include <boost/python.hpp>
 
@@ -76,6 +76,8 @@ ris::BufferPtr ris::Frame::getBuffer(uint32_t index) {
    ris::BufferPtr ret;
 
    if ( index < buffers_.size() ) ret = buffers_[index];
+   else throw(re::BoundaryException(index,buffers_.size()));
+
    return(ret);
 }
 
@@ -130,34 +132,12 @@ void ris::Frame::setError(uint32_t error) {
 
 //! Read count bytes from frame, starting from offset.
 uint32_t ris::Frame::read  ( void *p, uint32_t offset, uint32_t count ) {
-   uint32_t currOff;
-   uint32_t x;
-   uint32_t cnt;
-   
-   ris::BufferPtr buff;
+   ris::FrameIteratorPtr iter = startRead(offset,count);
 
-   currOff = 0; 
-   cnt = 0;
+   do {
+      memcpy(((uint8_t *)p)+iter->total(),iter->data(),iter->size());
+   } while(nextRead(iter));
 
-   for (x=0; x < buffers_.size(); x++) {
-      buff = buffers_[x];
-
-      // Offset has been reached
-      if ( currOff >= offset ) cnt += buff->read((uint8_t *)p+cnt,0,(count-cnt));
-
-      // Attempt read with raw count and adjusted offset.
-      // Buffer read with return zero if offset is larger than payload size
-      else {
-         cnt += buff->read(p,(offset-currOff),count);
-         currOff += buff->getPayload();
-      }
-
-      // Read has reached requested count
-      if (cnt == count) return(count);
-   }
-
-   // Count error if we got here
-   throw(re::BoundsException(count,cnt));
    return(count);
 }
 
@@ -166,7 +146,7 @@ void ris::Frame::readPy ( boost::python::object p, uint32_t offset ) {
    Py_buffer  pyBuf;
 
    if ( PyObject_GetBuffer(p.ptr(),&pyBuf,PyBUF_SIMPLE) < 0 ) 
-      throw(re::BufferException());
+      throw(re::GeneralException("Python Buffer Error In Frame"));
 
    read(pyBuf.buf,offset,pyBuf.len);
    PyBuffer_Release(&pyBuf);
@@ -174,34 +154,12 @@ void ris::Frame::readPy ( boost::python::object p, uint32_t offset ) {
 
 //! Write count bytes to frame, starting at offset
 uint32_t ris::Frame::write ( void *p, uint32_t offset, uint32_t count ) {
-   uint32_t currOff;
-   uint32_t x;
-   uint32_t cnt;
-   
-   ris::BufferPtr buff;
+   ris::FrameIteratorPtr iter = startWrite(offset,count);
 
-   currOff = 0; 
-   cnt = 0;
+   do {
+      memcpy(iter->data(),((uint8_t *)p)+iter->total(),iter->size());
+   } while(nextWrite(iter));
 
-   for (x=0; x < buffers_.size(); x++) {
-      buff = buffers_[x];
-
-      // Offset has been reached
-      if ( currOff >= offset ) cnt += buff->write((uint8_t *)p+cnt,0,(count-cnt));
-
-      // Attempt read with raw count and adjusted offset.
-      // Buffer read will return zero if offset is larger than payload size
-      else {
-         cnt += buff->write(p,(offset-currOff),count);
-         currOff += buff->getAvailable();
-      }
-
-      // Read has reached requested count
-      if (cnt == count) return(count);
-   }
-
-   // Count error if we got here
-   throw(re::BoundsException(count,cnt));
    return(count);
 }
 
@@ -210,10 +168,181 @@ void ris::Frame::writePy ( boost::python::object p, uint32_t offset ) {
    Py_buffer  pyBuf;
 
    if ( PyObject_GetBuffer(p.ptr(),&pyBuf,PyBUF_CONTIG) < 0 )
-      throw(re::BufferException());
+      throw(re::GeneralException("Python Buffer Error In Frame"));
 
    write(pyBuf.buf,offset,pyBuf.len);
    PyBuffer_Release(&pyBuf);
+}
+
+//! Start an iterative write
+/*
+ * Pass offset and total size
+ * Returns iterator object.
+ * Use data and size fields in object to control transaction
+ * Call nextWrite to following data update.
+ */
+ris::FrameIteratorPtr ris::Frame::startWrite(uint32_t offset, uint32_t size) {
+   uint32_t total;
+   uint32_t temp;
+   ris::BufferPtr buff;
+
+   ris::FrameIteratorPtr iter = boost::make_shared<ris::FrameIterator>();
+
+   iter->offset_     = offset;
+   iter->remaining_  = size;
+   iter->total_      = 0;
+
+   total = 0;
+   temp  = 0;
+
+   // Find buffer which matches offset
+   for (iter->index_=0; iter->index_ < buffers_.size(); iter->index_++) {
+      buff = buffers_[iter->index_];
+      temp = buff->getRawSize() - buff->getHeadRoom();
+      total += temp;
+
+      // Offset is within payload range
+      if ( iter->offset_ < temp ) break;
+
+      // Subtract buffer payload size from offset
+      iter->offset_ -= temp;
+
+      // Update payload to be full since write index is higher
+      buff->setSize(buff->getRawSize());
+   }
+
+   if ( iter->index_ == buffers_.size() ) throw(re::BoundaryException(offset,total));
+
+   // Raw pointer
+   iter->data_ = buff->getPayloadData() + iter->offset_;
+
+   // Set size
+   if ( (temp - iter->offset_) > iter->remaining_ ) 
+      iter->size_ = iter->remaining_;
+   else
+      iter->size_ = (temp - iter->offset_);
+
+   // Return iterator
+   return(iter);
+}
+
+//! Continue an iterative write
+bool ris::Frame::nextWrite(ris::FrameIteratorPtr iter) {
+   ris::BufferPtr buff;
+   uint32_t temp;
+
+   buff = buffers_[iter->index_];
+
+   // Update payload size
+   if ( (iter->offset_ + iter->size_ + buff->getHeadRoom() ) > buff->getCount() ) 
+      buff->setSize(iter->offset_ + iter->size_ + buff->getHeadRoom());
+
+   // We are done
+   if ( iter->size_ == iter->remaining_ ) return(false);
+
+   // Sanity check before getting next buffer
+   if ( ++iter->index_ == buffers_.size() ) 
+      throw(re::BoundaryException(iter->index_,buffers_.size()));
+
+   // Next buffer
+   buff = buffers_[iter->index_];
+   temp = buff->getRawSize() - buff->getHeadRoom();
+
+   // Adjust
+   iter->remaining_ -= iter->size_;
+   iter->total_     += iter->size_;
+   iter->offset_     = 0;
+
+   // Raw pointer
+   iter->data_ = buff->getPayloadData();
+
+   // Set size
+   if ( temp > iter->remaining_ ) 
+      iter->size_ = iter->remaining_;
+   else
+      iter->size_ = temp;
+
+   return(true);
+}
+
+//! Start an iterative read
+/*
+ * Pass offset and total size
+ * Returns iterator object.
+ * Use data and size fields in object to control transaction
+ * Call nextRead to following data update.
+ */
+ris::FrameIteratorPtr ris::Frame::startRead(uint32_t offset, uint32_t size) {
+   uint32_t total;
+   uint32_t temp;
+   ris::BufferPtr buff;
+
+   ris::FrameIteratorPtr iter = boost::make_shared<ris::FrameIterator>();
+
+   iter->offset_    = offset;
+   iter->remaining_ = size;
+   iter->total_     = 0;
+
+   total = 0;
+   temp  = 0;
+
+   // Find buffer which matches offset
+   for (iter->index_=0; iter->index_ < buffers_.size(); iter->index_++) {
+      buff = buffers_[iter->index_];
+      temp = buff->getPayload();
+      total += temp;
+
+      // Offset is within payload range
+      if ( iter->offset_ < temp ) break;
+      else iter->offset_ -= temp;
+   }
+
+   if ( iter->index_ == buffers_.size() ) throw(re::BoundaryException(offset,total));
+
+   // Raw pointer
+   iter->data_ = buff->getPayloadData() + iter->offset_;
+
+   // Set size
+   if ( (temp - iter->offset_) > iter->remaining_ ) 
+      iter->size_ = iter->remaining_;
+   else
+      iter->size_ = (temp - iter->offset_);
+
+   // Return iterator
+   return(iter);
+}
+
+//! Continue an iterative read
+bool ris::Frame::nextRead(ris::FrameIteratorPtr iter) {
+   ris::BufferPtr buff;
+   uint32_t temp;
+
+   // We are done
+   if ( iter->size_ == iter->remaining_ ) return(false);
+
+   // Sanity check before getting next buffer
+   if ( ++iter->index_ == buffers_.size() ) 
+      throw(re::BoundaryException(iter->index_,buffers_.size()));
+
+   // Next buffer
+   buff = buffers_[iter->index_];
+   temp = buff->getPayload();
+
+   // Adjust
+   iter->remaining_ -= iter->size_;
+   iter->total_     += iter->size_;
+   iter->offset_     = 0;
+
+   // Raw pointer
+   iter->data_ = buff->getPayloadData();
+
+   // Set size
+   if ( temp > iter->remaining_ ) 
+      iter->size_ = iter->remaining_;
+   else
+      iter->size_ = temp;
+
+   return(true);
 }
 
 void ris::Frame::setup_python() {

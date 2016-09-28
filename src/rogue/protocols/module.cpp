@@ -22,7 +22,6 @@
 
 #include <boost/python.hpp>
 #include <rogue/protocols/module.h>
-#include <rogue/protocols/map/module.h>
 #include <rogue/protocols/packetizer/module.h>
 #include <rogue/protocols/rssi/module.h>
 #include <rogue/protocols/srp/module.h>
@@ -41,7 +40,6 @@ void rogue::protocols::setup_module() {
    // set the current scope to the new sub-module
    bp::scope io_scope = module;
 
-   rogue::protocols::map::setup_module();
    rogue::protocols::packetizer::setup_module();
    rogue::protocols::rssi::setup_module();
    rogue::protocols::srp::setup_module();

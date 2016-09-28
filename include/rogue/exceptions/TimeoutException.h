@@ -31,6 +31,11 @@ namespace rogue {
       extern PyObject * timeoutExceptionObj;
 
       //! Timeout exception
+      /*
+       * Called when a timeout occurs during an access to memory 
+       * or when sending/receicing a frame. Other interfaces with
+       * a set timeout may also generate this exception.
+       */
       class TimeoutException : public std::exception {
             char text_[100];
          public:

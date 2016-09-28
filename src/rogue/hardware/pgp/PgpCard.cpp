@@ -28,8 +28,7 @@
 #include <rogue/interfaces/stream/Frame.h>
 #include <rogue/interfaces/stream/Buffer.h>
 #include <rogue/exceptions/OpenException.h>
-#include <rogue/exceptions/MaskException.h>
-#include <rogue/exceptions/WriteException.h>
+#include <rogue/exceptions/GeneralException.h>
 #include <rogue/exceptions/TimeoutException.h>
 #include <boost/make_shared.hpp>
 
@@ -48,17 +47,18 @@ rhp::PgpCardPtr rhp::PgpCard::create (std::string path, uint32_t lane, uint32_t 
 rhp::PgpCard::PgpCard ( std::string path, uint32_t lane, uint32_t vc ) {
    uint32_t mask;
 
-   lane_ = lane;
-   vc_   = vc;
+   lane_    = lane;
+   vc_      = vc;
+   timeout_ = 1000000;
 
    mask = (1 << ((lane_*4) +vc_));
 
    if ( (fd_ = ::open(path.c_str(), O_RDWR)) < 0 ) 
-      throw(re::OpenException(path.c_str()));
+      throw(re::OpenException(path.c_str(),mask));
 
    if ( pgpSetMask(fd_,mask) < 0 ) {
       ::close(fd_);
-      throw(re::MaskException(mask));
+      throw(re::OpenException(path.c_str(),mask));
    }
 
    // Result may be that rawBuff_ = NULL
@@ -79,7 +79,8 @@ rhp::PgpCard::~PgpCard() {
 
 //! Set timeout for frame transmits in microseconds
 void rhp::PgpCard::setTimeout(uint32_t timeout) {
-   timeout_ = timeout;
+   if ( timeout == 0 ) timeout_ = 1;
+   else timeout_ = timeout;
 }
 
 //! Get card info.
@@ -142,7 +143,6 @@ ris::FramePtr rhp::PgpCard::acceptReq ( uint32_t size, bool zeroCopyEn ) {
    int32_t          res;
    fd_set           fds;
    struct timeval   tout;
-   struct timeval * tpr;
    uint32_t         alloc;
    ris::BufferPtr   buff;
    ris::FramePtr    frame;
@@ -173,14 +173,10 @@ ris::FramePtr rhp::PgpCard::acceptReq ( uint32_t size, bool zeroCopyEn ) {
             FD_SET(fd_,&fds);
 
             // Setup select timeout
-            if ( timeout_ > 0 ) {
-               tout.tv_sec=timeout_ / 1000000;
-               tout.tv_usec=timeout_ % 1000000;
-               tpr = &tout;
-            }
-            else tpr = NULL;
+            tout.tv_sec=timeout_ / 1000000;
+            tout.tv_usec=timeout_ % 1000000;
 
-            if ( (res = select(fd_+1,NULL,&fds,NULL,tpr)) == 0 ) 
+            if ( (res = select(fd_+1,NULL,&fds,NULL,&tout)) == 0 ) 
                throw(re::TimeoutException(timeout_));
             
             // Attempt to get index.
@@ -203,7 +199,6 @@ void rhp::PgpCard::acceptFrame ( ris::FramePtr frame ) {
    int32_t          res;
    fd_set           fds;
    struct timeval   tout;
-   struct timeval * tpr;
    uint32_t         meta;
    uint32_t         x;
    uint32_t         cont;
@@ -229,7 +224,7 @@ void rhp::PgpCard::acceptFrame ( ris::FramePtr frame ) {
 
             // Write by passing buffer index to driver
             if ( pgpWriteIndex(fd_, meta & 0x3FFFFFFF, buff->getCount(), lane_, vc_, cont) <= 0 ) 
-               throw(re::WriteException());
+               throw(re::GeneralException("PGP Write Call Failed"));
 
             // Mark buffer as stale
             meta |= 0x40000000;
@@ -249,21 +244,17 @@ void rhp::PgpCard::acceptFrame ( ris::FramePtr frame ) {
             FD_SET(fd_,&fds);
 
             // Setup select timeout
-            if ( timeout_ > 0 ) {
-               tout.tv_sec=timeout_ / 1000000;
-               tout.tv_usec=timeout_ % 1000000;
-               tpr = &tout;
-            }
-            else tpr = NULL;
+            tout.tv_sec=timeout_ / 1000000;
+            tout.tv_usec=timeout_ % 1000000;
 
-            if ( (res = select(fd_+1,NULL,&fds,NULL,tpr)) == 0 ) 
+            if ( (res = select(fd_+1,NULL,&fds,NULL,&tout)) == 0 ) 
                throw(re::TimeoutException(timeout_));
 
             // Write with buffer copy
             res = pgpWrite(fd_, buff->getRawData(), buff->getCount(), lane_, vc_, cont);
 
             // Error
-            if ( res < 0 ) throw(re::WriteException());
+            if ( res < 0 ) throw(re::GeneralException("PGP Write Call Failed"));
          }
 
          // Exit out if return flag was set false
@@ -360,7 +351,7 @@ void rhp::PgpCard::runThread() {
 
 void rhp::PgpCard::setup_python () {
 
-   bp::class_<rhp::PgpCard, bp::bases<ris::Master,ris::Slave>, rhp::PgpCardPtr, boost::noncopyable >("PgpCard",bp::init<std::string,uint32_t,uint32_t>())
+   bp::class_<rhp::PgpCard, rhp::PgpCardPtr, bp::bases<ris::Master,ris::Slave>, boost::noncopyable >("PgpCard",bp::init<std::string,uint32_t,uint32_t>())
       .def("create",         &rhp::PgpCard::create)
       .staticmethod("create")
       .def("getInfo",        &rhp::PgpCard::getInfo)
@@ -373,6 +364,9 @@ void rhp::PgpCard::setup_python () {
       .def("setData",        &rhp::PgpCard::setData)
       .def("sendOpCode",     &rhp::PgpCard::sendOpCode)
    ;
+
+   bp::implicitly_convertible<rhp::PgpCardPtr, ris::MasterPtr>();
+   bp::implicitly_convertible<rhp::PgpCardPtr, ris::SlavePtr>();
 
 }
 

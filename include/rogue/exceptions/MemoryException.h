@@ -31,6 +31,9 @@ namespace rogue {
       extern PyObject * memoryExceptionObj;
 
       //! Memory exception
+      /*
+       * Called as a result of a memory access error.
+       */
       class MemoryException : public std::exception {
             char text_[100];
          public:

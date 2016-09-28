@@ -22,10 +22,8 @@
 
 #include <boost/python.hpp>
 #include <rogue/protocols/srp/module.h>
-#include <rogue/protocols/srp/Bridge.h>
-#include <rogue/protocols/srp/Transaction.h>
-#include <rogue/protocols/srp/TransactionV0.h>
-#include <rogue/protocols/srp/TransactionV3.h>
+#include <rogue/protocols/srp/SrpV0.h>
+#include <rogue/protocols/srp/SrpV3.h>
 
 namespace bp  = boost::python;
 namespace rps = rogue::protocols::srp;
@@ -41,10 +39,7 @@ void rps::setup_module() {
    // set the current scope to the new sub-module
    bp::scope io_scope = module;
 
-   rps::Bridge::setup_python();
-   rps::Transaction::setup_python();
-   rps::TransactionV0::setup_python();
-   rps::TransactionV3::setup_python();
-
+   rps::SrpV0::setup_python();
+   rps::SrpV3::setup_python();
 }
 

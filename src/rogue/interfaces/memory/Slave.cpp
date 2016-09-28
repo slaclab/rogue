@@ -20,10 +20,12 @@
  * ----------------------------------------------------------------------------
 **/
 #include <rogue/interfaces/memory/Slave.h>
-#include <rogue/interfaces/memory/Block.h>
+#include <rogue/interfaces/memory/Master.h>
+#include <rogue/exceptions/GeneralException.h>
 #include <boost/make_shared.hpp>
 
 namespace rim = rogue::interfaces::memory;
+namespace re  = rogue::exceptions;
 namespace bp = boost::python;
 
 //! Create a slave container
@@ -38,44 +40,35 @@ rim::Slave::Slave() { }
 //! Destroy object
 rim::Slave::~Slave() { }
 
-//! Post a transaction
-void rim::Slave::doTransaction(bool write, bool posted, rim::BlockPtr block) { }
+//! Get master device with index, called by sub classes
+rim::MasterPtr rim::Slave::getMaster(uint32_t index) {
+   boost::lock_guard<boost::mutex> lock(masterMapMtx_);
 
-//! Post a transaction
-void rim::SlaveWrap::doTransaction(bool write, bool posted, rim::BlockPtr block) {
-   bool found;
-
-   found = false;
-
-   // Not sure if this is (and release) are ok if calling from python to python
-   // It appears we need to lock before calling get_override
-   PyGILState_STATE pyState = PyGILState_Ensure();
-
-   if (boost::python::override dt = this->get_override("doTransaction")) {
-      found = true;
-      try {
-         dt(write,posted,block);
-      } catch (...) {
-         PyErr_Print();
-      }
-   }
-   PyGILState_Release(pyState);
-
-   if ( ! found ) rim::Slave::doTransaction(write,posted,block);
+   if ( masterMap_.find(index) != masterMap_.end() ) return(masterMap_[index]);
+   else throw(re::GeneralException("Memory Master Not Linked To Slave"));
 }
 
-//! Default doWite call
-void rim::SlaveWrap::defTransaction(bool write, bool posted, rim::BlockPtr block) {
-   return(rim::Slave::doTransaction(write,posted,block));
+//! Return true if master is valid
+bool rim::Slave::validMaster(uint32_t index) {
+   boost::lock_guard<boost::mutex> lock(masterMapMtx_);
+   if ( masterMap_.find(index) != masterMap_.end() ) return(true);
+   else return(false);
 }
 
-void rim::Slave::setup_python () {
+//! Register a master. Called by Master class during addSlave.
+void rim::Slave::addMaster(rim::MasterPtr master) {
+   boost::lock_guard<boost::mutex> lock(masterMapMtx_);
+   masterMap_[master->getIndex()] = master;
+}
 
-   bp::class_<rim::SlaveWrap, rim::SlaveWrapPtr, boost::noncopyable>("Slave",bp::init<>())
-      .def("create",         &rim::Slave::create)
-      .staticmethod("create")
-      .def("doTransaction",  &rim::Slave::doTransaction, &rim::SlaveWrap::defTransaction)
-   ;
+//! Post a transaction
+void rim::Slave::doTransaction(rim::MasterPtr master, uint64_t address, uint32_t size, bool write, bool posted) {
+   master->doneTransaction(0xFFFFFFFF);
+}
 
+void rim::Slave::setup_python() {
+
+   // slave can only exist as sub-class in python
+   bp::class_<rim::Slave, rim::SlavePtr, boost::noncopyable>("Slave",bp::init<>());
 }
 

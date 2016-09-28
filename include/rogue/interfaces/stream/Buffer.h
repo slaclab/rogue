@@ -136,13 +136,6 @@ namespace rogue {
 
                //! Set head room
                void setHeadRoom(uint32_t offset);
-
-               //! Read up to count bytes from buffer, starting from offset.
-               uint32_t read  ( void *p, uint32_t offset, uint32_t count );
-
-               //! Write count bytes to frame, starting at offset
-               uint32_t write ( void *p, uint32_t offset, uint32_t count );
-
          };
 
          // Convienence

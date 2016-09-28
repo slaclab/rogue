@@ -24,9 +24,17 @@ pgpVc3 = rogue.hardware.pgp.PgpCard("/dev/pgpcard_0",0,3)
 print("PGP Card Version: %x" % (pgpVc0.getInfo().version))
 
 # Create and Connect SRP
-srp = rogue.protocols.srp.Bridge(0)
+srp = rogue.protocols.srp.SrpV0()
 srp.setSlave(pgpVc0)
 pgpVc0.setSlave(srp)
+
+probeA = rogue.interfaces.stream.Slave()
+probeA.setDebug(16,"SRP")
+probeB = rogue.interfaces.stream.Slave()
+probeB.setDebug(16,"PGP")
+
+#srp.addSlave(probeA)
+#pgpVc0.addSlave(probeB)
 
 # Connect Data
 dataRx = rogue.utilities.Prbs()
@@ -51,13 +59,15 @@ prbsCont.setSlave(srp)
 prbsLength.setSlave(srp)
 
 # Post read transactions
-fwVersion.doTransaction(False,False,1)
-scratchpad.doTransaction(False,False,1000)
-deviceDna.doTransaction(False,False,1000)
-heartbeat.doTransaction(False,False,1000)
-buildstamp.doTransaction(False,False,1000)
-prbsCont.doTransaction(False,False,1000)
-prbsLength.doTransaction(False,False,1000)
+fwVersion.backgroundRead();
+scratchpad.backgroundRead();
+deviceDna.backgroundRead();
+heartbeat.backgroundRead();
+buildstamp.backgroundRead();
+prbsCont.backgroundRead();
+prbsLength.backgroundRead();
+
+prbsLength.getError()
 
 # Print results
 print("")
@@ -73,23 +83,23 @@ print("")
 # Set scratchpad
 print("Set scratchpad: 0x11111111")
 scratchpad.setUInt32(0,0x11111111)
-scratchpad.doTransaction(True,False,1000) # Write
+scratchpad.blockingWrite()
 scratchpad.setUInt32(0,0x00000000) # test clear
-scratchpad.doTransaction(False,False,1000) # Read
+scratchpad.blockingRead()
 print("Get Scratchpad: 0x%08x" % ( scratchpad.getUInt32(0)))
 print("Set scratchpad: 0x22222222")
 scratchpad.setUInt32(0,0x22222222)
-scratchpad.doTransaction(True,False,1000) # Write
+scratchpad.blockingWrite()
 scratchpad.setUInt32(0,0x00000000) # test clear
-scratchpad.doTransaction(False,False,1000) # Read
+scratchpad.blockingRead()
 print("Get Scratchpad: 0x%08x" % ( scratchpad.getUInt32(0)))
 print("")
 
 # Setup PRBS
 prbsCont.setUInt32(0,0x01)
-prbsCont.doTransaction(True,False,1000)
+prbsCont.blockingWrite()
 prbsLength.setUInt32(0,0x7F)
-prbsLength.doTransaction(True,False,1000)
+prbsLength.blockingWrite()
 
 # Wait a moment before connecting microblaze
 print("Enabling MB Debug")
@@ -101,7 +111,7 @@ print("Entering Loop")
 while (True):
    time.sleep(1)
    prbsCont.setUInt32(0,0x11)
-   prbsCont.doTransaction(True,False,1000)
+   prbsCont.backgroundWrite()
    print("-------- PRBS Status ---------------")
    print(" Prbs: Count %i, Bytes %i, Errors %i" % (dataRx.getRxCount(),dataRx.getRxBytes(),dataRx.getRxErrors()))
    print("")

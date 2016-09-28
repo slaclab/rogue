@@ -36,12 +36,14 @@ ru::PeekPokePtr ru::PeekPoke::create (uint32_t size) {
 
 //! Setup class in python
 void ru::PeekPoke::setup_python() {
-   bp::class_<ru::PeekPoke, bp::bases<rim::Block>, ru::PeekPokePtr, boost::noncopyable >("PeekPoke",bp::init<uint32_t>())
+   bp::class_<ru::PeekPoke, ru::PeekPokePtr, bp::bases<rim::Block>, boost::noncopyable >("PeekPoke",bp::init<uint32_t>())
       .def("create",         &ru::PeekPoke::create)
       .staticmethod("create")
       .def("poke",           &ru::PeekPoke::poke)
       .def("peek",           &ru::PeekPoke::peek)
    ;
+
+   bp::implicitly_convertible<ru::PeekPokePtr, rim::BlockPtr>();
 }
 
 //! Creator 
@@ -51,26 +53,25 @@ ru::PeekPoke::PeekPoke(uint32_t size) : Block(0,size) { }
 ru::PeekPoke::~PeekPoke() {}
 
 //! Poke. Write to an address
-bool ru::PeekPoke::poke ( uint32_t address, uint32_t value ) {
+void ru::PeekPoke::poke ( uint64_t address, uint32_t value ) {
    adjAddress(0,address);
 
    if ( getSize() == 1 ) setUInt8(0,value);
    else if ( getSize() == 2 ) setUInt16(0,value);
    else if ( getSize() == 4 ) setUInt32(0,value);
 
-   doTransaction(true,false,1000000);
-   return(getError());
+   blockingWrite();
 }
 
 //! Peek. Read from an address
-uint32_t ru::PeekPoke::peek ( uint32_t address ) {
+uint32_t ru::PeekPoke::peek ( uint64_t address ) {
    uint32_t ret;
 
    adjAddress(0,address);
 
    ret = 0xFFFFFFFF;
 
-   doTransaction(false,false,1000000);
+   blockingRead();
    if ( getSize() == 1 ) ret = getUInt8(0);
    else if ( getSize() == 2 ) ret = getUInt16(0);
    else if ( getSize() == 4 ) ret = getUInt32(0);

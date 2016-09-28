@@ -23,17 +23,34 @@
 #define __ROGUE_INTERFACES_MEMORY_SLAVE_H__
 #include <stdint.h>
 #include <vector>
+#include <rogue/interfaces/memory/Master.h>
 #include <boost/python.hpp>
 
 namespace rogue {
    namespace interfaces {
       namespace memory {
 
-         class Block;
-         class BlockVector;
+         class Master;
 
          //! Slave container
          class Slave {
+
+               //! Slave map
+               std::map<uint32_t, boost::shared_ptr<rogue::interfaces::memory::Master> > masterMap_;
+
+               //! Slave map lock
+               boost::mutex masterMapMtx_;
+
+            protected:
+
+               //! Register a master.
+               void addMaster(boost::shared_ptr<rogue::interfaces::memory::Master> master);
+
+               //! Get master device with index
+               boost::shared_ptr<rogue::interfaces::memory::Master> getMaster(uint32_t index);
+
+               //! Return true if master is valid
+               bool validMaster(uint32_t index);
 
             public:
 
@@ -49,32 +66,14 @@ namespace rogue {
                //! Destroy object
                ~Slave();
 
-               //! Post a transaction
-               virtual void doTransaction(bool write, bool posted, 
-                     boost::shared_ptr<rogue::interfaces::memory::Block> block);
-
-         };
-
-         //! Slave class, wrapper to enable pyton overload of virtual methods
-         class SlaveWrap : 
-            public rogue::interfaces::memory::Slave, 
-            public boost::python::wrapper<rogue::interfaces::memory::Slave> {
-
-            public:
-
-               //! Post a transaction
-               void doTransaction(bool write_, bool posted_, 
-                    boost::shared_ptr<rogue::interfaces::memory::Block> block);
-
-               //! Post a transaction
-               void defTransaction(bool write_, bool posted_, 
-                    boost::shared_ptr<rogue::interfaces::memory::Block> block);
+               //! Post a transaction. Master will call this method with the access attributes.
+               virtual void doTransaction(boost::shared_ptr<rogue::interfaces::memory::Master> master,
+                                          uint64_t address, uint32_t size, bool write, bool posted);
 
          };
 
          // Convienence
          typedef boost::shared_ptr<rogue::interfaces::memory::Slave> SlavePtr;
-         typedef boost::shared_ptr<rogue::interfaces::memory::SlaveWrap> SlaveWrapPtr;
 
       }
    }

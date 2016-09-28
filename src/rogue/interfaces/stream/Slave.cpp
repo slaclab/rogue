@@ -25,7 +25,7 @@
 #include <rogue/interfaces/stream/Master.h>
 #include <rogue/interfaces/stream/Buffer.h>
 #include <rogue/interfaces/stream/Frame.h>
-#include <rogue/exceptions/AllocException.h>
+#include <rogue/exceptions/AllocationException.h>
 #include <boost/make_shared.hpp>
 
 namespace ris = rogue::interfaces::stream;
@@ -100,7 +100,7 @@ ris::BufferPtr ris::Slave::allocBuffer ( uint32_t size ) {
    uint8_t * data;
 
    if ( (data = (uint8_t *)malloc(size)) == NULL ) 
-      throw(re::AllocException(size));
+      throw(re::AllocationException(size));
 
    buff = createBuffer(data,allocMeta_,size);
 

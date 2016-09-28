@@ -34,15 +34,13 @@ rhp::EvrStatusPtr rhp::EvrStatus::create() {
 void rhp::EvrStatus::setup_python () {
 
    bp::class_<rhp::EvrStatus, rhp::EvrStatusPtr >("EvrStatus",bp::no_init)
-      .def("create",                  &rhp::EvrStatus::create)
-      .staticmethod("create")
-      .def_readwrite("lane",          &rhp::EvrStatus::lane)
-      .def_readwrite("linkErrors",    &rhp::EvrStatus::linkErrors)
-      .def_readwrite("linkUp",        &rhp::EvrStatus::linkUp)
-      .def_readwrite("runStatus",     &rhp::EvrStatus::runStatus)
-      .def_readwrite("evrSeconds",    &rhp::EvrStatus::evrSeconds)
-      .def_readwrite("runCounter",    &rhp::EvrStatus::runCounter)
-      .def_readwrite("acceptCounter", &rhp::EvrStatus::acceptCounter)
+      .def_readonly("lane",          &rhp::EvrStatus::lane)
+      .def_readonly("linkErrors",    &rhp::EvrStatus::linkErrors)
+      .def_readonly("linkUp",        &rhp::EvrStatus::linkUp)
+      .def_readonly("runStatus",     &rhp::EvrStatus::runStatus)
+      .def_readonly("evrSeconds",    &rhp::EvrStatus::evrSeconds)
+      .def_readonly("runCounter",    &rhp::EvrStatus::runCounter)
+      .def_readonly("acceptCounter", &rhp::EvrStatus::acceptCounter)
    ;
 
 }

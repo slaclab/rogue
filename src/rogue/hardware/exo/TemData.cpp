@@ -42,10 +42,12 @@ rhe::TemData::~TemData() { }
 
 void rhe::TemData::setup_python () {
 
-   bp::class_<rhe::TemData, bp::bases<rhe::Tem>, rhe::TemDataPtr, boost::noncopyable >("TemData",bp::init<>())
+   bp::class_<rhe::TemData, rhe::TemDataPtr, bp::bases<rhe::Tem>, boost::noncopyable >("TemData",bp::init<>())
       .def("create",         &rhe::TemData::create)
       .staticmethod("create")
    ;
+
+   bp::implicitly_convertible<rhe::TemDataPtr, rhe::TemPtr>();
 
 }
 

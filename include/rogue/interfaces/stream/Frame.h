@@ -35,6 +35,7 @@ namespace rogue {
 
          class Buffer;
          class Slave;
+         class FrameIterator;
 
          //! Frame container
          /*
@@ -115,21 +116,103 @@ namespace rogue {
                //! Set error state
                void setError(uint32_t error);
 
-               //! Read count bytes from frame, starting from offset.
+               //! Read count bytes from frame payload, starting from offset.
+               /* 
+                * Frame reads can be from random offsets
+                */
                uint32_t read  ( void *p, uint32_t offset, uint32_t count );
 
-               //! Read count bytes from frame, starting from offset. Python version.
+               //! Read count bytes from frame payload, starting from offset. Python version.
+               /* 
+                * Frame reads can be from random offsets
+                */
                void readPy ( boost::python::object p, uint32_t offset );
 
-               //! Write count bytes to frame, starting at offset
+               //! Write count bytes to frame payload, starting at offset
+               /* 
+                * Frame writes can be at random offsets. Payload size will
+                * be set to highest write offset.
+                */
                uint32_t write ( void *p, uint32_t offset, uint32_t count );
 
-               //! Write count bytes to frame, starting at offset. Python Version
+               //! Write count bytes to frame payload, starting at offset. Python Version
+               /* 
+                * Frame writes can be at random offsets. Payload size will
+                * be set to highest write offset.
+                */
                void writePy ( boost::python::object p, uint32_t offset );
+
+               //! Start an iterative write
+               /*
+                * Pass offset and total size
+                * Returns iterator object.
+                * Use data and size fields in object to control transaction
+                * Call writeNext to following data update.
+                */
+               boost::shared_ptr<rogue::interfaces::stream::FrameIterator> 
+                   startWrite(uint32_t offset, uint32_t size);
+
+               //! Continue an iterative write
+               bool nextWrite(boost::shared_ptr<rogue::interfaces::stream::FrameIterator> iter);
+
+               //! Start an iterative read
+               /*
+                * Pass offset and total size
+                * Returns iterator object.
+                * Use data and size fields in object to control transaction
+                * Call readNext to following data update.
+                */
+                boost::shared_ptr<rogue::interfaces::stream::FrameIterator> 
+                   startRead(uint32_t offset, uint32_t size);
+
+               //! Continue an iterative read
+               bool nextRead(boost::shared_ptr<rogue::interfaces::stream::FrameIterator> iter);
+
+         };
+
+         //! Frame iterator
+         /*
+          * Tracks accesses within a frame while iterating.
+          * data is pointer to raw buffer to act on
+          * size is the transaction size allowed for pointer
+          */
+         class FrameIterator {
+            friend class rogue::interfaces::stream::Frame;
+            protected:
+
+               //! Buffer index
+               uint32_t index_;
+
+               //! Remaining bytes in transaction
+               uint32_t remaining_;
+
+               //! Buffer pointer
+               uint8_t * data_;
+
+               //! Buffer offset
+               uint32_t offset_;
+
+               //! Size of pointer
+               uint32_t size_;
+
+               //! Transaction total
+               uint32_t total_;
+
+            public:
+
+               //! Get pointer
+               uint8_t * data() { return(data_); }
+
+               //! Get size
+               uint32_t size() { return(size_); }
+
+               //! Transaction total
+               uint32_t total() {return(total_);}
          };
 
          // Convienence
          typedef boost::shared_ptr<rogue::interfaces::stream::Frame> FramePtr;
+         typedef boost::shared_ptr<rogue::interfaces::stream::FrameIterator> FrameIteratorPtr;
 
       }
    }

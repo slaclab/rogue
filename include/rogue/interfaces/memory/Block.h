@@ -30,21 +30,13 @@
 #include <rogue/interfaces/memory/Master.h>
 #include <boost/python.hpp>
 #include <boost/thread.hpp>
-#include <boost/enable_shared_from_this.hpp>
 
 namespace rogue {
    namespace interfaces {
       namespace memory {
 
          //! Transaction container
-         class Block : public Master, 
-                       public boost::enable_shared_from_this<rogue::interfaces::memory::Block> {
-
-               //! Class instance counter
-               static uint32_t classIdx_;
-
-               //! Class instance lock
-               static boost::mutex classIdxMtx_;
+         class Block : public Master {
 
                //! Transaction timeout
                uint32_t timeout_;
@@ -57,9 +49,6 @@ namespace rogue {
 
                //! Pointer to data
                uint8_t * data_;
-
-               //! Index
-               uint32_t index_;
 
                //! Error state of last transaction
                /*
@@ -97,8 +86,8 @@ namespace rogue {
                //! Destroy a block
                ~Block();
 
-               //! Get the global index
-               uint32_t getIndex();
+               //! Set timeout value
+               void setTimeout(uint32_t timeout);
 
                //! Get the address
                uint64_t getAddress();
@@ -119,32 +108,36 @@ namespace rogue {
                // Transaction Methods
                //////////////////////////////////////
 
-               //! Get pointer to raw data
-               /*
-                * This direct access method is used only by slave sub-classes
-                * to update data during transaction. This access is unlocked and
-                * only occurs when busy is set.
-                */
-               uint8_t * getData();
+               //! Generate background read transaction
+               void backgroundRead();
+               
+               //! Generate blocking read transaction
+               void blockingRead();
+               
+               //! Generate background write transaction
+               void backgroundWrite();
+               
+               //! Generate blocking write transaction
+               void blockingWrite();
+               
+               //! Generate posted write transaction
+               void postedWrite();
 
-               //! Get pointer to raw data, python version
-               /*
-                * This direct access method is used only by slave sub-classes
-                * to update data during transaction. This access is unlocked and
-                * only occurs when busy is set. 
-                */
-               boost::python::object getDataPy();
+               //////////////////////////////////////
+               // Slave Interface Transactions
+               //////////////////////////////////////
 
-               //! Do Transaction
-               /*
-                * Write set to true for write transactions.
-                * posted set to true if transaction is posted for writes
-                * Pass optiona timeout in uSeconds
-                */
-               void doTransaction(bool write, bool posted, uint32_t timeout);
+               //! Post a transaction, called locally, forwarded to slave
+               void reqTransaction(bool write, bool posted);
 
                //! Transaction complete, set by slave
                void doneTransaction(uint32_t error);
+
+               //! Set to master from slave, called by slave
+               void setData(void *data, uint32_t offset, uint32_t size);
+
+               //! Get from master to slave, called by slave
+               void getData(void *data, uint32_t offset, uint32_t size);
 
                //////////////////////////////////////
                // Access Methods

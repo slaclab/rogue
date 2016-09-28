@@ -56,7 +56,6 @@ ris::Buffer::Buffer(ris::SlavePtr source, void *data, uint32_t meta, uint32_t ra
  */
 ris::Buffer::~Buffer() {
    source_->retBuffer(data_,meta_,rawSize_);
-   data_ = NULL;
 }
 
 //! Get raw data pointer
@@ -66,8 +65,7 @@ uint8_t * ris::Buffer::getRawData() {
 
 //! Get payload data pointer
 uint8_t * ris::Buffer::getPayloadData() {
-   if ( data_ == NULL ) return(NULL);
-   else return(data_ + headRoom_);
+   return(data_ + headRoom_);
 }
 
 //! Get meta data
@@ -116,7 +114,7 @@ uint32_t ris::Buffer::getFlags() {
    return(flags_);
 }
 
-//! Set error state
+//! Set flags
 void ris::Buffer::setFlags(uint32_t flags) {
    error_ = flags;
 }
@@ -139,48 +137,6 @@ void ris::Buffer::setSize(uint32_t size) {
 //! Set head room
 void ris::Buffer::setHeadRoom(uint32_t offset) {
    headRoom_ = offset;
-}
-
-//! Read up to count bytes from buffer, starting from offset.
-uint32_t ris::Buffer::read  ( void *p, uint32_t offset, uint32_t count ) {
-   uint32_t rcnt;
-
-   // Empty buffer
-   if ( data_ == NULL ) return(0);
-
-   // No data in buffer
-   if ( count_ < headRoom_ ) return(0);
-
-   // Read offset is larger than payload
-   if ( offset >= (count_ - headRoom_) ) return(0);
-
-   // Adjust read count for payload size and offset
-   if ( count > ((count_ - headRoom_) - offset) ) 
-      rcnt = ((count_ - headRoom_) - offset);
-   else rcnt = count;
-
-   // Copy data
-   memcpy(p,data_+headRoom_+offset,rcnt);
-   return(rcnt);
-}
-
-//! Write count bytes to frame, starting at offset
-uint32_t ris::Buffer::write ( void *p, uint32_t offset, uint32_t count ) {
-   uint32_t wcnt;
-
-   // Empty buffer
-   if ( data_ == NULL ) return(0);
-
-   if ( offset >= (rawSize_ - headRoom_) ) return(0);
-
-   if ( count > ((rawSize_ - headRoom_) - offset)) 
-      wcnt = ((rawSize_ - headRoom_) - offset);
-   else wcnt = count;
-
-   // Set payload size to last write
-   count_ = offset + headRoom_ + wcnt;
-   memcpy(data_+headRoom_+offset,p,wcnt);
-   return(wcnt);
 }
 
 void ris::Buffer::setup_python() {
