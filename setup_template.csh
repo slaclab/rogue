@@ -1,6 +1,5 @@
 
-# Python search path, uncomment to compile python script support
-setenv PYTHONPATH ${PWD}/build
+setenv PYTHONPATH ${PWD}/build:${PWD}/python
 setenv PYTHON_CFG python2.6-config
 
 # Setup library path
