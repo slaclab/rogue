@@ -1,8 +1,8 @@
 /**
  *-----------------------------------------------------------------------------
- * Title      : Python Module For Stream Interface
+ * Title      : Python Module
  * ----------------------------------------------------------------------------
- * File       : module.cpp
+ * File       : module.h
  * Author     : Ryan Herbst, rherbst@slac.stanford.edu
  * Created    : 2016-08-08
  * Last update: 2016-08-08
@@ -19,32 +19,16 @@
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
+#ifndef __ROGUE_UTILITIES_FILEIO_H__
+#define __ROGUE_UTILITIES_FILEIO_H__
 
-#include <rogue/utilities/module.h>
-#include <rogue/utilities/Prbs.h>
-#include <rogue/utilities/PeekPoke.h>
-#include <rogue/utilities/fileio/module.h>
-#include <rogue/interfaces/stream/Slave.h>
-#include <rogue/interfaces/stream/Master.h>
-#include <boost/python.hpp>
-
-namespace bp  = boost::python;
-namespace ru  = rogue::utilities;
-namespace ris = rogue::interfaces::stream;
-
-void ru::setup_module() {
-
-   // map the IO namespace to a sub-module
-   bp::object module(bp::handle<>(bp::borrowed(PyImport_AddModule("rogue.utilities"))));
-
-   // make "from mypackage import class1" work
-   bp::scope().attr("utilities") = module;
-
-   // set the current scope to the new sub-module
-   bp::scope io_scope = module;
-
-   ru::Prbs::setup_python();
-   ru::PeekPoke::setup_python();
-   ru::fileio::setup_module();
+namespace rogue {
+   namespace utilities {
+      namespace fileio {
+         void setup_module();
+      }
+   }
 }
+
+#endif
 

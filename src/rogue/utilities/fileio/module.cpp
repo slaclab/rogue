@@ -20,31 +20,28 @@
  * ----------------------------------------------------------------------------
 **/
 
-#include <rogue/utilities/module.h>
-#include <rogue/utilities/Prbs.h>
-#include <rogue/utilities/PeekPoke.h>
+#include <rogue/utilities/fileio/StreamReader.h>
+#include <rogue/utilities/fileio/StreamWriter.h>
+#include <rogue/utilities/fileio/StreamWriterSlave.h>
 #include <rogue/utilities/fileio/module.h>
-#include <rogue/interfaces/stream/Slave.h>
-#include <rogue/interfaces/stream/Master.h>
 #include <boost/python.hpp>
 
 namespace bp  = boost::python;
-namespace ru  = rogue::utilities;
-namespace ris = rogue::interfaces::stream;
+namespace ruf = rogue::utilities::fileio;
 
-void ru::setup_module() {
+void ruf::setup_module() {
 
    // map the IO namespace to a sub-module
-   bp::object module(bp::handle<>(bp::borrowed(PyImport_AddModule("rogue.utilities"))));
+   bp::object module(bp::handle<>(bp::borrowed(PyImport_AddModule("rogue.utilities.fileio"))));
 
    // make "from mypackage import class1" work
-   bp::scope().attr("utilities") = module;
+   bp::scope().attr("fileio") = module;
 
    // set the current scope to the new sub-module
    bp::scope io_scope = module;
 
-   ru::Prbs::setup_python();
-   ru::PeekPoke::setup_python();
-   ru::fileio::setup_module();
+   ruf::StreamReader::setup_python();
+   ruf::StreamWriter::setup_python();
+   ruf::StreamWriterSlave::setup_python();
 }
 

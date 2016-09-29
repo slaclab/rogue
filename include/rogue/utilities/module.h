@@ -19,8 +19,8 @@
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
-#ifndef __ROGUE_UTILITIES_MODULE_H__
-#define __ROGUE_UTILITIES_MODULE_H__
+#ifndef __ROGUE_UTILITIES_FILEIO_MODULE_H__
+#define __ROGUE_UTILITIES_FILEIO_MODULE_H__
 
 namespace rogue {
    namespace utilities {
