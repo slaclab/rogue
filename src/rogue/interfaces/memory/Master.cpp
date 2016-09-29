@@ -33,19 +33,20 @@ uint32_t rim::Master::classIdx_ = 0;
 boost::mutex rim::Master::classIdxMtx_;
 
 //! Create a master container
-rim::MasterPtr rim::Master::create () {
-   rim::MasterPtr m = boost::make_shared<rim::Master>();
+rim::MasterPtr rim::Master::create (uint64_t address) {
+   rim::MasterPtr m = boost::make_shared<rim::Master>(address);
    return(m);
 }
 
 //! Create object
-rim::Master::Master() { 
+rim::Master::Master(uint64_t address) { 
    classIdxMtx_.lock();
    if ( classIdx_ == 0 ) classIdx_ = 1;
    index_ = classIdx_;
    classIdx_++;
    classIdxMtx_.unlock();
    slave_ = rim::Slave::create();
+   address_  = address;
 } 
 
 //! Destroy object
@@ -54,6 +55,26 @@ rim::Master::~Master() { }
 //! Get index
 uint32_t rim::Master::getIndex() {
    return(index_);
+}
+
+//! Get address
+uint64_t rim::Master::getAddress() {
+   return(address_);
+}
+
+//! Set Address
+void rim::Master::setAddress(uint64_t address) {
+   address_ = address;
+}
+
+//! Adjust address
+/*
+ * address_ &= mask
+ * address_ |= baseAddr
+ */
+void rim::Master::adjAddress(uint64_t mask, uint64_t baseAddr) {
+   address_ &= mask;
+   address_ |= baseAddr;
 }
 
 //! Set slave, used for buffer request forwarding
@@ -66,6 +87,12 @@ void rim::Master::setSlave ( rim::SlavePtr slave ) {
 rim::SlavePtr rim::Master::getSlave () {
    boost::lock_guard<boost::mutex> lock(slaveMtx_);
    return(slave_);
+}
+
+//! Query the minimum access size in bytes for interface
+uint32_t rim::Master::reqMinAccess() {
+   boost::lock_guard<boost::mutex> lock(slaveMtx_);
+   return(slave_->doMinAccess());
 }
 
 //! Post a transaction, called locally, forwarded to slave
@@ -86,8 +113,11 @@ void rim::Master::getData(void *data, uint32_t offset, uint32_t size) { }
 void rim::Master::setup_python() {
 
    // slave can only exist as sub-class in python
-   bp::class_<rim::Master, rim::MasterPtr, boost::noncopyable>("Master",bp::init<>())
+   bp::class_<rim::Master, rim::MasterPtr, boost::noncopyable>("Master",bp::init<uint64_t>())
       .def("setSlave",       &rim::Master::setSlave)
+      .def("getAddress",     &rim::Master::getAddress)
+      .def("setAddress",     &rim::Master::setAddress)
+      .def("adjAddress",     &rim::Master::adjAddress)
    ;
 
 }

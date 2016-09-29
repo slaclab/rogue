@@ -41,9 +41,6 @@ namespace rogue {
                //! Transaction timeout
                uint32_t timeout_;
 
-               //! Address of memory block
-               uint64_t address_;
-
                //! Size of memory block
                uint32_t size_;
 
@@ -88,12 +85,6 @@ namespace rogue {
 
                //! Set timeout value
                void setTimeout(uint32_t timeout);
-
-               //! Get the address
-               uint64_t getAddress();
-
-               //! Adjust the address
-               void adjAddress(uint64_t mask, uint64_t addr);
 
                //! Get the size
                uint32_t getSize();

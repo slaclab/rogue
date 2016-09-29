@@ -55,6 +55,11 @@ rps::SrpV0::SrpV0() : ris::Master(), ris::Slave(), rim::Slave() { }
 //! Deconstructor
 rps::SrpV0::~SrpV0() {}
 
+//! Return min access size to requesting master
+uint32_t rps::SrpV0::doMinAccess() {
+   return(4);
+}
+
 //! Post a transaction
 void rps::SrpV0::doTransaction(rim::MasterPtr master, uint64_t address, uint32_t size, bool write, bool posted) {
    ris::FrameIteratorPtr iter;

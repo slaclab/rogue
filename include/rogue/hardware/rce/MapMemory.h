@@ -70,6 +70,9 @@ namespace rogue {
                //! Add a memory space
                void addMap(uint32_t address, uint32_t size);
 
+               //! Return min access size to requesting master
+               uint32_t doMinAccess();
+
                //! Post a transaction
                void doTransaction(uint32_t index, uint64_t address, uint32_t size, bool write, bool posted);
          };

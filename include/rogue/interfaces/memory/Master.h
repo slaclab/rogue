@@ -53,8 +53,14 @@ namespace rogue {
 
             protected:
 
+               //! Address
+               uint64_t address_;
+
                //! Get slave
                boost::shared_ptr<rogue::interfaces::memory::Slave> getSlave();
+
+               //! Query the minimum access size in bytes for interface
+               uint32_t reqMinAccess();
 
                //! Post a transaction, called locally, forwarded to slave
                void reqTransaction(uint64_t address, uint32_t size, bool write, bool posted);
@@ -62,7 +68,7 @@ namespace rogue {
             public:
 
                //! Create a master container
-               static boost::shared_ptr<rogue::interfaces::memory::Master> create ();
+               static boost::shared_ptr<rogue::interfaces::memory::Master> create (uint64_t address);
 
                //! Setup class in python
                static void setup_python();
@@ -70,8 +76,21 @@ namespace rogue {
                //! Get index
                uint32_t getIndex();
 
+               //! Get address
+               uint64_t getAddress();
+
+               //! Set address
+               void setAddress(uint64_t address);
+
+               //! Adjust address
+               /*
+                * address_ &= mask
+                * address_ |= baseAddr
+                */
+               void adjAddress(uint64_t mask, uint64_t baseAddr);
+
                //! Create object
-               Master();
+               Master(uint64_t address);
 
                //! Destroy object
                ~Master();

@@ -88,6 +88,11 @@ uint8_t * rhr::MapMemory::findSpace (uint32_t base, uint32_t size) {
    return(NULL);
 }
 
+//! Return min access size to requesting master
+uint32_t rhr::MapMemory::doMinAccess() {
+   return(4);
+}
+
 //! Post a transaction
 void rhr::MapMemory::doTransaction(uint32_t index, uint64_t address, uint32_t size, bool write, bool posted) {
    uint8_t * ptr;

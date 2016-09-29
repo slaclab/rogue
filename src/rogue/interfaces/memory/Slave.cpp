@@ -61,6 +61,11 @@ void rim::Slave::addMaster(rim::MasterPtr master) {
    masterMap_[master->getIndex()] = master;
 }
 
+//! Return min access size to requesting master
+uint32_t rim::Slave::doMinAccess() {
+   return(4);
+}
+
 //! Post a transaction
 void rim::Slave::doTransaction(rim::MasterPtr master, uint64_t address, uint32_t size, bool write, bool posted) {
    master->doneTransaction(0xFFFFFFFF);

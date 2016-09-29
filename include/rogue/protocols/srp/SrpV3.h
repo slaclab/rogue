@@ -54,9 +54,12 @@ namespace rogue {
                //! Deconstructor
                ~SrpV3();
 
+               //! Return min access size to requesting master
+               uint32_t doMinAccess();
+
                //! Post a transaction. Master will call this method with the access attributes.
-               virtual void doTransaction(boost::shared_ptr<rogue::interfaces::memory::Master> master,
-                                          uint64_t address, uint32_t size, bool write, bool posted);
+               void doTransaction(boost::shared_ptr<rogue::interfaces::memory::Master> master,
+                                  uint64_t address, uint32_t size, bool write, bool posted);
 
                //! Accept a frame from master
                void acceptFrame ( boost::shared_ptr<rogue::interfaces::stream::Frame> frame );

@@ -54,7 +54,7 @@ ru::PeekPoke::~PeekPoke() {}
 
 //! Poke. Write to an address
 void ru::PeekPoke::poke ( uint64_t address, uint32_t value ) {
-   adjAddress(0,address);
+   setAddress(address);
 
    if ( getSize() == 1 ) setUInt8(0,value);
    else if ( getSize() == 2 ) setUInt16(0,value);
@@ -67,7 +67,7 @@ void ru::PeekPoke::poke ( uint64_t address, uint32_t value ) {
 uint32_t ru::PeekPoke::peek ( uint64_t address ) {
    uint32_t ret;
 
-   adjAddress(0,address);
+   setAddress(address);
 
    ret = 0xFFFFFFFF;
 

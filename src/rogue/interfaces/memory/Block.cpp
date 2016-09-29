@@ -40,9 +40,8 @@ rim::BlockPtr rim::Block::create (uint64_t address, uint32_t size ) {
 }
 
 //! Create an block
-rim::Block::Block(uint64_t address, uint32_t size ) : Master () {
+rim::Block::Block(uint64_t address, uint32_t size ) : Master (address) {
    timeout_ = 1000000; // One second
-   address_ = address;
    size_    = size;
    error_   = 0;
    stale_   = 0;
@@ -64,19 +63,6 @@ void rim::Block::setTimeout(uint32_t timeout) {
    boost::unique_lock<boost::mutex> lck = lockAndCheck(false);
    if ( timeout == 0 ) timeout_ = 1;
    else timeout_ = timeout;
-}
-
-//! Get the address
-uint64_t rim::Block::getAddress() {
-   boost::lock_guard<boost::mutex> lock(mtx_);
-   return(address_);
-}
-
-//! Adjust the address
-void rim::Block::adjAddress(uint64_t mask, uint64_t addr) {
-   boost::unique_lock<boost::mutex> lck = lockAndCheck(false);
-   address_ &= mask;
-   address_ |= addr;
 }
 
 //! Get the size
@@ -381,8 +367,6 @@ void rim::Block::setup_python() {
       .def("create",          &rim::Block::create)
       .staticmethod("create")
       .def("setTimeout",      &rim::Block::setTimeout)
-      .def("getAddress",      &rim::Block::getAddress)
-      .def("adjAddress",      &rim::Block::adjAddress)
       .def("getSize",         &rim::Block::getSize)
       .def("getError",        &rim::Block::getError)
       .def("getStale",        &rim::Block::getStale)
