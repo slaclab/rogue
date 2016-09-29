@@ -115,6 +115,8 @@ void rim::Master::setup_python() {
    // slave can only exist as sub-class in python
    bp::class_<rim::Master, rim::MasterPtr, boost::noncopyable>("Master",bp::init<uint64_t>())
       .def("setSlave",       &rim::Master::setSlave)
+      .def("getSlave",       &rim::Master::getSlave)
+      .def("reqMinAccess",   &rim::Master::reqMinAccess)
       .def("getAddress",     &rim::Master::getAddress)
       .def("setAddress",     &rim::Master::setAddress)
       .def("adjAddress",     &rim::Master::adjAddress)

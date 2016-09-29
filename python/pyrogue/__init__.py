@@ -26,7 +26,7 @@ class Command(object):
 class Device(rogue.interfaces.memory.Master):
       
     def __init__(self, name ="", description = "", size = 0):
-        rouge.interfaces.memory.Master.__init__(self,0) # Base address of zero 
+        rogue.interfaces.memory.Master.__init__(self,0) # Base address of zero 
         self.__description = description
         self.__name     = name
         self.__size     = size
@@ -52,15 +52,15 @@ class Device(rogue.interfaces.memory.Master):
 
         # Block not found
         if found == False:
-            minSize   = self.getMinSize()
+            minSize   = self.reqMinAccess()
             sizeBytes = minSize
-            totBits   = (sizeBits + lsbit) * nelms
+            totBits   = (field.sizeBits + field.lsbit) * field.nelms
 
             # Required size is larger than min block size
             # Compute new size alinged to min size
             if totBits > (sizeBytes * 8): 
-                sizeBytes = math.ceil(totBits / (minSize * 8.0)) * 8
-
+                sizeBytes = int(math.ceil(totBits / (minSize * 8.0)) * minSize)
+            
             block = rogue.interfaces.memory.Block((self.getAddress() & self.__mask) | field.offset,sizeBytes)
             block.setSlave(self.getSlave())
             field.block = block
@@ -75,7 +75,7 @@ class Device(rogue.interfaces.memory.Master):
             return None  # Exception
 
         # Determine Accessor
-        if nelms == 0:
+        if fld.nelms == 1:
             if fld.sizeBits == 8 and (fld.lsbit % 8) == 0:
                 fld.block.setUInt8(fld.lsbit/8,value)
             elif fld.sizeBits == 16 and (fld.lsbit % 16) == 0:
@@ -97,7 +97,7 @@ class Device(rogue.interfaces.memory.Master):
             return None  # Exception
 
         # Determine Accessor
-        if nelms == 0:
+        if fld.nelms == 1:
             if fld.sizeBits == 8 and (fld.lsbit % 8) == 0:
                 return fld.block.getUInt8(fld.lsbit/8)
             elif fld.sizeBits == 16 and (fld.lsbit % 16) == 0:
@@ -115,10 +115,10 @@ class Device(rogue.interfaces.memory.Master):
 
     def setAndWrite(self,field,value):
         self.set(field,value)
-        self.__fields[field].blockingWrite()
+        self.__fields[field].block.blockingWrite()
 
     def readAndGet(self,field):
-        self.__fields[field].blockingRead()
+        self.__fields[field].block.blockingRead()
         return self.get(field)
 
     def writeStale(self):
@@ -140,7 +140,7 @@ class Device(rogue.interfaces.memory.Master):
 
     def readAll(self):
         for block in self.__blocks:
-            block.backgroundWrite()
+            block.backgroundRead()
 
         for block in self.__blocks:
             if block.getError():
