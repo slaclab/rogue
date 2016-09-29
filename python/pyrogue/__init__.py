@@ -5,7 +5,9 @@ import math
 
 class IntField(object):
 
-    def __init__(self):
+    def __init__(self,branch):
+
+        # Default YAML Fields
         self.offset      = 0
         self.name        = ""
         self.mode        = "RW"
@@ -13,9 +15,13 @@ class IntField(object):
         self.sizeBits    = 32
         self.nelms       = 1
         self.description = ""
-        self.block       = None
-        self.conversion  = None
-        self.parameters  = []
+
+        # Parse YAML
+        for br in branch:
+           setattr(self,br,branch[br])
+
+        # Tracking fields
+        self.block = None
 
 class Command(object):
     def __init__(self):
@@ -25,49 +31,67 @@ class Command(object):
 
 class Device(rogue.interfaces.memory.Master):
       
-    def __init__(self, name ="", description = "", size = 0):
+    #def __init__(self, name ="", description = "", size = 0):
+    def __init__(self,branch):
         rogue.interfaces.memory.Master.__init__(self,0) # Base address of zero 
-        self.__description = description
-        self.__name     = name
-        self.__size     = size
-        self.__mask     = size - 1
+
+        # Tracking Fields
         self.__blocks   = []
         self.__fields   = {}
         self.__commands = {}
 
-    def addAt(self,):
-        pass
+        # Default Yaml Fields
+        self.description = ""
+        self.offset   = 0
+        self.name     = ""
+        self.size     = 0
 
-    def addIntField(self,field):
+        # Parse YAML Branch
+        for br in branch:
 
-        # Insert into dictionary so we can map by name
-        self.__fields[field.name] = field
+            # Process Each IntField Record
+            if br == 'IntField':
+                for f in branch[br]:
+                    field = IntField(f)
+                    self.__fields[field.name] = field
 
-        # First find matching block for address
-        found = False
-        for block in self.__blocks:
-            if (block.getAddress() & self.__mask) == field.offset:
-                field.block = block
-                found = True
+            # Otherwise set local variable
+            setattr(self,br,branch[br])
 
-        # Block not found
-        if found == False:
-            minSize   = self.reqMinAccess()
-            sizeBytes = minSize
-            totBits   = (field.sizeBits + field.lsbit) * field.nelms
+        # Derived fields
+        self.__mask = self.size - 1
 
-            # Required size is larger than min block size
-            # Compute new size alinged to min size
-            if totBits > (sizeBytes * 8): 
-                sizeBytes = int(math.ceil(totBits / (minSize * 8.0)) * minSize)
+        # Loop through and create blocks
+        for fld in self.__fields:
+            field = self.__fields[fld] 
+
+            # First find matching block for address
+            found = False
+            for block in self.__blocks:
+                if (block.getAddress() & self.__mask) == field.offset:
+                    field.block = block
+                    found = True
+    
+            # Block not found
+            if found == False:
+                minSize   = self.reqMinAccess()
+                sizeBytes = minSize
+                totBits   = (field.sizeBits + field.lsbit) * field.nelms
+    
+                # Required size is larger than min block size
+                # Compute new size alinged to min size
+                if totBits > (sizeBytes * 8): 
+                    sizeBytes = int(math.ceil(totBits / (minSize * 8.0)) * minSize)
             
-            block = rogue.interfaces.memory.Block((self.getAddress() & self.__mask) | field.offset,sizeBytes)
-            block.setSlave(self.getSlave())
-            field.block = block
-            self.__blocks.append(block)
+                block = rogue.interfaces.memory.Block((self.getAddress() & self.__mask) | field.offset,sizeBytes)
+                block.setSlave(self.getSlave())
+                field.block = block
+                self.__blocks.append(block)
 
-    def addCommand(self, command):
-        self.__commands[command.name] = command
+    def addAt(self,prev):
+        self.setSlave(prev)
+        for block in self.__blocks:
+           block.setSlave(prev)
 
     def set(self,field,value):
         fld = self.__fields[field]
