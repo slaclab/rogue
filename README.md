@@ -33,7 +33,6 @@ Determine if setting GIL is ok when master and slave are both in python.
 Add the following:
 
 protocols/rssi
-protocols/map
 protocols/packetizer
 protocols/udp
 
