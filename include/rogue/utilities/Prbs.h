@@ -154,9 +154,6 @@ namespace rogue {
             //! Reset counters
             void resetCount();
 
-            //! Dump state
-            void dump();
-
             //! Enable messages
             void enMessages(bool state);
 

@@ -11,8 +11,9 @@ class AxiVersion(pyrogue.Device):
     # different in more complex bus structures. They will also be different for the top most node.
     # The setMemBase call can be used to update the memBase for this Device. All sub-devices and local
     # blocks will be updated.
-    def __init__(self, parent, memBase=None, offset=0):
-        pyrogue.Device.__init__(self, parent=parent, name='AxiVersion', description='AXI-Lite Version Module', 
+    def __init__(self, parent, name, index=None, memBase=None, offset=0):
+
+        pyrogue.Device.__init__(self, parent=parent, name=name, description='AXI-Lite Version Module', 
                                 size=0x1000, memBase=memBase, offset=offset)
 
         #############################################
@@ -118,19 +119,19 @@ class AxiVersion(pyrogue.Device):
         # A command has an associated function. The function can be a series of
         # python commands in a string. Function calls are executed in the command scope
         # the passed arg is available as 'arg'. Use self._parent to get to device scope.
-        pyrogue.Command(parent=self, name="MasterReset",description="Master Reset",
-           function="self._parent.MasterReset.setAndWrite(1)")
+        pyrogue.Command(parent=self, name='MasterReset',description='Master Reset',
+           function='self._parent.MasterReset.setAndWrite(1)')
        
         # A command can also be a call to a local function with local scope.
         # The command object and the arg are passed
-        pyrogue.Command(parent=self, name="FpgaReload",description="Reload FPGA",
+        pyrogue.Command(parent=self, name='FpgaReload',description='Reload FPGA',
            function=self.fpgaReload)
 
-        pyrogue.Command(parent=self, name="CounterReset",description="Counter Reset",
-           function="self._parent.Counter.setAndWrite(1)")
+        pyrogue.Command(parent=self, name='CounterReset',description='Counter Reset',
+           function='self._parent.Counter.setAndWrite(1)')
 
         # Example printing the arg and showing a larger block. The indentation will be adjusted.
-        pyrogue.Command(parent=self, name="TestCommand",description="Test Command",
+        pyrogue.Command(parent=self, name='TestCommand',description='Test Command',
            function="""\
                     print("Someone executed the %s command" % (self.name))
                     print("The passed arg was %s" % (arg))

@@ -149,11 +149,14 @@ class Variable(Node):
                         self._setFunction(self,value)
                     else:
                         exec(textwrap.dedent(self._setFunction))
-        
-                elif self.base == 'string':
-                    self._block.setString(value)
+
+                elif self._block:        
+                    if self.base == 'string':
+                        self._block.setString(value)
+                    else:
+                        self._block.setUInt(self.bitOffset,self.bitSize,value)
                 else:
-                    self._block.setUInt(self.bitOffset,self.bitSize,value)
+                    raise VariableError('No valid function for variable')
             else:
                 raise VariableError('Attempt to set variable with mode %s' % (mode))
                 
@@ -167,11 +170,15 @@ class Variable(Node):
                         value = None
                         exec(textwrap.dedent(self._getFunction))
                         return value
-        
-                elif self.base == 'string':
-                    return(self._block.getString())
+       
+                elif self._block:        
+                    if self.base == 'string':
+                        return(self._block.getString())
+                    else:
+                        return(self._block.getUInt(self.bitOffset,self.bitSize))
                 else:
-                    return(self._block.getUInt(self.bitOffset,self.bitSize))
+                    raise VariableError('No valid function for variable')
+
             else:
                 raise VariableError('Attempt to get variable with mode %s' % (mode))
 
@@ -279,7 +286,7 @@ class Device(Node,rogue.interfaces.memory.Master):
         # Adjust position in tree
         if memBase:
             self.setMemBase(memBase,offset)
-        else:
+        elif isinstance(self._parent,rogue.interfaces.memory.Master):
             self._inheritFrom(self._parent)
 
     def setMemBase(self,memBase,offset):
@@ -323,7 +330,27 @@ class Device(Node,rogue.interfaces.memory.Master):
                 if block.mode == 'RO' or block.mode == 'RW':
                     block.checkError()
                     block._genVariableUpdates()
-            
+
+    def readPoll(self):
+        """Read all with error check"""
+        if self.enabled:
+
+            # Generate transactions for local blocks
+            for block in self._blocks:
+                if block.pollEn and (block.mode == 'RO' or block.mode == 'RW'):
+                    block.backgroundRead()
+
+            # Generate transactions for sub devices
+            for key,dev in self.__dict__.iteritems():
+                if isinstance(dev,Device):
+                    dev.readPoll()
+
+            # Check status of local blocks
+            for block in self._blocks:
+                if block.pollEn and (block.mode == 'RO' or block.mode == 'RW'):
+                    block.checkError()
+                    block._genVariableUpdates()
+
     def writeAll(self):
         """Write all with error check"""
         if self.enabled:
