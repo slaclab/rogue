@@ -26,8 +26,11 @@ namespace bp = boost::python;
 
 PyObject * re::timeoutExceptionObj = 0;
 
-re::TimeoutException::TimeoutException(std::string src,uint32_t time) {
-   sprintf(text_,"%s: Timeout after %i microseconds",src.c_str(),time);
+re::TimeoutException::TimeoutException(std::string src,uint32_t time, uint64_t address) {
+   if ( address != 0 ) 
+      sprintf(text_,"%s: Timeout after %i microseconds. Address=%lx",src.c_str(),time,address);
+   else
+      sprintf(text_,"%s: Timeout after %i microseconds",src.c_str(),time);
 }
 
 char const * re::TimeoutException::what() const throw() {
@@ -35,7 +38,7 @@ char const * re::TimeoutException::what() const throw() {
 }
 
 void re::TimeoutException::setup_python() {
-   bp::class_<re::TimeoutException>("TimeoutException",bp::init<std::string,uint32_t>());
+   bp::class_<re::TimeoutException>("TimeoutException",bp::init<std::string,uint32_t,uint64_t>());
 
    PyObject * typeObj = PyErr_NewException((char *)"rogue.exceptions.TimeoutException", PyExc_Exception, 0);
    bp::scope().attr("TimeoutException") = bp::handle<>(bp::borrowed(typeObj));

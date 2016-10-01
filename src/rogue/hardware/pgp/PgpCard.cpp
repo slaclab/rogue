@@ -181,7 +181,7 @@ ris::FramePtr rhp::PgpCard::acceptReq ( uint32_t size, bool zeroCopyEn ) {
             tout.tv_usec=timeout_ % 1000000;
 
             if ( (res = select(fd_+1,NULL,&fds,NULL,&tout)) == 0 ) 
-               throw(re::TimeoutException("PgpCard::acceptReq",timeout_));
+               throw(re::TimeoutException("PgpCard::acceptReq",timeout_,0));
             
             // Attempt to get index.
             // return of less than 0 is a failure to get a buffer
@@ -250,7 +250,7 @@ void rhp::PgpCard::acceptFrame ( ris::FramePtr frame ) {
             tout.tv_usec=timeout_ % 1000000;
 
             if ( (res = select(fd_+1,NULL,&fds,NULL,&tout)) == 0 ) 
-               throw(re::TimeoutException("PgpCard::acceptFrame",timeout_));
+               throw(re::TimeoutException("PgpCard::acceptFrame",timeout_,0));
 
             // Write with buffer copy
             res = pgpWrite(fd_, buff->getRawData(), buff->getCount(), lane_, vc_, cont);

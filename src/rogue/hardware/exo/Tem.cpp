@@ -118,7 +118,7 @@ void rhe::Tem::acceptFrame ( ris::FramePtr frame ) {
       tout.tv_usec=timeout_ % 1000000;
 
       if ( (res = select(fd_+1,NULL,&fds,NULL,&tout)) == 0 ) 
-         throw(re::TimeoutException("Tem::acceptFrame",timeout_));
+         throw(re::TimeoutException("Tem::acceptFrame",timeout_,0));
 
       // Write
       res = temWriteCmd(fd_, buff->getRawData(), buff->getCount());

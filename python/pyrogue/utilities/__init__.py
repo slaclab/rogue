@@ -1,5 +1,23 @@
 #!/usr/bin/env python
-
+#-----------------------------------------------------------------------------
+# Title      : PyRogue Utilities base module
+#-----------------------------------------------------------------------------
+# File       : pyrogue/utilities/__init__.py
+# Author     : Ryan Herbst, rherbst@slac.stanford.edu
+# Created    : 2016-09-29
+# Last update: 2016-09-29
+#-----------------------------------------------------------------------------
+# Description:
+# Module containing the utilities module class and methods
+#-----------------------------------------------------------------------------
+# This file is part of the rogue software platform. It is subject to 
+# the license terms in the LICENSE.txt file found in the top-level directory 
+# of this distribution and at: 
+#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
+# No part of the rogue software platform, including this file, may be 
+# copied, modified, propagated, or distributed except according to the terms 
+# contained in the LICENSE.txt file.
+#-----------------------------------------------------------------------------
 import rogue.utilities
 import pyrogue
 
@@ -12,7 +30,7 @@ class PrbsDevice(pyrogue.Device):
                                 size=0, memBase=None, offset=0)
 
         self._prbs       = rogue.utilities.Prbs()
-        self._enable     = False
+        self._txEnable   = False
         self._size       = 1000
         self._enMessages = False
 
@@ -24,14 +42,14 @@ class PrbsDevice(pyrogue.Device):
         pyrogue.Variable(parent=self, name='txEnable', description='PRBS Run Enable',
                          bitSize=1, bitOffset=0, base='bool', mode='RW',
                          setFunction="""\
-                                     if self._parent._enable != int(value):
+                                     if self._parent._txEnable != int(value):
                                          if int(value) == 0:
                                              self._parent._prbs.disable()
                                          else:
                                              self._parent._prbs.enable(self._parent._size)
-                                         self._parent._enable = int(value)
+                                         self._parent._txEnable = int(value)
                                      """,
-                         getFunction='value = self._parent._enable')
+                         getFunction='value = self._parent._txEnable')
 
         pyrogue.Command(parent=self, name='genFrame',description='Generate a single frame',
                         function='self._parent._prbs.genFrame(self._parent._size)')
@@ -48,7 +66,7 @@ class PrbsDevice(pyrogue.Device):
                          bitSize=32, bitOffset=0, base='uint', mode='RO',
                          setFunction=None, getFunction='value = self._parent._prbs.getRxBytes()')
 
-        pyrogue.Variable(parent=self, name='rxErrors', description='RX Error Count',
+        pyrogue.Variable(parent=self, name='txErrors', description='TX Error Count',
                          bitSize=32, bitOffset=0, base='uint', mode='RO',
                          setFunction=None, getFunction='value = self._parent._prbs.getTxErrors()')
 
@@ -66,8 +84,8 @@ class PrbsDevice(pyrogue.Device):
         pyrogue.Variable(parent=self, name='enMessages', description='PRBS Run Enable',
                          bitSize=1, bitOffset=0, base='bool', mode='RW',
                          setFunction="""\
-                                         self._parent._enable = int(value)
-                                         self._parent._prbs.enMessages(self._parent._enable)
+                                         self._parent._enMessages = int(value)
+                                         self._parent._prbs.enMessages(self._parent._enMessages)
                                      """,
                          getFunction='value = self._parent._enMessages')
 

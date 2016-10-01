@@ -1,11 +1,28 @@
 #!/usr/bin/env python
-
+#-----------------------------------------------------------------------------
+# Title      : File read and write test
+#-----------------------------------------------------------------------------
+# File       : exoTest.py
+# Author     : Ryan Herbst, rherbst@slac.stanford.edu
+# Created    : 2016-09-29
+# Last update: 2016-09-29
+#-----------------------------------------------------------------------------
+# Description:
+# File read and write test
+#-----------------------------------------------------------------------------
+# This file is part of the rogue software platform. It is subject to 
+# the license terms in the LICENSE.txt file found in the top-level directory 
+# of this distribution and at: 
+#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
+# No part of the rogue software platform, including this file, may be 
+# copied, modified, propagated, or distributed except according to the terms 
+# contained in the LICENSE.txt file.
+#-----------------------------------------------------------------------------
 import rogue.hardware.pgp
 import rogue.utilities 
 import rogue.interfaces.stream
 import pyrogue
 import time
-
 
 fwr = rogue.utilities.fileio.StreamWriter()
 fwr.setBufferSize(100004)

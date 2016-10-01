@@ -1,5 +1,23 @@
 #!/usr/bin/env python
-
+#-----------------------------------------------------------------------------
+# Title      : PyRogue AXI Module
+#-----------------------------------------------------------------------------
+# File       : pyrogue/devices/axi.py
+# Author     : Ryan Herbst, rherbst@slac.stanford.edu
+# Created    : 2016-09-29
+# Last update: 2016-09-29
+#-----------------------------------------------------------------------------
+# Description:
+# PyRogue AXI Module
+#-----------------------------------------------------------------------------
+# This file is part of the rogue software platform. It is subject to 
+# the license terms in the LICENSE.txt file found in the top-level directory 
+# of this distribution and at: 
+#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
+# No part of the rogue software platform, including this file, may be 
+# copied, modified, propagated, or distributed except according to the terms 
+# contained in the LICENSE.txt file.
+#-----------------------------------------------------------------------------
 import pyrogue
 
 class AxiVersion(pyrogue.Device):
@@ -30,7 +48,7 @@ class AxiVersion(pyrogue.Device):
             # otherwise base is used by a higher level interface (GUI, etc) to determine display mode
             # Allowed modes are RO, WO, RW or CMD. Command indicates registers can be written but only
             # when executing commands (not accessed during writeAll and writeStale calls
-            pyrogue.Variable(parent=self, name='FpgaVersion', description='FPGA Firmware Version Number',
+            pyrogue.Variable(parent=self, name='fpgaVersion', description='FPGA Firmware Version Number',
                              bitSize=32, bitOffset=0, base='hex', mode='RO') ])
 
         pyrogue.Block(parent=self, offset=0x4, size=4, variables = [
@@ -39,77 +57,77 @@ class AxiVersion(pyrogue.Device):
             # at the bottom. getFunction is defined as a series of python calls. When using the defined
             # function the scope is relative to the location of the function defintion. A pointer to the variable
             # and passed value are provided as args. See UserConstants below for an alernative method.
-            pyrogue.Variable(parent=self, name='ScratchPad', description='Register to test read and writes',
+            pyrogue.Variable(parent=self, name='scratchPad', description='Register to test read and writes',
                              bitSize=32, bitOffset=0, base='hex', mode='RW', setFunction=self.setVariableExample,
                              getFunction=self.getVariableExample) ])
 
         pyrogue.Block(parent=self, offset=0x8, size=8, variables = [
 
-            pyrogue.Variable(parent=self, name='DeviceDna', description='Xilinx Device DNA value burned into FPGA',
+            pyrogue.Variable(parent=self, name='deviceDna', description='Xilinx Device DNA value burned into FPGA',
                              bitSize=64, bitOffset=0, base='hex', mode='RO') ])
 
         pyrogue.Block(parent=self, offset=0x10, size=8, variables = [
 
-            pyrogue.Variable(parent=self, name='FdSerial', description='Board ID value read from DS2411 chip',
+            pyrogue.Variable(parent=self, name='fdSerial', description='Board ID value read from DS2411 chip',
                              bitSize=64, bitOffset=0, base='hex', mode='RO') ])
 
         pyrogue.Block(parent=self, offset=0x18, size=4, variables = [
 
             # Here we define MasterReset as mode 'CMD' this will ensure it does not get written during
             # writeAll and writeStale commands
-            pyrogue.Variable(parent=self, name='MasterReset', description='Optional User Reset',
+            pyrogue.Variable(parent=self, name='masterResetVar', description='Optional User Reset',
                              bitSize=1, bitOffset=0, base='bool', mode='CMD', hidden=True) ])
 
         pyrogue.Block(parent=self, offset=0x1C, size=4, variables = [
 
-            pyrogue.Variable(parent=self, name='FpgaReload', description='Optional reload the FPGA from the attached PROM',
+            pyrogue.Variable(parent=self, name='fpgaReloadVar', description='Optional reload the FPGA from the attached PROM',
                              bitSize=1, bitOffset=0, base='bool', mode='CMD', hidden=True) ])
 
         pyrogue.Block(parent=self, offset=0x20, size=4, variables = [
 
-            pyrogue.Variable(parent=self, name='FpgaReloadAddress', description='Reload start address',
+            pyrogue.Variable(parent=self, name='fpgaReloadAddress', description='Reload start address',
                              bitSize=32, bitOffset=0, base='hex', mode='RW') ])
 
         pyrogue.Block(parent=self, offset=0x24, size=4, pollEn=True, variables = [
 
-            pyrogue.Variable(parent=self, name='Counter', description='Free running counter',
+            pyrogue.Variable(parent=self, name='counter', description='Free running counter',
                              bitSize=32, bitOffset=0, base='hex', mode='RO') ])
 
         pyrogue.Block(parent=self, offset=0x28, size=4, variables = [
 
             # Bool is not used locally. Access will occur just as a uint or hex. The GUI will know how to display it.
-            pyrogue.Variable(parent=self, name='FpgaReloadHalt', description='Used to halt automatic reloads via AxiVersion',
+            pyrogue.Variable(parent=self, name='fpgaReloadHalt', description='Used to halt automatic reloads via AxiVersion',
                              bitSize=1, bitOffset=0, base='bool', mode='RW') ])
 
         pyrogue.Block(parent=self, offset=0x2C, size=4, pollEn=True, variables = [
 
-            pyrogue.Variable(parent=self, name='UpTimeCnt', description='Number of seconds since reset',
+            pyrogue.Variable(parent=self, name='upTimeCnt', description='Number of seconds since reset',
                              bitSize=32, bitOffset=0, base='hex', mode='RO') ])
 
         pyrogue.Block(parent=self, offset=0x30, size=4, variables = [
 
-            pyrogue.Variable(parent=self, name='DeviceId', description='Device identification',
+            pyrogue.Variable(parent=self, name='deviceId', description='Device identification',
                              bitSize=32, bitOffset=0, base='hex', mode='RO') ])
-
-        for i in range(0,64):
-            pyrogue.Block(parent=self, offset=0x400+(i*4), size=4, variables = [
-
-                # Example of using setFunction and getFunction passed as strings. The scope is local to 
-                # the variable object with the passed value available as 'value' in the scope.
-                # The get function must set the 'value' variable as a result of the function.
-                pyrogue.Variable(parent=self, name='UserConstant_%02i'%(i), description='Optional user input values',
-                                 bitSize=32, bitOffset=0, base='hex', mode='RW',
-                                 getFunction="""
-                                             value = self._block.getUInt(self.bitOffset,self.bitSize)
-                                             """,
-                                 setFunction="""
-                                             self._block.setUInt(self.bitOffset,self.bitSize,value)
-                                             """
-                )])
+#
+#        for i in range(0,64):
+#            pyrogue.Block(parent=self, offset=0x400+(i*4), size=4, variables = [
+#
+#                # Example of using setFunction and getFunction passed as strings. The scope is local to 
+#                # the variable object with the passed value available as 'value' in the scope.
+#                # The get function must set the 'value' variable as a result of the function.
+#                pyrogue.Variable(parent=self, name='userConstant_%02i'%(i), description='Optional user input values',
+#                                 bitSize=32, bitOffset=0, base='hex', mode='RW',
+#                                 getFunction="""\
+#                                             value = self._block.getUInt(self.bitOffset,self.bitSize)
+#                                             """,
+#                                 setFunction="""\
+#                                             self._block.setUInt(self.bitOffset,self.bitSize,value)
+#                                             """
+#                )])
 
         pyrogue.Block(parent=self, offset=0x800, size=256, variables = [
 
-            pyrogue.Variable(parent=self, name='BuildStamp', description='Firmware build string',
+            pyrogue.Variable(parent=self, name='buildStamp', description='Firmware build string',
                              bitSize=256*8, bitOffset=0, base='string', mode='RO') ])
 
         #####################################
@@ -119,19 +137,19 @@ class AxiVersion(pyrogue.Device):
         # A command has an associated function. The function can be a series of
         # python commands in a string. Function calls are executed in the command scope
         # the passed arg is available as 'arg'. Use self._parent to get to device scope.
-        pyrogue.Command(parent=self, name='MasterReset',description='Master Reset',
+        pyrogue.Command(parent=self, name='masterReset',description='Master Reset',
            function='self._parent.MasterReset.setAndWrite(1)')
        
         # A command can also be a call to a local function with local scope.
         # The command object and the arg are passed
-        pyrogue.Command(parent=self, name='FpgaReload',description='Reload FPGA',
-           function=self.fpgaReload)
+        pyrogue.Command(parent=self, name='fpgaReload',description='Reload FPGA',
+           function=self.cmdFpgaReload)
 
-        pyrogue.Command(parent=self, name='CounterReset',description='Counter Reset',
+        pyrogue.Command(parent=self, name='counterReset',description='Counter Reset',
            function='self._parent.Counter.setAndWrite(1)')
 
         # Example printing the arg and showing a larger block. The indentation will be adjusted.
-        pyrogue.Command(parent=self, name='TestCommand',description='Test Command',
+        pyrogue.Command(parent=self, name='testCommand',description='Test Command',
            function="""\
                     print("Someone executed the %s command" % (self.name))
                     print("The passed arg was %s" % (arg))
@@ -139,7 +157,7 @@ class AxiVersion(pyrogue.Device):
                     """)
 
     # Example command function
-    def fpgaReload(self,cmd,arg):
+    def cmdFpgaReload(self,cmd,arg):
         self.FpgaReload.setAndWrite(1)
 
     # Example variable set function

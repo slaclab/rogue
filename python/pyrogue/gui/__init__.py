@@ -1,14 +1,14 @@
 #!/usr/bin/env python
 #-----------------------------------------------------------------------------
-# Title      : PyRogue Devices Module
+# Title      : PyRogue GUI module
 #-----------------------------------------------------------------------------
-# File       : pyrogue/__init__.py
+# File       : pyrogue/gui/__init__.py
 # Author     : Ryan Herbst, rherbst@slac.stanford.edu
 # Created    : 2016-09-29
 # Last update: 2016-09-29
 #-----------------------------------------------------------------------------
 # Description:
-# PyRogue Devices Module
+# Python code for pyrogue GUI
 #-----------------------------------------------------------------------------
 # This file is part of the rogue software platform. It is subject to 
 # the license terms in the LICENSE.txt file found in the top-level directory 

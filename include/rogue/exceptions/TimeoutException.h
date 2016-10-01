@@ -39,7 +39,7 @@ namespace rogue {
       class TimeoutException : public std::exception {
             char text_[100];
          public:
-            TimeoutException (std::string src, uint32_t time );
+            TimeoutException (std::string src, uint32_t time, uint64_t address );
             char const * what() const throw();
             static void setup_python();
             static void translate(TimeoutException const &e);

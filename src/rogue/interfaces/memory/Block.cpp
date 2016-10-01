@@ -66,6 +66,18 @@ void rim::Block::setTimeout(uint32_t timeout) {
    else timeout_ = timeout;
 }
 
+//! Set enable flag
+void rim::Block::setEnable(bool en) {
+   boost::unique_lock<boost::mutex> lck = lockAndCheck(false);
+   enable_ = en;
+}
+
+//! Get enable flag
+bool rim::Block::getEnable() {
+   boost::unique_lock<boost::mutex> lck = lockAndCheck(false);
+   return(enable_);
+}
+
 //! Get error state
 uint32_t rim::Block::getError() {
    boost::unique_lock<boost::mutex> lck = lockAndCheck(false);
@@ -103,11 +115,11 @@ boost::unique_lock<boost::mutex> rim::Block::lockAndCheck(bool errEnable) {
    // Timeout if busy is set
    if ( busy_ ) {
       busy_ = false;
-      throw(re::TimeoutException("Block::lockAndCheck",timeout_));
+      throw(re::TimeoutException("Block::lockAndCheck",timeout_,address_));
    }
 
    // Throw error if enabled and error is nonzero
-   if ( errEnable && (error_ != 0) ) throw(re::MemoryException("Block::lockAndCheck",error_));
+   if ( errEnable && (error_ != 0) ) throw(re::MemoryException("Block::lockAndCheck",error_,address_));
 
    return(lock);
 }
@@ -144,6 +156,10 @@ void rim::Block::reqTransaction(bool write, bool posted) {
    { // Begin scope of lck
 
       boost::unique_lock<boost::mutex> lck = lockAndCheck(false);
+
+      // Don't do transaction when disabled
+      if ( enable_ == false ) return;
+
       error_   = 0;
       busy_    = true;
 
@@ -282,6 +298,8 @@ void rim::Block::setup_python() {
       .def("create",          &rim::Block::create)
       .staticmethod("create")
       .def("setTimeout",      &rim::Block::setTimeout)
+      .def("setEnable",       &rim::Block::setEnable)
+      .def("getEnable",       &rim::Block::getEnable)
       .def("getError",        &rim::Block::getError)
       .def("checkError",      &rim::Block::checkError)
       .def("getStale",        &rim::Block::getStale)

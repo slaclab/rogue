@@ -1,5 +1,23 @@
 #!/usr/bin/env python
-
+#-----------------------------------------------------------------------------
+# Title      : PyRogue FileIO Utilities base module
+#-----------------------------------------------------------------------------
+# File       : pyrogue/utilities/filio.py
+# Author     : Ryan Herbst, rherbst@slac.stanford.edu
+# Created    : 2016-09-29
+# Last update: 2016-09-29
+#-----------------------------------------------------------------------------
+# Description:
+# Module containing the filio utilities module class and methods
+#-----------------------------------------------------------------------------
+# This file is part of the rogue software platform. It is subject to 
+# the license terms in the LICENSE.txt file found in the top-level directory 
+# of this distribution and at: 
+#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
+# No part of the rogue software platform, including this file, may be 
+# copied, modified, propagated, or distributed except according to the terms 
+# contained in the LICENSE.txt file.
+#-----------------------------------------------------------------------------
 import rogue.utilities
 import rogue.utilities.fileio
 import pyrogue
@@ -46,10 +64,10 @@ class StreamWriterDevice(pyrogue.Device):
         pyrogue.Variable(parent=self, name='maxSize', description='File maximum size',
                          bitSize=32, bitOffset=0, base='uint', mode='RW',
                          setFunction="""
-                                     self._parent._maxSize = value
+                                     self._parent._maxFileSize = value
                                      self._parent._writer.setMaxSize(value)
                                      """,
-                         getFunction='value = self._parent._maxSize')
+                         getFunction='value = self._parent._maxFileSize')
 
         pyrogue.Variable(parent=self, name='fileSize', description='File size in bytes',
                          bitSize=32, bitOffset=0, base='uint', mode='RO',

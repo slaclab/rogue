@@ -61,6 +61,9 @@ namespace rogue {
                //! Transaction is busy
                bool busy_;
 
+               //! Block is enabled for memory access
+               bool enable_;
+
                //! Busy condition
                boost::condition_variable busyCond_;
 
@@ -84,6 +87,12 @@ namespace rogue {
 
                //! Set timeout value
                void setTimeout(uint32_t timeout);
+
+               //! Set enable flag
+               void setEnable(bool en);
+
+               //! Get enable flag
+               bool getEnable();
 
                //! Get error state without exception
                uint32_t getError();

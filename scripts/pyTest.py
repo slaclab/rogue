@@ -1,11 +1,28 @@
 #!/usr/bin/env python
-
+#-----------------------------------------------------------------------------
+# Title      : Python package test 
+#-----------------------------------------------------------------------------
+# File       : exoTest.py
+# Author     : Ryan Herbst, rherbst@slac.stanford.edu
+# Created    : 2016-09-29
+# Last update: 2016-09-29
+#-----------------------------------------------------------------------------
+# Description:
+# Python package test
+#-----------------------------------------------------------------------------
+# This file is part of the rogue software platform. It is subject to 
+# the license terms in the LICENSE.txt file found in the top-level directory 
+# of this distribution and at: 
+#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
+# No part of the rogue software platform, including this file, may be 
+# copied, modified, propagated, or distributed except according to the terms 
+# contained in the LICENSE.txt file.
+#-----------------------------------------------------------------------------
 import rogue.hardware.pgp
-import rogue.utilities 
-import rogue.interfaces.stream
 import pyrogue.devices.axi
 import pyrogue.utilities
 import pyrogue.utilities.fileio
+import yaml
 import time
 
 # Microblaze console printout
@@ -21,6 +38,10 @@ class MbDebug(rogue.interfaces.stream.Slave):
          frame.read(p,0)
          print('-------- Microblaze Console --------')
          print(p.decode('utf-8'))
+
+def wyaml(top):
+   with open('data.yml','w') as outfile:
+      yaml.dump(top.getStructure())
 
 # Set base
 root = pyrogue.Root()
@@ -56,9 +77,4 @@ pyrogue.streamTap(pgpVc3,mbcon)
 
 # Add Devices
 version = pyrogue.devices.axi.AxiVersion(parent=root,name='axiVersion',memBase=srp)
-
-def getSet():
-    vars = root.getUpdated()
-    for var in vars:
-       print("%s = %s" % (var.path,var.get()))
 
