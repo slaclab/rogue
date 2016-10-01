@@ -192,7 +192,7 @@ void ris::SlaveWrap::acceptFrame ( ris::FramePtr frame ) {
    // It appears we need to lock before calling get_override
    PyGILState_STATE pyState = PyGILState_Ensure();
 
-   if (boost::python::override pb = this->get_override("acceptFrame")) {
+   if (boost::python::override pb = this->get_override("_acceptFrame")) {
       found = true;
       try {
          pb(frame);
@@ -216,7 +216,7 @@ void ris::Slave::setup_python() {
       .def("create",         &ris::Slave::create)
       .staticmethod("create")
       .def("setDebug",       &ris::Slave::setDebug)
-      .def("acceptFrame",    &ris::Slave::acceptFrame, &ris::SlaveWrap::defAcceptFrame)
+      .def("_acceptFrame",   &ris::Slave::acceptFrame, &ris::SlaveWrap::defAcceptFrame)
       .def("getAllocCount",  &ris::Slave::getAllocCount)
       .def("getAllocBytes",  &ris::Slave::getAllocBytes)
    ;

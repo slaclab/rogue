@@ -45,10 +45,10 @@ namespace rogue {
             ~PeekPoke();
 
             //! Poke. Write to an address
-            void poke ( uint64_t address, uint32_t value );
+            void poke ( uint64_t address, uint64_t value );
 
             //! Peek. Read from an address
-            uint32_t peek ( uint64_t address );
+            uint64_t peek ( uint64_t address );
       };
 
       // Convienence

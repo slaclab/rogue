@@ -1,175 +1,366 @@
 #!/usr/bin/env python
 
 import rogue.interfaces.memory
-import math
+import textwrap
 
-class IntField(object):
+def streamConnect(source, dest):
+    """Connect soruce and destination stream devices"""
+    source._setSlave(dest)
 
-    def __init__(self,branch):
 
-        # Default YAML Fields
-        self.offset      = 0
-        self.name        = ""
-        self.mode        = "RW"
-        self.lsbit       = 0
-        self.sizeBits    = 32
-        self.nelms       = 1
-        self.description = ""
+def streamTap(source, tap):
+    """Add a stream tap"""
+    source._addSlave(tap)
 
-        # Parse YAML
-        for br in branch:
-           setattr(self,br,branch[br])
 
-        # Tracking fields
-        self.block = None
+def streamConnectBiDir(deviceA, deviceB):
+    """Connect two endpoints of a bi-directional stream"""
+    deviceA._setSlave(deviceB)
+    deviceB._setSlave(deviceA)
 
-class Command(object):
+
+def busConnect(client,server):
+    """Connector a memory bus client and server"""
+    client._setSlave(server)
+
+
+class VariableError(Exception):
+    pass
+
+
+def getStructure(obj):
+    """Generate a dictionary for the structure"""
+    data = {}
+    for key,value in obj.__dict__.iteritems():
+       if not callable(value) and not key.startswith('_'):
+          if isinstance(value,Node) or isinstance(value,Root):
+              data[key] = getStructure(value)
+          else:
+              data[key] = value
+    return data
+
+
+class Root(object):
+    """System base"""
+
     def __init__(self):
-        self.name        = ""
-        self.description = ""
-        self.sequence    = []  # Entry - value pairs
+        self.__updated = []
 
-class Device(rogue.interfaces.memory.Master):
-      
-    #def __init__(self, name ="", description = "", size = 0):
-    def __init__(self,branch):
-        rogue.interfaces.memory.Master.__init__(self,0) # Base address of zero 
+    # Track updated variables
+    def variableUpdated(self,node):
+        if not (node in self.__updated):
+            self.__updated.append(node)
 
-        # Tracking Fields
-        self.__blocks   = []
-        self.__fields   = {}
-        self.__commands = {}
+    # Get copy of updated list and clear
+    def getUpdated(self):
+        ret = self.__updated
+        self.__updated = []
+        return ret
 
-        # Default Yaml Fields
-        self.description = ""
-        self.offset   = 0
-        self.name     = ""
-        self.size     = 0
-
-        # Parse YAML Branch
-        for br in branch:
-
-            # Process Each IntField Record
-            if br == 'IntField':
-                for f in branch[br]:
-                    field = IntField(f)
-                    self.__fields[field.name] = field
-
-            # Otherwise set local variable
-            setattr(self,br,branch[br])
-
-        # Derived fields
-        self.__mask = self.size - 1
-
-        # Loop through and create blocks
-        for fld in self.__fields:
-            field = self.__fields[fld] 
-
-            # First find matching block for address
-            found = False
-            for block in self.__blocks:
-                if (block.getAddress() & self.__mask) == field.offset:
-                    field.block = block
-                    found = True
-    
-            # Block not found
-            if found == False:
-                minSize   = self.reqMinAccess()
-                sizeBytes = minSize
-                totBits   = (field.sizeBits + field.lsbit) * field.nelms
-    
-                # Required size is larger than min block size
-                # Compute new size alinged to min size
-                if totBits > (sizeBytes * 8): 
-                    sizeBytes = int(math.ceil(totBits / (minSize * 8.0)) * minSize)
-            
-                block = rogue.interfaces.memory.Block((self.getAddress() & self.__mask) | field.offset,sizeBytes)
-                block.setSlave(self.getSlave())
-                field.block = block
-                self.__blocks.append(block)
-
-    def addAt(self,prev):
-        self.setSlave(prev)
-        for block in self.__blocks:
-           block.setSlave(prev)
-
-    def set(self,field,value):
-        fld = self.__fields[field]
-        if fld.mode == "RO":
-            return None  # Exception
-
-        # Determine Accessor
-        if fld.nelms == 1:
-            if fld.sizeBits == 8 and (fld.lsbit % 8) == 0:
-                fld.block.setUInt8(fld.lsbit/8,value)
-            elif fld.sizeBits == 16 and (fld.lsbit % 16) == 0:
-                fld.block.setUInt16(fld.lsbit/8,value)
-            elif fld.sizeBits == 32 and (fld.lsbit % 32) == 0:
-                fld.block.setUInt32(fld.lsbit/8,value)
-            elif fld.sizeBits == 64 and (fld.lsbit % 64) == 0:
-                fld.block.setUInt64(fld.lsbit/8,value)
-            else:
-                return None  # Throw exception here
-        elif fld.sizeBits == 8:
-            return fld.block.setString(value)
-        else:
-            return None  # Throw exception here
-
-    def get(self,field):
-        fld = self.__fields[field]
-        if fld.mode == "WO":
-            return None  # Exception
-
-        # Determine Accessor
-        if fld.nelms == 1:
-            if fld.sizeBits == 8 and (fld.lsbit % 8) == 0:
-                return fld.block.getUInt8(fld.lsbit/8)
-            elif fld.sizeBits == 16 and (fld.lsbit % 16) == 0:
-                return fld.block.getUInt16(fld.lsbit/8)
-            elif fld.sizeBits == 32 and (fld.lsbit % 32) == 0:
-                return fld.block.getUInt32(fld.lsbit/8)
-            elif fld.sizeBits == 64 and (fld.lsbit % 64) == 0:
-                return fld.block.getUInt64(fld.lsbit/8)
-            else:
-                return None  # Throw exception here
-        elif fld.sizeBits == 8:
-            return fld.block.getString()
-        else:
-            return None  # Throw exception here
-
-    def setAndWrite(self,field,value):
-        self.set(field,value)
-        self.__fields[field].block.blockingWrite()
-
-    def readAndGet(self,field):
-        self.__fields[field].block.blockingRead()
-        return self.get(field)
-
-    def writeStale(self):
-        for block in self.__blocks:
-            if block.getStale():
-                block.backgroundWrite()
-
-        for block in self.__blocks:
-            if block.getError():
-                return None # Throw exception here
-
-    def writeAll(self):
-        for block in self.__blocks:
-            block.backgroundWrite()
-
-        for block in self.__blocks:
-            if block.getError():
-                return None # Throw exception here
+    # Add an entry
+    def _addNode(self,node):
+        setattr(self,node.name,node)
 
     def readAll(self):
-        for block in self.__blocks:
-            block.backgroundRead()
+        """Read all"""
 
-        for block in self.__blocks:
-            if block.getError():
-                return None # Throw exception here
+        # Generate transactions for sub devices
+        for key,dev in self.__dict__.iteritems():
+            if isinstance(dev,Device):
+                dev.readAll()
+            
+    def writeAll(self):
+        """Write all with error check"""
 
-    def getFields(self):
-        return self.__fields
+        # Generate transactions for sub devices
+        for key,dev in self.__dict__.iteritems():
+            if isinstance(dev,Device):
+                dev.writeAll()
+
+    def writeStale(self):
+        """Write stale with error check"""
+
+        # Generate transactions for sub devices
+        for key,dev in self.__dict__.iteritems():
+            if isinstance(dev,Device):
+                dev.writeStale()
+
+
+class Node(object):
+    """Common system node"""
+
+    def __init__(self, parent, name, description, hidden, classType, enabled):
+
+        # Public attributes
+        self.name        = name     
+        self.description = description
+        self.hidden      = hidden
+        self.classType   = classType
+        self.enabled     = enabled
+
+        # Tracking
+        self._parent = parent
+
+        if isinstance(parent,Node):
+            self._root = parent._root
+            self.path  = parent.path + "." + self.name
+        else:
+            self._root = parent
+            self.path  = "." + self.name
+
+        # Add to parent list
+        self._parent._addNode(self)
+
+    def _addNode(self,node):
+        setattr(self,node.name,node)
+
+
+class Variable(Node):
+    """Variable holder"""
+
+    def __init__(self, parent, name, description, bitSize=32, bitOffset=0, 
+                 base='hex', mode='RW', enums=None, hidden=False, setFunction=None, getFunction=None):
+        """Initialize variable class"""
+
+        Node.__init__(self,parent,name,description,hidden,'variable',True)
+
+        # Public Attributes
+        self.bitSize   = bitSize
+        self.bitOffset = bitOffset
+        self.base      = base      
+        self.mode      = mode
+        self.enums     = enums
+        self.hidden    = hidden
+
+        # Check modes
+        if (self.mode != 'RW') and (self.mode != 'RO') and (self.mode != 'WO') and (self.mode != 'CMD'):
+            raise VariableError('Invalid variable mode %s. Supported: RW, RO, WO, CMD' % (self.mode))
+
+        # Tracking variables
+        self._block       = None
+        self._setFunction = setFunction
+        self._getFunction = getFunction
+
+    def _intSet(self,value):
+        if self.enabled and self._parent.enabled:
+            if self.mode == 'RW' or self.mode == 'WO' or self.mode == 'CMD':
+                if self._setFunction != None:
+                    if callable(self._setFunction):
+                        self._setFunction(self,value)
+                    else:
+                        exec(textwrap.dedent(self._setFunction))
+        
+                elif self.base == 'string':
+                    self._block.setString(value)
+                else:
+                    self._block.setUInt(self.bitOffset,self.bitSize,value)
+            else:
+                raise VariableError('Attempt to set variable with mode %s' % (mode))
+                
+    def _intGet(self):
+        if self.enabled and self._parent.enabled:
+            if self.mode == 'RW' or self.mode == 'RO':
+                if self._getFunction != None:
+                    if callable(self._getFunction):
+                        return(self._getFunction(self))
+                    else:
+                        value = None
+                        exec(textwrap.dedent(self._getFunction))
+                        return value
+        
+                elif self.base == 'string':
+                    return(self._block.getString())
+                else:
+                    return(self._block.getUInt(self.bitOffset,self.bitSize))
+            else:
+                raise VariableError('Attempt to get variable with mode %s' % (mode))
+
+    def _updated(self):
+        self._root.variableUpdated(self)
+
+    def set(self,value):
+        """Set a value to shadow memory without writing"""
+        self._intSet(value)
+        self._updated()
+
+    def setAndWrite(self,value):
+        """Set a value to shadow memory with background write"""
+        self._intSet(value)
+        self._block.backgroundWrite()
+        self._updated()
+
+    def setAndWait(self,value):
+        """Set a value to shadow memory with blocking write"""
+        self._intSet(value)
+        self._block.blockingWrite()
+        self._updated()
+
+    def get(self):
+        """Get a value from shadow memory"""
+        return self._intGet()
+
+    def readAndGet(self):
+        """Get a value from shadow memory after blocking read"""
+        self._block.blockingRead()
+        self._updated()
+        return self._intGet()
+
+
+class Command(Node):
+    """Command holder"""
+
+    def __init__(self, parent, name, description, function=None, hidden=False):
+        """Initialize command class"""
+
+        Node.__init__(self,parent,name,description,hidden,'command',True)
+
+        # Public attributes
+        self.hidden = hidden
+
+        # Tracking
+        self._function = function
+
+    def execute(self,arg=None):
+        """Execute command"""
+
+        if self.enabled and self._parent.enabled:
+            if self._function != None:
+                if callable(self._function):
+                    self._function(self,arg)
+                else:
+                    exec(textwrap.dedent(self._function))
+
+
+class Block(rogue.interfaces.memory.Block):
+    """Memory block holder"""
+
+    def __init__(self,parent,offset,size,variables,pollEn=False):
+        """Initialize memory block class"""
+        rogue.interfaces.memory.Block.__init__(self,offset,size)
+
+        self.variables = variables
+        self.pollEn    = pollEn
+        self.mode      = 'RO'
+
+        # Add to device tracking list
+        parent._blocks.append(self)
+
+        # Update position in memory map
+        self._inheritFrom(parent)
+
+        for variable in variables:
+            variable._block = self
+
+            # Determine block mode based upon variables
+            # mismatch assumes block is read/write
+            if self.mode == '':
+                self.mode = variable.mode
+            elif self.mode != variable.mode:
+                self.mode = 'RW'
+
+    # Generate variable updates to base level
+    def _genVariableUpdates(self):
+        for variable in self.variables:
+            variable._updated()
+
+
+class Device(Node,rogue.interfaces.memory.Master):
+    """Device class holder"""
+
+    def __init__(self, parent, name, description, size, memBase=None, offset=0, hidden=False, enabled=True):
+        """Initialize device class"""
+
+        Node.__init__(self,parent,name,description,hidden,'device',enabled)
+        rogue.interfaces.memory.Master.__init__(self,offset,size)
+
+        # Tracking Fields
+        self._blocks = []
+
+        # Adjust position in tree
+        if memBase:
+            self.setMemBase(memBase,offset)
+        else:
+            self._inheritFrom(self._parent)
+
+    def setMemBase(self,memBase,offset):
+        """Connect to memory slave at offset"""
+        self._setAddress(offset)
+
+        # Device is a master (Device)
+        if isinstance(memBase,rogue.interfaces.memory.Master):
+            # Inhertit base address and slave pointer from one level up
+            self._inheritFrom(memBase)
+
+        # Direct connection to slae
+        else:
+            self._setSlave(memBase)
+
+        # Adust address map in blocks
+        for block in self._blocks:
+            block._inheritFrom(self)
+
+        # Adust address map in sub devices
+        for key,dev in self.__dict__.iteritems():
+            if isinstance(dev,Device):
+                dev._inheritFrom(self)
+
+    def readAll(self):
+        """Read all with error check"""
+        if self.enabled:
+
+            # Generate transactions for local blocks
+            for block in self._blocks:
+                if block.mode == 'RO' or block.mode == 'RW':
+                    block.backgroundRead()
+
+            # Generate transactions for sub devices
+            for key,dev in self.__dict__.iteritems():
+                if isinstance(dev,Device):
+                    dev.readAll()
+
+            # Check status of local blocks
+            for block in self._blocks:
+                if block.mode == 'RO' or block.mode == 'RW':
+                    block.checkError()
+                    block._genVariableUpdates()
+            
+    def writeAll(self):
+        """Write all with error check"""
+        if self.enabled:
+
+            # Generate transactions for local blocks
+            for block in self._blocks:
+                if block.mode == 'WO' or block.mode == 'RW':
+                    block.backgroundWrite()
+
+            # Generate transactions for sub devices
+            for key,dev in self.__dict__.iteritems():
+                if isinstance(dev,Device):
+                    dev.writeAll()
+
+            # Check status of local blocks
+            for block in self._blocks:
+                if block.mode == 'WO' or block.mode == 'RW':
+                    block.checkError()
+                    block._genVariableUpdates()
+
+    def writeStale(self):
+        """Write stale with error check"""
+        if self.enabled:
+
+            # Generate transactions for local blocks
+            for block in self._blocks:
+                if block.getStale() and (block.mode == 'WO' or block.mode == 'RW'):
+                    block.backgroundWrite()
+
+            # Generate transactions for sub devices
+            for key,dev in self.__dict__.iteritems():
+                if isinstance(dev,Device):
+                    dev.writeStale()
+
+            # Check status of local blocks
+            for block in self._blocks:
+                if block.mode == 'WO' or block.mode == 'RW':
+                    block.checkError()
+                    block._genVariableUpdates()
 

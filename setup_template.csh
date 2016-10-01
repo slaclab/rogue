@@ -1,6 +1,6 @@
 
 setenv PYTHONPATH ${PWD}/build:${PWD}/python
-setenv PYTHON_CFG python2.6-config
+setenv PYTHON_CFG python2.7-config
 
 # Setup library path
 if ($?LD_LIBRARY_PATH) then

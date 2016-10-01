@@ -64,6 +64,11 @@ uint32_t rps::SrpV3::doMinAccess() {
    return(4);
 }
 
+//! Return max access size to requesting master
+uint32_t rps::SrpV3::doMaxAccess() {
+   return(2^32);
+}
+
 //! Post a transaction
 void rps::SrpV3::doTransaction(rim::MasterPtr master, uint64_t address, uint32_t size, bool write, bool posted) {
    ris::FrameIteratorPtr iter;
@@ -124,7 +129,7 @@ void rps::SrpV3::doTransaction(rim::MasterPtr master, uint64_t address, uint32_t
       iter = frame->startWrite(cnt,size);
 
       do {
-         master->getData(iter->data(),iter->total(),iter->size());
+         master->getTransactionData(iter->data(),iter->total(),iter->size());
       } while (frame->nextWrite(iter));
       cnt += size;
    }
@@ -174,7 +179,7 @@ void rps::SrpV3::acceptFrame ( ris::FramePtr frame ) {
       iter = frame->startRead(cnt,size);
 
       do {
-         m->setData(iter->data(),iter->total(),iter->size());
+         m->setTransactionData(iter->data(),iter->total(),iter->size());
       } while (frame->nextRead(iter));
       cnt += size;
    }

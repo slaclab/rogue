@@ -22,7 +22,7 @@
 
 #include <rogue/utilities/fileio/StreamReader.h>
 #include <rogue/utilities/fileio/StreamWriter.h>
-#include <rogue/utilities/fileio/StreamWriterSlave.h>
+#include <rogue/utilities/fileio/StreamWriterPort.h>
 #include <rogue/utilities/fileio/module.h>
 #include <boost/python.hpp>
 
@@ -42,6 +42,6 @@ void ruf::setup_module() {
 
    ruf::StreamReader::setup_python();
    ruf::StreamWriter::setup_python();
-   ruf::StreamWriterSlave::setup_python();
+   ruf::StreamWriterPort::setup_python();
 }
 

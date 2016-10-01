@@ -56,19 +56,25 @@ namespace rogue {
                //! Address
                uint64_t address_;
 
+               //! Size tracking for transaction and/or managed space
+               uint64_t size_;
+
                //! Get slave
                boost::shared_ptr<rogue::interfaces::memory::Slave> getSlave();
 
                //! Query the minimum access size in bytes for interface
                uint32_t reqMinAccess();
 
+               //! Query the maximum transaction size in bytes for the interface
+               uint32_t reqMaxAccess();
+
                //! Post a transaction, called locally, forwarded to slave
-               void reqTransaction(uint64_t address, uint32_t size, bool write, bool posted);
+               void reqTransaction(bool write, bool posted);
 
             public:
 
                //! Create a master container
-               static boost::shared_ptr<rogue::interfaces::memory::Master> create (uint64_t address);
+               static boost::shared_ptr<rogue::interfaces::memory::Master> create (uint64_t address, uint64_t size);
 
                //! Setup class in python
                static void setup_python();
@@ -76,21 +82,23 @@ namespace rogue {
                //! Get index
                uint32_t getIndex();
 
+               //! Get size
+               uint64_t getSize();
+
                //! Get address
                uint64_t getAddress();
 
                //! Set address
                void setAddress(uint64_t address);
 
-               //! Adjust address
+               //! Inherit settings from master
                /*
-                * address_ &= mask
-                * address_ |= baseAddr
+                * Updates local information based upon parent master
                 */
-               void adjAddress(uint64_t mask, uint64_t baseAddr);
+               void inheritFrom(boost::shared_ptr<rogue::interfaces::memory::Master> parent );
 
                //! Create object
-               Master(uint64_t address);
+               Master(uint64_t address, uint64_t size);
 
                //! Destroy object
                ~Master();
@@ -102,10 +110,10 @@ namespace rogue {
                virtual void doneTransaction(uint32_t error);
 
                //! Set to master from slave, called by slave to push data into master.
-               virtual void setData(void *data, uint32_t offset, uint32_t size);
+               virtual void setTransactionData(void *data, uint32_t offset, uint32_t size);
 
                //! Get from master to slave, called by slave to pull data from mater.
-               virtual void getData(void *data, uint32_t offset, uint32_t size);
+               virtual void getTransactionData(void *data, uint32_t offset, uint32_t size);
 
          };
 

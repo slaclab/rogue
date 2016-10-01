@@ -33,13 +33,13 @@ uint32_t rim::Master::classIdx_ = 0;
 boost::mutex rim::Master::classIdxMtx_;
 
 //! Create a master container
-rim::MasterPtr rim::Master::create (uint64_t address) {
-   rim::MasterPtr m = boost::make_shared<rim::Master>(address);
+rim::MasterPtr rim::Master::create (uint64_t address, uint64_t size) {
+   rim::MasterPtr m = boost::make_shared<rim::Master>(address, size);
    return(m);
 }
 
 //! Create object
-rim::Master::Master(uint64_t address) { 
+rim::Master::Master(uint64_t address, uint64_t size) { 
    classIdxMtx_.lock();
    if ( classIdx_ == 0 ) classIdx_ = 1;
    index_ = classIdx_;
@@ -47,6 +47,7 @@ rim::Master::Master(uint64_t address) {
    classIdxMtx_.unlock();
    slave_ = rim::Slave::create();
    address_  = address;
+   size_     = size;
 } 
 
 //! Destroy object
@@ -55,6 +56,11 @@ rim::Master::~Master() { }
 //! Get index
 uint32_t rim::Master::getIndex() {
    return(index_);
+}
+
+//! Get size
+uint64_t rim::Master::getSize() {
+   return(size_);
 }
 
 //! Get address
@@ -67,14 +73,15 @@ void rim::Master::setAddress(uint64_t address) {
    address_ = address;
 }
 
-//! Adjust address
-/*
- * address_ &= mask
- * address_ |= baseAddr
- */
-void rim::Master::adjAddress(uint64_t mask, uint64_t baseAddr) {
+//! Inherit setting from master
+void rim::Master::inheritFrom(rim::MasterPtr master ) {
+   uint64_t mask;
+
+   setSlave(master->getSlave());
+
+   mask = (master->getSize() - 1);
    address_ &= mask;
-   address_ |= baseAddr;
+   address_ |= master->getAddress();
 }
 
 //! Set slave, used for buffer request forwarding
@@ -95,31 +102,39 @@ uint32_t rim::Master::reqMinAccess() {
    return(slave_->doMinAccess());
 }
 
-//! Post a transaction, called locally, forwarded to slave
-void rim::Master::reqTransaction(uint64_t address, uint32_t size, bool write, bool posted) {
+//! Query the maximum access size in bytes for interface
+uint32_t rim::Master::reqMaxAccess() {
    boost::lock_guard<boost::mutex> lock(slaveMtx_);
-   slave_->doTransaction(shared_from_this(),address,size,write,posted);
+   return(slave_->doMaxAccess());
+}
+
+//! Post a transaction, called locally, forwarded to slave
+void rim::Master::reqTransaction(bool write, bool posted) {
+   boost::lock_guard<boost::mutex> lock(slaveMtx_);
+   slave_->doTransaction(shared_from_this(),address_,(size_&0xFFFFFFFF),write,posted);
 }
 
 //! Transaction complete, set by slave, error passed
 void rim::Master::doneTransaction(uint32_t error) { }
 
 //! Set to master from slave, called by slave
-void rim::Master::setData(void *data, uint32_t offset, uint32_t size) { }
+void rim::Master::setTransactionData(void *data, uint32_t offset, uint32_t size) { }
 
 //! Get from master to slave, called by slave
-void rim::Master::getData(void *data, uint32_t offset, uint32_t size) { }
+void rim::Master::getTransactionData(void *data, uint32_t offset, uint32_t size) { }
 
 void rim::Master::setup_python() {
 
    // slave can only exist as sub-class in python
-   bp::class_<rim::Master, rim::MasterPtr, boost::noncopyable>("Master",bp::init<uint64_t>())
-      .def("setSlave",       &rim::Master::setSlave)
-      .def("getSlave",       &rim::Master::getSlave)
-      .def("reqMinAccess",   &rim::Master::reqMinAccess)
-      .def("getAddress",     &rim::Master::getAddress)
-      .def("setAddress",     &rim::Master::setAddress)
-      .def("adjAddress",     &rim::Master::adjAddress)
+   bp::class_<rim::Master, rim::MasterPtr, boost::noncopyable>("Master",bp::init<uint64_t,uint32_t>())
+      .def("_setSlave",     &rim::Master::setSlave)
+      .def("_getSlave",     &rim::Master::getSlave)
+      .def("_reqMinAccess", &rim::Master::reqMinAccess)
+      .def("_reqMaxAccess", &rim::Master::reqMaxAccess)
+      .def("getSize",       &rim::Master::getSize)
+      .def("getAddress",    &rim::Master::getAddress)
+      .def("_setAddress",   &rim::Master::setAddress)
+      .def("_inheritFrom",  &rim::Master::inheritFrom)
    ;
 
 }

@@ -47,11 +47,11 @@ namespace rogue {
    namespace utilities {
       namespace fileio {
 
-         class StreamWriterSlave;
+         class StreamWriterPort;
 
          //! Stream writer central class
          class StreamWriter : public boost::enable_shared_from_this<rogue::utilities::fileio::StreamWriter> {
-            friend class StreamWriterSlave;
+            friend class StreamWriterPort;
 
                //! File descriptor
                int32_t fd_;
@@ -100,7 +100,7 @@ namespace rogue {
 
             protected:
 
-               //! Write data to file. Called from StreamWriterSlave
+               //! Write data to file. Called from StreamWriterPort
                void writeFile ( uint16_t tag, uint8_t type, boost::shared_ptr<rogue::interfaces::stream::Frame> frame);
 
             public:
@@ -129,8 +129,8 @@ namespace rogue {
                //! Set max file size, 0 for unlimited
                void setMaxSize(uint32_t size);
 
-               //! Get a slave port
-               boost::shared_ptr<rogue::utilities::fileio::StreamWriterSlave> getSlave(uint16_t tag, uint8_t type);
+               //! Get a port
+               boost::shared_ptr<rogue::utilities::fileio::StreamWriterPort> getPort(uint16_t tag, uint8_t type);
 
                //! Get current file size
                uint32_t getSize();

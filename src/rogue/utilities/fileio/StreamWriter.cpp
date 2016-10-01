@@ -35,7 +35,7 @@
  * contained in the LICENSE.txt file.
  *-----------------------------------------------------------------------------
 **/
-#include <rogue/utilities/fileio/StreamWriterSlave.h>
+#include <rogue/utilities/fileio/StreamWriterPort.h>
 #include <rogue/utilities/fileio/StreamWriter.h>
 #include <rogue/interfaces/stream/Frame.h>
 #include <rogue/exceptions/OpenException.h>
@@ -67,7 +67,7 @@ void ruf::StreamWriter::setup_python() {
       .def("close",          &ruf::StreamWriter::close)
       .def("setBufferSize",  &ruf::StreamWriter::setBufferSize)
       .def("setMaxSize",     &ruf::StreamWriter::setMaxSize)
-      .def("getSlave",       &ruf::StreamWriter::getSlave)
+      .def("getPort",        &ruf::StreamWriter::getPort)
       .def("getSize",        &ruf::StreamWriter::getSize)
       .def("getBankCount",   &ruf::StreamWriter::getBankCount)
    ;
@@ -151,8 +151,8 @@ void ruf::StreamWriter::setMaxSize(uint32_t size) {
 }
 
 //! Get a slave port
-ruf::StreamWriterSlavePtr ruf::StreamWriter::getSlave(uint16_t tag, uint8_t type) {
-   return(ruf::StreamWriterSlave::create(shared_from_this(),tag,type));
+ruf::StreamWriterPortPtr ruf::StreamWriter::getPort(uint16_t tag, uint8_t type) {
+   return(ruf::StreamWriterPort::create(shared_from_this(),tag,type));
 }
 
 //! Get current file size
@@ -167,7 +167,7 @@ uint32_t ruf::StreamWriter::getBankCount() {
    return(bankCount_);
 }
 
-//! Write data to file. Called from StreamWriterSlave
+//! Write data to file. Called from StreamWriterPort
 void ruf::StreamWriter::writeFile ( uint16_t tag, uint8_t type, boost::shared_ptr<rogue::interfaces::stream::Frame> frame) {
    ris::FrameIteratorPtr iter;
    uint32_t value;

@@ -66,6 +66,11 @@ uint32_t rim::Slave::doMinAccess() {
    return(4);
 }
 
+//! Return max access size to requesting master
+uint32_t rim::Slave::doMaxAccess() {
+   return(4);
+}
+
 //! Post a transaction
 void rim::Slave::doTransaction(rim::MasterPtr master, uint64_t address, uint32_t size, bool write, bool posted) {
    master->doneTransaction(0xFFFFFFFF);

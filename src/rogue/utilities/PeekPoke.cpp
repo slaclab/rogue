@@ -53,29 +53,23 @@ ru::PeekPoke::PeekPoke(uint32_t size) : Block(0,size) { }
 ru::PeekPoke::~PeekPoke() {}
 
 //! Poke. Write to an address
-void ru::PeekPoke::poke ( uint64_t address, uint32_t value ) {
+void ru::PeekPoke::poke ( uint64_t address, uint64_t value ) {
    setAddress(address);
 
-   if ( getSize() == 1 ) setUInt8(0,value);
-   else if ( getSize() == 2 ) setUInt16(0,value);
-   else if ( getSize() == 4 ) setUInt32(0,value);
-
+   setUInt(0,getSize()*8,value);
    blockingWrite();
 }
 
 //! Peek. Read from an address
-uint32_t ru::PeekPoke::peek ( uint64_t address ) {
-   uint32_t ret;
+uint64_t ru::PeekPoke::peek ( uint64_t address ) {
+   uint64_t ret;
 
    setAddress(address);
 
    ret = 0xFFFFFFFF;
 
    blockingRead();
-   if ( getSize() == 1 ) ret = getUInt8(0);
-   else if ( getSize() == 2 ) ret = getUInt16(0);
-   else if ( getSize() == 4 ) ret = getUInt32(0);
-
+   ret = getUInt(0,getSize()*8);
    return(ret);
 }
 

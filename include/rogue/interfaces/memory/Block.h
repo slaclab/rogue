@@ -35,14 +35,13 @@ namespace rogue {
    namespace interfaces {
       namespace memory {
 
+         class BlockLock;
+
          //! Transaction container
          class Block : public Master {
 
                //! Transaction timeout
                uint32_t timeout_;
-
-               //! Size of memory block
-               uint32_t size_;
 
                //! Pointer to data
                uint8_t * data_;
@@ -86,11 +85,11 @@ namespace rogue {
                //! Set timeout value
                void setTimeout(uint32_t timeout);
 
-               //! Get the size
-               uint32_t getSize();
-
-               //! Get error state
+               //! Get error state without exception
                uint32_t getError();
+
+               //! Check error state with exception
+               void checkError();
 
                //! Get stale state
                bool getStale();
@@ -125,54 +124,55 @@ namespace rogue {
                void doneTransaction(uint32_t error);
 
                //! Set to master from slave, called by slave
-               void setData(void *data, uint32_t offset, uint32_t size);
+               void setTransactionData(void *data, uint32_t offset, uint32_t size);
 
                //! Get from master to slave, called by slave
-               void getData(void *data, uint32_t offset, uint32_t size);
+               void getTransactionData(void *data, uint32_t offset, uint32_t size);
 
                //////////////////////////////////////
                // Access Methods
                //////////////////////////////////////
 
-               //! Get uint8 at offset
-               uint8_t getUInt8(uint32_t offset);
+               //! Get arbitrary bit field at bit offset
+               uint64_t getUInt(uint32_t bitOffset, uint32_t bitCount);
 
-               //! Set uint8 at offset
-               void setUInt8(uint32_t offset, uint8_t value);
-
-               //! Get uint16 at offset
-               uint16_t getUInt16(uint32_t offset);
-
-               //! Set uint16 at offset
-               void setUInt16(uint32_t offset, uint16_t value);
-
-               //! Get uint32 at offset
-               uint32_t getUInt32(uint32_t offset);
-
-               //! Set uint32  offset
-               void setUInt32(uint32_t offset, uint32_t value);
-
-               //! Get uint64 at offset
-               uint64_t getUInt64(uint32_t offset);
-
-               //! Set uint64  offset
-               void setUInt64(uint32_t offset, uint64_t value);
-
-               //! Get arbitrary bit field at byte and bit offset
-               uint32_t getBits(uint32_t bitOffset, uint32_t bitCount);
-
-               //! Set arbitrary bit field at byte and bit offset
-               void setBits(uint32_t bitOffset, uint32_t bitCount, uint32_t value);
+               //! Set arbitrary bit field at bit offset
+               void setUInt(uint32_t bitOffset, uint32_t bitCount, uint64_t value);
 
                //! Get string
                std::string getString();
 
                //! Set string
                void setString(std::string value);
+
+               //////////////////////////////////////
+               // Raw access
+               //////////////////////////////////////
+               
+               //! Start raw access. Lock object is returned.
+               boost::shared_ptr<rogue::interfaces::memory::BlockLock> lockRaw(bool write);
+
+               //! Get a raw pointer to block data
+               uint8_t * rawData (boost::shared_ptr<rogue::interfaces::memory::BlockLock> lock);
+
+               //! Get a raw pointer to block data, python version
+               boost::python::object rawDataPy (boost::shared_ptr<rogue::interfaces::memory::BlockLock> lock);
+
+               //! End a raw access. Pass back lock object
+               void unlockRaw(boost::shared_ptr<rogue::interfaces::memory::BlockLock> lock);
+         };
+
+         //! Hold a lock for raw access
+         class BlockLock {
+            friend class rogue::interfaces::memory::Block;
+            protected:
+               bool write_;
+               boost::unique_lock<boost::mutex> lock_;
          };
 
          // Convienence
          typedef boost::shared_ptr<rogue::interfaces::memory::Block> BlockPtr;
+         typedef boost::shared_ptr<rogue::interfaces::memory::BlockLock> BlockLockPtr;
 
       }
    }

@@ -93,6 +93,11 @@ uint32_t rhr::MapMemory::doMinAccess() {
    return(4);
 }
 
+//! Return max access size to requesting master
+uint32_t rhr::MapMemory::doMaxAccess() {
+   return(2^32);
+}
+
 //! Post a transaction
 void rhr::MapMemory::doTransaction(uint32_t index, uint64_t address, uint32_t size, bool write, bool posted) {
    uint8_t * ptr;
@@ -106,8 +111,8 @@ void rhr::MapMemory::doTransaction(uint32_t index, uint64_t address, uint32_t si
 
       rim::MasterPtr m = getMaster(index);
 
-      if (write) m->getData(ptr,0,size);
-      else m->setData(ptr,0,size);
+      if (write) m->getTransactionData(ptr,0,size);
+      else m->setTransactionData(ptr,0,size);
 
       m->doneTransaction(0);
    }

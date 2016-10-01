@@ -1,14 +1,14 @@
 /**
  *-----------------------------------------------------------------------------
- * Title         : Data file writer utility. Slave interface.
+ * Title         : Data file writer utility. Port interface.
  * ----------------------------------------------------------------------------
- * File          : StreamWriterSlaveSlave.h
+ * File          : StreamWriterPortPort.h
  * Author        : Ryan Herbst <rherbst@slac.stanford.edu>
  * Created       : 09/28/2016
  * Last update   : 09/28/2016
  *-----------------------------------------------------------------------------
  * Description :
- *    Class to act as a slave interface to the StreamWriterSlave. Each
+ *    Class to act as a slave interface to the StreamWriterPort. Each
  *    slave is associated with a tag. The tag is included in the bank header
  *    of each write.
  *-----------------------------------------------------------------------------
@@ -21,8 +21,8 @@
  * contained in the LICENSE.txt file.
  *-----------------------------------------------------------------------------
 **/
-#ifndef __ROGUE_UTILITIES_FILEIO_STREAM_WRITER_SLAVE_H__
-#define __ROGUE_UTILITIES_FILEIO_STREAM_WRITER_SLAVE_H__
+#ifndef __ROGUE_UTILITIES_FILEIO_STREAM_WRITER_PORT_H__
+#define __ROGUE_UTILITIES_FILEIO_STREAM_WRITER_PORT_H__
 #include <stdint.h>
 #include <boost/thread.hpp>
 #include <rogue/interfaces/stream/Slave.h>
@@ -34,7 +34,7 @@ namespace rogue {
          class StreamWriter;
 
          //! Stream writer central class
-         class StreamWriterSlave : public rogue::interfaces::stream::Slave {
+         class StreamWriterPort : public rogue::interfaces::stream::Slave {
 
                //! Associated Stream Writer class
                boost::shared_ptr<rogue::utilities::fileio::StreamWriter> writer_;
@@ -48,24 +48,24 @@ namespace rogue {
             public:
 
                //! Class creation
-               static boost::shared_ptr<rogue::utilities::fileio::StreamWriterSlave> 
+               static boost::shared_ptr<rogue::utilities::fileio::StreamWriterPort> 
                   create (boost::shared_ptr<rogue::utilities::fileio::StreamWriter> writer, uint16_t tag, uint8_t type);
 
                //! Setup class in python
                static void setup_python();
 
                //! Creator
-               StreamWriterSlave(boost::shared_ptr<rogue::utilities::fileio::StreamWriter> writer, uint16_t tag, uint8_t type);
+               StreamWriterPort(boost::shared_ptr<rogue::utilities::fileio::StreamWriter> writer, uint16_t tag, uint8_t type);
 
                //! Deconstructor
-               ~StreamWriterSlave();
+               ~StreamWriterPort();
 
                //! Accept a frame from master
                void acceptFrame ( boost::shared_ptr<rogue::interfaces::stream::Frame> frame );
          };
 
          // Convienence
-         typedef boost::shared_ptr<rogue::utilities::fileio::StreamWriterSlave> StreamWriterSlavePtr;
+         typedef boost::shared_ptr<rogue::utilities::fileio::StreamWriterPort> StreamWriterPortPtr;
       }
    }
 }

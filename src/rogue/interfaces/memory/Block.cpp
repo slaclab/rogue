@@ -26,8 +26,10 @@
 #include <rogue/exceptions/BoundaryException.h>
 #include <rogue/exceptions/TimeoutException.h>
 #include <rogue/exceptions/MemoryException.h>
+#include <rogue/exceptions/GeneralException.h>
 #include <boost/make_shared.hpp>
 #include <boost/python.hpp>
+#include <math.h>
 
 namespace rim = rogue::interfaces::memory;
 namespace re  = rogue::exceptions;
@@ -40,9 +42,8 @@ rim::BlockPtr rim::Block::create (uint64_t address, uint32_t size ) {
 }
 
 //! Create an block
-rim::Block::Block(uint64_t address, uint32_t size ) : Master (address) {
+rim::Block::Block(uint64_t address, uint32_t size ) : Master (address,size) {
    timeout_ = 1000000; // One second
-   size_    = size;
    error_   = 0;
    stale_   = 0;
    busy_    = false;
@@ -65,15 +66,15 @@ void rim::Block::setTimeout(uint32_t timeout) {
    else timeout_ = timeout;
 }
 
-//! Get the size
-uint32_t rim::Block::getSize() {
-   return(size_);
-}
-
 //! Get error state
 uint32_t rim::Block::getError() {
    boost::unique_lock<boost::mutex> lck = lockAndCheck(false);
    return(error_);
+}
+
+//! Get error state 
+void rim::Block::checkError() {
+   boost::unique_lock<boost::mutex> lck = lockAndCheck(true);
 }
 
 //! Get stale state
@@ -150,7 +151,7 @@ void rim::Block::reqTransaction(bool write, bool posted) {
 
    // Lock must be relased before this call because
    // complete() call can come directly as a result
-   rim::Master::reqTransaction(address_,size_,write,posted);
+   rim::Master::reqTransaction(write,posted);
 }
 
 //! Transaction complete
@@ -169,8 +170,8 @@ void rim::Block::doneTransaction(uint32_t error) {
 }
 
 //! Set to master from slave, called by slave
-void rim::Block::setData(void *data, uint32_t offset, uint32_t size) {
-   if ( (offset+size) > size_ ) 
+void rim::Block::setTransactionData(void *data, uint32_t offset, uint32_t size) {
+   if ( (offset+size) > size_ )
       throw(re::BoundaryException("Block::setData",offset+size,size_));
 
    boost::lock_guard<boost::mutex> lck(mtx_); // Will succeedd if busy is set
@@ -178,170 +179,58 @@ void rim::Block::setData(void *data, uint32_t offset, uint32_t size) {
 }
 
 //! Get from master to slave, called by slave
-void rim::Block::getData(void *data, uint32_t offset, uint32_t size) {
-   if ( (offset+size) > size_ ) 
+void rim::Block::getTransactionData(void *data, uint32_t offset, uint32_t size) {
+   if ( (offset+size) > size_ )
       throw(re::BoundaryException("Block::getData",offset+size,size_));
 
    boost::lock_guard<boost::mutex> lck(mtx_); // Will succeedd if busy is set
    memcpy(data,((uint8_t *)data_)+offset,size);
 }
 
-//! Get uint8 at offset
-uint8_t rim::Block::getUInt8(uint32_t offset) {
-   if ( offset >= size_ ) 
-      throw(re::BoundaryException("Block::getUInt8",offset,size_));
-
-   boost::unique_lock<boost::mutex> lck = lockAndCheck(true);
-   return(data_[offset]);
-}
-
-//! Set uint8 at offset
-void rim::Block::setUInt8(uint32_t offset, uint8_t value) {
-   if ( offset >= size_ ) 
-      throw(re::BoundaryException("Block::setUInt8",offset,size_));
-
-   boost::unique_lock<boost::mutex> lck = lockAndCheck(false);
-   data_[offset] = value;
-   stale_ = true;
-}
-
-//! Get uint16 at offset
-uint16_t rim::Block::getUInt16(uint32_t offset) {
-   if ( (offset % 2) != 0 )
-      throw(re::AlignmentException("Block::getUInt16",offset,2));
-
-   if ( offset > (size_-2) )
-      throw(re::BoundaryException("Block::getUInt16",offset+2,size_));
-
-   boost::unique_lock<boost::mutex> lck = lockAndCheck(true);
-   return(((uint16_t *)data_)[offset/2]);
-}
-
-//! Set uint32  offset
-void rim::Block::setUInt16(uint32_t offset, uint16_t value) {
-   if ( (offset % 2) != 0 )
-      throw(re::AlignmentException("Block::setUInt16",offset,2));
-
-   if ( offset > (size_-2) )
-      throw(re::BoundaryException("Block::setUInt16",offset+2,size_));
-
-   boost::unique_lock<boost::mutex> lck = lockAndCheck(false);
-
-   ((uint16_t *)data_)[offset/2] = value;
-   stale_ = true;
-}
-
-//! Get uint32 at offset
-uint32_t rim::Block::getUInt32(uint32_t offset) {
-   if ( (offset % 4) != 0 )
-      throw(re::AlignmentException("Block::getUInt32",offset,4));
-
-   if ( offset > (size_-4) )
-      throw(re::BoundaryException("Block::getUInt32",offset+4,size_));
-
-   boost::unique_lock<boost::mutex> lck = lockAndCheck(true);
-   return(((uint32_t *)data_)[offset/4]);
-}
-
-//! Set uint32  offset
-void rim::Block::setUInt32(uint32_t offset, uint32_t value) {
-   if ( (offset % 4) != 0 )
-      throw(re::AlignmentException("Block::setUInt32",offset,4));
-
-   if ( offset > (size_-4) )
-      throw(re::BoundaryException("Block::setUInt32",offset+4,size_));
-
-   boost::unique_lock<boost::mutex> lck = lockAndCheck(false);
-
-   ((uint32_t *)data_)[offset/4] = value;
-   stale_ = true;
-}
-
-//! Get uint64 at offset
-uint64_t rim::Block::getUInt64(uint32_t offset) {
-   if ( (offset % 8) != 0 )
-      throw(re::AlignmentException("Block::getUInt64",offset,8));
-
-   if ( offset > (size_-8) )
-      throw(re::BoundaryException("Block::getUInt64",offset+8,size_));
-
-   boost::unique_lock<boost::mutex> lck = lockAndCheck(true);
-   return(((uint64_t *)data_)[offset/8]);
-}
-
-//! Set uint64  offset
-void rim::Block::setUInt64(uint32_t offset, uint64_t value) {
-   if ( (offset % 8) != 0 )
-      throw(re::AlignmentException("Block::setUInt64",offset,8));
-
-   if ( offset > (size_-8) )
-      throw(re::BoundaryException("Block::setUInt64",offset+8,size_));
-
-   boost::unique_lock<boost::mutex> lck = lockAndCheck(false);
-
-   ((uint64_t *)data_)[offset/8] = value;
-   stale_ = true;
-}
-
 //! Get arbitrary bit field at byte and bit offset
-uint32_t rim::Block::getBits(uint32_t bitOffset, uint32_t bitCount) {
-   uint32_t ret;
-   uint32_t currByte;
-   uint32_t currBit;
-   uint32_t cnt;
-   uint32_t bit;
+uint64_t rim::Block::getUInt(uint32_t bitOffset, uint32_t bitCount) {
+   uint64_t   ret;
+   uint64_t * ptr;
+   uint64_t   mask;
 
-   if ( bitCount > 32 ) throw(re::BoundaryException("Block::getBits",bitCount,32));
+   if ( bitCount > 64 ) throw(re::BoundaryException("Block::getUInt",bitCount,64));
 
-   if ( bitOffset > ((size_*8)-bitCount) )
-      throw(re::BoundaryException("Block::getBits",bitOffset,(size_*8)-bitCount));
+   if ( (bitOffset + bitCount) > (size_*8) )
+      throw(re::BoundaryException("Block::getUInt",(bitOffset+bitCount),(size_*8)));
 
    boost::unique_lock<boost::mutex> lck = lockAndCheck(true);
 
-   currByte = bitOffset / 8;
-   currBit  = bitOffset % 8;
+   if ( bitCount == 64 ) mask = 0xFFFFFFFFFFFFFFFF;
+   else mask = pow(2,bitCount) - 1;
 
-   cnt = 0;
-   ret = 0;
-   while (cnt < bitCount) {
-      bit = (data_[currByte] >> currBit) & 0x1;
-      ret += (bit << cnt);
-      if ( ++currBit == 8 ) {
-         currBit = 0;
-         currByte++;
-      }
-   }
-   return(ret); 
+   ptr = (uint64_t *)(data_ + (bitOffset/8));
+   ret = ((*ptr) >> (bitOffset % 8)) & mask;
+
+   return(ret);
 }
 
 //! Set arbitrary bit field at byte and bit offset
-void rim::Block::setBits(uint32_t bitOffset, uint32_t bitCount, uint32_t value) {
-   uint32_t currByte;
-   uint32_t currBit;
-   uint32_t cnt;
-   uint32_t bit;
+void rim::Block::setUInt(uint32_t bitOffset, uint32_t bitCount, uint64_t value) {
+   uint64_t * ptr;
+   uint64_t   mask;
+   uint64_t   clear;
 
-   if ( bitCount > 32 ) throw(re::BoundaryException("Block::setBits",bitCount,32));
+   if ( bitCount > 64 ) throw(re::BoundaryException("Block::setUInt",bitCount,64));
 
-   if ( bitOffset > ((size_*8)-bitCount) )
-      throw(re::BoundaryException("Block::setBits",bitOffset,(size_*8)-bitCount));
+   if ( (bitOffset + bitCount) > (size_*8) )
+      throw(re::BoundaryException("Block::setUInt",(bitOffset+bitCount),(size_*8)));
 
    boost::unique_lock<boost::mutex> lck = lockAndCheck(false);
 
-   currByte = bitOffset / 8;
-   currBit  = bitOffset % 8;
+   if ( bitCount == 64 ) mask = 0xFFFFFFFFFFFFFFFF;
+   else mask = pow(2,bitCount) - 1;
 
-   cnt = 0;
-   while (cnt < bitCount) {
-      bit = (value >> cnt) & 0x1;
+   mask = mask << (bitOffset % 8);
+   clear = ~mask;
 
-      data_[currByte] &= ((1   << currBit) ^ 0xFF);
-      data_[currByte] |= (bit << currBit);
-      if ( ++currBit == 8 ) {
-         currBit = 0;
-         currByte++;
-      }
-   }
+   ptr = (uint64_t *)(data_ + (bitOffset/8));
+   (*ptr) &= clear;
+   (*ptr) |= value << (bitOffset % 8);
 }
 
 //! Get string
@@ -361,31 +250,56 @@ void rim::Block::setString(std::string value) {
    strcpy((char *)data_,value.c_str());
 }
 
+//! Start raw access. Lock object is returned.
+rim::BlockLockPtr rim::Block::lockRaw(bool write) {
+   rim::BlockLockPtr lock = boost::make_shared<rim::BlockLock>();
+   lock->write_ = write;
+   lock->lock_ = lockAndCheck(!write);
+   return(lock);
+}
+
+//! Get a raw pointer to block data
+uint8_t * rim::Block::rawData (rim::BlockLockPtr lock) {
+   return(data_);
+}
+
+//! Get a raw pointer to block data, python version
+bp::object rim::Block::rawDataPy (rim::BlockLockPtr lock) {
+   PyObject* py_buf = PyBuffer_FromReadWriteMemory(data_, size_);
+   bp::object retval = bp::object(bp::handle<>(py_buf));
+   return retval;
+}
+
+//! End a raw access. Pass back lock object
+void rim::Block::unlockRaw(rim::BlockLockPtr lock) {
+   if ( lock->write_ ) stale_ = true;
+   lock->lock_.unlock();
+}
+
 void rim::Block::setup_python() {
 
    bp::class_<rim::Block, rim::BlockPtr, bp::bases<rim::Master>, boost::noncopyable>("Block",bp::init<uint64_t,uint32_t>())
       .def("create",          &rim::Block::create)
       .staticmethod("create")
       .def("setTimeout",      &rim::Block::setTimeout)
-      .def("getSize",         &rim::Block::getSize)
       .def("getError",        &rim::Block::getError)
+      .def("checkError",      &rim::Block::checkError)
       .def("getStale",        &rim::Block::getStale)
       .def("backgroundRead",  &rim::Block::backgroundRead)
       .def("blockingRead",    &rim::Block::blockingRead)
       .def("backgroundWrite", &rim::Block::backgroundWrite)
       .def("blockingWrite",   &rim::Block::blockingWrite)
       .def("postedWrite",     &rim::Block::postedWrite)
-      .def("getUInt8",        &rim::Block::getUInt8)
-      .def("setUInt8",        &rim::Block::setUInt8)
-      .def("getUInt32",       &rim::Block::getUInt32)
-      .def("setUInt32",       &rim::Block::setUInt32)
-      .def("getUInt64",       &rim::Block::getUInt64)
-      .def("setUInt64",       &rim::Block::setUInt64)
-      .def("getBits",         &rim::Block::getBits)
-      .def("setBits",         &rim::Block::setBits)
+      .def("getUInt",         &rim::Block::getUInt)
+      .def("setUInt",         &rim::Block::setUInt)
       .def("getString",       &rim::Block::getString)
       .def("setString",       &rim::Block::setString)
+      .def("_lockRaw",        &rim::Block::lockRaw)
+      .def("_rawData",        &rim::Block::rawDataPy)
+      .def("_unlockRaw",      &rim::Block::unlockRaw)
    ;
+
+   bp::class_<rim::BlockLock, rim::BlockLockPtr, boost::noncopyable>("BlockLock",bp::no_init);
 
    bp::implicitly_convertible<rim::BlockPtr, rim::MasterPtr>();
 
