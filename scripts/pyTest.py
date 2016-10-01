@@ -59,13 +59,16 @@ srp = rogue.protocols.srp.SrpV0()
 pyrogue.streamConnectBiDir(pgpVc0,srp)
 
 # File writer 
-dataFile = pyrogue.utilities.fileio.StreamWriterDevice(root,'writer')
+dataFile = pyrogue.utilities.fileio.StreamWriterDevice(root,'dataFile')
 
 # Add data stream to file as tag 1, type 8
 pyrogue.streamConnect(pgpVc1,dataFile.getWriter().getPort(0x1,0x8))
 
 ## Add console stream to file as tag 2, type 10
 pyrogue.streamConnect(pgpVc3,dataFile.getWriter().getPort(0x2,0xA))
+
+# Add configuration stream to file as tag 0, type 1
+pyrogue.streamConnect(root,dataFile.getWriter().getPort(0x0,0x1))
 
 # PRBS Receiver as secdonary receiver for VC1
 prbsRx = pyrogue.utilities.PrbsDevice(root,'prbsRx')

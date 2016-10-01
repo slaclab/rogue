@@ -94,10 +94,12 @@ def getAtPath(obj,path):
         return(getAtPath(getattr(obj,base),rest))
 
 
-class Root(object):
+class Root(rogue.interfaces.stream.Master):
     """System base"""
 
     def __init__(self):
+        rogue.interfaces.stream.Master.__init__(self)
+
         self.__updated = []
         self.__errorLog = []
 
@@ -120,6 +122,15 @@ class Root(object):
             raise NodeError('Invalid %s name %s. Name already exists' % (node.classType,node.name))
         else:
             setattr(self,node.name,node)
+
+    # Push configuration on stream
+    def streamConfig(self):
+        s = self.getYamlConfig()
+        f = self._reqFrame(len(s),True)
+        b = bytearray()
+        b.extend(s)
+        f.write(b,0)
+        self._sendFrame(f)
 
     # Generate structure
     def getStructure(self):
@@ -191,7 +202,7 @@ class Root(object):
         v = getAtPath(self,path)
         return(v.readAndGet())
 
-    def execute(self,path,arg=None):
+    def command(self,path,arg=None):
         v = getAtPath(self,path)
         v(arg)
 

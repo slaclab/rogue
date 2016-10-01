@@ -44,12 +44,12 @@ class StreamWriterDevice(pyrogue.Device):
         pyrogue.Variable(parent=self, name='open', description='Data file open state',
                          bitSize=1, bitOffset=0, base='bool', mode='RW',
                          setFunction="""\
-                                     if self._parent._open != int(value):
-                                         if int(value) == 0:
+                                     if self._parent._open != value:
+                                         if value == 0:
                                              self._parent._writer.close()
                                          else:
                                              self._parent._writer.open(self._parent._file)
-                                         self._parent._enable = int(value)
+                                         self._parent._enable = value
                                      """,
                          getFunction='value = self._parent._open')
 
