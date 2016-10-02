@@ -60,9 +60,9 @@ void ris::Master::addSlave ( ris::SlavePtr slave ) {
 }
 
 //! Request frame from primary slave
-ris::FramePtr ris::Master::reqFrame ( uint32_t size, bool zeroCopyEn ) {
+ris::FramePtr ris::Master::reqFrame ( uint32_t size, bool zeroCopyEn, uint32_t maxBuffSize ) {
    boost::lock_guard<boost::mutex> lock(slaveMtx_);
-   return(primary_->acceptReq(size,zeroCopyEn));
+   return(primary_->acceptReq(size,zeroCopyEn,maxBuffSize));
 }
 
 //! Push frame to slaves

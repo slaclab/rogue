@@ -59,20 +59,20 @@ srp = rogue.protocols.srp.SrpV0()
 pyrogue.streamConnectBiDir(pgpVc0,srp)
 
 # File writer 
-dataFile = pyrogue.utilities.fileio.StreamWriterDevice(root,'dataFile')
+dataFile = pyrogue.utilities.fileio.StreamWriter(root,'dataFile')
 
-# Add data stream to file as tag 1, type 8
-pyrogue.streamConnect(pgpVc1,dataFile.getWriter().getPort(0x1,0x8))
+# Add data stream to file as channel 1
+pyrogue.streamConnect(pgpVc1,dataFile.getChannel(0x1))
 
-## Add console stream to file as tag 2, type 10
-pyrogue.streamConnect(pgpVc3,dataFile.getWriter().getPort(0x2,0xA))
+## Add console stream to file as channel 2
+pyrogue.streamConnect(pgpVc3,dataFile.getChannel(0x2))
 
-# Add configuration stream to file as tag 0, type 1
-pyrogue.streamConnect(root,dataFile.getWriter().getPort(0x0,0x1))
+# Add configuration stream to file as channel 0
+pyrogue.streamConnect(root,dataFile.getChannel(0x0))
 
 # PRBS Receiver as secdonary receiver for VC1
-prbsRx = pyrogue.utilities.PrbsDevice(root,'prbsRx')
-pyrogue.streamTap(pgpVc1,prbsRx.getPrbs())
+prbsRx = pyrogue.utilities.Prbs(root,'prbsRx')
+pyrogue.streamTap(pgpVc1,prbsRx)
 
 # Microblaze console connected to VC2
 mbcon = MbDebug()

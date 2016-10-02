@@ -78,6 +78,8 @@ ris::FramePtr ris::Slave::createFrame ( uint32_t totSize, uint32_t buffSize,
    uint32_t alloc;
    uint32_t bSize;
 
+   if ( buffSize == 0 ) buffSize = totSize;
+
    ret  = ris::Frame::create(shared_from_this(),zeroCopy);
    alloc = 0;
 
@@ -145,8 +147,8 @@ void ris::Slave::deleteBuffer( uint32_t rawSize) {
  * Pass total size required.
  * Pass flag indicating if zero copy buffers are acceptable
  */
-ris::FramePtr ris::Slave::acceptReq ( uint32_t size, bool zeroCopyEn) {
-   return(createFrame(size,size,false,false));
+ris::FramePtr ris::Slave::acceptReq ( uint32_t size, bool zeroCopyEn, uint32_t maxBuffSize) {
+   return(createFrame(size,maxBuffSize,false,false));
 }
 
 //! Accept a frame from master

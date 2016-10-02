@@ -24,23 +24,63 @@ import yaml
 
 def streamConnect(source, dest):
     """Connect soruce and destination stream devices"""
-    source._setSlave(dest)
+
+    # Is object a native master or wrapped?
+    if isinstance(source,rogue.interfaces.stream.Master):
+        master = source
+    else:
+        master = source._getStreamMaster()
+
+    # Is object a native slave or wrapped?
+    if isinstance(dest,rogue.interfaces.stream.Slave):
+        slave = dest
+    else:
+        slave = dest._getStreamSlave()
+
+    master._setSlave(slave)
 
 
 def streamTap(source, tap):
     """Add a stream tap"""
-    source._addSlave(tap)
+
+    # Is object a native master or wrapped?
+    if isinstance(source,rogue.interfaces.stream.Master):
+        master = source
+    else:
+        master = source._getStreamMaster()
+
+    # Is object a native slave or wrapped?
+    if isinstance(tap,rogue.interfaces.stream.Slave):
+        slave = tap
+    else:
+        slave = tap._getStreamSlave()
+
+    master._addSlave(slave)
 
 
 def streamConnectBiDir(deviceA, deviceB):
     """Connect two endpoints of a bi-directional stream"""
-    deviceA._setSlave(deviceB)
-    deviceB._setSlave(deviceA)
+
+    streamConnect(deviceA,deviceB)
+    streamConnect(deviceB,deviceA)
 
 
-def busConnect(client,server):
+def busConnect(source,dest):
     """Connector a memory bus client and server"""
-    client._setSlave(server)
+
+    # Is object a native master or wrapped?
+    if isinstance(source,rogue.interfaces.stream.Master):
+        master = source
+    else:
+        master = source._getMemoryMaster()
+
+    # Is object a native slave or wrapped?
+    if isinstance(dest,rogue.interfaces.stream.Slave):
+        slave = dest
+    else:
+        slave = dest._getMemorySlave()
+
+    master._setSlave(slave)
 
 
 class VariableError(Exception):

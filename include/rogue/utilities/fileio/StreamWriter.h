@@ -10,21 +10,18 @@
  * Description :
  *    Class to coordinate data file writing.
  *    This class supports multiple stream slaves, each with the ability to
- *    write to a common data file. The file format is JLAB evio-like. The 
- *    evio file is a series of banks. Each bank has a type, a tag and a number.
+ *    write to a common data file. The data file is a series of banks.
+ *    Each bank has a channel and frame flags. The channel is per source and the
+ *    lower 24 bits of the frame flags are used as the flags.
  *    The bank is preceeded by 2 - 32-bit headers to indicate bank information
  *    and length:
  *
  *       headerA:
- *          [31:0] = Length of data block
+ *          [31:0] = Length of data block in bytes
  *       headerB
- *          31:16  = Bank tag (source ID)
- *          15:8   = Bank type
- *           7:0   = Bank number
+ *          31:24  = Channel ID
+ *          23:9   = Frame flags
  *
- * This generic class does not define the types. Each feeder is assigned a 
- * tag as it is added to the interface. The bank number will increment with
- * each file write, wrapping around at 255.
  *-----------------------------------------------------------------------------
  * This file is part of the rogue software platform. It is subject to 
  * the license terms in the LICENSE.txt file found in the top-level directory 
@@ -47,11 +44,11 @@ namespace rogue {
    namespace utilities {
       namespace fileio {
 
-         class StreamWriterPort;
+         class StreamWriterChannel;
 
          //! Stream writer central class
          class StreamWriter : public boost::enable_shared_from_this<rogue::utilities::fileio::StreamWriter> {
-            friend class StreamWriterPort;
+            friend class StreamWriterChannel;
 
                //! File descriptor
                int32_t fd_;
@@ -86,9 +83,6 @@ namespace rogue {
                //! Total number of banks in file
                uint32_t bankCount_;
 
-               //! Running bank counter
-               uint8_t bankIdx_;
-
                //! Internal method for file writing 
                void intWrite(void *data, uint32_t size);
 
@@ -100,8 +94,8 @@ namespace rogue {
 
             protected:
 
-               //! Write data to file. Called from StreamWriterPort
-               void writeFile ( uint16_t tag, uint8_t type, boost::shared_ptr<rogue::interfaces::stream::Frame> frame);
+               //! Write data to file. Called from StreamWriterChannel
+               void writeFile ( uint8_t channel, boost::shared_ptr<rogue::interfaces::stream::Frame> frame);
 
             public:
 
@@ -130,7 +124,7 @@ namespace rogue {
                void setMaxSize(uint32_t size);
 
                //! Get a port
-               boost::shared_ptr<rogue::utilities::fileio::StreamWriterPort> getPort(uint16_t tag, uint8_t type);
+               boost::shared_ptr<rogue::utilities::fileio::StreamWriterChannel> getChannel(uint8_t channel);
 
                //! Get current file size
                uint32_t getSize();

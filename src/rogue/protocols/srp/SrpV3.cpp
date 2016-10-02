@@ -90,7 +90,7 @@ void rps::SrpV3::doTransaction(rim::MasterPtr master, uint64_t address, uint32_t
    else frameSize = 20;
 
    // Request frame
-   frame = reqFrame(frameSize,true);
+   frame = reqFrame(frameSize,true,0);
 
    // Bits 7:0 of first 32-bit word are version
    temp = 0x3;

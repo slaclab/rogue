@@ -89,13 +89,16 @@ namespace rogue {
                 */
                void dmaAck();
 
-               //! Generate a buffer. Called from master
+               //! Generate a Frame. Called from master
                /*
                 * Pass total size required.
                 * Pass flag indicating if zero copy buffers are acceptable
+                * maxBuffSize indicates the largest acceptable buffer size. A larger buffer can be
+                * returned but the total buffer count must assume each buffer is of size maxBuffSize
+                * If maxBuffSize = 0, slave will freely determine the buffer size.
                 */
                boost::shared_ptr<rogue::interfaces::stream::Frame>
-                  acceptReq ( uint32_t size, bool zeroCopyEn );
+                  acceptReq ( uint32_t size, bool zeroCopyEn, uint32_t maxBufferSize );
 
                //! Accept a frame from master
                void acceptFrame ( boost::shared_ptr<rogue::interfaces::stream::Frame> frame );

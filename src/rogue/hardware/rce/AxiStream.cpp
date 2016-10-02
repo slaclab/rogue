@@ -89,17 +89,22 @@ void rhr::AxiStream::dmaAck() {
 }
 
 //! Generate a buffer. Called from master
-ris::FramePtr rhr::AxiStream::acceptReq ( uint32_t size, bool zeroCopyEn) {
+ris::FramePtr rhr::AxiStream::acceptReq ( uint32_t size, bool zeroCopyEn, uint32_t maxBuffSize) {
    int32_t          res;
    fd_set           fds;
    struct timeval   tout;
    uint32_t         alloc;
    ris::BufferPtr   buff;
    ris::FramePtr    frame;
+   uint32_t         buffSize;
+
+   //! Adjust allocation size
+   if ( (maxBuffSize > bSize_) || (maxBuffSize == 0)) buffSize = bSize_;
+   else buffSize = maxBuffSize;
 
    // Zero copy is disabled. Allocate from memory.
    if ( zeroCopyEn == false || rawBuff_ == NULL ) {
-      frame = createFrame(size,bSize_,true,false);
+      frame = createFrame(size,buffSize,true,false);
    }
 
    // Allocate zero copy buffers from driver
@@ -136,7 +141,7 @@ ris::FramePtr rhr::AxiStream::acceptReq ( uint32_t size, bool zeroCopyEn) {
          // Mark zero copy meta with bit 31 set, lower bits are index
          buff = createBuffer(rawBuff_[res],0x80000000 | res,bSize_);
          frame->appendBuffer(buff);
-         alloc += bSize_;
+         alloc += buffSize;
       }
    }
    return(frame);

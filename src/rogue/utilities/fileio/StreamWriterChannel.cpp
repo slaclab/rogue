@@ -1,14 +1,14 @@
 /**
  *-----------------------------------------------------------------------------
- * Title         : Data file writer utility. Port interface.
+ * Title         : Data file writer utility. Channel interface.
  * ----------------------------------------------------------------------------
- * File          : StreamWriterPort.cpp
+ * File          : StreamWriterChannel.cpp
  * Author        : Ryan Herbst <rherbst@slac.stanford.edu>
  * Created       : 09/28/2016
  * Last update   : 09/28/2016
  *-----------------------------------------------------------------------------
  * Description :
- *    Class to act as a slave interface to the StreamWriterPort. Each
+ *    Class to act as a slave interface to the StreamWriterChannel. Each
  *    slave is associated with a tag. The tag is included in the bank header
  *    of each write.
  *-----------------------------------------------------------------------------
@@ -21,7 +21,7 @@
  * contained in the LICENSE.txt file.
  *-----------------------------------------------------------------------------
 **/
-#include <rogue/utilities/fileio/StreamWriterPort.h>
+#include <rogue/utilities/fileio/StreamWriterChannel.h>
 #include <rogue/utilities/fileio/StreamWriter.h>
 #include <rogue/interfaces/stream/Frame.h>
 #include <stdint.h>
@@ -33,29 +33,28 @@ namespace ruf = rogue::utilities::fileio;
 namespace bp  = boost::python;
 
 //! Class creation
-ruf::StreamWriterPortPtr ruf::StreamWriterPort::create (ruf::StreamWriterPtr writer, uint16_t tag, uint8_t type) {
-   ruf::StreamWriterPortPtr s = boost::make_shared<ruf::StreamWriterPort>(writer,tag,type);
+ruf::StreamWriterChannelPtr ruf::StreamWriterChannel::create (ruf::StreamWriterPtr writer, uint8_t channel) {
+   ruf::StreamWriterChannelPtr s = boost::make_shared<ruf::StreamWriterChannel>(writer,channel);
    return(s);
 }
 
 //! Setup class in python
-void ruf::StreamWriterPort::setup_python() {
-   bp::class_<ruf::StreamWriterPort, ruf::StreamWriterPortPtr, bp::bases<ris::Slave>, boost::noncopyable >("StreamWriterPort",bp::no_init);
-   bp::implicitly_convertible<ruf::StreamWriterPortPtr, ris::SlavePtr>();
+void ruf::StreamWriterChannel::setup_python() {
+   bp::class_<ruf::StreamWriterChannel, ruf::StreamWriterChannelPtr, bp::bases<ris::Slave>, boost::noncopyable >("StreamWriterChannel",bp::no_init);
+   bp::implicitly_convertible<ruf::StreamWriterChannelPtr, ris::SlavePtr>();
 }
 
 //! Creator
-ruf::StreamWriterPort::StreamWriterPort(ruf::StreamWriterPtr writer, uint16_t tag, uint8_t type) {
-   writer_ = writer;
-   tag_    = tag;
-   type_   = type;
+ruf::StreamWriterChannel::StreamWriterChannel(ruf::StreamWriterPtr writer, uint8_t channel) {
+   writer_  = writer;
+   channel_ = channel;
 }
 
 //! Deconstructor
-ruf::StreamWriterPort::~StreamWriterPort() { }
+ruf::StreamWriterChannel::~StreamWriterChannel() { }
 
 //! Accept a frame from master
-void ruf::StreamWriterPort::acceptFrame ( ris::FramePtr frame ) {
-   writer_->writeFile (tag_, type_, frame);
+void ruf::StreamWriterChannel::acceptFrame ( ris::FramePtr frame ) {
+   writer_->writeFile (channel_, frame);
 }
 

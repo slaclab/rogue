@@ -86,7 +86,7 @@ void rps::SrpV0::doTransaction(rim::MasterPtr master, uint64_t address, uint32_t
    else frameSize = 16;
 
    // Request frame
-   frame = reqFrame(frameSize,true);
+   frame = reqFrame(frameSize,true,0);
 
    // First 32-bit value is context
    temp = master->getIndex();

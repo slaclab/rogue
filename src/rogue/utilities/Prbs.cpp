@@ -245,7 +245,7 @@ void ru::Prbs::genFrame (uint32_t size) {
    if ( width_ == 16 ) txSeq_ &= 0xFFFF;
 
    // Get frame
-   fr = reqFrame(size,true);
+   fr = reqFrame(size,true,0);
 
    // Frame allocation failed
    if ( fr->getAvailable() < size ) {

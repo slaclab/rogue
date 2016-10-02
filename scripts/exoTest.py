@@ -78,7 +78,7 @@ class exoCmdTx(rogue.interfaces.stream.Master):
       self.addParity(ba)
       ia = [(ba[x] | (ba[x+1]<<8)) for x in range(0,len(ba),2)]
       print("Gen size=%i Data:  %s" % (len(ba),"".join("%04x:" % i for i in ia)))
-      frame = self._reqFrame(len(ba),True)
+      frame = self._reqFrame(len(ba),True,0)
       frame.write(ba,0)
       self._sendFrame(frame)
 

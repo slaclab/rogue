@@ -21,8 +21,8 @@
 import rogue.utilities
 import pyrogue
 
-class PrbsDevice(pyrogue.Device):
-    """PRBS Device Wrapper"""
+class Prbs(pyrogue.Device):
+    """PRBS Wrapper"""
 
     def __init__(self, parent, name):
 
@@ -89,6 +89,12 @@ class PrbsDevice(pyrogue.Device):
                                      """,
                          getFunction='value = self._parent._enMessages')
 
+    def _getStreamSlave(self):
+        return self._prbs
+
+    def _getStreamMaster(self):
+        return self._prbs
+
     def readAll(self):
         self.readPoll()
 
@@ -99,7 +105,4 @@ class PrbsDevice(pyrogue.Device):
         self.rxErrors.readAndGet()
         self.rxCount.readAndGet()
         self.txBytes.readAndGet()
-
-    def getPrbs(self):
-        return self._prbs
 

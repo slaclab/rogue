@@ -76,9 +76,12 @@ namespace rogue {
                /*
                 * An allocate command will be issued to the primary slave set with setSlave()
                 * Pass size and flag indicating if zero copy buffers are allowed
+                * maxBuffSize indicates the largest acceptable buffer size. A larger buffer can be
+                * returned but the total buffer count must assume each buffer is of size maxBuffSize
+                * If maxBuffSize = 0, slave will freely determine the buffer size.
                 */
                boost::shared_ptr<rogue::interfaces::stream::Frame>
-                  reqFrame ( uint32_t size, bool zeroCopyEn);
+                  reqFrame ( uint32_t size, bool zeroCopyEn, uint32_t maxBuffSize);
 
                //! Push frame to all slaves
                void sendFrame ( boost::shared_ptr<rogue::interfaces::stream::Frame> frame );

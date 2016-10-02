@@ -47,6 +47,7 @@ rim::Block::Block(uint64_t address, uint32_t size ) : Master (address,size) {
    error_   = 0;
    stale_   = 0;
    busy_    = false;
+   enable_  = true;
 
    if ( (data_ = (uint8_t *)malloc(size)) == NULL ) 
       throw(re::AllocationException("Block::Block",size));

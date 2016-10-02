@@ -10,21 +10,18 @@
  * Description :
  *    Class to coordinate data file writing.
  *    This class supports multiple stream slaves, each with the ability to
- *    write to a common data file. The file format is JLAB evio-like. The 
- *    evio file is a series of banks. Each bank has a type, a tag and a number.
+ *    write to a common data file. The data file is a series of banks.
+ *    Each bank has a channel and frame flags. The channel is per source and the
+ *    lower 24 bits of the frame flags are used as the flags.
  *    The bank is preceeded by 2 - 32-bit headers to indicate bank information
  *    and length:
  *
  *       headerA:
- *          [31:0] = Length of data block
+ *          [31:0] = Length of data block in bytes
  *       headerB
- *          31:16  = Bank tag (source ID)
- *          15:8   = Bank type
- *           7:0   = Bank number
+ *          31:24  = Channel ID
+ *          23:o   = Frame flags
  *
- * This generic class does not define the types. Each feeder is assigned a 
- * tag as it is added to the interface. The bank number will increment with
- * each file write, wrapping around at 255.
  *-----------------------------------------------------------------------------
  * This file is part of the rogue software platform. It is subject to 
  * the license terms in the LICENSE.txt file found in the top-level directory 
@@ -35,7 +32,7 @@
  * contained in the LICENSE.txt file.
  *-----------------------------------------------------------------------------
 **/
-#include <rogue/utilities/fileio/StreamWriterPort.h>
+#include <rogue/utilities/fileio/StreamWriterChannel.h>
 #include <rogue/utilities/fileio/StreamWriter.h>
 #include <rogue/interfaces/stream/Frame.h>
 #include <rogue/exceptions/OpenException.h>
@@ -67,7 +64,7 @@ void ruf::StreamWriter::setup_python() {
       .def("close",          &ruf::StreamWriter::close)
       .def("setBufferSize",  &ruf::StreamWriter::setBufferSize)
       .def("setMaxSize",     &ruf::StreamWriter::setMaxSize)
-      .def("getPort",        &ruf::StreamWriter::getPort)
+      .def("getChannel",     &ruf::StreamWriter::getChannel)
       .def("getSize",        &ruf::StreamWriter::getSize)
       .def("getBankCount",   &ruf::StreamWriter::getBankCount)
    ;
@@ -83,7 +80,6 @@ ruf::StreamWriter::StreamWriter() {
    totSize_    = 0;
    buffer_     = NULL;
    bankCount_  = 0;
-   bankIdx_    = 0;
    currBuffer_ = 0;
 }
 
@@ -108,7 +104,6 @@ void ruf::StreamWriter::open(std::string file) {
    totSize_    = 0;
    currSize_   = 0;
    bankCount_  = 0;
-   bankIdx_    = 0;
    currBuffer_ = 0;
 }
 
@@ -151,8 +146,8 @@ void ruf::StreamWriter::setMaxSize(uint32_t size) {
 }
 
 //! Get a slave port
-ruf::StreamWriterPortPtr ruf::StreamWriter::getPort(uint16_t tag, uint8_t type) {
-   return(ruf::StreamWriterPort::create(shared_from_this(),tag,type));
+ruf::StreamWriterChannelPtr ruf::StreamWriter::getChannel(uint8_t channel) {
+   return(ruf::StreamWriterChannel::create(shared_from_this(),channel));
 }
 
 //! Get current file size
@@ -167,8 +162,8 @@ uint32_t ruf::StreamWriter::getBankCount() {
    return(bankCount_);
 }
 
-//! Write data to file. Called from StreamWriterPort
-void ruf::StreamWriter::writeFile ( uint16_t tag, uint8_t type, boost::shared_ptr<rogue::interfaces::stream::Frame> frame) {
+//! Write data to file. Called from StreamWriterChannel
+void ruf::StreamWriter::writeFile ( uint8_t channel, boost::shared_ptr<rogue::interfaces::stream::Frame> frame) {
    ris::FrameIteratorPtr iter;
    uint32_t value;
    uint32_t size;
@@ -184,9 +179,8 @@ void ruf::StreamWriter::writeFile ( uint16_t tag, uint8_t type, boost::shared_pt
    intWrite(&size,4);
 
    // Create EVIO header
-   value  = bankIdx_;
-   value |= (type << 8);
-   value |= (tag << 16);
+   value  = frame->getFlags() & 0xFFFFFF;
+   value |= (channel << 24);
    intWrite(&value,4);
 
    iter = frame->startRead(0,size-4);
@@ -195,7 +189,6 @@ void ruf::StreamWriter::writeFile ( uint16_t tag, uint8_t type, boost::shared_pt
    } while (frame->nextRead(iter));
 
    // Update counters
-   bankIdx_++;
    bankCount_ ++;
 }
 

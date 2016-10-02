@@ -43,8 +43,5 @@ data file writer in utilities
 -- NOTES
 -------------------------------------
 
-Stream interface should be modified so that the request contains a max per buffer size. The slave can return larger buffers but the number of buffers should assume the requester will only populate the accoring to the max per buffer size.
-
 Look into adding timeout retries in the block. A block write or read request with a specific flag would spawn a thread to wait for the reply. Thsi thread would interrupt the doneTransaction call and retry if there is a timeout or error. Maybe this just get enabled per block? Timeout and retry enable should be block creation attributes.
 
-Stream and memory connector helpers should be smart enough to handle when the true slave or master is wrapped in python. It should first check if the pass oject is a sub class of slave or master. If not it will call _getStreamMaster, _getStreamSlave, etc.

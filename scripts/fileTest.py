@@ -29,7 +29,7 @@ fwr.setBufferSize(100004)
 fwr.setMaxSize(1000003)
 
 prbsA = rogue.utilities.Prbs()
-pyrogue.streamConnect(prbsA,fwr.getPort(0x5,0x8))
+pyrogue.streamConnect(prbsA,fwr.getChannel(0x5))
 
 fwr.open("test.dat")
 

@@ -142,7 +142,7 @@ void ruf::StreamReader::runThread() {
             }
 
             // Request frame
-            frame = reqFrame(size,true);
+            frame = reqFrame(size,true,0);
             frame->setFlags(flags);
 
             // Populate frame

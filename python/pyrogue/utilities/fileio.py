@@ -22,8 +22,8 @@ import rogue.utilities
 import rogue.utilities.fileio
 import pyrogue
 
-class StreamWriterDevice(pyrogue.Device):
-    """Stream Writer Device Wrapper"""
+class StreamWriter(pyrogue.Device):
+    """Stream Writer Wrapper"""
 
     def __init__(self, parent, name):
 
@@ -84,12 +84,12 @@ class StreamWriterDevice(pyrogue.Device):
         self.fileSize.readAndGet()
         self.bankCount.readAndGet()
 
-    def getWriter(self):
-        return self._writer
+    def getChannel(self,chan):
+        return self._writer.getChannel(chan)
 
 
-class StreamReaderDevice(pyrogue.Device):
-    """Stream Reader Device Wrapper"""
+class StreamReader(pyrogue.Device):
+    """Stream Reader Wrapper"""
 
     def __init__(self, parent, name):
 
@@ -112,13 +112,13 @@ class StreamReaderDevice(pyrogue.Device):
                          setFunction="""\
                                      if self._parent._open != int(value):
                                          if int(value) == 0:
-                                             self._parent._writer.close()
+                                             self._parent._reader.close()
                                          else:
-                                             self._parent._writer.open(self._parent._file)
+                                             self._parent._reader.open(self._parent._file)
                                          self._parent._enable = int(value)
                                      """,
                          getFunction='value = self._parent._open')
 
-    def getReader(self):
-        return self._writer
+    def _getStreamMaster(self):
+        return self._reader
 
