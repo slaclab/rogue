@@ -154,7 +154,7 @@ void rim::Block::backgroundWrite() {
 //! Generate blocking write transaction
 void rim::Block::blockingWrite() {
    reqTransaction(true,false);
-   getUpdated();
+   lockAndCheck(true);
 }
 
 //! Generate posted write transaction

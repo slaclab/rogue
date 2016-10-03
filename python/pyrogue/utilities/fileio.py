@@ -81,6 +81,9 @@ class StreamWriter(pyrogue.Device):
         self.fileSize.read()
         self.bankCount.read()
 
+        self.fileSize._updated()
+        self.bankCount._updated()
+
     def _pollOthers(self):
         self._readOthers()
 

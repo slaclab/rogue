@@ -103,6 +103,13 @@ class Prbs(pyrogue.Device):
         self.rxCount.read()
         self.txBytes.read()
 
+        self.rxErrors._updated()
+        self.rxCount._updated()
+        self.rxBytes._updated()
+        self.rxErrors._updated()
+        self.rxCount._updated()
+        self.txBytes._updated()
+
     def _pollOthers(self):
         self._readOthers()
 

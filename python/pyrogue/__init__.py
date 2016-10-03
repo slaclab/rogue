@@ -415,10 +415,12 @@ class Device(Node,rogue.interfaces.memory.Master):
 
     def _readOthers(self):
         """Method to read and update non block based variables. Called from readAllBlocks."""
+        # Be sure to call variable._updated() on variables to propogate changes to listeners
         pass
 
     def _pollOthers(self):
         """Method to poll and update non block based variables. Called from pollAllBlocks."""
+        # Be sure to call variable._updated() on variables to propogate changes to listeners
         pass
 
 
