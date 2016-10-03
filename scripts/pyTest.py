@@ -44,7 +44,7 @@ def wyaml(top):
       yaml.dump(top.getStructure())
 
 # Set base
-root = pyrogue.Root()
+evalBoard = pyrogue.Root('evalBoard')
 
 # Create the PGP interfaces
 pgpVc0 = rogue.hardware.pgp.PgpCard('/dev/pgpcard_0',0,0)
@@ -59,7 +59,7 @@ srp = rogue.protocols.srp.SrpV0()
 pyrogue.streamConnectBiDir(pgpVc0,srp)
 
 # File writer 
-dataFile = pyrogue.utilities.fileio.StreamWriter(root,'dataFile')
+dataFile = pyrogue.utilities.fileio.StreamWriter(evalBoard,'dataFile')
 
 # Add data stream to file as channel 1
 pyrogue.streamConnect(pgpVc1,dataFile.getChannel(0x1))
@@ -68,10 +68,10 @@ pyrogue.streamConnect(pgpVc1,dataFile.getChannel(0x1))
 pyrogue.streamConnect(pgpVc3,dataFile.getChannel(0x2))
 
 # Add configuration stream to file as channel 0
-pyrogue.streamConnect(root,dataFile.getChannel(0x0))
+pyrogue.streamConnect(evalBoard,dataFile.getChannel(0x0))
 
 # PRBS Receiver as secdonary receiver for VC1
-prbsRx = pyrogue.utilities.Prbs(root,'prbsRx')
+prbsRx = pyrogue.utilities.Prbs(evalBoard,'prbsRx')
 pyrogue.streamTap(pgpVc1,prbsRx)
 
 # Microblaze console connected to VC2
@@ -79,5 +79,5 @@ mbcon = MbDebug()
 pyrogue.streamTap(pgpVc3,mbcon)
 
 # Add Devices
-version = pyrogue.devices.axi.AxiVersion(parent=root,name='axiVersion',memBase=srp)
+version = pyrogue.devices.axi.AxiVersion(parent=evalBoard,name='axiVersion',memBase=srp)
 

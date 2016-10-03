@@ -91,160 +91,94 @@ class NodeError(Exception):
     pass
 
 
-def getStructure(obj):
-    """Recursive function to generate a dictionary for the structure"""
-    data = {}
-    for key,value in obj.__dict__.iteritems():
-       if not callable(value) and not key.startswith('_'):
-          if isinstance(value,Node):
-              data[key] = getStructure(value)
-          else:
-              data[key] = value
-    return data
-
-
-def getConfig(obj):
-    """Recursive function to generate a dictionary for the configuration"""
-    data = {}
-    for key,value in obj.__dict__.iteritems():
-        if isinstance(value,Device):
-            data[key] = getConfig(value)
-        elif isinstance(value,Variable) and value.mode=='RW':
-            data[key] = value.get()
-    return data
-
-
-def setConfig(obj,d):
-    """Recursive function to set configuration from a dictionary"""
-    for key, value in d.iteritems():
-        v = getattr(obj,key)
-        if isinstance(v,Device):
-            setConfig(v,value)
-        elif isinstance(v,Variable):
-            v.set(value)
-
-
-def getAtPath(obj,path):
-    """Recursive function to return object at passed path"""
-    if not '.' in path:
-        return getattr(obj,path)
-    else:
-        base = path[:path.find('.')]
-        rest = path[path.find('.')+1:]
-        return(getAtPath(getattr(obj,base),rest))
-
-
 class Root(rogue.interfaces.stream.Master):
     """System base"""
 
-    def __init__(self):
+    def __init__(self,name):
         rogue.interfaces.stream.Master.__init__(self)
 
-        self.__updated = []
-        self.__errorLog = []
+        self.name = name
 
         # Config write command exposed to higher level
         Command(parent=self, name='writeConfig',description='Write Configuration',
-           function=self._writeConfig)
+           function=self._writeYamlConfig)
 
         # Config read command exposed to higher level
         Command(parent=self, name='readConfig',description='Read Configuration',
-           function=self._readConfig)
-
-    # Track updated variables
-    def _variableUpdated(self,node):
-        if not (node in self.__updated):
-            self.__updated.append(node)
-
-    # Add an entry
-    def _addNode(self,node):
-        if hasattr(self,node.name):
-            raise NodeError('Invalid %s name %s. Name already exists' % (node.classType,node.name))
-        else:
-            setattr(self,node.name,node)
+           function=self._readYamlConfig)
 
     # Push configuration on stream
     def streamConfig(self):
+        """Push confiuration string out on a stream"""
         s = self.getYamlConfig()
-        f = self._reqFrame(len(s),True)
+        f = self._reqFrame(len(s),True,0)
         b = bytearray()
         b.extend(s)
         f.write(b,0)
         self._sendFrame(f)
 
-    # Generate structure
     def getStructure(self):
-        return getStructure(self)
+        """Get structure as a dictionary"""
+        return {self.name:_getStructure(self)}
 
-    # Get copy of updated list and clear
-    def getUpdated(self):
-        ret = self.__updated
-        self.__updated = []
-        return ret
+    def getYamlStructure(self):
+        """Get structure as a yaml string"""
+        return yaml.dump(self.getStructure(),default_flow_style=False)
 
-    def readAll(self):
-        """Read all"""
+    def getConfig(self):
+        """Get configuration as a dictionary"""
+        self.readAll()
+        return {self.name:_getConfig(self)}
 
-        # Generate transactions for sub devices
-        for key,dev in self.__dict__.iteritems():
-            if isinstance(dev,Device):
-                dev.readAll()
-            
+    def getYamlConfig(self):
+        """Get configuration as a yaml string"""
+        return yaml.dump(self.getConfig(),default_flow_style=False)
+
+    def setConfig(self,d):
+        """Set configuration from a dictionary"""
+        for key, value in d.iteritems():
+            if key == self.name:
+                _setConfig(self,value)
+        self.writeAll()
+
+    def setYamlConfig(self,yml):
+        """Set configuration from a yaml string"""
+        d = yaml.load(yml)
+        self.setConfig(d)
+
     def writeAll(self):
-        """Write all with error check"""
-
-        # Generate transactions for sub devices
-        for key,dev in self.__dict__.iteritems():
-            if isinstance(dev,Device):
-                dev.writeAll()
+        """Write all blocks"""
+        _writeAll(self)
 
     def writeStale(self):
-        """Write stale with error check"""
+        """Write stale blocks"""
+        _writeStale(self)
 
-        # Generate transactions for sub devices
-        for key,dev in self.__dict__.iteritems():
-            if isinstance(dev,Device):
-                dev.writeStale()
+    def readAll(self):
+        """Read all blocks"""
+        _readAll(self)
 
-    def _writeConfig(self,cmd,arg):
+    def readPollable(self):
+        """Read pollable blocks"""
+        _readPollable(self)
+
+    def checkUpdatedBlocks(self):
+        """Check status of updated blocks"""
+        _checkUpdatedBlocks(self)
+
+    def getAtPath(self,path):
+        """Get dictionary entry at path"""
+        return(_getAtPath(self,path))
+
+    def _writeYamlConfig(self,cmd,arg):
+        """Write YAML configuration to a file. Called from command"""
         with open(arg,'w') as f:
             f.write(self.getYamlConfig())
 
-    def getYamlConfig(self):
-        return yaml.dump(getConfig(self),default_flow_style=False)
-
-    def _readConfig(self,cmd,arg):
+    def _readYamlConfig(self,cmd,arg):
+        """Read YAML configuration from a file. Called from command"""
         with open(arg,'r') as f:
             self.setYamlConfig(f.read())
-
-    def setYamlConfig(self,yml):
-        d = yaml.load(yml)
-        setConfig(self,d)
-        self.writeAll()
-
-    def set(self,path,value):
-        v = getAtPath(self,path)
-        v.set(value)
-
-    def setAndWrite(self,path,value):
-        v = getAtPath(self,path)
-        v.setAndWrite(value)
-
-    def setAndWait(self,path,value):
-        v = getAtPath(self,path)
-        v.setAndWait(value)
-
-    def get(self,path):
-        v = getAtPath(self,path)
-        return(v.get())
-
-    def readAndGet(self,path):
-        v = getAtPath(self,path)
-        return(v.readAndGet())
-
-    def command(self,path,arg=None):
-        v = getAtPath(self,path)
-        v(arg)
 
 
 class Node(object):
@@ -266,16 +200,13 @@ class Node(object):
             self.path  = parent.path + "." + self.name
         else:
             self._root = parent
-            self.path  = self.name
+            self.path  = parent.name + "." + self.name
 
         # Add to parent list
-        self._parent._addNode(self)
-
-    def _addNode(self,node):
-        if hasattr(self,node.name):
-            raise NodeError('Invalid %s name %s. Name already exists' % (node.classType,node.name))
+        if hasattr(self._parent,self.name):
+            raise NodeError('Invalid %s name %s. Name already exists' % (self.classType,self.name))
         else:
-            setattr(self,node.name,node)
+            setattr(self._parent,self.name,self)
 
 
 class Variable(Node):
@@ -317,6 +248,8 @@ class Variable(Node):
                     self._block.setString(value)
                 else:
                     self._block.setUInt(self.bitOffset,self.bitSize,value)
+
+            self._updated()
         else:
             raise VariableError('Attempt to set variable with mode %s' % (self.mode))
                 
@@ -341,33 +274,30 @@ class Variable(Node):
             raise VariableError('Attempt to get variable with mode %s' % (self.mode))
 
     def _updated(self):
-        self._root._variableUpdated(self)
+        """Placeholder for calling listeners when variable is updated"""
+        pass
 
     def set(self,value):
-        """Set a value to shadow memory without writing"""
+        """Set a value without writing to hardware"""
         self._intSet(value)
-        self._updated()
 
-    def setAndWrite(self,value):
-        """Set a value to shadow memory with background write"""
+    def write(self,value):
+        """Set a value with write to hardware"""
         self._intSet(value)
-        self._block.backgroundWrite()
-        self._updated()
+        if self._block: self._block.blockingWrite()
 
-    def setAndWait(self,value):
-        """Set a value to shadow memory with blocking write"""
+    def writePosted(self,value):
+        """Set a value with posted write to hardware"""
         self._intSet(value)
-        self._block.blockingWrite()
-        self._updated()
+        if self._block: self._block.postedWrite()
 
     def get(self):
         """Get a value from shadow memory"""
         return self._intGet()
 
-    def readAndGet(self):
-        """Get a value from shadow memory after blocking read"""
-        self._block.blockingRead()
-        self._updated()
+    def read(self):
+        """Get a value after read from hardware"""
+        if self._block: self._block.blockingRead()
         return self._intGet()
 
 
@@ -422,10 +352,11 @@ class Block(rogue.interfaces.memory.Block):
             elif self.mode != variable.mode:
                 self.mode = 'RW'
 
-    # Generate variable updates to base level
-    def _genVariableUpdates(self):
-        for variable in self.variables:
-            variable._updated()
+    # Generate variable updates if block has been updated
+    def _checkUpdated(self):
+        if block.getUpdated():
+            for variable in self.variables:
+                variable._updated()
 
 
 class Device(Node,rogue.interfaces.memory.Master):
@@ -443,7 +374,7 @@ class Device(Node,rogue.interfaces.memory.Master):
 
         # Adjust position in tree
         if memBase:
-            self.setMemBase(memBase,offset)
+            self._setMemBase(memBase,offset)
         elif isinstance(self._parent,rogue.interfaces.memory.Master):
             self._inheritFrom(self._parent)
 
@@ -460,12 +391,12 @@ class Device(Node,rogue.interfaces.memory.Master):
     def _getEnable(self,var):
         return(self._enable)
 
-    def setMemBase(self,memBase,offset):
+    def _setMemBase(self,memBase,offset=None):
         """Connect to memory slave at offset"""
-        self._setAddress(offset)
+        if offset: self._setAddress(offset)
 
-        # Device is a master (Device)
-        if isinstance(memBase,rogue.interfaces.memory.Master):
+        # Membase is a Device
+        if isinstance(memBase,Device):
             # Inhertit base address and slave pointer from one level up
             self._inheritFrom(memBase)
 
@@ -480,85 +411,113 @@ class Device(Node,rogue.interfaces.memory.Master):
         # Adust address map in sub devices
         for key,dev in self.__dict__.iteritems():
             if isinstance(dev,Device):
-                dev._inheritFrom(self)
+                dev._setMemBase(self)
 
-    def readAll(self):
-        """Read all with error check"""
-        if self._enable:
+    def _readOthers(self):
+        """Method to read and update non block based variables. Called from readAllBlocks."""
+        pass
 
-            # Generate transactions for local blocks
-            for block in self._blocks:
-                if block.mode == 'RO' or block.mode == 'RW':
-                    block.backgroundRead()
+    def _pollOthers(self):
+        """Method to poll and update non block based variables. Called from pollAllBlocks."""
+        pass
 
-            # Generate transactions for sub devices
-            for key,dev in self.__dict__.iteritems():
-                if isinstance(dev,Device):
-                    dev.readAll()
 
-            # Check status of local blocks
-            for block in self._blocks:
-                if block.mode == 'RO' or block.mode == 'RW':
-                    block.checkError()
-                    block._genVariableUpdates()
+def _getStructure(obj):
+    """Recursive function to generate a dictionary for the structure"""
+    data = {}
+    for key,value in obj.__dict__.iteritems():
+       if not callable(value) and not key.startswith('_'):
+          if isinstance(value,Node):
+              data[key] = _getStructure(value)
+          else:
+              data[key] = value
 
-    def readPoll(self):
-        """Read all with error check"""
-        if self._enable:
+    return data
 
-            # Generate transactions for local blocks
-            for block in self._blocks:
-                if block.pollEn and (block.mode == 'RO' or block.mode == 'RW'):
-                    block.backgroundRead()
 
-            # Generate transactions for sub devices
-            for key,dev in self.__dict__.iteritems():
-                if isinstance(dev,Device):
-                    dev.readPoll()
+def _getConfig(obj):
+    """Recursive function to generate a dictionary for the configuration"""
+    data = {}
+    for key,value in obj.__dict__.iteritems():
+        if isinstance(value,Device):
+            data[key] = _getConfig(value)
+        elif isinstance(value,Variable) and value.mode=='RW':
+            data[key] = value.get()
 
-            # Check status of local blocks
-            for block in self._blocks:
-                if block.pollEn and (block.mode == 'RO' or block.mode == 'RW'):
-                    block.checkError()
-                    block._genVariableUpdates()
+    return data
 
-    def writeAll(self):
-        """Write all with error check"""
-        if self._enable:
 
-            # Generate transactions for local blocks
-            for block in self._blocks:
+def _setConfig(obj,d):
+    """Recursive function to set configuration from a dictionary"""
+    for key, value in d.iteritems():
+        v = getattr(obj,key)
+        if isinstance(v,Device):
+            _setConfig(v,value)
+        elif isinstance(v,Variable):
+            v.set(value)
+
+
+def _writeAll(obj):
+    """Recursive function to write all blocks in each Device"""
+    for key,value in obj.__dict__.iteritems():
+        if isinstance(value,Device):
+            for block in value._blocks:
                 if block.mode == 'WO' or block.mode == 'RW':
                     block.backgroundWrite()
+            _writeAll(value)
 
-            # Generate transactions for sub devices
-            for key,dev in self.__dict__.iteritems():
-                if isinstance(dev,Device):
-                    dev.writeAll()
 
-            # Check status of local blocks
-            for block in self._blocks:
-                if block.mode == 'WO' or block.mode == 'RW':
-                    block.checkError()
-                    block._genVariableUpdates()
-
-    def writeStale(self):
-        """Write stale with error check"""
-        if self._enable:
-
-            # Generate transactions for local blocks
-            for block in self._blocks:
+def _writeStale(obj):
+    """Recursive function to write stale blocks in each Device"""
+    for key,value in obj.__dict__.iteritems():
+        if isinstance(value,Device):
+            for block in value._blocks:
                 if block.getStale() and (block.mode == 'WO' or block.mode == 'RW'):
                     block.backgroundWrite()
+            _writeStale(value)
 
-            # Generate transactions for sub devices
-            for key,dev in self.__dict__.iteritems():
-                if isinstance(dev,Device):
-                    dev.writeStale()
 
-            # Check status of local blocks
-            for block in self._blocks:
-                if block.mode == 'WO' or block.mode == 'RW':
-                    block.checkError()
-                    block._genVariableUpdates()
+def _readAll(obj):
+    """Recursive function to read all of the blocks in each Device"""
+    for key,value in obj.__dict__.iteritems():
+        if isinstance(value,Device):
+            for block in value._blocks:
+                if block.mode == 'RO' or block.mode == 'RW':
+                    block.backgroundRead()
+
+            value._readOthers()
+            _readAll(value)
+
+
+def _readPollable(obj):
+    """Recursive function to read pollable blocks in each Device"""
+    for key,value in obj.__dict__.iteritems():
+        if isinstance(value,Device):
+            for block in value._blocks:
+                if block.pollEn and (block.mode == 'RO' or block.mode == 'RW'):
+                    block.backgroundRead()
+
+            value._pollOthers()
+            _readPollable(value)
+
+
+def _checkUpdatedBlocks(obj):
+    """Recursive function to check status of all blocks in each Device"""
+    for key,value in obj.__dict__.iteritems():
+        if isinstance(value,Device):
+            for block in value._blocks:
+                block._checkUpdated()
+
+            _checkUpdatedBlocks(value)
+
+
+def _getAtPath(obj,path):
+    """Recursive function to return object at passed path"""
+    if not '.' in path:
+        return getattr(obj,path)
+    else:
+        base = path[:path.find('.')]
+        rest = path[path.find('.')+1:]
+        return(_getAtPath(getattr(obj,base),rest))
+
 

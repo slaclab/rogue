@@ -46,8 +46,10 @@ rim::Block::Block(uint64_t address, uint32_t size ) : Master (address,size) {
    timeout_ = 1000000; // One second
    error_   = 0;
    stale_   = 0;
+   write_   = 0;
    busy_    = false;
    enable_  = true;
+   updated_ = false;
 
    if ( (data_ = (uint8_t *)malloc(size)) == NULL ) 
       throw(re::AllocationException("Block::Block",size));
@@ -85,9 +87,17 @@ uint32_t rim::Block::getError() {
    return(error_);
 }
 
-//! Get error state 
-void rim::Block::checkError() {
+//! Get and clear updated state, raise exception if error
+/*
+ * Update state is set to true each time a read or write
+ * transaction completes.
+ */
+bool rim::Block::getUpdated() {
+   bool ret;
    boost::unique_lock<boost::mutex> lck = lockAndCheck(true);
+   ret = updated_;
+   updated_ = false;
+   return ret;
 }
 
 //! Get stale state
@@ -133,7 +143,7 @@ void rim::Block::backgroundRead() {
 //! Generate blocking read transaction
 void rim::Block::blockingRead() {
    reqTransaction(false,false);
-   lockAndCheck(true);
+   getUpdated();
 }
 
 //! Generate background write transaction
@@ -144,7 +154,7 @@ void rim::Block::backgroundWrite() {
 //! Generate blocking write transaction
 void rim::Block::blockingWrite() {
    reqTransaction(true,false);
-   lockAndCheck(true);
+   getUpdated();
 }
 
 //! Generate posted write transaction
@@ -161,8 +171,9 @@ void rim::Block::reqTransaction(bool write, bool posted) {
       // Don't do transaction when disabled
       if ( enable_ == false ) return;
 
-      error_   = 0;
-      busy_    = true;
+      write_ = write;
+      error_ = 0;
+      busy_  = true;
 
    } // End scope of lck
 
@@ -178,9 +189,12 @@ void rim::Block::doneTransaction(uint32_t error) {
       boost::lock_guard<boost::mutex> lck(mtx_); // Will succeedd if busy is set
       if ( busy_ == false ) return; // Transaction was not active,
                                     // message was received after timeout.
-      busy_  = false;
-      error_ = error;
-      if ( error == 0 ) stale_ = false;
+      busy_    = false;
+      error_   = error;
+      if ( error == 0 ) {
+         if ( ! write_ ) updated_ = true;
+         stale_   = false;
+      }
 
    } // End scope of lck
    busyCond_.notify_one();
@@ -302,7 +316,7 @@ void rim::Block::setup_python() {
       .def("setEnable",       &rim::Block::setEnable)
       .def("getEnable",       &rim::Block::getEnable)
       .def("getError",        &rim::Block::getError)
-      .def("checkError",      &rim::Block::checkError)
+      .def("getUpdated",      &rim::Block::getUpdated)
       .def("getStale",        &rim::Block::getStale)
       .def("backgroundRead",  &rim::Block::backgroundRead)
       .def("blockingRead",    &rim::Block::blockingRead)

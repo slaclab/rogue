@@ -95,14 +95,14 @@ class Prbs(pyrogue.Device):
     def _getStreamMaster(self):
         return self._prbs
 
-    def readAll(self):
-        self.readPoll()
+    def _readOthers(self):
+        self.rxErrors.read()
+        self.rxCount.read()
+        self.rxBytes.read()
+        self.rxErrors.read()
+        self.rxCount.read()
+        self.txBytes.read()
 
-    def readPoll(self):
-        self.rxErrors.readAndGet()
-        self.rxCount.readAndGet()
-        self.rxBytes.readAndGet()
-        self.rxErrors.readAndGet()
-        self.rxCount.readAndGet()
-        self.txBytes.readAndGet()
+    def _pollOthers(self):
+        self._readOthers()
 

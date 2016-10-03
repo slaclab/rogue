@@ -77,12 +77,12 @@ class StreamWriter(pyrogue.Device):
                          bitSize=32, bitOffset=0, base='uint', mode='RO',
                          setFunction=None, getFunction='value = self._parent._writer.getBankCount()')
 
-    def readAll(self):
-        self.readPoll()
+    def _readOthers(self):
+        self.fileSize.read()
+        self.bankCount.read()
 
-    def readPoll(self):
-        self.fileSize.readAndGet()
-        self.bankCount.readAndGet()
+    def _pollOthers(self):
+        self._readOthers()
 
     def getChannel(self,chan):
         return self._writer.getChannel(chan)

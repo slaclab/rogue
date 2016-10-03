@@ -61,6 +61,12 @@ namespace rogue {
                //! Transaction is busy
                bool busy_;
 
+               //! Block updated state, set in doneTransaction
+               bool updated_;
+
+               //! Current transaction is a write
+               bool write_;
+
                //! Block is enabled for memory access
                bool enable_;
 
@@ -97,8 +103,8 @@ namespace rogue {
                //! Get error state without exception
                uint32_t getError();
 
-               //! Check error state with exception
-               void checkError();
+               //! Get and clear updated state, raise exception if error
+               bool getUpdated();
 
                //! Get stale state
                bool getStale();
