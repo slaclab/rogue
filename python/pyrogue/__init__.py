@@ -168,7 +168,20 @@ class Root(rogue.interfaces.stream.Master):
 
     def getAtPath(self,path):
         """Get dictionary entry at path"""
-        return(_getAtPath(self,path))
+
+        if not '.' in path:
+            if path == self.name: 
+                return self
+            else:
+                return None
+        else:
+            base = path[:path.find('.')]
+            rest = path[path.find('.')+1:]
+
+            if base == self.name:
+                return(_getAtPath(self,rest))
+            else:
+                return None
 
     def _writeYamlConfig(self,cmd,arg):
         """Write YAML configuration to a file. Called from command"""
@@ -516,7 +529,10 @@ def _checkUpdatedBlocks(obj):
 def _getAtPath(obj,path):
     """Recursive function to return object at passed path"""
     if not '.' in path:
-        return getattr(obj,path)
+        if hasattr(obj,path):
+            return getattr(obj,path)
+        else:
+            return None
     else:
         base = path[:path.find('.')]
         rest = path[path.find('.')+1:]
