@@ -138,7 +138,7 @@ class AxiVersion(pyrogue.Device):
         # python commands in a string. Function calls are executed in the command scope
         # the passed arg is available as 'arg'. Use self._parent to get to device scope.
         pyrogue.Command(parent=self, name='masterReset',description='Master Reset',
-           function='self._parent.MasterReset.setAndWrite(1)')
+           function='self._parent.masterResetVar.write(1)')
        
         # A command can also be a call to a local function with local scope.
         # The command object and the arg are passed
@@ -146,7 +146,7 @@ class AxiVersion(pyrogue.Device):
            function=self.cmdFpgaReload)
 
         pyrogue.Command(parent=self, name='counterReset',description='Counter Reset',
-           function='self._parent.Counter.setAndWrite(1)')
+           function='self._parent.counter.write(1)')
 
         # Example printing the arg and showing a larger block. The indentation will be adjusted.
         pyrogue.Command(parent=self, name='testCommand',description='Test Command',
@@ -156,9 +156,16 @@ class AxiVersion(pyrogue.Device):
                     print("My device is %s" % (self._parent.name))
                     """)
 
+        # Alternative function for CPSW compatability
+        # Pass a dictionary of numbered variable, value pairs to generate a CPSW sequence
+        pyrogue.Command(parent=self, name='testCpsw',description='Test CPSW',
+              function={ 1: { 'masterResetVar': 1 },
+                         2: { 'usleep': 100 },
+                         3: { 'counter': 1 } })
+
     # Example command function
     def cmdFpgaReload(self,cmd,arg):
-        self.FpgaReload.setAndWrite(1)
+        self.fpgaReload.write(1)
 
     # Example variable set function
     def setVariableExample(self,var,value):

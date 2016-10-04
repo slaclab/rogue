@@ -1,11 +1,16 @@
 
+setenv PYDIR /afs/slac/g/lcls/package/python/python2.7.9/linux-x86_64/
+
+# Setup python path
 setenv PYTHONPATH ${PWD}/build:${PWD}/python
-setenv PYTHON_CFG python2.7-config
+
+# Setup path
+setenv PATH ${PYDIR}/bin:${PATH}
 
 # Setup library path
 if ($?LD_LIBRARY_PATH) then
-   setenv LD_LIBRARY_PATH ${PWD}/build:${LD_LIBRARY_PATH}
+   setenv LD_LIBRARY_PATH ${PWD}/build:${PYDIR}/lib:${LD_LIBRARY_PATH}
 else
-   setenv LD_LIBRARY_PATH ${PWD}/build
+   setenv LD_LIBRARY_PATH ${PWD}/build:${PYDIR}/lib
 endif
 

@@ -20,10 +20,13 @@
 #-----------------------------------------------------------------------------
 import rogue.hardware.pgp
 import pyrogue.devices.axi
-import pyrogue.utilities
+import pyrogue.utilities.prbs
 import pyrogue.utilities.fileio
+import pyrogue.gui
 import yaml
 import time
+import sys
+import PyQt4.QtCore
 
 # Microblaze console printout
 class MbDebug(rogue.interfaces.stream.Slave):
@@ -59,19 +62,19 @@ srp = rogue.protocols.srp.SrpV0()
 pyrogue.streamConnectBiDir(pgpVc0,srp)
 
 # File writer 
-dataFile = pyrogue.utilities.fileio.StreamWriter(evalBoard,'dataFile')
+dataWriter = pyrogue.utilities.fileio.StreamWriter(evalBoard,'dataWriter')
 
 # Add data stream to file as channel 1
-pyrogue.streamConnect(pgpVc1,dataFile.getChannel(0x1))
+pyrogue.streamConnect(pgpVc1,dataWriter.getChannel(0x1))
 
 ## Add console stream to file as channel 2
-pyrogue.streamConnect(pgpVc3,dataFile.getChannel(0x2))
+pyrogue.streamConnect(pgpVc3,dataWriter.getChannel(0x2))
 
 # Add configuration stream to file as channel 0
-pyrogue.streamConnect(evalBoard,dataFile.getChannel(0x0))
+pyrogue.streamConnect(evalBoard,dataWriter.getChannel(0x0))
 
 # PRBS Receiver as secdonary receiver for VC1
-prbsRx = pyrogue.utilities.Prbs(evalBoard,'prbsRx')
+prbsRx = pyrogue.utilities.prbs.PrbsRx(evalBoard,'prbsRx')
 pyrogue.streamTap(pgpVc1,prbsRx)
 
 # Microblaze console connected to VC2
@@ -80,4 +83,7 @@ pyrogue.streamTap(pgpVc3,mbcon)
 
 # Add Devices
 version = pyrogue.devices.axi.AxiVersion(parent=evalBoard,name='axiVersion',memBase=srp)
+
+# Create GUI
+gui = pyrogue.gui.GuiThread(evalBoard)
 

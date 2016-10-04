@@ -45,11 +45,11 @@ class StreamWriter(pyrogue.Device):
                          bitSize=1, bitOffset=0, base='bool', mode='RW',
                          setFunction="""\
                                      if self._parent._open != value:
-                                         if value == 0:
+                                         if value == False:
                                              self._parent._writer.close()
                                          else:
                                              self._parent._writer.open(self._parent._file)
-                                         self._parent._enable = value
+                                         self._parent._open = value
                                      """,
                          getFunction='value = self._parent._open')
 
@@ -73,16 +73,16 @@ class StreamWriter(pyrogue.Device):
                          bitSize=32, bitOffset=0, base='uint', mode='RO',
                          setFunction=None, getFunction='value = self._parent._writer.getSize()')
 
-        pyrogue.Variable(parent=self, name='bankCount', description='Total banks in file',
+        pyrogue.Variable(parent=self, name='frameCount', description='Total frames in file',
                          bitSize=32, bitOffset=0, base='uint', mode='RO',
-                         setFunction=None, getFunction='value = self._parent._writer.getBankCount()')
+                         setFunction=None, getFunction='value = self._parent._writer.getFrameCount()')
 
     def _readOthers(self):
         self.fileSize.read()
-        self.bankCount.read()
+        self.frameCount.read()
 
         self.fileSize._updated()
-        self.bankCount._updated()
+        self.frameCount._updated()
 
     def _pollOthers(self):
         self._readOthers()
@@ -114,11 +114,11 @@ class StreamReader(pyrogue.Device):
                          bitSize=1, bitOffset=0, base='bool', mode='RW',
                          setFunction="""\
                                      if self._parent._open != int(value):
-                                         if int(value) == 0:
+                                         if value == False:
                                              self._parent._reader.close()
                                          else:
                                              self._parent._reader.open(self._parent._file)
-                                         self._parent._enable = int(value)
+                                         self._parent._open = value
                                      """,
                          getFunction='value = self._parent._open')
 

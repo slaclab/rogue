@@ -80,8 +80,8 @@ namespace rogue {
                //! File access lock
                boost::mutex mtx_;
 
-               //! Total number of banks in file
-               uint32_t bankCount_;
+               //! Total number of frames in file
+               uint32_t frameCount_;
 
                //! Internal method for file writing 
                void intWrite(void *data, uint32_t size);
@@ -129,8 +129,8 @@ namespace rogue {
                //! Get current file size
                uint32_t getSize();
 
-               //! Get current bank count
-               uint32_t getBankCount();
+               //! Get current frame count
+               uint32_t getFrameCount();
 
          };
 

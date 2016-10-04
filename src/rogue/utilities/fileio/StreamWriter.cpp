@@ -66,7 +66,7 @@ void ruf::StreamWriter::setup_python() {
       .def("setMaxSize",     &ruf::StreamWriter::setMaxSize)
       .def("getChannel",     &ruf::StreamWriter::getChannel)
       .def("getSize",        &ruf::StreamWriter::getSize)
-      .def("getBankCount",   &ruf::StreamWriter::getBankCount)
+      .def("getFrameCount",  &ruf::StreamWriter::getFrameCount)
    ;
 }
 
@@ -79,7 +79,7 @@ ruf::StreamWriter::StreamWriter() {
    currSize_   = 0;
    totSize_    = 0;
    buffer_     = NULL;
-   bankCount_  = 0;
+   frameCount_ = 0;
    currBuffer_ = 0;
 }
 
@@ -103,7 +103,7 @@ void ruf::StreamWriter::open(std::string file) {
 
    totSize_    = 0;
    currSize_   = 0;
-   bankCount_  = 0;
+   frameCount_ = 0;
    currBuffer_ = 0;
 }
 
@@ -156,10 +156,10 @@ uint32_t ruf::StreamWriter::getSize() {
    return(totSize_ + currBuffer_);
 }
 
-//! Get current bank count
-uint32_t ruf::StreamWriter::getBankCount() {
+//! Get current frame count
+uint32_t ruf::StreamWriter::getFrameCount() {
    boost::lock_guard<boost::mutex> lock(mtx_);
-   return(bankCount_);
+   return(frameCount_);
 }
 
 //! Write data to file. Called from StreamWriterChannel
@@ -169,6 +169,8 @@ void ruf::StreamWriter::writeFile ( uint8_t channel, boost::shared_ptr<rogue::in
    uint32_t size;
 
    boost::lock_guard<boost::mutex> lock(mtx_);
+
+   if ( fd_ < 0 ) return;
 
    size = frame->getPayload() + 4;
 
@@ -189,7 +191,7 @@ void ruf::StreamWriter::writeFile ( uint8_t channel, boost::shared_ptr<rogue::in
    } while (frame->nextRead(iter));
 
    // Update counters
-   bankCount_ ++;
+   frameCount_ ++;
 }
 
 //! Internal method for file writing with buffer and auto close and reopen
