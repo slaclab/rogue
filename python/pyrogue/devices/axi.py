@@ -175,3 +175,75 @@ class AxiVersion(pyrogue.Device):
     def getVariableExample(self,var):
         return(var._block.getUInt(var.bitOffset,var.bitSize))
 
+    # Soft reset. Called from top level. Add calls to generate a device specific 'softReset'
+    def _softReset(self):
+      self.counter.write(1)
+
+    # Hard reset. Called from top level. Add calls to generate a device specific 'hardReset'
+    def _hardReset(self):
+      self.masterResetVar.write(1)
+
+    # Count reset. Called from top level. Add calls to generate a device specific 'countReset'
+    def _countReset(self):
+      self.counter.write(1)
+
+
+class AxiPrbsTx(pyrogue.Device):
+    """PRBS Tx"""
+
+    def __init__(self, parent, name, index=None, memBase=None, offset=0):
+
+        pyrogue.Device.__init__(self, parent=parent, name=name, description='HW PRBS Transmitter', 
+                                size=0x100, memBase=memBase, offset=offset)
+
+        pyrogue.Block(parent=self, offset=0x0, size=4, variables = [
+
+            pyrogue.Variable(parent=self, name='axiEn', description='AXI Bus enable',
+                             bitSize=1, bitOffset=0, base='bool', mode='RW'),
+            
+            pyrogue.Variable(parent=self, name='txEn', description='Transmit enable',
+                             bitSize=1, bitOffset=1, base='bool', mode='RW'), 
+
+            pyrogue.Variable(parent=self, name='busy', description='Busy Flag',
+                             bitSize=1, bitOffset=2, base='bool', mode='RO'), 
+
+            pyrogue.Variable(parent=self, name='overflow', description='Overflow Flag',
+                             bitSize=1, bitOffset=3, base='bool', mode='RO'), 
+
+            pyrogue.Variable(parent=self, name='oneShotCmd', hidden=True, description='Oneshot frame generate',
+                             bitSize=1, bitOffset=4, base='bool', mode='CMD'), 
+
+            pyrogue.Variable(parent=self, name='fwCnt', description='????',
+                             bitSize=1, bitOffset=5, base='bool', mode='RW') ])
+
+        pyrogue.Block(parent=self, offset=0x4, size=4, variables = [
+
+            pyrogue.Variable(parent=self, name='packetLength', description='Packet Length Control',
+                             bitSize=32, bitOffset=0, base='uint', mode='RW') ])
+
+        pyrogue.Block(parent=self, offset=0x8, size=4, variables = [
+
+            pyrogue.Variable(parent=self, name='tDest', description='TDEST value for frame',
+                             bitSize=8, bitOffset=0, base='hex', mode='RW'),
+
+            pyrogue.Variable(parent=self, name='tId', description='TID value for frame',
+                             bitSize=8, bitOffset=8, base='hex', mode='RW') ])
+
+        pyrogue.Block(parent=self, offset=0xC, size=4, pollEn=True, variables = [
+
+            pyrogue.Variable(parent=self, name='dataCount', description='Data counter',
+                             bitSize=32, bitOffset=0, base='uint', mode='RO') ])
+
+        pyrogue.Block(parent=self, offset=0x10, size=4, pollEn=True, variables = [
+
+            pyrogue.Variable(parent=self, name='eventCount', description='Event counter',
+                             bitSize=32, bitOffset=0, base='uint', mode='RO') ])
+
+        pyrogue.Block(parent=self, offset=0x14, size=4, pollEn=True, variables = [
+
+            pyrogue.Variable(parent=self, name='randomData', description='Random data',
+                             bitSize=32, bitOffset=0, base='uint', mode='RO') ])
+
+        pyrogue.Command(parent=self, name='oneShot',description='Generate a single frame',
+              function={ 1: { 'oneShotCmd': 1 } })
+

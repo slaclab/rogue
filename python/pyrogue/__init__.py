@@ -118,12 +118,24 @@ class Root(rogue.interfaces.stream.Master):
         self._poller = Poller(self)
 
         # Config write command exposed to higher level
-        Command(parent=self, name='writeConfig',description='Write Configuration', base='string',
+        Command(parent=self, name='writeConfig',description='Write Configuration', base='string', hidden=True,
            function=self._writeYamlConfig)
 
         # Config read command exposed to higher level
-        Command(parent=self, name='readConfig',description='Read Configuration', base='string',
+        Command(parent=self, name='readConfig',description='Read Configuration', base='string', hidden=True,
            function=self._readYamlConfig)
+
+        # Soft reset
+        Command(parent=self, name='softReset',description='Soft Reset', hidden=True,
+           function=self._softReset)
+
+        # Hard reset
+        Command(parent=self, name='hardReset',description='Hard Reset', hidden=True,
+           function=self._hardReset)
+
+        # Count reset
+        Command(parent=self, name='countReset',description='Count Reset', hidden=True,
+           function=self._hardReset)
 
         # Polling period variable
         Variable(parent=self, name='pollPeriod', description='Polling Period', base='float', mode='RW', 
@@ -223,6 +235,15 @@ class Root(rogue.interfaces.stream.Master):
         with open(arg,'r') as f:
             self.setYamlConfig(f.read())
 
+    def _softReset(self):
+       self.softReset(self)
+
+    def _hardReset(self):
+       self.hardReset(self)
+
+    def _countReset(self):
+       self.countReset(self)
+
 
 class Node(object):
     """Common system node"""
@@ -261,6 +282,8 @@ class Variable(Node):
         """Initialize variable class"""
         # Currently supported bases:
         #    uint, hex, enum, bool, range, string, float
+        # Enums are in the form:
+        #   idx : value
 
         Node.__init__(self,parent,name,description,hidden,'variable')
 
@@ -299,7 +322,8 @@ class Variable(Node):
                 else: val = 0
                 self._block.setUInt(self.bitOffset,self.bitSize,val)
             elif self.base == 'enum':
-                self._block.setUInt(self.bitOffset,self.bitSize,self.enum[value])
+                val = {value: key for key,value in self.enum.iteritems()}[value]
+                self._block.setUInt(self.bitOffset,self.bitSize,val)
             else:
                 self._block.setUInt(self.bitOffset,self.bitSize,value)
 
@@ -318,10 +342,9 @@ class Variable(Node):
             if self.base == 'string':
                 return(self._block.getString())
             elif self.base == 'bool':
-                val = (self._block.getUInt(self.bitOffset,self.bitSize) != 0)
+                return(self._block.getUInt(self.bitOffset,self.bitSize) != 0)
             elif self.base == 'enum':
-                val = self._block.getUInt(self.bitOffset,self.bitSize)
-                return {value: key for key,value in self.enum.iteritems()}[val]
+                return self.enum[self._block.getUInt(self.bitOffset,self.bitSize)]
             else:
                 return(self._block.getUInt(self.bitOffset,self.bitSize))
         else:
@@ -468,17 +491,14 @@ class Device(Node,rogue.interfaces.memory.Master):
             self._inheritFrom(self._parent)
 
         # Variable interface to enable flag
-        Variable(parent=self, name='enable', description='Enable Flag', bitSize=1, 
-                bitOffset=0, base='bool', mode='RW', setFunction=self._setEnable, getFunction=self._getEnable)
+        Variable(parent=self, name='enable', description='Enable Flag', base='bool', mode='RW', 
+                 setFunction=self._setEnable, getFunction='value = self._parent._enable')
 
     def _setEnable(self, var, enable):
         self._enable = enable
 
         for block in self._blocks:
             block.setEnable(enable)
-
-    def _getEnable(self,var):
-        return(self._enable)
 
     def _setMemBase(self,memBase,offset=None):
         """Connect to memory slave at offset"""
@@ -511,6 +531,115 @@ class Device(Node,rogue.interfaces.memory.Master):
         """Method to poll and update non block based variables. Called from pollAllBlocks."""
         # Be sure to call variable._updated() on variables to propogate changes to listeners
         pass
+
+    def _softReset(self):
+        """Method to perform a softReset."""
+        pass
+
+    def _hardReset(self):
+        """Method to perform a hardReset."""
+        pass
+
+    def _countReset(self):
+        """Method to perform a countReset."""
+        pass
+
+
+class DataWriter(Device):
+    """Special base class to control data files"""
+
+    def __init__(self, parent, name):
+        """Initialize device class"""
+
+        Device.__init__(self, parent=parent, name=name, description='Data Writer',
+                        size=0, memBase=None, offset=0, hidden=True)
+
+        self.classType    = 'dataWriter'
+        self._open        = False
+        self._dataFile    = ''
+        self._bufferSize  = 0
+        self._maxFileSize = 0
+
+        Variable(parent=self, name='dataFile', description='Data File', base='string', mode='RW', hidden=True,
+                 setFunction='self._parent._dataFile = value',
+                 getFunction='value = self._parent._dataFile')
+
+        Variable(parent=self, name='open', description='Data file open state',
+                 base='bool', mode='RW', hidden=True,
+                 setFunction=self._setOpen,  # Implement in sub class
+                 getFunction='value = self._parent._open')
+
+        Variable(parent=self, name='bufferSize', description='File buffering size',
+                 base='uint', mode='RW',
+                 setFunction=self._setBufferSize,  # Implement in sub class
+                 getFunction='value = self._parent._bufferSize')
+
+        Variable(parent=self, name='maxSize', description='File maximum size',
+                 base='uint', mode='RW',
+                 setFunction=self._setMaxSize,  # Implement in sub class
+                 getFunction='value = self._parent._maxFileSize')
+
+        Variable(parent=self, name='fileSize', description='File size in bytes',
+                 base='uint', mode='RO',
+                 setFunction=None, getFunction=self._getFileSize)  # Implement in sub class
+
+        Variable(parent=self, name='frameCount', description='Total frames in file',
+                 base='uint', mode='RO',
+                 setFunction=None, getFunction=self._getFrameCount)  # Implement in sub class
+
+    def _readOthers(self):
+        self.fileSize.read()
+        self.frameCount.read()
+
+        self.fileSize._updated()
+        self.frameCount._updated()
+
+    def _pollOthers(self):
+        self._readOthers()
+
+
+class RunControl(Device):
+    """Special base class to control runs"""
+
+    def __init__(self, parent, name):
+        """Initialize device class"""
+
+        Device.__init__(self, parent=parent, name=name, description='Data Writer',
+                        size=0, memBase=None, offset=0, hidden=True)
+
+        self.classType = 'runControl'
+        self._runState = 'Stopped'
+        self._runCount = 0
+        self._runRate  = '1 Hz'
+
+        Variable(parent=self, name='runState', description='Run State', base='Enum', mode='RW', hidden=True,
+                 enum={0:'Stopped', 1:'Running'},
+                 setFunction=self._setRunState,
+                 getFunction='value = self._parent._runState')
+
+        Variable(parent=self, name='runRate', description='Run Rate', base='Enum', mode='RW', hidden=True,
+                 enum={1:'1 Hz',    10:'10 Hz'},
+                 setFunction=self._setRunRate,
+                 getFunction='value = self._parent._runRate')
+
+        Variable(parent=self, name='runCount', description='Run Counter',
+                 base='uint', mode='RO', hidden=True,
+                 setFunction=None, getFunction='value = self._parent._runCount')
+
+    # Reimplement in sub class
+    def _setRunState(self,cmd,value):
+        self._runState = value
+
+    # Reimplement in sub class
+    def _setRunRate(self,cmd,value):
+        self._runRate = value
+
+    def _readOthers(self):
+        self.runCount.read()
+        self.runCount._updated()
+
+    def _pollOthers(self):
+        self._readOthers()
 
 
 def _getStructure(obj):
@@ -619,4 +748,27 @@ def _getAtPath(obj,path):
         rest = path[path.find('.')+1:]
         return(_getAtPath(getattr(obj,base),rest))
 
+
+def _softReset(obj):
+    """Recursive function to execute softReset commands in each device"""
+    for key,value in obj.__dict__.iteritems():
+        if isinstance(value,Device):
+             value._softReset()
+             _softReset(value)
+
+
+def _hardReset(obj):
+    """Recursive function to execute hardReset commands in each device"""
+    for key,value in obj.__dict__.iteritems():
+        if isinstance(value,Device):
+             value._hardReset()
+             _hardReset(value)
+
+
+def _countReset(obj):
+    """Recursive function to execute countReset commands in each device"""
+    for key,value in obj.__dict__.iteritems():
+        if isinstance(value,Device):
+             value._countReset()
+             _countReset(value)
 

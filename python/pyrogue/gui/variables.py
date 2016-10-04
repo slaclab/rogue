@@ -39,15 +39,15 @@ class VariableLink(QObject):
         item.setText(1,variable.mode)
         item.setText(2,variable.base)
 
-        if variable.base == 'enum':
+        if variable.base == 'enum' and variable.mode=='RW':
             self.widget = QComboBox()
             self.widget.activated.connect(self.guiChanged)
             self.connect(self,SIGNAL('updateGui'),self.widget.setCurrentIndex)
 
             for i in sorted(variable.enum):
-                self.widget.addItem(i)
+                self.widget.addItem(variable.enum[i])
 
-        elif variable.base == 'bool':
+        elif variable.base == 'bool' and variable.mode=='RW':
             self.widget = QComboBox()
             self.widget.addItem('False')
             self.widget.addItem('True')
@@ -78,7 +78,7 @@ class VariableLink(QObject):
 
         value = self.variable.get()
 
-        if self.variable.base == 'enum' or self.variable.base == 'bool':
+        if self.variable.mode == 'RW' and (self.variable.base == 'enum' or self.variable.base == 'bool'):
             self.emit(SIGNAL("updateGui"),self.widget.findText(str(value)))
 
         elif self.variable.base == 'range':

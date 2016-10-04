@@ -23,6 +23,7 @@ import pyrogue.devices.axi
 import pyrogue.utilities.prbs
 import pyrogue.utilities.fileio
 import pyrogue.gui
+import threading
 import yaml
 import time
 import sys
@@ -42,9 +43,27 @@ class MbDebug(rogue.interfaces.stream.Slave):
          print('-------- Microblaze Console --------')
          print(p.decode('utf-8'))
 
-def wyaml(top):
-   with open('data.yml','w') as outfile:
-      yaml.dump(top.getStructure())
+
+# Custom run control
+class MyRunControl(pyrogue.RunControl,threading.Thread):
+   def __init__(self,parent,name):
+      threading.Thread.__init__(self)
+      pyrogue.RunControl.__init__(self,parent,name)
+
+   def _setRunState(self,cmd,value):
+      if self._runState != value:
+         self._runState = value
+
+         if self._runState == 'Running':
+            self.start()
+
+   def run(self):
+
+      while (self._runState == 'Running'):
+         delay = 1.0 / ({value: key for key,value in self.runRate.enum.iteritems()}[self._runRate])
+         time.sleep(delay)
+         self._root.axiPrbsTx.oneShot()
+
 
 # Set base
 evalBoard = pyrogue.Root('evalBoard')
@@ -81,8 +100,12 @@ pyrogue.streamTap(pgpVc1,prbsRx)
 mbcon = MbDebug()
 pyrogue.streamTap(pgpVc3,mbcon)
 
+# Add run control
+runC = MyRunControl(evalBoard,'runControl')
+
 # Add Devices
-version = pyrogue.devices.axi.AxiVersion(parent=evalBoard,name='axiVersion',memBase=srp)
+version = pyrogue.devices.axi.AxiVersion(parent=evalBoard,name='axiVersion',memBase=srp,offset=0x0)
+hwPrbs  = pyrogue.devices.axi.AxiPrbsTx(parent=evalBoard,name='axiPrbsTx',memBase=srp,offset=0x30000)
 
 # Create GUI
 gui = pyrogue.gui.GuiThread(evalBoard)

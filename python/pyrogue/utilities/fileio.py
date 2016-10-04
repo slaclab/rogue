@@ -22,70 +22,34 @@ import rogue.utilities
 import rogue.utilities.fileio
 import pyrogue
 
-class StreamWriter(pyrogue.Device):
+class StreamWriter(pyrogue.DataWriter):
     """Stream Writer Wrapper"""
 
     def __init__(self, parent, name):
+        pyrogue.DataWriter.__init__(self,parent=parent, name=name)
+        self._writer = rogue.utilities.fileio.StreamWriter()
 
-        pyrogue.Device.__init__(self, parent=parent, name=name, description='Stream Writer', 
-                                size=0, memBase=None, offset=0)
+    def _setOpen(self,cmd,arg):
+        if self._open != value:
+            if arg == False:
+                self._writer.close()
+            else:
+                self._writer.open(self._dataFile)
+            self._open = value
 
-        self._writer      = rogue.utilities.fileio.StreamWriter()
-        self._file        = ""
-        self._open        = False
-        self._bufferSize  = 0
-        self._maxFileSize = 0
+    def _setBufferSize(self,cmd,arg):
+        self._bufferSize = value
+        self._writer.setBufferSize(value)
 
-        pyrogue.Variable(parent=self, name='dataFile', description='Data File',
-                         bitSize=0, bitOffset=0, base='string', mode='RW',
-                         setFunction='self._parent._file = value',
-                         getFunction='value = self._parent._file')
+    def _setMaxSize(self,cmd,arg):
+        self._maxFileSize = value
+        self._writer.setMaxSize(value)
 
-        pyrogue.Variable(parent=self, name='open', description='Data file open state',
-                         bitSize=1, bitOffset=0, base='bool', mode='RW',
-                         setFunction="""\
-                                     if self._parent._open != value:
-                                         if value == False:
-                                             self._parent._writer.close()
-                                         else:
-                                             self._parent._writer.open(self._parent._file)
-                                         self._parent._open = value
-                                     """,
-                         getFunction='value = self._parent._open')
+    def _getFileSize(self,cmd):
+        return self._writer.getSize()
 
-        pyrogue.Variable(parent=self, name='bufferSize', description='File buffering size',
-                         bitSize=32, bitOffset=0, base='uint', mode='RW',
-                         setFunction="""
-                                     self._parent._bufferSize = value
-                                     self._parent._writer.setBufferSize(value)
-                                     """,
-                         getFunction='value = self._parent._bufferSize')
-
-        pyrogue.Variable(parent=self, name='maxSize', description='File maximum size',
-                         bitSize=32, bitOffset=0, base='uint', mode='RW',
-                         setFunction="""
-                                     self._parent._maxFileSize = value
-                                     self._parent._writer.setMaxSize(value)
-                                     """,
-                         getFunction='value = self._parent._maxFileSize')
-
-        pyrogue.Variable(parent=self, name='fileSize', description='File size in bytes',
-                         bitSize=32, bitOffset=0, base='uint', mode='RO',
-                         setFunction=None, getFunction='value = self._parent._writer.getSize()')
-
-        pyrogue.Variable(parent=self, name='frameCount', description='Total frames in file',
-                         bitSize=32, bitOffset=0, base='uint', mode='RO',
-                         setFunction=None, getFunction='value = self._parent._writer.getFrameCount()')
-
-    def _readOthers(self):
-        self.fileSize.read()
-        self.frameCount.read()
-
-        self.fileSize._updated()
-        self.frameCount._updated()
-
-    def _pollOthers(self):
-        self._readOthers()
+    def _getFrameCount(self,cmd):
+        return self._writer.getFrameCount()
 
     def getChannel(self,chan):
         return self._writer.getChannel(chan)
