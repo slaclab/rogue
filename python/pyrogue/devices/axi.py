@@ -246,5 +246,5 @@ class AxiPrbsTx(pyrogue.Device):
                              bitSize=32, bitOffset=0, base='uint', mode='RO') ])
 
         pyrogue.Command(parent=self, name='oneShot',description='Generate a single frame',
-              function={ 1: { 'oneShotCmd': 1 } })
+              function=collections.OrderedDict({'oneShotCmd': 1}))
 

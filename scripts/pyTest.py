@@ -24,10 +24,12 @@ import pyrogue.utilities.prbs
 import pyrogue.utilities.fileio
 import pyrogue.gui
 import threading
+import signal
+import atexit
 import yaml
 import time
 import sys
-import PyQt4.QtCore
+import PyQt4.QtGui
 
 # Microblaze console printout
 class MbDebug(rogue.interfaces.stream.Slave):
@@ -113,6 +115,12 @@ runC = MyRunControl(evalBoard,'runControl')
 version = pyrogue.devices.axi.AxiVersion(parent=evalBoard,name='axiVersion',memBase=srp,offset=0x0)
 hwPrbs  = pyrogue.devices.axi.AxiPrbsTx(parent=evalBoard,name='axiPrbsTx',memBase=srp,offset=0x30000)
 
-# Create GUI
-gui = pyrogue.gui.GuiThread(evalBoard)
+# Start the GUI. ipython --gui=qt4 to enable
+appTop = PyQt4.QtGui.QApplication(sys.argv)
+guiTop = pyrogue.gui.GuiTop(evalBoard)
+
+# Close window and stop polling
+def stop():
+    guiTop.close()
+    evalBoard.stop()
 

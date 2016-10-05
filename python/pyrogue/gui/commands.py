@@ -37,15 +37,15 @@ class CommandLink(QObject):
         item.setText(0,command.name)
         item.setText(1,command.base)
 
+        pb = QPushButton('Execute')
+        item.treeWidget().setItemWidget(item,2,pb)
+        pb.clicked.connect(self.execPressed)
+
         if command.base != 'None':
             self.widget = QLineEdit()
-            item.treeWidget().setItemWidget(item,2,self.widget)
+            item.treeWidget().setItemWidget(item,3,self.widget)
         else:
             self.widget = None
-
-        pb = QPushButton('Execute')
-        item.treeWidget().setItemWidget(item,3,pb)
-        pb.clicked.connect(self.execPressed)
 
     def execPressed(self):
         if self.widget != None:
@@ -91,7 +91,7 @@ class CommandWidget(QWidget):
         vb.addWidget(tree)
 
         tree.setColumnCount(2)
-        tree.setHeaderLabels(['Command','Base','Arg','Execute'])
+        tree.setHeaderLabels(['Command','Base','Execute','Arg'])
 
         top = QTreeWidgetItem(tree)
         top.setText(0,root.name)

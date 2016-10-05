@@ -130,7 +130,7 @@ ris::FramePtr rhr::AxiStream::acceptReq ( uint32_t size, bool zeroCopyEn, uint32
             tout.tv_usec=timeout_ % 1000000;
 
             if ( (res = select(fd_+1,NULL,&fds,NULL,&tout)) == 0 ) 
-               throw(re::TimeoutException("AxiStream::acceptReq",timeout_,0));
+               throw(re::TimeoutException("AxiStream::acceptReq",timeout_));
 
             // Attempt to get index.
             // return of less than 0 is a failure to get a buffer
@@ -206,7 +206,7 @@ void rhr::AxiStream::acceptFrame ( ris::FramePtr frame ) {
             tout.tv_usec=timeout_ % 1000000;
 
             if ( (res = select(fd_+1,NULL,&fds,NULL,&tout)) == 0 ) 
-               throw(re::TimeoutException("AxiStream::acceptFrame",timeout_,0));
+               throw(re::TimeoutException("AxiStream::acceptFrame",timeout_));
 
             // Write with buffer copy
             res = axisWrite(fd_, buff->getRawData(), buff->getCount(), fuser, luser, dest_);

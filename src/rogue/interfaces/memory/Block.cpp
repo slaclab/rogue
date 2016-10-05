@@ -24,7 +24,6 @@
 #include <rogue/exceptions/AllocationException.h>
 #include <rogue/exceptions/AlignmentException.h>
 #include <rogue/exceptions/BoundaryException.h>
-#include <rogue/exceptions/TimeoutException.h>
 #include <rogue/exceptions/MemoryException.h>
 #include <rogue/exceptions/GeneralException.h>
 #include <boost/make_shared.hpp>
@@ -126,11 +125,11 @@ boost::unique_lock<boost::mutex> rim::Block::lockAndCheck(bool errEnable) {
    // Timeout if busy is set
    if ( busy_ ) {
       busy_ = false;
-      throw(re::TimeoutException("Block::lockAndCheck",timeout_,address_));
+      throw(re::MemoryException("Block::lockAndCheck",0,address_,timeout_));
    }
 
    // Throw error if enabled and error is nonzero
-   if ( errEnable && (error_ != 0) ) throw(re::MemoryException("Block::lockAndCheck",error_,address_));
+   if ( errEnable && (error_ != 0) ) throw(re::MemoryException("Block::lockAndCheck",error_,address_,0));
 
    return(lock);
 }
@@ -252,6 +251,7 @@ void rim::Block::setUInt(uint32_t bitOffset, uint32_t bitCount, uint64_t value) 
       throw(re::BoundaryException("Block::setUInt",(bitOffset+bitCount),(size_*8)));
 
    boost::unique_lock<boost::mutex> lck = lockAndCheck(false);
+   stale_ = true;
 
    if ( bitCount == 64 ) mask = 0xFFFFFFFFFFFFFFFF;
    else mask = pow(2,bitCount) - 1;
@@ -278,6 +278,7 @@ void rim::Block::setString(std::string value) {
       throw(re::BoundaryException("Block::setString",value.length(),size_));
 
    boost::unique_lock<boost::mutex> lck = lockAndCheck(false);
+   stale_ = true;
    strcpy((char *)data_,value.c_str());
 }
 

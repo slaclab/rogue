@@ -30,27 +30,11 @@ import pyrogue.gui.system
 import threading
 import sys
 
-class GuiThread(threading.Thread):
-    def __init__(self,root):
-       threading.Thread.__init__(self)
-       self._root = root
-       self.start()
 
-    def run(self):
-       guiRun(self._root)
-
-
-def guiRun(root):
-    app = QApplication(sys.argv)
-    gui = GuiWidget(root)
-    gui.show()
-    app.exec_()
-
-
-class GuiWidget(QWidget):
+class GuiTop(QWidget):
 
     def __init__(self,root,parent=None):
-        super(GuiWidget,self).__init__(parent)
+        super(GuiTop,self).__init__(parent)
 
         vb = QVBoxLayout()
         self.setLayout(vb)
@@ -66,5 +50,6 @@ class GuiWidget(QWidget):
 
         vw = pyrogue.gui.commands.CommandWidget(root,tab)
         tab.addTab(vw,'Commands')
+        self.show()
 
 

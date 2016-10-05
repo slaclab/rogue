@@ -24,6 +24,7 @@ import yaml
 import threading
 import time
 import collections
+import datetime
 
 def streamConnect(source, dest):
     """Connect source and destination stream devices"""
@@ -198,27 +199,42 @@ class Root(rogue.interfaces.stream.Master):
 
     def writeAll(self):
         """Write all blocks"""
-        _writeAll(self)
-        _checkUpdatedBlocks(self)
+        try:
+            _writeAll(self)
+            _checkUpdatedBlocks(self)
+        except Exception as e:
+            self._logException(e)
 
     def writeStale(self):
         """Write stale blocks"""
-        _writeStale(self)
-        _checkUpdatedBlocks(self)
+        try:
+            _writeStale(self)
+            _checkUpdatedBlocks(self)
+        except Exception as e:
+            self._logException(e)
 
     def readAll(self):
         """Read all blocks"""
-        _readAll(self)
-        _checkUpdatedBlocks(self)
+        try:
+            _readAll(self)
+            _checkUpdatedBlocks(self)
+        except Exception as e:
+            self._logException(e)
 
     def readPollable(self):
         """Read pollable blocks"""
-        _readPollable(self)
-        _checkUpdatedBlocks(self)
+        try:
+            _readPollable(self)
+            _checkUpdatedBlocks(self)
+        except Exception as e:
+            self._logException(e)
 
     def verify(self):
         """Verify read/write blocks"""
-        pass
+        try:
+            pass
+        except Exception as e:
+            self._logException(e)
 
     def getAtPath(self,path):
         """Get dictionary entry at path"""
@@ -260,8 +276,12 @@ class Root(rogue.interfaces.stream.Master):
         self._systemLog = ""
         self.systemLog._updated()
 
-    def _addToLog(self,string):  # LOCK?
-        self._systemLog += (string + '\n')
+    def _logException(self,ex):
+        self._addToLog(str(ex))
+
+    def _addToLog(self,string):
+        self._systemLog += string
+        self._systemLog += '\n'
         self.systemLog._updated()
 
 
@@ -383,30 +403,45 @@ class Variable(Node):
 
     def set(self,value):
         """Set a value without writing to hardware"""
-        self._intSet(value)
+        try:
+            self._intSet(value)
+        except Exception as e:
+            self._root._logException(e)
 
     def write(self,value):
         """Set a value with write to hardware"""
-        self._intSet(value)
-        if self._block and self._block.mode != 'RO':
-            self._block.blockingWrite()
+        try:
+            self._intSet(value)
+            if self._block and self._block.mode != 'RO':
+                self._block.blockingWrite()
+        except Exception as e:
+            self._root._logException(e)
 
     def writePosted(self,value):
         """Set a value with posted write to hardware"""
-        self._intSet(value)
-        if self._block and self._block.mode != 'RO':
-            self._block.postedWrite()
+        try:
+            self._intSet(value)
+            if self._block and self._block.mode != 'RO':
+                self._block.postedWrite()
+        except Exception as e:
+            self._root._logException(e)
 
     def get(self):
         """Get a value from shadow memory"""
-        return self._intGet()
+        try:
+            return self._intGet()
+        except Exception as e:
+            self._root._logException(e)
 
     def read(self):
         """Get a value after read from hardware"""
-        if self._block and self._block.mode != 'WO':
-            self._block.blockingRead()
-            self._updated()
-        return self._intGet()
+        try:
+            if self._block and self._block.mode != 'WO':
+                self._block.blockingRead()
+                self._updated()
+            return self._intGet()
+        except Exception as e:
+            self._root._logException(e)
 
 
 class Command(Node):
@@ -429,33 +464,36 @@ class Command(Node):
 
     def __call__(self,arg=None):
         """Execute command"""
+        try:
+            if self._function != None:
 
-        if self._function != None:
+                # Function is really a function
+                if callable(self._function):
+                    self._function(self,arg)
 
-            # Function is really a function
-            if callable(self._function):
-                self._function(self,arg)
+                # Function is a CPSW sequence
+                elif type(self._function) is collections.OrderedDict:
+                    for key,value in self._function.iteritems():
 
-            # Function is a CPSW sequence
-            elif type(self._function) is collections.OrderedDict:
-                for key,value in self._function.iteritems():
+                        # Built in
+                        if key == 'usleep':
+                            time.sleep(value/1e6)
 
-                    # Built in
-                    if key == 'usleep':
-                        time.sleep(value/1e6)
+                        # Determine if it is a command or variable
+                        else:
+                            n = self._parent._nodes[key]
 
-                    # Determine if it is a command or variable
-                    else:
-                        n = self._parent._nodes[key]
+                            if callable(n): 
+                                n(value)
+                            else: 
+                                n.write(value)
 
-                        if callable(n): 
-                            n(value)
-                        else: 
-                            n.write(value)
+                # Attempt to execute string as a python script
+                else:
+                    exec(textwrap.dedent(self._function))
 
-            # Attempt to execute string as a python script
-            else:
-                exec(textwrap.dedent(self._function))
+        except Exception as e:
+            self._root._logException(e)
 
 
 class Block(rogue.interfaces.memory.Block):
@@ -608,6 +646,21 @@ class DataWriter(Device):
                  base='uint', mode='RO',
                  setFunction=None, getFunction=self._getFrameCount)  # Implement in sub class
 
+        Command(parent=self, name='autoName',description='Generate File Name',
+           function=self._genFileName)
+
+    def _genFileName(self,var,arg):
+        idx = self._dataFile.rfind('/')
+
+        if idx < 0:
+            base = ''
+        else:
+            base = self._dataFile[:idx+1]
+
+        self._dataFile = base
+        self._dataFile += datetime.datetime.now().strftime("%Y%m%d_%H%M%S.dat") 
+        self.dataFile._updated()
+
     def _readOthers(self):
         self.fileSize.read()
         self.frameCount.read()
@@ -666,7 +719,7 @@ class RunControl(Device):
 def _getStructure(obj):
     """Recursive function to generate a dictionary for the structure"""
     data = {}
-    for key,value in obj._nodes.iteritems():
+    for key,value in obj.__dict__.iteritems():
         if isinstance(value,Node):
             data[key] = _getStructure(value)
         else:
