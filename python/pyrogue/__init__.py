@@ -23,9 +23,10 @@ import textwrap
 import yaml
 import threading
 import time
+import collections
 
 def streamConnect(source, dest):
-    """Connect soruce and destination stream devices"""
+    """Connect source and destination stream devices"""
 
     # Is object a native master or wrapped?
     if isinstance(source,rogue.interfaces.stream.Master):
@@ -116,26 +117,36 @@ class Root(rogue.interfaces.stream.Master):
 
         self.name = name
         self._poller = Poller(self)
+        self._systemLog = ""
+        self._nodes = collections.OrderedDict()
 
         # Config write command exposed to higher level
-        Command(parent=self, name='writeConfig',description='Write Configuration', base='string', hidden=True,
+        Command(parent=self, name='writeConfig',description='Write Configuration', base='string',
            function=self._writeYamlConfig)
 
         # Config read command exposed to higher level
-        Command(parent=self, name='readConfig',description='Read Configuration', base='string', hidden=True,
+        Command(parent=self, name='readConfig',description='Read Configuration', base='string',
            function=self._readYamlConfig)
 
         # Soft reset
-        Command(parent=self, name='softReset',description='Soft Reset', hidden=True,
+        Command(parent=self, name='softReset',description='Soft Reset',
            function=self._softReset)
 
         # Hard reset
-        Command(parent=self, name='hardReset',description='Hard Reset', hidden=True,
+        Command(parent=self, name='hardReset',description='Hard Reset',
            function=self._hardReset)
 
         # Count reset
-        Command(parent=self, name='countReset',description='Count Reset', hidden=True,
+        Command(parent=self, name='countReset',description='Count Reset',
            function=self._hardReset)
+
+        # Clear log window
+        Command(parent=self, name='clearLog',description='Clear Log',
+           function=self._clearLog)
+
+        # System log variable
+        Variable(parent=self, name='systemLog', description='System Log', base='string', mode='RO', hidden=True,
+                 setFunction=None, getFunction='value=self._parent._systemLog')
 
         # Polling period variable
         Variable(parent=self, name='pollPeriod', description='Polling Period', base='float', mode='RW', 
@@ -206,6 +217,7 @@ class Root(rogue.interfaces.stream.Master):
         _checkUpdatedBlocks(self)
 
     def verify(self):
+        """Verify read/write blocks"""
         pass
 
     def getAtPath(self,path):
@@ -235,14 +247,22 @@ class Root(rogue.interfaces.stream.Master):
         with open(arg,'r') as f:
             self.setYamlConfig(f.read())
 
-    def _softReset(self):
-       self.softReset(self)
+    def _softReset(self,cmd,arg):
+       _softReset(self)
 
-    def _hardReset(self):
-       self.hardReset(self)
+    def _hardReset(self,cmd,arg):
+       _hardReset(self)
 
-    def _countReset(self):
-       self.countReset(self)
+    def _countReset(self,cmd,arg):
+       _countReset(self)
+
+    def _clearLog(self,cmd,arg):
+        self._systemLog = ""
+        self.systemLog._updated()
+
+    def _addToLog(self,string):  # LOCK?
+        self._systemLog += (string + '\n')
+        self.systemLog._updated()
 
 
 class Node(object):
@@ -258,6 +278,7 @@ class Node(object):
 
         # Tracking
         self._parent = parent
+        self._nodes = collections.OrderedDict()
 
         if isinstance(parent,Node):
             self._root = parent._root
@@ -271,6 +292,7 @@ class Node(object):
             raise NodeError('Invalid %s name %s. Name already exists' % (self.classType,self.name))
         else:
             setattr(self._parent,self.name,self)
+            self._parent._nodes[self.name] = self
 
 
 class Variable(Node):
@@ -415,17 +437,16 @@ class Command(Node):
                 self._function(self,arg)
 
             # Function is a CPSW sequence
-            elif type(self._function) is dict:
-                for key in sorted(self._function):
-                    var,value = self._function[key].items()[0]
+            elif type(self._function) is collections.OrderedDict:
+                for key,value in self._function.iteritems():
 
                     # Built in
-                    if var == 'usleep':
+                    if key == 'usleep':
                         time.sleep(value/1e6)
 
                     # Determine if it is a command or variable
                     else:
-                        n = getattr(self._parent,var)
+                        n = self._parent._nodes[key]
 
                         if callable(n): 
                             n(value)
@@ -518,7 +539,7 @@ class Device(Node,rogue.interfaces.memory.Master):
             block._inheritFrom(self)
 
         # Adust address map in sub devices
-        for key,dev in self.__dict__.iteritems():
+        for key,dev in self._nodes.iteritems():
             if isinstance(dev,Device):
                 dev._setMemBase(self)
 
@@ -548,11 +569,11 @@ class Device(Node,rogue.interfaces.memory.Master):
 class DataWriter(Device):
     """Special base class to control data files"""
 
-    def __init__(self, parent, name):
+    def __init__(self, parent, name, description='', hidden=False):
         """Initialize device class"""
 
-        Device.__init__(self, parent=parent, name=name, description='Data Writer',
-                        size=0, memBase=None, offset=0, hidden=True)
+        Device.__init__(self, parent=parent, name=name, description=description,
+                        size=0, memBase=None, offset=0, hidden=hidden)
 
         self.classType    = 'dataWriter'
         self._open        = False
@@ -560,12 +581,12 @@ class DataWriter(Device):
         self._bufferSize  = 0
         self._maxFileSize = 0
 
-        Variable(parent=self, name='dataFile', description='Data File', base='string', mode='RW', hidden=True,
+        Variable(parent=self, name='dataFile', description='Data File', base='string', mode='RW',
                  setFunction='self._parent._dataFile = value',
                  getFunction='value = self._parent._dataFile')
 
         Variable(parent=self, name='open', description='Data file open state',
-                 base='bool', mode='RW', hidden=True,
+                 base='bool', mode='RW',
                  setFunction=self._setOpen,  # Implement in sub class
                  getFunction='value = self._parent._open')
 
@@ -601,29 +622,29 @@ class DataWriter(Device):
 class RunControl(Device):
     """Special base class to control runs"""
 
-    def __init__(self, parent, name):
+    def __init__(self, parent, name, description='', hidden=False):
         """Initialize device class"""
 
-        Device.__init__(self, parent=parent, name=name, description='Data Writer',
-                        size=0, memBase=None, offset=0, hidden=True)
+        Device.__init__(self, parent=parent, name=name, description=description,
+                        size=0, memBase=None, offset=0, hidden=hidden)
 
         self.classType = 'runControl'
         self._runState = 'Stopped'
         self._runCount = 0
         self._runRate  = '1 Hz'
 
-        Variable(parent=self, name='runState', description='Run State', base='Enum', mode='RW', hidden=True,
+        Variable(parent=self, name='runState', description='Run State', base='enum', mode='RW',
                  enum={0:'Stopped', 1:'Running'},
                  setFunction=self._setRunState,
                  getFunction='value = self._parent._runState')
 
-        Variable(parent=self, name='runRate', description='Run Rate', base='Enum', mode='RW', hidden=True,
+        Variable(parent=self, name='runRate', description='Run Rate', base='enum', mode='RW',
                  enum={1:'1 Hz',    10:'10 Hz'},
                  setFunction=self._setRunRate,
                  getFunction='value = self._parent._runRate')
 
         Variable(parent=self, name='runCount', description='Run Counter',
-                 base='uint', mode='RO', hidden=True,
+                 base='uint', mode='RO',
                  setFunction=None, getFunction='value = self._parent._runCount')
 
     # Reimplement in sub class
@@ -645,12 +666,11 @@ class RunControl(Device):
 def _getStructure(obj):
     """Recursive function to generate a dictionary for the structure"""
     data = {}
-    for key,value in obj.__dict__.iteritems():
-       if not callable(value) and not key.startswith('_'):
-          if isinstance(value,Node):
-              data[key] = _getStructure(value)
-          else:
-              data[key] = value
+    for key,value in obj._nodes.iteritems():
+        if isinstance(value,Node):
+            data[key] = _getStructure(value)
+        else:
+            data[key] = value
 
     return data
 
@@ -658,7 +678,7 @@ def _getStructure(obj):
 def _getConfig(obj):
     """Recursive function to generate a dictionary for the configuration"""
     data = {}
-    for key,value in obj.__dict__.iteritems():
+    for key,value in obj._nodes.iteritems():
         if isinstance(value,Device):
             data[key] = _getConfig(value)
         elif isinstance(value,Variable) and value.mode=='RW':
@@ -679,7 +699,7 @@ def _setConfig(obj,d):
 
 def _writeAll(obj):
     """Recursive function to write all blocks in each Device"""
-    for key,value in obj.__dict__.iteritems():
+    for key,value in obj._nodes.iteritems():
         if isinstance(value,Device):
             if value._enable:
                 for block in value._blocks:
@@ -690,7 +710,7 @@ def _writeAll(obj):
 
 def _writeStale(obj):
     """Recursive function to write stale blocks in each Device"""
-    for key,value in obj.__dict__.iteritems():
+    for key,value in obj._nodes.iteritems():
         if isinstance(value,Device):
             if value._enable:
                 for block in value._blocks:
@@ -701,7 +721,7 @@ def _writeStale(obj):
 
 def _readAll(obj):
     """Recursive function to read all of the blocks in each Device"""
-    for key,value in obj.__dict__.iteritems():
+    for key,value in obj._nodes.iteritems():
         if isinstance(value,Device):
             if value._enable:
                 for block in value._blocks:
@@ -714,7 +734,7 @@ def _readAll(obj):
 
 def _readPollable(obj):
     """Recursive function to read pollable blocks in each Device"""
-    for key,value in obj.__dict__.iteritems():
+    for key,value in obj._nodes.iteritems():
         if isinstance(value,Device):
             if value._enable:
                 for block in value._blocks:
@@ -727,7 +747,7 @@ def _readPollable(obj):
 
 def _checkUpdatedBlocks(obj):
     """Recursive function to check status of all blocks in each Device"""
-    for key,value in obj.__dict__.iteritems():
+    for key,value in obj._nodes.iteritems():
         if isinstance(value,Device):
             if value._enable:
                 for block in value._blocks:
@@ -751,7 +771,7 @@ def _getAtPath(obj,path):
 
 def _softReset(obj):
     """Recursive function to execute softReset commands in each device"""
-    for key,value in obj.__dict__.iteritems():
+    for key,value in obj._nodes.iteritems():
         if isinstance(value,Device):
              value._softReset()
              _softReset(value)
@@ -759,7 +779,7 @@ def _softReset(obj):
 
 def _hardReset(obj):
     """Recursive function to execute hardReset commands in each device"""
-    for key,value in obj.__dict__.iteritems():
+    for key,value in obj._nodes.iteritems():
         if isinstance(value,Device):
              value._hardReset()
              _hardReset(value)
@@ -767,7 +787,7 @@ def _hardReset(obj):
 
 def _countReset(obj):
     """Recursive function to execute countReset commands in each device"""
-    for key,value in obj.__dict__.iteritems():
+    for key,value in obj._nodes.iteritems():
         if isinstance(value,Device):
              value._countReset()
              _countReset(value)

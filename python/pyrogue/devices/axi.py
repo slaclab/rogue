@@ -19,6 +19,7 @@
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
 import pyrogue
+import collections
 
 class AxiVersion(pyrogue.Device):
     """AXI Lite Version Class"""
@@ -159,9 +160,9 @@ class AxiVersion(pyrogue.Device):
         # Alternative function for CPSW compatability
         # Pass a dictionary of numbered variable, value pairs to generate a CPSW sequence
         pyrogue.Command(parent=self, name='testCpsw',description='Test CPSW',
-              function={ 1: { 'masterResetVar': 1 },
-                         2: { 'usleep': 100 },
-                         3: { 'counter': 1 } })
+              function=collections.OrderedDict({ 'masterResetVar': 1,
+                                                 'usleep': 100,
+                                                 'counter': 1 }))
 
     # Example command function
     def cmdFpgaReload(self,cmd,arg):

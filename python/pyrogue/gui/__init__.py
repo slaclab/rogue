@@ -26,6 +26,7 @@ import pyrogue
 import pyrogue.gui
 import pyrogue.gui.variables
 import pyrogue.gui.commands
+import pyrogue.gui.system
 import threading
 import sys
 
@@ -56,6 +57,9 @@ class GuiWidget(QWidget):
 
         tab = QTabWidget()
         vb.addWidget(tab)
+
+        vw = pyrogue.gui.system.SystemWidget(root,tab)
+        tab.addTab(vw,'System')
 
         vw = pyrogue.gui.variables.VariableWidget(root,tab)
         tab.addTab(vw,'Variables')

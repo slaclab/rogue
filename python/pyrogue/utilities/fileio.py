@@ -26,24 +26,24 @@ class StreamWriter(pyrogue.DataWriter):
     """Stream Writer Wrapper"""
 
     def __init__(self, parent, name):
-        pyrogue.DataWriter.__init__(self,parent=parent, name=name)
+        pyrogue.DataWriter.__init__(self,parent=parent, name=name, description='Stream Writer')
         self._writer = rogue.utilities.fileio.StreamWriter()
 
     def _setOpen(self,cmd,arg):
-        if self._open != value:
+        if self._open != arg:
             if arg == False:
                 self._writer.close()
             else:
                 self._writer.open(self._dataFile)
-            self._open = value
+            self._open = arg
 
     def _setBufferSize(self,cmd,arg):
-        self._bufferSize = value
-        self._writer.setBufferSize(value)
+        self._bufferSize = arg
+        self._writer.setBufferSize(arg)
 
     def _setMaxSize(self,cmd,arg):
-        self._maxFileSize = value
-        self._writer.setMaxSize(value)
+        self._maxFileSize = arg
+        self._writer.setMaxSize(arg)
 
     def _getFileSize(self,cmd):
         return self._writer.getSize()

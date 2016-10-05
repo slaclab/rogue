@@ -181,15 +181,13 @@ class VariableWidget(QWidget):
     def addTreeItems(self,tree,d):
 
         # First create variables
-        for key in sorted(d.__dict__):
-            val = getattr(d,key)
+        for key,val in d._nodes.iteritems():
             if isinstance(val,pyrogue.Variable):
                 if not(key.startswith('_') or val.hidden):
                     var = VariableLink(tree,val)
 
         # Then create devices
-        for key in sorted(d.__dict__):
-            val = getattr(d,key)
+        for key,val in d._nodes.iteritems():
             if isinstance(val,pyrogue.Device):
                 if not(key.startswith('_') or val.hidden):
                     w = QTreeWidgetItem(tree)

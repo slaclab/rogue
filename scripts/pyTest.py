@@ -48,7 +48,7 @@ class MbDebug(rogue.interfaces.stream.Slave):
 class MyRunControl(pyrogue.RunControl,threading.Thread):
    def __init__(self,parent,name):
       threading.Thread.__init__(self)
-      pyrogue.RunControl.__init__(self,parent,name)
+      pyrogue.RunControl.__init__(self,parent,name,'Run Controller')
 
    def _setRunState(self,cmd,value):
       if self._runState != value:
@@ -58,12 +58,18 @@ class MyRunControl(pyrogue.RunControl,threading.Thread):
             self.start()
 
    def run(self):
+      self._runCount = 0
+      self._last = int(time.time())
 
       while (self._runState == 'Running'):
          delay = 1.0 / ({value: key for key,value in self.runRate.enum.iteritems()}[self._runRate])
          time.sleep(delay)
          self._root.axiPrbsTx.oneShot()
 
+         self._runCount += 1
+         if self._last != int(time.time()):
+             self._last = int(time.time())
+             self.runCount._updated()
 
 # Set base
 evalBoard = pyrogue.Root('evalBoard')
