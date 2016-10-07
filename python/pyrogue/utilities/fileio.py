@@ -32,9 +32,15 @@ class StreamWriter(pyrogue.DataWriter):
     def _setOpen(self,dev,var,value):
         if self._open != value:
             if value == False:
+
+                # Dump config/status to file
+                self._root._streamYamlVariables()
                 self._writer.close()
             else:
                 self._writer.open(self._dataFile)
+
+                # Dump config/status to file
+                self._root._streamYamlVariables()
             self._open = value
 
     def _setBufferSize(self,dev,var,value):
@@ -71,20 +77,20 @@ class StreamReader(pyrogue.Device):
 
         self.add(pyrogue.Variable(name='dataFile', description='Data File',
                                   bitSize=0, bitOffset=0, base='string', mode='RW',
-                                  setFunction='self._parent._file = value',
-                                  getFunction='value = self._parent._file'))
+                                  setFunction='dev._file = value',
+                                  getFunction='value = dev._file'))
 
         self.add(pyrogue.Variable(name='open', description='Data file open state',
                                   bitSize=1, bitOffset=0, base='bool', mode='RW',
                                   setFunction="""\
-                                              if self._parent._open != int(value):
+                                              if dev._open != int(value):
                                                   if value == False:
-                                                      self._parent._reader.close()
+                                                      dev._reader.close()
                                                   else:
-                                                      self._parent._reader.open(self._parent._file)
-                                                  self._parent._open = value
+                                                      dev._reader.open(dev._file)
+                                                  dev._open = value
                                               """,
-                                  getFunction='value = self._parent._open'))
+                                  getFunction='value = dev._open'))
 
     def _getStreamMaster(self):
         return self._reader

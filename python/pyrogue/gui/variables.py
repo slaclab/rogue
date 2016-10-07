@@ -71,12 +71,10 @@ class VariableLink(QObject):
 
         item.treeWidget().setItemWidget(item,3,self.widget)
         variable._addListener(self.newValue)
-        self.newValue(None)
+        self.newValue(None,variable._rawGet())
 
-    def newValue(self,var):
+    def newValue(self,var,value):
         if self.block: return
-
-        value = self.variable._rawGet()
 
         if self.variable.mode=='RW' and (self.variable.base == 'enum' or self.variable.base == 'bool'):
             self.emit(SIGNAL("updateGui"),self.widget.findText(str(value)))

@@ -286,9 +286,14 @@ class Root(rogue.interfaces.stream.Master,Node):
 
         # Keep of list of errors, exposed as a variable
         self._systemLog = ""
+        self._sysLogLock = threading.Lock()
 
         # Add poller
         self._pollThread = None
+
+        # Variable update list
+        self._updatedDict = {}
+        self._updatedLock = threading.Lock()
 
         # Commands
 
@@ -371,6 +376,8 @@ class Root(rogue.interfaces.stream.Master,Node):
         """
         Get tree variable current values as a dictionary.
         modes is a list of variable modes to include.
+        Vlist can contain an optional list of variale paths to include in the
+        dict. If this list is not NULL only these variables will be included.
         """
         return {self.name:self._getVariables(modes)}
 
@@ -378,6 +385,8 @@ class Root(rogue.interfaces.stream.Master,Node):
         """
         Get tree variable current values as a dictionary.
         modes is a list of variable modes to include.
+        Vlist can contain an optional list of variale paths to include in the
+        yaml. If this list is not NULL only these variables will be included.
         """
         return yaml.dump(self._getDictVariables(modes),default_flow_style=False)
 
@@ -386,9 +395,13 @@ class Root(rogue.interfaces.stream.Master,Node):
         Set variable values from a dictionary.
         modes is a list of variable modes to act on
         """
+        self._initUpdatedVars()
+
         for key, value in d.iteritems():
             if key == self.name:
                 self._setVariables(value,modes)
+
+        self._streamUpdatedVars()
 
     def _setYamlVariables(self,yml,modes=['RW']):
         """
@@ -398,20 +411,45 @@ class Root(rogue.interfaces.stream.Master,Node):
         d = yaml.load(yml)
         self._setDictVariables(d,modes)
 
-    def _streamVariables(self,modes=['RW','RO']):
+    def _streamYamlDict(self,d):
+        """
+        Generate a frame containing the passed dictionary in yaml format.
+        """
+        if not d: return
+
+        yml = yaml.dump(d,default_flow_style=False)
+        frame = self._reqFrame(len(yml),True,0)
+        b = bytearray()
+        b.extend(yml)
+        frame.write(b,0)
+        self._sendFrame(frame)
+
+    def _streamYamlVariables(self,modes=['RW','RO']):
         """
         Generate a frame containing all variables values in yaml format.
         A hardware read is not generated before the frame is generated.
+        Vlist can contain an optional list of variale paths to include in the
+        stream. If this list is not NULL only these variables will be included.
         """
-        vals = self.getYamlVariables(modes)
-        frame = self._reqFrame(len(vals),True,0)
-        b = bytearray()
-        b.extend(vals)
-        f.write(b,0)
-        self._sendFrame(frame)
+        d = self._getDictVariables(modes)
+        self._streamYamlDict(d)
+
+    def _initUpdatedVars(self):
+        """Initialize the update tracking log before a bulk variable update"""
+        self._updatedLock.acquire()
+        self._updatedDict = {}
+        self._updatedLock.release()
+
+    def _streamUpdatedVars(self):
+        """Stream the results of a bulk variable update"""
+        self._updatedLock.acquire()
+        self._streamYamlDict(self._updatedDict)
+        self._updatedDict = None
+        self._updatedLock.release()
 
     def _write(self):
         """Write all blocks"""
+
         try:
             for key,value in self._nodes.iteritems():
                 if isinstance(value,Device):
@@ -427,6 +465,9 @@ class Root(rogue.interfaces.stream.Master,Node):
 
     def _read(self):
         """Read all blocks"""
+
+        self._initUpdatedVars()
+
         try:
             for key,value in self._nodes.iteritems():
                 if isinstance(value,Device):
@@ -437,8 +478,13 @@ class Root(rogue.interfaces.stream.Master,Node):
         except Exception as e:
             self._root._logException(e)
 
+        self._streamUpdatedVars()
+
     def _poll(self):
         """Read pollable blocks"""
+
+        self._initUpdatedVars()
+
         try:
             for key,value in self._nodes.iteritems():
                 if isinstance(value,Device):
@@ -448,6 +494,8 @@ class Root(rogue.interfaces.stream.Master,Node):
                     value._check()
         except Exception as e:
             self._root._logException(e)
+
+        self._streamUpdatedVars()
 
     def _writeConfig(self,dev,cmd,arg):
         """Write YAML configuration to a file. Called from command"""
@@ -460,11 +508,13 @@ class Root(rogue.interfaces.stream.Master,Node):
 
     def _readConfig(self,dev,cmd,arg):
         """Read YAML configuration from a file. Called from command"""
+
         try:
             with open(arg,'r') as f:
                 self._setYamlVariables(f.read(),modes=['RW'])
         except Exception as e:
             self._root._logException(e)
+
         self._write()
 
     def _softReset(self,dev,cmd,arg):
@@ -488,7 +538,9 @@ class Root(rogue.interfaces.stream.Master,Node):
 
     def _clearLog(self,dev,cmd,arg):
         """Clear the system log"""
+        self._sysLogLock.acquire()
         self._systemLog = ""
+        self._sysLogLock.release()
         self.systemLog._updated()
 
     def _logException(self,exception):
@@ -499,9 +551,29 @@ class Root(rogue.interfaces.stream.Master,Node):
 
     def _addToLog(self,string):
         """Add an string to the log"""
+        self._sysLogLock.acquire()
         self._systemLog += string
         self._systemLog += '\n'
+        self._sysLogLock.release()
+
         self.systemLog._updated()
+
+    def _varUpdated(self,var,value):
+        """ Log updated variables"""
+
+        self._updatedLock.acquire()
+
+        # Log is active add to log
+        if self._updatedDict != None:
+            addPathToDict(self._updatedDict,var.path,value)
+
+        # Otherwise stream directly
+        else:
+            d = {}
+            addPathToDict(d,var.path,value)
+            self._streamYamlDict(d)
+
+        self._updatedLock.release()
 
 
 class Variable(Node):
@@ -582,8 +654,17 @@ class Variable(Node):
 
     def _updated(self):
         """Variable has been updated. Inform listeners."""
+        
+        # Don't generate updates for CMD and WO variables
+        if self.mode == 'WO' or self.mode == 'CMD': return
+
+        value = self._rawGet()
+
         for func in self.__listeners:
-            func(self)
+            func(self,value)
+
+        # Root variable update log
+        self._root._varUpdated(self,value)
 
     def _rawSet(self,value):
         """
@@ -1107,4 +1188,24 @@ class RunControl(Device):
         """Force update of non block status variables"""
         self.runCount.get()
         Device._poll(self)
+
+
+# Helper function add a path/value pair to a dictionary tree
+def addPathToDict(d, path, value):
+    npath = path
+    sd = d
+
+    # Transit through levels
+    while '.' in npath:
+        base  = npath[:npath.find('.')]
+        npath = npath[npath.find('.')+1:]
+
+        if sd.has_key(base):
+           sd = sd[base]
+        else:
+           sd[base] = {}
+           sd = sd[base]
+
+    # Add final node
+    sd[npath] = value
 

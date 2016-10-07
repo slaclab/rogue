@@ -46,6 +46,19 @@ class MbDebug(rogue.interfaces.stream.Slave):
          print('-------- Microblaze Console --------')
          print(p.decode('utf-8'))
 
+# Monitor config stream
+class ConfigMon(rogue.interfaces.stream.Slave):
+
+   def __init__(self):
+      rogue.interfaces.stream.Slave.__init__(self)
+      self.enable = False
+
+   def _acceptFrame(self,frame):
+      if self.enable:
+         p = bytearray(frame.getPayload())
+         frame.read(p,0)
+         print('-------- Config Stream --------')
+         print(p.decode('utf-8'))
 
 # Custom run control
 class MyRunControl(pyrogue.RunControl):
@@ -114,6 +127,10 @@ evalBoard.add(prbsRx)
 # Microblaze console connected to VC2
 mbcon = MbDebug()
 pyrogue.streamTap(pgpVc3,mbcon)
+
+# Config monitor
+cfgMon = ConfigMon()
+pyrogue.streamTap(evalBoard,cfgMon)
 
 # Add run control
 evalBoard.add(MyRunControl('runControl'))
