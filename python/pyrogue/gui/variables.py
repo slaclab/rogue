@@ -63,7 +63,7 @@ class VariableLink(QObject):
 
         else:
             self.widget = QLineEdit()
-            self.widget.textEdited.connect(self.guiChanged)
+            self.widget.returnPressed.connect(self.returnPressed)
             self.connect(self,SIGNAL('updateGui'),self.widget.setText)
 
         if variable.mode == 'RO':
@@ -90,6 +90,9 @@ class VariableLink(QObject):
         else:
             self.emit(SIGNAL("updateGui"),str(value))
 
+    def returnPressed(self):
+        self.guiChanged(self.widget.text())
+
     def guiChanged(self,value):
         self.block = True
 
@@ -103,22 +106,13 @@ class VariableLink(QObject):
             self.variable.set(value)
 
         elif self.variable.base == 'hex':
-            try:
-                self.variable.set(int(str(value),16))
-            except Exception:
-                pass
+            self.variable.set(int(str(value),16))
 
         elif self.variable.base == 'uint':
-            try:
-                self.variable.set(int(str(value)))
-            except Exception:
-                pass
+            self.variable.set(int(str(value)))
 
         elif self.variable.base == 'float':
-            try:
-                self.variable.set(float(str(value)))
-            except Exception:
-                pass
+            self.variable.set(float(str(value)))
 
         else:
             self.variable.set(str(value))

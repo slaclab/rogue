@@ -46,7 +46,7 @@ class DataLink(QObject):
         self.writer.dataFile._addListener(self.newValue)
         self.dataFile = QLineEdit()
         self.dataFile.setText(self.writer.dataFile._rawGet())
-        self.dataFile.textEdited.connect(self.dataFileChanged)
+        self.dataFile.returnPressed.connect(self.dataFileChanged)
         self.connect(self,SIGNAL('updateDataFile'),self.dataFile.setText)
 
         fl.addRow('Data File:',self.dataFile)
@@ -73,7 +73,7 @@ class DataLink(QObject):
         self.writer.bufferSize._addListener(self.newValue)
         self.bufferSize = QLineEdit()
         self.bufferSize.setText(str(self.writer.bufferSize._rawGet()))
-        self.bufferSize.textEdited.connect(self.bufferSizeChanged)
+        self.bufferSize.returnPressed.connect(self.bufferSizeChanged)
         self.connect(self,SIGNAL('updateBufferSize'),self.bufferSize.setText)
 
         fl.addRow('Buffer Size:',self.bufferSize)
@@ -102,7 +102,7 @@ class DataLink(QObject):
         self.writer.maxFileSize._addListener(self.newValue)
         self.maxSize = QLineEdit()
         self.maxSize.setText(str(self.writer.maxFileSize._rawGet()))
-        self.maxSize.textEdited.connect(self.maxSizeChanged)
+        self.maxSize.returnPressed.connect(self.maxSizeChanged)
         self.connect(self,SIGNAL('updateMaxSize'),self.maxSize.setText)
 
         fl.addRow('Max Size:',self.maxSize)
@@ -151,7 +151,7 @@ class DataLink(QObject):
         elif var.name == 'frameCount':
             self.emit(SIGNAL("updateFrameCount"),str(var._rawGet()))
 
-    def dataFileChanged(self,value):
+    def dataFileChanged(self):
         self.block = True
         self.writer.dataFile.set(str(self.dataFile.text()))
         self.block = False
@@ -161,20 +161,14 @@ class DataLink(QObject):
         self.writer.open.set(self.openState.itemText(value) == 'True')
         self.block = False
 
-    def bufferSizeChanged(self,value):
+    def bufferSizeChanged(self):
         self.block = True
-        try:
-            self.writer.bufferSize.set(int(str(value)))
-        except Exception:
-            pass
+        self.writer.bufferSize.set(int(str(self.bufferSize.text())))
         self.block = False
 
-    def maxSizeChanged(self,value):
+    def maxSizeChanged(self):
         self.block = True
-        try:
-            self.writer.maxFileSize.set(int(str(value)))
-        except Exception:
-            pass
+        self.writer.maxFileSize.set(int(str(self.maxSize.text())))
         self.block = False
 
 
