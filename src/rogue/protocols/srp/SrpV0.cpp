@@ -76,7 +76,7 @@ void rps::SrpV0::doTransaction(rim::MasterPtr master, uint64_t address, uint32_t
    addMaster(master);
 
    // Size error
-   if ((size % 4) != 0 || size < 4 || size > 2048) {
+   if ((address % 4) != 0 || (size % 4) != 0 || size < 4 || size > 2048) {
       master->doneTransaction(0x80000000);
       return;
    }

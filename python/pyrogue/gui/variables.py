@@ -70,15 +70,15 @@ class VariableLink(QObject):
             self.widget.setReadOnly(True)
 
         item.treeWidget().setItemWidget(item,3,self.widget)
-        variable._addListener(self)
+        variable._addListener(self.newValue)
         self.newValue(None)
 
     def newValue(self,var):
         if self.block: return
 
-        value = self.variable.get()
+        value = self.variable._rawGet()
 
-        if self.variable.mode == 'RW' and (self.variable.base == 'enum' or self.variable.base == 'bool'):
+        if self.variable.mode=='RW' and (self.variable.base == 'enum' or self.variable.base == 'bool'):
             self.emit(SIGNAL("updateGui"),self.widget.findText(str(value)))
 
         elif self.variable.base == 'range':
@@ -150,46 +150,32 @@ class VariableWidget(QWidget):
         hb = QHBoxLayout()
         vb.addLayout(hb)
 
-        pb = QPushButton('Read All')
-        pb.pressed.connect(self.readAllPressed)
+        pb = QPushButton('Read')
+        pb.pressed.connect(self.readPressed)
         hb.addWidget(pb)
 
-        pb = QPushButton('Write All')
-        pb.pressed.connect(self.writeAllPressed)
+        pb = QPushButton('Write')
+        pb.pressed.connect(self.writePressed)
         hb.addWidget(pb)
 
-        pb = QPushButton('Write Stale')
-        pb.pressed.connect(self.writeStalePressed)
-        hb.addWidget(pb)
+    def readPressed(self):
+        self.root._read()
 
-        pb = QPushButton('Verify')
-        pb.pressed.connect(self.verifyPressed)
-        hb.addWidget(pb)
-
-    def readAllPressed(self):
-        self.root.readAll()
-
-    def writeAllPressed(self):
-        self.root.writeAll()
-
-    def writeStalePressed(self):
-        self.root.writeStale()
-
-    def verifyPressed(self):
-        self.root.verify()
+    def writePressed(self):
+        self.root._write()
 
     def addTreeItems(self,tree,d):
 
         # First create variables
         for key,val in d._nodes.iteritems():
             if isinstance(val,pyrogue.Variable):
-                if not(key.startswith('_') or val.hidden):
+                if not val.hidden:
                     var = VariableLink(tree,val)
 
         # Then create devices
         for key,val in d._nodes.iteritems():
             if isinstance(val,pyrogue.Device):
-                if not(key.startswith('_') or val.hidden):
+                if not val.hidden:
                     w = QTreeWidgetItem(tree)
                     w.setText(0,val.name)
                     w.setExpanded(True)

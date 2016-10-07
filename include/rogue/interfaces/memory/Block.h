@@ -52,16 +52,13 @@ namespace rogue {
                 */
                uint32_t error_;
 
-               //! Stale state of memory space
-               bool stale_;
-
                //! Main class mutex
                boost::mutex mtx_;
 
                //! Transaction is busy
                bool busy_;
 
-               //! Block updated state, set in doneTransaction
+               //! Block updated state
                bool updated_;
 
                //! Current transaction is a write
@@ -100,14 +97,23 @@ namespace rogue {
                //! Get enable flag
                bool getEnable();
 
-               //! Get error state without exception
+               //! Get error state without generating exception
+               /*
+                * Error state is not cleared until another transaction
+                * is generated.
+                */
                uint32_t getError();
 
                //! Get and clear updated state, raise exception if error
+               /*
+                * Get updated will return true if the most recent
+                * tranasaction was a read. This allows the upper
+                * level to check all memory blocks to determine 
+                * which ones were updated. Doing this at this level
+                * takes advantage of the locking which exists in this
+                * module.
+                */
                bool getUpdated();
-
-               //! Get stale state
-               bool getStale();
 
                //////////////////////////////////////
                // Transaction Methods
@@ -181,7 +187,6 @@ namespace rogue {
          class BlockLock {
             friend class rogue::interfaces::memory::Block;
             protected:
-               bool write_;
                boost::unique_lock<boost::mutex> lock_;
          };
 

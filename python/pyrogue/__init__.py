@@ -23,11 +23,20 @@ import textwrap
 import yaml
 import threading
 import time
+import math
 import collections
 import datetime
+import traceback
 
 def streamConnect(source, dest):
-    """Connect source and destination stream devices"""
+    """
+    Attach the passed dest object to the source a stream.
+    Connect source and destination stream devices.
+    source is either a stream master sub class or implements
+    the _getStreamMaster call to return a contained master.
+    Similiarly dest is either a stream slave sub class or implements
+    the _getStreamSlave call to return a contained slave.
+    """
 
     # Is object a native master or wrapped?
     if isinstance(source,rogue.interfaces.stream.Master):
@@ -45,7 +54,15 @@ def streamConnect(source, dest):
 
 
 def streamTap(source, tap):
-    """Add a stream tap"""
+    """
+    Attach the passed dest object to the source for a streams
+    as a secondary destination.
+    Connect source and destination stream devices.
+    source is either a stream master sub class or implements
+    the _getStreamMaster call to return a contained master.
+    Similiarly dest is either a stream slave sub class or implements
+    the _getStreamSlave call to return a contained slave.
+    """
 
     # Is object a native master or wrapped?
     if isinstance(source,rogue.interfaces.stream.Master):
@@ -63,14 +80,35 @@ def streamTap(source, tap):
 
 
 def streamConnectBiDir(deviceA, deviceB):
-    """Connect two endpoints of a bi-directional stream"""
+    """
+    Attach the passed dest object to the source a stream.
+    Connect source and destination stream devices.
+    source is either a stream master sub class or implements
+    the _getStreamMaster call to return a contained master.
+    Similiarly dest is either a stream slave sub class or implements
+    the _getStreamSlave call to return a contained slave.
+    """
+
+    """
+    Connect deviceA and deviceB as end points to a
+    bi-directional stream. This method calls the
+    streamConnect method to perform the actual connection. 
+    See streamConnect description for object requirements.
+    """
 
     streamConnect(deviceA,deviceB)
     streamConnect(deviceB,deviceA)
 
 
 def busConnect(source,dest):
-    """Connector a memory bus client and server"""
+    """
+    Connect the source object to the dest object for 
+    memory accesses. 
+    source is either a memory master sub class or implements
+    the _getMemoryMaster call to return a contained master.
+    Similiarly dest is either a memory slave sub class or implements
+    the _getMemorySlave call to return a contained slave.
+    """
 
     # Is object a native master or wrapped?
     if isinstance(source,rogue.interfaces.stream.Master):
@@ -88,157 +126,225 @@ def busConnect(source,dest):
 
 
 class VariableError(Exception):
+    """ Exception for variable access errors."""
     pass
 
 
 class NodeError(Exception):
+    """ Exception for node manipulation errors."""
     pass
 
 
-class Poller(threading.Thread):
-    def __init__(self,root):
-        threading.Thread.__init__(self)
-        self.period = 0
-        self.root = root
+class Node(object):
+    """
+    Class which serves as a managed obect within the pyrogue package. 
+    Each node has the following public fields:
+        name: Global name of object
+        description: Description of the object.
+        hidden: Flag to indicate if object should be hidden from external interfaces.
+        classtype: text string matching name of node sub-class
+        path: Full path to the node (ie. node1.node2.node3)
 
-    def run(self):
-        while(self.period != None):
-            if self.period != 0:
-                time.sleep(self.period)
-                self.root.readPollable()
-            else:
-                time.sleep(1)
+    Each node is associated with a parent and has a link to the top node of a tree.
+    A node has a list of sub-nodes as well as each sub-node being attached as an
+    attribute. This allows tree browsing using: node1.node2.node3
+    """
+
+    def __init__(self, name, description, hidden, classType):
+        """Init the node with passed attributes"""
+
+        # Public attributes
+        self.name        = name     
+        self.description = description
+        self.hidden      = hidden
+        self.classType   = classType
+        self.path        = self.name
+
+        # Tracking
+        self._parent = None
+        self._root   = self
+        self._nodes  = collections.OrderedDict()
+
+    def add(self,node):
+        """Add node as sub-node"""
+
+        # Names of all sub-nodes must be unique
+        if node.name in self._nodes:
+            raise NodeError('Error adding %s with name %s to %s. Name collision.' % 
+                             (node.classType,node.name,self.name))
+
+        # Attach directly as attribute and add to ordered node dictionary
+        setattr(self,node.name,node)
+        self._nodes[node.name] = node
+
+        # Update path related attributes
+        node._updateTree(self)
+
+    def _updateTree(self,parent):
+        """
+        Update tree. In some cases nodes such as variables, commands and devices will
+        be added to a device before the device is inserted into a tree. This call
+        ensures the nodes and sub-nodes attached to a device can be updated as the tree
+        gets created.
+        """
+        self._parent = parent
+        self._root   = self._parent._root
+        self.path    = self._parent.path + '.' + self.name
+
+        for key,value in self._nodes.iteritems():
+            value._updateTree(self)
+
+    def _getNodeAtPath(self,path):
+        """
+        Return node at given path, recursing when neccessary.
+        Called from getAtPath in the root node.
+        """
+        if not '.' in path:
+            node = path
+            rest = None
+        else:
+            node = path[:path.find('.')]
+            rest = path[path.find('.')+1:]
+
+        if node not in self._nodes:
+            return None
+        elif rest:
+            return self._nodes[node]._getNodeAtPath(rest)
+        else:
+            return self._nodes[node]
+
+    def _getStructure(self):
+        """
+        Get structure starting from this level.
+        Attributes that are Nodes are recursed.
+        Called from getDictStructure in the root node.
+        """
+        data = {}
+        for key,value in self.__dict__.iteritems():
+            if not key.startswith('_'):
+                if isinstance(value,Node):
+                    data[key] = value._getStructure()
+                else:
+                    data[key] = value
+
+        return data
+
+    def _getVariables(self,modes):
+        """
+        Get variable values in a dictionary starting from this level.
+        Attributes that are Nodes are recursed.
+        modes is a list of variable modes to include.
+        Called from getDictVariables in the root node.
+        """
+        data = {}
+        for key,value in self._nodes.iteritems():
+            if isinstance(value,Device):
+                data[key] = value._getVariables(modes)
+            elif isinstance(value,Variable) and (value.mode in modes):
+                data[key] = value._rawGet()
+
+        return data
+
+    def _setVariables(self,d,modes):
+        """
+        Set variable values from a dictionary starting from this level.
+        Attributes that are Nodes are recursed.
+        modes is a list of variable modes to act on
+        Called from setDictVariables in the root node.
+        """
+        for key, value in d.iteritems():
+
+            # Entry is in node list
+            if key in self._nodes:
+
+                # If entry is a device, recurse
+                if isinstance(self._nodes[key],Device):
+                    self._nodes[key]._setVariables(value,modes)
+
+                # Set value if variable with enabled mode
+                elif isinstance(self._nodes[key],Variable) and (self._nodes[key].mode in modes):
+                    self._nodes[key]._rawSet(value)
 
 
-class Root(rogue.interfaces.stream.Master):
-    """System base"""
+class Root(rogue.interfaces.stream.Master,Node):
+    """
+    Class which serves as the root of a tree of nodes.
+    The root is the interface point for tree level access and updats.
+    The root is a stream master which generates frames containing tree
+    configuration and status values. This allows confiuration and status
+    to be stored in data files.
+    """
 
-    def __init__(self,name):
+    def __init__(self, name, description):
+        """Init the node with passed attributes"""
+
         rogue.interfaces.stream.Master.__init__(self)
+        Node.__init__(self, name, description, False, 'root')
 
-        self.name = name
-        self._poller = Poller(self)
+        # Polling period. Set to None to exit. 0 = don't poll
+        self._pollPeriod = 0
+
+        # Keep of list of errors, exposed as a variable
         self._systemLog = ""
-        self._nodes = collections.OrderedDict()
 
-        # Config write command exposed to higher level
-        Command(parent=self, name='writeConfig',description='Write Configuration', base='string',
-           function=self._writeYamlConfig)
+        # Add poller
+        self._pollThread = None
 
-        # Config read command exposed to higher level
-        Command(parent=self, name='readConfig',description='Read Configuration', base='string',
-           function=self._readYamlConfig)
+        # Commands
 
-        # Soft reset
-        Command(parent=self, name='softReset',description='Soft Reset',
-           function=self._softReset)
+        self.add(Command(name='writeConfig', base='string', function=self._writeConfig,
+            description='Write configuration to passed filename in YAML format'))
 
-        # Hard reset
-        Command(parent=self, name='hardReset',description='Hard Reset',
-           function=self._hardReset)
+        self.add(Command(name='readConfig', base='string', function=self._readConfig,
+            description='Read configuration from passed filename in YAML format'))
 
-        # Count reset
-        Command(parent=self, name='countReset',description='Count Reset',
-           function=self._hardReset)
+        self.add(Command(name='hardReset', base='None', function=self._hardReset,
+            description='Generate a hard reset to each device in the tree'))
 
-        # Clear log window
-        Command(parent=self, name='clearLog',description='Clear Log',
-           function=self._clearLog)
+        self.add(Command(name='softReset', base='None', function=self._softReset,
+            description='Generate a soft reset to each device in the tree'))
 
-        # System log variable
-        Variable(parent=self, name='systemLog', description='System Log', base='string', mode='RO', hidden=True,
-                 setFunction=None, getFunction='value=self._parent._systemLog')
+        self.add(Command(name='countReset', base='None', function=self._countReset,
+            description='Generate a count reset to each device in the tree'))
 
-        # Polling period variable
-        Variable(parent=self, name='pollPeriod', description='Polling Period', base='float', mode='RW', 
-                 setFunction='self._parent._poller.period=value', 
-                 getFunction='value=self._parent._poller.period')
-        
-        self._poller.start()
+        self.add(Command(name='clearLog', base='None', function=self._clearLog,
+            description='Clear the message log cntained in the systemLog variable'))
+
+        # Variables
+
+        self.add(Variable(name='systemLog', base='string', mode='RO', hidden=True,
+            setFunction=None, getFunction='value=dev._systemLog',
+            description='String containing newline seperated system logic entries'))
+
+        self.add(Variable(name='pollPeriod', base='float', mode='RW',
+            setFunction=self._setPollPeriod, getFunction='value=dev._pollPeriod',
+            description='Polling period for pollable variables. Set to 0 to disable polling'))
 
     def stop(self):
-        self._poller.period=None
+        """Stop the polling thread. Must be called for clean exit."""
+        self._pollPeriod=0
 
-    def streamConfig(self):
-        """Push confiuration string out on a stream"""
-        s = self.getYamlConfig()
-        f = self._reqFrame(len(s),True,0)
-        b = bytearray()
-        b.extend(s)
-        f.write(b,0)
-        self._sendFrame(f)
+    def _setPollPeriod(self,dev,var,value):
+        old = self._pollPeriod
+        self._pollPeriod = value
 
-    def getStructure(self):
-        """Get structure as a dictionary"""
-        return {self.name:_getStructure(self)}
+        # Start thread
+        if old == 0 and value != 0:
+            self._pollThread = threading.Thread(target=self._runPoll)
+            self._pollThread.start()
 
-    def getYamlStructure(self):
-        """Get structure as a yaml string"""
-        return yaml.dump(self.getStructure(),default_flow_style=False)
+        # Stop thread
+        elif old != 0 and value == 0:
+            self._pollThread.join()
+            self._pollThread = None
 
-    def getConfig(self):
-        """Get configuration as a dictionary"""
-        self.readAll()
-        return {self.name:_getConfig(self)}
+    def _runPoll(self):
+        while(self._pollPeriod != 0):
+            time.sleep(self._pollPeriod)
+            self._poll()
 
-    def getYamlConfig(self):
-        """Get configuration as a yaml string"""
-        return yaml.dump(self.getConfig(),default_flow_style=False)
-
-    def setConfig(self,d):
-        """Set configuration from a dictionary"""
-        for key, value in d.iteritems():
-            if key == self.name:
-                _setConfig(self,value)
-        self.writeAll()
-
-    def setYamlConfig(self,yml):
-        """Set configuration from a yaml string"""
-        d = yaml.load(yml)
-        self.setConfig(d)
-
-    def writeAll(self):
-        """Write all blocks"""
-        try:
-            _writeAll(self)
-            _checkUpdatedBlocks(self)
-        except Exception as e:
-            self._logException(e)
-
-    def writeStale(self):
-        """Write stale blocks"""
-        try:
-            _writeStale(self)
-            _checkUpdatedBlocks(self)
-        except Exception as e:
-            self._logException(e)
-
-    def readAll(self):
-        """Read all blocks"""
-        try:
-            _readAll(self)
-            _checkUpdatedBlocks(self)
-        except Exception as e:
-            self._logException(e)
-
-    def readPollable(self):
-        """Read pollable blocks"""
-        try:
-            _readPollable(self)
-            _checkUpdatedBlocks(self)
-        except Exception as e:
-            self._logException(e)
-
-    def verify(self):
-        """Verify read/write blocks"""
-        try:
-            pass
-        except Exception as e:
-            self._logException(e)
-
-    def getAtPath(self,path):
-        """Get dictionary entry at path"""
-
+    def _getAtPath(self,path):
+        """Get node using path"""
         if not '.' in path:
             if path == self.name: 
                 return self
@@ -249,98 +355,216 @@ class Root(rogue.interfaces.stream.Master):
             rest = path[path.find('.')+1:]
 
             if base == self.name:
-                return(_getAtPath(self,rest))
+                return(self._getPath(rest))
             else:
                 return None
 
-    def _writeYamlConfig(self,cmd,arg):
+    def _getDictStructure(self):
+        """Get structure as a dictionary"""
+        return {self.name:self._getStructure()}
+
+    def _getYamlStructure(self):
+        """Get structure as a yaml string"""
+        return yaml.dump(self._getDictStructure(),default_flow_style=False)
+
+    def _getDictVariables(self,modes=['RW']):
+        """
+        Get tree variable current values as a dictionary.
+        modes is a list of variable modes to include.
+        """
+        return {self.name:self._getVariables(modes)}
+
+    def _getYamlVariables(self,modes=['RW']):
+        """
+        Get tree variable current values as a dictionary.
+        modes is a list of variable modes to include.
+        """
+        return yaml.dump(self._getDictVariables(modes),default_flow_style=False)
+
+    def _setDictVariables(self,d,modes=['RW']):
+        """
+        Set variable values from a dictionary.
+        modes is a list of variable modes to act on
+        """
+        for key, value in d.iteritems():
+            if key == self.name:
+                self._setVariables(value,modes)
+
+    def _setYamlVariables(self,yml,modes=['RW']):
+        """
+        Set variable values from a dictionary.
+        modes is a list of variable modes to act on
+        """
+        d = yaml.load(yml)
+        self._setDictVariables(d,modes)
+
+    def _streamVariables(self,modes=['RW','RO']):
+        """
+        Generate a frame containing all variables values in yaml format.
+        A hardware read is not generated before the frame is generated.
+        """
+        vals = self.getYamlVariables(modes)
+        frame = self._reqFrame(len(vals),True,0)
+        b = bytearray()
+        b.extend(vals)
+        f.write(b,0)
+        self._sendFrame(frame)
+
+    def _write(self):
+        """Write all blocks"""
+        try:
+            for key,value in self._nodes.iteritems():
+                if isinstance(value,Device):
+                    value._write()
+            for key,value in self._nodes.iteritems():
+                if isinstance(value,Device):
+                    value._verify()
+            for key,value in self._nodes.iteritems():
+                if isinstance(value,Device):
+                    value._check()
+        except Exception as e:
+            self._root._logException(e)
+
+    def _read(self):
+        """Read all blocks"""
+        try:
+            for key,value in self._nodes.iteritems():
+                if isinstance(value,Device):
+                    value._read()
+            for key,value in self._nodes.iteritems():
+                if isinstance(value,Device):
+                    value._check()
+        except Exception as e:
+            self._root._logException(e)
+
+    def _poll(self):
+        """Read pollable blocks"""
+        try:
+            for key,value in self._nodes.iteritems():
+                if isinstance(value,Device):
+                    value._poll()
+            for key,value in self._nodes.iteritems():
+                if isinstance(value,Device):
+                    value._check()
+        except Exception as e:
+            self._root._logException(e)
+
+    def _writeConfig(self,dev,cmd,arg):
         """Write YAML configuration to a file. Called from command"""
-        with open(arg,'w') as f:
-            f.write(self.getYamlConfig())
+        self._read()
+        try:
+            with open(arg,'w') as f:
+                f.write(self._getYamlVariables(modes=['RW']))
+        except Exception as e:
+            self._root._logException(e)
 
-    def _readYamlConfig(self,cmd,arg):
+    def _readConfig(self,dev,cmd,arg):
         """Read YAML configuration from a file. Called from command"""
-        with open(arg,'r') as f:
-            self.setYamlConfig(f.read())
+        try:
+            with open(arg,'r') as f:
+                self._setYamlVariables(f.read(),modes=['RW'])
+        except Exception as e:
+            self._root._logException(e)
+        self._write()
 
-    def _softReset(self,cmd,arg):
-       _softReset(self)
+    def _softReset(self,dev,cmd,arg):
+        """Generate a soft reset on all devices"""
+        for key,value in self._nodes.iteritems():
+            if isinstance(value,Device):
+                value._devReset('soft')
 
-    def _hardReset(self,cmd,arg):
-       _hardReset(self)
+    def _hardReset(self,dev,cmd,arg):
+        """Generate a hard reset on all devices"""
+        for key,value in self._nodes.iteritems():
+            if isinstance(value,Device):
+                value._devReset('hard')
+        self._clearLog(dev,cmd,arg)
 
-    def _countReset(self,cmd,arg):
-       _countReset(self)
+    def _countReset(self,dev,cmd,arg):
+        """Generate a count reset on all devices"""
+        for key,value in self._nodes.iteritems():
+            if isinstance(value,Device):
+                value._devReset('count')
 
-    def _clearLog(self,cmd,arg):
+    def _clearLog(self,dev,cmd,arg):
+        """Clear the system log"""
         self._systemLog = ""
         self.systemLog._updated()
 
-    def _logException(self,ex):
-        self._addToLog(str(ex))
+    def _logException(self,exception):
+        """Add an exception to the log"""
+        #traceback.print_exc(limit=1)
+        traceback.print_exc()
+        self._addToLog(str(exception))
 
     def _addToLog(self,string):
+        """Add an string to the log"""
         self._systemLog += string
         self._systemLog += '\n'
         self.systemLog._updated()
 
 
-class Node(object):
-    """Common system node"""
-
-    def __init__(self, parent, name, description, hidden, classType):
-
-        # Public attributes
-        self.name        = name     
-        self.description = description
-        self.hidden      = hidden
-        self.classType   = classType
-
-        # Tracking
-        self._parent = parent
-        self._nodes = collections.OrderedDict()
-
-        if isinstance(parent,Node):
-            self._root = parent._root
-            self.path  = parent.path + '.' + self.name
-        else:
-            self._root = parent
-            self.path  = parent.name + '.' + self.name
-
-        # Add to parent list
-        if hasattr(self._parent,self.name):
-            raise NodeError('Invalid %s name %s. Name already exists' % (self.classType,self.name))
-        else:
-            setattr(self._parent,self.name,self)
-            self._parent._nodes[self.name] = self
-
-
 class Variable(Node):
-    """Variable holder"""
+    """
+    Variable holder.
+    A variable can be associated with a block of real memory or just manage a local variable.
 
-    def __init__(self, parent, name, description, bitSize=32, bitOffset=0, 
+    offset: offset is the memory offset (in bytes) if the associated with memory. 
+            This offset must be aligned to the minimum accessable memory entry for 
+            the underlying hardware. Variables with the same offset value will be 
+            associated with the same block object. 
+    bitSize: The size in bits of the variable entry if associated with memory.
+    bitOffset: The offset in bits from the byte offset if associated with memory.
+    pollEn: Set to true to enable polling of the associated memory.
+    base: This defined the type of entry tracked by this variable.
+          hex = An ukisngd integer in hex form
+          uint = An unsigned integer
+          enum = An enum with value,key pairs passed
+          bool = A True,False value
+          range = An unsigned integer with a bounded range
+          string = A string value
+          float = A float value
+    mode: Access mode of the variable
+          RW = Read/Write
+          RO = Read Only
+          WR = Write Only
+          CMD = A variable only used to perform commands. Can be WO or RW.
+    enum: A dictionary of index:value pairs ie {0:'Zero':0,'One'}
+    minimum: Minimum value for base=range
+    maximum: Maximum value for base=range
+    setFunction: Function to call to set the value. dev, var, value passed.
+    getFunction: Function to call to set the value. dev, var passed. Return value.
+    hidden: Variable is hidden
+
+    The set and get functions can be in one of two forms. They can either be a series 
+    of python commands in a string or a pointer to a class function. When defining 
+    pythone functions in a string the get function must update the 'value' variable with
+    the variable value. For the set function the variable 'value' is set in the value 
+    variable. ie setFunction='_someVariable = value', getFunction='value = _someVariable'
+    The string function is executed in the context of the variable object with 'dev' set
+    to the parent device object.
+    """
+    def __init__(self, name, description, offset=None, bitSize=32, bitOffset=0, pollEn=False,
                  base='hex', mode='RW', enum=None, hidden=False, minimum=None, maximum=None,
                  setFunction=None, getFunction=None):
         """Initialize variable class"""
-        # Currently supported bases:
-        #    uint, hex, enum, bool, range, string, float
-        # Enums are in the form:
-        #   idx : value
 
-        Node.__init__(self,parent,name,description,hidden,'variable')
+        Node.__init__(self,name,description,hidden,'variable')
 
         # Public Attributes
+        self.offset    = offset
         self.bitSize   = bitSize
         self.bitOffset = bitOffset
+        self.pollEn    = pollEn
         self.base      = base      
         self.mode      = mode
         self.enum      = enum
-        self.hidden    = hidden
         self.minimum   = minimum # For base='range'
         self.maximum   = maximum # For base='range'
 
         # Check modes
-        if (self.mode != 'RW') and (self.mode != 'RO') and (self.mode != 'WO') and (self.mode != 'CMD'):
+        if (self.mode != 'RW') and (self.mode != 'RO') and \
+           (self.mode != 'WO') and (self.mode != 'CMD'):
             raise VariableError('Invalid variable mode %s. Supported: RW, RO, WO, CMD' % (self.mode))
 
         # Tracking variables
@@ -349,127 +573,161 @@ class Variable(Node):
         self._getFunction = getFunction
         self.__listeners  = []
 
-    def _intSet(self,value):
+    def _addListener(self, func):
+        """
+        Add a listener function to call when variable changes. 
+        Variable will be passed as an arg:  func(self)
+        """
+        self.__listeners.append(func)
+
+    def _updated(self):
+        """Variable has been updated. Inform listeners."""
+        for func in self.__listeners:
+            func(self)
+
+    def _rawSet(self,value):
+        """
+        Raw set method. This is called by the set() method in order to convert the passed
+        variable to a value which can be written to a local container (block or local variable).
+        The set function defaults to setting a string value to the local block if mode='string'
+        or an integer value for mode='hex', mode='uint' or mode='bool'. All others will default to
+        a uint set. 
+        The user can use the setFunction attribute to pass a string containing python commands or
+        a specific method to call. When using a python string the code will find the passed value
+        as the variable 'value'. A passed method will accept the variable object and value as args.
+        Listeners will be informed of the update.
+        _rawSet() is called during bulk configuration loads with a seperate hardware access generated later.
+        """
         if self._setFunction != None:
             if callable(self._setFunction):
-                self._setFunction(self,value)
+                self._setFunction(self._parent,self,value)
             else:
+                dev = self._parent
                 exec(textwrap.dedent(self._setFunction))
 
         elif self._block:        
             if self.base == 'string':
                 self._block.setString(value)
-            elif self.base == 'bool':
-                if value: val = 1
-                else: val = 0
-                self._block.setUInt(self.bitOffset,self.bitSize,val)
-            elif self.base == 'enum':
-                val = {value: key for key,value in self.enum.iteritems()}[value]
-                self._block.setUInt(self.bitOffset,self.bitSize,val)
             else:
-                self._block.setUInt(self.bitOffset,self.bitSize,value)
+                if self.base == 'bool':
+                    if value: ivalue = 1
+                    else: ivalue = 0
+                elif self.base == 'enum':
+                    ivalue = {value: key for key,value in self.enum.iteritems()}[value]
+                else:
+                    ivalue = int(value)
+                self._block.setUInt(self.bitOffset,self.bitSize,ivalue)
 
+        # Inform listeners
         self._updated()
                 
-    def _intGet(self):
+    def _rawGet(self):
+        """
+        Raw get method. This is called by the get() method in order to convert the local
+        container value (block or local variable) to a value returned to the caller.
+        The set function defaults to getting a string value from the local block if mode='string'
+        or an integer value for mode='hex', mode='uint' or mode='bool'. All others will default to
+        a uint get. 
+        The user can use the getFunction attribute to pass a string containing python commands or
+        a specific method to call. When using a python string the code will set the 'value' variable
+        with the value to return. A passed method will accept the variable as an arg and return the
+        resulting value.
+        _rawGet() can be called from other levels to get current value without generating a hardware access.
+        """
         if self._getFunction != None:
             if callable(self._getFunction):
-                return(self._getFunction(self))
+                return(self._getFunction(self._parent,self))
             else:
                 value = None
+                dev = self._parent
                 exec(textwrap.dedent(self._getFunction))
                 return value
 
         elif self._block:        
             if self.base == 'string':
                 return(self._block.getString())
-            elif self.base == 'bool':
-                return(self._block.getUInt(self.bitOffset,self.bitSize) != 0)
-            elif self.base == 'enum':
-                return self.enum[self._block.getUInt(self.bitOffset,self.bitSize)]
             else:
-                return(self._block.getUInt(self.bitOffset,self.bitSize))
+                ivalue = self._block.getUInt(self.bitOffset,self.bitSize)
+
+                if self.base == 'bool':
+                    return(ivalue != 0)
+                elif self.base == 'enum':
+                    return self.enum[ivalue]
+                else:
+                    return ivalue
         else:
             return None
 
-    def _addListener(self, dest):
-        """Add a listner for variable changes. Function newValue will be called"""
-        self.__listeners.append(dest)
-
-    def _updated(self):
-        """Update liteners with new value"""
-        for l in self.__listeners:
-            l.newValue(self)
-
     def set(self,value):
-        """Set a value without writing to hardware"""
+        """
+        Set the value and write to hardware if applicable
+        Writes to hardware are blocking. An error will result in a logged exception.
+        """
         try:
-            self._intSet(value)
-        except Exception as e:
-            self._root._logException(e)
-
-    def write(self,value):
-        """Set a value with write to hardware"""
-        try:
-            self._intSet(value)
+            self._rawSet(value)
             if self._block and self._block.mode != 'RO':
                 self._block.blockingWrite()
+                #self._block.block.blockingVerify() # Not yet implemented in memory::Block
         except Exception as e:
             self._root._logException(e)
 
-    def writePosted(self,value):
-        """Set a value with posted write to hardware"""
+    def post(self,value):
+        """
+        Set the value and write to hardware if applicable using a posted write.
+        Writes to hardware are posted.
+        """
         try:
-            self._intSet(value)
+            self._rawSet(value)
             if self._block and self._block.mode != 'RO':
                 self._block.postedWrite()
         except Exception as e:
             self._root._logException(e)
 
     def get(self):
-        """Get a value from shadow memory"""
-        try:
-            return self._intGet()
-        except Exception as e:
-            self._root._logException(e)
-
-    def read(self):
-        """Get a value after read from hardware"""
+        """ 
+        Return the value after performing a read from hardware if applicable.
+        Hardware read is blocking. An error will result in a logged exception.
+        Listeners will be informed of the update.
+        """
         try:
             if self._block and self._block.mode != 'WO':
                 self._block.blockingRead()
-                self._updated()
-            return self._intGet()
+            ret = self._rawGet()
         except Exception as e:
             self._root._logException(e)
 
+        # Update listeners for all variables in the block
+        if self._block:
+            self._block._updated()
+        else:
+            self._updated()
+        return ret
 
 class Command(Node):
-    """Command holder"""
+    """Command holder: TODO: Update comments"""
 
-    def __init__(self, parent, name, description, base='None', function=None, hidden=False):
+    def __init__(self, name, description, base='None', function=None, hidden=False):
         """Initialize command class"""
 
-        Node.__init__(self,parent,name,description,hidden,'command')
+        Node.__init__(self,name,description,hidden,'command')
 
         # Currently supported bases:
         #    uint, hex, string, float
 
         # Public attributes
-        self.hidden = hidden
-        self.base   = base
+        self.base = base
 
         # Tracking
         self._function = function
 
     def __call__(self,arg=None):
-        """Execute command"""
+        """Execute command: TODO: Update comments"""
         try:
             if self._function != None:
 
                 # Function is really a function
                 if callable(self._function):
-                    self._function(self,arg)
+                    self._function(self._parent,self,arg)
 
                 # Function is a CPSW sequence
                 elif type(self._function) is collections.OrderedDict:
@@ -486,10 +744,11 @@ class Command(Node):
                             if callable(n): 
                                 n(value)
                             else: 
-                                n.write(value)
+                                n.set(value)
 
                 # Attempt to execute string as a python script
                 else:
+                    dev = self._parent
                     exec(textwrap.dedent(self._function))
 
         except Exception as e:
@@ -497,78 +756,123 @@ class Command(Node):
 
 
 class Block(rogue.interfaces.memory.Block):
-    """Memory block holder"""
+    """Internal memory block holder"""
 
-    def __init__(self,parent,offset,size,variables,pollEn=False):
+    def __init__(self,offset,size):
         """Initialize memory block class"""
         rogue.interfaces.memory.Block.__init__(self,offset,size)
 
-        self.variables = variables
-        self.pollEn    = pollEn
-        self.mode      = 'RO'
+        # Attributes
+        self.offset    = offset # track locally because memory::Block address is global
+        self.variables = []
+        self.pollEn    = False
+        self.mode      = ''
 
-        # Add to device tracking list
-        parent._blocks.append(self)
+    def _check(self):
+        if self.getUpdated(): # Throws exception if error
+            self._updated()
 
-        # Update position in memory map
-        self._inheritFrom(parent)
-
-        for variable in variables:
-            variable._block = self
-
-            # Determine block mode based upon variables
-            # mismatch assumes block is read/write
-            if self.mode == '':
-                self.mode = variable.mode
-            elif self.mode != variable.mode:
-                self.mode = 'RW'
-
-    # Generate variable updates if block has been updated
-    def _checkUpdated(self):
-        if self.getUpdated():
-            for variable in self.variables:
-                variable._updated()
+    def _updated(self):
+        for variable in self.variables:
+            variable._updated()
 
 
 class Device(Node,rogue.interfaces.memory.Master):
-    """Device class holder"""
+    """Device class holder. TODO: Update comments"""
 
-    def __init__(self, parent, name, description, size, memBase=None, offset=0, hidden=False):
+    def __init__(self, name, description, size, memBase=None, offset=0, hidden=False):
         """Initialize device class"""
 
-        Node.__init__(self,parent,name,description,hidden,'device')
+        Node.__init__(self,name,description,hidden,'device')
         rogue.interfaces.memory.Master.__init__(self,offset,size)
 
         # Blocks
-        self._blocks = []
-        self._enable = True
+        self._blocks    = []
+        self._enable    = True
+        self._memBase   = memBase
+        self._resetFunc = None
 
         # Adjust position in tree
-        if memBase:
-            self._setMemBase(memBase,offset)
-        elif isinstance(self._parent,rogue.interfaces.memory.Master):
-            self._inheritFrom(self._parent)
+        if memBase: self._setMemBase(memBase,offset)
 
         # Variable interface to enable flag
-        Variable(parent=self, name='enable', description='Enable Flag', base='bool', mode='RW', 
-                 setFunction=self._setEnable, getFunction='value = self._parent._enable')
+        self.add(Variable(name='enable', base='bool', mode='RW',
+            setFunction=self._setEnable, getFunction='value=dev._enable',
+            description='Determines if device is enabled for hardware access'))
 
-    def _setEnable(self, var, enable):
+    def add(self,node):
+        """
+        Add node as sub-node in the object
+        Device specific implementation to add blocks as required.
+        """
+
+        # Call node add
+        Node.add(self,node)
+
+        # Adding device whos membase is not yet set
+        if isinstance(node,Device) and node._memBase == None:
+            node._setMemBase(self)
+
+        # Adding variable
+        if isinstance(node,Variable) and node.offset != None:
+            varBytes = int(math.ceil(float(node.bitOffset + node.bitSize) / 8.0))
+
+            # First find if and existing block matches
+            vblock = None
+            for block in self._blocks:
+                if node.offset == block.offset:
+                    vblock = block
+
+            # Create new block if not found
+            if vblock == None:
+                vblock = Block(node.offset,varBytes)
+                vblock._inheritFrom(self)
+                self._blocks.append(vblock)
+
+            # Do association
+            node._block = vblock
+            vblock.variables.append(node)
+
+            if node.pollEn: 
+                vblock.pollEn = True
+
+            if vblock.mode == '': 
+                vblock.mode = node.mode
+            elif vblock.mode != node.mode:
+                vblock.mode = 'RW'
+
+            # Adjust size to hold variable. Underlying class will adjust
+            # size to align to minimum protocol access size 
+            if vblock.getSize() < varBytes:
+               vblock._setSize(varBytes)
+
+    def setResetFunc(self,func):
+        self._resetFunc = func
+
+    def _setEnable(self, dev, var, enable):
+        """
+        Method to update enable in underlying block.
+        May be re-implemented in some sub-class to 
+        propogate enable to leaf nodes in the tree.
+        """
         self._enable = enable
 
         for block in self._blocks:
             block.setEnable(enable)
 
     def _setMemBase(self,memBase,offset=None):
-        """Connect to memory slave at offset"""
-        if offset: self._setAddress(offset)
+        """Connect to memory slave at offset. Adjusting global address."""
+        self._memBase = memBase
+
+        if offset != None: 
+            self._setAddress(offset)
 
         # Membase is a Device
         if isinstance(memBase,Device):
             # Inhertit base address and slave pointer from one level up
             self._inheritFrom(memBase)
 
-        # Direct connection to slae
+        # Direct connection to slave
         else:
             self._setSlave(memBase)
 
@@ -581,36 +885,94 @@ class Device(Node,rogue.interfaces.memory.Master):
             if isinstance(dev,Device):
                 dev._setMemBase(self)
 
-    def _readOthers(self):
-        """Method to read and update non block based variables. Called from readAllBlocks."""
-        # Be sure to call variable._updated() on variables to propogate changes to listeners
-        pass
+    def _write(self):
+        """ Write all blocks. """
+        if not self._enable: return
 
-    def _pollOthers(self):
-        """Method to poll and update non block based variables. Called from pollAllBlocks."""
-        # Be sure to call variable._updated() on variables to propogate changes to listeners
-        pass
+        # Process local blocks
+        for block in self._blocks:
+            if block.mode == 'WO' or block.mode == 'RW':
+                block.backgroundWrite()
 
-    def _softReset(self):
-        """Method to perform a softReset."""
-        pass
+        # Process reset of tree
+        for key,value in self._nodes.iteritems():
+            if isinstance(value,Device):
+                value._write()
 
-    def _hardReset(self):
-        """Method to perform a hardReset."""
-        pass
+    def _verify(self):
+        """ Verify all blocks. """
+        if not self._enable: return
 
-    def _countReset(self):
-        """Method to perform a countReset."""
-        pass
+        # Process local blocks
+        for block in self._blocks:
+            if block.mode == 'WO' or block.mode == 'RW':
+                #block.backgroundVerify()
+                pass # Not yet implemented in memory::Block
+
+        # Process reset of tree
+        for key,value in self._nodes.iteritems():
+            if isinstance(value,Device):
+                value._verify()
+
+    def _read(self):
+        """Read all blocks"""
+        if not self._enable: return
+
+        # Process local blocks
+        for block in self._blocks:
+            if block.mode == 'RO' or block.mode == 'RW':
+                block.backgroundRead()
+
+        # Process reset of tree
+        for key,value in self._nodes.iteritems():
+            if isinstance(value,Device):
+                value._read()
+
+    def _poll(self):
+        """Read pollable blocks"""
+        if not self._enable: return
+
+        # Process local blocks
+        for block in self._blocks:
+            if block.pollEn and (block.mode == 'RO' or block.mode == 'RW'):
+                block.backgroundRead()
+
+        # Process reset of tree
+        for key,value in self._nodes.iteritems():
+            if isinstance(value,Device):
+                value._poll()
+
+    def _check(self):
+        """Check errors in all blocks and generate variable update nofifications"""
+        if not self._enable: return
+
+        # Process local blocks
+        for block in self._blocks:
+            block._check()
+
+        # Process reset of tree
+        for key,value in self._nodes.iteritems():
+            if isinstance(value,Device):
+                value._check()
+
+    def _devReset(self,rstType):
+        """Generate a count, soft or hard reset"""
+        if callable(self._resetFunc):
+            self._resetFunc(self,rstType)
+
+        # process remaining blocks
+        for key,value in self._nodes.iteritems():
+            if isinstance(value,Device):
+                value._devReset(rstType)
 
 
 class DataWriter(Device):
-    """Special base class to control data files"""
+    """Special base class to control data files. TODO: Update comments"""
 
-    def __init__(self, parent, name, description='', hidden=False):
+    def __init__(self, name, description='', hidden=False):
         """Initialize device class"""
 
-        Device.__init__(self, parent=parent, name=name, description=description,
+        Device.__init__(self, name=name, description=description,
                         size=0, memBase=None, offset=0, hidden=hidden)
 
         self.classType    = 'dataWriter'
@@ -619,37 +981,58 @@ class DataWriter(Device):
         self._bufferSize  = 0
         self._maxFileSize = 0
 
-        Variable(parent=self, name='dataFile', description='Data File', base='string', mode='RW',
-                 setFunction='self._parent._dataFile = value',
-                 getFunction='value = self._parent._dataFile')
+        self.add(Variable(name='dataFile', base='string', mode='RW',
+            setFunction='dev._dataFile = value', getFunction='value = dev._dataFile',
+            description='Data file for storing frames for connected streams.'))
 
-        Variable(parent=self, name='open', description='Data file open state',
-                 base='bool', mode='RW',
-                 setFunction=self._setOpen,  # Implement in sub class
-                 getFunction='value = self._parent._open')
+        self.add(Variable(name='open', base='bool', mode='RW',
+            setFunction=self._setOpen, getFunction='value = dev._open',
+            description='Data file open state'))
 
-        Variable(parent=self, name='bufferSize', description='File buffering size',
-                 base='uint', mode='RW',
-                 setFunction=self._setBufferSize,  # Implement in sub class
-                 getFunction='value = self._parent._bufferSize')
+        self.add(Variable(name='bufferSize', base='uint', mode='RW',
+            setFunction=self._setBufferSize, getFunction='value = dev._bufferSize',
+            description='File buffering size. Enables caching of data before call to file system.'))
 
-        Variable(parent=self, name='maxSize', description='File maximum size',
-                 base='uint', mode='RW',
-                 setFunction=self._setMaxSize,  # Implement in sub class
-                 getFunction='value = self._parent._maxFileSize')
+        self.add(Variable(name='maxFileSize', base='uint', mode='RW',
+            setFunction=self._setMaxFileSize, getFunction='value = dev._maxFileSize',
+            description='Maximum size for an individual file. Setting to a non zero splits the run data into multiple files.'))
 
-        Variable(parent=self, name='fileSize', description='File size in bytes',
-                 base='uint', mode='RO',
-                 setFunction=None, getFunction=self._getFileSize)  # Implement in sub class
+        self.add(Variable(name='fileSize', base='uint', mode='RO',
+            setFunction=None, getFunction=self._getFileSize,
+            description='Size of data files(s) for current open session in bytes.'))
 
-        Variable(parent=self, name='frameCount', description='Total frames in file',
-                 base='uint', mode='RO',
-                 setFunction=None, getFunction=self._getFrameCount)  # Implement in sub class
+        self.add(Variable(name='frameCount', base='uint', mode='RO',
+            setFunction=None, getFunction=self._getFrameCount,
+            description='Frame in data file(s) for current open session in bytes.'))
 
-        Command(parent=self, name='autoName',description='Generate File Name',
-           function=self._genFileName)
+        self.add(Command(name='autoName', function=self._genFileName,
+            description='Auto create data file name using data and time.'))
 
-    def _genFileName(self,var,arg):
+    def _setOpen(self,dev,var,value):
+        """Set open state. Override in sub-class"""
+        self._open = value
+
+    def _setBufferSize(self,dev,var,value):
+        """Set buffer size. Override in sub-class"""
+        self._bufferSize = value
+
+    def _setMaxFileSize(self,dev,var,value):
+        """Set max file size. Override in sub-class"""
+        self._maxFileSize = value
+
+    def _getFileSize(self,dev,cmd):
+        """get current file size. Override in sub-class"""
+        return(0)
+
+    def _getFrameCount(self,dev,cmd):
+        """get current file frame count. Override in sub-class"""
+        return(0)
+
+    def _genFileName(self,dev,cmd,arg):
+        """
+        Auto create data file name based upon date and time.
+        Preserve file's location in path.
+        """
         idx = self._dataFile.rfind('/')
 
         if idx < 0:
@@ -661,24 +1044,26 @@ class DataWriter(Device):
         self._dataFile += datetime.datetime.now().strftime("%Y%m%d_%H%M%S.dat") 
         self.dataFile._updated()
 
-    def _readOthers(self):
-        self.fileSize.read()
-        self.frameCount.read()
+    def _read(self):
+        """Force update of non block status variables"""
+        self.fileSize.get()
+        self.frameCount.get()
+        Device._read(self)
 
-        self.fileSize._updated()
-        self.frameCount._updated()
-
-    def _pollOthers(self):
-        self._readOthers()
+    def _poll(self):
+        """Force update of non block status variables"""
+        self.fileSize.get()
+        self.frameCount.get()
+        Device._poll(self)
 
 
 class RunControl(Device):
-    """Special base class to control runs"""
+    """Special base class to control runs. TODO: Update comments."""
 
-    def __init__(self, parent, name, description='', hidden=False):
+    def __init__(self, name, description='', hidden=False):
         """Initialize device class"""
 
-        Device.__init__(self, parent=parent, name=name, description=description,
+        Device.__init__(self, name=name, description=description,
                         size=0, memBase=None, offset=0, hidden=hidden)
 
         self.classType = 'runControl'
@@ -686,162 +1071,40 @@ class RunControl(Device):
         self._runCount = 0
         self._runRate  = '1 Hz'
 
-        Variable(parent=self, name='runState', description='Run State', base='enum', mode='RW',
-                 enum={0:'Stopped', 1:'Running'},
-                 setFunction=self._setRunState,
-                 getFunction='value = self._parent._runState')
+        self.add(Variable(name='runState', base='enum', mode='RW', enum={0:'Stopped', 1:'Running'},
+            setFunction=self._setRunState, getFunction='value = dev._runState',
+            description='Run state of the system.'))
 
-        Variable(parent=self, name='runRate', description='Run Rate', base='enum', mode='RW',
-                 enum={1:'1 Hz',    10:'10 Hz'},
-                 setFunction=self._setRunRate,
-                 getFunction='value = self._parent._runRate')
+        self.add(Variable(name='runRate', base='enum', mode='RW', enum={1:'1 Hz', 10:'10 Hz'},
+            setFunction=self._setRunRate, getFunction='value = dev._runRate',
+            description='Run rate of the system.'))
 
-        Variable(parent=self, name='runCount', description='Run Counter',
-                 base='uint', mode='RO',
-                 setFunction=None, getFunction='value = self._parent._runCount')
+        self.add(Variable(name='runCount', base='uint', mode='RO',
+            setFunction=None, getFunction='value = dev._runCount',
+            description='Run Counter updated by run thread.'))
 
-    # Reimplement in sub class
-    def _setRunState(self,cmd,value):
+    def _setRunState(self,dev,var,value):
+        """
+        Set run state. Reimplement in sub-class.
+        Enum of run states can also be overriden.
+        Underlying run control must update _runCount variable.
+        """
         self._runState = value
 
-    # Reimplement in sub class
-    def _setRunRate(self,cmd,value):
+    def _setRunRate(self,dev,var,value):
+        """
+        Set run rate. Reimplement in sub-class.
+        Enum of run rates can also be overriden.
+        """
         self._runRate = value
 
-    def _readOthers(self):
-        self.runCount.read()
-        self.runCount._updated()
+    def _read(self):
+        """Force update of non block status variables"""
+        self.runCount.get()
+        Device._read(self)
 
-    def _pollOthers(self):
-        self._readOthers()
-
-
-def _getStructure(obj):
-    """Recursive function to generate a dictionary for the structure"""
-    data = {}
-    for key,value in obj.__dict__.iteritems():
-        if isinstance(value,Node):
-            data[key] = _getStructure(value)
-        else:
-            data[key] = value
-
-    return data
-
-
-def _getConfig(obj):
-    """Recursive function to generate a dictionary for the configuration"""
-    data = {}
-    for key,value in obj._nodes.iteritems():
-        if isinstance(value,Device):
-            data[key] = _getConfig(value)
-        elif isinstance(value,Variable) and value.mode=='RW':
-            data[key] = value.get()
-
-    return data
-
-
-def _setConfig(obj,d):
-    """Recursive function to set configuration from a dictionary"""
-    for key, value in d.iteritems():
-        v = getattr(obj,key)
-        if isinstance(v,Device):
-            _setConfig(v,value)
-        elif isinstance(v,Variable):
-            v.set(value)
-
-
-def _writeAll(obj):
-    """Recursive function to write all blocks in each Device"""
-    for key,value in obj._nodes.iteritems():
-        if isinstance(value,Device):
-            if value._enable:
-                for block in value._blocks:
-                    if block.mode == 'WO' or block.mode == 'RW':
-                        block.backgroundWrite()
-                _writeAll(value)
-
-
-def _writeStale(obj):
-    """Recursive function to write stale blocks in each Device"""
-    for key,value in obj._nodes.iteritems():
-        if isinstance(value,Device):
-            if value._enable:
-                for block in value._blocks:
-                    if block.getStale() and (block.mode == 'WO' or block.mode == 'RW'):
-                        block.backgroundWrite()
-                _writeStale(value)
-
-
-def _readAll(obj):
-    """Recursive function to read all of the blocks in each Device"""
-    for key,value in obj._nodes.iteritems():
-        if isinstance(value,Device):
-            if value._enable:
-                for block in value._blocks:
-                    if block.mode == 'RO' or block.mode == 'RW':
-                        block.backgroundRead()
-
-                value._readOthers()
-                _readAll(value)
-
-
-def _readPollable(obj):
-    """Recursive function to read pollable blocks in each Device"""
-    for key,value in obj._nodes.iteritems():
-        if isinstance(value,Device):
-            if value._enable:
-                for block in value._blocks:
-                    if block.pollEn and (block.mode == 'RO' or block.mode == 'RW'):
-                        block.backgroundRead()
-
-                value._pollOthers()
-                _readPollable(value)
-
-
-def _checkUpdatedBlocks(obj):
-    """Recursive function to check status of all blocks in each Device"""
-    for key,value in obj._nodes.iteritems():
-        if isinstance(value,Device):
-            if value._enable:
-                for block in value._blocks:
-                    block._checkUpdated()
-
-                _checkUpdatedBlocks(value)
-
-
-def _getAtPath(obj,path):
-    """Recursive function to return object at passed path"""
-    if not '.' in path:
-        if hasattr(obj,path):
-            return getattr(obj,path)
-        else:
-            return None
-    else:
-        base = path[:path.find('.')]
-        rest = path[path.find('.')+1:]
-        return(_getAtPath(getattr(obj,base),rest))
-
-
-def _softReset(obj):
-    """Recursive function to execute softReset commands in each device"""
-    for key,value in obj._nodes.iteritems():
-        if isinstance(value,Device):
-             value._softReset()
-             _softReset(value)
-
-
-def _hardReset(obj):
-    """Recursive function to execute hardReset commands in each device"""
-    for key,value in obj._nodes.iteritems():
-        if isinstance(value,Device):
-             value._hardReset()
-             _hardReset(value)
-
-
-def _countReset(obj):
-    """Recursive function to execute countReset commands in each device"""
-    for key,value in obj._nodes.iteritems():
-        if isinstance(value,Device):
-             value._countReset()
-             _countReset(value)
+    def _poll(self):
+        """Force update of non block status variables"""
+        self.runCount.get()
+        Device._poll(self)
 

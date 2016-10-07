@@ -63,6 +63,11 @@ uint64_t rim::Master::getSize() {
    return(size_);
 }
 
+//! Set size
+void rim::Master::setSize(uint64_t size) {
+   size_ = size;
+}
+
 //! Get address
 uint64_t rim::Master::getAddress() {
    return(address_);
@@ -131,6 +136,7 @@ void rim::Master::setup_python() {
       .def("_getSlave",     &rim::Master::getSlave)
       .def("_reqMinAccess", &rim::Master::reqMinAccess)
       .def("_reqMaxAccess", &rim::Master::reqMaxAccess)
+      .def("_setSize",      &rim::Master::setSize)
       .def("getSize",       &rim::Master::getSize)
       .def("getAddress",    &rim::Master::getAddress)
       .def("_setAddress",   &rim::Master::setAddress)

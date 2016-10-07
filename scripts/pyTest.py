@@ -19,7 +19,8 @@
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
 import rogue.hardware.pgp
-import pyrogue.devices.axi
+import pyrogue.devices.axi_version
+import pyrogue.devices.axi_prbstx
 import pyrogue.utilities.prbs
 import pyrogue.utilities.fileio
 import pyrogue.gui
@@ -47,19 +48,23 @@ class MbDebug(rogue.interfaces.stream.Slave):
 
 
 # Custom run control
-class MyRunControl(pyrogue.RunControl,threading.Thread):
-   def __init__(self,parent,name):
-      threading.Thread.__init__(self)
-      pyrogue.RunControl.__init__(self,parent,name,'Run Controller')
+class MyRunControl(pyrogue.RunControl):
+   def __init__(self,name):
+      pyrogue.RunControl.__init__(self,name,'Run Controller')
+      self._thread = None
 
-   def _setRunState(self,cmd,value):
+   def _setRunState(self,dev,var,value):
       if self._runState != value:
          self._runState = value
 
          if self._runState == 'Running':
-            self.start()
+            self._thread = threading.Thread(target=self._run)
+            self._thread.start()
+         else:
+            self._thread.join()
+            self._thread = None
 
-   def run(self):
+   def _run(self):
       self._runCount = 0
       self._last = int(time.time())
 
@@ -74,7 +79,7 @@ class MyRunControl(pyrogue.RunControl,threading.Thread):
              self.runCount._updated()
 
 # Set base
-evalBoard = pyrogue.Root('evalBoard')
+evalBoard = pyrogue.Root('evalBoard','Evaluation Board')
 
 # Create the PGP interfaces
 pgpVc0 = rogue.hardware.pgp.PgpCard('/dev/pgpcard_0',0,0)
@@ -89,7 +94,8 @@ srp = rogue.protocols.srp.SrpV0()
 pyrogue.streamConnectBiDir(pgpVc0,srp)
 
 # File writer 
-dataWriter = pyrogue.utilities.fileio.StreamWriter(evalBoard,'dataWriter')
+dataWriter = pyrogue.utilities.fileio.StreamWriter('dataWriter')
+evalBoard.add(dataWriter)
 
 # Add data stream to file as channel 1
 pyrogue.streamConnect(pgpVc1,dataWriter.getChannel(0x1))
@@ -101,19 +107,20 @@ pyrogue.streamConnect(pgpVc3,dataWriter.getChannel(0x2))
 pyrogue.streamConnect(evalBoard,dataWriter.getChannel(0x0))
 
 # PRBS Receiver as secdonary receiver for VC1
-prbsRx = pyrogue.utilities.prbs.PrbsRx(evalBoard,'prbsRx')
+prbsRx = pyrogue.utilities.prbs.PrbsRx('prbsRx')
 pyrogue.streamTap(pgpVc1,prbsRx)
+evalBoard.add(prbsRx)
 
 # Microblaze console connected to VC2
 mbcon = MbDebug()
 pyrogue.streamTap(pgpVc3,mbcon)
 
 # Add run control
-runC = MyRunControl(evalBoard,'runControl')
+evalBoard.add(MyRunControl('runControl'))
 
 # Add Devices
-version = pyrogue.devices.axi.AxiVersion(parent=evalBoard,name='axiVersion',memBase=srp,offset=0x0)
-hwPrbs  = pyrogue.devices.axi.AxiPrbsTx(parent=evalBoard,name='axiPrbsTx',memBase=srp,offset=0x30000)
+evalBoard.add(pyrogue.devices.axi_version.create(name='axiVersion',memBase=srp,offset=0x0))
+evalBoard.add(pyrogue.devices.axi_prbstx.create(name='axiPrbsTx',memBase=srp,offset=0x30000))
 
 # Start the GUI. ipython --gui=qt4 to enable
 appTop = PyQt4.QtGui.QApplication(sys.argv)

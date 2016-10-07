@@ -85,6 +85,9 @@ namespace rogue {
                //! Get size
                uint64_t getSize();
 
+               //! Set size
+               void setSize(uint64_t size);
+
                //! Get address
                uint64_t getAddress();
 

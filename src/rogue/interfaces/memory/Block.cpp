@@ -44,7 +44,6 @@ rim::BlockPtr rim::Block::create (uint64_t address, uint32_t size ) {
 rim::Block::Block(uint64_t address, uint32_t size ) : Master (address,size) {
    timeout_ = 1000000; // One second
    error_   = 0;
-   stale_   = 0;
    write_   = 0;
    busy_    = false;
    enable_  = true;
@@ -99,12 +98,6 @@ bool rim::Block::getUpdated() {
    return ret;
 }
 
-//! Get stale state
-bool rim::Block::getStale() {
-   boost::unique_lock<boost::mutex> lck = lockAndCheck(false);
-   return(stale_);
-}
-
 //! Internal function to wait for busy = false and acquire lock
 /*
  * Exception thrown on busy wait timeout
@@ -140,6 +133,10 @@ void rim::Block::backgroundRead() {
 }
 
 //! Generate blocking read transaction
+/*
+ * Updated flag is cleared.
+ * An exception is thrown on error.
+ */
 void rim::Block::blockingRead() {
    reqTransaction(false,false);
    getUpdated();
@@ -151,6 +148,9 @@ void rim::Block::backgroundWrite() {
 }
 
 //! Generate blocking write transaction
+/*
+ * An exception is thrown on error.
+ */
 void rim::Block::blockingWrite() {
    reqTransaction(true,false);
    lockAndCheck(true);
@@ -163,6 +163,8 @@ void rim::Block::postedWrite() {
 
 //! Do Transaction
 void rim::Block::reqTransaction(bool write, bool posted) {
+   uint32_t min;
+
    { // Begin scope of lck
 
       boost::unique_lock<boost::mutex> lck = lockAndCheck(false);
@@ -173,6 +175,10 @@ void rim::Block::reqTransaction(bool write, bool posted) {
       write_ = write;
       error_ = 0;
       busy_  = true;
+
+      // Adjust size to align to protocol minimum
+      min = reqMinAccess();
+      if ( (size_ % min) != 0 ) size_ = (((size_ / min) + 1)*min);
 
    } // End scope of lck
 
@@ -192,7 +198,6 @@ void rim::Block::doneTransaction(uint32_t error) {
       error_   = error;
       if ( error == 0 ) {
          if ( ! write_ ) updated_ = true;
-         stale_   = false;
       }
 
    } // End scope of lck
@@ -251,7 +256,6 @@ void rim::Block::setUInt(uint32_t bitOffset, uint32_t bitCount, uint64_t value) 
       throw(re::BoundaryException("Block::setUInt",(bitOffset+bitCount),(size_*8)));
 
    boost::unique_lock<boost::mutex> lck = lockAndCheck(false);
-   stale_ = true;
 
    if ( bitCount == 64 ) mask = 0xFFFFFFFFFFFFFFFF;
    else mask = pow(2,bitCount) - 1;
@@ -278,14 +282,12 @@ void rim::Block::setString(std::string value) {
       throw(re::BoundaryException("Block::setString",value.length(),size_));
 
    boost::unique_lock<boost::mutex> lck = lockAndCheck(false);
-   stale_ = true;
    strcpy((char *)data_,value.c_str());
 }
 
 //! Start raw access. Lock object is returned.
 rim::BlockLockPtr rim::Block::lockRaw(bool write) {
    rim::BlockLockPtr lock = boost::make_shared<rim::BlockLock>();
-   lock->write_ = write;
    lock->lock_ = lockAndCheck(!write);
    return(lock);
 }
@@ -304,7 +306,6 @@ bp::object rim::Block::rawDataPy (rim::BlockLockPtr lock) {
 
 //! End a raw access. Pass back lock object
 void rim::Block::unlockRaw(rim::BlockLockPtr lock) {
-   if ( lock->write_ ) stale_ = true;
    lock->lock_.unlock();
 }
 
@@ -318,7 +319,6 @@ void rim::Block::setup_python() {
       .def("getEnable",       &rim::Block::getEnable)
       .def("getError",        &rim::Block::getError)
       .def("getUpdated",      &rim::Block::getUpdated)
-      .def("getStale",        &rim::Block::getStale)
       .def("backgroundRead",  &rim::Block::backgroundRead)
       .def("blockingRead",    &rim::Block::blockingRead)
       .def("backgroundWrite", &rim::Block::backgroundWrite)

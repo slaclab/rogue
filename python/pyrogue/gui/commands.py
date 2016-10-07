@@ -109,13 +109,13 @@ class CommandWidget(QWidget):
         # First create commands
         for key,val in d._nodes.iteritems():
             if isinstance(val,pyrogue.Command):
-                if not(key.startswith('_') or val.hidden):
+                if not val.hidden:
                     self.commands.append(CommandLink(tree,val))
 
         # Then create devices
         for key,val in d._nodes.iteritems():
             if isinstance(val,pyrogue.Device):
-                if not(key.startswith('_') or val.hidden):
+                if not val.hidden:
                     w = QTreeWidgetItem(tree)
                     w.setText(0,val.name)
                     w.setExpanded(True)

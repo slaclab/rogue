@@ -25,30 +25,30 @@ import pyrogue
 class StreamWriter(pyrogue.DataWriter):
     """Stream Writer Wrapper"""
 
-    def __init__(self, parent, name):
-        pyrogue.DataWriter.__init__(self,parent=parent, name=name, description='Stream Writer')
+    def __init__(self, name):
+        pyrogue.DataWriter.__init__(self, name=name, description='Stream Writer')
         self._writer = rogue.utilities.fileio.StreamWriter()
 
-    def _setOpen(self,cmd,arg):
-        if self._open != arg:
-            if arg == False:
+    def _setOpen(self,dev,var,value):
+        if self._open != value:
+            if value == False:
                 self._writer.close()
             else:
                 self._writer.open(self._dataFile)
-            self._open = arg
+            self._open = value
 
-    def _setBufferSize(self,cmd,arg):
-        self._bufferSize = arg
-        self._writer.setBufferSize(arg)
+    def _setBufferSize(self,dev,var,value):
+        self._bufferSize = value
+        self._writer.setBufferSize(value)
 
-    def _setMaxSize(self,cmd,arg):
-        self._maxFileSize = arg
-        self._writer.setMaxSize(arg)
+    def _setMaxFileSize(self,dev,var,value):
+        self._maxFileSize = value
+        self._writer.setMaxSize(value)
 
-    def _getFileSize(self,cmd):
+    def _getFileSize(self,dev,var):
         return self._writer.getSize()
 
-    def _getFrameCount(self,cmd):
+    def _getFrameCount(self,dev,var):
         return self._writer.getFrameCount()
 
     def getChannel(self,chan):
@@ -58,9 +58,9 @@ class StreamWriter(pyrogue.DataWriter):
 class StreamReader(pyrogue.Device):
     """Stream Reader Wrapper"""
 
-    def __init__(self, parent, name):
+    def __init__(self, name):
 
-        pyrogue.Device.__init__(self, parent=parent, name=name, description='Stream Writer', 
+        pyrogue.Device.__init__(self, name=name, description='Stream Writer', 
                                 size=0, memBase=None, offset=0)
 
         self._reader      = rogue.utilities.fileio.StreamReader()
@@ -69,22 +69,22 @@ class StreamReader(pyrogue.Device):
         self._bufferSize  = 0
         self._maxFileSize = 0
 
-        pyrogue.Variable(parent=self, name='dataFile', description='Data File',
-                         bitSize=0, bitOffset=0, base='string', mode='RW',
-                         setFunction='self._parent._file = value',
-                         getFunction='value = self._parent._file')
+        self.add(pyrogue.Variable(name='dataFile', description='Data File',
+                                  bitSize=0, bitOffset=0, base='string', mode='RW',
+                                  setFunction='self._parent._file = value',
+                                  getFunction='value = self._parent._file'))
 
-        pyrogue.Variable(parent=self, name='open', description='Data file open state',
-                         bitSize=1, bitOffset=0, base='bool', mode='RW',
-                         setFunction="""\
-                                     if self._parent._open != int(value):
-                                         if value == False:
-                                             self._parent._reader.close()
-                                         else:
-                                             self._parent._reader.open(self._parent._file)
-                                         self._parent._open = value
-                                     """,
-                         getFunction='value = self._parent._open')
+        self.add(pyrogue.Variable(name='open', description='Data file open state',
+                                  bitSize=1, bitOffset=0, base='bool', mode='RW',
+                                  setFunction="""\
+                                              if self._parent._open != int(value):
+                                                  if value == False:
+                                                      self._parent._reader.close()
+                                                  else:
+                                                      self._parent._reader.open(self._parent._file)
+                                                  self._parent._open = value
+                                              """,
+                                  getFunction='value = self._parent._open'))
 
     def _getStreamMaster(self):
         return self._reader
