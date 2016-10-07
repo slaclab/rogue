@@ -28,6 +28,7 @@
 #include <rogue/exceptions/GeneralException.h>
 #include <rogue/exceptions/TimeoutException.h>
 #include <boost/make_shared.hpp>
+#include <rogue/common.h>
 
 namespace rhe = rogue::hardware::exo;
 namespace ris = rogue::interfaces::stream;
@@ -42,23 +43,23 @@ rhe::TemPtr rhe::Tem::create (std::string path, bool data) {
 
 //! Open the device. Pass lane & vc.
 rhe::Tem::Tem(std::string path, bool data) {
+   int32_t res;
+
    isData_  = data;
    timeout_ = 1000000;
 
    if ( (fd_ = ::open(path.c_str(), O_RDWR)) < 0 )
       throw(re::OpenException("Tem::Temp",path.c_str(),0));
 
+   PyRogue_BEGIN_ALLOW_THREADS;
    if ( isData_ ) {
-      if ( temEnableDataRead(fd_) < 0 ) {
-         ::close(fd_);
-         throw(re::OpenException("Tem::Temp",path.c_str(),2));
-      }
+      if ( (res = temEnableDataRead(fd_)) < 0 ) ::close(fd_);
    } else {
-      if ( temEnableCmdRead(fd_) < 0 ) {
-         ::close(fd_);
-         throw(re::OpenException("Tem::Temp",path.c_str(),1));
-      }
+      if ((res =  temEnableCmdRead(fd_)) < 0 ) ::close(fd_);
    }
+   PyRogue_END_ALLOW_THREADS;
+
+   if ( res < 0 ) throw(re::OpenException("Tem::Temp",path.c_str(),1));
 
    // Start read thread
    thread_ = new boost::thread(boost::bind(&rhe::Tem::runThread, this));
@@ -71,7 +72,9 @@ rhe::Tem::~Tem() {
    thread_->interrupt();
    thread_->join();
 
+   PyRogue_BEGIN_ALLOW_THREADS;
    ::close(fd_);
+   PyRogue_END_ALLOW_THREADS;
 }
 
 //! Set timeout for frame transmits in microseconds
@@ -100,6 +103,7 @@ rhe::PciStatusPtr rhe::Tem::getPciStatus() {
 void rhe::Tem::acceptFrame ( ris::FramePtr frame ) {
    ris::BufferPtr   buff;
    int32_t          res;
+   int32_t          sres;
    fd_set           fds;
    struct timeval   tout;
 
@@ -117,11 +121,17 @@ void rhe::Tem::acceptFrame ( ris::FramePtr frame ) {
       tout.tv_sec=timeout_ / 1000000;
       tout.tv_usec=timeout_ % 1000000;
 
-      if ( (res = select(fd_+1,NULL,&fds,NULL,&tout)) == 0 ) 
-         throw(re::TimeoutException("Tem::acceptFrame",timeout_));
+      PyRogue_BEGIN_ALLOW_THREADS;
 
-      // Write
-      res = temWriteCmd(fd_, buff->getRawData(), buff->getCount());
+      if ( (sres = select(fd_+1,NULL,&fds,NULL,&tout)) > 0 ) {
+
+         // Write
+         res = temWriteCmd(fd_, buff->getRawData(), buff->getCount());
+      } else res = 0;
+      PyRogue_END_ALLOW_THREADS;
+
+      // Select timeout
+      if ( sres <= 0 ) throw(re::TimeoutException("Tem::acceptFrame",timeout_));
 
       // Error
       if ( res < 0 ) throw(re::GeneralException("Tem::acceptFrame","Tem Write Call Failed"));

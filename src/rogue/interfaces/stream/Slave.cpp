@@ -30,6 +30,7 @@
 #include <rogue/exceptions/AllocationException.h>
 #include <rogue/exceptions/GeneralException.h>
 #include <boost/make_shared.hpp>
+#include <rogue/common.h>
 
 namespace ris = rogue::interfaces::stream;
 namespace re  = rogue::exceptions;
@@ -108,6 +109,7 @@ ris::BufferPtr ris::Slave::allocBuffer ( uint32_t size ) {
       throw(re::AllocationException("Slave::allocBuffer",size));
 
    // Temporary lock to get meta
+   PyRogue_BEGIN_ALLOW_THREADS;
    {
       boost::lock_guard<boost::mutex> lock(mtx_);
 
@@ -117,6 +119,7 @@ ris::BufferPtr ris::Slave::allocBuffer ( uint32_t size ) {
       allocMeta_++;
       allocMeta_ &= 0xFFFFFF;
    }
+   PyRogue_END_ALLOW_THREADS;
 
    return(createBuffer(data,meta,size));
 }
@@ -126,20 +129,30 @@ ris::BufferPtr ris::Slave::allocBuffer ( uint32_t size ) {
 ris::BufferPtr ris::Slave::createBuffer( void * data, uint32_t meta, uint32_t rawSize) {
    ris::BufferPtr buff;
 
-   boost::lock_guard<boost::mutex> lock(mtx_);
+   PyRogue_BEGIN_ALLOW_THREADS;
+   {
 
-   buff = ris::Buffer::create(shared_from_this(),data,meta,rawSize);
+      boost::lock_guard<boost::mutex> lock(mtx_);
 
-   allocBytes_ += rawSize;
-   allocCount_++;
+      buff = ris::Buffer::create(shared_from_this(),data,meta,rawSize);
+
+      allocBytes_ += rawSize;
+      allocCount_++;
+   }
+   PyRogue_END_ALLOW_THREADS;
+
    return(buff);
 }
 
 //! Track buffer deletion
 void ris::Slave::deleteBuffer( uint32_t rawSize) {
-   boost::lock_guard<boost::mutex> lock(mtx_);
-   allocBytes_ -= rawSize;
-   allocCount_--;
+   PyRogue_BEGIN_ALLOW_THREADS;
+   {
+      boost::lock_guard<boost::mutex> lock(mtx_);
+      allocBytes_ -= rawSize;
+      allocCount_--;
+   }
+   PyRogue_END_ALLOW_THREADS;
 }
 
 //! Accept a frame request. Called from master
@@ -174,14 +187,20 @@ void ris::Slave::acceptFrame ( ris::FramePtr frame ) {
  * Called when this instance is marked as owner of a Buffer entity
  */
 void ris::Slave::retBuffer(uint8_t * data, uint32_t meta, uint32_t rawSize) {
-   boost::lock_guard<boost::mutex> lock(mtx_);
+
    if ( meta == freeMeta_ ) 
       throw(re::GeneralException("Slave::retBuffer","Buffer return with duplicate meta"));
-   freeMeta_ = meta;
 
-   if ( data != NULL ) free(data);
-   allocBytes_ -= rawSize;
-   allocCount_--;
+   PyRogue_BEGIN_ALLOW_THREADS;
+   {
+      boost::lock_guard<boost::mutex> lock(mtx_);
+      freeMeta_ = meta;
+
+      if ( data != NULL ) free(data);
+      allocBytes_ -= rawSize;
+      allocCount_--;
+   }
+   PyRogue_END_ALLOW_THREADS;
 }
 
 //! Accept frame

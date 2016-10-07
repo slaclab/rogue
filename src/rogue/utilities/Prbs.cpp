@@ -27,6 +27,7 @@
 #include <rogue/interfaces/stream/Buffer.h>
 #include <rogue/utilities/Prbs.h>
 #include <boost/make_shared.hpp>
+#include <rogue/common.h>
 
 namespace ris = rogue::interfaces::stream;
 namespace ru  = rogue::utilities;
@@ -229,7 +230,11 @@ void ru::Prbs::genFrame (uint32_t size) {
    uint32_t      value;
    ris::FramePtr fr;
 
-   boost::lock_guard<boost::mutex> lock(txMtx_);
+   boost::unique_lock<boost::mutex> lock(txMtx_,boost::defer_lock);
+
+   PyRogue_BEGIN_ALLOW_THREADS;
+   lock.lock();
+   PyRogue_END_ALLOW_THREADS;
 
    // Verify size first
    if ((( size % byteWidth_ ) != 0) || size < minSize_ ) {
@@ -282,7 +287,11 @@ void ru::Prbs::acceptFrame ( ris::FramePtr frame ) {
    uint32_t   expValue;
    uint32_t   gotValue;
 
-   boost::lock_guard<boost::mutex> lock(rxMtx_);
+   boost::unique_lock<boost::mutex> lock(rxMtx_,boost::defer_lock);
+
+   PyRogue_BEGIN_ALLOW_THREADS;
+   lock.lock();
+   PyRogue_END_ALLOW_THREADS;
 
    size = frame->getPayload();
 

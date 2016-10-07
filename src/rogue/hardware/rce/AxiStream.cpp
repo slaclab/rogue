@@ -26,6 +26,7 @@
 #include <rogue/exceptions/GeneralException.h>
 #include <rogue/exceptions/TimeoutException.h>
 #include <boost/make_shared.hpp>
+#include <rogue/common.h>
 
 namespace rhr = rogue::hardware::rce;
 namespace ris = rogue::interfaces::stream;
@@ -41,6 +42,7 @@ rhr::AxiStreamPtr rhr::AxiStream::create (std::string path, uint32_t dest) {
 //! Open the device. Pass destination.
 rhr::AxiStream::AxiStream ( std::string path, uint32_t dest ) {
    uint32_t mask;
+   int32_t  res;
 
    timeout_ = 1000000;
    dest_    = dest;
@@ -49,10 +51,11 @@ rhr::AxiStream::AxiStream ( std::string path, uint32_t dest ) {
    if ( (fd_ = ::open(path.c_str(), O_RDWR)) < 0 )
       throw(re::OpenException("AxiStream::AxiStream",path.c_str(),mask));
 
-   if ( axisSetMask(fd_,mask) < 0 ) {
-      ::close(fd_);
-      throw(re::OpenException("AxiStream::AxiStream",path.c_str(),mask));
-   }
+   PyRogue_BEGIN_ALLOW_THREADS;
+   if  ( (res = axisSetMask(fd_,mask)) < 0 ) ::close(fd_);
+   PyRogue_END_ALLOW_THREADS;
+
+   if ( res < 0) throw(re::OpenException("AxiStream::AxiStream",path.c_str(),mask));
 
    // Result may be that rawBuff_ = NULL
    rawBuff_ = axisMapDma(fd_,&bCount_,&bSize_);
@@ -69,7 +72,9 @@ rhr::AxiStream::~AxiStream() {
    thread_->join();
 
    if ( rawBuff_ != NULL ) axisUnMapDma(fd_, rawBuff_);
+   PyRogue_BEGIN_ALLOW_THREADS;
    ::close(fd_);
+   PyRogue_END_ALLOW_THREADS;
 }
 
 //! Set timeout for frame transmits in microseconds
@@ -91,6 +96,7 @@ void rhr::AxiStream::dmaAck() {
 //! Generate a buffer. Called from master
 ris::FramePtr rhr::AxiStream::acceptReq ( uint32_t size, bool zeroCopyEn, uint32_t maxBuffSize) {
    int32_t          res;
+   int32_t          sres;
    fd_set           fds;
    struct timeval   tout;
    uint32_t         alloc;
@@ -129,12 +135,16 @@ ris::FramePtr rhr::AxiStream::acceptReq ( uint32_t size, bool zeroCopyEn, uint32
             tout.tv_sec=timeout_ / 1000000;
             tout.tv_usec=timeout_ % 1000000;
 
-            if ( (res = select(fd_+1,NULL,&fds,NULL,&tout)) == 0 ) 
-               throw(re::TimeoutException("AxiStream::acceptReq",timeout_));
+            PyRogue_BEGIN_ALLOW_THREADS;
+            if ( (sres = select(fd_+1,NULL,&fds,NULL,&tout)) > 0 ) {
 
-            // Attempt to get index.
-            // return of less than 0 is a failure to get a buffer
-            res = axisGetIndex(fd_);
+               // Attempt to get index.
+               // return of less than 0 is a failure to get a buffer
+               res = axisGetIndex(fd_);
+            } else res=0;
+            PyRogue_END_ALLOW_THREADS;
+
+            if ( sres == 0 ) throw(re::TimeoutException("AxiStream::acceptReq",timeout_));
          }
          while (res < 0);
 
@@ -151,6 +161,7 @@ ris::FramePtr rhr::AxiStream::acceptReq ( uint32_t size, bool zeroCopyEn, uint32
 void rhr::AxiStream::acceptFrame ( ris::FramePtr frame ) {
    ris::BufferPtr buff;
    int32_t          res;
+   int32_t          sres;
    fd_set           fds;
    struct timeval   tout;
    uint32_t         meta;
@@ -181,7 +192,11 @@ void rhr::AxiStream::acceptFrame ( ris::FramePtr frame ) {
          if ( (meta & 0x40000000) == 0 ) {
 
             // Write by passing buffer index to driver
-            if ( axisWriteIndex(fd_, meta & 0x3FFFFFFF, buff->getCount(), fuser, luser, dest_) <= 0 ) 
+            PyRogue_BEGIN_ALLOW_THREADS;
+            res = axisWriteIndex(fd_, meta & 0x3FFFFFFF, buff->getCount(), fuser, luser, dest_);
+            PyRogue_END_ALLOW_THREADS;
+
+            if ( res <= 0 )
                throw(re::GeneralException("AxiStream::acceptFrame","AXIS Write Call Failed"));
 
             // Mark buffer as stale
@@ -205,11 +220,17 @@ void rhr::AxiStream::acceptFrame ( ris::FramePtr frame ) {
             tout.tv_sec=timeout_ / 1000000;
             tout.tv_usec=timeout_ % 1000000;
 
-            if ( (res = select(fd_+1,NULL,&fds,NULL,&tout)) == 0 ) 
-               throw(re::TimeoutException("AxiStream::acceptFrame",timeout_));
+            PyRogue_BEGIN_ALLOW_THREADS;
 
-            // Write with buffer copy
-            res = axisWrite(fd_, buff->getRawData(), buff->getCount(), fuser, luser, dest_);
+            if ( (sres = select(fd_+1,NULL,&fds,NULL,&tout)) > 0 ) {
+
+               // Write with buffer copy
+               res = axisWrite(fd_, buff->getRawData(), buff->getCount(), fuser, luser, dest_);
+            } else res = 0;
+            PyRogue_END_ALLOW_THREADS;
+
+            // Select timeout
+            if ( sres <= 0 ) throw(re::TimeoutException("AxiStream::acceptFrame",timeout_));
 
             // Error
             if ( res < 0 ) throw(re::GeneralException("AxiStream::acceptFrame","AXIS Write Call Failed"));
@@ -230,7 +251,9 @@ void rhr::AxiStream::retBuffer(uint8_t * data, uint32_t meta, uint32_t rawSize) 
       // Device is open and buffer is not stale
       // Bit 30 indicates buffer has already been returned to hardware
       if ( (fd_ >= 0) && ((meta & 0x40000000) == 0) ) {
+         PyRogue_BEGIN_ALLOW_THREADS;
          axisRetIndex(fd_,meta & 0x3FFFFFFF); // Return to hardware
+         PyRogue_END_ALLOW_THREADS;
       }
 
       deleteBuffer(rawSize);

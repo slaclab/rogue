@@ -26,6 +26,7 @@
 #include <rogue/exceptions/BoundaryException.h>
 #include <rogue/exceptions/MemoryException.h>
 #include <rogue/exceptions/GeneralException.h>
+#include <rogue/common.h>
 #include <boost/make_shared.hpp>
 #include <boost/python.hpp>
 #include <math.h>
@@ -105,15 +106,16 @@ bool rim::Block::getUpdated() {
  */
 boost::unique_lock<boost::mutex> rim::Block::lockAndCheck(bool errEnable) {
    bool ret;
+   boost::unique_lock<boost::mutex> lock(mtx_,boost::defer_lock);
 
-   boost::unique_lock<boost::mutex> lock(mtx_);
+   PyRogue_BEGIN_ALLOW_THREADS;
+   lock.lock();
 
    ret = true;
    while(busy_ && ret ) {
-      Py_BEGIN_ALLOW_THREADS; // Allow python to keep running while waiting
       ret = busyCond_.timed_wait(lock,boost::posix_time::microseconds(timeout_));
-      Py_END_ALLOW_THREADS;
    }
+   PyRogue_END_ALLOW_THREADS;
 
    // Timeout if busy is set
    if ( busy_ ) {

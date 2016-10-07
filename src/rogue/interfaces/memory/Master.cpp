@@ -22,6 +22,7 @@
 #include <rogue/interfaces/memory/Master.h>
 #include <rogue/interfaces/memory/Slave.h>
 #include <boost/make_shared.hpp>
+#include <rogue/common.h>
 
 namespace rim = rogue::interfaces::memory;
 namespace bp  = boost::python;
@@ -91,32 +92,66 @@ void rim::Master::inheritFrom(rim::MasterPtr master ) {
 
 //! Set slave, used for buffer request forwarding
 void rim::Master::setSlave ( rim::SlavePtr slave ) {
-   boost::lock_guard<boost::mutex> lock(slaveMtx_);
-   slave_ = slave;
+   PyRogue_BEGIN_ALLOW_THREADS;
+   {
+      boost::lock_guard<boost::mutex> lock(slaveMtx_);
+      slave_ = slave;
+   }
+   PyRogue_END_ALLOW_THREADS;
 }
 
 //! Get slave
 rim::SlavePtr rim::Master::getSlave () {
-   boost::lock_guard<boost::mutex> lock(slaveMtx_);
-   return(slave_);
+   rim::SlavePtr ret;
+
+   PyRogue_BEGIN_ALLOW_THREADS;
+   {
+      boost::lock_guard<boost::mutex> lock(slaveMtx_);
+      ret = slave_;
+   }
+   PyRogue_END_ALLOW_THREADS;
+
+   return(ret);
 }
 
 //! Query the minimum access size in bytes for interface
 uint32_t rim::Master::reqMinAccess() {
-   boost::lock_guard<boost::mutex> lock(slaveMtx_);
-   return(slave_->doMinAccess());
+   rim::SlavePtr slave;
+
+   PyRogue_BEGIN_ALLOW_THREADS;
+   {
+      boost::lock_guard<boost::mutex> lock(slaveMtx_);
+      slave = slave_;
+   }
+   PyRogue_END_ALLOW_THREADS;
+   return(slave->doMinAccess());
 }
 
 //! Query the maximum access size in bytes for interface
 uint32_t rim::Master::reqMaxAccess() {
-   boost::lock_guard<boost::mutex> lock(slaveMtx_);
-   return(slave_->doMaxAccess());
+   rim::SlavePtr slave;
+
+   PyRogue_BEGIN_ALLOW_THREADS;
+   {
+      boost::lock_guard<boost::mutex> lock(slaveMtx_);
+      slave = slave_;
+   }
+   PyRogue_END_ALLOW_THREADS;
+   return(slave->doMaxAccess());
 }
 
 //! Post a transaction, called locally, forwarded to slave
 void rim::Master::reqTransaction(bool write, bool posted) {
-   boost::lock_guard<boost::mutex> lock(slaveMtx_);
-   slave_->doTransaction(shared_from_this(),address_,(size_&0xFFFFFFFF),write,posted);
+   rim::SlavePtr slave;
+
+   PyRogue_BEGIN_ALLOW_THREADS;
+   {
+      boost::lock_guard<boost::mutex> lock(slaveMtx_);
+      slave = slave_;
+   }
+   PyRogue_END_ALLOW_THREADS;
+
+   slave->doTransaction(shared_from_this(),address_,(size_&0xFFFFFFFF),write,posted);
 }
 
 //! Transaction complete, set by slave, error passed

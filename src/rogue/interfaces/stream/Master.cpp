@@ -23,7 +23,7 @@
 #include <rogue/interfaces/stream/Slave.h>
 #include <rogue/interfaces/stream/Master.h>
 #include <rogue/interfaces/stream/Frame.h>
-
+#include <rogue/common.h>
 #include <boost/python.hpp>
 #include <boost/make_shared.hpp>
 
@@ -48,31 +48,53 @@ ris::Master::~Master() {
 
 //! Set primary slave, used for buffer request forwarding
 void ris::Master::setSlave ( boost::shared_ptr<interfaces::stream::Slave> slave ) {
-   boost::lock_guard<boost::mutex> lock(slaveMtx_);
-   slaves_.push_back(slave);
-   primary_ = slave;
+   PyRogue_BEGIN_ALLOW_THREADS;
+   {
+      boost::lock_guard<boost::mutex> lock(slaveMtx_);
+      slaves_.push_back(slave);
+      primary_ = slave;
+   }
+   PyRogue_END_ALLOW_THREADS;
 }
 
 //! Add secondary slave
 void ris::Master::addSlave ( ris::SlavePtr slave ) {
-   boost::lock_guard<boost::mutex> lock(slaveMtx_);
-   slaves_.push_back(slave);
+   PyRogue_BEGIN_ALLOW_THREADS;
+   {
+      boost::lock_guard<boost::mutex> lock(slaveMtx_);
+      slaves_.push_back(slave);
+   }
+   PyRogue_END_ALLOW_THREADS;
 }
 
 //! Request frame from primary slave
 ris::FramePtr ris::Master::reqFrame ( uint32_t size, bool zeroCopyEn, uint32_t maxBuffSize ) {
-   boost::lock_guard<boost::mutex> lock(slaveMtx_);
-   return(primary_->acceptReq(size,zeroCopyEn,maxBuffSize));
+   ris::SlavePtr slave;
+
+   PyRogue_BEGIN_ALLOW_THREADS;
+   {
+      boost::lock_guard<boost::mutex> lock(slaveMtx_);
+      slave = primary_;
+   }
+   PyRogue_END_ALLOW_THREADS;
+   return(slave->acceptReq(size,zeroCopyEn,maxBuffSize));
 }
 
 //! Push frame to slaves
 void ris::Master::sendFrame ( FramePtr frame) {
    uint32_t x;
 
-   boost::lock_guard<boost::mutex> lock(slaveMtx_);
+   std::vector<ris::SlavePtr> slaves;
+
+   PyRogue_BEGIN_ALLOW_THREADS;
+   {
+      boost::lock_guard<boost::mutex> lock(slaveMtx_);
+      slaves = slaves_;
+   }
+   PyRogue_END_ALLOW_THREADS;
 
    for (x=0; x < slaves_.size(); x++) 
-      slaves_[x]->acceptFrame(frame);
+      slaves[x]->acceptFrame(frame);
 }
 
 void ris::Master::setup_python() {
