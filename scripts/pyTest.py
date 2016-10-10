@@ -93,6 +93,26 @@ class MyRunControl(pyrogue.RunControl):
              self._last = int(time.time())
              self.runCount._updated()
 
+class stresser(threading.Thread):
+
+   def __init__(self):
+      threading.Thread.__init__(self)
+      self.enable = True
+      self.start()
+
+   def stop(self):
+      self.enable = False
+
+   def run(self):
+      last = int(time.time())
+
+      while(self.enable):
+         time.sleep(.1)
+         stamp = evalBoard.axiVersion.buildStamp.get()
+         if last != int(time.time()):
+            print("Hello: %s" % (stamp))
+            last = int(time.time())
+
 # Set base
 evalBoard = pyrogue.Root('evalBoard','Evaluation Board')
 

@@ -26,17 +26,11 @@ extern PyThreadState * _PyThreadState_Current;
 
 PyThreadState * PyRogue_SaveThread() {
    PyThreadState * tstate = _PyThreadState_Current;
-   if ( tstate && (tstate == PyGILState_GetThisThreadState()) ) {
-      printf("Saving thread state for python thread\n");
-      return(PyEval_SaveThread());
-   }
+   if ( tstate && (tstate == PyGILState_GetThisThreadState()) ) return(PyEval_SaveThread());
    else return(NULL);
 }
 
 void PyRogue_RestoreThread(PyThreadState * state) {
-   if ( state != NULL ) {
-      printf("Restoring thread state for python thread\n");
-      PyEval_RestoreThread(state);
-   }
+   if ( state != NULL ) PyEval_RestoreThread(state);
 }
 
