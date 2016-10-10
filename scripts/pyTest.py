@@ -66,6 +66,8 @@ class MyRunControl(pyrogue.RunControl):
       pyrogue.RunControl.__init__(self,name,'Run Controller')
       self._thread = None
 
+      self.runRate.enum = {1:'1 Hz', 10:'10 Hz', 30:'30 Hz'}
+
    def _setRunState(self,dev,var,value):
       if self._runState != value:
          self._runState = value

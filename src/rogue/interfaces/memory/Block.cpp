@@ -63,26 +63,37 @@ rim::Block::~Block() {
 
 //! Set timeout value
 void rim::Block::setTimeout(uint32_t timeout) {
-   boost::unique_lock<boost::mutex> lck = lockAndCheck(false);
-   if ( timeout == 0 ) timeout_ = 1;
-   else timeout_ = timeout;
+   PyRogue_BEGIN_ALLOW_THREADS;
+   {
+      boost::unique_lock<boost::mutex> lck = waitAndLock();
+      if ( timeout == 0 ) timeout_ = 1;
+      else timeout_ = timeout;
+   }
+   PyRogue_END_ALLOW_THREADS;
 }
 
 //! Set enable flag
 void rim::Block::setEnable(bool en) {
-   boost::unique_lock<boost::mutex> lck = lockAndCheck(false);
-   enable_ = en;
+   PyRogue_BEGIN_ALLOW_THREADS;
+   {
+      boost::unique_lock<boost::mutex> lck = waitAndLock();
+      enable_ = en;
+   }
+   PyRogue_END_ALLOW_THREADS;
 }
 
 //! Get enable flag
 bool rim::Block::getEnable() {
-   boost::unique_lock<boost::mutex> lck = lockAndCheck(false);
    return(enable_);
 }
 
 //! Get error state
 uint32_t rim::Block::getError() {
-   boost::unique_lock<boost::mutex> lck = lockAndCheck(false);
+   PyRogue_BEGIN_ALLOW_THREADS;
+   {
+      boost::unique_lock<boost::mutex> lck = waitAndLock();
+   }
+   PyRogue_END_ALLOW_THREADS;
    return(error_);
 }
 
@@ -93,39 +104,37 @@ uint32_t rim::Block::getError() {
  */
 bool rim::Block::getUpdated() {
    bool ret;
-   boost::unique_lock<boost::mutex> lck = lockAndCheck(true);
-   ret = updated_;
-   updated_ = false;
+   PyRogue_BEGIN_ALLOW_THREADS;
+   {
+      boost::unique_lock<boost::mutex> lck = waitAndLock();
+      if ( error_ == 0 ) {
+         ret = updated_;
+         updated_ = false;
+      }
+      else ret = false;
+   }
+   PyRogue_END_ALLOW_THREADS;
+   if ( error_ ) throw(re::MemoryException("Block::getUpdated",error_,address_,timeout_));
    return ret;
 }
 
-//! Internal function to wait for busy = false and acquire lock
-/*
- * Exception thrown on busy wait timeout
- * Exception thrown if error flag is non-zero and errEnable is true
- */
-boost::unique_lock<boost::mutex> rim::Block::lockAndCheck(bool errEnable) {
+//! Internal function to wait for busy = false and lock
+boost::unique_lock<boost::mutex> rim::Block::waitAndLock() {
    bool ret;
    boost::unique_lock<boost::mutex> lock(mtx_,boost::defer_lock);
 
-   PyRogue_BEGIN_ALLOW_THREADS;
    lock.lock();
 
    ret = true;
    while(busy_ && ret ) {
       ret = busyCond_.timed_wait(lock,boost::posix_time::microseconds(timeout_));
    }
-   PyRogue_END_ALLOW_THREADS;
 
    // Timeout if busy is set
    if ( busy_ ) {
       busy_ = false;
-      throw(re::MemoryException("Block::lockAndCheck",0,address_,timeout_));
+      error_ = 0xFFFFFFFF;
    }
-
-   // Throw error if enabled and error is nonzero
-   if ( errEnable && (error_ != 0) ) throw(re::MemoryException("Block::lockAndCheck",error_,address_,0));
-
    return(lock);
 }
 
@@ -155,7 +164,10 @@ void rim::Block::backgroundWrite() {
  */
 void rim::Block::blockingWrite() {
    reqTransaction(true,false);
-   lockAndCheck(true);
+   PyRogue_BEGIN_ALLOW_THREADS;
+   waitAndLock();
+   PyRogue_END_ALLOW_THREADS;
+   if ( error_ ) throw(re::MemoryException("Block::blockingWrite",error_,address_,timeout_));
 }
 
 //! Generate posted write transaction
@@ -167,26 +179,28 @@ void rim::Block::postedWrite() {
 void rim::Block::reqTransaction(bool write, bool posted) {
    uint32_t min;
 
+   PyRogue_BEGIN_ALLOW_THREADS;
    { // Begin scope of lck
 
-      boost::unique_lock<boost::mutex> lck = lockAndCheck(false);
+      boost::unique_lock<boost::mutex> lck = waitAndLock();
 
       // Don't do transaction when disabled
-      if ( enable_ == false ) return;
+      if ( enable_ ) {
+         write_      = write;
+         error_      = 0;
+         busy_       = true;
 
-      write_ = write;
-      error_ = 0;
-      busy_  = true;
-
-      // Adjust size to align to protocol minimum
-      min = reqMinAccess();
-      if ( (size_ % min) != 0 ) size_ = (((size_ / min) + 1)*min);
+         // Adjust size to align to protocol minimum
+         min = reqMinAccess();
+         if ( (size_ % min) != 0 ) size_ = (((size_ / min) + 1)*min);
+      }
 
    } // End scope of lck
+   PyRogue_END_ALLOW_THREADS;
 
    // Lock must be relased before this call because
    // complete() call can come directly as a result
-   rim::Master::reqTransaction(write,posted);
+   if ( enable_ ) rim::Master::reqTransaction(write,posted);
 }
 
 //! Transaction complete
@@ -235,13 +249,20 @@ uint64_t rim::Block::getUInt(uint32_t bitOffset, uint32_t bitCount) {
    if ( (bitOffset + bitCount) > (size_*8) )
       throw(re::BoundaryException("Block::getUInt",(bitOffset+bitCount),(size_*8)));
 
-   boost::unique_lock<boost::mutex> lck = lockAndCheck(true);
+   PyRogue_BEGIN_ALLOW_THREADS;
+   {
 
-   if ( bitCount == 64 ) mask = 0xFFFFFFFFFFFFFFFF;
-   else mask = pow(2,bitCount) - 1;
+      boost::unique_lock<boost::mutex> lck = waitAndLock();
 
-   ptr = (uint64_t *)(data_ + (bitOffset/8));
-   ret = ((*ptr) >> (bitOffset % 8)) & mask;
+      if ( bitCount == 64 ) mask = 0xFFFFFFFFFFFFFFFF;
+      else mask = pow(2,bitCount) - 1;
+
+      ptr = (uint64_t *)(data_ + (bitOffset/8));
+      ret = ((*ptr) >> (bitOffset % 8)) & mask;
+   }
+   PyRogue_END_ALLOW_THREADS;
+
+   if ( error_ ) throw(re::MemoryException("Block::getUInt",error_,address_,timeout_));
 
    return(ret);
 }
@@ -257,25 +278,37 @@ void rim::Block::setUInt(uint32_t bitOffset, uint32_t bitCount, uint64_t value) 
    if ( (bitOffset + bitCount) > (size_*8) )
       throw(re::BoundaryException("Block::setUInt",(bitOffset+bitCount),(size_*8)));
 
-   boost::unique_lock<boost::mutex> lck = lockAndCheck(false);
+   PyRogue_BEGIN_ALLOW_THREADS;
+   {
+      boost::unique_lock<boost::mutex> lck = waitAndLock();
 
-   if ( bitCount == 64 ) mask = 0xFFFFFFFFFFFFFFFF;
-   else mask = pow(2,bitCount) - 1;
+      if ( bitCount == 64 ) mask = 0xFFFFFFFFFFFFFFFF;
+      else mask = pow(2,bitCount) - 1;
 
-   mask = mask << (bitOffset % 8);
-   clear = ~mask;
+      mask = mask << (bitOffset % 8);
+      clear = ~mask;
 
-   ptr = (uint64_t *)(data_ + (bitOffset/8));
-   (*ptr) &= clear;
-   (*ptr) |= value << (bitOffset % 8);
+      ptr = (uint64_t *)(data_ + (bitOffset/8));
+      (*ptr) &= clear;
+      (*ptr) |= value << (bitOffset % 8);
+   }
+   PyRogue_END_ALLOW_THREADS;
 }
 
 //! Get string
 std::string rim::Block::getString() {
-   boost::unique_lock<boost::mutex> lck = lockAndCheck(true);
+   std::string ret;
+   PyRogue_BEGIN_ALLOW_THREADS;
+   {
+      boost::unique_lock<boost::mutex> lck = waitAndLock();
 
-   data_[size_-1] = 0; // to be safe
-   return(std::string((char *)data_));
+      data_[size_-1] = 0; // to be safe
+      ret = std::string((char *)data_);
+   }
+   PyRogue_END_ALLOW_THREADS;
+
+   if ( error_ ) throw(re::MemoryException("Block::getString",error_,address_,timeout_));
+   return (ret);
 }
 
 //! Set string
@@ -283,32 +316,12 @@ void rim::Block::setString(std::string value) {
    if ( value.length() > size_ ) 
       throw(re::BoundaryException("Block::setString",value.length(),size_));
 
-   boost::unique_lock<boost::mutex> lck = lockAndCheck(false);
-   strcpy((char *)data_,value.c_str());
-}
-
-//! Start raw access. Lock object is returned.
-rim::BlockLockPtr rim::Block::lockRaw(bool write) {
-   rim::BlockLockPtr lock = boost::make_shared<rim::BlockLock>();
-   lock->lock_ = lockAndCheck(!write);
-   return(lock);
-}
-
-//! Get a raw pointer to block data
-uint8_t * rim::Block::rawData (rim::BlockLockPtr lock) {
-   return(data_);
-}
-
-//! Get a raw pointer to block data, python version
-bp::object rim::Block::rawDataPy (rim::BlockLockPtr lock) {
-   PyObject* py_buf = PyBuffer_FromReadWriteMemory(data_, size_);
-   bp::object retval = bp::object(bp::handle<>(py_buf));
-   return retval;
-}
-
-//! End a raw access. Pass back lock object
-void rim::Block::unlockRaw(rim::BlockLockPtr lock) {
-   lock->lock_.unlock();
+   PyRogue_BEGIN_ALLOW_THREADS;
+   {
+      boost::unique_lock<boost::mutex> lck = waitAndLock();
+      strcpy((char *)data_,value.c_str());
+   }
+   PyRogue_END_ALLOW_THREADS;
 }
 
 void rim::Block::setup_python() {
@@ -330,12 +343,7 @@ void rim::Block::setup_python() {
       .def("setUInt",         &rim::Block::setUInt)
       .def("getString",       &rim::Block::getString)
       .def("setString",       &rim::Block::setString)
-      .def("_lockRaw",        &rim::Block::lockRaw)
-      .def("_rawData",        &rim::Block::rawDataPy)
-      .def("_unlockRaw",      &rim::Block::unlockRaw)
    ;
-
-   bp::class_<rim::BlockLock, rim::BlockLockPtr, boost::noncopyable>("BlockLock",bp::no_init);
 
    bp::implicitly_convertible<rim::BlockPtr, rim::MasterPtr>();
 

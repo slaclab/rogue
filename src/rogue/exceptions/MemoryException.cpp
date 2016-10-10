@@ -26,7 +26,7 @@ namespace bp = boost::python;
 PyObject * re::memoryExceptionObj = 0;
 
 re::MemoryException::MemoryException(std::string src, uint32_t error, uint64_t address, uint32_t time) {
-   if (time > 0) 
+   if (error == 0xFFFFFFFF) 
       sprintf(text_,"%s: Memory access timeout after %i uSeconds. Address: 0x%lx",src.c_str(),time,address);
    else
       sprintf(text_,"%s: Memory access error detected: 0x%x. Address: 0x%lx",src.c_str(),error,address);

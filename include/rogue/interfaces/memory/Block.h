@@ -35,8 +35,6 @@ namespace rogue {
    namespace interfaces {
       namespace memory {
 
-         class BlockLock;
-
          //! Transaction container
          class Block : public Master {
 
@@ -70,8 +68,8 @@ namespace rogue {
                //! Busy condition
                boost::condition_variable busyCond_;
 
-               //! Internal function to wait for busy = false and acquire lock
-               boost::unique_lock<boost::mutex> lockAndCheck(bool errEnable);
+               //! Internal function to wait for busy = false and lock
+               boost::unique_lock<boost::mutex> waitAndLock();
 
             public:
 
@@ -166,33 +164,10 @@ namespace rogue {
                //! Set string
                void setString(std::string value);
 
-               //////////////////////////////////////
-               // Raw access
-               //////////////////////////////////////
-               
-               //! Start raw access. Lock object is returned.
-               boost::shared_ptr<rogue::interfaces::memory::BlockLock> lockRaw(bool write);
-
-               //! Get a raw pointer to block data
-               uint8_t * rawData (boost::shared_ptr<rogue::interfaces::memory::BlockLock> lock);
-
-               //! Get a raw pointer to block data, python version
-               boost::python::object rawDataPy (boost::shared_ptr<rogue::interfaces::memory::BlockLock> lock);
-
-               //! End a raw access. Pass back lock object
-               void unlockRaw(boost::shared_ptr<rogue::interfaces::memory::BlockLock> lock);
-         };
-
-         //! Hold a lock for raw access
-         class BlockLock {
-            friend class rogue::interfaces::memory::Block;
-            protected:
-               boost::unique_lock<boost::mutex> lock_;
          };
 
          // Convienence
          typedef boost::shared_ptr<rogue::interfaces::memory::Block> BlockPtr;
-         typedef boost::shared_ptr<rogue::interfaces::memory::BlockLock> BlockLockPtr;
 
       }
    }

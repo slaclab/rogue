@@ -2,13 +2,13 @@
  *-----------------------------------------------------------------------------
  * Title      : Common Rogue Functions
  * ----------------------------------------------------------------------------
- * File       : common.h
+ * File       : common.cpp
  * Author     : Ryan Herbst, rherbst@slac.stanford.edu
- * Created    : 2016-10-07
- * Last update: 2016-10-07
+ * Created    : 2016-08-08
+ * Last update: 2016-08-08
  * ----------------------------------------------------------------------------
  * Description:
- * Common Rogue Functions and macros
+ * Common rogue functions
  * ----------------------------------------------------------------------------
  * This file is part of the rogue software platform. It is subject to 
  * the license terms in the LICENSE.txt file found in the top-level directory 
@@ -19,15 +19,24 @@
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
-#ifndef __ROGUE_COMMON_H__
-#define __ROGUE_COMMON_H__
 
-#include <boost/python.hpp>
+#include <rogue/common.h>
 
-PyThreadState * PyRogue_SaveThread();
-void PyRogue_RestoreThread(PyThreadState * state);
+extern PyThreadState * _PyThreadState_Current;
 
-#define PyRogue_BEGIN_ALLOW_THREADS { PyThreadState *_save; _save = PyRogue_SaveThread();
-#define PyRogue_END_ALLOW_THREADS PyRogue_RestoreThread(_save); }
+PyThreadState * PyRogue_SaveThread() {
+   PyThreadState * tstate = _PyThreadState_Current;
+   if ( tstate && (tstate == PyGILState_GetThisThreadState()) ) {
+      printf("Saving thread state for python thread\n");
+      return(PyEval_SaveThread());
+   }
+   else return(NULL);
+}
 
-#endif
+void PyRogue_RestoreThread(PyThreadState * state) {
+   if ( state != NULL ) {
+      printf("Restoring thread state for python thread\n");
+      PyEval_RestoreThread(state);
+   }
+}
+
