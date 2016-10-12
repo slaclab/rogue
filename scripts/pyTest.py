@@ -24,6 +24,7 @@ import pyrogue.devices.axi_prbstx
 import pyrogue.utilities.prbs
 import pyrogue.utilities.fileio
 import pyrogue.gui
+import pyrogue.mesh
 import threading
 import signal
 import atexit
@@ -165,8 +166,15 @@ evalBoard.add(pyrogue.devices.axi_prbstx.create(name='axiPrbsTx',memBase=srp,off
 appTop = PyQt4.QtGui.QApplication(sys.argv)
 guiTop = pyrogue.gui.GuiTop(evalBoard)
 
+# Create mesh node
+mNode = pyrogue.mesh.MeshNode('rogue',root=evalBoard)
+
+def testFunc(a,b,c,d='test'):
+    print("a=%, b=%, c=%, d=%" % (a,b,c,d))
+
 # Close window and stop polling
 def stop():
     guiTop.close()
+    mNode.stop()
     evalBoard.stop()
 
