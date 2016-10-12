@@ -306,14 +306,14 @@ class SystemWidget(QWidget):
         # Data Controllers
         ###################
         for key,val in root._nodes.iteritems():
-            if isinstance(val,pyrogue.DataWriter):
+            if isinstance(val,pyrogue.Device) and val.classType=='dataWriter':
                 self.holders.append(DataLink(tl,val))
 
         ###################
         # Run Controllers
         ###################
         for key,val in root._nodes.iteritems():
-            if isinstance(val,pyrogue.RunControl):
+            if isinstance(val,pyrogue.Device) and val.classType=='runControl':
                 self.holders.append(ControlLink(tl,val))
 
         ###################
