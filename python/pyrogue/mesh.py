@@ -23,6 +23,7 @@ import threading
 import zyre
 import czmq
 import pyrogue
+import time
 
 class MeshNode(threading.Thread):
     """
@@ -35,59 +36,90 @@ class MeshNode(threading.Thread):
         self._group   = group
         self._name    = self._root.name if self._root else None
         self._runEn   = True
-        self._noSet   = False
+        self._noMsg   = False
         self._servers = {}
+        self._newNode = None
 
         self._mesh = zyre.Zyre(self._name)
         self._mesh.set_interface(iface)
 
-        self._mesh.start()
-        self._mesh.join(group)
-
-        # register callback and send out structure if root
         if self._root:
             self._root.addVarListener(self._variableStatus)
-            self._sendStructure()
 
         self.start()
 
     def run(self):
+        self._mesh.set_header('server','True' if self._root else 'False')
+        self._mesh.start()
+        self._mesh.join(self._group)
 
         while(self._runEn):
-           e = zyre.ZyreEvent(self._mesh)
-           src = e.peer_name()
 
-           if e.type() == 'WHISPER' or e.type() == 'SHOUT':
-               cmd = e.msg().popstr()
-               yml = e.msg().popstr()
+            # Get a message
+            e = zyre.ZyreEvent(self._mesh)
+            src = e.peer_name()
+            sid = e.peer_uuid()
 
-               if cmd == 'variable_set':
-                   self._root._setYamlVariables(yml)
-               elif cmd == 'command':
-                   print("got command")
-                   self._root._execYamlCommands(yml)
-               elif cmd == 'get_structure':
-                   self._sendStructure(self,src=None)
-               elif cmd == 'structure':
-                   nr = pyrogue.rootFromYaml(yml,self._setFunction,self._cmdFunction)
-                   if not self._servers.has_key(nr.name):
-                       self._servers[nr.name] = nr
-               elif cmd == 'variable_status':
-                   self._noSet = True
-                   for key,value in self._servers.iteritems():
-                       try:
-                           value._setYamlVariables(yml,modes=['RW','RO'])
-                       except Exception as e:
-                           value._logException(e)
-                       value._write()
+            if e.type() == 'WHISPER' or e.type() == 'SHOUT': size = e.msg().size()
+            else: size = 0
 
-                   self._noSet = False
+            if size > 0: cmd = e.msg().popstr()
+            else: cmd = None
 
-           #elif e.type() == 'JOIN':
-               #msg = czmq.Zmsg()
-               #msg.addstr('get_structure')
-               ##self._mesh.whisper(name,msg)
-               #self._mesh.shout(self._group,msg)
+            # Commands sent directly to this node
+            if e.type() == 'WHISPER':
+
+                # Variable set from client to server
+                if cmd == 'variable_set' and size > 1:
+                    try:
+                        self._root._setYamlVariables(e.msg().popstr())
+                    except Exception as e:
+                        self._root._logException(e)
+                    self._root._write()
+
+                # Command from client to server
+                elif cmd == 'command' and size > 1:
+                    self._root._execYamlCommands(e.msg().popstr())
+
+                # Structure update from server to client
+                elif cmd == 'structure_status' and size > 2:
+                    nr = pyrogue.rootFromYaml(e.msg().popstr(),self._setFunction,self._cmdFunction)
+
+                    if not self._servers.has_key(nr.name):
+                        setattr(nr,'uuid',sid)
+                        self._servers[nr.name] = nr
+                        self._noMsg = True
+                        nr._setYamlVariables(e.msg().popstr(),modes=['RW','RO'])
+                        self._noMsg = False
+
+                        if self._newNode:
+                            self._newNode(nr)
+
+                # Structure request from client to server
+                elif cmd == 'get_structure':
+                    msg = czmq.Zmsg()
+                    msg.addstr('structure_status')
+                    msg.addstr(self._root._getYamlStructure())
+                    msg.addstr(self._root._getYamlVariables(modes=['RW','RO']))
+                    self._mesh.whisper(sid,msg)
+
+            # Commands sent as a broadcast
+            elif e.type() == 'SHOUT':
+
+                # Field update from server to client
+                if cmd == 'variable_status' and size > 1:
+                    self._noMsg = True
+                    for key,value in self._servers.iteritems():
+                        value._setYamlVariables(e.msg().popstr(),modes=['RW','RO'])
+
+                    self._noMsg = False
+
+            # New node, request structure if a server and we are not already tracking it
+            elif e.type() == 'JOIN':
+                if self._mesh.peer_header_value(sid,'server') == 'True' and not self._servers.has_key(src):
+                    msg = czmq.Zmsg()
+                    msg.addstr('get_structure')
+                    self._mesh.whisper(sid,msg)
 
     def stop(self):
         self._runEn = False
@@ -100,6 +132,14 @@ class MeshNode(threading.Thread):
         else:
             return None
 
+    def waitRoot(self,name):
+        while self.getRoot(name) == None:
+            time.sleep(.1)
+
+    def setNewNodeCb(self,func):
+        self._newNode = func
+
+    # Command button pressed on client
     def _cmdFunction(self,dev,cmd,arg):
         d = {}
         pyrogue.addPathToDict(d,cmd.path,arg)
@@ -109,12 +149,12 @@ class MeshNode(threading.Thread):
         msg = czmq.Zmsg()
         msg.addstr('command')
         msg.addstr(yml)
-        #self._mesh.whisper(name,msg)
-        self._mesh.shout(self._group,msg)
+        self._mesh.whisper(self._servers[name].uuid,msg)
 
+    # Variable field updated on client
     def _setFunction(self,dev,var,value):
         var._scratch = value
-        if self._noSet: return
+        if self._noMsg: return
         d = {}
         pyrogue.addPathToDict(d,var.path,value)
         name = var.path[:var.path.find('.')]
@@ -123,25 +163,12 @@ class MeshNode(threading.Thread):
         msg = czmq.Zmsg()
         msg.addstr('variable_set')
         msg.addstr(yml)
-        #self._mesh.whisper(name,msg)
-        self._mesh.shout(self._group,msg)
+        self._mesh.whisper(self._servers[name].uuid,msg)
 
+    # Variable field updated on server
     def _variableStatus(self,yml):
         msg = czmq.Zmsg()
         msg.addstr('variable_status')
         msg.addstr(yml)
-        #self._mesh.whisper(name,msg)
         self._mesh.shout(self._group,msg)
-
-    def _sendStructure(self,src=None):
-        if self._root:
-            yml = self._root._getYamlStructure()
-            msg = czmq.Zmsg()
-            msg.addstr('structure')
-            msg.addstr(yml)
-
-            if src:
-                self._mesh.whisper(src,msg)
-            else:
-                self._mesh.shout(self._group,msg)
 

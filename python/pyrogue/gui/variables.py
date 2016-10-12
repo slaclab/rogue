@@ -118,26 +118,23 @@ class VariableLink(QObject):
 
 
 class VariableWidget(QWidget):
-    def __init__(self, root, parent=None):
+    def __init__(self, group, parent=None):
         super(VariableWidget, self).__init__(parent)
 
-        self.root = root
+        self.roots = []
 
         vb = QVBoxLayout()
         self.setLayout(vb)
-        tree = QTreeWidget()
-        vb.addWidget(tree)
+        self.tree = QTreeWidget()
+        vb.addWidget(self.tree)
 
-        tree.setColumnCount(2)
-        tree.setHeaderLabels(['Variable','Mode','Base','Value'])
+        self.tree.setColumnCount(2)
+        self.tree.setHeaderLabels(['Variable','Mode','Base','Value'])
 
-        top = QTreeWidgetItem(tree)
-        top.setText(0,root.name)
-        tree.addTopLevelItem(top)
-        top.setExpanded(True)
-        self.addTreeItems(top,root)
-        for i in range(0,4):
-            tree.resizeColumnToContents(i)
+        self.top = QTreeWidgetItem(self.tree)
+        self.top.setText(0,group)
+        self.tree.addTopLevelItem(self.top)
+        self.top.setExpanded(True)
 
         hb = QHBoxLayout()
         vb.addLayout(hb)
@@ -150,11 +147,24 @@ class VariableWidget(QWidget):
         pb.pressed.connect(self.writePressed)
         hb.addWidget(pb)
 
+    def addRoot(self,root):
+        self.roots.append(root)
+
+        r = QTreeWidgetItem(self.top)
+        r.setText(0,root.name)
+        r.setExpanded(True)
+        self.addTreeItems(r,root)
+
+        for i in range(0,4):
+            self.tree.resizeColumnToContents(i)
+
     def readPressed(self):
-        self.root._read()
+        for root in self.roots:
+            root.readAll()
 
     def writePressed(self):
-        self.root._write()
+        for root in self.roots:
+            root.readAll()
 
     def addTreeItems(self,tree,d):
 

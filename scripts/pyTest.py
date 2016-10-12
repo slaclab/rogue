@@ -164,7 +164,8 @@ evalBoard.add(pyrogue.devices.axi_prbstx.create(name='axiPrbsTx',memBase=srp,off
 
 # Start the GUI. ipython --gui=qt4 to enable
 appTop = PyQt4.QtGui.QApplication(sys.argv)
-guiTop = pyrogue.gui.GuiTop(evalBoard)
+guiTop = pyrogue.gui.GuiTop('rogue')
+guiTop.addRoot(evalBoard)
 
 # Create mesh node
 mNode = pyrogue.mesh.MeshNode('rogue',root=evalBoard)

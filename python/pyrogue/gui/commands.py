@@ -79,30 +79,38 @@ class CommandLink(QObject):
 
 
 class CommandWidget(QWidget):
-    def __init__(self, root, parent=None):
+    def __init__(self, group, parent=None):
         super(CommandWidget, self).__init__(parent)
 
-        self.root = root
+        self.roots = []
         self.commands = []
 
         vb = QVBoxLayout()
         self.setLayout(vb)
-        tree = QTreeWidget()
-        vb.addWidget(tree)
+        self.tree = QTreeWidget()
+        vb.addWidget(self.tree)
 
-        tree.setColumnCount(2)
-        tree.setHeaderLabels(['Command','Base','Execute','Arg'])
+        self.tree.setColumnCount(2)
+        self.tree.setHeaderLabels(['Command','Base','Execute','Arg'])
 
-        top = QTreeWidgetItem(tree)
-        top.setText(0,root.name)
-        tree.addTopLevelItem(top)
-        top.setExpanded(True)
-        self.addTreeItems(top,root)
-        for i in range(0,3):
-            tree.resizeColumnToContents(i)
+        self.top = QTreeWidgetItem(self.tree)
+        self.top.setText(0,group)
+        self.tree.addTopLevelItem(self.top)
+        self.top.setExpanded(True)
 
         hb = QHBoxLayout()
         vb.addLayout(hb)
+
+    def addRoot(self,root):
+        self.roots.append(root)
+
+        r = QTreeWidgetItem(self.top)
+        r.setText(0,root.name)
+        r.setExpanded(True)
+        self.addTreeItems(r,root)
+
+        for i in range(0,3):
+            self.tree.resizeColumnToContents(i)
 
     def addTreeItems(self,tree,d):
 

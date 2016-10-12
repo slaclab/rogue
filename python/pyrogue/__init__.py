@@ -376,11 +376,11 @@ class Root(rogue.interfaces.stream.Master,Node):
         self.add(Command(name='clearLog', base='None', function=self._clearLog,
             description='Clear the message log cntained in the systemLog variable'))
 
-        self.add(Command(name='ReadAll', base='None', function=self._read,
+        self.add(Command(name='readAll', base='None', function=self._read,
             description='Read all values from the hardware'))
 
-        self.add(Command(name='WriteAll', base='None', function=self._write,
-            description='Write all values to the hardware'))
+        self.add(Command(name='writeAll', base='None', function=self._write,
+            description='Write wll values to the hardware'))
 
         # Variables
 
@@ -512,7 +512,7 @@ class Root(rogue.interfaces.stream.Master,Node):
         self._updatedDict = None
         self._updatedLock.release()
 
-    def _write(self):
+    def _write(self,dev=None,cmd=None,arg=None):
         """Write all blocks"""
 
         try:
@@ -528,7 +528,7 @@ class Root(rogue.interfaces.stream.Master,Node):
         except Exception as e:
             self._root._logException(e)
 
-    def _read(self):
+    def _read(self,dev=None,cmd=None,arg=None):
         """Read all blocks"""
 
         self._initUpdatedVars()

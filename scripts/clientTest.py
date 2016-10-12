@@ -7,5 +7,7 @@ import sys
 node = pyrogue.mesh.MeshNode('rogue')
 
 appTop = PyQt4.QtGui.QApplication(sys.argv)
-#guiTop = pyrogue.gui.GuiTop(evalBoard)
+guiTop = pyrogue.gui.GuiTop('rogue')
+
+node.setNewNodeCb(guiTop.addRoot)
 

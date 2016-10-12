@@ -258,11 +258,11 @@ class ControlLink(QObject):
 
 
 class SystemWidget(QWidget):
-    def __init__(self, root, parent=None):
+    def __init__(self, group, parent=None):
         super(SystemWidget, self).__init__(parent)
 
         self.holders = []
-        self.root = root
+        self.roots = []
 
         tl = QVBoxLayout()
         self.setLayout(tl)
@@ -302,25 +302,30 @@ class SystemWidget(QWidget):
         pb.clicked.connect(self.saveSettings)
         hb.addWidget(pb)
 
+        self.tl = tl
+
+    def addRoot(self,root):
+        self.roots.append(root)
+
         ###################
         # Data Controllers
         ###################
         for key,val in root._nodes.iteritems():
             if isinstance(val,pyrogue.Device) and val.classType=='dataWriter':
-                self.holders.append(DataLink(tl,val))
+                self.holders.append(DataLink(self.tl,val))
 
         ###################
         # Run Controllers
         ###################
         for key,val in root._nodes.iteritems():
             if isinstance(val,pyrogue.Device) and val.classType=='runControl':
-                self.holders.append(ControlLink(tl,val))
+                self.holders.append(ControlLink(self.tl,val))
 
         ###################
         # System Log
         ###################
         gb = QGroupBox('System Log')
-        tl.addWidget(gb)
+        self.tl.addWidget(gb)
 
         vb = QVBoxLayout()
         gb.setLayout(vb)
@@ -329,7 +334,7 @@ class SystemWidget(QWidget):
         self.systemLog.setReadOnly(True)
         vb.addWidget(self.systemLog)
 
-        self.root.systemLog._addListener(self.newValue)
+        root.systemLog._addListener(self.newValue)
         self.connect(self,SIGNAL('updateLog'),self.systemLog.setText)
         
         pb = QPushButton('Clear Log')
@@ -337,20 +342,25 @@ class SystemWidget(QWidget):
         vb.addWidget(pb)
 
     def resetLog(self):
-        self.root.clearLog()
+        for root in self.roots:
+            root.clearLog()
 
+    # FIX THIS!!!!!!
     def newValue(self,var,value):
         if var.name == 'systemLog':
             self.emit(SIGNAL("updateLog"),value)
 
     def hardReset(self):
-        self.root.hardReset()
+        for root in self.roots:
+            root.hardReset()
 
     def softReset(self):
-        self.root.softReset()
+        for root in self.roots:
+            root.softReset()
 
     def countReset(self):
-        self.root.countReset()
+        for root in self.roots:
+            root.countReset()
 
     def loadSettings(self):
         dlg = QFileDialog()
@@ -358,8 +368,9 @@ class SystemWidget(QWidget):
         dlg.setFilter('Config Files (*.yml)')
 
         if dlg.exec_():
-           loadFile = str(dlg.selectedFiles()[0])
-           self.root.readConfig(loadFile)
+            loadFile = str(dlg.selectedFiles()[0])
+            for root in self.roots:
+                root.readConfig(loadFile)
 
     def saveSettings(self):
         dlg = QFileDialog()
@@ -367,6 +378,7 @@ class SystemWidget(QWidget):
         dlg.setFilter('Config Files (*.yml)')
 
         if dlg.exec_():
-           saveFile = str(dlg.selectedFiles()[0])
-           self.root.writeConfig(saveFile)
+            saveFile = str(dlg.selectedFiles()[0])
+            for root in self.roots:
+                root.writeConfig(saveFile)
 
