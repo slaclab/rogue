@@ -217,7 +217,7 @@ class Node(object):
         """
         Get structure starting from this level.
         Attributes that are Nodes are recursed.
-        Called from getDictStructure in the root node.
+        Called from getYamlStructure in the root node.
         """
         data = {}
         for key,value in self.__dict__.iteritems():
@@ -229,12 +229,51 @@ class Node(object):
 
         return data
 
+    def _addStructure(self,d,setFunction,cmdFunction):
+        """
+        Creation structure from passed dictionary. Used for clients.
+        Blocks are not created and functions are set to the passed values.
+        """
+        for key, value in d.iteritems():
+
+            # Only work on nodes
+            if isinstance(value,dict) and value.has_key('classType'):
+
+                # If entry is a device add and recurse
+                if value['classType'] == 'device' or value['classType'] == 'dataWriter' or value['classType'] == 'runControl':
+                    dev = Device(**value)
+                    dev.classType = value['classType']
+                    self.add(dev)
+                    dev._addStructure(value,setFunction,cmdFunction)
+
+                # If entry is a variable add and recurse
+                elif value['classType'] == 'variable':
+                    if not value['name'] in self._nodes:
+                        value['offset']      = None
+                        value['setFunction'] = setFunction
+                        value['getFunction'] = 'value = self._scratch'
+                        var = Variable(**value)
+                        self.add(var)
+                    else:
+                        getattr(self,value['name'])._setFunction = setFunction
+                        getattr(self,value['name'])._getFunction = 'value = self._scratch'
+
+                # If entry is a variable add and recurse
+                elif value['classType'] == 'command':
+                    if not value['name'] in self._nodes:
+                        value['function'] = cmdFunction
+                        cmd = Command(**value)
+                        self.add(cmd)
+                    else:
+                        getattr(self,value['name'])._function = cmdFunction
+
+
     def _getVariables(self,modes):
         """
         Get variable values in a dictionary starting from this level.
         Attributes that are Nodes are recursed.
         modes is a list of variable modes to include.
-        Called from getDictVariables in the root node.
+        Called from getYamlVariables in the root node.
         """
         data = {}
         for key,value in self._nodes.iteritems():
@@ -250,7 +289,7 @@ class Node(object):
         Set variable values from a dictionary starting from this level.
         Attributes that are Nodes are recursed.
         modes is a list of variable modes to act on
-        Called from setDictVariables in the root node.
+        Called from setYamlVariables in the root node.
         """
         for key, value in d.iteritems():
 
@@ -265,6 +304,25 @@ class Node(object):
                 elif isinstance(self._nodes[key],Variable) and (self._nodes[key].mode in modes):
                     self._nodes[key]._rawSet(value)
 
+    def _execCommands(self,d):
+        """
+        Execute commands from a dictionary starting from this level.
+        Attributes that are Nodes are recursed.
+        Called from execDictCommands in the root node.
+        """
+        for key, value in d.iteritems():
+
+            # Entry is in node list
+            if key in self._nodes:
+
+                # If entry is a device, recurse
+                if isinstance(self._nodes[key],Device):
+                    self._nodes[key]._execCommands(value)
+
+                # Execute if command with enabled mode
+                elif isinstance(self._nodes[key],Command):
+                    self._nodes[key](value)
+
 
 class Root(rogue.interfaces.stream.Master,Node):
     """
@@ -275,7 +333,7 @@ class Root(rogue.interfaces.stream.Master,Node):
     to be stored in data files.
     """
 
-    def __init__(self, name, description):
+    def __init__(self, name, description, **dump):
         """Init the node with passed attributes"""
 
         rogue.interfaces.stream.Master.__init__(self)
@@ -294,6 +352,9 @@ class Root(rogue.interfaces.stream.Master,Node):
         # Variable update list
         self._updatedDict = {}
         self._updatedLock = threading.Lock()
+
+        # Variable update listener
+        self._varListeners = []
 
         # Commands
 
@@ -315,6 +376,12 @@ class Root(rogue.interfaces.stream.Master,Node):
         self.add(Command(name='clearLog', base='None', function=self._clearLog,
             description='Clear the message log cntained in the systemLog variable'))
 
+        self.add(Command(name='ReadAll', base='None', function=self._read,
+            description='Read all values from the hardware'))
+
+        self.add(Command(name='WriteAll', base='None', function=self._write,
+            description='Write all values to the hardware'))
+
         # Variables
 
         self.add(Variable(name='systemLog', base='string', mode='RO', hidden=True,
@@ -324,6 +391,15 @@ class Root(rogue.interfaces.stream.Master,Node):
         self.add(Variable(name='pollPeriod', base='float', mode='RW',
             setFunction=self._setPollPeriod, getFunction='value=dev._pollPeriod',
             description='Polling period for pollable variables. Set to 0 to disable polling'))
+
+    def addVarListener(self,func):
+        """Add a variable update listener"""
+        self._varListeners.append(func)
+
+    def _updateVarListeners(self, yml):
+        """Send yaml update to listeners"""
+        for f in self._varListeners:
+            f(yml)
 
     def stop(self):
         """Stop the polling thread. Must be called for clean exit."""
@@ -364,22 +440,9 @@ class Root(rogue.interfaces.stream.Master,Node):
             else:
                 return None
 
-    def _getDictStructure(self):
-        """Get structure as a dictionary"""
-        return {self.name:self._getStructure()}
-
     def _getYamlStructure(self):
         """Get structure as a yaml string"""
-        return yaml.dump(self._getDictStructure(),default_flow_style=False)
-
-    def _getDictVariables(self,modes=['RW']):
-        """
-        Get tree variable current values as a dictionary.
-        modes is a list of variable modes to include.
-        Vlist can contain an optional list of variale paths to include in the
-        dict. If this list is not NULL only these variables will be included.
-        """
-        return {self.name:self._getVariables(modes)}
+        return yaml.dump({self.name:self._getStructure()},default_flow_style=False)
 
     def _getYamlVariables(self,modes=['RW']):
         """
@@ -388,20 +451,7 @@ class Root(rogue.interfaces.stream.Master,Node):
         Vlist can contain an optional list of variale paths to include in the
         yaml. If this list is not NULL only these variables will be included.
         """
-        return yaml.dump(self._getDictVariables(modes),default_flow_style=False)
-
-    def _setDictVariables(self,d,modes=['RW']):
-        """
-        Set variable values from a dictionary.
-        modes is a list of variable modes to act on
-        """
-        self._initUpdatedVars()
-
-        for key, value in d.iteritems():
-            if key == self.name:
-                self._setVariables(value,modes)
-
-        self._streamUpdatedVars()
+        return yaml.dump({self.name:self._getVariables(modes)},default_flow_style=False)
 
     def _setYamlVariables(self,yml,modes=['RW']):
         """
@@ -409,15 +459,19 @@ class Root(rogue.interfaces.stream.Master,Node):
         modes is a list of variable modes to act on
         """
         d = yaml.load(yml)
-        self._setDictVariables(d,modes)
 
-    def _streamYamlDict(self,d):
-        """
-        Generate a frame containing the passed dictionary in yaml format.
-        """
-        if not d: return
+        self._initUpdatedVars()
 
-        yml = yaml.dump(d,default_flow_style=False)
+        for key, value in d.iteritems():
+            if key == self.name:
+                self._setVariables(value,modes)
+
+        self._doneUpdatedVars()
+
+    def _streamYaml(self,yml):
+        """
+        Generate a frame containing the passed yaml string.
+        """
         frame = self._reqFrame(len(yml),True,0)
         b = bytearray()
         b.extend(yml)
@@ -431,8 +485,17 @@ class Root(rogue.interfaces.stream.Master,Node):
         Vlist can contain an optional list of variale paths to include in the
         stream. If this list is not NULL only these variables will be included.
         """
-        d = self._getDictVariables(modes)
-        self._streamYamlDict(d)
+        self._streamYaml(self._getYamlVariables(modes))
+
+    def _execYamlCommands(self,yml):
+        """
+        Execute commands
+        """
+        d = yaml.load(yml)
+
+        for key, value in d.iteritems():
+            if key == self.name:
+                self._execCommands(value)
 
     def _initUpdatedVars(self):
         """Initialize the update tracking log before a bulk variable update"""
@@ -440,10 +503,12 @@ class Root(rogue.interfaces.stream.Master,Node):
         self._updatedDict = {}
         self._updatedLock.release()
 
-    def _streamUpdatedVars(self):
-        """Stream the results of a bulk variable update"""
+    def _doneUpdatedVars(self):
+        """Stream the results of a bulk variable update and update listeners"""
         self._updatedLock.acquire()
-        self._streamYamlDict(self._updatedDict)
+        yml = yaml.dump(self._updatedDict,default_flow_style=False)
+        self._streamYaml(yml)
+        self._updateVarListeners(yml)
         self._updatedDict = None
         self._updatedLock.release()
 
@@ -478,7 +543,7 @@ class Root(rogue.interfaces.stream.Master,Node):
         except Exception as e:
             self._root._logException(e)
 
-        self._streamUpdatedVars()
+        self._doneUpdatedVars()
 
     def _poll(self):
         """Read pollable blocks"""
@@ -495,7 +560,7 @@ class Root(rogue.interfaces.stream.Master,Node):
         except Exception as e:
             self._root._logException(e)
 
-        self._streamUpdatedVars()
+        self._doneUpdatedVars()
 
     def _writeConfig(self,dev,cmd,arg):
         """Write YAML configuration to a file. Called from command"""
@@ -560,6 +625,7 @@ class Root(rogue.interfaces.stream.Master,Node):
 
     def _varUpdated(self,var,value):
         """ Log updated variables"""
+        yml = None
 
         self._updatedLock.acquire()
 
@@ -567,13 +633,17 @@ class Root(rogue.interfaces.stream.Master,Node):
         if self._updatedDict != None:
             addPathToDict(self._updatedDict,var.path,value)
 
-        # Otherwise stream directly
+        # Otherwise act directly
         else:
             d = {}
             addPathToDict(d,var.path,value)
-            self._streamYamlDict(d)
+            yml = yaml.dump(d,default_flow_style=False)
 
         self._updatedLock.release()
+
+        if yml:
+            self._streamYaml(yml)
+            self._updateVarListeners(yml)
 
 
 class Variable(Node):
@@ -618,7 +688,7 @@ class Variable(Node):
     """
     def __init__(self, name, description, offset=None, bitSize=32, bitOffset=0, pollEn=False,
                  base='hex', mode='RW', enum=None, hidden=False, minimum=None, maximum=None,
-                 setFunction=None, getFunction=None):
+                 setFunction=None, getFunction=None, **dump):
         """Initialize variable class"""
 
         Node.__init__(self,name,description,hidden,'variable')
@@ -645,9 +715,15 @@ class Variable(Node):
         self._getFunction = getFunction
         self.__listeners  = []
 
+        if self.base == 'string':
+            self._scratch = ''
+        else:
+            self._scratch = 0
+
     def _addListener(self, func):
         """
         Add a listener function to call when variable changes. 
+        This is usefull when chaining variables together. (adc conversions, etc)
         Variable will be passed as an arg:  func(self)
         """
         self.__listeners.append(func)
@@ -787,7 +863,7 @@ class Variable(Node):
 class Command(Node):
     """Command holder: TODO: Update comments"""
 
-    def __init__(self, name, description, base='None', function=None, hidden=False):
+    def __init__(self, name, description, base='None', function=None, hidden=False, **dump):
         """Initialize command class"""
 
         Node.__init__(self,name,description,hidden,'command')
@@ -861,7 +937,7 @@ class Block(rogue.interfaces.memory.Block):
 class Device(Node,rogue.interfaces.memory.Master):
     """Device class holder. TODO: Update comments"""
 
-    def __init__(self, name, description, size, memBase=None, offset=0, hidden=False):
+    def __init__(self, name, description, size=0, memBase=None, offset=0, hidden=False, **dump):
         """Initialize device class"""
 
         Node.__init__(self,name,description,hidden,'device')
@@ -1050,7 +1126,7 @@ class Device(Node,rogue.interfaces.memory.Master):
 class DataWriter(Device):
     """Special base class to control data files. TODO: Update comments"""
 
-    def __init__(self, name, description='', hidden=False):
+    def __init__(self, name, description='', hidden=False, **dump):
         """Initialize device class"""
 
         Device.__init__(self, name=name, description=description,
@@ -1141,7 +1217,7 @@ class DataWriter(Device):
 class RunControl(Device):
     """Special base class to control runs. TODO: Update comments."""
 
-    def __init__(self, name, description='', hidden=False):
+    def __init__(self, name, description='', hidden=False, **dump):
         """Initialize device class"""
 
         Device.__init__(self, name=name, description=description,
@@ -1190,8 +1266,8 @@ class RunControl(Device):
         Device._poll(self)
 
 
-# Helper function add a path/value pair to a dictionary tree
 def addPathToDict(d, path, value):
+    """Helper function to add a path/value pair to a dictionary tree"""
     npath = path
     sd = d
 
@@ -1208,4 +1284,18 @@ def addPathToDict(d, path, value):
 
     # Add final node
     sd[npath] = value
+
+
+def rootFromYaml(yml,setFunction,cmdFunction):
+    """
+    Create structure from yaml.
+    """
+    d = yaml.load(yml)
+    root = None
+
+    for key, value in d.iteritems():
+        root = Root(**value)
+        root._addStructure(value,setFunction,cmdFunction)
+
+    return root
 
