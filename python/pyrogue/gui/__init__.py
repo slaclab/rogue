@@ -39,23 +39,24 @@ class GuiTop(QWidget):
         vb = QVBoxLayout()
         self.setLayout(vb)
 
-        tab = QTabWidget()
-        vb.addWidget(tab)
+        self.tab = QTabWidget()
+        vb.addWidget(self.tab)
 
-        self.sys = pyrogue.gui.system.SystemWidget(group,tab)
-        tab.addTab(self.sys,'System')
+        self.var = pyrogue.gui.variables.VariableWidget(group,self.tab)
+        self.tab.addTab(self.var,'Variables')
 
-        self.var = pyrogue.gui.variables.VariableWidget(group,tab)
-        tab.addTab(self.var,'Variables')
-
-        self.cmd = pyrogue.gui.commands.CommandWidget(group,tab)
-        tab.addTab(self.cmd,'Commands')
+        self.cmd = pyrogue.gui.commands.CommandWidget(group,self.tab)
+        self.tab.addTab(self.cmd,'Commands')
         self.show()
 
-        self.connect(self,SIGNAL('newRoot'),self.sys.addRoot)
+        self.connect(self,SIGNAL('newRoot'),self.sys._addRoot)
         self.connect(self,SIGNAL('newRoot'),self.var.addRoot)
         self.connect(self,SIGNAL('newRoot'),self.cmd.addRoot)
 
     def addRoot(self,root):
         self.emit(SIGNAL("newRoot"),root)
+
+    def _addRoot(self,root):
+        self.sys = pyrogue.gui.system.SystemWidget(root,self.tab)
+        tab.addTab(self.sys,root.name)
 

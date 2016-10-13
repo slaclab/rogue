@@ -70,8 +70,8 @@ class VariableLink(QObject):
             self.widget.setReadOnly(True)
 
         item.treeWidget().setItemWidget(item,3,self.widget)
-        variable._addListener(self.newValue)
-        self.newValue(None,variable._rawGet())
+        variable.addListener(self.newValue)
+        self.newValue(None,variable.get(read=False))
 
     def newValue(self,var,value):
         if self.block: return
@@ -169,17 +169,15 @@ class VariableWidget(QWidget):
     def addTreeItems(self,tree,d):
 
         # First create variables
-        for key,val in d._nodes.iteritems():
-            if isinstance(val,pyrogue.Variable):
-                if not val.hidden:
-                    var = VariableLink(tree,val)
+        for key,val in d.getNodes(pyrogue.Variable).iteritems():
+            if not val.hidden:
+                var = VariableLink(tree,val)
 
         # Then create devices
-        for key,val in d._nodes.iteritems():
-            if isinstance(val,pyrogue.Device):
-                if not val.hidden:
-                    w = QTreeWidgetItem(tree)
-                    w.setText(0,val.name)
-                    w.setExpanded(True)
-                    self.addTreeItems(w,val)
+        for key,val in d.getNodes(pyrogue.Device).iteritems():
+            if not val.hidden:
+                w = QTreeWidgetItem(tree)
+                w.setText(0,val.name)
+                w.setExpanded(True)
+                self.addTreeItems(w,val)
 

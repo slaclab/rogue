@@ -71,15 +71,11 @@ class MeshNode(threading.Thread):
 
                 # Variable set from client to server
                 if cmd == 'variable_set' and size > 1:
-                    try:
-                        self._root._setYamlVariables(e.msg().popstr())
-                    except Exception as e:
-                        self._root._logException(e)
-                    self._root._write()
+                    self._root.setYamlVariables(e.msg().popstr(),write=True)
 
                 # Command from client to server
                 elif cmd == 'command' and size > 1:
-                    self._root._execYamlCommands(e.msg().popstr())
+                    self._root.execYamlCommands(e.msg().popstr())
 
                 # Structure update from server to client
                 elif cmd == 'structure_status' and size > 2:
@@ -89,7 +85,7 @@ class MeshNode(threading.Thread):
                         setattr(nr,'uuid',sid)
                         self._servers[nr.name] = nr
                         self._noMsg = True
-                        nr._setYamlVariables(e.msg().popstr(),modes=['RW','RO'])
+                        nr.setYamlVariables(e.msg().popstr(),modes=['RW','RO'],write=False)
                         self._noMsg = False
 
                         if self._newNode:
@@ -99,8 +95,8 @@ class MeshNode(threading.Thread):
                 elif cmd == 'get_structure':
                     msg = czmq.Zmsg()
                     msg.addstr('structure_status')
-                    msg.addstr(self._root._getYamlStructure())
-                    msg.addstr(self._root._getYamlVariables(modes=['RW','RO']))
+                    msg.addstr(self._root.getYamlStructure())
+                    msg.addstr(self._root.getYamlVariables(modes=['RW','RO']),read=False)
                     self._mesh.whisper(sid,msg)
 
             # Commands sent as a broadcast
@@ -110,7 +106,7 @@ class MeshNode(threading.Thread):
                 if cmd == 'variable_status' and size > 1:
                     self._noMsg = True
                     for key,value in self._servers.iteritems():
-                        value._setYamlVariables(e.msg().popstr(),modes=['RW','RO'])
+                        value.setYamlVariables(e.msg().popstr(),modes=['RW','RO'],write=False)
 
                     self._noMsg = False
 
@@ -166,7 +162,7 @@ class MeshNode(threading.Thread):
         self._mesh.whisper(self._servers[name].uuid,msg)
 
     # Variable field updated on server
-    def _variableStatus(self,yml):
+    def _variableStatus(self,yml,d):
         msg = czmq.Zmsg()
         msg.addstr('variable_status')
         msg.addstr(yml)

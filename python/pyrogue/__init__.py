@@ -180,6 +180,16 @@ class Node(object):
         # Update path related attributes
         node._updateTree(self)
 
+    def getNodes(self,typ=None):
+        if typ:
+            ret = collections.OrderedDict()
+            for key,node in self._nodes.iteritems():
+                if isinstance(node,typ):
+                    ret[key] = node
+            return ret
+        else:
+            return self._nodes
+
     def _updateTree(self,parent):
         """
         Update tree. In some cases nodes such as variables, commands and devices will
@@ -193,25 +203,6 @@ class Node(object):
 
         for key,value in self._nodes.iteritems():
             value._updateTree(self)
-
-    def _getNodeAtPath(self,path):
-        """
-        Return node at given path, recursing when neccessary.
-        Called from getAtPath in the root node.
-        """
-        if not '.' in path:
-            node = path
-            rest = None
-        else:
-            node = path[:path.find('.')]
-            rest = path[path.find('.')+1:]
-
-        if node not in self._nodes:
-            return None
-        elif rest:
-            return self._nodes[node]._getNodeAtPath(rest)
-        else:
-            return self._nodes[node]
 
     def _getStructure(self):
         """
@@ -392,18 +383,80 @@ class Root(rogue.interfaces.stream.Master,Node):
             setFunction=self._setPollPeriod, getFunction='value=dev._pollPeriod',
             description='Polling period for pollable variables. Set to 0 to disable polling'))
 
+    def stop(self):
+        """Stop the polling thread. Must be called for clean exit."""
+        self._pollPeriod=0
+
     def addVarListener(self,func):
         """Add a variable update listener"""
         self._varListeners.append(func)
 
-    def _updateVarListeners(self, yml):
-        """Send yaml update to listeners"""
-        for f in self._varListeners:
-            f(yml)
+    def getYamlStructure(self):
+        """Get structure as a yaml string"""
+        return yaml.dump({self.name:self._getStructure()},default_flow_style=False)
 
-    def stop(self):
-        """Stop the polling thread. Must be called for clean exit."""
-        self._pollPeriod=0
+    def getYamlVariables(self,modes=['RW'],read=True):
+        """
+        Get current values as a yaml dictionary.
+        modes is a list of variable modes to include.
+        Vlist can contain an optional list of variale paths to include in the
+        yaml. If this list is not NULL only these variables will be included.
+        """
+        ret = None
+
+        if read: self._read()
+        try:
+            ret = yaml.dump({self.name:self._getVariables(modes)},default_flow_style=False)
+        except Exception as e:
+            self._root._logException(e)
+
+        return ret
+
+    def setYamlVariables(self,yml,modes=['RW'], write=True):
+        """
+        Set variable values from a dictionary.
+        modes is a list of variable modes to act on
+        """
+        d = yaml.load(yml)
+
+        self._initUpdatedVars()
+
+        for key, value in d.iteritems():
+            if key == self.name:
+                self._setVariables(value,modes)
+
+        self._doneUpdatedVars()
+
+        if write: self._write()
+
+    def execYamlCommands(self,yml):
+        """
+        Execute commands
+        """
+        d = yaml.load(yml)
+
+        for key, value in d.iteritems():
+            if key == self.name:
+                self._execCommands(value)
+
+    def setPathVariable(self,path,value):
+        d = {}
+        pyrogue.addPathToDict(d,path,value)
+        name = path[:path.find('.')]
+        yml = yaml.dump(d,default_flow_style=False)
+        self.setYamlVariables(yml,['RW'],write=True)
+
+    def execPathCommand(self,path,arg):
+        d = {}
+        addPathToDict(d,path,arg)
+        name = path[:path.find('.')]
+        yml = yaml.dump(d,default_flow_style=False)
+        self.execYamlCommands(yml)
+
+    def _updateVarListeners(self, yml, d):
+        """Send yaml and dict update to listeners"""
+        for f in self._varListeners:
+            f(yml,d)
 
     def _setPollPeriod(self,dev,var,value):
         old = self._pollPeriod
@@ -424,50 +477,6 @@ class Root(rogue.interfaces.stream.Master,Node):
             time.sleep(self._pollPeriod)
             self._poll()
 
-    def _getAtPath(self,path):
-        """Get node using path"""
-        if not '.' in path:
-            if path == self.name: 
-                return self
-            else:
-                return None
-        else:
-            base = path[:path.find('.')]
-            rest = path[path.find('.')+1:]
-
-            if base == self.name:
-                return(self._getPath(rest))
-            else:
-                return None
-
-    def _getYamlStructure(self):
-        """Get structure as a yaml string"""
-        return yaml.dump({self.name:self._getStructure()},default_flow_style=False)
-
-    def _getYamlVariables(self,modes=['RW']):
-        """
-        Get tree variable current values as a dictionary.
-        modes is a list of variable modes to include.
-        Vlist can contain an optional list of variale paths to include in the
-        yaml. If this list is not NULL only these variables will be included.
-        """
-        return yaml.dump({self.name:self._getVariables(modes)},default_flow_style=False)
-
-    def _setYamlVariables(self,yml,modes=['RW']):
-        """
-        Set variable values from a dictionary.
-        modes is a list of variable modes to act on
-        """
-        d = yaml.load(yml)
-
-        self._initUpdatedVars()
-
-        for key, value in d.iteritems():
-            if key == self.name:
-                self._setVariables(value,modes)
-
-        self._doneUpdatedVars()
-
     def _streamYaml(self,yml):
         """
         Generate a frame containing the passed yaml string.
@@ -485,17 +494,7 @@ class Root(rogue.interfaces.stream.Master,Node):
         Vlist can contain an optional list of variale paths to include in the
         stream. If this list is not NULL only these variables will be included.
         """
-        self._streamYaml(self._getYamlVariables(modes))
-
-    def _execYamlCommands(self,yml):
-        """
-        Execute commands
-        """
-        d = yaml.load(yml)
-
-        for key, value in d.iteritems():
-            if key == self.name:
-                self._execCommands(value)
+        self._streamYaml(self.getYamlVariables(modes),read=False)
 
     def _initUpdatedVars(self):
         """Initialize the update tracking log before a bulk variable update"""
@@ -508,7 +507,7 @@ class Root(rogue.interfaces.stream.Master,Node):
         self._updatedLock.acquire()
         yml = yaml.dump(self._updatedDict,default_flow_style=False)
         self._streamYaml(yml)
-        self._updateVarListeners(yml)
+        self._updateVarListeners(yml,self._updatedDict)
         self._updatedDict = None
         self._updatedLock.release()
 
@@ -564,23 +563,19 @@ class Root(rogue.interfaces.stream.Master,Node):
 
     def _writeConfig(self,dev,cmd,arg):
         """Write YAML configuration to a file. Called from command"""
-        self._read()
         try:
             with open(arg,'w') as f:
-                f.write(self._getYamlVariables(modes=['RW']))
+                f.write(self.getYamlVariables(modes=['RW']),read=True)
         except Exception as e:
             self._root._logException(e)
 
     def _readConfig(self,dev,cmd,arg):
         """Read YAML configuration from a file. Called from command"""
-
         try:
             with open(arg,'r') as f:
-                self._setYamlVariables(f.read(),modes=['RW'])
+                self._setYamlVariables(f.read(),modes=['RW'],write=True)
         except Exception as e:
             self._root._logException(e)
-
-        self._write()
 
     def _softReset(self,dev,cmd,arg):
         """Generate a soft reset on all devices"""
@@ -626,6 +621,7 @@ class Root(rogue.interfaces.stream.Master,Node):
     def _varUpdated(self,var,value):
         """ Log updated variables"""
         yml = None
+        d = {}
 
         self._updatedLock.acquire()
 
@@ -635,7 +631,6 @@ class Root(rogue.interfaces.stream.Master,Node):
 
         # Otherwise act directly
         else:
-            d = {}
             addPathToDict(d,var.path,value)
             yml = yaml.dump(d,default_flow_style=False)
 
@@ -643,7 +638,7 @@ class Root(rogue.interfaces.stream.Master,Node):
 
         if yml:
             self._streamYaml(yml)
-            self._updateVarListeners(yml)
+            self._updateVarListeners(yml,d)
 
 
 class Variable(Node):
@@ -840,24 +835,25 @@ class Variable(Node):
         except Exception as e:
             self._root._logException(e)
 
-    def get(self):
+    def get(self,read=True):
         """ 
         Return the value after performing a read from hardware if applicable.
         Hardware read is blocking. An error will result in a logged exception.
         Listeners will be informed of the update.
         """
         try:
-            if self._block and self._block.mode != 'WO':
+            if read and self._block and self._block.mode != 'WO':
                 self._block.blockingRead()
             ret = self._rawGet()
         except Exception as e:
             self._root._logException(e)
 
         # Update listeners for all variables in the block
-        if self._block:
-            self._block._updated()
-        else:
-            self._updated()
+        if read:
+            if self._block:
+                self._block._updated()
+            else:
+                self._updated()
         return ret
 
 class Command(Node):

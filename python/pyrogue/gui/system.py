@@ -258,11 +258,11 @@ class ControlLink(QObject):
 
 
 class SystemWidget(QWidget):
-    def __init__(self, group, parent=None):
+    def __init__(self, root, parent=None):
         super(SystemWidget, self).__init__(parent)
 
         self.holders = []
-        self.roots = []
+        self.root = root
 
         tl = QVBoxLayout()
         self.setLayout(tl)
@@ -302,30 +302,25 @@ class SystemWidget(QWidget):
         pb.clicked.connect(self.saveSettings)
         hb.addWidget(pb)
 
-        self.tl = tl
-
-    def addRoot(self,root):
-        self.roots.append(root)
-
         ###################
         # Data Controllers
         ###################
-        for key,val in root._nodes.iteritems():
-            if isinstance(val,pyrogue.Device) and val.classType=='dataWriter':
-                self.holders.append(DataLink(self.tl,val))
+        for key,val in root.getNodes(pyrogue.Device).iteritems():
+            if val.classType=='dataWriter':
+                self.holders.append(DataLink(tl,val))
 
         ###################
         # Run Controllers
         ###################
-        for key,val in root._nodes.iteritems():
-            if isinstance(val,pyrogue.Device) and val.classType=='runControl':
-                self.holders.append(ControlLink(self.tl,val))
+        for key,val in root.getNodes(pyrogue.Device).iteritems():
+            if val.classType=='runControl':
+                self.holders.append(ControlLink(tl,val))
 
         ###################
         # System Log
         ###################
         gb = QGroupBox('System Log')
-        self.tl.addWidget(gb)
+        tl.addWidget(gb)
 
         vb = QVBoxLayout()
         gb.setLayout(vb)
@@ -342,25 +337,20 @@ class SystemWidget(QWidget):
         vb.addWidget(pb)
 
     def resetLog(self):
-        for root in self.roots:
-            root.clearLog()
+        self._root.clearLog()
 
-    # FIX THIS!!!!!!
     def newValue(self,var,value):
         if var.name == 'systemLog':
             self.emit(SIGNAL("updateLog"),value)
 
     def hardReset(self):
-        for root in self.roots:
-            root.hardReset()
+        self._root.hardReset()
 
     def softReset(self):
-        for root in self.roots:
-            root.softReset()
+        self._root.softReset()
 
     def countReset(self):
-        for root in self.roots:
-            root.countReset()
+        self._root.countReset()
 
     def loadSettings(self):
         dlg = QFileDialog()
@@ -369,8 +359,7 @@ class SystemWidget(QWidget):
 
         if dlg.exec_():
             loadFile = str(dlg.selectedFiles()[0])
-            for root in self.roots:
-                root.readConfig(loadFile)
+            self._root.readConfig(loadFile)
 
     def saveSettings(self):
         dlg = QFileDialog()
@@ -379,6 +368,5 @@ class SystemWidget(QWidget):
 
         if dlg.exec_():
             saveFile = str(dlg.selectedFiles()[0])
-            for root in self.roots:
-                root.writeConfig(saveFile)
+            self._root.writeConfig(saveFile)
 
