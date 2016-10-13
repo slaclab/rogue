@@ -494,7 +494,7 @@ class Root(rogue.interfaces.stream.Master,Node):
         Vlist can contain an optional list of variale paths to include in the
         stream. If this list is not NULL only these variables will be included.
         """
-        self._streamYaml(self.getYamlVariables(modes),read=False)
+        self._streamYaml(self.getYamlVariables(modes,False))
 
     def _initUpdatedVars(self):
         """Initialize the update tracking log before a bulk variable update"""
@@ -715,13 +715,59 @@ class Variable(Node):
         else:
             self._scratch = 0
 
-    def _addListener(self, func):
+    def addListener(self, func):
         """
         Add a listener function to call when variable changes. 
         This is usefull when chaining variables together. (adc conversions, etc)
         Variable will be passed as an arg:  func(self)
         """
         self.__listeners.append(func)
+
+    def set(self,value):
+        """
+        Set the value and write to hardware if applicable
+        Writes to hardware are blocking. An error will result in a logged exception.
+        """
+        try:
+            self._rawSet(value)
+            if self._block and self._block.mode != 'RO':
+                self._block.blockingWrite()
+                #self._block.block.blockingVerify() # Not yet implemented in memory::Block
+        except Exception as e:
+            self._root._logException(e)
+
+    def post(self,value):
+        """
+        Set the value and write to hardware if applicable using a posted write.
+        Writes to hardware are posted.
+        """
+        try:
+            self._rawSet(value)
+            if self._block and self._block.mode != 'RO':
+                self._block.postedWrite()
+        except Exception as e:
+            self._root._logException(e)
+
+    def get(self,read=True):
+        """ 
+        Return the value after performing a read from hardware if applicable.
+        Hardware read is blocking. An error will result in a logged exception.
+        Listeners will be informed of the update.
+        """
+        try:
+            if read and self._block and self._block.mode != 'WO':
+                self._block.blockingRead()
+            ret = self._rawGet()
+        except Exception as e:
+            self._root._logException(e)
+
+        # Update listeners for all variables in the block
+        if read:
+            if self._block:
+                self._block._updated()
+            else:
+                self._updated()
+        return ret
 
     def _updated(self):
         """Variable has been updated. Inform listeners."""
@@ -810,51 +856,6 @@ class Variable(Node):
         else:
             return None
 
-    def set(self,value):
-        """
-        Set the value and write to hardware if applicable
-        Writes to hardware are blocking. An error will result in a logged exception.
-        """
-        try:
-            self._rawSet(value)
-            if self._block and self._block.mode != 'RO':
-                self._block.blockingWrite()
-                #self._block.block.blockingVerify() # Not yet implemented in memory::Block
-        except Exception as e:
-            self._root._logException(e)
-
-    def post(self,value):
-        """
-        Set the value and write to hardware if applicable using a posted write.
-        Writes to hardware are posted.
-        """
-        try:
-            self._rawSet(value)
-            if self._block and self._block.mode != 'RO':
-                self._block.postedWrite()
-        except Exception as e:
-            self._root._logException(e)
-
-    def get(self,read=True):
-        """ 
-        Return the value after performing a read from hardware if applicable.
-        Hardware read is blocking. An error will result in a logged exception.
-        Listeners will be informed of the update.
-        """
-        try:
-            if read and self._block and self._block.mode != 'WO':
-                self._block.blockingRead()
-            ret = self._rawGet()
-        except Exception as e:
-            self._root._logException(e)
-
-        # Update listeners for all variables in the block
-        if read:
-            if self._block:
-                self._block._updated()
-            else:
-                self._updated()
-        return ret
 
 class Command(Node):
     """Command holder: TODO: Update comments"""

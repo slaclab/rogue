@@ -49,7 +49,7 @@ class GuiTop(QWidget):
         self.tab.addTab(self.cmd,'Commands')
         self.show()
 
-        self.connect(self,SIGNAL('newRoot'),self.sys._addRoot)
+        self.connect(self,SIGNAL('newRoot'),self._addRoot)
         self.connect(self,SIGNAL('newRoot'),self.var.addRoot)
         self.connect(self,SIGNAL('newRoot'),self.cmd.addRoot)
 
@@ -58,5 +58,5 @@ class GuiTop(QWidget):
 
     def _addRoot(self,root):
         self.sys = pyrogue.gui.system.SystemWidget(root,self.tab)
-        tab.addTab(self.sys,root.name)
+        self.tab.addTab(self.sys,root.name)
 

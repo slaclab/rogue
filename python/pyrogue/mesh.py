@@ -96,7 +96,7 @@ class MeshNode(threading.Thread):
                     msg = czmq.Zmsg()
                     msg.addstr('structure_status')
                     msg.addstr(self._root.getYamlStructure())
-                    msg.addstr(self._root.getYamlVariables(modes=['RW','RO']),read=False)
+                    msg.addstr(self._root.getYamlVariables(modes=['RW','RO'],read=False))
                     self._mesh.whisper(sid,msg)
 
             # Commands sent as a broadcast
