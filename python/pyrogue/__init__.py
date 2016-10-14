@@ -441,7 +441,7 @@ class Root(rogue.interfaces.stream.Master,Node):
 
     def setPathVariable(self,path,value):
         d = {}
-        pyrogue.addPathToDict(d,path,value)
+        addPathToDict(d,path,value)
         name = path[:path.find('.')]
         yml = yaml.dump(d,default_flow_style=False)
         self.setYamlVariables(yml,['RW'],write=True)

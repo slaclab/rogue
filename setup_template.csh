@@ -15,3 +15,6 @@ else
    setenv LD_LIBRARY_PATH ${PWD}/build:${PYDIR}/lib:${ZMQ_DIR}/lib
 endif
 
+source /u1/epics/base-3.15.4/setup.csh
+source /u1/epics/EPICS-CPP-4.6.0/pvaPy/bin/linux-x86_64/setup.csh
+

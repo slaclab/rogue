@@ -25,6 +25,7 @@ import pyrogue.utilities.prbs
 import pyrogue.utilities.fileio
 import pyrogue.gui
 import pyrogue.mesh
+import pyrogue.epics
 import threading
 import signal
 import atexit
@@ -170,12 +171,14 @@ guiTop.addRoot(evalBoard)
 # Create mesh node
 mNode = pyrogue.mesh.MeshNode('rogue',root=evalBoard)
 
-def testFunc(a,b,c,d='test'):
-    print("a=%, b=%, c=%, d=%" % (a,b,c,d))
+# Create epics node
+epics = pyrogue.epics.EpicsCaServer('rogue',evalBoard)
 
 # Close window and stop polling
 def stop():
     guiTop.close()
     mNode.stop()
     evalBoard.stop()
+
+appTop.exec_()
 

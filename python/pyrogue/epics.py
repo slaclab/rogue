@@ -31,7 +31,10 @@ class EpicsCaDriver(pcaspy.Driver):
         self._root = root
 
     def write(self,reason,value):
-        print("epics: write %s = %s" % (reason,value))
+        path = reason.replace(':','.')
+        self._root.setPathVariable(path,value)
+        self._root.execPathCommand(path,value)
+        self.setParam(reason,value)
 
 
 class EpicsCaServer(threading.Thread):
@@ -43,30 +46,38 @@ class EpicsCaServer(threading.Thread):
         self._root    = root
         self._base    = base 
         self._runEn   = True
-        self._server  = pcaspy.SimpleServer()
+        self._server  = None
+        self._driver  = None
 
         if self._root:
             self._root.addVarListener(self._variableStatus)
 
         self.start()
 
+    def _addPv(self,node,pvdb):
+        d = {}
+        if node.base == 'enum': 
+            d['type'] = 'enum'
+            d['enums'] = [val for val in node.enum] 
+        elif node.base == 'uint' or node.base == 'hex':
+            d['type'] = 'int'
+        else:
+            d['type'] = 'string'
+
+        name = node.path.replace('.',':')
+        pvdb[name] = d
+
     def _addDevice(self,node,pvdb):
 
-        # Get variables
+        # Get variables 
         for key,value in node.getNodes(pyrogue.Variable).iteritems():
             if value.hidden == False:
-                d = {}
-                if value.base == 'enum': 
-                    d['type'] = 'enum'
-                    d['enums'] = [value for value in value.enums]
-                elif value.base == 'uint' or value.base == 'hex':
-                    d['type'] = 'int'
-                else:
-                    d['type'] = 'string'
+                self._addPv(value,pvdb)
 
-                name = value.path.replace('.',':')
-                print("Adding: %s" % (name))
-                pvdb[name] = d
+        # Get commands
+        for key,value in node.getNodes(pyrogue.Command).iteritems():
+            if value.hidden == False:
+                self._addPv(value,pvdb)
 
         # Get devices
         for key,value in node.getNodes(pyrogue.Device).iteritems():
@@ -74,29 +85,31 @@ class EpicsCaServer(threading.Thread):
                 self._addDevice(value,pvdb)
 
     def run(self):
-        server = pcaspy.SimpleServer()
+        self._server = pcaspy.SimpleServer()
 
         # Create PVs
         pvdb = {}
         self._addDevice(self._root,pvdb)
 
-        server.createPV(self._base + ':',pvdb)
-        driver = EpicsCaDriver(self._root)
+        self._server.createPV(self._base + ':',pvdb)
+        self._driver = EpicsCaDriver(self._root)
 
         while(self._runEn):
-            server.process(0.1)
+            self._server.process(0.1)
 
     # Variable field updated on server
     def _variableStatus(self,yml,d):
-        self._walkDict("",d)
-        self._driver.setPVs()
+        self._walkDict(None,d)
+        self._driver.updatePVs()
 
     def _walkDict(self,currPath,d):
         for key,value in d.iteritems():
-            locPath = currPath + ':' + key
+
+            if currPath: locPath = currPath + ':' + key
+            else: locPath = key
+
             if isinstance(value,dict):
                 self._walkDict(locPath,value)
             else:
-                print("epics: updating %s = %s" % (locPath,value))
                 self._driver.setParam(locPath,value)
 
