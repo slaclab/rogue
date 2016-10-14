@@ -112,6 +112,7 @@ class MeshNode(threading.Thread):
 
             # New node, request structure if a server and we are not already tracking it
             elif e.type() == 'JOIN':
+                print("Saw join from %s" % (src))
                 if self._mesh.peer_header_value(sid,'server') == 'True' and not self._servers.has_key(src):
                     msg = czmq.Zmsg()
                     msg.addstr('get_structure')
