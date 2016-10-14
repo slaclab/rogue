@@ -70,22 +70,18 @@ class MeshNode(threading.Thread):
             if e.type() == 'WHISPER':
 
                 # Variable set from client to server
-                if cmd == 'variable_set' and size > 1:
-                    self._root.setYamlVariables(e.msg().popstr(),write=True)
-
-                # Command from client to server
-                elif cmd == 'command' and size > 1:
-                    self._root.execYamlCommands(e.msg().popstr())
+                if (cmd == 'variable_set' or cmd == 'command') and size > 1:
+                    self._root.setOrExecYaml(e.msg().popstr(),True,['RW'])
 
                 # Structure update from server to client
                 elif cmd == 'structure_status' and size > 2:
-                    nr = pyrogue.rootFromYaml(e.msg().popstr(),self._setFunction,self._cmdFunction)
+                    nr = pyrogue.treeFromYaml(e.msg().popstr(),self._setFunction,self._cmdFunction)
 
                     if not self._servers.has_key(nr.name):
                         setattr(nr,'uuid',sid)
                         self._servers[nr.name] = nr
                         self._noMsg = True
-                        nr.setYamlVariables(e.msg().popstr(),modes=['RW','RO'],write=False)
+                        nr.setOrExecYaml(e.msg().popstr(),False,['RW','RO'])
                         self._noMsg = False
 
                         if self._newNode:
@@ -96,7 +92,7 @@ class MeshNode(threading.Thread):
                     msg = czmq.Zmsg()
                     msg.addstr('structure_status')
                     msg.addstr(self._root.getYamlStructure())
-                    msg.addstr(self._root.getYamlVariables(modes=['RW','RO'],read=False))
+                    msg.addstr(self._root.getYamlVariables(False,['RW','RO']))
                     self._mesh.whisper(sid,msg)
 
             # Commands sent as a broadcast
@@ -112,7 +108,6 @@ class MeshNode(threading.Thread):
 
             # New node, request structure if a server and we are not already tracking it
             elif e.type() == 'JOIN':
-                print("Saw join from %s" % (src))
                 if self._mesh.peer_header_value(sid,'server') == 'True' and not self._servers.has_key(src):
                     msg = czmq.Zmsg()
                     msg.addstr('get_structure')

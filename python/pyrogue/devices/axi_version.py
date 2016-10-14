@@ -41,7 +41,7 @@ def create(name, offset, memBase=None, hidden=False):
     # otherwise the value is retrieved or set using:
     # setUInt(self.bitOffset,self.bitSize,value) or getUInt(self.bitOffset,self.bitSize)
     # otherwise base is used by a higher level interface (GUI, etc) to determine display mode
-    # Allowed modes are RO, WO, RW or CMD. Command indicates registers can be written but only
+    # Allowed modes are RO, WO, RW or SL. SL indicates registers can be written but only
     # when executing commands (not accessed during writeAll and writeStale calls
     dev.add(pyrogue.Variable(name='fpgaVersion', description='FPGA Firmware Version Number',
                              offset=0x0, bitSize=32, bitOffset=0, base='hex', mode='RO'))
@@ -60,13 +60,13 @@ def create(name, offset, memBase=None, hidden=False):
     dev.add(pyrogue.Variable(name='fdSerial', description='Board ID value read from DS2411 chip',
                              offset=0x10, bitSize=64, bitOffset=0, base='hex', mode='RO'))
 
-    # Here we define MasterReset as mode 'CMD' this will ensure it does not get written during
+    # Here we define MasterReset as mode 'SL' this will ensure it does not get written during
     # writeAll and writeStale commands
     dev.add(pyrogue.Variable(name='masterResetVar', description='Optional User Reset',
-                             offset=0x18, bitSize=1, bitOffset=0, base='bool', mode='CMD', hidden=True))
+                             offset=0x18, bitSize=1, bitOffset=0, base='bool', mode='SL', hidden=True))
 
     dev.add(pyrogue.Variable(name='fpgaReloadVar', description='Optional reload the FPGA from the attached PROM',
-                             offset=0x1C, bitSize=1, bitOffset=0, base='bool', mode='CMD', hidden=True))
+                             offset=0x1C, bitSize=1, bitOffset=0, base='bool', mode='SL', hidden=True))
 
     dev.add(pyrogue.Variable(name='fpgaReloadAddress', description='Reload start address',
                              offset=0x20, bitSize=32, bitOffset=0, base='hex', mode='RW'))

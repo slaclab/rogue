@@ -43,7 +43,7 @@ class EpicsCaServer(threading.Thread):
         self._root    = root
         self._base    = base 
         self._runEn   = True
-        self._server  = pcaspy.SimpleServer()
+        self._server  = None
 
         if self._root:
             self._root.addVarListener(self._variableStatus)
