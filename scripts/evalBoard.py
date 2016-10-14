@@ -1,14 +1,14 @@
 #!/usr/bin/env python
 #-----------------------------------------------------------------------------
-# Title      : Python package test 
+# Title      : Eval board instance
 #-----------------------------------------------------------------------------
-# File       : exoTest.py
+# File       : evalBoard.py
 # Author     : Ryan Herbst, rherbst@slac.stanford.edu
 # Created    : 2016-09-29
 # Last update: 2016-09-29
 #-----------------------------------------------------------------------------
 # Description:
-# Python package test
+# Rogue interface to eval board
 #-----------------------------------------------------------------------------
 # This file is part of the rogue software platform. It is subject to 
 # the license terms in the LICENSE.txt file found in the top-level directory 
@@ -48,20 +48,6 @@ class MbDebug(rogue.interfaces.stream.Slave):
          print('-------- Microblaze Console --------')
          print(p.decode('utf-8'))
 
-# Monitor config stream
-class ConfigMon(rogue.interfaces.stream.Slave):
-
-   def __init__(self):
-      rogue.interfaces.stream.Slave.__init__(self)
-      self.enable = False
-
-   def _acceptFrame(self,frame):
-      if self.enable:
-         p = bytearray(frame.getPayload())
-         frame.read(p,0)
-         print('-------- Config Stream --------')
-         print(p.decode('utf-8'))
-
 # Custom run control
 class MyRunControl(pyrogue.RunControl):
    def __init__(self,name):
@@ -95,33 +81,20 @@ class MyRunControl(pyrogue.RunControl):
              self._last = int(time.time())
              self.runCount._updated()
 
-class stresser(threading.Thread):
-
-   def __init__(self):
-      threading.Thread.__init__(self)
-      self.enable = True
-      self.start()
-
-   def stop(self):
-      self.enable = False
-
-   def run(self):
-      last = int(time.time())
-
-      while(self.enable):
-         time.sleep(.1)
-         stamp = evalBoard.axiVersion.buildStamp.get()
-         if last != int(time.time()):
-            print("Hello: %s" % (stamp))
-            last = int(time.time())
-
 # Set base
 evalBoard = pyrogue.Root('evalBoard','Evaluation Board')
 
+# Run control
+evalBoard.add(MyRunControl('runControl'))
+
+# File writer
+dataWriter = pyrogue.utilities.fileio.StreamWriter('dataWriter')
+evalBoard.add(dataWriter)
+
 # Create the PGP interfaces
-pgpVc0 = rogue.hardware.pgp.PgpCard('/dev/pgpcard_0',0,0)
-pgpVc1 = rogue.hardware.pgp.PgpCard('/dev/pgpcard_0',0,1)
-pgpVc3 = rogue.hardware.pgp.PgpCard('/dev/pgpcard_0',0,3)
+pgpVc0 = rogue.hardware.pgp.PgpCard('/dev/pgpcard_0',0,0) # Registers
+pgpVc1 = rogue.hardware.pgp.PgpCard('/dev/pgpcard_0',0,1) # Data
+pgpVc3 = rogue.hardware.pgp.PgpCard('/dev/pgpcard_0',0,3) # Microblaze
 
 print("")
 print("PGP Card Version: %x" % (pgpVc0.getInfo().version))
@@ -130,55 +103,43 @@ print("PGP Card Version: %x" % (pgpVc0.getInfo().version))
 srp = rogue.protocols.srp.SrpV0()
 pyrogue.streamConnectBiDir(pgpVc0,srp)
 
-# File writer 
-dataWriter = pyrogue.utilities.fileio.StreamWriter('dataWriter')
-evalBoard.add(dataWriter)
+# Add configuration stream to file as channel 0
+pyrogue.streamConnect(evalBoard,dataWriter.getChannel(0x0))
 
 # Add data stream to file as channel 1
 pyrogue.streamConnect(pgpVc1,dataWriter.getChannel(0x1))
 
-## Add console stream to file as channel 2
+## Add microblaze console stream to file as channel 2
 pyrogue.streamConnect(pgpVc3,dataWriter.getChannel(0x2))
-
-# Add configuration stream to file as channel 0
-pyrogue.streamConnect(evalBoard,dataWriter.getChannel(0x0))
 
 # PRBS Receiver as secdonary receiver for VC1
 prbsRx = pyrogue.utilities.prbs.PrbsRx('prbsRx')
 pyrogue.streamTap(pgpVc1,prbsRx)
 evalBoard.add(prbsRx)
 
-# Microblaze console connected to VC2
+# Microblaze console monitor add secondary tap
 mbcon = MbDebug()
 pyrogue.streamTap(pgpVc3,mbcon)
-
-# Config monitor
-cfgMon = ConfigMon()
-pyrogue.streamTap(evalBoard,cfgMon)
-
-# Add run control
-evalBoard.add(MyRunControl('runControl'))
 
 # Add Devices
 evalBoard.add(pyrogue.devices.axi_version.create(name='axiVersion',memBase=srp,offset=0x0))
 evalBoard.add(pyrogue.devices.axi_prbstx.create(name='axiPrbsTx',memBase=srp,offset=0x30000))
 
-# Start the GUI. ipython --gui=qt4 to enable
-appTop = PyQt4.QtGui.QApplication(sys.argv)
-guiTop = pyrogue.gui.GuiTop('rogue')
-guiTop.addRoot(evalBoard)
-
 # Create mesh node
-mNode = pyrogue.mesh.MeshNode('rogue',root=evalBoard)
+mNode = pyrogue.mesh.MeshNode('rogueTest',root=evalBoard)
+mNode.start()
 
 # Create epics node
-epics = pyrogue.epics.EpicsCaServer('rogue',evalBoard)
+epics = pyrogue.epics.EpicsCaServer('rogueTest',evalBoard)
+epics.start()
 
 # Close window and stop polling
 def stop():
-    guiTop.close()
     mNode.stop()
+    epics.stop()
     evalBoard.stop()
+    exit()
 
-appTop.exec_()
+# Start with ipython -i scripts/evalBoard.py
+print("Started rogue mesh and epics V3 server. To exit type stop()")
 

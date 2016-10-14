@@ -147,7 +147,7 @@ class VariableWidget(QWidget):
         pb.pressed.connect(self.writePressed)
         hb.addWidget(pb)
 
-    def addRoot(self,root):
+    def addTree(self,root):
         self.roots.append(root)
 
         r = QTreeWidgetItem(self.top)

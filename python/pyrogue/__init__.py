@@ -181,6 +181,10 @@ class Node(object):
         node._updateTree(self)
 
     def getNodes(self,typ=None):
+        """
+        Get a ordered dictionary of nodes.
+        pass a class type to receive a certain type of node
+        """
         if typ:
             ret = collections.OrderedDict()
             for key,node in self._nodes.iteritems():
@@ -189,6 +193,18 @@ class Node(object):
             return ret
         else:
             return self._nodes
+
+    def getParent(self):
+        """
+        Return parent node or NULL if no parent exists.
+        """
+        return self._parent
+
+    def getRoot(self):
+        """
+        Return root node of tree.
+        """
+        return self._root
 
     def _updateTree(self,parent):
         """
@@ -210,13 +226,16 @@ class Node(object):
         Attributes that are Nodes are recursed.
         Called from getYamlStructure in the root node.
         """
-        data = {}
+        data = collections.OrderedDict()
+
+        # First get non-node local values
         for key,value in self.__dict__.iteritems():
-            if not key.startswith('_'):
-                if isinstance(value,Node):
-                    data[key] = value._getStructure()
-                else:
-                    data[key] = value
+            if (not key.startswith('_')) and (not isinstance(value,Node)):
+                data[key] = value
+
+        # Next get sub nodes
+        for key,value in self.getNodes().iteritems():
+            data[key] = value._getStructure()
 
         return data
 
@@ -231,7 +250,9 @@ class Node(object):
             if isinstance(value,dict) and value.has_key('classType'):
 
                 # If entry is a device add and recurse
-                if value['classType'] == 'device' or value['classType'] == 'dataWriter' or value['classType'] == 'runControl':
+                if value['classType'] == 'device' or value['classType'] == 'dataWriter' or \
+                   value['classType'] == 'runControl':
+
                     dev = Device(**value)
                     dev.classType = value['classType']
                     self.add(dev)
@@ -258,7 +279,6 @@ class Node(object):
                     else:
                         getattr(self,value['name'])._function = cmdFunction
 
-
     def _getVariables(self,modes):
         """
         Get variable values in a dictionary starting from this level.
@@ -266,21 +286,21 @@ class Node(object):
         modes is a list of variable modes to include.
         Called from getYamlVariables in the root node.
         """
-        data = {}
+        data = collections.OrderedDict()
         for key,value in self._nodes.iteritems():
             if isinstance(value,Device):
                 data[key] = value._getVariables(modes)
             elif isinstance(value,Variable) and (value.mode in modes):
-                data[key] = value._rawGet()
+                data[key] = value.get(read=False)
 
         return data
 
-    def _setVariables(self,d,modes):
+    def _setOrExec(self,d,writeEach,modes):
         """
-        Set variable values from a dictionary starting from this level.
-        Attributes that are Nodes are recursed.
-        modes is a list of variable modes to act on
-        Called from setYamlVariables in the root node.
+        Set variable values or execute commands from a dictionary starting 
+        from this level.  Attributes that are Nodes are recursed.
+        modes is a list of variable nodes to act on for variable accesses.
+        Called from setOrExecYaml in the root node.
         """
         for key, value in d.iteritems():
 
@@ -289,28 +309,13 @@ class Node(object):
 
                 # If entry is a device, recurse
                 if isinstance(self._nodes[key],Device):
-                    self._nodes[key]._setVariables(value,modes)
+                    self._nodes[key]._setOrExec(value,writeEach,modes)
 
                 # Set value if variable with enabled mode
                 elif isinstance(self._nodes[key],Variable) and (self._nodes[key].mode in modes):
-                    self._nodes[key]._rawSet(value)
+                    self._nodes[key].set(value,writeEach)
 
-    def _execCommands(self,d):
-        """
-        Execute commands from a dictionary starting from this level.
-        Attributes that are Nodes are recursed.
-        Called from execDictCommands in the root node.
-        """
-        for key, value in d.iteritems():
-
-            # Entry is in node list
-            if key in self._nodes:
-
-                # If entry is a device, recurse
-                if isinstance(self._nodes[key],Device):
-                    self._nodes[key]._execCommands(value)
-
-                # Execute if command with enabled mode
+                # Execute if command
                 elif isinstance(self._nodes[key],Command):
                     self._nodes[key](value)
 
@@ -341,7 +346,7 @@ class Root(rogue.interfaces.stream.Master,Node):
         self._pollThread = None
 
         # Variable update list
-        self._updatedDict = {}
+        self._updatedDict = collections.OrderedDict()
         self._updatedLock = threading.Lock()
 
         # Variable update listener
@@ -388,23 +393,27 @@ class Root(rogue.interfaces.stream.Master,Node):
         self._pollPeriod=0
 
     def addVarListener(self,func):
-        """Add a variable update listener"""
+        """
+        Add a variable update listener function.
+        The function should accept a dictionary of update
+        variables in both yaml and dict form:
+            func(yaml,dict)
+        """
         self._varListeners.append(func)
 
     def getYamlStructure(self):
         """Get structure as a yaml string"""
         return yaml.dump({self.name:self._getStructure()},default_flow_style=False)
 
-    def getYamlVariables(self,modes=['RW'],read=True):
+    def getYamlVariables(self,readFirst,modes=['RW']):
         """
         Get current values as a yaml dictionary.
         modes is a list of variable modes to include.
-        Vlist can contain an optional list of variale paths to include in the
-        yaml. If this list is not NULL only these variables will be included.
+        If readFirst=True a full read from hardware is performed.
         """
         ret = None
 
-        if read: self._read()
+        if readFirst: self._read()
         try:
             ret = yaml.dump({self.name:self._getVariables(modes)},default_flow_style=False)
         except Exception as e:
@@ -412,10 +421,15 @@ class Root(rogue.interfaces.stream.Master,Node):
 
         return ret
 
-    def setYamlVariables(self,yml,modes=['RW'], write=True):
+    def setOrExecYaml(self,yml,writeEach,modes=['RW']):
         """
-        Set variable values from a dictionary.
-        modes is a list of variable modes to act on
+        Set variable values or execute commands from a dictionary.
+        modes is a list of variable modes to act on.
+        writeEach is set to true if accessing a single variable at a time.
+        Writes will be performed as each variable is updated. If set to 
+        false a bulk write will be performed after all of the variable updates
+        are completed. Bulk writes provide better performance when updating a large
+        quanitty of variables.
         """
         d = yaml.load(yml)
 
@@ -423,35 +437,22 @@ class Root(rogue.interfaces.stream.Master,Node):
 
         for key, value in d.iteritems():
             if key == self.name:
-                self._setVariables(value,modes)
+                self._setOrExec(value,writeEach,modes)
 
         self._doneUpdatedVars()
 
-        if write: self._write()
+        if not writeEach: self._write()
 
-    def execYamlCommands(self,yml):
+    def setOrExecPath(self,path,value):
         """
-        Execute commands
+        Set variable values or execute commands from a dictionary.
+        Pass the variable or command path and associated value or arg.
         """
-        d = yaml.load(yml)
-
-        for key, value in d.iteritems():
-            if key == self.name:
-                self._execCommands(value)
-
-    def setPathVariable(self,path,value):
         d = {}
         addPathToDict(d,path,value)
         name = path[:path.find('.')]
         yml = yaml.dump(d,default_flow_style=False)
-        self.setYamlVariables(yml,['RW'],write=True)
-
-    def execPathCommand(self,path,arg):
-        d = {}
-        addPathToDict(d,path,arg)
-        name = path[:path.find('.')]
-        yml = yaml.dump(d,default_flow_style=False)
-        self.execYamlCommands(yml)
+        self.setOrExecYaml(yml,writeEach=True,modes=['RW'])
 
     def _updateVarListeners(self, yml, d):
         """Send yaml and dict update to listeners"""
@@ -459,6 +460,7 @@ class Root(rogue.interfaces.stream.Master,Node):
             f(yml,d)
 
     def _setPollPeriod(self,dev,var,value):
+        """Set poller period"""
         old = self._pollPeriod
         self._pollPeriod = value
 
@@ -473,6 +475,7 @@ class Root(rogue.interfaces.stream.Master,Node):
             self._pollThread = None
 
     def _runPoll(self):
+        """Polling function"""
         while(self._pollPeriod != 0):
             time.sleep(self._pollPeriod)
             self._poll()
@@ -494,20 +497,21 @@ class Root(rogue.interfaces.stream.Master,Node):
         Vlist can contain an optional list of variale paths to include in the
         stream. If this list is not NULL only these variables will be included.
         """
-        self._streamYaml(self.getYamlVariables(modes,False))
+        self._streamYaml(self.getYamlVariables(False,modes))
 
     def _initUpdatedVars(self):
         """Initialize the update tracking log before a bulk variable update"""
         self._updatedLock.acquire()
-        self._updatedDict = {}
+        self._updatedDict = collections.OrderedDict()
         self._updatedLock.release()
 
     def _doneUpdatedVars(self):
         """Stream the results of a bulk variable update and update listeners"""
         self._updatedLock.acquire()
-        yml = yaml.dump(self._updatedDict,default_flow_style=False)
-        self._streamYaml(yml)
-        self._updateVarListeners(yml,self._updatedDict)
+        if self._updatedDict:
+            yml = yaml.dump(self._updatedDict,default_flow_style=False)
+            self._streamYaml(yml)
+            self._updateVarListeners(yml,self._updatedDict)
         self._updatedDict = None
         self._updatedLock.release()
 
@@ -565,7 +569,7 @@ class Root(rogue.interfaces.stream.Master,Node):
         """Write YAML configuration to a file. Called from command"""
         try:
             with open(arg,'w') as f:
-                f.write(self.getYamlVariables(modes=['RW']),read=True)
+                f.write(self.getYamlVariables(True,modes=['RW']))
         except Exception as e:
             self._root._logException(e)
 
@@ -573,7 +577,7 @@ class Root(rogue.interfaces.stream.Master,Node):
         """Read YAML configuration from a file. Called from command"""
         try:
             with open(arg,'r') as f:
-                self._setYamlVariables(f.read(),modes=['RW'],write=True)
+                self._setYamlVariables(f.read(),True,['RW'])
         except Exception as e:
             self._root._logException(e)
 
@@ -621,7 +625,6 @@ class Root(rogue.interfaces.stream.Master,Node):
     def _varUpdated(self,var,value):
         """ Log updated variables"""
         yml = None
-        d = {}
 
         self._updatedLock.acquire()
 
@@ -631,6 +634,7 @@ class Root(rogue.interfaces.stream.Master,Node):
 
         # Otherwise act directly
         else:
+            d = {}
             addPathToDict(d,var.path,value)
             yml = yaml.dump(d,default_flow_style=False)
 
@@ -665,12 +669,14 @@ class Variable(Node):
           RW = Read/Write
           RO = Read Only
           WR = Write Only
-          CMD = A variable only used to perform commands. Can be WO or RW.
+          SL = A slave variable which is not included in block writes or config/status dumps.
     enum: A dictionary of index:value pairs ie {0:'Zero':0,'One'}
     minimum: Minimum value for base=range
     maximum: Maximum value for base=range
     setFunction: Function to call to set the value. dev, var, value passed.
+        setFunction(dev,var,value)
     getFunction: Function to call to set the value. dev, var passed. Return value.
+        value = getFunction(dev,var)
     hidden: Variable is hidden
 
     The set and get functions can be in one of two forms. They can either be a series 
@@ -701,8 +707,8 @@ class Variable(Node):
 
         # Check modes
         if (self.mode != 'RW') and (self.mode != 'RO') and \
-           (self.mode != 'WO') and (self.mode != 'CMD'):
-            raise VariableError('Invalid variable mode %s. Supported: RW, RO, WO, CMD' % (self.mode))
+           (self.mode != 'WO') and (self.mode != 'SL'):
+            raise VariableError('Invalid variable mode %s. Supported: RW, RO, WO, SL' % (self.mode))
 
         # Tracking variables
         self._block       = None
@@ -719,18 +725,18 @@ class Variable(Node):
         """
         Add a listener function to call when variable changes. 
         This is usefull when chaining variables together. (adc conversions, etc)
-        Variable will be passed as an arg:  func(self)
+        The variable and value will be passed as an arg: func(var,value)
         """
         self.__listeners.append(func)
 
-    def set(self,value):
+    def set(self,value,write=True):
         """
         Set the value and write to hardware if applicable
         Writes to hardware are blocking. An error will result in a logged exception.
         """
         try:
             self._rawSet(value)
-            if self._block and self._block.mode != 'RO':
+            if write and self._block and self._block.mode != 'RO':
                 self._block.blockingWrite()
                 #self._block.block.blockingVerify() # Not yet implemented in memory::Block
         except Exception as e:
@@ -769,11 +775,15 @@ class Variable(Node):
                 self._updated()
         return ret
 
+    def getBlock(self):
+        """Get the block associated with this varable if it exists"""
+        return self._block
+
     def _updated(self):
         """Variable has been updated. Inform listeners."""
         
-        # Don't generate updates for CMD and WO variables
-        if self.mode == 'WO' or self.mode == 'CMD': return
+        # Don't generate updates for SL and WO variables
+        if self.mode == 'WO' or self.mode == 'SL': return
 
         value = self._rawGet()
 
@@ -1001,6 +1011,11 @@ class Device(Node,rogue.interfaces.memory.Master):
                vblock._setSize(varBytes)
 
     def setResetFunc(self,func):
+        """
+        Set function for count, hard or soft reset
+        resetFunc(type) 
+        where type = 'soft','hard','count'
+        """
         self._resetFunc = func
 
     def _setEnable(self, dev, var, enable):
@@ -1276,14 +1291,14 @@ def addPathToDict(d, path, value):
         if sd.has_key(base):
            sd = sd[base]
         else:
-           sd[base] = {}
+           sd[base] = collections.OrderedDict()
            sd = sd[base]
 
     # Add final node
     sd[npath] = value
 
 
-def rootFromYaml(yml,setFunction,cmdFunction):
+def treeFromYaml(yml,setFunction,cmdFunction):
     """
     Create structure from yaml.
     """

@@ -42,7 +42,7 @@ def create(name, offset, memBase=None, hidden=False):
                              offset=0x0, bitSize=1, bitOffset=3, base='bool', mode='RO')) 
 
     dev.add(pyrogue.Variable(name='oneShotCmd', hidden=True, description='Oneshot frame generate',
-                             offset=0x0, bitSize=1, bitOffset=4, base='bool', mode='CMD')) 
+                             offset=0x0, bitSize=1, bitOffset=4, base='bool', mode='SL')) 
 
     dev.add(pyrogue.Variable(name='fwCnt', description='????',
                              offset=0x0, bitSize=1, bitOffset=5, base='bool', mode='RW'))

@@ -23,36 +23,51 @@ import threading
 import pyrogue
 import time
 import pcaspy
+import Queue
 
 
 class EpicsCaDriver(pcaspy.Driver):
-    def __init__(self,root):
+    def __init__(self,queue):
         pcaspy.Driver.__init__(self)
-        self._root = root
+        self._q = queue
 
     def write(self,reason,value):
         path = reason.replace(':','.')
-        self._root.setPathVariable(path,value)
-        self._root.execPathCommand(path,value)
+        entry = {'path':path,'value':value}
+        self._q.put(entry)
         self.setParam(reason,value)
 
 
-class EpicsCaServer(threading.Thread):
+class EpicsCaServer(object):
     """
     Class to contain an epics ca server
     """
     def __init__(self,base,root):
-        threading.Thread.__init__(self)
         self._root    = root
         self._base    = base 
         self._runEn   = True
         self._server  = None
         self._driver  = None
+        self._queue   = Queue.Queue()
+        self._wThread = None
+        self._eThread = None
 
         if self._root:
             self._root.addVarListener(self._variableStatus)
 
-        self.start()
+    def stop(self):
+        self._runEn = False
+        self._wThread.join()
+        self._eThread.join()
+        self._wThread = None
+        self._eThread = None
+
+    def start(self):
+        self._runEn = True
+        self._eThread = threading.Thread(target=self._epicsRun)
+        self._wThread = threading.Thread(target=self._workRun)
+        self._eThread.start()
+        self._wThread.start()
 
     def _addPv(self,node,pvdb):
         d = {}
@@ -84,7 +99,7 @@ class EpicsCaServer(threading.Thread):
             if value.hidden == False:
                 self._addDevice(value,pvdb)
 
-    def run(self):
+    def _epicsRun(self):
         self._server = pcaspy.SimpleServer()
 
         # Create PVs
@@ -92,13 +107,22 @@ class EpicsCaServer(threading.Thread):
         self._addDevice(self._root,pvdb)
 
         self._server.createPV(self._base + ':',pvdb)
-        self._driver = EpicsCaDriver(self._root)
+        self._driver = EpicsCaDriver(self._queue)
 
         while(self._runEn):
-            self._server.process(0.1)
+            self._server.process(0.5)
+
+    def _workRun(self):
+        while(self._runEn):
+            try:
+                e = self._queue.get(True,0.5)
+                self._root.setOrExecPath(e['path'],e['value'])
+            except:
+                pass
 
     # Variable field updated on server
     def _variableStatus(self,yml,d):
+        if not self._driver: return
         self._walkDict(None,d)
         self._driver.updatePVs()
 

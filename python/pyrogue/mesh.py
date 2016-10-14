@@ -35,10 +35,11 @@ class MeshNode(threading.Thread):
         self._root    = root
         self._group   = group
         self._name    = self._root.name if self._root else None
-        self._runEn   = True
+        self._runEn   = False
         self._noMsg   = False
         self._servers = {}
-        self._newNode = None
+        self._newTree = None
+        self._thread  = None
 
         self._mesh = zyre.Zyre(self._name)
         self._mesh.set_interface(iface)
@@ -46,9 +47,34 @@ class MeshNode(threading.Thread):
         if self._root:
             self._root.addVarListener(self._variableStatus)
 
-        self.start()
+    def start(self):
+        self._runEn = True
+        self._thread = threading.Thread(target=self._run)
+        self._thread.start()
 
-    def run(self):
+    def stop(self):
+        self._runEn = False
+        self._mesh.leave(self._group)
+        self._mesh.stop()
+        self._thread.join()
+
+    def getTree(self,name):
+        if self._servers.has_key(name):
+            return self._servers[name]
+        else:
+            return None
+
+    def waitTree(self,name):
+        t = self.getTree(name)
+        while (not t):
+            time.sleep(.1)
+            t = self.getTree(name)
+        return t
+
+    def setNewTreeCb(self,func):
+        self._newTree = func
+
+    def _run(self):
         self._mesh.set_header('server','True' if self._root else 'False')
         self._mesh.start()
         self._mesh.join(self._group)
@@ -70,33 +96,37 @@ class MeshNode(threading.Thread):
             if e.type() == 'WHISPER':
 
                 # Variable set from client to server
-                if cmd == 'variable_set' and size > 1:
-                    self._root.setYamlVariables(e.msg().popstr(),write=True)
-
-                # Command from client to server
-                elif cmd == 'command' and size > 1:
-                    self._root.execYamlCommands(e.msg().popstr())
+                if (cmd == 'variable_set' or cmd == 'command') and size > 1:
+                    self._root.setOrExecYaml(e.msg().popstr(),True,['RW'])
 
                 # Structure update from server to client
                 elif cmd == 'structure_status' and size > 2:
-                    nr = pyrogue.rootFromYaml(e.msg().popstr(),self._setFunction,self._cmdFunction)
+                    yml = e.msg().popstr()
+                    
+                    # Does name already exist? Update UUID
+                    if self._servers.has_key(src):
+                        t = self._servers[src]
+                        t.uuid = sid
 
-                    if not self._servers.has_key(nr.name):
-                        setattr(nr,'uuid',sid)
-                        self._servers[nr.name] = nr
-                        self._noMsg = True
-                        nr.setYamlVariables(e.msg().popstr(),modes=['RW','RO'],write=False)
-                        self._noMsg = False
-
-                        if self._newNode:
-                            self._newNode(nr)
+                    # Otherwise create new tree
+                    else:
+                        t = pyrogue.treeFromYaml(yml,self._setFunction,self._cmdFunction)
+                        setattr(t,'uuid',sid)
+                        self._servers[t.name] = t
+                        if self._newTree:
+                            self._newTree(t)
+                    
+                    # Apply updates
+                    self._noMsg = True
+                    t.setOrExecYaml(e.msg().popstr(),False,['RW','RO'])
+                    self._noMsg = False
 
                 # Structure request from client to server
                 elif cmd == 'get_structure':
                     msg = czmq.Zmsg()
                     msg.addstr('structure_status')
                     msg.addstr(self._root.getYamlStructure())
-                    msg.addstr(self._root.getYamlVariables(modes=['RW','RO'],read=False))
+                    msg.addstr(self._root.getYamlVariables(False,['RW','RO']))
                     self._mesh.whisper(sid,msg)
 
             # Commands sent as a broadcast
@@ -106,35 +136,17 @@ class MeshNode(threading.Thread):
                 if cmd == 'variable_status' and size > 1:
                     self._noMsg = True
                     for key,value in self._servers.iteritems():
-                        value.setYamlVariables(e.msg().popstr(),modes=['RW','RO'],write=False)
+                        value.setOrExecYaml(e.msg().popstr(),False,['RW','RO'])
 
                     self._noMsg = False
 
-            # New node, request structure if a server and we are not already tracking it
+            # New node, request structure and status
             elif e.type() == 'JOIN':
-                print("Saw join from %s" % (src))
-                if self._mesh.peer_header_value(sid,'server') == 'True' and not self._servers.has_key(src):
+                if self._mesh.peer_header_value(sid,'server') == 'True':
                     msg = czmq.Zmsg()
                     msg.addstr('get_structure')
                     self._mesh.whisper(sid,msg)
 
-    def stop(self):
-        self._runEn = False
-        self._mesh.leave(self._group)
-        self._mesh.stop()
-
-    def getRoot(self,name):
-        if self._servers.has_key(name):
-            return self._servers[name]
-        else:
-            return None
-
-    def waitRoot(self,name):
-        while self.getRoot(name) == None:
-            time.sleep(.1)
-
-    def setNewNodeCb(self,func):
-        self._newNode = func
 
     # Command button pressed on client
     def _cmdFunction(self,dev,cmd,arg):

@@ -101,7 +101,7 @@ class CommandWidget(QWidget):
         hb = QHBoxLayout()
         vb.addLayout(hb)
 
-    def addRoot(self,root):
+    def addTree(self,root):
         self.roots.append(root)
 
         r = QTreeWidgetItem(self.top)
