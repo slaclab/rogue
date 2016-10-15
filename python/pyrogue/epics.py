@@ -108,8 +108,17 @@ class EpicsCaServer(object):
         pvdb = {}
         self._addDevice(self._root,pvdb)
 
+        # Add variable for structure
+        sname = self._root.name + ':' + 'structure'
+        pvdb[sname] = {'type':'string'}
+
+        # Create PVs
         self._server.createPV(self._base + ':',pvdb)
         self._driver = EpicsCaDriver(self._queue)
+
+        # Load structure string
+        s = self._root.getYamlStructure()
+        self._driver.setParam(sname,s)
 
         while(self._runEn):
             self._server.process(0.5)
