@@ -73,11 +73,18 @@ class EpicsCaServer(object):
         d = {}
         if node.base == 'enum': 
             d['type'] = 'enum'
-            d['enums'] = [val for val in node.enum] 
+            d['enums'] = [val for key,val in node.enum.iteritems()] 
+        elif node.base == 'bool':
+            d['type'] = 'enum'
+            d['enums'] = ['True','False']
         elif node.base == 'float':
             d['type'] = 'float'
         elif node.base == 'uint' or node.base == 'hex':
             d['type'] = 'int'
+        elif node.base == 'range':
+            d['type'] = 'int'
+            d['lolim'] = node.minimum
+            d['hilim'] = node.maximum
         else:
             d['type'] = 'string'
 
