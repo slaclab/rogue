@@ -1,6 +1,9 @@
 # rogue
 SLAC Python Based Hardware Abstraction &amp; Data Acquisition System
 
+Introduction presentation: 
+https://docs.google.com/presentation/d/1m2nqGzCZXsQV8ul4d0Gk7xmwn-OLW1iucTLm7LLp9eg/edit?usp=sharing
+
 To build this package you must first setup the environment. A
 template file setup_template.csh is provided as an example. To 
 use this file execute the following in your tcsh:
@@ -28,16 +31,13 @@ TODO
 Proper memory allocation in Slave for Frame and Buffers. This includes allocating
 space for payload as well as the variables within the clases.
 
-Determine if setting GIL is ok when master and slave are both in python.
-
 Add the following:
 
 protocols/rssi
 protocols/packetizer
 protocols/udp
 
-data file writer in utilities
-
+stream Master should access primary slave last. Update code to remove primary from slave list and call it only after other slaves have been completed. This is important for zero copy.
 
 -------------------------------------
 -- NOTES
