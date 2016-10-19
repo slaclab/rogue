@@ -76,6 +76,7 @@ class MeshNode(threading.Thread):
 
     def _run(self):
         self._mesh.set_header('server','True' if self._root else 'False')
+        #self._mesh.set_header('hostname',socket.getfqdn())
         self._mesh.start()
         self._mesh.join(self._group)
 

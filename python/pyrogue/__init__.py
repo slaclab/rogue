@@ -380,7 +380,7 @@ class Root(rogue.interfaces.stream.Master,Node):
 
         # Variables
 
-        self.add(Variable(name='systemLog', base='string', mode='RO', hidden=True,
+        self.add(Variable(name='systemLog', base='string', mode='RO',
             setFunction=None, getFunction='value=dev._systemLog',
             description='String containing newline seperated system logic entries'))
 
