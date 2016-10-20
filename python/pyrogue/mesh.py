@@ -154,7 +154,7 @@ class MeshNode(threading.Thread):
         d = {}
         pyrogue.addPathToDict(d,cmd.path,arg)
         name = cmd.path[:cmd.path.find('.')]
-        yml = yaml.dump(d,default_flow_style=False)
+        yml = pyrogue.dictToYaml(d,default_flow_style=False)
 
         msg = czmq.Zmsg()
         msg.addstr('command')
@@ -168,7 +168,7 @@ class MeshNode(threading.Thread):
         d = {}
         pyrogue.addPathToDict(d,var.path,value)
         name = var.path[:var.path.find('.')]
-        yml = yaml.dump(d,default_flow_style=False)
+        yml = pyrogue.dictToYaml(d,default_flow_style=False)
 
         msg = czmq.Zmsg()
         msg.addstr('variable_set')

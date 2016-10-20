@@ -18,7 +18,6 @@
 # copied, modified, propagated, or distributed except according to the terms 
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
-import yaml
 import threading
 import pyrogue
 import time

@@ -403,7 +403,7 @@ class Root(rogue.interfaces.stream.Master,Node):
 
     def getYamlStructure(self):
         """Get structure as a yaml string"""
-        return yaml.dump({self.name:self._getStructure()},default_flow_style=False)
+        return dictToYaml({self.name:self._getStructure()},default_flow_style=False)
 
     def getYamlVariables(self,readFirst,modes=['RW']):
         """
@@ -415,7 +415,7 @@ class Root(rogue.interfaces.stream.Master,Node):
 
         if readFirst: self._read()
         try:
-            ret = yaml.dump({self.name:self._getVariables(modes)},default_flow_style=False)
+            ret = dictToYaml({self.name:self._getVariables(modes)},default_flow_style=False)
         except Exception as e:
             self._root._logException(e)
 
@@ -431,7 +431,7 @@ class Root(rogue.interfaces.stream.Master,Node):
         are completed. Bulk writes provide better performance when updating a large
         quanitty of variables.
         """
-        d = yaml.load(yml)
+        d = yamlToDict(yml)
 
         self._initUpdatedVars()
 
@@ -451,7 +451,7 @@ class Root(rogue.interfaces.stream.Master,Node):
         d = {}
         addPathToDict(d,path,value)
         name = path[:path.find('.')]
-        yml = yaml.dump(d,default_flow_style=False)
+        yml = dictToYaml(d,default_flow_style=False)
         self.setOrExecYaml(yml,writeEach=True,modes=['RW'])
 
     def _updateVarListeners(self, yml, d):
@@ -509,7 +509,7 @@ class Root(rogue.interfaces.stream.Master,Node):
         """Stream the results of a bulk variable update and update listeners"""
         self._updatedLock.acquire()
         if self._updatedDict:
-            yml = yaml.dump(self._updatedDict,default_flow_style=False)
+            yml = dictToYaml(self._updatedDict,default_flow_style=False)
             self._streamYaml(yml)
             self._updateVarListeners(yml,self._updatedDict)
         self._updatedDict = None
@@ -636,7 +636,7 @@ class Root(rogue.interfaces.stream.Master,Node):
         else:
             d = {}
             addPathToDict(d,var.path,value)
-            yml = yaml.dump(d,default_flow_style=False)
+            yml = dictToYaml(d,default_flow_style=False)
 
         self._updatedLock.release()
 
@@ -1302,7 +1302,7 @@ def treeFromYaml(yml,setFunction,cmdFunction):
     """
     Create structure from yaml.
     """
-    d = yaml.load(yml)
+    d = yamlToDict(yml)
     root = None
 
     for key, value in d.iteritems():
@@ -1310,4 +1310,28 @@ def treeFromYaml(yml,setFunction,cmdFunction):
         root._addStructure(value,setFunction,cmdFunction)
 
     return root
+
+
+def yamlToDict(stream, Loader=yaml.Loader, object_pairs_hook=collections.OrderedDict):
+    """Load yaml to ordered dictionary"""
+    class OrderedLoader(Loader):
+        pass
+    def construct_mapping(loader, node):
+        loader.flatten_mapping(node)
+        return object_pairs_hook(loader.construct_pairs(node))
+    OrderedLoader.add_constructor(
+        yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG,
+        construct_mapping)
+    return yaml.load(stream, OrderedLoader)
+
+
+def dictToYaml(data, stream=None, Dumper=yaml.Dumper, **kwds):
+    """Convert ordered dictionary to yaml"""
+    class OrderedDumper(Dumper):
+        pass
+    def _dict_representer(dumper, data):
+        return dumper.represent_mapping(
+            yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG,data.items())
+    OrderedDumper.add_representer(collections.OrderedDict, _dict_representer)
+    return yaml.dump(data, stream, OrderedDumper, **kwds)
 
