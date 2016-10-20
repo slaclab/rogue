@@ -4,6 +4,9 @@ SLAC Python Based Hardware Abstraction &amp; Data Acquisition System
 Introduction presentation: 
 https://docs.google.com/presentation/d/1m2nqGzCZXsQV8ul4d0Gk7xmwn-OLW1iucTLm7LLp9eg/edit?usp=sharing
 
+JIRA:
+https://jira.slac.stanford.edu/plugins/servlet/project-config/ESROGUE
+
 To build this package you must first setup the environment. A
 template file setup_template.csh is provided as an example. To 
 use this file execute the following in your tcsh:
