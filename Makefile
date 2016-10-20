@@ -25,8 +25,8 @@ CC       := g++
 DEF      :=
 BLD      := $(PWD)/build
 CFLAGS   := -Wall `python2.7-config --cflags` -I$(PWD)/include -std=c++0x -fPIC
-#LFLAGS   := `python2.7-config --ldflags` -lboost_thread-mt -lboost_python -lboost_system
-LFLAGS   := `python2.7-config --ldflags` -lboost_thread -lboost_python -lboost_system
+LFLAGS   := `python2.7-config --ldflags` -lboost_thread-mt -lboost_python -lboost_system
+#LFLAGS   := `python2.7-config --ldflags` -lboost_thread -lboost_python -lboost_system
 LFLAGS   += -L`python2.7-config --prefix`/lib/
 SHNAME   := rogue
 SHLIB    := rogue.so

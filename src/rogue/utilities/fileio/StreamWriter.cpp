@@ -128,26 +128,28 @@ void ruf::StreamWriter::setBufferSize(uint32_t size) {
       boost::lock_guard<boost::mutex> lock(mtx_);
 
       // No change
-      if ( size == buffSize_ ) return;
+      if ( size != buffSize_ ) {
 
-      // Flush data out of current buffer
-      flush();
+         // Flush data out of current buffer
+         flush();
 
-      // Free old buffer
-      if ( buffer_ != NULL ) free(buffer_);
-      buffSize_ = 0;
+         // Free old buffer
+         if ( buffer_ != NULL ) free(buffer_);
+         buffSize_ = 0;
 
-      // Buffer is not enabled
-      if ( size == 0 ) return;
+         // Buffer is enabled
+         if ( size != 0 ) {
 
-      // Create new buffer
-      if ( (buffer_ = (uint8_t *)malloc(size)) != NULL )
-         buffSize_ = size;
+            // Create new buffer
+            if ( (buffer_ = (uint8_t *)malloc(size)) != NULL )
+               buffSize_ = size;
+         }
+      }
    }
    PyRogue_END_ALLOW_THREADS;
 
    // Create new buffer
-   if ( buffer_ == NULL )
+   if ( buffSize_ != 0 && buffer_ == NULL )
       throw(re::AllocationException("StreamWriter::setBufferSize",size));
 }
 

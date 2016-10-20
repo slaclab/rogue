@@ -359,7 +359,7 @@ class SystemWidget(QWidget):
 
         if dlg.exec_():
             loadFile = str(dlg.selectedFiles()[0])
-            self._root.readConfig(loadFile)
+            self.root.readConfig(loadFile)
 
     def saveSettings(self):
         dlg = QFileDialog()
@@ -368,5 +368,5 @@ class SystemWidget(QWidget):
 
         if dlg.exec_():
             saveFile = str(dlg.selectedFiles()[0])
-            self._root.writeConfig(saveFile)
+            self.root.writeConfig(saveFile)
 

@@ -577,7 +577,7 @@ class Root(rogue.interfaces.stream.Master,Node):
         """Read YAML configuration from a file. Called from command"""
         try:
             with open(arg,'r') as f:
-                self._setYamlVariables(f.read(),True,['RW'])
+                self.setOrExecYaml(f.read(),False,['RW'])
         except Exception as e:
             self._root._logException(e)
 
