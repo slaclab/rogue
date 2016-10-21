@@ -23,7 +23,6 @@
 # Variables
 CC       := g++
 DEF      :=
-BLD      := $(PWD)/build
 CFLAGS   := -Wall `python2.7-config --cflags` -I$(PWD)/include -std=c++0x -fPIC
 LFLAGS   := `python2.7-config --ldflags` -lboost_thread-mt -lboost_python -lboost_system
 #LFLAGS   := `python2.7-config --ldflags` -lboost_thread -lboost_python -lboost_system
@@ -36,12 +35,7 @@ LIB_HDR := $(PWD)/include/rogue
 LIB_SRC := $(PWD)/src/rogue
 LIB_CPP := $(foreach dir,$(shell find $(LIB_SRC) -type d),$(wildcard $(dir)/*.cpp))
 LIB_OBJ := $(patsubst %.cpp,%.o,$(LIB_CPP))
-LIB_SHO := $(BLD)/$(SHLIB)
-
-# Application Sources
-APP_SRC := $(PWD)/src/app
-APP_CPP := $(wildcard $(APP_SRC)/*.cpp)
-APP_BIN := $(patsubst $(APP_SRC)/%.cpp,$(BLD)/%,$(APP_CPP))
+LIB_SHO := $(PWD)/python/$(SHLIB)
 
 # Targets
 all: $(LIB_OBJ) $(LIB_SHO) $(APP_BIN)
@@ -52,8 +46,8 @@ docs:
 
 # Clean
 clean:
-	@rm -f $(BLD)/*
 	@rm -f $(LIB_OBJ)
+	@rm -f $(LIB_SHO)
 
 # Compile sources with headers
 %.o: %.cpp %.h
@@ -65,13 +59,5 @@ clean:
 
 # Compile Shared Library
 $(LIB_SHO): $(LIB_OBJ)
-	@test -d $(BLD) || mkdir $(BLD)
 	@echo "Creating $@"; $(CC) -shared -Wl,-soname,$(SHNAME) $(LIB_OBJ) $(LFLAGS) -o $@
 
-# Application sources
-$(BLD)/%: $(APP_SRC)/%.cpp $(LIB_SHO)
-	@test -d $(BLD) || mkdir $(BLD)
-	@echo "Compiling $@"; $(CC) $(CFLAGS) $(DEF) $(LIB_OBJ) $(LFLAGS) -o $@ $<
-
-# Compile from shared does not work....
-#@echo "Compiling $@"; $(CC) $(CFLAGS) $(DEF) -l:$(SHLIB) -L$(BLD) $(LFLAGS) -o $@ $<
