@@ -1,0 +1,39 @@
+Getting roque working on the RCE:
+
+----------------------------------------------------------
+Required Packages
+----------------------------------------------------------
+pacman -S zeromq python-pyzmq python2-pyzmq
+pacman -S autoconf automake pkg-config
+
+----------------------------------------------------------
+Install and compile czmq & zyre
+----------------------------------------------------------
+mkdir /mnt/host/zyre
+mkdir /mnt/host/zyre/src
+cd /mnt/host/zyre/src
+
+git clone https://github.com/zeromq/czmq.git
+cd czmq
+./autogen.sh
+./configure --prefix=/mnt/host/zyre/
+make install
+
+git clone https://github.com/zeromq/zyre.git
+cd zyre
+./autogen.sh
+export czmq_LIBS="-L/mnt/host/zyre/lib/"
+export czmq_CFLAGS="-I/mnt/host/zyre/include/"
+./configure --prefix=/mnt/host/zyre --with-libczmq=/mnt/host/zyre
+make install
+
+----------------------------------------------------------
+Installing EPICS on the RCE
+----------------------------------------------------------
+mkdir /mnt/host/epics/
+cd /mnt/host/epics
+wget https://www.aps.anl.gov/epics/download/base/base-3.15.1.tar.gz
+tar -xvvzpf base-3.15.1.tar.gz
+cd base-3.15.1
+export EPICS_HOST_ARCH linux-arm
+make
