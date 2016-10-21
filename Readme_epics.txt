@@ -1,7 +1,5 @@
-
-
 ----------------------------------------------------------
-Installing EPICS on the RCE
+Compiling and installing EPICS base
 ----------------------------------------------------------
 Choose a directory for epics. The epics install is in the 
 same directory it is compiled in. 
