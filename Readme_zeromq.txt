@@ -1,4 +1,4 @@
-Compiling zeromq:
+Compiling zeromq
 
 ----------------------------------------------------------
 Required Packages
@@ -19,7 +19,9 @@ pacman -S autoconf automake pkg-config git
 Install and compile libzeromq, czmq & zyre
 ----------------------------------------------------------
 Choose your install path for zeromq, with a src and 
-python library directory.
+python library directory. The install scripts will create
+lib and bin sub-directories.
+
 For example on the RCE:
 
 mkdir /mnt/host/zeromq/
