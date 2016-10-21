@@ -23,7 +23,6 @@ import pyrogue.devices.axi_version
 import pyrogue.devices.axi_prbstx
 import pyrogue.utilities.prbs
 import pyrogue.utilities.fileio
-import pyrogue.gui
 import pyrogue.mesh
 import pyrogue.epics
 import threading
@@ -32,10 +31,9 @@ import atexit
 import yaml
 import time
 import sys
-import PyQt4.QtGui
 
 # Set base
-evalBoard = pyrogue.Root('evalBoard','Evaluation Board')
+evalBoard = pyrogue.Root('testBoard','Evaluation Board')
 
 # File writer
 dataWriter = pyrogue.utilities.fileio.StreamWriter('dataWriter')

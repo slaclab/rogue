@@ -231,7 +231,7 @@ void ruf::StreamWriter::intWrite(void *data, uint32_t size) {
    // Attempted write is larger than buffer, raw write
    // This is called if bufer is disabled
    if ( size > buffSize_ ) {
-      if (write(fd_,data,size) != size) 
+      if (write(fd_,data,size) != (int32_t)size) 
          throw(re::GeneralException("StreamWriter::intWrite","Write failed"));
       currSize_ += size;
       totSize_  += size;
@@ -276,7 +276,7 @@ void ruf::StreamWriter::checkSize(uint32_t size) {
 //! Flush file
 void ruf::StreamWriter::flush() {
    if ( currBuffer_ > 0 ) {
-      if ( write(fd_,buffer_,currBuffer_) != currBuffer_ )
+      if ( write(fd_,buffer_,currBuffer_) != (int32_t)currBuffer_ )
          throw(re::GeneralException("StreamWriter::flush","Write failed"));
       currSize_ += currBuffer_;
       totSize_  += currBuffer_;
