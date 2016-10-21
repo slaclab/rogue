@@ -1,6 +1,5 @@
-----------------------------------------------------------
-Install and compile libzeromq, czmq & zyre
-----------------------------------------------------------
+# Install and compile libzeromq, czmq & zyre
+
 A recent version of autoconf is required, which is not 
 available in rhel6. At SLAC a proper version can be found at: 
 

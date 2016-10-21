@@ -1,3 +1,5 @@
+# Python support for rogue
+
 Python 2.7 is required for rogue which of course is not available
 natively on rhel6 machines. A proper version is available at 
 SLAC in the following directory:
