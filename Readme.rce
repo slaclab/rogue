@@ -3,34 +3,41 @@ Getting roque working on the RCE:
 ----------------------------------------------------------
 Required Packages
 ----------------------------------------------------------
-pacman -S zeromq python-pyzmq python2-pyzmq
-pacman -S autoconf automake pkg-config
+pacman -S autoconf automake pkg-config git
 
 ----------------------------------------------------------
-Install and compile czmq & zyre
+Install and compile libzeromq, czmq & zyre
 ----------------------------------------------------------
-mkdir /mnt/host/zyre
-mkdir /mnt/host/zyre/src
-cd /mnt/host/zyre/src
+mkdir /mnt/host/zeromq
+mkdir /mnt/host/zeromq/python
+mkdir /mnt/host/zeromq/src
+cd /mnt/host/zeromq/src
 
 git clone https://github.com/zeromq/libzmq.git
 cd libzmq
 ./autogen.sh
-./configure --prefix=/mnt/host/zyre/
+./configure --prefix=/mnt/host/zeromq/
+make install
 
+cd ..
 git clone https://github.com/zeromq/czmq.git
 cd czmq
 ./autogen.sh
-./configure --prefix=/mnt/host/zyre/
+export libzmq_LIBS="-L/mnt/host/zeromq/lib/ -lzmq"
+export libzmq_CFLAGS="-I/mnt/host/zeromq/include/"
+./configure --prefix=/mnt/host/zeromq/ --with-libzmq=/mnt/host/zeromq
 make install
+scp -r bindings/python/czmq ../../python/
 
+cd ..
 git clone https://github.com/zeromq/zyre.git
 cd zyre
 ./autogen.sh
-export czmq_LIBS="-L/mnt/host/zyre/lib/"
-export czmq_CFLAGS="-I/mnt/host/zyre/include/"
-./configure --prefix=/mnt/host/zyre --with-libczmq=/mnt/host/zyre
+export czmq_LIBS="-L/mnt/host/zeromq/lib/ -lczmq"
+export czmq_CFLAGS="-I/mnt/host/zeromq/include/"
+./configure --prefix=/mnt/host/zeromq --with-libczmq=/mnt/host/zeromq
 make install
+scp -r bindings/python/zyre ../../python/
 
 ----------------------------------------------------------
 Installing EPICS on the RCE
