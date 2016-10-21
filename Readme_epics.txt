@@ -25,3 +25,11 @@ Get and compile epics:
 > cd base-3.15.1
 > make
 
+Once the compile is complete you will need to set the EPICS_BASE
+environment variable:
+
+> export EPICS_BASE=/mnt/host/epics/base-3.15.1/
+
+You will also nee the python pcaspy package as described in
+Readme_python.txt
+
