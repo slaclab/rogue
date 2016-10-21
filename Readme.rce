@@ -13,6 +13,11 @@ mkdir /mnt/host/zyre
 mkdir /mnt/host/zyre/src
 cd /mnt/host/zyre/src
 
+git clone https://github.com/zeromq/libzmq.git
+cd libzmq
+./autogen.sh
+./configure --prefix=/mnt/host/zyre/
+
 git clone https://github.com/zeromq/czmq.git
 cd czmq
 ./autogen.sh
