@@ -1,7 +1,5 @@
-Compiling zeromq
-
 ----------------------------------------------------------
-Required Packages
+Install and compile libzeromq, czmq & zyre
 ----------------------------------------------------------
 A recent version of autoconf is required, which is not 
 available in rhel6. At SLAC a proper version can be found at: 
@@ -13,11 +11,8 @@ or download it and compile it on your own. Most modern versions
 of linux have the appropriate version.
 
 For archlinux on the RCE:
-pacman -S autoconf automake pkg-config git
+> pacman -S autoconf automake pkg-config git
 
-----------------------------------------------------------
-Install and compile libzeromq, czmq & zyre
-----------------------------------------------------------
 Choose your install path for zeromq. This will include a
 base directory, a src directory and a python directory for
 the resulting python wrappers. The install scripts will create
