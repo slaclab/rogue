@@ -766,6 +766,7 @@ class Variable(Node):
             ret = self._rawGet()
         except Exception as e:
             self._root._logException(e)
+            return None
 
         # Update listeners for all variables in the block
         if read:

@@ -126,7 +126,7 @@ evalBoard.add(pyrogue.devices.axi_version.create(name='axiVersion',memBase=srp,o
 evalBoard.add(pyrogue.devices.axi_prbstx.create(name='axiPrbsTx',memBase=srp,offset=0x30000))
 
 # Create mesh node
-mNode = pyrogue.mesh.MeshNode('rogueTest',root=evalBoard)
+mNode = pyrogue.mesh.MeshNode('rogueTest',iface='eth3',root=evalBoard)
 mNode.start()
 
 # Create epics node

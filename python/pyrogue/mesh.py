@@ -43,6 +43,7 @@ class MeshNode(threading.Thread):
 
         self._mesh = zyre.Zyre(self._name)
         self._mesh.set_interface(iface)
+        #self._mesh.set_verbose()
 
         if self._root:
             self._root.addVarListener(self._variableStatus)
@@ -132,12 +133,13 @@ class MeshNode(threading.Thread):
 
             # Commands sent as a broadcast
             elif e.type() == 'SHOUT':
+                msg = e.msg().popstr()
 
                 # Field update from server to client
                 if cmd == 'variable_status' and size > 1:
                     self._noMsg = True
                     for key,value in self._servers.iteritems():
-                        value.setOrExecYaml(e.msg().popstr(),False,['RW','RO'])
+                        value.setOrExecYaml(msg,False,['RW','RO'])
 
                     self._noMsg = False
 

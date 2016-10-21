@@ -11,6 +11,7 @@ On the RCE python 2.7 can be installed with the following commands:
 > pacman -S python2
 > pacman -S python2-pip
 > pacman -S swig
+> pacman -S python2-yaml
 
 You will also want to install ipython for python 2.7. This is already
 included in the SLAC AFS install listed above.

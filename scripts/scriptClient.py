@@ -24,7 +24,7 @@ import PyQt4.QtGui
 import sys
 
 group = 'rogueTest'
-iface = 'eth0'
+iface = 'eth3'
 
 # Create mesh node
 node = pyrogue.mesh.MeshNode(group,iface=iface)

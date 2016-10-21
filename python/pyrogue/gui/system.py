@@ -337,20 +337,20 @@ class SystemWidget(QWidget):
         vb.addWidget(pb)
 
     def resetLog(self):
-        self._root.clearLog()
+        self.root.clearLog()
 
     def newValue(self,var,value):
         if var.name == 'systemLog':
             self.emit(SIGNAL("updateLog"),value)
 
     def hardReset(self):
-        self._root.hardReset()
+        self.root.hardReset()
 
     def softReset(self):
-        self._root.softReset()
+        self.root.softReset()
 
     def countReset(self):
-        self._root.countReset()
+        self.root.countReset()
 
     def loadSettings(self):
         dlg = QFileDialog()

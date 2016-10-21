@@ -1,6 +1,6 @@
 # 
 # ----------------------------------------------------------------------------
-# Title      : PGP applications makefile
+# Title      : ROGUE makefile
 # ----------------------------------------------------------------------------
 # File       : Makefile
 # Author     : Ryan Herbst, rherbst@slac.stanford.edu
@@ -8,7 +8,7 @@
 # Last update: 2016-08-08
 # ----------------------------------------------------------------------------
 # Description:
-# PGP applications makefile
+# ROGUE makefile
 # ----------------------------------------------------------------------------
 # This file is part of the rogue software package. It is subject to 
 # the license terms in the LICENSE.txt file found in the top-level directory 
