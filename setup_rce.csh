@@ -4,6 +4,9 @@ setenv EPICS_BASE /mnt/host/epics/base-3.15.1/
 setenv EPICS_BIN  $EPICS_BASE/bin/linux-arm/
 setenv EPICS_LIB  $EPICS_BASE/lib/linux-arm/
 
+# Boot thread library names differ from system to system, not all have -mt
+setenv BOOST_THREAD -lboost_thread
+
 # Setup python path
 setenv PYTHONPATH ${PWD}/python:${ZMQ_DIR}/python
 
