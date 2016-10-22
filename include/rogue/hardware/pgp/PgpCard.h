@@ -23,7 +23,7 @@
 #define __ROGUE_HARDWARE_PGP_PGP_CARD_H__
 #include <rogue/interfaces/stream/Master.h>
 #include <rogue/interfaces/stream/Slave.h>
-#include <rogue/hardware/pgp/PgpDriver.h>
+#include <PgpDriver.h>
 #include <boost/python.hpp>
 #include <boost/thread.hpp>
 #include <stdint.h>

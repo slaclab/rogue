@@ -23,7 +23,7 @@
 # Variables
 CC       := g++
 DEF      :=
-CFLAGS   := -Wall `python2.7-config --cflags` -I$(PWD)/include -std=c++0x -fPIC
+CFLAGS   := -Wall `python2.7-config --cflags` -I$(PWD)/include -std=c++0x -fPIC -I$(PWD)/drivers/include
 LFLAGS   := `python2.7-config --ldflags` -lboost_thread-mt -lboost_python -lboost_system
 #LFLAGS   := `python2.7-config --ldflags` -lboost_thread -lboost_python -lboost_system
 LFLAGS   += -L`python2.7-config --prefix`/lib/

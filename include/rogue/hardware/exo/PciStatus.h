@@ -21,7 +21,7 @@
 **/
 #ifndef __ROGUE_HARDWARE_EXO_PCI_STATUS_H__
 #define __ROGUE_HARDWARE_EXO_PCI_STATUS_H__
-#include <rogue/hardware/exo/TemDriver.h>
+#include <TemDriver.h>
 #include <boost/python.hpp>
 #include <stdint.h>
 

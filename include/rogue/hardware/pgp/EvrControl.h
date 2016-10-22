@@ -21,7 +21,7 @@
 **/
 #ifndef __ROGUE_HARDWARE_PGP_EVR_CONTROL_H__
 #define __ROGUE_HARDWARE_PGP_EVR_CONTROL_H__
-#include <rogue/hardware/pgp/PgpDriver.h>
+#include <PgpDriver.h>
 #include <boost/python.hpp>
 #include <stdint.h>
 

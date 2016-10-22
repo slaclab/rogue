@@ -23,7 +23,7 @@
 #define __ROGUE_HARDWARE_RCE_AXI_STREAM_H__
 #include <rogue/interfaces/stream/Master.h>
 #include <rogue/interfaces/stream/Slave.h>
-#include <rogue/hardware/rce/AxisDriver.h>
+#include <AxisDriver.h>
 #include <boost/python.hpp>
 #include <boost/thread.hpp>
 #include <stdint.h>

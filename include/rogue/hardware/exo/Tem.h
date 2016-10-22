@@ -23,7 +23,7 @@
 #define __ROGUE_HARDWARE_EXO_TEM_H__
 #include <rogue/interfaces/stream/Master.h>
 #include <rogue/interfaces/stream/Slave.h>
-#include <rogue/hardware/exo/TemDriver.h>
+#include <TemDriver.h>
 #include <boost/python.hpp>
 #include <boost/thread.hpp>
 #include <stdint.h>

@@ -1,0 +1,3 @@
+[submodule "drivers"]
+	path = drivers
+	url = https://github.com/slaclab/aes_stream_drivers.git
