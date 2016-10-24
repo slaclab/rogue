@@ -24,6 +24,11 @@ import os
 import pyrogue
 
 def findAndReadYamlFiles(path,base):
+    """
+    Search path for yaml files from which to generate python modules
+    base is the base path for the location where the generated files are put.
+    """
+       
     failed = []
     for root,dirs,files in os.walk(path):
         for f in files:
@@ -40,6 +45,10 @@ def findAndReadYamlFiles(path,base):
 
 
 def readYamlFile(path,base):
+    """
+    Ready yaml file defined by path and generate a python module
+    base is the base path for the location where the generated files are put.
+    """
     with open(path,'r') as f:
         try:
             d = pyrogue.yamlToDict(f.read())
