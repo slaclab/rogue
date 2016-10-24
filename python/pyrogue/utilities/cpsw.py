@@ -114,6 +114,9 @@ def genMMIODev(path,base,name,fields):
         for l in lines:
             f.write(l)
 
+        f.write('\n')
+        f.write('    return dev\n')
+
     return True
 
 
@@ -245,7 +248,7 @@ def genSequence(name,fields,lines):
         c = c.replace('[','_')
         c = c.replace(']','')
         loc += '                                     dev.%s\n' % (c)
-    loc += '                                     """\n\n'
+    loc += '                                     """))\n\n'
 
     lines.append(loc)
     return True
