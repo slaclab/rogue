@@ -7,6 +7,10 @@ https://docs.google.com/presentation/d/1m2nqGzCZXsQV8ul4d0Gk7xmwn-OLW1iucTLm7LLp
 JIRA:
 https://jira.slac.stanford.edu/plugins/servlet/project-config/ESROGUE
 
+For example scripts and sub-class source code examples see:
+
+https://github.com/slaclab/rogue_example
+
 see Readme_build.txt for build instructions.
 
 ------------------
