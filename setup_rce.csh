@@ -2,7 +2,7 @@
 set temp_path=($_)
 
 # Package directories
-setenv ROGUE_DIR  ${PWD}/$temp_path[2]
+setenv ROGUE_DIR  `dirname ${PWD}/$temp_path[2]`
 setenv ZMQ_DIR    /mnt/host/zeromq/
 setenv EPICS_BASE /mnt/host/epics/base-3.15.1/
 setenv EPICS_BIN  $EPICS_BASE/bin/linux-arm/

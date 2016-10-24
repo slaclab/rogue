@@ -2,7 +2,7 @@
 set temp_path=($_)
 
 # Package directories
-setenv ROGUE_DIR  ${PWD}/$temp_path[2]
+setenv ROGUE_DIR  `dirname ${PWD}/$temp_path[2]`
 setenv PYDIR      /afs/slac.stanford.edu/g/lcls/package/python/python2.7.9/linux-x86_64/
 setenv ZMQ_DIR    /afs/slac.stanford.edu/g/reseng/vol11/zeromq
 setenv EPICS_BASE /afs/slac.stanford.edu/g/lcls/epics/R3-16-0/base/base-R3-16-0/
