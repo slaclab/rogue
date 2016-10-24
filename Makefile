@@ -37,7 +37,7 @@ LIB_OBJ := $(patsubst %.cpp,%.o,$(LIB_CPP))
 LIB_SHO := $(PWD)/python/$(SHLIB)
 
 # Targets
-all: $(LIB_OBJ) $(LIB_SHO) $(APP_BIN)
+all: $(LIB_OBJ) $(LIB_SHO)
 
 # Doxygen
 docs:
