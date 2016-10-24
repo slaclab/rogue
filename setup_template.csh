@@ -9,6 +9,8 @@ setenv EPICS_BASE /afs/slac.stanford.edu/g/lcls/epics/R3-16-0/base/base-R3-16-0/
 setenv EPICS_BIN  $EPICS_BASE/bin/linux-x86_64/
 setenv EPICS_LIB  $EPICS_BASE/lib/linux-x86_64/
 
+echo $ROGUE_DIR
+
 # Boot thread library names differ from system to system, not all have -mt
 setenv BOOST_THREAD -lboost_thread-mt
 
