@@ -27,6 +27,9 @@ Building Rogue
 Download the rogue package
 
 > git clone https://github.com/slaclab/rogue.git
+> cd rogue
+> git submodule init
+> git submodule update
 > source setup_template.csh (or your custom version)
 > make
 
