@@ -44,7 +44,7 @@ rhr::MapMemoryPtr rhr::MapMemory::create () {
 //! Creator
 rhr::MapMemory::MapMemory() {
    fd_ = ::open("/dev/mem", O_RDWR | O_SYNC);
-   if ( fd_ > 0 ) throw(re::OpenException("MapMemory::MapMemory","/dev/mem",0));
+   if ( fd_ < 0 ) throw(re::OpenException("MapMemory::MapMemory","/dev/mem",0));
 }
 
 //! Destructor
@@ -81,7 +81,7 @@ uint8_t * rhr::MapMemory::findSpace (uint32_t base, uint32_t size) {
    boost::lock_guard<boost::mutex> lock(mapMtx_);
 
    for (x=0; x < maps_.size(); x++) {
-      if ( (base > maps_[x].base) && (((base - maps_[x].base) + size) < maps_[x].size) ) {
+      if ( (base >= maps_[x].base) && (((base - maps_[x].base) + size) < maps_[x].size) ) {
          return(maps_[x].ptr + (base-maps_[x].base));
       }
    }
@@ -99,22 +99,24 @@ uint32_t rhr::MapMemory::doMaxAccess() {
 }
 
 //! Post a transaction
-void rhr::MapMemory::doTransaction(uint32_t index, uint64_t address, uint32_t size, bool write, bool posted) {
+void rhr::MapMemory::doTransaction(boost::shared_ptr<rogue::interfaces::memory::Master> master, 
+                                   uint64_t address, uint32_t size, bool write, bool posted) {
    uint8_t * ptr;
-
-   rim::MasterPtr m = getMaster(index);
+   uint32_t count;
 
    if ((ptr = findSpace(address,size)) == NULL) {
-      m->doneTransaction(1);
+      master->doneTransaction(1);
    }
    else {
+      count = 0;
 
-      rim::MasterPtr m = getMaster(index);
+      while ( count < size ) {
+         if (write) master->getTransactionData(ptr+count,count,4);
+         else master->setTransactionData(ptr+count,count,4);
+         count += 4;
+      }
 
-      if (write) m->getTransactionData(ptr,0,size);
-      else m->setTransactionData(ptr,0,size);
-
-      m->doneTransaction(0);
+      master->doneTransaction(0);
    }
 }
 
