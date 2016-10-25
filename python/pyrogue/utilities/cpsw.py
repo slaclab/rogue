@@ -103,9 +103,11 @@ def genMMIODev(path,base,name,fields):
 
     fname = '%s/%s.py' % (base,name)
 
+    newName = name[:1].lower() + name[1:]
+
     with open(fname,'w') as f:
         f.write(genHeader(path,name))
-        f.write('def create(name, offset, memBase=None, hidden=False):\n\n')
+        f.write('def create(name=\'%s\', offset=0, memBase=None, hidden=False):\n\n' % (newName))
         f.write('    dev = pyrogue.Device(name=name,memBase=memBase,offset=offset,\n')
         f.write('                         hidden=hidden,size=0x%x,\n' % (int(size)))
         f.write('                         description=\'%s\')\n' % (desc))
@@ -114,7 +116,6 @@ def genMMIODev(path,base,name,fields):
         for l in lines:
             f.write(l)
 
-        f.write('\n')
         f.write('    return dev\n')
 
     return True
@@ -145,6 +146,8 @@ def genIntField(name,fields,lines):
     stride    = 0
     hidden    = False
     enum      = None
+
+    newName = name[:1].lower() + name[1:]
 
     for key,value in fields.iteritems():
         if   key == 'description': desc      = value
@@ -181,8 +184,9 @@ def genIntField(name,fields,lines):
             return False
 
     if (offset % 4) != 0:
-        offset = offset / 4
+        newOffset = (offset / 4) * 4
         bitOffset += ((offset % 4) * 8)
+        offset = newOffset
 
     if nelms != 1 and stride == 0:
         bitSize = bitSize * nelms
@@ -192,7 +196,7 @@ def genIntField(name,fields,lines):
     loc += '                             hidden=%s, enum=%s, offset=0x%x, bitSize=%s, bitOffset=%s, base=\'%s\', mode=\'%s\'))\n\n'
 
     if stride == 0:
-        lines.append(loc % (name,desc,hidden,str(enum),int(offset),bitSize,bitOffset,base,mode))
+        lines.append(loc % (newName,desc,hidden,str(enum),int(offset),bitSize,bitOffset,base,mode))
     else:
 
         if stride % 4 != 0:
@@ -200,7 +204,7 @@ def genIntField(name,fields,lines):
             return False
         
         for i in range(0,nelms):
-            lname = '%s_%i' % (name,i)
+            lname = '%s_%i' % (newName,i)
             loffset = offset + (i * stride)
             lines.append(loc % (lname,desc,hidden,str(enum),int(loffset),bitSize,bitOffset,base,mode))
 
@@ -211,6 +215,8 @@ def genSequence(name,fields,lines):
     desc      = ''
     offset    = 0
     nelms     = 1
+
+    newName = name[:1].lower() + name[1:]
 
     for key,value in fields.iteritems():
         if   key == 'description': desc      = value
@@ -239,15 +245,16 @@ def genSequence(name,fields,lines):
             print('Unknown field %s in SequenceCommand' % (key))
             return False
 
-    loc  = '    dev.add(pyrogue.Command(name=\'%s\',\n' % (name)
+    loc  = '    dev.add(pyrogue.Command(name=\'%s\',\n' % (newName)
     loc += '                            description=\'%s\',\n' % (desc)
-    loc += '                            hidden=False, base=None,\n'
+    loc += '                            hidden=False, base=\'None\',\n'
     loc += '                            function="""\\\n'
 
     for c in cmds:
         c = c.replace('[','_')
         c = c.replace(']','')
-        loc += '                                     dev.%s\n' % (c)
+        cName = c[:1].lower() + c[1:]
+        loc += '                                     dev.%s\n' % (cName)
     loc += '                                     """))\n\n'
 
     lines.append(loc)
