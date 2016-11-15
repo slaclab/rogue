@@ -454,6 +454,14 @@ class Root(rogue.interfaces.stream.Master,Node):
         yml = dictToYaml(d,default_flow_style=False)
         self.setOrExecYaml(yml,writeEach=True,modes=['RW'])
 
+    def setTimeout(self,timeout):
+        """
+        Set timeout value on all devices & blocks
+        """
+        for key,value in self._nodes.iteritems():
+            if isinstance(value,Device):
+                value._setTimeout(timeout)
+
     def _updateVarListeners(self, yml, d):
         """Send yaml and dict update to listeners"""
         for f in self._varListeners:
@@ -1134,6 +1142,18 @@ class Device(Node,rogue.interfaces.memory.Master):
         for key,value in self._nodes.iteritems():
             if isinstance(value,Device):
                 value._devReset(rstType)
+
+    def _setTimeout(self,timeout):
+        """
+        Set timeout value on all devices & blocks
+        """
+
+        for block in self._blocks:
+            block.setTimeout(timeout)
+
+        for key,value in self._nodes.iteritems():
+            if isinstance(value,Device):
+                value._setTimeout(timeout)
 
 
 class DataWriter(Device):
