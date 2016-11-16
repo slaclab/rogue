@@ -715,8 +715,9 @@ class Variable(Node):
 
         # Check modes
         if (self.mode != 'RW') and (self.mode != 'RO') and \
-           (self.mode != 'WO') and (self.mode != 'SL'):
-            raise VariableError('Invalid variable mode %s. Supported: RW, RO, WO, SL' % (self.mode))
+           (self.mode != 'WO') and (self.mode != 'SL') and \
+           (self.mode != 'CMD'):
+            raise VariableError('Invalid variable mode %s. Supported: RW, RO, WO, SL, CMD' % (self.mode))
 
         # Tracking variables
         self._block       = None
@@ -876,21 +877,17 @@ class Variable(Node):
             return None
 
 
-class Command(Node):
-    """Command holder: TODO: Update comments"""
+class Command(Variable):
+    """Command holder: Subclass of variable with callable interface"""
 
-    def __init__(self, name, description, base='None', function=None, hidden=False, **dump):
-        """Initialize command class"""
+    def __init__(self, name, description, base='None', function=None, hidden=False, 
+                 enum=None, minimum=None, maximum=None, offset=None, bitSize=32, bitOffset=0, **dump):
 
-        Node.__init__(self,name,description,hidden,'command')
+        Variable.__init__(self, name, description, offset=offset, bitSize=bitSize, bitOffset=bitOffset, pollEn=False,
+                          base=base, mode='CMD', enum=enum, hidden=hidden, minimum=minimum, maximum=maximum,
+                          setFunction=None, getFunction=None)
 
-        # Currently supported bases:
-        #    uint, hex, string, float
-
-        # Public attributes
-        self.base = base
-
-        # Tracking
+        self.classType = 'command'
         self._function = function
 
     def __call__(self,arg=None):
