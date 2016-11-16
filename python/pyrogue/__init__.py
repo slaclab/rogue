@@ -744,8 +744,11 @@ class Variable(Node):
         """
         try:
             self._rawSet(value)
+            
             if write and self._block and self._block.mode != 'RO':
                 self._block.blockingWrite()
+                self._parent._postWrite()
+                #self._parent._preVerify()
                 #self._block.block.blockingVerify() # Not yet implemented in memory::Block
         except Exception as e:
             self._root._logException(e)
@@ -770,6 +773,7 @@ class Variable(Node):
         """
         try:
             if read and self._block and self._block.mode != 'WO':
+                self._parent._preRead()
                 self._block.blockingRead()
             ret = self._rawGet()
         except Exception as e:
@@ -1027,6 +1031,15 @@ class Device(Node,rogue.interfaces.memory.Master):
         """
         self._resetFunc = func
 
+    def _preRead(self):
+        pass
+
+    def _preVerify(self):
+        pass
+
+    def _postWrite(self):
+        pass
+
     def _setEnable(self, dev, var, enable):
         """
         Method to update enable in underlying block.
@@ -1072,14 +1085,20 @@ class Device(Node,rogue.interfaces.memory.Master):
             if block.mode == 'WO' or block.mode == 'RW':
                 block.backgroundWrite()
 
-        # Process reset of tree
+        # Process rest of tree
         for key,value in self._nodes.iteritems():
             if isinstance(value,Device):
                 value._write()
 
+        # Post write function for special cases
+        self._postWrite()
+
     def _verify(self):
         """ Verify all blocks. """
         if not self._enable: return
+
+        # Post write function for special cases
+        self._preVerify()
 
         # Process local blocks
         for block in self._blocks:
@@ -1095,6 +1114,9 @@ class Device(Node,rogue.interfaces.memory.Master):
     def _read(self):
         """Read all blocks"""
         if not self._enable: return
+
+        # Post write function for special cases
+        self._preRead()
 
         # Process local blocks
         for block in self._blocks:
