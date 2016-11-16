@@ -666,7 +666,7 @@ class Variable(Node):
     bitOffset: The offset in bits from the byte offset if associated with memory.
     pollEn: Set to true to enable polling of the associated memory.
     base: This defined the type of entry tracked by this variable.
-          hex = An ukisngd integer in hex form
+          hex = An unsigned integer in hex form
           uint = An unsigned integer
           enum = An enum with value,key pairs passed
           bool = A True,False value
@@ -676,7 +676,7 @@ class Variable(Node):
     mode: Access mode of the variable
           RW = Read/Write
           RO = Read Only
-          WR = Write Only
+          WO = Write Only
           SL = A slave variable which is not included in block writes or config/status dumps.
     enum: A dictionary of index:value pairs ie {0:'Zero':0,'One'}
     minimum: Minimum value for base=range
@@ -1120,7 +1120,7 @@ class Device(Node,rogue.interfaces.memory.Master):
             if block.mode == 'RO' or block.mode == 'RW':
                 block.backgroundRead()
 
-        # Process reset of tree
+        # Process rest of tree
         for key,value in self._nodes.iteritems():
             if isinstance(value,Device):
                 value._read()
@@ -1134,7 +1134,7 @@ class Device(Node,rogue.interfaces.memory.Master):
             if block.pollEn and (block.mode == 'RO' or block.mode == 'RW'):
                 block.backgroundRead()
 
-        # Process reset of tree
+        # Process rest of tree
         for key,value in self._nodes.iteritems():
             if isinstance(value,Device):
                 value._poll()
@@ -1147,7 +1147,7 @@ class Device(Node,rogue.interfaces.memory.Master):
         for block in self._blocks:
             block._check()
 
-        # Process reset of tree
+        # Process rest of tree
         for key,value in self._nodes.iteritems():
             if isinstance(value,Device):
                 value._check()
@@ -1161,6 +1161,15 @@ class Device(Node,rogue.interfaces.memory.Master):
         for key,value in self._nodes.iteritems():
             if isinstance(value,Device):
                 value._devReset(rstType)
+
+    def _hardReset(self):
+        self._resetFunc(self, "hard")
+
+    def _softReset(self):
+        self._resetFunc(self, "soft")
+
+    def _countReset(self):
+        self._resetFunc(self, "count")
 
     def _setTimeout(self,timeout):
         """
