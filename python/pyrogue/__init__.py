@@ -1,1 +1,1 @@
-from pyrogue import *
+from _pyrogue import *

@@ -696,7 +696,7 @@ class Variable(Node):
     to the parent device object.
     """
     def __init__(self, name, description="", offset=None, bitSize=32, bitOffset=0, pollEn=False,
-                 base='hex', mode='RW', enum=None, hidden=False, minimum=None, maximum=None,
+                 base='hex', mode='RW', enum=None, units=None, hidden=False, minimum=None, maximum=None,
                  setFunction=None, getFunction=None, **dump):
         """Initialize variable class"""
 
@@ -710,6 +710,7 @@ class Variable(Node):
         self.base      = base      
         self.mode      = mode
         self.enum      = enum
+        self.units     = units
         self.minimum   = minimum # For base='range'
         self.maximum   = maximum # For base='range'
 
@@ -807,6 +808,9 @@ class Variable(Node):
         # Root variable update log
         self._root._varUpdated(self,value)
 
+    def _setRawUInt(self, value):
+        self._block.setUInt(self.bitOffset, self.bitSize, value)        
+
     def _rawSet(self,value):
         """
         Raw set method. This is called by the set() method in order to convert the passed
@@ -838,10 +842,13 @@ class Variable(Node):
                     ivalue = {value: key for key,value in self.enum.iteritems()}[value]
                 else:
                     ivalue = int(value)
-                self._block.setUInt(self.bitOffset,self.bitSize,ivalue)
+                self._setRawUInt(ivalue)
 
         # Inform listeners
         self._updated()
+
+    def _getRawUInt(self):
+        return self._block.getUInt(self.bitOffset,self.bitSize)
                 
     def _rawGet(self):
         """
@@ -869,7 +876,7 @@ class Variable(Node):
             if self.base == 'string':
                 return(self._block.getString())
             else:
-                ivalue = self._block.getUInt(self.bitOffset,self.bitSize)
+                ivalue = self._getRawUInt()
 
                 if self.base == 'bool':
                     return(ivalue != 0)
@@ -954,8 +961,12 @@ class Block(rogue.interfaces.memory.Block):
 class Device(Node,rogue.interfaces.memory.Master):
     """Device class holder. TODO: Update comments"""
 
-    def __init__(self, name, description="", size=0, memBase=None, offset=0, hidden=False, **dump):
+    def __init__(self, name=None, description="", size=0, memBase=None, offset=0, hidden=False, **dump):
         """Initialize device class"""
+        if name is None:
+            name = self.__class__.__name__
+
+        print("Making device {:s}".format(name))
 
         Node.__init__(self, name, hidden, 'device', description)
         rogue.interfaces.memory.Master.__init__(self,offset,size)
