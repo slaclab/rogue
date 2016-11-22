@@ -333,7 +333,7 @@ class Root(rogue.interfaces.stream.Master,Node):
         """Init the node with passed attributes"""
 
         rogue.interfaces.stream.Master.__init__(self)
-        Node.__init__(self, name, 'root', description, False,)
+        Node.__init__(self, name=name, classType='root', description=description, hidden=False)
 
         # Polling period. Set to None to exit. 0 = don't poll
         self._pollPeriod = 0
@@ -700,7 +700,7 @@ class Variable(Node):
                  setFunction=None, getFunction=None, **dump):
         """Initialize variable class"""
 
-        Node.__init__(self, name, hidden, 'variable', description)
+        Node.__init__(self, name=name, classType='variable', description=description, hidden=hidden)
 
         # Public Attributes
         self.offset    = offset
@@ -894,9 +894,9 @@ class Command(Variable):
     def __init__(self, name, description, base='None', function=None, hidden=False, 
                  enum=None, minimum=None, maximum=None, offset=None, bitSize=32, bitOffset=0, **dump):
 
-        Variable.__init__(self, name, description, offset=offset, bitSize=bitSize, bitOffset=bitOffset, pollEn=False,
-                          base=base, mode='CMD', enum=enum, hidden=hidden, minimum=minimum, maximum=maximum,
-                          setFunction=None, getFunction=None)
+        Variable.__init__(self, name=name, description=description, offset=offset, bitSize=bitSize,
+                          bitOffset=bitOffset, pollEn=False, base=base, mode='CMD', enum=enum,
+                          hidden=hidden, minimum=minimum, maximum=maximum, setFunction=None, getFunction=None)
 
         self.classType = 'command'
         self._function = function
@@ -935,6 +935,19 @@ class Command(Variable):
         except Exception as e:
             self._root._logException(e)
 
+    def toggle(dev, cmd, arg):
+        cmd.set(1)
+        cmd.set(0)
+
+    def touch(dev, cmd, arg):
+        if arg is not None:
+            cmd.set(arg)
+        else:
+            cmd.set(1)
+
+    def postedTouch(dev, cmd, arg)
+        
+
 
 class Block(rogue.interfaces.memory.Block):
     """Internal memory block holder"""
@@ -968,7 +981,7 @@ class Device(Node,rogue.interfaces.memory.Master):
 
         print("Making device {:s}".format(name))
 
-        Node.__init__(self, name, hidden, 'device', description)
+        Node.__init__(self, name=name, hidden=hidden, classType='device', description=description)
         rogue.interfaces.memory.Master.__init__(self,offset,size)
 
         # Blocks
