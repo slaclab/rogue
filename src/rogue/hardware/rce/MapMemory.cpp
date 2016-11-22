@@ -99,24 +99,24 @@ uint32_t rhr::MapMemory::doMaxAccess() {
 }
 
 //! Post a transaction
-void rhr::MapMemory::doTransaction(boost::shared_ptr<rogue::interfaces::memory::Master> master, 
+void rhr::MapMemory::doTransaction(uint32_t id, boost::shared_ptr<rogue::interfaces::memory::Master> master, 
                                    uint64_t address, uint32_t size, bool write, bool posted) {
    uint8_t * ptr;
    uint32_t count;
 
    if ((ptr = findSpace(address,size)) == NULL) {
-      master->doneTransaction(1);
+      master->doneTransaction(id,1);
    }
    else {
       count = 0;
 
       while ( count < size ) {
-         if (write) master->getTransactionData(ptr+count,count,4);
-         else master->setTransactionData(ptr+count,count,4);
+         if (write) master->getTransactionData(id,ptr+count,count,4);
+         else master->setTransactionData(id,ptr+count,count,4);
          count += 4;
       }
 
-      master->doneTransaction(0);
+      master->doneTransaction(id,0);
    }
 }
 

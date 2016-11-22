@@ -40,6 +40,12 @@ rim::Slave::Slave() { }
 //! Destroy object
 rim::Slave::~Slave() { }
 
+//! Register a master. Called by Master class during addSlave.
+void rim::Slave::addMaster(uint32_t id, rim::MasterPtr master) {
+   boost::lock_guard<boost::mutex> lock(masterMapMtx_);
+   masterMap_[id] = master;
+}
+
 //! Get master device with index, called by sub classes
 rim::MasterPtr rim::Slave::getMaster(uint32_t index) {
    boost::lock_guard<boost::mutex> lock(masterMapMtx_);
@@ -55,12 +61,6 @@ bool rim::Slave::validMaster(uint32_t index) {
    else return(false);
 }
 
-//! Register a master. Called by Master class during addSlave.
-void rim::Slave::addMaster(rim::MasterPtr master) {
-   boost::lock_guard<boost::mutex> lock(masterMapMtx_);
-   masterMap_[master->getIndex()] = master;
-}
-
 //! Return min access size to requesting master
 uint32_t rim::Slave::doMinAccess() {
    return(4);
@@ -72,8 +72,8 @@ uint32_t rim::Slave::doMaxAccess() {
 }
 
 //! Post a transaction
-void rim::Slave::doTransaction(rim::MasterPtr master, uint64_t address, uint32_t size, bool write, bool posted) {
-   master->doneTransaction(0xFFFFFFFF);
+void rim::Slave::doTransaction(uint32_t id, rim::MasterPtr master, uint64_t address, uint32_t size, bool write, bool posted) {
+   master->doneTransaction(id,0xFFFFFFFF);
 }
 
 void rim::Slave::setup_python() {

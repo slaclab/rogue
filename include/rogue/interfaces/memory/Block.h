@@ -140,13 +140,13 @@ namespace rogue {
                void reqTransaction(bool write, bool posted);
 
                //! Transaction complete, set by slave
-               void doneTransaction(uint32_t error);
+               void doneTransaction(uint32_t id, uint32_t error);
 
                //! Set to master from slave, called by slave
-               void setTransactionData(void *data, uint32_t offset, uint32_t size);
+               void setTransactionData(uint32_t id, void *data, uint32_t offset, uint32_t size);
 
                //! Get from master to slave, called by slave
-               void getTransactionData(void *data, uint32_t offset, uint32_t size);
+               void getTransactionData(uint32_t id, void *data, uint32_t offset, uint32_t size);
 
                //////////////////////////////////////
                // Access Methods

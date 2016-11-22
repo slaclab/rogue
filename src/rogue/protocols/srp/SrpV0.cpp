@@ -66,20 +66,20 @@ uint32_t rps::SrpV0::doMaxAccess() {
 }
 
 //! Post a transaction
-void rps::SrpV0::doTransaction(rim::MasterPtr master, uint64_t address, uint32_t size, bool write, bool posted) {
+void rps::SrpV0::doTransaction(uint32_t id, rim::MasterPtr master, uint64_t address, uint32_t size, bool write, bool posted) {
    ris::FrameIteratorPtr iter;
    ris::FramePtr  frame;
    uint32_t  frameSize;
    uint32_t  temp;
    uint32_t  cnt;
 
-   addMaster(master);
-
    // Size error
    if ((address % 4) != 0 || (size % 4) != 0 || size < 4 || size > 2048) {
-      master->doneTransaction(0x80000000);
+      master->doneTransaction(id,0x80000000);
       return;
    }
+
+   addMaster(id,master);
 
    // Compute transmit frame size
    if (write) frameSize = (size + 12); // 2 x 32 bits for header, 1 x 32 for tail
@@ -89,7 +89,7 @@ void rps::SrpV0::doTransaction(rim::MasterPtr master, uint64_t address, uint32_t
    frame = reqFrame(frameSize,true,0);
 
    // First 32-bit value is context
-   temp = master->getIndex();
+   temp = id;
    cnt  = frame->write(&(temp),0,4);
    
    // Second 32-bit value is address & mode
@@ -102,7 +102,7 @@ void rps::SrpV0::doTransaction(rim::MasterPtr master, uint64_t address, uint32_t
       iter = frame->startWrite(cnt,size);
 
       do {
-         master->getTransactionData(iter->data(),iter->total(),iter->size());
+         master->getTransactionData(id,iter->data(),iter->total(),iter->size());
       } while (frame->nextWrite(iter));
       cnt += size;
    }
@@ -117,7 +117,7 @@ void rps::SrpV0::doTransaction(rim::MasterPtr master, uint64_t address, uint32_t
    temp = 0;
    cnt += frame->write(&temp,cnt,4);
 
-   if ( write && posted ) master->doneTransaction(0);
+   if ( write && posted ) master->doneTransaction(id,0);
    else sendFrame(frame);
 }
 
@@ -125,7 +125,7 @@ void rps::SrpV0::doTransaction(rim::MasterPtr master, uint64_t address, uint32_t
 void rps::SrpV0::acceptFrame ( ris::FramePtr frame ) {
    ris::FrameIteratorPtr iter;
    rim::MasterPtr m;
-   uint32_t  index;
+   uint32_t  id;
    uint32_t  size;
    uint32_t  cnt;
    uint32_t  temp;
@@ -133,17 +133,17 @@ void rps::SrpV0::acceptFrame ( ris::FramePtr frame ) {
    // Check frame size
    if ( frame->getPayload() < 16 ) return; // Invalid frame, drop it
 
-   // Extract index from frame
-   frame->read(&index,0,4);
+   // Extract id from frame
+   frame->read(&id,0,4);
 
    // Find master
-   if ( ! validMaster(index) ) return; // Bad index drop frame
-   else m = getMaster(index);
+   if ( ! validMaster(id) ) return; // Bad id drop frame
+   else m = getMaster(id);
 
    // Read tail error value, complete if error is set
    frame->read(&temp,frame->getPayload()-4,4);
    if ( temp != 0 ) {
-      m->doneTransaction(temp);
+      m->doneTransaction(id,temp);
       return;
    }
 
@@ -156,11 +156,11 @@ void rps::SrpV0::acceptFrame ( ris::FramePtr frame ) {
       iter = frame->startRead(cnt,size);
 
       do {
-         m->setTransactionData(iter->data(),iter->total(),iter->size());
+         m->setTransactionData(id,iter->data(),iter->total(),iter->size());
       } while (frame->nextRead(iter));
       cnt += size;
    }
 
-   m->doneTransaction(0);
+   m->doneTransaction(id,0);
 }
 

@@ -204,7 +204,7 @@ void rim::Block::reqTransaction(bool write, bool posted) {
 }
 
 //! Transaction complete
-void rim::Block::doneTransaction(uint32_t error) {
+void rim::Block::doneTransaction(uint32_t id, uint32_t error) {
    { // Begin scope of lck
 
       boost::lock_guard<boost::mutex> lck(mtx_); // Will succeedd if busy is set
@@ -221,7 +221,7 @@ void rim::Block::doneTransaction(uint32_t error) {
 }
 
 //! Set to master from slave, called by slave
-void rim::Block::setTransactionData(void *data, uint32_t offset, uint32_t size) {
+void rim::Block::setTransactionData(uint32_t id, void *data, uint32_t offset, uint32_t size) {
    if ( (offset+size) > size_ )
       throw(re::BoundaryException("Block::setData",offset+size,size_));
 
@@ -230,7 +230,7 @@ void rim::Block::setTransactionData(void *data, uint32_t offset, uint32_t size) 
 }
 
 //! Get from master to slave, called by slave
-void rim::Block::getTransactionData(void *data, uint32_t offset, uint32_t size) {
+void rim::Block::getTransactionData(uint32_t id, void *data, uint32_t offset, uint32_t size) {
    if ( (offset+size) > size_ )
       throw(re::BoundaryException("Block::getData",offset+size,size_));
 

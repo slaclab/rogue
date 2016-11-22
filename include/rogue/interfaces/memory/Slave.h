@@ -44,7 +44,7 @@ namespace rogue {
             protected:
 
                //! Register a master.
-               void addMaster(boost::shared_ptr<rogue::interfaces::memory::Master> master);
+               void addMaster(uint32_t, boost::shared_ptr<rogue::interfaces::memory::Master> master);
 
                //! Get master device with index
                boost::shared_ptr<rogue::interfaces::memory::Master> getMaster(uint32_t index);
@@ -73,7 +73,7 @@ namespace rogue {
                virtual uint32_t doMaxAccess();
 
                //! Post a transaction. Master will call this method with the access attributes.
-               virtual void doTransaction(boost::shared_ptr<rogue::interfaces::memory::Master> master,
+               virtual void doTransaction(uint32_t tid, boost::shared_ptr<rogue::interfaces::memory::Master> master,
                                           uint64_t address, uint32_t size, bool write, bool posted);
 
          };

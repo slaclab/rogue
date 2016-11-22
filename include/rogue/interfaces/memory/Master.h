@@ -42,22 +42,22 @@ namespace rogue {
                //! Class instance lock
                static boost::mutex classIdxMtx_;
 
+               //! Index
+               uint32_t index_;
+
+            protected:
+
                //! Slave. Used for request forwards.
                boost::shared_ptr<rogue::interfaces::memory::Slave> slave_;
 
                //! Slave mutex
                boost::mutex slaveMtx_;
 
-               //! Index
-               uint32_t index_;
-
-            protected:
-
                //! Address
                uint64_t address_;
 
                //! Size tracking for transaction and/or managed space
-               uint64_t size_;
+               uint32_t size_;
 
                //! Get slave
                boost::shared_ptr<rogue::interfaces::memory::Slave> getSlave();
@@ -74,7 +74,7 @@ namespace rogue {
             public:
 
                //! Create a master container
-               static boost::shared_ptr<rogue::interfaces::memory::Master> create (uint64_t address, uint64_t size);
+               static boost::shared_ptr<rogue::interfaces::memory::Master> create (uint64_t address, uint32_t size);
 
                //! Setup class in python
                static void setup_python();
@@ -83,10 +83,10 @@ namespace rogue {
                uint32_t getIndex();
 
                //! Get size
-               uint64_t getSize();
+               uint32_t getSize();
 
                //! Set size
-               void setSize(uint64_t size);
+               void setSize(uint32_t size);
 
                //! Get address
                uint64_t getAddress();
@@ -94,29 +94,23 @@ namespace rogue {
                //! Set address
                void setAddress(uint64_t address);
 
-               //! Inherit settings from master
-               /*
-                * Updates local information based upon parent master
-                */
-               void inheritFrom(boost::shared_ptr<rogue::interfaces::memory::Master> parent );
-
                //! Create object
-               Master(uint64_t address, uint64_t size);
+               Master(uint64_t address, uint32_t size);
 
                //! Destroy object
                ~Master();
 
-               //! Set slave, used for memory access requests
+               //! Set slave
                void setSlave ( boost::shared_ptr<rogue::interfaces::memory::Slave> slave );
 
                //! Transaction complete, called by slave when transaction is complete, error passed
-               virtual void doneTransaction(uint32_t error);
+               virtual void doneTransaction(uint32_t id, uint32_t error);
 
                //! Set to master from slave, called by slave to push data into master.
-               virtual void setTransactionData(void *data, uint32_t offset, uint32_t size);
+               virtual void setTransactionData(uint32_t id, void *data, uint32_t offset, uint32_t size);
 
                //! Get from master to slave, called by slave to pull data from mater.
-               virtual void getTransactionData(void *data, uint32_t offset, uint32_t size);
+               virtual void getTransactionData(uint32_t id, void *data, uint32_t offset, uint32_t size);
 
          };
 

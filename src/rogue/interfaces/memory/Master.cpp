@@ -34,13 +34,13 @@ uint32_t rim::Master::classIdx_ = 0;
 boost::mutex rim::Master::classIdxMtx_;
 
 //! Create a master container
-rim::MasterPtr rim::Master::create (uint64_t address, uint64_t size) {
+rim::MasterPtr rim::Master::create (uint64_t address, uint32_t size) {
    rim::MasterPtr m = boost::make_shared<rim::Master>(address, size);
    return(m);
 }
 
 //! Create object
-rim::Master::Master(uint64_t address, uint64_t size) { 
+rim::Master::Master(uint64_t address, uint32_t size) { 
    classIdxMtx_.lock();
    if ( classIdx_ == 0 ) classIdx_ = 1;
    index_ = classIdx_;
@@ -60,12 +60,12 @@ uint32_t rim::Master::getIndex() {
 }
 
 //! Get size
-uint64_t rim::Master::getSize() {
+uint32_t rim::Master::getSize() {
    return(size_);
 }
 
 //! Set size
-void rim::Master::setSize(uint64_t size) {
+void rim::Master::setSize(uint32_t size) {
    size_ = size;
 }
 
@@ -79,18 +79,7 @@ void rim::Master::setAddress(uint64_t address) {
    address_ = address;
 }
 
-//! Inherit setting from master
-void rim::Master::inheritFrom(rim::MasterPtr master ) {
-   uint64_t mask;
-
-   setSlave(master->getSlave());
-
-   mask = (master->getSize() - 1);
-   address_ &= mask;
-   address_ |= master->getAddress();
-}
-
-//! Set slave, used for buffer request forwarding
+//! Set slave
 void rim::Master::setSlave ( rim::SlavePtr slave ) {
    PyRogue_BEGIN_ALLOW_THREADS;
    {
@@ -151,17 +140,17 @@ void rim::Master::reqTransaction(bool write, bool posted) {
    }
    PyRogue_END_ALLOW_THREADS;
 
-   slave->doTransaction(shared_from_this(),address_,(size_&0xFFFFFFFF),write,posted);
+   slave->doTransaction(index_,shared_from_this(),address_,size_,write,posted);
 }
 
 //! Transaction complete, set by slave, error passed
-void rim::Master::doneTransaction(uint32_t error) { }
+void rim::Master::doneTransaction(uint32_t id, uint32_t error) { }
 
 //! Set to master from slave, called by slave
-void rim::Master::setTransactionData(void *data, uint32_t offset, uint32_t size) { }
+void rim::Master::setTransactionData(uint32_t id, void *data, uint32_t offset, uint32_t size) { }
 
 //! Get from master to slave, called by slave
-void rim::Master::getTransactionData(void *data, uint32_t offset, uint32_t size) { }
+void rim::Master::getTransactionData(uint32_t id, void *data, uint32_t offset, uint32_t size) { }
 
 void rim::Master::setup_python() {
 
@@ -175,7 +164,6 @@ void rim::Master::setup_python() {
       .def("getSize",       &rim::Master::getSize)
       .def("getAddress",    &rim::Master::getAddress)
       .def("_setAddress",   &rim::Master::setAddress)
-      .def("_inheritFrom",  &rim::Master::inheritFrom)
    ;
 
 }

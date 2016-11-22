@@ -77,7 +77,7 @@ namespace rogue {
                uint32_t doMaxAccess();
 
                //! Post a transaction
-               void doTransaction(boost::shared_ptr<rogue::interfaces::memory::Master> master, 
+               void doTransaction(uint32_t id, boost::shared_ptr<rogue::interfaces::memory::Master> master, 
                                   uint64_t address, uint32_t size, bool write, bool posted);
          };
 

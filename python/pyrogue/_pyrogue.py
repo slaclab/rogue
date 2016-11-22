@@ -945,8 +945,11 @@ class Command(Variable):
         else:
             cmd.set(1)
 
-    def postedTouch(dev, cmd, arg)
-        
+    def postedTouch(dev, cmd, arg):
+        if arg is not None:
+            cmd.post(arg)
+        else:
+            cmd.post(1)
 
 
 class Block(rogue.interfaces.memory.Block):
@@ -971,10 +974,10 @@ class Block(rogue.interfaces.memory.Block):
             variable._updated()
 
 
-class Device(Node,rogue.interfaces.memory.Master):
+class Device(Node,rogue.interfaces.memory.Hub):
     """Device class holder. TODO: Update comments"""
 
-    def __init__(self, name=None, description="", size=0, memBase=None, offset=0, hidden=False, **dump):
+    def __init__(self, name=None, description="", memBase=None, offset=0, hidden=False, **dump):
         """Initialize device class"""
         if name is None:
             name = self.__class__.__name__
@@ -982,7 +985,7 @@ class Device(Node,rogue.interfaces.memory.Master):
         print("Making device {:s}".format(name))
 
         Node.__init__(self, name=name, hidden=hidden, classType='device', description=description)
-        rogue.interfaces.memory.Master.__init__(self,offset,size)
+        rogue.interfaces.memory.Hub.__init__(self,offset,0)
 
         # Blocks
         self._blocks    = []
@@ -990,8 +993,8 @@ class Device(Node,rogue.interfaces.memory.Master):
         self._memBase   = memBase
         self._resetFunc = None
 
-        # Adjust position in tree
-        if memBase: self._setMemBase(memBase,offset)
+        # Connect to memory slave
+        if memBase: self._setSlave(memBase)
 
         # Variable interface to enable flag
         self.add(Variable(name='enable', base='bool', mode='RW',
@@ -1009,7 +1012,7 @@ class Device(Node,rogue.interfaces.memory.Master):
 
         # Adding device whos membase is not yet set
         if isinstance(node,Device) and node._memBase == None:
-            node._setMemBase(self)
+            node._setSlave(memBase)
 
         # Adding variable
         if isinstance(node,Variable) and node.offset != None:
@@ -1024,7 +1027,7 @@ class Device(Node,rogue.interfaces.memory.Master):
             # Create new block if not found
             if vblock == None:
                 vblock = Block(node.offset,varBytes)
-                vblock._inheritFrom(self)
+                vblock._setSlave(self)
                 self._blocks.append(vblock)
 
             # Do association
@@ -1071,31 +1074,6 @@ class Device(Node,rogue.interfaces.memory.Master):
 
         for block in self._blocks:
             block.setEnable(enable)
-
-    def _setMemBase(self,memBase,offset=None):
-        """Connect to memory slave at offset. Adjusting global address."""
-        self._memBase = memBase
-
-        if offset != None: 
-            self._setAddress(offset)
-
-        # Membase is a Device
-        if isinstance(memBase,Device):
-            # Inhertit base address and slave pointer from one level up
-            self._inheritFrom(memBase)
-
-        # Direct connection to slave
-        else:
-            self._setSlave(memBase)
-
-        # Adust address map in blocks
-        for block in self._blocks:
-            block._inheritFrom(self)
-
-        # Adust address map in sub devices
-        for key,dev in self._nodes.iteritems():
-            if isinstance(dev,Device):
-                dev._setMemBase(self)
 
     def _write(self):
         """ Write all blocks. """

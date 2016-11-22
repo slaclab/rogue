@@ -7,4 +7,4 @@
 # copied, modified, propagated, or distributed except according to the terms 
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
-from _pyrogue import *
+from _gui import *

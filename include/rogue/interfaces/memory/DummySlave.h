@@ -42,8 +42,11 @@ namespace rogue {
                //! Destroy object
                ~DummySlave();
 
+               // Setup python
+               static void setup_python();
+
                //! Post a transaction. Master will call this method with the access attributes.
-               virtual void doTransaction(boost::shared_ptr<rogue::interfaces::memory::Master> master,
+               virtual void doTransaction(uint32_t id, boost::shared_ptr<rogue::interfaces::memory::Master> master,
                                           uint64_t address, uint32_t size, bool write, bool posted);
 
          };

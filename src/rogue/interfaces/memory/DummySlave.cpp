@@ -36,9 +36,13 @@ rim::DummySlave::DummySlave() : rim::Slave() { }
 rim::DummySlave::~DummySlave() { }
 
 //! Post a transaction
-void rim::DummySlave::doTransaction(rim::MasterPtr master, uint64_t address, uint32_t size, bool write, bool posted) {
-   master->doneTransaction(0);
+void rim::DummySlave::doTransaction(uint32_t id, rim::MasterPtr master, uint64_t address, uint32_t size, bool write, bool posted) {
+   master->doneTransaction(id,0);
 }
 
+void rim::DummySlave::setup_python() {
 
+   // slave can only exist as sub-class in python
+   bp::class_<rim::DummySlave, rim::DummySlavePtr, boost::noncopyable>("DummySlave",bp::init<>());
+}
 
