@@ -170,7 +170,7 @@ class VariableWidget(QWidget):
 
         # First create variables
         for key,val in d.getNodes(pyrogue.Variable).iteritems():
-            if not val.hidden:
+            if not val.hidden and val.mode != 'CMD':
                 var = VariableLink(tree,val)
 
         # Then create devices
