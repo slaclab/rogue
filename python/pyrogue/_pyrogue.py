@@ -977,7 +977,7 @@ class Block(rogue.interfaces.memory.Block):
 class Device(Node,rogue.interfaces.memory.Hub):
     """Device class holder. TODO: Update comments"""
 
-    def __init__(self, name=None, description="", memBase=None, offset=0, hidden=False, **dump):
+    def __init__(self, name=None, description="", memBase=None, offset=0, hidden=False, variables=None, **dump):
         """Initialize device class"""
         if name is None:
             name = self.__class__.__name__
@@ -1001,11 +1001,27 @@ class Device(Node,rogue.interfaces.memory.Hub):
             setFunction=self._setEnable, getFunction='value=dev._enable',
             description='Determines if device is enabled for hardware access'))
 
+        if variables is not None and isinstance(variables, collections.Iterable):
+            if all(isinstance(v, Variable) for v in variables):
+                # add the list of Variable objects
+                self.add(variables)
+            elif all(isinstance(v, dict) for v in variables):
+                # create Variable objects from a dict list
+                self.add(Variable(**v) for v in variables)
+                    
+
     def add(self,node):
         """
         Add node as sub-node in the object
         Device specific implementation to add blocks as required.
         """
+
+        # Special case if list (or iterable of nodes) is passed
+        if isinstance(node, collections.Iterable) and all(isinstance(n, Node) for n in nodes):
+            for n in node:
+                self.add(n)
+            return
+        
 
         # Call node add
         Node.add(self,node)
