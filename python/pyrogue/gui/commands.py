@@ -59,6 +59,12 @@ class CommandLink(QObject):
             except Exception:
                 pass
 
+        elif self.command.base == 'bin':
+            try:
+                self.command(int(value,2))
+            except Exception:
+                pass
+            
         elif self.command.base == 'uint':
             try:
                 self.command(int(value))
