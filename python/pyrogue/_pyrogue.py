@@ -637,7 +637,7 @@ class Root(rogue.interfaces.stream.Master,Node):
         self._updatedLock.acquire()
 
         # Log is active add to log
-        if self._updatedDict != None:
+        if self._updatedDict is not None:
             addPathToDict(self._updatedDict,var.path,value)
 
         # Otherwise act directly
@@ -824,7 +824,7 @@ class Variable(Node):
         Listeners will be informed of the update.
         _rawSet() is called during bulk configuration loads with a seperate hardware access generated later.
         """
-        if self._setFunction != None:
+        if self._setFunction is not None:
             if callable(self._setFunction):
                 self._setFunction(self._parent,self,value)
             else:
@@ -863,7 +863,7 @@ class Variable(Node):
         resulting value.
         _rawGet() can be called from other levels to get current value without generating a hardware access.
         """
-        if self._getFunction != None:
+        if self._getFunction is not None:
             if callable(self._getFunction):
                 return(self._getFunction(self._parent,self))
             else:
@@ -904,7 +904,7 @@ class Command(Variable):
     def __call__(self,arg=None):
         """Execute command: TODO: Update comments"""
         try:
-            if self._function != None:
+            if self._function is not None:
 
                 # Function is really a function
                 if callable(self._function):
@@ -1027,11 +1027,11 @@ class Device(Node,rogue.interfaces.memory.Hub):
         Node.add(self,node)
 
         # Adding device whos membase is not yet set
-        if isinstance(node,Device) and node._memBase == None:
+        if isinstance(node,Device) and node._memBase is None:
             node._setSlave(memBase)
 
         # Adding variable
-        if isinstance(node,Variable) and node.offset != None:
+        if isinstance(node,Variable) and node.offset is not None:
             varBytes = int(math.ceil(float(node.bitOffset + node.bitSize) / 8.0))
 
             # First find if and existing block matches
@@ -1041,7 +1041,7 @@ class Device(Node,rogue.interfaces.memory.Hub):
                     vblock = block
 
             # Create new block if not found
-            if vblock == None:
+            if vblock is None:
                 vblock = Block(node.offset,varBytes)
                 vblock._setSlave(self)
                 self._blocks.append(vblock)
