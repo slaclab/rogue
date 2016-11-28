@@ -509,19 +509,18 @@ class Root(rogue.interfaces.stream.Master,Node):
 
     def _initUpdatedVars(self):
         """Initialize the update tracking log before a bulk variable update"""
-        self._updatedLock.acquire()
-        self._updatedDict = collections.OrderedDict()
-        self._updatedLock.release()
+        with self._updatedLock:
+            self._updatedDict = collections.OrderedDict()
 
     def _doneUpdatedVars(self):
         """Stream the results of a bulk variable update and update listeners"""
-        self._updatedLock.acquire()
-        if self._updatedDict:
-            yml = dictToYaml(self._updatedDict,default_flow_style=False)
-            self._streamYaml(yml)
-            self._updateVarListeners(yml,self._updatedDict)
-        self._updatedDict = None
-        self._updatedLock.release()
+        with self._updatedLock:
+            if self._updatedDict:
+                yml = dictToYaml(self._updatedDict,default_flow_style=False)
+                self._streamYaml(yml)
+                self._updateVarListeners(yml,self._updatedDict)
+            self._updatedDict = None
+
 
     def _write(self,dev=None,cmd=None,arg=None):
         """Write all blocks"""
@@ -610,10 +609,9 @@ class Root(rogue.interfaces.stream.Master,Node):
 
     def _clearLog(self,dev,cmd,arg):
         """Clear the system log"""
-        self._sysLogLock.acquire()
-        self._systemLog = ""
-        self._sysLogLock.release()
-        self.systemLog._updated()
+        with self._sysLogLock:
+            self._systemLog = ""
+            self._sysLogLock.release()
 
     def _logException(self,exception):
         """Add an exception to the log"""
@@ -623,10 +621,9 @@ class Root(rogue.interfaces.stream.Master,Node):
 
     def _addToLog(self,string):
         """Add an string to the log"""
-        self._sysLogLock.acquire()
-        self._systemLog += string
-        self._systemLog += '\n'
-        self._sysLogLock.release()
+        with self._sysLogLock:
+            self._systemLog += string
+            self._systemLog += '\n'
 
         self.systemLog._updated()
 
@@ -634,19 +631,17 @@ class Root(rogue.interfaces.stream.Master,Node):
         """ Log updated variables"""
         yml = None
 
-        self._updatedLock.acquire()
+        with self._updatedLock:
 
-        # Log is active add to log
-        if self._updatedDict is not None:
-            addPathToDict(self._updatedDict,var.path,value)
+            # Log is active add to log
+            if self._updatedDict is not None:
+                addPathToDict(self._updatedDict,var.path,value)
 
-        # Otherwise act directly
-        else:
-            d = {}
-            addPathToDict(d,var.path,value)
-            yml = dictToYaml(d,default_flow_style=False)
-
-        self._updatedLock.release()
+            # Otherwise act directly
+            else:
+                d = {}
+                addPathToDict(d,var.path,value)
+                yml = dictToYaml(d,default_flow_style=False)
 
         if yml:
             self._streamYaml(yml)
