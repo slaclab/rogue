@@ -611,7 +611,7 @@ class Root(rogue.interfaces.stream.Master,Node):
         """Clear the system log"""
         with self._sysLogLock:
             self._systemLog = ""
-            self._sysLogLock.release()
+        self.systemLog._updated()
 
     def _logException(self,exception):
         """Add an exception to the log"""
