@@ -85,6 +85,9 @@ class VariableLink(QObject):
         elif self.variable.base == 'hex':
             self.emit(SIGNAL("updateGui"),'0x%x' % (value))
 
+        elif self.variable.base == 'bin':
+            self.emit(SIGNAL("updateGui"), '0b{0:b}'.format(value))
+
         else:
             self.emit(SIGNAL("updateGui"),str(value))
 
@@ -108,6 +111,9 @@ class VariableLink(QObject):
 
         elif self.variable.base == 'uint':
             self.variable.set(int(str(value)))
+
+        elif self.variable.base == 'bin':
+            self.variable.set(int(str(value), 2))
 
         elif self.variable.base == 'float':
             self.variable.set(float(str(value)))

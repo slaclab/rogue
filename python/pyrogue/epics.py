@@ -78,7 +78,7 @@ class EpicsCaServer(object):
             d['enums'] = ['True','False']
         elif node.base == 'float':
             d['type'] = 'float'
-        elif node.base == 'uint' or node.base == 'hex':
+        elif node.base == 'uint' or node.base == 'hex' or node.base == 'bin':
             d['type'] = 'int'
         elif node.base == 'range':
             d['type'] = 'int'

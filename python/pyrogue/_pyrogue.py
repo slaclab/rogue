@@ -509,19 +509,18 @@ class Root(rogue.interfaces.stream.Master,Node):
 
     def _initUpdatedVars(self):
         """Initialize the update tracking log before a bulk variable update"""
-        self._updatedLock.acquire()
-        self._updatedDict = collections.OrderedDict()
-        self._updatedLock.release()
+        with self._updatedLock:
+            self._updatedDict = collections.OrderedDict()
 
     def _doneUpdatedVars(self):
         """Stream the results of a bulk variable update and update listeners"""
-        self._updatedLock.acquire()
-        if self._updatedDict:
-            yml = dictToYaml(self._updatedDict,default_flow_style=False)
-            self._streamYaml(yml)
-            self._updateVarListeners(yml,self._updatedDict)
-        self._updatedDict = None
-        self._updatedLock.release()
+        with self._updatedLock:
+            if self._updatedDict:
+                yml = dictToYaml(self._updatedDict,default_flow_style=False)
+                self._streamYaml(yml)
+                self._updateVarListeners(yml,self._updatedDict)
+            self._updatedDict = None
+
 
     def _write(self,dev=None,cmd=None,arg=None):
         """Write all blocks"""
@@ -610,9 +609,8 @@ class Root(rogue.interfaces.stream.Master,Node):
 
     def _clearLog(self,dev,cmd,arg):
         """Clear the system log"""
-        self._sysLogLock.acquire()
-        self._systemLog = ""
-        self._sysLogLock.release()
+        with self._sysLogLock:
+            self._systemLog = ""
         self.systemLog._updated()
 
     def _logException(self,exception):
@@ -623,10 +621,9 @@ class Root(rogue.interfaces.stream.Master,Node):
 
     def _addToLog(self,string):
         """Add an string to the log"""
-        self._sysLogLock.acquire()
-        self._systemLog += string
-        self._systemLog += '\n'
-        self._sysLogLock.release()
+        with self._sysLogLock:
+            self._systemLog += string
+            self._systemLog += '\n'
 
         self.systemLog._updated()
 
@@ -634,19 +631,17 @@ class Root(rogue.interfaces.stream.Master,Node):
         """ Log updated variables"""
         yml = None
 
-        self._updatedLock.acquire()
+        with self._updatedLock:
 
-        # Log is active add to log
-        if self._updatedDict != None:
-            addPathToDict(self._updatedDict,var.path,value)
+            # Log is active add to log
+            if self._updatedDict is not None:
+                addPathToDict(self._updatedDict,var.path,value)
 
-        # Otherwise act directly
-        else:
-            d = {}
-            addPathToDict(d,var.path,value)
-            yml = dictToYaml(d,default_flow_style=False)
-
-        self._updatedLock.release()
+            # Otherwise act directly
+            else:
+                d = {}
+                addPathToDict(d,var.path,value)
+                yml = dictToYaml(d,default_flow_style=False)
 
         if yml:
             self._streamYaml(yml)
@@ -824,7 +819,7 @@ class Variable(Node):
         Listeners will be informed of the update.
         _rawSet() is called during bulk configuration loads with a seperate hardware access generated later.
         """
-        if self._setFunction != None:
+        if self._setFunction is not None:
             if callable(self._setFunction):
                 self._setFunction(self._parent,self,value)
             else:
@@ -863,7 +858,7 @@ class Variable(Node):
         resulting value.
         _rawGet() can be called from other levels to get current value without generating a hardware access.
         """
-        if self._getFunction != None:
+        if self._getFunction is not None:
             if callable(self._getFunction):
                 return(self._getFunction(self._parent,self))
             else:
@@ -904,7 +899,7 @@ class Command(Variable):
     def __call__(self,arg=None):
         """Execute command: TODO: Update comments"""
         try:
-            if self._function != None:
+            if self._function is not None:
 
                 # Function is really a function
                 if callable(self._function):
@@ -977,7 +972,7 @@ class Block(rogue.interfaces.memory.Block):
 class Device(Node,rogue.interfaces.memory.Hub):
     """Device class holder. TODO: Update comments"""
 
-    def __init__(self, name=None, description="", memBase=None, offset=0, hidden=False, **dump):
+    def __init__(self, name=None, description="", memBase=None, offset=0, hidden=False, variables=None, **dump):
         """Initialize device class"""
         if name is None:
             name = self.__class__.__name__
@@ -1001,21 +996,37 @@ class Device(Node,rogue.interfaces.memory.Hub):
             setFunction=self._setEnable, getFunction='value=dev._enable',
             description='Determines if device is enabled for hardware access'))
 
+        if variables is not None and isinstance(variables, collections.Iterable):
+            if all(isinstance(v, Variable) for v in variables):
+                # add the list of Variable objects
+                self.add(variables)
+            elif all(isinstance(v, dict) for v in variables):
+                # create Variable objects from a dict list
+                self.add(Variable(**v) for v in variables)
+                    
+
     def add(self,node):
         """
         Add node as sub-node in the object
         Device specific implementation to add blocks as required.
         """
 
+        # Special case if list (or iterable of nodes) is passed
+        if isinstance(node, collections.Iterable) and all(isinstance(n, Node) for n in nodes):
+            for n in node:
+                self.add(n)
+            return
+        
+
         # Call node add
         Node.add(self,node)
 
         # Adding device whos membase is not yet set
-        if isinstance(node,Device) and node._memBase == None:
+        if isinstance(node,Device) and node._memBase is None:
             node._setSlave(memBase)
 
         # Adding variable
-        if isinstance(node,Variable) and node.offset != None:
+        if isinstance(node,Variable) and node.offset is not None:
             varBytes = int(math.ceil(float(node.bitOffset + node.bitSize) / 8.0))
 
             # First find if and existing block matches
@@ -1025,7 +1036,7 @@ class Device(Node,rogue.interfaces.memory.Hub):
                     vblock = block
 
             # Create new block if not found
-            if vblock == None:
+            if vblock is None:
                 vblock = Block(node.offset,varBytes)
                 vblock._setSlave(self)
                 self._blocks.append(vblock)
