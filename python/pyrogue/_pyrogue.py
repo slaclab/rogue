@@ -985,7 +985,7 @@ class Device(Node,rogue.interfaces.memory.Hub):
         print("Making device {:s}".format(name))
 
         Node.__init__(self, name=name, hidden=hidden, classType='device', description=description)
-        rogue.interfaces.memory.Hub.__init__(self,offset,0)
+        rogue.interfaces.memory.Hub.__init__(self,offset)
 
         # Blocks
         self._blocks    = []
