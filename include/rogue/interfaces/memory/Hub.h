@@ -41,21 +41,16 @@ namespace rogue {
             public:
 
                //! Create a block, class creator
-               static boost::shared_ptr<rogue::interfaces::memory::Hub> create (
-                     uint64_t address, uint32_t size );
+               static boost::shared_ptr<rogue::interfaces::memory::Hub> create (uint64_t address);
 
                //! Setup class in python
                static void setup_python();
 
                //! Create a hub
-               Hub(uint64_t address, uint32_t size );
+               Hub(uint64_t address);
 
                //! Destroy a hub
                ~Hub();
-
-               ///////////////////////////////////////////
-               // Slave to Master Interface Transactions
-               ///////////////////////////////////////////
 
                //! Return min access size to requesting master
                uint32_t doMinAccess();
@@ -64,21 +59,8 @@ namespace rogue {
                uint32_t doMaxAccess();
 
                //! Post a transaction. Master will call this method with the access attributes.
-               void doTransaction(uint32_t tid, boost::shared_ptr<rogue::interfaces::memory::Master> master,
+               void doTransaction(uint32_t id, boost::shared_ptr<rogue::interfaces::memory::Master> master,
                                   uint64_t address, uint32_t size, bool write, bool posted);
-
-               ///////////////////////////////////////////
-               // Master to Slave Interface Transactions
-               ///////////////////////////////////////////
-
-               //! Transaction complete, set by slave
-               void doneTransaction(uint32_t id, uint32_t error);
-
-               //! Set to master from slave, called by slave
-               void setTransactionData(uint32_t id, void *data, uint32_t offset, uint32_t size);
-
-               //! Get from master to slave, called by slave
-               void getTransactionData(uint32_t id, void *data, uint32_t offset, uint32_t size);
 
          };
 

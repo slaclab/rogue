@@ -30,13 +30,13 @@ namespace rim = rogue::interfaces::memory;
 namespace bp  = boost::python;
 
 //! Create a block, class creator
-rim::HubPtr rim::Hub::create (uint64_t address, uint32_t size ) {
-   rim::HubPtr b = boost::make_shared<rim::Hub>(address,size);
+rim::HubPtr rim::Hub::create (uint64_t address) {
+   rim::HubPtr b = boost::make_shared<rim::Hub>(address);
    return(b);
 }
 
 //! Create an block
-rim::Hub::Hub(uint64_t address, uint32_t size ) : Master (address,size), Slave() { }
+rim::Hub::Hub(uint64_t address) : Master (address,0), Slave() { }
 
 //! Destroy a block
 rim::Hub::~Hub() { }
@@ -64,7 +64,7 @@ uint32_t rim::Hub::doMaxAccess() {
 }
 
 //! Post a transaction. Master will call this method with the access attributes.
-void rim::Hub::doTransaction(uint32_t tid, boost::shared_ptr<rogue::interfaces::memory::Master> master,
+void rim::Hub::doTransaction(uint32_t id, boost::shared_ptr<rogue::interfaces::memory::Master> master,
                              uint64_t address, uint32_t size, bool write, bool posted) {
 
    rim::SlavePtr slave;
@@ -78,50 +78,14 @@ void rim::Hub::doTransaction(uint32_t tid, boost::shared_ptr<rogue::interfaces::
    // Adjust address
    outAddress = address_ | address;
 
-   // Add master for tracking
-   addMaster(tid,master);
-
    // Forward transaction
-   slave->doTransaction(tid,shared_from_this(),outAddress,size,write,posted);
-}
-
-//! Transaction complete
-void rim::Hub::doneTransaction(uint32_t id, uint32_t error) {
-   rim::MasterPtr m;
-
-   // Find master
-   if ( ! validMaster(id) ) return; // Bad id
-   else m = getMaster(id);
-
-   m->doneTransaction(id,error);
-}
-
-//! Set to master from slave, called by slave
-void rim::Hub::setTransactionData(uint32_t id, void *data, uint32_t offset, uint32_t size) {
-   rim::MasterPtr m;
-
-   // Find master
-   if ( ! validMaster(id) ) return; // Bad id
-   else m = getMaster(id);
-
-   m->setTransactionData(id,data,offset,size);
-}
-
-//! Get from master to slave, called by slave
-void rim::Hub::getTransactionData(uint32_t id, void *data, uint32_t offset, uint32_t size) {
-   rim::MasterPtr m;
-
-   // Find master
-   if ( ! validMaster(id) ) return; // Bad id
-   else m = getMaster(id);
-
-   m->getTransactionData(id,data,offset,size);
+   slave->doTransaction(id,master,outAddress,size,write,posted);
 }
 
 void rim::Hub::setup_python() {
 
-   bp::class_<rim::Hub, rim::HubPtr, bp::bases<rim::Master,rim::Slave>, boost::noncopyable>("Hub",bp::init<uint64_t,uint32_t>())
-      .def("create",          &rim::Hub::create)
+   bp::class_<rim::Hub, rim::HubPtr, bp::bases<rim::Master,rim::Slave>, boost::noncopyable>("Hub",bp::init<uint64_t>())
+      .def("create", &rim::Hub::create)
       .staticmethod("create")
    ;
 
