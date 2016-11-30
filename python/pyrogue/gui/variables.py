@@ -22,6 +22,8 @@ from PyQt4.QtCore   import *
 from PyQt4.QtGui    import *
 from PyQt4.QtWebKit import *
 
+import parse
+
 import pyrogue
 
 
@@ -85,14 +87,19 @@ class VariableLink(QObject):
         elif self.variable.base == 'range':
             self.emit(SIGNAL("updateGui"),value)
 
+
         elif self.variable.base == 'hex':
             self.emit(SIGNAL("updateGui"),'0x%x' % (value))
 
         elif self.variable.base == 'bin':
             self.emit(SIGNAL("updateGui"), '0b{0:b}'.format(value))
 
+        elif self.variable.base == 'float' or self.variable.base == 'string':
+            self.emit(SIGNAL("updateGui"), str(value))
+            
         else:
-            self.emit(SIGNAL("updateGui"),str(value))
+            self.emit(SIGNAL("updateGui"), self.variable.base.format(value))
+            
 
     def returnPressed(self):
         self.guiChanged(self.widget.text())
@@ -120,9 +127,13 @@ class VariableLink(QObject):
 
         elif self.variable.base == 'float':
             self.variable.set(float(str(value)))
+                      
+        elif self.variable.base == 'string':
+            self.variable.set(str(value))
 
         else:
-            self.variable.set(str(value))
+            self.variable.set(parse.parse(self.variable.base, value)[0])
+            
         self.block = False
 
 
