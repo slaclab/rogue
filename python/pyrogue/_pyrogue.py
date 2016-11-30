@@ -662,6 +662,7 @@ class Variable(Node):
     pollEn: Set to true to enable polling of the associated memory.
     base: This defined the type of entry tracked by this variable.
           hex = An unsigned integer in hex form
+          bin = An unsigned integer in binary form
           uint = An unsigned integer
           enum = An enum with value,key pairs passed
           bool = A True,False value
@@ -1024,7 +1025,7 @@ class Device(Node,rogue.interfaces.memory.Hub):
 
         # Adding device whos membase is not yet set
         if isinstance(node,Device) and node._memBase is None:
-            node._setSlave(memBase)
+            node._setSlave(self)
 
         # Adding variable
         if isinstance(node,Variable) and node.offset is not None:
