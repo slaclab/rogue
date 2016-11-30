@@ -54,20 +54,10 @@ void rps::SrpV3::setup_python() {
 }
 
 //! Creator with version constant
-rps::SrpV3::SrpV3() : ris::Master(), ris::Slave(), rim::Slave() { }
+rps::SrpV3::SrpV3() : ris::Master(), ris::Slave(), rim::Slave(4,2^32) { }
 
 //! Deconstructor
 rps::SrpV3::~SrpV3() {}
-
-//! Return min access size to requesting master
-uint32_t rps::SrpV3::doMinAccess() {
-   return(4);
-}
-
-//! Return max access size to requesting master
-uint32_t rps::SrpV3::doMaxAccess() {
-   return(2^32);
-}
 
 //! Post a transaction
 void rps::SrpV3::doTransaction(uint32_t id, rim::MasterPtr master, uint64_t address, uint32_t size, bool write, bool posted) {
@@ -82,8 +72,6 @@ void rps::SrpV3::doTransaction(uint32_t id, rim::MasterPtr master, uint64_t addr
       master->doneTransaction(id, 0x80000000);
       return;
    }
-
-   addMaster(id,master);
 
    // Compute transmit frame size
    if (write) frameSize = (size + 20); // 5 x 32 bits for header
@@ -135,6 +123,10 @@ void rps::SrpV3::doTransaction(uint32_t id, rim::MasterPtr master, uint64_t addr
    }
 
    if ( write && posted ) master->doneTransaction(id,0);
+   else {
+      addMaster(id,master);
+      sendFrame(frame);
+   }
 }
 
 //! Accept a frame from master
@@ -159,6 +151,7 @@ void rps::SrpV3::acceptFrame ( ris::FramePtr frame ) {
    // Verify frame size
    frame->read(&size,16,4);
    if ( size != (frame->getPayload()-24) ) {
+      delMaster(id);
       m->doneTransaction(id,0x80000000);
       return;
    }
@@ -166,6 +159,7 @@ void rps::SrpV3::acceptFrame ( ris::FramePtr frame ) {
    // Read tail error value, complete if error is set
    frame->read(&temp,frame->getPayload()-4,4);
    if ( temp != 0 ) {
+      delMaster(id);
       m->doneTransaction(id,temp);
       return;
    }
@@ -184,6 +178,7 @@ void rps::SrpV3::acceptFrame ( ris::FramePtr frame ) {
       cnt += size;
    }
 
+   delMaster(id);
    m->doneTransaction(id,0);
 }
 

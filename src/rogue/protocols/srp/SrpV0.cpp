@@ -50,20 +50,10 @@ void rps::SrpV0::setup_python() {
 }
 
 //! Creator with version constant
-rps::SrpV0::SrpV0() : ris::Master(), ris::Slave(), rim::Slave() { }
+rps::SrpV0::SrpV0() : ris::Master(), ris::Slave(), rim::Slave(4,2048) { }
 
 //! Deconstructor
 rps::SrpV0::~SrpV0() {}
-
-//! Return min access size to requesting master
-uint32_t rps::SrpV0::doMinAccess() {
-   return(4);
-}
-
-//! Return min access size to requesting master
-uint32_t rps::SrpV0::doMaxAccess() {
-   return(2048);
-}
 
 //! Post a transaction
 void rps::SrpV0::doTransaction(uint32_t id, rim::MasterPtr master, uint64_t address, uint32_t size, bool write, bool posted) {
@@ -78,8 +68,6 @@ void rps::SrpV0::doTransaction(uint32_t id, rim::MasterPtr master, uint64_t addr
       master->doneTransaction(id,0x80000000);
       return;
    }
-
-   addMaster(id,master);
 
    // Compute transmit frame size
    if (write) frameSize = (size + 12); // 2 x 32 bits for header, 1 x 32 for tail
@@ -118,7 +106,10 @@ void rps::SrpV0::doTransaction(uint32_t id, rim::MasterPtr master, uint64_t addr
    cnt += frame->write(&temp,cnt,4);
 
    if ( write && posted ) master->doneTransaction(id,0);
-   else sendFrame(frame);
+   else {
+      addMaster(id,master);
+      sendFrame(frame);
+   }
 }
 
 //! Accept a frame from master
@@ -143,6 +134,7 @@ void rps::SrpV0::acceptFrame ( ris::FramePtr frame ) {
    // Read tail error value, complete if error is set
    frame->read(&temp,frame->getPayload()-4,4);
    if ( temp != 0 ) {
+      delMaster(id);
       m->doneTransaction(id,temp);
       return;
    }
@@ -161,6 +153,7 @@ void rps::SrpV0::acceptFrame ( ris::FramePtr frame ) {
       cnt += size;
    }
 
+   delMaster(id);
    m->doneTransaction(id,0);
 }
 

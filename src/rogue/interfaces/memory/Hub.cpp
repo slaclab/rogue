@@ -36,50 +36,38 @@ rim::HubPtr rim::Hub::create (uint64_t address) {
 }
 
 //! Create an block
-rim::Hub::Hub(uint64_t address) : Master (address,0), Slave() { }
+rim::Hub::Hub(uint64_t address) : Master (), Slave(0,0) { 
+   address_ = address;
+}
 
 //! Destroy a block
 rim::Hub::~Hub() { }
 
+//! Get address
+uint64_t rim::Hub::getAddress() {
+   return(address_);
+}
+
 //! Return min access size to requesting master
 uint32_t rim::Hub::doMinAccess() {
-   rim::SlavePtr slave;
-
-   {
-      boost::lock_guard<boost::mutex> lock(slaveMtx_);
-      slave = slave_;
-   }
-   return(slave->doMinAccess());
+   return(reqMinAccess());
 }
 
 //! Return max access size to requesting master
 uint32_t rim::Hub::doMaxAccess() {
-   rim::SlavePtr slave;
-
-   {
-      boost::lock_guard<boost::mutex> lock(slaveMtx_);
-      slave = slave_;
-   }
-   return(slave->doMaxAccess());
+   return(reqMaxAccess());
 }
 
 //! Post a transaction. Master will call this method with the access attributes.
 void rim::Hub::doTransaction(uint32_t id, boost::shared_ptr<rogue::interfaces::memory::Master> master,
                              uint64_t address, uint32_t size, bool write, bool posted) {
-
-   rim::SlavePtr slave;
    uint64_t outAddress;
-
-   {
-      boost::lock_guard<boost::mutex> lock(slaveMtx_);
-      slave = slave_;
-   }
 
    // Adjust address
    outAddress = address_ | address;
 
    // Forward transaction
-   slave->doTransaction(id,master,outAddress,size,write,posted);
+   getSlave()->doTransaction(id,master,outAddress,size,write,posted);
 }
 
 void rim::Hub::setup_python() {
@@ -87,6 +75,7 @@ void rim::Hub::setup_python() {
    bp::class_<rim::Hub, rim::HubPtr, bp::bases<rim::Master,rim::Slave>, boost::noncopyable>("Hub",bp::init<uint64_t>())
       .def("create", &rim::Hub::create)
       .staticmethod("create")
+      .def("_getAddress", &rim::Hub::getAddress)
    ;
 
    bp::implicitly_convertible<rim::HubPtr, rim::MasterPtr>();

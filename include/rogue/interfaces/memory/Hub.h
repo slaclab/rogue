@@ -38,6 +38,9 @@ namespace rogue {
          //! Transaction container
          class Hub : public Master, public Slave {
 
+               //! Base address of hub
+               uint64_t address_;
+
             public:
 
                //! Create a block, class creator
@@ -51,6 +54,9 @@ namespace rogue {
 
                //! Destroy a hub
                ~Hub();
+
+               //! Get address
+               uint64_t getAddress();
 
                //! Return min access size to requesting master
                uint32_t doMinAccess();

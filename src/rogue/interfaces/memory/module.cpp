@@ -25,7 +25,6 @@
 #include <rogue/interfaces/memory/Slave.h>
 #include <rogue/interfaces/memory/Master.h>
 #include <rogue/interfaces/memory/Hub.h>
-#include <rogue/interfaces/memory/DummySlave.h>
 #include <boost/python.hpp>
 
 namespace bp  = boost::python;
@@ -46,7 +45,6 @@ void rim::setup_module() {
    rim::Slave::setup_python(); 
    rim::Block::setup_python(); 
    rim::Hub::setup_python(); 
-   rim::DummySlave::setup_python(); 
 
 }
 

@@ -42,22 +42,54 @@ namespace rogue {
                //! Class instance lock
                static boost::mutex classIdxMtx_;
 
-               //! Index
-               uint32_t index_;
-
-            protected:
-
                //! Slave. Used for request forwards.
                boost::shared_ptr<rogue::interfaces::memory::Slave> slave_;
 
                //! Slave mutex
                boost::mutex slaveMtx_;
 
-               //! Address
-               uint64_t address_;
+               //! Transaction python buffer
+               Py_buffer pyBuf_;
 
-               //! Size tracking for transaction and/or managed space
-               uint32_t size_;
+               //! Python buffer is valid
+               bool pyValid_;
+
+               //! Transaction data
+               uint8_t * tData_;
+
+               //! Transaction size
+               uint32_t tSize_;
+
+               //! Transaction lock
+               boost::mutex tMtx_;
+
+               //! Transaction id
+               uint32_t tId_;
+
+            protected:
+
+               //! Generate a transaction id, not python safe
+               void genId();
+
+            public:
+
+               //! Create a master container
+               static boost::shared_ptr<rogue::interfaces::memory::Master> create ();
+
+               //! Setup class in python
+               static void setup_python();
+
+               //! Create object
+               Master();
+
+               //! Destroy object
+               ~Master();
+
+               //! Get current transaction id, zero if no active transaction
+               uint32_t getId();
+
+               //! Set slave
+               void setSlave ( boost::shared_ptr<rogue::interfaces::memory::Slave> slave );
 
                //! Get slave
                boost::shared_ptr<rogue::interfaces::memory::Slave> getSlave();
@@ -68,40 +100,14 @@ namespace rogue {
                //! Query the maximum transaction size in bytes for the interface
                uint32_t reqMaxAccess();
 
-               //! Post a transaction, called locally, forwarded to slave
-               void reqTransaction(bool write, bool posted);
+               //! Post a transaction, called locally, forwarded to slave, data pointer is optional
+               void reqTransaction(uint64_t address, uint32_t size, void *data, bool write, bool posted);
 
-            public:
+               //! Post a transaction, called locally, forwarded to slave, python version
+               void reqTransactionPy(uint64_t address, boost::python::object p, bool write, bool posted);
 
-               //! Create a master container
-               static boost::shared_ptr<rogue::interfaces::memory::Master> create (uint64_t address, uint32_t size);
-
-               //! Setup class in python
-               static void setup_python();
-
-               //! Get index
-               uint32_t getIndex();
-
-               //! Get size
-               uint32_t getSize();
-
-               //! Set size
-               void setSize(uint32_t size);
-
-               //! Get address
-               uint64_t getAddress();
-
-               //! Set address
-               void setAddress(uint64_t address);
-
-               //! Create object
-               Master(uint64_t address, uint32_t size);
-
-               //! Destroy object
-               ~Master();
-
-               //! Set slave
-               void setSlave ( boost::shared_ptr<rogue::interfaces::memory::Slave> slave );
+               //! End current transaction, ensures data pointer is not update and de-allocates python buffer
+               void endTransaction();
 
                //! Transaction complete, called by slave when transaction is complete, error passed
                virtual void doneTransaction(uint32_t id, uint32_t error);
@@ -109,13 +115,33 @@ namespace rogue {
                //! Set to master from slave, called by slave to push data into master.
                virtual void setTransactionData(uint32_t id, void *data, uint32_t offset, uint32_t size);
 
+               //! Set to master from slave, called by slave to push data into master. Python Version.
+               void setTransactionDataPy(uint32_t id, uint32_t offset, boost::python::object p);
+
                //! Get from master to slave, called by slave to pull data from mater.
                virtual void getTransactionData(uint32_t id, void *data, uint32_t offset, uint32_t size);
 
+               //! Get from master to slave, called by slave to pull data from mater. Python Version.
+               void getTransactionDataPy(uint32_t id, uint32_t offset, boost::python::object p);
+         };
+
+         //! Memory master class, wrapper to enable pyton overload of virtual methods
+         class MasterWrap : 
+            public rogue::interfaces::memory::Master,
+            public boost::python::wrapper<rogue::interfaces::memory::Master> {
+
+            public:
+
+               //! Transaction complete, called by slave when transaction is complete, error passed
+               void doneTransaction(uint32_t id, uint32_t error);
+
+               //! Transaction complete, called by slave when transaction is complete, error passed
+               void defDoneTransaction(uint32_t id, uint32_t error);
          };
 
          // Convienence
          typedef boost::shared_ptr<rogue::interfaces::memory::Master> MasterPtr;
+         typedef boost::shared_ptr<rogue::interfaces::memory::MasterWrap> MasterWrapPtr;
 
       }
    }

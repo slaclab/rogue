@@ -42,13 +42,15 @@ rim::BlockPtr rim::Block::create (uint64_t address, uint32_t size ) {
 }
 
 //! Create an block
-rim::Block::Block(uint64_t address, uint32_t size ) : Master (address,size) {
+rim::Block::Block(uint64_t address, uint32_t size ) : Master () {
    timeout_ = 1000000; // One second
    error_   = 0;
    write_   = 0;
    busy_    = false;
    enable_  = true;
    updated_ = false;
+   address_ = address;
+   size_    = size;
 
    if ( (data_ = (uint8_t *)malloc(size)) == NULL ) 
       throw(re::AllocationException("Block::Block",size));
@@ -59,6 +61,44 @@ rim::Block::Block(uint64_t address, uint32_t size ) : Master (address,size) {
 //! Destroy a block
 rim::Block::~Block() {
    if ( data_ != NULL ) free(data_);
+}
+
+//! Get address
+void rim::Block::setAddress(uint64_t address) {
+   PyRogue_BEGIN_ALLOW_THREADS;
+   {
+      boost::unique_lock<boost::mutex> lck = waitAndLock();
+      address_ = address;
+   }
+   PyRogue_END_ALLOW_THREADS;
+}
+   
+
+//! Get address
+uint64_t rim::Block::getAddress() {
+   return(address_);
+}
+
+//! Set size
+void rim::Block::setSize(uint32_t size) {
+   PyRogue_BEGIN_ALLOW_THREADS;
+   {
+      boost::unique_lock<boost::mutex> lck = waitAndLock();
+
+      if ( data_ != NULL ) free(data_);
+
+      if ( (data_ = (uint8_t *)malloc(size)) == NULL ) 
+         throw(re::AllocationException("Block::Block",size));
+
+      size_ = size;
+      memset(data_,0,size);
+   }
+   PyRogue_END_ALLOW_THREADS;
+}
+
+//! Get size
+uint32_t rim::Block::getSize() {
+   return(size_);
 }
 
 //! Set timeout value
@@ -134,6 +174,9 @@ boost::unique_lock<boost::mutex> rim::Block::waitAndLock() {
    if ( busy_ ) {
       busy_ = false;
       error_ = 0xFFFFFFFF;
+      printf("timeout1\n");
+      endTransaction();
+      printf("timeout2\n");
    }
    return(lock);
 }
@@ -200,42 +243,29 @@ void rim::Block::reqTransaction(bool write, bool posted) {
 
    // Lock must be relased before this call because
    // complete() call can come directly as a result
-   if ( enable_ ) rim::Master::reqTransaction(write,posted);
+   if ( enable_ ) rim::Master::reqTransaction(address_,size_,data_,write,posted);
 }
 
 //! Transaction complete
 void rim::Block::doneTransaction(uint32_t id, uint32_t error) {
+   PyRogue_BEGIN_ALLOW_THREADS;
    { // Begin scope of lck
 
       boost::lock_guard<boost::mutex> lck(mtx_); // Will succeedd if busy is set
-      if ( busy_ == false ) return; // Transaction was not active,
-                                    // message was received after timeout.
-      busy_    = false;
-      error_   = error;
-      if ( error == 0 ) {
-         if ( ! write_ ) updated_ = true;
+
+      // Make sure id matches
+      if ( id == getId() and busy_ ) {
+         busy_    = false;
+         error_   = error;
+         if ( error == 0 ) {
+            if ( ! write_ ) updated_ = true;
+         }
       }
 
    } // End scope of lck
+   PyRogue_END_ALLOW_THREADS;
+   endTransaction();
    busyCond_.notify_one();
-}
-
-//! Set to master from slave, called by slave
-void rim::Block::setTransactionData(uint32_t id, void *data, uint32_t offset, uint32_t size) {
-   if ( (offset+size) > size_ )
-      throw(re::BoundaryException("Block::setData",offset+size,size_));
-
-   boost::lock_guard<boost::mutex> lck(mtx_); // Will succeedd if busy is set
-   memcpy(((uint8_t *)data_)+offset,data,size);
-}
-
-//! Get from master to slave, called by slave
-void rim::Block::getTransactionData(uint32_t id, void *data, uint32_t offset, uint32_t size) {
-   if ( (offset+size) > size_ )
-      throw(re::BoundaryException("Block::getData",offset+size,size_));
-
-   boost::lock_guard<boost::mutex> lck(mtx_); // Will succeedd if busy is set
-   memcpy(data,((uint8_t *)data_)+offset,size);
 }
 
 //! Get arbitrary bit field at byte and bit offset
@@ -343,6 +373,10 @@ void rim::Block::setup_python() {
       .def("setUInt",         &rim::Block::setUInt)
       .def("getString",       &rim::Block::getString)
       .def("setString",       &rim::Block::setString)
+      .def("_setSize",        &rim::Block::setSize)
+      .def("getSize",         &rim::Block::getSize)
+      .def("getAddress",      &rim::Block::getAddress)
+      .def("_setAddress",     &rim::Block::setAddress)
    ;
 
    bp::implicitly_convertible<rim::BlockPtr, rim::MasterPtr>();

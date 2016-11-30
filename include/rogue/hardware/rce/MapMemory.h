@@ -70,12 +70,6 @@ namespace rogue {
                //! Add a memory space
                void addMap(uint32_t address, uint32_t size);
 
-               //! Return min access size to requesting master
-               uint32_t doMinAccess();
-
-               //! Return max access size to requesting master
-               uint32_t doMaxAccess();
-
                //! Post a transaction
                void doTransaction(uint32_t id, boost::shared_ptr<rogue::interfaces::memory::Master> master, 
                                   uint64_t address, uint32_t size, bool write, bool posted);

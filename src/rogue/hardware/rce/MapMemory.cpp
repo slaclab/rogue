@@ -42,7 +42,7 @@ rhr::MapMemoryPtr rhr::MapMemory::create () {
 }
 
 //! Creator
-rhr::MapMemory::MapMemory() {
+rhr::MapMemory::MapMemory() : rim::Slave(1,0xFFFFFFFF) {
    fd_ = ::open("/dev/mem", O_RDWR | O_SYNC);
    if ( fd_ < 0 ) throw(re::OpenException("MapMemory::MapMemory","/dev/mem",0));
 }
@@ -86,16 +86,6 @@ uint8_t * rhr::MapMemory::findSpace (uint32_t base, uint32_t size) {
       }
    }
    return(NULL);
-}
-
-//! Return min access size to requesting master
-uint32_t rhr::MapMemory::doMinAccess() {
-   return(4);
-}
-
-//! Return max access size to requesting master
-uint32_t rhr::MapMemory::doMaxAccess() {
-   return(2^32);
 }
 
 //! Post a transaction

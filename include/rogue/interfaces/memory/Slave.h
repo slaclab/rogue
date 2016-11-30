@@ -41,10 +41,16 @@ namespace rogue {
                //! Slave map lock
                boost::mutex masterMapMtx_;
 
+               //! Min access
+               uint32_t min_;
+
+               //! Max access
+               uint32_t max_;
+
             protected:
 
                //! Register a master.
-               void addMaster(uint32_t, boost::shared_ptr<rogue::interfaces::memory::Master> master);
+               void addMaster(uint32_t index, boost::shared_ptr<rogue::interfaces::memory::Master> master);
 
                //! Get master device with index
                boost::shared_ptr<rogue::interfaces::memory::Master> getMaster(uint32_t index);
@@ -52,16 +58,19 @@ namespace rogue {
                //! Return true if master is valid
                bool validMaster(uint32_t index);
 
+               //! Remove master from the list
+               void delMaster(uint32_t index);
+
             public:
 
                //! Create a slave container
-               static boost::shared_ptr<rogue::interfaces::memory::Slave> create ();
+               static boost::shared_ptr<rogue::interfaces::memory::Slave> create (uint32_t min, uint32_t max);
 
                //! Setup class in python
                static void setup_python();
 
                //! Create object
-               Slave();
+               Slave(uint32_t min, uint32_t max);
 
                //! Destroy object
                ~Slave();
@@ -73,13 +82,46 @@ namespace rogue {
                virtual uint32_t doMaxAccess();
 
                //! Post a transaction. Master will call this method with the access attributes.
-               virtual void doTransaction(uint32_t tid, boost::shared_ptr<rogue::interfaces::memory::Master> master,
+               virtual void doTransaction(uint32_t id, boost::shared_ptr<rogue::interfaces::memory::Master> master,
                                           uint64_t address, uint32_t size, bool write, bool posted);
+
+         };
+
+         //! Memory slave class, wrapper to enable pyton overload of virtual methods
+         class SlaveWrap : 
+            public rogue::interfaces::memory::Slave, 
+            public boost::python::wrapper<rogue::interfaces::memory::Slave> {
+
+            public:
+
+               //! Constructor
+               SlaveWrap(uint32_t min, uint32_t max);
+
+               //! Return min access size to requesting master
+               uint32_t doMinAccess();
+
+               //! Return min access size to requesting master
+               uint32_t defDoMinAccess();
+
+               //! Return max access size to requesting master
+               uint32_t doMaxAccess();
+
+               //! Return max access size to requesting master
+               uint32_t defDoMaxAccess();
+
+               //! Post a transaction. Master will call this method with the access attributes.
+               void doTransaction(uint32_t id, boost::shared_ptr<rogue::interfaces::memory::Master> master,
+                                  uint64_t address, uint32_t size, bool write, bool posted);
+
+               //! Post a transaction. Master will call this method with the access attributes.
+               void defDoTransaction(uint32_t id, boost::shared_ptr<rogue::interfaces::memory::Master> master,
+                                     uint64_t address, uint32_t size, bool write, bool posted);
 
          };
 
          // Convienence
          typedef boost::shared_ptr<rogue::interfaces::memory::Slave> SlavePtr;
+         typedef boost::shared_ptr<rogue::interfaces::memory::SlaveWrap> SlaveWrapPtr;
 
       }
    }

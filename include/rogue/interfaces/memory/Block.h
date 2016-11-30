@@ -65,6 +65,12 @@ namespace rogue {
                //! Block is enabled for memory access
                bool enable_;
 
+               //! Address
+               uint64_t address_;
+
+               //! Size 
+               uint32_t size_;
+
                //! Busy condition
                boost::condition_variable busyCond_;
 
@@ -85,6 +91,18 @@ namespace rogue {
 
                //! Destroy a block
                ~Block();
+
+               //! set address
+               void setAddress(uint64_t address);
+
+               //! Get address
+               uint64_t getAddress();
+
+               //! Set size
+               void setSize(uint32_t size);
+
+               //! Get size
+               uint32_t getSize();
 
                //! Set timeout value
                void setTimeout(uint32_t timeout);
@@ -141,12 +159,6 @@ namespace rogue {
 
                //! Transaction complete, set by slave
                void doneTransaction(uint32_t id, uint32_t error);
-
-               //! Set to master from slave, called by slave
-               void setTransactionData(uint32_t id, void *data, uint32_t offset, uint32_t size);
-
-               //! Get from master to slave, called by slave
-               void getTransactionData(uint32_t id, void *data, uint32_t offset, uint32_t size);
 
                //////////////////////////////////////
                // Access Methods

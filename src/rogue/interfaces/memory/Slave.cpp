@@ -29,13 +29,16 @@ namespace re  = rogue::exceptions;
 namespace bp = boost::python;
 
 //! Create a slave container
-rim::SlavePtr rim::Slave::create () {
-   rim::SlavePtr s = boost::make_shared<rim::Slave>();
+rim::SlavePtr rim::Slave::create (uint32_t min, uint32_t max) {
+   rim::SlavePtr s = boost::make_shared<rim::Slave>(min,max);
    return(s);
 }
 
 //! Create object
-rim::Slave::Slave() { } 
+rim::Slave::Slave(uint32_t min, uint32_t max) { 
+   min_ = min;
+   max_ = max;
+} 
 
 //! Destroy object
 rim::Slave::~Slave() { }
@@ -61,24 +64,123 @@ bool rim::Slave::validMaster(uint32_t index) {
    else return(false);
 }
 
+//! Remove master from the list
+void rim::Slave::delMaster(uint32_t index) {
+   boost::lock_guard<boost::mutex> lock(masterMapMtx_);
+   if ( masterMap_.find(index) != masterMap_.end() ) masterMap_.erase(index);
+}
+
 //! Return min access size to requesting master
 uint32_t rim::Slave::doMinAccess() {
-   return(4);
+   return(min_);
 }
 
 //! Return max access size to requesting master
 uint32_t rim::Slave::doMaxAccess() {
-   return(4);
+   return(max_);
 }
 
 //! Post a transaction
 void rim::Slave::doTransaction(uint32_t id, rim::MasterPtr master, uint64_t address, uint32_t size, bool write, bool posted) {
-   master->doneTransaction(id,0xFFFFFFFF);
+   master->doneTransaction(id,0);
 }
 
 void rim::Slave::setup_python() {
+   bp::class_<rim::SlaveWrap, rim::SlaveWrapPtr, boost::noncopyable>("Slave",bp::init<uint32_t,uint32_t>())
+      .def("create",         &rim::Slave::create)
+      .staticmethod("create")
+      .def("_doMinAccess",   &rim::Slave::doMinAccess,   &rim::SlaveWrap::defDoMinAccess)
+      .def("_doMaxAccess",   &rim::Slave::doMaxAccess,   &rim::SlaveWrap::defDoMaxAccess)
+      .def("_doTransaction", &rim::Slave::doTransaction, &rim::SlaveWrap::defDoTransaction)
+   ;
+}
 
-   // slave can only exist as sub-class in python
-   bp::class_<rim::Slave, rim::SlavePtr, boost::noncopyable>("Slave",bp::init<>());
+//! Constructor
+rim::SlaveWrap::SlaveWrap(uint32_t min, uint32_t max) : rim::Slave(min,max) {}
+
+//! Return min access size to requesting master
+uint32_t rim::SlaveWrap::doMinAccess() {
+   bool     found;
+   uint32_t ret;
+
+   found = false;
+   ret = 0;
+
+   PyGILState_STATE pyState = PyGILState_Ensure();
+
+   if (boost::python::override pb = this->get_override("_doMinAccess")) {
+      found = true;
+      try {
+         ret = pb();
+      } catch (...) {
+         PyErr_Print();
+      }
+   }
+   PyGILState_Release(pyState);
+
+   if ( ! found ) ret = rim::Slave::doMinAccess();
+   return(ret);
+}
+
+//! Return min access size to requesting master
+uint32_t rim::SlaveWrap::defDoMinAccess() {
+   return(rim::Slave::doMinAccess());
+}
+
+//! Return max access size to requesting master
+uint32_t rim::SlaveWrap::doMaxAccess() {
+   bool     found;
+   uint32_t ret;
+
+   found = false;
+   ret = 0;
+
+   PyGILState_STATE pyState = PyGILState_Ensure();
+
+   if (boost::python::override pb = this->get_override("_doMaxAccess")) {
+      found = true;
+      try {
+         ret = pb();
+      } catch (...) {
+         PyErr_Print();
+      }
+   }
+   PyGILState_Release(pyState);
+
+   if ( ! found ) ret = rim::Slave::doMaxAccess();
+   return(ret);
+}
+
+//! Return max access size to requesting master
+uint32_t rim::SlaveWrap::defDoMaxAccess() {
+   return(rim::Slave::doMinAccess());
+}
+
+//! Post a transaction. Master will call this method with the access attributes.
+void rim::SlaveWrap::doTransaction(uint32_t id, rim::MasterPtr master,
+                                   uint64_t address, uint32_t size, bool write, bool posted) {
+   bool found;
+
+   found = false;
+
+   PyGILState_STATE pyState = PyGILState_Ensure();
+
+   if (boost::python::override pb = this->get_override("_doTransaction")) {
+      found = true;
+      try {
+         pb(id,master,address,size,write,posted);
+      } catch (...) {
+         PyErr_Print();
+      }
+   }
+   PyGILState_Release(pyState);
+
+   if ( ! found ) rim::Slave::doTransaction(id,master,address,size,write,posted);
+}
+
+//! Post a transaction. Master will call this method with the access attributes.
+void rim::SlaveWrap::defDoTransaction(uint32_t id, rim::MasterPtr master,
+                                      uint64_t address, uint32_t size, bool write, bool posted) {
+   rim::Slave::doTransaction(id, master, address, size, write, posted);
 }
 

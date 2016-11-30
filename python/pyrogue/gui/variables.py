@@ -149,10 +149,6 @@ class VariableWidget(QWidget):
         pb.pressed.connect(self.readPressed)
         hb.addWidget(pb)
 
-        pb = QPushButton('Write')
-        pb.pressed.connect(self.writePressed)
-        hb.addWidget(pb)
-
     def addTree(self,root):
         self.roots.append(root)
 
@@ -165,10 +161,6 @@ class VariableWidget(QWidget):
             self.tree.resizeColumnToContents(i)
 
     def readPressed(self):
-        for root in self.roots:
-            root.readAll()
-
-    def writePressed(self):
         for root in self.roots:
             root.readAll()
 
