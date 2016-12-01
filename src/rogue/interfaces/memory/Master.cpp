@@ -122,6 +122,19 @@ uint32_t rim::Master::reqMaxAccess() {
    return(slave->doMaxAccess());
 }
 
+//! Query the offset
+uint64_t rim::Master::reqOffset() {
+   rim::SlavePtr slave;
+
+   PyRogue_BEGIN_ALLOW_THREADS;
+   {
+      boost::lock_guard<boost::mutex> lock(slaveMtx_);
+      slave = slave_;
+   }
+   PyRogue_END_ALLOW_THREADS;
+   return(slave->doOffset());
+}
+
 //! Post a transaction, called locally, forwarded to slave
 void rim::Master::reqTransaction(uint64_t address, uint32_t size, void *data, bool write, bool posted) {
    rim::SlavePtr slave;
@@ -254,6 +267,7 @@ void rim::Master::setup_python() {
       .def("_getSlave",           &rim::Master::getSlave)
       .def("_reqMinAccess",       &rim::Master::reqMinAccess)
       .def("_reqMaxAccess",       &rim::Master::reqMaxAccess)
+      .def("_reqOffset",          &rim::Master::reqOffset)
       .def("_reqTransaction",     &rim::Master::reqTransactionPy)
       .def("_endTransaction",     &rim::Master::endTransaction)
       .def("_doneTransaction",    &rim::Master::doneTransaction, &rim::MasterWrap::defDoneTransaction)

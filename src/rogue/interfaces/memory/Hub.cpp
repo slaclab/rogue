@@ -58,6 +58,11 @@ uint32_t rim::Hub::doMaxAccess() {
    return(reqMaxAccess());
 }
 
+//! Return offset
+uint64_t rim::Hub::doOffset() {
+   return(reqOffset() | address_);
+}
+
 //! Post a transaction. Master will call this method with the access attributes.
 void rim::Hub::doTransaction(uint32_t id, boost::shared_ptr<rogue::interfaces::memory::Master> master,
                              uint64_t address, uint32_t size, bool write, bool posted) {

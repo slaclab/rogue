@@ -100,6 +100,9 @@ namespace rogue {
                //! Query the maximum transaction size in bytes for the interface
                uint32_t reqMaxAccess();
 
+               //! Query the offset
+               uint64_t reqOffset();
+
                //! Post a transaction, called locally, forwarded to slave, data pointer is optional
                void reqTransaction(uint64_t address, uint32_t size, void *data, bool write, bool posted);
 

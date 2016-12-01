@@ -21,6 +21,7 @@
 **/
 #include <rogue/hardware/rce/MapMemory.h>
 #include <rogue/exceptions/OpenException.h>
+#include <rogue/exceptions/MemoryException.h>
 #include <rogue/interfaces/memory/Block.h>
 #include <boost/make_shared.hpp>
 #include <stdio.h>
@@ -95,7 +96,7 @@ void rhr::MapMemory::doTransaction(uint32_t id, boost::shared_ptr<rogue::interfa
    uint32_t count;
 
    if ((ptr = findSpace(address,size)) == NULL) {
-      master->doneTransaction(id,1);
+      master->doneTransaction(id,re::MemoryException::AddressError);
    }
    else {
       count = 0;

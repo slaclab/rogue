@@ -42,7 +42,13 @@ namespace rogue {
                uint32_t timeout_;
 
                //! Pointer to data
-               uint8_t * data_;
+               uint8_t * bData_;
+
+               //! Pointer to verify data
+               uint8_t * vData_;
+
+               //! Pointer to verify mask
+               uint8_t * mData_;
 
                //! Error state of last transaction
                /*
@@ -61,6 +67,9 @@ namespace rogue {
 
                //! Current transaction is a write
                bool write_;
+
+               //! Current transaction is a verify
+               bool verify_;
 
                //! Block is enabled for memory access
                bool enable_;
@@ -98,6 +107,9 @@ namespace rogue {
                //! Get address
                uint64_t getAddress();
 
+               //! Get full address
+               uint64_t getFullAddress();
+
                //! Set size
                void setSize(uint32_t size);
 
@@ -112,6 +124,9 @@ namespace rogue {
 
                //! Get enable flag
                bool getEnable();
+
+               //! Add Verify bits
+               void addVerify(uint32_t bitOffset, uint32_t bitCount);
 
                //! Get error state without generating exception
                /*
@@ -150,12 +165,18 @@ namespace rogue {
                //! Generate posted write transaction
                void postedWrite();
 
+               //! Generate background verify read transaction
+               void backgroundVerify();
+               
+               //! Generate blocking verify read transaction
+               void blockingVerify();
+
                //////////////////////////////////////
                // Slave Interface Transactions
                //////////////////////////////////////
 
                //! Post a transaction, called locally, forwarded to slave
-               void reqTransaction(bool write, bool posted);
+               void reqTransaction(bool write, bool posted, bool verify);
 
                //! Transaction complete, set by slave
                void doneTransaction(uint32_t id, uint32_t error);

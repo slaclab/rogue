@@ -80,6 +80,11 @@ uint32_t rim::Slave::doMaxAccess() {
    return(max_);
 }
 
+//! Return offset
+uint64_t rim::Slave::doOffset() {
+   return(0);
+}
+
 //! Post a transaction
 void rim::Slave::doTransaction(uint32_t id, rim::MasterPtr master, uint64_t address, uint32_t size, bool write, bool posted) {
    master->doneTransaction(id,0);
@@ -91,6 +96,7 @@ void rim::Slave::setup_python() {
       .staticmethod("create")
       .def("_doMinAccess",   &rim::Slave::doMinAccess,   &rim::SlaveWrap::defDoMinAccess)
       .def("_doMaxAccess",   &rim::Slave::doMaxAccess,   &rim::SlaveWrap::defDoMaxAccess)
+      .def("_doOffset",      &rim::Slave::doOffset,      &rim::SlaveWrap::defDoOffset)
       .def("_doTransaction", &rim::Slave::doTransaction, &rim::SlaveWrap::defDoTransaction)
    ;
 }
@@ -154,6 +160,35 @@ uint32_t rim::SlaveWrap::doMaxAccess() {
 //! Return max access size to requesting master
 uint32_t rim::SlaveWrap::defDoMaxAccess() {
    return(rim::Slave::doMinAccess());
+}
+
+//! Return offset
+uint64_t rim::SlaveWrap::doOffset() {
+   bool     found;
+   uint64_t ret;
+
+   found = false;
+   ret = 0;
+
+   PyGILState_STATE pyState = PyGILState_Ensure();
+
+   if (boost::python::override pb = this->get_override("_doOffset")) {
+      found = true;
+      try {
+         ret = pb();
+      } catch (...) {
+         PyErr_Print();
+      }
+   }
+   PyGILState_Release(pyState);
+
+   if ( ! found ) ret = rim::Slave::doOffset();
+   return(ret);
+}
+
+//! Return offset
+uint64_t rim::SlaveWrap::defDoOffset() {
+   return(rim::Slave::doOffset());
 }
 
 //! Post a transaction. Master will call this method with the access attributes.

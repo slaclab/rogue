@@ -39,6 +39,9 @@ class VariableLink(QObject):
         item.setText(1,variable.mode)
         item.setText(2,variable.base)
 
+        if variable.units:
+           item.setText(4,str(variable.units))
+
         if variable.base == 'enum' and variable.mode=='RW':
             self.widget = QComboBox()
             self.widget.activated.connect(self.guiChanged)
@@ -135,7 +138,7 @@ class VariableWidget(QWidget):
         vb.addWidget(self.tree)
 
         self.tree.setColumnCount(2)
-        self.tree.setHeaderLabels(['Variable','Mode','Base','Value'])
+        self.tree.setHeaderLabels(['Variable','Mode','Base','Value','Units'])
 
         self.top = QTreeWidgetItem(self.tree)
         self.top.setText(0,group)
@@ -176,6 +179,6 @@ class VariableWidget(QWidget):
             if not val.hidden:
                 w = QTreeWidgetItem(tree)
                 w.setText(0,val.name)
-                w.setExpanded(True)
+                w.setExpanded(val.expand)
                 self.addTreeItems(w,val)
 

@@ -745,8 +745,8 @@ class Variable(Node):
             if write and self._block and self._block.mode != 'RO':
                 self._block.blockingWrite()
                 self._parent._afterWrite()
-                #self._parent._beforeVerify()
-                #self._block.block.blockingVerify() # Not yet implemented in memory::Block
+                self._parent._beforeVerify()
+                self._block.blockingVerify()
         except Exception as e:
             self._root._logException(e)
 
@@ -972,7 +972,7 @@ class Block(rogue.interfaces.memory.Block):
 class Device(Node,rogue.interfaces.memory.Hub):
     """Device class holder. TODO: Update comments"""
 
-    def __init__(self, name=None, description="", memBase=None, offset=0, hidden=False, variables=None, **dump):
+    def __init__(self, name=None, description="", memBase=None, offset=0, hidden=False, variables=None, expand=True, **dump):
         """Initialize device class"""
         if name is None:
             name = self.__class__.__name__
@@ -987,6 +987,7 @@ class Device(Node,rogue.interfaces.memory.Hub):
         self._enable    = True
         self._memBase   = memBase
         self._resetFunc = None
+        self.expand     = expand
 
         # Connect to memory slave
         if memBase: self._setSlave(memBase)
@@ -1058,6 +1059,10 @@ class Device(Node,rogue.interfaces.memory.Hub):
             if vblock.getSize() < varBytes:
                vblock._setSize(varBytes)
 
+            # Update verify mask
+            if node.mode == 'RW':
+               vblock.addVerify(node.bitOffset,node.bitSize)
+
     def setResetFunc(self,func):
         """
         Set function for count, hard or soft reset
@@ -1113,8 +1118,7 @@ class Device(Node,rogue.interfaces.memory.Hub):
         # Process local blocks
         for block in self._blocks:
             if block.mode == 'WO' or block.mode == 'RW':
-                #block.backgroundVerify()
-                pass # Not yet implemented in memory::Block
+                block.backgroundVerify()
 
         # Process reset of tree
         for key,value in self._nodes.iteritems():

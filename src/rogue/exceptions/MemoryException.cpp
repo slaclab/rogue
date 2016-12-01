@@ -25,11 +25,34 @@ namespace bp = boost::python;
 
 PyObject * re::memoryExceptionObj = 0;
 
-re::MemoryException::MemoryException(std::string src, uint32_t error, uint64_t address, uint32_t time) {
-   if (error == 0xFFFFFFFF) 
-      sprintf(text_,"%s: Memory access timeout after %i uSeconds. Address: 0x%lx",src.c_str(),time,address);
-   else
-      sprintf(text_,"%s: Memory access error detected: 0x%x. Address: 0x%lx",src.c_str(),error,address);
+re::MemoryException::MemoryException(std::string src, uint32_t error, uint64_t address, uint32_t size) {
+
+   switch ( error & 0xFF000000 ) {
+
+      case TimeoutError:
+         sprintf(text_,"%s: Memory access timeout. Address: 0x%lx, Size: %i",src.c_str(),address,size);
+         break;
+
+      case VerifyError:
+         sprintf(text_,"%s: Memory verify error. Address: 0x%lx, Size: %i",src.c_str(),address,size);
+         break;
+
+      case AddressError:
+         sprintf(text_,"%s: Memory address error. Address: 0x%lx, Size: %i",src.c_str(),address,size);
+         break;
+
+      case AxiTimeout:
+         sprintf(text_,"%s: Memory AXI timeout. Address: 0x%lx, Size: %i",src.c_str(),address,size);
+         break;
+
+      case AxiFail:
+         sprintf(text_,"%s: Memory AXI fail. Address: 0x%lx, Size: %i",src.c_str(),address,size);
+         break;
+
+      default:
+         sprintf(text_,"%s: Memory error detected: 0x%x. Address: 0x%lx, Size: %i",src.c_str(),error,address,size);
+         break;
+   }
 }
 
 char const * re::MemoryException::what() const throw() {
