@@ -39,27 +39,16 @@ namespace rogue {
                std::map<uint32_t, boost::shared_ptr<rogue::interfaces::memory::Master> > masterMap_;
 
                //! Slave map lock
-               boost::mutex masterMapMtx_;
+               boost::mutex mtx_;
 
                //! Min access
                uint32_t min_;
 
                //! Max access
                uint32_t max_;
-
-            protected:
-
-               //! Register a master.
-               void addMaster(uint32_t index, boost::shared_ptr<rogue::interfaces::memory::Master> master);
-
-               //! Get master device with index
-               boost::shared_ptr<rogue::interfaces::memory::Master> getMaster(uint32_t index);
-
-               //! Return true if master is valid
-               bool validMaster(uint32_t index);
-
-               //! Remove master from the list
-               void delMaster(uint32_t index);
+               
+               //! Enable local response
+               bool enLocDone_;
 
             public:
 
@@ -74,6 +63,21 @@ namespace rogue {
 
                //! Destroy object
                ~Slave();
+
+               //! Register a master.
+               void addMaster(uint32_t index, boost::shared_ptr<rogue::interfaces::memory::Master> master);
+
+               //! Get master device with index
+               boost::shared_ptr<rogue::interfaces::memory::Master> getMaster(uint32_t index);
+
+               //! Return true if master is valid
+               bool validMaster(uint32_t index);
+
+               //! Remove master from the list
+               void delMaster(uint32_t index);
+
+               //! Enable local response
+               void enLocDone(bool enable);
 
                //! Return min access size to requesting master
                virtual uint32_t doMinAccess();
