@@ -23,6 +23,23 @@ import datetime
 import os
 import pyrogue
 
+
+def genDescription(indent,text):
+    if text.find('\n') < 0:
+       ret = "'%s'" % (text)
+    else:
+
+        l = text.split('\n')
+        ret = '"""\n'
+
+        for le in l:
+            ret += ((' ' * indent) + ('%s\n' % (le)))
+
+        ret += ((' ' * indent) + '"""')
+
+    return(ret)
+
+
 def findAndReadYamlFiles(path,base):
     """
     Search path for yaml files from which to generate python modules
@@ -110,7 +127,7 @@ def genMMIODev(path,base,name,fields):
         f.write('def create(name=\'%s\', offset=0, memBase=None, hidden=False):\n\n' % (newName))
         f.write('    dev = pyrogue.Device(name=name,memBase=memBase,offset=offset,\n')
         f.write('                         hidden=hidden,size=0x%x,\n' % (int(size)))
-        f.write('                         description=\'%s\')\n' % (desc))
+        f.write('                         description=%s)\n' % (genDescription(38,desc)))
         f.write('\n')
 
         for l in lines:
@@ -192,11 +209,11 @@ def genIntField(name,fields,lines):
         bitSize = bitSize * nelms
 
     loc  = '    dev.add(pyrogue.Variable(name=\'%s\',\n'
-    loc += '                             description=\'%s\',\n'
+    loc += '                             description=%s,\n'
     loc += '                             hidden=%s, enum=%s, offset=0x%x, bitSize=%s, bitOffset=%s, base=\'%s\', mode=\'%s\'))\n\n'
 
     if stride == 0:
-        lines.append(loc % (newName,desc,hidden,str(enum),int(offset),bitSize,bitOffset,base,mode))
+        lines.append(loc % (newName,genDescription(41,desc),hidden,str(enum),int(offset),bitSize,bitOffset,base,mode))
     else:
 
         if stride % 4 != 0:
@@ -206,7 +223,7 @@ def genIntField(name,fields,lines):
         for i in range(0,nelms):
             lname = '%s_%i' % (newName,i)
             loffset = offset + (i * stride)
-            lines.append(loc % (lname,desc,hidden,str(enum),int(loffset),bitSize,bitOffset,base,mode))
+            lines.append(loc % (lname,genDescription(41,desc),hidden,str(enum),int(loffset),bitSize,bitOffset,base,mode))
 
     return True
 
@@ -219,7 +236,7 @@ def genSequence(name,fields,lines):
     newName = name[:1].lower() + name[1:]
 
     for key,value in fields.iteritems():
-        if   key == 'description': desc      = value
+        if   key == 'description': desc = value
         elif key == 'at':
             for k,v in value.iteritems():
                 if   k == 'offset': offset = v
@@ -246,7 +263,7 @@ def genSequence(name,fields,lines):
             return False
 
     loc  = '    dev.add(pyrogue.Command(name=\'%s\',\n' % (newName)
-    loc += '                            description=\'%s\',\n' % (desc)
+    loc += '                            description=%s,\n' % (genDescription(40,desc))
     loc += '                            hidden=False, base=\'None\',\n'
     loc += '                            function="""\\\n'
 
