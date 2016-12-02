@@ -39,6 +39,7 @@ rim::SlavePtr rim::Slave::create (uint32_t min, uint32_t max) {
 rim::Slave::Slave(uint32_t min, uint32_t max) { 
    min_ = min;
    max_ = max;
+   enLocDone_ = false;
 } 
 
 //! Destroy object
