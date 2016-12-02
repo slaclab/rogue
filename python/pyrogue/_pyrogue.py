@@ -790,14 +790,15 @@ class Variable(Node):
         """Get the block associated with this varable if it exists"""
         return self._block
 
-    def _updated(self):
+    def _updated(self, value=None):
         """Variable has been updated. Inform listeners."""
         
         # Don't generate updates for SL and WO variables
         if self.mode == 'WO' or self.mode == 'SL': return
 
-        value = self._rawGet()
-
+        if value is None:
+            value = self._rawGet()
+        
         for func in self.__listeners:
             func(self,value)
 
@@ -882,6 +883,9 @@ class Variable(Node):
                     return ivalue
         else:
             return None
+
+    def linkUpdated(self, var, value):
+        self._updated(value)
 
 
 class Command(Variable):
@@ -973,7 +977,7 @@ class Block(rogue.interfaces.memory.Block):
 class Device(Node,rogue.interfaces.memory.Hub):
     """Device class holder. TODO: Update comments"""
 
-    def __init__(self, name=None, description="", memBase=None, offset=0, hidden=False, variables=None, expand=True, **dump):
+    def __init__(self, name=None, description="", memBase=None, offset=0, hidden=False, variables=None, expand=True, enabled=True, **dump):
         """Initialize device class"""
         if name is None:
             name = self.__class__.__name__
@@ -985,7 +989,7 @@ class Device(Node,rogue.interfaces.memory.Hub):
 
         # Blocks
         self._blocks    = []
-        self._enable    = True
+        self._enable    = enabled
         self._memBase   = memBase
         self._resetFunc = None
         self.expand     = expand
