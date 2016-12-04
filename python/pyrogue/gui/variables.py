@@ -60,8 +60,6 @@ class VariableLink(QObject):
             self.connect(self,SIGNAL('updateGui'),self.widget.setCurrentIndex)
 
         elif variable.base == 'range':
-            self.widget = QSpinBox()
-            self.widget.setMinimum(variable.minimum)
             self.widget.setMaximum(variable.maximum)
             self.widget.valueChanged.connect(self.guiChanged)
             self.connect(self,SIGNAL('updateGui'),self.widget.setValue)
@@ -87,7 +85,6 @@ class VariableLink(QObject):
         elif self.variable.base == 'range':
             self.emit(SIGNAL("updateGui"),value)
 
-
         elif self.variable.base == 'hex':
             self.emit(SIGNAL("updateGui"),'0x%x' % (value))
 
@@ -98,7 +95,8 @@ class VariableLink(QObject):
             self.emit(SIGNAL("updateGui"), str(value))
             
         else:
-            self.emit(SIGNAL("updateGui"), self.variable.base.format(value))
+            self.emit(SIGNAL("updateGui"), str(value))
+            #self.emit(SIGNAL("updateGui"), self.variable.base.format(value)) # Broken
             
 
     def returnPressed(self):
@@ -132,7 +130,8 @@ class VariableLink(QObject):
             self.variable.set(str(value))
 
         else:
-            self.variable.set(parse.parse(self.variable.base, value)[0])
+            #self.variable.set(parse.parse(self.variable.base, value)[0])  # Broken
+            self.variable.set(str(value))
             
         self.block = False
 

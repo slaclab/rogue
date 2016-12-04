@@ -796,8 +796,7 @@ class Variable(Node):
         # Don't generate updates for SL and WO variables
         if self.mode == 'WO' or self.mode == 'SL': return
 
-        if value is None:
-            value = self._rawGet()
+        value = self._rawGet()
         
         for func in self.__listeners:
             func(self,value)
@@ -885,7 +884,7 @@ class Variable(Node):
             return None
 
     def linkUpdated(self, var, value):
-        self._updated(value)
+        self._updated()
 
 
 class Command(Variable):
