@@ -60,6 +60,8 @@ class VariableLink(QObject):
             self.connect(self,SIGNAL('updateGui'),self.widget.setCurrentIndex)
 
         elif variable.base == 'range':
+            self.widget = QSpinBox();
+            self.widget.setMinimum(variable.minimum)
             self.widget.setMaximum(variable.maximum)
             self.widget.valueChanged.connect(self.guiChanged)
             self.connect(self,SIGNAL('updateGui'),self.widget.setValue)
