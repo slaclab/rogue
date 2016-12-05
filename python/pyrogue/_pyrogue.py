@@ -693,7 +693,7 @@ class Variable(Node):
     """
     def __init__(self, name, description="", offset=None, bitSize=32, bitOffset=0, pollEn=False,
                  base='hex', mode='RW', enum=None, units=None, hidden=False, minimum=None, maximum=None,
-                 setFunction=None, getFunction=None, **dump):
+                 setFunction=None, getFunction=None, dependencies=None, **dump):
         """Initialize variable class"""
 
         Node.__init__(self, name=name, classType='variable', description=description, hidden=hidden)
@@ -709,6 +709,7 @@ class Variable(Node):
         self.units     = units
         self.minimum   = minimum # For base='range'
         self.maximum   = maximum # For base='range'
+
 
         # Check modes
         if (self.mode != 'RW') and (self.mode != 'RO') and \
@@ -727,13 +728,30 @@ class Variable(Node):
         else:
             self._scratch = 0
 
-    def addListener(self, func):
+        self.setDependencies(dependencies)
+
+    def __repr__(self):
+        return self.name
+
+    def setDependencies(self, deps):
+        self.dependencies = deps        
+        if deps is not None:
+            for d in deps:
+                d.addListener(self)
+        
+
+    def addListener(self, listener):
         """
-        Add a listener function to call when variable changes. 
+        Add a listener Variable or function to call when variable changes. 
+        If listener is a Variable then Variable.linkUpdated() will be used as the function
         This is usefull when chaining variables together. (adc conversions, etc)
         The variable and value will be passed as an arg: func(var,value)
         """
-        self.__listeners.append(func)
+
+        if isinstance(listener, Variable):
+            self.__listeners.append(listener.linkUpdated)
+        else:
+            self.__listeners.append(listener)
 
     def set(self,value,write=True):
         """
@@ -769,6 +787,9 @@ class Variable(Node):
         Hardware read is blocking. An error will result in a logged exception.
         Listeners will be informed of the update.
         """
+        if read:
+            print "{:s}.read(True)".format(self.name)
+            
         try:
             if read and self._block and self._block.mode != 'WO':
                 self._parent._beforeRead()
@@ -790,7 +811,7 @@ class Variable(Node):
         """Get the block associated with this varable if it exists"""
         return self._block
 
-    def _updated(self, value=None):
+    def _updated(self):
         """Variable has been updated. Inform listeners."""
         
         # Don't generate updates for SL and WO variables
