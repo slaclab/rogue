@@ -42,6 +42,8 @@ ris::FramePtr ris::Frame::create(ris::SlavePtr source, bool zeroCopy) {
 ris::Frame::Frame(ris::SlavePtr source, bool zeroCopy) { 
    source_   = source;
    zeroCopy_ = zeroCopy;
+   flags_    = 0;
+   error_    = 0;
 }
 
 //! Destroy a frame.

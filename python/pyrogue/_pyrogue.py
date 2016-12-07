@@ -764,8 +764,10 @@ class Variable(Node):
             if write and self._block and self._block.mode != 'RO':
                 self._block.blockingWrite()
                 self._parent._afterWrite()
-                self._parent._beforeVerify()
-                self._block.blockingVerify()
+
+                if self._block.mode == 'RW':
+                   self._parent._beforeVerify()
+                   self._block.blockingVerify()
         except Exception as e:
             self._root._logException(e)
 
