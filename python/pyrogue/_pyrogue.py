@@ -165,6 +165,9 @@ class Node(object):
         self._root   = self
         self._nodes  = collections.OrderedDict()
 
+    def __repr__(self):
+        return self.path
+
     def add(self,node):
         """Add node as sub-node"""
 
@@ -194,13 +197,15 @@ class Node(object):
         else:
             return self._nodes
 
-    def getParent(self):
+    @property
+    def parent(self):
         """
         Return parent node or NULL if no parent exists.
         """
         return self._parent
 
-    def getRoot(self):
+    @property
+    def root(self):
         """
         Return root node of tree.
         """
@@ -728,18 +733,20 @@ class Variable(Node):
         else:
             self._scratch = 0
 
-        self.setDependencies(dependencies)
+        # Dependency tracking
+        self.__dependencies = []
+        if dependencies is not None:
+            for d in dependencies:
+                self.addDependency(d)
 
-    def __repr__(self):
-        return self.name
+    def addDependency(self, dep):
+        self.__dependencies.append(dep)
+        dep.addListener(self)
 
-    def setDependencies(self, deps):
-        self.dependencies = deps        
-        if deps is not None:
-            for d in deps:
-                d.addListener(self)
-        
-
+    @property
+    def dependencies(self):
+        return self.__dependencies[:]
+    
     def addListener(self, listener):
         """
         Add a listener Variable or function to call when variable changes. 
@@ -957,16 +964,19 @@ class Command(Variable):
         except Exception as e:
             self._root._logException(e)
 
+    @staticmethod
     def toggle(dev, cmd, arg):
         cmd.set(1)
         cmd.set(0)
 
+    @staticmethod
     def touch(dev, cmd, arg):
         if arg is not None:
             cmd.set(arg)
         else:
             cmd.set(1)
 
+    @staticmethod
     def postedTouch(dev, cmd, arg):
         if arg is not None:
             cmd.post(arg)
@@ -999,7 +1009,8 @@ class Block(rogue.interfaces.memory.Block):
 class Device(Node,rogue.interfaces.memory.Hub):
     """Device class holder. TODO: Update comments"""
 
-    def __init__(self, name=None, description="", memBase=None, offset=0, hidden=False, variables=None, expand=True, enabled=True, **dump):
+    def __init__(self, name=None, description="", memBase=None, offset=0, hidden=False,
+                 variables=None, expand=True, enabled=True, **dump):
         """Initialize device class"""
         if name is None:
             name = self.__class__.__name__
@@ -1023,6 +1034,7 @@ class Device(Node,rogue.interfaces.memory.Hub):
         self.add(Variable(name='enable', base='bool', mode='RW',
             setFunction=self._setEnable, getFunction='value=dev._enable',
             description='Determines if device is enabled for hardware access'))
+
 
         if variables is not None and isinstance(variables, collections.Iterable):
             if all(isinstance(v, Variable) for v in variables):
@@ -1089,6 +1101,20 @@ class Device(Node,rogue.interfaces.memory.Hub):
             # Update verify mask
             if node.mode == 'RW':
                vblock.addVerify(node.bitOffset,node.bitSize)
+
+    def collect(self, devices):
+        # Check that all devices to be collected are of this same subclass
+        if all(isinstance(d, self.__class__) for d in devices):
+            # Loop through each node
+            for n in this._nodes:
+                # If node is a 'RW' Variable
+                if isinstance(n, Variable) and n.mode == 'RW':
+                    # Make the corresponding variable in each collected device depend in this device's variable
+                    for d in devices:
+                        v = d._nodes[n.name]
+                        v.hidden = true;
+                        v.addDependency(n)
+                        
 
     def setResetFunc(self,func):
         """
