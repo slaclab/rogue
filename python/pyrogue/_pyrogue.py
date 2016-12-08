@@ -24,6 +24,7 @@ import yaml
 import threading
 import time
 import math
+from collections import OrderedDict as odict
 import collections
 import datetime
 import traceback
@@ -163,7 +164,7 @@ class Node(object):
         # Tracking
         self._parent = None
         self._root   = self
-        self._nodes  = collections.OrderedDict()
+        self._nodes  = odict()
 
     def __repr__(self):
         return self.path
@@ -183,19 +184,38 @@ class Node(object):
         # Update path related attributes
         node._updateTree(self)
 
-    def getNodes(self,typ=None):
+    def _getNodes(self,typ):
         """
         Get a ordered dictionary of nodes.
         pass a class type to receive a certain type of node
         """
-        if typ:
-            ret = collections.OrderedDict()
-            for key,node in self._nodes.iteritems():
-                if isinstance(node,typ):
-                    ret[key] = node
-            return ret
-        else:
-            return self._nodes
+        return odict([(k,n) for k,n in self._nodes.iteritems() if isinstance(n, typ)])
+
+    @property
+    def nodes(self):
+        return self._nodes
+
+    @property
+    def variables(self):
+        """
+        Return an OrderedDict of the variables but not commands (which are a subclass of Variable
+        """
+        return odict([(k,n) for k,n in self._nodes.iteritems()
+                      if isinstance(n, Variable) and not isinstance(n, Command)])
+
+    @property
+    def commands(self):
+        """
+        Return an OrderedDict of the Commands that are children of this Node
+        """
+        return self._getNodes(Command)
+
+    @property
+    def devices(self):
+        """
+        Return an OrderedDict of the Devices that are children of this Node
+        """
+        return self._getNodes(Device)
 
     @property
     def parent(self):
@@ -231,7 +251,7 @@ class Node(object):
         Attributes that are Nodes are recursed.
         Called from getYamlStructure in the root node.
         """
-        data = collections.OrderedDict()
+        data = odict()
 
         # First get non-node local values
         for key,value in self.__dict__.iteritems():
@@ -239,7 +259,7 @@ class Node(object):
                 data[key] = value
 
         # Next get sub nodes
-        for key,value in self.getNodes().iteritems():
+        for key,value in self.nodes.iteritems():
             data[key] = value._getStructure()
 
         return data
@@ -291,7 +311,7 @@ class Node(object):
         modes is a list of variable modes to include.
         Called from getYamlVariables in the root node.
         """
-        data = collections.OrderedDict()
+        data = odict()
         for key,value in self._nodes.iteritems():
             if isinstance(value,Device):
                 data[key] = value._getVariables(modes)
@@ -351,7 +371,7 @@ class Root(rogue.interfaces.stream.Master,Node):
         self._pollThread = None
 
         # Variable update list
-        self._updatedDict = collections.OrderedDict()
+        self._updatedDict = odict()
         self._updatedLock = threading.Lock()
 
         # Variable update listener
@@ -515,7 +535,7 @@ class Root(rogue.interfaces.stream.Master,Node):
     def _initUpdatedVars(self):
         """Initialize the update tracking log before a bulk variable update"""
         with self._updatedLock:
-            self._updatedDict = collections.OrderedDict()
+            self._updatedDict = odict()
 
     def _doneUpdatedVars(self):
         """Stream the results of a bulk variable update and update listeners"""
@@ -698,7 +718,9 @@ class Variable(Node):
     """
     def __init__(self, name, description="", offset=None, bitSize=32, bitOffset=0, pollEn=False,
                  base='hex', mode='RW', enum=None, units=None, hidden=False, minimum=None, maximum=None,
-                 setFunction=None, getFunction=None, dependencies=None, **dump):
+                 setFunction=None, getFunction=None, dependencies=None,               
+                 beforeReadCmd=None, afterWriteCmd=None, beforeVerifyCmd=None, **dump):
+ 
         """Initialize variable class"""
 
         Node.__init__(self, name=name, classType='variable', description=description, hidden=hidden)
@@ -739,6 +761,11 @@ class Variable(Node):
             for d in dependencies:
                 self.addDependency(d)
 
+        # Commands that run before or after block access
+        self._beforeReadCmd   = beforeReadCmd
+        self._afterWriteCmd   = afterWriteCmd
+                
+
     def addDependency(self, dep):
         self.__dependencies.append(dep)
         dep.addListener(self)
@@ -754,11 +781,18 @@ class Variable(Node):
         This is usefull when chaining variables together. (adc conversions, etc)
         The variable and value will be passed as an arg: func(var,value)
         """
-
         if isinstance(listener, Variable):
             self.__listeners.append(listener.linkUpdated)
         else:
             self.__listeners.append(listener)
+
+    def beforeReadCmd(self, cmd):
+        self._beforeReadCmd = cmd
+    beforeReadCmd = property(None, beforeReadCmd)
+
+    def afterWriteCmd(self, cmd):
+        self._afterWriteCmd = cmd
+    afterWriteCmd = property(None, afterWriteCmd)
 
     def set(self,value,write=True):
         """
@@ -770,11 +804,13 @@ class Variable(Node):
             
             if write and self._block and self._block.mode != 'RO':
                 self._block.blockingWrite()
-                self._parent._afterWrite()
+                if self._afterWriteCmd is not None:
+                    self._afterWriteCmd()
 
                 if self._block.mode == 'RW':
-                   self._parent._beforeVerify()
-                   self._block.blockingVerify()
+                    if self._beforeReadCmd is not None:
+                        self._beforeReadCmd()
+                    self._block.blockingVerify()
         except Exception as e:
             self._root._logException(e)
 
@@ -801,7 +837,8 @@ class Variable(Node):
             
         try:
             if read and self._block and self._block.mode != 'WO':
-                self._parent._beforeRead()
+                if self._beforeReadCmd is not None:
+                    self._beforeReadCmd()
                 self._block.blockingRead()
             ret = self._rawGet()
         except Exception as e:
@@ -816,7 +853,8 @@ class Variable(Node):
                 self._updated()
         return ret
 
-    def getBlock(self):
+    @property
+    def block(self):
         """Get the block associated with this varable if it exists"""
         return self._block
 
@@ -928,7 +966,7 @@ class Command(Variable):
                           hidden=hidden, minimum=minimum, maximum=maximum, setFunction=None, getFunction=None)
 
         self.classType = 'command'
-        self._function = function
+        self._function = function if function is not None else Command.nothing
 
     def __call__(self,arg=None):
         """Execute command: TODO: Update comments"""
@@ -937,10 +975,10 @@ class Command(Variable):
 
                 # Function is really a function
                 if callable(self._function):
-                    self._function(self._parent,self,arg)
+                    self._function(self._parent, self, arg)
 
                 # Function is a CPSW sequence
-                elif type(self._function) is collections.OrderedDict:
+                elif type(self._function) is odict:
                     for key,value in self._function.iteritems():
 
                         # Built in
@@ -965,6 +1003,10 @@ class Command(Variable):
             self._root._logException(e)
 
     @staticmethod
+    def nothing(dev, cmd, arg):
+        pass
+            
+    @staticmethod
     def toggle(dev, cmd, arg):
         cmd.set(1)
         cmd.set(0)
@@ -982,6 +1024,8 @@ class Command(Variable):
             cmd.post(arg)
         else:
             cmd.post(1)
+
+BLANK_COMMAND = Command(name='Blank', description='A singleton command that does nothing')
 
 
 class Block(rogue.interfaces.memory.Block):
@@ -1102,18 +1146,6 @@ class Device(Node,rogue.interfaces.memory.Hub):
             if node.mode == 'RW':
                vblock.addVerify(node.bitOffset,node.bitSize)
 
-    def collect(self, devices):
-        # Check that all devices to be collected are of this same subclass
-        if all(isinstance(d, self.__class__) for d in devices):
-            # Loop through each node
-            for n in this._nodes:
-                # If node is a 'RW' Variable
-                if isinstance(n, Variable) and n.mode == 'RW':
-                    # Make the corresponding variable in each collected device depend in this device's variable
-                    for d in devices:
-                        v = d._nodes[n.name]
-                        v.hidden = true;
-                        v.addDependency(n)
                         
 
     def setResetFunc(self,func):
@@ -1160,14 +1192,24 @@ class Device(Node,rogue.interfaces.memory.Hub):
 
         # Post write function for special cases
         self._afterWrite()
+        
+        # Execute all unique afterWriteCmds
+        cmds = set([v._afterWriteCmd for v in self.variables.values() if v._afterWriteCmd is not None])
+        for cmd in cmds:
+            cmd()
 
     def _verify(self):
         """ Verify all blocks. """
         if not self._enable: return
 
-        # Post write function for special cases
-        self._beforeVerify()
+        # Device level pre-verify function
+        self._beforeRead()
 
+        # Execute all unique beforeReadCmds
+        cmds = set([v._beforeReadCmd for v in self.variables.values() if v._beforeReadCmd is not None])
+        for cmd in cmds:
+            cmd()
+            
         # Process local blocks
         for block in self._blocks:
             if block.mode == 'WO' or block.mode == 'RW':
@@ -1182,8 +1224,13 @@ class Device(Node,rogue.interfaces.memory.Hub):
         """Read all blocks"""
         if not self._enable: return
 
-        # Post write function for special cases
+        # Do the device level _beforeRead (if one exists)
         self._beforeRead()
+        
+        # Execute all unique beforeReadCmds
+        cmds = set([v._beforeReadCmd for v in self.variables.values() if v._beforeReadCmd is not None])
+        for cmd in cmds:
+            cmd()
 
         # Process local blocks
         for block in self._blocks:
@@ -1410,7 +1457,7 @@ def addPathToDict(d, path, value):
         if sd.has_key(base):
            sd = sd[base]
         else:
-           sd[base] = collections.OrderedDict()
+           sd[base] = odict()
            sd = sd[base]
 
     # Add final node
@@ -1431,7 +1478,7 @@ def treeFromYaml(yml,setFunction,cmdFunction):
     return root
 
 
-def yamlToDict(stream, Loader=yaml.Loader, object_pairs_hook=collections.OrderedDict):
+def yamlToDict(stream, Loader=yaml.Loader, object_pairs_hook=odict):
     """Load yaml to ordered dictionary"""
     class OrderedLoader(Loader):
         pass
@@ -1451,6 +1498,6 @@ def dictToYaml(data, stream=None, Dumper=yaml.Dumper, **kwds):
     def _dict_representer(dumper, data):
         return dumper.represent_mapping(
             yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG,data.items())
-    OrderedDumper.add_representer(collections.OrderedDict, _dict_representer)
+    OrderedDumper.add_representer(odict, _dict_representer)
     return yaml.dump(data, stream, OrderedDumper, **kwds)
 
