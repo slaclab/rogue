@@ -28,20 +28,28 @@ class StreamSim(rogue.interfaces.stream.Master,
                 rogue.interfaces.stream.Slave, 
                 threading.Thread):
 
-    def __init__(self,host,dest,ssi=False):
+    def __init__(self,host,dest,uid,ssi=False):
         rogue.interfaces.stream.Master.__init__(self)
         rogue.interfaces.stream.Slave.__init__(self)
         threading.Thread.__init__(self)
+
+        ibPort = 5000 + dest + uid*100
+        obPort = 6000 + dest + uid*100
+        ocPort = 7000 + dest + uid*100
+        sbPort = 8000 + dest + uid*100
         
         self._ctx = zmq.Context()
         self._ibSock = self._ctx.socket(zmq.REP)
         self._obSock = self._ctx.socket(zmq.REQ)
         self._ocSock = self._ctx.socket(zmq.REQ)
         self._sbSock = self._ctx.socket(zmq.REQ)
-        self._ibSock.connect("tcp://%s:%i" % (host,dest+5000))
-        self._obSock.connect("tcp://%s:%i" % (host,dest+6000))
-        self._ocSock.connect("tcp://%s:%i" % (host,dest+7000))
-        self._sbSock.connect("tcp://%s:%i" % (host,dest+8000))
+        self._ibSock.connect("tcp://%s:%i" % (host,ibPort))
+        self._obSock.connect("tcp://%s:%i" % (host,obPort))
+        self._ocSock.connect("tcp://%s:%i" % (host,ocPort))
+        self._sbSock.connect("tcp://%s:%i" % (host,sbPort))
+
+        print("StreamSim: Destination %i : id = %i, ib = %i, ob = %i, Code = %i, Side Data = %i" % 
+              (dest,uid,ibPort,obPort,ocPort,sbPort))
 
         self._ssi     = ssi
         self._enable  = True
