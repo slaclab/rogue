@@ -36,8 +36,12 @@ class StreamSim(rogue.interfaces.stream.Master,
         self._ctx = zmq.Context()
         self._ibSock = self._ctx.socket(zmq.REP)
         self._obSock = self._ctx.socket(zmq.REQ)
+        self._ocSock = self._ctx.socket(zmq.REQ)
+        self._sbSock = self._ctx.socket(zmq.REQ)
         self._ibSock.connect("tcp://%s:%i" % (host,dest+5000))
         self._obSock.connect("tcp://%s:%i" % (host,dest+6000))
+        self._ocSock.connect("tcp://%s:%i" % (host,dest+7000))
+        self._sbSock.connect("tcp://%s:%i" % (host,dest+8000))
 
         self._ssi     = ssi
         self._enable  = True
@@ -48,6 +52,22 @@ class StreamSim(rogue.interfaces.stream.Master,
 
     def stop(self):
         self._enable = False
+
+    def sendOpCode(self,opCode):
+        ba = bytearray(1)
+        ba[0] = opCode
+        self._ocSock.send(ba)
+
+        # Wait for ack
+        self._ocSock.recv_multipart()
+
+    def setData(self,data):
+        ba = bytearray(1)
+        ba[0] = data
+        self._sbSock.send(ba)
+
+        # Wait for ack
+        self._sbSock.recv_multipart()
 
     def _acceptFrame(self,frame):
         """ Forward frame to simulation """

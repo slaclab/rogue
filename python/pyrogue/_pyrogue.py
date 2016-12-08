@@ -827,9 +827,6 @@ class Variable(Node):
         # Root variable update log
         self._root._varUpdated(self,value)
 
-    def _setRawUInt(self, value):
-        self._block.setUInt(self.bitOffset, self.bitSize, value)        
-
     def _rawSet(self,value):
         """
         Raw set method. This is called by the set() method in order to convert the passed
@@ -861,14 +858,11 @@ class Variable(Node):
                     ivalue = {value: key for key,value in self.enum.iteritems()}[value]
                 else:
                     ivalue = int(value)
-                self._setRawUInt(ivalue)
+                self._block.setUInt(self.bitOffset, self.bitSize, value)        
 
         # Inform listeners
         self._updated()
 
-    def _getRawUInt(self):
-        return self._block.getUInt(self.bitOffset,self.bitSize)
-                
     def _rawGet(self):
         """
         Raw get method. This is called by the get() method in order to convert the local
@@ -895,7 +889,7 @@ class Variable(Node):
             if self.base == 'string':
                 return(self._block.getString())
             else:
-                ivalue = self._getRawUInt()
+                ivalue = self._block.getUInt(self.bitOffset,self.bitSize)
 
                 if self.base == 'bool':
                     return(ivalue != 0)
