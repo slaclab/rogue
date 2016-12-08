@@ -121,12 +121,12 @@ class CommandWidget(QWidget):
     def addTreeItems(self,tree,d):
 
         # First create commands
-        for key,val in d.getNodes(pyrogue.Command).iteritems():
+        for key,val in d.commands.iteritems():
             if not val.hidden:
                 self.commands.append(CommandLink(tree,val))
 
         # Then create devices
-        for key,val in d.getNodes(pyrogue.Device).iteritems():
+        for key,val in d.devices.iteritems():
             if not val.hidden:
                 w = QTreeWidgetItem(tree)
                 w.setText(0,val.name)

@@ -93,17 +93,17 @@ class EpicsCaServer(object):
     def _addDevice(self,node,pvdb):
 
         # Get variables 
-        for key,value in node.getNodes(pyrogue.Variable).iteritems():
+        for key,value in node.variables.iteritems():
             if value.hidden == False:
                 self._addPv(value,pvdb)
 
         # Get commands
-        for key,value in node.getNodes(pyrogue.Command).iteritems():
+        for key,value in node.commands.iteritems():
             if value.hidden == False:
                 self._addPv(value,pvdb)
 
         # Get devices
-        for key,value in node.getNodes(pyrogue.Device).iteritems():
+        for key,value in node.devices.iteritems():
             if value.hidden == False:
                 self._addDevice(value,pvdb)
 
