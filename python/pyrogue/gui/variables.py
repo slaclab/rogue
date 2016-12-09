@@ -108,7 +108,7 @@ class VariableLink(QObject):
         self.block = True
 
         if self.variable.base == 'enum':
-            self.variable.set(self.widget.itemText(value))
+            self.variable.set(str(self.widget.itemText(value)))
 
         elif self.variable.base == 'bool':
             self.variable.set(self.widget.itemText(value) == 'True')
