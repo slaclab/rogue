@@ -719,7 +719,7 @@ class Variable(Node):
     def __init__(self, name, description="", offset=None, bitSize=32, bitOffset=0, pollEn=False,
                  base='hex', mode='RW', enum=None, units=None, hidden=False, minimum=None, maximum=None,
                  setFunction=None, getFunction=None, dependencies=None,               
-                 beforeReadCmd=None, afterWriteCmd=None, beforeVerifyCmd=None, **dump):
+                 beforeReadCmd=None, afterWriteCmd=None, **dump):
  
         """Initialize variable class"""
 
@@ -772,7 +772,7 @@ class Variable(Node):
 
     @property
     def dependencies(self):
-        return self.__dependencies[:]
+        return self.__dependencies
     
     def addListener(self, listener):
         """
@@ -903,7 +903,7 @@ class Variable(Node):
                     ivalue = {value: key for key,value in self.enum.iteritems()}[value]
                 else:
                     ivalue = int(value)
-                self._block.setUInt(self.bitOffset, self.bitSize, value)        
+                self._block.setUInt(self.bitOffset, self.bitSize, ivalue)        
 
         # Inform listeners
         self._updated()
@@ -952,7 +952,7 @@ class Variable(Node):
 class Command(Variable):
     """Command holder: Subclass of variable with callable interface"""
 
-    def __init__(self, name, description, base='None', function=None, hidden=False, 
+    def __init__(self, name, description="", base='None', function=None, hidden=False, 
                  enum=None, minimum=None, maximum=None, offset=None, bitSize=32, bitOffset=0, **dump):
 
         Variable.__init__(self, name=name, description=description, offset=offset, bitSize=bitSize,
@@ -1140,7 +1140,16 @@ class Device(Node,rogue.interfaces.memory.Hub):
             if node.mode == 'RW':
                vblock.addVerify(node.bitOffset,node.bitSize)
 
-                        
+    def hideVariables(self, hidden, variables=None):
+        """Hide a list of Variables (or Variable names)"""
+        if variables is None:
+            variables=self.variables
+            
+        for v in variables:
+            if isinstance(v, Variable):
+                v.hidden = hidden;
+            elif isinstance(variables[0], str):
+                self.variables[v].hidden = hidden
 
     def setResetFunc(self,func):
         """
