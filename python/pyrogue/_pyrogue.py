@@ -1143,7 +1143,7 @@ class Device(Node,rogue.interfaces.memory.Hub):
     def hideVariables(self, hidden, variables=None):
         """Hide a list of Variables (or Variable names)"""
         if variables is None:
-            variables=self.variables
+            variables=self.variables.values()
             
         for v in variables:
             if isinstance(v, Variable):
