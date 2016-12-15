@@ -21,12 +21,11 @@
 **/
 #include <rogue/interfaces/memory/Slave.h>
 #include <rogue/interfaces/memory/Master.h>
-#include <rogue/exceptions/GeneralException.h>
+#include <rogue/GeneralError.h>
 #include <boost/make_shared.hpp>
 #include <rogue/common.h>
 
 namespace rim = rogue::interfaces::memory;
-namespace re  = rogue::exceptions;
 namespace bp = boost::python;
 
 //! Create a slave container
@@ -79,7 +78,7 @@ rim::MasterPtr rim::Slave::getMaster(uint32_t index) {
    }
    PyRogue_END_ALLOW_THREADS;
 
-   if ( fail ) throw(re::GeneralException("Slave::getMaster","Memory Master Not Linked To Slave"));
+   if ( fail ) throw(rogue::GeneralError("Slave::getMaster","Memory Master Not Linked To Slave"));
    else return(ret);
 }
 

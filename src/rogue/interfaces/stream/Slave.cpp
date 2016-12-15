@@ -27,13 +27,11 @@
 #include <rogue/interfaces/stream/Master.h>
 #include <rogue/interfaces/stream/Buffer.h>
 #include <rogue/interfaces/stream/Frame.h>
-#include <rogue/exceptions/AllocationException.h>
-#include <rogue/exceptions/GeneralException.h>
+#include <rogue/GeneralError.h>
 #include <boost/make_shared.hpp>
 #include <rogue/common.h>
 
 namespace ris = rogue::interfaces::stream;
-namespace re  = rogue::exceptions;
 namespace bp  = boost::python;
 
 //! Class creation
@@ -106,7 +104,7 @@ ris::BufferPtr ris::Slave::allocBuffer ( uint32_t size ) {
    uint32_t  meta;
 
    if ( (data = (uint8_t *)malloc(size)) == NULL ) 
-      throw(re::AllocationException("Slave::allocBuffer",size));
+      throw(re::GeneralError::allocation("Slave::allocBuffer",size));
 
    // Temporary lock to get meta
    PyRogue_BEGIN_ALLOW_THREADS;
@@ -189,7 +187,7 @@ void ris::Slave::acceptFrame ( ris::FramePtr frame ) {
 void ris::Slave::retBuffer(uint8_t * data, uint32_t meta, uint32_t rawSize) {
 
    if ( meta == freeMeta_ ) 
-      throw(re::GeneralException("Slave::retBuffer","Buffer return with duplicate meta"));
+      throw(rogue::GeneralError("Slave::retBuffer","Buffer return with duplicate meta"));
 
    PyRogue_BEGIN_ALLOW_THREADS;
    {

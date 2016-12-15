@@ -24,15 +24,12 @@
 #include <rogue/hardware/exo/PciStatus.h>
 #include <rogue/interfaces/stream/Frame.h>
 #include <rogue/interfaces/stream/Buffer.h>
-#include <rogue/exceptions/OpenException.h>
-#include <rogue/exceptions/GeneralException.h>
-#include <rogue/exceptions/TimeoutException.h>
+#include <rogue/GeneralError.h>
 #include <boost/make_shared.hpp>
 #include <rogue/common.h>
 
 namespace rhe = rogue::hardware::exo;
 namespace ris = rogue::interfaces::stream;
-namespace re  = rogue::exceptions;
 namespace bp  = boost::python;
 
 //! Class creation
@@ -49,7 +46,7 @@ rhe::Tem::Tem(std::string path, bool data) {
    timeout_ = 1000000;
 
    if ( (fd_ = ::open(path.c_str(), O_RDWR)) < 0 )
-      throw(re::OpenException("Tem::Temp",path.c_str(),0));
+      throw(rogue::GeneralError::open("Tem::Tem",path.c_str()));
 
    PyRogue_BEGIN_ALLOW_THREADS;
    if ( isData_ ) {
@@ -59,7 +56,7 @@ rhe::Tem::Tem(std::string path, bool data) {
    }
    PyRogue_END_ALLOW_THREADS;
 
-   if ( res < 0 ) throw(re::OpenException("Tem::Temp",path.c_str(),1));
+   if ( res < 0 ) throw(rogue::GeneralError::mask("Tem::Tem",path.c_str(),1));
 
    // Start read thread
    thread_ = new boost::thread(boost::bind(&rhe::Tem::runThread, this));
@@ -131,10 +128,10 @@ void rhe::Tem::acceptFrame ( ris::FramePtr frame ) {
       PyRogue_END_ALLOW_THREADS;
 
       // Select timeout
-      if ( sres <= 0 ) throw(re::TimeoutException("Tem::acceptFrame",timeout_));
+      if ( sres <= 0 ) throw(rogue::GeneralError::timeout("Tem::acceptFrame",timeout_));
 
       // Error
-      if ( res < 0 ) throw(re::GeneralException("Tem::acceptFrame","Tem Write Call Failed"));
+      if ( res < 0 ) throw(rogue::GeneralError("Tem::acceptFrame","Tem Write Call Failed"));
    }
 
    // Exit out if return flag was set false

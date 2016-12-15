@@ -21,7 +21,6 @@
 **/
 
 #include <boost/python.hpp>
-#include <rogue/exceptions/module.h>
 #include <rogue/interfaces/module.h>
 #include <rogue/hardware/module.h>
 #include <rogue/utilities/module.h>
@@ -31,7 +30,6 @@ BOOST_PYTHON_MODULE(rogue) {
 
    PyEval_InitThreads();
 
-   rogue::exceptions::setup_module();
    rogue::interfaces::setup_module();
    rogue::protocols::setup_module();
    rogue::hardware::setup_module();

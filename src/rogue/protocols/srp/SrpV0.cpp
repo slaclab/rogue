@@ -26,14 +26,13 @@
 #include <rogue/interfaces/stream/Slave.h>
 #include <rogue/interfaces/stream/Frame.h>
 #include <rogue/interfaces/memory/Slave.h>
+#include <rogue/interfaces/memory/Errors.h>
 #include <rogue/protocols/srp/SrpV0.h>
-#include <rogue/exceptions/MemoryException.h>
 
 namespace bp = boost::python;
 namespace rps = rogue::protocols::srp;
 namespace rim = rogue::interfaces::memory;
 namespace ris = rogue::interfaces::stream;
-namespace re  = rogue::exceptions;
 
 //! Class creation
 rps::SrpV0Ptr rps::SrpV0::create () {
@@ -67,7 +66,7 @@ void rps::SrpV0::doTransaction(uint32_t id, rim::MasterPtr master, uint64_t addr
 
    // Size error
    if ((address % 4) != 0 || (size % 4) != 0 || size < 4 || size > 2048) {
-      master->doneTransaction(id,re::MemoryException::AddressError);
+      master->doneTransaction(id,rim::AddressError);
       return;
    }
 
@@ -138,8 +137,8 @@ void rps::SrpV0::acceptFrame ( ris::FramePtr frame ) {
    if ( temp != 0 ) {
       delMaster(id);
 
-      if ( temp & 0x20000 ) m->doneTransaction(id,re::MemoryException::AxiTimeout);
-      else if ( temp & 0x10000 ) m->doneTransaction(id,re::MemoryException::AxiFail);
+      if ( temp & 0x20000 ) m->doneTransaction(id,rim::AxiTimeout);
+      else if ( temp & 0x10000 ) m->doneTransaction(id,rim::AxiFail);
       else m->doneTransaction(id,temp);
       return;
    }

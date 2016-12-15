@@ -21,8 +21,7 @@
 **/
 #include <rogue/utilities/fileio/StreamReader.h>
 #include <rogue/interfaces/stream/Frame.h>
-#include <rogue/exceptions/OpenException.h>
-#include <rogue/exceptions/AllocationException.h>
+#include <rogue/GeneralError.h>
 #include <stdint.h>
 #include <boost/thread.hpp>
 #include <boost/make_shared.hpp>
@@ -32,7 +31,6 @@
 namespace ris = rogue::interfaces::stream;
 namespace ruf = rogue::utilities::fileio;
 namespace bp  = boost::python;
-namespace re  = rogue::exceptions;
 
 //! Class creation
 ruf::StreamReaderPtr ruf::StreamReader::create () {
@@ -76,7 +74,7 @@ void ruf::StreamReader::open(std::string file) {
    }
 
    if ( (fd_ = ::open(file.c_str(),O_RDONLY)) < 0 ) 
-      throw(re::OpenException("StreamReader::open",file,0));
+      throw(rogue::GeneralError::open("StreamReader::open",file));
 
    readThread_ = new boost::thread(boost::bind(&StreamReader::runThread, this));
 }

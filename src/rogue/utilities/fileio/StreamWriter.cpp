@@ -35,9 +35,7 @@
 #include <rogue/utilities/fileio/StreamWriterChannel.h>
 #include <rogue/utilities/fileio/StreamWriter.h>
 #include <rogue/interfaces/stream/Frame.h>
-#include <rogue/exceptions/OpenException.h>
-#include <rogue/exceptions/GeneralException.h>
-#include <rogue/exceptions/AllocationException.h>
+#include <rogue/GeneralError.h>
 #include <stdint.h>
 #include <boost/thread.hpp>
 #include <boost/make_shared.hpp>
@@ -48,7 +46,6 @@
 namespace ris = rogue::interfaces::stream;
 namespace ruf = rogue::utilities::fileio;
 namespace bp  = boost::python;
-namespace re  = rogue::exceptions;
 
 //! Class creation
 ruf::StreamWriterPtr ruf::StreamWriter::create () {
@@ -100,7 +97,7 @@ void ruf::StreamWriter::open(std::string file) {
    if ( sizeLimit_ > 0 ) name.append(".1");
 
    if ( (fd_ = ::open(name.c_str(),O_RDWR|O_CREAT|O_APPEND,S_IRUSR|S_IWUSR|S_IRGRP|S_IWGRP|S_IROTH|S_IWOTH)) < 0 )
-      throw(re::OpenException("StreamWriter::open",name,0));
+      throw(rogue::GeneralError::open("StreamWriter::open",name));
 
    totSize_    = 0;
    currSize_   = 0;
@@ -150,7 +147,7 @@ void ruf::StreamWriter::setBufferSize(uint32_t size) {
 
    // Create new buffer
    if ( buffSize_ != 0 && buffer_ == NULL )
-      throw(re::AllocationException("StreamWriter::setBufferSize",size));
+      throw(rogue::GeneralError::allocation("StreamWriter::setBufferSize",size));
 }
 
 //! Set max file size, 0 for unlimited
@@ -232,7 +229,7 @@ void ruf::StreamWriter::intWrite(void *data, uint32_t size) {
    // This is called if bufer is disabled
    if ( size > buffSize_ ) {
       if (write(fd_,data,size) != (int32_t)size) 
-         throw(re::GeneralException("StreamWriter::intWrite","Write failed"));
+         throw(rogue::GeneralError("StreamWriter::intWrite","Write failed"));
       currSize_ += size;
       totSize_  += size;
    }
@@ -253,7 +250,7 @@ void ruf::StreamWriter::checkSize(uint32_t size) {
 
    // Bad configuration
    if ( size > sizeLimit_ ) 
-      throw(re::GeneralException("StreamWriter::checkSize","Frame size is larger than file size limit"));
+      throw(rogue::GeneralError("StreamWriter::checkSize","Frame size is larger than file size limit"));
 
    // File size (including buffer) is larger than max size
    if ( (size + currBuffer_ + currSize_) > sizeLimit_ ) {
@@ -267,7 +264,7 @@ void ruf::StreamWriter::checkSize(uint32_t size) {
 
       // Open new file
       if ( (fd_ = ::open(name.c_str(),O_RDWR|O_CREAT|O_APPEND,S_IRUSR|S_IWUSR|S_IRGRP|S_IWGRP|S_IROTH|S_IWOTH)) < 0 )
-         throw(re::OpenException("StreamWriter::checkSize",name,0));
+         throw(rogue::GeneralError::open("StreamWriter::checkSize",name));
 
       currSize_ = 0;
    }
@@ -277,7 +274,7 @@ void ruf::StreamWriter::checkSize(uint32_t size) {
 void ruf::StreamWriter::flush() {
    if ( currBuffer_ > 0 ) {
       if ( write(fd_,buffer_,currBuffer_) != (int32_t)currBuffer_ )
-         throw(re::GeneralException("StreamWriter::flush","Write failed"));
+         throw(rogue::GeneralError("StreamWriter::flush","Write failed"));
       currSize_ += currBuffer_;
       totSize_  += currBuffer_;
       currBuffer_ = 0;

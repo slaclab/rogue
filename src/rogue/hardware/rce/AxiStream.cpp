@@ -22,15 +22,12 @@
 #include <rogue/hardware/rce/AxiStream.h>
 #include <rogue/interfaces/stream/Frame.h>
 #include <rogue/interfaces/stream/Buffer.h>
-#include <rogue/exceptions/OpenException.h>
-#include <rogue/exceptions/GeneralException.h>
-#include <rogue/exceptions/TimeoutException.h>
+#include <rogue/GeneralError.h>
 #include <boost/make_shared.hpp>
 #include <rogue/common.h>
 
 namespace rhr = rogue::hardware::rce;
 namespace ris = rogue::interfaces::stream;
-namespace re  = rogue::exceptions;
 namespace bp  = boost::python;
 
 //! Class creation
@@ -49,13 +46,13 @@ rhr::AxiStream::AxiStream ( std::string path, uint32_t dest ) {
    mask     = (1 << dest_);
 
    if ( (fd_ = ::open(path.c_str(), O_RDWR)) < 0 )
-      throw(re::OpenException("AxiStream::AxiStream",path.c_str(),mask));
+      throw(rogue::GeneralError::open("AxiStream::AxiStream",path.c_str()));
 
    PyRogue_BEGIN_ALLOW_THREADS;
    if  ( (res = axisSetMask(fd_,mask)) < 0 ) ::close(fd_);
    PyRogue_END_ALLOW_THREADS;
 
-   if ( res < 0) throw(re::OpenException("AxiStream::AxiStream",path.c_str(),mask));
+   if ( res < 0) throw(rogue::GeneralError::mask("AxiStream::AxiStream",path.c_str(),mask));
 
    // Result may be that rawBuff_ = NULL
    rawBuff_ = axisMapDma(fd_,&bCount_,&bSize_);
@@ -144,7 +141,7 @@ ris::FramePtr rhr::AxiStream::acceptReq ( uint32_t size, bool zeroCopyEn, uint32
             } else res=0;
             PyRogue_END_ALLOW_THREADS;
 
-            if ( sres == 0 ) throw(re::TimeoutException("AxiStream::acceptReq",timeout_));
+            if ( sres == 0 ) throw(rogue::GeneralError::timeout("AxiStream::acceptReq",timeout_));
          }
          while (res < 0);
 
@@ -197,7 +194,7 @@ void rhr::AxiStream::acceptFrame ( ris::FramePtr frame ) {
             PyRogue_END_ALLOW_THREADS;
 
             if ( res <= 0 )
-               throw(re::GeneralException("AxiStream::acceptFrame","AXIS Write Call Failed"));
+               throw(rogue::GeneralError("AxiStream::acceptFrame","AXIS Write Call Failed"));
 
             // Mark buffer as stale
             meta |= 0x40000000;
@@ -230,10 +227,10 @@ void rhr::AxiStream::acceptFrame ( ris::FramePtr frame ) {
             PyRogue_END_ALLOW_THREADS;
 
             // Select timeout
-            if ( sres <= 0 ) throw(re::TimeoutException("AxiStream::acceptFrame",timeout_));
+            if ( sres <= 0 ) throw(rogue::GeneralError::timeout("AxiStream::acceptFrame",timeout_));
 
             // Error
-            if ( res < 0 ) throw(re::GeneralException("AxiStream::acceptFrame","AXIS Write Call Failed"));
+            if ( res < 0 ) throw(rogue::GeneralError("AxiStream::acceptFrame","AXIS Write Call Failed"));
          }
 
          // Exit out if return flag was set false

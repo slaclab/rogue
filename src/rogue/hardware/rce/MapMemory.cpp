@@ -20,8 +20,7 @@
  * ----------------------------------------------------------------------------
 **/
 #include <rogue/hardware/rce/MapMemory.h>
-#include <rogue/exceptions/OpenException.h>
-#include <rogue/exceptions/MemoryException.h>
+#include <rogue/GeneralError.h>
 #include <rogue/interfaces/memory/Block.h>
 #include <boost/make_shared.hpp>
 #include <stdio.h>
@@ -33,7 +32,6 @@
 
 namespace rhr = rogue::hardware::rce;
 namespace rim = rogue::interfaces::memory;
-namespace re  = rogue::exceptions;
 namespace bp  = boost::python;
 
 //! Class creation
@@ -45,7 +43,7 @@ rhr::MapMemoryPtr rhr::MapMemory::create () {
 //! Creator
 rhr::MapMemory::MapMemory() : rim::Slave(1,0xFFFFFFFF) {
    fd_ = ::open("/dev/mem", O_RDWR | O_SYNC);
-   if ( fd_ < 0 ) throw(re::OpenException("MapMemory::MapMemory","/dev/mem",0));
+   if ( fd_ < 0 ) throw(rogue::GeneralError::open("MapMemory::MapMemory","/dev/mem"));
 }
 
 //! Destructor
@@ -96,7 +94,7 @@ void rhr::MapMemory::doTransaction(uint32_t id, boost::shared_ptr<rogue::interfa
    uint32_t count;
 
    if ((ptr = findSpace(address,size)) == NULL) {
-      master->doneTransaction(id,re::MemoryException::AddressError);
+      master->doneTransaction(id,rim::AddressError);
    }
    else {
       count = 0;

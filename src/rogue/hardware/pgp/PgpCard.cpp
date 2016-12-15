@@ -27,15 +27,12 @@
 #include <rogue/hardware/pgp/EvrControl.h>
 #include <rogue/interfaces/stream/Frame.h>
 #include <rogue/interfaces/stream/Buffer.h>
-#include <rogue/exceptions/OpenException.h>
-#include <rogue/exceptions/GeneralException.h>
-#include <rogue/exceptions/TimeoutException.h>
+#include <rogue/GeneralError.h>
 #include <boost/make_shared.hpp>
 #include <rogue/common.h>
 
 namespace rhp = rogue::hardware::pgp;
 namespace ris = rogue::interfaces::stream;
-namespace re  = rogue::exceptions;
 namespace bp  = boost::python;
 
 //! Class creation
@@ -57,13 +54,13 @@ rhp::PgpCard::PgpCard ( std::string path, uint32_t lane, uint32_t vc ) {
    mask = (1 << ((lane_*4) +vc_));
 
    if ( (fd_ = ::open(path.c_str(), O_RDWR)) < 0 ) 
-      throw(re::OpenException("PgpCard::PgpCard",path.c_str(),mask));
+      throw(rogue::GeneralError::open("PgpCard::PgpCard",path.c_str()));
 
    PyRogue_BEGIN_ALLOW_THREADS;
    if  ( (res = pgpSetMask(fd_,mask)) < 0 ) ::close(fd_);
    PyRogue_END_ALLOW_THREADS;
 
-   if ( res < 0) throw(re::OpenException("PgpCard::PgpCard",path.c_str(),mask));
+   if ( res < 0) throw(rogue::GeneralError::mask("PgpCard::PgpCard",path.c_str(),mask));
 
    // Result may be that rawBuff_ = NULL
    PyRogue_BEGIN_ALLOW_THREADS;
@@ -202,7 +199,7 @@ ris::FramePtr rhp::PgpCard::acceptReq ( uint32_t size, bool zeroCopyEn, uint32_t
             } else res = 0;
             PyRogue_END_ALLOW_THREADS;
 
-            if ( sres == 0 ) throw(re::TimeoutException("PgpCard::acceptReq",timeout_));
+            if ( sres == 0 ) throw(rogue::GeneralError::timeout("PgpCard::acceptReq",timeout_));
          }
          while (res < 0);
 
@@ -248,7 +245,7 @@ void rhp::PgpCard::acceptFrame ( ris::FramePtr frame ) {
             PyRogue_END_ALLOW_THREADS;
 
             if ( res <= 0 ) 
-               throw(re::GeneralException("PgpCard::acceptFrame","PGP Write Call Failed"));
+               throw(rogue::GeneralError("PgpCard::acceptFrame","PGP Write Call Failed"));
 
             // Mark buffer as stale
             meta |= 0x40000000;
@@ -281,10 +278,10 @@ void rhp::PgpCard::acceptFrame ( ris::FramePtr frame ) {
             PyRogue_END_ALLOW_THREADS;
 
             // Select timeout
-            if ( sres <= 0 ) throw(re::TimeoutException("PgpCard::acceptFrame",timeout_));
+            if ( sres <= 0 ) throw(rogue::GeneralError::timeout("PgpCard::acceptFrame",timeout_));
 
             // Error
-            if ( res < 0 ) throw(re::GeneralException("PgpCard::acceptFrame","PGP Write Call Failed"));
+            if ( res < 0 ) throw(rogue::GeneralError("PgpCard::acceptFrame","PGP Write Call Failed"));
          }
 
          // Continue while write result was zero

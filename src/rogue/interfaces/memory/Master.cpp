@@ -21,12 +21,11 @@
 **/
 #include <rogue/interfaces/memory/Master.h>
 #include <rogue/interfaces/memory/Slave.h>
-#include <rogue/exceptions/GeneralException.h>
+#include <rogue/GeneralError.h>
 #include <boost/make_shared.hpp>
 #include <rogue/common.h>
 
 namespace rim = rogue::interfaces::memory;
-namespace re  = rogue::exceptions;
 namespace bp  = boost::python;
 
 // Init class counter
@@ -173,7 +172,7 @@ void rim::Master::reqTransactionPy(uint64_t address, boost::python::object p, bo
          if ( pyValid_ ) PyBuffer_Release(&pyBuf_);
 
          if ( PyObject_GetBuffer(p.ptr(),&pyBuf_,PyBUF_SIMPLE) < 0 )
-            throw(re::GeneralException("Master::reqTransactionPy","Python Buffer Error"));
+            throw(rogue::GeneralError("Master::reqTransactionPy","Python Buffer Error"));
 
          tData_   = (uint8_t *)pyBuf_.buf;
          tSize_   = pyBuf_.len;
@@ -225,7 +224,7 @@ void rim::Master::setTransactionDataPy(uint32_t id, uint32_t offset, boost::pyth
    Py_buffer pb;
 
    if ( PyObject_GetBuffer(p.ptr(),&pb,PyBUF_SIMPLE) < 0 )
-      throw(re::GeneralException("Master::setTransactionDataPy","Python Buffer Error"));
+      throw(rogue::GeneralError("Master::setTransactionDataPy","Python Buffer Error"));
    
    setTransactionData(id, pb.buf, offset, pb.len);
    PyBuffer_Release(&pb);
@@ -249,7 +248,7 @@ void rim::Master::getTransactionDataPy(uint32_t id, uint32_t offset, boost::pyth
    Py_buffer pb;
 
    if ( PyObject_GetBuffer(p.ptr(),&pb,PyBUF_SIMPLE) < 0 )
-      throw(re::GeneralException("Master::getTransactionDataPy","Python Buffer Error"));
+      throw(rogue::GeneralError("Master::getTransactionDataPy","Python Buffer Error"));
    
    getTransactionData(id, pb.buf, offset, pb.len);
    PyBuffer_Release(&pb);
