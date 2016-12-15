@@ -45,8 +45,8 @@ namespace rogue {
                //! Slave. Used for request forwards.
                boost::shared_ptr<rogue::interfaces::memory::Slave> slave_;
 
-               //! Slave mutex
-               boost::mutex slaveMtx_;
+               //! Mutex
+               boost::mutex mtx_;
 
                //! Transaction python buffer
                Py_buffer pyBuf_;
@@ -59,9 +59,6 @@ namespace rogue {
 
                //! Transaction size
                uint32_t tSize_;
-
-               //! Transaction lock
-               boost::mutex tMtx_;
 
                //! Transaction id
                uint32_t tId_;

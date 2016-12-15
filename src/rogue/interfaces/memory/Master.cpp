@@ -63,7 +63,7 @@ void rim::Master::genId() {
    classIdx_++;
    classIdxMtx_.unlock();
 
-   boost::lock_guard<boost::mutex> lock(tMtx_);
+   boost::lock_guard<boost::mutex> lock(mtx_);
    tId_ = nid;
 }
 
@@ -76,7 +76,7 @@ uint32_t rim::Master::getId() {
 void rim::Master::setSlave ( rim::SlavePtr slave ) {
    PyRogue_BEGIN_ALLOW_THREADS;
    {
-      boost::lock_guard<boost::mutex> lock(slaveMtx_);
+      boost::lock_guard<boost::mutex> lock(mtx_);
       slave_ = slave;
    }
    PyRogue_END_ALLOW_THREADS;
@@ -88,7 +88,7 @@ rim::SlavePtr rim::Master::getSlave () {
 
    PyRogue_BEGIN_ALLOW_THREADS;
    {
-      boost::lock_guard<boost::mutex> lock(slaveMtx_);
+      boost::lock_guard<boost::mutex> lock(mtx_);
       ret = slave_;
    }
    PyRogue_END_ALLOW_THREADS;
@@ -102,7 +102,7 @@ uint32_t rim::Master::reqMinAccess() {
 
    PyRogue_BEGIN_ALLOW_THREADS;
    {
-      boost::lock_guard<boost::mutex> lock(slaveMtx_);
+      boost::lock_guard<boost::mutex> lock(mtx_);
       slave = slave_;
    }
    PyRogue_END_ALLOW_THREADS;
@@ -115,7 +115,7 @@ uint32_t rim::Master::reqMaxAccess() {
 
    PyRogue_BEGIN_ALLOW_THREADS;
    {
-      boost::lock_guard<boost::mutex> lock(slaveMtx_);
+      boost::lock_guard<boost::mutex> lock(mtx_);
       slave = slave_;
    }
    PyRogue_END_ALLOW_THREADS;
@@ -128,7 +128,7 @@ uint64_t rim::Master::reqOffset() {
 
    PyRogue_BEGIN_ALLOW_THREADS;
    {
-      boost::lock_guard<boost::mutex> lock(slaveMtx_);
+      boost::lock_guard<boost::mutex> lock(mtx_);
       slave = slave_;
    }
    PyRogue_END_ALLOW_THREADS;
@@ -144,11 +144,8 @@ void rim::Master::reqTransaction(uint64_t address, uint32_t size, void *data, bo
    {
       genId();
       {
-         boost::lock_guard<boost::mutex> lock(slaveMtx_);
+         boost::lock_guard<boost::mutex> lock(mtx_);
          slave = slave_;
-      }
-      {
-         boost::lock_guard<boost::mutex> lock(tMtx_);
          if ( pyValid_ ) PyBuffer_Release(&pyBuf_);
          tData_   = (uint8_t *)data;
          tSize_   = size;
@@ -171,11 +168,8 @@ void rim::Master::reqTransactionPy(uint64_t address, boost::python::object p, bo
 
       genId();
       {
-         boost::lock_guard<boost::mutex> lock(slaveMtx_);
+         boost::lock_guard<boost::mutex> lock(mtx_);
          slave = slave_;
-      }
-      {
-         boost::lock_guard<boost::mutex> lock(tMtx_);
          if ( pyValid_ ) PyBuffer_Release(&pyBuf_);
 
          if ( PyObject_GetBuffer(p.ptr(),&pyBuf_,PyBUF_SIMPLE) < 0 )
@@ -196,7 +190,7 @@ void rim::Master::reqTransactionPy(uint64_t address, boost::python::object p, bo
 void rim::Master::endTransaction() {
    PyRogue_BEGIN_ALLOW_THREADS;
    {
-      boost::lock_guard<boost::mutex> lock(tMtx_);
+      boost::lock_guard<boost::mutex> lock(mtx_);
 
       if ( pyValid_ ) PyBuffer_Release(&pyBuf_);
 
@@ -217,7 +211,7 @@ void rim::Master::doneTransaction(uint32_t id, uint32_t error) {
 void rim::Master::setTransactionData(uint32_t id, void *data, uint32_t offset, uint32_t size) { 
    PyRogue_BEGIN_ALLOW_THREADS;
    {
-      boost::lock_guard<boost::mutex> lock(tMtx_);
+      boost::lock_guard<boost::mutex> lock(mtx_);
 
       if ( tId_ != id || tData_ == NULL || (offset + size) > tSize_ ) return;
 
@@ -241,7 +235,7 @@ void rim::Master::setTransactionDataPy(uint32_t id, uint32_t offset, boost::pyth
 void rim::Master::getTransactionData(uint32_t id, void *data, uint32_t offset, uint32_t size) { 
    PyRogue_BEGIN_ALLOW_THREADS;
    {
-      boost::lock_guard<boost::mutex> lock(tMtx_);
+      boost::lock_guard<boost::mutex> lock(mtx_);
 
       if ( tId_ != id || tData_ == NULL || (offset + size) > tSize_ ) return;
 
@@ -265,6 +259,7 @@ void rim::Master::setup_python() {
    bp::class_<rim::MasterWrap, rim::MasterWrapPtr, boost::noncopyable>("Master",bp::init<>())
       .def("_setSlave",           &rim::Master::setSlave)
       .def("_getSlave",           &rim::Master::getSlave)
+      .def("_getId",              &rim::Master::getId)
       .def("_reqMinAccess",       &rim::Master::reqMinAccess)
       .def("_reqMaxAccess",       &rim::Master::reqMaxAccess)
       .def("_reqOffset",          &rim::Master::reqOffset)

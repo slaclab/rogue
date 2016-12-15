@@ -21,7 +21,6 @@
 **/
 
 #include <rogue/interfaces/memory/module.h>
-#include <rogue/interfaces/memory/Block.h>
 #include <rogue/interfaces/memory/Slave.h>
 #include <rogue/interfaces/memory/Master.h>
 #include <rogue/interfaces/memory/Hub.h>
@@ -43,7 +42,6 @@ void rim::setup_module() {
 
    rim::Master::setup_python(); 
    rim::Slave::setup_python(); 
-   rim::Block::setup_python(); 
    rim::Hub::setup_python(); 
 
 }

@@ -193,6 +193,9 @@ class Node(object):
 
     @property
     def nodes(self):
+        """
+        Get a ordered dictionary of all nodes.
+        """
         return self._nodes
 
     @property
@@ -546,7 +549,6 @@ class Root(rogue.interfaces.stream.Master,Node):
                 self._updateVarListeners(yml,self._updatedDict)
             self._updatedDict = None
 
-
     def _write(self,dev=None,cmd=None,arg=None):
         """Write all blocks"""
 
@@ -559,7 +561,7 @@ class Root(rogue.interfaces.stream.Master,Node):
                     value._verify()
             for key,value in self._nodes.iteritems():
                 if isinstance(value,Device):
-                    value._check()
+                    value._check(update=False)
         except Exception as e:
             self._root._logException(e)
 
@@ -574,7 +576,7 @@ class Root(rogue.interfaces.stream.Master,Node):
                     value._read()
             for key,value in self._nodes.iteritems():
                 if isinstance(value,Device):
-                    value._check()
+                    value._check(update=True)
         except Exception as e:
             self._root._logException(e)
 
@@ -591,7 +593,7 @@ class Root(rogue.interfaces.stream.Master,Node):
                     value._poll()
             for key,value in self._nodes.iteritems():
                 if isinstance(value,Device):
-                    value._check()
+                    value._check(update=True)
         except Exception as e:
             self._root._logException(e)
 
@@ -736,7 +738,6 @@ class Variable(Node):
         self.units     = units
         self.minimum   = minimum # For base='range'
         self.maximum   = maximum # For base='range'
-
 
         # Check modes
         if (self.mode != 'RW') and (self.mode != 'RO') and \
@@ -1022,27 +1023,328 @@ class Command(Variable):
 BLANK_COMMAND = Command(name='Blank', description='A singleton command that does nothing')
 
 
-class Block(rogue.interfaces.memory.Block):
+class Block(rogue.interfaces.memory.Master):
     """Internal memory block holder"""
 
-    def __init__(self,offset,size):
-        """Initialize memory block class"""
-        rogue.interfaces.memory.Block.__init__(self,offset,size)
+    def __init__(self,device,variable):
+        """
+        Initialize memory block class.
+        Pass initial variable.
+        """
+        rogue.interfaces.memory.Master.__init__()
 
         # Attributes
-        self.offset    = offset # track locally because memory::Block address is global
-        self.variables = []
-        self.pollEn    = False
-        self.mode      = ''
+        self._offset    = variable.offset
+        self._mode      = variable.mode
+        self._pollEn    = variable.pollEn
+        self._bData     = byteArray()
+        self._vData     = byteArray()
+        self._mData     = byteArray()
+        self._size      = 0
+        self._variables = []
+        self._timeout   = 1.0
+        self._enable    = True
+        self._lock      = threading.Lock()
+        self._cond      = threading.Conditional(self._lock)
+        self._doUpdate  = False
+        self._doVerify  = False
 
-    def _check(self):
-        if self.getUpdated(): # Throws exception if error
-            self._updated()
+        self._setSlave(device)
+        self._addVariable(variable)
+
+    def set(self,bitOffset,bitCount,ba):
+        """
+        Update block with bitCount bits from passed byte array.
+        Offset sets the starting point in the block array.
+        """
+        with self._cond:
+            self._waitWhileBusy()
+
+            # Access is fully byte aligned
+            if (bitOffset % 8) == 0 and (bitCount % 8) == 0:
+                self._bData[bitOffset/8:(bitOffset+bitCount)/8] = ba
+
+            # Bit level access
+            else:
+                for x in range(0,bitCount):
+                    setBitToBytes(self._bData,x+bitOffset,getBitFromBytes(ba,x))
+
+    def get(self,bitOffset,bitCount):
+        """
+        Get bitCount bytes from block data.
+        Offset sets the starting point in the block array.
+        bytearray is returned
+        """
+        with self._cond:
+            self._waitWhileBusy()
+
+            # Access is fully byte aligned
+            if (bitOffset % 8) == 0 and (bitCount % 8) == 0:
+                return self._bData[bitOffset/8:(bitOffset+bitCount)/8]
+
+            # Bit level access
+            else:
+                ba = bytearray(bitCount / 8)
+                if (bitCount % 8) > 0: ba.extend(bytearray(1))
+                for x in range(0,bitCount):
+                    setBitToBytes(ba,x,getBitFromBytes(self._bData,x+bitOffset))
+
+    def setUInt(self,bitOffset,bitCount,value):
+        """
+        Set a uint. to be deprecated
+        """
+        bCount = bitCount / 8
+        if ( bitCount % 8 ) > 0: bCount += 1
+        ba = bytearray(bCount)
+
+        for x in range(0,bCount):
+            ba[x] = (value >> (x*8)) & 0xFF
+
+        self.set(bitOffset,bitCount,ba)
+
+    def getUInt(self,bitOffset,bitCount):
+        """
+        Get a uint. to be deprecated
+        """
+        ba = self.get(bitOffset,bitCount)
+        ret = 0
+
+        for x in range(0,len(ba)):
+            ret += (ba[x] << (x*8))
+
+        return ret
+
+    def setString(self,value):
+        """
+        Set a string. to be deprecated
+        """
+        ba = bytarray(value)
+        ba.extend(bytearray(1))
+
+        self.set(0,len(ba)*8,ba)
+
+    def getString(self):
+        """
+        Get a string. to be deprecated
+        """
+        ba = self.get(0,self._size)
+
+        ba.rstrip('\0')
+        return str(ba)
+
+    def backgroundRead(self):
+        """
+        Perform a background read. 
+        """
+        self._startTransaction(write=False,posted=False,verify=False)
+
+    def blockingRead(self):
+        """
+        Perform a foreground read. 
+        """
+        self._startTransaction(write=False,posted=False,verify=False)
+        self._check(update=False)
+
+    def backgroundWrite(self):
+        """
+        Perform a background write.
+        """
+        self._startTransaction(write=True,posted=False,verify=False)
+
+    def blockingWrite(self):
+        """
+        Perform a foreground write.
+        """
+        self._startTransaction(write=True,posted=False,verify=False)
+        self._check(update=False)
+
+    def postedWrite(self):
+        """
+        Perform a posted write.
+        """
+        self._startTransaction(write=True,posted=True,verify=False)
+
+    def backgroundVerify(self):
+        """
+        Perform a background verify.
+        """
+        self._startTransaction(write=False,posted=False,verify=True)
+
+    def blockingVerify(self):
+        """
+        Perform a foreground verify.
+        """
+        self._startTransaction(write=False,posted=False,verify=True)
+        self._check(update=False)
+
+    @property
+    def offset(self):
+        return self._offset
+
+    @property
+    def address(self):
+        return self._offset | self._reqOffset()
+
+    @property
+    def timeout(self):
+        return self._timeout
+
+    @timeout.setter
+    def timeout(self,value):
+        with self._cond:
+            self._waitWhileBusy()
+            self._timeout = value
+
+    @property
+    def enable(self):
+        return self._enable
+
+    @enable.setter
+    def enable(self,value):
+        with self._cond:
+            self._waitWhileBusy()
+            self._enable = value
+
+    @property
+    def error(self):
+        return self._error
+
+    def _waitWhileBusy(self):
+        """
+        Wait while a transaction is pending.
+        Set an error on timeout.
+        Lock must be held before calling this method
+        """
+        lid = self._getId()
+        while lid > 0:
+            self._cond.wait(self._timeout)
+            if self._getId() == lid:
+                self._endTransaction()
+                self._error = 0xFFFF  # Replace with proper error for timeout
+                break
+            lid = self._getId()
+
+    def _addVariable(self,var):
+        """
+        Add a variable to the block
+        """
+        with self._cond:
+            self._waitWhileBusy()
+
+            # Return false if offset does not match
+            if var.offset != self._offset:
+                return False
+
+            # Compute the max variable address to determine required size of block
+            varBytes = int(math.ceil(float(var.bitOffset + var.bitSize) / 8.0))
+
+            # Link variable to block
+            var._block = self
+            self_.variables.append(var)
+
+            # Update polling, set true if any variable have poll enable set
+            if var.pollEn:
+                self._pollEn = True
+
+            # If variable modes mismatch, set to read/write
+            if var.mode != self._mode:
+                self._mode = 'RW'
+
+            # Adjust size to hold variable. Underlying class will adjust
+            # size to align to minimum protocol access size 
+            if self._size < varBytes:
+                self._bData.extend(byteArray(varBytes - self._size))
+                self._vData.extend(byteArray(varBytes - self._size))
+                self._mData.extend(byteArray(varBytes - self._size))
+                self._size = varBytes
+
+            # Update verify mask
+            if var.mode == 'RW':
+                for x in range(var.bitOffset,var.bitOffset+var.bitSize):
+                    setBitToBytes(self._bData,x,1)
+
+    def _startTransaction(self,write,posted,verify):
+        """
+        Start a transaction.
+        """
+        minSize = self._reqMinAccess()
+        tData = None
+
+        with self._cond:
+            self._waitWhileBusy()
+
+            # Adjust size if required
+            if (self._size % minSize) > 0:
+                newSize = ((self._size / minSize) + 1) * minSize
+                self._bData.extend(byteArray(newSize - self._size))
+                self._vData.extend(byteArray(newSize - self._size))
+                self._mData.extend(byteArray(newSize - self._size))
+                self._size = newSize
+
+            # Return if not enabled
+            if not self._enable:
+                return
+
+            # Setup transaction
+            self._doVerify = verify
+            self._doUpdate = not (write or verify)
+            self._error    = 0
+
+            # Set data pointer
+            tData = self._vData if verify else self._bData
+
+        # Start transaction outside of lock
+        self._reqTransaction(self._offset,self._size,tData,write,posted)
+
+    def _doneTransaction(tid,error):
+        """
+        Callback for when transaction is complete
+        """
+        with self._lock:
+
+            # Make sure id matches
+            if tid != self._getId():
+                return
+
+            # Clear transaction state
+            self._endTransaction()
+            self._error = error
+
+            # Check for error
+            if error > 0:
+                self._doUpdate = False
+                return
+
+            # Do verify
+            if self._doVerify:
+                for x in range(0,self._size):
+                    if (self._vData[x] & self._mData[x]) != (self._bData[x] & self._mData[x]):
+                        error_ = 0xFFFF  # Proper error for mismatch here
+                        return
+
+    def _check(self,update):
+        """
+        Check status of block.
+        If update=True notify variables if read
+        """
+        doUpdate = False
+        with self._cond:
+            self._waitWhileBusy()
+
+            # Updated
+            doUpdate = update and self_.doUpdate
+            self._doUpdate = False
+
+            # Error
+            if error > 0:
+                pass # Raise exception here
+
+        # Update variables outside of lock
+        if doUpdate: self._updated()
 
     def _updated(self):
-        for variable in self.variables:
+        for variable in self._variables:
             variable._updated()
-
 
 class Device(Node,rogue.interfaces.memory.Hub):
     """Device class holder. TODO: Update comments"""
@@ -1073,7 +1375,6 @@ class Device(Node,rogue.interfaces.memory.Hub):
             setFunction=self._setEnable, getFunction='value=dev._enable',
             description='Determines if device is enabled for hardware access'))
 
-
         if variables is not None and isinstance(variables, collections.Iterable):
             if all(isinstance(v, Variable) for v in variables):
                 # add the list of Variable objects
@@ -1094,7 +1395,6 @@ class Device(Node,rogue.interfaces.memory.Hub):
             for n in node:
                 self.add(n)
             return
-        
 
         # Call node add
         Node.add(self,node)
@@ -1105,42 +1405,8 @@ class Device(Node,rogue.interfaces.memory.Hub):
 
         # Adding variable
         if isinstance(node,Variable) and node.offset is not None:
-            varBytes = int(math.ceil(float(node.bitOffset + node.bitSize) / 8.0))
-
-            # First find if and existing block matches
-            vblock = None
-            for block in self._blocks:
-                if node.offset == block.offset:
-                    vblock = block
-
-            # Create new block if not found
-            if vblock is None:
-                vblock = Block(node.offset,varBytes)
-                vblock._setSlave(self)
-                self._blocks.append(vblock)
-
-            # Do association
-            node._block = vblock
-            vblock.variables.append(node)
-
-            if node.pollEn: 
-                vblock.pollEn = True
-
-            if vblock.mode == '': 
-                vblock.mode = node.mode
-            elif vblock.mode != node.mode:
-                vblock.mode = 'RW'
-
-            # Adjust size to hold variable. Underlying class will adjust
-            # size to align to minimum protocol access size 
-            if vblock.getSize() < varBytes:
-               vblock._setSize(varBytes)
-
-            # Update verify mask
-            if node.mode == 'RW':
-               vblock.addVerify(node.bitOffset,node.bitSize)
-
-                        
+            if not any(block.addVariable(node) for block in self._blocks):
+                self._blocks.append(Block(self,node))
 
     def setResetFunc(self,func):
         """
@@ -1250,18 +1516,18 @@ class Device(Node,rogue.interfaces.memory.Hub):
             if isinstance(value,Device):
                 value._poll()
 
-    def _check(self):
+    def _check(self,update):
         """Check errors in all blocks and generate variable update nofifications"""
         if not self._enable: return
 
         # Process local blocks
         for block in self._blocks:
-            block._check()
+            block._check(update)
 
         # Process rest of tree
         for key,value in self._nodes.iteritems():
             if isinstance(value,Device):
-                value._check()
+                value._check(update)
 
     def _devReset(self,rstType):
         """Generate a count, soft or hard reset"""
@@ -1494,4 +1760,25 @@ def dictToYaml(data, stream=None, Dumper=yaml.Dumper, **kwds):
             yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG,data.items())
     OrderedDumper.add_representer(odict, _dict_representer)
     return yaml.dump(data, stream, OrderedDumper, **kwds)
+
+def setBitToBytes(ba, bitOffset, value):
+    """
+    Set a bit to a specific location in an array of bytes
+    """
+    byte = bitOffset / 8
+    bit  = bitOffset % 8
+
+    if value > 0:
+        ba[byte] |= (1 << bit)
+    else:
+        ba[byte] &= (0xFF ^ (1 << bit))
+
+def getBitFromBytes(ba, bitOffset):
+    """
+    Get a bit from a specific location in an array of bytes
+    """
+    byte = bitOffset / 8
+    bit  = bitOffset % 8
+
+    return ((ba[byte] >> bit) & 0x1)
 
