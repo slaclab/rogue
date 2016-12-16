@@ -3,9 +3,7 @@
  * Title      : Memory Master
  * ----------------------------------------------------------------------------
  * File       : Errors.h
- * Author     : Ryan Herbst, rherbst@slac.stanford.edu
  * Created    : 2016-12-05
- * Last update: 2016-12-05
  * ----------------------------------------------------------------------------
  * Description:
  * Memory error constants.

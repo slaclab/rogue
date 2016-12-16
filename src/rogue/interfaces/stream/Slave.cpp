@@ -104,7 +104,7 @@ ris::BufferPtr ris::Slave::allocBuffer ( uint32_t size ) {
    uint32_t  meta;
 
    if ( (data = (uint8_t *)malloc(size)) == NULL ) 
-      throw(re::GeneralError::allocation("Slave::allocBuffer",size));
+      throw(rogue::GeneralError::allocation("Slave::allocBuffer",size));
 
    // Temporary lock to get meta
    PyRogue_BEGIN_ALLOW_THREADS;

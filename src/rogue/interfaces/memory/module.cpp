@@ -3,9 +3,7 @@
  * Title      : Python Module
  * ----------------------------------------------------------------------------
  * File       : module.cpp
- * Author     : Ryan Herbst, rherbst@slac.stanford.edu
  * Created    : 2016-08-08
- * Last update: 2016-08-08
  * ----------------------------------------------------------------------------
  * Description:
  * Python module setup
@@ -24,6 +22,7 @@
 #include <rogue/interfaces/memory/Slave.h>
 #include <rogue/interfaces/memory/Master.h>
 #include <rogue/interfaces/memory/Hub.h>
+#include <rogue/interfaces/memory/Errors.h>
 #include <boost/python.hpp>
 
 namespace bp  = boost::python;
@@ -36,6 +35,13 @@ void rim::setup_module() {
 
    // make "from mypackage import class1" work
    bp::scope().attr("memory") = module;
+
+   // Error constants
+   bp::scope().attr("TimeoutError") = TimeoutError;
+   bp::scope().attr("VerifyError")  = VerifyError;
+   bp::scope().attr("AddressError") = AddressError;
+   bp::scope().attr("AxiTimeout")   = AxiTimeout;
+   bp::scope().attr("AxiFail")      = AxiFail;
 
    // set the current scope to the new sub-module
    bp::scope io_scope = module;

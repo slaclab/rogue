@@ -27,7 +27,7 @@
 
 namespace rogue {
 
-   extern PyObject * generalExceptionObj;
+   extern PyObject * generalErrorObj;
 
    //! General exception
    /*
@@ -41,7 +41,7 @@ namespace rogue {
 
          static GeneralError timeout(std::string src, uint32_t time);
          static GeneralError open(std::string src, std::string file);
-         static GeneralError mask(std::string src, std::string file, std::string mask);
+         static GeneralError mask(std::string src, std::string file, uint32_t mask);
          static GeneralError boundary(std::string src, uint32_t position, uint32_t limit);
          static GeneralError allocation(std::string src, uint32_t size);
 

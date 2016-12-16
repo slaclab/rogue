@@ -20,8 +20,8 @@
  * ----------------------------------------------------------------------------
 **/
 #include <rogue/hardware/rce/MapMemory.h>
+#include <rogue/interfaces/memory/Errors.h>
 #include <rogue/GeneralError.h>
-#include <rogue/interfaces/memory/Block.h>
 #include <boost/make_shared.hpp>
 #include <stdio.h>
 #include <unistd.h>
