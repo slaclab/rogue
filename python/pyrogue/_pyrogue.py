@@ -3,9 +3,7 @@
 # Title      : PyRogue base module
 #-----------------------------------------------------------------------------
 # File       : pyrogue/__init__.py
-# Author     : Ryan Herbst, rherbst@slac.stanford.edu
 # Created    : 2016-09-29
-# Last update: 2016-09-29
 #-----------------------------------------------------------------------------
 # Description:
 # Module containing the top functions and classes within the pyrouge library
@@ -124,11 +122,6 @@ def busConnect(source,dest):
         slave = dest._getMemorySlave()
 
     master._setSlave(slave)
-
-
-class VariableError(Exception):
-    """ Exception for variable access errors."""
-    pass
 
 
 class NodeError(Exception):
@@ -675,6 +668,11 @@ class Root(rogue.interfaces.stream.Master,Node):
             self._updateVarListeners(yml,d)
 
 
+class VariableError(Exception):
+    """ Exception for variable access errors."""
+    pass
+
+
 class Variable(Node):
     """
     Variable holder.
@@ -1023,6 +1021,35 @@ class Command(Variable):
 BLANK_COMMAND = Command(name='Blank', description='A singleton command that does nothing')
 
 
+class BlockError(Exception):
+    """ Exception for memory access errors."""
+
+    def __init__(self,block):
+        self._error = block.error
+        self._value = "Error in block %s with address 0x%x: " % (block.name,block.address)
+
+        if (self._error & 0xFF000000) == rogue.interfaces.memory.TimeoutError:
+            self._value += "Timeout after %s seconds" % (block.timeout)
+
+        elif (self._error & 0xFF000000) == rogue.interfaces.memory.VerifyError:
+            self._value += "Verify error"
+
+        elif (self._error & 0xFF000000) == rogue.interfaces.memory.AddressError:
+            self._value += "Address error"
+
+        elif (self._error & 0xFF000000) == rogue.interfaces.memory.AxiTimeout:
+            self._value += "AXI timeout"
+
+        elif (self._error & 0xFF000000) == rogue.interfaces.memory.AxiFail:
+            self._value += "AXI fail"
+
+        else:
+            self._value += "Unknown error 0x%x" % (self._error)
+
+    def __str__(self):
+        return repr(self._value)
+
+
 class Block(rogue.interfaces.memory.Master):
     """Internal memory block holder"""
 
@@ -1031,21 +1058,22 @@ class Block(rogue.interfaces.memory.Master):
         Initialize memory block class.
         Pass initial variable.
         """
-        rogue.interfaces.memory.Master.__init__()
+        rogue.interfaces.memory.Master.__init__(self)
 
         # Attributes
         self._offset    = variable.offset
         self._mode      = variable.mode
         self._pollEn    = variable.pollEn
-        self._bData     = byteArray()
-        self._vData     = byteArray()
-        self._mData     = byteArray()
+        self._bData     = bytearray()
+        self._vData     = bytearray()
+        self._mData     = bytearray()
         self._size      = 0
         self._variables = []
         self._timeout   = 1.0
         self._enable    = True
         self._lock      = threading.Lock()
-        self._cond      = threading.Conditional(self._lock)
+        self._cond      = threading.Condition(self._lock)
+        self._error     = 0
         self._doUpdate  = False
         self._doVerify  = False
 
@@ -1088,6 +1116,7 @@ class Block(rogue.interfaces.memory.Master):
                 if (bitCount % 8) > 0: ba.extend(bytearray(1))
                 for x in range(0,bitCount):
                     setBitToBytes(ba,x,getBitFromBytes(self._bData,x+bitOffset))
+                return ba
 
     def setUInt(self,bitOffset,bitCount,value):
         """
@@ -1186,6 +1215,18 @@ class Block(rogue.interfaces.memory.Master):
         return self._offset | self._reqOffset()
 
     @property
+    def name(self):
+        return self._variables[0].name
+
+    @property
+    def mode(self):
+        return self._mode
+
+    @property
+    def pollEn(self):
+        return self._pollEn
+
+    @property
     def timeout(self):
         return self._timeout
 
@@ -1220,7 +1261,7 @@ class Block(rogue.interfaces.memory.Master):
             self._cond.wait(self._timeout)
             if self._getId() == lid:
                 self._endTransaction()
-                self._error = 0xFFFF  # Replace with proper error for timeout
+                self._error = rogue.interfaces.memory.TimeoutError
                 break
             lid = self._getId()
 
@@ -1240,7 +1281,7 @@ class Block(rogue.interfaces.memory.Master):
 
             # Link variable to block
             var._block = self
-            self_.variables.append(var)
+            self._variables.append(var)
 
             # Update polling, set true if any variable have poll enable set
             if var.pollEn:
@@ -1253,15 +1294,15 @@ class Block(rogue.interfaces.memory.Master):
             # Adjust size to hold variable. Underlying class will adjust
             # size to align to minimum protocol access size 
             if self._size < varBytes:
-                self._bData.extend(byteArray(varBytes - self._size))
-                self._vData.extend(byteArray(varBytes - self._size))
-                self._mData.extend(byteArray(varBytes - self._size))
+                self._bData.extend(bytearray(varBytes - self._size))
+                self._vData.extend(bytearray(varBytes - self._size))
+                self._mData.extend(bytearray(varBytes - self._size))
                 self._size = varBytes
 
             # Update verify mask
             if var.mode == 'RW':
                 for x in range(var.bitOffset,var.bitOffset+var.bitSize):
-                    setBitToBytes(self._bData,x,1)
+                    setBitToBytes(self._mData,x,1)
 
     def _startTransaction(self,write,posted,verify):
         """
@@ -1276,9 +1317,9 @@ class Block(rogue.interfaces.memory.Master):
             # Adjust size if required
             if (self._size % minSize) > 0:
                 newSize = ((self._size / minSize) + 1) * minSize
-                self._bData.extend(byteArray(newSize - self._size))
-                self._vData.extend(byteArray(newSize - self._size))
-                self._mData.extend(byteArray(newSize - self._size))
+                self._bData.extend(bytearray(newSize - self._size))
+                self._vData.extend(bytearray(newSize - self._size))
+                self._mData.extend(bytearray(newSize - self._size))
                 self._size = newSize
 
             # Return if not enabled
@@ -1294,9 +1335,9 @@ class Block(rogue.interfaces.memory.Master):
             tData = self._vData if verify else self._bData
 
         # Start transaction outside of lock
-        self._reqTransaction(self._offset,self._size,tData,write,posted)
+        self._reqTransaction(self._offset,tData,write,posted)
 
-    def _doneTransaction(tid,error):
+    def _doneTransaction(self,tid,error):
         """
         Callback for when transaction is complete
         """
@@ -1332,12 +1373,12 @@ class Block(rogue.interfaces.memory.Master):
             self._waitWhileBusy()
 
             # Updated
-            doUpdate = update and self_.doUpdate
+            doUpdate = update and self._doUpdate
             self._doUpdate = False
 
             # Error
-            if error > 0:
-                pass # Raise exception here
+            if self._error > 0:
+                raise BlockError(self)
 
         # Update variables outside of lock
         if doUpdate: self._updated()
@@ -1345,6 +1386,7 @@ class Block(rogue.interfaces.memory.Master):
     def _updated(self):
         for variable in self._variables:
             variable._updated()
+
 
 class Device(Node,rogue.interfaces.memory.Hub):
     """Device class holder. TODO: Update comments"""
@@ -1405,7 +1447,7 @@ class Device(Node,rogue.interfaces.memory.Hub):
 
         # Adding variable
         if isinstance(node,Variable) and node.offset is not None:
-            if not any(block.addVariable(node) for block in self._blocks):
+            if not any(block._addVariable(node) for block in self._blocks):
                 self._blocks.append(Block(self,node))
 
     def setResetFunc(self,func):
@@ -1554,7 +1596,7 @@ class Device(Node,rogue.interfaces.memory.Hub):
         """
 
         for block in self._blocks:
-            block.setTimeout(timeout)
+            block.timeout = timeout
 
         for key,value in self._nodes.iteritems():
             if isinstance(value,Device):

@@ -3,9 +3,7 @@
  * Title      : Stream interface slave
  * ----------------------------------------------------------------------------
  * File       : Slave.cpp
- * Author     : Ryan Herbst, rherbst@slac.stanford.edu
  * Created    : 2016-09-16
- * Last update: 2016-09-16
  * ----------------------------------------------------------------------------
  * Description:
  * Stream interface slave

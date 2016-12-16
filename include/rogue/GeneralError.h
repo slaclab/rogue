@@ -3,9 +3,7 @@
  * Title      : General Error
  * ----------------------------------------------------------------------------
  * File       : GeneralError.h
- * Author     : Ryan Herbst, rherbst@slac.stanford.edu
  * Created    : 2017-12-05
- * Last update: 2017-12-05
  * ----------------------------------------------------------------------------
  * Description:
  * General exception for Rogue
