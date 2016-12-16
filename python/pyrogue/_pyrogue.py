@@ -831,9 +831,6 @@ class Variable(Node):
         Hardware read is blocking. An error will result in a logged exception.
         Listeners will be informed of the update.
         """
-        if read:
-            print "{:s}.read(True)".format(self.name)
-            
         try:
             if read and self._block and self._block.mode != 'WO':
                 if self._beforeReadCmd is not None:
@@ -1359,14 +1356,16 @@ class Block(rogue.interfaces.memory.Master):
             # Check for error
             if error > 0:
                 self._doUpdate = False
-                return
 
             # Do verify
-            if self._doVerify:
+            elif self._doVerify:
                 for x in range(0,self._size):
                     if (self._vData[x] & self._mData[x]) != (self._bData[x] & self._mData[x]):
                         self._error = rogue.interfaces.memory.VerifyError
-                        return
+                        break
+
+            # Notify waiters
+            self._cond.notify()
 
     def _check(self,update):
         """
