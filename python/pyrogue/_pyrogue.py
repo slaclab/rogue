@@ -1107,6 +1107,10 @@ class Block(rogue.interfaces.memory.Master):
         with self._cond:
             self._waitWhileBusy()
 
+            # Error
+            if self._error > 0:
+                raise BlockError(self)
+
             # Access is fully byte aligned
             if (bitOffset % 8) == 0 and (bitCount % 8) == 0:
                 return self._bData[bitOffset/8:(bitOffset+bitCount)/8]
