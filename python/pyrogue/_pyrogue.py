@@ -1063,6 +1063,7 @@ class Block(rogue.interfaces.memory.Master):
         # Attributes
         self._offset    = variable.offset
         self._mode      = variable.mode
+        self._name      = variable.name
         self._pollEn    = variable.pollEn
         self._bData     = bytearray()
         self._vData     = bytearray()
@@ -1216,7 +1217,7 @@ class Block(rogue.interfaces.memory.Master):
 
     @property
     def name(self):
-        return self._variables[0].name
+        return self._name
 
     @property
     def mode(self):
@@ -1360,7 +1361,7 @@ class Block(rogue.interfaces.memory.Master):
             if self._doVerify:
                 for x in range(0,self._size):
                     if (self._vData[x] & self._mData[x]) != (self._bData[x] & self._mData[x]):
-                        error_ = 0xFFFF  # Proper error for mismatch here
+                        self._error = rogue.interfaces.memory.VerifyError
                         return
 
     def _check(self,update):
@@ -1424,7 +1425,6 @@ class Device(Node,rogue.interfaces.memory.Hub):
             elif all(isinstance(v, dict) for v in variables):
                 # create Variable objects from a dict list
                 self.add(Variable(**v) for v in variables)
-                    
 
     def add(self,node):
         """
@@ -1494,7 +1494,7 @@ class Device(Node,rogue.interfaces.memory.Hub):
 
         # Post write function for special cases
         self._afterWrite()
-        
+
         # Execute all unique afterWriteCmds
         cmds = set([v._afterWriteCmd for v in self.variables.values() if v._afterWriteCmd is not None])
         for cmd in cmds:
@@ -1511,7 +1511,7 @@ class Device(Node,rogue.interfaces.memory.Hub):
         cmds = set([v._beforeReadCmd for v in self.variables.values() if v._beforeReadCmd is not None])
         for cmd in cmds:
             cmd()
-            
+
         # Process local blocks
         for block in self._blocks:
             if block.mode == 'WO' or block.mode == 'RW':
@@ -1528,7 +1528,7 @@ class Device(Node,rogue.interfaces.memory.Hub):
 
         # Do the device level _beforeRead (if one exists)
         self._beforeRead()
-        
+
         # Execute all unique beforeReadCmds
         cmds = set([v._beforeReadCmd for v in self.variables.values() if v._beforeReadCmd is not None])
         for cmd in cmds:
