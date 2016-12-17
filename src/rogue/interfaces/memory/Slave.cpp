@@ -21,6 +21,7 @@
 **/
 #include <rogue/interfaces/memory/Slave.h>
 #include <rogue/interfaces/memory/Master.h>
+#include <rogue/interfaces/memory/Constants.h>
 #include <rogue/GeneralError.h>
 #include <boost/make_shared.hpp>
 #include <rogue/common.h>
@@ -122,8 +123,9 @@ uint64_t rim::Slave::doOffset() {
 }
 
 //! Post a transaction
-void rim::Slave::doTransaction(uint32_t id, rim::MasterPtr master, uint64_t address, uint32_t size, bool write, bool posted) {
+void rim::Slave::doTransaction(uint32_t id, rim::MasterPtr master, uint64_t address, uint32_t size, uint32_t type) {
    if ( enLocDone_ ) master->doneTransaction(id,0);
+   else master->doneTransaction(id,rim::Unsupported);
 }
 
 void rim::Slave::setup_python() {
@@ -234,7 +236,7 @@ uint64_t rim::SlaveWrap::defDoOffset() {
 
 //! Post a transaction. Master will call this method with the access attributes.
 void rim::SlaveWrap::doTransaction(uint32_t id, rim::MasterPtr master,
-                                   uint64_t address, uint32_t size, bool write, bool posted) {
+                                   uint64_t address, uint32_t size, uint32_t type) {
    bool found;
 
    found = false;
@@ -244,19 +246,19 @@ void rim::SlaveWrap::doTransaction(uint32_t id, rim::MasterPtr master,
    if (boost::python::override pb = this->get_override("_doTransaction")) {
       found = true;
       try {
-         pb(id,master,address,size,write,posted);
+         pb(id,master,address,size,type);
       } catch (...) {
          PyErr_Print();
       }
    }
    PyGILState_Release(pyState);
 
-   if ( ! found ) rim::Slave::doTransaction(id,master,address,size,write,posted);
+   if ( ! found ) rim::Slave::doTransaction(id,master,address,size,type);
 }
 
 //! Post a transaction. Master will call this method with the access attributes.
 void rim::SlaveWrap::defDoTransaction(uint32_t id, rim::MasterPtr master,
-                                      uint64_t address, uint32_t size, bool write, bool posted) {
-   rim::Slave::doTransaction(id, master, address, size, write, posted);
+                                      uint64_t address, uint32_t size, uint32_t type) {
+   rim::Slave::doTransaction(id, master, address, size, type);
 }
 

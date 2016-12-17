@@ -20,7 +20,7 @@
  * ----------------------------------------------------------------------------
 **/
 #include <rogue/hardware/rce/MapMemory.h>
-#include <rogue/interfaces/memory/Errors.h>
+#include <rogue/interfaces/memory/Constants.h>
 #include <rogue/GeneralError.h>
 #include <boost/make_shared.hpp>
 #include <stdio.h>
@@ -89,7 +89,7 @@ uint8_t * rhr::MapMemory::findSpace (uint32_t base, uint32_t size) {
 
 //! Post a transaction
 void rhr::MapMemory::doTransaction(uint32_t id, boost::shared_ptr<rogue::interfaces::memory::Master> master, 
-                                   uint64_t address, uint32_t size, bool write, bool posted) {
+                                   uint64_t address, uint32_t size, uint32_t type) {
    uint8_t * ptr;
    uint32_t count;
 
@@ -100,8 +100,10 @@ void rhr::MapMemory::doTransaction(uint32_t id, boost::shared_ptr<rogue::interfa
       count = 0;
 
       while ( count < size ) {
-         if (write) master->getTransactionData(id,ptr+count,count,4);
-         else master->setTransactionData(id,ptr+count,count,4);
+         if (type == rim::Write || type == rim::Post) 
+            master->getTransactionData(id,ptr+count,count,4);
+         else 
+            master->setTransactionData(id,ptr+count,count,4);
          count += 4;
       }
 

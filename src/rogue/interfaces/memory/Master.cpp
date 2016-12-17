@@ -135,7 +135,7 @@ uint64_t rim::Master::reqOffset() {
 }
 
 //! Post a transaction, called locally, forwarded to slave
-void rim::Master::reqTransaction(uint64_t address, uint32_t size, void *data, bool write, bool posted) {
+void rim::Master::reqTransaction(uint64_t address, uint32_t size, void *data, uint32_t type) {
    rim::SlavePtr slave;
    uint32_t id;
 
@@ -153,11 +153,11 @@ void rim::Master::reqTransaction(uint64_t address, uint32_t size, void *data, bo
       }
    }
    PyRogue_END_ALLOW_THREADS;
-   slave->doTransaction(id,shared_from_this(),address,size,write,posted);
+   slave->doTransaction(id,shared_from_this(),address,size,type);
 }
 
 //! Post a transaction, called locally, forwarded to slave, python version
-void rim::Master::reqTransactionPy(uint64_t address, boost::python::object p, bool write, bool posted) {
+void rim::Master::reqTransactionPy(uint64_t address, boost::python::object p, uint32_t type) {
    rim::SlavePtr slave;
    uint32_t size;
    uint32_t id;
@@ -182,7 +182,7 @@ void rim::Master::reqTransactionPy(uint64_t address, boost::python::object p, bo
       }
    }
    PyRogue_END_ALLOW_THREADS;
-   slave->doTransaction(id,shared_from_this(),address,size,write,posted);
+   slave->doTransaction(id,shared_from_this(),address,size,type);
 }
 
 //! End current transaction, ensures data pointer is not update and de-allocates python buffer

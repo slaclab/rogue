@@ -2,11 +2,11 @@
  *-----------------------------------------------------------------------------
  * Title      : Memory Master
  * ----------------------------------------------------------------------------
- * File       : Errors.h
+ * File       : Constants.h
  * Created    : 2016-12-05
  * ----------------------------------------------------------------------------
  * Description:
- * Memory error constants.
+ * Memory error and transaction constants.
  * ----------------------------------------------------------------------------
  * This file is part of the rogue software platform. It is subject to 
  * the license terms in the LICENSE.txt file found in the top-level directory 
@@ -26,11 +26,19 @@ namespace rogue {
    namespace interfaces {
       namespace memory {
 
+         // Error constants
          static const uint32_t TimeoutError = 0x01000000;
          static const uint32_t VerifyError  = 0x02000000;
          static const uint32_t AddressError = 0x03000000;
          static const uint32_t AxiTimeout   = 0x04000000;
          static const uint32_t AxiFail      = 0x05000000;
+         static const uint32_t Unsupported  = 0x06000000;
+
+         // Transaction constants
+         static const uint32_t Read   = 0x1;
+         static const uint32_t Write  = 0x2;
+         static const uint32_t Post   = 0x3;
+         static const uint32_t Verify = 0x4;
 
       }
    }

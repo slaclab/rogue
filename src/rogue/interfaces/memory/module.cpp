@@ -22,7 +22,7 @@
 #include <rogue/interfaces/memory/Slave.h>
 #include <rogue/interfaces/memory/Master.h>
 #include <rogue/interfaces/memory/Hub.h>
-#include <rogue/interfaces/memory/Errors.h>
+#include <rogue/interfaces/memory/Constants.h>
 #include <boost/python.hpp>
 
 namespace bp  = boost::python;
@@ -45,6 +45,12 @@ void rim::setup_module() {
    bp::scope().attr("AddressError") = AddressError;
    bp::scope().attr("AxiTimeout")   = AxiTimeout;
    bp::scope().attr("AxiFail")      = AxiFail;
+
+   // Transaction constants
+   bp::scope().attr("Read")   = Read;
+   bp::scope().attr("Write")  = Write;
+   bp::scope().attr("Post")   = Post;
+   bp::scope().attr("Verify") = Verify;
 
    rim::Master::setup_python(); 
    rim::Slave::setup_python(); 

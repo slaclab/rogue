@@ -90,7 +90,7 @@ namespace rogue {
 
                //! Post a transaction. Master will call this method with the access attributes.
                virtual void doTransaction(uint32_t id, boost::shared_ptr<rogue::interfaces::memory::Master> master,
-                                          uint64_t address, uint32_t size, bool write, bool posted);
+                                          uint64_t address, uint32_t size, uint32_t type);
 
          };
 
@@ -124,11 +124,11 @@ namespace rogue {
 
                //! Post a transaction. Master will call this method with the access attributes.
                void doTransaction(uint32_t id, boost::shared_ptr<rogue::interfaces::memory::Master> master,
-                                  uint64_t address, uint32_t size, bool write, bool posted);
+                                  uint64_t address, uint32_t size, uint32_t type);
 
                //! Post a transaction. Master will call this method with the access attributes.
                void defDoTransaction(uint32_t id, boost::shared_ptr<rogue::interfaces::memory::Master> master,
-                                     uint64_t address, uint32_t size, bool write, bool posted);
+                                     uint64_t address, uint32_t size, uint32_t type);
 
          };
 

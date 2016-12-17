@@ -26,7 +26,7 @@
 #include <rogue/interfaces/stream/Slave.h>
 #include <rogue/interfaces/stream/Frame.h>
 #include <rogue/interfaces/memory/Slave.h>
-#include <rogue/interfaces/memory/Errors.h>
+#include <rogue/interfaces/memory/Constants.h>
 #include <rogue/protocols/srp/SrpV0.h>
 
 namespace bp = boost::python;
@@ -57,7 +57,7 @@ rps::SrpV0::SrpV0() : ris::Master(), ris::Slave(), rim::Slave(4,2048) { }
 rps::SrpV0::~SrpV0() {}
 
 //! Post a transaction
-void rps::SrpV0::doTransaction(uint32_t id, rim::MasterPtr master, uint64_t address, uint32_t size, bool write, bool posted) {
+void rps::SrpV0::doTransaction(uint32_t id, rim::MasterPtr master, uint64_t address, uint32_t size, uint32_t type) {
    ris::FrameIteratorPtr iter;
    ris::FramePtr  frame;
    uint32_t  frameSize;
@@ -71,8 +71,10 @@ void rps::SrpV0::doTransaction(uint32_t id, rim::MasterPtr master, uint64_t addr
    }
 
    // Compute transmit frame size
-   if (write) frameSize = (size + 12); // 2 x 32 bits for header, 1 x 32 for tail
-   else frameSize = 16;
+   if (type == rim::Write || type == rim::Post)
+      frameSize = (size + 12); // 2 x 32 bits for header, 1 x 32 for tail
+   else 
+      frameSize = 16;
 
    // Request frame
    frame = reqFrame(frameSize,true,0);
@@ -82,12 +84,12 @@ void rps::SrpV0::doTransaction(uint32_t id, rim::MasterPtr master, uint64_t addr
    cnt  = frame->write(&(temp),0,4);
    
    // Second 32-bit value is address & mode
-   temp  = (write)?0x40000000:0x00000000;
+   temp  = (type == rim::Write || type == rim::Post)?0x40000000:0x00000000;
    temp |= (address >> 2) & 0x3FFFFFFF;
    cnt  += frame->write(&(temp),cnt,4);
 
    // Write data
-   if ( write ) {
+   if ( type == rim::Write || type == rim::Post ) {
       iter = frame->startWrite(cnt,size);
 
       do {
@@ -106,11 +108,10 @@ void rps::SrpV0::doTransaction(uint32_t id, rim::MasterPtr master, uint64_t addr
    temp = 0;
    cnt += frame->write(&temp,cnt,4);
 
-   if ( write && posted ) master->doneTransaction(id,0);
-   else {
-      addMaster(id,master);
-      sendFrame(frame);
-   }
+   if ( type == rim::Post ) master->doneTransaction(id,0);
+   else addMaster(id,master);
+
+   sendFrame(frame);
 }
 
 //! Accept a frame from master
@@ -129,7 +130,7 @@ void rps::SrpV0::acceptFrame ( ris::FramePtr frame ) {
    frame->read(&id,0,4);
 
    // Find master
-   if ( ! validMaster(id) ) return; // Bad id drop frame
+   if ( ! validMaster(id) ) return; // Bad id or post, drop frame
    else m = getMaster(id);
 
    // Read tail error value, complete if error is set

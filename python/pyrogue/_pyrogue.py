@@ -548,13 +548,13 @@ class Root(rogue.interfaces.stream.Master,Node):
         try:
             for key,value in self._nodes.iteritems():
                 if isinstance(value,Device):
-                    value._write()
+                    value._backgroundTransaction(rogue.interfaces.memory.Write)
             for key,value in self._nodes.iteritems():
                 if isinstance(value,Device):
-                    value._verify()
+                    value._backgroundTransaction(rogue.interfaces.memory.Verify)
             for key,value in self._nodes.iteritems():
                 if isinstance(value,Device):
-                    value._check(update=False)
+                    value._checkTransaction(update=False)
         except Exception as e:
             self._root._logException(e)
 
@@ -566,10 +566,10 @@ class Root(rogue.interfaces.stream.Master,Node):
         try:
             for key,value in self._nodes.iteritems():
                 if isinstance(value,Device):
-                    value._read()
+                    value._backgroundTransaction(rogue.interfaces.memory.Read)
             for key,value in self._nodes.iteritems():
                 if isinstance(value,Device):
-                    value._check(update=True)
+                    value._checkTransaction(update=True)
         except Exception as e:
             self._root._logException(e)
 
@@ -586,7 +586,7 @@ class Root(rogue.interfaces.stream.Master,Node):
                     value._poll()
             for key,value in self._nodes.iteritems():
                 if isinstance(value,Device):
-                    value._check(update=True)
+                    value._checkTransaction(update=True)
         except Exception as e:
             self._root._logException(e)
 
@@ -673,6 +673,14 @@ class VariableError(Exception):
     pass
 
 
+class Base(object):
+    """
+    Class which defines how data is stored, displayed and converted.
+    """
+    def __init__(self):
+        pass
+
+
 class Variable(Node):
     """
     Variable holder.
@@ -719,7 +727,7 @@ class Variable(Node):
     def __init__(self, name, description="", offset=None, bitSize=32, bitOffset=0, pollEn=False,
                  base='hex', mode='RW', enum=None, units=None, hidden=False, minimum=None, maximum=None,
                  setFunction=None, getFunction=None, dependencies=None,               
-                 beforeReadCmd=None, afterWriteCmd=None, beforeVerifyCmd=None, **dump):
+                 beforeReadCmd=None, afterWriteCmd=None, **dump):
  
         """Initialize variable class"""
 
@@ -802,14 +810,14 @@ class Variable(Node):
             self._rawSet(value)
             
             if write and self._block and self._block.mode != 'RO':
-                self._block.blockingWrite()
+                self._block.blockingTransaction(rogue.interfaces.memory.Write)
                 if self._afterWriteCmd is not None:
                     self._afterWriteCmd()
 
                 if self._block.mode == 'RW':
                     if self._beforeReadCmd is not None:
                         self._beforeReadCmd()
-                    self._block.blockingVerify()
+                    self._block.blockingTransaction(rogue.interfaces.memory.Verify)
         except Exception as e:
             self._root._logException(e)
 
@@ -821,7 +829,7 @@ class Variable(Node):
         try:
             self._rawSet(value)
             if self._block and self._block.mode != 'RO':
-                self._block.postedWrite()
+                self._block.backgroundTransaction(rogue.interfaces.memory.Post)
         except Exception as e:
             self._root._logException(e)
 
@@ -835,7 +843,7 @@ class Variable(Node):
             if read and self._block and self._block.mode != 'WO':
                 if self._beforeReadCmd is not None:
                     self._beforeReadCmd()
-                self._block.blockingRead()
+                self._block.blockingTransaction(rogue.interfaces.memory.Read)
             ret = self._rawGet()
         except Exception as e:
             self._root._logException(e)
@@ -1068,14 +1076,14 @@ class Block(rogue.interfaces.memory.Master):
         self._size      = 0
         self._variables = []
         self._timeout   = 1.0
-        self._enable    = True
         self._lock      = threading.Lock()
         self._cond      = threading.Condition(self._lock)
         self._error     = 0
         self._doUpdate  = False
         self._doVerify  = False
+        self._device    = variable.parent
 
-        self._setSlave(device)
+        self._setSlave(self._device)
         self._addVariable(variable)
 
     def set(self,bitOffset,bitCount,ba):
@@ -1084,7 +1092,7 @@ class Block(rogue.interfaces.memory.Master):
         Offset sets the starting point in the block array.
         """
         with self._cond:
-            self._waitWhileBusy()
+            self._waitTransaction()
 
             # Access is fully byte aligned
             if (bitOffset % 8) == 0 and (bitCount % 8) == 0:
@@ -1102,7 +1110,7 @@ class Block(rogue.interfaces.memory.Master):
         bytearray is returned
         """
         with self._cond:
-            self._waitWhileBusy()
+            self._waitTransaction()
 
             # Error
             if self._error > 0:
@@ -1163,50 +1171,18 @@ class Block(rogue.interfaces.memory.Master):
         ba.rstrip('\0')
         return str(ba)
 
-    def backgroundRead(self):
+    def backgroundTransaction(self,type):
         """
-        Perform a background read. 
+        Perform a background transaction
         """
-        self._startTransaction(write=False,posted=False,verify=False)
+        self._startTransaction(type)
 
-    def blockingRead(self):
+    def blockingTransaction(self,type):
         """
-        Perform a foreground read. 
+        Perform a blocking transaction
         """
-        self._startTransaction(write=False,posted=False,verify=False)
-        self._check(update=False)
-
-    def backgroundWrite(self):
-        """
-        Perform a background write.
-        """
-        self._startTransaction(write=True,posted=False,verify=False)
-
-    def blockingWrite(self):
-        """
-        Perform a foreground write.
-        """
-        self._startTransaction(write=True,posted=False,verify=False)
-        self._check(update=False)
-
-    def postedWrite(self):
-        """
-        Perform a posted write.
-        """
-        self._startTransaction(write=True,posted=True,verify=False)
-
-    def backgroundVerify(self):
-        """
-        Perform a background verify.
-        """
-        self._startTransaction(write=False,posted=False,verify=True)
-
-    def blockingVerify(self):
-        """
-        Perform a foreground verify.
-        """
-        self._startTransaction(write=False,posted=False,verify=True)
-        self._check(update=False)
+        self._startTransaction(type)
+        self._checkTransaction(update=False)
 
     @property
     def offset(self):
@@ -1235,24 +1211,14 @@ class Block(rogue.interfaces.memory.Master):
     @timeout.setter
     def timeout(self,value):
         with self._cond:
-            self._waitWhileBusy()
+            self._waitTransaction()
             self._timeout = value
-
-    @property
-    def enable(self):
-        return self._enable
-
-    @enable.setter
-    def enable(self,value):
-        with self._cond:
-            self._waitWhileBusy()
-            self._enable = value
 
     @property
     def error(self):
         return self._error
 
-    def _waitWhileBusy(self):
+    def _waitTransaction(self):
         """
         Wait while a transaction is pending.
         Set an error on timeout.
@@ -1272,7 +1238,7 @@ class Block(rogue.interfaces.memory.Master):
         Add a variable to the block
         """
         with self._cond:
-            self._waitWhileBusy()
+            self._waitTransaction()
 
             # Return false if offset does not match
             if var.offset != self._offset:
@@ -1306,7 +1272,7 @@ class Block(rogue.interfaces.memory.Master):
                 for x in range(var.bitOffset,var.bitOffset+var.bitSize):
                     setBitToBytes(self._mData,x,1)
 
-    def _startTransaction(self,write,posted,verify):
+    def _startTransaction(self,type):
         """
         Start a transaction.
         """
@@ -1314,7 +1280,7 @@ class Block(rogue.interfaces.memory.Master):
         tData = None
 
         with self._cond:
-            self._waitWhileBusy()
+            self._waitTransaction()
 
             # Adjust size if required
             if (self._size % minSize) > 0:
@@ -1325,19 +1291,19 @@ class Block(rogue.interfaces.memory.Master):
                 self._size = newSize
 
             # Return if not enabled
-            if not self._enable:
+            if not self._device._enable:
                 return
 
             # Setup transaction
-            self._doVerify = verify
-            self._doUpdate = not (write or verify)
+            self._doVerify = (type == rogue.interfaces.memory.Verify)
+            self._doUpdate = (type == rogue.interfaces.memory.Read)
             self._error    = 0
 
             # Set data pointer
-            tData = self._vData if verify else self._bData
+            tData = self._vData if self._doVerify else self._bData
 
         # Start transaction outside of lock
-        self._reqTransaction(self._offset,tData,write,posted)
+        self._reqTransaction(self._offset,tData,type)
 
     def _doneTransaction(self,tid,error):
         """
@@ -1367,14 +1333,14 @@ class Block(rogue.interfaces.memory.Master):
             # Notify waiters
             self._cond.notify()
 
-    def _check(self,update):
+    def _checkTransaction(self,update):
         """
         Check status of block.
         If update=True notify variables if read
         """
         doUpdate = False
         with self._cond:
-            self._waitWhileBusy()
+            self._waitTransaction()
 
             # Updated
             doUpdate = update and self._doUpdate
@@ -1461,15 +1427,6 @@ class Device(Node,rogue.interfaces.memory.Hub):
         """
         self._resetFunc = func
 
-    def _beforeRead(self):
-        pass
-
-    def _beforeVerify(self):
-        pass
-
-    def _afterWrite(self):
-        pass
-
     def _setEnable(self, dev, var, enable):
         """
         Method to update enable in underlying block.
@@ -1478,74 +1435,39 @@ class Device(Node,rogue.interfaces.memory.Hub):
         """
         self._enable = enable
 
-        for block in self._blocks:
-            block.setEnable(enable)
-
-    def _write(self):
-        """ Write all blocks. """
+    def _backgroundTransaction(self,type):
+        """
+        Perform background transactions
+        """
         if not self._enable: return
 
-        # Process local blocks
+        # Execute all unique beforeReadCmds for reads or verify
+        if type == rogue.interfaces.memory.Read or type == rogue.interfaces.memory.Verify:
+            cmds = set([v._beforeReadCmd for v in self.variables.values() if v._beforeReadCmd is not None])
+            for cmd in cmds:
+                cmd()
+
+        # Process local blocks. 
         for block in self._blocks:
-            if block.mode == 'WO' or block.mode == 'RW':
-                block.backgroundWrite()
+
+            # Only process writes if block is WO or RW
+            # Only process reads if block is RO or RW
+            # Only process verify if block is RW
+            if (type == rogue.interfaces.memory.Write  and (block.mode == 'WO' or block.mode == 'RW')) or \
+               (type == rogue.interfaces.memory.Read   and (block.mode == 'RO' or block.mode == 'RW')) or  \
+               (type == rogue.interfaces.memory.Verify and block.mode == 'RW'):
+                block.backgroundTransaction(type)
 
         # Process rest of tree
         for key,value in self._nodes.iteritems():
             if isinstance(value,Device):
-                value._write()
+                value._backgroundTransaction(type)
 
-        # Post write function for special cases
-        self._afterWrite()
-
-        # Execute all unique afterWriteCmds
-        cmds = set([v._afterWriteCmd for v in self.variables.values() if v._afterWriteCmd is not None])
-        for cmd in cmds:
-            cmd()
-
-    def _verify(self):
-        """ Verify all blocks. """
-        if not self._enable: return
-
-        # Device level pre-verify function
-        self._beforeRead()
-
-        # Execute all unique beforeReadCmds
-        cmds = set([v._beforeReadCmd for v in self.variables.values() if v._beforeReadCmd is not None])
-        for cmd in cmds:
-            cmd()
-
-        # Process local blocks
-        for block in self._blocks:
-            if block.mode == 'WO' or block.mode == 'RW':
-                block.backgroundVerify()
-
-        # Process reset of tree
-        for key,value in self._nodes.iteritems():
-            if isinstance(value,Device):
-                value._verify()
-
-    def _read(self):
-        """Read all blocks"""
-        if not self._enable: return
-
-        # Do the device level _beforeRead (if one exists)
-        self._beforeRead()
-
-        # Execute all unique beforeReadCmds
-        cmds = set([v._beforeReadCmd for v in self.variables.values() if v._beforeReadCmd is not None])
-        for cmd in cmds:
-            cmd()
-
-        # Process local blocks
-        for block in self._blocks:
-            if block.mode == 'RO' or block.mode == 'RW':
-                block.backgroundRead()
-
-        # Process rest of tree
-        for key,value in self._nodes.iteritems():
-            if isinstance(value,Device):
-                value._read()
+        # Execute all unique afterWriteCmds for writes
+        if type == rogue.interfaces.memory.Write:
+            cmds = set([v._afterWriteCmd for v in self.variables.values() if v._afterWriteCmd is not None])
+            for cmd in cmds:
+                cmd()
 
     def _poll(self):
         """Read pollable blocks"""
@@ -1554,25 +1476,25 @@ class Device(Node,rogue.interfaces.memory.Hub):
         # Process local blocks
         for block in self._blocks:
             if block.pollEn and (block.mode == 'RO' or block.mode == 'RW'):
-                block.backgroundRead()
+                block.backgroundTransaction(rogue.interfaces.memory.Read)
 
         # Process rest of tree
         for key,value in self._nodes.iteritems():
             if isinstance(value,Device):
                 value._poll()
 
-    def _check(self,update):
+    def _checkTransaction(self,update):
         """Check errors in all blocks and generate variable update nofifications"""
         if not self._enable: return
 
         # Process local blocks
         for block in self._blocks:
-            block._check(update)
+            block._checkTransaction(update)
 
         # Process rest of tree
         for key,value in self._nodes.iteritems():
             if isinstance(value,Device):
-                value._check(update)
+                value._checkTransaction(update)
 
     def _devReset(self,rstType):
         """Generate a count, soft or hard reset"""
@@ -1583,15 +1505,6 @@ class Device(Node,rogue.interfaces.memory.Hub):
         for key,value in self._nodes.iteritems():
             if isinstance(value,Device):
                 value._devReset(rstType)
-
-    def _hardReset(self):
-        self._resetFunc(self, "hard")
-
-    def _softReset(self):
-        self._resetFunc(self, "soft")
-
-    def _countReset(self):
-        self._resetFunc(self, "count")
 
     def _setTimeout(self,timeout):
         """
@@ -1684,11 +1597,12 @@ class DataWriter(Device):
         self._dataFile += datetime.datetime.now().strftime("%Y%m%d_%H%M%S.dat") 
         self.dataFile._updated()
 
-    def _read(self):
+    def _backgroundTransaction(self,type):
         """Force update of non block status variables"""
-        self.fileSize.get()
-        self.frameCount.get()
-        Device._read(self)
+        if type == rogue.interfaces.memory.Read:
+            self.fileSize.get()
+            self.frameCount.get()
+        Device._backgroundTransaction(self,type)
 
     def _poll(self):
         """Force update of non block status variables"""
@@ -1738,10 +1652,11 @@ class RunControl(Device):
         """
         self._runRate = value
 
-    def _read(self):
+    def _backgroundTransaction(self,type):
         """Force update of non block status variables"""
-        self.runCount.get()
-        Device._read(self)
+        if type == rogue.interfaces.memory.Read:
+            self.runCount.get()
+        Device._backgroundTransaction(self,type)
 
     def _poll(self):
         """Force update of non block status variables"""

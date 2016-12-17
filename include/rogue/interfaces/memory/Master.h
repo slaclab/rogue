@@ -101,10 +101,10 @@ namespace rogue {
                uint64_t reqOffset();
 
                //! Post a transaction, called locally, forwarded to slave, data pointer is optional
-               void reqTransaction(uint64_t address, uint32_t size, void *data, bool write, bool posted);
+               void reqTransaction(uint64_t address, uint32_t size, void *data, uint32_t type);
 
                //! Post a transaction, called locally, forwarded to slave, python version
-               void reqTransactionPy(uint64_t address, boost::python::object p, bool write, bool posted);
+               void reqTransactionPy(uint64_t address, boost::python::object p, uint32_t type);
 
                //! End current transaction, ensures data pointer is not update and de-allocates python buffer
                void endTransaction();

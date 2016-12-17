@@ -72,7 +72,7 @@ namespace rogue {
 
                //! Post a transaction
                void doTransaction(uint32_t id, boost::shared_ptr<rogue::interfaces::memory::Master> master, 
-                                  uint64_t address, uint32_t size, bool write, bool posted);
+                                  uint64_t address, uint32_t size, uint32_t type);
          };
 
          // Convienence
