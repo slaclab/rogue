@@ -28,6 +28,7 @@ from collections import OrderedDict as odict
 import collections
 import datetime
 import traceback
+import re
 
 def streamConnect(source, dest):
     """
@@ -168,6 +169,28 @@ class Node(object):
 
     def __repr__(self):
         return self.path
+
+    def __getattr__(self, name):
+        """Allow child with the 'name[key]' naming convention to be accessed as if they belong to a 
+        dictionary of Nodes with that 'name'.
+        This override builds an OrderedDict of all child nodes named as 'name[key]' and returns it.
+        Raises AttributeError if no such named Nodes are found
+        """
+        ret = odict()
+        rg = re.compile('{:s}\\[(.*?)\\]'.format(name))
+        for k,v in self._nodes.iteritems():
+            m = rg.match(k)
+            if m:
+                key = m.group(1)
+                if key.isdigit():
+                    key = int(key)
+                ret[key] = v
+
+        if len(ret) == 0:
+            raise AttributeError
+        
+        return ret
+        
 
     def add(self,node):
         """Add node as sub-node"""
