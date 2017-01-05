@@ -26,6 +26,8 @@ from collections import OrderedDict as odict
 import collections
 import datetime
 import traceback
+import re
+import functools
 
 def streamConnect(source, dest):
     """
@@ -162,6 +164,28 @@ class Node(object):
     def __repr__(self):
         return self.path
 
+    def __getattr__(self, name):
+        """Allow child Nodes with the 'name[key]' naming convention to be accessed as if they belong to a 
+        dictionary of Nodes with that 'name'.
+        This override builds an OrderedDict of all child nodes named as 'name[key]' and returns it.
+        Raises AttributeError if no such named Nodes are found. """
+        
+        ret = odict()
+        rg = re.compile('{:s}\\[(.*?)\\]'.format(name))
+        for k,v in self._nodes.iteritems():
+            m = rg.match(k)
+            if m:
+                key = m.group(1)
+                if key.isdigit():
+                    key = int(key)
+                ret[key] = v
+
+        if len(ret) == 0:
+            raise AttributeError
+        
+        return ret
+        
+
     def add(self,node):
         """Add node as sub-node"""
 
@@ -176,6 +200,13 @@ class Node(object):
 
         # Update path related attributes
         node._updateTree(self)
+
+    def addNode(nodeClass, **kwargs):
+        self.add(nodeClass(**kwargs))
+
+    def addNodes(nodeClass, name, number, offset, stride, **kwargs):
+        for i in xrange(number):
+            self.add(nodeClass(name='{:s}[{:d}]'.format(name, i), offset=offset+(i*stride), **kwargs))
 
     def _getNodes(self,typ):
         """
@@ -778,7 +809,7 @@ class Variable(Node):
 
     @property
     def dependencies(self):
-        return self.__dependencies[:]
+        return self.__dependencies
     
     def addListener(self, listener):
         """
@@ -907,7 +938,7 @@ class Variable(Node):
                     ivalue = {value: key for key,value in self.enum.items()}[value]
                 else:
                     ivalue = int(value)
-                self._block.setUInt(self.bitOffset, self.bitSize, value)        
+                self._block.setUInt(self.bitOffset, self.bitSize, ivalue)        
 
         # Inform listeners
         self._updated()
@@ -957,7 +988,7 @@ class Variable(Node):
 class Command(Variable):
     """Command holder: Subclass of variable with callable interface"""
 
-    def __init__(self, name, description, base='None', function=None, hidden=False, 
+    def __init__(self, name, description="", base='None', function=None, hidden=False, 
                  enum=None, minimum=None, maximum=None, offset=None, bitSize=32, bitOffset=0, **dump):
 
         Variable.__init__(self, name=name, description=description, offset=offset, bitSize=bitSize,
@@ -1025,6 +1056,16 @@ class Command(Variable):
             cmd.post(1)
 
 BLANK_COMMAND = Command(name='Blank', description='A singleton command that does nothing')
+
+def command(dev, **kwargs):
+    """A decorator to easily make any function a Command and add() it to 'dev'
+    Additional **kwargs are passed to the Command constructor
+    """
+    
+    def decorator(func):
+        dev.add(Command(name=func.__name__, function=func, **kwargs))
+        return func
+    return decorator
 
 
 class BlockError(Exception):
@@ -1420,6 +1461,17 @@ class Device(Node,rogue.interfaces.memory.Hub):
         if isinstance(node,Variable) and node.offset is not None:
             if not any(block._addVariable(node) for block in self._blocks):
                 self._blocks.append(Block(self,node))
+
+    def hideVariables(self, hidden, variables=None):
+        """Hide a list of Variables (or Variable names)"""
+        if variables is None:
+            variables=self.variables.values()
+            
+        for v in variables:
+            if isinstance(v, Variable):
+                v.hidden = hidden;
+            elif isinstance(variables[0], str):
+                self.variables[v].hidden = hidden
 
     def setResetFunc(self,func):
         """
