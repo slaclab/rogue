@@ -20,9 +20,9 @@
 #-----------------------------------------------------------------------------
 import yaml
 import threading
-import zyre
-import czmq
+import pyre
 import pyrogue
+import uuid
 import time
 
 class MeshNode(threading.Thread):
@@ -41,9 +41,9 @@ class MeshNode(threading.Thread):
         self._newTree = None
         self._thread  = None
 
-        self._mesh = zyre.Zyre(self._name)
+        self._mesh = pyre.Pyre(self._name)
         self._mesh.set_interface(iface)
-        #self._mesh.set_verbose()
+        self._mesh.set_verbose()
 
         if self._root:
             self._root.addVarListener(self._variableStatus)
@@ -60,7 +60,7 @@ class MeshNode(threading.Thread):
         self._thread.join()
 
     def getTree(self,name):
-        if self._servers.has_key(name):
+        if name in self._servers:
             return self._servers[name]
         else:
             return None
@@ -77,42 +77,39 @@ class MeshNode(threading.Thread):
 
     def _run(self):
         self._mesh.set_header('server','True' if self._root else 'False')
-        #self._mesh.set_header('hostname',socket.getfqdn())
         self._mesh.start()
         self._mesh.join(self._group)
 
         while(self._runEn):
 
             # Get a message
-            e = zyre.ZyreEvent(self._mesh)
-            src = e.peer_name()
-            sid = e.peer_uuid()
-
-            if e.type() == 'WHISPER' or e.type() == 'SHOUT': size = e.msg().size()
-            else: size = 0
-
-            if size > 0: cmd = e.msg().popstr()
-            else: cmd = None
+            e = self._mesh.recv()
+            typ  = e[0].decode('utf-8')
+            sid  = uuid.UUID(bytes=e[1])
+            src  = e[2].decode('utf-8')
 
             # Commands sent directly to this node
-            if e.type() == 'WHISPER':
+            if typ == 'WHISPER':
+                m = yaml.load(e[3].decode('utf-8'))
+                cmd  = m['cmd']
+                msg1 = m['msg1']
+                msg2 = m['msg2']
 
                 # Variable set from client to server
-                if (cmd == 'variable_set' or cmd == 'command') and size > 1:
-                    self._root.setOrExecYaml(e.msg().popstr(),True,['RW'])
+                if (cmd == 'variable_set' or cmd == 'command'):
+                    self._root.setOrExecYaml(msg1,True,['RW'])
 
                 # Structure update from server to client
-                elif cmd == 'structure_status' and size > 2:
-                    yml = e.msg().popstr()
+                elif cmd == 'structure_status':
                     
                     # Does name already exist? Update UUID
-                    if self._servers.has_key(src):
+                    if src in self._servers:
                         t = self._servers[src]
                         t.uuid = sid
 
                     # Otherwise create new tree
                     else:
-                        t = pyrogue.treeFromYaml(yml,self._setFunction,self._cmdFunction)
+                        t = pyrogue.treeFromYaml(msg1,self._setFunction,self._cmdFunction)
                         setattr(t,'uuid',sid)
                         self._servers[t.name] = t
                         if self._newTree:
@@ -120,36 +117,42 @@ class MeshNode(threading.Thread):
                     
                     # Apply updates
                     self._noMsg = True
-                    t.setOrExecYaml(e.msg().popstr(),False,['RW','RO'])
+                    t.setOrExecYaml(msg2,False,['RW','RO'])
                     self._noMsg = False
 
                 # Structure request from client to server
                 elif cmd == 'get_structure':
-                    msg = czmq.Zmsg()
-                    msg.addstr('structure_status')
-                    msg.addstr(self._root.getYamlStructure())
-                    msg.addstr(self._root.getYamlVariables(False,['RW','RO']))
-                    self._mesh.whisper(sid,msg)
+                    self._intWhisper(sid,'structure_status',self._root.getYamlStructure(),self._root.getYamlVariables(False,['RW','RO']))
 
             # Commands sent as a broadcast
-            elif e.type() == 'SHOUT':
-                msg = e.msg().popstr()
+            elif typ == 'SHOUT':
+                m = yaml.load(e[4].decode('utf-8'))
+                cmd  = m['cmd']
+                msg  = m['msg']
 
                 # Field update from server to client
-                if cmd == 'variable_status' and size > 1:
+                if cmd == 'variable_status':
                     self._noMsg = True
-                    for key,value in self._servers.iteritems():
+                    for key,value in self._servers.items():
                         value.setOrExecYaml(msg,False,['RW','RO'])
-
                     self._noMsg = False
 
             # New node, request structure and status
-            elif e.type() == 'JOIN':
+            elif typ == 'JOIN':
                 if self._mesh.peer_header_value(sid,'server') == 'True':
-                    msg = czmq.Zmsg()
-                    msg.addstr('get_structure')
-                    self._mesh.whisper(sid,msg)
+                    self._intWhisper(sid,'get_structure')
 
+    # Shout a message/payload combination
+    def _intShout(self,cmd,msg=None):
+        m = {'cmd':cmd,'msg':msg}
+        ym = yaml.dump(m)
+        self._mesh.shouts(self._group,ym)
+
+    # Whisper a message/payload combination
+    def _intWhisper(self,uuid,cmd,msg1=None,msg2=None):
+        m = {'cmd':cmd,'msg1':msg1,'msg2':msg2}
+        ym = yaml.dump(m)
+        self._mesh.whispers(uuid,ym)
 
     # Command button pressed on client
     def _cmdFunction(self,dev,cmd,arg):
@@ -157,11 +160,7 @@ class MeshNode(threading.Thread):
         pyrogue.addPathToDict(d,cmd.path,arg)
         name = cmd.path[:cmd.path.find('.')]
         yml = pyrogue.dictToYaml(d,default_flow_style=False)
-
-        msg = czmq.Zmsg()
-        msg.addstr('command')
-        msg.addstr(yml)
-        self._mesh.whisper(self._servers[name].uuid,msg)
+        self._intWhisper(self._servers[name].uuid,'command',yml)
 
     # Variable field updated on client
     def _setFunction(self,dev,var,value):
@@ -171,16 +170,9 @@ class MeshNode(threading.Thread):
         pyrogue.addPathToDict(d,var.path,value)
         name = var.path[:var.path.find('.')]
         yml = pyrogue.dictToYaml(d,default_flow_style=False)
-
-        msg = czmq.Zmsg()
-        msg.addstr('variable_set')
-        msg.addstr(yml)
-        self._mesh.whisper(self._servers[name].uuid,msg)
+        self._intWhisper(self._servers[name].uuid,'variable_set',yml)
 
     # Variable field updated on server
     def _variableStatus(self,yml,d):
-        msg = czmq.Zmsg()
-        msg.addstr('variable_status')
-        msg.addstr(yml)
-        self._mesh.shout(self._group,msg)
+        self._intShout('variable_status',yml)
 

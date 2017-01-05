@@ -22,7 +22,11 @@ import threading
 import pyrogue
 import time
 import pcaspy
-import Queue
+
+try:
+   import queue
+except ImportError:
+   import Queue as queue
 
 
 class EpicsCaDriver(pcaspy.Driver):
@@ -47,7 +51,8 @@ class EpicsCaServer(object):
         self._runEn   = True
         self._server  = None
         self._driver  = None
-        self._queue   = Queue.Queue()
+        self._queue   = queue.Queue()
+        #self._queue   = Queue.Queue()
         self._wThread = None
         self._eThread = None
 
@@ -72,7 +77,7 @@ class EpicsCaServer(object):
         d = {}
         if node.base == 'enum': 
             d['type'] = 'enum'
-            d['enums'] = [val for key,val in node.enum.iteritems()] 
+            d['enums'] = [val for key,val in node.enum.items()] 
         elif node.base == 'bool':
             d['type'] = 'enum'
             d['enums'] = ['True','False']
@@ -93,17 +98,17 @@ class EpicsCaServer(object):
     def _addDevice(self,node,pvdb):
 
         # Get variables 
-        for key,value in node.variables.iteritems():
+        for key,value in node.variables.items():
             if value.hidden == False:
                 self._addPv(value,pvdb)
 
         # Get commands
-        for key,value in node.commands.iteritems():
+        for key,value in node.commands.items():
             if value.hidden == False:
                 self._addPv(value,pvdb)
 
         # Get devices
-        for key,value in node.devices.iteritems():
+        for key,value in node.devices.items():
             if value.hidden == False:
                 self._addDevice(value,pvdb)
 
@@ -144,7 +149,7 @@ class EpicsCaServer(object):
         self._driver.updatePVs()
 
     def _walkDict(self,currPath,d):
-        for key,value in d.iteritems():
+        for key,value in d.items():
 
             if currPath: locPath = currPath + ':' + key
             else: locPath = key

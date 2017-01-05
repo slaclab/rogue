@@ -182,7 +182,7 @@ class Node(object):
         Get a ordered dictionary of nodes.
         pass a class type to receive a certain type of node
         """
-        return odict([(k,n) for k,n in self._nodes.iteritems() if isinstance(n, typ)])
+        return odict([(k,n) for k,n in self._nodes.items() if isinstance(n, typ)])
 
     @property
     def nodes(self):
@@ -196,7 +196,7 @@ class Node(object):
         """
         Return an OrderedDict of the variables but not commands (which are a subclass of Variable
         """
-        return odict([(k,n) for k,n in self._nodes.iteritems()
+        return odict([(k,n) for k,n in self._nodes.items()
                       if isinstance(n, Variable) and not isinstance(n, Command)])
 
     @property
@@ -238,7 +238,7 @@ class Node(object):
         self._root   = self._parent._root
         self.path    = self._parent.path + '.' + self.name
 
-        for key,value in self._nodes.iteritems():
+        for key,value in self._nodes.items():
             value._updateTree(self)
 
     def _getStructure(self):
@@ -250,12 +250,12 @@ class Node(object):
         data = odict()
 
         # First get non-node local values
-        for key,value in self.__dict__.iteritems():
+        for key,value in self.__dict__.items():
             if (not key.startswith('_')) and (not isinstance(value,Node)):
                 data[key] = value
 
         # Next get sub nodes
-        for key,value in self.nodes.iteritems():
+        for key,value in self.nodes.items():
             data[key] = value._getStructure()
 
         return data
@@ -265,10 +265,10 @@ class Node(object):
         Creation structure from passed dictionary. Used for clients.
         Blocks are not created and functions are set to the passed values.
         """
-        for key, value in d.iteritems():
+        for key, value in d.items():
 
             # Only work on nodes
-            if isinstance(value,dict) and value.has_key('classType'):
+            if isinstance(value,dict) and 'classType' in value:
 
                 # If entry is a device add and recurse
                 if value['classType'] == 'device' or value['classType'] == 'dataWriter' or \
@@ -308,7 +308,7 @@ class Node(object):
         Called from getYamlVariables in the root node.
         """
         data = odict()
-        for key,value in self._nodes.iteritems():
+        for key,value in self._nodes.items():
             if isinstance(value,Device):
                 data[key] = value._getVariables(modes)
             elif isinstance(value,Variable) and (value.mode in modes):
@@ -323,7 +323,7 @@ class Node(object):
         modes is a list of variable nodes to act on for variable accesses.
         Called from setOrExecYaml in the root node.
         """
-        for key, value in d.iteritems():
+        for key, value in d.items():
 
             # Entry is in node list
             if key in self._nodes:
@@ -456,7 +456,7 @@ class Root(rogue.interfaces.stream.Master,Node):
 
         self._initUpdatedVars()
 
-        for key, value in d.iteritems():
+        for key, value in d.items():
             if key == self.name:
                 self._setOrExec(value,writeEach,modes)
 
@@ -479,7 +479,7 @@ class Root(rogue.interfaces.stream.Master,Node):
         """
         Set timeout value on all devices & blocks
         """
-        for key,value in self._nodes.iteritems():
+        for key,value in self._nodes.items():
             if isinstance(value,Device):
                 value._setTimeout(timeout)
 
@@ -514,8 +514,7 @@ class Root(rogue.interfaces.stream.Master,Node):
         Generate a frame containing the passed yaml string.
         """
         frame = self._reqFrame(len(yml),True,0)
-        b = bytearray()
-        b.extend(yml)
+        b = bytearray(yml,'utf-8')
         frame.write(b,0)
         self._sendFrame(frame)
 
@@ -546,13 +545,13 @@ class Root(rogue.interfaces.stream.Master,Node):
         """Write all blocks"""
 
         try:
-            for key,value in self._nodes.iteritems():
+            for key,value in self._nodes.items():
                 if isinstance(value,Device):
                     value._backgroundTransaction(rogue.interfaces.memory.Write)
-            for key,value in self._nodes.iteritems():
+            for key,value in self._nodes.items():
                 if isinstance(value,Device):
                     value._backgroundTransaction(rogue.interfaces.memory.Verify)
-            for key,value in self._nodes.iteritems():
+            for key,value in self._nodes.items():
                 if isinstance(value,Device):
                     value._checkTransaction(update=False)
         except Exception as e:
@@ -564,10 +563,10 @@ class Root(rogue.interfaces.stream.Master,Node):
         self._initUpdatedVars()
 
         try:
-            for key,value in self._nodes.iteritems():
+            for key,value in self._nodes.items():
                 if isinstance(value,Device):
                     value._backgroundTransaction(rogue.interfaces.memory.Read)
-            for key,value in self._nodes.iteritems():
+            for key,value in self._nodes.items():
                 if isinstance(value,Device):
                     value._checkTransaction(update=True)
         except Exception as e:
@@ -581,10 +580,10 @@ class Root(rogue.interfaces.stream.Master,Node):
         self._initUpdatedVars()
 
         try:
-            for key,value in self._nodes.iteritems():
+            for key,value in self._nodes.items():
                 if isinstance(value,Device):
                     value._poll()
-            for key,value in self._nodes.iteritems():
+            for key,value in self._nodes.items():
                 if isinstance(value,Device):
                     value._checkTransaction(update=True)
         except Exception as e:
@@ -610,20 +609,20 @@ class Root(rogue.interfaces.stream.Master,Node):
 
     def _softReset(self,dev,cmd,arg):
         """Generate a soft reset on all devices"""
-        for key,value in self._nodes.iteritems():
+        for key,value in self._nodes.items():
             if isinstance(value,Device):
                 value._devReset('soft')
 
     def _hardReset(self,dev,cmd,arg):
         """Generate a hard reset on all devices"""
-        for key,value in self._nodes.iteritems():
+        for key,value in self._nodes.items():
             if isinstance(value,Device):
                 value._devReset('hard')
         self._clearLog(dev,cmd,arg)
 
     def _countReset(self,dev,cmd,arg):
         """Generate a count reset on all devices"""
-        for key,value in self._nodes.iteritems():
+        for key,value in self._nodes.items():
             if isinstance(value,Device):
                 value._devReset('count')
 
@@ -846,6 +845,7 @@ class Variable(Node):
                 self._block.blockingTransaction(rogue.interfaces.memory.Read)
             ret = self._rawGet()
         except Exception as e:
+            print("Got exception in get: %s" % (str(e)))
             self._root._logException(e)
             return None
 
@@ -904,7 +904,7 @@ class Variable(Node):
                     if value: ivalue = 1
                     else: ivalue = 0
                 elif self.base == 'enum':
-                    ivalue = {value: key for key,value in self.enum.iteritems()}[value]
+                    ivalue = {value: key for key,value in self.enum.items()}[value]
                 else:
                     ivalue = int(value)
                 self._block.setUInt(self.bitOffset, self.bitSize, value)        
@@ -929,10 +929,11 @@ class Variable(Node):
             if callable(self._getFunction):
                 return(self._getFunction(self._parent,self))
             else:
-                value = None
                 dev = self._parent
-                exec(textwrap.dedent(self._getFunction))
-                return value
+                value = 0
+                ns = locals()
+                exec(textwrap.dedent(self._getFunction),ns)
+                return ns['value']
 
         elif self._block:        
             if self.base == 'string':
@@ -977,7 +978,7 @@ class Command(Variable):
 
                 # Function is a CPSW sequence
                 elif type(self._function) is odict:
-                    for key,value in self._function.iteritems():
+                    for key,value in self._function.items():
 
                         # Built in
                         if key == 'usleep':
@@ -1037,10 +1038,13 @@ class BlockError(Exception):
             self._value += "Timeout after %s seconds" % (block.timeout)
 
         elif (self._error & 0xFF000000) == rogue.interfaces.memory.VerifyError:
-            self._value += "Verify error"
+            self._value += "Verify error. Local=%s, Verify=%s, Mask=%s" % (self._bData,self._vData,self._mData)
 
         elif (self._error & 0xFF000000) == rogue.interfaces.memory.AddressError:
             self._value += "Address error"
+
+        elif (self._error & 0xFF000000) == rogue.interfaces.memory.SizeError:
+            self._value += "Size error. Size=%i" % (block._size)
 
         elif (self._error & 0xFF000000) == rogue.interfaces.memory.AxiTimeout:
             self._value += "AXI timeout"
@@ -1096,7 +1100,7 @@ class Block(rogue.interfaces.memory.Master):
 
             # Access is fully byte aligned
             if (bitOffset % 8) == 0 and (bitCount % 8) == 0:
-                self._bData[bitOffset/8:(bitOffset+bitCount)/8] = ba
+                self._bData[int(bitOffset/8):int((bitOffset+bitCount)/8)] = ba
 
             # Bit level access
             else:
@@ -1118,11 +1122,11 @@ class Block(rogue.interfaces.memory.Master):
 
             # Access is fully byte aligned
             if (bitOffset % 8) == 0 and (bitCount % 8) == 0:
-                return self._bData[bitOffset/8:(bitOffset+bitCount)/8]
+                return self._bData[int(bitOffset/8):int((bitOffset+bitCount)/8)]
 
             # Bit level access
             else:
-                ba = bytearray(bitCount / 8)
+                ba = bytearray(int(bitCount / 8))
                 if (bitCount % 8) > 0: ba.extend(bytearray(1))
                 for x in range(0,bitCount):
                     setBitToBytes(ba,x,getBitFromBytes(self._bData,x+bitOffset))
@@ -1157,7 +1161,7 @@ class Block(rogue.interfaces.memory.Master):
         """
         Set a string. to be deprecated
         """
-        ba = bytarray(value)
+        ba = bytarray(value,'utf-8')
         ba.extend(bytearray(1))
 
         self.set(0,len(ba)*8,ba)
@@ -1166,10 +1170,8 @@ class Block(rogue.interfaces.memory.Master):
         """
         Get a string. to be deprecated
         """
-        ba = self.get(0,self._size)
-
-        ba.rstrip('\0')
-        return str(ba)
+        ba = self.get(0,self._size*8).rstrip(bytearray(1))
+        return(ba.decode('utf-8'))
 
     def backgroundTransaction(self,type):
         """
@@ -1284,7 +1286,7 @@ class Block(rogue.interfaces.memory.Master):
 
             # Adjust size if required
             if (self._size % minSize) > 0:
-                newSize = ((self._size / minSize) + 1) * minSize
+                newSize = (((int)(self._size / minSize) + 1) * minSize)
                 self._bData.extend(bytearray(newSize - self._size))
                 self._vData.extend(bytearray(newSize - self._size))
                 self._mData.extend(bytearray(newSize - self._size))
@@ -1459,7 +1461,7 @@ class Device(Node,rogue.interfaces.memory.Hub):
                 block.backgroundTransaction(type)
 
         # Process rest of tree
-        for key,value in self._nodes.iteritems():
+        for key,value in self._nodes.items():
             if isinstance(value,Device):
                 value._backgroundTransaction(type)
 
@@ -1479,7 +1481,7 @@ class Device(Node,rogue.interfaces.memory.Hub):
                 block.backgroundTransaction(rogue.interfaces.memory.Read)
 
         # Process rest of tree
-        for key,value in self._nodes.iteritems():
+        for key,value in self._nodes.items():
             if isinstance(value,Device):
                 value._poll()
 
@@ -1492,7 +1494,7 @@ class Device(Node,rogue.interfaces.memory.Hub):
             block._checkTransaction(update)
 
         # Process rest of tree
-        for key,value in self._nodes.iteritems():
+        for key,value in self._nodes.items():
             if isinstance(value,Device):
                 value._checkTransaction(update)
 
@@ -1502,7 +1504,7 @@ class Device(Node,rogue.interfaces.memory.Hub):
             self._resetFunc(self,rstType)
 
         # process remaining blocks
-        for key,value in self._nodes.iteritems():
+        for key,value in self._nodes.items():
             if isinstance(value,Device):
                 value._devReset(rstType)
 
@@ -1514,7 +1516,7 @@ class Device(Node,rogue.interfaces.memory.Hub):
         for block in self._blocks:
             block.timeout = timeout
 
-        for key,value in self._nodes.iteritems():
+        for key,value in self._nodes.items():
             if isinstance(value,Device):
                 value._setTimeout(timeout)
 
@@ -1674,7 +1676,7 @@ def addPathToDict(d, path, value):
         base  = npath[:npath.find('.')]
         npath = npath[npath.find('.')+1:]
 
-        if sd.has_key(base):
+        if base in sd:
            sd = sd[base]
         else:
            sd[base] = odict()
@@ -1691,7 +1693,7 @@ def treeFromYaml(yml,setFunction,cmdFunction):
     d = yamlToDict(yml)
     root = None
 
-    for key, value in d.iteritems():
+    for key, value in d.items():
         root = Root(**value)
         root._addStructure(value,setFunction,cmdFunction)
 
@@ -1725,7 +1727,7 @@ def setBitToBytes(ba, bitOffset, value):
     """
     Set a bit to a specific location in an array of bytes
     """
-    byte = bitOffset / 8
+    byte = int(bitOffset / 8)
     bit  = bitOffset % 8
 
     if value > 0:
@@ -1737,7 +1739,7 @@ def getBitFromBytes(ba, bitOffset):
     """
     Get a bit from a specific location in an array of bytes
     """
-    byte = bitOffset / 8
+    byte = int(bitOffset / 8)
     bit  = bitOffset % 8
 
     return ((ba[byte] >> bit) & 0x1)

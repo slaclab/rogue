@@ -20,7 +20,6 @@
 #-----------------------------------------------------------------------------
 from PyQt4.QtCore   import *
 from PyQt4.QtGui    import *
-from PyQt4.QtWebKit import *
 
 import pyrogue
 
@@ -121,12 +120,14 @@ class CommandWidget(QWidget):
     def addTreeItems(self,tree,d):
 
         # First create commands
-        for key,val in d.commands.iteritems():
+        for key,val in d.commands.items():
+        #for key,val in d.commands.iteritems():
             if not val.hidden:
                 self.commands.append(CommandLink(tree,val))
 
         # Then create devices
-        for key,val in d.devices.iteritems():
+        #for key,val in d.devices.iteritems():
+        for key,val in d.devices.items():
             if not val.hidden:
                 w = QTreeWidgetItem(tree)
                 w.setText(0,val.name)

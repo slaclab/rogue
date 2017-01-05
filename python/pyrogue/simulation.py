@@ -37,7 +37,7 @@ class StreamSim(rogue.interfaces.stream.Master,
         obPort = 6000 + dest + uid*100
         ocPort = 7000 + dest + uid*100
         sbPort = 8000 + dest + uid*100
-        
+
         self._ctx = zmq.Context()
         self._ibSock = self._ctx.socket(zmq.REP)
         self._obSock = self._ctx.socket(zmq.REQ)

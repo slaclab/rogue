@@ -20,10 +20,8 @@
 #-----------------------------------------------------------------------------
 from PyQt4.QtCore   import *
 from PyQt4.QtGui    import *
-from PyQt4.QtWebKit import *
 
-import parse
-
+#import parse
 import pyrogue
 
 
@@ -182,12 +180,14 @@ class VariableWidget(QWidget):
     def addTreeItems(self,tree,d):
 
         # First create variables
-        for key,val in d.variables.iteritems():
+        #for key,val in d.variables.iteritems():
+        for key,val in d.variables.items():
             if not val.hidden and val.mode != 'CMD':
                 var = VariableLink(tree,val)
 
         # Then create devices
-        for key,val in d.devices.iteritems():
+        #for key,val in d.devices.iteritems():
+        for key,val in d.devices.items():
             if not val.hidden:
                 w = QTreeWidgetItem(tree)
                 w.setText(0,val.name)

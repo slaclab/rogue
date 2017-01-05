@@ -1,29 +1,23 @@
 
 set temp_path=($_)
 
+# Python 3 support
+source /afs/slac.stanford.edu/g/reseng/python/3.5.2/settings.csh
+source /afs/slac.stanford.edu/g/reseng/boost/1.62.0_p3/settings.csh
+
+# Python 2 support
+#source /afs/slac.stanford.edu/g/reseng/python/2.7.13/settings.csh
+#source /afs/slac.stanford.edu/g/reseng/boost/1.62.0_p2/settings.csh
+
+source /afs/slac.stanford.edu/g/reseng/zeromq/4.2.0/settings.csh
+source /afs/slac.stanford.edu/g/reseng/epics/base-R3-16-0/settings.csh
+
 # Package directories
 setenv ROGUE_DIR  `dirname ${PWD}/$temp_path[2]`
-setenv PYDIR      /afs/slac.stanford.edu/g/lcls/package/python/python2.7.9/linux-x86_64/
-setenv ZMQ_DIR    /afs/slac.stanford.edu/g/reseng/vol11/zeromq
-setenv EPICS_BASE /afs/slac.stanford.edu/g/lcls/epics/R3-16-0/base/base-R3-16-0/
-setenv EPICS_BIN  $EPICS_BASE/bin/linux-x86_64/
-setenv EPICS_LIB  $EPICS_BASE/lib/linux-x86_64/
-
-echo $ROGUE_DIR
-
-# Boot thread library names differ from system to system, not all have -mt
-setenv BOOST_THREAD -lboost_thread-mt
 
 # Setup python path
-setenv PYTHONPATH ${ROGUE_DIR}/python:${ZMQ_DIR}/python
-
-# Setup path
-setenv PATH ${PYDIR}/bin:${ZMQ_DIR}/bin:${EPICS_BIN}:${PATH}
+setenv PYTHONPATH ${ROGUE_DIR}/python:${PYTHONPATH}
 
 # Setup library path
-if ($?LD_LIBRARY_PATH) then
-   setenv LD_LIBRARY_PATH ${ROGUE_DIR}/python:${PYDIR}/lib:${ZMQ_DIR}/lib:${EPICS_LIB}:${LD_LIBRARY_PATH}
-else
-   setenv LD_LIBRARY_PATH ${ROGUE_DIR}/python:${PYDIR}/lib:${ZMQ_DIR}/lib:${EPICS_LIB}
-endif
+setenv LD_LIBRARY_PATH ${ROGUE_DIR}/python:${LD_LIBRARY_PATH}
 

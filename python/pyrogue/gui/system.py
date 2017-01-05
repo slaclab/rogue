@@ -20,7 +20,6 @@
 #-----------------------------------------------------------------------------
 from PyQt4.QtCore   import *
 from PyQt4.QtGui    import *
-from PyQt4.QtWebKit import *
 
 import pyrogue
 
@@ -305,14 +304,14 @@ class SystemWidget(QWidget):
         ###################
         # Data Controllers
         ###################
-        for key,val in root.devices.iteritems():
+        for key,val in root.devices.items():
             if val.classType=='dataWriter':
                 self.holders.append(DataLink(tl,val))
 
         ###################
         # Run Controllers
         ###################
-        for key,val in root.devices.iteritems():
+        for key,val in root.devices.items():
             if val.classType=='runControl':
                 self.holders.append(ControlLink(tl,val))
 
