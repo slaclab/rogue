@@ -33,6 +33,7 @@ namespace rogue {
          static const uint32_t AxiTimeout   = 0x04000000;
          static const uint32_t AxiFail      = 0x05000000;
          static const uint32_t Unsupported  = 0x06000000;
+         static const uint32_t SizeError    = 0x07000000;
 
          // Transaction constants
          static const uint32_t Read   = 0x1;
