@@ -372,332 +372,6 @@ class Node(object):
                     self._nodes[key](value)
 
 
-class Root(rogue.interfaces.stream.Master,Node):
-    """
-    Class which serves as the root of a tree of nodes.
-    The root is the interface point for tree level access and updats.
-    The root is a stream master which generates frames containing tree
-    configuration and status values. This allows confiuration and status
-    to be stored in data files.
-    """
-
-    def __init__(self, name, description, **dump):
-        """Init the node with passed attributes"""
-
-        rogue.interfaces.stream.Master.__init__(self)
-        Node.__init__(self, name=name, classType='root', description=description, hidden=False)
-
-        # Polling period. Set to None to exit. 0 = don't poll
-        self._pollPeriod = 0
-
-        # Keep of list of errors, exposed as a variable
-        self._systemLog = ""
-        self._sysLogLock = threading.Lock()
-
-        # Add poller
-        self._pollThread = None
-
-        # Variable update list
-        self._updatedDict = odict()
-        self._updatedLock = threading.Lock()
-
-        # Variable update listener
-        self._varListeners = []
-
-        # Commands
-
-        self.add(Command(name='writeConfig', base='string', function=self._writeConfig,
-            description='Write configuration to passed filename in YAML format'))
-
-        self.add(Command(name='readConfig', base='string', function=self._readConfig,
-            description='Read configuration from passed filename in YAML format'))
-
-        self.add(Command(name='hardReset', base='None', function=self._hardReset,
-            description='Generate a hard reset to each device in the tree'))
-
-        self.add(Command(name='softReset', base='None', function=self._softReset,
-            description='Generate a soft reset to each device in the tree'))
-
-        self.add(Command(name='countReset', base='None', function=self._countReset,
-            description='Generate a count reset to each device in the tree'))
-
-        self.add(Command(name='clearLog', base='None', function=self._clearLog,
-            description='Clear the message log cntained in the systemLog variable'))
-
-        self.add(Command(name='readAll', base='None', function=self._read,
-            description='Read all values from the hardware'))
-
-        self.add(Command(name='writeAll', base='None', function=self._write,
-            description='Write wll values to the hardware'))
-
-        # Variables
-
-        self.add(Variable(name='systemLog', base='string', mode='RO',
-            setFunction=None, getFunction='value=dev._systemLog',
-            description='String containing newline seperated system logic entries'))
-
-        self.add(Variable(name='pollPeriod', base='float', mode='RW',
-            setFunction=self._setPollPeriod, getFunction='value=dev._pollPeriod',
-            description='Polling period for pollable variables. Set to 0 to disable polling'))
-
-    def stop(self):
-        """Stop the polling thread. Must be called for clean exit."""
-        self._pollPeriod=0
-
-    def addVarListener(self,func):
-        """
-        Add a variable update listener function.
-        The function should accept a dictionary of update
-        variables in both yaml and dict form:
-            func(yaml,dict)
-        """
-        self._varListeners.append(func)
-
-    def getYamlStructure(self):
-        """Get structure as a yaml string"""
-        return dictToYaml({self.name:self._getStructure()},default_flow_style=False)
-
-    def getYamlVariables(self,readFirst,modes=['RW']):
-        """
-        Get current values as a yaml dictionary.
-        modes is a list of variable modes to include.
-        If readFirst=True a full read from hardware is performed.
-        """
-        ret = None
-
-        if readFirst: self._read()
-        try:
-            ret = dictToYaml({self.name:self._getVariables(modes)},default_flow_style=False)
-        except Exception as e:
-            self._root._logException(e)
-
-        return ret
-
-    def setOrExecYaml(self,yml,writeEach,modes=['RW']):
-        """
-        Set variable values or execute commands from a dictionary.
-        modes is a list of variable modes to act on.
-        writeEach is set to true if accessing a single variable at a time.
-        Writes will be performed as each variable is updated. If set to 
-        false a bulk write will be performed after all of the variable updates
-        are completed. Bulk writes provide better performance when updating a large
-        quanitty of variables.
-        """
-        d = yamlToDict(yml)
-
-        self._initUpdatedVars()
-
-        for key, value in d.items():
-            if key == self.name:
-                self._setOrExec(value,writeEach,modes)
-
-        self._doneUpdatedVars()
-
-        if not writeEach: self._write()
-
-    def setOrExecPath(self,path,value):
-        """
-        Set variable values or execute commands from a dictionary.
-        Pass the variable or command path and associated value or arg.
-        """
-        d = {}
-        addPathToDict(d,path,value)
-        name = path[:path.find('.')]
-        yml = dictToYaml(d,default_flow_style=False)
-        self.setOrExecYaml(yml,writeEach=True,modes=['RW'])
-
-    def setTimeout(self,timeout):
-        """
-        Set timeout value on all devices & blocks
-        """
-        for key,value in self._nodes.items():
-            if isinstance(value,Device):
-                value._setTimeout(timeout)
-
-    def _updateVarListeners(self, yml, d):
-        """Send yaml and dict update to listeners"""
-        for f in self._varListeners:
-            f(yml,d)
-
-    def _setPollPeriod(self,dev,var,value):
-        """Set poller period"""
-        old = self._pollPeriod
-        self._pollPeriod = value
-
-        # Start thread
-        if old == 0 and value != 0:
-            self._pollThread = threading.Thread(target=self._runPoll)
-            self._pollThread.start()
-
-        # Stop thread
-        elif old != 0 and value == 0:
-            self._pollThread.join()
-            self._pollThread = None
-
-    def _runPoll(self):
-        """Polling function"""
-        while(self._pollPeriod != 0):
-            time.sleep(self._pollPeriod)
-            self._poll()
-
-    def _streamYaml(self,yml):
-        """
-        Generate a frame containing the passed yaml string.
-        """
-        frame = self._reqFrame(len(yml),True,0)
-        b = bytearray(yml,'utf-8')
-        frame.write(b,0)
-        self._sendFrame(frame)
-
-    def _streamYamlVariables(self,modes=['RW','RO']):
-        """
-        Generate a frame containing all variables values in yaml format.
-        A hardware read is not generated before the frame is generated.
-        Vlist can contain an optional list of variale paths to include in the
-        stream. If this list is not NULL only these variables will be included.
-        """
-        self._streamYaml(self.getYamlVariables(False,modes))
-
-    def _initUpdatedVars(self):
-        """Initialize the update tracking log before a bulk variable update"""
-        with self._updatedLock:
-            self._updatedDict = odict()
-
-    def _doneUpdatedVars(self):
-        """Stream the results of a bulk variable update and update listeners"""
-        with self._updatedLock:
-            if self._updatedDict:
-                yml = dictToYaml(self._updatedDict,default_flow_style=False)
-                self._streamYaml(yml)
-                self._updateVarListeners(yml,self._updatedDict)
-            self._updatedDict = None
-
-    def _write(self,dev=None,cmd=None,arg=None):
-        """Write all blocks"""
-
-        try:
-            for key,value in self._nodes.items():
-                if isinstance(value,Device):
-                    value._backgroundTransaction(rogue.interfaces.memory.Write)
-            for key,value in self._nodes.items():
-                if isinstance(value,Device):
-                    value._backgroundTransaction(rogue.interfaces.memory.Verify)
-            for key,value in self._nodes.items():
-                if isinstance(value,Device):
-                    value._checkTransaction(update=False)
-        except Exception as e:
-            self._root._logException(e)
-
-    def _read(self,dev=None,cmd=None,arg=None):
-        """Read all blocks"""
-
-        self._initUpdatedVars()
-
-        try:
-            for key,value in self._nodes.items():
-                if isinstance(value,Device):
-                    value._backgroundTransaction(rogue.interfaces.memory.Read)
-            for key,value in self._nodes.items():
-                if isinstance(value,Device):
-                    value._checkTransaction(update=True)
-        except Exception as e:
-            self._root._logException(e)
-
-        self._doneUpdatedVars()
-
-    def _poll(self):
-        """Read pollable blocks"""
-
-        self._initUpdatedVars()
-
-        try:
-            for key,value in self._nodes.items():
-                if isinstance(value,Device):
-                    value._poll()
-            for key,value in self._nodes.items():
-                if isinstance(value,Device):
-                    value._checkTransaction(update=True)
-        except Exception as e:
-            self._root._logException(e)
-
-        self._doneUpdatedVars()
-
-    def _writeConfig(self,dev,cmd,arg):
-        """Write YAML configuration to a file. Called from command"""
-        try:
-            with open(arg,'w') as f:
-                f.write(self.getYamlVariables(True,modes=['RW']))
-        except Exception as e:
-            self._root._logException(e)
-
-    def _readConfig(self,dev,cmd,arg):
-        """Read YAML configuration from a file. Called from command"""
-        try:
-            with open(arg,'r') as f:
-                self.setOrExecYaml(f.read(),False,['RW'])
-        except Exception as e:
-            self._root._logException(e)
-
-    def _softReset(self,dev,cmd,arg):
-        """Generate a soft reset on all devices"""
-        for key,value in self._nodes.items():
-            if isinstance(value,Device):
-                value._devReset('soft')
-
-    def _hardReset(self,dev,cmd,arg):
-        """Generate a hard reset on all devices"""
-        for key,value in self._nodes.items():
-            if isinstance(value,Device):
-                value._devReset('hard')
-        self._clearLog(dev,cmd,arg)
-
-    def _countReset(self,dev,cmd,arg):
-        """Generate a count reset on all devices"""
-        for key,value in self._nodes.items():
-            if isinstance(value,Device):
-                value._devReset('count')
-
-    def _clearLog(self,dev,cmd,arg):
-        """Clear the system log"""
-        with self._sysLogLock:
-            self._systemLog = ""
-        self.systemLog._updated()
-
-    def _logException(self,exception):
-        """Add an exception to the log"""
-        #traceback.print_exc(limit=1)
-        traceback.print_exc()
-        self._addToLog(str(exception))
-
-    def _addToLog(self,string):
-        """Add an string to the log"""
-        with self._sysLogLock:
-            self._systemLog += string
-            self._systemLog += '\n'
-
-        self.systemLog._updated()
-
-    def _varUpdated(self,var,value):
-        """ Log updated variables"""
-        yml = None
-
-        with self._updatedLock:
-
-            # Log is active add to log
-            if self._updatedDict is not None:
-                addPathToDict(self._updatedDict,var.path,value)
-
-            # Otherwise act directly
-            else:
-                d = {}
-                addPathToDict(d,var.path,value)
-                yml = dictToYaml(d,default_flow_style=False)
-
-        if yml:
-            self._streamYaml(yml)
-            self._updateVarListeners(yml,d)
-
-
 class VariableError(Exception):
     """ Exception for variable access errors."""
     pass
@@ -1405,14 +1079,14 @@ class Device(Node,rogue.interfaces.memory.Hub):
     """Device class holder. TODO: Update comments"""
 
     def __init__(self, name=None, description="", memBase=None, offset=0, hidden=False,
-                 variables=None, expand=True, enabled=True, **dump):
+                 variables=None, expand=True, enabled=True, classType='device', **dump):
         """Initialize device class"""
         if name is None:
             name = self.__class__.__name__
 
         print("Making device {:s}".format(name))
 
-        Node.__init__(self, name=name, hidden=hidden, classType='device', description=description)
+        Node.__init__(self, name=name, hidden=hidden, classType=classType, description=description)
         rogue.interfaces.memory.Hub.__init__(self,offset)
 
         # Blocks
@@ -1523,7 +1197,7 @@ class Device(Node,rogue.interfaces.memory.Hub):
             for cmd in cmds:
                 cmd()
 
-    def _poll(self):
+    def _pollTransaction(self):
         """Read pollable blocks"""
         if not self._enable: return
 
@@ -1535,7 +1209,7 @@ class Device(Node,rogue.interfaces.memory.Hub):
         # Process rest of tree
         for key,value in self._nodes.items():
             if isinstance(value,Device):
-                value._poll()
+                value._pollTransaction()
 
     def _checkTransaction(self,update):
         """Check errors in all blocks and generate variable update nofifications"""
@@ -1571,6 +1245,305 @@ class Device(Node,rogue.interfaces.memory.Hub):
         for key,value in self._nodes.items():
             if isinstance(value,Device):
                 value._setTimeout(timeout)
+
+
+class Root(rogue.interfaces.stream.Master,Device):
+    """
+    Class which serves as the root of a tree of nodes.
+    The root is the interface point for tree level access and updats.
+    The root is a stream master which generates frames containing tree
+    configuration and status values. This allows confiuration and status
+    to be stored in data files.
+    """
+
+    def __init__(self, name, description, **dump):
+        """Init the node with passed attributes"""
+
+        rogue.interfaces.stream.Master.__init__(self)
+        Device.__init__(self, name=name, description=description, classType='root')
+
+        # Polling period. Set to None to exit. 0 = don't poll
+        self._pollPeriod = 0
+
+        # Keep of list of errors, exposed as a variable
+        self._systemLog = ""
+        self._sysLogLock = threading.Lock()
+
+        # Add poller
+        self._pollThread = None
+
+        # Variable update list
+        self._updatedDict = odict()
+        self._updatedLock = threading.Lock()
+
+        # Variable update listener
+        self._varListeners = []
+
+        # Commands
+
+        self.add(Command(name='writeConfig', base='string', function=self._writeConfig,
+            description='Write configuration to passed filename in YAML format'))
+
+        self.add(Command(name='readConfig', base='string', function=self._readConfig,
+            description='Read configuration from passed filename in YAML format'))
+
+        self.add(Command(name='hardReset', base='None', function=self._hardReset,
+            description='Generate a hard reset to each device in the tree'))
+
+        self.add(Command(name='softReset', base='None', function=self._softReset,
+            description='Generate a soft reset to each device in the tree'))
+
+        self.add(Command(name='countReset', base='None', function=self._countReset,
+            description='Generate a count reset to each device in the tree'))
+
+        self.add(Command(name='clearLog', base='None', function=self._clearLog,
+            description='Clear the message log cntained in the systemLog variable'))
+
+        self.add(Command(name='readAll', base='None', function=self._read,
+            description='Read all values from the hardware'))
+
+        self.add(Command(name='writeAll', base='None', function=self._write,
+            description='Write wll values to the hardware'))
+
+        # Variables
+
+        self.add(Variable(name='systemLog', base='string', mode='RO',
+            setFunction=None, getFunction='value=dev._systemLog',
+            description='String containing newline seperated system logic entries'))
+
+        self.add(Variable(name='pollPeriod', base='float', mode='RW',
+            setFunction=self._setPollPeriod, getFunction='value=dev._pollPeriod',
+            description='Polling period for pollable variables. Set to 0 to disable polling'))
+
+    def stop(self):
+        """Stop the polling thread. Must be called for clean exit."""
+        self._pollPeriod=0
+
+    def addVarListener(self,func):
+        """
+        Add a variable update listener function.
+        The function should accept a dictionary of update
+        variables in both yaml and dict form:
+            func(yaml,dict)
+        """
+        self._varListeners.append(func)
+
+    def getYamlStructure(self):
+        """Get structure as a yaml string"""
+        return dictToYaml({self.name:self._getStructure()},default_flow_style=False)
+
+    def getYamlVariables(self,readFirst,modes=['RW']):
+        """
+        Get current values as a yaml dictionary.
+        modes is a list of variable modes to include.
+        If readFirst=True a full read from hardware is performed.
+        """
+        ret = None
+
+        if readFirst: self._read()
+        try:
+            ret = dictToYaml({self.name:self._getVariables(modes)},default_flow_style=False)
+        except Exception as e:
+            self._root._logException(e)
+
+        return ret
+
+    def setOrExecYaml(self,yml,writeEach,modes=['RW']):
+        """
+        Set variable values or execute commands from a dictionary.
+        modes is a list of variable modes to act on.
+        writeEach is set to true if accessing a single variable at a time.
+        Writes will be performed as each variable is updated. If set to 
+        false a bulk write will be performed after all of the variable updates
+        are completed. Bulk writes provide better performance when updating a large
+        quanitty of variables.
+        """
+        d = yamlToDict(yml)
+
+        self._initUpdatedVars()
+
+        for key, value in d.items():
+            if key == self.name:
+                self._setOrExec(value,writeEach,modes)
+
+        self._doneUpdatedVars()
+
+        if not writeEach: self._write()
+
+    def setOrExecPath(self,path,value):
+        """
+        Set variable values or execute commands from a dictionary.
+        Pass the variable or command path and associated value or arg.
+        """
+        d = {}
+        addPathToDict(d,path,value)
+        name = path[:path.find('.')]
+        yml = dictToYaml(d,default_flow_style=False)
+        self.setOrExecYaml(yml,writeEach=True,modes=['RW'])
+
+    def setTimeout(self,timeout):
+        """
+        Set timeout value on all devices & blocks
+        """
+        for key,value in self._nodes.items():
+            if isinstance(value,Device):
+                value._setTimeout(timeout)
+
+    def _updateVarListeners(self, yml, d):
+        """Send yaml and dict update to listeners"""
+        for f in self._varListeners:
+            f(yml,d)
+
+    def _setPollPeriod(self,dev,var,value):
+        """Set poller period"""
+        old = self._pollPeriod
+        self._pollPeriod = value
+
+        # Start thread
+        if old == 0 and value != 0:
+            self._pollThread = threading.Thread(target=self._runPoll)
+            self._pollThread.start()
+
+        # Stop thread
+        elif old != 0 and value == 0:
+            self._pollThread.join()
+            self._pollThread = None
+
+    def _runPoll(self):
+        """Polling function"""
+        while(self._pollPeriod != 0):
+            time.sleep(self._pollPeriod)
+            self._poll()
+
+    def _streamYaml(self,yml):
+        """
+        Generate a frame containing the passed yaml string.
+        """
+        frame = self._reqFrame(len(yml),True,0)
+        b = bytearray(yml,'utf-8')
+        frame.write(b,0)
+        self._sendFrame(frame)
+
+    def _streamYamlVariables(self,modes=['RW','RO']):
+        """
+        Generate a frame containing all variables values in yaml format.
+        A hardware read is not generated before the frame is generated.
+        Vlist can contain an optional list of variale paths to include in the
+        stream. If this list is not NULL only these variables will be included.
+        """
+        self._streamYaml(self.getYamlVariables(False,modes))
+
+    def _initUpdatedVars(self):
+        """Initialize the update tracking log before a bulk variable update"""
+        with self._updatedLock:
+            self._updatedDict = odict()
+
+    def _doneUpdatedVars(self):
+        """Stream the results of a bulk variable update and update listeners"""
+        with self._updatedLock:
+            if self._updatedDict:
+                yml = dictToYaml(self._updatedDict,default_flow_style=False)
+                self._streamYaml(yml)
+                self._updateVarListeners(yml,self._updatedDict)
+            self._updatedDict = None
+
+    def _write(self,dev=None,cmd=None,arg=None):
+        """Write all blocks"""
+        try:
+            self._backgroundTransaction(rogue.interfaces.memory.Write)
+            self._backgroundTransaction(rogue.interfaces.memory.Verify)
+            self._checkTransaction(update=False)
+        except Exception as e:
+            self._root._logException(e)
+
+    def _read(self,dev=None,cmd=None,arg=None):
+        """Read all blocks"""
+        self._initUpdatedVars()
+        try:
+            self._backgroundTransaction(rogue.interfaces.memory.Read)
+            self._checkTransaction(update=True)
+        except Exception as e:
+            self._root._logException(e)
+        self._doneUpdatedVars()
+
+    def _poll(self):
+        """Read pollable blocks"""
+        self._initUpdatedVars()
+        try:
+            self._pollTransaction()
+            self._checkTransaction(update=True)
+        except Exception as e:
+            self._root._logException(e)
+        self._doneUpdatedVars()
+
+    def _writeConfig(self,dev,cmd,arg):
+        """Write YAML configuration to a file. Called from command"""
+        try:
+            with open(arg,'w') as f:
+                f.write(self.getYamlVariables(True,modes=['RW']))
+        except Exception as e:
+            self._root._logException(e)
+
+    def _readConfig(self,dev,cmd,arg):
+        """Read YAML configuration from a file. Called from command"""
+        try:
+            with open(arg,'r') as f:
+                self.setOrExecYaml(f.read(),False,['RW'])
+        except Exception as e:
+            self._root._logException(e)
+
+    def _softReset(self,dev,cmd,arg):
+        """Generate a soft reset on all devices"""
+        self._devReset('soft')
+
+    def _hardReset(self,dev,cmd,arg):
+        """Generate a hard reset on all devices"""
+        self._devReset('hard')
+        self._clearLog(dev,cmd,arg)
+
+    def _countReset(self,dev,cmd,arg):
+        """Generate a count reset on all devices"""
+        self._devReset('count')
+
+    def _clearLog(self,dev,cmd,arg):
+        """Clear the system log"""
+        with self._sysLogLock:
+            self._systemLog = ""
+        self.systemLog._updated()
+
+    def _logException(self,exception):
+        """Add an exception to the log"""
+        #traceback.print_exc(limit=1)
+        traceback.print_exc()
+        self._addToLog(str(exception))
+
+    def _addToLog(self,string):
+        """Add an string to the log"""
+        with self._sysLogLock:
+            self._systemLog += string
+            self._systemLog += '\n'
+
+        self.systemLog._updated()
+
+    def _varUpdated(self,var,value):
+        """ Log updated variables"""
+        yml = None
+
+        with self._updatedLock:
+
+            # Log is active add to log
+            if self._updatedDict is not None:
+                addPathToDict(self._updatedDict,var.path,value)
+
+            # Otherwise act directly
+            else:
+                d = {}
+                addPathToDict(d,var.path,value)
+                yml = dictToYaml(d,default_flow_style=False)
+
+        if yml:
+            self._streamYaml(yml)
+            self._updateVarListeners(yml,d)
 
 
 class DataWriter(Device):
