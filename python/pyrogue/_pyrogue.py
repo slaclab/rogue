@@ -29,6 +29,7 @@ import collections
 import datetime
 import traceback
 import re
+import functools
 
 def streamConnect(source, dest):
     """
@@ -171,11 +172,11 @@ class Node(object):
         return self.path
 
     def __getattr__(self, name):
-        """Allow child with the 'name[key]' naming convention to be accessed as if they belong to a 
+        """Allow child Nodes with the 'name[key]' naming convention to be accessed as if they belong to a 
         dictionary of Nodes with that 'name'.
         This override builds an OrderedDict of all child nodes named as 'name[key]' and returns it.
-        Raises AttributeError if no such named Nodes are found
-        """
+        Raises AttributeError if no such named Nodes are found. """
+        
         ret = odict()
         rg = re.compile('{:s}\\[(.*?)\\]'.format(name))
         for k,v in self._nodes.iteritems():
@@ -206,6 +207,13 @@ class Node(object):
 
         # Update path related attributes
         node._updateTree(self)
+
+    def addNode(nodeClass, **kwargs):
+        self.add(nodeClass(**kwargs))
+
+    def addNodes(nodeClass, name, number, offset, stride, **kwargs):
+        for i in xrange(number):
+            self.add(nodeClass(name='{:s}[{:d}]'.format(name, i), offset=offset+(i*stride), **kwargs))
 
     def _getNodes(self,typ):
         """
@@ -855,9 +863,6 @@ class Variable(Node):
         Hardware read is blocking. An error will result in a logged exception.
         Listeners will be informed of the update.
         """
-        if read:
-            print "{:s}.read(True)".format(self.name)
-            
         try:
             if read and self._block and self._block.mode != 'WO':
                 if self._beforeReadCmd is not None:
@@ -1044,6 +1049,16 @@ class Command(Variable):
 
 BLANK_COMMAND = Command(name='Blank', description='A singleton command that does nothing')
 
+def command(dev, **kwargs):
+    """A decorator to easily make any function a Command and add() it to 'dev'
+    Additional **kwargs are passed to the Command constructor
+    """
+    
+    def decorator(func):
+        dev.add(Command(name=func.__name__, function=func, **kwargs))
+        return func
+    return decorator
+
 
 class Block(rogue.interfaces.memory.Block):
     """Internal memory block holder"""
@@ -1162,6 +1177,8 @@ class Device(Node,rogue.interfaces.memory.Hub):
             # Update verify mask
             if node.mode == 'RW':
                vblock.addVerify(node.bitOffset,node.bitSize)
+
+        
 
     def hideVariables(self, hidden, variables=None):
         """Hide a list of Variables (or Variable names)"""
