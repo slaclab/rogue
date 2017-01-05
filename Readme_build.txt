@@ -1,11 +1,10 @@
-To build the rogue base package you need the following libraries installed:
+To build the rogue base package you need the following:
 
-boost
-boost-libs
-
-See Readme_python.txt for python package requirements and installation
-See Readme_zeromq.txt for ZEROMQ package requirements and installation
-See Readme_epics.txt  for epics  package requirements and installation
+See Readme_zeromq.txt  for ZEROMQ  package requirements and installation
+See Readme_python2.txt for python2 package requirements and installation
+See Readme_python3.txt for python3 package requirements and installation
+See Readme_boost.txt   for boost   package requirements and installation
+See Readme_epics.txt   for epics   package requirements and installation
 
 To build this package you must first setup the environment. A
 template file setup_template.csh is provided as an example. To 
