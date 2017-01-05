@@ -3,9 +3,7 @@
 Choose a directory for epics. The epics install is in the 
 same directory it is compiled in. 
 
-For example on the RCE:
-
-> mkdir /mnt/host/epics/
+> mkdir /path/to/epics/
 
 You need to set an environment variable for the host your 
 are compiling on. For the RCE:
@@ -18,7 +16,7 @@ For one of the linux workstartions:
 
 Get and compile epics:
 
-> cd /mnt/host/epics
+> cd /path/to/epics
 > wget https://www.aps.anl.gov/epics/download/base/base-3.15.1.tar.gz
 > tar -xvvzpf base-3.15.1.tar.gz
 > cd base-3.15.1
@@ -29,6 +27,8 @@ environment variable:
 
 > export EPICS_BASE=/mnt/host/epics/base-3.15.1/
 
-You will also nee the python pcaspy package as described in
-Readme_python.txt
+One complete create settings.csh and settings.sh source file in
+/path/to/epics/base-3.15.1 which sets the EPICS_BASE and EPICS_HOST_ARCH
+environment variables. Also add {EPICS_BASE}/bin/linux-x86_64/ to $PATH
+and ${EPICS_BASE}/lib/linux-x86_64/ to $LD_LIBRARY_PATH
 

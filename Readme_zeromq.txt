@@ -1,36 +1,46 @@
-# Install and compile libzeromq, czmq & zyre
+# ZeroMq
 
-A recent version of autoconf is required, which is not 
-available in rhel6. At SLAC a proper version can be found at: 
+Choose an install location:
 
-/afs/slac.stanford.edu/g/reseng/vol11/autoconf/autoconf-2.69
+> mkdir /path/to/zeromq/4.2.0
+> mkdir /path/to/zeromq/4.2.0/src/
 
-You need to either install autoconf, the the above version
-or download it and compile it on your own. Most modern versions
-of linux have the appropriate version.
+Zeromq libraries
 
-For archlinux on the RCE:
-> pacman -S autoconf automake pkg-config git
-
-Choose your install path for zeromq. This will include a
-base directory, a src directory and a python directory for
-the resulting python wrappers. The install scripts will create
-lib and bin sub-directories within this base.
-
-For example on the RCE:
-
-> mkdir /mnt/host/zeromq/
-> mkdir /mnt/host/zeromq/python/
-> mkdir /mnt/host/zeromq/src/
-> cd /mnt/host/zeromq/src/
-
-Get and compile zeromq:
-
-> git clone https://github.com/zeromq/libzmq.git
-> cd libzmq
+> cd /path/to/zeromq/4.2.0/src/
+> wget https://github.com/zeromq/libzmq/releases/download/v4.2.0/zeromq-4.2.0.tar.gz
+> tar -xvvzpf zeromq-4.2.0.tar.gz
+> cd zeromq-4.2.0
 > ./autogen.sh
-> ./configure --prefix=/mnt/host/zeromq/
+> ./configure --prefix=/path/to/zeromq/4.2.0/
+> make 
 > make install
+
+Setup environment
+
+Add /path/to/zeromq/4.2.0/bin to your $PATH
+Add /path/to/zeromq/4.2.0/lib to your $LD_LIBRARY_PATH
+
+It is recommended to create a settings.csh and settings.sh file in
+/path/to/zeromq/4.2.0 to allow users to add this specific python
+install to their environment when needed. ZEROMQ_PATH should be set
+to allow makefiles to include the proper include files and libraries.
+
+
+
+
+
+
+
+
+
+
+
+------------------------------------
+Old Notes
+------------------------------------
+
+
 
 Get and compile czmq (high level wrappers for libzmq):
 
@@ -38,11 +48,24 @@ Get and compile czmq (high level wrappers for libzmq):
 > git clone https://github.com/zeromq/czmq.git
 > cd czmq
 > ./autogen.sh
-> export libzmq_LIBS="-L/mnt/host/zeromq/lib/ -lzmq"
-> export libzmq_CFLAGS="-I/mnt/host/zeromq/include/"
-> ./configure --prefix=/mnt/host/zeromq/ --with-libzmq=/mnt/host/zeromq
+> export libzmq_LIBS="-L/mnt/host/zeromq/4.2.0/lib/ -lzmq"
+> export libzmq_CFLAGS="-I/mnt/host/zeromq/4.2.0/include/"
+> ./configure --prefix=/mnt/host/zeromq/4.2.0 --with-libzmq=/mnt/host/zeromq/4.2.0
+> make 
 > make install
 > scp -r bindings/python/czmq ../../python/
+
+
+Setup environment
+
+Add /path/to/python/2.7.13/bin to your $PATH
+Add /path/to/python/2.7.13/lib to your $LD_LIBRARY_PATH
+
+It is recommended to create a settings.csh and settings.sh file in
+/path/to/python/2.7.13 to allow users to add this specific python
+install to their environment when needed.
+
+
 
 Get and compile zyre:
 
@@ -53,6 +76,7 @@ Get and compile zyre:
 > export czmq_LIBS="-L/mnt/host/zeromq/lib/ -lczmq"
 > export czmq_CFLAGS="-I/mnt/host/zeromq/include/"
 > ./configure --prefix=/mnt/host/zeromq --with-libczmq=/mnt/host/zeromq
+> make 
 > make install
 > scp -r bindings/python/zyre ../../python/
 
