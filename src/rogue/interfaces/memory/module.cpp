@@ -43,6 +43,7 @@ void rim::setup_module() {
    bp::scope().attr("TimeoutError") = TimeoutError;
    bp::scope().attr("VerifyError")  = VerifyError;
    bp::scope().attr("AddressError") = AddressError;
+   bp::scope().attr("SizeError")    = SizeError;
    bp::scope().attr("AxiTimeout")   = AxiTimeout;
    bp::scope().attr("AxiFail")      = AxiFail;
 

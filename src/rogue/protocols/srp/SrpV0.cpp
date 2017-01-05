@@ -65,8 +65,14 @@ void rps::SrpV0::doTransaction(uint32_t id, rim::MasterPtr master, uint64_t addr
    uint32_t  cnt;
 
    // Size error
-   if ((address % 4) != 0 || (size % 4) != 0 || size < 4 || size > 2048) {
+   if ((address % 4) != 0 ) {
       master->doneTransaction(id,rim::AddressError);
+      return;
+   }
+
+   // Size error
+   if ((size % 4) != 0 || size < 4 || size > 2048) {
+      master->doneTransaction(id,rim::SizeError);
       return;
    }
 

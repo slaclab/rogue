@@ -70,7 +70,7 @@ void rps::SrpV3::doTransaction(uint32_t id, rim::MasterPtr master, uint64_t addr
 
    // Size error
    if ((size % 4) != 0 || size < 4) {
-      master->doneTransaction(id,rim::AddressError);
+      master->doneTransaction(id,rim::SizeError);
       return;
    }
 
