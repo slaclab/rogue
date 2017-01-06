@@ -27,7 +27,7 @@ import collections
 import datetime
 import traceback
 import re
-import functools
+import functools as ft
 
 def streamConnect(source, dest):
     """
@@ -201,10 +201,12 @@ class Node(object):
         # Update path related attributes
         node._updateTree(self)
 
-    def addNode(nodeClass, **kwargs):
+    def addNode(self, nodeClass, **kwargs):
         self.add(nodeClass(**kwargs))
 
-    def addNodes(nodeClass, name, number, offset, stride, **kwargs):
+    def addNodes(self, nodeClass, number, stride, **kwargs):
+        name = kwargs.pop('name')
+        offset = kwargs.pop('offset')
         for i in xrange(number):
             self.add(nodeClass(name='{:s}[{:d}]'.format(name, i), offset=offset+(i*stride), **kwargs))
 
@@ -662,12 +664,9 @@ class Variable(Node):
 class Command(Variable):
     """Command holder: Subclass of variable with callable interface"""
 
-    def __init__(self, name, description="", base='None', function=None, hidden=False, 
-                 enum=None, minimum=None, maximum=None, offset=None, bitSize=32, bitOffset=0, **dump):
+    def __init__(self, base='None', mode='CMD', function=None, **kwargs):
 
-        Variable.__init__(self, name=name, description=description, offset=offset, bitSize=bitSize,
-                          bitOffset=bitOffset, pollEn=False, base=base, mode='CMD', enum=enum,
-                          hidden=hidden, minimum=minimum, maximum=maximum, setFunction=None, getFunction=None)
+        Variable.__init__(self, base=base, mode=mode, **kwargs)
 
         self.classType = 'command'
         self._function = function if function is not None else Command.nothing
@@ -740,6 +739,17 @@ def command(dev, **kwargs):
         dev.add(Command(name=func.__name__, function=func, **kwargs))
         return func
     return decorator
+
+def command2(func):
+    if getattr(func, 'PyrogueCommand', False):
+        return func
+
+    def wrapper(*args, **kwargs):
+        return func(*args, **kwargs)
+    
+    wrapper.PyrogueCommand = True
+
+    return wrapper
 
 
 class BlockError(Exception):
@@ -1078,6 +1088,12 @@ class Block(rogue.interfaces.memory.Master):
 class Device(Node,rogue.interfaces.memory.Hub):
     """Device class holder. TODO: Update comments"""
 
+    __decorated_commands = []
+
+    def __new__(cls):
+        cls.__decorated_commands = super(Device, cls).__decorated_commands
+        return super(Device, cls).__new__(cls)
+
     def __init__(self, name=None, description="", memBase=None, offset=0, hidden=False,
                  variables=None, expand=True, enabled=True, classType='device', **dump):
         """Initialize device class"""
@@ -1099,6 +1115,14 @@ class Device(Node,rogue.interfaces.memory.Hub):
         # Connect to memory slave
         if memBase: self._setSlave(memBase)
 
+        # Convenience methods
+        self.addDevice = ft.partial(self.addNode, Device)
+        self.addDevices = ft.partial(self.addNodes, Device)
+        self.addVariable = ft.partial(self.addNode, Variable)        
+        self.addVariables = ft.partial(self.addNodes, Variable)
+        self.addCommand = ft.partial(self.addNode, Command)        
+        self.addCommands = ft.partial(self.addNodes, Command)
+
         # Variable interface to enable flag
         self.add(Variable(name='enable', base='bool', mode='RW',
             setFunction=self._setEnable, getFunction='value=dev._enable',
@@ -1111,6 +1135,9 @@ class Device(Node,rogue.interfaces.memory.Hub):
             elif all(isinstance(v, dict) for v in variables):
                 # create Variable objects from a dict list
                 self.add(Variable(**v) for v in variables)
+
+        for cmd in __decorated_commands:
+            print cmd
 
     def add(self,node):
         """
