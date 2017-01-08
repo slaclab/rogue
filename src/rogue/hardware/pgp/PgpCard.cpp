@@ -393,6 +393,7 @@ void rhp::PgpCard::setup_python () {
       .def("setData",        &rhp::PgpCard::setData)
       .def("sendOpCode",     &rhp::PgpCard::sendOpCode)
       .def("setZeroCopyEn",  &rhp::PgpCard::setZeroCopyEn)
+      .def("setTimeout",     &rhp::PgpCard::setTimeout)
    ;
 
    bp::implicitly_convertible<rhp::PgpCardPtr, ris::MasterPtr>();

@@ -185,6 +185,7 @@ void rhe::Tem::setup_python () {
       .staticmethod("create")
       .def("getInfo",        &rhe::Tem::getInfo)
       .def("getPciStatus",   &rhe::Tem::getPciStatus)
+      .def("setTimeout",     &rhe::Tem::setTimeout)
    ;
 
    bp::implicitly_convertible<rhe::TemPtr, ris::MasterPtr>();

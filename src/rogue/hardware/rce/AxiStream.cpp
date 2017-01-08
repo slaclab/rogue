@@ -340,6 +340,7 @@ void rhr::AxiStream::setup_python () {
       .staticmethod("create")
       .def("enableSsi",      &rhr::AxiStream::enableSsi)
       .def("dmaAck",         &rhr::AxiStream::dmaAck)
+      .def("setTimeout",     &rhr::AxiStream::setTimeout)
    ;
 
    bp::implicitly_convertible<rhr::AxiStreamPtr, ris::MasterPtr>();

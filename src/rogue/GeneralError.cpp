@@ -61,6 +61,13 @@ rogue::GeneralError rogue::GeneralError::allocation(std::string src, uint32_t si
    return(rogue::GeneralError(src,temp));
 }
 
+rogue::GeneralError rogue::GeneralError::network(std::string src, std::string host, uint16_t port) {
+   char temp[100];
+
+   sprintf(temp,"UDP connect error. Host = %s, Port = %i",host.c_str(),port);
+   return(rogue::GeneralError(src,temp));
+}
+
 char const * rogue::GeneralError::what() const throw() {
    return(text_);
 }
