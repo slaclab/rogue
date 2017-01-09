@@ -851,7 +851,7 @@ class Block(rogue.interfaces.memory.Master):
         """
         Set a uint. to be deprecated
         """
-        bCount = bitCount / 8
+        bCount = (int)(bitCount / 8)
         if ( bitCount % 8 ) > 0: bCount += 1
         ba = bytearray(bCount)
 
