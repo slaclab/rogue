@@ -258,7 +258,7 @@ void rhp::PgpCard::acceptFrame ( ris::FramePtr frame ) {
 
          // Keep trying since select call can fire 
          // but write fails because we did not win the buffer lock
-         while (1) {
+         do {
 
             // Setup fds for select call
             FD_ZERO(&fds);
