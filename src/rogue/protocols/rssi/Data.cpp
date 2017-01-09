@@ -1,14 +1,13 @@
 /**
  *-----------------------------------------------------------------------------
- * Title      : Python Module
+ * Title      : RSII Data Class
  * ----------------------------------------------------------------------------
- * File       : module.cpp
- * Author     : Ryan Herbst, rherbst@slac.stanford.edu
- * Created    : 2016-08-08
- * Last update: 2016-08-08
+ * File       : Data.h
+ * Created    : 2017-01-07
+ * Last update: 2017-01-07
  * ----------------------------------------------------------------------------
  * Description:
- * Python module setup
+ * RSSI Data
  * ----------------------------------------------------------------------------
  * This file is part of the rogue software platform. It is subject to 
  * the license terms in the LICENSE.txt file found in the top-level directory 
@@ -19,30 +18,41 @@
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
-
-#include <boost/python.hpp>
-#include <rogue/protocols/rssi/module.h>
-#include <rogue/protocols/rssi/Header.h>
 #include <rogue/protocols/rssi/Data.h>
-#include <rogue/protocols/rssi/Syn.h>
+#include <boost/make_shared.hpp>
+#include <rogue/common.h>
+#include <stdint.h>
 
-namespace bp  = boost::python;
 namespace rpr = rogue::protocols::rssi;
+namespace bp  = boost::python;
 
-void rpr::setup_module() {
+//! Class creation
+rpr::DataPtr rpr::Data::create (uint8_t * data, uint32_t size) {
+   rpr::DataPtr r = boost::make_shared<rpr::Data>(data,size);
+   return(r);
+}
 
-   // map the IO namespace to a sub-module
-   bp::object module(bp::handle<>(bp::borrowed(PyImport_AddModule("rogue.protocols.rssi"))));
+// Setup python
+void rpr::Data::setup_python () { }
 
-   // make "from mypackage import class1" work
-   bp::scope().attr("rssi") = module;
+//! Return required size
+uint32_t rpr::Data::size(uint32_t dataSize) {
+   return(dataSize + 8);
+}
 
-   // set the current scope to the new sub-module
-   bp::scope io_scope = module;
+//! Creator
+rpr::Data::Data ( uint8_t * data, uint32_t size) : rpr::Header(data,size) { }
 
-   rpr::Header::setup_python();
-   rpr::Data::setup_python();
-   rpr::Syn::setup_python();
+//! Destructor
+rpr::Data::~Data() { }
 
+//! Return pointer to data
+uint8_t * rpr::Data::getData() {
+   return(data_ + 8);
+}
+
+//! Get data size
+uint32_t rpr::Data::getDataSize() {
+   return(size_ - 8);
 }
 
