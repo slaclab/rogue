@@ -21,7 +21,6 @@
 #ifndef __ROGUE_PROTOCOLS_RSSI_DATA_H__
 #define __ROGUE_PROTOCOLS_RSSI_DATA_H__
 #include <rogue/protocols/rssi/Header.h>
-#include <boost/python.hpp>
 #include <stdint.h>
 
 namespace rogue {
@@ -35,9 +34,6 @@ namespace rogue {
 
                //! Class creation
                static boost::shared_ptr<rogue::protocols::rssi::Data> create (uint8_t * data, uint32_t size);
-
-               //! Setup class in python
-               static void setup_python();
 
                //! Return required size
                static uint32_t size(uint32_t dataSize);

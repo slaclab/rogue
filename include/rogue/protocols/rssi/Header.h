@@ -20,8 +20,8 @@
 **/
 #ifndef __ROGUE_PROTOCOLS_RSSI_HEADER_H__
 #define __ROGUE_PROTOCOLS_RSSI_HEADER_H__
-#include <boost/python.hpp>
 #include <stdint.h>
+#include <boost/shared_ptr.hpp>
 
 namespace rogue {
    namespace protocols {
@@ -42,9 +42,6 @@ namespace rogue {
 
                //! Class creation
                static boost::shared_ptr<rogue::protocols::rssi::Header> create (uint8_t * data, uint32_t size);
-
-               //! Setup class in python
-               static void setup_python();
 
                //! Return required size
                static uint32_t size();

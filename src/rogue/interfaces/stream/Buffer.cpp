@@ -22,7 +22,7 @@
 **/
 
 #include <rogue/interfaces/stream/Buffer.h>
-#include <rogue/interfaces/stream/Slave.h>
+#include <rogue/interfaces/stream/Pool.h>
 #include <boost/make_shared.hpp>
 
 namespace ris = rogue::interfaces::stream;
@@ -31,7 +31,7 @@ namespace ris = rogue::interfaces::stream;
 /*
  * Pass owner, raw data buffer, and meta data
  */
-ris::BufferPtr ris::Buffer::create ( ris::SlavePtr source, void * data, uint32_t meta, uint32_t rawSize) {
+ris::BufferPtr ris::Buffer::create ( ris::PoolPtr source, void * data, uint32_t meta, uint32_t rawSize) {
    ris::BufferPtr buff = boost::make_shared<ris::Buffer>(source,data,meta,rawSize);
    return(buff);
 }
@@ -40,7 +40,7 @@ ris::BufferPtr ris::Buffer::create ( ris::SlavePtr source, void * data, uint32_t
 /*
  * Pass owner, raw data buffer, and meta data
  */
-ris::Buffer::Buffer(ris::SlavePtr source, void *data, uint32_t meta, uint32_t rawSize) {
+ris::Buffer::Buffer(ris::PoolPtr source, void *data, uint32_t meta, uint32_t rawSize) {
    source_   = source;
    data_     = (uint8_t *)data;
    meta_     = meta;

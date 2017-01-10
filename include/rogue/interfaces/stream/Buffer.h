@@ -32,7 +32,7 @@ namespace rogue {
    namespace interfaces {
       namespace stream {
 
-         class Slave;
+         class Pool;
 
          //! Frame buffer
          /*
@@ -43,7 +43,7 @@ namespace rogue {
          class Buffer {
 
                //! Pointer to entity which allocated this buffer
-               boost::shared_ptr<rogue::interfaces::stream::Slave> source_; 
+               boost::shared_ptr<rogue::interfaces::stream::Pool> source_; 
 
                //! Pointer to raw data buffer. Raw pointer is used here!
                uint8_t *  data_;
@@ -73,7 +73,7 @@ namespace rogue {
                 * Pass owner, raw data buffer, and meta data
                 */
                static boost::shared_ptr<rogue::interfaces::stream::Buffer> create (
-                     boost::shared_ptr<rogue::interfaces::stream::Slave> source, 
+                     boost::shared_ptr<rogue::interfaces::stream::Pool> source, 
                         void * data, uint32_t meta, uint32_t rawSize);
 
                //! Setup class in python
@@ -83,7 +83,7 @@ namespace rogue {
                /*
                 * Pass owner, raw data buffer, and meta data
                 */
-               Buffer(boost::shared_ptr<rogue::interfaces::stream::Slave> source, 
+               Buffer(boost::shared_ptr<rogue::interfaces::stream::Pool> source, 
                       void * data, uint32_t meta, uint32_t rawSize);
 
                //! Destroy a buffer

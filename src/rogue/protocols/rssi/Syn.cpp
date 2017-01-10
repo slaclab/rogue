@@ -32,9 +32,6 @@ rpr::SynPtr rpr::Syn::create (uint8_t * data, uint32_t size) {
    return(r);
 }
 
-// Setup python
-void rpr::Syn::setup_python () { }
-
 //! Return required size
 uint32_t rpr::Syn::size() {
    return(24);

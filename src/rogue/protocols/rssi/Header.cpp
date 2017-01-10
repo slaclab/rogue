@@ -32,9 +32,6 @@ rpr::HeaderPtr rpr::Header::create (uint8_t * data, uint32_t size) {
    return(r);
 }
 
-// Setup python
-void rpr::Header::setup_python () { }
-
 //! Return required size
 uint32_t rpr::Header::size() {
    return(8);

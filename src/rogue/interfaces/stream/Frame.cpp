@@ -22,7 +22,7 @@
 **/
 #include <rogue/interfaces/stream/Frame.h>
 #include <rogue/interfaces/stream/Buffer.h>
-#include <rogue/interfaces/stream/Slave.h>
+#include <rogue/interfaces/stream/Pool.h>
 #include <rogue/GeneralError.h>
 #include <boost/make_shared.hpp>
 #include <boost/python.hpp>
@@ -31,13 +31,13 @@ namespace ris = rogue::interfaces::stream;
 namespace bp  = boost::python;
 
 //! Create an empty frame
-ris::FramePtr ris::Frame::create(ris::SlavePtr source, bool zeroCopy) {
+ris::FramePtr ris::Frame::create(ris::PoolPtr source, bool zeroCopy) {
    ris::FramePtr frame = boost::make_shared<ris::Frame>(source,zeroCopy);
    return(frame);
 }
 
 //! Create an empty frame
-ris::Frame::Frame(ris::SlavePtr source, bool zeroCopy) { 
+ris::Frame::Frame(ris::PoolPtr source, bool zeroCopy) { 
    source_   = source;
    zeroCopy_ = zeroCopy;
    flags_    = 0;

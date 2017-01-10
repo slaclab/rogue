@@ -32,9 +32,6 @@ rpr::DataPtr rpr::Data::create (uint8_t * data, uint32_t size) {
    return(r);
 }
 
-// Setup python
-void rpr::Data::setup_python () { }
-
 //! Return required size
 uint32_t rpr::Data::size(uint32_t dataSize) {
    return(dataSize + 8);
