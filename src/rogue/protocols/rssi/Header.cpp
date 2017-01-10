@@ -23,14 +23,16 @@
 #include <boost/make_shared.hpp>
 #include <rogue/common.h>
 #include <stdint.h>
+#include <iomanip>
+#include <rogue/interfaces/stream/Buffer.h>
 
 namespace rpr = rogue::protocols::rssi;
 namespace ris = rogue::interfaces::stream;
 namespace bp  = boost::python;
 
 //! Class creation
-rpr::HeaderPtr rpr::Header::create (ris::BufferPtr buff) {
-   rpr::HeaderPtr r = boost::make_shared<rpr::Header>(buff);
+rpr::HeaderPtr rpr::Header::create (ris::FramePtr frame) {
+   rpr::HeaderPtr r = boost::make_shared<rpr::Header>(frame);
    return(r);
 }
 
@@ -40,15 +42,31 @@ uint32_t rpr::Header::minSize() {
 }
 
 //! Creator
-rpr::Header::Header ( ris::BufferPtr buff) {
-   if (buff_->getCount() < HeaderSize)
-      throw(rogue::GeneralError::boundary("Header::Header", HeaderSize, buff_->getCount()));
-   buff_ = buff;
-   buff_->setHeadRoom(HeaderSize);
+rpr::Header::Header ( ris::FramePtr frame) {
+   setFrame(frame);
 }
 
 //! Destructor
 rpr::Header::~Header() { }
+
+//! Set frame pointers
+void rpr::Header::setFrame(ris::FramePtr frame) {
+
+   if (frame->getCount() != 1 )
+      throw(rogue::GeneralError("Header::Header", "Frame must contain a single buffer"));
+
+   if (frame->getBuffer(0)->getRawSize() < minSize())
+      throw(rogue::GeneralError::boundary("Header::Header", minSize(), frame->getBuffer(0)->getRawSize()));
+
+   frame_ = frame;
+   buff_  = frame_->getBuffer(0);
+   buff_->setHeadRoom(minSize());
+}
+
+//! Get frame pointers
+ris::FramePtr rpr::Header::getFrame() {
+   return(frame_);
+}
 
 //! Get header size
 uint8_t rpr::Header::getHeaderSize() {
@@ -64,7 +82,7 @@ void rpr::Header::init() {
 //! Verify header contents
 bool rpr::Header::verify() {
    uint16_t * val = (uint16_t *)&(buff_->getRawData()[6]);
-   uint32_t   x;
+   int32_t    x;
    uint32_t   sum;
 
    sum = 0;
@@ -78,7 +96,7 @@ bool rpr::Header::verify() {
 //! Update checksum
 void rpr::Header::update() {
    uint16_t * val = (uint16_t *)&(buff_->getRawData()[6]);
-   uint32_t   x;
+   int32_t    x;
    uint32_t   sum;
 
    sum = 0;
@@ -165,12 +183,41 @@ void rpr::Header::setSequence(uint16_t seq) {
 }
 
 //! Get acknowledge number
-uint16_t rpr::Header::getAcknowledg() {
+uint16_t rpr::Header::getAcknowledge() {
    return(buff_->getRawData()[2]);
 }
 
 //! Set acknowledge number
 void rpr::Header::setAcknowledge(uint16_t ack) {
    buff_->getRawData()[2] = ack;
+}
+
+//! Dump message
+std::string rpr::Header::dump() {
+   uint16_t * val = (uint16_t *)&(buff_->getRawData()[6]);
+   uint32_t   x;
+
+   std::stringstream ret("");
+
+   ret << "   Total Size : " << std::dec << buff_->getCount() << std::endl;
+   ret << "  Header Size : " << std::dec << buff_->getHeadRoom() << std::endl;
+   ret << "   Raw Header : ";
+
+   for (x=0; x < (getHeaderSize()/2); x++) {
+      ret << "0x" << std::hex << std::setw(4) << std::setfill('0') << val[x];
+      if ( (x % 4) == 0 ) ret << std::endl << "                ";
+   }
+   ret << std::endl;
+
+   ret << "          Syn : " << std::dec << getSyn() << std::endl;
+   ret << "          Ack : " << std::dec << getAck() << std::endl;
+   ret << "         EAck : " << std::dec << getEAck() << std::endl;
+   ret << "          Rst : " << std::dec << getRst() << std::endl;
+   ret << "          Nul : " << std::dec << getNul() << std::endl;
+   ret << "         Busy : " << std::dec << getBusy() << std::endl;
+   ret << "     Sequence : " << std::dec << getSequence() << std::endl;
+   ret << "   Acknowlede : " << std::dec << getAcknowledge() << std::endl;
+
+   return(ret.str());
 }
 

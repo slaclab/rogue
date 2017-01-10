@@ -30,19 +30,20 @@ namespace ris = rogue::interfaces::stream;
 namespace bp  = boost::python;
 
 //! Class creation
-rpu::ClientPtr rpu::Client::create (std::string host, uint16_t port) {
-   rpu::ClientPtr r = boost::make_shared<rpu::Client>(host,port);
+rpu::ClientPtr rpu::Client::create (std::string host, uint16_t port, uint16_t maxSize) {
+   rpu::ClientPtr r = boost::make_shared<rpu::Client>(host,port,maxSize);
    return(r);
 }
 
 //! Creator
-rpu::Client::Client ( std::string host, uint16_t port) {
+rpu::Client::Client ( std::string host, uint16_t port, uint16_t maxSize) {
    struct addrinfo     aiHints;
    struct addrinfo*    aiList=0;
    const  sockaddr_in* addr;
 
    address_ = host;
    port_    = port;
+   maxSize_ = maxSize;
    timeout_ = 10000000;
 
    // Create socket
@@ -82,6 +83,25 @@ rpu::Client::~Client() {
 void rpu::Client::setTimeout(uint32_t timeout) {
    if ( timeout == 0 ) timeout_ = 1;
    else timeout_ = timeout;
+}
+
+
+//! Generate a Frame. Called from master
+/*
+ * Pass total size required.
+ * Pass flag indicating if zero copy buffers are acceptable
+ * maxBuffSize indicates the largest acceptable buffer size. A larger buffer can be
+ * returned but the total buffer count must assume each buffer is of size maxBuffSize
+ * If maxBuffSize = 0, slave will freely determine the buffer size.
+ */
+ris::FramePtr rpu::Client::acceptReq ( uint32_t size, bool zeroCopyEn, uint32_t maxBuffSize ) {
+   uint32_t max;
+
+   // Adjust max buffer size
+   max = maxBuffSize;
+   if ( max > maxSize_ ) max = maxSize_;
+
+   return(createFrame(size,max,false,false));
 }
 
 //! Accept a frame from master
@@ -195,7 +215,7 @@ void rpu::Client::runThread() {
 
 void rpu::Client::setup_python () {
 
-   bp::class_<rpu::Client, rpu::ClientPtr, bp::bases<ris::Master,ris::Slave>, boost::noncopyable >("Client",bp::init<std::string,uint16_t>())
+   bp::class_<rpu::Client, rpu::ClientPtr, bp::bases<ris::Master,ris::Slave>, boost::noncopyable >("Client",bp::init<std::string,uint16_t,uint16_t>())
       .def("create",         &rpu::Client::create)
       .staticmethod("create")
       .def("setTimeout",     &rpu::Client::setTimeout)

@@ -23,14 +23,15 @@
 #include <boost/make_shared.hpp>
 #include <rogue/common.h>
 #include <stdint.h>
+#include <rogue/interfaces/stream/Buffer.h>
 
 namespace rpr = rogue::protocols::rssi;
 namespace ris = rogue::interfaces::stream;
 namespace bp  = boost::python;
 
 //! Class creation
-rpr::SynPtr rpr::Syn::create (ris::BufferPtr buff) {
-   rpr::SynPtr r = boost::make_shared<rpr::Syn>(buff);
+rpr::SynPtr rpr::Syn::create (ris::FramePtr frame) {
+   rpr::SynPtr r = boost::make_shared<rpr::Syn>(frame);
    return(r);
 }
 
@@ -40,11 +41,7 @@ uint32_t rpr::Syn::minSize() {
 }
 
 //! Creator
-rpr::Syn::Syn ( ris::BufferPtr buff) : rpr::Header(buff) {
-   if (buff_->getCount() < SynSize)
-      throw(rogue::GeneralError::boundary("Syn::Syn", SynSize, buff_->getCount()));
-   buff_->setHeadRoom(SynSize);
-}
+rpr::Syn::Syn ( ris::FramePtr frame) : Header(frame) { }
 
 //! Destructor
 rpr::Syn::~Syn() { }
@@ -78,7 +75,7 @@ void rpr::Syn::setMaxOutstandingSegments(uint8_t max) {
 }
 
 //! Get MAX Segment Size
-uint16_t rpr::Syn::getMaxSegmentsSize() {
+uint16_t rpr::Syn::getMaxSegmentSize() {
    uint16_t * val = (uint16_t *)&(buff_->getRawData()[6]);
    return(le16toh(*val));
 }
@@ -165,5 +162,24 @@ uint32_t rpr::Syn::getConnectionId() {
 void rpr::Syn::setConnectionId(uint32_t id) {
    uint32_t * val = (uint32_t *)&(buff_->getRawData()[18]);
    *val = htole32(id);
+}
+
+//! Dump message
+std::string rpr::Syn::dump() {
+   std::stringstream ret("");
+   ret << rpr::Header::dump();
+
+   ret << "          Chk : " << std::dec << getChk() << std::endl;
+   ret << "  Max Out Seg : " << std::dec << getMaxOutstandingSegments() << std::endl;
+   ret << " Max Seg Size : " << std::dec << getMaxSegmentSize() << std::endl;
+   ret << "  Retran Tout : " << std::dec << getRetransmissionTimeout() << std::endl;
+   ret << " Cum Ack Tout : " << std::dec << getCumulativeAckTimeout() << std::endl;
+   ret << "    Null Tout : " << std::dec << getNullTimeout() << std::endl;
+   ret << "  Max Retrans : " << std::dec << getMaxRetransmissions() << std::endl;
+   ret << "  Max Cum Ack : " << std::dec << getMaxCumulativeAck() << std::endl;
+   ret << " Timeout Unit : " << std::dec << getTimeoutUnit() << std::endl;
+   ret << "      Conn Id : " << std::dec << getConnectionId() << std::endl;
+
+   return(ret.str());
 }
 

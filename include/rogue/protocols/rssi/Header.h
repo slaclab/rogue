@@ -22,7 +22,7 @@
 #define __ROGUE_PROTOCOLS_RSSI_HEADER_H__
 #include <stdint.h>
 #include <boost/shared_ptr.hpp>
-#include <rogue/interfaces/stream/Buffer.h>
+#include <rogue/interfaces/stream/Frame.h>
 
 namespace rogue {
    namespace protocols {
@@ -36,22 +36,31 @@ namespace rogue {
                //! Header Size
                static const uint32_t HeaderSize = 8;
 
+               //! Frame
+               boost::shared_ptr<rogue::interfaces::stream::Frame> frame_;
+
                //! Buffer
                boost::shared_ptr<rogue::interfaces::stream::Buffer> buff_;
 
             public:
 
                //! Class creation
-               static boost::shared_ptr<rogue::protocols::rssi::Header> create (boost::shared_ptr<rogue::interfaces::stream::Buffer> buf);
+               static boost::shared_ptr<rogue::protocols::rssi::Header> create (boost::shared_ptr<rogue::interfaces::stream::Frame> frame);
 
                //! Return required size
                static uint32_t minSize();
 
                //! Creator
-               Header(boost::shared_ptr<rogue::interfaces::stream::Buffer> buf);
+               Header(boost::shared_ptr<rogue::interfaces::stream::Frame> frame);
 
                //! Destructor
                ~Header();
+
+               //! Set frame pointers
+               void setFrame(boost::shared_ptr<rogue::interfaces::stream::Frame> frame);
+
+               //! Get frame pointers
+               boost::shared_ptr<rogue::interfaces::stream::Frame> getFrame();
 
                //! Get header size
                uint8_t getHeaderSize();
@@ -108,10 +117,13 @@ namespace rogue {
                void setSequence(uint16_t seq);
 
                //! Get acknowledge number
-               uint16_t getAcknowledg();
+               uint16_t getAcknowledge();
 
                //! Set acknowledge number
                void setAcknowledge(uint16_t ack);
+
+               //! Dump message contents
+               virtual std::string dump();
 
          };
 

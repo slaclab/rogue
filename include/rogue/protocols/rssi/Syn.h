@@ -39,13 +39,13 @@ namespace rogue {
             public:
 
                //! Class creation
-               static boost::shared_ptr<rogue::protocols::rssi::Syn> create (boost::shared_ptr<rogue::interfaces::stream::Buffer> buf);
+               static boost::shared_ptr<rogue::protocols::rssi::Syn> create (boost::shared_ptr<rogue::interfaces::stream::Frame> frame);
 
                //! Return required size
                static uint32_t minSize();
 
                //! Creator
-               Syn(boost::shared_ptr<rogue::interfaces::stream::Buffer> buf);
+               Syn(boost::shared_ptr<rogue::interfaces::stream::Frame> frame);
 
                //! Destructor
                ~Syn();
@@ -66,7 +66,7 @@ namespace rogue {
                void setMaxOutstandingSegments(uint8_t max);
 
                //! Get MAX Segment Size
-               uint16_t getMaxSegmentsSize();
+               uint16_t getMaxSegmentSize();
 
                //! Set MAX Segment Size
                void setMaxSegmentSize(uint16_t size);
@@ -112,6 +112,9 @@ namespace rogue {
 
                //! Set Timeout Unit
                void setConnectionId(uint32_t id);
+
+               //! Dump message contents
+               std::string dump();
 
          };
 

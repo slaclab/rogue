@@ -1,13 +1,13 @@
 /**
  *-----------------------------------------------------------------------------
- * Title      : UDP Client Class
+ * Title      : RSSI Transport Class
  * ----------------------------------------------------------------------------
- * File       : Client.h
+ * File       : Transport.h
  * Created    : 2017-01-07
  * Last update: 2017-01-07
  * ----------------------------------------------------------------------------
  * Description:
- * UDP Client
+ * RSSI Transport
  * ----------------------------------------------------------------------------
  * This file is part of the rogue software platform. It is subject to 
  * the license terms in the LICENSE.txt file found in the top-level directory 
@@ -18,72 +18,47 @@
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
-#ifndef __ROGUE_PROTOCOLS_UDP_CLIENT_H__
-#define __ROGUE_PROTOCOLS_UDP_CLIENT_H__
+#ifndef __ROGUE_PROTOCOLS_RSSI_TRANSPORT_H__
+#define __ROGUE_PROTOCOLS_RSSI_TRANSPORT_H__
 #include <rogue/interfaces/stream/Master.h>
 #include <rogue/interfaces/stream/Slave.h>
 #include <boost/python.hpp>
-#include <boost/thread.hpp>
 #include <stdint.h>
-#include <netdb.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <netinet/ip.h>
 
 namespace rogue {
    namespace protocols {
-      namespace udp {
+      namespace rssi {
 
-         //! PGP Card class
-         class Client : public rogue::interfaces::stream::Master, 
-                        public rogue::interfaces::stream::Slave {
+         class Controller;
+         class Application;
 
-               //! Constant RX size
-               static const uint32_t RX_SIZE = 9000;
+         //! RSSI Transport Class
+         class Transport : public rogue::interfaces::stream::Master, 
+                           public rogue::interfaces::stream::Slave {
 
-               //! Socket
-               int32_t  fd_;
+               //! Core module
+               boost::shared_ptr<rogue::protocols::rssi::Controller> cntl_;
 
-               //! Max packet size
-               uint32_t maxSize_;
-
-               //! Address, hostname or ip address
-               std::string address_;
-
-               //! Remote port number
-               uint16_t port_;
-
-               //! Remote socket address
-               struct sockaddr_in addr_;
-
-               //! Timeout value
-               uint32_t timeout_;
-
-               boost::thread* thread_;
-
-               //! mutex
-               boost::mutex mtx_;
-
-               //! Thread background
-               void runThread();
+               //! Application module
+               boost::shared_ptr<rogue::protocols::rssi::Application> app_;
 
             public:
 
                //! Class creation
-               static boost::shared_ptr<rogue::protocols::udp::Client> 
-                  create (std::string host, uint16_t port, uint16_t maxSize);
+               static boost::shared_ptr<rogue::protocols::rssi::Transport> create ();
 
                //! Setup class in python
                static void setup_python();
 
                //! Creator
-               Client(std::string host, uint16_t port, uint16_t maxSize);
+               Transport();
 
                //! Destructor
-               ~Client();
+               ~Transport();
 
-               //! Set timeout for frame transmits in microseconds
-               void setTimeout(uint32_t timeout);
+               //! Setup links
+               void setup( boost::shared_ptr<rogue::protocols::rssi::Controller> cntl, 
+                           boost::shared_ptr<rogue::protocols::rssi::Application> app );
 
                //! Generate a Frame. Called from master
                /*
@@ -101,7 +76,7 @@ namespace rogue {
          };
 
          // Convienence
-         typedef boost::shared_ptr<rogue::protocols::udp::Client> ClientPtr;
+         typedef boost::shared_ptr<rogue::protocols::rssi::Transport> TransportPtr;
 
       }
    }

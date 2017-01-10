@@ -33,13 +33,13 @@ namespace rogue {
             public:
 
                //! Class creation
-               static boost::shared_ptr<rogue::protocols::rssi::Data> create (boost::shared_ptr<rogue::interfaces::stream::Buffer> buf);
+               static boost::shared_ptr<rogue::protocols::rssi::Data> create (boost::shared_ptr<rogue::interfaces::stream::Frame> frame);
 
                //! Return required size
                static uint32_t minSize();
 
                //! Creator
-               Data(boost::shared_ptr<rogue::interfaces::stream::Buffer> buf);
+               Data(boost::shared_ptr<rogue::interfaces::stream::Frame> frame);
 
                //! Destructor
                ~Data();
