@@ -148,7 +148,7 @@ class Node(object):
     attribute. This allows tree browsing using: node1.node2.node3
     """
 
-    def __init__(self, name, classType, description="", hidden=False):
+    def __init__(self, name, classType, description="", hidden=False, parent=None):
         """Init the node with passed attributes"""
 
         # Public attributes
@@ -159,9 +159,12 @@ class Node(object):
         self.path        = self.name
 
         # Tracking
-        self._parent = None
+        self._parent = parent
         self._root   = self
         self._nodes  = odict()
+        
+        if parent is not None:
+            parent.add(self)
 
     def __repr__(self):
         return self.path
@@ -183,7 +186,7 @@ class Node(object):
                 ret[key] = v
 
         if len(ret) == 0:
-            raise AttributeError
+            raise AttributeError('{} has no attribute {}'.format(self, name))
         
         return ret
         
@@ -264,8 +267,7 @@ class Node(object):
 
     def _rootAttached(self):
         """Called once the root node is attached. Can override to do anything depends on the full tree existing"""
-        for n in self.nodes.values():
-            n._rootAttached()
+        pass
 
     def _updateTree(self,parent):
         """
@@ -278,8 +280,12 @@ class Node(object):
         self._root   = self._parent._root
         self.path    = self._parent.path + '.' + self.name
 
+        if isinstance(self._root, Root):
+            self._rootAttached()
+
         for key,value in self._nodes.items():
             value._updateTree(self)
+
 
     def _getStructure(self):
         """
@@ -438,14 +444,11 @@ class Variable(Node):
     The string function is executed in the context of the variable object with 'dev' set
     to the parent device object.
     """
-    def __init__(self, name, description="", offset=None, bitSize=32, bitOffset=0, pollInterval=0, value=None,
+    def __init__(self, name, description="", parent=None, offset=None, bitSize=32, bitOffset=0, pollInterval=0, value=None,
                  base='hex', mode='RW', enum=None, units=None, hidden=False, minimum=None, maximum=None,
                  setFunction=None, getFunction=None, dependencies=None, 
                  beforeReadCmd=None, afterWriteCmd=None, **dump):
- 
-        """Initialize variable class"""
-
-        Node.__init__(self, name=name, classType='variable', description=description, hidden=hidden)
+        """Initialize variable class""" 
 
         # Public Attributes
         self.offset    = offset
@@ -459,7 +462,7 @@ class Variable(Node):
         self.maximum   = maximum # For base='range'
         self._defaultValue = value
         self._pollInterval = pollInterval
-        
+
         # Check modes
         if (self.mode != 'RW') and (self.mode != 'RO') and \
            (self.mode != 'WO') and (self.mode != 'SL') and \
@@ -486,6 +489,9 @@ class Variable(Node):
         # Commands that run before or after block access
         self._beforeReadCmd   = beforeReadCmd
         self._afterWriteCmd   = afterWriteCmd
+
+        # Call super constructor
+        Node.__init__(self, name=name, classType='variable', description=description, hidden=hidden, parent=parent)
 
     def _rootAttached(self):
         # Variables are always leaf nodes so no need to recurse
@@ -692,9 +698,9 @@ class Variable(Node):
 class Command(Variable):
     """Command holder: Subclass of variable with callable interface"""
 
-    def __init__(self, base='None', mode='CMD', function=None, **kwargs):
+    def __init__(self, parent=None, base='None', mode='CMD', function=None, **kwargs):
 
-        Variable.__init__(self, base=base, mode=mode, **kwargs)
+        Variable.__init__(self, base=base, mode=mode, parent=parent, **kwargs)
 
         self.classType = 'command'
         self._function = function if function is not None else Command.nothing
@@ -756,28 +762,6 @@ class Command(Variable):
         else:
             cmd.post(1)
 
-BLANK_COMMAND = Command(name='Blank', description='A singleton command that does nothing')
-
-def command(dev, **kwargs):
-    """A decorator to easily make any function a Command and add() it to 'dev'
-    Additional **kwargs are passed to the Command constructor
-    """
-    
-    def decorator(func):
-        dev.add(Command(name=func.__name__, function=func, **kwargs))
-        return func
-    return decorator
-
-def command2(func):
-    if getattr(func, 'PyrogueCommand', False):
-        return func
-
-    def wrapper(*args, **kwargs):
-        return func(*args, **kwargs)
-    
-    wrapper.PyrogueCommand = True
-
-    return wrapper
 
 
 class BlockError(Exception):
@@ -1110,7 +1094,7 @@ class Block(rogue.interfaces.memory.Master):
 class Device(Node,rogue.interfaces.memory.Hub):
     """Device class holder. TODO: Update comments"""
 
-    def __init__(self, name=None, description="", memBase=None, offset=0, hidden=False,
+    def __init__(self, name=None, description="", memBase=None, offset=0, hidden=False, parent=None,
                  variables=None, expand=True, enabled=True, classType='device', **dump):
         """Initialize device class"""
         if name is None:
@@ -1118,7 +1102,7 @@ class Device(Node,rogue.interfaces.memory.Hub):
 
         print("Making device {:s}".format(name))
 
-        Node.__init__(self, name=name, hidden=hidden, classType=classType, description=description)
+        # Hub.__init__ must be called first for _setSlave to work below
         rogue.interfaces.memory.Hub.__init__(self,offset)
 
         # Blocks
@@ -1130,6 +1114,9 @@ class Device(Node,rogue.interfaces.memory.Hub):
 
         # Connect to memory slave
         if memBase: self._setSlave(memBase)
+
+        # Node.__init__ can't be called until after self._memBase is created
+        Node.__init__(self, name=name, hidden=hidden, classType=classType, description=description, parent=parent)
 
         # Convenience methods
         self.addDevice = ft.partial(self.addNode, Device)
@@ -1159,7 +1146,7 @@ class Device(Node,rogue.interfaces.memory.Hub):
         """
 
         # Special case if list (or iterable of nodes) is passed
-        if isinstance(node, collections.Iterable) and all(isinstance(n, Node) for n in nodes):
+        if isinstance(node, collections.Iterable) and all(isinstance(n, Node) for n in node):
             for n in node:
                 self.add(n)
             return
@@ -1335,10 +1322,6 @@ class Root(rogue.interfaces.stream.Master,Device):
             setFunction=None, getFunction='value=dev._systemLog',
             description='String containing newline seperated system logic entries'))
 
-
-    def add(self, node):
-        Node.add(self, node)
-        node._rootAttached()
 
     def stop(self):
         """Stop the polling thread. Must be called for clean exit."""
@@ -1752,6 +1735,34 @@ def getBitFromBytes(ba, bitOffset):
 
     return ((ba[byte] >> bit) & 0x1)
 
+###################################
+# (Hopefully) useful Command stuff
+##################################
+BLANK_COMMAND = Command(name='Blank', description='A singleton command that does nothing')
+
+def command(dev, **kwargs):
+    """A decorator to easily make any function a Command and add() it to 'dev'
+    Additional **kwargs are passed to the Command constructor
+    """
+    
+    def decorator(func):
+        dev.add(Command(name=func.__name__, function=func, **kwargs))
+        return func
+    return decorator
+
+def command2(func):
+    if getattr(func, 'PyrogueCommand', False):
+        return func
+
+    def wrapper(*args, **kwargs):
+        return func(*args, **kwargs)
+    
+    wrapper.PyrogueCommand = True
+
+    return wrapper
+################################
+
+
 class PollQueue(object):
 
     Entry = collections.namedtuple('PollQueueEntry', ['readTime', 'count', 'interval', 'block'])
@@ -1768,10 +1779,13 @@ class PollQueue(object):
         print("PollQueue Started")
 
     def _addEntry(self, block, interval):
-        print('PollQueue._addEntry({:s}, {:d}'.format(block, interval))
+
         with self._lock:
             timedelta = datetime.timedelta(seconds=interval)
-            readTime = datetime.datetime.now() #new entries are always polled first immediately
+            # new entries are always polled first immediately 
+            # (rounded up to the next second)
+            readTime = datetime.datetime.now()
+            readTime = readTime.replace(second=readTime.second+1, microsecond=0)
             entry = PollQueue.Entry(readTime, next(self._counter), timedelta, block)
             self._entries[block] = entry
             heapq.heappush(self._pq, entry)
@@ -1845,15 +1859,9 @@ class PollQueue(object):
                 # Pop all timed out entries from the queue
                 now = datetime.datetime.now()                
                 entries = []
-                while self.empty() is False and self.peek().readTime <= now:
-                    e = heapq.heappop(self._pq)
-                    if e.block is not None:
-                        entries.append(e)
-                        
-                # Start the block reads
-                for entry in entries:
- #                   print('PollQueue: _startTransaction: {:s}'.format(entry))
+                for entry in self._expiredEntries(now):
                     if isinstance(entry.block, Block):
+                        entries.append(entry)
                         entry.block._startTransaction(rogue.interfaces.memory.Read)
                         print('Polling: {:s}'.format(entry.block._variables))                        
                     else:
@@ -1863,8 +1871,7 @@ class PollQueue(object):
 
                 # Wait for reads to be done
                 for entry in entries:
-                    if isinstance(entry.block, Block):
-                        entry.block._checkTransaction(update=True)
+                    entry.block._checkTransaction(update=True)
 #                    print('PollQueue: _checkTransaction: {:s}'.format(entry))                    
                     # Update the entry with new read time
                     entry = entry._replace(readTime=(entry.readTime + entry.interval),
@@ -1872,7 +1879,16 @@ class PollQueue(object):
                     # Add updated entry back to finder and queue
                     heapq.heappush(self._pq, entry)
 
-                    
+    def _expiredEntries(self, time=None):
+        with self._lock:
+            if time == None:
+                time = datetime.datetime.now()
+            while self.empty() is False and self.peek().readTime <= time:
+                entry = heapq.heappop(self._pq)
+                if entry.block is not None:
+                    yield entry
+
+                
     def peek(self):
         with self._lock:
             if self.empty() is False:
