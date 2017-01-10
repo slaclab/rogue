@@ -19,28 +19,32 @@
  * ----------------------------------------------------------------------------
 **/
 #include <rogue/protocols/rssi/Header.h>
+#include <rogue/GeneralError.h>
 #include <boost/make_shared.hpp>
 #include <rogue/common.h>
 #include <stdint.h>
 
 namespace rpr = rogue::protocols::rssi;
+namespace ris = rogue::interfaces::stream;
 namespace bp  = boost::python;
 
 //! Class creation
-rpr::HeaderPtr rpr::Header::create (uint8_t * data, uint32_t size) {
-   rpr::HeaderPtr r = boost::make_shared<rpr::Header>(data,size);
+rpr::HeaderPtr rpr::Header::create (ris::BufferPtr buff) {
+   rpr::HeaderPtr r = boost::make_shared<rpr::Header>(buff);
    return(r);
 }
 
 //! Return required size
-uint32_t rpr::Header::size() {
-   return(8);
+uint32_t rpr::Header::minSize() {
+   return(HeaderSize);
 }
 
 //! Creator
-rpr::Header::Header ( uint8_t * data, uint32_t size) {
-   data_ = data;
-   size_ = size;
+rpr::Header::Header ( ris::BufferPtr buff) {
+   if (buff_->getCount() < HeaderSize)
+      throw(rogue::GeneralError::boundary("Header::Header", HeaderSize, buff_->getCount()));
+   buff_ = buff;
+   buff_->setHeadRoom(HeaderSize);
 }
 
 //! Destructor
@@ -48,110 +52,125 @@ rpr::Header::~Header() { }
 
 //! Get header size
 uint8_t rpr::Header::getHeaderSize() {
-   return(data_[0]);
+   return(buff_->getRawData()[0]);
 }
 
 //! Init header contents
 void rpr::Header::init() {
-   memset(data_,0,8);
-   data_[0] = 8;
+   memset(buff_->getRawData(),0,HeaderSize);
+   buff_->getRawData()[0] = HeaderSize;
 }
 
 //! Verify header contents
 bool rpr::Header::verify() {
-   return(true);
+   uint16_t * val = (uint16_t *)&(buff_->getRawData()[6]);
+   uint32_t   x;
+   uint32_t   sum;
 
+   sum = 0;
+   for (x=0; x < (getHeaderSize()/2); x++) {
+      sum += val[x];
+   }
+
+   return(true);
 }
 
 //! Update checksum
 void rpr::Header::update() {
+   uint16_t * val = (uint16_t *)&(buff_->getRawData()[6]);
+   uint32_t   x;
+   uint32_t   sum;
+
+   sum = 0;
+   for (x=0; x < ((getHeaderSize()/2)-2); x++) {
+      sum += val[x];
+   }
 
 }
 
 //! Get syn flag
 bool rpr::Header::getSyn() {
-   return(data_[1]&0x80);
+   return(buff_->getRawData()[1]&0x80);
 }
 
 //! Set syn flag
 void rpr::Header::setSyn(bool state) {
-   data_[1] &= 0x7F;
-   if ( state ) data_[1] |= 0x80;
+   buff_->getRawData()[1] &= 0x7F;
+   if ( state ) buff_->getRawData()[1] |= 0x80;
 }
 
 //! Get ack flag
 bool rpr::Header::getAck() {
-   return(data_[1]&0x40);
+   return(buff_->getRawData()[1]&0x40);
 }
 
 //! Set ack flag
 void rpr::Header::setAck(bool state) {
-   data_[1] &= 0xBF;
-   if ( state ) data_[1] |= 0x40;
+   buff_->getRawData()[1] &= 0xBF;
+   if ( state ) buff_->getRawData()[1] |= 0x40;
 }
 
 //! Get eack flag
 bool rpr::Header::getEAck() {
-   return(data_[1]&0x20);
+   return(buff_->getRawData()[1]&0x20);
 }
 
 //! Set eack flag
 void rpr::Header::setEAck(bool state) {
-   data_[1] &= 0xDF;
-   if ( state ) data_[1] |= 0x20;
+   buff_->getRawData()[1] &= 0xDF;
+   if ( state ) buff_->getRawData()[1] |= 0x20;
 }
 
 //! Get rst flag
 bool rpr::Header::getRst() {
-   return(data_[1]&0x10);
+   return(buff_->getRawData()[1]&0x10);
 }
 
 //! Set rst flag
 void rpr::Header::setRst(bool state) {
-   data_[1] &= 0xEF;
-   if ( state ) data_[1] |= 0x10;
+   buff_->getRawData()[1] &= 0xEF;
+   if ( state ) buff_->getRawData()[1] |= 0x10;
 }
 
 //! Get NUL flag
 bool rpr::Header::getNul() {
-   return(data_[1]&0x08);
+   return(buff_->getRawData()[1]&0x08);
 }
 
 //! Set NUL flag
 void rpr::Header::setNul(bool state) {
-   data_[1] &= 0xF7;
-   if ( state ) data_[1] |= 0x08;
+   buff_->getRawData()[1] &= 0xF7;
+   if ( state ) buff_->getRawData()[1] |= 0x08;
 }
 
 //! Get Busy flag
 bool rpr::Header::getBusy() {
-   return(data_[1]&0x01);
+   return(buff_->getRawData()[1]&0x01);
 }
 
 //! Set Busy flag
 void rpr::Header::setBusy(bool state) {
-   data_[1] &= 0xFE;
-   if ( state ) data_[1] |= 0x01;
+   buff_->getRawData()[1] &= 0xFE;
+   if ( state ) buff_->getRawData()[1] |= 0x01;
 }
 
 //! Get sequence number
 uint16_t rpr::Header::getSequence() {
-   return(data_[3]);
+   return(buff_->getRawData()[3]);
 }
 
 //! Set sequence number
 void rpr::Header::setSequence(uint16_t seq) {
-   data_[3] = seq;
+   buff_->getRawData()[3] = seq;
 }
 
 //! Get acknowledge number
 uint16_t rpr::Header::getAcknowledg() {
-   return(data_[2]);
+   return(buff_->getRawData()[2]);
 }
 
 //! Set acknowledge number
 void rpr::Header::setAcknowledge(uint16_t ack) {
-   data_[2] = ack;
+   buff_->getRawData()[2] = ack;
 }
-
 

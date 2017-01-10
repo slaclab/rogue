@@ -22,6 +22,7 @@
 #define __ROGUE_PROTOCOLS_RSSI_HEADER_H__
 #include <stdint.h>
 #include <boost/shared_ptr.hpp>
+#include <rogue/interfaces/stream/Buffer.h>
 
 namespace rogue {
    namespace protocols {
@@ -32,22 +33,22 @@ namespace rogue {
 
             protected:
 
-               //! Pointer to data
-               uint8_t * data_;
+               //! Header Size
+               static const uint32_t HeaderSize = 8;
 
-               //! Header size
-               uint32_t size_;
+               //! Buffer
+               boost::shared_ptr<rogue::interfaces::stream::Buffer> buff_;
 
             public:
 
                //! Class creation
-               static boost::shared_ptr<rogue::protocols::rssi::Header> create (uint8_t * data, uint32_t size);
+               static boost::shared_ptr<rogue::protocols::rssi::Header> create (boost::shared_ptr<rogue::interfaces::stream::Buffer> buf);
 
                //! Return required size
-               static uint32_t size();
+               static uint32_t minSize();
 
                //! Creator
-               Header(uint8_t *data, uint32_t size);
+               Header(boost::shared_ptr<rogue::interfaces::stream::Buffer> buf);
 
                //! Destructor
                ~Header();

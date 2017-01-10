@@ -24,32 +24,28 @@
 #include <stdint.h>
 
 namespace rpr = rogue::protocols::rssi;
+namespace ris = rogue::interfaces::stream;
 namespace bp  = boost::python;
 
 //! Class creation
-rpr::DataPtr rpr::Data::create (uint8_t * data, uint32_t size) {
-   rpr::DataPtr r = boost::make_shared<rpr::Data>(data,size);
+rpr::DataPtr rpr::Data::create (ris::BufferPtr buff) {
+   rpr::DataPtr r = boost::make_shared<rpr::Data>(buff);
    return(r);
 }
 
-//! Return required size
-uint32_t rpr::Data::size(uint32_t dataSize) {
-   return(dataSize + 8);
-}
-
 //! Creator
-rpr::Data::Data ( uint8_t * data, uint32_t size) : rpr::Header(data,size) { }
+rpr::Data::Data ( ris::BufferPtr buff) : rpr::Header(buff) { }
 
 //! Destructor
 rpr::Data::~Data() { }
 
 //! Return pointer to data
 uint8_t * rpr::Data::getData() {
-   return(data_ + 8);
+   return(buff_->getPayloadData());
 }
 
 //! Get data size
 uint32_t rpr::Data::getDataSize() {
-   return(size_ - 8);
+   return(buff_->getPayload());
 }
 
