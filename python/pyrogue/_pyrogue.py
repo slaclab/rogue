@@ -842,6 +842,9 @@ class Block(rogue.interfaces.memory.Master):
         self._setSlave(self._device)
         self._addVariable(variable)
 
+    def __repr__(self):
+        return repr(self._variables)
+
     def set(self,bitOffset,bitCount,ba):
         """
         Update block with bitCount bits from passed byte array.
@@ -1568,11 +1571,11 @@ class DataWriter(Device):
             setFunction=self._setMaxFileSize, getFunction='value = dev._maxFileSize',
             description='Maximum size for an individual file. Setting to a non zero splits the run data into multiple files.'))
 
-        self.add(Variable(name='fileSize', base='uint', mode='RO',
-                          setFunction=None, getFunction=self._getFileSize, pollInverval=1,
+        self.add(Variable(name='fileSize', base='uint', mode='RO', pollInverval=1,
+                          setFunction=None, getFunction=self._getFileSize,
                           description='Size of data files(s) for current open session in bytes.'))
 
-        self.add(Variable(name='frameCount', base='uint', mode='RO',
+        self.add(Variable(name='frameCount', base='uint', mode='RO', pollInverval=1,
             setFunction=None, getFunction=self._getFrameCount,
             description='Frame in data file(s) for current open session in bytes.'))
 
@@ -1622,12 +1625,6 @@ class DataWriter(Device):
             self.frameCount.get()
         Device._backgroundTransaction(self,type)
 
-    def _poll(self):
-        """Force update of non block status variables"""
-        self.fileSize.get()
-        self.frameCount.get()
-        Device._poll(self)
-
 
 class RunControl(Device):
     """Special base class to control runs. TODO: Update comments."""
@@ -1651,7 +1648,7 @@ class RunControl(Device):
             setFunction=self._setRunRate, getFunction='value = dev._runRate',
             description='Run rate of the system.'))
 
-        self.add(Variable(name='runCount', base='uint', mode='RO',
+        self.add(Variable(name='runCount', base='uint', mode='RO', pollInterval=1,
             setFunction=None, getFunction='value = dev._runCount',
             description='Run Counter updated by run thread.'))
 
@@ -1675,11 +1672,6 @@ class RunControl(Device):
         if type == rogue.interfaces.memory.Read:
             self.runCount.get()
         Device._backgroundTransaction(self,type)
-
-    def _poll(self):
-        """Force update of non block status variables"""
-        self.runCount.get()
-        Device._poll(self)
 
 
 def addPathToDict(d, path, value):
@@ -1766,7 +1758,7 @@ class PollQueue(object):
 
     def __init__(self):
         self._pq = [] # The heap queue
-        self._entries = {} # {Block: Entry} mapping to look up if a block is already in the queue
+        self._entries = {} # {Block/Variable: Entry} mapping to look up if a block is already in the queue
         self._counter = itertools.count()
         self._lock = threading.RLock()
         self._update = threading.Condition()
@@ -1776,7 +1768,7 @@ class PollQueue(object):
         print("PollQueue Started")
 
     def _addEntry(self, block, interval):
-        print('PollQueue._addEntry({:s}, {:d}'.format(block._variables, interval))
+        print('PollQueue._addEntry({:s}, {:d}'.format(block, interval))
         with self._lock:
             timedelta = datetime.timedelta(seconds=interval)
             readTime = datetime.datetime.now() #new entries are always polled first immediately
@@ -1794,9 +1786,17 @@ class PollQueue(object):
             # Special case: Variable has no block and just depends on other variables
             # Then do update on each dependency instead
             if var._block is None:
-                for dep in var.dependencies:
-                    if dep.pollInterval == 0 or var.pollInterval < dep.pollInterval:
-                        dep.pollInterval = var.pollInterval
+                if len(var.dependencies) > 0:
+                    for dep in var.dependencies:
+                        if dep.pollInterval == 0 or var.pollInterval < dep.pollInterval:
+                            dep.pollInterval = var.pollInterval
+
+                else:
+                    # Special case for variables without a block
+                    # Add the variable itself
+                    if var in self._entries.keys():
+                        self._entries[var].block = None
+                    self._addEntry(var, var.pollInterval)
                 return
             
             if var._block in self._entries.keys():
@@ -1853,12 +1853,18 @@ class PollQueue(object):
                 # Start the block reads
                 for entry in entries:
  #                   print('PollQueue: _startTransaction: {:s}'.format(entry))
-                    entry.block._startTransaction(rogue.interfaces.memory.Read)
-                    print('Polling: {:s}'.format(entry.block._variables))
+                    if isinstance(entry.block, Block):
+                        entry.block._startTransaction(rogue.interfaces.memory.Read)
+                        print('Polling: {:s}'.format(entry.block._variables))                        
+                    else:
+                        # Hack for handling local variables
+                        entry.block.get(read=True)
+                        print('Polling: {:s}'.format(entry.block))
 
                 # Wait for reads to be done
                 for entry in entries:
-                    entry.block._checkTransaction(update=True)
+                    if isinstance(entry.block, Block):
+                        entry.block._checkTransaction(update=True)
 #                    print('PollQueue: _checkTransaction: {:s}'.format(entry))                    
                     # Update the entry with new read time
                     entry = entry._replace(readTime=(entry.readTime + entry.interval),
