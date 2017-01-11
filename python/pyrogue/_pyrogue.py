@@ -1785,7 +1785,7 @@ class PollQueue(object):
 
     def updatePollInterval(self, var):
         with self._lock:
-
+            #print('updatePollInterval {} - {}'.format(var, var.pollInterval))
             # Special case: Variable has no block and just depends on other variables
             # Then do update on each dependency instead
             if var._block is None:
@@ -1834,6 +1834,7 @@ class PollQueue(object):
                 readTime = self.peek().readTime
                 waitTime = (readTime - now).total_seconds()
                 with self._update:
+                    #print('Poll thread sleeping for {}'.format(waitTime))
                     self._update.wait(waitTime)
                 
             with self._lock:
@@ -1847,9 +1848,12 @@ class PollQueue(object):
                 blockEntries = []
                 for entry in self._expiredEntries(now):
                     if isinstance(entry.block, Block):
+                        #print('Polling {}'.format(entry.block._variables))
+                        blockEntries.append(entry)
                         entry.block._startTransaction(rogue.interfaces.memory.Read)
                     else:
                         # Hack for handling local variables
+                        #print('Polling {}'.format(entry.block))
                         entry.block.get(read=True)
                         
                     # Update the entry with new read time
