@@ -30,6 +30,7 @@ import re
 import functools as ft
 import itertools
 import heapq
+from inspect import signature
 
 def streamConnect(source, dest):
     """
@@ -1284,11 +1285,13 @@ class Device(Node,rogue.interfaces.memory.Hub):
         def _decorator(func):
             if 'name' not in kwargs:
                 kwargs['name'] = func.__name__
+
+            argCount = len(signature(func).parameters)
             def newFunc(dev, var, val):
-                if func.func_code.co_argcount == 0:
-                    return func
+                if argCount == 0:
+                    return func()
                 else:
-                    return functools.partial(func, val)
+                    return func(val)
             self.add(Command(function=newFunc, **kwargs))
             return func
         return _decorator
