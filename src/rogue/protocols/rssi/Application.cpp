@@ -22,7 +22,6 @@
 #include <rogue/interfaces/stream/Buffer.h>
 #include <rogue/protocols/rssi/Header.h>
 #include <rogue/protocols/rssi/Controller.h>
-#include <rogue/protocols/rssi/Transport.h>
 #include <rogue/protocols/rssi/Application.h>
 #include <rogue/GeneralError.h>
 #include <boost/make_shared.hpp>
@@ -45,36 +44,13 @@ rpr::Application::Application () { }
 rpr::Application::~Application() { }
 
 //! Setup links
-void rpr::Application::setup( rpr::ControllerPtr cntl, rpr::TransportPtr tran ) {
+void rpr::Application::setController( rpr::ControllerPtr cntl ) {
    cntl_ = cntl;
-   tran_ = tran;
 }
 
 //! Generate a Frame. Called from master
-/*
- * Pass total size required.
- * Pass flag indicating if zero copy buffers are acceptable
- * maxBuffSize indicates the largest acceptable buffer size. A larger buffer can be
- * returned but the total buffer count must assume each buffer is of size maxBuffSize
- * If maxBuffSize = 0, slave will freely determine the buffer size.
- */
 ris::FramePtr rpr::Application::acceptReq ( uint32_t size, bool zeroCopyEn, uint32_t maxBuffSize ) {
-   uint32_t      nsize;
-   ris::FramePtr frame;
-   uint32_t      x;
-
-   // Add header to frame size
-   nsize = size + rpr::Header::minSize();
-
-   // Forward frame request to transport slave
-   frame = tran_->reqFrame (nsize, zeroCopyEn, maxBuffSize);
-
-   // Update header area in each buffer before returning frame
-   for (x=0; x < frame->getCount(); x++) 
-      frame->getBuffer(x)->setHeadRoom(frame->getBuffer(x)->getHeadRoom() + rpr::Header::minSize());
-
-   // Return frame
-   return(frame);
+   return(cntl_->reqFrame(size,maxBuffSize));
 }
 
 //! Accept a frame from master

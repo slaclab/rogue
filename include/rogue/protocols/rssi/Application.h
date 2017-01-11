@@ -30,7 +30,6 @@ namespace rogue {
       namespace rssi {
 
          class Controller;
-         class Transport;
 
          //! RSSI Application Class
          class Application : public rogue::interfaces::stream::Master, 
@@ -38,9 +37,6 @@ namespace rogue {
 
                //! Core module
                boost::shared_ptr<rogue::protocols::rssi::Controller> cntl_;
-
-               //! Transport module
-               boost::shared_ptr<rogue::protocols::rssi::Transport> tran_;
 
             public:
 
@@ -57,8 +53,7 @@ namespace rogue {
                ~Application();
 
                //! Setup links
-               void setup( boost::shared_ptr<rogue::protocols::rssi::Controller> cntl, 
-                           boost::shared_ptr<rogue::protocols::rssi::Transport> tran );
+               void setController ( boost::shared_ptr<rogue::protocols::rssi::Controller> cntl );
 
                //! Generate a Frame. Called from master
                /*

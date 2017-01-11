@@ -30,8 +30,8 @@ namespace rpr = rogue::protocols::rssi;
 namespace ris = rogue::interfaces::stream;
 namespace bp  = boost::python;
 
-//! Class creation
-rpr::HeaderPtr rpr::Header::create (ris::FramePtr frame) {
+//! Create
+rpr::HeaderPtr rpr::Header::create(ris::FramePtr frame) {
    rpr::HeaderPtr r = boost::make_shared<rpr::Header>(frame);
    return(r);
 }
@@ -42,46 +42,29 @@ uint32_t rpr::Header::minSize() {
 }
 
 //! Creator
-rpr::Header::Header ( ris::FramePtr frame) {
-   setFrame(frame);
-}
-
-//! Destructor
-rpr::Header::~Header() { }
-
-//! Set frame pointers
-void rpr::Header::setFrame(ris::FramePtr frame) {
-
-   if (frame->getCount() != 1 )
-      throw(rogue::GeneralError("Header::Header", "Frame must contain a single buffer"));
-
-   if (frame->getBuffer(0)->getRawSize() < minSize())
-      throw(rogue::GeneralError::boundary("Header::Header", minSize(), frame->getBuffer(0)->getRawSize()));
-
+rpr::Header::Header(ris::FramePtr frame) {
    frame_ = frame;
-   buff_  = frame_->getBuffer(0);
-   buff_->setHeadRoom(minSize());
 }
 
-//! Get frame pointers
+//! Get Frame
 ris::FramePtr rpr::Header::getFrame() {
    return(frame_);
 }
 
 //! Get header size
 uint8_t rpr::Header::getHeaderSize() {
-   return(buff_->getRawData()[0]);
+   return(frame_->getBuffer(0)->getRawData()[0]);
 }
 
 //! Init header contents
 void rpr::Header::init() {
-   memset(buff_->getRawData(),0,HeaderSize);
-   buff_->getRawData()[0] = HeaderSize;
+   memset(frame_->getBuffer(0)->getRawData(),0,HeaderSize);
+   frame_->getBuffer(0)->getRawData()[0] = HeaderSize;
 }
 
 //! Verify header contents
 bool rpr::Header::verify() {
-   uint16_t * val = (uint16_t *)&(buff_->getRawData()[6]);
+   uint16_t * val = (uint16_t *)&(frame_->getBuffer(0)->getRawData()[6]);
    int32_t    x;
    uint32_t   sum;
 
@@ -95,7 +78,7 @@ bool rpr::Header::verify() {
 
 //! Update checksum
 void rpr::Header::update() {
-   uint16_t * val = (uint16_t *)&(buff_->getRawData()[6]);
+   uint16_t * val = (uint16_t *)&(frame_->getBuffer(0)->getRawData()[6]);
    int32_t    x;
    uint32_t   sum;
 
@@ -108,99 +91,99 @@ void rpr::Header::update() {
 
 //! Get syn flag
 bool rpr::Header::getSyn() {
-   return(buff_->getRawData()[1]&0x80);
+   return(frame_->getBuffer(0)->getRawData()[1]&0x80);
 }
 
 //! Set syn flag
 void rpr::Header::setSyn(bool state) {
-   buff_->getRawData()[1] &= 0x7F;
-   if ( state ) buff_->getRawData()[1] |= 0x80;
+   frame_->getBuffer(0)->getRawData()[1] &= 0x7F;
+   if ( state ) frame_->getBuffer(0)->getRawData()[1] |= 0x80;
 }
 
 //! Get ack flag
 bool rpr::Header::getAck() {
-   return(buff_->getRawData()[1]&0x40);
+   return(frame_->getBuffer(0)->getRawData()[1]&0x40);
 }
 
 //! Set ack flag
 void rpr::Header::setAck(bool state) {
-   buff_->getRawData()[1] &= 0xBF;
-   if ( state ) buff_->getRawData()[1] |= 0x40;
+   frame_->getBuffer(0)->getRawData()[1] &= 0xBF;
+   if ( state ) frame_->getBuffer(0)->getRawData()[1] |= 0x40;
 }
 
 //! Get eack flag
 bool rpr::Header::getEAck() {
-   return(buff_->getRawData()[1]&0x20);
+   return(frame_->getBuffer(0)->getRawData()[1]&0x20);
 }
 
 //! Set eack flag
 void rpr::Header::setEAck(bool state) {
-   buff_->getRawData()[1] &= 0xDF;
-   if ( state ) buff_->getRawData()[1] |= 0x20;
+   frame_->getBuffer(0)->getRawData()[1] &= 0xDF;
+   if ( state ) frame_->getBuffer(0)->getRawData()[1] |= 0x20;
 }
 
 //! Get rst flag
 bool rpr::Header::getRst() {
-   return(buff_->getRawData()[1]&0x10);
+   return(frame_->getBuffer(0)->getRawData()[1]&0x10);
 }
 
 //! Set rst flag
 void rpr::Header::setRst(bool state) {
-   buff_->getRawData()[1] &= 0xEF;
-   if ( state ) buff_->getRawData()[1] |= 0x10;
+   frame_->getBuffer(0)->getRawData()[1] &= 0xEF;
+   if ( state ) frame_->getBuffer(0)->getRawData()[1] |= 0x10;
 }
 
 //! Get NUL flag
 bool rpr::Header::getNul() {
-   return(buff_->getRawData()[1]&0x08);
+   return(frame_->getBuffer(0)->getRawData()[1]&0x08);
 }
 
 //! Set NUL flag
 void rpr::Header::setNul(bool state) {
-   buff_->getRawData()[1] &= 0xF7;
-   if ( state ) buff_->getRawData()[1] |= 0x08;
+   frame_->getBuffer(0)->getRawData()[1] &= 0xF7;
+   if ( state ) frame_->getBuffer(0)->getRawData()[1] |= 0x08;
 }
 
 //! Get Busy flag
 bool rpr::Header::getBusy() {
-   return(buff_->getRawData()[1]&0x01);
+   return(frame_->getBuffer(0)->getRawData()[1]&0x01);
 }
 
 //! Set Busy flag
 void rpr::Header::setBusy(bool state) {
-   buff_->getRawData()[1] &= 0xFE;
-   if ( state ) buff_->getRawData()[1] |= 0x01;
+   frame_->getBuffer(0)->getRawData()[1] &= 0xFE;
+   if ( state ) frame_->getBuffer(0)->getRawData()[1] |= 0x01;
 }
 
 //! Get sequence number
 uint16_t rpr::Header::getSequence() {
-   return(buff_->getRawData()[3]);
+   return(frame_->getBuffer(0)->getRawData()[3]);
 }
 
 //! Set sequence number
 void rpr::Header::setSequence(uint16_t seq) {
-   buff_->getRawData()[3] = seq;
+   frame_->getBuffer(0)->getRawData()[3] = seq;
 }
 
 //! Get acknowledge number
 uint16_t rpr::Header::getAcknowledge() {
-   return(buff_->getRawData()[2]);
+   return(frame_->getBuffer(0)->getRawData()[2]);
 }
 
 //! Set acknowledge number
 void rpr::Header::setAcknowledge(uint16_t ack) {
-   buff_->getRawData()[2] = ack;
+   frame_->getBuffer(0)->getRawData()[2] = ack;
 }
 
 //! Dump message
 std::string rpr::Header::dump() {
-   uint16_t * val = (uint16_t *)&(buff_->getRawData()[6]);
+   uint16_t * val = (uint16_t *)&(frame_->getBuffer(0)->getRawData()[6]);
    uint32_t   x;
 
    std::stringstream ret("");
 
-   ret << "   Total Size : " << std::dec << buff_->getCount() << std::endl;
-   ret << "  Header Size : " << std::dec << buff_->getHeadRoom() << std::endl;
+   ret << "   Total Size : " << std::dec << frame_->getBuffer(0)->getCount() << std::endl;
+   ret << "  Header Size : " << std::dec << frame_->getBuffer(0)->getHeadRoom() << std::endl;
    ret << "   Raw Header : ";
 
    for (x=0; x < (getHeaderSize()/2); x++) {

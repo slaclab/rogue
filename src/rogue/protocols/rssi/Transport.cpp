@@ -22,7 +22,6 @@
 #include <rogue/interfaces/stream/Buffer.h>
 #include <rogue/protocols/rssi/Controller.h>
 #include <rogue/protocols/rssi/Transport.h>
-#include <rogue/protocols/rssi/Application.h>
 #include <rogue/GeneralError.h>
 #include <boost/make_shared.hpp>
 #include <rogue/common.h>
@@ -44,9 +43,8 @@ rpr::Transport::Transport () { }
 rpr::Transport::~Transport() { }
 
 //! Setup links
-void rpr::Transport::setup( rpr::ControllerPtr cntl, rpr::ApplicationPtr app ) {
+void rpr::Transport::setController( rpr::ControllerPtr cntl ) {
    cntl_ = cntl;
-   app_  = app;
 }
 
 //! Generate a Frame. Called from master

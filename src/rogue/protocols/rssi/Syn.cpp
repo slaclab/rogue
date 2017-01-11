@@ -29,8 +29,8 @@ namespace rpr = rogue::protocols::rssi;
 namespace ris = rogue::interfaces::stream;
 namespace bp  = boost::python;
 
-//! Class creation
-rpr::SynPtr rpr::Syn::create (ris::FramePtr frame) {
+//! Create
+rpr::SynPtr rpr::Syn::create(ris::FramePtr frame) {
    rpr::SynPtr r = boost::make_shared<rpr::Syn>(frame);
    return(r);
 }
@@ -41,126 +41,138 @@ uint32_t rpr::Syn::minSize() {
 }
 
 //! Creator
-rpr::Syn::Syn ( ris::FramePtr frame) : Header(frame) { }
+rpr::Syn::Syn(ris::FramePtr frame) : rpr::Header(frame) { }
 
 //! Destructor
 rpr::Syn::~Syn() { }
 
 //! Init header contents
 void rpr::Syn::init() {
-   memset(buff_->getRawData(),0,SynSize);
-   buff_->getRawData()[0] = SynSize;
-   buff_->getRawData()[5] = 0x18;
+   memset(frame_->getBuffer(0)->getRawData(),0,SynSize);
+   frame_->getBuffer(0)->getRawData()[0] = SynSize;
+   frame_->getBuffer(0)->getRawData()[1] = 0x80;
+   frame_->getBuffer(0)->getRawData()[5] = 0x08;
+}
+
+//! Get version field
+uint8_t rpr::Syn::getVersion() {
+   return((frame_->getBuffer(0)->getRawData()[5] >> 4) & 0xF);
+}
+
+//! Set version field
+void rpr::Syn::setVersion(uint8_t version) {
+   frame_->getBuffer(0)->getRawData()[5] &= 0xF;
+   frame_->getBuffer(0)->getRawData()[5] |= (version << 4);
 }
 
 //! Get chk flag
 bool rpr::Syn::getChk() {
-   return(buff_->getRawData()[5] & 0x04);
+   return(frame_->getBuffer(0)->getRawData()[5] & 0x04);
 }
 
 //! Set chk flag
 void rpr::Syn::setChk(bool state) {
-   buff_->getRawData()[5] &= 0x0B;
-   if ( state ) buff_->getRawData()[5] |= 0x04;
+   frame_->getBuffer(0)->getRawData()[5] &= 0x0B;
+   if ( state ) frame_->getBuffer(0)->getRawData()[5] |= 0x04;
 }
 
 //! Get MAX Outstanding Segments
 uint8_t rpr::Syn::getMaxOutstandingSegments() {
-   return(buff_->getRawData()[4]);
+   return(frame_->getBuffer(0)->getRawData()[4]);
 }
 
 //! Set MAX Outstanding Segments
 void rpr::Syn::setMaxOutstandingSegments(uint8_t max) {
-   buff_->getRawData()[4] = max;
+   frame_->getBuffer(0)->getRawData()[4] = max;
 }
 
 //! Get MAX Segment Size
 uint16_t rpr::Syn::getMaxSegmentSize() {
-   uint16_t * val = (uint16_t *)&(buff_->getRawData()[6]);
+   uint16_t * val = (uint16_t *)&(frame_->getBuffer(0)->getRawData()[6]);
    return(le16toh(*val));
 }
 
 //! Set MAX Segment Size
 void rpr::Syn::setMaxSegmentSize(uint16_t size) {
-   uint16_t * val = (uint16_t *)&(buff_->getRawData()[6]);
+   uint16_t * val = (uint16_t *)&(frame_->getBuffer(0)->getRawData()[6]);
    *val = htole16(size);
 }
 
 //! Get Retransmission Timeout
 uint16_t rpr::Syn::getRetransmissionTimeout() {
-   uint16_t * val = (uint16_t *)&(buff_->getRawData()[8]);
+   uint16_t * val = (uint16_t *)&(frame_->getBuffer(0)->getRawData()[8]);
    return(le16toh(*val));
 }
 
 //! Set Retransmission Timeout
 void rpr::Syn::setRetransmissionTimeout(uint16_t to) {
-   uint16_t * val = (uint16_t *)&(buff_->getRawData()[8]);
+   uint16_t * val = (uint16_t *)&(frame_->getBuffer(0)->getRawData()[8]);
    *val = htole16(to);
 }
 
 //! Get Cumulative Acknowledgement Timeout
 uint16_t rpr::Syn::getCumulativeAckTimeout() {
-   uint16_t * val = (uint16_t *)&(buff_->getRawData()[10]);
+   uint16_t * val = (uint16_t *)&(frame_->getBuffer(0)->getRawData()[10]);
    return(le16toh(*val));
 }
 
 //! Set Cumulative Acknowledgement Timeout
 void rpr::Syn::setCumulativeAckTimeout(uint16_t to) {
-   uint16_t * val = (uint16_t *)&(buff_->getRawData()[10]);
+   uint16_t * val = (uint16_t *)&(frame_->getBuffer(0)->getRawData()[10]);
    *val = htole16(to);
 }
 
 //! Get NULL Timeout
 uint16_t rpr::Syn::getNullTimeout() {
-   uint16_t * val = (uint16_t *)&(buff_->getRawData()[12]);
+   uint16_t * val = (uint16_t *)&(frame_->getBuffer(0)->getRawData()[12]);
    return(le16toh(*val));
 }
 
 //! Set NULL Timeout
 void rpr::Syn::setNullTimeout(uint16_t to) {
-   uint16_t * val = (uint16_t *)&(buff_->getRawData()[12]);
+   uint16_t * val = (uint16_t *)&(frame_->getBuffer(0)->getRawData()[12]);
    *val = htole16(to);
 }
 
 //! Get Max Retransmissions
 uint8_t rpr::Syn::getMaxRetransmissions() {
-   return(buff_->getRawData()[15]);
+   return(frame_->getBuffer(0)->getRawData()[15]);
 }
 
 //! Set Max Retransmissions
 void rpr::Syn::setMaxRetransmissions(uint8_t max) {
-   buff_->getRawData()[15] = max;
+   frame_->getBuffer(0)->getRawData()[15] = max;
 }
 
 //! Get MAX Cumulative Ack
 uint8_t rpr::Syn::getMaxCumulativeAck() {
-   return(buff_->getRawData()[14]);
+   return(frame_->getBuffer(0)->getRawData()[14]);
 }
 
 //! Set Max Cumulative Ack
 void rpr::Syn::setMaxCumulativeAck(uint8_t max) {
-   buff_->getRawData()[14] = max;
+   frame_->getBuffer(0)->getRawData()[14] = max;
 }
 
 //! Get Timeout Unit
 uint8_t rpr::Syn::getTimeoutUnit() {
-   return(buff_->getRawData()[16]);
+   return(frame_->getBuffer(0)->getRawData()[16]);
 }
 
 //! Set Timeout Unit
 void rpr::Syn::setTimeoutUnit(uint8_t unit) {
-   buff_->getRawData()[16] = unit;
+   frame_->getBuffer(0)->getRawData()[16] = unit;
 }
 
 //! Get Connection ID
 uint32_t rpr::Syn::getConnectionId() {
-   uint32_t * val = (uint32_t *)&(buff_->getRawData()[18]);
+   uint32_t * val = (uint32_t *)&(frame_->getBuffer(0)->getRawData()[18]);
    return(le32toh(*val));
 }
 
 //! Set Timeout Unit
 void rpr::Syn::setConnectionId(uint32_t id) {
-   uint32_t * val = (uint32_t *)&(buff_->getRawData()[18]);
+   uint32_t * val = (uint32_t *)&(frame_->getBuffer(0)->getRawData()[18]);
    *val = htole32(id);
 }
 
@@ -169,6 +181,7 @@ std::string rpr::Syn::dump() {
    std::stringstream ret("");
    ret << rpr::Header::dump();
 
+   ret << "      Version : " << std::dec << getVersion() << std::endl;
    ret << "          Chk : " << std::dec << getChk() << std::endl;
    ret << "  Max Out Seg : " << std::dec << getMaxOutstandingSegments() << std::endl;
    ret << " Max Seg Size : " << std::dec << getMaxSegmentSize() << std::endl;

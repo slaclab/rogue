@@ -33,13 +33,11 @@ namespace rogue {
                //! Syn Size
                static const uint32_t SynSize = 24;
 
-               //! Expected version
-               static const uint8_t Version = 0x1;
-
             public:
 
-               //! Class creation
-               static boost::shared_ptr<rogue::protocols::rssi::Syn> create (boost::shared_ptr<rogue::interfaces::stream::Frame> frame);
+               //! Create
+               static boost::shared_ptr<rogue::protocols::rssi::Syn>
+                  create(boost::shared_ptr<rogue::interfaces::stream::Frame> frame);
 
                //! Return required size
                static uint32_t minSize();
@@ -52,6 +50,12 @@ namespace rogue {
 
                //! Init header contents
                void init();
+
+               //! Get version field
+               uint8_t getVersion();
+
+               //! Set version field
+               void setVersion(uint8_t version);
 
                //! Get chk flag
                bool getChk();

@@ -35,17 +35,15 @@ namespace rogue {
 
                //! Header Size
                static const uint32_t HeaderSize = 8;
-
-               //! Frame
+   
+               //! Frame pointer
                boost::shared_ptr<rogue::interfaces::stream::Frame> frame_;
-
-               //! Buffer
-               boost::shared_ptr<rogue::interfaces::stream::Buffer> buff_;
 
             public:
 
-               //! Class creation
-               static boost::shared_ptr<rogue::protocols::rssi::Header> create (boost::shared_ptr<rogue::interfaces::stream::Frame> frame);
+               //! Create
+               static boost::shared_ptr<rogue::protocols::rssi::Header>
+                  create(boost::shared_ptr<rogue::interfaces::stream::Frame> frame);
 
                //! Return required size
                static uint32_t minSize();
@@ -56,10 +54,7 @@ namespace rogue {
                //! Destructor
                ~Header();
 
-               //! Set frame pointers
-               void setFrame(boost::shared_ptr<rogue::interfaces::stream::Frame> frame);
-
-               //! Get frame pointers
+               //! Get Frame
                boost::shared_ptr<rogue::interfaces::stream::Frame> getFrame();
 
                //! Get header size
