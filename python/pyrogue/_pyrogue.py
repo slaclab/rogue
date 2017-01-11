@@ -177,7 +177,7 @@ class Node(object):
         
         ret = odict()
         rg = re.compile('{:s}\\[(.*?)\\]'.format(name))
-        for k,v in self._nodes.iteritems():
+        for k,v in self._nodes.items():
             m = rg.match(k)
             if m:
                 key = m.group(1)
@@ -762,7 +762,18 @@ class Command(Variable):
         else:
             cmd.post(1)
 
+###################################
+# (Hopefully) useful Command stuff
+##################################
+BLANK_COMMAND = Command(name='Blank', description='A singleton command that does nothing')
 
+def command(order=0, **cmdArgs):
+    def wrapper(func):
+        func.PyrogueCommandOrder = order
+        func.PyrogueCommandArgs = cmdArgs
+        return func
+    return wrapper
+################################
 
 class BlockError(Exception):
     """ Exception for memory access errors."""
@@ -1139,6 +1150,14 @@ class Device(Node,rogue.interfaces.memory.Hub):
                 # create Variable objects from a dict list
                 self.add(Variable(**v) for v in variables)
 
+        cmds = sorted((d for d in (getattr(self, c) for c in dir(self)) if hasattr(d, 'PyrogueCommandArgs')),
+                      key=lambda x: x.PyrogueCommandOrder)
+        for cmd in cmds:
+            args = getattr(cmd, 'PyrogueCommandArgs')
+            if 'name' not in args:
+                args['name'] = cmd.__name__
+            self.add(Command(function=cmd, **args))
+
     def add(self,node):
         """
         Add node as sub-node in the object
@@ -1260,6 +1279,21 @@ class Device(Node,rogue.interfaces.memory.Hub):
                 value._setTimeout(timeout)
 
 
+    def command(self, **kwargs):
+        """A Decorator to add inline constructor functions as commands"""
+        def _decorator(func):
+            if 'name' not in kwargs:
+                kwargs['name'] = func.__name__
+            def newFunc(dev, var, val):
+                if func.func_code.co_argcount == 0:
+                    return func
+                else:
+                    return functools.partial(func, val)
+            self.add(Command(function=newFunc, **kwargs))
+            return func
+        return _decorator
+
+
 class Root(rogue.interfaces.stream.Master,Device):
     """
     Class which serves as the root of a tree of nodes.
@@ -1290,34 +1324,7 @@ class Root(rogue.interfaces.stream.Master,Device):
         # Variable update listener
         self._varListeners = []
 
-        # Commands
-
-        self.add(Command(name='writeConfig', base='string', function=self._writeConfig,
-            description='Write configuration to passed filename in YAML format'))
-
-        self.add(Command(name='readConfig', base='string', function=self._readConfig,
-            description='Read configuration from passed filename in YAML format'))
-
-        self.add(Command(name='hardReset', base='None', function=self._hardReset,
-            description='Generate a hard reset to each device in the tree'))
-
-        self.add(Command(name='softReset', base='None', function=self._softReset,
-            description='Generate a soft reset to each device in the tree'))
-
-        self.add(Command(name='countReset', base='None', function=self._countReset,
-            description='Generate a count reset to each device in the tree'))
-
-        self.add(Command(name='clearLog', base='None', function=self._clearLog,
-            description='Clear the message log cntained in the systemLog variable'))
-
-        self.add(Command(name='readAll', base='None', function=self._read,
-            description='Read all values from the hardware'))
-
-        self.add(Command(name='writeAll', base='None', function=self._write,
-            description='Write wll values to the hardware'))
-
         # Variables
-
         self.add(Variable(name='systemLog', base='string', mode='RO',
             setFunction=None, getFunction='value=dev._systemLog',
             description='String containing newline seperated system logic entries'))
@@ -1434,6 +1441,8 @@ class Root(rogue.interfaces.stream.Master,Device):
                 self._updateVarListeners(yml,self._updatedDict)
             self._updatedDict = None
 
+
+    @command(order=7, name='writeAll', description='Write all values to the hardware')
     def _write(self,dev=None,cmd=None,arg=None):
         """Write all blocks"""
         try:
@@ -1443,6 +1452,7 @@ class Root(rogue.interfaces.stream.Master,Device):
         except Exception as e:
             self._root._logException(e)
 
+    @command(order=6, name="readAll", description='Read all values from the hardware')
     def _read(self,dev=None,cmd=None,arg=None):
         """Read all blocks"""
         self._initUpdatedVars()
@@ -1453,6 +1463,7 @@ class Root(rogue.interfaces.stream.Master,Device):
             self._root._logException(e)
         self._doneUpdatedVars()
 
+    @command(order=0, name='writeConfig', base='string', description='Write configuration to passed filename in YAML format')
     def _writeConfig(self,dev,cmd,arg):
         """Write YAML configuration to a file. Called from command"""
         try:
@@ -1461,6 +1472,7 @@ class Root(rogue.interfaces.stream.Master,Device):
         except Exception as e:
             self._root._logException(e)
 
+    @command(order=1, name='readConfig', base='string', description='Read configuration from passed filename in YAML format')
     def _readConfig(self,dev,cmd,arg):
         """Read YAML configuration from a file. Called from command"""
         try:
@@ -1468,20 +1480,24 @@ class Root(rogue.interfaces.stream.Master,Device):
                 self.setOrExecYaml(f.read(),False,['RW'])
         except Exception as e:
             self._root._logException(e)
-
+            
+    @command(order=3, name='softReset', description='Generate a soft reset to each device in the tree')
     def _softReset(self,dev,cmd,arg):
         """Generate a soft reset on all devices"""
         self._devReset('soft')
 
+    @command(order=2, name='hardReset', description='Generate a hard reset to each device in the tree')
     def _hardReset(self,dev,cmd,arg):
         """Generate a hard reset on all devices"""
         self._devReset('hard')
         self._clearLog(dev,cmd,arg)
 
+    @command(order=4, name='countReset', description='Generate a count reset to each device in the tree')
     def _countReset(self,dev,cmd,arg):
         """Generate a count reset on all devices"""
         self._devReset('count')
-
+        
+    @command(order=5, name='clearLog', description='Clear the message log cntained in the systemLog variable')
     def _clearLog(self,dev,cmd,arg):
         """Clear the system log"""
         with self._sysLogLock:
@@ -1554,11 +1570,11 @@ class DataWriter(Device):
             setFunction=self._setMaxFileSize, getFunction='value = dev._maxFileSize',
             description='Maximum size for an individual file. Setting to a non zero splits the run data into multiple files.'))
 
-        self.add(Variable(name='fileSize', base='uint', mode='RO', pollInverval=1,
+        self.add(Variable(name='fileSize', base='uint', mode='RO', pollInterval=1,
                           setFunction=None, getFunction=self._getFileSize,
                           description='Size of data files(s) for current open session in bytes.'))
 
-        self.add(Variable(name='frameCount', base='uint', mode='RO', pollInverval=1,
+        self.add(Variable(name='frameCount', base='uint', mode='RO', pollInterval=1,
             setFunction=None, getFunction=self._getFrameCount,
             description='Frame in data file(s) for current open session in bytes.'))
 
@@ -1735,32 +1751,7 @@ def getBitFromBytes(ba, bitOffset):
 
     return ((ba[byte] >> bit) & 0x1)
 
-###################################
-# (Hopefully) useful Command stuff
-##################################
-BLANK_COMMAND = Command(name='Blank', description='A singleton command that does nothing')
 
-def command(dev, **kwargs):
-    """A decorator to easily make any function a Command and add() it to 'dev'
-    Additional **kwargs are passed to the Command constructor
-    """
-    
-    def decorator(func):
-        dev.add(Command(name=func.__name__, function=func, **kwargs))
-        return func
-    return decorator
-
-def command2(func):
-    if getattr(func, 'PyrogueCommand', False):
-        return func
-
-    def wrapper(*args, **kwargs):
-        return func(*args, **kwargs)
-    
-    wrapper.PyrogueCommand = True
-
-    return wrapper
-################################
 
 
 class PollQueue(object):
@@ -1779,7 +1770,6 @@ class PollQueue(object):
         print("PollQueue Started")
 
     def _addEntry(self, block, interval):
-
         with self._lock:
             timedelta = datetime.timedelta(seconds=interval)
             # new entries are always polled first immediately 
@@ -1794,7 +1784,6 @@ class PollQueue(object):
                 self._update.notify()            
 
     def updatePollInterval(self, var):
-        print('Updating polling for variable: {:s} with interval: {:d}'.format(var.name, var.pollInterval))
         with self._lock:
 
             # Special case: Variable has no block and just depends on other variables
@@ -1837,16 +1826,13 @@ class PollQueue(object):
             
             if self.empty() is True:
                 # Sleep until woken
-                print("PollQueue thread sleap until woken")
                 with self._update:
                     self._update.wait()
-                print("PollQueue thread sleap woken")                
             else:
                 # Sleep until the top entry is ready to be polled
                 # Or a new entry is added by updatePollInterval
                 readTime = self.peek().readTime
                 waitTime = (readTime - now).total_seconds()
-                print("PollQueue thread sleap for {:f}".format(waitTime))
                 with self._update:
                     self._update.wait(waitTime)
                 
@@ -1858,28 +1844,30 @@ class PollQueue(object):
 
                 # Pop all timed out entries from the queue
                 now = datetime.datetime.now()                
-                entries = []
+                blockEntries = []
                 for entry in self._expiredEntries(now):
                     if isinstance(entry.block, Block):
-                        entries.append(entry)
                         entry.block._startTransaction(rogue.interfaces.memory.Read)
-                        print('Polling: {:s}'.format(entry.block._variables))                        
                     else:
                         # Hack for handling local variables
                         entry.block.get(read=True)
-                        print('Polling: {:s}'.format(entry.block))
-
-                # Wait for reads to be done
-                for entry in entries:
-                    entry.block._checkTransaction(update=True)
-#                    print('PollQueue: _checkTransaction: {:s}'.format(entry))                    
+                        
                     # Update the entry with new read time
                     entry = entry._replace(readTime=(entry.readTime + entry.interval),
                                            count=next(self._counter))
-                    # Add updated entry back to finder and queue
+                    # Push the updated entry back into the queue
                     heapq.heappush(self._pq, entry)
 
+
+                # Wait for reads to be done
+                for entry in blockEntries:
+                    entry.block._checkTransaction(update=True)
+
     def _expiredEntries(self, time=None):
+        """An iterator of all entries that expire by a given time. 
+        Use datetime.now() if no time provided. Each entry is popped from the queue before being 
+        yielded by the iterator
+        """
         with self._lock:
             if time == None:
                 time = datetime.datetime.now()
