@@ -28,6 +28,8 @@ import datetime
 import traceback
 import re
 import functools as ft
+import itertools
+import heapq
 
 def streamConnect(source, dest):
     """
@@ -146,7 +148,7 @@ class Node(object):
     attribute. This allows tree browsing using: node1.node2.node3
     """
 
-    def __init__(self, name, classType, description="", hidden=False):
+    def __init__(self, name, classType, description="", hidden=False, parent=None):
         """Init the node with passed attributes"""
 
         # Public attributes
@@ -157,9 +159,12 @@ class Node(object):
         self.path        = self.name
 
         # Tracking
-        self._parent = None
+        self._parent = parent
         self._root   = self
         self._nodes  = odict()
+        
+        if parent is not None:
+            parent.add(self)
 
     def __repr__(self):
         return self.path
@@ -172,7 +177,7 @@ class Node(object):
         
         ret = odict()
         rg = re.compile('{:s}\\[(.*?)\\]'.format(name))
-        for k,v in self._nodes.iteritems():
+        for k,v in self._nodes.items():
             m = rg.match(k)
             if m:
                 key = m.group(1)
@@ -181,7 +186,7 @@ class Node(object):
                 ret[key] = v
 
         if len(ret) == 0:
-            raise AttributeError
+            raise AttributeError('{} has no attribute {}'.format(self, name))
         
         return ret
         
@@ -260,6 +265,10 @@ class Node(object):
         """
         return self._root
 
+    def _rootAttached(self):
+        """Called once the root node is attached. Can override to do anything depends on the full tree existing"""
+        pass
+
     def _updateTree(self,parent):
         """
         Update tree. In some cases nodes such as variables, commands and devices will
@@ -271,8 +280,12 @@ class Node(object):
         self._root   = self._parent._root
         self.path    = self._parent.path + '.' + self.name
 
+        if isinstance(self._root, Root):
+            self._rootAttached()
+
         for key,value in self._nodes.items():
             value._updateTree(self)
+
 
     def _getStructure(self):
         """
@@ -398,7 +411,8 @@ class Variable(Node):
             associated with the same block object. 
     bitSize: The size in bits of the variable entry if associated with memory.
     bitOffset: The offset in bits from the byte offset if associated with memory.
-    pollEn: Set to true to enable polling of the associated memory.
+    pollInterval: How often the variable should be polled (in seconds) defualts to 0 (not polled)
+    value: An initial value to set the variable to
     base: This defined the type of entry tracked by this variable.
           hex = An unsigned integer in hex form
           bin = An unsigned integer in binary form
@@ -430,26 +444,24 @@ class Variable(Node):
     The string function is executed in the context of the variable object with 'dev' set
     to the parent device object.
     """
-    def __init__(self, name, description="", offset=None, bitSize=32, bitOffset=0, pollEn=False,
+    def __init__(self, name, description="", parent=None, offset=None, bitSize=32, bitOffset=0, pollInterval=0, value=None,
                  base='hex', mode='RW', enum=None, units=None, hidden=False, minimum=None, maximum=None,
-                 setFunction=None, getFunction=None, dependencies=None,               
+                 setFunction=None, getFunction=None, dependencies=None, 
                  beforeReadCmd=None, afterWriteCmd=None, **dump):
- 
-        """Initialize variable class"""
-
-        Node.__init__(self, name=name, classType='variable', description=description, hidden=hidden)
+        """Initialize variable class""" 
 
         # Public Attributes
         self.offset    = offset
         self.bitSize   = bitSize
         self.bitOffset = bitOffset
-        self.pollEn    = pollEn
         self.base      = base      
         self.mode      = mode
         self.enum      = enum
         self.units     = units
         self.minimum   = minimum # For base='range'
         self.maximum   = maximum # For base='range'
+        self._defaultValue = value
+        self._pollInterval = pollInterval
 
         # Check modes
         if (self.mode != 'RW') and (self.mode != 'RO') and \
@@ -477,11 +489,33 @@ class Variable(Node):
         # Commands that run before or after block access
         self._beforeReadCmd   = beforeReadCmd
         self._afterWriteCmd   = afterWriteCmd
+
+        # Call super constructor
+        Node.__init__(self, name=name, classType='variable', description=description, hidden=hidden, parent=parent)
+
+    def _rootAttached(self):
+        # Variables are always leaf nodes so no need to recurse
+        if self._defaultValue is not None:
+            self.set(self._defaultValue, write=True)
+            
+        if self._pollInterval > 0:
+            self._root._pollQueue.updatePollInterval(self)
                 
 
     def addDependency(self, dep):
         self.__dependencies.append(dep)
         dep.addListener(self)
+
+    @property
+    def pollInterval(self):
+        return self._pollInterval
+
+    @pollInterval.setter
+    def pollInterval(self, interval):
+        self._pollInterval = interval        
+        if isinstance(self._root, Root):
+            self._root._pollQueue.updatePollInterval(self)
+
 
     @property
     def dependencies(self):
@@ -664,9 +698,9 @@ class Variable(Node):
 class Command(Variable):
     """Command holder: Subclass of variable with callable interface"""
 
-    def __init__(self, base='None', mode='CMD', function=None, **kwargs):
+    def __init__(self, parent=None, base='None', mode='CMD', function=None, **kwargs):
 
-        Variable.__init__(self, base=base, mode=mode, **kwargs)
+        Variable.__init__(self, base=base, mode=mode, parent=parent, **kwargs)
 
         self.classType = 'command'
         self._function = function if function is not None else Command.nothing
@@ -728,29 +762,18 @@ class Command(Variable):
         else:
             cmd.post(1)
 
+###################################
+# (Hopefully) useful Command stuff
+##################################
 BLANK_COMMAND = Command(name='Blank', description='A singleton command that does nothing')
 
-def command(dev, **kwargs):
-    """A decorator to easily make any function a Command and add() it to 'dev'
-    Additional **kwargs are passed to the Command constructor
-    """
-    
-    def decorator(func):
-        dev.add(Command(name=func.__name__, function=func, **kwargs))
+def command(order=0, **cmdArgs):
+    def wrapper(func):
+        func.PyrogueCommandOrder = order
+        func.PyrogueCommandArgs = cmdArgs
         return func
-    return decorator
-
-def command2(func):
-    if getattr(func, 'PyrogueCommand', False):
-        return func
-
-    def wrapper(*args, **kwargs):
-        return func(*args, **kwargs)
-    
-    wrapper.PyrogueCommand = True
-
     return wrapper
-
+################################
 
 class BlockError(Exception):
     """ Exception for memory access errors."""
@@ -798,7 +821,6 @@ class Block(rogue.interfaces.memory.Master):
         self._offset    = variable.offset
         self._mode      = variable.mode
         self._name      = variable.name
-        self._pollEn    = variable.pollEn
         self._bData     = bytearray()
         self._vData     = bytearray()
         self._mData     = bytearray()
@@ -814,6 +836,9 @@ class Block(rogue.interfaces.memory.Master):
 
         self._setSlave(self._device)
         self._addVariable(variable)
+
+    def __repr__(self):
+        return repr(self._variables)
 
     def set(self,bitOffset,bitCount,ba):
         """
@@ -928,10 +953,6 @@ class Block(rogue.interfaces.memory.Master):
         return self._mode
 
     @property
-    def pollEn(self):
-        return self._pollEn
-
-    @property
     def timeout(self):
         return self._timeout
 
@@ -977,10 +998,6 @@ class Block(rogue.interfaces.memory.Master):
             # Link variable to block
             var._block = self
             self._variables.append(var)
-
-            # Update polling, set true if any variable have poll enable set
-            if var.pollEn:
-                self._pollEn = True
 
             # If variable modes mismatch, set to read/write
             if var.mode != self._mode:
@@ -1088,13 +1105,7 @@ class Block(rogue.interfaces.memory.Master):
 class Device(Node,rogue.interfaces.memory.Hub):
     """Device class holder. TODO: Update comments"""
 
-    __decorated_commands = []
-
-    def __new__(cls):
-        cls.__decorated_commands = super(Device, cls).__decorated_commands
-        return super(Device, cls).__new__(cls)
-
-    def __init__(self, name=None, description="", memBase=None, offset=0, hidden=False,
+    def __init__(self, name=None, description="", memBase=None, offset=0, hidden=False, parent=None,
                  variables=None, expand=True, enabled=True, classType='device', **dump):
         """Initialize device class"""
         if name is None:
@@ -1102,7 +1113,7 @@ class Device(Node,rogue.interfaces.memory.Hub):
 
         print("Making device {:s}".format(name))
 
-        Node.__init__(self, name=name, hidden=hidden, classType=classType, description=description)
+        # Hub.__init__ must be called first for _setSlave to work below
         rogue.interfaces.memory.Hub.__init__(self,offset)
 
         # Blocks
@@ -1114,6 +1125,9 @@ class Device(Node,rogue.interfaces.memory.Hub):
 
         # Connect to memory slave
         if memBase: self._setSlave(memBase)
+
+        # Node.__init__ can't be called until after self._memBase is created
+        Node.__init__(self, name=name, hidden=hidden, classType=classType, description=description, parent=parent)
 
         # Convenience methods
         self.addDevice = ft.partial(self.addNode, Device)
@@ -1136,8 +1150,13 @@ class Device(Node,rogue.interfaces.memory.Hub):
                 # create Variable objects from a dict list
                 self.add(Variable(**v) for v in variables)
 
-        for cmd in __decorated_commands:
-            print cmd
+        cmds = sorted((d for d in (getattr(self, c) for c in dir(self)) if hasattr(d, 'PyrogueCommandArgs')),
+                      key=lambda x: x.PyrogueCommandOrder)
+        for cmd in cmds:
+            args = getattr(cmd, 'PyrogueCommandArgs')
+            if 'name' not in args:
+                args['name'] = cmd.__name__
+            self.add(Command(function=cmd, **args))
 
     def add(self,node):
         """
@@ -1146,7 +1165,7 @@ class Device(Node,rogue.interfaces.memory.Hub):
         """
 
         # Special case if list (or iterable of nodes) is passed
-        if isinstance(node, collections.Iterable) and all(isinstance(n, Node) for n in nodes):
+        if isinstance(node, collections.Iterable) and all(isinstance(n, Node) for n in node):
             for n in node:
                 self.add(n)
             return
@@ -1224,20 +1243,6 @@ class Device(Node,rogue.interfaces.memory.Hub):
             for cmd in cmds:
                 cmd()
 
-    def _pollTransaction(self):
-        """Read pollable blocks"""
-        if not self._enable: return
-
-        # Process local blocks
-        for block in self._blocks:
-            if block.pollEn and (block.mode == 'RO' or block.mode == 'RW'):
-                block.backgroundTransaction(rogue.interfaces.memory.Read)
-
-        # Process rest of tree
-        for key,value in self._nodes.items():
-            if isinstance(value,Device):
-                value._pollTransaction()
-
     def _checkTransaction(self,update):
         """Check errors in all blocks and generate variable update nofifications"""
         if not self._enable: return
@@ -1274,6 +1279,21 @@ class Device(Node,rogue.interfaces.memory.Hub):
                 value._setTimeout(timeout)
 
 
+    def command(self, **kwargs):
+        """A Decorator to add inline constructor functions as commands"""
+        def _decorator(func):
+            if 'name' not in kwargs:
+                kwargs['name'] = func.__name__
+            def newFunc(dev, var, val):
+                if func.func_code.co_argcount == 0:
+                    return func
+                else:
+                    return functools.partial(func, val)
+            self.add(Command(function=newFunc, **kwargs))
+            return func
+        return _decorator
+
+
 class Root(rogue.interfaces.stream.Master,Device):
     """
     Class which serves as the root of a tree of nodes.
@@ -1289,15 +1309,13 @@ class Root(rogue.interfaces.stream.Master,Device):
         rogue.interfaces.stream.Master.__init__(self)
         Device.__init__(self, name=name, description=description, classType='root')
 
-        # Polling period. Set to None to exit. 0 = don't poll
-        self._pollPeriod = 0
 
         # Keep of list of errors, exposed as a variable
         self._systemLog = ""
         self._sysLogLock = threading.Lock()
 
-        # Add poller
-        self._pollThread = None
+        # Polling
+        self._pollQueue = PollQueue()
 
         # Variable update list
         self._updatedDict = odict()
@@ -1306,45 +1324,15 @@ class Root(rogue.interfaces.stream.Master,Device):
         # Variable update listener
         self._varListeners = []
 
-        # Commands
-
-        self.add(Command(name='writeConfig', base='string', function=self._writeConfig,
-            description='Write configuration to passed filename in YAML format'))
-
-        self.add(Command(name='readConfig', base='string', function=self._readConfig,
-            description='Read configuration from passed filename in YAML format'))
-
-        self.add(Command(name='hardReset', base='None', function=self._hardReset,
-            description='Generate a hard reset to each device in the tree'))
-
-        self.add(Command(name='softReset', base='None', function=self._softReset,
-            description='Generate a soft reset to each device in the tree'))
-
-        self.add(Command(name='countReset', base='None', function=self._countReset,
-            description='Generate a count reset to each device in the tree'))
-
-        self.add(Command(name='clearLog', base='None', function=self._clearLog,
-            description='Clear the message log cntained in the systemLog variable'))
-
-        self.add(Command(name='readAll', base='None', function=self._read,
-            description='Read all values from the hardware'))
-
-        self.add(Command(name='writeAll', base='None', function=self._write,
-            description='Write wll values to the hardware'))
-
         # Variables
-
         self.add(Variable(name='systemLog', base='string', mode='RO',
             setFunction=None, getFunction='value=dev._systemLog',
             description='String containing newline seperated system logic entries'))
 
-        self.add(Variable(name='pollPeriod', base='float', mode='RW',
-            setFunction=self._setPollPeriod, getFunction='value=dev._pollPeriod',
-            description='Polling period for pollable variables. Set to 0 to disable polling'))
 
     def stop(self):
         """Stop the polling thread. Must be called for clean exit."""
-        self._pollPeriod=0
+        self._pollQueue.stop()
 
     def addVarListener(self,func):
         """
@@ -1421,27 +1409,6 @@ class Root(rogue.interfaces.stream.Master,Device):
         for f in self._varListeners:
             f(yml,d)
 
-    def _setPollPeriod(self,dev,var,value):
-        """Set poller period"""
-        old = self._pollPeriod
-        self._pollPeriod = value
-
-        # Start thread
-        if old == 0 and value != 0:
-            self._pollThread = threading.Thread(target=self._runPoll)
-            self._pollThread.start()
-
-        # Stop thread
-        elif old != 0 and value == 0:
-            self._pollThread.join()
-            self._pollThread = None
-
-    def _runPoll(self):
-        """Polling function"""
-        while(self._pollPeriod != 0):
-            time.sleep(self._pollPeriod)
-            self._poll()
-
     def _streamYaml(self,yml):
         """
         Generate a frame containing the passed yaml string.
@@ -1474,6 +1441,8 @@ class Root(rogue.interfaces.stream.Master,Device):
                 self._updateVarListeners(yml,self._updatedDict)
             self._updatedDict = None
 
+
+    @command(order=7, name='writeAll', description='Write all values to the hardware')
     def _write(self,dev=None,cmd=None,arg=None):
         """Write all blocks"""
         try:
@@ -1483,6 +1452,7 @@ class Root(rogue.interfaces.stream.Master,Device):
         except Exception as e:
             self._root._logException(e)
 
+    @command(order=6, name="readAll", description='Read all values from the hardware')
     def _read(self,dev=None,cmd=None,arg=None):
         """Read all blocks"""
         self._initUpdatedVars()
@@ -1493,16 +1463,7 @@ class Root(rogue.interfaces.stream.Master,Device):
             self._root._logException(e)
         self._doneUpdatedVars()
 
-    def _poll(self):
-        """Read pollable blocks"""
-        self._initUpdatedVars()
-        try:
-            self._pollTransaction()
-            self._checkTransaction(update=True)
-        except Exception as e:
-            self._root._logException(e)
-        self._doneUpdatedVars()
-
+    @command(order=0, name='writeConfig', base='string', description='Write configuration to passed filename in YAML format')
     def _writeConfig(self,dev,cmd,arg):
         """Write YAML configuration to a file. Called from command"""
         try:
@@ -1511,6 +1472,7 @@ class Root(rogue.interfaces.stream.Master,Device):
         except Exception as e:
             self._root._logException(e)
 
+    @command(order=1, name='readConfig', base='string', description='Read configuration from passed filename in YAML format')
     def _readConfig(self,dev,cmd,arg):
         """Read YAML configuration from a file. Called from command"""
         try:
@@ -1518,20 +1480,24 @@ class Root(rogue.interfaces.stream.Master,Device):
                 self.setOrExecYaml(f.read(),False,['RW'])
         except Exception as e:
             self._root._logException(e)
-
+            
+    @command(order=3, name='softReset', description='Generate a soft reset to each device in the tree')
     def _softReset(self,dev,cmd,arg):
         """Generate a soft reset on all devices"""
         self._devReset('soft')
 
+    @command(order=2, name='hardReset', description='Generate a hard reset to each device in the tree')
     def _hardReset(self,dev,cmd,arg):
         """Generate a hard reset on all devices"""
         self._devReset('hard')
         self._clearLog(dev,cmd,arg)
 
+    @command(order=4, name='countReset', description='Generate a count reset to each device in the tree')
     def _countReset(self,dev,cmd,arg):
         """Generate a count reset on all devices"""
         self._devReset('count')
-
+        
+    @command(order=5, name='clearLog', description='Clear the message log cntained in the systemLog variable')
     def _clearLog(self,dev,cmd,arg):
         """Clear the system log"""
         with self._sysLogLock:
@@ -1604,11 +1570,11 @@ class DataWriter(Device):
             setFunction=self._setMaxFileSize, getFunction='value = dev._maxFileSize',
             description='Maximum size for an individual file. Setting to a non zero splits the run data into multiple files.'))
 
-        self.add(Variable(name='fileSize', base='uint', mode='RO',
-            setFunction=None, getFunction=self._getFileSize,
-            description='Size of data files(s) for current open session in bytes.'))
+        self.add(Variable(name='fileSize', base='uint', mode='RO', pollInterval=1,
+                          setFunction=None, getFunction=self._getFileSize,
+                          description='Size of data files(s) for current open session in bytes.'))
 
-        self.add(Variable(name='frameCount', base='uint', mode='RO',
+        self.add(Variable(name='frameCount', base='uint', mode='RO', pollInterval=1,
             setFunction=None, getFunction=self._getFrameCount,
             description='Frame in data file(s) for current open session in bytes.'))
 
@@ -1658,12 +1624,6 @@ class DataWriter(Device):
             self.frameCount.get()
         Device._backgroundTransaction(self,type)
 
-    def _poll(self):
-        """Force update of non block status variables"""
-        self.fileSize.get()
-        self.frameCount.get()
-        Device._poll(self)
-
 
 class RunControl(Device):
     """Special base class to control runs. TODO: Update comments."""
@@ -1687,7 +1647,7 @@ class RunControl(Device):
             setFunction=self._setRunRate, getFunction='value = dev._runRate',
             description='Run rate of the system.'))
 
-        self.add(Variable(name='runCount', base='uint', mode='RO',
+        self.add(Variable(name='runCount', base='uint', mode='RO', pollInterval=1,
             setFunction=None, getFunction='value = dev._runCount',
             description='Run Counter updated by run thread.'))
 
@@ -1711,11 +1671,6 @@ class RunControl(Device):
         if type == rogue.interfaces.memory.Read:
             self.runCount.get()
         Device._backgroundTransaction(self,type)
-
-    def _poll(self):
-        """Force update of non block status variables"""
-        self.runCount.get()
-        Device._poll(self)
 
 
 def addPathToDict(d, path, value):
@@ -1796,3 +1751,146 @@ def getBitFromBytes(ba, bitOffset):
 
     return ((ba[byte] >> bit) & 0x1)
 
+
+
+
+class PollQueue(object):
+
+    Entry = collections.namedtuple('PollQueueEntry', ['readTime', 'count', 'interval', 'block'])
+
+    def __init__(self):
+        self._pq = [] # The heap queue
+        self._entries = {} # {Block/Variable: Entry} mapping to look up if a block is already in the queue
+        self._counter = itertools.count()
+        self._lock = threading.RLock()
+        self._update = threading.Condition()
+        self._run = True
+        self._pollThread = threading.Thread(target=self._poll)
+        self._pollThread.start()
+        print("PollQueue Started")
+
+    def _addEntry(self, block, interval):
+        with self._lock:
+            timedelta = datetime.timedelta(seconds=interval)
+            # new entries are always polled first immediately 
+            # (rounded up to the next second)
+            readTime = datetime.datetime.now()
+            readTime = readTime.replace(second=readTime.second+1, microsecond=0)
+            entry = PollQueue.Entry(readTime, next(self._counter), timedelta, block)
+            self._entries[block] = entry
+            heapq.heappush(self._pq, entry)
+            # Wake up the thread
+            with self._update:
+                self._update.notify()            
+
+    def updatePollInterval(self, var):
+        with self._lock:
+
+            # Special case: Variable has no block and just depends on other variables
+            # Then do update on each dependency instead
+            if var._block is None:
+                if len(var.dependencies) > 0:
+                    for dep in var.dependencies:
+                        if dep.pollInterval == 0 or var.pollInterval < dep.pollInterval:
+                            dep.pollInterval = var.pollInterval
+
+                else:
+                    # Special case for variables without a block
+                    # Add the variable itself
+                    if var in self._entries.keys():
+                        self._entries[var].block = None
+                    self._addEntry(var, var.pollInterval)
+                return
+            
+            if var._block in self._entries.keys():
+                oldInterval = self._entries[var._block].interval
+                blockVars = [v for v in var._block._variables if v.pollInterval > 0]
+                if len(blockVars) > 0:
+                    newInterval = min(blockVars, key=lambda x: x.pollInterval)
+                    # If block interval has changed, invalidate the current entry for the block
+                    # and re-add it with the new interval
+                    if newInterval != oldInterval:
+                        self._entries[var._block].block = None
+                        self._addEntry(var._block, newInterval)
+                else:
+                    # No more variables belong to block entry, can remove it
+                    self._entries[var._block].blocks = None
+            else:
+                # Pure entry add
+                self._addEntry(var._block, var.pollInterval)
+                     
+    def _poll(self):
+        """Run by the poll thread"""
+        while True:
+            now = datetime.datetime.now()
+            
+            if self.empty() is True:
+                # Sleep until woken
+                with self._update:
+                    self._update.wait()
+            else:
+                # Sleep until the top entry is ready to be polled
+                # Or a new entry is added by updatePollInterval
+                readTime = self.peek().readTime
+                waitTime = (readTime - now).total_seconds()
+                with self._update:
+                    self._update.wait(waitTime)
+                
+            with self._lock:
+                # Stop the thread if someone set run to False
+                if self._run is False:
+                    print("PollQueue thread exiting")
+                    return
+
+                # Pop all timed out entries from the queue
+                now = datetime.datetime.now()                
+                blockEntries = []
+                for entry in self._expiredEntries(now):
+                    if isinstance(entry.block, Block):
+                        entry.block._startTransaction(rogue.interfaces.memory.Read)
+                    else:
+                        # Hack for handling local variables
+                        entry.block.get(read=True)
+                        
+                    # Update the entry with new read time
+                    entry = entry._replace(readTime=(entry.readTime + entry.interval),
+                                           count=next(self._counter))
+                    # Push the updated entry back into the queue
+                    heapq.heappush(self._pq, entry)
+
+
+                # Wait for reads to be done
+                for entry in blockEntries:
+                    entry.block._checkTransaction(update=True)
+
+    def _expiredEntries(self, time=None):
+        """An iterator of all entries that expire by a given time. 
+        Use datetime.now() if no time provided. Each entry is popped from the queue before being 
+        yielded by the iterator
+        """
+        with self._lock:
+            if time == None:
+                time = datetime.datetime.now()
+            while self.empty() is False and self.peek().readTime <= time:
+                entry = heapq.heappop(self._pq)
+                if entry.block is not None:
+                    yield entry
+
+                
+    def peek(self):
+        with self._lock:
+            if self.empty() is False:
+                return self._pq[0]
+            else:
+                return None
+
+    def empty(self):
+        with self._lock:
+            return len(self._pq)==0
+
+    def stop(self):
+        with self._lock, self._update:
+            self._run = False
+            self._update.notify()
+
+                    
