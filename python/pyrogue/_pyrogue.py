@@ -298,7 +298,7 @@ class Node(object):
 
         # First get non-node local values
         for key,value in self.__dict__.items():
-            if (not key.startswith('_')) and (not isinstance(value,Node)) and (not callable(value)):
+            if (not key.startswith('_')) and (not isinstance(value,Node)):
                 data[key] = value
 
         # Next get sub nodes
@@ -781,7 +781,7 @@ class BlockError(Exception):
 
     def __init__(self,block):
         self._error = block.error
-        self._value = "Error in block %s with address 0x%x: " % (block.name,block.address)
+        self._value = "Error in block %s with address 0x%x: \nBlock Variables: %s" % (block.name,block.address,block._variables)
 
         if (self._error & 0xFF000000) == rogue.interfaces.memory.TimeoutError:
             self._value += "Timeout after %s seconds" % (block.timeout)
@@ -1023,8 +1023,6 @@ class Block(rogue.interfaces.memory.Master):
                 for x in range(var.bitOffset,var.bitOffset+var.bitSize):
                     setBitToBytes(self._mData,x,1)
 
-        return True
-
     def _startTransaction(self,type):
         """
         Start a transaction.
@@ -1044,7 +1042,7 @@ class Block(rogue.interfaces.memory.Master):
                 self._size = newSize
 
             # Return if not enabled
-            if not self._device._enable:
+            if not self._device.enable.get():
                 return
 
             # Setup transaction
@@ -1149,8 +1147,8 @@ class Device(Node,rogue.interfaces.memory.Hub):
 
         # Variable interface to enable flag
         self.add(Variable(name='enable', base='bool', mode='RW',
-            setFunction=self._setEnable, getFunction='value=dev._enable',
-            description='Determines if device is enabled for hardware access'))
+                          setFunction=self._setEnable, getFunction=self._getEnable,
+                          description='Determines if device is enabled for hardware access'))
 
         if variables is not None and isinstance(variables, collections.Iterable):
             if all(isinstance(v, Variable) for v in variables):
@@ -1219,6 +1217,14 @@ class Device(Node,rogue.interfaces.memory.Hub):
         propogate enable to leaf nodes in the tree.
         """
         self._enable = enable
+
+    def _getEnable(self, dev, var):
+        if dev._enable is False:
+            return False
+        if dev == dev._root:
+            return dev._enable
+        else:
+            return dev._parent.enable.get()
 
     def _backgroundTransaction(self,type):
         """
@@ -1775,7 +1781,7 @@ class PollQueue(object):
 
     Entry = collections.namedtuple('PollQueueEntry', ['readTime', 'count', 'interval', 'block'])
 
-    def __init__(self,root):
+    def __init__(self, root):
         self._pq = [] # The heap queue
         self._entries = {} # {Block/Variable: Entry} mapping to look up if a block is already in the queue
         self._counter = itertools.count()
@@ -1868,12 +1874,7 @@ class PollQueue(object):
                     if isinstance(entry.block, Block):
                         #print('Polling {}'.format(entry.block._variables))
                         blockEntries.append(entry)
-
-                        try:
-                            entry.block._startTransaction(rogue.interfaces.memory.Read)
-                        except Exception as e:
-                            self._root._logException(e)
-
+                        entry.block._startTransaction(rogue.interfaces.memory.Read)
                     else:
                         # Hack for handling local variables
                         #print('Polling {}'.format(entry.block))
@@ -1889,7 +1890,6 @@ class PollQueue(object):
                 # Wait for reads to be done
                 try:
                     for entry in blockEntries:
-                        entry.block._checkTransaction(update=True)
                 except Exception as e:
                     self._root._logException(e)
 
