@@ -140,16 +140,16 @@ namespace rogue {
                void setBusy(bool state);
 
                //! Get sequence number
-               uint16_t getSequence();
+               uint8_t getSequence();
 
                //! Set sequence number
-               void setSequence(uint16_t seq);
+               void setSequence(uint8_t seq);
 
                //! Get acknowledge number
-               uint16_t getAcknowledge();
+               uint8_t getAcknowledge();
 
                //! Set acknowledge number
-               void setAcknowledge(uint16_t ack);
+               void setAcknowledge(uint8_t ack);
 
                //! Dump message contents
                virtual std::string dump();

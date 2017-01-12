@@ -134,6 +134,9 @@ namespace rogue {
                //! Set size including header
                void setSize(uint32_t size);
 
+               //! Set payload size (not including header)
+               void setPayload(uint32_t size);
+
                //! Set head room
                void setHeadRoom(uint32_t offset);
          };

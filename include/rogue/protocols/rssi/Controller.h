@@ -37,40 +37,44 @@ namespace rogue {
          class Controller : public boost::enable_shared_from_this<rogue::protocols::rssi::Controller> {
 
                static const uint8_t  Version       = 1;
-               static const uint8_t  TimeoutUnit   = 6; // 1e-6
+               static const uint8_t  TimeoutUnit   = 3; // 1e-3
                static const uint8_t  LocMaxBuffers = 32;
                static const uint16_t LocMaxSegment = 8000;
-               static const uint16_t ReqRetranTout = 60;
-               static const uint16_t ReqAckTout    = 30;
-               static const uint16_t ReqNullTout   = 300;
-               static const uint8_t  ReqMaxRetran  = 4;
-               static const uint8_t  ReqMaxCumAck  = 8;
-               static const uint32_t ReqConnId     = 0x4321DEFA;
-               static const uint32_t TryPeriod     = 1000000; // 1 second
+               static const uint16_t ReqRetranTout = 10;
+               static const uint16_t ReqCumAckTout = 5;
+               static const uint16_t ReqNullTout   = 3000;
+               static const uint8_t  ReqMaxRetran  = 15;
+               static const uint8_t  ReqMaxCumAck  = 2;
+               static const uint32_t TryPeriod     = 1000; // 1 second
 
                //! Connection states
-               enum States : uint32_t { StClosed  = 0,
-                                        StSendSyn = 1,
-                                        StWaitSyn = 2,
-                                        StSendAck = 3,
-                                        StOpen    = 4,
-                                        StSendRst = 5 };
+               enum States : uint32_t { StClosed     = 0,
+                                        StWaitSyn    = 1,
+                                        StSendSeqAck = 2,
+                                        StWaitAck    = 3,
+                                        StIdle       = 4,
+                                        StSendRst    = 5 };
 
-               //! Int buffer size
-               uint32_t intBuffSize_;
+               // Connection parameters
+               uint32_t locConnId_;
+               uint8_t  remMaxBuffers_;
+               uint16_t remMaxSegment_;
+               uint32_t retranTout_;
+               uint16_t cumAckTout_;
+               uint16_t nullTout_;
+               uint8_t  maxRetran_;
+               uint8_t  maxCumAck_;
+               uint32_t remConnId_;
 
-               //! Current state
+               // Connection tracking
+               uint32_t retranCount_;
+               uint8_t  locSequence_;
+               uint8_t  remSequence_;
+               bool     open_;
                uint32_t state_;
 
-               //! Last state update time
                struct timeval stTime_;
-
-               //! Last packet rx time
-               struct timeval rxTime_;
-
-               //! Last packet tx time
-               struct timeval txTime_;
-
+               
                //! Transport module
                boost::shared_ptr<rogue::protocols::rssi::Transport> tran_;
 
@@ -82,6 +86,9 @@ namespace rogue {
                //! mutex
                boost::mutex mtx_;
 
+               //! Condition
+               boost::condition_variable cond_;
+
                //! Transmit frame helper
                void sendFrame(boost::shared_ptr<rogue::interfaces::stream::Frame> frame);
 
@@ -91,6 +98,15 @@ namespace rogue {
                //! Thread background
                void runThread();
 
+               //! Gen syn packet
+               boost::shared_ptr<rogue::interfaces::stream::Frame> genSyn();
+            
+               //! gen ack packet
+               boost::shared_ptr<rogue::interfaces::stream::Frame> genAck(bool nul);
+ 
+               //! Gen rst packet
+               boost::shared_ptr<rogue::interfaces::stream::Frame> genRst();
+ 
             public:
 
                //! Class creation

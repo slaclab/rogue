@@ -134,6 +134,11 @@ void ris::Buffer::setSize(uint32_t size) {
    count_ = size;
 }
 
+//! Set payload size (not including header)
+void ris::Buffer::setPayload(uint32_t size) {
+   count_ = headRoom_ + size;
+}
+
 //! Set head room
 void ris::Buffer::setHeadRoom(uint32_t offset) {
    headRoom_ = offset;

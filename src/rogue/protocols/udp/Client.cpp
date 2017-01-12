@@ -151,7 +151,6 @@ void rpu::Client::acceptFrame ( ris::FramePtr frame ) {
 
             if ( (sres = select(fd_+1,NULL,&fds,NULL,&tout)) > 0 ) {
                res = sendmsg(fd_,&msg,0);
-               printf("Sent message. Ret = %i\n",res);
             }
             else res = 0;
 
@@ -201,7 +200,6 @@ void rpu::Client::runThread() {
 
             // Read was successfull
             if ( res > 0 ) {
-               printf("Got message. Ret = %i\n",res);
                buff->setSize(res);
 
                // Push frame and get a new empty frame

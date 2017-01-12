@@ -39,9 +39,9 @@ void rpr::Header::setBit ( uint8_t byte, uint8_t bit, bool value) {
    if ( byte >= getHeaderSize() )
       throw(rogue::GeneralError::boundary("Header::setBit",byte,getHeaderSize()));
 
-   frame_->getBuffer(0)->getRawData()[byte] &= (0xFF ^ (1 << bit));
+   frame_->getBuffer(0)->getPayloadData()[byte] &= (0xFF ^ (1 << bit));
 
-   if ( value ) frame_->getBuffer(0)->getRawData()[byte] |= (1 << bit);
+   if ( value ) frame_->getBuffer(0)->getPayloadData()[byte] |= (1 << bit);
 }
 
 //! Get bit value
@@ -52,7 +52,7 @@ bool rpr::Header::getBit ( uint8_t byte, uint8_t bit) {
    if ( byte >= getHeaderSize() )
       throw(rogue::GeneralError::boundary("Header::getBit",byte,getHeaderSize()-1));
 
-   return(((frame_->getBuffer(0)->getRawData()[byte] >> bit) & 0x1) != 0);
+   return(((frame_->getBuffer(0)->getPayloadData()[byte] >> bit) & 0x1) != 0);
 }
 
 //! Set 8-bit uint value
@@ -60,7 +60,7 @@ void rpr::Header::setUInt8 ( uint8_t byte, uint8_t value) {
    if ( byte >= getHeaderSize() )
       throw(rogue::GeneralError::boundary("Header::setUInt8",byte,getHeaderSize()));
 
-   frame_->getBuffer(0)->getRawData()[byte] = value;
+   frame_->getBuffer(0)->getPayloadData()[byte] = value;
 }
 
 //! Get 8-bit uint value
@@ -68,7 +68,7 @@ uint8_t rpr::Header::getUInt8 ( uint8_t byte ) {
    if ( byte >= getHeaderSize() )
       throw(rogue::GeneralError::boundary("Header::getUInt8",byte,getHeaderSize()));
 
-   return(frame_->getBuffer(0)->getRawData()[byte]);
+   return(frame_->getBuffer(0)->getPayloadData()[byte]);
 }
 
 //! Set 16-bit uint value
@@ -76,7 +76,7 @@ void rpr::Header::setUInt16 ( uint8_t byte, uint16_t value) {
    if ( (byte+1) >= getHeaderSize() )
       throw(rogue::GeneralError::boundary("Header::setUInt16",byte+1,getHeaderSize()));
 
-   *((uint16_t *)(&(frame_->getBuffer(0)->getRawData()[byte]))) = htons(value);
+   *((uint16_t *)(&(frame_->getBuffer(0)->getPayloadData()[byte]))) = htons(value);
 }
 
 //! Get 16-bit uint value
@@ -84,7 +84,7 @@ uint16_t rpr::Header::getUInt16 ( uint8_t byte ) {
    if ( (byte+1) >= getHeaderSize() )
       throw(rogue::GeneralError::boundary("Header::getUInt16",byte+1,getHeaderSize()));
 
-   return(ntohs(*((uint16_t *)(&(frame_->getBuffer(0)->getRawData()[byte])))));
+   return(ntohs(*((uint16_t *)(&(frame_->getBuffer(0)->getPayloadData()[byte])))));
 }
 
 //! Set 32-bit uint value
@@ -92,7 +92,7 @@ void rpr::Header::setUInt32 ( uint8_t byte, uint32_t value) {
    if ( (byte+3) >= getHeaderSize() )
       throw(rogue::GeneralError::boundary("Header::setUInt32",byte+3,getHeaderSize()));
 
-   *((uint32_t *)(&(frame_->getBuffer(0)->getRawData()[byte]))) = htonl(value);
+   *((uint32_t *)(&(frame_->getBuffer(0)->getPayloadData()[byte]))) = htonl(value);
 }
 
 //! Get 32-bit uint value
@@ -100,7 +100,7 @@ uint32_t rpr::Header::getUInt32 ( uint8_t byte ) {
    if ( (byte+3) >= getHeaderSize() )
       throw(rogue::GeneralError::boundary("Header::getUInt32",byte+3,getHeaderSize()));
 
-   return(ntohl(*((uint32_t *)(&(frame_->getBuffer(0)->getRawData()[byte])))));
+   return(ntohl(*((uint32_t *)(&(frame_->getBuffer(0)->getPayloadData()[byte])))));
 }
 
 //! compute checksum
@@ -128,6 +128,8 @@ void rpr::Header::setup_python() {
 
 //! Creator
 rpr::Header::Header(ris::FramePtr frame) {
+   if ( frame->getCount() == 0 ) 
+      throw(rogue::GeneralError("Header::Header","Frame must not be empty!"));
    frame_ = frame;
 }
 
@@ -146,26 +148,25 @@ uint32_t rpr::Header::minSize() {
 
 //! Get header size
 uint8_t rpr::Header::getHeaderSize() {
-   return(frame_->getBuffer(0)->getRawData()[1]);
+   return(frame_->getBuffer(0)->getPayloadData()[1]);
 }
 
 //! Init header contents
 void rpr::Header::init(bool setSize) {
 
-   if ( frame_->getCount() != 1 ) 
-      throw(rogue::GeneralError("Header::init","Frame must contain a single buffer"));
+   if ( frame_->getBuffer(0)->getAvailable() < minSize() )
+      throw(rogue::GeneralError::boundary("Header::init",minSize(),frame_->getBuffer(0)->getAvailable()));
 
-   if ( frame_->getBuffer(0)->getRawSize() < minSize() ) 
-      throw(rogue::GeneralError::boundary("Header::init",minSize(),frame_->getBuffer(0)->getRawSize()));
-
-   memset(frame_->getBuffer(0)->getRawData(),0,minSize());
-   frame_->getBuffer(0)->getRawData()[1] = minSize();
-   if ( setSize ) frame_->getBuffer(0)->setSize(minSize());
+   memset(frame_->getBuffer(0)->getPayloadData(),0,minSize());
+   frame_->getBuffer(0)->getPayloadData()[1] = minSize();
+   if ( setSize ) frame_->getBuffer(0)->setPayload(minSize());
 }
 
 //! Verify header contents
 bool rpr::Header::verify() {
-   return(getUInt16(getHeaderSize()-2) == compSum());
+   return( (getHeaderSize() == minSize()) && 
+           (frame_->getBuffer(0)->getPayload() >= minSize()) &&
+           (getUInt16(getHeaderSize()-2) == compSum()));
 }
 
 //! Update checksum
@@ -234,23 +235,23 @@ void rpr::Header::setBusy(bool state) {
 }
 
 //! Get sequence number
-uint16_t rpr::Header::getSequence() {
-   return(getUInt16(2));
+uint8_t rpr::Header::getSequence() {
+   return(getUInt8(2));
 }
 
 //! Set sequence number
-void rpr::Header::setSequence(uint16_t seq) {
-   setUInt16(2,seq);
+void rpr::Header::setSequence(uint8_t seq) {
+   setUInt8(2,seq);
 }
 
 //! Get acknowledge number
-uint16_t rpr::Header::getAcknowledge() {
-   return(getUInt16(3));
+uint8_t rpr::Header::getAcknowledge() {
+   return(getUInt8(3));
 }
 
 //! Set acknowledge number
-void rpr::Header::setAcknowledge(uint16_t ack) {
-   setUInt16(3,ack);
+void rpr::Header::setAcknowledge(uint8_t ack) {
+   setUInt8(3,ack);
 }
 
 //! Dump message
@@ -259,7 +260,7 @@ std::string rpr::Header::dump() {
 
    std::stringstream ret("");
 
-   ret << "   Total Size : " << std::dec << frame_->getBuffer(0)->getCount() << std::endl;
+   ret << "   Total Size : " << std::dec << frame_->getBuffer(0)->getPayload() << std::endl;
    ret << "   Raw Header : ";
 
    for (x=0; x < getHeaderSize(); x++) {
@@ -275,8 +276,8 @@ std::string rpr::Header::dump() {
    ret << "          Rst : " << std::dec << getRst() << std::endl;
    ret << "          Nul : " << std::dec << getNul() << std::endl;
    ret << "         Busy : " << std::dec << getBusy() << std::endl;
-   ret << "     Sequence : " << std::dec << getSequence() << std::endl;
-   ret << "  Acknowledge : " << std::dec << getAcknowledge() << std::endl;
+   ret << "     Sequence : " << std::dec << (uint32_t)getSequence() << std::endl;
+   ret << "  Acknowledge : " << std::dec << (uint32_t)getAcknowledge() << std::endl;
 
    return(ret.str());
 }
