@@ -30,17 +30,17 @@ namespace rogue {
          //! PGP Card class
          class Syn : public rogue::protocols::rssi::Header {
 
+            public:
+
                //! Syn Size
                static const uint32_t SynSize = 24;
-
-            public:
 
                //! Create
                static boost::shared_ptr<rogue::protocols::rssi::Syn>
                   create(boost::shared_ptr<rogue::interfaces::stream::Frame> frame);
 
-               //! Return required size
-               static uint32_t minSize();
+               //! Setup class in python
+               static void setup_python();
 
                //! Creator
                Syn(boost::shared_ptr<rogue::interfaces::stream::Frame> frame);
@@ -48,8 +48,11 @@ namespace rogue {
                //! Destructor
                ~Syn();
 
+               //! Return required size
+               uint32_t minSize();
+
                //! Init header contents
-               void init();
+               void init(bool setSize);
 
                //! Get version field
                uint8_t getVersion();

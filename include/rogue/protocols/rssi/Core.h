@@ -20,8 +20,6 @@
 **/
 #ifndef __ROGUE_PROTOCOLS_RSSI_CORE_H__
 #define __ROGUE_PROTOCOLS_RSSI_CORE_H__
-#include <rogue/interfaces/stream/Master.h>
-#include <rogue/interfaces/stream/Slave.h>
 #include <boost/python.hpp>
 #include <boost/thread.hpp>
 #include <stdint.h>
@@ -30,17 +28,21 @@ namespace rogue {
    namespace protocols {
       namespace rssi {
 
+         class Transport;
+         class Application;
+         class Controller;
+
          //! RSSI Core Class
-         class Core : public rogue::interfaces::stream::Master, 
-                      public rogue::interfaces::stream::Slave {
+         class Core {
 
-               boost::thread* thread_;
+               //! Transport module
+               boost::shared_ptr<rogue::protocols::rssi::Transport> tran_;
 
-               //! mutex
-               boost::mutex mtx_;
+               //! Application module
+               boost::shared_ptr<rogue::protocols::rssi::Application> app_;
 
-               //! Thread background
-               void runThread();
+               //! Core module
+               boost::shared_ptr<rogue::protocols::rssi::Controller> cntl_;
 
             public:
 
@@ -56,23 +58,16 @@ namespace rogue {
                //! Destructor
                ~Core();
 
-               //! Generate a Frame. Called from master
-               /*
-                * Pass total size required.
-                * Pass flag indicating if zero copy buffers are acceptable
-                * maxBuffSize indicates the largest acceptable buffer size. A larger buffer can be
-                * returned but the total buffer count must assume each buffer is of size maxBuffSize
-                * If maxBuffSize = 0, slave will freely determine the buffer size.
-                */
-               boost::shared_ptr<rogue::interfaces::stream::Frame>
-                  acceptReq ( uint32_t size, bool zeroCopyEn, uint32_t maxBuffSize );
+               //! Get transport interface
+               boost::shared_ptr<rogue::protocols::rssi::Transport> transport();
 
-               //! Accept a frame from master
-               void acceptFrame ( boost::shared_ptr<rogue::interfaces::stream::Frame> frame );
+               //! Application module
+               boost::shared_ptr<rogue::protocols::rssi::Application> application();
+
          };
 
          // Convienence
-         typedef boost::shared_ptr<rogue::protocols::udp::Core> CorePtr;
+         typedef boost::shared_ptr<rogue::protocols::rssi::Core> CorePtr;
 
       }
    }

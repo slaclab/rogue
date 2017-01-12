@@ -20,7 +20,6 @@
 **/
 #include <rogue/interfaces/stream/Frame.h>
 #include <rogue/interfaces/stream/Buffer.h>
-#include <rogue/protocols/rssi/Header.h>
 #include <rogue/protocols/rssi/Controller.h>
 #include <rogue/protocols/rssi/Application.h>
 #include <rogue/GeneralError.h>
@@ -35,6 +34,17 @@ namespace bp  = boost::python;
 rpr::ApplicationPtr rpr::Application::create () {
    rpr::ApplicationPtr r = boost::make_shared<rpr::Application>();
    return(r);
+}
+
+void rpr::Application::setup_python() {
+
+   bp::class_<rpr::Application, rpr::ApplicationPtr, bp::bases<ris::Master,ris::Slave>, boost::noncopyable >("Application",bp::init<>())
+      .def("create",         &rpr::Application::create)
+      .staticmethod("create")
+   ;
+
+   bp::implicitly_convertible<rpr::ApplicationPtr, ris::MasterPtr>();
+   bp::implicitly_convertible<rpr::ApplicationPtr, ris::SlavePtr>();
 }
 
 //! Creator

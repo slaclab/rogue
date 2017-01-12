@@ -31,13 +31,44 @@ namespace rogue {
          //! PGP Card class
          class Header {
 
-            protected:
+            public:
 
                //! Header Size
                static const uint32_t HeaderSize = 8;
+
+            private:
    
                //! Frame pointer
                boost::shared_ptr<rogue::interfaces::stream::Frame> frame_;
+
+            protected:
+
+               //! Set bit value
+               void setBit ( uint8_t byte, uint8_t bit, bool value);
+
+               //! Get bit value
+               bool getBit ( uint8_t byte, uint8_t bit);
+
+               //! Set 8-bit uint value
+               void setUInt8 ( uint8_t byte, uint8_t value);
+
+               //! Get 8-bit uint value
+               uint8_t getUInt8 ( uint8_t byte );
+
+               //! Set 16-bit uint value
+               void setUInt16 ( uint8_t byte, uint16_t value);
+
+               //! Get 16-bit uint value
+               uint16_t getUInt16 ( uint8_t byte );
+
+               //! Set 32-bit uint value
+               void setUInt32 ( uint8_t byte, uint32_t value);
+
+               //! Get 32-bit uint value
+               uint32_t getUInt32 ( uint8_t byte );
+
+               //! compute checksum
+               uint16_t compSum ( );
 
             public:
 
@@ -45,8 +76,8 @@ namespace rogue {
                static boost::shared_ptr<rogue::protocols::rssi::Header>
                   create(boost::shared_ptr<rogue::interfaces::stream::Frame> frame);
 
-               //! Return required size
-               static uint32_t minSize();
+               //! Setup class in python
+               static void setup_python();
 
                //! Creator
                Header(boost::shared_ptr<rogue::interfaces::stream::Frame> frame);
@@ -57,11 +88,14 @@ namespace rogue {
                //! Get Frame
                boost::shared_ptr<rogue::interfaces::stream::Frame> getFrame();
 
+               //! Return required size
+               virtual uint32_t minSize();
+
                //! Get header size
                uint8_t getHeaderSize();
 
                //! Init header contents
-               virtual void init();
+               virtual void init(bool setSize);
 
                //! Verify header checksum
                bool verify();

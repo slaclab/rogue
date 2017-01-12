@@ -40,14 +40,15 @@ rpr::ControllerPtr rpr::Controller::create ( rpr::TransportPtr tran, rpr::Applic
    return(r);
 }
 
+void rpr::Controller::setup_python() {
+   // Nothing to do
+}
+
 //! Creator
 rpr::Controller::Controller ( rpr::TransportPtr tran, rpr::ApplicationPtr app ) {
    app_   = app;
    tran_  = tran;
    state_ = StClosed;
-
-   app_->setController(shared_from_this());
-   tran_->setController(shared_from_this());
 
    gettimeofday(&stTime_,NULL);
    gettimeofday(&rxTime_,NULL);
@@ -97,7 +98,7 @@ ris::FramePtr rpr::Controller::reqFrame ( uint32_t size, uint32_t maxBuffSize ) 
    x = 0; nSize = 0;
    while ( x < size ) {
       nSize += bSize;
-      x += (bSize - rpr::Header::minSize());
+      x += (bSize - rpr::Header::HeaderSize);
    }
 
    // Forward frame request to transport slave
@@ -105,7 +106,7 @@ ris::FramePtr rpr::Controller::reqFrame ( uint32_t size, uint32_t maxBuffSize ) 
 
    // Update header area in each buffer before returning frame
    for (x=0; x < frame->getCount(); x++) 
-      frame->getBuffer(x)->setHeadRoom(frame->getBuffer(x)->getHeadRoom() + rpr::Header::minSize());
+      frame->getBuffer(x)->setHeadRoom(frame->getBuffer(x)->getHeadRoom() + rpr::Header::HeaderSize);
 
    // Return frame
    return(frame);
@@ -137,8 +138,8 @@ void rpr::Controller::runThread() {
 
             case StClosed :
                if ( timePassed(&currTime,&stTime_,TryPeriod) ) {
-                  rpr::SynPtr syn = rpr::Syn::create(tran_->reqFrame(rpr::Syn::minSize(),false,rpr::Syn::minSize()));
-                  syn->init();
+                  rpr::SynPtr syn = rpr::Syn::create(tran_->reqFrame(rpr::Syn::SynSize,false,rpr::Syn::SynSize));
+                  syn->init(true);
                   syn->setAck(false);
                   syn->setRst(false);
                   syn->setNul(false);
@@ -156,11 +157,12 @@ void rpr::Controller::runThread() {
                   syn->setMaxCumulativeAck(ReqMaxCumAck);
                   syn->setTimeoutUnit(TimeoutUnit);
                   syn->setConnectionId(ReqConnId);
+                  syn->update();
                   std::cout << "------------------- Frame Tx --------------------------" << std::endl;
                   std::cout << syn->dump();
                   tran_->sendFrame(syn->getFrame());
+                  stTime_ = currTime;
                }
-               stTime_ = currTime;
                break;
 
             default :

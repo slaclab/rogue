@@ -36,6 +36,17 @@ rpr::TransportPtr rpr::Transport::create () {
    return(r);
 }
 
+void rpr::Transport::setup_python() {
+
+   bp::class_<rpr::Transport, rpr::TransportPtr, bp::bases<ris::Master,ris::Slave>, boost::noncopyable >("Transport",bp::init<>())
+      .def("create",         &rpr::Transport::create)
+      .staticmethod("create")
+   ;
+
+   bp::implicitly_convertible<rpr::TransportPtr, ris::MasterPtr>();
+   bp::implicitly_convertible<rpr::TransportPtr, ris::SlavePtr>();
+}
+
 //! Creator
 rpr::Transport::Transport () { }
 
@@ -61,6 +72,6 @@ ris::FramePtr rpr::Transport::acceptReq ( uint32_t size, bool zeroCopyEn, uint32
 
 //! Accept a frame from master
 void rpr::Transport::acceptFrame ( ris::FramePtr frame ) {
-   cntl_->applicationRx(frame);
+   cntl_->transportRx(frame);
 }
 
