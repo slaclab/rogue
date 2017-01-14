@@ -467,7 +467,7 @@ ris::FramePtr rpr::Controller::stateOpen (uint32_t *wait) {
    if ( lastAckRx_ != locSequence_ ) {
 
       // Walk through each frame in list, looking for first expired
-      for ( idx=lastAckRx_+1; idx != locSequence_; idx++ ) {
+      for ( idx=lastAckRx_+1; idx != (locSequence_+1); idx++ ) {
          head = txList_[idx];
 
          if ( timePassed(head->getTime(),retranTout_) ) {
