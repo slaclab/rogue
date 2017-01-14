@@ -25,6 +25,7 @@
 #include <boost/enable_shared_from_this.hpp>
 #include <boost/python.hpp>
 #include <stdint.h>
+#include <queue>
 
 namespace rogue {
    namespace protocols {
@@ -32,6 +33,7 @@ namespace rogue {
 
          class Application;
          class Transport;
+         class Header;
 
          //! RSSI Controller Class
          class Controller : public boost::enable_shared_from_this<rogue::protocols::rssi::Controller> {
@@ -51,9 +53,8 @@ namespace rogue {
                enum States : uint32_t { StClosed     = 0,
                                         StWaitSyn    = 1,
                                         StSendSeqAck = 2,
-                                        StWaitAck    = 3,
-                                        StIdle       = 4,
-                                        StSendRst    = 5 };
+                                        StOpen       = 3,
+                                        StError      = 4 };
 
                // Connection parameters
                uint32_t locConnId_;
@@ -67,46 +68,35 @@ namespace rogue {
                uint32_t remConnId_;
 
                // Connection tracking
-               uint32_t retranCount_;
                uint8_t  locSequence_;
                uint8_t  remSequence_;
-               bool     open_;
+               uint8_t  ackTxPend_;
+               uint8_t  lastAckRx_;
+               uint8_t  prevAckRx_;
                uint32_t state_;
+               bool     tranBusy_;
+               uint8_t  txListCount_;
+
+               // Counters
+               uint32_t downCount_;
+               uint32_t dropCount_;
+               uint32_t retranCount_;
 
                struct timeval stTime_;
-               
-               //! Transport module
-               boost::shared_ptr<rogue::protocols::rssi::Transport> tran_;
 
-               //! Application module
+               std::queue<boost::shared_ptr<rogue::protocols::rssi::Header>> appQueue_;
+
+               boost::shared_ptr<rogue::protocols::rssi::Header> txList_[256];
+
+               boost::shared_ptr<rogue::protocols::rssi::Transport> tran_;
                boost::shared_ptr<rogue::protocols::rssi::Application> app_;
 
                boost::thread* thread_;
+               boost::mutex   mtx_;
 
-               //! mutex
-               boost::mutex mtx_;
+               boost::condition_variable stCond_;
+               boost::condition_variable appCond_;
 
-               //! Condition
-               boost::condition_variable cond_;
-
-               //! Transmit frame helper
-               void sendFrame(boost::shared_ptr<rogue::interfaces::stream::Frame> frame);
-
-               //! Helper function to determine if time has elapsed
-               bool timePassed ( struct timeval *currTime, struct timeval *lastTime, uint32_t usec );
-
-               //! Thread background
-               void runThread();
-
-               //! Gen syn packet
-               boost::shared_ptr<rogue::interfaces::stream::Frame> genSyn();
-            
-               //! gen ack packet
-               boost::shared_ptr<rogue::interfaces::stream::Frame> genAck(bool nul);
- 
-               //! Gen rst packet
-               boost::shared_ptr<rogue::interfaces::stream::Frame> genRst();
- 
             public:
 
                //! Class creation
@@ -124,15 +114,53 @@ namespace rogue {
                //! Destructor
                ~Controller();
 
+               //! Transport frame allocation request
+               boost::shared_ptr<rogue::interfaces::stream::Frame>
+                  reqFrame ( uint32_t size, uint32_t maxBuffSize );
+
                //! Frame received at transport interface
                void transportRx( boost::shared_ptr<rogue::interfaces::stream::Frame> frame );
+
+               //! Interface for application transmitter thread
+               boost::shared_ptr<rogue::interfaces::stream::Frame> applicationTx ();
 
                //! Frame received at application interface
                void applicationRx( boost::shared_ptr<rogue::interfaces::stream::Frame> frame );
 
-               //! Transport frame allocation request
-               boost::shared_ptr<rogue::interfaces::stream::Frame>
-                  reqFrame ( uint32_t size, uint32_t maxBuffSize );
+               //! Get state
+               bool getOpen();
+
+               //! Get Down Count
+               uint32_t getDownCount();
+
+               //! Get Drop Count
+               uint32_t getDropCount();
+
+               //! Get Retran Count
+               uint32_t getRetranCount();
+
+            private:
+
+               //! Convert rssi time to microseconds
+               uint32_t convTime ( uint32_t rssiTime );
+
+               //! Helper function to determine if time has elapsed in current state
+               bool timePassed ( struct timeval *lastTime, uint32_t rssiTime );
+
+               //! Thread background
+               void runThread();
+
+               //! Closed/Waiting for Syn
+               boost::shared_ptr<rogue::interfaces::stream::Frame> stateClosedWait (uint32_t *wait);
+
+               //! Send sequence ack
+               boost::shared_ptr<rogue::interfaces::stream::Frame> stateSendSeqAck (uint32_t *wait);
+
+               //! Open state
+               boost::shared_ptr<rogue::interfaces::stream::Frame> stateOpen (uint32_t *wait);
+
+               //! Error state
+               boost::shared_ptr<rogue::interfaces::stream::Frame> stateError (uint32_t *wait);
 
          };
 

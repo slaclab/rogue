@@ -51,11 +51,17 @@ void rpr::Application::setup_python() {
 rpr::Application::Application () { }
 
 //! Destructor
-rpr::Application::~Application() { }
+rpr::Application::~Application() { 
+   thread_->interrupt();
+   thread_->join();
+}
 
 //! Setup links
 void rpr::Application::setController( rpr::ControllerPtr cntl ) {
    cntl_ = cntl;
+
+   // Start read thread
+   thread_ = new boost::thread(boost::bind(&rpr::Application::runThread, this));
 }
 
 //! Generate a Frame. Called from master
@@ -65,6 +71,15 @@ ris::FramePtr rpr::Application::acceptReq ( uint32_t size, bool zeroCopyEn, uint
 
 //! Accept a frame from master
 void rpr::Application::acceptFrame ( ris::FramePtr frame ) {
-   cntl_->transportRx(frame);
+   cntl_->applicationRx(frame);
+}
+
+//! Thread background
+void rpr::Application::runThread() {
+   try {
+      while(1) {
+         sendFrame(cntl_->applicationTx());
+      }
+   } catch (boost::thread_interrupted&) { }
 }
 

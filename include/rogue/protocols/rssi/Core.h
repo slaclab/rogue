@@ -64,6 +64,18 @@ namespace rogue {
                //! Application module
                boost::shared_ptr<rogue::protocols::rssi::Application> application();
 
+               //! Get state
+               bool getOpen();
+
+               //! Get Down Count
+               uint32_t getDownCount();
+
+               //! Get Drop Count
+               uint32_t getDropCount();
+
+               //! Get Retran Count
+               uint32_t getRetranCount();
+
          };
 
          // Convienence

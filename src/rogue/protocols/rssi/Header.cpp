@@ -131,6 +131,9 @@ rpr::Header::Header(ris::FramePtr frame) {
    if ( frame->getCount() == 0 ) 
       throw(rogue::GeneralError("Header::Header","Frame must not be empty!"));
    frame_ = frame;
+
+   gettimeofday(&time_,NULL);
+   count_ = 0;
 }
 
 //! Destructor
@@ -172,6 +175,9 @@ bool rpr::Header::verify() {
 //! Update checksum
 void rpr::Header::update() {
    setUInt16(getHeaderSize()-2,compSum());
+
+   gettimeofday(&time_,NULL);
+   count_++;
 }
 
 //! Get syn flag
@@ -280,5 +286,15 @@ std::string rpr::Header::dump() {
    ret << "  Acknowledge : " << std::dec << (uint32_t)getAcknowledge() << std::endl;
 
    return(ret.str());
+}
+
+//! Get time
+struct timeval * rpr::Header::getTime() {
+   return(&time_);
+}
+
+//! Get Count
+uint32_t rpr::Header::count() {
+   return(count_);
 }
 

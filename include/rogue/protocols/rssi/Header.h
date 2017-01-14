@@ -41,6 +41,12 @@ namespace rogue {
                //! Frame pointer
                boost::shared_ptr<rogue::interfaces::stream::Frame> frame_;
 
+               //! Time last transmitted
+               struct timeval time_;
+
+               //! Transmit count
+               uint32_t count_;
+
             protected:
 
                //! Set bit value
@@ -153,6 +159,12 @@ namespace rogue {
 
                //! Dump message contents
                virtual std::string dump();
+
+               //! Get time
+               struct timeval * getTime();
+
+               //! Get Count
+               uint32_t count();
 
          };
 
