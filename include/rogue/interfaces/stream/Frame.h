@@ -34,7 +34,6 @@ namespace rogue {
       namespace stream {
 
          class Buffer;
-         class Pool;
          class FrameIterator;
 
          //! Frame container
@@ -47,12 +46,6 @@ namespace rogue {
          */
          class Frame {
 
-               //! Pointer to entity which allocated this buffer
-               boost::shared_ptr<rogue::interfaces::stream::Pool> source_; 
-
-               //! Buffer list is zero copy mode
-               bool zeroCopy_;             
-              
                //! Interface specific flags
                uint32_t flags_;
 
@@ -71,11 +64,10 @@ namespace rogue {
                /*
                 * Pass owner and zero copy status
                 */
-               static boost::shared_ptr<rogue::interfaces::stream::Frame> create(
-                     boost::shared_ptr<rogue::interfaces::stream::Pool> source, bool zeroCopy);
+               static boost::shared_ptr<rogue::interfaces::stream::Frame> create();
 
                //! Create an empty frame
-               Frame(boost::shared_ptr<rogue::interfaces::stream::Pool> source, bool zeroCopy);
+               Frame();
 
                //! Destroy a frame.
                ~Frame();
@@ -94,9 +86,6 @@ namespace rogue {
 
                //! Get buffer at index
                boost::shared_ptr<rogue::interfaces::stream::Buffer> getBuffer(uint32_t index);
-
-               //! Get zero copy state
-               bool getZeroCopy();
 
                //! Get total available capacity (not including header space)
                uint32_t getAvailable();

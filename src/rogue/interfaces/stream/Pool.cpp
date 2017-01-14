@@ -63,7 +63,7 @@ ris::FramePtr ris::Pool::createFrame ( uint32_t totSize, uint32_t buffSize,
 
    if ( buffSize == 0 ) buffSize = totSize;
 
-   ret  = ris::Frame::create(shared_from_this(),zeroCopy);
+   ret  = ris::Frame::create();
    alloc = 0;
 
    while ( alloc < totSize ) {

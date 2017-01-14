@@ -31,7 +31,8 @@ PYBOOST = -lboost_python3
 # Variables
 C       := g++
 DEF      :=
-CFLAGS   := -Wall `$(PYCONF) --cflags | sed s/-Wstrict-prototypes//` -I $(BOOST_PATH)/include -I$(PWD)/include -I$(PWD)/drivers/include -std=c++0x -fPIC
+CFLAGS   := -Wall `$(PYCONF) --cflags | sed s/-Wstrict-prototypes//` -fno-strict-aliasing
+CFLAGS   += -I $(BOOST_PATH)/include -I$(PWD)/include -I$(PWD)/drivers/include -std=c++0x -fPIC
 LFLAGS   := `$(PYCONF) --ldflags` -lboost_thread $(PYBOOST) -lboost_system
 LFLAGS   += -L`$(PYCONF) --prefix`/lib/ -L$(BOOST_PATH)/lib 
 SHNAME   := rogue
