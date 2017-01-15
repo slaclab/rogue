@@ -31,14 +31,14 @@ namespace ris = rogue::interfaces::stream;
 namespace bp  = boost::python;
 
 //! Class creation
-rpp::ApplicationPtr rpp::Application::create () {
-   rpp::ApplicationPtr r = boost::make_shared<rpp::Application>();
+rpp::ApplicationPtr rpp::Application::create (uint8_t id) {
+   rpp::ApplicationPtr r = boost::make_shared<rpp::Application>(id);
    return(r);
 }
 
 void rpp::Application::setup_python() {
 
-   bp::class_<rpp::Application, rpp::ApplicationPtr, bp::bases<ris::Master,ris::Slave>, boost::noncopyable >("Application",bp::init<>())
+   bp::class_<rpp::Application, rpp::ApplicationPtr, bp::bases<ris::Master,ris::Slave>, boost::noncopyable >("Application",bp::init<uint8_t>())
       .def("create",         &rpp::Application::create)
       .staticmethod("create")
    ;
@@ -48,7 +48,9 @@ void rpp::Application::setup_python() {
 }
 
 //! Creator
-rpp::Application::Application () { }
+rpp::Application::Application (uint8_t id) { 
+   id_ = id;
+}
 
 //! Destructor
 rpp::Application::~Application() { }
@@ -65,6 +67,6 @@ ris::FramePtr rpp::Application::acceptReq ( uint32_t size, bool zeroCopyEn, uint
 
 //! Accept a frame from master
 void rpp::Application::acceptFrame ( ris::FramePtr frame ) {
-   cntl_->applicationRx(frame);
+   cntl_->applicationRx(frame,id_);
 }
 

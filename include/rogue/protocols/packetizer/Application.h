@@ -38,16 +38,19 @@ namespace rogue {
                //! Core module
                boost::shared_ptr<rogue::protocols::packetizer::Controller> cntl_;
 
+               // ID
+               uint8_t id_;
+
             public:
 
                //! Class creation
-               static boost::shared_ptr<rogue::protocols::packetizer::Application> create ();
+               static boost::shared_ptr<rogue::protocols::packetizer::Application> create (uint8_t id);
 
                //! Setup class in python
                static void setup_python();
 
                //! Creator
-               Application();
+               Application(uint8_t id);
 
                //! Destructor
                ~Application();

@@ -38,8 +38,8 @@ namespace rogue {
                //! Transport module
                boost::shared_ptr<rogue::protocols::packetizer::Transport> tran_;
 
-               //! Application module
-               boost::shared_ptr<rogue::protocols::packetizer::Application> app_;
+               //! Application modules
+               boost::shared_ptr<rogue::protocols::packetizer::Application> app_[256];
 
                //! Core module
                boost::shared_ptr<rogue::protocols::packetizer::Controller> cntl_;
@@ -47,13 +47,13 @@ namespace rogue {
             public:
 
                //! Class creation
-               static boost::shared_ptr<rogue::protocols::packetizer::Core> create ();
+               static boost::shared_ptr<rogue::protocols::packetizer::Core> create (uint32_t segmentSize);
 
                //! Setup class in python
                static void setup_python();
 
                //! Creator
-               Core();
+               Core(uint32_t segmentSize);
 
                //! Destructor
                ~Core();
@@ -62,7 +62,7 @@ namespace rogue {
                boost::shared_ptr<rogue::protocols::packetizer::Transport> transport();
 
                //! Application module
-               boost::shared_ptr<rogue::protocols::packetizer::Application> application();
+               boost::shared_ptr<rogue::protocols::packetizer::Application> application(uint8_t dest);
          };
 
          // Convienence

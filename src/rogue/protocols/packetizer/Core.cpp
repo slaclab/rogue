@@ -31,14 +31,14 @@ namespace ris = rogue::interfaces::stream;
 namespace bp  = boost::python;
 
 //! Class creation
-rpp::CorePtr rpp::Core::create ( ) {
-   rpp::CorePtr r = boost::make_shared<rpp::Core>();
+rpp::CorePtr rpp::Core::create (uint32_t segmentSize) {
+   rpp::CorePtr r = boost::make_shared<rpp::Core>(segmentSize);
    return(r);
 }
 
 void rpp::Core::setup_python() {
 
-   bp::class_<rpp::Core, rpp::CorePtr, boost::noncopyable >("Core",bp::init<>())
+   bp::class_<rpp::Core, rpp::CorePtr, boost::noncopyable >("Core",bp::init<uint32_t>())
       .def("create",         &rpp::Core::create)
       .staticmethod("create")
       .def("transport",      &rpp::Core::transport)
@@ -48,12 +48,10 @@ void rpp::Core::setup_python() {
 }
 
 //! Creator
-rpp::Core::Core ( ) {
-   app_   = rpp::Application::create();
+rpp::Core::Core (uint32_t segmentSize) {
    tran_  = rpp::Transport::create();
-   cntl_  = rpp::Controller::create(tran_,app_);
+   cntl_  = rpp::Controller::create(segmentSize,tran_,app_);
 
-   app_->setController(cntl_);
    tran_->setController(cntl_);
 }
 
@@ -67,7 +65,11 @@ rpp::TransportPtr rpp::Core::transport() {
 }
 
 //! Application module
-rpp::ApplicationPtr rpp::Core::application() {
-   return(app_);
+rpp::ApplicationPtr rpp::Core::application(uint8_t dest) {
+   if ( ! app_[dest] ) {
+      app_[dest] = rpp::Application::create(dest);
+      app_[dest]->setController(cntl_);
+   }
+   return(app_[dest]);
 }
 
