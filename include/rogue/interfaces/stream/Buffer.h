@@ -57,6 +57,9 @@ namespace rogue {
                //! Header room of buffer
                uint32_t   headRoom_;
 
+               //! Tail room of buffer
+               uint32_t   tailRoom_;
+
                //! Data count including header
                uint32_t   count_;
 
@@ -113,6 +116,9 @@ namespace rogue {
                //! Get header space
                uint32_t getHeadRoom();
 
+               //! Get tail space
+               uint32_t getTailRoom();
+
                //! Get available size for payload
                uint32_t getAvailable();
 
@@ -139,6 +145,10 @@ namespace rogue {
 
                //! Set head room
                void setHeadRoom(uint32_t offset);
+
+               //! Set tail room
+               void setTailRoom(uint32_t offset);
+
          };
 
          // Convienence

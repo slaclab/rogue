@@ -46,6 +46,7 @@ ris::Buffer::Buffer(ris::PoolPtr source, void *data, uint32_t meta, uint32_t raw
    meta_     = meta;
    rawSize_  = rawSize;
    headRoom_ = 0;
+   tailRoom_ = 0;
    count_    = 0;
    error_    = 0;
 }
@@ -93,20 +94,25 @@ uint32_t ris::Buffer::getHeadRoom() {
    return(headRoom_);
 }
 
+//! Get tail space
+uint32_t ris::Buffer::getTailRoom() {
+   return(tailRoom_);
+}
+
 //! Get available size for payload
 uint32_t ris::Buffer::getAvailable() {
    uint32_t temp;
 
    temp = rawSize_ - count_;
 
-   if ( temp < headRoom_) return(0);
-   else return(temp - headRoom_);
+   if ( temp < (headRoom_ + tailRoom_) ) return(0);
+   else return(temp - (headRoom_+tailRoom_));
 }
 
 //! Get real payload size
 uint32_t ris::Buffer::getPayload() {
-   if ( count_ < headRoom_ ) return(0);
-   else return(count_ - headRoom_);
+   if ( count_ < (headRoom_ + tailRoom_)) return(0);
+   else return(count_ - (headRoom_ + tailRoom_));
 }
 
 //! Get flags
@@ -134,7 +140,7 @@ void ris::Buffer::setSize(uint32_t size) {
    count_ = size;
 }
 
-//! Set payload size (not including header)
+//! Set payload size (not including header & tail)
 void ris::Buffer::setPayload(uint32_t size) {
    count_ = headRoom_ + size;
 }
@@ -142,6 +148,11 @@ void ris::Buffer::setPayload(uint32_t size) {
 //! Set head room
 void ris::Buffer::setHeadRoom(uint32_t offset) {
    headRoom_ = offset;
+}
+
+//! Set tail room
+void ris::Buffer::setTailRoom(uint32_t offset) {
+   tailRoom_ = offset;
 }
 
 void ris::Buffer::setup_python() {
