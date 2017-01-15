@@ -73,3 +73,8 @@ rpp::ApplicationPtr rpp::Core::application(uint8_t dest) {
    return(app_[dest]);
 }
 
+//! Get drop count
+uint32_t rpp::Core::getDropCount() {
+   return(cntl_->getDropCount());
+}
+

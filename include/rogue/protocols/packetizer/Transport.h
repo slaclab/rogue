@@ -38,6 +38,12 @@ namespace rogue {
                //! Core module
                boost::shared_ptr<rogue::protocols::packetizer::Controller> cntl_;
 
+               // Transmission thread
+               boost::thread* thread_;
+
+               //! Thread background
+               void runThread();
+
             public:
 
                //! Class creation

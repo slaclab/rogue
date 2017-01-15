@@ -29,23 +29,23 @@
 #include <rogue/common.h>
 #include <math.h>
 
-namespace rpr = rogue::protocols::packetizer;
+namespace rpp = rogue::protocols::packetizer;
 namespace ris = rogue::interfaces::stream;
 namespace bp  = boost::python;
 
 //! Class creation
-rpr::ControllerPtr rpr::Controller::create ( uint32_t segmentSize, 
-                                             rpr::TransportPtr tran, rpr::ApplicationPtr * app ) {
-   rpr::ControllerPtr r = boost::make_shared<rpr::Controller>(segmentSize,tran,app);
+rpp::ControllerPtr rpp::Controller::create ( uint32_t segmentSize, 
+                                             rpp::TransportPtr tran, rpp::ApplicationPtr * app ) {
+   rpp::ControllerPtr r = boost::make_shared<rpp::Controller>(segmentSize,tran,app);
    return(r);
 }
 
-void rpr::Controller::setup_python() {
+void rpp::Controller::setup_python() {
    // Nothing to do
 }
 
 //! Creator
-rpr::Controller::Controller ( uint32_t segmentSize, rpr::TransportPtr tran, rpr::ApplicationPtr * app ) {
+rpp::Controller::Controller ( uint32_t segmentSize, rpp::TransportPtr tran, rpp::ApplicationPtr * app ) {
    app_  = app;
    tran_ = tran;
    segmentSize_ = segmentSize;
@@ -53,13 +53,14 @@ rpr::Controller::Controller ( uint32_t segmentSize, rpr::TransportPtr tran, rpr:
    tranIndex_ = 0;
    tranCount_ = 0;
    tranDest_ = 0;
+   dropCount_ = 0;
 }
 
 //! Destructor
-rpr::Controller::~Controller() { }
+rpp::Controller::~Controller() { }
 
 //! Transport frame allocation request
-ris::FramePtr rpr::Controller::reqFrame ( uint32_t size, uint32_t maxBuffSize ) {
+ris::FramePtr rpp::Controller::reqFrame ( uint32_t size, uint32_t maxBuffSize ) {
    ris::FramePtr  lFrame;
    ris::FramePtr  rFrame;
    ris::BufferPtr buff;
@@ -91,7 +92,7 @@ ris::FramePtr rpr::Controller::reqFrame ( uint32_t size, uint32_t maxBuffSize ) 
 }
 
 //! Frame received at transport interface
-void rpr::Controller::transportRx( ris::FramePtr frame ) {
+void rpp::Controller::transportRx( ris::FramePtr frame ) {
    ris::FramePtr tFrame;
    ris::BufferPtr buff;
    ris::MasterPtr mast;
@@ -110,13 +111,16 @@ void rpr::Controller::transportRx( ris::FramePtr frame ) {
 
    PyRogue_BEGIN_ALLOW_THREADS;
    {
-      boost::lock_guard<boost::mutex> lock(tranMtx_);
+      boost::lock_guard<boost::mutex> lock(tranRxMtx_);
 
       buff = frame->getBuffer(0);
       data = buff->getPayloadData();
 
       // Drop invalid data
-      if ( frame->getError() || (buff->getPayload() < 9) || ((data[0] & 0xF) != 0) ) return;
+      if ( frame->getError() || (buff->getPayload() < 9) || ((data[0] & 0xF) != 0) ) {
+         dropCount_++;
+         return;
+      }
 
       tmpIdx  = (data[0] >> 4);
       tmpIdx += data[1] * 16;
@@ -140,6 +144,7 @@ void rpr::Controller::transportRx( ris::FramePtr frame ) {
 
       // Drop frame and reset state if mismatch
       if ( tranCount_ > 0  && ( tmpIdx != tranIndex_ || tmpCount != tranCount_ ) ) {
+         dropCount_++;
          tranCount_ = 0;
          tranFrame_.reset();
          return;
@@ -175,8 +180,24 @@ void rpr::Controller::transportRx( ris::FramePtr frame ) {
    if ( tFrame ) mast->sendFrame(tFrame);
 }
 
+//! Frame transmit at transport interface
+// Called by transport class thread
+ris::FramePtr rpp::Controller::transportTx() {
+   ris::FramePtr  frame;
+
+   boost::unique_lock<boost::mutex> lock(tranTxMtx_);
+
+   while ( tranQueue_.empty() ) tranCond_.wait(lock);
+
+   frame = tranQueue_.front();
+   tranQueue_.pop();
+   appCond_.notify_one();
+
+   return(frame);
+}
+
 //! Frame received at application interface
-void rpr::Controller::applicationRx ( ris::FramePtr frame, uint8_t tDest ) {
+void rpp::Controller::applicationRx ( ris::FramePtr frame, uint8_t tDest ) {
    ris::BufferPtr buff;
    uint8_t * data;
    uint32_t x;
@@ -192,7 +213,7 @@ void rpr::Controller::applicationRx ( ris::FramePtr frame, uint8_t tDest ) {
 
    PyRogue_BEGIN_ALLOW_THREADS;
    {
-      boost::lock_guard<boost::mutex> lock(appMtx_);
+      boost::lock_guard<boost::mutex> lock(appRxMtx_);
 
       fUser = frame->getFlags() & 0xFF;
       lUser = (frame->getFlags() >> 8) & 0xFF;
@@ -230,10 +251,20 @@ void rpr::Controller::applicationRx ( ris::FramePtr frame, uint8_t tDest ) {
 
          tFrame->appendBuffer(buff);
 
-         // Nested lock will occur here. May need to create queue & tx thread to fix
-         tran_->sendFrame(tFrame);
+         // Add to transmit queue
+         {
+            boost::unique_lock<boost::mutex> txLock(tranTxMtx_);
+            while ( tranQueue_.size() > 16 ) appCond_.wait(txLock);
+            tranQueue_.push(tFrame);
+            tranCond_.notify_one();
+         }
       }
    }
    PyRogue_END_ALLOW_THREADS;
+}
+
+//! Get drop count
+uint32_t rpp::Controller::getDropCount() {
+   return(dropCount_);
 }
 

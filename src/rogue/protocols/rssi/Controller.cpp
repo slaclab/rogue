@@ -195,31 +195,27 @@ ris::FramePtr rpr::Controller::applicationTx() {
    rpr::HeaderPtr head;
    ris::FramePtr  frame;
 
-   while ( ! frame ) {
+   boost::unique_lock<boost::mutex> lock(mtx_);
 
-      boost::unique_lock<boost::mutex> lock(mtx_);
+   while (!frame) {
 
-      // Wait
-      appCond_.wait(lock);
+      while ( appQueue_.empty() ) appCond_.wait(lock);
+      head = appQueue_.front();
+      appQueue_.pop();
 
-      if ( ! appQueue_.empty() ) {
-         head = appQueue_.front();
-         appQueue_.pop();
+      // Check sequence order, drop if not in sequence
+      if ( head->getSequence() == (remSequence_+1) ) {
+         remSequence_ = head->getSequence();
+         ackTxPend_++;
 
-         // Check sequence order, drop if not in sequence
-         if ( head->getSequence() == (remSequence_+1) ) {
-            remSequence_ = head->getSequence();
-            ackTxPend_++;
-
-            // Non NULL Packet, adjust headroom, set pointer for return
-            if ( ( ! head->getNul() ) && head->getFrame()->getPayload() > rpr::Header::HeaderSize ) {
-               frame = head->getFrame();
-               frame->getBuffer(0)->setHeadRoom(frame->getBuffer(0)->getHeadRoom() + rpr::Header::HeaderSize);
-            }
+         // Non NULL Packet, adjust headroom, set pointer for return
+         if ( ( ! head->getNul() ) && head->getFrame()->getPayload() > rpr::Header::HeaderSize ) {
+            frame = head->getFrame();
+            frame->getBuffer(0)->setHeadRoom(frame->getBuffer(0)->getHeadRoom() + rpr::Header::HeaderSize);
          }
-         else dropCount_++;
-         stCond_.notify_one();
       }
+      else dropCount_++;
+      stCond_.notify_one();
    }
    return(frame);
 }

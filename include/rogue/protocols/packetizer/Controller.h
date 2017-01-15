@@ -44,14 +44,21 @@ namespace rogue {
                uint32_t tranIndex_;
                uint32_t tranCount_;
                uint8_t  tranDest_;
+               uint32_t dropCount_;
 
                boost::shared_ptr<rogue::interfaces::stream::Frame> tranFrame_;
 
-               boost::mutex appMtx_;
-               boost::mutex tranMtx_;
+               boost::mutex appRxMtx_;
+               boost::mutex tranRxMtx_;
+               boost::mutex tranTxMtx_;
 
                boost::shared_ptr<rogue::protocols::packetizer::Transport> tran_;
                boost::shared_ptr<rogue::protocols::packetizer::Application> * app_;
+
+               std::queue<boost::shared_ptr<rogue::interfaces::stream::Frame>> tranQueue_;
+
+               boost::condition_variable tranCond_;
+               boost::condition_variable appCond_;
 
             public:
 
@@ -79,9 +86,14 @@ namespace rogue {
                //! Frame received at transport interface
                void transportRx( boost::shared_ptr<rogue::interfaces::stream::Frame> frame );
 
+               //! Interface for transport transmitter thread
+               boost::shared_ptr<rogue::interfaces::stream::Frame> transportTx ();
+
                //! Frame received at application interface
                void applicationRx( boost::shared_ptr<rogue::interfaces::stream::Frame> frame, uint8_t id);
 
+               //! Get drop count
+               uint32_t getDropCount();
          };
 
          // Convienence

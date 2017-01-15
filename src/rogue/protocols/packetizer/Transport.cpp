@@ -51,11 +51,17 @@ void rpp::Transport::setup_python() {
 rpp::Transport::Transport () { }
 
 //! Destructor
-rpp::Transport::~Transport() { }
+rpp::Transport::~Transport() { 
+   thread_->interrupt();
+   thread_->join();
+}
 
 //! Setup links
 void rpp::Transport::setController( rpp::ControllerPtr cntl ) {
    cntl_ = cntl;
+
+   // Start read thread
+   thread_ = new boost::thread(boost::bind(&rpp::Transport::runThread, this));
 }
 
 //! Generate a Frame. Called from master
@@ -73,5 +79,14 @@ ris::FramePtr rpp::Transport::acceptReq ( uint32_t size, bool zeroCopyEn, uint32
 //! Accept a frame from master
 void rpp::Transport::acceptFrame ( ris::FramePtr frame ) {
    cntl_->transportRx(frame);
+}
+
+//! Thread background
+void rpp::Transport::runThread() {
+   try {
+      while(1) {
+         sendFrame(cntl_->transportTx());
+      }
+   } catch (boost::thread_interrupted&) { }
 }
 

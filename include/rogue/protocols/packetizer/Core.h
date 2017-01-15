@@ -63,6 +63,9 @@ namespace rogue {
 
                //! Application module
                boost::shared_ptr<rogue::protocols::packetizer::Application> application(uint8_t dest);
+
+               //! Get drop count
+               uint32_t getDropCount();
          };
 
          // Convienence
