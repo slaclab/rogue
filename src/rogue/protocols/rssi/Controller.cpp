@@ -36,8 +36,10 @@ namespace ris = rogue::interfaces::stream;
 namespace bp  = boost::python;
 
 //! Class creation
-rpr::ControllerPtr rpr::Controller::create ( rpr::TransportPtr tran, rpr::ApplicationPtr app ) {
-   rpr::ControllerPtr r = boost::make_shared<rpr::Controller>(tran,app);
+rpr::ControllerPtr rpr::Controller::create ( uint32_t segSize, 
+                                             rpr::TransportPtr tran, 
+                                             rpr::ApplicationPtr app ) {
+   rpr::ControllerPtr r = boost::make_shared<rpr::Controller>(segSize,tran,app);
    return(r);
 }
 
@@ -46,7 +48,7 @@ void rpr::Controller::setup_python() {
 }
 
 //! Creator
-rpr::Controller::Controller ( rpr::TransportPtr tran, rpr::ApplicationPtr app ) {
+rpr::Controller::Controller ( uint32_t segSize, rpr::TransportPtr tran, rpr::ApplicationPtr app ) {
    app_  = app;
    tran_ = tran;
 
@@ -59,6 +61,7 @@ rpr::Controller::Controller ( rpr::TransportPtr tran, rpr::ApplicationPtr app ) 
    maxRetran_     = ReqMaxRetran;
    maxCumAck_     = ReqMaxCumAck;
    remConnId_     = 0;
+   segmentSize_   = segSize;
 
    locSequence_ = 100;
    remSequence_ = 0;
@@ -91,8 +94,9 @@ ris::FramePtr rpr::Controller::reqFrame ( uint32_t size, uint32_t maxBuffSize ) 
    uint32_t      bSize;
 
    // Determine buffer size
-   if ( maxBuffSize > remMaxSegment_ ) bSize = remMaxSegment_;
-   else bSize = maxBuffSize;
+   bSize = maxBuffSize;
+   if ( bSize > remMaxSegment_ ) bSize = remMaxSegment_;
+   if ( bSize > segmentSize_  ) bSize = segmentSize_;
 
    // Adjust request size to include our header
    nSize = size + rpr::Header::HeaderSize;
@@ -398,7 +402,7 @@ ris::FramePtr rpr::Controller::stateClosedWait (uint32_t *wait) {
       syn->setVersion(Version);
       syn->setChk(true);
       syn->setMaxOutstandingSegments(LocMaxBuffers);
-      syn->setMaxSegmentSize(LocMaxSegment);
+      syn->setMaxSegmentSize(segmentSize_);
       syn->setRetransmissionTimeout(retranTout_);
       syn->setCumulativeAckTimeout(cumAckTout_);
       syn->setNullTimeout(nullTout_);

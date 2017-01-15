@@ -41,7 +41,6 @@ namespace rogue {
                static const uint8_t  Version       = 1;
                static const uint8_t  TimeoutUnit   = 3; // 1e-3
                static const uint8_t  LocMaxBuffers = 32;
-               static const uint16_t LocMaxSegment = 8000;
                static const uint16_t ReqRetranTout = 10;
                static const uint16_t ReqCumAckTout = 5;
                static const uint16_t ReqNullTout   = 3000;
@@ -66,6 +65,7 @@ namespace rogue {
                uint8_t  maxRetran_;
                uint8_t  maxCumAck_;
                uint32_t remConnId_;
+               uint32_t segmentSize_;
 
                // Connection tracking
                uint8_t  locSequence_;
@@ -101,14 +101,16 @@ namespace rogue {
 
                //! Class creation
                static boost::shared_ptr<rogue::protocols::rssi::Controller> 
-                  create ( boost::shared_ptr<rogue::protocols::rssi::Transport> tran,
+                  create ( uint32_t segSize,
+                           boost::shared_ptr<rogue::protocols::rssi::Transport> tran,
                            boost::shared_ptr<rogue::protocols::rssi::Application> app );
 
                //! Setup class in python
                static void setup_python();
 
                //! Creator
-               Controller( boost::shared_ptr<rogue::protocols::rssi::Transport> tran,
+               Controller( uint32_t segSize,
+                           boost::shared_ptr<rogue::protocols::rssi::Transport> tran,
                            boost::shared_ptr<rogue::protocols::rssi::Application> app );
 
                //! Destructor
