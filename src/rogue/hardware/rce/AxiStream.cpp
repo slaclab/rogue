@@ -325,6 +325,7 @@ void rhr::AxiStream::runThread() {
                buff->setError(error);
                frame->setError(error | frame->getError());
                frame->appendBuffer(buff);
+               frame->setFlags(flags);
                sendFrame(frame);
                frame = createFrame(0,0,false,(rawBuff_ != NULL));
             }
