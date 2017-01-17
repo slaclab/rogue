@@ -43,6 +43,8 @@ void rpp::Core::setup_python() {
       .staticmethod("create")
       .def("transport",      &rpp::Core::transport)
       .def("application",    &rpp::Core::application)
+      .def("getDropCount",   &rpp::Core::getDropCount)
+
    ;
 
 }

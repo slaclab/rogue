@@ -43,6 +43,10 @@ void rpr::Core::setup_python() {
       .staticmethod("create")
       .def("transport",      &rpr::Core::transport)
       .def("application",    &rpr::Core::application)
+      .def("getOpen",        &rpr::Core::getOpen)
+      .def("getDownCount",   &rpr::Core::getDownCount)
+      .def("getDropCount",   &rpr::Core::getDropCount)
+      .def("getRetranCount", &rpr::Core::getRetranCount)
    ;
 
 }

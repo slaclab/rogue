@@ -106,7 +106,7 @@ void rpp::Controller::transportRx( ris::FramePtr frame ) {
    if ( frame->getCount() == 0 ) 
       throw(rogue::GeneralError("packetizer::Controller::transportRx","Frame must not be empty"));
 
-   printf("Packetizer transport rx frame = %i\n",frame->getPayload());
+   //printf("Packetizer transport rx frame = %i\n",frame->getPayload());
 
    PyRogue_BEGIN_ALLOW_THREADS;
    {
@@ -117,6 +117,7 @@ void rpp::Controller::transportRx( ris::FramePtr frame ) {
 
       // Drop invalid data
       if ( frame->getError() || (buff->getPayload() < 9) || ((data[0] & 0xF) != 0) ) {
+         //printf("Packetizer dropped frame. A.\n");
          dropCount_++;
          return;
       }
@@ -143,6 +144,7 @@ void rpp::Controller::transportRx( ris::FramePtr frame ) {
       
       // Drop frame and reset state if mismatch
       if ( tranCount_ > 0  && ( tmpIdx != tranIndex_ || tmpCount != tranCount_ ) ) {
+         //printf("Packetizer dropped frame. B.\n");
          dropCount_++;
          tranCount_ = 0;
          tranFrame_.reset();
@@ -170,7 +172,7 @@ void rpp::Controller::transportRx( ris::FramePtr frame ) {
          if ( app_[tranDest_] ) {
             tFrame = tranFrame_;
             mast = app_[tranDest_];
-            printf("Packetizer transport generate frame = %i\n",frame->getPayload());
+            //printf("Packetizer transport generate frame = %i\n",frame->getPayload());
          }
          tranFrame_.reset();
       }
@@ -211,7 +213,7 @@ void rpp::Controller::applicationRx ( ris::FramePtr frame, uint8_t tDest ) {
 
    if ( frame->getError() ) return;
 
-   printf("Packetizer application frame=%i\n",frame->getPayload());
+   //printf("Packetizer application frame=%i\n",frame->getPayload());
 
    PyRogue_BEGIN_ALLOW_THREADS;
    {
@@ -234,9 +236,8 @@ void rpp::Controller::applicationRx ( ris::FramePtr frame, uint8_t tDest ) {
          size = buff->getPayload();
          data = buff->getPayloadData();
 
-         data[0] = appIndex_ % 16;
-         data[1] = appIndex_ / 16;
-         appIndex_++;
+         data[0] = ((appIndex_ % 16) << 4);
+         data[1] = (appIndex_ / 16) & 0xFF;
 
          data[2] = x % 256;
          data[3] = (x % 0xFFFF) / 256;
@@ -248,7 +249,7 @@ void rpp::Controller::applicationRx ( ris::FramePtr frame, uint8_t tDest ) {
 
          data[size-1] = lUser & 0x7F;
 
-         if ( x == frame->getCount()-1 ) data[size-1] |= 0x80;
+         if ( x == (frame->getCount()-1) ) data[size-1] |= 0x80;
 
          tFrame->appendBuffer(buff);
 
@@ -256,11 +257,12 @@ void rpp::Controller::applicationRx ( ris::FramePtr frame, uint8_t tDest ) {
          {
             boost::unique_lock<boost::mutex> txLock(tranTxMtx_);
             while ( tranQueue_.size() > 16 ) appCond_.wait(txLock);
-            printf("Packetizer application generate frame=%i\n",frame->getPayload());
+            //printf("Packetizer application generate frame=%i\n",frame->getPayload());
             tranQueue_.push(tFrame);
             tranCond_.notify_one();
          }
       }
+      appIndex_++;
    }
    PyRogue_END_ALLOW_THREADS;
 }

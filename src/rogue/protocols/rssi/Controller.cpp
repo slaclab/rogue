@@ -143,7 +143,7 @@ void rpr::Controller::transportRx( ris::FramePtr frame ) {
 
          // We are waiting and packet is valid
          if ( state_ == StWaitSyn && syn->getAck() && syn->getAcknowledge() == locSequence_ ) {
-            printf("Got SYN:\n%s\n",syn->dump().c_str());
+            //printf("Got SYN:\n%s\n",syn->dump().c_str());
             remSequence_   = syn->getSequence();
             remMaxBuffers_ = syn->getMaxOutstandingSegments();
             remMaxSegment_ = syn->getMaxSegmentSize();
@@ -161,6 +161,7 @@ void rpr::Controller::transportRx( ris::FramePtr frame ) {
 
          // Syn packet received during open state, generate reset and close
          else if ( state_ == StOpen ) {
+            //printf("RSSI: Got unexpected syn\n");
             state_ = StError;
             gettimeofday(&stTime_,NULL);
          }
@@ -171,22 +172,28 @@ void rpr::Controller::transportRx( ris::FramePtr frame ) {
 
          // Reset
          if ( head->getRst() ) {
+            //printf("RSSI: Got reset\n");
             state_ = StError;
             gettimeofday(&stTime_,NULL);
          }
          else {
 
             // Ack set
-            if ( head->getAck() ) {
-               lastAckRx_ = head->getAcknowledge();
-               printf("Got ACK:\n%s\n",head->dump().c_str());
-            }
+            if ( head->getAck() ) lastAckRx_ = head->getAcknowledge();
 
             // Update busy bit
             tranBusy_ = head->getBusy();
 
             // Payload or NULL packet
-            if ( head->getNul() || frame->getPayload() > rpr::Header::HeaderSize ) appQueue_.push(head);
+            if ( head->getNul() || frame->getPayload() > rpr::Header::HeaderSize ) {
+               appQueue_.push(head);
+               //printf("rssi rx. Seq=%i, ack=%i, Size=%i\n",
+                     //head->getSequence(),head->getAcknowledge(),frame->getPayload());
+            }
+            //else if ( head->getAck() ) {
+               //printf("rssi rx ack. Seq=%i, ack=%i, Size=%i\n",
+                     //head->getSequence(),head->getAcknowledge(),frame->getPayload());
+            //}
          }
       }
       appCond_.notify_all();
@@ -200,6 +207,7 @@ void rpr::Controller::transportRx( ris::FramePtr frame ) {
 ris::FramePtr rpr::Controller::applicationTx() {
    rpr::HeaderPtr head;
    ris::FramePtr  frame;
+   uint8_t expSequence;
 
    boost::unique_lock<boost::mutex> lock(mtx_);
 
@@ -210,21 +218,23 @@ ris::FramePtr rpr::Controller::applicationTx() {
       appQueue_.pop();
 
       // Check sequence order, drop if not in sequence
-      if ( head->getSequence() == (remSequence_+1) ) {
+      expSequence = remSequence_+1;
+      if ( head->getSequence() == expSequence ) {
          remSequence_ = head->getSequence();
          ackTxPend_++;
 
          // Non NULL Packet, adjust headroom, set pointer for return
          if ( ( ! head->getNul() ) && head->getFrame()->getPayload() > rpr::Header::HeaderSize ) {
             frame = head->getFrame();
-            printf("Rssi transport rx frame, size=%i\n",frame->getPayload());
             frame->getBuffer(0)->setHeadRoom(frame->getBuffer(0)->getHeadRoom() + rpr::Header::HeaderSize);
          }
       }
-      else dropCount_++;
+      else {
+         //printf("RSSI Dropped Frame. Got seq=%i, Exp Seq=%i\n",head->getSequence(),expSequence);
+         dropCount_++;
+      }
       stCond_.notify_one();
    }
-   printf("rssi sending frame to application. Size=%i\n",frame->getPayload());
    return(frame);
 }
 
@@ -243,7 +253,6 @@ void rpr::Controller::applicationRx ( ris::FramePtr frame ) {
 
    // Adjust header in first buffer
    frame->getBuffer(0)->setHeadRoom(frame->getBuffer(0)->getHeadRoom() - rpr::Header::HeaderSize);
-   printf("Rssi application rx frame, size=%i\n",frame->getPayload());
 
    // Map to RSSI 
    rpr::HeaderPtr head = rpr::Header::create(frame);
@@ -277,6 +286,8 @@ void rpr::Controller::applicationRx ( ris::FramePtr frame ) {
 
       // Enable transmit
       tranFrame = head->getFrame();
+      //printf("rssi tx. Size=%i, seq=%i, ack=%i\n",
+            //tranFrame->getPayload(),head->getSequence(),head->getAcknowledge());
 
       // Clear pending ack tx counter
       ackTxPend_ = 0;
@@ -289,7 +300,6 @@ void rpr::Controller::applicationRx ( ris::FramePtr frame ) {
 
    // Pass frame to transport if valid
    if ( tranFrame ) {
-      printf("rssi sending frame to transport. Size=%i\n",frame->getPayload());
       tran_->sendFrame(tranFrame);
    }
 }
@@ -420,7 +430,7 @@ ris::FramePtr rpr::Controller::stateClosedWait (uint32_t *wait) {
       syn->setConnectionId(locConnId_);
       syn->update();
 
-      printf("Gen SYN:\n%s\n",syn->dump().c_str());
+      //printf("Gen SYN:\n%s\n",syn->dump().c_str());
       frame = syn->getFrame();
 
       // Update state and time
@@ -446,13 +456,13 @@ ris::FramePtr rpr::Controller::stateSendSeqAck (uint32_t *wait) {
    ack->setAcknowledge(remSequence_);
    ack->update();
 
-   printf("Gen ACK:\n%s\n",ack->dump().c_str());
+   //printf("Gen ACK:\n%s\n",ack->dump().c_str());
 
    // Update state and time
    state_ = StOpen;
    gettimeofday(&stTime_,NULL);
 
-   printf("Connection state set to open\n");
+   //printf("Connection state set to open\n");
    *wait = convTime(nullTout_/10);
 
    return(ack->getFrame());
@@ -479,13 +489,16 @@ ris::FramePtr rpr::Controller::stateOpen (uint32_t *wait) {
    if ( lastAckRx_ != locSequence_ ) {
 
       // Walk through each frame in list, looking for first expired
-      for ( idx=lastAckRx_+1; idx != (locSequence_+1); idx++ ) {
+      for ( idx=lastAckRx_+1; idx != ((locSequence_+1)%256); idx++ ) {
          head = txList_[idx];
 
          if ( timePassed(head->getTime(),retranTout_) ) {
 
             // Max retran count reached, close connection
-            if ( head->count() >= maxRetran_ ) state_ = StError;
+            if ( head->count() >= maxRetran_ ) {
+               state_ = StError;
+               //printf("RSSI: Max retransmissions\n");
+            }
             else {
 
                // Generate transmit
@@ -494,7 +507,7 @@ ris::FramePtr rpr::Controller::stateOpen (uint32_t *wait) {
                head->setBusy(appQueue_.size() >= LocMaxBuffers);
                head->update();
 
-               printf("Retran:\n%s\n",head->dump().c_str());
+               //printf("RSSI Retran. Seq=%i, Ack=%i\n",head->getSequence(),head->getAcknowledge());
 
                // Clear pending ack tx counter
                ackTxPend_ = 0;
@@ -537,7 +550,7 @@ ris::FramePtr rpr::Controller::stateOpen (uint32_t *wait) {
       // Clear pending ack tx counter
       ackTxPend_ = 0;
 
-      printf("Gen ACK:\n%s\n",head->dump().c_str());
+      //printf("RSSI TX ACK. Seq=%i, Ack=%i, NUL=%i\n",head->getSequence(),head->getAcknowledge(),head->getNul());
 
       gettimeofday(&stTime_,NULL);
       frame = head->getFrame();
@@ -556,9 +569,9 @@ ris::FramePtr rpr::Controller::stateError (uint32_t *wait) {
    rst->setRst(true);
    rst->setSequence(locSequence_);
    rst->update();
-   printf("Sending RST:\n%s\n",rst->dump().c_str());
+   //printf("Sending RST:\n%s\n",rst->dump().c_str());
 
-   printf("Connection state set to closed\n");
+   //printf("Connection state set to closed\n");
    downCount_++;
    state_ = StClosed;
    gettimeofday(&stTime_,NULL);
