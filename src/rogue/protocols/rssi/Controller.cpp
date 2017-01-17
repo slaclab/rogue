@@ -89,29 +89,35 @@ rpr::Controller::~Controller() {
 
 //! Transport frame allocation request
 ris::FramePtr rpr::Controller::reqFrame ( uint32_t size, uint32_t maxBuffSize ) {
-   ris::FramePtr frame;
-   uint32_t      nSize;
-   uint32_t      bSize;
+   ris::FramePtr  frame;
+   ris::BufferPtr buffer;
+   uint32_t       nSize;
 
-   // Determine buffer size
-   bSize = maxBuffSize;
-   if ( bSize > remMaxSegment_ ) bSize = remMaxSegment_;
-   if ( bSize > segmentSize_  ) bSize = segmentSize_;
-
-   // Adjust request size to include our header
+   // Request only single buffer frames.
+   // Frame size returned is never greater than remote max size
+   // or local segment size
    nSize = size + rpr::Header::HeaderSize;
+   if ( nSize > remMaxSegment_ ) nSize = remMaxSegment_;
+   if ( nSize > segmentSize_  ) nSize = segmentSize_;
 
    // Forward frame request to transport slave
-   frame = tran_->reqFrame (nSize, false, bSize);
+   frame = tran_->reqFrame (nSize, false, nSize);
+   buffer = frame->getBuffer(0);
 
    // Make sure there is enough room in first buffer for our header
-   if ( frame->getBuffer(0)->getAvailable() < rpr::Header::HeaderSize )
-      throw(rogue::GeneralError::boundary("Controller::reqFrame",
+   if ( buffer->getAvailable() < rpr::Header::HeaderSize )
+      throw(rogue::GeneralError::boundary("rss::Controller::reqFrame",
                                           rpr::Header::HeaderSize,
-                                          frame->getBuffer(0)->getAvailable()));
+                                          buffer->getAvailable()));
 
    // Update first buffer to include our header space.
-   frame->getBuffer(0)->setHeadRoom(frame->getBuffer(0)->getHeadRoom() + rpr::Header::HeaderSize);
+   buffer->setHeadRoom(buffer->getHeadRoom() + rpr::Header::HeaderSize);
+
+   // Trim multi buffer frames
+   if ( frame->getCount() > 1 ) {
+      frame = ris::Frame::create();
+      frame->appendBuffer(buffer);
+   }
 
    // Return frame
    return(frame);
@@ -122,7 +128,7 @@ void rpr::Controller::transportRx( ris::FramePtr frame ) {
    ris::FramePtr appFrame;
 
    if ( frame->getCount() == 0 ) 
-      throw(rogue::GeneralError("Controller::transportRx","Frame must not be empty"));
+      throw(rogue::GeneralError("rss::Controller::transportRx","Frame must not be empty"));
 
    rpr::HeaderPtr head = rpr::Header::create(frame);
    rpr::SynPtr    syn  = rpr::Syn::create(frame);
@@ -211,12 +217,14 @@ ris::FramePtr rpr::Controller::applicationTx() {
          // Non NULL Packet, adjust headroom, set pointer for return
          if ( ( ! head->getNul() ) && head->getFrame()->getPayload() > rpr::Header::HeaderSize ) {
             frame = head->getFrame();
+            printf("Rssi transport rx frame, size=%i\n",frame->getPayload());
             frame->getBuffer(0)->setHeadRoom(frame->getBuffer(0)->getHeadRoom() + rpr::Header::HeaderSize);
          }
       }
       else dropCount_++;
       stCond_.notify_one();
    }
+   printf("rssi sending frame to application. Size=%i\n",frame->getPayload());
    return(frame);
 }
 
@@ -225,16 +233,17 @@ void rpr::Controller::applicationRx ( ris::FramePtr frame ) {
    ris::FramePtr tranFrame;
 
    if ( frame->getCount() == 0 ) 
-      throw(rogue::GeneralError("Controller::applicationRx","Frame must not be empty"));
+      throw(rogue::GeneralError("rss::Controller::applicationRx","Frame must not be empty"));
 
    // First buffer of frame does not have enough room for header
    if ( frame->getBuffer(0)->getHeadRoom() < rpr::Header::HeaderSize )
-      throw(rogue::GeneralError::boundary("Controller::applicationRx",
+      throw(rogue::GeneralError::boundary("rss::Controller::applicationRx",
                                           rpr::Header::HeaderSize,
                                           frame->getBuffer(0)->getHeadRoom()));
 
    // Adjust header in first buffer
    frame->getBuffer(0)->setHeadRoom(frame->getBuffer(0)->getHeadRoom() - rpr::Header::HeaderSize);
+   printf("Rssi application rx frame, size=%i\n",frame->getPayload());
 
    // Map to RSSI 
    rpr::HeaderPtr head = rpr::Header::create(frame);
@@ -279,7 +288,10 @@ void rpr::Controller::applicationRx ( ris::FramePtr frame ) {
    PyRogue_END_ALLOW_THREADS;
 
    // Pass frame to transport if valid
-   if ( tranFrame ) tran_->sendFrame(tranFrame);
+   if ( tranFrame ) {
+      printf("rssi sending frame to transport. Size=%i\n",frame->getPayload());
+      tran_->sendFrame(tranFrame);
+   }
 }
 
 

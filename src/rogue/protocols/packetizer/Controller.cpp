@@ -72,18 +72,15 @@ ris::FramePtr rpp::Controller::reqFrame ( uint32_t size, uint32_t maxBuffSize ) 
    while ( lFrame->getAvailable() < size ) {
       rFrame = tran_->reqFrame (segmentSize_, false, segmentSize_);
       buff = rFrame->getBuffer(0);
-   
-      // Make sure there is enough room in first buffer for our header/tail plus size
-      if ( buff->getAvailable() < ( segmentSize_ + 9) )
-         throw(rogue::GeneralError::boundary("Controller::reqFrame",
-                                             (segmentSize_ + 9), buff->getAvailable()));
+  
+      // Buffer should support our header/tail plus at least one payload byte 
+      if ( buff->getAvailable() < 10 )
+         throw(rogue::GeneralError::boundary("packetizer::Controller::reqFrame",10,
+                                             buff->getAvailable()));
 
       // Add 8 bytes to headroom
       buff->setHeadRoom(buff->getHeadRoom() + 8);
       
-      // Add 1 bytes to tailroom
-      buff->setTailRoom(buff->getTailRoom() + 1);
-
       // Add buffer to return frame
       lFrame->appendBuffer(buff);
    }
@@ -107,7 +104,9 @@ void rpp::Controller::transportRx( ris::FramePtr frame ) {
    uint8_t * data;
 
    if ( frame->getCount() == 0 ) 
-      throw(rogue::GeneralError("Controller::transportRx","Frame must not be empty"));
+      throw(rogue::GeneralError("packetizer::Controller::transportRx","Frame must not be empty"));
+
+   printf("Packetizer transport rx frame = %i\n",frame->getPayload());
 
    PyRogue_BEGIN_ALLOW_THREADS;
    {
@@ -138,10 +137,10 @@ void rpp::Controller::transportRx( ris::FramePtr frame ) {
 
       // Rem 8 bytes to headroom
       buff->setHeadRoom(buff->getHeadRoom() + 8);
-      
-      // Rem 1 bytes to tailroom
-      buff->setTailRoom(buff->getTailRoom() + 1);
 
+      // Shorten message by one byte
+      buff->setPayload(buff->getPayload()-1);
+      
       // Drop frame and reset state if mismatch
       if ( tranCount_ > 0  && ( tmpIdx != tranIndex_ || tmpCount != tranCount_ ) ) {
          dropCount_++;
@@ -171,6 +170,7 @@ void rpp::Controller::transportRx( ris::FramePtr frame ) {
          if ( app_[tranDest_] ) {
             tFrame = tranFrame_;
             mast = app_[tranDest_];
+            printf("Packetizer transport generate frame = %i\n",frame->getPayload());
          }
          tranFrame_.reset();
       }
@@ -207,9 +207,11 @@ void rpp::Controller::applicationRx ( ris::FramePtr frame, uint8_t tDest ) {
    uint8_t  tId;
 
    if ( frame->getCount() == 0 ) 
-      throw(rogue::GeneralError("Controller::applicationRx","Frame must not be empty"));
+      throw(rogue::GeneralError("packetizer::Controller::applicationRx","Frame must not be empty"));
 
    if ( frame->getError() ) return;
+
+   printf("Packetizer application frame=%i\n",frame->getPayload());
 
    PyRogue_BEGIN_ALLOW_THREADS;
    {
@@ -221,16 +223,15 @@ void rpp::Controller::applicationRx ( ris::FramePtr frame, uint8_t tDest ) {
 
       for (x=0; x < frame->getCount(); x++ ) {
          ris::FramePtr tFrame = ris::Frame::create();
-         
          buff = frame->getBuffer(x);
-         size = buff->getPayload();
 
          // Rem 8 bytes to headroom
          buff->setHeadRoom(buff->getHeadRoom() - 8);
          
-         // Rem 1 bytes to tailroom
-         buff->setTailRoom(buff->getTailRoom() - 1);
+         // Make payload one byte longer
+         buff->setPayload(buff->getPayload()+1);
 
+         size = buff->getPayload();
          data = buff->getPayloadData();
 
          data[0] = appIndex_ % 16;
@@ -245,9 +246,9 @@ void rpp::Controller::applicationRx ( ris::FramePtr frame, uint8_t tDest ) {
          data[6] = tId;
          data[7] = fUser;
 
-         data[size+8] = lUser & 0x7F;
+         data[size-1] = lUser & 0x7F;
 
-         if ( x == frame->getCount()-1 ) data[size+8] |= 0x80;
+         if ( x == frame->getCount()-1 ) data[size-1] |= 0x80;
 
          tFrame->appendBuffer(buff);
 
@@ -255,6 +256,7 @@ void rpp::Controller::applicationRx ( ris::FramePtr frame, uint8_t tDest ) {
          {
             boost::unique_lock<boost::mutex> txLock(tranTxMtx_);
             while ( tranQueue_.size() > 16 ) appCond_.wait(txLock);
+            printf("Packetizer application generate frame=%i\n",frame->getPayload());
             tranQueue_.push(tFrame);
             tranCond_.notify_one();
          }

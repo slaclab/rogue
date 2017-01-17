@@ -38,11 +38,8 @@ class UdpRssiPack(object):
         self._rssi.application()._setSlave(self._pack.transport())
         self._pack.transport()._setSlave(self._rssi.application())
 
-    def _getStreamMaster(self):
-        return(self._pack.application())
-
-    def _getStreamSlave(self):
-        return(self._pack.application())
+    def application(self,dest):
+        return(self._pack.application(dest))
 
     def getRssiOpen(self):
         return(self._rssi.getOpen())
