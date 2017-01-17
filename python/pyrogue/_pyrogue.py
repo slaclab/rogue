@@ -1020,6 +1020,7 @@ class Block(rogue.interfaces.memory.Master):
             tData = self._vData if self._doVerify else self._bData
 
         # Start transaction outside of lock
+        #print("Block reading %s. Addr=%i" % (self._name,self._offset))
         self._reqTransaction(self._offset,tData,type)
 
     def _doneTransaction(self,tid,error):
@@ -1049,6 +1050,8 @@ class Block(rogue.interfaces.memory.Master):
 
             # Notify waiters
             self._cond.notify()
+
+            #print("Block got done. Name=%s. Addr=%i" % (self._name,self._offset))
 
     def _checkTransaction(self,update):
         """
