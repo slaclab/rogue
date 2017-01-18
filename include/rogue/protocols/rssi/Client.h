@@ -1,13 +1,13 @@
 /**
  *-----------------------------------------------------------------------------
- * Title      : RSSI Core Class
+ * Title      : RSSI Client Class
  * ----------------------------------------------------------------------------
- * File       : Core.h
+ * File       : Client.h
  * Created    : 2017-01-07
  * Last update: 2017-01-07
  * ----------------------------------------------------------------------------
  * Description:
- * UDP Core
+ * UDP Client
  * ----------------------------------------------------------------------------
  * This file is part of the rogue software platform. It is subject to 
  * the license terms in the LICENSE.txt file found in the top-level directory 
@@ -18,8 +18,8 @@
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
-#ifndef __ROGUE_PROTOCOLS_RSSI_CORE_H__
-#define __ROGUE_PROTOCOLS_RSSI_CORE_H__
+#ifndef __ROGUE_PROTOCOLS_RSSI_CLIENT_H__
+#define __ROGUE_PROTOCOLS_RSSI_CLIENT_H__
 #include <boost/python.hpp>
 #include <boost/thread.hpp>
 #include <stdint.h>
@@ -32,8 +32,8 @@ namespace rogue {
          class Application;
          class Controller;
 
-         //! RSSI Core Class
-         class Core {
+         //! RSSI Client Class
+         class Client {
 
                //! Transport module
                boost::shared_ptr<rogue::protocols::rssi::Transport> tran_;
@@ -41,22 +41,22 @@ namespace rogue {
                //! Application module
                boost::shared_ptr<rogue::protocols::rssi::Application> app_;
 
-               //! Core module
+               //! Client module
                boost::shared_ptr<rogue::protocols::rssi::Controller> cntl_;
 
             public:
 
                //! Class creation
-               static boost::shared_ptr<rogue::protocols::rssi::Core> create (uint32_t segSize);
+               static boost::shared_ptr<rogue::protocols::rssi::Client> create (uint32_t segSize);
 
                //! Setup class in python
                static void setup_python();
 
                //! Creator
-               Core(uint32_t segSize);
+               Client(uint32_t segSize);
 
                //! Destructor
-               ~Core();
+               ~Client();
 
                //! Get transport interface
                boost::shared_ptr<rogue::protocols::rssi::Transport> transport();
@@ -79,7 +79,7 @@ namespace rogue {
          };
 
          // Convienence
-         typedef boost::shared_ptr<rogue::protocols::rssi::Core> CorePtr;
+         typedef boost::shared_ptr<rogue::protocols::rssi::Client> ClientPtr;
 
       }
    }

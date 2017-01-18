@@ -95,13 +95,16 @@ void rpu::Client::setTimeout(uint32_t timeout) {
  * If maxBuffSize = 0, slave will freely determine the buffer size.
  */
 ris::FramePtr rpu::Client::acceptReq ( uint32_t size, bool zeroCopyEn, uint32_t maxBuffSize ) {
+   ris::FramePtr frame;
    uint32_t max;
 
    // Adjust max buffer size
    max = maxBuffSize;
-   if ( max > maxSize_ ) max = maxSize_;
+   if ( max > maxSize_ || max == 0 ) max = maxSize_;
+   frame = createFrame(size,max,false,false);
 
-   return(createFrame(size,max,false,false));
+   //printf("UDP returning frame with size = %i\n",frame->getAvailable());
+   return(frame);
 }
 
 //! Accept a frame from master

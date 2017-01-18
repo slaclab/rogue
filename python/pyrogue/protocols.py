@@ -29,7 +29,7 @@ class UdpRssiPack(object):
         self._size = size
 
         self._udp  = rogue.protocols.udp.Client(host,port,size)
-        self._rssi = rogue.protocols.rssi.Core(size)
+        self._rssi = rogue.protocols.rssi.Client(size)
         self._pack = rogue.protocols.packetizer.Core(size)
 
         self._udp._setSlave(self._rssi.transport())

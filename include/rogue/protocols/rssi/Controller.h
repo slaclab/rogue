@@ -46,7 +46,7 @@ namespace rogue {
                static const uint16_t ReqNullTout   = 3000;
                static const uint8_t  ReqMaxRetran  = 15;
                static const uint8_t  ReqMaxCumAck  = 2;
-               static const uint32_t TryPeriod     = 1000; // 1 second
+               static const uint32_t TryPeriod     = 100;
 
                //! Connection states
                enum States : uint32_t { StClosed     = 0,

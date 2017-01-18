@@ -58,11 +58,12 @@ class PrbsRx(pyrogue.Device):
     def _getStreamSlave(self):
         return self._prbs
 
-    def _read(self):
-        self.rxErrors.get()
-        self.rxCount.get()
-        self.rxBytes.get()
-        pyrogue.Device._read(self)
+    def _backgroundTransaction(self,type):
+        if type == rogue.interfaces.memory.Read:
+            self.rxErrors.get()
+            self.rxCount.get()
+            self.rxBytes.get()
+        pyrogue.Device._backgroundTransaction(self,type)
 
     def _poll(self):
         self.rxErrors.get()
@@ -116,11 +117,12 @@ class PrbsTx(pyrogue.Device):
     def _getStreamMaster(self):
         return self._prbs
 
-    def _read(self):
-        self.txErrors.get()
-        self.txCount.get()
-        self.txBytes.get()
-        pyrogue.Device._read(self)
+    def _backgroundTransaction(self,type):
+        if type == rogue.interfaces.memory.Read:
+            self.txErrors.get()
+            self.txCount.get()
+            self.txBytes.get()
+        pyrogue.Device._backgroundTransaction(self,type)
 
     def _poll(self):
         self.txErrors.get()

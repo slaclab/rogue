@@ -97,7 +97,7 @@ ris::FramePtr rpr::Controller::reqFrame ( uint32_t size, uint32_t maxBuffSize ) 
    // Frame size returned is never greater than remote max size
    // or local segment size
    nSize = size + rpr::Header::HeaderSize;
-   if ( nSize > remMaxSegment_ ) nSize = remMaxSegment_;
+   if ( nSize > remMaxSegment_ && remMaxSegment_ > 0 ) nSize = remMaxSegment_;
    if ( nSize > segmentSize_  ) nSize = segmentSize_;
 
    // Forward frame request to transport slave
@@ -118,6 +118,8 @@ ris::FramePtr rpr::Controller::reqFrame ( uint32_t size, uint32_t maxBuffSize ) 
       frame = ris::Frame::create();
       frame->appendBuffer(buffer);
    }
+
+   //printf("RSSI returning frame with size = %i\n",frame->getAvailable());
 
    // Return frame
    return(frame);

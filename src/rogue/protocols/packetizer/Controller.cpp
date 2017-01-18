@@ -85,6 +85,7 @@ ris::FramePtr rpp::Controller::reqFrame ( uint32_t size, uint32_t maxBuffSize ) 
       lFrame->appendBuffer(buff);
    }
 
+   //printf("Packetizer returning frame with size = %i\n",lFrame->getAvailable());
    return(lFrame);
 }
 
@@ -176,6 +177,7 @@ void rpp::Controller::transportRx( ris::FramePtr frame ) {
          }
          tranFrame_.reset();
       }
+      else tranCount_++;
    }
    PyRogue_END_ALLOW_THREADS;
 

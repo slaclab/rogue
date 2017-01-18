@@ -282,7 +282,7 @@ class Node(object):
 
         # First get non-node local values
         for key,value in self.__dict__.items():
-            if (not key.startswith('_')) and (not isinstance(value,Node)):
+            if (not key.startswith('_')) and (not isinstance(value,Node)) and (not callable(value)):
                 data[key] = value
 
         # Next get sub nodes

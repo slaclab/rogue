@@ -1,13 +1,13 @@
 /**
  *-----------------------------------------------------------------------------
- * Title      : RSSI Core Class
+ * Title      : RSSI Client Class
  * ----------------------------------------------------------------------------
- * File       : Core.h
+ * File       : Client.h
  * Created    : 2017-01-07
  * Last update: 2017-01-07
  * ----------------------------------------------------------------------------
  * Description:
- * UDP Core
+ * UDP Client
  * ----------------------------------------------------------------------------
  * This file is part of the rogue software platform. It is subject to 
  * the license terms in the LICENSE.txt file found in the top-level directory 
@@ -18,7 +18,7 @@
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
-#include <rogue/protocols/rssi/Core.h>
+#include <rogue/protocols/rssi/Client.h>
 #include <rogue/protocols/rssi/Transport.h>
 #include <rogue/protocols/rssi/Application.h>
 #include <rogue/protocols/rssi/Controller.h>
@@ -31,28 +31,28 @@ namespace ris = rogue::interfaces::stream;
 namespace bp  = boost::python;
 
 //! Class creation
-rpr::CorePtr rpr::Core::create (uint32_t segSize) {
-   rpr::CorePtr r = boost::make_shared<rpr::Core>(segSize);
+rpr::ClientPtr rpr::Client::create (uint32_t segSize) {
+   rpr::ClientPtr r = boost::make_shared<rpr::Client>(segSize);
    return(r);
 }
 
-void rpr::Core::setup_python() {
+void rpr::Client::setup_python() {
 
-   bp::class_<rpr::Core, rpr::CorePtr, boost::noncopyable >("Core",bp::init<uint32_t>())
-      .def("create",         &rpr::Core::create)
+   bp::class_<rpr::Client, rpr::ClientPtr, boost::noncopyable >("Client",bp::init<uint32_t>())
+      .def("create",         &rpr::Client::create)
       .staticmethod("create")
-      .def("transport",      &rpr::Core::transport)
-      .def("application",    &rpr::Core::application)
-      .def("getOpen",        &rpr::Core::getOpen)
-      .def("getDownCount",   &rpr::Core::getDownCount)
-      .def("getDropCount",   &rpr::Core::getDropCount)
-      .def("getRetranCount", &rpr::Core::getRetranCount)
+      .def("transport",      &rpr::Client::transport)
+      .def("application",    &rpr::Client::application)
+      .def("getOpen",        &rpr::Client::getOpen)
+      .def("getDownCount",   &rpr::Client::getDownCount)
+      .def("getDropCount",   &rpr::Client::getDropCount)
+      .def("getRetranCount", &rpr::Client::getRetranCount)
    ;
 
 }
 
 //! Creator
-rpr::Core::Core (uint32_t segSize) {
+rpr::Client::Client (uint32_t segSize) {
    app_   = rpr::Application::create();
    tran_  = rpr::Transport::create();
    cntl_  = rpr::Controller::create(segSize,tran_,app_);
@@ -62,36 +62,36 @@ rpr::Core::Core (uint32_t segSize) {
 }
 
 //! Destructor
-rpr::Core::~Core() { }
+rpr::Client::~Client() { }
 
 
 //! Get transport interface
-rpr::TransportPtr rpr::Core::transport() {
+rpr::TransportPtr rpr::Client::transport() {
    return(tran_);
 }
 
 //! Application module
-rpr::ApplicationPtr rpr::Core::application() {
+rpr::ApplicationPtr rpr::Client::application() {
    return(app_);
 }
 
 //! Get state
-bool rpr::Core::getOpen() {
+bool rpr::Client::getOpen() {
    return(cntl_->getOpen());
 }
 
 //! Get Down Count
-uint32_t rpr::Core::getDownCount() {
+uint32_t rpr::Client::getDownCount() {
    return(cntl_->getDownCount());
 }
 
 //! Get Drop Count
-uint32_t rpr::Core::getDropCount() {
+uint32_t rpr::Client::getDropCount() {
    return(cntl_->getDropCount());
 }
 
 //! Get Retran Count
-uint32_t rpr::Core::getRetranCount() {
+uint32_t rpr::Client::getRetranCount() {
    return(cntl_->getRetranCount());
 }
 
