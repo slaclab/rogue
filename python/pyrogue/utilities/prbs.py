@@ -33,15 +33,15 @@ class PrbsRx(pyrogue.Device):
         self._enMessages = False
 
         self.add(pyrogue.Variable(name='rxErrors', description='RX Error Count',
-                                  bitSize=32, bitOffset=0, base='uint', mode='RO',
+                                  bitSize=32, bitOffset=0, base='uint', mode='RO', pollInterval=1,
                                   setFunction=None, getFunction='value = dev._prbs.getRxErrors()'))
 
         self.add(pyrogue.Variable(name='rxCount', description='RX Count',
-                                  bitSize=32, bitOffset=0, base='uint', mode='RO',
+                                  bitSize=32, bitOffset=0, base='uint', mode='RO', pollInterval=1,
                                   setFunction=None, getFunction='value = dev._prbs.getRxCount()'))
 
         self.add(pyrogue.Variable(name='rxBytes', description='RX Bytes',
-                                  bitSize=32, bitOffset=0, base='uint', mode='RO',
+                                  bitSize=32, bitOffset=0, base='uint', mode='RO', pollInterval=1,
                                   setFunction=None, getFunction='value = dev._prbs.getRxBytes()'))
 
         self.add(pyrogue.Command(name='resetCount',description='Reset counters',
