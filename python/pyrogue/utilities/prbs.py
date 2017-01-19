@@ -65,12 +65,6 @@ class PrbsRx(pyrogue.Device):
             self.rxBytes.get()
         pyrogue.Device._backgroundTransaction(self,type)
 
-    def _poll(self):
-        self.rxErrors.get()
-        self.rxCount.get()
-        self.rxBytes.get()
-        pyrogue.Device._poll(self)
-
 
 class PrbsTx(pyrogue.Device):
     """PRBS TX Wrapper"""
@@ -102,13 +96,13 @@ class PrbsTx(pyrogue.Device):
         dev.add(pyrogue.Command(name='genFrame',description='Generate a single frame',
                                 function='dev._prbs.genFrame(dev._size)'))
 
-        dev.add(pyrogue.Variable(name='txErrors', description='TX Error Count', base='uint', mode='RO',
+        dev.add(pyrogue.Variable(name='txErrors', description='TX Error Count', base='uint', mode='RO', pollPeriod = 1,
                                  setFunction=None, getFunction='value = dev._prbs.getTxErrors()'))
 
-        dev.add(pyrogue.Variable(name='txCount', description='TX Count', base='uint', mode='RO',
+        dev.add(pyrogue.Variable(name='txCount', description='TX Count', base='uint', mode='RO', pollPeriod = 1,
                                  setFunction=None, getFunction='value = dev._prbs.getTxCount()'))
 
-        dev.add(pyrogue.Variable(name='txBytes', description='TX Bytes', base='uint', mode='RO',
+        dev.add(pyrogue.Variable(name='txBytes', description='TX Bytes', base='uint', mode='RO', pollPeriod = 1,
                                  setFunction=None, getFunction='value = dev._prbs.getTxBytes()'))
 
         dev.add(pyrogue.Command(name='resetCount',description='Reset counters',
@@ -123,12 +117,4 @@ class PrbsTx(pyrogue.Device):
             self.txCount.get()
             self.txBytes.get()
         pyrogue.Device._backgroundTransaction(self,type)
-
-    def _poll(self):
-        self.txErrors.get()
-        self.txCount.get()
-        self.txBytes.get()
-        pyrogue.Device._poll(self)
-
-
 
