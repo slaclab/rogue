@@ -33,83 +33,52 @@ namespace bp  = boost::python;
 
 //! Set bit value
 void rpr::Header::setBit ( uint8_t byte, uint8_t bit, bool value) {
-   if ( bit > 7 )
-      throw(rogue::GeneralError::boundary("Header::setBit",bit,7));
-
-   if ( byte >= getHeaderSize() )
-      throw(rogue::GeneralError::boundary("Header::setBit",byte,getHeaderSize()));
-
-   frame_->getBuffer(0)->getPayloadData()[byte] &= (0xFF ^ (1 << bit));
-
-   if ( value ) frame_->getBuffer(0)->getPayloadData()[byte] |= (1 << bit);
+   data_[byte] &= (0xFF ^ (1 << bit));
+   if ( value ) data_[byte] |= (1 << bit);
 }
 
 //! Get bit value
 bool rpr::Header::getBit ( uint8_t byte, uint8_t bit) {
-   if ( bit > 7 )
-      throw(rogue::GeneralError::boundary("Header::getBit",bit,7));
-
-   if ( byte >= getHeaderSize() ) 
-      throw(rogue::GeneralError::boundary("Header::getBit",byte,getHeaderSize()-1));
-
-   return(((frame_->getBuffer(0)->getPayloadData()[byte] >> bit) & 0x1) != 0);
+   return(((data_[byte] >> bit) & 0x1) != 0);
 }
 
 //! Set 8-bit uint value
 void rpr::Header::setUInt8 ( uint8_t byte, uint8_t value) {
-   if ( byte >= getHeaderSize() )
-      throw(rogue::GeneralError::boundary("Header::setUInt8",byte,getHeaderSize()));
-
-   frame_->getBuffer(0)->getPayloadData()[byte] = value;
+   data_[byte] = value;
 }
 
 //! Get 8-bit uint value
 uint8_t rpr::Header::getUInt8 ( uint8_t byte ) {
-   if ( byte >= getHeaderSize() )
-      throw(rogue::GeneralError::boundary("Header::getUInt8",byte,getHeaderSize()));
-
-   return(frame_->getBuffer(0)->getPayloadData()[byte]);
+   return(data_[byte]);
 }
 
 //! Set 16-bit uint value
 void rpr::Header::setUInt16 ( uint8_t byte, uint16_t value) {
-   if ( (byte+1) >= getHeaderSize() )
-      throw(rogue::GeneralError::boundary("Header::setUInt16",byte+1,getHeaderSize()));
-
-   *((uint16_t *)(&(frame_->getBuffer(0)->getPayloadData()[byte]))) = htons(value);
+   *((uint16_t *)(&(data_[byte]))) = htons(value);
 }
 
 //! Get 16-bit uint value
 uint16_t rpr::Header::getUInt16 ( uint8_t byte ) {
-   if ( (byte+1) >= getHeaderSize() )
-      throw(rogue::GeneralError::boundary("Header::getUInt16",byte+1,getHeaderSize()));
-
-   return(ntohs(*((uint16_t *)(&(frame_->getBuffer(0)->getPayloadData()[byte])))));
+   return(ntohs(*((uint16_t *)(&(data_[byte])))));
 }
 
 //! Set 32-bit uint value
 void rpr::Header::setUInt32 ( uint8_t byte, uint32_t value) {
-   if ( (byte+3) >= getHeaderSize() )
-      throw(rogue::GeneralError::boundary("Header::setUInt32",byte+3,getHeaderSize()));
-
-   *((uint32_t *)(&(frame_->getBuffer(0)->getPayloadData()[byte]))) = htonl(value);
+   *((uint32_t *)(&(data_[byte]))) = htonl(value);
 }
 
 //! Get 32-bit uint value
 uint32_t rpr::Header::getUInt32 ( uint8_t byte ) {
-   if ( (byte+3) >= getHeaderSize() )
-      throw(rogue::GeneralError::boundary("Header::getUInt32",byte+3,getHeaderSize()));
-
-   return(ntohl(*((uint32_t *)(&(frame_->getBuffer(0)->getPayloadData()[byte])))));
+   return(ntohl(*((uint32_t *)(&(data_[byte])))));
 }
 
 //! compute checksum
 uint16_t rpr::Header::compSum ( ) {
-   int32_t    x;
+   uint32_t   x;
    uint32_t   sum;
 
    sum = 0;
-   for (x=0; x < getHeaderSize()-2; x = x+2) sum += getUInt16(x);
+   for (x=0; x < size_-2; x = x+2) sum += getUInt16(x);
 
    sum = (sum % 0x10000) + (sum / 0x10000);
    sum = sum ^ 0xFFFF;
@@ -131,6 +100,8 @@ rpr::Header::Header(ris::FramePtr frame) {
    if ( frame->getCount() == 0 ) 
       throw(rogue::GeneralError("Header::Header","Frame must not be empty!"));
    frame_ = frame;
+   data_  = frame->getBuffer(0)->getPayloadData();
+   size_  = 0;
 
    gettimeofday(&time_,NULL);
    count_ = 0;
@@ -141,15 +112,15 @@ rpr::Header::~Header() { }
 
 //! Init header contents
 void rpr::Header::txInit(bool syn, bool setSize) {
-   uint32_t headSize = syn?SynSize:HeaderSize;
+   size_ = syn?SynSize:HeaderSize;
 
-   if ( frame_->getBuffer(0)->getRawPayload() < headSize )
-      throw(rogue::GeneralError::boundary("Header::init",headSize,frame_->getBuffer(0)->getRawPayload()));
+   if ( frame_->getBuffer(0)->getRawPayload() < size_ )
+      throw(rogue::GeneralError::boundary("Header::init",size_,frame_->getBuffer(0)->getRawPayload()));
 
-   memset(frame_->getBuffer(0)->getPayloadData(),0,headSize);
-   frame_->getBuffer(0)->getPayloadData()[1] = headSize;
+   memset(data_,0,size_);
+   data_[1] = size_;
 
-   if ( setSize ) frame_->getBuffer(0)->setPayload(headSize);
+   if ( setSize ) frame_->getBuffer(0)->setPayload(size_);
 
    // Set syn bit
    if ( syn ) {
@@ -163,30 +134,20 @@ ris::FramePtr rpr::Header::getFrame() {
    return(frame_);
 }
 
-//! Get header size
-uint8_t rpr::Header::getHeaderSize() {
-   uint8_t size = frame_->getBuffer(0)->getPayloadData()[1];
-
-   if ( frame_->getBuffer(0)->getRawPayload() < size )
-      throw(rogue::GeneralError::boundary("Header::getHeaderSize",size,frame_->getBuffer(0)->getRawPayload()));
-
-   return(size);
-}
-
 //! Verify header contents
 bool rpr::Header::verify() {
    if ( frame_->getBuffer(0)->getPayload() < HeaderSize ) return(false);
+   size_ = HeaderSize;
+   if ( getSyn() ) size_ = SynSize;
 
-   uint32_t headSize = getSyn()?SynSize:HeaderSize;
-
-   return( (getHeaderSize() == headSize) && 
-           (frame_->getBuffer(0)->getPayload() >= headSize) &&
-           (getUInt16(getHeaderSize()-2) == compSum()));
+   return( (data_[1] == size_) && 
+           (frame_->getBuffer(0)->getPayload() >= size_) &&
+           (getUInt16(size_-2) == compSum()));
 }
 
 //! Update checksum, set tx time and increment tx count
 void rpr::Header::update() {
-   setUInt16(getHeaderSize()-2,compSum());
+   setUInt16(size_-2,compSum());
 
    gettimeofday(&time_,NULL);
    count_++;
@@ -409,9 +370,9 @@ std::string rpr::Header::dump() {
    ret << "     Raw Size : " << std::dec << frame_->getBuffer(0)->getRawPayload() << std::endl;
    ret << "   Raw Header : ";
 
-   for (x=0; x < getHeaderSize(); x++) {
+   for (x=0; x < size_; x++) {
       ret << "0x" << std::hex << std::setw(2) << std::setfill('0') << (uint32_t)getUInt8(x) << " ";
-      if ( (x % 8) == 7 && (x+1) != getHeaderSize()) ret << std::endl << "                ";
+      if ( (x % 8) == 7 && (x+1) != size_) ret << std::endl << "                ";
    }
    ret << std::endl;
 

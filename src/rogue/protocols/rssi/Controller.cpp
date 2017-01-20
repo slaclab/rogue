@@ -29,6 +29,7 @@
 #include <boost/make_shared.hpp>
 #include <boost/pointer_cast.hpp>
 #include <rogue/common.h>
+#include <sys/syscall.h>
 #include <math.h>
 
 namespace rpr = rogue::protocols::rssi;
@@ -305,6 +306,8 @@ void rpr::Controller::runThread() {
    uint32_t wait;
 
    wait = 0;
+
+   printf("RSSI::Controller PID=%i, TID=%li\n",getpid(),syscall(SYS_gettid));
 
    try {
       while(1) {

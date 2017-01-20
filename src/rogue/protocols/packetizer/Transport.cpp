@@ -25,6 +25,7 @@
 #include <rogue/GeneralError.h>
 #include <boost/make_shared.hpp>
 #include <rogue/common.h>
+#include <sys/syscall.h>
 
 namespace rpp = rogue::protocols::packetizer;
 namespace ris = rogue::interfaces::stream;
@@ -83,6 +84,9 @@ void rpp::Transport::acceptFrame ( ris::FramePtr frame ) {
 
 //! Thread background
 void rpp::Transport::runThread() {
+
+   printf("Packet::Transport PID=%i, TID=%li\n",getpid(),syscall(SYS_gettid));
+
    try {
       while(1) {
          sendFrame(cntl_->transportTx());

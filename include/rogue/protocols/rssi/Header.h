@@ -42,11 +42,17 @@ namespace rogue {
                //! Frame pointer
                boost::shared_ptr<rogue::interfaces::stream::Frame> frame_;
 
+               //! Raw data pointer
+               uint8_t * data_;
+
                //! Time last transmitted
                struct timeval time_;
 
                //! Transmit count
                uint32_t count_;
+
+               //! Header size
+               uint32_t size_;
 
             protected:
 
@@ -98,10 +104,7 @@ namespace rogue {
                //! Get Frame
                boost::shared_ptr<rogue::interfaces::stream::Frame> getFrame();
 
-               //! Get header size
-               uint8_t getHeaderSize();
-
-               //! Verify header checksum
+               //! Verify header checksum. Also inits records.
                bool verify();
 
                //! Update checksum, tx time and tx count

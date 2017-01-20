@@ -24,6 +24,7 @@
 #include <rogue/GeneralError.h>
 #include <boost/make_shared.hpp>
 #include <rogue/common.h>
+#include <sys/syscall.h>
 
 namespace rpu = rogue::protocols::udp;
 namespace ris = rogue::interfaces::stream;
@@ -182,33 +183,35 @@ void rpu::Client::runThread() {
    // Preallocate frame
    frame = createFrame(RX_SIZE,RX_SIZE,false,false);
 
+   printf("UDP::Client PID=%i, TID=%li\n",getpid(),syscall(SYS_gettid));
+
    try {
 
       while(1) {
 
-         // Setup fds for select call
-         FD_ZERO(&fds);
-         FD_SET(fd_,&fds);
+         // Attempt receive
+         buff = frame->getBuffer(0);
+         res = ::read(fd_, buff->getRawData(), RX_SIZE);
 
-         // Setup select timeout
-         tout.tv_sec  = 0;
-         tout.tv_usec = 100;
+         if ( res > 0 ) {
+            buff->setSize(res);
 
-         // Select returns with available buffer
-         if ( select(fd_+1,&fds,NULL,NULL,&tout) > 0 ) {
-            buff = frame->getBuffer(0);
+            // Push frame and get a new empty frame
+            sendFrame(frame);
+            frame = createFrame(RX_SIZE,RX_SIZE,false,false);
+         }
+         else {
 
-            // Attempt receive
-            res = ::read(fd_, buff->getRawData(), RX_SIZE);
+            // Setup fds for select call
+            FD_ZERO(&fds);
+            FD_SET(fd_,&fds);
 
-            // Read was successfull
-            if ( res > 0 ) {
-               buff->setSize(res);
+            // Setup select timeout
+            tout.tv_sec  = 0;
+            tout.tv_usec = 100;
 
-               // Push frame and get a new empty frame
-               sendFrame(frame);
-               frame = createFrame(RX_SIZE,RX_SIZE,false,false);
-            }
+            // Select returns with available buffer
+            select(fd_+1,&fds,NULL,NULL,&tout);
          }
       }
    } catch (boost::thread_interrupted&) { }

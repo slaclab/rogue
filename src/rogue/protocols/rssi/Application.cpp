@@ -25,6 +25,7 @@
 #include <rogue/GeneralError.h>
 #include <boost/make_shared.hpp>
 #include <rogue/common.h>
+#include <sys/syscall.h>
 
 namespace rpr = rogue::protocols::rssi;
 namespace ris = rogue::interfaces::stream;
@@ -76,6 +77,9 @@ void rpr::Application::acceptFrame ( ris::FramePtr frame ) {
 
 //! Thread background
 void rpr::Application::runThread() {
+
+   printf("RSSI::Application PID=%i, TID=%li\n",getpid(),syscall(SYS_gettid));
+
    try {
       while(1) {
          sendFrame(cntl_->applicationTx());
