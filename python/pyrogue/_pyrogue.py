@@ -397,9 +397,42 @@ class Base(object):
     """
     Class which defines how data is stored, displayed and converted.
     """
-    def __init__(self):
-        pass
+    def __init__(self, format, endianness='little'):
+        self._format = format
+        self._endianness = endianness
 
+class UInt(Base):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        
+    def toByteArray(value, bits):
+        value.to_bytes(bits//8, endianness, signed=False)
+
+    def fromByteArray(ba):
+        return int.from_bytes(ba, endianness, signed=False)
+
+class Int(Base):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+
+    def toByteArray(value, bits):
+        value.to_bytes(bits//8, endianness, signed=True)
+
+    def fromByteArray(ba):
+        return int.from_bytes(ba, endianness, signed=True)
+
+ class String(Base):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+
+    def toByteArray(value, bits):
+        ba = bytearray(value, 'utf-8')
+        ba.extend(bytearray(1))
+        return ba
+        
+    def fromByteArray(ba):
+        s = ba.rstrip(bytearray(1))
+        return s.decode('utf-8')
 
 class Variable(Node):
     """
@@ -471,10 +504,16 @@ class Variable(Node):
             raise VariableError('Invalid variable mode %s. Supported: RW, RO, WO, SL, CMD' % (self.mode))
 
         # Tracking variables
-        self._block       = None
+        
         self._setFunction = setFunction
         self._getFunction = getFunction
         self.__listeners  = []
+
+        self._block = None
+        if self._local is not None or self._setFunction is not None or self._getFunction is not None:
+            self._block = LocalBlock(self)
+
+            
 
         if self.base == 'string':
             self._scratch = ''
@@ -534,13 +573,11 @@ class Variable(Node):
         else:
             self.__listeners.append(listener)
 
-    def beforeReadCmd(self, cmd):
-        self._beforeReadCmd = cmd
-    beforeReadCmd = property(None, beforeReadCmd)
+    def _beforeReadCmd(self):
+        pass
 
-    def afterWriteCmd(self, cmd):
-        self._afterWriteCmd = cmd
-    afterWriteCmd = property(None, afterWriteCmd)
+    def _afterWriteCmd(self):
+        pass
 
     def set(self,value,write=True):
         """
@@ -548,16 +585,17 @@ class Variable(Node):
         Writes to hardware are blocking. An error will result in a logged exception.
         """
         try:
-            self._rawSet(value)
+            self.value=value
+            self._block.set(self, value)
+            # Inform listeners
+            self._updated()
             
-            if write and self._block and self._block.mode != 'RO':
+            if write and self._block.mode != 'RO':
                 self._block.blockingTransaction(rogue.interfaces.memory.Write)
-                if self._afterWriteCmd is not None:
-                    self._afterWriteCmd()
+                self._afterWriteCmd()
 
                 if self._block.mode == 'RW':
-                    if self._beforeReadCmd is not None:
-                        self._beforeReadCmd()
+                    self._beforeReadCmd()
                     self._block.blockingTransaction(rogue.interfaces.memory.Verify)
         except Exception as e:
             self._root._logException(e)
@@ -568,7 +606,8 @@ class Variable(Node):
         Writes to hardware are posted.
         """
         try:
-            self._rawSet(value)
+            self.value = value
+            self._block.set(self, value)
             if self._block and self._block.mode != 'RO':
                 self._block.backgroundTransaction(rogue.interfaces.memory.Post)
         except Exception as e:
@@ -581,11 +620,10 @@ class Variable(Node):
         Listeners will be informed of the update.
         """
         try:
-            if read and self._block and self._block.mode != 'WO':
-                if self._beforeReadCmd is not None:
-                    self._beforeReadCmd()
+            if read and self._block.mode != 'WO':
+                self._beforeReadCmd()
                 self._block.blockingTransaction(rogue.interfaces.memory.Read)
-            ret = self._rawGet()
+            ret = self._block.get(self)
         except Exception as e:
             print("Got exception in get: %s" % (str(e)))
             self._root._logException(e)
@@ -593,16 +631,9 @@ class Variable(Node):
 
         # Update listeners for all variables in the block
         if read:
-            if self._block:
-                self._block._updated()
-            else:
-                self._updated()
+            self._block._updated()
         return ret
 
-    @property
-    def block(self):
-        """Get the block associated with this varable if it exists"""
-        return self._block
 
     def _updated(self):
         """Variable has been updated. Inform listeners."""
@@ -610,15 +641,15 @@ class Variable(Node):
         # Don't generate updates for SL and WO variables
         if self.mode == 'WO' or self.mode == 'SL': return
 
-        value = self._rawGet()
+        self.value = self._block.get(self)
         
         for func in self.__listeners:
             func(self,value)
 
         # Root variable update log
-        self._root._varUpdated(self,value)
+        self._root._varUpdated(self,self.value)
 
-    def _rawSet(self,value):
+    def _toBlock(self,value):
         """
         Raw set method. This is called by the set() method in order to convert the passed
         variable to a value which can be written to a local container (block or local variable).
@@ -631,30 +662,31 @@ class Variable(Node):
         Listeners will be informed of the update.
         _rawSet() is called during bulk configuration loads with a seperate hardware access generated later.
         """
-        if self._setFunction is not None:
-            if callable(self._setFunction):
-                self._setFunction(self._parent,self,value)
-            else:
-                dev = self._parent
-                exec(textwrap.dedent(self._setFunction))
+        return self.base.toBlock(value)
+        #return int(value).to_bytes(self.bitCount//8+1)
+            
+#         if self._setFunction is not None:
+#             if callable(self._setFunction):
+#                 self._setFunction(self._parent,self,value)
+#             else:
+#                 dev = self._parent
+#                 exec(textwrap.dedent(self._setFunction))
 
-        elif self._block:        
-            if self.base == 'string':
-                self._block.setString(value)
-            else:
-                if self.base == 'bool':
-                    if value: ivalue = 1
-                    else: ivalue = 0
-                elif self.base == 'enum':
-                    ivalue = {value: key for key,value in self.enum.items()}[value]
-                else:
-                    ivalue = int(value)
-                self._block.setUInt(self.bitOffset, self.bitSize, ivalue)        
+#         elif self._block:        
+#             if self.base == 'string':
+#                 self._block.setString(value)
+#             else:
+#                 if self.base == 'bool':
+#                     if value: ivalue = 1
+#                     else: ivalue = 0
+#                 elif self.base == 'enum':
+#                     ivalue = {value: key for key,value in self.enum.items()}[value]
+#                 else:
+#                     ivalue = int(value)
+#                 self._block.setUInt(self.bitOffset, self.bitSize, ivalue)        
 
-        # Inform listeners
-        self._updated()
 
-    def _rawGet(self):
+    def _fromBlock(self):
         """
         Raw get method. This is called by the get() method in order to convert the local
         container value (block or local variable) to a value returned to the caller.
@@ -667,30 +699,32 @@ class Variable(Node):
         resulting value.
         _rawGet() can be called from other levels to get current value without generating a hardware access.
         """
-        if self._getFunction is not None:
-            if callable(self._getFunction):
-                return(self._getFunction(self._parent,self))
-            else:
-                dev = self._parent
-                value = 0
-                ns = locals()
-                exec(textwrap.dedent(self._getFunction),ns)
-                return ns['value']
+        return self.base.fromBlock(self)
 
-        elif self._block:        
-            if self.base == 'string':
-                return(self._block.getString())
-            else:
-                ivalue = self._block.getUInt(self.bitOffset,self.bitSize)
+    #         if self._getFunction is not None:
+#             if callable(self._getFunction):
+#                 return(self._getFunction(self._parent,self))
+#             else:
+#                 dev = self._parent
+#                 value = 0
+#                 ns = locals()
+#                 exec(textwrap.dedent(self._getFunction),ns)
+#                 return ns['value']
 
-                if self.base == 'bool':
-                    return(ivalue != 0)
-                elif self.base == 'enum':
-                    return self.enum[ivalue]
-                else:
-                    return ivalue
-        else:
-            return None
+#         elif self._block:        
+#             if self.base == 'string':
+#                 return(self._block.getString())
+#             else:
+#                 ivalue = self._block.getUInt(self.bitOffset,self.bitSize)
+
+#                 if self.base == 'bool':
+#                     return(ivalue != 0)
+#                 elif self.base == 'enum':
+#                     return self.enum[ivalue]
+#                 else:
+#                     return ivalue
+#         else:
+#             return None
 
     def linkUpdated(self, var, value):
         self._updated()
@@ -808,10 +842,54 @@ class BlockError(Exception):
         return repr(self._value)
 
 
-class Block(rogue.interfaces.memory.Master):
+class LocalBlock(object):
+    def __init__(self, variable, local=None, gf=None, sf=None):
+        self._name = variable.name
+        self._variable = variable
+        self._device = variable.parent
+        
+
+        if variable.local is not None:
+            self._local = variable.local
+
+        if variable._getFunction is not None:
+            self.get = variable._getFunction
+
+        if variable._setFunction is not None:
+            self.set = variable._setFunction
+
+    def __repr__(self):
+        return 'LocalBlock({})'.format(self._variable)
+
+    def _addVariable(self, var):
+        return False
+
+    def get(self, var):
+        return self._local
+
+    def set(self, var, val):
+        # Check that types match first
+        self._local = val;
+
+    def backgroundTransaction(self,type):
+        pass
+
+    def blockingTransaction(self,type):
+        pass
+    
+    def _startTransaction(self, type):
+        pass
+
+    def _checkTransaction(self, update):
+        if update: self._updated()
+
+    def _updated(self):
+        variable._updated()
+
+class RemoteBlock(rogue.interfaces.memory.Master):
     """Internal memory block holder"""
 
-    def __init__(self,device,variable):
+    def __init__(self, variable):
         """
         Initialize memory block class.
         Pass initial variable.
@@ -841,7 +919,7 @@ class Block(rogue.interfaces.memory.Master):
     def __repr__(self):
         return repr(self._variables)
 
-    def set(self,bitOffset,bitCount,ba):
+    def set(self, var, value):
         """
         Update block with bitCount bits from passed byte array.
         Offset sets the starting point in the block array.
@@ -849,16 +927,18 @@ class Block(rogue.interfaces.memory.Master):
         with self._cond:
             self._waitTransaction()
 
+            ba = var.toBlock(value)
+
             # Access is fully byte aligned
-            if (bitOffset % 8) == 0 and (bitCount % 8) == 0:
-                self._bData[int(bitOffset/8):int((bitOffset+bitCount)/8)] = ba
+            if (var.bitOffset % 8) == 0 and (var.bitCount % 8) == 0:
+                self._bData[var.bitOffset//8:(var.bitOffset+var.bitCount)//8] = ba
 
             # Bit level access
             else:
-                for x in range(0,bitCount):
-                    setBitToBytes(self._bData,x+bitOffset,getBitFromBytes(ba,x))
+                for x in range(0, var.bitCount):
+                    setBitToBytes(self._bData,x+var.bitOffset,getBitFromBytes(ba,x))
 
-    def get(self,bitOffset,bitCount):
+    def get(self, var):
         """
         Get bitCount bytes from block data.
         Offset sets the starting point in the block array.
@@ -872,57 +952,16 @@ class Block(rogue.interfaces.memory.Master):
                 raise BlockError(self)
 
             # Access is fully byte aligned
-            if (bitOffset % 8) == 0 and (bitCount % 8) == 0:
-                return self._bData[int(bitOffset/8):int((bitOffset+bitCount)/8)]
+            if (var.bitOffset % 8) == 0 and (var.bitCount % 8) == 0:
+                return var.fromBlock(self._bData[int(var.bitOffset/8):int((var.bitOffset+var.bitCount)/8)])
 
             # Bit level access
             else:
-                ba = bytearray(int(bitCount / 8))
-                if (bitCount % 8) > 0: ba.extend(bytearray(1))
-                for x in range(0,bitCount):
-                    setBitToBytes(ba,x,getBitFromBytes(self._bData,x+bitOffset))
-                return ba
-
-    def setUInt(self,bitOffset,bitCount,value):
-        """
-        Set a uint. to be deprecated
-        """
-        bCount = (int)(bitCount / 8)
-        if ( bitCount % 8 ) > 0: bCount += 1
-        ba = bytearray(bCount)
-
-        for x in range(0,bCount):
-            ba[x] = (value >> (x*8)) & 0xFF
-
-        self.set(bitOffset,bitCount,ba)
-
-    def getUInt(self,bitOffset,bitCount):
-        """
-        Get a uint. to be deprecated
-        """
-        ba = self.get(bitOffset,bitCount)
-        ret = 0
-
-        for x in range(0,len(ba)):
-            ret += (ba[x] << (x*8))
-
-        return ret
-
-    def setString(self,value):
-        """
-        Set a string. to be deprecated
-        """
-        ba = bytarray(value,'utf-8')
-        ba.extend(bytearray(1))
-
-        self.set(0,len(ba)*8,ba)
-
-    def getString(self):
-        """
-        Get a string. to be deprecated
-        """
-        ba = self.get(0,self._size*8).rstrip(bytearray(1))
-        return(ba.decode('utf-8'))
+                ba = bytearray(int(var.bitCount / 8))
+                if (var.bitCount % 8) > 0: ba.extend(bytearray(1))
+                for x in range(0,var.bitCount):
+                    setBitToBytes(ba,x,getBitFromBytes(self._bData,x+var.bitOffset))
+                return var.fromBlock(ba)
 
     def backgroundTransaction(self,type):
         """
@@ -1179,9 +1218,11 @@ class Device(Node,rogue.interfaces.memory.Hub):
             node._setSlave(self)
 
         # Adding variable
-        if isinstance(node,Variable) and node.offset is not None:
-            if not any(block._addVariable(node) for block in self._blocks):
-                self._blocks.append(Block(self,node))
+        # Create RemoteBlocks as needed
+        if isinstance(node,Variable):
+            if node.offset is not None:
+                if not any(block._addVariable(node) for block in self._blocks):
+                    self._blocks.append(RemoteBlock(node))
 
     def hideVariables(self, hidden, variables=None):
         """Hide a list of Variables (or Variable names)"""
