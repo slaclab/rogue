@@ -787,7 +787,7 @@ class BlockError(Exception):
             self._value += "Timeout after %s seconds" % (block.timeout)
 
         elif (self._error & 0xFF000000) == rogue.interfaces.memory.VerifyError:
-            self._value += "Verify error. Local=%s, Verify=%s, Mask=%s" % (self._bData,self._vData,self._mData)
+            self._value += "Verify error. Local=%s, Verify=%s, Mask=%s" % (block._bData,block._vData,block._mData)
 
         elif (self._error & 0xFF000000) == rogue.interfaces.memory.AddressError:
             self._value += "Address error"
