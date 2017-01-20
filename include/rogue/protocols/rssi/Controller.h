@@ -1,3 +1,4 @@
+
 /**
  *-----------------------------------------------------------------------------
  * Title      : RSSI Controller Class
@@ -25,7 +26,7 @@
 #include <boost/enable_shared_from_this.hpp>
 #include <boost/python.hpp>
 #include <stdint.h>
-#include <queue>
+#include <rogue/Queue.h>
 
 namespace rogue {
    namespace protocols {
@@ -47,6 +48,7 @@ namespace rogue {
                static const uint8_t  ReqMaxRetran  = 15;
                static const uint8_t  ReqMaxCumAck  = 2;
                static const uint32_t TryPeriod     = 100;
+               static const uint32_t BusyThold     = 4;
 
                //! Connection states
                enum States : uint32_t { StClosed     = 0,
@@ -54,6 +56,42 @@ namespace rogue {
                                         StSendSeqAck = 2,
                                         StOpen       = 3,
                                         StError      = 4 };
+
+               // Interfaces
+               boost::shared_ptr<rogue::protocols::rssi::Transport> tran_;
+               boost::shared_ptr<rogue::protocols::rssi::Application> app_;
+
+               // Receive tracking
+               uint32_t dropCount_;
+               uint8_t  nextSeqRx_;
+               uint8_t  lastAckRx_;
+               bool     tranBusy_;
+
+               // Application queue
+               rogue::Queue<boost::shared_ptr<rogue::protocols::rssi::Header>> appQueue_;
+
+               // State queue
+               rogue::Queue<boost::shared_ptr<rogue::protocols::rssi::Header>> stQueue_;
+
+               // Application tracking
+               uint8_t lastSeqRx_;
+
+               // State Tracking
+               boost::condition_variable stCond_;
+               boost::mutex stMtx_;
+               uint32_t state_;
+               struct timeval stTime_;
+               uint8_t prevAckRx_;
+               uint32_t downCount_;
+               uint32_t retranCount_;
+
+               // Transmit tracking
+               boost::shared_ptr<rogue::protocols::rssi::Header> txList_[256];
+               boost::mutex txMtx_;
+               uint8_t txListCount_;
+               uint8_t lastAckTx_;
+               uint8_t locSequence_;
+               struct timeval txTime_;
 
                // Connection parameters
                uint32_t locConnId_;
@@ -67,35 +105,8 @@ namespace rogue {
                uint32_t remConnId_;
                uint32_t segmentSize_;
 
-               // Connection tracking
-               uint8_t  locSequence_;
-               uint8_t  remSequence_;
-               uint8_t  ackTxPend_;
-               uint8_t  lastAckRx_;
-               uint8_t  prevAckRx_;
-               uint32_t state_;
-               bool     tranBusy_;
-               uint8_t  txListCount_;
-
-               // Counters
-               uint32_t downCount_;
-               uint32_t dropCount_;
-               uint32_t retranCount_;
-
-               struct timeval stTime_;
-
-               std::queue<boost::shared_ptr<rogue::protocols::rssi::Header>> appQueue_;
-
-               boost::shared_ptr<rogue::protocols::rssi::Header> txList_[256];
-
-               boost::shared_ptr<rogue::protocols::rssi::Transport> tran_;
-               boost::shared_ptr<rogue::protocols::rssi::Application> app_;
-
+               // State thread
                boost::thread* thread_;
-               boost::mutex   mtx_;
-
-               boost::condition_variable stCond_;
-               boost::condition_variable appCond_;
 
             public:
 
@@ -143,6 +154,9 @@ namespace rogue {
 
             private:
 
+               // Method to transit a frame with proper updates
+               void transportTx(boost::shared_ptr<rogue::protocols::rssi::Header> head, bool seqUpdate);
+
                //! Convert rssi time to microseconds
                uint32_t convTime ( uint32_t rssiTime );
 
@@ -153,16 +167,16 @@ namespace rogue {
                void runThread();
 
                //! Closed/Waiting for Syn
-               boost::shared_ptr<rogue::interfaces::stream::Frame> stateClosedWait (uint32_t *wait);
+               uint32_t stateClosedWait ();
 
                //! Send sequence ack
-               boost::shared_ptr<rogue::interfaces::stream::Frame> stateSendSeqAck (uint32_t *wait);
+               uint32_t stateSendSeqAck ();
 
                //! Open state
-               boost::shared_ptr<rogue::interfaces::stream::Frame> stateOpen (uint32_t *wait);
+               uint32_t stateOpen ();
 
                //! Error state
-               boost::shared_ptr<rogue::interfaces::stream::Frame> stateError (uint32_t *wait);
+               uint32_t stateError ();
 
          };
 
@@ -174,4 +188,3 @@ namespace rogue {
 };
 
 #endif
-

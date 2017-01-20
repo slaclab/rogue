@@ -26,7 +26,6 @@
 #include <rogue/protocols/rssi/Controller.h>
 #include <rogue/protocols/rssi/Client.h>
 #include <rogue/protocols/rssi/Header.h>
-#include <rogue/protocols/rssi/Syn.h>
 #include <rogue/protocols/rssi/Transport.h>
 
 namespace bp  = boost::python;
@@ -47,7 +46,6 @@ void rpr::setup_module() {
    rpr::Controller::setup_python();
    rpr::Client::setup_python();
    rpr::Header::setup_python();
-   rpr::Syn::setup_python();
    rpr::Transport::setup_python();
 
 }

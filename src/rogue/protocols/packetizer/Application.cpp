@@ -50,6 +50,7 @@ void rpp::Application::setup_python() {
 //! Creator
 rpp::Application::Application (uint8_t id) { 
    id_ = id;
+   queue_.setMax(8);
 }
 
 //! Destructor
@@ -58,6 +59,9 @@ rpp::Application::~Application() { }
 //! Setup links
 void rpp::Application::setController( rpp::ControllerPtr cntl ) {
    cntl_ = cntl;
+
+   // Start read thread
+   thread_ = new boost::thread(boost::bind(&rpp::Application::runThread, this));
 }
 
 //! Generate a Frame. Called from master
@@ -68,5 +72,19 @@ ris::FramePtr rpp::Application::acceptReq ( uint32_t size, bool zeroCopyEn, uint
 //! Accept a frame from master
 void rpp::Application::acceptFrame ( ris::FramePtr frame ) {
    cntl_->applicationRx(frame,id_);
+}
+
+//! Push frame for transmit
+void rpp::Application::pushFrame( ris::FramePtr frame ) {
+   queue_.push(frame);
+}
+
+//! Thread background
+void rpp::Application::runThread() {
+   try {
+      while(1) {
+         sendFrame(queue_.pop());
+      }
+   } catch (boost::thread_interrupted&) { }
 }
 

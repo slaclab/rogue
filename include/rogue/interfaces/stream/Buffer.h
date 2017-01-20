@@ -107,6 +107,9 @@ namespace rogue {
                //! Get raw size
                uint32_t getRawSize();
 
+               //! Get raw payload (rawsize - header)
+               uint32_t getRawPayload();
+
                //! Get buffer data count (payload + headroom)
                uint32_t getCount();
 

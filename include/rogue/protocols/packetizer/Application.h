@@ -24,6 +24,7 @@
 #include <rogue/interfaces/stream/Slave.h>
 #include <boost/python.hpp>
 #include <stdint.h>
+#include <rogue/Queue.h>
 
 namespace rogue {
    namespace protocols {
@@ -41,6 +42,15 @@ namespace rogue {
                // ID
                uint8_t id_;
 
+               // Transmission thread
+               boost::thread* thread_;
+
+               //! Thread background
+               void runThread();
+
+               // Application queue
+               rogue::Queue<boost::shared_ptr<rogue::interfaces::stream::Frame>> queue_;
+
             public:
 
                //! Class creation
@@ -57,6 +67,9 @@ namespace rogue {
 
                //! Set Controller
                void setController(boost::shared_ptr<rogue::protocols::packetizer::Controller> cntl );
+
+               //! Push frame for transmit
+               void pushFrame(boost::shared_ptr<rogue::interfaces::stream::Frame> frame);
 
                //! Generate a Frame. Called from master
                /*

@@ -83,6 +83,12 @@ uint32_t ris::Buffer::getRawSize() {
    return(rawSize_);
 }
 
+//! Get raw payload (raw - header)
+uint32_t ris::Buffer::getRawPayload() {
+   if ( rawSize_ < headRoom_ ) return (0);
+   else return(rawSize_ - headRoom_);
+}
+
 //! Get buffer data count (payload + headroom)
 uint32_t ris::Buffer::getCount() {
    return(count_);

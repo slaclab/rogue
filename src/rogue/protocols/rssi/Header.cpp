@@ -49,7 +49,7 @@ bool rpr::Header::getBit ( uint8_t byte, uint8_t bit) {
    if ( bit > 7 )
       throw(rogue::GeneralError::boundary("Header::getBit",bit,7));
 
-   if ( byte >= getHeaderSize() )
+   if ( byte >= getHeaderSize() ) 
       throw(rogue::GeneralError::boundary("Header::getBit",byte,getHeaderSize()-1));
 
    return(((frame_->getBuffer(0)->getPayloadData()[byte] >> bit) & 0x1) != 0);
@@ -139,40 +139,52 @@ rpr::Header::Header(ris::FramePtr frame) {
 //! Destructor
 rpr::Header::~Header() { }
 
+//! Init header contents
+void rpr::Header::txInit(bool syn, bool setSize) {
+   uint32_t headSize = syn?SynSize:HeaderSize;
+
+   if ( frame_->getBuffer(0)->getRawPayload() < headSize )
+      throw(rogue::GeneralError::boundary("Header::init",headSize,frame_->getBuffer(0)->getRawPayload()));
+
+   memset(frame_->getBuffer(0)->getPayloadData(),0,headSize);
+   frame_->getBuffer(0)->getPayloadData()[1] = headSize;
+
+   if ( setSize ) frame_->getBuffer(0)->setPayload(headSize);
+
+   // Set syn bit
+   if ( syn ) {
+      setBit(0,7,true); // Syn
+      setBit(4,4,true);
+   }
+}
+
 //! Get Frame
 ris::FramePtr rpr::Header::getFrame() {
    return(frame_);
 }
 
-//! Return required size
-uint32_t rpr::Header::minSize() {
-   return(HeaderSize);
-}
-
 //! Get header size
 uint8_t rpr::Header::getHeaderSize() {
-   return(frame_->getBuffer(0)->getPayloadData()[1]);
-}
+   uint8_t size = frame_->getBuffer(0)->getPayloadData()[1];
 
-//! Init header contents
-void rpr::Header::init(bool setSize) {
+   if ( frame_->getBuffer(0)->getRawPayload() < size )
+      throw(rogue::GeneralError::boundary("Header::getHeaderSize",size,frame_->getBuffer(0)->getRawPayload()));
 
-   if ( frame_->getBuffer(0)->getAvailable() < minSize() )
-      throw(rogue::GeneralError::boundary("Header::init",minSize(),frame_->getBuffer(0)->getAvailable()));
-
-   memset(frame_->getBuffer(0)->getPayloadData(),0,minSize());
-   frame_->getBuffer(0)->getPayloadData()[1] = minSize();
-   if ( setSize ) frame_->getBuffer(0)->setPayload(minSize());
+   return(size);
 }
 
 //! Verify header contents
 bool rpr::Header::verify() {
-   return( (getHeaderSize() == minSize()) && 
-           (frame_->getBuffer(0)->getPayload() >= minSize()) &&
+   if ( frame_->getBuffer(0)->getPayload() < HeaderSize ) return(false);
+
+   uint32_t headSize = getSyn()?SynSize:HeaderSize;
+
+   return( (getHeaderSize() == headSize) && 
+           (frame_->getBuffer(0)->getPayload() >= headSize) &&
            (getUInt16(getHeaderSize()-2) == compSum()));
 }
 
-//! Update checksum
+//! Update checksum, set tx time and increment tx count
 void rpr::Header::update() {
    setUInt16(getHeaderSize()-2,compSum());
 
@@ -180,14 +192,24 @@ void rpr::Header::update() {
    count_++;
 }
 
+//! Get time
+struct timeval * rpr::Header::getTime() {
+   return(&time_);
+}
+
+//! Get Count
+uint32_t rpr::Header::count() {
+   return(count_);
+}
+
+//! Reset timer
+void rpr::Header::rstTime() {
+   gettimeofday(&time_,NULL);
+}
+
 //! Get syn flag
 bool rpr::Header::getSyn() {
    return(getBit(0,7));
-}
-
-//! Set syn flag
-void rpr::Header::setSyn(bool state) {
-   setBit(0,7,state);
 }
 
 //! Get ack flag
@@ -260,6 +282,123 @@ void rpr::Header::setAcknowledge(uint8_t ack) {
    setUInt8(3,ack);
 }
 
+//! Get version field
+uint8_t rpr::Header::getVersion() {
+   return(getUInt8(4) >> 4);
+}
+
+//! Set version field
+void rpr::Header::setVersion(uint8_t version) {
+   uint8_t val;
+
+   val = getUInt8(4);
+
+   val &= 0x0F;
+   val |= version << 4;
+
+   setUInt8(4,val);
+}
+
+//! Get chk flag
+bool rpr::Header::getChk() {
+   return(getBit(4,2));
+}
+
+//! Set chk flag
+void rpr::Header::setChk(bool state) {
+   setBit(4,2,state);
+}
+
+//! Get MAX Outstanding Segments
+uint8_t rpr::Header::getMaxOutstandingSegments() {
+   return(getUInt8(5));
+}
+
+//! Set MAX Outstanding Segments
+void rpr::Header::setMaxOutstandingSegments(uint8_t max) {
+   setUInt8(5,max);
+}
+
+//! Get MAX Segment Size
+uint16_t rpr::Header::getMaxSegmentSize() {
+   return(getUInt16(6));
+}
+
+//! Set MAX Segment Size
+void rpr::Header::setMaxSegmentSize(uint16_t size) {
+   setUInt16(6,size);
+}
+
+//! Get Retransmission Timeout
+uint16_t rpr::Header::getRetransmissionTimeout() {
+   return(getUInt16(8));
+}
+
+//! Set Retransmission Timeout
+void rpr::Header::setRetransmissionTimeout(uint16_t to) {
+   setUInt16(8,to);
+}
+
+//! Get Cumulative Acknowledgement Timeout
+uint16_t rpr::Header::getCumulativeAckTimeout() {
+   return(getUInt16(10));
+}
+
+//! Set Cumulative Acknowledgement Timeout
+void rpr::Header::setCumulativeAckTimeout(uint16_t to) {
+   setUInt16(10,to);
+}
+
+//! Get NULL Timeout
+uint16_t rpr::Header::getNullTimeout() {
+   return(getUInt16(12));
+}
+
+//! Set NULL Timeout
+void rpr::Header::setNullTimeout(uint16_t to) {
+   setUInt16(12,to);
+}
+
+//! Get Max Retransmissions
+uint8_t rpr::Header::getMaxRetransmissions() {
+   return(getUInt8(14));
+}
+
+//! Set Max Retransmissions
+void rpr::Header::setMaxRetransmissions(uint8_t max) {
+   setUInt8(14,max);
+}
+
+//! Get MAX Cumulative Ack
+uint8_t rpr::Header::getMaxCumulativeAck() {
+   return(getUInt8(15));
+}
+
+//! Set Max Cumulative Ack
+void rpr::Header::setMaxCumulativeAck(uint8_t max) {
+   setUInt8(15,max);
+}
+
+//! Get Timeout Unit
+uint8_t rpr::Header::getTimeoutUnit() {
+   return(getUInt8(17));
+}
+
+//! Set Timeout Unit
+void rpr::Header::setTimeoutUnit(uint8_t unit) {
+   setUInt8(17,unit);
+}
+
+//! Get Connection ID
+uint32_t rpr::Header::getConnectionId() {
+   return(getUInt32(18));
+}
+
+//! Set Timeout Unit
+void rpr::Header::setConnectionId(uint32_t id) {
+   setUInt32(18,id);
+}
+
 //! Dump message
 std::string rpr::Header::dump() {
    uint32_t   x;
@@ -267,6 +406,7 @@ std::string rpr::Header::dump() {
    std::stringstream ret("");
 
    ret << "   Total Size : " << std::dec << frame_->getBuffer(0)->getPayload() << std::endl;
+   ret << "     Raw Size : " << std::dec << frame_->getBuffer(0)->getRawPayload() << std::endl;
    ret << "   Raw Header : ";
 
    for (x=0; x < getHeaderSize(); x++) {
@@ -285,16 +425,20 @@ std::string rpr::Header::dump() {
    ret << "     Sequence : " << std::dec << (uint32_t)getSequence() << std::endl;
    ret << "  Acknowledge : " << std::dec << (uint32_t)getAcknowledge() << std::endl;
 
+   if ( ! getSyn() ) return(ret.str());
+
+   ret << "      Version : " << std::dec << (uint32_t)getVersion() << std::endl;
+   ret << "          Chk : " << std::dec << getChk() << std::endl;
+   ret << "  Max Out Seg : " << std::dec << (uint32_t)getMaxOutstandingSegments() << std::endl;
+   ret << " Max Seg Size : " << std::dec << (uint32_t)getMaxSegmentSize() << std::endl;
+   ret << "  Retran Tout : " << std::dec << (uint32_t)getRetransmissionTimeout() << std::endl;
+   ret << " Cum Ack Tout : " << std::dec << (uint32_t)getCumulativeAckTimeout() << std::endl;
+   ret << "    Null Tout : " << std::dec << (uint32_t)getNullTimeout() << std::endl;
+   ret << "  Max Retrans : " << std::dec << (uint32_t)getMaxRetransmissions() << std::endl;
+   ret << "  Max Cum Ack : " << std::dec << (uint32_t)getMaxCumulativeAck() << std::endl;
+   ret << " Timeout Unit : " << std::dec << (uint32_t)getTimeoutUnit() << std::endl;
+   ret << "      Conn Id : " << std::dec << (uint32_t)getConnectionId() << std::endl;
+
    return(ret.str());
-}
-
-//! Get time
-struct timeval * rpr::Header::getTime() {
-   return(&time_);
-}
-
-//! Get Count
-uint32_t rpr::Header::count() {
-   return(count_);
 }
 

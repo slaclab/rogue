@@ -54,6 +54,7 @@ rpp::Controller::Controller ( uint32_t segmentSize, rpp::TransportPtr tran, rpp:
    tranCount_ = 0;
    tranDest_ = 0;
    dropCount_ = 0;
+   tranQueue_.setMax(32);
 }
 
 //! Destructor
@@ -91,9 +92,7 @@ ris::FramePtr rpp::Controller::reqFrame ( uint32_t size, uint32_t maxBuffSize ) 
 
 //! Frame received at transport interface
 void rpp::Controller::transportRx( ris::FramePtr frame ) {
-   ris::FramePtr tFrame;
    ris::BufferPtr buff;
-   ris::MasterPtr mast;
    uint32_t  tmpIdx;
    uint32_t  tmpCount;
    uint8_t   tmpFuser;
@@ -111,7 +110,7 @@ void rpp::Controller::transportRx( ris::FramePtr frame ) {
 
    PyRogue_BEGIN_ALLOW_THREADS;
    {
-      boost::lock_guard<boost::mutex> lock(tranRxMtx_);
+      boost::lock_guard<boost::mutex> lock(tranMtx_);
 
       buff = frame->getBuffer(0);
       data = buff->getPayloadData();
@@ -171,8 +170,7 @@ void rpp::Controller::transportRx( ris::FramePtr frame ) {
       if ( tmpEof ) {
          tranCount_ = 0;
          if ( app_[tranDest_] ) {
-            tFrame = tranFrame_;
-            mast = app_[tranDest_];
+            app_[tranDest_]->pushFrame(tranFrame_);
             //printf("Packetizer transport generate frame = %i\n",frame->getPayload());
          }
          tranFrame_.reset();
@@ -180,23 +178,13 @@ void rpp::Controller::transportRx( ris::FramePtr frame ) {
       else tranCount_++;
    }
    PyRogue_END_ALLOW_THREADS;
-
-   if ( tFrame ) mast->sendFrame(tFrame);
 }
 
 //! Frame transmit at transport interface
 // Called by transport class thread
 ris::FramePtr rpp::Controller::transportTx() {
-   ris::FramePtr  frame;
-
-   boost::unique_lock<boost::mutex> lock(tranTxMtx_);
-
-   while ( tranQueue_.empty() ) tranCond_.wait(lock);
-
-   frame = tranQueue_.front();
-   tranQueue_.pop();
-   appCond_.notify_one();
-
+   ris::FramePtr frame;
+   frame = tranQueue_.pop();
    return(frame);
 }
 
@@ -219,7 +207,7 @@ void rpp::Controller::applicationRx ( ris::FramePtr frame, uint8_t tDest ) {
 
    PyRogue_BEGIN_ALLOW_THREADS;
    {
-      boost::lock_guard<boost::mutex> lock(appRxMtx_);
+      boost::lock_guard<boost::mutex> lock(appMtx_);
 
       fUser = frame->getFlags() & 0xFF;
       lUser = (frame->getFlags() >> 8) & 0xFF;
@@ -254,15 +242,7 @@ void rpp::Controller::applicationRx ( ris::FramePtr frame, uint8_t tDest ) {
          if ( x == (frame->getCount()-1) ) data[size-1] |= 0x80;
 
          tFrame->appendBuffer(buff);
-
-         // Add to transmit queue
-         {
-            boost::unique_lock<boost::mutex> txLock(tranTxMtx_);
-            while ( tranQueue_.size() > 16 ) appCond_.wait(txLock);
-            //printf("Packetizer application generate frame=%i\n",frame->getPayload());
-            tranQueue_.push(tFrame);
-            tranCond_.notify_one();
-         }
+         tranQueue_.push(tFrame);
       }
       appIndex_++;
    }

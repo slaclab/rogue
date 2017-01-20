@@ -25,7 +25,7 @@
 #include <boost/enable_shared_from_this.hpp>
 #include <boost/python.hpp>
 #include <stdint.h>
-#include <queue>
+#include <rogue/Queue.h>
 
 namespace rogue {
    namespace protocols {
@@ -48,17 +48,13 @@ namespace rogue {
 
                boost::shared_ptr<rogue::interfaces::stream::Frame> tranFrame_;
 
-               boost::mutex appRxMtx_;
-               boost::mutex tranRxMtx_;
-               boost::mutex tranTxMtx_;
+               boost::mutex appMtx_;
+               boost::mutex tranMtx_;
 
                boost::shared_ptr<rogue::protocols::packetizer::Transport> tran_;
                boost::shared_ptr<rogue::protocols::packetizer::Application> * app_;
 
-               std::queue<boost::shared_ptr<rogue::interfaces::stream::Frame>> tranQueue_;
-
-               boost::condition_variable tranCond_;
-               boost::condition_variable appCond_;
+               rogue::Queue<boost::shared_ptr<rogue::interfaces::stream::Frame>> tranQueue_;
 
             public:
 
