@@ -76,6 +76,9 @@ namespace rogue {
                //! Get Retran Count
                uint32_t getRetranCount();
 
+               //! Get Busy
+               bool getBusy();
+
          };
 
          // Convienence

@@ -152,6 +152,9 @@ namespace rogue {
                //! Get Retran Count
                uint32_t getRetranCount();
 
+               //! Get busy
+               bool getBusy();
+
             private:
 
                // Method to transit a frame with proper updates

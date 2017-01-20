@@ -247,6 +247,11 @@ uint32_t rpr::Controller::getRetranCount() {
    return(retranCount_);
 }
 
+//! Get busy
+bool rpr::Controller::getBusy() {
+   return(appQueue_.size() > BusyThold);
+}
+
 // Method to transit a frame with proper updates
 void rpr::Controller::transportTx(rpr::HeaderPtr head, bool seqUpdate) {
    head->setSequence(locSequence_);

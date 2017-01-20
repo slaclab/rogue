@@ -47,6 +47,7 @@ void rpr::Client::setup_python() {
       .def("getDownCount",   &rpr::Client::getDownCount)
       .def("getDropCount",   &rpr::Client::getDropCount)
       .def("getRetranCount", &rpr::Client::getRetranCount)
+      .def("getBusy",        &rpr::Client::getBusy)
    ;
 
 }
@@ -93,5 +94,10 @@ uint32_t rpr::Client::getDropCount() {
 //! Get Retran Count
 uint32_t rpr::Client::getRetranCount() {
    return(cntl_->getRetranCount());
+}
+
+//! Get busy
+bool rpr::Client::getBusy() {
+   return(cntl_->getBusy());
 }
 

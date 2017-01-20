@@ -56,3 +56,6 @@ class UdpRssiPack(object):
     def getPackDropCount(self):
         return(self._pack.getDropCount())
 
+    def getRssiBusy(self):
+        return(self._rssi.getBusy())
+
