@@ -31,8 +31,8 @@ namespace ris = rogue::interfaces::stream;
 /*
  * Pass owner, raw data buffer, and meta data
  */
-ris::BufferPtr ris::Buffer::create ( ris::PoolPtr source, void * data, uint32_t meta, uint32_t rawSize) {
-   ris::BufferPtr buff = boost::make_shared<ris::Buffer>(source,data,meta,rawSize);
+ris::BufferPtr ris::Buffer::create ( ris::PoolPtr source, void * data, uint32_t meta, uint32_t size, uint32_t alloc) {
+   ris::BufferPtr buff = boost::make_shared<ris::Buffer>(source,data,meta,size,alloc);
    return(buff);
 }
 
@@ -40,14 +40,15 @@ ris::BufferPtr ris::Buffer::create ( ris::PoolPtr source, void * data, uint32_t 
 /*
  * Pass owner, raw data buffer, and meta data
  */
-ris::Buffer::Buffer(ris::PoolPtr source, void *data, uint32_t meta, uint32_t rawSize) {
-   source_   = source;
-   data_     = (uint8_t *)data;
-   meta_     = meta;
-   rawSize_  = rawSize;
-   headRoom_ = 0;
-   count_    = 0;
-   error_    = 0;
+ris::Buffer::Buffer(ris::PoolPtr source, void *data, uint32_t meta, uint32_t size, uint32_t alloc) {
+   source_    = source;
+   data_      = (uint8_t *)data;
+   meta_      = meta;
+   rawSize_   = size;
+   allocSize_ = alloc;
+   headRoom_  = 0;
+   count_     = 0;
+   error_     = 0;
 }
 
 //! Destroy a buffer
@@ -55,7 +56,7 @@ ris::Buffer::Buffer(ris::PoolPtr source, void *data, uint32_t meta, uint32_t raw
  * Owner return buffer method is called
  */
 ris::Buffer::~Buffer() {
-   source_->retBuffer(data_,meta_,rawSize_);
+   source_->retBuffer(data_,meta_,allocSize_);
 }
 
 //! Get raw data pointer

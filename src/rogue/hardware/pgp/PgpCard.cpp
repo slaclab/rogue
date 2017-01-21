@@ -165,14 +165,14 @@ ris::FramePtr rhp::PgpCard::acceptReq ( uint32_t size, bool zeroCopyEn, uint32_t
 
    // Zero copy is disabled. Allocate from memory.
    if ( zeroCopyEn_ == false || zeroCopyEn == false || rawBuff_ == NULL ) {
-      frame = createFrame(size,buffSize,true,false);
+      frame = ris::Pool::acceptReq(size,false,buffSize);
    }
 
    // Allocate zero copy buffers from driver
    else {
 
       // Create empty frame
-      frame = createFrame(0,0,true,true);
+      frame = ris::Frame::create();
       alloc=0;
 
       // Request may be serviced with multiple buffers
@@ -203,7 +203,7 @@ ris::FramePtr rhp::PgpCard::acceptReq ( uint32_t size, bool zeroCopyEn, uint32_t
          }
          while (res < 0);
 
-         buff = createBuffer(rawBuff_[res],0x80000000 | res,bSize_);
+         buff = createBuffer(rawBuff_[res],0x80000000 | res,buffSize,bSize_);
          frame->appendBuffer(buff);
          alloc += buffSize;
       }
@@ -291,7 +291,7 @@ void rhp::PgpCard::acceptFrame ( ris::FramePtr frame ) {
 }
 
 //! Return a buffer
-void rhp::PgpCard::retBuffer(uint8_t * data, uint32_t meta, uint32_t rawSize) {
+void rhp::PgpCard::retBuffer(uint8_t * data, uint32_t meta, uint32_t size) {
 
    // Buffer is zero copy as indicated by bit 31
    if ( (meta & 0x80000000) != 0 ) {
@@ -303,11 +303,11 @@ void rhp::PgpCard::retBuffer(uint8_t * data, uint32_t meta, uint32_t rawSize) {
          pgpRetIndex(fd_,meta & 0x3FFFFFFF); // Return to hardware
          PyRogue_END_ALLOW_THREADS;
       }
-      deleteBuffer(rawSize);
+      decCounter(size);
    }
 
    // Buffer is allocated from Slave class
-   else Slave::retBuffer(data,meta,rawSize);
+   else Slave::retBuffer(data,meta,size);
 }
 
 //! Run thread
@@ -322,7 +322,7 @@ void rhp::PgpCard::runThread() {
    struct timeval tout;
 
    // Preallocate empty frame
-   frame = createFrame(0,0,false,(rawBuff_ != NULL));
+   frame = ris::Frame::create();
 
    try {
 
@@ -343,7 +343,7 @@ void rhp::PgpCard::runThread() {
             if ( zeroCopyEn_ == false || rawBuff_ == NULL ) {
 
                // Allocate a buffer
-               buff = allocBuffer(bSize_);
+               buff = allocBuffer(bSize_,NULL);
 
                // Attempt read, lane and vc not needed since only one lane/vc is open
                res = pgpRead(fd_, buff->getRawData(), buff->getRawSize(), NULL, NULL, &error, &cont);
@@ -356,7 +356,7 @@ void rhp::PgpCard::runThread() {
                if ((res = pgpReadIndex(fd_, &meta, NULL, NULL, &error, &cont)) > 0) {
 
                   // Allocate a buffer, Mark zero copy meta with bit 31 set, lower bits are index
-                  buff = createBuffer(rawBuff_[meta],0x80000000 | meta,bSize_);
+                  buff = createBuffer(rawBuff_[meta],0x80000000 | meta,bSize_,bSize_);
                }
             }
 
@@ -370,7 +370,7 @@ void rhp::PgpCard::runThread() {
                // If continue flag is not set, push frame and get a new empty frame
                if ( cont == 0 ) {
                   sendFrame(frame);
-                  frame = createFrame(0,0,false,(rawBuff_ != NULL));
+                  frame = ris::Frame::create();
                }
             }
          }

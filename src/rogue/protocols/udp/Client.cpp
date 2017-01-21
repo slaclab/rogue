@@ -68,6 +68,9 @@ rpu::Client::Client ( std::string host, uint16_t port, uint16_t maxSize) {
    ((struct sockaddr_in *)(&addr_))->sin_addr.s_addr=addr->sin_addr.s_addr;
    ((struct sockaddr_in *)(&addr_))->sin_port=htons(port_);
 
+   // Fixed size buffer pool
+   enBufferPool(maxSize_,1024*256);
+
    // Start rx thread
    thread_ = new boost::thread(boost::bind(&rpu::Client::runThread, this));
 }
@@ -84,28 +87,6 @@ rpu::Client::~Client() {
 void rpu::Client::setTimeout(uint32_t timeout) {
    if ( timeout == 0 ) timeout_ = 1;
    else timeout_ = timeout;
-}
-
-
-//! Generate a Frame. Called from master
-/*
- * Pass total size required.
- * Pass flag indicating if zero copy buffers are acceptable
- * maxBuffSize indicates the largest acceptable buffer size. A larger buffer can be
- * returned but the total buffer count must assume each buffer is of size maxBuffSize
- * If maxBuffSize = 0, slave will freely determine the buffer size.
- */
-ris::FramePtr rpu::Client::acceptReq ( uint32_t size, bool zeroCopyEn, uint32_t maxBuffSize ) {
-   ris::FramePtr frame;
-   uint32_t max;
-
-   // Adjust max buffer size
-   max = maxBuffSize;
-   if ( max > maxSize_ || max == 0 ) max = maxSize_;
-   frame = createFrame(size,max,false,false);
-
-   //printf("UDP returning frame with size = %i\n",frame->getAvailable());
-   return(frame);
 }
 
 //! Accept a frame from master
@@ -181,7 +162,7 @@ void rpu::Client::runThread() {
    struct timeval tout;
 
    // Preallocate frame
-   frame = createFrame(RX_SIZE,RX_SIZE,false,false);
+   frame = ris::Pool::acceptReq(maxSize_,false,maxSize_);
 
    printf("UDP::Client PID=%i, TID=%li\n",getpid(),syscall(SYS_gettid));
 
@@ -191,14 +172,14 @@ void rpu::Client::runThread() {
 
          // Attempt receive
          buff = frame->getBuffer(0);
-         res = ::read(fd_, buff->getRawData(), RX_SIZE);
+         res = ::read(fd_, buff->getRawData(), maxSize_);
 
          if ( res > 0 ) {
             buff->setSize(res);
 
             // Push frame and get a new empty frame
             sendFrame(frame);
-            frame = createFrame(RX_SIZE,RX_SIZE,false,false);
+            frame = ris::Pool::acceptReq(maxSize_,false,maxSize_);
          }
          else {
 

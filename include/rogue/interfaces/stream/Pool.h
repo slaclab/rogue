@@ -27,6 +27,7 @@
 #include <boost/python.hpp>
 #include <boost/thread.hpp>
 #include <boost/enable_shared_from_this.hpp>
+#include <rogue/Queue.h>
 
 namespace rogue {
    namespace interfaces {
@@ -44,45 +45,22 @@ namespace rogue {
                //! Track buffer allocations
                uint32_t allocMeta_;
 
-               //! Track buffer free
-               uint32_t freeMeta_;
-
                //! Total memory allocated
                uint32_t allocBytes_;
 
                //! Total buffers allocated
                uint32_t allocCount_;
 
-            protected:
+               //! Buffer queue
+               std::queue<uint8_t *> dataQ_;
 
-               //! Create a frame
-               /*
-                * Pass total size of frame. Zero for empty frame
-                * Pass per buffer size.
-                * If compact is set buffers are allocated based upon needed size.
-                * If compact is not set, all buffers are allocated with size = buffSize
-                * Pass zero copy flag
-                */
-               boost::shared_ptr<rogue::interfaces::stream::Frame> createFrame ( uint32_t totSize, 
-                                                                                 uint32_t buffSize,
-                                                                                 bool compact,
-                                                                                 bool zeroCopy );
+               //! Fixed size buffer mode
+               uint32_t fixedSize_;
 
-               //! Allocate and Create a Buffer
-               boost::shared_ptr<rogue::interfaces::stream::Buffer> allocBuffer ( uint32_t size );
-
-               //! Create a Buffer with passed data
-               boost::shared_ptr<rogue::interfaces::stream::Buffer> createBuffer( void * data, 
-                                                                                  uint32_t meta, 
-                                                                                  uint32_t rawSize);
-
-               //! Delete a buffer
-               void deleteBuffer( uint32_t rawSize);
+               //! Buffer queue count
+               uint32_t maxCount_;
 
             public:
-
-               //! Setup class in python
-               static void setup_python();
 
                //! Creator
                Pool();
@@ -100,8 +78,7 @@ namespace rogue {
                /*
                 * Pass total size required.
                 * Pass flag indicating if zero copy buffers are acceptable
-                * maxBuffSize indicates the largest acceptable buffer size. A larger buffer can be
-                * returned but the total buffer count must assume each buffer is of size maxBuffSize
+                * maxBuffSize indicates the largest acceptable buffer size. 
                 * If maxBuffSize = 0, slave will freely determine the buffer size.
                 */
                virtual boost::shared_ptr<rogue::interfaces::stream::Frame>
@@ -111,7 +88,28 @@ namespace rogue {
                /*
                 * Called when this instance is marked as owner of a Buffer entity that is deleted.
                 */
-               virtual void retBuffer(uint8_t * data, uint32_t meta, uint32_t rawSize);
+               virtual void retBuffer(uint8_t * data, uint32_t meta, uint32_t size);
+
+               //! Setup class in python
+               static void setup_python();
+
+            protected:
+
+               //! Set fixed size mode
+               void enBufferPool(uint32_t size, uint32_t count);
+
+               //! Allocate and Create a Buffer
+               boost::shared_ptr<rogue::interfaces::stream::Buffer> allocBuffer ( uint32_t size, uint32_t *total );
+
+               //! Create a Buffer with passed data
+               boost::shared_ptr<rogue::interfaces::stream::Buffer> createBuffer( void * data, 
+                                                                                  uint32_t meta, 
+                                                                                  uint32_t size,
+                                                                                  uint32_t alloc);
+
+               //! Decrement Allocation counter
+               void decCounter( uint32_t alloc);
+
          };
 
          // Convienence

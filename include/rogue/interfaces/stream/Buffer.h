@@ -51,6 +51,9 @@ namespace rogue {
                //! Meta data used to track this buffer by source
                uint32_t   meta_;
 
+               //! Alloc size of buffer
+               uint32_t   allocSize_;
+
                //! Raw size of buffer
                uint32_t   rawSize_;
 
@@ -74,7 +77,7 @@ namespace rogue {
                 */
                static boost::shared_ptr<rogue::interfaces::stream::Buffer> create (
                      boost::shared_ptr<rogue::interfaces::stream::Pool> source, 
-                        void * data, uint32_t meta, uint32_t rawSize);
+                        void * data, uint32_t meta, uint32_t size, uint32_t alloc);
 
                //! Setup class in python
                static void setup_python();
@@ -84,7 +87,7 @@ namespace rogue {
                 * Pass owner, raw data buffer, and meta data
                 */
                Buffer(boost::shared_ptr<rogue::interfaces::stream::Pool> source, 
-                      void * data, uint32_t meta, uint32_t rawSize);
+                      void * data, uint32_t meta, uint32_t size, uint32_t alloc);
 
                //! Destroy a buffer
                /*
@@ -104,7 +107,7 @@ namespace rogue {
                //! Set meta data
                void setMeta(uint32_t meta);
 
-               //! Get raw size
+               //! Get raw size of full buffer
                uint32_t getRawSize();
 
                //! Get raw payload (rawsize - header)

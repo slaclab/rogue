@@ -38,9 +38,6 @@ namespace rogue {
          class Client : public rogue::interfaces::stream::Master, 
                         public rogue::interfaces::stream::Slave {
 
-               //! Constant RX size
-               static const uint32_t RX_SIZE = 9000;
-
                //! Socket
                int32_t  fd_;
 
@@ -84,17 +81,6 @@ namespace rogue {
 
                //! Set timeout for frame transmits in microseconds
                void setTimeout(uint32_t timeout);
-
-               //! Generate a Frame. Called from master
-               /*
-                * Pass total size required.
-                * Pass flag indicating if zero copy buffers are acceptable
-                * maxBuffSize indicates the largest acceptable buffer size. A larger buffer can be
-                * returned but the total buffer count must assume each buffer is of size maxBuffSize
-                * If maxBuffSize = 0, slave will freely determine the buffer size.
-                */
-               boost::shared_ptr<rogue::interfaces::stream::Frame>
-                  acceptReq ( uint32_t size, bool zeroCopyEn, uint32_t maxBuffSize );
 
                //! Accept a frame from master
                void acceptFrame ( boost::shared_ptr<rogue::interfaces::stream::Frame> frame );

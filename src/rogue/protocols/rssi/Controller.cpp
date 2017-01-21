@@ -148,7 +148,11 @@ void rpr::Controller::transportRx( ris::FramePtr frame ) {
    // Syn frame and resets go to state machine if state = open 
    // or we are waiting for ack replay
    if ( ( state_ == StOpen || state_ == StWaitSyn) && 
-        ( head->getSyn() || head->getRst() ) ) stQueue_.push(head);
+        ( head->getSyn() || head->getRst() ) ) {
+      PyRogue_BEGIN_ALLOW_THREADS;
+      stQueue_.push(head);
+      PyRogue_END_ALLOW_THREADS;
+   }
 
    // Data or NULL in the correct sequence or syn go to application
    // Syn is passed to update sequence receive tracking
