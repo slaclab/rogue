@@ -934,8 +934,10 @@ class Block(rogue.interfaces.memory.Master):
         """
         Perform a blocking transaction
         """
+        #print("Setting block. %s. Addr=%x, Data=%s" % (self._name,self._offset,self._bData))
         self._startTransaction(type)
         self._checkTransaction(update=False)
+        #print("Done block. %s. Addr=%x, Data=%s" % (self._name,self._offset,self._bData))
 
     @property
     def offset(self):
@@ -1016,6 +1018,8 @@ class Block(rogue.interfaces.memory.Master):
             if var.mode == 'RW':
                 for x in range(var.bitOffset,var.bitOffset+var.bitSize):
                     setBitToBytes(self._mData,x,1)
+
+        return True
 
     def _startTransaction(self,type):
         """
@@ -1181,6 +1185,7 @@ class Device(Node,rogue.interfaces.memory.Hub):
         # Adding variable
         if isinstance(node,Variable) and node.offset is not None:
             if not any(block._addVariable(node) for block in self._blocks):
+                #print("Adding new block %s at offset %i" % (node.name,node.offset))
                 self._blocks.append(Block(self,node))
 
     def hideVariables(self, hidden, variables=None):
