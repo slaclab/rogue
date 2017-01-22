@@ -140,35 +140,39 @@ void rpr::Controller::transportRx( ris::FramePtr frame ) {
    //printf("Got frame: \n%s\n",head->dump().c_str());
 
    // Ack set
-   if ( head->getAck() ) lastAckRx_ = head->getAcknowledge();
+   if ( head->ack ) lastAckRx_ = head->acknowledge;
 
    // Update busy bit
-   tranBusy_ = head->getBusy();
+   tranBusy_ = head->busy;
+
+   // Data or NULL in the correct sequence go to application
+   if ( state_ == StOpen && head->sequence == nextSeqRx_ ) {
+
+      if ( head->nul || frame->getPayload() > rpr::Header::HeaderSize ) {
+         lastSeqRx_ = nextSeqRx_;
+         nextSeqRx_ = nextSeqRx_ + 1;
+         stCond_.notify_all();
+      }
+
+      if ( (!head->nul) && frame->getPayload() > rpr::Header::HeaderSize ) {
+         PyRogue_BEGIN_ALLOW_THREADS;
+         appQueue_.push(head);
+         PyRogue_END_ALLOW_THREADS;
+      }
+   }
 
    // Syn frame and resets go to state machine if state = open 
    // or we are waiting for ack replay
    if ( ( state_ == StOpen || state_ == StWaitSyn) && 
-        ( head->getSyn() || head->getRst() ) ) {
+        ( head->syn || head->rst ) ) {
+
+      lastSeqRx_ = head->sequence;
+      nextSeqRx_ = lastSeqRx_ + 1;
+
       PyRogue_BEGIN_ALLOW_THREADS;
       stQueue_.push(head);
       PyRogue_END_ALLOW_THREADS;
    }
-
-   // Data or NULL in the correct sequence or syn go to application
-   // Syn is passed to update sequence receive tracking
-   if ( head->getSyn() || ( state_ == StOpen && 
-       (head->getNul() || frame->getPayload() > rpr::Header::HeaderSize ) &&
-       (head->getSequence() == nextSeqRx_ ) ) ) {
-
-      if ( head->getSyn() ) nextSeqRx_ = head->getSequence()+1;
-      else nextSeqRx_++;
-
-      PyRogue_BEGIN_ALLOW_THREADS;
-      appQueue_.push(head);
-      PyRogue_END_ALLOW_THREADS;
-   }
-
-   stCond_.notify_all();
 }
 
 //! Frame transmit at application interface
@@ -182,14 +186,10 @@ ris::FramePtr rpr::Controller::applicationTx() {
       PyRogue_BEGIN_ALLOW_THREADS;
       head = appQueue_.pop();
       PyRogue_END_ALLOW_THREADS;
-
-      lastSeqRx_ = head->getSequence();
       stCond_.notify_all();
 
-      if ( ! ( head->getNul() || head->getSyn() ) ) {
-         frame = head->getFrame();
-         frame->getBuffer(0)->setHeadRoom(frame->getBuffer(0)->getHeadRoom() + rpr::Header::HeaderSize);
-      }
+      frame = head->getFrame();
+      frame->getBuffer(0)->setHeadRoom(frame->getBuffer(0)->getHeadRoom() + rpr::Header::HeaderSize);
    }
    return(frame);
 }
@@ -212,8 +212,7 @@ void rpr::Controller::applicationRx ( ris::FramePtr frame ) {
 
    // Map to RSSI 
    rpr::HeaderPtr head = rpr::Header::create(frame);
-   head->txInit(false,false);
-   head->setAck(true);
+   head->ack = true;
 
    PyRogue_BEGIN_ALLOW_THREADS;
 
@@ -259,7 +258,7 @@ bool rpr::Controller::getBusy() {
 
 // Method to transit a frame with proper updates
 void rpr::Controller::transportTx(rpr::HeaderPtr head, bool seqUpdate) {
-   head->setSequence(locSequence_);
+   head->sequence = locSequence_;
 
    // Update sequence numbers
    if ( seqUpdate ) {
@@ -268,12 +267,16 @@ void rpr::Controller::transportTx(rpr::HeaderPtr head, bool seqUpdate) {
       locSequence_++;
    }
 
-   // Setup header
-   head->setAcknowledge(lastSeqRx_);
-   head->setBusy(appQueue_.size() > BusyThold);
+   if ( appQueue_.size() > BusyThold ) {
+      head->acknowledge = lastAckTx_;
+      head->busy = true;
+   }
+   else {
+      head->acknowledge = lastSeqRx_;
+      lastAckTx_ = lastSeqRx_;
+      head->busy = false;
+   }
    head->update();
-
-   lastAckTx_ = lastSeqRx_;
 
    // Track last tx time
    gettimeofday(&txTime_,NULL);
@@ -362,18 +365,18 @@ uint32_t rpr::Controller::stateClosedWait () {
       head = stQueue_.pop();
 
       // Reset
-      if ( head->getRst() ) state_ = StClosed;
+      if ( head->rst ) state_ = StClosed;
 
       // Syn ack
-      else if ( head->getSyn() && head->getAck() ) {
-         remMaxBuffers_ = head->getMaxOutstandingSegments();
-         remMaxSegment_ = head->getMaxSegmentSize();
-         retranTout_    = head->getRetransmissionTimeout();
-         cumAckTout_    = head->getCumulativeAckTimeout();
-         nullTout_      = head->getNullTimeout();
-         maxRetran_     = head->getMaxRetransmissions();
-         maxCumAck_     = head->getMaxCumulativeAck();
-         prevAckRx_     = head->getAcknowledge();
+      else if ( head->syn && head->ack ) {
+         remMaxBuffers_ = head->maxOutstandingSegments;
+         remMaxSegment_ = head->maxSegmentSize;
+         retranTout_    = head->retransmissionTimeout;
+         cumAckTout_    = head->cumulativeAckTimeout;
+         nullTout_      = head->nullTimeout;
+         maxRetran_     = head->maxRetransmissions;
+         maxCumAck_     = head->maxCumulativeAck;
+         prevAckRx_     = head->acknowledge;
          state_         = StSendSeqAck;
          gettimeofday(&stTime_,NULL);
       }
@@ -386,18 +389,18 @@ uint32_t rpr::Controller::stateClosedWait () {
       head = rpr::Header::create(tran_->reqFrame(rpr::Header::SynSize,false,rpr::Header::SynSize));
 
       // Set frame
-      head->txInit(true,true);
-      head->setVersion(Version);
-      head->setChk(true);
-      head->setMaxOutstandingSegments(LocMaxBuffers);
-      head->setMaxSegmentSize(segmentSize_);
-      head->setRetransmissionTimeout(retranTout_);
-      head->setCumulativeAckTimeout(cumAckTout_);
-      head->setNullTimeout(nullTout_);
-      head->setMaxRetransmissions(maxRetran_);
-      head->setMaxCumulativeAck(maxCumAck_);
-      head->setTimeoutUnit(TimeoutUnit);
-      head->setConnectionId(locConnId_);
+      head->syn = true;
+      head->version = Version;
+      head->chk = true;
+      head->maxOutstandingSegments = LocMaxBuffers;
+      head->maxSegmentSize = segmentSize_;
+      head->retransmissionTimeout = retranTout_;
+      head->cumulativeAckTimeout = cumAckTout_;
+      head->nullTimeout = nullTout_;
+      head->maxRetransmissions = maxRetran_;
+      head->maxCumulativeAck = maxCumAck_;
+      head->timeoutUnit = TimeoutUnit;
+      head->connectionId = locConnId_;
 
       boost::unique_lock<boost::mutex> lock(txMtx_);
       transportTx(head,true);
@@ -418,9 +421,8 @@ uint32_t rpr::Controller::stateSendSeqAck () {
    rpr::HeaderPtr ack = rpr::Header::create(tran_->reqFrame(rpr::Header::HeaderSize,false,rpr::Header::HeaderSize));
 
    // Setup frame
-   ack->txInit(false,true);
-   ack->setAck(true);
-   ack->setNul(false);
+   ack->ack = true;
+   ack->nul = false;
 
    boost::unique_lock<boost::mutex> lock(txMtx_);
    transportTx(ack,false);
@@ -516,9 +518,8 @@ uint32_t rpr::Controller::stateOpen () {
       //printf("ack pend = %i, do Null = %i, size = %i\n",ackPend,doNull,appQueue_.size());
 
       head = rpr::Header::create(tran_->reqFrame(rpr::Header::HeaderSize,false,rpr::Header::HeaderSize));
-      head->txInit(false,true);
-      head->setAck(true);
-      head->setNul(doNull);
+      head->ack = true;
+      head->nul = doNull;
 
       boost::unique_lock<boost::mutex> lock(txMtx_);
       transportTx(head,doNull);
@@ -534,8 +535,7 @@ uint32_t rpr::Controller::stateError () {
    uint32_t x;
 
    rst = rpr::Header::create(tran_->reqFrame(rpr::Header::HeaderSize,false,rpr::Header::HeaderSize));
-   rst->txInit(false,true);
-   rst->setRst(true);
+   rst->rst = true;
    //printf("Sending RST:\n%s\n",rst->dump().c_str());
 
    boost::unique_lock<boost::mutex> lock(txMtx_);
