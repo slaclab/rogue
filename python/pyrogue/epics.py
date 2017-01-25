@@ -36,7 +36,7 @@ class EpicsCaDriver(pcaspy.Driver):
 
     def write(self,reason,value):
         path = reason.replace(':','.')
-        entry = {'path':path,'value':value}
+        entry = {'path':path,'value':value,'epath':reason}
         self._q.put(entry)
         self.setParam(reason,value)
 
@@ -52,9 +52,9 @@ class EpicsCaServer(object):
         self._server  = None
         self._driver  = None
         self._queue   = queue.Queue()
-        #self._queue   = Queue.Queue()
         self._wThread = None
         self._eThread = None
+        self._pvdb    = {}
 
         if self._root:
             self._root.addVarListener(self._variableStatus)
@@ -73,7 +73,7 @@ class EpicsCaServer(object):
         self._eThread.start()
         self._wThread.start()
 
-    def _addPv(self,node,pvdb):
+    def _addPv(self,node):
         d = {}
         if node.base == 'enum': 
             d['type'] = 'enum'
@@ -93,38 +93,37 @@ class EpicsCaServer(object):
             d['type'] = 'string'
 
         name = node.path.replace('.',':')
-        pvdb[name] = d
+        self._pvdb[name] = d
 
-    def _addDevice(self,node,pvdb):
+    def _addDevice(self,node):
 
         # Get variables 
         for key,value in node.variables.items():
             if value.hidden == False:
-                self._addPv(value,pvdb)
+                self._addPv(value)
 
         # Get commands
         for key,value in node.commands.items():
             if value.hidden == False:
-                self._addPv(value,pvdb)
+                self._addPv(value)
 
         # Get devices
         for key,value in node.devices.items():
             if value.hidden == False:
-                self._addDevice(value,pvdb)
+                self._addDevice(value)
 
     def _epicsRun(self):
         self._server = pcaspy.SimpleServer()
 
         # Create PVs
-        pvdb = {}
-        self._addDevice(self._root,pvdb)
+        self._addDevice(self._root)
 
         # Add variable for structure
         sname = self._root.name + ':' + 'structure'
-        pvdb[sname] = {'type':'string'}
+        self._pvdb[sname] = {'type':'string'}
 
         # Create PVs
-        self._server.createPV(self._base + ':',pvdb)
+        self._server.createPV(self._base + ':',self._pvdb)
         self._driver = EpicsCaDriver(self._queue)
 
         # Load structure string
@@ -138,7 +137,16 @@ class EpicsCaServer(object):
         while(self._runEn):
             try:
                 e = self._queue.get(True,0.5)
-                self._root.setOrExecPath(e['path'],e['value'])
+                epath = e['epath']
+                path  = e['path']
+                value = e['value']
+
+                if self._pvdb[epath]['type'] == 'enum':
+                    v = self._pvdb[epath]['enums'][value]
+                else:
+                    v = e['value']
+
+                self._root.setOrExecPath(path,v)
             except:
                 pass
 
@@ -157,5 +165,10 @@ class EpicsCaServer(object):
             if isinstance(value,dict):
                 self._walkDict(locPath,value)
             else:
-                self._driver.setParam(locPath,value)
+                if self._pvdb[locPath]['type'] == 'enum':
+                    v = self._pvdb[locPath]['enums'].index(value)
+                else:
+                    v =value
+
+                self._driver.setParam(locPath,v)
 
