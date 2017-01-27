@@ -1333,7 +1333,7 @@ class Root(rogue.interfaces.stream.Master,Device):
         self._varListeners = []
 
         # Variables
-        self.add(Variable(name='systemLog', base='string', mode='RO',
+        self.add(Variable(name='systemLog', base='string', mode='RO',hidden=True,
             setFunction=None, getFunction='value=dev._systemLog',
             description='String containing newline seperated system logic entries'))
 
@@ -1636,7 +1636,7 @@ class DataWriter(Device):
 class RunControl(Device):
     """Special base class to control runs. TODO: Update comments."""
 
-    def __init__(self, name, description='', hidden=False, **dump):
+    def __init__(self, name, description='', hidden=True, **dump):
         """Initialize device class"""
 
         Device.__init__(self, name=name, description=description,
