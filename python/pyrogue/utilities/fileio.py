@@ -25,8 +25,8 @@ import pyrogue
 class StreamWriter(pyrogue.DataWriter):
     """Stream Writer Wrapper"""
 
-    def __init__(self, name):
-        pyrogue.DataWriter.__init__(self, name=name, description='Stream Writer')
+    def __init__(self, name, hidden=True):
+        pyrogue.DataWriter.__init__(self, name=name, description='Stream Writer',hidden=hidden)
         self._writer = rogue.utilities.fileio.StreamWriter()
 
     def _setOpen(self,dev,var,value):
