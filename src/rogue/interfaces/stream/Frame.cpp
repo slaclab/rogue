@@ -109,7 +109,7 @@ uint32_t ris::Frame::getFlags() {
 
 //! Set error state
 void ris::Frame::setFlags(uint32_t flags) {
-   error_ = flags;
+   flags_ = flags;
 }
 
 //! Get error state

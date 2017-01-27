@@ -99,18 +99,15 @@ class EpicsCaServer(object):
 
         # Get variables 
         for key,value in node.variables.items():
-            if value.hidden == False:
-                self._addPv(value)
+            self._addPv(value)
 
         # Get commands
         for key,value in node.commands.items():
-            if value.hidden == False:
-                self._addPv(value)
+            self._addPv(value)
 
         # Get devices
         for key,value in node.devices.items():
-            if value.hidden == False:
-                self._addDevice(value)
+            self._addDevice(value)
 
     def _epicsRun(self):
         self._server = pcaspy.SimpleServer()
