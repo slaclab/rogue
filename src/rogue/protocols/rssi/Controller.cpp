@@ -53,6 +53,8 @@ rpr::Controller::Controller ( uint32_t segSize, rpr::TransportPtr tran, rpr::App
    app_  = app;
    tran_ = tran;
 
+   appQueue_.setThold(BusyThold);
+
    dropCount_   = 0;
    nextSeqRx_   = 0;
    lastAckRx_   = 0;
@@ -132,10 +134,12 @@ ris::FramePtr rpr::Controller::reqFrame ( uint32_t size, uint32_t maxBuffSize ) 
 
 //! Frame received at transport interface
 void rpr::Controller::transportRx( ris::FramePtr frame ) {
-
    rpr::HeaderPtr head = rpr::Header::create(frame);
 
-   if ( frame->getCount() == 0 || ! head->verify() ) dropCount_++;
+   if ( frame->getCount() == 0 || ! head->verify() ) {
+      dropCount_++;
+      return;
+   }
 
    //printf("Got frame: \n%s\n",head->dump().c_str());
 
@@ -146,15 +150,13 @@ void rpr::Controller::transportRx( ris::FramePtr frame ) {
    tranBusy_ = head->busy;
 
    // Data or NULL in the correct sequence go to application
-   if ( state_ == StOpen && head->sequence == nextSeqRx_ ) {
+   if ( state_ == StOpen && head->sequence == nextSeqRx_ && 
+        ( head->nul || frame->getPayload() > rpr::Header::HeaderSize ) ) {
+      lastSeqRx_ = nextSeqRx_;
+      nextSeqRx_ = nextSeqRx_ + 1;
+      stCond_.notify_all();
 
-      if ( head->nul || frame->getPayload() > rpr::Header::HeaderSize ) {
-         lastSeqRx_ = nextSeqRx_;
-         nextSeqRx_ = nextSeqRx_ + 1;
-         stCond_.notify_all();
-      }
-
-      if ( (!head->nul) && frame->getPayload() > rpr::Header::HeaderSize ) {
+      if ( !head->nul ) {
          PyRogue_BEGIN_ALLOW_THREADS;
          appQueue_.push(head);
          PyRogue_END_ALLOW_THREADS;
@@ -163,9 +165,7 @@ void rpr::Controller::transportRx( ris::FramePtr frame ) {
 
    // Syn frame and resets go to state machine if state = open 
    // or we are waiting for ack replay
-   if ( ( state_ == StOpen || state_ == StWaitSyn) && 
-        ( head->syn || head->rst ) ) {
-
+   else if ( ( state_ == StOpen || state_ == StWaitSyn) && ( head->syn || head->rst ) ) {
       lastSeqRx_ = head->sequence;
       nextSeqRx_ = lastSeqRx_ + 1;
 
@@ -253,7 +253,7 @@ uint32_t rpr::Controller::getRetranCount() {
 
 //! Get busy
 bool rpr::Controller::getBusy() {
-   return(appQueue_.size() > BusyThold);
+   return(appQueue_.busy());
 }
 
 // Method to transit a frame with proper updates
@@ -267,7 +267,7 @@ void rpr::Controller::transportTx(rpr::HeaderPtr head, bool seqUpdate) {
       locSequence_++;
    }
 
-   if ( appQueue_.size() > BusyThold ) {
+   if ( appQueue_.busy() ) {
       head->acknowledge = lastAckTx_;
       head->busy = true;
    }
@@ -450,12 +450,29 @@ uint32_t rpr::Controller::stateOpen () {
    locSeqRx = lastSeqRx_; // Sample once
    locSeqTx = locSequence_-1;
 
-   // Pending frame is an error
-   if ( ! stQueue_.empty() ) {
-      head = stQueue_.pop();
-      state_ = StError;
-      gettimeofday(&stTime_,NULL);
-      return(0);
+   // Sample transmit time and compute pending ack count under lock
+   {
+      boost::unique_lock<boost::mutex> lock(txMtx_);
+      locTime = txTime_;
+      ackPend = locSeqRx - lastAckTx_;
+   }
+
+   // NULL required
+   if ( timePassed(&locTime,nullTout_/3) ) doNull = true;
+   else doNull = false;
+
+   // Outbound frame required
+   if ( ( doNull || ackPend >= maxCumAck_ || 
+        ((ackPend > 0 || appQueue_.busy()) && timePassed(&locTime,cumAckTout_)) ) ) {
+      //printf("ack pend = %i, do Null = %i, size = %i\n",ackPend,doNull,appQueue_.size());
+
+      head = rpr::Header::create(tran_->reqFrame(rpr::Header::HeaderSize,false,rpr::Header::HeaderSize));
+      head->ack = true;
+      head->nul = doNull;
+
+      boost::unique_lock<boost::mutex> lock(txMtx_);
+      transportTx(head,doNull);
+      lock.unlock();
    }
 
    // Update ack states
@@ -499,31 +516,12 @@ uint32_t rpr::Controller::stateOpen () {
       lock.unlock();
    }
 
-   // Sample transmit time and compute pending ack count under lock
-   {
-      boost::unique_lock<boost::mutex> lock(txMtx_);
-      locTime = txTime_;
-
-      ackPend = 0;
-      for (idx = lastAckTx_; idx != locSeqRx; idx++) ackPend++;
-   }
-
-   // NULL required
-   if ( timePassed(&locTime,nullTout_/3) ) doNull = true;
-   else doNull = false;
-
-   // Outbound frame required
-   if ( ( doNull || ackPend >= maxCumAck_ || 
-        ((ackPend > 0 || appQueue_.size() > BusyThold) && timePassed(&locTime,cumAckTout_)) ) ) {
-      //printf("ack pend = %i, do Null = %i, size = %i\n",ackPend,doNull,appQueue_.size());
-
-      head = rpr::Header::create(tran_->reqFrame(rpr::Header::HeaderSize,false,rpr::Header::HeaderSize));
-      head->ack = true;
-      head->nul = doNull;
-
-      boost::unique_lock<boost::mutex> lock(txMtx_);
-      transportTx(head,doNull);
-      lock.unlock();
+   // Pending frame is an error
+   if ( ! stQueue_.empty() ) {
+      head = stQueue_.pop();
+      state_ = StError;
+      gettimeofday(&stTime_,NULL);
+      return(0);
    }
 
    return(convTime(cumAckTout_/2));
