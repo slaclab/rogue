@@ -20,10 +20,11 @@ import pyrogue
 import rogue.protocols.udp
 import rogue.protocols.rssi
 import rogue.protocols.packetizer
+import time
 
 class UdpRssiPack(object):
 
-    def __init__(self,host,port,size):
+    def __init__(self,host,port,size,wait=True):
         self._host = host
         self._port = port
         self._size = size
@@ -37,6 +38,17 @@ class UdpRssiPack(object):
 
         self._rssi.application()._setSlave(self._pack.transport())
         self._pack.transport()._setSlave(self._rssi.application())
+
+        if wait:
+            curr = int(time.time())
+            last = curr
+
+            while not self._rssi.getOpen():
+                time.sleep(.0001)
+                curr = int(time.time())
+                if last != curr:
+                    print("UdpRssiPack -> Waiting for link!")
+                    last = curr
 
     def application(self,dest):
         return(self._pack.application(dest))
