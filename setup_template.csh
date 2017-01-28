@@ -20,5 +20,5 @@ setenv ROGUE_DIR  `dirname ${PWD}/$temp_path[2]`
 setenv PYTHONPATH ${ROGUE_DIR}/python:${PYTHONPATH}
 
 # Setup library path
-setenv LD_LIBRARY_PATH ${ROGUE_DIR}/python:${LD_LIBRARY_PATH}
+setenv LD_LIBRARY_PATH ${ROGUE_DIR}/lib:${LD_LIBRARY_PATH}
 

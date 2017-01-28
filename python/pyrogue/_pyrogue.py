@@ -787,7 +787,10 @@ class BlockError(Exception):
             self._value += "Timeout after %s seconds" % (block.timeout)
 
         elif (self._error & 0xFF000000) == rogue.interfaces.memory.VerifyError:
-            self._value += "Verify error. Local=%s, Verify=%s, Mask=%s" % (block._bData,block._vData,block._mData)
+            bStr = ''.join('0x{:02x} '.format(x) for x in block._bData)
+            vStr = ''.join('0x{:02x} '.format(x) for x in block._vData)
+            mStr = ''.join('0x{:02x} '.format(x) for x in block._mData)
+            self._value += "Verify error. Local=%s, Verify=%s, Mask=%s" % (bStr,vStr,mStr)
 
         elif (self._error & 0xFF000000) == rogue.interfaces.memory.AddressError:
             self._value += "Address error"
@@ -834,6 +837,7 @@ class Block(rogue.interfaces.memory.Master):
         self._doUpdate  = False
         self._doVerify  = False
         self._device    = variable.parent
+        self._tranTime  = time.time()
 
         self._setSlave(self._device)
         self._addVariable(variable)
@@ -977,8 +981,8 @@ class Block(rogue.interfaces.memory.Master):
         """
         lid = self._getId()
         while lid > 0:
-            self._cond.wait(self._timeout)
-            if self._getId() == lid:
+            self._cond.wait(.01)
+            if self._getId() == lid and (time.time() - self._tranTime) > self._timeout:
                 self._endTransaction()
                 self._error = rogue.interfaces.memory.TimeoutError
                 break
@@ -1047,6 +1051,7 @@ class Block(rogue.interfaces.memory.Master):
             self._doVerify = (type == rogue.interfaces.memory.Verify)
             self._doUpdate = (type == rogue.interfaces.memory.Read)
             self._error    = 0
+            self._tranTime = time.time()
 
             # Set data pointer
             tData = self._vData if self._doVerify else self._bData

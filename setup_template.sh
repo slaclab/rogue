@@ -26,5 +26,5 @@ export ROGUE_DIR=`dirname ${PWD}/`
 export PYTHONPATH=${ROGUE_DIR}/python:${PYTHONPATH}
 
 # Setup library path
-export LD_LIBRARY_PATH=${ROGUE_DIR}/python:${LD_LIBRARY_PATH}
+export LD_LIBRARY_PATH=${ROGUE_DIR}/lib:${LD_LIBRARY_PATH}
 
