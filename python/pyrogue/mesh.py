@@ -101,7 +101,7 @@ class MeshNode(threading.Thread):
 
                 # Structure update from server to client
                 elif cmd == 'structure_status':
-                    
+
                     # Does name already exist? Update UUID
                     if src in self._servers:
                         t = self._servers[src]
@@ -114,7 +114,7 @@ class MeshNode(threading.Thread):
                         self._servers[t.name] = t
                         if self._newTree:
                             self._newTree(t)
-                    
+
                     # Apply updates
                     self._noMsg = True
                     t.setOrExecYaml(msg2,False,['RW','RO'])
@@ -122,25 +122,28 @@ class MeshNode(threading.Thread):
 
                 # Structure request from client to server
                 elif cmd == 'get_structure':
-                    self._intWhisper(sid,'structure_status',self._root.getYamlStructure(),self._root.getYamlVariables(False,['RW','RO']))
+                    self._intWhisper(sid,'structure_status',self._root.getYamlStructure(),
+                                     self._root.getYamlVariables(False,['RW','RO']))
 
             # Commands sent as a broadcast
             elif typ == 'SHOUT':
-                m = yaml.load(e[4].decode('utf-8'))
-                cmd  = m['cmd']
-                msg  = m['msg']
+                if e[3].decode('utf-8') == self._group:
+                    m = yaml.load(e[4].decode('utf-8'))
+                    cmd  = m['cmd']
+                    msg  = m['msg']
 
-                # Field update from server to client
-                if cmd == 'variable_status':
-                    self._noMsg = True
-                    for key,value in self._servers.items():
-                        value.setOrExecYaml(msg,False,['RW','RO'])
-                    self._noMsg = False
+                    # Field update from server to client
+                    if cmd == 'variable_status':
+                        self._noMsg = True
+                        for key,value in self._servers.items():
+                            value.setOrExecYaml(msg,False,['RW','RO'])
+                        self._noMsg = False
 
             # New node, request structure and status
             elif typ == 'JOIN':
-                if self._mesh.peer_header_value(sid,'server') == 'True':
-                    self._intWhisper(sid,'get_structure')
+                if e[3].decode('utf-8') == self._group:
+                    if self._mesh.peer_header_value(sid,'server') == 'True':
+                        self._intWhisper(sid,'get_structure')
 
     # Shout a message/payload combination
     def _intShout(self,cmd,msg=None):
