@@ -498,10 +498,10 @@ class Variable(Node):
         # Variables are always leaf nodes so no need to recurse
         if self._defaultValue is not None:
             self.set(self._defaultValue, write=True)
-            
-        if self._pollInterval > 0:
+
+        if self._pollInterval > 0 and self._root._pollQueue:
             self._root._pollQueue.updatePollInterval(self)
-                
+
 
     def addDependency(self, dep):
         self.__dependencies.append(dep)
@@ -514,7 +514,7 @@ class Variable(Node):
     @pollInterval.setter
     def pollInterval(self, interval):
         self._pollInterval = interval        
-        if isinstance(self._root, Root):
+        if isinstance(self._root, Root) and self._root._pollQueue:
             self._root._pollQueue.updatePollInterval(self)
 
 
@@ -1316,7 +1316,7 @@ class Root(rogue.interfaces.stream.Master,Device):
     to be stored in data files.
     """
 
-    def __init__(self, name, description, **dump):
+    def __init__(self, name, description, pollEn=True, **dump):
         """Init the node with passed attributes"""
 
         rogue.interfaces.stream.Master.__init__(self)
@@ -1328,7 +1328,10 @@ class Root(rogue.interfaces.stream.Master,Device):
         self._sysLogLock = threading.Lock()
 
         # Polling
-        self._pollQueue = PollQueue()
+        if pollEn:
+            self._pollQueue = PollQueue()
+        else:
+            self._pollQueue = None
 
         # Variable update list
         self._updatedDict = odict()
@@ -1345,7 +1348,8 @@ class Root(rogue.interfaces.stream.Master,Device):
 
     def stop(self):
         """Stop the polling thread. Must be called for clean exit."""
-        self._pollQueue.stop()
+        if self._pollQueue:
+            self._pollQueue.stop()
 
     def addVarListener(self,func):
         """
@@ -1714,7 +1718,7 @@ def treeFromYaml(yml,setFunction,cmdFunction):
     root = None
 
     for key, value in d.items():
-        root = Root(**value)
+        root = Root(pollEn=False,**value)
         root._addStructure(value,setFunction,cmdFunction)
 
     return root
