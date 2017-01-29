@@ -1334,7 +1334,7 @@ class Root(rogue.interfaces.stream.Master,Device):
             self._pollQueue = None
 
         # Variable update list
-        self._updatedDict = odict()
+        self._updatedDict = None
         self._updatedLock = threading.Lock()
 
         # Variable update listener
