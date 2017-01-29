@@ -80,7 +80,7 @@ class EpicsCaServer(object):
             d['enums'] = [val for key,val in node.enum.items()] 
         elif node.base == 'bool':
             d['type'] = 'enum'
-            d['enums'] = ['True','False']
+            d['enums'] = ['False','True']
         elif node.base == 'float':
             d['type'] = 'float'
         elif node.base == 'uint' or node.base == 'hex' or node.base == 'bin':
@@ -163,7 +163,7 @@ class EpicsCaServer(object):
                 self._walkDict(locPath,value)
             else:
                 if self._pvdb[locPath]['type'] == 'enum':
-                    v = self._pvdb[locPath]['enums'].index(value)
+                    v = self._pvdb[locPath]['enums'].index(str(value))
                 else:
                     v =value
 
