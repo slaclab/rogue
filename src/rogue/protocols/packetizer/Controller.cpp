@@ -117,7 +117,7 @@ void rpp::Controller::transportRx( ris::FramePtr frame ) {
 
       // Drop invalid data
       if ( frame->getError() || (buff->getPayload() < 9) || ((data[0] & 0xF) != 0) ) {
-         //printf("Packetizer dropped frame. A.\n");
+         //printf("Packetizer dropped frame. Error=%i\n",frame->getError());
          dropCount_++;
          return;
       }
@@ -136,15 +136,19 @@ void rpp::Controller::transportRx( ris::FramePtr frame ) {
       tmpLuser = data[buff->getPayload()-1] & 0x7F;
       tmpEof   = data[buff->getPayload()-1] & 0x80;
 
+      //printf("Got Frame. tranIndex_=%i, tmpIdx=%i, tmpCnt=%i, tranCount=%i, size=%i, last=%x\n",
+            //tranIndex_,tmpIdx,tmpCount,tranCount_,buff->getPayload(),data[buff->getPayload()-1]);
+
       // Rem 8 bytes to headroom
       buff->setHeadRoom(buff->getHeadRoom() + 8);
 
       // Shorten message by one byte
       buff->setPayload(buff->getPayload()-1);
-      
+
       // Drop frame and reset state if mismatch
-      if ( tranCount_ > 0  && ( tmpIdx != tranIndex_ || tmpCount != tranCount_ ) ) {
-         //printf("Packetizer dropped frame. B.\n");
+      if ( tmpCount > 0  && ( tmpIdx != tranIndex_ || tmpCount != tranCount_ ) ) {
+         //printf("Packetizer dropped frame. tranIndex_=%i, tmpIdx=%i, tmpCnt=%i, tranCount=%i\n",
+               //tranIndex_,tmpIdx,tmpCount,tranCount_);
          dropCount_++;
          tranCount_ = 0;
          tranFrame_.reset();
@@ -152,10 +156,11 @@ void rpp::Controller::transportRx( ris::FramePtr frame ) {
       }
 
       // First frame
-      if ( tranCount_ == 0 ) {
+      if ( tmpCount == 0 ) {
          tranFrame_ = ris::Frame::create();
          tranIndex_ = tmpIdx;
          tranDest_  = tmpDest;
+         tranCount_ = 0;
 
          flags  = tmpFuser;
          if ( tmpEof ) flags += tmpLuser << 8;
