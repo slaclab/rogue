@@ -207,10 +207,11 @@ bool rpu::Client::setRxSize(uint32_t size) {
    setsockopt(fd_, SOL_SOCKET, SO_RCVBUF, (char*)&size, sizeof(size));
    getsockopt(fd_, SOL_SOCKET, SO_RCVBUF, &rwin, &rwin_size);
    if(size > rwin) {
-      std::cout << "--------------------------------" << std::endl;
-      std::cout << "Error setting rx buffer size."    << std::endl;
+      std::cout << "----------------------------------------------------------" << std::endl;
+      std::cout << "Error setting rx buffer size."                              << std::endl;
       std::cout << "Wanted " << std::dec << size << " Got " << std::dec << rwin << std::endl;
-      std::cout << "--------------------------------" << std::endl;
+      std::cout << "sysctl -w net.core.rmem_max=size to increase in kernel"     << std::endl;
+      std::cout << "----------------------------------------------------------" << std::endl;
       return(false);
    }
    return(true);
