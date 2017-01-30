@@ -79,6 +79,9 @@ namespace rogue {
                //! Destructor
                ~Client();
 
+               //! Set UDP RX Size
+               bool setRxSize(uint32_t size);
+
                //! Set timeout for frame transmits in microseconds
                void setTimeout(uint32_t timeout);
 

@@ -198,12 +198,31 @@ void rpu::Client::runThread() {
    } catch (boost::thread_interrupted&) { }
 }
 
+
+//! Set UDP RX Size
+bool rpu::Client::setRxSize(uint32_t size) {
+   uint32_t   rwin;
+   socklen_t  rwin_size=4;
+
+   setsockopt(fd_, SOL_SOCKET, SO_RCVBUF, (char*)&size, sizeof(size));
+   getsockopt(fd_, SOL_SOCKET, SO_RCVBUF, &rwin, &rwin_size);
+   if(size > rwin) {
+      std::cout << "--------------------------------" << std::endl;
+      std::cout << "Error setting rx buffer size."    << std::endl;
+      std::cout << "Wanted " << std::dec << size << " Got " << std::dec << rwin << std::endl;
+      std::cout << "--------------------------------" << std::endl;
+      return(false);
+   }
+   return(true);
+}
+
 void rpu::Client::setup_python () {
 
    bp::class_<rpu::Client, rpu::ClientPtr, bp::bases<ris::Master,ris::Slave>, boost::noncopyable >("Client",bp::init<std::string,uint16_t,uint16_t>())
       .def("create",         &rpu::Client::create)
       .staticmethod("create")
       .def("setTimeout",     &rpu::Client::setTimeout)
+      .def("setRxSize",      &rpu::Client::setRxSize)
    ;
 
    bp::implicitly_convertible<rpu::ClientPtr, ris::MasterPtr>();
