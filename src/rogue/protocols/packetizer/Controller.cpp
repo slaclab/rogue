@@ -54,7 +54,8 @@ rpp::Controller::Controller ( uint32_t segmentSize, rpp::TransportPtr tran, rpp:
    tranCount_ = 0;
    tranDest_ = 0;
    dropCount_ = 0;
-   tranQueue_.setMax(32);
+   timeout_ = 1000000;
+   tranQueue_.setThold(64);
 }
 
 //! Destructor
@@ -202,6 +203,19 @@ void rpp::Controller::applicationRx ( ris::FramePtr frame, uint8_t tDest ) {
    uint8_t  fUser;
    uint8_t  lUser;
    uint8_t  tId;
+   struct timeval startTime;
+   struct timeval currTime;
+   struct timeval sumTime;
+   struct timeval endTime;
+   bool err = false;
+
+   if ( timeout_ > 0 ) {
+      gettimeofday(&startTime,NULL);
+      sumTime.tv_sec = (timeout_ / 1000000);
+      sumTime.tv_usec = (timeout_ % 1000000);
+      timeradd(&startTime,&sumTime,&endTime);
+   }
+   else gettimeofday(&endTime,NULL);
 
    if ( frame->getCount() == 0 ) 
       throw(rogue::GeneralError("packetizer::Controller::applicationRx","Frame must not be empty"));
@@ -214,48 +228,64 @@ void rpp::Controller::applicationRx ( ris::FramePtr frame, uint8_t tDest ) {
    {
       boost::lock_guard<boost::mutex> lock(appMtx_);
 
-      fUser = frame->getFlags() & 0xFF;
-      lUser = (frame->getFlags() >> 8) & 0xFF;
-      tId   = (frame->getFlags() >> 16) & 0xFF;
-
-      for (x=0; x < frame->getCount(); x++ ) {
-         ris::FramePtr tFrame = ris::Frame::create();
-         buff = frame->getBuffer(x);
-
-         // Rem 8 bytes to headroom
-         buff->setHeadRoom(buff->getHeadRoom() - 8);
-         
-         // Make payload one byte longer
-         buff->setPayload(buff->getPayload()+1);
-
-         size = buff->getPayload();
-         data = buff->getPayloadData();
-
-         data[0] = ((appIndex_ % 16) << 4);
-         data[1] = (appIndex_ / 16) & 0xFF;
-
-         data[2] = x % 256;
-         data[3] = (x % 0xFFFF) / 256;
-         data[4] = x / 0xFFFF;
-
-         data[5] = tDest;
-         data[6] = tId;
-         data[7] = fUser;
-
-         data[size-1] = lUser & 0x7F;
-
-         if ( x == (frame->getCount()-1) ) data[size-1] |= 0x80;
-
-         tFrame->appendBuffer(buff);
-         tranQueue_.push(tFrame);
+      // Wait while queue is busy
+      while ( tranQueue_.busy() && ! err ) {
+         usleep(10);
+         if ( timeout_ > 0 ) {
+            gettimeofday(&currTime,NULL);
+            if ( timercmp(&currTime,&endTime,>)) err = true;
+         }
       }
-      appIndex_++;
+      if ( ! err ) {
+         fUser = frame->getFlags() & 0xFF;
+         lUser = (frame->getFlags() >> 8) & 0xFF;
+         tId   = (frame->getFlags() >> 16) & 0xFF;
+
+         for (x=0; x < frame->getCount(); x++ ) {
+            ris::FramePtr tFrame = ris::Frame::create();
+            buff = frame->getBuffer(x);
+
+            // Rem 8 bytes to headroom
+            buff->setHeadRoom(buff->getHeadRoom() - 8);
+            
+            // Make payload one byte longer
+            buff->setPayload(buff->getPayload()+1);
+
+            size = buff->getPayload();
+            data = buff->getPayloadData();
+
+            data[0] = ((appIndex_ % 16) << 4);
+            data[1] = (appIndex_ / 16) & 0xFF;
+
+            data[2] = x % 256;
+            data[3] = (x % 0xFFFF) / 256;
+            data[4] = x / 0xFFFF;
+
+            data[5] = tDest;
+            data[6] = tId;
+            data[7] = fUser;
+
+            data[size-1] = lUser & 0x7F;
+
+            if ( x == (frame->getCount()-1) ) data[size-1] |= 0x80;
+
+            tFrame->appendBuffer(buff);
+            tranQueue_.push(tFrame);
+         }
+         appIndex_++;
+      }
    }
    PyRogue_END_ALLOW_THREADS;
+   if ( err ) throw(rogue::GeneralError::timeout("packetizer::Controller::applicationRx",timeout_));
 }
 
 //! Get drop count
 uint32_t rpp::Controller::getDropCount() {
    return(dropCount_);
+}
+
+//! Set timeout for frame transmits in microseconds
+void rpp::Controller::setTimeout(uint32_t timeout) {
+    timeout_ = timeout;
 }
 

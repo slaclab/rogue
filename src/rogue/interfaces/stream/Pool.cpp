@@ -113,9 +113,10 @@ void ris::Pool::enBufferPool(uint32_t size, uint32_t count) {
 // Buffer container and raw data should be allocated from shared memory pool
 ris::BufferPtr ris::Pool::allocBuffer ( uint32_t size, uint32_t *total ) {
    uint8_t * data;
-   uint32_t  meta;
    uint32_t  bAlloc;
    uint32_t  bSize;
+   uint32_t  meta = 0;
+   bool err = false;
 
    bAlloc = size;
    bSize  = size;
@@ -132,19 +133,21 @@ ris::BufferPtr ris::Pool::allocBuffer ( uint32_t size, uint32_t *total ) {
          data = dataQ_.front();
          dataQ_.pop();
       }
-      else if ( (data = (uint8_t *)malloc(bAlloc)) == NULL ) 
-         throw(rogue::GeneralError::allocation("Pool::allocBuffer",bAlloc));
+      else if ( (data = (uint8_t *)malloc(bAlloc)) == NULL ) err = true;
 
-      // Only use lower 24 bits of meta. 
-      // Upper 8 bits may have special meaning to sub-class
-      meta = allocMeta_;
-      allocMeta_++;
-      allocMeta_ &= 0xFFFFFF;
-      allocBytes_ += bAlloc;
-      allocCount_++;
-      if ( total != NULL ) *total += bSize;
+      if ( ! err ) {
+         // Only use lower 24 bits of meta. 
+         // Upper 8 bits may have special meaning to sub-class
+         meta = allocMeta_;
+         allocMeta_++;
+         allocMeta_ &= 0xFFFFFF;
+         allocBytes_ += bAlloc;
+         allocCount_++;
+         if ( total != NULL ) *total += bSize;
+      }
    }
    PyRogue_END_ALLOW_THREADS;
+   if (err) throw(rogue::GeneralError::allocation("Pool::allocBuffer",bAlloc));
 
    return(ris::Buffer::create(shared_from_this(),data,meta,bSize,bAlloc));
 }

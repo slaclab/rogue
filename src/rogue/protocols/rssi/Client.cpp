@@ -63,8 +63,9 @@ rpr::Client::Client (uint32_t segSize) {
 }
 
 //! Destructor
-rpr::Client::~Client() { }
-
+rpr::Client::~Client() { 
+   cntl_->stop();
+}
 
 //! Get transport interface
 rpr::TransportPtr rpr::Client::transport() {
@@ -99,5 +100,10 @@ uint32_t rpr::Client::getRetranCount() {
 //! Get busy
 bool rpr::Client::getBusy() {
    return(cntl_->getBusy());
+}
+
+//! Set timeout for frame transmits in microseconds
+void rpr::Client::setTimeout(uint32_t timeout) {
+   cntl_->setTimeout(timeout);
 }
 

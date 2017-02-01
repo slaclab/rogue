@@ -85,8 +85,7 @@ rpu::Client::~Client() {
 
 //! Set timeout for frame transmits in microseconds
 void rpu::Client::setTimeout(uint32_t timeout) {
-   if ( timeout == 0 ) timeout_ = 1;
-   else timeout_ = timeout;
+   timeout_ = timeout;
 }
 
 //! Accept a frame from master
@@ -109,48 +108,49 @@ void rpu::Client::acceptFrame ( ris::FramePtr frame ) {
    msg.msg_controllen = 0;
    msg.msg_flags      = 0;
 
-   // Get lock
-   PyRogue_BEGIN_ALLOW_THREADS;
-   {
-      boost::lock_guard<boost::mutex> lock(mtx_);
+   // Go through each buffer in the frame
+   for (x=0; x < frame->getCount(); x++) {
+      buff = frame->getBuffer(x);
+      if ( buff->getCount() == 0 ) break;
 
-      // Go through each buffer in the frame
-      for (x=0; x < frame->getCount(); x++) {
-         buff = frame->getBuffer(x);
+      // Setup IOVs
+      msg_iov[0].iov_base = buff->getRawData();
+      msg_iov[0].iov_len  = buff->getCount();
 
-         // Setup IOVs
-         msg_iov[0].iov_base = buff->getRawData();
-         msg_iov[0].iov_len  = buff->getCount();
+      // Keep trying since select call can fire 
+      // but write fails because we did not win the buffer lock
+      do {
 
-         // Keep trying since select call can fire 
-         // but write fails because we did not win the buffer lock
-         do {
+         // Setup fds for select call
+         FD_ZERO(&fds);
+         FD_SET(fd_,&fds);
 
-            // Setup fds for select call
-            FD_ZERO(&fds);
-            FD_SET(fd_,&fds);
+         // Setup select timeout
+         tout.tv_sec=(timeout_>0)?(timeout_ / 1000000):0;
+         tout.tv_usec=(timeout_>0)?(timeout_ % 1000000):10000;
 
-            // Setup select timeout
-            tout.tv_sec=timeout_ / 1000000;
-            tout.tv_usec=timeout_ % 1000000;
+         PyRogue_BEGIN_ALLOW_THREADS;
+         {
+            boost::lock_guard<boost::mutex> lock(mtx_);
 
-            if ( (sres = select(fd_+1,NULL,&fds,NULL,&tout)) > 0 ) {
+            if ( (sres = select(fd_+1,NULL,&fds,NULL,&tout)) > 0 ) 
                res = sendmsg(fd_,&msg,0);
-            }
             else res = 0;
-
-            // Select timeout
-            if ( sres <= 0 ) throw(rogue::GeneralError::timeout("Client::acceptFrame",timeout_));
-
-            // Error
-            if ( res < 0 ) throw(rogue::GeneralError("Client::acceptFrame","UDP Write Call Failed"));
          }
+         PyRogue_END_ALLOW_THREADS;
 
-         // Continue while write result was zero
-         while ( res == 0 );
+         // Select timeout
+         if ( sres <= 0 && timeout_ > 0 ) 
+            throw(rogue::GeneralError::timeout("Client::acceptFrame",timeout_));
+
+         // Error
+         if ( res < 0 ) 
+            throw(rogue::GeneralError("Client::acceptFrame","UDP Write Call Failed"));
       }
+
+      // Continue while write result was zero
+      while ( res == 0 );
    }
-   PyRogue_END_ALLOW_THREADS;
 }
 
 //! Run thread

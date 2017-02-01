@@ -80,3 +80,7 @@ uint32_t rpp::Core::getDropCount() {
    return(cntl_->getDropCount());
 }
 
+void rpp::Core::setTimeout(uint32_t timeout) {
+   cntl_->setTimeout(timeout);
+}
+

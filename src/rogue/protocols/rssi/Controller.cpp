@@ -53,6 +53,8 @@ rpr::Controller::Controller ( uint32_t segSize, rpr::TransportPtr tran, rpr::App
    app_  = app;
    tran_ = tran;
 
+   timeout_ = 0;
+
    appQueue_.setThold(BusyThold);
 
    dropCount_   = 0;
@@ -90,6 +92,11 @@ rpr::Controller::Controller ( uint32_t segSize, rpr::TransportPtr tran, rpr::App
 
 //! Destructor
 rpr::Controller::~Controller() { 
+   stop();
+}
+
+//! Close
+void rpr::Controller::stop() {
    thread_->interrupt();
    thread_->join();
 }
@@ -197,6 +204,10 @@ ris::FramePtr rpr::Controller::applicationTx() {
 //! Frame received at application interface
 void rpr::Controller::applicationRx ( ris::FramePtr frame ) {
    ris::FramePtr tranFrame;
+   struct timeval startTime;
+   bool err = false;
+
+   gettimeofday(&startTime,NULL);
 
    if ( frame->getCount() == 0 ) 
       throw(rogue::GeneralError("rss::Controller::applicationRx","Frame must not be empty"));
@@ -214,21 +225,27 @@ void rpr::Controller::applicationRx ( ris::FramePtr frame ) {
    rpr::HeaderPtr head = rpr::Header::create(frame);
    head->ack = true;
 
-   PyRogue_BEGIN_ALLOW_THREADS;
-
-   // Wait while busy either by flow control or buffer starvation
-   while ( txListCount_ >= remMaxBuffers_ && state_ == StOpen ) usleep(10);
-
    // Connection is closed
    if ( state_ != StOpen ) return;
 
-   // Transmit
-   boost::unique_lock<boost::mutex> lock(txMtx_);
-   transportTx(head,true);
-   lock.unlock();
+   PyRogue_BEGIN_ALLOW_THREADS;
 
-   PyRogue_END_ALLOW_THREADS;
-   stCond_.notify_all();
+   // Wait while busy either by flow control or buffer starvation
+   while ( txListCount_ >= remMaxBuffers_ ) {
+      usleep(10);
+      if ( timeout_ > 0 && timePassed(&startTime,timeout_,true) ) err = true;
+   }
+   if ( ! err ) {
+
+      // Transmit
+      boost::unique_lock<boost::mutex> lock(txMtx_);
+      transportTx(head,true);
+      lock.unlock();
+
+      PyRogue_END_ALLOW_THREADS;
+      stCond_.notify_all();
+   }
+   if (err) throw(rogue::GeneralError::timeout("rssi::Controller::applicationRx",timeout_));
 }
 
 //! Get state
@@ -292,12 +309,14 @@ uint32_t rpr::Controller::convTime ( uint32_t rssiTime ) {
 }
 
 //! Helper function to determine if time has elapsed
-bool rpr::Controller::timePassed ( struct timeval *lastTime, uint32_t rssiTime ) {
+bool rpr::Controller::timePassed ( struct timeval *lastTime, uint32_t time, bool rawTime ) {
    struct timeval endTime;
    struct timeval sumTime;
    struct timeval currTime;
+   uint32_t usec;
 
-   uint32_t usec = convTime(rssiTime);
+   if ( rawTime ) usec = time;
+   else usec = convTime(time);
 
    gettimeofday(&currTime,NULL);
 
@@ -416,6 +435,7 @@ uint32_t rpr::Controller::stateClosedWait () {
 
 //! Send sequence ack
 uint32_t rpr::Controller::stateSendSeqAck () {
+   uint32_t x;
 
    // Allocate frame
    rpr::HeaderPtr ack = rpr::Header::create(tran_->reqFrame(rpr::Header::HeaderSize,false,rpr::Header::HeaderSize));
@@ -426,6 +446,10 @@ uint32_t rpr::Controller::stateSendSeqAck () {
 
    boost::unique_lock<boost::mutex> lock(txMtx_);
    transportTx(ack,false);
+
+   // Reset tx list
+   for (x=0; x < 256; x++) txList_[x].reset();
+   txListCount_ = 0;
    lock.unlock();
 
    // Update state
@@ -545,7 +569,7 @@ uint32_t rpr::Controller::stateError () {
 
    lock.unlock();
 
-   //printf("RSSI state set to closed\n");
+   //printf("RSSI state set to closed.\n");
    downCount_++;
    state_ = StClosed;
 
@@ -555,5 +579,10 @@ uint32_t rpr::Controller::stateError () {
 
    gettimeofday(&stTime_,NULL);
    return(convTime(TryPeriod));
+}
+
+//! Set timeout for frame transmits in microseconds
+void rpr::Controller::setTimeout(uint32_t timeout) {
+   timeout_ = timeout;
 }
 

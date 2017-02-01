@@ -203,7 +203,8 @@ ris::FrameIteratorPtr ris::Frame::startWrite(uint32_t offset, uint32_t size) {
       buff->setSize(buff->getRawSize());
    }
 
-   if ( iter->index_ == buffers_.size() ) throw(rogue::GeneralError::boundary("Frame::startWrite",offset,total));
+   if ( iter->index_ == buffers_.size() ) 
+      throw(rogue::GeneralError::boundary("Frame::startWrite",offset,total));
 
    // Raw pointer
    iter->data_ = buff->getPayloadData() + iter->offset_;
@@ -289,7 +290,8 @@ ris::FrameIteratorPtr ris::Frame::startRead(uint32_t offset, uint32_t size) {
       else iter->offset_ -= temp;
    }
 
-   if ( iter->index_ == buffers_.size() ) throw(rogue::GeneralError::boundary("Frame::startRead",offset,total));
+   if ( iter->index_ == buffers_.size() ) 
+      throw(rogue::GeneralError::boundary("Frame::startRead",offset,total));
 
    // Raw pointer
    iter->data_ = buff->getPayloadData() + iter->offset_;

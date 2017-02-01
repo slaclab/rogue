@@ -159,8 +159,9 @@ void rim::Master::reqTransaction(uint64_t address, uint32_t size, void *data, ui
 //! Post a transaction, called locally, forwarded to slave, python version
 void rim::Master::reqTransactionPy(uint64_t address, boost::python::object p, uint32_t type) {
    rim::SlavePtr slave;
-   uint32_t size;
-   uint32_t id;
+   uint32_t size = 0;
+   uint32_t id = 0;
+   bool err = false;
 
    PyRogue_BEGIN_ALLOW_THREADS;
    {
@@ -171,17 +172,18 @@ void rim::Master::reqTransactionPy(uint64_t address, boost::python::object p, ui
          slave = slave_;
          if ( pyValid_ ) PyBuffer_Release(&pyBuf_);
 
-         if ( PyObject_GetBuffer(p.ptr(),&pyBuf_,PyBUF_SIMPLE) < 0 )
-            throw(rogue::GeneralError("Master::reqTransactionPy","Python Buffer Error"));
-
-         tData_   = (uint8_t *)pyBuf_.buf;
-         tSize_   = pyBuf_.len;
-         size     = pyBuf_.len;
-         id       = tId_;
-         pyValid_ = true;
+         if ( PyObject_GetBuffer(p.ptr(),&pyBuf_,PyBUF_SIMPLE) < 0 ) err = true;
+         else {
+            tData_   = (uint8_t *)pyBuf_.buf;
+            tSize_   = pyBuf_.len;
+            size     = pyBuf_.len;
+            id       = tId_;
+            pyValid_ = true;
+         }
       }
    }
    PyRogue_END_ALLOW_THREADS;
+   if (err) throw(rogue::GeneralError("Master::reqTransactionPy","Python Buffer Error"));
    slave->doTransaction(id,shared_from_this(),address,size,type);
 }
 

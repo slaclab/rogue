@@ -45,6 +45,7 @@ namespace rogue {
                uint32_t tranCount_;
                uint8_t  tranDest_;
                uint32_t dropCount_;
+               uint32_t timeout_;
 
                boost::shared_ptr<rogue::interfaces::stream::Frame> tranFrame_;
 
@@ -90,6 +91,9 @@ namespace rogue {
 
                //! Get drop count
                uint32_t getDropCount();
+
+               //! Set timeout in microseconds for frame transmits
+               void setTimeout(uint32_t timeout);
          };
 
          // Convienence

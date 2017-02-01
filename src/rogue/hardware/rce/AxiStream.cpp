@@ -76,8 +76,7 @@ rhr::AxiStream::~AxiStream() {
 
 //! Set timeout for frame transmits in microseconds
 void rhr::AxiStream::setTimeout(uint32_t timeout) {
-   if ( timeout == 0 ) timeout_ = 1;
-   else timeout_ = timeout;
+   timeout_ = timeout;
 }
 
 //! Enable SSI flags in first and last user fields
@@ -129,8 +128,8 @@ ris::FramePtr rhr::AxiStream::acceptReq ( uint32_t size, bool zeroCopyEn, uint32
             FD_SET(fd_,&fds);
 
             // Setup select timeout
-            tout.tv_sec=timeout_ / 1000000;
-            tout.tv_usec=timeout_ % 1000000;
+            tout.tv_sec=(timeout_>0)?(timeout_ / 1000000):0;
+            tout.tv_usec=(timeout_>0)?(timeout_ % 1000000):10000;
 
             PyRogue_BEGIN_ALLOW_THREADS;
             if ( (sres = select(fd_+1,NULL,&fds,NULL,&tout)) > 0 ) {
@@ -141,7 +140,8 @@ ris::FramePtr rhr::AxiStream::acceptReq ( uint32_t size, bool zeroCopyEn, uint32
             } else res=0;
             PyRogue_END_ALLOW_THREADS;
 
-            if ( sres == 0 ) throw(rogue::GeneralError::timeout("AxiStream::acceptReq",timeout_));
+            if ( sres <= 0 && timeout_ > 0 ) 
+               throw(rogue::GeneralError::timeout("AxiStream::acceptReq",timeout_));
          }
          while (res < 0);
 
@@ -214,8 +214,8 @@ void rhr::AxiStream::acceptFrame ( ris::FramePtr frame ) {
             FD_SET(fd_,&fds);
 
             // Setup select timeout
-            tout.tv_sec=timeout_ / 1000000;
-            tout.tv_usec=timeout_ % 1000000;
+            tout.tv_sec=(timeout_ > 0)?(timeout_ / 1000000):0;
+            tout.tv_usec=(timeout_ > 0)?(timeout_ % 1000000):10000;
 
             PyRogue_BEGIN_ALLOW_THREADS;
 
@@ -227,7 +227,8 @@ void rhr::AxiStream::acceptFrame ( ris::FramePtr frame ) {
             PyRogue_END_ALLOW_THREADS;
 
             // Select timeout
-            if ( sres <= 0 ) throw(rogue::GeneralError::timeout("AxiStream::acceptFrame",timeout_));
+            if ( sres <= 0 && timeout_ > 0) 
+               throw(rogue::GeneralError::timeout("AxiStream::acceptFrame",timeout_));
 
             // Error
             if ( res < 0 ) throw(rogue::GeneralError("AxiStream::acceptFrame","AXIS Write Call Failed"));

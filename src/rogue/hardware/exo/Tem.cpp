@@ -76,8 +76,7 @@ rhe::Tem::~Tem() {
 
 //! Set timeout for frame transmits in microseconds
 void rhe::Tem::setTimeout(uint32_t timeout) {
-   if ( timeout == 0 ) timeout_ = 1;
-   else timeout_ = timeout;
+   timeout_ = timeout;
 }
 
 //! Get card info.
@@ -115,8 +114,8 @@ void rhe::Tem::acceptFrame ( ris::FramePtr frame ) {
       FD_SET(fd_,&fds);
 
       // Setup select timeout
-      tout.tv_sec=timeout_ / 1000000;
-      tout.tv_usec=timeout_ % 1000000;
+      tout.tv_sec=(timeout_ > 0)?(timeout_ / 1000000):0;
+      tout.tv_usec=(timeout_ > 0)?(timeout_ % 1000000):10000;
 
       PyRogue_BEGIN_ALLOW_THREADS;
 
@@ -128,7 +127,8 @@ void rhe::Tem::acceptFrame ( ris::FramePtr frame ) {
       PyRogue_END_ALLOW_THREADS;
 
       // Select timeout
-      if ( sres <= 0 ) throw(rogue::GeneralError::timeout("Tem::acceptFrame",timeout_));
+      if ( sres <= 0 && timeout_ > 0) 
+         throw(rogue::GeneralError::timeout("Tem::acceptFrame",timeout_));
 
       // Error
       if ( res < 0 ) throw(rogue::GeneralError("Tem::acceptFrame","Tem Write Call Failed"));

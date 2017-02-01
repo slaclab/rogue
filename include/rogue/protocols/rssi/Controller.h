@@ -108,6 +108,9 @@ namespace rogue {
                // State thread
                boost::thread* thread_;
 
+               // Application frame transmit timeout
+               uint32_t timeout_;
+
             public:
 
                //! Class creation
@@ -155,6 +158,12 @@ namespace rogue {
                //! Get busy
                bool getBusy();
 
+               //! Set timeout in microseconds for frame transmits
+               void setTimeout(uint32_t timeout);
+
+               //! Stop connection
+               void stop();
+
             private:
 
                // Method to transit a frame with proper updates
@@ -164,7 +173,7 @@ namespace rogue {
                uint32_t convTime ( uint32_t rssiTime );
 
                //! Helper function to determine if time has elapsed in current state
-               bool timePassed ( struct timeval *lastTime, uint32_t rssiTime );
+               bool timePassed ( struct timeval *lastTime, uint32_t time, bool rawTime=false);
 
                //! Thread background
                void runThread();

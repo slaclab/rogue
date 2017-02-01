@@ -66,6 +66,9 @@ namespace rogue {
 
                //! Get drop count
                uint32_t getDropCount();
+
+               //! Set timeout
+               void setTimeout(uint32_t timeout);
          };
 
          // Convienence

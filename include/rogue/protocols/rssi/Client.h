@@ -79,6 +79,9 @@ namespace rogue {
                //! Get Busy
                bool getBusy();
 
+               //! Set timeout in microseconds for frame transmits
+               void setTimeout(uint32_t timeout);
+
          };
 
          // Convienence
