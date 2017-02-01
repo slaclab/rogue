@@ -1329,7 +1329,7 @@ class Root(rogue.interfaces.stream.Master,Device):
 
         # Polling
         if pollEn:
-            self._pollQueue = PollQueue()
+            self._pollQueue = PollQueue(self)
         else:
             self._pollQueue = None
 
@@ -1775,7 +1775,7 @@ class PollQueue(object):
 
     Entry = collections.namedtuple('PollQueueEntry', ['readTime', 'count', 'interval', 'block'])
 
-    def __init__(self):
+    def __init__(self,root):
         self._pq = [] # The heap queue
         self._entries = {} # {Block/Variable: Entry} mapping to look up if a block is already in the queue
         self._counter = itertools.count()
@@ -1784,6 +1784,7 @@ class PollQueue(object):
         self._run = True
         self._pollThread = threading.Thread(target=self._poll)
         self._pollThread.start()
+        self._root = root
         print("PollQueue Started")
 
     def _addEntry(self, block, interval):
@@ -1840,7 +1841,7 @@ class PollQueue(object):
         """Run by the poll thread"""
         while True:
             now = datetime.datetime.now()
-            
+
             if self.empty() is True:
                 # Sleep until woken
                 with self._update:
@@ -1857,7 +1858,7 @@ class PollQueue(object):
             with self._lock:
                 # Stop the thread if someone set run to False
                 if self._run is False:
-                    print("PollQueue thread exiting")
+                    #print("PollQueue thread exiting")
                     return
 
                 # Pop all timed out entries from the queue
@@ -1881,8 +1882,11 @@ class PollQueue(object):
 
 
                 # Wait for reads to be done
-                for entry in blockEntries:
-                    entry.block._checkTransaction(update=True)
+                try:
+                    for entry in blockEntries:
+                        entry.block._checkTransaction(update=True)
+                except Exception as e:
+                    self._root._logException(e)
 
     def _expiredEntries(self, time=None):
         """An iterator of all entries that expire by a given time. 
