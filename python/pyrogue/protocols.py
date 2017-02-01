@@ -47,7 +47,7 @@ class UdpRssiPack(object):
                 time.sleep(.0001)
                 curr = int(time.time())
                 if last != curr:
-                    print("UdpRssiPack -> Waiting for link!")
+                    print(("UdpRssiPack(host=%s, port=%d) -> Establishing link ...") % (host,port))
                     last = curr
 
     def application(self,dest):
