@@ -647,6 +647,7 @@ class Variable(Node):
                     else: ivalue = 0
                 elif self.base == 'enum':
                     ivalue = {value: key for key,value in self.enum.items()}[value]
+                    #print('_rawSet enum value= {}, ivalue={}'.format(value, ivalue))
                 else:
                     ivalue = int(value)
                 self._block.setUInt(self.bitOffset, self.bitSize, ivalue)        
@@ -686,6 +687,7 @@ class Variable(Node):
                 if self.base == 'bool':
                     return(ivalue != 0)
                 elif self.base == 'enum':
+                    #print('_rawGet enum value= {}, ivalue = {}'.format(self.enum[ivalue], ivalue))
                     return self.enum[ivalue]
                 else:
                     return ivalue
@@ -713,6 +715,7 @@ class Command(Variable):
 
                 # Function is really a function
                 if callable(self._function):
+                    #print('Calling CMD: {}'.format(self.name))
                     self._function(self._parent, self, arg)
 
                 # Function is a CPSW sequence
@@ -781,6 +784,7 @@ class BlockError(Exception):
 
     def __init__(self,block):
         self._error = block.error
+        block._error = 0
         self._value = "Error in block %s with address 0x%x: \nBlock Variables: %s" % (block.name,block.address,block._variables)
 
         if (self._error & 0xFF000000) == rogue.interfaces.memory.TimeoutError:
@@ -874,6 +878,7 @@ class Block(rogue.interfaces.memory.Master):
             # Error
             if self._error > 0:
                 raise BlockError(self)
+
 
             # Access is fully byte aligned
             if (bitOffset % 8) == 0 and (bitCount % 8) == 0:
@@ -1027,6 +1032,9 @@ class Block(rogue.interfaces.memory.Master):
         """
         Start a transaction.
         """
+
+        #print('_startTransaction name= {}, type={}'.format(self.name, type))
+
         minSize = self._reqMinAccess()
         tData = None
 
@@ -1044,7 +1052,9 @@ class Block(rogue.interfaces.memory.Master):
             # Return if not enabled
             if not self._device.enable.get():
                 return
-
+            
+            #print('len bData = {}, vData = {}, mData = {}'.format(len(self._bData), len(self._vData), len(self._mData)))
+                  
             # Setup transaction
             self._doVerify = (type == rogue.interfaces.memory.Verify)
             self._doUpdate = (type == rogue.interfaces.memory.Read)
@@ -1799,7 +1809,7 @@ class PollQueue(object):
             # new entries are always polled first immediately 
             # (rounded up to the next second)
             readTime = datetime.datetime.now()
-            readTime = readTime.replace(second=readTime.second+1, microsecond=0)
+            readTime = readTime.replace(microsecond=0)
             entry = PollQueue.Entry(readTime, next(self._counter), timedelta, block)
             self._entries[block] = entry
             heapq.heappush(self._pq, entry)
