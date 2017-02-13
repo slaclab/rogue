@@ -760,6 +760,14 @@ class Command(Variable):
             cmd.set(1)
 
     @staticmethod
+    def touchZero(dev, cmd, arg):
+        cmd.set(0)
+
+    @staticmethod
+    def touchOne(dev, cmd, arg):
+        cmd.set(1)
+
+    @staticmethod
     def postedTouch(dev, cmd, arg):
         if arg is not None:
             cmd.post(arg)
@@ -1900,6 +1908,7 @@ class PollQueue(object):
                 # Wait for reads to be done
                 try:
                     for entry in blockEntries:
+                        entry.block._checkTransaction(update=True)
                 except Exception as e:
                     self._root._logException(e)
 
