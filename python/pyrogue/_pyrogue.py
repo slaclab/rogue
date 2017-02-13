@@ -547,6 +547,8 @@ class Variable(Node):
         Set the value and write to hardware if applicable
         Writes to hardware are blocking. An error will result in a logged exception.
         """
+
+        print("{}.set({})".format(self, value))
         try:
             self._rawSet(value)
             
@@ -1005,6 +1007,8 @@ class Block(rogue.interfaces.memory.Master):
         """
         Add a variable to the block
         """
+
+	
         with self._cond:
             self._waitTransaction()
 
@@ -1035,6 +1039,8 @@ class Block(rogue.interfaces.memory.Master):
             if var.mode == 'RW':
                 for x in range(var.bitOffset,var.bitOffset+var.bitSize):
                     setBitToBytes(self._mData,x,1)
+
+            return True
 
     def _startTransaction(self,type):
         """
@@ -1206,7 +1212,7 @@ class Device(Node,rogue.interfaces.memory.Hub):
         # Adding variable
         if isinstance(node,Variable) and node.offset is not None:
             if not any(block._addVariable(node) for block in self._blocks):
-                #print("Adding new block %s at offset %i" % (node.name,node.offset))
+                #print("Adding new block %s at offset %x" % (node.name,node.offset))
                 self._blocks.append(Block(self,node))
 
     def hideVariables(self, hidden, variables=None):
