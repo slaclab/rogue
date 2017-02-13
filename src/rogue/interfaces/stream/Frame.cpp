@@ -22,7 +22,6 @@
 **/
 #include <rogue/interfaces/stream/Frame.h>
 #include <rogue/interfaces/stream/Buffer.h>
-#include <rogue/interfaces/stream/Slave.h>
 #include <rogue/GeneralError.h>
 #include <boost/make_shared.hpp>
 #include <boost/python.hpp>
@@ -31,15 +30,13 @@ namespace ris = rogue::interfaces::stream;
 namespace bp  = boost::python;
 
 //! Create an empty frame
-ris::FramePtr ris::Frame::create(ris::SlavePtr source, bool zeroCopy) {
-   ris::FramePtr frame = boost::make_shared<ris::Frame>(source,zeroCopy);
+ris::FramePtr ris::Frame::create() {
+   ris::FramePtr frame = boost::make_shared<ris::Frame>();
    return(frame);
 }
 
 //! Create an empty frame
-ris::Frame::Frame(ris::SlavePtr source, bool zeroCopy) { 
-   source_   = source;
-   zeroCopy_ = zeroCopy;
+ris::Frame::Frame() {
    flags_    = 0;
    error_    = 0;
 }
@@ -81,11 +78,6 @@ ris::BufferPtr ris::Frame::getBuffer(uint32_t index) {
    return(ret);
 }
 
-//! Get zero copy state
-bool ris::Frame::getZeroCopy() {
-   return(zeroCopy_);
-}
-
 //! Get total available capacity (not including header space)
 uint32_t ris::Frame::getAvailable() {
    uint32_t ret;
@@ -117,7 +109,7 @@ uint32_t ris::Frame::getFlags() {
 
 //! Set error state
 void ris::Frame::setFlags(uint32_t flags) {
-   error_ = flags;
+   flags_ = flags;
 }
 
 //! Get error state
@@ -211,7 +203,8 @@ ris::FrameIteratorPtr ris::Frame::startWrite(uint32_t offset, uint32_t size) {
       buff->setSize(buff->getRawSize());
    }
 
-   if ( iter->index_ == buffers_.size() ) throw(rogue::GeneralError::boundary("Frame::startWrite",offset,total));
+   if ( iter->index_ == buffers_.size() ) 
+      throw(rogue::GeneralError::boundary("Frame::startWrite",offset,total));
 
    // Raw pointer
    iter->data_ = buff->getPayloadData() + iter->offset_;
@@ -297,7 +290,8 @@ ris::FrameIteratorPtr ris::Frame::startRead(uint32_t offset, uint32_t size) {
       else iter->offset_ -= temp;
    }
 
-   if ( iter->index_ == buffers_.size() ) throw(rogue::GeneralError::boundary("Frame::startRead",offset,total));
+   if ( iter->index_ == buffers_.size() ) 
+      throw(rogue::GeneralError::boundary("Frame::startRead",offset,total));
 
    // Raw pointer
    iter->data_ = buff->getPayloadData() + iter->offset_;

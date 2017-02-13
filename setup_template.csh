@@ -9,6 +9,7 @@ source /afs/slac.stanford.edu/g/reseng/boost/1.62.0_p3/settings.csh
 #source /afs/slac.stanford.edu/g/reseng/python/2.7.13/settings.csh
 #source /afs/slac.stanford.edu/g/reseng/boost/1.62.0_p2/settings.csh
 
+# The following two are optional
 source /afs/slac.stanford.edu/g/reseng/zeromq/4.2.0/settings.csh
 source /afs/slac.stanford.edu/g/reseng/epics/base-R3-16-0/settings.csh
 
@@ -19,5 +20,5 @@ setenv ROGUE_DIR  `dirname ${PWD}/$temp_path[2]`
 setenv PYTHONPATH ${ROGUE_DIR}/python:${PYTHONPATH}
 
 # Setup library path
-setenv LD_LIBRARY_PATH ${ROGUE_DIR}/python:${LD_LIBRARY_PATH}
+setenv LD_LIBRARY_PATH ${ROGUE_DIR}/lib:${LD_LIBRARY_PATH}
 

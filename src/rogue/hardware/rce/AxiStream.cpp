@@ -76,8 +76,7 @@ rhr::AxiStream::~AxiStream() {
 
 //! Set timeout for frame transmits in microseconds
 void rhr::AxiStream::setTimeout(uint32_t timeout) {
-   if ( timeout == 0 ) timeout_ = 1;
-   else timeout_ = timeout;
+   timeout_ = timeout;
 }
 
 //! Enable SSI flags in first and last user fields
@@ -107,14 +106,14 @@ ris::FramePtr rhr::AxiStream::acceptReq ( uint32_t size, bool zeroCopyEn, uint32
 
    // Zero copy is disabled. Allocate from memory.
    if ( zeroCopyEn == false || rawBuff_ == NULL ) {
-      frame = createFrame(size,buffSize,true,false);
+      frame = ris::Pool::acceptReq(size,false,buffSize);
    }
 
    // Allocate zero copy buffers from driver
    else {
 
       // Create empty frame
-      frame = createFrame(0,0,true,true);
+      frame = ris::Frame::create();
       alloc=0;
 
       // Request may be serviced with multiple buffers
@@ -129,8 +128,8 @@ ris::FramePtr rhr::AxiStream::acceptReq ( uint32_t size, bool zeroCopyEn, uint32
             FD_SET(fd_,&fds);
 
             // Setup select timeout
-            tout.tv_sec=timeout_ / 1000000;
-            tout.tv_usec=timeout_ % 1000000;
+            tout.tv_sec=(timeout_>0)?(timeout_ / 1000000):0;
+            tout.tv_usec=(timeout_>0)?(timeout_ % 1000000):10000;
 
             PyRogue_BEGIN_ALLOW_THREADS;
             if ( (sres = select(fd_+1,NULL,&fds,NULL,&tout)) > 0 ) {
@@ -141,12 +140,13 @@ ris::FramePtr rhr::AxiStream::acceptReq ( uint32_t size, bool zeroCopyEn, uint32
             } else res=0;
             PyRogue_END_ALLOW_THREADS;
 
-            if ( sres == 0 ) throw(rogue::GeneralError::timeout("AxiStream::acceptReq",timeout_));
+            if ( sres <= 0 && timeout_ > 0 ) 
+               throw(rogue::GeneralError::timeout("AxiStream::acceptReq",timeout_));
          }
          while (res < 0);
 
          // Mark zero copy meta with bit 31 set, lower bits are index
-         buff = createBuffer(rawBuff_[res],0x80000000 | res,bSize_);
+         buff = createBuffer(rawBuff_[res],0x80000000 | res,buffSize,bSize_);
          frame->appendBuffer(buff);
          alloc += buffSize;
       }
@@ -214,8 +214,8 @@ void rhr::AxiStream::acceptFrame ( ris::FramePtr frame ) {
             FD_SET(fd_,&fds);
 
             // Setup select timeout
-            tout.tv_sec=timeout_ / 1000000;
-            tout.tv_usec=timeout_ % 1000000;
+            tout.tv_sec=(timeout_ > 0)?(timeout_ / 1000000):0;
+            tout.tv_usec=(timeout_ > 0)?(timeout_ % 1000000):10000;
 
             PyRogue_BEGIN_ALLOW_THREADS;
 
@@ -227,7 +227,8 @@ void rhr::AxiStream::acceptFrame ( ris::FramePtr frame ) {
             PyRogue_END_ALLOW_THREADS;
 
             // Select timeout
-            if ( sres <= 0 ) throw(rogue::GeneralError::timeout("AxiStream::acceptFrame",timeout_));
+            if ( sres <= 0 && timeout_ > 0) 
+               throw(rogue::GeneralError::timeout("AxiStream::acceptFrame",timeout_));
 
             // Error
             if ( res < 0 ) throw(rogue::GeneralError("AxiStream::acceptFrame","AXIS Write Call Failed"));
@@ -240,7 +241,7 @@ void rhr::AxiStream::acceptFrame ( ris::FramePtr frame ) {
 }
 
 //! Return a buffer
-void rhr::AxiStream::retBuffer(uint8_t * data, uint32_t meta, uint32_t rawSize) {
+void rhr::AxiStream::retBuffer(uint8_t * data, uint32_t meta, uint32_t size) {
 
    // Buffer is zero copy as indicated by bit 31
    if ( (meta & 0x80000000) != 0 ) {
@@ -253,11 +254,11 @@ void rhr::AxiStream::retBuffer(uint8_t * data, uint32_t meta, uint32_t rawSize) 
          PyRogue_END_ALLOW_THREADS;
       }
 
-      deleteBuffer(rawSize);
+      decCounter(size);
    }
 
    // Buffer is allocated from Slave class
-   else Slave::retBuffer(data,meta,rawSize);
+   else Slave::retBuffer(data,meta,size);
 }
 
 //! Run thread
@@ -274,7 +275,7 @@ void rhr::AxiStream::runThread() {
    struct timeval tout;
 
    // Preallocate empty frame
-   frame = createFrame(0,0,false,(rawBuff_ != NULL));
+   frame = ris::Frame::create();
 
    try {
       while(1) {
@@ -294,7 +295,7 @@ void rhr::AxiStream::runThread() {
             if ( rawBuff_ == NULL ) {
 
                // Allocate a buffer
-               buff = allocBuffer(bSize_);
+               buff = allocBuffer(bSize_,NULL);
 
                // Attempt read, dest is not needed since only one lane/vc is open
                res = axisRead(fd_, buff->getRawData(), buff->getRawSize(), &fuser, &luser, NULL);
@@ -307,7 +308,7 @@ void rhr::AxiStream::runThread() {
                if ((res = axisReadIndex(fd_, &meta, &fuser, & luser, NULL)) > 0) {
 
                   // Allocate a buffer, Mark zero copy meta with bit 31 set, lower bits are index
-                  buff = createBuffer(rawBuff_[meta],0x80000000 | meta,bSize_);
+                  buff = createBuffer(rawBuff_[meta],0x80000000 | meta,bSize_,bSize_);
                }
             }
 
@@ -325,8 +326,9 @@ void rhr::AxiStream::runThread() {
                buff->setError(error);
                frame->setError(error | frame->getError());
                frame->appendBuffer(buff);
+               frame->setFlags(flags);
                sendFrame(frame);
-               frame = createFrame(0,0,false,(rawBuff_ != NULL));
+               frame = ris::Frame::create();
             }
          }
       }

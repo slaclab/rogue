@@ -22,6 +22,11 @@
 
 #include <boost/python.hpp>
 #include <rogue/protocols/rssi/module.h>
+#include <rogue/protocols/rssi/Application.h>
+#include <rogue/protocols/rssi/Controller.h>
+#include <rogue/protocols/rssi/Client.h>
+#include <rogue/protocols/rssi/Header.h>
+#include <rogue/protocols/rssi/Transport.h>
 
 namespace bp  = boost::python;
 namespace rpr = rogue::protocols::rssi;
@@ -36,6 +41,12 @@ void rpr::setup_module() {
 
    // set the current scope to the new sub-module
    bp::scope io_scope = module;
+
+   rpr::Application::setup_python();
+   rpr::Controller::setup_python();
+   rpr::Client::setup_python();
+   rpr::Header::setup_python();
+   rpr::Transport::setup_python();
 
 }
 

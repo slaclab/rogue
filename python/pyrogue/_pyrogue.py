@@ -537,10 +537,10 @@ class Variable(Node):
         # Variables are always leaf nodes so no need to recurse
         if self._defaultValue is not None:
             self.set(self._defaultValue, write=True)
-            
-        if self._pollInterval > 0:
+
+        if self._pollInterval > 0 and self._root._pollQueue:
             self._root._pollQueue.updatePollInterval(self)
-                
+
 
     def addDependency(self, dep):
         self.__dependencies.append(dep)
@@ -553,7 +553,7 @@ class Variable(Node):
     @pollInterval.setter
     def pollInterval(self, interval):
         self._pollInterval = interval        
-        if isinstance(self._root, Root):
+        if isinstance(self._root, Root) and self._root._pollQueue:
             self._root._pollQueue.updatePollInterval(self)
 
 
@@ -747,6 +747,7 @@ class Command(Variable):
 
                 # Function is really a function
                 if callable(self._function):
+                    #print('Calling CMD: {}'.format(self.name))
                     self._function(self._parent, self, arg)
 
                 # Function is a CPSW sequence
@@ -791,6 +792,14 @@ class Command(Variable):
             cmd.set(1)
 
     @staticmethod
+    def touchZero(dev, cmd, arg):
+        cmd.set(0)
+
+    @staticmethod
+    def touchOne(dev, cmd, arg):
+        cmd.set(1)
+
+    @staticmethod
     def postedTouch(dev, cmd, arg):
         if arg is not None:
             cmd.post(arg)
@@ -815,13 +824,17 @@ class BlockError(Exception):
 
     def __init__(self,block):
         self._error = block.error
+        block._error = 0
         self._value = "Error in block %s with address 0x%x: \nBlock Variables: %s" % (block.name,block.address,block._variables)
 
         if (self._error & 0xFF000000) == rogue.interfaces.memory.TimeoutError:
             self._value += "Timeout after %s seconds" % (block.timeout)
 
         elif (self._error & 0xFF000000) == rogue.interfaces.memory.VerifyError:
-            self._value += "Verify error. Local=%s, Verify=%s, Mask=%s" % (block._bData, block._vData, block._mData)
+            bStr = ''.join('0x{:02x} '.format(x) for x in block._bData)
+            vStr = ''.join('0x{:02x} '.format(x) for x in block._vData)
+            mStr = ''.join('0x{:02x} '.format(x) for x in block._mData)
+            self._value += "Verify error. Local=%s, Verify=%s, Mask=%s" % (bStr,vStr,mStr)
 
         elif (self._error & 0xFF000000) == rogue.interfaces.memory.AddressError:
             self._value += "Address error"
@@ -912,6 +925,7 @@ class RemoteBlock(rogue.interfaces.memory.Master):
         self._doUpdate  = False
         self._doVerify  = False
         self._device    = variable.parent
+        self._tranTime  = time.time()
 
         self._setSlave(self._device)
         self._addVariable(variable)
@@ -951,6 +965,7 @@ class RemoteBlock(rogue.interfaces.memory.Master):
             if self._error > 0:
                 raise BlockError(self)
 
+
             # Access is fully byte aligned
             if (var.bitOffset % 8) == 0 and (var.bitCount % 8) == 0:
                 return var.fromBlock(self._bData[int(var.bitOffset/8):int((var.bitOffset+var.bitCount)/8)])
@@ -973,8 +988,10 @@ class RemoteBlock(rogue.interfaces.memory.Master):
         """
         Perform a blocking transaction
         """
+        #print("Setting block. %s. Addr=%x, Data=%s" % (self._name,self._offset,self._bData))
         self._startTransaction(type)
         self._checkTransaction(update=False)
+        #print("Done block. %s. Addr=%x, Data=%s" % (self._name,self._offset,self._bData))
 
     @property
     def offset(self):
@@ -1014,8 +1031,8 @@ class RemoteBlock(rogue.interfaces.memory.Master):
         """
         lid = self._getId()
         while lid > 0:
-            self._cond.wait(self._timeout)
-            if self._getId() == lid:
+            self._cond.wait(.01)
+            if self._getId() == lid and (time.time() - self._tranTime) > self._timeout:
                 self._endTransaction()
                 self._error = rogue.interfaces.memory.TimeoutError
                 break
@@ -1060,6 +1077,9 @@ class RemoteBlock(rogue.interfaces.memory.Master):
         """
         Start a transaction.
         """
+
+        #print('_startTransaction name= {}, type={}'.format(self.name, type))
+
         minSize = self._reqMinAccess()
         tData = None
 
@@ -1077,11 +1097,14 @@ class RemoteBlock(rogue.interfaces.memory.Master):
             # Return if not enabled
             if not self._device.enable.get():
                 return
-
+            
+            #print('len bData = {}, vData = {}, mData = {}'.format(len(self._bData), len(self._vData), len(self._mData)))
+                  
             # Setup transaction
             self._doVerify = (type == rogue.interfaces.memory.Verify)
             self._doUpdate = (type == rogue.interfaces.memory.Read)
             self._error    = 0
+            self._tranTime = time.time()
 
             # Set data pointer
             tData = self._vData if self._doVerify else self._bData
@@ -1355,7 +1378,7 @@ class Root(rogue.interfaces.stream.Master,Device):
     to be stored in data files.
     """
 
-    def __init__(self, name, description, **dump):
+    def __init__(self, name, description, pollEn=True, **dump):
         """Init the node with passed attributes"""
 
         rogue.interfaces.stream.Master.__init__(self)
@@ -1367,24 +1390,28 @@ class Root(rogue.interfaces.stream.Master,Device):
         self._sysLogLock = threading.Lock()
 
         # Polling
-        self._pollQueue = PollQueue(self)
+        if pollEn:
+            self._pollQueue = PollQueue(self)
+        else:
+            self._pollQueue = None
 
         # Variable update list
-        self._updatedDict = odict()
+        self._updatedDict = None
         self._updatedLock = threading.Lock()
 
         # Variable update listener
         self._varListeners = []
 
         # Variables
-        self.add(Variable(name='systemLog', base='string', mode='RO',
+        self.add(Variable(name='systemLog', base='string', mode='RO',hidden=True,
             setFunction=None, getFunction='value=dev._systemLog',
             description='String containing newline seperated system logic entries'))
 
 
     def stop(self):
         """Stop the polling thread. Must be called for clean exit."""
-        self._pollQueue.stop()
+        if self._pollQueue:
+            self._pollQueue.stop()
 
     def addVarListener(self,func):
         """
@@ -1680,7 +1707,7 @@ class DataWriter(Device):
 class RunControl(Device):
     """Special base class to control runs. TODO: Update comments."""
 
-    def __init__(self, name, description='', hidden=False, **dump):
+    def __init__(self, name, description='', hidden=True, **dump):
         """Initialize device class"""
 
         Device.__init__(self, name=name, description=description,
@@ -1753,7 +1780,7 @@ def treeFromYaml(yml,setFunction,cmdFunction):
     root = None
 
     for key, value in d.items():
-        root = Root(**value)
+        root = Root(pollEn=False,**value)
         root._addStructure(value,setFunction,cmdFunction)
 
     return root
@@ -1828,7 +1855,7 @@ class PollQueue(object):
             # new entries are always polled first immediately 
             # (rounded up to the next second)
             readTime = datetime.datetime.now()
-            readTime = readTime.replace(second=readTime.second+1, microsecond=0)
+            readTime = readTime.replace(microsecond=0)
             entry = PollQueue.Entry(readTime, next(self._counter), timedelta, block)
             self._entries[block] = entry
             heapq.heappush(self._pq, entry)
@@ -1876,7 +1903,7 @@ class PollQueue(object):
         """Run by the poll thread"""
         while True:
             now = datetime.datetime.now()
-            
+
             if self.empty() is True:
                 # Sleep until woken
                 with self._update:
@@ -1893,7 +1920,7 @@ class PollQueue(object):
             with self._lock:
                 # Stop the thread if someone set run to False
                 if self._run is False:
-                    print("PollQueue thread exiting")
+                    #print("PollQueue thread exiting")
                     return
 
                 # Pop all timed out entries from the queue
@@ -1917,13 +1944,11 @@ class PollQueue(object):
 
 
                 # Wait for reads to be done
-                for entry in blockEntries:
-                    try:
+                try:
+                    for entry in blockEntries:
                         entry.block._checkTransaction(update=True)
-                    except BlockError as e:
-                        print(e)
-                        self._root._logException(e)
-                        
+                except Exception as e:
+                    self._root._logException(e)
 
     def _expiredEntries(self, time=None):
         """An iterator of all entries that expire by a given time. 

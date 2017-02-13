@@ -24,6 +24,7 @@ import pyre
 import pyrogue
 import uuid
 import time
+import zmq
 
 class MeshNode(threading.Thread):
     """
@@ -55,8 +56,6 @@ class MeshNode(threading.Thread):
 
     def stop(self):
         self._runEn = False
-        self._mesh.leave(self._group)
-        self._mesh.stop()
         self._thread.join()
 
     def getTree(self,name):
@@ -80,67 +79,78 @@ class MeshNode(threading.Thread):
         self._mesh.start()
         self._mesh.join(self._group)
 
+        poller = zmq.Poller()
+        poller.register(self._mesh.socket(),zmq.POLLIN)
+
         while(self._runEn):
+            evts = dict(poller.poll(100))
+            if self._mesh.socket() in evts and evts[self._mesh.socket()] == zmq.POLLIN:
 
-            # Get a message
-            e = self._mesh.recv()
-            typ  = e[0].decode('utf-8')
-            sid  = uuid.UUID(bytes=e[1])
-            src  = e[2].decode('utf-8')
+                # Get a message
+                e = self._mesh.recv()
+                typ  = e[0].decode('utf-8')
+                sid  = uuid.UUID(bytes=e[1])
+                src  = e[2].decode('utf-8')
 
-            # Commands sent directly to this node
-            if typ == 'WHISPER':
-                m = yaml.load(e[3].decode('utf-8'))
-                cmd  = m['cmd']
-                msg1 = m['msg1']
-                msg2 = m['msg2']
+                # Commands sent directly to this node
+                if typ == 'WHISPER':
+                    m = yaml.load(e[3].decode('utf-8'))
+                    cmd  = m['cmd']
+                    msg1 = m['msg1']
+                    msg2 = m['msg2']
 
-                # Variable set from client to server
-                if (cmd == 'variable_set' or cmd == 'command'):
-                    self._root.setOrExecYaml(msg1,True,['RW'])
+                    # Variable set from client to server
+                    if (cmd == 'variable_set' or cmd == 'command'):
+                        self._root.setOrExecYaml(msg1,True,['RW'])
 
-                # Structure update from server to client
-                elif cmd == 'structure_status':
-                    
-                    # Does name already exist? Update UUID
-                    if src in self._servers:
-                        t = self._servers[src]
-                        t.uuid = sid
+                    # Structure update from server to client
+                    elif cmd == 'structure_status':
 
-                    # Otherwise create new tree
-                    else:
-                        t = pyrogue.treeFromYaml(msg1,self._setFunction,self._cmdFunction)
-                        setattr(t,'uuid',sid)
-                        self._servers[t.name] = t
-                        if self._newTree:
-                            self._newTree(t)
-                    
-                    # Apply updates
-                    self._noMsg = True
-                    t.setOrExecYaml(msg2,False,['RW','RO'])
-                    self._noMsg = False
+                        # Does name already exist? Update UUID
+                        if src in self._servers:
+                            t = self._servers[src]
+                            t.uuid = sid
 
-                # Structure request from client to server
-                elif cmd == 'get_structure':
-                    self._intWhisper(sid,'structure_status',self._root.getYamlStructure(),self._root.getYamlVariables(False,['RW','RO']))
+                        # Otherwise create new tree
+                        else:
+                            t = pyrogue.treeFromYaml(msg1,self._setFunction,self._cmdFunction)
+                            setattr(t,'uuid',sid)
+                            self._servers[t.name] = t
+                            if self._newTree:
+                                self._newTree(t)
 
-            # Commands sent as a broadcast
-            elif typ == 'SHOUT':
-                m = yaml.load(e[4].decode('utf-8'))
-                cmd  = m['cmd']
-                msg  = m['msg']
+                        # Apply updates
+                        self._noMsg = True
+                        t.setOrExecYaml(msg2,False,['RW','RO'])
+                        self._noMsg = False
 
-                # Field update from server to client
-                if cmd == 'variable_status':
-                    self._noMsg = True
-                    for key,value in self._servers.items():
-                        value.setOrExecYaml(msg,False,['RW','RO'])
-                    self._noMsg = False
+                    # Structure request from client to server
+                    elif cmd == 'get_structure':
+                        self._intWhisper(sid,'structure_status',self._root.getYamlStructure(),
+                                         self._root.getYamlVariables(False,['RW','RO']))
 
-            # New node, request structure and status
-            elif typ == 'JOIN':
-                if self._mesh.peer_header_value(sid,'server') == 'True':
-                    self._intWhisper(sid,'get_structure')
+                # Commands sent as a broadcast
+                elif typ == 'SHOUT':
+                    if e[3].decode('utf-8') == self._group:
+                        m = yaml.load(e[4].decode('utf-8'))
+                        cmd  = m['cmd']
+                        msg  = m['msg']
+
+                        # Field update from server to client
+                        if cmd == 'variable_status':
+                            self._noMsg = True
+                            for key,value in self._servers.items():
+                                value.setOrExecYaml(msg,False,['RW','RO'])
+                            self._noMsg = False
+
+                # New node, request structure and status
+                elif typ == 'JOIN':
+                    if e[3].decode('utf-8') == self._group:
+                        if self._mesh.peer_header_value(sid,'server') == 'True':
+                            self._intWhisper(sid,'get_structure')
+
+        self._mesh.leave(self._group)
+        self._mesh.stop()
 
     # Shout a message/payload combination
     def _intShout(self,cmd,msg=None):

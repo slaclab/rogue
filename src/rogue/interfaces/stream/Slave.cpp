@@ -39,12 +39,8 @@ ris::SlavePtr ris::Slave::create () {
 }
 
 //! Creator
-ris::Slave::Slave() { 
-   allocMeta_  = 0;
-   freeMeta_   = 0xFFFFFFFF;
-   allocBytes_ = 0;
-   allocCount_ = 0;
-   debug_      = 0;
+ris::Slave::Slave() {
+   debug_ = 0;
 }
 
 //! Destructor
@@ -54,110 +50,6 @@ ris::Slave::~Slave() { }
 void ris::Slave::setDebug(uint32_t debug, std::string name) {
    name_  = name;
    debug_ = debug;
-}
-
-//! Get allocated memory
-uint32_t ris::Slave::getAllocBytes() {
-   return(allocBytes_);
-}
-
-//! Get allocated count
-uint32_t ris::Slave::getAllocCount() {
-   return(allocCount_);
-}
-
-//! Create a frame and allocate buffers
-// Frame container should be allocated from shared memory pool
-ris::FramePtr ris::Slave::createFrame ( uint32_t totSize, uint32_t buffSize,
-                                        bool compact, bool zeroCopy ) {
-   ris::FramePtr  ret;
-   ris::BufferPtr buff;
-   uint32_t alloc;
-   uint32_t bSize;
-
-   if ( buffSize == 0 ) buffSize = totSize;
-
-   ret  = ris::Frame::create(shared_from_this(),zeroCopy);
-   alloc = 0;
-
-   while ( alloc < totSize ) {
-
-      // Don't create larger buffers than we need if compact is set
-      if ( (compact == false) || ((totSize-alloc) > buffSize) ) bSize = buffSize;
-      else bSize = (totSize-alloc);
-
-      // Create buffer and append to frame
-      buff = allocBuffer(bSize);
-      alloc += bSize;
-      ret->appendBuffer(buff);
-   }
-
-   return(ret);
-}
-
-//! Allocate a buffer passed size
-// Buffer container and raw data should be allocated from shared memory pool
-ris::BufferPtr ris::Slave::allocBuffer ( uint32_t size ) {
-   uint8_t * data;
-   uint32_t  meta;
-
-   if ( (data = (uint8_t *)malloc(size)) == NULL ) 
-      throw(rogue::GeneralError::allocation("Slave::allocBuffer",size));
-
-   // Temporary lock to get meta
-   PyRogue_BEGIN_ALLOW_THREADS;
-   {
-      boost::lock_guard<boost::mutex> lock(mtx_);
-
-      // Only use lower 24 bits of meta. 
-      // Upper 8 bits may have special meaning to sub-class
-      meta = allocMeta_;
-      allocMeta_++;
-      allocMeta_ &= 0xFFFFFF;
-   }
-   PyRogue_END_ALLOW_THREADS;
-
-   return(createBuffer(data,meta,size));
-}
-
-
-//! Create a Buffer with passed data
-ris::BufferPtr ris::Slave::createBuffer( void * data, uint32_t meta, uint32_t rawSize) {
-   ris::BufferPtr buff;
-
-   PyRogue_BEGIN_ALLOW_THREADS;
-   {
-
-      boost::lock_guard<boost::mutex> lock(mtx_);
-
-      buff = ris::Buffer::create(shared_from_this(),data,meta,rawSize);
-
-      allocBytes_ += rawSize;
-      allocCount_++;
-   }
-   PyRogue_END_ALLOW_THREADS;
-
-   return(buff);
-}
-
-//! Track buffer deletion
-void ris::Slave::deleteBuffer( uint32_t rawSize) {
-   PyRogue_BEGIN_ALLOW_THREADS;
-   {
-      boost::lock_guard<boost::mutex> lock(mtx_);
-      allocBytes_ -= rawSize;
-      allocCount_--;
-   }
-   PyRogue_END_ALLOW_THREADS;
-}
-
-//! Accept a frame request. Called from master
-/*
- * Pass total size required.
- * Pass flag indicating if zero copy buffers are acceptable
- */
-ris::FramePtr ris::Slave::acceptReq ( uint32_t size, bool zeroCopyEn, uint32_t maxBuffSize) {
-   return(createFrame(size,maxBuffSize,false,false));
 }
 
 //! Accept a frame from master
@@ -176,27 +68,6 @@ void ris::Slave::acceptFrame ( ris::FramePtr frame ) {
       }
       if (( x % 10 ) != 0) printf("\n");
    }
-}
-
-//! Return a buffer
-/*
- * Called when this instance is marked as owner of a Buffer entity
- */
-void ris::Slave::retBuffer(uint8_t * data, uint32_t meta, uint32_t rawSize) {
-
-   if ( meta == freeMeta_ ) 
-      throw(rogue::GeneralError("Slave::retBuffer","Buffer return with duplicate meta"));
-
-   PyRogue_BEGIN_ALLOW_THREADS;
-   {
-      boost::lock_guard<boost::mutex> lock(mtx_);
-      freeMeta_ = meta;
-
-      if ( data != NULL ) free(data);
-      allocBytes_ -= rawSize;
-      allocCount_--;
-   }
-   PyRogue_END_ALLOW_THREADS;
 }
 
 //! Accept frame
@@ -234,8 +105,9 @@ void ris::Slave::setup_python() {
       .staticmethod("create")
       .def("setDebug",       &ris::Slave::setDebug)
       .def("_acceptFrame",   &ris::Slave::acceptFrame, &ris::SlaveWrap::defAcceptFrame)
-      .def("getAllocCount",  &ris::Slave::getAllocCount)
-      .def("getAllocBytes",  &ris::Slave::getAllocBytes)
    ;
+
+   bp::implicitly_convertible<ris::SlavePtr, ris::PoolPtr>();
+
 }
 

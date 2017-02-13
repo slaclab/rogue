@@ -22,6 +22,10 @@
 
 #include <boost/python.hpp>
 #include <rogue/protocols/packetizer/module.h>
+#include <rogue/protocols/packetizer/Application.h>
+#include <rogue/protocols/packetizer/Transport.h>
+#include <rogue/protocols/packetizer/Controller.h>
+#include <rogue/protocols/packetizer/Core.h>
 
 namespace bp  = boost::python;
 namespace rpp = rogue::protocols::packetizer;
@@ -36,6 +40,11 @@ void rpp::setup_module() {
 
    // set the current scope to the new sub-module
    bp::scope io_scope = module;
+
+   rpp::Application::setup_python();
+   rpp::Transport::setup_python();
+   rpp::Controller::setup_python();
+   rpp::Core::setup_python();
 
 }
 

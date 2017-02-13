@@ -1,5 +1,8 @@
 # Compiling and installing EPICS base
 
+Epics install is optional. It is only required if you want to
+use the epics server feature of rogue.
+
 Choose a directory for epics. The epics install is in the 
 same directory it is compiled in. 
 

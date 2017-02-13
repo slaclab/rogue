@@ -25,6 +25,7 @@
 #include <rogue/hardware/module.h>
 #include <rogue/utilities/module.h>
 #include <rogue/protocols/module.h>
+#include <rogue/GeneralError.h>
 
 BOOST_PYTHON_MODULE(rogue) {
 
@@ -34,6 +35,8 @@ BOOST_PYTHON_MODULE(rogue) {
    rogue::protocols::setup_module();
    rogue::hardware::setup_module();
    rogue::utilities::setup_module();
+
+   rogue::GeneralError::setup_python();
 
 };
 

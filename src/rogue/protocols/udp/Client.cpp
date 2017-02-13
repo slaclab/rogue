@@ -24,25 +24,27 @@
 #include <rogue/GeneralError.h>
 #include <boost/make_shared.hpp>
 #include <rogue/common.h>
+#include <sys/syscall.h>
 
 namespace rpu = rogue::protocols::udp;
 namespace ris = rogue::interfaces::stream;
 namespace bp  = boost::python;
 
 //! Class creation
-rpu::ClientPtr rpu::Client::create (std::string host, uint16_t port) {
-   rpu::ClientPtr r = boost::make_shared<rpu::Client>(host,port);
+rpu::ClientPtr rpu::Client::create (std::string host, uint16_t port, uint16_t maxSize) {
+   rpu::ClientPtr r = boost::make_shared<rpu::Client>(host,port,maxSize);
    return(r);
 }
 
 //! Creator
-rpu::Client::Client ( std::string host, uint16_t port) {
+rpu::Client::Client ( std::string host, uint16_t port, uint16_t maxSize) {
    struct addrinfo     aiHints;
    struct addrinfo*    aiList=0;
    const  sockaddr_in* addr;
 
    address_ = host;
    port_    = port;
+   maxSize_ = maxSize;
    timeout_ = 10000000;
 
    // Create socket
@@ -66,6 +68,9 @@ rpu::Client::Client ( std::string host, uint16_t port) {
    ((struct sockaddr_in *)(&addr_))->sin_addr.s_addr=addr->sin_addr.s_addr;
    ((struct sockaddr_in *)(&addr_))->sin_port=htons(port_);
 
+   // Fixed size buffer pool
+   enBufferPool(maxSize_,1024*256);
+
    // Start rx thread
    thread_ = new boost::thread(boost::bind(&rpu::Client::runThread, this));
 }
@@ -80,8 +85,7 @@ rpu::Client::~Client() {
 
 //! Set timeout for frame transmits in microseconds
 void rpu::Client::setTimeout(uint32_t timeout) {
-   if ( timeout == 0 ) timeout_ = 1;
-   else timeout_ = timeout;
+   timeout_ = timeout;
 }
 
 //! Accept a frame from master
@@ -104,49 +108,49 @@ void rpu::Client::acceptFrame ( ris::FramePtr frame ) {
    msg.msg_controllen = 0;
    msg.msg_flags      = 0;
 
-   // Get lock
-   PyRogue_BEGIN_ALLOW_THREADS;
-   {
-      boost::lock_guard<boost::mutex> lock(mtx_);
+   // Go through each buffer in the frame
+   for (x=0; x < frame->getCount(); x++) {
+      buff = frame->getBuffer(x);
+      if ( buff->getCount() == 0 ) break;
 
-      // Go through each buffer in the frame
-      for (x=0; x < frame->getCount(); x++) {
-         buff = frame->getBuffer(x);
+      // Setup IOVs
+      msg_iov[0].iov_base = buff->getRawData();
+      msg_iov[0].iov_len  = buff->getCount();
 
-         // Setup IOVs
-         msg_iov[0].iov_base = buff->getRawData();
-         msg_iov[0].iov_len  = buff->getCount();
+      // Keep trying since select call can fire 
+      // but write fails because we did not win the buffer lock
+      do {
 
-         // Keep trying since select call can fire 
-         // but write fails because we did not win the buffer lock
-         do {
+         // Setup fds for select call
+         FD_ZERO(&fds);
+         FD_SET(fd_,&fds);
 
-            // Setup fds for select call
-            FD_ZERO(&fds);
-            FD_SET(fd_,&fds);
+         // Setup select timeout
+         tout.tv_sec=(timeout_>0)?(timeout_ / 1000000):0;
+         tout.tv_usec=(timeout_>0)?(timeout_ % 1000000):10000;
 
-            // Setup select timeout
-            tout.tv_sec=timeout_ / 1000000;
-            tout.tv_usec=timeout_ % 1000000;
+         PyRogue_BEGIN_ALLOW_THREADS;
+         {
+            boost::lock_guard<boost::mutex> lock(mtx_);
 
-            if ( (sres = select(fd_+1,NULL,&fds,NULL,&tout)) > 0 ) {
+            if ( (sres = select(fd_+1,NULL,&fds,NULL,&tout)) > 0 ) 
                res = sendmsg(fd_,&msg,0);
-               printf("Sent message. Ret = %i\n",res);
-            }
             else res = 0;
-
-            // Select timeout
-            if ( sres <= 0 ) throw(rogue::GeneralError::timeout("Client::acceptFrame",timeout_));
-
-            // Error
-            if ( res < 0 ) throw(rogue::GeneralError("Client::acceptFrame","UDP Write Call Failed"));
          }
+         PyRogue_END_ALLOW_THREADS;
 
-         // Continue while write result was zero
-         while ( res == 0 );
+         // Select timeout
+         if ( sres <= 0 && timeout_ > 0 ) 
+            throw(rogue::GeneralError::timeout("Client::acceptFrame",timeout_));
+
+         // Error
+         if ( res < 0 ) 
+            throw(rogue::GeneralError("Client::acceptFrame","UDP Write Call Failed"));
       }
+
+      // Continue while write result was zero
+      while ( res == 0 );
    }
-   PyRogue_END_ALLOW_THREADS;
 }
 
 //! Run thread
@@ -158,47 +162,68 @@ void rpu::Client::runThread() {
    struct timeval tout;
 
    // Preallocate frame
-   frame = createFrame(RX_SIZE,RX_SIZE,false,false);
+   frame = ris::Pool::acceptReq(maxSize_,false,maxSize_);
+
+   printf("UDP::Client PID=%i, TID=%li\n",getpid(),syscall(SYS_gettid));
 
    try {
 
       while(1) {
 
-         // Setup fds for select call
-         FD_ZERO(&fds);
-         FD_SET(fd_,&fds);
+         // Attempt receive
+         buff = frame->getBuffer(0);
+         res = ::read(fd_, buff->getRawData(), maxSize_);
 
-         // Setup select timeout
-         tout.tv_sec  = 0;
-         tout.tv_usec = 100;
+         if ( res > 0 ) {
+            buff->setSize(res);
 
-         // Select returns with available buffer
-         if ( select(fd_+1,&fds,NULL,NULL,&tout) > 0 ) {
-            buff = frame->getBuffer(0);
+            // Push frame and get a new empty frame
+            sendFrame(frame);
+            frame = ris::Pool::acceptReq(maxSize_,false,maxSize_);
+         }
+         else {
 
-            // Attempt receive
-            res = ::read(fd_, buff->getRawData(), RX_SIZE);
+            // Setup fds for select call
+            FD_ZERO(&fds);
+            FD_SET(fd_,&fds);
 
-            // Read was successfull
-            if ( res > 0 ) {
-               printf("Got message. Ret = %i\n",res);
-               buff->setSize(res);
+            // Setup select timeout
+            tout.tv_sec  = 0;
+            tout.tv_usec = 100;
 
-               // Push frame and get a new empty frame
-               sendFrame(frame);
-               frame = createFrame(RX_SIZE,RX_SIZE,false,false);
-            }
+            // Select returns with available buffer
+            select(fd_+1,&fds,NULL,NULL,&tout);
          }
       }
    } catch (boost::thread_interrupted&) { }
 }
 
+
+//! Set UDP RX Size
+bool rpu::Client::setRxSize(uint32_t size) {
+   uint32_t   rwin;
+   socklen_t  rwin_size=4;
+
+   setsockopt(fd_, SOL_SOCKET, SO_RCVBUF, (char*)&size, sizeof(size));
+   getsockopt(fd_, SOL_SOCKET, SO_RCVBUF, &rwin, &rwin_size);
+   if(size > rwin) {
+      std::cout << "----------------------------------------------------------" << std::endl;
+      std::cout << "Error setting rx buffer size."                              << std::endl;
+      std::cout << "Wanted " << std::dec << size << " Got " << std::dec << rwin << std::endl;
+      std::cout << "sysctl -w net.core.rmem_max=size to increase in kernel"     << std::endl;
+      std::cout << "----------------------------------------------------------" << std::endl;
+      return(false);
+   }
+   return(true);
+}
+
 void rpu::Client::setup_python () {
 
-   bp::class_<rpu::Client, rpu::ClientPtr, bp::bases<ris::Master,ris::Slave>, boost::noncopyable >("Client",bp::init<std::string,uint16_t>())
+   bp::class_<rpu::Client, rpu::ClientPtr, bp::bases<ris::Master,ris::Slave>, boost::noncopyable >("Client",bp::init<std::string,uint16_t,uint16_t>())
       .def("create",         &rpu::Client::create)
       .staticmethod("create")
       .def("setTimeout",     &rpu::Client::setTimeout)
+      .def("setRxSize",      &rpu::Client::setRxSize)
    ;
 
    bp::implicitly_convertible<rpu::ClientPtr, ris::MasterPtr>();

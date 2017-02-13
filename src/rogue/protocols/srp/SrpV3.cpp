@@ -82,20 +82,20 @@ void rps::SrpV3::doTransaction(uint32_t id, rim::MasterPtr master, uint64_t addr
    frame = reqFrame(frameSize,true,0);
 
    // Bits 7:0 of first 32-bit word are version
-   temp = 0x3;
+   temp = 0x03;
 
    // Bits 9:8: 0x0 = read, 0x1 = write, 0x3 = posted write
    switch ( type ) {
-      case rim::Write : temp |= 0x1; break;
-      case rim::Post  : temp |= 0x3; break;
+      case rim::Write : temp |= 0x100; break;
+      case rim::Post  : temp |= 0x300; break;
       default: break; // Read or verify
    }
    
    // Bits 13:10 not used in gen frame
    // Bit 14 = ignore mem resp
-   // Bit 14 = ignore mem resp
    // Bit 23:15 = Unused
    // Bit 31:24 = timeout count
+   temp |= 0x0A000000;
    cnt = frame->write(&(temp),0,4);
 
    // Header word 1, transaction ID
@@ -111,7 +111,7 @@ void rps::SrpV3::doTransaction(uint32_t id, rim::MasterPtr master, uint64_t addr
    cnt += frame->write(&(temp),cnt,4);
 
    // Header word 4, request size
-   temp = size;
+   temp = size-1;
    cnt += frame->write(&(temp),cnt,4);
 
    // Write data
@@ -151,6 +151,7 @@ void rps::SrpV3::acceptFrame ( ris::FramePtr frame ) {
 
    // Verify frame size, drop frame
    frame->read(&size,16,4);
+   size += 1;
    if ( size != (frame->getPayload()-24) ) {
       delMaster(id);
       return;

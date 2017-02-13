@@ -1,5 +1,9 @@
 # ZeroMq
 
+Zeromq is optional. It is only needed if you choose to use 
+the mesh networking features of rogue or the simulation
+link library.
+
 Choose an install location:
 
 > mkdir /path/to/zeromq/4.2.0

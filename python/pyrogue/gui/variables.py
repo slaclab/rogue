@@ -85,19 +85,19 @@ class VariableLink(QObject):
         elif self.variable.base == 'range':
             self.emit(SIGNAL("updateGui"),value)
 
-        elif self.variable.base == 'hex':
+        elif self.variable.base == 'hex' and value != None:
             self.emit(SIGNAL("updateGui"),'0x%x' % (value))
 
-        elif self.variable.base == 'bin':
+        elif self.variable.base == 'bin' and value != None:
             self.emit(SIGNAL("updateGui"), '0b{0:b}'.format(value))
 
         elif self.variable.base == 'float' or self.variable.base == 'string':
             self.emit(SIGNAL("updateGui"), str(value))
-            
+
         else:
             self.emit(SIGNAL("updateGui"), str(value))
             #self.emit(SIGNAL("updateGui"), self.variable.base.format(value)) # Broken
-            
+
 
     def returnPressed(self):
         self.guiChanged(self.widget.text())

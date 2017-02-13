@@ -75,12 +75,12 @@ char const * rogue::GeneralError::what() const throw() {
 void rogue::GeneralError::setup_python() {
    bp::class_<rogue::GeneralError>("GeneralError",bp::init<std::string,std::string>());
 
-   PyObject * typeObj = PyErr_NewException((char *)"rogue.exceptions.GeneralError", PyExc_Exception, 0);
+   PyObject * typeObj = PyErr_NewException((char *)"rogue.GeneralError", PyExc_Exception, 0);
    bp::scope().attr("GeneralError") = bp::handle<>(bp::borrowed(typeObj));
 
    rogue::generalErrorObj = typeObj;
 
-   bp::register_exception_translator<rogue::GeneralError>(&rogue::GeneralError::translate);
+   bp::register_exception_translator<rogue::GeneralError>(&(rogue::GeneralError::translate));
 }
 
 void rogue::GeneralError::translate(GeneralError const &e) {

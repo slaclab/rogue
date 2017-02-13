@@ -24,6 +24,7 @@
 #include <rogue/protocols/srp/module.h>
 #include <rogue/protocols/srp/SrpV0.h>
 #include <rogue/protocols/srp/SrpV3.h>
+#include <rogue/protocols/srp/Cmd.h>
 
 namespace bp  = boost::python;
 namespace rps = rogue::protocols::srp;
@@ -41,5 +42,6 @@ void rps::setup_module() {
 
    rps::SrpV0::setup_python();
    rps::SrpV3::setup_python();
+   rps::Cmd::setup_python();
 }
 
