@@ -584,6 +584,8 @@ class Variable(Node):
         Set the value and write to hardware if applicable
         Writes to hardware are blocking. An error will result in a logged exception.
         """
+
+        #print("{}.set({})".format(self, value))
         try:
             self.value=value
             self._block.set(self, value)
@@ -1042,6 +1044,8 @@ class RemoteBlock(rogue.interfaces.memory.Master):
         """
         Add a variable to the block
         """
+
+	
         with self._cond:
             self._waitTransaction()
 
@@ -1072,6 +1076,8 @@ class RemoteBlock(rogue.interfaces.memory.Master):
             if var.mode == 'RW':
                 for x in range(var.bitOffset,var.bitOffset+var.bitSize):
                     setBitToBytes(self._mData,x,1)
+
+            return True
 
     def _startTransaction(self,type):
         """
