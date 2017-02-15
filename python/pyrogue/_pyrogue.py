@@ -298,7 +298,7 @@ class Node(object):
 
         # First get non-node local values
         for key,value in self.__dict__.items():
-            if (not key.startswith('_')) and (not isinstance(value,Node)):
+            if (not key.startswith('_')) and (not isinstance(value,Node)) and (not callable(value)):
                 data[key] = value
 
         # Next get sub nodes
@@ -1898,7 +1898,11 @@ class PollQueue(object):
                     if isinstance(entry.block, Block):
                         #print('Polling {}'.format(entry.block._variables))
                         blockEntries.append(entry)
-                        entry.block._startTransaction(rogue.interfaces.memory.Read)
+                        try:
+                            entry.block._startTransaction(rogue.interfaces.memory.Read)
+                        except Exception as e:
+                            self._root._logException(e)
+
                     else:
                         # Hack for handling local variables
                         #print('Polling {}'.format(entry.block))
