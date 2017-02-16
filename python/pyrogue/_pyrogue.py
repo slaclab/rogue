@@ -128,6 +128,9 @@ def busConnect(source,dest):
 
     master._setSlave(slave)
 
+def numBytes(bits):
+    return int(math.ceil(float(bits) / 8.0))    
+
 
 class NodeError(Exception):
     """ Exception for node manipulation errors."""
@@ -393,34 +396,6 @@ class VariableError(Exception):
     pass
 
 
-class Base(object):
-    """
-    Class which defines how data is stored, displayed and converted.
-    """
-    def __init__(self, format, endianness='little'):
-        self._format = format
-        self._endianness = endianness
-
-class UInt(Base):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        
-    def toByteArray(value, bits):
-        value.to_bytes(bits//8, endianness, signed=False)
-
-    def fromByteArray(ba):
-        return int.from_bytes(ba, endianness, signed=False)
-
-class Int(Base):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-
-    def toByteArray(value, bits):
-        value.to_bytes(bits//8, endianness, signed=True)
-
-    def fromByteArray(ba):
-        return int.from_bytes(ba, endianness, signed=True)
-
  class String(Base):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -447,15 +422,6 @@ class Variable(Node):
     bitOffset: The offset in bits from the byte offset if associated with memory.
     pollInterval: How often the variable should be polled (in seconds) defualts to 0 (not polled)
     value: An initial value to set the variable to
-    base: This defined the type of entry tracked by this variable.
-          hex = An unsigned integer in hex form
-          bin = An unsigned integer in binary form
-          uint = An unsigned integer
-          enum = An enum with value,key pairs passed
-          bool = A True,False value
-          range = An unsigned integer with a bounded range
-          string = A string value
-          float = A float value
     mode: Access mode of the variable
           RW = Read/Write
           RO = Read Only
@@ -464,37 +430,27 @@ class Variable(Node):
     enum: A dictionary of index:value pairs ie {0:'Zero':0,'One'}
     minimum: Minimum value for base=range
     maximum: Maximum value for base=range
-    setFunction: Function to call to set the value. dev, var, value passed.
-        setFunction(dev,var,value)
-    getFunction: Function to call to set the value. dev, var passed. Return value.
-        value = getFunction(dev,var)
     hidden: Variable is hidden
-
-    The set and get functions can be in one of two forms. They can either be a series 
-    of python commands in a string or a pointer to a class function. When defining 
-    pythone functions in a string the get function must update the 'value' variable with
-    the variable value. For the set function the variable 'value' is set in the value 
-    variable. ie setFunction='_someVariable = value', getFunction='value = _someVariable'
-    The string function is executed in the context of the variable object with 'dev' set
-    to the parent device object.
     """
-    def __init__(self, name, description="", parent=None, offset=None, bitSize=32, bitOffset=0, pollInterval=0, value=None,
-                 base='hex', mode='RW', enum=None, units=None, hidden=False, minimum=None, maximum=None,
-                 setFunction=None, getFunction=None, dependencies=None, 
-                 beforeReadCmd=None, afterWriteCmd=None, **dump):
+    def __init__(self, name, description="", parent=None,
+                 offset=None, bitSize=32, bitOffset=0, pollInterval=0, mode='RW',
+                 value=None,
+                 enum=None, units=None, hidden=False, minimum=None, maximum=None,
+                 dependencies=None, 
+                 **dump):
         """Initialize variable class""" 
 
         # Public Attributes
         self.offset    = offset
         self.bitSize   = bitSize
         self.bitOffset = bitOffset
-        self.base      = base      
         self.mode      = mode
         self.enum      = enum
         self.units     = units
         self.minimum   = minimum # For base='range'
         self.maximum   = maximum # For base='range'
-        self._defaultValue = value
+        self.value     = value
+        
         self._pollInterval = pollInterval
 
         # Check modes
@@ -505,20 +461,19 @@ class Variable(Node):
 
         # Tracking variables
         
-        self._setFunction = setFunction
-        self._getFunction = getFunction
         self.__listeners  = []
 
         self._block = None
-        if self._local is not None or self._setFunction is not None or self._getFunction is not None:
-            self._block = LocalBlock(self)
-
-            
 
         if self.base == 'string':
             self._scratch = ''
         else:
             self._scratch = 0
+
+        if enum is not None:
+            def setConv(value):
+                return enum[value]
+            self.setConv = setConv
 
         # Dependency tracking
         self.__dependencies = []
@@ -526,21 +481,16 @@ class Variable(Node):
             for d in dependencies:
                 self.addDependency(d)
 
-        # Commands that run before or after block access
-        self._beforeReadCmd   = beforeReadCmd
-        self._afterWriteCmd   = afterWriteCmd
-
         # Call super constructor
         Node.__init__(self, name=name, classType='variable', description=description, hidden=hidden, parent=parent)
 
     def _rootAttached(self):
         # Variables are always leaf nodes so no need to recurse
-        if self._defaultValue is not None:
-            self.set(self._defaultValue, write=True)
+        if self.value is not None:
+            self.set(self.value, write=True)
 
-        if self._pollInterval > 0 and self._root._pollQueue:
+        if self._pollInterval > 0 and self._root._pollQueue is not None:
             self._root._pollQueue.updatePollInterval(self)
-
 
     def addDependency(self, dep):
         self.__dependencies.append(dep)
@@ -555,7 +505,6 @@ class Variable(Node):
         self._pollInterval = interval        
         if isinstance(self._root, Root) and self._root._pollQueue:
             self._root._pollQueue.updatePollInterval(self)
-
 
     @property
     def dependencies(self):
@@ -579,7 +528,7 @@ class Variable(Node):
     def _afterWriteCmd(self):
         pass
 
-    def set(self,value,write=True):
+    def set(self, value, write=True):
         """
         Set the value and write to hardware if applicable
         Writes to hardware are blocking. An error will result in a logged exception.
@@ -587,7 +536,7 @@ class Variable(Node):
 
         #print("{}.set({})".format(self, value))
         try:
-            self.value=value
+            self.value = self._setFunc(self._parent, self, value)
             self._block.set(self, value)
             # Inform listeners
             self._updated()
@@ -599,6 +548,7 @@ class Variable(Node):
                 if self._block.mode == 'RW':
                     self._beforeReadCmd()
                     self._block.blockingTransaction(rogue.interfaces.memory.Verify)
+                    
         except Exception as e:
             self._root._logException(e)
 
@@ -608,10 +558,12 @@ class Variable(Node):
         Writes to hardware are posted.
         """
         try:
-            self.value = value
-            self._block.set(self, value)
+            self.value = self.setFunc(self._parent, self, value)
+            self._block.set(self, self.value)
+
             if self._block and self._block.mode != 'RO':
                 self._block.backgroundTransaction(rogue.interfaces.memory.Post)
+                
         except Exception as e:
             self._root._logException(e)
 
@@ -625,7 +577,10 @@ class Variable(Node):
             if read and self._block.mode != 'WO':
                 self._beforeReadCmd()
                 self._block.blockingTransaction(rogue.interfaces.memory.Read)
-            ret = self._block.get(self)
+
+            self.value = self._block.get(self))
+            self.value = self.getFunc(self._parent, self) 
+            
         except Exception as e:
             print("Got exception in get: %s" % (str(e)))
             self._root._logException(e)
@@ -634,8 +589,7 @@ class Variable(Node):
         # Update listeners for all variables in the block
         if read:
             self._block._updated()
-        return ret
-
+        return self.value
 
     def _updated(self):
         """Variable has been updated. Inform listeners."""
@@ -643,7 +597,7 @@ class Variable(Node):
         # Don't generate updates for SL and WO variables
         if self.mode == 'WO' or self.mode == 'SL': return
 
-        self.value = self._block.get(self)
+        #self.value = self._block.get(self)
         
         for func in self.__listeners:
             func(self,value)
@@ -651,86 +605,73 @@ class Variable(Node):
         # Root variable update log
         self._root._varUpdated(self,self.value)
 
-    def _toBlock(self,value):
-        """
-        Raw set method. This is called by the set() method in order to convert the passed
-        variable to a value which can be written to a local container (block or local variable).
-        The set function defaults to setting a string value to the local block if mode='string'
-        or an integer value for mode='hex', mode='uint' or mode='bool'. All others will default to
-        a uint set. 
-        The user can use the setFunction attribute to pass a string containing python commands or
-        a specific method to call. When using a python string the code will find the passed value
-        as the variable 'value'. A passed method will accept the variable object and value as args.
-        Listeners will be informed of the update.
-        _rawSet() is called during bulk configuration loads with a seperate hardware access generated later.
-        """
-        return self.base.toBlock(value)
-        #return int(value).to_bytes(self.bitCount//8+1)
-            
-#         if self._setFunction is not None:
-#             if callable(self._setFunction):
-#                 self._setFunction(self._parent,self,value)
-#             else:
-#                 dev = self._parent
-#                 exec(textwrap.dedent(self._setFunction))
-
-#         elif self._block:        
-#             if self.base == 'string':
-#                 self._block.setString(value)
-#             else:
-#                 if self.base == 'bool':
-#                     if value: ivalue = 1
-#                     else: ivalue = 0
-#                 elif self.base == 'enum':
-#                     ivalue = {value: key for key,value in self.enum.items()}[value]
-#                 else:
-#                     ivalue = int(value)
-#                 self._block.setUInt(self.bitOffset, self.bitSize, ivalue)        
-
-
-    def _fromBlock(self):
-        """
-        Raw get method. This is called by the get() method in order to convert the local
-        container value (block or local variable) to a value returned to the caller.
-        The set function defaults to getting a string value from the local block if mode='string'
-        or an integer value for mode='hex', mode='uint' or mode='bool'. All others will default to
-        a uint get. 
-        The user can use the getFunction attribute to pass a string containing python commands or
-        a specific method to call. When using a python string the code will set the 'value' variable
-        with the value to return. A passed method will accept the variable as an arg and return the
-        resulting value.
-        _rawGet() can be called from other levels to get current value without generating a hardware access.
-        """
-        return self.base.fromBlock(self)
-
-    #         if self._getFunction is not None:
-#             if callable(self._getFunction):
-#                 return(self._getFunction(self._parent,self))
-#             else:
-#                 dev = self._parent
-#                 value = 0
-#                 ns = locals()
-#                 exec(textwrap.dedent(self._getFunction),ns)
-#                 return ns['value']
-
-#         elif self._block:        
-#             if self.base == 'string':
-#                 return(self._block.getString())
-#             else:
-#                 ivalue = self._block.getUInt(self.bitOffset,self.bitSize)
-
-#                 if self.base == 'bool':
-#                     return(ivalue != 0)
-#                 elif self.base == 'enum':
-#                     return self.enum[ivalue]
-#                 else:
-#                     return ivalue
-#         else:
-#             return None
-
     def linkUpdated(self, var, value):
         self._updated()
 
+    def sefFunc(self, value):
+        return value
+
+    def getFunc(self):
+        return self.value
+
+    def _toBlock(self):
+        """
+        Convert from the Python native type of the Variable and a bytearray to be stored in memory
+        """
+        raise Exception("Unimlemented")
+        #return self.base.toBlock(value)
+
+    def _fromBlock(self, ba):
+        """
+        Convert from a memory byte array to a python native type
+        """
+        raise Exception("Unimlemented")        
+        #return self.base.fromBlock(self)
+
+
+
+class IntVariable(Variable):
+    """Variable holding an unsigned integer"""
+    def __init__(self, signed=False, endianness='little', **kwargs):
+        super().__init__(**kwargs)
+        self.signed = signed
+        self.endianness = endianness
+
+    def _toBlock(self):
+        return self.value.to_bytes(numBytes(self.bitSize), self.endianness, signed=self.signed)
+
+    def _fromBlock(self, ba):
+        return int.from_bytes(ba, self.endianness, signed=self.signed)
+
+class BoolVariable(IntVariable):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+
+    def _fromBlock(self, ba):
+        return bool(super()._fromBlock(ba))
+        
+class StringVariable(Variable):
+    """Variable holding a string"""
+    def __init__(self, encoding='utf-8', **kwargs):
+        super().__init__(**kwargs)
+        self.encoding = encoding
+
+    def _toBlock(self):
+        ba = bytearray(self.value, self.encoding)
+        ba.extend(bytearray(1))
+        return ba
+
+    def _fromBlock(self, ba):
+        s = ba.rstrip(bytearray(1))
+        return s.decode(self.encoding)
+
+
+class LocalVariable(Variable):
+    def __init__(self, getFunc=None, setFunc=None, **kwargs):
+        super().__init__(**kwargs)
+        self.getFunc = getFunc
+        self.setFunc = setFunc
+    
 
 class Command(Variable):
     """Command holder: Subclass of variable with callable interface"""
@@ -858,33 +799,24 @@ class BlockError(Exception):
 
 
 class LocalBlock(object):
-    def __init__(self, variable, local=None, gf=None, sf=None):
+    def __init__(self, variable):
         self._name = variable.name
         self._variable = variable
         self._device = variable.parent
+        variable._block = self
         
-
-        if variable.local is not None:
-            self._local = variable.local
-
-        if variable._getFunction is not None:
-            self.get = variable._getFunction
-
-        if variable._setFunction is not None:
-            self.set = variable._setFunction
-
     def __repr__(self):
         return 'LocalBlock({})'.format(self._variable)
 
     def _addVariable(self, var):
         return False
 
-    def get(self, var):
-        return self._local
+    def get(self):
+        return self._variable.value
 
-    def set(self, var, val):
+    def set(self, var):
         # Check that types match first
-        self._local = val;
+        pass
 
     def backgroundTransaction(self,type):
         pass
@@ -935,7 +867,7 @@ class RemoteBlock(rogue.interfaces.memory.Master):
     def __repr__(self):
         return repr(self._variables)
 
-    def set(self, var, value):
+    def set(self, var):
         """
         Update block with bitCount bits from passed byte array.
         Offset sets the starting point in the block array.
@@ -943,7 +875,7 @@ class RemoteBlock(rogue.interfaces.memory.Master):
         with self._cond:
             self._waitTransaction()
 
-            ba = var.toBlock(value)
+            ba = var.toBlock()
 
             # Access is fully byte aligned
             if (var.bitOffset % 8) == 0 and (var.bitCount % 8) == 0:
@@ -1248,10 +1180,12 @@ class Device(Node,rogue.interfaces.memory.Hub):
 
         # Adding variable
         # Create RemoteBlocks as needed
-        if isinstance(node,Variable):
-            if node.offset is not None:
-                if not any(block._addVariable(node) for block in self._blocks):
-                    self._blocks.append(RemoteBlock(node))
+        if isinstance(node, LocalVariable):
+            self._blocks.append(LocalBlock(node))
+            
+        elif isinstance(node,Variable):
+            if not any(block._addVariable(node) for block in self._blocks):
+                self._blocks.append(RemoteBlock(node))
 
     def hideVariables(self, hidden, variables=None):
         """Hide a list of Variables (or Variable names)"""

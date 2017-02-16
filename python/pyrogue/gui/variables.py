@@ -42,7 +42,7 @@ class VariableLink(QObject):
         if variable.units:
            item.setText(4,str(variable.units))
 
-        if variable.base == 'enum' and variable.mode=='RW':
+        if variable.enum is not None and variable.mode=='RW':
             self.widget = QComboBox()
             self.widget.activated.connect(self.guiChanged)
             self.connect(self,SIGNAL('updateGui'),self.widget.setCurrentIndex)
