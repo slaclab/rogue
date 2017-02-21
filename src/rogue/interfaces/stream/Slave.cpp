@@ -66,7 +66,7 @@ void ris::Slave::acceptFrame ( ris::FramePtr frame ) {
          if (( (x+1) % 10 ) == 0) 
             printf("\n     ");
       }
-      if (( x % 10 ) != 0) printf("\n");
+      if (( x % 8 ) != 0) printf("\n");
    }
 }
 
