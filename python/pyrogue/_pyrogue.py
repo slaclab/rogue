@@ -427,16 +427,17 @@ class Variable(Node):
           RO = Read Only
           WO = Write Only
           SL = A slave variable which is not included in block writes or config/status dumps.
-    enum: A dictionary of index:value pairs ie {0:'Zero':0,'One'}
-    minimum: Minimum value for base=range
-    maximum: Maximum value for base=range
+    enum: A dictionary of index:value pairs ie {0:'Zero':0,'One'} for disp='enum'
+    minimum: Minimum value for disp='range'
+    maximum: Maximum value for disp='range'
     hidden: Variable is hidden
     """
     def __init__(self, name, description="", parent=None,
                  offset=None, bitSize=32, bitOffset=0, pollInterval=0, mode='RW',
                  value=None,
-                 enum=None, units=None, hidden=False, minimum=None, maximum=None,
-                 dependencies=None, 
+                 disp='hex', enum=None, units=None, hidden=False, minimum=None, maximum=None,
+                 dependencies=None,
+                 beforeReadCmd=None, afterWriteCmd=None,
                  **dump):
         """Initialize variable class""" 
 
@@ -446,11 +447,22 @@ class Variable(Node):
         self.bitOffset = bitOffset
         self.mode      = mode
         self.enum      = enum
+        self.revEnum = {v,k for k,v in enum.items()}
         self.units     = units
         self.minimum   = minimum # For base='range'
         self.maximum   = maximum # For base='range'
         self.value     = value
-        
+
+        # Format disp
+        if disp == 'hex':
+            self.disp = '{:x}'
+        elif disp == 'uint':
+            self.disp = '{:d}'
+        elif disp == 'bin':
+            self.disp = '{:b}'
+        elif disp == 'string':
+            self.disp = '{}'
+            
         self._pollInterval = pollInterval
 
         # Check modes
@@ -460,7 +472,17 @@ class Variable(Node):
             raise VariableError('Invalid variable mode %s. Supported: RW, RO, WO, SL, CMD' % (self.mode))
 
         # Tracking variables
-        
+
+        if beforeReadCmd is not None:
+            self._beforeReadCmd = beforeReadCmd
+        else:
+            self._beforeReadCmd = lambda: None
+
+        if afterWriteCmd is not None:
+            self._afterWriteCmd = afterWriteCmd
+        else:
+            self._afterWriteCmd = lambda: None
+
         self.__listeners  = []
 
         self._block = None
@@ -469,11 +491,6 @@ class Variable(Node):
             self._scratch = ''
         else:
             self._scratch = 0
-
-        if enum is not None:
-            def setConv(value):
-                return enum[value]
-            self.setConv = setConv
 
         # Dependency tracking
         self.__dependencies = []
@@ -487,7 +504,7 @@ class Variable(Node):
     def _rootAttached(self):
         # Variables are always leaf nodes so no need to recurse
         if self.value is not None:
-            self.set(self.value, write=True)
+            self.set(self.value, write=False)
 
         if self._pollInterval > 0 and self._root._pollQueue is not None:
             self._root._pollQueue.updatePollInterval(self)
@@ -522,11 +539,7 @@ class Variable(Node):
         else:
             self.__listeners.append(listener)
 
-    def _beforeReadCmd(self):
-        pass
 
-    def _afterWriteCmd(self):
-        pass
 
     def set(self, value, write=True):
         """
@@ -536,7 +549,7 @@ class Variable(Node):
 
         #print("{}.set({})".format(self, value))
         try:
-            self.value = self._setFunc(self._parent, self, value)
+            self.value = value
             self._block.set(self, value)
             # Inform listeners
             self._updated()
@@ -578,8 +591,8 @@ class Variable(Node):
                 self._beforeReadCmd()
                 self._block.blockingTransaction(rogue.interfaces.memory.Read)
 
-            self.value = self._block.get(self))
-            self.value = self.getFunc(self._parent, self) 
+            self.value = self._block.get(self)
+            #self.value = self.getFunc(self._parent, self) 
             
         except Exception as e:
             print("Got exception in get: %s" % (str(e)))
@@ -597,22 +610,16 @@ class Variable(Node):
         # Don't generate updates for SL and WO variables
         if self.mode == 'WO' or self.mode == 'SL': return
 
-        #self.value = self._block.get(self)
+        self.value = self._block.get(self)
         
         for func in self.__listeners:
-            func(self,value)
+            func(self, value)
 
         # Root variable update log
         self._root._varUpdated(self,self.value)
 
     def linkUpdated(self, var, value):
         self._updated()
-
-    def sefFunc(self, value):
-        return value
-
-    def getFunc(self):
-        return self.value
 
     def _toBlock(self):
         """
@@ -628,8 +635,19 @@ class Variable(Node):
         raise Exception("Unimlemented")        
         #return self.base.fromBlock(self)
 
+    def getDisp(self, read=True):
+        if self.disp == 'enum':
+            return self.enum[self.get(read)]
+        else:
+            return self.disp.format(self.get(read))
 
+    def setDisp(self, sValue, write=True):
+        if self.disp = 'enum':
+            self.set(self.revEnum[sValue], write)
+        else:
+            self.set(parse.parse(self.disp, sValue)[0], write)
 
+        
 class IntVariable(Variable):
     """Variable holding an unsigned integer"""
     def __init__(self, signed=False, endianness='little', **kwargs):
@@ -637,8 +655,8 @@ class IntVariable(Variable):
         self.signed = signed
         self.endianness = endianness
 
-    def _toBlock(self):
-        return self.value.to_bytes(numBytes(self.bitSize), self.endianness, signed=self.signed)
+    def _toBlock(self, value):
+        return value.to_bytes(numBytes(self.bitSize), self.endianness, signed=self.signed)
 
     def _fromBlock(self, ba):
         return int.from_bytes(ba, self.endianness, signed=self.signed)
@@ -647,8 +665,12 @@ class BoolVariable(IntVariable):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
+        if enum is None:
+            self.disp = 'enum'
+            self.enum = {True: 'True', False: 'False'}
+
     def _fromBlock(self, ba):
-        return bool(super()._fromBlock(ba))
+        return bool(IntVariable._fromBlock(self, ba))
         
 class StringVariable(Variable):
     """Variable holding a string"""
@@ -656,8 +678,8 @@ class StringVariable(Variable):
         super().__init__(**kwargs)
         self.encoding = encoding
 
-    def _toBlock(self):
-        ba = bytearray(self.value, self.encoding)
+    def _toBlock(self, value):
+        ba = bytearray(value, self.encoding)
         ba.extend(bytearray(1))
         return ba
 
@@ -669,9 +691,37 @@ class StringVariable(Variable):
 class LocalVariable(Variable):
     def __init__(self, getFunc=None, setFunc=None, **kwargs):
         super().__init__(**kwargs)
-        self.getFunc = getFunc
-        self.setFunc = setFunc
-    
+        
+        if setFunc is not None:
+            self.setSetFunc(setFunc)
+        if getFunc is not None:
+            self.setGetFunc(getFunc)
+
+    def setSetFunc(setFunc):
+        self.set = type.MethodType(setFunc, self)
+            
+    def setGetFunc(getFunc):
+        self.get = types.MethodType(getFunc, self)
+
+    def set(self, value, write=True):
+        self.value = value
+
+    def get(self, read=True):
+        return self.value
+
+    @staticmethod
+    def clone(self, var):
+        """ A factory for cloning the properties of another variable """
+        return LocalVariable(
+            name=var.name
+            description=var.description,
+            mode=var.mode,
+            value=var.value,
+            disp=var.disp,
+            enum=var.enum,
+            minimum=var.minimum,
+            maximum=var.maximum)
+
 
 class Command(Variable):
     """Command holder: Subclass of variable with callable interface"""
@@ -811,10 +861,10 @@ class LocalBlock(object):
     def _addVariable(self, var):
         return False
 
-    def get(self):
-        return self._variable.value
+    def get(self, var):
+        return var.value
 
-    def set(self, var):
+    def set(self, var, value):
         # Check that types match first
         pass
 
@@ -867,7 +917,7 @@ class RemoteBlock(rogue.interfaces.memory.Master):
     def __repr__(self):
         return repr(self._variables)
 
-    def set(self, var):
+    def set(self, var, value):
         """
         Update block with bitCount bits from passed byte array.
         Offset sets the starting point in the block array.
@@ -875,7 +925,7 @@ class RemoteBlock(rogue.interfaces.memory.Master):
         with self._cond:
             self._waitTransaction()
 
-            ba = var.toBlock()
+            ba = var.toBlock(value)
 
             # Access is fully byte aligned
             if (var.bitOffset % 8) == 0 and (var.bitCount % 8) == 0:
@@ -902,7 +952,7 @@ class RemoteBlock(rogue.interfaces.memory.Master):
 
             # Access is fully byte aligned
             if (var.bitOffset % 8) == 0 and (var.bitCount % 8) == 0:
-                return var.fromBlock(self._bData[int(var.bitOffset/8):int((var.bitOffset+var.bitCount)/8)])
+                return var._fromBlock(self._bData[int(var.bitOffset/8):int((var.bitOffset+var.bitCount)/8)])
 
             # Bit level access
             else:
@@ -910,7 +960,7 @@ class RemoteBlock(rogue.interfaces.memory.Master):
                 if (var.bitCount % 8) > 0: ba.extend(bytearray(1))
                 for x in range(0,var.bitCount):
                     setBitToBytes(ba,x,getBitFromBytes(self._bData,x+var.bitOffset))
-                return var.fromBlock(ba)
+                return var._fromBlock(ba)
 
     def backgroundTransaction(self,type):
         """
@@ -1308,6 +1358,41 @@ class Device(Node,rogue.interfaces.memory.Hub):
             return func
         return _decorator
 
+class MultiDevice(Device):
+    def __init__(self, name, devices, **kwargs):
+        super(name=name, **kwargs)
+
+        # First check that all devices are of same type
+        if len(set((d.__class__ for d in devices))) != 1:
+            raise Exception("Devices must all be of same class")
+
+        for v in devices[0].variables.values():
+            if v.mode == 'RW':
+                self.add(LocalVariable.clone(v))
+
+        for locVar in self.variables.values():
+            depVars = [v for d in devices for v in d.variables.items() if v.name == locVar.name]
+
+            # Create a new set method that mirrors the set value out to all the dependent variables
+            def locSet(self, value, write=True):
+                self.value = value
+                for v in depVars:
+                    v.set(locVar.value, write)
+
+            # Monkey patch the new set method in to the local variable
+            locVar.setSetFunc(locSet)
+            
+            def locGet(self, read=True):
+                values = {v: v.get(read) for v in depVars}
+
+                self.value = list(values.values())[0]
+                if len(set(values)) != 1:
+                    raise Exception("MultiDevice variables do not match: {}".format(values))
+
+                return self.value
+
+            locVar.setGetFunc(locGet)
+                
 
 class Root(rogue.interfaces.stream.Master,Device):
     """
