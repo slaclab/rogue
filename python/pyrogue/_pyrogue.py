@@ -396,19 +396,6 @@ class VariableError(Exception):
     pass
 
 
- class String(Base):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-
-    def toByteArray(value, bits):
-        ba = bytearray(value, 'utf-8')
-        ba.extend(bytearray(1))
-        return ba
-        
-    def fromByteArray(ba):
-        s = ba.rstrip(bytearray(1))
-        return s.decode('utf-8')
-
 class Variable(Node):
     """
     Variable holder.
@@ -447,7 +434,9 @@ class Variable(Node):
         self.bitOffset = bitOffset
         self.mode      = mode
         self.enum      = enum
-        self.revEnum = {v,k for k,v in enum.items()}
+        self.revEnum = None
+        if enum is not None:
+            self.revEnum = {v:k for k,v in enum.items()}
         self.units     = units
         self.minimum   = minimum # For base='range'
         self.maximum   = maximum # For base='range'
@@ -642,7 +631,7 @@ class Variable(Node):
             return self.disp.format(self.get(read))
 
     def setDisp(self, sValue, write=True):
-        if self.disp = 'enum':
+        if self.disp == 'enum':
             self.set(self.revEnum[sValue], write)
         else:
             self.set(parse.parse(self.disp, sValue)[0], write)
@@ -689,7 +678,7 @@ class StringVariable(Variable):
 
 
 class LocalVariable(Variable):
-    def __init__(self, getFunc=None, setFunc=None, **kwargs):
+    def __init__(self, getFunction=None, setFunction=None, **kwargs):
         super().__init__(**kwargs)
         
         if setFunc is not None:
@@ -698,10 +687,10 @@ class LocalVariable(Variable):
             self.setGetFunc(getFunc)
 
     def setSetFunc(setFunc):
-        self.set = type.MethodType(setFunc, self)
+        self.set = type.MethodType(setFunction, self)
             
     def setGetFunc(getFunc):
-        self.get = types.MethodType(getFunc, self)
+        self.get = types.MethodType(getFunction, self)
 
     def set(self, value, write=True):
         self.value = value
@@ -713,7 +702,7 @@ class LocalVariable(Variable):
     def clone(self, var):
         """ A factory for cloning the properties of another variable """
         return LocalVariable(
-            name=var.name
+            name=var.name,
             description=var.description,
             mode=var.mode,
             value=var.value,
@@ -723,14 +712,12 @@ class LocalVariable(Variable):
             maximum=var.maximum)
 
 
-class Command(Variable):
+class Command(Node):
     """Command holder: Subclass of variable with callable interface"""
 
-    def __init__(self, parent=None, base='None', mode='CMD', function=None, **kwargs):
+    def __init__(self, name=None, function=None, **kwargs):
+        super().__init__(self, classType='command', **kwargs)
 
-        Variable.__init__(self, base=base, mode=mode, parent=parent, **kwargs)
-
-        self.classType = 'command'
         self._function = function if function is not None else Command.nothing
 
     def __call__(self,arg=None):
@@ -771,7 +758,13 @@ class Command(Variable):
     @staticmethod
     def nothing(dev, cmd, arg):
         pass
-            
+
+class IntCommand(Command, IntVariable):
+    def __init__(self, parent=None, mode='CMD', function=None, **kwargs):
+        Command.__init__(self, function=function)        
+        IntVariable.__init__(self, parent=parent, mode=mode, **kwargs)
+
+
     @staticmethod
     def toggle(dev, cmd, arg):
         cmd.set(1)
@@ -1183,8 +1176,8 @@ class Device(Node,rogue.interfaces.memory.Hub):
         # Convenience methods
         self.addDevice = ft.partial(self.addNode, Device)
         self.addDevices = ft.partial(self.addNodes, Device)
-        self.addVariable = ft.partial(self.addNode, Variable)        
-        self.addVariables = ft.partial(self.addNodes, Variable)
+        self.addIntVariable = ft.partial(self.addNode, Variable)        
+        self.addIntVariables = ft.partial(self.addNodes, Variable)
         self.addCommand = ft.partial(self.addNode, Command)        
         self.addCommands = ft.partial(self.addNodes, Command)
 
@@ -1658,24 +1651,19 @@ class DataWriter(Device):
         self._bufferSize  = 0
         self._maxFileSize = 0
 
-        self.add(Variable(name='dataFile', base='string', mode='RW',
-            setFunction='dev._dataFile = value', getFunction='value = dev._dataFile',
+        self.add(LocalVariable(name='dataFile', base='string', mode='RW',
             description='Data file for storing frames for connected streams.'))
 
-        self.add(Variable(name='open', base='bool', mode='RW',
-            setFunction=self._setOpen, getFunction='value = dev._open',
+        self.add(LocalVariable(name='open', base='bool', mode='RW',
             description='Data file open state'))
 
         self.add(Variable(name='bufferSize', base='uint', mode='RW',
-            setFunction=self._setBufferSize, getFunction='value = dev._bufferSize',
             description='File buffering size. Enables caching of data before call to file system.'))
 
         self.add(Variable(name='maxFileSize', base='uint', mode='RW',
-            setFunction=self._setMaxFileSize, getFunction='value = dev._maxFileSize',
             description='Maximum size for an individual file. Setting to a non zero splits the run data into multiple files.'))
 
         self.add(Variable(name='fileSize', base='uint', mode='RO', pollInterval=1,
-                          setFunction=None, getFunction=self._getFileSize,
                           description='Size of data files(s) for current open session in bytes.'))
 
         self.add(Variable(name='frameCount', base='uint', mode='RO', pollInterval=1,
@@ -1685,12 +1673,6 @@ class DataWriter(Device):
         self.add(Command(name='autoName', function=self._genFileName,
             description='Auto create data file name using data and time.'))
 
-    def _setOpen(self,dev,var,value):
-        """Set open state. Override in sub-class"""
-        self._open = value
-
-    def _setBufferSize(self,dev,var,value):
-        """Set buffer size. Override in sub-class"""
         self._bufferSize = value
 
     def _setMaxFileSize(self,dev,var,value):
