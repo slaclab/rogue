@@ -9,7 +9,7 @@ Download and install python3
 
 > cd /path/to/python/3.5.2/src
 > wget https://www.python.org/ftp/python/3.5.2/Python-3.5.2.tar.xz
-> tar -xvvzpf Python-3.5.2.tar.xz
+> tar -xvvpf Python-3.5.2.tar.xz
 > cd Python-3.5.2
 > ./configure --prefix=/path/to/python/3.5.2 --enable-shared
 > make 
