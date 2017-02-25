@@ -34,7 +34,7 @@ Install sip
 > make 
 > make install
 
-Install pyqt4
+Install pyqt4 (if you want a local GUI)
 
 > cd /path/to/python/2.7.13/src/
 > wget http://sourceforge.net/projects/pyqt/files/PyQt4/PyQt-4.11.4/PyQt-x11-gpl-4.11.4.tar.gz

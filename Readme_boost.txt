@@ -15,7 +15,8 @@ Boost with python3 support:
 > cd boost_1_62_0
 > source /path/to/python3/settings.csh (or settings.sh)
 
-Edit tools/build/src/tools/python.jam
+In some cases you will need to edit: tools/build/src/tools/python.jam to fix
+a compile error. I have seen this on redhat machines:
 Change line 542 to:
 
 includes ?= $(prefix)/include/python$(version)m ;
