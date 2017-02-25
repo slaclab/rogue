@@ -38,24 +38,26 @@ rhr::AxiStreamPtr rhr::AxiStream::create (std::string path, uint32_t dest) {
 
 //! Open the device. Pass destination.
 rhr::AxiStream::AxiStream ( std::string path, uint32_t dest ) {
-   uint32_t mask;
-   int32_t  res;
+   uint8_t mask[DMA_MASK_SIZE];
+   int32_t res;
 
    timeout_ = 1000000;
    dest_    = dest;
-   mask     = (1 << dest_);
 
    if ( (fd_ = ::open(path.c_str(), O_RDWR)) < 0 )
       throw(rogue::GeneralError::open("AxiStream::AxiStream",path.c_str()));
 
+   dmaInitMaskBytes(mask);
+   dmaAddMaskBytes(mask,dest_);
+
    PyRogue_BEGIN_ALLOW_THREADS;
-   if  ( (res = axisSetMask(fd_,mask)) < 0 ) ::close(fd_);
+   if  ( (res = dmaSetMaskBytes(fd_,mask)) < 0 ) ::close(fd_);
    PyRogue_END_ALLOW_THREADS;
 
-   if ( res < 0) throw(rogue::GeneralError::mask("AxiStream::AxiStream",path.c_str(),mask));
+   if ( res < 0) throw(rogue::GeneralError::dest("AxiStream::AxiStream",path.c_str(),dest_));
 
    // Result may be that rawBuff_ = NULL
-   rawBuff_ = axisMapDma(fd_,&bCount_,&bSize_);
+   rawBuff_ = dmaMapDma(fd_,&bCount_,&bSize_);
 
    // Start read thread
    thread_ = new boost::thread(boost::bind(&rhr::AxiStream::runThread, this));
@@ -68,7 +70,7 @@ rhr::AxiStream::~AxiStream() {
    thread_->interrupt();
    thread_->join();
 
-   if ( rawBuff_ != NULL ) axisUnMapDma(fd_, rawBuff_);
+   if ( rawBuff_ != NULL ) dmaUnMapDma(fd_, rawBuff_);
    PyRogue_BEGIN_ALLOW_THREADS;
    ::close(fd_);
    PyRogue_END_ALLOW_THREADS;
@@ -136,7 +138,7 @@ ris::FramePtr rhr::AxiStream::acceptReq ( uint32_t size, bool zeroCopyEn, uint32
 
                // Attempt to get index.
                // return of less than 0 is a failure to get a buffer
-               res = axisGetIndex(fd_);
+               res = dmaGetIndex(fd_);
             } else res=0;
             PyRogue_END_ALLOW_THREADS;
 
@@ -250,7 +252,7 @@ void rhr::AxiStream::retBuffer(uint8_t * data, uint32_t meta, uint32_t size) {
       // Bit 30 indicates buffer has already been returned to hardware
       if ( (fd_ >= 0) && ((meta & 0x40000000) == 0) ) {
          PyRogue_BEGIN_ALLOW_THREADS;
-         axisRetIndex(fd_,meta & 0x3FFFFFFF); // Return to hardware
+         dmaRetIndex(fd_,meta & 0x3FFFFFFF); // Return to hardware
          PyRogue_END_ALLOW_THREADS;
       }
 

@@ -40,10 +40,10 @@ rogue::GeneralError rogue::GeneralError::open(std::string src, std::string file)
    return(rogue::GeneralError(src,temp));
 }
 
-rogue::GeneralError rogue::GeneralError::mask(std::string src, std::string file, uint32_t mask) {
+rogue::GeneralError rogue::GeneralError::dest(std::string src, std::string file, uint32_t dest) {
    char temp[100];
 
-   sprintf(temp,"failed to open file %s with mask 0x%x",file.c_str(),mask);
+   sprintf(temp,"failed to open file %s with dest 0x%x",file.c_str(),dest);
    return(rogue::GeneralError(src,temp));
 }
 

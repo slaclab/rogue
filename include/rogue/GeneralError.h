@@ -39,7 +39,7 @@ namespace rogue {
 
          static GeneralError timeout(std::string src, uint32_t time);
          static GeneralError open(std::string src, std::string file);
-         static GeneralError mask(std::string src, std::string file, uint32_t mask);
+         static GeneralError dest(std::string src, std::string file, uint32_t dest);
          static GeneralError boundary(std::string src, uint32_t position, uint32_t limit);
          static GeneralError allocation(std::string src, uint32_t size);
          static GeneralError network(std::string src, std::string host, uint16_t port);

@@ -43,28 +43,29 @@ rhp::PgpCardPtr rhp::PgpCard::create (std::string path, uint32_t lane, uint32_t 
 
 //! Creator
 rhp::PgpCard::PgpCard ( std::string path, uint32_t lane, uint32_t vc ) {
-   uint32_t mask;
    int32_t  res;
+   uint8_t  mask[DMA_MASK_SIZE];
 
    lane_       = lane;
    vc_         = vc;
    timeout_    = 10000000;
    zeroCopyEn_ = true;
 
-   mask = (1 << ((lane_*4) +vc_));
-
    if ( (fd_ = ::open(path.c_str(), O_RDWR)) < 0 ) 
       throw(rogue::GeneralError::open("PgpCard::PgpCard",path.c_str()));
 
+   dmaInitMaskBytes(mask);
+   dmaAddMaskBytes(mask,(lane_*4)+vc_);
+
    PyRogue_BEGIN_ALLOW_THREADS;
-   if  ( (res = pgpSetMask(fd_,mask)) < 0 ) ::close(fd_);
+   if  ( (res = dmaSetMaskBytes(fd_,mask)) < 0 ) ::close(fd_);
    PyRogue_END_ALLOW_THREADS;
 
-   if ( res < 0) throw(rogue::GeneralError::mask("PgpCard::PgpCard",path.c_str(),mask));
+   if ( res < 0) throw(rogue::GeneralError::dest("PgpCard::PgpCard",path.c_str(),(lane_*4)+vc_));
 
    // Result may be that rawBuff_ = NULL
    PyRogue_BEGIN_ALLOW_THREADS;
-   rawBuff_ = pgpMapDma(fd_,&bCount_,&bSize_);
+   rawBuff_ = dmaMapDma(fd_,&bCount_,&bSize_);
    PyRogue_END_ALLOW_THREADS;
 
    // Start read thread
@@ -76,7 +77,7 @@ rhp::PgpCard::~PgpCard() {
    thread_->interrupt();
    thread_->join();
 
-   if ( rawBuff_ != NULL ) pgpUnMapDma(fd_, rawBuff_);
+   if ( rawBuff_ != NULL ) dmaUnMapDma(fd_, rawBuff_);
    PyRogue_BEGIN_ALLOW_THREADS;
    ::close(fd_);
    PyRogue_END_ALLOW_THREADS;
@@ -194,7 +195,7 @@ ris::FramePtr rhp::PgpCard::acceptReq ( uint32_t size, bool zeroCopyEn, uint32_t
 
                // Attempt to get index.
                // return of less than 0 is a failure to get a buffer
-               res = pgpGetIndex(fd_);
+               res = dmaGetIndex(fd_);
             } else res = 0;
             PyRogue_END_ALLOW_THREADS;
 
@@ -301,7 +302,7 @@ void rhp::PgpCard::retBuffer(uint8_t * data, uint32_t meta, uint32_t size) {
       // Bit 30 indicates buffer has already been returned to hardware
       if ( (fd_ >= 0) && ((meta & 0x40000000) == 0) ) {
          PyRogue_BEGIN_ALLOW_THREADS;
-         pgpRetIndex(fd_,meta & 0x3FFFFFFF); // Return to hardware
+         dmaRetIndex(fd_,meta & 0x3FFFFFFF); // Return to hardware
          PyRogue_END_ALLOW_THREADS;
       }
       decCounter(size);
