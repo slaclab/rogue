@@ -1,4 +1,5 @@
-To build the rogue base package you need the following:
+To build the rogue base package you need the following. Some of these packages
+may be available in a modern linux distribution. (see below).
 
 See Readme_zeromq.txt  for ZEROMQ  package requirements and installation
 See Readme_python2.txt for python2 package requirements and installation
@@ -12,12 +13,28 @@ use this file execute the following in your tcsh:
 
 > source setup_template.csh
 
-An RCE version is available as well
-
-> source setup_rce.csh
-
 If using a different shell the equivelent setup file for that shell 
 must be created.
+
+--------------------------------------
+Modern linux (archlinux RCE example)
+--------------------------------------
+In some cases on modern distributons the above packages can be 
+available through the package manager:
+
+> pacman -S python3
+> pacman -S python-pip
+> pacman -S boost
+> pacman -S zeromq
+> pacman -S pyqt4
+> pacman -S python-pyqt4
+
+> pip install pyzmq
+> pip install https://github.com/zeromq/pyre/archive/master.zip
+> pip install ipython
+> pip install PyYAML
+
+Epics will always need to be installed manually.
 
 --------------------------------------
 Building Rogue
