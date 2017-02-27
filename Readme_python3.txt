@@ -69,7 +69,6 @@ Zeromq wrappers for python (see Readme_zeromq.txt)
 
 > source /path/to/zeromq/settings.csh (or settings.sh)
 > pip3 install pyzmq
-> pip3 install https://github.com/zeromq/pyre/archive/master.zip
 
 Other python packages
 

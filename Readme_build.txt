@@ -30,7 +30,6 @@ available through the package manager:
 > pacman -S python-pyqt4
 
 > pip3 install pyzmq
-> pip3 install https://github.com/zeromq/pyre/archive/master.zip
 > pip3 install ipython
 > pip3 install PyYAML
 > pip3 install pcaspy
