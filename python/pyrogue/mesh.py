@@ -43,7 +43,7 @@ class MeshNode(threading.Thread):
         self._thread  = None
 
         self._mesh = pyre.Pyre(name=self._name,interface=iface)
-        self._mesh.set_verbose()
+        #self._mesh.set_verbose()
 
         if self._root:
             self._root.addVarListener(self._variableStatus)
