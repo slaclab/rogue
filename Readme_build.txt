@@ -29,10 +29,11 @@ available through the package manager:
 > pacman -S pyqt4
 > pacman -S python-pyqt4
 
-> pip install pyzmq
-> pip install https://github.com/zeromq/pyre/archive/master.zip
-> pip install ipython
-> pip install PyYAML
+> pip3 install pyzmq
+> pip3 install https://github.com/zeromq/pyre/archive/master.zip
+> pip3 install ipython
+> pip3 install PyYAML
+> pip3 install pcaspy
 
 Epics will always need to be installed manually.
 
