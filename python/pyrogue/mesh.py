@@ -31,7 +31,7 @@ class MeshNode(threading.Thread):
     Class to contain a Zyre node which acts as a client and/or server for 
     inter-connection between pyrogue nodes.
     """
-    def __init__(self,group,iface='eth0',root=None):
+    def __init__(self,group,iface=None,root=None):
         threading.Thread.__init__(self)
         self._root    = root
         self._group   = group
@@ -42,8 +42,7 @@ class MeshNode(threading.Thread):
         self._newTree = None
         self._thread  = None
 
-        self._mesh = pyre.Pyre(self._name)
-        self._mesh.set_interface(iface)
+        self._mesh = pyre.Pyre(name=self._name,interface=iface)
         self._mesh.set_verbose()
 
         if self._root:
