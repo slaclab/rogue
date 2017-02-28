@@ -39,6 +39,8 @@ class UdpRssiPack(object):
         self._rssi.application()._setSlave(self._pack.transport())
         self._pack.transport()._setSlave(self._rssi.application())
 
+        self._log = pyrogue.logInit(self)
+
         if wait:
             curr = int(time.time())
             last = curr
@@ -47,7 +49,7 @@ class UdpRssiPack(object):
                 time.sleep(.0001)
                 curr = int(time.time())
                 if last != curr:
-                    print(("UdpRssiPack(host=%s, port=%d) -> Establishing link ...") % (host,port))
+                    self._log.warning("host=%s, port=%d -> Establishing link ..." % (host,port))
                     last = curr
 
     def application(self,dest):

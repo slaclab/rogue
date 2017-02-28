@@ -33,6 +33,8 @@ class StreamSim(rogue.interfaces.stream.Master,
         rogue.interfaces.stream.Slave.__init__(self)
         threading.Thread.__init__(self)
 
+        self._log = pyrogue.logInit(self)
+
         ibPort = 5000 + dest + uid*100
         obPort = 6000 + dest + uid*100
         ocPort = 7000 + dest + uid*100
@@ -48,7 +50,7 @@ class StreamSim(rogue.interfaces.stream.Master,
         self._ocSock.connect("tcp://%s:%i" % (host,ocPort))
         self._sbSock.connect("tcp://%s:%i" % (host,sbPort))
 
-        print("StreamSim: Destination %i : id = %i, ib = %i, ob = %i, Code = %i, Side Data = %i" % 
+        self._log.info("Destination %i : id = %i, ib = %i, ob = %i, Code = %i, Side Data = %i" %
               (dest,uid,ibPort,obPort,ocPort,sbPort))
 
         self._ssi     = ssi
