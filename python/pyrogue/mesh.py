@@ -41,9 +41,12 @@ class MeshNode(threading.Thread):
         self._servers = {}
         self._newTree = None
         self._thread  = None
+        self._log = pyrogue.logInit(self,self._name)
+
+        self._log.debug("test")
 
         self._mesh = pyre.Pyre(name=self._name,interface=iface)
-        #self._mesh.set_verbose()
+        self._mesh.set_verbose()
 
         if self._root:
             self._root.addVarListener(self._variableStatus)
@@ -125,6 +128,7 @@ class MeshNode(threading.Thread):
 
                     # Structure request from client to server
                     elif cmd == 'get_structure':
+                        self._log.debug("Got structure request.")
                         self._intWhisper(sid,'structure_status',self._root.getYamlStructure(),
                                          self._root.getYamlVariables(False,['RW','RO']))
 
@@ -144,8 +148,10 @@ class MeshNode(threading.Thread):
 
                 # New node, request structure and status
                 elif typ == 'JOIN':
+                    self._log.debug("Saw join")
                     if e[3].decode('utf-8') == self._group:
                         if self._mesh.peer_header_value(sid,'server') == 'True':
+                            self._log.debug("Peer is server. Requesting structure.")
                             self._intWhisper(sid,'get_structure')
 
         self._mesh.leave(self._group)
