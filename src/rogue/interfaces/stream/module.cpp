@@ -46,6 +46,7 @@ void ris::setup_module() {
    ris::Frame::setup_python();
    ris::Master::setup_python();
    ris::Slave::setup_python();
+   ris::Pool::setup_python();
 
 }
 

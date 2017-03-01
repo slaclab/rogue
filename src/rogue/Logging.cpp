@@ -1,14 +1,12 @@
 /**
  *-----------------------------------------------------------------------------
- * Title      : Python Package
+ * Title      : Logging interface
  * ----------------------------------------------------------------------------
- * File       : package.cpp
- * Author     : Ryan Herbst, rherbst@slac.stanford.edu
- * Created    : 2016-08-08
- * Last update: 2016-08-08
+ * File       : Logging.cpp
+ * Created    : 2017-02-28
  * ----------------------------------------------------------------------------
  * Description:
- * Python package setup
+ * Logging interface for pyrogue
  * ----------------------------------------------------------------------------
  * This file is part of the rogue software platform. It is subject to 
  * the license terms in the LICENSE.txt file found in the top-level directory 
@@ -19,26 +17,31 @@
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
-
-#include <boost/python.hpp>
-#include <rogue/interfaces/module.h>
-#include <rogue/hardware/module.h>
-#include <rogue/utilities/module.h>
-#include <rogue/protocols/module.h>
-#include <rogue/GeneralError.h>
 #include <rogue/Logging.h>
+namespace bp = boost::python;
 
-BOOST_PYTHON_MODULE(rogue) {
+rogue::Logging::Logging(const char *cls) {
+   char name[100];
+   sprintf(name,"pyrogue.%s",cls);
 
-   PyEval_InitThreads();
+   PyGILState_STATE pyState = PyGILState_Ensure();
+   _logging = bp::import("logging");
+   _logger = _logging.attr("getLogger")(name);
+   PyGILState_Release(pyState);
+}
 
-   rogue::interfaces::setup_module();
-   rogue::protocols::setup_module();
-   rogue::hardware::setup_module();
-   rogue::utilities::setup_module();
+void rogue::Logging::log(const char *level, const char * fmt, ...) {
+   va_list args;
+   char buffer[256];
 
-   rogue::GeneralError::setup_python();
-   rogue::Logging::setup_python();
+   va_start(args,fmt);
+   vsprintf(buffer,fmt,args);
+   va_end(args);
 
-};
+   PyGILState_STATE pyState = PyGILState_Ensure();
+   _logger.attr(level)(buffer);
+   PyGILState_Release(pyState);
+}
+
+void rogue::Logging::setup_python() {}
 

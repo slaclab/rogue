@@ -25,6 +25,7 @@
 #include <rogue/GeneralError.h>
 #include <boost/make_shared.hpp>
 #include <rogue/common.h>
+#include <rogue/Logging.h>
 #include <sys/syscall.h>
 
 namespace rpr = rogue::protocols::rssi;
@@ -77,8 +78,8 @@ void rpr::Application::acceptFrame ( ris::FramePtr frame ) {
 
 //! Thread background
 void rpr::Application::runThread() {
-
-   printf("RSSI::Application PID=%i, TID=%li\n",getpid(),syscall(SYS_gettid));
+   Logging log("rssi.Application");
+   log.log("info","PID=%i, TID=%li",getpid(),syscall(SYS_gettid));
 
    try {
       while(1) {

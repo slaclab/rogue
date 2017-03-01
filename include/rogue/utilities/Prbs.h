@@ -51,9 +51,6 @@ namespace rogue {
             //! Min size
             uint32_t   minSize_;
 
-            //! Message enable
-            bool       enMessages_;
-
             //! RX Count
             boost::mutex rxMtx_;
 
@@ -153,9 +150,6 @@ namespace rogue {
 
             //! Reset counters
             void resetCount();
-
-            //! Enable messages
-            void enMessages(bool state);
 
             //! Accept a frame from master
             void acceptFrame ( boost::shared_ptr<rogue::interfaces::stream::Frame> frame );

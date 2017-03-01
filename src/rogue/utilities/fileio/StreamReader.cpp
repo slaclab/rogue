@@ -22,6 +22,7 @@
 #include <rogue/utilities/fileio/StreamReader.h>
 #include <rogue/interfaces/stream/Frame.h>
 #include <rogue/GeneralError.h>
+#include <rogue/Logging.h>
 #include <stdint.h>
 #include <boost/thread.hpp>
 #include <boost/make_shared.hpp>
@@ -99,16 +100,12 @@ bool ruf::StreamReader::nextFile() {
 
 //! Close a data file
 void ruf::StreamReader::close() {
-   printf("Closing\n");
    if ( readThread_ != NULL ) {
-      printf("Interrupt Thread\n");
       readThread_->interrupt();
-      printf("Join Thread\n");
       readThread_->join();
       delete readThread_;
       readThread_ = NULL;
    }
-   printf("Done\n");
 }
 
 //! Thread background
@@ -118,6 +115,7 @@ void ruf::StreamReader::runThread() {
    uint32_t flags;
    ris::FramePtr frame;
    ris::FrameIteratorPtr iter;
+   Logging log("streamReader");
 
    try {
       do {
@@ -125,7 +123,7 @@ void ruf::StreamReader::runThread() {
          // Read size of each frame
          while ( fd_ > 0 && read(fd_,&size,4) == 4 ) {
             if ( size == 0 ) {
-               printf("StreamReader::runThread -> Bad size read %i",size);
+               log.log("warning","Bad size read %i",size);
                ::close(fd_);
                fd_ = -1;
                return;
@@ -133,7 +131,7 @@ void ruf::StreamReader::runThread() {
 
             // Read flags
             if ( read(fd_,&flags,4) != 4 ) {
-               printf("StreamReader::runThread -> Failed to read flags");
+               log.log("warning","Failed to read flags");
                ::close(fd_);
                fd_ = -1;
                return;
@@ -147,7 +145,7 @@ void ruf::StreamReader::runThread() {
             iter = frame->startWrite(0,size-4);
             do {
                if ( (ret = read(fd_,iter->data(),iter->size())) != (int32_t)iter->size()) {
-                  printf("StreamReader::runThread -> Short read. Ret = %i Req = %i after %i bytes",ret,iter->size(),iter->total());
+                  log.log("warning","Short read. Ret = %i Req = %i after %i bytes",ret,iter->size(),iter->total());
                   ::close(fd_);
                   fd_ = -1;
                   frame->setError(0x1);
