@@ -29,8 +29,7 @@ class PrbsRx(pyrogue.Device):
         pyrogue.Device.__init__(self, name=name, description='PRBS Software Receiver', 
                                 size=0, memBase=None, offset=0)
 
-        self._prbs       = rogue.utilities.Prbs()
-        self._enMessages = False
+        self._prbs = rogue.utilities.Prbs()
 
         self.add(pyrogue.Variable(name='rxErrors', description='RX Error Count',
                                   bitSize=32, bitOffset=0, base='uint', mode='RO', pollInterval=1,
@@ -46,14 +45,6 @@ class PrbsRx(pyrogue.Device):
 
         self.add(pyrogue.Command(name='resetCount',description='Reset counters',
                                  function='dev._prbs.resetCount()'))
-
-        self.add(pyrogue.Variable(name='enMessages', description='Enable error messages',
-                                  bitSize=1, bitOffset=0, base='bool', mode='RW',
-                                  setFunction="""\
-                                                  dev._enMessages = value
-                                                  dev._prbs.enMessages(int(dev._enMessages))
-                                              """,
-                                  getFunction='value = dev._enMessages'))
 
     def _getStreamSlave(self):
         return self._prbs

@@ -55,7 +55,7 @@ namespace rogue {
                uint8_t * findSpace (uint32_t base, uint32_t size);
 
                // Logging
-               rogue::Logging * _log;
+               rogue::Logging * log_;
 
             public:
 
