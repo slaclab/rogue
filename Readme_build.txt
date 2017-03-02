@@ -1,13 +1,14 @@
 To build the rogue base package you need the following. Some of these packages
 may be available in a modern linux distribution. (see below).
 
-See Readme_zeromq.txt  for ZEROMQ  package requirements and installation
-See Readme_python2.txt for python2 package requirements and installation
-See Readme_python3.txt for python3 package requirements and installation
+See Readme_python2.txt for python2 package requirements and installation (not recommended)
+See Readme_python3.txt for python3 package requirements and installation (preferred)
 See Readme_boost.txt   for boost   package requirements and installation
+
+Optional packages for mesh networking and epics support:
+
+See Readme_zeromq.txt  for ZEROMQ  package requirements and installation (optional)
 See Readme_epics.txt   for epics   package requirements and installation
-
-
 
 --------------------------------------
 Modern linux (archlinux RCE example)
@@ -18,14 +19,14 @@ available through the package manager:
 > pacman -S python3
 > pacman -S python-pip
 > pacman -S boost
-> pacman -S zeromq
-> pacman -S pyqt4
-> pacman -S python-pyqt4
+> pacman -S zeromq (opional for mesh networking)
+> pacman -S pyqt4 (optional for GUI)
+> pacman -S python-pyqt4 (optional for gui)
 
-> pip3 install pyzmq
 > pip3 install ipython
 > pip3 install PyYAML
-> pip3 install pcaspy
+> pip3 install pyzmq (optional for mesh networking)
+> pip3 install pcaspy (optional for epics)
 
 Epics will always need to be installed manually.
 
