@@ -7,14 +7,7 @@ See Readme_python3.txt for python3 package requirements and installation
 See Readme_boost.txt   for boost   package requirements and installation
 See Readme_epics.txt   for epics   package requirements and installation
 
-To build this package you must first setup the environment. A
-template file setup_template.csh is provided as an example. To 
-use this file execute the following in your tcsh:
 
-> source setup_template.csh
-
-If using a different shell the equivelent setup file for that shell 
-must be created.
 
 --------------------------------------
 Modern linux (archlinux RCE example)
@@ -39,6 +32,14 @@ Epics will always need to be installed manually.
 --------------------------------------
 Building Rogue
 --------------------------------------
+To build this package you must first setup the environment. A
+template file setup_template.csh is provided as an example. To 
+use this file execute the following in your tcsh:
+
+> source setup_template.csh
+
+If using a different shell the equivelent setup file for that shell 
+must be created.
 
 Download the rogue package
 
