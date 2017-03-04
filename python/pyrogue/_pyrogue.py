@@ -285,6 +285,13 @@ class Node(object):
         """
         return self._root
 
+    def getNode(self, path):
+        """Find a node in the tree that has a particular path string"""
+        obj = self
+        for a in path.split('.')[1:]:
+            obj = getattr(obj, a)
+        return obj
+
     def _rootAttached(self):
         """Called once the root node is attached. Can override to do anything depends on the full tree existing"""
         pass
