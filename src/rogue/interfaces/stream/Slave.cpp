@@ -62,16 +62,17 @@ void ris::Slave::acceptFrame ( ris::FramePtr frame ) {
       Logging log(name_.c_str());
       char buffer[1000];
 
-      log.log("info","Got Size=%i, Data:",name_.c_str(),frame->getPayload());
+      log.log("info","Got Size=%i, Data:",frame->getPayload());
       sprintf(buffer,"     ");
 
       for (x=0; (x < debug_ && x < frame->getPayload()); x++) {
          frame->read(&val,x,1);
 
          sprintf(buffer + strlen(buffer)," 0x%.2x",val);
-         if (( (x+1) % 10 ) == 0) 
+         if (( (x+1) % 10 ) == 0) {
             log.log("info",buffer);
             sprintf(buffer,"     ");
+         }
       }
 
       if ( strlen(buffer) > 5 ) log.log("info",buffer);
