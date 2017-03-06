@@ -74,7 +74,7 @@ void rhr::MapMemory::addMap(uint32_t address, uint32_t size) {
          return;
       }
       maps_.push_back(map);
-      log_->log("debug","Mapped address 0x%x with size %i to pointer 0x%x",map.base,map.size,map.ptr);
+      log_->log("info","Mapped address 0x%x with size %i to pointer 0x%x",map.base,map.size,map.ptr);
    }
 }
 
