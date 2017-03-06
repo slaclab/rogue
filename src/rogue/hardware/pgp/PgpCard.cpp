@@ -308,8 +308,8 @@ void rhp::PgpCard::retBuffer(uint8_t * data, uint32_t meta, uint32_t size) {
       decCounter(size);
    }
 
-   // Buffer is allocated from Slave class
-   else Slave::retBuffer(data,meta,size);
+   // Buffer is allocated from Pool class
+   else Pool::retBuffer(data,meta,size);
 }
 
 //! Run thread
