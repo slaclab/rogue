@@ -22,6 +22,8 @@ Change line 542 to:
 includes ?= $(prefix)/include/python$(version)m ;
 (adding m after version)
 
+Make sure before running this step you have your path setup with the python3 bin and lib directory.
+
 > ./bootstrap --prefix=/path/to/boost/1.62.0_p3/ --with-python=python3
 > ./b2 
 > ./b2 install
