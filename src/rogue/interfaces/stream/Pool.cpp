@@ -26,7 +26,7 @@
 #include <rogue/interfaces/stream/Frame.h>
 #include <rogue/GeneralError.h>
 #include <boost/make_shared.hpp>
-#include <rogue/common.h>
+#include <rogue/GilRelease.h>
 
 namespace ris = rogue::interfaces::stream;
 namespace bp  = boost::python;
@@ -80,18 +80,15 @@ ris::FramePtr ris::Pool::acceptReq (uint32_t size, bool zeroCopyEn, uint32_t max
  * Called when this instance is marked as owner of a Buffer entity
  */
 void ris::Pool::retBuffer(uint8_t * data, uint32_t meta, uint32_t rawSize) {
-   PyRogue_BEGIN_ALLOW_THREADS;
-   {
-      boost::lock_guard<boost::mutex> lock(mtx_);
+   rogue::GilRelease noGil;
+   boost::lock_guard<boost::mutex> lock(mtx_);
 
-      if ( data != NULL ) {
-         if ( rawSize == fixedSize_ && maxCount_ > dataQ_.size() ) dataQ_.push(data);
-         else free(data);
-      }
-      allocBytes_ -= rawSize;
-      allocCount_--;
+   if ( data != NULL ) {
+      if ( rawSize == fixedSize_ && maxCount_ > dataQ_.size() ) dataQ_.push(data);
+      else free(data);
    }
-   PyRogue_END_ALLOW_THREADS;
+   allocBytes_ -= rawSize;
+   allocCount_--;
 }
 
 void ris::Pool::setup_python() {
@@ -121,34 +118,28 @@ ris::BufferPtr ris::Pool::allocBuffer ( uint32_t size, uint32_t *total ) {
    bAlloc = size;
    bSize  = size;
 
-   PyRogue_BEGIN_ALLOW_THREADS;
-   {
-      boost::lock_guard<boost::mutex> lock(mtx_);
-      if ( fixedSize_ > 0 ) {
-         bAlloc = fixedSize_;
-         if ( bSize > bAlloc ) bSize = bAlloc;
-      }
-
-      if ( dataQ_.size() > 0 ) {
-         data = dataQ_.front();
-         dataQ_.pop();
-      }
-      else if ( (data = (uint8_t *)malloc(bAlloc)) == NULL ) err = true;
-
-      if ( ! err ) {
-         // Only use lower 24 bits of meta. 
-         // Upper 8 bits may have special meaning to sub-class
-         meta = allocMeta_;
-         allocMeta_++;
-         allocMeta_ &= 0xFFFFFF;
-         allocBytes_ += bAlloc;
-         allocCount_++;
-         if ( total != NULL ) *total += bSize;
-      }
+   rogue::GilRelease noGil;
+   boost::lock_guard<boost::mutex> lock(mtx_);
+   if ( fixedSize_ > 0 ) {
+      bAlloc = fixedSize_;
+      if ( bSize > bAlloc ) bSize = bAlloc;
    }
-   PyRogue_END_ALLOW_THREADS;
-   if (err) throw(rogue::GeneralError::allocation("Pool::allocBuffer",bAlloc));
 
+   if ( dataQ_.size() > 0 ) {
+      data = dataQ_.front();
+      dataQ_.pop();
+   }
+   else if ( (data = (uint8_t *)malloc(bAlloc)) == NULL ) 
+      throw(rogue::GeneralError::allocation("Pool::allocBuffer",bAlloc));
+
+   // Only use lower 24 bits of meta. 
+   // Upper 8 bits may have special meaning to sub-class
+   meta = allocMeta_;
+   allocMeta_++;
+   allocMeta_ &= 0xFFFFFF;
+   allocBytes_ += bAlloc;
+   allocCount_++;
+   if ( total != NULL ) *total += bSize;
    return(ris::Buffer::create(shared_from_this(),data,meta,bSize,bAlloc));
 }
 
@@ -156,27 +147,21 @@ ris::BufferPtr ris::Pool::allocBuffer ( uint32_t size, uint32_t *total ) {
 ris::BufferPtr ris::Pool::createBuffer( void * data, uint32_t meta, uint32_t size, uint32_t alloc) {
    ris::BufferPtr buff;
 
-   PyRogue_BEGIN_ALLOW_THREADS;
-   {
-      boost::lock_guard<boost::mutex> lock(mtx_);
+   rogue::GilRelease noGil;
+   boost::lock_guard<boost::mutex> lock(mtx_);
 
-      buff = ris::Buffer::create(shared_from_this(),data,meta,size,alloc);
+   buff = ris::Buffer::create(shared_from_this(),data,meta,size,alloc);
 
-      allocBytes_ += alloc;
-      allocCount_++;
-   }
-   PyRogue_END_ALLOW_THREADS;
+   allocBytes_ += alloc;
+   allocCount_++;
    return(buff);
 }
 
 //! Track buffer deletion
 void ris::Pool::decCounter( uint32_t alloc) {
-   PyRogue_BEGIN_ALLOW_THREADS;
-   {
-      boost::lock_guard<boost::mutex> lock(mtx_);
-      allocBytes_ -= alloc;
-      allocCount_--;
-   }
-   PyRogue_END_ALLOW_THREADS;
+   rogue::GilRelease noGil;
+   boost::lock_guard<boost::mutex> lock(mtx_);
+   allocBytes_ -= alloc;
+   allocCount_--;
 }
 

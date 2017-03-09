@@ -49,8 +49,8 @@ ris::Slave::~Slave() { }
 
 //! Set debug message size
 void ris::Slave::setDebug(uint32_t debug, std::string name) {
-   name_  = name;
    debug_ = debug;
+   log_   = new Logging(name.c_str());
 }
 
 //! Accept a frame from master
@@ -59,10 +59,9 @@ void ris::Slave::acceptFrame ( ris::FramePtr frame ) {
    uint8_t  val;
 
    if ( debug_ > 0 ) {
-      Logging log(name_.c_str());
       char buffer[1000];
 
-      log.log("info","Got Size=%i, Data:",frame->getPayload());
+      log_->log("info","Got Size=%i, Data:",frame->getPayload());
       sprintf(buffer,"     ");
 
       for (x=0; (x < debug_ && x < frame->getPayload()); x++) {
@@ -70,12 +69,12 @@ void ris::Slave::acceptFrame ( ris::FramePtr frame ) {
 
          sprintf(buffer + strlen(buffer)," 0x%.2x",val);
          if (( (x+1) % 10 ) == 0) {
-            log.log("info",buffer);
+            log_->log("info",buffer);
             sprintf(buffer,"     ");
          }
       }
 
-      if ( strlen(buffer) > 5 ) log.log("info",buffer);
+      if ( strlen(buffer) > 5 ) log_->log("info",buffer);
    }
 }
 

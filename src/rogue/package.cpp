@@ -27,6 +27,7 @@
 #include <rogue/protocols/module.h>
 #include <rogue/GeneralError.h>
 #include <rogue/Logging.h>
+#include <rogue/GilRelease.h>
 
 BOOST_PYTHON_MODULE(rogue) {
 
@@ -39,6 +40,7 @@ BOOST_PYTHON_MODULE(rogue) {
 
    rogue::GeneralError::setup_python();
    rogue::Logging::setup_python();
+   rogue::GilRelease::setup_python();
 
 };
 

@@ -18,6 +18,8 @@
  * ----------------------------------------------------------------------------
 **/
 #include <rogue/Logging.h>
+#include <sys/syscall.h>
+
 namespace bp = boost::python;
 
 rogue::Logging::Logging(const char *cls) {
@@ -38,9 +40,13 @@ void rogue::Logging::log(const char *level, const char * fmt, ...) {
    vsprintf(buffer,fmt,args);
    va_end(args);
 
+   printf("Grabbing lock %li\n",syscall(SYS_gettid));
    PyGILState_STATE pyState = PyGILState_Ensure();
+   printf("About to log %li: %s\n",syscall(SYS_gettid),buffer);
    _logger.attr(level)(buffer);
+   printf("Logged %li\n",syscall(SYS_gettid));
    PyGILState_Release(pyState);
+   printf("Released lock %li\n",syscall(SYS_gettid));
 }
 
 void rogue::Logging::setup_python() {}

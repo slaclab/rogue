@@ -1531,23 +1531,30 @@ class Root(rogue.interfaces.stream.Master,Device):
     @command(order=7, name='writeAll', description='Write all values to the hardware')
     def _write(self,dev=None,cmd=None,arg=None):
         """Write all blocks"""
+        self._log.info("Start root write")
         try:
             self._backgroundTransaction(rogue.interfaces.memory.Write)
+            self._log.info("Verify root read")
             self._backgroundTransaction(rogue.interfaces.memory.Verify)
+            self._log.info("Check root read")
             self._checkTransaction(update=False)
         except Exception as e:
             self._log.error(e)
+        self._log.info("Done root write")
 
     @command(order=6, name="readAll", description='Read all values from the hardware')
     def _read(self,dev=None,cmd=None,arg=None):
         """Read all blocks"""
+        self._log.info("Start root read")
         self._initUpdatedVars()
         try:
             self._backgroundTransaction(rogue.interfaces.memory.Read)
+            self._log.info("Check root read")
             self._checkTransaction(update=True)
         except Exception as e:
             self._log.error(e)
         self._doneUpdatedVars()
+        self._log.info("Done root read")
 
     @command(order=0, name='writeConfig', base='string', description='Write configuration to passed filename in YAML format')
     def _writeConfig(self,dev,cmd,arg):

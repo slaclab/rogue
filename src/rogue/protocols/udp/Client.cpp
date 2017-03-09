@@ -23,7 +23,7 @@
 #include <rogue/interfaces/stream/Buffer.h>
 #include <rogue/GeneralError.h>
 #include <boost/make_shared.hpp>
-#include <rogue/common.h>
+#include <rogue/GilRelease.h>
 #include <rogue/Logging.h>
 #include <sys/syscall.h>
 
@@ -93,7 +93,6 @@ void rpu::Client::setTimeout(uint32_t timeout) {
 void rpu::Client::acceptFrame ( ris::FramePtr frame ) {
    ris::BufferPtr   buff;
    int32_t          res;
-   int32_t          sres;
    fd_set           fds;
    struct timeval   tout;
    uint32_t         x;
@@ -108,6 +107,9 @@ void rpu::Client::acceptFrame ( ris::FramePtr frame ) {
    msg.msg_control    = NULL;
    msg.msg_controllen = 0;
    msg.msg_flags      = 0;
+
+   rogue::GilRelease noGil;
+   boost::lock_guard<boost::mutex> lock(mtx_);
 
    // Go through each buffer in the frame
    for (x=0; x < frame->getCount(); x++) {
@@ -130,22 +132,11 @@ void rpu::Client::acceptFrame ( ris::FramePtr frame ) {
          tout.tv_sec=(timeout_>0)?(timeout_ / 1000000):0;
          tout.tv_usec=(timeout_>0)?(timeout_ % 1000000):10000;
 
-         PyRogue_BEGIN_ALLOW_THREADS;
-         {
-            boost::lock_guard<boost::mutex> lock(mtx_);
-
-            if ( (sres = select(fd_+1,NULL,&fds,NULL,&tout)) > 0 ) 
-               res = sendmsg(fd_,&msg,0);
-            else res = 0;
+         if ( select(fd_+1,NULL,&fds,NULL,&tout) <= 0 ) {
+            if ( timeout_ > 0 ) throw(rogue::GeneralError::timeout("Client::acceptFrame",timeout_));
+            res = 0;
          }
-         PyRogue_END_ALLOW_THREADS;
-
-         // Select timeout
-         if ( sres <= 0 && timeout_ > 0 ) 
-            throw(rogue::GeneralError::timeout("Client::acceptFrame",timeout_));
-
-         // Error
-         if ( res < 0 ) 
+         else if ( (res = sendmsg(fd_,&msg,0)) < 0 )
             throw(rogue::GeneralError("Client::acceptFrame","UDP Write Call Failed"));
       }
 

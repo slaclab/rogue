@@ -1,14 +1,12 @@
 /**
  *-----------------------------------------------------------------------------
- * Title      : Common Rogue Functions
+ * Title      : Release GIL within scope.
  * ----------------------------------------------------------------------------
- * File       : common.h
- * Author     : Ryan Herbst, rherbst@slac.stanford.edu
- * Created    : 2016-10-07
- * Last update: 2016-10-07
+ * File       : GilRelease.h
+ * Created    : 2017-02-28
  * ----------------------------------------------------------------------------
  * Description:
- * Common Rogue Functions and macros
+ * Release GIL for the scope of this class.
  * ----------------------------------------------------------------------------
  * This file is part of the rogue software platform. It is subject to 
  * the license terms in the LICENSE.txt file found in the top-level directory 
@@ -19,15 +17,24 @@
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
-#ifndef __ROGUE_COMMON_H__
-#define __ROGUE_COMMON_H__
-
+#ifndef __ROGUE_GIL_RELEASE_H__
+#define __ROGUE_GIL_RELEASE_H__
 #include <boost/python.hpp>
+#include <stdint.h>
 
-PyThreadState * PyRogue_SaveThread();
-void PyRogue_RestoreThread(PyThreadState * state);
+namespace rogue {
 
-#define PyRogue_BEGIN_ALLOW_THREADS { PyThreadState *_save; _save = PyRogue_SaveThread();
-#define PyRogue_END_ALLOW_THREADS PyRogue_RestoreThread(_save); }
+   //! Logging
+   class GilRelease {
+         PyThreadState *state_;
+      public:
+         GilRelease();
+         ~GilRelease();
+         void acquire();
+         void release();
+         static void setup_python();
+   };
+}
 
 #endif
+

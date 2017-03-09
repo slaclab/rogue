@@ -28,7 +28,7 @@
 #include <rogue/GeneralError.h>
 #include <boost/make_shared.hpp>
 #include <boost/pointer_cast.hpp>
-#include <rogue/common.h>
+#include <rogue/GilRelease.h>
 #include <rogue/Logging.h>
 #include <sys/syscall.h>
 #include <math.h>
@@ -161,9 +161,8 @@ void rpr::Controller::transportRx( ris::FramePtr frame ) {
       stCond_.notify_all();
 
       if ( !head->nul ) {
-         PyRogue_BEGIN_ALLOW_THREADS;
+         rogue::GilRelease noGil;
          appQueue_.push(head);
-         PyRogue_END_ALLOW_THREADS;
       }
    }
 
@@ -173,9 +172,8 @@ void rpr::Controller::transportRx( ris::FramePtr frame ) {
       lastSeqRx_ = head->sequence;
       nextSeqRx_ = lastSeqRx_ + 1;
 
-      PyRogue_BEGIN_ALLOW_THREADS;
+      rogue::GilRelease noGil;
       stQueue_.push(head);
-      PyRogue_END_ALLOW_THREADS;
    }
 }
 
@@ -185,11 +183,9 @@ ris::FramePtr rpr::Controller::applicationTx() {
    ris::FramePtr  frame;
    rpr::HeaderPtr head;
 
+   rogue::GilRelease noGil;
    while(!frame) {
-
-      PyRogue_BEGIN_ALLOW_THREADS;
       head = appQueue_.pop();
-      PyRogue_END_ALLOW_THREADS;
       stCond_.notify_all();
 
       frame = head->getFrame();
@@ -225,24 +221,20 @@ void rpr::Controller::applicationRx ( ris::FramePtr frame ) {
    // Connection is closed
    if ( state_ != StOpen ) return;
 
-   PyRogue_BEGIN_ALLOW_THREADS;
+   rogue::GilRelease noGil;
 
    // Wait while busy either by flow control or buffer starvation
    while ( txListCount_ >= remMaxBuffers_ ) {
       usleep(10);
-      if ( timeout_ > 0 && timePassed(&startTime,timeout_,true) ) err = true;
+      if ( timeout_ > 0 && timePassed(&startTime,timeout_,true) ) 
+         throw(rogue::GeneralError::timeout("rssi::Controller::applicationRx",timeout_));
    }
-   if ( ! err ) {
 
-      // Transmit
-      boost::unique_lock<boost::mutex> lock(txMtx_);
-      transportTx(head,true);
-      lock.unlock();
-
-      PyRogue_END_ALLOW_THREADS;
-      stCond_.notify_all();
-   }
-   if (err) throw(rogue::GeneralError::timeout("rssi::Controller::applicationRx",timeout_));
+   // Transmit
+   boost::unique_lock<boost::mutex> lock(txMtx_);
+   transportTx(head,true);
+   lock.unlock();
+   stCond_.notify_all();
 }
 
 //! Get state

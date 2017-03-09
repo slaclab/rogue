@@ -24,7 +24,7 @@
 #include <rogue/protocols/packetizer/Controller.h>
 #include <rogue/GeneralError.h>
 #include <boost/make_shared.hpp>
-#include <rogue/common.h>
+#include <rogue/GilRelease.h>
 
 namespace rpp = rogue::protocols::packetizer;
 namespace ris = rogue::interfaces::stream;

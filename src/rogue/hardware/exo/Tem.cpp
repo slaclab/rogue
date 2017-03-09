@@ -26,7 +26,7 @@
 #include <rogue/interfaces/stream/Buffer.h>
 #include <rogue/GeneralError.h>
 #include <boost/make_shared.hpp>
-#include <rogue/common.h>
+#include <rogue/GilRelease.h>
 
 namespace rhe = rogue::hardware::exo;
 namespace ris = rogue::interfaces::stream;
@@ -45,16 +45,16 @@ rhe::Tem::Tem(std::string path, bool data) {
    isData_  = data;
    timeout_ = 1000000;
 
+   rogue::GilRelease noGil;
+
    if ( (fd_ = ::open(path.c_str(), O_RDWR)) < 0 )
       throw(rogue::GeneralError::open("Tem::Tem",path.c_str()));
 
-   PyRogue_BEGIN_ALLOW_THREADS;
    if ( isData_ ) {
       if ( (res = temEnableDataRead(fd_)) < 0 ) ::close(fd_);
    } else {
       if ((res =  temEnableCmdRead(fd_)) < 0 ) ::close(fd_);
    }
-   PyRogue_END_ALLOW_THREADS;
 
    if ( res < 0 ) throw(rogue::GeneralError::dest("Tem::Tem",path.c_str(),1));
 
@@ -64,14 +64,13 @@ rhe::Tem::Tem(std::string path, bool data) {
 
 //! Close the device
 rhe::Tem::~Tem() {
+   rogue::GilRelease noGil;
 
    // Stop read thread
    thread_->interrupt();
    thread_->join();
 
-   PyRogue_BEGIN_ALLOW_THREADS;
    ::close(fd_);
-   PyRogue_END_ALLOW_THREADS;
 }
 
 //! Set timeout for frame transmits in microseconds
@@ -105,6 +104,8 @@ void rhe::Tem::acceptFrame ( ris::FramePtr frame ) {
 
    buff = frame->getBuffer(0);
 
+   rogue::GilRelease noGil;
+
    // Keep trying since select call can fire 
    // but write fails because we did not win the buffer lock
    do {
@@ -117,21 +118,15 @@ void rhe::Tem::acceptFrame ( ris::FramePtr frame ) {
       tout.tv_sec=(timeout_ > 0)?(timeout_ / 1000000):0;
       tout.tv_usec=(timeout_ > 0)?(timeout_ % 1000000):10000;
 
-      PyRogue_BEGIN_ALLOW_THREADS;
-
-      if ( (sres = select(fd_+1,NULL,&fds,NULL,&tout)) > 0 ) {
-
+      if ( select(fd_+1,NULL,&fds,NULL,&tout) <= 0 ) {
+         if ( timeout_ > 0) throw(rogue::GeneralError::timeout("Tem::acceptFrame",timeout_));
+         res = 0;
+      }
+      else {
          // Write
-         res = temWriteCmd(fd_, buff->getRawData(), buff->getCount());
-      } else res = 0;
-      PyRogue_END_ALLOW_THREADS;
-
-      // Select timeout
-      if ( sres <= 0 && timeout_ > 0) 
-         throw(rogue::GeneralError::timeout("Tem::acceptFrame",timeout_));
-
-      // Error
-      if ( res < 0 ) throw(rogue::GeneralError("Tem::acceptFrame","Tem Write Call Failed"));
+         if ( (res = temWriteCmd(fd_, buff->getRawData(), buff->getCount())) < 0 ) 
+            throw(rogue::GeneralError("Tem::acceptFrame","Tem Write Call Failed"));
+      }
    }
 
    // Exit out if return flag was set false

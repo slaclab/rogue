@@ -23,7 +23,7 @@
 #include <rogue/interfaces/stream/Slave.h>
 #include <rogue/interfaces/stream/Master.h>
 #include <rogue/interfaces/stream/Frame.h>
-#include <rogue/common.h>
+#include <rogue/GilRelease.h>
 #include <boost/python.hpp>
 #include <boost/make_shared.hpp>
 
@@ -48,35 +48,26 @@ ris::Master::~Master() {
 
 //! Set primary slave, used for buffer request forwarding
 void ris::Master::setSlave ( boost::shared_ptr<interfaces::stream::Slave> slave ) {
-   PyRogue_BEGIN_ALLOW_THREADS;
-   {
-      boost::lock_guard<boost::mutex> lock(slaveMtx_);
-      slaves_.push_back(slave);
-      primary_ = slave;
-   }
-   PyRogue_END_ALLOW_THREADS;
+   rogue::GilRelease noGil;
+   boost::lock_guard<boost::mutex> lock(slaveMtx_);
+   slaves_.push_back(slave);
+   primary_ = slave;
 }
 
 //! Add secondary slave
 void ris::Master::addSlave ( ris::SlavePtr slave ) {
-   PyRogue_BEGIN_ALLOW_THREADS;
-   {
-      boost::lock_guard<boost::mutex> lock(slaveMtx_);
-      slaves_.push_back(slave);
-   }
-   PyRogue_END_ALLOW_THREADS;
+   rogue::GilRelease noGil;
+   boost::lock_guard<boost::mutex> lock(slaveMtx_);
+   slaves_.push_back(slave);
 }
 
 //! Request frame from primary slave
 ris::FramePtr ris::Master::reqFrame ( uint32_t size, bool zeroCopyEn, uint32_t maxBuffSize ) {
    ris::SlavePtr slave;
 
-   PyRogue_BEGIN_ALLOW_THREADS;
-   {
-      boost::lock_guard<boost::mutex> lock(slaveMtx_);
-      slave = primary_;
-   }
-   PyRogue_END_ALLOW_THREADS;
+   rogue::GilRelease noGil;
+   boost::lock_guard<boost::mutex> lock(slaveMtx_);
+   slave = primary_;
    return(slave->acceptReq(size,zeroCopyEn,maxBuffSize));
 }
 
@@ -86,12 +77,11 @@ void ris::Master::sendFrame ( FramePtr frame) {
 
    std::vector<ris::SlavePtr> slaves;
 
-   PyRogue_BEGIN_ALLOW_THREADS;
    {
+      rogue::GilRelease noGil;
       boost::lock_guard<boost::mutex> lock(slaveMtx_);
       slaves = slaves_;
    }
-   PyRogue_END_ALLOW_THREADS;
 
    for (x=0; x < slaves_.size(); x++) 
       slaves[x]->acceptFrame(frame);

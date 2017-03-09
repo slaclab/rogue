@@ -24,7 +24,7 @@
 #include <rogue/protocols/packetizer/Transport.h>
 #include <rogue/GeneralError.h>
 #include <boost/make_shared.hpp>
-#include <rogue/common.h>
+#include <rogue/GilRelease.h>
 #include <rogue/Logging.h>
 #include <sys/syscall.h>
 

@@ -29,6 +29,7 @@
 #include <boost/python.hpp>
 #include <boost/thread.hpp>
 #include <rogue/interfaces/stream/Pool.h>
+#include <rogue/Logging.h>
 
 namespace rogue {
    namespace interfaces {
@@ -49,7 +50,7 @@ namespace rogue {
 
                //! Debug control
                uint32_t    debug_;
-               std::string name_;
+               rogue::Logging * log_;
 
             public:
 

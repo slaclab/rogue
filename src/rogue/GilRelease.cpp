@@ -1,14 +1,12 @@
 /**
  *-----------------------------------------------------------------------------
- * Title      : Common Rogue Functions
+ * Title      : Release GIL within scope.
  * ----------------------------------------------------------------------------
- * File       : common.cpp
- * Author     : Ryan Herbst, rherbst@slac.stanford.edu
- * Created    : 2016-08-08
- * Last update: 2016-08-08
+ * File       : GilRelease.cpp
+ * Created    : 2017-02-28
  * ----------------------------------------------------------------------------
  * Description:
- * Common rogue functions
+ * Release GIL for the scope of this class.
  * ----------------------------------------------------------------------------
  * This file is part of the rogue software platform. It is subject to 
  * the license terms in the LICENSE.txt file found in the top-level directory 
@@ -19,18 +17,33 @@
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
-
-#include <rogue/common.h>
+#include <boost/python.hpp>
+#include <stdint.h>
+#include <rogue/GilRelease.h>
 
 extern PyThreadState * _PyThreadState_Current;
 
-PyThreadState * PyRogue_SaveThread() {
-   PyThreadState * tstate = _PyThreadState_Current;
-   if ( tstate && (tstate == PyGILState_GetThisThreadState()) ) return(PyEval_SaveThread());
-   else return(NULL);
+rogue::GilRelease::GilRelease() {
+   state_ = NULL;
+   release();
 }
 
-void PyRogue_RestoreThread(PyThreadState * state) {
-   if ( state != NULL ) PyEval_RestoreThread(state);
+rogue::GilRelease::~GilRelease() {
+   acquire();
 }
+
+void rogue::GilRelease::acquire() {
+   if ( state_ != NULL ) PyEval_RestoreThread(state_);
+   state_ = NULL;
+}
+
+void rogue::GilRelease::release() {
+   PyThreadState * tstate = _PyThreadState_Current;
+   if ( tstate && (tstate == PyGILState_GetThisThreadState()) ) 
+      state_ = PyEval_SaveThread();
+   else
+      state_ = NULL;
+}
+
+void rogue::GilRelease::setup_python() {}
 
