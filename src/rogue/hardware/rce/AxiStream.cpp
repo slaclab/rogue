@@ -220,7 +220,7 @@ void rhr::AxiStream::acceptFrame ( ris::FramePtr frame ) {
             }
             else {
                // Write with buffer copy
-               if ( res = axisWrite(fd_, buff->getRawData(), buff->getCount(), fuser, luser, dest_) < 0 ) {
+               if ( (res = axisWrite(fd_, buff->getRawData(), buff->getCount(), fuser, luser, dest_)) < 0 ) {
                   throw(rogue::GeneralError("AxiStream::acceptFrame","AXIS Write Call Failed"));
                }
             }

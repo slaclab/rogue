@@ -1390,7 +1390,7 @@ class Root(rogue.interfaces.stream.Master,Device):
         handler.setLevel(logging.ERROR)
         handler.setFormatter(formatter)
         self._logger = logging.getLogger('pyrogue')
-        self._logger.addHandler(handler)
+        #self._logger.addHandler(handler)
 
         # Keep of list of errors, exposed as a variable
         self._systemLog = ""

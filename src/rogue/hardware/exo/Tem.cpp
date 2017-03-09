@@ -98,7 +98,6 @@ rhe::PciStatusPtr rhe::Tem::getPciStatus() {
 void rhe::Tem::acceptFrame ( ris::FramePtr frame ) {
    ris::BufferPtr   buff;
    int32_t          res;
-   int32_t          sres;
    fd_set           fds;
    struct timeval   tout;
 

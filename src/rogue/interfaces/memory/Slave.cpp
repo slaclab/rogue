@@ -72,7 +72,7 @@ rim::MasterPtr rim::Slave::getMaster(uint32_t index) {
 bool rim::Slave::validMaster(uint32_t index) {
    rogue::GilRelease noGil;
    boost::lock_guard<boost::mutex> lock(mtx_);
-   if ( masterMap_.find(index) != masterMap_.end() ) return(true):
+   if ( masterMap_.find(index) != masterMap_.end() ) return(true);
    else return(false);
 }
 

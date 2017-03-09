@@ -113,7 +113,6 @@ ris::BufferPtr ris::Pool::allocBuffer ( uint32_t size, uint32_t *total ) {
    uint32_t  bAlloc;
    uint32_t  bSize;
    uint32_t  meta = 0;
-   bool err = false;
 
    bAlloc = size;
    bSize  = size;

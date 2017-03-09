@@ -43,7 +43,6 @@ rhp::PgpCardPtr rhp::PgpCard::create (std::string path, uint32_t lane, uint32_t 
 
 //! Creator
 rhp::PgpCard::PgpCard ( std::string path, uint32_t lane, uint32_t vc ) {
-   int32_t  res;
    uint8_t  mask[DMA_MASK_SIZE];
 
    lane_       = lane;
@@ -149,7 +148,6 @@ void rhp::PgpCard::sendOpCode(uint8_t code) {
 //! Generate a buffer. Called from master
 ris::FramePtr rhp::PgpCard::acceptReq ( uint32_t size, bool zeroCopyEn, uint32_t maxBuffSize ) {
    int32_t          res;
-   int32_t          sres;
    fd_set           fds;
    struct timeval   tout;
    uint32_t         alloc;
@@ -213,7 +211,6 @@ ris::FramePtr rhp::PgpCard::acceptReq ( uint32_t size, bool zeroCopyEn, uint32_t
 void rhp::PgpCard::acceptFrame ( ris::FramePtr frame ) {
    ris::BufferPtr buff;
    int32_t          res;
-   int32_t          sres;
    fd_set           fds;
    struct timeval   tout;
    uint32_t         meta;
@@ -270,7 +267,7 @@ void rhp::PgpCard::acceptFrame ( ris::FramePtr frame ) {
             }
             else {
                // Write with buffer copy
-               if ( (res = pgpWrite(fd_, buff->getRawData(), buff->getCount(), lane_, vc_, cont) < 0 ) 
+               if ( (res = pgpWrite(fd_, buff->getRawData(), buff->getCount(), lane_, vc_, cont) < 0 ) )
                   throw(rogue::GeneralError("PgpCard::acceptFrame","PGP Write Call Failed"));
             } 
          }

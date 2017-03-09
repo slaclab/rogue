@@ -22,18 +22,49 @@
 #include <exception>
 #include <boost/python.hpp>
 #include <stdint.h>
+#include <boost/thread.hpp>
 
 namespace rogue {
 
    //! Logging
    class Logging {
-         boost::python::object _logging;
-         boost::python::object _logger;
+         //boost::python::object _logging;
+         //boost::python::object _logger;
+      
+         //! Logging level 
+         static uint32_t level_; 
+
+         //! Logging level lock
+         static boost::mutex levelMtx_;
+         
+         char * name_;
+
+         void intLog ( uint32_t level, const char *format, va_list args);
+         
       public:
-         Logging (const char *cls);
-         void log(const char *level, const char * fmt, ...);
+
+         static const uint32_t Critical = 50;
+         static const uint32_t Error    = 40;
+         static const uint32_t Warning  = 30;
+         static const uint32_t Info     = 20;
+         static const uint32_t Debug    = 10;
+
+         Logging (const char *name);
+         ~Logging();
+
+         static void setLevel(uint32_t level);
+
+         void log(uint32_t level, const char * fmt, ...);
+         void critical(const char * fmt, ...);
+         void error(const char * fmt, ...);
+         void warning(const char * fmt, ...);
+         void info(const char * fmt, ...);
+         void debug(const char * fmt, ...);
+
          static void setup_python();
    };
+
+   typedef boost::shared_ptr<rogue::Logging> LoggingPtr;
 }
 
 #endif

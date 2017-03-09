@@ -154,7 +154,7 @@ void rpu::Client::runThread() {
    struct timeval tout;
 
    rogue::Logging log("udp.Client");
-   log.log("info","PID=%i, TID=%li",getpid(),syscall(SYS_gettid));
+   log.info("PID=%i, TID=%li",getpid(),syscall(SYS_gettid));
 
    // Preallocate frame
    frame = ris::Pool::acceptReq(maxSize_,false,maxSize_);

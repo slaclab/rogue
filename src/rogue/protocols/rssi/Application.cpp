@@ -79,7 +79,7 @@ void rpr::Application::acceptFrame ( ris::FramePtr frame ) {
 //! Thread background
 void rpr::Application::runThread() {
    Logging log("rssi.Application");
-   log.log("info","PID=%i, TID=%li",getpid(),syscall(SYS_gettid));
+   log.info("PID=%i, TID=%li",getpid(),syscall(SYS_gettid));
 
    try {
       while(1) {

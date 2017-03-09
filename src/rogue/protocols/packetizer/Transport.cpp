@@ -86,7 +86,7 @@ void rpp::Transport::acceptFrame ( ris::FramePtr frame ) {
 //! Thread background
 void rpp::Transport::runThread() {
    Logging log("packetizer.Transport");
-   log.log("info","PID=%i, TID=%li",getpid(),syscall(SYS_gettid));
+   log.info("PID=%i, TID=%li",getpid(),syscall(SYS_gettid));
 
    try {
       while(1) {

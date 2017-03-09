@@ -84,7 +84,7 @@ void rpp::Application::pushFrame( ris::FramePtr frame ) {
 //! Thread background
 void rpp::Application::runThread() {
    Logging log("packetizer.Application");
-   log.log("info","PID=%i, TID=%li",getpid(),syscall(SYS_gettid));
+   log.info("PID=%i, TID=%li",getpid(),syscall(SYS_gettid));
 
    try {
       while(1) {

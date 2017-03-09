@@ -235,7 +235,7 @@ void ru::Prbs::genFrame (uint32_t size) {
 
    // Verify size first
    if ((( size % byteWidth_ ) != 0) || size < minSize_ ) {
-      txLog_->log("warning","Size violation size=%i, count=%i",size,txCount_);
+      txLog_->warning("Size violation size=%i, count=%i",size,txCount_);
       txErrCount_++;
       return;
    }
@@ -293,7 +293,7 @@ void ru::Prbs::acceptFrame ( ris::FramePtr frame ) {
 
    // Verify size
    if ((( size % byteWidth_ ) != 0) || size < minSize_ ) {
-      rxLog_->log("warning","Size violation size=%i, count=%i",size,rxCount_);
+      rxLog_->warning("Size violation size=%i, count=%i",size,rxCount_);
       rxErrCount_++;
       return;
    }
@@ -312,7 +312,7 @@ void ru::Prbs::acceptFrame ( ris::FramePtr frame ) {
 
    // Check size
    if ( frSize != size ) {
-      rxLog_->log("warning","Bad size. exp=%i, got=%i, count=%i",frSize,size,rxCount_);
+      rxLog_->warning("Bad size. exp=%i, got=%i, count=%i",frSize,size,rxCount_);
       rxErrCount_++;
       return;
    }
@@ -321,7 +321,7 @@ void ru::Prbs::acceptFrame ( ris::FramePtr frame ) {
    // Accept any sequence if our local count is zero
    // incoming frames with seq = 0 never cause errors and treated as a restart
    if ( frSeq != 0 && curSeq != 0 && frSeq != curSeq ) {
-      rxLog_->log("warning","Bad Sequence. cur=%i, got=%i, count=%i",curSeq,frSeq,rxCount_);
+      rxLog_->warning("Bad Sequence. cur=%i, got=%i, count=%i",curSeq,frSeq,rxCount_);
       rxErrCount_++;
       return;
    }
@@ -334,7 +334,7 @@ void ru::Prbs::acceptFrame ( ris::FramePtr frame ) {
       cnt += readSingle(frame,cnt,&gotValue);
 
       if (expValue != gotValue) {
-         rxLog_->log("warning","Bad value at index %i. exp=0x%x, got=0x, count=%i%x",
+         rxLog_->warning("Bad value at index %i. exp=0x%x, got=0x, count=%i%x",
                  (cnt-byteWidth_),expValue,gotValue,rxCount_);
          rxErrCount_++;
          return;

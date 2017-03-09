@@ -49,7 +49,7 @@ namespace rogue {
                boost::mutex mtx_;
 
                //! Debug control
-               uint32_t    debug_;
+               uint32_t         debug_;
                rogue::Logging * log_;
 
             public:

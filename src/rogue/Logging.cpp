@@ -22,32 +22,95 @@
 
 namespace bp = boost::python;
 
-rogue::Logging::Logging(const char *cls) {
-   char name[100];
-   sprintf(name,"pyrogue.%s",cls);
+// Logging level
+uint32_t rogue::Logging::level_ = 0;
 
-   PyGILState_STATE pyState = PyGILState_Ensure();
-   _logging = bp::import("logging");
-   _logger = _logging.attr("getLogger")(name);
-   PyGILState_Release(pyState);
+// Logging level lock
+boost::mutex rogue::Logging::levelMtx_;
+
+rogue::Logging::Logging(const char *name) {
+
+   name_ = (char *)malloc(strlen("pyrogue.") + strlen(name) + 1);
+   strcpy(name_,"pyrogue.");
+   strcat(name_,name);
+
+   //PyGILState_STATE pyState = PyGILState_Ensure();
+   //_logging = bp::import("logging");
+   //_logger = _logging.attr("getLogger")(name);
+   //PyGILState_Release(pyState);
 }
 
-void rogue::Logging::log(const char *level, const char * fmt, ...) {
-   va_list args;
-   char buffer[256];
-
-   va_start(args,fmt);
-   vsprintf(buffer,fmt,args);
-   va_end(args);
-
-   printf("Grabbing lock %li\n",syscall(SYS_gettid));
-   PyGILState_STATE pyState = PyGILState_Ensure();
-   printf("About to log %li: %s\n",syscall(SYS_gettid),buffer);
-   _logger.attr(level)(buffer);
-   printf("Logged %li\n",syscall(SYS_gettid));
-   PyGILState_Release(pyState);
-   printf("Released lock %li\n",syscall(SYS_gettid));
+rogue::Logging::~Logging() {
+   free(name_);
 }
 
-void rogue::Logging::setup_python() {}
+void rogue::Logging::setLevel(uint32_t level) {
+   levelMtx_.lock();
+   level_ = level;
+   levelMtx_.unlock();
+}
+
+void rogue::Logging::intLog(uint32_t level, const char * fmt, va_list args) {
+   if ( level < level_ ) return;
+
+   printf("%s: ",name_);
+   vprintf(fmt,args);
+   printf("\n");
+
+   //PyGILState_STATE pyState = PyGILState_Ensure();
+   //_logging = bp::import("logging");
+   //_logger = _logging.attr("getLogger")(name);
+   //_logger.attr(level)(buffer);
+   //PyGILState_Release(pyState);
+}
+
+void rogue::Logging::log(uint32_t level, const char * fmt, ...) {
+   va_list arg;
+   va_start(arg,fmt);
+   intLog(level,fmt,arg);
+   va_end(arg);
+}
+
+void rogue::Logging::critical(const char * fmt, ...) {
+   va_list arg;
+   va_start(arg,fmt);
+   intLog(rogue::Logging::Critical,fmt,arg);
+   va_end(arg);
+}
+
+void rogue::Logging::error(const char * fmt, ...) {
+   va_list arg;
+   va_start(arg,fmt);
+   intLog(rogue::Logging::Error,fmt,arg);
+   va_end(arg);
+}
+
+void rogue::Logging::warning(const char * fmt, ...) {
+   va_list arg;
+   va_start(arg,fmt);
+   intLog(rogue::Logging::Warning,fmt,arg);
+   va_end(arg);
+}
+
+void rogue::Logging::info(const char * fmt, ...) {
+   va_list arg;
+   va_start(arg,fmt);
+   intLog(rogue::Logging::Info,fmt,arg);
+   va_end(arg);
+}
+
+void rogue::Logging::debug(const char * fmt, ...) {
+   va_list arg;
+   va_start(arg,fmt);
+   intLog(rogue::Logging::Debug,fmt,arg);
+   va_end(arg);
+}
+
+void rogue::Logging::setup_python() {
+   bp::class_<rogue::Logging, rogue::LoggingPtr, boost::noncopyable>("Logging",bp::no_init)
+      .def("setLevel", &rogue::Logging::setLevel)
+      .staticmethod("setLevel")
+   ;
+}
+
 

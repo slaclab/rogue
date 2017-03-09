@@ -198,7 +198,6 @@ ris::FramePtr rpr::Controller::applicationTx() {
 void rpr::Controller::applicationRx ( ris::FramePtr frame ) {
    ris::FramePtr tranFrame;
    struct timeval startTime;
-   bool err = false;
 
    gettimeofday(&startTime,NULL);
 
@@ -320,7 +319,7 @@ void rpr::Controller::runThread() {
    uint32_t wait;
 
    Logging log("rssi.Controller");
-   log.log("info","PID=%i, TID=%li",getpid(),syscall(SYS_gettid));
+   log.info("PID=%i, TID=%li",getpid(),syscall(SYS_gettid));
 
    wait = 0;
 

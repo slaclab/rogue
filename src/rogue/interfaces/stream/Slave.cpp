@@ -27,7 +27,7 @@
 #include <rogue/interfaces/stream/Frame.h>
 #include <rogue/GeneralError.h>
 #include <boost/make_shared.hpp>
-#include <rogue/common.h>
+#include <rogue/GilRelease.h>
 #include <rogue/Logging.h>
 
 namespace ris = rogue::interfaces::stream;
@@ -61,7 +61,7 @@ void ris::Slave::acceptFrame ( ris::FramePtr frame ) {
    if ( debug_ > 0 ) {
       char buffer[1000];
 
-      log_->log("info","Got Size=%i, Data:",frame->getPayload());
+      log_->log(100,"Got Size=%i, Data:",frame->getPayload());
       sprintf(buffer,"     ");
 
       for (x=0; (x < debug_ && x < frame->getPayload()); x++) {
@@ -69,12 +69,12 @@ void ris::Slave::acceptFrame ( ris::FramePtr frame ) {
 
          sprintf(buffer + strlen(buffer)," 0x%.2x",val);
          if (( (x+1) % 10 ) == 0) {
-            log_->log("info",buffer);
+            log_->log(100,buffer);
             sprintf(buffer,"     ");
          }
       }
 
-      if ( strlen(buffer) > 5 ) log_->log("info",buffer);
+      if ( strlen(buffer) > 5 ) log_->log(100,buffer);
    }
 }
 
