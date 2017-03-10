@@ -165,6 +165,7 @@ void rhe::Tem::runThread() {
             if ( res > 0 ) {
                buff->setSize(res);
                sendFrame(frame);
+               buff.reset();
                frame.reset();
             }
          }

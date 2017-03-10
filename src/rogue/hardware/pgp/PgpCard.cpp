@@ -353,6 +353,7 @@ void rhp::PgpCard::runThread() {
                buff->setError(error);
                frame->setError(error | frame->getError());
                frame->appendBuffer(buff);
+               buff.reset();
 
                // If continue flag is not set, push frame and get a new empty frame
                if ( cont == 0 ) {

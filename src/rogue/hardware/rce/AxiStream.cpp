@@ -317,6 +317,7 @@ void rhr::AxiStream::runThread() {
                buff->setError(error);
                frame->setError(error | frame->getError());
                frame->appendBuffer(buff);
+               buff.reset();
                frame->setFlags(flags);
                sendFrame(frame);
                frame = ris::Frame::create();
