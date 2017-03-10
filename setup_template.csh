@@ -14,7 +14,7 @@ source /afs/slac.stanford.edu/g/reseng/zeromq/4.2.0/settings.csh
 source /afs/slac.stanford.edu/g/reseng/epics/base-R3-16-0/settings.csh
 
 # Package directories
-setenv ROGUE_DIR  `dirname ${PWD}/$temp_path[2]`
+setenv ROGUE_DIR  `dirname $temp_path[2]`
 
 # Setup python path
 setenv PYTHONPATH ${ROGUE_DIR}/python:${PYTHONPATH}

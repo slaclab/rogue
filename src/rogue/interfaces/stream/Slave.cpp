@@ -68,7 +68,7 @@ void ris::Slave::acceptFrame ( ris::FramePtr frame ) {
          frame->read(&val,x,1);
 
          sprintf(buffer + strlen(buffer)," 0x%.2x",val);
-         if (( (x+1) % 10 ) == 0) {
+         if (( (x+1) % 8 ) == 0) {
             log_->log(100,buffer);
             sprintf(buffer,"     ");
          }

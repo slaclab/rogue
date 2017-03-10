@@ -15,6 +15,9 @@ Download and install python3
 > make 
 > make install
 
+Check the /path/to/python/3.5.2/bin directory to make sure the python3 binary exists. If not:
+> ln -s python3.5 python3
+
 Setup environment
 
 Add /path/to/python/3.5.2/bin to your $PATH
