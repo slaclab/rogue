@@ -187,6 +187,7 @@ void rpu::Client::runThread() {
             // Select returns with available buffer
             select(fd_+1,&fds,NULL,NULL,&tout);
          }
+         boost::this_thread::interruption_point();
       }
    } catch (boost::thread_interrupted&) { }
 }

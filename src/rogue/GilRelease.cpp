@@ -33,16 +33,24 @@ rogue::GilRelease::~GilRelease() {
 }
 
 void rogue::GilRelease::acquire() {
-   if ( state_ != NULL ) PyEval_RestoreThread(state_);
+   if ( state_ != NULL ) {
+      PyEval_RestoreThread(state_);
+      //printf("Reacquire GIL\n");
+   }
+   //else printf("Did not have GIL\n");
    state_ = NULL;
 }
 
 void rogue::GilRelease::release() {
    PyThreadState * tstate = _PyThreadState_Current;
-   if ( tstate && (tstate == PyGILState_GetThisThreadState()) ) 
+   if ( tstate && (tstate == PyGILState_GetThisThreadState()) ) {
+      //printf("Releasing GIL\n");
       state_ = PyEval_SaveThread();
-   else
+   }
+   else {
+      //printf("Did not have GIL\n");
       state_ = NULL;
+   }
 }
 
 void rogue::GilRelease::setup_python() {}

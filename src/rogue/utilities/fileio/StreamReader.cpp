@@ -152,6 +152,7 @@ void ruf::StreamReader::runThread() {
                }
             } while (frame->nextWrite(iter));
             sendFrame(frame);
+            boost::this_thread::interruption_point();
          }
       } while ( nextFile() );
    } catch (boost::thread_interrupted&) {}

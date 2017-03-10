@@ -361,6 +361,7 @@ void rhp::PgpCard::runThread() {
                }
             }
          }
+         boost::this_thread::interruption_point();
       }
    } catch (boost::thread_interrupted&) { }
 }

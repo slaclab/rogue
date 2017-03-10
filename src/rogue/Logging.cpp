@@ -23,7 +23,7 @@
 namespace bp = boost::python;
 
 // Logging level
-uint32_t rogue::Logging::level_ = 0;
+uint32_t rogue::Logging::level_ = rogue::Logging::Error;
 
 // Logging level lock
 boost::mutex rogue::Logging::levelMtx_;

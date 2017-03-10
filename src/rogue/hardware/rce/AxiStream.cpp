@@ -322,6 +322,7 @@ void rhr::AxiStream::runThread() {
                frame = ris::Frame::create();
             }
          }
+         boost::this_thread::interruption_point();
       }
    } catch (boost::thread_interrupted&) { }
 }

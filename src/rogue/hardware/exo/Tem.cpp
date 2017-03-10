@@ -168,6 +168,7 @@ void rhe::Tem::runThread() {
                frame.reset();
             }
          }
+         boost::this_thread::interruption_point();
       }
    } catch (boost::thread_interrupted&) { }
 }
