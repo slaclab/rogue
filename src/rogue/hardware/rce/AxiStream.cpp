@@ -24,7 +24,7 @@
 #include <rogue/interfaces/stream/Buffer.h>
 #include <rogue/GeneralError.h>
 #include <boost/make_shared.hpp>
-#include <rogue/common.h>
+#include <rogue/GilRelease.h>
 
 namespace rhr = rogue::hardware::rce;
 namespace ris = rogue::interfaces::stream;
@@ -39,10 +39,11 @@ rhr::AxiStreamPtr rhr::AxiStream::create (std::string path, uint32_t dest) {
 //! Open the device. Pass destination.
 rhr::AxiStream::AxiStream ( std::string path, uint32_t dest ) {
    uint8_t mask[DMA_MASK_SIZE];
-   int32_t res;
 
    timeout_ = 1000000;
    dest_    = dest;
+
+   rogue::GilRelease noGil;
 
    if ( (fd_ = ::open(path.c_str(), O_RDWR)) < 0 )
       throw(rogue::GeneralError::open("AxiStream::AxiStream",path.c_str()));
@@ -50,11 +51,10 @@ rhr::AxiStream::AxiStream ( std::string path, uint32_t dest ) {
    dmaInitMaskBytes(mask);
    dmaAddMaskBytes(mask,dest_);
 
-   PyRogue_BEGIN_ALLOW_THREADS;
-   if  ( (res = dmaSetMaskBytes(fd_,mask)) < 0 ) ::close(fd_);
-   PyRogue_END_ALLOW_THREADS;
-
-   if ( res < 0) throw(rogue::GeneralError::dest("AxiStream::AxiStream",path.c_str(),dest_));
+   if  ( dmaSetMaskBytes(fd_,mask) < 0 ) {
+      ::close(fd_);
+      throw(rogue::GeneralError::dest("AxiStream::AxiStream",path.c_str(),dest_));
+   }
 
    // Result may be that rawBuff_ = NULL
    rawBuff_ = dmaMapDma(fd_,&bCount_,&bSize_);
@@ -65,15 +65,14 @@ rhr::AxiStream::AxiStream ( std::string path, uint32_t dest ) {
 
 //! Close the device
 rhr::AxiStream::~AxiStream() {
+   rogue::GilRelease noGil;
 
    // Stop read thread
    thread_->interrupt();
    thread_->join();
 
    if ( rawBuff_ != NULL ) dmaUnMapDma(fd_, rawBuff_);
-   PyRogue_BEGIN_ALLOW_THREADS;
    ::close(fd_);
-   PyRogue_END_ALLOW_THREADS;
 }
 
 //! Set timeout for frame transmits in microseconds
@@ -94,7 +93,6 @@ void rhr::AxiStream::dmaAck() {
 //! Generate a buffer. Called from master
 ris::FramePtr rhr::AxiStream::acceptReq ( uint32_t size, bool zeroCopyEn, uint32_t maxBuffSize) {
    int32_t          res;
-   int32_t          sres;
    fd_set           fds;
    struct timeval   tout;
    uint32_t         alloc;
@@ -113,6 +111,7 @@ ris::FramePtr rhr::AxiStream::acceptReq ( uint32_t size, bool zeroCopyEn, uint32
 
    // Allocate zero copy buffers from driver
    else {
+      rogue::GilRelease noGil;
 
       // Create empty frame
       frame = ris::Frame::create();
@@ -133,17 +132,15 @@ ris::FramePtr rhr::AxiStream::acceptReq ( uint32_t size, bool zeroCopyEn, uint32
             tout.tv_sec=(timeout_>0)?(timeout_ / 1000000):0;
             tout.tv_usec=(timeout_>0)?(timeout_ % 1000000):10000;
 
-            PyRogue_BEGIN_ALLOW_THREADS;
-            if ( (sres = select(fd_+1,NULL,&fds,NULL,&tout)) > 0 ) {
-
+            if ( select(fd_+1,NULL,&fds,NULL,&tout) <= 0 ) {
+               if ( timeout_ > 0 ) throw(rogue::GeneralError::timeout("AxiStream::acceptReq",timeout_));
+               res = 0;
+            }
+            else {
                // Attempt to get index.
                // return of less than 0 is a failure to get a buffer
                res = dmaGetIndex(fd_);
-            } else res=0;
-            PyRogue_END_ALLOW_THREADS;
-
-            if ( sres <= 0 && timeout_ > 0 ) 
-               throw(rogue::GeneralError::timeout("AxiStream::acceptReq",timeout_));
+            }
          }
          while (res < 0);
 
@@ -160,7 +157,6 @@ ris::FramePtr rhr::AxiStream::acceptReq ( uint32_t size, bool zeroCopyEn, uint32
 void rhr::AxiStream::acceptFrame ( ris::FramePtr frame ) {
    ris::BufferPtr buff;
    int32_t          res;
-   int32_t          sres;
    fd_set           fds;
    struct timeval   tout;
    uint32_t         meta;
@@ -168,6 +164,8 @@ void rhr::AxiStream::acceptFrame ( ris::FramePtr frame ) {
    uint32_t         flags;
    uint32_t         fuser;
    uint32_t         luser;
+
+   rogue::GilRelease noGil;
 
    // Go through each buffer in the frame
    for (x=0; x < frame->getCount(); x++) {
@@ -191,12 +189,9 @@ void rhr::AxiStream::acceptFrame ( ris::FramePtr frame ) {
          if ( (meta & 0x40000000) == 0 ) {
 
             // Write by passing buffer index to driver
-            PyRogue_BEGIN_ALLOW_THREADS;
-            res = axisWriteIndex(fd_, meta & 0x3FFFFFFF, buff->getCount(), fuser, luser, dest_);
-            PyRogue_END_ALLOW_THREADS;
-
-            if ( res <= 0 )
+            if ( axisWriteIndex(fd_, meta & 0x3FFFFFFF, buff->getCount(), fuser, luser, dest_) <= 0 ) {
                throw(rogue::GeneralError("AxiStream::acceptFrame","AXIS Write Call Failed"));
+            }
 
             // Mark buffer as stale
             meta |= 0x40000000;
@@ -219,21 +214,16 @@ void rhr::AxiStream::acceptFrame ( ris::FramePtr frame ) {
             tout.tv_sec=(timeout_ > 0)?(timeout_ / 1000000):0;
             tout.tv_usec=(timeout_ > 0)?(timeout_ % 1000000):10000;
 
-            PyRogue_BEGIN_ALLOW_THREADS;
-
-            if ( (sres = select(fd_+1,NULL,&fds,NULL,&tout)) > 0 ) {
-
+            if ( select(fd_+1,NULL,&fds,NULL,&tout) <= 0 ) {
+               if ( timeout_ > 0) throw(rogue::GeneralError::timeout("AxiStream::acceptFrame",timeout_));
+               res = 0;
+            }
+            else {
                // Write with buffer copy
-               res = axisWrite(fd_, buff->getRawData(), buff->getCount(), fuser, luser, dest_);
-            } else res = 0;
-            PyRogue_END_ALLOW_THREADS;
-
-            // Select timeout
-            if ( sres <= 0 && timeout_ > 0) 
-               throw(rogue::GeneralError::timeout("AxiStream::acceptFrame",timeout_));
-
-            // Error
-            if ( res < 0 ) throw(rogue::GeneralError("AxiStream::acceptFrame","AXIS Write Call Failed"));
+               if ( (res = axisWrite(fd_, buff->getRawData(), buff->getCount(), fuser, luser, dest_)) < 0 ) {
+                  throw(rogue::GeneralError("AxiStream::acceptFrame","AXIS Write Call Failed"));
+               }
+            }
          }
 
          // Exit out if return flag was set false
@@ -244,6 +234,7 @@ void rhr::AxiStream::acceptFrame ( ris::FramePtr frame ) {
 
 //! Return a buffer
 void rhr::AxiStream::retBuffer(uint8_t * data, uint32_t meta, uint32_t size) {
+   rogue::GilRelease noGil;
 
    // Buffer is zero copy as indicated by bit 31
    if ( (meta & 0x80000000) != 0 ) {
@@ -251,9 +242,7 @@ void rhr::AxiStream::retBuffer(uint8_t * data, uint32_t meta, uint32_t size) {
       // Device is open and buffer is not stale
       // Bit 30 indicates buffer has already been returned to hardware
       if ( (fd_ >= 0) && ((meta & 0x40000000) == 0) ) {
-         PyRogue_BEGIN_ALLOW_THREADS;
          dmaRetIndex(fd_,meta & 0x3FFFFFFF); // Return to hardware
-         PyRogue_END_ALLOW_THREADS;
       }
 
       decCounter(size);
@@ -328,11 +317,13 @@ void rhr::AxiStream::runThread() {
                buff->setError(error);
                frame->setError(error | frame->getError());
                frame->appendBuffer(buff);
+               buff.reset();
                frame->setFlags(flags);
                sendFrame(frame);
                frame = ris::Frame::create();
             }
          }
+         boost::this_thread::interruption_point();
       }
    } catch (boost::thread_interrupted&) { }
 }

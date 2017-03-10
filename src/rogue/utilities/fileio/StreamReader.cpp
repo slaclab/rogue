@@ -123,7 +123,7 @@ void ruf::StreamReader::runThread() {
          // Read size of each frame
          while ( fd_ > 0 && read(fd_,&size,4) == 4 ) {
             if ( size == 0 ) {
-               log.log("warning","Bad size read %i",size);
+               log.warning("Bad size read %i",size);
                ::close(fd_);
                fd_ = -1;
                return;
@@ -131,7 +131,7 @@ void ruf::StreamReader::runThread() {
 
             // Read flags
             if ( read(fd_,&flags,4) != 4 ) {
-               log.log("warning","Failed to read flags");
+               log.warning("Failed to read flags");
                ::close(fd_);
                fd_ = -1;
                return;
@@ -145,13 +145,14 @@ void ruf::StreamReader::runThread() {
             iter = frame->startWrite(0,size-4);
             do {
                if ( (ret = read(fd_,iter->data(),iter->size())) != (int32_t)iter->size()) {
-                  log.log("warning","Short read. Ret = %i Req = %i after %i bytes",ret,iter->size(),iter->total());
+                  log.warning("Short read. Ret = %i Req = %i after %i bytes",ret,iter->size(),iter->total());
                   ::close(fd_);
                   fd_ = -1;
                   frame->setError(0x1);
                }
             } while (frame->nextWrite(iter));
             sendFrame(frame);
+            boost::this_thread::interruption_point();
          }
       } while ( nextFile() );
    } catch (boost::thread_interrupted&) {}

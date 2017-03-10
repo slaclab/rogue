@@ -70,11 +70,11 @@ void rhr::MapMemory::addMap(uint32_t address, uint32_t size) {
    if ( fd_ >= 0 ) {
       map.ptr = (uint8_t *)mmap(NULL, map.size, PROT_READ | PROT_WRITE, MAP_SHARED, fd_, map.base);
       if ( map.ptr == NULL ) {
-         log_->log("error","Failed to map address 0x%x with size %i",map.base,map.size);
+         log_->error("Failed to map address 0x%x with size %i",map.base,map.size);
          return;
       }
       maps_.push_back(map);
-      log_->log("info","Mapped address 0x%x with size %i to pointer 0x%x",map.base,map.size,map.ptr);
+      log_->info("Mapped address 0x%x with size %i to pointer 0x%x",map.base,map.size,map.ptr);
    }
 }
 
@@ -88,11 +88,11 @@ uint8_t * rhr::MapMemory::findSpace (uint32_t base, uint32_t size) {
    for (x=0; x < maps_.size(); x++) {
       if ( (base >= maps_[x].base) && (((base - maps_[x].base) + size) < maps_[x].size) ) {
          ret = maps_[x].ptr + (base-maps_[x].base);
-         log_->log("debug","Found map for address 0x%x, size %i at 0x%x",base,size,ret);
+         log_->debug("Found map for address 0x%x, size %i at 0x%x",base,size,ret);
          return(ret);
       }
    }
-   log_->log("debug","Failed to find map for address 0x%x, size %i",base,size);
+   log_->debug("Failed to find map for address 0x%x, size %i",base,size);
    return(NULL);
 }
 

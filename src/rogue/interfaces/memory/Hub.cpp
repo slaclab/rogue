@@ -22,7 +22,7 @@
  * ----------------------------------------------------------------------------
 **/
 #include <rogue/interfaces/memory/Hub.h>
-#include <rogue/common.h>
+#include <rogue/GilRelease.h>
 #include <boost/make_shared.hpp>
 #include <boost/python.hpp>
 

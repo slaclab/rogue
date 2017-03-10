@@ -24,7 +24,7 @@
 #include <rogue/protocols/packetizer/Application.h>
 #include <rogue/GeneralError.h>
 #include <boost/make_shared.hpp>
-#include <rogue/common.h>
+#include <rogue/GilRelease.h>
 #include <rogue/Logging.h>
 #include <sys/syscall.h>
 
@@ -84,7 +84,7 @@ void rpp::Application::pushFrame( ris::FramePtr frame ) {
 //! Thread background
 void rpp::Application::runThread() {
    Logging log("packetizer.Application");
-   log.log("info","PID=%i, TID=%li",getpid(),syscall(SYS_gettid));
+   log.info("PID=%i, TID=%li",getpid(),syscall(SYS_gettid));
 
    try {
       while(1) {
