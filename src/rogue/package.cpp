@@ -33,11 +33,11 @@ BOOST_PYTHON_MODULE(rogue) {
 
    PyEval_InitThreads();
 
-   printf("Rogue/pyrogue is released under the license conditions defined by:\n");
-   printf("   https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html\n"); 
-   printf("      Authors: Ryan Herbst <rherbst@slac.stanford.edu>\n"); 
-   printf("               Ben Reese <bareese@slac.stanford.edu>\n"); 
-   printf("               Larry Ruckman <ruckman@slac.stanford.edu>\n"); 
+//   printf("Rogue/pyrogue is released under the license conditions defined by:\n");
+//   printf("   https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html\n"); 
+//   printf("      Authors: Ryan Herbst <rherbst@slac.stanford.edu>\n"); 
+//   printf("               Ben Reese <bareese@slac.stanford.edu>\n"); 
+//   printf("               Larry Ruckman <ruckman@slac.stanford.edu>\n"); 
 
    rogue::interfaces::setup_module();
    rogue::protocols::setup_module();
