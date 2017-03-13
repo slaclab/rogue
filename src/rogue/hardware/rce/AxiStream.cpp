@@ -48,6 +48,9 @@ rhr::AxiStream::AxiStream ( std::string path, uint32_t dest ) {
    if ( (fd_ = ::open(path.c_str(), O_RDWR)) < 0 )
       throw(rogue::GeneralError::open("AxiStream::AxiStream",path.c_str()));
 
+   if ( dmaCheckVersion(fd_) < 0 )
+      throw(rogue::GeneralError("AxiStream::AxiStream","Bad kernel driver version detected. Please re-compile kernel driver"));
+
    dmaInitMaskBytes(mask);
    dmaAddMaskBytes(mask,dest_);
 
@@ -189,7 +192,7 @@ void rhr::AxiStream::acceptFrame ( ris::FramePtr frame ) {
          if ( (meta & 0x40000000) == 0 ) {
 
             // Write by passing buffer index to driver
-            if ( axisWriteIndex(fd_, meta & 0x3FFFFFFF, buff->getCount(), fuser, luser, dest_) <= 0 ) {
+            if ( dmaWriteIndex(fd_, meta & 0x3FFFFFFF, buff->getCount(), axisSetFlags(fuser, luser,0), dest_) <= 0 ) {
                throw(rogue::GeneralError("AxiStream::acceptFrame","AXIS Write Call Failed"));
             }
 
@@ -220,7 +223,7 @@ void rhr::AxiStream::acceptFrame ( ris::FramePtr frame ) {
             }
             else {
                // Write with buffer copy
-               if ( (res = axisWrite(fd_, buff->getRawData(), buff->getCount(), fuser, luser, dest_)) < 0 ) {
+               if ( (res = dmaWrite(fd_, buff->getRawData(), buff->getCount(), axisSetFlags(fuser, luser,0), dest_)) < 0 ) {
                   throw(rogue::GeneralError("AxiStream::acceptFrame","AXIS Write Call Failed"));
                }
             }
@@ -263,7 +266,11 @@ void rhr::AxiStream::runThread() {
    uint32_t       fuser;
    uint32_t       luser;
    uint32_t       flags;
+   uint32_t       rxFlags;
    struct timeval tout;
+
+   fuser = 0;
+   luser = 0;
 
    // Preallocate empty frame
    frame = ris::Frame::create();
@@ -289,14 +296,18 @@ void rhr::AxiStream::runThread() {
                buff = allocBuffer(bSize_,NULL);
 
                // Attempt read, dest is not needed since only one lane/vc is open
-               res = axisRead(fd_, buff->getRawData(), buff->getRawSize(), &fuser, &luser, NULL);
+               res = dmaRead(fd_, buff->getRawData(), buff->getRawSize(), &rxFlags, NULL, NULL);
+               fuser = axisGetFuser(rxFlags);
+               luser = axisGetLuser(rxFlags);
             }
 
             // Zero copy read
             else {
 
                // Attempt read, dest is not needed since only one lane/vc is open
-               if ((res = axisReadIndex(fd_, &meta, &fuser, & luser, NULL)) > 0) {
+               if ((res = dmaReadIndex(fd_, &meta, &rxFlags, NULL, NULL)) > 0) {
+                  fuser = axisGetFuser(rxFlags);
+                  luser = axisGetLuser(rxFlags);
 
                   // Allocate a buffer, Mark zero copy meta with bit 31 set, lower bits are index
                   buff = createBuffer(rawBuff_[meta],0x80000000 | meta,bSize_,bSize_);
