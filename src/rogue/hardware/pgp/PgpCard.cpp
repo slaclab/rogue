@@ -55,6 +55,9 @@ rhp::PgpCard::PgpCard ( std::string path, uint32_t lane, uint32_t vc ) {
    if ( (fd_ = ::open(path.c_str(), O_RDWR)) < 0 ) 
       throw(rogue::GeneralError::open("PgpCard::PgpCard",path.c_str()));
 
+   if ( dmaCheckVersion(fd_) < 0 )
+      throw(rogue::GeneralError("PgpCard::PgpCard","Bad kernel driver version detected. Please re-compile kernel driver"));
+
    dmaInitMaskBytes(mask);
    dmaAddMaskBytes(mask,(lane_*4)+vc_);
 
@@ -237,7 +240,7 @@ void rhp::PgpCard::acceptFrame ( ris::FramePtr frame ) {
          if ( (meta & 0x40000000) == 0 ) {
 
             // Write by passing buffer index to driver
-            if ( pgpWriteIndex(fd_, meta & 0x3FFFFFFF, buff->getCount(), lane_, vc_, cont) <= 0 )
+            if ( dmaWriteIndex(fd_, meta & 0x3FFFFFFF, buff->getCount(), pgpSetFlags(cont),pgpSetDest(lane_, vc_)) <= 0 )
                throw(rogue::GeneralError("PgpCard::acceptFrame","PGP Write Call Failed"));
 
             // Mark buffer as stale
@@ -267,7 +270,7 @@ void rhp::PgpCard::acceptFrame ( ris::FramePtr frame ) {
             }
             else {
                // Write with buffer copy
-               if ( (res = pgpWrite(fd_, buff->getRawData(), buff->getCount(), lane_, vc_, cont) < 0 ) )
+               if ( (res = dmaWrite(fd_, buff->getRawData(), buff->getCount(), pgpSetFlags(cont), pgpSetDest(lane_, vc_)) < 0 ) )
                   throw(rogue::GeneralError("PgpCard::acceptFrame","PGP Write Call Failed"));
             } 
          }
@@ -305,6 +308,7 @@ void rhp::PgpCard::runThread() {
    int32_t        res;
    uint32_t       error;
    uint32_t       cont;
+   uint32_t       flags;
    uint32_t       meta;
    struct timeval tout;
 
@@ -333,14 +337,16 @@ void rhp::PgpCard::runThread() {
                buff = allocBuffer(bSize_,NULL);
 
                // Attempt read, lane and vc not needed since only one lane/vc is open
-               res = pgpRead(fd_, buff->getRawData(), buff->getRawSize(), NULL, NULL, &error, &cont);
+               res = dmaRead(fd_, buff->getRawData(), buff->getRawSize(), &flags, &error, NULL);
+               cont = pgpGetCont(flags);
             }
 
             // Zero copy read
             else {
 
                // Attempt read, lane and vc not needed since only one lane/vc is open
-               if ((res = pgpReadIndex(fd_, &meta, NULL, NULL, &error, &cont)) > 0) {
+               if ((res = dmaReadIndex(fd_, &meta, &flags, &error, NULL)) > 0) {
+                  cont = pgpGetCont(flags);
 
                   // Allocate a buffer, Mark zero copy meta with bit 31 set, lower bits are index
                   buff = createBuffer(rawBuff_[meta],0x80000000 | meta,bSize_,bSize_);

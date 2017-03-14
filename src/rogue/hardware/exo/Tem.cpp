@@ -50,6 +50,9 @@ rhe::Tem::Tem(std::string path, bool data) {
    if ( (fd_ = ::open(path.c_str(), O_RDWR)) < 0 )
       throw(rogue::GeneralError::open("Tem::Tem",path.c_str()));
 
+   if ( dmaCheckVersion(fd_) < 0 ) 
+      throw(rogue::GeneralError("Tem::Tem","Bad kernel driver version detected. Please re-compile kernel driver"));
+
    if ( isData_ ) {
       if ( (res = temEnableDataRead(fd_)) < 0 ) ::close(fd_);
    } else {
