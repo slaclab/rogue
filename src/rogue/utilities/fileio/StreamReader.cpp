@@ -89,6 +89,7 @@ void ruf::StreamReader::open(std::string file) {
 
 //! Open file
 bool ruf::StreamReader::nextFile() {
+   boost::unique_lock<boost::mutex> lock(mtx_);
    std::string name;
 
    if ( fd_ >= 0 ) {
@@ -120,6 +121,7 @@ void ruf::StreamReader::intClose() {
       delete readThread_;
       readThread_ = NULL;
    }
+   if ( fd_ >= 0 ) ::close(fd_);
 }
 
 //! Close when done
@@ -141,10 +143,12 @@ void ruf::StreamReader::runThread() {
    int32_t  ret;
    uint32_t size;
    uint32_t flags;
+   bool err;
    ris::FramePtr frame;
    ris::FrameIteratorPtr iter;
    Logging log("streamReader");
 
+   err = false;
    try {
       do {
 
@@ -152,17 +156,15 @@ void ruf::StreamReader::runThread() {
          while ( fd_ > 0 && read(fd_,&size,4) == 4 ) {
             if ( size == 0 ) {
                log.warning("Bad size read %i",size);
-               ::close(fd_);
-               fd_ = -1;
-               return;
+               err = true;
+               break;
             }
 
             // Read flags
             if ( read(fd_,&flags,4) != 4 ) {
                log.warning("Failed to read flags");
-               ::close(fd_);
-               fd_ = -1;
-               return;
+               err = true;
+               break;
             }
 
             // Request frame
@@ -182,10 +184,12 @@ void ruf::StreamReader::runThread() {
             sendFrame(frame);
             boost::this_thread::interruption_point();
          }
-      } while ( nextFile() );
+      } while ( (err == false) && nextFile() );
    } catch (boost::thread_interrupted&) {}
 
    boost::unique_lock<boost::mutex> lock(mtx_);
+   if ( fd_ >= 0 ) ::close(fd_);
+   fd_ = -1;
    active_ = false;
    lock.unlock();
    cond_.notify_all();
