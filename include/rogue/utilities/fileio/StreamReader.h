@@ -41,6 +41,9 @@ namespace rogue {
 
                //! File index
                uint32_t fdIdx_;
+
+               //! Active
+               bool active_;
               
                //! Read thread
                boost::thread* readThread_;
@@ -50,6 +53,15 @@ namespace rogue {
 
                //! Open file
                bool nextFile();
+
+               //! Internal close
+               void intClose();
+
+               //! Active condition
+               boost::condition_variable cond_;
+
+               //! Active lock
+               boost::mutex mtx_;
 
             public:
 
@@ -70,6 +82,12 @@ namespace rogue {
 
                //! Close and stop thread
                void close();
+
+               //! Close when done
+               void closeWait();
+
+               //! Return true while reading
+               bool isActive();
          };
 
          // Convienence

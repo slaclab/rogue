@@ -23,6 +23,7 @@
 #include <rogue/interfaces/stream/Frame.h>
 #include <rogue/GeneralError.h>
 #include <rogue/Logging.h>
+#include <rogue/GilRelease.h>
 #include <stdint.h>
 #include <boost/thread.hpp>
 #include <boost/make_shared.hpp>
@@ -46,6 +47,8 @@ void ruf::StreamReader::setup_python() {
       .staticmethod("create")
       .def("open",           &ruf::StreamReader::open)
       .def("close",          &ruf::StreamReader::close)
+      .def("closeWait",      &ruf::StreamReader::closeWait)
+      .def("isActive",       &ruf::StreamReader::isActive)
    ;
 }
 
@@ -53,6 +56,7 @@ void ruf::StreamReader::setup_python() {
 ruf::StreamReader::StreamReader() { 
    baseName_   = "";
    readThread_ = NULL;
+   active_     = false;
 }
 
 //! Deconstructor
@@ -62,7 +66,9 @@ ruf::StreamReader::~StreamReader() {
 
 //! Open a data file
 void ruf::StreamReader::open(std::string file) {
-   close();
+   rogue::GilRelease noGil;
+   boost::unique_lock<boost::mutex> lock(mtx_);
+   intClose();
 
    // Determine if we read a group of files
    if ( file.substr(file.find_last_of(".")) == ".1" ) {
@@ -77,6 +83,7 @@ void ruf::StreamReader::open(std::string file) {
    if ( (fd_ = ::open(file.c_str(),O_RDONLY)) < 0 ) 
       throw(rogue::GeneralError::open("StreamReader::open",file));
 
+   active_ = true;
    readThread_ = new boost::thread(boost::bind(&StreamReader::runThread, this));
 }
 
@@ -100,12 +107,33 @@ bool ruf::StreamReader::nextFile() {
 
 //! Close a data file
 void ruf::StreamReader::close() {
+   rogue::GilRelease noGil;
+   boost::unique_lock<boost::mutex> lock(mtx_);
+   intClose();
+}
+
+//! Close a data file
+void ruf::StreamReader::intClose() {
    if ( readThread_ != NULL ) {
       readThread_->interrupt();
       readThread_->join();
       delete readThread_;
       readThread_ = NULL;
    }
+}
+
+//! Close when done
+void ruf::StreamReader::closeWait() {
+   rogue::GilRelease noGil;
+   boost::unique_lock<boost::mutex> lock(mtx_);
+   while ( active_ ) cond_.timed_wait(lock,boost::posix_time::microseconds(1000));
+   intClose();
+}
+
+//! Return true when done
+bool ruf::StreamReader::isActive() {
+   rogue::GilRelease noGil;
+   return (active_);
 }
 
 //! Thread background
@@ -156,5 +184,10 @@ void ruf::StreamReader::runThread() {
          }
       } while ( nextFile() );
    } catch (boost::thread_interrupted&) {}
+
+   boost::unique_lock<boost::mutex> lock(mtx_);
+   active_ = false;
+   lock.unlock();
+   cond_.notify_all();
 }
 
