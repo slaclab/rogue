@@ -153,7 +153,7 @@ void ruf::StreamReader::runThread() {
       do {
 
          // Read size of each frame
-         while ( fd_ > 0 && read(fd_,&size,4) == 4 ) {
+         while ( (fd_ >= 0) && (read(fd_,&size,4) == 4) ) {
             if ( size == 0 ) {
                log.warning("Bad size read %i",size);
                err = true;
