@@ -16,6 +16,7 @@
 # copied, modified, propagated, or distributed except according to the terms 
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
+import sys
 import rogue.interfaces.memory
 import textwrap
 import yaml
@@ -29,8 +30,23 @@ import traceback
 import re
 import functools as ft
 import itertools
+import logging
 import heapq
 from inspect import signature
+
+
+def logInit(cls=None,name=None):
+    """Init a logging pbject. Set global options."""
+    logging.basicConfig(
+        #level=logging.NOTSET,
+        format="%(levelname)s:%(name)s:%(message)s",
+        stream=sys.stdout)
+
+    msg = 'pyrogue'
+    if cls: msg += "." + cls.__class__.__name__
+    if name: msg += "." + name
+    return logging.getLogger(msg)
+
 
 def streamConnect(source, dest):
     """
@@ -166,7 +182,10 @@ class Node(object):
         self._parent = parent
         self._root   = self
         self._nodes  = odict()
-        
+       
+        # Setup logging
+        self._log = logInit(self,name)
+
         if parent is not None:
             parent.add(self)
 
@@ -269,6 +288,13 @@ class Node(object):
         """
         return self._root
 
+    def getNode(self, path):
+        """Find a node in the tree that has a particular path string"""
+        obj = self
+        for a in path.split('.')[1:]:
+            obj = getattr(obj, a)
+        return obj
+
     def _rootAttached(self):
         """Called once the root node is attached. Can override to do anything depends on the full tree existing"""
         pass
@@ -301,7 +327,7 @@ class Node(object):
 
         # First get non-node local values
         for key,value in self.__dict__.items():
-            if (not key.startswith('_')) and (not isinstance(value,Node)):
+            if (not key.startswith('_')) and (not isinstance(value,Node)) and (not callable(value)):
                 data[key] = value
 
         # Next get sub nodes
@@ -564,13 +590,13 @@ class Variable(Node):
         Writes to hardware are blocking. An error will result in a logged exception.
         """
 
-        #print("{}.set({})".format(self, value))
+        self._log.debug("{}.set({})".format(self, value))
         try:
             # Transform first with setFunc?
             self._block.set(self, value)
             # Inform listeners
             self._updated()
-            
+
             if write and self._block.mode != 'RO':
                 self._block.blockingTransaction(rogue.interfaces.memory.Write)
                 self._afterWriteCmd()
@@ -580,7 +606,7 @@ class Variable(Node):
                     self._block.blockingTransaction(rogue.interfaces.memory.Verify)
                     
         except Exception as e:
-            self._root._logException(e)
+            self._log.error(e)
 
     def post(self,value):
         """
@@ -595,7 +621,7 @@ class Variable(Node):
                 self._block.backgroundTransaction(rogue.interfaces.memory.Post)
                 
         except Exception as e:
-            self._root._logException(e)
+            self._log.error(e)
 
     def get(self,read=True):
         """ 
@@ -612,8 +638,7 @@ class Variable(Node):
             # Transform with getFunc?
             
         except Exception as e:
-            print("Got exception in get: %s" % (str(e)))
-            self._root._logException(e)
+            self._log.error(e)
             return None
 
         # Update listeners for all variables in the block
@@ -748,7 +773,7 @@ class Command(Node):
 
                 # Function is really a function
                 if callable(self._function):
-                    #print('Calling CMD: {}'.format(self.name))
+                    self._log.debug('Calling CMD: {}'.format(self.name))
                     self._function(self._parent, self, arg)
 
                 # Function is a CPSW sequence
@@ -774,7 +799,7 @@ class Command(Node):
                     exec(textwrap.dedent(self._function))
 
         except Exception as e:
-            self._root._logException(e)
+            self._log.error(e)
 
     @staticmethod
     def nothing(dev, cmd, arg):
@@ -832,7 +857,7 @@ class BlockError(Exception):
     def __init__(self,block):
         self._error = block.error
         block._error = 0
-        self._value = "Error in block %s with address 0x%x: \nBlock Variables: %s" % (block.name,block.address,block._variables)
+        self._value = "Error in block %s with address 0x%x: Block Variables: %s. " % (block.name,block.address,block._variables)
 
         if (self._error & 0xFF000000) == rogue.interfaces.memory.TimeoutError:
             self._value += "Timeout after %s seconds" % (block.timeout)
@@ -919,6 +944,9 @@ class Block(rogue.interfaces.memory.Master):
         self._setSlave(self._device)
         self._addVariable(variable)
 
+        # Setup logging
+        self._log = logInit(self,self._name)
+
     def __repr__(self):
         return repr(self._variables)
 
@@ -977,10 +1005,10 @@ class Block(rogue.interfaces.memory.Master):
         """
         Perform a blocking transaction
         """
-        #print("Setting block. %s. Addr=%x, Data=%s" % (self._name,self._offset,self._bData))
+        self._log.debug("Setting block. Addr=%x, Data=%s" % (self._offset,self._bData))
         self._startTransaction(type)
         self._checkTransaction(update=False)
-        #print("Done block. %s. Addr=%x, Data=%s" % (self._name,self._offset,self._bData))
+        self._log.debug("Done block. Addr=%x, Data=%s" % (self._offset,self._bData))
 
     @property
     def offset(self):
@@ -1071,7 +1099,7 @@ class Block(rogue.interfaces.memory.Master):
         Start a transaction.
         """
 
-        #print('_startTransaction name= {}, type={}'.format(self.name, type))
+        self._log.debug('_startTransaction type={}'.format(type))
 
         minSize = self._reqMinAccess()
         tData = None
@@ -1091,7 +1119,7 @@ class Block(rogue.interfaces.memory.Master):
             if not self._device.enable.get():
                 return
             
-            #print('len bData = {}, vData = {}, mData = {}'.format(len(self._bData), len(self._vData), len(self._mData)))
+            self._log.debug('len bData = {}, vData = {}, mData = {}'.format(len(self._bData), len(self._vData), len(self._mData)))
                   
             # Setup transaction
             self._doVerify = (type == rogue.interfaces.memory.Verify)
@@ -1167,8 +1195,6 @@ class Device(Node,rogue.interfaces.memory.Hub):
         if name is None:
             name = self.__class__.__name__
 
-        print("Making device {:s}".format(name))
-
         # Hub.__init__ must be called first for _setSlave to work below
         rogue.interfaces.memory.Hub.__init__(self,offset)
 
@@ -1185,11 +1211,13 @@ class Device(Node,rogue.interfaces.memory.Hub):
         # Node.__init__ can't be called until after self._memBase is created
         Node.__init__(self, name=name, hidden=hidden, classType=classType, description=description, parent=parent)
 
+        self._log.info("Making device {:s}".format(name))
+
         # Convenience methods
         self.addDevice = ft.partial(self.addNode, Device)
         self.addDevices = ft.partial(self.addNodes, Device)
-        self.addIntVariable = ft.partial(self.addNode, Variable)        
-        self.addIntVariables = ft.partial(self.addNodes, Variable)
+        self.addVariable = ft.partial(self.addNode, Variable)        
+        self.addVariables = ft.partial(self.addNodes, Variable)
         self.addCommand = ft.partial(self.addNode, Command)        
         self.addCommands = ft.partial(self.addNodes, Command)
 
@@ -1240,7 +1268,8 @@ class Device(Node,rogue.interfaces.memory.Hub):
             
         elif isinstance(node,Variable):
             if not any(block._addVariable(node) for block in self._blocks):
-                self._blocks.append(RemoteBlock(node))
+                self._log.debug("Adding new block %s at offset %x" % (node.name,node.offset))
+                self._blocks.append(Block(self,node))
 
     def hideVariables(self, hidden, variables=None):
         """Hide a list of Variables (or Variable names)"""
@@ -1378,6 +1407,7 @@ class MultiDevice(Device):
         for locVar in self.variables.values():
             depVars = [v for d in devices for v in d.variables.items() if v.name == locVar.name]
 
+
             # Create a new set method that mirrors the set value out to all the dependent variables
             def locSet(self, value, write=True):
                 self.value = value
@@ -1397,7 +1427,19 @@ class MultiDevice(Device):
                 return self.value
 
             locVar.setGetFunc(locGet)
-                
+            
+
+class RootLogHandler(logging.Handler):
+    """ Class to listen to log entries and add them to syslog variable"""
+    def __init__(self,root):
+        logging.Handler.__init__(self)
+        self._root = root
+
+    def emit(self,record):
+        with self._root._sysLogLock:
+            self._root._systemLog += self.format(record)
+            self._root._systemLog += '\n'
+        self._root.systemLog._updated()
 
 class Root(rogue.interfaces.stream.Master,Device):
     """
@@ -1414,6 +1456,13 @@ class Root(rogue.interfaces.stream.Master,Device):
         rogue.interfaces.stream.Master.__init__(self)
         Device.__init__(self, name=name, description=description, classType='root')
 
+        # Create log listener to add to systemlog variable
+        formatter = logging.Formatter("%(msg)s")
+        handler = RootLogHandler(self)
+        handler.setLevel(logging.ERROR)
+        handler.setFormatter(formatter)
+        self._logger = logging.getLogger('pyrogue')
+        self._logger.addHandler(handler)
 
         # Keep of list of errors, exposed as a variable
         self._systemLog = ""
@@ -1421,7 +1470,7 @@ class Root(rogue.interfaces.stream.Master,Device):
 
         # Polling
         if pollEn:
-            self._pollQueue = PollQueue(self)
+            self._pollQueue = PollQueue()
         else:
             self._pollQueue = None
 
@@ -1468,7 +1517,7 @@ class Root(rogue.interfaces.stream.Master,Device):
         try:
             ret = dictToYaml({self.name:self._getVariables(modes)},default_flow_style=False)
         except Exception as e:
-            self._root._logException(e)
+            self._log.error(e)
 
         return ret
 
@@ -1559,7 +1608,7 @@ class Root(rogue.interfaces.stream.Master,Device):
             self._backgroundTransaction(rogue.interfaces.memory.Verify)
             self._checkTransaction(update=False)
         except Exception as e:
-            self._root._logException(e)
+            self._log.error(e)
 
     @command(order=6, name="readAll", description='Read all values from the hardware')
     def _read(self,dev=None,cmd=None,arg=None):
@@ -1569,7 +1618,7 @@ class Root(rogue.interfaces.stream.Master,Device):
             self._backgroundTransaction(rogue.interfaces.memory.Read)
             self._checkTransaction(update=True)
         except Exception as e:
-            self._root._logException(e)
+            self._log.error(e)
         self._doneUpdatedVars()
 
     @command(order=0, name='writeConfig', base='string', description='Write configuration to passed filename in YAML format')
@@ -1579,7 +1628,7 @@ class Root(rogue.interfaces.stream.Master,Device):
             with open(arg,'w') as f:
                 f.write(self.getYamlVariables(True,modes=['RW']))
         except Exception as e:
-            self._root._logException(e)
+            self._log.error(e)
 
     @command(order=1, name='readConfig', base='string', description='Read configuration from passed filename in YAML format')
     def _readConfig(self,dev,cmd,arg):
@@ -1588,8 +1637,8 @@ class Root(rogue.interfaces.stream.Master,Device):
             with open(arg,'r') as f:
                 self.setOrExecYaml(f.read(),False,['RW'])
         except Exception as e:
-            self._root._logException(e)
-            
+            self._log.error(e)
+
     @command(order=3, name='softReset', description='Generate a soft reset to each device in the tree')
     def _softReset(self,dev,cmd,arg):
         """Generate a soft reset on all devices"""
@@ -1605,26 +1654,12 @@ class Root(rogue.interfaces.stream.Master,Device):
     def _countReset(self,dev,cmd,arg):
         """Generate a count reset on all devices"""
         self._devReset('count')
-        
+
     @command(order=5, name='clearLog', description='Clear the message log cntained in the systemLog variable')
     def _clearLog(self,dev,cmd,arg):
         """Clear the system log"""
         with self._sysLogLock:
             self._systemLog = ""
-        self.systemLog._updated()
-
-    def _logException(self,exception):
-        """Add an exception to the log"""
-        #traceback.print_exc(limit=1)
-        traceback.print_exc()
-        self._addToLog(str(exception))
-
-    def _addToLog(self,string):
-        """Add an string to the log"""
-        with self._sysLogLock:
-            self._systemLog += string
-            self._systemLog += '\n'
-
         self.systemLog._updated()
 
     def _varUpdated(self,var,value):
@@ -1685,6 +1720,12 @@ class DataWriter(Device):
         self.add(Command(name='autoName', function=self._genFileName,
             description='Auto create data file name using data and time.'))
 
+    def _setOpen(self,dev,var,value):
+        """Set open state. Override in sub-class"""
+        self._open = value
+
+    def _setBufferSize(self,dev,var,value):
+        """Set buffer size. Override in sub-class"""
         self._bufferSize = value
 
     def _setMaxFileSize(self,dev,var,value):
@@ -1856,7 +1897,7 @@ class PollQueue(object):
 
     Entry = collections.namedtuple('PollQueueEntry', ['readTime', 'count', 'interval', 'block'])
 
-    def __init__(self, root):
+    def __init__(self):
         self._pq = [] # The heap queue
         self._entries = {} # {Block/Variable: Entry} mapping to look up if a block is already in the queue
         self._counter = itertools.count()
@@ -1865,8 +1906,11 @@ class PollQueue(object):
         self._run = True
         self._pollThread = threading.Thread(target=self._poll)
         self._pollThread.start()
-        self._root = root
-        print("PollQueue Started")
+
+        # Setup logging
+        self._log = logInit(self)
+
+        self._log.info("PollQueue Started")
 
     def _addEntry(self, block, interval):
         with self._lock:
@@ -1884,7 +1928,7 @@ class PollQueue(object):
 
     def updatePollInterval(self, var):
         with self._lock:
-            #print('updatePollInterval {} - {}'.format(var, var.pollInterval))
+            self._log.debug('updatePollInterval {} - {}'.format(var, var.pollInterval))
             # Special case: Variable has no block and just depends on other variables
             # Then do update on each dependency instead
             if var._block is None:
@@ -1933,13 +1977,13 @@ class PollQueue(object):
                 readTime = self.peek().readTime
                 waitTime = (readTime - now).total_seconds()
                 with self._update:
-                    #print('Poll thread sleeping for {}'.format(waitTime))
+                    self._log.debug('Poll thread sleeping for {}'.format(waitTime))
                     self._update.wait(waitTime)
-                
+
             with self._lock:
                 # Stop the thread if someone set run to False
                 if self._run is False:
-                    #print("PollQueue thread exiting")
+                    self._log.info("PollQueue thread exiting")
                     return
 
                 # Pop all timed out entries from the queue
@@ -1947,14 +1991,18 @@ class PollQueue(object):
                 blockEntries = []
                 for entry in self._expiredEntries(now):
                     if isinstance(entry.block, Block):
-                        #print('Polling {}'.format(entry.block._variables))
+                        self._log.debug('Polling {}'.format(entry.block._variables))
                         blockEntries.append(entry)
-                        entry.block._startTransaction(rogue.interfaces.memory.Read)
+                        try:
+                            entry.block._startTransaction(rogue.interfaces.memory.Read)
+                        except Exception as e:
+                            self._log.error(e)
+
                     else:
                         # Hack for handling local variables
-                        #print('Polling {}'.format(entry.block))
+                        self._log.debug('Polling {}'.format(entry.block))
                         entry.block.get(read=True)
-                        
+
                     # Update the entry with new read time
                     entry = entry._replace(readTime=(entry.readTime + entry.interval),
                                            count=next(self._counter))
@@ -1967,7 +2015,7 @@ class PollQueue(object):
                     for entry in blockEntries:
                         entry.block._checkTransaction(update=True)
                 except Exception as e:
-                    self._root._logException(e)
+                    self._log.error(e)
 
     def _expiredEntries(self, time=None):
         """An iterator of all entries that expire by a given time. 
@@ -1982,7 +2030,7 @@ class PollQueue(object):
                 if entry.block is not None:
                     yield entry
 
-                
+
     def peek(self):
         with self._lock:
             if self.empty() is False:

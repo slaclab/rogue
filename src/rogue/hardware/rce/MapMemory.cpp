@@ -41,8 +41,9 @@ rhr::MapMemoryPtr rhr::MapMemory::create () {
 }
 
 //! Creator
-rhr::MapMemory::MapMemory() : rim::Slave(1,0xFFFFFFFF) {
+rhr::MapMemory::MapMemory() : rim::Slave(4,0xFFFFFFFF) {
    fd_ = ::open("/dev/mem", O_RDWR | O_SYNC);
+   log_ = new rogue::Logging("rce.MapMemory");
    if ( fd_ < 0 ) throw(rogue::GeneralError::open("MapMemory::MapMemory","/dev/mem"));
 }
 
@@ -68,22 +69,30 @@ void rhr::MapMemory::addMap(uint32_t address, uint32_t size) {
 
    if ( fd_ >= 0 ) {
       map.ptr = (uint8_t *)mmap(NULL, map.size, PROT_READ | PROT_WRITE, MAP_SHARED, fd_, map.base);
-      if ( map.ptr == NULL ) return;
+      if ( map.ptr == NULL ) {
+         log_->log("error","Failed to map address 0x%x with size %i",map.base,map.size);
+         return;
+      }
       maps_.push_back(map);
+      log_->log("debug","Mapped address 0x%x with size %i to pointer 0x%x",map.base,map.size,map.ptr);
    }
 }
 
 // Find matching address space
 uint8_t * rhr::MapMemory::findSpace (uint32_t base, uint32_t size) {
    uint32_t x;
+   uint8_t * ret;
 
    boost::lock_guard<boost::mutex> lock(mapMtx_);
 
    for (x=0; x < maps_.size(); x++) {
       if ( (base >= maps_[x].base) && (((base - maps_[x].base) + size) < maps_[x].size) ) {
-         return(maps_[x].ptr + (base-maps_[x].base));
+         ret = maps_[x].ptr + (base-maps_[x].base);
+         log_->log("debug","Found map for address 0x%x, size %i at 0x%x",base,size,ret);
+         return(ret);
       }
    }
+   log_->log("debug","Failed to find map for address 0x%x, size %i",base,size);
    return(NULL);
 }
 

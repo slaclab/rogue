@@ -28,6 +28,7 @@
 #include <rogue/GeneralError.h>
 #include <boost/make_shared.hpp>
 #include <rogue/common.h>
+#include <rogue/Logging.h>
 
 namespace ris = rogue::interfaces::stream;
 namespace bp  = boost::python;
@@ -58,15 +59,23 @@ void ris::Slave::acceptFrame ( ris::FramePtr frame ) {
    uint8_t  val;
 
    if ( debug_ > 0 ) {
-      printf("%s: Got Size=%i, Data:\n",name_.c_str(),frame->getPayload());
-      printf("     ");
+      Logging log(name_.c_str());
+      char buffer[1000];
+
+      log.log("info","Got Size=%i, Data:",frame->getPayload());
+      sprintf(buffer,"     ");
+
       for (x=0; (x < debug_ && x < frame->getPayload()); x++) {
          frame->read(&val,x,1);
-         printf(" 0x%.2x",val);
-         if (( (x+1) % 10 ) == 0) 
-            printf("\n     ");
+
+         sprintf(buffer + strlen(buffer)," 0x%.2x",val);
+         if (( (x+1) % 10 ) == 0) {
+            log.log("info",buffer);
+            sprintf(buffer,"     ");
+         }
       }
-      if (( x % 10 ) != 0) printf("\n");
+
+      if ( strlen(buffer) > 5 ) log.log("info",buffer);
    }
 }
 

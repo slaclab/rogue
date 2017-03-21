@@ -9,7 +9,7 @@ Download and install python3
 
 > cd /path/to/python/3.5.2/src
 > wget https://www.python.org/ftp/python/3.5.2/Python-3.5.2.tar.xz
-> tar -xvvzpf Python-3.5.2.tar.xz
+> tar -xvvpf Python-3.5.2.tar.xz
 > cd Python-3.5.2
 > ./configure --prefix=/path/to/python/3.5.2 --enable-shared
 > make 
@@ -34,7 +34,7 @@ Install sip
 > make 
 > make install
 
-Install pyqt4
+Install pyqt4 (if you want a local GUI)
 
 > cd /path/to/python/3.5.2/src/
 > wget http://sourceforge.net/projects/pyqt/files/PyQt4/PyQt-4.11.4/PyQt-x11-gpl-4.11.4.tar.gz
@@ -69,7 +69,6 @@ Zeromq wrappers for python (see Readme_zeromq.txt)
 
 > source /path/to/zeromq/settings.csh (or settings.sh)
 > pip3 install pyzmq
-> pip3 install https://github.com/zeromq/pyre/archive/master.zip
 
 Other python packages
 

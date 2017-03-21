@@ -24,6 +24,7 @@
 #include <rogue/GeneralError.h>
 #include <boost/make_shared.hpp>
 #include <rogue/common.h>
+#include <rogue/Logging.h>
 #include <sys/syscall.h>
 
 namespace rpu = rogue::protocols::udp;
@@ -161,10 +162,11 @@ void rpu::Client::runThread() {
    int32_t        res;
    struct timeval tout;
 
+   rogue::Logging log("udp.Client");
+   log.log("info","PID=%i, TID=%li",getpid(),syscall(SYS_gettid));
+
    // Preallocate frame
    frame = ris::Pool::acceptReq(maxSize_,false,maxSize_);
-
-   printf("UDP::Client PID=%i, TID=%li\n",getpid(),syscall(SYS_gettid));
 
    try {
 

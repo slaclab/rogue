@@ -56,7 +56,7 @@ rhe::Tem::Tem(std::string path, bool data) {
    }
    PyRogue_END_ALLOW_THREADS;
 
-   if ( res < 0 ) throw(rogue::GeneralError::mask("Tem::Tem",path.c_str(),1));
+   if ( res < 0 ) throw(rogue::GeneralError::dest("Tem::Tem",path.c_str(),1));
 
    // Start read thread
    thread_ = new boost::thread(boost::bind(&rhe::Tem::runThread, this));

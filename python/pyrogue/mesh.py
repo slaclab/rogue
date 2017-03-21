@@ -31,19 +31,19 @@ class MeshNode(threading.Thread):
     Class to contain a Zyre node which acts as a client and/or server for 
     inter-connection between pyrogue nodes.
     """
-    def __init__(self,group,iface='eth0',root=None):
+    def __init__(self,group,iface=None,root=None):
         threading.Thread.__init__(self)
         self._root    = root
         self._group   = group
         self._name    = self._root.name if self._root else None
         self._runEn   = False
-        self._noMsg   = False
+        self._noMsg   = True
         self._servers = {}
         self._newTree = None
         self._thread  = None
+        self._log = pyrogue.logInit(self,self._name)
 
-        self._mesh = pyre.Pyre(self._name)
-        self._mesh.set_interface(iface)
+        self._mesh = pyre.Pyre(name=self._name,interface=iface)
         self._mesh.set_verbose()
 
         if self._root:
@@ -81,6 +81,7 @@ class MeshNode(threading.Thread):
 
         poller = zmq.Poller()
         poller.register(self._mesh.socket(),zmq.POLLIN)
+        self._noMsg = False
 
         while(self._runEn):
             evts = dict(poller.poll(100))
@@ -126,6 +127,7 @@ class MeshNode(threading.Thread):
 
                     # Structure request from client to server
                     elif cmd == 'get_structure':
+                        self._log.debug("Got structure request.")
                         self._intWhisper(sid,'structure_status',self._root.getYamlStructure(),
                                          self._root.getYamlVariables(False,['RW','RO']))
 
@@ -145,8 +147,11 @@ class MeshNode(threading.Thread):
 
                 # New node, request structure and status
                 elif typ == 'JOIN':
+                    self._log.debug("Saw join")
                     if e[3].decode('utf-8') == self._group:
+                        self._log.debug("Join group matches")
                         if self._mesh.peer_header_value(sid,'server') == 'True':
+                            self._log.debug("Peer is server. Requesting structure.")
                             self._intWhisper(sid,'get_structure')
 
         self._mesh.leave(self._group)
@@ -154,12 +159,14 @@ class MeshNode(threading.Thread):
 
     # Shout a message/payload combination
     def _intShout(self,cmd,msg=None):
+        if self._noMsg: return
         m = {'cmd':cmd,'msg':msg}
         ym = yaml.dump(m)
         self._mesh.shouts(self._group,ym)
 
     # Whisper a message/payload combination
     def _intWhisper(self,uuid,cmd,msg1=None,msg2=None):
+        if self._noMsg: return
         m = {'cmd':cmd,'msg1':msg1,'msg2':msg2}
         ym = yaml.dump(m)
         self._mesh.whispers(uuid,ym)
@@ -175,7 +182,6 @@ class MeshNode(threading.Thread):
     # Variable field updated on client
     def _setFunction(self,dev,var,value):
         var._scratch = value
-        if self._noMsg: return
         d = {}
         pyrogue.addPathToDict(d,var.path,value)
         name = var.path[:var.path.find('.')]

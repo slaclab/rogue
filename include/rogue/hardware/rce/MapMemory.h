@@ -25,6 +25,7 @@
 #include <boost/python.hpp>
 #include <boost/thread.hpp>
 #include <stdint.h>
+#include <rogue/Logging.h>
 
 namespace rogue {
    namespace hardware {
@@ -52,6 +53,9 @@ namespace rogue {
 
                // Find matching address space
                uint8_t * findSpace (uint32_t base, uint32_t size);
+
+               // Logging
+               rogue::Logging * log_;
 
             public:
 

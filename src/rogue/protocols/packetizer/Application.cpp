@@ -25,6 +25,7 @@
 #include <rogue/GeneralError.h>
 #include <boost/make_shared.hpp>
 #include <rogue/common.h>
+#include <rogue/Logging.h>
 #include <sys/syscall.h>
 
 namespace rpp = rogue::protocols::packetizer;
@@ -82,8 +83,8 @@ void rpp::Application::pushFrame( ris::FramePtr frame ) {
 
 //! Thread background
 void rpp::Application::runThread() {
-
-   printf("Packet::Application PID=%i, TID=%li\n",getpid(),syscall(SYS_gettid));
+   Logging log("packetizer.Application");
+   log.log("info","PID=%i, TID=%li",getpid(),syscall(SYS_gettid));
 
    try {
       while(1) {

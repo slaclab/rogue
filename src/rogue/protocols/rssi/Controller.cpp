@@ -29,6 +29,7 @@
 #include <boost/make_shared.hpp>
 #include <boost/pointer_cast.hpp>
 #include <rogue/common.h>
+#include <rogue/Logging.h>
 #include <sys/syscall.h>
 #include <math.h>
 
@@ -133,8 +134,6 @@ ris::FramePtr rpr::Controller::reqFrame ( uint32_t size, uint32_t maxBuffSize ) 
       frame->appendBuffer(buffer);
    }
 
-   //printf("RSSI returning frame with size = %i\n",frame->getAvailable());
-
    // Return frame
    return(frame);
 }
@@ -147,8 +146,6 @@ void rpr::Controller::transportRx( ris::FramePtr frame ) {
       dropCount_++;
       return;
    }
-
-   //printf("Got frame: \n%s\n",head->dump().c_str());
 
    // Ack set
    if ( head->ack ) lastAckRx_ = head->acknowledge;
@@ -299,7 +296,6 @@ void rpr::Controller::transportTx(rpr::HeaderPtr head, bool seqUpdate) {
    gettimeofday(&txTime_,NULL);
 
    // Send frame
-   //printf("Sending frame: \n%s\n",head->dump().c_str());
    tran_->sendFrame(head->getFrame());
 }
 
@@ -331,9 +327,10 @@ bool rpr::Controller::timePassed ( struct timeval *lastTime, uint32_t time, bool
 void rpr::Controller::runThread() {
    uint32_t wait;
 
-   wait = 0;
+   Logging log("rssi.Controller");
+   log.log("info","PID=%i, TID=%li",getpid(),syscall(SYS_gettid));
 
-   printf("RSSI::Controller PID=%i, TID=%li\n",getpid(),syscall(SYS_gettid));
+   wait = 0;
 
    try {
       while(1) {
@@ -454,7 +451,6 @@ uint32_t rpr::Controller::stateSendSeqAck () {
 
    // Update state
    state_ = StOpen;
-   //printf("RSSI State = Open\n");
    return(convTime(cumAckTout_/2));
 }
 
@@ -488,7 +484,6 @@ uint32_t rpr::Controller::stateOpen () {
    // Outbound frame required
    if ( ( doNull || ackPend >= maxCumAck_ || 
         ((ackPend > 0 || appQueue_.busy()) && timePassed(&locTime,cumAckTout_)) ) ) {
-      //printf("ack pend = %i, do Null = %i, size = %i\n",ackPend,doNull,appQueue_.size());
 
       head = rpr::Header::create(tran_->reqFrame(rpr::Header::HeaderSize,false,rpr::Header::HeaderSize));
       head->ack = true;
@@ -531,7 +526,6 @@ uint32_t rpr::Controller::stateOpen () {
             }
             else {
 
-               //printf("RSSI Retran. Seq=%i, Ack=%i\n",head->getSequence(),head->getAcknowledge());
                transportTx(head,false);
                retranCount_++;
             }
@@ -558,7 +552,6 @@ uint32_t rpr::Controller::stateError () {
 
    rst = rpr::Header::create(tran_->reqFrame(rpr::Header::HeaderSize,false,rpr::Header::HeaderSize));
    rst->rst = true;
-   //printf("Sending RST:\n%s\n",rst->dump().c_str());
 
    boost::unique_lock<boost::mutex> lock(txMtx_);
    transportTx(rst,true);
@@ -569,7 +562,6 @@ uint32_t rpr::Controller::stateError () {
 
    lock.unlock();
 
-   //printf("RSSI state set to closed.\n");
    downCount_++;
    state_ = StClosed;
 

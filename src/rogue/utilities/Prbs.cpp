@@ -28,6 +28,7 @@
 #include <rogue/utilities/Prbs.h>
 #include <boost/make_shared.hpp>
 #include <rogue/common.h>
+#include <rogue/Logging.h>
 
 namespace ris = rogue::interfaces::stream;
 namespace ru  = rogue::utilities;
@@ -68,7 +69,6 @@ ru::Prbs::~Prbs() {
 
 void ru::Prbs::init(uint32_t width, uint32_t tapCnt) {
    txThread_   = NULL;
-   enMessages_ = false;
    tapCnt_     = tapCnt;
    rxSeq_      = 0;
    rxErrCount_ = 0;
@@ -218,11 +218,6 @@ void ru::Prbs::resetCount() {
 
 }
 
-//! Enable messages
-void ru::Prbs::enMessages(bool state) {
-   enMessages_ = state;
-}
-
 //! Generate a data frame
 void ru::Prbs::genFrame (uint32_t size) {
    uint32_t      cnt;
@@ -238,8 +233,8 @@ void ru::Prbs::genFrame (uint32_t size) {
 
    // Verify size first
    if ((( size % byteWidth_ ) != 0) || size < minSize_ ) {
-      if ( enMessages_ ) 
-         printf("Prbs::genFrame -> Size violation size=%i, count=%i",size,txCount_);
+      Logging log("prbs.genFrame");
+      log.log("warning","Size violation size=%i, count=%i",size,txCount_);
       txErrCount_++;
       return;
    }
@@ -286,6 +281,7 @@ void ru::Prbs::acceptFrame ( ris::FramePtr frame ) {
    uint32_t   cnt;
    uint32_t   expValue;
    uint32_t   gotValue;
+   Logging    log("prbs.acceptFrame");
 
    boost::unique_lock<boost::mutex> lock(rxMtx_,boost::defer_lock);
 
@@ -297,8 +293,7 @@ void ru::Prbs::acceptFrame ( ris::FramePtr frame ) {
 
    // Verify size
    if ((( size % byteWidth_ ) != 0) || size < minSize_ ) {
-      if ( enMessages_ ) 
-         printf("Prbs::acceptFrame -> Size violation size=%i, count=%i",size,rxCount_);
+      log.log("warning","Size violation size=%i, count=%i",size,rxCount_);
       rxErrCount_++;
       return;
    }
@@ -317,8 +312,7 @@ void ru::Prbs::acceptFrame ( ris::FramePtr frame ) {
 
    // Check size
    if ( frSize != size ) {
-      if ( enMessages_ ) 
-         printf("Prbs::acceptFrame -> Bad size. exp=%i, got=%i, count=%i\n",frSize,size,rxCount_);
+      log.log("warning","Bad size. exp=%i, got=%i, count=%i",frSize,size,rxCount_);
       rxErrCount_++;
       return;
    }
@@ -327,8 +321,7 @@ void ru::Prbs::acceptFrame ( ris::FramePtr frame ) {
    // Accept any sequence if our local count is zero
    // incoming frames with seq = 0 never cause errors and treated as a restart
    if ( frSeq != 0 && curSeq != 0 && frSeq != curSeq ) {
-      if ( enMessages_ ) 
-         printf("Prbs::acceptFrame -> Bad Sequence. cur=%i, got=%i, count=%i\n",curSeq,frSeq,rxCount_);
+      log.log("warning","Bad Sequence. cur=%i, got=%i, count=%i",curSeq,frSeq,rxCount_);
       rxErrCount_++;
       return;
    }
@@ -341,9 +334,8 @@ void ru::Prbs::acceptFrame ( ris::FramePtr frame ) {
       cnt += readSingle(frame,cnt,&gotValue);
 
       if (expValue != gotValue) {
-         if ( enMessages_ ) 
-            printf("Prbs::acceptFrame -> Bad value at index %i. exp=0x%x, got=0x, count=%i%x\n",
-                     (cnt-byteWidth_),expValue,gotValue,rxCount_);
+         log.log("warning","Bad value at index %i. exp=0x%x, got=0x, count=%i%x",
+                 (cnt-byteWidth_),expValue,gotValue,rxCount_);
          rxErrCount_++;
          return;
       }
@@ -368,7 +360,6 @@ void ru::Prbs::setup_python() {
       .def("getTxCount",     &ru::Prbs::getTxCount)
       .def("getTxBytes",     &ru::Prbs::getTxBytes)
       .def("resetCount",     &ru::Prbs::resetCount)
-      .def("enMessages",     &ru::Prbs::enMessages)
    ;
 
    bp::implicitly_convertible<ru::PrbsPtr, ris::SlavePtr>();

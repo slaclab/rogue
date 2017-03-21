@@ -1,14 +1,12 @@
 /**
  *-----------------------------------------------------------------------------
- * Title      : Python Package
+ * Title      : Logging interface
  * ----------------------------------------------------------------------------
- * File       : package.cpp
- * Author     : Ryan Herbst, rherbst@slac.stanford.edu
- * Created    : 2016-08-08
- * Last update: 2016-08-08
+ * File       : Logging.h
+ * Created    : 2017-02-28
  * ----------------------------------------------------------------------------
  * Description:
- * Python package setup
+ * Logging interface for pyrogue
  * ----------------------------------------------------------------------------
  * This file is part of the rogue software platform. It is subject to 
  * the license terms in the LICENSE.txt file found in the top-level directory 
@@ -19,26 +17,24 @@
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
-
+#ifndef __ROGUE_LOGGING_H__
+#define __ROGUE_LOGGING_H__
+#include <exception>
 #include <boost/python.hpp>
-#include <rogue/interfaces/module.h>
-#include <rogue/hardware/module.h>
-#include <rogue/utilities/module.h>
-#include <rogue/protocols/module.h>
-#include <rogue/GeneralError.h>
-#include <rogue/Logging.h>
+#include <stdint.h>
 
-BOOST_PYTHON_MODULE(rogue) {
+namespace rogue {
 
-   PyEval_InitThreads();
+   //! Logging
+   class Logging {
+         boost::python::object _logging;
+         boost::python::object _logger;
+      public:
+         Logging (const char *cls);
+         void log(const char *level, const char * fmt, ...);
+         static void setup_python();
+   };
+}
 
-   rogue::interfaces::setup_module();
-   rogue::protocols::setup_module();
-   rogue::hardware::setup_module();
-   rogue::utilities::setup_module();
-
-   rogue::GeneralError::setup_python();
-   rogue::Logging::setup_python();
-
-};
+#endif
 
