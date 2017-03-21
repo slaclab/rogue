@@ -722,6 +722,14 @@ class LocalVariable(Variable):
     def get(self, read=True):
         return self.value
 
+    def __set__(self, value):
+        self.set(value)
+
+    def __get__(self):
+        return self.get()
+
+
+
  
 
 
