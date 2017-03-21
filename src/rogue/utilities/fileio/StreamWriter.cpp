@@ -104,6 +104,11 @@ void ruf::StreamWriter::open(std::string file) {
    currSize_   = 0;
    frameCount_ = 0;
    currBuffer_ = 0;
+
+   //Iterate over all channels and reset their frame counts
+   for (std::map<uint32_t,ruf::StreamWriterChannelPtr>::iterator it=channelMap_.begin(); it!=channelMap_.end(); ++it) {
+     it->second->setFrameCount(0);
+   }
 }
 
 //! Close a data file

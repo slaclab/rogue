@@ -72,6 +72,13 @@ uint32_t ruf::StreamWriterChannel::getFrameCount() {
   return frameCount_;
 }
 
+
+void ruf::StreamWriterChannel::setFrameCount(uint32_t count) {
+  rogue::GilRelease noGil;
+  boost::unique_lock<boost::mutex> lock(mtx_);
+  frameCount_ = count;
+}
+
 void ruf::StreamWriterChannel::waitFrameCount(uint32_t count) {
   rogue::GilRelease noGil;
   boost::unique_lock<boost::mutex> lock(mtx_);

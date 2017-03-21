@@ -72,6 +72,9 @@ namespace rogue {
                //! Get number of frames that have been accepted
                uint32_t getFrameCount();
 
+               //! Set the frame count to a specific value
+               void setFrameCount(uint32_t count);
+
                //! Block until a number of frames have been received
                void waitFrameCount(uint32_t count);
          };
