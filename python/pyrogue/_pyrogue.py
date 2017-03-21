@@ -422,6 +422,7 @@ class Variable(Node):
     def __init__(self, name, description="", parent=None,
                  offset=None, bitSize=32, bitOffset=0, pollInterval=0, mode='RW',
                  value=None,
+                 model=None, base=None,
                  disp='hex', enum=None, units=None, hidden=False, minimum=None, maximum=None,
                  dependencies=None,
                  beforeReadCmd=None, afterWriteCmd=None,
@@ -433,25 +434,52 @@ class Variable(Node):
         self.bitSize   = bitSize
         self.bitOffset = bitOffset
         self.mode      = mode
-        self.enum      = enum
-        self.revEnum = None
-        if enum is not None:
-            self.revEnum = {v:k for k,v in enum.items()}
         self.units     = units
+        self.enum = enum        
         self.minimum   = minimum # For base='range'
         self.maximum   = maximum # For base='range'
         self.value     = value
 
+        if model is not None:
+            self.model = model
+        elif base is not None:
+            if base == 'hex' or base == 'uint' or base == 'bin' or base == 'enum' or base == 'range':
+                self.model = IntModel(signed=False, endianness='little')
+            elif base == 'string':
+                self.model = StringModel()
+            elif base == 'float':
+                self.model = FloatModel()
+
         # Format disp
-        if disp == 'hex':
-            self.disp = '{:x}'
-        elif disp == 'uint':
-            self.disp = '{:d}'
-        elif disp == 'bin':
-            self.disp = '{:b}'
-        elif disp == 'string':
-            self.disp = '{}'
-            
+        if disp is not None:
+            tmp = disp
+        elif base is not None:
+            tmp = base
+
+        if isinstance(tmp, dict):
+            self.disp = 'enum'
+            self.enum = tmp
+        elif isinstance(tmp, list):
+            self.disp = 'enum'
+            self.enum = {k:str(k) for k in tmp}
+        elif isinstance(tmp, str):
+            if tmp == 'range':
+                self.disp = 'range'
+            elif tmp == 'hex':
+                self.disp = '{:x}'
+            elif tmp == 'uint':
+                self.disp = '{:d}'
+            elif tmp == 'bin':
+                self.disp = '{:b}'
+            elif tmp == 'string':
+                self.disp = '{}'
+            else:
+                self.disp = tmp
+
+        self.revEnum = None
+        if self.enum is not None:
+            self.revEnum = {v:k for k,v in self.enum.items()}
+
         self._pollInterval = pollInterval
 
         # Check modes
@@ -476,7 +504,7 @@ class Variable(Node):
 
         self._block = None
 
-        if self.base == 'string':
+        if isinstance(self.model, StringModel):
             self._scratch = ''
         else:
             self._scratch = 0
@@ -538,7 +566,7 @@ class Variable(Node):
 
         #print("{}.set({})".format(self, value))
         try:
-            self.value = value
+            # Transform first with setFunc?
             self._block.set(self, value)
             # Inform listeners
             self._updated()
@@ -560,8 +588,8 @@ class Variable(Node):
         Writes to hardware are posted.
         """
         try:
-            self.value = self.setFunc(self._parent, self, value)
-            self._block.set(self, self.value)
+
+            self._block.set(self, value)
 
             if self._block and self._block.mode != 'RO':
                 self._block.backgroundTransaction(rogue.interfaces.memory.Post)
@@ -580,8 +608,8 @@ class Variable(Node):
                 self._beforeReadCmd()
                 self._block.blockingTransaction(rogue.interfaces.memory.Read)
 
-            self.value = self._block.get(self)
-            #self.value = self.getFunc(self._parent, self) 
+            value = self._block.get(self)
+            # Transform with getFunc?
             
         except Exception as e:
             print("Got exception in get: %s" % (str(e)))
@@ -591,7 +619,7 @@ class Variable(Node):
         # Update listeners for all variables in the block
         if read:
             self._block._updated()
-        return self.value
+        return value
 
     def _updated(self):
         """Variable has been updated. Inform listeners."""
@@ -602,27 +630,13 @@ class Variable(Node):
         self.value = self._block.get(self)
         
         for func in self.__listeners:
-            func(self, value)
+            func(self, self.value)
 
         # Root variable update log
         self._root._varUpdated(self,self.value)
 
     def linkUpdated(self, var, value):
         self._updated()
-
-    def _toBlock(self):
-        """
-        Convert from the Python native type of the Variable and a bytearray to be stored in memory
-        """
-        raise Exception("Unimlemented")
-        #return self.base.toBlock(value)
-
-    def _fromBlock(self, ba):
-        """
-        Convert from a memory byte array to a python native type
-        """
-        raise Exception("Unimlemented")        
-        #return self.base.fromBlock(self)
 
     def getDisp(self, read=True):
         if self.disp == 'enum':
@@ -636,32 +650,39 @@ class Variable(Node):
         else:
             self.set(parse.parse(self.disp, sValue)[0], write)
 
-        
-class IntVariable(Variable):
+class ModelMeta(type):
+    def __init__(cls, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        cls.cache = {}
+
+    def __call__(cls, *args, **kwargs)
+        key = str(args) + str(kwargs)
+        if key not in cls.cache:
+            inst = super().__call__(*args, **kwargs)
+            cls.cache[key] = inst
+        return cls.cache[key]
+
+class Model(metaclass=ModelMeta):
+    pass
+
+class IntModel(Model):
     """Variable holding an unsigned integer"""
-    def __init__(self, signed=False, endianness='little', **kwargs):
-        super().__init__(**kwargs)
+    def __init__(self, signed=False, endianness='little'):
         self.signed = signed
         self.endianness = endianness
 
     def _toBlock(self, value):
-        return value.to_bytes(numBytes(self.bitSize), self.endianness, signed=self.signed)
+        return value.to_bytes(numBytes(value.bit_length()), self.endianness, signed=self.signed)
 
     def _fromBlock(self, ba):
         return int.from_bytes(ba, self.endianness, signed=self.signed)
 
-class BoolVariable(IntVariable):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-
-        if enum is None:
-            self.disp = 'enum'
-            self.enum = {True: 'True', False: 'False'}
+class BoolModel(IntModel):
 
     def _fromBlock(self, ba):
-        return bool(IntVariable._fromBlock(self, ba))
+        return bool(IntModel._fromBlock(self, ba))
         
-class StringVariable(Variable):
+class StringModel(Model):
     """Variable holding a string"""
     def __init__(self, encoding='utf-8', **kwargs):
         super().__init__(**kwargs)
@@ -680,6 +701,9 @@ class StringVariable(Variable):
 class LocalVariable(Variable):
     def __init__(self, getFunction=None, setFunction=None, **kwargs):
         super().__init__(**kwargs)
+
+        if value in kwargs:
+            self.value = kwargs[value]
         
         if setFunc is not None:
             self.setSetFunc(setFunc)
@@ -698,18 +722,7 @@ class LocalVariable(Variable):
     def get(self, read=True):
         return self.value
 
-    @staticmethod
-    def clone(self, var):
-        """ A factory for cloning the properties of another variable """
-        return LocalVariable(
-            name=var.name,
-            description=var.description,
-            mode=var.mode,
-            value=var.value,
-            disp=var.disp,
-            enum=var.enum,
-            minimum=var.minimum,
-            maximum=var.maximum)
+ 
 
 
 class Command(Node):
@@ -845,21 +858,12 @@ class LocalBlock(object):
     def __init__(self, variable):
         self._name = variable.name
         self._variable = variable
-        self._device = variable.parent
-        variable._block = self
         
     def __repr__(self):
         return 'LocalBlock({})'.format(self._variable)
 
     def _addVariable(self, var):
         return False
-
-    def get(self, var):
-        return var.value
-
-    def set(self, var, value):
-        # Check that types match first
-        pass
 
     def backgroundTransaction(self,type):
         pass
@@ -876,7 +880,7 @@ class LocalBlock(object):
     def _updated(self):
         variable._updated()
 
-class RemoteBlock(rogue.interfaces.memory.Master):
+class Block(rogue.interfaces.memory.Master):
     """Internal memory block holder"""
 
     def __init__(self, variable):
@@ -918,7 +922,7 @@ class RemoteBlock(rogue.interfaces.memory.Master):
         with self._cond:
             self._waitTransaction()
 
-            ba = var.toBlock(value)
+            ba = var.model._toBlock(value)
 
             # Access is fully byte aligned
             if (var.bitOffset % 8) == 0 and (var.bitCount % 8) == 0:
@@ -945,7 +949,7 @@ class RemoteBlock(rogue.interfaces.memory.Master):
 
             # Access is fully byte aligned
             if (var.bitOffset % 8) == 0 and (var.bitCount % 8) == 0:
-                return var._fromBlock(self._bData[int(var.bitOffset/8):int((var.bitOffset+var.bitCount)/8)])
+                return var.model._fromBlock(self._bData[int(var.bitOffset/8):int((var.bitOffset+var.bitCount)/8)])
 
             # Bit level access
             else:
