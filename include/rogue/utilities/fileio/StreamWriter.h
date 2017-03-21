@@ -92,6 +92,11 @@ namespace rogue {
                //! Flush file
                void flush();
 
+               //! condition
+               boost::condition_variable cond_;
+
+               std::map<uint32_t,StreamWriterChannelPtr> channelMap_;
+
             protected:
 
                //! Write data to file. Called from StreamWriterChannel
@@ -131,6 +136,9 @@ namespace rogue {
 
                //! Get current frame count
                uint32_t getFrameCount();
+
+               //! Block until a frame count is reached
+               void waitFrameCount(uint32_t count);
 
          };
 

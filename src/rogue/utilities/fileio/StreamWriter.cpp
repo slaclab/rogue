@@ -65,6 +65,7 @@ void ruf::StreamWriter::setup_python() {
       .def("getChannel",     &ruf::StreamWriter::getChannel)
       .def("getSize",        &ruf::StreamWriter::getSize)
       .def("getFrameCount",  &ruf::StreamWriter::getFrameCount)
+      .def("waitFrameCount", &ruf::StreamWriter::waitFrameCount)
    ;
 }
 
@@ -108,7 +109,7 @@ void ruf::StreamWriter::open(std::string file) {
 //! Close a data file
 void ruf::StreamWriter::close() {
    rogue::GilRelease noGil;
-   boost::lock_guard<boost::mutex> lock(mtx_);
+   boost::unique_lock<boost::mutex> lock(mtx_);
    flush();
    if ( fd_ >= 0 ) ::close(fd_);
    fd_ = -1;
@@ -117,7 +118,7 @@ void ruf::StreamWriter::close() {
 //! Set buffering size, 0 to disable
 void ruf::StreamWriter::setBufferSize(uint32_t size) {
    rogue::GilRelease noGil;
-   boost::lock_guard<boost::mutex> lock(mtx_);
+   boost::unique_lock<boost::mutex> lock(mtx_);
 
    // No change
    if ( size != buffSize_ ) {
@@ -143,25 +144,38 @@ void ruf::StreamWriter::setBufferSize(uint32_t size) {
 //! Set max file size, 0 for unlimited
 void ruf::StreamWriter::setMaxSize(uint32_t size) {
    rogue::GilRelease noGil;
-   boost::lock_guard<boost::mutex> lock(mtx_);
+   boost::unique_lock<boost::mutex> lock(mtx_);
    sizeLimit_ = size;
 }
 
 //! Get a slave port
 ruf::StreamWriterChannelPtr ruf::StreamWriter::getChannel(uint8_t channel) {
-   return(ruf::StreamWriterChannel::create(shared_from_this(),channel));
+  rogue::GilRelease noGil;
+  boost::unique_lock<boost::mutex> lock(mtx_);
+  if (channelMap_.count(channel) == 0) {
+    channelMap_[channel] = ruf::StreamWriterChannel::create(shared_from_this(),channel);
+  }
+  return (channelMap_[channel]);
 }
 
 //! Get current file size
 uint32_t ruf::StreamWriter::getSize() {
    rogue::GilRelease noGil;
-   boost::lock_guard<boost::mutex> lock(mtx_);
+   boost::unique_lock<boost::mutex> lock(mtx_);
    return(totSize_ + currBuffer_);
 }
 
 //! Get current frame count
 uint32_t ruf::StreamWriter::getFrameCount() {
    return(frameCount_);
+}
+
+void ruf::StreamWriter::waitFrameCount(uint32_t count) {
+  rogue::GilRelease noGil;
+  boost::unique_lock<boost::mutex> lock(mtx_);
+  while (frameCount_ < count) {
+    cond_.timed_wait(lock, boost::posix_time::microseconds(1000));
+  }
 }
 
 //! Write data to file. Called from StreamWriterChannel
@@ -171,7 +185,7 @@ void ruf::StreamWriter::writeFile ( uint8_t channel, boost::shared_ptr<rogue::in
    uint32_t size;
 
    rogue::GilRelease noGil;
-   boost::lock_guard<boost::mutex> lock(mtx_);
+   boost::unique_lock<boost::mutex> lock(mtx_);
 
    if ( fd_ >= 0 ) {
       size = frame->getPayload() + 4;
@@ -194,6 +208,8 @@ void ruf::StreamWriter::writeFile ( uint8_t channel, boost::shared_ptr<rogue::in
 
       // Update counters
       frameCount_ ++;
+      lock.unlock();
+      cond_.notify_all();
    }
 }
 
