@@ -32,8 +32,8 @@
  * contained in the LICENSE.txt file.
  *-----------------------------------------------------------------------------
 **/
-#include <rogue/utilities/fileio/StreamWriterChannel.h>
 #include <rogue/utilities/fileio/StreamWriter.h>
+#include <rogue/utilities/fileio/StreamWriterChannel.h>
 #include <rogue/interfaces/stream/Frame.h>
 #include <rogue/GeneralError.h>
 #include <stdint.h>

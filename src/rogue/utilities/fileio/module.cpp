@@ -41,8 +41,8 @@ void ruf::setup_module() {
    bp::scope io_scope = module;
 
    ruf::StreamReader::setup_python();
-   ruf::StreamWriterChannel::setup_python();   
    ruf::StreamWriter::setup_python();
+   ruf::StreamWriterChannel::setup_python();   
 
 }
 

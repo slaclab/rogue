@@ -95,7 +95,7 @@ namespace rogue {
                //! condition
                boost::condition_variable cond_;
 
-               std::map<uint32_t,StreamWriterChannelPtr> channelMap_;
+               std::map<uint32_t,boost::shared_ptr<rogue::utilities::fileio::StreamWriterChannel>> channelMap_;
 
             protected:
 
