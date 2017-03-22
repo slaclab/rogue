@@ -35,22 +35,13 @@ namespace rogue {
                //! DataMap file descriptor
                int32_t  fd_;
 
-               //! Tracked mapped spaces
-               std::vector<rogue::hardware::rce::Map> maps_;
-
-               //! Lock for vector access
-               boost::mutex mapMtx_;
-
-               // Find matching address space
-               uint8_t * findSpace (uint32_t base, uint32_t size);
-
                // Logging
                rogue::Logging * log_;
 
             public:
 
                //! Class creation
-               static boost::shared_ptr<rogue::hardware::rce::DataMap> create (std::string path);
+               static boost::shared_ptr<rogue::hardware::data::DataMap> create (std::string path);
 
                //! Setup class in python
                static void setup_python();
@@ -67,7 +58,7 @@ namespace rogue {
          };
 
          // Convienence
-         typedef boost::shared_ptr<rogue::hardware::rce::DataMap> DataMapPtr;
+         typedef boost::shared_ptr<rogue::hardware::data::DataMap> DataMapPtr;
 
       }
    }

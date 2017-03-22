@@ -52,6 +52,9 @@ namespace rogue {
                //! Timeout for frame transmits
                uint32_t timeout_;
 
+               //! ssi insertion enable
+               bool enSsi_;
+
                //! Pointer to zero copy buffers
                void  ** rawBuff_;
 
@@ -83,6 +86,12 @@ namespace rogue {
 
                //! Enable / disable zero copy
                void setZeroCopyEn(bool state);
+
+               //! Enable SSI flags in first and last user fields
+               void enableSsi(bool enable);
+
+               //! Strobe ack line
+               void dmaAck();
 
                //! Generate a Frame. Called from master
                /*
