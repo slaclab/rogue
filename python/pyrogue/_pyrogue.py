@@ -466,15 +466,6 @@ class Variable(Node):
         self.maximum   = maximum # For base='range'
         self.value     = value  
         
-        # Local Variables override get and set functions
-        self.__local = local or setFunction is not None or getFunction is not None
-        self._setFunction = setFunction
-        self._getFunction = getFunction
-        if self.__local == True:
-            if setFunction is None:
-                self._setFunction = self._localSetFunction
-            if getFunction is None:
-                self._setFunction = self._localGetFunction
         
 
         # Handle legacy model declarations
@@ -526,9 +517,20 @@ class Variable(Node):
            (self.mode != 'CMD'):
             raise VariableError('Invalid variable mode %s. Supported: RW, RO, WO, SL, CMD' % (self.mode))
 
+        #Tracking variables
+        self._block = None
         self.__listeners  = []
 
-        self._block = None
+        # Local Variables override get and set functions
+        self.__local = local or setFunction is not None or getFunction is not None
+        self._setFunction = setFunction
+        self._getFunction = getFunction
+        if self.__local == True:
+            if setFunction is None:
+                self._setFunction = self._localSetFunction
+            if getFunction is None:
+                self._setFunction = self._localGetFunction
+
 
         if isinstance(self.model, StringModel):
             self._scratch = ''
