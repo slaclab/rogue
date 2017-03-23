@@ -21,7 +21,7 @@
 #include <rogue/protocols/rssi/Header.h>
 #include <rogue/GeneralError.h>
 #include <boost/make_shared.hpp>
-#include <rogue/common.h>
+#include <rogue/GilRelease.h>
 #include <stdint.h>
 #include <iomanip>
 #include <rogue/interfaces/stream/Buffer.h>

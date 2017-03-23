@@ -23,7 +23,7 @@
 #include <rogue/interfaces/memory/Slave.h>
 #include <rogue/GeneralError.h>
 #include <boost/make_shared.hpp>
-#include <rogue/common.h>
+#include <rogue/GilRelease.h>
 
 namespace rim = rogue::interfaces::memory;
 namespace bp  = boost::python;
@@ -73,38 +73,27 @@ uint32_t rim::Master::getId() {
 
 //! Set slave
 void rim::Master::setSlave ( rim::SlavePtr slave ) {
-   PyRogue_BEGIN_ALLOW_THREADS;
-   {
-      boost::lock_guard<boost::mutex> lock(mtx_);
-      slave_ = slave;
-   }
-   PyRogue_END_ALLOW_THREADS;
+   rogue::GilRelease noGil;
+   boost::lock_guard<boost::mutex> lock(mtx_);
+   slave_ = slave;
 }
 
 //! Get slave
 rim::SlavePtr rim::Master::getSlave () {
    rim::SlavePtr ret;
 
-   PyRogue_BEGIN_ALLOW_THREADS;
-   {
-      boost::lock_guard<boost::mutex> lock(mtx_);
-      ret = slave_;
-   }
-   PyRogue_END_ALLOW_THREADS;
-
-   return(ret);
+   rogue::GilRelease noGil;
+   boost::lock_guard<boost::mutex> lock(mtx_);
+   return(slave_);
 }
 
 //! Query the minimum access size in bytes for interface
 uint32_t rim::Master::reqMinAccess() {
    rim::SlavePtr slave;
 
-   PyRogue_BEGIN_ALLOW_THREADS;
-   {
-      boost::lock_guard<boost::mutex> lock(mtx_);
-      slave = slave_;
-   }
-   PyRogue_END_ALLOW_THREADS;
+   rogue::GilRelease noGil;
+   boost::lock_guard<boost::mutex> lock(mtx_);
+   slave = slave_;
    return(slave->doMinAccess());
 }
 
@@ -112,12 +101,9 @@ uint32_t rim::Master::reqMinAccess() {
 uint32_t rim::Master::reqMaxAccess() {
    rim::SlavePtr slave;
 
-   PyRogue_BEGIN_ALLOW_THREADS;
-   {
-      boost::lock_guard<boost::mutex> lock(mtx_);
-      slave = slave_;
-   }
-   PyRogue_END_ALLOW_THREADS;
+   rogue::GilRelease noGil;
+   boost::lock_guard<boost::mutex> lock(mtx_);
+   slave = slave_;
    return(slave->doMaxAccess());
 }
 
@@ -125,12 +111,9 @@ uint32_t rim::Master::reqMaxAccess() {
 uint64_t rim::Master::reqOffset() {
    rim::SlavePtr slave;
 
-   PyRogue_BEGIN_ALLOW_THREADS;
-   {
-      boost::lock_guard<boost::mutex> lock(mtx_);
-      slave = slave_;
-   }
-   PyRogue_END_ALLOW_THREADS;
+   rogue::GilRelease noGil;
+   boost::lock_guard<boost::mutex> lock(mtx_);
+   slave = slave_;
    return(slave->doOffset());
 }
 
@@ -139,20 +122,18 @@ void rim::Master::reqTransaction(uint64_t address, uint32_t size, void *data, ui
    rim::SlavePtr slave;
    uint32_t id;
 
-   PyRogue_BEGIN_ALLOW_THREADS;
+   rogue::GilRelease noGil;
+   genId();
    {
-      genId();
-      {
-         boost::lock_guard<boost::mutex> lock(mtx_);
-         slave = slave_;
-         if ( pyValid_ ) PyBuffer_Release(&pyBuf_);
-         tData_   = (uint8_t *)data;
-         tSize_   = size;
-         id       = tId_;
-         pyValid_ = false;
-      }
+      boost::lock_guard<boost::mutex> lock(mtx_);
+      slave = slave_;
+      if ( pyValid_ ) PyBuffer_Release(&pyBuf_);
+      tData_   = (uint8_t *)data;
+      tSize_   = size;
+      id       = tId_;
+      pyValid_ = false;
    }
-   PyRogue_END_ALLOW_THREADS;
+   noGil.acquire();
    slave->doTransaction(id,shared_from_this(),address,size,type);
 }
 
@@ -161,46 +142,39 @@ void rim::Master::reqTransactionPy(uint64_t address, boost::python::object p, ui
    rim::SlavePtr slave;
    uint32_t size = 0;
    uint32_t id = 0;
-   bool err = false;
 
-   PyRogue_BEGIN_ALLOW_THREADS;
+   rogue::GilRelease noGil;
+   genId();
    {
+      boost::lock_guard<boost::mutex> lock(mtx_);
+      slave = slave_;
+      if ( pyValid_ ) PyBuffer_Release(&pyBuf_);
 
-      genId();
-      {
-         boost::lock_guard<boost::mutex> lock(mtx_);
-         slave = slave_;
-         if ( pyValid_ ) PyBuffer_Release(&pyBuf_);
-
-         if ( PyObject_GetBuffer(p.ptr(),&pyBuf_,PyBUF_SIMPLE) < 0 ) err = true;
-         else {
-            tData_   = (uint8_t *)pyBuf_.buf;
-            tSize_   = pyBuf_.len;
-            size     = pyBuf_.len;
-            id       = tId_;
-            pyValid_ = true;
-         }
+      if ( PyObject_GetBuffer(p.ptr(),&pyBuf_,PyBUF_SIMPLE) < 0 )
+         throw(rogue::GeneralError("Master::reqTransactionPy","Python Buffer Error"));
+      else {
+         tData_   = (uint8_t *)pyBuf_.buf;
+         tSize_   = pyBuf_.len;
+         size     = pyBuf_.len;
+         id       = tId_;
+         pyValid_ = true;
       }
    }
-   PyRogue_END_ALLOW_THREADS;
-   if (err) throw(rogue::GeneralError("Master::reqTransactionPy","Python Buffer Error"));
+   noGil.acquire();
    slave->doTransaction(id,shared_from_this(),address,size,type);
 }
 
 //! End current transaction, ensures data pointer is not update and de-allocates python buffer
 void rim::Master::endTransaction() {
-   PyRogue_BEGIN_ALLOW_THREADS;
-   {
-      boost::lock_guard<boost::mutex> lock(mtx_);
+   rogue::GilRelease noGil;
+   boost::lock_guard<boost::mutex> lock(mtx_);
 
-      if ( pyValid_ ) PyBuffer_Release(&pyBuf_);
+   if ( pyValid_ ) PyBuffer_Release(&pyBuf_);
 
-      pyValid_ = false;
-      tData_   = NULL;
-      tSize_   = 0;
-      tId_     = 0;
-   }
-   PyRogue_END_ALLOW_THREADS;
+   pyValid_ = false;
+   tData_   = NULL;
+   tSize_   = 0;
+   tId_     = 0;
 }
 
 //! Transaction complete, set by slave, error passed
@@ -210,15 +184,12 @@ void rim::Master::doneTransaction(uint32_t id, uint32_t error) {
 
 //! Set to master from slave, called by slave
 void rim::Master::setTransactionData(uint32_t id, void *data, uint32_t offset, uint32_t size) { 
-   PyRogue_BEGIN_ALLOW_THREADS;
-   {
-      boost::lock_guard<boost::mutex> lock(mtx_);
+   rogue::GilRelease noGil;
+   boost::lock_guard<boost::mutex> lock(mtx_);
 
-      if ( tId_ != id || tData_ == NULL || (offset + size) > tSize_ ) return;
+   if ( tId_ != id || tData_ == NULL || (offset + size) > tSize_ ) return;
 
-      memcpy(tData_ + offset, data, size);
-   }
-   PyRogue_END_ALLOW_THREADS;
+   memcpy(tData_ + offset, data, size);
 }
 
 //! Set to master from slave, called by slave to push data into master. Python Version.
@@ -234,15 +205,12 @@ void rim::Master::setTransactionDataPy(uint32_t id, uint32_t offset, boost::pyth
 
 //! Get from master to slave, called by slave
 void rim::Master::getTransactionData(uint32_t id, void *data, uint32_t offset, uint32_t size) { 
-   PyRogue_BEGIN_ALLOW_THREADS;
-   {
-      boost::lock_guard<boost::mutex> lock(mtx_);
+   rogue::GilRelease noGil;
+   boost::lock_guard<boost::mutex> lock(mtx_);
 
-      if ( tId_ != id || tData_ == NULL || (offset + size) > tSize_ ) return;
+   if ( tId_ != id || tData_ == NULL || (offset + size) > tSize_ ) return;
 
-      memcpy(data,tData_ + offset, size);
-   }
-   PyRogue_END_ALLOW_THREADS;
+   memcpy(data,tData_ + offset, size);
 }
 
 //! Get from master to slave, called by slave to pull data from mater. Python Version.

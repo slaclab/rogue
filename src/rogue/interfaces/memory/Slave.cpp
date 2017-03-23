@@ -24,7 +24,7 @@
 #include <rogue/interfaces/memory/Constants.h>
 #include <rogue/GeneralError.h>
 #include <boost/make_shared.hpp>
-#include <rogue/common.h>
+#include <rogue/GilRelease.h>
 
 namespace rim = rogue::interfaces::memory;
 namespace bp = boost::python;
@@ -47,64 +47,40 @@ rim::Slave::~Slave() { }
 
 //! Enable local response
 void rim::Slave::enLocDone(bool enable) {
-   PyRogue_BEGIN_ALLOW_THREADS;
-   {
-      boost::lock_guard<boost::mutex> lock(mtx_);
-      enLocDone_ = enable;
-   }
-   PyRogue_END_ALLOW_THREADS;
+   rogue::GilRelease noGil;
+   boost::lock_guard<boost::mutex> lock(mtx_);
+   enLocDone_ = enable;
 }
 
 //! Register a master.
 void rim::Slave::addMaster(uint32_t id, rim::MasterPtr master) {
-   PyRogue_BEGIN_ALLOW_THREADS;
-   {
-      boost::lock_guard<boost::mutex> lock(mtx_);
-      masterMap_[id] = master;
-   }
-   PyRogue_END_ALLOW_THREADS;
+   rogue::GilRelease noGil;
+   boost::lock_guard<boost::mutex> lock(mtx_);
+   masterMap_[id] = master;
 }
 
 //! Get master device with index, called by sub classes
 rim::MasterPtr rim::Slave::getMaster(uint32_t index) {
-   rim::MasterPtr ret;
-   bool fail = false;
+   rogue::GilRelease noGil;
+   boost::lock_guard<boost::mutex> lock(mtx_);
 
-   PyRogue_BEGIN_ALLOW_THREADS;
-   {
-      boost::lock_guard<boost::mutex> lock(mtx_);
-
-      if ( masterMap_.find(index) != masterMap_.end() ) ret = masterMap_[index];
-      else fail = true;
-   }
-   PyRogue_END_ALLOW_THREADS;
-
-   if ( fail ) throw(rogue::GeneralError("Slave::getMaster","Memory Master Not Linked To Slave"));
-   else return(ret);
+   if ( masterMap_.find(index) != masterMap_.end() ) return(masterMap_[index]);
+   else throw(rogue::GeneralError("Slave::getMaster","Memory Master Not Linked To Slave"));
 }
 
 //! Return true if master is valid
 bool rim::Slave::validMaster(uint32_t index) {
-   bool ret;
-
-   PyRogue_BEGIN_ALLOW_THREADS;
-   {
-      boost::lock_guard<boost::mutex> lock(mtx_);
-      if ( masterMap_.find(index) != masterMap_.end() ) ret = true;
-      else ret = false;
-   }
-   PyRogue_END_ALLOW_THREADS;
-   return(ret);
+   rogue::GilRelease noGil;
+   boost::lock_guard<boost::mutex> lock(mtx_);
+   if ( masterMap_.find(index) != masterMap_.end() ) return(true);
+   else return(false);
 }
 
 //! Remove master from the list
 void rim::Slave::delMaster(uint32_t index) {
-   PyRogue_BEGIN_ALLOW_THREADS;
-   {
-      boost::lock_guard<boost::mutex> lock(mtx_);
-      if ( masterMap_.find(index) != masterMap_.end() ) masterMap_.erase(index);
-   }
-   PyRogue_END_ALLOW_THREADS;
+   rogue::GilRelease noGil;
+   boost::lock_guard<boost::mutex> lock(mtx_);
+   if ( masterMap_.find(index) != masterMap_.end() ) masterMap_.erase(index);
 }
 
 //! Return min access size to requesting master

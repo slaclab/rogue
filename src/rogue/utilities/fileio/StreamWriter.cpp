@@ -32,8 +32,8 @@
  * contained in the LICENSE.txt file.
  *-----------------------------------------------------------------------------
 **/
-#include <rogue/utilities/fileio/StreamWriterChannel.h>
 #include <rogue/utilities/fileio/StreamWriter.h>
+#include <rogue/utilities/fileio/StreamWriterChannel.h>
 #include <rogue/interfaces/stream/Frame.h>
 #include <rogue/GeneralError.h>
 #include <stdint.h>
@@ -41,7 +41,7 @@
 #include <boost/make_shared.hpp>
 #include <boost/lexical_cast.hpp>
 #include <fcntl.h>
-#include <rogue/common.h>
+#include <rogue/GilRelease.h>
 
 namespace ris = rogue::interfaces::stream;
 namespace ruf = rogue::utilities::fileio;
@@ -65,6 +65,7 @@ void ruf::StreamWriter::setup_python() {
       .def("getChannel",     &ruf::StreamWriter::getChannel)
       .def("getSize",        &ruf::StreamWriter::getSize)
       .def("getFrameCount",  &ruf::StreamWriter::getFrameCount)
+      .def("waitFrameCount", &ruf::StreamWriter::waitFrameCount)
    ;
 }
 
@@ -103,84 +104,83 @@ void ruf::StreamWriter::open(std::string file) {
    currSize_   = 0;
    frameCount_ = 0;
    currBuffer_ = 0;
+
+   //Iterate over all channels and reset their frame counts
+   for (std::map<uint32_t,ruf::StreamWriterChannelPtr>::iterator it=channelMap_.begin(); it!=channelMap_.end(); ++it) {
+     it->second->setFrameCount(0);
+   }
 }
 
 //! Close a data file
 void ruf::StreamWriter::close() {
-   PyRogue_BEGIN_ALLOW_THREADS;
-   {
-      boost::lock_guard<boost::mutex> lock(mtx_);
-      flush();
-      if ( fd_ >= 0 ) ::close(fd_);
-      fd_ = -1;
-   }
-   PyRogue_END_ALLOW_THREADS;
+   rogue::GilRelease noGil;
+   boost::lock_guard<boost::mutex> lock(mtx_);
+   flush();
+   if ( fd_ >= 0 ) ::close(fd_);
+   fd_ = -1;
 }
 
 //! Set buffering size, 0 to disable
 void ruf::StreamWriter::setBufferSize(uint32_t size) {
-   PyRogue_BEGIN_ALLOW_THREADS;
-   {
+   rogue::GilRelease noGil;
+   boost::lock_guard<boost::mutex> lock(mtx_);
 
-      boost::lock_guard<boost::mutex> lock(mtx_);
+   // No change
+   if ( size != buffSize_ ) {
 
-      // No change
-      if ( size != buffSize_ ) {
+      // Flush data out of current buffer
+      flush();
 
-         // Flush data out of current buffer
-         flush();
+      // Free old buffer
+      if ( buffer_ != NULL ) free(buffer_);
+      buffSize_ = 0;
 
-         // Free old buffer
-         if ( buffer_ != NULL ) free(buffer_);
-         buffSize_ = 0;
+      // Buffer is enabled
+      if ( size != 0 ) {
 
-         // Buffer is enabled
-         if ( size != 0 ) {
-
-            // Create new buffer
-            if ( (buffer_ = (uint8_t *)malloc(size)) != NULL )
-               buffSize_ = size;
-         }
+         // Create new buffer
+         if ( (buffer_ = (uint8_t *)malloc(size)) == NULL )
+            throw(rogue::GeneralError::allocation("StreamWriter::setBufferSize",size));
+         buffSize_ = size;
       }
    }
-   PyRogue_END_ALLOW_THREADS;
-
-   // Create new buffer
-   if ( buffSize_ != 0 && buffer_ == NULL )
-      throw(rogue::GeneralError::allocation("StreamWriter::setBufferSize",size));
 }
 
 //! Set max file size, 0 for unlimited
 void ruf::StreamWriter::setMaxSize(uint32_t size) {
-   PyRogue_BEGIN_ALLOW_THREADS;
-   {
-      boost::lock_guard<boost::mutex> lock(mtx_);
-      sizeLimit_ = size;
-   }
-   PyRogue_END_ALLOW_THREADS;
+   rogue::GilRelease noGil;
+   boost::lock_guard<boost::mutex> lock(mtx_);
+   sizeLimit_ = size;
 }
 
 //! Get a slave port
 ruf::StreamWriterChannelPtr ruf::StreamWriter::getChannel(uint8_t channel) {
-   return(ruf::StreamWriterChannel::create(shared_from_this(),channel));
+  rogue::GilRelease noGil;
+  boost::lock_guard<boost::mutex> lock(mtx_);
+  if (channelMap_.count(channel) == 0) {
+    channelMap_[channel] = ruf::StreamWriterChannel::create(shared_from_this(),channel);
+  }
+  return (channelMap_[channel]);
 }
 
 //! Get current file size
 uint32_t ruf::StreamWriter::getSize() {
-   uint32_t ret;
-
-   PyRogue_BEGIN_ALLOW_THREADS;
-   {
-      boost::lock_guard<boost::mutex> lock(mtx_);
-      ret = (totSize_ + currBuffer_);
-   }
-   PyRogue_END_ALLOW_THREADS;
-   return(ret);
+   rogue::GilRelease noGil;
+   boost::lock_guard<boost::mutex> lock(mtx_);
+   return(totSize_ + currBuffer_);
 }
 
 //! Get current frame count
 uint32_t ruf::StreamWriter::getFrameCount() {
    return(frameCount_);
+}
+
+void ruf::StreamWriter::waitFrameCount(uint32_t count) {
+  rogue::GilRelease noGil;
+  boost::unique_lock<boost::mutex> lock(mtx_);
+  while (frameCount_ < count) {
+    cond_.timed_wait(lock, boost::posix_time::microseconds(1000));
+  }
 }
 
 //! Write data to file. Called from StreamWriterChannel
@@ -189,8 +189,8 @@ void ruf::StreamWriter::writeFile ( uint8_t channel, boost::shared_ptr<rogue::in
    uint32_t value;
    uint32_t size;
 
-   PyRogue_BEGIN_ALLOW_THREADS;
-   boost::lock_guard<boost::mutex> lock(mtx_);
+   rogue::GilRelease noGil;
+   boost::unique_lock<boost::mutex> lock(mtx_);
 
    if ( fd_ >= 0 ) {
       size = frame->getPayload() + 4;
@@ -213,8 +213,9 @@ void ruf::StreamWriter::writeFile ( uint8_t channel, boost::shared_ptr<rogue::in
 
       // Update counters
       frameCount_ ++;
+      lock.unlock();
+      cond_.notify_all();
    }
-   PyRogue_END_ALLOW_THREADS;
 }
 
 //! Internal method for file writing with buffer and auto close and reopen

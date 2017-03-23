@@ -29,7 +29,7 @@ PYBOOST = -lboost_python3
 #PYBOOST = -lboost_python
 
 # Variables
-C       := g++
+CC       := g++
 DEF      :=
 CFLAGS   := -Wall `$(PYCONF) --cflags | sed s/-Wstrict-prototypes//` -fno-strict-aliasing
 CFLAGS   += -I $(BOOST_PATH)/include -I$(PWD)/include -I$(PWD)/drivers/include -std=c++0x -fPIC
@@ -78,4 +78,14 @@ $(PYLIB): $(LIB_OBJ)
 $(CPPLIB): $(LIB_OBJ)
 	@mkdir -p $(PWD)/lib
 	@echo "Creating $@"; $(CC) -shared $(LIB_OBJ) $(LFLAGS) -o $@
+
+# Driver compile
+driver:
+	make -C $(PWD)/drivers driver
+	make -C $(PWD)/drivers app
+
+# Driver install
+driver_install:
+	make -C $(PWD)/drivers linux_install
+	make -C $(PWD)/drivers rce_install
 

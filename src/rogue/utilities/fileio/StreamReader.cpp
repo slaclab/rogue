@@ -23,6 +23,7 @@
 #include <rogue/interfaces/stream/Frame.h>
 #include <rogue/GeneralError.h>
 #include <rogue/Logging.h>
+#include <rogue/GilRelease.h>
 #include <stdint.h>
 #include <boost/thread.hpp>
 #include <boost/make_shared.hpp>
@@ -46,6 +47,8 @@ void ruf::StreamReader::setup_python() {
       .staticmethod("create")
       .def("open",           &ruf::StreamReader::open)
       .def("close",          &ruf::StreamReader::close)
+      .def("closeWait",      &ruf::StreamReader::closeWait)
+      .def("isActive",       &ruf::StreamReader::isActive)
    ;
 }
 
@@ -53,6 +56,7 @@ void ruf::StreamReader::setup_python() {
 ruf::StreamReader::StreamReader() { 
    baseName_   = "";
    readThread_ = NULL;
+   active_     = false;
 }
 
 //! Deconstructor
@@ -62,7 +66,9 @@ ruf::StreamReader::~StreamReader() {
 
 //! Open a data file
 void ruf::StreamReader::open(std::string file) {
-   close();
+   rogue::GilRelease noGil;
+   boost::unique_lock<boost::mutex> lock(mtx_);
+   intClose();
 
    // Determine if we read a group of files
    if ( file.substr(file.find_last_of(".")) == ".1" ) {
@@ -77,11 +83,13 @@ void ruf::StreamReader::open(std::string file) {
    if ( (fd_ = ::open(file.c_str(),O_RDONLY)) < 0 ) 
       throw(rogue::GeneralError::open("StreamReader::open",file));
 
+   active_ = true;
    readThread_ = new boost::thread(boost::bind(&StreamReader::runThread, this));
 }
 
 //! Open file
 bool ruf::StreamReader::nextFile() {
+   boost::unique_lock<boost::mutex> lock(mtx_);
    std::string name;
 
    if ( fd_ >= 0 ) {
@@ -100,12 +108,34 @@ bool ruf::StreamReader::nextFile() {
 
 //! Close a data file
 void ruf::StreamReader::close() {
+   rogue::GilRelease noGil;
+   boost::unique_lock<boost::mutex> lock(mtx_);
+   intClose();
+}
+
+//! Close a data file
+void ruf::StreamReader::intClose() {
    if ( readThread_ != NULL ) {
       readThread_->interrupt();
       readThread_->join();
       delete readThread_;
       readThread_ = NULL;
    }
+   if ( fd_ >= 0 ) ::close(fd_);
+}
+
+//! Close when done
+void ruf::StreamReader::closeWait() {
+   rogue::GilRelease noGil;
+   boost::unique_lock<boost::mutex> lock(mtx_);
+   while ( active_ ) cond_.timed_wait(lock,boost::posix_time::microseconds(1000));
+   intClose();
+}
+
+//! Return true when done
+bool ruf::StreamReader::isActive() {
+   rogue::GilRelease noGil;
+   return (active_);
 }
 
 //! Thread background
@@ -113,28 +143,28 @@ void ruf::StreamReader::runThread() {
    int32_t  ret;
    uint32_t size;
    uint32_t flags;
+   bool err;
    ris::FramePtr frame;
    ris::FrameIteratorPtr iter;
    Logging log("streamReader");
 
+   err = false;
    try {
       do {
 
          // Read size of each frame
-         while ( fd_ > 0 && read(fd_,&size,4) == 4 ) {
+         while ( (fd_ >= 0) && (read(fd_,&size,4) == 4) ) {
             if ( size == 0 ) {
-               log.log("warning","Bad size read %i",size);
-               ::close(fd_);
-               fd_ = -1;
-               return;
+               log.warning("Bad size read %i",size);
+               err = true;
+               break;
             }
 
             // Read flags
             if ( read(fd_,&flags,4) != 4 ) {
-               log.log("warning","Failed to read flags");
-               ::close(fd_);
-               fd_ = -1;
-               return;
+               log.warning("Failed to read flags");
+               err = true;
+               break;
             }
 
             // Request frame
@@ -145,15 +175,23 @@ void ruf::StreamReader::runThread() {
             iter = frame->startWrite(0,size-4);
             do {
                if ( (ret = read(fd_,iter->data(),iter->size())) != (int32_t)iter->size()) {
-                  log.log("warning","Short read. Ret = %i Req = %i after %i bytes",ret,iter->size(),iter->total());
+                  log.warning("Short read. Ret = %i Req = %i after %i bytes",ret,iter->size(),iter->total());
                   ::close(fd_);
                   fd_ = -1;
                   frame->setError(0x1);
                }
             } while (frame->nextWrite(iter));
             sendFrame(frame);
+            boost::this_thread::interruption_point();
          }
-      } while ( nextFile() );
+      } while ( (err == false) && nextFile() );
    } catch (boost::thread_interrupted&) {}
+
+   boost::unique_lock<boost::mutex> lock(mtx_);
+   if ( fd_ >= 0 ) ::close(fd_);
+   fd_ = -1;
+   active_ = false;
+   lock.unlock();
+   cond_.notify_all();
 }
 

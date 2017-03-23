@@ -135,15 +135,16 @@ class MeshNode(threading.Thread):
                 elif typ == 'SHOUT':
                     if e[3].decode('utf-8') == self._group:
                         m = yaml.load(e[4].decode('utf-8'))
-                        cmd  = m['cmd']
-                        msg  = m['msg']
+                        if isinstance(m,dict):
+                            cmd  = m['cmd']
+                            msg  = m['msg']
 
-                        # Field update from server to client
-                        if cmd == 'variable_status':
-                            self._noMsg = True
-                            for key,value in self._servers.items():
-                                value.setOrExecYaml(msg,False,['RW','RO'])
-                            self._noMsg = False
+                            # Field update from server to client
+                            if cmd == 'variable_status':
+                                self._noMsg = True
+                                for key,value in self._servers.items():
+                                    value.setOrExecYaml(msg,False,['RW','RO'])
+                                self._noMsg = False
 
                 # New node, request structure and status
                 elif typ == 'JOIN':

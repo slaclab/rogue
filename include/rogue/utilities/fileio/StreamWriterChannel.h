@@ -42,6 +42,15 @@ namespace rogue {
                //! Channel information
                uint16_t channel_;
 
+               //! Number of frames received by channel
+               uint32_t frameCount_;
+
+               //! Lock for frameCount_
+               boost::mutex mtx_;
+
+               //! Condition variable for frameCount_ updates
+               boost::condition_variable cond_;
+
             public:
 
                //! Class creation
@@ -59,6 +68,15 @@ namespace rogue {
 
                //! Accept a frame from master
                void acceptFrame ( boost::shared_ptr<rogue::interfaces::stream::Frame> frame );
+
+               //! Get number of frames that have been accepted
+               uint32_t getFrameCount();
+
+               //! Set the frame count to a specific value
+               void setFrameCount(uint32_t count);
+
+               //! Block until a number of frames have been received
+               void waitFrameCount(uint32_t count);
          };
 
          // Convienence

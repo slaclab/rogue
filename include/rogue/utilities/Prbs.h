@@ -84,6 +84,10 @@ namespace rogue {
             //! TX bytes
             uint32_t   txBytes_;
 
+            //! Logger
+            rogue::Logging *rxLog_;
+            rogue::Logging *txLog_;
+
             //! TX thread
             boost::thread* txThread_;
 

@@ -62,7 +62,7 @@ namespace rogue {
                Slave(uint32_t min, uint32_t max);
 
                //! Destroy object
-               ~Slave();
+               virtual ~Slave();
 
                //! Register a master.
                void addMaster(uint32_t index, boost::shared_ptr<rogue::interfaces::memory::Master> master);

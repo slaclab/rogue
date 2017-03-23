@@ -27,6 +27,7 @@
 #include <stdint.h>
 #include <boost/thread.hpp>
 #include <boost/make_shared.hpp>
+#include <rogue/GilRelease.h>
 
 namespace ris = rogue::interfaces::stream;
 namespace ruf = rogue::utilities::fileio;
@@ -40,7 +41,10 @@ ruf::StreamWriterChannelPtr ruf::StreamWriterChannel::create (ruf::StreamWriterP
 
 //! Setup class in python
 void ruf::StreamWriterChannel::setup_python() {
-   bp::class_<ruf::StreamWriterChannel, ruf::StreamWriterChannelPtr, bp::bases<ris::Slave>, boost::noncopyable >("StreamWriterChannel",bp::no_init);
+   bp::class_<ruf::StreamWriterChannel, ruf::StreamWriterChannelPtr, bp::bases<ris::Slave>, boost::noncopyable >("StreamWriterChannel",bp::no_init)
+       .def("getFrameCount", &ruf::StreamWriterChannel::getFrameCount)
+       .def("waitFrameCount", &ruf::StreamWriterChannel::waitFrameCount)
+       ;
    bp::implicitly_convertible<ruf::StreamWriterChannelPtr, ris::SlavePtr>();
 }
 
@@ -48,6 +52,7 @@ void ruf::StreamWriterChannel::setup_python() {
 ruf::StreamWriterChannel::StreamWriterChannel(ruf::StreamWriterPtr writer, uint8_t channel) {
    writer_  = writer;
    channel_ = channel;
+   frameCount_ = 0;
 }
 
 //! Deconstructor
@@ -55,6 +60,30 @@ ruf::StreamWriterChannel::~StreamWriterChannel() { }
 
 //! Accept a frame from master
 void ruf::StreamWriterChannel::acceptFrame ( ris::FramePtr frame ) {
-   writer_->writeFile (channel_, frame);
+  rogue::GilRelease noGil;
+  boost::unique_lock<boost::mutex> lock(mtx_);
+  writer_->writeFile (channel_, frame);
+  frameCount_++;
+  lock.unlock();
+  cond_.notify_all();
+}
+
+uint32_t ruf::StreamWriterChannel::getFrameCount() {
+  return frameCount_;
+}
+
+
+void ruf::StreamWriterChannel::setFrameCount(uint32_t count) {
+  rogue::GilRelease noGil;
+  boost::unique_lock<boost::mutex> lock(mtx_);
+  frameCount_ = count;
+}
+
+void ruf::StreamWriterChannel::waitFrameCount(uint32_t count) {
+  rogue::GilRelease noGil;
+  boost::unique_lock<boost::mutex> lock(mtx_);
+  while (frameCount_ < count) {
+    cond_.timed_wait(lock, boost::posix_time::microseconds(1000));
+  }
 }
 

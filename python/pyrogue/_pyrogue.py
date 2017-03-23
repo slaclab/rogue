@@ -1442,14 +1442,14 @@ class Root(rogue.interfaces.stream.Master,Device):
         handler.setLevel(logging.ERROR)
         handler.setFormatter(formatter)
         self._logger = logging.getLogger('pyrogue')
-        self._logger.addHandler(handler)
+        #self._logger.addHandler(handler)
 
         # Keep of list of errors, exposed as a variable
         self._sysLogLock = threading.Lock()
 
         # Polling
         if pollEn:
-            self._pollQueue = PollQueue()
+            self._pollQueue = PollQueue(self)
         else:
             self._pollQueue = None
 
@@ -1581,23 +1581,30 @@ class Root(rogue.interfaces.stream.Master,Device):
     @command(order=7, name='writeAll', description='Write all values to the hardware')
     def _write(self,dev=None,cmd=None,arg=None):
         """Write all blocks"""
+        self._log.info("Start root write")
         try:
             self._backgroundTransaction(rogue.interfaces.memory.Write)
+            self._log.info("Verify root read")
             self._backgroundTransaction(rogue.interfaces.memory.Verify)
+            self._log.info("Check root read")
             self._checkTransaction(update=False)
         except Exception as e:
             self._log.error(e)
+        self._log.info("Done root write")
 
     @command(order=6, name="readAll", description='Read all values from the hardware')
     def _read(self,dev=None,cmd=None,arg=None):
         """Read all blocks"""
+        self._log.info("Start root read")
         self._initUpdatedVars()
         try:
             self._backgroundTransaction(rogue.interfaces.memory.Read)
+            self._log.info("Check root read")
             self._checkTransaction(update=True)
         except Exception as e:
             self._log.error(e)
         self._doneUpdatedVars()
+        self._log.info("Done root read")
 
     @command(order=0, name='writeConfig', base='string', description='Write configuration to passed filename in YAML format')
     def _writeConfig(self,dev,cmd,arg):
@@ -1865,13 +1872,14 @@ class PollQueue(object):
 
     Entry = collections.namedtuple('PollQueueEntry', ['readTime', 'count', 'interval', 'block'])
 
-    def __init__(self):
+    def __init__(self,root):
         self._pq = [] # The heap queue
         self._entries = {} # {Block/Variable: Entry} mapping to look up if a block is already in the queue
         self._counter = itertools.count()
         self._lock = threading.RLock()
         self._update = threading.Condition()
         self._run = True
+        self._root = root
         self._pollThread = threading.Thread(target=self._poll)
         self._pollThread.start()
 
@@ -1948,11 +1956,16 @@ class PollQueue(object):
                     self._log.debug('Poll thread sleeping for {}'.format(waitTime))
                     self._update.wait(waitTime)
 
+            self._log.debug("Global reference count: %s" % (sys.getrefcount(None)))
+
             with self._lock:
                 # Stop the thread if someone set run to False
                 if self._run is False:
                     self._log.info("PollQueue thread exiting")
                     return
+
+                # Start update capture
+                self._root._initUpdatedVars()
 
                 # Pop all timed out entries from the queue
                 now = datetime.datetime.now()                
@@ -1977,13 +1990,13 @@ class PollQueue(object):
                     # Push the updated entry back into the queue
                     heapq.heappush(self._pq, entry)
 
-
-                # Wait for reads to be done
                 try:
                     for entry in blockEntries:
                         entry.block._checkTransaction(update=True)
                 except Exception as e:
                     self._log.error(e)
+                # End update capture
+                self._root._doneUpdatedVars()
 
     def _expiredEntries(self, time=None):
         """An iterator of all entries that expire by a given time. 

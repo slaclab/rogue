@@ -80,7 +80,7 @@ namespace rogue {
                Master();
 
                //! Destroy object
-               ~Master();
+               virtual ~Master();
 
                //! Get current transaction id, zero if no active transaction
                uint32_t getId();
