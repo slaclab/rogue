@@ -451,7 +451,7 @@ class Variable(Node):
                  model=None, base=None,
                  disp='hex', enum=None, units=None, hidden=False, minimum=None, maximum=None,
                  dependencies=None,
-                 beforeReadCmd=None, afterWriteCmd=None,
+                 beforeReadCmd=lambda: None, afterWriteCmd=lambda: None,
                  **dump):
         """Initialize variable class""" 
 
@@ -460,8 +460,8 @@ class Variable(Node):
         self.bitSize   = bitSize
         self.bitOffset = bitOffset
         self.mode      = mode
+        self.enum      = enum
         self.units     = units
-        self.enum = enum        
         self.minimum   = minimum # For base='range'
         self.maximum   = maximum # For base='range'
         self.value     = value  
@@ -526,17 +526,6 @@ class Variable(Node):
            (self.mode != 'CMD'):
             raise VariableError('Invalid variable mode %s. Supported: RW, RO, WO, SL, CMD' % (self.mode))
 
-
-        if beforeReadCmd is not None:
-            self._beforeReadCmd = beforeReadCmd
-        else:
-            self._beforeReadCmd = lambda: None
-
-        if afterWriteCmd is not None:
-            self._afterWriteCmd = afterWriteCmd
-        else:
-            self._afterWriteCmd = lambda: None
-
         self.__listeners  = []
 
         self._block = None
@@ -551,6 +540,10 @@ class Variable(Node):
         if dependencies is not None:
             for d in dependencies:
                 self.addDependency(d)
+
+        # These run before or after block access
+        self._beforeReadCmd = beforeReadCmd
+        self._afterWriteCmd = afterWriteCmd
 
         # Call super constructor
         Node.__init__(self, name=name, classType='variable', description=description, hidden=hidden, parent=parent)
@@ -661,6 +654,20 @@ class Variable(Node):
                 
         return ret
 
+   def _updated(self):
+        """Variable has been updated. Inform listeners."""
+        
+        # Don't generate updates for SL and WO variables
+        if self.mode == 'WO' or self.mode == 'SL': return
+
+        self.value = self._block.get(self)
+        
+        for func in self.__listeners:
+            func(self, self.value)
+
+        # Root variable update log
+        self._root._varUpdated(self,self.value)    
+
     def _rawSet(self, value):
         # If a setFunction exists, call it (Used by local variables)        
         if self._setFunction is not None:
@@ -700,19 +707,7 @@ class Variable(Node):
     def __get__(self):
         self.get(read=True)
 
-    def _updated(self):
-        """Variable has been updated. Inform listeners."""
-        
-        # Don't generate updates for SL and WO variables
-        if self.mode == 'WO' or self.mode == 'SL': return
-
-        self.value = self._block.get(self)
-        
-        for func in self.__listeners:
-            func(self, self.value)
-
-        # Root variable update log
-        self._root._varUpdated(self,self.value)
+ 
 
     def linkUpdated(self, var, value):
         self._updated()
@@ -1422,7 +1417,7 @@ class RootLogHandler(logging.Handler):
 
     def emit(self,record):
         with self._root._sysLogLock:
-            self._root.systemLog += self.format(record) + '\n'
+            self._root.systemLog += (self.format(record) + '\n')
 
 class Root(rogue.interfaces.stream.Master,Device):
     """
@@ -1726,11 +1721,10 @@ class DataWriter(Device):
         if idx < 0:
             base = ''
         else:
-            base = self._dataFile[:idx+1]
+            base = self.dataFile.get()[:idx+1]
 
         self.dataFile = base
         self.dataFile += datetime.datetime.now().strftime("%Y%m%d_%H%M%S.dat") 
-        self.dataFile._updated()
 
     def _backgroundTransaction(self,type):
         """Force update of non block status variables"""
