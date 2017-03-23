@@ -1695,15 +1695,15 @@ class DataWriter(Device):
 
     def _setOpen(self,dev,var,value):
         """Set open state. Override in sub-class"""
-        self._open = value
+        var.value = value
 
     def _setBufferSize(self,dev,var,value):
         """Set buffer size. Override in sub-class"""
-        self._bufferSize = value
+        var.value = value
 
     def _setMaxFileSize(self,dev,var,value):
         """Set max file size. Override in sub-class"""
-        self._maxFileSize = value
+        var.value = value
 
     def _getFileSize(self,dev,cmd):
         """get current file size. Override in sub-class"""
@@ -1725,8 +1725,7 @@ class DataWriter(Device):
         else:
             base = self.dataFile.get()[:idx+1]
 
-        self.dataFile = base
-        self.dataFile += datetime.datetime.now().strftime("%Y%m%d_%H%M%S.dat") 
+        self.dataFile = base + datetime.datetime.now().strftime("%Y%m%d_%H%M%S.dat") 
 
     def _backgroundTransaction(self,type):
         """Force update of non block status variables"""
@@ -1746,21 +1745,18 @@ class RunControl(Device):
                         size=0, memBase=None, offset=0, hidden=hidden)
 
         self.classType = 'runControl'
-        self._runState = 'Stopped'
-        self._runCount = 0
-        self._runRate  = '1 Hz'
 
-        self.add(Variable(name='runState', base='enum', mode='RW', enum={0:'Stopped', 1:'Running'},
-            setFunction=self._setRunState, getFunction='value = dev._runState',
-            description='Run state of the system.'))
+        self.add(Variable(name='runState', value=0, local=True, enum={0:'Stopped', 1:'Running'},
+                          setFunction=self._setRunState, 
+                          description='Run state of the system.'))
 
-        self.add(Variable(name='runRate', base='enum', mode='RW', enum={1:'1 Hz', 10:'10 Hz'},
-            setFunction=self._setRunRate, getFunction='value = dev._runRate',
-            description='Run rate of the system.'))
+        self.add(Variable(name='runRate', value=1, local=True, enum={1:'1 Hz', 10:'10 Hz'},
+                          setFunction=self._setRunRate, 
+                          description='Run rate of the system.'))
 
-        self.add(Variable(name='runCount', base='uint', mode='RO', pollInterval=1,
-            setFunction=None, getFunction='value = dev._runCount',
-            description='Run Counter updated by run thread.'))
+        self.add(Variable(name='runCount', value=0, mode='RO', pollInterval=1,
+                          local=True, setFunction=None, 
+                          description='Run Counter updated by run thread.'))
 
     def _setRunState(self,dev,var,value):
         """
@@ -1768,14 +1764,14 @@ class RunControl(Device):
         Enum of run states can also be overriden.
         Underlying run control must update _runCount variable.
         """
-        self._runState = value
+        var.value = value
 
     def _setRunRate(self,dev,var,value):
         """
         Set run rate. Reimplement in sub-class.
         Enum of run rates can also be overriden.
         """
-        self._runRate = value
+        var.value = value
 
     def _backgroundTransaction(self,type):
         """Force update of non block status variables"""
