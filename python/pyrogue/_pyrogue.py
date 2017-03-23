@@ -447,7 +447,7 @@ class Variable(Node):
     """
     def __init__(self, name, description="", parent=None,
                  offset=None, bitSize=32, bitOffset=0, pollInterval=0, mode='RW',
-                 value=None,
+                 value=None, local=False, getFunction=None, setFunction=None,
                  model=None, base=None,
                  disp='hex', enum=None, units=None, hidden=False, minimum=None, maximum=None,
                  dependencies=None,
@@ -464,8 +464,20 @@ class Variable(Node):
         self.enum = enum        
         self.minimum   = minimum # For base='range'
         self.maximum   = maximum # For base='range'
-        self.value     = value
+        self.value     = value  
+        
+        # Local Variables override get and set functions
+        self.__local = local or setFunction is not None or getFunction is not None
+        self._setFunction = setFunction
+        self._getFunction = getFunction
+        if self.__local == True:
+            if setFunction is None:
+                self._setFunction = self._localSetFunction
+            if getFunction is None:
+                self._setFunction = self._localGetFunction
+        
 
+        # Handle legacy model declarations
         if model is not None:
             self.model = model
         elif base is not None:
@@ -514,7 +526,6 @@ class Variable(Node):
            (self.mode != 'CMD'):
             raise VariableError('Invalid variable mode %s. Supported: RW, RO, WO, SL, CMD' % (self.mode))
 
-        # Tracking variables
 
         if beforeReadCmd is not None:
             self._beforeReadCmd = beforeReadCmd
@@ -582,7 +593,13 @@ class Variable(Node):
         else:
             self.__listeners.append(listener)
 
+    @staticmethod
+    def _localGetFunction(dev, var):
+        return var.value
 
+    @staticmethod
+    def _localSetFunction(dev, var, val):
+        var.value = val
 
     def set(self, value, write=True):
         """
@@ -592,12 +609,9 @@ class Variable(Node):
 
         self._log.debug("{}.set({})".format(self, value))
         try:
-            # Transform first with setFunc?
-            self._block.set(self, value)
-            # Inform listeners
-            self._updated()
-
-            if write and self._block.mode != 'RO':
+            self._rawSet(value)
+            
+            if write and self._block is not None and self._block.mode != 'RO':
                 self._block.blockingTransaction(rogue.interfaces.memory.Write)
                 self._afterWriteCmd()
 
@@ -614,9 +628,7 @@ class Variable(Node):
         Writes to hardware are posted.
         """
         try:
-
-            self._block.set(self, value)
-
+            self._rawSet(value)
             if self._block and self._block.mode != 'RO':
                 self._block.backgroundTransaction(rogue.interfaces.memory.Post)
                 
@@ -630,12 +642,11 @@ class Variable(Node):
         Listeners will be informed of the update.
         """
         try:
-            if read and self._block.mode != 'WO':
+            if read and not self.__local and self._block.mode != 'WO':
                 self._beforeReadCmd()
                 self._block.blockingTransaction(rogue.interfaces.memory.Read)
 
-            value = self._block.get(self)
-            # Transform with getFunc?
+            ret = self._rawGet()
             
         except Exception as e:
             self._log.error(e)
@@ -643,8 +654,51 @@ class Variable(Node):
 
         # Update listeners for all variables in the block
         if read:
-            self._block._updated()
-        return value
+            if self._block is not None:
+                self._block._updated()
+            else:
+                self._updated()
+                
+        return ret
+
+    def _rawSet(self, value):
+        # If a setFunction exists, call it (Used by local variables)        
+        if self._setFunction is not None:
+            if callable(self._setFunction):
+                self._setFunction(self._parent, self, value)
+            else:
+                dev = self._parent
+                exec(textwrap.dedent(self._setFunction))
+                
+        elif self._block is not None:
+            # No setFunction, write to the block
+            self._block.set(self, value)
+
+        # Inform listeners
+        self._updated()
+
+    def _rawGet(self):
+        if self._getFunction is not None:
+            if callable(self._getFunction):
+                return(self._getFunction(self._parent,self))
+            else:
+                dev = self._parent
+                value = 0
+                ns = locals()
+                exec(textwrap.dedent(self._getFunction),ns)
+                return ns['value']
+
+        elif self._block is not None:        
+            return self._block.get(self)
+        else:
+            return None
+
+    # Not sure if we really want these        
+    def __set__(self, value):
+        self.set(value, write=True)
+
+    def __get__(self):
+        self.get(read=True)
 
     def _updated(self):
         """Variable has been updated. Inform listeners."""
@@ -723,45 +777,12 @@ class StringModel(Model):
         return s.decode(self.encoding)
 
 
-class LocalVariable(Variable):
-    def __init__(self, getFunction=None, setFunction=None, **kwargs):
-        super().__init__(**kwargs)
-
-        if value in kwargs:
-            self.value = kwargs[value]
-        
-        if setFunc is not None:
-            self.setSetFunc(setFunc)
-        if getFunc is not None:
-            self.setGetFunc(getFunc)
-
-    def setSetFunc(setFunc):
-        self.set = type.MethodType(setFunction, self)
-            
-    def setGetFunc(getFunc):
-        self.get = types.MethodType(getFunction, self)
-
-    def set(self, value, write=True):
-        self.value = value
-
-    def get(self, read=True):
-        return self.value
-
-    def __set__(self, value):
-        self.set(value)
-
-    def __get__(self):
-        return self.get()
 
 
-
- 
-
-
-class Command(Node):
+class Command(Variable):
     """Command holder: Subclass of variable with callable interface"""
 
-    def __init__(self, name=None, function=None, **kwargs):
+    def __init__(self, name=None, mode='CMD', function=None, **kwargs):
         super().__init__(self, classType='command', **kwargs)
 
         self._function = function if function is not None else Command.nothing
@@ -804,12 +825,6 @@ class Command(Node):
     @staticmethod
     def nothing(dev, cmd, arg):
         pass
-
-class IntCommand(Command, IntVariable):
-    def __init__(self, parent=None, mode='CMD', function=None, **kwargs):
-        Command.__init__(self, function=function)        
-        IntVariable.__init__(self, parent=parent, mode=mode, **kwargs)
-
 
     @staticmethod
     def toggle(dev, cmd, arg):
@@ -887,32 +902,7 @@ class BlockError(Exception):
         return repr(self._value)
 
 
-class LocalBlock(object):
-    def __init__(self, variable):
-        self._name = variable.name
-        self._variable = variable
-        
-    def __repr__(self):
-        return 'LocalBlock({})'.format(self._variable)
-
-    def _addVariable(self, var):
-        return False
-
-    def backgroundTransaction(self,type):
-        pass
-
-    def blockingTransaction(self,type):
-        pass
-    
-    def _startTransaction(self, type):
-        pass
-
-    def _checkTransaction(self, update):
-        if update: self._updated()
-
-    def _updated(self):
-        variable._updated()
-
+ 
 class Block(rogue.interfaces.memory.Master):
     """Internal memory block holder"""
 
@@ -1261,12 +1251,7 @@ class Device(Node,rogue.interfaces.memory.Hub):
         if isinstance(node,Device) and node._memBase is None:
             node._setSlave(self)
 
-        # Adding variable
-        # Create RemoteBlocks as needed
-        if isinstance(node, LocalVariable):
-            self._blocks.append(LocalBlock(node))
-            
-        elif isinstance(node,Variable):
+        if isinstance(node,Variable) and node.offset is not None:
             if not any(block._addVariable(node) for block in self._blocks):
                 self._log.debug("Adding new block %s at offset %x" % (node.name,node.offset))
                 self._blocks.append(Block(self,node))
@@ -1392,41 +1377,41 @@ class Device(Node,rogue.interfaces.memory.Hub):
             return func
         return _decorator
 
-class MultiDevice(Device):
-    def __init__(self, name, devices, **kwargs):
-        super(name=name, **kwargs)
+# class MultiDevice(Device):
+#     def __init__(self, name, devices, **kwargs):
+#         super(name=name, **kwargs)
 
-        # First check that all devices are of same type
-        if len(set((d.__class__ for d in devices))) != 1:
-            raise Exception("Devices must all be of same class")
+#         # First check that all devices are of same type
+#         if len(set((d.__class__ for d in devices))) != 1:
+#             raise Exception("Devices must all be of same class")
 
-        for v in devices[0].variables.values():
-            if v.mode == 'RW':
-                self.add(LocalVariable.clone(v))
+#         for v in devices[0].variables.values():
+#             if v.mode == 'RW':
+#                 self.add(LocalVariable.clone(v))
 
-        for locVar in self.variables.values():
-            depVars = [v for d in devices for v in d.variables.items() if v.name == locVar.name]
+#         for locVar in self.variables.values():
+#             depVars = [v for d in devices for v in d.variables.items() if v.name == locVar.name]
 
 
-            # Create a new set method that mirrors the set value out to all the dependent variables
-            def locSet(self, value, write=True):
-                self.value = value
-                for v in depVars:
-                    v.set(locVar.value, write)
+#             # Create a new set method that mirrors the set value out to all the dependent variables
+#             def locSet(self, value, write=True):
+#                 self.value = value
+#                 for v in depVars:
+#                     v.set(locVar.value, write)
 
-            # Monkey patch the new set method in to the local variable
-            locVar.setSetFunc(locSet)
+#             # Monkey patch the new set method in to the local variable
+#             locVar.setSetFunc(locSet)
             
-            def locGet(self, read=True):
-                values = {v: v.get(read) for v in depVars}
+#             def locGet(self, read=True):
+#                 values = {v: v.get(read) for v in depVars}
 
-                self.value = list(values.values())[0]
-                if len(set(values)) != 1:
-                    raise Exception("MultiDevice variables do not match: {}".format(values))
+#                 self.value = list(values.values())[0]
+#                 if len(set(values)) != 1:
+#                     raise Exception("MultiDevice variables do not match: {}".format(values))
 
-                return self.value
+#                 return self.value
 
-            locVar.setGetFunc(locGet)
+#             locVar.setGetFunc(locGet)
             
 
 class RootLogHandler(logging.Handler):
@@ -1437,9 +1422,7 @@ class RootLogHandler(logging.Handler):
 
     def emit(self,record):
         with self._root._sysLogLock:
-            self._root._systemLog += self.format(record)
-            self._root._systemLog += '\n'
-        self._root.systemLog._updated()
+            self._root.systemLog += self.format(record) + '\n'
 
 class Root(rogue.interfaces.stream.Master,Device):
     """
@@ -1465,7 +1448,6 @@ class Root(rogue.interfaces.stream.Master,Device):
         self._logger.addHandler(handler)
 
         # Keep of list of errors, exposed as a variable
-        self._systemLog = ""
         self._sysLogLock = threading.Lock()
 
         # Polling
@@ -1482,8 +1464,7 @@ class Root(rogue.interfaces.stream.Master,Device):
         self._varListeners = []
 
         # Variables
-        self.add(Variable(name='systemLog', base='string', mode='RO',hidden=True,
-            setFunction=None, getFunction='value=dev._systemLog',
+        self.add(Variable(name='systemLog', value='', local=True, mode='RO',hidden=True,
             description='String containing newline seperated system logic entries'))
 
 
@@ -1659,8 +1640,7 @@ class Root(rogue.interfaces.stream.Master,Device):
     def _clearLog(self,dev,cmd,arg):
         """Clear the system log"""
         with self._sysLogLock:
-            self._systemLog = ""
-        self.systemLog._updated()
+            self.systemLog = ""
 
     def _varUpdated(self,var,value):
         """ Log updated variables"""
@@ -1693,32 +1673,28 @@ class DataWriter(Device):
                         size=0, memBase=None, offset=0, hidden=hidden)
 
         self.classType    = 'dataWriter'
-        self._open        = False
-        self._dataFile    = ''
-        self._bufferSize  = 0
-        self._maxFileSize = 0
 
-        self.add(LocalVariable(name='dataFile', base='string', mode='RW',
-            description='Data file for storing frames for connected streams.'))
+        self.add((
+            Variable(name='dataFile', value='',
+                          description='Data file for storing frames for connected streams.'),
 
-        self.add(LocalVariable(name='open', base='bool', mode='RW',
-            description='Data file open state'))
+            Variable(name='open', value=False, setFunction=self._setOpen,
+                          description='Data file open state'),
 
-        self.add(Variable(name='bufferSize', base='uint', mode='RW',
-            description='File buffering size. Enables caching of data before call to file system.'))
+            Variable(name='bufferSize', value=0, setFunction=self._setBufferSize,
+                          description='File buffering size. Enables caching of data before call to file system.'),
 
-        self.add(Variable(name='maxFileSize', base='uint', mode='RW',
-            description='Maximum size for an individual file. Setting to a non zero splits the run data into multiple files.'))
+            Variable(name='maxFileSize', value=0, setFunction=self._setMaxFileSize,
+                          description='Maximum size for an individual file. Setting to a non zero splits the run data into multiple files.'),
 
-        self.add(Variable(name='fileSize', base='uint', mode='RO', pollInterval=1,
-                          description='Size of data files(s) for current open session in bytes.'))
+            Variable(name='fileSize', value=0, mode='RO', pollInterval=1, getFunction=self._getFileSize,
+                          description='Size of data files(s) for current open session in bytes.'),
 
-        self.add(Variable(name='frameCount', base='uint', mode='RO', pollInterval=1,
-            setFunction=None, getFunction=self._getFrameCount,
-            description='Frame in data file(s) for current open session in bytes.'))
+            Variable(name='frameCount', value=0, mode='RO', pollInterval=1, getFrameCount=self._getFrameCount,
+                          description='Frame in data file(s) for current open session in bytes.'),
 
-        self.add(Command(name='autoName', function=self._genFileName,
-            description='Auto create data file name using data and time.'))
+            Command(name='autoName', function=self._genFileName,
+                    description='Auto create data file name using data and time.')))
 
     def _setOpen(self,dev,var,value):
         """Set open state. Override in sub-class"""
@@ -1752,8 +1728,8 @@ class DataWriter(Device):
         else:
             base = self._dataFile[:idx+1]
 
-        self._dataFile = base
-        self._dataFile += datetime.datetime.now().strftime("%Y%m%d_%H%M%S.dat") 
+        self.dataFile = base
+        self.dataFile += datetime.datetime.now().strftime("%Y%m%d_%H%M%S.dat") 
         self.dataFile._updated()
 
     def _backgroundTransaction(self,type):

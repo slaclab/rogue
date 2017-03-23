@@ -30,25 +30,24 @@ class StreamWriter(pyrogue.DataWriter):
         self._writer = rogue.utilities.fileio.StreamWriter()
 
     def _setOpen(self,dev,var,value):
-        if self._open != value:
+        if var.value != value:
             if value == False:
-
                 # Dump config/status to file
                 self._root._streamYamlVariables()
                 self._writer.close()
             else:
-                self._writer.open(self._dataFile)
+                self._writer.open(self.dataFile)
 
                 # Dump config/status to file
                 self._root._streamYamlVariables()
-            self._open = value
+            var.value = value
 
     def _setBufferSize(self,dev,var,value):
-        self._bufferSize = value
+        var.value = value
         self._writer.setBufferSize(value)
 
     def _setMaxFileSize(self,dev,var,value):
-        self._maxFileSize = value
+        var.value = value
         self._writer.setMaxSize(value)
 
     def _getFileSize(self,dev,var):
@@ -56,6 +55,9 @@ class StreamWriter(pyrogue.DataWriter):
 
     def _getFrameCount(self,dev,var):
         return self._writer.getFrameCount()
+
+    def waitFrameCount(self, count):
+        self._writer.waitFrameCount(count)
 
     def getChannel(self,chan):
         return self._writer.getChannel(chan)
@@ -67,30 +69,25 @@ class StreamReader(pyrogue.Device):
     def __init__(self, name):
 
         pyrogue.Device.__init__(self, name=name, description='Stream Writer', 
-                                size=0, memBase=None, offset=0)
+                                memBase=None, offset=0)
 
         self._reader      = rogue.utilities.fileio.StreamReader()
-        self._file        = ""
-        self._open        = False
         self._bufferSize  = 0
         self._maxFileSize = 0
 
-        self.add(pyrogue.Variable(name='dataFile', description='Data File',
-                                  bitSize=0, bitOffset=0, base='string', mode='RW',
-                                  setFunction='dev._file = value',
-                                  getFunction='value = dev._file'))
+        self.add(
+            pyrogue.Variable(name='dataFile', value='', local=True, description='Data File'),
+            pyrogue.Variable(name='open', value=False, local=True, mode='RW',
+                             setFunction=self._setOpen,
+                             description='Data file open state'))
 
-        self.add(pyrogue.Variable(name='open', description='Data file open state',
-                                  bitSize=1, bitOffset=0, base='bool', mode='RW',
-                                  setFunction="""\
-                                              if dev._open != int(value):
-                                                  if value == False:
-                                                      dev._reader.close()
-                                                  else:
-                                                      dev._reader.open(dev._file)
-                                                  dev._open = value
-                                              """,
-                                  getFunction='value = dev._open'))
+    def _setOpen(self, dev, var, value):
+        if dev.open != int(value):
+            if value == False:
+                dev._reader.close()
+            else:
+                dev._reader.open(dev.dataFile)
+            var.value = value
 
     def _getStreamMaster(self):
         return self._reader
