@@ -37,7 +37,7 @@ class VariableLink(QObject):
         parent.addChild(item)
         item.setText(0,variable.name)
         item.setText(1,variable.mode)
-        item.setText(2,variable.base)
+        item.setText(2,variable.disp) # Fix this. Should show model and size
 
         if variable.units:
            item.setText(4,str(variable.units))
@@ -50,7 +50,7 @@ class VariableLink(QObject):
             for i in sorted(variable.enum):
                 self.widget.addItem(variable.enum[i])
 
-        elif variable.base == 'range':
+        elif variable.disp == 'range':
             self.widget = QSpinBox();
             self.widget.setMinimum(variable.minimum)
             self.widget.setMaximum(variable.maximum)

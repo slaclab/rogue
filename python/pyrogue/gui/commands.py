@@ -34,13 +34,13 @@ class CommandLink(QObject):
         item = QTreeWidgetItem(parent)
         parent.addChild(item)
         item.setText(0,command.name)
-        item.setText(1,command.base)
+        item.setText(1,command.disp)
 
         pb = QPushButton('Execute')
         item.treeWidget().setItemWidget(item,2,pb)
         pb.clicked.connect(self.execPressed)
 
-        if command.base != 'None':
+        if command.model != 'None':
             self.widget = QLineEdit()
             item.treeWidget().setItemWidget(item,3,self.widget)
         else:
@@ -52,36 +52,14 @@ class CommandLink(QObject):
         else:
             value=None
 
-        if self.command.base == 'hex':
+        if self.command.model is not None:
             try:
-                self.command(int(value,16))
+                self.command(self.command.parseDisp(value))
             except Exception:
                 pass
-
-        elif self.command.base == 'bin':
-            try:
-                self.command(int(value,2))
-            except Exception:
-                pass
-            
-        elif self.command.base == 'uint':
-            try:
-                self.command(int(value))
-            except Exception:
-                pass
-
-        elif self.command.base == 'float':
-            try:
-                self.command(float(value))
-            except Exception:
-                pass
-
-        elif self.command.base == 'string':
-            self.command(value)
-
         else:
             self.command()
-
+            
 
 class CommandWidget(QWidget):
     def __init__(self, group, parent=None):

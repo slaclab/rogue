@@ -445,10 +445,10 @@ class Variable(Node):
     maximum: Maximum value for disp='range'
     hidden: Variable is hidden
     """
-    def __init__(self, name, description="", parent=None,
+    def __init__(self, name=None, description="", parent=None, classType='variable',
                  offset=None, bitSize=32, bitOffset=0, pollInterval=0, mode='RW',
                  value=None, local=False, getFunction=None, setFunction=None,
-                 model=None, base=None,
+                 model=None, base='hex',
                  disp='hex', enum=None, units=None, hidden=False, minimum=None, maximum=None,
                  dependencies=None,
                  beforeReadCmd=lambda: None, afterWriteCmd=lambda: None,
@@ -466,24 +466,28 @@ class Variable(Node):
         self.maximum   = maximum # For base='range'
         self.value     = value  
         
-        
+        #print('Variable.__init__( name={}, base={}, disp={}, model={} )'.format(name, base, disp, model))        
 
         # Handle legacy model declarations
-        if model is not None:
-            self.model = model
-        elif base is not None:
+        self.model = model
+        if model is None and base is not None:
             if base == 'hex' or base == 'uint' or base == 'bin' or base == 'enum' or base == 'range':
                 self.model = IntModel(signed=False, endianness='little')
+            elif base == 'int':
+                self.model = IntModel(signed=True, endianness='little')
+            elif base == 'bool':
+                self.model = BoolModel()
             elif base == 'string':
                 self.model = StringModel()
             elif base == 'float':
                 self.model = FloatModel()
 
+
         # Format disp
-        if disp is not None:
-            tmp = disp
-        elif base is not None:
+        if base is not None:
             tmp = base
+        elif disp is not None:
+            tmp = disp
 
         if isinstance(tmp, dict):
             self.disp = 'enum'
@@ -529,7 +533,7 @@ class Variable(Node):
             if setFunction is None:
                 self._setFunction = self._localSetFunction
             if getFunction is None:
-                self._setFunction = self._localGetFunction
+                self._getFunction = self._localGetFunction
 
 
         if isinstance(self.model, StringModel):
@@ -548,7 +552,7 @@ class Variable(Node):
         self._afterWriteCmd = afterWriteCmd
 
         # Call super constructor
-        Node.__init__(self, name=name, classType='variable', description=description, hidden=hidden, parent=parent)
+        Node.__init__(self, name=name, classType=classType, description=description, hidden=hidden, parent=parent)
 
     def _rootAttached(self):
         # Variables are always leaf nodes so no need to recurse
@@ -656,13 +660,14 @@ class Variable(Node):
                 
         return ret
 
-   def _updated(self):
+    def _updated(self):
         """Variable has been updated. Inform listeners."""
         
         # Don't generate updates for SL and WO variables
         if self.mode == 'WO' or self.mode == 'SL': return
 
-        self.value = self._block.get(self)
+        if self._block is not None:
+            self.value = self._block.get(self)
         
         for func in self.__listeners:
             func(self, self.value)
@@ -715,23 +720,29 @@ class Variable(Node):
         self._updated()
 
     def getDisp(self, read=True):
+        #print('{}.getDisp(read={}) disp={}'.format(self.path, read, self.disp))
         if self.disp == 'enum':
             return self.enum[self.get(read)]
         else:
             return self.disp.format(self.get(read))
 
-    def setDisp(self, sValue, write=True):
+    def parseDisp(self, sValue):
         if self.disp == 'enum':
-            self.set(self.revEnum[sValue], write)
+            return self.revEnum[sValue], write
         else:
-            self.set(parse.parse(self.disp, sValue)[0], write)
+             return (parse.parse(self.disp, sValue)[0])
+
+    def setDisp(self, sValue, write=True):
+        self.set(self.parseDisp(sValue, write))
+        
+        
 
 class ModelMeta(type):
     def __init__(cls, *args, **kwargs):
         super().__init__(*args, **kwargs)
         cls.cache = {}
 
-    def __call__(cls, *args, **kwargs)
+    def __call__(cls, *args, **kwargs):
         key = str(args) + str(kwargs)
         if key not in cls.cache:
             inst = super().__call__(*args, **kwargs)
@@ -752,6 +763,7 @@ class IntModel(Model):
 
     def _fromBlock(self, ba):
         return int.from_bytes(ba, self.endianness, signed=self.signed)
+
 
 class BoolModel(IntModel):
 
@@ -780,7 +792,7 @@ class Command(Variable):
     """Command holder: Subclass of variable with callable interface"""
 
     def __init__(self, name=None, mode='CMD', function=None, **kwargs):
-        super().__init__(self, classType='command', **kwargs)
+        Variable.__init__(self, name=name, mode=mode, classType='command', **kwargs)
 
         self._function = function if function is not None else Command.nothing
 
@@ -939,7 +951,7 @@ class Block(rogue.interfaces.memory.Master):
 
     def set(self, var, value):
         """
-        Update block with bitCount bits from passed byte array.
+        Update block with bitSize bits from passed byte array.
         Offset sets the starting point in the block array.
         """
         with self._cond:
@@ -948,17 +960,17 @@ class Block(rogue.interfaces.memory.Master):
             ba = var.model._toBlock(value)
 
             # Access is fully byte aligned
-            if (var.bitOffset % 8) == 0 and (var.bitCount % 8) == 0:
-                self._bData[var.bitOffset//8:(var.bitOffset+var.bitCount)//8] = ba
+            if (var.bitOffset % 8) == 0 and (var.bitSize % 8) == 0:
+                self._bData[var.bitOffset//8:(var.bitOffset+var.bitSize)//8] = ba
 
             # Bit level access
             else:
-                for x in range(0, var.bitCount):
+                for x in range(0, var.bitSize):
                     setBitToBytes(self._bData,x+var.bitOffset,getBitFromBytes(ba,x))
 
     def get(self, var):
         """
-        Get bitCount bytes from block data.
+        Get bitSize bytes from block data.
         Offset sets the starting point in the block array.
         bytearray is returned
         """
@@ -971,16 +983,16 @@ class Block(rogue.interfaces.memory.Master):
 
 
             # Access is fully byte aligned
-            if (var.bitOffset % 8) == 0 and (var.bitCount % 8) == 0:
-                return var.model._fromBlock(self._bData[int(var.bitOffset/8):int((var.bitOffset+var.bitCount)/8)])
+            if (var.bitOffset % 8) == 0 and (var.bitSize % 8) == 0:
+                return var.model._fromBlock(self._bData[int(var.bitOffset/8):int((var.bitOffset+var.bitSize)/8)])
 
             # Bit level access
             else:
-                ba = bytearray(int(var.bitCount / 8))
-                if (var.bitCount % 8) > 0: ba.extend(bytearray(1))
-                for x in range(0,var.bitCount):
+                ba = bytearray(int(var.bitSize / 8))
+                if (var.bitSize % 8) > 0: ba.extend(bytearray(1))
+                for x in range(0,var.bitSize):
                     setBitToBytes(ba,x,getBitFromBytes(self._bData,x+var.bitOffset))
-                return var._fromBlock(ba)
+                return var.model._fromBlock(ba)
 
     def backgroundTransaction(self,type):
         """
@@ -1251,7 +1263,7 @@ class Device(Node,rogue.interfaces.memory.Hub):
         if isinstance(node,Variable) and node.offset is not None:
             if not any(block._addVariable(node) for block in self._blocks):
                 self._log.debug("Adding new block %s at offset %x" % (node.name,node.offset))
-                self._blocks.append(Block(self,node))
+                self._blocks.append(Block(node))
 
     def hideVariables(self, hidden, variables=None):
         """Hide a list of Variables (or Variable names)"""
