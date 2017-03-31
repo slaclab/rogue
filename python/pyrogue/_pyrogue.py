@@ -448,8 +448,8 @@ class Variable(Node):
     def __init__(self, name=None, description="", parent=None, classType='variable',
                  offset=None, bitSize=32, bitOffset=0, pollInterval=0, mode='RW',
                  value=None, local=False, getFunction=None, setFunction=None,
-                 model=None, base='hex',
-                 disp='hex', enum=None, units=None, hidden=False, minimum=None, maximum=None,
+                 base='hex',
+                 disp=None, enum=None, units=None, hidden=False, minimum=None, maximum=None,
                  dependencies=None,
                  beforeReadCmd=lambda: None, afterWriteCmd=lambda: None,
                  **dump):
@@ -468,46 +468,48 @@ class Variable(Node):
         
         #print('Variable.__init__( name={}, base={}, disp={}, model={} )'.format(name, base, disp, model))        
 
+
+        self.base = base
         # Handle legacy model declarations
-        self.model = model
-        if model is None and base is not None:
-            if base == 'hex' or base == 'uint' or base == 'bin' or base == 'enum' or base == 'range':
-                self.model = IntModel(signed=False, endianness='little')
-            elif base == 'int':
-                self.model = IntModel(signed=True, endianness='little')
-            elif base == 'bool':
-                self.model = BoolModel()
-            elif base == 'string':
-                self.model = StringModel()
-            elif base == 'float':
-                self.model = FloatModel()
+        if base == 'hex' or base == 'uint' or base == 'bin' or base == 'enum' or base == 'range':
+            self.base = IntModel(signed=False, endianness='little')
+        elif base == 'int':
+            self.base = IntModel(signed=True, endianness='little')
+        elif base == 'bool':
+            self.base = BoolModel()
+        elif base == 'string':
+            self.base = StringModel()
+        elif base == 'float':
+            self.base = FloatModel()
 
-
-        # Format disp
-        if base is not None:
-            tmp = base
-        elif disp is not None:
-            tmp = disp
-
-        if isinstance(tmp, dict):
+        # disp follows base if not specified
+        if disp is None and isinstance(base, str):
+            disp = base
+        elif disp is None:
+            disp = self.base.defaultdisp
+            
+        if isinstance(disp, dict):
             self.disp = 'enum'
-            self.enum = tmp
-        elif isinstance(tmp, list):
+            self.enum = disp
+        elif isinstance(disp, list):
             self.disp = 'enum'
-            self.enum = {k:str(k) for k in tmp}
-        elif isinstance(tmp, str):
-            if tmp == 'range':
+            self.enum = {k:str(k) for k in disp}
+        elif isinstance(disp, str):
+            if disp == 'range':
                 self.disp = 'range'
-            elif tmp == 'hex':
+            elif disp == 'hex':
                 self.disp = '{:x}'
-            elif tmp == 'uint':
+            elif disp == 'uint':
                 self.disp = '{:d}'
-            elif tmp == 'bin':
+            elif disp == 'bin':
                 self.disp = '{:b}'
-            elif tmp == 'string':
+            elif disp == 'string':
                 self.disp = '{}'
+            elif disp == 'bool':
+                self.disp = 'enum'
+                self.enum = {False: 'False', True: 'True'}
             else:
-                self.disp = tmp
+                self.disp = disp
 
         self.revEnum = None
         if self.enum is not None:
@@ -536,7 +538,7 @@ class Variable(Node):
                 self._getFunction = self._localGetFunction
 
 
-        if isinstance(self.model, StringModel):
+        if isinstance(self.base, StringModel):
             self._scratch = ''
         else:
             self._scratch = 0
@@ -728,12 +730,12 @@ class Variable(Node):
 
     def parseDisp(self, sValue):
         if self.disp == 'enum':
-            return self.revEnum[sValue], write
+            return self.revEnum[sValue]
         else:
              return (parse.parse(self.disp, sValue)[0])
 
     def setDisp(self, sValue, write=True):
-        self.set(self.parseDisp(sValue, write))
+        self.set(self.parseDisp(sValue), write)
         
         
 
@@ -755,6 +757,7 @@ class Model(metaclass=ModelMeta):
 class IntModel(Model):
     """Variable holding an unsigned integer"""
     def __init__(self, signed=False, endianness='little'):
+        self.defaultdisp = '{:x}'
         self.signed = signed
         self.endianness = endianness
 
@@ -765,7 +768,15 @@ class IntModel(Model):
         return int.from_bytes(ba, self.endianness, signed=self.signed)
 
 
+
 class BoolModel(IntModel):
+
+    def __init__(self):
+        super().__init__(self)
+        self.defaultdisp = {False: 'False', True: 'True'}
+
+    def _toBlock(self, value):
+        return value.to_bytes(1, 'little', signed=False)
 
     def _fromBlock(self, ba):
         return bool(IntModel._fromBlock(self, ba))
@@ -775,6 +786,7 @@ class StringModel(Model):
     def __init__(self, encoding='utf-8', **kwargs):
         super().__init__(**kwargs)
         self.encoding = encoding
+        self.defaultdisp = '{}'
 
     def _toBlock(self, value):
         ba = bytearray(value, self.encoding)
@@ -785,7 +797,29 @@ class StringModel(Model):
         s = ba.rstrip(bytearray(1))
         return s.decode(self.encoding)
 
+class FloatModel(Model):
+    def __init__(self, endianness='little'):
+        super().__init__(self)
+        self.defaultdisp = '{:f}'
+        if endianness == 'little':
+            self.format = 'f'
+        if endianness == 'big':
+            self.format = '!f'
 
+    def _toBlock(self, value):
+        return bytearray(struct.pack(self.format, value))
+
+    def _fromBlock(self, ba):
+        return struct.unpack(self.format, ba)
+
+class DoubleModel(FloatModel):
+    def __init__(self, endianness='little'):
+        super().__init__(self, endianness)
+        if endianness == 'little':
+            self.format = 'd'
+        if endianness == 'big':
+            self.format = '!d'
+        
 
 
 class Command(Variable):
@@ -957,7 +991,7 @@ class Block(rogue.interfaces.memory.Master):
         with self._cond:
             self._waitTransaction()
 
-            ba = var.model._toBlock(value)
+            ba = var.base._toBlock(value)
 
             # Access is fully byte aligned
             if (var.bitOffset % 8) == 0 and (var.bitSize % 8) == 0:
@@ -984,7 +1018,7 @@ class Block(rogue.interfaces.memory.Master):
 
             # Access is fully byte aligned
             if (var.bitOffset % 8) == 0 and (var.bitSize % 8) == 0:
-                return var.model._fromBlock(self._bData[int(var.bitOffset/8):int((var.bitOffset+var.bitSize)/8)])
+                return var.base._fromBlock(self._bData[int(var.bitOffset/8):int((var.bitOffset+var.bitSize)/8)])
 
             # Bit level access
             else:
@@ -992,7 +1026,7 @@ class Block(rogue.interfaces.memory.Master):
                 if (var.bitSize % 8) > 0: ba.extend(bytearray(1))
                 for x in range(0,var.bitSize):
                     setBitToBytes(ba,x,getBitFromBytes(self._bData,x+var.bitOffset))
-                return var.model._fromBlock(ba)
+                return var.base._fromBlock(ba)
 
     def backgroundTransaction(self,type):
         """
@@ -1199,7 +1233,6 @@ class Device(Node,rogue.interfaces.memory.Hub):
 
         # Blocks
         self._blocks    = []
-        self._enable    = enabled
         self._memBase   = memBase
         self._resetFunc = None
         self.expand     = expand
@@ -1221,7 +1254,7 @@ class Device(Node,rogue.interfaces.memory.Hub):
         self.addCommands = ft.partial(self.addNodes, Command)
 
         # Variable interface to enable flag
-        self.add(Variable(name='enable', base='bool', mode='RW',
+        self.add(Variable(name='enable', value=enabled, base='bool', mode='RW',
                           setFunction=self._setEnable, getFunction=self._getEnable,
                           description='Determines if device is enabled for hardware access'))
 
@@ -1290,13 +1323,13 @@ class Device(Node,rogue.interfaces.memory.Hub):
         May be re-implemented in some sub-class to 
         propogate enable to leaf nodes in the tree.
         """
-        self._enable = enable
+        var.value = enable
 
     def _getEnable(self, dev, var):
-        if dev._enable is False:
+        if var.value is False:
             return False
         if dev == dev._root:
-            return dev._enable
+            return dev.enable.value
         else:
             return dev._parent.enable.get()
 
@@ -1304,7 +1337,7 @@ class Device(Node,rogue.interfaces.memory.Hub):
         """
         Perform background transactions
         """
-        if not self._enable: return
+        if not self.enable: return
 
         # Execute all unique beforeReadCmds for reads or verify
         if type == rogue.interfaces.memory.Read or type == rogue.interfaces.memory.Verify:
@@ -1336,7 +1369,7 @@ class Device(Node,rogue.interfaces.memory.Hub):
 
     def _checkTransaction(self,update):
         """Check errors in all blocks and generate variable update nofifications"""
-        if not self._enable: return
+        if not self.enable: return
 
         # Process local blocks
         for block in self._blocks:

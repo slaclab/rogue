@@ -37,7 +37,7 @@ class VariableLink(QObject):
         parent.addChild(item)
         item.setText(0,variable.name)
         item.setText(1,variable.mode)
-        item.setText(2,variable.disp) # Fix this. Should show model and size
+        item.setText(2,variable.disp) # Fix this. Should show base and size
 
         if variable.units:
            item.setText(4,str(variable.units))
@@ -70,6 +70,7 @@ class VariableLink(QObject):
         self.newValue(None,variable.getDisp(read=False))
 
     def newValue(self, var, value):
+        print('{}.newValue( {}, {} )'.format(self.variable, var, value))
         if self.block: return
 
         if self.variable.mode=='RW' and (self.variable.disp == 'enum'):
@@ -86,7 +87,7 @@ class VariableLink(QObject):
         self.block = True
 
         if self.variable.disp == 'enum':
-            self.variable.setDisp(self.widget.itemText(value))
+            self.variable.setDisp(self.widget.itemText(int(value)))
 
         else:
             self.variable.setDisp(value)
