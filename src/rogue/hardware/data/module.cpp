@@ -3,9 +3,7 @@
  * Title      : Python Module
  * ----------------------------------------------------------------------------
  * File       : module.cpp
- * Author     : Ryan Herbst, rherbst@slac.stanford.edu
- * Created    : 2016-08-08
- * Last update: 2016-08-08
+ * Created    : 2017-03-21
  * ----------------------------------------------------------------------------
  * Description:
  * Python module setup
@@ -20,30 +18,28 @@
  * ----------------------------------------------------------------------------
 **/
 
-#include <boost/python.hpp>
-#include <rogue/hardware/module.h>
-#include <rogue/hardware/pgp/module.h>
-#include <rogue/hardware/rce/module.h>
-#include <rogue/hardware/exo/module.h>
+#include <rogue/hardware/data/DataMap.h>
+#include <rogue/hardware/data/DataCard.h>
 #include <rogue/hardware/data/module.h>
+#include <boost/python.hpp>
 
 namespace bp  = boost::python;
+namespace rhd = rogue::hardware::data;
+namespace ris = rogue::interfaces::stream;
 
-void rogue::hardware::setup_module() {
+void rhd::setup_module() {
 
    // map the IO namespace to a sub-module
-   bp::object module(bp::handle<>(bp::borrowed(PyImport_AddModule("rogue.hardware"))));
+   bp::object module(bp::handle<>(bp::borrowed(PyImport_AddModule("rogue.hardware.data"))));
 
    // make "from mypackage import class1" work
-   bp::scope().attr("hardware") = module;
+   bp::scope().attr("data") = module;
 
    // set the current scope to the new sub-module
    bp::scope io_scope = module;
 
-   rogue::hardware::pgp::setup_module();
-   rogue::hardware::rce::setup_module();
-   rogue::hardware::exo::setup_module();
-   rogue::hardware::data::setup_module();
+   rhd::DataCard::setup_python();
+   rhd::DataMap::setup_python();
 
 }
 
