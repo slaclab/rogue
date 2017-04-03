@@ -33,7 +33,7 @@ void rhd::setup_module() {
    bp::object module(bp::handle<>(bp::borrowed(PyImport_AddModule("rogue.hardware.data"))));
 
    // make "from mypackage import class1" work
-   bp::scope().attr("pgp") = module;
+   bp::scope().attr("data") = module;
 
    // set the current scope to the new sub-module
    bp::scope io_scope = module;
