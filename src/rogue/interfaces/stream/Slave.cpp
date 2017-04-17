@@ -41,7 +41,9 @@ ris::SlavePtr ris::Slave::create () {
 
 //! Creator
 ris::Slave::Slave() {
-   debug_ = 0;
+   debug_      = 0;
+   frameCount_ = 0;
+   frameBytes_ = 0;
 }
 
 //! Destructor
@@ -57,6 +59,9 @@ void ris::Slave::setDebug(uint32_t debug, std::string name) {
 void ris::Slave::acceptFrame ( ris::FramePtr frame ) {
    uint32_t x;
    uint8_t  val;
+
+   frameCount_++;
+   frameBytes_ += frame->getPayload();
 
    if ( debug_ > 0 ) {
       char buffer[1000];
@@ -106,6 +111,17 @@ void ris::SlaveWrap::defAcceptFrame ( ris::FramePtr frame ) {
    ris::Slave::acceptFrame(frame);
 }
 
+
+//! Get frame counter
+uint64_t ris::Slave::getFrameCount() {
+   return(frameCount_);
+}
+
+//! Get byte counter
+uint64_t ris::Slave::getByteCount() {
+   return(frameBytes_);
+}
+
 void ris::Slave::setup_python() {
 
    bp::class_<ris::SlaveWrap, ris::SlaveWrapPtr, boost::noncopyable>("Slave",bp::init<>())
@@ -113,6 +129,8 @@ void ris::Slave::setup_python() {
       .staticmethod("create")
       .def("setDebug",       &ris::Slave::setDebug)
       .def("_acceptFrame",   &ris::Slave::acceptFrame, &ris::SlaveWrap::defAcceptFrame)
+      .def("getFrameCount",  &ris::Slave::getFrameCount)
+      .def("getByteCount",   &ris::Slave::getByteCount)
    ;
 
    bp::implicitly_convertible<ris::SlavePtr, ris::PoolPtr>();
