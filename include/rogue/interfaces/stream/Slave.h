@@ -52,6 +52,10 @@ namespace rogue {
                uint32_t         debug_;
                rogue::Logging * log_;
 
+               //! Counters
+               uint64_t frameCount_;
+               uint64_t frameBytes_;
+
             public:
 
                //! Class creation
@@ -71,6 +75,12 @@ namespace rogue {
 
                //! Accept a frame from master
                virtual void acceptFrame ( boost::shared_ptr<rogue::interfaces::stream::Frame> frame );
+
+               //! Get frame counter
+               uint64_t getFrameCount();
+
+               //! Get byte counter
+               uint64_t getByteCount();
 
          };
 
