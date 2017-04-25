@@ -282,6 +282,7 @@ void ru::Prbs::acceptFrame ( ris::FramePtr frame ) {
    uint32_t   cnt;
    uint32_t   expValue;
    uint32_t   gotValue;
+   uint32_t   x;
 
    boost::unique_lock<boost::mutex> lock(rxMtx_,boost::defer_lock);
 
@@ -313,6 +314,11 @@ void ru::Prbs::acceptFrame ( ris::FramePtr frame ) {
    // Check size
    if ( frSize != size ) {
       rxLog_->warning("Bad size. exp=%i, got=%i, count=%i",frSize,size,rxCount_);
+
+      for ( x=0; x < 8; x++ ) {
+         frame->read(&gotValue,x*4,4);
+         rxLog_->warning("Data: %i = 0x%.8x",x,gotValue);
+      }
       rxErrCount_++;
       return;
    }
