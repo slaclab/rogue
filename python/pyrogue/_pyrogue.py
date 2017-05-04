@@ -232,7 +232,7 @@ class Node(object):
     def addNodes(self, nodeClass, number, stride, **kwargs):
         name = kwargs.pop('name')
         offset = kwargs.pop('offset')
-        for i in xrange(number):
+        for i in range(number):
             self.add(nodeClass(name='{:s}[{:d}]'.format(name, i), offset=offset+(i*stride), **kwargs))
 
     def _getNodes(self,typ):
