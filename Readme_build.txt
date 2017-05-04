@@ -1,7 +1,6 @@
 To build the rogue base package you need the following. Some of these packages
 may be available in a modern linux distribution. (see below).
 
-See Readme_python2.txt for python2 package requirements and installation (not recommended)
 See Readme_python3.txt for python3 package requirements and installation (preferred)
 See Readme_boost.txt   for boost   package requirements and installation
 

@@ -20,21 +20,13 @@
 # ----------------------------------------------------------------------------
 # 
 
-# Python 3
-PYCONF = python3-config
-PYBOOST = -lboost_python3
-
-# Python 2
-#PYCONF = python2.7-config
-#PYBOOST = -lboost_python
-
 # Variables
 CC       := g++
 DEF      :=
-CFLAGS   := -Wall `$(PYCONF) --cflags | sed s/-Wstrict-prototypes//` -fno-strict-aliasing
-CFLAGS   += -I $(BOOST_PATH)/include -I$(PWD)/include -I$(PWD)/drivers/include -std=c++0x -fPIC
-LFLAGS   := `$(PYCONF) --ldflags` -lboost_thread $(PYBOOST) -lboost_system
-LFLAGS   += -L`$(PYCONF) --prefix`/lib/ -L$(BOOST_PATH)/lib 
+CFLAGS   := -Wall `python3-config --cflags | sed s/-Wstrict-prototypes//` -fno-strict-aliasing
+CFLAGS   += -I$(BOOST_PATH)/include -I$(PWD)/include -I$(PWD)/drivers/include -std=c++0x -fPIC
+LFLAGS   := `python3-config --ldflags` -lboost_thread -lboost_python3 -lboost_system
+LFLAGS   += -L`python3-config --prefix`/lib/ -L$(BOOST_PATH)/lib 
 
 # Rogue Library Sources
 LIB_HDR  := $(PWD)/include/rogue
@@ -78,14 +70,4 @@ $(PYLIB): $(LIB_OBJ)
 $(CPPLIB): $(LIB_OBJ)
 	@mkdir -p $(PWD)/lib
 	@echo "Creating $@"; $(CC) -shared $(LIB_OBJ) $(LFLAGS) -o $@
-
-# Driver compile
-driver:
-	make -C $(PWD)/drivers driver
-	make -C $(PWD)/drivers app
-
-# Driver install
-driver_install:
-	make -C $(PWD)/drivers linux_install
-	make -C $(PWD)/drivers rce_install
 
