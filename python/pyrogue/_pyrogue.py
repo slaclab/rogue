@@ -472,7 +472,8 @@ class Variable(Node):
     to the parent device object.
     """
     def __init__(self, name, description="", parent=None, offset=None, bitSize=32, bitOffset=0, pollInterval=0, value=None,
-                 base='hex', mode='RW', enum=None, units=None, hidden=False, minimum=None, maximum=None,
+                 base='hex', mode='RW', enum=None, units=None, hidden=False,
+                 minimum=None, maximum=None, verify=True,
                  setFunction=None, getFunction=None, dependencies=None, 
                  beforeReadCmd=None, afterWriteCmd=None, **dump):
         """Initialize variable class""" 
@@ -483,6 +484,7 @@ class Variable(Node):
         self.bitOffset = bitOffset
         self.base      = base      
         self.mode      = mode
+        self.verify    = verify
         self.enum      = enum
         self.units     = units
         self.minimum   = minimum # For base='range'
@@ -1064,7 +1066,7 @@ class Block(rogue.interfaces.memory.Master):
                 self._size = varBytes
 
             # Update verify mask
-            if var.mode == 'RW':
+            if var.mode == 'RW' and var.verify is True:
                 for x in range(var.bitOffset,var.bitOffset+var.bitSize):
                     setBitToBytes(self._mData,x,1)
 
