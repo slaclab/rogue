@@ -405,13 +405,13 @@ class Node(object):
                 if isinstance(self._nodes[key],Device):
                     self._nodes[key]._setOrExec(value,writeEach,modes)
 
-                # Set value if variable with enabled mode
-                elif isinstance(self._nodes[key],Variable) and (self._nodes[key].mode in modes):
-                    self._nodes[key].set(value,writeEach)
-
                 # Execute if command
                 elif isinstance(self._nodes[key],Command):
                     self._nodes[key](value)
+
+                # Set value if variable with enabled mode
+                elif isinstance(self._nodes[key],Variable) and (self._nodes[key].mode in modes):
+                    self._nodes[key].set(value,writeEach)
 
 
 class VariableError(Exception):
