@@ -2,10 +2,8 @@
  *-----------------------------------------------------------------------------
  * Title      : Python Module
  * ----------------------------------------------------------------------------
- * File       : module.cpp
- * Author     : Ryan Herbst, rherbst@slac.stanford.edu
- * Created    : 2016-08-08
- * Last update: 2016-08-08
+ * File       : module.h
+ * Created    : 2017-03-21
  * ----------------------------------------------------------------------------
  * Description:
  * Python module setup
@@ -19,31 +17,16 @@
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
+#ifndef __ROGUE_HARDWARE_DATA_MODULE_H__
+#define __ROGUE_HAREWARE_DATA_MODULE_H__
 
-#include <boost/python.hpp>
-#include <rogue/hardware/module.h>
-#include <rogue/hardware/pgp/module.h>
-#include <rogue/hardware/rce/module.h>
-#include <rogue/hardware/exo/module.h>
-#include <rogue/hardware/data/module.h>
-
-namespace bp  = boost::python;
-
-void rogue::hardware::setup_module() {
-
-   // map the IO namespace to a sub-module
-   bp::object module(bp::handle<>(bp::borrowed(PyImport_AddModule("rogue.hardware"))));
-
-   // make "from mypackage import class1" work
-   bp::scope().attr("hardware") = module;
-
-   // set the current scope to the new sub-module
-   bp::scope io_scope = module;
-
-   rogue::hardware::pgp::setup_module();
-   rogue::hardware::rce::setup_module();
-   rogue::hardware::exo::setup_module();
-   rogue::hardware::data::setup_module();
-
+namespace rogue {
+   namespace hardware {
+      namespace data {
+         void setup_module();
+      }
+   }
 }
+
+#endif
 

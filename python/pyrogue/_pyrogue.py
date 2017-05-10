@@ -235,7 +235,7 @@ class Node(object):
     def addNodes(self, nodeClass, number, stride, **kwargs):
         name = kwargs.pop('name')
         offset = kwargs.pop('offset')
-        for i in xrange(number):
+        for i in range(number):
             self.add(nodeClass(name='{:s}[{:d}]'.format(name, i), offset=offset+(i*stride), **kwargs))
 
     def _getNodes(self,typ):
@@ -408,13 +408,13 @@ class Node(object):
                 if isinstance(self._nodes[key],Device):
                     self._nodes[key]._setOrExec(value,writeEach,modes)
 
-                # Set value if variable with enabled mode
-                elif isinstance(self._nodes[key],Variable) and (self._nodes[key].mode in modes):
-                    self._nodes[key].set(value,writeEach)
-
                 # Execute if command
                 elif isinstance(self._nodes[key],Command):
                     self._nodes[key](value)
+
+                # Set value if variable with enabled mode
+                elif isinstance(self._nodes[key],Variable) and (self._nodes[key].mode in modes):
+                    self._nodes[key].set(value,writeEach)
 
 
 class VariableError(Exception):
@@ -446,7 +446,7 @@ class Variable(Node):
     hidden: Variable is hidden
     """
     def __init__(self, name=None, description="", parent=None, classType='variable',
-                 offset=None, bitSize=32, bitOffset=0, pollInterval=0, mode='RW',
+                 offset=None, bitSize=32, bitOffset=0, pollInterval=0, mode='RW', verify=True
                  value=None, local=False, getFunction=None, setFunction=None,
                  base='hex',
                  disp=None, enum=None, units=None, hidden=False, minimum=None, maximum=None,
@@ -460,6 +460,7 @@ class Variable(Node):
         self.bitSize   = bitSize
         self.bitOffset = bitOffset
         self.mode      = mode
+        self.verify    = verify
         self.enum      = enum
         self.units     = units
         self.minimum   = minimum # For base='range'
@@ -1121,7 +1122,7 @@ class Block(rogue.interfaces.memory.Master):
                 self._size = varBytes
 
             # Update verify mask
-            if var.mode == 'RW':
+            if var.mode == 'RW' and var.verify is True:
                 for x in range(var.bitOffset,var.bitOffset+var.bitSize):
                     setBitToBytes(self._mData,x,1)
 

@@ -69,11 +69,11 @@ class PrbsTx(pyrogue.Device):
         self._txEnable   = False
         self._size       = 1000
 
-        dev.add(pyrogue.Variable(name='txSize', description='PRBS Frame Size', base='uint', mode='RW',
+        self.add(pyrogue.Variable(name='txSize', description='PRBS Frame Size', base='uint', mode='RW',
                                  setFunction='dev._size = value',
                                  getFunction='value = dev._size'))
 
-        dev.add(pyrogue.Variable(name='txEnable', description='PRBS Run Enable', base='bool', mode='RW',
+        self.add(pyrogue.Variable(name='txEnable', description='PRBS Run Enable', base='bool', mode='RW',
                                  setFunction="""\
                                              if dev._txEnable != int(value):
                                                  if int(value) == 0:
@@ -84,19 +84,19 @@ class PrbsTx(pyrogue.Device):
                                              """,
                                  getFunction='value = dev._txEnable'))
 
-        dev.add(pyrogue.Command(name='genFrame',description='Generate a single frame',
+        self.add(pyrogue.Command(name='genFrame',description='Generate a single frame',
                                 function='dev._prbs.genFrame(dev._size)'))
 
-        dev.add(pyrogue.Variable(name='txErrors', description='TX Error Count', base='uint', mode='RO', pollPeriod = 1,
+        self.add(pyrogue.Variable(name='txErrors', description='TX Error Count', base='uint', mode='RO', pollPeriod = 1,
                                  setFunction=None, getFunction='value = dev._prbs.getTxErrors()'))
 
-        dev.add(pyrogue.Variable(name='txCount', description='TX Count', base='uint', mode='RO', pollPeriod = 1,
+        self.add(pyrogue.Variable(name='txCount', description='TX Count', base='uint', mode='RO', pollPeriod = 1,
                                  setFunction=None, getFunction='value = dev._prbs.getTxCount()'))
 
-        dev.add(pyrogue.Variable(name='txBytes', description='TX Bytes', base='uint', mode='RO', pollPeriod = 1,
+        self.add(pyrogue.Variable(name='txBytes', description='TX Bytes', base='uint', mode='RO', pollPeriod = 1,
                                  setFunction=None, getFunction='value = dev._prbs.getTxBytes()'))
 
-        dev.add(pyrogue.Command(name='resetCount',description='Reset counters',
+        self.add(pyrogue.Command(name='resetCount',description='Reset counters',
                                 function='dev._prbs.resetCount()'))
 
     def _getStreamMaster(self):
