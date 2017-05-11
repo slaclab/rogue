@@ -446,7 +446,7 @@ class Variable(Node):
     hidden: Variable is hidden
     """
     def __init__(self, name=None, description="", parent=None, classType='variable',
-                 offset=None, bitSize=32, bitOffset=0, pollInterval=0, mode='RW', verify=True
+                 offset=None, bitSize=32, bitOffset=0, pollInterval=0, mode='RW', verify=True,
                  value=None, local=False, getFunction=None, setFunction=None,
                  base='hex',
                  disp=None, enum=None, units=None, hidden=False, minimum=None, maximum=None,
