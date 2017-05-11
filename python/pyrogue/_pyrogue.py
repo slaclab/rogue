@@ -1387,7 +1387,7 @@ class Root(rogue.interfaces.stream.Master,Device):
     to be stored in data files.
     """
 
-    def __init__(self, name, description, pollEn=True, **dump):
+    def __init__(self, name, description, pollEn=True, readBeforeConfig=False, **dump):
         """Init the node with passed attributes"""
 
         rogue.interfaces.stream.Master.__init__(self)
@@ -1400,6 +1400,9 @@ class Root(rogue.interfaces.stream.Master,Device):
         handler.setFormatter(formatter)
         self._logger = logging.getLogger('pyrogue')
         #self._logger.addHandler(handler)
+
+        # Trigger read from hardware before loading config file
+        self._readBeforeConfig = readBeforeConfig
 
         # Keep of list of errors, exposed as a variable
         self._systemLog = ""
@@ -1577,6 +1580,7 @@ class Root(rogue.interfaces.stream.Master,Device):
     @command(order=1, name='readConfig', base='string', description='Read configuration from passed filename in YAML format')
     def _readConfig(self,dev,cmd,arg):
         """Read YAML configuration from a file. Called from command"""
+        if self._readBeforeConfig: self._read()
         try:
             with open(arg,'r') as f:
                 self.setOrExecYaml(f.read(),False,['RW'])
