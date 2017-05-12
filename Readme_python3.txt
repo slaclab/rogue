@@ -30,9 +30,9 @@ install to their environment when needed.
 Install sip
 
 > cd /path/to/python/3.5.2/src/
-> wget https://sourceforge.net/projects/pyqt/files/sip/sip-4.18.1/sip-4.18.1.tar.gz
-> tar -xvvzpf sip-4.18.1.tar.gz
-> cd sip-4.18.1
+> wget https://sourceforge.net/projects/pyqt/files/sip/sip-4.19.2/sip-4.19.2.tar.gz
+> tar -xvvzpf sip-4.19.2.tar.gz
+> cd sip-4.19.2
 > python3 configure.py 
 > make 
 > make install
@@ -40,9 +40,9 @@ Install sip
 Install pyqt4 (if you want a local GUI)
 
 > cd /path/to/python/3.5.2/src/
-> wget http://sourceforge.net/projects/pyqt/files/PyQt4/PyQt-4.11.4/PyQt-x11-gpl-4.11.4.tar.gz
-> tar -xvvzpf PyQt-x11-gpl-4.11.4.tar.gz
-> cd PyQt-x11-gpl-4.11.4
+> wget https://downloads.sourceforge.net/project/pyqt/PyQt4/PyQt-4.12/PyQt4_gpl_x11-4.12.tar.gz
+> tar -xvvzpf PyQt4_gpl_x11-4.12.tar.gz
+> cd PyQt4_gpl_x11-4.12
 > python3 configure-ng.py --qmake=/usr/bin/qmake-qt4 --assume-shared
 > make 
 > make install
