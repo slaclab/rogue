@@ -145,7 +145,8 @@ def busConnect(source,dest):
     master._setSlave(slave)
 
 def numBytes(bits):
-    return int(math.ceil(float(bits) / 8.0))    
+    if bits == 0: return 1
+    return int(math.ceil(float(bits) / 8.0))
 
 
 class NodeError(Exception):
@@ -723,8 +724,10 @@ class Variable(Node):
         self._updated()
 
     def getDisp(self, read=True):
-        #print('{}.getDisp(read={}) disp={}'.format(self.path, read, self.disp))
+        #print('{}.getDisp(read={}) disp={} value={}'.format(self.path, read, self.disp, self.value))
         if self.disp == 'enum':
+            #print('enum: {}'.format(self.enum))
+            #print('get: {}'.format(self.get(read)))
             return self.enum[self.get(read)]
         else:
             return self.disp.format(self.get(read))
@@ -1150,7 +1153,7 @@ class Block(rogue.interfaces.memory.Master):
                 self._size = newSize
 
             # Return if not enabled
-            if not self._device.enable.get():
+            if not self._device.enable.get(read=False):
                 return
             
             self._log.debug('len bData = {}, vData = {}, mData = {}'.format(len(self._bData), len(self._vData), len(self._mData)))
@@ -1332,7 +1335,7 @@ class Device(Node,rogue.interfaces.memory.Hub):
         if dev == dev._root:
             return dev.enable.value
         else:
-            return dev._parent.enable.get()
+            return dev._parent.enable.get(read=False)
 
     def _backgroundTransaction(self,type):
         """
@@ -1478,10 +1481,9 @@ class Root(rogue.interfaces.stream.Master,Device):
 
     def __init__(self, name, description, pollEn=True, **dump):
         """Init the node with passed attributes"""
-
         rogue.interfaces.stream.Master.__init__(self)
-        Device.__init__(self, name=name, description=description, classType='root')
 
+        
         # Create log listener to add to systemlog variable
         formatter = logging.Formatter("%(msg)s")
         handler = RootLogHandler(self)
@@ -1505,6 +1507,9 @@ class Root(rogue.interfaces.stream.Master,Device):
 
         # Variable update listener
         self._varListeners = []
+
+        #Can't init the device until _updatedLock exists.
+        Device.__init__(self, name=name, description=description, classType='root')
 
         # Variables
         self.add(Variable(name='systemLog', value='', local=True, mode='RO',hidden=True,

@@ -43,11 +43,12 @@ class VariableLink(QObject):
            item.setText(4,str(variable.units))
 
         if variable.disp == 'enum' and variable.enum is not None and variable.mode=='RW':
+            #print('VariableLink: variable: {} , enum: {}'.format(variable, variable.enum))
             self.widget = QComboBox()
             self.widget.activated.connect(self.guiChanged)
             self.connect(self,SIGNAL('updateGui'),self.widget.setCurrentIndex)
 
-            for i in sorted(variable.enum):
+            for i in variable.enum:
                 self.widget.addItem(variable.enum[i])
 
         elif variable.disp == 'range':
@@ -67,29 +68,31 @@ class VariableLink(QObject):
 
         item.treeWidget().setItemWidget(item,3,self.widget)
         variable.addListener(self.newValue)
-        self.newValue(None,variable.getDisp(read=False))
-
+        
+        if isinstance(self.widget, QComboBox):
+            self.newValue(None,self.widget.findText(variable.getDisp(read=False)))
+        else:
+            self.newValue(None,variable.getDisp(read=False))
+            
     def newValue(self, var, value):
-        print('{}.newValue( {}, {} )'.format(self.variable, var, value))
+        #print('{} newValue ( {} {} )'.format(self.variable, type(value), value))
         if self.block: return
-
-        if self.variable.mode=='RW' and (self.variable.disp == 'enum'):
-            self.emit(SIGNAL("updateGui"),self.widget.findText(value))
-
-        elif value is not None:
-            self.emit(SIGNAL("updateGui"), value)
-
+        self.emit(SIGNAL("updateGui"), value)
 
     def returnPressed(self):
         self.guiChanged(self.widget.text())
 
     def guiChanged(self, value):
+        #print('{} guiChanged( {}({}) )'.format(self.variable, type(value), value))
         self.block = True
 
         if self.variable.disp == 'enum':
-            self.variable.setDisp(self.widget.itemText(int(value)))
+            # For enums, value will be index of selected item
+            #print('indexDict({}) = {}'.format(value, self.indexDict[value]))
+            self.variable.setDisp(self.widget.itemText(value))
 
         else:
+            # For non enums, value will be string entered in box
             self.variable.setDisp(value)
 
         self.block = False
