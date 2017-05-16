@@ -28,9 +28,10 @@ class RootLogHandler(logging.Handler):
 
     def emit(self,record):
         with self._root._sysLogLock:
-            self._root._systemLog += self.format(record)
-            self._root._systemLog += '\n'
-        self._root.systemLog._updated()
+            val = self._root.systemLog.get(read=False)
+            val += (self.format(record) + '\n')
+            self._root.systemLog.set(write=False,value=val)
+        self._root.systemLog._updated() # Update outside of lock
 
 class Root(rogue.interfaces.stream.Master,pr.Device):
     """
@@ -45,7 +46,6 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         """Init the node with passed attributes"""
 
         rogue.interfaces.stream.Master.__init__(self)
-        pr.Device.__init__(self, name=name, description=description, classType='root')
 
         # Create log listener to add to systemlog variable
         formatter = logging.Formatter("%(msg)s")
@@ -53,13 +53,12 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         handler.setLevel(logging.ERROR)
         handler.setFormatter(formatter)
         self._logger = logging.getLogger('pyrogue')
-        #self._logger.addHandler(handler)
+        self._logger.addHandler(handler)
 
         # Trigger read from hardware before loading config file
         self._readBeforeConfig = readBeforeConfig
 
         # Keep of list of errors, exposed as a variable
-        self._systemLog = ""
         self._sysLogLock = threading.Lock()
 
         # Polling
@@ -75,9 +74,11 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         # Variable update listener
         self._varListeners = []
 
+        # Init after _updatedLock exists
+        pr.Device.__init__(self, name=name, description=description, classType='root')
+
         # Variables
-        self.add(pr.Variable(name='systemLog', base='string', mode='RO',hidden=True,
-            setFunction=None, getFunction='value=dev._systemLog',
+        self.add(pr.LocalVariable(name='systemLog', value='', mode='RO', hidden=True,
             description='String containing newline seperated system logic entries'))
 
 
@@ -261,7 +262,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
     def _clearLog(self,dev,cmd,arg):
         """Clear the system log"""
         with self._sysLogLock:
-            self._systemLog = ""
+            self.systemLog.set(value='',write=False)
         self.systemLog._updated()
 
     def _varUpdated(self,var,value):
