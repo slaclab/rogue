@@ -59,7 +59,7 @@ class BlockError(Exception):
 class Block(Object):
 
     def __init__(self, variable):
-        self._mode     = variable.mode
+        self._mode      = variable.mode
         self._bData     = bytearray()
         self._vData     = bytearray()
         self._mData     = bytearray()
@@ -122,6 +122,10 @@ class Block(Object):
     @property
     def mode(self):
         return self._mode
+
+    @property
+    def value(self):
+        return self._value
 
     @property
     def timeout(self):

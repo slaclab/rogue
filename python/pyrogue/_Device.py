@@ -33,7 +33,6 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
 
         # Blocks
         self._blocks    = []
-        self._enable    = enabled
         self._memBase   = memBase
         self._resetFunc = None
         self.expand     = expand
@@ -49,18 +48,18 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
         # Convenience methods
         self.addDevice = ft.partial(self.addNode, pr.Device)
         self.addDevices = ft.partial(self.addNodes, pr.Device)
-        self.addVariable = ft.partial(self.addNode, pr.Variable)
-        self.addVariables = ft.partial(self.addNodes, pr.Variable)
-        self.addCommand = ft.partial(self.addNode, pr.Command)
-        self.addCommands = ft.partial(self.addNodes, pr.Command)
+        self.addVariable = ft.partial(self.addNode, pr.BaseVariable)
+        self.addVariables = ft.partial(self.addNodes, pr.BaseVariable)
+        self.addCommand = ft.partial(self.addNode, pr.BaseCommand)
+        self.addCommands = ft.partial(self.addNodes, pr.BaseCommand)
 
         # Variable interface to enable flag
-        self.add(pr.Variable(name='enable', base='bool', mode='RW',
+        self.add(pr.LocalVariable(name='enable', base='bool', mode='RW',
                           setFunction=self._setEnable, getFunction=self._getEnable,
                           description='Determines if device is enabled for hardware access'))
 
         if variables is not None and isinstance(variables, collections.Iterable):
-            if all(isinstance(v, pr.Variable) for v in variables):
+            if all(isinstance(v, pr.BaseVariable) for v in variables):
                 # add the list of Variable objects
                 self.add(variables)
             elif all(isinstance(v, dict) for v in variables):
@@ -94,19 +93,21 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
         if isinstance(node,Device) and node._memBase is None:
             node._setSlave(self)
 
-        # Adding variable
-        if isinstance(node,pr.Variable) and node.offset is not None:
+        if isinstance(node,pr.LocalVariable):
+            self._blocks.append(blk)
+
+        if isinstance(node,pr.MemoryVariable):
             if not any(block._addVariable(node) for block in self._blocks):
                 self._log.debug("Adding new block %s at offset %x" % (node.name,node.offset))
-                self._blocks.append(Block(self,node))
+                self._blocks.append(blk)
 
     def hideVariables(self, hidden, variables=None):
         """Hide a list of Variables (or Variable names)"""
         if variables is None:
             variables=self.variables.values()
-
+            
         for v in variables:
-            if isinstance(v, pr.Variable):
+            if isinstance(v, pr.BaseVariable):
                 v.hidden = hidden;
             elif isinstance(variables[0], str):
                 self.variables[v].hidden = hidden
@@ -125,21 +126,21 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
         May be re-implemented in some sub-class to 
         propogate enable to leaf nodes in the tree.
         """
-        self._enable = enable
+        pass
 
     def _getEnable(self, dev, var):
-        if dev._enable is False:
+        if var.get(read=False) is False:
             return False
         if dev == dev._root:
-            return dev._enable
+            return dev.enable.get(read=False)
         else:
-            return dev._parent.enable.get()
+            return dev._parent.enable.get(read=False)
 
     def _backgroundTransaction(self,type):
         """
         Perform background transactions
         """
-        if not self._enable: return
+        if not self.enable: return
 
         # Execute all unique beforeReadCmds for reads or verify
         if type == rogue.interfaces.memory.Read or type == rogue.interfaces.memory.Verify:
@@ -171,7 +172,7 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
 
     def _checkTransaction(self,update):
         """Check errors in all blocks and generate variable update nofifications"""
-        if not self._enable: return
+        if not self.enable: return
 
         # Process local blocks
         for block in self._blocks:
@@ -204,7 +205,6 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
             if isinstance(value,Device):
                 value._setTimeout(timeout)
 
-
     def command(self, **kwargs):
         """A Decorator to add inline constructor functions as commands"""
         def _decorator(func):
@@ -231,50 +231,40 @@ class DataWriter(Device):
         Device.__init__(self, name=name, description=description,
                         size=0, memBase=None, offset=0, hidden=hidden)
 
-        self.classType    = 'dataWriter'
-        self._open        = False
-        self._dataFile    = ''
-        self._bufferSize  = 0
-        self._maxFileSize = 0
+        self.classType = 'dataWriter'
 
-        self.add(pr.Variable(name='dataFile', base='string', mode='RW',
-            setFunction='dev._dataFile = value', getFunction='value = dev._dataFile',
+        self.add(pr.LocalVariable(name='dataFile', mode='RW', value='',
             description='Data file for storing frames for connected streams.'))
 
-        self.add(pr.Variable(name='open', base='bool', mode='RW',
-            setFunction=self._setOpen, getFunction='value = dev._open',
-            description='Data file open state'))
+        self.add(pr.LocalVariable(name='open', mode='RW', value=False,
+            setFunction=self._setOpen, description='Data file open state'))
 
-        self.add(pr.Variable(name='bufferSize', base='uint', mode='RW',
-            setFunction=self._setBufferSize, getFunction='value = dev._bufferSize',
+        self.add(pr.LocalVariable(name='bufferSize', mode='RW', value=0, setFunction=self._setBufferSize,
             description='File buffering size. Enables caching of data before call to file system.'))
 
-        self.add(pr.Variable(name='maxFileSize', base='uint', mode='RW',
-            setFunction=self._setMaxFileSize, getFunction='value = dev._maxFileSize',
+        self.add(pr.LocalVariable(name='maxFileSize', mode='RW', value=0, setFunction=self._setMaxFileSize,
             description='Maximum size for an individual file. Setting to a non zero splits the run data into multiple files.'))
 
-        self.add(pr.Variable(name='fileSize', base='uint', mode='RO', pollInterval=1,
-                          setFunction=None, getFunction=self._getFileSize,
-                          description='Size of data files(s) for current open session in bytes.'))
+        self.add(pr.LocalVariable(name='fileSize', mode='RO', value=0, pollInterval=1, getFunction=self._getFileSize,
+            description='Size of data files(s) for current open session in bytes.'))
 
-        self.add(pr.Variable(name='frameCount', base='uint', mode='RO', pollInterval=1,
-            setFunction=None, getFunction=self._getFrameCount,
+        self.add(pr.LocalVariable(name='frameCount', mode='RO', value=0, pollInterval=1, getFunction=self._getFrameCount,
             description='Frame in data file(s) for current open session in bytes.'))
 
-        self.add(pr.Command(name='autoName', function=self._genFileName,
+        self.add(pr.LocalCommand(name='autoName', function=self._genFileName,
             description='Auto create data file name using data and time.'))
 
     def _setOpen(self,dev,var,value):
         """Set open state. Override in sub-class"""
-        self._open = value
+        pass
 
     def _setBufferSize(self,dev,var,value):
         """Set buffer size. Override in sub-class"""
-        self._bufferSize = value
+        pass
 
     def _setMaxFileSize(self,dev,var,value):
         """Set max file size. Override in sub-class"""
-        self._maxFileSize = value
+        pass
 
     def _getFileSize(self,dev,cmd):
         """get current file size. Override in sub-class"""
@@ -289,23 +279,14 @@ class DataWriter(Device):
         Auto create data file name based upon date and time.
         Preserve file's location in path.
         """
-        idx = self._dataFile.rfind('/')
+        idx = self._dataFile.read(read=False).rfind('/')
 
         if idx < 0:
             base = ''
         else:
-            base = self._dataFile[:idx+1]
+            base = self._dataFile.get(read=False)[:idx+1]
 
-        self._dataFile = base
-        self._dataFile += datetime.datetime.now().strftime("%Y%m%d_%H%M%S.dat") 
-        self.dataFile._updated()
-
-    def _backgroundTransaction(self,type):
-        """Force update of non block status variables"""
-        if type == rogue.interfaces.memory.Read:
-            self.fileSize.get()
-            self.frameCount.get()
-        Device._backgroundTransaction(self,type)
+        self._dataFile = base + datetime.datetime.now().strftime("%Y%m%d_%H%M%S.dat") 
 
 
 class RunControl(Device):
@@ -318,20 +299,14 @@ class RunControl(Device):
                         size=0, memBase=None, offset=0, hidden=hidden)
 
         self.classType = 'runControl'
-        self._runState = 'Stopped'
-        self._runCount = 0
-        self._runRate  = '1 Hz'
 
-        self.add(pr.Variable(name='runState', base='enum', mode='RW', enum={0:'Stopped', 1:'Running'},
-            setFunction=self._setRunState, getFunction='value = dev._runState',
-            description='Run state of the system.'))
+        self.add(pr.LocalVariable(name='runState', value=0, mode='RW', enum={0:'Stopped', 1:'Running'},
+            setFunction=self._setRunState, description='Run state of the system.'))
 
-        self.add(pr.Variable(name='runRate', base='enum', mode='RW', enum={1:'1 Hz', 10:'10 Hz'},
-            setFunction=self._setRunRate, getFunction='value = dev._runRate',
-            description='Run rate of the system.'))
+        self.add(pr.LocalVariable(name='runRate', value=0, mode='RW', enum={1:'1 Hz', 10:'10 Hz'},
+            setFunction=self._setRunRate, description='Run rate of the system.'))
 
-        self.add(pr.Variable(name='runCount', base='uint', mode='RO', pollInterval=1,
-            setFunction=None, getFunction='value = dev._runCount',
+        self.add(pr.LocalVariable(name='runCount', value=0, mode='RO', pollInterval=1,
             description='Run Counter updated by run thread.'))
 
     def _setRunState(self,dev,var,value):
@@ -340,19 +315,12 @@ class RunControl(Device):
         Enum of run states can also be overriden.
         Underlying run control must update _runCount variable.
         """
-        self._runState = value
+        pass
 
     def _setRunRate(self,dev,var,value):
         """
         Set run rate. Reimplement in sub-class.
         Enum of run rates can also be overriden.
         """
-        self._runRate = value
-
-    def _backgroundTransaction(self,type):
-        """Force update of non block status variables"""
-        if type == rogue.interfaces.memory.Read:
-            self.runCount.get()
-        Device._backgroundTransaction(self,type)
-
+        pass
 
