@@ -19,6 +19,7 @@ import time
 import math
 import pyrogue as pr
 
+
 class BlockError(Exception):
     """ Exception for memory access errors."""
 
@@ -55,20 +56,10 @@ class BlockError(Exception):
         return repr(self._value)
 
 
-class Block(rogue.interfaces.memory.Master):
-    """Internal memory block holder"""
+class Block(Object):
 
-    def __init__(self,device,variable):
-        """
-        Initialize memory block class.
-        Pass initial variable.
-        """
-        rogue.interfaces.memory.Master.__init__(self)
-
-        # Attributes
-        self._offset    = variable.offset
-        self._mode      = variable.mode
-        self._name      = variable.name
+    def __init__(self, variable):
+        self._mode     = variable.mode
         self._bData     = bytearray()
         self._vData     = bytearray()
         self._mData     = bytearray()
@@ -80,101 +71,23 @@ class Block(rogue.interfaces.memory.Master):
         self._error     = 0
         self._doUpdate  = False
         self._doVerify  = False
-        self._device    = variable.parent
         self._tranTime  = time.time()
-
-        self._setSlave(self._device)
-        self._addVariable(variable)
+        self._value     = None
 
         # Setup logging
-        self._log = pr.logInit(self,self._name)
+        self._log = logInit(self,variable.name)
+
+        # Add the variable
+        self._addvariable(variable)
 
     def __repr__(self):
         return repr(self._variables)
 
-    def set(self,bitOffset,bitCount,ba):
-        """
-        Update block with bitCount bits from passed byte array.
-        Offset sets the starting point in the block array.
-        """
-        with self._cond:
-            self._waitTransaction()
+    def set(self, var, value):
+        self._value = value
 
-            # Access is fully byte aligned
-            if (bitOffset % 8) == 0 and (bitCount % 8) == 0:
-                self._bData[int(bitOffset/8):int((bitOffset+bitCount)/8)] = ba
-
-            # Bit level access
-            else:
-                for x in range(0,bitCount):
-                    setBitToBytes(self._bData,x+bitOffset,getBitFromBytes(ba,x))
-
-    def get(self,bitOffset,bitCount):
-        """
-        Get bitCount bytes from block data.
-        Offset sets the starting point in the block array.
-        bytearray is returned
-        """
-        with self._cond:
-            self._waitTransaction()
-
-            # Error
-            if self._error > 0:
-                raise BlockError(self)
-
-
-            # Access is fully byte aligned
-            if (bitOffset % 8) == 0 and (bitCount % 8) == 0:
-                return self._bData[int(bitOffset/8):int((bitOffset+bitCount)/8)]
-
-            # Bit level access
-            else:
-                ba = bytearray(int(bitCount / 8))
-                if (bitCount % 8) > 0: ba.extend(bytearray(1))
-                for x in range(0,bitCount):
-                    setBitToBytes(ba,x,getBitFromBytes(self._bData,x+bitOffset))
-                return ba
-
-    def setUInt(self,bitOffset,bitCount,value):
-        """
-        Set a uint. to be deprecated
-        """
-        bCount = (int)(bitCount / 8)
-        if ( bitCount % 8 ) > 0: bCount += 1
-        ba = bytearray(bCount)
-
-        for x in range(0,bCount):
-            ba[x] = (value >> (x*8)) & 0xFF
-
-        self.set(bitOffset,bitCount,ba)
-
-    def getUInt(self,bitOffset,bitCount):
-        """
-        Get a uint. to be deprecated
-        """
-        ba = self.get(bitOffset,bitCount)
-        ret = 0
-
-        for x in range(0,len(ba)):
-            ret += (ba[x] << (x*8))
-
-        return ret
-
-    def setString(self,value):
-        """
-        Set a string. to be deprecated
-        """
-        ba = bytarray(value,'utf-8')
-        ba.extend(bytearray(1))
-
-        self.set(0,len(ba)*8,ba)
-
-    def getString(self):
-        """
-        Get a string. to be deprecated
-        """
-        ba = self.get(0,self._size*8).rstrip(bytearray(1))
-        return(ba.decode('utf-8'))
+    def get(self, var, value):
+        return self._value
 
     def backgroundTransaction(self,type):
         """
@@ -186,22 +99,25 @@ class Block(rogue.interfaces.memory.Master):
         """
         Perform a blocking transaction
         """
-        self._log.debug("Setting block. Addr=%x, Data=%s" % (self._offset,self._bData))
+        self._log.debug("Setting block. Addr=%x, Data=%s" % (self._variables[0].offset,self._bData))
         self._startTransaction(type)
         self._checkTransaction(update=False)
-        self._log.debug("Done block. Addr=%x, Data=%s" % (self._offset,self._bData))
+        self._log.debug("Done block. Addr=%x, Data=%s" % (self._variables[0].offset,self._bData))
 
     @property
     def offset(self):
-        return self._offset
+        return self._variables[0].offset
 
     @property
     def address(self):
-        return self._offset | self._reqOffset()
+        if isinstance(self,rogue.interfaces.memory.Master):
+            return self._variables[0].offset | self._reqOffset()
+        else:
+            return self._variables[0].offset
 
     @property
     def name(self):
-        return self._name
+        return self._variables[0].name
 
     @property
     def mode(self):
@@ -222,6 +138,149 @@ class Block(rogue.interfaces.memory.Master):
         return self._error
 
     def _waitTransaction(self):
+        pass
+
+    def _addVariable(self,var):
+        """
+        Add a variable to the block
+        """
+        with self._lock:
+            if len(self._variables) == 0:
+                self._variables.append(var)
+                return True;
+            else:
+                return False
+
+    def _starttransaction(self,type):
+        """
+        Start a transaction.
+        """
+        with self._lock:
+            self._doUpdate = (type == rogue.interfaces.memory.Read)
+
+    def _checktransaction(self,update):
+        if update: self._updated()
+
+    def _checkTransaction(self,update):
+        """
+        Check status of block.
+        If update=True notify variables if read
+        """
+        doUpdate = False
+        with self._cond:
+            self._waitTransaction()
+
+            # Updated
+            doUpdate = update and self._doUpdate
+            self._doUpdate = False
+
+            # Error
+            if self._error > 0:
+                raise BlockError(self)
+
+        # Update variables outside of lock
+        if doUpdate: self._updated()
+
+    def _updated(self):
+        for variable in self._variables:
+            variable._updated()
+
+
+class BlockLocal(Block):
+
+    def __init__(self, variable, localSet, localGet):
+        self._localSet = localSet
+        self._localGet = localGet
+
+        Block.__init__(variable)
+
+    def set(self, var, value):
+        with self._lock:
+            self._value = value
+            dev = var.parent
+
+            # If a setFunction exists, call it (Used by local variables)        
+            if self._localSet is not None:
+                if callable(self._localSet):
+                    self._localSet(dev, var, value)
+                else:
+                    exec(textwrap.dedent(self._localSet))
+                    
+    def get(self, var):
+        with self._lock:
+            dev   = var.parent
+            value = 0
+
+            if self._localGet is not None:
+                if callable(self._localGet):
+                    self._value = self._localGet(dev,var)
+                else:
+                    ns = locals()
+                    exec(textwrap.dedent(self._localGet),ns)
+                    self._value = ns['value']
+
+            return self._value
+
+
+class BlockMemory(Block,rogue.interfaces.memory.Master):
+    """Internal memory block holder"""
+
+    def __init__(self, variable):
+        """
+        Initialize memory block class.
+        Pass initial variable.
+        """
+        rogue.interfaces.memory.Master.__init__(self)
+        self._setSlave(variable.parent)
+        Block.__init__(variable)
+
+    def set(self, var, value):
+        """
+        Update block with bitSize bits from passed byte array.
+        Offset sets the starting point in the block array.
+        """
+        with self._cond:
+            self._waitTransaction()
+            self._value = value
+
+            ba = var.base._toBlock(value)
+
+            # Access is fully byte aligned
+            if (var.bitOffset % 8) == 0 and (var.bitSize % 8) == 0:
+                self._bData[var.bitOffset//8:(var.bitOffset+var.bitSize)//8] = ba
+
+            # Bit level access
+            else:
+                for x in range(0, var.bitSize):
+                    setBitToBytes(self._bData,x+var.bitOffset,getBitFromBytes(ba,x))
+
+    def get(self, var):
+        """
+        Get bitSize bytes from block data.
+        Offset sets the starting point in the block array.
+        bytearray is returned
+        """
+        with self._cond:
+            self._waitTransaction()
+
+            # Error
+            if self._error > 0:
+                raise BlockError(self)
+
+
+            # Access is fully byte aligned
+            if (var.bitOffset % 8) == 0 and (var.bitSize % 8) == 0:
+                return var.base._fromBlock(self._bData[int(var.bitOffset/8):int((var.bitOffset+var.bitSize)/8)])
+
+            # Bit level access
+            else:
+                ba = bytearray(int(var.bitSize / 8))
+                if (var.bitSize % 8) > 0: ba.extend(bytearray(1))
+                for x in range(0,var.bitSize):
+                    setBitToBytes(ba,x,getBitFromBytes(self._bData,x+var.bitOffset))
+                return var.base._fromBlock(ba)
+
+    def _waitTransaction(self):
         """
         Wait while a transaction is pending.
         Set an error on timeout.
@@ -238,15 +297,14 @@ class Block(rogue.interfaces.memory.Master):
 
     def _addVariable(self,var):
         """
-        Add a variable to the block
+        Add a variable to the block. Called from Device for BlockMemory
         """
 
-	
         with self._cond:
             self._waitTransaction()
 
             # Return false if offset does not match
-            if var.offset != self._offset:
+            if len(self._variables) != 0 and var.offset != self._variables[0].offset:
                 return False
 
             # Compute the max variable address to determine required size of block
@@ -297,7 +355,7 @@ class Block(rogue.interfaces.memory.Master):
                 self._size = newSize
 
             # Return if not enabled
-            if not self._device.enable.get():
+            if not self._variables[0].parent.enable.get(read=False):
                 return
             
             self._log.debug('len bData = {}, vData = {}, mData = {}'.format(len(self._bData), len(self._vData), len(self._mData)))
@@ -312,7 +370,7 @@ class Block(rogue.interfaces.memory.Master):
             tData = self._vData if self._doVerify else self._bData
 
         # Start transaction outside of lock
-        self._reqTransaction(self._offset,tData,type)
+        self._reqTransaction(self._variables[0].offset,tData,type)
 
     def _doneTransaction(self,tid,error):
         """
@@ -341,30 +399,6 @@ class Block(rogue.interfaces.memory.Master):
 
             # Notify waiters
             self._cond.notify()
-
-    def _checkTransaction(self,update):
-        """
-        Check status of block.
-        If update=True notify variables if read
-        """
-        doUpdate = False
-        with self._cond:
-            self._waitTransaction()
-
-            # Updated
-            doUpdate = update and self._doUpdate
-            self._doUpdate = False
-
-            # Error
-            if self._error > 0:
-                raise BlockError(self)
-
-        # Update variables outside of lock
-        if doUpdate: self._updated()
-
-    def _updated(self):
-        for variable in self._variables:
-            variable._updated()
 
 
 def setBitToBytes(ba, bitOffset, value):
