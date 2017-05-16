@@ -27,7 +27,7 @@ class PollQueue(object):
 
     def __init__(self,root):
         self._pq = [] # The heap queue
-        self._entries = {} # {Block/Variable: Entry} mapping to look up if a block is already in the queue
+        self._entries = {} # {Block: Entry} mapping to look up if a block is already in the queue
         self._counter = itertools.count()
         self._lock = threading.RLock()
         self._update = threading.Condition()
@@ -66,12 +66,6 @@ class PollQueue(object):
                         if dep.pollInterval == 0 or var.pollInterval < dep.pollInterval:
                             dep.pollInterval = var.pollInterval
 
-                else:
-                    # Special case for variables without a block
-                    # Add the variable itself
-                    if var in self._entries.keys():
-                        self._entries[var].block = None
-                    self._addEntry(var, var.pollInterval)
                 return
 
             if var._block in self._entries.keys():
@@ -124,18 +118,12 @@ class PollQueue(object):
                 now = datetime.datetime.now()
                 blockEntries = []
                 for entry in self._expiredEntries(now):
-                    if isinstance(entry.block, pr.Block):
-                        self._log.debug('Polling {}'.format(entry.block._variables))
-                        blockEntries.append(entry)
-                        try:
-                            entry.block._startTransaction(rogue.interfaces.memory.Read)
-                        except Exception as e:
-                            self._log.error(e)
-
-                    else:
-                        # Hack for handling local variables
-                        self._log.debug('Polling {}'.format(entry.block))
-                        entry.block.get(read=True)
+                    self._log.debug('Polling {}'.format(entry.block._variables))
+                    blockEntries.append(entry)
+                    try:
+                        entry.block._startTransaction(rogue.interfaces.memory.Read)
+                    except Exception as e:
+                        self._log.error(e)
 
                     # Update the entry with new read time
                     entry = entry._replace(readTime=(entry.readTime + entry.interval),
