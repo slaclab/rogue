@@ -141,14 +141,14 @@ class Node(object):
         Return an OrderedDict of the variables but not commands (which are a subclass of Variable
         """
         return odict([(k,n) for k,n in self._nodes.items()
-                      if isinstance(n, pr.Variable) and not isinstance(n, pr.Command)])
+                      if isinstance(n, pr.BaseVariable) and not isinstance(n, pr.BaseCommand)])
 
     @property
     def commands(self):
         """
         Return an OrderedDict of the Commands that are children of this Node
         """
-        return self._getNodes(pr.Command)
+        return self._getNodes(pr.BaseCommand)
 
     @property
     def devices(self):
@@ -243,7 +243,7 @@ class Node(object):
                         value['offset']      = None
                         value['setFunction'] = setFunction
                         value['getFunction'] = 'value = self._scratch'
-                        var = Variable(**value)
+                        var = pr.Variable(**value)
                         self.add(var)
                     else:
                         getattr(self,value['name'])._setFunction = setFunction
@@ -269,7 +269,7 @@ class Node(object):
         for key,value in self._nodes.items():
             if isinstance(value,Device):
                 data[key] = value._getVariables(modes)
-            elif isinstance(value,Variable) and (value.mode in modes):
+            elif isinstance(value,pr.BaseVariable) and (value.mode in modes):
                 data[key] = value.get(read=False)
 
         return data
@@ -291,10 +291,10 @@ class Node(object):
                     self._nodes[key]._setOrExec(value,writeEach,modes)
 
                 # Execute if command
-                elif isinstance(self._nodes[key],Command):
+                elif isinstance(self._nodes[key],pr.BaseCommand):
                     self._nodes[key](value)
 
                 # Set value if variable with enabled mode
-                elif isinstance(self._nodes[key],Variable) and (self._nodes[key].mode in modes):
+                elif isinstance(self._nodes[key],pr.BaseVariable) and (self._nodes[key].mode in modes):
                     self._nodes[key].set(value,writeEach)
 
