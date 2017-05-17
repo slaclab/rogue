@@ -301,3 +301,22 @@ class Node(object):
                 elif isinstance(self._nodes[key],pr.BaseVariable) and (self._nodes[key].mode in modes):
                     self._nodes[key].set(value,writeEach)
 
+    def _walkPath(self,path):
+        """
+        Return object at given path. Assume we are already at this level
+        and recurse this call to next object at the base of the path
+        Return None if not found. Assume we are looking for nodes.
+        """
+        if '.' in path:
+            base  = path[:path.find('.')]
+            npath = path[path.find('.')+1:]
+
+            if base in self._nodes:
+                return self._nodes[base]._walkPath(npath) 
+            else:
+                return None
+        elif path in self._nodes:
+            return self._nodes[path]
+        else:
+            return None
+
