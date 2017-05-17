@@ -305,14 +305,14 @@ class SystemWidget(QWidget):
         # Data Controllers
         ###################
         for key,val in root.devices.items():
-            if val.classType=='dataWriter':
+            if val.classType=='DataWriter':
                 self.holders.append(DataLink(tl,val))
 
         ###################
         # Run Controllers
         ###################
         for key,val in root.devices.items():
-            if val.classType=='runControl':
+            if val.classType=='RunControl':
                 self.holders.append(ControlLink(tl,val))
 
         ###################

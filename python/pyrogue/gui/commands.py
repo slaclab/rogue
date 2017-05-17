@@ -40,7 +40,7 @@ class CommandLink(QObject):
         item.treeWidget().setItemWidget(item,2,pb)
         pb.clicked.connect(self.execPressed)
 
-        if command.base != 'None':
+        if command._base != 'None':
             self.widget = QLineEdit()
             item.treeWidget().setItemWidget(item,3,self.widget)
         else:
@@ -52,7 +52,7 @@ class CommandLink(QObject):
         else:
             value=None
 
-        if self.command.base is not None:
+        if self.command._base is not None:
             try:
                 self.command(self.command.parseDisp(value))
             except Exception:

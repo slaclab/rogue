@@ -75,22 +75,23 @@ class EpicsCaServer(object):
 
     def _addPv(self,node):
         d = {}
-        if node.base == 'enum': 
+
+        if node.disp == 'enum':
             d['type'] = 'enum'
             d['enums'] = [val for key,val in node.enum.items()] 
-        elif node.base == 'bool':
-            d['type'] = 'enum'
-            d['enums'] = ['False','True']
-        elif node.base == 'float':
+        elif isinstance(node._base,pyrogue.IntModel):
+            d['type'] = 'int'
+            if node.minimum is not None:
+                d['lolim'] = node.minimum
+            if node.maximum is not None:
+                d['hilim'] = node.maximum
+        elif isinstance(node._base,pyrogue.FloatModel):
             d['type'] = 'float'
-        elif node.base == 'uint' or node.base == 'hex' or node.base == 'bin':
-            d['type'] = 'int'
-        elif node.base == 'range':
-            d['type'] = 'int'
-            d['lolim'] = node.minimum
-            d['hilim'] = node.maximum
-        else:
+        elif isinstance(node._base,pyrogue.StringModel):
             d['type'] = 'string'
+        else:
+            d['type'] = 'int'
+            #raise(pyrogue.VariableError('Invalid base type {} for {}'.format(node._base,node.path)))
 
         name = node.path.replace('.',':')
         self._pvdb[name] = d

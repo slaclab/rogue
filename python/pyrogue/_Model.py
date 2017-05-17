@@ -56,7 +56,7 @@ class BoolModel(IntModel):
 
     def _fromBlock(self, ba):
         return bool(IntModel._fromBlock(self, ba))
-        
+
 class StringModel(Model):
     """Variable holding a string"""
     def __init__(self, encoding='utf-8', **kwargs):

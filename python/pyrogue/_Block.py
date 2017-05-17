@@ -192,11 +192,12 @@ class BaseBlock(object):
 
 
 class LocalBlock(BaseBlock):
-    def __init__(self, variable, localSet, localGet):
+    def __init__(self, variable, localSet, localGet, value):
         self._localSet = localSet
         self._localGet = localGet
 
         BaseBlock.__init__(self,variable)
+        self._value = value
 
     def set(self, var, value):
         with self._lock:
@@ -209,7 +210,7 @@ class LocalBlock(BaseBlock):
                     self._localSet(dev, var, value)
                 else:
                     exec(textwrap.dedent(self._localSet))
-                    
+
     def get(self, var):
         with self._lock:
             dev   = var.parent

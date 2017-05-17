@@ -61,7 +61,7 @@ class BaseVariable(pr.Node):
             disp = base
         elif disp is None:
             disp = self._base.defaultdisp
-            
+
         if isinstance(disp, dict):
             self.disp = 'enum'
             self.enum = disp
@@ -110,14 +110,14 @@ class BaseVariable(pr.Node):
 
     @pollInterval.setter
     def pollInterval(self, interval):
-        self._pollInterval = interval        
+        self._pollInterval = interval
         if isinstance(self._root, pr.Root) and self._root._pollQueue:
             self._root._pollQueue.updatePollInterval(self)
 
     @property
     def dependencies(self):
         return self.__dependencies
-    
+
     def addListener(self, listener):
         """
         Add a listener Variable or function to call when variable changes. 
@@ -125,7 +125,7 @@ class BaseVariable(pr.Node):
         This is usefull when chaining variables together. (adc conversions, etc)
         The variable and value will be passed as an arg: func(var,value)
         """
-        if isinstance(listener, Variable):
+        if isinstance(listener, BaseVariable):
             self.__listeners.append(listener.linkUpdated)
         else:
             self.__listeners.append(listener)
@@ -143,10 +143,10 @@ class BaseVariable(pr.Node):
         self._updated()
 
     def getDisp(self, read=True):
-        #print('{}.getDisp(read={}) disp={} value={}'.format(self.path, read, self.disp, self.value))
+        #print('{}.getDisp(read={}) disp={} value={}'.format(self.path, read, self.disp, self.get(read=False)))
         if self.disp == 'enum':
-            #print('enum: {}'.format(self.enum))
-            #print('get: {}'.format(self.get(read)))
+            print('enum: {}'.format(self.enum))
+            print('get: {}'.format(self.get(read)))
             return self.enum[self.get(read)]
         else:
             return self.disp.format(self.get(read))
@@ -171,7 +171,7 @@ class BaseVariable(pr.Node):
     def _updated(self):
         """Variable has been updated. Inform listeners."""
         value = self.get(read=False)
-        
+
         for func in self.__listeners:
             func(self, value)
 
@@ -218,7 +218,7 @@ class RemoteVariable(BaseVariable):
         try:
             self._block.set(self, value)
             self._updated()
-            
+
             if write and self._block.mode != 'RO':
                 self._block.blockingTransaction(rogue.interfaces.memory.Write)
                 self._afterWriteCmd()
@@ -226,7 +226,7 @@ class RemoteVariable(BaseVariable):
                 if self._block.mode == 'RW':
                     self._beforeReadCmd()
                     self._block.blockingTransaction(rogue.interfaces.memory.Verify)
-                    
+
         except Exception as e:
             self._log.error(e)
 
@@ -241,7 +241,7 @@ class RemoteVariable(BaseVariable):
 
             if self._block.mode != 'RO':
                 self._block.backgroundTransaction(rogue.interfaces.memory.Post)
-                
+
         except Exception as e:
             self._log.error(e)
 
@@ -257,7 +257,7 @@ class RemoteVariable(BaseVariable):
                 self._block.blockingTransaction(rogue.interfaces.memory.Read)
 
             ret = self._block.get(self)
-            
+
         except Exception as e:
             self._log.error(e)
             return None
@@ -265,7 +265,7 @@ class RemoteVariable(BaseVariable):
         # Update listeners for all variables in the block
         if read:
             self._block._updated()
-                
+
         return ret
 
 
@@ -281,20 +281,20 @@ class LocalVariable(BaseVariable):
                      enum=enum, units=units, hidden=hidden, minimum=minimum, maximum=maximum)
 
         self._pollInterval = pollInterval
-        self._block = pr.LocalBlock(self,localSet,localGet)
+        self._block = pr.LocalBlock(self,localSet,localGet,self._default)
 
     def set(self, value, write=True):
         try:
             self._block.set(self, value)
             self._updated()
-                    
+
         except Exception as e:
             self._log.error(e)
 
     def get(self,read=True):
         try:
             ret = self._block.get(self)
-            
+
         except Exception as e:
             self._log.error(e)
             return None

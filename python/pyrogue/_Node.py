@@ -60,8 +60,9 @@ class Node(object):
         self.name        = name
         self.description = description
         self.hidden      = hidden
-        self.classType   = type(self)
-        self.classList   = inspect.getmro(type(self))
+        self.classType   = self.__class__.__name__
+        self.classList   = [i.__name__ for i in inspect.getmro(self.__class__)]
+
         self.path        = self.name
 
         # Tracking
@@ -231,7 +232,7 @@ class Node(object):
             if isinstance(value,dict) and 'classType' in value:
 
                 # If entry is a device add and recurse
-                if pyrogue._Device.Device in value['classList']:
+                if 'Device' in value['classList']:
                     dev = pr.Device(**value)
                     dev.classType = value['classType']
                     dev.classList = value['classList']
@@ -239,23 +240,23 @@ class Node(object):
                     dev._addStructure(value,setFunction,cmdFunction)
 
                 # If entry is a variable add and recurse
-                elif pyrogue._Command.BaseCommnd in value['classList']:
+                elif 'BaseCommnd' in value['classList']:
                     if not value['name'] in self._nodes:
                         value['function'] = cmdFunction
                         cmd = pr.BaseCommand(**value)
-                        dev.classType = value['classType']
-                        dev.classList = value['classList']
+                        cmd.classType = value['classType']
+                        cmd.classList = value['classList']
                         self.add(cmd)
                     else:
                         getattr(self,value['name'])._function = cmdFunction
 
                 # If entry is a variable add and recurse
-                elif value['classType'] == 'variable':
+                elif 'BaseVariable' in value['classList']:
                     if not value['name'] in self._nodes:
                         value['setLocal'] = setFunction
                         var = pr.LocalVariable(**value)
-                        dev.classType = value['classType']
-                        dev.classList = value['classList']
+                        var.classType = value['classType']
+                        var.classList = value['classList']
                         self.add(var)
                     else:
                         getattr(self,value['name'])._setFunction = setFunction

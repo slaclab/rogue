@@ -340,6 +340,11 @@ def dictToYaml(data, stream=None, Dumper=yaml.Dumper, **kwds):
     def _dict_representer(dumper, data):
         return dumper.represent_mapping(
             yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG,data.items())
-    OrderedDumper.add_representer(odict, _dict_representer)
-    return yaml.dump(data, stream, OrderedDumper, **kwds)
+        OrderedDumper.add_representer(odict, _dict_representer)
+    try:
+        ret = yaml.dump(data, stream, OrderedDumper, **kwds)
+    except Exception as e:
+        print("Error: {} dict {}".format(e,data))
+        return None
+    return ret
 
