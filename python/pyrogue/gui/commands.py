@@ -34,7 +34,7 @@ class CommandLink(QObject):
         item = QTreeWidgetItem(parent)
         parent.addChild(item)
         item.setText(0,command.name)
-        item.setText(1,command.disp)
+        item.setText(1,command.typeStr)
 
         pb = QPushButton('Execute')
         item.treeWidget().setItemWidget(item,2,pb)
