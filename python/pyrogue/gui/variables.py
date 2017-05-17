@@ -37,7 +37,7 @@ class VariableLink(QObject):
         parent.addChild(item)
         item.setText(0,variable.name)
         item.setText(1,variable.mode)
-        item.setText(2,variable.disp) # Fix this. Should show base and size
+        item.setText(2,variable.typeStr) # Fix this. Should show base and size
 
         if variable.units:
            item.setText(4,str(variable.units))
@@ -88,7 +88,7 @@ class VariableLink(QObject):
 
         if self.variable.disp == 'enum':
             # For enums, value will be index of selected item
-            #print('indexDict({}) = {}'.format(value, self.indexDict[value]))
+            # Need to call itemText to convert to string
             self.variable.setDisp(self.widget.itemText(value))
 
         else:

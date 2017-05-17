@@ -144,9 +144,18 @@ def busConnect(source,dest):
 
     master._setSlave(slave)
 
-def numBytes(bits):
-    if bits == 0: return 1
-    return int(math.ceil(float(bits) / 8.0))
+def wordCount(bits, wordSize):
+    ret = bits // wordSize
+    if (bits % wordSize != 0 or bits == 0):
+        ret += 1
+    return ret
+
+def byteCount(bits):
+    return wordCount(bits, 8)
+
+# def numBytes(bits):
+#     if bits == 0: return 1
+#     return int(math.ceil(float(bits) / 8.0))
 
 
 class NodeError(Exception):
@@ -474,9 +483,9 @@ class Variable(Node):
         self.base = base
         # Handle legacy model declarations
         if base == 'hex' or base == 'uint' or base == 'bin' or base == 'enum' or base == 'range':
-            self.base = IntModel(signed=False, endianness='little')
+            self.base = IntModel(numBits=bitSize, signed=False, endianness='little')
         elif base == 'int':
-            self.base = IntModel(signed=True, endianness='little')
+            self.base = IntModel(numBits=bitSize, signed=True, endianness='little')
         elif base == 'bool':
             self.base = BoolModel()
         elif base == 'string':
@@ -512,6 +521,8 @@ class Variable(Node):
                 self.enum = {False: 'False', True: 'True'}
             else:
                 self.disp = disp
+
+        self.typeStr = str(self.base)
 
         self.revEnum = None
         if self.enum is not None:
@@ -724,10 +735,11 @@ class Variable(Node):
         self._updated()
 
     def getDisp(self, read=True):
-        #print('{}.getDisp(read={}) disp={} value={}'.format(self.path, read, self.disp, self.value))
+        
         if self.disp == 'enum':
-            #print('enum: {}'.format(self.enum))
-            #print('get: {}'.format(self.get(read)))
+            print('{}.getDisp(read={}) disp={} value={}'.format(self.path, read, self.disp, self.value))            
+            print('enum: {}'.format(self.enum))
+            print('get: {}'.format(self.get(read)))
             return self.enum[self.get(read)]
         else:
             return self.disp.format(self.get(read))
@@ -736,8 +748,9 @@ class Variable(Node):
         if self.disp == 'enum':
             return self.revEnum[sValue]
         else:
-             return (parse.parse(self.disp, sValue)[0])
-
+            #return (parse.parse(self.disp, sValue)[0])
+            return self.base._fromString(sValue)
+        
     def setDisp(self, sValue, write=True):
         self.set(self.parseDisp(sValue), write)
         
@@ -760,30 +773,48 @@ class Model(metaclass=ModelMeta):
 
 class IntModel(Model):
     """Variable holding an unsigned integer"""
-    def __init__(self, signed=False, endianness='little'):
+    def __init__(self, numBits=1, signed=False, endianness='little'):
+        self.numBits = numBits
+        self.numBytes = byteCount(numBits)
         self.defaultdisp = '{:x}'
         self.signed = signed
         self.endianness = endianness
 
     def _toBlock(self, value):
-        return value.to_bytes(numBytes(value.bit_length()), self.endianness, signed=self.signed)
+        return value.to_bytes(self.numBytes, self.endianness, signed=self.signed)
 
     def _fromBlock(self, ba):
         return int.from_bytes(ba, self.endianness, signed=self.signed)
 
+    def _fromString(self, string):
+        i = int(string, 0)
+        # perform twos complement if necessary
+        if self.signed and i>0 and ((i >> self.numBits) & 0x1 == 1):
+            i = i - (1 << self.numBits)
+        return i            
 
+    def __str__(self):
+        if self.signed is True:
+            return 'Int{}'.format(self.numBits)
+        else:
+            return 'UInt{}'.format(self.numBits)
 
-class BoolModel(IntModel):
+class BoolModel(Model):
 
     def __init__(self):
-        super().__init__(self)
         self.defaultdisp = {False: 'False', True: 'True'}
 
     def _toBlock(self, value):
         return value.to_bytes(1, 'little', signed=False)
 
     def _fromBlock(self, ba):
-        return bool(IntModel._fromBlock(self, ba))
+        return bool(int.from_bytes(ba, 'little', signed=False))
+
+    def _fromString(self, string):
+        return str.lower(string) == "true"
+
+    def __str__(self):
+        return 'Bool'
         
 class StringModel(Model):
     """Variable holding a string"""
@@ -801,6 +832,12 @@ class StringModel(Model):
         s = ba.rstrip(bytearray(1))
         return s.decode(self.encoding)
 
+    def _fromString(self, string):
+        return string
+
+    def __str__(self):
+        return 'String'
+
 class FloatModel(Model):
     def __init__(self, endianness='little'):
         super().__init__(self)
@@ -816,6 +853,12 @@ class FloatModel(Model):
     def _fromBlock(self, ba):
         return struct.unpack(self.format, ba)
 
+    def _fromString(self, string):
+        return float(string)
+
+    def __str__(self):
+        return 'Float32'
+
 class DoubleModel(FloatModel):
     def __init__(self, endianness='little'):
         super().__init__(self, endianness)
@@ -823,8 +866,9 @@ class DoubleModel(FloatModel):
             self.format = 'd'
         if endianness == 'big':
             self.format = '!d'
-        
 
+    def __str__(self):
+        return 'Float64'
 
 class Command(Variable):
     """Command holder: Subclass of variable with callable interface"""
