@@ -308,15 +308,15 @@ class LinkVariable(BaseVariable):
     def __init__(self, name=None, description="", parent=None, classType='variable',
                  mode='RW', value=None, base='hex', disp=None,
                  enum=None, units=None, hidden=False, minimum=None, maximum=None,
-                 setFunction=None, getFunction=None, dependencies=None, **dump):
+                 linkedSet=None, linkedGet=None, dependencies=None, **dump):
 
         BaseVariable.__init__(self, name=name, description=description, parent=parent, classType=classType,
                      mode=mode, value=value, base=vase, disp=disp,
                      enum=enum, units=units, hidden=hidden, minimum=minimum, maximum=maximum)
 
         # Set and get functions
-        self._setFunction = setFunction
-        self._getFunction = getFunction
+        self._linkedGet = linkedGet
+        self._linkedSet = linkedSet
 
         # Dependency tracking
         if dependencies is not None:
@@ -326,35 +326,35 @@ class LinkVariable(BaseVariable):
 
     def set(self, value, write=True):
         """
-        The user can use the setFunction attribute to pass a string containing python commands or
+        The user can use the linkedSet attribute to pass a string containing python commands or
         a specific method to call. When using a python string the code will find the passed value
         as the variable 'value'. A passed method will accept the variable object and value as args.
         Listeners will be informed of the update.
         """
-        if self._setFunction is not None:
-            if callable(self._setFunction):
-                self._setFunction(self._parent,self,value)
+        if self._linkedSet is not None:
+            if callable(self._linkedSet):
+                self._linksedSet(self._parent,self,value)
             else:
                 dev = self._parent
                 var = self
-                exec(textwrap.dedent(self._setFunction))
+                exec(textwrap.dedent(self._linkedSet))
 
     def get(self):
         """
-        The user can use the getFunction attribute to pass a string containing python commands or
+        The user can use the linkedGet attribute to pass a string containing python commands or
         a specific method to call. When using a python string the code will set the 'value' variable
         with the value to return. A passed method will accept the variable as an arg and return the
         resulting value.
         """
-        if self._getFunction is not None:
-            if callable(self._getFunction):
-                return(self._getFunction(self._parent,self))
+        if self._linkedGet is not None:
+            if callable(self._linkedGet):
+                return(self._linkedGet(self._parent,self))
             else:
                 dev = self._parent
                 var = self
                 value = 0
                 ns = locals()
-                exec(textwrap.dedent(self._getFunction),ns)
+                exec(textwrap.dedent(self._linkedGet),ns)
                 return ns['value']
         else:
             return None
