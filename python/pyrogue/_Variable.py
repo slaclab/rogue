@@ -100,6 +100,14 @@ class BaseVariable(pr.Node):
         # Call super constructor
         pr.Node.__init__(self, name=name, description=description, hidden=hidden, parent=parent)
 
+    def updateEnum(self,enum):
+        self.revEnum = None
+        self.valEnum = None
+        self.enum = enum
+        if self.enum is not None:
+            self.revEnum = {v:k for k,v in self.enum.items()}
+            self.valEnum = [v for k,v in self.enum.items()]
+
     def addDependency(self, dep):
         self.__dependencies.append(dep)
         dep.addListener(self)
