@@ -19,7 +19,7 @@ import time
 import math
 import textwrap
 import pyrogue as pr
-
+import inspect
 
 class BlockError(Exception):
     """ Exception for memory access errors."""
@@ -201,13 +201,18 @@ class LocalBlock(BaseBlock):
 
     def set(self, var, value):
         with self._lock:
+            changed = self._value != value
             self._value = value
             dev = var.parent
 
             # If a setFunction exists, call it (Used by local variables)        
             if self._localSet is not None:
                 if callable(self._localSet):
-                    self._localSet(dev, var, value)
+                    # Function takes changed arg
+                    if len(inspect.signature(self._localSet).parameters) == 4:
+                        self._localSet(dev, var, value, changed)
+                    else:
+                        self._localSet(dev, var, value)
                 else:
                     exec(textwrap.dedent(self._localSet))
 

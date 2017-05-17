@@ -252,7 +252,7 @@ class DataWriter(Device):
         self.add(pr.LocalCommand(name='autoName', function=self._genFileName,
             description='Auto create data file name using data and time.'))
 
-    def _setOpen(self,dev,var,value):
+    def _setOpen(self,dev,var,value,changed):
         """Set open state. Override in sub-class"""
         pass
 
@@ -284,7 +284,7 @@ class DataWriter(Device):
         else:
             base = self._dataFile.get(read=False)[:idx+1]
 
-        self._dataFile = base + datetime.datetime.now().strftime("%Y%m%d_%H%M%S.dat") 
+        self._dataFile = base + datetime.datetime.now().strftime("%Y%m%d_%H%M%S.dat")
 
 
 class RunControl(Device):
@@ -305,7 +305,7 @@ class RunControl(Device):
         self.add(pr.LocalVariable(name='runCount', value=0, mode='RO', pollInterval=1,
             description='Run Counter updated by run thread.'))
 
-    def _setRunState(self,dev,var,value):
+    def _setRunState(self,dev,var,value,changed):
         """
         Set run state. Reimplement in sub-class.
         Enum of run states can also be overriden.
