@@ -247,7 +247,7 @@ class BlockMemory(Block,rogue.interfaces.memory.Master):
             self._waitTransaction()
             self._value = value
 
-            ba = var.base._toBlock(value)
+            ba = var._base._toBlock(value)
 
             # Access is fully byte aligned
             if (var.bitOffset % 8) == 0 and (var.bitSize % 8) == 0:
@@ -274,7 +274,7 @@ class BlockMemory(Block,rogue.interfaces.memory.Master):
 
             # Access is fully byte aligned
             if (var.bitOffset % 8) == 0 and (var.bitSize % 8) == 0:
-                return var.base._fromBlock(self._bData[int(var.bitOffset/8):int((var.bitOffset+var.bitSize)/8)])
+                return var._base._fromBlock(self._bData[int(var.bitOffset/8):int((var.bitOffset+var.bitSize)/8)])
 
             # Bit level access
             else:
@@ -282,7 +282,7 @@ class BlockMemory(Block,rogue.interfaces.memory.Master):
                 if (var.bitSize % 8) > 0: ba.extend(bytearray(1))
                 for x in range(0,var.bitSize):
                     setBitToBytes(ba,x,getBitFromBytes(self._bData,x+var.bitOffset))
-                return var.base._fromBlock(ba)
+                return var._base._fromBlock(ba)
 
     def _waitTransaction(self):
         """
