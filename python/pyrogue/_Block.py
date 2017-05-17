@@ -91,7 +91,7 @@ class Block(rogue.interfaces.memory.Master):
         self._addVariable(variable)
 
         # Setup logging
-        self._log = logInit(self,self._name)
+        self._log = pr.logInit(self,self._name)
 
     def __repr__(self):
         return repr(self._variables)
