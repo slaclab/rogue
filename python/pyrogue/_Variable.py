@@ -98,7 +98,7 @@ class BaseVariable(pr.Node):
             raise VariableError('Invalid variable mode %s. Supported: RW, RO, WO, SL, CMD' % (self.mode))
 
         # Call super constructor
-        Node.__init__(self, name=name, classType=classType, description=description, hidden=hidden, parent=parent)
+        pr.Node.__init__(self, name=name, classType=classType, description=description, hidden=hidden, parent=parent)
 
     def addDependency(self, dep):
         self.__dependencies.append(dep)
@@ -162,8 +162,8 @@ class BaseVariable(pr.Node):
 
     def _rootAttached(self):
         # Variables are always leaf nodes so no need to recurse
-        if self.value is not None:
-            self.set(self.value, write=False)
+        if self._default is not None:
+            self.set(self._default, write=False)
 
         if self._pollInterval > 0 and self._root._pollQueue is not None:
             self._root._pollQueue.updatePollInterval(self)
@@ -194,7 +194,7 @@ class RemoteVariable(BaseVariable):
                  verify=True, beforeReadCmd=lambda: None, afterWriteCmd=lambda: None, **dump):
 
         BaseVariable.__init__(self, name=name, description=description, parent=parent, classType=classType,
-                     mode=mode, value=value, base=vase, disp=disp,
+                     mode=mode, value=value, base=base, disp=disp,
                      enum=enum, units=units, hidden=hidden, minimum=minimum, maximum=maximum);
 
         self._pollInterval  = pollInterval
@@ -277,11 +277,11 @@ class LocalVariable(BaseVariable):
                  localSet=None, localGet=None, pollInterval=0, **dump):
 
         BaseVariable.__init__(self, name=name, description=description, parent=parent, classType=classType,
-                     mode=mode, value=value, base=vase, disp=disp,
+                     mode=mode, value=value, base=base, disp=disp,
                      enum=enum, units=units, hidden=hidden, minimum=minimum, maximum=maximum)
 
         self._pollInterval = pollInterval
-        self._block = BlockLocal(self,localSet,localGet)
+        self._block = pr.LocalBlock(self,localSet,localGet)
 
     def set(self, value, write=True):
         try:
@@ -311,7 +311,7 @@ class LinkVariable(BaseVariable):
                  linkedSet=None, linkedGet=None, dependencies=None, **dump):
 
         BaseVariable.__init__(self, name=name, description=description, parent=parent, classType=classType,
-                     mode=mode, value=value, base=vase, disp=disp,
+                     mode=mode, value=value, base=base, disp=disp,
                      enum=enum, units=units, hidden=hidden, minimum=minimum, maximum=maximum)
 
         # Set and get functions
@@ -359,26 +359,13 @@ class LinkVariable(BaseVariable):
         else:
             return None
 
-
-def Variable(name, description="", parent=None, classType='variable', 
-             offset=None, bitSize=32, bitOffset=0, pollInterval=0, mode='RW', verify=True,
-             value=None, local=False, getFunction=None, setFunction=None, 
-             base='hex',  disp=None, enum=None, units=None, hidden=False, minimum=None, maximum=None,
-             dependencies=None, beforeReadCmd=lambda: None, afterWriteCmd=lambda: None):
+# Legacy Support
+def Variable(local=False, setFunction=None, getFunction=None, **kwargs):
 
     # Local Variables override get and set functions
     if local or setFunction is not None or getFunction is not None:
-        return(LocalVariable(name=name, description=description, parent=parent, classType=classtype,
-                             mode=mode, value=value, base=base, disp=disp,
-                             enum=enum, units=units, hidden=hidden, minimum=minimum, maximum=maximum,
-                             localSet=setFunction, localGet=getFunction, pollInterval=pollInterval))
+        return(LocalVariable(localSet=setFunction, localGet=getFunction, **kwargs))
 
     # Otherwise assume remote
-    else:
-        return(RemoteVariable(name=name, description=description, parent=parent, classType=classType,
-                              mode=mode, value=value, base=base, disp=disp,
-                              enum=enum, units=units, hidden=hidden, minimum=minimum, maximum=maximum,
-                              offset=offset, bitSize=bitSize, bitOffset=bitOffset, pollInterval=pollInterval, 
-                              verify=verify, beforeReadCmd=beforeReadCmd, afterWriteCmd=afterWriteCmd, **dump))
-
+    else: return(RemoteVariable(**kwargs))
 

@@ -16,18 +16,13 @@
 import textwrap
 import time
 from collections import OrderedDict as odict
-import pyrogue
+import pyrogue as pr
 
 
-class Command(pyrogue.Variable):
-    """Command holder: Subclass of variable with callable interface"""
+class BaseCommand(object):
 
-    def __init__(self, parent=None, base='None', mode='CMD', function=None, **kwargs):
-
-        pyrogue.Variable.__init__(self, base=base, mode=mode, parent=parent, **kwargs)
-
-        self.classType = 'command'
-        self._function = function if function is not None else Command.nothing
+    def __init__(self, function=None):
+        self._function = function if function is not None else BaseCommand.nothing
 
     def __call__(self,arg=None):
         """Execute command: TODO: Update comments"""
@@ -94,6 +89,26 @@ class Command(pyrogue.Variable):
             cmd.post(arg)
         else:
             cmd.post(1)
+
+
+class LocalCommand(BaseCommand,pr.LocalVariable):
+    def __init__(self, name=None, function=None, **kwargs):
+        BaseCommand.__init__(self,function=function)
+        pr.LocalVariable.__init__(self, name=name, mode='CMD', classType='command', **kwargs)
+
+
+class RemoteCommand(BaseCommand, pr.RemoteVariable):
+    def __init__(self, name=None, function=None, **kwargs):
+        BaseCommand.__init__(self,function=function)
+        pr.RemoteVariable.__init__(self, name=name, mode='CMD', classType='command', **kwargs)
+
+# Legacy Support
+def Command(offset=None, **kwargs):
+    if offset is None:
+        return(LocalCommand(**kwargs))
+    else:
+        return(RemoteCommand(offset=offset,**kwargs))
+
 
 ###################################
 # (Hopefully) useful Command stuff

@@ -94,12 +94,12 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
             node._setSlave(self)
 
         if isinstance(node,pr.LocalVariable):
-            self._blocks.append(blk)
+            self._blocks.append(node._block)
 
-        if isinstance(node,pr.MemoryVariable):
+        if isinstance(node,pr.RemoteVariable) and node.offset is not None:
             if not any(block._addVariable(node) for block in self._blocks):
                 self._log.debug("Adding new block %s at offset %x" % (node.name,node.offset))
-                self._blocks.append(blk)
+                self._blocks.append(pr.MemoryBlock(node))
 
     def hideVariables(self, hidden, variables=None):
         """Hide a list of Variables (or Variable names)"""

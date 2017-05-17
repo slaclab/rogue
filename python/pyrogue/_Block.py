@@ -56,7 +56,7 @@ class BlockError(Exception):
         return repr(self._value)
 
 
-class Block(Object):
+class BaseBlock(object):
 
     def __init__(self, variable):
         self._mode      = variable.mode
@@ -75,10 +75,10 @@ class Block(Object):
         self._value     = None
 
         # Setup logging
-        self._log = logInit(self,variable.name)
+        self._log = pr.logInit(self,variable.name)
 
         # Add the variable
-        self._addvariable(variable)
+        self._addVariable(variable)
 
     def __repr__(self):
         return repr(self._variables)
@@ -190,13 +190,12 @@ class Block(Object):
             variable._updated()
 
 
-class BlockLocal(Block):
-
+class LocalBlock(BaseBlock):
     def __init__(self, variable, localSet, localGet):
         self._localSet = localSet
         self._localGet = localGet
 
-        Block.__init__(variable)
+        BaseBlock.__init__(self,variable)
 
     def set(self, var, value):
         with self._lock:
@@ -226,7 +225,7 @@ class BlockLocal(Block):
             return self._value
 
 
-class BlockMemory(Block,rogue.interfaces.memory.Master):
+class MemoryBlock(BaseBlock,rogue.interfaces.memory.Master):
     """Internal memory block holder"""
 
     def __init__(self, variable):
@@ -236,7 +235,7 @@ class BlockMemory(Block,rogue.interfaces.memory.Master):
         """
         rogue.interfaces.memory.Master.__init__(self)
         self._setSlave(variable.parent)
-        Block.__init__(variable)
+        BaseBlock.__init__(self,variable)
 
     def set(self, var, value):
         """
