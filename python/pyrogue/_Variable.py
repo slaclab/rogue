@@ -153,8 +153,8 @@ class BaseVariable(pr.Node):
     def getDisp(self, read=True):
         #print('{}.getDisp(read={}) disp={} value={}'.format(self.path, read, self.disp, self.get(read=False)))
         if self.disp == 'enum':
-            print('enum: {}'.format(self.enum))
-            print('get: {}'.format(self.get(read)))
+            #print('enum: {}'.format(self.enum))
+            #print('get: {}'.format(self.get(read)))
             return self.enum[self.get(read)]
         else:
             return self.disp.format(self.get(read))
