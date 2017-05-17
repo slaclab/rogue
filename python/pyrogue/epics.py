@@ -57,7 +57,7 @@ class EpicsCaServer(object):
         self._pvdb    = {}
 
         if self._root:
-            self._root.addVarListener(self._variableStatus)
+            self._root.addVarListener(self._variableStatus,'list')
 
     def stop(self):
         self._runEn = False
@@ -77,23 +77,28 @@ class EpicsCaServer(object):
         d = {}
 
         if node.disp == 'enum':
-            d['type'] = 'enum'
+            d['type']  = 'enum'
             d['enums'] = [val for key,val in node.enum.items()] 
-        elif isinstance(node._base,pyrogue.IntModel):
-            d['type'] = 'int'
-            if node.minimum is not None:
-                d['lolim'] = node.minimum
-            if node.maximum is not None:
-                d['hilim'] = node.maximum
-        elif isinstance(node._base,pyrogue.FloatModel):
-            d['type'] = 'float'
-        elif isinstance(node._base,pyrogue.StringModel):
-            d['type'] = 'string'
+            d['value'] = d['enums'].index(node.getDisp(read=False))
+
         else:
-            d['type'] = 'int'
-            #raise(pyrogue.VariableError('Invalid base type {} for {}'.format(node._base,node.path)))
+            d['value'] = node.get(read=False)
+
+            if isinstance(node._base,pyrogue.IntModel):
+                d['type'] = 'int'
+                if node.minimum is not None:
+                    d['lolim'] = node.minimum
+                if node.maximum is not None:
+                    d['hilim'] = node.maximum
+            elif isinstance(node._base,pyrogue.FloatModel):
+                d['type'] = 'float'
+            elif isinstance(node._base,pyrogue.StringModel):
+                d['type'] = 'string'
+            else:
+                d['type'] = 'int'
 
         name = node.path.replace('.',':')
+        #print("Adding epics variable {}".format(name))
         self._pvdb[name] = d
 
     def _addDevice(self,node):
@@ -140,33 +145,27 @@ class EpicsCaServer(object):
                 value = e['value']
 
                 if self._pvdb[epath]['type'] == 'enum':
-                    v = self._pvdb[epath]['enums'][value]
+                    val = self._pvdb[epath]['enums'][value]
+                    self._root.getNodeByPath(path).setDisp(val)
                 else:
-                    v = e['value']
-
-                self._root.setOrExecPath(path,v)
+                    val = e['value']
+                    self._root.getNodeByPath(path).set(val)
             except:
                 pass
 
     # Variable field updated on server
-    def _variableStatus(self,yml,d):
+    def _variableStatus(self,l):
         if not self._driver: return
-        self._walkDict(None,d)
-        self._driver.updatePVs()
 
-    def _walkDict(self,currPath,d):
-        for key,value in d.items():
+        for var in l:
+            epath = var.path.replace('.',':')
 
-            if currPath: locPath = currPath + ':' + key
-            else: locPath = key
-
-            if isinstance(value,dict):
-                self._walkDict(locPath,value)
+            if self._pvdb[epath]['type'] == 'enum':
+                val = self._pvdb[epath]['enums'].index(var.getDisp(read=False))
             else:
-                if self._pvdb[locPath]['type'] == 'enum':
-                    v = self._pvdb[locPath]['enums'].index(str(value))
-                else:
-                    v =value
+                val = var.get(read=False)
 
-                self._driver.setParam(locPath,v)
+            self._driver.setParam(epath,val)
+
+        self._driver.updatePVs()
 
