@@ -14,7 +14,6 @@
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
 import pyrogue
-import textwrap
 
 class ModelMeta(type):
     def __init__(cls, *args, **kwargs):

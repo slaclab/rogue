@@ -19,9 +19,10 @@ from collections import OrderedDict as odict
 import pyrogue as pr
 
 
-class BaseCommand(object):
+class BaseCommand(pr.Node):
 
-    def __init__(self, function=None):
+    def __init__(self, name=None, description="", hidden=False, parent=None, function=None):
+        pr.Node.__init__(self, name=name, description=description, hidden=hidden, parent=parent)
         self._function = function if function is not None else BaseCommand.nothing
 
     def __call__(self,arg=None):
@@ -92,15 +93,16 @@ class BaseCommand(object):
 
 
 class LocalCommand(BaseCommand,pr.LocalVariable):
-    def __init__(self, name=None, function=None, **kwargs):
-        BaseCommand.__init__(self,function=function)
-        pr.LocalVariable.__init__(self, name=name, mode='CMD', classType='command', **kwargs)
+    def __init__(self, name=None, description="", hidden=False, parent=None, function=None, **kwargs):
+        BaseCommand.__init__(self,name=name, description=description, hidden=hidden, parent=None, function=function)
+        pr.LocalVariable.__init__(self, name=name, description=description, hidden=hidden, parent=None, mode='CMD', **kwargs)
 
 
 class RemoteCommand(BaseCommand, pr.RemoteVariable):
-    def __init__(self, name=None, function=None, **kwargs):
-        BaseCommand.__init__(self,function=function)
-        pr.RemoteVariable.__init__(self, name=name, mode='CMD', classType='command', **kwargs)
+    def __init__(self, name=None, description="", hidden=False, parent=None, function=None, **kwargs):
+        BaseCommand.__init__(self,name=name, description=description, hidden=hidden, parent=None, function=function)
+        pr.RemoteVariable.__init__(self, name=name, description=description, hidden=hidden, parent=None, mode='CMD', **kwargs)
+
 
 # Legacy Support
 def Command(offset=None, **kwargs):

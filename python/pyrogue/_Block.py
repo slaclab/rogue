@@ -17,6 +17,7 @@ import rogue.interfaces.memory
 import threading
 import time
 import math
+import textwrap
 import pyrogue as pr
 
 
@@ -155,14 +156,14 @@ class BaseBlock(object):
             else:
                 return False
 
-    def _starttransaction(self,type):
+    def _startTransaction(self,type):
         """
         Start a transaction.
         """
         with self._lock:
             self._doUpdate = (type == rogue.interfaces.memory.Read)
 
-    def _checktransaction(self,update):
+    def _checkTransaction(self,update):
         if update: self._updated()
 
     def _checkTransaction(self,update):

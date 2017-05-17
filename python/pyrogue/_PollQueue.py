@@ -19,6 +19,7 @@ import collections
 import datetime
 import itertools
 import heapq
+import rogue.interfaces.memory
 import pyrogue as pr
 
 class PollQueue(object):

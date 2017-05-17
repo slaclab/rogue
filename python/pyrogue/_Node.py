@@ -17,6 +17,7 @@ import sys
 from collections import OrderedDict as odict
 import logging
 import re
+import inspect
 import pyrogue as pr
 
 def logInit(cls=None,name=None):
@@ -52,14 +53,15 @@ class Node(object):
     attribute. This allows tree browsing using: node1.node2.node3
     """
 
-    def __init__(self, name, classType, description="", hidden=False, parent=None):
+    def __init__(self, name, description="", hidden=False, parent=None):
         """Init the node with passed attributes"""
 
         # Public attributes
         self.name        = name
         self.description = description
         self.hidden      = hidden
-        self.classType   = classType
+        self.classType   = type(self)
+        self.classList   = inspect.getmro(type(self))
         self.path        = self.name
 
         # Tracking
@@ -103,7 +105,7 @@ class Node(object):
         # Names of all sub-nodes must be unique
         if node.name in self._nodes:
             raise NodeError('Error adding %s with name %s to %s. Name collision.' % 
-                             (node.classType,node.name,self.name))
+                             (str(node.classType),node.name,self.name))
 
         # Attach directly as attribute and add to ordered node dictionary
         setattr(self,node.name,node)
@@ -229,34 +231,34 @@ class Node(object):
             if isinstance(value,dict) and 'classType' in value:
 
                 # If entry is a device add and recurse
-                if value['classType'] == 'device' or value['classType'] == 'dataWriter' or \
-                   value['classType'] == 'runControl':
-
-                    dev = Device(**value)
+                if pyrogue._Device.Device in value['classList']:
+                    dev = pr.Device(**value)
                     dev.classType = value['classType']
+                    dev.classList = value['classList']
                     self.add(dev)
                     dev._addStructure(value,setFunction,cmdFunction)
 
                 # If entry is a variable add and recurse
-                elif value['classType'] == 'variable':
-                    if not value['name'] in self._nodes:
-                        value['offset']      = None
-                        value['setFunction'] = setFunction
-                        value['getFunction'] = 'value = self._scratch'
-                        var = pr.Variable(**value)
-                        self.add(var)
-                    else:
-                        getattr(self,value['name'])._setFunction = setFunction
-                        getattr(self,value['name'])._getFunction = 'value = self._scratch'
-
-                # If entry is a variable add and recurse
-                elif value['classType'] == 'command':
+                elif pyrogue._Command.BaseCommnd in value['classList']:
                     if not value['name'] in self._nodes:
                         value['function'] = cmdFunction
-                        cmd = Command(**value)
+                        cmd = pr.BaseCommand(**value)
+                        dev.classType = value['classType']
+                        dev.classList = value['classList']
                         self.add(cmd)
                     else:
                         getattr(self,value['name'])._function = cmdFunction
+
+                # If entry is a variable add and recurse
+                elif value['classType'] == 'variable':
+                    if not value['name'] in self._nodes:
+                        value['setLocal'] = setFunction
+                        var = pr.LocalVariable(**value)
+                        dev.classType = value['classType']
+                        dev.classList = value['classList']
+                        self.add(var)
+                    else:
+                        getattr(self,value['name'])._setFunction = setFunction
 
     def _getVariables(self,modes):
         """
@@ -267,7 +269,7 @@ class Node(object):
         """
         data = odict()
         for key,value in self._nodes.items():
-            if isinstance(value,Device):
+            if isinstance(value,pr.Device):
                 data[key] = value._getVariables(modes)
             elif isinstance(value,pr.BaseVariable) and (value.mode in modes):
                 data[key] = value.get(read=False)
@@ -287,7 +289,7 @@ class Node(object):
             if key in self._nodes:
 
                 # If entry is a device, recurse
-                if isinstance(self._nodes[key],Device):
+                if isinstance(self._nodes[key],pr.Device):
                     self._nodes[key]._setOrExec(value,writeEach,modes)
 
                 # Execute if command

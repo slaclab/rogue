@@ -23,7 +23,7 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
     """Device class holder. TODO: Update comments"""
 
     def __init__(self, name=None, description="", memBase=None, offset=0, hidden=False, parent=None,
-                 variables=None, expand=True, enabled=True, classType='device', **dump):
+                 variables=None, expand=True, enabled=True, **dump):
         """Initialize device class"""
         if name is None:
             name = self.__class__.__name__
@@ -41,7 +41,7 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
         if memBase: self._setSlave(memBase)
 
         # Node.__init__ can't be called until after self._memBase is created
-        pr.Node.__init__(self, name=name, hidden=hidden, classType=classType, description=description, parent=parent)
+        pr.Node.__init__(self, name=name, hidden=hidden, description=description, parent=parent)
 
         self._log.info("Making device {:s}".format(name))
 
@@ -231,8 +231,6 @@ class DataWriter(Device):
         Device.__init__(self, name=name, description=description,
                         size=0, memBase=None, offset=0, hidden=hidden)
 
-        self.classType = 'dataWriter'
-
         self.add(pr.LocalVariable(name='dataFile', mode='RW', value='',
             description='Data file for storing frames for connected streams.'))
 
@@ -297,8 +295,6 @@ class RunControl(Device):
 
         Device.__init__(self, name=name, description=description,
                         size=0, memBase=None, offset=0, hidden=hidden)
-
-        self.classType = 'runControl'
 
         self.add(pr.LocalVariable(name='runState', value=0, mode='RW', enum={0:'Stopped', 1:'Running'},
             setFunction=self._setRunState, description='Run state of the system.'))

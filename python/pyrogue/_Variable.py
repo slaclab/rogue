@@ -24,7 +24,7 @@ class VariableError(Exception):
 
 class BaseVariable(pr.Node):
 
-    def __init__(self, name=None, description="", parent=None, classType='variable',
+    def __init__(self, name=None, description="", parent=None, 
                  mode='RW', value=None, base='hex', disp=None,
                  enum=None, units=None, hidden=False, minimum=None, maximum=None, **dump):
 
@@ -98,7 +98,7 @@ class BaseVariable(pr.Node):
             raise VariableError('Invalid variable mode %s. Supported: RW, RO, WO, SL, CMD' % (self.mode))
 
         # Call super constructor
-        pr.Node.__init__(self, name=name, classType=classType, description=description, hidden=hidden, parent=parent)
+        pr.Node.__init__(self, name=name, description=description, hidden=hidden, parent=parent)
 
     def addDependency(self, dep):
         self.__dependencies.append(dep)
@@ -111,7 +111,7 @@ class BaseVariable(pr.Node):
     @pollInterval.setter
     def pollInterval(self, interval):
         self._pollInterval = interval        
-        if isinstance(self._root, Root) and self._root._pollQueue:
+        if isinstance(self._root, pr.Root) and self._root._pollQueue:
             self._root._pollQueue.updatePollInterval(self)
 
     @property
@@ -187,13 +187,13 @@ class BaseVariable(pr.Node):
 
 class RemoteVariable(BaseVariable):
 
-    def __init__(self, name=None, description="", parent=None, classType='variable',
+    def __init__(self, name=None, description="", parent=None, 
                  mode='RW', value=None, base='hex', disp=None,
                  enum=None, units=None, hidden=False, minimum=None, maximum=None,
                  offset=None, bitSize=32, bitOffset=0, pollInterval=0, 
                  verify=True, beforeReadCmd=lambda: None, afterWriteCmd=lambda: None, **dump):
 
-        BaseVariable.__init__(self, name=name, description=description, parent=parent, classType=classType,
+        BaseVariable.__init__(self, name=name, description=description, parent=parent, 
                      mode=mode, value=value, base=base, disp=disp,
                      enum=enum, units=units, hidden=hidden, minimum=minimum, maximum=maximum);
 
@@ -271,12 +271,12 @@ class RemoteVariable(BaseVariable):
 
 class LocalVariable(BaseVariable):
 
-    def __init__(self, name=None, description="", parent=None, classType='variable',
+    def __init__(self, name=None, description="", parent=None, 
                  mode='RW', value=None, base='hex', disp=None,
                  enum=None, units=None, hidden=False, minimum=None, maximum=None,
                  localSet=None, localGet=None, pollInterval=0, **dump):
 
-        BaseVariable.__init__(self, name=name, description=description, parent=parent, classType=classType,
+        BaseVariable.__init__(self, name=name, description=description, parent=parent, 
                      mode=mode, value=value, base=base, disp=disp,
                      enum=enum, units=units, hidden=hidden, minimum=minimum, maximum=maximum)
 
@@ -305,12 +305,12 @@ class LocalVariable(BaseVariable):
 
 class LinkVariable(BaseVariable):
 
-    def __init__(self, name=None, description="", parent=None, classType='variable',
+    def __init__(self, name=None, description="", parent=None, 
                  mode='RW', value=None, base='hex', disp=None,
                  enum=None, units=None, hidden=False, minimum=None, maximum=None,
                  linkedSet=None, linkedGet=None, dependencies=None, **dump):
 
-        BaseVariable.__init__(self, name=name, description=description, parent=parent, classType=classType,
+        BaseVariable.__init__(self, name=name, description=description, parent=parent, 
                      mode=mode, value=value, base=base, disp=disp,
                      enum=enum, units=units, hidden=hidden, minimum=minimum, maximum=maximum)
 
