@@ -13,7 +13,7 @@
 # copied, modified, propagated, or distributed except according to the terms 
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
-import pyrogue
+import pyrogue as pr
 import textwrap
 
 
@@ -22,78 +22,74 @@ class VariableError(Exception):
     pass
 
 
-class Base(object):
-    """
-    Class which defines how data is stored, displayed and converted.
-    """
-    def __init__(self):
-        pass
+class BaseVariable(pr.Node):
 
-
-class Variable(pyrogue.Node):
-    """
-    Variable holder.
-    A variable can be associated with a block of real memory or just manage a local variable.
-
-    offset: offset is the memory offset (in bytes) if the associated with memory. 
-            This offset must be aligned to the minimum accessable memory entry for 
-            the underlying hardware. Variables with the same offset value will be 
-            associated with the same block object. 
-    bitSize: The size in bits of the variable entry if associated with memory.
-    bitOffset: The offset in bits from the byte offset if associated with memory.
-    pollInterval: How often the variable should be polled (in seconds) defualts to 0 (not polled)
-    value: An initial value to set the variable to
-    base: This defined the type of entry tracked by this variable.
-          hex = An unsigned integer in hex form
-          bin = An unsigned integer in binary form
-          uint = An unsigned integer
-          enum = An enum with value,key pairs passed
-          bool = A True,False value
-          range = An unsigned integer with a bounded range
-          string = A string value
-          float = A float value
-    mode: Access mode of the variable
-          RW = Read/Write
-          RO = Read Only
-          WO = Write Only
-          SL = A slave variable which is not included in block writes or config/status dumps.
-    enum: A dictionary of index:value pairs ie {0:'Zero':0,'One'}
-    minimum: Minimum value for base=range
-    maximum: Maximum value for base=range
-    setFunction: Function to call to set the value. dev, var, value passed.
-        setFunction(dev,var,value)
-    getFunction: Function to call to set the value. dev, var passed. Return value.
-        value = getFunction(dev,var)
-    hidden: Variable is hidden
-
-    The set and get functions can be in one of two forms. They can either be a series 
-    of python commands in a string or a pointer to a class function. When defining 
-    pythone functions in a string the get function must update the 'value' variable with
-    the variable value. For the set function the variable 'value' is set in the value 
-    variable. ie setFunction='_someVariable = value', getFunction='value = _someVariable'
-    The string function is executed in the context of the variable object with 'dev' set
-    to the parent device object.
-    """
-    def __init__(self, name, description="", parent=None, offset=None, bitSize=32, bitOffset=0, pollInterval=0, value=None,
-                 base='hex', mode='RW', enum=None, units=None, hidden=False,
-                 minimum=None, maximum=None, verify=True,
-                 setFunction=None, getFunction=None, dependencies=None, 
-                 beforeReadCmd=None, afterWriteCmd=None, **dump):
-        """Initialize variable class""" 
+    def __init__(self, name=None, description="", parent=None, classType='variable',
+                 mode='RW', value=None, base='hex', disp=None,
+                 enum=None, units=None, hidden=False, minimum=None, maximum=None, **dump):
 
         # Public Attributes
-        self.offset    = offset
-        self.bitSize   = bitSize
-        self.bitOffset = bitOffset
-        self.base      = base      
-        self.mode      = mode
-        self.verify    = verify
-        self.enum      = enum
-        self.units     = units
-        self.minimum   = minimum # For base='range'
-        self.maximum   = maximum # For base='range'
-        self._defaultValue = value
-        self._pollInterval = pollInterval
+        self.mode           = mode
+        self.enum           = enum
+        self.units          = units
+        self.minimum        = minimum # For base='range'
+        self.maximum        = maximum # For base='range'
+
+        self._default       = value
+        self.__listeners    = []
+        self._pollInterval  = 0
+        self._beforeReadCmd = None
+        self._afterWriteCmd = None
+        self.__dependencies = []
+
+        self._base = base
+
+        # Handle legacy model declarations
+        if base == 'hex' or base == 'uint' or base == 'bin' or base == 'enum' or base == 'range':
+            self._base = pr.IntModel(signed=False, endianness='little')
+        elif base == 'int':
+            self._base = pr.IntModel(signed=True, endianness='little')
+        elif base == 'bool':
+            self._base = pr.BoolModel()
+        elif base == 'string':
+            self._base = pr.StringModel()
+        elif base == 'float':
+            self._base = pr.FloatModel()
+
+        # disp follows base if not specified
+        if disp is None and isinstance(base, str):
+            disp = base
+        elif disp is None:
+            disp = self._base.defaultdisp
+            
+        if isinstance(disp, dict):
+            self.disp = 'enum'
+            self.enum = disp
+        elif isinstance(disp, list):
+            self.disp = 'enum'
+            self.enum = {k:str(k) for k in disp}
+        elif isinstance(disp, str):
+            if disp == 'range':
+                self.disp = 'range'
+            elif disp == 'hex':
+                self.disp = '{:x}'
+            elif disp == 'uint':
+                self.disp = '{:d}'
+            elif disp == 'bin':
+                self.disp = '{:b}'
+            elif disp == 'string':
+                self.disp = '{}'
+            elif disp == 'bool':
+                self.disp = 'enum'
+                self.enum = {False: 'False', True: 'True'}
+            else:
+                self.disp = disp
+
+        self.revEnum = None
+        self.valEnum = None
+        if self.enum is not None:
+            self.revEnum = {v:k for k,v in self.enum.items()}
+            self.valEnum = [v for k,v in self.enum.items()]
 
         # Check modes
         if (self.mode != 'RW') and (self.mode != 'RO') and \
@@ -101,38 +97,8 @@ class Variable(pyrogue.Node):
            (self.mode != 'CMD'):
             raise VariableError('Invalid variable mode %s. Supported: RW, RO, WO, SL, CMD' % (self.mode))
 
-        # Tracking variables
-        self._block       = None
-        self._setFunction = setFunction
-        self._getFunction = getFunction
-        self.__listeners  = []
-
-        if self.base == 'string':
-            self._scratch = ''
-        else:
-            self._scratch = 0
-
-        # Dependency tracking
-        self.__dependencies = []
-        if dependencies is not None:
-            for d in dependencies:
-                self.addDependency(d)
-
-        # Commands that run before or after block access
-        self._beforeReadCmd   = beforeReadCmd
-        self._afterWriteCmd   = afterWriteCmd
-
         # Call super constructor
-        pyrogue.Node.__init__(self, name=name, classType='variable', description=description, hidden=hidden, parent=parent)
-
-    def _rootAttached(self):
-        # Variables are always leaf nodes so no need to recurse
-        if self._defaultValue is not None:
-            self.set(self._defaultValue, write=True)
-
-        if self._pollInterval > 0 and self._root._pollQueue:
-            self._root._pollQueue.updatePollInterval(self)
-
+        Node.__init__(self, name=name, classType=classType, description=description, hidden=hidden, parent=parent)
 
     def addDependency(self, dep):
         self.__dependencies.append(dep)
@@ -147,7 +113,6 @@ class Variable(pyrogue.Node):
         self._pollInterval = interval        
         if isinstance(self._root, Root) and self._root._pollQueue:
             self._root._pollQueue.updatePollInterval(self)
-
 
     @property
     def dependencies(self):
@@ -165,15 +130,85 @@ class Variable(pyrogue.Node):
         else:
             self.__listeners.append(listener)
 
-    def beforeReadCmd(self, cmd):
-        self._beforeReadCmd = cmd
-    beforeReadCmd = property(None, beforeReadCmd)
+    def set(self, value, write=True):
+        pass
 
-    def afterWriteCmd(self, cmd):
-        self._afterWriteCmd = cmd
-    afterWriteCmd = property(None, afterWriteCmd)
+    def post(self,value):
+        pass
 
-    def set(self,value,write=True):
+    def get(self,read=True):
+        return None
+
+    def linkUpdated(self, var, value):
+        self._updated()
+
+    def getDisp(self, read=True):
+        #print('{}.getDisp(read={}) disp={} value={}'.format(self.path, read, self.disp, self.value))
+        if self.disp == 'enum':
+            #print('enum: {}'.format(self.enum))
+            #print('get: {}'.format(self.get(read)))
+            return self.enum[self.get(read)]
+        else:
+            return self.disp.format(self.get(read))
+
+    def parseDisp(self, sValue):
+        if self.disp == 'enum':
+            return self.revEnum[sValue]
+        else:
+             return (parse.parse(self.disp, sValue)[0])
+
+    def setDisp(self, sValue, write=True):
+        self.set(self.parseDisp(sValue), write)
+
+    def _rootAttached(self):
+        # Variables are always leaf nodes so no need to recurse
+        if self.value is not None:
+            self.set(self.value, write=False)
+
+        if self._pollInterval > 0 and self._root._pollQueue is not None:
+            self._root._pollQueue.updatePollInterval(self)
+
+    def _updated(self):
+        """Variable has been updated. Inform listeners."""
+        value = self.get(read=False)
+        
+        for func in self.__listeners:
+            func(self, value)
+
+        # Root variable update log
+        self._root._varUpdated(self,value)
+
+    def __set__(self, value):
+        self.set(value, write=True)
+
+    def __get__(self):
+        self.get(read=True)
+
+
+class RemoteVariable(BaseVariable):
+
+    def __init__(self, name=None, description="", parent=None, classType='variable',
+                 mode='RW', value=None, base='hex', disp=None,
+                 enum=None, units=None, hidden=False, minimum=None, maximum=None,
+                 offset=None, bitSize=32, bitOffset=0, pollInterval=0, 
+                 verify=True, beforeReadCmd=lambda: None, afterWriteCmd=lambda: None, **dump):
+
+        BaseVariable.__init__(self, name=name, description=description, parent=parent, classType=classType,
+                     mode=mode, value=value, base=vase, disp=disp,
+                     enum=enum, units=units, hidden=hidden, minimum=minimum, maximum=maximum);
+
+        self._pollInterval  = pollInterval
+        self._beforeReadCmd = beforeReadCmd
+        self._afterWriteCmd = afterWriteCmd
+
+        self._block    = None
+
+        self.offset    = offset
+        self.bitSize   = bitSize
+        self.bitOffset = bitOffset
+        self.verify    = verify
+
+    def set(self, value, write=True):
         """
         Set the value and write to hardware if applicable
         Writes to hardware are blocking. An error will result in a logged exception.
@@ -181,17 +216,17 @@ class Variable(pyrogue.Node):
 
         self._log.debug("{}.set({})".format(self, value))
         try:
-            self._rawSet(value)
-
-            if write and self._block and self._block.mode != 'RO':
+            self._block.set(self, value)
+            self._updated()
+            
+            if write and self._block.mode != 'RO':
                 self._block.blockingTransaction(rogue.interfaces.memory.Write)
-                if self._afterWriteCmd is not None:
-                    self._afterWriteCmd()
+                self._afterWriteCmd()
 
                 if self._block.mode == 'RW':
-                    if self._beforeReadCmd is not None:
-                        self._beforeReadCmd()
+                    self._beforeReadCmd()
                     self._block.blockingTransaction(rogue.interfaces.memory.Verify)
+                    
         except Exception as e:
             self._log.error(e)
 
@@ -201,9 +236,12 @@ class Variable(pyrogue.Node):
         Writes to hardware are posted.
         """
         try:
-            self._rawSet(value)
-            if self._block and self._block.mode != 'RO':
+            self._block.set(self, value)
+            self._updated()
+
+            if self._block.mode != 'RO':
                 self._block.backgroundTransaction(rogue.interfaces.memory.Post)
+                
         except Exception as e:
             self._log.error(e)
 
@@ -214,118 +252,133 @@ class Variable(pyrogue.Node):
         Listeners will be informed of the update.
         """
         try:
-            if read and self._block and self._block.mode != 'WO':
-                if self._beforeReadCmd is not None:
-                    self._beforeReadCmd()
+            if read and self._block.mode != 'WO':
+                self._beforeReadCmd()
                 self._block.blockingTransaction(rogue.interfaces.memory.Read)
-            ret = self._rawGet()
+
+            ret = self._block.get(self)
+            
         except Exception as e:
             self._log.error(e)
             return None
 
         # Update listeners for all variables in the block
         if read:
-            if self._block:
-                self._block._updated()
-            else:
-                self._updated()
+            self._block._updated()
+                
         return ret
 
-    @property
-    def block(self):
-        """Get the block associated with this varable if it exists"""
-        return self._block
 
-    def _updated(self):
-        """Variable has been updated. Inform listeners."""
-        
-        # Don't generate updates for SL and WO variables
-        if self.mode == 'WO' or self.mode == 'SL': return
+class LocalVariable(BaseVariable):
 
-        value = self._rawGet()
-        
-        for func in self.__listeners:
-            func(self,value)
+    def __init__(self, name=None, description="", parent=None, classType='variable',
+                 mode='RW', value=None, base='hex', disp=None,
+                 enum=None, units=None, hidden=False, minimum=None, maximum=None,
+                 localSet=None, localGet=None, pollInterval=0, **dump):
 
-        # Root variable update log
-        self._root._varUpdated(self,value)
+        BaseVariable.__init__(self, name=name, description=description, parent=parent, classType=classType,
+                     mode=mode, value=value, base=vase, disp=disp,
+                     enum=enum, units=units, hidden=hidden, minimum=minimum, maximum=maximum)
 
-    def _rawSet(self,value):
+        self._pollInterval = pollInterval
+        self._block = BlockLocal(self,localSet,localGet)
+
+    def set(self, value, write=True):
+        try:
+            self._block.set(self, value)
+            self._updated()
+                    
+        except Exception as e:
+            self._log.error(e)
+
+    def get(self,read=True):
+        try:
+            ret = self._block.get(self)
+            
+        except Exception as e:
+            self._log.error(e)
+            return None
+
+        if read: self._block._updated()
+        return ret
+
+
+class LinkVariable(BaseVariable):
+
+    def __init__(self, name=None, description="", parent=None, classType='variable',
+                 mode='RW', value=None, base='hex', disp=None,
+                 enum=None, units=None, hidden=False, minimum=None, maximum=None,
+                 setFunction=None, getFunction=None, dependencies=None, **dump):
+
+        BaseVariable.__init__(self, name=name, description=description, parent=parent, classType=classType,
+                     mode=mode, value=value, base=vase, disp=disp,
+                     enum=enum, units=units, hidden=hidden, minimum=minimum, maximum=maximum)
+
+        # Set and get functions
+        self._setFunction = setFunction
+        self._getFunction = getFunction
+
+        # Dependency tracking
+        if dependencies is not None:
+            for d in dependencies:
+                self.addDependency(d)
+
+
+    def set(self, value, write=True):
         """
-        Raw set method. This is called by the set() method in order to convert the passed
-        variable to a value which can be written to a local container (block or local variable).
-        The set function defaults to setting a string value to the local block if mode='string'
-        or an integer value for mode='hex', mode='uint' or mode='bool'. All others will default to
-        a uint set. 
         The user can use the setFunction attribute to pass a string containing python commands or
         a specific method to call. When using a python string the code will find the passed value
         as the variable 'value'. A passed method will accept the variable object and value as args.
         Listeners will be informed of the update.
-        _rawSet() is called during bulk configuration loads with a seperate hardware access generated later.
         """
         if self._setFunction is not None:
             if callable(self._setFunction):
                 self._setFunction(self._parent,self,value)
             else:
                 dev = self._parent
+                var = self
                 exec(textwrap.dedent(self._setFunction))
 
-        elif self._block:        
-            if self.base == 'string':
-                self._block.setString(value)
-            else:
-                if self.base == 'bool':
-                    if value: ivalue = 1
-                    else: ivalue = 0
-                elif self.base == 'enum':
-                    ivalue = {value: key for key,value in self.enum.items()}[value]
-                    self._log.debug('_rawSet enum value= {}, ivalue={}'.format(value, ivalue))
-                else:
-                    ivalue = int(value)
-                self._block.setUInt(self.bitOffset, self.bitSize, ivalue)        
-
-        # Inform listeners
-        self._updated()
-
-    def _rawGet(self):
+    def get(self):
         """
-        Raw get method. This is called by the get() method in order to convert the local
-        container value (block or local variable) to a value returned to the caller.
-        The set function defaults to getting a string value from the local block if mode='string'
-        or an integer value for mode='hex', mode='uint' or mode='bool'. All others will default to
-        a uint get. 
         The user can use the getFunction attribute to pass a string containing python commands or
         a specific method to call. When using a python string the code will set the 'value' variable
         with the value to return. A passed method will accept the variable as an arg and return the
         resulting value.
-        _rawGet() can be called from other levels to get current value without generating a hardware access.
         """
         if self._getFunction is not None:
             if callable(self._getFunction):
                 return(self._getFunction(self._parent,self))
             else:
                 dev = self._parent
+                var = self
                 value = 0
                 ns = locals()
                 exec(textwrap.dedent(self._getFunction),ns)
                 return ns['value']
-
-        elif self._block:        
-            if self.base == 'string':
-                return(self._block.getString())
-            else:
-                ivalue = self._block.getUInt(self.bitOffset,self.bitSize)
-
-                if self.base == 'bool':
-                    return(ivalue != 0)
-                elif self.base == 'enum':
-                    self._log.debug('_rawGet enum value= {}, ivalue = {}'.format(self.enum[ivalue], ivalue))
-                    return self.enum[ivalue]
-                else:
-                    return ivalue
         else:
             return None
 
-    def linkUpdated(self, var, value):
-        self._updated()
+
+def Variable(name, description="", parent=None, classType='variable', 
+             offset=None, bitSize=32, bitOffset=0, pollInterval=0, mode='RW', verify=True,
+             value=None, local=False, getFunction=None, setFunction=None, 
+             base='hex',  disp=None, enum=None, units=None, hidden=False, minimum=None, maximum=None,
+             dependencies=None, beforeReadCmd=lambda: None, afterWriteCmd=lambda: None):
+
+    # Local Variables override get and set functions
+    if local or setFunction is not None or getFunction is not None:
+        return(LocalVariable(name=name, description=description, parent=parent, classType=classtype,
+                             mode=mode, value=value, base=base, disp=disp,
+                             enum=enum, units=units, hidden=hidden, minimum=minimum, maximum=maximum,
+                             localSet=setFunction, localGet=getFunction, pollInterval=pollInterval))
+
+    # Otherwise assume remote
+    else:
+        return(RemoteVariable(name=name, description=description, parent=parent, classType=classType,
+                              mode=mode, value=value, base=base, disp=disp,
+                              enum=enum, units=units, hidden=hidden, minimum=minimum, maximum=maximum,
+                              offset=offset, bitSize=bitSize, bitOffset=bitOffset, pollInterval=pollInterval, 
+                              verify=verify, beforeReadCmd=beforeReadCmd, afterWriteCmd=afterWriteCmd, **dump))
+
 
