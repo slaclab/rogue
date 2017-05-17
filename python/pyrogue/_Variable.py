@@ -46,9 +46,9 @@ class BaseVariable(pr.Node):
 
         # Handle legacy model declarations
         if base == 'hex' or base == 'uint' or base == 'bin' or base == 'enum' or base == 'range':
-            self._base = pr.IntModel(signed=False, endianness='little')
+            self._base = pr.IntModel(numBits=bitSize, signed=False, endianness='little')
         elif base == 'int':
-            self._base = pr.IntModel(signed=True, endianness='little')
+            self._base = pr.IntModel(numBits=bitSize, signed=True, endianness='little')
         elif base == 'bool':
             self._base = pr.BoolModel()
         elif base == 'string':
@@ -84,6 +84,8 @@ class BaseVariable(pr.Node):
                 self.enum = {False: 'False', True: 'True'}
             else:
                 self.disp = disp
+
+        self.typeStr = str(self.base)
 
         self.revEnum = None
         self.valEnum = None

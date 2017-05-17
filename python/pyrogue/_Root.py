@@ -154,7 +154,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         Set timeout value on all devices & blocks
         """
         for key,value in self._nodes.items():
-            if isinstance(value,Device):
+            if isinstance(value,pr.Device):
                 value._setTimeout(timeout)
 
     def _updateVarListeners(self, yml, d):
@@ -235,7 +235,8 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
     @pr.command(order=1, name='readConfig', base='string', description='Read configuration from passed filename in YAML format')
     def _readConfig(self,dev,cmd,arg):
         """Read YAML configuration from a file. Called from command"""
-        if self._readBeforeConfig: self._read()
+        if self._readBeforeConfig: 
+            self._read()
         try:
             with open(arg,'r') as f:
                 self.setOrExecYaml(f.read(),False,['RW'])
