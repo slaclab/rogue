@@ -55,6 +55,7 @@ class EpicsCaServer(object):
         self._wThread = None
         self._eThread = None
         self._pvdb    = {}
+        self._log     = pyrogue.logInit(self)
 
         if self._root:
             self._root.addVarListener(self._variableStatus,'list')
@@ -79,10 +80,10 @@ class EpicsCaServer(object):
         if node.disp == 'enum':
             d['type']  = 'enum'
             d['enums'] = [val for key,val in node.enum.items()] 
-            d['value'] = d['enums'].index(node.getDisp(read=False))
+            d['value'] = d['enums'].index(node.valueDisp())
 
         else:
-            d['value'] = node.get(read=False)
+            d['value'] = node.value()
 
             if isinstance(node._base,pyrogue.IntModel):
                 d['type'] = 'int'
@@ -98,7 +99,7 @@ class EpicsCaServer(object):
                 d['type'] = 'int'
 
         name = node.path.replace('.',':')
-        #print("Adding epics variable {}".format(name))
+        self._log.info("Adding epics variable {}".format(name))
         self._pvdb[name] = d
 
     def _addDevice(self,node):
@@ -161,9 +162,9 @@ class EpicsCaServer(object):
             epath = var.path.replace('.',':')
 
             if self._pvdb[epath]['type'] == 'enum':
-                val = self._pvdb[epath]['enums'].index(var.getDisp(read=False))
+                val = self._pvdb[epath]['enums'].index(var.valueDisp())
             else:
-                val = var.get(read=False)
+                val = var.value()
 
             self._driver.setParam(epath,val)
 

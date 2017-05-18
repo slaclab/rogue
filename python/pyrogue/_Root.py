@@ -29,7 +29,7 @@ class RootLogHandler(logging.Handler):
 
     def emit(self,record):
         with self._root._sysLogLock:
-            val = self._root.systemLog.get(read=False)
+            val = self._root.systemLog.value()
             val += (self.format(record) + '\n')
             self._root.systemLog.set(write=False,value=val)
         self._root.systemLog._updated() # Update outside of lock

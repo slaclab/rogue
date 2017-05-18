@@ -273,7 +273,7 @@ class Node(object):
             if isinstance(value,pr.Device):
                 data[key] = value._getVariables(modes)
             elif isinstance(value,pr.BaseVariable) and (value.mode in modes):
-                data[key] = value.get(read=False)
+                data[key] = value.value()
 
         return data
 
