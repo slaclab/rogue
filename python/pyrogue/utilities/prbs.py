@@ -64,7 +64,7 @@ class PrbsTx(pyrogue.Device):
                                        value=0, setFunction=self._txEnable))
 
         self.add(pyrogue.LocalCommand(name='genFrame',description='Generate a single frame',
-                                      function='dev._prbs.genFrame(dev.txSize.get(read=False))'))
+                                      function='dev._prbs.genFrame(dev.txSize.value())'))
 
         self.add(pyrogue.LocalVariable(name='txErrors', description='TX Error Count', base='uint', mode='RO', pollPeriod = 1,
                                        value=0, getFunction='value = dev._prbs.getTxErrors()'))
@@ -83,7 +83,7 @@ class PrbsTx(pyrogue.Device):
             if int(value) == 0:
                 dev._prbs.disable()
             else:
-                dev._prbs.enable(dev.txSize.get(read=False))
+                dev._prbs.enable(dev.txSize.value())
 
     def _getStreamMaster(self):
         return self._prbs

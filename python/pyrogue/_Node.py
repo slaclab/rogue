@@ -273,7 +273,7 @@ class Node(object):
             if isinstance(value,pr.Device):
                 data[key] = value._getVariables(modes)
             elif isinstance(value,pr.BaseVariable) and (value.mode in modes):
-                data[key] = value.get(read=False)
+                data[key] = value.value()
 
         return data
 
@@ -300,4 +300,23 @@ class Node(object):
                 # Set value if variable with enabled mode
                 elif isinstance(self._nodes[key],pr.BaseVariable) and (self._nodes[key].mode in modes):
                     self._nodes[key].set(value,writeEach)
+
+    def _walkPath(self,path):
+        """
+        Return object at given path. Assume we are already at this level
+        and recurse this call to next object at the base of the path
+        Return None if not found. Assume we are looking for nodes.
+        """
+        if '.' in path:
+            base  = path[:path.find('.')]
+            npath = path[path.find('.')+1:]
+
+            if base in self._nodes:
+                return self._nodes[base]._walkPath(npath) 
+            else:
+                return None
+        elif path in self._nodes:
+            return self._nodes[path]
+        else:
+            return None
 

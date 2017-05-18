@@ -93,11 +93,13 @@ class BaseVariable(pr.Node):
             self.revEnum = {v:k for k,v in self.enum.items()}
             self.valEnum = [v for k,v in self.enum.items()]
 
+        # Legacy SL becomes CMD
+        if self.mode == 'SL': self.mode = 'CMD'
+
         # Check modes
         if (self.mode != 'RW') and (self.mode != 'RO') and \
-           (self.mode != 'WO') and (self.mode != 'SL') and \
-           (self.mode != 'CMD'):
-            raise VariableError('Invalid variable mode %s. Supported: RW, RO, WO, SL, CMD' % (self.mode))
+           (self.mode != 'WO') and (self.mode != 'CMD'):
+            raise VariableError('Invalid variable mode %s. Supported: RW, RO, WO, CMD' % (self.mode))
 
         # Call super constructor
         pr.Node.__init__(self, name=name, description=description, hidden=hidden, parent=parent)
@@ -149,17 +151,23 @@ class BaseVariable(pr.Node):
     def get(self,read=True):
         return None
 
+    def value(self):
+        return self.get(read=False)
+
     def linkUpdated(self, var, value):
         self._updated()
 
     def getDisp(self, read=True):
-        #print('{}.getDisp(read={}) disp={} value={}'.format(self.path, read, self.disp, self.get(read=False)))
+        #print('{}.getDisp(read={}) disp={} value={}'.format(self.path, read, self.disp, self.value()))
         if self.disp == 'enum':
-            print('enum: {}'.format(self.enum))
-            print('get: {}'.format(self.get(read)))
+            #print('enum: {}'.format(self.enum))
+            #print('get: {}'.format(self.get(read)))
             return self.enum[self.get(read)]
         else:
             return self.disp.format(self.get(read))
+
+    def valueDisp(self, read=True):
+        return self.getDisp(read=False)
 
     def parseDisp(self, sValue):
         if self.disp == 'enum':
@@ -180,7 +188,7 @@ class BaseVariable(pr.Node):
 
     def _updated(self):
         """Variable has been updated. Inform listeners."""
-        value = self.get(read=False)
+        value = self.value()
 
         for func in self.__listeners:
             func(self, value)
@@ -346,13 +354,13 @@ class LinkVariable(BaseVariable):
         """
         if self._linkedSet is not None:
             if callable(self._linkedSet):
-                self._linksedSet(self._parent,self,value)
+                self._linksedSet(self._parent,self,value,write)
             else:
                 dev = self._parent
                 var = self
                 exec(textwrap.dedent(self._linkedSet))
 
-    def get(self):
+    def get(self, read=True):
         """
         The user can use the linkedGet attribute to pass a string containing python commands or
         a specific method to call. When using a python string the code will set the 'value' variable
@@ -361,7 +369,7 @@ class LinkVariable(BaseVariable):
         """
         if self._linkedGet is not None:
             if callable(self._linkedGet):
-                return(self._linkedGet(self._parent,self))
+                return(self._linkedGet(self._parent,self,read))
             else:
                 dev = self._parent
                 var = self

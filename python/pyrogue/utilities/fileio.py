@@ -37,7 +37,7 @@ class StreamWriter(pyrogue.DataWriter):
                 self._root._streamYamlVariables()
                 self._writer.close()
             else:
-                self._writer.open(self.dataFile.get(read=False))
+                self._writer.open(self.dataFile.value())
 
                 # Dump config/status to file
                 self._root._streamYamlVariables()
@@ -81,7 +81,7 @@ class StreamReader(pyrogue.Device):
             if value == False:
                 dev._reader.close()
             else:
-                dev._reader.open(self.dataFile.get(read=False))
+                dev._reader.open(self.dataFile.value())
 
     def _getStreamMaster(self):
         return self._reader

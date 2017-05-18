@@ -129,12 +129,12 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
         pass
 
     def _getEnable(self, dev, var):
-        if var.get(read=False) is False:
+        if var.value() is False:
             return False
         if dev == dev._root:
-            return dev.enable.get(read=False)
+            return dev.enable.value()
         else:
-            return dev._parent.enable.get(read=False)
+            return dev._parent.enable.value()
 
     def _backgroundTransaction(self,type):
         """
@@ -277,14 +277,14 @@ class DataWriter(Device):
         Auto create data file name based upon date and time.
         Preserve file's location in path.
         """
-        idx = self._dataFile.read(read=False).rfind('/')
+        idx = self.dataFile.value().rfind('/')
 
         if idx < 0:
             base = ''
         else:
-            base = self._dataFile.get(read=False)[:idx+1]
+            base = self.dataFile.value()[:idx+1]
 
-        self._dataFile = base + datetime.datetime.now().strftime("%Y%m%d_%H%M%S.dat")
+        self.dataFile = base + datetime.datetime.now().strftime("%Y%m%d_%H%M%S.dat")
 
 
 class RunControl(Device):

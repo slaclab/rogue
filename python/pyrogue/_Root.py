@@ -19,6 +19,7 @@ import threading
 from collections import OrderedDict as odict
 import logging
 import pyrogue as pr
+import functools as ft
 
 class RootLogHandler(logging.Handler):
     """ Class to listen to log entries and add them to syslog variable"""
@@ -28,7 +29,7 @@ class RootLogHandler(logging.Handler):
 
     def emit(self,record):
         with self._root._sysLogLock:
-            val = self._root.systemLog.get(read=False)
+            val = self._root.systemLog.value()
             val += (self.format(record) + '\n')
             self._root.systemLog.set(write=False,value=val)
         self._root.systemLog._updated() # Update outside of lock
@@ -69,6 +70,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
         # Variable update list
         self._updatedDict = None
+        self._updatedList = None
         self._updatedLock = threading.Lock()
 
         # Variable update listener
@@ -87,14 +89,17 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         if self._pollQueue:
             self._pollQueue.stop()
 
-    def addVarListener(self,func):
+    def addVarListener(self,func,form='dual'):
         """
         Add a variable update listener function.
-        The function should accept a dictionary of update
-        variables in both yaml and dict form:
-            func(yaml,dict)
+        Form = 'dual,'dict','yaml','list'
+        The passed function depends on form
+            dual: func(yaml,dict)  # Yaml and dictionary formats
+            dict: func(dict)       # Dictionary only
+            yaml: func(yaml)       # Yaml only
+            list: func(list)       # List of updated elements
         """
-        self._varListeners.append(func)
+        self._varListeners.append({'func':func,'form':form})
 
     def getYamlStructure(self):
         """Get structure as a yaml string"""
@@ -138,16 +143,30 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
         if not writeEach: self._write()
 
+    @ft.lru_cache(maxsize=None)
+    def getNodeByPath(self,path):
+        if '.' in path:
+            npath = path[path.find('.')+1:]
+            return self._walkPath(npath)
+        elif path == self.name:
+            return self
+        else:
+            return None
+
     def setOrExecPath(self,path,value):
         """
-        Set variable values or execute commands from a dictionary.
+        Set variable values or execute commands from a path
         Pass the variable or command path and associated value or arg.
         """
-        d = {}
-        addPathToDict(d,path,value)
-        name = path[:path.find('.')]
-        yml = dictToYaml(d,default_flow_style=False)
-        self.setOrExecYaml(yml,writeEach=True,modes=['RW'])
+        obj = getNodeByPath(path)
+
+        # Execute if command
+        if isinstance(obj,pr.BaseCommand):
+            obj(value)
+
+        # Set value if variable with enabled mode
+        elif isinstance(obj,pr.BaseVariable):
+            obj.set(value)
 
     def setTimeout(self,timeout):
         """
@@ -157,10 +176,13 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
             if isinstance(value,pr.Device):
                 value._setTimeout(timeout)
 
-    def _updateVarListeners(self, yml, d):
-        """Send yaml and dict update to listeners"""
-        for f in self._varListeners:
-            f(yml,d)
+    def _updateVarListeners(self, yml, d, l):
+        """Send update to listeners"""
+        for tar in self._varListeners:
+            if   tar['form'] == 'list': tar['func'](l)
+            elif tar['form'] == 'dual': tar['func'](yml,d)
+            elif tar['form'] == 'dict': tar['func'](d)
+            elif tar['form'] == 'yaml': tar['func'](yml)
 
     def _streamYaml(self,yml):
         """
@@ -184,16 +206,24 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         """Initialize the update tracking log before a bulk variable update"""
         with self._updatedLock:
             self._updatedDict = odict()
+            self._updatedList = []
 
     def _doneUpdatedVars(self):
         """Stream the results of a bulk variable update and update listeners"""
+        yml = ''
+        d   = None
+        l   = []
         with self._updatedLock:
             if self._updatedDict:
+                d = self._updatedDict
+                l = self._updatedList
                 yml = dictToYaml(self._updatedDict,default_flow_style=False)
-                self._streamYaml(yml)
-                self._updateVarListeners(yml,self._updatedDict)
-            self._updatedDict = None
+                self._updatedDict = None
+                self._updatedList = None
 
+        if d is not None:
+            self._updateVarListeners(yml,d,l)
+            self._streamYaml(yml)
 
     @pr.command(order=7, name='writeAll', description='Write all values to the hardware')
     def _write(self,dev=None,cmd=None,arg=None):
@@ -269,22 +299,25 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
     def _varUpdated(self,var,value):
         """ Log updated variables"""
         yml = None
+        l   = []
 
         with self._updatedLock:
 
             # Log is active add to log
             if self._updatedDict is not None:
                 addPathToDict(self._updatedDict,var.path,value)
+                self._updatedList.append(var)
 
             # Otherwise act directly
             else:
                 d = {}
+                l = [var]
                 addPathToDict(d,var.path,value)
                 yml = dictToYaml(d,default_flow_style=False)
 
-        if yml:
+        if yml is not None:
             self._streamYaml(yml)
-            self._updateVarListeners(yml,d)
+            self._updateVarListeners(yml,d,l)
 
 
 def addPathToDict(d, path, value):

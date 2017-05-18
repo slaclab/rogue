@@ -70,9 +70,9 @@ class VariableLink(QObject):
         variable.addListener(self.newValue)
         
         if isinstance(self.widget, QComboBox):
-            self.newValue(None,self.widget.findText(variable.getDisp(read=False)))
+            self.newValue(None,self.widget.findText(variable.valueDisp()))
         else:
-            self.newValue(None,variable.getDisp(read=False))
+            self.newValue(None,variable.valueDisp())
             
     def newValue(self, var, value):
         #print('{} newValue ( {} {} )'.format(self.variable, type(value), value))
