@@ -95,7 +95,7 @@ class BaseBlock(object):
         Perform a background transaction
         """
         if (type == rogue.interfaces.memory.Write  and (self.mode == 'WO' or self.mode == 'RW')) or \
-        if (type == rogue.interfaces.memory.Post   and (self.mode == 'WO' or self.mode == 'RW')) or \
+           (type == rogue.interfaces.memory.Post   and (self.mode == 'WO' or self.mode == 'RW')) or \
            (type == rogue.interfaces.memory.Read   and (self.mode == 'RO' or self.mode == 'RW')) or  \
            (type == rogue.interfaces.memory.Verify and self.mode == 'RW'):
             self._startTransaction(type)
@@ -105,7 +105,7 @@ class BaseBlock(object):
         Perform a blocking transaction
         """
         if (type == rogue.interfaces.memory.Write  and (self.mode == 'WO' or self.mode == 'RW')) or \
-        if (type == rogue.interfaces.memory.Post   and (self.mode == 'WO' or self.mode == 'RW')) or \
+           (type == rogue.interfaces.memory.Post   and (self.mode == 'WO' or self.mode == 'RW')) or \
            (type == rogue.interfaces.memory.Read   and (self.mode == 'RO' or self.mode == 'RW')) or  \
            (type == rogue.interfaces.memory.Verify and self.mode == 'RW'):
 

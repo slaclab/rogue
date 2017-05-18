@@ -95,6 +95,8 @@ class EpicsCaServer(object):
             # Commands return None
             if d['type'] == 'NoneType':
                 d['type'] = 'int'
+            elif d['type'] == 'bool':
+                d['type'] = 'int'
             
         name = node.path.replace('.',':')
         self._log.info("Adding epics variable {} type {}".format(name,d['type']))
