@@ -87,7 +87,6 @@ class VariableLink(QObject):
         self.guiChanged(self.widget.text())
 
     def guiChanged(self, value):
-        #print('{} guiChanged( {}({}) )'.format(self.variable, type(value), value))
         self.block = True
 
         if self.variable.disp == 'enum':

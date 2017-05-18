@@ -255,13 +255,16 @@ class Node(object):
                 # If entry is a variable add and recurse
                 elif 'BaseVariable' in value['classList']:
                     if not value['name'] in self._nodes:
-                        value['setLocal'] = setFunction
+                        value['localSet'] = setFunction
+                        value['value']    = None
                         var = pr.LocalVariable(**value)
                         var.classType = value['classType']
                         var.classList = value['classList']
                         self.add(var)
                     else:
-                        getattr(self,value['name'])._setFunction = setFunction
+                        print("Local set for {} in {}".format(value['name'],self.name))
+                        getattr(self,value['name'])._block._localSet = setFunction
+                        getattr(self,value['name'])._block._localGet = None
 
     def _getVariables(self,modes):
         """

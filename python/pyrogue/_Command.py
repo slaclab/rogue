@@ -93,17 +93,15 @@ class BaseCommand(pr.Node):
 
 
 class LocalCommand(BaseCommand,pr.LocalVariable):
-    def __init__(self, name=None, mode=None, description="", hidden=False, parent=None, function=None, **kwargs):
+    def __init__(self, name=None, mode=None, value=None, description="", hidden=False, parent=None, function=None, **kwargs):
         BaseCommand.__init__(self,name=name, description=description, hidden=hidden, parent=None, function=function)
-        pr.LocalVariable.__init__(self, name=name, description=description, hidden=hidden, parent=None, mode='CMD', 
-                                  **kwargs)
+        pr.LocalVariable.__init__(self, name=name, value=value, description=description, hidden=hidden, parent=None, mode='CMD', **kwargs)
 
 
 class RemoteCommand(BaseCommand, pr.RemoteVariable):
-    def __init__(self, name=None, mode=None, description="", hidden=False, parent=None, function=None, **kwargs):
+    def __init__(self, name=None, mode=None, value=None, description="", hidden=False, parent=None, function=None, **kwargs):
         BaseCommand.__init__(self,name=name, description=description, hidden=hidden, parent=None, function=function)
-        pr.RemoteVariable.__init__(self, name=name, description=description, hidden=hidden, parent=None, mode='CMD', 
-                                   **kwargs)
+        pr.RemoteVariable.__init__(self, name=name, value=value, description=description, hidden=hidden, parent=None, mode='CMD', **kwargs)
 
 
 # Legacy Support
