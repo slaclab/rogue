@@ -43,6 +43,8 @@ namespace rogue {
 
          static bool lessThan(std::string compare);
 
+         static void minVersion(std::string compare);
+
          static void setup_python();
    };
 }

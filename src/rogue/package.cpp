@@ -44,7 +44,7 @@ BOOST_PYTHON_MODULE(rogue) {
    rogue::GilRelease::setup_python();
    rogue::Version::setup_python();
 
-   printf("Rogue/pyrogue version %s. https://git@github.com/slaclab/rogue\n",rogue::Version::current().c_str());
+   printf("Rogue/pyrogue version %s. https://github.com/slaclab/rogue\n",rogue::Version::current().c_str());
 
 };
 
