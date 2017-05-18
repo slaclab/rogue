@@ -113,6 +113,13 @@ def Command(offset=None, **kwargs):
     else:
         return(RemoteCommand(offset=offset,**kwargs))
 
+Command.nothing = BaseCommand.nothing
+Command.toggle = BaseCommand.toggle
+Command.touch = BaseCommand.touch
+Command.touchZero = BaseCommand.touchZero
+Command.touchOne = BaseCommand.touchOne
+Command.postedTouch = BaseCommand.postedTouch
+
 
 ###################################
 # (Hopefully) useful Command stuff
