@@ -17,13 +17,20 @@ import textwrap
 import time
 from collections import OrderedDict as odict
 import pyrogue as pr
-
+import inspect
 
 class BaseCommand(pr.Node):
 
-    def __init__(self, name=None, description="", hidden=False, parent=None, function=None):
+    def __init__(self, name=None, arg=False, description="", hidden=False, parent=None, function=None):
         pr.Node.__init__(self, name=name, description=description, hidden=hidden, parent=parent)
         self._function = function if function is not None else BaseCommand.nothing
+
+        if not callable(self._function):
+            self.arg = True
+        elif len(inspect.signature(self._function).parameters) == 3:
+            self.arg = True
+        else:
+            self.arg = False
 
     def __call__(self,arg=None):
         """Execute command: TODO: Update comments"""
@@ -33,39 +40,27 @@ class BaseCommand(pr.Node):
                 # Function is really a function
                 if callable(self._function):
                     self._log.debug('Calling CMD: {}'.format(self.name))
-                    self._function(self._parent, self, arg)
 
-                # Function is a CPSW sequence
-                elif type(self._function) is odict:
-                    for key,value in self._function.items():
-
-                        # Built in
-                        if key == 'usleep':
-                            time.sleep(value/1e6)
-
-                        # Determine if it is a command or variable
-                        else:
-                            n = self._parent._nodes[key]
-
-                            if callable(n): 
-                                n(value)
-                            else: 
-                                n.set(value)
+                    if len(inspect.signature(self._function).parameters) == 3:
+                        self._function(self._parent, self, arg)
+                    else:
+                        self._function(self._parent, self)
 
                 # Attempt to execute string as a python script
                 else:
                     dev = self._parent
+                    cmd = self
                     exec(textwrap.dedent(self._function))
 
         except Exception as e:
             self._log.error(e)
 
     @staticmethod
-    def nothing(dev, cmd, arg):
+    def nothing(dev, cmd):
         pass
 
     @staticmethod
-    def toggle(dev, cmd, arg):
+    def toggle(dev, cmd):
         cmd.set(1)
         cmd.set(0)
 
@@ -77,11 +72,11 @@ class BaseCommand(pr.Node):
             cmd.set(1)
 
     @staticmethod
-    def touchZero(dev, cmd, arg):
+    def touchZero(dev, cmd):
         cmd.set(0)
 
     @staticmethod
-    def touchOne(dev, cmd, arg):
+    def touchOne(dev, cmd):
         cmd.set(1)
 
     @staticmethod
@@ -93,15 +88,15 @@ class BaseCommand(pr.Node):
 
 
 class LocalCommand(BaseCommand,pr.LocalVariable):
-    def __init__(self, name=None, mode=None, value=None, description="", hidden=False, parent=None, function=None, **kwargs):
+    def __init__(self, name=None, mode=None, description="", hidden=False, parent=None, function=None, **kwargs):
         BaseCommand.__init__(self,name=name, description=description, hidden=hidden, parent=None, function=function)
-        pr.LocalVariable.__init__(self, name=name, value=value, description=description, hidden=hidden, parent=None, mode='CMD', **kwargs)
+        pr.LocalVariable.__init__(self, name=name, description=description, hidden=hidden, parent=None, mode='CMD', **kwargs)
 
 
 class RemoteCommand(BaseCommand, pr.RemoteVariable):
-    def __init__(self, name=None, mode=None, value=None, description="", hidden=False, parent=None, function=None, **kwargs):
+    def __init__(self, name=None, mode=None, description="", hidden=False, parent=None, function=None, **kwargs):
         BaseCommand.__init__(self,name=name, description=description, hidden=hidden, parent=None, function=function)
-        pr.RemoteVariable.__init__(self, name=name, value=value, description=description, hidden=hidden, parent=None, mode='CMD', **kwargs)
+        pr.RemoteVariable.__init__(self, name=name, description=description, hidden=hidden, parent=None, mode='CMD', **kwargs)
 
 
 # Legacy Support
