@@ -232,7 +232,7 @@ class LocalBlock(BaseBlock):
             return self._value
 
 
-class MemoryBlock(BaseBlock,rogue.interfaces.memory.Master):
+class MemoryBlock(BaseBlock, rogue.interfaces.memory.Master):
     """Internal memory block holder"""
 
     def __init__(self, variable):
@@ -253,7 +253,7 @@ class MemoryBlock(BaseBlock,rogue.interfaces.memory.Master):
             self._waitTransaction()
             self._value = value
 
-            ba = var._base._toBlock(value)
+            ba = var._base.toBlock(value, var.bitSize)
 
             # Access is fully byte aligned
             if (var.bitOffset % 8) == 0 and (var.bitSize % 8) == 0:
@@ -280,7 +280,7 @@ class MemoryBlock(BaseBlock,rogue.interfaces.memory.Master):
 
             # Access is fully byte aligned
             if (var.bitOffset % 8) == 0 and (var.bitSize % 8) == 0:
-                return var._base._fromBlock(self._bData[int(var.bitOffset/8):int((var.bitOffset+var.bitSize)/8)])
+                return var._base.fromBlock(self._bData[int(var.bitOffset/8):int((var.bitOffset+var.bitSize)/8)])
 
             # Bit level access
             else:
@@ -288,7 +288,7 @@ class MemoryBlock(BaseBlock,rogue.interfaces.memory.Master):
                 if (var.bitSize % 8) > 0: ba.extend(bytearray(1))
                 for x in range(0,var.bitSize):
                     setBitToBytes(ba,x,getBitFromBytes(self._bData,x+var.bitOffset))
-                return var._base._fromBlock(ba)
+                return var._base.fromBlock(ba)
 
     def _waitTransaction(self):
         """

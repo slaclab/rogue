@@ -101,7 +101,7 @@ class LocalCommand(BaseCommand,pr.LocalVariable):
 class RemoteCommand(BaseCommand, pr.RemoteVariable):
     def __init__(self, name=None, description="", hidden=False, parent=None, function=None, **kwargs):
         BaseCommand.__init__(self,name=name, description=description, hidden=hidden, parent=None, function=function)
-        pr.RemoteVariable.__init__(self, name=name, description=description, hidden=hidden, parent=None, mode='CMD', **kwargs)
+        pr.RemoteVariable.__init__(self, name=name, description=description, hidden=hidden, parent=None, **kwargs)
 
 
 # Legacy Support

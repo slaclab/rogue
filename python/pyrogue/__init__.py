@@ -9,8 +9,8 @@
 #-----------------------------------------------------------------------------
 from pyrogue._Node      import *
 from pyrogue._Block     import *
-from pyrogue._Variable  import *
 from pyrogue._Model     import *
+from pyrogue._Variable  import *
 from pyrogue._Command   import *
 from pyrogue._Device    import *
 from pyrogue._Root      import *

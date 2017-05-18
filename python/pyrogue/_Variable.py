@@ -25,12 +25,13 @@ class VariableError(Exception):
 class BaseVariable(pr.Node):
 
     def __init__(self, name=None, description="", parent=None, 
-                 mode='RW', value=None, base='hex', disp=None,
+                 mode='RW', value=None, disp='{}',
                  enum=None, units=None, hidden=False, minimum=None, maximum=None, **dump):
+
+        print('BaseVariable( name={}, disp={} )'.format(name, disp))
 
         # Public Attributes
         self.mode           = mode
-        self.enum           = enum
         self.units          = units
         self.minimum        = minimum # For base='range'
         self.maximum        = maximum # For base='range'
@@ -41,51 +42,15 @@ class BaseVariable(pr.Node):
         self._beforeReadCmd = None
         self._afterWriteCmd = None
         self.__dependencies = []
-
-        self._base = base
-
-        # Handle legacy model declarations
-        if base == 'hex' or base == 'uint' or base == 'bin' or base == 'enum' or base == 'range':
-            self._base = pr.IntModel(numBits=32, signed=False, endianness='little')
-        elif base == 'int':
-            self._base = pr.IntModel(numBits=32, signed=True, endianness='little')
-        elif base == 'bool':
-            self._base = pr.BoolModel()
-        elif base == 'string':
-            self._base = pr.StringModel()
-        elif base == 'float':
-            self._base = pr.FloatModel()
-
-        # disp follows base if not specified
-        if disp is None and isinstance(base, str):
-            disp = base
-        elif disp is None:
-            disp = self._base.defaultdisp
-
+        
+        self.disp = disp
+        self.enum = enum
         if isinstance(disp, dict):
             self.disp = 'enum'
             self.enum = disp
         elif isinstance(disp, list):
             self.disp = 'enum'
-            self.enum = {k:str(k) for k in disp}
-        elif isinstance(disp, str):
-            if disp == 'range':
-                self.disp = 'range'
-            elif disp == 'hex':
-                self.disp = '{:x}'
-            elif disp == 'uint':
-                self.disp = '{:d}'
-            elif disp == 'bin':
-                self.disp = '{:b}'
-            elif disp == 'string':
-                self.disp = '{}'
-            elif disp == 'bool':
-                self.disp = 'enum'
-                self.enum = {False: 'False', True: 'True'}
-            else:
-                self.disp = disp
-
-        self.typeStr = str(self._base)
+            self.enum = {k:str(k) for k in disp}        
 
         self.revEnum = None
         self.valEnum = None
@@ -158,7 +123,7 @@ class BaseVariable(pr.Node):
         self._updated()
 
     def getDisp(self, read=True):
-        #print('{}.getDisp(read={}) disp={} value={}'.format(self.path, read, self.disp, self.value()))
+        print('{}.getDisp(read={}) disp={} value={}'.format(self.path, read, self.disp, self.value()))
         if self.disp == 'enum':
             #print('enum: {}'.format(self.enum))
             #print('get: {}'.format(self.get(read)))
@@ -206,28 +171,32 @@ class BaseVariable(pr.Node):
 class RemoteVariable(BaseVariable):
 
     def __init__(self, name=None, description="", parent=None, 
-                 mode='RW', value=None, base='hex', disp=None,
+                 mode='RW', value=None, base=pr.UInt, disp=pr.UInt.defaultdisp,
                  enum=None, units=None, hidden=False, minimum=None, maximum=None,
                  offset=None, bitSize=32, bitOffset=0, pollInterval=0, 
                  verify=True, beforeReadCmd=lambda: None, afterWriteCmd=lambda: None, **dump):
 
+        if disp is None:
+            disp = base.defaultdisp
+
         BaseVariable.__init__(self, name=name, description=description, parent=parent, 
-                     mode=mode, value=value, base=base, disp=disp,
+                     mode=mode, value=value, disp=disp,
                      enum=enum, units=units, hidden=hidden, minimum=minimum, maximum=maximum);
 
         self._pollInterval  = pollInterval
         self._beforeReadCmd = beforeReadCmd
         self._afterWriteCmd = afterWriteCmd
 
+        self._base     = base        
         self._block    = None
+        
 
         self.offset    = offset
-#        self.bitSize   = bitSize
+        self.bitSize   = bitSize
         self.bitOffset = bitOffset
         self.verify    = verify
 
-        if isinstance(self._base, pr.IntModel):
-            self._base = self._base.clone(bitSize)
+        self.typeStr = '{}{}'.format(base.__name__, bitSize)
 
     def set(self, value, write=True):
         """
@@ -293,16 +262,22 @@ class RemoteVariable(BaseVariable):
 class LocalVariable(BaseVariable):
 
     def __init__(self, name=None, description="", parent=None, 
-                 mode='RW', value=None, base='hex', disp=None,
+                 mode='RW', value=None, disp='{}',
                  enum=None, units=None, hidden=False, minimum=None, maximum=None,
                  localSet=None, localGet=None, pollInterval=0, **dump):
 
         BaseVariable.__init__(self, name=name, description=description, parent=parent, 
-                     mode=mode, value=value, base=base, disp=disp,
+                     mode=mode, value=value, disp=disp,
                      enum=enum, units=units, hidden=hidden, minimum=minimum, maximum=maximum)
 
         self._pollInterval = pollInterval
         self._block = pr.LocalBlock(self,localSet,localGet,self._default)
+
+        if value is None:
+            self.typeStr = 'Unknown'
+        else:
+            self.typeStr = type(value).__class__.__name__
+        
 
     def set(self, value, write=True):
         try:
@@ -327,17 +302,22 @@ class LocalVariable(BaseVariable):
 class LinkVariable(BaseVariable):
 
     def __init__(self, name=None, description="", parent=None, 
-                 mode='RW', value=None, base='hex', disp=None,
+                 mode='RW', value=None, disp='{}',
                  enum=None, units=None, hidden=False, minimum=None, maximum=None,
                  linkedSet=None, linkedGet=None, dependencies=None, **dump):
 
         BaseVariable.__init__(self, name=name, description=description, parent=parent, 
-                     mode=mode, value=value, base=base, disp=disp,
+                     mode=mode, value=value, disp=disp,
                      enum=enum, units=units, hidden=hidden, minimum=minimum, maximum=maximum)
 
         # Set and get functions
         self._linkedGet = linkedGet
         self._linkedSet = linkedSet
+
+        if value is None:
+            self.typeStr = 'Unknown'
+        else:
+            self.typeStr = type(value).__class__.__name__
 
         # Dependency tracking
         if dependencies is not None:
@@ -382,12 +362,65 @@ class LinkVariable(BaseVariable):
 
 # Legacy Support
 def Variable(local=False, setFunction=None, getFunction=None, **kwargs):
+        
+#         # disp follows base if not specified
+#         if disp is None and isinstance(base, str):
+#             disp = base
+#         elif disp is None:
+#             disp = self._base.defaultdisp
+
+#         if isinstance(disp, dict):
+#             self.disp = 'enum'
+#             self.enum = disp
+#         elif isinstance(disp, list):
+#             self.disp = 'enum'
+#             self.enum = {k:str(k) for k in disp}
+#         elif isinstance(disp, str):
+#             if disp == 'range':
+#                 self.disp = 'range'
+#             elif disp == 'hex':
+#                 self.disp = '{:x}'
+#             elif disp == 'uint':
+#                 self.disp = '{:d}'
+#             elif disp == 'bin':
+#                 self.disp = '{:b}'
+#             elif disp == 'string':
+#                 self.disp = '{}'
+#             elif disp == 'bool':
+#                 self.disp = 'enum'
+#                 self.enum = {False: 'False', True: 'True'}
+#             else:
+#                 self.disp = disp            
+    
 
     # Local Variables override get and set functions
     if local or setFunction is not None or getFunction is not None:
         return(LocalVariable(localSet=setFunction, localGet=getFunction, **kwargs))
 
     # Otherwise assume remote
-    else: return(RemoteVariable(**kwargs))
+    else:
+        if 'base' not in kwargs:
+            kwargs['base'] = pr.UInt
+            
+        base = kwargs['base']
+
+        if isinstance(base, str):
+            if base == 'hex' or base == 'uint' or base == 'bin' or base == 'enum' or base == 'range':
+                base = pr.UInt
+            elif base == 'int':
+                base = pr.Int
+            elif base == 'bool':
+                base = pr.Bool
+            elif base == 'string':
+                base = pr.String
+            elif base == 'float':
+                base = pr.Float
+
+        kwargs['base'] = base
+
+        if 'disp' not in kwargs:
+            kwargs['disp'] = base.defaultdisp     # or None?       
+
+        return(RemoteVariable(**kwargs))
 
 

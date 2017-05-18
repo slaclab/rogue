@@ -24,123 +24,131 @@ def wordCount(bits, wordSize):
 def byteCount(bits):
     return wordCount(bits, 8)
 
-class ModelMeta(type):
-    def __init__(cls, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        cls.cache = {}
+# class ModelMeta(type):
+#     def __init__(cls, *args, **kwargs):
+#         super().__init__(*args, **kwargs)
+#         cls.cache = {}
 
-    def __call__(cls, *args, **kwargs):
-        key = str(args) + str(kwargs)
-        if key not in cls.cache:
-            inst = super().__call__(*args, **kwargs)
-            cls.cache[key] = inst
-        return cls.cache[key]
+#     def __call__(cls, *args, **kwargs):
+#         key = str(args) + str(kwargs)
+#         if key not in cls.cache:
+#             inst = super().__call__(*args, **kwargs)
+#             cls.cache[key] = inst
+#         return cls.cache[key]
 
-# Python magic so that only one instance of each Model 
-# with a specific set of args is ever created
-class Model(metaclass=ModelMeta):
-    pass
+# # Python magic so that only one instance of each Model 
+# # with a specific set of args is ever created
+# class Model(metaclass=ModelMeta):
+#     pass
 
-class IntModel(Model):
-    """Variable holding an unsigned integer"""
-    def __init__(self, numBits=1, signed=False, endianness='little'):
-        self.numBits = numBits
-        self.numBytes = byteCount(numBits)
-        self.defaultdisp = '{:x}'
-        self.signed = signed
-        self.endianness = endianness
+class UInt(object):
+    """Converts Unsigned Integer to and from bytearray"""
+#     def __init__(self, numBits=1, signed=False, endianness='little'):
+#         self.numBits = numBits
+#         self.numBytes = byteCount(numBits)
+#         self.defaultdisp = '{:x}'
+#         self.signed = signed
+#         self.endianness = endianness
 
-    def clone(self, numBits):
-        return IntModel(numBits, self.signed, self.endianness)
+#     def clone(self, numBits):
+#         return IntModel(numBits, self.signed, self.endianness)
+    defaultdisp = '{:x}'
 
-    def _toBlock(self, value):
-        return value.to_bytes(self.numBytes, self.endianness, signed=self.signed)
+    @staticmethod
+    def toBlock(value, bitSize):
+        return value.to_bytes(byteCount(bitSize), 'little', signed=False)
 
-    def _fromBlock(self, ba):
-        return int.from_bytes(ba, self.endianness, signed=self.signed)
+    @staticmethod
+    def fromBlock(ba):
+        return int.from_bytes(ba, 'little', signed=False)
 
-    def _fromString(self, string):
+    @staticmethod
+    def fromString(string):
+        i = int(string, 0)
+
+class Int(object):
+
+    defaultdisp = '{:x}'    
+
+    @staticmethod
+    def toBlock(value, bitSize):
+        return value.to_bytes(byteCount(bitSize), 'little', signed=True)
+
+    @staticmethod
+    def fromBlock(ba):
+        return int.from_bytes(ba, 'little', signed=True)
+
+    @staticmethod
+    def fromString(string):
         i = int(string, 0)
         # perform twos complement if necessary
-        if self.signed and i>0 and ((i >> self.numBits) & 0x1 == 1):
+        if i>0 and ((i >> self.numBits) & 0x1 == 1):
             i = i - (1 << self.numBits)
         return i            
 
-    def __str__(self):
-        if self.signed is True:
-            return 'Int{}'.format(self.numBits)
-        else:
-            return 'UInt{}'.format(self.numBits)
+class Bool(object):
+    
+    defaultdisp = {False: 'False', True: 'True'}    
 
-class BoolModel(Model):
-
-    def __init__(self):
-        self.defaultdisp = {False: 'False', True: 'True'}
-
-    def _toBlock(self, value):
+    @staticmethod
+    def toBlock(value, bitSize):
         return value.to_bytes(1, 'little', signed=False)
 
-    def _fromBlock(self, ba):
+    @staticmethod
+    def fromBlock(ba):
         return bool(int.from_bytes(ba, 'little', signed=False))
 
-    def _fromString(self, string):
+    @staticmethod
+    def fromString(string):
         return str.lower(string) == "true"
-
-    def __str__(self):
-        return 'Bool'
         
-class StringModel(Model):
-    """Variable holding a string"""
-    def __init__(self, encoding='utf-8', **kwargs):
-        super().__init__(**kwargs)
-        self.encoding = encoding
-        self.defaultdisp = '{}'
+class String(object):
 
-    def _toBlock(self, value):
-        ba = bytearray(value, self.encoding)
+    encoding = 'utf-8'
+    defaultdisp = '{}'
+
+    @staticmethod
+    def toBlock(value, bitSize):
+        ba = bytearray(value, String.encoding)
         ba.extend(bytearray(1))
         return ba
 
-    def _fromBlock(self, ba):
+    @staticmethod
+    def fromBlock(ba):
         s = ba.rstrip(bytearray(1))
-        return s.decode(self.encoding)
+        return s.decode(String.encoding)
 
-    def _fromString(self, string):
+    @staticmethod
+    def fromString(string):
         return string
 
-    def __str__(self):
-        return 'String'
+class Float(object):
+    """Converter for 32-bit float"""
 
-class FloatModel(Model):
-    def __init__(self, endianness='little'):
-        super().__init__(self)
-        self.defaultdisp = '{:f}'
-        if endianness == 'little':
-            self.format = 'f'
-        if endianness == 'big':
-            self.format = '!f'
+    defaultdisp = '{:f}'
+#    endianness='little'
+#    fstring = 'f' # use '!f' for big endian
 
-    def _toBlock(self, value):
-        return bytearray(struct.pack(self.format, value))
+    @staticmethod
+    def toBlock(value, bitSize):
+        if bitSize == 32:
+            fstring = 'f'
+        elif bitsize == 64:
+            fstring = 'd'
+        return bytearray(struct.pack(fstring, value))
 
-    def _fromBlock(self, ba):
-        return struct.unpack(self.format, ba)
+    @staticmethod
+    def fromBlock(ba):
+        if len(ba) == 4:
+            return struct.unpack('f', ba)
+        elif len(ba) == 8:
+            return struct.unpack('d', ba)
 
-    def _fromString(self, string):
+        # Need better error handling
+        return struct.unpack('d', ba)        
+
+    @staticmethod
+    def fromString(string):
         return float(string)
-
-    def __str__(self):
-        return 'Float32'
-
-class DoubleModel(FloatModel):
-    def __init__(self, endianness='little'):
-        super().__init__(self, endianness)
-        if endianness == 'little':
-            self.format = 'd'
-        if endianness == 'big':
-            self.format = '!d'
-
-    def __str__(self):
-        return 'Float64'
 
 

@@ -18,6 +18,7 @@ import collections
 import datetime
 import functools as ft
 import pyrogue as pr
+import inspect
 
 class Device(pr.Node,rogue.interfaces.memory.Hub):
     """Device class holder. TODO: Update comments"""
@@ -211,7 +212,7 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
             if 'name' not in kwargs:
                 kwargs['name'] = func.__name__
 
-            argCount = len(signature(func).parameters)
+            argCount = len(inspect.signature(func).parameters)
             def newFunc(dev, var, val):
                 if argCount == 0:
                     return func()
