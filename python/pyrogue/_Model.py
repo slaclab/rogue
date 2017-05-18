@@ -66,6 +66,10 @@ class UInt(object):
     def fromString(string):
         i = int(string, 0)
 
+    @classmethod
+    def name(cls, bitSize):
+        return '{}{}'.format(cls.__name__, bitSize)
+
 class Int(object):
 
     defaultdisp = '{:x}'    
@@ -84,7 +88,12 @@ class Int(object):
         # perform twos complement if necessary
         if i>0 and ((i >> self.numBits) & 0x1 == 1):
             i = i - (1 << self.numBits)
-        return i            
+        return i
+
+    @classmethod
+    def name(cls, bitSize):
+        return '{}{}'.format(cls.__name__, bitSize)
+    
 
 class Bool(object):
     
@@ -101,6 +110,11 @@ class Bool(object):
     @staticmethod
     def fromString(string):
         return str.lower(string) == "true"
+
+    @classmethod
+    def name(cls, bitSize):
+        return '{}'.format(cls.__name__)
+    
         
 class String(object):
 
@@ -121,6 +135,11 @@ class String(object):
     @staticmethod
     def fromString(string):
         return string
+
+    @classmethod
+    def name(cls, bitSize):
+        return '{}'.format(cls.__name__)
+
 
 class Float(object):
     """Converter for 32-bit float"""
@@ -151,4 +170,6 @@ class Float(object):
     def fromString(string):
         return float(string)
 
-
+    @classmethod
+    def name(cls, bitSize):
+        return '{}{}'.format(cls.__name__, bitSize)

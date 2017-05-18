@@ -55,7 +55,7 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
         self.addCommands = ft.partial(self.addNodes, pr.Command)
 
         # Variable interface to enable flag
-        self.add(pr.LocalVariable(name='enable', base='bool', mode='RW', value=enabled,
+        self.add(pr.LocalVariable(name='enable', mode='RW', value=enabled,
                           setFunction=self._setEnable, getFunction=self._getEnable,
                           description='Determines if device is enabled for hardware access'))
 

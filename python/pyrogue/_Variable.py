@@ -25,7 +25,7 @@ class VariableError(Exception):
 class BaseVariable(pr.Node):
 
     def __init__(self, name=None, description="", parent=None, 
-                 mode='RW', value=None, disp='{}',
+                 mode='RW', value=0, disp='{}',
                  enum=None, units=None, hidden=False, minimum=None, maximum=None, **dump):
 
         # Public Attributes
@@ -48,8 +48,11 @@ class BaseVariable(pr.Node):
             self.enum = disp
         elif isinstance(disp, list):
             self.disp = 'enum'
-            self.enum = {k:str(k) for k in disp}        
-
+            self.enum = {k:str(k) for k in disp}
+        elif isinstance(value, bool):
+            self.disp = 'enum'
+            self.enum = {False: 'False', True: 'True'}
+            
         self.revEnum = None
         self.valEnum = None
         if self.enum is not None:
@@ -169,7 +172,7 @@ class BaseVariable(pr.Node):
 class RemoteVariable(BaseVariable):
 
     def __init__(self, name=None, description="", parent=None, 
-                 mode='RW', value=None, base=pr.UInt, disp=pr.UInt.defaultdisp,
+                 mode='RW', value=None, base=pr.UInt, disp=None,
                  enum=None, units=None, hidden=False, minimum=None, maximum=None,
                  offset=None, bitSize=32, bitOffset=0, pollInterval=0, 
                  verify=True, beforeReadCmd=lambda: None, afterWriteCmd=lambda: None, **dump):
@@ -194,7 +197,7 @@ class RemoteVariable(BaseVariable):
         self.bitOffset = bitOffset
         self.verify    = verify
 
-        self.typeStr = '{}{}'.format(base.__name__, bitSize)
+        self.typeStr = base.name(bitSize)
 
     def set(self, value, write=True):
         """
@@ -260,7 +263,7 @@ class RemoteVariable(BaseVariable):
 class LocalVariable(BaseVariable):
 
     def __init__(self, name=None, description="", parent=None, 
-                 mode='RW', value=None, disp='{}',
+                 mode='RW', value=0, disp='{}',
                  enum=None, units=None, hidden=False, minimum=None, maximum=None,
                  localSet=None, localGet=None, pollInterval=0, **dump):
 
@@ -274,7 +277,7 @@ class LocalVariable(BaseVariable):
         if value is None:
             self.typeStr = 'Unknown'
         else:
-            self.typeStr = type(value).__class__.__name__
+            self.typeStr = value.__class__.__name__
         
 
     def set(self, value, write=True):
@@ -304,6 +307,9 @@ class LinkVariable(BaseVariable):
                  enum=None, units=None, hidden=False, minimum=None, maximum=None,
                  linkedSet=None, linkedGet=None, dependencies=None, **dump):
 
+        if value is None:
+            raise Exception("LinkVariable param 'value' must be assigned")
+
         BaseVariable.__init__(self, name=name, description=description, parent=parent, 
                      mode=mode, value=value, disp=disp,
                      enum=enum, units=units, hidden=hidden, minimum=minimum, maximum=maximum)
@@ -315,7 +321,7 @@ class LinkVariable(BaseVariable):
         if value is None:
             self.typeStr = 'Unknown'
         else:
-            self.typeStr = type(value).__class__.__name__
+            self.typeStr = value.__class__.__name__
 
         # Dependency tracking
         if dependencies is not None:
@@ -404,20 +410,24 @@ def Variable(local=False, setFunction=None, getFunction=None, **kwargs):
 
         if isinstance(base, str):
             if base == 'hex' or base == 'uint' or base == 'bin' or base == 'enum' or base == 'range':
-                base = pr.UInt
+                kwargs['base'] = pr.UInt
             elif base == 'int':
-                base = pr.Int
+                kwargs['base'] = pr.Int
             elif base == 'bool':
-                base = pr.Bool
+                kwargs['base'] = pr.Bool
             elif base == 'string':
-                base = pr.String
+                kwargs['base'] = pr.String
             elif base == 'float':
-                base = pr.Float
+                kwargs['base'] = pr.Float
 
-        kwargs['base'] = base
 
-        if 'disp' not in kwargs:
-            kwargs['disp'] = base.defaultdisp     # or None?       
+        if 'disp' not in kwargs and isinstance(base, str):
+            if base == 'uint':
+                kwargs['disp'] = '{:d}'
+            elif base == 'bin':
+                kwargs['disp'] = '{:b}'
+#             else:
+#                 kwargs['disp'] = kwargs['base'].defaultdisp     # or None?       
 
         return(RemoteVariable(**kwargs))
 
