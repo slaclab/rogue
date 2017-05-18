@@ -242,10 +242,10 @@ class Node(object):
                     dev._addStructure(value,setFunction,cmdFunction)
 
                 # If entry is a variable add and recurse
-                elif 'BaseCommnd' in value['classList']:
+                elif 'BaseCommand' in value['classList']:
                     if not value['name'] in self._nodes:
                         value['function'] = cmdFunction
-                        cmd = pr.BaseCommand(**value)
+                        cmd = pr.LocalCommand(**value)
                         cmd.classType = value['classType']
                         cmd.classList = value['classList']
                         self.add(cmd)

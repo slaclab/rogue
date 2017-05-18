@@ -77,7 +77,11 @@ class VariableLink(QObject):
     def newValue(self, var, value):
         #print('{} newValue ( {} {} )'.format(self.variable, type(value), value))
         if self.block: return
-        self.emit(SIGNAL("updateGui"), value)
+
+        if isinstance(self.widget, QComboBox):
+            self.emit(SIGNAL("updateGui"), self.widget.findText(self.variable.valueDisp()))
+        else:
+            self.emit(SIGNAL("updateGui"), self.variable.valueDisp())
 
     def returnPressed(self):
         self.guiChanged(self.widget.text())
