@@ -28,8 +28,6 @@ class BaseVariable(pr.Node):
                  mode='RW', value=None, disp='{}',
                  enum=None, units=None, hidden=False, minimum=None, maximum=None, **dump):
 
-        print('BaseVariable( name={}, disp={} )'.format(name, disp))
-
         # Public Attributes
         self.mode           = mode
         self.units          = units
@@ -123,7 +121,7 @@ class BaseVariable(pr.Node):
         self._updated()
 
     def getDisp(self, read=True):
-        print('{}.getDisp(read={}) disp={} value={}'.format(self.path, read, self.disp, self.value()))
+        #print('{}.getDisp(read={}) disp={} value={}'.format(self.path, read, self.disp, self.value()))
         if self.disp == 'enum':
             #print('enum: {}'.format(self.enum))
             #print('get: {}'.format(self.get(read)))
