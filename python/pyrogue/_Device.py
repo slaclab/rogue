@@ -151,14 +151,7 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
 
         # Process local blocks. 
         for block in self._blocks:
-
-            # Only process writes if block is WO or RW
-            # Only process reads if block is RO or RW
-            # Only process verify if block is RW
-            if (type == rogue.interfaces.memory.Write  and (block.mode == 'WO' or block.mode == 'RW')) or \
-               (type == rogue.interfaces.memory.Read   and (block.mode == 'RO' or block.mode == 'RW')) or  \
-               (type == rogue.interfaces.memory.Verify and block.mode == 'RW'):
-                block.backgroundTransaction(type)
+            block.backgroundTransaction(type)
 
         # Process rest of tree
         for key,value in self._nodes.items():

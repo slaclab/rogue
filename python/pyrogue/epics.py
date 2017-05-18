@@ -85,21 +85,19 @@ class EpicsCaServer(object):
         else:
             d['value'] = node.value()
 
-            if isinstance(node._base,pyrogue.IntModel):
-                d['type'] = 'int'
-                if node.minimum is not None:
-                    d['lolim'] = node.minimum
-                if node.maximum is not None:
-                    d['hilim'] = node.maximum
-            elif isinstance(node._base,pyrogue.FloatModel):
-                d['type'] = 'float'
-            elif isinstance(node._base,pyrogue.StringModel):
-                d['type'] = 'string'
-            else:
-                d['type'] = 'int'
+            if node.minimum is not None:
+                d['lolim'] = node.minimum
+            if node.maximum is not None:
+                d['hilim'] = node.maximum
 
+            d['type'] = d['value'].__class__.__name__
+
+            # Commands return None
+            if d['type'] == 'NoneType':
+                d['type'] = 'int'
+            
         name = node.path.replace('.',':')
-        self._log.info("Adding epics variable {}".format(name))
+        self._log.info("Adding epics variable {} type {}".format(name,d['type']))
         self._pvdb[name] = d
 
     def _addDevice(self,node):
