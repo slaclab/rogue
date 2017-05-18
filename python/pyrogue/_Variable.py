@@ -46,9 +46,9 @@ class BaseVariable(pr.Node):
 
         # Handle legacy model declarations
         if base == 'hex' or base == 'uint' or base == 'bin' or base == 'enum' or base == 'range':
-            self._base = pr.IntModel(numBits=bitSize, signed=False, endianness='little')
+            self._base = pr.IntModel(numBits=32, signed=False, endianness='little')
         elif base == 'int':
-            self._base = pr.IntModel(numBits=bitSize, signed=True, endianness='little')
+            self._base = pr.IntModel(numBits=32, signed=True, endianness='little')
         elif base == 'bool':
             self._base = pr.BoolModel()
         elif base == 'string':
@@ -85,7 +85,7 @@ class BaseVariable(pr.Node):
             else:
                 self.disp = disp
 
-        self.typeStr = str(self.base)
+        self.typeStr = str(self._base)
 
         self.revEnum = None
         self.valEnum = None
@@ -214,9 +214,12 @@ class RemoteVariable(BaseVariable):
         self._block    = None
 
         self.offset    = offset
-        self.bitSize   = bitSize
+#        self.bitSize   = bitSize
         self.bitOffset = bitOffset
         self.verify    = verify
+
+        if isinstance(self._base, pr.IntModel):
+            self._base = self._base.clone(bitSize)
 
     def set(self, value, write=True):
         """
@@ -378,4 +381,5 @@ def Variable(local=False, setFunction=None, getFunction=None, **kwargs):
 
     # Otherwise assume remote
     else: return(RemoteVariable(**kwargs))
+
 

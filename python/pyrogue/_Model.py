@@ -50,6 +50,9 @@ class IntModel(Model):
         self.signed = signed
         self.endianness = endianness
 
+    def clone(self, numBits):
+        return IntModel(numBits, self.signed, self.endianness)
+
     def _toBlock(self, value):
         return value.to_bytes(self.numBytes, self.endianness, signed=self.signed)
 
