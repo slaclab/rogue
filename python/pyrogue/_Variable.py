@@ -53,6 +53,9 @@ class BaseVariable(pr.Node):
         elif isinstance(value, bool):
             self.disp = 'enum'
             self.enum = {False: 'False', True: 'True'}
+
+        if enum is not None:
+            self.disp = 'enum'
             
         self.revEnum = None
         self.valEnum = None
