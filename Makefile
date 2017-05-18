@@ -18,11 +18,14 @@
 # copied, modified, propagated, or distributed except according to the terms 
 # contained in the LICENSE.txt file.
 # ----------------------------------------------------------------------------
-# 
+
+VER_MAJOR := 1
+VER_MINOR := 2
+VER_MAINT := 2
 
 # Variables
 CC       := g++
-DEF      :=
+DEF      := -DVER_MAJOR=$(VER_MAJOR) -DVER_MINOR=$(VER_MINOR) -DVER_MAINT=$(VER_MAINT)
 CFLAGS   := -Wall `python3-config --cflags | sed s/-Wstrict-prototypes//` -fno-strict-aliasing
 CFLAGS   += -I$(BOOST_PATH)/include -I$(PWD)/include -I$(PWD)/drivers/include -std=c++0x -fPIC
 LFLAGS   := `python3-config --ldflags` -lboost_thread -lboost_python3 -lboost_system
@@ -54,12 +57,16 @@ clean:
 	@rm -f $(CPPLIB)
 	@rm -f $(LIB_OBJ)
 
+# Version is special
+$(PWD)/src/rogue/Version.o: $(PWD)/src/rogue/Version.cpp $(PWD)/include/rogue/Version.h Makefile
+	@echo "Compiling $@"; $(CC) -c $(CFLAGS) $(DEF) -o $@ $<
+
 # Compile sources with headers
-%.o: %.cpp %.h
+%.o: %.cpp %.h 
 	@echo "Compiling $@"; $(CC) -c $(CFLAGS) $(DEF) -o $@ $<
 
 # Compile sources without headers
-%.o: %.cpp
+%.o: %.cpp 
 	@echo "Compiling $@"; $(CC) -c $(CFLAGS) $(DEF) -o $@ $<
 
 # Compile Shared Library

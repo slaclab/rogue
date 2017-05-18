@@ -20,6 +20,12 @@
 #include <rogue/Logging.h>
 #include <sys/syscall.h>
 
+const uint32_t rogue::Logging::Critical;
+const uint32_t rogue::Logging::Error;
+const uint32_t rogue::Logging::Warning;
+const uint32_t rogue::Logging::Info;
+const uint32_t rogue::Logging::Debug;
+
 namespace bp = boost::python;
 
 // Logging level
@@ -110,6 +116,11 @@ void rogue::Logging::setup_python() {
    bp::class_<rogue::Logging, rogue::LoggingPtr, boost::noncopyable>("Logging",bp::no_init)
       .def("setLevel", &rogue::Logging::setLevel)
       .staticmethod("setLevel")
+      .def_readonly("Critical", &rogue::Logging::Critical)
+      .def_readonly("Error",    &rogue::Logging::Error)
+      .def_readonly("Warning",  &rogue::Logging::Warning)
+      .def_readonly("Info",     &rogue::Logging::Info)
+      .def_readonly("Debug",    &rogue::Logging::Debug)
    ;
 }
 
