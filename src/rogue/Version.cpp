@@ -57,6 +57,11 @@ bool rogue::Version::lessThan(std::string compare) {
    return(false);
 }
 
+void rogue::Version::minVersion(std::string compare) {
+   if ( lessThan(compare) ) 
+      throw(rogue::GeneralError("Version:extract","Installed rogue is less than minimum version"));
+}
+
 void rogue::Version::setup_python() {
    bp::class_<rogue::Version, boost::noncopyable>("Version",bp::no_init)
       .def("current", &rogue::Version::current)
@@ -65,6 +70,8 @@ void rogue::Version::setup_python() {
       .staticmethod("greaterThanEqual")
       .def("lessThan", &rogue::Version::lessThan)
       .staticmethod("lessThan")
+      .def("minVersion", &rogue::Version::minVersion)
+      .staticmethod("minVersion")
       .def_readonly("Major",&rogue::Version::Major)
       .def_readonly("Minor",&rogue::Version::Minor)
       .def_readonly("Maint",&rogue::Version::Maint)
