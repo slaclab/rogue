@@ -15,7 +15,7 @@
 #-----------------------------------------------------------------------------
 import pyrogue as pr
 import textwrap
-
+import rogue.interfaces.memory
 
 class VariableError(Exception):
     """ Exception for variable access errors."""
