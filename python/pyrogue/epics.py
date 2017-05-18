@@ -147,10 +147,10 @@ class EpicsCaServer(object):
 
                 if self._pvdb[epath]['type'] == 'enum':
                     val = self._pvdb[epath]['enums'][value]
-                    self._root.getNodeByPath(path).setDisp(val)
+                    self._root.getNode(path).setDisp(val)
                 else:
                     val = e['value']
-                    self._root.getNodeByPath(path).set(val)
+                    self._root.getNode(path).set(val)
             except:
                 pass
 

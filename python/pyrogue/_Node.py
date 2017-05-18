@@ -19,6 +19,8 @@ import logging
 import re
 import inspect
 import pyrogue as pr
+#import Pyro4
+import functools as ft
 
 def logInit(cls=None,name=None):
     """Init a logging pbject. Set global options."""
@@ -36,7 +38,6 @@ def logInit(cls=None,name=None):
 class NodeError(Exception):
     """ Exception for node manipulation errors."""
     pass
-
 
 class Node(object):
     """
@@ -174,6 +175,7 @@ class Node(object):
         """
         return self._root
 
+    @ft.lru_cache(maxsize=None)
     def getNode(self, path):
         """Find a node in the tree that has a particular path string"""
         obj = self
@@ -300,23 +302,4 @@ class Node(object):
                 # Set value if variable with enabled mode
                 elif isinstance(self._nodes[key],pr.BaseVariable) and (self._nodes[key].mode in modes):
                     self._nodes[key].set(value,writeEach)
-
-    def _walkPath(self,path):
-        """
-        Return object at given path. Assume we are already at this level
-        and recurse this call to next object at the base of the path
-        Return None if not found. Assume we are looking for nodes.
-        """
-        if '.' in path:
-            base  = path[:path.find('.')]
-            npath = path[path.find('.')+1:]
-
-            if base in self._nodes:
-                return self._nodes[base]._walkPath(npath) 
-            else:
-                return None
-        elif path in self._nodes:
-            return self._nodes[path]
-        else:
-            return None
 

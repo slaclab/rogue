@@ -19,7 +19,7 @@ import threading
 from collections import OrderedDict as odict
 import logging
 import pyrogue as pr
-import functools as ft
+#import Pyro4
 
 class RootLogHandler(logging.Handler):
     """ Class to listen to log entries and add them to syslog variable"""
@@ -34,6 +34,7 @@ class RootLogHandler(logging.Handler):
             self._root.systemLog.set(write=False,value=val)
         self._root.systemLog._updated() # Update outside of lock
 
+#@Pyro4.expose
 class Root(rogue.interfaces.stream.Master,pr.Device):
     """
     Class which serves as the root of a tree of nodes.
@@ -83,6 +84,10 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         self.add(pr.LocalVariable(name='systemLog', value='', mode='RO', hidden=True,
             description='String containing newline seperated system logic entries'))
 
+        self.test = self.name
+
+    def getSelf(self):
+        return self
 
     def stop(self):
         """Stop the polling thread. Must be called for clean exit."""
@@ -143,22 +148,12 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
         if not writeEach: self._write()
 
-    @ft.lru_cache(maxsize=None)
-    def getNodeByPath(self,path):
-        if '.' in path:
-            npath = path[path.find('.')+1:]
-            return self._walkPath(npath)
-        elif path == self.name:
-            return self
-        else:
-            return None
-
     def setOrExecPath(self,path,value):
         """
         Set variable values or execute commands from a path
         Pass the variable or command path and associated value or arg.
         """
-        obj = getNodeByPath(path)
+        obj = self.getNode(path)
 
         # Execute if command
         if isinstance(obj,pr.BaseCommand):
