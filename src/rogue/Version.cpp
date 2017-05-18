@@ -70,6 +70,8 @@ void rogue::Version::setup_python() {
       .staticmethod("greaterThanEqual")
       .def("lessThan", &rogue::Version::lessThan)
       .staticmethod("lessThan")
+      .def("minVersion", &rogue::Version::minVersion)
+      .staticmethod("minVersion")
       .def_readonly("Major",&rogue::Version::Major)
       .def_readonly("Minor",&rogue::Version::Minor)
       .def_readonly("Maint",&rogue::Version::Maint)
