@@ -145,10 +145,22 @@ class BaseVariable(pr.Node):
         elif self.disp == 'enum':
             return self.revEnum[sValue]
         else:
-             return (parse.parse(self.disp, sValue)[0])
+            t = self.nativeType()
+            if t == int:
+                return int(sValue, 0)
+            elif t == float:
+                return float(sValue)
+            elif t == bool:
+                return str.lower(sValue) == "true"
+            else:
+                return str
+            #return (parse.parse(self.disp, sValue)[0])
 
     def setDisp(self, sValue, write=True):
         self.set(self.parseDisp(sValue), write)
+
+    def nativeType(self):
+        return type(self.value())
 
     def _rootAttached(self):
         # Variables are always leaf nodes so no need to recurse
@@ -265,6 +277,14 @@ class RemoteVariable(BaseVariable):
             self._block._updated()
 
         return ret
+
+    def parseDisp(self, sValue):
+        #print("Parsing var {}, value= {}".format(self.name, sValue))
+        if self.disp == 'enum':
+            return self.revEnum[sValue]
+        else:
+            #print(self._base.fromString(sValue))
+            return self._base.fromString(sValue)
 
 
 class LocalVariable(BaseVariable):
@@ -432,7 +452,7 @@ def Variable(local=False, setFunction=None, getFunction=None, **kwargs):
             if base == 'uint':
                 kwargs['disp'] = '{:d}'
             elif base == 'bin':
-                kwargs['disp'] = '{:b}'
+                kwargs['disp'] = '{:#b}'
 #             else:
 #                 kwargs['disp'] = kwargs['base'].defaultdisp     # or None?       
 

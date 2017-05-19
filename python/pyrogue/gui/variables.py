@@ -84,6 +84,7 @@ class VariableLink(QObject):
 
     def returnPressed(self):
         self.guiChanged(self.widget.text())
+        self.emit(SIGNAL("updateGui"), self.variable.valueDisp())
 
     def guiChanged(self, value):
         self.block = True

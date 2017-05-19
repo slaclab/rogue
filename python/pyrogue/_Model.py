@@ -52,7 +52,7 @@ class UInt(object):
 
 #     def clone(self, numBits):
 #         return IntModel(numBits, self.signed, self.endianness)
-    defaultdisp = '{:x}'
+    defaultdisp = '{:#x}'
 
     @staticmethod
     def toBlock(value, bitSize):
@@ -64,7 +64,7 @@ class UInt(object):
 
     @staticmethod
     def fromString(string):
-        i = int(string, 0)
+        return int(string, 0)
 
     @classmethod
     def name(cls, bitSize):
@@ -72,7 +72,7 @@ class UInt(object):
 
 class Int(object):
 
-    defaultdisp = '{:x}'    
+    defaultdisp = '{:#x}'    
 
     @staticmethod
     def toBlock(value, bitSize):

@@ -236,7 +236,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
             self._streamYaml(yml)
 
     @pr.command(order=7, name='writeAll', description='Write all values to the hardware')
-    def _write(self,dev=None,cmd=None,arg=None):
+    def _write(self,dev=None,cmd=None):
         """Write all blocks"""
         self._log.info("Start root write")
         try:
@@ -250,7 +250,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         self._log.info("Done root write")
 
     @pr.command(order=6, name="readAll", description='Read all values from the hardware')
-    def _read(self,dev=None,cmd=None,arg=None):
+    def _read(self,dev=None,cmd=None):
         """Read all blocks"""
         self._log.info("Start root read")
         self._initUpdatedVars()
@@ -284,23 +284,23 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
             self._log.error(e)
 
     @pr.command(order=3, name='softReset', description='Generate a soft reset to each device in the tree')
-    def _softReset(self,dev,cmd,arg):
+    def _softReset(self,dev,cmd):
         """Generate a soft reset on all devices"""
         self._devReset('soft')
 
     @pr.command(order=2, name='hardReset', description='Generate a hard reset to each device in the tree')
-    def _hardReset(self,dev,cmd,arg):
+    def _hardReset(self,dev,cmd):
         """Generate a hard reset on all devices"""
         self._devReset('hard')
-        self._clearLog(dev,cmd,arg)
+        self._clearLog(dev,cmd)
 
     @pr.command(order=4, name='countReset', description='Generate a count reset to each device in the tree')
-    def _countReset(self,dev,cmd,arg):
+    def _countReset(self,dev,cmd):
         """Generate a count reset on all devices"""
         self._devReset('count')
 
     @pr.command(order=5, name='clearLog', description='Clear the message log cntained in the systemLog variable')
-    def _clearLog(self,dev,cmd,arg):
+    def _clearLog(self,dev,cmd):
         """Clear the system log"""
         with self._sysLogLock:
             self.systemLog.set(value='',write=False)
