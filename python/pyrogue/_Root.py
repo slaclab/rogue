@@ -86,25 +86,21 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
         self.test = self.name
 
-    def getSelf(self):
-        return self
-
     def stop(self):
         """Stop the polling thread. Must be called for clean exit."""
         if self._pollQueue:
             self._pollQueue.stop()
 
-    def addVarListener(self,func,form='dual'):
+    def addVarListener(self,func):
         """
         Add a variable update listener function.
-        Form = 'dual,'dict','yaml','list'
-        The passed function depends on form
-            dual: func(yaml,dict)  # Yaml and dictionary formats
-            dict: func(dict)       # Dictionary only
-            yaml: func(yaml)       # Yaml only
-            list: func(list)       # List of updated elements
+        The called function should take the following form:
+            func(yaml, list)
+                yaml = A yaml string containing updated variables and disp values
+                list = A list of variables with the following format for each entry
+                    {'path':path, 'value':rawValue, 'disp': dispValue}
         """
-        self._varListeners.append({'func':func,'form':form})
+        self._varListeners.append(func)
 
     def getYamlStructure(self):
         """Get structure as a yaml string"""
@@ -137,7 +133,6 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         quanitty of variables.
         """
         d = yamlToDict(yml)
-
         self._initUpdatedVars()
 
         for key, value in d.items():
@@ -163,6 +158,30 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         elif isinstance(obj,pr.BaseVariable):
             obj.set(value)
 
+    def get(self,path):
+        obj = self.getNode(path)
+        return obj.get()
+
+    def getDisp(self,path):
+        obj = self.getNode(path)
+        return obj.getDisp()
+
+    def value(self,path):
+        obj = self.getNode(path)
+        return obj.value()
+
+    def valueDisp(self,path):
+        obj = self.getNode(path)
+        return obj.valueDisp()
+
+    def set(self,path,value):
+        obj = self.getNode(path)
+        return obj.set(value)
+
+    def exec(self,path,arg):
+        obj = self.getNode(path)
+        return obj(arg)
+
     def setTimeout(self,timeout):
         """
         Set timeout value on all devices & blocks
@@ -171,13 +190,10 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
             if isinstance(value,pr.Device):
                 value._setTimeout(timeout)
 
-    def _updateVarListeners(self, yml, d, l):
+    def _updateVarListeners(self, yml, l):
         """Send update to listeners"""
         for tar in self._varListeners:
-            if   tar['form'] == 'list': tar['func'](l)
-            elif tar['form'] == 'dual': tar['func'](yml,d)
-            elif tar['form'] == 'dict': tar['func'](d)
-            elif tar['form'] == 'yaml': tar['func'](yml)
+            tar(yml,l)
 
     def _streamYaml(self,yml):
         """
@@ -205,19 +221,18 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
     def _doneUpdatedVars(self):
         """Stream the results of a bulk variable update and update listeners"""
-        yml = ''
-        d   = None
-        l   = []
+        yml = None
+        lst = None
         with self._updatedLock:
             if self._updatedDict:
-                d = self._updatedDict
-                l = self._updatedList
+                d   = self._updatedDict
+                lst = self._updatedList
                 yml = dictToYaml(self._updatedDict,default_flow_style=False)
                 self._updatedDict = None
                 self._updatedList = None
 
-        if d is not None:
-            self._updateVarListeners(yml,d,l)
+        if yml is not None:
+            self._updateVarListeners(yml,lst)
             self._streamYaml(yml)
 
     @pr.command(order=7, name='writeAll', description='Write all values to the hardware')
@@ -291,28 +306,28 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
             self.systemLog.set(value='',write=False)
         self.systemLog._updated()
 
-    def _varUpdated(self,var,value):
-        """ Log updated variables"""
+    def _varUpdated(self,var,value,disp):
         yml = None
-        l   = []
+        lst = None
+        entry = {'path':var.path,'value':value,'disp':disp}
 
         with self._updatedLock:
 
             # Log is active add to log
             if self._updatedDict is not None:
-                addPathToDict(self._updatedDict,var.path,value)
-                self._updatedList.append(var)
+                addPathToDict(self._updatedDict,var.path,disp)
+                self._updatedList.append(entry)
 
             # Otherwise act directly
             else:
-                d = {}
-                l = [var]
-                addPathToDict(d,var.path,value)
+                d   = {}
+                addPathToDict(d,var.path,disp)
                 yml = dictToYaml(d,default_flow_style=False)
+                lst = [entry]
 
         if yml is not None:
+            self._updateVarListeners(yml,lst)
             self._streamYaml(yml)
-            self._updateVarListeners(yml,d,l)
 
 
 def addPathToDict(d, path, value):
@@ -369,11 +384,11 @@ def dictToYaml(data, stream=None, Dumper=yaml.Dumper, **kwds):
     def _dict_representer(dumper, data):
         return dumper.represent_mapping(
             yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG,data.items())
-        OrderedDumper.add_representer(odict, _dict_representer)
+    OrderedDumper.add_representer(odict, _dict_representer)
     try:
         ret = yaml.dump(data, stream, OrderedDumper, **kwds)
     except Exception as e:
-        print("Error: {} dict {}".format(e,data))
+        #print("Error: {} dict {}".format(e,data))
         return None
     return ret
 

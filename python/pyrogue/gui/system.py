@@ -128,27 +128,27 @@ class DataLink(QObject):
         self.writer.autoName()
         pass
 
-    def newValue(self,var,value):
+    def newValue(self,var,value,disp):
 
         if self.block: return
 
         if var.name == 'dataFile':
-            self.emit(SIGNAL("updateDataFile"),var.valueDisp())
+            self.emit(SIGNAL("updateDataFile"),disp)
 
         elif var.name == 'open':
-            self.emit(SIGNAL("updateOpenState"),self.openState.findText(var.valueDisp()))
+            self.emit(SIGNAL("updateOpenState"),self.openState.findText(disp))
 
         elif var.name == 'bufferSize':
-            self.emit(SIGNAL("updateBufferSize"),var.valueDisp())
+            self.emit(SIGNAL("updateBufferSize"),disp)
 
         elif var.name == 'maxFileSize':
-            self.emit(SIGNAL("updateMaxSize"),var.valueDisp())
+            self.emit(SIGNAL("updateMaxSize"),disp)
 
         elif var.name == 'fileSize':
-            self.emit(SIGNAL("updateFileSize"),var.valueDisp())
+            self.emit(SIGNAL("updateFileSize"),disp)
 
         elif var.name == 'frameCount':
-            self.emit(SIGNAL("updateFrameCount"),var.valueDisp())
+            self.emit(SIGNAL("updateFrameCount"),disp)
 
     def dataFileChanged(self):
         self.block = True
@@ -233,17 +233,17 @@ class ControlLink(QObject):
 
         fl.addRow('Run Count:',self.runCount)
 
-    def newValue(self,var,value):
+    def newValue(self,var,value,disp):
         if self.block: return
 
         if var.name == 'runState':
-            self.emit(SIGNAL("updateState"),self.runState.findText(var.valueDisp()))
+            self.emit(SIGNAL("updateState"),self.runState.findText(disp))
 
         elif var.name == 'runRate':
-            self.emit(SIGNAL("updateRate"),self.runRate.findText(var.valueDisp()))
+            self.emit(SIGNAL("updateRate"),self.runRate.findText(disp))
 
         elif var.name == 'runCount':
-            self.emit(SIGNAL("updateCount"),var.valueDisp())
+            self.emit(SIGNAL("updateCount"),disp)
 
     def runStateChanged(self,value):
         self.block = True
@@ -338,9 +338,9 @@ class SystemWidget(QWidget):
     def resetLog(self):
         self.root.clearLog()
 
-    def newValue(self,var,value):
+    def newValue(self,var,value,disp):
         if var.name == 'systemLog':
-            self.emit(SIGNAL("updateLog"),value)
+            self.emit(SIGNAL("updateLog"),disp)
 
     def hardReset(self):
         self.root.hardReset()

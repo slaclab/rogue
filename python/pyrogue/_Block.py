@@ -173,9 +173,6 @@ class BaseBlock(object):
             self._doUpdate = (type == rogue.interfaces.memory.Read)
 
     def _checkTransaction(self,update):
-        if update: self._updated()
-
-    def _checkTransaction(self,update):
         """
         Check status of block.
         If update=True notify variables if read

@@ -188,14 +188,13 @@ class MeshNode(threading.Thread):
     def _setFunction(self,dev,var,value):
         if not self._ready: return
         #print("Variable set {} = {}".format(var.name,value));
-        var._scratch = value
         d = {}
-        pyrogue.addPathToDict(d,var.path,value)
+        pyrogue.addPathToDict(d,var.path,var.genDisp(value))
         name = var.path[:var.path.find('.')]
         yml = pyrogue.dictToYaml(d,default_flow_style=False)
         self._intWhisper(self._servers[name].uuid,'variable_set',yml)
 
     # Variable field updated on server
-    def _variableStatus(self,yml,d):
+    def _variableStatus(self,yml,l):
         self._intShout('variable_status',yml)
 

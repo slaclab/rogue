@@ -118,28 +118,31 @@ class BaseVariable(pr.Node):
     def value(self):
         return self.get(read=False)
 
-    def linkUpdated(self, var, value):
+    def linkUpdated(self, var, value, disp):
         self._updated()
 
-    def getDisp(self, read=True):
-        #print('{}.getDisp(read={}) disp={} value={}'.format(self.path, read, self.disp, self.value()))
+    def genDisp(self, value):
+        #print('{}.genDisp(read={}) disp={} value={}'.format(self.path, read, self.disp, value))
         if self.disp == 'enum':
             #print('enum: {}'.format(self.enum))
             #print('get: {}'.format(self.get(read)))
-            return self.enum[self.get(read)]
+            return self.enum[value]
         else:
-            v = self.get(read)
-            #print("Format called {} for '{}'".format(self.name,v))
-            if v == '' or v is None:
-                return v
+            if value == '' or value is None:
+                return value
             else:
-                return self.disp.format(v)
+                return self.disp.format(value)
+
+    def getDisp(self, read=True):
+        return(self.genDisp(self.get(read)))
 
     def valueDisp(self, read=True):
         return self.getDisp(read=False)
 
     def parseDisp(self, sValue):
-        if self.disp == 'enum':
+        if sValue is '':
+            return ''
+        elif self.disp == 'enum':
             return self.revEnum[sValue]
         else:
              return (parse.parse(self.disp, sValue)[0])
@@ -158,12 +161,13 @@ class BaseVariable(pr.Node):
     def _updated(self):
         """Variable has been updated. Inform listeners."""
         value = self.value()
+        disp  = self.valueDisp()
 
         for func in self.__listeners:
-            func(self, value)
+            func(self,value,disp)
 
         # Root variable update log
-        self._root._varUpdated(self,value)
+        self._root._varUpdated(self,value,disp)
 
     def __set__(self, value):
         self.set(value, write=True)

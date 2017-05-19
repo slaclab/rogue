@@ -68,20 +68,19 @@ class VariableLink(QObject):
 
         item.treeWidget().setItemWidget(item,3,self.widget)
         variable.addListener(self.newValue)
-        
-        if isinstance(self.widget, QComboBox):
-            self.newValue(None,self.widget.findText(variable.valueDisp()))
-        else:
-            self.newValue(None,variable.valueDisp())
-            
-    def newValue(self, var, value):
+       
+        self.newValue(None,variable.value(),variable.valueDisp())
+
+    def newValue(self, var, value, disp):
         #print('{} newValue ( {} {} )'.format(self.variable, type(value), value))
         if self.block: return
 
         if isinstance(self.widget, QComboBox):
-            self.emit(SIGNAL("updateGui"), self.widget.findText(self.variable.valueDisp()))
+            self.emit(SIGNAL("updateGui"), self.widget.findText(disp))
+        elif isinstance(self.widget, QComboBox):
+            self.emit(SIGNAL("updateGui"), value)
         else:
-            self.emit(SIGNAL("updateGui"), self.variable.valueDisp())
+            self.emit(SIGNAL("updateGui"), disp)
 
     def returnPressed(self):
         self.guiChanged(self.widget.text())
