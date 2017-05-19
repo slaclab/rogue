@@ -41,6 +41,7 @@ class MeshNode(threading.Thread):
         self._servers = {}
         self._newTree = None
         self._thread  = None
+        self._ready   = False
         self._log = pyrogue.logInit(self,self._name)
 
         self._mesh = pyre.Pyre(name=self._name,interface=iface)
@@ -124,6 +125,7 @@ class MeshNode(threading.Thread):
                         self._noMsg = True
                         t.setOrExecYaml(msg2,False,['RW','RO'])
                         self._noMsg = False
+                        self._ready = True
 
                     # Structure request from client to server
                     elif cmd == 'get_structure':
@@ -140,7 +142,7 @@ class MeshNode(threading.Thread):
                             msg  = m['msg']
 
                             # Field update from server to client
-                            if cmd == 'variable_status':
+                            if cmd == 'variable_status' and self._ready:
                                 self._noMsg = True
                                 for key,value in self._servers.items():
                                     value.setOrExecYaml(msg,False,['RW','RO'])
@@ -174,7 +176,8 @@ class MeshNode(threading.Thread):
 
     # Command button pressed on client
     def _cmdFunction(self,dev,cmd,arg):
-        print("Command pressed {}".format(cmd.name));
+        if not self._ready: return
+        #print("Command pressed {}".format(cmd.name));
         d = {}
         pyrogue.addPathToDict(d,cmd.path,arg)
         name = cmd.path[:cmd.path.find('.')]
@@ -183,7 +186,8 @@ class MeshNode(threading.Thread):
 
     # Variable field updated on client
     def _setFunction(self,dev,var,value):
-        print("Variable set {} = {}".format(var.name,value));
+        if not self._ready: return
+        #print("Variable set {} = {}".format(var.name,value));
         var._scratch = value
         d = {}
         pyrogue.addPathToDict(d,var.path,value)

@@ -278,22 +278,31 @@ class DataWriter(Device):
         else:
             base = self.dataFile.value()[:idx+1]
 
-        self.dataFile = base + datetime.datetime.now().strftime("%Y%m%d_%H%M%S.dat")
-
+        self.dataFile.set(base + datetime.datetime.now().strftime("%Y%m%d_%H%M%S.dat")) 
 
 class RunControl(Device):
     """Special base class to control runs. TODO: Update comments."""
 
-    def __init__(self, name, description='', hidden=True, **dump):
+    def __init__(self, name, description='', hidden=True, rates=None, states=None, **dump):
         """Initialize device class"""
+
+        if rates is None:
+            rates={1:'1 Hz', 10:'10 Hz'},
+
+        if states is None:
+            states={0:'Stopped', 1:'Running'}
 
         Device.__init__(self, name=name, description=description,
                         size=0, memBase=None, offset=0, hidden=hidden)
 
-        self.add(pr.LocalVariable(name='runState', value=0, mode='RW', enum={0:'Stopped', 1:'Running'},
+        value = [k for k,v in states.items()][0]
+
+        self.add(pr.LocalVariable(name='runState', value=value, mode='RW', enum=states,
             setFunction=self._setRunState, description='Run state of the system.'))
 
-        self.add(pr.LocalVariable(name='runRate', value=0, mode='RW', enum={1:'1 Hz', 10:'10 Hz'},
+        value = [k for k,v in rates.items()][0]
+
+        self.add(pr.LocalVariable(name='runRate', value=value, mode='RW', enum=rates,
             setFunction=self._setRunRate, description='Run rate of the system.'))
 
         self.add(pr.LocalVariable(name='runCount', value=0, mode='RO', pollInterval=1,

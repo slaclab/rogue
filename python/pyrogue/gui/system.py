@@ -44,7 +44,7 @@ class DataLink(QObject):
 
         self.writer.dataFile.addListener(self.newValue)
         self.dataFile = QLineEdit()
-        self.dataFile.setText(self.writer.dataFile._rawGet())
+        self.dataFile.setText(self.writer.dataFile.valueDisp())
         self.dataFile.returnPressed.connect(self.dataFileChanged)
         self.connect(self,SIGNAL('updateDataFile'),self.dataFile.setText)
 
@@ -71,7 +71,7 @@ class DataLink(QObject):
 
         self.writer.bufferSize.addListener(self.newValue)
         self.bufferSize = QLineEdit()
-        self.bufferSize.setText(str(self.writer.bufferSize._rawGet()))
+        self.bufferSize.setText(self.writer.bufferSize.valueDisp())
         self.bufferSize.returnPressed.connect(self.bufferSizeChanged)
         self.connect(self,SIGNAL('updateBufferSize'),self.bufferSize.setText)
 
@@ -79,7 +79,7 @@ class DataLink(QObject):
 
         self.writer.fileSize.addListener(self.newValue)
         self.totSize = QLineEdit()
-        self.totSize.setText(str(self.writer.fileSize._rawGet()))
+        self.totSize.setText(self.writer.fileSize.valueDisp())
         self.totSize.setReadOnly(True)
         self.connect(self,SIGNAL('updateFileSize'),self.totSize.setText)
 
@@ -100,7 +100,7 @@ class DataLink(QObject):
 
         self.writer.maxFileSize.addListener(self.newValue)
         self.maxSize = QLineEdit()
-        self.maxSize.setText(str(self.writer.maxFileSize._rawGet()))
+        self.maxSize.setText(self.writer.maxFileSize.valueDisp())
         self.maxSize.returnPressed.connect(self.maxSizeChanged)
         self.connect(self,SIGNAL('updateMaxSize'),self.maxSize.setText)
 
@@ -108,7 +108,7 @@ class DataLink(QObject):
 
         self.writer.frameCount.addListener(self.newValue)
         self.frameCount = QLineEdit()
-        self.frameCount.setText(str(self.writer.frameCount._rawGet()))
+        self.frameCount.setText(self.writer.frameCount.valueDisp())
         self.frameCount.setReadOnly(True)
         self.connect(self,SIGNAL('updateFrameCount'),self.frameCount.setText)
 
@@ -121,7 +121,7 @@ class DataLink(QObject):
 
         if dlg.exec_():
            dataFile = str(dlg.selectedFiles()[0])
-           self.writer.dataFile.set(dataFile)
+           self.writer.dataFile.setDisp(dataFile)
         pass
     
     def _genName(self):
@@ -133,41 +133,41 @@ class DataLink(QObject):
         if self.block: return
 
         if var.name == 'dataFile':
-            self.emit(SIGNAL("updateDataFile"),str(value))
+            self.emit(SIGNAL("updateDataFile"),var.valueDisp())
 
         elif var.name == 'open':
-            self.emit(SIGNAL("updateOpenState"),self.openState.findText(str(value)))
+            self.emit(SIGNAL("updateOpenState"),self.openState.findText(var.valueDisp()))
 
         elif var.name == 'bufferSize':
-            self.emit(SIGNAL("updateBufferSize"),str(value))
+            self.emit(SIGNAL("updateBufferSize"),var.valueDisp())
 
         elif var.name == 'maxFileSize':
-            self.emit(SIGNAL("updateMaxSize"),str(value))
+            self.emit(SIGNAL("updateMaxSize"),var.valueDisp())
 
         elif var.name == 'fileSize':
-            self.emit(SIGNAL("updateFileSize"),str(value))
+            self.emit(SIGNAL("updateFileSize"),var.valueDisp())
 
         elif var.name == 'frameCount':
-            self.emit(SIGNAL("updateFrameCount"),str(value))
+            self.emit(SIGNAL("updateFrameCount"),var.valueDisp())
 
     def dataFileChanged(self):
         self.block = True
-        self.writer.dataFile.set(str(self.dataFile.text()))
+        self.writer.dataFile.setDisp(self.dataFile.text())
         self.block = False
 
     def openStateChanged(self,value):
         self.block = True
-        self.writer.open.set(self.openState.itemText(value) == 'True')
+        self.writer.open.setDisp(self.openState.itemText(value))
         self.block = False
 
     def bufferSizeChanged(self):
         self.block = True
-        self.writer.bufferSize.set(int(str(self.bufferSize.text())))
+        self.writer.bufferSize.setDisp(self.bufferSize.text())
         self.block = False
 
     def maxSizeChanged(self):
         self.block = True
-        self.writer.maxFileSize.set(int(str(self.maxSize.text())))
+        self.writer.maxFileSize.setDisp(self.maxSize.text())
         self.block = False
 
 
@@ -196,7 +196,7 @@ class ControlLink(QObject):
         self.connect(self,SIGNAL('updateRate'),self.runRate.setCurrentIndex)
         for key in sorted(self.control.runRate.enum):
             self.runRate.addItem(self.control.runRate.enum[key])
-        self.runRate.setCurrentIndex(self.runRate.findText(str(self.control.runRate._rawGet())))
+        self.runRate.setCurrentIndex(self.runRate.findText(self.control.runRate.valueDisp()))
 
         fl.addRow('Run Rate:',self.runRate)
 
@@ -215,7 +215,7 @@ class ControlLink(QObject):
         self.connect(self,SIGNAL('updateState'),self.runState.setCurrentIndex)
         for key in sorted(self.control.runState.enum):
             self.runState.addItem(self.control.runState.enum[key])
-        self.runState.setCurrentIndex(self.runState.findText(str(self.control.runState._rawGet())))
+        self.runState.setCurrentIndex(self.runState.findText(self.control.runState.valueDisp()))
 
         fl.addRow('Run State:',self.runState)
 
@@ -227,7 +227,7 @@ class ControlLink(QObject):
 
         self.control.runCount.addListener(self.newValue)
         self.runCount = QLineEdit()
-        self.runCount.setText(str(self.control.runCount._rawGet()))
+        self.runCount.setText(self.control.runCount.valueDisp())
         self.runCount.setReadOnly(True)
         self.connect(self,SIGNAL('updateCount'),self.runCount.setText)
 
@@ -237,22 +237,22 @@ class ControlLink(QObject):
         if self.block: return
 
         if var.name == 'runState':
-            self.emit(SIGNAL("updateState"),self.runState.findText(str(value)))
+            self.emit(SIGNAL("updateState"),self.runState.findText(var.valueDisp()))
 
         elif var.name == 'runRate':
-            self.emit(SIGNAL("updateRate"),self.runRate.findText(str(value)))
+            self.emit(SIGNAL("updateRate"),self.runRate.findText(var.valueDisp()))
 
         elif var.name == 'runCount':
-            self.emit(SIGNAL("updateCount"),str(value))
+            self.emit(SIGNAL("updateCount"),var.valueDisp())
 
     def runStateChanged(self,value):
         self.block = True
-        self.control.runState.set(str(self.runState.itemText(value)))
+        self.control.runState.setDisp(self.runState.itemText(value))
         self.block = False
 
     def runRateChanged(self,value):
         self.block = True
-        self.control.runRate.set(str(self.runRate.itemText(value)))
+        self.control.runRate.setDisp(self.runRate.itemText(value))
         self.block = False
 
 
@@ -305,14 +305,14 @@ class SystemWidget(QWidget):
         # Data Controllers
         ###################
         for key,val in root.devices.items():
-            if val.classType=='DataWriter':
+            if 'DataWriter' in val.classList:
                 self.holders.append(DataLink(tl,val))
 
         ###################
         # Run Controllers
         ###################
         for key,val in root.devices.items():
-            if val.classType=='RunControl':
+            if 'RunControl' in val.classList:
                 self.holders.append(ControlLink(tl,val))
 
         ###################

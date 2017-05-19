@@ -56,7 +56,9 @@ class BaseVariable(pr.Node):
 
         if enum is not None:
             self.disp = 'enum'
-            
+            if not self._default in enum:
+                self._default = [k for k,v in enum.items()][0]
+
         self.revEnum = None
         self.valEnum = None
         if self.enum is not None:
@@ -73,14 +75,6 @@ class BaseVariable(pr.Node):
 
         # Call super constructor
         pr.Node.__init__(self, name=name, description=description, hidden=hidden, parent=parent)
-
-    def updateEnum(self,enum):
-        self.revEnum = None
-        self.valEnum = None
-        self.enum = enum
-        if self.enum is not None:
-            self.revEnum = {v:k for k,v in self.enum.items()}
-            self.valEnum = [v for k,v in self.enum.items()]
 
     def addDependency(self, dep):
         self.__dependencies.append(dep)
@@ -134,7 +128,12 @@ class BaseVariable(pr.Node):
             #print('get: {}'.format(self.get(read)))
             return self.enum[self.get(read)]
         else:
-            return self.disp.format(self.get(read))
+            v = self.get(read)
+            #print("Format called {} for '{}'".format(self.name,v))
+            if v == '' or v is None:
+                return v
+            else:
+                return self.disp.format(v)
 
     def valueDisp(self, read=True):
         return self.getDisp(read=False)
@@ -278,7 +277,7 @@ class LocalVariable(BaseVariable):
         self._pollInterval = pollInterval
         self._block = pr.LocalBlock(self,localSet,localGet,self._default)
 
-        if value is None:
+        if self._default is None:
             self.typeStr = 'Unknown'
         else:
             self.typeStr = value.__class__.__name__
