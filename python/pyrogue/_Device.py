@@ -49,10 +49,12 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
         # Convenience methods
         self.addDevice = ft.partial(self.addNode, pr.Device)
         self.addDevices = ft.partial(self.addNodes, pr.Device)
-        self.addVariable = ft.partial(self.addNode, pr.Variable)
-        self.addVariables = ft.partial(self.addNodes, pr.Variable)
-        self.addCommand = ft.partial(self.addNode, pr.Command)
-        self.addCommands = ft.partial(self.addNodes, pr.Command)
+        self.addVariable = ft.partial(self.addNode, pr.Variable) # Legacy
+        self.addVariables = ft.partial(self.addNodes, pr.Variable) # Legacy
+        self.addRemoteVariables = ft.partial(self.addNodes, pr.RemoteVariable)
+        self.addCommand = ft.partial(self.addNode, pr.Command) # Legacy
+        self.addCommands = ft.partial(self.addNodes, pr.Command) # Legacy
+        self.addRemoteCommands = ft.partial(self.addNodes, pr.RemoteCommand)
 
         # Variable interface to enable flag
         self.add(pr.LocalVariable(name='enable', mode='RW', value=enabled,
