@@ -157,7 +157,10 @@ class BaseVariable(pr.Node):
             #return (parse.parse(self.disp, sValue)[0])
 
     def setDisp(self, sValue, write=True):
-        self.set(self.parseDisp(sValue), write)
+        if isinstance(sValue, self.nativeType()):
+            self.set(sValue, write)
+        else:
+            self.set(self.parseDisp(sValue), write)
 
     def nativeType(self):
         return type(self.value())
