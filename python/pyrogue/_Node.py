@@ -39,6 +39,7 @@ class NodeError(Exception):
     """ Exception for node manipulation errors."""
     pass
 
+#@Pyro4.expose
 class Node(object):
     """
     Class which serves as a managed obect within the pyrogue package. 
@@ -276,7 +277,7 @@ class Node(object):
             if isinstance(value,pr.Device):
                 data[key] = value._getVariables(modes)
             elif isinstance(value,pr.BaseVariable) and (value.mode in modes):
-                data[key] = value.value()
+                data[key] = value.valueDisp()
 
         return data
 
@@ -302,5 +303,5 @@ class Node(object):
 
                 # Set value if variable with enabled mode
                 elif isinstance(self._nodes[key],pr.BaseVariable) and (self._nodes[key].mode in modes):
-                    self._nodes[key].set(value,writeEach)
+                    self._nodes[key].setDisp(value,writeEach)
 
