@@ -287,7 +287,7 @@ class RunControl(Device):
         """Initialize device class"""
 
         if rates is None:
-            rates={1:'1 Hz', 10:'10 Hz'},
+            rates={1:'1 Hz', 10:'10 Hz'}
 
         if states is None:
             states={0:'Stopped', 1:'Running'}
