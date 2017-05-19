@@ -40,8 +40,20 @@ class CommandLink(QObject):
         item.treeWidget().setItemWidget(item,2,pb)
         pb.clicked.connect(self.execPressed)
 
-        if hasattr(command, '_base') and command._base != 'None':
-            self.widget = QLineEdit()
+        if command.arg:
+            if command.disp == 'enum' and command.enum is not None:
+                self.widget = QComboBox()
+                for i in command.enum:
+                    self.widget.addItem(command.enum[i])
+
+            elif command.disp == 'range':
+                self.widget = QSpinBox();
+                self.widget.setMinimum(command.minimum)
+                self.widget.setMaximum(command.maximum)
+
+            else:
+                self.widget = QLineEdit()
+            
             item.treeWidget().setItemWidget(item,3,self.widget)
         else:
             self.widget = None
@@ -52,7 +64,7 @@ class CommandLink(QObject):
         else:
             value=None
 
-        if self.command._base is not None:
+        if self.command.arg:
             try:
                 self.command(self.command.parseDisp(value))
             except Exception:
