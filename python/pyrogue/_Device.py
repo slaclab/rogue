@@ -58,7 +58,7 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
 
         # Variable interface to enable flag
         self.add(pr.LocalVariable(name='enable', mode='RW', value=enabled,
-                          setFunction=self._setEnable, getFunction=self._getEnable,
+                          localSet=self._setEnable, localGet=self._getEnable,
                           description='Determines if device is enabled for hardware access'))
 
         if variables is not None and isinstance(variables, collections.Iterable):
@@ -132,10 +132,10 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
         pass
 
     def _getEnable(self, dev, var):
-        if var.value() is False:
+        if var._block._value is False:
             return False
         if dev == dev._root:
-            return dev.enable.value()
+            return dev.enable._block._value
         else:
             return dev._parent.enable.value()
 
