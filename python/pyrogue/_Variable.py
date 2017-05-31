@@ -17,12 +17,13 @@ import pyrogue as pr
 import textwrap
 import rogue.interfaces.memory
 import parse
+import Pyro4
 
 class VariableError(Exception):
     """ Exception for variable access errors."""
     pass
 
-
+@Pyro4.expose
 class BaseVariable(pr.Node):
 
     def __init__(self, name=None, description="", parent=None, 
@@ -186,6 +187,9 @@ class BaseVariable(pr.Node):
         disp  = self.valueDisp()
 
         for func in self.__listeners:
+            if isinstance(func,Pyro4.Proxy):
+                func.varListener(self,value,disp)
+            else:
             func(self,value,disp)
 
         # Root variable update log
@@ -198,6 +202,7 @@ class BaseVariable(pr.Node):
         self.get(read=True)
 
 
+@Pyro4.expose
 class RemoteVariable(BaseVariable):
 
     def __init__(self, name=None, description="", parent=None, 
@@ -297,6 +302,7 @@ class RemoteVariable(BaseVariable):
             return self._base.fromString(sValue)
 
 
+@Pyro4.expose
 class LocalVariable(BaseVariable):
 
     def __init__(self, name=None, description="", parent=None, 
@@ -334,7 +340,8 @@ class LocalVariable(BaseVariable):
 
         if read: self._block._updated()
         return ret
-    
+
+@Pyro4.expose
 class LinkVariable(BaseVariable):
 
     def __init__(self, name=None, description="", parent=None, 

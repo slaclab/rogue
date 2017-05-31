@@ -22,7 +22,9 @@ from PyQt4.QtCore   import *
 from PyQt4.QtGui    import *
 
 import pyrogue
+import Pyro4
 
+@Pyro4.expose
 class DataLink(QObject):
 
     def __init__(self,layout,writer):
@@ -42,7 +44,7 @@ class DataLink(QObject):
         fl.setLabelAlignment(Qt.AlignRight)
         vb.addLayout(fl)
 
-        self.writer.dataFile.addListener(self.newValue)
+        self.writer.dataFile.addListener(self.varListener)
         self.dataFile = QLineEdit()
         self.dataFile.setText(self.writer.dataFile.valueDisp())
         self.dataFile.returnPressed.connect(self.dataFileChanged)
@@ -59,7 +61,7 @@ class DataLink(QObject):
         fl.setLabelAlignment(Qt.AlignRight)
         hb.addLayout(fl)
 
-        self.writer.open.addListener(self.newValue)
+        self.writer.open.addListener(self.varListener)
         self.openState = QComboBox()
         self.openState.addItem('False')
         self.openState.addItem('True')
@@ -69,7 +71,7 @@ class DataLink(QObject):
 
         fl.addRow('File Open:',self.openState)
 
-        self.writer.bufferSize.addListener(self.newValue)
+        self.writer.bufferSize.addListener(self.varListener)
         self.bufferSize = QLineEdit()
         self.bufferSize.setText(self.writer.bufferSize.valueDisp())
         self.bufferSize.returnPressed.connect(self.bufferSizeChanged)
@@ -77,7 +79,7 @@ class DataLink(QObject):
 
         fl.addRow('Buffer Size:',self.bufferSize)
 
-        self.writer.fileSize.addListener(self.newValue)
+        self.writer.fileSize.addListener(self.varListener)
         self.totSize = QLineEdit()
         self.totSize.setText(self.writer.fileSize.valueDisp())
         self.totSize.setReadOnly(True)
@@ -98,7 +100,7 @@ class DataLink(QObject):
         pb2.clicked.connect(self._genName)
         fl.addRow(pb1,pb2)
 
-        self.writer.maxFileSize.addListener(self.newValue)
+        self.writer.maxFileSize.addListener(self.varListener)
         self.maxSize = QLineEdit()
         self.maxSize.setText(self.writer.maxFileSize.valueDisp())
         self.maxSize.returnPressed.connect(self.maxSizeChanged)
@@ -106,7 +108,7 @@ class DataLink(QObject):
 
         fl.addRow('Max Size:',self.maxSize)
 
-        self.writer.frameCount.addListener(self.newValue)
+        self.writer.frameCount.addListener(self.varListener)
         self.frameCount = QLineEdit()
         self.frameCount.setText(self.writer.frameCount.valueDisp())
         self.frameCount.setReadOnly(True)
@@ -128,7 +130,7 @@ class DataLink(QObject):
         self.writer.autoName()
         pass
 
-    def newValue(self,var,value,disp):
+    def varListener(self,var,value,disp):
 
         if self.block: return
 
@@ -171,6 +173,7 @@ class DataLink(QObject):
         self.block = False
 
 
+@Pyro4.expose
 class ControlLink(QObject):
 
     def __init__(self,layout,control):
@@ -190,7 +193,7 @@ class ControlLink(QObject):
         fl.setLabelAlignment(Qt.AlignRight)
         vb.addLayout(fl)
 
-        self.control.runRate.addListener(self.newValue)
+        self.control.runRate.addListener(self.varListener)
         self.runRate = QComboBox()
         self.runRate.activated.connect(self.runRateChanged)
         self.connect(self,SIGNAL('updateRate'),self.runRate.setCurrentIndex)
@@ -209,7 +212,7 @@ class ControlLink(QObject):
         fl.setLabelAlignment(Qt.AlignRight)
         hb.addLayout(fl)
 
-        self.control.runState.addListener(self.newValue)
+        self.control.runState.addListener(self.varListener)
         self.runState = QComboBox()
         self.runState.activated.connect(self.runStateChanged)
         self.connect(self,SIGNAL('updateState'),self.runState.setCurrentIndex)
@@ -225,7 +228,7 @@ class ControlLink(QObject):
         fl.setLabelAlignment(Qt.AlignRight)
         hb.addLayout(fl)
 
-        self.control.runCount.addListener(self.newValue)
+        self.control.runCount.addListener(self.varListener)
         self.runCount = QLineEdit()
         self.runCount.setText(self.control.runCount.valueDisp())
         self.runCount.setReadOnly(True)
@@ -233,7 +236,7 @@ class ControlLink(QObject):
 
         fl.addRow('Run Count:',self.runCount)
 
-    def newValue(self,var,value,disp):
+    def varListener(self,var,value,disp):
         if self.block: return
 
         if var.name == 'runState':
@@ -256,6 +259,7 @@ class ControlLink(QObject):
         self.block = False
 
 
+@Pyro4.expose
 class SystemWidget(QWidget):
     def __init__(self, root, parent=None):
         super(SystemWidget, self).__init__(parent)
@@ -328,7 +332,7 @@ class SystemWidget(QWidget):
         self.systemLog.setReadOnly(True)
         vb.addWidget(self.systemLog)
 
-        root.systemLog.addListener(self.newValue)
+        root.systemLog.addListener(self.varListener)
         self.connect(self,SIGNAL('updateLog'),self.systemLog.setText)
         
         pb = QPushButton('Clear Log')
@@ -338,7 +342,7 @@ class SystemWidget(QWidget):
     def resetLog(self):
         self.root.clearLog()
 
-    def newValue(self,var,value,disp):
+    def varListener(self,var,value,disp):
         if var.name == 'systemLog':
             self.emit(SIGNAL("updateLog"),disp)
 

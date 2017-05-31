@@ -19,7 +19,7 @@ import threading
 from collections import OrderedDict as odict
 import logging
 import pyrogue as pr
-#import Pyro4
+import Pyro4
 
 class RootLogHandler(logging.Handler):
     """ Class to listen to log entries and add them to syslog variable"""
@@ -34,7 +34,7 @@ class RootLogHandler(logging.Handler):
             self._root.systemLog.set(write=False,value=val)
         self._root.systemLog._updated() # Update outside of lock
 
-#@Pyro4.expose
+@Pyro4.expose
 class Root(rogue.interfaces.stream.Master,pr.Device):
     """
     Class which serves as the root of a tree of nodes.
@@ -156,7 +156,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
         # Set value if variable with enabled mode
         elif isinstance(obj,pr.BaseVariable):
-            obj.set(value)
+            obj.setDisp(value)
 
     def get(self,path):
         obj = self.getNode(path)
@@ -178,6 +178,10 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         obj = self.getNode(path)
         return obj.set(value)
 
+    def setDisp(self,path,value):
+        obj = self.getNode(path)
+        return obj.setDisp(value)
+
     def exec(self,path,arg):
         obj = self.getNode(path)
         return obj(arg)
@@ -193,7 +197,10 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
     def _updateVarListeners(self, yml, l):
         """Send update to listeners"""
         for tar in self._varListeners:
-            tar(yml,l)
+            if isinstance(tar,Pyro4.Proxy):
+                tar.rootListener(yml,l)
+            else:
+                tar(yml,l)
 
     def _streamYaml(self,yml):
         """

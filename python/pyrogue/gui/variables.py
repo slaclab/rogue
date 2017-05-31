@@ -23,8 +23,9 @@ from PyQt4.QtGui    import *
 
 #import parse
 import pyrogue
+import Pyro4
 
-
+@Pyro4.expose
 class VariableLink(QObject):
     """Bridge between the pyrogue tree and the display element"""
 
@@ -67,17 +68,17 @@ class VariableLink(QObject):
             self.widget.setReadOnly(True)
 
         item.treeWidget().setItemWidget(item,3,self.widget)
-        variable.addListener(self.newValue)
+        variable.addListener(self.varListener)
        
-        self.newValue(None,variable.value(),variable.valueDisp())
+        self.varListener(None,variable.value(),variable.valueDisp())
 
-    def newValue(self, var, value, disp):
-        #print('{} newValue ( {} {} )'.format(self.variable, type(value), value))
+    def varListener(self, var, value, disp):
+        #print('{} varListener ( {} {} )'.format(self.variable, type(value), value))
 
 
         if isinstance(self.widget, QComboBox):
             if self.widget.currentIndex() != self.widget.findText(disp):
-                self.emit(SIGNAL("updateGui"), self.widget.findText(disp))
+            self.emit(SIGNAL("updateGui"), self.widget.findText(disp))
         elif isinstance(self.widget, QSpinBox):
             if self.block: return                        
             self.emit(SIGNAL("updateGui"), value)

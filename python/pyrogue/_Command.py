@@ -18,7 +18,9 @@ import time
 from collections import OrderedDict as odict
 import pyrogue as pr
 import inspect
+import Pyro4
 
+@Pyro4.expose
 class BaseCommand(pr.Node):
 
     def __init__(self, name=None, arg=False, description="", hidden=False, parent=None, function=None):
@@ -87,12 +89,14 @@ class BaseCommand(pr.Node):
             cmd.post(1)
 
 
+@Pyro4.expose
 class LocalCommand(BaseCommand,pr.LocalVariable):
     def __init__(self, name=None, mode=None, description="", hidden=False, parent=None, function=None, **kwargs):
         BaseCommand.__init__(self,name=name, description=description, hidden=hidden, parent=None, function=function)
         pr.LocalVariable.__init__(self, name=name, description=description, hidden=hidden, parent=None, mode='CMD', **kwargs)
 
 
+@Pyro4.expose
 class RemoteCommand(BaseCommand, pr.RemoteVariable):
     def __init__(self, name=None, mode=None, description="", hidden=False, parent=None, function=None, **kwargs):
         BaseCommand.__init__(self,name=name, description=description, hidden=hidden, parent=None, function=function)
