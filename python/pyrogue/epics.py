@@ -57,9 +57,6 @@ class EpicsCaServer(object):
         self._pvdb    = {}
         self._log     = pyrogue.logInit(self)
 
-        if self._root:
-            self._root.addVarListener(self._variableStatus)
-
     def stop(self):
         self._runEn = False
         self._wThread.join()
@@ -99,6 +96,9 @@ class EpicsCaServer(object):
                 d['type'] = 'int'
             
         name = node.path.replace('.',':')
+
+        node.addListener(self._variableUpdated)
+
         self._log.info("Adding epics variable {} type {}".format(name,d['type']))
         self._pvdb[name] = d
 
@@ -154,19 +154,17 @@ class EpicsCaServer(object):
             except:
                 pass
 
-    # Variable field updated on server
-    def _variableStatus(self,yml,l):
-        if not self._driver: return
+    # Variable was updated
+    def _variableUpdated(self,var,value,disp):
+        if self._driver is None: return
 
-        for ent in l:
-            epath = ent['path'].replace('.',':')
+        epath = var.path.replace('.',':')
 
-            if self._pvdb[epath]['type'] == 'enum':
-                val = self._pvdb[epath]['enums'].index(ent['disp'])
-            else:
-                val = ent['value']
+        if self._pvdb[epath]['type'] == 'enum':
+            val = self._pvdb[epath]['enums'].index(ent[disp])
+        else:
+            val = value
 
-            self._driver.setParam(epath,val)
-
+        self._driver.setParam(epath,val)
         self._driver.updatePVs()
 
