@@ -19,6 +19,46 @@ import datetime
 import functools as ft
 import pyrogue as pr
 import inspect
+import threading
+
+class EnableVariable(pr.BaseVariable):
+    def __init__(self, enabled):
+        pr.BaseVariable.__init__(self, name='enable', mode='RW', value=enabled,
+                                 disp={False: 'False', True: 'True', 'parent': 'ParentFalse'},
+                                 description='Determines if device is enabled for hardware access')
+
+        self._value = enabled
+        self._lock = threading.Lock()
+        
+
+    def get(self, read=False):
+        ret = self._value
+        with self._lock:
+            if self._value is False:
+                ret = False
+            elif self._parent == self._root:
+                print("Root enable = {}".format(self._value))
+                ret = self._value
+            else:
+                if self._parent._parent.enable.value() is not True:
+                    ret = 'parent'
+                else:
+                    ret = True
+
+        if read:
+            self._updated()
+        return ret
+        
+    def set(self, value, write=True):
+        with self._lock:
+            if value != 'parent':
+                self._value = value
+        self._updated()
+
+    def _rootAttached(self):
+        if self._parent != self._root:
+            self._parent._parent.enable.addListener(self)
+        
 
 class Device(pr.Node,rogue.interfaces.memory.Hub):
     """Device class holder. TODO: Update comments"""
@@ -57,9 +97,7 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
         self.addRemoteCommands = ft.partial(self.addNodes, pr.RemoteCommand)
 
         # Variable interface to enable flag
-        self.add(pr.LocalVariable(name='enable', mode='RW', value=enabled,
-                          setFunction=self._setEnable, getFunction=self._getEnable,
-                          description='Determines if device is enabled for hardware access'))
+        self.add(EnableVariable(enabled))
 
         if variables is not None and isinstance(variables, collections.Iterable):
             if all(isinstance(v, pr.BaseVariable) for v in variables):
@@ -123,21 +161,6 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
         """
         self._resetFunc = func
 
-    def _setEnable(self, dev, var, enable):
-        """
-        Method to update enable in underlying block.
-        May be re-implemented in some sub-class to 
-        propogate enable to leaf nodes in the tree.
-        """
-        pass
-
-    def _getEnable(self, dev, var):
-        if var.value() is False:
-            return False
-        if dev == dev._root:
-            return dev.enable.value()
-        else:
-            return dev._parent.enable.value()
 
     def _backgroundTransaction(self,type):
         """
