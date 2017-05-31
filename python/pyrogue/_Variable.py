@@ -190,7 +190,7 @@ class BaseVariable(pr.Node):
             if isinstance(func,Pyro4.Proxy):
                 func.varListener(self,value,disp)
             else:
-            func(self,value,disp)
+                func(self,value,disp)
 
         # Root variable update log
         self._root._varUpdated(self,value,disp)

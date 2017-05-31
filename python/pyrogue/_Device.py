@@ -38,7 +38,7 @@ class EnableVariable(pr.BaseVariable):
             if self._value is False:
                 ret = False
             elif self._parent == self._root:
-                print("Root enable = {}".format(self._value))
+                #print("Root enable = {}".format(self._value))
                 ret = self._value
             else:
                 if self._parent._parent.enable.value() is not True:
