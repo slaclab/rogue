@@ -180,6 +180,8 @@ class BaseVariable(pr.Node):
 
     def _updated(self):
         """Variable has been updated. Inform listeners."""
+        if self.mode == 'CMD': return
+
         value = self.value()
         disp  = self.valueDisp()
 
