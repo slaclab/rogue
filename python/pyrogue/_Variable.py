@@ -27,7 +27,7 @@ class VariableError(Exception):
 class BaseVariable(pr.Node):
 
     def __init__(self, name=None, description="", parent=None, 
-                 mode='RW', value=0, disp='{}', 
+                 mode='RW', value=0, disp='{}',
                  enum=None, units=None, hidden=False, minimum=None, maximum=None, **dump):
 
         # Public Attributes
@@ -51,7 +51,7 @@ class BaseVariable(pr.Node):
         elif isinstance(disp, list):
             self.disp = 'enum'
             self.enum = {k:str(k) for k in disp}
-        elif isinstance(value, bool):
+        elif isinstance(value, bool) and enum is None:
             self.disp = 'enum'
             self.enum = {False: 'False', True: 'True'}
 
@@ -59,6 +59,11 @@ class BaseVariable(pr.Node):
             self.disp = 'enum'
             if not self._default in enum:
                 self._default = [k for k,v in enum.items()][0]
+
+        if value is None:
+            self.typeStr = 'Unknown'
+        else:
+            self.typeStr = value.__class__.__name__
 
         self.revEnum = None
         self.valEnum = None
@@ -185,7 +190,7 @@ class BaseVariable(pr.Node):
             if isinstance(func,Pyro4.Proxy):
                 func.varListener(self,value,disp)
             else:
-                func(self,value,disp)
+            func(self,value,disp)
 
         # Root variable update log
         self._root._varUpdated(self,value,disp)
@@ -317,7 +322,6 @@ class LocalVariable(BaseVariable):
         else:
             self.typeStr = value.__class__.__name__
         
-
     def set(self, value, write=True):
         try:
             self._block.set(self, value)
@@ -336,7 +340,6 @@ class LocalVariable(BaseVariable):
 
         if read: self._block._updated()
         return ret
-
 
 @Pyro4.expose
 class LinkVariable(BaseVariable):
@@ -357,10 +360,6 @@ class LinkVariable(BaseVariable):
         self._linkedGet = linkedGet
         self._linkedSet = linkedSet
 
-        if value is None:
-            self.typeStr = 'Unknown'
-        else:
-            self.typeStr = value.__class__.__name__
 
         # Dependency tracking
         if dependencies is not None:

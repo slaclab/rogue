@@ -369,7 +369,7 @@ class MemoryBlock(BaseBlock, rogue.interfaces.memory.Master):
                 self._size = newSize
 
             # Return if not enabled
-            if not self._variables[0].parent.enable.value():
+            if self._variables[0].parent.enable.value() is not True:
                 return
             
             self._log.debug('len bData = {}, vData = {}, mData = {}'.format(len(self._bData), len(self._vData), len(self._mData)))
