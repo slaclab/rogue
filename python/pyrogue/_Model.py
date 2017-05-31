@@ -14,6 +14,7 @@
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
 import pyrogue as pr
+import Pyro4
 
 def wordCount(bits, wordSize):
     ret = bits // wordSize
@@ -41,6 +42,7 @@ def byteCount(bits):
 # class Model(metaclass=ModelMeta):
 #     pass
 
+@Pyro4.expose
 class UInt(object):
     """Converts Unsigned Integer to and from bytearray"""
 #     def __init__(self, numBits=1, signed=False, endianness='little'):
@@ -70,6 +72,7 @@ class UInt(object):
     def name(cls, bitSize):
         return '{}{}'.format(cls.__name__, bitSize)
 
+@Pyro4.expose
 class Int(object):
 
     defaultdisp = '{:#x}'    
@@ -95,6 +98,7 @@ class Int(object):
         return '{}{}'.format(cls.__name__, bitSize)
     
 
+@Pyro4.expose
 class Bool(object):
     
     defaultdisp = {False: 'False', True: 'True'}    
@@ -116,6 +120,7 @@ class Bool(object):
         return '{}'.format(cls.__name__)
     
         
+@Pyro4.expose
 class String(object):
 
     encoding = 'utf-8'
@@ -141,6 +146,7 @@ class String(object):
         return '{}'.format(cls.__name__)
 
 
+@Pyro4.expose
 class Float(object):
     """Converter for 32-bit float"""
 

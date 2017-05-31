@@ -19,7 +19,9 @@ import datetime
 import functools as ft
 import pyrogue as pr
 import inspect
+import Pyro4
 
+@Pyro4.expose
 class Device(pr.Node,rogue.interfaces.memory.Hub):
     """Device class holder. TODO: Update comments"""
 
@@ -218,6 +220,7 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
         return _decorator
 
 
+@Pyro4.expose
 class DataWriter(Device):
     """Special base class to control data files. TODO: Update comments"""
 
@@ -282,6 +285,7 @@ class DataWriter(Device):
 
         self.dataFile.set(base + datetime.datetime.now().strftime("%Y%m%d_%H%M%S.dat")) 
 
+@Pyro4.expose
 class RunControl(Device):
     """Special base class to control runs. TODO: Update comments."""
 

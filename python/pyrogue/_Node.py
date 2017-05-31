@@ -19,7 +19,7 @@ import logging
 import re
 import inspect
 import pyrogue as pr
-#import Pyro4
+import Pyro4
 import functools as ft
 
 def logInit(cls=None,name=None):
@@ -39,7 +39,7 @@ class NodeError(Exception):
     """ Exception for node manipulation errors."""
     pass
 
-#@Pyro4.expose
+@Pyro4.expose
 class Node(object):
     """
     Class which serves as a managed obect within the pyrogue package. 
@@ -176,7 +176,7 @@ class Node(object):
         """
         return self._root
 
-    @ft.lru_cache(maxsize=None)
+    #@ft.lru_cache(maxsize=None)
     def getNode(self, path):
         """Find a node in the tree that has a particular path string"""
         obj = self
