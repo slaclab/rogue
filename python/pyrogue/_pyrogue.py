@@ -637,7 +637,7 @@ class Variable(Node):
         """Variable has been updated. Inform listeners."""
         
         # Don't generate updates for SL and WO variables
-        if self.mode == 'WO' or self.mode == 'SL': return
+        if self.mode == 'WO' or self.mode == 'SL' or self.mode == 'CMD': return
 
         value = self._rawGet()
         
