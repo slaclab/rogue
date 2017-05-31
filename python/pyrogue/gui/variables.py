@@ -32,7 +32,6 @@ class VariableLink(QObject):
     def __init__(self,parent,variable):
         QObject.__init__(self)
         self.variable = variable
-        self.block = False
 
         item = QTreeWidgetItem(parent)
         parent.addChild(item)
@@ -69,29 +68,27 @@ class VariableLink(QObject):
 
         item.treeWidget().setItemWidget(item,3,self.widget)
         variable.addListener(self.varListener)
-       
+
         self.varListener(None,variable.value(),variable.valueDisp())
 
     def varListener(self, var, value, disp):
         #print('{} varListener ( {} {} )'.format(self.variable, type(value), value))
 
-
         if isinstance(self.widget, QComboBox):
             if self.widget.currentIndex() != self.widget.findText(disp):
-            self.emit(SIGNAL("updateGui"), self.widget.findText(disp))
+                self.emit(SIGNAL("updateGui"), self.widget.findText(disp))
         elif isinstance(self.widget, QSpinBox):
-            if self.block: return                        
-            self.emit(SIGNAL("updateGui"), value)
+            if self.widget.value != value:
+                self.emit(SIGNAL("updateGui"), value)
         else:
-            if self.block: return            
-            self.emit(SIGNAL("updateGui"), disp)
+            if self.widget.text() != disp:
+                self.emit(SIGNAL("updateGui"), disp)
 
     def returnPressed(self):
         self.guiChanged(self.widget.text())
         self.emit(SIGNAL("updateGui"), self.variable.valueDisp())
 
     def guiChanged(self, value):
-        self.block = True
 
         if self.variable.disp == 'enum':
             # For enums, value will be index of selected item
@@ -101,8 +98,6 @@ class VariableLink(QObject):
         else:
             # For non enums, value will be string entered in box
             self.variable.setDisp(value)
-
-        self.block = False
 
 
 class VariableWidget(QWidget):
