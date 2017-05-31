@@ -269,3 +269,11 @@ void rim::MasterWrap::defDoneTransaction(uint32_t id, uint32_t error) {
    rim::Master::doneTransaction(id,error);
 }
 
+void rim::Master::setTimer(struct timeval *tme) {
+   saveTime = *tme;
+}
+
+void rim::Master::getTimer(struct timeval *tme) {
+   *tme = saveTime;
+}
+
