@@ -66,11 +66,11 @@ class CommandLink(QObject):
 
         if self.command.arg:
             try:
-                self.command(self.command.parseDisp(value))
+                self.command.call(self.command.parseDisp(value))
             except Exception:
                 pass
         else:
-            self.command()
+            self.command.call()
             
 
 class CommandWidget(QWidget):

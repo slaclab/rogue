@@ -20,7 +20,6 @@ import pyrogue as pr
 import inspect
 import Pyro4
 
-@Pyro4.expose
 class BaseCommand(pr.Node):
 
     def __init__(self, name=None, arg=False, description="", hidden=False, parent=None, function=None):
@@ -28,13 +27,19 @@ class BaseCommand(pr.Node):
         self._function = function if function is not None else BaseCommand.nothing
 
         if not callable(self._function):
-            self.arg = True
+            self._arg = True
         elif len(inspect.signature(self._function).parameters) == 3:
-            self.arg = True
+            self._arg = True
         else:
-            self.arg = False
+            self._arg = False
 
-    def __call__(self,arg=None):
+    @Pyro4.expose
+    @property
+    def arg(self):
+        return self._arg
+
+    @Pyro4.expose
+    def call(self,arg=None):
         """Execute command: TODO: Update comments"""
         try:
             if self._function is not None:
@@ -56,6 +61,9 @@ class BaseCommand(pr.Node):
 
         except Exception as e:
             self._log.error(e)
+
+    def __call__(self,arg=None):
+        self._exec(arg)
 
     @staticmethod
     def nothing(dev, cmd):
@@ -89,14 +97,12 @@ class BaseCommand(pr.Node):
             cmd.post(1)
 
 
-@Pyro4.expose
 class LocalCommand(BaseCommand,pr.LocalVariable):
     def __init__(self, name=None, mode=None, description="", hidden=False, parent=None, function=None, **kwargs):
         BaseCommand.__init__(self,name=name, description=description, hidden=hidden, parent=None, function=function)
         pr.LocalVariable.__init__(self, name=name, description=description, hidden=hidden, parent=None, mode='CMD', **kwargs)
 
 
-@Pyro4.expose
 class RemoteCommand(BaseCommand, pr.RemoteVariable):
     def __init__(self, name=None, mode=None, description="", hidden=False, parent=None, function=None, **kwargs):
         BaseCommand.__init__(self,name=name, description=description, hidden=hidden, parent=None, function=function)

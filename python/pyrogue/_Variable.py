@@ -23,7 +23,6 @@ class VariableError(Exception):
     """ Exception for variable access errors."""
     pass
 
-@Pyro4.expose
 class BaseVariable(pr.Node):
 
     def __init__(self, name=None, description="", parent=None, 
@@ -31,10 +30,10 @@ class BaseVariable(pr.Node):
                  enum=None, units=None, hidden=False, minimum=None, maximum=None, **dump):
 
         # Public Attributes
-        self.mode           = mode
-        self.units          = units
-        self.minimum        = minimum # For base='range'
-        self.maximum        = maximum # For base='range'
+        self._mode          = mode
+        self._units         = units
+        self._minimum       = minimum # For base='range'
+        self._maximum       = maximum # For base='range'
 
         self._default       = value
         self.__listeners    = []
@@ -43,44 +42,89 @@ class BaseVariable(pr.Node):
         self._afterWriteCmd = None
         self.__dependencies = []
         
-        self.disp = disp
-        self.enum = enum
+        self._disp = disp
+        self._enum = enum
         if isinstance(disp, dict):
-            self.disp = 'enum'
-            self.enum = disp
+            self._disp = 'enum'
+            self._enum = disp
         elif isinstance(disp, list):
-            self.disp = 'enum'
-            self.enum = {k:str(k) for k in disp}
+            self._disp = 'enum'
+            self._enum = {k:str(k) for k in disp}
         elif isinstance(value, bool) and enum is None:
-            self.disp = 'enum'
-            self.enum = {False: 'False', True: 'True'}
+            self._disp = 'enum'
+            self._enum = {False: 'False', True: 'True'}
 
         if enum is not None:
-            self.disp = 'enum'
+            self._disp = 'enum'
             if not self._default in enum:
                 self._default = [k for k,v in enum.items()][0]
 
         if value is None:
-            self.typeStr = 'Unknown'
+            self._typeStr = 'Unknown'
         else:
-            self.typeStr = value.__class__.__name__
+            self._typeStr = value.__class__.__name__
 
-        self.revEnum = None
-        self.valEnum = None
-        if self.enum is not None:
-            self.revEnum = {v:k for k,v in self.enum.items()}
-            self.valEnum = [v for k,v in self.enum.items()]
+        self._revEnum = None
+        self._valEnum = None
+        if self._enum is not None:
+            self._revEnum = {v:k for k,v in self._enum.items()}
+            self._valEnum = [v for k,v in self._enum.items()]
 
         # Legacy SL becomes CMD
-        if self.mode == 'SL': self.mode = 'CMD'
+        if self._mode == 'SL': self._mode = 'CMD'
 
         # Check modes
-        if (self.mode != 'RW') and (self.mode != 'RO') and \
-           (self.mode != 'WO') and (self.mode != 'CMD'):
-            raise VariableError('Invalid variable mode %s. Supported: RW, RO, WO, CMD' % (self.mode))
+        if (self._mode != 'RW') and (self._mode != 'RO') and \
+           (self._mode != 'WO') and (self._mode != 'CMD'):
+            raise VariableError('Invalid variable mode %s. Supported: RW, RO, WO, CMD' % (self._mode))
 
         # Call super constructor
         pr.Node.__init__(self, name=name, description=description, hidden=hidden, parent=parent)
+
+    @Pyro4.expose
+    @property
+    def enum(self):
+        return self._enum
+
+    @Pyro4.expose
+    @property
+    def revEnum(self):
+        return self._revEnum
+
+    @Pyro4.expose
+    @property
+    def valEnum(self):
+        return self._valEnum
+
+    @Pyro4.expose
+    @property
+    def typeStr(self):
+        return self._typeStr
+
+    @Pyro4.expose
+    @property
+    def disp(self):
+        return self._disp
+
+    @Pyro4.expose
+    @property
+    def mode(self):
+        return self._mode
+
+    @Pyro4.expose
+    @property
+    def units(self):
+        return self._units
+
+    @Pyro4.expose
+    @property
+    def minimum(self):
+        return self._minimum
+
+    @Pyro4.expose
+    @property
+    def maximum(self):
+        return self._maximum
 
     def addDependency(self, dep):
         self.__dependencies.append(dep)
@@ -100,6 +144,7 @@ class BaseVariable(pr.Node):
     def dependencies(self):
         return self.__dependencies
 
+    @Pyro4.expose
     def addListener(self, listener):
         """
         Add a listener Variable or function to call when variable changes. 
@@ -112,21 +157,27 @@ class BaseVariable(pr.Node):
         else:
             self.__listeners.append(listener)
 
+    @Pyro4.expose
     def set(self, value, write=True):
         pass
 
+    @Pyro4.expose
     def post(self,value):
         pass
 
+    @Pyro4.expose
     def get(self,read=True):
         return None
 
+    @Pyro4.expose
     def value(self):
         return self.get(read=False)
 
+    @Pyro4.expose
     def linkUpdated(self, var, value, disp):
         self._updated()
 
+    @Pyro4.expose
     def genDisp(self, value):
         #print('{}.genDisp(read={}) disp={} value={}'.format(self.path, read, self.disp, value))
         if self.disp == 'enum':
@@ -139,12 +190,15 @@ class BaseVariable(pr.Node):
             else:
                 return self.disp.format(value)
 
+    @Pyro4.expose
     def getDisp(self, read=True):
         return(self.genDisp(self.get(read)))
 
+    @Pyro4.expose
     def valueDisp(self, read=True):
         return self.getDisp(read=False)
 
+    @Pyro4.expose
     def parseDisp(self, sValue):
         if sValue is '':
             return ''
@@ -162,12 +216,14 @@ class BaseVariable(pr.Node):
                 return str
             #return (parse.parse(self.disp, sValue)[0])
 
+    @Pyro4.expose
     def setDisp(self, sValue, write=True):
         if isinstance(sValue, self.nativeType()):
             self.set(sValue, write)
         else:
             self.set(self.parseDisp(sValue), write)
 
+    @Pyro4.expose
     def nativeType(self):
         return type(self.value())
 
@@ -187,7 +243,7 @@ class BaseVariable(pr.Node):
         disp  = self.valueDisp()
 
         for func in self.__listeners:
-            if isinstance(func,Pyro4.Proxy):
+            if isinstance(func,object):
                 func.varListener(self,value,disp)
             else:
                 func(self,value,disp)
@@ -226,13 +282,34 @@ class RemoteVariable(BaseVariable):
         self._block    = None
         
 
-        self.offset    = offset
-        self.bitSize   = bitSize
-        self.bitOffset = bitOffset
-        self.verify    = verify
+        self._offset    = offset
+        self._bitSize   = bitSize
+        self._bitOffset = bitOffset
+        self._verify    = verify
 
-        self.typeStr = base.name(bitSize)
+        self._typeStr = base.name(bitSize)
 
+    @Pyro4.expose
+    @property
+    def offset(self):
+        return self._offset
+
+    @Pyro4.expose
+    @property
+    def bitSize(self):
+        return self._bitSize
+
+    @Pyro4.expose
+    @property
+    def bitOffset(self):
+        return self._bitOffset
+
+    @Pyro4.expose
+    @property
+    def verify(self):
+        return self._verify
+
+    @Pyro4.expose
     def set(self, value, write=True):
         """
         Set the value and write to hardware if applicable
@@ -255,6 +332,7 @@ class RemoteVariable(BaseVariable):
         except Exception as e:
             self._log.error(e)
 
+    @Pyro4.expose
     def post(self,value):
         """
         Set the value and write to hardware if applicable using a posted write.
@@ -270,6 +348,7 @@ class RemoteVariable(BaseVariable):
         except Exception as e:
             self._log.error(e)
 
+    @Pyro4.expose
     def get(self,read=True):
         """ 
         Return the value after performing a read from hardware if applicable.
@@ -293,6 +372,7 @@ class RemoteVariable(BaseVariable):
 
         return ret
 
+    @Pyro4.expose
     def parseDisp(self, sValue):
         #print("Parsing var {}, value= {}".format(self.name, sValue))
         if self.disp == 'enum':
@@ -302,7 +382,6 @@ class RemoteVariable(BaseVariable):
             return self._base.fromString(sValue)
 
 
-@Pyro4.expose
 class LocalVariable(BaseVariable):
 
     def __init__(self, name=None, description="", parent=None, 
@@ -318,10 +397,11 @@ class LocalVariable(BaseVariable):
         self._block = pr.LocalBlock(self,localSet,localGet,self._default)
 
         if self._default is None:
-            self.typeStr = 'Unknown'
+            self._typeStr = 'Unknown'
         else:
-            self.typeStr = value.__class__.__name__
+            self._typeStr = value.__class__.__name__
         
+    @Pyro4.expose
     def set(self, value, write=True):
         try:
             self._block.set(self, value)
@@ -330,6 +410,7 @@ class LocalVariable(BaseVariable):
         except Exception as e:
             self._log.error(e)
 
+    @Pyro4.expose
     def get(self,read=True):
         try:
             ret = self._block.get(self)
@@ -367,6 +448,7 @@ class LinkVariable(BaseVariable):
                 self.addDependency(d)
 
 
+    @Pyro4.expose
     def set(self, value, write=True):
         """
         The user can use the linkedSet attribute to pass a string containing python commands or
@@ -382,6 +464,7 @@ class LinkVariable(BaseVariable):
                 var = self
                 exec(textwrap.dedent(self._linkedSet))
 
+    @Pyro4.expose
     def get(self, read=True):
         """
         The user can use the linkedGet attribute to pass a string containing python commands or

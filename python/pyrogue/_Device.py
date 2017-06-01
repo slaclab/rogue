@@ -19,8 +19,8 @@ import datetime
 import functools as ft
 import pyrogue as pr
 import inspect
-import Pyro4
 import threading
+import Pyro4
 
 class EnableVariable(pr.BaseVariable):
     def __init__(self, enabled):
@@ -32,6 +32,7 @@ class EnableVariable(pr.BaseVariable):
         self._lock = threading.Lock()
         
 
+    @Pyro4.expose
     def get(self, read=False):
         ret = self._value
         with self._lock:
@@ -50,6 +51,7 @@ class EnableVariable(pr.BaseVariable):
             self._updated()
         return ret
         
+    @Pyro4.expose
     def set(self, value, write=True):
         with self._lock:
             if value != 'parent':
@@ -61,7 +63,6 @@ class EnableVariable(pr.BaseVariable):
             self._parent._parent.enable.addListener(self)
         
 
-@Pyro4.expose
 class Device(pr.Node,rogue.interfaces.memory.Hub):
     """Device class holder. TODO: Update comments"""
 
@@ -78,7 +79,7 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
         self._blocks    = []
         self._memBase   = memBase
         self._resetFunc = None
-        self.expand     = expand
+        self._expand    = expand
 
         # Connect to memory slave
         if memBase: self._setSlave(memBase)
@@ -116,6 +117,11 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
             if 'name' not in args:
                 args['name'] = cmd.__name__
             self.add(pr.Command(function=cmd, **args))
+
+    @Pyro4.expose
+    @property
+    def expand(self):
+        return self._expand
 
     def add(self,node):
         """
@@ -243,7 +249,6 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
         return _decorator
 
 
-@Pyro4.expose
 class DataWriter(Device):
     """Special base class to control data files. TODO: Update comments"""
 
@@ -308,7 +313,6 @@ class DataWriter(Device):
 
         self.dataFile.set(base + datetime.datetime.now().strftime("%Y%m%d_%H%M%S.dat")) 
 
-@Pyro4.expose
 class RunControl(Device):
     """Special base class to control runs. TODO: Update comments."""
 

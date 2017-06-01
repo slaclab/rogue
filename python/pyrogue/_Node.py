@@ -39,7 +39,6 @@ class NodeError(Exception):
     """ Exception for node manipulation errors."""
     pass
 
-@Pyro4.expose
 class Node(object):
     """
     Class which serves as a managed obect within the pyrogue package. 
@@ -59,13 +58,10 @@ class Node(object):
         """Init the node with passed attributes"""
 
         # Public attributes
-        self.name        = name
-        self.description = description
-        self.hidden      = hidden
-        self.classType   = self.__class__.__name__
-        self.classList   = [i.__name__ for i in inspect.getmro(self.__class__)]
-
-        self.path        = self.name
+        self._name        = name
+        self._description = description
+        self._hidden      = hidden
+        self._path        = name
 
         # Tracking
         self._parent = parent
@@ -77,6 +73,26 @@ class Node(object):
 
         if parent is not None:
             parent.add(self)
+
+    @Pyro4.expose
+    @property
+    def name(self):
+        return self._name
+
+    @Pyro4.expose
+    @property
+    def description(self):
+        return self._description
+
+    @Pyro4.expose
+    @property
+    def hidden(self):
+        return self._hidden
+
+    @Pyro4.expose
+    @property
+    def path(self):
+        return self._path
 
     def __repr__(self):
         return self.path
@@ -100,6 +116,7 @@ class Node(object):
         if len(ret) == 0:
             raise AttributeError('{} has no attribute {}'.format(self, name))
 
+        print("returning {}".format(ret))
         return ret
 
     def add(self,node):
@@ -112,7 +129,7 @@ class Node(object):
 
         # Attach directly as attribute and add to ordered node dictionary
         setattr(self,node.name,node)
-        self._nodes[node.name] = node
+        self._nodes[node.name] = node 
 
         # Update path related attributes
         node._updateTree(self)
@@ -133,6 +150,7 @@ class Node(object):
         """
         return odict([(k,n) for k,n in self._nodes.items() if isinstance(n, typ)])
 
+    @Pyro4.expose
     @property
     def nodes(self):
         """
@@ -140,6 +158,7 @@ class Node(object):
         """
         return self._nodes
 
+    @Pyro4.expose
     @property
     def variables(self):
         """
@@ -148,6 +167,7 @@ class Node(object):
         return odict([(k,n) for k,n in self._nodes.items()
                       if isinstance(n, pr.BaseVariable) and not isinstance(n, pr.BaseCommand)])
 
+    @Pyro4.expose
     @property
     def commands(self):
         """
@@ -155,6 +175,7 @@ class Node(object):
         """
         return self._getNodes(pr.BaseCommand)
 
+    @Pyro4.expose
     @property
     def devices(self):
         """
@@ -162,6 +183,7 @@ class Node(object):
         """
         return self._getNodes(pr.Device)
 
+    @Pyro4.expose
     @property
     def parent(self):
         """
@@ -169,6 +191,7 @@ class Node(object):
         """
         return self._parent
 
+    @Pyro4.expose
     @property
     def root(self):
         """
@@ -176,13 +199,9 @@ class Node(object):
         """
         return self._root
 
-    #@ft.lru_cache(maxsize=None)
-    def getNode(self, path):
-        """Find a node in the tree that has a particular path string"""
-        obj = self
-        for a in path.split('.')[1:]:
-            obj = getattr(obj, a)
-        return obj
+    @Pyro4.expose
+    def node(self, path):
+        return self._nodes[path]
 
     def _rootAttached(self):
         """Called once the root node is attached. Can override to do anything depends on the full tree existing"""
@@ -197,7 +216,7 @@ class Node(object):
         """
         self._parent = parent
         self._root   = self._parent._root
-        self.path    = self._parent.path + '.' + self.name
+        self._path   = self._parent.path + '.' + self.name
 
         if isinstance(self._root, pr.Root):
             self._rootAttached()
@@ -205,65 +224,12 @@ class Node(object):
         for key,value in self._nodes.items():
             value._updateTree(self)
 
-    def _getStructure(self):
-        """
-        Get structure starting from this level.
-        Attributes that are Nodes are recursed.
-        Called from getYamlStructure in the root node.
-        """
-        data = odict()
+    def _getNodeList(self,lst):
+        for k,v in self._nodes.items():
+            lst.append(v)
 
-        # First get non-node local values
-        for key,value in self.__dict__.items():
-            if (not key.startswith('_')) and (not isinstance(value,Node)) and (not callable(value)):
-                data[key] = value
-
-        # Next get sub nodes
-        for key,value in self.nodes.items():
-            data[key] = value._getStructure()
-
-        return data
-
-    def _addStructure(self,d,setFunction,cmdFunction):
-        """
-        Creation structure from passed dictionary. Used for clients.
-        Blocks are not created and functions are set to the passed values.
-        """
-        for key, value in d.items():
-
-            # Only work on nodes
-            if isinstance(value,dict) and 'classType' in value:
-
-                # If entry is a device add and recurse
-                if 'Device' in value['classList']:
-                    dev = pr.Device(**value)
-                    dev.classType = value['classType']
-                    dev.classList = value['classList']
-                    self.add(dev)
-                    dev._addStructure(value,setFunction,cmdFunction)
-
-                # If entry is a variable add and recurse
-                elif 'BaseCommand' in value['classList']:
-                    if not value['name'] in self._nodes:
-                        value['function'] = cmdFunction
-                        cmd = pr.LocalCommand(**value)
-                        cmd.classType = value['classType']
-                        cmd.classList = value['classList']
-                        self.add(cmd)
-                    else:
-                        getattr(self,value['name'])._function = cmdFunction
-
-                # If entry is a variable add and recurse
-                elif 'BaseVariable' in value['classList']:
-                    if not value['name'] in self._nodes:
-                        value['localSet'] = setFunction
-                        var = pr.LocalVariable(**value)
-                        var.classType = value['classType']
-                        var.classList = value['classList']
-                        self.add(var)
-                    else:
-                        getattr(self,value['name'])._block._localSet = setFunction
-                        getattr(self,value['name'])._block._localGet = None
+            if isinstance(v,pr.Device):
+                v._getNodeList(lst)
 
     def _getVariables(self,modes):
         """
@@ -304,4 +270,71 @@ class Node(object):
                 # Set value if variable with enabled mode
                 elif isinstance(self._nodes[key],pr.BaseVariable) and (self._nodes[key].mode in modes):
                     self._nodes[key].setDisp(value,writeEach)
+
+
+class PyroNode(object):
+    def __init__(self, node,daemon):
+        self._node   = node
+        self._nodes  = None
+        self._daemon = daemon
+
+    def __repr__(self):
+        return self._node.path
+
+    def __getattr__(self, name):
+        if self._nodes is None:
+            self._nodes = self._convert(self._node.nodes)
+
+        if name in self._nodes:
+            return self._nodes[name]
+        else:
+            return self._node.__getattr__(name)
+
+    def _convert(self,d):
+        ret = odict()
+        for k,n in d.items():
+
+            if isinstance(n,dict):
+                ret[k] = PyroNode(Pyro4.util.SerializerBase.dict_to_class(n),self._daemon)
+            else:
+                ret[k] = PyroNode(n,self._daemon)
+
+        return ret
+
+    def addInstance(self,node):
+        self._daemon.register(node)
+
+    def node(self, path):
+        return PyroNode(self._node.node(path),self._daemon)
+
+    @property
+    def nodes(self):
+        return self._convert(self._node.nodes)
+
+    @property
+    def variables(self):
+        return self._convert(self._node.variables)
+
+    @property
+    def commands(self):
+        return self._convert(self._node.commands)
+
+    @property
+    def devices(self):
+        return self._convert(self._node.devices)
+
+    @property
+    def parent(self):
+        return PyroNode(self._node.parent,self._daemon)
+
+    @property
+    def root(self):
+        return pr.PyroRoot(self._node.root,self._daemon)
+
+    def addListener(self, listener):
+        self._daemon.register(listener)
+        self._node.addListener(listener)
+
+    def __call__(self,arg=None):
+        self._node.call(arg)
 

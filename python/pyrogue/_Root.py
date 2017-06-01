@@ -20,6 +20,7 @@ from collections import OrderedDict as odict
 import logging
 import pyrogue as pr
 import Pyro4
+import functools as ft
 
 class RootLogHandler(logging.Handler):
     """ Class to listen to log entries and add them to syslog variable"""
@@ -34,7 +35,6 @@ class RootLogHandler(logging.Handler):
             self._root.systemLog.set(write=False,value=val)
         self._root.systemLog._updated() # Update outside of lock
 
-@Pyro4.expose
 class Root(rogue.interfaces.stream.Master,pr.Device):
     """
     Class which serves as the root of a tree of nodes.
@@ -84,13 +84,26 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         self.add(pr.LocalVariable(name='systemLog', value='', mode='RO', hidden=True,
             description='String containing newline seperated system logic entries'))
 
-        self.test = self.name
-
     def stop(self):
         """Stop the polling thread. Must be called for clean exit."""
         if self._pollQueue:
             self._pollQueue.stop()
 
+    @Pyro4.expose
+    def getNode(self, path):
+        return self._getPath(path)
+
+    @ft.lru_cache(maxsize=None)
+    def _getPath(self,path):
+        """Find a node in the tree that has a particular path string"""
+        obj = self
+        if '.' in path:
+            for a in path.split('.')[1:]:
+                obj = getattr(obj, a)
+
+        return obj
+
+    @Pyro4.expose
     def addVarListener(self,func):
         """
         Add a variable update listener function.
@@ -101,10 +114,6 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                     {'path':path, 'value':rawValue, 'disp': dispValue}
         """
         self._varListeners.append(func)
-
-    def getYamlStructure(self):
-        """Get structure as a yaml string"""
-        return dictToYaml({self.name:self._getStructure()},default_flow_style=False)
 
     def getYamlVariables(self,readFirst,modes=['RW']):
         """
@@ -158,30 +167,37 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         elif isinstance(obj,pr.BaseVariable):
             obj.setDisp(value)
 
+    @Pyro4.expose
     def get(self,path):
         obj = self.getNode(path)
         return obj.get()
 
+    @Pyro4.expose
     def getDisp(self,path):
         obj = self.getNode(path)
         return obj.getDisp()
 
+    @Pyro4.expose
     def value(self,path):
         obj = self.getNode(path)
         return obj.value()
 
+    @Pyro4.expose
     def valueDisp(self,path):
         obj = self.getNode(path)
         return obj.valueDisp()
 
+    @Pyro4.expose
     def set(self,path,value):
         obj = self.getNode(path)
         return obj.set(value)
 
+    @Pyro4.expose
     def setDisp(self,path,value):
         obj = self.getNode(path)
         return obj.setDisp(value)
 
+    @Pyro4.expose
     def exec(self,path,arg):
         obj = self.getNode(path)
         return obj(arg)
@@ -337,6 +353,17 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
             self._streamYaml(yml)
 
 
+class PyroRoot(pr.PyroNode):
+    def __init__(self, node,daemon):
+        pr.PyroNode.__init__(self,node,daemon)
+
+    def addInstance(self,node):
+        self._daemon.register(node)
+
+    def getNode(self, path):
+        return pr.PyroNode(self._node.getNode(path))
+
+
 def addPathToDict(d, path, value):
     """Helper function to add a path/value pair to a dictionary tree"""
     npath = path
@@ -355,20 +382,6 @@ def addPathToDict(d, path, value):
 
     # Add final node
     sd[npath] = value
-
-
-def treeFromYaml(yml,setFunction,cmdFunction):
-    """
-    Create structure from yaml.
-    """
-    d = yamlToDict(yml)
-    root = None
-
-    for key, value in d.items():
-        root = Root(pollEn=False,**value)
-        root._addStructure(value,setFunction,cmdFunction)
-
-    return root
 
 
 def yamlToDict(stream, Loader=yaml.Loader, object_pairs_hook=odict):
