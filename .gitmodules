@@ -2,6 +2,3 @@
 	path = drivers
 	url = git@github.com:slaclab/aes-stream-drivers.git
 	branch = master
-[submodule "3rdparty/pyre"]
-	path = 3rdparty/pyre
-	url = git@github.com:/slaclab/pyre.git
