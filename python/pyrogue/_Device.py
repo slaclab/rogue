@@ -94,8 +94,6 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
         self._log.info("Making device {:s}".format(name))
 
         # Convenience methods
-        self.addDevice = ft.partial(self.addNode, pr.Device)
-        self.addDevices = ft.partial(self.addNodes, pr.Device)
         self.addVariable = ft.partial(self.addNode, pr.Variable) # Legacy
         self.addVariables = ft.partial(self.addNodes, pr.Variable) # Legacy
         self.addRemoteVariables = ft.partial(self.addNodes, pr.RemoteVariable)
