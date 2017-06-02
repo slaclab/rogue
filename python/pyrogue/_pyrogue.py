@@ -1192,8 +1192,6 @@ class Device(Node,rogue.interfaces.memory.Hub):
         self._log.info("Making device {:s}".format(name))
 
         # Convenience methods
-        self.addDevice = ft.partial(self.addNode, Device)
-        self.addDevices = ft.partial(self.addNodes, Device)
         self.addVariable = ft.partial(self.addNode, Variable)        
         self.addVariables = ft.partial(self.addNodes, Variable)
         self.addCommand = ft.partial(self.addNode, Command)        
