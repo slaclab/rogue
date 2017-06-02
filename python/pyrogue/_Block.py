@@ -24,12 +24,15 @@ import inspect
 class BlockError(Exception):
     """ Exception for memory access errors."""
 
-    def __init__(self,block):
+    def __init__(self,block,msg=None):
         self._error = block.error
         block._error = 0
         self._value = "Error in block %s with address 0x%x: Block Variables: %s. " % (block.name,block.address,block._variables)
 
-        if (self._error & 0xFF000000) == rogue.interfaces.memory.TimeoutError:
+        if msg is not None:
+            self._value += msg
+
+        elif (self._error & 0xFF000000) == rogue.interfaces.memory.TimeoutError:
             self._value += "Timeout after %s seconds" % (block.timeout)
 
         elif (self._error & 0xFF000000) == rogue.interfaces.memory.VerifyError:
@@ -247,7 +250,15 @@ class MemoryBlock(BaseBlock, rogue.interfaces.memory.Master):
         """
         rogue.interfaces.memory.Master.__init__(self)
         self._setSlave(variable.parent)
+
+        self._minSize = self._reqMinAccess()
+        self._maxSize = self._reqMaxAccess()
+
+        if self._minSize == 0 or self._maxSize == 0:
+            raise BlockError(self,"Invalid min/max size.")
+
         BaseBlock.__init__(self,variable)
+
 
     def set(self, var, value):
         """
@@ -282,7 +293,6 @@ class MemoryBlock(BaseBlock, rogue.interfaces.memory.Master):
             if self._error > 0:
                 raise BlockError(self)
 
-
             # Access is fully byte aligned
             if (var.bitOffset % 8) == 0 and (var.bitSize % 8) == 0:
                 return var._base.fromBlock(self._bData[int(var.bitOffset/8):int((var.bitOffset+var.bitSize)/8)])
@@ -315,6 +325,11 @@ class MemoryBlock(BaseBlock, rogue.interfaces.memory.Master):
         Add a variable to the block. Called from Device for BlockMemory
         """
 
+        # Align variable address to block alignment
+        varShift = var.offset % self._minSize
+        var._offset -= varShift
+        var._bitOffset += (varShift * 8)
+
         with self._cond:
             self._waitTransaction()
 
@@ -323,7 +338,7 @@ class MemoryBlock(BaseBlock, rogue.interfaces.memory.Master):
                 return False
 
             # Compute the max variable address to determine required size of block
-            varBytes = int(math.ceil(float(var.bitOffset + var.bitSize) / 8.0))
+            varBytes = int(math.ceil(float(var.bitOffset + var.bitSize) / float(self._minSize*8))) * self._minSize
 
             # Link variable to block
             var._block = self
@@ -359,14 +374,6 @@ class MemoryBlock(BaseBlock, rogue.interfaces.memory.Master):
 
         with self._cond:
             self._waitTransaction()
-
-            # Adjust size if required
-            if (self._size % minSize) > 0:
-                newSize = (((int)(self._size / minSize) + 1) * minSize)
-                self._bData.extend(bytearray(newSize - self._size))
-                self._vData.extend(bytearray(newSize - self._size))
-                self._mData.extend(bytearray(newSize - self._size))
-                self._size = newSize
 
             # Return if not enabled
             if self._variables[0].parent.enable.value() is not True:

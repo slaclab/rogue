@@ -63,6 +63,10 @@ class EnableVariable(pr.BaseVariable):
             self._parent._parent.enable.addListener(self)
         
 
+class DeviceError(Exception):
+    """ Exception for device manipulation errors."""
+    pass
+
 class Device(pr.Node,rogue.interfaces.memory.Hub):
     """Device class holder. TODO: Update comments"""
 
@@ -85,7 +89,7 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
         if memBase: self._setSlave(memBase)
 
         # Node.__init__ can't be called until after self._memBase is created
-        pr.Node.__init__(self, name=name, hidden=hidden, description=description, parent=parent)
+        pr.Node.__init__(self, name=name, hidden=hidden, description=description)
 
         self._log.info("Making device {:s}".format(name))
 
@@ -135,20 +139,24 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
                 self.add(n)
             return
 
+        # Can't add if we already have a block list
+        if len(self._blocks) != 0:
+            raise DeviceError('Error adding %s with name %s to %s. Device has already been attached.' % 
+                              (str(node.classType),node.name,self.name))
+
+        # Adding device
+        if isinstance(node,Device):
+           
+            # Device does not have a membase
+            if node._memBase is None:
+                node._setSlave(self)
+
+            # Build the device blocks
+            node._buildBlocks()
+
         # Call node add
         pr.Node.add(self,node)
 
-        # Adding device whos membase is not yet set
-        if isinstance(node,Device) and node._memBase is None:
-            node._setSlave(self)
-
-        if isinstance(node,pr.LocalVariable):
-            self._blocks.append(node._block)
-
-        if isinstance(node,pr.RemoteVariable) and node.offset is not None:
-            if not any(block._addVariable(node) for block in self._blocks):
-                self._log.debug("Adding new block %s at offset %x" % (node.name,node.offset))
-                self._blocks.append(pr.MemoryBlock(node))
 
     def hideVariables(self, hidden, variables=None):
         """Hide a list of Variables (or Variable names)"""
@@ -168,6 +176,19 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
         where type = 'soft','hard','count'
         """
         self._resetFunc = func
+
+    def _buildBlocks(self):
+
+        # Get all of the variables
+        for k,n in self.variables.items():
+
+            if isinstance(n,pr.LocalVariable):
+                self._blocks.append(n._block)
+
+            elif isinstance(n,pr.RemoteVariable) and n.offset is not None:
+                if not any(block._addVariable(n) for block in self._blocks):
+                    self._log.debug("Adding new block %s at offset %x" % (n.name,n.offset))
+                    self._blocks.append(pr.MemoryBlock(n))
 
 
     def _backgroundTransaction(self,type):

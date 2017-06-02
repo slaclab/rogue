@@ -25,7 +25,7 @@ class VariableError(Exception):
 
 class BaseVariable(pr.Node):
 
-    def __init__(self, name=None, description="", parent=None, 
+    def __init__(self, name=None, description="", 
                  mode='RW', value=0, disp='{}',
                  enum=None, units=None, hidden=False, minimum=None, maximum=None, **dump):
 
@@ -79,7 +79,7 @@ class BaseVariable(pr.Node):
             raise VariableError('Invalid variable mode %s. Supported: RW, RO, WO, CMD' % (self._mode))
 
         # Call super constructor
-        pr.Node.__init__(self, name=name, description=description, hidden=hidden, parent=parent)
+        pr.Node.__init__(self, name=name, description=description, hidden=hidden)
 
     @Pyro4.expose
     @property
@@ -243,7 +243,7 @@ class BaseVariable(pr.Node):
         disp  = self.valueDisp()
 
         for func in self.__listeners:
-            if isinstance(func,object):
+            if getattr(func,'varListener',None) is not None:
                 func.varListener(self,value,disp)
             else:
                 func(self,value,disp)
@@ -261,7 +261,7 @@ class BaseVariable(pr.Node):
 @Pyro4.expose
 class RemoteVariable(BaseVariable):
 
-    def __init__(self, name=None, description="", parent=None, 
+    def __init__(self, name=None, description="", 
                  mode='RW', value=None, base=pr.UInt, disp=None,
                  enum=None, units=None, hidden=False, minimum=None, maximum=None,
                  offset=None, bitSize=32, bitOffset=0, pollInterval=0, 
@@ -270,7 +270,7 @@ class RemoteVariable(BaseVariable):
         if disp is None:
             disp = base.defaultdisp
 
-        BaseVariable.__init__(self, name=name, description=description, parent=parent, 
+        BaseVariable.__init__(self, name=name, description=description, 
                      mode=mode, value=value, disp=disp,
                      enum=enum, units=units, hidden=hidden, minimum=minimum, maximum=maximum);
 
@@ -384,12 +384,12 @@ class RemoteVariable(BaseVariable):
 
 class LocalVariable(BaseVariable):
 
-    def __init__(self, name=None, description="", parent=None, 
+    def __init__(self, name=None, description="", 
                  mode='RW', value=0, disp='{}',
                  enum=None, units=None, hidden=False, minimum=None, maximum=None,
                  localSet=None, localGet=None, pollInterval=0, **dump):
 
-        BaseVariable.__init__(self, name=name, description=description, parent=parent, 
+        BaseVariable.__init__(self, name=name, description=description, 
                      mode=mode, value=value, disp=disp,
                      enum=enum, units=units, hidden=hidden, minimum=minimum, maximum=maximum)
 
@@ -425,7 +425,7 @@ class LocalVariable(BaseVariable):
 @Pyro4.expose
 class LinkVariable(BaseVariable):
 
-    def __init__(self, name=None, description="", parent=None, 
+    def __init__(self, name=None, description="", 
                  mode='RW', value=None, disp='{}',
                  enum=None, units=None, hidden=False, minimum=None, maximum=None,
                  linkedSet=None, linkedGet=None, dependencies=None, **dump):
@@ -433,7 +433,7 @@ class LinkVariable(BaseVariable):
         if value is None:
             raise Exception("LinkVariable param 'value' must be assigned")
 
-        BaseVariable.__init__(self, name=name, description=description, parent=parent, 
+        BaseVariable.__init__(self, name=name, description=description, 
                      mode=mode, value=value, disp=disp,
                      enum=enum, units=units, hidden=hidden, minimum=minimum, maximum=maximum)
 

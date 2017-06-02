@@ -122,17 +122,9 @@ class EpicsCaServer(object):
         # Create PVs
         self._addDevice(self._root)
 
-        # Add variable for structure
-        sname = self._root.name + ':' + 'structure'
-        self._pvdb[sname] = {'type':'string'}
-
         # Create PVs
         self._server.createPV(self._base + ':',self._pvdb)
         self._driver = EpicsCaDriver(self._queue)
-
-        # Load structure string
-        s = self._root.getYamlStructure()
-        self._driver.setParam(sname,s)
 
         while(self._runEn):
             self._server.process(0.5)
@@ -161,7 +153,7 @@ class EpicsCaServer(object):
         epath = var.path.replace('.',':')
 
         if self._pvdb[epath]['type'] == 'enum':
-            val = self._pvdb[epath]['enums'].index(ent[disp])
+            val = self._pvdb[epath]['enums'].index(disp)
         else:
             val = value
 

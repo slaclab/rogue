@@ -69,6 +69,10 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         else:
             self._pollQueue = None
 
+        # Remote object export
+        self._pyroThread = None
+        self._pyroDaemon = None
+
         # Variable update list
         self._updatedDict = None
         self._updatedList = None
@@ -88,6 +92,8 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         """Stop the polling thread. Must be called for clean exit."""
         if self._pollQueue:
             self._pollQueue.stop()
+        if self._pyroDaemon:
+            self._pyroDaemon.shutdown()
 
     @Pyro4.expose
     def getNode(self, path):
@@ -209,6 +215,27 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         for key,value in self._nodes.items():
             if isinstance(value,pr.Device):
                 value._setTimeout(timeout)
+
+    def exportRoot(self,group,host=None):
+        Pyro4.config.THREADPOOL_SIZE = 100
+        Pyro4.util.SerializerBase.register_dict_to_class("collections.OrderedDict", recreate_OrderedDict)
+
+        self._pyroDaemon = Pyro4.Daemon(host=host)
+
+        uri = self._pyroDaemon.register(self)
+
+        try:
+            Pyro4.locateNS().register('{}.{}'.format(group,self.name),uri)
+        except:
+            print("Root::exportRoot -> Failed to find Pyro4 nameserver.")
+            print("                    Start with the following command:")
+            print("                          python -m Pyro4.naming")
+            return
+
+        self._exportNodes(self._pyroDaemon)
+
+        self._pyroThread = threading.Thread(target=self._pyroDaemon.requestLoop)
+        self._pyroThread.start()
 
     def _updateVarListeners(self, yml, l):
         """Send update to listeners"""
@@ -364,6 +391,38 @@ class PyroRoot(pr.PyroNode):
         return pr.PyroNode(self._node.getNode(path))
 
 
+class PyroClient(object):
+    def __init__(self, group, host=None):
+        self._group = group
+
+        Pyro4.config.THREADPOOL_SIZE = 100
+        Pyro4.util.SerializerBase.register_dict_to_class("collections.OrderedDict", recreate_OrderedDict)
+
+        try:
+            self._ns = Pyro4.locateNS()
+        except:
+            print("PyroClient -> Failed to find Pyro4 nameserver.")
+            print("              Start with the following command:")
+            print("                    python -m Pyro4.naming")
+            raise pr.NodeError("PyroClient Failed to find nameserver")
+
+        self._pyroDaemon = Pyro4.Daemon(host=host)
+
+        self._pyroThread = threading.Thread(target=self._pyroDaemon.requestLoop)
+        self._pyroThread.start()
+
+
+    def stop(self):
+        self._pyroDaemon.shutdown()
+
+    def getRoot(self,name):
+        try:
+            uri = self._ns.lookup("{}.{}".format(self._group,name))
+            return(PyroRoot(Pyro4.Proxy(uri),self._pyroDaemon))
+        except:
+            raise pr.NodeError("PyroClient Failed to find {}.{}.".format(self._group,name))
+
+
 def addPathToDict(d, path, value):
     """Helper function to add a path/value pair to a dictionary tree"""
     npath = path
@@ -411,4 +470,7 @@ def dictToYaml(data, stream=None, Dumper=yaml.Dumper, **kwds):
         #print("Error: {} dict {}".format(e,data))
         return None
     return ret
+
+def recreate_OrderedDict(name, values):
+    return odict(values['items'])
 

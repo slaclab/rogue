@@ -54,7 +54,7 @@ class Node(object):
     attribute. This allows tree browsing using: node1.node2.node3
     """
 
-    def __init__(self, name, description="", hidden=False, parent=None):
+    def __init__(self, name, description="", hidden=False):
         """Init the node with passed attributes"""
 
         # Public attributes
@@ -64,15 +64,12 @@ class Node(object):
         self._path        = name
 
         # Tracking
-        self._parent = parent
+        self._parent = None
         self._root   = self
         self._nodes  = odict()
 
         # Setup logging
         self._log = logInit(self,name)
-
-        if parent is not None:
-            parent.add(self)
 
     @Pyro4.expose
     @property
@@ -121,6 +118,11 @@ class Node(object):
 
     def add(self,node):
         """Add node as sub-node"""
+
+        # Error if added node already has a parent
+        if node._parent is not None:
+            raise NodeError('Error adding %s with name %s to %s. Node is already attached.' % 
+                             (str(node.classType),node.name,self.name))
 
         # Names of all sub-nodes must be unique
         if node.name in self._nodes:
@@ -224,12 +226,13 @@ class Node(object):
         for key,value in self._nodes.items():
             value._updateTree(self)
 
-    def _getNodeList(self,lst):
-        for k,v in self._nodes.items():
-            lst.append(v)
+    def _exportNodes(self,daemon):
 
-            if isinstance(v,pr.Device):
-                v._getNodeList(lst)
+        for k,n in self._nodes.items():
+            daemon.register(n)
+
+            if isinstance(n,pr.Device):
+                n._exportNodes(daemon)
 
     def _getVariables(self,modes):
         """

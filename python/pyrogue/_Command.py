@@ -22,8 +22,8 @@ import Pyro4
 
 class BaseCommand(pr.Node):
 
-    def __init__(self, name=None, arg=False, description="", hidden=False, parent=None, function=None):
-        pr.Node.__init__(self, name=name, description=description, hidden=hidden, parent=parent)
+    def __init__(self, name=None, arg=False, description="", hidden=False, function=None):
+        pr.Node.__init__(self, name=name, description=description, hidden=hidden)
         self._function = function if function is not None else BaseCommand.nothing
 
         if not callable(self._function):
@@ -98,15 +98,15 @@ class BaseCommand(pr.Node):
 
 
 class LocalCommand(BaseCommand,pr.LocalVariable):
-    def __init__(self, name=None, mode=None, description="", hidden=False, parent=None, function=None, **kwargs):
-        BaseCommand.__init__(self,name=name, description=description, hidden=hidden, parent=None, function=function)
-        pr.LocalVariable.__init__(self, name=name, description=description, hidden=hidden, parent=None, mode='CMD', **kwargs)
+    def __init__(self, name=None, mode=None, description="", hidden=False, function=None, **kwargs):
+        BaseCommand.__init__(self,name=name, description=description, hidden=hidden, function=function)
+        pr.LocalVariable.__init__(self, name=name, description=description, hidden=hidden, mode='CMD', **kwargs)
 
 
 class RemoteCommand(BaseCommand, pr.RemoteVariable):
-    def __init__(self, name=None, mode=None, description="", hidden=False, parent=None, function=None, **kwargs):
-        BaseCommand.__init__(self,name=name, description=description, hidden=hidden, parent=None, function=function)
-        pr.RemoteVariable.__init__(self, name=name, description=description, hidden=hidden, parent=None, mode='CMD', **kwargs)
+    def __init__(self, name=None, mode=None, description="", hidden=False, function=None, **kwargs):
+        BaseCommand.__init__(self,name=name, description=description, hidden=hidden, function=function)
+        pr.RemoteVariable.__init__(self, name=name, description=description, hidden=hidden, mode='CMD', **kwargs)
 
 
 # Legacy Support
