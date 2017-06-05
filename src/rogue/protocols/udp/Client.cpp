@@ -25,6 +25,7 @@
 #include <boost/make_shared.hpp>
 #include <rogue/GilRelease.h>
 #include <rogue/Logging.h>
+#include <iostream>
 #include <sys/syscall.h>
 
 namespace rpu = rogue::protocols::udp;

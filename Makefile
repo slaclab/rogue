@@ -19,9 +19,9 @@
 # contained in the LICENSE.txt file.
 # ----------------------------------------------------------------------------
 
-VER_MAJOR := 1
-VER_MINOR := 2
-VER_MAINT := 3
+VER_MAJOR := 2
+VER_MINOR := 0
+VER_MAINT := 0
 
 # Variables
 CC       := g++

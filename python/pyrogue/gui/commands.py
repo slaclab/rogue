@@ -34,14 +34,26 @@ class CommandLink(QObject):
         item = QTreeWidgetItem(parent)
         parent.addChild(item)
         item.setText(0,command.name)
-        item.setText(1,command.base)
+        item.setText(1,command.typeStr)
 
         pb = QPushButton('Execute')
         item.treeWidget().setItemWidget(item,2,pb)
         pb.clicked.connect(self.execPressed)
 
-        if command.base != 'None':
-            self.widget = QLineEdit()
+        if command.arg:
+            if command.disp == 'enum' and command.enum is not None:
+                self.widget = QComboBox()
+                for i in command.enum:
+                    self.widget.addItem(command.enum[i])
+
+            elif command.disp == 'range':
+                self.widget = QSpinBox();
+                self.widget.setMinimum(command.minimum)
+                self.widget.setMaximum(command.maximum)
+
+            else:
+                self.widget = QLineEdit()
+            
             item.treeWidget().setItemWidget(item,3,self.widget)
         else:
             self.widget = None
@@ -52,36 +64,14 @@ class CommandLink(QObject):
         else:
             value=None
 
-        if self.command.base == 'hex':
+        if self.command.arg:
             try:
-                self.command(int(value,16))
+                self.command.call(self.command.parseDisp(value))
             except Exception:
                 pass
-
-        elif self.command.base == 'bin':
-            try:
-                self.command(int(value,2))
-            except Exception:
-                pass
-            
-        elif self.command.base == 'uint':
-            try:
-                self.command(int(value))
-            except Exception:
-                pass
-
-        elif self.command.base == 'float':
-            try:
-                self.command(float(value))
-            except Exception:
-                pass
-
-        elif self.command.base == 'string':
-            self.command(value)
-
         else:
-            self.command()
-
+            self.command.call()
+            
 
 class CommandWidget(QWidget):
     def __init__(self, group, parent=None):

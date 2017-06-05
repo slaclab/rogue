@@ -21,9 +21,8 @@
 from PyQt4.QtCore   import *
 from PyQt4.QtGui    import *
 
-#import parse
 import pyrogue
-
+import Pyro4
 
 class VariableLink(QObject):
     """Bridge between the pyrogue tree and the display element"""
@@ -31,33 +30,26 @@ class VariableLink(QObject):
     def __init__(self,parent,variable):
         QObject.__init__(self)
         self.variable = variable
-        self.block = False
 
         item = QTreeWidgetItem(parent)
         parent.addChild(item)
         item.setText(0,variable.name)
         item.setText(1,variable.mode)
-        item.setText(2,variable.base)
+        item.setText(2,variable.typeStr) # Fix this. Should show base and size
 
         if variable.units:
            item.setText(4,str(variable.units))
 
-        if variable.base == 'enum' and variable.mode=='RW':
+        if variable.disp == 'enum' and variable.enum is not None and variable.mode=='RW':
+            #print('VariableLink: variable: {} , enum: {}'.format(variable, variable.enum))
             self.widget = QComboBox()
             self.widget.activated.connect(self.guiChanged)
             self.connect(self,SIGNAL('updateGui'),self.widget.setCurrentIndex)
 
-            for i in sorted(variable.enum):
+            for i in variable.enum:
                 self.widget.addItem(variable.enum[i])
 
-        elif variable.base == 'bool' and variable.mode=='RW':
-            self.widget = QComboBox()
-            self.widget.addItem('False')
-            self.widget.addItem('True')
-            self.widget.activated.connect(self.guiChanged)
-            self.connect(self,SIGNAL('updateGui'),self.widget.setCurrentIndex)
-
-        elif variable.base == 'range':
+        elif variable.disp == 'range':
             self.widget = QSpinBox();
             self.widget.setMinimum(variable.minimum)
             self.widget.setMaximum(variable.maximum)
@@ -73,67 +65,38 @@ class VariableLink(QObject):
             self.widget.setReadOnly(True)
 
         item.treeWidget().setItemWidget(item,3,self.widget)
-        variable.addListener(self.newValue)
-        self.newValue(None,variable.get(read=False))
+        variable.addListener(self)
 
-    def newValue(self,var,value):
-        if self.block: return
+        self.varListener(None,variable.value(),variable.valueDisp())
 
-        if self.variable.mode=='RW' and (self.variable.base == 'enum' or self.variable.base == 'bool'):
-            self.emit(SIGNAL("updateGui"),self.widget.findText(str(value)))
+    @Pyro4.expose
+    def varListener(self, var, value, disp):
+        #print('{} varListener ( {} {} )'.format(self.variable, type(value), value))
 
-        elif self.variable.base == 'range':
-            self.emit(SIGNAL("updateGui"),value)
-
-        elif self.variable.base == 'hex' and value != None:
-            self.emit(SIGNAL("updateGui"),'0x%x' % (value))
-
-        elif self.variable.base == 'bin' and value != None:
-            self.emit(SIGNAL("updateGui"), '0b{0:b}'.format(value))
-
-        elif self.variable.base == 'float' or self.variable.base == 'string':
-            self.emit(SIGNAL("updateGui"), str(value))
-
+        if isinstance(self.widget, QComboBox):
+            if self.widget.currentIndex() != self.widget.findText(disp):
+                self.emit(SIGNAL("updateGui"), self.widget.findText(disp))
+        elif isinstance(self.widget, QSpinBox):
+            if self.widget.value != value:
+                self.emit(SIGNAL("updateGui"), value)
         else:
-            self.emit(SIGNAL("updateGui"), str(value))
-            #self.emit(SIGNAL("updateGui"), self.variable.base.format(value)) # Broken
-
+            if self.widget.text() != disp:
+                self.emit(SIGNAL("updateGui"), disp)
 
     def returnPressed(self):
         self.guiChanged(self.widget.text())
+        self.emit(SIGNAL("updateGui"), self.variable.valueDisp())
 
-    def guiChanged(self,value):
-        self.block = True
+    def guiChanged(self, value):
 
-        if self.variable.base == 'enum':
-            self.variable.set(str(self.widget.itemText(value)))
-
-        elif self.variable.base == 'bool':
-            self.variable.set(self.widget.itemText(value) == 'True')
-
-        elif self.variable.base == 'range':
-            self.variable.set(value)
-
-        elif self.variable.base == 'hex':
-            self.variable.set(int(str(value),16))
-
-        elif self.variable.base == 'uint':
-            self.variable.set(int(str(value)))
-
-        elif self.variable.base == 'bin':
-            self.variable.set(int(str(value), 2))
-
-        elif self.variable.base == 'float':
-            self.variable.set(float(str(value)))
-                      
-        elif self.variable.base == 'string':
-            self.variable.set(str(value))
+        if self.variable.disp == 'enum':
+            # For enums, value will be index of selected item
+            # Need to call itemText to convert to string
+            self.variable.setDisp(self.widget.itemText(value))
 
         else:
-            #self.variable.set(parse.parse(self.variable.base, value)[0])  # Broken
-            self.variable.set(str(value))
-            
-        self.block = False
+            # For non enums, value will be string entered in box
+            self.variable.setDisp(value)
 
 
 class VariableWidget(QWidget):

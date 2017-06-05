@@ -55,9 +55,7 @@ class EpicsCaServer(object):
         self._wThread = None
         self._eThread = None
         self._pvdb    = {}
-
-        if self._root:
-            self._root.addVarListener(self._variableStatus)
+        self._log     = pyrogue.logInit(self)
 
     def stop(self):
         self._runEn = False
@@ -75,24 +73,33 @@ class EpicsCaServer(object):
 
     def _addPv(self,node):
         d = {}
-        if node.base == 'enum': 
-            d['type'] = 'enum'
-            d['enums'] = [val for key,val in node.enum.items()] 
-        elif node.base == 'bool':
-            d['type'] = 'enum'
-            d['enums'] = ['False','True']
-        elif node.base == 'float':
-            d['type'] = 'float'
-        elif node.base == 'uint' or node.base == 'hex' or node.base == 'bin':
-            d['type'] = 'int'
-        elif node.base == 'range':
-            d['type'] = 'int'
-            d['lolim'] = node.minimum
-            d['hilim'] = node.maximum
-        else:
-            d['type'] = 'string'
 
+        if node.disp == 'enum':
+            d['type']  = 'enum'
+            d['enums'] = [val for key,val in node.enum.items()] 
+            d['value'] = d['enums'].index(node.valueDisp())
+
+        else:
+            d['value'] = node.value()
+
+            if node.minimum is not None:
+                d['lolim'] = node.minimum
+            if node.maximum is not None:
+                d['hilim'] = node.maximum
+
+            d['type'] = d['value'].__class__.__name__
+
+            # Commands return None
+            if d['type'] == 'NoneType':
+                d['type'] = 'int'
+            elif d['type'] == 'bool':
+                d['type'] = 'int'
+            
         name = node.path.replace('.',':')
+
+        node.addListener(self._variableUpdated)
+
+        self._log.info("Adding epics variable {} type {}".format(name,d['type']))
         self._pvdb[name] = d
 
     def _addDevice(self,node):
@@ -115,17 +122,9 @@ class EpicsCaServer(object):
         # Create PVs
         self._addDevice(self._root)
 
-        # Add variable for structure
-        sname = self._root.name + ':' + 'structure'
-        self._pvdb[sname] = {'type':'string'}
-
         # Create PVs
         self._server.createPV(self._base + ':',self._pvdb)
         self._driver = EpicsCaDriver(self._queue)
-
-        # Load structure string
-        s = self._root.getYamlStructure()
-        self._driver.setParam(sname,s)
 
         while(self._runEn):
             self._server.process(0.5)
@@ -139,33 +138,25 @@ class EpicsCaServer(object):
                 value = e['value']
 
                 if self._pvdb[epath]['type'] == 'enum':
-                    v = self._pvdb[epath]['enums'][value]
+                    val = self._pvdb[epath]['enums'][value]
+                    self._root.getNode(path).setDisp(val)
                 else:
-                    v = e['value']
-
-                self._root.setOrExecPath(path,v)
+                    val = e['value']
+                    self._root.getNode(path).set(val)
             except:
                 pass
 
-    # Variable field updated on server
-    def _variableStatus(self,yml,d):
-        if not self._driver: return
-        self._walkDict(None,d)
+    # Variable was updated
+    def _variableUpdated(self,var,value,disp):
+        if self._driver is None: return
+
+        epath = var.path.replace('.',':')
+
+        if self._pvdb[epath]['type'] == 'enum':
+            val = self._pvdb[epath]['enums'].index(disp)
+        else:
+            val = value
+
+        self._driver.setParam(epath,val)
         self._driver.updatePVs()
-
-    def _walkDict(self,currPath,d):
-        for key,value in d.items():
-
-            if currPath: locPath = currPath + ':' + key
-            else: locPath = key
-
-            if isinstance(value,dict):
-                self._walkDict(locPath,value)
-            else:
-                if self._pvdb[locPath]['type'] == 'enum':
-                    v = self._pvdb[locPath]['enums'].index(str(value))
-                else:
-                    v =value
-
-                self._driver.setParam(locPath,v)
 

@@ -29,7 +29,6 @@ import pyrogue.gui.system
 import threading
 import sys
 
-
 class GuiTop(QWidget):
 
     def __init__(self,group,parent=None):

@@ -36,6 +36,8 @@ namespace rogue {
          //! Slave container
          class Master : public boost::enable_shared_from_this<rogue::interfaces::memory::Master> {
 
+               struct timeval saveTime;
+
                //! Class instance counter
                static uint32_t classIdx_;
 
@@ -123,6 +125,13 @@ namespace rogue {
 
                //! Get from master to slave, called by slave to pull data from mater. Python Version.
                void getTransactionDataPy(uint32_t id, uint32_t offset, boost::python::object p);
+
+               //! save a timer
+               void setTimer(struct timeval *tme);
+
+               //! get a timer
+               void getTimer(struct timeval *tme);
+
          };
 
          //! Memory master class, wrapper to enable pyton overload of virtual methods
