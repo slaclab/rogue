@@ -63,7 +63,7 @@ class BaseCommand(pr.Node):
             self._log.error(e)
 
     def __call__(self,arg=None):
-        self._exec(arg)
+        self.call(arg)
 
     @staticmethod
     def nothing(dev, cmd):
