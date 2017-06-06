@@ -401,9 +401,11 @@ class PyroClient(object):
         try:
             self._ns = Pyro4.locateNS()
         except:
-            print("PyroClient -> Failed to find Pyro4 nameserver.")
-            print("              Start with the following command:")
-            print("                    python -m Pyro4.naming")
+            print("\n------------- PyroClient ----------------------")
+            print("    Failed to find Pyro4 nameserver!")
+            print("    Start with the following command:")
+            print("         python -m Pyro4.naming")
+            print("-----------------------------------------------\n")
             raise pr.NodeError("PyroClient Failed to find nameserver")
 
         self._pyroDaemon = Pyro4.Daemon(host=host)
@@ -411,14 +413,14 @@ class PyroClient(object):
         self._pyroThread = threading.Thread(target=self._pyroDaemon.requestLoop)
         self._pyroThread.start()
 
-
     def stop(self):
         self._pyroDaemon.shutdown()
 
     def getRoot(self,name):
         try:
             uri = self._ns.lookup("{}.{}".format(self._group,name))
-            return(PyroRoot(Pyro4.Proxy(uri),self._pyroDaemon))
+            ret = PyroRoot(Pyro4.Proxy(uri),self._pyroDaemon)
+            return ret
         except:
             raise pr.NodeError("PyroClient Failed to find {}.{}.".format(self._group,name))
 
