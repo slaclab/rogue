@@ -28,28 +28,28 @@ class BlockError(Exception):
         self._error = block.error
         block._error = 0
 
-        self._value = "Error in block with address 0x%x: " % (block.address)
+        self._value = "Error in block with address 0x{:02x}: ".format(block.address)
 
         if hasattr(block,'_variables'):
-            self._value += "Block Variables: %s. " % (block._variables)
+            self._value += "Block Variables: {}. ".format(block._variables)
 
         if msg is not None:
             self._value += msg
 
         elif (self._error & 0xFF000000) == rogue.interfaces.memory.TimeoutError:
-            self._value += "Timeout after %s seconds" % (block.timeout)
+            self._value += "Timeout after {} seconds".format(block.timeout)
 
         elif (self._error & 0xFF000000) == rogue.interfaces.memory.VerifyError and hasattr(block,'_bData'):
             bStr = ''.join('0x{:02x} '.format(x) for x in block._bData)
             vStr = ''.join('0x{:02x} '.format(x) for x in block._vData)
             mStr = ''.join('0x{:02x} '.format(x) for x in block._mData)
-            self._value += "Verify error. Local=%s, Verify=%s, Mask=%s" % (bStr,vStr,mStr)
+            self._value += "Verify error. Local={}, Verify={}, Mask={}".format(bStr,vStr,mStr)
 
         elif (self._error & 0xFF000000) == rogue.interfaces.memory.AddressError:
             self._value += "Address error"
 
         elif (self._error & 0xFF000000) == rogue.interfaces.memory.SizeError:
-            self._value += "Size error. Size=%i" % (block._size)
+            self._value += "Size error. Size={}".format(block._size)
 
         elif (self._error & 0xFF000000) == rogue.interfaces.memory.AxiTimeout:
             self._value += "AXI timeout"
@@ -58,7 +58,7 @@ class BlockError(Exception):
             self._value += "AXI fail"
 
         else:
-            self._value += "Unknown error 0x%x" % (self._error)
+            self._value += "Unknown error 0x{:02x}".format(self._error)
 
     def __str__(self):
         return repr(self._value)
@@ -116,10 +116,10 @@ class BaseBlock(object):
            (type == rogue.interfaces.memory.Read   and (self.mode == 'CMD' or self.mode == 'RO' or self.mode == 'RW')) or  \
            (type == rogue.interfaces.memory.Verify and (self.mode == 'CMD' or self.mode == 'RW')):
 
-            self._log.debug("Setting block. Addr=%x, Data=%s" % (self._variables[0].offset,self._bData))
+            self._log.debug("Setting block. Addr=0x{:02x}, Data={}".format(self._variables[0].offset,self._bData))
             self._startTransaction(type)
             self._checkTransaction(update=False)
-            self._log.debug("Done block. Addr=%x, Data=%s" % (self._variables[0].offset,self._bData))
+            self._log.debug("Done block. Addr=0x{:02x}, Data={}".format(self._variables[0].offset,self._bData))
 
     @property
     def offset(self):
