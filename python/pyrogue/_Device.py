@@ -163,9 +163,9 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
             
         for v in variables:
             if isinstance(v, pr.BaseVariable):
-                v.hidden = hidden;
+                v._hidden = hidden;
             elif isinstance(variables[0], str):
-                self.variables[v].hidden = hidden
+                self.variables[v]._hidden = hidden
 
     def setResetFunc(self,func):
         """
@@ -178,7 +178,7 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
     def _buildBlocks(self):
 
         # Get all of the variables
-        for k,n in self.variables.items():
+        for k,n in self.nodes.items():
 
             if isinstance(n,pr.LocalVariable):
                 self._blocks.append(n._block)
