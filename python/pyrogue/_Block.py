@@ -428,9 +428,9 @@ class MemoryBlock(BaseBlock, rogue.interfaces.memory.Master):
 
 class RawBlock(rogue.interfaces.memory.Master):
 
-    def __init__(self, parent):
+    def __init__(self, slave):
         rogue.interfaces.memory.Master.__init__(self)
-        self._setSlave(parent)
+        self._setSlave(slave)
 
         self._timeout   = 1.0
         self._lock      = threading.Lock()
@@ -461,7 +461,6 @@ class RawBlock(rogue.interfaces.memory.Master):
         self._doTransaction(rogue.interfaces.memory.Read, address, bdata)
 
     def _doTransaction(self, type, address, bdata):
-        self._log.debug('_doTransaction type={}'.format(type))
 
         with self._cond:
             self._waitTransaction()
@@ -473,7 +472,7 @@ class RawBlock(rogue.interfaces.memory.Master):
             self._tranTime = time.time()
 
         # Start transaction outside of lock
-        self._reqTransaction(address,bData,type)
+        self._reqTransaction(address,bdata,type)
 
         # wait for completion
         with self._cond:
