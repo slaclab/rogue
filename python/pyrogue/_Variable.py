@@ -405,10 +405,11 @@ class LocalVariable(BaseVariable):
     def set(self, value, write=True):
         try:
             self._block.set(self, value)
-            self._updated()
 
         except Exception as e:
             self._log.error(e)
+
+        if write: self._updated()
 
     def __set__(self, value):
         self.set(value, write=False)
@@ -422,7 +423,7 @@ class LocalVariable(BaseVariable):
             self._log.error(e)
             return None
 
-        if read: self._block._updated()
+        if read: self._updated()
         return ret
 
     def __get__(self):
