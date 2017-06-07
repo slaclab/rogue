@@ -27,25 +27,29 @@ class BlockError(Exception):
     def __init__(self,block,msg=None):
         self._error = block.error
         block._error = 0
-        self._value = "Error in block %s with address 0x%x: Block Variables: %s. " % (block.name,block.address,block._variables)
+
+        self._value = "Error in block with address 0x{:02x}: ".format(block.address)
+
+        if hasattr(block,'_variables'):
+            self._value += "Block Variables: {}. ".format(block._variables)
 
         if msg is not None:
             self._value += msg
 
         elif (self._error & 0xFF000000) == rogue.interfaces.memory.TimeoutError:
-            self._value += "Timeout after %s seconds" % (block.timeout)
+            self._value += "Timeout after {} seconds".format(block.timeout)
 
-        elif (self._error & 0xFF000000) == rogue.interfaces.memory.VerifyError:
+        elif (self._error & 0xFF000000) == rogue.interfaces.memory.VerifyError and hasattr(block,'_bData'):
             bStr = ''.join('0x{:02x} '.format(x) for x in block._bData)
             vStr = ''.join('0x{:02x} '.format(x) for x in block._vData)
             mStr = ''.join('0x{:02x} '.format(x) for x in block._mData)
-            self._value += "Verify error. Local=%s, Verify=%s, Mask=%s" % (bStr,vStr,mStr)
+            self._value += "Verify error. Local={}, Verify={}, Mask={}".format(bStr,vStr,mStr)
 
         elif (self._error & 0xFF000000) == rogue.interfaces.memory.AddressError:
             self._value += "Address error"
 
         elif (self._error & 0xFF000000) == rogue.interfaces.memory.SizeError:
-            self._value += "Size error. Size=%i" % (block._size)
+            self._value += "Size error. Size={}".format(block._size)
 
         elif (self._error & 0xFF000000) == rogue.interfaces.memory.AxiTimeout:
             self._value += "AXI timeout"
@@ -54,10 +58,11 @@ class BlockError(Exception):
             self._value += "AXI fail"
 
         else:
-            self._value += "Unknown error 0x%x" % (self._error)
+            self._value += "Unknown error 0x{:02x}".format(self._error)
 
     def __str__(self):
         return repr(self._value)
+
 
 class BaseBlock(object):
 
@@ -111,10 +116,10 @@ class BaseBlock(object):
            (type == rogue.interfaces.memory.Read   and (self.mode == 'CMD' or self.mode == 'RO' or self.mode == 'RW')) or  \
            (type == rogue.interfaces.memory.Verify and (self.mode == 'CMD' or self.mode == 'RW')):
 
-            self._log.debug("Setting block. Addr=%x, Data=%s" % (self._variables[0].offset,self._bData))
+            self._log.debug("Setting block. Addr=0x{:02x}, Data={}".format(self._variables[0].offset,self._bData))
             self._startTransaction(type)
             self._checkTransaction(update=False)
-            self._log.debug("Done block. Addr=%x, Data=%s" % (self._variables[0].offset,self._bData))
+            self._log.debug("Done block. Addr=0x{:02x}, Data={}".format(self._variables[0].offset,self._bData))
 
     @property
     def offset(self):
@@ -369,7 +374,6 @@ class MemoryBlock(BaseBlock, rogue.interfaces.memory.Master):
         """
         self._log.debug('_startTransaction type={}'.format(type))
 
-        minSize = self._reqMinAccess()
         tData = None
 
         with self._cond:
@@ -422,6 +426,95 @@ class MemoryBlock(BaseBlock, rogue.interfaces.memory.Master):
             self._cond.notify()
 
 
+class RawBlock(rogue.interfaces.memory.Master):
+
+    def __init__(self, slave):
+        rogue.interfaces.memory.Master.__init__(self)
+        self._setSlave(slave)
+
+        self._timeout   = 1.0
+        self._lock      = threading.Lock()
+        self._cond      = threading.Condition(self._lock)
+        self._error     = 0
+        self._address   = 0
+        self._size      = 0
+        self._tranTime  = time.time()
+
+    @property
+    def address(self):
+        return self._addr | self._reqOffset()
+
+    @property
+    def timeout(self):
+        return self._timeout
+
+    @timeout.setter
+    def timeout(self,value):
+        with self._cond:
+            self._waitTransaction()
+            self._timeout = value
+
+    def write(self,address,bdata):
+        self._doTransaction(rogue.interfaces.memory.Write, address, bdata)
+
+    def read(self,address,bdata):
+        self._doTransaction(rogue.interfaces.memory.Read, address, bdata)
+
+    def _doTransaction(self, type, address, bdata):
+
+        with self._cond:
+            self._waitTransaction()
+
+            # Setup transaction
+            self._size     = len(bdata)
+            self._address  = address
+            self._error    = 0
+            self._tranTime = time.time()
+
+        # Start transaction outside of lock
+        self._reqTransaction(address,bdata,type)
+
+        # wait for completion
+        with self._cond:
+            self._waitTransaction()
+
+            # Error
+            if self._error > 0:
+                raise BlockError(self)
+
+    def _waitTransaction(self):
+        """
+        Wait while a transaction is pending.
+        Set an error on timeout.
+        Lock must be held before calling this method
+        """
+        lid = self._getId()
+        while lid > 0:
+            self._cond.wait(.01)
+            if self._getId() == lid and (time.time() - self._tranTime) > self._timeout:
+                self._endTransaction()
+                self._error = rogue.interfaces.memory.TimeoutError
+                break
+            lid = self._getId()
+
+    def _doneTransaction(self,tid,error):
+        """
+        Callback for when transaction is complete
+        """
+        with self._lock:
+
+            # Make sure id matches
+            if tid != self._getId():
+                return
+
+            # Clear transaction state
+            self._endTransaction()
+            self._error = error
+
+            # Notify waiters
+            self._cond.notify()
+
+
 def setBitToBytes(ba, bitOffset, value):
     """
     Set a bit to a specific location in an array of bytes
@@ -433,6 +526,7 @@ def setBitToBytes(ba, bitOffset, value):
         ba[byte] |= (1 << bit)
     else:
         ba[byte] &= (0xFF ^ (1 << bit))
+
 
 def getBitFromBytes(ba, bitOffset):
     """

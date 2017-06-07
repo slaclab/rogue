@@ -405,10 +405,14 @@ class LocalVariable(BaseVariable):
     def set(self, value, write=True):
         try:
             self._block.set(self, value)
-            self._updated()
 
         except Exception as e:
             self._log.error(e)
+
+        if write: self._updated()
+
+    def __set__(self, value):
+        self.set(value, write=False)
 
     @Pyro4.expose
     def get(self,read=True):
@@ -419,8 +423,11 @@ class LocalVariable(BaseVariable):
             self._log.error(e)
             return None
 
-        if read: self._block._updated()
+        if read: self._updated()
         return ret
+
+    def __get__(self):
+        return self.get(read=False)
 
 @Pyro4.expose
 class LinkVariable(BaseVariable):
@@ -488,36 +495,6 @@ class LinkVariable(BaseVariable):
 # Legacy Support
 def Variable(local=False, setFunction=None, getFunction=None, **kwargs):
         
-#         # disp follows base if not specified
-#         if disp is None and isinstance(base, str):
-#             disp = base
-#         elif disp is None:
-#             disp = self._base.defaultdisp
-
-#         if isinstance(disp, dict):
-#             self.disp = 'enum'
-#             self.enum = disp
-#         elif isinstance(disp, list):
-#             self.disp = 'enum'
-#             self.enum = {k:str(k) for k in disp}
-#         elif isinstance(disp, str):
-#             if disp == 'range':
-#                 self.disp = 'range'
-#             elif disp == 'hex':
-#                 self.disp = '{:x}'
-#             elif disp == 'uint':
-#                 self.disp = '{:d}'
-#             elif disp == 'bin':
-#                 self.disp = '{:b}'
-#             elif disp == 'string':
-#                 self.disp = '{}'
-#             elif disp == 'bool':
-#                 self.disp = 'enum'
-#                 self.enum = {False: 'False', True: 'True'}
-#             else:
-#                 self.disp = disp            
-    
-
     # Local Variables override get and set functions
     if local or setFunction is not None or getFunction is not None:
         return(LocalVariable(localSet=setFunction, localGet=getFunction, **kwargs))
