@@ -100,21 +100,14 @@ class Node(object):
         This override builds an OrderedDict of all child nodes named as 'name[key]' and returns it.
         Raises AttributeError if no such named Nodes are found. """
 
-        ret = odict()
-        rg = re.compile('{:s}\\[(.*?)\\]'.format(name))
-        for k,v in self._nodes.items():
-            m = rg.match(k)
-            if m:
-                key = m.group(1)
-                if key.isdigit():
-                    key = int(key)
-                ret[key] = v
-
-        if len(ret) == 0:
+        ret = attrHelper(self._nodes,name)
+        if ret is None:
             raise AttributeError('{} has no attribute {}'.format(self, name))
+        else:
+            return ret
 
-        print("returning {}".format(ret))
-        return ret
+    def __dir__(self):
+        return(super().__dir__() + [k for k,v in self._nodes.items()])
 
     def add(self,node):
         """Add node as sub-node"""
@@ -129,8 +122,6 @@ class Node(object):
             raise NodeError('Error adding %s with name %s to %s. Name collision.' % 
                              (str(node.classType),node.name,self.name))
 
-        # Attach directly as attribute and add to ordered node dictionary
-        setattr(self,node.name,node)
         self._nodes[node.name] = node 
 
         # Update path related attributes
@@ -288,10 +279,17 @@ class PyroNode(object):
         if self._nodes is None:
             self._nodes = self._convert(self._node.nodes)
 
-        if name in self._nodes:
-            return self._nodes[name]
-        else:
+        ret = attrHelper(self._nodes,name)
+        if ret is None:
             return self._node.__getattr__(name)
+        else:
+            return ret
+
+    def __dir__(self):
+        if self._nodes is None:
+            self._nodes = self._convert(self._node.nodes)
+
+        return(super().__dir__() + [k for k,v in self._nodes.items()])
 
     def _convert(self,d):
         ret = odict()
@@ -340,4 +338,24 @@ class PyroNode(object):
 
     def __call__(self,arg=None):
         self._node.call(arg)
+
+
+def attrHelper(nodes,name):
+    if name in nodes:
+        return nodes[name]
+    else:
+        ret = odict()
+        rg = re.compile('{:s}\\[(.*?)\\]'.format(name))
+        for k,v in nodes.items():
+            m = rg.match(k)
+            if m:
+                key = m.group(1)
+                if key.isdigit():
+                    key = int(key)
+                ret[key] = v
+
+        if len(ret) == 0:
+            return None
+        else:
+            return ret
 
