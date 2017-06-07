@@ -49,7 +49,7 @@ typedef struct {
 } RogueControlMem;
 
 // Open and map shared memory
-inline int32_t rogueControlOpenAndMap ( RogueControlMem **ptr, const char * group, const char * root) {
+inline int32_t rogueSMemControlOpenAndMap ( RogueControlMem **ptr, const char * group, const char * root) {
    int32_t  smemFd;
    char     shmName[ROGUE_NAME_SIZE];
    int32_t  lid;
@@ -82,7 +82,7 @@ inline int32_t rogueControlOpenAndMap ( RogueControlMem **ptr, const char * grou
 }
 
 // Close shared memory
-inline void rogueControlClose ( RogueControlMem *ptr ) {
+inline void rogueSMemControlClose ( RogueControlMem *ptr ) {
    char shmName[200];
 
    // Get shared name
@@ -93,7 +93,7 @@ inline void rogueControlClose ( RogueControlMem *ptr ) {
 }
 
 // Init data structure, called by rogue
-inline void rogueControlInit ( RogueControlMem *ptr ) {
+inline void rogueSMemControlInit ( RogueControlMem *ptr ) {
    memset(ptr->path,0,ROGUE_PATH_STR_SIZE);
    memset(ptr->arg,0,ROGUE_ARG_STR_SIZE);
    memset(ptr->result,0,ROGUE_ARG_STR_SIZE);
@@ -104,7 +104,7 @@ inline void rogueControlInit ( RogueControlMem *ptr ) {
 }
 
 // Send command
-inline void rogueControlReq ( RogueControlMem *ptr, uint8_t cmdType, const char *path, const char *arg ) {
+inline void rogueSMemControlReq ( RogueControlMem *ptr, uint8_t cmdType, const char *path, const char *arg ) {
    if ( path != NULL ) {
       strncpy(ptr->path,path,ROGUE_PATH_STR_SIZE);
       ptr->path[ROGUE_PATH_STR_SIZE-1] = '\0';
@@ -120,7 +120,7 @@ inline void rogueControlReq ( RogueControlMem *ptr, uint8_t cmdType, const char 
 }
 
 // Check for pending command
-inline int32_t rogueControlReqCheck ( RogueControlMem *ptr, uint8_t *cmdType, char **path, char **arg ) {
+inline int32_t rogueSMemControlReqCheck ( RogueControlMem *ptr, uint8_t *cmdType, char **path, char **arg ) {
    if ( ptr->cmdReqCount == ptr->cmdAckCount ) return(0);
    else {
       ptr->path[ROGUE_PATH_SIZE_SIZE-1] = '\0';
@@ -134,7 +134,7 @@ inline int32_t rogueControlReqCheck ( RogueControlMem *ptr, uint8_t *cmdType, ch
 }
 
 // Command ack
-inline void rogueControlAck ( RogueControlMem *ptr, const char *result ) {
+inline void rogueSMemControlAck ( RogueControlMem *ptr, const char *result ) {
    if ( result != NULL ) {
       strncpy(ptr->result,result,ROGUE_ARG_STR_SIZE);
       ptr->result[ROGUE_ARG_STR_SIZE-1] = '\0';
@@ -143,7 +143,7 @@ inline void rogueControlAck ( RogueControlMem *ptr, const char *result ) {
 }
 
 // Wait for ack
-inline int32_t rogueControlAckCheck ( RogueControlMem *ptr, char *result ) {
+inline int32_t rogueSMemControlAckCheck ( RogueControlMem *ptr, char *result ) {
    if ( ptr->cmdReqCount != ptr->cmdAckCount ) return(0);
    else { 
       if ( result != NULL ) {
