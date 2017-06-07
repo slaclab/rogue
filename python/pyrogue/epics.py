@@ -35,8 +35,7 @@ class EpicsCaDriver(pcaspy.Driver):
         self._q = queue
 
     def write(self,reason,value):
-        path = reason.replace(':','.')
-        entry = {'path':path,'value':value,'epath':reason}
+        entry = {'value':value,'epath':reason}
         self._q.put(entry)
         self.setParam(reason,value)
 
@@ -45,7 +44,7 @@ class EpicsCaServer(object):
     """
     Class to contain an epics ca server
     """
-    def __init__(self,base,root):
+    def __init__(self,base,root,pvMap=None):
         self._root    = root
         self._base    = base 
         self._runEn   = True
@@ -54,8 +53,18 @@ class EpicsCaServer(object):
         self._queue   = queue.Queue()
         self._wThread = None
         self._eThread = None
-        self._pvdb    = {}
+        self._pvDb    = {}
         self._log     = pyrogue.logInit(self)
+
+        if pvMap is None:
+            doAll = True
+            self._pvMap = {}
+        else:
+            doAll = False
+            self._pvMap = pvMap
+
+        # Create PVs
+        self._addDevice(self._root,doAll)
 
     def stop(self):
         self._runEn = False
@@ -71,8 +80,18 @@ class EpicsCaServer(object):
         self._eThread.start()
         self._wThread.start()
 
-    def _addPv(self,node):
+    def _addPv(self,node,doAll):
         d = {}
+
+        if doAll:
+            d['name'] = node.path.replace('.',':')
+        elif node.path in self._pvMap:
+            d['name'] = self._pvMap[node.path]
+        else:
+            return
+
+        self._pvMap[node.path] = d
+        d['var'] = node
 
         if node.disp == 'enum':
             d['type']  = 'enum'
@@ -95,35 +114,30 @@ class EpicsCaServer(object):
             elif d['type'] == 'bool':
                 d['type'] = 'int'
             
-        name = node.path.replace('.',':')
-
         node.addListener(self._variableUpdated)
 
-        self._log.info("Adding epics variable {} type {}".format(name,d['type']))
-        self._pvdb[name] = d
+        self._log.info("Adding {} type {} maped to {}".format(node.path,d['type'],name))
+        self._pvDb[d['name']] = d
 
-    def _addDevice(self,node):
+    def _addDevice(self,node,doAll):
 
         # Get variables 
         for key,value in node.variables.items():
-            self._addPv(value)
+            self._addPv(value,doAll)
 
         # Get commands
         for key,value in node.commands.items():
-            self._addPv(value)
+            self._addPv(value,doAll)
 
         # Get devices
         for key,value in node.devices.items():
-            self._addDevice(value)
+            self._addDevice(value,doAll)
 
     def _epicsRun(self):
         self._server = pcaspy.SimpleServer()
 
         # Create PVs
-        self._addDevice(self._root)
-
-        # Create PVs
-        self._server.createPV(self._base + ':',self._pvdb)
+        self._server.createPV(self._base + ':',self._pvDb)
         self._driver = EpicsCaDriver(self._queue)
 
         while(self._runEn):
@@ -133,16 +147,15 @@ class EpicsCaServer(object):
         while(self._runEn):
             try:
                 e = self._queue.get(True,0.5)
-                epath = e['epath']
-                path  = e['path']
+                d = self._pvDb[e['epath']]
                 value = e['value']
 
-                if self._pvdb[epath]['type'] == 'enum':
-                    val = self._pvdb[epath]['enums'][value]
-                    self._root.getNode(path).setDisp(val)
+                if d['type'] == 'enum':
+                    val = d['enums'][value]
+                    d['var'].setDisp(val)
                 else:
                     val = e['value']
-                    self._root.getNode(path).set(val)
+                    d['var'].set(val)
             except:
                 pass
 
@@ -150,13 +163,13 @@ class EpicsCaServer(object):
     def _variableUpdated(self,var,value,disp):
         if self._driver is None: return
 
-        epath = var.path.replace('.',':')
+        d = self._pvMap[var.path]
 
-        if self._pvdb[epath]['type'] == 'enum':
-            val = self._pvdb[epath]['enums'].index(disp)
+        if d['type'] == 'enum':
+            val = d['enums'].index(disp)
         else:
             val = value
 
-        self._driver.setParam(epath,val)
+        self._driver.setParam(d['name'],val)
         self._driver.updatePVs()
 
