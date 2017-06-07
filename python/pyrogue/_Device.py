@@ -167,8 +167,18 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
             elif isinstance(variables[0], str):
                 self.variables[v]._hidden = hidden
 
+    def softReset(self):
+        pass
+
+    def hardReset(self):
+        pass
+
+    def countReset(self):
+        pass
+
     def setResetFunc(self,func):
         """
+        Deprecated!
         Set function for count, hard or soft reset
         resetFunc(type) 
         where type = 'soft','hard','count'
@@ -232,7 +242,15 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
     def _devReset(self,rstType):
         """Generate a count, soft or hard reset"""
         if callable(self._resetFunc):
+            # Deprecate!
             self._resetFunc(self,rstType)
+
+        if rstType == 'hard':
+            self.hardReset()
+        elif rstType == 'soft':
+            self.softReset()
+        elif rstType == 'count':
+            self.countReset()
 
         # process remaining blocks
         for key,value in self._nodes.items():
