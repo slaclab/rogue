@@ -116,7 +116,7 @@ class EpicsCaServer(object):
             
         node.addListener(self._variableUpdated)
 
-        self._log.info("Adding {} type {} maped to {}".format(node.path,d['type'],name))
+        self._log.info("Adding {} type {} maped to {}".format(node.path,d['type'],d['name']))
         self._pvDb[d['name']] = d
 
     def _addDevice(self,node,doAll):
