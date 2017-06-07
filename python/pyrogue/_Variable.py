@@ -405,10 +405,12 @@ class LocalVariable(BaseVariable):
     def set(self, value, write=True):
         try:
             self._block.set(self, value)
-            self._updated()
 
         except Exception as e:
             self._log.error(e)
+
+        if write:
+            self._updated()
 
     @Pyro4.expose
     def get(self,read=True):
