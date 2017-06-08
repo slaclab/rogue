@@ -175,6 +175,12 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
     def countReset(self):
         pass
 
+
+
+
+
+
+
     def blockWrite(self, forceWrite=False, recurse=True):
         """
         Perform background writes
@@ -251,6 +257,9 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
         if recurse:
             for key,value in self.devices.items():
                 value.blockCheck(varUpdate=varUpdate,recurse=True)
+
+
+
 
     def _buildBlocks(self):
         # Get all of the variables
