@@ -877,6 +877,7 @@ class Block(rogue.interfaces.memory.Master):
         self._error     = 0
         self._doUpdate  = False
         self._doVerify  = False
+        self._verifyEn  = False
         self._device    = variable.parent
         self._tranTime  = time.time()
 
@@ -1067,6 +1068,7 @@ class Block(rogue.interfaces.memory.Master):
 
             # Update verify mask
             if var.mode == 'RW' and var.verify is True:
+                self._verifyEn = True
                 for x in range(var.bitOffset,var.bitOffset+var.bitSize):
                     setBitToBytes(self._mData,x,1)
 
@@ -1076,6 +1078,9 @@ class Block(rogue.interfaces.memory.Master):
         """
         Start a transaction.
         """
+
+        if (not self._device.enable.get()) or (type == rogue.interfaces.memory.Verify and self._verifyEn == False):
+            return
 
         self._log.debug('_startTransaction type={}'.format(type))
 
@@ -1093,10 +1098,6 @@ class Block(rogue.interfaces.memory.Master):
                 self._mData.extend(bytearray(newSize - self._size))
                 self._size = newSize
 
-            # Return if not enabled
-            if not self._device.enable.get():
-                return
-            
             self._log.debug('len bData = {}, vData = {}, mData = {}'.format(len(self._bData), len(self._vData), len(self._mData)))
                   
             # Setup transaction
