@@ -120,7 +120,7 @@ class BaseBlock(object):
 
             self._log.debug("Setting block. Addr=0x{:02x}, Data={}".format(self._variables[0].offset,self._bData))
             self._startTransaction(type)
-            self.checkTransaction(update=False)
+            self._checkTransaction(update=False)
             self._log.debug("Done block. Addr=0x{:02x}, Data={}".format(self._variables[0].offset,self._bData))
 
     @property
@@ -185,7 +185,7 @@ class BaseBlock(object):
         with self._lock:
             self._doUpdate = (type == rogue.interfaces.memory.Read)
 
-    def checkTransaction(self,update):
+    def _checkTransaction(self,update):
         """
         Check status of block.
         If update=True notify variables if read
