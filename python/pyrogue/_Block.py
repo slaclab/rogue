@@ -454,11 +454,24 @@ class RawBlock(rogue.interfaces.memory.Master):
             self._waitTransaction()
             self._timeout = value
 
-    def write(self,address,bdata):
-        self._doTransaction(rogue.interfaces.memory.Write, address, bdata)
+    def write(self,address,value):
+        if isinstance(value,bytearray):
+            ldata = value
+        else:
+            ldata = value.to_bytes(4,'little',signed=False)
 
-    def read(self,address,bdata):
-        self._doTransaction(rogue.interfaces.memory.Read, address, bdata)
+        self._doTransaction(rogue.interfaces.memory.Write, address, ldata)
+
+    def read(self,address,bdata=None):
+        if bdata:
+            ldata = bdata
+        else:
+            ldata = bytearray(4)
+
+        self._doTransaction(rogue.interfaces.memory.Read, address, ldata)
+
+        if bdata is None:
+            return int.from_bytes(ldata,'little',signed=False)
 
     def _doTransaction(self, type, address, bdata):
 
