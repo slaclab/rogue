@@ -167,8 +167,7 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
                 self.variables[v]._hidden = hidden
 
     def softReset(self):
-        passs
-
+        pass
 
     def hardReset(self):
         pass
