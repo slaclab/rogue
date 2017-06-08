@@ -164,7 +164,7 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
             if isinstance(v, pr.BaseVariable):
                 v._hidden = hidden;
             elif isinstance(variables[0], str):
-                self.variables[v]._hieadn = hidden
+                self.variables[v]._hidden = hidden
 
     def softReset(self):
         passs
