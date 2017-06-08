@@ -64,7 +64,6 @@ rogue::SMemControl::~SMemControl() {
    rogue::GilRelease noGil;
    thread_->interrupt();
    thread_->join();
-   rogueSMemControlClose ( smem_ );
 }
 
 std::string rogue::SMemControl::doRequest ( uint8_t type, std::string path, std::string arg ) {

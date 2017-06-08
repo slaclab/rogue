@@ -41,7 +41,6 @@ typedef struct {
    uint8_t cmdReqCount;
    uint8_t cmdAckCount;
    uint8_t cmdType;
-   char    name[ROGUE_NAME_SIZE];
    char    path[ROGUE_PATH_STR_SIZE];
    char    arg[ROGUE_ARG_STR_SIZE];
    char    result[ROGUE_ARG_STR_SIZE];
@@ -73,22 +72,7 @@ inline int32_t rogueSMemControlOpenAndMap ( RogueControlMem **ptr, const char * 
    if((*ptr = (RogueControlMem *)mmap(0, sizeof(RogueControlMem),
               (PROT_READ | PROT_WRITE), MAP_SHARED, smemFd, 0)) == MAP_FAILED) return(-2);
 
-   // Store name
-   strncpy((*ptr)->name,shmName,ROGUE_NAME_SIZE);
-   (*ptr)->name[ROGUE_NAME_SIZE-1] = '\0';
-
    return(smemFd);
-}
-
-// Close shared memory
-inline void rogueSMemControlClose ( RogueControlMem *ptr ) {
-   char shmName[200];
-
-   // Get shared name
-   strcpy(shmName,ptr->name);
-
-   // Unlink
-   shm_unlink(shmName);
 }
 
 // Init data structure, called by rogue
