@@ -185,19 +185,6 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
         """
         self._resetFunc = func
 
-    def _buildBlocks(self):
-
-        # Get all of the variables
-        for k,n in self.nodes.items():
-
-            if isinstance(n,pr.LocalVariable):
-                self._blocks.append(n._block)
-
-            elif isinstance(n,pr.RemoteVariable) and n.offset is not None:
-                if not any(block._addVariable(n) for block in self._blocks):
-                    self._log.debug("Adding new block %s at offset %x" % (n.name,n.offset))
-                    self._blocks.append(pr.MemoryBlock(n))
-
 
     def _backgroundTransaction(self,type):
         """
@@ -226,18 +213,82 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
             for cmd in cmds:
                 cmd()
 
-    def _checkTransaction(self,update):
+
+
+    def blockVerify(self
+        """
+        Perform background verify
+        """
+        if not self.enable: return
+
+        # Execute all unique beforeReadCmds for reads or verify
+        if type == rogue.interfaces.memory.Read or type == rogue.interfaces.memory.Verify:
+            cmds = set([v._beforeReadCmd for v in self.variables.values() if v._beforeReadCmd is not None])
+            for cmd in cmds:
+                cmd()
+
+        # Process local blocks. 
+        for block in self._blocks:
+            block.backgroundTransaction(type)
+
+        # Process rest of tree
+        for key,value in self._nodes.items():
+            if isinstance(value,Device):
+                value._backgroundTransaction(type)
+
+        # Execute all unique afterWriteCmds for writes
+        if type == rogue.interfaces.memory.Write:
+            cmds = set([v._afterWriteCmd for v in self.variables.values() if v._afterWriteCmd is not None])
+            for cmd in cmds:
+                cmd()
+
+
+
+
+    def blockRead(self, varUpdate=True, recurse=True):
+        """
+        Perform background reads
+        """
+        if not self.enable: return
+
+        # Execute all unique beforeReadCmds
+        cmds = set([v._beforeReadCmd for v in self.variables.values() if v._beforeReadCmd is not None])
+        for cmd in cmds:
+            cmd()
+
+        # Process local blocks. 
+        for block in self._blocks:
+            block.backgroundTransaction(rogue.interfaces.memory.Read)
+
+        # Process rest of tree
+        for key,value in self._nodes.items():
+            if isinstance(value,Device):
+                value.backgroundTransaction(type)
+
+    def blockCheck(self,varUpdate=True,recurse=True):
         """Check errors in all blocks and generate variable update nofifications"""
         if not self.enable: return
 
         # Process local blocks
         for block in self._blocks:
-            block._checkTransaction(update)
+            block.checkTransaction(varUpdate)
 
         # Process rest of tree
-        for key,value in self._nodes.items():
-            if isinstance(value,Device):
-                value._checkTransaction(update)
+        if recurse:
+            for key,value in self.devices.items():
+                value.blockCheck(varUpdate,recurse)
+
+    def _buildBlocks(self):
+        # Get all of the variables
+        for k,n in self.nodes.items():
+
+            if isinstance(n,pr.LocalVariable):
+                self._blocks.append(n._block)
+
+            elif isinstance(n,pr.RemoteVariable) and n.offset is not None:
+                if not any(block._addVariable(n) for block in self._blocks):
+                    self._log.debug("Adding new block %s at offset %x" % (n.name,n.offset))
+                    self._blocks.append(pr.MemoryBlock(n))
 
     def _devReset(self,rstType):
         """Generate a count, soft or hard reset"""

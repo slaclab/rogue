@@ -294,7 +294,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
             self._log.info("Verify root read")
             self._backgroundTransaction(rogue.interfaces.memory.Verify)
             self._log.info("Check root read")
-            self._checkTransaction(update=False)
+            self.blockCheck(update=False)
         except Exception as e:
             self._log.error(e)
         self._log.info("Done root write")
@@ -307,7 +307,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         try:
             self._backgroundTransaction(rogue.interfaces.memory.Read)
             self._log.info("Check root read")
-            self._checkTransaction(update=True)
+            self.blockCheck(update=True)
         except Exception as e:
             self._log.error(e)
         self._doneUpdatedVars()
