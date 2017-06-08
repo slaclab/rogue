@@ -29,6 +29,7 @@
 #include <rogue/Logging.h>
 #include <rogue/SMemControl.h>
 #include <rogue/GilRelease.h>
+#include <rogue/ScopedGil.h>
 #include <rogue/Version.h>
 
 BOOST_PYTHON_MODULE(rogue) {
@@ -43,6 +44,7 @@ BOOST_PYTHON_MODULE(rogue) {
    rogue::GeneralError::setup_python();
    rogue::Logging::setup_python();
    rogue::GilRelease::setup_python();
+   rogue::ScopedGil::setup_python();
    rogue::Version::setup_python();
    rogue::SMemControl::setup_python();
 
