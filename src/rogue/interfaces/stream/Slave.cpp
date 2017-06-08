@@ -28,6 +28,7 @@
 #include <rogue/GeneralError.h>
 #include <boost/make_shared.hpp>
 #include <rogue/GilRelease.h>
+#include <rogue/ScopedGil.h>
 #include <rogue/Logging.h>
 
 namespace ris = rogue::interfaces::stream;
@@ -85,25 +86,19 @@ void ris::Slave::acceptFrame ( ris::FramePtr frame ) {
 
 //! Accept frame
 void ris::SlaveWrap::acceptFrame ( ris::FramePtr frame ) {
-   bool found;
+   {
+      rogue::ScopedGil gil;
 
-   found = false;
-
-   // Not sure if this is (and release) are ok if calling from python to python
-   // It appears we need to lock before calling get_override
-   PyGILState_STATE pyState = PyGILState_Ensure();
-
-   if (boost::python::override pb = this->get_override("_acceptFrame")) {
-      found = true;
-      try {
-         pb(frame);
-      } catch (...) {
-         PyErr_Print();
+      if (boost::python::override pb = this->get_override("_acceptFrame")) {
+         try {
+            pb(frame);
+            return;
+         } catch (...) {
+            PyErr_Print();
+         }
       }
    }
-   PyGILState_Release(pyState);
-
-   if ( ! found ) ris::Slave::acceptFrame(frame);
+   ris::Slave::acceptFrame(frame);
 }
 
 //! Default accept frame call
