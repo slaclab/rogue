@@ -81,6 +81,7 @@ class BaseBlock(object):
         self._doVerify  = False
         self._tranTime  = time.time()
         self._value     = None
+        self._stale     = False
 
         # Setup logging
         self._log = pr.logInit(self,variable.name)
@@ -93,6 +94,7 @@ class BaseBlock(object):
 
     def set(self, var, value):
         self._value = value
+        self._stale = True
 
     def get(self, var, value):
         return self._value
@@ -121,6 +123,27 @@ class BaseBlock(object):
             self.checkTransaction(update=False)
             self._log.debug("Done block. Addr=0x{:02x}, Data={}".format(self._variables[0].offset,self._bData))
 
+    def checkTransaction(self,update):
+        """
+        Check status of block.
+        If update=True notify variables if read
+        """
+        doUpdate = False
+        with self._cond:
+            self._waitTransaction()
+
+            # Updated
+            doUpdate = update and self._doUpdate
+            self._doUpdate = False
+
+            # Error
+            if self._error > 0:
+                raise BlockError(self)
+
+        # Update variables outside of lock
+        if doUpdate: self._updated()
+        self._stale = False
+
     @property
     def offset(self):
         return self._variables[0].offset
@@ -143,6 +166,10 @@ class BaseBlock(object):
     @property
     def value(self):
         return self._value
+
+    @property
+    def stale(self):
+        return self._stale
 
     @property
     def timeout(self):
@@ -179,26 +206,6 @@ class BaseBlock(object):
         with self._lock:
             self._doUpdate = (type == rogue.interfaces.memory.Read)
 
-    def checkTransaction(self,update):
-        """
-        Check status of block.
-        If update=True notify variables if read
-        """
-        doUpdate = False
-        with self._cond:
-            self._waitTransaction()
-
-            # Updated
-            doUpdate = update and self._doUpdate
-            self._doUpdate = False
-
-            # Error
-            if self._error > 0:
-                raise BlockError(self)
-
-        # Update variables outside of lock
-        if doUpdate: self._updated()
-
     def _updated(self):
         for variable in self._variables:
             variable._updated()
@@ -217,6 +224,7 @@ class LocalBlock(BaseBlock):
             changed = self._value != value
             self._value = value
             dev = var.parent
+            self._stale = True
 
             # If a setFunction exists, call it (Used by local variables)        
             if self._localSet is not None:
@@ -273,6 +281,7 @@ class MemoryBlock(BaseBlock, rogue.interfaces.memory.Master):
         with self._cond:
             self._waitTransaction()
             self._value = value
+            self._stale = True
 
             ba = var._base.toBlock(value, var.bitSize)
 

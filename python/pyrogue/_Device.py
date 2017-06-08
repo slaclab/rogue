@@ -82,7 +82,6 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
         # Blocks
         self._blocks    = []
         self._memBase   = memBase
-        self._resetFunc = None
         self._expand    = expand
 
         # Connect to memory slave
@@ -165,10 +164,11 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
             if isinstance(v, pr.BaseVariable):
                 v._hidden = hidden;
             elif isinstance(variables[0], str):
-                self.variables[v]._hidden = hidden
+                self.variables[v]._hieadn = hidden
 
     def softReset(self):
-        pass
+        passs
+
 
     def hardReset(self):
         pass
@@ -176,82 +176,57 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
     def countReset(self):
         pass
 
-    def setResetFunc(self,func):
+    def blockWrite(self, forceWrite=False, recurse=True):
         """
-        Deprecated!
-        Set function for count, hard or soft reset
-        resetFunc(type) 
-        where type = 'soft','hard','count'
-        """
-        self._resetFunc = func
-
-
-    def _backgroundTransaction(self,type):
-        """
-        Perform background transactions
+        Perform background writes
         """
         if not self.enable: return
 
-        # Execute all unique beforeReadCmds for reads or verify
-        if type == rogue.interfaces.memory.Read or type == rogue.interfaces.memory.Verify:
-            cmds = set([v._beforeReadCmd for v in self.variables.values() if v._beforeReadCmd is not None])
-            for cmd in cmds:
-                cmd()
-
         # Process local blocks. 
         for block in self._blocks:
-            block.backgroundTransaction(type)
+            if forceWrite or block.stale:
+                block.backgroundTransaction(rogue.interfaces.memory.Write)
 
         # Process rest of tree
-        for key,value in self._nodes.items():
-            if isinstance(value,Device):
-                value._backgroundTransaction(type)
+        if recurse:
+            for key,value in self.devices.items():
+                value.blockWrite(forceWrite=forceWrite,recurse=True)
 
-        # Execute all unique afterWriteCmds for writes
-        if type == rogue.interfaces.memory.Write:
-            cmds = set([v._afterWriteCmd for v in self.variables.values() if v._afterWriteCmd is not None])
-            for cmd in cmds:
-                cmd()
+        # Execute all unique afterWriteCmds
+        # Can this be deprecated since we can override blockWrite?
+        cmds = set([v._afterWriteCmd for v in self.variables.values() if v._afterWriteCmd is not None])
+        for cmd in cmds:
+            cmd()
 
-
-
-    def blockVerify(self
+    def blockVerify(self, recurse=True):
         """
         Perform background verify
         """
         if not self.enable: return
 
-        # Execute all unique beforeReadCmds for reads or verify
-        if type == rogue.interfaces.memory.Read or type == rogue.interfaces.memory.Verify:
-            cmds = set([v._beforeReadCmd for v in self.variables.values() if v._beforeReadCmd is not None])
-            for cmd in cmds:
-                cmd()
+        # Execute all unique beforeReadCmds
+        # Can this be deprecated since we can override blockVerify?
+        cmds = set([v._beforeReadCmd for v in self.variables.values() if v._beforeReadCmd is not None])
+        for cmd in cmds:
+            cmd()
 
         # Process local blocks. 
         for block in self._blocks:
-            block.backgroundTransaction(type)
+            block.backgroundTransaction(rogue.interfaces.memory.Verify)
 
         # Process rest of tree
-        for key,value in self._nodes.items():
-            if isinstance(value,Device):
-                value._backgroundTransaction(type)
+        if recurse:
+            for key,value in self.devices.items():
+                value.blockVerify(recurse=True)
 
-        # Execute all unique afterWriteCmds for writes
-        if type == rogue.interfaces.memory.Write:
-            cmds = set([v._afterWriteCmd for v in self.variables.values() if v._afterWriteCmd is not None])
-            for cmd in cmds:
-                cmd()
-
-
-
-
-    def blockRead(self, varUpdate=True, recurse=True):
+    def blockRead(self, recurse=True):
         """
         Perform background reads
         """
         if not self.enable: return
 
         # Execute all unique beforeReadCmds
+        # Can this be deprecated since we can override blockRead?
         cmds = set([v._beforeReadCmd for v in self.variables.values() if v._beforeReadCmd is not None])
         for cmd in cmds:
             cmd()
@@ -261,9 +236,9 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
             block.backgroundTransaction(rogue.interfaces.memory.Read)
 
         # Process rest of tree
-        for key,value in self._nodes.items():
-            if isinstance(value,Device):
-                value.backgroundTransaction(type)
+        if recurse:
+            for key,value in self.devices.items():
+                value.blockRead(recurse=True)
 
     def blockCheck(self,varUpdate=True,recurse=True):
         """Check errors in all blocks and generate variable update nofifications"""
@@ -276,7 +251,7 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
         # Process rest of tree
         if recurse:
             for key,value in self.devices.items():
-                value.blockCheck(varUpdate,recurse)
+                value.blockCheck(varUpdate=varUpdate,recurse=True)
 
     def _buildBlocks(self):
         # Get all of the variables
@@ -292,9 +267,6 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
 
     def _devReset(self,rstType):
         """Generate a count, soft or hard reset"""
-        if callable(self._resetFunc):
-            # Deprecate!
-            self._resetFunc(self,rstType)
 
         if rstType == 'hard':
             self.hardReset()
