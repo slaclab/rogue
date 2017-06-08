@@ -24,6 +24,7 @@
 #include <rogue/GeneralError.h>
 #include <boost/make_shared.hpp>
 #include <rogue/GilRelease.h>
+#include <rogue/ScopedGil.h>
 
 namespace rim = rogue::interfaces::memory;
 namespace bp  = boost::python;
@@ -245,23 +246,19 @@ void rim::Master::setup_python() {
 
 //! Transaction complete, called by slave when transaction is complete, error passed
 void rim::MasterWrap::doneTransaction(uint32_t id, uint32_t error) {
-   bool found;
+   {
+      rogue::ScopedGil gil;
 
-   found = false;
-
-   PyGILState_STATE pyState = PyGILState_Ensure();
-
-   if (boost::python::override pb = this->get_override("_doneTransaction")) {
-      found = true;
-      try {
-         pb(id,error);
-      } catch (...) {
-         PyErr_Print();
+      if (boost::python::override pb = this->get_override("_doneTransaction")) {
+         try {
+            pb(id,error);
+            return;
+         } catch (...) {
+            PyErr_Print();
+         }
       }
    }
-   PyGILState_Release(pyState);
-
-   if ( ! found ) rim::Master::doneTransaction(id,error);
+   rim::Master::doneTransaction(id,error);
 }
 
 //! Transaction complete, called by slave when transaction is complete, error passed
