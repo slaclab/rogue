@@ -25,6 +25,7 @@
 #include <rogue/GeneralError.h>
 #include <boost/make_shared.hpp>
 #include <rogue/GilRelease.h>
+#include <rogue/ScopedGil.h>
 
 namespace rim = rogue::interfaces::memory;
 namespace bp = boost::python;
@@ -125,26 +126,18 @@ rim::SlaveWrap::SlaveWrap(uint32_t min, uint32_t max) : rim::Slave(min,max) {}
 
 //! Return min access size to requesting master
 uint32_t rim::SlaveWrap::doMinAccess() {
-   bool     found;
-   uint32_t ret;
+   {
+      rogue::ScopedGil gil;
 
-   found = false;
-   ret = 0;
-
-   PyGILState_STATE pyState = PyGILState_Ensure();
-
-   if (boost::python::override pb = this->get_override("_doMinAccess")) {
-      found = true;
-      try {
-         ret = pb();
-      } catch (...) {
-         PyErr_Print();
+      if (boost::python::override pb = this->get_override("_doMinAccess")) {
+         try {
+            return(pb());
+         } catch (...) {
+            PyErr_Print();
+         }
       }
    }
-   PyGILState_Release(pyState);
-
-   if ( ! found ) ret = rim::Slave::doMinAccess();
-   return(ret);
+   return(rim::Slave::doMinAccess());
 }
 
 //! Return min access size to requesting master
@@ -154,26 +147,18 @@ uint32_t rim::SlaveWrap::defDoMinAccess() {
 
 //! Return max access size to requesting master
 uint32_t rim::SlaveWrap::doMaxAccess() {
-   bool     found;
-   uint32_t ret;
+   {
+      rogue::ScopedGil gil;
 
-   found = false;
-   ret = 0;
-
-   PyGILState_STATE pyState = PyGILState_Ensure();
-
-   if (boost::python::override pb = this->get_override("_doMaxAccess")) {
-      found = true;
-      try {
-         ret = pb();
-      } catch (...) {
-         PyErr_Print();
+      if (boost::python::override pb = this->get_override("_doMaxAccess")) {
+         try {
+            return(pb());
+         } catch (...) {
+            PyErr_Print();
+         }
       }
    }
-   PyGILState_Release(pyState);
-
-   if ( ! found ) ret = rim::Slave::doMaxAccess();
-   return(ret);
+   return(rim::Slave::doMaxAccess());
 }
 
 //! Return max access size to requesting master
@@ -183,26 +168,18 @@ uint32_t rim::SlaveWrap::defDoMaxAccess() {
 
 //! Return offset
 uint64_t rim::SlaveWrap::doOffset() {
-   bool     found;
-   uint64_t ret;
+   {
+      rogue::ScopedGil gil;
 
-   found = false;
-   ret = 0;
-
-   PyGILState_STATE pyState = PyGILState_Ensure();
-
-   if (boost::python::override pb = this->get_override("_doOffset")) {
-      found = true;
-      try {
-         ret = pb();
-      } catch (...) {
-         PyErr_Print();
+      if (boost::python::override pb = this->get_override("_doOffset")) {
+         try {
+            return(pb());
+         } catch (...) {
+            PyErr_Print();
+         }
       }
    }
-   PyGILState_Release(pyState);
-
-   if ( ! found ) ret = rim::Slave::doOffset();
-   return(ret);
+   return(rim::Slave::doOffset());
 }
 
 //! Return offset
@@ -213,23 +190,19 @@ uint64_t rim::SlaveWrap::defDoOffset() {
 //! Post a transaction. Master will call this method with the access attributes.
 void rim::SlaveWrap::doTransaction(uint32_t id, rim::MasterPtr master,
                                    uint64_t address, uint32_t size, uint32_t type) {
-   bool found;
+   {
+      rogue::ScopedGil gil;
 
-   found = false;
-
-   PyGILState_STATE pyState = PyGILState_Ensure();
-
-   if (boost::python::override pb = this->get_override("_doTransaction")) {
-      found = true;
-      try {
-         pb(id,master,address,size,type);
-      } catch (...) {
-         PyErr_Print();
+      if (boost::python::override pb = this->get_override("_doTransaction")) {
+         try {
+            pb(id,master,address,size,type);
+            return;
+         } catch (...) {
+            PyErr_Print();
+         }
       }
    }
-   PyGILState_Release(pyState);
-
-   if ( ! found ) rim::Slave::doTransaction(id,master,address,size,type);
+   rim::Slave::doTransaction(id,master,address,size,type);
 }
 
 //! Post a transaction. Master will call this method with the access attributes.

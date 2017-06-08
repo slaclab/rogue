@@ -17,14 +17,14 @@
 #ifndef __ROGUE_SMEM_FUNCTIONS_H__
 #define __ROGUE_SMEM_FUNCTIONS_H__
 
+#include <sys/mman.h>
 #include <sys/stat.h>
-#include <fcntl.h>   
-#include <string.h>   
-#include <unistd.h>
-#include <stdio.h>
-#include <time.h>
-#include <sys/time.h>
+#include <fcntl.h>
 #include <stdint.h>
+#include <stdio.h>
+#include <string.h>
+#include <unistd.h>
+#include <sys/types.h>
 
 // Commands
 #define ROGUE_CMD_GET   0x1
@@ -49,13 +49,12 @@ typedef struct {
 } RogueControlMem;
 
 // Open and map shared memory
-inline int32_t rogueSMemControlOpenAndMap ( RogueControlMem **ptr, const char * group, const char * root) {
+inline int32_t rogueSMemControlOpenAndMap ( RogueControlMem **ptr, const char * group ) {
    int32_t  smemFd;
    char     shmName[ROGUE_NAME_SIZE];
-   int32_t  lid;
 
    // Generate shared memory
-   sprintf(shmName,"rogue_control.%s.%s",group,root);
+   sprintf(shmName,"rogue_control.%s",group);
 
    // Attempt to open existing shared memory
    if ( (smemFd = shm_open(shmName, O_RDWR, (S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH)) ) < 0 ) {
@@ -123,7 +122,7 @@ inline void rogueSMemControlReq ( RogueControlMem *ptr, uint8_t cmdType, const c
 inline int32_t rogueSMemControlReqCheck ( RogueControlMem *ptr, uint8_t *cmdType, char **path, char **arg ) {
    if ( ptr->cmdReqCount == ptr->cmdAckCount ) return(0);
    else {
-      ptr->path[ROGUE_PATH_SIZE_SIZE-1] = '\0';
+      ptr->path[ROGUE_PATH_STR_SIZE-1] = '\0';
       ptr->arg[ROGUE_ARG_STR_SIZE-1] = '\0';
 
       *cmdType = ptr->cmdType;
