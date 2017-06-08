@@ -123,27 +123,6 @@ class BaseBlock(object):
             self.checkTransaction(update=False)
             self._log.debug("Done block. Addr=0x{:02x}, Data={}".format(self._variables[0].offset,self._bData))
 
-    def checkTransaction(self,update):
-        """
-        Check status of block.
-        If update=True notify variables if read
-        """
-        doUpdate = False
-        with self._cond:
-            self._waitTransaction()
-
-            # Updated
-            doUpdate = update and self._doUpdate
-            self._doUpdate = False
-
-            # Error
-            if self._error > 0:
-                raise BlockError(self)
-
-        # Update variables outside of lock
-        if doUpdate: self._updated()
-        self._stale = False
-
     @property
     def offset(self):
         return self._variables[0].offset
@@ -205,6 +184,27 @@ class BaseBlock(object):
         """
         with self._lock:
             self._doUpdate = (type == rogue.interfaces.memory.Read)
+
+    def checkTransaction(self,update):
+        """
+        Check status of block.
+        If update=True notify variables if read
+        """
+        doUpdate = False
+        with self._cond:
+            self._waitTransaction()
+
+            # Updated
+            doUpdate = update and self._doUpdate
+            self._doUpdate = False
+
+            # Error
+            if self._error > 0:
+                raise BlockError(self)
+
+        # Update variables outside of lock
+        if doUpdate: self._updated()
+        self._stale = False
 
     def _updated(self):
         for variable in self._variables:
