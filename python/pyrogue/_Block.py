@@ -269,13 +269,13 @@ class MemoryBlock(BaseBlock, rogue.interfaces.memory.Master):
             ba = var._base.toBlock(value, var.bitSize)
 
             # Access is fully byte aligned
-            if (var.bitOffset % 8) == 0 and (var.bitSize % 8) == 0:
+            if (var.bitOffset % 8) == 0 and (var.bitSize % 8) == 0 and var.bitSpacing == 0:
                 self._bData[var.bitOffset//8:(var.bitOffset+var.bitSize)//8] = ba
 
             # Bit level access
             else:
                 for x in range(0, var.bitSize):
-                    setBitToBytes(self._bData,x+var.bitOffset,getBitFromBytes(ba,x))
+                    setBitToBytes(self._bData,(x*var.bitSpacing)+var.bitOffset,getBitFromBytes(ba,x))
 
     def get(self, var):
         """
@@ -291,7 +291,7 @@ class MemoryBlock(BaseBlock, rogue.interfaces.memory.Master):
                 raise BlockError(self)
 
             # Access is fully byte aligned
-            if (var.bitOffset % 8) == 0 and (var.bitSize % 8) == 0:
+            if (var.bitOffset % 8) == 0 and (var.bitSize % 8) == 0 and var.bitSpacing == 0:
                 return var._base.fromBlock(self._bData[int(var.bitOffset/8):int((var.bitOffset+var.bitSize)/8)])
 
             # Bit level access
@@ -299,7 +299,7 @@ class MemoryBlock(BaseBlock, rogue.interfaces.memory.Master):
                 ba = bytearray(int(var.bitSize / 8))
                 if (var.bitSize % 8) > 0: ba.extend(bytearray(1))
                 for x in range(0,var.bitSize):
-                    setBitToBytes(ba,x,getBitFromBytes(self._bData,x+var.bitOffset))
+                    setBitToBytes(ba,x,getBitFromBytes(self._bData,(x*var.bitSpacing)+var.bitOffset))
                 return var._base.fromBlock(ba)
 
     def _waitTransaction(self):
@@ -335,7 +335,7 @@ class MemoryBlock(BaseBlock, rogue.interfaces.memory.Master):
                 return False
 
             # Compute the max variable address to determine required size of block
-            varBytes = int(math.ceil(float(var.bitOffset + var.bitSize) / float(self._minSize*8))) * self._minSize
+            varBytes = int(math.ceil(float(var.bitOffset + (var.bitSize * var.bitSpacing)) / float(self._minSize*8))) * self._minSize
 
             # Link variable to block
             var._block = self
@@ -356,8 +356,8 @@ class MemoryBlock(BaseBlock, rogue.interfaces.memory.Master):
             # Update verify mask
             if var.mode == 'RW' and var.verify is True:
                 self._verifyEn = True
-                for x in range(var.bitOffset,var.bitOffset+var.bitSize):
-                    setBitToBytes(self._mData,x,1)
+                for x in range(0,var.bitSize):
+                    setBitToBytes(self._mData,var.bitOffset+(x*bitSpacing),1)
 
             return True
 

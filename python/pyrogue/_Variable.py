@@ -264,7 +264,7 @@ class RemoteVariable(BaseVariable):
     def __init__(self, name=None, description="", 
                  mode='RW', value=None, base=pr.UInt, disp=None,
                  enum=None, units=None, hidden=False, minimum=None, maximum=None,
-                 offset=None, bitSize=32, bitOffset=0, pollInterval=0, 
+                 offset=None, bitSize=32, bitOffset=0, bitSpacing=1, pollInterval=0, 
                  verify=True, beforeReadCmd=lambda: None, afterWriteCmd=lambda: None, **dump):
 
         if disp is None:
@@ -282,10 +282,11 @@ class RemoteVariable(BaseVariable):
         self._block    = None
         
 
-        self._offset    = offset
-        self._bitSize   = bitSize
-        self._bitOffset = bitOffset
-        self._verify    = verify
+        self._offset     = offset
+        self._bitSize    = bitSize
+        self._bitSpacing = bitSpacing
+        self._bitOffset  = bitOffset
+        self._verify     = verify
 
         self._typeStr = base.name(bitSize)
 
@@ -298,6 +299,11 @@ class RemoteVariable(BaseVariable):
     @property
     def bitSize(self):
         return self._bitSize
+
+    @Pyro4.expose
+    @property
+    def bitSpacing(self):
+        return self._bitSpacing
 
     @Pyro4.expose
     @property
