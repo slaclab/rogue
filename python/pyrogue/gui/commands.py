@@ -121,6 +121,6 @@ class CommandWidget(QWidget):
             if not val.hidden:
                 w = QTreeWidgetItem(tree)
                 w.setText(0,val.name)
-                w.setExpanded(True)
+                w.setExpanded(val.expand)
                 self.addTreeItems(w,val)
 
