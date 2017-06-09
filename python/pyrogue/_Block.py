@@ -78,6 +78,7 @@ class BaseBlock(object):
         self._cond      = threading.Condition(self._lock)
         self._error     = 0
         self._doUpdate  = False
+        self._verifyEn  = False
         self._doVerify  = False
         self._tranTime  = time.time()
         self._value     = None
@@ -103,21 +104,12 @@ class BaseBlock(object):
         """
         Perform a background transaction
         """
-        if (type == rogue.interfaces.memory.Write  and (self.mode == 'CMD' or self.mode == 'WO' or self.mode == 'RW')) or \
-           (type == rogue.interfaces.memory.Post   and (self.mode == 'CMD' or self.mode == 'WO' or self.mode == 'RW')) or \
-           (type == rogue.interfaces.memory.Read   and (self.mode == 'CMD' or self.mode == 'RO' or self.mode == 'RW')) or  \
-           (type == rogue.interfaces.memory.Verify and (self.mode == 'CMD' or self.mode == 'RW')):
             self._startTransaction(type)
 
     def blockingTransaction(self,type):
         """
         Perform a blocking transaction
         """
-        if (type == rogue.interfaces.memory.Write  and (self.mode == 'CMD' or self.mode == 'WO' or self.mode == 'RW')) or \
-           (type == rogue.interfaces.memory.Post   and (self.mode == 'CMD' or self.mode == 'WO' or self.mode == 'RW')) or \
-           (type == rogue.interfaces.memory.Read   and (self.mode == 'CMD' or self.mode == 'RO' or self.mode == 'RW')) or  \
-           (type == rogue.interfaces.memory.Verify and (self.mode == 'CMD' or self.mode == 'RW')):
-
             self._log.debug("Setting block. Addr=0x{:02x}, Data={}".format(self._variables[0].offset,self._bData))
             self._startTransaction(type)
             self._checkTransaction(update=False)
@@ -372,6 +364,7 @@ class MemoryBlock(BaseBlock, rogue.interfaces.memory.Master):
 
             # Update verify mask
             if var.mode == 'RW' and var.verify is True:
+                self._verifyEn = True
                 for x in range(var.bitOffset,var.bitOffset+var.bitSize):
                     setBitToBytes(self._mData,x,1)
 
@@ -381,6 +374,14 @@ class MemoryBlock(BaseBlock, rogue.interfaces.memory.Master):
         """
         Start a transaction.
         """
+        # Check for invalid combinations or disabled device
+        if (self._variables[0].parent.enable.value() is not True) or \
+           (type == rogue.interfaces.memory.Write  and (self.mode == 'RO')) or \
+           (type == rogue.interfaces.memory.Post   and (self.mode == 'RO')) or \
+           (type == rogue.interfaces.memory.Read   and (self.mode == 'WO')) or \
+           (type == rogue.interfaces.memory.Verify and (self.mode == 'WO' or self.mode == 'RO' or self._verifyEn == False)):
+            return
+
         self._log.debug('_startTransaction type={}'.format(type))
 
         tData = None
@@ -388,10 +389,6 @@ class MemoryBlock(BaseBlock, rogue.interfaces.memory.Master):
         with self._cond:
             self._waitTransaction()
 
-            # Return if not enabled
-            if self._variables[0].parent.enable.value() is not True:
-                return
-            
             self._log.debug('len bData = {}, vData = {}, mData = {}'.format(len(self._bData), len(self._vData), len(self._mData)))
                   
             # Setup transaction
