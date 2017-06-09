@@ -102,16 +102,16 @@ class BaseBlock(object):
         """
         Perform a background transaction
         """
-            self._startTransaction(type)
+        self._startTransaction(type)
 
     def blockingTransaction(self,type):
         """
         Perform a blocking transaction
         """
-            self._log.debug("Setting block. Addr=0x{:02x}, Data={}".format(self._variables[0].offset,self._bData))
-            self._startTransaction(type)
-            self._checkTransaction(update=False)
-            self._log.debug("Done block. Addr=0x{:02x}, Data={}".format(self._variables[0].offset,self._bData))
+        self._log.debug("Setting block. Addr=0x{:02x}, Data={}".format(self._variables[0].offset,self._bData))
+        self._startTransaction(type)
+        self._checkTransaction(update=False)
+        self._log.debug("Done block. Addr=0x{:02x}, Data={}".format(self._variables[0].offset,self._bData))
 
     @property
     def offset(self):
