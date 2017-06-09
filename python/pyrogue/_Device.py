@@ -175,82 +175,77 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
     def countReset(self):
         pass
 
-    def blockWrite(self, forceWrite=False, recurse=True):
+    def writeBlocks(self, force=False, recurse=True, variable=None):
         """
         Perform background writes
         """
         if not self.enable: return
 
-        # Process local blocks. 
-        for block in self._blocks:
-            if forceWrite or block.stale:
-                block.backgroundTransaction(rogue.interfaces.memory.Write)
+        # Process local blocks.
+        if variable is not None:
+            variable._blocks.backgroundTransaction(rogue.interface.memory.Write)
+        else:
+            for block in self._blocks:
+                if force or block.stale:
+                    block.backgroundTransaction(rogue.interfaces.memory.Write)
 
         # Process rest of tree
         if recurse:
             for key,value in self.devices.items():
-                value.blockWrite(forceWrite=forceWrite,recurse=True)
+                value.writeBlocks(force=force, recurse=True)
 
-        # Execute all unique afterWriteCmds
-        # Can this be deprecated since we can override blockWrite?
-        cmds = set([v._afterWriteCmd for v in self.variables.values() if v._afterWriteCmd is not None])
-        for cmd in cmds:
-            cmd()
 
-    def blockVerify(self, recurse=True):
+    def verifyBlocks(self, recurse=True, variable=None):
         """
         Perform background verify
         """
         if not self.enable: return
 
-        # Execute all unique beforeReadCmds
-        # Can this be deprecated since we can override blockVerify?
-        cmds = set([v._beforeReadCmd for v in self.variables.values() if v._beforeReadCmd is not None])
-        for cmd in cmds:
-            cmd()
-
-        # Process local blocks. 
-        for block in self._blocks:
-            block.backgroundTransaction(rogue.interfaces.memory.Verify)
+        # Process local blocks.
+        if variable is not None:
+            variable._blocks.backgroundTransaction(rogue.interface.memory.Verify)
+        else:
+            for block in self._blocks:
+                block.backgroundTransaction(rogue.interfaces.memory.Verify)
 
         # Process rest of tree
         if recurse:
             for key,value in self.devices.items():
-                value.blockVerify(recurse=True)
+                value.verifyBlocks(recurse=True)
 
-    def blockRead(self, recurse=True):
+    def readBlocks(self, recurse=True, variable=None):
         """
         Perform background reads
         """
         if not self.enable: return
 
-        # Execute all unique beforeReadCmds
-        # Can this be deprecated since we can override blockRead?
-        cmds = set([v._beforeReadCmd for v in self.variables.values() if v._beforeReadCmd is not None])
-        for cmd in cmds:
-            cmd()
-
-        # Process local blocks. 
-        for block in self._blocks:
-            block.backgroundTransaction(rogue.interfaces.memory.Read)
+        # Process local blocks.
+        if variable is not None:
+            variable._block.backgroundTransaction(rogue.interfaces.memory.Read)
+        else:
+            for block in self._blocks:
+                block.backgroundTransaction(rogue.interfaces.memory.Read)
 
         # Process rest of tree
         if recurse:
             for key,value in self.devices.items():
-                value.blockRead(recurse=True)
+                value.readBlocks(recurse=True)
 
-    def blockCheck(self,varUpdate=True,recurse=True):
+    def checkBlocks(self,varUpdate=True, recurse=True, variable=None):
         """Check errors in all blocks and generate variable update nofifications"""
         if not self.enable: return
 
         # Process local blocks
-        for block in self._blocks:
-            block._checkTransaction(varUpdate)
+        if variable is not None:
+            variable._block._checkTransaction(varUpdate)
+        else:
+            for block in self._blocks:
+                block._checkTransaction(varUpdate)
 
         # Process rest of tree
         if recurse:
             for key,value in self.devices.items():
-                value.blockCheck(varUpdate=varUpdate,recurse=True)
+                value.blockCheck(varUpdate=varUpdate, recurse=True)
 
     def _buildBlocks(self):
         # Get all of the variables
