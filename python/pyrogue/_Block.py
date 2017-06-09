@@ -57,6 +57,9 @@ class BlockError(Exception):
         elif (self._error & 0xFF000000) == rogue.interfaces.memory.AxiFail:
             self._value += "AXI fail"
 
+        elif (self._error & 0xFF000000) == rogue.interfaces.memory.Unsupported:
+            self._value += "Unsupported Transaction"
+
         else:
             self._value += "Unknown error 0x{:02x}".format(self._error)
 
