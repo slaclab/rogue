@@ -81,6 +81,7 @@ class BaseBlock(object):
         self._doVerify  = False
         self._tranTime  = time.time()
         self._value     = None
+        self._stale     = False
 
         # Setup logging
         self._log = pr.logInit(self,variable.name)
@@ -93,6 +94,7 @@ class BaseBlock(object):
 
     def set(self, var, value):
         self._value = value
+        self._stale = True
 
     def get(self, var, value):
         return self._value
@@ -143,6 +145,10 @@ class BaseBlock(object):
     @property
     def value(self):
         return self._value
+
+    @property
+    def stale(self):
+        return self._stale
 
     @property
     def timeout(self):
@@ -198,6 +204,7 @@ class BaseBlock(object):
 
         # Update variables outside of lock
         if doUpdate: self._updated()
+        self._stale = False
 
     def _updated(self):
         for variable in self._variables:
@@ -217,6 +224,7 @@ class LocalBlock(BaseBlock):
             changed = self._value != value
             self._value = value
             dev = var.parent
+            self._stale = True
 
             # If a setFunction exists, call it (Used by local variables)        
             if self._localSet is not None:
@@ -273,6 +281,7 @@ class MemoryBlock(BaseBlock, rogue.interfaces.memory.Master):
         with self._cond:
             self._waitTransaction()
             self._value = value
+            self._stale = True
 
             ba = var._base.toBlock(value, var.bitSize)
 
