@@ -357,7 +357,7 @@ class MemoryBlock(BaseBlock, rogue.interfaces.memory.Master):
             if var.mode == 'RW' and var.verify is True:
                 self._verifyEn = True
                 for x in range(0,var.bitSize):
-                    setBitToBytes(self._mData,var.bitOffset+(x*bitSpacing),1)
+                    setBitToBytes(self._mData,var.bitOffset+(x*var.bitSpacing),1)
 
             return True
 

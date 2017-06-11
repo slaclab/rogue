@@ -155,13 +155,16 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
         # Call node add
         pr.Node.add(self,node)
 
-    def addRemoteVariables(number, stride, pack=False, **kwargs):
+    def addRemoteVariables(self, number, stride, pack=False, **kwargs):
         hidden = pack or kwargs.pop('hidden', False)
         self.addNodes(pr.RemoteVariable, number, stride, hidden=hidden, **kwargs)
-        varList = self.variables[kwargs['name']].values()
+
 
         # If pack specified, create a linked variable to combine everything
         if pack:
+            print(self.variables)
+            varList = getattr(self, kwargs['name']).values()
+            
             def linkedSet(dev, var, val, write):
                 values = val.split('_')
                 for variable, value in zip(varList, values):
@@ -175,7 +178,7 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
             name += 'All'
             kwargs.pop('value', None)
             
-            lv = LinkVariable(name=name, value='', dependencies=varList, linkedGet=linkedGet, linkedSet=linkedSet, **kwargs)
+            lv = pr.LinkVariable(name=name, value='', dependencies=varList, linkedGet=linkedGet, linkedSet=linkedSet, **kwargs)
             self.add(lv)
 
 
