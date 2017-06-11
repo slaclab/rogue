@@ -313,11 +313,6 @@ class RemoteVariable(BaseVariable):
 
     @Pyro4.expose
     @property
-    def bitSpacing(self):
-        return self._bitSpacing
-
-    @Pyro4.expose
-    @property
     def bitOffset(self):
         return self._bitOffset
 
