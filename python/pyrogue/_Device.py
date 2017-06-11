@@ -162,10 +162,10 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
 
         # If pack specified, create a linked variable to combine everything
         if pack:
-            print(self.variables)
             varList = getattr(self, kwargs['name']).values()
             
             def linkedSet(dev, var, val, write):
+                if val == '': return
                 values = val.split('_')
                 for variable, value in zip(varList, values):
                     variable.setDisp(value, write=write)
