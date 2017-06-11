@@ -295,11 +295,11 @@ class RemoteVariable(BaseVariable):
         elif (isinstance(bitOffset,list) and isinstance(bitSize,list)) and (len(bitOffset) != len(bitSize)):
             raise VariableError("Error in {}. bitSize={}, bitOffset={}".format(self.name,bitOffset,bitSize))
 
-        self._offset     = offset
-        self._bitSize    = bitSize
-        self._bitOffset  = bitOffset
-        self._verify     = verify
-        self._typeStr    = base.name(sum(bitSize))
+        self._offset    = offset
+        self._bitSize   = bitSize
+        self._bitOffset = bitOffset
+        self._verify    = verify
+        self._typeStr   = base.name(sum(bitSize))
 
     @Pyro4.expose
     @property
