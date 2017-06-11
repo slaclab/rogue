@@ -264,7 +264,7 @@ class RemoteVariable(BaseVariable):
     def __init__(self, name=None, description="", 
                  mode='RW', value=None, base=pr.UInt, disp=None,
                  enum=None, units=None, hidden=False, minimum=None, maximum=None,
-                 offset=None, bitSize=32, bitOffset=0, bitSpacing=1, pollInterval=0, 
+                 offset=None, bitSize=32, bitOffset=0, pollInterval=0, 
                  verify=True, beforeReadCmd=lambda: None, afterWriteCmd=lambda: None, **dump):
 
         if disp is None:
@@ -281,14 +281,25 @@ class RemoteVariable(BaseVariable):
         self._base     = base        
         self._block    = None
         
+        # Adjust bitOffset or bitSize, make sure lenths match
+        if (not isinstance(bitSize,list)) and (not isinstance(bitOffset,list)):
+            bitOffset = [bitOffset]
+            bitSize   = [bitSize]
+
+        elif isinstance(bitSize,list) and (not isinstance(bitOffset,list)):
+            bitOffset = [bitOffset for 1 in range(0,len(bitSize))]
+
+        elif isinstance(bitOffset,list) and (not isinstance(bitSize,list):
+            bitSize = [bitSize for 1 in range(0,len(bitOffset))]
+
+        elif (isinstance(bitOffset,list) and isinstance(bitSize,list)) and (len(bitOffset) != len(bitSize)):
+            raise VariableError("Error in {}. bitSize={}, bitOffset={}".format(self.name,bitOffset,bitSize))
 
         self._offset     = offset
         self._bitSize    = bitSize
-        self._bitSpacing = bitSpacing
         self._bitOffset  = bitOffset
         self._verify     = verify
-
-        self._typeStr = base.name(bitSize)
+        self._typeStr    = base.name(sum(bitSize))
 
     @Pyro4.expose
     @property
