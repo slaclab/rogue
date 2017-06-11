@@ -96,7 +96,7 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
         # Convenience methods
         self.addVariable = ft.partial(self.addNode, pr.Variable) # Legacy
         self.addVariables = ft.partial(self.addNodes, pr.Variable) # Legacy
-        self.addRemoteVariables = ft.partial(self.addNodes, pr.RemoteVariable)
+
         self.addCommand = ft.partial(self.addNode, pr.Command) # Legacy
         self.addCommands = ft.partial(self.addNodes, pr.Command) # Legacy
         self.addRemoteCommands = ft.partial(self.addNodes, pr.RemoteCommand)
@@ -154,6 +154,29 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
 
         # Call node add
         pr.Node.add(self,node)
+
+    def addRemoteVariables(number, stride, pack=False, **kwargs):
+        hidden = pack or kwargs.pop('hidden', False)
+        self.addNodes(pr.RemoteVariable, number, stride, hidden=hidden, **kwargs)
+        varList = self.variables[kwargs['name']].values()
+
+        # If pack specified, create a linked variable to combine everything
+        if pack:
+            def linkedSet(dev, var, val, write):
+                values = val.split('_')
+                for variable, value in zip(varList, values):
+                    variable.setDisp(value, write=write)
+
+            def linkedGet(dev, var, read):
+                values = [v.getDisp(read=read) for v in varList]
+                return '_'.join(values)
+
+            name = kwargs.pop('name')
+            name += 'All'
+            kwargs.pop('value', None)
+            
+            lv = LinkVariable(name=name, value='', dependencies=varList, linkedGet=linkedGet, linkedSet=linkedSet, **kwargs)
+            self.add(lv)
 
 
     def hideVariables(self, hidden, variables=None):

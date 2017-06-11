@@ -471,7 +471,7 @@ class LinkVariable(BaseVariable):
         """
         if self._linkedSet is not None:
             if callable(self._linkedSet):
-                self._linksedSet(self._parent,self,value,write)
+                self._linkedSet(self._parent,self,value,write)
             else:
                 dev = self._parent
                 var = self
