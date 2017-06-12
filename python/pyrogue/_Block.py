@@ -59,6 +59,9 @@ class BlockError(Exception):
         elif (self._error & 0xFF000000) == rogue.interfaces.memory.AxiFail:
             self._value += "AXI fail"
 
+        elif (self._error & 0xFF000000) == rogue.interfaces.memory.Unsupported:
+            self._value += "Unsupported Transaction"
+
         else:
             self._value += "Unknown error 0x{:02x}".format(self._error)
 
@@ -84,6 +87,8 @@ class BaseBlock(object):
         self._doVerify  = False
         self._tranTime  = time.time()
         self._value     = None
+        self._stale     = False
+        self._verifyWr  = False
 
         # Setup logging
         self._log = pr.logInit(self,variable.name)
@@ -95,10 +100,10 @@ class BaseBlock(object):
         return repr(self._variables)
 
     def set(self, var, value):
-        self._value = value
+        pass
 
     def get(self, var, value):
-        return self._value
+        return None
 
     def backgroundTransaction(self,type):
         """
@@ -137,6 +142,10 @@ class BaseBlock(object):
     @property
     def value(self):
         return self._value
+
+    @property
+    def stale(self):
+        return self._stale
 
     @property
     def timeout(self):
@@ -267,6 +276,7 @@ class MemoryBlock(BaseBlock, rogue.interfaces.memory.Master):
         with self._cond:
             self._waitTransaction()
             self._value = value
+            self._stale = True
 
             ba = var._base.toBlock(value, sum(var.bitSize))
 
@@ -379,7 +389,9 @@ class MemoryBlock(BaseBlock, rogue.interfaces.memory.Master):
            (type == rogue.interfaces.memory.Write  and (self.mode == 'RO')) or \
            (type == rogue.interfaces.memory.Post   and (self.mode == 'RO')) or \
            (type == rogue.interfaces.memory.Read   and (self.mode == 'WO')) or \
-           (type == rogue.interfaces.memory.Verify and (self.mode == 'WO' or self.mode == 'RO' or self._verifyEn == False)):
+           (type == rogue.interfaces.memory.Verify and (self.mode == 'WO' or \
+                                                        self.mode == 'RO' or \
+                                                        self._verifyWr == False)):
             return
 
         self._log.debug('_startTransaction type={}'.format(type))
@@ -390,6 +402,11 @@ class MemoryBlock(BaseBlock, rogue.interfaces.memory.Master):
             self._waitTransaction()
 
             self._log.debug('len bData = {}, vData = {}, mData = {}'.format(len(self._bData), len(self._vData), len(self._mData)))
+
+            # Track verify after writes. 
+            # Only verify blocks that have been written since last verify
+            if type == rogue.interfaces.memory.Write:
+                self._verifyWr = self._verifyEn
                   
             # Setup transaction
             self._doVerify = (type == rogue.interfaces.memory.Verify)
@@ -417,16 +434,18 @@ class MemoryBlock(BaseBlock, rogue.interfaces.memory.Master):
             self._endTransaction()
             self._error = error
 
-            # Check for error
-            if error > 0:
-                self._doUpdate = False
-
             # Do verify
-            elif self._doVerify:
+            if self._doVerify:
+                self._verifyWr = False
                 for x in range(0,self._size):
                     if (self._vData[x] & self._mData[x]) != (self._bData[x] & self._mData[x]):
                         self._error = rogue.interfaces.memory.VerifyError
                         break
+
+            if self._error == 0:
+                self._stale = False
+            else:
+                self._doUpdate = False
 
             # Notify waiters
             self._cond.notify()

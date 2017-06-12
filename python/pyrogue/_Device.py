@@ -83,7 +83,6 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
         # Blocks
         self._blocks    = []
         self._memBase   = memBase
-        self._resetFunc = None
         self._expand    = expand
 
         # Connect to memory slave
@@ -202,54 +201,77 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
     def countReset(self):
         pass
 
-    def setResetFunc(self,func):
+    def writeBlocks(self, force=False, recurse=True, variable=None):
         """
-        Deprecated!
-        Set function for count, hard or soft reset
-        resetFunc(type) 
-        where type = 'soft','hard','count'
-        """
-        self._resetFunc = func
-
-    def _backgroundTransaction(self,type):
-        """
-        Perform background transactions
+        Perform background writes
         """
         if not self.enable: return
 
-        # Execute all unique beforeReadCmds for reads or verify
-        if type == rogue.interfaces.memory.Read or type == rogue.interfaces.memory.Verify:
-            cmds = set([v._beforeReadCmd for v in self.variables.values() if v._beforeReadCmd is not None])
-            for cmd in cmds:
-                cmd()
-
-        # Process local blocks. 
-        for block in self._blocks:
-            block.backgroundTransaction(type)
+        # Process local blocks.
+        if variable is not None:
+            variable._blocks.backgroundTransaction(rogue.interface.memory.Write)
+        else:
+            for block in self._blocks:
+                if force or block.stale:
+                    block.backgroundTransaction(rogue.interfaces.memory.Write)
 
         # Process rest of tree
-        for key,value in self._nodes.items():
-            if isinstance(value,Device):
-                value._backgroundTransaction(type)
+        if recurse:
+            for key,value in self.devices.items():
+                value.writeBlocks(force=force, recurse=True)
 
-        # Execute all unique afterWriteCmds for writes
-        if type == rogue.interfaces.memory.Write:
-            cmds = set([v._afterWriteCmd for v in self.variables.values() if v._afterWriteCmd is not None])
-            for cmd in cmds:
-                cmd()
 
-    def _checkTransaction(self,update):
+    def verifyBlocks(self, recurse=True, variable=None):
+        """
+        Perform background verify
+        """
+        if not self.enable: return
+
+        # Process local blocks.
+        if variable is not None:
+            variable._blocks.backgroundTransaction(rogue.interface.memory.Verify)
+        else:
+            for block in self._blocks:
+                block.backgroundTransaction(rogue.interfaces.memory.Verify)
+
+        # Process rest of tree
+        if recurse:
+            for key,value in self.devices.items():
+                value.verifyBlocks(recurse=True)
+
+    def readBlocks(self, recurse=True, variable=None):
+        """
+        Perform background reads
+        """
+        if not self.enable: return
+
+        # Process local blocks. 
+        if variable is not None:
+            variable._block.backgroundTransaction(rogue.interfaces.memory.Read)
+        else:
+        for block in self._blocks:
+                block.backgroundTransaction(rogue.interfaces.memory.Read)
+
+        # Process rest of tree
+        if recurse:
+            for key,value in self.devices.items():
+                value.readBlocks(recurse=True)
+
+    def checkBlocks(self,varUpdate=True, recurse=True, variable=None):
         """Check errors in all blocks and generate variable update nofifications"""
         if not self.enable: return
 
         # Process local blocks
+        if variable is not None:
+            variable._block._checkTransaction(varUpdate)
+        else:
         for block in self._blocks:
-            block._checkTransaction(update)
+                block._checkTransaction(varUpdate)
 
         # Process rest of tree
-        for key,value in self._nodes.items():
-            if isinstance(value,Device):
-                value._checkTransaction(update)
+        if recurse:
+            for key,value in self.devices.items():
+                value.blockCheck(varUpdate=varUpdate, recurse=True)
 
     def _buildBlocks(self):
         remVars = []
@@ -292,11 +314,10 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
                 self._log.debug("Adding new block {} at offset {:#02x}".format(n.name,n.offset))
                 self._blocks.append(pr.MemoryBlock(n))
 
+
+
     def _devReset(self,rstType):
         """Generate a count, soft or hard reset"""
-        if callable(self._resetFunc):
-            # Deprecate!
-            self._resetFunc(self,rstType)
 
         if rstType == 'hard':
             self.hardReset()

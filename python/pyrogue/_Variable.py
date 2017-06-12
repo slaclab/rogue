@@ -39,8 +39,6 @@ class BaseVariable(pr.Node):
         self._default       = value
         self.__listeners    = []
         self._pollInterval  = 0
-        self._beforeReadCmd = None
-        self._afterWriteCmd = None
         self.__dependencies = []
         
         self._disp = disp
@@ -266,7 +264,7 @@ class RemoteVariable(BaseVariable):
                  mode='RW', value=None, base=pr.UInt, disp=None,
                  enum=None, units=None, hidden=False, minimum=None, maximum=None,
                  offset=None, bitSize=32, bitOffset=0, pollInterval=0, 
-                 verify=True, beforeReadCmd=lambda: None, afterWriteCmd=lambda: None, **dump):
+                 verify=True, **dump):
 
         if disp is None:
             disp = base.defaultdisp
@@ -276,8 +274,6 @@ class RemoteVariable(BaseVariable):
                      enum=enum, units=units, hidden=hidden, minimum=minimum, maximum=maximum);
 
         self._pollInterval  = pollInterval
-        self._beforeReadCmd = beforeReadCmd
-        self._afterWriteCmd = afterWriteCmd
 
         self._base     = base        
         self._block    = None
@@ -341,12 +337,12 @@ class RemoteVariable(BaseVariable):
             self._updated()
 
             if write and self._block.mode != 'RO':
-                self._block.blockingTransaction(rogue.interfaces.memory.Write)
-                self._afterWriteCmd()
+                self._parent.writeBlocks(force=False, recurse=False, variable=self)
+                self._parent.checkBlocks(varUpdate=False, recurse=False, variable=self)
 
                 if self._block.mode == 'RW':
-                    self._beforeReadCmd()
-                    self._block.blockingTransaction(rogue.interfaces.memory.Verify)
+                    self._parent.verifyBlocks(recurse=False, variable=self)
+                    self._parent.checkBlocks(varUpdate=False, recurse=False, variable=self)
 
         except Exception as e:
             self._log.error(e)
@@ -362,7 +358,7 @@ class RemoteVariable(BaseVariable):
             self._updated()
 
             if self._block.mode != 'RO':
-                self._block.backgroundTransaction(rogue.interfaces.memory.Post)
+                self._parent.writeBlocks(force=False, recurse=False, variable=self)
 
         except Exception as e:
             self._log.error(e)
@@ -376,8 +372,8 @@ class RemoteVariable(BaseVariable):
         """
         try:
             if read and self._block.mode != 'WO':
-                self._beforeReadCmd()
-                self._block.blockingTransaction(rogue.interfaces.memory.Read)
+                self._parent.readBlocks(recurse=False, variable=self)
+                self._parent.checkBlocks(varUpdate=True, recurse=False, variable=self)
 
             ret = self._block.get(self)
 
