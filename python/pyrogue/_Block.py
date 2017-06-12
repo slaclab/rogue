@@ -294,7 +294,7 @@ class MemoryBlock(BaseBlock, rogue.interfaces.memory.Master):
                 raise BlockError(self)
 
             # Access is fully byte aligned
-            if len(var.bitOffset) == 0 and (var.bitOffset[0] % 8) == 0 and (var.bitSize[0] % 8) == 0:
+            if len(var.bitOffset) == 1 and (var.bitOffset[0] % 8) == 0 and (var.bitSize[0] % 8) == 0:
                 return var._base.fromBlock(self._bData[int(var.bitOffset[0]/8):int((var.bitOffset[0]+var.bitSize[0])/8)])
 
             # Bit level access
