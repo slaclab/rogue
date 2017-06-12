@@ -295,8 +295,6 @@ class RemoteVariable(BaseVariable):
         bitOffset = [x+((y-baseAddr)*8) for x,y in zip(bitOffset, offset)]
         offset = baseAddr
 
-        print('{} - {} {} {}'.format(self, offset, bitOffset, bitSize))        
-
         self._offset    = offset
         self._bitSize   = bitSize
         self._bitOffset = bitOffset
