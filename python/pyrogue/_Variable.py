@@ -294,7 +294,7 @@ class RemoteVariable(BaseVariable):
             bitSize = [bitSize for i in range(0,len(bitOffset))]
 
         elif (isinstance(bitOffset,list) and isinstance(bitSize,list)) and (len(bitOffset) != len(bitSize)):
-            raise VariableError("Error in {}. bitSize={}, bitOffset={}".format(self.name,bitOffset,bitSize))
+            raise VariableError("Error in {}. bitSize={}, bitOffset={}".format(self.name,bitSize,bitOffset))
 
         self._offset    = offset
         self._bitSize   = bitSize
