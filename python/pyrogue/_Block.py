@@ -266,7 +266,7 @@ class MemoryBlock(BaseBlock, rogue.interfaces.memory.Master):
             self._waitTransaction()
             self._value = value
 
-            ba = var._base.toBlock(value, var.bitSize)
+            ba = var._base.toBlock(value, sum(var.bitSize))
 
             # Access is fully byte aligned
             if len(var.bitOffset) == 1 and (var.bitOffset[0] % 8) == 0 and (var.bitSize[0] % 8) == 0:
@@ -299,8 +299,7 @@ class MemoryBlock(BaseBlock, rogue.interfaces.memory.Master):
 
             # Bit level access
             else:
-                ba = bytearray(int(var.bitSize / 8))
-                if (var.bitSize % 8) > 0: ba.extend(bytearray(1))
+                ba = bytearray(int(math.ceil(float(sum(var.bitSize)) / 8.0)))
 
                 bit = 0
                 for x in range(0, len(var.bitOffset)):
@@ -336,9 +335,7 @@ class MemoryBlock(BaseBlock, rogue.interfaces.memory.Master):
             # Return false if offset does not match
             if len(self._variables) != 0 and var.offset != self._variables[0].offset:
                 return False
-
-            self._log.debug("Adding variable {} to block {} at offset 0x{:02x}".format(var.name,self,name,self.offset))
-
+    
             # Compute the max variable address to determine required size of block
             varBytes = int(math.ceil(float(var.bitOffset[-1] + var.bitSize[-1]) / float(self._minSize*8))) * self._minSize
 
@@ -349,6 +346,8 @@ class MemoryBlock(BaseBlock, rogue.interfaces.memory.Master):
             # Link variable to block
             var._block = self
             self._variables.append(var)
+
+            self._log.debug("Adding variable {} to block {} at offset 0x{:02x}".format(var.name,self.name,self.offset))
 
             # If variable modes mismatch, set block to read/write
             if var.mode != self._mode:

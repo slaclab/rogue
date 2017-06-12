@@ -230,7 +230,7 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
                 n._offset -= varShift
 
                 for i in range(0,len(n.bitOffset)):
-                    var._bitOffset[i] += varShift*8
+                    n._bitOffset[i] += varShift*8
 
                 remVars += [n]
 
