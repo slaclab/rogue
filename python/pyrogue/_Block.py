@@ -426,7 +426,7 @@ class MemoryBlock(BaseBlock, rogue.interfaces.memory.Master):
             self._error = error
 
             # Do verify
-            elif self._doVerify:
+            if self._doVerify:
                 self._verifyWr = False
                 for x in range(0,self._size):
                     if (self._vData[x] & self._mData[x]) != (self._bData[x] & self._mData[x]):
