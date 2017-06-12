@@ -226,7 +226,7 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
 
             # Align to min access, create list softed by offset 
             elif isinstance(n,pr.RemoteVariable) and n.offset is not None:
-                n.shiftOffsetDown(n.offset % minSize, minSize)
+                n._shiftOffsetDown(n.offset % minSize, minSize)
                 remVars += [n]
 
         # Loop until no overlaps found
@@ -243,14 +243,14 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
                 # Variable overlaps the range of the previous variable
                 if (remVars[i].offset != remVars[i-1].offset) and (remVars[i].offset <= (remVars[i-1].varBytes-1)):
                     print("Overlap detected cur offset={} prev offset={} prev bytes={}".format(remVars[i].offset,remVars[i-1].offset,remVars[i-1].varBytes))
-                    remVars[i].shiftOffsetDown(remVars[i].offset - remVars[i-1].offset, minSize)
+                    remVars[i]._shiftOffsetDown(remVars[i].offset - remVars[i-1].offset, minSize)
                     done = False
                     break
 
         # Add variables
         for n in remVars:
             if not any(block._addVariable(n) for block in self._blocks):
-                self._log.debug("Adding new block {} at offset 0x{:02x}".format(n.name,n.offset))
+                self._log.debug("Adding new block {} at offset {:#02x}".format(n.name,n.offset))
                 self._blocks.append(pr.MemoryBlock(n))
 
 
