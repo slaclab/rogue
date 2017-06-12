@@ -21,6 +21,8 @@ import textwrap
 import pyrogue as pr
 import inspect
 
+
+
 class BlockError(Exception):
     """ Exception for memory access errors."""
 
@@ -28,7 +30,7 @@ class BlockError(Exception):
         self._error = block.error
         block._error = 0
 
-        self._value = "Error in block with address 0x{:02x}: ".format(block.address)
+        self._value = "Error in block with address {:#08x}: ".format(block.address)
 
         if hasattr(block,'_variables'):
             self._value += "Block Variables: {}. ".format(block._variables)
@@ -108,10 +110,10 @@ class BaseBlock(object):
         """
         Perform a blocking transaction
         """
-        self._log.debug("Setting block. Addr=0x{:02x}, Data={}".format(self._variables[0].offset,self._bData))
+        self._log.debug("Setting block. Addr=0x{:08x}, Data={}".format(self._variables[0].offset,self._bData))
         self._startTransaction(type)
         self._checkTransaction(update=False)
-        self._log.debug("Done block. Addr=0x{:02x}, Data={}".format(self._variables[0].offset,self._bData))
+        self._log.debug("Done block. Addr=0x{:08x}, Data={}".format(self._variables[0].offset,self._bData))
 
     @property
     def offset(self):
@@ -266,16 +268,19 @@ class MemoryBlock(BaseBlock, rogue.interfaces.memory.Master):
             self._waitTransaction()
             self._value = value
 
-            ba = var._base.toBlock(value, var.bitSize)
+            ba = var._base.toBlock(value, sum(var.bitSize))
 
             # Access is fully byte aligned
-            if (var.bitOffset % 8) == 0 and (var.bitSize % 8) == 0:
-                self._bData[var.bitOffset//8:(var.bitOffset+var.bitSize)//8] = ba
+            if len(var.bitOffset) == 1 and (var.bitOffset[0] % 8) == 0 and (var.bitSize[0] % 8) == 0:
+                self._bData[var.bitOffset[0]//8:(var.bitOffset[0]+var.bitSize[0])//8] = ba
 
             # Bit level access
             else:
-                for x in range(0, var.bitSize):
-                    setBitToBytes(self._bData,x+var.bitOffset,getBitFromBytes(ba,x))
+                bit = 0
+                for x in range(0, len(var.bitOffset)):
+                    for y in range(0, var.bitSize[x]):
+                        setBitToBytes(self._bData,var.bitOffset[x]+y,getBitFromBytes(ba,bit))
+                        bit += 1
 
     def get(self, var):
         """
@@ -291,15 +296,19 @@ class MemoryBlock(BaseBlock, rogue.interfaces.memory.Master):
                 raise BlockError(self)
 
             # Access is fully byte aligned
-            if (var.bitOffset % 8) == 0 and (var.bitSize % 8) == 0:
-                return var._base.fromBlock(self._bData[int(var.bitOffset/8):int((var.bitOffset+var.bitSize)/8)])
+            if len(var.bitOffset) == 1 and (var.bitOffset[0] % 8) == 0 and (var.bitSize[0] % 8) == 0:
+                return var._base.fromBlock(self._bData[int(var.bitOffset[0]/8):int((var.bitOffset[0]+var.bitSize[0])/8)])
 
             # Bit level access
             else:
-                ba = bytearray(int(var.bitSize / 8))
-                if (var.bitSize % 8) > 0: ba.extend(bytearray(1))
-                for x in range(0,var.bitSize):
-                    setBitToBytes(ba,x,getBitFromBytes(self._bData,x+var.bitOffset))
+                ba = bytearray(int(math.ceil(float(sum(var.bitSize)) / 8.0)))
+
+                bit = 0
+                for x in range(0, len(var.bitOffset)):
+                    for y in range(0, var.bitSize[x]):
+                        setBitToBytes(ba,bit,getBitFromBytes(self._bData,var.bitOffset[x]+y))
+                        bit += 1
+
                 return var._base.fromBlock(ba)
 
     def _waitTransaction(self):
@@ -322,42 +331,42 @@ class MemoryBlock(BaseBlock, rogue.interfaces.memory.Master):
         Add a variable to the block. Called from Device for BlockMemory
         """
 
-        # Align variable address to block alignment
-        varShift = var.offset % self._minSize
-        var._offset -= varShift
-        var._bitOffset += (varShift * 8)
-
         with self._cond:
             self._waitTransaction()
 
             # Return false if offset does not match
             if len(self._variables) != 0 and var.offset != self._variables[0].offset:
                 return False
-
-            # Compute the max variable address to determine required size of block
-            varBytes = int(math.ceil(float(var.bitOffset + var.bitSize) / float(self._minSize*8))) * self._minSize
+    
+            # Range check
+            if var.varBytes > self._maxSize:
+                raise BlockError(self,"Variable {} size {} exceeds maxSize {}".format(var.name,var.varBytes,self._maxSize))
 
             # Link variable to block
             var._block = self
             self._variables.append(var)
 
-            # If variable modes mismatch, set to read/write
+            self._log.debug("Adding variable {} to block {} at offset 0x{:02x}".format(var.name,self.name,self.offset))
+
+            # If variable modes mismatch, set block to read/write
             if var.mode != self._mode:
                 self._mode = 'RW'
 
             # Adjust size to hold variable. Underlying class will adjust
             # size to align to minimum protocol access size 
-            if self._size < varBytes:
-                self._bData.extend(bytearray(varBytes - self._size))
-                self._vData.extend(bytearray(varBytes - self._size))
-                self._mData.extend(bytearray(varBytes - self._size))
-                self._size = varBytes
+            if self._size < var.varBytes:
+                self._bData.extend(bytearray(var.varBytes - self._size))
+                self._vData.extend(bytearray(var.varBytes - self._size))
+                self._mData.extend(bytearray(var.varBytes - self._size))
+                self._size = var.varBytes
 
             # Update verify mask
             if var.mode == 'RW' and var.verify is True:
                 self._verifyEn = True
-                for x in range(var.bitOffset,var.bitOffset+var.bitSize):
-                    setBitToBytes(self._mData,x,1)
+
+                for x in range(0, len(var.bitOffset)):
+                    for y in range(0, var.bitSize[x]):
+                        setBitToBytes(self._mData,var.bitOffset[x]+y,1)
 
             return True
 

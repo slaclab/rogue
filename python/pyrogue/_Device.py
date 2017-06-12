@@ -21,6 +21,7 @@ import pyrogue as pr
 import inspect
 import threading
 import Pyro4
+import math
 
 class EnableVariable(pr.BaseVariable):
     def __init__(self, enabled):
@@ -96,7 +97,7 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
         # Convenience methods
         self.addVariable = ft.partial(self.addNode, pr.Variable) # Legacy
         self.addVariables = ft.partial(self.addNodes, pr.Variable) # Legacy
-        self.addRemoteVariables = ft.partial(self.addNodes, pr.RemoteVariable)
+
         self.addCommand = ft.partial(self.addNode, pr.Command) # Legacy
         self.addCommands = ft.partial(self.addNodes, pr.Command) # Legacy
         self.addRemoteCommands = ft.partial(self.addNodes, pr.RemoteCommand)
@@ -155,6 +156,31 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
         # Call node add
         pr.Node.add(self,node)
 
+    def addRemoteVariables(self, number, stride, pack=False, **kwargs):
+        hidden = pack or kwargs.pop('hidden', False)
+        self.addNodes(pr.RemoteVariable, number, stride, hidden=hidden, **kwargs)
+
+
+        # If pack specified, create a linked variable to combine everything
+        if pack:
+            varList = getattr(self, kwargs['name']).values()
+            
+            def linkedSet(dev, var, val, write):
+                if val == '': return
+                values = reversed(val.split('_'))
+                for variable, value in zip(varList, values):
+                    variable.setDisp(value, write=write)
+
+            def linkedGet(dev, var, read):
+                values = [v.getDisp(read=read) for v in varList]
+                return '_'.join(reversed(values))
+
+            name = kwargs.pop('name')
+            kwargs.pop('value', None)
+            
+            lv = pr.LinkVariable(name=name, value='', dependencies=varList, linkedGet=linkedGet, linkedSet=linkedSet, **kwargs)
+            self.add(lv)
+
 
     def hideVariables(self, hidden, variables=None):
         """Hide a list of Variables (or Variable names)"""
@@ -184,20 +210,6 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
         where type = 'soft','hard','count'
         """
         self._resetFunc = func
-
-    def _buildBlocks(self):
-
-        # Get all of the variables
-        for k,n in self.nodes.items():
-
-            if isinstance(n,pr.LocalVariable):
-                self._blocks.append(n._block)
-
-            elif isinstance(n,pr.RemoteVariable) and n.offset is not None:
-                if not any(block._addVariable(n) for block in self._blocks):
-                    self._log.debug("Adding new block %s at offset %x" % (n.name,n.offset))
-                    self._blocks.append(pr.MemoryBlock(n))
-
 
     def _backgroundTransaction(self,type):
         """
@@ -238,6 +250,47 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
         for key,value in self._nodes.items():
             if isinstance(value,Device):
                 value._checkTransaction(update)
+
+    def _buildBlocks(self):
+        remVars = []
+
+        minSize = self._reqMinAccess()
+
+        # Process all of the variables
+        for k,n in self.nodes.items():
+
+            # Local variables have a 1:1 block association
+            if isinstance(n,pr.LocalVariable):
+                self._blocks.append(n._block)
+
+            # Align to min access, create list softed by offset 
+            elif isinstance(n,pr.RemoteVariable) and n.offset is not None:
+                n._shiftOffsetDown(n.offset % minSize, minSize)
+                remVars += [n]
+
+        # Loop until no overlaps found
+        done = False
+        while done == False:
+            done = True
+
+            # Sort byte offset and size
+            remVars.sort(key=lambda x: (x.offset, x.varBytes))
+
+            # Look for overlaps and adjust offset
+            for i in range(1,len(remVars)):
+
+                # Variable overlaps the range of the previous variable
+                if (remVars[i].offset != remVars[i-1].offset) and (remVars[i].offset <= (remVars[i-1].varBytes-1)):
+                    print("Overlap detected cur offset={} prev offset={} prev bytes={}".format(remVars[i].offset,remVars[i-1].offset,remVars[i-1].varBytes))
+                    remVars[i]._shiftOffsetDown(remVars[i].offset - remVars[i-1].offset, minSize)
+                    done = False
+                    break
+
+        # Add variables
+        for n in remVars:
+            if not any(block._addVariable(n) for block in self._blocks):
+                self._log.debug("Adding new block {} at offset {:#02x}".format(n.name,n.offset))
+                self._blocks.append(pr.MemoryBlock(n))
 
     def _devReset(self,rstType):
         """Generate a count, soft or hard reset"""

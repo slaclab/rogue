@@ -18,6 +18,7 @@ import textwrap
 import rogue.interfaces.memory
 import parse
 import Pyro4
+import math
 
 class VariableError(Exception):
     """ Exception for variable access errors."""
@@ -281,13 +282,31 @@ class RemoteVariable(BaseVariable):
         self._base     = base        
         self._block    = None
         
+        # Adjust bitOffset or bitSize, make sure lenths match
+        if (not isinstance(bitSize,list)) and (not isinstance(bitOffset,list)):
+            bitOffset = [bitOffset]
+            bitSize   = [bitSize]
+
+        elif isinstance(bitSize,list) and (not isinstance(bitOffset,list)):
+            bitOffset = [bitOffset for i in range(0,len(bitSize))]
+
+        elif isinstance(bitOffset,list) and (not isinstance(bitSize,list)):
+            bitSize = [bitSize for i in range(0,len(bitOffset))]
+
+        elif (isinstance(bitOffset,list) and isinstance(bitSize,list)) and (len(bitOffset) != len(bitSize)):
+            raise VariableError("Error in {}. bitSize={}, bitOffset={}".format(self.name,bitSize,bitOffset))
 
         self._offset    = offset
         self._bitSize   = bitSize
         self._bitOffset = bitOffset
         self._verify    = verify
+        self._typeStr   = base.name(sum(bitSize))
+        self._bytes     = int(math.ceil(float(self._bitOffset[-1] + self._bitSize[-1]) / 8.0))
 
-        self._typeStr = base.name(bitSize)
+
+    @property
+    def varBytes(self):
+        return self._bytes
 
     @Pyro4.expose
     @property
@@ -381,6 +400,20 @@ class RemoteVariable(BaseVariable):
             #print(self._base.fromString(sValue))
             return self._base.fromString(sValue)
 
+    def _shiftOffsetDown(self,amount,minSize):
+        if amount != 0:
+
+            self._log.debug("Adjusting variable {} offset from 0x{:02x} to 0x{:02x}".format(self.name,self._offset,self._offset-amount))
+            print("Adjusting variable {} offset from 0x{:02x} to 0x{:02x}".format(self.name,self._offset,self._offset-amount))
+
+            self._offset -= amount
+
+            for i in range(0,len(self._bitOffset)):
+                self._bitOffset[i] += (amount * 8)
+
+        self._bytes = int(math.ceil(float(self._bitOffset[-1] + self._bitSize[-1]) / float(minSize*8))) * minSize
+
+
 
 class LocalVariable(BaseVariable):
 
@@ -454,6 +487,9 @@ class LinkVariable(BaseVariable):
             for d in dependencies:
                 self.addDependency(d)
 
+    def __getitem__(self, key):
+        # Allow dependencies to be accessed as indicies of self
+        return self.dependencies[key]
 
     @Pyro4.expose
     def set(self, value, write=True):
@@ -465,7 +501,7 @@ class LinkVariable(BaseVariable):
         """
         if self._linkedSet is not None:
             if callable(self._linkedSet):
-                self._linksedSet(self._parent,self,value,write)
+                self._linkedSet(self._parent,self,value,write)
             else:
                 dev = self._parent
                 var = self
