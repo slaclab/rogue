@@ -303,17 +303,18 @@ class RemoteVariable(BaseVariable):
         self._typeStr   = base.name(sum(bitSize))
         self._bytes     = int(math.ceil(float(self._bitOffset[-1] + self._bitSize[-1]) / 8.0))
 
-    def shiftOffsetDown(self,amount):
-        if amount == 0: return
+    def shiftOffsetDown(self,amount,minSize):
+        if amount != 0:
 
-        self._log.debug("Adjusting variable {} offset from 0x{:02x} to 0x{:02x}".format(self.name,self._offset,self._offset-amount))
-        print("Adjusting variable {} offset from 0x{:02x} to 0x{:02x}".format(self.name,self._offset,self._offset-amount))
+            self._log.debug("Adjusting variable {} offset from 0x{:02x} to 0x{:02x}".format(self.name,self._offset,self._offset-amount))
+            print("Adjusting variable {} offset from 0x{:02x} to 0x{:02x}".format(self.name,self._offset,self._offset-amount))
 
-        self._offset -= amount
-        self._bytes  += amount
+            self._offset -= amount
 
-        for i in range(0,len(self._bitOffset)):
-            self._bitOffset[i] += (amount * 8)
+            for i in range(0,len(self._bitOffset)):
+                self._bitOffset[i] += (amount * 8)
+
+        self._bytes = int(math.ceil(float(self._bitOffset[-1] + self._bitSize[-1]) / float(minSize*8))) * minSize
 
     @property
     def varBytes(self):
