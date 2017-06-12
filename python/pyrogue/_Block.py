@@ -331,6 +331,7 @@ class MemoryBlock(BaseBlock, rogue.interfaces.memory.Master):
         """
 
         # Align variable address to block alignment
+        # Remove after device var prep update.
         varShift = var.offset % self._minSize
         var._offset -= varShift
         var._bitOffset += (varShift * 8)
@@ -345,11 +346,15 @@ class MemoryBlock(BaseBlock, rogue.interfaces.memory.Master):
             # Compute the max variable address to determine required size of block
             varBytes = int(math.ceil(float(var.bitOffset[-1] + var.bitSize[-1]) / float(self._minSize*8))) * self._minSize
 
+            # Range check
+            if varBytes > self._maxSize:
+                raise BlockError(self,"Variable {} size {} exceeds maxSize {}".format(var.name,varBytes,self._maxSize))
+
             # Link variable to block
             var._block = self
             self._variables.append(var)
 
-            # If variable modes mismatch, set to read/write
+            # If variable modes mismatch, set block to read/write
             if var.mode != self._mode:
                 self._mode = 'RW'
 
