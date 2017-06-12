@@ -167,16 +167,15 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
             
             def linkedSet(dev, var, val, write):
                 if val == '': return
-                values = val.split('_')
+                values = reversed(val.split('_'))
                 for variable, value in zip(varList, values):
                     variable.setDisp(value, write=write)
 
             def linkedGet(dev, var, read):
                 values = [v.getDisp(read=read) for v in varList]
-                return '_'.join(values)
+                return '_'.join(reversed(values))
 
             name = kwargs.pop('name')
-            name += 'All'
             kwargs.pop('value', None)
             
             lv = pr.LinkVariable(name=name, value='', dependencies=varList, linkedGet=linkedGet, linkedSet=linkedSet, **kwargs)

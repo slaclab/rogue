@@ -487,6 +487,9 @@ class LinkVariable(BaseVariable):
             for d in dependencies:
                 self.addDependency(d)
 
+    def __getitem__(self, key):
+        # Allow dependencies to be accessed as indicies of self
+        return self.dependencies[key]
 
     @Pyro4.expose
     def set(self, value, write=True):
