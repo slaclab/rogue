@@ -44,7 +44,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
     to be stored in data files.
     """
 
-    def __init__(self, name, description, pollEn=True, readBeforeConfig=False, **dump):
+    def __init__(self, name, description, pollEn=True, **dump):
         """Init the node with passed attributes"""
 
         rogue.interfaces.stream.Master.__init__(self)
@@ -56,9 +56,6 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         handler.setFormatter(formatter)
         self._logger = logging.getLogger('pyrogue')
         self._logger.addHandler(handler)
-
-        # Trigger read from hardware before loading config file
-        self._readBeforeConfig = readBeforeConfig
 
         # Keep of list of errors, exposed as a variable
         self._sysLogLock = threading.Lock()
@@ -87,6 +84,9 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         # Variables
         self.add(pr.LocalVariable(name='systemLog', value='', mode='RO', hidden=True,
             description='String containing newline seperated system logic entries'))
+
+        self.add(pr.LocalVariable(name='forceWrite', value=False, mode='RW', hidden=True,
+            description='Cofiguration Flag To Control Write All Block'))
 
     def stop(self):
         """Stop the polling thread. Must be called for clean exit."""
@@ -290,11 +290,11 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         """Write all blocks"""
         self._log.info("Start root write")
         try:
-            self._backgroundTransaction(rogue.interfaces.memory.Write)
+            self.writeBlocks(force=self.forceWrite, recurse=True)
             self._log.info("Verify root read")
-            self._backgroundTransaction(rogue.interfaces.memory.Verify)
+            self.verifyBlocks(recurse=True)
             self._log.info("Check root read")
-            self._checkTransaction(update=False)
+            self.checkBlocks(varUpdate=False, recurse=True)
         except Exception as e:
             self._log.error(e)
         self._log.info("Done root write")
@@ -305,9 +305,9 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         self._log.info("Start root read")
         self._initUpdatedVars()
         try:
-            self._backgroundTransaction(rogue.interfaces.memory.Read)
+            self.readBlocks(recurse=True)
             self._log.info("Check root read")
-            self._checkTransaction(update=True)
+            self.checkBlocks(varUpdate=True, recurse=True)
         except Exception as e:
             self._log.error(e)
         self._doneUpdatedVars()
@@ -325,8 +325,6 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
     @pr.command(order=1, name='readConfig', base='string', description='Read configuration from passed filename in YAML format')
     def _readConfig(self,dev,cmd,arg):
         """Read YAML configuration from a file. Called from command"""
-        if self._readBeforeConfig: 
-            self._read()
         try:
             with open(arg,'r') as f:
                 self.setOrExecYaml(f.read(),False,['RW'])
