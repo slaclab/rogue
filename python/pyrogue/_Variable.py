@@ -18,6 +18,7 @@ import textwrap
 import rogue.interfaces.memory
 import parse
 import Pyro4
+import math
 
 class VariableError(Exception):
     """ Exception for variable access errors."""
@@ -300,6 +301,28 @@ class RemoteVariable(BaseVariable):
         self._bitOffset = bitOffset
         self._verify    = verify
         self._typeStr   = base.name(sum(bitSize))
+        self._bytes     = int(math.ceil(float(self._bitOffset[-1] + self._bitSize[-1]) / 8.0))
+
+    def shiftOffsetDown(self,amount):
+        if amount == 0: return
+
+        self._log.debug("Adjusting variable {} offset from 0x{:02x} to 0x{:02x}".format(self.name,self._offset,self._offset-amount))
+        print("Adjusting variable {} offset from 0x{:02x} to 0x{:02x}".format(self.name,self._offset,self._offset-amount))
+
+        self._offset -= amount
+
+        for i in range(0,len(self._bitOffset)):
+            self._bitOffset[i] += (amount * 8)
+
+        self._bytes += amount
+
+    @property
+    def bytes(self):
+        return self._bytes
+
+    @bytes.setter
+    def bytes(self,value):
+        self._bytes = value
 
     @Pyro4.expose
     @property

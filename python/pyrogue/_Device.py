@@ -21,6 +21,7 @@ import pyrogue as pr
 import inspect
 import threading
 import Pyro4
+import math
 
 class EnableVariable(pr.BaseVariable):
     def __init__(self, enabled):
@@ -226,13 +227,30 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
             # Find remote variables with valid offset
             # Aligned to min access, create list softed by offset 
             elif isinstance(n,pr.RemoteVariable) and n.offset is not None:
-                varShift = n.offset % minSize
-                n._offset -= varShift
+                n.shiftOffsetDown(n.offset % minSize)
 
-                for i in range(0,len(n.bitOffset)):
-                    n._bitOffset[i] += varShift*8
+                # Set var bytes value based upon min size
+                n.varBytes = int(math.ceil(float(n.bitOffset[-1] + n.bitSize[-1]) / float(minSize*8))) * minSize
 
                 remVars += [n]
+
+        # Loop until no overlaps found
+        done = False
+        while done == False:
+            done = True
+
+            # Sort byte offset and size
+            remVars.sort(key=lambda x: (x.offset, x.varBytes))
+
+            # Look for overlaps and adjust offset
+            for i in range(1,len(remVars)):
+
+                # Variable overlaps the range of the previous variable
+                if (remVars[i].offset != remVars[i-1].offset) and (remVars[i].offset <= (remVars[i-1].varBytes-1)):
+                    print("Overlap detected cur offset={} prev offset={} prev bytes={}".format(remVars[i].offset,remVars[i-1].offset,remVars[i-1].varBytes))
+                    remVars[i].shiftOffsetDown(remVars[i].offset - remVars[i-1].offset)
+                    done = False
+                    break
 
         # Add variables
         for n in remVars:

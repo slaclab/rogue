@@ -336,12 +336,9 @@ class MemoryBlock(BaseBlock, rogue.interfaces.memory.Master):
             if len(self._variables) != 0 and var.offset != self._variables[0].offset:
                 return False
     
-            # Compute the max variable address to determine required size of block
-            varBytes = int(math.ceil(float(var.bitOffset[-1] + var.bitSize[-1]) / float(self._minSize*8))) * self._minSize
-
             # Range check
-            if varBytes > self._maxSize:
-                raise BlockError(self,"Variable {} size {} exceeds maxSize {}".format(var.name,varBytes,self._maxSize))
+            if var.varBytes > self._maxSize:
+                raise BlockError(self,"Variable {} size {} exceeds maxSize {}".format(var.name,var.varBytes,self._maxSize))
 
             # Link variable to block
             var._block = self
@@ -355,11 +352,11 @@ class MemoryBlock(BaseBlock, rogue.interfaces.memory.Master):
 
             # Adjust size to hold variable. Underlying class will adjust
             # size to align to minimum protocol access size 
-            if self._size < varBytes:
-                self._bData.extend(bytearray(varBytes - self._size))
-                self._vData.extend(bytearray(varBytes - self._size))
-                self._mData.extend(bytearray(varBytes - self._size))
-                self._size = varBytes
+            if self._size < var.varBytes:
+                self._bData.extend(bytearray(var.varBytes - self._size))
+                self._vData.extend(bytearray(var.varBytes - self._size))
+                self._mData.extend(bytearray(var.varBytes - self._size))
+                self._size = var.varBytes
 
             # Update verify mask
             if var.mode == 'RW' and var.verify is True:
