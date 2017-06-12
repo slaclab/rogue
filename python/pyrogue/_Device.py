@@ -212,6 +212,46 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
         """
         self._resetFunc = func
 
+    def _backgroundTransaction(self,type):
+        """
+        Perform background transactions
+        """
+        if not self.enable: return
+
+        # Execute all unique beforeReadCmds for reads or verify
+        if type == rogue.interfaces.memory.Read or type == rogue.interfaces.memory.Verify:
+            cmds = set([v._beforeReadCmd for v in self.variables.values() if v._beforeReadCmd is not None])
+            for cmd in cmds:
+                cmd()
+
+        # Process local blocks. 
+        for block in self._blocks:
+            block.backgroundTransaction(type)
+
+        # Process rest of tree
+        for key,value in self._nodes.items():
+            if isinstance(value,Device):
+                value._backgroundTransaction(type)
+
+        # Execute all unique afterWriteCmds for writes
+        if type == rogue.interfaces.memory.Write:
+            cmds = set([v._afterWriteCmd for v in self.variables.values() if v._afterWriteCmd is not None])
+            for cmd in cmds:
+                cmd()
+
+    def _checkTransaction(self,update):
+        """Check errors in all blocks and generate variable update nofifications"""
+        if not self.enable: return
+
+        # Process local blocks
+        for block in self._blocks:
+            block._checkTransaction(update)
+
+        # Process rest of tree
+        for key,value in self._nodes.items():
+            if isinstance(value,Device):
+                value._checkTransaction(update)
+
     def _buildBlocks(self):
         remVars = []
 
@@ -252,47 +292,6 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
             if not any(block._addVariable(n) for block in self._blocks):
                 self._log.debug("Adding new block {} at offset {:#02x}".format(n.name,n.offset))
                 self._blocks.append(pr.MemoryBlock(n))
-
-
-    def _backgroundTransaction(self,type):
-        """
-        Perform background transactions
-        """
-        if not self.enable: return
-
-        # Execute all unique beforeReadCmds for reads or verify
-        if type == rogue.interfaces.memory.Read or type == rogue.interfaces.memory.Verify:
-            cmds = set([v._beforeReadCmd for v in self.variables.values() if v._beforeReadCmd is not None])
-            for cmd in cmds:
-                cmd()
-
-        # Process local blocks. 
-        for block in self._blocks:
-            block.backgroundTransaction(type)
-
-        # Process rest of tree
-        for key,value in self._nodes.items():
-            if isinstance(value,Device):
-                value._backgroundTransaction(type)
-
-        # Execute all unique afterWriteCmds for writes
-        if type == rogue.interfaces.memory.Write:
-            cmds = set([v._afterWriteCmd for v in self.variables.values() if v._afterWriteCmd is not None])
-            for cmd in cmds:
-                cmd()
-
-    def _checkTransaction(self,update):
-        """Check errors in all blocks and generate variable update nofifications"""
-        if not self.enable: return
-
-        # Process local blocks
-        for block in self._blocks:
-            block._checkTransaction(update)
-
-        # Process rest of tree
-        for key,value in self._nodes.items():
-            if isinstance(value,Device):
-                value._checkTransaction(update)
 
     def _devReset(self,rstType):
         """Generate a count, soft or hard reset"""
