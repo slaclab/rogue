@@ -21,6 +21,8 @@ import textwrap
 import pyrogue as pr
 import inspect
 
+
+
 class BlockError(Exception):
     """ Exception for memory access errors."""
 
@@ -28,7 +30,7 @@ class BlockError(Exception):
         self._error = block.error
         block._error = 0
 
-        self._value = "Error in block with address 0x{:02x}: ".format(block.address)
+        self._value = "Error in block with address {:#08x}: ".format(block.address)
 
         if hasattr(block,'_variables'):
             self._value += "Block Variables: {}. ".format(block._variables)
@@ -108,10 +110,10 @@ class BaseBlock(object):
         """
         Perform a blocking transaction
         """
-        self._log.debug("Setting block. Addr=0x{:02x}, Data={}".format(self._variables[0].offset,self._bData))
+        self._log.debug("Setting block. Addr=0x{:08x}, Data={}".format(self._variables[0].offset,self._bData))
         self._startTransaction(type)
         self._checkTransaction(update=False)
-        self._log.debug("Done block. Addr=0x{:02x}, Data={}".format(self._variables[0].offset,self._bData))
+        self._log.debug("Done block. Addr=0x{:08x}, Data={}".format(self._variables[0].offset,self._bData))
 
     @property
     def offset(self):
