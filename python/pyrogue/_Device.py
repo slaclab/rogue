@@ -212,17 +212,33 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
         self._resetFunc = func
 
     def _buildBlocks(self):
+        remVars = []
 
-        # Get all of the variables
+        minSize = self._reqMinAccess()
+
+        # Process all of the variables
         for k,n in self.nodes.items():
 
+            # Local variables have a 1:1 block association
             if isinstance(n,pr.LocalVariable):
                 self._blocks.append(n._block)
 
+            # Find remote variables with valid offset
+            # Aligned to min access, create list softed by offset 
             elif isinstance(n,pr.RemoteVariable) and n.offset is not None:
-                if not any(block._addVariable(n) for block in self._blocks):
-                    self._log.debug("Adding new block %s at offset %x" % (n.name,n.offset))
-                    self._blocks.append(pr.MemoryBlock(n))
+                varShift = n.offset % minSize
+                n._offset -= varShift
+
+                for i in range(0,len(n.bitOffset)):
+                    var._bitOffset[i] += varShift*8
+
+                remVars += [n]
+
+        # Add variables
+        for n in remVars:
+            if not any(block._addVariable(n) for block in self._blocks):
+                self._log.debug("Adding new block {} at offset 0x{:02x}".format(n.name,n.offset))
+                self._blocks.append(pr.MemoryBlock(n))
 
 
     def _backgroundTransaction(self,type):
