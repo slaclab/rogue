@@ -220,7 +220,6 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
             for key,value in self.devices.items():
                 value.writeBlocks(force=force, recurse=True)
 
-
     def verifyBlocks(self, recurse=True, variable=None):
         """
         Perform background verify
@@ -249,7 +248,7 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
         if variable is not None:
             variable._block.backgroundTransaction(rogue.interfaces.memory.Read)
         else:
-        for block in self._blocks:
+            for block in self._blocks:
                 block.backgroundTransaction(rogue.interfaces.memory.Read)
 
         # Process rest of tree
@@ -265,7 +264,7 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
         if variable is not None:
             variable._block._checkTransaction(varUpdate)
         else:
-        for block in self._blocks:
+            for block in self._blocks:
                 block._checkTransaction(varUpdate)
 
         # Process rest of tree
@@ -313,8 +312,6 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
             if not any(block._addVariable(n) for block in self._blocks):
                 self._log.debug("Adding new block {} at offset {:#02x}".format(n.name,n.offset))
                 self._blocks.append(pr.MemoryBlock(n))
-
-
 
     def _devReset(self,rstType):
         """Generate a count, soft or hard reset"""
