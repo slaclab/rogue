@@ -19,6 +19,7 @@ import rogue.interfaces.memory
 import parse
 import Pyro4
 import math
+from collections import Iterable
 
 class VariableError(Exception):
     """ Exception for variable access errors."""
@@ -277,20 +278,24 @@ class RemoteVariable(BaseVariable):
 
         self._base     = base        
         self._block    = None
-        
-        # Adjust bitOffset or bitSize, make sure lenths match
-        if (not isinstance(bitSize,list)) and (not isinstance(bitOffset,list)):
-            bitOffset = [bitOffset]
-            bitSize   = [bitSize]
 
-        elif isinstance(bitSize,list) and (not isinstance(bitOffset,list)):
-            bitOffset = [bitOffset for i in range(0,len(bitSize))]
+        # Convert the address parameters into lists
+        addrParams = [offset, bitOffset, bitSize]
+        addrParams = [list(x) if isinstance(x, Iterable) else [x] for x in addrParams]
+        length = max((len(x) for x in addrParams))
+        addrParams = [x*length if len(x)==1 else x for x in addrParams]
+        offset, bitOffset, bitSize = addrParams
 
-        elif isinstance(bitOffset,list) and (not isinstance(bitSize,list)):
-            bitSize = [bitSize for i in range(0,len(bitOffset))]
+        # Verify the the list lengths match
+        if len(offset) != len(bitOffset) != len(bitSize):
+            raise VariableError('Lengths of offset: {}, bitOffset: {}, bitSize {} must match'.format(offset, bitOffset, bitSize))        
 
-        elif (isinstance(bitOffset,list) and isinstance(bitSize,list)) and (len(bitOffset) != len(bitSize)):
-            raise VariableError("Error in {}. bitSize={}, bitOffset={}".format(self.name,bitSize,bitOffset))
+        # Normalize bitOffsets relative to the smallest offset
+        baseAddr = min(offset)
+        bitOffset = [x+((y-baseAddr)*8) for x,y in zip(bitOffset, offset)]
+        offset = baseAddr
+
+        print('{} - {} {} {}'.format(self, offset, bitOffset, bitSize))        
 
         self._offset    = offset
         self._bitSize   = bitSize
