@@ -330,18 +330,14 @@ class MemoryBlock(BaseBlock, rogue.interfaces.memory.Master):
         Add a variable to the block. Called from Device for BlockMemory
         """
 
-        # Align variable address to block alignment
-        # Remove after device var prep update.
-        varShift = var.offset % self._minSize
-        var._offset -= varShift
-        var._bitOffset += (varShift * 8)
-
         with self._cond:
             self._waitTransaction()
 
             # Return false if offset does not match
             if len(self._variables) != 0 and var.offset != self._variables[0].offset:
                 return False
+
+            self._log.debug("Adding variable {} to block {} at offset 0x{:02x}".format(var.name,self,name,self.offset))
 
             # Compute the max variable address to determine required size of block
             varBytes = int(math.ceil(float(var.bitOffset[-1] + var.bitSize[-1]) / float(self._minSize*8))) * self._minSize
