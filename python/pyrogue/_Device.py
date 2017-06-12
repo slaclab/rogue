@@ -209,7 +209,7 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
 
         # Process local blocks.
         if variable is not None:
-            variable._blocks.backgroundTransaction(rogue.interface.memory.Write)
+            variable._block.backgroundTransaction(rogue.interfaces.memory.Write)
         else:
             for block in self._blocks:
                 if force or block.stale:
@@ -228,7 +228,7 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
 
         # Process local blocks.
         if variable is not None:
-            variable._blocks.backgroundTransaction(rogue.interface.memory.Verify)
+            variable._block.backgroundTransaction(rogue.interfaces.memory.Verify)
         else:
             for block in self._blocks:
                 block.backgroundTransaction(rogue.interfaces.memory.Verify)
@@ -270,7 +270,7 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
         # Process rest of tree
         if recurse:
             for key,value in self.devices.items():
-                value.blockCheck(varUpdate=varUpdate, recurse=True)
+                value.checkBlocks(varUpdate=varUpdate, recurse=True)
 
     def _buildBlocks(self):
         remVars = []
