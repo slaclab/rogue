@@ -310,19 +310,14 @@ class RemoteVariable(BaseVariable):
         print("Adjusting variable {} offset from 0x{:02x} to 0x{:02x}".format(self.name,self._offset,self._offset-amount))
 
         self._offset -= amount
+        self._bytes  += amount
 
         for i in range(0,len(self._bitOffset)):
             self._bitOffset[i] += (amount * 8)
 
-        self._bytes += amount
-
     @property
-    def bytes(self):
+    def varBytes(self):
         return self._bytes
-
-    @bytes.setter
-    def bytes(self,value):
-        self._bytes = value
 
     @Pyro4.expose
     @property

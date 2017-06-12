@@ -224,14 +224,9 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
             if isinstance(n,pr.LocalVariable):
                 self._blocks.append(n._block)
 
-            # Find remote variables with valid offset
-            # Aligned to min access, create list softed by offset 
+            # Align to min access, create list softed by offset 
             elif isinstance(n,pr.RemoteVariable) and n.offset is not None:
                 n.shiftOffsetDown(n.offset % minSize)
-
-                # Set var bytes value based upon min size
-                n.varBytes = int(math.ceil(float(n.bitOffset[-1] + n.bitSize[-1]) / float(minSize*8))) * minSize
-
                 remVars += [n]
 
         # Loop until no overlaps found
