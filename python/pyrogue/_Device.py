@@ -31,7 +31,6 @@ class EnableVariable(pr.BaseVariable):
 
         self._value = enabled
         self._lock = threading.Lock()
-        
 
     @Pyro4.expose
     def get(self, read=False):
@@ -203,9 +202,9 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
 
     def writeBlocks(self, force=False, recurse=True, variable=None):
         """
-        Perform background writes
+        Write all of the blocks held by this Device to memory
         """
-        if not self.enable: return
+        if not self.enable.get(): return
 
         # Process local blocks.
         if variable is not None:
@@ -224,7 +223,7 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
         """
         Perform background verify
         """
-        if not self.enable: return
+        if not self.enable.get(): return
 
         # Process local blocks.
         if variable is not None:
@@ -242,7 +241,7 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
         """
         Perform background reads
         """
-        if not self.enable: return
+        if not self.enable.get(): return
 
         # Process local blocks. 
         if variable is not None:
@@ -258,7 +257,7 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
 
     def checkBlocks(self,varUpdate=True, recurse=True, variable=None):
         """Check errors in all blocks and generate variable update nofifications"""
-        if not self.enable: return
+        if not self.enable.get(): return
 
         # Process local blocks
         if variable is not None:
