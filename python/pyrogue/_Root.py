@@ -217,7 +217,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                 value._setTimeout(timeout)
 
     def exportRoot(self,group,host=None):
-        Pyro4.config.THREADPOOL_SIZE = 100
+        Pyro4.config.THREADPOOL_SIZE = 500
         Pyro4.util.SerializerBase.register_dict_to_class("collections.OrderedDict", recreate_OrderedDict)
 
         self._pyroDaemon = Pyro4.Daemon(host=host)
