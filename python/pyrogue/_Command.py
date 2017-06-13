@@ -13,6 +13,7 @@
 # copied, modified, propagated, or distributed except according to the terms 
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
+import rogue.interfaces.memory
 import textwrap
 import time
 from collections import OrderedDict as odict
@@ -46,7 +47,7 @@ class BaseCommand(pr.Node):
 
                 # Function is really a function
                 if callable(self._function):
-                    self._log.debug('Calling CMD: {}'.format(self.name))
+                    self._log.debug('Calling Command: {}'.format(self.name))
 
                     if len(inspect.signature(self._function).parameters) == 3:
                         self._function(self._parent, self, arg)
@@ -98,15 +99,41 @@ class BaseCommand(pr.Node):
 
 
 class LocalCommand(BaseCommand,pr.LocalVariable):
-    def __init__(self, name=None, mode=None, description="", hidden=False, function=None, **kwargs):
+    def __init__(self, name=None, mode='RW', description="", hidden=False, function=None, update=False, **kwargs):
         BaseCommand.__init__(self,name=name, description=description, hidden=hidden, function=function)
-        pr.LocalVariable.__init__(self, name=name, description=description, hidden=hidden, mode='CMD', **kwargs)
+        pr.LocalVariable.__init__(self, name=name, description=description, hidden=hidden, mode=mode, update=update, **kwargs)
 
 
 class RemoteCommand(BaseCommand, pr.RemoteVariable):
-    def __init__(self, name=None, mode=None, description="", hidden=False, function=None, **kwargs):
+    def __init__(self, name=None, mode='RW', description="", hidden=False, function=None, update=False, **kwargs):
         BaseCommand.__init__(self,name=name, description=description, hidden=hidden, function=function)
-        pr.RemoteVariable.__init__(self, name=name, description=description, hidden=hidden, mode='CMD', **kwargs)
+        pr.RemoteVariable.__init__(self, name=name, description=description, hidden=hidden, mode=mode, update=update, **kwargs)
+
+    def set(self, value, write=True):
+        self._log.debug("{}.set({})".format(self, value))
+        try:
+            self._block.set(self, value)
+
+            if write:
+                self._block.blockingTransaction(rogue.interfaces.memory.Write)
+
+        except Exception as e:
+            self._log.error(e)
+
+ 
+    def get(self, read=True):
+        try:
+            if read:
+                self._block.blockingTransaction(rogue.interfaces.memory.Read)
+                
+            ret = self._block.get(self)
+
+        except Exception as e:
+            self._log.error(e)
+            return None
+
+        return ret
+            
 
 
 # Legacy Support
