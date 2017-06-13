@@ -362,7 +362,10 @@ class RemoteVariable(BaseVariable):
         
         try:
             self._block.set(self, value)
-            self._block.backgroundTransaction(rogue.interfaces.memory.Post)
+            self._updated()
+
+            if self._block.mode != 'RO':
+                self._block.backgroundTransaction(rogue.interfaces.memory.Post)
 
         except Exception as e:
             self._log.error(e)
