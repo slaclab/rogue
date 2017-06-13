@@ -253,7 +253,7 @@ class Node(object):
 
             # Single entry returned
             if not isinstance(ah,odict):
-                return ah
+                return [ah]
 
             # Indexed ordered dictionary returned
             # Convert to list with gaps = None
