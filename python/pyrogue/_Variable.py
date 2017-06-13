@@ -27,7 +27,7 @@ class VariableError(Exception):
 
 class BaseVariable(pr.Node):
 
-    def __init__(self, name=None, description="", 
+    def __init__(self, name=None, description="", update=True,
                  mode='RW', value=0, disp='{}',
                  enum=None, units=None, hidden=False, minimum=None, maximum=None, **dump):
 
@@ -36,6 +36,7 @@ class BaseVariable(pr.Node):
         self._units         = units
         self._minimum       = minimum # For base='range'
         self._maximum       = maximum # For base='range'
+        self._update        = update
 
         self._default       = value
         self.__listeners    = []
@@ -237,7 +238,7 @@ class BaseVariable(pr.Node):
 
     def _updated(self):
         """Variable has been updated. Inform listeners."""
-        if self.mode == 'CMD': return
+        if self._update is False: return
 
         value = self.value()
         disp  = self.valueDisp()
@@ -280,11 +281,11 @@ class RemoteVariable(BaseVariable):
         self._block    = None
 
         # Convert the address parameters into lists
-        addrParams = [offset, bitOffset, bitSize]
-        addrParams = [list(x) if isinstance(x, Iterable) else [x] for x in addrParams]
-        length = max((len(x) for x in addrParams))
-        addrParams = [x*length if len(x)==1 else x for x in addrParams]
-        offset, bitOffset, bitSize = addrParams
+        addrParams = [offset, bitOffset, bitSize] # Make a copy
+        addrParams = [list(x) if isinstance(x, Iterable) else [x] for x in addrParams] # convert to lists
+        length = max((len(x) for x in addrParams)) 
+        addrParams = [x*length if len(x)==1 else x for x in addrParams] # Make single element lists as long as max
+        offset, bitOffset, bitSize = addrParams # Assign back
 
         # Verify the the list lengths match
         if len(offset) != len(bitOffset) != len(bitSize):
@@ -354,14 +355,14 @@ class RemoteVariable(BaseVariable):
     def post(self,value):
         """
         Set the value and write to hardware if applicable using a posted write.
-        Writes to hardware are posted.
+        This method does not call through parent.writeBlocks(), but rather
+        calls on self._block directly.
         """
+        self._log.debug("{}.post({})".format(self, value))
+        
         try:
             self._block.set(self, value)
-            self._updated()
-
-            if self._block.mode != 'RO':
-                self._parent.writeBlocks(force=False, recurse=False, variable=self)
+            self._block.backgroundTransaction(rogue.interfaces.memory.Post)
 
         except Exception as e:
             self._log.error(e)
@@ -403,7 +404,7 @@ class RemoteVariable(BaseVariable):
         if amount != 0:
 
             self._log.debug("Adjusting variable {} offset from 0x{:02x} to 0x{:02x}".format(self.name,self._offset,self._offset-amount))
-            print("Adjusting variable {} offset from 0x{:02x} to 0x{:02x}".format(self.name,self._offset,self._offset-amount))
+            #print("Adjusting variable {} offset from 0x{:02x} to 0x{:02x}".format(self.name,self._offset,self._offset-amount))
 
             self._offset -= amount
 
