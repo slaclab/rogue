@@ -212,7 +212,8 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
         else:
             for block in self._blocks:
                 if force or block.stale:
-                    block.backgroundTransaction(rogue.interfaces.memory.Write)
+                    if not all((isinstance(v, pr.RemoteCommand) for v in block._variables)):
+                        block.backgroundTransaction(rogue.interfaces.memory.Write)
 
         # Process rest of tree
         if recurse:
@@ -230,7 +231,8 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
             variable._block.backgroundTransaction(rogue.interfaces.memory.Verify)
         else:
             for block in self._blocks:
-                block.backgroundTransaction(rogue.interfaces.memory.Verify)
+                if not all((isinstance(v, pr.RemoteCommand) for v in block._variables)):
+                    block.backgroundTransaction(rogue.interfaces.memory.Verify)
 
         # Process rest of tree
         if recurse:
@@ -248,7 +250,8 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
             variable._block.backgroundTransaction(rogue.interfaces.memory.Read)
         else:
             for block in self._blocks:
-                block.backgroundTransaction(rogue.interfaces.memory.Read)
+                if not all((isinstance(v, pr.RemoteCommand) for v in block._variables)):
+                    block.backgroundTransaction(rogue.interfaces.memory.Read)
 
         # Process rest of tree
         if recurse:
