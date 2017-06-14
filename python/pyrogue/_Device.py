@@ -464,7 +464,7 @@ class RunControl(Device):
             if self.runState.value() == 'Running':
                 self._thread = threading.Thread(target=self._run)
                 self._thread.start()
-            else:
+            elif self._thread is not None:
                 self._thread.join()
                 self._thread = None
 
