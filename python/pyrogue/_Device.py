@@ -372,18 +372,18 @@ class DataWriter(Device):
             description='Data file for storing frames for connected streams.'))
 
         self.add(pr.LocalVariable(name='open', mode='RW', value=False,
-            setFunction=self._setOpen, description='Data file open state'))
+            localSet=self._setOpen, description='Data file open state'))
 
-        self.add(pr.LocalVariable(name='bufferSize', mode='RW', value=0, setFunction=self._setBufferSize,
+        self.add(pr.LocalVariable(name='bufferSize', mode='RW', value=0, localSet=self._setBufferSize,
             description='File buffering size. Enables caching of data before call to file system.'))
 
-        self.add(pr.LocalVariable(name='maxFileSize', mode='RW', value=0, setFunction=self._setMaxFileSize,
+        self.add(pr.LocalVariable(name='maxFileSize', mode='RW', value=0, localSet=self._setMaxFileSize,
             description='Maximum size for an individual file. Setting to a non zero splits the run data into multiple files.'))
 
-        self.add(pr.LocalVariable(name='fileSize', mode='RO', value=0, pollInterval=1, getFunction=self._getFileSize,
+        self.add(pr.LocalVariable(name='fileSize', mode='RO', value=0, pollInterval=1, localGet=self._getFileSize,
             description='Size of data files(s) for current open session in bytes.'))
 
-        self.add(pr.LocalVariable(name='frameCount', mode='RO', value=0, pollInterval=1, getFunction=self._getFrameCount,
+        self.add(pr.LocalVariable(name='frameCount', mode='RO', value=0, pollInterval=1, localGet=self._getFrameCount,
             description='Frame in data file(s) for current open session in bytes.'))
 
         self.add(pr.LocalCommand(name='autoName', function=self._genFileName,
@@ -444,15 +444,15 @@ class RunControl(Device):
         self._cmd = cmd
 
         self.add(pr.LocalVariable(name='runState', value=value, mode='RW', enum=states,
-            setFunction=self._setRunState, description='Run state of the system.'))
+            localSet=self._setRunState, description='Run state of the system.'))
 
         value = [k for k,v in rates.items()][0]
 
         self.add(pr.LocalVariable(name='runRate', value=value, mode='RW', enum=rates,
-            setFunction=self._setRunRate, description='Run rate of the system.'))
+            localSet=self._setRunRate, description='Run rate of the system.'))
 
         self.add(pr.LocalVariable(name='runCount', value=0, mode='RO', pollInterval=1,
-            description='Run Counter updated by run thread.'))
+            localSet='Run Counter updated by run thread.'))
 
     def _setRunState(self,dev,var,value,changed):
         """
@@ -462,9 +462,11 @@ class RunControl(Device):
         """
         if changed:
             if self.runState.value() == 'Running':
+                #print("Starting run")
                 self._thread = threading.Thread(target=self._run)
                 self._thread.start()
             elif self._thread is not None:
+                #print("Stopping run")
                 self._thread.join()
                 self._thread = None
 
@@ -475,12 +477,14 @@ class RunControl(Device):
         pass
 
     def _run(self):
+        #print("Thread start")
         self.runCount.set(0)
 
-        while (self.runState.value() == 'Running'):
+        while (self.runState.disp() == 'Running'):
             time.sleep(1.0 / float(self.runRate.value()))
             if cmd is not None:
                 cmd()
 
             self.runCount += 1
+        #print("Thread stop")
 

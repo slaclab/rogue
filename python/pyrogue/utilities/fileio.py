@@ -74,7 +74,7 @@ class StreamReader(pyrogue.Device):
 
         self.add(pyrogue.LocalVariable(name='open', description='Data file open state',
                                   bitSize=1, bitOffset=0, base='bool', mode='RW',
-                                  setFunction=self._setOpen))
+                                  localSet=self._setOpen))
 
     def _setOpen(self,dev,var,value,changed):
         if changed:
