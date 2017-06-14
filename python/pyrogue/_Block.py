@@ -127,7 +127,9 @@ class BaseBlock(object):
 
     @property
     def address(self):
-        if isinstance(self,rogue.interfaces.memory.Master):
+        if len(self._variables) == 0:
+            return 0
+        elif isinstance(self,rogue.interfaces.memory.Master):
             return self._variables[0].offset | self._reqOffset()
         else:
             return self._variables[0].offset
