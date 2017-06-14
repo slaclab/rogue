@@ -22,6 +22,7 @@ import inspect
 import threading
 import Pyro4
 import math
+import time
 
 class EnableVariable(pr.BaseVariable):
     def __init__(self, enabled):
@@ -460,13 +461,15 @@ class RunControl(Device):
         Enum of run states can also be overriden.
         Underlying run control must update runCount variable.
         """
+        print(f'_setRunState(value={value})')
+        pr.LocalVariable.set(self, value, write=False)
         if changed:
-            if self.runState.value() == 'Running':
-                #print("Starting run")
+            if self.runState.genDisp(value) == 'Running':
+                print("Starting run")
                 self._thread = threading.Thread(target=self._run)
                 self._thread.start()
             elif self._thread is not None:
-                #print("Stopping run")
+                print("Stopping run")
                 self._thread.join()
                 self._thread = None
 
@@ -477,14 +480,14 @@ class RunControl(Device):
         pass
 
     def _run(self):
-        #print("Thread start")
+        print("Thread start")
         self.runCount.set(0)
 
         while (self.runState.valueDisp() == 'Running'):
             time.sleep(1.0 / float(self.runRate.value()))
-            if cmd is not None:
-                cmd()
+            if self._cmd is not None:
+                self._cmd()
 
-            self.runCount += 1
-        #print("Thread stop")
+            self.runCount.set(self.runCount.value() + 1)
+        print("Thread stop")
 
