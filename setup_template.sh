@@ -16,7 +16,7 @@ source /afs/slac.stanford.edu/g/reseng/epics/base-R3-16-0/settings.sh
 #source /path/to/epics/base/settings.sh
 
 # Package directories
-export ROGUE_DIR=`dirname ${PWD}/`
+export ROGUE_DIR=${PWD}
 
 # Setup python path
 export PYTHONPATH=${ROGUE_DIR}/python:${PYTHONPATH}

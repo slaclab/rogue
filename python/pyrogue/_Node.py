@@ -21,6 +21,7 @@ import inspect
 import pyrogue as pr
 import Pyro4
 import functools as ft
+import parse
 
 def logInit(cls=None,name=None):
     """Init a logging pbject. Set global options."""
@@ -62,6 +63,7 @@ class Node(object):
         self._description = description
         self._hidden      = hidden
         self._path        = name
+        self._depWarn     = False
 
         # Tracking
         self._parent = None
@@ -236,10 +238,53 @@ class Node(object):
         for key,value in self._nodes.items():
             if isinstance(value,pr.Device):
                 data[key] = value._getVariables(modes)
-            elif isinstance(value,pr.BaseVariable) and (value.mode in modes):
+            elif isinstance(value,pr.BaseVariable) and not isinstance(value, pr.BaseCommand) \
+                 and (value.mode in modes):
                 data[key] = value.valueDisp()
 
         return data
+
+    def _nodeList(self,name):
+        fields = re.split('\[|\]',name)
+
+        # Wildcard
+        if len(fields) > 1 and fields[1] == '*':
+            return self._nodeList(fields[0])
+        else:
+            ah = attrHelper(self._nodes,fields[0])
+
+            # Single entry returned
+            if not isinstance(ah,odict):
+
+                # Should be indexed
+                if len(fields) > 1:
+                    return []
+                else:
+                    return [ah]
+
+            # Indexed ordered dictionary returned
+            # Convert to list with gaps = None
+            else:
+                idxLast = list(ah.items())[-1][0] # Last index
+                ret = [None] * (idxLast+1)
+                for i,n in ah.items():
+                    ret[i] = n
+
+                if len(fields) > 1:
+                    return eval('ret[{}]'.format(fields[1]))
+                else:
+                    return ret
+         
+    def _getDepWarn(self):
+        ret = []
+
+        if self._depWarn:
+            ret += [self.path]
+
+        for key,value in self._nodes.items():
+            ret += value._getDepWarn()
+
+        return ret
 
     def _setOrExec(self,d,writeEach,modes):
         """
@@ -249,21 +294,19 @@ class Node(object):
         Called from setOrExecYaml in the root node.
         """
         for key, value in d.items():
-
-            # Entry is in node list
-            if key in self._nodes:
+            for n in self._nodeList(key):
 
                 # If entry is a device, recurse
-                if isinstance(self._nodes[key],pr.Device):
-                    self._nodes[key]._setOrExec(value,writeEach,modes)
+                if isinstance(n,pr.Device):
+                    n._setOrExec(value,writeEach,modes)
 
                 # Execute if command
-                elif isinstance(self._nodes[key],pr.BaseCommand):
-                    self._nodes[key](value)
+                elif isinstance(n,pr.BaseCommand):
+                    n.call(value)
 
                 # Set value if variable with enabled mode
-                elif isinstance(self._nodes[key],pr.BaseVariable) and (self._nodes[key].mode in modes):
-                    self._nodes[key].setDisp(value,writeEach)
+                elif isinstance(n,pr.BaseVariable) and (n.mode in modes):
+                    n.setDisp(value,writeEach)
 
 
 class PyroNode(object):
