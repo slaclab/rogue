@@ -443,16 +443,16 @@ class RunControl(Device):
         self._thread = None
         self._cmd = cmd
 
-        self.add(pr.LocalVariable(name='runState', value=value, mode='RW', enum=states,
-            localSet=self._setRunState, description='Run state of the system.'))
+        self.add(pr.LocalVariable(name='runState', value=value, mode='RW', disp=states,
+                                  localSet=self._setRunState, description='Run state of the system.'))
 
         value = [k for k,v in rates.items()][0]
 
-        self.add(pr.LocalVariable(name='runRate', value=value, mode='RW', enum=rates,
-            localSet=self._setRunRate, description='Run rate of the system.'))
+        self.add(pr.LocalVariable(name='runRate', value=value, mode='RW', disp=rates,
+                                  localSet=self._setRunRate, description='Run rate of the system.'))
 
-        self.add(pr.LocalVariable(name='runCount', value=0, mode='RO', pollInterval=1,
-            localSet='Run Counter updated by run thread.'))
+        self.add(pr.LocalVariable(name='runCount', value=0, mode='RW', pollInterval=1,
+                                  description='Run Counter updated by run thread.'))
 
     def _setRunState(self,dev,var,value,changed):
         """
