@@ -41,9 +41,11 @@ def byteCount(bits):
 # # with a specific set of args is ever created
 # class Model(metaclass=ModelMeta):
 #     pass
+class Model(object):
+    pass
 
 @Pyro4.expose
-class UInt(object):
+class UInt(Model):
     """Converts Unsigned Integer to and from bytearray"""
 #     def __init__(self, numBits=1, signed=False, endianness='little'):
 #         self.numBits = numBits
@@ -55,6 +57,7 @@ class UInt(object):
 #     def clone(self, numBits):
 #         return IntModel(numBits, self.signed, self.endianness)
     defaultdisp = '{:#x}'
+    pytype = int
 
     @staticmethod
     def toBlock(value, bitSize):
@@ -72,10 +75,12 @@ class UInt(object):
     def name(cls, bitSize):
         return '{}{}'.format(cls.__name__, bitSize)
 
-@Pyro4.expose
-class Int(object):
 
-    defaultdisp = '{:#x}'    
+@Pyro4.expose
+class Int(Model):
+
+    defaultdisp = '{:#x}'
+    pytype = int
 
     @staticmethod
     def toBlock(value, bitSize):
@@ -99,9 +104,10 @@ class Int(object):
     
 
 @Pyro4.expose
-class Bool(object):
+class Bool(Model):
     
-    defaultdisp = {False: 'False', True: 'True'}    
+    defaultdisp = {False: 'False', True: 'True'}
+    pytype = bool
 
     @staticmethod
     def toBlock(value, bitSize):
@@ -121,10 +127,11 @@ class Bool(object):
     
         
 @Pyro4.expose
-class String(object):
+class String(Model):
 
     encoding = 'utf-8'
     defaultdisp = '{}'
+    pytype = str
 
     @staticmethod
     def toBlock(value, bitSize):
@@ -147,10 +154,11 @@ class String(object):
 
 
 @Pyro4.expose
-class Float(object):
+class Float(Model):
     """Converter for 32-bit float"""
 
     defaultdisp = '{:f}'
+    pytype = float
 #    endianness='little'
 #    fstring = 'f' # use '!f' for big endian
 
