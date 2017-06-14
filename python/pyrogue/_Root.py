@@ -241,8 +241,8 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         lst = self._getDepWarn()
 
         if len(lst) > 0:
-            print("----------- Depcreation Warning --------------------------------")
-            print("The following nodes were created with depcrated calls:")
+            print("----------- Deprecation Warning --------------------------------")
+            print("The following nodes were created with deprecated calls:")
 
             for n in lst:
                 print("   " + n)
