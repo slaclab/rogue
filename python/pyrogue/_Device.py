@@ -478,7 +478,7 @@ class RunControl(Device):
         self.runCount.set(0)
         self._last = int(time.time())
 
-        while (self.runState.get(read=False) == 'Running'):
+        while (self.runState.value() == 'Running'):
             time.sleep(1.0 / float(self.runRate.value()))
             if cmd is not None:
                 cmd()
