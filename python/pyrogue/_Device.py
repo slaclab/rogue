@@ -462,7 +462,7 @@ class RunControl(Device):
         Underlying run control must update runCount variable.
         """
         if changed:
-            if self.runState.genDisp(value) == 'Running':
+            if self.runState.valueDisp() == 'Running':
                 #print("Starting run")
                 self._thread = threading.Thread(target=self._run)
                 self._thread.start()
