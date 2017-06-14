@@ -480,7 +480,7 @@ class RunControl(Device):
         #print("Thread start")
         self.runCount.set(0)
 
-        while (self.runState.disp() == 'Running'):
+        while (self.runState.valueDisp() == 'Running'):
             time.sleep(1.0 / float(self.runRate.value()))
             if cmd is not None:
                 cmd()
