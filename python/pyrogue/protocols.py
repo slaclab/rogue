@@ -40,8 +40,6 @@ class UdpRssiPack(pr.Device):
         self._rssi.application()._setSlave(self._pack.transport())
         self._pack.transport()._setSlave(self._rssi.application())
 
-        self._log = pyrogue.logInit(self)
-
         self.add(pr.LocalVariable(name='rssiOpen',        mode='RO', value=0, pollInterval=1, getFunction=self.getRssiOpen))
         self.add(pr.LocalVariable(name='rssiDownCount',   mode='RO', value=0, pollInterval=1, getFunction=self.getRssiDownCount))
         self.add(pr.LocalVariable(name='rssiDropCount',   mode='RO', value=0, pollInterval=1, getFunction=self.getRssiDropCount))
