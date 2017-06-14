@@ -426,7 +426,7 @@ class DataWriter(Device):
 class RunControl(Device):
     """Special base class to control runs. TODO: Update comments."""
 
-    def __init__(self, name, description='', hidden=True, rates=None, states=None, **dump):
+    def __init__(self, name, description='Run Controller', hidden=True, rates=None, states=None, cmd=None, **dump):
         """Initialize device class"""
 
         if rates is None:
@@ -439,6 +439,9 @@ class RunControl(Device):
                         size=0, memBase=None, offset=0, hidden=hidden)
 
         value = [k for k,v in states.items()][0]
+
+        self._thread = None
+        self._cmd = cmd
 
         self.add(pr.LocalVariable(name='runState', value=value, mode='RW', enum=states,
             setFunction=self._setRunState, description='Run state of the system.'))
@@ -455,14 +458,33 @@ class RunControl(Device):
         """
         Set run state. Reimplement in sub-class.
         Enum of run states can also be overriden.
-        Underlying run control must update _runCount variable.
+        Underlying run control must update runCount variable.
         """
-        pass
+        if changed:
+            if self.runState.value() == 'Running':
+                self._thread = threading.Thread(target=self._run)
+                self._thread.start()
+            else:
+                self._thread.join()
+                self._thread = None
 
     def _setRunRate(self,dev,var,value):
         """
-        Set run rate. Reimplement in sub-class.
-        Enum of run rates can also be overriden.
+        Set run rate. Reimplement in sub-class if neccessary.
         """
         pass
+
+    def _run(self):
+        self.runCount.set(0)
+        self._last = int(time.time())
+
+        while (self.runState.get(read=False) == 'Running'):
+            time.sleep(1.0 / float(self.runRate.value()))
+            if cmd is not None:
+                cmd()
+
+            self.runCount += 1
+            if self._last != int(time.time()):
+                self._last = int(time.time())
+                self.runCount.get() # Force display update
 
