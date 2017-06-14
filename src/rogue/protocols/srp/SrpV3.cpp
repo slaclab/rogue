@@ -55,7 +55,7 @@ void rps::SrpV3::setup_python() {
 }
 
 //! Creator with version constant
-rps::SrpV3::SrpV3() : ris::Master(), ris::Slave(), rim::Slave(4,2^32) { }
+rps::SrpV3::SrpV3() : ris::Master(), ris::Slave(), rim::Slave(4,0xFFFFFFFF) { }
 
 //! Deconstructor
 rps::SrpV3::~SrpV3() {}

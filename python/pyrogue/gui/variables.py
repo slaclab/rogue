@@ -145,7 +145,7 @@ class VariableWidget(QWidget):
         # First create variables
         #for key,val in d.variables.iteritems():
         for key,val in d.variables.items():
-            if not val.hidden and val.mode != 'CMD':
+            if not val.hidden:
                 var = VariableLink(tree,val)
 
         # Then create devices

@@ -21,6 +21,8 @@ import textwrap
 import pyrogue as pr
 import inspect
 
+
+
 class BlockError(Exception):
     """ Exception for memory access errors."""
 
@@ -28,7 +30,7 @@ class BlockError(Exception):
         self._error = block.error
         block._error = 0
 
-        self._value = "Error in block with address 0x{:02x}: ".format(block.address)
+        self._value = "Error in block with address {:#08x}: ".format(block.address)
 
         if hasattr(block,'_variables'):
             self._value += "Block Variables: {}. ".format(block._variables)
@@ -57,6 +59,9 @@ class BlockError(Exception):
         elif (self._error & 0xFF000000) == rogue.interfaces.memory.AxiFail:
             self._value += "AXI fail"
 
+        elif (self._error & 0xFF000000) == rogue.interfaces.memory.Unsupported:
+            self._value += "Unsupported Transaction"
+
         else:
             self._value += "Unknown error 0x{:02x}".format(self._error)
 
@@ -79,9 +84,12 @@ class BaseBlock(object):
         self._error     = 0
         self._doUpdate  = False
         self._verifyEn  = False
+        self._bulkEn    = False
         self._doVerify  = False
         self._tranTime  = time.time()
         self._value     = None
+        self._stale     = False
+        self._verifyWr  = False
 
         # Setup logging
         self._log = pr.logInit(self,variable.name)
@@ -93,10 +101,10 @@ class BaseBlock(object):
         return repr(self._variables)
 
     def set(self, var, value):
-        self._value = value
+        pass
 
     def get(self, var, value):
-        return self._value
+        return None
 
     def backgroundTransaction(self,type):
         """
@@ -108,10 +116,10 @@ class BaseBlock(object):
         """
         Perform a blocking transaction
         """
-        self._log.debug("Setting block. Addr=0x{:02x}, Data={}".format(self._variables[0].offset,self._bData))
+        self._log.debug("Setting block. Addr=0x{:08x}, Data={}".format(self._variables[0].offset,self._bData))
         self._startTransaction(type)
         self._checkTransaction(update=False)
-        self._log.debug("Done block. Addr=0x{:02x}, Data={}".format(self._variables[0].offset,self._bData))
+        self._log.debug("Done block. Addr=0x{:08x}, Data={}".format(self._variables[0].offset,self._bData))
 
     @property
     def offset(self):
@@ -119,7 +127,9 @@ class BaseBlock(object):
 
     @property
     def address(self):
-        if isinstance(self,rogue.interfaces.memory.Master):
+        if len(self._variables) == 0:
+            return 0
+        elif isinstance(self,rogue.interfaces.memory.Master):
             return self._variables[0].offset | self._reqOffset()
         else:
             return self._variables[0].offset
@@ -137,6 +147,10 @@ class BaseBlock(object):
         return self._value
 
     @property
+    def stale(self):
+        return self._stale
+
+    @property
     def timeout(self):
         return self._timeout
 
@@ -150,6 +164,10 @@ class BaseBlock(object):
     def error(self):
         return self._error
 
+    @property
+    def bulkEn(self):
+        return self._bulkEn
+
     def _waitTransaction(self):
         pass
 
@@ -158,6 +176,9 @@ class BaseBlock(object):
         Add a variable to the block
         """
         with self._lock:
+            if not isinstance(var, pr.BaseCommand):
+                self._bulkEn = True
+                
             if len(self._variables) == 0:
                 self._variables.append(var)
                 return True;
@@ -222,19 +243,19 @@ class LocalBlock(BaseBlock):
                     exec(textwrap.dedent(self._localSet))
 
     def get(self, var):
-        with self._lock:
-            dev   = var.parent
-            value = 0
+        if self._localGet is not None:
+            with self._lock:
+                dev   = var.parent
+                value = 0
 
-            if self._localGet is not None:
                 if callable(self._localGet):
                     self._value = self._localGet(dev,var)
                 else:
                     ns = locals()
                     exec(textwrap.dedent(self._localGet),ns)
                     self._value = ns['value']
-
-            return self._value
+   
+        return self._value
 
 
 class MemoryBlock(BaseBlock, rogue.interfaces.memory.Master):
@@ -265,17 +286,21 @@ class MemoryBlock(BaseBlock, rogue.interfaces.memory.Master):
         with self._cond:
             self._waitTransaction()
             self._value = value
+            self._stale = True
 
-            ba = var._base.toBlock(value, var.bitSize)
+            ba = var._base.toBlock(value, sum(var.bitSize))
 
             # Access is fully byte aligned
-            if (var.bitOffset % 8) == 0 and (var.bitSize % 8) == 0:
-                self._bData[var.bitOffset//8:(var.bitOffset+var.bitSize)//8] = ba
+            if len(var.bitOffset) == 1 and (var.bitOffset[0] % 8) == 0 and (var.bitSize[0] % 8) == 0:
+                self._bData[var.bitOffset[0]//8:(var.bitOffset[0]+var.bitSize[0])//8] = ba
 
             # Bit level access
             else:
-                for x in range(0, var.bitSize):
-                    setBitToBytes(self._bData,x+var.bitOffset,getBitFromBytes(ba,x))
+                bit = 0
+                for x in range(0, len(var.bitOffset)):
+                    for y in range(0, var.bitSize[x]):
+                        setBitToBytes(self._bData,var.bitOffset[x]+y,getBitFromBytes(ba,bit))
+                        bit += 1
 
     def get(self, var):
         """
@@ -291,15 +316,19 @@ class MemoryBlock(BaseBlock, rogue.interfaces.memory.Master):
                 raise BlockError(self)
 
             # Access is fully byte aligned
-            if (var.bitOffset % 8) == 0 and (var.bitSize % 8) == 0:
-                return var._base.fromBlock(self._bData[int(var.bitOffset/8):int((var.bitOffset+var.bitSize)/8)])
+            if len(var.bitOffset) == 1 and (var.bitOffset[0] % 8) == 0 and (var.bitSize[0] % 8) == 0:
+                return var._base.fromBlock(self._bData[int(var.bitOffset[0]/8):int((var.bitOffset[0]+var.bitSize[0])/8)])
 
             # Bit level access
             else:
-                ba = bytearray(int(var.bitSize / 8))
-                if (var.bitSize % 8) > 0: ba.extend(bytearray(1))
-                for x in range(0,var.bitSize):
-                    setBitToBytes(ba,x,getBitFromBytes(self._bData,x+var.bitOffset))
+                ba = bytearray(int(math.ceil(float(sum(var.bitSize)) / 8.0)))
+
+                bit = 0
+                for x in range(0, len(var.bitOffset)):
+                    for y in range(0, var.bitSize[x]):
+                        setBitToBytes(ba,bit,getBitFromBytes(self._bData,var.bitOffset[x]+y))
+                        bit += 1
+
                 return var._base.fromBlock(ba)
 
     def _waitTransaction(self):
@@ -322,42 +351,46 @@ class MemoryBlock(BaseBlock, rogue.interfaces.memory.Master):
         Add a variable to the block. Called from Device for BlockMemory
         """
 
-        # Align variable address to block alignment
-        varShift = var.offset % self._minSize
-        var._offset -= varShift
-        var._bitOffset += (varShift * 8)
-
         with self._cond:
             self._waitTransaction()
 
             # Return false if offset does not match
             if len(self._variables) != 0 and var.offset != self._variables[0].offset:
                 return False
-
-            # Compute the max variable address to determine required size of block
-            varBytes = int(math.ceil(float(var.bitOffset + var.bitSize) / float(self._minSize*8))) * self._minSize
+    
+            # Range check
+            if var.varBytes > self._maxSize:
+                raise BlockError(self,"Variable {} size {} exceeds maxSize {}".format(var.name,var.varBytes,self._maxSize))
 
             # Link variable to block
             var._block = self
+            
+            if not isinstance(var, pr.BaseCommand):
+                self._bulkEn = True
+                
             self._variables.append(var)
 
-            # If variable modes mismatch, set to read/write
+            self._log.debug("Adding variable {} to block {} at offset 0x{:02x}".format(var.name,self.name,self.offset))
+
+            # If variable modes mismatch, set block to read/write
             if var.mode != self._mode:
                 self._mode = 'RW'
 
             # Adjust size to hold variable. Underlying class will adjust
             # size to align to minimum protocol access size 
-            if self._size < varBytes:
-                self._bData.extend(bytearray(varBytes - self._size))
-                self._vData.extend(bytearray(varBytes - self._size))
-                self._mData.extend(bytearray(varBytes - self._size))
-                self._size = varBytes
+            if self._size < var.varBytes:
+                self._bData.extend(bytearray(var.varBytes - self._size))
+                self._vData.extend(bytearray(var.varBytes - self._size))
+                self._mData.extend(bytearray(var.varBytes - self._size))
+                self._size = var.varBytes
 
             # Update verify mask
             if var.mode == 'RW' and var.verify is True:
                 self._verifyEn = True
-                for x in range(var.bitOffset,var.bitOffset+var.bitSize):
-                    setBitToBytes(self._mData,x,1)
+
+                for x in range(0, len(var.bitOffset)):
+                    for y in range(0, var.bitSize[x]):
+                        setBitToBytes(self._mData,var.bitOffset[x]+y,1)
 
             return True
 
@@ -370,7 +403,9 @@ class MemoryBlock(BaseBlock, rogue.interfaces.memory.Master):
            (type == rogue.interfaces.memory.Write  and (self.mode == 'RO')) or \
            (type == rogue.interfaces.memory.Post   and (self.mode == 'RO')) or \
            (type == rogue.interfaces.memory.Read   and (self.mode == 'WO')) or \
-           (type == rogue.interfaces.memory.Verify and (self.mode == 'WO' or self.mode == 'RO' or self._verifyEn == False)):
+           (type == rogue.interfaces.memory.Verify and (self.mode == 'WO' or \
+                                                        self.mode == 'RO' or \
+                                                        self._verifyWr == False)):
             return
 
         self._log.debug('_startTransaction type={}'.format(type))
@@ -381,6 +416,11 @@ class MemoryBlock(BaseBlock, rogue.interfaces.memory.Master):
             self._waitTransaction()
 
             self._log.debug('len bData = {}, vData = {}, mData = {}'.format(len(self._bData), len(self._vData), len(self._mData)))
+
+            # Track verify after writes. 
+            # Only verify blocks that have been written since last verify
+            if type == rogue.interfaces.memory.Write:
+                self._verifyWr = self._verifyEn
                   
             # Setup transaction
             self._doVerify = (type == rogue.interfaces.memory.Verify)
@@ -408,16 +448,18 @@ class MemoryBlock(BaseBlock, rogue.interfaces.memory.Master):
             self._endTransaction()
             self._error = error
 
-            # Check for error
-            if error > 0:
-                self._doUpdate = False
-
             # Do verify
-            elif self._doVerify:
+            if self._doVerify:
+                self._verifyWr = False
                 for x in range(0,self._size):
                     if (self._vData[x] & self._mData[x]) != (self._bData[x] & self._mData[x]):
                         self._error = rogue.interfaces.memory.VerifyError
                         break
+
+            if self._error == 0:
+                self._stale = False
+            else:
+                self._doUpdate = False
 
             # Notify waiters
             self._cond.notify()

@@ -21,16 +21,17 @@ import pyrogue as pr
 import inspect
 import threading
 import Pyro4
+import math
+import time
 
 class EnableVariable(pr.BaseVariable):
     def __init__(self, enabled):
-        pr.BaseVariable.__init__(self, name='enable', mode='RW', value=enabled,
+        pr.BaseVariable.__init__(self, name='enable', mode='RW', value=enabled, 
                                  disp={False: 'False', True: 'True', 'parent': 'ParentFalse'},
                                  description='Determines if device is enabled for hardware access')
 
         self._value = enabled
         self._lock = threading.Lock()
-        
 
     @Pyro4.expose
     def get(self, read=False):
@@ -82,7 +83,6 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
         # Blocks
         self._blocks    = []
         self._memBase   = memBase
-        self._resetFunc = None
         self._expand    = expand
 
         # Connect to memory slave
@@ -96,7 +96,7 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
         # Convenience methods
         self.addVariable = ft.partial(self.addNode, pr.Variable) # Legacy
         self.addVariables = ft.partial(self.addNodes, pr.Variable) # Legacy
-        self.addRemoteVariables = ft.partial(self.addNodes, pr.RemoteVariable)
+
         self.addCommand = ft.partial(self.addNode, pr.Command) # Legacy
         self.addCommands = ft.partial(self.addNodes, pr.Command) # Legacy
         self.addRemoteCommands = ft.partial(self.addNodes, pr.RemoteCommand)
@@ -118,7 +118,7 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
             args = getattr(cmd, 'PyrogueCommandArgs')
             if 'name' not in args:
                 args['name'] = cmd.__name__
-            self.add(pr.Command(function=cmd, **args))
+            self.add(pr.LocalCommand(function=cmd, **args))
 
     @Pyro4.expose
     @property
@@ -155,6 +155,31 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
         # Call node add
         pr.Node.add(self,node)
 
+    def addRemoteVariables(self, number, stride, pack=False, **kwargs):
+        hidden = pack or kwargs.pop('hidden', False)
+        self.addNodes(pr.RemoteVariable, number, stride, hidden=hidden, **kwargs)
+
+
+        # If pack specified, create a linked variable to combine everything
+        if pack:
+            varList = getattr(self, kwargs['name']).values()
+            
+            def linkedSet(dev, var, val, write):
+                if val == '': return
+                values = reversed(val.split('_'))
+                for variable, value in zip(varList, values):
+                    variable.setDisp(value, write=write)
+
+            def linkedGet(dev, var, read):
+                values = [v.getDisp(read=read) for v in varList]
+                return '_'.join(reversed(values))
+
+            name = kwargs.pop('name')
+            kwargs.pop('value', None)
+            
+            lv = pr.LinkVariable(name=name, value='', dependencies=varList, linkedGet=linkedGet, linkedSet=linkedSet, **kwargs)
+            self.add(lv)
+
 
     def hideVariables(self, hidden, variables=None):
         """Hide a list of Variables (or Variable names)"""
@@ -176,74 +201,123 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
     def countReset(self):
         pass
 
-    def setResetFunc(self,func):
+    def writeBlocks(self, force=False, recurse=True, variable=None):
         """
-        Deprecated!
-        Set function for count, hard or soft reset
-        resetFunc(type) 
-        where type = 'soft','hard','count'
+        Write all of the blocks held by this Device to memory
         """
-        self._resetFunc = func
+        if not self.enable.get(): return
+
+        # Process local blocks.
+        if variable is not None:
+            variable._block.backgroundTransaction(rogue.interfaces.memory.Write)
+        else:
+            for block in self._blocks:
+                if force or block.stale:
+                    if block.bulkEn:
+                        block.backgroundTransaction(rogue.interfaces.memory.Write)
+
+        # Process rest of tree
+        if recurse:
+            for key,value in self.devices.items():
+                value.writeBlocks(force=force, recurse=True)
+
+    def verifyBlocks(self, recurse=True, variable=None):
+        """
+        Perform background verify
+        """
+        if not self.enable.get(): return
+
+        # Process local blocks.
+        if variable is not None:
+            variable._block.backgroundTransaction(rogue.interfaces.memory.Verify)
+        else:
+            for block in self._blocks:
+                if block.bulkEn:
+                    block.backgroundTransaction(rogue.interfaces.memory.Verify)
+
+        # Process rest of tree
+        if recurse:
+            for key,value in self.devices.items():
+                value.verifyBlocks(recurse=True)
+
+    def readBlocks(self, recurse=True, variable=None):
+        """
+        Perform background reads
+        """
+        if not self.enable.get(): return
+
+        # Process local blocks. 
+        if variable is not None:
+            variable._block.backgroundTransaction(rogue.interfaces.memory.Read)
+        else:
+            for block in self._blocks:
+                if block.bulkEn:
+                    block.backgroundTransaction(rogue.interfaces.memory.Read)
+
+        # Process rest of tree
+        if recurse:
+            for key,value in self.devices.items():
+                value.readBlocks(recurse=True)
+
+    def checkBlocks(self,varUpdate=True, recurse=True, variable=None):
+        """Check errors in all blocks and generate variable update nofifications"""
+        if not self.enable.get(): return
+
+        # Process local blocks
+        if variable is not None:
+            variable._block._checkTransaction(varUpdate)
+        else:
+            for block in self._blocks:
+                block._checkTransaction(varUpdate)
+
+        # Process rest of tree
+        if recurse:
+            for key,value in self.devices.items():
+                value.checkBlocks(varUpdate=varUpdate, recurse=True)
 
     def _buildBlocks(self):
+        remVars = []
 
-        # Get all of the variables
+        minSize = self._reqMinAccess()
+
+        # Process all of the variables
         for k,n in self.nodes.items():
 
+            # Local variables have a 1:1 block association
             if isinstance(n,pr.LocalVariable):
                 self._blocks.append(n._block)
 
+            # Align to min access, create list softed by offset 
             elif isinstance(n,pr.RemoteVariable) and n.offset is not None:
-                if not any(block._addVariable(n) for block in self._blocks):
-                    self._log.debug("Adding new block %s at offset %x" % (n.name,n.offset))
-                    self._blocks.append(pr.MemoryBlock(n))
+                n._shiftOffsetDown(n.offset % minSize, minSize)
+                remVars += [n]
 
+        # Loop until no overlaps found
+        done = False
+        while done == False:
+            done = True
 
-    def _backgroundTransaction(self,type):
-        """
-        Perform background transactions
-        """
-        if not self.enable: return
+            # Sort byte offset and size
+            remVars.sort(key=lambda x: (x.offset, x.varBytes))
 
-        # Execute all unique beforeReadCmds for reads or verify
-        if type == rogue.interfaces.memory.Read or type == rogue.interfaces.memory.Verify:
-            cmds = set([v._beforeReadCmd for v in self.variables.values() if v._beforeReadCmd is not None])
-            for cmd in cmds:
-                cmd()
+            # Look for overlaps and adjust offset
+            for i in range(1,len(remVars)):
 
-        # Process local blocks. 
-        for block in self._blocks:
-            block.backgroundTransaction(type)
+                # Variable overlaps the range of the previous variable
+                if (remVars[i].offset != remVars[i-1].offset) and (remVars[i].offset <= (remVars[i-1].varBytes-1)):
+                    print("Overlap detected cur offset={} prev offset={} prev bytes={}".format(remVars[i].offset,remVars[i-1].offset,remVars[i-1].varBytes))
+                    remVars[i]._shiftOffsetDown(remVars[i].offset - remVars[i-1].offset, minSize)
+                    done = False
+                    break
 
-        # Process rest of tree
-        for key,value in self._nodes.items():
-            if isinstance(value,Device):
-                value._backgroundTransaction(type)
-
-        # Execute all unique afterWriteCmds for writes
-        if type == rogue.interfaces.memory.Write:
-            cmds = set([v._afterWriteCmd for v in self.variables.values() if v._afterWriteCmd is not None])
-            for cmd in cmds:
-                cmd()
-
-    def _checkTransaction(self,update):
-        """Check errors in all blocks and generate variable update nofifications"""
-        if not self.enable: return
-
-        # Process local blocks
-        for block in self._blocks:
-            block._checkTransaction(update)
-
-        # Process rest of tree
-        for key,value in self._nodes.items():
-            if isinstance(value,Device):
-                value._checkTransaction(update)
+        # Add variables
+        for n in remVars:
+            if not any(block._addVariable(n) for block in self._blocks):
+                self._log.debug("Adding new block {} at offset {:#02x}".format(n.name,n.offset))
+                self._blocks.append(pr.MemoryBlock(n))
 
     def _devReset(self,rstType):
         """Generate a count, soft or hard reset"""
-        if callable(self._resetFunc):
-            # Deprecate!
-            self._resetFunc(self,rstType)
 
         if rstType == 'hard':
             self.hardReset()
@@ -299,18 +373,18 @@ class DataWriter(Device):
             description='Data file for storing frames for connected streams.'))
 
         self.add(pr.LocalVariable(name='open', mode='RW', value=False,
-            setFunction=self._setOpen, description='Data file open state'))
+            localSet=self._setOpen, description='Data file open state'))
 
-        self.add(pr.LocalVariable(name='bufferSize', mode='RW', value=0, setFunction=self._setBufferSize,
+        self.add(pr.LocalVariable(name='bufferSize', mode='RW', value=0, localSet=self._setBufferSize,
             description='File buffering size. Enables caching of data before call to file system.'))
 
-        self.add(pr.LocalVariable(name='maxFileSize', mode='RW', value=0, setFunction=self._setMaxFileSize,
+        self.add(pr.LocalVariable(name='maxFileSize', mode='RW', value=0, localSet=self._setMaxFileSize,
             description='Maximum size for an individual file. Setting to a non zero splits the run data into multiple files.'))
 
-        self.add(pr.LocalVariable(name='fileSize', mode='RO', value=0, pollInterval=1, getFunction=self._getFileSize,
+        self.add(pr.LocalVariable(name='fileSize', mode='RO', value=0, pollInterval=1, localGet=self._getFileSize,
             description='Size of data files(s) for current open session in bytes.'))
 
-        self.add(pr.LocalVariable(name='frameCount', mode='RO', value=0, pollInterval=1, getFunction=self._getFrameCount,
+        self.add(pr.LocalVariable(name='frameCount', mode='RO', value=0, pollInterval=1, localGet=self._getFrameCount,
             description='Frame in data file(s) for current open session in bytes.'))
 
         self.add(pr.LocalCommand(name='autoName', function=self._genFileName,
@@ -353,7 +427,7 @@ class DataWriter(Device):
 class RunControl(Device):
     """Special base class to control runs. TODO: Update comments."""
 
-    def __init__(self, name, description='', hidden=True, rates=None, states=None, **dump):
+    def __init__(self, name, description='Run Controller', hidden=True, rates=None, states=None, cmd=None, **dump):
         """Initialize device class"""
 
         if rates is None:
@@ -367,29 +441,51 @@ class RunControl(Device):
 
         value = [k for k,v in states.items()][0]
 
-        self.add(pr.LocalVariable(name='runState', value=value, mode='RW', enum=states,
-            setFunction=self._setRunState, description='Run state of the system.'))
+        self._thread = None
+        self._cmd = cmd
+
+        self.add(pr.LocalVariable(name='runState', value=value, mode='RW', disp=states,
+                                  localSet=self._setRunState, description='Run state of the system.'))
 
         value = [k for k,v in rates.items()][0]
 
-        self.add(pr.LocalVariable(name='runRate', value=value, mode='RW', enum=rates,
-            setFunction=self._setRunRate, description='Run rate of the system.'))
+        self.add(pr.LocalVariable(name='runRate', value=value, mode='RW', disp=rates,
+                                  localSet=self._setRunRate, description='Run rate of the system.'))
 
-        self.add(pr.LocalVariable(name='runCount', value=0, mode='RO', pollInterval=1,
-            description='Run Counter updated by run thread.'))
+        self.add(pr.LocalVariable(name='runCount', value=0, mode='RW', pollInterval=1,
+                                  description='Run Counter updated by run thread.'))
 
     def _setRunState(self,dev,var,value,changed):
         """
         Set run state. Reimplement in sub-class.
         Enum of run states can also be overriden.
-        Underlying run control must update _runCount variable.
+        Underlying run control must update runCount variable.
         """
-        pass
+        if changed:
+            if self.runState.valueDisp() == 'Running':
+                #print("Starting run")
+                self._thread = threading.Thread(target=self._run)
+                self._thread.start()
+            elif self._thread is not None:
+                #print("Stopping run")
+                self._thread.join()
+                self._thread = None
 
     def _setRunRate(self,dev,var,value):
         """
-        Set run rate. Reimplement in sub-class.
-        Enum of run rates can also be overriden.
+        Set run rate. Reimplement in sub-class if neccessary.
         """
         pass
+
+    def _run(self):
+        #print("Thread start")
+        self.runCount.set(0)
+
+        while (self.runState.valueDisp() == 'Running'):
+            time.sleep(1.0 / float(self.runRate.value()))
+            if self._cmd is not None:
+                self._cmd()
+
+            self.runCount.set(self.runCount.value() + 1)
+        #print("Thread stop")
 

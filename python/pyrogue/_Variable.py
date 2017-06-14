@@ -18,6 +18,8 @@ import textwrap
 import rogue.interfaces.memory
 import parse
 import Pyro4
+import math
+from collections import Iterable
 
 class VariableError(Exception):
     """ Exception for variable access errors."""
@@ -25,8 +27,8 @@ class VariableError(Exception):
 
 class BaseVariable(pr.Node):
 
-    def __init__(self, name=None, description="", 
-                 mode='RW', value=0, disp='{}',
+    def __init__(self, name=None, description="", update=True,
+                 mode='RW', value=None, disp='{}',
                  enum=None, units=None, hidden=False, minimum=None, maximum=None, **dump):
 
         # Public Attributes
@@ -34,14 +36,13 @@ class BaseVariable(pr.Node):
         self._units         = units
         self._minimum       = minimum # For base='range'
         self._maximum       = maximum # For base='range'
-
+        self._update        = update
         self._default       = value
-        self.__listeners    = []
         self._pollInterval  = 0
-        self._beforeReadCmd = None
-        self._afterWriteCmd = None
+        self.__listeners    = []
         self.__dependencies = []
-        
+
+        # Build enum if specified
         self._disp = disp
         self._enum = enum
         if isinstance(disp, dict):
@@ -50,7 +51,7 @@ class BaseVariable(pr.Node):
         elif isinstance(disp, list):
             self._disp = 'enum'
             self._enum = {k:str(k) for k in disp}
-        elif isinstance(value, bool) and enum is None:
+        elif type(value) == bool and enum is None:
             self._disp = 'enum'
             self._enum = {False: 'False', True: 'True'}
 
@@ -59,24 +60,25 @@ class BaseVariable(pr.Node):
             if not self._default in enum:
                 self._default = [k for k,v in enum.items()][0]
 
-        if value is None:
-            self._typeStr = 'Unknown'
-        else:
+        # Determine typeStr from value type
+        if value is not None:
             self._typeStr = value.__class__.__name__
+        else:
+            self._typeStr = 'Unknown'
 
+        # Create inverted enum
         self._revEnum = None
-        self._valEnum = None
         if self._enum is not None:
             self._revEnum = {v:k for k,v in self._enum.items()}
-            self._valEnum = [v for k,v in self._enum.items()]
 
-        # Legacy SL becomes CMD
-        if self._mode == 'SL': self._mode = 'CMD'
+        # Legacy SL and CMD become RW
+        if self._mode == 'SL': self._mode = 'RW'
+        if self._mode == 'CMD' : self._mode = 'RW'
 
         # Check modes
         if (self._mode != 'RW') and (self._mode != 'RO') and \
-           (self._mode != 'WO') and (self._mode != 'CMD'):
-            raise VariableError('Invalid variable mode %s. Supported: RW, RO, WO, CMD' % (self._mode))
+           (self._mode != 'WO'):
+            raise VariableError(f'Invalid variable mode {self._mode}. Supported: RW, RO, WO')
 
         # Call super constructor
         pr.Node.__init__(self, name=name, description=description, hidden=hidden)
@@ -90,11 +92,6 @@ class BaseVariable(pr.Node):
     @property
     def revEnum(self):
         return self._revEnum
-
-    @Pyro4.expose
-    @property
-    def valEnum(self):
-        return self._valEnum
 
     @Pyro4.expose
     @property
@@ -237,7 +234,7 @@ class BaseVariable(pr.Node):
 
     def _updated(self):
         """Variable has been updated. Inform listeners."""
-        if self.mode == 'CMD': return
+        if self._update is False: return
 
         value = self.value()
         disp  = self.valueDisp()
@@ -262,32 +259,50 @@ class BaseVariable(pr.Node):
 class RemoteVariable(BaseVariable):
 
     def __init__(self, name=None, description="", 
-                 mode='RW', value=None, base=pr.UInt, disp=None,
+                 base=pr.UInt, mode='RW', value=None,  disp=None,
                  enum=None, units=None, hidden=False, minimum=None, maximum=None,
                  offset=None, bitSize=32, bitOffset=0, pollInterval=0, 
-                 verify=True, beforeReadCmd=lambda: None, afterWriteCmd=lambda: None, **dump):
+                 verify=True, **dump):
 
         if disp is None:
             disp = base.defaultdisp
 
         BaseVariable.__init__(self, name=name, description=description, 
-                     mode=mode, value=value, disp=disp,
-                     enum=enum, units=units, hidden=hidden, minimum=minimum, maximum=maximum);
+                              base=base, mode=mode, value=value, disp=disp,
+                              enum=enum, units=units, hidden=hidden, minimum=minimum, maximum=maximum);
 
         self._pollInterval  = pollInterval
-        self._beforeReadCmd = beforeReadCmd
-        self._afterWriteCmd = afterWriteCmd
 
         self._base     = base        
         self._block    = None
-        
+
+        # Convert the address parameters into lists
+        addrParams = [offset, bitOffset, bitSize] # Make a copy
+        addrParams = [list(x) if isinstance(x, Iterable) else [x] for x in addrParams] # convert to lists
+        length = max((len(x) for x in addrParams)) 
+        addrParams = [x*length if len(x)==1 else x for x in addrParams] # Make single element lists as long as max
+        offset, bitOffset, bitSize = addrParams # Assign back
+
+        # Verify the the list lengths match
+        if len(offset) != len(bitOffset) != len(bitSize):
+            raise VariableError('Lengths of offset: {}, bitOffset: {}, bitSize {} must match'.format(offset, bitOffset, bitSize))        
+
+        # Normalize bitOffsets relative to the smallest offset
+        baseAddr = min(offset)
+        bitOffset = [x+((y-baseAddr)*8) for x,y in zip(bitOffset, offset)]
+        offset = baseAddr
 
         self._offset    = offset
         self._bitSize   = bitSize
         self._bitOffset = bitOffset
         self._verify    = verify
+        self._typeStr   = base.name(sum(bitSize))
+        self._bytes     = int(math.ceil(float(self._bitOffset[-1] + self._bitSize[-1]) / 8.0))
 
-        self._typeStr = base.name(bitSize)
+
+    @property
+    def varBytes(self):
+        return self._bytes
 
     @Pyro4.expose
     @property
@@ -322,12 +337,12 @@ class RemoteVariable(BaseVariable):
             self._updated()
 
             if write and self._block.mode != 'RO':
-                self._block.blockingTransaction(rogue.interfaces.memory.Write)
-                self._afterWriteCmd()
+                self._parent.writeBlocks(force=False, recurse=False, variable=self)
+                self._parent.checkBlocks(varUpdate=False, recurse=False, variable=self)
 
                 if self._block.mode == 'RW':
-                    self._beforeReadCmd()
-                    self._block.blockingTransaction(rogue.interfaces.memory.Verify)
+                    self._parent.verifyBlocks(recurse=False, variable=self)
+                    self._parent.checkBlocks(varUpdate=False, recurse=False, variable=self)
 
         except Exception as e:
             self._log.error(e)
@@ -336,8 +351,11 @@ class RemoteVariable(BaseVariable):
     def post(self,value):
         """
         Set the value and write to hardware if applicable using a posted write.
-        Writes to hardware are posted.
+        This method does not call through parent.writeBlocks(), but rather
+        calls on self._block directly.
         """
+        self._log.debug("{}.post({})".format(self, value))
+        
         try:
             self._block.set(self, value)
             self._updated()
@@ -357,8 +375,8 @@ class RemoteVariable(BaseVariable):
         """
         try:
             if read and self._block.mode != 'WO':
-                self._beforeReadCmd()
-                self._block.blockingTransaction(rogue.interfaces.memory.Read)
+                self._parent.readBlocks(recurse=False, variable=self)
+                self._parent.checkBlocks(varUpdate=True, recurse=False, variable=self)
 
             ret = self._block.get(self)
 
@@ -381,25 +399,39 @@ class RemoteVariable(BaseVariable):
             #print(self._base.fromString(sValue))
             return self._base.fromString(sValue)
 
+    def _shiftOffsetDown(self,amount,minSize):
+        if amount != 0:
+
+            self._log.debug("Adjusting variable {} offset from 0x{:02x} to 0x{:02x}".format(self.name,self._offset,self._offset-amount))
+            #print("Adjusting variable {} offset from 0x{:02x} to 0x{:02x}".format(self.name,self._offset,self._offset-amount))
+
+            self._offset -= amount
+
+            for i in range(0,len(self._bitOffset)):
+                self._bitOffset[i] += (amount * 8)
+
+        self._bytes = int(math.ceil(float(self._bitOffset[-1] + self._bitSize[-1]) / float(minSize*8))) * minSize
+
+
 
 class LocalVariable(BaseVariable):
 
     def __init__(self, name=None, description="", 
-                 mode='RW', value=0, disp='{}',
+                 mode='RW', value=None, disp='{}',
                  enum=None, units=None, hidden=False, minimum=None, maximum=None,
                  localSet=None, localGet=None, pollInterval=0, **dump):
 
+        if value is None:
+            raise VariableError(f'LocalVariable {self.path} must specify value= argument in constructor')
+
         BaseVariable.__init__(self, name=name, description=description, 
-                     mode=mode, value=value, disp=disp,
-                     enum=enum, units=units, hidden=hidden, minimum=minimum, maximum=maximum)
+                              mode=mode, value=value, disp=disp,
+                              enum=enum, units=units, hidden=hidden,
+                              minimum=minimum, maximum=maximum)
 
         self._pollInterval = pollInterval
         self._block = pr.LocalBlock(self,localSet,localGet,self._default)
 
-        if self._default is None:
-            self._typeStr = 'Unknown'
-        else:
-            self._typeStr = value.__class__.__name__
         
     @Pyro4.expose
     def set(self, value, write=True):
@@ -433,16 +465,16 @@ class LocalVariable(BaseVariable):
 class LinkVariable(BaseVariable):
 
     def __init__(self, name=None, description="", 
-                 mode='RW', value=None, disp='{}',
+                 mode='RW', disp='{}', typeStr='Linked',
                  enum=None, units=None, hidden=False, minimum=None, maximum=None,
                  linkedSet=None, linkedGet=None, dependencies=None, **dump):
 
-        if value is None:
-            raise Exception("LinkVariable param 'value' must be assigned")
-
         BaseVariable.__init__(self, name=name, description=description, 
-                     mode=mode, value=value, disp=disp,
-                     enum=enum, units=units, hidden=hidden, minimum=minimum, maximum=maximum)
+                              mode=mode, disp=disp,
+                              enum=enum, units=units, hidden=hidden,
+                              minimum=minimum, maximum=maximum)
+
+        self._typeStr = typeStr
 
         # Set and get functions
         self._linkedGet = linkedGet
@@ -454,6 +486,9 @@ class LinkVariable(BaseVariable):
             for d in dependencies:
                 self.addDependency(d)
 
+    def __getitem__(self, key):
+        # Allow dependencies to be accessed as indicies of self
+        return self.dependencies[key]
 
     @Pyro4.expose
     def set(self, value, write=True):
@@ -465,7 +500,7 @@ class LinkVariable(BaseVariable):
         """
         if self._linkedSet is not None:
             if callable(self._linkedSet):
-                self._linksedSet(self._parent,self,value,write)
+                self._linkedSet(self._parent,self,value,write)
             else:
                 dev = self._parent
                 var = self
@@ -497,7 +532,9 @@ def Variable(local=False, setFunction=None, getFunction=None, **kwargs):
         
     # Local Variables override get and set functions
     if local or setFunction is not None or getFunction is not None:
-        return(LocalVariable(localSet=setFunction, localGet=getFunction, **kwargs))
+        ret = LocalVariable(localSet=setFunction, localGet=getFunction, **kwargs)
+        ret._depWarn = True
+        return(ret)
 
     # Otherwise assume remote
     else:
@@ -527,6 +564,7 @@ def Variable(local=False, setFunction=None, getFunction=None, **kwargs):
 #             else:
 #                 kwargs['disp'] = kwargs['base'].defaultdisp     # or None?       
 
-        return(RemoteVariable(**kwargs))
-
+        ret = RemoteVariable(**kwargs)
+        ret._depWarn = True
+        return(ret)
 
