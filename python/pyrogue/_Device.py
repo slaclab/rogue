@@ -476,7 +476,6 @@ class RunControl(Device):
 
     def _run(self):
         self.runCount.set(0)
-        self._last = int(time.time())
 
         while (self.runState.value() == 'Running'):
             time.sleep(1.0 / float(self.runRate.value()))
@@ -484,7 +483,4 @@ class RunControl(Device):
                 cmd()
 
             self.runCount += 1
-            if self._last != int(time.time()):
-                self._last = int(time.time())
-                self.runCount.get() # Force display update
 
