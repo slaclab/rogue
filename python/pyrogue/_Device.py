@@ -117,7 +117,7 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
             args = getattr(cmd, 'PyrogueCommandArgs')
             if 'name' not in args:
                 args['name'] = cmd.__name__
-            self.add(pr.Command(function=cmd, **args))
+            self.add(pr.LocalCommand(function=cmd, **args))
 
     @Pyro4.expose
     @property

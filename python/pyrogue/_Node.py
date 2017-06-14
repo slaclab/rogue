@@ -62,6 +62,7 @@ class Node(object):
         self._description = description
         self._hidden      = hidden
         self._path        = name
+        self._depWarn     = False
 
         # Tracking
         self._parent = None
@@ -240,6 +241,17 @@ class Node(object):
                 data[key] = value.valueDisp()
 
         return data
+
+    def _getDepWarn(self):
+        ret = []
+
+        if self._depWarn:
+            ret += [self.path]
+
+        for key,value in self._nodes.items():
+            ret += value._getDepWarn()
+
+        return ret
 
     def _setOrExec(self,d,writeEach,modes):
         """

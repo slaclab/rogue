@@ -237,6 +237,17 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         self._pyroThread = threading.Thread(target=self._pyroDaemon.requestLoop)
         self._pyroThread.start()
 
+    def warnDeprecated(self):
+        lst = self._getDepWarn()
+
+        if len(lst) > 0:
+            print("----------- Depcreation Warning --------------------------------")
+            print("The following nodes were created with depcrated calls:")
+
+            for n in lst:
+                print("   " + n)
+            print("----------------------------------------------------------------")
+
     def _updateVarListeners(self, yml, l):
         """Send update to listeners"""
         for tar in self._varListeners:

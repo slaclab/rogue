@@ -139,9 +139,13 @@ class RemoteCommand(BaseCommand, pr.RemoteVariable):
 # Legacy Support
 def Command(offset=None, **kwargs):
     if offset is None:
-        return(LocalCommand(**kwargs))
+        ret = LocalCommand(**kwargs)
+        ret._depWarn = True
+        return(ret)
     else:
-        return(RemoteCommand(offset=offset,**kwargs))
+        ret = RemoteCommand(offset=offset,**kwargs)
+        ret._depWarn = True
+        return(ret)
 
 Command.nothing = BaseCommand.nothing
 Command.toggle = BaseCommand.toggle

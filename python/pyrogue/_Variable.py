@@ -536,7 +536,9 @@ def Variable(local=False, setFunction=None, getFunction=None, **kwargs):
         
     # Local Variables override get and set functions
     if local or setFunction is not None or getFunction is not None:
-        return(LocalVariable(localSet=setFunction, localGet=getFunction, **kwargs))
+        ret = LocalVariable(localSet=setFunction, localGet=getFunction, **kwargs)
+        ret._depWarn = True
+        return(ret)
 
     # Otherwise assume remote
     else:
@@ -566,6 +568,7 @@ def Variable(local=False, setFunction=None, getFunction=None, **kwargs):
 #             else:
 #                 kwargs['disp'] = kwargs['base'].defaultdisp     # or None?       
 
-        return(RemoteVariable(**kwargs))
-
+        ret = RemoteVariable(**kwargs)
+        ret._depWarn = True
+        return(ret)
 
