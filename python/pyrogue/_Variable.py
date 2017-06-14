@@ -28,7 +28,7 @@ class VariableError(Exception):
 class BaseVariable(pr.Node):
 
     def __init__(self, name=None, description="", update=True,
-                 mode='RW', value=0, disp='{}',
+                 mode='RW', value=None, disp='{}',
                  enum=None, units=None, hidden=False, minimum=None, maximum=None, **dump):
 
         # Public Attributes
@@ -37,12 +37,12 @@ class BaseVariable(pr.Node):
         self._minimum       = minimum # For base='range'
         self._maximum       = maximum # For base='range'
         self._update        = update
-
         self._default       = value
-        self.__listeners    = []
         self._pollInterval  = 0
+        self.__listeners    = []
         self.__dependencies = []
-        
+
+        # Build enum if specified
         self._disp = disp
         self._enum = enum
         if isinstance(disp, dict):
@@ -51,7 +51,7 @@ class BaseVariable(pr.Node):
         elif isinstance(disp, list):
             self._disp = 'enum'
             self._enum = {k:str(k) for k in disp}
-        elif isinstance(value, bool) and enum is None:
+        elif type(value) == bool and enum is None:
             self._disp = 'enum'
             self._enum = {False: 'False', True: 'True'}
 
@@ -60,24 +60,27 @@ class BaseVariable(pr.Node):
             if not self._default in enum:
                 self._default = [k for k,v in enum.items()][0]
 
-        if value is None:
-            self._typeStr = 'Unknown'
-        else:
+        # Determine typeStr from value type
+        if value is not None:
             self._typeStr = value.__class__.__name__
+        else:
+            self._typeStr = 'Unknown'
 
+        # Create inverted enum
         self._revEnum = None
         self._valEnum = None
         if self._enum is not None:
             self._revEnum = {v:k for k,v in self._enum.items()}
             self._valEnum = [v for k,v in self._enum.items()]
 
-        # Legacy SL becomes CMD
-        if self._mode == 'SL': self._mode = 'CMD'
+        # Legacy SL and CMD become RW
+        if self._mode == 'SL': self._mode = 'RW'
+        if self._mode == 'CMD' : self._mode = 'RW'
 
         # Check modes
         if (self._mode != 'RW') and (self._mode != 'RO') and \
-           (self._mode != 'WO') and (self._mode != 'CMD'):
-            raise VariableError('Invalid variable mode %s. Supported: RW, RO, WO, CMD' % (self._mode))
+           (self._mode != 'WO'):
+            raise VariableError(f'Invalid variable mode {self._mode}. Supported: RW, RO, WO')
 
         # Call super constructor
         pr.Node.__init__(self, name=name, description=description, hidden=hidden)
@@ -263,7 +266,7 @@ class BaseVariable(pr.Node):
 class RemoteVariable(BaseVariable):
 
     def __init__(self, name=None, description="", 
-                 mode='RW', value=None, base=pr.UInt, disp=None,
+                 base=pr.UInt, mode='RW', value=None,  disp=None,
                  enum=None, units=None, hidden=False, minimum=None, maximum=None,
                  offset=None, bitSize=32, bitOffset=0, pollInterval=0, 
                  verify=True, **dump):
@@ -272,8 +275,8 @@ class RemoteVariable(BaseVariable):
             disp = base.defaultdisp
 
         BaseVariable.__init__(self, name=name, description=description, 
-                     mode=mode, value=value, disp=disp,
-                     enum=enum, units=units, hidden=hidden, minimum=minimum, maximum=maximum);
+                              base=base, mode=mode, value=value, disp=disp,
+                              enum=enum, units=units, hidden=hidden, minimum=minimum, maximum=maximum);
 
         self._pollInterval  = pollInterval
 
@@ -421,21 +424,21 @@ class RemoteVariable(BaseVariable):
 class LocalVariable(BaseVariable):
 
     def __init__(self, name=None, description="", 
-                 mode='RW', value=0, disp='{}',
+                 mode='RW', value=None, disp='{}',
                  enum=None, units=None, hidden=False, minimum=None, maximum=None,
                  localSet=None, localGet=None, pollInterval=0, **dump):
 
+        if value is None:
+            raise VariableError(f'LocalVariable {self.path} must specify value= argument in constructor')
+
         BaseVariable.__init__(self, name=name, description=description, 
-                     mode=mode, value=value, disp=disp,
-                     enum=enum, units=units, hidden=hidden, minimum=minimum, maximum=maximum)
+                              mode=mode, value=value, disp=disp,
+                              enum=enum, units=units, hidden=hidden,
+                              minimum=minimum, maximum=maximum)
 
         self._pollInterval = pollInterval
         self._block = pr.LocalBlock(self,localSet,localGet,self._default)
 
-        if self._default is None:
-            self._typeStr = 'Unknown'
-        else:
-            self._typeStr = value.__class__.__name__
         
     @Pyro4.expose
     def set(self, value, write=True):
@@ -469,16 +472,16 @@ class LocalVariable(BaseVariable):
 class LinkVariable(BaseVariable):
 
     def __init__(self, name=None, description="", 
-                 mode='RW', value=None, disp='{}',
+                 mode='RW', disp='{}', typeStr='Linked',
                  enum=None, units=None, hidden=False, minimum=None, maximum=None,
                  linkedSet=None, linkedGet=None, dependencies=None, **dump):
 
-        if value is None:
-            raise Exception("LinkVariable param 'value' must be assigned")
-
         BaseVariable.__init__(self, name=name, description=description, 
-                     mode=mode, value=value, disp=disp,
-                     enum=enum, units=units, hidden=hidden, minimum=minimum, maximum=maximum)
+                              mode=mode, disp=disp,
+                              enum=enum, units=units, hidden=hidden,
+                              minimum=minimum, maximum=maximum)
+
+        self._typeStr = typeStr
 
         # Set and get functions
         self._linkedGet = linkedGet

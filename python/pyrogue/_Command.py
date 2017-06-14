@@ -98,10 +98,10 @@ class BaseCommand(pr.Node):
             cmd.post(1)
 
 
-class LocalCommand(BaseCommand,pr.LocalVariable):
+class LocalCommand(BaseCommand,pr.BaseVariable):
     def __init__(self, name=None, mode='RW', description="", hidden=False, function=None, update=False, **kwargs):
         BaseCommand.__init__(self,name=name, description=description, hidden=hidden, function=function)
-        pr.LocalVariable.__init__(self, name=name, description=description, hidden=hidden, mode=mode, update=update, **kwargs)
+        pr.BaseVariable.__init__(self, name=name, description=description, hidden=hidden, mode=mode, update=update, **kwargs)
 
 
 class RemoteCommand(BaseCommand, pr.RemoteVariable):
