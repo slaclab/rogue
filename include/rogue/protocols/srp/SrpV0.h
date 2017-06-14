@@ -26,6 +26,7 @@
 #include <rogue/interfaces/stream/Master.h>
 #include <rogue/interfaces/stream/Slave.h>
 #include <rogue/interfaces/memory/Slave.h>
+#include <rogue/Logging.h>
 
 namespace rogue {
    namespace protocols {
@@ -39,6 +40,8 @@ namespace rogue {
          class SrpV0 : public rogue::interfaces::stream::Master,
                        public rogue::interfaces::stream::Slave,
                        public rogue::interfaces::memory::Slave {
+
+               rogue::Logging * log_;
 
             public:
 
