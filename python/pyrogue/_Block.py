@@ -84,6 +84,7 @@ class BaseBlock(object):
         self._error     = 0
         self._doUpdate  = False
         self._verifyEn  = False
+        self._bulkEn    = False
         self._doVerify  = False
         self._tranTime  = time.time()
         self._value     = None
@@ -161,6 +162,10 @@ class BaseBlock(object):
     def error(self):
         return self._error
 
+    @property
+    def bulkEn(self):
+        return self._bulkEn
+
     def _waitTransaction(self):
         pass
 
@@ -169,6 +174,9 @@ class BaseBlock(object):
         Add a variable to the block
         """
         with self._lock:
+            if not isinstance(var, pr.BaseCommand):
+                self._bulkEn = True
+                
             if len(self._variables) == 0:
                 self._variables.append(var)
                 return True;
@@ -354,6 +362,10 @@ class MemoryBlock(BaseBlock, rogue.interfaces.memory.Master):
 
             # Link variable to block
             var._block = self
+            
+            if not isinstance(var, pr.BaseCommand):
+                self._bulkEn = True
+                
             self._variables.append(var)
 
             self._log.debug("Adding variable {} to block {} at offset 0x{:02x}".format(var.name,self.name,self.offset))

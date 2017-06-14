@@ -237,7 +237,8 @@ class Node(object):
         for key,value in self._nodes.items():
             if isinstance(value,pr.Device):
                 data[key] = value._getVariables(modes)
-            elif isinstance(value,pr.BaseVariable) and (value.mode in modes):
+            elif isinstance(value,pr.BaseVariable) and not isinstance(value, pr.BaseCommand) \
+                 and (value.mode in modes):
                 data[key] = value.valueDisp()
 
         return data

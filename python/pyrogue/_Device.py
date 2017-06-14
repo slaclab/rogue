@@ -25,7 +25,7 @@ import math
 
 class EnableVariable(pr.BaseVariable):
     def __init__(self, enabled):
-        pr.BaseVariable.__init__(self, name='enable', mode='RW', value=enabled,
+        pr.BaseVariable.__init__(self, name='enable', mode='RW', value=enabled, 
                                  disp={False: 'False', True: 'True', 'parent': 'ParentFalse'},
                                  description='Determines if device is enabled for hardware access')
 
@@ -212,7 +212,7 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
         else:
             for block in self._blocks:
                 if force or block.stale:
-                    if not all((isinstance(v, pr.RemoteCommand) for v in block._variables)):
+                    if block.bulkEn:
                         block.backgroundTransaction(rogue.interfaces.memory.Write)
 
         # Process rest of tree
@@ -231,7 +231,7 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
             variable._block.backgroundTransaction(rogue.interfaces.memory.Verify)
         else:
             for block in self._blocks:
-                if not all((isinstance(v, pr.RemoteCommand) for v in block._variables)):
+                if block.bulkEn:
                     block.backgroundTransaction(rogue.interfaces.memory.Verify)
 
         # Process rest of tree
@@ -250,7 +250,7 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
             variable._block.backgroundTransaction(rogue.interfaces.memory.Read)
         else:
             for block in self._blocks:
-                if not all((isinstance(v, pr.RemoteCommand) for v in block._variables)):
+                if block.bulkEn:
                     block.backgroundTransaction(rogue.interfaces.memory.Read)
 
         # Process rest of tree
