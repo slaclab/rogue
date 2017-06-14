@@ -68,10 +68,8 @@ class BaseVariable(pr.Node):
 
         # Create inverted enum
         self._revEnum = None
-        self._valEnum = None
         if self._enum is not None:
             self._revEnum = {v:k for k,v in self._enum.items()}
-            self._valEnum = [v for k,v in self._enum.items()]
 
         # Legacy SL and CMD become RW
         if self._mode == 'SL': self._mode = 'RW'
@@ -94,11 +92,6 @@ class BaseVariable(pr.Node):
     @property
     def revEnum(self):
         return self._revEnum
-
-    @Pyro4.expose
-    @property
-    def valEnum(self):
-        return self._valEnum
 
     @Pyro4.expose
     @property
