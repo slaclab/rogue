@@ -25,6 +25,7 @@
 #include <rogue/protocols/rssi/Application.h>
 #include <rogue/protocols/rssi/Controller.h>
 #include <rogue/protocols/rssi/Client.h>
+#include <rogue/protocols/rssi/Server.h>
 #include <rogue/protocols/rssi/Header.h>
 #include <rogue/protocols/rssi/Transport.h>
 
@@ -45,6 +46,7 @@ void rpr::setup_module() {
    rpr::Application::setup_python();
    rpr::Controller::setup_python();
    rpr::Client::setup_python();
+   rpr::Server::setup_python();
    rpr::Header::setup_python();
    rpr::Transport::setup_python();
 

@@ -5,7 +5,6 @@
  * ----------------------------------------------------------------------------
  * File       : Controller.h
  * Created    : 2017-01-07
- * Last update: 2017-01-07
  * ----------------------------------------------------------------------------
  * Description:
  * RSSI Controller
@@ -60,6 +59,9 @@ namespace rogue {
                // Interfaces
                boost::shared_ptr<rogue::protocols::rssi::Transport> tran_;
                boost::shared_ptr<rogue::protocols::rssi::Application> app_;
+
+               // Is server
+               bool server_;
 
                // Receive tracking
                uint32_t dropCount_;
@@ -117,7 +119,7 @@ namespace rogue {
                static boost::shared_ptr<rogue::protocols::rssi::Controller> 
                   create ( uint32_t segSize,
                            boost::shared_ptr<rogue::protocols::rssi::Transport> tran,
-                           boost::shared_ptr<rogue::protocols::rssi::Application> app );
+                           boost::shared_ptr<rogue::protocols::rssi::Application> app, bool server );
 
                //! Setup class in python
                static void setup_python();
@@ -125,7 +127,7 @@ namespace rogue {
                //! Creator
                Controller( uint32_t segSize,
                            boost::shared_ptr<rogue::protocols::rssi::Transport> tran,
-                           boost::shared_ptr<rogue::protocols::rssi::Application> app );
+                           boost::shared_ptr<rogue::protocols::rssi::Application> app, bool server );
 
                //! Destructor
                ~Controller();

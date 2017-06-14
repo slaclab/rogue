@@ -16,15 +16,16 @@
 # copied, modified, propagated, or distributed except according to the terms 
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
-import pyrogue
+import pyrogue as pr
 import rogue.protocols.udp
 import rogue.protocols.rssi
 import rogue.protocols.packetizer
 import time
 
-class UdpRssiPack(object):
+class UdpRssiPack(pr.Device):
 
-    def __init__(self,host,port,size,wait=True):
+    def __init__(self,host,port,size,wait=True, **kwargs):
+        super(self.__class__, self).__init__(**kwargs)
         self._host = host
         self._port = port
         self._size = size
@@ -39,7 +40,12 @@ class UdpRssiPack(object):
         self._rssi.application()._setSlave(self._pack.transport())
         self._pack.transport()._setSlave(self._rssi.application())
 
-        self._log = pyrogue.logInit(self)
+        self.add(pr.LocalVariable(name='rssiOpen',        mode='RO', value=0, pollInterval=1, localGet=self.getRssiOpen))
+        self.add(pr.LocalVariable(name='rssiDownCount',   mode='RO', value=0, pollInterval=1, localGet=self.getRssiDownCount))
+        self.add(pr.LocalVariable(name='rssiDropCount',   mode='RO', value=0, pollInterval=1, localGet=self.getRssiDropCount))
+        self.add(pr.LocalVariable(name='rssiRetranCount', mode='RO', value=0, pollInterval=1, localGet=self.getRssiRetranCount))
+        self.add(pr.LocalVariable(name='packDropCount',   mode='RO', value=0, pollInterval=1, localGet=self.getPackDropCount))
+        self.add(pr.LocalVariable(name='getRssiBusy',     mode='RO', value=0, pollInterval=1, localGet=self.getRssiBusy))
 
         if wait:
             curr = int(time.time())
@@ -55,21 +61,21 @@ class UdpRssiPack(object):
     def application(self,dest):
         return(self._pack.application(dest))
 
-    def getRssiOpen(self):
+    def getRssiOpen(self,dev=None,cmd=None):
         return(self._rssi.getOpen())
 
-    def getRssiDownCount(self):
+    def getRssiDownCount(self,dev=None,cmd=None):
         return(self._rssi.getDownCount())
 
-    def getRssiDropCount(self):
+    def getRssiDropCount(self,dev=None,cmd=None):
         return(self._rssi.getDropCount())
 
-    def getRssiRetranCount(self):
+    def getRssiRetranCount(self,dev=None,cmd=None):
         return(self._rssi.getRetranCount())
 
-    def getPackDropCount(self):
+    def getPackDropCount(self,dev=None,cmd=None):
         return(self._pack.getDropCount())
 
-    def getRssiBusy(self):
+    def getRssiBusy(self,dev=None,cmd=None):
         return(self._rssi.getBusy())
 

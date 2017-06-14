@@ -28,6 +28,7 @@
 #include <rogue/interfaces/memory/Slave.h>
 #include <rogue/interfaces/memory/Constants.h>
 #include <rogue/protocols/srp/SrpV0.h>
+#include <rogue/Logging.h>
 
 namespace bp = boost::python;
 namespace rps = rogue::protocols::srp;
@@ -51,7 +52,9 @@ void rps::SrpV0::setup_python() {
 }
 
 //! Creator with version constant
-rps::SrpV0::SrpV0() : ris::Master(), ris::Slave(), rim::Slave(4,2048) { }
+rps::SrpV0::SrpV0() : ris::Master(), ris::Slave(), rim::Slave(4,2048) { 
+   log_ = new rogue::Logging("SrpV0");
+}
 
 //! Deconstructor
 rps::SrpV0::~SrpV0() {}
@@ -117,6 +120,7 @@ void rps::SrpV0::doTransaction(uint32_t id, rim::MasterPtr master, uint64_t addr
    if ( type == rim::Post ) master->doneTransaction(id,0);
    else addMaster(id,master);
 
+   log_->debug("Send frame for id=0x%08x, addr 0x%08x. Size=%i, type=%i",id,address,size,type);
    sendFrame(frame);
 }
 
@@ -134,6 +138,8 @@ void rps::SrpV0::acceptFrame ( ris::FramePtr frame ) {
 
    // Extract id from frame
    frame->read(&id,0,4);
+
+   log_->debug("Recv frame for id=0x%08x",id);
 
    // Find master
    if ( ! validMaster(id) ) return; // Bad id or post, drop frame
