@@ -461,15 +461,13 @@ class RunControl(Device):
         Enum of run states can also be overriden.
         Underlying run control must update runCount variable.
         """
-        print(f'_setRunState(value={value})')
-        pr.LocalVariable.set(self, value, write=False)
         if changed:
             if self.runState.genDisp(value) == 'Running':
-                print("Starting run")
+                #print("Starting run")
                 self._thread = threading.Thread(target=self._run)
                 self._thread.start()
             elif self._thread is not None:
-                print("Stopping run")
+                #print("Stopping run")
                 self._thread.join()
                 self._thread = None
 
@@ -480,7 +478,7 @@ class RunControl(Device):
         pass
 
     def _run(self):
-        print("Thread start")
+        #print("Thread start")
         self.runCount.set(0)
 
         while (self.runState.valueDisp() == 'Running'):
@@ -489,5 +487,5 @@ class RunControl(Device):
                 self._cmd()
 
             self.runCount.set(self.runCount.value() + 1)
-        print("Thread stop")
+        #print("Thread stop")
 
