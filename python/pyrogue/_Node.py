@@ -271,7 +271,7 @@ class Node(object):
                     ret[i] = n
 
                 if len(fields) > 1:
-                    return eval('ret[{}]'.format(fields[1]))
+                    return [eval('ret[{}]'.format(fields[1]))]
                 else:
                     return ret
          
