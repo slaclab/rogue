@@ -274,7 +274,7 @@ class Node(object):
                     r =  eval('ret[{}]'.format(fields[1]))
                     if isinstance(r,collections.Iterable):
                         return r
-                    else
+                    else:
                         return [r]
                 else:
                     return ret
