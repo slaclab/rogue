@@ -22,6 +22,7 @@ import pyrogue as pr
 import Pyro4
 import functools as ft
 import parse
+import collections
 
 def logInit(cls=None,name=None):
     """Init a logging pbject. Set global options."""
