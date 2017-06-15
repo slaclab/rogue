@@ -152,7 +152,10 @@ void rps::SrpV3::acceptFrame ( ris::FramePtr frame ) {
    log_->debug("Recv frame for id=0x%08x",id);
 
    // Find master
-   if ( ! validMaster(id) ) return; // Bad id or post, drop frame
+   if ( ! validMaster(id) ) {
+      log_->debug("Bad master for id=0x%08x",id);
+      return; // Bad id or post, drop frame
+   }
    else m = getMaster(id);
 
    // Verify frame size, drop frame
@@ -160,6 +163,7 @@ void rps::SrpV3::acceptFrame ( ris::FramePtr frame ) {
    size += 1;
    if ( size != (frame->getPayload()-24) ) {
       delMaster(id);
+      log_->debug("Size mismatch id=0x%08x",id);
       return;
    }
 
@@ -171,6 +175,7 @@ void rps::SrpV3::acceptFrame ( ris::FramePtr frame ) {
       if ( temp & 0xFF) m->doneTransaction(id,rim::AxiFail | (temp & 0xFF));
       else if ( temp & 0x100 ) m->doneTransaction(id,rim::AxiTimeout);
       else m->doneTransaction(id,temp);
+      log_->debug("Error detect id=0x%08x",id);
       return;
    }
 
