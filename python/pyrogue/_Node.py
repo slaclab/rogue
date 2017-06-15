@@ -22,6 +22,7 @@ import pyrogue as pr
 import Pyro4
 import functools as ft
 import parse
+import collections
 
 def logInit(cls=None,name=None):
     """Init a logging pbject. Set global options."""
@@ -271,7 +272,11 @@ class Node(object):
                     ret[i] = n
 
                 if len(fields) > 1:
-                    return eval('ret[{}]'.format(fields[1]))
+                    r =  eval('ret[{}]'.format(fields[1]))
+                    if isinstance(r,collections.Iterable):
+                        return r
+                    else:
+                        return [r]
                 else:
                     return ret
          
