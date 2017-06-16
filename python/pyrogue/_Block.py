@@ -79,7 +79,7 @@ class BaseBlock(object):
         self._size      = 0
         self._variables = []
         self._timeout   = 1.0
-        self._lock      = threading.Lock()
+        self._lock      = threading.RLock()
         self._cond      = threading.Condition(self._lock)
         self._error     = 0
         self._doUpdate  = False
@@ -231,7 +231,7 @@ class LocalBlock(BaseBlock):
             self._value = value
             dev = var.parent
 
-            # If a setFunction exists, call it (Used by local variables)        
+            # If a setFunction exists, call it (Used by local variables)
             if self._localSet is not None:
                 if callable(self._localSet):
                     # Function takes changed arg
@@ -243,8 +243,8 @@ class LocalBlock(BaseBlock):
                     exec(textwrap.dedent(self._localSet))
 
     def get(self, var):
-        if self._localGet is not None:
-            with self._lock:
+        with self._lock:
+            if self._localGet is not None:
                 dev   = var.parent
                 value = 0
 
@@ -255,7 +255,7 @@ class LocalBlock(BaseBlock):
                     exec(textwrap.dedent(self._localGet),ns)
                     self._value = ns['value']
    
-        return self._value
+            return self._value
 
 
 class MemoryBlock(BaseBlock, rogue.interfaces.memory.Master):
@@ -472,7 +472,7 @@ class RawBlock(rogue.interfaces.memory.Master):
         self._setSlave(slave)
 
         self._timeout   = 1.0
-        self._lock      = threading.Lock()
+        self._lock      = threading.RLock()
         self._cond      = threading.Condition(self._lock)
         self._error     = 0
         self._address   = 0
