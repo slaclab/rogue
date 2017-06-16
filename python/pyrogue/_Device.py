@@ -149,9 +149,6 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
             if node._memBase is None:
                 node._setSlave(self)
 
-            # Build the device blocks
-            node._buildBlocks()
-
         # Call node add
         pr.Node.add(self,node)
 
@@ -315,6 +312,9 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
             if not any(block._addVariable(n) for block in self._blocks):
                 self._log.debug("Adding new block {} at offset {:#02x}".format(n.name,n.offset))
                 self._blocks.append(pr.MemoryBlock(n))
+
+    def _rootAttached(self):
+        self._buildBlocks()
 
     def _devReset(self,rstType):
         """Generate a count, soft or hard reset"""
