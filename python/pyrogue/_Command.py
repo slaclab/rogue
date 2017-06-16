@@ -71,9 +71,22 @@ class BaseCommand(pr.Node):
         pass
 
     @staticmethod
+    def createToggle(sets):
+        def toggle(dev, cmd):
+            for s in sets:
+                cmd.set(i)
+        return toggle
+
+    @staticmethod
     def toggle(dev, cmd):
         cmd.set(1)
         cmd.set(0)
+
+    @staticmethod
+    def createTouch(value):
+        def touch(dev, cmd):
+            cmd.set(value)
+        return touch
 
     @staticmethod
     def touch(dev, cmd, arg):
