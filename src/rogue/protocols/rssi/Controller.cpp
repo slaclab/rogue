@@ -40,8 +40,8 @@ namespace bp  = boost::python;
 //! Class creation
 rpr::ControllerPtr rpr::Controller::create ( uint32_t segSize, 
                                              rpr::TransportPtr tran, 
-                                             rpr::ApplicationPtr app ) {
-   rpr::ControllerPtr r = boost::make_shared<rpr::Controller>(segSize,tran,app);
+                                             rpr::ApplicationPtr app, bool server ) {
+   rpr::ControllerPtr r = boost::make_shared<rpr::Controller>(segSize,tran,app,server);
    return(r);
 }
 
@@ -50,9 +50,10 @@ void rpr::Controller::setup_python() {
 }
 
 //! Creator
-rpr::Controller::Controller ( uint32_t segSize, rpr::TransportPtr tran, rpr::ApplicationPtr app ) {
-   app_  = app;
-   tran_ = tran;
+rpr::Controller::Controller ( uint32_t segSize, rpr::TransportPtr tran, rpr::ApplicationPtr app, bool server ) {
+   app_    = app;
+   tran_   = tran;
+   server_ = server;
 
    timeout_ = 0;
 

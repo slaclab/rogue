@@ -426,13 +426,15 @@ class MemoryBlock(BaseBlock, rogue.interfaces.memory.Master):
             self._doVerify = (type == rogue.interfaces.memory.Verify)
             self._doUpdate = (type == rogue.interfaces.memory.Read)
             self._error    = 0
-            self._tranTime = time.time()
 
             # Set data pointer
             tData = self._vData if self._doVerify else self._bData
 
-        # Start transaction outside of lock
-        self._reqTransaction(self._variables[0].offset,tData,type)
+            # Start transaction
+            self._reqTransaction(self._variables[0].offset,tData,type)
+
+            # Start timer after return
+            self._tranTime = time.time()
 
     def _doneTransaction(self,tid,error):
         """

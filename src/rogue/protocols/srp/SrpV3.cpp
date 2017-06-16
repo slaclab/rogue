@@ -28,6 +28,7 @@
 #include <rogue/interfaces/memory/Slave.h>
 #include <rogue/interfaces/memory/Constants.h>
 #include <rogue/protocols/srp/SrpV3.h>
+#include <rogue/Logging.h>
 
 namespace bp = boost::python;
 namespace rps = rogue::protocols::srp;
@@ -55,7 +56,9 @@ void rps::SrpV3::setup_python() {
 }
 
 //! Creator with version constant
-rps::SrpV3::SrpV3() : ris::Master(), ris::Slave(), rim::Slave(4,0xFFFFFFFF) { }
+rps::SrpV3::SrpV3() : ris::Master(), ris::Slave(), rim::Slave(4,0xFFFFFFFF) { 
+   log_ = new rogue::Logging("SrpV3");
+}
 
 //! Deconstructor
 rps::SrpV3::~SrpV3() {}
@@ -127,6 +130,7 @@ void rps::SrpV3::doTransaction(uint32_t id, rim::MasterPtr master, uint64_t addr
    if ( type == rim::Post ) master->doneTransaction(id,0);
    else addMaster(id,master);
 
+   log_->debug("Send frame for id=0x%08x, addr 0x%08x. Size=%i, type=%i",id,address,size,type);
    sendFrame(frame);
 }
 
@@ -145,8 +149,13 @@ void rps::SrpV3::acceptFrame ( ris::FramePtr frame ) {
    // Extract id from frame
    frame->read(&id,4,4);
 
+   log_->debug("Recv frame for id=0x%08x",id);
+
    // Find master
-   if ( ! validMaster(id) ) return; // Bad id or post, drop frame
+   if ( ! validMaster(id) ) {
+      log_->debug("Bad master for id=0x%08x",id);
+      return; // Bad id or post, drop frame
+   }
    else m = getMaster(id);
 
    // Verify frame size, drop frame
@@ -154,6 +163,7 @@ void rps::SrpV3::acceptFrame ( ris::FramePtr frame ) {
    size += 1;
    if ( size != (frame->getPayload()-24) ) {
       delMaster(id);
+      log_->debug("Size mismatch id=0x%08x",id);
       return;
    }
 
@@ -165,6 +175,7 @@ void rps::SrpV3::acceptFrame ( ris::FramePtr frame ) {
       if ( temp & 0xFF) m->doneTransaction(id,rim::AxiFail | (temp & 0xFF));
       else if ( temp & 0x100 ) m->doneTransaction(id,rim::AxiTimeout);
       else m->doneTransaction(id,temp);
+      log_->debug("Error detect id=0x%08x",id);
       return;
    }
 
