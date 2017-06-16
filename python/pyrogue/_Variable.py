@@ -210,7 +210,7 @@ class BaseVariable(pr.Node):
             elif t == bool:
                 return str.lower(sValue) == "true"
             else:
-                return str
+                return sValue
             #return (parse.parse(self.disp, sValue)[0])
 
     @Pyro4.expose
