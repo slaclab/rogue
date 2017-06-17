@@ -124,7 +124,7 @@ class PollQueue(object):
                     try:
                         entry.block.backgroundTransaction(rogue.interfaces.memory.Read)
                     except Exception as e:
-                        self._log.error(e)
+                        self._log.exception(e)
 
                     # Update the entry with new read time
                     entry = entry._replace(readTime=(entry.readTime + entry.interval),
@@ -136,7 +136,7 @@ class PollQueue(object):
                     for entry in blockEntries:
                         entry.block._checkTransaction(update=True)
                 except Exception as e:
-                    self._log.error(e)
+                    self._log.exception(e)
                 # End update capture
                 self._root._doneUpdatedVars()
 
