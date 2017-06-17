@@ -243,8 +243,8 @@ class LocalBlock(BaseBlock):
                     exec(textwrap.dedent(self._localSet))
 
     def get(self, var):
-        with self._lock:
-            if self._localGet is not None:
+        if self._localGet is not None:
+            with self._lock:
                 dev   = var.parent
                 value = 0
 
@@ -255,7 +255,7 @@ class LocalBlock(BaseBlock):
                     exec(textwrap.dedent(self._localGet),ns)
                     self._value = ns['value']
    
-            return self._value
+        return self._value
 
 
 class MemoryBlock(BaseBlock, rogue.interfaces.memory.Master):
