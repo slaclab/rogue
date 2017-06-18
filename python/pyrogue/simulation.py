@@ -129,3 +129,52 @@ class StreamSim(rogue.interfaces.stream.Master,
             ba[0] = 0xFF
             self._ibSock.send(ba)
 
+
+class MemEmulate(rogue.interfaces.memory.Slave):
+
+    def __init__(self, minWidth=4, maxSize=0xFFFFFFFF):
+        rogue.interfaces.memory.Slave.__init__(self,4,4)
+        self._minWidth = minWidth
+        self._maxSize  = maxSize
+        self._data = {}
+
+    def _checkRange(self, address, size):
+
+        return 0
+
+    def _doMaxAccess(self):
+        return(self._maxSize)
+
+    def _doMinAccess(self):
+        return(self._minWidth)
+
+    def _doTransaction(self,tid,master,address,size,type):
+
+        if (address % self._minWidth) != 0:
+            master._doneTransaction(tid,rogue.interfaces.memory.AddressError)
+            return
+        elif size > self._maxSize:
+            master._doneTransaction(tid,rogue.interfaces.memory.SizeError)
+            return
+
+        for i in range (0, size):
+            if not (address+i) in self._data:
+                self._data[address+i] = 0
+
+        ba = bytearray(size)
+
+        if type == rogue.interfaces.memory.Write or type == rogue.interfaces.memory.Post:
+            master._getTransactionData(tid,0,ba)
+
+            for i in range(0, size):
+                self._data[address+i] = ba[i]
+
+            master._doneTransaction(tid,0)
+
+        else:
+            for i in range(0, size):
+                ba[i] = self._data[address+i]
+
+            master._setTransactionData(tid,0,ba)
+            master._doneTransaction(tid,0)
+
