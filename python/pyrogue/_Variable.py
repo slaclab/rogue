@@ -345,7 +345,7 @@ class RemoteVariable(BaseVariable):
                     self._parent.checkBlocks(varUpdate=False, recurse=False, variable=self)
 
         except Exception as e:
-            self._log.error(e)
+            self._log.exception(e)
 
     @Pyro4.expose
     def post(self,value):
@@ -364,7 +364,7 @@ class RemoteVariable(BaseVariable):
                 self._block.backgroundTransaction(rogue.interfaces.memory.Post)
 
         except Exception as e:
-            self._log.error(e)
+            self._log.exception(e)
 
     @Pyro4.expose
     def get(self,read=True):
@@ -381,7 +381,7 @@ class RemoteVariable(BaseVariable):
             ret = self._block.get(self)
 
         except Exception as e:
-            self._log.error(e)
+            self._log.exception(e)
             return None
 
         # Update listeners for all variables in the block
@@ -439,7 +439,7 @@ class LocalVariable(BaseVariable):
             self._block.set(self, value)
 
         except Exception as e:
-            self._log.error(e)
+            self._log.exception(e)
 
         if write: self._updated()
 
@@ -452,7 +452,7 @@ class LocalVariable(BaseVariable):
             ret = self._block.get(self)
 
         except Exception as e:
-            self._log.error(e)
+            self._log.exception(e)
             return None
 
         if read: self._updated()

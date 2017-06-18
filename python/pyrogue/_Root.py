@@ -31,7 +31,7 @@ class RootLogHandler(logging.Handler):
     def emit(self,record):
         with self._root._sysLogLock:
             val = self._root.systemLog.value()
-            val += (self.format(record) + '\n')
+            val += (self.format(record).splitlines()[0] + '\n')
             self._root.systemLog.set(write=False,value=val)
         self._root.systemLog._updated() # Update outside of lock
 
@@ -133,7 +133,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         try:
             ret = dictToYaml({self.name:self._getVariables(modes)},default_flow_style=False)
         except Exception as e:
-            self._log.error(e)
+            self._log.exception(e)
 
         return ret
 
@@ -307,7 +307,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
             self._log.info("Check root read")
             self.checkBlocks(varUpdate=False, recurse=True)
         except Exception as e:
-            self._log.error(e)
+            self._log.exception(e)
         self._log.info("Done root write")
 
     @pr.command(order=6, name="readAll", description='Read all values from the hardware')
@@ -320,7 +320,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
             self._log.info("Check root read")
             self.checkBlocks(varUpdate=True, recurse=True)
         except Exception as e:
-            self._log.error(e)
+            self._log.exception(e)
         self._doneUpdatedVars()
         self._log.info("Done root read")
 
@@ -331,7 +331,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
             with open(arg,'w') as f:
                 f.write(self.getYamlVariables(True,modes=['RW']))
         except Exception as e:
-            self._log.error(e)
+            self._log.exception(e)
 
     @pr.command(order=1, name='readConfig', base='string', description='Read configuration from passed filename in YAML format')
     def _readConfig(self,dev,cmd,arg):
@@ -340,7 +340,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
             with open(arg,'r') as f:
                 self.setOrExecYaml(f.read(),False,['RW'])
         except Exception as e:
-            self._log.error(e)
+            self._log.exception(e)
 
     @pr.command(order=3, name='softReset', description='Generate a soft reset to each device in the tree')
     def _softReset(self,dev,cmd):

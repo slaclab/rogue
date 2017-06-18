@@ -61,7 +61,7 @@ class BaseCommand(pr.Node):
                     exec(textwrap.dedent(self._function))
 
         except Exception as e:
-            self._log.error(e)
+            self._log.exception(e)
 
     def __call__(self,arg=None):
         self.call(arg)
@@ -131,7 +131,7 @@ class RemoteCommand(BaseCommand, pr.RemoteVariable):
                 self._block.blockingTransaction(rogue.interfaces.memory.Write)
 
         except Exception as e:
-            self._log.error(e)
+            self._log.exception(e)
 
  
     def get(self, read=True):
@@ -142,7 +142,7 @@ class RemoteCommand(BaseCommand, pr.RemoteVariable):
             ret = self._block.get(self)
 
         except Exception as e:
-            self._log.error(e)
+            self._log.exception(e)
             return None
 
         return ret
