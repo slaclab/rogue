@@ -246,6 +246,12 @@ class Node(object):
         return data
 
     def _nodeList(self,name):
+
+        # First check to see if unit matches a node name
+        # needed when [ and ] are in a variable or device name
+        if name in self._nodes:
+            return [self._nodes[name]]
+
         fields = re.split('\[|\]',name)
 
         # Wildcard
@@ -254,8 +260,11 @@ class Node(object):
         else:
             ah = attrHelper(self._nodes,fields[0])
 
+            if ah is None:
+                return []
+
             # Single entry returned
-            if not isinstance(ah,odict):
+            elif not isinstance(ah,odict):
 
                 # Should be indexed
                 if len(fields) > 1:
@@ -267,6 +276,9 @@ class Node(object):
             # Convert to list with gaps = None
             else:
                 idxLast = list(ah.items())[-1][0] # Last index
+                if not isinstance(idxLast,int):
+                    return []
+
                 ret = [None] * (idxLast+1)
                 for i,n in ah.items():
                     ret[i] = n
@@ -299,19 +311,24 @@ class Node(object):
         Called from setOrExecYaml in the root node.
         """
         for key, value in d.items():
-            for n in self._nodeList(key):
+            nlist = self._nodeList(key)
 
-                # If entry is a device, recurse
-                if isinstance(n,pr.Device):
-                    n._setOrExec(value,writeEach,modes)
+            if len(nlist) == 0:
+                self._log.error("Entry {} not found".format(key))
+            else:
+                for n in nlist:
 
-                # Execute if command
-                elif isinstance(n,pr.BaseCommand):
-                    n.call(value)
+                    # If entry is a device, recurse
+                    if isinstance(n,pr.Device):
+                        n._setOrExec(value,writeEach,modes)
 
-                # Set value if variable with enabled mode
-                elif isinstance(n,pr.BaseVariable) and (n.mode in modes):
-                    n.setDisp(value,writeEach)
+                    # Execute if command
+                    elif isinstance(n,pr.BaseCommand):
+                        n.call(value)
+
+                    # Set value if variable with enabled mode
+                    elif isinstance(n,pr.BaseVariable) and (n.mode in modes):
+                        n.setDisp(value,writeEach)
 
 
 class PyroNode(object):
