@@ -74,12 +74,13 @@ class PollQueue(object):
                 oldInterval = self._entries[var._block].interval
                 blockVars = [v for v in var._block._variables if v.pollInterval > 0]
                 if len(blockVars) > 0:
-                    newInterval = min(blockVars, key=lambda x: x.pollInterval)
+                    minVar = min(blockVars, key=lambda x: x.pollInterval)
+                    newInterval = datetime.timedelta(seconds=minVar.pollInterval)
                     # If block interval has changed, invalidate the current entry for the block
                     # and re-add it with the new interval
                     if newInterval != oldInterval:
                         self._entries[var._block].block = None
-                        self._addEntry(var._block, newInterval)
+                        self._addEntry(var._block, minVar.pollInterval)
                 else:
                     # No more variables belong to block entry, can remove it
                     self._entries[var._block].block = None
@@ -121,6 +122,7 @@ class PollQueue(object):
                 blockEntries = []
                 for entry in self._expiredEntries(now):
                     self._log.debug('Polling {}'.format(entry.block._variables))
+                    print('Polling {}'.format(entry.block._variables))
                     blockEntries.append(entry)
                     try:
                         entry.block.backgroundTransaction(rogue.interfaces.memory.Read)
