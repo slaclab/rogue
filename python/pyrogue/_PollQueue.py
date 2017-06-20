@@ -122,7 +122,6 @@ class PollQueue(object):
                 blockEntries = []
                 for entry in self._expiredEntries(now):
                     self._log.debug('Polling {}'.format(entry.block._variables))
-                    print('Polling {}'.format(entry.block._variables))
                     blockEntries.append(entry)
                     try:
                         entry.block.backgroundTransaction(rogue.interfaces.memory.Read)
