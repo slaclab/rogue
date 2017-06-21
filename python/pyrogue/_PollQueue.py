@@ -21,10 +21,11 @@ import itertools
 import heapq
 import rogue.interfaces.memory
 import pyrogue as pr
+import recordclass
 
 class PollQueue(object):
 
-    Entry = collections.namedtuple('PollQueueEntry', ['readTime', 'count', 'interval', 'block'])
+    Entry = recordclass.recordclass('PollQueueEntry', ['readTime', 'count', 'interval', 'block'])
 
     def __init__(self,root):
         self._pq = [] # The heap queue
@@ -73,15 +74,16 @@ class PollQueue(object):
                 oldInterval = self._entries[var._block].interval
                 blockVars = [v for v in var._block._variables if v.pollInterval > 0]
                 if len(blockVars) > 0:
-                    newInterval = min(blockVars, key=lambda x: x.pollInterval)
+                    minVar = min(blockVars, key=lambda x: x.pollInterval)
+                    newInterval = datetime.timedelta(seconds=minVar.pollInterval)
                     # If block interval has changed, invalidate the current entry for the block
                     # and re-add it with the new interval
                     if newInterval != oldInterval:
                         self._entries[var._block].block = None
-                        self._addEntry(var._block, newInterval)
+                        self._addEntry(var._block, minVar.pollInterval)
                 else:
                     # No more variables belong to block entry, can remove it
-                    self._entries[var._block].blocks = None
+                    self._entries[var._block].block = None
             else:
                 # Pure entry add
                 self._addEntry(var._block, var.pollInterval)
