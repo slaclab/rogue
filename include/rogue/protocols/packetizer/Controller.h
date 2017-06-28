@@ -26,6 +26,7 @@
 #include <boost/python.hpp>
 #include <stdint.h>
 #include <rogue/Queue.h>
+#include <rogue/Logging.h>
 
 namespace rogue {
    namespace protocols {
@@ -34,6 +35,7 @@ namespace rogue {
          class Application;
          class Transport;
          class Header;
+
 
          //! Packetizer Controller Class
          class Controller : public boost::enable_shared_from_this<rogue::protocols::packetizer::Controller> {
@@ -46,6 +48,8 @@ namespace rogue {
                uint8_t  tranDest_;
                uint32_t dropCount_;
                uint32_t timeout_;
+
+               rogue::Logging * log_;
 
                boost::shared_ptr<rogue::interfaces::stream::Frame> tranFrame_;
 

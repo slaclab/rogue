@@ -56,6 +56,7 @@ rpp::Controller::Controller ( uint32_t segmentSize, rpp::TransportPtr tran, rpp:
    dropCount_ = 0;
    timeout_ = 1000000;
    tranQueue_.setThold(64);
+   log_ = new rogue::Logging("packetizer.Controller");
 }
 
 //! Destructor
@@ -114,6 +115,7 @@ void rpp::Controller::transportRx( ris::FramePtr frame ) {
 
    // Drop invalid data
    if ( frame->getError() || (buff->getPayload() < 9) || ((data[0] & 0xF) != 0) ) {
+      log_->info("Dropping frame due to contents: error=0x%x, payload=%i, Version=0x%x",frame->getError(),buff->getPayload(),data[0]&0xF);
       dropCount_++;
       return;
    }
@@ -140,6 +142,7 @@ void rpp::Controller::transportRx( ris::FramePtr frame ) {
 
    // Drop frame and reset state if mismatch
    if ( tmpCount > 0  && ( tmpIdx != tranIndex_ || tmpCount != tranCount_ ) ) {
+      log_->info("Dropping frame due to state mismatch: expIdx=%i, gotIdx=%i, expCount=%i, gotCount=%i",tranIndex_,tmpIdx,tranCount_,tmpCount);
       dropCount_++;
       tranCount_ = 0;
       tranFrame_.reset();
@@ -148,6 +151,10 @@ void rpp::Controller::transportRx( ris::FramePtr frame ) {
 
    // First frame
    if ( tmpCount == 0 ) {
+
+      if ( tranCount_ != 0 ) 
+         log_->info("Dropping frame due to new incoming frame: expIdx=%i, expCount=%i",tranIndex_,tranCount_);
+
       tranFrame_ = ris::Frame::create();
       tranIndex_ = tmpIdx;
       tranDest_  = tmpDest;
