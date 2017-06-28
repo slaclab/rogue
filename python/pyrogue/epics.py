@@ -79,6 +79,8 @@ class EpicsCaServer(object):
         self._wThread = threading.Thread(target=self._workRun)
         self._eThread.start()
         self._wThread.start()
+        # Initialize the parameters associated to commands
+        self._initCommandParams()
 
     def _addPv(self,node,doAll):
         d = {}
@@ -106,13 +108,25 @@ class EpicsCaServer(object):
             if node.maximum is not None:
                 d['hilim'] = node.maximum
 
-            d['type'] = d['value'].__class__.__name__
+            if self._isCommand(node):
+                # Proccess commands
+                if node.arg:
+                    # If this command has arguments, use char
+                    # String type will accept upto 40 chars only so
+                    # let's use char with count > 40 instead to accept longer inputs 
+                    # We can do "caput -s PV "long string argument"" to call the command
+                    d['type']  = 'char'
+                    d['count'] =  300
+                else:
+                    # If this command has no arguments, use int
+                    # so we can do "caput PV 1" for example to call the command
+                    d['type']  = 'int'
+            else:
+                # Process registers
+                d['type'] = d['value'].__class__.__name__
 
-            # Commands return None
-            if d['type'] == 'NoneType':
-                d['type'] = 'int'
-            elif d['type'] == 'bool':
-                d['type'] = 'int'
+                if d['type'] == 'bool':
+                    d['type'] = 'int'
             
         node.addListener(self._variableUpdated)
 
@@ -149,13 +163,23 @@ class EpicsCaServer(object):
                 e = self._queue.get(True,0.5)
                 d = self._pvDb[e['epath']]
                 value = e['value']
+                v = d['var']
 
-                if d['type'] == 'enum':
-                    val = d['enums'][value]
-                    d['var'].setDisp(val)
+                if self._isCommand(v):
+                    # Process command requests
+                    try:
+                        v.call(value)
+                    except:
+                        pass
+             
                 else:
-                    val = e['value']
-                    d['var'].set(val)
+                    # Process normal register write requests
+                    if d['type'] == 'enum':
+                        val = d['enums'][value]
+                        v.setDisp(val)
+                    else:
+                        val = e['value']
+                        v.set(val)
             except:
                 pass
 
@@ -173,3 +197,27 @@ class EpicsCaServer(object):
         self._driver.setParam(d['name'],val)
         self._driver.updatePVs()
 
+    # Is this variable a command?
+    def _isCommand(self, var):
+        # Only commands has the 'call' attribute
+        return hasattr(var, 'call')
+
+    # Initialize parameter for commands
+    # This avoid having errors "Channel read request failed"
+    # The first time the command is excecuted
+    def _initCommandParams(self):
+    
+        # Wait for the CA server to be online
+        retries = 0
+        while self._driver is None:
+            if retries >= 5:
+                # The server was never online
+                return
+
+            retries +=  1
+            time.sleep(.5)
+
+        # Look for all the commands and set their respective parameters to zero
+        for name,d in self._pvDb.items():
+            if self._isCommand(d['var']):
+                self._driver.setParam(name, 0)
