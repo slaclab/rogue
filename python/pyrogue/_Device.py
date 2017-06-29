@@ -410,7 +410,7 @@ class DataWriter(Device):
         """get current file frame count. Override in sub-class"""
         return(0)
 
-    def _genFileName(self,dev,cmd,arg):
+    def _genFileName(self,dev,cmd):
         """
         Auto create data file name based upon date and time.
         Preserve file's location in path.
