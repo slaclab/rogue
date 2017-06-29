@@ -116,17 +116,8 @@ class BaseCommand(pr.Node):
 
 
 class LocalCommand(BaseCommand,pr.BaseVariable):
-    def __init__(self, name=None, mode='RW', description="", value=None, hidden=False, function=None, update=False, **kwargs):
+    def __init__(self, name=None, mode='RW', description="", value=0, hidden=False, function=None, update=False, **kwargs):
         BaseCommand.__init__(self,name=name, description=description, hidden=hidden, function=function)
-
-        # Default to integer for local commands without an arg
-        if not self._arg:
-            value = 0
-
-        # Raise error is value is not passed when accepting an arg
-        elif value is None:
-            raise CommandError(f'LocalCommand {self.path} must specify value= argument in constructor when accepting an arg')
-
         pr.BaseVariable.__init__(self, name=name, description=description, value=value, hidden=hidden, mode=mode, update=update, **kwargs)
 
 
