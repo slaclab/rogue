@@ -21,6 +21,10 @@ import pyrogue as pr
 import inspect
 import Pyro4
 
+class CommandError(Exception):
+    """ Exception for command errors."""
+    pass
+
 class BaseCommand(pr.Node):
 
     def __init__(self, name=None, description="", hidden=False, function=None):
@@ -118,6 +122,10 @@ class LocalCommand(BaseCommand,pr.BaseVariable):
         # Default to integer for local commands without an arg
         if not self._arg:
             value = 0
+
+        # Raise error is value is not passed when accepting an arg
+        elif value is None:
+            raise CommandError(f'LocalCommand {self.path} must specify value= argument in constructor when accepting an arg')
 
         pr.BaseVariable.__init__(self, name=name, description=description, value=value, hidden=hidden, mode=mode, update=update, **kwargs)
 
