@@ -164,7 +164,7 @@ class BaseVariable(pr.Node):
 
     @Pyro4.expose
     def get(self,read=True):
-        return None
+        return self._default
 
     @Pyro4.expose
     def value(self):
