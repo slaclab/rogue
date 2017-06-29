@@ -197,28 +197,27 @@ class BaseVariable(pr.Node):
 
     @Pyro4.expose
     def parseDisp(self, sValue):
-        if sValue is '':
-            return ''
-        elif self.disp == 'enum':
-            return self.revEnum[sValue]
-        else:
-            t = self.nativeType()
-            if t == int:
-                return int(sValue, 0)
-            elif t == float:
-                return float(sValue)
-            elif t == bool:
-                return str.lower(sValue) == "true"
+        if isinstance(sValue, self.nativeType()):
+            return sValue
+        else:        
+            if sValue is '':
+                return ''
+            elif self.disp == 'enum':
+                return self.revEnum[sValue]
             else:
-                return sValue
-            #return (parse.parse(self.disp, sValue)[0])
+                t = self.nativeType()
+                if t == int:
+                    return int(sValue, 0)
+                elif t == float:
+                    return float(sValue)
+                elif t == bool:
+                    return str.lower(sValue) == "true"
+                else:
+                    return sValue
 
     @Pyro4.expose
     def setDisp(self, sValue, write=True):
-        if isinstance(sValue, self.nativeType()):
-            self.set(sValue, write)
-        else:
-            self.set(self.parseDisp(sValue), write)
+        self.set(self.parseDisp(sValue), write)
 
     @Pyro4.expose
     def nativeType(self):
