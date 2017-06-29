@@ -324,7 +324,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         self._doneUpdatedVars()
         self._log.info("Done root read")
 
-    @pr.command(order=0, name='writeConfig', base='string', description='Write configuration to passed filename in YAML format')
+    @pr.command(order=0, name='writeConfig', value='', description='Write configuration to passed filename in YAML format')
     def _writeConfig(self,dev,cmd,arg):
         """Write YAML configuration to a file. Called from command"""
         try:
@@ -333,7 +333,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         except Exception as e:
             self._log.exception(e)
 
-    @pr.command(order=1, name='readConfig', base='string', description='Read configuration from passed filename in YAML format')
+    @pr.command(order=1, name='readConfig', value='', description='Read configuration from passed filename in YAML format')
     def _readConfig(self,dev,cmd,arg):
         """Read YAML configuration from a file. Called from command"""
         try:
