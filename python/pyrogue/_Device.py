@@ -355,7 +355,7 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
                     return func()
                 else:
                     return func(val)
-            self.add(pr.Command(function=newFunc, **kwargs))
+            self.add(pr.LocalCommand(function=newFunc, **kwargs))
             return func
         return _decorator
 
