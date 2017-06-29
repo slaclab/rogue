@@ -172,24 +172,22 @@ class EpicsCaServer(object):
             try:
                 e = self._queue.get(True,0.5)
                 d = self._pvDb[e['epath']]
-                value = e['value']
                 v = d['var']
+
+                # Enum must be converted for both commands and variables
+                if d['type'] == 'enum':
+                    value = d['enums'][e['value']]
+                else:
+                    value = e['value']
 
                 if self._isCommand(v):
                     # Process command requests
-                    try:
-                        v.call(value)
-                    except:
-                        pass
+                    v.call(value)
              
                 else:
                     # Process normal register write requests
-                    if d['type'] == 'enum':
-                        val = d['enums'][value]
-                        v.setDisp(val)
-                    else:
-                        val = e['value']
-                        v.set(val)
+                    v.setDisp(value)
+
             except:
                 pass
 
