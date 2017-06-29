@@ -79,8 +79,6 @@ class EpicsCaServer(object):
         self._wThread = threading.Thread(target=self._workRun)
         self._eThread.start()
         self._wThread.start()
-        # Initialize the parameters associated to commands
-        self._initCommandParams()
 
     def _addPv(self,node,doAll):
         d = {}
@@ -102,31 +100,43 @@ class EpicsCaServer(object):
 
         else:
             d['value'] = node.value()
+            
+            # All devices should return a not NULL value
+            if not d['value']:
+                self._log.warning("Device {} has a null value".format(d['name']))
 
             if node.minimum is not None:
                 d['lolim'] = node.minimum
             if node.maximum is not None:
                 d['hilim'] = node.maximum
 
-            if self._isCommand(node):
-                # Proccess commands
-                if node.arg:
-                    # If this command has arguments, use char
-                    # String type will accept upto 40 chars only so
-                    # let's use char with count > 40 instead to accept longer inputs 
-                    # We can do "caput -s PV "long string argument"" to call the command
-                    d['type']  = 'char'
-                    d['count'] =  300
-                else:
-                    # If this command has no arguments, use int
-                    # so we can do "caput PV 1" for example to call the command
-                    d['type']  = 'int'
-            else:
-                # Process registers
-                d['type'] = d['value'].__class__.__name__
+            # Get device type
+            d['type'] = d['value'].__class__.__name__
 
-                if d['type'] == 'bool':
-                    d['type'] = 'int'
+            # All devices should return a type different from NoneType
+            if d['type'] == 'NoneType':
+                self._log.warning("Device {} returned NoneType".format(d['name']))
+                return 
+
+            # Adjust some types
+            if d['type'] == 'string':
+                # If this command has arguments, use char
+                # String type will accept upto 40 chars only so
+                # let's use char with count > 40 instead to accept longer inputs 
+                # We can do "caput -s PV "long string argument"" to call the command
+                d['type']  = 'char'
+                d['count'] =  300
+            elif d['type'] == 'bool':
+                # Bool is not supported, so let's use int instead
+                d['type'] = 'int'
+
+            # These are the only type supported by pcaspy
+            supportedType = {"enum", "string", "char", "float", "int"}
+
+            # Check if type is supported
+            if d['type'] not in supportedType:
+                self._log.warning("Device {} has type {} which is not supported by pcaspy".format(d['name'], d['type'] ))
+                return
             
         node.addListener(self._variableUpdated)
 
@@ -199,25 +209,5 @@ class EpicsCaServer(object):
 
     # Is this variable a command?
     def _isCommand(self, var):
-        # Only commands has the 'call' attribute
-        return hasattr(var, 'call')
-
-    # Initialize parameter for commands
-    # This avoid having errors "Channel read request failed"
-    # The first time the command is excecuted
-    def _initCommandParams(self):
-    
-        # Wait for the CA server to be online
-        retries = 0
-        while self._driver is None:
-            if retries >= 5:
-                # The server was never online
-                return
-
-            retries +=  1
-            time.sleep(.5)
-
-        # Look for all the commands and set their respective parameters to zero
-        for name,d in self._pvDb.items():
-            if self._isCommand(d['var']):
-                self._driver.setParam(name, 0)
+        # Command are instances of pyrogue.BaseCommand
+        return isinstance(var, pyrogue.BaseCommand)
