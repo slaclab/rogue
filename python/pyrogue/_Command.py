@@ -23,7 +23,7 @@ import Pyro4
 
 class BaseCommand(pr.Node):
 
-    def __init__(self, name=None, arg=False, description="", hidden=False, function=None):
+    def __init__(self, name=None, description="", hidden=False, function=None):
         pr.Node.__init__(self, name=name, description=description, hidden=hidden)
         self._function = function if function is not None else BaseCommand.nothing
 
@@ -112,9 +112,14 @@ class BaseCommand(pr.Node):
 
 
 class LocalCommand(BaseCommand,pr.BaseVariable):
-    def __init__(self, name=None, mode='RW', description="", hidden=False, function=None, update=False, **kwargs):
+    def __init__(self, name=None, mode='RW', description="", value=None, hidden=False, function=None, update=False, **kwargs):
         BaseCommand.__init__(self,name=name, description=description, hidden=hidden, function=function)
-        pr.BaseVariable.__init__(self, name=name, description=description, hidden=hidden, mode=mode, update=update, **kwargs)
+
+        # Default to integer for local commands without an arg
+        if not self._arg:
+            value = 0
+
+        pr.BaseVariable.__init__(self, name=name, description=description, value=value, hidden=hidden, mode=mode, update=update, **kwargs)
 
 
 class RemoteCommand(BaseCommand, pr.RemoteVariable):
