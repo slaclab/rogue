@@ -499,12 +499,18 @@ class LinkVariable(BaseVariable):
         Listeners will be informed of the update.
         """
         if self._linkedSet is not None:
-            if callable(self._linkedSet):
-                self._linkedSet(self._parent,self,value,write)
-            else:
-                dev = self._parent
-                var = self
-                exec(textwrap.dedent(self._linkedSet))
+
+            # Possible args
+            pargs = {'dev' : self.parent, 'var' : self, 'value' : value, 'write' : write}
+
+            # Function args
+            fargs = inspect.getfullargspec(self._linkedSet).args
+
+            # Build arg list
+            args = {k:pargs[k] for k in fargs}
+
+            # Call function
+            self._linkedSet(**args)
 
     @Pyro4.expose
     def get(self, read=True):
@@ -515,15 +521,19 @@ class LinkVariable(BaseVariable):
         resulting value.
         """
         if self._linkedGet is not None:
-            if callable(self._linkedGet):
-                return(self._linkedGet(self._parent,self,read))
-            else:
-                dev = self._parent
-                var = self
-                value = 0
-                ns = locals()
-                exec(textwrap.dedent(self._linkedGet),ns)
-                return ns['value']
+
+            # Possible args
+            pargs = {'dev' : self.parent, 'var' : self, 'read' : read}
+
+            # Function args
+            fargs = inspect.getfullargspec(self._linkedGet).args
+
+            # Build arg list
+            args = {k:pargs[k] for k in fargs}
+
+            # Call function
+            return(self._linkedGet(**args))
+
         else:
             return None
 
