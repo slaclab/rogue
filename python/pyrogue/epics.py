@@ -102,7 +102,7 @@ class EpicsCaServer(object):
             d['value'] = node.value()
             
             # All devices should return a not NULL value
-            if not d['value']:
+            if d['value'] is None:
                 self._log.warning("Device {} has a null value".format(d['name']))
 
             if node.minimum is not None:
@@ -130,15 +130,13 @@ class EpicsCaServer(object):
                 # Bool is not supported, so let's use int instead
                 d['type'] = 'int'
 
-            else:
+            # These are the only type supported by pcaspy
+            supportedType = {"enum", "string", "char", "float", "int"}
 
-                # These are the only type supported by pcaspy
-                supportedType = {"enum", "string", "char", "float", "int"}
-
-                # Check if type is supported
-                if d['type'] not in supportedType:
-                    self._log.warning("Device {} has type {} which is not supported by pcaspy".format(d['name'], d['type'] ))
-                    return
+            # Check if type is supported
+            if d['type'] not in supportedType:
+                self._log.warning("Device {} has type {} which is not supported by pcaspy".format(d['name'], d['type'] ))
+                return
             
         node.addListener(self._variableUpdated)
 
