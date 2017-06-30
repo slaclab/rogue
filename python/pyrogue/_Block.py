@@ -236,7 +236,7 @@ class LocalBlock(BaseBlock):
                 # Possible args
                 pargs = {'dev' : var.parent, 'var' : var, 'value' : self._value, 'changed' : changed}
 
-                pr.varFuncHelper(self._localSet, pargs)
+                pr.varFuncHelper(self._localSet, pargs, self._log)
 
     def get(self, var):
         if self._localGet is not None:
@@ -245,7 +245,7 @@ class LocalBlock(BaseBlock):
                 # Possible args
                 pargs = {'dev' : var.parent, 'var' : var}
 
-                self._value = pr.varFuncHelper(self._localGet,pargs)
+                self._value = pr.varFuncHelper(self._localGet,pargs, self._log)
 
         return self._value
 

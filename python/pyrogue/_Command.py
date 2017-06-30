@@ -59,7 +59,7 @@ class BaseCommand(pr.BaseVariable):
             # Possible args
             pargs = {'dev' : self.parent, 'cmd' : self, 'arg' : arg}
 
-            pr.varFuncHelper(self._function,pargs)
+            pr.varFuncHelper(self._function,pargs, self._log)
 
         except Exception as e:
             self._log.exception(e)

@@ -502,7 +502,7 @@ class LinkVariable(BaseVariable):
             # Possible args
             pargs = {'dev' : self.parent, 'var' : self, 'value' : value, 'write' : write}
 
-            varFuncHelper(self._linkedSet,pargs)
+            varFuncHelper(self._linkedSet,pargs,self._log)
 
     @Pyro4.expose
     def get(self, read=True):
@@ -511,7 +511,7 @@ class LinkVariable(BaseVariable):
             # Possible args
             pargs = {'dev' : self.parent, 'var' : self, 'read' : read}
 
-            return varFuncHelper(self._linkedGet,pargs)
+            return varFuncHelper(self._linkedGet,pargs,self._log)
         else:
             return none
 
@@ -558,10 +558,11 @@ def Variable(local=False, setFunction=None, getFunction=None, **kwargs):
 
 
 # Function helper
-def varFuncHelper(func,pargs):
+def varFuncHelper(func,pargs,log):
 
     if not callable(func):
-        raise VariableError("Passed function is not callable")
+        log.error("Passed function '{}' is not callable".format(func))
+        return
 
     # Python functions
     try:
