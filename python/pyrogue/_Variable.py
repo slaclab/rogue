@@ -393,7 +393,7 @@ class RemoteVariable(BaseVariable):
 
     @Pyro4.expose
     def parseDisp(self, sValue):
-        if isinstance(sValue, self.nativeType()):
+        if sValue is None or isinstance(sValue, self.nativeType()):
             return sValue
         else:        
 
