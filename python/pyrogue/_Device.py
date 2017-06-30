@@ -350,7 +350,7 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
                 kwargs['name'] = func.__name__
 
             argCount = len(inspect.signature(func).parameters)
-            def newFunc(dev, var, val):
+            def newFunc(val):
                 if argCount == 0:
                     return func()
                 else:
