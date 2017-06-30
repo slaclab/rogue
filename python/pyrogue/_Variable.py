@@ -502,7 +502,7 @@ class LinkVariable(BaseVariable):
             # Possible args
             pargs = {'dev' : self.parent, 'var' : self, 'value' : value, 'write' : write}
 
-            varFuncHelper(self._linkedSet,pargs,self._log)
+            varFuncHelper(self._linkedSet,pargs,self._log,self.path)
 
     @Pyro4.expose
     def get(self, read=True):
@@ -511,7 +511,7 @@ class LinkVariable(BaseVariable):
             # Possible args
             pargs = {'dev' : self.parent, 'var' : self, 'read' : read}
 
-            return varFuncHelper(self._linkedGet,pargs,self._log)
+            return varFuncHelper(self._linkedGet,pargs,self._log,self.path)
         else:
             return none
 
@@ -558,10 +558,10 @@ def Variable(local=False, setFunction=None, getFunction=None, **kwargs):
 
 
 # Function helper
-def varFuncHelper(func,pargs,log):
+def varFuncHelper(func,pargs,log,path):
 
     if not callable(func):
-        log.warning("Using deprecated eval string. Please change to function: {}".format(func))
+        log.warning("Using deprecated eval string. Please change to function: {}".format(path))
 
         dev   = None
         var   = None
