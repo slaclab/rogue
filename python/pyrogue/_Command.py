@@ -112,6 +112,10 @@ class BaseCommand(pr.BaseVariable):
             cmd.post(1)
 
 
+# LocalCommand is the same as BaseCommand
+LocalCommand = BaseCommand
+
+
 class RemoteCommand(BaseCommand, pr.RemoteVariable):
 
     def __init__(self, name=None, description="", hidden=False, function=None,
@@ -153,9 +157,6 @@ class RemoteCommand(BaseCommand, pr.RemoteVariable):
 
         return ret
             
-# LocalCommand is the same as BaseCommand
-LocalCommand = BaseCommand
-
 # Legacy Support
 def Command(offset=None, **kwargs):
     if offset is None:
