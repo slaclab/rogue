@@ -208,7 +208,6 @@ class Node(object):
         self._path   = parent.path + '.' + self.name
 
     def _exportNodes(self,daemon):
-
         for k,n in self._nodes.items():
             daemon.register(n)
 

@@ -89,6 +89,10 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
     def start(self,pollEn=True, pyroGroup=None, pyroHost=None):
         """Setup the tree. Start the polling thread."""
 
+        # Create poll queue object
+        if pollEn:
+            self._pollQueue = pr.PollQueue(self)
+
         # Set myself as root
         self._parent = self
         self._root   = self
@@ -130,7 +134,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
         # Start poller if enabled
         if pollEn:
-            self._pollQueue = pr.PollQueue(self)
+            self._pollQueue._start()
 
         self._running = True
 

@@ -225,7 +225,6 @@ class BaseVariable(pr.Node):
         return type(self.value())
 
     def _rootAttached(self,parent,root):
-        print("variable root attached called on {}".self.name)
         pr.Node._rootAttached(self,parent,root)
 
         if self._default is not None:

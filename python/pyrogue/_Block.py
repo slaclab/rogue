@@ -261,13 +261,13 @@ class LocalBlock(BaseBlock):
 class MemoryBlock(BaseBlock, rogue.interfaces.memory.Master):
     """Internal memory block holder"""
 
-    def __init__(self, variable):
+    def __init__(self, variable, device):
         """
         Initialize memory block class.
         Pass initial variable.
         """
         rogue.interfaces.memory.Master.__init__(self)
-        self._setSlave(variable.parent)
+        self._setSlave(device)
 
         self._minSize = self._reqMinAccess()
         self._maxSize = self._reqMaxAccess()

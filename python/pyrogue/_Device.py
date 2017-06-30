@@ -307,10 +307,9 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
         for n in remVars:
             if not any(block._addVariable(n) for block in self._blocks):
                 self._log.debug("Adding new block {} at offset {:#02x}".format(n.name,n.offset))
-                self._blocks.append(pr.MemoryBlock(n))
+                self._blocks.append(pr.MemoryBlock(n,self))
 
     def _rootAttached(self,parent,root):
-        print("device root attached called on {}".self.name)
         pr.Node._rootAttached(self,parent,root)
 
         self._buildBlocks()
