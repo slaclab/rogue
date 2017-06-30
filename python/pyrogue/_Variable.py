@@ -582,7 +582,7 @@ def varFuncHelper(func,pargs,log,path):
             arg = pargs['arg']
 
         ns = locals()
-        exec(texwrap.dedent(func),ns)
+        exec(textwrap.dedent(func),ns)
         value = ns['value']
         return value
 
