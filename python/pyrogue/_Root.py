@@ -44,7 +44,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
     to be stored in data files.
     """
 
-    def __init__(self, name, description, pollEn=True, **dump):
+    def __init__(self, name, description, **dump):
         """Init the node with passed attributes"""
 
         rogue.interfaces.stream.Master.__init__(self)
@@ -60,11 +60,9 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         # Keep of list of errors, exposed as a variable
         self._sysLogLock = threading.Lock()
 
-        # Polling
-        if pollEn:
-            self._pollQueue = pr.PollQueue(self)
-        else:
-            self._pollQueue = None
+        # Background threads
+        self._pollQueue = None
+        self._running   = False
 
         # Remote object export
         self._pyroThread = None
@@ -88,12 +86,69 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         self.add(pr.LocalVariable(name='forceWrite', value=False, mode='RW', hidden=True,
             description='Cofiguration Flag To Control Write All Block'))
 
+    def start(self,pollEn=True, pyroGroup=None, pyroHost=None):
+        """Setup the tree. Start the polling thread."""
+
+        # Set myself as root
+        self._parent = self
+        self._root   = self
+        self._path   = self.name
+
+        for key,value in self._nodes.items():
+            value._rootAttached(self,root)
+
+        # Get list of deprecated nodes
+        lst = self._getDepWarn()
+
+        if len(lst) > 0:
+            print("----------- Deprecation Warning --------------------------------")
+            print("The following nodes were created with deprecated calls:")
+
+            for n in lst:
+                print("   " + n)
+            print("----------------------------------------------------------------")
+
+        # Start pyro server if enabled
+        if pyroGroup is not None:
+            Pyro4.config.THREADPOOL_SIZE = 500
+            Pyro4.util.SerializerBase.register_dict_to_class("collections.OrderedDict", recreate_OrderedDict)
+
+            self._pyroDaemon = Pyro4.Daemon(host=pyroHost)
+
+            uri = self._pyroDaemon.register(self)
+
+            try:
+                Pyro4.locateNS().register('{}.{}'.format(pyroGroup,self.name),uri)
+
+                self._exportNodes(self._pyroDaemon)
+                self._pyroThread = threading.Thread(target=self._pyroDaemon.requestLoop)
+                self._pyroThread.start()
+            except:
+                print("Root::start -> Failed to find Pyro4 nameserver.")
+                print("               Start with the following command:")
+                print("                  python -m Pyro4.naming")
+
+        # Start poller if enabled
+        if pollEn:
+            self._pollQueue = pr.PollQueue(self)
+
+        self._running = True
+
     def stop(self):
         """Stop the polling thread. Must be called for clean exit."""
         if self._pollQueue:
             self._pollQueue.stop()
         if self._pyroDaemon:
             self._pyroDaemon.shutdown()
+        self._running=False
+
+    @property
+    def running(self):
+        return self._running
+
+    @property
+    def group(self):
+        return self._group
 
     @Pyro4.expose
     def getNode(self, path):
@@ -215,38 +270,6 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         for key,value in self._nodes.items():
             if isinstance(value,pr.Device):
                 value._setTimeout(timeout)
-
-    def exportRoot(self,group,host=None):
-        Pyro4.config.THREADPOOL_SIZE = 500
-        Pyro4.util.SerializerBase.register_dict_to_class("collections.OrderedDict", recreate_OrderedDict)
-
-        self._pyroDaemon = Pyro4.Daemon(host=host)
-
-        uri = self._pyroDaemon.register(self)
-
-        try:
-            Pyro4.locateNS().register('{}.{}'.format(group,self.name),uri)
-        except:
-            print("Root::exportRoot -> Failed to find Pyro4 nameserver.")
-            print("                    Start with the following command:")
-            print("                          python -m Pyro4.naming")
-            return
-
-        self._exportNodes(self._pyroDaemon)
-
-        self._pyroThread = threading.Thread(target=self._pyroDaemon.requestLoop)
-        self._pyroThread.start()
-
-    def warnDeprecated(self):
-        lst = self._getDepWarn()
-
-        if len(lst) > 0:
-            print("----------- Deprecation Warning --------------------------------")
-            print("The following nodes were created with deprecated calls:")
-
-            for n in lst:
-                print("   " + n)
-            print("----------------------------------------------------------------")
 
     def _updateVarListeners(self, yml, l):
         """Send update to listeners"""
