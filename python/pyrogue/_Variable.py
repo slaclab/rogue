@@ -561,20 +561,44 @@ def Variable(local=False, setFunction=None, getFunction=None, **kwargs):
 def varFuncHelper(func,pargs,log):
 
     if not callable(func):
-        log.error("Passed function '{}' is not callable".format(func))
-        return
+        log.warning("Using deprecated eval string. Please change to function: {}".format(func))
 
-    # Python functions
-    try:
-        # Function args
-        fargs = inspect.getfullargspec(func).args
+        dev   = None
+        var   = None
+        cmd   = None
+        arg   = None
+        value = 0
 
-        # Build overlapping arg list
-        args = {k:pargs[k] for k in fargs if k is not 'self'}
+        if 'dev' in pargs:
+            dev = pargs['dev']
 
-    # handle c++ functions, no args supported for now
-    except:
-        args = {}
+        if 'var' in pargs:
+            var = pargs['var']
 
-    return func(**args)
+        if 'cmd' in pargs:
+            cmd = pargs['cmd']
+
+        if 'arg' in pargs:
+            arg = pargs['arg']
+
+        ns = locals()
+        exec(texwrap.dedent(func),ns)
+        value = ns['value']
+        return value
+
+    else:
+
+        # Python functions
+        try:
+            # Function args
+            fargs = inspect.getfullargspec(func).args
+
+            # Build overlapping arg list
+            args = {k:pargs[k] for k in fargs if k is not 'self'}
+
+        # handle c++ functions, no args supported for now
+        except:
+            args = {}
+
+        return func(**args)
 
