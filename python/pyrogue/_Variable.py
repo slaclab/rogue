@@ -235,7 +235,7 @@ class BaseVariable(pr.Node):
 
     def _updated(self):
         """Variable has been updated. Inform listeners."""
-        if self._update is False or not isinstance(self._root, pr.Root):
+        if self._update is False or self._root is None:
             return
 
         value = self.value()
