@@ -119,7 +119,7 @@ class EpicsCaServer(object):
                 return 
 
             # Adjust some types
-            if d['type'] == 'string':
+            if d['type'] == 'string' or d['type'] == 'str':
                 # If this command has arguments, use char
                 # String type will accept upto 40 chars only so
                 # let's use char with count > 40 instead to accept longer inputs 
@@ -130,13 +130,15 @@ class EpicsCaServer(object):
                 # Bool is not supported, so let's use int instead
                 d['type'] = 'int'
 
-            # These are the only type supported by pcaspy
-            supportedType = {"enum", "string", "char", "float", "int"}
+            else:
 
-            # Check if type is supported
-            if d['type'] not in supportedType:
-                self._log.warning("Device {} has type {} which is not supported by pcaspy".format(d['name'], d['type'] ))
-                return
+                # These are the only type supported by pcaspy
+                supportedType = {"enum", "string", "char", "float", "int"}
+
+                # Check if type is supported
+                if d['type'] not in supportedType:
+                    self._log.warning("Device {} has type {} which is not supported by pcaspy".format(d['name'], d['type'] ))
+                    return
             
         node.addListener(self._variableUpdated)
 
