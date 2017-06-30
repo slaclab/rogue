@@ -207,9 +207,6 @@ class Node(object):
         self._root   = root
         self._path   = parent.path + '.' + self.name
 
-        for key,value in self._nodes.items():
-            value._rootAttached(self,root)
-
     def _exportNodes(self,daemon):
 
         for k,n in self._nodes.items():

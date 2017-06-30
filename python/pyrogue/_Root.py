@@ -95,7 +95,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         self._path   = self.name
 
         for key,value in self._nodes.items():
-            value._rootAttached(self,root)
+            value._rootAttached(self,self)
 
         # Get list of deprecated nodes
         lst = self._getDepWarn()
@@ -145,10 +145,6 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
     @property
     def running(self):
         return self._running
-
-    @property
-    def group(self):
-        return self._group
 
     @Pyro4.expose
     def getNode(self, path):
