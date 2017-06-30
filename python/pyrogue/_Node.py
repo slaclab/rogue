@@ -161,7 +161,7 @@ class Node(object):
         Return an OrderedDict of the variables but not commands (which are a subclass of Variable
         """
         return odict([(k,n) for k,n in self._nodes.items()
-                      if isinstance(n, pr.BaseVariable) and not isinstance(n, pr.LocalCommand)])
+                      if isinstance(n, pr.BaseVariable) and not isinstance(n, pr.BaseCommand)])
 
     @Pyro4.expose
     @property
@@ -239,7 +239,7 @@ class Node(object):
         for key,value in self._nodes.items():
             if isinstance(value,pr.Device):
                 data[key] = value._getVariables(modes)
-            elif isinstance(value,pr.BaseVariable) and not isinstance(value, pr.LocalCommand) \
+            elif isinstance(value,pr.BaseVariable) and not isinstance(value, pr.BaseCommand) \
                  and (value.mode in modes):
                 data[key] = value.valueDisp()
 
@@ -323,7 +323,7 @@ class Node(object):
                         n._setOrExec(value,writeEach,modes)
 
                     # Execute if command
-                    elif isinstance(n,pr.LocalCommand):
+                    elif isinstance(n,pr.BaseCommand):
                         n.call(value)
 
                     # Set value if variable with enabled mode

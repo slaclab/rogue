@@ -176,7 +176,7 @@ class BaseBlock(object):
         Add a variable to the block
         """
         with self._lock:
-            if not isinstance(var, pr.LocalCommand):
+            if not isinstance(var, pr.BaseCommand):
                 self._bulkEn = True
                 
             if len(self._variables) == 0:
@@ -357,7 +357,7 @@ class MemoryBlock(BaseBlock, rogue.interfaces.memory.Master):
             # Link variable to block
             var._block = self
             
-            if not isinstance(var, pr.LocalCommand):
+            if not isinstance(var, pr.BaseCommand):
                 self._bulkEn = True
                 
             self._variables.append(var)
