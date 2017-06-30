@@ -25,18 +25,18 @@ class CommandError(Exception):
     """ Exception for command errors."""
     pass
 
-class BaseCommand(pr.Node):
+class LocalCommand(pr.BaseVariable):
 
-    def __init__(self, name=None, description="", hidden=False, function=None):
-        pr.Node.__init__(self, name=name, description=description, hidden=hidden)
-        self._function = function if function is not None else BaseCommand.nothing
+    def __init__(self, name=None, description="", hidden=False, function=None,
+                 value=0, enum=None, minimum=None, maximum=None, **dump):
 
-        if not callable(self._function):
-            self._arg = True
-        elif len(inspect.signature(self._function).parameters) == 3:
-            self._arg = True
-        else:
-            self._arg = False
+        pr.BaseVariable.__init__(self, name=name, description=description, update=False,
+                                 mode='WO', value=value, enum=enum, minimum=minimum, maximum=maximum)
+        
+        self._function = function if function is not None else LocalCommand.nothing
+
+        # args flag
+        self._arg = 'arg' in inspect.getfullargspec(self._function).args:
 
     @Pyro4.expose
     @property
@@ -47,22 +47,21 @@ class BaseCommand(pr.Node):
     def call(self,arg=None):
         """Execute command: TODO: Update comments"""
         try:
-            if self._function is not None:
 
-                # Function is really a function
-                if callable(self._function):
-                    self._log.debug('Calling Command: {}'.format(self.name))
+            # Convert arg
+            arg = self.parseDisp(arg)
 
-                    if len(inspect.signature(self._function).parameters) == 3:
-                        self._function(self._parent, self, arg)
-                    else:
-                        self._function(self._parent, self)
+            # Possible args
+            pargs = {'dev' : self.parent, 'cmd' : self, 'arg' : arg}
 
-                # Attempt to execute string as a python script
-                else:
-                    dev = self._parent
-                    cmd = self
-                    exec(textwrap.dedent(self._function))
+            # Function args
+            fargs = inspect.getfullargspec(self._function).args
+
+            # Build arg list
+            args = {k:pargs[k] for k in fargs}
+
+            # Call function
+            self._function(**args)
 
         except Exception as e:
             self._log.exception(e)
@@ -71,60 +70,65 @@ class BaseCommand(pr.Node):
         self.call(arg)
 
     @staticmethod
-    def nothing(dev, cmd):
+    def nothing():
         pass
 
     @staticmethod
     def createToggle(sets):
-        def toggle(dev, cmd):
+        def toggle(cmd):
             for s in sets:
                 cmd.set(i)
         return toggle
 
     @staticmethod
-    def toggle(dev, cmd):
+    def toggle(cmd):
         cmd.set(1)
         cmd.set(0)
 
     @staticmethod
     def createTouch(value):
-        def touch(dev, cmd):
+        def touch(cmd):
             cmd.set(value)
         return touch
 
     @staticmethod
-    def touch(dev, cmd, arg):
+    def touch(cmd, arg):
         if arg is not None:
             cmd.set(arg)
         else:
             cmd.set(1)
 
     @staticmethod
-    def touchZero(dev, cmd):
+    def touchZero(cmd):
         cmd.set(0)
 
     @staticmethod
-    def touchOne(dev, cmd):
+    def touchOne(cmd):
         cmd.set(1)
 
     @staticmethod
-    def postedTouch(dev, cmd, arg):
+    def postedTouch(cmd, arg):
         if arg is not None:
             cmd.post(arg)
         else:
             cmd.post(1)
 
 
-class LocalCommand(BaseCommand,pr.BaseVariable):
-    def __init__(self, name=None, mode='RW', description="", value=0, hidden=False, function=None, update=False, **kwargs):
-        BaseCommand.__init__(self,name=name, description=description, hidden=hidden, function=function)
-        pr.BaseVariable.__init__(self, name=name, description=description, value=value, hidden=hidden, mode=mode, update=update, **kwargs)
+class RemoteCommand(LocalCommand, pr.RemoteVariable):
 
+    def __init__(self, name=None, description="", hidden=False, function=None,
+                 base=pr.UInt, value=None, enum=None, minimum=None, maximum=None,
+                 offset=None, bitSize=32, bitOffset=0, **dump):
+        
+        LocalCommand.__init__(self,name=name, description=description,
+                              hidden=hidden, function=function, value=value,
+                              enum=enum, minimum=minimum, maximum=maximum)
 
-class RemoteCommand(BaseCommand, pr.RemoteVariable):
-    def __init__(self, name=None, mode='RW', description="", hidden=False, function=None, update=False, **kwargs):
-        BaseCommand.__init__(self,name=name, description=description, hidden=hidden, function=function)
-        pr.RemoteVariable.__init__(self, name=name, description=description, hidden=hidden, mode=mode, update=update, **kwargs)
+        pr.RemoteVariable.__init__(self, name=name, description=description, 
+                                   base=base, mode='WO', value=value, 
+                                   enum=enum, hidden=hidden, minimum=minimum, maximum=maximum,
+                                   offset=offset, bitSize=bitSize, bitOffset=bitOffset, verify=False)
+
 
     def set(self, value, write=True):
         self._log.debug("{}.set({})".format(self, value))
@@ -164,12 +168,12 @@ def Command(offset=None, **kwargs):
         ret._depWarn = True
         return(ret)
 
-Command.nothing = BaseCommand.nothing
-Command.toggle = BaseCommand.toggle
-Command.touch = BaseCommand.touch
-Command.touchZero = BaseCommand.touchZero
-Command.touchOne = BaseCommand.touchOne
-Command.postedTouch = BaseCommand.postedTouch
+Command.nothing = LocalCommand.nothing
+Command.toggle = LocalCommand.toggle
+Command.touch = LocalCommand.touch
+Command.touchZero = LocalCommand.touchZero
+Command.touchOne = LocalCommand.touchOne
+Command.postedTouch = LocalCommand.postedTouch
 
 
 ###################################
