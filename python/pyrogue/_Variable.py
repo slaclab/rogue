@@ -392,12 +392,16 @@ class RemoteVariable(BaseVariable):
 
     @Pyro4.expose
     def parseDisp(self, sValue):
-        #print("Parsing var {}, value= {}".format(self.name, sValue))
-        if self.disp == 'enum':
-            return self.revEnum[sValue]
-        else:
-            #print(self._base.fromString(sValue))
-            return self._base.fromString(sValue)
+        if isinstance(sValue, self.nativeType()):
+            return sValue
+        else:        
+
+            #print("Parsing var {}, value= {}".format(self.name, sValue))
+            if self.disp == 'enum':
+                return self.revEnum[sValue]
+            else:
+                #print(self._base.fromString(sValue))
+                return self._base.fromString(sValue)
 
     def _shiftOffsetDown(self,amount,minSize):
         if amount != 0:
