@@ -229,32 +229,24 @@ class LocalBlock(BaseBlock):
         with self._lock:
             changed = self._value != value
             self._value = value
-            dev = var.parent
 
             # If a setFunction exists, call it (Used by local variables)
             if self._localSet is not None:
-                if callable(self._localSet):
-                    # Function takes changed arg
-                    if len(inspect.signature(self._localSet).parameters) == 4:
-                        self._localSet(dev, var, value, changed)
-                    else:
-                        self._localSet(dev, var, value)
-                else:
-                    exec(textwrap.dedent(self._localSet))
+
+                # Possible args
+                pargs = {'dev' : var.parent, 'var' : var, 'value' : self._value, 'changed' : changed}
+
+                pr.varFuncHelper(self._localSet, pargs, self._log, var.path)
 
     def get(self, var):
         if self._localGet is not None:
             with self._lock:
-                dev   = var.parent
-                value = 0
 
-                if callable(self._localGet):
-                    self._value = self._localGet(dev,var)
-                else:
-                    ns = locals()
-                    exec(textwrap.dedent(self._localGet),ns)
-                    self._value = ns['value']
-   
+                # Possible args
+                pargs = {'dev' : var.parent, 'var' : var}
+
+                self._value = pr.varFuncHelper(self._localGet,pargs, self._log, var.path)
+
         return self._value
 
 

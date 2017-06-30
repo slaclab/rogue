@@ -76,7 +76,7 @@ class StreamReader(pyrogue.Device):
                                   bitSize=1, bitOffset=0, base='bool', mode='RW',
                                   localSet=self._setOpen))
 
-    def _setOpen(self,dev,var,value,changed):
+    def _setOpen(self,value,changed):
         if changed:
             if value == False:
                 dev._reader.close()
