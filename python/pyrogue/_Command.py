@@ -36,7 +36,12 @@ class BaseCommand(pr.BaseVariable):
         self._function = function if function is not None else BaseCommand.nothing
 
         # args flag
-        self._arg = 'arg' in inspect.getfullargspec(self._function).args
+        try:
+            self._arg = 'arg' in inspect.getfullargspec(self._function).args
+
+        # C++ functions
+        except:
+            self._arg = False
 
     @Pyro4.expose
     @property
