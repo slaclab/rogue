@@ -19,6 +19,7 @@ import rogue.interfaces.memory
 import parse
 import Pyro4
 import math
+import inspect
 from collections import Iterable
 
 class VariableError(Exception):
@@ -197,7 +198,7 @@ class BaseVariable(pr.Node):
 
     @Pyro4.expose
     def parseDisp(self, sValue):
-        if isinstance(sValue, self.nativeType()):
+        if sValue is None or isinstance(sValue, self.nativeType()):
             return sValue
         else:        
             if sValue is '':
@@ -496,50 +497,23 @@ class LinkVariable(BaseVariable):
 
     @Pyro4.expose
     def set(self, value, write=True):
-        """
-        The user can use the linkedSet attribute to pass a string containing python commands or
-        a specific method to call. When using a python string the code will find the passed value
-        as the variable 'value'. A passed method will accept the variable object and value as args.
-        Listeners will be informed of the update.
-        """
         if self._linkedSet is not None:
 
             # Possible args
             pargs = {'dev' : self.parent, 'var' : self, 'value' : value, 'write' : write}
 
-            # Function args
-            fargs = inspect.getfullargspec(self._linkedSet).args
-
-            # Build arg list
-            args = {k:pargs[k] for k in fargs}
-
-            # Call function
-            self._linkedSet(**args)
+            varFuncHelper(self._linkedSet,pargs)
 
     @Pyro4.expose
     def get(self, read=True):
-        """
-        The user can use the linkedGet attribute to pass a string containing python commands or
-        a specific method to call. When using a python string the code will set the 'value' variable
-        with the value to return. A passed method will accept the variable as an arg and return the
-        resulting value.
-        """
         if self._linkedGet is not None:
 
             # Possible args
             pargs = {'dev' : self.parent, 'var' : self, 'read' : read}
 
-            # Function args
-            fargs = inspect.getfullargspec(self._linkedGet).args
-
-            # Build arg list
-            args = {k:pargs[k] for k in fargs}
-
-            # Call function
-            return(self._linkedGet(**args))
-
+            return varFuncHelper(self._linkedGet,pargs)
         else:
-            return None
+            return none
 
 # Legacy Support
 def Variable(local=False, setFunction=None, getFunction=None, **kwargs):
@@ -581,4 +555,25 @@ def Variable(local=False, setFunction=None, getFunction=None, **kwargs):
         ret = RemoteVariable(**kwargs)
         ret._depWarn = True
         return(ret)
+
+
+# Function helper
+def varFuncHelper(func,pargs):
+
+    if not callable(func):
+        raise VariableError("Passed function is not callable")
+
+    # Python functions
+    try:
+        # Function args
+        fargs = inspect.getfullargspec(func).args
+
+        # Build overlapping arg list
+        args = {k:pargs[k] for k in fargs if k is not 'self'}
+
+    # handle c++ functions, no args supported for now
+    except:
+        args = {}
+
+    return func(**args)
 

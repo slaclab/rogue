@@ -236,14 +236,7 @@ class LocalBlock(BaseBlock):
                 # Possible args
                 pargs = {'dev' : var.parent, 'var' : var, 'value' : self._value, 'changed' : changed}
 
-                # Function args
-                fargs = inspect.getfullargspec(self._localSet).args
-
-                # Build arg list
-                args = {k:pargs[k] for k in fargs}
-
-                # Call function
-                self._localSet(**args)
+                pr.varFuncHelper(self._localSet, pargs)
 
     def get(self, var):
         if self._localGet is not None:
@@ -252,14 +245,7 @@ class LocalBlock(BaseBlock):
                 # Possible args
                 pargs = {'dev' : var.parent, 'var' : var}
 
-                # Function args
-                fargs = inspect.getfullargspec(self._localGet).args
-
-                # Build arg list
-                args = {k:pargs[k] for k in fargs}
-
-                # Call function
-                self._value = self._localGet(**args)
+                self._value = pr.varFuncHelper(self._localGet,pargs)
 
         return self._value
 

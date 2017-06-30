@@ -25,7 +25,7 @@ class CommandError(Exception):
     """ Exception for command errors."""
     pass
 
-class LocalCommand(pr.BaseVariable):
+class BaseCommand(pr.BaseVariable):
 
     def __init__(self, name=None, description="", hidden=False, function=None,
                  value=0, enum=None, minimum=None, maximum=None, **dump):
@@ -33,10 +33,10 @@ class LocalCommand(pr.BaseVariable):
         pr.BaseVariable.__init__(self, name=name, description=description, update=False,
                                  mode='WO', value=value, enum=enum, minimum=minimum, maximum=maximum)
         
-        self._function = function if function is not None else LocalCommand.nothing
+        self._function = function if function is not None else BaseCommand.nothing
 
         # args flag
-        self._arg = 'arg' in inspect.getfullargspec(self._function).args:
+        self._arg = 'arg' in inspect.getfullargspec(self._function).args
 
     @Pyro4.expose
     @property
@@ -54,14 +54,7 @@ class LocalCommand(pr.BaseVariable):
             # Possible args
             pargs = {'dev' : self.parent, 'cmd' : self, 'arg' : arg}
 
-            # Function args
-            fargs = inspect.getfullargspec(self._function).args
-
-            # Build arg list
-            args = {k:pargs[k] for k in fargs}
-
-            # Call function
-            self._function(**args)
+            pr.varFuncHelper(self._function,pargs)
 
         except Exception as e:
             self._log.exception(e)
@@ -114,15 +107,15 @@ class LocalCommand(pr.BaseVariable):
             cmd.post(1)
 
 
-class RemoteCommand(LocalCommand, pr.RemoteVariable):
+class RemoteCommand(BaseCommand, pr.RemoteVariable):
 
     def __init__(self, name=None, description="", hidden=False, function=None,
                  base=pr.UInt, value=None, enum=None, minimum=None, maximum=None,
                  offset=None, bitSize=32, bitOffset=0, **dump):
         
-        LocalCommand.__init__(self,name=name, description=description,
-                              hidden=hidden, function=function, value=value,
-                              enum=enum, minimum=minimum, maximum=maximum)
+        BaseCommand.__init__(self,name=name, description=description,
+                             hidden=hidden, function=function, value=value,
+                             enum=enum, minimum=minimum, maximum=maximum)
 
         pr.RemoteVariable.__init__(self, name=name, description=description, 
                                    base=base, mode='WO', value=value, 
@@ -155,7 +148,8 @@ class RemoteCommand(LocalCommand, pr.RemoteVariable):
 
         return ret
             
-
+# LocalCommand is the same as BaseCommand
+LocalCommand = BaseCommand
 
 # Legacy Support
 def Command(offset=None, **kwargs):
@@ -168,12 +162,12 @@ def Command(offset=None, **kwargs):
         ret._depWarn = True
         return(ret)
 
-Command.nothing = LocalCommand.nothing
-Command.toggle = LocalCommand.toggle
-Command.touch = LocalCommand.touch
-Command.touchZero = LocalCommand.touchZero
-Command.touchOne = LocalCommand.touchOne
-Command.postedTouch = LocalCommand.postedTouch
+Command.nothing = BaseCommand.nothing
+Command.toggle = BaseCommand.toggle
+Command.touch = BaseCommand.touch
+Command.touchZero = BaseCommand.touchZero
+Command.touchOne = BaseCommand.touchOne
+Command.postedTouch = BaseCommand.postedTouch
 
 
 ###################################
