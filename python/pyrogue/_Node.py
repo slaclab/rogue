@@ -169,7 +169,7 @@ class Node(object):
         """
         Return an OrderedDict of the Commands that are children of this Node
         """
-        return self._getNodes(pr.LocalCommand)
+        return self._getNodes(pr.BaseCommand)
 
     @Pyro4.expose
     @property
