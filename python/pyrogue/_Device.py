@@ -349,18 +349,19 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
             if 'name' not in kwargs:
                 kwargs['name'] = func.__name__
 
-            argCount = len(inspect.signature(func).parameters)
-            def newFuncArg(arg):
-                return func(arg)
-            def newFuncNoArg():
-                return func()
+            fargs = inspect.getfullargspec(func).args
 
-            if argCount == 0:
-                newFunc = newFuncNoArg
+            # Handle functions with the wrong arg name and genere warning
+            if len(fargs) > 0 and 'arg' not in fargs:
+                log.warning("Decorated init functions must have the parameter name 'arg': {}".format(self.path))
+
+                def newFunc(arg):
+                    return func(arg)
+
+                self.add(pr.LocalCommand(function=newFunc, **kwargs))
             else:
-                newFunc = newFuncArg
+                self.add(pr.LocalCommand(function=func, **kwargs))
 
-            self.add(pr.LocalCommand(function=newFunc, **kwargs))
             return func
         return _decorator
 
