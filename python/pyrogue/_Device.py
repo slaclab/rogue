@@ -351,7 +351,7 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
 
             argCount = len(inspect.signature(func).parameters)
             def newFuncArg(arg):
-                return func(val)
+                return func(arg)
             def newFuncNoArg():
                 return func()
 
