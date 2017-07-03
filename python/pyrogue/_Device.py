@@ -350,11 +350,16 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
                 kwargs['name'] = func.__name__
 
             argCount = len(inspect.signature(func).parameters)
-            def newFunc(val):
-                if argCount == 0:
-                    return func()
-                else:
-                    return func(val)
+            def newFuncArg(arg):
+                return func(val)
+            def newFuncNoArg():
+                return func()
+
+            if argCount == 0:
+                newFunc = newFuncNoArg
+            else:
+                newFunc = newFuncArg
+
             self.add(pr.LocalCommand(function=newFunc, **kwargs))
             return func
         return _decorator
