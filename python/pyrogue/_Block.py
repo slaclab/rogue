@@ -78,7 +78,6 @@ class BaseBlock(object):
         self._mData     = bytearray()
         self._size      = 0
         self._variables = []
-        self._timeout   = 1.0
         self._lock      = threading.RLock()
         self._doUpdate  = False
         self._verifyEn  = False
@@ -449,7 +448,6 @@ class RawBlock(rogue.interfaces.memory.Master):
         rogue.interfaces.memory.Master.__init__(self)
         self._setSlave(slave)
 
-        self._timeout   = 1.0
         self._lock      = threading.RLock()
         self._address   = 0
         self._size      = 0
