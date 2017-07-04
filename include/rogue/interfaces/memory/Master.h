@@ -36,7 +36,11 @@ namespace rogue {
          //! Slave container
          class Master : public boost::enable_shared_from_this<rogue::interfaces::memory::Master> {
 
-               struct timeval saveTime;
+               //! Transaction start time
+               struct timeval tranTime_;
+
+               //! Timeout value
+               uint32_t timeout_;
 
                //! Class instance counter
                static uint32_t classIdx_;
@@ -44,11 +48,15 @@ namespace rogue {
                //! Class instance lock
                static boost::mutex classIdxMtx_;
 
+               //! Generate a transaction id, not python safe
+               static uint32_t genId();
+
                //! Slave. Used for request forwards.
                boost::shared_ptr<rogue::interfaces::memory::Slave> slave_;
 
                //! Mutex
                boost::mutex mtx_;
+               boost::condition_variable cond_;
 
                //! Transaction python buffer
                Py_buffer pyBuf_;
@@ -62,13 +70,16 @@ namespace rogue {
                //! Transaction size
                uint32_t tSize_;
 
-               //! Transaction id
-               uint32_t tId_;
+               //! Transaction error
+               uint32_t error_;
 
             protected:
 
-               //! Generate a transaction id, not python safe
-               void genId();
+               //! Transaction id
+               uint32_t tId_;
+
+               //! Reset transaction data
+               void rstTransaction(uint32_t error, bool notify);
 
             public:
 
@@ -102,6 +113,18 @@ namespace rogue {
                //! Query the offset
                uint64_t reqOffset();
 
+               //! Get error
+               uint32_t getError();
+
+               //! Rst error
+               void setError(uint32_t error);
+
+               //! Set timeout
+               void setTimeout(uint32_t timeout);
+
+               //! Get timeout
+               uint32_t getTimeout();
+
                //! Post a transaction, called locally, forwarded to slave, data pointer is optional
                void reqTransaction(uint64_t address, uint32_t size, void *data, uint32_t type);
 
@@ -126,11 +149,8 @@ namespace rogue {
                //! Get from master to slave, called by slave to pull data from mater. Python Version.
                void getTransactionDataPy(uint32_t id, uint32_t offset, boost::python::object p);
 
-               //! save a timer
-               void setTimer(struct timeval *tme);
-
-               //! get a timer
-               void getTimer(struct timeval *tme);
+               //! wait for done or timeout
+               void waitTransaction();
 
          };
 
