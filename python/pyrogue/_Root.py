@@ -146,6 +146,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
             self._pyroDaemon.shutdown()
         self._running=False
 
+    @Pyro4.expose
     @property
     def running(self):
         return self._running
