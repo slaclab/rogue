@@ -88,6 +88,9 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         self.add(pr.LocalVariable(name='forceWrite', value=False, mode='RW', hidden=True,
             description='Cofiguration Flag To Control Write All Block'))
 
+    def start(self,pollEn=True, pyroGroup=None, pyroHost=None):
+        pass
+
     def stop(self):
         """Stop the polling thread. Must be called for clean exit."""
         if self._pollQueue:
