@@ -248,7 +248,7 @@ class LocalBlock(BaseBlock):
         return self._value
 
 
-class MemoryBlock(BaseBlock, rogue.interfaces.memory.Master):
+class RegisterBlock(BaseBlock, rogue.interfaces.memory.Master):
     """Internal memory block holder"""
 
     def __init__(self, variable):
@@ -440,6 +440,86 @@ class MemoryBlock(BaseBlock, rogue.interfaces.memory.Master):
                 self._stale = False
             else:
                 self._doUpdate = False
+
+                
+class MemoryBlock(BaseBlock, rogue.interfaces.memory.Master):
+
+    def __init__(self, dev, offset):
+        rogue.interfaces.memory.Master.__init__(self)
+        
+        self._setSlave(dev)
+        
+        self._dev = dev
+        self._offset = offset
+
+        self._minSize = self._reqMinAccess()
+        self._maxSize = self._reqMaxAccess()
+
+        if self._minSize == 0 or self._maxSize == 0:
+            raise BlockError(self,"Invalid min/max size.")
+
+        BaseBlock.__init__(self,variable)
+
+
+    def set(self, values):
+
+        with self._lock:
+            self._waitTransaction()            
+            size = bytearray(len(values)*self._dev._stride)
+
+            if size > self._maxSize:
+                raise BlockError(self, "Tried to call set with transaction that is too big")
+
+            self._bData = b''.join( self._dev._base.toBlock(v, self._dev._stride) for v in values)
+            self._vData = bytearray(len(self._bData))
+
+    def _startTransaction(self, type):
+        """
+        Start a transaction.
+        """
+        # Check for invalid combinations or disabled device
+        if (self._dev.enable.value() is not True) or \
+           (type == rogue.interfaces.memory.Post) or \
+           (type == rogue.interfaces.memory.Verify and self._verifyWr == False)):
+            return
+
+        self._log.debug('_startTransaction type={}'.format(type))
+
+        tData = None
+
+        with self._cond:
+            self._waitTransaction()
+
+            self._log.debug('len bData = {}, vData = {}'.format(len(self._bData), len(self._vData)))
+
+            # Track verify after writes. 
+            # Only verify blocks that have been written since last verify
+            if type == rogue.interfaces.memory.Write:
+                self._verifyWr = self._verifyEn
+                  
+            # Setup transaction
+            self._doVerify = (type == rogue.interfaces.memory.Verify)
+            self._error    = 0
+
+            # Set data pointer
+            tData = self._vData if self._doVerify else self._bData
+
+            # Start transaction
+            self._reqTransaction(self._offset,tData,type)
+
+    def _doneTransaction(self, tid, error):
+        with self._lock:
+            if self._dev.Verify.value():
+                self._verifyWr = False
+                if self._vData != self._bData:
+                    self.error = rogue.interfaces.memory.VerifyError
+                    break
+
+            if self.error == 0:
+                self._bData = bytearray()
+                self._vData = bytearray()
+                
+                
 
 
 class RawBlock(rogue.interfaces.memory.Master):
