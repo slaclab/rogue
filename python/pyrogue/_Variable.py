@@ -263,16 +263,16 @@ class RemoteVariable(BaseVariable):
                  base=pr.UInt, mode='RW', value=None,  disp=None,
                  enum=None, units=None, hidden=False, minimum=None, maximum=None,
                  offset=None, bitSize=32, bitOffset=0, pollInterval=0, 
-                 verify=True, **dump):
+                 verify=True, update=True, **dump):
 
         if disp is None:
             disp = base.defaultdisp
 
         BaseVariable.__init__(self, name=name, description=description, 
-                              base=base, mode=mode, value=value, disp=disp,
+                              mode=mode, value=value, disp=disp, update=update,
                               enum=enum, units=units, hidden=hidden, minimum=minimum, maximum=maximum);
 
-        self._pollInterval  = pollInterval
+        self._pollInterval = pollInterval
 
         self._base     = base        
         self._block    = None
@@ -422,7 +422,7 @@ class RemoteVariable(BaseVariable):
 class LocalVariable(BaseVariable):
 
     def __init__(self, name=None, description="", 
-                 mode='RW', value=None, disp='{}',
+                 mode='RW', value=None, disp='{}', update=True,
                  enum=None, units=None, hidden=False, minimum=None, maximum=None,
                  localSet=None, localGet=None, pollInterval=0, **dump):
 
@@ -430,7 +430,7 @@ class LocalVariable(BaseVariable):
             raise VariableError(f'LocalVariable {self.path} must specify value= argument in constructor')
 
         BaseVariable.__init__(self, name=name, description=description, 
-                              mode=mode, value=value, disp=disp,
+                              mode=mode, value=value, disp=disp, update=update,
                               enum=enum, units=units, hidden=hidden,
                               minimum=minimum, maximum=maximum)
 
@@ -475,7 +475,7 @@ class LinkVariable(BaseVariable):
                  linkedSet=None, linkedGet=None, dependencies=None, **dump):
 
         BaseVariable.__init__(self, name=name, description=description, 
-                              mode=mode, disp=disp,
+                              mode=mode, disp=disp, update=True,
                               enum=enum, units=units, hidden=hidden,
                               minimum=minimum, maximum=maximum)
 

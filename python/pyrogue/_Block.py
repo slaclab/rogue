@@ -28,7 +28,7 @@ class BlockError(Exception):
 
     def __init__(self,block,msg=None):
         self._error = block.error
-        block._error = 0
+        block.error = 0
 
         self._value = "Error in block with address {:#08x}: ".format(block.address)
 
@@ -78,15 +78,11 @@ class BaseBlock(object):
         self._mData     = bytearray()
         self._size      = 0
         self._variables = []
-        self._timeout   = 1.0
         self._lock      = threading.RLock()
-        self._cond      = threading.Condition(self._lock)
-        self._error     = 0
         self._doUpdate  = False
         self._verifyEn  = False
         self._bulkEn    = False
         self._doVerify  = False
-        self._tranTime  = time.time()
         self._value     = None
         self._stale     = False
         self._verifyWr  = False
@@ -152,17 +148,19 @@ class BaseBlock(object):
 
     @property
     def timeout(self):
-        return self._timeout
+        return 0
 
     @timeout.setter
     def timeout(self,value):
-        with self._cond:
-            self._waitTransaction()
-            self._timeout = value
+        pass
 
     @property
     def error(self):
-        return self._error
+        return 0
+
+    @error.setter
+    def error(self,value):
+        pass
 
     @property
     def bulkEn(self):
@@ -198,7 +196,7 @@ class BaseBlock(object):
         If update=True notify variables if read
         """
         doUpdate = False
-        with self._cond:
+        with self._lock:
             self._waitTransaction()
 
             # Updated
@@ -206,7 +204,7 @@ class BaseBlock(object):
             self._doUpdate = False
 
             # Error
-            if self._error > 0:
+            if self.error > 0:
                 raise BlockError(self)
 
         # Update variables outside of lock
@@ -269,13 +267,28 @@ class MemoryBlock(BaseBlock, rogue.interfaces.memory.Master):
 
         BaseBlock.__init__(self,variable)
 
+    @property
+    def timeout(self):
+        return float(self._getTimeout()) / 1000000.0
+
+    @timeout.setter
+    def timeout(self,value):
+        self._setTimeout(value*1000000)
+
+    @property
+    def error(self):
+        return self._getError()
+
+    @error.setter
+    def error(self,value):
+        return self._setError(value)
 
     def set(self, var, value):
         """
         Update block with bitSize bits from passed byte array.
         Offset sets the starting point in the block array.
         """
-        with self._cond:
+        with self._lock:
             self._waitTransaction()
             self._value = value
             self._stale = True
@@ -300,11 +313,11 @@ class MemoryBlock(BaseBlock, rogue.interfaces.memory.Master):
         Offset sets the starting point in the block array.
         bytearray is returned
         """
-        with self._cond:
+        with self._lock:
             self._waitTransaction()
 
             # Error
-            if self._error > 0:
+            if self.error > 0:
                 raise BlockError(self)
 
             # Access is fully byte aligned
@@ -323,27 +336,12 @@ class MemoryBlock(BaseBlock, rogue.interfaces.memory.Master):
 
                 return var._base.fromBlock(ba)
 
-    def _waitTransaction(self):
-        """
-        Wait while a transaction is pending.
-        Set an error on timeout.
-        Lock must be held before calling this method
-        """
-        lid = self._getId()
-        while lid > 0:
-            self._cond.wait(.01)
-            if self._getId() == lid and (time.time() - self._tranTime) > self._timeout:
-                self._endTransaction()
-                self._error = rogue.interfaces.memory.TimeoutError
-                break
-            lid = self._getId()
-
     def _addVariable(self,var):
         """
         Add a variable to the block. Called from Device for BlockMemory
         """
 
-        with self._cond:
+        with self._lock:
             self._waitTransaction()
 
             # Return false if offset does not match
@@ -404,7 +402,7 @@ class MemoryBlock(BaseBlock, rogue.interfaces.memory.Master):
 
         tData = None
 
-        with self._cond:
+        with self._lock:
             self._waitTransaction()
 
             self._log.debug('len bData = {}, vData = {}, mData = {}'.format(len(self._bData), len(self._vData), len(self._mData)))
@@ -417,7 +415,6 @@ class MemoryBlock(BaseBlock, rogue.interfaces.memory.Master):
             # Setup transaction
             self._doVerify = (type == rogue.interfaces.memory.Verify)
             self._doUpdate = (type == rogue.interfaces.memory.Read)
-            self._error    = 0
 
             # Set data pointer
             tData = self._vData if self._doVerify else self._bData
@@ -425,38 +422,24 @@ class MemoryBlock(BaseBlock, rogue.interfaces.memory.Master):
             # Start transaction
             self._reqTransaction(self._variables[0].offset,tData,type)
 
-            # Start timer after return
-            self._tranTime = time.time()
-
     def _doneTransaction(self,tid,error):
         """
         Callback for when transaction is complete
         """
         with self._lock:
 
-            # Make sure id matches
-            if tid != self._getId():
-                return
-
-            # Clear transaction state
-            self._endTransaction()
-            self._error = error
-
             # Do verify
             if self._doVerify:
                 self._verifyWr = False
                 for x in range(0,self._size):
                     if (self._vData[x] & self._mData[x]) != (self._bData[x] & self._mData[x]):
-                        self._error = rogue.interfaces.memory.VerifyError
+                        self.error = rogue.interfaces.memory.VerifyError
                         break
 
-            if self._error == 0:
+            if self.error == 0:
                 self._stale = False
             else:
                 self._doUpdate = False
-
-            # Notify waiters
-            self._cond.notify()
 
 
 class RawBlock(rogue.interfaces.memory.Master):
@@ -465,27 +448,29 @@ class RawBlock(rogue.interfaces.memory.Master):
         rogue.interfaces.memory.Master.__init__(self)
         self._setSlave(slave)
 
-        self._timeout   = 1.0
         self._lock      = threading.RLock()
-        self._cond      = threading.Condition(self._lock)
-        self._error     = 0
         self._address   = 0
         self._size      = 0
-        self._tranTime  = time.time()
 
     @property
     def address(self):
-        return self._addr | self._reqOffset()
+        return self._address | self._reqOffset()
 
     @property
     def timeout(self):
-        return self._timeout
+        return float(self._getTimeout()) / 1000000.0
 
     @timeout.setter
     def timeout(self,value):
-        with self._cond:
-            self._waitTransaction()
-            self._timeout = value
+        self._setTimeout(value*1000000)
+
+    @property
+    def error(self):
+        return self._getError()
+
+    @error.setter
+    def error(self,value):
+        return self._setError(value)
 
     def write(self,address,value):
         if isinstance(value,bytearray):
@@ -508,57 +493,22 @@ class RawBlock(rogue.interfaces.memory.Master):
 
     def _doTransaction(self, type, address, bdata):
 
-        with self._cond:
+        with self._lock:
             self._waitTransaction()
 
             # Setup transaction
             self._size     = len(bdata)
             self._address  = address
-            self._error    = 0
-            self._tranTime = time.time()
 
         # Start transaction outside of lock
         self._reqTransaction(address,bdata,type)
 
         # wait for completion
-        with self._cond:
-            self._waitTransaction()
+        self._waitTransaction()
 
-            # Error
-            if self._error > 0:
-                raise BlockError(self)
-
-    def _waitTransaction(self):
-        """
-        Wait while a transaction is pending.
-        Set an error on timeout.
-        Lock must be held before calling this method
-        """
-        lid = self._getId()
-        while lid > 0:
-            self._cond.wait(.01)
-            if self._getId() == lid and (time.time() - self._tranTime) > self._timeout:
-                self._endTransaction()
-                self._error = rogue.interfaces.memory.TimeoutError
-                break
-            lid = self._getId()
-
-    def _doneTransaction(self,tid,error):
-        """
-        Callback for when transaction is complete
-        """
-        with self._lock:
-
-            # Make sure id matches
-            if tid != self._getId():
-                return
-
-            # Clear transaction state
-            self._endTransaction()
-            self._error = error
-
-            # Notify waiters
-            self._cond.notify()
+        # Error
+        if self.error > 0:
+            raise BlockError(self)
 
 
 def setBitToBytes(ba, bitOffset, value):
