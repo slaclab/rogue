@@ -441,7 +441,7 @@ class LocalVariable(BaseVariable):
     @Pyro4.expose
     def set(self, value, write=True):
         try:
-            self._block.set(self, value)
+            self._block.set(value)
 
         except Exception as e:
             self._log.exception(e)
@@ -454,7 +454,7 @@ class LocalVariable(BaseVariable):
     @Pyro4.expose
     def get(self,read=True):
         try:
-            ret = self._block.get(self)
+            ret = self._block.get()
 
         except Exception as e:
             self._log.exception(e)

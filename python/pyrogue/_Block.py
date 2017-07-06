@@ -13,7 +13,7 @@
 # copied, modified, propagated, or distributed except according to the terms 
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
-import rogue.interfaces.memory
+import rogue.interfaces.memory as rim
 import threading
 import time
 import math
@@ -38,28 +38,28 @@ class BlockError(Exception):
         if msg is not None:
             self._value += msg
 
-        elif (self._error & 0xFF000000) == rogue.interfaces.memory.TimeoutError:
+        elif (self._error & 0xFF000000) == rim.TimeoutError:
             self._value += "Timeout after {} seconds".format(block.timeout)
 
-        elif (self._error & 0xFF000000) == rogue.interfaces.memory.VerifyError and hasattr(block,'_bData'):
+        elif (self._error & 0xFF000000) == rim.VerifyError and hasattr(block,'_bData'):
             bStr = ''.join('0x{:02x} '.format(x) for x in block._bData)
             vStr = ''.join('0x{:02x} '.format(x) for x in block._vData)
             mStr = ''.join('0x{:02x} '.format(x) for x in block._mData)
             self._value += "Verify error. Local={}, Verify={}, Mask={}".format(bStr,vStr,mStr)
 
-        elif (self._error & 0xFF000000) == rogue.interfaces.memory.AddressError:
+        elif (self._error & 0xFF000000) == rim.AddressError:
             self._value += "Address error"
 
-        elif (self._error & 0xFF000000) == rogue.interfaces.memory.SizeError:
+        elif (self._error & 0xFF000000) == rim.SizeError:
             self._value += "Size error. Size={}".format(block._size)
 
-        elif (self._error & 0xFF000000) == rogue.interfaces.memory.AxiTimeout:
+        elif (self._error & 0xFF000000) == rim.AxiTimeout:
             self._value += "AXI timeout"
 
-        elif (self._error & 0xFF000000) == rogue.interfaces.memory.AxiFail:
+        elif (self._error & 0xFF000000) == rim.AxiFail:
             self._value += "AXI fail"
 
-        elif (self._error & 0xFF000000) == rogue.interfaces.memory.Unsupported:
+        elif (self._error & 0xFF000000) == rim.Unsupported:
             self._value += "Unsupported Transaction"
 
         else:
@@ -71,36 +71,25 @@ class BlockError(Exception):
 
 class BaseBlock(object):
 
-    def __init__(self, variable):
-        self._mode      = variable.mode
-        self._bData     = bytearray()
-        self._vData     = bytearray()
-        self._mData     = bytearray()
-        self._size      = 0
-        self._variables = []
+    def __init__(self, name, mode, device):
+
+        self._mode      = mode
+        self._device    = device
         self._lock      = threading.RLock()
         self._doUpdate  = False
-        self._verifyEn  = False
-        self._bulkEn    = False
-        self._doVerify  = False
-        self._value     = None
-        self._stale     = False
-        self._verifyWr  = False
 
         # Setup logging
-        self._log = pr.logInit(self,variable.name)
+        self._log = pr.logInit(self,name)
 
-        # Add the variable
-        self._addVariable(variable)
 
     def __repr__(self):
-        return repr(self._variables)
+        return repr(self.name)
 
-    def set(self, var, value):
-        pass
+#     def set(self, var, value):
+#         pass
 
-    def get(self, var, value):
-        return None
+#     def get(self, var, value):
+#         return None
 
     def backgroundTransaction(self,type):
         """
@@ -112,39 +101,17 @@ class BaseBlock(object):
         """
         Perform a blocking transaction
         """
-        self._log.debug("Setting block. Addr=0x{:08x}, Data={}".format(self._variables[0].offset,self._bData))
         self._startTransaction(type)
         self._checkTransaction(update=False)
-        self._log.debug("Done block. Addr=0x{:08x}, Data={}".format(self._variables[0].offset,self._bData))
-
-    @property
-    def offset(self):
-        return self._variables[0].offset
-
-    @property
-    def address(self):
-        if len(self._variables) == 0:
-            return 0
-        elif isinstance(self,rogue.interfaces.memory.Master):
-            return self._variables[0].offset | self._reqOffset()
-        else:
-            return self._variables[0].offset
 
     @property
     def name(self):
-        return self._variables[0].name
+        return self._name
 
     @property
     def mode(self):
         return self._mode
 
-    @property
-    def value(self):
-        return self._value
-
-    @property
-    def stale(self):
-        return self._stale
 
     @property
     def timeout(self):
@@ -162,33 +129,17 @@ class BaseBlock(object):
     def error(self,value):
         pass
 
-    @property
-    def bulkEn(self):
-        return self._bulkEn
 
     def _waitTransaction(self):
         pass
 
-    def _addVariable(self,var):
-        """
-        Add a variable to the block
-        """
-        with self._lock:
-            if not isinstance(var, pr.BaseCommand):
-                self._bulkEn = True
-                
-            if len(self._variables) == 0:
-                self._variables.append(var)
-                return True;
-            else:
-                return False
 
     def _startTransaction(self,type):
         """
         Start a transaction.
         """
         with self._lock:
-            self._doUpdate = (type == rogue.interfaces.memory.Read)
+            self._doUpdate = (type == rim.Read)
 
     def _checkTransaction(self,update):
         """
@@ -211,19 +162,25 @@ class BaseBlock(object):
         if doUpdate: self._updated()
 
     def _updated(self):
-        for variable in self._variables:
-            variable._updated()
+        pass
 
 
 class LocalBlock(BaseBlock):
     def __init__(self, variable, localSet, localGet, value):
+        BaseBlock.__init__(self, name=variable.name, mode=variable.mode)
+
         self._localSet = localSet
         self._localGet = localGet
-
-        BaseBlock.__init__(self,variable)
+        self._variable = variable
         self._value = value
 
-    def set(self, var, value):
+
+    @property
+    def value(self):
+        return self._value
+        
+
+    def set(self, value):
         with self._lock:
             changed = self._value != value
             self._value = value
@@ -232,40 +189,59 @@ class LocalBlock(BaseBlock):
             if self._localSet is not None:
 
                 # Possible args
-                pargs = {'dev' : var.parent, 'var' : var, 'value' : self._value, 'changed' : changed}
+                pargs = {'dev' : self._device, 'var' : self._variable, 'value' : self._value, 'changed' : changed}
 
-                pr.varFuncHelper(self._localSet, pargs, self._log, var.path)
+                pr.varFuncHelper(self._localSet, pargs, self._log, self._variable.path)
 
-    def get(self, var):
+    def get(self):
         if self._localGet is not None:
             with self._lock:
 
                 # Possible args
-                pargs = {'dev' : var.parent, 'var' : var}
+                pargs = {'dev' : self._device, 'var' : self._variable}
 
-                self._value = pr.varFuncHelper(self._localGet,pargs, self._log, var.path)
+                self._value = pr.varFuncHelper(self._localGet,pargs, self._log, self._variable.path)
 
         return self._value
 
+    def _updated(self):
+        self._variable._updated()
 
-class RegisterBlock(BaseBlock, rogue.interfaces.memory.Master):
-    """Internal memory block holder"""
 
-    def __init__(self, variable):
-        """
-        Initialize memory block class.
-        Pass initial variable.
-        """
-        rogue.interfaces.memory.Master.__init__(self)
-        self._setSlave(variable.parent)
-
-        self._minSize = self._reqMinAccess()
-        self._maxSize = self._reqMaxAccess()
+class RemoteBlock(BaseBlock, rim.Master):
+    def __init__(self, name, mode, device, offset=0):
+        
+        rim.Master__init__(self)
+        self._setSlave(device)
+        
+        BaseBlock.__init__(self, name=name, mode=mode, device=device)
+        self._verifyEn  = False
+        self._bulkEn    = False
+        self._doVerify  = False
+        self._stale     = False
+        self._verifyWr  = False
+        self._bData     = bytearray()
+        self._vData     = bytearray()
+        self._mData     = bytearray()
+        self._size      = 0
+        self._offset    = offset
+        self._minSize   = self._reqMinAccess()
+        self._maxSize   = self._reqMaxAccess()
 
         if self._minSize == 0 or self._maxSize == 0:
             raise BlockError(self,"Invalid min/max size.")
 
-        BaseBlock.__init__(self,variable)
+    @property
+    def stale(self):
+        return self._stale
+
+    @property
+    def offset(self):
+        return self._offset
+
+    @property
+    def address(self):
+        return self._offset | self._reqOffset()
 
     @property
     def timeout(self):
@@ -282,6 +258,73 @@ class RegisterBlock(BaseBlock, rogue.interfaces.memory.Master):
     @error.setter
     def error(self,value):
         return self._setError(value)
+
+    @property
+    def bulkEn(self):
+        return self._bulkEn
+
+
+    def _startTransaction(self,type):
+        """
+        Start a transaction.
+        """
+        # Check for invalid combinations or disabled device
+        if (self._device.enable.value() is not True) or \
+           (type == rim.Write  and (self.mode == 'RO')) or \
+           (type == rim.Post   and (self.mode == 'RO')) or \
+           (type == rim.Read   and (self.mode == 'WO')) or \
+           (type == rim.Verify and (self.mode == 'WO' or \
+                                    self.mode == 'RO' or \
+                                    self._verifyWr == False)):
+            return
+
+        self._log.debug(f'_startTransaction type={type}')
+
+        tData = None
+
+        with self._lock:
+            self._waitTransaction()
+
+            self._log.debug(f'len bData = {len(self._bData)}, vData = {len(self._vData)}, mData = {len(self._mData)}')
+
+            # Track verify after writes. 
+            # Only verify blocks that have been written since last verify
+            if type == rim.Write:
+                self._verifyWr = self._verifyEn
+                  
+            # Setup transaction
+            self._doVerify = (type == rim.Verify)
+            self._doUpdate = (type == rim.Read)
+
+            # Set data pointer
+            tData = self._vData if self._doVerify else self._bData
+
+            # Start transaction
+            self._reqTransaction(self.offset,tData,type)
+    
+
+class RegisterBlock(RemoteBlock):
+    """Internal memory block holder"""
+
+    def __init__(self, variable):
+        """
+        Initialize memory block class.
+        Pass initial variable.
+        """
+        super().__init__(name=variable.name, mode=variable.mode, device=variable.parent, offset=variable.offset)
+
+        self._variables = []
+        self._addVariable(variable)
+
+    def __repr__(self):
+        return repr(self._variables)
+
+    def blockingTransaction(self, type):
+        # Call is same as BaseBlock, just add logging
+        self._log.debug(f"Setting block. Addr={self.offset:#08x}, Data={self._bData}")
+        BaseBlock.blockingTransaction(self, type)
+        self._log.debug(f"Done block. Addr={self._offset:08x}, Data={self._bData}")
+
 
     def set(self, var, value):
         """
@@ -350,7 +393,7 @@ class RegisterBlock(BaseBlock, rogue.interfaces.memory.Master):
     
             # Range check
             if var.varBytes > self._maxSize:
-                raise BlockError(self,"Variable {} size {} exceeds maxSize {}".format(var.name,var.varBytes,self._maxSize))
+                raise BlockError(self,f"Variable {var.name} size {var.varBytes} exceeds maxSize {self._maxSize}")
 
             # Link variable to block
             var._block = self
@@ -360,7 +403,7 @@ class RegisterBlock(BaseBlock, rogue.interfaces.memory.Master):
                 
             self._variables.append(var)
 
-            self._log.debug("Adding variable {} to block {} at offset 0x{:02x}".format(var.name,self.name,self.offset))
+            self._log.debug(f"Adding variable {var.name} to block {self.name} at offset {self.offset:#02x}")
 
             # If variable modes mismatch, set block to read/write
             if var.mode != self._mode:
@@ -384,43 +427,7 @@ class RegisterBlock(BaseBlock, rogue.interfaces.memory.Master):
 
             return True
 
-    def _startTransaction(self,type):
-        """
-        Start a transaction.
-        """
-        # Check for invalid combinations or disabled device
-        if (self._variables[0].parent.enable.value() is not True) or \
-           (type == rogue.interfaces.memory.Write  and (self.mode == 'RO')) or \
-           (type == rogue.interfaces.memory.Post   and (self.mode == 'RO')) or \
-           (type == rogue.interfaces.memory.Read   and (self.mode == 'WO')) or \
-           (type == rogue.interfaces.memory.Verify and (self.mode == 'WO' or \
-                                                        self.mode == 'RO' or \
-                                                        self._verifyWr == False)):
-            return
 
-        self._log.debug('_startTransaction type={}'.format(type))
-
-        tData = None
-
-        with self._lock:
-            self._waitTransaction()
-
-            self._log.debug('len bData = {}, vData = {}, mData = {}'.format(len(self._bData), len(self._vData), len(self._mData)))
-
-            # Track verify after writes. 
-            # Only verify blocks that have been written since last verify
-            if type == rogue.interfaces.memory.Write:
-                self._verifyWr = self._verifyEn
-                  
-            # Setup transaction
-            self._doVerify = (type == rogue.interfaces.memory.Verify)
-            self._doUpdate = (type == rogue.interfaces.memory.Read)
-
-            # Set data pointer
-            tData = self._vData if self._doVerify else self._bData
-
-            # Start transaction
-            self._reqTransaction(self._variables[0].offset,tData,type)
 
     def _doneTransaction(self,tid,error):
         """
@@ -433,7 +440,7 @@ class RegisterBlock(BaseBlock, rogue.interfaces.memory.Master):
                 self._verifyWr = False
                 for x in range(0,self._size):
                     if (self._vData[x] & self._mData[x]) != (self._bData[x] & self._mData[x]):
-                        self.error = rogue.interfaces.memory.VerifyError
+                        self.error = rim.VerifyError
                         break
 
             if self.error == 0:
@@ -442,24 +449,12 @@ class RegisterBlock(BaseBlock, rogue.interfaces.memory.Master):
                 self._doUpdate = False
 
                 
-class MemoryBlock(BaseBlock, rogue.interfaces.memory.Master):
+class MemoryBlock(RemoteBlock):
 
-    def __init__(self, dev, offset):
-        rogue.interfaces.memory.Master.__init__(self)
-        
-        self._setSlave(dev)
-        
-        self._dev = dev
-        self._offset = offset
+    def __init__(self, name, mode, device, offset):
+        """device is expected to be a MemoryDevice"""
 
-        self._minSize = self._reqMinAccess()
-        self._maxSize = self._reqMaxAccess()
-
-        if self._minSize == 0 or self._maxSize == 0:
-            raise BlockError(self,"Invalid min/max size.")
-
-        BaseBlock.__init__(self,variable)
-
+        super().__init__(name=name, mode=mode, device=device, offset=offset)
 
     def set(self, values):
 
@@ -473,59 +468,26 @@ class MemoryBlock(BaseBlock, rogue.interfaces.memory.Master):
             self._bData = b''.join( self._dev._base.toBlock(v, self._dev._stride) for v in values)
             self._vData = bytearray(len(self._bData))
 
-    def _startTransaction(self, type):
-        """
-        Start a transaction.
-        """
-        # Check for invalid combinations or disabled device
-        if (self._dev.enable.value() is not True) or \
-           (type == rogue.interfaces.memory.Post) or \
-           (type == rogue.interfaces.memory.Verify and self._verifyWr == False)):
-            return
-
-        self._log.debug('_startTransaction type={}'.format(type))
-
-        tData = None
-
-        with self._cond:
-            self._waitTransaction()
-
-            self._log.debug('len bData = {}, vData = {}'.format(len(self._bData), len(self._vData)))
-
-            # Track verify after writes. 
-            # Only verify blocks that have been written since last verify
-            if type == rogue.interfaces.memory.Write:
-                self._verifyWr = self._verifyEn
-                  
-            # Setup transaction
-            self._doVerify = (type == rogue.interfaces.memory.Verify)
-            self._error    = 0
-
-            # Set data pointer
-            tData = self._vData if self._doVerify else self._bData
-
-            # Start transaction
-            self._reqTransaction(self._offset,tData,type)
 
     def _doneTransaction(self, tid, error):
         with self._lock:
             if self._dev.Verify.value():
                 self._verifyWr = False
                 if self._vData != self._bData:
-                    self.error = rogue.interfaces.memory.VerifyError
+                    self.error = rim.VerifyError
                     break
 
-            if self.error == 0:
+            if self.error == 0 and self._verifyWr is False:
                 self._bData = bytearray()
                 self._vData = bytearray()
                 
                 
 
 
-class RawBlock(rogue.interfaces.memory.Master):
+class RawBlock(rim.Master):
 
     def __init__(self, slave):
-        rogue.interfaces.memory.Master.__init__(self)
+        rim.Master.__init__(self)
         self._setSlave(slave)
 
         self._lock      = threading.RLock()
@@ -536,21 +498,6 @@ class RawBlock(rogue.interfaces.memory.Master):
     def address(self):
         return self._address | self._reqOffset()
 
-    @property
-    def timeout(self):
-        return float(self._getTimeout()) / 1000000.0
-
-    @timeout.setter
-    def timeout(self,value):
-        self._setTimeout(value*1000000)
-
-    @property
-    def error(self):
-        return self._getError()
-
-    @error.setter
-    def error(self,value):
-        return self._setError(value)
 
     def write(self,address,value):
         if isinstance(value,bytearray):
@@ -558,7 +505,7 @@ class RawBlock(rogue.interfaces.memory.Master):
         else:
             ldata = value.to_bytes(4,'little',signed=False)
 
-        self._doTransaction(rogue.interfaces.memory.Write, address, ldata)
+        self._doTransaction(rim.Write, address, ldata)
 
     def read(self,address,bdata=None):
         if bdata:
@@ -566,7 +513,7 @@ class RawBlock(rogue.interfaces.memory.Master):
         else:
             ldata = bytearray(4)
 
-        self._doTransaction(rogue.interfaces.memory.Read, address, ldata)
+        self._doTransaction(rim.Read, address, ldata)
 
         if bdata is None:
             return int.from_bytes(ldata,'little',signed=False)
