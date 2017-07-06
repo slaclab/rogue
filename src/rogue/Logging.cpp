@@ -29,45 +29,54 @@ const uint32_t rogue::Logging::Debug;
 namespace bp = boost::python;
 
 // Logging level
-uint32_t rogue::Logging::level_ = rogue::Logging::Error;
+uint32_t rogue::Logging::gblLevel_ = rogue::Logging::Error;
 
 // Logging level lock
 boost::mutex rogue::Logging::levelMtx_;
 
-rogue::Logging::Logging(const char *name) {
+rogue::Logging::Logging(std::string name) {
+   std::vector<rogue::LogFilter *>::iterator it;
 
-   name_ = (char *)malloc(strlen("pyrogue.") + strlen(name) + 1);
-   strcpy(name_,"pyrogue.");
-   strcat(name_,name);
+   name_ = "pyrogue." + name;
 
-   //PyGILState_STATE pyState = PyGILState_Ensure();
-   //_logging = bp::import("logging");
-   //_logger = _logging.attr("getLogger")(name);
-   //PyGILState_Release(pyState);
+   levelMtx_.lock();
+
+   level_ = gblLevel_;
+
+   for (it=filters_.begin(); it < filters_.end(); it++) {
+      if ( name_.find((*it)->name_) == 0 ) {
+         if ( (*it)->level_ < level_ ) level_ = (*it)->level_;
+      }
+   }
+   levelMtx_.unlock();
+
+   warning("Starting logger with level = %i",level_);
 }
 
-rogue::Logging::~Logging() {
-   free(name_);
-}
+rogue::Logging::~Logging() { }
 
 void rogue::Logging::setLevel(uint32_t level) {
    levelMtx_.lock();
-   level_ = level;
+   gblLevel_ = level;
+   levelMtx_.unlock();
+}
+
+void rogue::Logging::setFilter(std::string name, uint32_t level) {
+   levelMtx_.lock();
+
+   rogue::LogFilter *flt = new rogue::LogFilter(name,level);
+
+   filters_.push_back(flt);
+
    levelMtx_.unlock();
 }
 
 void rogue::Logging::intLog(uint32_t level, const char * fmt, va_list args) {
    if ( level < level_ ) return;
 
-   printf("%s: ",name_);
+   printf("%s: ",name_.c_str());
    vprintf(fmt,args);
    printf("\n");
-
-   //PyGILState_STATE pyState = PyGILState_Ensure();
-   //_logging = bp::import("logging");
-   //_logger = _logging.attr("getLogger")(name);
-   //_logger.attr(level)(buffer);
-   //PyGILState_Release(pyState);
 }
 
 void rogue::Logging::log(uint32_t level, const char * fmt, ...) {
@@ -116,6 +125,8 @@ void rogue::Logging::setup_python() {
    bp::class_<rogue::Logging, rogue::LoggingPtr, boost::noncopyable>("Logging",bp::no_init)
       .def("setLevel", &rogue::Logging::setLevel)
       .staticmethod("setLevel")
+      .def("setFilter", &rogue::Logging::setFilter)
+      .staticmethod("setFilter")
       .def_readonly("Critical", &rogue::Logging::Critical)
       .def_readonly("Error",    &rogue::Logging::Error)
       .def_readonly("Warning",  &rogue::Logging::Warning)
