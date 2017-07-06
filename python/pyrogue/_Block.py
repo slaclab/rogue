@@ -85,11 +85,6 @@ class BaseBlock(object):
     def __repr__(self):
         return repr(self.name)
 
-#     def set(self, var, value):
-#         pass
-
-#     def get(self, var, value):
-#         return None
 
     def backgroundTransaction(self,type):
         """
