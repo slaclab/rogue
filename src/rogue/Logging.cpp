@@ -34,6 +34,9 @@ uint32_t rogue::Logging::gblLevel_ = rogue::Logging::Error;
 // Logging level lock
 boost::mutex rogue::Logging::levelMtx_;
 
+// Filter list
+std::vector <rogue::LogFilter *> rogue::Logging::filters_;
+
 rogue::Logging::Logging(std::string name) {
    std::vector<rogue::LogFilter *>::iterator it;
 
