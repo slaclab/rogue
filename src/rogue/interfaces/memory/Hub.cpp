@@ -30,18 +30,23 @@ namespace rim = rogue::interfaces::memory;
 namespace bp  = boost::python;
 
 //! Create a block, class creator
-rim::HubPtr rim::Hub::create (uint64_t address) {
-   rim::HubPtr b = boost::make_shared<rim::Hub>(address);
+rim::HubPtr rim::Hub::create (uint64_t offset) {
+   rim::HubPtr b = boost::make_shared<rim::Hub>(offset);
    return(b);
 }
 
 //! Create an block
-rim::Hub::Hub(uint64_t address) : Master (), Slave(0,0) { 
-   address_ = address;
+rim::Hub::Hub(uint64_t offset) : Master (), Slave(0,0) { 
+   offset_ = offset;
 }
 
 //! Destroy a block
 rim::Hub::~Hub() { }
+
+//! Get offset
+uint64_t rim::Hub::getOffset() {
+   return offset_;
+}
 
 //! Return min access size to requesting master
 uint32_t rim::Hub::doMinAccess() {
@@ -54,8 +59,8 @@ uint32_t rim::Hub::doMaxAccess() {
 }
 
 //! Return offset
-uint64_t rim::Hub::doOffset() {
-   return(reqOffset() | address_);
+uint64_t rim::Hub::doAddress() {
+   return(reqAddress() | offset_);
 }
 
 //! Post a transaction. Master will call this method with the access attributes.
@@ -64,7 +69,7 @@ void rim::Hub::doTransaction(uint32_t id, boost::shared_ptr<rogue::interfaces::m
    uint64_t outAddress;
 
    // Adjust address
-   outAddress = address_ | address;
+   outAddress = offset_ | address;
 
    // Forward transaction
    getSlave()->doTransaction(id,master,outAddress,size,type);
@@ -75,7 +80,8 @@ void rim::Hub::setup_python() {
    bp::class_<rim::Hub, rim::HubPtr, bp::bases<rim::Master,rim::Slave>, boost::noncopyable>("Hub",bp::init<uint64_t>())
       .def("create", &rim::Hub::create)
       .staticmethod("create")
-      .def("_getAddress", &rim::Hub::doOffset)
+      .def("_getAddress", &rim::Hub::doAddress)
+      .def("_getOffset",  &rim::Hub::getOffset)
    ;
 
    bp::implicitly_convertible<rim::HubPtr, rim::MasterPtr>();

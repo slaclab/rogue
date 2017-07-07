@@ -59,10 +59,11 @@ class EnableVariable(pr.BaseVariable):
                 self._value = value
         self._updated()
 
-    def _rootAttached(self):
-        if self._parent != self._root:
-            self._parent._parent.enable.addListener(self)
-        
+    def _rootAttached(self,parent,root):
+        pr.Node._rootAttached(self,parent,root)
+
+        if parent != root:
+            parent._parent.enable.addListener(self)
 
 class DeviceError(Exception):
     """ Exception for device manipulation errors."""
@@ -131,6 +132,11 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
     def address(self):
         return self._getAddress()
 
+    @Pyro4.expose
+    @property
+    def offset(self):
+        return self._getOffset()
+
     def add(self,node):
         """
         Add node as sub-node in the object
@@ -142,11 +148,6 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
             for n in node:
                 self.add(n)
             return
-
-        # Can't add if we already have a block list
-        if len(self._blocks) != 0:
-            raise DeviceError('Error adding %s with name %s to %s. Device has already been attached.' % 
-                              (str(node.classType),node.name,self.name))
 
         # Adding device
         if isinstance(node,Device):
@@ -281,7 +282,7 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
             for key,value in self.devices.items():
                 value.checkBlocks(varUpdate=varUpdate, recurse=True)
 
-    def rawWrite(self, address, data, model=pr.UInt, stride=4):
+    def _rawWrite(self, address, data, model=pr.UInt, stride=4):
         
         if isinstance(data, bytearray):
             ldata = data
@@ -291,13 +292,13 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
             ldata = model.toBlock(data, stride)
 
         with self._rawLock:
-            self._reqTransaction(address,ldata,rogue.interfaces.memory.Write)
+            self._reqTransaction(address|self.offset,ldata,rogue.interfaces.memory.Write)
             self._waitTransaction()
 
             if self._getError() > 0:
-                raise pr.MemoryError (name=self.name, address=self.address, error=self._getError())
+                raise pr.MemoryError (name=self.name, address=address|self.address, error=self._getError())
 
-    def rawRead(self, address, size=1, model=pr.UInt, stride=4, bdata=None):
+    def _rawRead(self, address, size=1, model=pr.UInt, stride=4, bdata=None):
         
         if bdata is not None:
             ldata = bdata
@@ -306,11 +307,11 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
         
         with self._rawLock:
 
-            self._reqTransaction(address,ldata,rogue.interfaces.memory.Read)
+            self._reqTransaction(address|self.offset,ldata,rogue.interfaces.memory.Read)
             self._waitTransaction()
 
             if self._getError() > 0:
-                raise pr.MemoryError (name=self.name, address=self.address, error=self._getError())
+                raise pr.MemoryError (name=self.name, address=address|self.address, error=self._getError())
 
             if size == 1:
                 return base.fromBlock(ldata)
@@ -359,8 +360,13 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
                 self._log.debug("Adding new block {} at offset {:#02x}".format(n.name,n.offset))
                 self._blocks.append(pr.RegisterBlock(n))
 
-    def _rootAttached(self):
+    def _rootAttached(self, parent, root):
+	pr.Node._rootAttached(self, parent, root)
+
         self._buildBlocks()
+
+        for key,value in self._nodes.items():
+            value._rootAttached(self,root)
 
     def _devReset(self,rstType):
         """Generate a count, soft or hard reset"""

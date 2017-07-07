@@ -68,7 +68,7 @@ class Node(object):
 
         # Tracking
         self._parent = None
-        self._root   = self
+        self._root   = None
         self._nodes  = odict()
 
         # Setup logging
@@ -115,6 +115,11 @@ class Node(object):
     def add(self,node):
         """Add node as sub-node"""
 
+        # Fail if root already exists
+        if self._root is not None:
+            raise NodeError('Error adding %s with name %s to %s. Tree is already started.' % 
+                             (str(node.classType),node.name,self.name))
+
         # Error if added node already has a parent
         if node._parent is not None:
             raise NodeError('Error adding %s with name %s to %s. Node is already attached.' % 
@@ -126,9 +131,6 @@ class Node(object):
                              (str(node.classType),node.name,self.name))
 
         self._nodes[node.name] = node 
-
-        # Update path related attributes
-        node._updateTree(self)
 
     def addNode(self, nodeClass, **kwargs):
         self.add(nodeClass(**kwargs))
@@ -199,29 +201,13 @@ class Node(object):
     def node(self, path):
         return self._nodes[path]
 
-    def _rootAttached(self):
-        """Called once the root node is attached. Can override to do anything depends on the full tree existing"""
-        pass
-
-    def _updateTree(self,parent):
-        """
-        Update tree. In some cases nodes such as variables, commands and devices will
-        be added to a device before the device is inserted into a tree. This call
-        ensures the nodes and sub-nodes attached to a device can be updated as the tree
-        gets created.
-        """
+    def _rootAttached(self,parent,root):
+        """Called once the root node is attached."""
         self._parent = parent
-        self._root   = self._parent._root
-        self._path   = self._parent.path + '.' + self.name
-
-        if isinstance(self._root, pr.Root):
-            self._rootAttached()
-
-        for key,value in self._nodes.items():
-            value._updateTree(self)
+        self._root   = root
+        self._path   = parent.path + '.' + self.name
 
     def _exportNodes(self,daemon):
-
         for k,n in self._nodes.items():
             daemon.register(n)
 

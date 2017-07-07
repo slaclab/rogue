@@ -38,22 +38,25 @@ namespace rogue {
          //! Transaction container
          class Hub : public Master, public Slave {
 
-               //! Base address of hub
-               uint64_t address_;
+               //! Offset address of hub
+               uint64_t offset_;
 
             public:
 
                //! Create a block, class creator
-               static boost::shared_ptr<rogue::interfaces::memory::Hub> create (uint64_t address);
+               static boost::shared_ptr<rogue::interfaces::memory::Hub> create (uint64_t offset);
 
                //! Setup class in python
                static void setup_python();
 
                //! Create a hub
-               Hub(uint64_t address);
+               Hub(uint64_t offset);
 
                //! Destroy a hub
                ~Hub();
+
+               //! Get offset
+               uint64_t getOffset();
 
                //! Return min access size to requesting master
                uint32_t doMinAccess();
@@ -61,8 +64,8 @@ namespace rogue {
                //! Return max access size to requesting master
                uint32_t doMaxAccess();
 
-               //! Return offset
-               uint64_t doOffset();
+               //! Return address
+               uint64_t doAddress();
 
                //! Post a transaction. Master will call this method with the access attributes.
                void doTransaction(uint32_t id, boost::shared_ptr<rogue::interfaces::memory::Master> master,

@@ -224,17 +224,18 @@ class BaseVariable(pr.Node):
     def nativeType(self):
         return type(self.value())
 
-    def _rootAttached(self):
-        # Variables are always leaf nodes so no need to recurse
+    def _rootAttached(self,parent,root):
+        pr.Node._rootAttached(self,parent,root)
+
         if self._default is not None:
             self.set(self._default, write=False)
 
-        if self._pollInterval > 0 and self._root._pollQueue is not None:
-            self._root._pollQueue.updatePollInterval(self)
+        if self._pollInterval > 0 and root._pollQueue is not None:
+            root._pollQueue.updatePollInterval(self)
 
     def _updated(self):
         """Variable has been updated. Inform listeners."""
-        if self._update is False or not isinstance(self._root, pr.Root):
+        if self._update is False or self._root is None:
             return
 
 

@@ -111,13 +111,13 @@ uint32_t rim::Master::reqMaxAccess() {
 }
 
 //! Query the offset
-uint64_t rim::Master::reqOffset() {
+uint64_t rim::Master::reqAddress() {
    rim::SlavePtr slave;
 
    rogue::GilRelease noGil;
    boost::lock_guard<boost::mutex> lock(mtx_);
    slave = slave_;
-   return(slave->doOffset());
+   return(slave->doAddress());
 }
 
 //! Get error
@@ -277,7 +277,7 @@ void rim::Master::setup_python() {
       .def("_getId",              &rim::Master::getId)
       .def("_reqMinAccess",       &rim::Master::reqMinAccess)
       .def("_reqMaxAccess",       &rim::Master::reqMaxAccess)
-      .def("_reqOffset",          &rim::Master::reqOffset)
+      .def("_reqAddress",         &rim::Master::reqAddress)
       .def("_getError",           &rim::Master::getError)
       .def("_setError",           &rim::Master::setError)
       .def("_setTimeout",         &rim::Master::setTimeout)

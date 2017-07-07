@@ -52,6 +52,8 @@ class GuiTop(QWidget):
         self.connect(self,SIGNAL('newTree'),self.cmd.addTree)
 
     def addTree(self,root):
+        if not root.running:
+            raise Exception("GUI can not be attached to a tree which is not started")
         self.emit(SIGNAL("newTree"),root)
 
     def _addTree(self,root):
