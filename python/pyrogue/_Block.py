@@ -269,7 +269,7 @@ class MemoryBlock(BaseBlock, rogue.interfaces.memory.Master):
 
     @property
     def address(self):
-        return self._variables[0].offset | self._reqOffset()
+        return self._variables[0].offset | self._reqAddress()
 
     @property
     def timeout(self):

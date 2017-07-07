@@ -110,8 +110,8 @@ namespace rogue {
                //! Query the maximum transaction size in bytes for the interface
                uint32_t reqMaxAccess();
 
-               //! Query the offset
-               uint64_t reqOffset();
+               //! Query the address
+               uint64_t reqAddress();
 
                //! Get error
                uint32_t getError();
