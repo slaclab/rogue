@@ -51,7 +51,7 @@ class MemoryError(Exception):
             self._value += "Unsupported Transaction."
 
         else:
-            self._value += "Unknown error {error:#02x}."
+            self._value += f"Unknown error {error:#02x}."
 
         if msg is not None:
             self._value += (' ' + msg)
