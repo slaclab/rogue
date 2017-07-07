@@ -278,7 +278,7 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
             for key,value in self.devices.items():
                 value.checkBlocks(varUpdate=varUpdate, recurse=True)
 
-    def rawWrite(self,address,value):
+    def _rawWrite(self,address,value):
         with self._rawLock:
 
             if isinstance(value,bytearray):
@@ -292,7 +292,7 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
             if self._getError() > 0:
                 raise pr.MemoryError (name=self.name, address=self.address, error=self._getError())
 
-    def rawRead(self,address,bdata=None):
+    def _rawRead(self,address,bdata=None):
         with self._rawLock:
             if bdata:
                 ldata = bdata
