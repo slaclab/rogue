@@ -281,26 +281,30 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
             for key,value in self.devices.items():
                 value.checkBlocks(varUpdate=varUpdate, recurse=True)
 
-    def rawWrite(self,address,value):
+    def rawWrite(self, address, data, model=pr.UInt, stride=4):
+        
+        if isinstance(data, bytearray):
+            ldata = data
+        elif isinstance(data, Iterable):
+            ldata = b''.join(model.toBlock(word, stride) for word in data)
+        else:
+            ldata = model.toBlock(data, stride)
+
         with self._rawLock:
-
-            if isinstance(value,bytearray):
-                ldata = value
-            else:
-                ldata = value.to_bytes(4,'little',signed=False)
-
             self._reqTransaction(address,ldata,rogue.interfaces.memory.Write)
             self._waitTransaction()
 
             if self._getError() > 0:
                 raise pr.MemoryError (name=self.name, address=self.address, error=self._getError())
 
-    def rawRead(self,address,bdata=None):
+    def rawRead(self, address, size=1, model=pr.UInt, stride=4, bdata=None):
+        
+        if bdata is not None:
+            ldata = bdata
+        else:
+            ldata = bytearray(size*stride)
+        
         with self._rawLock:
-            if bdata:
-                ldata = bdata
-            else:
-                ldata = bytearray(4)
 
             self._reqTransaction(address,ldata,rogue.interfaces.memory.Read)
             self._waitTransaction()
@@ -308,8 +312,11 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
             if self._getError() > 0:
                 raise pr.MemoryError (name=self.name, address=self.address, error=self._getError())
 
-            if bdata is None:
-                return int.from_bytes(ldata,'little',signed=False)
+            if size == 1:
+                return base.fromBlock(ldata)
+            else:
+                return [base.fromBlock(ldata[i:i+stride]) for i in range(0, len(ldata), stride)]
+            
 
     def _buildBlocks(self):
         remVars = []
