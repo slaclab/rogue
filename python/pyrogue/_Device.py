@@ -303,6 +303,9 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
         if self._getError() > 0:
             raise pr.MemoryError (name=self.name, address=self.address, error=self._getError())
 
+        if bdata is None:
+            return int.from_bytes(ldata,'little',signed=False)
+
     def _buildBlocks(self):
         remVars = []
 
