@@ -185,29 +185,30 @@ class BaseBlock(object):
         with self._lock:
             self._blockWait()
 
+            # Error
+            err = self.error
+            self.error = 0
+
+            if err > 0:
+                raise MemoryError(name=self.name, address=self.address, error=err, size=self._size)
+
+            if self._doVerify:
+                self._verifyWr = False
+
+                for x in range(0,self._size):
+                    if (self._vData[x] & self._mData[x]) != (self._bData[x] & self._mData[x]):
+                        msg  = ('Local='    + ''.join('0x{:02x} '.format(x) for x in block._bData))
+                        msg += ('. Verify=' + ''.join('0x{:02x} '.format(x) for x in block._vData))
+                        msg += ('. Mask='   + ''.join('0x{:02x} '.format(x) for x in block._mData))
+
+                        raise MemoryError(name=self.name, address=self.address, error=rogue.interfaces.memory.VerifyError, msg=msg, size=self._size)
+
             # Updated
             doUpdate = update and self._doUpdate
             self._doUpdate = False
 
-            # Error
-            if self.error > 0:
-                self._genError()
-
         # Update variables outside of lock
         if doUpdate: self._updated()
-
-    def _genError(self):
-        err = self.error
-        self.error = 0
-
-        if (err & 0xFF000000) == rogue.interfaces.memory.VerifyError:
-            msg  = ('Local='    + ''.join('0x{:02x} '.format(x) for x in block._bData))
-            msg += ('. Verify=' + ''.join('0x{:02x} '.format(x) for x in block._vData))
-            msg += ('. Mask='   + ''.join('0x{:02x} '.format(x) for x in block._mData))
-        else:
-            msg = None
-
-        raise MemoryError(name=self.name, address=self.address, error=err, msg=msg, size=self.size)
 
     def _updated(self):
         for variable in self._variables:
@@ -319,10 +320,6 @@ class MemoryBlock(BaseBlock, rogue.interfaces.memory.Master):
         with self._lock:
             self._blockWait()
 
-            # Error
-            if self.error > 0:
-                self._genError()
-
             # Access is fully byte aligned
             if len(var.bitOffset) == 1 and (var.bitOffset[0] % 8) == 0 and (var.bitSize[0] % 8) == 0:
                 return var._base.fromBlock(self._bData[int(var.bitOffset[0]/8):int((var.bitOffset[0]+var.bitSize[0])/8)])
@@ -428,26 +425,6 @@ class MemoryBlock(BaseBlock, rogue.interfaces.memory.Master):
 
     def _blockWait(self):
         self._waitTransaction()
-
-    def _doneTransaction(self,tid,error):
-        """
-        Callback for when transaction is complete
-        """
-        with self._lock:
-
-            # Do verify
-            if self._doVerify:
-                self._verifyWr = False
-                for x in range(0,self._size):
-                    if (self._vData[x] & self._mData[x]) != (self._bData[x] & self._mData[x]):
-                        self.error = rogue.interfaces.memory.VerifyError
-                        break
-
-            if self.error == 0:
-                self._stale = False
-            else:
-                self._doUpdate = False
-
 
 def setBitToBytes(ba, bitOffset, value):
     """

@@ -84,6 +84,7 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
         self._blocks    = []
         self._memBase   = memBase
         self._expand    = expand
+        self._rawLock   = threading.RLock()
 
         # Connect to memory slave
         if memBase: self._setSlave(memBase)
@@ -278,33 +279,34 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
                 value.checkBlocks(varUpdate=varUpdate, recurse=True)
 
     def rawWrite(self,address,value):
-        if isinstance(value,bytearray):
-            ldata = value
-        else:
-            ldata = value.to_bytes(4,'little',signed=False)
+        with self._rawLock:
 
-        self._waitTransaction()
-        self._reqTransaction(address,ldata,rogue.interfaces.memory.Write)
-        self._waitTransaction()
+            if isinstance(value,bytearray):
+                ldata = value
+            else:
+                ldata = value.to_bytes(4,'little',signed=False)
 
-        if self._getError() > 0:
-            raise pr.MemoryError (name=self.name, address=self.address, error=self._getError())
+            self._reqTransaction(address,ldata,rogue.interfaces.memory.Write)
+            self._waitTransaction()
+
+            if self._getError() > 0:
+                raise pr.MemoryError (name=self.name, address=self.address, error=self._getError())
 
     def rawRead(self,address,bdata=None):
-        if bdata:
-            ldata = bdata
-        else:
-            ldata = bytearray(4)
+        with self._rawLock:
+            if bdata:
+                ldata = bdata
+            else:
+                ldata = bytearray(4)
 
-        self._waitTransaction()
-        self._reqTransaction(address,ldata,rogue.interfaces.memory.Read)
-        self._waitTransaction()
+            self._reqTransaction(address,ldata,rogue.interfaces.memory.Read)
+            self._waitTransaction()
 
-        if self._getError() > 0:
-            raise pr.MemoryError (name=self.name, address=self.address, error=self._getError())
+            if self._getError() > 0:
+                raise pr.MemoryError (name=self.name, address=self.address, error=self._getError())
 
-        if bdata is None:
-            return int.from_bytes(ldata,'little',signed=False)
+            if bdata is None:
+                return int.from_bytes(ldata,'little',signed=False)
 
     def _buildBlocks(self):
         remVars = []

@@ -193,8 +193,6 @@ void rim::Master::reqTransactionPy(uint64_t address, boost::python::object p, ui
          tId_     = genId();
          id       = tId_;
          pyValid_ = true;
-
-         gettimeofday(&tranTime_,NULL);
       }
    }
    slave->doTransaction(id,shared_from_this(),address,size,type);
@@ -305,7 +303,6 @@ void rim::MasterWrap::doneTransaction(uint32_t id, uint32_t error) {
       if (boost::python::override pb = this->get_override("_doneTransaction")) {
          try {
             pb(id,error);
-            return;
          } catch (...) {
             PyErr_Print();
          }
