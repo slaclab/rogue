@@ -138,16 +138,8 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
         return self._getOffset()
 
     def add(self,node):
-        """
-        Add node as sub-node in the object
-        Device specific implementation to add blocks as required.
-        """
-
-        # Special case if list (or iterable of nodes) is passed
-        if isinstance(node, collections.Iterable) and all(isinstance(n, pr.Node) for n in node):
-            for n in node:
-                self.add(n)
-            return
+        # Call node add
+        pr.Node.add(self,node)
 
         # Adding device
         if isinstance(node,Device):
@@ -156,13 +148,9 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
             if node._memBase is None:
                 node._setSlave(self)
 
-        # Call node add
-        pr.Node.add(self,node)
-
     def addRemoteVariables(self, number, stride, pack=False, **kwargs):
         hidden = pack or kwargs.pop('hidden', False)
         self.addNodes(pr.RemoteVariable, number, stride, hidden=hidden, **kwargs)
-
 
         # If pack specified, create a linked variable to combine everything
         if pack:

@@ -115,6 +115,17 @@ class Node(object):
     def add(self,node):
         """Add node as sub-node"""
 
+        # Special case if list (or iterable of nodes) is passed
+        if isinstance(node, collections.Iterable) and all(isinstance(n, Node) for n in node):
+            for n in node:
+                self.add(n)
+            return
+
+        # Fail if added to a non device node (may change in future)
+        if not isinstance(self,pr.Device):
+            raise NodeError('Attempting to add %s with name %s to non device node %s.' % 
+                             (str(node.classType),node.name,self.name))
+
         # Fail if root already exists
         if self._root is not None:
             raise NodeError('Error adding %s with name %s to %s. Tree is already started.' % 
