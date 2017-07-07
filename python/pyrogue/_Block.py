@@ -22,46 +22,39 @@ import pyrogue as pr
 import inspect
 
 
-
 class MemoryError(Exception):
     """ Exception for memory access errors."""
 
-    def __init__(self,address,error=0,msg=None,varables=None):
+    def __init__(self,name,address,error=0,msg=None,size=0):
 
-        self._value = "Memory Error at address {:#08x}: ".format(address)
+        self._value = "Memory Error for {} at address {:#08x}: ".format(name,address)
 
-        if variables is not None:
-            self._value += "Variables: {}. ".format(variables)
+        if (error & 0xFF000000) == rogue.interfaces.memory.TimeoutError:
+            self._value += "Timeout. "
+
+        elif (error & 0xFF000000) == rogue.interfaces.memory.VerifyError:
+            self._value += "Verify error. "
+
+        elif (error & 0xFF000000) == rogue.interfaces.memory.AddressError:
+            self._value += "Address error. "
+
+        elif (error & 0xFF000000) == rogue.interfaces.memory.SizeError:
+            self._value += "Size error. Size={}. ".format(size)
+
+        elif (error & 0xFF000000) == rogue.interfaces.memory.AxiTimeout:
+            self._value += "AXI timeout. "
+
+        elif (error & 0xFF000000) == rogue.interfaces.memory.AxiFail:
+            self._value += "AXI fail. "
+
+        elif (error & 0xFF000000) == rogue.interfaces.memory.Unsupported:
+            self._value += "Unsupported Transaction. "
+
+        else:
+            self._value += "Unknown error 0x{:02x}. ".format(error)
 
         if msg is not None:
             self._value += msg
-
-        elif (error & 0xFF000000) == rogue.interfaces.memory.TimeoutError:
-            self._value += "Timeout"
-
-        elif (error & 0xFF000000) == rogue.interfaces.memory.VerifyError and hasattr(block,'_bData'):
-            bStr = ''.join('0x{:02x} '.format(x) for x in block._bData)
-            vStr = ''.join('0x{:02x} '.format(x) for x in block._vData)
-            mStr = ''.join('0x{:02x} '.format(x) for x in block._mData)
-            self._value += "Verify error. Local={}, Verify={}, Mask={}".format(bStr,vStr,mStr)
-
-        elif (self._error & 0xFF000000) == rogue.interfaces.memory.AddressError:
-            self._value += "Address error"
-
-        elif (self._error & 0xFF000000) == rogue.interfaces.memory.SizeError:
-            self._value += "Size error. Size={}".format(block._size)
-
-        elif (self._error & 0xFF000000) == rogue.interfaces.memory.AxiTimeout:
-            self._value += "AXI timeout"
-
-        elif (self._error & 0xFF000000) == rogue.interfaces.memory.AxiFail:
-            self._value += "AXI fail"
-
-        elif (self._error & 0xFF000000) == rogue.interfaces.memory.Unsupported:
-            self._value += "Unsupported Transaction"
-
-        else:
-            self._value += "Unknown error 0x{:02x}".format(self._error)
 
     def __str__(self):
         return repr(self._value)
@@ -203,10 +196,23 @@ class BaseBlock(object):
 
             # Error
             if self.error > 0:
-                raise BlockError(self)
+                self._genError()
 
         # Update variables outside of lock
         if doUpdate: self._updated()
+
+    def _genError(self):
+        err = self.error
+        self.error = 0
+
+        if (err & 0xFF000000) == rogue.interfaces.memory.VerifyError:
+            msg  = ('Local='    + ''.join('0x{:02x} '.format(x) for x in block._bData))
+            msg += ('. Verify=' + ''.join('0x{:02x} '.format(x) for x in block._vData))
+            msg += ('. Mask='   + ''.join('0x{:02x} '.format(x) for x in block._mData))
+        else:
+            msg = None
+
+        raise MemoryError(name=self,name, address=self.address, error=err, msg=msg, size=self.size)
 
     def _updated(self):
         for variable in self._variables:
@@ -261,7 +267,7 @@ class MemoryBlock(BaseBlock, rogue.interfaces.memory.Master):
         self._maxSize = self._reqMaxAccess()
 
         if self._minSize == 0 or self._maxSize == 0:
-            raise BlockError(self,"Invalid min/max size.")
+            raise MemoryError(name=self,name, address=self.address, msg="Invalid min/max size")
 
         BaseBlock.__init__(self,variable)
 
@@ -279,7 +285,7 @@ class MemoryBlock(BaseBlock, rogue.interfaces.memory.Master):
 
     @error.setter
     def error(self,value):
-        return self._setError(value)
+        self._setError(value)
 
     def set(self, var, value):
         """
@@ -316,7 +322,7 @@ class MemoryBlock(BaseBlock, rogue.interfaces.memory.Master):
 
             # Error
             if self.error > 0:
-                raise BlockError(self)
+                self._genError()
 
             # Access is fully byte aligned
             if len(var.bitOffset) == 1 and (var.bitOffset[0] % 8) == 0 and (var.bitSize[0] % 8) == 0:
@@ -348,7 +354,8 @@ class MemoryBlock(BaseBlock, rogue.interfaces.memory.Master):
     
             # Range check
             if var.varBytes > self._maxSize:
-                raise BlockError(self,"Variable {} size {} exceeds maxSize {}".format(var.name,var.varBytes,self._maxSize))
+                msg = 'Variable {} size {} exceeds maxSize {}'.format(var.name,var.varBytes,self._maxSize)
+                raise MemoryError(name=self.name, address=self.address, msg=msg)
 
             # Link variable to block
             var._block = self

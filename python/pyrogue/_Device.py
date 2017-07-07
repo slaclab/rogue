@@ -125,6 +125,11 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
     def expand(self):
         return self._expand
 
+    @Pyro4.expose
+    @property
+    def address(self):
+        return self._getAddress()
+
     def add(self,node):
         """
         Add node as sub-node in the object
@@ -283,7 +288,7 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
         self._waitTransaction()
 
         if self._getError() > 0:
-            raise DeviceError("RawWrite error in device {}.  Error={}".format(self.name,self.error))
+            raise pr.MemoryError (name=self.name, address=self.address, error=self._getError())
 
     def rawRead(self,address,bdata=None):
         if bdata:
@@ -296,10 +301,7 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
         self._waitTransaction()
 
         if self._getError() > 0:
-            raise DeviceError("RawRead error in device {}.  Error={}".format(self.name,self.error))
-
-        elif bdata is None:
-            return int.from_bytes(ldata,'little',signed=False)
+            raise pr.MemoryError (name=self.name, address=self.address, error=self._getError())
 
     def _buildBlocks(self):
         remVars = []
