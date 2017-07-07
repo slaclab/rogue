@@ -131,6 +131,11 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
     def address(self):
         return self._getAddress()
 
+    @Pyro4.expose
+    @property
+    def offset(self):
+        return self._getOffset()
+
     def add(self,node):
         """
         Add node as sub-node in the object
@@ -286,11 +291,11 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
             else:
                 ldata = value.to_bytes(4,'little',signed=False)
 
-            self._reqTransaction(address,ldata,rogue.interfaces.memory.Write)
+            self._reqTransaction(address|self.offset,ldata,rogue.interfaces.memory.Write)
             self._waitTransaction()
 
             if self._getError() > 0:
-                raise pr.MemoryError (name=self.name, address=self.address, error=self._getError())
+                raise pr.MemoryError (name=self.name, address=address|self.address, error=self._getError())
 
     def _rawRead(self,address,bdata=None):
         with self._rawLock:
@@ -299,11 +304,11 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
             else:
                 ldata = bytearray(4)
 
-            self._reqTransaction(address,ldata,rogue.interfaces.memory.Read)
+            self._reqTransaction(address|self.offset,ldata,rogue.interfaces.memory.Read)
             self._waitTransaction()
 
             if self._getError() > 0:
-                raise pr.MemoryError (name=self.name, address=self.address, error=self._getError())
+                raise pr.MemoryError (name=self.name, address=address|self.address, error=self._getError())
 
             if bdata is None:
                 return int.from_bytes(ldata,'little',signed=False)

@@ -85,8 +85,8 @@ namespace rogue {
                //! Return max access size to requesting master
                virtual uint32_t doMaxAccess();
 
-               //! Return offset address
-               virtual uint64_t doOffset();
+               //! Return address
+               virtual uint64_t doAddress();
 
                //! Post a transaction. Master will call this method with the access attributes.
                virtual void doTransaction(uint32_t id, boost::shared_ptr<rogue::interfaces::memory::Master> master,
@@ -117,10 +117,10 @@ namespace rogue {
                uint32_t defDoMaxAccess();
 
                //! Return offset
-               uint64_t doOffset();
+               uint64_t doAddress();
 
                //! Return offset
-               uint64_t defDoOffset();
+               uint64_t defDoAddress();
 
                //! Post a transaction. Master will call this method with the access attributes.
                void doTransaction(uint32_t id, boost::shared_ptr<rogue::interfaces::memory::Master> master,

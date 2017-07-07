@@ -95,7 +95,7 @@ uint32_t rim::Slave::doMaxAccess() {
 }
 
 //! Return offset
-uint64_t rim::Slave::doOffset() {
+uint64_t rim::Slave::doAddress() {
    return(0);
 }
 
@@ -116,7 +116,7 @@ void rim::Slave::setup_python() {
       .def("enLocDone",      &rim::Slave::enLocDone)
       .def("_doMinAccess",   &rim::Slave::doMinAccess,   &rim::SlaveWrap::defDoMinAccess)
       .def("_doMaxAccess",   &rim::Slave::doMaxAccess,   &rim::SlaveWrap::defDoMaxAccess)
-      .def("_doOffset",      &rim::Slave::doOffset,      &rim::SlaveWrap::defDoOffset)
+      .def("_doAddress",     &rim::Slave::doAddress,     &rim::SlaveWrap::defDoAddress)
       .def("_doTransaction", &rim::Slave::doTransaction, &rim::SlaveWrap::defDoTransaction)
    ;
 }
@@ -167,11 +167,11 @@ uint32_t rim::SlaveWrap::defDoMaxAccess() {
 }
 
 //! Return offset
-uint64_t rim::SlaveWrap::doOffset() {
+uint64_t rim::SlaveWrap::doAddress() {
    {
       rogue::ScopedGil gil;
 
-      if (boost::python::override pb = this->get_override("_doOffset")) {
+      if (boost::python::override pb = this->get_override("_doAddress")) {
          try {
             return(pb());
          } catch (...) {
@@ -179,12 +179,12 @@ uint64_t rim::SlaveWrap::doOffset() {
          }
       }
    }
-   return(rim::Slave::doOffset());
+   return(rim::Slave::doAddress());
 }
 
 //! Return offset
-uint64_t rim::SlaveWrap::defDoOffset() {
-   return(rim::Slave::doOffset());
+uint64_t rim::SlaveWrap::defDoAddress() {
+   return(rim::Slave::doAddress());
 }
 
 //! Post a transaction. Master will call this method with the access attributes.
