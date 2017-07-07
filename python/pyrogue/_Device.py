@@ -272,6 +272,35 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
             for key,value in self.devices.items():
                 value.checkBlocks(varUpdate=varUpdate, recurse=True)
 
+    def rawWrite(self,address,value):
+        if isinstance(value,bytearray):
+            ldata = value
+        else:
+            ldata = value.to_bytes(4,'little',signed=False)
+
+        self._waitTransaction()
+        self._reqTransaction(address,ldata,rogue.interfaces.memory.Write)
+        self._waitTransaction()
+
+        if self._getError() > 0:
+            raise DeviceError("RawWrite error in device {}.  Error={}".format(self.name,self.error))
+
+    def rawRead(self,address,bdata=None):
+        if bdata:
+            ldata = bdata
+        else:
+            ldata = bytearray(4)
+
+        self._waitTransaction()
+        self._reqTransaction(address,ldata,rogue.interfaces.memory.Read)
+        self._waitTransaction()
+
+        if self._getError() > 0:
+            raise DeviceError("RawRead error in device {}.  Error={}".format(self.name,self.error))
+
+        elif bdata is None:
+            return int.from_bytes(ldata,'little',signed=False)
+
     def _buildBlocks(self):
         remVars = []
 

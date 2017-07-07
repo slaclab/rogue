@@ -23,25 +23,23 @@ import inspect
 
 
 
-class BlockError(Exception):
+class MemoryError(Exception):
     """ Exception for memory access errors."""
 
-    def __init__(self,block,msg=None):
-        self._error = block.error
-        block.error = 0
+    def __init__(self,address,error=0,msg=None,varables=None):
 
-        self._value = "Error in block with address {:#08x}: ".format(block.address)
+        self._value = "Memory Error at address {:#08x}: ".format(address)
 
-        if hasattr(block,'_variables'):
-            self._value += "Block Variables: {}. ".format(block._variables)
+        if variables is not None:
+            self._value += "Variables: {}. ".format(variables)
 
         if msg is not None:
             self._value += msg
 
-        elif (self._error & 0xFF000000) == rogue.interfaces.memory.TimeoutError:
-            self._value += "Timeout after {} seconds".format(block.timeout)
+        elif (error & 0xFF000000) == rogue.interfaces.memory.TimeoutError:
+            self._value += "Timeout"
 
-        elif (self._error & 0xFF000000) == rogue.interfaces.memory.VerifyError and hasattr(block,'_bData'):
+        elif (error & 0xFF000000) == rogue.interfaces.memory.VerifyError and hasattr(block,'_bData'):
             bStr = ''.join('0x{:02x} '.format(x) for x in block._bData)
             vStr = ''.join('0x{:02x} '.format(x) for x in block._vData)
             mStr = ''.join('0x{:02x} '.format(x) for x in block._mData)
@@ -440,75 +438,6 @@ class MemoryBlock(BaseBlock, rogue.interfaces.memory.Master):
                 self._stale = False
             else:
                 self._doUpdate = False
-
-
-class RawBlock(rogue.interfaces.memory.Master):
-
-    def __init__(self, slave):
-        rogue.interfaces.memory.Master.__init__(self)
-        self._setSlave(slave)
-
-        self._lock      = threading.RLock()
-        self._address   = 0
-        self._size      = 0
-
-    @property
-    def address(self):
-        return self._address | self._reqOffset()
-
-    @property
-    def timeout(self):
-        return float(self._getTimeout()) / 1000000.0
-
-    @timeout.setter
-    def timeout(self,value):
-        self._setTimeout(value*1000000)
-
-    @property
-    def error(self):
-        return self._getError()
-
-    @error.setter
-    def error(self,value):
-        return self._setError(value)
-
-    def write(self,address,value):
-        if isinstance(value,bytearray):
-            ldata = value
-        else:
-            ldata = value.to_bytes(4,'little',signed=False)
-
-        self._doTransaction(rogue.interfaces.memory.Write, address, ldata)
-
-    def read(self,address,bdata=None):
-        if bdata:
-            ldata = bdata
-        else:
-            ldata = bytearray(4)
-
-        self._doTransaction(rogue.interfaces.memory.Read, address, ldata)
-
-        if bdata is None:
-            return int.from_bytes(ldata,'little',signed=False)
-
-    def _doTransaction(self, type, address, bdata):
-
-        with self._lock:
-            self._waitTransaction()
-
-            # Setup transaction
-            self._size     = len(bdata)
-            self._address  = address
-
-        # Start transaction outside of lock
-        self._reqTransaction(address,bdata,type)
-
-        # wait for completion
-        self._waitTransaction()
-
-        # Error
-        if self.error > 0:
-            raise BlockError(self)
 
 
 def setBitToBytes(ba, bitOffset, value):
