@@ -203,6 +203,7 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
         Write all of the blocks held by this Device to memory
         """
         if not self.enable.get(): return
+        self._log.debug(f'Calling {self.path}._writeBlocks')
 
         # Process local blocks.
         if variable is not None:
@@ -241,8 +242,8 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
         """
         Perform background reads
         """
-        print(f'Calling {self.path}._readBlocks')
         if not self.enable.get(): return
+        self._log.debug(f'Calling {self.path}._readBlocks')
 
         # Process local blocks. 
         if variable is not None:
@@ -260,6 +261,7 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
     def checkBlocks(self,varUpdate=True, recurse=True, variable=None):
         """Check errors in all blocks and generate variable update nofifications"""
         if not self.enable.get(): return
+        self._log.debug(f'Calling {self.path}._checkBlocks')
 
         # Process local blocks
         if variable is not None:
