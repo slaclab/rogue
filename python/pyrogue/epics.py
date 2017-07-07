@@ -56,6 +56,9 @@ class EpicsCaServer(object):
         self._pvDb    = {}
         self._log     = pyrogue.logInit(self)
 
+        if not root.running:
+            raise Exception("Epics can be setup on a tree which is not started")
+
         if pvMap is None:
             doAll = True
             self._pvMap = {}

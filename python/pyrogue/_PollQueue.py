@@ -36,11 +36,12 @@ class PollQueue(object):
         self._run = True
         self._root = root
         self._pollThread = threading.Thread(target=self._poll)
-        self._pollThread.start()
 
         # Setup logging
         self._log = pr.logInit(self)
 
+    def _start(self):
+        self._pollThread.start()
         self._log.info("PollQueue Started")
 
     def _addEntry(self, block, interval):

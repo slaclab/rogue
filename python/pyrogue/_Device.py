@@ -59,10 +59,11 @@ class EnableVariable(pr.BaseVariable):
                 self._value = value
         self._updated()
 
-    def _rootAttached(self):
-        if self._parent != self._root:
-            self._parent._parent.enable.addListener(self)
-        
+    def _rootAttached(self,parent,root):
+        pr.Node._rootAttached(self,parent,root)
+
+        if parent != root:
+            parent._parent.enable.addListener(self)
 
 class DeviceError(Exception):
     """ Exception for device manipulation errors."""
@@ -136,11 +137,6 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
             for n in node:
                 self.add(n)
             return
-
-        # Can't add if we already have a block list
-        if len(self._blocks) != 0:
-            raise DeviceError('Error adding %s with name %s to %s. Device has already been attached.' % 
-                              (str(node.classType),node.name,self.name))
 
         # Adding device
         if isinstance(node,Device):
@@ -311,10 +307,15 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
         for n in remVars:
             if not any(block._addVariable(n) for block in self._blocks):
                 self._log.debug("Adding new block {} at offset {:#02x}".format(n.name,n.offset))
-                self._blocks.append(pr.MemoryBlock(n))
+                self._blocks.append(pr.MemoryBlock(n,self))
 
-    def _rootAttached(self):
+    def _rootAttached(self,parent,root):
+        pr.Node._rootAttached(self,parent,root)
+
         self._buildBlocks()
+
+        for key,value in self._nodes.items():
+            value._rootAttached(self,root)
 
     def _devReset(self,rstType):
         """Generate a count, soft or hard reset"""
