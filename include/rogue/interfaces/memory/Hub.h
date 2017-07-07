@@ -55,9 +55,6 @@ namespace rogue {
                //! Destroy a hub
                ~Hub();
 
-               //! Get address
-               uint64_t getAddress();
-
                //! Return min access size to requesting master
                uint32_t doMinAccess();
 

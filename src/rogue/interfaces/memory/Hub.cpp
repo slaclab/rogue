@@ -43,11 +43,6 @@ rim::Hub::Hub(uint64_t address) : Master (), Slave(0,0) {
 //! Destroy a block
 rim::Hub::~Hub() { }
 
-//! Get address
-uint64_t rim::Hub::getAddress() {
-   return(address_);
-}
-
 //! Return min access size to requesting master
 uint32_t rim::Hub::doMinAccess() {
    return(reqMinAccess());
@@ -80,7 +75,7 @@ void rim::Hub::setup_python() {
    bp::class_<rim::Hub, rim::HubPtr, bp::bases<rim::Master,rim::Slave>, boost::noncopyable>("Hub",bp::init<uint64_t>())
       .def("create", &rim::Hub::create)
       .staticmethod("create")
-      .def("_getAddress", &rim::Hub::getAddress)
+      .def("_getAddress", &rim::Hub::doOffset)
    ;
 
    bp::implicitly_convertible<rim::HubPtr, rim::MasterPtr>();
