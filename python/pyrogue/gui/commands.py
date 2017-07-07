@@ -96,6 +96,8 @@ class CommandWidget(QWidget):
         hb = QHBoxLayout()
         vb.addLayout(hb)
 
+        self.devList = []
+
     def addTree(self,root):
         self.roots.append(root)
 
@@ -106,6 +108,8 @@ class CommandWidget(QWidget):
 
         for i in range(0,3):
             self.tree.resizeColumnToContents(i)
+
+        self.setExpanded()
 
     def addTreeItems(self,tree,d):
 
@@ -121,6 +125,12 @@ class CommandWidget(QWidget):
             if not val.hidden:
                 w = QTreeWidgetItem(tree)
                 w.setText(0,val.name)
-                w.setExpanded(val.expand)
+                w.setExpanded(True)
                 self.addTreeItems(w,val)
+
+                self.devList.append({'dev':val,'item':w})
+
+    def setExpanded(self):
+        for e in self.devList:
+            e['item'].setExpanded(e['dev'].expand)
 

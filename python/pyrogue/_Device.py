@@ -350,13 +350,19 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
             if 'name' not in kwargs:
                 kwargs['name'] = func.__name__
 
-            argCount = len(inspect.signature(func).parameters)
-            def newFunc(dev, var, val):
-                if argCount == 0:
-                    return func()
-                else:
-                    return func(val)
-            self.add(pr.Command(function=newFunc, **kwargs))
+            fargs = inspect.getfullargspec(func).args
+
+            # Handle functions with the wrong arg name and genere warning
+            if len(fargs) > 0 and 'arg' not in fargs:
+                log.warning("Decorated init functions must have the parameter name 'arg': {}".format(self.path))
+
+                def newFunc(arg):
+                    return func(arg)
+
+                self.add(pr.LocalCommand(function=newFunc, **kwargs))
+            else:
+                self.add(pr.LocalCommand(function=func, **kwargs))
+
             return func
         return _decorator
 
@@ -391,27 +397,27 @@ class DataWriter(Device):
         self.add(pr.LocalCommand(name='autoName', function=self._genFileName,
             description='Auto create data file name using data and time.'))
 
-    def _setOpen(self,dev,var,value,changed):
+    def _setOpen(self,value,changed):
         """Set open state. Override in sub-class"""
         pass
 
-    def _setBufferSize(self,dev,var,value):
+    def _setBufferSize(self,value):
         """Set buffer size. Override in sub-class"""
         pass
 
-    def _setMaxFileSize(self,dev,var,value):
+    def _setMaxFileSize(self,value):
         """Set max file size. Override in sub-class"""
         pass
 
-    def _getFileSize(self,dev,cmd):
+    def _getFileSize(self):
         """get current file size. Override in sub-class"""
         return(0)
 
-    def _getFrameCount(self,dev,cmd):
+    def _getFrameCount(self):
         """get current file frame count. Override in sub-class"""
         return(0)
 
-    def _genFileName(self,dev,cmd,arg):
+    def _genFileName(self):
         """
         Auto create data file name based upon date and time.
         Preserve file's location in path.
@@ -456,7 +462,7 @@ class RunControl(Device):
         self.add(pr.LocalVariable(name='runCount', value=0, mode='RW', pollInterval=1,
                                   description='Run Counter updated by run thread.'))
 
-    def _setRunState(self,dev,var,value,changed):
+    def _setRunState(self,value,changed):
         """
         Set run state. Reimplement in sub-class.
         Enum of run states can also be overriden.
@@ -472,7 +478,7 @@ class RunControl(Device):
                 self._thread.join()
                 self._thread = None
 
-    def _setRunRate(self,dev,var,value):
+    def _setRunRate(self,value):
         """
         Set run rate. Reimplement in sub-class if neccessary.
         """

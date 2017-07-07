@@ -26,21 +26,39 @@
 
 namespace rogue {
 
+   //! Filter
+   class LogFilter {
+      public:
+
+         std::string name_;
+         uint32_t level_;
+
+         LogFilter(std::string name, uint32_t level){
+            name_  = name;
+            level_ = level;
+         }
+   };
+
    //! Logging
    class Logging {
-         //boost::python::object _logging;
-         //boost::python::object _logger;
       
-         //! Logging level 
-         static uint32_t level_; 
+         //! Global Logging level 
+         static uint32_t gblLevel_; 
 
          //! Logging level lock
          static boost::mutex levelMtx_;
-         
-         char * name_;
+
+         //! List of filters
+         static std::vector <rogue::LogFilter *> filters_;
 
          void intLog ( uint32_t level, const char *format, va_list args);
-         
+
+         //! Local logging level
+         uint32_t level_;
+
+         //! Logger name
+         std::string name_;
+
       public:
 
          static const uint32_t Critical = 50;
@@ -49,10 +67,11 @@ namespace rogue {
          static const uint32_t Info     = 20;
          static const uint32_t Debug    = 10;
 
-         Logging (const char *name);
+         Logging (std::string name);
          ~Logging();
 
          static void setLevel(uint32_t level);
+         static void setFilter(std::string filter, uint32_t level);
 
          void log(uint32_t level, const char * fmt, ...);
          void critical(const char * fmt, ...);

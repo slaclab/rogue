@@ -325,7 +325,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
             self._streamYaml(yml)
 
     @pr.command(order=7, name='writeAll', description='Write all values to the hardware')
-    def _write(self,dev=None,cmd=None):
+    def _write(self):
         """Write all blocks"""
         self._log.info("Start root write")
         try:
@@ -339,7 +339,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         self._log.info("Done root write")
 
     @pr.command(order=6, name="readAll", description='Read all values from the hardware')
-    def _read(self,dev=None,cmd=None):
+    def _read(self):
         """Read all blocks"""
         self._log.info("Start root read")
         self._initUpdatedVars()
@@ -352,8 +352,8 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         self._doneUpdatedVars()
         self._log.info("Done root read")
 
-    @pr.command(order=0, name='writeConfig', base='string', description='Write configuration to passed filename in YAML format')
-    def _writeConfig(self,dev,cmd,arg):
+    @pr.command(order=0, name='writeConfig', value='', description='Write configuration to passed filename in YAML format')
+    def _writeConfig(self,arg):
         """Write YAML configuration to a file. Called from command"""
         try:
             with open(arg,'w') as f:
@@ -361,8 +361,8 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         except Exception as e:
             self._log.exception(e)
 
-    @pr.command(order=1, name='readConfig', base='string', description='Read configuration from passed filename in YAML format')
-    def _readConfig(self,dev,cmd,arg):
+    @pr.command(order=1, name='readConfig', value='', description='Read configuration from passed filename in YAML format')
+    def _readConfig(self,arg):
         """Read YAML configuration from a file. Called from command"""
         try:
             with open(arg,'r') as f:
@@ -371,23 +371,23 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
             self._log.exception(e)
 
     @pr.command(order=3, name='softReset', description='Generate a soft reset to each device in the tree')
-    def _softReset(self,dev,cmd):
+    def _softReset(self):
         """Generate a soft reset on all devices"""
         self._devReset('soft')
 
     @pr.command(order=2, name='hardReset', description='Generate a hard reset to each device in the tree')
-    def _hardReset(self,dev,cmd):
+    def _hardReset(self):
         """Generate a hard reset on all devices"""
         self._devReset('hard')
         self._clearLog(dev,cmd)
 
     @pr.command(order=4, name='countReset', description='Generate a count reset to each device in the tree')
-    def _countReset(self,dev,cmd):
+    def _countReset(self):
         """Generate a count reset on all devices"""
         self._devReset('count')
 
     @pr.command(order=5, name='clearLog', description='Clear the message log cntained in the systemLog variable')
-    def _clearLog(self,dev,cmd):
+    def _clearLog(self):
         """Clear the system log"""
         with self._sysLogLock:
             self.systemLog.set(value='',write=False)

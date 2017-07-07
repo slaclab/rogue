@@ -19,6 +19,7 @@ import rogue.interfaces.memory
 import parse
 import Pyro4
 import math
+import inspect
 from collections import Iterable
 
 class VariableError(Exception):
@@ -164,7 +165,7 @@ class BaseVariable(pr.Node):
 
     @Pyro4.expose
     def get(self,read=True):
-        return None
+        return self._default
 
     @Pyro4.expose
     def value(self):
@@ -197,28 +198,27 @@ class BaseVariable(pr.Node):
 
     @Pyro4.expose
     def parseDisp(self, sValue):
-        if sValue is '':
-            return ''
-        elif self.disp == 'enum':
-            return self.revEnum[sValue]
-        else:
-            t = self.nativeType()
-            if t == int:
-                return int(sValue, 0)
-            elif t == float:
-                return float(sValue)
-            elif t == bool:
-                return str.lower(sValue) == "true"
+        if sValue is None or isinstance(sValue, self.nativeType()):
+            return sValue
+        else:        
+            if sValue is '':
+                return ''
+            elif self.disp == 'enum':
+                return self.revEnum[sValue]
             else:
-                return sValue
-            #return (parse.parse(self.disp, sValue)[0])
+                t = self.nativeType()
+                if t == int:
+                    return int(sValue, 0)
+                elif t == float:
+                    return float(sValue)
+                elif t == bool:
+                    return str.lower(sValue) == "true"
+                else:
+                    return sValue
 
     @Pyro4.expose
     def setDisp(self, sValue, write=True):
-        if isinstance(sValue, self.nativeType()):
-            self.set(sValue, write)
-        else:
-            self.set(self.parseDisp(sValue), write)
+        self.set(self.parseDisp(sValue), write)
 
     @Pyro4.expose
     def nativeType(self):
@@ -264,16 +264,16 @@ class RemoteVariable(BaseVariable):
                  base=pr.UInt, mode='RW', value=None,  disp=None,
                  enum=None, units=None, hidden=False, minimum=None, maximum=None,
                  offset=None, bitSize=32, bitOffset=0, pollInterval=0, 
-                 verify=True, **dump):
+                 verify=True, update=True, **dump):
 
         if disp is None:
             disp = base.defaultdisp
 
         BaseVariable.__init__(self, name=name, description=description, 
-                              base=base, mode=mode, value=value, disp=disp,
+                              mode=mode, value=value, disp=disp, update=update,
                               enum=enum, units=units, hidden=hidden, minimum=minimum, maximum=maximum);
 
-        self._pollInterval  = pollInterval
+        self._pollInterval = pollInterval
 
         self._base     = base        
         self._block    = None
@@ -394,12 +394,16 @@ class RemoteVariable(BaseVariable):
 
     @Pyro4.expose
     def parseDisp(self, sValue):
-        #print("Parsing var {}, value= {}".format(self.name, sValue))
-        if self.disp == 'enum':
-            return self.revEnum[sValue]
-        else:
-            #print(self._base.fromString(sValue))
-            return self._base.fromString(sValue)
+        if sValue is None or isinstance(sValue, self.nativeType()):
+            return sValue
+        else:        
+
+            #print("Parsing var {}, value= {}".format(self.name, sValue))
+            if self.disp == 'enum':
+                return self.revEnum[sValue]
+            else:
+                #print(self._base.fromString(sValue))
+                return self._base.fromString(sValue)
 
     def _shiftOffsetDown(self,amount,minSize):
         if amount != 0:
@@ -419,7 +423,7 @@ class RemoteVariable(BaseVariable):
 class LocalVariable(BaseVariable):
 
     def __init__(self, name=None, description="", 
-                 mode='RW', value=None, disp='{}',
+                 mode='RW', value=None, disp='{}', update=True,
                  enum=None, units=None, hidden=False, minimum=None, maximum=None,
                  localSet=None, localGet=None, pollInterval=0, **dump):
 
@@ -427,7 +431,7 @@ class LocalVariable(BaseVariable):
             raise VariableError(f'LocalVariable {self.path} must specify value= argument in constructor')
 
         BaseVariable.__init__(self, name=name, description=description, 
-                              mode=mode, value=value, disp=disp,
+                              mode=mode, value=value, disp=disp, update=update,
                               enum=enum, units=units, hidden=hidden,
                               minimum=minimum, maximum=maximum)
 
@@ -472,7 +476,7 @@ class LinkVariable(BaseVariable):
                  linkedSet=None, linkedGet=None, dependencies=None, **dump):
 
         BaseVariable.__init__(self, name=name, description=description, 
-                              mode=mode, disp=disp,
+                              mode=mode, disp=disp, update=True,
                               enum=enum, units=units, hidden=hidden,
                               minimum=minimum, maximum=maximum)
 
@@ -494,40 +498,23 @@ class LinkVariable(BaseVariable):
 
     @Pyro4.expose
     def set(self, value, write=True):
-        """
-        The user can use the linkedSet attribute to pass a string containing python commands or
-        a specific method to call. When using a python string the code will find the passed value
-        as the variable 'value'. A passed method will accept the variable object and value as args.
-        Listeners will be informed of the update.
-        """
         if self._linkedSet is not None:
-            if callable(self._linkedSet):
-                self._linkedSet(self._parent,self,value,write)
-            else:
-                dev = self._parent
-                var = self
-                exec(textwrap.dedent(self._linkedSet))
+
+            # Possible args
+            pargs = {'dev' : self.parent, 'var' : self, 'value' : value, 'write' : write}
+
+            varFuncHelper(self._linkedSet,pargs,self._log,self.path)
 
     @Pyro4.expose
     def get(self, read=True):
-        """
-        The user can use the linkedGet attribute to pass a string containing python commands or
-        a specific method to call. When using a python string the code will set the 'value' variable
-        with the value to return. A passed method will accept the variable as an arg and return the
-        resulting value.
-        """
         if self._linkedGet is not None:
-            if callable(self._linkedGet):
-                return(self._linkedGet(self._parent,self,read))
-            else:
-                dev = self._parent
-                var = self
-                value = 0
-                ns = locals()
-                exec(textwrap.dedent(self._linkedGet),ns)
-                return ns['value']
+
+            # Possible args
+            pargs = {'dev' : self.parent, 'var' : self, 'read' : read}
+
+            return varFuncHelper(self._linkedGet,pargs,self._log,self.path)
         else:
-            return None
+            return none
 
 # Legacy Support
 def Variable(local=False, setFunction=None, getFunction=None, **kwargs):
@@ -569,4 +556,50 @@ def Variable(local=False, setFunction=None, getFunction=None, **kwargs):
         ret = RemoteVariable(**kwargs)
         ret._depWarn = True
         return(ret)
+
+
+# Function helper
+def varFuncHelper(func,pargs,log,path):
+
+    if not callable(func):
+        log.warning("Using deprecated eval string. Please change to function: {}".format(path))
+
+        dev   = None
+        var   = None
+        cmd   = None
+        arg   = None
+        value = 0
+
+        if 'dev' in pargs:
+            dev = pargs['dev']
+
+        if 'var' in pargs:
+            var = pargs['var']
+
+        if 'cmd' in pargs:
+            cmd = pargs['cmd']
+
+        if 'arg' in pargs:
+            arg = pargs['arg']
+
+        ns = locals()
+        exec(textwrap.dedent(func),ns)
+        value = ns['value']
+        return value
+
+    else:
+
+        # Python functions
+        try:
+            # Function args
+            fargs = inspect.getfullargspec(func).args
+
+            # Build overlapping arg list
+            args = {k:pargs[k] for k in fargs if k is not 'self'}
+
+        # handle c++ functions, no args supported for now
+        except:
+            args = {}
+
+        return func(**args)
 

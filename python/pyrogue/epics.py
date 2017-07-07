@@ -103,19 +103,43 @@ class EpicsCaServer(object):
 
         else:
             d['value'] = node.value()
+            
+            # All devices should return a not NULL value
+            if d['value'] is None:
+                self._log.warning("Device {} has a null value".format(d['name']))
 
             if node.minimum is not None:
                 d['lolim'] = node.minimum
             if node.maximum is not None:
                 d['hilim'] = node.maximum
 
+            # Get device type
             d['type'] = d['value'].__class__.__name__
 
-            # Commands return None
+            # All devices should return a type different from NoneType
             if d['type'] == 'NoneType':
-                d['type'] = 'int'
+                self._log.warning("Device {} returned NoneType".format(d['name']))
+                return 
+
+            # Adjust some types
+            if d['type'] == 'string' or d['type'] == 'str':
+                # If this command has arguments, use char
+                # String type will accept upto 40 chars only so
+                # let's use char with count > 40 instead to accept longer inputs 
+                # We can do "caput -s PV "long string argument"" to call the command
+                d['type']  = 'char'
+                d['count'] =  300
             elif d['type'] == 'bool':
+                # Bool is not supported, so let's use int instead
                 d['type'] = 'int'
+
+            # These are the only type supported by pcaspy
+            supportedType = {"enum", "string", "char", "float", "int"}
+
+            # Check if type is supported
+            if d['type'] not in supportedType:
+                self._log.warning("Device {} has type {} which is not supported by pcaspy".format(d['name'], d['type'] ))
+                return
             
         node.addListener(self._variableUpdated)
 
@@ -151,14 +175,22 @@ class EpicsCaServer(object):
             try:
                 e = self._queue.get(True,0.5)
                 d = self._pvDb[e['epath']]
-                value = e['value']
+                v = d['var']
 
+                # Enum must be converted for both commands and variables
                 if d['type'] == 'enum':
-                    val = d['enums'][value]
-                    d['var'].setDisp(val)
+                    value = d['enums'][e['value']]
                 else:
-                    val = e['value']
-                    d['var'].set(val)
+                    value = e['value']
+
+                if self._isCommand(v):
+                    # Process command requests
+                    v.call(value)
+             
+                else:
+                    # Process normal register write requests
+                    v.setDisp(value)
+
             except:
                 pass
 
@@ -176,3 +208,7 @@ class EpicsCaServer(object):
         self._driver.setParam(d['name'],val)
         self._driver.updatePVs()
 
+    # Is this variable a command?
+    def _isCommand(self, var):
+        # Command are instances of pyrogue.BaseCommand
+        return isinstance(var, pyrogue.BaseCommand)
