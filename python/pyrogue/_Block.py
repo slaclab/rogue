@@ -25,36 +25,36 @@ import inspect
 class MemoryError(Exception):
     """ Exception for memory access errors."""
 
-    def __init__(self,name,address,error=0,msg=None,size=0):
+    def __init__(self, name, address, error=0, msg=None, size=0):
 
         self._value = "Memory Error for {} at address {:#08x}: ".format(name,address)
 
         if (error & 0xFF000000) == rogue.interfaces.memory.TimeoutError:
-            self._value += "Timeout. "
+            self._value += "Timeout."
 
         elif (error & 0xFF000000) == rogue.interfaces.memory.VerifyError:
-            self._value += "Verify error. "
+            self._value += "Verify error."
 
         elif (error & 0xFF000000) == rogue.interfaces.memory.AddressError:
-            self._value += "Address error. "
+            self._value += "Address error."
 
         elif (error & 0xFF000000) == rogue.interfaces.memory.SizeError:
-            self._value += "Size error. Size={}. ".format(size)
+            self._value += "Size error. Size={}.".format(size)
 
         elif (error & 0xFF000000) == rogue.interfaces.memory.AxiTimeout:
-            self._value += "AXI timeout. "
+            self._value += "AXI timeout."
 
         elif (error & 0xFF000000) == rogue.interfaces.memory.AxiFail:
-            self._value += "AXI fail. "
+            self._value += "AXI fail."
 
         elif (error & 0xFF000000) == rogue.interfaces.memory.Unsupported:
-            self._value += "Unsupported Transaction. "
+            self._value += "Unsupported Transaction."
 
         else:
-            self._value += "Unknown error 0x{:02x}. ".format(error)
+            self._value += "Unknown error 0x{:02x}.".format(error)
 
         if msg is not None:
-            self._value += msg
+            self._value += (' ' + msg)
 
     def __str__(self):
         return repr(self._value)
@@ -114,12 +114,7 @@ class BaseBlock(object):
 
     @property
     def address(self):
-        if len(self._variables) == 0:
-            return 0
-        elif isinstance(self,rogue.interfaces.memory.Master):
-            return self._variables[0].offset | self._reqOffset()
-        else:
-            return self._variables[0].offset
+        return 0
 
     @property
     def name(self):
@@ -157,9 +152,6 @@ class BaseBlock(object):
     def bulkEn(self):
         return self._bulkEn
 
-    def _waitTransaction(self):
-        pass
-
     def _addVariable(self,var):
         """
         Add a variable to the block
@@ -181,6 +173,9 @@ class BaseBlock(object):
         with self._lock:
             self._doUpdate = (type == rogue.interfaces.memory.Read)
 
+    def _blockWait(self):
+        pass
+
     def _checkTransaction(self,update):
         """
         Check status of block.
@@ -188,7 +183,7 @@ class BaseBlock(object):
         """
         doUpdate = False
         with self._lock:
-            self._waitTransaction()
+            self._blockWait()
 
             # Updated
             doUpdate = update and self._doUpdate
@@ -212,7 +207,7 @@ class BaseBlock(object):
         else:
             msg = None
 
-        raise MemoryError(name=self,name, address=self.address, error=err, msg=msg, size=self.size)
+        raise MemoryError(name=self.name, address=self.address, error=err, msg=msg, size=self.size)
 
     def _updated(self):
         for variable in self._variables:
@@ -267,9 +262,13 @@ class MemoryBlock(BaseBlock, rogue.interfaces.memory.Master):
         self._maxSize = self._reqMaxAccess()
 
         if self._minSize == 0 or self._maxSize == 0:
-            raise MemoryError(name=self,name, address=self.address, msg="Invalid min/max size")
+            raise MemoryError(name=self.name, address=self.address, msg="Invalid min/max size")
 
         BaseBlock.__init__(self,variable)
+
+    @property
+    def address(self):
+        return self._variables[0].offset | self._reqOffset()
 
     @property
     def timeout(self):
@@ -293,7 +292,7 @@ class MemoryBlock(BaseBlock, rogue.interfaces.memory.Master):
         Offset sets the starting point in the block array.
         """
         with self._lock:
-            self._waitTransaction()
+            self._blockWait()
             self._value = value
             self._stale = True
 
@@ -318,7 +317,7 @@ class MemoryBlock(BaseBlock, rogue.interfaces.memory.Master):
         bytearray is returned
         """
         with self._lock:
-            self._waitTransaction()
+            self._blockWait()
 
             # Error
             if self.error > 0:
@@ -346,7 +345,7 @@ class MemoryBlock(BaseBlock, rogue.interfaces.memory.Master):
         """
 
         with self._lock:
-            self._waitTransaction()
+            self._blockWait()
 
             # Return false if offset does not match
             if len(self._variables) != 0 and var.offset != self._variables[0].offset:
@@ -408,7 +407,7 @@ class MemoryBlock(BaseBlock, rogue.interfaces.memory.Master):
         tData = None
 
         with self._lock:
-            self._waitTransaction()
+            self._blockWait()
 
             self._log.debug('len bData = {}, vData = {}, mData = {}'.format(len(self._bData), len(self._vData), len(self._mData)))
 
@@ -426,6 +425,9 @@ class MemoryBlock(BaseBlock, rogue.interfaces.memory.Master):
 
             # Start transaction
             self._reqTransaction(self._variables[0].offset,tData,type)
+
+    def _blockWait(self):
+        self._waitTransaction()
 
     def _doneTransaction(self,tid,error):
         """
