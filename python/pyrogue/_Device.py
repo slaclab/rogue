@@ -241,6 +241,7 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
         """
         Perform background reads
         """
+        print(f'Calling {self.path}._readBlocks')
         if not self.enable.get(): return
 
         # Process local blocks. 
@@ -353,7 +354,7 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
 
             # Handle functions with the wrong arg name and genere warning
             if len(fargs) > 0 and 'arg' not in fargs:
-                log.warning("Decorated init functions must have the parameter name 'arg': {}".format(self.path))
+                self._log.warning("Decorated init functions must have the parameter name 'arg': {}".format(self.path))
 
                 def newFunc(arg):
                     return func(arg)

@@ -237,8 +237,10 @@ class BaseVariable(pr.Node):
         if self._update is False or not isinstance(self._root, pr.Root):
             return
 
+
         value = self.value()
         disp  = self.valueDisp()
+        print(f'Variable {self.name}._updated() value: {value} disp: {disp}')
 
         for func in self.__listeners:
             if getattr(func,'varListener',None) is not None:
@@ -513,7 +515,7 @@ class LinkVariable(BaseVariable):
 
             return varFuncHelper(self._linkedGet,pargs,self._log,self.path)
         else:
-            return none
+            return None
 
 # Legacy Support
 def Variable(local=False, setFunction=None, getFunction=None, **kwargs):

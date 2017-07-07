@@ -73,6 +73,7 @@ class BaseBlock(object):
 
     def __init__(self, name, mode, device):
 
+        self._name      = name
         self._mode      = mode
         self._device    = device
         self._lock      = threading.RLock()
@@ -124,6 +125,10 @@ class BaseBlock(object):
     def error(self,value):
         pass
 
+    @property
+    def bulkEn(self):
+        return True
+
 
     def _waitTransaction(self):
         pass
@@ -162,7 +167,7 @@ class BaseBlock(object):
 
 class LocalBlock(BaseBlock):
     def __init__(self, variable, localSet, localGet, value):
-        BaseBlock.__init__(self, name=variable.name, mode=variable.mode)
+        BaseBlock.__init__(self, name=variable.name, mode=variable.mode, device=variable.parent)
 
         self._localSet = localSet
         self._localGet = localGet
@@ -206,7 +211,7 @@ class LocalBlock(BaseBlock):
 class RemoteBlock(BaseBlock, rim.Master):
     def __init__(self, name, mode, device, offset=0):
         
-        rim.Master__init__(self)
+        rim.Master.__init__(self)
         self._setSlave(device)
         
         BaseBlock.__init__(self, name=name, mode=mode, device=device)
@@ -274,6 +279,7 @@ class RemoteBlock(BaseBlock, rim.Master):
             return
 
         self._log.debug(f'_startTransaction type={type}')
+        print(f'_startTransaction type={type}')
 
         tData = None
 
@@ -281,6 +287,7 @@ class RemoteBlock(BaseBlock, rim.Master):
             self._waitTransaction()
 
             self._log.debug(f'len bData = {len(self._bData)}, vData = {len(self._vData)}, mData = {len(self._mData)}')
+            print(f'len bData = {len(self._bData)}, vData = {len(self._vData)}, mData = {len(self._mData)}')
 
             # Track verify after writes. 
             # Only verify blocks that have been written since last verify
@@ -358,6 +365,8 @@ class RegisterBlock(RemoteBlock):
             if self.error > 0:
                 raise BlockError(self)
 
+            print(f'Block {self.name}.get({var.name})')
+
             # Access is fully byte aligned
             if len(var.bitOffset) == 1 and (var.bitOffset[0] % 8) == 0 and (var.bitSize[0] % 8) == 0:
                 return var._base.fromBlock(self._bData[int(var.bitOffset[0]/8):int((var.bitOffset[0]+var.bitSize[0])/8)])
@@ -429,6 +438,7 @@ class RegisterBlock(RemoteBlock):
         Callback for when transaction is complete
         """
         with self._lock:
+            print(f'Block {self.name}._doneTransaction() bData: {self._bData}')
 
             # Do verify
             if self._doVerify:
@@ -442,6 +452,11 @@ class RegisterBlock(RemoteBlock):
                 self._stale = False
             else:
                 self._doUpdate = False
+
+    def _updated(self):
+        print(f'Called Block {self.name}._updated()')
+        for var in self._variables:
+            var._updated()
 
                 
 class MemoryBlock(RemoteBlock):
@@ -470,7 +485,6 @@ class MemoryBlock(RemoteBlock):
                 self._verifyWr = False
                 if self._vData != self._bData:
                     self.error = rim.VerifyError
-                    break
 
             if self.error == 0 and self._verifyWr is False:
                 self._bData = bytearray()
