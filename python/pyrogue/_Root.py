@@ -104,12 +104,16 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         # Get list of deprecated nodes
         lst = self._getDepWarn()
 
-        if len(lst) > 0:
+        cnt=len(lst)
+        if cnt > 0:
             print("----------- Deprecation Warning --------------------------------")
             print("The following nodes were created with deprecated calls:")
+            if cnt > 50:
+                print("   (Only showing 50 out of {} total deprecated nodes)".format(cnt))
 
-            for n in lst:
+            for n in lst[:50]:
                 print("   " + n)
+
             print("----------------------------------------------------------------")
 
         # Start pyro server if enabled
