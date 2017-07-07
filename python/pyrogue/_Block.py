@@ -22,48 +22,39 @@ import pyrogue as pr
 import inspect
 
 
-
-class BlockError(Exception):
+class MemoryError(Exception):
     """ Exception for memory access errors."""
 
-    def __init__(self,block,msg=None):
-        self._error = block.error
-        block.error = 0
+    def __init__(self, name, address, error=0, msg=None, size=0):
 
-        self._value = "Error in block with address {:#08x}: ".format(block.address)
+        self._value = f"Memory Error for {name} at address {address:#08x}"
 
-        if hasattr(block,'_variables'):
-            self._value += "Block Variables: {}. ".format(block._variables)
+        if (error & 0xFF000000) == rim.TimeoutError:
+            self._value += "Timeout."
 
-        if msg is not None:
-            self._value += msg
+        elif (error & 0xFF000000) == rim.VerifyError:
+            self._value += "Verify error."
 
-        elif (self._error & 0xFF000000) == rim.TimeoutError:
-            self._value += "Timeout after {} seconds".format(block.timeout)
+        elif (error & 0xFF000000) == rim.AddressError:
+            self._value += "Address error."
 
-        elif (self._error & 0xFF000000) == rim.VerifyError and hasattr(block,'_bData'):
-            bStr = ''.join('0x{:02x} '.format(x) for x in block._bData)
-            vStr = ''.join('0x{:02x} '.format(x) for x in block._vData)
-            mStr = ''.join('0x{:02x} '.format(x) for x in block._mData)
-            self._value += "Verify error. Local={}, Verify={}, Mask={}".format(bStr,vStr,mStr)
+        elif (error & 0xFF000000) == rim.SizeError:
+            self._value += f"Size error. Size={size}."
 
-        elif (self._error & 0xFF000000) == rim.AddressError:
-            self._value += "Address error"
+        elif (error & 0xFF000000) == rim.AxiTimeout:
+            self._value += "AXI timeout."
 
-        elif (self._error & 0xFF000000) == rim.SizeError:
-            self._value += "Size error. Size={}".format(block._size)
+        elif (error & 0xFF000000) == rim.AxiFail:
+            self._value += "AXI fail."
 
-        elif (self._error & 0xFF000000) == rim.AxiTimeout:
-            self._value += "AXI timeout"
-
-        elif (self._error & 0xFF000000) == rim.AxiFail:
-            self._value += "AXI fail"
-
-        elif (self._error & 0xFF000000) == rim.Unsupported:
-            self._value += "Unsupported Transaction"
+        elif (error & 0xFF000000) == rim.Unsupported:
+            self._value += "Unsupported Transaction."
 
         else:
-            self._value += "Unknown error 0x{:02x}".format(self._error)
+            self._value += "Unknown error {error:#02x}."
+
+        if msg is not None:
+            self._value += (' ' + msg)
 
     def __str__(self):
         return repr(self._value)
@@ -130,10 +121,6 @@ class BaseBlock(object):
         return True
 
 
-    def _waitTransaction(self):
-        pass
-
-
     def _startTransaction(self,type):
         """
         Start a transaction.
@@ -148,19 +135,12 @@ class BaseBlock(object):
         """
         doUpdate = False
         with self._lock:
-            self._waitTransaction()
-
-            # Updated
             doUpdate = update and self._doUpdate
             self._doUpdate = False
 
-            # Error
-            if self.error > 0:
-                raise BlockError(self)
-
         # Update variables outside of lock
         if doUpdate: self._updated()
-
+        
     def _updated(self):
         pass
 
@@ -229,7 +209,7 @@ class RemoteBlock(BaseBlock, rim.Master):
         self._maxSize   = self._reqMaxAccess()
 
         if self._minSize == 0 or self._maxSize == 0:
-            raise BlockError(self,"Invalid min/max size.")
+            raise MemoryError(name=self.name, address=self.address, msg="Invalid min/max size")
 
     @property
     def stale(self):
@@ -257,7 +237,7 @@ class RemoteBlock(BaseBlock, rim.Master):
 
     @error.setter
     def error(self,value):
-        return self._setError(value)
+        self._setError(value)
 
     @property
     def bulkEn(self):
@@ -303,7 +283,38 @@ class RemoteBlock(BaseBlock, rim.Master):
 
             # Start transaction
             self._reqTransaction(self.offset,tData,type)
-    
+
+
+    def _checkTransaction(self, update):
+        doUpdate = False
+        with self._lock:
+            self._waitTransaction()
+
+            # Error
+            err = self.error
+            self.error = 0
+
+            if err > 0:
+                raise MemoryError(name=self.name, address=self.address, error=err, size=self._size)
+
+            if self._doVerify:
+                self._verifyWr = False
+
+                for x in range(0,self._size):
+                    if (self._vData[x] & self._mData[x]) != (self._bData[x] & self._mData[x]):
+                        msg  = ('Local='    + ''.join(f'{x:#02x}' for x in block._bData))
+                        msg += ('. Verify=' + ''.join(f'{x:#02x}' for x in block._vData))
+                        msg += ('. Mask='   + ''.join(f'{x:#02x}' for x in block._mData))
+
+                        raise MemoryError(name=self.name, address=self.address, error=rim.VerifyError, msg=msg, size=self._size)
+
+               # Updated
+            doUpdate = update and self._doUpdate
+            self._doUpdate = False
+
+        # Update variables outside of lock
+        if doUpdate: self._updated()
+
 
 class RegisterBlock(RemoteBlock):
     """Internal memory block holder"""
@@ -361,10 +372,6 @@ class RegisterBlock(RemoteBlock):
         with self._lock:
             self._waitTransaction()
 
-            # Error
-            if self.error > 0:
-                raise BlockError(self)
-
             print(f'Block {self.name}.get({var.name})')
 
             # Access is fully byte aligned
@@ -397,7 +404,8 @@ class RegisterBlock(RemoteBlock):
     
             # Range check
             if var.varBytes > self._maxSize:
-                raise BlockError(self,f"Variable {var.name} size {var.varBytes} exceeds maxSize {self._maxSize}")
+                msg = f'Variable {var.name} size {var.varBytes} exceeds maxSize {self._maxSize}'
+                raise MemoryError(name=self.name, address=self.address, msg=msg)
 
             # Link variable to block
             var._block = self
@@ -431,34 +439,12 @@ class RegisterBlock(RemoteBlock):
 
             return True
 
-
-
-    def _doneTransaction(self,tid,error):
-        """
-        Callback for when transaction is complete
-        """
-        with self._lock:
-            print(f'Block {self.name}._doneTransaction() bData: {self._bData}')
-
-            # Do verify
-            if self._doVerify:
-                self._verifyWr = False
-                for x in range(0,self._size):
-                    if (self._vData[x] & self._mData[x]) != (self._bData[x] & self._mData[x]):
-                        self.error = rim.VerifyError
-                        break
-
-            if self.error == 0:
-                self._stale = False
-            else:
-                self._doUpdate = False
-
     def _updated(self):
-        print(f'Called Block {self.name}._updated()')
-        for var in self._variables:
-            var._updated()
+        self._log.debug(f'Block {self._name} _update called')
+        for v in self._variables:
+            v._updated()
 
-                
+        
 class MemoryBlock(RemoteBlock):
 
     def __init__(self, name, mode, device, offset):
@@ -477,6 +463,7 @@ class MemoryBlock(RemoteBlock):
 
             self._bData = b''.join( self._dev._base.toBlock(v, self._dev._stride) for v in values)
             self._vData = bytearray(len(self._bData))
+            self._mData = bytearray(0xff for x in range(len(self._bData)))
 
 
     def _doneTransaction(self, tid, error):
@@ -489,63 +476,9 @@ class MemoryBlock(RemoteBlock):
             if self.error == 0 and self._verifyWr is False:
                 self._bData = bytearray()
                 self._vData = bytearray()
+                self._mData = bytearray()                                    
                 
-                
-
-
-class RawBlock(rim.Master):
-
-    def __init__(self, slave):
-        rim.Master.__init__(self)
-        self._setSlave(slave)
-
-        self._lock      = threading.RLock()
-        self._address   = 0
-        self._size      = 0
-
-    @property
-    def address(self):
-        return self._address | self._reqOffset()
-
-
-    def write(self,address,value):
-        if isinstance(value,bytearray):
-            ldata = value
-        else:
-            ldata = value.to_bytes(4,'little',signed=False)
-
-        self._doTransaction(rim.Write, address, ldata)
-
-    def read(self,address,bdata=None):
-        if bdata:
-            ldata = bdata
-        else:
-            ldata = bytearray(4)
-
-        self._doTransaction(rim.Read, address, ldata)
-
-        if bdata is None:
-            return int.from_bytes(ldata,'little',signed=False)
-
-    def _doTransaction(self, type, address, bdata):
-
-        with self._lock:
-            self._waitTransaction()
-
-            # Setup transaction
-            self._size     = len(bdata)
-            self._address  = address
-
-        # Start transaction outside of lock
-        self._reqTransaction(address,bdata,type)
-
-        # wait for completion
-        self._waitTransaction()
-
-        # Error
-        if self.error > 0:
-            raise BlockError(self)
-
+               
 
 def setBitToBytes(ba, bitOffset, value):
     """

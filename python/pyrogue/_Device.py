@@ -84,6 +84,7 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
         self._blocks    = []
         self._memBase   = memBase
         self._expand    = expand
+        self._rawLock   = threading.RLock()
 
         # Connect to memory slave
         if memBase: self._setSlave(memBase)
@@ -124,6 +125,11 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
     @property
     def expand(self):
         return self._expand
+
+    @Pyro4.expose
+    @property
+    def address(self):
+        return self._getAddress()
 
     def add(self,node):
         """
@@ -274,6 +280,36 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
         if recurse:
             for key,value in self.devices.items():
                 value.checkBlocks(varUpdate=varUpdate, recurse=True)
+
+    def rawWrite(self,address,value):
+        with self._rawLock:
+
+            if isinstance(value,bytearray):
+                ldata = value
+            else:
+                ldata = value.to_bytes(4,'little',signed=False)
+
+            self._reqTransaction(address,ldata,rogue.interfaces.memory.Write)
+            self._waitTransaction()
+
+            if self._getError() > 0:
+                raise pr.MemoryError (name=self.name, address=self.address, error=self._getError())
+
+    def rawRead(self,address,bdata=None):
+        with self._rawLock:
+            if bdata:
+                ldata = bdata
+            else:
+                ldata = bytearray(4)
+
+            self._reqTransaction(address,ldata,rogue.interfaces.memory.Read)
+            self._waitTransaction()
+
+            if self._getError() > 0:
+                raise pr.MemoryError (name=self.name, address=self.address, error=self._getError())
+
+            if bdata is None:
+                return int.from_bytes(ldata,'little',signed=False)
 
     def _buildBlocks(self):
         remVars = []
