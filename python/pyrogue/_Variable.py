@@ -567,7 +567,8 @@ def Variable(local=False, setFunction=None, getFunction=None, **kwargs):
     if local or setFunction is not None or getFunction is not None:
 
         # Get list of possible class args
-        cargs = inspect.getfullargspec(LocalVariable.__init__).args
+        cargs = inspect.getfullargspec(LocalVariable.__init__).args + \
+                inspect.getfullargspec(LocalVariable.__init__).kwonlyargs
 
         # Pass supported args
         args = {k:kwargs[k] for k in kwargs if k in cargs}
@@ -605,7 +606,8 @@ def Variable(local=False, setFunction=None, getFunction=None, **kwargs):
 #                 kwargs['disp'] = kwargs['base'].defaultdisp     # or None?       
 
         # Get list of possible class args
-        cargs = inspect.getfullargspec(RemoteVariable.__init__).args
+        cargs = inspect.getfullargspec(RemoteVariable.__init__).args + \
+                inspect.getfullargspec(RemoteVariable.__init__).kwonlyargs
 
         # Pass supported args
         args = {k:kwargs[k] for k in kwargs if k in cargs}
@@ -649,7 +651,8 @@ def varFuncHelper(func,pargs,log,path):
         # Python functions
         try:
             # Function args
-            fargs = inspect.getfullargspec(func).args
+            fargs = inspect.getfullargspec(func).args + \
+                    inspect.getfullargspec(func).kwonlyargs 
 
             # Build overlapping arg list
             args = {k:pargs[k] for k in fargs if k is not 'self'}

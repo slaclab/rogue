@@ -201,7 +201,8 @@ def Command(offset=None, **kwargs):
     if offset is None:
 
         # Get list of possible class args
-        cargs = inspect.getfullargspec(LocalCommand.__init__).args
+        cargs = inspect.getfullargspec(LocalCommand.__init__).args + \
+                inspect.getfullargspec(LocalCommand.__init__).kwonlyargs
 
         # Pass supported args
         args = {k:kwargs[k] for k in kwargs if k in cargs}
@@ -212,7 +213,8 @@ def Command(offset=None, **kwargs):
     else:
 
         # Get list of possible class args
-        cargs = inspect.getfullargspec(RemoteCommand.__init__).args
+        cargs = inspect.getfullargspec(RemoteCommand.__init__).args + \
+                inspect.getfullargspec(RemoteCommand.__init__).kwonlyargs
 
         # Pass supported args
         args = {k:kwargs[k] for k in kwargs if k in cargs}
