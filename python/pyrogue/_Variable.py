@@ -29,7 +29,7 @@ class VariableError(Exception):
 class BaseVariable(pr.Node):
 
     def __init__(self, *,
-                 name=None,
+                 name,
                  description='',
                  update=True,
                  mode='RW',
@@ -270,7 +270,7 @@ class BaseVariable(pr.Node):
 class RemoteVariable(BaseVariable):
 
     def __init__(self, *,
-                 name=None,
+                 name,
                  description='',
                  update=True,                 
                  mode='RW',
@@ -446,7 +446,7 @@ class RemoteVariable(BaseVariable):
 class LocalVariable(BaseVariable):
 
     def __init__(self, *,
-                 name=None,
+                 name,
                  description='',
                  update=True,                 
                  mode='RW',
@@ -505,8 +505,8 @@ class LocalVariable(BaseVariable):
 class LinkVariable(BaseVariable):
 
     def __init__(self, *,
-                 name=None,
-                 description="", 
+                 name,
+                 description='', 
                  mode='RW',
                  disp='{}',
                  enum=None,

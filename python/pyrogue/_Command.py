@@ -27,11 +27,27 @@ class CommandError(Exception):
 
 class BaseCommand(pr.BaseVariable):
 
-    def __init__(self, *, name=None, description="", hidden=False, function=None,
-                 value=0, enum=None, minimum=None, maximum=None):
+    def __init__(self, *,
+                 name=None,
+                 description="",
+                 value=0,
+                 enum=None,
+                 hidden=False,                 
+                 minimum=None,
+                 maximum=None,
+                 function=None):
 
-        pr.BaseVariable.__init__(self, name=name, description=description, update=False,
-                                 mode='WO', value=value, enum=enum, minimum=minimum, maximum=maximum)
+        pr.BaseVariable.__init__(
+            self,
+            name=name,
+            description=description,
+            update=False,
+            mode='WO',
+            value=value,
+            enum=enum,
+            hidden=hidden,
+            minimum=minimum,
+            maximum=maximum)
         
         self._function = function if function is not None else BaseCommand.nothing
 
@@ -118,18 +134,41 @@ LocalCommand = BaseCommand
 
 class RemoteCommand(BaseCommand, pr.RemoteVariable):
 
-    def __init__(self, *, name=None, description="", hidden=False, function=None,
-                 base=pr.UInt, value=None, enum=None, minimum=None, maximum=None,
-                 offset=None, bitSize=32, bitOffset=0):
-        
-        BaseCommand.__init__(self,name=name, description=description,
-                             hidden=hidden, function=function, value=value,
-                             enum=enum, minimum=minimum, maximum=maximum)
+    def __init__(self, *,
+                 name,
+                 description='',
+                 value=None,
+                 enum=None,
+                 hidden=False,
+                 minimum=None,
+                 maximum=None,
+                 function=None,
+                 base=pr.UInt,
+                 offset=None,
+                 bitSize=32,
+                 bitOffset=0):
 
-        pr.RemoteVariable.__init__(self, name=name, description=description, 
-                                   base=base, mode='WO', value=value, 
-                                   enum=enum, hidden=hidden, minimum=minimum, maximum=maximum,
-                                   offset=offset, bitSize=bitSize, bitOffset=bitOffset, verify=False)
+        # RemoteVariable constructor will handle assignment of most params
+        BaseCommand.__init__(
+            self,
+            name=name,
+            function=function)
+
+        pr.RemoteVariable.__init__(
+            self,
+            name=name,
+            description=description,
+            mode='WO',
+            value=value,
+            enum=enum,
+            hidden=hidden,
+            minimum=minimum,
+            maximum=maximum,
+            base=base,
+            offset=offset,
+            bitSize=bitSize,
+            bitOffset=bitOffset,
+            verify=False)
 
 
     def set(self, value, write=True):
