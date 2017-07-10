@@ -197,9 +197,9 @@ class BaseBlock(object):
 
                 for x in range(0,self._size):
                     if (self._vData[x] & self._mData[x]) != (self._bData[x] & self._mData[x]):
-                        msg  = ('Local='    + ''.join('0x{:02x} '.format(x) for x in block._bData))
-                        msg += ('. Verify=' + ''.join('0x{:02x} '.format(x) for x in block._vData))
-                        msg += ('. Mask='   + ''.join('0x{:02x} '.format(x) for x in block._mData))
+                        msg  = ('Local='    + ''.join('0x{:02x} '.format(x) for x in self._bData))
+                        msg += ('. Verify=' + ''.join('0x{:02x} '.format(x) for x in self._vData))
+                        msg += ('. Mask='   + ''.join('0x{:02x} '.format(x) for x in self._mData))
 
                         raise MemoryError(name=self.name, address=self.address, error=rogue.interfaces.memory.VerifyError, msg=msg, size=self._size)
 
