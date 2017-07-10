@@ -73,7 +73,7 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
     """Device class holder. TODO: Update comments"""
 
     def __init__(self, name=None, description="", memBase=None, offset=0, hidden=False, parent=None,
-                 variables=None, expand=True, enabled=True, **dump):
+                 variables=None, expand=True, enabled=True):
         """Initialize device class"""
         if name is None:
             name = self.__class__.__name__
@@ -411,7 +411,7 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
 class DataWriter(Device):
     """Special base class to control data files. TODO: Update comments"""
 
-    def __init__(self, name, description='', hidden=False, **dump):
+    def __init__(self, name, description='', hidden=False):
         """Initialize device class"""
 
         Device.__init__(self, name=name, description=description,
@@ -475,7 +475,7 @@ class DataWriter(Device):
 class RunControl(Device):
     """Special base class to control runs. TODO: Update comments."""
 
-    def __init__(self, name, description='Run Controller', hidden=True, rates=None, states=None, cmd=None, **dump):
+    def __init__(self, name, description='Run Controller', hidden=True, rates=None, states=None, cmd=None):
         """Initialize device class"""
 
         if rates is None:

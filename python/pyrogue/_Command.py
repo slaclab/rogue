@@ -28,7 +28,7 @@ class CommandError(Exception):
 class BaseCommand(pr.BaseVariable):
 
     def __init__(self, name=None, description="", hidden=False, function=None,
-                 value=0, enum=None, minimum=None, maximum=None, **dump):
+                 value=0, enum=None, minimum=None, maximum=None):
 
         pr.BaseVariable.__init__(self, name=name, description=description, update=False,
                                  mode='WO', value=value, enum=enum, minimum=minimum, maximum=maximum)
@@ -120,7 +120,7 @@ class RemoteCommand(BaseCommand, pr.RemoteVariable):
 
     def __init__(self, name=None, description="", hidden=False, function=None,
                  base=pr.UInt, value=None, enum=None, minimum=None, maximum=None,
-                 offset=None, bitSize=32, bitOffset=0, **dump):
+                 offset=None, bitSize=32, bitOffset=0):
         
         BaseCommand.__init__(self,name=name, description=description,
                              hidden=hidden, function=function, value=value,
@@ -160,11 +160,25 @@ class RemoteCommand(BaseCommand, pr.RemoteVariable):
 # Legacy Support
 def Command(offset=None, **kwargs):
     if offset is None:
-        ret = LocalCommand(**kwargs)
+
+        # Get list of possible class args
+        cargs = inspect.getfullargspec(LocalCommand.__init__).args
+
+        # Pass supported args
+        args = {k:kwargs[k] for k in kwargs if k in cargs}
+
+        ret = LocalCommand(**args)
         ret._depWarn = True
         return(ret)
     else:
-        ret = RemoteCommand(offset=offset,**kwargs)
+
+        # Get list of possible class args
+        cargs = inspect.getfullargspec(RemoteCommand.__init__).args
+
+        # Pass supported args
+        args = {k:kwargs[k] for k in kwargs if k in cargs}
+
+        ret = RemoteCommand(offset=offset,**args)
         ret._depWarn = True
         return(ret)
 

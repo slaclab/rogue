@@ -44,7 +44,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
     to be stored in data files.
     """
 
-    def __init__(self, name, description, **dump):
+    def __init__(self, name, description):
         """Init the node with passed attributes"""
 
         rogue.interfaces.stream.Master.__init__(self)

@@ -30,7 +30,7 @@ class BaseVariable(pr.Node):
 
     def __init__(self, name=None, description="", update=True,
                  mode='RW', value=None, disp='{}',
-                 enum=None, units=None, hidden=False, minimum=None, maximum=None, **dump):
+                 enum=None, units=None, hidden=False, minimum=None, maximum=None):
 
         # Public Attributes
         self._mode          = mode
@@ -264,7 +264,7 @@ class RemoteVariable(BaseVariable):
                  base=pr.UInt, mode='RW', value=None,  disp=None,
                  enum=None, units=None, hidden=False, minimum=None, maximum=None,
                  offset=None, bitSize=32, bitOffset=0, pollInterval=0, 
-                 verify=True, update=True, **dump):
+                 verify=True, update=True):
 
         if disp is None:
             disp = base.defaultdisp
@@ -425,7 +425,7 @@ class LocalVariable(BaseVariable):
     def __init__(self, name=None, description="", 
                  mode='RW', value=None, disp='{}', update=True,
                  enum=None, units=None, hidden=False, minimum=None, maximum=None,
-                 localSet=None, localGet=None, pollInterval=0, **dump):
+                 localSet=None, localGet=None, pollInterval=0):
 
         if value is None:
             raise VariableError(f'LocalVariable {self.path} must specify value= argument in constructor')
@@ -473,7 +473,7 @@ class LinkVariable(BaseVariable):
     def __init__(self, name=None, description="", 
                  mode='RW', disp='{}', typeStr='Linked',
                  enum=None, units=None, hidden=False, minimum=None, maximum=None,
-                 linkedSet=None, linkedGet=None, dependencies=None, **dump):
+                 linkedSet=None, linkedGet=None, dependencies=None):
 
         BaseVariable.__init__(self, name=name, description=description, 
                               mode=mode, disp=disp, update=True,
@@ -521,7 +521,14 @@ def Variable(local=False, setFunction=None, getFunction=None, **kwargs):
         
     # Local Variables override get and set functions
     if local or setFunction is not None or getFunction is not None:
-        ret = LocalVariable(localSet=setFunction, localGet=getFunction, **kwargs)
+
+        # Get list of possible class args
+        cargs = inspect.getfullargspec(LocalVariable.__init__).args
+
+        # Pass supported args
+        args = {k:kwargs[k] for k in kwargs if k in cargs}
+
+        ret = LocalVariable(localSet=setFunction, localGet=getFunction, **args)
         ret._depWarn = True
         return(ret)
 
@@ -553,7 +560,13 @@ def Variable(local=False, setFunction=None, getFunction=None, **kwargs):
 #             else:
 #                 kwargs['disp'] = kwargs['base'].defaultdisp     # or None?       
 
-        ret = RemoteVariable(**kwargs)
+        # Get list of possible class args
+        cargs = inspect.getfullargspec(RemoteVariable.__init__).args
+
+        # Pass supported args
+        args = {k:kwargs[k] for k in kwargs if k in cargs}
+
+        ret = RemoteVariable(**args)
         ret._depWarn = True
         return(ret)
 
