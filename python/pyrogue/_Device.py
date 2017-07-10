@@ -375,10 +375,10 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
     def _rootAttached(self, parent, root):
         pr.Node._rootAttached(self, parent, root)
 
-        self._buildBlocks()
-
         for key,value in self._nodes.items():
             value._rootAttached(self,root)
+
+        self._buildBlocks()
 
     def _devReset(self,rstType):
         """Generate a count, soft or hard reset"""

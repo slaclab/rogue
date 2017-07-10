@@ -190,7 +190,7 @@ class LocalBlock(BaseBlock):
 
 class RemoteBlock(BaseBlock, rim.Master):
     def __init__(self, *, name, mode, device, offset=0):
-        
+     
         rim.Master.__init__(self)
         self._setSlave(device)
         
