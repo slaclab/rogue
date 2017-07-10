@@ -121,7 +121,10 @@ class RemoteCommand(BaseCommand, pr.RemoteVariable):
     def __init__(self, name=None, description="", hidden=False, function=None,
                  base=pr.UInt, value=None, enum=None, minimum=None, maximum=None,
                  offset=None, bitSize=32, bitOffset=0, **dump):
-        
+       
+        if 'stride' in dump:
+            raise VariableError('stride passed for RemoteCommand {}. Use addRemoteCommands() instead.'.format(name))
+
         BaseCommand.__init__(self,name=name, description=description,
                              hidden=hidden, function=function, value=value,
                              enum=enum, minimum=minimum, maximum=maximum)
