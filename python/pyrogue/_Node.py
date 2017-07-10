@@ -56,7 +56,7 @@ class Node(object):
     attribute. This allows tree browsing using: node1.node2.node3
     """
 
-    def __init__(self, name, description="", hidden=False):
+    def __init__(self, name, description="", expand=True, hidden=False):
         """Init the node with passed attributes"""
 
         # Public attributes
@@ -65,6 +65,7 @@ class Node(object):
         self._hidden      = hidden
         self._path        = name
         self._depWarn     = False
+        self._expand      = expand
 
         # Tracking
         self._parent = None
@@ -93,6 +94,11 @@ class Node(object):
     @property
     def path(self):
         return self._path
+
+    @Pyro4.expose
+    @property
+    def expand(self):
+        return self._expand
 
     def __repr__(self):
         return self.path

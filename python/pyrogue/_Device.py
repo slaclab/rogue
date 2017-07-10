@@ -84,14 +84,13 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
         # Blocks
         self._blocks    = []
         self._memBase   = memBase
-        self._expand    = expand
         self._rawLock   = threading.RLock()
 
         # Connect to memory slave
         if memBase: self._setSlave(memBase)
 
         # Node.__init__ can't be called until after self._memBase is created
-        pr.Node.__init__(self, name=name, hidden=hidden, description=description)
+        pr.Node.__init__(self, name=name, hidden=hidden, description=description, expand=expand)
 
         self._log.info("Making device {:s}".format(name))
 
@@ -121,11 +120,6 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
             if 'name' not in args:
                 args['name'] = cmd.__name__
             self.add(pr.LocalCommand(function=cmd, **args))
-
-    @Pyro4.expose
-    @property
-    def expand(self):
-        return self._expand
 
     @Pyro4.expose
     @property
