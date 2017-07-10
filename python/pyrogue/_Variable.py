@@ -266,6 +266,9 @@ class RemoteVariable(BaseVariable):
                  offset=None, bitSize=32, bitOffset=0, pollInterval=0, 
                  verify=True, update=True, **dump):
 
+        if 'stride' in dump:
+            raise VariableError('stride passed for RemoteVariable {}. Use addRemoteVariables() instead.'.format(name))
+
         if disp is None:
             disp = base.defaultdisp
 
