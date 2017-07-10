@@ -25,7 +25,7 @@ import math
 import time
 
 class EnableVariable(pr.BaseVariable):
-    def __init__(self, enabled):
+    def __init__(self, *, enabled):
         pr.BaseVariable.__init__(self, name='enable', mode='RW', value=enabled, 
                                  disp={False: 'False', True: 'True', 'parent': 'ParentFalse'},
                                  description='Determines if device is enabled for hardware access')
@@ -72,7 +72,7 @@ class DeviceError(Exception):
 class Device(pr.Node,rogue.interfaces.memory.Hub):
     """Device class holder. TODO: Update comments"""
 
-    def __init__(self, name=None, description="", memBase=None, offset=0, hidden=False, parent=None,
+    def __init__(self, *, name=None, description="", memBase=None, offset=0, hidden=False, parent=None,
                  variables=None, expand=True, enabled=True):
         """Initialize device class"""
         if name is None:
@@ -104,7 +104,7 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
         self.addRemoteCommands = ft.partial(self.addNodes, pr.RemoteCommand)
 
         # Variable interface to enable flag
-        self.add(EnableVariable(enabled))
+        self.add(EnableVariable(enabled=enabled))
 
         if variables is not None and isinstance(variables, collections.Iterable):
             if all(isinstance(v, pr.BaseVariable) for v in variables):
@@ -348,7 +348,7 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
         for n in remVars:
             if not any(block._addVariable(n) for block in self._blocks):
                 self._log.debug("Adding new block {} at offset {:#02x}".format(n.name,n.offset))
-                self._blocks.append(pr.MemoryBlock(n,self))
+                self._blocks.append(pr.MemoryBlock(variable=n,device=self))
 
     def _rootAttached(self,parent,root):
         pr.Node._rootAttached(self,parent,root)
@@ -411,11 +411,11 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
 class DataWriter(Device):
     """Special base class to control data files. TODO: Update comments"""
 
-    def __init__(self, name, description='', hidden=False):
+    def __init__(self, *, name, description='', hidden=False):
         """Initialize device class"""
 
         Device.__init__(self, name=name, description=description,
-                        size=0, memBase=None, offset=0, hidden=hidden)
+                        memBase=None, offset=0, hidden=hidden)
 
         self.add(pr.LocalVariable(name='dataFile', mode='RW', value='',
             description='Data file for storing frames for connected streams.'))
@@ -475,7 +475,7 @@ class DataWriter(Device):
 class RunControl(Device):
     """Special base class to control runs. TODO: Update comments."""
 
-    def __init__(self, name, description='Run Controller', hidden=True, rates=None, states=None, cmd=None):
+    def __init__(self, *, name, description='Run Controller', hidden=True, rates=None, states=None, cmd=None):
         """Initialize device class"""
 
         if rates is None:
@@ -485,7 +485,7 @@ class RunControl(Device):
             states={0:'Stopped', 1:'Running'}
 
         Device.__init__(self, name=name, description=description,
-                        size=0, memBase=None, offset=0, hidden=hidden)
+                        memBase=None, offset=0, hidden=hidden)
 
         value = [k for k,v in states.items()][0]
 

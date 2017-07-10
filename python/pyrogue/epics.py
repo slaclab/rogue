@@ -44,7 +44,7 @@ class EpicsCaServer(object):
     """
     Class to contain an epics ca server
     """
-    def __init__(self,base,root,pvMap=None):
+    def __init__(self,*,base,root,pvMap=None):
         self._root    = root
         self._base    = base 
         self._runEn   = True

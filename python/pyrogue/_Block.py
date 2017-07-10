@@ -25,7 +25,7 @@ import inspect
 class MemoryError(Exception):
     """ Exception for memory access errors."""
 
-    def __init__(self, name, address, error=0, msg=None, size=0):
+    def __init__(self, *, name, address, error=0, msg=None, size=0):
 
         self._value = "Memory Error for {} at address {:#08x}: ".format(name,address)
 
@@ -62,7 +62,7 @@ class MemoryError(Exception):
 
 class BaseBlock(object):
 
-    def __init__(self, variable):
+    def __init__(self, *, variable):
         self._mode      = variable.mode
         self._bData     = bytearray()
         self._vData     = bytearray()
@@ -216,11 +216,11 @@ class BaseBlock(object):
 
 
 class LocalBlock(BaseBlock):
-    def __init__(self, variable, localSet, localGet, value):
+    def __init__(self, *, variable, localSet, localGet, value):
         self._localSet = localSet
         self._localGet = localGet
 
-        BaseBlock.__init__(self,variable)
+        BaseBlock.__init__(self,variable=variable)
         self._value = value
 
     def set(self, var, value):
@@ -251,7 +251,7 @@ class LocalBlock(BaseBlock):
 class MemoryBlock(BaseBlock, rogue.interfaces.memory.Master):
     """Internal memory block holder"""
 
-    def __init__(self, variable, device):
+    def __init__(self, *, variable, device):
         """
         Initialize memory block class.
         Pass initial variable.
@@ -265,7 +265,7 @@ class MemoryBlock(BaseBlock, rogue.interfaces.memory.Master):
         if self._minSize == 0 or self._maxSize == 0:
             raise MemoryError(name=self.name, address=self.address, msg="Invalid min/max size")
 
-        BaseBlock.__init__(self,variable)
+        BaseBlock.__init__(self,variable=variable)
 
     @property
     def address(self):

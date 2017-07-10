@@ -27,7 +27,7 @@ class CommandError(Exception):
 
 class BaseCommand(pr.BaseVariable):
 
-    def __init__(self, name=None, description="", hidden=False, function=None,
+    def __init__(self, *, name=None, description="", hidden=False, function=None,
                  value=0, enum=None, minimum=None, maximum=None):
 
         pr.BaseVariable.__init__(self, name=name, description=description, update=False,
@@ -118,7 +118,7 @@ LocalCommand = BaseCommand
 
 class RemoteCommand(BaseCommand, pr.RemoteVariable):
 
-    def __init__(self, name=None, description="", hidden=False, function=None,
+    def __init__(self, *, name=None, description="", hidden=False, function=None,
                  base=pr.UInt, value=None, enum=None, minimum=None, maximum=None,
                  offset=None, bitSize=32, bitOffset=0):
         

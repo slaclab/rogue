@@ -28,7 +28,7 @@ class VariableError(Exception):
 
 class BaseVariable(pr.Node):
 
-    def __init__(self, name=None, description="", update=True,
+    def __init__(self, *, name=None, description="", update=True,
                  mode='RW', value=None, disp='{}',
                  enum=None, units=None, hidden=False, minimum=None, maximum=None):
 
@@ -260,7 +260,7 @@ class BaseVariable(pr.Node):
 @Pyro4.expose
 class RemoteVariable(BaseVariable):
 
-    def __init__(self, name=None, description="", 
+    def __init__(self, *, name=None, description="", 
                  base=pr.UInt, mode='RW', value=None,  disp=None,
                  enum=None, units=None, hidden=False, minimum=None, maximum=None,
                  offset=None, bitSize=32, bitOffset=0, pollInterval=0, 
@@ -422,7 +422,7 @@ class RemoteVariable(BaseVariable):
 
 class LocalVariable(BaseVariable):
 
-    def __init__(self, name=None, description="", 
+    def __init__(self, *, name=None, description="", 
                  mode='RW', value=None, disp='{}', update=True,
                  enum=None, units=None, hidden=False, minimum=None, maximum=None,
                  localSet=None, localGet=None, pollInterval=0):
@@ -436,7 +436,7 @@ class LocalVariable(BaseVariable):
                               minimum=minimum, maximum=maximum)
 
         self._pollInterval = pollInterval
-        self._block = pr.LocalBlock(self,localSet,localGet,self._default)
+        self._block = pr.LocalBlock(variable=self,localSet=localSet,localGet=localGet,value=self._default)
 
         
     @Pyro4.expose
@@ -470,7 +470,7 @@ class LocalVariable(BaseVariable):
 @Pyro4.expose
 class LinkVariable(BaseVariable):
 
-    def __init__(self, name=None, description="", 
+    def __init__(self, *, name=None, description="", 
                  mode='RW', disp='{}', typeStr='Linked',
                  enum=None, units=None, hidden=False, minimum=None, maximum=None,
                  linkedSet=None, linkedGet=None, dependencies=None):

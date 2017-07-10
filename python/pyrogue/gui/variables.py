@@ -27,7 +27,7 @@ import Pyro4
 class VariableLink(QObject):
     """Bridge between the pyrogue tree and the display element"""
 
-    def __init__(self,parent,variable):
+    def __init__(self,*,parent,variable):
         QObject.__init__(self)
         self.variable = variable
 
@@ -100,7 +100,7 @@ class VariableLink(QObject):
 
 
 class VariableWidget(QWidget):
-    def __init__(self, group, parent=None):
+    def __init__(self, *, group, parent=None):
         super(VariableWidget, self).__init__(parent)
 
         self.roots = []
@@ -150,7 +150,7 @@ class VariableWidget(QWidget):
         #for key,val in d.variables.iteritems():
         for key,val in d.variables.items():
             if not val.hidden:
-                var = VariableLink(tree,val)
+                var = VariableLink(parent=tree,variable=val)
 
         # Then create devices
         #for key,val in d.devices.iteritems():
