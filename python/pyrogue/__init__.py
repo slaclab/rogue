@@ -13,6 +13,7 @@ from pyrogue._Model     import *
 from pyrogue._Variable  import *
 from pyrogue._Command   import *
 from pyrogue._Device    import *
+from pyrogue._Memory    import *
 from pyrogue._Root      import *
 from pyrogue._PollQueue import *
 

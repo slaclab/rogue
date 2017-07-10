@@ -18,7 +18,7 @@ class MemoryDevice(pr.Device):
         """ Spin up a number of MemoryBlocks and set() them """
 
         for offset, valueStr in d.items():
-            values = self._base.fromString(i) for i in valueStr.split(',')
+            values = [self._base.fromString(i) for i in valueStr.split(',')]
             size = len(values) * self._stride
             blockSize = self._reqMaxAccess()
             for i in range(offset, offset+size, blockSize):
