@@ -24,7 +24,7 @@ import functools as ft
 
 class RootLogHandler(logging.Handler):
     """ Class to listen to log entries and add them to syslog variable"""
-    def __init__(self,root):
+    def __init__(self,*, root):
         logging.Handler.__init__(self)
         self._root = root
 
@@ -44,14 +44,14 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
     to be stored in data files.
     """
 
-    def __init__(self, name, description, **dump):
+    def __init__(self, *, name, description):
         """Init the node with passed attributes"""
 
         rogue.interfaces.stream.Master.__init__(self)
 
         # Create log listener to add to systemlog variable
         formatter = logging.Formatter("%(msg)s")
-        handler = RootLogHandler(self)
+        handler = RootLogHandler(root=self)
         handler.setLevel(logging.ERROR)
         handler.setFormatter(formatter)
         self._logger = logging.getLogger('pyrogue')
@@ -77,7 +77,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         self._varListeners = []
 
         # Init after _updatedLock exists
-        pr.Device.__init__(self, name=name, description=description, classType='root')
+        pr.Device.__init__(self, name=name, description=description)
 
         # Variables
         self.add(pr.LocalVariable(name='systemLog', value='', mode='RO', hidden=True,
@@ -91,7 +91,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
         # Create poll queue object
         if pollEn:
-            self._pollQueue = pr.PollQueue(self)
+            self._pollQueue = pr.PollQueue(root=self)
 
         # Set myself as root
         self._parent = self
@@ -418,7 +418,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
 
 class PyroRoot(pr.PyroNode):
-    def __init__(self, node,daemon):
+    def __init__(self, *, node,daemon):
         pr.PyroNode.__init__(self,node,daemon)
 
     def addInstance(self,node):
@@ -429,7 +429,7 @@ class PyroRoot(pr.PyroNode):
 
 
 class PyroClient(object):
-    def __init__(self, group, host=None):
+    def __init__(self, *, group, host=None):
         self._group = group
 
         Pyro4.config.THREADPOOL_SIZE = 100

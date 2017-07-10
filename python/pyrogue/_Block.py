@@ -25,7 +25,7 @@ import inspect
 class MemoryError(Exception):
     """ Exception for memory access errors."""
 
-    def __init__(self, name, address, error=0, msg=None, size=0):
+    def __init__(self, *, name, address, error=0, msg=None, size=0):
 
         self._value = f"Memory Error for {name} at address {address:#08x}"
 
@@ -62,7 +62,7 @@ class MemoryError(Exception):
 
 class BaseBlock(object):
 
-    def __init__(self, name, mode, device):
+    def __init__(self, *, name, mode, device):
 
         self._name      = name
         self._mode      = mode
@@ -146,7 +146,7 @@ class BaseBlock(object):
 
 
 class LocalBlock(BaseBlock):
-    def __init__(self, variable, localSet, localGet, value):
+    def __init__(self, *, variable, localSet, localGet, value):
         BaseBlock.__init__(self, name=variable.name, mode=variable.mode, device=variable.parent)
 
         self._localSet = localSet
@@ -189,7 +189,7 @@ class LocalBlock(BaseBlock):
 
 
 class RemoteBlock(BaseBlock, rim.Master):
-    def __init__(self, name, mode, device, offset=0):
+    def __init__(self, *, name, mode, device, offset=0):
         
         rim.Master.__init__(self)
         self._setSlave(device)
@@ -319,7 +319,7 @@ class RemoteBlock(BaseBlock, rim.Master):
 class RegisterBlock(RemoteBlock):
     """Internal memory block holder"""
 
-    def __init__(self, variable):
+    def __init__(self, *, variable):
         """
         Initialize memory block class.
         Pass initial variable.
@@ -447,7 +447,7 @@ class RegisterBlock(RemoteBlock):
         
 class MemoryBlock(RemoteBlock):
 
-    def __init__(self, name, mode, device, offset):
+    def __init__(self, *, name, mode, device, offset):
         """device is expected to be a MemoryDevice"""
 
         super().__init__(name=name, mode=mode, device=device, offset=offset)

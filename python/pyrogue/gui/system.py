@@ -26,7 +26,7 @@ import Pyro4
 
 class DataLink(QObject):
 
-    def __init__(self,layout,writer):
+    def __init__(self,*,layout,writer):
         QObject.__init__(self)
         self.writer = writer
         self.block = False
@@ -175,7 +175,7 @@ class DataLink(QObject):
 
 class ControlLink(QObject):
 
-    def __init__(self,layout,control):
+    def __init__(self,*,layout,control):
         QObject.__init__(self)
         self.control = control
         self.block = False
@@ -260,7 +260,7 @@ class ControlLink(QObject):
 
 
 class SystemWidget(QWidget):
-    def __init__(self, root, parent=None):
+    def __init__(self, *, root, parent=None):
         super(SystemWidget, self).__init__(parent)
 
         self.holders = []
@@ -309,14 +309,14 @@ class SystemWidget(QWidget):
         ###################
         for key,val in root.devices.items():
             if isinstance(val,pyrogue.DataWriter):
-                self.holders.append(DataLink(tl,val))
+                self.holders.append(DataLink(layout=tl,writer=val))
 
         ###################
         # Run Controllers
         ###################
         for key,val in root.devices.items():
             if isinstance(val,pyrogue.RunControl):
-                self.holders.append(ControlLink(tl,val))
+                self.holders.append(ControlLink(layout=tl,control=val))
 
         ###################
         # System Log

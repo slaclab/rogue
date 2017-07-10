@@ -16,7 +16,7 @@
 import rogue
 
 class SMemControl(rogue.SMemControl):
-    def __init__(self,group,root):
+    def __init__(self,*,group,root):
         rogue.SMemControl.__init__(self,group)
         self._root = root
 

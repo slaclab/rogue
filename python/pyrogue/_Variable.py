@@ -28,9 +28,18 @@ class VariableError(Exception):
 
 class BaseVariable(pr.Node):
 
-    def __init__(self, name=None, description="", update=True,
-                 mode='RW', value=None, disp='{}',
-                 enum=None, units=None, hidden=False, minimum=None, maximum=None, **dump):
+    def __init__(self, *,
+                 name,
+                 description='',
+                 update=True,
+                 mode='RW',
+                 value=None,
+                 disp='{}',
+                 enum=None,
+                 units=None,
+                 hidden=False,
+                 minimum=None,
+                 maximum=None):
 
         # Public Attributes
         self._mode          = mode
@@ -262,18 +271,32 @@ class BaseVariable(pr.Node):
 @Pyro4.expose
 class RemoteVariable(BaseVariable):
 
-    def __init__(self, name=None, description="", 
-                 base=pr.UInt, mode='RW', value=None,  disp=None,
-                 enum=None, units=None, hidden=False, minimum=None, maximum=None,
-                 offset=None, bitSize=32, bitOffset=0, pollInterval=0, 
-                 verify=True, update=True, **dump):
+    def __init__(self, *,
+                 name,
+                 description='',
+                 update=True,                 
+                 mode='RW',
+                 value=None,
+                 disp=None,
+                 enum=None,
+                 units=None,
+                 hidden=False,
+                 minimum=None,
+                 maximum=None,
+                 base=pr.UInt,                                 
+                 offset=None,
+                 bitSize=32,
+                 bitOffset=0,
+                 pollInterval=0, 
+                 verify=True, ):
 
         if disp is None:
             disp = base.defaultdisp
 
         BaseVariable.__init__(self, name=name, description=description, 
                               mode=mode, value=value, disp=disp, update=update,
-                              enum=enum, units=units, hidden=hidden, minimum=minimum, maximum=maximum);
+                              enum=enum, units=units, hidden=hidden,
+                              minimum=minimum, maximum=maximum);
 
         self._pollInterval = pollInterval
 
@@ -424,10 +447,21 @@ class RemoteVariable(BaseVariable):
 
 class LocalVariable(BaseVariable):
 
-    def __init__(self, name=None, description="", 
-                 mode='RW', value=None, disp='{}', update=True,
-                 enum=None, units=None, hidden=False, minimum=None, maximum=None,
-                 localSet=None, localGet=None, pollInterval=0, **dump):
+    def __init__(self, *,
+                 name,
+                 description='',
+                 update=True,                 
+                 mode='RW',
+                 value=None,
+                 disp='{}',
+                 enum=None,
+                 units=None,
+                 hidden=False,
+                 minimum=None,
+                 maximum=None,
+                 localSet=None,
+                 localGet=None,
+                 pollInterval=0):
 
         if value is None:
             raise VariableError(f'LocalVariable {self.path} must specify value= argument in constructor')
@@ -438,7 +472,7 @@ class LocalVariable(BaseVariable):
                               minimum=minimum, maximum=maximum)
 
         self._pollInterval = pollInterval
-        self._block = pr.LocalBlock(self,localSet,localGet,self._default)
+        self._block = pr.LocalBlock(variable=self,localSet=localSet,localGet=localGet,value=self._default)
 
         
     @Pyro4.expose
@@ -472,11 +506,21 @@ class LocalVariable(BaseVariable):
 @Pyro4.expose
 class LinkVariable(BaseVariable):
 
-    def __init__(self, name=None, description="", 
-                 mode='RW', disp='{}', typeStr='Linked',
-                 enum=None, units=None, hidden=False, minimum=None, maximum=None,
-                 linkedSet=None, linkedGet=None, dependencies=None, **dump):
-
+    def __init__(self, *,
+                 name,
+                 description='', 
+                 mode='RW',
+                 disp='{}',
+                 enum=None,
+                 units=None,
+                 hidden=False,
+                 minimum=None,
+                 maximum=None,
+                 typeStr='Linked',                 
+                 linkedSet=None,
+                 linkedGet=None,
+                 dependencies=None):
+                 
         BaseVariable.__init__(self, name=name, description=description, 
                               mode=mode, disp=disp, update=True,
                               enum=enum, units=units, hidden=hidden,
@@ -523,7 +567,14 @@ def Variable(local=False, setFunction=None, getFunction=None, **kwargs):
         
     # Local Variables override get and set functions
     if local or setFunction is not None or getFunction is not None:
-        ret = LocalVariable(localSet=setFunction, localGet=getFunction, **kwargs)
+
+        # Get list of possible class args
+        cargs = inspect.getfullargspec(LocalVariable.__init__).args
+
+        # Pass supported args
+        args = {k:kwargs[k] for k in kwargs if k in cargs}
+
+        ret = LocalVariable(localSet=setFunction, localGet=getFunction, **args)
         ret._depWarn = True
         return(ret)
 
@@ -555,7 +606,13 @@ def Variable(local=False, setFunction=None, getFunction=None, **kwargs):
 #             else:
 #                 kwargs['disp'] = kwargs['base'].defaultdisp     # or None?       
 
-        ret = RemoteVariable(**kwargs)
+        # Get list of possible class args
+        cargs = inspect.getfullargspec(RemoteVariable.__init__).args
+
+        # Pass supported args
+        args = {k:kwargs[k] for k in kwargs if k in cargs}
+
+        ret = RemoteVariable(**args)
         ret._depWarn = True
         return(ret)
 

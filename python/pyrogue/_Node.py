@@ -56,7 +56,7 @@ class Node(object):
     attribute. This allows tree browsing using: node1.node2.node3
     """
 
-    def __init__(self, name, description="", hidden=False):
+    def __init__(self, *, name, description="", hidden=False):
         """Init the node with passed attributes"""
 
         # Public attributes
@@ -318,7 +318,7 @@ class Node(object):
 
 
 class PyroNode(object):
-    def __init__(self, node,daemon):
+    def __init__(self, *, node,daemon):
         self._node   = node
         self._nodes  = None
         self._daemon = daemon
