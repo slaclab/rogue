@@ -24,7 +24,7 @@ import pyrogue
 class PrbsRx(pyrogue.Device):
     """PRBS RX Wrapper"""
 
-    def __init__(self, name):
+    def __init__(self, *, name):
 
         pyrogue.Device.__init__(self, name=name, description='PRBS Software Receiver')
         self._prbs = rogue.utilities.Prbs()
@@ -51,7 +51,7 @@ class PrbsRx(pyrogue.Device):
 class PrbsTx(pyrogue.Device):
     """PRBS TX Wrapper"""
 
-    def __init__(self, name):
+    def __init__(self, *, name):
 
         pyrogue.Device.__init__(self, name=name, description='PRBS Software Transmitter')
 

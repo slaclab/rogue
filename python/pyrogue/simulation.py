@@ -28,7 +28,7 @@ class StreamSim(rogue.interfaces.stream.Master,
                 rogue.interfaces.stream.Slave, 
                 threading.Thread):
 
-    def __init__(self,host,dest,uid,ssi=False):
+    def __init__(self,*,host,dest,uid,ssi=False):
         rogue.interfaces.stream.Master.__init__(self)
         rogue.interfaces.stream.Slave.__init__(self)
         threading.Thread.__init__(self)
@@ -132,7 +132,7 @@ class StreamSim(rogue.interfaces.stream.Master,
 
 class MemEmulate(rogue.interfaces.memory.Slave):
 
-    def __init__(self, minWidth=4, maxSize=0xFFFFFFFF):
+    def __init__(self, *, minWidth=4, maxSize=0xFFFFFFFF):
         rogue.interfaces.memory.Slave.__init__(self,4,4)
         self._minWidth = minWidth
         self._maxSize  = maxSize
