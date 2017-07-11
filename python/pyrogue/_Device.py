@@ -283,7 +283,7 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
         
         if isinstance(data, bytearray):
             ldata = data
-        elif isinstance(data, Iterable):
+        elif isinstance(data, collections.Iterable):
             ldata = b''.join(model.toBlock(word, stride*8) for word in data)
         else:
             ldata = model.toBlock(data, stride*8)
