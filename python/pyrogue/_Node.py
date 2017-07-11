@@ -239,6 +239,7 @@ class Node(object):
             return [self._nodes[name]]
 
         fields = re.split('\[|\]',name)
+        print(f'{self.path}._nodeList({name}) - fields: {fields}')        
 
         # Wildcard
         if len(fields) > 1 and fields[1] == '*':

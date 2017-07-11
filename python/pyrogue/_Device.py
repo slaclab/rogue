@@ -37,6 +37,9 @@ class EnableVariable(pr.BaseVariable):
         self._value = enabled
         self._lock = threading.Lock()
 
+    def nativeType(self):
+        return bool
+
     @Pyro4.expose
     def get(self, read=False):
         ret = self._value

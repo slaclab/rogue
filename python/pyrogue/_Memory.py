@@ -22,21 +22,20 @@ class MemoryDevice(pr.Device):
             size = len(values) * self._stride
             blockSize = self._reqMaxAccess()
             for i in range(offset, offset+size, blockSize):
-                block = pr.MemoryBlock(self, offset=i)                
+                print(f'Making MemoryBlock for {self.path} with offset {i}')
+                block = pr.MemoryBlock(name=f'{self.name}{i}', mode='RW', device=self, offset=i)
+                block.timeout = 10
                 self._blocks.append(block)
                 block.set(values[offset-i:min(len(values), offset-i+blockSize)])
             
 
     def checkBlocks(self, varUpdate=True, recurse=True, variable=None):
-        Device.checkBlocks(varUpdate=varUpdate, recurse=recurse, variable=variable)
+        print(f'Checking blocks in {self.path}, blocks: {self._blocks}')
+        pr.Device.checkBlocks(self, varUpdate=varUpdate, recurse=recurse, variable=variable)
 
         self._blocks = [b for b in self._blocks if b._verifyWr is False]
+        print(f'Checking blocks done {self.path}, blocks: {self._blocks}')        
 
     def readBlocks(self, recurse=True, variable=None):
         pass
 
-    def write(self, offset, values):
-        pass
-
-    def read(self, offset, size):
-        pass

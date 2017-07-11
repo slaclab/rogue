@@ -250,7 +250,6 @@ class BaseVariable(pr.Node):
 
         value = self.value()
         disp  = self.valueDisp()
-        print(f'Variable {self.name}._updated() value: {value} disp: {disp}')
 
         for func in self.__listeners:
             if getattr(func,'varListener',None) is not None:
@@ -423,7 +422,6 @@ class RemoteVariable(BaseVariable):
             return sValue
         else:        
 
-            #print("Parsing var {}, value= {}".format(self.name, sValue))
             if self.disp == 'enum':
                 return self.revEnum[sValue]
             else:

@@ -27,7 +27,7 @@ class MemoryError(Exception):
 
     def __init__(self, *, name, address, error=0, msg=None, size=0):
 
-        self._value = f"Memory Error for {name} at address {address:#08x}"
+        self._value = f"Memory Error for {name} at address {address:#08x} "
 
         if (error & 0xFF000000) == rim.TimeoutError:
             self._value += "Timeout."
@@ -221,7 +221,7 @@ class RemoteBlock(BaseBlock, rim.Master):
 
     @property
     def address(self):
-        return self._offset | self._reqOffset()
+        return self._offset | self._reqAddress()
 
     @property
     def timeout(self):
@@ -256,10 +256,11 @@ class RemoteBlock(BaseBlock, rim.Master):
            (type == rim.Verify and (self.mode == 'WO' or \
                                     self.mode == 'RO' or \
                                     self._verifyWr == False)):
+            print(f'Block {self.name} _startTransaction returning')
             return
 
+        print(f'Block {self.name} _startTransaction starting, type= {type}')        
         self._log.debug(f'_startTransaction type={type}')
-        print(f'_startTransaction type={type}')
 
         tData = None
 
@@ -302,9 +303,9 @@ class RemoteBlock(BaseBlock, rim.Master):
 
                 for x in range(0,self._size):
                     if (self._vData[x] & self._mData[x]) != (self._bData[x] & self._mData[x]):
-                        msg  = ('Local='    + ''.join(f'{x:#02x}' for x in block._bData))
-                        msg += ('. Verify=' + ''.join(f'{x:#02x}' for x in block._vData))
-                        msg += ('. Mask='   + ''.join(f'{x:#02x}' for x in block._mData))
+                        msg  = ('Local='    + ''.join(f'{x:#02x}' for x in self._bData))
+                        msg += ('. Verify=' + ''.join(f'{x:#02x}' for x in self._vData))
+                        msg += ('. Mask='   + ''.join(f'{x:#02x}' for x in self._mData))
 
                         raise MemoryError(name=self.name, address=self.address, error=rim.VerifyError, msg=msg, size=self._size)
 
@@ -371,8 +372,6 @@ class RegisterBlock(RemoteBlock):
         """
         with self._lock:
             self._waitTransaction()
-
-            print(f'Block {self.name}.get({var.name})')
 
             # Access is fully byte aligned
             if len(var.bitOffset) == 1 and (var.bitOffset[0] % 8) == 0 and (var.bitSize[0] % 8) == 0:
@@ -451,32 +450,39 @@ class MemoryBlock(RemoteBlock):
         """device is expected to be a MemoryDevice"""
 
         super().__init__(name=name, mode=mode, device=device, offset=offset)
+        self._bulkEn = True
+        self._verifyEn = True
 
     def set(self, values):
+        print(f'Calling set on Block {self.name}')
 
         with self._lock:
-            self._waitTransaction()            
-            size = bytearray(len(values)*self._dev._stride)
+            self._waitTransaction()
+            self._stale = True
+            size = len(values)*self._device._stride
 
             if size > self._maxSize:
                 raise BlockError(self, "Tried to call set with transaction that is too big")
 
-            self._bData = b''.join( self._dev._base.toBlock(v, self._dev._stride) for v in values)
+            self._bData = b''.join( self._device._base.toBlock(v, self._device._bitStride) for v in values)
+            print(f'Block data: {self._bData}')
             self._vData = bytearray(len(self._bData))
             self._mData = bytearray(0xff for x in range(len(self._bData)))
+            self._size = len(self._bData)
 
 
-    def _doneTransaction(self, tid, error):
-        with self._lock:
-            if self._dev.Verify.value():
-                self._verifyWr = False
-                if self._vData != self._bData:
-                    self.error = rim.VerifyError
+#     def _doneTransaction(self, tid, error):
+#         with self._lock:
+#             if self._device.Verify.value():
+#                 self._verifyWr = False
+#                 if self._vData != self._bData:
+#                     self.error = rim.VerifyError
 
-            if self.error == 0 and self._verifyWr is False:
-                self._bData = bytearray()
-                self._vData = bytearray()
-                self._mData = bytearray()                                    
+#             if self.error == 0 and self._verifyWr is False:
+#                 self._bData = bytearray()
+#                 self._vData = bytearray()
+#                 self._mData = bytearray()   
+                
                 
                
 

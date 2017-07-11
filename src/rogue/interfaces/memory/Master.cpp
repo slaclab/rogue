@@ -340,6 +340,11 @@ void rim::Master::waitTransaction() {
       gettimeofday(&currTime,NULL);
       if ( timercmp(&currTime,&endTime,>) ) {
          lock.unlock();
+         printf("Timeout start = %i:%i end = %i:%i cur = %i:%i\n",
+                tranTime_.tv_sec, tranTime_.tv_usec,
+                endTime.tv_sec, endTime.tv_usec,
+                currTime.tv_sec, currTime.tv_usec);
+         
          rstTransaction(rim::TimeoutError,false);
          break;
       }
