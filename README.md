@@ -8,6 +8,9 @@ some concepts (Blocks and Variables) are a little out of data as we have made ch
 JIRA:
 https://jira.slac.stanford.edu/plugins/servlet/project-config/ESROGUE
 
+Email List For Announcements:
+https://listserv.slac.stanford.edu/cgi-bin/wa?A0=AIR-ROGUE-USERS
+
 For example scripts and sub-class source code examples see:
 
 https://github.com/slaclab/rogue-example
