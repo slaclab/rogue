@@ -142,7 +142,10 @@ void rps::SrpV0::acceptFrame ( ris::FramePtr frame ) {
    log_->debug("Recv frame for id=0x%08x",id);
 
    // Find master
-   if ( ! validMaster(id) ) return; // Bad id or post, drop frame
+   if ( ! validMaster(id) ) {
+     log_->debug("Invalid ID frame for id=0x%08x",id);
+     return; // Bad id or post, drop frame
+   }
    else m = getMaster(id);
 
    // Read tail error value, complete if error is set
@@ -153,6 +156,7 @@ void rps::SrpV0::acceptFrame ( ris::FramePtr frame ) {
       if ( temp & 0x20000 ) m->doneTransaction(id,rim::AxiTimeout);
       else if ( temp & 0x10000 ) m->doneTransaction(id,rim::AxiFail);
       else m->doneTransaction(id,temp);
+      log_->debug("Error detected for ID id=0x%08x",id);
       return;
    }
 

@@ -247,6 +247,7 @@ class BaseVariable(pr.Node):
         if self._update is False or self._root is None:
             return
 
+
         value = self.value()
         disp  = self.valueDisp()
 
@@ -421,7 +422,6 @@ class RemoteVariable(BaseVariable):
             return sValue
         else:        
 
-            #print("Parsing var {}, value= {}".format(self.name, sValue))
             if self.disp == 'enum':
                 return self.revEnum[sValue]
             else:
@@ -476,7 +476,7 @@ class LocalVariable(BaseVariable):
     @Pyro4.expose
     def set(self, value, write=True):
         try:
-            self._block.set(self, value)
+            self._block.set(value)
 
         except Exception as e:
             self._log.exception(e)
@@ -489,7 +489,7 @@ class LocalVariable(BaseVariable):
     @Pyro4.expose
     def get(self,read=True):
         try:
-            ret = self._block.get(self)
+            ret = self._block.get()
 
         except Exception as e:
             self._log.exception(e)
@@ -558,7 +558,7 @@ class LinkVariable(BaseVariable):
 
             return varFuncHelper(self._linkedGet,pargs,self._log,self.path)
         else:
-            return none
+            return None
 
 # Legacy Support
 def Variable(local=False, setFunction=None, getFunction=None, **kwargs):

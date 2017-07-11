@@ -37,6 +37,9 @@ class EnableVariable(pr.BaseVariable):
         self._value = enabled
         self._lock = threading.Lock()
 
+    def nativeType(self):
+        return bool
+
     @Pyro4.expose
     def get(self, read=False):
         ret = self._value
@@ -204,6 +207,7 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
         Write all of the blocks held by this Device to memory
         """
         if not self.enable.get(): return
+        self._log.debug(f'Calling {self.path}._writeBlocks')
 
         # Process local blocks.
         if variable is not None:
@@ -243,6 +247,7 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
         Perform background reads
         """
         if not self.enable.get(): return
+        self._log.debug(f'Calling {self.path}._readBlocks')
 
         # Process local blocks. 
         if variable is not None:
@@ -260,6 +265,7 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
     def checkBlocks(self,varUpdate=True, recurse=True, variable=None):
         """Check errors in all blocks and generate variable update nofifications"""
         if not self.enable.get(): return
+        self._log.debug(f'Calling {self.path}._checkBlocks')
 
         # Process local blocks
         if variable is not None:
@@ -273,26 +279,30 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
             for key,value in self.devices.items():
                 value.checkBlocks(varUpdate=varUpdate, recurse=True)
 
-    def _rawWrite(self,address,value):
+    def _rawWrite(self, address, data, model=pr.UInt, stride=4):
+        
+        if isinstance(data, bytearray):
+            ldata = data
+        elif isinstance(data, Iterable):
+            ldata = b''.join(model.toBlock(word, stride*8) for word in data)
+        else:
+            ldata = model.toBlock(data, stride*8)
+
         with self._rawLock:
-
-            if isinstance(value,bytearray):
-                ldata = value
-            else:
-                ldata = value.to_bytes(4,'little',signed=False)
-
             self._reqTransaction(address|self.offset,ldata,rogue.interfaces.memory.Write)
             self._waitTransaction()
 
             if self._getError() > 0:
                 raise pr.MemoryError (name=self.name, address=address|self.address, error=self._getError())
 
-    def _rawRead(self,address,bdata=None):
+    def _rawRead(self, address, size=1, model=pr.UInt, stride=4, bdata=None):
+        
+        if bdata is not None:
+            ldata = bdata
+        else:
+            ldata = bytearray(size*stride)
+        
         with self._rawLock:
-            if bdata:
-                ldata = bdata
-            else:
-                ldata = bytearray(4)
 
             self._reqTransaction(address|self.offset,ldata,rogue.interfaces.memory.Read)
             self._waitTransaction()
@@ -300,8 +310,11 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
             if self._getError() > 0:
                 raise pr.MemoryError (name=self.name, address=address|self.address, error=self._getError())
 
-            if bdata is None:
-                return int.from_bytes(ldata,'little',signed=False)
+            if size == 1:
+                return base.fromBlock(ldata)
+            else:
+                return [base.fromBlock(ldata[i:i+stride]) for i in range(0, len(ldata), stride)]
+            
 
     def _buildBlocks(self):
         remVars = []
@@ -342,15 +355,15 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
         for n in remVars:
             if not any(block._addVariable(n) for block in self._blocks):
                 self._log.debug("Adding new block {} at offset {:#02x}".format(n.name,n.offset))
-                self._blocks.append(pr.MemoryBlock(variable=n,device=self))
+                self._blocks.append(pr.RegisterBlock(variable=n))
 
-    def _rootAttached(self,parent,root):
-        pr.Node._rootAttached(self,parent,root)
-
-        self._buildBlocks()
+    def _rootAttached(self, parent, root):
+        pr.Node._rootAttached(self, parent, root)
 
         for key,value in self._nodes.items():
             value._rootAttached(self,root)
+
+        self._buildBlocks()
 
     def _devReset(self,rstType):
         """Generate a count, soft or hard reset"""
@@ -389,7 +402,7 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
 
             # Handle functions with the wrong arg name and genere warning
             if len(fargs) > 0 and 'arg' not in fargs:
-                log.warning("Decorated init functions must have the parameter name 'arg': {}".format(self.path))
+                self._log.warning("Decorated init functions must have the parameter name 'arg': {}".format(self.path))
 
                 def newFunc(arg):
                     return func(arg)
