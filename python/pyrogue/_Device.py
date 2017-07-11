@@ -25,10 +25,14 @@ import math
 import time
 
 class EnableVariable(pr.BaseVariable):
-    def __init__(self, enabled):
-        pr.BaseVariable.__init__(self, name='enable', mode='RW', value=enabled, 
-                                 disp={False: 'False', True: 'True', 'parent': 'ParentFalse'},
-                                 description='Determines if device is enabled for hardware access')
+    def __init__(self, *, enabled):
+        pr.BaseVariable.__init__(
+            self,
+            description='Determines if device is enabled for hardware access',            
+            name='enable',
+            mode='RW',
+            value=enabled, 
+            disp={False: 'False', True: 'True', 'parent': 'ParentFalse'})
 
         self._value = enabled
         self._lock = threading.Lock()
@@ -72,8 +76,16 @@ class DeviceError(Exception):
 class Device(pr.Node,rogue.interfaces.memory.Hub):
     """Device class holder. TODO: Update comments"""
 
-    def __init__(self, name=None, description="", memBase=None, offset=0, hidden=False, parent=None,
-                 variables=None, expand=True, enabled=True, **dump):
+    def __init__(self, *,
+                 name=None,
+                 description='',
+                 memBase=None,
+                 offset=0,
+                 hidden=False,
+                 variables=None,
+                 expand=True,
+                 enabled=True):
+        
         """Initialize device class"""
         if name is None:
             name = self.__class__.__name__
@@ -103,7 +115,7 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
         self.addRemoteCommands = ft.partial(self.addNodes, pr.RemoteCommand)
 
         # Variable interface to enable flag
-        self.add(EnableVariable(enabled))
+        self.add(EnableVariable(enabled=enabled))
 
         if variables is not None and isinstance(variables, collections.Iterable):
             if all(isinstance(v, pr.BaseVariable) for v in variables):
@@ -330,7 +342,7 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
         for n in remVars:
             if not any(block._addVariable(n) for block in self._blocks):
                 self._log.debug("Adding new block {} at offset {:#02x}".format(n.name,n.offset))
-                self._blocks.append(pr.MemoryBlock(n,self))
+                self._blocks.append(pr.MemoryBlock(variable=n,device=self))
 
     def _rootAttached(self,parent,root):
         pr.Node._rootAttached(self,parent,root)
@@ -393,31 +405,57 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
 class DataWriter(Device):
     """Special base class to control data files. TODO: Update comments"""
 
-    def __init__(self, name, description='', hidden=False, **dump):
+    def __init__(self, *, name, **kwargs):
         """Initialize device class"""
 
-        Device.__init__(self, name=name, description=description,
-                        size=0, memBase=None, offset=0, hidden=hidden)
+        Device.__init__(self, name=name, **kwargs)
 
-        self.add(pr.LocalVariable(name='dataFile', mode='RW', value='',
+        self.add(pr.LocalVariable(
+            name='dataFile',
+            mode='RW',
+            value='',
             description='Data file for storing frames for connected streams.'))
 
-        self.add(pr.LocalVariable(name='open', mode='RW', value=False,
-            localSet=self._setOpen, description='Data file open state'))
+        self.add(pr.LocalVariable(
+            name='open',
+            mode='RW',
+            value=False,
+            localSet=self._setOpen,
+            description='Data file open state'))
 
-        self.add(pr.LocalVariable(name='bufferSize', mode='RW', value=0, localSet=self._setBufferSize,
+        self.add(pr.LocalVariable(
+            name='bufferSize',
+            mode='RW',
+            value=0,
+            localSet=self._setBufferSize,
             description='File buffering size. Enables caching of data before call to file system.'))
 
-        self.add(pr.LocalVariable(name='maxFileSize', mode='RW', value=0, localSet=self._setMaxFileSize,
+        self.add(pr.LocalVariable(
+            name='maxFileSize',
+            mode='RW',
+            value=0,
+            localSet=self._setMaxFileSize,
             description='Maximum size for an individual file. Setting to a non zero splits the run data into multiple files.'))
 
-        self.add(pr.LocalVariable(name='fileSize', mode='RO', value=0, pollInterval=1, localGet=self._getFileSize,
+        self.add(pr.LocalVariable(
+            name='fileSize',
+            mode='RO',
+            value=0,
+            pollInterval=1,
+            localGet=self._getFileSize,
             description='Size of data files(s) for current open session in bytes.'))
 
-        self.add(pr.LocalVariable(name='frameCount', mode='RO', value=0, pollInterval=1, localGet=self._getFrameCount,
+        self.add(pr.LocalVariable(
+            name='frameCount',
+            mode='RO',
+            value=0,
+            pollInterval=1,
+            localGet=self._getFrameCount,
             description='Frame in data file(s) for current open session in bytes.'))
 
-        self.add(pr.LocalCommand(name='autoName', function=self._genFileName,
+        self.add(pr.LocalCommand(
+            name='autoName',
+            function=self._genFileName,
             description='Auto create data file name using data and time.'))
 
     def _setOpen(self,value,changed):
@@ -457,7 +495,7 @@ class DataWriter(Device):
 class RunControl(Device):
     """Special base class to control runs. TODO: Update comments."""
 
-    def __init__(self, name, description='Run Controller', hidden=True, rates=None, states=None, cmd=None, **dump):
+    def __init__(self, *, name, description='Run Controller', hidden=True, rates=None, states=None, cmd=None):
         """Initialize device class"""
 
         if rates is None:
@@ -466,24 +504,37 @@ class RunControl(Device):
         if states is None:
             states={0:'Stopped', 1:'Running'}
 
-        Device.__init__(self, name=name, description=description,
-                        size=0, memBase=None, offset=0, hidden=hidden)
+        Device.__init__(self, name=name, description=description, hidden=hidden)
 
         value = [k for k,v in states.items()][0]
 
         self._thread = None
         self._cmd = cmd
 
-        self.add(pr.LocalVariable(name='runState', value=value, mode='RW', disp=states,
-                                  localSet=self._setRunState, description='Run state of the system.'))
+        self.add(pr.LocalVariable(
+            name='runState',
+            value=value,
+            mode='RW',
+            disp=states,
+            localSet=self._setRunState,
+            description='Run state of the system.'))
 
         value = [k for k,v in rates.items()][0]
 
-        self.add(pr.LocalVariable(name='runRate', value=value, mode='RW', disp=rates,
-                                  localSet=self._setRunRate, description='Run rate of the system.'))
+        self.add(pr.LocalVariable(
+            name='runRate',
+            value=value,
+            mode='RW',
+            disp=rates,
+            localSet=self._setRunRate,
+            description='Run rate of the system.'))
 
-        self.add(pr.LocalVariable(name='runCount', value=0, mode='RW', pollInterval=1,
-                                  description='Run Counter updated by run thread.'))
+        self.add(pr.LocalVariable(
+            name='runCount',
+            value=0,
+            mode='RW',
+            pollInterval=1,
+            description='Run Counter updated by run thread.'))
 
     def _setRunState(self,value,changed):
         """

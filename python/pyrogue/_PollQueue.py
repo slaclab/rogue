@@ -27,7 +27,7 @@ class PollQueue(object):
 
     Entry = recordclass.recordclass('PollQueueEntry', ['readTime', 'count', 'interval', 'block'])
 
-    def __init__(self,root):
+    def __init__(self,*, root):
         self._pq = [] # The heap queue
         self._entries = {} # {Block: Entry} mapping to look up if a block is already in the queue
         self._counter = itertools.count()
