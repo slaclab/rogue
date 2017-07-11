@@ -71,8 +71,10 @@ class EpicsCaServer(object):
 
     def stop(self):
         self._runEn = False
-        self._wThread.join()
-        self._eThread.join()
+        if self._wThread is not None:
+            self._wThread.join()
+        if self._eThread is not None:
+            self._eThread.join()
         self._wThread = None
         self._eThread = None
 
