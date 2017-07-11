@@ -256,10 +256,8 @@ class RemoteBlock(BaseBlock, rim.Master):
            (type == rim.Verify and (self.mode == 'WO' or \
                                     self.mode == 'RO' or \
                                     self._verifyWr == False)):
-            print(f'Block {self.name} _startTransaction returning')
             return
 
-        print(f'Block {self.name} _startTransaction starting, type= {type}')        
         self._log.debug(f'_startTransaction type={type}')
 
         tData = None
@@ -268,7 +266,6 @@ class RemoteBlock(BaseBlock, rim.Master):
             self._waitTransaction()
 
             self._log.debug(f'len bData = {len(self._bData)}, vData = {len(self._vData)}, mData = {len(self._mData)}')
-            print(f'len bData = {len(self._bData)}, vData = {len(self._vData)}, mData = {len(self._mData)}')
 
             # Track verify after writes. 
             # Only verify blocks that have been written since last verify
@@ -454,7 +451,6 @@ class MemoryBlock(RemoteBlock):
         self._verifyEn = True
 
     def set(self, values):
-        print(f'Calling set on Block {self.name}')
 
         with self._lock:
             self._waitTransaction()
@@ -465,7 +461,6 @@ class MemoryBlock(RemoteBlock):
                 raise BlockError(self, "Tried to call set with transaction that is too big")
 
             self._bData = b''.join( self._device._base.toBlock(v, self._device._bitStride) for v in values)
-            print(f'Block data: {self._bData}')
             self._vData = bytearray(len(self._bData))
             self._mData = bytearray(0xff for x in range(len(self._bData)))
             self._size = len(self._bData)
