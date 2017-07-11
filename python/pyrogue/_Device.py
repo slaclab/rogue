@@ -284,9 +284,9 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
         if isinstance(data, bytearray):
             ldata = data
         elif isinstance(data, Iterable):
-            ldata = b''.join(model.toBlock(word, stride) for word in data)
+            ldata = b''.join(model.toBlock(word, stride*8) for word in data)
         else:
-            ldata = model.toBlock(data, stride)
+            ldata = model.toBlock(data, stride*8)
 
         with self._rawLock:
             self._reqTransaction(address|self.offset,ldata,rogue.interfaces.memory.Write)
