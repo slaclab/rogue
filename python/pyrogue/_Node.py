@@ -56,7 +56,8 @@ class Node(object):
     attribute. This allows tree browsing using: node1.node2.node3
     """
 
-    def __init__(self, *, name, description="", hidden=False):
+
+    def __init__(self, *, name, description="", expand=True, hidden=False):
         """Init the node with passed attributes"""
 
         # Public attributes
@@ -65,6 +66,7 @@ class Node(object):
         self._hidden      = hidden
         self._path        = name
         self._depWarn     = False
+        self._expand      = expand
 
         # Tracking
         self._parent = None
@@ -94,6 +96,11 @@ class Node(object):
     def path(self):
         return self._path
 
+    @Pyro4.expose
+    @property
+    def expand(self):
+        return self._expand
+
     def __repr__(self):
         return self.path
 
@@ -114,6 +121,17 @@ class Node(object):
 
     def add(self,node):
         """Add node as sub-node"""
+
+        # Special case if list (or iterable of nodes) is passed
+        if isinstance(node, collections.Iterable) and all(isinstance(n, Node) for n in node):
+            for n in node:
+                self.add(n)
+            return
+
+        # Fail if added to a non device node (may change in future)
+        if not isinstance(self,pr.Device):
+            raise NodeError('Attempting to add %s with name %s to non device node %s.' % 
+                             (str(node.classType),node.name,self.name))
 
         # Fail if root already exists
         if self._root is not None:

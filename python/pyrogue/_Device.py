@@ -99,14 +99,13 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
         # Blocks
         self._blocks    = []
         self._memBase   = memBase
-        self._expand    = expand
         self._rawLock   = threading.RLock()
 
         # Connect to memory slave
         if memBase: self._setSlave(memBase)
 
         # Node.__init__ can't be called until after self._memBase is created
-        pr.Node.__init__(self, name=name, hidden=hidden, description=description)
+        pr.Node.__init__(self, name=name, hidden=hidden, description=description, expand=expand)
 
         self._log.info("Making device {:s}".format(name))
 
@@ -139,11 +138,6 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
 
     @Pyro4.expose
     @property
-    def expand(self):
-        return self._expand
-
-    @Pyro4.expose
-    @property
     def address(self):
         return self._getAddress()
 
@@ -153,16 +147,8 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
         return self._getOffset()
 
     def add(self,node):
-        """
-        Add node as sub-node in the object
-        Device specific implementation to add blocks as required.
-        """
-
-        # Special case if list (or iterable of nodes) is passed
-        if isinstance(node, collections.Iterable) and all(isinstance(n, pr.Node) for n in node):
-            for n in node:
-                self.add(n)
-            return
+        # Call node add
+        pr.Node.add(self,node)
 
         # Adding device
         if isinstance(node,Device):
@@ -171,13 +157,9 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
             if node._memBase is None:
                 node._setSlave(self)
 
-        # Call node add
-        pr.Node.add(self,node)
-
     def addRemoteVariables(self, number, stride, pack=False, **kwargs):
         hidden = pack or kwargs.pop('hidden', False)
         self.addNodes(pr.RemoteVariable, number, stride, hidden=hidden, **kwargs)
-
 
         # If pack specified, create a linked variable to combine everything
         if pack:
