@@ -263,7 +263,7 @@ class RemoteBlock(BaseBlock, rim.Master):
         tData = None
 
         with self._lock:
-            self._waitTransaction()
+            self._waitTransaction(0)
 
             self._log.debug(f'len bData = {len(self._bData)}, vData = {len(self._vData)}, mData = {len(self._mData)}')
 
@@ -286,7 +286,7 @@ class RemoteBlock(BaseBlock, rim.Master):
     def _checkTransaction(self, update):
         doUpdate = False
         with self._lock:
-            self._waitTransaction()
+            self._waitTransaction(0)
 
             # Error
             err = self.error
@@ -343,7 +343,7 @@ class RegisterBlock(RemoteBlock):
         Offset sets the starting point in the block array.
         """
         with self._lock:
-            self._waitTransaction()
+            self._waitTransaction(0)
             self._value = value
             self._stale = True
 
@@ -368,7 +368,7 @@ class RegisterBlock(RemoteBlock):
         bytearray is returned
         """
         with self._lock:
-            self._waitTransaction()
+            self._waitTransaction(0)
 
             # Access is fully byte aligned
             if len(var.bitOffset) == 1 and (var.bitOffset[0] % 8) == 0 and (var.bitSize[0] % 8) == 0:
@@ -392,7 +392,7 @@ class RegisterBlock(RemoteBlock):
         """
 
         with self._lock:
-            self._waitTransaction()
+            self._waitTransaction(0)
 
             # Return false if offset does not match
             if len(self._variables) != 0 and var.offset != self._variables[0].offset:
@@ -453,7 +453,7 @@ class MemoryBlock(RemoteBlock):
     def set(self, values):
 
         with self._lock:
-            self._waitTransaction()
+            self._waitTransaction(0)
             self._stale = True
             size = len(values)*self._device._stride
 

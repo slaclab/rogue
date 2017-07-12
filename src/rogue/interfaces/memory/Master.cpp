@@ -45,12 +45,10 @@ rim::MasterPtr rim::Master::create () {
 //! Create object
 rim::Master::Master() {
    slave_   = rim::Slave::create(4,4);
-   pyValid_ = false;
-   tData_   = NULL;
-   tSize_   = 0;
-   tId_     = 0;
    error_   = 0;
-   timeout_ = 1000000;
+
+   sumTime_.tv_sec  = 1;
+   sumTime_.tv_usec = 0;
 } 
 
 //! Destroy object
@@ -69,9 +67,26 @@ uint32_t rim::Master::genId() {
    return(nid);
 }
 
-//! Get current transaction id, zero if no active transaction
-uint32_t rim::Master::getId() {
-   return(tId_);
+//! Reset transaction data, not python safe, needs lock
+void rim::Master::rstTransaction(uint32_t id, uint32_t error, bool notify) {
+   std::map<uint32_t, rogue::interfaces::memory::MasterTransaction>::iterator it;
+
+   it = tran_.find(id);
+   if ( it == tran_.end() ) return;
+
+   if ( it->second.pyValid ) PyBuffer_Release(&(it->second.pyBuf));
+
+   tran_.erase(it);
+
+   if ( error != 0 ) error_ = error;
+   if ( notify ) cond_.notify_all();
+}
+
+//! Get transaaction count
+uint32_t rim::Master::tranCount() {
+   rogue::GilRelease noGil;
+   boost::lock_guard<boost::mutex> lock(mtx_);
+   return(tran_.size());
 }
 
 //! Set slave
@@ -83,8 +98,6 @@ void rim::Master::setSlave ( rim::SlavePtr slave ) {
 
 //! Get slave
 rim::SlavePtr rim::Master::getSlave () {
-   rim::SlavePtr ret;
-
    rogue::GilRelease noGil;
    boost::lock_guard<boost::mutex> lock(mtx_);
    return(slave_);
@@ -138,94 +151,106 @@ void rim::Master::setTimeout(uint32_t timeout) {
    rogue::GilRelease noGil;
    boost::lock_guard<boost::mutex> lock(mtx_);
 
-   if (timeout == 0 ) timeout_ = 1;
-   else timeout_ = timeout;
-}
-
-//! Get timeout
-uint32_t rim::Master::getTimeout() {
-   return timeout_;
+   if (timeout == 0 ) {
+      sumTime_.tv_sec  = 1;
+      sumTime_.tv_usec = 0;
+   } else {
+      sumTime_.tv_sec = (timeout / 1000000);
+      sumTime_.tv_usec = (timeout % 1000000);
+   }
 }
 
 //! Post a transaction, called locally, forwarded to slave
-void rim::Master::reqTransaction(uint64_t address, uint32_t size, void *data, uint32_t type) {
+uint32_t rim::Master::reqTransaction(uint64_t address, uint32_t size, void *data, uint32_t type) {
+   struct timeval currTime;
    rim::SlavePtr slave;
    uint32_t id;
+   rim::MasterTransaction tran;
 
    {
       rogue::GilRelease noGil;
       boost::lock_guard<boost::mutex> lock(mtx_);
       slave = slave_;
-      if ( pyValid_ ) PyBuffer_Release(&pyBuf_);
-      tData_   = (uint8_t *)data;
-      tSize_   = size;
-      error_   = 0;
-      tId_     = genId();
-      id       = tId_;
-      pyValid_ = false;
+      id    = genId();
+
+      memset(&(tran.pyBuf),0,sizeof(Py_buffer));
+
+      tran.pyValid = false;
+      tran.tData   = (uint8_t *)data;
+      tran.tSize   = size;
+      tran.tId     = id;
+
+      tran.endTime.tv_sec = 0;
+      tran.endTime.tv_usec = 0;
+   
+      tran_[id] = tran;
    }
    slave->doTransaction(id,shared_from_this(),address,size,type);
 
    rogue::GilRelease noGil;
    boost::lock_guard<boost::mutex> lock(mtx_);
-   gettimeofday(&tranTime_,NULL);
+
+   gettimeofday(&currTime,NULL);
+   timeradd(&currTime,&sumTime_,&(tran.endTime));
+
+   tran_[id] = tran;
+   return(id);
 }
 
 //! Post a transaction, called locally, forwarded to slave, python version
-void rim::Master::reqTransactionPy(uint64_t address, boost::python::object p, uint32_t type) {
+uint32_t rim::Master::reqTransactionPy(uint64_t address, boost::python::object p, uint32_t type) {
+   struct timeval currTime;
    rim::SlavePtr slave;
-   uint32_t size = 0;
    uint32_t id = 0;
+   rim::MasterTransaction tran;
 
    {
       rogue::GilRelease noGil;
       boost::lock_guard<boost::mutex> lock(mtx_);
       slave = slave_;
-      if ( pyValid_ ) PyBuffer_Release(&pyBuf_);
+      id    = genId();
 
-      if ( PyObject_GetBuffer(p.ptr(),&pyBuf_,PyBUF_SIMPLE) < 0 )
+      if ( PyObject_GetBuffer(p.ptr(),&(tran.pyBuf),PyBUF_SIMPLE) < 0 )
          throw(rogue::GeneralError("Master::reqTransactionPy","Python Buffer Error"));
-      else {
-         tData_   = (uint8_t *)pyBuf_.buf;
-         tSize_   = pyBuf_.len;
-         size     = pyBuf_.len;
-         error_   = 0;
-         tId_     = genId();
-         id       = tId_;
-         pyValid_ = true;
-      }
+
+      tran.pyValid = true;
+      tran.tData   = (uint8_t *)tran.pyBuf.buf;
+      tran.tSize   = tran.pyBuf.len;
+      tran.tId     = id;
+
+      tran.endTime.tv_sec = 0;
+      tran.endTime.tv_usec = 0;
+   
+      tran_[id] = tran;
    }
-   slave->doTransaction(id,shared_from_this(),address,size,type);
+   slave->doTransaction(id,shared_from_this(),address,tran.tSize,type);
 
    rogue::GilRelease noGil;
    boost::lock_guard<boost::mutex> lock(mtx_);
-   gettimeofday(&tranTime_,NULL);
-}
 
-//! Reset transaction data
-void rim::Master::rstTransaction(uint32_t error, bool notify) {
-   rogue::GilRelease noGil;
-   boost::lock_guard<boost::mutex> lock(mtx_);
+   gettimeofday(&currTime,NULL);
+   timeradd(&currTime,&sumTime_,&(tran.endTime));
 
-   if ( pyValid_ ) PyBuffer_Release(&pyBuf_);
-
-   pyValid_ = false;
-   tData_   = NULL;
-   tSize_   = 0;
-   tId_     = 0;
-
-   if ( error != 0 ) error_ = error;
-   if ( notify ) cond_.notify_all();
+   tran_[id] = tran;
+   return(id);
 }
 
 //! End current transaction, ensures data pointer is not update and de-allocates python buffer
-void rim::Master::endTransaction() {
-   rstTransaction(0,false);
+void rim::Master::endTransaction(uint32_t id) {
+   rogue::GilRelease noGil;
+   boost::lock_guard<boost::mutex> lock(mtx_);
+
+   if ( id == 0 ) {
+      std::map<uint32_t, rogue::interfaces::memory::MasterTransaction>::iterator it;
+      for ( it=tran_.begin(); it != tran_.end(); it++ ) rstTransaction(it->second.tId,0,false);
+   } else rstTransaction(id,0,false);
 }
 
 //! Transaction complete, set by slave, error passed
 void rim::Master::doneTransaction(uint32_t id, uint32_t error) { 
-   if ( id == tId_ ) rstTransaction(error,true);
+   rogue::GilRelease noGil;
+   boost::lock_guard<boost::mutex> lock(mtx_);
+   rstTransaction(id,error,true);
 }
 
 //! Set to master from slave, called by slave
@@ -233,9 +258,14 @@ void rim::Master::setTransactionData(uint32_t id, void *data, uint32_t offset, u
    rogue::GilRelease noGil;
    boost::lock_guard<boost::mutex> lock(mtx_);
 
-   if ( tId_ != id || tData_ == NULL || (offset + size) > tSize_ ) return;
+   std::map<uint32_t, rogue::interfaces::memory::MasterTransaction>::iterator it;
 
-   memcpy(tData_ + offset, data, size);
+   it = tran_.find(id);
+   if ( it == tran_.end() ) return;
+
+   if ( (offset + size) > it->second.tSize ) return;
+
+   memcpy(it->second.tData + offset, data, size);
 }
 
 //! Set to master from slave, called by slave to push data into master. Python Version.
@@ -254,9 +284,14 @@ void rim::Master::getTransactionData(uint32_t id, void *data, uint32_t offset, u
    rogue::GilRelease noGil;
    boost::lock_guard<boost::mutex> lock(mtx_);
 
-   if ( tId_ != id || tData_ == NULL || (offset + size) > tSize_ ) return;
+   std::map<uint32_t, rogue::interfaces::memory::MasterTransaction>::iterator it;
 
-   memcpy(data,tData_ + offset, size);
+   it = tran_.find(id);
+   if ( it == tran_.end() ) return;
+
+   if ( (offset + size) > it->second.tSize ) return;
+
+   memcpy(data,it->second.tData + offset, size);
 }
 
 //! Get from master to slave, called by slave to pull data from mater. Python Version.
@@ -274,14 +309,13 @@ void rim::Master::setup_python() {
    bp::class_<rim::MasterWrap, rim::MasterWrapPtr, boost::noncopyable>("Master",bp::init<>())
       .def("_setSlave",           &rim::Master::setSlave)
       .def("_getSlave",           &rim::Master::getSlave)
-      .def("_getId",              &rim::Master::getId)
+      .def("_tranCount",          &rim::Master::tranCount)
       .def("_reqMinAccess",       &rim::Master::reqMinAccess)
       .def("_reqMaxAccess",       &rim::Master::reqMaxAccess)
       .def("_reqAddress",         &rim::Master::reqAddress)
       .def("_getError",           &rim::Master::getError)
       .def("_setError",           &rim::Master::setError)
       .def("_setTimeout",         &rim::Master::setTimeout)
-      .def("_getTimeout",         &rim::Master::getTimeout)
       .def("_reqTransaction",     &rim::Master::reqTransactionPy)
       .def("_endTransaction",     &rim::Master::endTransaction)
       .def("_doneTransaction",    &rim::Master::doneTransaction, &rim::MasterWrap::defDoneTransaction)
@@ -296,7 +330,6 @@ void rim::Master::setup_python() {
 
 //! Transaction complete, called by slave when transaction is complete, error passed
 void rim::MasterWrap::doneTransaction(uint32_t id, uint32_t error) {
-   if ( id != tId_ ) return;
    {
       rogue::ScopedGil gil;
 
@@ -308,7 +341,6 @@ void rim::MasterWrap::doneTransaction(uint32_t id, uint32_t error) {
          }
       }
    }
-   rstTransaction(error,true);
 }
 
 //! Transaction complete, called by slave when transaction is complete, error passed
@@ -317,37 +349,30 @@ void rim::MasterWrap::defDoneTransaction(uint32_t id, uint32_t error) {
 }
 
 // Wait for transaction. Timeout in seconds
-void rim::Master::waitTransaction() {
-
-   // Return immediatly if transaction is done
-   if ( tId_ == 0 ) return;
-
-   struct timeval endTime;
-   struct timeval sumTime;
+void rim::Master::waitTransaction(uint32_t id) {
    struct timeval currTime;
 
-   sumTime.tv_sec = (timeout_ / 1000000);
-   sumTime.tv_usec = (timeout_ % 1000000);
-   timeradd(&tranTime_,&sumTime,&endTime);
+   std::map<uint32_t, rogue::interfaces::memory::MasterTransaction>::iterator it;
 
    rogue::GilRelease noGil;
    boost::unique_lock<boost::mutex> lock(mtx_);
 
-   while (tId_ > 0) {
+   // No id means wait for all
+   if ( id == 0 ) it = tran_.begin();
+   else it = tran_.find(id);
+
+   while (it != tran_.end()) {
       cond_.timed_wait(lock,boost::posix_time::microseconds(1000));
 
       // Timeout?S
       gettimeofday(&currTime,NULL);
-      if ( timercmp(&currTime,&endTime,>) ) {
-         lock.unlock();
-         printf("Timeout start = %i:%i end = %i:%i cur = %i:%i\n",
-                tranTime_.tv_sec, tranTime_.tv_usec,
-                endTime.tv_sec, endTime.tv_usec,
-                currTime.tv_sec, currTime.tv_usec);
-         
-         rstTransaction(rim::TimeoutError,false);
+      if ( timercmp(&currTime,&(it->second.endTime),>) ) {
+         rstTransaction(it->second.tId,rim::TimeoutError,false);
          break;
       }
+
+      if ( id == 0 ) it = tran_.begin();
+      else it = tran_.find(id);
    }
 }
 

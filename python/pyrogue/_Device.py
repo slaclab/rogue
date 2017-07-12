@@ -290,7 +290,7 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
 
         with self._rawLock:
             self._reqTransaction(address|self.offset,ldata,rogue.interfaces.memory.Write)
-            self._waitTransaction()
+            self._waitTransaction(0)
 
             if self._getError() > 0:
                 raise pr.MemoryError (name=self.name, address=address|self.address, error=self._getError())
@@ -305,7 +305,7 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
         with self._rawLock:
 
             self._reqTransaction(address|self.offset,ldata,rogue.interfaces.memory.Read)
-            self._waitTransaction()
+            self._waitTransaction(0)
 
             if self._getError() > 0:
                 raise pr.MemoryError (name=self.name, address=address|self.address, error=self._getError())
