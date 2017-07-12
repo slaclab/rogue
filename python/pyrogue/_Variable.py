@@ -39,7 +39,9 @@ class BaseVariable(pr.Node):
                  units=None,
                  hidden=False,
                  minimum=None,
-                 maximum=None):
+                 maximum=None,
+                 pollInterval=0
+                ):
 
         # Public Attributes
         self._mode          = mode
@@ -48,7 +50,7 @@ class BaseVariable(pr.Node):
         self._maximum       = maximum # For base='range'
         self._update        = update
         self._default       = value
-        self._pollInterval  = 0
+        self._pollInterval  = pollInterval
         self.__listeners    = []
         self.__dependencies = []
 
@@ -144,9 +146,8 @@ class BaseVariable(pr.Node):
     @pollInterval.setter
     def pollInterval(self, interval):
         self._pollInterval = interval
-        if isinstance(self._root, pr.Root) and self._root._pollQueue:
-            self._root._pollQueue.updatePollInterval(self)
-
+        self._updatePollInterval()
+        
     @property
     def dependencies(self):
         return self.__dependencies
@@ -239,8 +240,9 @@ class BaseVariable(pr.Node):
         if self._default is not None:
             self.set(self._default, write=False)
 
-        if self._pollInterval > 0 and root._pollQueue is not None:
-            root._pollQueue.updatePollInterval(self)
+    def _updatePollInterval(self):
+        if self._pollInterval > 0 and self.root._pollQueue is not None:
+            self.root._pollQueue.updatePollInterval(self)
 
     def _updated(self):
         """Variable has been updated. Inform listeners."""
@@ -295,9 +297,8 @@ class RemoteVariable(BaseVariable):
         BaseVariable.__init__(self, name=name, description=description, 
                               mode=mode, value=value, disp=disp, update=update,
                               enum=enum, units=units, hidden=hidden,
-                              minimum=minimum, maximum=maximum);
-
-        self._pollInterval = pollInterval
+                              minimum=minimum, maximum=maximum,
+                              pollInterval=pollInterval)
 
         self._base     = base        
         self._block    = None
@@ -467,9 +468,9 @@ class LocalVariable(BaseVariable):
         BaseVariable.__init__(self, name=name, description=description, 
                               mode=mode, value=value, disp=disp, update=update,
                               enum=enum, units=units, hidden=hidden,
-                              minimum=minimum, maximum=maximum)
+                              minimum=minimum, maximum=maximum,
+                              pollInterval=pollInterval)
 
-        self._pollInterval = pollInterval
         self._block = pr.LocalBlock(variable=self,localSet=localSet,localGet=localGet,value=self._default)
 
         
