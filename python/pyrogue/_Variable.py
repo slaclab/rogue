@@ -144,9 +144,8 @@ class BaseVariable(pr.Node):
     @pollInterval.setter
     def pollInterval(self, interval):
         self._pollInterval = interval
-        if isinstance(self._root, pr.Root) and self._root._pollQueue:
-            self._root._pollQueue.updatePollInterval(self)
-
+        self._updatePollInterval()
+        
     @property
     def dependencies(self):
         return self.__dependencies
@@ -239,6 +238,7 @@ class BaseVariable(pr.Node):
         if self._default is not None:
             self.set(self._default, write=False)
 
+    def _updatePollInterval(self):
         if self._pollInterval > 0 and root._pollQueue is not None:
             root._pollQueue.updatePollInterval(self)
 

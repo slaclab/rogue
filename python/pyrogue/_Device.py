@@ -365,6 +365,9 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
 
         self._buildBlocks()
 
+        for v in self.variables.values():
+            v._updatePollInterval()
+
     def _devReset(self,rstType):
         """Generate a count, soft or hard reset"""
 
