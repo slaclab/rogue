@@ -337,6 +337,7 @@ void rim::Master::setup_python() {
 
 //! Transaction complete, called by slave when transaction is complete, error passed
 void rim::MasterWrap::doneTransaction(uint32_t id, uint32_t error) {
+   bool found = false;
    {
       rogue::ScopedGil gil;
 
@@ -346,8 +347,10 @@ void rim::MasterWrap::doneTransaction(uint32_t id, uint32_t error) {
          } catch (...) {
             PyErr_Print();
          }
+         found = true;
       }
    }
+   if ( !found ) rim::Master::doneTransaction(id,error);
 }
 
 //! Transaction complete, called by slave when transaction is complete, error passed
