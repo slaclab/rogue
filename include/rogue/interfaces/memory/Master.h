@@ -95,6 +95,9 @@ namespace rogue {
                //! Reset transaction data
                void rstTransaction(uint32_t id, uint32_t error, bool notify);
 
+               //! Request transaction
+               uint32_t intTransaction(uint64_t address, rogue::interfaces::memory::MasterTransaction *tran, uint32_t type);
+
             public:
 
                //! Create a master container
