@@ -147,11 +147,12 @@ class BaseBlock(object):
 
 class LocalBlock(BaseBlock):
     def __init__(self, *, variable, localSet, localGet, value):
-        BaseBlock.__init__(self, name=variable.name, mode=variable.mode, device=variable.parent)
+        BaseBlock.__init__(self, name=variable.path, mode=variable.mode, device=variable.parent)
 
         self._localSet = localSet
         self._localGet = localGet
         self._variable = variable
+        self._variables = [variable] # Used by poller
         self._value = value
 
 
@@ -322,7 +323,7 @@ class RegisterBlock(RemoteBlock):
         Initialize memory block class.
         Pass initial variable.
         """
-        super().__init__(name=variable.name, mode=variable.mode, device=variable.parent, offset=variable.offset)
+        super().__init__(name=variable.path, mode=variable.mode, device=variable.parent, offset=variable.offset)
 
         self._variables = []
         self._addVariable(variable)
