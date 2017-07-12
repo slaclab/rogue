@@ -26,6 +26,7 @@
 #include <boost/enable_shared_from_this.hpp>
 #include <boost/python.hpp>
 #include <boost/thread.hpp>
+#include <rogue/Logging.h>
 
 namespace rogue {
    namespace interfaces {
@@ -51,9 +52,6 @@ namespace rogue {
 
                //! Transaction size
                uint32_t tSize;
-
-               //! Transaction id
-               uint32_t tId;
          };
 
          //! Slave container
@@ -82,6 +80,9 @@ namespace rogue {
 
                //! Transaction error
                uint32_t error_;
+
+               //! Log
+               rogue::Logging * log_;
 
             protected:
 

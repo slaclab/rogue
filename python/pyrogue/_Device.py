@@ -385,6 +385,8 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
         Set timeout value on all devices & blocks
         """
 
+        self._setTimeout(timeout * 1000000)
+
         for block in self._blocks:
             block.timeout = timeout
 

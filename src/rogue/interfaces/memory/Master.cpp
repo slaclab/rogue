@@ -49,6 +49,8 @@ rim::Master::Master() {
 
    sumTime_.tv_sec  = 1;
    sumTime_.tv_usec = 0;
+
+   log_ = new Logging("memory.Master");
 } 
 
 //! Destroy object
@@ -72,7 +74,12 @@ void rim::Master::rstTransaction(uint32_t id, uint32_t error, bool notify) {
    std::map<uint32_t, rogue::interfaces::memory::MasterTransaction>::iterator it;
 
    it = tran_.find(id);
-   if ( it == tran_.end() ) return;
+   if ( it == tran_.end() ) {
+      log_->info("Reset transaction failed to find transaction id=%i",id);
+      return;
+   }
+
+   log_->debug("Resetting transaction id=%i",id);
 
    if ( it->second.pyValid ) PyBuffer_Release(&(it->second.pyBuf));
 
@@ -178,13 +185,15 @@ uint32_t rim::Master::reqTransaction(uint64_t address, uint32_t size, void *data
       tran.pyValid = false;
       tran.tData   = (uint8_t *)data;
       tran.tSize   = size;
-      tran.tId     = id;
 
       tran.endTime.tv_sec = 0;
       tran.endTime.tv_usec = 0;
    
       tran_[id] = tran;
    }
+
+   log_->debug("Request transaction type=%i id=%i",type,id);
+
    slave->doTransaction(id,shared_from_this(),address,size,type);
 
    rogue::GilRelease noGil;
@@ -216,13 +225,13 @@ uint32_t rim::Master::reqTransactionPy(uint64_t address, boost::python::object p
       tran.pyValid = true;
       tran.tData   = (uint8_t *)tran.pyBuf.buf;
       tran.tSize   = tran.pyBuf.len;
-      tran.tId     = id;
 
       tran.endTime.tv_sec = 0;
       tran.endTime.tv_usec = 0;
    
       tran_[id] = tran;
    }
+   log_->debug("Request transaction type=%i id=%i",type,id);
    slave->doTransaction(id,shared_from_this(),address,tran.tSize,type);
 
    rogue::GilRelease noGil;
@@ -240,9 +249,11 @@ void rim::Master::endTransaction(uint32_t id) {
    rogue::GilRelease noGil;
    boost::lock_guard<boost::mutex> lock(mtx_);
 
+   log_->debug("End transaction id=%i",id);
+
    if ( id == 0 ) {
       std::map<uint32_t, rogue::interfaces::memory::MasterTransaction>::iterator it;
-      for ( it=tran_.begin(); it != tran_.end(); it++ ) rstTransaction(it->second.tId,0,false);
+      for ( it=tran_.begin(); it != tran_.end(); it++ ) rstTransaction(it->first,0,false);
    } else rstTransaction(id,0,false);
 }
 
@@ -250,6 +261,7 @@ void rim::Master::endTransaction(uint32_t id) {
 void rim::Master::doneTransaction(uint32_t id, uint32_t error) { 
    rogue::GilRelease noGil;
    boost::lock_guard<boost::mutex> lock(mtx_);
+   log_->debug("Done transaction id=%i",id);
    rstTransaction(id,error,true);
 }
 
@@ -261,10 +273,14 @@ void rim::Master::setTransactionData(uint32_t id, void *data, uint32_t offset, u
    std::map<uint32_t, rogue::interfaces::memory::MasterTransaction>::iterator it;
 
    it = tran_.find(id);
-   if ( it == tran_.end() ) return;
+   if ( it == tran_.end() ) {
+      log_->info("Set transaction data failed to find transaction id=%i",id);
+      return;
+   }
 
    if ( (offset + size) > it->second.tSize ) return;
 
+   log_->debug("Set transaction data id=%i",id);
    memcpy(it->second.tData + offset, data, size);
 }
 
@@ -287,10 +303,14 @@ void rim::Master::getTransactionData(uint32_t id, void *data, uint32_t offset, u
    std::map<uint32_t, rogue::interfaces::memory::MasterTransaction>::iterator it;
 
    it = tran_.find(id);
-   if ( it == tran_.end() ) return;
+   if ( it == tran_.end() ) {
+      log_->info("Get transaction data failed to find transaction id=%i",id);
+      return;
+   }
 
    if ( (offset + size) > it->second.tSize ) return;
 
+   log_->debug("Get transaction data id=%i",id);
    memcpy(data,it->second.tData + offset, size);
 }
 
@@ -364,11 +384,15 @@ void rim::Master::waitTransaction(uint32_t id) {
    while (it != tran_.end()) {
       cond_.timed_wait(lock,boost::posix_time::microseconds(1000));
 
-      // Timeout?S
-      gettimeofday(&currTime,NULL);
-      if ( timercmp(&currTime,&(it->second.endTime),>) ) {
-         rstTransaction(it->second.tId,rim::TimeoutError,false);
-         break;
+      // Timeout?
+      if ( it->second.endTime.tv_sec != 0 && it->second.endTime.tv_usec != 0 ) {
+         gettimeofday(&currTime,NULL);
+         if ( timercmp(&currTime,&(it->second.endTime),>) ) {
+            log_->info("Transaction timeout id=%i end=%i:%i curr=%i:%i",it->first,
+                  it->second.endTime.tv_sec,it->second.endTime.tv_usec,currTime.tv_sec,currTime.tv_usec);
+            rstTransaction(it->first,rim::TimeoutError,false);
+            break;
+         }
       }
 
       if ( id == 0 ) it = tran_.begin();
