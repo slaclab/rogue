@@ -41,6 +41,9 @@ namespace rogue {
                //! Transaction start time
                struct timeval endTime;
 
+               //! Transaction start time
+               struct timeval startTime;
+
                //! Transaction python buffer
                Py_buffer pyBuf;
 

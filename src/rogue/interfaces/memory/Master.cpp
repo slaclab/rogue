@@ -188,7 +188,9 @@ uint32_t rim::Master::reqTransaction(uint64_t address, uint32_t size, void *data
 
       tran.endTime.tv_sec = 0;
       tran.endTime.tv_usec = 0;
-   
+
+      gettimeofday(&(tran.startTime),NULL);
+
       tran_[id] = tran;
    }
 
@@ -228,7 +230,9 @@ uint32_t rim::Master::reqTransactionPy(uint64_t address, boost::python::object p
 
       tran.endTime.tv_sec = 0;
       tran.endTime.tv_usec = 0;
-   
+
+      gettimeofday(&(tran.startTime),NULL);
+
       tran_[id] = tran;
    }
    log_->debug("Request transaction type=%i id=%i",type,id);
@@ -382,18 +386,21 @@ void rim::Master::waitTransaction(uint32_t id) {
    else it = tran_.find(id);
 
    while (it != tran_.end()) {
-      cond_.timed_wait(lock,boost::posix_time::microseconds(1000));
 
       // Timeout?
       if ( it->second.endTime.tv_sec != 0 && it->second.endTime.tv_usec != 0 ) {
          gettimeofday(&currTime,NULL);
          if ( timercmp(&currTime,&(it->second.endTime),>) ) {
-            log_->info("Transaction timeout id=%i end=%i:%i curr=%i:%i",it->first,
-                  it->second.endTime.tv_sec,it->second.endTime.tv_usec,currTime.tv_sec,currTime.tv_usec);
+            log_->info("Transaction timeout id=%i start =%i:%i end=%i:%i curr=%i:%i",it->first,
+                  it->second.startTime.tv_sec, it->second.startTime.tv_usec,
+                  it->second.endTime.tv_sec,it->second.endTime.tv_usec,
+                  currTime.tv_sec,currTime.tv_usec);
             rstTransaction(it->first,rim::TimeoutError,false);
             break;
          }
       }
+
+      cond_.timed_wait(lock,boost::posix_time::microseconds(1000));
 
       if ( id == 0 ) it = tran_.begin();
       else it = tran_.find(id);
