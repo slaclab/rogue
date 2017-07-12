@@ -388,19 +388,15 @@ void rim::Master::waitTransaction(uint32_t id) {
    while (it != tran_.end()) {
 
       // Timeout?
-      if ( it->second.endTime.tv_sec != 0 && it->second.endTime.tv_usec != 0 ) {
-         gettimeofday(&currTime,NULL);
-         if ( timercmp(&currTime,&(it->second.endTime),>) ) {
-            log_->info("Transaction timeout id=%i start =%i:%i end=%i:%i curr=%i:%i",it->first,
-                  it->second.startTime.tv_sec, it->second.startTime.tv_usec,
-                  it->second.endTime.tv_sec,it->second.endTime.tv_usec,
-                  currTime.tv_sec,currTime.tv_usec);
-            rstTransaction(it->first,rim::TimeoutError,false);
-            break;
-         }
+      gettimeofday(&currTime,NULL);
+      if ( it->second.endTime.tv_sec != 0 && it->second.endTime.tv_usec != 0 && timercmp(&currTime,&(it->second.endTime),>) ) {
+         log_->info("Transaction timeout id=%i start =%i:%i end=%i:%i curr=%i:%i",it->first,
+               it->second.startTime.tv_sec, it->second.startTime.tv_usec,
+               it->second.endTime.tv_sec,it->second.endTime.tv_usec,
+               currTime.tv_sec,currTime.tv_usec);
+         rstTransaction(it->first,rim::TimeoutError,false);
       }
-
-      cond_.timed_wait(lock,boost::posix_time::microseconds(1000));
+      else cond_.timed_wait(lock,boost::posix_time::microseconds(1000));
 
       if ( id == 0 ) it = tran_.begin();
       else it = tran_.find(id);
