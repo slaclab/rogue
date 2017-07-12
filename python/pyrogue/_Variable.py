@@ -39,7 +39,9 @@ class BaseVariable(pr.Node):
                  units=None,
                  hidden=False,
                  minimum=None,
-                 maximum=None):
+                 maximum=None,
+                 pollInterval=0
+                ):
 
         # Public Attributes
         self._mode          = mode
@@ -48,7 +50,7 @@ class BaseVariable(pr.Node):
         self._maximum       = maximum # For base='range'
         self._update        = update
         self._default       = value
-        self._pollInterval  = 0
+        self._pollInterval  = pollInterval
         self.__listeners    = []
         self.__dependencies = []
 
@@ -295,9 +297,8 @@ class RemoteVariable(BaseVariable):
         BaseVariable.__init__(self, name=name, description=description, 
                               mode=mode, value=value, disp=disp, update=update,
                               enum=enum, units=units, hidden=hidden,
-                              minimum=minimum, maximum=maximum);
-
-        self._pollInterval = pollInterval
+                              minimum=minimum, maximum=maximum,
+                              pollInterval=pollInterval)
 
         self._base     = base        
         self._block    = None
@@ -467,9 +468,9 @@ class LocalVariable(BaseVariable):
         BaseVariable.__init__(self, name=name, description=description, 
                               mode=mode, value=value, disp=disp, update=update,
                               enum=enum, units=units, hidden=hidden,
-                              minimum=minimum, maximum=maximum)
+                              minimum=minimum, maximum=maximum,
+                              pollInterval=pollInterval)
 
-        self._pollInterval = pollInterval
         self._block = pr.LocalBlock(variable=self,localSet=localSet,localGet=localGet,value=self._default)
 
         
