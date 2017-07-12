@@ -279,14 +279,14 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
             for key,value in self.devices.items():
                 value.checkBlocks(varUpdate=varUpdate, recurse=True)
 
-    def _rawWrite(self, address, data, model=pr.UInt, stride=4):
+    def _rawWrite(self, address, data, base=pr.UInt, stride=4):
         
         if isinstance(data, bytearray):
             ldata = data
-        elif isinstance(data, Iterable):
-            ldata = b''.join(model.toBlock(word, stride*8) for word in data)
+        elif isinstance(data, collections.Iterable):
+            ldata = b''.join(base.toBlock(word, stride*8) for word in data)
         else:
-            ldata = model.toBlock(data, stride*8)
+            ldata = base.toBlock(data, stride*8)
 
         with self._rawLock:
             self._reqTransaction(address|self.offset,ldata,rogue.interfaces.memory.Write)
@@ -295,7 +295,7 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
             if self._getError() > 0:
                 raise pr.MemoryError (name=self.name, address=address|self.address, error=self._getError())
 
-    def _rawRead(self, address, size=1, model=pr.UInt, stride=4, bdata=None):
+    def _rawRead(self, address, size=1, base=pr.UInt, stride=4, bdata=None):
         
         if bdata is not None:
             ldata = bdata
