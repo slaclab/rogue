@@ -137,7 +137,7 @@ class BaseBlock(object):
         with self._lock:
             doUpdate = update and self._doUpdate
             self._doUpdate = False
-            for x in range(0,self._lockCnt): self._lock.release()
+            for x in range(self._lockCnt): self._lock.release()
             self._lockCnt = 0
 
         # Update variables outside of lock
@@ -145,7 +145,7 @@ class BaseBlock(object):
 
     def _resetTransaction(self):
         with self._lock:
-            for x in range(0,self._lockCnt): self._lock.release()
+            for x in range(self._lockCnt): self._lock.release()
             self._lockCnt = 0
 
     def _updated(self):
@@ -305,7 +305,7 @@ class RemoteBlock(BaseBlock, rim.Master):
             if self._doVerify:
                 self._verifyWr = False
 
-                for x in range(0,self._size):
+                for x in range(self._size):
                     if (self._vData[x] & self._mData[x]) != (self._bData[x] & self._mData[x]):
                         msg  = ('Local='    + ''.join(f'{x:#02x}' for x in self._bData))
                         msg += ('. Verify=' + ''.join(f'{x:#02x}' for x in self._vData))
@@ -317,7 +317,7 @@ class RemoteBlock(BaseBlock, rim.Master):
             doUpdate = update and self._doUpdate
             self._doUpdate = False
 
-            for x in range(0,self._lockCnt): self._lock.release()
+            for x in range(self._lockCnt): self._lock.release()
             self._lockCnt = 0
 
         # Update variables outside of lock
@@ -326,7 +326,7 @@ class RemoteBlock(BaseBlock, rim.Master):
     def _resetTransaction(self):
         with self._lock:
             self._endTransaction(0)
-            for x in range(0,self._lockCnt): self._lock.release()
+            for x in range(self._lockCnt): self._lock.release()
             self._lockCnt = 0
 
 class RegisterBlock(RemoteBlock):
