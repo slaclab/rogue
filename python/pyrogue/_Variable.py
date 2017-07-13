@@ -232,11 +232,10 @@ class BaseVariable(pr.Node):
     def nativeType(self):
         return type(self.value())
 
-    def _rootAttached(self,parent,root):
-        pr.Node._rootAttached(self,parent,root)
-
+    def _setDefault(self):
+        # Called by parent Device after _buildBlocks()
         if self._default is not None:
-            self.set(self._default, write=False)
+            self.setDisp(self._default, write=False)
 
     def _updatePollInterval(self):
         if self._pollInterval > 0 and self.root._pollQueue is not None:
