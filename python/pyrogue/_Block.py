@@ -59,12 +59,6 @@ class MemoryError(Exception):
     def __str__(self):
         return repr(self._value)
 
-def resetLock(lock):
-    try:
-        while True:
-            lock.release()
-    except:
-        pass
 
 class BaseBlock(object):
 
@@ -74,6 +68,7 @@ class BaseBlock(object):
         self._mode      = mode
         self._device    = device
         self._lock      = threading.RLock()
+        self._lockCnt   = 0
         self._doUpdate  = False
 
         # Setup logging
@@ -130,6 +125,7 @@ class BaseBlock(object):
         Start a transaction.
         """
         self._lock.acquire()
+        self._lockCnt += 1
         self._doUpdate = (type == rim.Read)
 
     def _checkTransaction(self,update):
@@ -137,16 +133,20 @@ class BaseBlock(object):
         Check status of block.
         If update=True notify variables if read
         """
-        self._lock.acquire()
-        doUpdate = update and self._doUpdate
-        self._doUpdate = False
-        resetLock(self._lock)
+        doUpdate = False
+        with self._lock:
+            doUpdate = update and self._doUpdate
+            self._doUpdate = False
+            for x in range(0,self._lockCnt): self._lock.release()
+            self._lockCnt = 0
 
         # Update variables outside of lock
         if doUpdate: self._updated()
 
     def _resetTransaction(self):
-        resetLock(self._lock)
+        with self._lock:
+            for x in range(0,self._lockCnt): self._lock.release()
+            self._lockCnt = 0
 
     def _updated(self):
         pass
@@ -256,7 +256,6 @@ class RemoteBlock(BaseBlock, rim.Master):
         Start a transaction.
         """
         self._lock.acquire()
-        self._waitTransaction(0)
 
         # Check for invalid combinations or disabled device
         if (self._device.enable.value() is not True) or \
@@ -266,8 +265,11 @@ class RemoteBlock(BaseBlock, rim.Master):
            (type == rim.Verify and (self.mode == 'WO' or \
                                     self.mode == 'RO' or \
                                     self._verifyWr == False)):
-            resetLock(self._lock)
+            self._lock.release()
             return
+
+        self._lockCnt += 1
+        self._waitTransaction(0)
 
         self._log.debug(f'_startTransaction type={type}')
         self._log.debug(f'len bData = {len(self._bData)}, vData = {len(self._vData)}, mData = {len(self._mData)}')
@@ -289,39 +291,43 @@ class RemoteBlock(BaseBlock, rim.Master):
 
 
     def _checkTransaction(self, update):
-        self._lock.acquire()
-        self._waitTransaction(0)
+        doUpdate = False
+        with self._lock:
+            self._waitTransaction(0)
 
-        # Error
-        err = self.error
-        self.error = 0
+            # Error
+            err = self.error
+            self.error = 0
 
-        if err > 0:
-            raise MemoryError(name=self.name, address=self.address, error=err, size=self._size)
+            if err > 0:
+                raise MemoryError(name=self.name, address=self.address, error=err, size=self._size)
 
-        if self._doVerify:
-            self._verifyWr = False
+            if self._doVerify:
+                self._verifyWr = False
 
-            for x in range(0,self._size):
-                if (self._vData[x] & self._mData[x]) != (self._bData[x] & self._mData[x]):
-                    msg  = ('Local='    + ''.join(f'{x:#02x}' for x in self._bData))
-                    msg += ('. Verify=' + ''.join(f'{x:#02x}' for x in self._vData))
-                    msg += ('. Mask='   + ''.join(f'{x:#02x}' for x in self._mData))
+                for x in range(0,self._size):
+                    if (self._vData[x] & self._mData[x]) != (self._bData[x] & self._mData[x]):
+                        msg  = ('Local='    + ''.join(f'{x:#02x}' for x in self._bData))
+                        msg += ('. Verify=' + ''.join(f'{x:#02x}' for x in self._vData))
+                        msg += ('. Mask='   + ''.join(f'{x:#02x}' for x in self._mData))
 
-                    raise MemoryError(name=self.name, address=self.address, error=rim.VerifyError, msg=msg, size=self._size)
+                        raise MemoryError(name=self.name, address=self.address, error=rim.VerifyError, msg=msg, size=self._size)
 
-           # Updated
-        doUpdate = update and self._doUpdate
-        self._doUpdate = False
+               # Updated
+            doUpdate = update and self._doUpdate
+            self._doUpdate = False
 
-        resetLock(self._lock)
+            for x in range(0,self._lockCnt): self._lock.release()
+            self._lockCnt = 0
 
         # Update variables outside of lock
         if doUpdate: self._updated()
 
     def _resetTransaction(self):
-        self._endTransaction(0)
-        resetLock(self._lock)
+        with self._lock:
+            self._endTransaction(0)
+            for x in range(0,self._lockCnt): self._lock.release()
+            self._lockCnt = 0
 
 class RegisterBlock(RemoteBlock):
     """Internal memory block holder"""
@@ -352,6 +358,7 @@ class RegisterBlock(RemoteBlock):
         Offset sets the starting point in the block array.
         """
         self._lock.acquire()
+        self._lockCnt += 1
 
         self._value = value
         self._stale = True
