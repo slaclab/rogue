@@ -60,45 +60,6 @@ class MemoryError(Exception):
         return repr(self._value)
 
 
-class MemoryLock(object):
-
-    def __init__(self):
-        self._cond  = threading.Conditional()
-        self._owner = None
-        self._count = 0
-
-    def acquire(self):
-        with self._cond:
-            while self._owner is not None and self._owner != threading.current_thread():
-                self._cond.wait()
-            self._owner = threading.current_thread()
-            self._count += 1
-
-    def release(self):
-        with self._cond:
-            if self._owner == threading.current_thread():
-                if self._count < 2:
-                    self._owner = None
-                    self._count = 0
-                    self._cond.notify()
-                else:
-                    self._count -= 1
-
-    def reset(self):
-        with self._cond:
-            if self._owner == threading.current_thread():
-                self._owner = None
-                self._count = 0
-                self._cond.notify()
-
-    def __enter__(self):
-        self.acquire()
-        return self
-
-    def __exit__(self, typ, val tb):
-        self.release()
-
-
 class BaseBlock(object):
 
     def __init__(self, *, name, mode, device):
@@ -106,7 +67,7 @@ class BaseBlock(object):
         self._name      = name
         self._mode      = mode
         self._device    = device
-        self._lock      = MemoryLock()
+        self._lock      = threading.RLock()
         self._doUpdate  = False
 
         # Setup logging
@@ -138,7 +99,6 @@ class BaseBlock(object):
     def mode(self):
         return self._mode
 
-
     @property
     def timeout(self):
         return 0
@@ -159,7 +119,6 @@ class BaseBlock(object):
     def bulkEn(self):
         return True
 
-
     def _startTransaction(self,type):
         """
         Start a transaction.
@@ -175,14 +134,21 @@ class BaseBlock(object):
         self._lock.acquire()
         doUpdate = update and self._doUpdate
         self._doUpdate = False
-        self._lock.reset()
+        self._clearLock()
 
         # Update variables outside of lock
         if doUpdate: self._updated()
 
+    def _clearLock(self):
+        try:
+            while True:
+                self._lock.release()
+        except:
+            pass
+       
     def _resetTransaction(self):
-        self._lock.reset()
-        
+        self._clearLock()
+
     def _updated(self):
         pass
 
@@ -286,7 +252,6 @@ class RemoteBlock(BaseBlock, rim.Master):
     def bulkEn(self):
         return self._bulkEn
 
-
     def _startTransaction(self,type):
         """
         Start a transaction.
@@ -302,7 +267,7 @@ class RemoteBlock(BaseBlock, rim.Master):
            (type == rim.Verify and (self.mode == 'WO' or \
                                     self.mode == 'RO' or \
                                     self._verifyWr == False)):
-            self._lock.reset()
+            self._clearLock()
             return
 
         self._log.debug(f'_startTransaction type={type}')
@@ -333,7 +298,6 @@ class RemoteBlock(BaseBlock, rim.Master):
         self.error = 0
 
         if err > 0:
-            self._lock.reset()
             raise MemoryError(name=self.name, address=self.address, error=err, size=self._size)
 
         if self._doVerify:
@@ -345,21 +309,20 @@ class RemoteBlock(BaseBlock, rim.Master):
                     msg += ('. Verify=' + ''.join(f'{x:#02x}' for x in self._vData))
                     msg += ('. Mask='   + ''.join(f'{x:#02x}' for x in self._mData))
 
-                    self._lock.reset()
                     raise MemoryError(name=self.name, address=self.address, error=rim.VerifyError, msg=msg, size=self._size)
 
            # Updated
         doUpdate = update and self._doUpdate
         self._doUpdate = False
 
-        self._lock.reset()
+        self._clearLock()
 
         # Update variables outside of lock
         if doUpdate: self._updated()
 
     def _resetTransaction(self):
         self._endTransaction(0)
-        self._lock.reset()
+        self._clearLock()
 
 class RegisterBlock(RemoteBlock):
     """Internal memory block holder"""

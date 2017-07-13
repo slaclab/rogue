@@ -239,8 +239,8 @@ class BaseVariable(pr.Node):
             self.set(self._default, write=False)
 
     def _updatePollInterval(self):
-        if self._pollInterval > 0 and root._pollQueue is not None:
-            root._pollQueue.updatePollInterval(self)
+        if self._pollInterval > 0 and self.root._pollQueue is not None:
+            self.root._pollQueue.updatePollInterval(self)
 
     def _updated(self):
         """Variable has been updated. Inform listeners."""

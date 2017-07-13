@@ -99,7 +99,7 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
         # Blocks
         self._blocks    = []
         self._memBase   = memBase
-        self._memLock   = pr.MemoryLock()
+        self._memLock   = threading.RLock()
 
         # Connect to memory slave
         if memBase: self._setSlave(memBase)
