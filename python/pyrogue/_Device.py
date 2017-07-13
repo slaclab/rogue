@@ -13,7 +13,7 @@
 # copied, modified, propagated, or distributed except according to the terms 
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
-import rogue.interfaces.memory
+import rogue.interfaces.memory as rim
 import collections
 import datetime
 import functools as ft
@@ -76,7 +76,7 @@ class DeviceError(Exception):
     """ Exception for device manipulation errors."""
     pass
 
-class Device(pr.Node,rogue.interfaces.memory.Hub):
+class Device(pr.Node,rim.Hub):
     """Device class holder. TODO: Update comments"""
 
     def __init__(self, *,
@@ -84,6 +84,7 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
                  description='',
                  memBase=None,
                  offset=0,
+                 size=0,
                  hidden=False,
                  variables=None,
                  expand=True,
@@ -94,12 +95,13 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
             name = self.__class__.__name__
 
         # Hub.__init__ must be called first for _setSlave to work below
-        rogue.interfaces.memory.Hub.__init__(self,offset)
+        rim.Hub.__init__(self,offset)
 
         # Blocks
         self._blocks    = []
         self._memBase   = memBase
         self._rawLock   = threading.RLock()
+        self._size      = 0
 
         # Connect to memory slave
         if memBase: self._setSlave(memBase)
@@ -211,12 +213,12 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
 
         # Process local blocks.
         if variable is not None:
-            variable._block.backgroundTransaction(rogue.interfaces.memory.Write)
+            variable._block.backgroundTransaction(rim.Write)
         else:
             for block in self._blocks:
                 if force or block.stale:
                     if block.bulkEn:
-                        block.backgroundTransaction(rogue.interfaces.memory.Write)
+                        block.backgroundTransaction(rim.Write)
 
         # Process rest of tree
         if recurse:
@@ -231,11 +233,11 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
 
         # Process local blocks.
         if variable is not None:
-            variable._block.backgroundTransaction(rogue.interfaces.memory.Verify)
+            variable._block.backgroundTransaction(rim.Verify)
         else:
             for block in self._blocks:
                 if block.bulkEn:
-                    block.backgroundTransaction(rogue.interfaces.memory.Verify)
+                    block.backgroundTransaction(rim.Verify)
 
         # Process rest of tree
         if recurse:
@@ -251,11 +253,11 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
 
         # Process local blocks. 
         if variable is not None:
-            variable._block.backgroundTransaction(rogue.interfaces.memory.Read)
+            variable._block.backgroundTransaction(rim.Read)
         else:
             for block in self._blocks:
                 if block.bulkEn:
-                    block.backgroundTransaction(rogue.interfaces.memory.Read)
+                    block.backgroundTransaction(rim.Read)
 
         # Process rest of tree
         if recurse:
@@ -288,8 +290,11 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
         else:
             ldata = base.toBlock(data, stride*8)
 
+        if address + len(ldata) > self._size:
+            raise pr.MemoryError (name=self.name, address=address|self.address, error=rim.SizeError,size=len(ldata))
+
         with self._rawLock:
-            self._reqTransaction(address|self.offset,ldata,rogue.interfaces.memory.Write)
+            self._reqTransaction(address|self.offset,ldata,rim.Write)
             self._waitTransaction()
 
             if self._getError() > 0:
@@ -301,10 +306,13 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
             ldata = bdata
         else:
             ldata = bytearray(size*stride)
-        
+
+        if address + len(ldata) > self._size:
+            raise pr.MemoryError (name=self.name, address=address|self.address, error=rim.SizeError,size=len(ldata))
+
         with self._rawLock:
 
-            self._reqTransaction(address|self.offset,ldata,rogue.interfaces.memory.Read)
+            self._reqTransaction(address|self.offset,ldata,rim.Read)
             self._waitTransaction()
 
             if self._getError() > 0:
@@ -356,6 +364,10 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
             if not any(block._addVariable(n) for block in self._blocks):
                 self._log.debug("Adding new block {} at offset {:#02x}".format(n.name,n.offset))
                 self._blocks.append(pr.RegisterBlock(variable=n))
+
+            if n.offset + n.varBytes > self._size:
+                self._size = n.offset + n.varBytes
+
 
     def _rootAttached(self, parent, root):
         pr.Node._rootAttached(self, parent, root)
