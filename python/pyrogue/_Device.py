@@ -101,7 +101,7 @@ class Device(pr.Node,rim.Hub):
         self._blocks    = []
         self._memBase   = memBase
         self._rawLock   = threading.RLock()
-        self._size      = 0
+        self._size      = size
 
         # Connect to memory slave
         if memBase: self._setSlave(memBase)
