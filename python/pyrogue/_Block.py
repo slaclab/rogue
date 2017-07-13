@@ -59,6 +59,12 @@ class MemoryError(Exception):
     def __str__(self):
         return repr(self._value)
 
+def resetLock(lock):
+    try:
+        while True:
+            lock.release()
+    except:
+        pass
 
 class BaseBlock(object):
 
@@ -134,20 +140,13 @@ class BaseBlock(object):
         self._lock.acquire()
         doUpdate = update and self._doUpdate
         self._doUpdate = False
-        self._clearLock()
+        resetLock(self._lock)
 
         # Update variables outside of lock
         if doUpdate: self._updated()
 
-    def _clearLock(self):
-        try:
-            while True:
-                self._lock.release()
-        except:
-            pass
-       
     def _resetTransaction(self):
-        self._clearLock()
+        resetLock(self._lock)
 
     def _updated(self):
         pass
@@ -267,7 +266,7 @@ class RemoteBlock(BaseBlock, rim.Master):
            (type == rim.Verify and (self.mode == 'WO' or \
                                     self.mode == 'RO' or \
                                     self._verifyWr == False)):
-            self._clearLock()
+            resetLock(self._lock)
             return
 
         self._log.debug(f'_startTransaction type={type}')
@@ -315,14 +314,14 @@ class RemoteBlock(BaseBlock, rim.Master):
         doUpdate = update and self._doUpdate
         self._doUpdate = False
 
-        self._clearLock()
+        resetLock(self._lock)
 
         # Update variables outside of lock
         if doUpdate: self._updated()
 
     def _resetTransaction(self):
         self._endTransaction(0)
-        self._clearLock()
+        resetLock(self._lock)
 
 class RegisterBlock(RemoteBlock):
     """Internal memory block holder"""
