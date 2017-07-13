@@ -365,8 +365,8 @@ class Device(pr.Node,rim.Hub):
                 self._log.debug("Adding new block {} at offset {:#02x}".format(n.name,n.offset))
                 self._blocks.append(pr.RegisterBlock(variable=n))
 
-            if n.offset + n.varBytes > self._size:
-                self._size = n.offset + n.varBytes
+            if (n.offset + n.varBytes + 1) > self._size:
+                self._size = n.offset + n.varBytes + 1
 
 
     def _rootAttached(self, parent, root):
