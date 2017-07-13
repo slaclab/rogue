@@ -335,6 +335,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
             self._log.info("Check root read")
             self.checkBlocks(varUpdate=False, recurse=True)
         except Exception as e:
+            self._resetBlocks()
             self._log.exception(e)
         self._log.info("Done root write")
 
@@ -348,6 +349,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
             self._log.info("Check root read")
             self.checkBlocks(varUpdate=True, recurse=True)
         except Exception as e:
+            self._resetBlocks()
             self._log.exception(e)
         self._doneUpdatedVars()
         self._log.info("Done root read")

@@ -99,7 +99,7 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
         # Blocks
         self._blocks    = []
         self._memBase   = memBase
-        self._rawLock   = threading.RLock()
+        self._memLock   = pr.MemoryLock()
 
         # Connect to memory slave
         if memBase: self._setSlave(memBase)
@@ -218,10 +218,9 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
                     if block.bulkEn:
                         block.backgroundTransaction(rogue.interfaces.memory.Write)
 
-        # Process rest of tree
-        if recurse:
-            for key,value in self.devices.items():
-                value.writeBlocks(force=force, recurse=True)
+            if recurse:
+                for key,value in self.devices.items():
+                    value.writeBlocks(force=force, recurse=True)
 
     def verifyBlocks(self, recurse=True, variable=None):
         """
@@ -237,10 +236,9 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
                 if block.bulkEn:
                     block.backgroundTransaction(rogue.interfaces.memory.Verify)
 
-        # Process rest of tree
-        if recurse:
-            for key,value in self.devices.items():
-                value.verifyBlocks(recurse=True)
+            if recurse:
+                for key,value in self.devices.items():
+                    value.verifyBlocks(recurse=True)
 
     def readBlocks(self, recurse=True, variable=None):
         """
@@ -257,10 +255,9 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
                 if block.bulkEn:
                     block.backgroundTransaction(rogue.interfaces.memory.Read)
 
-        # Process rest of tree
-        if recurse:
-            for key,value in self.devices.items():
-                value.readBlocks(recurse=True)
+            if recurse:
+                for key,value in self.devices.items():
+                    value.readBlocks(recurse=True)
 
     def checkBlocks(self,varUpdate=True, recurse=True, variable=None):
         """Check errors in all blocks and generate variable update nofifications"""
@@ -274,10 +271,16 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
             for block in self._blocks:
                 block._checkTransaction(varUpdate)
 
-        # Process rest of tree
-        if recurse:
-            for key,value in self.devices.items():
-                value.checkBlocks(varUpdate=varUpdate, recurse=True)
+            if recurse:
+                for key,value in self.devices.items():
+                    value.checkBlocks(varUpdate=varUpdate, recurse=True)
+
+    def _resetBlocks(self):
+        for block in self._blocks:
+            block._resetTransaction()
+
+        for key,value in self.devices.items():
+            value._resetBlocks()
 
     def _rawWrite(self, address, data, base=pr.UInt, stride=4):
         
@@ -288,7 +291,7 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
         else:
             ldata = base.toBlock(data, stride*8)
 
-        with self._rawLock:
+        with self._memLock:
             self._reqTransaction(address|self.offset,ldata,rogue.interfaces.memory.Write)
             self._waitTransaction(0)
 
@@ -302,8 +305,7 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
         else:
             ldata = bytearray(size*stride)
         
-        with self._rawLock:
-
+        with self._memLock:
             self._reqTransaction(address|self.offset,ldata,rogue.interfaces.memory.Read)
             self._waitTransaction(0)
 
