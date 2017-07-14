@@ -79,7 +79,7 @@ class UInt(Model):
 @Pyro4.expose
 class Int(Model):
 
-    defaultdisp = '{:#x}'
+    defaultdisp = '{:d}'
     pytype = int
 
     @staticmethod
