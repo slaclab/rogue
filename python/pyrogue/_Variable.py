@@ -241,6 +241,10 @@ class BaseVariable(pr.Node):
         if self._pollInterval > 0 and self.root._pollQueue is not None:
             self.root._pollQueue.updatePollInterval(self)
 
+    def _finishInit(self):
+        self._setDefault()
+        self._updatePollInterval()
+
     def _updated(self):
         """Variable has been updated. Inform listeners."""
         if self._update is False or self._root is None:
