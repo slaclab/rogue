@@ -282,40 +282,68 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
         for key,value in self.devices.items():
             value._resetBlocks()
 
-    def _rawWrite(self, address, data, base=pr.UInt, stride=4):
+    def _rawWrite(self, offset, data, base=pr.UInt, stride=4, wordBitSize=0):
+        
+        if wordBitSize > stride*8:
+            raise pr.MemoryError(name=self.name, address=offset|self.address,
+                                 error='Called _rawWrite with wordBitSize > stride')
+        if wordBitSize == 0:
+            wordBitSize = stride*8
+
+        mask = 2**wordBitSize-1
         
         if isinstance(data, bytearray):
             ldata = data
         elif isinstance(data, collections.Iterable):
-            ldata = b''.join(base.toBlock(word, stride*8) for word in data)
+            ldata = b''.join(base.toBlock(word&mask, stride*8) for word in data)
         else:
-            ldata = base.toBlock(data, stride*8)
+            ldata = base.toBlock(data&mask, stride*8)
+
+        maxTxnSize = self._reqMaxAccess()
 
         with self._memLock:
-            self._reqTransaction(address|self.offset,ldata,rogue.interfaces.memory.Write)
-            self._waitTransaction(0)
+            for i in range(offset, offset+len(ldata), maxTxnSize):
+                ldataSlice = ba[i:min(i+maxTxnSize, len(ba))]
+                sliceOffset = i | self.offset
+                self._reqTransaction(sliceOffset,ldataSlice,rogue.interfaces.memory.Write)
+                self._waitTransaction(0)
 
-            if self._getError() > 0:
-                raise pr.MemoryError (name=self.name, address=address|self.address, error=self._getError())
+                if self._getError() > 0:
+                    raise pr.MemoryError (name=self.name, address=sliceOffset|self.address, error=self._getError())
 
-    def _rawRead(self, address, size=1, base=pr.UInt, stride=4, bdata=None):
+    def _rawRead(self, offset, numWords=1, base=pr.UInt, stride=4, wordBitSize=0, bdata=None):
+
+        if wordBitSize > stride*8:
+            raise pr.MemoryError(name=self.name, address=offset|self.address,
+                                 error='Called _rawRead with wordBitSize > stride')
+        if wordBitSize == 0:
+            wordBitSize = stride*8
+
+        mask = 2**wordBitSize-1        
         
         if bdata is not None:
             ldata = bdata
         else:
             ldata = bytearray(size*stride)
+
+        maxTxnSize = self._reqMaxAccess()            
         
         with self._memLock:
-            self._reqTransaction(address|self.offset,ldata,rogue.interfaces.memory.Read)
-            self._waitTransaction(0)
+            for i in range(offset, offset+len(ldata), maxTxnSize):
+                ldataSlice = ldata[i:min(i+maxTxnSize, len(ldata))]
+                sliceOffset = i | self.offset
+                self._reqTransaction(sliceOffset,ldataSlice,rogue.interfaces.memory.Read)
+                self._waitTransaction(0)
+                ldata[i:min(i+maxTxnSize, len(ldata))] = ldataSlice
+                
 
-            if self._getError() > 0:
-                raise pr.MemoryError (name=self.name, address=address|self.address, error=self._getError())
+                if self._getError() > 0:
+                    raise pr.MemoryError (name=self.name, address=sliceOffset|self.address, error=self._getError())
 
             if size == 1:
-                return base.fromBlock(ldata)
+                return base.fromBlock(ldata)&mask
             else:
-                return [base.fromBlock(ldata[i:i+stride]) for i in range(0, len(ldata), stride)]
+                return [base.fromBlock(ldata[i:i+stride])&mask for i in range(0, len(ldata), stride)]
             
 
     def _buildBlocks(self):
@@ -367,9 +395,10 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
 
         self._buildBlocks()
 
+        # Some variable initialization can run until the blocks are built
         for v in self.variables.values():
-            v._setDefault()
-            v._updatePollInterval()
+            v._finishInit()
+
 
     def _devReset(self,rstType):
         """Generate a count, soft or hard reset"""
@@ -390,8 +419,6 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
         """
         Set timeout value on all devices & blocks
         """
-
-        self._setTimeout(timeout * 1000000)
 
         for block in self._blocks:
             block.timeout = timeout
