@@ -137,7 +137,7 @@ namespace rogue {
                void setError(uint32_t error);
 
                //! Set timeout
-               void setTimeout(uint32_t timeout);
+               void setTimeout(uint64_t timeout);
 
                //! Post a transaction, called locally, forwarded to slave, data pointer is optional
                uint32_t reqTransaction(uint64_t address, uint32_t size, void *data, uint32_t type);

@@ -423,6 +423,8 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
         for block in self._blocks:
             block.timeout = timeout
 
+        super(rim::Master,self)._setTimeout(timeout*1000000)
+
         for key,value in self._nodes.items():
             if isinstance(value,Device):
                 value._setTimeout(timeout)

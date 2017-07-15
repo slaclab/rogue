@@ -134,7 +134,7 @@ void rim::Master::setError(uint32_t error) {
 }
 
 //! Set timeout
-void rim::Master::setTimeout(uint32_t timeout) {
+void rim::Master::setTimeout(uint64_t timeout) {
    rogue::GilRelease noGil;
    boost::lock_guard<boost::mutex> lock(mtx_);
 
