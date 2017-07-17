@@ -198,15 +198,22 @@ uint32_t rim::Master::reqTransaction(uint64_t address, uint32_t size, void *data
 }
 
 //! Post a transaction, called locally, forwarded to slave, python version
-uint32_t rim::Master::reqTransactionPy(uint64_t address, boost::python::object p, uint32_t type) {
+uint32_t rim::Master::reqTransactionPy(uint64_t address, boost::python::object p, uint32_t size, uint32_t offset, uint32_t type) {
    rim::MasterTransaction tran;
 
    if ( PyObject_GetBuffer(p.ptr(),&(tran.pyBuf),PyBUF_SIMPLE) < 0 )
       throw(rogue::GeneralError("Master::reqTransactionPy","Python Buffer Error"));
 
+   if ( size == 0 ) size = tran.pyBuf.len;
+
+   if ( (size + offset) > tran.pyBuf.len ) {
+      PyBuffer_Release(&(tran.pyBuf));
+      throw(rogue::GeneralError::boundary("Master::reqTransactionPy",(size+offset),tran.pyBuf.len));
+   }
+
    tran.pyValid = true;
-   tran.tData   = (uint8_t *)tran.pyBuf.buf;
-   tran.tSize   = tran.pyBuf.len;
+   tran.tData   = ((uint8_t *)tran.pyBuf.buf) + offset;
+   tran.tSize   = size;
 
    return(intTransaction(address,&tran,type));
 }

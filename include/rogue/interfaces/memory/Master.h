@@ -143,7 +143,8 @@ namespace rogue {
                uint32_t reqTransaction(uint64_t address, uint32_t size, void *data, uint32_t type);
 
                //! Post a transaction, called locally, forwarded to slave, python version
-               uint32_t reqTransactionPy(uint64_t address, boost::python::object p, uint32_t type);
+               // size and offset are optional to use a slice within the python buffer
+               uint32_t reqTransactionPy(uint64_t address, boost::python::object p, uint32_t size, uint32_t offset, uint32_t type);
 
                //! End current transaction, ensures data pointer is not update and de-allocates python buffer
                void endTransaction(uint32_t id);

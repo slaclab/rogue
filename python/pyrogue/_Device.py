@@ -305,7 +305,7 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
             for i in range(offset, offset+len(ldata), maxTxnSize):
                 ldataSlice = ba[i:min(i+maxTxnSize, len(ba))]
                 sliceOffset = i | self.offset
-                self._reqTransaction(sliceOffset,ldataSlice,rogue.interfaces.memory.Write)
+                self._reqTransaction(sliceOffset,ldataSlice,0,0,rogue.interfaces.memory.Write)
                 self._waitTransaction(0)
 
                 if self._getError() > 0:
@@ -332,7 +332,7 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
             for i in range(offset, offset+len(ldata), maxTxnSize):
                 ldataSlice = ldata[i:min(i+maxTxnSize, len(ldata))]
                 sliceOffset = i | self.offset
-                self._reqTransaction(sliceOffset,ldataSlice,rogue.interfaces.memory.Read)
+                self._reqTransaction(sliceOffset,ldataSlice,0,0,rogue.interfaces.memory.Read)
                 self._waitTransaction(0)
                 ldata[i:min(i+maxTxnSize, len(ldata))] = ldataSlice
                 

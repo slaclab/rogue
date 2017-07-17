@@ -287,7 +287,7 @@ class RemoteBlock(BaseBlock, rim.Master):
         tData = self._vData if self._doVerify else self._bData
 
         # Start transaction
-        self._reqTransaction(self.offset,tData,type)
+        self._reqTransaction(self.offset,tData,0,0,type)
 
 
     def _checkTransaction(self, update):
