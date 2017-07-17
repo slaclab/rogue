@@ -13,7 +13,7 @@
 # copied, modified, propagated, or distributed except according to the terms 
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
-import rogue.interfaces.memory
+import rogue.interfaces.memory as rim
 import collections
 import datetime
 import functools as ft
@@ -76,7 +76,7 @@ class DeviceError(Exception):
     """ Exception for device manipulation errors."""
     pass
 
-class Device(pr.Node,rogue.interfaces.memory.Hub):
+class Device(pr.Node,rim.Hub):
     """Device class holder. TODO: Update comments"""
 
     def __init__(self, *,
@@ -94,7 +94,7 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
             name = self.__class__.__name__
 
         # Hub.__init__ must be called first for _setSlave to work below
-        rogue.interfaces.memory.Hub.__init__(self,offset)
+        rim.Hub.__init__(self,offset)
 
         # Blocks
         self._blocks    = []
@@ -211,12 +211,12 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
 
         # Process local blocks.
         if variable is not None:
-            variable._block.backgroundTransaction(rogue.interfaces.memory.Write)
+            variable._block.backgroundTransaction(rim.Write)
         else:
             for block in self._blocks:
                 if force or block.stale:
                     if block.bulkEn:
-                        block.backgroundTransaction(rogue.interfaces.memory.Write)
+                        block.backgroundTransaction(rim.Write)
 
             if recurse:
                 for key,value in self.devices.items():
@@ -230,11 +230,11 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
 
         # Process local blocks.
         if variable is not None:
-            variable._block.backgroundTransaction(rogue.interfaces.memory.Verify)
+            variable._block.backgroundTransaction(rim.Verify)
         else:
             for block in self._blocks:
                 if block.bulkEn:
-                    block.backgroundTransaction(rogue.interfaces.memory.Verify)
+                    block.backgroundTransaction(rim.Verify)
 
             if recurse:
                 for key,value in self.devices.items():
@@ -249,11 +249,11 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
 
         # Process local blocks. 
         if variable is not None:
-            variable._block.backgroundTransaction(rogue.interfaces.memory.Read)
+            variable._block.backgroundTransaction(rim.Read)
         else:
             for block in self._blocks:
                 if block.bulkEn:
-                    block.backgroundTransaction(rogue.interfaces.memory.Read)
+                    block.backgroundTransaction(rim.Read)
 
             if recurse:
                 for key,value in self.devices.items():
@@ -305,7 +305,7 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
             for i in range(offset, offset+len(ldata), maxTxnSize):
                 ldataSlice = ba[i:min(i+maxTxnSize, len(ba))]
                 sliceOffset = i | self.offset
-                self._reqTransaction(sliceOffset,ldataSlice,0,0,rogue.interfaces.memory.Write)
+                self._reqTransaction(sliceOffset,ldataSlice,0,0,rim.Write)
                 self._waitTransaction(0)
 
                 if self._getError() > 0:
@@ -332,7 +332,7 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
             for i in range(offset, offset+len(ldata), maxTxnSize):
                 ldataSlice = ldata[i:min(i+maxTxnSize, len(ldata))]
                 sliceOffset = i | self.offset
-                self._reqTransaction(sliceOffset,ldataSlice,0,0,rogue.interfaces.memory.Read)
+                self._reqTransaction(sliceOffset,ldataSlice,0,0,rim.Read)
                 self._waitTransaction(0)
                 ldata[i:min(i+maxTxnSize, len(ldata))] = ldataSlice
                 
@@ -423,7 +423,7 @@ class Device(pr.Node,rogue.interfaces.memory.Hub):
         for block in self._blocks:
             block.timeout = timeout
 
-        super(rim::Master,self)._setTimeout(timeout*1000000)
+        super(rim.Master,self)._setTimeout(timeout*1000000)
 
         for key,value in self._nodes.items():
             if isinstance(value,Device):
