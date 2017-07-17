@@ -204,16 +204,16 @@ uint32_t rim::Master::reqTransactionPy(uint64_t address, boost::python::object p
    if ( PyObject_GetBuffer(p.ptr(),&(tran.pyBuf),PyBUF_SIMPLE) < 0 )
       throw(rogue::GeneralError("Master::reqTransactionPy","Python Buffer Error"));
 
-   if ( size == 0 ) size = tran.pyBuf.len;
+   if ( size == 0 ) tran.tSize = tran.pyBuf.len;
+   else tran.tSize = size;
 
-   if ( (size + offset) > tran.pyBuf.len ) {
+   if ( (tran.tSize + offset) > tran.pyBuf.len ) {
       PyBuffer_Release(&(tran.pyBuf));
-      throw(rogue::GeneralError::boundary("Master::reqTransactionPy",(size+offset),tran.pyBuf.len));
+      throw(rogue::GeneralError::boundary("Master::reqTransactionPy",(tran.tSize+offset),tran.pyBuf.len));
    }
 
    tran.pyValid = true;
    tran.tData   = ((uint8_t *)tran.pyBuf.buf) + offset;
-   tran.tSize   = size;
 
    return(intTransaction(address,&tran,type));
 }
