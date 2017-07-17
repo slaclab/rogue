@@ -42,7 +42,12 @@ def byteCount(bits):
 # class Model(metaclass=ModelMeta):
 #     pass
 class Model(object):
-    pass
+
+    @staticmethod
+    def blockMask(bitSize, bitOffset=0):
+        # For now all models are little endian so we can get away with this
+        return int.to_bytes(2**bitSize << bitOffset, byteCount(bitSize+bitOffset), 'little', signed=False)
+
 
 @Pyro4.expose
 class UInt(Model):
@@ -70,6 +75,7 @@ class UInt(Model):
     @staticmethod
     def fromString(string):
         return int(string, 0)
+
 
     @classmethod
     def name(cls, bitSize):

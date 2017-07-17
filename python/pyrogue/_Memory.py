@@ -1,84 +1,94 @@
 import pyrogue as pr
 import rogue.interfaces.memory as rim
 import threading
+from collections import OrderedDict as odict
+
 
 class MemoryDevice(pr.Device):
-    def __init__(self, base=pr.UInt, wordSize=4, stride=4, verify=True, **kwargs):
+    def __init__(self, *, base=pr.UInt, wordBitSize=4, stride=4, verify=True, **kwargs):
         super().__init__(hidden=True, **kwargs)
 
+        self._lockCnt = 0
         self._base = base
-        self._wordSize = wordSize
-        self._bitSize = wordSize*8
+        self._wordBitSize = wordBitSize
         self._stride = stride
-        self._bitStride = stride*8
         self._verify = verify
-        self._txnSize = self._reqMaxAccess()        
-        self._segments = {} # Data parsed from yaml
-        self._wrTxns = {} # map of txnId and bytearrays
-        self._verTxns = {}
+        self._mask = base.blockMask(wordBitSize)
 
-        self._cond = threading.Condition()
-        self._txnPending = False
+        self._setBlocks = odict()
+        self._wrBlocks = odict() # parsed from yaml
+        self._verBlocks = odict()
+        self._wrData = odict() # byte arrays written
+        self._verData = odict() # verify data wread back
+
+    def __mask(self, ba):
+        return bytearray(x&y for x,y in zip(self._mask, ba))
 
     def _buildBlocks(self):
         pass
 
     def _setOrExec(self, d, writeEach, modes):
         # Parse comma separated values at each offset (key) in d
-        with self._cond:
-            self._segments = {k: [self._base.fromString(s) for s in v.split(',')] for k, v in d.items()}
+        with self._memLock:
+            self._setBlocks[0] = [i for i in range(2**14)]
+            #for offset, values in d.items():
+            #    self._setBlocks[offset] = [self._base.fromString(s) for s in values.split(',')]
 
 
     def writeBlocks(self, force=False, recurse=True, variable=None):
         if not self.enable.get(): return
 
-        with self._cond:
-            self._cond.wait_for(self._txnPending==False)
-            self._txnPending = True
+        with self._memLock:
+            self._wrBlocks = self._setBlocks
+            
+            for offset, values in self._setBlocks.items():
+                wdata = self._rawTxnChunker(offset, values, self._base, self._stride, self._wordBitSize, rim.Write)
+                if self._verify:
+                    self._wrData[offset] = wdata
 
-            # transform each segment into a bytearray
-            arrays = {k: [b''.join(self._base.toBlock(v, self._bitStride))] for k, v in self._segments}            
-
-            # Issue as many transactions as are needed to cover each bytearray            
-            for offset, ba in arrays.items():
-                for i in range(offset, offset+len(ba), self._txnSize):
-                    baSlice = ba[i:min(i+self._txnSize, len(ba))]
-                    sliceOffset = i|self.offset
-                    self._reqTransaction(sliceOffset, baSlice, rim.Write)
-                    self._wrTxns[sliceOffset] = baSlice
-                    if self._verify:
-                        self._verTxns[sliceOffset] = bytearray(len(baSlice))
+            # clear out wrBlocks when done
+            self._setBlocks = odict()
         
 
     def verifyBlocks(self, recurse=True, variable=None):
         if not self.enable.get(): return
-        
-        with self._cond:
-            for offset, ba in self._verTxns.items():
-                self._reqTransaction(offset, ba, rim.Verify)
+
+        with self._memLock:
+            for offset, ba in self._wrData.items():
+                self._verData[offset] = bytearray(len(ba))
+                self._rawTxnChunker(offset, self._verData[offset], rim.Verify)
+
+            self._wrData = odict()
+            self._verBlocks = self._wrBlocks
+
 
     def checkBlocks(self, varUpdate=True, recurse=True, variable=None):
-        with self._cond:
+        with self._memLock:
+            # Wait for all txns to complete
             self._waitTransaction(0)
 
             # Error check?
             error = self._getError()
             self._setError(0)
 
+            # Convert the read verfiy data back to the natic type
+            checkBlocks = {offset: [self._base.fromBlock(self.__mask(ba[i:i+self._stride]))
+                                          for i in range(0, len(ba), self._stride)
+                                          for offset, ba in self._verData.items()]}
+
             # Do verify if necessary
-            if len(self._verTxns) > 0:
+            if len(self._verBlocks) > 0:
                 # Compare wrData with verData
-                if self._wrTxns != self._verTxns:
+                if self._verBlocks != checkBlocks:
                     msg = 'Local - Verify \n'
-                    msg += '\n'.join(f'{x:#02x} - {y:#02x}' for x,y in zip(self._wrTxns.values(), self._verTxns.values()))
+                    msg += '\n'.join(f'{x:#02x} - {y:#02x}'
+                                     for x,y in zip(self._verBlocks.values(), self._checkBlocks.values()))
 
 
-                # destroy the txn maps when done with verify
-                self._wrTxns = {}
-                self._verTxns = {}
-                self._txnPending = False
-                self._cond.notify()
-        
+            # destroy the txn maps when done with verify
+            self._verBlocks = odict()
+            self._verData = odict()
+
 
     def readBlocks(self, recurse=True, variable=None):
         pass
