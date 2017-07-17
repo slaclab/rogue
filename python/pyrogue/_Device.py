@@ -275,13 +275,6 @@ class Device(pr.Node,rim.Hub):
                 for key,value in self.devices.items():
                     value.checkBlocks(varUpdate=varUpdate, recurse=True)
 
-    def _resetBlocks(self):
-        for block in self._blocks:
-            block._resetTransaction()
-
-        for key,value in self.devices.items():
-            value._resetBlocks()
-
     def _rawWrite(self, offset, data, base=pr.UInt, stride=4, wordBitSize=0):
         
         if wordBitSize > stride*8:

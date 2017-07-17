@@ -374,7 +374,6 @@ class RemoteVariable(BaseVariable):
                 self._parent.checkBlocks(varUpdate=False, recurse=False, variable=self)
 
         except Exception as e:
-            self._block.resetTransaction()
             self._log.exception(e)
 
     @Pyro4.expose
@@ -395,7 +394,6 @@ class RemoteVariable(BaseVariable):
                 self._block.checkTransaction(update=False)
 
         except Exception as e:
-            self._block.resetTransaction()
             self._log.exception(e)
 
     @Pyro4.expose
@@ -413,7 +411,6 @@ class RemoteVariable(BaseVariable):
             ret = self._block.get(self)
 
         except Exception as e:
-            self._block.resetTransaction()
             self._log.exception(e)
             return None
 
