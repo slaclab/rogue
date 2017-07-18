@@ -144,6 +144,8 @@ class BaseBlock(object):
     def _updated(self):
         pass
 
+    def _addVariable(self,var):
+        return False
 
 class LocalBlock(BaseBlock):
     def __init__(self, *, variable, localSet, localGet, value):
