@@ -219,7 +219,7 @@ class Node(object):
     def node(self, path):
         return self._nodes[path]
 
-     def find(self, *, recurse=True, typ=None, **kwargs):
+    def find(self, *, recurse=True, typ=None, **kwargs):
         """ 
         Find all child nodes that are a base class of 'typ'
         and whose properties match all of the kwargs.
