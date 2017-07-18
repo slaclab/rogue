@@ -219,22 +219,31 @@ class Node(object):
     def node(self, path):
         return self._nodes[path]
 
-    def find(self, name='.*', typ=None):
+    def find(self, typ=None, **kwargs):
         """ 
-        Find all Nodes in the tree that match 'name' regex and are an instance of 'typ' 
-        name defaults to match everything
-        typ defaults to match all pyroge.Node instances
+        Find all child nodes that are a base class of 'typ'
+        and whose properties match all of the kwargs.
+        For string properties, accepts regexes.
         """
-        
+    
         if typ is None:
             typ = pr.Node
 
         found = []
-        for k,n in self._nodes.items():
-            if (re.match(name, k)) and isinstance(n, typ):
-                found.append(n)
-            found.extend(n.find(name=name, typ=typ))
-        return found
+        for node in self._nodes.values():
+            if isinstance(node, typ):
+                for prop, value in kwargs.items():
+                    if not hasattr(node, prop):
+                        break
+                    if isinstance(value, str):
+                        if not re.match(value, getattr(node, prop)):
+                            break
+                    elif (value != getattr(node, prop)):
+                        break
+                else:
+                    found.append(node)
+            found.extend(node.find(typ=typ, **kwargs))
+        return found    
 
     def _rootAttached(self,parent,root):
         """Called once the root node is attached."""
