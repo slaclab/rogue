@@ -397,17 +397,20 @@ class PyroNode(object):
         for k,n in d.items():
 
             if isinstance(n,dict):
-                ret[k] = PyroNode(Pyro4.util.SerializerBase.dict_to_class(n),self._daemon)
+                ret[k] = PyroNode(node=Pyro4.util.SerializerBase.dict_to_class(n),daemon=self._daemon)
             else:
-                ret[k] = PyroNode(n,self._daemon)
+                ret[k] = PyroNode(node=n,daemon=self._daemon)
 
         return ret
+
+    def attr(self,attr,**kwargs):
+        return self.__getattr__(attr)(**kwargs)
 
     def addInstance(self,node):
         self._daemon.register(node)
 
     def node(self, path):
-        return PyroNode(self._node.node(path),self._daemon)
+        return PyroNode(node=self._node.node(path),daemon=self._daemon)
 
     @property
     def nodes(self):
@@ -427,7 +430,7 @@ class PyroNode(object):
 
     @property
     def parent(self):
-        return PyroNode(self._node.parent,self._daemon)
+        return PyroNode(node=self._node.parent,daemon=self._daemon)
 
     @property
     def root(self):
