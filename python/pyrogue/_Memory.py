@@ -61,8 +61,7 @@ class MemoryDevice(pr.Device):
             self._wrData = odict()
             self._verBlocks = self._wrBlocks
 
-
-    def checkBlocks(self, varUpdate=True, recurse=True, variable=None):
+    def checkBlocks(self, recurse=True, variable=None):
         with self._memLock:
             # Wait for all txns to complete
             self._waitTransaction(0)

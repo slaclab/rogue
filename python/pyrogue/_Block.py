@@ -68,7 +68,6 @@ class BaseBlock(object):
         self._mode      = mode
         self._device    = device
         self._lock      = threading.RLock()
-        self._lockCnt   = 0
         self._doUpdate  = False
 
         # Setup logging
@@ -90,7 +89,7 @@ class BaseBlock(object):
         Perform a blocking transaction
         """
         self._startTransaction(type)
-        self._checkTransaction(update=False)
+        self._checkTransaction()
 
     @property
     def name(self):
@@ -124,29 +123,21 @@ class BaseBlock(object):
         """
         Start a transaction.
         """
-        self._lock.acquire()
-        self._lockCnt += 1
-        self._doUpdate = (type == rim.Read)
+        with self._lock:
+            self._doUpdate = True
 
-    def _checkTransaction(self,update):
+    def _checkTransaction(self):
         """
         Check status of block.
         If update=True notify variables if read
         """
         doUpdate = False
         with self._lock:
-            doUpdate = update and self._doUpdate
+            doUpdate = self._doUpdate
             self._doUpdate = False
-            for x in range(self._lockCnt): self._lock.release()
-            self._lockCnt = 0
 
         # Update variables outside of lock
         if doUpdate: self._updated()
-
-    def _resetTransaction(self):
-        with self._lock:
-            for x in range(self._lockCnt): self._lock.release()
-            self._lockCnt = 0
 
     def _updated(self):
         pass
@@ -206,11 +197,12 @@ class RemoteBlock(BaseBlock, rim.Master):
         self._verifyEn  = False
         self._bulkEn    = False
         self._doVerify  = False
-        self._stale     = False
         self._verifyWr  = False
-        self._bData     = bytearray()
-        self._vData     = bytearray()
-        self._mData     = bytearray()
+        self._sData     = bytearray()  # Set data
+        self._sDataMask = bytearray()  # Set data mask
+        self._bData     = bytearray()  # Block data
+        self._vData     = bytearray()  # Verify data
+        self._vDataMask = bytearray()  # Verify data mask
         self._size      = 0
         self._offset    = offset
         self._minSize   = self._reqMinAccess()
@@ -221,7 +213,7 @@ class RemoteBlock(BaseBlock, rim.Master):
 
     @property
     def stale(self):
-        return self._stale
+        return any([b != 0 for b in self._sDataMask])
 
     @property
     def offset(self):
@@ -255,42 +247,48 @@ class RemoteBlock(BaseBlock, rim.Master):
         """
         Start a transaction.
         """
-        self._lock.acquire()
+        with self._lock:
 
-        # Check for invalid combinations or disabled device
-        if (self._device.enable.value() is not True) or \
-           (type == rim.Write  and (self.mode == 'RO')) or \
-           (type == rim.Post   and (self.mode == 'RO')) or \
-           (type == rim.Read   and (self.mode == 'WO')) or \
-           (type == rim.Verify and (self.mode == 'WO' or \
-                                    self.mode == 'RO' or \
-                                    self._verifyWr == False)):
-            self._lock.release()
-            return
+            # Check for invalid combinations or disabled device
+            if (self._device.enable.value() is not True) or \
+               (type == rim.Write  and (self.mode == 'RO')) or \
+               (type == rim.Post   and (self.mode == 'RO')) or \
+               (type == rim.Read   and (self.mode == 'WO')) or \
+               (type == rim.Verify and (self.mode == 'WO' or \
+                                        self.mode == 'RO' or \
+                                        self._verifyWr == False)):
+                return
 
-        self._lockCnt += 1
-        self._waitTransaction(0)
+            self._waitTransaction(0)
 
-        self._log.debug(f'_startTransaction type={type}')
-        self._log.debug(f'len bData = {len(self._bData)}, vData = {len(self._vData)}, mData = {len(self._mData)}')
+            if type == rim.Write or type == rim.Post:
+                for x in range(self._size):
+                    self._bData[x] = self._bData[x] & (self._sDataMask[x] ^ 0xFF)
+                    self._bData[x] = self._bData[x] | (self._sDataMask[x] & self._sData[x])
 
-        # Track verify after writes. 
-        # Only verify blocks that have been written since last verify
-        if type == rim.Write:
-            self._verifyWr = self._verifyEn
-              
-        # Setup transaction
-        self._doVerify = (type == rim.Verify)
-        self._doUpdate = (type == rim.Read)
+                self._sData = bytearray(self._size)
+                self._sDataMask = bytearray(self._size)
 
-        # Set data pointer
-        tData = self._vData if self._doVerify else self._bData
+            self._log.debug(f'_startTransaction type={type}')
+            self._log.debug(f'len bData = {len(self._bData)}, vData = {len(self._vData)}, vDataMask = {len(self._vDataMask)}')
 
-        # Start transaction
-        self._reqTransaction(self.offset,tData,0,0,type)
+            # Track verify after writes. 
+            # Only verify blocks that have been written since last verify
+            if type == rim.Write:
+                self._verifyWr = self._verifyEn
+                  
+            # Setup transaction
+            self._doVerify = (type == rim.Verify)
+            self._doUpdate = True
+
+            # Set data pointer
+            tData = self._vData if self._doVerify else self._bData
+
+            # Start transaction
+            self._reqTransaction(self.offset,tData,0,0,type)
 
 
-    def _checkTransaction(self, update):
+    def _checkTransaction(self):
         doUpdate = False
         with self._lock:
             self._waitTransaction(0)
@@ -306,28 +304,20 @@ class RemoteBlock(BaseBlock, rim.Master):
                 self._verifyWr = False
 
                 for x in range(self._size):
-                    if (self._vData[x] & self._mData[x]) != (self._bData[x] & self._mData[x]):
+                    if (self._vData[x] & self._vDataMask[x]) != (self._bData[x] & self._vDataMask[x]):
                         msg  = ('Local='    + ''.join(f'{x:#02x}' for x in self._bData))
                         msg += ('. Verify=' + ''.join(f'{x:#02x}' for x in self._vData))
-                        msg += ('. Mask='   + ''.join(f'{x:#02x}' for x in self._mData))
+                        msg += ('. Mask='   + ''.join(f'{x:#02x}' for x in self._vDataMask))
 
                         raise MemoryError(name=self.name, address=self.address, error=rim.VerifyError, msg=msg, size=self._size)
 
                # Updated
-            doUpdate = update and self._doUpdate
+            doUpdate = self._doUpdate
             self._doUpdate = False
-
-            for x in range(self._lockCnt): self._lock.release()
-            self._lockCnt = 0
 
         # Update variables outside of lock
         if doUpdate: self._updated()
 
-    def _resetTransaction(self):
-        with self._lock:
-            self._endTransaction(0)
-            for x in range(self._lockCnt): self._lock.release()
-            self._lockCnt = 0
 
 class RegisterBlock(RemoteBlock):
     """Internal memory block holder"""
@@ -347,9 +337,9 @@ class RegisterBlock(RemoteBlock):
 
     def blockingTransaction(self, type):
         # Call is same as BaseBlock, just add logging
-        self._log.debug(f"Setting block. Addr={self.offset:#08x}, Data={self._bData}")
+        self._log.debug(f"Blocking tran. Addr={self.offset:#08x}")
         BaseBlock.blockingTransaction(self, type)
-        self._log.debug(f"Done block. Addr={self._offset:08x}, Data={self._bData}")
+        self._log.debug(f"Done block. Addr={self._offset:08x}")
 
 
     def set(self, var, value):
@@ -357,25 +347,22 @@ class RegisterBlock(RemoteBlock):
         Update block with bitSize bits from passed byte array.
         Offset sets the starting point in the block array.
         """
-        self._lock.acquire()
-        self._lockCnt += 1
+        with self._lock:
+            ba = var._base.toBlock(value, sum(var.bitSize))
 
-        self._value = value
-        self._stale = True
+            # Access is fully byte aligned
+            if len(var.bitOffset) == 1 and (var.bitOffset[0] % 8) == 0 and (var.bitSize[0] % 8) == 0:
+                self._sData[var.bitOffset[0]//8:(var.bitOffset[0]+var.bitSize[0])//8] = ba
+                self._sDataMask[var.bitOffset[0]//8:(var.bitOffset[0]+var.bitSize[0])//8] = bytearray([0xff] * (var.bitSize[0] // 8))
 
-        ba = var._base.toBlock(value, sum(var.bitSize))
-
-        # Access is fully byte aligned
-        if len(var.bitOffset) == 1 and (var.bitOffset[0] % 8) == 0 and (var.bitSize[0] % 8) == 0:
-            self._bData[var.bitOffset[0]//8:(var.bitOffset[0]+var.bitSize[0])//8] = ba
-
-        # Bit level access
-        else:
-            bit = 0
-            for x in range(0, len(var.bitOffset)):
-                for y in range(0, var.bitSize[x]):
-                    setBitToBytes(self._bData,var.bitOffset[x]+y,getBitFromBytes(ba,bit))
-                    bit += 1
+            # Bit level access
+            else:
+                bit = 0
+                for x in range(0, len(var.bitOffset)):
+                    for y in range(0, var.bitSize[x]):
+                        setBitToBytes(self._sData,var.bitOffset[x]+y,getBitFromBytes(ba,bit))
+                        setBitToBytes(self._sDataMask,var.bitOffset[x]+y,1)
+                        bit += 1
 
     def get(self, var):
         """
@@ -436,8 +423,11 @@ class RegisterBlock(RemoteBlock):
             if self._size < var.varBytes:
                 self._bData.extend(bytearray(var.varBytes - self._size))
                 self._vData.extend(bytearray(var.varBytes - self._size))
-                self._mData.extend(bytearray(var.varBytes - self._size))
+                self._vDataMask.extend(bytearray(var.varBytes - self._size))
                 self._size = var.varBytes
+
+            self._sData = bytearray(self._size)
+            self._sDataMask = bytearray(self._size)
 
             # Update verify mask
             if var.mode == 'RW' and var.verify is True:
@@ -445,7 +435,7 @@ class RegisterBlock(RemoteBlock):
 
                 for x in range(0, len(var.bitOffset)):
                     for y in range(0, var.bitSize[x]):
-                        setBitToBytes(self._mData,var.bitOffset[x]+y,1)
+                        setBitToBytes(self._vDataMask,var.bitOffset[x]+y,1)
 
             return True
 
@@ -454,7 +444,7 @@ class RegisterBlock(RemoteBlock):
         for v in self._variables:
             v._updated()
 
-        
+# Is this even used?????
 class MemoryBlock(RemoteBlock):
 
     def __init__(self, *, name, mode, device, offset):
@@ -468,7 +458,6 @@ class MemoryBlock(RemoteBlock):
 
         with self._lock:
             self._waitTransaction(0)
-            self._stale = True
             size = len(values)*self._device._stride
 
             if size > self._maxSize:
@@ -476,7 +465,7 @@ class MemoryBlock(RemoteBlock):
 
             self._bData = b''.join( self._device._base.toBlock(v, self._device._bitStride) for v in values)
             self._vData = bytearray(len(self._bData))
-            self._mData = bytearray(0xff for x in range(len(self._bData)))
+            self._vDataMask = bytearray(0xff for x in range(len(self._bData)))
             self._size = len(self._bData)
 
 

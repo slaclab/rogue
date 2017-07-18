@@ -259,29 +259,21 @@ class Device(pr.Node,rim.Hub):
                 for key,value in self.devices.items():
                     value.readBlocks(recurse=True)
 
-    def checkBlocks(self,varUpdate=True, recurse=True, variable=None):
+    def checkBlocks(self, recurse=True, variable=None):
         """Check errors in all blocks and generate variable update nofifications"""
         if not self.enable.get(): return
         self._log.debug(f'Calling {self.path}._checkBlocks')
 
         # Process local blocks
         if variable is not None:
-            variable._block._checkTransaction(varUpdate)
+            variable._block._checkTransaction()
         else:
             for block in self._blocks:
-                block._checkTransaction(varUpdate)
+                block._checkTransaction()
 
             if recurse:
                 for key,value in self.devices.items():
-                    value.checkBlocks(varUpdate=varUpdate, recurse=True)
-
-    def _resetBlocks(self):
-        for block in self._blocks:
-            block._resetTransaction()
-
-        for key,value in self.devices.items():
-            value._resetBlocks()
-            
+                    value.checkBlocks(recurse=True)
 
     def _rawTxnChunker(self, offset, data, base=pr.UInt, stride=4, wordBitSize=0, txnType=rim.Write):
         if wordBitSize > stride*8:
@@ -424,7 +416,7 @@ class Device(pr.Node,rim.Hub):
         for block in self._blocks:
             block.timeout = timeout
 
-        rim.Master._setTimeout(self, timeout*1000000)
+        super(rim.Master,self)._setTimeout(timeout*1000000)
 
         for key,value in self._nodes.items():
             if isinstance(value,Device):
