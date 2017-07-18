@@ -56,7 +56,7 @@ class EnableVariable(pr.BaseVariable):
                     ret = True
 
         if read:
-            self._updated()
+            self.updated()
         return ret
         
     @Pyro4.expose
@@ -64,7 +64,7 @@ class EnableVariable(pr.BaseVariable):
         with self._lock:
             if value != 'parent':
                 self._value = value
-        self._updated()
+        self.updated()
 
     def _rootAttached(self,parent,root):
         pr.Node._rootAttached(self,parent,root)

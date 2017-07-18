@@ -33,7 +33,7 @@ class RootLogHandler(logging.Handler):
             val = self._root.systemLog.value()
             val += (self.format(record).splitlines()[0] + '\n')
             self._root.systemLog.set(write=False,value=val)
-        self._root.systemLog._updated() # Update outside of lock
+        self._root.systemLog.updated() # Update outside of lock
 
 class Root(rogue.interfaces.stream.Master,pr.Device):
     """
@@ -391,7 +391,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         """Clear the system log"""
         with self._sysLogLock:
             self.systemLog.set(value='',write=False)
-        self.systemLog._updated()
+        self.systemLog.updated()
 
     def _varUpdated(self,var,value,disp):
         yml = None
