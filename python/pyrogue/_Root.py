@@ -86,7 +86,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         self.add(pr.LocalVariable(name='forceWrite', value=False, mode='RW', hidden=True,
             description='Cofiguration Flag To Control Write All Block'))
 
-    def start(self,pollEn=True, pyroGroup=None, pyroHost=None):
+    def start(self,pollEn=True, pyroGroup=None, pyroHost=None, pyroNs=None):
         """Setup the tree. Start the polling thread."""
 
         # Create poll queue object
@@ -126,7 +126,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
             uri = self._pyroDaemon.register(self)
 
             try:
-                Pyro4.locateNS().register('{}.{}'.format(pyroGroup,self.name),uri)
+                Pyro4.locateNS(pyroNs).register('{}.{}'.format(pyroGroup,self.name),uri)
 
                 self._exportNodes(self._pyroDaemon)
                 self._pyroThread = threading.Thread(target=self._pyroDaemon.requestLoop)
@@ -419,24 +419,24 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
 class PyroRoot(pr.PyroNode):
     def __init__(self, *, node,daemon):
-        pr.PyroNode.__init__(self,node,daemon)
+        pr.PyroNode.__init__(self,node=node,daemon=daemon)
 
     def addInstance(self,node):
         self._daemon.register(node)
 
     def getNode(self, path):
-        return pr.PyroNode(self._node.getNode(path))
+        return pr.PyroNode(node=self._node.getNode(path),daemon=daemon)
 
 
 class PyroClient(object):
-    def __init__(self, *, group, host=None):
+    def __init__(self, *, group, host=None, ns=None):
         self._group = group
 
         Pyro4.config.THREADPOOL_SIZE = 100
         Pyro4.util.SerializerBase.register_dict_to_class("collections.OrderedDict", recreate_OrderedDict)
 
         try:
-            self._ns = Pyro4.locateNS()
+            self._ns = Pyro4.locateNS(host=ns)
         except:
             print("\n------------- PyroClient ----------------------")
             print("    Failed to find Pyro4 nameserver!")
@@ -456,7 +456,7 @@ class PyroClient(object):
     def getRoot(self,name):
         try:
             uri = self._ns.lookup("{}.{}".format(self._group,name))
-            ret = PyroRoot(Pyro4.Proxy(uri),self._pyroDaemon)
+            ret = PyroRoot(node=Pyro4.Proxy(uri),daemon=self._pyroDaemon)
             return ret
         except:
             raise pr.NodeError("PyroClient Failed to find {}.{}.".format(self._group,name))
