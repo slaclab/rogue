@@ -220,9 +220,9 @@ class Device(pr.Node,rim.Hub):
                     if block.bulkEn:
                         block.backgroundTransaction(rim.Write)
 
-        if recurse:
-            for key,value in self.devices.items():
-                value.writeBlocks(force=force, recurse=True)
+            if recurse:
+                for key,value in self.devices.items():
+                    value.writeBlocks(force=force, recurse=True)
 
     def verifyBlocks(self, recurse=True, variable=None):
         """
@@ -238,9 +238,9 @@ class Device(pr.Node,rim.Hub):
                 if block.bulkEn:
                     block.backgroundTransaction(rim.Verify)
 
-        if recurse:
-            for key,value in self.devices.items():
-                value.verifyBlocks(recurse=True)
+            if recurse:
+                for key,value in self.devices.items():
+                    value.verifyBlocks(recurse=True)
 
     def readBlocks(self, recurse=True, variable=None):
         """
@@ -257,9 +257,9 @@ class Device(pr.Node,rim.Hub):
                 if block.bulkEn:
                     block.backgroundTransaction(rim.Read)
 
-        if recurse:
-            for key,value in self.devices.items():
-                value.readBlocks(recurse=True)
+            if recurse:
+                for key,value in self.devices.items():
+                    value.readBlocks(recurse=True)
 
     def checkBlocks(self, recurse=True, variable=None):
         """Check errors in all blocks and generate variable update nofifications"""
@@ -273,9 +273,9 @@ class Device(pr.Node,rim.Hub):
             for block in self._blocks:
                 block._checkTransaction()
 
-        if recurse:
-            for key,value in self.devices.items():
-                    value.checkBlocks(recurse=True)
+            if recurse:
+                for key,value in self.devices.items():
+                        value.checkBlocks(recurse=True)
 
     def _rawTxnChunker(self, offset, data, base=pr.UInt, stride=4, wordBitSize=0, txnType=rim.Write):
         if wordBitSize > stride*8:
@@ -287,11 +287,11 @@ class Device(pr.Node,rim.Hub):
         mask = 2**wordBitSize-1
         
         if txnType == rim.Write:
-        if isinstance(data, bytearray):
-            ldata = data
-        elif isinstance(data, collections.Iterable):
+            if isinstance(data, bytearray):
+                ldata = data
+            elif isinstance(data, collections.Iterable):
                 ldata = b''.join(base.toBlock(word&mask, stride*8) for word in data)
-        else:
+            else:
                 ldata = base.toBlock(data&mask, stride*8)
 
         else:

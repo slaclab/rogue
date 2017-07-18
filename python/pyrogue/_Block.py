@@ -251,15 +251,15 @@ class RemoteBlock(BaseBlock, rim.Master):
         """
         with self._lock:
 
-        # Check for invalid combinations or disabled device
-        if (self._device.enable.value() is not True) or \
-           (type == rim.Write  and (self.mode == 'RO')) or \
-           (type == rim.Post   and (self.mode == 'RO')) or \
-           (type == rim.Read   and (self.mode == 'WO')) or \
-           (type == rim.Verify and (self.mode == 'WO' or \
-                                    self.mode == 'RO' or \
-                                    self._verifyWr == False)):
-            return
+            # Check for invalid combinations or disabled device
+            if (self._device.enable.value() is not True) or \
+               (type == rim.Write  and (self.mode == 'RO')) or \
+               (type == rim.Post   and (self.mode == 'RO')) or \
+               (type == rim.Read   and (self.mode == 'WO')) or \
+               (type == rim.Verify and (self.mode == 'WO' or \
+                                        self.mode == 'RO' or \
+                                        self._verifyWr == False)):
+                return
 
             self._waitTransaction(0)
 
