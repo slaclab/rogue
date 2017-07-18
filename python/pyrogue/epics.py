@@ -133,6 +133,11 @@ class EpicsCaServer(object):
                 # Bool is not supported, so let's use int instead
                 d['type'] = 'int'
 
+            # Handle lists
+            elif d['type'] == 'list':
+                d['type'] = d['value'][0].__class__.__name__
+                d['count'] = len(d['value'])
+
             # These are the only type supported by pcaspy
             supportedType = {"enum", "string", "char", "float", "int"}
 
