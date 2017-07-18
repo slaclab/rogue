@@ -219,6 +219,38 @@ class Node(object):
     def node(self, path):
         return self._nodes[path]
 
+    def find(self, *, recurse=True, typ=None, **kwargs):
+        """ 
+        Find all child nodes that are a base class of 'typ'
+        and whose properties match all of the kwargs.
+        For string properties, accepts regexes.
+        """
+    
+        if typ is None:
+            typ = pr.Node
+
+        found = []
+        for node in self._nodes.values():
+            if isinstance(node, typ):
+                for prop, value in kwargs.items():
+                    if not hasattr(node, prop):
+                        break
+                    attr = getattr(node, prop)
+                    if isinstance(value, str):
+                        if not re.match(value, attr):
+                            break
+
+                    else:
+                        if inspect.ismethod(attr):
+                            attr = attr()
+                        if not value == attr:
+                            break
+                else:
+                    found.append(node)
+            if recurse:
+                found.extend(node.find(recurse=recurse, typ=typ, **kwargs))
+        return found
+
     def _rootAttached(self,parent,root):
         """Called once the root node is attached."""
         self._parent = parent
