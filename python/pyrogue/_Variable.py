@@ -484,6 +484,10 @@ class LocalVariable(BaseVariable):
         self.set(value, write=False)
 
     @Pyro4.expose
+    def post(self,value):
+        self.set(self, value)
+
+    @Pyro4.expose
     def get(self,read=True):
         try:
             ret = self._block.get()
