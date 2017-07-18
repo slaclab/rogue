@@ -259,21 +259,21 @@ class Device(pr.Node,rim.Hub):
                 for key,value in self.devices.items():
                     value.readBlocks(recurse=True)
 
-    def checkBlocks(self,varUpdate=True, recurse=True, variable=None):
+    def checkBlocks(self, recurse=True, variable=None):
         """Check errors in all blocks and generate variable update nofifications"""
         if not self.enable.get(): return
         self._log.debug(f'Calling {self.path}._checkBlocks')
 
         # Process local blocks
         if variable is not None:
-            variable._block._checkTransaction(varUpdate)
+            variable._block._checkTransaction()
         else:
             for block in self._blocks:
-                block._checkTransaction(varUpdate)
+                block._checkTransaction()
 
             if recurse:
                 for key,value in self.devices.items():
-                    value.checkBlocks(varUpdate=varUpdate, recurse=True)
+                    value.checkBlocks(recurse=True)
 
     def _rawWrite(self, offset, data, base=pr.UInt, stride=4, wordBitSize=0):
         

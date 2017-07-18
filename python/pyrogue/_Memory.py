@@ -29,9 +29,9 @@ class MemoryDevice(pr.Device):
                 block.set(values[offset-i:min(len(values), offset-i+blockSize)])
             
 
-    def checkBlocks(self, varUpdate=True, recurse=True, variable=None):
+    def checkBlocks(self, recurse=True, variable=None):
         print(f'Checking blocks in {self.path}, blocks: {self._blocks}')
-        pr.Device.checkBlocks(self, varUpdate=varUpdate, recurse=recurse, variable=variable)
+        pr.Device.checkBlocks(self, recurse=recurse, variable=variable)
 
         self._blocks = [b for b in self._blocks if b._verifyWr is False]
         print(f'Checking blocks done {self.path}, blocks: {self._blocks}')        

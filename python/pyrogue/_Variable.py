@@ -250,7 +250,6 @@ class BaseVariable(pr.Node):
         if self._update is False or self._root is None:
             return
 
-
         value = self.value()
         disp  = self.valueDisp()
 
@@ -363,7 +362,6 @@ class RemoteVariable(BaseVariable):
         self._log.debug("{}.set({})".format(self, value))
         try:
             self._block.set(self, value)
-            self._updated()
 
             if write and self._block.mode != 'RO':
                 self._parent.writeBlocks(force=False, recurse=False, variable=self)
@@ -371,7 +369,7 @@ class RemoteVariable(BaseVariable):
                 if self._block.mode == 'RW':
                     self._parent.verifyBlocks(recurse=False, variable=self)
 
-                self._parent.checkBlocks(varUpdate=False, recurse=False, variable=self)
+                self._parent.checkBlocks(recurse=False, variable=self)
 
         except Exception as e:
             self._log.exception(e)
@@ -387,11 +385,10 @@ class RemoteVariable(BaseVariable):
         
         try:
             self._block.set(self, value)
-            self._updated()
 
             if self._block.mode != 'RO':
                 self._block.backgroundTransaction(rogue.interfaces.memory.Post)
-                self._block.checkTransaction(update=False)
+                self._block.checkTransaction()
 
         except Exception as e:
             self._log.exception(e)
@@ -406,17 +403,13 @@ class RemoteVariable(BaseVariable):
         try:
             if read and self._block.mode != 'WO':
                 self._parent.readBlocks(recurse=False, variable=self)
-                self._parent.checkBlocks(varUpdate=True, recurse=False, variable=self)
+                self._parent.checkBlocks(recurse=False, variable=self)
 
             ret = self._block.get(self)
 
         except Exception as e:
             self._log.exception(e)
             return None
-
-        # Update listeners for all variables in the block
-        if read:
-            self._block._updated()
 
         return ret
 

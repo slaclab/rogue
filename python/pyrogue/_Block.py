@@ -89,7 +89,7 @@ class BaseBlock(object):
         Perform a blocking transaction
         """
         self._startTransaction(type)
-        self._checkTransaction(update=False)
+        self._checkTransaction()
 
     @property
     def name(self):
@@ -124,16 +124,16 @@ class BaseBlock(object):
         Start a transaction.
         """
         with self._lock:
-            self._doUpdate = (type == rim.Read)
+            self._doUpdate = True
 
-    def _checkTransaction(self,update):
+    def _checkTransaction(self):
         """
         Check status of block.
         If update=True notify variables if read
         """
         doUpdate = False
         with self._lock:
-            doUpdate = update and self._doUpdate
+            doUpdate = self._doUpdate
             self._doUpdate = False
 
         # Update variables outside of lock
@@ -279,7 +279,7 @@ class RemoteBlock(BaseBlock, rim.Master):
                   
             # Setup transaction
             self._doVerify = (type == rim.Verify)
-            self._doUpdate = (type == rim.Read)
+            self._doUpdate = True
 
             # Set data pointer
             tData = self._vData if self._doVerify else self._bData
@@ -288,7 +288,7 @@ class RemoteBlock(BaseBlock, rim.Master):
             self._reqTransaction(self.offset,tData,0,0,type)
 
 
-    def _checkTransaction(self, update):
+    def _checkTransaction(self):
         doUpdate = False
         with self._lock:
             self._waitTransaction(0)
@@ -312,7 +312,7 @@ class RemoteBlock(BaseBlock, rim.Master):
                         raise MemoryError(name=self.name, address=self.address, error=rim.VerifyError, msg=msg, size=self._size)
 
                # Updated
-            doUpdate = update and self._doUpdate
+            doUpdate = self._doUpdate
             self._doUpdate = False
 
         # Update variables outside of lock
