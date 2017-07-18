@@ -5,7 +5,7 @@ from collections import OrderedDict as odict
 
 
 class MemoryDevice(pr.Device):
-    def __init__(self, *, base=pr.UInt, wordBitSize=4, stride=4, verify=True, **kwargs):
+    def __init__(self, *, base=pr.UInt, wordBitSize=32, stride=4, verify=True, **kwargs):
         super().__init__(hidden=True, **kwargs)
 
         self._lockCnt = 0
@@ -15,9 +15,9 @@ class MemoryDevice(pr.Device):
         self._verify = verify
         self._mask = base.blockMask(wordBitSize)
 
-        self._setBlocks = odict()
-        self._wrBlocks = odict() # parsed from yaml
-        self._verBlocks = odict()
+        self._setValues = odict()
+        self._wrValues = odict() # parsed from yaml
+        self._verValues = odict()
         self._wrData = odict() # byte arrays written
         self._verData = odict() # verify data wread back
 
@@ -30,24 +30,23 @@ class MemoryDevice(pr.Device):
     def _setOrExec(self, d, writeEach, modes):
         # Parse comma separated values at each offset (key) in d
         with self._memLock:
-            self._setBlocks[0] = [i for i in range(2**14)]
-            #for offset, values in d.items():
-            #    self._setBlocks[offset] = [self._base.fromString(s) for s in values.split(',')]
+            for offset, values in d.items():
+                self._setValues[offset] = [self._base.fromString(s) for s in values.split(',')]
 
 
     def writeBlocks(self, force=False, recurse=True, variable=None):
         if not self.enable.get(): return
 
         with self._memLock:
-            self._wrBlocks = self._setBlocks
+            self._wrValues = self._setValues
             
-            for offset, values in self._setBlocks.items():
+            for offset, values in self._setValues.items():
                 wdata = self._rawTxnChunker(offset, values, self._base, self._stride, self._wordBitSize, rim.Write)
                 if self._verify:
                     self._wrData[offset] = wdata
 
-            # clear out wrBlocks when done
-            self._setBlocks = odict()
+            # clear out wrValues when done
+            self._setValues = odict()
         
 
     def verifyBlocks(self, recurse=True, variable=None):
@@ -56,10 +55,10 @@ class MemoryDevice(pr.Device):
         with self._memLock:
             for offset, ba in self._wrData.items():
                 self._verData[offset] = bytearray(len(ba))
-                self._rawTxnChunker(offset, self._verData[offset], rim.Verify)
+                self._rawTxnChunker(offset, self._verData[offset], txnType=rim.Verify)
 
             self._wrData = odict()
-            self._verBlocks = self._wrBlocks
+            self._verValues = self._wrValues
 
     def checkBlocks(self, recurse=True, variable=None):
         with self._memLock:
@@ -71,22 +70,25 @@ class MemoryDevice(pr.Device):
             self._setError(0)
 
             # Convert the read verfiy data back to the natic type
-            checkBlocks = odict()
+            checkValues = odict()
+            print(self._verData.items())
             for offset, ba in self._verData.items():
-                for i in range(0, len(ba), self._stride):
-                    checkBlocks[offset] = self._base.fromBlock(self.__mask(ba[i:i+self._stride]))
+                checkValues[offset] = [self._base.fromBlock(self.__mask(ba[i:i+self._stride]))
+                                       for i in range(0, len(ba), self._stride)]
 
             # Do verify if necessary
-            if len(self._verBlocks) > 0:
+            if len(self._verValues) > 0:
                 # Compare wrData with verData
-                if self._verBlocks != checkBlocks:
-                    msg = 'Local - Verify \n'
-                    msg += '\n'.join(f'{x:#02x} - {y:#02x}'
-                                     for x,y in zip(self._verBlocks.values(), self._checkBlocks.values()))
+                if self._verValues != checkValues:
+                    msg = 'Verify error \n'
+                    msg += f'Expected: \n {self._verValues} \n'
+                    msg += f'Got: \n {checkValues}'
+                    print(msg)
+                    raise MemoryError(name=self.name, address=self.address, error=rim.VerifyError, msg=msg, size=self._size)
 
 
             # destroy the txn maps when done with verify
-            self._verBlocks = odict()
+            self._verValues = odict()
             self._verData = odict()
 
 

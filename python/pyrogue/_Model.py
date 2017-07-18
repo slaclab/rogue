@@ -46,7 +46,8 @@ class Model(object):
     @staticmethod
     def blockMask(bitSize, bitOffset=0):
         # For now all models are little endian so we can get away with this
-        return int.to_bytes(2**bitSize << bitOffset, byteCount(bitSize+bitOffset), 'little', signed=False)
+        i = (2**bitSize-1) << bitOffset
+        return i.to_bytes(byteCount(bitSize+bitOffset), 'little', signed=False)
 
 
 @Pyro4.expose
