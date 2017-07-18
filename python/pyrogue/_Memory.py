@@ -71,9 +71,10 @@ class MemoryDevice(pr.Device):
             self._setError(0)
 
             # Convert the read verfiy data back to the natic type
-            checkBlocks = {offset: [self._base.fromBlock(self.__mask(ba[i:i+self._stride]))
-                                          for i in range(0, len(ba), self._stride)
-                                          for offset, ba in self._verData.items()]}
+            checkBlocks = odict()
+            for offset, ba in self._verData.items():
+                for i in range(0, len(ba), self._stride):
+                    checkBlocks[offset] = self._base.fromBlock(self.__mask(ba[i:i+self._stride]))
 
             # Do verify if necessary
             if len(self._verBlocks) > 0:
