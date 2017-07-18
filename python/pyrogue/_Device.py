@@ -56,7 +56,7 @@ class EnableVariable(pr.BaseVariable):
                     ret = True
 
         if read:
-            self._updated()
+            self.updated()
         return ret
         
     @Pyro4.expose
@@ -64,7 +64,7 @@ class EnableVariable(pr.BaseVariable):
         with self._lock:
             if value != 'parent':
                 self._value = value
-        self._updated()
+        self.updated()
 
     def _rootAttached(self,parent,root):
         pr.Node._rootAttached(self,parent,root)
@@ -84,6 +84,7 @@ class Device(pr.Node,rim.Hub):
                  description='',
                  memBase=None,
                  offset=0,
+                 size=0,
                  hidden=False,
                  variables=None,
                  expand=True,
@@ -100,6 +101,7 @@ class Device(pr.Node,rim.Hub):
         self._blocks    = []
         self._memBase   = memBase
         self._memLock   = threading.RLock()
+        self._size      = size
 
         # Connect to memory slave
         if memBase: self._setSlave(memBase)
@@ -218,9 +220,9 @@ class Device(pr.Node,rim.Hub):
                     if block.bulkEn:
                         block.backgroundTransaction(rim.Write)
 
-            if recurse:
-                for key,value in self.devices.items():
-                    value.writeBlocks(force=force, recurse=True)
+        if recurse:
+            for key,value in self.devices.items():
+                value.writeBlocks(force=force, recurse=True)
 
     def verifyBlocks(self, recurse=True, variable=None):
         """
@@ -236,9 +238,9 @@ class Device(pr.Node,rim.Hub):
                 if block.bulkEn:
                     block.backgroundTransaction(rim.Verify)
 
-            if recurse:
-                for key,value in self.devices.items():
-                    value.verifyBlocks(recurse=True)
+        if recurse:
+            for key,value in self.devices.items():
+                value.verifyBlocks(recurse=True)
 
     def readBlocks(self, recurse=True, variable=None):
         """
@@ -255,9 +257,9 @@ class Device(pr.Node,rim.Hub):
                 if block.bulkEn:
                     block.backgroundTransaction(rim.Read)
 
-            if recurse:
-                for key,value in self.devices.items():
-                    value.readBlocks(recurse=True)
+        if recurse:
+            for key,value in self.devices.items():
+                value.readBlocks(recurse=True)
 
     def checkBlocks(self, recurse=True, variable=None):
         """Check errors in all blocks and generate variable update nofifications"""
@@ -271,8 +273,8 @@ class Device(pr.Node,rim.Hub):
             for block in self._blocks:
                 block._checkTransaction()
 
-            if recurse:
-                for key,value in self.devices.items():
+        if recurse:
+            for key,value in self.devices.items():
                     value.checkBlocks(recurse=True)
 
     def _rawTxnChunker(self, offset, data, base=pr.UInt, stride=4, wordBitSize=0, txnType=rim.Write):
@@ -283,28 +285,28 @@ class Device(pr.Node,rim.Hub):
             wordBitSize = stride*8
 
         mask = 2**wordBitSize-1
-
+        
         if txnType == rim.Write:
-            if isinstance(data, bytearray):
-                ldata = data
-            elif isinstance(data, collections.Iterable):
+        if isinstance(data, bytearray):
+            ldata = data
+        elif isinstance(data, collections.Iterable):
                 ldata = b''.join(base.toBlock(word&mask, stride*8) for word in data)
-            else:
+        else:
                 ldata = base.toBlock(data&mask, stride*8)
 
         else:
             if data is not None:
                 ldata = data
             else:
-                ldata = bytearray(size*stride)            
-
+                ldata = bytearray(size*stride)
+            
         with self._memLock:
             for i in range(offset, offset+len(ldata), self._maxTxnSize):
                 sliceOffset = i | self.offset
                 txnSize = min(self._maxTxnSize, len(ldata)-(i-offset))
                 #print(f'sliceOffset: {sliceOffset:#x}, ldata: {ldata}, txnSize: {txnSize}, buffOffset: {i-offset}')
                 self._reqTransaction(sliceOffset, ldata, txnSize, i-offset, txnType)
-                
+
             return ldata
 
  #    def _backgroundRawWrite(offset, data, base=pr.UInt, stride=4, wordBitSize=0):
@@ -317,16 +319,16 @@ class Device(pr.Node,rim.Hub):
 
             if self._getError() > 0:
                 raise pr.MemoryError (name=self.name, address=sliceOffset|self.address, error=self._getError())
-            
 
+        
  #    def _backgroundRawRead(self, offset, numWords=1, base=pr.UInt, stride=4, wordBitSize=0, data=None, txnType=rim.Read):
 #         self.__rawTxnChunker(offset, data, base, stride, wordBitSize, txnType):
-
+        
     def _rawRead(self, offset, numWords=1, base=pr.UInt, stride=4, wordBitSize=0, data=None):
         with self._memLock:
             ldata = self._rawTxnChunker(offset, data, base, stride, wordBitSize, txnType=rim.Read)
             self._waitTransaction(0)
-            
+
             if self._getError() > 0:
                 raise pr.MemoryError (name=self.name, address=sliceOffset|self.address, error=self._getError())
 

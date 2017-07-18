@@ -137,11 +137,13 @@ class BaseBlock(object):
             self._doUpdate = False
 
         # Update variables outside of lock
-        if doUpdate: self._updated()
-
-    def _updated(self):
+        if doUpdate: self.updated()
+        
+    def updated(self):
         pass
 
+    def _addVariable(self,var):
+        return False
 
 class LocalBlock(BaseBlock):
     def __init__(self, *, variable, localSet, localGet, value):
@@ -183,8 +185,8 @@ class LocalBlock(BaseBlock):
 
         return self._value
 
-    def _updated(self):
-        self._variable._updated()
+    def updated(self):
+        self._variable.updated()
 
 
 class RemoteBlock(BaseBlock, rim.Master):
@@ -249,15 +251,15 @@ class RemoteBlock(BaseBlock, rim.Master):
         """
         with self._lock:
 
-            # Check for invalid combinations or disabled device
-            if (self._device.enable.value() is not True) or \
-               (type == rim.Write  and (self.mode == 'RO')) or \
-               (type == rim.Post   and (self.mode == 'RO')) or \
-               (type == rim.Read   and (self.mode == 'WO')) or \
-               (type == rim.Verify and (self.mode == 'WO' or \
-                                        self.mode == 'RO' or \
-                                        self._verifyWr == False)):
-                return
+        # Check for invalid combinations or disabled device
+        if (self._device.enable.value() is not True) or \
+           (type == rim.Write  and (self.mode == 'RO')) or \
+           (type == rim.Post   and (self.mode == 'RO')) or \
+           (type == rim.Read   and (self.mode == 'WO')) or \
+           (type == rim.Verify and (self.mode == 'WO' or \
+                                    self.mode == 'RO' or \
+                                    self._verifyWr == False)):
+            return
 
             self._waitTransaction(0)
 
@@ -316,7 +318,7 @@ class RemoteBlock(BaseBlock, rim.Master):
             self._doUpdate = False
 
         # Update variables outside of lock
-        if doUpdate: self._updated()
+        if doUpdate: self.updated()
 
 
 class RegisterBlock(RemoteBlock):
@@ -439,12 +441,12 @@ class RegisterBlock(RemoteBlock):
 
             return True
 
-    def _updated(self):
+    def updated(self):
         self._log.debug(f'Block {self._name} _update called')
         for v in self._variables:
-            v._updated()
-               
+            v.updated()
 
+        
 def setBitToBytes(ba, bitOffset, value):
     """
     Set a bit to a specific location in an array of bytes

@@ -219,6 +219,38 @@ class Node(object):
     def node(self, path):
         return self._nodes[path]
 
+    def find(self, *, recurse=True, typ=None, **kwargs):
+        """ 
+        Find all child nodes that are a base class of 'typ'
+        and whose properties match all of the kwargs.
+        For string properties, accepts regexes.
+        """
+    
+        if typ is None:
+            typ = pr.Node
+
+        found = []
+        for node in self._nodes.values():
+            if isinstance(node, typ):
+                for prop, value in kwargs.items():
+                    if not hasattr(node, prop):
+                        break
+                    attr = getattr(node, prop)
+                    if isinstance(value, str):
+                        if not re.match(value, attr):
+                            break
+
+                    else:
+                        if inspect.ismethod(attr):
+                            attr = attr()
+                        if not value == attr:
+                            break
+                else:
+                    found.append(node)
+            if recurse:
+                found.extend(node.find(recurse=recurse, typ=typ, **kwargs))
+        return found
+
     def _rootAttached(self,parent,root):
         """Called once the root node is attached."""
         self._parent = parent
@@ -365,17 +397,20 @@ class PyroNode(object):
         for k,n in d.items():
 
             if isinstance(n,dict):
-                ret[k] = PyroNode(Pyro4.util.SerializerBase.dict_to_class(n),self._daemon)
+                ret[k] = PyroNode(node=Pyro4.util.SerializerBase.dict_to_class(n),daemon=self._daemon)
             else:
-                ret[k] = PyroNode(n,self._daemon)
+                ret[k] = PyroNode(node=n,daemon=self._daemon)
 
         return ret
+
+    def attr(self,attr,**kwargs):
+        return self.__getattr__(attr)(**kwargs)
 
     def addInstance(self,node):
         self._daemon.register(node)
 
     def node(self, path):
-        return PyroNode(self._node.node(path),self._daemon)
+        return PyroNode(node=self._node.node(path),daemon=self._daemon)
 
     @property
     def nodes(self):
@@ -395,7 +430,7 @@ class PyroNode(object):
 
     @property
     def parent(self):
-        return PyroNode(self._node.parent,self._daemon)
+        return PyroNode(node=self._node.parent,daemon=self._daemon)
 
     @property
     def root(self):

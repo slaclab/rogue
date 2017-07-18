@@ -39,7 +39,9 @@ class BaseVariable(pr.Node):
                  units=None,
                  hidden=False,
                  minimum=None,
-                 maximum=None):
+                 maximum=None,
+                 pollInterval=0
+                ):
 
         # Public Attributes
         self._mode          = mode
@@ -48,7 +50,7 @@ class BaseVariable(pr.Node):
         self._maximum       = maximum # For base='range'
         self._update        = update
         self._default       = value
-        self._pollInterval  = 0
+        self._pollInterval  = pollInterval
         self.__listeners    = []
         self.__dependencies = []
 
@@ -145,7 +147,7 @@ class BaseVariable(pr.Node):
     def pollInterval(self, interval):
         self._pollInterval = interval
         self._updatePollInterval()
-        
+
     @property
     def dependencies(self):
         return self.__dependencies
@@ -154,12 +156,12 @@ class BaseVariable(pr.Node):
     def addListener(self, listener):
         """
         Add a listener Variable or function to call when variable changes. 
-        If listener is a Variable then Variable.linkUpdated() will be used as the function
+        If listener is a Variable then Variable.updated() will be used as the function
         This is usefull when chaining variables together. (adc conversions, etc)
         The variable and value will be passed as an arg: func(var,value)
         """
         if isinstance(listener, BaseVariable):
-            self.__listeners.append(listener.linkUpdated)
+            self.__listeners.append(listener.updated)
         else:
             self.__listeners.append(listener)
 
@@ -180,8 +182,27 @@ class BaseVariable(pr.Node):
         return self.get(read=False)
 
     @Pyro4.expose
-    def linkUpdated(self, var, value, disp):
-        self._updated()
+    def updated(self, var=None, value=None, disp=None):
+        """Variable has been updated. Inform listeners."""
+        value = None
+        disp  = None
+
+        for func in self.__listeners:
+            if value is None:
+                value = self.value()
+                disp  = self.valueDisp()
+
+            if getattr(func,'varListener',None) is not None:
+                func.varListener(self,value,disp)
+            else:
+                func(self,value,disp)
+
+        # Root variable update log
+        if self._update is True and self._root is not None:
+            if value is None:
+                value = self.value()
+                disp  = self.valueDisp()
+            self._root._varUpdated(self,value,disp)
 
     @Pyro4.expose
     def genDisp(self, value):
@@ -237,6 +258,7 @@ class BaseVariable(pr.Node):
         if self._default is not None:
             self.setDisp(self._default, write=False)
 
+
     def _updatePollInterval(self):
         if self._pollInterval > 0 and self.root._pollQueue is not None:
             self.root._pollQueue.updatePollInterval(self)
@@ -245,22 +267,6 @@ class BaseVariable(pr.Node):
         self._setDefault()
         self._updatePollInterval()
 
-    def _updated(self):
-        """Variable has been updated. Inform listeners."""
-        if self._update is False or self._root is None:
-            return
-
-        value = self.value()
-        disp  = self.valueDisp()
-
-        for func in self.__listeners:
-            if getattr(func,'varListener',None) is not None:
-                func.varListener(self,value,disp)
-            else:
-                func(self,value,disp)
-
-        # Root variable update log
-        self._root._varUpdated(self,value,disp)
 
     def __set__(self, value):
         self.set(value, write=True)
@@ -297,9 +303,8 @@ class RemoteVariable(BaseVariable):
         BaseVariable.__init__(self, name=name, description=description, 
                               mode=mode, value=value, disp=disp, update=update,
                               enum=enum, units=units, hidden=hidden,
-                              minimum=minimum, maximum=maximum);
-
-        self._pollInterval = pollInterval
+                              minimum=minimum, maximum=maximum,
+                              pollInterval=pollInterval)
 
         self._base     = base        
         self._block    = None
@@ -391,6 +396,7 @@ class RemoteVariable(BaseVariable):
         try:
             self._block.set(self, value)
 
+
             if self._block.mode != 'RO':
                 self._block.backgroundTransaction(rogue.interfaces.memory.Post)
                 self._block.checkTransaction()
@@ -469,9 +475,9 @@ class LocalVariable(BaseVariable):
         BaseVariable.__init__(self, name=name, description=description, 
                               mode=mode, value=value, disp=disp, update=update,
                               enum=enum, units=units, hidden=hidden,
-                              minimum=minimum, maximum=maximum)
+                              minimum=minimum, maximum=maximum,
+                              pollInterval=pollInterval)
 
-        self._pollInterval = pollInterval
         self._block = pr.LocalBlock(variable=self,localSet=localSet,localGet=localGet,value=self._default)
 
         
@@ -483,7 +489,7 @@ class LocalVariable(BaseVariable):
         except Exception as e:
             self._log.exception(e)
 
-        if write: self._updated()
+        if write: self.updated()
 
     def __set__(self, value):
         self.set(value, write=False)
@@ -501,7 +507,7 @@ class LocalVariable(BaseVariable):
             self._log.exception(e)
             return None
 
-        if read: self._updated()
+        if read: self.updated()
         return ret
 
     def __get__(self):
