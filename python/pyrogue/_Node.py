@@ -219,7 +219,7 @@ class Node(object):
     def node(self, path):
         return self._nodes[path]
 
-    def find(self, typ=None, **kwargs):
+    def find(self, *, recurse=True, typ=None, **kwargs):
         """ 
         Find all child nodes that are a base class of 'typ'
         and whose properties match all of the kwargs.
@@ -242,7 +242,8 @@ class Node(object):
                         break
                 else:
                     found.append(node)
-            found.extend(node.find(typ=typ, **kwargs))
+            if recurse:
+                found.extend(node.find(recurse=recurse, typ=typ, **kwargs))
         return found    
 
     def _rootAttached(self,parent,root):
