@@ -353,6 +353,11 @@ class RemoteVariable(BaseVariable):
         return self._verify
 
     @Pyro4.expose
+    @property
+    def base(self):
+        return self._base
+
+    @Pyro4.expose
     def set(self, value, write=True):
         """
         Set the value and write to hardware if applicable
