@@ -139,9 +139,9 @@ class BaseBlock(object):
             self._doUpdate = False
 
         # Update variables outside of lock
-        if doUpdate: self._updated()
+        if doUpdate: self.updated()
         
-    def _updated(self):
+    def updated(self):
         pass
 
     def _addVariable(self,var):
@@ -187,8 +187,8 @@ class LocalBlock(BaseBlock):
 
         return self._value
 
-    def _updated(self):
-        self._variable._updated()
+    def updated(self):
+        self._variable.updated()
 
 
 class RemoteBlock(BaseBlock, rim.Master):
@@ -314,7 +314,7 @@ class RemoteBlock(BaseBlock, rim.Master):
             self._doUpdate = False
 
         # Update variables outside of lock
-        if doUpdate: self._updated()
+        if doUpdate: self.updated()
 
 
 class RegisterBlock(RemoteBlock):
@@ -438,10 +438,10 @@ class RegisterBlock(RemoteBlock):
 
             return True
 
-    def _updated(self):
+    def updated(self):
         self._log.debug(f'Block {self._name} _update called')
         for v in self._variables:
-            v._updated()
+            v.updated()
 
         
 class MemoryBlock(RemoteBlock):
