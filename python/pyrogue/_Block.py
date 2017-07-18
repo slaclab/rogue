@@ -443,45 +443,6 @@ class RegisterBlock(RemoteBlock):
         self._log.debug(f'Block {self._name} _update called')
         for v in self._variables:
             v._updated()
-
-# Is this even used?????
-class MemoryBlock(RemoteBlock):
-
-    def __init__(self, *, name, mode, device, offset):
-        """device is expected to be a MemoryDevice"""
-
-        super().__init__(name=name, mode=mode, device=device, offset=offset)
-        self._bulkEn = True
-        self._verifyEn = True
-
-    def set(self, values):
-
-        with self._lock:
-            self._waitTransaction(0)
-            size = len(values)*self._device._stride
-
-            if size > self._maxSize:
-                raise BlockError(self, "Tried to call set with transaction that is too big")
-
-            self._bData = b''.join( self._device._base.toBlock(v, self._device._bitStride) for v in values)
-            self._vData = bytearray(len(self._bData))
-            self._vDataMask = bytearray(0xff for x in range(len(self._bData)))
-            self._size = len(self._bData)
-
-
-#     def _doneTransaction(self, tid, error):
-#         with self._lock:
-#             if self._device.Verify.value():
-#                 self._verifyWr = False
-#                 if self._vData != self._bData:
-#                     self.error = rim.VerifyError
-
-#             if self.error == 0 and self._verifyWr is False:
-#                 self._bData = bytearray()
-#                 self._vData = bytearray()
-#                 self._mData = bytearray()   
-                
-                
                
 
 def setBitToBytes(ba, bitOffset, value):
