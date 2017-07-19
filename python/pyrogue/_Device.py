@@ -284,15 +284,13 @@ class Device(pr.Node,rim.Hub):
         if wordBitSize == 0:
             wordBitSize = stride*8
 
-        mask = 2**wordBitSize-1
-        
         if txnType == rim.Write:
             if isinstance(data, bytearray):
                 ldata = data
             elif isinstance(data, collections.Iterable):
-                ldata = b''.join(base.toBlock(word&mask, stride*8) for word in data)
+                ldata = b''.join(base.toBlock(word, wordBitSize) for word in data)
             else:
-                ldata = base.toBlock(data&mask, stride*8)
+                ldata = base.toBlock(data, wordBitSize)
 
         else:
             if data is not None:
@@ -326,12 +324,10 @@ class Device(pr.Node,rim.Hub):
             if self._getError() > 0:
                 raise pr.MemoryError (name=self.name, address=sliceOffset|self.address, error=self._getError())
 
-            mask = 2**wordBitSize-1
-
             if size == 1:
-                return base.fromBlock(ldata)&mask
+                return base.fromBlock(ldata)
             else:
-                return [base.fromBlock(ldata[i:i+stride])&mask for i in range(0, len(ldata), stride)]
+                return [base.fromBlock(ldata[i:i+stride]) for i in range(0, len(ldata), stride)]
             
 
     def _buildBlocks(self):
