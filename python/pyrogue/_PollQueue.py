@@ -137,7 +137,7 @@ class PollQueue(object):
 
                 try:
                     for entry in blockEntries:
-                        entry.block._checkTransaction(update=True)
+                        entry.block._checkTransaction()
                 except Exception as e:
                     self._log.exception(e)
                 # End update capture
