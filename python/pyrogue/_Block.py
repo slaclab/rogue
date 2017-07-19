@@ -350,7 +350,7 @@ class RegisterBlock(RemoteBlock):
         Offset sets the starting point in the block array.
         """
         with self._lock:
-            ba = var._base.toBlock(value, sum(var.bitSize))
+            ba = var._base.toBytes(value, sum(var.bitSize))
 
             # Access is fully byte aligned
             if len(var.bitOffset) == 1 and (var.bitOffset[0] % 8) == 0 and (var.bitSize[0] % 8) == 0:
@@ -376,7 +376,9 @@ class RegisterBlock(RemoteBlock):
 
             # Access is fully byte aligned
             if len(var.bitOffset) == 1 and (var.bitOffset[0] % 8) == 0 and (var.bitSize[0] % 8) == 0:
-                return var._base.fromBlock(self._bData[int(var.bitOffset[0]/8):int((var.bitOffset[0]+var.bitSize[0])/8)])
+                return var._base.fromBytes(
+                    self._bData[var.bitOffset[0]//8:((var.bitOffset[0]+var.bitSize[0])//8)],
+                    sum(var.bitSize))
 
             # Bit level access
             else:
@@ -388,7 +390,7 @@ class RegisterBlock(RemoteBlock):
                         setBitToBytes(ba,bit,getBitFromBytes(self._bData,var.bitOffset[x]+y))
                         bit += 1
 
-                return var._base.fromBlock(ba)
+                return var._base.fromBytes(ba, sum(var.bitSize))
 
     def _addVariable(self,var):
         """
