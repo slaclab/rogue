@@ -66,6 +66,10 @@ class UInt(Model):
     pytype = int
 
     @staticmethod
+    def check(value,bitSize):
+        return (type(value) == UInt.pytype and bitSize >= value.bit_length())
+
+    @staticmethod
     def toBlock(value, bitSize):
         return value.to_bytes(byteCount(bitSize), 'little', signed=False)
 
@@ -88,6 +92,10 @@ class Int(Model):
 
     defaultdisp = '{:d}'
     pytype = int
+
+    @staticmethod
+    def check(value,bitSize):
+        return (type(value) == Int.pytype and bitSize >= value.bit_length())
 
     @staticmethod
     def toBlock(value, bitSize):
@@ -117,6 +125,10 @@ class Bool(Model):
     pytype = bool
 
     @staticmethod
+    def check(value,bitSize):
+        return (type(value) == Bool.pytype and bitSize == 1)
+
+    @staticmethod
     def toBlock(value, bitSize):
         return value.to_bytes(1, 'little', signed=False)
 
@@ -139,6 +151,10 @@ class String(Model):
     encoding = 'utf-8'
     defaultdisp = '{}'
     pytype = str
+
+    @staticmethod
+    def check(value,bitSize):
+        return (type(val) == String.pytype and bitSize >= (len(value) * 8))
 
     @staticmethod
     def toBlock(value, bitSize):
@@ -168,6 +184,10 @@ class Float(Model):
     pytype = float
 #    endianness='little'
 #    fstring = 'f' # use '!f' for big endian
+
+    @staticmethod
+    def check(value,bitSize):
+        return (type(val) == Float.pytype and (bitSize == 32 or bitSize == 64))
 
     @staticmethod
     def toBlock(value, bitSize):

@@ -50,7 +50,7 @@ class MemoryError(Exception):
         elif (error & 0xFF000000) == rim.Unsupported:
             self._value += "Unsupported Transaction."
 
-        else:
+        elif error != 0:
             self._value += f"Unknown error {error:#02x}."
 
         if msg is not None:
@@ -349,6 +349,10 @@ class RegisterBlock(RemoteBlock):
         Update block with bitSize bits from passed byte array.
         Offset sets the starting point in the block array.
         """
+        if not var._base.check(value,sum(var.bitSize)):
+            msg = "Invalid value '{}' for base type {} with bit size {}".format(value,var._base.pytype,sum(var.bitSize))
+            raise MemoryError(name=var.name, address=self.address, msg=msg)
+
         with self._lock:
             ba = var._base.toBlock(value, sum(var.bitSize))
 
