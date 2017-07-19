@@ -277,12 +277,10 @@ class Device(pr.Node,rim.Hub):
                 for key,value in self.devices.items():
                         value.checkBlocks(recurse=True)
 
-    def _rawTxnChunker(self, offset, data, base=pr.UInt, stride=4, wordBitSize=0, txnType=rim.Write, numWords=1):
+    def _rawTxnChunker(self, offset, data, base=pr.UInt, stride=4, wordBitSize=32, txnType=rim.Write, numWords=1):
         if wordBitSize > stride*8:
             raise pr.MemoryError(name=self.name, address=offset|self.address,
                                  error='Called raw memory access with wordBitSize > stride')
-        if wordBitSize == 0:
-            wordBitSize = stride*8
 
         if txnType == rim.Write:
             if isinstance(data, bytearray):
@@ -307,7 +305,7 @@ class Device(pr.Node,rim.Hub):
 
             return ldata
 
-    def _rawWrite(self, offset, data, base=pr.UInt, stride=4, wordBitSize=0):
+    def _rawWrite(self, offset, data, base=pr.UInt, stride=4, wordBitSize=32):
         with self._memLock:
             self._rawTxnChunker(offset, data, base, stride, wordBitSize, txnType=rim.Write)
             self._waitTransaction(0)
@@ -316,7 +314,7 @@ class Device(pr.Node,rim.Hub):
                 raise pr.MemoryError (name=self.name, address=sliceOffset|self.address, error=self._getError())
 
         
-    def _rawRead(self, offset, numWords=1, base=pr.UInt, stride=4, wordBitSize=0, data=None):
+    def _rawRead(self, offset, numWords=1, base=pr.UInt, stride=4, wordBitSize=32, data=None):
         with self._memLock:
             ldata = self._rawTxnChunker(offset, data, base, stride, wordBitSize, txnType=rim.Read, numWords=numWords)
             self._waitTransaction(0)
