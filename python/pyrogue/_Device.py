@@ -316,7 +316,7 @@ class Device(pr.Node,rim.Hub):
                 raise pr.MemoryError (name=self.name, address=sliceOffset|self.address, error=self._getError())
 
         
-    def _rawRead(self, offset, numWords=1, base=pr.UInt, stride=4, wordBitSize=32, data=None):
+    def _rawRead(self, offset, numWords=1, base=pr.UInt, stride=4, wordBitSize=0, data=None):
         with self._memLock:
             ldata = self._rawTxnChunker(offset, data, base, stride, wordBitSize, txnType=rim.Read, numWords=numWords)
             self._waitTransaction(0)
