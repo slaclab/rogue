@@ -46,6 +46,7 @@ void rim::setup_module() {
    bp::scope().attr("SizeError")    = SizeError;
    bp::scope().attr("AxiTimeout")   = AxiTimeout;
    bp::scope().attr("AxiFail")      = AxiFail;
+   bp::scope().attr("Unsupported")  = Unsupported;
 
    // Transaction constants
    bp::scope().attr("Read")   = Read;

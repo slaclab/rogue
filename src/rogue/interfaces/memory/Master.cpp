@@ -85,39 +85,22 @@ void rim::Master::setSlave ( rim::SlavePtr slave ) {
 
 //! Get slave
 rim::SlavePtr rim::Master::getSlave () {
-   rogue::GilRelease noGil;
-   boost::lock_guard<boost::mutex> lock(mtx_);
    return(slave_);
 }
 
 //! Query the minimum access size in bytes for interface
 uint32_t rim::Master::reqMinAccess() {
-   rim::SlavePtr slave;
-
-   rogue::GilRelease noGil;
-   boost::lock_guard<boost::mutex> lock(mtx_);
-   slave = slave_;
-   return(slave->doMinAccess());
+   return(slave_->doMinAccess());
 }
 
 //! Query the maximum access size in bytes for interface
 uint32_t rim::Master::reqMaxAccess() {
-   rim::SlavePtr slave;
-
-   rogue::GilRelease noGil;
-   boost::lock_guard<boost::mutex> lock(mtx_);
-   slave = slave_;
-   return(slave->doMaxAccess());
+   return(slave_->doMaxAccess());
 }
 
 //! Query the offset
 uint64_t rim::Master::reqAddress() {
-   rim::SlavePtr slave;
-
-   rogue::GilRelease noGil;
-   boost::lock_guard<boost::mutex> lock(mtx_);
-   slave = slave_;
-   return(slave->doAddress());
+   return(slave_->doAddress());
 }
 
 //! Get error
