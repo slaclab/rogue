@@ -180,7 +180,7 @@ class Float(Model):
 
     @staticmethod
     def check(value,bitSize):
-        return (type(val) == pytype and (bitSize == 32 or bitSize == 64))
+        return (type(val) == Float.pytype and (bitSize == 32 or bitSize == 64))
 
     @staticmethod
     def toBlock(value, bitSize):
