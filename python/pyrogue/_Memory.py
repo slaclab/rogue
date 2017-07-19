@@ -5,8 +5,28 @@ from collections import OrderedDict as odict
 
 
 class MemoryDevice(pr.Device):
-    def __init__(self, *, base=pr.UInt, wordBitSize=32, stride=4, verify=True, **kwargs):
-        super().__init__(hidden=True, **kwargs)
+    def __init__(self, *,
+                 name=None,
+                 description='',
+                 memBase=None,
+                 offset=0,
+                 size=0,
+                 hidden=False,
+                 enabled=True,
+                 base=pr.UInt,
+                 wordBitSize=32,
+                 stride=4,
+                 verify=True):
+        
+        super().__init__(
+            name=name,
+            description=description,
+            memBase=memBase,
+            offset=offset,
+            size=size,
+            hidden=hidden,
+            enabled=enabled,
+        )
 
         self._lockCnt = 0
         self._base = base
