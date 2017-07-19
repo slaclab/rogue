@@ -361,6 +361,10 @@ class RemoteVariable(BaseVariable):
 
         self._log.debug("{}.set({})".format(self, value))
         try:
+
+            if self._block is None:
+                raise VariableError("set called before tree is started")
+
             self._block.set(self, value)
             self.updated()
 
@@ -383,8 +387,12 @@ class RemoteVariable(BaseVariable):
         calls on self._block directly.
         """
         self._log.debug("{}.post({})".format(self, value))
-        
+
         try:
+
+            if self._block is None:
+                raise VariableError("post called before tree is started")
+
             self._block.set(self, value)
             self.updated()
 
@@ -402,6 +410,9 @@ class RemoteVariable(BaseVariable):
         Listeners will be informed of the update.
         """
         try:
+            if self._block is None:
+                raise VariableError("get called before tree is started")
+
             if read and self._block.mode != 'WO':
                 self._parent.readBlocks(recurse=False, variable=self)
                 self._parent.checkBlocks(varUpdate=True, recurse=False, variable=self)
