@@ -20,8 +20,8 @@
 # ----------------------------------------------------------------------------
 
 VER_MAJOR := 2
-VER_MINOR := 1
-VER_MAINT := 1
+VER_MINOR := 2
+VER_MAINT := 0
 
 # Variables
 CC       := g++

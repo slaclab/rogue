@@ -147,7 +147,7 @@ class BaseVariable(pr.Node):
     def pollInterval(self, interval):
         self._pollInterval = interval
         self._updatePollInterval()
-        
+
     @property
     def dependencies(self):
         return self.__dependencies
@@ -253,15 +253,20 @@ class BaseVariable(pr.Node):
     def nativeType(self):
         return type(self.value())
 
-    def _rootAttached(self,parent,root):
-        pr.Node._rootAttached(self,parent,root)
-
+    def _setDefault(self):
+        # Called by parent Device after _buildBlocks()
         if self._default is not None:
-            self.set(self._default, write=False)
+            self.setDisp(self._default, write=False)
+
 
     def _updatePollInterval(self):
         if self._pollInterval > 0 and self.root._pollQueue is not None:
             self.root._pollQueue.updatePollInterval(self)
+
+    def _finishInit(self):
+        self._setDefault()
+        self._updatePollInterval()
+
 
     def __set__(self, value):
         self.set(value, write=True)
@@ -353,6 +358,11 @@ class RemoteVariable(BaseVariable):
         return self._verify
 
     @Pyro4.expose
+    @property
+    def base(self):
+        return self._base
+
+    @Pyro4.expose
     def set(self, value, write=True):
         """
         Set the value and write to hardware if applicable
@@ -362,15 +372,14 @@ class RemoteVariable(BaseVariable):
         self._log.debug("{}.set({})".format(self, value))
         try:
             self._block.set(self, value)
-            self.updated()
 
             if write and self._block.mode != 'RO':
                 self._parent.writeBlocks(force=False, recurse=False, variable=self)
-                self._parent.checkBlocks(varUpdate=False, recurse=False, variable=self)
 
                 if self._block.mode == 'RW':
                     self._parent.verifyBlocks(recurse=False, variable=self)
-                    self._parent.checkBlocks(varUpdate=False, recurse=False, variable=self)
+
+                self._parent.checkBlocks(recurse=False, variable=self)
 
         except Exception as e:
             self._log.exception(e)
@@ -386,10 +395,11 @@ class RemoteVariable(BaseVariable):
         
         try:
             self._block.set(self, value)
-            self.updated()
+
 
             if self._block.mode != 'RO':
                 self._block.backgroundTransaction(rogue.interfaces.memory.Post)
+                self._block.checkTransaction()
 
         except Exception as e:
             self._log.exception(e)
@@ -404,17 +414,13 @@ class RemoteVariable(BaseVariable):
         try:
             if read and self._block.mode != 'WO':
                 self._parent.readBlocks(recurse=False, variable=self)
-                self._parent.checkBlocks(varUpdate=True, recurse=False, variable=self)
+                self._parent.checkBlocks(recurse=False, variable=self)
 
             ret = self._block.get(self)
 
         except Exception as e:
             self._log.exception(e)
             return None
-
-        # Update listeners for all variables in the block
-        if read:
-            self._block.updated()
 
         return ret
 
@@ -487,6 +493,10 @@ class LocalVariable(BaseVariable):
 
     def __set__(self, value):
         self.set(value, write=False)
+
+    @Pyro4.expose
+    def post(self,value):
+        self.set(self, value)
 
     @Pyro4.expose
     def get(self,read=True):

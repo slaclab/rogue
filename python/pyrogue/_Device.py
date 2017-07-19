@@ -100,7 +100,7 @@ class Device(pr.Node,rim.Hub):
         # Blocks
         self._blocks    = []
         self._memBase   = memBase
-        self._rawLock   = threading.RLock()
+        self._memLock   = threading.RLock()
         self._size      = size
 
         # Connect to memory slave
@@ -220,10 +220,9 @@ class Device(pr.Node,rim.Hub):
                     if block.bulkEn:
                         block.backgroundTransaction(rim.Write)
 
-        # Process rest of tree
-        if recurse:
-            for key,value in self.devices.items():
-                value.writeBlocks(force=force, recurse=True)
+            if recurse:
+                for key,value in self.devices.items():
+                    value.writeBlocks(force=force, recurse=True)
 
     def verifyBlocks(self, recurse=True, variable=None):
         """
@@ -239,10 +238,9 @@ class Device(pr.Node,rim.Hub):
                 if block.bulkEn:
                     block.backgroundTransaction(rim.Verify)
 
-        # Process rest of tree
-        if recurse:
-            for key,value in self.devices.items():
-                value.verifyBlocks(recurse=True)
+            if recurse:
+                for key,value in self.devices.items():
+                    value.verifyBlocks(recurse=True)
 
     def readBlocks(self, recurse=True, variable=None):
         """
@@ -259,64 +257,72 @@ class Device(pr.Node,rim.Hub):
                 if block.bulkEn:
                     block.backgroundTransaction(rim.Read)
 
-        # Process rest of tree
-        if recurse:
-            for key,value in self.devices.items():
-                value.readBlocks(recurse=True)
+            if recurse:
+                for key,value in self.devices.items():
+                    value.readBlocks(recurse=True)
 
-    def checkBlocks(self,varUpdate=True, recurse=True, variable=None):
+    def checkBlocks(self, recurse=True, variable=None):
         """Check errors in all blocks and generate variable update nofifications"""
         if not self.enable.get(): return
         self._log.debug(f'Calling {self.path}._checkBlocks')
 
         # Process local blocks
         if variable is not None:
-            variable._block._checkTransaction(varUpdate)
+            variable._block._checkTransaction()
         else:
             for block in self._blocks:
-                block._checkTransaction(varUpdate)
+                block._checkTransaction()
 
-        # Process rest of tree
-        if recurse:
-            for key,value in self.devices.items():
-                value.checkBlocks(varUpdate=varUpdate, recurse=True)
+            if recurse:
+                for key,value in self.devices.items():
+                        value.checkBlocks(recurse=True)
 
-    def _rawWrite(self, address, data, base=pr.UInt, stride=4):
-        
-        if isinstance(data, bytearray):
-            ldata = data
-        elif isinstance(data, collections.Iterable):
-            ldata = b''.join(base.toBlock(word, stride*8) for word in data)
+    def _rawTxnChunker(self, offset, data, base=pr.UInt, stride=4, wordBitSize=0, txnType=rim.Write):
+        if wordBitSize > stride*8:
+            raise pr.MemoryError(name=self.name, address=offset|self.address,
+                                 error='Called raw memory access with wordBitSize > stride')
+        if wordBitSize == 0:
+            wordBitSize = stride*8
+
+        if txnType == rim.Write:
+            if isinstance(data, bytearray):
+                ldata = data
+            elif isinstance(data, collections.Iterable):
+                ldata = b''.join(base.toBlock(word, wordBitSize) for word in data)
+            else:
+                ldata = base.toBlock(data, wordBitSize)
+
         else:
-            ldata = base.toBlock(data, stride*8)
+            if data is not None:
+                ldata = data
+            else:
+                ldata = bytearray(size*stride)
+            
+        with self._memLock:
+            for i in range(offset, offset+len(ldata), self._maxTxnSize):
+                sliceOffset = i | self.offset
+                txnSize = min(self._maxTxnSize, len(ldata)-(i-offset))
+                #print(f'sliceOffset: {sliceOffset:#x}, ldata: {ldata}, txnSize: {txnSize}, buffOffset: {i-offset}')
+                self._reqTransaction(sliceOffset, ldata, txnSize, i-offset, txnType)
 
-        if address + len(ldata) > self._size:
-            raise pr.MemoryError (name=self.name, address=address|self.address, error=rim.SizeError,size=len(ldata))
+            return ldata
 
-        with self._rawLock:
-            self._reqTransaction(address|self.offset,ldata,rim.Write)
-            self._waitTransaction()
+    def _rawWrite(self, offset, data, base=pr.UInt, stride=4, wordBitSize=0):
+        with self._memLock:
+            self._rawTxnChunker(offset, data, base, stride, wordBitSize, txnType=rim.Write)
+            self._waitTransaction(0)
 
             if self._getError() > 0:
-                raise pr.MemoryError (name=self.name, address=address|self.address, error=self._getError())
+                raise pr.MemoryError (name=self.name, address=sliceOffset|self.address, error=self._getError())
 
-    def _rawRead(self, address, size=1, base=pr.UInt, stride=4, bdata=None):
         
-        if bdata is not None:
-            ldata = bdata
-        else:
-            ldata = bytearray(size*stride)
-
-        if address + len(ldata) > self._size:
-            raise pr.MemoryError (name=self.name, address=address|self.address, error=rim.SizeError,size=len(ldata))
-
-        with self._rawLock:
-
-            self._reqTransaction(address|self.offset,ldata,rim.Read)
-            self._waitTransaction()
+    def _rawRead(self, offset, numWords=1, base=pr.UInt, stride=4, wordBitSize=0, data=None):
+        with self._memLock:
+            ldata = self._rawTxnChunker(offset, data, base, stride, wordBitSize, txnType=rim.Read)
+            self._waitTransaction(0)
 
             if self._getError() > 0:
-                raise pr.MemoryError (name=self.name, address=address|self.address, error=self._getError())
+                raise pr.MemoryError (name=self.name, address=sliceOffset|self.address, error=self._getError())
 
             if size == 1:
                 return base.fromBlock(ldata)
@@ -365,20 +371,21 @@ class Device(pr.Node,rim.Hub):
                 self._log.debug("Adding new block {} at offset {:#02x}".format(n.name,n.offset))
                 self._blocks.append(pr.RegisterBlock(variable=n))
 
-            if (n.offset + n.varBytes + 1) > self._size:
-                self._size = n.offset + n.varBytes + 1
-
-
     def _rootAttached(self, parent, root):
         pr.Node._rootAttached(self, parent, root)
+
+        self._maxTxnSize = self._reqMaxAccess()
+        self._minTxnSize = self._reqMinAccess()        
 
         for key,value in self._nodes.items():
             value._rootAttached(self,root)
 
         self._buildBlocks()
 
+        # Some variable initialization can run until the blocks are built
         for v in self.variables.values():
-            v._updatePollInterval()
+            v._finishInit()
+
 
     def _devReset(self,rstType):
         """Generate a count, soft or hard reset"""
@@ -402,6 +409,8 @@ class Device(pr.Node,rim.Hub):
 
         for block in self._blocks:
             block.timeout = timeout
+
+        rim.Master._setTimeout(self, timeout*1000000)
 
         for key,value in self._nodes.items():
             if isinstance(value,Device):
