@@ -309,9 +309,6 @@ class Device(pr.Node,rim.Hub):
 
             return ldata
 
- #    def _backgroundRawWrite(offset, data, base=pr.UInt, stride=4, wordBitSize=0):
-#         self.__rawTxnChunker(offset, data, base, stride, wordBitSize, txnType=rim.Write):
-
     def _rawWrite(self, offset, data, base=pr.UInt, stride=4, wordBitSize=0):
         with self._memLock:
             self._rawTxnChunker(offset, data, base, stride, wordBitSize, txnType=rim.Write)
@@ -321,9 +318,6 @@ class Device(pr.Node,rim.Hub):
                 raise pr.MemoryError (name=self.name, address=sliceOffset|self.address, error=self._getError())
 
         
- #    def _backgroundRawRead(self, offset, numWords=1, base=pr.UInt, stride=4, wordBitSize=0, data=None, txnType=rim.Read):
-#         self.__rawTxnChunker(offset, data, base, stride, wordBitSize, txnType):
-        
     def _rawRead(self, offset, numWords=1, base=pr.UInt, stride=4, wordBitSize=0, data=None):
         with self._memLock:
             ldata = self._rawTxnChunker(offset, data, base, stride, wordBitSize, txnType=rim.Read)
@@ -331,6 +325,8 @@ class Device(pr.Node,rim.Hub):
 
             if self._getError() > 0:
                 raise pr.MemoryError (name=self.name, address=sliceOffset|self.address, error=self._getError())
+
+            mask = 2**wordBitSize-1
 
             if size == 1:
                 return base.fromBlock(ldata)&mask
