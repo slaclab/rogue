@@ -47,7 +47,7 @@ class Model(object):
     def getMask(bitSize):
         # For now all models are little endian so we can get away with this
         i = (2**bitSize-1)
-        return i.to_bytes(byteCount(bitSize+bitOffset), 'little', signed=False)
+        return i.to_bytes(byteCount(bitSize), 'little', signed=False)
 
     @classmethod
     def mask(cls, ba, bitSize):
@@ -202,7 +202,7 @@ class Float(Model):
             fstring = 'f'
         elif bitsize == 64:
             fstring = 'd'
-        return cls.mask(bytearray(struct.pack(fstring, value)), bitSize)
+        return bytearray(struct.pack(fstring, value))
 
     @classmethod
     def fromBytes(cls, ba, bitSize):
@@ -212,7 +212,7 @@ class Float(Model):
             return struct.unpack('d', ba)
 
         # Need better error handling
-        return struct.unpack('d', cls.mask(ba, bitSize))        
+        return struct.unpack('d', ba)        
 
     @staticmethod
     def fromString(string):
