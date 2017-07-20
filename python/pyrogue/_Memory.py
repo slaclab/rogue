@@ -91,7 +91,7 @@ class MemoryDevice(pr.Device):
             checkValues = odict()
             print(self._verData.items())
             for offset, ba in self._verData.items():
-                checkValues[offset] = [self._base.fromBytes(ba[i:i+self._stride], self._wordBitSize)
+                checkValues[offset] = [self._base.mask(self._base.fromBytes(ba[i:i+self._stride]), self._wordBitSize)
                                        for i in range(0, len(ba), self._stride)]
 
             # Do verify if necessary

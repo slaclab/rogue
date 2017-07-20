@@ -77,11 +77,11 @@ class UInt(Model):
 
     @classmethod
     def toBytes(cls, value, bitSize):
-        return cls.mask(value.to_bytes(byteCount(bitSize), 'little', signed=False), bitSize)
+        return value.to_bytes(byteCount(bitSize), 'little', signed=False)
 
     @classmethod
-    def fromBytes(cls, ba, bitSize):
-        return int.from_bytes(cls.mask(ba, bitSize), 'little', signed=False)
+    def fromBytes(cls, ba):
+        return int.from_bytes(ba, 'little', signed=False)
 
 
     @staticmethod
@@ -106,11 +106,11 @@ class Int(Model):
 
     @classmethod
     def toBytes(cls, value, bitSize):
-        return cls.mask(value.to_bytes(byteCount(bitSize), 'little', signed=True), bitSize)
+        return value.to_bytes(byteCount(bitSize), 'little', signed=True)
 
     @classmethod
-    def fromBytes(cls,ba, bitSize):
-        return int.from_bytes(cls.mask(ba, bitSize), 'little', signed=True)
+    def fromBytes(cls,ba):
+        return int.from_bytes(ba, 'little', signed=True)
 
     @staticmethod
     def fromString(string):
@@ -137,11 +137,11 @@ class Bool(Model):
 
     @classmethod
     def toBytes(cls, value, bitSize):
-        return cls.mask(value.to_bytes(1, 'little', signed=False), 1)
+        return value.to_bytes(1, 'little', signed=False)
 
     @classmethod
-    def fromBytes(cls, ba, bitSize):
-        return bool(int.from_bytes(cls.mask(ba, 1), 'little', signed=False))
+    def fromBytes(cls, ba):
+        return bool(int.from_bytes(ba, 'little', signed=False))
 
     @staticmethod
     def fromString(string):
@@ -170,7 +170,7 @@ class String(Model):
         return ba
 
     @classmethod
-    def fromBytes(cls, ba, bitSize):
+    def fromBytes(cls, ba):
         s = ba.rstrip(bytearray(1))
         return s.decode(String.encoding)
 
@@ -205,7 +205,7 @@ class Float(Model):
         return bytearray(struct.pack(fstring, value))
 
     @classmethod
-    def fromBytes(cls, ba, bitSize):
+    def fromBytes(cls, ba):
         if len(ba) == 4:
             return struct.unpack('f', ba)
         elif len(ba) == 8:

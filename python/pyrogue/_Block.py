@@ -381,8 +381,7 @@ class RegisterBlock(RemoteBlock):
             # Access is fully byte aligned
             if len(var.bitOffset) == 1 and (var.bitOffset[0] % 8) == 0 and (var.bitSize[0] % 8) == 0:
                 return var._base.fromBytes(
-                    self._bData[var.bitOffset[0]//8:((var.bitOffset[0]+var.bitSize[0])//8)],
-                    sum(var.bitSize))
+                    self._bData[var.bitOffset[0]//8:((var.bitOffset[0]+var.bitSize[0])//8)])
 
             # Bit level access
             else:
@@ -394,7 +393,7 @@ class RegisterBlock(RemoteBlock):
                         setBitToBytes(ba,bit,getBitFromBytes(self._bData,var.bitOffset[x]+y))
                         bit += 1
 
-                return var._base.fromBytes(ba, sum(var.bitSize))
+                return var._base.fromBytes(ba)
 
     def _addVariable(self,var):
         """

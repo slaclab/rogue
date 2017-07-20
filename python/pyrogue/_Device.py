@@ -288,9 +288,9 @@ class Device(pr.Node,rim.Hub):
             if isinstance(data, bytearray):
                 ldata = data
             elif isinstance(data, collections.Iterable):
-                ldata = b''.join(base.toBytes(word, wordBitSize) for word in data)
+                ldata = b''.join(base.mask(base.toBytes(word, wordBitSize), wordBitSize) for word in data)
             else:
-                ldata = base.toBytes(data, wordBitSize)
+                ldata = base.mask(base.toBytes(data, wordBitSize), wordBitSize)
 
         else:
             if data is not None:
@@ -331,9 +331,9 @@ class Device(pr.Node,rim.Hub):
                 raise pr.MemoryError (name=self.name, address=sliceOffset|self.address, error=self._getError())
 
             if size == 1:
-                return base.fromBytes(ldata, wordBitSize)
+                return base.fromBytes(base.mask(ldata, wordBitSize))
             else:
-                return [base.fromBytes(ldata[i:i+stride], wordBitSize) for i in range(0, len(ldata), stride)]
+                return [base.fromBytes(base.mask(ldata[i:i+stride], wordBitSize)) for i in range(0, len(ldata), stride)]
             
 
     def _buildBlocks(self):
