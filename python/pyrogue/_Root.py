@@ -86,7 +86,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         self.add(pr.LocalVariable(name='forceWrite', value=False, mode='RW', hidden=True,
             description='Cofiguration Flag To Control Write All Block'))
 
-    def start(self,pollEn=True, pyroGroup=None, pyroHost=None, pyroNs=None):
+    def start(self, initRead=False, initWrite=False, pollEn=True, pyroGroup=None, pyroHost=None, pyroNs=None):
         """Setup the tree. Start the polling thread."""
 
         # Create poll queue object
@@ -135,6 +135,15 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                 print("Root::start -> Failed to find Pyro4 nameserver.")
                 print("               Start with the following command:")
                 print("                  python -m Pyro4.naming")
+
+        # Read current state
+        if initRead:
+            self._read()
+
+        # Commit default values
+        # Read did not override defaults because set values are cached
+        if initWrite:
+            self._write()
 
         # Start poller if enabled
         if pollEn:
@@ -313,7 +322,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         """Write all blocks"""
         self._log.info("Start root write")
         try:
-            self.writeBlocks(force=self.forceWrite, recurse=True)
+            self.writeBlocks(force=self.forceWrite.value(), recurse=True)
             self._log.info("Verify root read")
             self.verifyBlocks(recurse=True)
             self._log.info("Check root read")
