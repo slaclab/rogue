@@ -279,8 +279,8 @@ class Device(pr.Node,rim.Hub):
 
     def _rawTxnChunker(self, offset, data, base=pr.UInt, stride=4, wordBitSize=32, txnType=rim.Write, numWords=1):
         if wordBitSize > stride*8:
-            raise pr.MemoryError(name=self.name, address=offset|self.address,
-                                 error='Called raw memory access with wordBitSize > stride')
+            raise pr.MemoryError(name=self.name, address=offset|self.address, 
+                                 msg='Called raw memory access with wordBitSize > stride')
 
         if txnType == rim.Write:
             if isinstance(data, bytearray):
