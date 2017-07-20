@@ -274,6 +274,16 @@ class BaseVariable(pr.Node):
     def __get__(self):
         self.get(read=True)
 
+    def _setDict(self,d,writeEach,modes):
+        if self._mode in modes:
+            self.setDisp(d,writeEach)
+
+    def _getDict(self,modes):
+        if self._mode in modes:
+            return self.valueDisp()
+        else:
+            return None
+
 
 @Pyro4.expose
 class RemoteVariable(BaseVariable):
