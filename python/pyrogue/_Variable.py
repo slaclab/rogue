@@ -276,11 +276,11 @@ class BaseVariable(pr.Node):
 
     def _setDict(self,d,writeEach,modes):
         if self._mode in modes:
-            self.setDisp(value,writeEach)
+            self.setDisp(d,writeEach)
 
     def _getDict(self,modes):
         if self._mode in modes:
-            return self._valueDisp()
+            return self.valueDisp()
         else:
             return None
 

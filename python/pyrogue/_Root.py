@@ -187,7 +187,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         modes is a list of variable modes to include.
         If readFirst=True a full read from hardware is performed.
         """
-        ret = None
+        ret = ""
 
         if readFirst: self._read()
         try:
