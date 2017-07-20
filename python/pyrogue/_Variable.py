@@ -69,8 +69,6 @@ class BaseVariable(pr.Node):
 
         if enum is not None:
             self._disp = 'enum'
-            if not self._default in enum:
-                self._default = [k for k,v in enum.items()][0]
 
         # Determine typeStr from value type
         if value is not None:
@@ -268,11 +266,11 @@ class BaseVariable(pr.Node):
         self._updatePollInterval()
 
 
-    def __set__(self, value):
-        self.set(value, write=True)
+    #def __set__(self, value):
+        #self.set(value, write=True)
 
-    def __get__(self):
-        self.get(read=True)
+    #def __get__(self):
+        #self.get(read=True)
 
 
 @Pyro4.expose

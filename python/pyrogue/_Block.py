@@ -155,11 +155,13 @@ class LocalBlock(BaseBlock):
         self._variables = [variable] # Used by poller
         self._value = value
 
-
     @property
     def value(self):
         return self._value
-        
+       
+    @property
+    def stale(self):
+        return False
 
     def set(self, value):
         with self._lock:
