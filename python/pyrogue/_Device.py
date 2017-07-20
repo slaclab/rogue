@@ -367,7 +367,7 @@ class Device(pr.Node,rim.Hub):
         for n in remVars:
             if not any(block._addVariable(n) for block in self._blocks):
                 self._log.debug("Adding new block {} at offset {:#02x}".format(n.name,n.offset))
-                self._blocks.append(pr.RegisterBlock(variable=n))
+                self._blocks.append(pr.RemoteBlock(variable=n))
 
     def _rootAttached(self, parent, root):
         pr.Node._rootAttached(self, parent, root)
