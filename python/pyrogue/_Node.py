@@ -260,26 +260,24 @@ class Node(object):
     def _exportNodes(self,daemon):
         for k,n in self._nodes.items():
             daemon.register(n)
+            n._exportNodes(daemon)
 
-            if isinstance(n,pr.Device):
-                n._exportNodes(daemon)
-
-    def _getVariables(self,modes):
+    def _getDict(self,modes):
         """
         Get variable values in a dictionary starting from this level.
         Attributes that are Nodes are recursed.
         modes is a list of variable modes to include.
-        Called from getYamlVariables in the root node.
         """
         data = odict()
         for key,value in self._nodes.items():
-            if isinstance(value,pr.Device):
-                data[key] = value._getVariables(modes)
-            elif isinstance(value,pr.BaseVariable) and not isinstance(value, pr.BaseCommand) \
-                 and (value.mode in modes):
-                data[key] = value.valueDisp()
+            nv = value._getDict(modes)
+            if nv is not None:
+                data[key] = nv
 
-        return data
+        if len(data) == 0:
+            return None
+        else:
+            return data
 
     def _nodeList(self,name):
 
@@ -339,13 +337,7 @@ class Node(object):
 
         return ret
 
-    def _setOrExec(self,d,writeEach,modes):
-        """
-        Set variable values or execute commands from a dictionary starting 
-        from this level.  Attributes that are Nodes are recursed.
-        modes is a list of variable nodes to act on for variable accesses.
-        Called from setOrExecYaml in the root node.
-        """
+    def _setDict(self,d,writeEach,modes):
         for key, value in d.items():
             nlist = self._nodeList(key)
 
@@ -353,19 +345,10 @@ class Node(object):
                 self._log.error("Entry {} not found".format(key))
             else:
                 for n in nlist:
+                    n._setDict(value,writeEach,modes)
 
-                    # If entry is a device, recurse
-                    if isinstance(n,pr.Device):
-                        n._setOrExec(value,writeEach,modes)
-
-                    # Execute if command
-                    elif isinstance(n,pr.BaseCommand):
-                        n.call(value)
-
-                    # Set value if variable with enabled mode
-                    elif isinstance(n,pr.BaseVariable) and (n.mode in modes):
-                        n.setDisp(value,writeEach)
-
+    def _setTimeout(self,timeout):
+        pass
 
 class PyroNode(object):
     def __init__(self, *, node,daemon):
