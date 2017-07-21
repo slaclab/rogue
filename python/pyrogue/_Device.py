@@ -320,7 +320,7 @@ class Device(pr.Node,rim.Hub):
         with self._memLock:
             if wordBitSize > stride*8:
                 raise pr.MemoryError(name=self.name, address=offset|self.address,
-                                     error='Called raw memory access with wordBitSize > stride')
+                                     msg='Called raw memory access with wordBitSize > stride')
             if wordBitSize == 0:
                 wordBitSize = stride*8
             

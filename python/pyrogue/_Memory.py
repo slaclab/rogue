@@ -12,6 +12,7 @@ class MemoryDevice(pr.Device):
                  offset=0,
                  size=0,
                  hidden=False,
+                 expand=True,
                  enabled=True,
                  base=pr.UInt,
                  wordBitSize=32,
@@ -25,6 +26,7 @@ class MemoryDevice(pr.Device):
             offset=offset,
             size=size,
             hidden=hidden,
+            expand=expand,
             enabled=enabled,
         )
 
