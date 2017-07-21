@@ -155,11 +155,13 @@ class LocalBlock(BaseBlock):
         self._variables = [variable] # Used by poller
         self._value = value
 
-
     @property
     def value(self):
         return self._value
         
+    @property
+    def stale(self):
+        return False
 
     def set(self, value):
         with self._lock:
@@ -190,12 +192,12 @@ class LocalBlock(BaseBlock):
 
 
 class RemoteBlock(BaseBlock, rim.Master):
-    def __init__(self, *, name, mode, device, offset=0):
+    def __init__(self, *, variable):
      
         rim.Master.__init__(self)
-        self._setSlave(device)
+        self._setSlave(variable.parent)
         
-        BaseBlock.__init__(self, name=name, mode=mode, device=device)
+        BaseBlock.__init__(self, name=variable.path, mode=variable.mode, device=variable.parent)
         self._verifyEn  = False
         self._bulkEn    = False
         self._doVerify  = False
@@ -206,12 +208,18 @@ class RemoteBlock(BaseBlock, rim.Master):
         self._vData     = bytearray()  # Verify data
         self._vDataMask = bytearray()  # Verify data mask
         self._size      = 0
-        self._offset    = offset
+        self._offset    = variable.offset
         self._minSize   = self._reqMinAccess()
         self._maxSize   = self._reqMaxAccess()
+        self._variables = []
 
         if self._minSize == 0 or self._maxSize == 0:
             raise MemoryError(name=self.name, address=self.address, msg="Invalid min/max size")
+
+        self._addVariable(variable)
+
+    def __repr__(self):
+        return repr(self._variables)
 
     @property
     def stale(self):
@@ -244,6 +252,62 @@ class RemoteBlock(BaseBlock, rim.Master):
     @property
     def bulkEn(self):
         return self._bulkEn
+
+    def blockingTransaction(self, type):
+        # Call is same as BaseBlock, just add logging
+        self._log.debug(f"Blocking tran. Addr={self.offset:#08x}")
+        BaseBlock.blockingTransaction(self, type)
+        self._log.debug(f"Done block. Addr={self._offset:08x}")
+
+    def set(self, var, value):
+        """
+        Update block with bitSize bits from passed byte array.
+        Offset sets the starting point in the block array.
+        """
+        if not var._base.check(value,sum(var.bitSize)):
+            msg = "Invalid value '{}' for base type {} with bit size {}".format(value,var._base.pytype,sum(var.bitSize))
+            raise MemoryError(name=var.name, address=self.address, msg=msg)
+
+        with self._lock:
+            ba = var._base.toBlock(value, sum(var.bitSize))
+
+            # Access is fully byte aligned
+            if len(var.bitOffset) == 1 and (var.bitOffset[0] % 8) == 0 and (var.bitSize[0] % 8) == 0:
+                self._sData[var.bitOffset[0]//8:(var.bitOffset[0]+var.bitSize[0])//8] = ba
+                self._sDataMask[var.bitOffset[0]//8:(var.bitOffset[0]+var.bitSize[0])//8] = bytearray([0xff] * (var.bitSize[0] // 8))
+
+            # Bit level access
+            else:
+                bit = 0
+                for x in range(0, len(var.bitOffset)):
+                    for y in range(0, var.bitSize[x]):
+                        setBitToBytes(self._sData,var.bitOffset[x]+y,getBitFromBytes(ba,bit))
+                        setBitToBytes(self._sDataMask,var.bitOffset[x]+y,1)
+                        bit += 1
+
+    def get(self, var):
+        """
+        Get bitSize bytes from block data.
+        Offset sets the starting point in the block array.
+        bytearray is returned
+        """
+        with self._lock:
+
+            # Access is fully byte aligned
+            if len(var.bitOffset) == 1 and (var.bitOffset[0] % 8) == 0 and (var.bitSize[0] % 8) == 0:
+                return var._base.fromBlock(self._bData[int(var.bitOffset[0]/8):int((var.bitOffset[0]+var.bitSize[0])/8)])
+
+            # Bit level access
+            else:
+                ba = bytearray(int(math.ceil(float(sum(var.bitSize)) / 8.0)))
+
+                bit = 0
+                for x in range(0, len(var.bitOffset)):
+                    for y in range(0, var.bitSize[x]):
+                        setBitToBytes(ba,bit,getBitFromBytes(self._bData,var.bitOffset[x]+y))
+                        bit += 1
+
+                return var._base.fromBlock(ba)
 
     def _startTransaction(self,type):
         """
@@ -319,81 +383,6 @@ class RemoteBlock(BaseBlock, rim.Master):
 
         # Update variables outside of lock
         if doUpdate: self.updated()
-
-
-class RegisterBlock(RemoteBlock):
-    """Internal memory block holder"""
-
-    def __init__(self, *, variable):
-        """
-        Initialize memory block class.
-        Pass initial variable.
-        """
-        super().__init__(name=variable.path, mode=variable.mode, device=variable.parent, offset=variable.offset)
-
-        self._variables = []
-        self._addVariable(variable)
-
-    def __repr__(self):
-        return repr(self._variables)
-
-    def blockingTransaction(self, type):
-        # Call is same as BaseBlock, just add logging
-        self._log.debug(f"Blocking tran. Addr={self.offset:#08x}")
-        BaseBlock.blockingTransaction(self, type)
-        self._log.debug(f"Done block. Addr={self._offset:08x}")
-
-
-    def set(self, var, value):
-        """
-        Update block with bitSize bits from passed byte array.
-        Offset sets the starting point in the block array.
-        """
-        if not var._base.check(value,sum(var.bitSize)):
-            msg = "Invalid value '{}' for base type {} with bit size {}".format(value,var._base.pytype,sum(var.bitSize))
-            raise MemoryError(name=var.name, address=self.address, msg=msg)
-
-        with self._lock:
-            ba = var._base.toBytes(value, sum(var.bitSize))
-
-            # Access is fully byte aligned
-            if len(var.bitOffset) == 1 and (var.bitOffset[0] % 8) == 0 and (var.bitSize[0] % 8) == 0:
-                self._sData[var.bitOffset[0]//8:(var.bitOffset[0]+var.bitSize[0])//8] = ba
-                self._sDataMask[var.bitOffset[0]//8:(var.bitOffset[0]+var.bitSize[0])//8] = bytearray([0xff] * (var.bitSize[0] // 8))
-
-            # Bit level access
-            else:
-                bit = 0
-                for x in range(0, len(var.bitOffset)):
-                    for y in range(0, var.bitSize[x]):
-                        setBitToBytes(self._sData,var.bitOffset[x]+y,getBitFromBytes(ba,bit))
-                        setBitToBytes(self._sDataMask,var.bitOffset[x]+y,1)
-                        bit += 1
-
-    def get(self, var):
-        """
-        Get bitSize bytes from block data.
-        Offset sets the starting point in the block array.
-        bytearray is returned
-        """
-        with self._lock:
-
-            # Access is fully byte aligned
-            if len(var.bitOffset) == 1 and (var.bitOffset[0] % 8) == 0 and (var.bitSize[0] % 8) == 0:
-                return var._base.fromBytes(
-                    self._bData[var.bitOffset[0]//8:((var.bitOffset[0]+var.bitSize[0])//8)])
-
-            # Bit level access
-            else:
-                ba = bytearray(int(math.ceil(float(sum(var.bitSize)) / 8.0)))
-
-                bit = 0
-                for x in range(0, len(var.bitOffset)):
-                    for y in range(0, var.bitSize[x]):
-                        setBitToBytes(ba,bit,getBitFromBytes(self._bData,var.bitOffset[x]+y))
-                        bit += 1
-
-                return var._base.fromBytes(ba)
 
     def _addVariable(self,var):
         """

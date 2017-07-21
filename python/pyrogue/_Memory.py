@@ -47,12 +47,14 @@ class MemoryDevice(pr.Device):
     def _buildBlocks(self):
         pass
 
-    def _setOrExec(self, d, writeEach, modes):
+    def _setDict(self, d, writeEach, modes):
         # Parse comma separated values at each offset (key) in d
         with self._memLock:
             for offset, values in d.items():
                 self._setValues[offset] = [self._base.fromString(s) for s in values.split(',')]
 
+    def _getDict(self,modes):
+        return None
 
     def writeBlocks(self, force=False, recurse=True, variable=None):
         if not self.enable.get(): return

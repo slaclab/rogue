@@ -86,7 +86,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         self.add(pr.LocalVariable(name='forceWrite', value=False, mode='RW', hidden=True,
             description='Cofiguration Flag To Control Write All Block'))
 
-    def start(self,pollEn=True, pyroGroup=None, pyroHost=None, pyroNs=None):
+    def start(self, initRead=False, initWrite=False, pollEn=True, pyroGroup=None, pyroHost=None, pyroNs=None):
         """Setup the tree. Start the polling thread."""
 
         # Create poll queue object
@@ -136,6 +136,15 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                 print("               Start with the following command:")
                 print("                  python -m Pyro4.naming")
 
+        # Read current state
+        if initRead:
+            self._read()
+
+        # Commit default values
+        # Read did not override defaults because set values are cached
+        if initWrite:
+            self._write()
+
         # Start poller if enabled
         if pollEn:
             self._pollQueue._start()
@@ -181,23 +190,23 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         """
         self._varListeners.append(func)
 
-    def getYamlVariables(self,readFirst,modes=['RW']):
+    def getYaml(self,readFirst,modes=['RW']):
         """
         Get current values as a yaml dictionary.
         modes is a list of variable modes to include.
         If readFirst=True a full read from hardware is performed.
         """
-        ret = None
+        ret = ""
 
         if readFirst: self._read()
         try:
-            ret = dictToYaml({self.name:self._getVariables(modes)},default_flow_style=False)
+            ret = dictToYaml({self.name:self._getDict(modes)},default_flow_style=False)
         except Exception as e:
             self._log.exception(e)
 
         return ret
 
-    def setOrExecYaml(self,yml,writeEach,modes=['RW']):
+    def setYaml(self,yml,writeEach,modes=['RW']):
         """
         Set variable values or execute commands from a dictionary.
         modes is a list of variable modes to act on.
@@ -212,26 +221,11 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
         for key, value in d.items():
             if key == self.name:
-                self._setOrExec(value,writeEach,modes)
+                self._setDict(value,writeEach,modes)
 
         self._doneUpdatedVars()
 
         if not writeEach: self._write()
-
-    def setOrExecPath(self,path,value):
-        """
-        Set variable values or execute commands from a path
-        Pass the variable or command path and associated value or arg.
-        """
-        obj = self.getNode(path)
-
-        # Execute if command
-        if isinstance(obj,pr.BaseCommand):
-            obj(value)
-
-        # Set value if variable with enabled mode
-        elif isinstance(obj,pr.BaseVariable):
-            obj.setDisp(value)
 
     @Pyro4.expose
     def get(self,path):
@@ -273,8 +267,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         Set timeout value on all devices & blocks
         """
         for key,value in self._nodes.items():
-            if isinstance(value,pr.Device):
-                value._setTimeout(timeout)
+            value._setTimeout(timeout)
 
     def _updateVarListeners(self, yml, l):
         """Send update to listeners"""
@@ -284,23 +277,23 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
             else:
                 tar(yml,l)
 
-    def _streamYaml(self,yml):
+    def _sendYamlFrame(self,yml):
         """
-        Generate a frame containing the passed yaml string.
+        Generate a frame containing the passed string.
         """
         frame = self._reqFrame(len(yml),True,0)
         b = bytearray(yml,'utf-8')
         frame.write(b,0)
         self._sendFrame(frame)
 
-    def _streamYamlVariables(self,modes=['RW','RO']):
+    def _streamYaml(self,modes=['RW','RO']):
         """
         Generate a frame containing all variables values in yaml format.
         A hardware read is not generated before the frame is generated.
         Vlist can contain an optional list of variale paths to include in the
         stream. If this list is not NULL only these variables will be included.
         """
-        self._streamYaml(self.getYamlVariables(False,modes))
+        self._sendYamlFrame(self.getYaml(False,modes))
 
     def _initUpdatedVars(self):
         """Initialize the update tracking log before a bulk variable update"""
@@ -322,14 +315,14 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
         if yml is not None:
             self._updateVarListeners(yml,lst)
-            self._streamYaml(yml)
+            self._sendYamlFrame(yml)
 
     @pr.command(order=7, name='writeAll', description='Write all values to the hardware')
     def _write(self):
         """Write all blocks"""
         self._log.info("Start root write")
         try:
-            self.writeBlocks(force=self.forceWrite, recurse=True)
+            self.writeBlocks(force=self.forceWrite.value(), recurse=True)
             self._log.info("Verify root read")
             self.verifyBlocks(recurse=True)
             self._log.info("Check root read")
@@ -357,7 +350,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         """Write YAML configuration to a file. Called from command"""
         try:
             with open(arg,'w') as f:
-                f.write(self.getYamlVariables(True,modes=['RW']))
+                f.write(self.getYaml(True,modes=['RW']))
         except Exception as e:
             self._log.exception(e)
 
@@ -366,7 +359,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         """Read YAML configuration from a file. Called from command"""
         try:
             with open(arg,'r') as f:
-                self.setOrExecYaml(f.read(),False,['RW'])
+                self.setYaml(f.read(),False,['RW'])
         except Exception as e:
             self._log.exception(e)
 
@@ -414,7 +407,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
         if yml is not None:
             self._updateVarListeners(yml,lst)
-            self._streamYaml(yml)
+            self._sendYamlFrame(yml)
 
 
 class PyroRoot(pr.PyroNode):

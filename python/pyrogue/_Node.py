@@ -260,74 +260,25 @@ class Node(object):
     def _exportNodes(self,daemon):
         for k,n in self._nodes.items():
             daemon.register(n)
+            n._exportNodes(daemon)
 
-            if isinstance(n,pr.Device):
-                n._exportNodes(daemon)
-
-    def _getVariables(self,modes):
+    def _getDict(self,modes):
         """
         Get variable values in a dictionary starting from this level.
         Attributes that are Nodes are recursed.
         modes is a list of variable modes to include.
-        Called from getYamlVariables in the root node.
         """
         data = odict()
         for key,value in self._nodes.items():
-            if isinstance(value,pr.Device):
-                data[key] = value._getVariables(modes)
-            elif isinstance(value,pr.BaseVariable) and not isinstance(value, pr.BaseCommand) \
-                 and (value.mode in modes):
-                data[key] = value.valueDisp()
+            nv = value._getDict(modes)
+            if nv is not None:
+                data[key] = nv
 
-        return data
-
-    def _nodeList(self,name):
-
-        # First check to see if unit matches a node name
-        # needed when [ and ] are in a variable or device name
-        if name in self._nodes:
-            return [self._nodes[name]]
-
-        fields = re.split('\[|\]',name)
-
-        # Wildcard
-        if len(fields) > 1 and fields[1] == '*':
-            return self._nodeList(fields[0])
+        if len(data) == 0:
+            return None
         else:
-            ah = attrHelper(self._nodes,fields[0])
+            return data
 
-            if ah is None:
-                return []
-
-            # Single entry returned
-            elif not isinstance(ah,odict):
-
-                # Should be indexed
-                if len(fields) > 1:
-                    return []
-                else:
-                    return [ah]
-
-            # Indexed ordered dictionary returned
-            # Convert to list with gaps = None
-            else:
-                idxLast = list(ah.items())[-1][0] # Last index
-                if not isinstance(idxLast,int):
-                    return []
-
-                ret = [None] * (idxLast+1)
-                for i,n in ah.items():
-                    ret[i] = n
-
-                if len(fields) > 1:
-                    r =  eval('ret[{}]'.format(fields[1]))
-                    if isinstance(r,collections.Iterable):
-                        return r
-                    else:
-                        return [r]
-                else:
-                    return ret
-         
     def _getDepWarn(self):
         ret = []
 
@@ -339,33 +290,18 @@ class Node(object):
 
         return ret
 
-    def _setOrExec(self,d,writeEach,modes):
-        """
-        Set variable values or execute commands from a dictionary starting 
-        from this level.  Attributes that are Nodes are recursed.
-        modes is a list of variable nodes to act on for variable accesses.
-        Called from setOrExecYaml in the root node.
-        """
+    def _setDict(self,d,writeEach,modes):
         for key, value in d.items():
-            nlist = self._nodeList(key)
+            nlist = nodeMatch(self._nodes,key)
 
-            if len(nlist) == 0:
+            if nlist is None or len(nlist) == 0:
                 self._log.error("Entry {} not found".format(key))
             else:
                 for n in nlist:
+                    n._setDict(value,writeEach,modes)
 
-                    # If entry is a device, recurse
-                    if isinstance(n,pr.Device):
-                        n._setOrExec(value,writeEach,modes)
-
-                    # Execute if command
-                    elif isinstance(n,pr.BaseCommand):
-                        n.call(value)
-
-                    # Set value if variable with enabled mode
-                    elif isinstance(n,pr.BaseVariable) and (n.mode in modes):
-                        n.setDisp(value,writeEach)
-
+    def _setTimeout(self,timeout):
+        pass
 
 class PyroNode(object):
     def __init__(self, *, node,daemon):
@@ -445,6 +381,13 @@ class PyroNode(object):
 
 
 def attrHelper(nodes,name):
+    """
+    Return a single item or a list of items matching the passed
+    name. If the name is an exact match to a single item in the list
+    then return it. Otherwise attempt to find items which match the 
+    passed name, but are array entries: name[n]. Return these items
+    as a list
+    """
     if name in nodes:
         return nodes[name]
     else:
@@ -462,4 +405,58 @@ def attrHelper(nodes,name):
             return None
         else:
             return ret
+
+
+def nodeMatch(nodes,name):
+    """
+    Return a list of nodes which match the given name. The name can either
+    be a single value or a list accessor:
+        value
+        value[9]
+        value[0:1]
+        value[*]
+    """
+
+    # First check to see if unit matches a node name
+    # needed when [ and ] are in a variable or device name
+    if name in nodes:
+        return [nodes[name]]
+
+    fields = re.split('\[|\]',name)
+
+    # Wildcard
+    if len(fields) > 1 and (fields[1] == '*' or fields[1] == ':'):
+        return nodeMatch(nodes,fields[0])
+    else:
+        ah = attrHelper(nodes,fields[0])
+
+        # None or exact match is an error
+        if ah is None or not isinstance(ah,odict):
+            return None
+
+        # Non integer keys is an error
+        if any(not isinstance(k,int) for k in ah.keys()):
+            return None
+
+        # no slicing, return list
+        if len(fields) == 1:
+            return [n for n in ah.items()]
+
+        # Indexed ordered dictionary returned
+        # Convert to list with gaps = None and apply slicing
+        idxLast = max(ah)
+
+        ret = [None] * (idxLast+1)
+        for i,n in ah.items():
+            ret[i] = n
+
+        r =  eval('ret[{}]'.format(fields[1]))
+
+        if r is None or any(v == None for v in r):
+            return None
+        elif isinstance(r,collections.Iterable):
+            return r
+        else:
+            return [r]
+
 

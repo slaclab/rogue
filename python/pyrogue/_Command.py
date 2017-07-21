@@ -127,6 +127,12 @@ class BaseCommand(pr.BaseVariable):
         else:
             cmd.post(1)
 
+    def _setDict(self,d,writeEach,modes):
+        pass
+
+    def _getDict(self,modes):
+        return None
+
 
 # LocalCommand is the same as BaseCommand
 LocalCommand = BaseCommand
