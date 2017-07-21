@@ -51,9 +51,9 @@ class Model(object):
 
     @classmethod
     def mask(cls, ba, bitSize):
-        m = cls.getMask(bitSize)
-        for i in range(len(ba)):
-            ba[i] = ba[i] & m[i]
+        #m = cls.getMask(bitSize)
+        #for i in range(len(ba)):
+            #ba[i] = ba[i] & m[i]
         return ba
 
 @Pyro4.expose
