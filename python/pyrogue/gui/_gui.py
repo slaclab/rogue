@@ -31,7 +31,7 @@ import sys
 
 class GuiTop(QWidget):
 
-    def __init__(self,group,parent=None):
+    def __init__(self,*, group,parent=None):
         super(GuiTop,self).__init__(parent)
 
         vb = QVBoxLayout()
@@ -40,10 +40,10 @@ class GuiTop(QWidget):
         self.tab = QTabWidget()
         vb.addWidget(self.tab)
 
-        self.var = pyrogue.gui.variables.VariableWidget(group,self.tab)
+        self.var = pyrogue.gui.variables.VariableWidget(group=group,parent=self.tab)
         self.tab.addTab(self.var,'Variables')
 
-        self.cmd = pyrogue.gui.commands.CommandWidget(group,self.tab)
+        self.cmd = pyrogue.gui.commands.CommandWidget(group=group,parent=self.tab)
         self.tab.addTab(self.cmd,'Commands')
         self.show()
 
@@ -57,6 +57,6 @@ class GuiTop(QWidget):
         self.emit(SIGNAL("newTree"),root)
 
     def _addTree(self,root):
-        self.sys = pyrogue.gui.system.SystemWidget(root,self.tab)
+        self.sys = pyrogue.gui.system.SystemWidget(root=root,parent=self.tab)
         self.tab.addTab(self.sys,root.name)
 

@@ -27,7 +27,7 @@ import pyrogue
 class CommandLink(QObject):
     """Bridge between the pyrogue tree and the display element"""
 
-    def __init__(self,parent,command):
+    def __init__(self,*,parent,command):
         QObject.__init__(self)
         self.command = command
 
@@ -74,7 +74,7 @@ class CommandLink(QObject):
             
 
 class CommandWidget(QWidget):
-    def __init__(self, group, parent=None):
+    def __init__(self, *, group, parent=None):
         super(CommandWidget, self).__init__(parent)
 
         self.roots = []
@@ -117,7 +117,7 @@ class CommandWidget(QWidget):
         for key,val in d.commands.items():
         #for key,val in d.commands.iteritems():
             if not val.hidden:
-                self.commands.append(CommandLink(tree,val))
+                self.commands.append(CommandLink(parent=tree,command=val))
 
         # Then create devices
         #for key,val in d.devices.iteritems():

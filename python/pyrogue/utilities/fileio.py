@@ -25,7 +25,7 @@ import pyrogue
 class StreamWriter(pyrogue.DataWriter):
     """Stream Writer Wrapper"""
 
-    def __init__(self, name, hidden=True):
+    def __init__(self, *, name, hidden=True):
         pyrogue.DataWriter.__init__(self, name=name, description='Stream Writer',hidden=hidden)
         self._writer = rogue.utilities.fileio.StreamWriter()
 
@@ -34,13 +34,13 @@ class StreamWriter(pyrogue.DataWriter):
             if value == False:
 
                 # Dump config/status to file
-                self._root._streamYamlVariables()
+                self._root._streamYaml()
                 self._writer.close()
             else:
                 self._writer.open(self.dataFile.value())
 
                 # Dump config/status to file
-                self._root._streamYamlVariables()
+                self._root._streamYaml()
 
     def _setBufferSize(self,dev,var,value):
         self._writer.setBufferSize(value)
@@ -64,7 +64,7 @@ class StreamWriter(pyrogue.DataWriter):
 class StreamReader(pyrogue.Device):
     """Stream Reader Wrapper"""
 
-    def __init__(self, name):
+    def __init__(self, *, name):
 
         pyrogue.Device.__init__(self, name=name, description='Stream Writer')
         self._reader = rogue.utilities.fileio.StreamReader()

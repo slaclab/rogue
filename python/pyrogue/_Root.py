@@ -24,7 +24,7 @@ import functools as ft
 
 class RootLogHandler(logging.Handler):
     """ Class to listen to log entries and add them to syslog variable"""
-    def __init__(self,root):
+    def __init__(self,*, root):
         logging.Handler.__init__(self)
         self._root = root
 
@@ -33,7 +33,7 @@ class RootLogHandler(logging.Handler):
             val = self._root.systemLog.value()
             val += (self.format(record).splitlines()[0] + '\n')
             self._root.systemLog.set(write=False,value=val)
-        self._root.systemLog._updated() # Update outside of lock
+        self._root.systemLog.updated() # Update outside of lock
 
 class Root(rogue.interfaces.stream.Master,pr.Device):
     """
@@ -44,14 +44,14 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
     to be stored in data files.
     """
 
-    def __init__(self, name, description, **dump):
+    def __init__(self, *, name, description):
         """Init the node with passed attributes"""
 
         rogue.interfaces.stream.Master.__init__(self)
 
         # Create log listener to add to systemlog variable
         formatter = logging.Formatter("%(msg)s")
-        handler = RootLogHandler(self)
+        handler = RootLogHandler(root=self)
         handler.setLevel(logging.ERROR)
         handler.setFormatter(formatter)
         self._logger = logging.getLogger('pyrogue')
@@ -77,7 +77,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         self._varListeners = []
 
         # Init after _updatedLock exists
-        pr.Device.__init__(self, name=name, description=description, classType='root')
+        pr.Device.__init__(self, name=name, description=description)
 
         # Variables
         self.add(pr.LocalVariable(name='systemLog', value='', mode='RO', hidden=True,
@@ -86,12 +86,12 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         self.add(pr.LocalVariable(name='forceWrite', value=False, mode='RW', hidden=True,
             description='Cofiguration Flag To Control Write All Block'))
 
-    def start(self,pollEn=True, pyroGroup=None, pyroHost=None):
+    def start(self, initRead=False, initWrite=False, pollEn=True, pyroGroup=None, pyroHost=None, pyroNs=None):
         """Setup the tree. Start the polling thread."""
 
         # Create poll queue object
         if pollEn:
-            self._pollQueue = pr.PollQueue(self)
+            self._pollQueue = pr.PollQueue(root=self)
 
         # Set myself as root
         self._parent = self
@@ -126,7 +126,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
             uri = self._pyroDaemon.register(self)
 
             try:
-                Pyro4.locateNS().register('{}.{}'.format(pyroGroup,self.name),uri)
+                Pyro4.locateNS(pyroNs).register('{}.{}'.format(pyroGroup,self.name),uri)
 
                 self._exportNodes(self._pyroDaemon)
                 self._pyroThread = threading.Thread(target=self._pyroDaemon.requestLoop)
@@ -135,6 +135,15 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                 print("Root::start -> Failed to find Pyro4 nameserver.")
                 print("               Start with the following command:")
                 print("                  python -m Pyro4.naming")
+
+        # Read current state
+        if initRead:
+            self._read()
+
+        # Commit default values
+        # Read did not override defaults because set values are cached
+        if initWrite:
+            self._write()
 
         # Start poller if enabled
         if pollEn:
@@ -181,23 +190,23 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         """
         self._varListeners.append(func)
 
-    def getYamlVariables(self,readFirst,modes=['RW']):
+    def getYaml(self,readFirst,modes=['RW']):
         """
         Get current values as a yaml dictionary.
         modes is a list of variable modes to include.
         If readFirst=True a full read from hardware is performed.
         """
-        ret = None
+        ret = ""
 
         if readFirst: self._read()
         try:
-            ret = dictToYaml({self.name:self._getVariables(modes)},default_flow_style=False)
+            ret = dictToYaml({self.name:self._getDict(modes)},default_flow_style=False)
         except Exception as e:
             self._log.exception(e)
 
         return ret
 
-    def setOrExecYaml(self,yml,writeEach,modes=['RW']):
+    def setYaml(self,yml,writeEach,modes=['RW']):
         """
         Set variable values or execute commands from a dictionary.
         modes is a list of variable modes to act on.
@@ -212,26 +221,11 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
         for key, value in d.items():
             if key == self.name:
-                self._setOrExec(value,writeEach,modes)
+                self._setDict(value,writeEach,modes)
 
         self._doneUpdatedVars()
 
         if not writeEach: self._write()
-
-    def setOrExecPath(self,path,value):
-        """
-        Set variable values or execute commands from a path
-        Pass the variable or command path and associated value or arg.
-        """
-        obj = self.getNode(path)
-
-        # Execute if command
-        if isinstance(obj,pr.BaseCommand):
-            obj(value)
-
-        # Set value if variable with enabled mode
-        elif isinstance(obj,pr.BaseVariable):
-            obj.setDisp(value)
 
     @Pyro4.expose
     def get(self,path):
@@ -273,8 +267,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         Set timeout value on all devices & blocks
         """
         for key,value in self._nodes.items():
-            if isinstance(value,pr.Device):
-                value._setTimeout(timeout)
+            value._setTimeout(timeout)
 
     def _updateVarListeners(self, yml, l):
         """Send update to listeners"""
@@ -284,23 +277,23 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
             else:
                 tar(yml,l)
 
-    def _streamYaml(self,yml):
+    def _sendYamlFrame(self,yml):
         """
-        Generate a frame containing the passed yaml string.
+        Generate a frame containing the passed string.
         """
         frame = self._reqFrame(len(yml),True,0)
         b = bytearray(yml,'utf-8')
         frame.write(b,0)
         self._sendFrame(frame)
 
-    def _streamYamlVariables(self,modes=['RW','RO']):
+    def _streamYaml(self,modes=['RW','RO']):
         """
         Generate a frame containing all variables values in yaml format.
         A hardware read is not generated before the frame is generated.
         Vlist can contain an optional list of variale paths to include in the
         stream. If this list is not NULL only these variables will be included.
         """
-        self._streamYaml(self.getYamlVariables(False,modes))
+        self._sendYamlFrame(self.getYaml(False,modes))
 
     def _initUpdatedVars(self):
         """Initialize the update tracking log before a bulk variable update"""
@@ -322,18 +315,18 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
         if yml is not None:
             self._updateVarListeners(yml,lst)
-            self._streamYaml(yml)
+            self._sendYamlFrame(yml)
 
     @pr.command(order=7, name='writeAll', description='Write all values to the hardware')
     def _write(self):
         """Write all blocks"""
         self._log.info("Start root write")
         try:
-            self.writeBlocks(force=self.forceWrite, recurse=True)
+            self.writeBlocks(force=self.forceWrite.value(), recurse=True)
             self._log.info("Verify root read")
             self.verifyBlocks(recurse=True)
             self._log.info("Check root read")
-            self.checkBlocks(varUpdate=False, recurse=True)
+            self.checkBlocks(recurse=True)
         except Exception as e:
             self._log.exception(e)
         self._log.info("Done root write")
@@ -346,7 +339,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         try:
             self.readBlocks(recurse=True)
             self._log.info("Check root read")
-            self.checkBlocks(varUpdate=True, recurse=True)
+            self.checkBlocks(recurse=True)
         except Exception as e:
             self._log.exception(e)
         self._doneUpdatedVars()
@@ -357,7 +350,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         """Write YAML configuration to a file. Called from command"""
         try:
             with open(arg,'w') as f:
-                f.write(self.getYamlVariables(True,modes=['RW']))
+                f.write(self.getYaml(True,modes=['RW']))
         except Exception as e:
             self._log.exception(e)
 
@@ -366,7 +359,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         """Read YAML configuration from a file. Called from command"""
         try:
             with open(arg,'r') as f:
-                self.setOrExecYaml(f.read(),False,['RW'])
+                self.setYaml(f.read(),False,['RW'])
         except Exception as e:
             self._log.exception(e)
 
@@ -391,7 +384,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         """Clear the system log"""
         with self._sysLogLock:
             self.systemLog.set(value='',write=False)
-        self.systemLog._updated()
+        self.systemLog.updated()
 
     def _varUpdated(self,var,value,disp):
         yml = None
@@ -414,29 +407,29 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
         if yml is not None:
             self._updateVarListeners(yml,lst)
-            self._streamYaml(yml)
+            self._sendYamlFrame(yml)
 
 
 class PyroRoot(pr.PyroNode):
-    def __init__(self, node,daemon):
-        pr.PyroNode.__init__(self,node,daemon)
+    def __init__(self, *, node,daemon):
+        pr.PyroNode.__init__(self,node=node,daemon=daemon)
 
     def addInstance(self,node):
         self._daemon.register(node)
 
     def getNode(self, path):
-        return pr.PyroNode(self._node.getNode(path))
+        return pr.PyroNode(node=self._node.getNode(path),daemon=daemon)
 
 
 class PyroClient(object):
-    def __init__(self, group, host=None):
+    def __init__(self, *, group, host=None, ns=None):
         self._group = group
 
         Pyro4.config.THREADPOOL_SIZE = 100
         Pyro4.util.SerializerBase.register_dict_to_class("collections.OrderedDict", recreate_OrderedDict)
 
         try:
-            self._ns = Pyro4.locateNS()
+            self._ns = Pyro4.locateNS(host=ns)
         except:
             print("\n------------- PyroClient ----------------------")
             print("    Failed to find Pyro4 nameserver!")
@@ -456,7 +449,7 @@ class PyroClient(object):
     def getRoot(self,name):
         try:
             uri = self._ns.lookup("{}.{}".format(self._group,name))
-            ret = PyroRoot(Pyro4.Proxy(uri),self._pyroDaemon)
+            ret = PyroRoot(node=Pyro4.Proxy(uri),daemon=self._pyroDaemon)
             return ret
         except:
             raise pr.NodeError("PyroClient Failed to find {}.{}.".format(self._group,name))

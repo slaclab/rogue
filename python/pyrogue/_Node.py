@@ -56,7 +56,8 @@ class Node(object):
     attribute. This allows tree browsing using: node1.node2.node3
     """
 
-    def __init__(self, name, description="", hidden=False):
+
+    def __init__(self, *, name, description="", expand=True, hidden=False):
         """Init the node with passed attributes"""
 
         # Public attributes
@@ -65,6 +66,7 @@ class Node(object):
         self._hidden      = hidden
         self._path        = name
         self._depWarn     = False
+        self._expand      = expand
 
         # Tracking
         self._parent = None
@@ -94,6 +96,11 @@ class Node(object):
     def path(self):
         return self._path
 
+    @Pyro4.expose
+    @property
+    def expand(self):
+        return self._expand
+
     def __repr__(self):
         return self.path
 
@@ -114,6 +121,17 @@ class Node(object):
 
     def add(self,node):
         """Add node as sub-node"""
+
+        # Special case if list (or iterable of nodes) is passed
+        if isinstance(node, collections.Iterable) and all(isinstance(n, Node) for n in node):
+            for n in node:
+                self.add(n)
+            return
+
+        # Fail if added to a non device node (may change in future)
+        if not isinstance(self,pr.Device):
+            raise NodeError('Attempting to add %s with name %s to non device node %s.' % 
+                             (str(node.classType),node.name,self.name))
 
         # Fail if root already exists
         if self._root is not None:
@@ -201,6 +219,38 @@ class Node(object):
     def node(self, path):
         return self._nodes[path]
 
+    def find(self, *, recurse=True, typ=None, **kwargs):
+        """ 
+        Find all child nodes that are a base class of 'typ'
+        and whose properties match all of the kwargs.
+        For string properties, accepts regexes.
+        """
+    
+        if typ is None:
+            typ = pr.Node
+
+        found = []
+        for node in self._nodes.values():
+            if isinstance(node, typ):
+                for prop, value in kwargs.items():
+                    if not hasattr(node, prop):
+                        break
+                    attr = getattr(node, prop)
+                    if isinstance(value, str):
+                        if not re.match(value, attr):
+                            break
+
+                    else:
+                        if inspect.ismethod(attr):
+                            attr = attr()
+                        if not value == attr:
+                            break
+                else:
+                    found.append(node)
+            if recurse:
+                found.extend(node.find(recurse=recurse, typ=typ, **kwargs))
+        return found
+
     def _rootAttached(self,parent,root):
         """Called once the root node is attached."""
         self._parent = parent
@@ -210,74 +260,25 @@ class Node(object):
     def _exportNodes(self,daemon):
         for k,n in self._nodes.items():
             daemon.register(n)
+            n._exportNodes(daemon)
 
-            if isinstance(n,pr.Device):
-                n._exportNodes(daemon)
-
-    def _getVariables(self,modes):
+    def _getDict(self,modes):
         """
         Get variable values in a dictionary starting from this level.
         Attributes that are Nodes are recursed.
         modes is a list of variable modes to include.
-        Called from getYamlVariables in the root node.
         """
         data = odict()
         for key,value in self._nodes.items():
-            if isinstance(value,pr.Device):
-                data[key] = value._getVariables(modes)
-            elif isinstance(value,pr.BaseVariable) and not isinstance(value, pr.BaseCommand) \
-                 and (value.mode in modes):
-                data[key] = value.valueDisp()
+            nv = value._getDict(modes)
+            if nv is not None:
+                data[key] = nv
 
-        return data
-
-    def _nodeList(self,name):
-
-        # First check to see if unit matches a node name
-        # needed when [ and ] are in a variable or device name
-        if name in self._nodes:
-            return [self._nodes[name]]
-
-        fields = re.split('\[|\]',name)
-
-        # Wildcard
-        if len(fields) > 1 and fields[1] == '*':
-            return self._nodeList(fields[0])
+        if len(data) == 0:
+            return None
         else:
-            ah = attrHelper(self._nodes,fields[0])
+            return data
 
-            if ah is None:
-                return []
-
-            # Single entry returned
-            elif not isinstance(ah,odict):
-
-                # Should be indexed
-                if len(fields) > 1:
-                    return []
-                else:
-                    return [ah]
-
-            # Indexed ordered dictionary returned
-            # Convert to list with gaps = None
-            else:
-                idxLast = list(ah.items())[-1][0] # Last index
-                if not isinstance(idxLast,int):
-                    return []
-
-                ret = [None] * (idxLast+1)
-                for i,n in ah.items():
-                    ret[i] = n
-
-                if len(fields) > 1:
-                    r =  eval('ret[{}]'.format(fields[1]))
-                    if isinstance(r,collections.Iterable):
-                        return r
-                    else:
-                        return [r]
-                else:
-                    return ret
-         
     def _getDepWarn(self):
         ret = []
 
@@ -289,36 +290,21 @@ class Node(object):
 
         return ret
 
-    def _setOrExec(self,d,writeEach,modes):
-        """
-        Set variable values or execute commands from a dictionary starting 
-        from this level.  Attributes that are Nodes are recursed.
-        modes is a list of variable nodes to act on for variable accesses.
-        Called from setOrExecYaml in the root node.
-        """
+    def _setDict(self,d,writeEach,modes):
         for key, value in d.items():
-            nlist = self._nodeList(key)
+            nlist = nodeMatch(self._nodes,key)
 
-            if len(nlist) == 0:
+            if nlist is None or len(nlist) == 0:
                 self._log.error("Entry {} not found".format(key))
             else:
                 for n in nlist:
+                    n._setDict(value,writeEach,modes)
 
-                    # If entry is a device, recurse
-                    if isinstance(n,pr.Device):
-                        n._setOrExec(value,writeEach,modes)
-
-                    # Execute if command
-                    elif isinstance(n,pr.BaseCommand):
-                        n.call(value)
-
-                    # Set value if variable with enabled mode
-                    elif isinstance(n,pr.BaseVariable) and (n.mode in modes):
-                        n.setDisp(value,writeEach)
-
+    def _setTimeout(self,timeout):
+        pass
 
 class PyroNode(object):
-    def __init__(self, node,daemon):
+    def __init__(self, *, node,daemon):
         self._node   = node
         self._nodes  = None
         self._daemon = daemon
@@ -347,17 +333,20 @@ class PyroNode(object):
         for k,n in d.items():
 
             if isinstance(n,dict):
-                ret[k] = PyroNode(Pyro4.util.SerializerBase.dict_to_class(n),self._daemon)
+                ret[k] = PyroNode(node=Pyro4.util.SerializerBase.dict_to_class(n),daemon=self._daemon)
             else:
-                ret[k] = PyroNode(n,self._daemon)
+                ret[k] = PyroNode(node=n,daemon=self._daemon)
 
         return ret
+
+    def attr(self,attr,**kwargs):
+        return self.__getattr__(attr)(**kwargs)
 
     def addInstance(self,node):
         self._daemon.register(node)
 
     def node(self, path):
-        return PyroNode(self._node.node(path),self._daemon)
+        return PyroNode(node=self._node.node(path),daemon=self._daemon)
 
     @property
     def nodes(self):
@@ -377,7 +366,7 @@ class PyroNode(object):
 
     @property
     def parent(self):
-        return PyroNode(self._node.parent,self._daemon)
+        return PyroNode(node=self._node.parent,daemon=self._daemon)
 
     @property
     def root(self):
@@ -392,6 +381,13 @@ class PyroNode(object):
 
 
 def attrHelper(nodes,name):
+    """
+    Return a single item or a list of items matching the passed
+    name. If the name is an exact match to a single item in the list
+    then return it. Otherwise attempt to find items which match the 
+    passed name, but are array entries: name[n]. Return these items
+    as a list
+    """
     if name in nodes:
         return nodes[name]
     else:
@@ -409,4 +405,58 @@ def attrHelper(nodes,name):
             return None
         else:
             return ret
+
+
+def nodeMatch(nodes,name):
+    """
+    Return a list of nodes which match the given name. The name can either
+    be a single value or a list accessor:
+        value
+        value[9]
+        value[0:1]
+        value[*]
+    """
+
+    # First check to see if unit matches a node name
+    # needed when [ and ] are in a variable or device name
+    if name in nodes:
+        return [nodes[name]]
+
+    fields = re.split('\[|\]',name)
+
+    # Wildcard
+    if len(fields) > 1 and (fields[1] == '*' or fields[1] == ':'):
+        return nodeMatch(nodes,fields[0])
+    else:
+        ah = attrHelper(nodes,fields[0])
+
+        # None or exact match is an error
+        if ah is None or not isinstance(ah,odict):
+            return None
+
+        # Non integer keys is an error
+        if any(not isinstance(k,int) for k in ah.keys()):
+            return None
+
+        # no slicing, return list
+        if len(fields) == 1:
+            return [n for n in ah.items()]
+
+        # Indexed ordered dictionary returned
+        # Convert to list with gaps = None and apply slicing
+        idxLast = max(ah)
+
+        ret = [None] * (idxLast+1)
+        for i,n in ah.items():
+            ret[i] = n
+
+        r =  eval('ret[{}]'.format(fields[1]))
+
+        if r is None or any(v == None for v in r):
+            return None
+        elif isinstance(r,collections.Iterable):
+            return r
+        else:
+            return [r]
+
 

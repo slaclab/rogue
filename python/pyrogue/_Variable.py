@@ -28,9 +28,20 @@ class VariableError(Exception):
 
 class BaseVariable(pr.Node):
 
-    def __init__(self, name=None, description="", update=True,
-                 mode='RW', value=None, disp='{}',
-                 enum=None, units=None, hidden=False, minimum=None, maximum=None, **dump):
+    def __init__(self, *,
+                 name,
+                 description='',
+                 update=True,
+                 mode='RW',
+                 value=None,
+                 disp='{}',
+                 enum=None,
+                 units=None,
+                 hidden=False,
+                 minimum=None,
+                 maximum=None,
+                 pollInterval=0
+                ):
 
         # Public Attributes
         self._mode          = mode
@@ -39,7 +50,7 @@ class BaseVariable(pr.Node):
         self._maximum       = maximum # For base='range'
         self._update        = update
         self._default       = value
-        self._pollInterval  = 0
+        self._pollInterval  = pollInterval
         self.__listeners    = []
         self.__dependencies = []
 
@@ -58,8 +69,6 @@ class BaseVariable(pr.Node):
 
         if enum is not None:
             self._disp = 'enum'
-            if not self._default in enum:
-                self._default = [k for k,v in enum.items()][0]
 
         # Determine typeStr from value type
         if value is not None:
@@ -135,8 +144,7 @@ class BaseVariable(pr.Node):
     @pollInterval.setter
     def pollInterval(self, interval):
         self._pollInterval = interval
-        if isinstance(self._root, pr.Root) and self._root._pollQueue:
-            self._root._pollQueue.updatePollInterval(self)
+        self._updatePollInterval()
 
     @property
     def dependencies(self):
@@ -146,12 +154,12 @@ class BaseVariable(pr.Node):
     def addListener(self, listener):
         """
         Add a listener Variable or function to call when variable changes. 
-        If listener is a Variable then Variable.linkUpdated() will be used as the function
+        If listener is a Variable then Variable.updated() will be used as the function
         This is usefull when chaining variables together. (adc conversions, etc)
         The variable and value will be passed as an arg: func(var,value)
         """
         if isinstance(listener, BaseVariable):
-            self.__listeners.append(listener.linkUpdated)
+            self.__listeners.append(listener.updated)
         else:
             self.__listeners.append(listener)
 
@@ -172,8 +180,27 @@ class BaseVariable(pr.Node):
         return self.get(read=False)
 
     @Pyro4.expose
-    def linkUpdated(self, var, value, disp):
-        self._updated()
+    def updated(self, var=None, value=None, disp=None):
+        """Variable has been updated. Inform listeners."""
+        value = None
+        disp  = None
+
+        for func in self.__listeners:
+            if value is None:
+                value = self.value()
+                disp  = self.valueDisp()
+
+            if getattr(func,'varListener',None) is not None:
+                func.varListener(self,value,disp)
+            else:
+                func(self,value,disp)
+
+        # Root variable update log
+        if self._update is True and self._root is not None:
+            if value is None:
+                value = self.value()
+                disp  = self.valueDisp()
+            self._root._varUpdated(self,value,disp)
 
     @Pyro4.expose
     def genDisp(self, value):
@@ -224,56 +251,68 @@ class BaseVariable(pr.Node):
     def nativeType(self):
         return type(self.value())
 
-    def _rootAttached(self,parent,root):
-        pr.Node._rootAttached(self,parent,root)
-
+    def _setDefault(self):
+        # Called by parent Device after _buildBlocks()
         if self._default is not None:
-            self.set(self._default, write=False)
+            self.setDisp(self._default, write=False)
 
-        if self._pollInterval > 0 and root._pollQueue is not None:
-            root._pollQueue.updatePollInterval(self)
 
-    def _updated(self):
-        """Variable has been updated. Inform listeners."""
-        if self._update is False or self._root is None:
-            return
+    def _updatePollInterval(self):
+        if self._pollInterval > 0 and self.root._pollQueue is not None:
+            self.root._pollQueue.updatePollInterval(self)
 
-        value = self.value()
-        disp  = self.valueDisp()
+    def _finishInit(self):
+        self._setDefault()
+        self._updatePollInterval()
 
-        for func in self.__listeners:
-            if getattr(func,'varListener',None) is not None:
-                func.varListener(self,value,disp)
-            else:
-                func(self,value,disp)
 
-        # Root variable update log
-        self._root._varUpdated(self,value,disp)
+    #def __set__(self, value):
+        #self.set(value, write=True)
 
-    def __set__(self, value):
-        self.set(value, write=True)
+    #def __get__(self):
+        #self.get(read=True)
 
-    def __get__(self):
-        self.get(read=True)
+    def _setDict(self,d,writeEach,modes):
+        if self._mode in modes:
+            self.setDisp(d,writeEach)
+
+    def _getDict(self,modes):
+        if self._mode in modes:
+            return self.valueDisp()
+        else:
+            return None
 
 
 @Pyro4.expose
 class RemoteVariable(BaseVariable):
 
-    def __init__(self, name=None, description="", 
-                 base=pr.UInt, mode='RW', value=None,  disp=None,
-                 enum=None, units=None, hidden=False, minimum=None, maximum=None,
-                 offset=None, bitSize=32, bitOffset=0, pollInterval=0, 
-                 verify=True, update=True, **dump):
+    def __init__(self, *,
+                 name,
+                 description='',
+                 update=True,                 
+                 mode='RW',
+                 value=None,
+                 disp=None,
+                 enum=None,
+                 units=None,
+                 hidden=False,
+                 minimum=None,
+                 maximum=None,
+                 base=pr.UInt,                                 
+                 offset=None,
+                 bitSize=32,
+                 bitOffset=0,
+                 pollInterval=0, 
+                 verify=True, ):
 
         if disp is None:
             disp = base.defaultdisp
 
         BaseVariable.__init__(self, name=name, description=description, 
                               mode=mode, value=value, disp=disp, update=update,
-                              enum=enum, units=units, hidden=hidden, minimum=minimum, maximum=maximum);
-
-        self._pollInterval = pollInterval
+                              enum=enum, units=units, hidden=hidden,
+                              minimum=minimum, maximum=maximum,
+                              pollInterval=pollInterval)
 
         self._base     = base        
         self._block    = None
@@ -327,6 +366,11 @@ class RemoteVariable(BaseVariable):
         return self._verify
 
     @Pyro4.expose
+    @property
+    def base(self):
+        return self._base
+
+    @Pyro4.expose
     def set(self, value, write=True):
         """
         Set the value and write to hardware if applicable
@@ -335,16 +379,19 @@ class RemoteVariable(BaseVariable):
 
         self._log.debug("{}.set({})".format(self, value))
         try:
+
+            if self._block is None:
+                raise VariableError("set called before tree is started")
+
             self._block.set(self, value)
-            self._updated()
 
             if write and self._block.mode != 'RO':
                 self._parent.writeBlocks(force=False, recurse=False, variable=self)
-                self._parent.checkBlocks(varUpdate=False, recurse=False, variable=self)
 
                 if self._block.mode == 'RW':
                     self._parent.verifyBlocks(recurse=False, variable=self)
-                    self._parent.checkBlocks(varUpdate=False, recurse=False, variable=self)
+
+                self._parent.checkBlocks(recurse=False, variable=self)
 
         except Exception as e:
             self._log.exception(e)
@@ -357,13 +404,18 @@ class RemoteVariable(BaseVariable):
         calls on self._block directly.
         """
         self._log.debug("{}.post({})".format(self, value))
-        
+
         try:
+
+            if self._block is None:
+                raise VariableError("post called before tree is started")
+
             self._block.set(self, value)
-            self._updated()
+
 
             if self._block.mode != 'RO':
                 self._block.backgroundTransaction(rogue.interfaces.memory.Post)
+                self._block.checkTransaction()
 
         except Exception as e:
             self._log.exception(e)
@@ -376,19 +428,18 @@ class RemoteVariable(BaseVariable):
         Listeners will be informed of the update.
         """
         try:
+            if self._block is None:
+                raise VariableError("get called before tree is started")
+
             if read and self._block.mode != 'WO':
                 self._parent.readBlocks(recurse=False, variable=self)
-                self._parent.checkBlocks(varUpdate=True, recurse=False, variable=self)
+                self._parent.checkBlocks(recurse=False, variable=self)
 
             ret = self._block.get(self)
 
         except Exception as e:
             self._log.exception(e)
             return None
-
-        # Update listeners for all variables in the block
-        if read:
-            self._block._updated()
 
         return ret
 
@@ -398,7 +449,6 @@ class RemoteVariable(BaseVariable):
             return sValue
         else:        
 
-            #print("Parsing var {}, value= {}".format(self.name, sValue))
             if self.disp == 'enum':
                 return self.revEnum[sValue]
             else:
@@ -422,10 +472,21 @@ class RemoteVariable(BaseVariable):
 
 class LocalVariable(BaseVariable):
 
-    def __init__(self, name=None, description="", 
-                 mode='RW', value=None, disp='{}', update=True,
-                 enum=None, units=None, hidden=False, minimum=None, maximum=None,
-                 localSet=None, localGet=None, pollInterval=0, **dump):
+    def __init__(self, *,
+                 name,
+                 description='',
+                 update=True,                 
+                 mode='RW',
+                 value=None,
+                 disp='{}',
+                 enum=None,
+                 units=None,
+                 hidden=False,
+                 minimum=None,
+                 maximum=None,
+                 localSet=None,
+                 localGet=None,
+                 pollInterval=0):
 
         if value is None:
             raise VariableError(f'LocalVariable {self.path} must specify value= argument in constructor')
@@ -433,35 +494,39 @@ class LocalVariable(BaseVariable):
         BaseVariable.__init__(self, name=name, description=description, 
                               mode=mode, value=value, disp=disp, update=update,
                               enum=enum, units=units, hidden=hidden,
-                              minimum=minimum, maximum=maximum)
+                              minimum=minimum, maximum=maximum,
+                              pollInterval=pollInterval)
 
-        self._pollInterval = pollInterval
-        self._block = pr.LocalBlock(self,localSet,localGet,self._default)
+        self._block = pr.LocalBlock(variable=self,localSet=localSet,localGet=localGet,value=self._default)
 
         
     @Pyro4.expose
     def set(self, value, write=True):
         try:
-            self._block.set(self, value)
+            self._block.set(value)
 
         except Exception as e:
             self._log.exception(e)
 
-        if write: self._updated()
+        if write: self.updated()
 
     def __set__(self, value):
         self.set(value, write=False)
 
     @Pyro4.expose
+    def post(self,value):
+        self.set(self, value)
+
+    @Pyro4.expose
     def get(self,read=True):
         try:
-            ret = self._block.get(self)
+            ret = self._block.get()
 
         except Exception as e:
             self._log.exception(e)
             return None
 
-        if read: self._updated()
+        if read: self.updated()
         return ret
 
     def __get__(self):
@@ -470,11 +535,21 @@ class LocalVariable(BaseVariable):
 @Pyro4.expose
 class LinkVariable(BaseVariable):
 
-    def __init__(self, name=None, description="", 
-                 mode='RW', disp='{}', typeStr='Linked',
-                 enum=None, units=None, hidden=False, minimum=None, maximum=None,
-                 linkedSet=None, linkedGet=None, dependencies=None, **dump):
-
+    def __init__(self, *,
+                 name,
+                 description='', 
+                 mode='RW',
+                 disp='{}',
+                 enum=None,
+                 units=None,
+                 hidden=False,
+                 minimum=None,
+                 maximum=None,
+                 typeStr='Linked',                 
+                 linkedSet=None,
+                 linkedGet=None,
+                 dependencies=None):
+                 
         BaseVariable.__init__(self, name=name, description=description, 
                               mode=mode, disp=disp, update=True,
                               enum=enum, units=units, hidden=hidden,
@@ -514,14 +589,22 @@ class LinkVariable(BaseVariable):
 
             return varFuncHelper(self._linkedGet,pargs,self._log,self.path)
         else:
-            return none
+            return None
 
 # Legacy Support
 def Variable(local=False, setFunction=None, getFunction=None, **kwargs):
         
     # Local Variables override get and set functions
     if local or setFunction is not None or getFunction is not None:
-        ret = LocalVariable(localSet=setFunction, localGet=getFunction, **kwargs)
+
+        # Get list of possible class args
+        cargs = inspect.getfullargspec(LocalVariable.__init__).args + \
+                inspect.getfullargspec(LocalVariable.__init__).kwonlyargs
+
+        # Pass supported args
+        args = {k:kwargs[k] for k in kwargs if k in cargs}
+
+        ret = LocalVariable(localSet=setFunction, localGet=getFunction, **args)
         ret._depWarn = True
         return(ret)
 
@@ -553,7 +636,14 @@ def Variable(local=False, setFunction=None, getFunction=None, **kwargs):
 #             else:
 #                 kwargs['disp'] = kwargs['base'].defaultdisp     # or None?       
 
-        ret = RemoteVariable(**kwargs)
+        # Get list of possible class args
+        cargs = inspect.getfullargspec(RemoteVariable.__init__).args + \
+                inspect.getfullargspec(RemoteVariable.__init__).kwonlyargs
+
+        # Pass supported args
+        args = {k:kwargs[k] for k in kwargs if k in cargs}
+
+        ret = RemoteVariable(**args)
         ret._depWarn = True
         return(ret)
 
@@ -592,7 +682,8 @@ def varFuncHelper(func,pargs,log,path):
         # Python functions
         try:
             # Function args
-            fargs = inspect.getfullargspec(func).args
+            fargs = inspect.getfullargspec(func).args + \
+                    inspect.getfullargspec(func).kwonlyargs 
 
             # Build overlapping arg list
             args = {k:pargs[k] for k in fargs if k is not 'self'}

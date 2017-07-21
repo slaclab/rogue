@@ -44,7 +44,7 @@ class EpicsCaServer(object):
     """
     Class to contain an epics ca server
     """
-    def __init__(self,base,root,pvMap=None):
+    def __init__(self,*,base,root,pvMap=None):
         self._root    = root
         self._base    = base 
         self._runEn   = True
@@ -134,6 +134,11 @@ class EpicsCaServer(object):
             elif d['type'] == 'bool':
                 # Bool is not supported, so let's use int instead
                 d['type'] = 'int'
+
+            # Handle lists
+            elif d['type'] == 'list':
+                d['type'] = d['value'][0].__class__.__name__
+                d['count'] = len(d['value'])
 
             # These are the only type supported by pcaspy
             supportedType = {"enum", "string", "char", "float", "int"}
