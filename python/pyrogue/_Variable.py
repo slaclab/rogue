@@ -395,6 +395,7 @@ class RemoteVariable(BaseVariable):
 
         except Exception as e:
             self._log.exception(e)
+            self._log.error("Error setting value '{}' to variable '{}'".format(value,self.path))
 
     @Pyro4.expose
     def post(self,value):
@@ -419,6 +420,7 @@ class RemoteVariable(BaseVariable):
 
         except Exception as e:
             self._log.exception(e)
+            self._log.error("Error posting value '{}' to variable '{}'".format(value,self.path))
 
     @Pyro4.expose
     def get(self,read=True):
@@ -439,6 +441,7 @@ class RemoteVariable(BaseVariable):
 
         except Exception as e:
             self._log.exception(e)
+            self._log.error("Error reading value from variable '{}'".format(self.path))
             return None
 
         return ret
