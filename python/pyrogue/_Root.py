@@ -85,7 +85,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
             description='String containing newline seperated system logic entries'))
 
         self.add(pr.LocalVariable(name='forceWrite', value=False, mode='RW', hidden=True,
-            description='Cofiguration Flag To Control Write All Block'))
+            description='Configuration Flag To Control Write All Block'))
 
     def start(self, initRead=False, initWrite=False, pollEn=True, pyroGroup=None, pyroHost=None, pyroNs=None):
         """Setup the tree. Start the polling thread."""
