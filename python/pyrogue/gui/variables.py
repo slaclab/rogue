@@ -30,6 +30,7 @@ class VariableLink(QObject):
     def __init__(self,*,parent,variable):
         QObject.__init__(self)
         self.variable = variable
+        self._inEdit = False
 
         item = QTreeWidgetItem(parent)
         parent.addChild(item)
@@ -59,6 +60,7 @@ class VariableLink(QObject):
         else:
             self.widget = QLineEdit()
             self.widget.returnPressed.connect(self.returnPressed)
+            self.widget.textEdited.connect(self.valueChanged)
             self.connect(self,SIGNAL('updateGui'),self.widget.setText)
 
         if variable.mode == 'RO':
@@ -72,6 +74,8 @@ class VariableLink(QObject):
     @Pyro4.expose
     def varListener(self, var, value, disp):
         #print('{} varListener ( {} {} )'.format(self.variable, type(value), value))
+        if self._inEdit is True:
+            return
 
         if isinstance(self.widget, QComboBox):
             if self.widget.currentIndex() != self.widget.findText(disp):
@@ -83,8 +87,19 @@ class VariableLink(QObject):
             if self.widget.text() != disp:
                 self.emit(SIGNAL("updateGui"), disp)
 
+    def valueChanged(self):
+        self._inEdit = True
+        p = QPalette()
+        p.setColor(QPalette.Base,Qt.yellow)
+        self.widget.setPalette(p)
+
     def returnPressed(self):
+        p = QPalette()
+        p.setColor(QPalette.Base,Qt.white)
+        self.widget.setPalette(p)
+
         self.guiChanged(self.widget.text())
+        self._inEdit = False
         self.emit(SIGNAL("updateGui"), self.variable.valueDisp())
 
     def guiChanged(self, value):
