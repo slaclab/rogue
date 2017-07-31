@@ -22,6 +22,7 @@ import threading
 import pyrogue
 import time
 import pcaspy
+import ctypes
 
 try:
    import queue
@@ -187,6 +188,10 @@ class EpicsCaServer(object):
                     value = d['enums'][e['value']]
                 else:
                     value = e['value']
+
+                # Check if value is unsigned. If so, cast it
+                if v.base is pyrogue.UInt:
+                    value = ctypes.c_uint(value).value
 
                 if self._isCommand(v):
                     # Process command requests
