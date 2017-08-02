@@ -215,6 +215,9 @@ ris::FrameIteratorPtr ris::Frame::startWrite(uint32_t offset, uint32_t size) {
    else
       iter->size_ = (temp - iter->offset_);
 
+   // Set default completed
+   iter->completed_ = iter->size_;
+
    // Return iterator
    return(iter);
 }
@@ -227,34 +230,51 @@ bool ris::Frame::nextWrite(ris::FrameIteratorPtr iter) {
    buff = buffers_[iter->index_];
 
    // Update payload size
-   if ( (iter->offset_ + iter->size_ + buff->getHeadRoom() ) > buff->getCount() ) 
-      buff->setSize(iter->offset_ + iter->size_ + buff->getHeadRoom());
+   if ( iter->size_ > 0 && ((iter->offset_ + iter->completed_ + buff->getHeadRoom()) > buff->getCount()) )
+      buff->setSize(iter->offset_ + iter->completed_ + buff->getHeadRoom());
 
    // We are done
-   if ( iter->size_ == iter->remaining_ ) return(false);
+   if ( iter->size_ == 0 || (iter->completed_ == iter->remaining_) ) {
+      iter->size_ = 0;
+      iter->data_ = 0;
+      return (false);
+   }
 
-   // Sanity check before getting next buffer
-   if ( ++iter->index_ == buffers_.size() ) 
-      throw(rogue::GeneralError::boundary("Frame::nextWrite",iter->index_,buffers_.size()));
+   // Completed matches buffer size
+   if ( iter->completed_ == iter->size_ ) {
 
-   // Next buffer
+      // Sanity check before getting next buffer
+      if ( ++iter->index_ == buffers_.size() ) 
+         throw(rogue::GeneralError::boundary("Frame::nextWrite",iter->index_,buffers_.size()));
+
+      // Next buffer
+      iter->offset_ = 0;
+   }
+
+   // Partial read, reuse current buffer 
+   else iter->offset_ += iter->completed_;
+
+   // Update pointers
    buff = buffers_[iter->index_];
    temp = buff->getRawSize() - buff->getHeadRoom();
 
    // Adjust
-   iter->remaining_ -= iter->size_;
-   iter->total_     += iter->size_;
-   iter->offset_     = 0;
+   iter->remaining_ -= iter->completed_;
+   iter->total_     += iter->completed_;
 
    // Raw pointer
-   iter->data_ = buff->getPayloadData();
+   iter->data_ = buff->getPayloadData() + iter->offset_;
 
    // Set size
-   if ( temp > iter->remaining_ ) 
+   if ( (temp - iter->offset_) > iter->remaining_ ) 
       iter->size_ = iter->remaining_;
    else
-      iter->size_ = temp;
+      iter->size_ = (temp - iter->offset_);
 
+   // Set default completed
+   iter->completed_ = iter->size_;
+
+   // Return iterator
    return(true);
 }
 
@@ -302,6 +322,9 @@ ris::FrameIteratorPtr ris::Frame::startRead(uint32_t offset, uint32_t size) {
    else
       iter->size_ = (temp - iter->offset_);
 
+   // Set default completed
+   iter->completed_ = iter->size_;
+
    // Return iterator
    return(iter);
 }
@@ -312,29 +335,45 @@ bool ris::Frame::nextRead(ris::FrameIteratorPtr iter) {
    uint32_t temp;
 
    // We are done
-   if ( iter->size_ == iter->remaining_ ) return(false);
+   if ( iter->size_ == 0 || (iter->completed_ == iter->remaining_) ) {
+      iter->size_ = 0;
+      iter->data_ = 0;
+      return(false);
+   }
 
-   // Sanity check before getting next buffer
-   if ( ++iter->index_ == buffers_.size() ) 
-      throw(rogue::GeneralError::boundary("Frame::nextRead",iter->index_,buffers_.size()));
+   // Completed matches buffer size
+   if ( iter->completed_ == iter->size_ ) {
 
-   // Next buffer
+      // Sanity check before getting next buffer
+      if ( ++iter->index_ == buffers_.size() ) 
+         throw(rogue::GeneralError::boundary("Frame::nextRead",iter->index_,buffers_.size()));
+
+      // Next buffer
+      iter->offset_ = 0;
+   }
+   
+   // Partial read, reuse current buffer 
+   else iter->offset_ += iter->completed_;
+
+   // Update pointers
    buff = buffers_[iter->index_];
    temp = buff->getPayload();
 
    // Adjust
-   iter->remaining_ -= iter->size_;
-   iter->total_     += iter->size_;
-   iter->offset_     = 0;
+   iter->remaining_ -= iter->completed_;
+   iter->total_     += iter->completed_;
 
    // Raw pointer
-   iter->data_ = buff->getPayloadData();
+   iter->data_ = buff->getPayloadData() + iter->offset_;
 
    // Set size
-   if ( temp > iter->remaining_ ) 
+   if ( (temp - iter->offset_) > iter->remaining_ ) 
       iter->size_ = iter->remaining_;
    else
-      iter->size_ = temp;
+      iter->size_ = (temp - iter->offset_);
+
+   // Set default completed
+   iter->completed_ = iter->size_;
 
    return(true);
 }
