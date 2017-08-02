@@ -22,6 +22,8 @@
 
 #include <rogue/utilities/module.h>
 #include <rogue/utilities/Prbs.h>
+#include <rogue/utilities/StreamZip.h>
+#include <rogue/utilities/StreamUnZip.h>
 #include <rogue/utilities/fileio/module.h>
 #include <rogue/interfaces/stream/Slave.h>
 #include <rogue/interfaces/stream/Master.h>
@@ -43,6 +45,8 @@ void ru::setup_module() {
    bp::scope io_scope = module;
 
    ru::Prbs::setup_python();
+   ru::StreamZip::setup_python();
+   ru::StreamUnZip::setup_python();
    ru::fileio::setup_module();
 }
 
