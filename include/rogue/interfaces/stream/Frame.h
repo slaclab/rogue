@@ -184,6 +184,9 @@ namespace rogue {
                //! Size of pointer
                uint32_t size_;
 
+               //! Amount completed in transaction
+               uint32_t completed_;
+
                //! Transaction total
                uint32_t total_;
 
@@ -197,6 +200,11 @@ namespace rogue {
 
                //! Transaction total
                uint32_t total() {return(total_);}
+
+               //! Update the amount accessed
+               void completed(uint32_t value) {
+                  if ( value < size_ ) completed_ = value;
+               }
          };
 
          // Convienence
