@@ -61,9 +61,15 @@ class EnableVariable(pr.BaseVariable):
         
     @Pyro4.expose
     def set(self, value, write=True):
-        with self._lock:
-            if value != 'parent':
+        if value != 'parent':
+            old = self.value()
+
+            with self._lock:
                 self._value = value
+            
+            if old != value:
+                self.parent.enableChanged(value)
+
         self.updated()
 
     def _rootAttached(self,parent,root):
@@ -203,6 +209,12 @@ class Device(pr.Node,rim.Hub):
 
     def countReset(self):
         pass
+
+    def enableChanged(self,value):
+        if value is True:
+            self.writeBlocks(force=True, recurse=True, variable=None)
+            self.verifyBlocks(recurse=True, variable=None)
+            self.checkBlocks(recurse=True, variable=None)
 
     def writeBlocks(self, force=False, recurse=True, variable=None):
         """
