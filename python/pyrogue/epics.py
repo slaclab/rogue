@@ -207,9 +207,11 @@ class EpicsCaServer(object):
                     # Process normal register write requests
 
                     # EPICS uses 32-bit signed integers
-                    # So, check if the register value is unsigned, and cast the value if so
-                    if v.base is pyrogue.UInt:
-                        value = ctypes.c_uint(value).value
+                    # So, check if the register value is unsigned, and cast the value if so.
+                    # Check if it is a RemoteVariable as LocalVariables don't have base property. 
+                    if isinstance(v, pyrogue.RemoteVariable):
+                        if v.base is pyrogue.UInt:
+                            value = ctypes.c_uint(value).value
 
                     v.setDisp(value)
 
