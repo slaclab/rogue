@@ -68,6 +68,13 @@ rogue::GeneralError rogue::GeneralError::network(std::string src, std::string ho
    return(rogue::GeneralError(src,temp));
 }
 
+rogue::GeneralError rogue::GeneralError::ret(std::string src, std::string text, int32_t ret) {
+   char temp[100];
+
+   sprintf(temp,"%s. Ret=%i",text.c_str(),ret);
+   return(rogue::GeneralError(src,temp));
+}
+
 char const * rogue::GeneralError::what() const throw() {
    return(text_);
 }
