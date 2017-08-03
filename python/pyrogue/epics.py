@@ -40,17 +40,6 @@ class EpicsCaDriver(pcaspy.Driver):
         self._q.put(entry)
         self.setParam(reason,value)
 
-    def read(self,reason):
-        # Read the value from the parameter list
-        value = self.getParam(reason)
-
-        # EPICS uses 32-bit signed integers, 
-        # So cast integer values during reading
-        if type(value) is int:
-            value = ctypes.c_int32(value).value
-
-        return value
-
 class EpicsCaServer(object):
     """
     Class to contain an epics ca server
@@ -114,6 +103,13 @@ class EpicsCaServer(object):
 
         else:
             d['value'] = node.value()
+
+            # EPICS uses 32-bit signed integers, 
+            # So, check if the register value is unsigned, and cast the value if so.
+            # Check if it is a RemoteVariable as LocalVariables don't have base property.
+            if isinstance(node, pyrogue.RemoteVariable):
+                if node.base is pyrogue.UInt:
+                    d['value'] = ctypes.c_int(node.value()).value
             
             # All devices should return a not NULL value
             if d['value'] is None:
@@ -199,20 +195,19 @@ class EpicsCaServer(object):
                 else:
                     value = e['value']
 
+                    # EPICS uses 32-bit signed integers
+                    # So, check if the register value is unsigned, and cast the value if so.
+                    # Check if it is a RemoteVariable as LocalVariables don't have base property. 
+                    if isinstance(v, pyrogue.RemoteVariable):
+                        if v.base is pyrogue.UInt:
+                            value = ctypes.c_uint(e['value']).value
+
                 if self._isCommand(v):
                     # Process command requests
                     v.call(value)
              
                 else:
                     # Process normal register write requests
-
-                    # EPICS uses 32-bit signed integers
-                    # So, check if the register value is unsigned, and cast the value if so.
-                    # Check if it is a RemoteVariable as LocalVariables don't have base property. 
-                    if isinstance(v, pyrogue.RemoteVariable):
-                        if v.base is pyrogue.UInt:
-                            value = ctypes.c_uint(value).value
-
                     v.setDisp(value)
 
             except:
@@ -228,6 +223,13 @@ class EpicsCaServer(object):
             val = d['enums'].index(disp)
         else:
             val = value
+
+            # EPICS uses 32-bit signed integers, 
+            # So, check if the register value is unsigned, and cast the value if so.
+            # Check if it is a RemoteVariable as LocalVariables don't have base property.
+            if isinstance(var, pyrogue.RemoteVariable):
+                if var.base is pyrogue.UInt:
+                    val = ctypes.c_int(value).value
 
         self._driver.setParam(d['name'],val)
         self._driver.updatePVs()
