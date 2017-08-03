@@ -67,7 +67,7 @@ class EnableVariable(pr.BaseVariable):
             with self._lock:
                 self._value = value
             
-            if old != value:
+            if old != value and old != 'parent':
                 self.parent.enableChanged(value)
 
         self.updated()
@@ -220,7 +220,6 @@ class Device(pr.Node,rim.Hub):
         """
         Write all of the blocks held by this Device to memory
         """
-        if not self.enable.get(): return
         self._log.debug(f'Calling {self.path}._writeBlocks')
 
         # Process local blocks.
@@ -240,7 +239,6 @@ class Device(pr.Node,rim.Hub):
         """
         Perform background verify
         """
-        if not self.enable.get(): return
 
         # Process local blocks.
         if variable is not None:
@@ -258,7 +256,6 @@ class Device(pr.Node,rim.Hub):
         """
         Perform background reads
         """
-        if not self.enable.get(): return
         self._log.debug(f'Calling {self.path}._readBlocks')
 
         # Process local blocks. 
@@ -275,7 +272,6 @@ class Device(pr.Node,rim.Hub):
 
     def checkBlocks(self, recurse=True, variable=None):
         """Check errors in all blocks and generate variable update nofifications"""
-        if not self.enable.get(): return
         self._log.debug(f'Calling {self.path}._checkBlocks')
 
         # Process local blocks
