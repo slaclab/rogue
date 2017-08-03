@@ -29,7 +29,7 @@ DEF      := -DVER_MAJOR=$(VER_MAJOR) -DVER_MINOR=$(VER_MINOR) -DVER_MAINT=$(VER_
 CFLAGS   := -Wall `python3-config --cflags | sed s/-Wstrict-prototypes//` -fno-strict-aliasing
 CFLAGS   += -I$(BOOST_PATH)/include -I$(PWD)/include -I$(PWD)/drivers/include -std=c++0x -fPIC
 LFLAGS   := `python3-config --ldflags` -lboost_thread -lboost_python3 -lboost_system
-LFLAGS   += -L`python3-config --prefix`/lib/ -L$(BOOST_PATH)/lib 
+LFLAGS   += -L`python3-config --prefix`/lib/ -L$(BOOST_PATH)/lib -lbz2
 
 # Rogue Library Sources
 LIB_HDR  := $(PWD)/include/rogue
