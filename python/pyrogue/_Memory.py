@@ -35,7 +35,6 @@ class MemoryDevice(pr.Device):
         self._wordBitSize = wordBitSize
         self._stride = stride
         self._verify = verify
-        self._mask = base.blockMask(wordBitSize)
 
         self._setValues = odict()
         self._wrValues = odict() # parsed from yaml
