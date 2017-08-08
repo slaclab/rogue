@@ -202,7 +202,8 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                 list = A list of variables with the following format for each entry
                     {'path':path, 'value':rawValue, 'disp': dispValue}
         """
-        self._varListeners.append(func)
+        with self._updatedLock:
+            self._varListeners.append(func)
 
     def getYaml(self,readFirst,modes=['RW']):
         """
@@ -284,12 +285,16 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
             value._setTimeout(timeout)
 
     def _updateVarListeners(self, yml, l):
-        """Send update to listeners"""
+        """Send update to listeners. Lock must be held."""
         for tar in self._varListeners:
-            if isinstance(tar,Pyro4.Proxy):
-                tar.rootListener(yml,l)
-            else:
-                tar(yml,l)
+            try:
+                if getattr(tar,'rootListener',None) is not None:
+                    tar.rootListener(yml,l)
+                else:
+                    tar(yml,l)
+            except Pyro4.errors.CommunicationError as e:
+                self._log.info("Pyro Disconnect. Removing callback")
+                self._varListeners.remove(tar)
 
     def _sendYamlFrame(self,yml):
         """
@@ -317,19 +322,15 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
     def _doneUpdatedVars(self):
         """Stream the results of a bulk variable update and update listeners"""
-        yml = None
-        lst = None
         with self._updatedLock:
             if self._updatedDict:
-                d   = self._updatedDict
-                lst = self._updatedList
                 yml = dictToYaml(self._updatedDict,default_flow_style=False)
+
+                self._updateVarListeners(yml,self._updatedList)
+                self._sendYamlFrame(yml)
+
                 self._updatedDict = None
                 self._updatedList = None
-
-        if yml is not None:
-            self._updateVarListeners(yml,lst)
-            self._sendYamlFrame(yml)
 
     @pr.command(order=7, name='writeAll', description='Write all values to the hardware')
     def _write(self):
@@ -401,8 +402,6 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         self.systemLog.updated()
 
     def _varUpdated(self,var,value,disp):
-        yml = None
-        lst = None
         entry = {'path':var.path,'value':value,'disp':disp}
 
         with self._updatedLock:
@@ -419,9 +418,8 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                 yml = dictToYaml(d,default_flow_style=False)
                 lst = [entry]
 
-        if yml is not None:
-            self._updateVarListeners(yml,lst)
-            self._sendYamlFrame(yml)
+                self._updateVarListeners(yml,lst)
+                self._sendYamlFrame(yml)
 
 
 class PyroRoot(pr.PyroNode):
