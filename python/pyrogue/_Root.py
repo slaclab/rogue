@@ -288,7 +288,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         """Send update to listeners. Lock must be held."""
         for tar in self._varListeners:
             try:
-                if getattr(tar,'rootListener',None) is not None:
+                if hasattr(tar,'rootListener'):
                     tar.rootListener(yml,l)
                 else:
                     tar(yml,l)

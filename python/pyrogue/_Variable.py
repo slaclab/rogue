@@ -194,7 +194,7 @@ class BaseVariable(pr.Node):
                     disp  = self.valueDisp()
 
                 try:
-                    if getattr(func,'varListener',None) is not None:
+                    if hasattr(func,'varListener'):
                         func.varListener(self,value,disp)
                     else:
                         func(self,value,disp)
