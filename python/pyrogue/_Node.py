@@ -185,6 +185,20 @@ class Node(object):
 
     @Pyro4.expose
     @property
+    def variableList(self):
+        """
+        Get a recursive list of variables.
+        """
+        lst = []
+        for key,value in self._nodes.items():
+            if isinstance(value,pr.BaseVariable):
+                lst += [value]
+            else:
+                lst += value.variableList
+        return lst
+
+    @Pyro4.expose
+    @property
     def commands(self):
         """
         Return an OrderedDict of the Commands that are children of this Node
@@ -218,6 +232,21 @@ class Node(object):
     @Pyro4.expose
     def node(self, path):
         return self._nodes[path]
+
+    @Pyro4.expose
+    @property
+    def isDevice(self):
+        return isinstance(self,pr.Device)
+
+    @Pyro4.expose
+    @property
+    def isVariable(self):
+        return (isinstance(self,pr.BaseVariable) and (not isinstance(self,pr.BaseCommand)))
+
+    @Pyro4.expose
+    @property
+    def isCommand(self):
+        return isinstance(self,pr.BaseCommand)
 
     def find(self, *, recurse=True, typ=None, **kwargs):
         """ 
