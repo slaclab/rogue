@@ -187,14 +187,14 @@ class Node(object):
     @property
     def variableList(self):
         """
-        Get a recursive list of variables.
+        Get a recursive list of variables and commands.
         """
         lst = []
         for key,value in self._nodes.items():
             if isinstance(value,pr.BaseVariable):
-                lst += [value]
+                lst.append(value)
             else:
-                lst += value.variableList
+                lst.extend(value.variableList)
         return lst
 
     @Pyro4.expose
