@@ -34,22 +34,21 @@ namespace rogue {
          ApiWrapper (bool local, std::string arg1, std::string arg2);
          ~ApiWrapper();
 
+         void exec(std::string path, uint64_t arg = 0);
+         void exec(std::string path, double   arg = 0);
          void exec(std::string path, std::string arg = "");
 
-         void exec(std::string path, uint64_t arg = 0);
-
          uint64_t get(std::string path);
-
+         double getDouble(std::string path);
          std::string getDisp(std::string path);
 
          uint64_t value(std::string path);
-
+         double valueDouble(std::string path);
          std::string valueDisp(std::string path);
 
          void set(std::string path, uint64_t value);
-
+         void set(std::string path, double   value);
          void setDisp(std::string path, std::string value);
-
    };
 
    typedef boost::shared_ptr<rogue::ApiWrapper> ApiWrapperPtr;
