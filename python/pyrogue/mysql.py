@@ -5,7 +5,6 @@
 # File       : pyrogue/mysql.py
 # Author     : Ryan Herbst, rherbst@slac.stanford.edu
 # Created    : 2016-09-29
-# Last update: 2016-09-29
 #-----------------------------------------------------------------------------
 # This file is part of the rogue software platform. It is subject to 
 # the license terms in the LICENSE.txt file found in the top-level directory 
@@ -44,7 +43,7 @@ class MysqlGw(object):
         self._log     = pyrogue.logInit(self)
 
         if not root.running:
-            raise Exception("MysqlGw can be setup on a tree which is not started")
+            raise Exception("MysqlGw can not be setup on a tree which is not started")
 
         # Connect to server
         with self._dbLock:
@@ -141,15 +140,18 @@ class MysqlGw(object):
 
     def _updateVariable (self, var, value, disp):
         with self._dbLock:
-            if self._db is None:
-                raise MysqlException("Not connected to Mysql server " + self._host)
+            try:
+                if self._db is None:
+                    raise MysqlException("Not connected to Mysql server " + self._host)
 
-            cursor = self._db.cursor(MySQLdb.cursors.DictCursor)
+                cursor = self._db.cursor(MySQLdb.cursors.DictCursor)
 
-            sql = "update variable set value='{}', server_ts=now(),".format(disp)
-            sql += "server_ser = (server_ser + 1) where name='{}'".format(var.path)
+                sql = "update variable set value='{}', server_ts=now(),".format(disp)
+                sql += "server_ser = (server_ser + 1) where name='{}'".format(var.path)
 
-            cursor.execute(sql)
+                cursor.execute(sql)
+            except:
+                self._db = None
 
     def _addCommand (self, command):
         cursor = self._db.cursor(MySQLdb.cursors.DictCursor)
@@ -198,9 +200,6 @@ class MysqlGw(object):
         self._dbLock.release()
 
     def _pollVariables(self):
-        if self._db is None:
-            return
-
         rows = []
         with self._dbLock:
             cursor = self._db.cursor(MySQLdb.cursors.DictCursor)
@@ -221,16 +220,9 @@ class MysqlGw(object):
             self._varTs = row['tstamp']
             if self._varSer != row['client_ser']:
                 self._varSer = row['client_ser']
-
-                try:
-                    self._root.setOrExecPath(row['name'],row['value'])
-                except:
-                    pass
+                self._root.setDisp(row['name'],row['value'])
 
     def _pollCommands(self):
-        if self._db is None:
-            return
-
         rows = []
         with self._dbLock:
             cursor = self._db.cursor(MySQLdb.cursors.DictCursor)
@@ -251,18 +243,207 @@ class MysqlGw(object):
             self._cmdTs = row['tstamp']
             if self._cmdSer != row['client_ser']:
                 self._cmdSer = row['client_ser']
-
-                try:
-                    self._root.setOrExecPath(row['name'],row['arg'])
-                except:
-                    pass
+                self._root.exec(row['name'],row['arg'])
 
     def _workRun(self):
         while(self._runEn):
             time.sleep(0.5)
             with self._dbLock:
-                if not self._connect():
-                    time.sleep(1)
-            self._pollCommands()
-            self._pollVariables()
+                try:
+                    if self._connect():
+                        self._pollCommands()
+                        self._pollVariables()
+                    else:
+                        time.sleep(5)
+                except:
+                    self._log.error("Lost connection to Mysql server {}".format(self._host)
+                    self._db = None
+
+
+class MysqlClient(object):
+
+    def __init__(self, *, dbHost, dbName, dbUser, dbPass):
+        self._host    = dbHost
+        self._port    = 3306
+        self._user    = dbUser
+        self._pass    = dbPass
+        self._dbase   = dbName
+        self._db      = None
+        self._dbLock  = threading.Lock()
+
+        # Connect to server
+        with self._dbLock:
+            if not self._connect():
+                return
+
+            # Create PVs
+            self._addDevice(self._root)
+            self._delOldEntries()
+
+        self._thread = threading.Thread(target=self._workRun)
+
+    def _connect(self):
+        if self._db is not None:
+            return True
+
+        try:
+            self._log.info("Connecting to Mysql server {}".format(self._host)
+            self._db = MySQLdb.connect(host=self._host,user=self._user,passwd=self._pass,db=self._dbase,port=self._port)
+
+            cursor = self._db.cursor(MySQLdb.cursors.DictCursor)
+            cursor.execute("SELECT VERSION()")
+            self._db.autocommit(True)
+            return True
+
+        except MySQLdb.Error:
+            self._log.error("Failed to connect to Mysql server {}".format(self._host)
+            self._db = None
+            return False
+
+    def get(self, path):
+        pass
+
+    def set(self, path, value):
+        pass
+
+    def exec(self, path, arg=None):
+        pass
+
+    def exec (self, path, arg=None):
+        with self._dbLock:
+            try:
+                if self._db is None:
+                    raise MysqlException("Not connected to Mysql server " + self._host)
+
+                cursor = self._db.cursor(MySQLdb.cursors.DictCursor)
+
+                sql = "update variable set value='{}', server_ts=now(),".format(disp)
+                sql += "server_ser = (server_ser + 1) where name='{}'".format(var.path)
+
+                cursor.execute(sql)
+            except:
+                self._db = None
+
+    def _addCommand (self, command):
+        cursor = self._db.cursor(MySQLdb.cursors.DictCursor)
+
+        sql =  "replace into command ("
+        sql += "command.name,"
+        sql += "command.description,"
+        sql += "command.arg,"
+        sql += "command.hasArg,"
+        sql += "command.create_ts,"
+        sql += "command.client_ts,"
+        sql += "command.client_ser,"
+        sql += "command.units,"
+        sql += "command.minimum,"
+        sql += "command.maximum,"
+        sql += "command.disp,"
+        sql += "command.enum,"
+        sql += "command.typeStr,"
+        sql += "command.hidden)"
+        sql += "values ("
+
+        sql += "'{}',".format(command.name)
+        sql += "'{}',".format(command.description)
+        sql += "'',"      # Arg
+        sql += "'{}',".format(command.arg)
+        sql += "'now()'," # create_ts
+        sql += "'now()'," # client_ts
+        sql += "'0',"     # client_ser
+        sql += "'{}',".format(command.units)
+        sql += "'{}',".format(command.minimum)
+        sql += "'{}',".format(command.maximum)
+        sql += "'{}',".format(command.disp)
+        sql += "'{}',".format(command.enum)
+        sql += "'{}',".format(command.typeStr)
+        sql += "'{}')".format(command.hidden)
+
+        cursor.execute(sql)
+        self._cmdSer[cmd.path] = 0
+
+    def _delOldEntries(self):
+        cursor = self._db.cursor(MySQLdb.cursors.DictCursor)
+
+        cursor.execute("delete from command  where create_ts < (now() - interval 1 minute)")
+        cursor.execute("delete from variable where create_ts < (now() - interval 1 minute)")
+
+        self._dbLock.release()
+
+    def _pollVariables(self):
+        rows = []
+        with self._dbLock:
+            cursor = self._db.cursor(MySQLdb.cursors.DictCursor)
+
+            # Setup query
+            query = "select name, value, client_ser, now() as tstamp from variables"
+
+            # Filter with optional passed time 
+            if self._varTs:
+                query += " where client_ts > ('{}' - interval 1 second)".format(self._varTs)
+
+            # Execute query
+            cursor.execute(query)
+            rows = cursor.fetchall()
+
+        # Process variables
+        for row in rows:
+            self._varTs = row['tstamp']
+            if self._varSer != row['client_ser']:
+                self._varSer = row['client_ser']
+                self._root.setDisp(row['name'],row['value'])
+
+    def _pollCommands(self):
+        rows = []
+        with self._dbLock:
+            cursor = self._db.cursor(MySQLdb.cursors.DictCursor)
+
+            # Setup query
+            query = "select name, arg, client_ser, now() as tstamp from commands"
+
+            # Filter with optional passed time 
+            if self._cmdTs:
+                query += " where client_ts > ('{}' - interval 1 second)".format(self._cmdTs)
+
+            # Execute query
+            cursor.execute(query)
+            rows = cursor.fetchall()
+
+        # Process variables
+        for row in rows:
+            self._cmdTs = row['tstamp']
+            if self._cmdSer != row['client_ser']:
+                self._cmdSer = row['client_ser']
+                self._root.exec(row['name'],row['arg'])
+
+    def _workRun(self):
+        while(self._runEn):
+            time.sleep(0.5)
+            with self._dbLock:
+                try:
+                    if self._connect():
+                        self._pollCommands()
+                        self._pollVariables()
+                    else:
+                        time.sleep(5)
+                except:
+                    self._log.error("Lost connection to Mysql server {}".format(self._host)
+                    self._db = None
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
