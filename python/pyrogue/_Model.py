@@ -44,11 +44,17 @@ def byteCount(bits):
 class Model(object):
 
     @staticmethod
-    def blockMask(bitSize, bitOffset=0):
+    def getMask(bitSize):
         # For now all models are little endian so we can get away with this
-        i = (2**bitSize-1) << bitOffset
-        return i.to_bytes(byteCount(bitSize+bitOffset), 'little', signed=False)
+        i = (2**bitSize-1)
+        return i.to_bytes(byteCount(bitSize), 'little', signed=False)
 
+    @classmethod
+    def mask(cls, ba, bitSize):
+        #m = cls.getMask(bitSize)
+        #for i in range(len(ba)):
+            #ba[i] = ba[i] & m[i]
+        return ba
 
 @Pyro4.expose
 class UInt(Model):
@@ -69,13 +75,14 @@ class UInt(Model):
     def check(value,bitSize):
         return (type(value) == UInt.pytype and bitSize >= value.bit_length())
 
-    @staticmethod
-    def toBlock(value, bitSize):
+    @classmethod
+    def toBytes(cls, value, bitSize):
         return value.to_bytes(byteCount(bitSize), 'little', signed=False)
 
-    @staticmethod
-    def fromBlock(ba):
+    @classmethod
+    def fromBytes(cls, ba):
         return int.from_bytes(ba, 'little', signed=False)
+
 
     @staticmethod
     def fromString(string):
@@ -97,12 +104,12 @@ class Int(Model):
     def check(value,bitSize):
         return (type(value) == Int.pytype and bitSize >= value.bit_length())
 
-    @staticmethod
-    def toBlock(value, bitSize):
+    @classmethod
+    def toBytes(cls, value, bitSize):
         return value.to_bytes(byteCount(bitSize), 'little', signed=True)
 
-    @staticmethod
-    def fromBlock(ba):
+    @classmethod
+    def fromBytes(cls,ba):
         return int.from_bytes(ba, 'little', signed=True)
 
     @staticmethod
@@ -128,12 +135,12 @@ class Bool(Model):
     def check(value,bitSize):
         return (type(value) == Bool.pytype and bitSize == 1)
 
-    @staticmethod
-    def toBlock(value, bitSize):
+    @classmethod
+    def toBytes(cls, value, bitSize):
         return value.to_bytes(1, 'little', signed=False)
 
-    @staticmethod
-    def fromBlock(ba):
+    @classmethod
+    def fromBytes(cls, ba):
         return bool(int.from_bytes(ba, 'little', signed=False))
 
     @staticmethod
@@ -156,14 +163,14 @@ class String(Model):
     def check(value,bitSize):
         return (type(val) == String.pytype and bitSize >= (len(value) * 8))
 
-    @staticmethod
-    def toBlock(value, bitSize):
+    @classmethod
+    def toBytes(cls, value, bitSize):
         ba = bytearray(value, String.encoding)
         ba.extend(bytearray(1))
         return ba
 
-    @staticmethod
-    def fromBlock(ba):
+    @classmethod
+    def fromBytes(cls, ba):
         s = ba.rstrip(bytearray(1))
         return s.decode(String.encoding)
 
@@ -189,16 +196,16 @@ class Float(Model):
     def check(value,bitSize):
         return (type(val) == Float.pytype and (bitSize == 32 or bitSize == 64))
 
-    @staticmethod
-    def toBlock(value, bitSize):
+    @classmethod
+    def toBytes(cls, value, bitSize):
         if bitSize == 32:
             fstring = 'f'
         elif bitsize == 64:
             fstring = 'd'
         return bytearray(struct.pack(fstring, value))
 
-    @staticmethod
-    def fromBlock(ba):
+    @classmethod
+    def fromBytes(cls, ba):
         if len(ba) == 4:
             return struct.unpack('f', ba)
         elif len(ba) == 8:

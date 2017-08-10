@@ -5,15 +5,36 @@ from collections import OrderedDict as odict
 
 
 class MemoryDevice(pr.Device):
-    def __init__(self, *, base=pr.UInt, wordBitSize=32, stride=4, verify=True, **kwargs):
-        super().__init__(hidden=True, **kwargs)
+    def __init__(self, *,
+                 name=None,
+                 description='',
+                 memBase=None,
+                 offset=0,
+                 size=0,
+                 hidden=False,
+                 expand=True,
+                 enabled=True,
+                 base=pr.UInt,
+                 wordBitSize=32,
+                 stride=4,
+                 verify=True):
+        
+        super().__init__(
+            name=name,
+            description=description,
+            memBase=memBase,
+            offset=offset,
+            size=size,
+            hidden=hidden,
+            expand=expand,
+            enabled=enabled,
+        )
 
         self._lockCnt = 0
         self._base = base
         self._wordBitSize = wordBitSize
         self._stride = stride
         self._verify = verify
-        self._mask = base.blockMask(wordBitSize)
 
         self._setValues = odict()
         self._wrValues = odict() # parsed from yaml
@@ -21,8 +42,6 @@ class MemoryDevice(pr.Device):
         self._wrData = odict() # byte arrays written
         self._verData = odict() # verify data wread back
 
-    def __mask(self, ba):
-        return bytearray(x&y for x,y in zip(self._mask, ba))
 
     def _buildBlocks(self):
         pass
@@ -75,7 +94,7 @@ class MemoryDevice(pr.Device):
             checkValues = odict()
             print(self._verData.items())
             for offset, ba in self._verData.items():
-                checkValues[offset] = [self._base.fromBlock(self.__mask(ba[i:i+self._stride]))
+                checkValues[offset] = [self._base.mask(self._base.fromBytes(ba[i:i+self._stride]), self._wordBitSize)
                                        for i in range(0, len(ba), self._stride)]
 
             # Do verify if necessary

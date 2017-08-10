@@ -20,6 +20,7 @@ from collections import OrderedDict as odict
 import logging
 import pyrogue as pr
 import Pyro4
+import Pyro4.naming
 import functools as ft
 
 class RootLogHandler(logging.Handler):
@@ -84,7 +85,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
             description='String containing newline seperated system logic entries'))
 
         self.add(pr.LocalVariable(name='forceWrite', value=False, mode='RW', hidden=True,
-            description='Cofiguration Flag To Control Write All Block'))
+            description='Configuration Flag To Control Write All Block'))
 
     def start(self, initRead=False, initWrite=False, pollEn=True, pyroGroup=None, pyroHost=None, pyroNs=None):
         """Setup the tree. Start the polling thread."""
@@ -119,22 +120,35 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         # Start pyro server if enabled
         if pyroGroup is not None:
             Pyro4.config.THREADPOOL_SIZE = 500
+            Pyro4.config.SERVERTYPE = "multiplex"
+            Pyro4.config.POLLTIMEOUT = 3
+
             Pyro4.util.SerializerBase.register_dict_to_class("collections.OrderedDict", recreate_OrderedDict)
 
             self._pyroDaemon = Pyro4.Daemon(host=pyroHost)
 
             uri = self._pyroDaemon.register(self)
 
+            # Do we create our own nameserver?
             try:
-                Pyro4.locateNS(pyroNs).register('{}.{}'.format(pyroGroup,self.name),uri)
+                if pyroNs is None:
+                    nsUri, nsDaemon, nsBcast = Pyro4.naming.startNS(host=pyroHost)
+                    self._pyroDaemon.combine(nsDaemon)
+                    if nsBcast is not None:
+                        self._pyroDaemon.combine(nsBcast)
+                    ns = nsDaemon.nameserver
+                    self._log.info("Started pyro4 nameserver: {}".format(nsUri))
+                else:
+                    ns = Pyro4.locateNS(pyroNs)
+                    self._loc.info("Using pyro4 nameserver at host: {}".format(pyroNs))
 
+                ns.register('{}.{}'.format(pyroGroup,self.name),uri)
                 self._exportNodes(self._pyroDaemon)
                 self._pyroThread = threading.Thread(target=self._pyroDaemon.requestLoop)
                 self._pyroThread.start()
-            except:
-                print("Root::start -> Failed to find Pyro4 nameserver.")
-                print("               Start with the following command:")
-                print("                  python -m Pyro4.naming")
+
+            except Exception as e:
+                self._log.error("Failed to start or locate pyro4 nameserver with error: {}".format(e))
 
         # Read current state
         if initRead:
@@ -188,7 +202,8 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                 list = A list of variables with the following format for each entry
                     {'path':path, 'value':rawValue, 'disp': dispValue}
         """
-        self._varListeners.append(func)
+        with self._updatedLock:
+            self._varListeners.append(func)
 
     def getYaml(self,readFirst,modes=['RW']):
         """
@@ -270,12 +285,16 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
             value._setTimeout(timeout)
 
     def _updateVarListeners(self, yml, l):
-        """Send update to listeners"""
+        """Send update to listeners. Lock must be held."""
         for tar in self._varListeners:
-            if isinstance(tar,Pyro4.Proxy):
-                tar.rootListener(yml,l)
-            else:
-                tar(yml,l)
+            try:
+                if hasattr(tar,'rootListener'):
+                    tar.rootListener(yml,l)
+                else:
+                    tar(yml,l)
+            except Pyro4.errors.CommunicationError as e:
+                self._log.info("Pyro Disconnect. Removing callback")
+                self._varListeners.remove(tar)
 
     def _sendYamlFrame(self,yml):
         """
@@ -303,19 +322,15 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
     def _doneUpdatedVars(self):
         """Stream the results of a bulk variable update and update listeners"""
-        yml = None
-        lst = None
         with self._updatedLock:
             if self._updatedDict:
-                d   = self._updatedDict
-                lst = self._updatedList
                 yml = dictToYaml(self._updatedDict,default_flow_style=False)
+
+                self._updateVarListeners(yml,self._updatedList)
+                self._sendYamlFrame(yml)
+
                 self._updatedDict = None
                 self._updatedList = None
-
-        if yml is not None:
-            self._updateVarListeners(yml,lst)
-            self._sendYamlFrame(yml)
 
     @pr.command(order=7, name='writeAll', description='Write all values to the hardware')
     def _write(self):
@@ -387,8 +402,6 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         self.systemLog.updated()
 
     def _varUpdated(self,var,value,disp):
-        yml = None
-        lst = None
         entry = {'path':var.path,'value':value,'disp':disp}
 
         with self._updatedLock:
@@ -405,9 +418,8 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                 yml = dictToYaml(d,default_flow_style=False)
                 lst = [entry]
 
-        if yml is not None:
-            self._updateVarListeners(yml,lst)
-            self._sendYamlFrame(yml)
+                self._updateVarListeners(yml,lst)
+                self._sendYamlFrame(yml)
 
 
 class PyroRoot(pr.PyroNode):
@@ -431,11 +443,6 @@ class PyroClient(object):
         try:
             self._ns = Pyro4.locateNS(host=ns)
         except:
-            print("\n------------- PyroClient ----------------------")
-            print("    Failed to find Pyro4 nameserver!")
-            print("    Start with the following command:")
-            print("         python -m Pyro4.naming")
-            print("-----------------------------------------------\n")
             raise pr.NodeError("PyroClient Failed to find nameserver")
 
         self._pyroDaemon = Pyro4.Daemon(host=host)

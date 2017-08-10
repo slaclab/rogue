@@ -20,6 +20,7 @@ import parse
 import Pyro4
 import math
 import inspect
+import threading
 from collections import Iterable
 
 class VariableError(Exception):
@@ -52,6 +53,7 @@ class BaseVariable(pr.Node):
         self._default       = value
         self._pollInterval  = pollInterval
         self.__listeners    = []
+        self._listenLock    = threading.Lock()
         self.__dependencies = []
 
         # Build enum if specified
@@ -158,10 +160,11 @@ class BaseVariable(pr.Node):
         This is usefull when chaining variables together. (adc conversions, etc)
         The variable and value will be passed as an arg: func(var,value)
         """
-        if isinstance(listener, BaseVariable):
-            self.__listeners.append(listener.updated)
-        else:
-            self.__listeners.append(listener)
+        with self._listenLock:
+            if isinstance(listener, BaseVariable):
+                self.__listeners.append(listener.updated)
+            else:
+                self.__listeners.append(listener)
 
     @Pyro4.expose
     def set(self, value, write=True):
@@ -184,16 +187,20 @@ class BaseVariable(pr.Node):
         """Variable has been updated. Inform listeners."""
         value = None
         disp  = None
+        with self._listenLock:
+            for func in self.__listeners:
+                if value is None:
+                    value = self.value()
+                    disp  = self.valueDisp()
 
-        for func in self.__listeners:
-            if value is None:
-                value = self.value()
-                disp  = self.valueDisp()
-
-            if getattr(func,'varListener',None) is not None:
-                func.varListener(self,value,disp)
-            else:
-                func(self,value,disp)
+                try:
+                    if hasattr(func,'varListener'):
+                        func.varListener(self,value,disp)
+                    else:
+                        func(self,value,disp)
+                except Pyro4.errors.CommunicationError:
+                    self._log.info("Pyro Disconnect. Removing callback")
+                    self.__listeners.remove(func)
 
         # Root variable update log
         if self._update is True and self._root is not None:
@@ -395,6 +402,7 @@ class RemoteVariable(BaseVariable):
 
         except Exception as e:
             self._log.exception(e)
+            self._log.error("Error setting value '{}' to variable '{}' with type {}".format(value,self.path,self.typeStr))
 
     @Pyro4.expose
     def post(self,value):
@@ -419,6 +427,7 @@ class RemoteVariable(BaseVariable):
 
         except Exception as e:
             self._log.exception(e)
+            self._log.error("Error posting value '{}' to variable '{}' with type {}".format(value,self.path,self.typeStr))
 
     @Pyro4.expose
     def get(self,read=True):
@@ -439,6 +448,7 @@ class RemoteVariable(BaseVariable):
 
         except Exception as e:
             self._log.exception(e)
+            self._log.error("Error reading value from variable '{}'".format(self.path))
             return None
 
         return ret

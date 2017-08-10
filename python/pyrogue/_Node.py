@@ -440,7 +440,7 @@ def nodeMatch(nodes,name):
 
         # no slicing, return list
         if len(fields) == 1:
-            return [n for n in ah.items()]
+            return [v for k,v in ah.items()]
 
         # Indexed ordered dictionary returned
         # Convert to list with gaps = None and apply slicing

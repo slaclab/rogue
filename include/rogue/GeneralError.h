@@ -43,6 +43,7 @@ namespace rogue {
          static GeneralError boundary(std::string src, uint32_t position, uint32_t limit);
          static GeneralError allocation(std::string src, uint32_t size);
          static GeneralError network(std::string src, std::string host, uint16_t port);
+         static GeneralError ret(std::string src, std::string text, int32_t ret);
 
          char const * what() const throw();
          static void setup_python();
