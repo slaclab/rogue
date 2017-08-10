@@ -100,8 +100,14 @@ class MysqlGw(object):
                 return
 
             # Create PVs
-            self._addDevice(self._root)
+            for v in self._root.variableList:
+                if v.isCommand:
+                    self._addCommand(v)
+                elif v.isVariable:
+                    self._addVariable(v)
+            self._db.commit()
             self._delOldEntries()
+            self._root.addVarListener(self._updateVariables)
 
     def start(self):
         self._runEn = True
@@ -113,8 +119,8 @@ class MysqlGw(object):
             return True
 
         try:
-            self._log.error("Connecting to Mysql server {}".format(self._host))
-            #self._log.info("Connecting to Mysql server {}".format(self._host))
+            #self._log.error("Connecting to Mysql server {}".format(self._host))
+            self._log.info("Connecting to Mysql server {}".format(self._host))
             newDb = MySQLdb.connect(
                 host=self._host,
                 user=self._user,
@@ -124,7 +130,6 @@ class MysqlGw(object):
 
             cursor = newDb.cursor(MySQLdb.cursors.DictCursor)
             cursor.execute("SELECT VERSION()")
-            newDb.autocommit(True)
             self._db = newDb
             return True
 
@@ -142,16 +147,6 @@ class MysqlGw(object):
             if self._db is not None:
                 self._db.close()
                 self._db = None
-
-    def _addDevice(self,device):
-        for key,value in device.variables.items():
-            self._addVariable(value)
-
-        for key,value in device.commands.items():
-            self._addCommand(value)
-
-        for key,value in device.devices.items():
-            self._addDevice(value)
 
     def _addVariable(self, variable):
         cursor = self._db.cursor(MySQLdb.cursors.DictCursor)
@@ -199,9 +194,7 @@ class MysqlGw(object):
         cursor.execute(sql)
         self._varSer[variable.path] = 0
 
-        variable.addListener(self._updateVariable)
-
-    def _updateVariable (self, var, value, disp):
+    def _updateVariables (self, yml, lst):
         if self._db is None:
             #self._log.error("Not connected to Mysql server " + self._host)
             return
@@ -209,10 +202,11 @@ class MysqlGw(object):
         with self._dbLock:
             try:
                 cursor = self._db.cursor(MySQLdb.cursors.DictCursor)
-
-                sql = "update variable set value='{}', server_ts=now(),".format(mysqlString(disp))
-                sql += "server_ser = (server_ser + 1) where name='{}'".format(var.path)
-                cursor.execute(sql)
+                for num in lst:
+                    sql = "update variable set value='{}', server_ts=now(),".format(mysqlString(num['disp']))
+                    sql += "server_ser = (server_ser + 1) where name='{}'".format(num['path'])
+                    cursor.execute(sql)
+                self._db.commit()
             except:
                 self._log.error("Error executing sql.")
                 self._db = None
@@ -262,6 +256,7 @@ class MysqlGw(object):
 
         cursor.execute("delete from command  where create_ts < (now() - interval 1 minute)")
         cursor.execute("delete from variable where create_ts < (now() - interval 1 minute)")
+        self._db.commit()
 
     def _pollVariables(self):
         rows = []
