@@ -434,7 +434,7 @@ class PyroRoot(pr.PyroNode):
 
 
 class PyroClient(object):
-    def __init__(self, *, group, host=None, ns=None):
+    def __init__(self, group, host=None, ns=None):
         self._group = group
 
         Pyro4.config.THREADPOOL_SIZE = 100
