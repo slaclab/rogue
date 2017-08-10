@@ -67,7 +67,8 @@ class EpicsCaServer(object):
             self._pvMap = pvMap
 
         # Create PVs
-        self._addDevice(self._root,doAll)
+        for v in self._root.variableList:
+            self._addPv(v,doAll)
 
     def stop(self):
         self._runEn = False
@@ -152,20 +153,6 @@ class EpicsCaServer(object):
 
         self._log.info("Adding {} type {} maped to {}".format(node.path,d['type'],d['name']))
         self._pvDb[d['name']] = d
-
-    def _addDevice(self,node,doAll):
-
-        # Get variables 
-        for key,value in node.variables.items():
-            self._addPv(value,doAll)
-
-        # Get commands
-        for key,value in node.commands.items():
-            self._addPv(value,doAll)
-
-        # Get devices
-        for key,value in node.devices.items():
-            self._addDevice(value,doAll)
 
     def _epicsRun(self):
         self._server = pcaspy.SimpleServer()

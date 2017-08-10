@@ -140,7 +140,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                     self._log.info("Started pyro4 nameserver: {}".format(nsUri))
                 else:
                     ns = Pyro4.locateNS(pyroNs)
-                    self._loc.info("Using pyro4 nameserver at host: {}".format(pyroNs))
+                    self._log.info("Using pyro4 nameserver at host: {}".format(pyroNs))
 
                 ns.register('{}.{}'.format(pyroGroup,self.name),uri)
                 self._exportNodes(self._pyroDaemon)
@@ -434,7 +434,7 @@ class PyroRoot(pr.PyroNode):
 
 
 class PyroClient(object):
-    def __init__(self, *, group, host=None, ns=None):
+    def __init__(self, group, host=None, ns=None):
         self._group = group
 
         Pyro4.config.THREADPOOL_SIZE = 100
