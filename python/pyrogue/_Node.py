@@ -130,23 +130,23 @@ class Node(object):
 
         # Fail if added to a non device node (may change in future)
         if not isinstance(self,pr.Device):
-            raise NodeError('Attempting to add %s with name %s to non device node %s.' % 
-                             (str(node.classType),node.name,self.name))
+            raise NodeError('Attempting to add node with name %s to non device node %s.' % 
+                             (node.name,self.name))
 
         # Fail if root already exists
         if self._root is not None:
-            raise NodeError('Error adding %s with name %s to %s. Tree is already started.' % 
-                             (str(node.classType),node.name,self.name))
+            raise NodeError('Error adding node with name %s to %s. Tree is already started.' % 
+                             (node.name,self.name))
 
         # Error if added node already has a parent
         if node._parent is not None:
-            raise NodeError('Error adding %s with name %s to %s. Node is already attached.' % 
-                             (str(node.classType),node.name,self.name))
+            raise NodeError('Error adding node with name %s to %s. Node is already attached.' % 
+                             (node.name,self.name))
 
         # Names of all sub-nodes must be unique
-        if node.name in self._nodes:
-            raise NodeError('Error adding %s with name %s to %s. Name collision.' % 
-                             (str(node.classType),node.name,self.name))
+        if node.name in self.__dir__():
+            raise NodeError('Error adding node with name %s to %s. Name collision.' % 
+                             (node.name,self.name))
 
         self._nodes[node.name] = node 
 
