@@ -45,7 +45,7 @@ class UdpRssiPack(pr.Device):
         self.add(pr.LocalVariable(name='rssiDropCount',   mode='RO', value=0, pollInterval=1, localGet=self.getRssiDropCount))
         self.add(pr.LocalVariable(name='rssiRetranCount', mode='RO', value=0, pollInterval=1, localGet=self.getRssiRetranCount))
         self.add(pr.LocalVariable(name='packDropCount',   mode='RO', value=0, pollInterval=1, localGet=self.getPackDropCount))
-        self.add(pr.LocalVariable(name='getRssiBusy',     mode='RO', value=0, pollInterval=1, localGet=self.getRssiBusy))
+        self.add(pr.LocalVariable(name='rssiBusy',        mode='RO', value=0, pollInterval=1, localGet=self.getRssiBusy))
 
         if wait:
             curr = int(time.time())

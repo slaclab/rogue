@@ -195,13 +195,13 @@ class Device(pr.Node,rim.Hub):
             elif isinstance(variables[0], str):
                 self.variables[v]._hidden = hidden
 
-    def softReset(self):
+    def softResetFunc(self):
         pass
 
-    def hardReset(self):
+    def hardResetFunc(self):
         pass
 
-    def countReset(self):
+    def countResetFunc(self):
         pass
 
     def writeBlocks(self, force=False, recurse=True, variable=None):
@@ -389,11 +389,11 @@ class Device(pr.Node,rim.Hub):
         """Generate a count, soft or hard reset"""
 
         if rstType == 'hard':
-            self.hardReset()
+            self.hardResetFunc()
         elif rstType == 'soft':
-            self.softReset()
+            self.softResetFunc()
         elif rstType == 'count':
-            self.countReset()
+            self.countResetFunc()
 
         # process remaining blocks
         for key,value in self._nodes.items():
