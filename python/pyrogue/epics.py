@@ -22,6 +22,7 @@ import threading
 import pyrogue
 import time
 import pcaspy
+import ctypes
 
 try:
    import queue
@@ -38,7 +39,6 @@ class EpicsCaDriver(pcaspy.Driver):
         entry = {'value':value,'epath':reason}
         self._q.put(entry)
         self.setParam(reason,value)
-
 
 class EpicsCaServer(object):
     """
@@ -104,6 +104,13 @@ class EpicsCaServer(object):
 
         else:
             d['value'] = node.value()
+
+            # EPICS uses 32-bit signed integers, 
+            # So, check if the register value is unsigned, and cast the value if so.
+            # Check if it is a RemoteVariable as LocalVariables don't have base property.
+            if isinstance(node, pyrogue.RemoteVariable):
+                if node.base is pyrogue.UInt:
+                    d['value'] = ctypes.c_int(node.value()).value
             
             # All devices should return a not NULL value
             if d['value'] is None:
@@ -175,6 +182,13 @@ class EpicsCaServer(object):
                 else:
                     value = e['value']
 
+                    # EPICS uses 32-bit signed integers
+                    # So, check if the register value is unsigned, and cast the value if so.
+                    # Check if it is a RemoteVariable as LocalVariables don't have base property. 
+                    if isinstance(v, pyrogue.RemoteVariable):
+                        if v.base is pyrogue.UInt:
+                            value = ctypes.c_uint(e['value']).value
+
                 if self._isCommand(v):
                     # Process command requests
                     v.call(value)
@@ -196,6 +210,13 @@ class EpicsCaServer(object):
             val = d['enums'].index(disp)
         else:
             val = value
+
+            # EPICS uses 32-bit signed integers, 
+            # So, check if the register value is unsigned, and cast the value if so.
+            # Check if it is a RemoteVariable as LocalVariables don't have base property.
+            if isinstance(var, pyrogue.RemoteVariable):
+                if var.base is pyrogue.UInt:
+                    val = ctypes.c_int(value).value
 
         self._driver.setParam(d['name'],val)
         self._driver.updatePVs()
