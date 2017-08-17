@@ -45,6 +45,14 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
     to be stored in data files.
     """
 
+    def __enter__(self):
+        """Root enter."""
+        return self
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        """Root exit."""
+        self.stop()
+
     def __init__(self, *, name, description):
         """Init the node with passed attributes"""
 
