@@ -251,6 +251,21 @@ class Node(object):
                 found.extend(node.find(recurse=recurse, typ=typ, **kwargs))
         return found
 
+    def callRecursive(self, func, nodeTypes=[pr.Node], **kwargs):
+        # Call the function
+        getattr(self, func)(**kwargs)
+
+        # Recursively call the function
+        for key, node in self._nodes.items():
+            if any(isinstance(node, typ) for typ in nodeTypes):
+                node.callRecursive(func, nodeTypes, **kwargs)
+
+    # this might be useful
+    def makeRecursive(self, func, nodeTypes=[pr.Node]):
+        def closure(**kwargs):
+            self.callRecursive(func, nodeTypes, **kwargs)
+        return closure
+
     def _rootAttached(self,parent,root):
         """Called once the root node is attached."""
         self._parent = parent

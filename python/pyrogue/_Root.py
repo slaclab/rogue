@@ -377,21 +377,21 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         except Exception as e:
             self._log.exception(e)
 
-    @pr.command(order=3, name='softReset', description='Generate a soft reset to each device in the tree')
+    @pr.command(order=3, name='SoftReset', description='Generate a soft reset to each device in the tree')
     def _softReset(self):
         """Generate a soft reset on all devices"""
-        self._devReset('soft')
+        self.callRecursive('softReset', nodeTypes=[pr.Device])
 
-    @pr.command(order=2, name='hardReset', description='Generate a hard reset to each device in the tree')
+    @pr.command(order=2, name='HardReset', description='Generate a hard reset to each device in the tree')
     def _hardReset(self):
         """Generate a hard reset on all devices"""
-        self._devReset('hard')
+        self.callRecursive('hardReset', nodeTypes=[pr.Device])        
         self._clearLog(dev,cmd)
 
-    @pr.command(order=4, name='countReset', description='Generate a count reset to each device in the tree')
+    @pr.command(order=4, name='CountReset', description='Generate a count reset to each device in the tree')
     def _countReset(self):
         """Generate a count reset on all devices"""
-        self._devReset('count')
+        self.callRecursive('softReset', nodeTypes=[pr.Device])        
 
     @pr.command(order=5, name='clearLog', description='Clear the message log cntained in the systemLog variable')
     def _clearLog(self):
