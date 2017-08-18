@@ -157,7 +157,7 @@ class VariableWidget(QWidget):
 
     def readPressed(self):
         for root in self.roots:
-            root.readAll()
+            root.ReadAll()
 
     def addTreeItems(self,tree,d):
 
