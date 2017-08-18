@@ -420,22 +420,21 @@ class Device(pr.Node,rim.Hub):
             if 'name' not in kwargs:
                 kwargs['name'] = func.__name__
 
-            fargs = inspect.getfullargspec(func).args
-
-            # Handle functions with the wrong arg name and genere warning
-            if len(fargs) > 0 and 'arg' not in fargs:
-                self._log.warning("Decorated init functions must have the parameter name 'arg': {}".format(self.path))
-
-                def newFunc(arg):
-                    return func(arg)
-
-                self.add(pr.LocalCommand(function=newFunc, **kwargs))
-            else:
-                self.add(pr.LocalCommand(function=func, **kwargs))
+            self.add(pr.LocalCommand(function=func, **kwargs))
 
             return func
         return _decorator
 
+    def linkedGet(self, **kwargs):
+        """ Decorator to add inline constructor functions as LinkVariable.linkedGet functions"""
+        def _decorator(func):
+            if 'name' not in kwargs:
+                kwargs['name'] = func.__name__
+
+            self.add(pr.LinkVariable(linkedGet=func, **kwargs))
+
+            return func
+        return _decorator
 
 class DataWriter(Device):
     """Special base class to control data files. TODO: Update comments"""
