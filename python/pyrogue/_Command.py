@@ -67,6 +67,9 @@ class BaseCommand(pr.BaseVariable):
     @Pyro4.expose
     def call(self,arg=None):
         """Execute command: TODO: Update comments"""
+        if (self.parent.enable.value() is not True):
+            return
+
         try:
 
             # Convert arg
