@@ -23,6 +23,7 @@ from PyQt4.QtGui    import *
 
 import pyrogue
 import Pyro4
+import threading
 
 class VariableLink(QObject):
     """Bridge between the pyrogue tree and the display element"""
@@ -31,6 +32,8 @@ class VariableLink(QObject):
         QObject.__init__(self)
         self.variable = variable
         self._inEdit = False
+        self._swSet = False
+        self._lock = threading.Lock()
 
         item = QTreeWidgetItem(parent)
         parent.addChild(item)
@@ -74,18 +77,23 @@ class VariableLink(QObject):
     @Pyro4.expose
     def varListener(self, var, value, disp):
         #print('{} varListener ( {} {} )'.format(self.variable, type(value), value))
-        if self._inEdit is True:
-            return
+        with self._lock:
+            if self._inEdit is True:
+                return
 
-        if isinstance(self.widget, QComboBox):
-            if self.widget.currentIndex() != self.widget.findText(disp):
-                self.emit(SIGNAL("updateGui"), self.widget.findText(disp))
-        elif isinstance(self.widget, QSpinBox):
-            if self.widget.value != value:
-                self.emit(SIGNAL("updateGui"), value)
-        else:
-            if self.widget.text() != disp:
-                self.emit(SIGNAL("updateGui"), disp)
+            self._swSet = True
+
+            if isinstance(self.widget, QComboBox):
+                if self.widget.currentIndex() != self.widget.findText(disp):
+                    self.emit(SIGNAL("updateGui"), self.widget.findText(disp))
+            elif isinstance(self.widget, QSpinBox):
+                if self.widget.value != value:
+                    self.emit(SIGNAL("updateGui"), value)
+            else:
+                if self.widget.text() != disp:
+                    self.emit(SIGNAL("updateGui"), disp)
+
+            self._swSet = False
 
     def valueChanged(self):
         self._inEdit = True
@@ -103,6 +111,8 @@ class VariableLink(QObject):
         self.emit(SIGNAL("updateGui"), self.variable.valueDisp())
 
     def guiChanged(self, value):
+        if self._swSet:
+            return
 
         if self.variable.disp == 'enum':
             # For enums, value will be index of selected item
