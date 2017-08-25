@@ -328,7 +328,7 @@ class Device(pr.Node,rim.Hub):
             self._waitTransaction(0)
 
             if self._getError() > 0:
-                raise pr.MemoryError (name=self.name, address=offsetffset|self.address, error=self._getError())
+                raise pr.MemoryError (name=self.name, address=offset|self.address, error=self._getError())
 
             if numWords == 1:
                 return base.fromBytes(base.mask(ldata, wordBitSize))
