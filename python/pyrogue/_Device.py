@@ -212,9 +212,7 @@ class Device(pr.Node,rim.Hub):
 
     def enableChanged(self,value):
         if value is True:
-            self.writeBlocks(force=True, recurse=True, variable=None)
-            self.verifyBlocks(recurse=True, variable=None)
-            self.checkBlocks(recurse=True, variable=None)
+            self.writeAndVerifyBlocks(force=True, recurse=True, variable=None)
 
     def writeBlocks(self, force=False, recurse=True, variable=None):
         """
@@ -284,6 +282,12 @@ class Device(pr.Node,rim.Hub):
             if recurse:
                 for key,value in self.devices.items():
                         value.checkBlocks(recurse=True)
+
+    def writeAndVerifyBlocks(self, force=False, recurse=True, variable=None):
+        """Perform a write, verify and check. Usefull for committing any stale variables"""
+        self.writeBlocks(force=force, recurse=recurse, variable=variable)
+        self.verifyBlocks(recurse=recurse, variable=variable)
+        self.checkBlocks(recurse=recurse, variable=variable)
 
     def _rawTxnChunker(self, offset, data, base=pr.UInt, stride=4, wordBitSize=32, txnType=rim.Write, numWords=1):
         if wordBitSize > stride*8:
