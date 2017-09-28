@@ -72,4 +72,5 @@ Other python packages
 > pip3 install Pyro4 
 > pip3 install parse 
 > pip3 install recordclass
+> pip3 install click
 
