@@ -94,7 +94,7 @@ class BaseCommand(pr.BaseVariable):
     def createToggle(sets):
         def toggle(cmd):
             for s in sets:
-                cmd.set(i)
+                cmd.set(s)
         return toggle
 
     @staticmethod
