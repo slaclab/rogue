@@ -521,3 +521,25 @@ def dictToYaml(data, stream=None, Dumper=yaml.Dumper, **kwds):
 def recreate_OrderedDict(name, values):
     return odict(values['items'])
 
+def generateAddressMap(root,fname):
+    vlist = root.variableList
+
+    with open(fname,'w') as f:
+        f.write("Path\t")
+        f.write("Type\t")
+        f.write("Offset\t")
+        f.write("BitOffset\t")
+        f.write("BitSize\t")
+        f.write("Enum\t")
+        f.write("Description\n")
+
+        for v in vlist:
+            if isinstance(v, pr.RemoteVariable):
+                f.write("{}\t".format(v.path))
+                f.write("{}\t".format(type(v)))
+                f.write("{:#x}\t".format(v.offset))
+                f.write("{}\t".format(v.bitOffset))
+                f.write("{}\t".format(v.bitSize))
+                f.write("{}\t".format(v.enum))
+                f.write("{}\n".format(v.description))
+
