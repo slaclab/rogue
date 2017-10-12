@@ -437,7 +437,7 @@ class Device(pr.Node,rim.Hub):
             return func
         return _decorator
 
-    def linkedGet(self, **kwargs):
+    def linkVariableGet(self, **kwargs):
         """ Decorator to add inline constructor functions as LinkVariable.linkedGet functions"""
         def _decorator(func):
             if 'name' not in kwargs:
