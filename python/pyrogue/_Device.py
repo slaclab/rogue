@@ -397,21 +397,6 @@ class Device(pr.Node,rim.Hub):
             v._finishInit()
 
 
-    def _devReset(self,rstType):
-        """Generate a count, soft or hard reset"""
-
-        if rstType == 'hard':
-            self.hardReset()
-        elif rstType == 'soft':
-            self.softReset()
-        elif rstType == 'count':
-            self.countReset()
-
-        # process remaining blocks
-        for key,value in self._nodes.items():
-            if isinstance(value,Device):
-                value._devReset(rstType)
-
     def _setTimeout(self,timeout):
         """
         Set timeout value on all devices & blocks
