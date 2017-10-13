@@ -212,9 +212,7 @@ class Device(pr.Node,rim.Hub):
 
     def enableChanged(self,value):
         if value is True:
-            self.writeBlocks(force=True, recurse=True, variable=None)
-            self.verifyBlocks(recurse=True, variable=None)
-            self.checkBlocks(recurse=True, variable=None)
+            self.writeAndVerifyBlocks(force=True, recurse=True, variable=None)
 
     def writeBlocks(self, force=False, recurse=True, variable=None):
         """
@@ -284,6 +282,12 @@ class Device(pr.Node,rim.Hub):
             if recurse:
                 for key,value in self.devices.items():
                         value.checkBlocks(recurse=True)
+
+    def writeAndVerifyBlocks(self, force=False, recurse=True, variable=None):
+        """Perform a write, verify and check. Usefull for committing any stale variables"""
+        self.writeBlocks(force=force, recurse=recurse, variable=variable)
+        self.verifyBlocks(recurse=recurse, variable=variable)
+        self.checkBlocks(recurse=recurse, variable=variable)
 
     def _rawTxnChunker(self, offset, data, base=pr.UInt, stride=4, wordBitSize=32, txnType=rim.Write, numWords=1):
         if wordBitSize > stride*8:
@@ -428,22 +432,21 @@ class Device(pr.Node,rim.Hub):
             if 'name' not in kwargs:
                 kwargs['name'] = func.__name__
 
-            fargs = inspect.getfullargspec(func).args
-
-            # Handle functions with the wrong arg name and genere warning
-            if len(fargs) > 0 and 'arg' not in fargs:
-                self._log.warning("Decorated init functions must have the parameter name 'arg': {}".format(self.path))
-
-                def newFunc(arg):
-                    return func(arg)
-
-                self.add(pr.LocalCommand(function=newFunc, **kwargs))
-            else:
-                self.add(pr.LocalCommand(function=func, **kwargs))
+            self.add(pr.LocalCommand(function=func, **kwargs))
 
             return func
         return _decorator
 
+    def linkVariableGet(self, **kwargs):
+        """ Decorator to add inline constructor functions as LinkVariable.linkedGet functions"""
+        def _decorator(func):
+            if 'name' not in kwargs:
+                kwargs['name'] = func.__name__
+
+            self.add(pr.LinkVariable(linkedGet=func, **kwargs))
+
+            return func
+        return _decorator
 
 class DataWriter(Device):
     """Special base class to control data files. TODO: Update comments"""

@@ -92,6 +92,11 @@ class Node(object):
         return self._hidden
 
     @Pyro4.expose
+    @hidden.setter
+    def hidden(self, value):
+        self._hidden = value
+
+    @Pyro4.expose
     @property
     def path(self):
         return self._path
