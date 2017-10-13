@@ -400,7 +400,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
     @pr.command(order=4, name='CountReset', description='Generate a count reset to each device in the tree')
     def _countReset(self):
         """Generate a count reset on all devices"""
-        self.callRecursive('softReset', nodeTypes=[pr.Device])        
+        self.callRecursive('countReset', nodeTypes=[pr.Device])        
 
     @pr.command(order=5, name='ClearLog', description='Clear the message log cntained in the SystemLog variable')
     def _clearLog(self):
