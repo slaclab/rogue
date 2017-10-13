@@ -315,9 +315,8 @@ class RemoteBlock(BaseBlock, rim.Master):
         """
         with self._lock:
 
-            # Check for invalid combinations or disabled device
-            if (self._device.enable.value() is not True) or \
-               (type == rim.Write  and (self.mode == 'RO')) or \
+            # Check for invalid combinations
+            if (type == rim.Write  and (self.mode == 'RO')) or \
                (type == rim.Post   and (self.mode == 'RO')) or \
                (type == rim.Read   and (self.mode == 'WO')) or \
                (type == rim.Verify and (self.mode == 'WO' or \
@@ -327,6 +326,7 @@ class RemoteBlock(BaseBlock, rim.Master):
 
             self._waitTransaction(0)
 
+            # Move staged write data to block. Clear stale.
             if type == rim.Write or type == rim.Post:
                 for x in range(self._size):
                     self._bData[x] = self._bData[x] & (self._sDataMask[x] ^ 0xFF)
@@ -334,6 +334,10 @@ class RemoteBlock(BaseBlock, rim.Master):
 
                 self._sData = bytearray(self._size)
                 self._sDataMask = bytearray(self._size)
+
+            # Do not write to hardware for a disabled device
+            if (self._device.enable.value() is not True):
+                return
 
             self._log.debug(f'_startTransaction type={type}')
             self._log.debug(f'len bData = {len(self._bData)}, vData = {len(self._vData)}, vDataMask = {len(self._vDataMask)}')

@@ -17,10 +17,21 @@
 #ifndef __ROGUE_API_WRAPPER_H__
 #define __ROGUE_API_WRAPPER_H__
 #include <boost/python.hpp>
+#include <vector>
 
 namespace rogue {
 
-   //! Logging
+   //! Structure for variable & command list
+   class ApiEntry {
+      public:
+         std::string path;
+         bool        cmd;
+         bool        cmdArg;
+         bool        hidden;
+         std::string typeStr;
+   };
+
+   //! API Wrapper
    class ApiWrapper {
 
          boost::python::object _root;
@@ -34,25 +45,40 @@ namespace rogue {
          ApiWrapper (bool local, std::string arg1, std::string arg2);
          ~ApiWrapper();
 
-         void exec(std::string path, std::string arg = "");
+         std::vector<boost::shared_ptr<rogue::ApiEntry>> getEntries();
 
-         void exec(std::string path, uint64_t arg = 0);
+         void execUInt32 (std::string path, uint32_t arg = 0);
+         void execUInt64 (std::string path, uint64_t arg = 0);
+         void execDouble (std::string path, double   arg = 0.0);
+         void execString (std::string path, std::string arg = "");
 
-         uint64_t get(std::string path);
+         uint32_t    getUInt32 (std::string path);
+         uint64_t    getUInt64 (std::string path);
+         double      getDouble (std::string path);
+         std::string getString (std::string path);
 
-         std::string getDisp(std::string path);
+         uint32_t    valueUInt32 (std::string path);
+         uint64_t    valueUInt64 (std::string path);
+         double      valueDouble (std::string path);
+         std::string valueString (std::string path);
 
-         uint64_t value(std::string path);
+         void setUInt32  (std::string path, uint32_t value);
+         void setUInt64  (std::string path, uint64_t value);
+         void setDouble  (std::string path, double   value);
+         void setString  (std::string path, std::string value);
 
-         std::string valueDisp(std::string path);
+         void stop();
 
-         void set(std::string path, uint64_t value);
+         std::string getYaml();
+         void setYaml(std::string);
 
-         void setDisp(std::string path, std::string value);
-
+         std::string getLog();
+         void clrLog();
    };
 
    typedef boost::shared_ptr<rogue::ApiWrapper> ApiWrapperPtr;
+   typedef boost::shared_ptr<rogue::ApiEntry>   ApiEntryPtr;
+   typedef std::vector<rogue::ApiEntryPtr>      ApiEntryList;
 }
 
 #endif

@@ -45,6 +45,14 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
     to be stored in data files.
     """
 
+    def __enter__(self):
+        """Root enter."""
+        return self
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        """Root exit."""
+        self.stop()
+
     def __init__(self, *, name, description):
         """Init the node with passed attributes"""
 
@@ -140,7 +148,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                     self._log.info("Started pyro4 nameserver: {}".format(nsUri))
                 else:
                     ns = Pyro4.locateNS(pyroNs)
-                    self._loc.info("Using pyro4 nameserver at host: {}".format(pyroNs))
+                    self._log.info("Using pyro4 nameserver at host: {}".format(pyroNs))
 
                 ns.register('{}.{}'.format(pyroGroup,self.name),uri)
                 self._exportNodes(self._pyroDaemon)
@@ -202,7 +210,8 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                 list = A list of variables with the following format for each entry
                     {'path':path, 'value':rawValue, 'disp': dispValue}
         """
-        self._varListeners.append(func)
+        with self._updatedLock:
+            self._varListeners.append(func)
 
     def getYaml(self,readFirst,modes=['RW']):
         """
@@ -284,12 +293,16 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
             value._setTimeout(timeout)
 
     def _updateVarListeners(self, yml, l):
-        """Send update to listeners"""
+        """Send update to listeners. Lock must be held."""
         for tar in self._varListeners:
-            if isinstance(tar,Pyro4.Proxy):
-                tar.rootListener(yml,l)
-            else:
-                tar(yml,l)
+            try:
+                if hasattr(tar,'rootListener'):
+                    tar.rootListener(yml,l)
+                else:
+                    tar(yml,l)
+            except Pyro4.errors.CommunicationError as e:
+                self._log.info("Pyro Disconnect. Removing callback")
+                self._varListeners.remove(tar)
 
     def _sendYamlFrame(self,yml):
         """
@@ -317,19 +330,15 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
     def _doneUpdatedVars(self):
         """Stream the results of a bulk variable update and update listeners"""
-        yml = None
-        lst = None
         with self._updatedLock:
             if self._updatedDict:
-                d   = self._updatedDict
-                lst = self._updatedList
                 yml = dictToYaml(self._updatedDict,default_flow_style=False)
+
+                self._updateVarListeners(yml,self._updatedList)
+                self._sendYamlFrame(yml)
+
                 self._updatedDict = None
                 self._updatedList = None
-
-        if yml is not None:
-            self._updateVarListeners(yml,lst)
-            self._sendYamlFrame(yml)
 
     @pr.command(order=7, name='WriteAll', description='Write all values to the hardware')
     def _write(self):
@@ -401,8 +410,6 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         self.SystemLog.updated()
 
     def _varUpdated(self,var,value,disp):
-        yml = None
-        lst = None
         entry = {'path':var.path,'value':value,'disp':disp}
 
         with self._updatedLock:
@@ -419,9 +426,8 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                 yml = dictToYaml(d,default_flow_style=False)
                 lst = [entry]
 
-        if yml is not None:
-            self._updateVarListeners(yml,lst)
-            self._sendYamlFrame(yml)
+                self._updateVarListeners(yml,lst)
+                self._sendYamlFrame(yml)
 
 
 class PyroRoot(pr.PyroNode):
@@ -436,7 +442,7 @@ class PyroRoot(pr.PyroNode):
 
 
 class PyroClient(object):
-    def __init__(self, *, group, host=None, ns=None):
+    def __init__(self, group, host=None, ns=None):
         self._group = group
 
         Pyro4.config.THREADPOOL_SIZE = 100
@@ -514,4 +520,26 @@ def dictToYaml(data, stream=None, Dumper=yaml.Dumper, **kwds):
 
 def recreate_OrderedDict(name, values):
     return odict(values['items'])
+
+def generateAddressMap(root,fname):
+    vlist = root.variableList
+
+    with open(fname,'w') as f:
+        f.write("Path\t")
+        f.write("Type\t")
+        f.write("Offset\t")
+        f.write("BitOffset\t")
+        f.write("BitSize\t")
+        f.write("Enum\t")
+        f.write("Description\n")
+
+        for v in vlist:
+            if isinstance(v, pr.RemoteVariable):
+                f.write("{}\t".format(v.path))
+                f.write("{}\t".format(type(v)))
+                f.write("{:#x}\t".format(v.offset))
+                f.write("{}\t".format(v.bitOffset))
+                f.write("{}\t".format(v.bitSize))
+                f.write("{}\t".format(v.enum))
+                f.write("{}\n".format(v.description))
 

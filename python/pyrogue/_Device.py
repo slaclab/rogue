@@ -61,9 +61,15 @@ class EnableVariable(pr.BaseVariable):
         
     @Pyro4.expose
     def set(self, value, write=True):
-        with self._lock:
-            if value != 'parent':
+        if value != 'parent':
+            old = self.value()
+
+            with self._lock:
                 self._value = value
+            
+            if old != value and old != 'parent':
+                self.parent.enableChanged(value)
+
         self.updated()
 
     def _rootAttached(self,parent,root):
@@ -204,11 +210,16 @@ class Device(pr.Node,rim.Hub):
     def countReset(self):
         pass
 
+    def enableChanged(self,value):
+        if value is True:
+            self.writeBlocks(force=True, recurse=True, variable=None)
+            self.verifyBlocks(recurse=True, variable=None)
+            self.checkBlocks(recurse=True, variable=None)
+
     def writeBlocks(self, force=False, recurse=True, variable=None):
         """
         Write all of the blocks held by this Device to memory
         """
-        if not self.enable.get(): return
         self._log.debug(f'Calling {self.path}._writeBlocks')
 
         # Process local blocks.
@@ -228,7 +239,6 @@ class Device(pr.Node,rim.Hub):
         """
         Perform background verify
         """
-        if not self.enable.get(): return
 
         # Process local blocks.
         if variable is not None:
@@ -246,7 +256,6 @@ class Device(pr.Node,rim.Hub):
         """
         Perform background reads
         """
-        if not self.enable.get(): return
         self._log.debug(f'Calling {self.path}._readBlocks')
 
         # Process local blocks. 
@@ -263,7 +272,6 @@ class Device(pr.Node,rim.Hub):
 
     def checkBlocks(self, recurse=True, variable=None):
         """Check errors in all blocks and generate variable update nofifications"""
-        if not self.enable.get(): return
         self._log.debug(f'Calling {self.path}._checkBlocks')
 
         # Process local blocks
@@ -311,7 +319,7 @@ class Device(pr.Node,rim.Hub):
             self._waitTransaction(0)
 
             if self._getError() > 0:
-                raise pr.MemoryError (name=self.name, address=sliceOffset|self.address, error=self._getError())
+                raise pr.MemoryError (name=self.name, address=offset|self.address, error=self._getError())
 
         
     def _rawRead(self, offset, numWords=1, base=pr.UInt, stride=4, wordBitSize=32, data=None):
@@ -320,7 +328,7 @@ class Device(pr.Node,rim.Hub):
             self._waitTransaction(0)
 
             if self._getError() > 0:
-                raise pr.MemoryError (name=self.name, address=sliceOffset|self.address, error=self._getError())
+                raise pr.MemoryError (name=self.name, address=offset|self.address, error=self._getError())
 
             if numWords == 1:
                 return base.fromBytes(base.mask(ldata, wordBitSize))
