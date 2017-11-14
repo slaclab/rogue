@@ -87,10 +87,10 @@ void rps::SrpV3::doTransaction(uint32_t id, rim::MasterPtr master, uint64_t addr
    // Bits 7:0 of first 32-bit word are version
    temp = 0x03;
 
-   // Bits 9:8: 0x0 = read, 0x1 = write, 0x3 = posted write
+   // Bits 9:8: 0x0 = read, 0x1 = write, 0x2 = posted write
    switch ( type ) {
       case rim::Write : temp |= 0x100; break;
-      case rim::Post  : temp |= 0x300; break;
+      case rim::Post  : temp |= 0x200; break;
       default: break; // Read or verify
    }
    
@@ -180,7 +180,7 @@ void rps::SrpV3::acceptFrame ( ris::FramePtr frame ) {
    }
 
    // Copy data if read
-   // Bits 9:8: 0x0 = read, 0x1 = write, 0x3 = posted write
+   // Bits 9:8: 0x0 = read, 0x1 = write, 0x2 = posted write
    frame->read(&temp,0,4);
    if ( (temp & 0x300) == 0 ) {
       cnt = 20;

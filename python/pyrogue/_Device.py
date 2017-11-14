@@ -61,9 +61,15 @@ class EnableVariable(pr.BaseVariable):
         
     @Pyro4.expose
     def set(self, value, write=True):
-        with self._lock:
-            if value != 'parent':
+        if value != 'parent':
+            old = self.value()
+
+            with self._lock:
                 self._value = value
+            
+            if old != value and old != 'parent':
+                self.parent.enableChanged(value)
+
         self.updated()
 
     def _rootAttached(self,parent,root):
@@ -204,11 +210,14 @@ class Device(pr.Node,rim.Hub):
     def countReset(self):
         pass
 
+    def enableChanged(self,value):
+        if value is True:
+            self.writeAndVerifyBlocks(force=True, recurse=True, variable=None)
+
     def writeBlocks(self, force=False, recurse=True, variable=None):
         """
         Write all of the blocks held by this Device to memory
         """
-        if not self.enable.get(): return
         self._log.debug(f'Calling {self.path}._writeBlocks')
 
         # Process local blocks.
@@ -228,7 +237,6 @@ class Device(pr.Node,rim.Hub):
         """
         Perform background verify
         """
-        if not self.enable.get(): return
 
         # Process local blocks.
         if variable is not None:
@@ -246,7 +254,6 @@ class Device(pr.Node,rim.Hub):
         """
         Perform background reads
         """
-        if not self.enable.get(): return
         self._log.debug(f'Calling {self.path}._readBlocks')
 
         # Process local blocks. 
@@ -263,7 +270,6 @@ class Device(pr.Node,rim.Hub):
 
     def checkBlocks(self, recurse=True, variable=None):
         """Check errors in all blocks and generate variable update nofifications"""
-        if not self.enable.get(): return
         self._log.debug(f'Calling {self.path}._checkBlocks')
 
         # Process local blocks
@@ -276,6 +282,12 @@ class Device(pr.Node,rim.Hub):
             if recurse:
                 for key,value in self.devices.items():
                         value.checkBlocks(recurse=True)
+
+    def writeAndVerifyBlocks(self, force=False, recurse=True, variable=None):
+        """Perform a write, verify and check. Usefull for committing any stale variables"""
+        self.writeBlocks(force=force, recurse=recurse, variable=variable)
+        self.verifyBlocks(recurse=recurse, variable=variable)
+        self.checkBlocks(recurse=recurse, variable=variable)
 
     def _rawTxnChunker(self, offset, data, base=pr.UInt, stride=4, wordBitSize=32, txnType=rim.Write, numWords=1):
         if wordBitSize > stride*8:
@@ -311,7 +323,7 @@ class Device(pr.Node,rim.Hub):
             self._waitTransaction(0)
 
             if self._getError() > 0:
-                raise pr.MemoryError (name=self.name, address=sliceOffset|self.address, error=self._getError())
+                raise pr.MemoryError (name=self.name, address=offset|self.address, error=self._getError())
 
         
     def _rawRead(self, offset, numWords=1, base=pr.UInt, stride=4, wordBitSize=32, data=None):
@@ -320,7 +332,7 @@ class Device(pr.Node,rim.Hub):
             self._waitTransaction(0)
 
             if self._getError() > 0:
-                raise pr.MemoryError (name=self.name, address=sliceOffset|self.address, error=self._getError())
+                raise pr.MemoryError (name=self.name, address=offset|self.address, error=self._getError())
 
             if numWords == 1:
                 return base.fromBytes(base.mask(ldata, wordBitSize))
@@ -385,21 +397,6 @@ class Device(pr.Node,rim.Hub):
             v._finishInit()
 
 
-    def _devReset(self,rstType):
-        """Generate a count, soft or hard reset"""
-
-        if rstType == 'hard':
-            self.hardReset()
-        elif rstType == 'soft':
-            self.softReset()
-        elif rstType == 'count':
-            self.countReset()
-
-        # process remaining blocks
-        for key,value in self._nodes.items():
-            if isinstance(value,Device):
-                value._devReset(rstType)
-
     def _setTimeout(self,timeout):
         """
         Set timeout value on all devices & blocks
@@ -420,22 +417,21 @@ class Device(pr.Node,rim.Hub):
             if 'name' not in kwargs:
                 kwargs['name'] = func.__name__
 
-            fargs = inspect.getfullargspec(func).args
-
-            # Handle functions with the wrong arg name and genere warning
-            if len(fargs) > 0 and 'arg' not in fargs:
-                self._log.warning("Decorated init functions must have the parameter name 'arg': {}".format(self.path))
-
-                def newFunc(arg):
-                    return func(arg)
-
-                self.add(pr.LocalCommand(function=newFunc, **kwargs))
-            else:
-                self.add(pr.LocalCommand(function=func, **kwargs))
+            self.add(pr.LocalCommand(function=func, **kwargs))
 
             return func
         return _decorator
 
+    def linkVariableGet(self, **kwargs):
+        """ Decorator to add inline constructor functions as LinkVariable.linkedGet functions"""
+        def _decorator(func):
+            if 'name' not in kwargs:
+                kwargs['name'] = func.__name__
+
+            self.add(pr.LinkVariable(linkedGet=func, **kwargs))
+
+            return func
+        return _decorator
 
 class DataWriter(Device):
     """Special base class to control data files. TODO: Update comments"""

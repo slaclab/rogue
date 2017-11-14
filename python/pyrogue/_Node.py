@@ -92,6 +92,11 @@ class Node(object):
         return self._hidden
 
     @Pyro4.expose
+    @hidden.setter
+    def hidden(self, value):
+        self._hidden = value
+
+    @Pyro4.expose
     @property
     def path(self):
         return self._path
@@ -130,23 +135,23 @@ class Node(object):
 
         # Fail if added to a non device node (may change in future)
         if not isinstance(self,pr.Device):
-            raise NodeError('Attempting to add %s with name %s to non device node %s.' % 
-                             (str(node.classType),node.name,self.name))
+            raise NodeError('Attempting to add node with name %s to non device node %s.' % 
+                             (node.name,self.name))
 
         # Fail if root already exists
         if self._root is not None:
-            raise NodeError('Error adding %s with name %s to %s. Tree is already started.' % 
-                             (str(node.classType),node.name,self.name))
+            raise NodeError('Error adding node with name %s to %s. Tree is already started.' % 
+                             (node.name,self.name))
 
         # Error if added node already has a parent
         if node._parent is not None:
-            raise NodeError('Error adding %s with name %s to %s. Node is already attached.' % 
-                             (str(node.classType),node.name,self.name))
+            raise NodeError('Error adding node with name %s to %s. Node is already attached.' % 
+                             (node.name,self.name))
 
         # Names of all sub-nodes must be unique
-        if node.name in self._nodes:
-            raise NodeError('Error adding %s with name %s to %s. Name collision.' % 
-                             (str(node.classType),node.name,self.name))
+        if node.name in self.__dir__():
+            raise NodeError('Error adding node with name %s to %s. Name collision.' % 
+                             (node.name,self.name))
 
         self._nodes[node.name] = node 
 
@@ -279,6 +284,24 @@ class Node(object):
             if recurse:
                 found.extend(node.find(recurse=recurse, typ=typ, **kwargs))
         return found
+
+    def callRecursive(self, func, nodeTypes=None, **kwargs):
+        # Call the function
+        getattr(self, func)(**kwargs)
+
+        if nodeTypes is None:
+            nodeTypes = [pr.Node]
+
+        # Recursively call the function
+        for key, node in self._nodes.items():
+            if any(isinstance(node, typ) for typ in nodeTypes):
+                node.callRecursive(func, nodeTypes, **kwargs)
+
+    # this might be useful
+    def makeRecursive(self, func, nodeTypes=None):
+        def closure(**kwargs):
+            self.callRecursive(func, nodeTypes, **kwargs)
+        return closure
 
     def _rootAttached(self,parent,root):
         """Called once the root node is attached."""

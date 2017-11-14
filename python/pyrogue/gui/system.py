@@ -331,7 +331,7 @@ class SystemWidget(QWidget):
         self.systemLog.setReadOnly(True)
         vb.addWidget(self.systemLog)
 
-        root.systemLog.addListener(self)
+        root.SystemLog.addListener(self)
         self.connect(self,SIGNAL('updateLog'),self.systemLog.setText)
         
         pb = QPushButton('Clear Log')
@@ -343,17 +343,17 @@ class SystemWidget(QWidget):
 
     @Pyro4.expose
     def varListener(self,var,value,disp):
-        if var.name == 'systemLog':
+        if var.name == 'SystemLog':
             self.emit(SIGNAL("updateLog"),disp)
 
     def hardReset(self):
-        self.root.hardReset()
+        self.root.HardReset()
 
     def softReset(self):
-        self.root.softReset()
+        self.root.SoftReset()
 
     def countReset(self):
-        self.root.countReset()
+        self.root.CountReset()
 
     def loadSettings(self):
         dlg = QFileDialog()
@@ -362,7 +362,7 @@ class SystemWidget(QWidget):
 
         if dlg.exec_():
             loadFile = str(dlg.selectedFiles()[0])
-            self.root.readConfig(loadFile)
+            self.root.ReadConfig(loadFile)
 
     def saveSettings(self):
         dlg = QFileDialog()
@@ -371,5 +371,5 @@ class SystemWidget(QWidget):
 
         if dlg.exec_():
             saveFile = str(dlg.selectedFiles()[0])
-            self.root.writeConfig(saveFile)
+            self.root.WriteConfig(saveFile)
 

@@ -31,10 +31,10 @@ class RootLogHandler(logging.Handler):
 
     def emit(self,record):
         with self._root._sysLogLock:
-            val = self._root.systemLog.value()
+            val = self._root.SystemLog.value()
             val += (self.format(record).splitlines()[0] + '\n')
-            self._root.systemLog.set(write=False,value=val)
-        self._root.systemLog.updated() # Update outside of lock
+            self._root.SystemLog.set(write=False,value=val)
+        self._root.SystemLog.updated() # Update outside of lock
 
 class Root(rogue.interfaces.stream.Master,pr.Device):
     """
@@ -44,6 +44,14 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
     configuration and status values. This allows confiuration and status
     to be stored in data files.
     """
+
+    def __enter__(self):
+        """Root enter."""
+        return self
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        """Root exit."""
+        self.stop()
 
     def __init__(self, *, name, description):
         """Init the node with passed attributes"""
@@ -81,10 +89,10 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         pr.Device.__init__(self, name=name, description=description)
 
         # Variables
-        self.add(pr.LocalVariable(name='systemLog', value='', mode='RO', hidden=True,
+        self.add(pr.LocalVariable(name='SystemLog', value='', mode='RO', hidden=True,
             description='String containing newline seperated system logic entries'))
 
-        self.add(pr.LocalVariable(name='forceWrite', value=False, mode='RW', hidden=True,
+        self.add(pr.LocalVariable(name='ForceWrite', value=False, mode='RW', hidden=True,
             description='Configuration Flag To Control Write All Block'))
 
     def start(self, initRead=False, initWrite=False, pollEn=True, pyroGroup=None, pyroHost=None, pyroNs=None):
@@ -332,12 +340,12 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                 self._updatedDict = None
                 self._updatedList = None
 
-    @pr.command(order=7, name='writeAll', description='Write all values to the hardware')
+    @pr.command(order=7, name='WriteAll', description='Write all values to the hardware')
     def _write(self):
         """Write all blocks"""
         self._log.info("Start root write")
         try:
-            self.writeBlocks(force=self.forceWrite.value(), recurse=True)
+            self.writeBlocks(force=self.ForceWrite.value(), recurse=True)
             self._log.info("Verify root read")
             self.verifyBlocks(recurse=True)
             self._log.info("Check root read")
@@ -346,7 +354,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
             self._log.exception(e)
         self._log.info("Done root write")
 
-    @pr.command(order=6, name="readAll", description='Read all values from the hardware')
+    @pr.command(order=6, name="ReadAll", description='Read all values from the hardware')
     def _read(self):
         """Read all blocks"""
         self._log.info("Start root read")
@@ -360,7 +368,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         self._doneUpdatedVars()
         self._log.info("Done root read")
 
-    @pr.command(order=0, name='writeConfig', value='', description='Write configuration to passed filename in YAML format')
+    @pr.command(order=0, name='WriteConfig', value='', description='Write configuration to passed filename in YAML format')
     def _writeConfig(self,arg):
         """Write YAML configuration to a file. Called from command"""
         try:
@@ -369,7 +377,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         except Exception as e:
             self._log.exception(e)
 
-    @pr.command(order=1, name='readConfig', value='', description='Read configuration from passed filename in YAML format')
+    @pr.command(order=1, name='ReadConfig', value='', description='Read configuration from passed filename in YAML format')
     def _readConfig(self,arg):
         """Read YAML configuration from a file. Called from command"""
         try:
@@ -378,28 +386,28 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         except Exception as e:
             self._log.exception(e)
 
-    @pr.command(order=3, name='softReset', description='Generate a soft reset to each device in the tree')
+    @pr.command(order=3, name='SoftReset', description='Generate a soft reset to each device in the tree')
     def _softReset(self):
         """Generate a soft reset on all devices"""
-        self._devReset('soft')
+        self.callRecursive('softReset', nodeTypes=[pr.Device])
 
-    @pr.command(order=2, name='hardReset', description='Generate a hard reset to each device in the tree')
+    @pr.command(order=2, name='HardReset', description='Generate a hard reset to each device in the tree')
     def _hardReset(self):
         """Generate a hard reset on all devices"""
-        self._devReset('hard')
+        self.callRecursive('hardReset', nodeTypes=[pr.Device])        
         self._clearLog(dev,cmd)
 
-    @pr.command(order=4, name='countReset', description='Generate a count reset to each device in the tree')
+    @pr.command(order=4, name='CountReset', description='Generate a count reset to each device in the tree')
     def _countReset(self):
         """Generate a count reset on all devices"""
-        self._devReset('count')
+        self.callRecursive('countReset', nodeTypes=[pr.Device])        
 
-    @pr.command(order=5, name='clearLog', description='Clear the message log cntained in the systemLog variable')
+    @pr.command(order=5, name='ClearLog', description='Clear the message log cntained in the SystemLog variable')
     def _clearLog(self):
         """Clear the system log"""
         with self._sysLogLock:
-            self.systemLog.set(value='',write=False)
-        self.systemLog.updated()
+            self.SystemLog.set(value='',write=False)
+        self.SystemLog.updated()
 
     def _varUpdated(self,var,value,disp):
         entry = {'path':var.path,'value':value,'disp':disp}
@@ -512,4 +520,26 @@ def dictToYaml(data, stream=None, Dumper=yaml.Dumper, **kwds):
 
 def recreate_OrderedDict(name, values):
     return odict(values['items'])
+
+def generateAddressMap(root,fname):
+    vlist = root.variableList
+
+    with open(fname,'w') as f:
+        f.write("Path\t")
+        f.write("Type\t")
+        f.write("Offset\t")
+        f.write("BitOffset\t")
+        f.write("BitSize\t")
+        f.write("Enum\t")
+        f.write("Description\n")
+
+        for v in vlist:
+            if isinstance(v, pr.RemoteVariable):
+                f.write("{}\t".format(v.path))
+                f.write("{}\t".format(type(v)))
+                f.write("{:#x}\t".format(v.offset))
+                f.write("{}\t".format(v.bitOffset))
+                f.write("{}\t".format(v.bitSize))
+                f.write("{}\t".format(v.enum))
+                f.write("{}\n".format(v.description))
 

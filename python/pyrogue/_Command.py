@@ -67,6 +67,9 @@ class BaseCommand(pr.BaseVariable):
     @Pyro4.expose
     def call(self,arg=None):
         """Execute command: TODO: Update comments"""
+        if (self.parent.enable.value() is not True):
+            return
+
         try:
 
             # Convert arg
@@ -91,7 +94,7 @@ class BaseCommand(pr.BaseVariable):
     def createToggle(sets):
         def toggle(cmd):
             for s in sets:
-                cmd.set(i)
+                cmd.set(s)
         return toggle
 
     @staticmethod
@@ -121,12 +124,23 @@ class BaseCommand(pr.BaseVariable):
         cmd.set(1)
 
     @staticmethod
-    def postedTouch(cmd, arg):
-        if arg is not None:
-            cmd.post(arg)
-        else:
-            cmd.post(1)
+    def createPostedTouch(value):
+        def postedTouch(cmd):
+            cmd.post(value)
+        return postedTouch
 
+    @staticmethod
+    def postedTouch(cmd, arg):
+        cmd.post(arg)
+
+    @staticmethod
+    def postedTouchOne(cmd):
+        cmd.post(1)
+
+    @staticmethod
+    def postedTouchZero(cmd):
+        cmd.post(0)
+        
     def _setDict(self,d,writeEach,modes):
         pass
 
