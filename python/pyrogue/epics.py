@@ -31,10 +31,10 @@ except ImportError:
 
 
 class EpicsCaDriver(pcaspy.Driver):
-    def __init__(self,queue, regMap):
+    def __init__(self,queue, reg_map):
         pcaspy.Driver.__init__(self)
         self._q = queue
-        self._regMap = regMap
+        self._reg_map = reg_map
 
     def write(self,reason,value):
         entry = {'value':value,'epath':reason}
@@ -43,8 +43,8 @@ class EpicsCaDriver(pcaspy.Driver):
 
     def read(self,reason):
         # Call register's get() method to update value
-        if reason in self._regMap:
-            self._regMap[reason].get()
+        if reason in self._reg_map:
+            self._reg_map[reason].get()
         
         return self.getParam(reason)
 
@@ -176,10 +176,10 @@ class EpicsCaServer(object):
         self._server.createPV(self._base + ':',self._pvDb)
 
         # Create PV name, register dictionary
-        regMap = {value['name']:value['var'] for key,value in self._pvMap.items()}
+        reg_map = {value['name']:value['var'] for key,value in self._pvMap.items()}
 
         # Create CA driver
-        self._driver = EpicsCaDriver(self._queue, regMap)
+        self._driver = EpicsCaDriver(self._queue, reg_map)
 
         while(self._runEn):
             self._server.process(0.5)
