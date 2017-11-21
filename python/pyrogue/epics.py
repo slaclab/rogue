@@ -57,16 +57,16 @@ class EpicsCaServer(object):
     Class to contain an epics ca server
     """
     def __init__(self,*,base,root,pvMap=None, sync_read=True):
-        self._root    = root
-        self._base    = base 
-        self._runEn   = True
-        self._server  = None
-        self._driver  = None
-        self._queue   = queue.Queue()
-        self._wThread = None
-        self._eThread = None
-        self._pvDb    = {}
-        self._log     = pyrogue.logInit(self)
+        self._root      = root
+        self._base      = base 
+        self._runEn     = True
+        self._server    = None
+        self._driver    = None
+        self._queue     = queue.Queue()
+        self._wThread   = None
+        self._eThread   = None
+        self._pvDb      = {}
+        self._log       = pyrogue.logInit(self)
         self._sync_read = sync_read
 
         if not root.running:
