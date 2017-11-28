@@ -219,7 +219,7 @@ class Device(pr.Node,rim.Hub):
         Write all of the blocks held by this Device to memory
         """
         self._log.debug(f'Calling {self.path}._writeBlocks')
-        print(f'Calling {self.path}.writeBlocks(recurse={recurse}, variable={variable}, checkEach={checkEach}')                
+        #print(f'Calling {self.path}.writeBlocks(recurse={recurse}, variable={variable}, checkEach={checkEach}')                
 
         # Process local blocks.
         if variable is not None:
@@ -238,7 +238,7 @@ class Device(pr.Node,rim.Hub):
         """
         Perform background verify
         """
-        print(f'Calling {self.path}.verifyBlocks(recurse={recurse}, variable={variable}, checkEach={checkEach}')                
+        #print(f'Calling {self.path}.verifyBlocks(recurse={recurse}, variable={variable}, checkEach={checkEach}')                
 
         # Process local blocks.
         if variable is not None:
@@ -257,7 +257,7 @@ class Device(pr.Node,rim.Hub):
         Perform background reads
         """
         self._log.debug(f'Calling {self.path}._readBlocks(recurse={recurse}, variable={variable}, checkEach={checkEach}')
-        print(f'Calling {self.path}.readBlocks(recurse={recurse}, variable={variable}, checkEach={checkEach})')        
+        #print(f'Calling {self.path}.readBlocks(recurse={recurse}, variable={variable}, checkEach={checkEach})')        
 
         # Process local blocks. 
         if variable is not None:

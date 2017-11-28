@@ -313,7 +313,7 @@ class RemoteBlock(BaseBlock, rim.Master):
         """
         with self._lock:
 
-            print(f'Called {self.name}.startTransaction(check={check})')
+            #print(f'Called {self.name}.startTransaction(check={check})')
 
             # Check for invalid combinations
             if (type == rim.Write  and (self.mode == 'RO')) or \
@@ -359,7 +359,7 @@ class RemoteBlock(BaseBlock, rim.Master):
             self._reqTransaction(self.offset,tData,0,0,type)
 
         if check:
-            print(f'Checking {self.name}.startTransaction(check={check})')
+            #print(f'Checking {self.name}.startTransaction(check={check})')
             self._checkTransaction()
 
 
@@ -368,7 +368,7 @@ class RemoteBlock(BaseBlock, rim.Master):
         with self._lock:
             self._waitTransaction(0)
 
-            print(f'Checking {self.name}._checkTransaction()')            
+            #print(f'Checking {self.name}._checkTransaction()')            
 
             # Error
             err = self.error
