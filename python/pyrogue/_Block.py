@@ -77,19 +77,17 @@ class BaseBlock(object):
     def __repr__(self):
         return repr(self.name)
 
+#     def backgroundTransaction(self,type):
+#         """
+#         Perform a background transaction
+#         """
+#         self.startTransaction(type, check=False)
 
-    def backgroundTransaction(self,type):
-        """
-        Perform a background transaction
-        """
-        self._startTransaction(type)
-
-    def blockingTransaction(self,type):
-        """
-        Perform a blocking transaction
-        """
-        self._startTransaction(type)
-        self._checkTransaction()
+#     def blockingTransaction(self,type):
+#         """
+#         Perform a blocking transaction
+#         """
+#         self.startTransaction(type, check=True)
 
     @property
     def name(self):
@@ -119,7 +117,7 @@ class BaseBlock(object):
     def bulkEn(self):
         return True
 
-    def _startTransaction(self,type):
+    def startTransaction(self,type, check=False):
         """
         Start a transaction.
         """
@@ -253,11 +251,11 @@ class RemoteBlock(BaseBlock, rim.Master):
     def bulkEn(self):
         return self._bulkEn
 
-    def blockingTransaction(self, type):
-        # Call is same as BaseBlock, just add logging
-        self._log.debug(f"Blocking tran. Addr={self.offset:#08x}")
-        BaseBlock.blockingTransaction(self, type)
-        self._log.debug(f"Done block. Addr={self._offset:08x}")
+#     def blockingTransaction(self, type):
+#         # Call is same as BaseBlock, just add logging
+#         self._log.debug(f"Blocking tran. Addr={self.offset:#08x}")
+#         BaseBlock.blockingTransaction(self, type)
+#         self._log.debug(f"Done block. Addr={self._offset:08x}")
 
     def set(self, var, value):
         """
@@ -309,11 +307,13 @@ class RemoteBlock(BaseBlock, rim.Master):
 
                 return var._base.fromBytes(ba)
 
-    def _startTransaction(self,type):
+    def startTransaction(self, type, check=False):
         """
         Start a transaction.
         """
         with self._lock:
+
+            print(f'Called {self.name}.startTransaction(check={check})')
 
             # Check for invalid combinations
             if (type == rim.Write  and (self.mode == 'RO')) or \
@@ -325,6 +325,7 @@ class RemoteBlock(BaseBlock, rim.Master):
                 return
 
             self._waitTransaction(0)
+            self.error = 0
 
             # Move staged write data to block. Clear stale.
             if type == rim.Write or type == rim.Post:
@@ -339,7 +340,7 @@ class RemoteBlock(BaseBlock, rim.Master):
             if (self._device.enable.value() is not True):
                 return
 
-            self._log.debug(f'_startTransaction type={type}')
+            self._log.debug(f'startTransaction type={type}')
             self._log.debug(f'len bData = {len(self._bData)}, vData = {len(self._vData)}, vDataMask = {len(self._vDataMask)}')
 
             # Track verify after writes. 
@@ -357,11 +358,17 @@ class RemoteBlock(BaseBlock, rim.Master):
             # Start transaction
             self._reqTransaction(self.offset,tData,0,0,type)
 
+        if check:
+            print(f'Checking {self.name}.startTransaction(check={check})')
+            self._checkTransaction()
+
 
     def _checkTransaction(self):
         doUpdate = False
         with self._lock:
             self._waitTransaction(0)
+
+            print(f'Checking {self.name}._checkTransaction()')            
 
             # Error
             err = self.error

@@ -215,7 +215,11 @@ class BaseVariable(pr.Node):
         if self.disp == 'enum':
             #print('enum: {}'.format(self.enum))
             #print('get: {}'.format(self.get(read)))
-            return self.enum[value]
+            try:
+                return self.enum[value]
+            except KeyError as e:
+                print(f'Error in {self.path} - value = {value}, keys = {self.enum}')
+                raise e
         else:
             if value == '' or value is None:
                 return value
@@ -422,7 +426,7 @@ class RemoteVariable(BaseVariable):
 
 
             if self._block.mode != 'RO':
-                self._block.backgroundTransaction(rogue.interfaces.memory.Post)
+                self._block.startTransaction(rogue.interfaces.memory.Post, check=False)
                 self._block._checkTransaction()
 
         except Exception as e:
