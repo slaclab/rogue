@@ -172,22 +172,17 @@ class VariableWidget(QWidget):
     def addTreeItems(self,tree,d):
 
         # First create variables
-        for key,val in d.getNodes(typ=pr.BaseVariable,hidden=False).items():
-        #for key,val in d.variables.iteritems():
-        for key,val in d.variables.items():
-            if not val.hidden:
-                var = VariableLink(parent=tree,variable=val)
+        for key,val in d.getNodes(typ=pr.BaseVariable,exc=pr.BaseCommand,hidden=False).items():
+            var = VariableLink(parent=tree,variable=val)
 
         # Then create devices
-        #for key,val in d.devices.iteritems():
-        for key,val in d.devices.items():
-            if not val.hidden:
-                w = QTreeWidgetItem(tree)
-                w.setText(0,val.name)
-                w.setExpanded(True)
-                self.addTreeItems(w,val)
+        for key,val in d.getNodes(typ=pr.Device,hidden=False).items():
+            w = QTreeWidgetItem(tree)
+            w.setText(0,val.name)
+            w.setExpanded(True)
+            self.addTreeItems(w,val)
 
-                self.devList.append({'dev':val,'item':w})
+            self.devList.append({'dev':val,'item':w})
 
     def setExpanded(self):
         for e in self.devList:
