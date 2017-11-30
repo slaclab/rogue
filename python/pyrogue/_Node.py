@@ -164,12 +164,13 @@ class Node(object):
         for i in range(number):
             self.add(nodeClass(name='{:s}[{:d}]'.format(name, i), offset=offset+(i*stride), **kwargs))
 
-    def _getNodes(self,typ):
+    @Pyro4.expose
+    def getNodes(self,typ,hidden=True):
         """
         Get a ordered dictionary of nodes.
         pass a class type to receive a certain type of node
         """
-        return odict([(k,n) for k,n in self._nodes.items() if isinstance(n, typ)])
+        return odict([(k,n) for k,n in self._nodes.items() if (isinstance(n, typ) and (hidden or n.hidden == False))])
 
     @Pyro4.expose
     @property

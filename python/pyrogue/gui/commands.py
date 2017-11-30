@@ -114,21 +114,17 @@ class CommandWidget(QWidget):
     def addTreeItems(self,tree,d):
 
         # First create commands
-        for key,val in d.commands.items():
-        #for key,val in d.commands.iteritems():
-            if not val.hidden:
-                self.commands.append(CommandLink(parent=tree,command=val))
+        for key,val in d.getNodes(typ=pr.BaseCommand,hidden=False).items():
+            self.commands.append(CommandLink(parent=tree,command=val))
 
         # Then create devices
-        #for key,val in d.devices.iteritems():
-        for key,val in d.devices.items():
-            if not val.hidden:
-                w = QTreeWidgetItem(tree)
-                w.setText(0,val.name)
-                w.setExpanded(True)
-                self.addTreeItems(w,val)
+        for key,val in d.getNodes(typ=pr.Device,hidden=False).items():
+            w = QTreeWidgetItem(tree)
+            w.setText(0,val.name)
+            w.setExpanded(True)
+            self.addTreeItems(w,val)
 
-                self.devList.append({'dev':val,'item':w})
+            self.devList.append({'dev':val,'item':w})
 
     def setExpanded(self):
         for e in self.devList:

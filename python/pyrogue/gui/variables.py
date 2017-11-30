@@ -172,6 +172,7 @@ class VariableWidget(QWidget):
     def addTreeItems(self,tree,d):
 
         # First create variables
+        for key,val in d.getNodes(typ=pr.BaseVariable,hidden=False).items():
         #for key,val in d.variables.iteritems():
         for key,val in d.variables.items():
             if not val.hidden:

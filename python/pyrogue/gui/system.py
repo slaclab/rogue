@@ -307,16 +307,14 @@ class SystemWidget(QWidget):
         ###################
         # Data Controllers
         ###################
-        for key,val in root.devices.items():
-            if isinstance(val,pyrogue.DataWriter):
-                self.holders.append(DataLink(layout=tl,writer=val))
+        for key,val in root.getNodes(typ=pyrogue.DataWriter,hidden=True).items():
+            self.holders.append(DataLink(layout=tl,writer=val))
 
         ###################
         # Run Controllers
         ###################
-        for key,val in root.devices.items():
-            if isinstance(val,pyrogue.RunControl):
-                self.holders.append(ControlLink(layout=tl,control=val))
+        for key,val in root.getNodes(typ=pyrogue.RunControl,hidden=True).items():
+            self.holders.append(ControlLink(layout=tl,control=val))
 
         ###################
         # System Log
