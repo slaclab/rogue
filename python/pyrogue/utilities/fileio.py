@@ -25,22 +25,23 @@ import pyrogue
 class StreamWriter(pyrogue.DataWriter):
     """Stream Writer Wrapper"""
 
-    def __init__(self, *, name, hidden=True):
+    def __init__(self, *, name, hidden=True, configEn=False):
         pyrogue.DataWriter.__init__(self, name=name, description='Stream Writer',hidden=hidden)
-        self._writer = rogue.utilities.fileio.StreamWriter()
+        self._writer   = rogue.utilities.fileio.StreamWriter()
+        self._configEn = configEn
 
     def _setOpen(self,dev,var,value,changed):
         if changed:
             if value == False:
 
                 # Dump config/status to file
-                self._root._streamYaml()
+                if self._configEn: self._root._streamYaml()
                 self._writer.close()
             else:
                 self._writer.open(self.dataFile.value())
 
                 # Dump config/status to file
-                self._root._streamYaml()
+                if self._configEn: self._root._streamYaml()
 
     def _setBufferSize(self,dev,var,value):
         self._writer.setBufferSize(value)
