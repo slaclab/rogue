@@ -115,9 +115,9 @@ class Int(Model):
     @staticmethod
     def fromString(string):
         i = int(string, 0)
-        # perform twos complement if necessary
-        if i>0 and ((i >> self.numBits) & 0x1 == 1):
-            i = i - (1 << self.numBits)
+#        # perform twos complement if necessary
+#        if i>0 and ((i >> self.numBits) & 0x1 == 1):
+#            i = i - (1 << self.numBits)
         return i
 
     @classmethod
