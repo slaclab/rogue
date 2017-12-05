@@ -35,13 +35,13 @@ class StreamWriter(pyrogue.DataWriter):
             if value == False:
 
                 # Dump config/status to file
-                if self._configEn: self._root._streamYaml()
+                if self._configEn: self.root._streamYaml()
                 self._writer.close()
             else:
                 self._writer.open(self.dataFile.value())
 
                 # Dump config/status to file
-                if self._configEn: self._root._streamYaml()
+                if self._configEn: self.root._streamYaml()
 
     def _setBufferSize(self,dev,var,value):
         self._writer.setBufferSize(value)
