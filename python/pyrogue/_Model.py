@@ -85,7 +85,7 @@ class UInt(Model):
 
 
     @staticmethod
-    def fromString(string):
+    def fromString(string, bitSize):
         return int(string, 0)
 
 
@@ -113,11 +113,11 @@ class Int(Model):
         return int.from_bytes(ba, 'little', signed=True)
 
     @staticmethod
-    def fromString(string):
+    def fromString(string, bitSize):
         i = int(string, 0)
-#        # perform twos complement if necessary
-#        if i>0 and ((i >> self.numBits) & 0x1 == 1):
-#            i = i - (1 << self.numBits)
+        # perform twos complement if necessary
+        if i>0 and ((i >> bitSize) & 0x1 == 1):
+            i = i - (1 << bitSize)
         return i
 
     @classmethod
@@ -144,7 +144,7 @@ class Bool(Model):
         return bool(int.from_bytes(ba, 'little', signed=False))
 
     @staticmethod
-    def fromString(string):
+    def fromString(string, bitSize):
         return str.lower(string) == "true"
 
     @classmethod
@@ -175,7 +175,7 @@ class String(Model):
         return s.decode(String.encoding)
 
     @staticmethod
-    def fromString(string):
+    def fromString(string, bitSize):
         return string
 
     @classmethod
@@ -215,7 +215,7 @@ class Float(Model):
         return struct.unpack('d', ba)        
 
     @staticmethod
-    def fromString(string):
+    def fromString(string, bitSize):
         return float(string)
 
     @classmethod
