@@ -172,11 +172,11 @@ class VariableWidget(QWidget):
     def addTreeItems(self,tree,d):
 
         # First create variables
-        for key,val in d.getNodes(typ=pr.BaseVariable,exc=pr.BaseCommand,hidden=False).items():
+        for key,val in d.getNodes(typ=pyrogue.BaseVariable,exc=pyrogue.BaseCommand,hidden=False).items():
             var = VariableLink(parent=tree,variable=val)
 
         # Then create devices
-        for key,val in d.getNodes(typ=pr.Device,hidden=False).items():
+        for key,val in d.getNodes(typ=pyrogue.Device,hidden=False).items():
             w = QTreeWidgetItem(tree)
             w.setText(0,val.name)
             w.setExpanded(True)

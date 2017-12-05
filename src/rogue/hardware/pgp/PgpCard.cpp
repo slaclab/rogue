@@ -329,7 +329,6 @@ void rhp::PgpCard::runThread() {
 
          // Select returns with available buffer
          if ( select(fd_+1,&fds,NULL,NULL,&tout) > 0 ) {
-            printf("Select fired for lane %i vc %i\n",lane_,vc_);
 
             // Zero copy buffers were not allocated or zero copy is disabled
             if ( zeroCopyEn_ == false || rawBuff_ == NULL ) {
@@ -361,16 +360,13 @@ void rhp::PgpCard::runThread() {
                frame->setError(error | frame->getError());
                frame->appendBuffer(buff);
                buff.reset();
-               printf("Got buffer\n");
 
                // If continue flag is not set, push frame and get a new empty frame
                if ( cont == 0 ) {
-                  printf("Got frame\n");
                   sendFrame(frame);
                   frame = ris::Frame::create();
                }
             }
-            printf("Empty read\n");
          }
          boost::this_thread::interruption_point();
       }
