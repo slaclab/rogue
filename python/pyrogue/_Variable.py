@@ -462,7 +462,7 @@ class RemoteVariable(BaseVariable):
             if self.disp == 'enum':
                 return self.revEnum[sValue]
             else:
-                return self._base.fromString(sValue, self._bitSize)
+                return self._base.fromString(sValue, sum(self._bitSize))
 
     def _shiftOffsetDown(self,amount,minSize):
         if amount != 0:
