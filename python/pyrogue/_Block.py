@@ -325,6 +325,7 @@ class RemoteBlock(BaseBlock, rim.Master):
                 return
 
             self._waitTransaction(0)
+            self.error = 0
 
             # Move staged write data to block. Clear stale.
             if type == rim.Write or type == rim.Post:
