@@ -50,7 +50,7 @@ class MemoryDevice(pr.Device):
         # Parse comma separated values at each offset (key) in d
         with self._memLock:
             for offset, values in d.items():
-                self._setValues[offset] = [self._base.fromString(s) for s in values.split(',')]
+                self._setValues[offset] = [self._base.fromString(s, self._wordBitSize) for s in values.split(',')]
 
     def _getDict(self,modes):
         return None

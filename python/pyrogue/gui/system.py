@@ -337,7 +337,7 @@ class SystemWidget(QWidget):
         vb.addWidget(pb)
 
     def resetLog(self):
-        self.root.clearLog()
+        self.root.ClearLog()
 
     @Pyro4.expose
     def varListener(self,var,value,disp):
