@@ -77,17 +77,17 @@ class BaseBlock(object):
     def __repr__(self):
         return repr(self.name)
 
-#     def backgroundTransaction(self,type):
-#         """
-#         Perform a background transaction
-#         """
-#         self.startTransaction(type, check=False)
+    def backgroundTransaction(self,type):
+        """
+        Perform a background transaction
+        """
+        self.startTransaction(type, check=False)
 
-#     def blockingTransaction(self,type):
-#         """
-#         Perform a blocking transaction
-#         """
-#         self.startTransaction(type, check=True)
+    def blockingTransaction(self,type):
+        """
+        Perform a blocking transaction
+        """
+        self.startTransaction(type, check=True)
 
     @property
     def name(self):
@@ -250,12 +250,6 @@ class RemoteBlock(BaseBlock, rim.Master):
     @property
     def bulkEn(self):
         return self._bulkEn
-
-#     def blockingTransaction(self, type):
-#         # Call is same as BaseBlock, just add logging
-#         self._log.debug(f"Blocking tran. Addr={self.offset:#08x}")
-#         BaseBlock.blockingTransaction(self, type)
-#         self._log.debug(f"Done block. Addr={self._offset:08x}")
 
     def set(self, var, value):
         """
