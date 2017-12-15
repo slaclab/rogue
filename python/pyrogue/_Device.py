@@ -567,7 +567,7 @@ class RunControl(Device):
         self.add(pr.LocalVariable(
             name='runCount',
             value=0,
-            mode='RW',
+            mode='RO',
             pollInterval=1,
             description='Run Counter updated by run thread.'))
 
@@ -602,6 +602,6 @@ class RunControl(Device):
             if self._cmd is not None:
                 self._cmd()
 
-            self.runCount.set(self.runCount.value() + 1)
+            self.runCount.set(self.runCount.value() + 1,write=False)
         #print("Thread stop")
 

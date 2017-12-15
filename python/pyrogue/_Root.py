@@ -196,7 +196,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         obj = self
         if '.' in path:
             for a in path.split('.')[1:]:
-                obj = getattr(obj, a)
+                obj = obj.node(a)
 
         return obj
 
@@ -283,7 +283,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
     @Pyro4.expose
     def exec(self,path,arg):
         obj = self.getNode(path)
-        return obj(arg)
+        return obj.call(arg)
 
     def setTimeout(self,timeout):
         """

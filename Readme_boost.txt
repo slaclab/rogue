@@ -4,7 +4,7 @@ Compile and install boost
 > mkdir /path/to/boost/1.64.0/src
 > cd /path/to/boost/1.64.0/src
 
-> wget https://sourceforge.net/projects/boost/files/boost/1.64.0/boost_1.64_0.tar.gz
+> wget https://sourceforge.net/projects/boost/files/boost/1.64.0/boost_1_64_0.tar.gz
 > tar -xvvzpf boost_1.64_0.tar.gz
 > cd boost_1.64_0
 > source /path/to/python3/settings.csh (or settings.sh)

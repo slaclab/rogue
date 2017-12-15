@@ -31,30 +31,43 @@ except ImportError:
 
 
 class EpicsCaDriver(pcaspy.Driver):
-    def __init__(self,queue):
+    def __init__(self,queue, reg_map=None):
         pcaspy.Driver.__init__(self)
         self._q = queue
+        self._reg_map = reg_map
 
     def write(self,reason,value):
         entry = {'value':value,'epath':reason}
         self._q.put(entry)
         self.setParam(reason,value)
 
+# This class redefine the read method to do synchronous read
+# using get() method for each caget call
+class EpicsCaDriverSync(EpicsCaDriver):
+
+    def read(self,reason):
+        # Call register's get() method to update value
+        if reason in self._reg_map:
+            self._reg_map[reason].get()
+        
+        return self.getParam(reason)
+
 class EpicsCaServer(object):
     """
     Class to contain an epics ca server
     """
-    def __init__(self,*,base,root,pvMap=None):
-        self._root    = root
-        self._base    = base 
-        self._runEn   = True
-        self._server  = None
-        self._driver  = None
-        self._queue   = queue.Queue()
-        self._wThread = None
-        self._eThread = None
-        self._pvDb    = {}
-        self._log     = pyrogue.logInit(self)
+    def __init__(self,*,base,root,pvMap=None, sync_read=True):
+        self._root      = root
+        self._base      = base 
+        self._runEn     = True
+        self._server    = None
+        self._driver    = None
+        self._queue     = queue.Queue()
+        self._wThread   = None
+        self._eThread   = None
+        self._pvDb      = {}
+        self._log       = pyrogue.logInit(self)
+        self._sync_read = sync_read
 
         if not root.running:
             raise Exception("Epics can be setup on a tree which is not started")
@@ -72,8 +85,10 @@ class EpicsCaServer(object):
 
     def stop(self):
         self._runEn = False
-        self._wThread.join()
-        self._eThread.join()
+        if self._wThread is not None:
+            self._wThread.join()
+        if self._eThread is not None:
+            self._eThread.join()
         self._wThread = None
         self._eThread = None
 
@@ -164,7 +179,14 @@ class EpicsCaServer(object):
 
         # Create PVs
         self._server.createPV(self._base + ':',self._pvDb)
-        self._driver = EpicsCaDriver(self._queue)
+
+        # Create CA driver
+        if self._sync_read:
+            # Create PV name, register dictionary
+            reg_map = {value['name']:value['var'] for key,value in self._pvMap.items()}
+            self._driver = EpicsCaDriverSync(self._queue, reg_map)
+        else:
+            self._driver = EpicsCaDriver(self._queue)
 
         while(self._runEn):
             self._server.process(0.5)
