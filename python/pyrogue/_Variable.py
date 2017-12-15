@@ -605,6 +605,20 @@ class LinkVariable(BaseVariable):
         else:
             return None
 
+class DirectLinkVariable(LinkVariable):
+    def __init__(self, variable, mode='RW', **kwargs):
+        
+        if 'linkedGet' not in kwargs:
+             kwargs['linkedGet'] = variable.value if (mode=='RW' or mode=='RO') else None
+
+        if 'linkedSet' not in kwargs:
+             kwargs['linkedSet'] = variable.set if (mode=='RW' or mode=='WO') else None
+                 
+        super().__init__(
+            dependencies=[variable],
+            **kwargs)
+         
+
 # Legacy Support
 def Variable(local=False, setFunction=None, getFunction=None, **kwargs):
         
