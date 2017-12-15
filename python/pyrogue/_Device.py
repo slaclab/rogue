@@ -563,7 +563,7 @@ class RunControl(Device):
         self.add(pr.LocalVariable(
             name='runCount',
             value=0,
-            mode='RW',
+            mode='RO',
             pollInterval=1,
             description='Run Counter updated by run thread.'))
 
