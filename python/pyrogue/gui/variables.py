@@ -28,69 +28,83 @@ import threading
 class VariableLink(QObject):
     """Bridge between the pyrogue tree and the display element"""
 
-    def __init__(self,*,parent,variable):
+    def __init__(self,*,tree,parent,variable,expand):
         QObject.__init__(self)
-        self.variable = variable
-        self._inEdit = False
-        self._swSet = False
-        self._lock = threading.Lock()
+        self._variable = variable
+        self._lock     = threading.Lock()
+        self._parent   = parent
+        self._tree     = tree
+        self._inEdit   = False
+        self._swSet    = False
+        self._widget   = None
 
-        item = QTreeWidgetItem(parent)
-        parent.addChild(item)
-        item.setText(0,variable.name)
-        item.setText(1,variable.mode)
-        item.setText(2,variable.typeStr) # Fix this. Should show base and size
+        self._item = QTreeWidgetItem(parent)
+        self._item.setText(0,variable.name)
+        self._item.setText(1,variable.mode)
+        self._item.setText(2,variable.typeStr) # Fix this. Should show base and size
 
         if variable.units:
-           item.setText(4,str(variable.units))
+            self._item.setText(4,str(variable.units))
 
-        if variable.disp == 'enum' and variable.enum is not None and variable.mode=='RW':
-            #print('VariableLink: variable: {} , enum: {}'.format(variable, variable.enum))
-            self.widget = QComboBox()
-            self.widget.activated.connect(self.guiChanged)
-            self.connect(self,SIGNAL('updateGui'),self.widget.setCurrentIndex)
-
-            for i in variable.enum:
-                self.widget.addItem(variable.enum[i])
-
-        elif variable.disp == 'range':
-            self.widget = QSpinBox();
-            self.widget.setMinimum(variable.minimum)
-            self.widget.setMaximum(variable.maximum)
-            self.widget.valueChanged.connect(self.guiChanged)
-            self.connect(self,SIGNAL('updateGui'),self.widget.setValue)
-
-        else:
-            self.widget = QLineEdit()
-            self.widget.returnPressed.connect(self.returnPressed)
-            self.widget.textEdited.connect(self.valueChanged)
-            self.connect(self,SIGNAL('updateGui'),self.widget.setText)
-
-        if variable.mode == 'RO':
-            self.widget.setReadOnly(True)
-
-        item.treeWidget().setItemWidget(item,3,self.widget)
         variable.addListener(self)
 
-        self.varListener(None,variable.value(),variable.valueDisp())
+        if expand:
+            self.setup(None)
+        else:
+            self._tree.itemExpanded.connect(self.setup)
+
+    def setup(self,item):
+        with self._lock:
+            if self._widget is not None or (item is not None and item != self._parent):
+                return
+
+            if self._variable.disp == 'enum' and self._variable.enum is not None and self._variable.mode != 'RO':
+                self._widget = QComboBox()
+                self._widget.activated.connect(self.guiChanged)
+                self.connect(self,SIGNAL('updateGui'),self._widget.setCurrentIndex)
+
+                for i in self._variable.enum:
+                    self._widget.addItem(self._variable.enum[i])
+
+            elif self._variable.disp == 'range':
+                self._widget = QSpinBox();
+                self._widget.setMinimum(self._variable.minimum)
+                self._widget.setMaximum(self._variable.maximum)
+                self._widget.valueChanged.connect(self.guiChanged)
+                self.connect(self,SIGNAL('updateGui'),self._widget.setValue)
+
+            else:
+                self._widget = QLineEdit()
+                self._widget.returnPressed.connect(self.returnPressed)
+                self._widget.textEdited.connect(self.valueChanged)
+                self.connect(self,SIGNAL('updateGui'),self._widget.setText)
+
+            if self._variable.mode == 'RO':
+                self._widget.setReadOnly(True)
+
+            self._tree.setItemWidget(self._item,3,self._widget)
+        self.varListener(None,self._variable.value(),self._variable.valueDisp())
+
+        for i in range(0,4):
+            self._tree.resizeColumnToContents(i)
 
     @Pyro4.expose
     def varListener(self, var, value, disp):
         #print('{} varListener ( {} {} )'.format(self.variable, type(value), value))
         with self._lock:
-            if self._inEdit is True:
+            if self._widget is None or self._inEdit is True:
                 return
 
             self._swSet = True
 
-            if isinstance(self.widget, QComboBox):
-                if self.widget.currentIndex() != self.widget.findText(disp):
-                    self.emit(SIGNAL("updateGui"), self.widget.findText(disp))
-            elif isinstance(self.widget, QSpinBox):
-                if self.widget.value != value:
+            if isinstance(self._widget, QComboBox):
+                if self._widget.currentIndex() != self._widget.findText(disp):
+                    self.emit(SIGNAL("updateGui"), self._widget.findText(disp))
+            elif isinstance(self._widget, QSpinBox):
+                if self._widget.value != value:
                     self.emit(SIGNAL("updateGui"), value)
             else:
-                if self.widget.text() != disp:
+                if self._widget.text() != disp:
                     self.emit(SIGNAL("updateGui"), disp)
 
             self._swSet = False
@@ -99,29 +113,29 @@ class VariableLink(QObject):
         self._inEdit = True
         p = QPalette()
         p.setColor(QPalette.Base,Qt.yellow)
-        self.widget.setPalette(p)
+        self._widget.setPalette(p)
 
     def returnPressed(self):
         p = QPalette()
         p.setColor(QPalette.Base,Qt.white)
-        self.widget.setPalette(p)
+        self._widget.setPalette(p)
 
-        self.guiChanged(self.widget.text())
+        self.guiChanged(self._widget.text())
         self._inEdit = False
-        self.emit(SIGNAL("updateGui"), self.variable.valueDisp())
+        self.emit(SIGNAL("updateGui"), self._variable.valueDisp())
 
     def guiChanged(self, value):
         if self._swSet:
             return
 
-        if self.variable.disp == 'enum':
+        if self._variable.disp == 'enum':
             # For enums, value will be index of selected item
             # Need to call itemText to convert to string
-            self.variable.setDisp(self.widget.itemText(value))
+            self._variable.setDisp(self._widget.itemText(value))
 
         else:
             # For non enums, value will be string entered in box
-            self.variable.setDisp(value)
+            self._variable.setDisp(value)
 
 
 class VariableWidget(QWidget):
@@ -158,37 +172,27 @@ class VariableWidget(QWidget):
         r = QTreeWidgetItem(self.top)
         r.setText(0,root.name)
         r.setExpanded(True)
-        self.addTreeItems(r,root)
-
-        for i in range(0,4):
-            self.tree.resizeColumnToContents(i)
-
-        self.setExpanded()
+        self.addTreeItems(r,root,True)
 
     def readPressed(self):
         for root in self.roots:
             root.ReadAll()
 
-    def addTreeItems(self,tree,d):
+    def addTreeItems(self,parent,d,expand):
 
         # First create variables
-        #for key,val in d.variables.iteritems():
-        for key,val in d.variables.items():
-            if not val.hidden:
-                var = VariableLink(parent=tree,variable=val)
+        for key,val in d.getNodes(typ=pyrogue.BaseVariable,exc=pyrogue.BaseCommand,hidden=False).items():
+            var = VariableLink(tree=self.tree,parent=parent,variable=val,expand=expand)
 
         # Then create devices
-        #for key,val in d.devices.iteritems():
-        for key,val in d.devices.items():
-            if not val.hidden:
-                w = QTreeWidgetItem(tree)
-                w.setText(0,val.name)
-                w.setExpanded(True)
-                self.addTreeItems(w,val)
+        for key,val in d.getNodes(typ=pyrogue.Device,hidden=False).items():
+            if not val.expand:
+                expand = False
 
-                self.devList.append({'dev':val,'item':w})
+            w = QTreeWidgetItem(parent)
+            w.setText(0,val.name)
+            w.setExpanded(expand)
+            self.addTreeItems(w,val,expand)
+            self.devList.append({'dev':val,'item':w})
 
-    def setExpanded(self):
-        for e in self.devList:
-            e['item'].setExpanded(e['dev'].expand)
 
