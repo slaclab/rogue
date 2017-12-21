@@ -27,51 +27,63 @@ import pyrogue
 class CommandLink(QObject):
     """Bridge between the pyrogue tree and the display element"""
 
-    def __init__(self,*,parent,command):
+    def __init__(self,*,tree,parent,command,expand):
         QObject.__init__(self)
-        self.command = command
+        self._command = command
+        self._parent  = parent
+        self._tree    = tree
+        self._widget  = None
+        self._pb      = None
 
-        item = QTreeWidgetItem(parent)
-        parent.addChild(item)
-        item.setText(0,command.name)
-        item.setText(1,command.typeStr)
+        self._item = QTreeWidgetItem(parent)
+        self._item.setText(0,command.name)
+        self._item.setText(1,command.typeStr)
 
-        pb = QPushButton('Execute')
-        item.treeWidget().setItemWidget(item,2,pb)
-        pb.clicked.connect(self.execPressed)
+        if expand:
+            self.setup(None)
+        else:
+            self._tree.itemExpanded.connect(self.setup)
 
-        if command.arg:
-            if command.disp == 'enum' and command.enum is not None:
-                self.widget = QComboBox()
-                for i in command.enum:
-                    self.widget.addItem(command.enum[i])
+    def setup(self,item):
+        if self._pb is not None or (item is not None and item != self._parent):
+            return
 
-            elif command.disp == 'range':
-                self.widget = QSpinBox();
-                self.widget.setMinimum(command.minimum)
-                self.widget.setMaximum(command.maximum)
+        self._pb = QPushButton('Execute')
+        self._tree.setItemWidget(self._item,2,self._pb)
+        self._pb.clicked.connect(self.execPressed)
+
+        if self._command.arg:
+            if self._command.disp == 'enum' and self._command.enum is not None:
+                self._widget = QComboBox()
+                for i in self._command.enum:
+                    self._widget.addItem(self._command.enum[i])
+
+            elif self._command.disp == 'range':
+                self._widget = QSpinBox();
+                self._widget.setMinimum(self._command.minimum)
+                self._widget.setMaximum(self._command.maximum)
 
             else:
-                self.widget = QLineEdit()
-            
-            item.treeWidget().setItemWidget(item,3,self.widget)
-        else:
-            self.widget = None
+                self._widget = QLineEdit()
+
+            self._tree.setItemWidget(self._item,3,self._widget)
+
+        for i in range(0,3):
+            self._tree.resizeColumnToContents(i)
 
     def execPressed(self):
-        if self.widget != None:
-            value = str(self.widget.text())
+        if self._widget is not None:
+            value = str(self._widget.text())
         else:
             value=None
 
-        if self.command.arg:
+        if self._command.arg:
             try:
-                self.command.call(self.command.parseDisp(value))
+                self._command.call(self._command.parseDisp(value))
             except Exception:
                 pass
         else:
-            self.command.call()
-            
+            self._command.call()
 
 class CommandWidget(QWidget):
     def __init__(self, *, group, parent=None):
@@ -104,33 +116,22 @@ class CommandWidget(QWidget):
         r = QTreeWidgetItem(self.top)
         r.setText(0,root.name)
         r.setExpanded(True)
-        self.addTreeItems(r,root)
+        self.addTreeItems(r,root,True)
 
-        for i in range(0,3):
-            self.tree.resizeColumnToContents(i)
-
-        self.setExpanded()
-
-    def addTreeItems(self,tree,d):
+    def addTreeItems(self,parent,d,expand):
 
         # First create commands
-        for key,val in d.commands.items():
-        #for key,val in d.commands.iteritems():
-            if not val.hidden:
-                self.commands.append(CommandLink(parent=tree,command=val))
+        for key,val in d.getNodes(typ=pyrogue.BaseCommand,hidden=False).items():
+            self.commands.append(CommandLink(tree=self.tree,parent=parent,command=val,expand=expand))
 
         # Then create devices
-        #for key,val in d.devices.iteritems():
-        for key,val in d.devices.items():
-            if not val.hidden:
-                w = QTreeWidgetItem(tree)
-                w.setText(0,val.name)
-                w.setExpanded(True)
-                self.addTreeItems(w,val)
+        for key,val in d.getNodes(typ=pyrogue.Device,hidden=False).items():
+            if not val.expand:
+                expand = False
 
-                self.devList.append({'dev':val,'item':w})
-
-    def setExpanded(self):
-        for e in self.devList:
-            e['item'].setExpanded(e['dev'].expand)
+            w = QTreeWidgetItem(parent)
+            w.setText(0,val.name)
+            w.setExpanded(expand)
+            self.addTreeItems(w,val,expand)
+            self.devList.append({'dev':val,'item':w})
 
