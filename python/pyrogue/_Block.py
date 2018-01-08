@@ -358,12 +358,10 @@ class RemoteBlock(BaseBlock, rim.Master):
 
 
     def _checkTransaction(self):
-        print('_checkTransaction() entered')
+        
         doUpdate = False
         with self._lock:
-            print('_checkTransaction() lock obtained')            
             self._waitTransaction(0)
-            print(f'_checkTransaction() waitTransaction(0) done')                        
 
             #print(f'Checking {self.name}._checkTransaction()')            
 
