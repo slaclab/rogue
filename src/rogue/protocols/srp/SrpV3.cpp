@@ -144,7 +144,10 @@ void rps::SrpV3::acceptFrame ( ris::FramePtr frame ) {
    uint32_t  size;
 
    // Check frame size
-   if ( frame->getPayload() < 20 ) return; // Invalid frame, drop it
+   if ( frame->getPayload() < 20 ) {
+     log_->debug("Recv invalid frame size %i", frame->getPayload());
+     return; // Invalid frame, drop it
+   }
 
    // Extract id from frame
    frame->read(&id,4,4);
