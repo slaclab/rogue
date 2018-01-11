@@ -213,7 +213,10 @@ void rim::Master::rstTransaction(uint32_t id, uint32_t error, bool notify) {
 
    log_->debug("Resetting transaction id=%i",id);
 
-   if ( it->second.pyValid ) PyBuffer_Release(&(it->second.pyBuf));
+   if ( it->second.pyValid ) {
+      rogue::ScopedGil gil;
+      PyBuffer_Release(&(it->second.pyBuf));
+   }
 
    tran_.erase(it);
 
