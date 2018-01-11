@@ -23,6 +23,7 @@
 #include <rogue/GeneralError.h>
 #include <boost/make_shared.hpp>
 #include <rogue/GilRelease.h>
+#include <rogue/Logging.h>
 
 namespace rhd = rogue::hardware::data;
 namespace ris = rogue::interfaces::stream;
@@ -40,6 +41,8 @@ rhd::DataCard::DataCard ( std::string path, uint32_t dest ) {
 
    timeout_ = 1000000;
    dest_    = dest;
+
+   log_ = new rogue::Logging("DataCard");
 
    rogue::GilRelease noGil;
 
@@ -100,6 +103,8 @@ ris::FramePtr rhd::DataCard::acceptReq ( uint32_t size, bool zeroCopyEn, uint32_
    ris::BufferPtr   buff;
    ris::FramePtr    frame;
    uint32_t         buffSize;
+
+   log_->debug("acceptReq(size= %i, zeroCopyEn= %i, maxBuffSize= %i", size, zeroCopyEn, maxBuffSize);
 
    //! Adjust allocation size
    if ( (maxBuffSize > bSize_) || (maxBuffSize == 0)) buffSize = bSize_;
@@ -165,6 +170,8 @@ void rhd::DataCard::acceptFrame ( ris::FramePtr frame ) {
    uint32_t         flags;
    uint32_t         fuser;
    uint32_t         luser;
+
+   log_->debug("acceptFrame()");
 
    rogue::GilRelease noGil;
 
@@ -267,8 +274,11 @@ void rhd::DataCard::runThread() {
    uint32_t       rxFlags;
    struct timeval tout;
 
+   uint32_t count;
+
    fuser = 0;
    luser = 0;
+   count = 0;
 
    // Preallocate empty frame
    frame = ris::Frame::create();
@@ -284,9 +294,12 @@ void rhd::DataCard::runThread() {
          tout.tv_sec  = 0;
          tout.tv_usec = 100;
 
+         count++;
+
          // Select returns with available buffer
          if ( select(fd_+1,&fds,NULL,NULL,&tout) > 0 ) {
-
+           log_->debug("Select has something after %i loops", count);
+           count = 0;
             // Zero copy buffers were not allocated
             if ( rawBuff_ == NULL ) {
 
@@ -301,7 +314,6 @@ void rhd::DataCard::runThread() {
 
             // Zero copy read
             else {
-
                // Attempt read, dest is not needed since only one lane/vc is open
                if ((res = dmaReadIndex(fd_, &meta, &rxFlags, NULL, NULL)) > 0) {
                   fuser = axisGetFuser(rxFlags);
@@ -329,6 +341,7 @@ void rhd::DataCard::runThread() {
                buff.reset();
                frame->setFlags(flags);
                sendFrame(frame);
+               log_->debug("RX frame was sent");               
                frame = ris::Frame::create();
             }
          }
