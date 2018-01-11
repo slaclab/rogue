@@ -42,7 +42,7 @@ rhd::DataMapPtr rhd::DataMap::create (std::string path) {
 //! Creator
 rhd::DataMap::DataMap(std::string path) : rim::Slave(4,0xFFFFFFFF) {
    fd_ = ::open(path.c_str(), O_RDWR);
-   log_ = new rogue::Logging("data.DataMap");
+   log_ = new rogue::Logging("DataMap");
    if ( fd_ < 0 ) throw(rogue::GeneralError::open("DataMap::DataMap",path));
 }
 
