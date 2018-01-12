@@ -164,12 +164,14 @@ class Node(object):
         for i in range(number):
             self.add(nodeClass(name='{:s}[{:d}]'.format(name, i), offset=offset+(i*stride), **kwargs))
 
-    def _getNodes(self,typ):
+    @Pyro4.expose
+    def getNodes(self,typ,exc=None,hidden=True):
         """
         Get a ordered dictionary of nodes.
         pass a class type to receive a certain type of node
         """
-        return odict([(k,n) for k,n in self._nodes.items() if isinstance(n, typ)])
+        return odict([(k,n) for k,n in self._nodes.items() \
+            if (isinstance(n, typ) and ((exc is None) or (not isinstance(n, exc))) and (hidden or n.hidden == False))])
 
     @Pyro4.expose
     @property
@@ -185,8 +187,7 @@ class Node(object):
         """
         Return an OrderedDict of the variables but not commands (which are a subclass of Variable
         """
-        return odict([(k,n) for k,n in self._nodes.items()
-                      if isinstance(n, pr.BaseVariable) and not isinstance(n, pr.BaseCommand)])
+        return self.getNodes(typ=pr.BaseVariable,exc=pr.BaseCommand)
 
     @Pyro4.expose
     @property
@@ -208,7 +209,7 @@ class Node(object):
         """
         Return an OrderedDict of the Commands that are children of this Node
         """
-        return self._getNodes(pr.BaseCommand)
+        return self.getNodes(pr.BaseCommand)
 
     @Pyro4.expose
     @property
@@ -216,7 +217,7 @@ class Node(object):
         """
         Return an OrderedDict of the Devices that are children of this Node
         """
-        return self._getNodes(pr.Device)
+        return self.getNodes(pr.Device)
 
     @Pyro4.expose
     @property
