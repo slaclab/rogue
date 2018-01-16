@@ -104,8 +104,6 @@ ris::FramePtr rhd::DataCard::acceptReq ( uint32_t size, bool zeroCopyEn, uint32_
    ris::FramePtr    frame;
    uint32_t         buffSize;
 
-   log_->debug("acceptReq(size= %i, zeroCopyEn= %i, maxBuffSize= %i", size, zeroCopyEn, maxBuffSize);
-
    //! Adjust allocation size
    if ( (maxBuffSize > bSize_) || (maxBuffSize == 0)) buffSize = bSize_;
    else buffSize = maxBuffSize;
@@ -170,8 +168,6 @@ void rhd::DataCard::acceptFrame ( ris::FramePtr frame ) {
    uint32_t         flags;
    uint32_t         fuser;
    uint32_t         luser;
-
-   log_->debug("acceptFrame()");
 
    rogue::GilRelease noGil;
 
@@ -298,7 +294,6 @@ void rhd::DataCard::runThread() {
 
          // Select returns with available buffer
          if ( select(fd_+1,&fds,NULL,NULL,&tout) > 0 ) {
-           log_->debug("Select has something after %i loops", count);
            count = 0;
             // Zero copy buffers were not allocated
             if ( rawBuff_ == NULL ) {
@@ -341,7 +336,6 @@ void rhd::DataCard::runThread() {
                buff.reset();
                frame->setFlags(flags);
                sendFrame(frame);
-               log_->debug("RX frame was sent");               
                frame = ris::Frame::create();
             }
          }
