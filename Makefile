@@ -21,7 +21,7 @@
 
 VER_MAJOR := 2
 VER_MINOR := 3
-VER_MAINT := 1
+VER_MAINT := 2
 
 # Variables
 CC       := g++
