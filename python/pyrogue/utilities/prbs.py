@@ -78,7 +78,7 @@ class PrbsTx(pyrogue.Device):
     def countReset(self):
         self._prbs.resetCount()
 
-    def _genFrame(self,arg):
+    def _genFrame(self):
         self._prbs.genFrame(self.txSize.value())
 
     def _txEnable(self,value,changed):
