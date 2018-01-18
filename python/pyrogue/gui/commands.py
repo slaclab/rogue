@@ -130,10 +130,7 @@ class CommandWidget(QWidget):
 
         # Then create devices
         for key,val in d.getNodes(typ=pyrogue.Device,hidden=False).items():
-            if not val.expand:
-                nxtExpand = False
-            else:
-                nxtExpand = expand
+            nxtExpand = expand if val.expand else False
 
             w = QTreeWidgetItem(parent)
             w.setText(0,val.name)
