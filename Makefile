@@ -20,9 +20,9 @@
 # ----------------------------------------------------------------------------
 
 
-VER_MAJOR := $(shell git describe --tags | awk -F'[v.-]' '{print $$2}')
-VER_MINOR := $(shell git describe --tags | awk -F'[v.-]' '{print $$3}')
-VER_MAINT := $(shell git describe --tags | awk -F'[v.-]' '{print $$4}')
+VER_MAJOR := $(shell git describe --tags | awk -F'[Vv.-]' '{print $$2}')
+VER_MINOR := $(shell git describe --tags | awk -F'[Vv.-]' '{print $$3}')
+VER_MAINT := $(shell git describe --tags | awk -F'[Vv.-]' '{print $$4}')
 VERSION   := "$(VER_MAJOR).$(VER_MINOR).$(VER_MAINT)"
 
 # Variables
