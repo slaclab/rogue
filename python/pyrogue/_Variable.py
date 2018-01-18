@@ -561,12 +561,15 @@ class LinkVariable(BaseVariable):
                  typeStr='Linked',                 
                  linkedSet=None,
                  linkedGet=None,
+                 pollInterval=0,
                  dependencies=None):
                  
         BaseVariable.__init__(self, name=name, description=description, 
                               mode=mode, disp=disp, update=True,
                               enum=enum, units=units, hidden=hidden,
-                              minimum=minimum, maximum=maximum)
+                              pollInterval=pollInterval,
+                              minimum=minimum, maximum=maximum,
+        )
 
         self._typeStr = typeStr
 
@@ -612,6 +615,12 @@ class DirectLinkVariable(LinkVariable):
 
         if 'linkedSet' not in kwargs:
              kwargs['linkedSet'] = variable.set if (mode=='RW' or mode=='WO') else None
+
+        # These args can be passed as kwargs, otherwise the properties from the linked variable will be used
+        args = ['disp', 'enum', 'units', 'minimum', 'maximum']
+        for arg in args:
+            if arg not in kwargs:
+                kwargs[arg] = getattr(variable, arg)
                  
         super().__init__(
             dependencies=[variable],
