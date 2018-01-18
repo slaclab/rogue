@@ -136,8 +136,9 @@ class BaseVariable(pr.Node):
         return self._maximum
 
     def addDependency(self, dep):
-        self.__dependencies.append(dep)
-        dep.addListener(self)
+        if dep not in self.__dependencies:
+            self.__dependencies.append(dep)
+            dep.addListener(self)
 
     @property
     def pollInterval(self):
@@ -422,7 +423,7 @@ class RemoteVariable(BaseVariable):
 
 
             if self._block.mode != 'RO':
-                self._block.backgroundTransaction(rogue.interfaces.memory.Post)
+                self._block.startTransaction(rogue.interfaces.memory.Post, check=False)
                 self._block._checkTransaction()
 
         except Exception as e:
@@ -546,32 +547,41 @@ class LinkVariable(BaseVariable):
 
     def __init__(self, *,
                  name,
-                 description='', 
-                 mode='RW',
-                 disp='{}',
-                 enum=None,
-                 units=None,
-                 hidden=False,
-                 minimum=None,
-                 maximum=None,
-                 typeStr='Linked',                 
+                 variable=None,
+                 dependencies=None,
+                 typeStr='Linked',   
                  linkedSet=None,
                  linkedGet=None,
-                 dependencies=None):
-                 
-        BaseVariable.__init__(self, name=name, description=description, 
-                              mode=mode, disp=disp, update=True,
-                              enum=enum, units=units, hidden=hidden,
-                              minimum=minimum, maximum=maximum)
-
-        self._typeStr = typeStr
-
+                 **kwargs): # Args passed to BaseVariable
+        
         # Set and get functions
         self._linkedGet = linkedGet
-        self._linkedSet = linkedSet
+        self._linkedSet = linkedSet        
 
+        if variable is not None:
+            # If directly linked to a variable, use it's value and set by defualt
+            # for linkedGet and linkedSet unless overridden
+            self._linkedGet = linkedGet if linkedGet else variable.value
+            self._linkedSet = linkedSet if linkedSet else variable.set
+
+            
+            # Search the kwargs for overridden properties, otherwise the properties from the linked variable will be used
+            args = ['disp', 'enum', 'units', 'minimum', 'maximum']
+            for arg in args:
+                if arg not in kwargs:
+                    kwargs[arg] = getattr(variable, arg)
+
+        # Call super constructor
+        BaseVariable.__init__(self, name=name, update=True, **kwargs)
+
+        # Must be done after super cunstructor to override it
+        self._typeStr = typeStr        
 
         # Dependency tracking
+        if variable is not None:
+            # Add the directly linked variable as a dependency
+            self.addDependency(variable)
+
         if dependencies is not None:
             for d in dependencies:
                 self.addDependency(d)
@@ -599,6 +609,7 @@ class LinkVariable(BaseVariable):
             return varFuncHelper(self._linkedGet,pargs,self._log,self.path)
         else:
             return None
+
 
 # Legacy Support
 def Variable(local=False, setFunction=None, getFunction=None, **kwargs):

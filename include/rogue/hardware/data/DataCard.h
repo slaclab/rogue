@@ -27,6 +27,7 @@
 #include <boost/python.hpp>
 #include <boost/thread.hpp>
 #include <stdint.h>
+#include <rogue/Logging.h>
 
 
 namespace rogue {
@@ -36,6 +37,8 @@ namespace rogue {
          //! DATA Card class
          class DataCard : public rogue::interfaces::stream::Master, 
                           public rogue::interfaces::stream::Slave {
+
+                            rogue::Logging * log_;
 
                //! DataCard file descriptor
                int32_t  fd_;

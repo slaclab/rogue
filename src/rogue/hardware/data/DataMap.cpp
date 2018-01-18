@@ -42,7 +42,7 @@ rhd::DataMapPtr rhd::DataMap::create (std::string path) {
 //! Creator
 rhd::DataMap::DataMap(std::string path) : rim::Slave(4,0xFFFFFFFF) {
    fd_ = ::open(path.c_str(), O_RDWR);
-   log_ = new rogue::Logging("data.DataMap");
+   log_ = new rogue::Logging("DataMap");
    if ( fd_ < 0 ) throw(rogue::GeneralError::open("DataMap::DataMap",path));
 }
 
@@ -73,6 +73,7 @@ void rhd::DataMap::doTransaction(uint32_t id, boost::shared_ptr<rogue::interface
       count += 4;
    }
 
+   log_->debug("Transaction id=0x%08x, addr 0x%08x. Size=%i, type=%i, data=0x%08x",id,address,size,type,data);
    master->doneTransaction(id,(ret==0)?0:1);
 }
 
