@@ -73,7 +73,7 @@ void rhd::DataMap::doTransaction(uint32_t id, boost::shared_ptr<rogue::interface
       count += 4;
    }
 
-   log_->debug("Transaction id=0x%08x, addr 0x%08x. Size=%i, type=%i, data=0x%04x",id,address,size,type,data);
+   log_->debug("Transaction id=0x%08x, addr 0x%08x. Size=%i, type=%i, data=0x%08x",id,address,size,type,data);
    master->doneTransaction(id,(ret==0)?0:1);
 }
 
