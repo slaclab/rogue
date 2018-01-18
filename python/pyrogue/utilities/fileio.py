@@ -25,8 +25,8 @@ import pyrogue
 class StreamWriter(pyrogue.DataWriter):
     """Stream Writer Wrapper"""
 
-    def __init__(self, *, name="StreamWriter", hidden=True, configEn=False):
-        pyrogue.DataWriter.__init__(self, name=name, description='Stream Writer',hidden=hidden)
+    def __init__(self, *, configEn=False, **kwargs):
+        pyrogue.DataWriter.__init__(self, **kwargs)
         self._writer   = rogue.utilities.fileio.StreamWriter()
         self._configEn = configEn
 
@@ -65,9 +65,8 @@ class StreamWriter(pyrogue.DataWriter):
 class StreamReader(pyrogue.Device):
     """Stream Reader Wrapper"""
 
-    def __init__(self, *, name="StreamReader"):
-
-        pyrogue.Device.__init__(self, name=name, description='Stream Writer')
+    def __init__(self, **kwargs):
+        pyrogue.Device.__init__(self, **kwargs)
         self._reader = rogue.utilities.fileio.StreamReader()
 
         self.add(pyrogue.LocalVariable(name='dataFile', description='Data File',
