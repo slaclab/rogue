@@ -19,9 +19,11 @@
 # contained in the LICENSE.txt file.
 # ----------------------------------------------------------------------------
 
-VER_MAJOR := 2
-VER_MINOR := 3
-VER_MAINT := 2
+
+VER_MAJOR := $(shell git describe --tags | awk -F'[v.-]' '{print $$2}')
+VER_MINOR := $(shell git describe --tags | awk -F'[v.-]' '{print $$3}')
+VER_MAINT := $(shell git describe --tags | awk -F'[v.-]' '{print $$4}')
+VERSION   := "$(VER_MAJOR).$(VER_MINOR).$(VER_MAINT)"
 
 # Variables
 CC       := g++
@@ -57,10 +59,6 @@ clean:
 	@rm -f $(CPPLIB)
 	@rm -f $(LIB_OBJ)
 
-# Version is special
-$(PWD)/src/rogue/Version.o: $(PWD)/src/rogue/Version.cpp $(PWD)/include/rogue/Version.h Makefile
-	@echo "Compiling $@"; $(CC) -c $(CFLAGS) $(DEF) -o $@ $<
-
 # Compile sources with headers
 %.o: %.cpp %.h 
 	@echo "Compiling $@"; $(CC) -c $(CFLAGS) $(DEF) -o $@ $<
@@ -71,10 +69,10 @@ $(PWD)/src/rogue/Version.o: $(PWD)/src/rogue/Version.cpp $(PWD)/include/rogue/Ve
 
 # Compile Shared Library
 $(PYLIB): $(LIB_OBJ)
-	@echo "Creating $@"; $(CC) -shared -Wl,-soname,$(PYLIB_NAME) $(LIB_OBJ) $(LFLAGS) -o $@
+	@echo "Creating Version $(VERSION) of $@"; $(CC) -shared -Wl,-soname,$(PYLIB_NAME) $(LIB_OBJ) $(LFLAGS) -o $@
 
 # Compile Shared Library
 $(CPPLIB): $(LIB_OBJ)
 	@mkdir -p $(PWD)/lib
-	@echo "Creating $@"; $(CC) -shared $(LIB_OBJ) $(LFLAGS) -o $@
+	@echo "Creating Version $(VERSION) of $@"; $(CC) -shared $(LIB_OBJ) $(LFLAGS) -o $@
 
