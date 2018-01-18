@@ -133,7 +133,7 @@ class CommandWidget(QWidget):
 
             w = QTreeWidgetItem(parent)
             w.setText(0,val.name)
-            w.setExpanded(expand)
+            w.setExpanded(nxtExpand)
             self.addTreeItems(w,val,nxtExpand)
             self.devList.append({'dev':val,'item':w})
 
