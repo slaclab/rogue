@@ -343,7 +343,7 @@ class Node(object):
 
         return ret
 
-    def _setDict(self,d,writeEach,modes):
+    def _setDict(self,d,writeEach,modes=['RW']):
         for key, value in d.items():
             nlist = nodeMatch(self._nodes,key)
 
