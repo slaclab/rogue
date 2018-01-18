@@ -436,7 +436,7 @@ class Device(pr.Node,rim.Hub):
 class DataWriter(Device):
     """Special base class to control data files. TODO: Update comments"""
 
-    def __init__(self, *, name, **kwargs):
+    def __init__(self, *, name="DataWriter", **kwargs):
         """Initialize device class"""
 
         Device.__init__(self, name=name, **kwargs)
@@ -526,7 +526,7 @@ class DataWriter(Device):
 class RunControl(Device):
     """Special base class to control runs. TODO: Update comments."""
 
-    def __init__(self, *, name, description='Run Controller', hidden=True, rates=None, states=None, cmd=None):
+    def __init__(self, *, name="RunControl", description='Run Controller', hidden=True, rates=None, states=None, cmd=None):
         """Initialize device class"""
 
         if rates is None:

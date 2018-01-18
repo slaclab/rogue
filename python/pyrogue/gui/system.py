@@ -46,6 +46,7 @@ class DataLink(QObject):
         self.writer.dataFile.addListener(self)
         self.dataFile = QLineEdit()
         self.dataFile.setText(self.writer.dataFile.valueDisp())
+        self.dataFile.textEdited.connect(self.dataFileEdited)
         self.dataFile.returnPressed.connect(self.dataFileChanged)
         self.connect(self,SIGNAL('updateDataFile'),self.dataFile.setText)
 
@@ -73,6 +74,7 @@ class DataLink(QObject):
         self.writer.bufferSize.addListener(self)
         self.bufferSize = QLineEdit()
         self.bufferSize.setText(self.writer.bufferSize.valueDisp())
+        self.bufferSize.textEdited.connect(self.bufferSizeEdited)
         self.bufferSize.returnPressed.connect(self.bufferSizeChanged)
         self.connect(self,SIGNAL('updateBufferSize'),self.bufferSize.setText)
 
@@ -102,6 +104,7 @@ class DataLink(QObject):
         self.writer.maxFileSize.addListener(self)
         self.maxSize = QLineEdit()
         self.maxSize.setText(self.writer.maxFileSize.valueDisp())
+        self.maxSize.textEdited.connect(self.maxSizeEdited)
         self.maxSize.returnPressed.connect(self.maxSizeChanged)
         self.connect(self,SIGNAL('updateMaxSize'),self.maxSize.setText)
 
@@ -152,7 +155,16 @@ class DataLink(QObject):
         elif var.name == 'frameCount':
             self.emit(SIGNAL("updateFrameCount"),disp)
 
+    def dataFileEdited(self):
+        p = QPalette()
+        p.setColor(QPalette.Base,Qt.yellow)
+        self.dataFile.setPalette(p)
+
     def dataFileChanged(self):
+        p = QPalette()
+        p.setColor(QPalette.Base,Qt.white)
+        self.dataFile.setPalette(p)
+
         self.block = True
         self.writer.dataFile.setDisp(self.dataFile.text())
         self.block = False
@@ -162,12 +174,30 @@ class DataLink(QObject):
         self.writer.open.setDisp(self.openState.itemText(value))
         self.block = False
 
+    def bufferSizeEdited(self):
+        p = QPalette()
+        p.setColor(QPalette.Base,Qt.yellow)
+        self.bufferSize.setPalette(p)
+
     def bufferSizeChanged(self):
+        p = QPalette()
+        p.setColor(QPalette.Base,Qt.white)
+        self.bufferSize.setPalette(p)
+
         self.block = True
         self.writer.bufferSize.setDisp(self.bufferSize.text())
         self.block = False
 
+    def maxSizeEdited(self):
+        p = QPalette()
+        p.setColor(QPalette.Base,Qt.yellow)
+        self.maxSize.setPalette(p)
+
     def maxSizeChanged(self):
+        p = QPalette()
+        p.setColor(QPalette.Base,Qt.white)
+        self.maxSize.setPalette(p)
+
         self.block = True
         self.writer.maxFileSize.setDisp(self.maxSize.text())
         self.block = False
@@ -370,4 +400,9 @@ class SystemWidget(QWidget):
         if dlg.exec_():
             saveFile = str(dlg.selectedFiles()[0])
             self.root.WriteConfig(saveFile)
+
+
+
+
+
 
