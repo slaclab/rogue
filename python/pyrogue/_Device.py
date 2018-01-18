@@ -436,10 +436,10 @@ class Device(pr.Node,rim.Hub):
 class DataWriter(Device):
     """Special base class to control data files. TODO: Update comments"""
 
-    def __init__(self, *, name="DataWriter", **kwargs):
+    def __init__(self, *, hidden=True, **kwargs):
         """Initialize device class"""
 
-        Device.__init__(self, name=name, **kwargs)
+        Device.__init__(self, hidden=hidden, **kwargs)
 
         self.add(pr.LocalVariable(
             name='dataFile',
@@ -526,7 +526,7 @@ class DataWriter(Device):
 class RunControl(Device):
     """Special base class to control runs. TODO: Update comments."""
 
-    def __init__(self, *, name="RunControl", description='Run Controller', hidden=True, rates=None, states=None, cmd=None):
+    def __init__(self, *, hidden=True, rates=None, states=None, cmd=None, **kwargs):
         """Initialize device class"""
 
         if rates is None:
@@ -535,7 +535,7 @@ class RunControl(Device):
         if states is None:
             states={0:'Stopped', 1:'Running'}
 
-        Device.__init__(self, name=name, description=description, hidden=hidden)
+        Device.__init__(self, hidden=hidden, **kwargs)
 
         value = [k for k,v in states.items()][0]
 
