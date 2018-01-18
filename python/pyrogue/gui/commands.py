@@ -57,14 +57,17 @@ class CommandLink(QObject):
                 self._widget = QComboBox()
                 for i in self._command.enum:
                     self._widget.addItem(self._command.enum[i])
+                self._widget.setCurrentIndex(self._widget.findText(self._command.valueDisp()))
 
             elif self._command.disp == 'range':
                 self._widget = QSpinBox();
                 self._widget.setMinimum(self._command.minimum)
                 self._widget.setMaximum(self._command.maximum)
+                self._widget.setValue(self._command.value())
 
             else:
                 self._widget = QLineEdit()
+                self._widget.setText(self._command.valueDisp())
 
             self._tree.setItemWidget(self._item,3,self._widget)
 
