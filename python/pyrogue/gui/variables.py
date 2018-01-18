@@ -187,12 +187,14 @@ class VariableWidget(QWidget):
         # Then create devices
         for key,val in d.getNodes(typ=pyrogue.Device,hidden=False).items():
             if not val.expand:
-                expand = False
+                nxtExpand = False
+            else:
+                nxtExpand = expand
 
             w = QTreeWidgetItem(parent)
             w.setText(0,val.name)
             w.setExpanded(expand)
-            self.addTreeItems(w,val,expand)
+            self.addTreeItems(w,val,nxtExpand)
             self.devList.append({'dev':val,'item':w})
 
 
