@@ -216,11 +216,7 @@ class BaseVariable(pr.Node):
         if self.disp == 'enum':
             #print('enum: {}'.format(self.enum))
             #print('get: {}'.format(self.get(read)))
-            try:
-                return self.enum[value]
-            except KeyError as e:
-                print(f'Error in {self.path} - value = {value}, keys = {self.enum}')
-                raise e
+            return self.enum[value]
         else:
             if value == '' or value is None:
                 return value

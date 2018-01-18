@@ -288,7 +288,6 @@ class Device(pr.Node,rim.Hub):
 
     def writeAndVerifyBlocks(self, force=False, recurse=True, variable=None, checkEach=False):
         """Perform a write, verify and check. Usefull for committing any stale variables"""
-        self.readBlocks(recurse=recurse, variable=variable, checkEach=checkEach)
         self.writeBlocks(force=force, recurse=recurse, variable=variable, checkEach=checkEach)
         self.verifyBlocks(recurse=recurse, variable=variable, checkEach=checkEach)
         self.checkBlocks(recurse=recurse, variable=variable)
