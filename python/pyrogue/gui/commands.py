@@ -51,6 +51,7 @@ class CommandLink(QObject):
         self._pb = QPushButton('Execute')
         self._tree.setItemWidget(self._item,2,self._pb)
         self._pb.clicked.connect(self.execPressed)
+        self._pb.setToolTip(self._command.description)
 
         if self._command.arg:
             if self._command.disp == 'enum' and self._command.enum is not None:
