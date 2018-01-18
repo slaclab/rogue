@@ -58,11 +58,11 @@ clean:
 
 # Compile sources with headers
 %.o: %.cpp %.h 
-	echo "Compiling $@"; $(CC) -c $(CFLAGS) $(DEF) -o $@ $<
+	@echo "Compiling $@"; $(CC) -c $(CFLAGS) $(DEF) -o $@ $<
 
 # Compile sources without headers
 %.o: %.cpp 
-	echo "Compiling $@"; $(CC) -c $(CFLAGS) $(DEF) -o $@ $<
+	@echo "Compiling $@"; $(CC) -c $(CFLAGS) $(DEF) -o $@ $<
 
 # Compile Shared Library
 $(PYLIB): $(LIB_OBJ)
