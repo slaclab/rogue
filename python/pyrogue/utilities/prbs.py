@@ -30,15 +30,15 @@ class PrbsRx(pyrogue.Device):
         self._prbs = rogue.utilities.Prbs()
 
         self.add(pyrogue.LocalVariable(name='rxErrors', description='RX Error Count',
-                                       base='uint', mode='RO', pollInterval=1, value=0,
+                                       mode='RO', pollInterval=1, value=0,
                                        localGet=self._prbs.getRxErrors))
 
         self.add(pyrogue.LocalVariable(name='rxCount', description='RX Count',
-                                       base='uint', mode='RO', pollInterval=1, value=0,
+                                       mode='RO', pollInterval=1, value=0,
                                        localGet=self._prbs.getRxCount))
 
         self.add(pyrogue.LocalVariable(name='rxBytes', description='RX Bytes',
-                                       base='uint', mode='RO', pollInterval=1, value=0,
+                                       mode='RO', pollInterval=1, value=0,
                                        localGet=self._prbs.getRxBytes))
 
     def countReset(self):
@@ -58,27 +58,27 @@ class PrbsTx(pyrogue.Device):
         self._prbs = rogue.utilities.Prbs()
 
         self.add(pyrogue.LocalVariable(name='txSize', description='PRBS Frame Size', 
-                                       base='uint', mode='RW', value=0))
+                                       mode='RW', value=0))
 
-        self.add(pyrogue.LocalVariable(name='txEnable', description='PRBS Run Enable', base='bool', mode='RW',
-                                       value=0, localSet=self._txEnable))
+        self.add(pyrogue.LocalVariable(name='txEnable', description='PRBS Run Enable', mode='RW',
+                                       value=False, localSet=self._txEnable))
 
         self.add(pyrogue.LocalCommand(name='genFrame',description='Generate a single frame',
                                       function=self._genFrame))
 
-        self.add(pyrogue.LocalVariable(name='txErrors', description='TX Error Count', base='uint', mode='RO', pollPeriod = 1,
+        self.add(pyrogue.LocalVariable(name='txErrors', description='TX Error Count', mode='RO', pollInterval = 1,
                                        value=0, localGet=self._prbs.getTxErrors))
 
-        self.add(pyrogue.LocalVariable(name='txCount', description='TX Count', base='uint', mode='RO', pollPeriod = 1,
+        self.add(pyrogue.LocalVariable(name='txCount', description='TX Count', mode='RO', pollInterval = 1,
                                        value=0, localGet=self._prbs.getTxCount))
 
-        self.add(pyrogue.LocalVariable(name='txBytes', description='TX Bytes', base='uint', mode='RO', pollPeriod = 1,
+        self.add(pyrogue.LocalVariable(name='txBytes', description='TX Bytes', mode='RO', pollInterval = 1,
                                        value=0, localGet=self._prbs.getTxBytes))
 
     def countReset(self):
         self._prbs.resetCount()
 
-    def _genFrame(self,arg):
+    def _genFrame(self):
         self._prbs.genFrame(self.txSize.value())
 
     def _txEnable(self,value,changed):

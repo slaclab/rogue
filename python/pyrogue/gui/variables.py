@@ -62,6 +62,7 @@ class VariableLink(QObject):
                 self._widget = QComboBox()
                 self._widget.activated.connect(self.guiChanged)
                 self.connect(self,SIGNAL('updateGui'),self._widget.setCurrentIndex)
+                self._widget.setToolTip(self._variable.description)
 
                 for i in self._variable.enum:
                     self._widget.addItem(self._variable.enum[i])
@@ -72,12 +73,14 @@ class VariableLink(QObject):
                 self._widget.setMaximum(self._variable.maximum)
                 self._widget.valueChanged.connect(self.guiChanged)
                 self.connect(self,SIGNAL('updateGui'),self._widget.setValue)
+                self._widget.setToolTip(self._variable.description)
 
             else:
                 self._widget = QLineEdit()
                 self._widget.returnPressed.connect(self.returnPressed)
                 self._widget.textEdited.connect(self.valueChanged)
                 self.connect(self,SIGNAL('updateGui'),self._widget.setText)
+                self._widget.setToolTip(self._variable.description)
 
             if self._variable.mode == 'RO':
                 self._widget.setReadOnly(True)
@@ -186,13 +189,12 @@ class VariableWidget(QWidget):
 
         # Then create devices
         for key,val in d.getNodes(typ=pyrogue.Device,hidden=False).items():
-            if not val.expand:
-                expand = False
+            nxtExpand = expand if val.expand else False
 
             w = QTreeWidgetItem(parent)
             w.setText(0,val.name)
-            w.setExpanded(expand)
-            self.addTreeItems(w,val,expand)
+            w.setExpanded(nxtExpand)
+            self.addTreeItems(w,val,nxtExpand)
             self.devList.append({'dev':val,'item':w})
 
 

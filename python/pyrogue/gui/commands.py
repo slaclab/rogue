@@ -51,20 +51,24 @@ class CommandLink(QObject):
         self._pb = QPushButton('Execute')
         self._tree.setItemWidget(self._item,2,self._pb)
         self._pb.clicked.connect(self.execPressed)
+        self._pb.setToolTip(self._command.description)
 
         if self._command.arg:
             if self._command.disp == 'enum' and self._command.enum is not None:
                 self._widget = QComboBox()
                 for i in self._command.enum:
                     self._widget.addItem(self._command.enum[i])
+                self._widget.setCurrentIndex(self._widget.findText(self._command.valueDisp()))
 
             elif self._command.disp == 'range':
                 self._widget = QSpinBox();
                 self._widget.setMinimum(self._command.minimum)
                 self._widget.setMaximum(self._command.maximum)
+                self._widget.setValue(self._command.value())
 
             else:
                 self._widget = QLineEdit()
+                self._widget.setText(self._command.valueDisp())
 
             self._tree.setItemWidget(self._item,3,self._widget)
 
@@ -126,12 +130,11 @@ class CommandWidget(QWidget):
 
         # Then create devices
         for key,val in d.getNodes(typ=pyrogue.Device,hidden=False).items():
-            if not val.expand:
-                expand = False
+            nxtExpand = expand if val.expand else False
 
             w = QTreeWidgetItem(parent)
             w.setText(0,val.name)
-            w.setExpanded(expand)
-            self.addTreeItems(w,val,expand)
+            w.setExpanded(nxtExpand)
+            self.addTreeItems(w,val,nxtExpand)
             self.devList.append({'dev':val,'item':w})
 
