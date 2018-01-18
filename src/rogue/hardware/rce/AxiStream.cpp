@@ -218,7 +218,7 @@ void rhr::AxiStream::acceptFrame ( ris::FramePtr frame ) {
             tout.tv_usec=(timeout_ > 0)?(timeout_ % 1000000):10000;
 
             if ( select(fd_+1,NULL,&fds,NULL,&tout) <= 0 ) {
-               if ( timeout_ > 0) throw(rogue::GeneralError::timeout("AxiStream::acceptFrame",timeout_));
+               if ( timeout_ > 0) throw(rogue::GeneralError("AxiStream::acceptFrame","AXIS Write Call Failed. Buffer Not Available!!!!"));
                res = 0;
             }
             else {
