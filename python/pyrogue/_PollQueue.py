@@ -63,7 +63,7 @@ class PollQueue(object):
             self._log.debug(f'updatePollInterval {var} - {var.pollInterval}')
             # Special case: Variable has no block and just depends on other variables
             # Then do update on each dependency instead
-            if var._block is None:
+            if not hasattr(var, '_block') or var._block is None:
                 if len(var.dependencies) > 0:
                     for dep in var.dependencies:
                         if dep.pollInterval == 0 or var.pollInterval < dep.pollInterval:
