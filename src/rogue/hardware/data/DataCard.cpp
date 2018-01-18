@@ -23,7 +23,6 @@
 #include <rogue/GeneralError.h>
 #include <boost/make_shared.hpp>
 #include <rogue/GilRelease.h>
-#include <rogue/Logging.h>
 
 namespace rhd = rogue::hardware::data;
 namespace ris = rogue::interfaces::stream;
@@ -41,8 +40,6 @@ rhd::DataCard::DataCard ( std::string path, uint32_t dest ) {
 
    timeout_ = 1000000;
    dest_    = dest;
-
-   log_ = new rogue::Logging("DataCard");
 
    rogue::GilRelease noGil;
 
@@ -270,11 +267,8 @@ void rhd::DataCard::runThread() {
    uint32_t       rxFlags;
    struct timeval tout;
 
-   uint32_t count;
-
    fuser = 0;
    luser = 0;
-   count = 0;
 
    // Preallocate empty frame
    frame = ris::Frame::create();
@@ -290,11 +284,9 @@ void rhd::DataCard::runThread() {
          tout.tv_sec  = 0;
          tout.tv_usec = 100;
 
-         count++;
-
          // Select returns with available buffer
          if ( select(fd_+1,&fds,NULL,NULL,&tout) > 0 ) {
-           count = 0;
+
             // Zero copy buffers were not allocated
             if ( rawBuff_ == NULL ) {
 
@@ -309,6 +301,7 @@ void rhd::DataCard::runThread() {
 
             // Zero copy read
             else {
+
                // Attempt read, dest is not needed since only one lane/vc is open
                if ((res = dmaReadIndex(fd_, &meta, &rxFlags, NULL, NULL)) > 0) {
                   fuser = axisGetFuser(rxFlags);
