@@ -136,8 +136,9 @@ class BaseVariable(pr.Node):
         return self._maximum
 
     def addDependency(self, dep):
-        self.__dependencies.append(dep)
-        dep.addListener(self)
+        if dep not in self.__dependencies:
+            self.__dependencies.append(dep)
+            dep.addListener(self)
 
     @property
     def pollInterval(self):
@@ -550,35 +551,41 @@ class LinkVariable(BaseVariable):
 
     def __init__(self, *,
                  name,
-                 description='', 
-                 mode='RW',
-                 disp='{}',
-                 enum=None,
-                 units=None,
-                 hidden=False,
-                 minimum=None,
-                 maximum=None,
-                 typeStr='Linked',                 
+                 variable=None,
+                 dependencies=None,
+                 typeStr='Linked',   
                  linkedSet=None,
                  linkedGet=None,
-                 pollInterval=0,
-                 dependencies=None):
-                 
-        BaseVariable.__init__(self, name=name, description=description, 
-                              mode=mode, disp=disp, update=True,
-                              enum=enum, units=units, hidden=hidden,
-                              pollInterval=pollInterval,
-                              minimum=minimum, maximum=maximum,
-        )
-
-        self._typeStr = typeStr
-
+                 **kwargs): # Args passed to BaseVariable
+        
         # Set and get functions
         self._linkedGet = linkedGet
-        self._linkedSet = linkedSet
+        self._linkedSet = linkedSet        
 
+        if variable is not None:
+            # If directly linked to a variable, use it's value and set by defualt
+            # for linkedGet and linkedSet unless overridden
+            self._linkedGet = linkedGet if linkedGet else variable.value
+            self._linkedSet = linkedSet if linkedSet else variable.set
+
+            
+            # Search the kwargs for overridden properties, otherwise the properties from the linked variable will be used
+            args = ['disp', 'enum', 'units', 'minimum', 'maximum']
+            for arg in args:
+                if arg not in kwargs:
+                    kwargs[arg] = getattr(variable, arg)
+
+        # Call super constructor
+        BaseVariable.__init__(self, name=name, update=True, **kwargs)
+
+        # Must be done after super cunstructor to override it
+        self._typeStr = typeStr        
 
         # Dependency tracking
+        if variable is not None:
+            # Add the directly linked variable as a dependency
+            self.addDependency(variable)
+
         if dependencies is not None:
             for d in dependencies:
                 self.addDependency(d)
@@ -607,25 +614,6 @@ class LinkVariable(BaseVariable):
         else:
             return None
 
-class DirectLinkVariable(LinkVariable):
-    def __init__(self, variable, mode='RW', **kwargs):
-        
-        if 'linkedGet' not in kwargs:
-             kwargs['linkedGet'] = variable.value if (mode=='RW' or mode=='RO') else None
-
-        if 'linkedSet' not in kwargs:
-             kwargs['linkedSet'] = variable.set if (mode=='RW' or mode=='WO') else None
-
-        # These args can be passed as kwargs, otherwise the properties from the linked variable will be used
-        args = ['disp', 'enum', 'units', 'minimum', 'maximum']
-        for arg in args:
-            if arg not in kwargs:
-                kwargs[arg] = getattr(variable, arg)
-                 
-        super().__init__(
-            dependencies=[variable],
-            **kwargs)
-         
 
 # Legacy Support
 def Variable(local=False, setFunction=None, getFunction=None, **kwargs):
