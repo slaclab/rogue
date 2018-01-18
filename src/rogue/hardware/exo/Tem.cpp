@@ -121,7 +121,7 @@ void rhe::Tem::acceptFrame ( ris::FramePtr frame ) {
       tout.tv_usec=(timeout_ > 0)?(timeout_ % 1000000):10000;
 
       if ( select(fd_+1,NULL,&fds,NULL,&tout) <= 0 ) {
-         if ( timeout_ > 0) throw(rogue::GeneralError("Temp::acceptFrame","Tem Write Call Failed. Buffer Not Available!!!!"));
+         if ( timeout_ > 0) throw(rogue::GeneralError("Tem::acceptFrame","Tem Write Call Failed. Buffer Not Available!!!!"));
          res = 0;
       }
       else {
