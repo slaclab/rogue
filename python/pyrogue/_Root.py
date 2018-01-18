@@ -395,7 +395,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
     def _hardReset(self):
         """Generate a hard reset on all devices"""
         self.callRecursive('hardReset', nodeTypes=[pr.Device])        
-        self._clearLog(dev,cmd)
+        self._clearLog()
 
     @pr.command(order=4, name='CountReset', description='Generate a count reset to each device in the tree')
     def _countReset(self):
