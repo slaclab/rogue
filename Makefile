@@ -19,9 +19,11 @@
 # contained in the LICENSE.txt file.
 # ----------------------------------------------------------------------------
 
-VER_MAJOR := $(shell /bin/git describe --tags | /bin/awk -F'[v.-]' '{print $$2}')
-VER_MINOR := $(shell /bin/git describe --tags | /bin/awk -F'[v.-]' '{print $$3}')
-VER_MAINT := $(shell /bin/git describe --tags | /bin/awk -F'[v.-]' '{print $$4}')
+
+VER_MAJOR := $(shell git describe --tags | awk -F'[v.-]' '{print $$2}')
+VER_MINOR := $(shell git describe --tags | awk -F'[v.-]' '{print $$3}')
+VER_MAINT := $(shell git describe --tags | awk -F'[v.-]' '{print $$4}')
+VERSION   := "$(VER_MAJOR).$(VER_MINOR).$(VER_MAINT)"
 
 # Variables
 CC       := g++
@@ -67,10 +69,10 @@ clean:
 
 # Compile Shared Library
 $(PYLIB): $(LIB_OBJ)
-	@echo "Creating $@"; $(CC) -shared -Wl,-soname,$(PYLIB_NAME) $(LIB_OBJ) $(LFLAGS) -o $@
+	@echo "Creating Version $(VERSION) of $@"; $(CC) -shared -Wl,-soname,$(PYLIB_NAME) $(LIB_OBJ) $(LFLAGS) -o $@
 
 # Compile Shared Library
 $(CPPLIB): $(LIB_OBJ)
 	@mkdir -p $(PWD)/lib
-	@echo "Creating $@"; $(CC) -shared $(LIB_OBJ) $(LFLAGS) -o $@
+	@echo "Creating Version $(VERSION) of $@"; $(CC) -shared $(LIB_OBJ) $(LFLAGS) -o $@
 
