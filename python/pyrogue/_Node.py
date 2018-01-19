@@ -437,7 +437,10 @@ class PyroNode(object):
         return pr.PyroRoot(self._node.root,self._daemon)
 
     def addListener(self, listener):
-        self._daemon.register(listener)
+        try:
+            self._daemon.register(listener)
+        except:
+            pass
         self._node.addListener(listener)
 
     def __call__(self,arg=None):
