@@ -31,16 +31,15 @@ namespace bp = boost::python;
 void rogue::Version::init() {
    uint32_t diff;
    char     dump[100];
+   char     lead;
    int32_t  ret;
 
-   ret = sscanf(_version,"v%i.%i.%i-%i-%s",&_major,&_minor,&_maint,&diff,dump);
+   ret = sscanf(_version,"%c%i.%i.%i-%i-%s",&lead,&_major,&_minor,&_maint,&diff,dump);
 
-   if ( ret != 3 && ret != 5 ) {
-      printf("In = %s, Maj = %i, Min = %i, Mnt = %i, Diff=%i, Ret = %i\n",_version,_major,_minor,_maint,diff,ret);
+   if ( (ret != 4 && ret != 6) || (lead != 'v' && lead != 'V')) 
       throw(rogue::GeneralError("Version:init","Invalid compiled version string"));
-   }
 
-   if ( ret == 5 ) _maint += diff;
+   if ( ret == 6 ) _maint += diff;
 }
 
 void rogue::Version::extract(std::string compare, uint32_t *major, uint32_t *minor, uint32_t *maint) {
