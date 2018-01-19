@@ -20,15 +20,12 @@
 # ----------------------------------------------------------------------------
 
 
-VER_MAJOR := $(shell git describe --tags | awk -F'[Vv.-]' '{print $$2}')
-VER_MINOR := $(shell git describe --tags | awk -F'[Vv.-]' '{print $$3}')
-VER_MAINT := $(shell git describe --tags | awk -F'[Vv.-]' '{print $$4}')
-VERSION   := "$(VER_MAJOR).$(VER_MINOR).$(VER_MAINT)"
+VERSION  := $(shell git describe --tags)
 
 # Variables
 CC       := g++
-DEF      := -DVER_MAJOR=$(VER_MAJOR) -DVER_MINOR=$(VER_MINOR) -DVER_MAINT=$(VER_MAINT)
-CFLAGS   := -Wall `python3-config --cflags | sed s/-Wstrict-prototypes//` -fno-strict-aliasing
+DEF      := -DVERSION=\"$(VERSION)\"
+CFLAGS   := -Wall `python3-config --cflags | sed s/-Wstrict-prototypes//` -fno-strict-aliasing -Wno-deprecated-declarations
 CFLAGS   += -I$(BOOST_PATH)/include -I$(PWD)/include -I$(PWD)/drivers/include -std=c++0x -fPIC
 LFLAGS   := `python3-config --ldflags` -lboost_thread -lboost_python3 -lboost_system
 LFLAGS   += -L`python3-config --prefix`/lib/ -L$(BOOST_PATH)/lib -lbz2
