@@ -119,3 +119,8 @@ def busConnect(source,dest):
 
     master._setSlave(slave)
 
+def isinstancestr(obj, typ):
+    tlist = [str(l) for l in obj.__class__.__bases__] + [str(obj.__class__)]
+    
+    return typ in tlist
+
