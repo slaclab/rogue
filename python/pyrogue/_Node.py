@@ -165,13 +165,21 @@ class Node(object):
             self.add(nodeClass(name='{:s}[{:d}]'.format(name, i), offset=offset+(i*stride), **kwargs))
 
     @Pyro4.expose
+    @property
+    def nodeList(self):
+        return([k for k,v in self._nodes.items()])
+
+    @Pyro4.expose
     def getNodes(self,typ,exc=None,hidden=True):
         """
         Get a ordered dictionary of nodes.
         pass a class type to receive a certain type of node
+        class type may be a string when called over Pyro4
         """
+        isType = pr.isinstancestr if isinstance(typ,str) else isinstance
+
         return odict([(k,n) for k,n in self._nodes.items() \
-            if (isinstance(n, typ) and ((exc is None) or (not isinstance(n, exc))) and (hidden or n.hidden == False))])
+            if (isType(n, typ) and ((exc is None) or (not isType(n, exc))) and (hidden or n.hidden == False))])
 
     @Pyro4.expose
     @property
@@ -237,7 +245,7 @@ class Node(object):
 
     @Pyro4.expose
     def node(self, path):
-        return self._nodes[path]
+        return attrHelper(self._nodes,path)
 
     @Pyro4.expose
     @property
@@ -359,27 +367,20 @@ class Node(object):
 class PyroNode(object):
     def __init__(self, *, node,daemon):
         self._node   = node
-        self._nodes  = None
         self._daemon = daemon
 
     def __repr__(self):
         return self._node.path
 
     def __getattr__(self, name):
-        if self._nodes is None:
-            self._nodes = self._convert(self._node.nodes)
-
-        ret = attrHelper(self._nodes,name)
+        ret = self.node(name)
         if ret is None:
             return self._node.__getattr__(name)
         else:
             return ret
 
     def __dir__(self):
-        if self._nodes is None:
-            self._nodes = self._convert(self._node.nodes)
-
-        return(super().__dir__() + [k for k,v in self._nodes.items()])
+        return(super().__dir__() + self._node.nodeList)
 
     def _convert(self,d):
         ret = odict()
@@ -399,7 +400,17 @@ class PyroNode(object):
         self._daemon.register(node)
 
     def node(self, path):
-        return PyroNode(node=self._node.node(path),daemon=self._daemon)
+        ret = self._node.node(path)
+        if ret is None: 
+            return None
+        elif isinstance(ret,odict) or isinstance(ret,dict):
+            return self._convert(ret)
+        else:
+            return PyroNode(node=ret,daemon=self._daemon)
+
+    def getNodes(self,typ,exc=None,hidden=True):
+        excPass = str(exc) if exc is not None else None
+        return self._convert(self._node.getNodes(str(typ),excPass,hidden))
 
     @property
     def nodes(self):
