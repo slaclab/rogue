@@ -438,9 +438,9 @@ class PyroNode(object):
 
     def addListener(self, listener):
         try:
-            self._daemon.register(listener)
+            uri = self._daemon.uriFor(listener)
         except:
-            pass
+            uri = self._daemon.register(listener)
         self._node.addListener(listener)
 
     def __call__(self,arg=None):

@@ -165,6 +165,9 @@ class BaseVariable(pr.Node):
             if isinstance(listener, BaseVariable):
                 self.__listeners.append(listener.updated)
             else:
+                if isinstance(listener,Pyro4.core.Proxy):
+                    print("Setting one way")
+                    listener._pyroOneway.add("varListener")
                 self.__listeners.append(listener)
 
     @Pyro4.expose
@@ -186,6 +189,7 @@ class BaseVariable(pr.Node):
     @Pyro4.expose
     def updated(self, var=None, value=None, disp=None):
         """Variable has been updated. Inform listeners."""
+        return
         value = None
         disp  = None
         with self._listenLock:
@@ -199,9 +203,14 @@ class BaseVariable(pr.Node):
                         func.varListener(self,value,disp)
                     else:
                         func(self,value,disp)
-                except Pyro4.errors.CommunicationError:
-                    self._log.info("Pyro Disconnect. Removing callback")
-                    self.__listeners.remove(func)
+                except Pyro4.errors.CommunicationError as msg:
+                    if 'Connection refused' in str(msg):
+                        #self._log.error("Pyro Disconnect. Removing callback")
+                        print("Pyro Disconnect. Removing callback for {}".format(self.path))
+                        self.__listeners.remove(func)
+                    else:
+                        #self._log.error("Pyro callback failed for {}: {}".format(self.name,msg))
+                        print("Pyro callback failed for {}: {}".format(self.name,msg))
 
         # Root variable update log
         if self._update is True and self._root is not None:

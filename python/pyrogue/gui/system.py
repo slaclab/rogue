@@ -134,6 +134,7 @@ class DataLink(QObject):
 
     @Pyro4.expose
     def varListener(self,var,value,disp):
+        print("Listener called for {}".format(var.name))
 
         if self.block: return
 

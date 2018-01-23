@@ -127,8 +127,9 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
         # Start pyro server if enabled
         if pyroGroup is not None:
-            Pyro4.config.THREADPOOL_SIZE = 500
+            Pyro4.config.THREADPOOL_SIZE = 10000
             Pyro4.config.SERVERTYPE = "multiplex"
+            #Pyro4.config.SERVERTYPE = "thread"
             Pyro4.config.POLLTIMEOUT = 3
 
             Pyro4.util.SerializerBase.register_dict_to_class("collections.OrderedDict", recreate_OrderedDict)
@@ -445,7 +446,15 @@ class PyroClient(object):
     def __init__(self, group, host=None, ns=None):
         self._group = group
 
-        Pyro4.config.THREADPOOL_SIZE = 100
+        Pyro4.config.THREADPOOL_SIZE = 10000
+        #Pyro4.config.SERVERTYPE = "multiplex"
+        Pyro4.config.SERVERTYPE = "thread"
+        #Pyro4.config.POLLTIMEOUT = 3
+
+        #Pyro4.config.THREADPOOL_SIZE = 100
+        #Pyro4.config.THREADPOOL_SIZE = 10000
+        #Pyro4.config.SERVERTYPE = "multiplex"
+        #Pyro4.config.POLLTIMEOUT = 3
         Pyro4.util.SerializerBase.register_dict_to_class("collections.OrderedDict", recreate_OrderedDict)
 
         try:
