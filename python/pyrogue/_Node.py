@@ -434,14 +434,10 @@ class PyroNode(object):
 
     @property
     def root(self):
-        return pr.PyroRoot(self._node.root,self._daemon)
+        return pr.PyroRoot(node=self._node.root,daemon=self._daemon)
 
     def addListener(self, listener):
-        try:
-            uri = self._daemon.uriFor(listener)
-        except:
-            uri = self._daemon.register(listener)
-        self._node.addListener(listener)
+        self.root._nodeVarListener(self.path, listener)
 
     def __call__(self,arg=None):
         self._node.call(arg)
@@ -450,6 +446,7 @@ class PyroNode(object):
 def attrHelper(nodes,name):
     """
     Return a single item or a list of items matching the passed
+
     name. If the name is an exact match to a single item in the list
     then return it. Otherwise attempt to find items which match the 
     passed name, but are array entries: name[n]. Return these items

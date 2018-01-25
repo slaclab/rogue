@@ -212,6 +212,9 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                     {'path':path, 'value':rawValue, 'disp': dispValue}
         """
         with self._updatedLock:
+
+            if isinstance(func,Pyro4.core.Proxy):
+                func._pyroOneway.add("rootListener")
             self._varListeners.append(func)
 
     def getYaml(self,readFirst,modes=['RW']):
@@ -301,9 +304,14 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                     tar.rootListener(yml,l)
                 else:
                     tar(yml,l)
-            except Pyro4.errors.CommunicationError as e:
-                self._log.info("Pyro Disconnect. Removing callback")
-                self._varListeners.remove(tar)
+
+            except Pyro4.errors.CommunicationError as msg:
+                if 'Connection refused' in str(msg):
+                    self._log.info("Pyro Disconnect. Removing callback")
+                    self._varListeners.remove(tar)
+                else:
+                    #self._log.error("Pyro callback failed for {}: {}".format(self.name,msg))
+                    print("Pyro callback failed for {}: {}".format(self.name,msg))
 
     def _sendYamlFrame(self,yml):
         """
@@ -435,11 +443,40 @@ class PyroRoot(pr.PyroNode):
     def __init__(self, *, node,daemon):
         pr.PyroNode.__init__(self,node=node,daemon=daemon)
 
+        self._varListenersLock = threading.Lock()
+        self._varListeners = {}
+
     def addInstance(self,node):
         self._daemon.register(node)
 
     def getNode(self, path):
         return pr.PyroNode(node=self._node.getNode(path),daemon=daemon)
+
+    def _nodeVarListener(self, path, listener):
+        with self._varListenersLock:
+            if not path in self._varListeners:
+                self._varListeners[path] = []
+
+            self._varListeners[path].append(listener)
+
+    def rootListener(self, yml, l):
+        path  = l['path']
+        value = l['value']
+        disp  = l['disp']
+
+        print("Got callback from {}".format(path))
+
+        with self._varListenersLock:
+            if path in self._varListeners:
+                for f in self._varListeners[path]:
+                    f(value,disp)
+
+    def addVarListener(self,func):
+        try:
+            uri = self._daemon.uriFor(listener)
+        except:
+            uri = self._daemon.register(listener)
+        self._node.addVarListener(listener)
 
 
 class PyroClient(object):
