@@ -79,7 +79,6 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
         # Variable update list
         self._updatedDict = None
-        self._updatedList = None
         self._updatedLock = threading.Lock()
 
         # Variable update listener
@@ -204,14 +203,8 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
     def addVarListener(self,func):
         """
         Add a variable update listener function.
-        The called function should take the following form:
-            func(yaml, list)
-                yaml = A yaml string containing updated variables and disp values
-                list = A list of variables with the following format for each entry
-                   {'var':variable, 'path':path, 'value':rawValue, 'disp': dispValue}
+        The variable, value and display string will be passed as an arg: func(var,value,disp)
         """
-        #if isinstance(func,Pyro4.core.Proxy):
-        #    func._pyroOneway.add("rootListener")
         self._varListeners.append(func)
 
     def getYaml(self,readFirst,modes=['RW']):
@@ -293,23 +286,6 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         for key,value in self._nodes.items():
             value._setTimeout(timeout)
 
-    def _updateVarListeners(self, yml, l):
-        """Send update to listeners. Lock must be held."""
-        for tar in self._varListeners:
-            try:
-                if hasattr(tar,'rootListener'):
-                    tar.rootListener(yml,l)
-                else:
-                    tar(yml,l)
-
-            except Pyro4.errors.CommunicationError as msg:
-                if 'Connection refused' in str(msg):
-                    self._log.info("Pyro Disconnect. Removing callback")
-                    self._varListeners.remove(tar)
-                else:
-                    self._log.error("Pyro callback failed for {}: {}".format(self.name,msg))
-                    print("Pyro callback failed for {}: {}".format(self.name,msg))
-
     def _sendYamlFrame(self,yml):
         """
         Generate a frame containing the passed string.
@@ -332,19 +308,14 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         """Initialize the update tracking log before a bulk variable update"""
         with self._updatedLock:
             self._updatedDict = odict()
-            self._updatedList = []
 
     def _doneUpdatedVars(self):
         """Stream the results of a bulk variable update and update listeners"""
         with self._updatedLock:
             if self._updatedDict:
                 yml = dictToYaml(self._updatedDict,default_flow_style=False)
-
-                self._updateVarListeners(yml,self._updatedList)
                 self._sendYamlFrame(yml)
-
                 self._updatedDict = None
-                self._updatedList = None
 
     @pr.command(order=7, name='WriteAll', description='Write all values to the hardware')
     def _write(self):
@@ -415,27 +386,34 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
             self.SystemLog.set(value='',write=False)
         self.SystemLog.updated()
 
-    def _varUpdated(self,update,var,value,disp):
-        entry = {'var':var, 'path':var.path,'value':value,'disp':disp}
+    def _varUpdated(self,var,value,disp):
+        for func in self._varListeners:
 
-        if not self.update:
-            return
+            try:
+                if hasattr(func,'varListener'):
+                    func.varListener(var,value,disp)
+                else:
+                    func(var,value,disp)
+
+            except Pyro4.errors.CommunicationError as msg:
+                if 'Connection refused' in str(msg):
+                    self._log.info("Pyro Disconnect. Removing callback")
+                    self._varListeners.remove(func)
+                else:
+                    self._log.error("Pyro callback failed for {}: {}".format(self.name,msg))
+                    print("Pyro callback failed for {}: {}".format(self.name,msg))
 
         with self._updatedLock:
 
             # Log is active add to log
             if self._updatedDict is not None:
                 addPathToDict(self._updatedDict,var.path,disp)
-                self._updatedList.append(entry)
 
             # Otherwise act directly
             else:
                 d   = {}
                 addPathToDict(d,var.path,disp)
                 yml = dictToYaml(d,default_flow_style=False)
-                lst = [entry]
-
-                self._updateVarListeners(yml,lst)
                 self._sendYamlFrame(yml)
 
 

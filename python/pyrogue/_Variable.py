@@ -157,7 +157,7 @@ class BaseVariable(pr.Node):
         Add a listener Variable or function to call when variable changes. 
         If listener is a Variable then Variable.updated() will be used as the function
         This is usefull when chaining variables together. (adc conversions, etc)
-        The variable and value will be passed as an arg: func(var,value)
+        The variable, value and display string will be passed as an arg: func(var,value,disp)
         """
         if isinstance(listener, BaseVariable):
             self.__listeners.append(listener.updated)
@@ -192,8 +192,8 @@ class BaseVariable(pr.Node):
                 func(self,value,disp)
 
         # Root variable update log
-        if self._root is not None:
-            self._root._varUpdated(self._update,self,value,disp)
+        if self._update is True and self._root is not None:
+            self._root._varUpdated(self,value,disp)
 
     @Pyro4.expose
     def genDisp(self, value):
