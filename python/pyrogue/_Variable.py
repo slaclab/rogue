@@ -185,6 +185,9 @@ class BaseVariable(pr.Node):
     def updated(self, var=None, value=None, disp=None):
         """Variable has been updated. Inform listeners."""
 
+        if len(self.__listeners) == 0 and self._update is False:
+            return
+
         value = self.value()
         disp  = self.valueDisp()
 
