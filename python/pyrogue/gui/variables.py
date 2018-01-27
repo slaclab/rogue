@@ -46,12 +46,12 @@ class VariableLink(QObject):
         if variable.units:
             self._item.setText(4,str(variable.units))
 
-        variable.addListener(self)
-
         if expand:
             self.setup(None)
         else:
             self._tree.itemExpanded.connect(self.setup)
+
+        variable.addListener(self)
 
     def setup(self,item):
         with self._lock:

@@ -83,7 +83,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         self._updatedLock = threading.Lock()
 
         # Variable update listener
-        self._varListeners = []
+        self._varListeners  = []
 
         # Init after _updatedLock exists
         pr.Device.__init__(self, name=name, description=description)
@@ -127,9 +127,8 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
         # Start pyro server if enabled
         if pyroGroup is not None:
-            Pyro4.config.THREADPOOL_SIZE = 10000
+            Pyro4.config.THREADPOOL_SIZE = 1000
             Pyro4.config.SERVERTYPE = "multiplex"
-            #Pyro4.config.SERVERTYPE = "thread"
             Pyro4.config.POLLTIMEOUT = 3
 
             Pyro4.util.SerializerBase.register_dict_to_class("collections.OrderedDict", recreate_OrderedDict)
@@ -209,13 +208,11 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
             func(yaml, list)
                 yaml = A yaml string containing updated variables and disp values
                 list = A list of variables with the following format for each entry
-                    {'path':path, 'value':rawValue, 'disp': dispValue}
+                   {'var':variable, 'path':path, 'value':rawValue, 'disp': dispValue}
         """
-        with self._updatedLock:
-
-            if isinstance(func,Pyro4.core.Proxy):
-                func._pyroOneway.add("rootListener")
-            self._varListeners.append(func)
+        #if isinstance(func,Pyro4.core.Proxy):
+        #    func._pyroOneway.add("rootListener")
+        self._varListeners.append(func)
 
     def getYaml(self,readFirst,modes=['RW']):
         """
@@ -310,7 +307,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                     self._log.info("Pyro Disconnect. Removing callback")
                     self._varListeners.remove(tar)
                 else:
-                    #self._log.error("Pyro callback failed for {}: {}".format(self.name,msg))
+                    self._log.error("Pyro callback failed for {}: {}".format(self.name,msg))
                     print("Pyro callback failed for {}: {}".format(self.name,msg))
 
     def _sendYamlFrame(self,yml):
@@ -418,8 +415,11 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
             self.SystemLog.set(value='',write=False)
         self.SystemLog.updated()
 
-    def _varUpdated(self,var,value,disp):
-        entry = {'path':var.path,'value':value,'disp':disp}
+    def _varUpdated(self,update,var,value,disp):
+        entry = {'var':var, 'path':var.path,'value':value,'disp':disp}
+
+        if not self.update:
+            return
 
         with self._updatedLock:
 
@@ -441,57 +441,49 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
 class PyroRoot(pr.PyroNode):
     def __init__(self, *, node,daemon):
-        pr.PyroNode.__init__(self,node=node,daemon=daemon)
+        pr.PyroNode.__init__(self,root=self,node=node,daemon=daemon)
 
-        self._varListenersLock = threading.Lock()
-        self._varListeners = {}
+        self._varListeners  = {}
+        self._rootListeners = {}
 
     def addInstance(self,node):
         self._daemon.register(node)
 
     def getNode(self, path):
-        return pr.PyroNode(node=self._node.getNode(path),daemon=daemon)
+        return pr.PyroNode(root=self,node=self._node.getNode(path),daemon=self._daemon)
 
-    def _nodeVarListener(self, path, listener):
-        with self._varListenersLock:
-            if not path in self._varListeners:
-                self._varListeners[path] = []
+    def addVarListener(self,listener):
+        self._rootListeners.append(listener)
 
-            self._varListeners[path].append(listener)
+    def _addRootVarListener(self, path, listener):
+        if not path in self._varListeners:
+            self._varListeners[path] = []
 
+        self._varListeners[path].append(listener)
+
+    @Pyro4.expose
     def rootListener(self, yml, l):
-        path  = l['path']
-        value = l['value']
-        disp  = l['disp']
+        for f in self._rootListeners:
+            f.rootListener(yml, l)
 
-        print("Got callback from {}".format(path))
+    @Pyro4.expose
+    def varListener(self, var, value, disp):
+        locVar = pr.PyroNode(root=self,node=var,daemon=self._daemon)
+        path   = locVar.path
 
-        with self._varListenersLock:
-            if path in self._varListeners:
-                for f in self._varListeners[path]:
-                    f(value,disp)
-
-    def addVarListener(self,func):
-        try:
-            uri = self._daemon.uriFor(listener)
-        except:
-            uri = self._daemon.register(listener)
-        self._node.addVarListener(listener)
+        if path in self._varListeners:
+            for f in self._varListeners[path]:
+                f.varListener(var=locVar, value=value, disp=disp)
 
 
 class PyroClient(object):
     def __init__(self, group, host=None, ns=None):
         self._group = group
 
-        Pyro4.config.THREADPOOL_SIZE = 10000
-        #Pyro4.config.SERVERTYPE = "multiplex"
-        Pyro4.config.SERVERTYPE = "thread"
-        #Pyro4.config.POLLTIMEOUT = 3
+        Pyro4.config.THREADPOOL_SIZE = 100
+        Pyro4.config.SERVERTYPE = "multiplex"
+        Pyro4.config.POLLTIMEOUT = 3
 
-        #Pyro4.config.THREADPOOL_SIZE = 100
-        #Pyro4.config.THREADPOOL_SIZE = 10000
-        #Pyro4.config.SERVERTYPE = "multiplex"
-        #Pyro4.config.POLLTIMEOUT = 3
         Pyro4.util.SerializerBase.register_dict_to_class("collections.OrderedDict", recreate_OrderedDict)
 
         try:
@@ -511,6 +503,9 @@ class PyroClient(object):
         try:
             uri = self._ns.lookup("{}.{}".format(self._group,name))
             ret = PyroRoot(node=Pyro4.Proxy(uri),daemon=self._pyroDaemon)
+            self._pyroDaemon.register(ret)
+
+            ret._node.addVarListener(ret)
             return ret
         except:
             raise pr.NodeError("PyroClient Failed to find {}.{}.".format(self._group,name))

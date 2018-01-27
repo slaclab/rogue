@@ -49,11 +49,10 @@ class BaseVariable(pr.Node):
         self._units         = units
         self._minimum       = minimum # For base='range'
         self._maximum       = maximum # For base='range'
-        self._update        = update
+        self._stream        = update
         self._default       = value
         self._pollInterval  = pollInterval
         self.__listeners    = []
-        self._listenLock    = threading.Lock()
         self.__dependencies = []
 
         # Build enum if specified
@@ -160,11 +159,10 @@ class BaseVariable(pr.Node):
         This is usefull when chaining variables together. (adc conversions, etc)
         The variable and value will be passed as an arg: func(var,value)
         """
-        with self._listenLock:
-            if isinstance(listener, BaseVariable):
-                self.__listeners.append(listener.updated)
-            else:
-                self.__listeners.append(listener)
+        if isinstance(listener, BaseVariable):
+            self.__listeners.append(listener.updated)
+        else:
+            self.__listeners.append(listener)
 
     @Pyro4.expose
     def set(self, value, write=True):
@@ -184,25 +182,18 @@ class BaseVariable(pr.Node):
 
     def updated(self, var=None, value=None, disp=None):
         """Variable has been updated. Inform listeners."""
-        value = None
-        disp  = None
-        with self._listenLock:
-            for func in self.__listeners:
-                if value is None:
-                    value = self.value()
-                    disp  = self.valueDisp()
+        value = self.value()
+        disp  = self.valueDisp()
 
-                if hasattr(func,'varListener'):
-                    func.varListener(self,value,disp)
-                else:
-                    func(self,value,disp)
+        for func in self.__listeners:
+            if hasattr(func,'varListener'):
+                func.varListener(self,value,disp)
+            else:
+                func(self,value,disp)
 
         # Root variable update log
-        if self._update is True and self._root is not None:
-            if value is None:
-                value = self.value()
-                disp  = self.valueDisp()
-            self._root._varUpdated(self,value,disp)
+        if self._root is not None:
+            self._root._varUpdated(self._update,self,value,disp)
 
     @Pyro4.expose
     def genDisp(self, value):

@@ -365,7 +365,8 @@ class Node(object):
         pass
 
 class PyroNode(object):
-    def __init__(self, *, node,daemon):
+    def __init__(self, *, root, node, daemon):
+        self._root   = root
         self._node   = node
         self._daemon = daemon
 
@@ -387,9 +388,9 @@ class PyroNode(object):
         for k,n in d.items():
 
             if isinstance(n,dict):
-                ret[k] = PyroNode(node=Pyro4.util.SerializerBase.dict_to_class(n),daemon=self._daemon)
+                ret[k] = PyroNode(root=self._root,node=Pyro4.util.SerializerBase.dict_to_class(n),daemon=self._daemon)
             else:
-                ret[k] = PyroNode(node=n,daemon=self._daemon)
+                ret[k] = PyroNode(root=self._root,node=n,daemon=self._daemon)
 
         return ret
 
@@ -406,7 +407,7 @@ class PyroNode(object):
         elif isinstance(ret,odict) or isinstance(ret,dict):
             return self._convert(ret)
         else:
-            return PyroNode(node=ret,daemon=self._daemon)
+            return PyroNode(root=self._root,node=ret,daemon=self._daemon)
 
     def getNodes(self,typ,exc=None,hidden=True):
         excPass = str(exc) if exc is not None else None
@@ -430,14 +431,14 @@ class PyroNode(object):
 
     @property
     def parent(self):
-        return PyroNode(node=self._node.parent,daemon=self._daemon)
+        return PyroNode(root=self._root,node=self._node.parent,daemon=self._daemon)
 
     @property
     def root(self):
-        return pr.PyroRoot(node=self._node.root,daemon=self._daemon)
+        return self._root
 
     def addListener(self, listener):
-        self.root._nodeVarListener(self.path, listener)
+        self.root._addRootVarListener(self.path, listener)
 
     def __call__(self,arg=None):
         self._node.call(arg)
