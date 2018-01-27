@@ -158,7 +158,7 @@ class BaseVariable(pr.Node):
         Add a listener Variable or function to call when variable changes. 
         If listener is a Variable then Variable.updated() will be used as the function
         This is usefull when chaining variables together. (adc conversions, etc)
-        The variable, value and display string will be passed as an arg: func(var,value,disp)
+        The variable, value and display string will be passed as an arg: func(path,value,disp)
         """
         if isinstance(listener, BaseVariable):
             self.__listeners.append(listener.updated)
@@ -182,7 +182,7 @@ class BaseVariable(pr.Node):
         return self.get(read=False)
 
     @Pyro4.expose
-    def updated(self, var=None, value=None, disp=None):
+    def updated(self, path=None, value=None, disp=None):
         """Variable has been updated. Inform listeners."""
 
         if len(self.__listeners) == 0 and self._update is False:
@@ -193,13 +193,13 @@ class BaseVariable(pr.Node):
 
         for func in self.__listeners:
             if hasattr(func,'varListener'):
-                func.varListener(self,value,disp)
+                func.varListener(self.path,value,disp)
             else:
-                func(self,value,disp)
+                func(self.path,value,disp)
 
         # Root variable update log
         if self._update is True and self._root is not None:
-            self._root._varUpdated(self,value,disp)
+            self._root._varUpdated(self.path,value,disp)
 
     @Pyro4.expose
     def genDisp(self, value):
@@ -254,7 +254,6 @@ class BaseVariable(pr.Node):
         # Called by parent Device after _buildBlocks()
         if self._default is not None:
             self.setDisp(self._default, write=False)
-
 
     def _updatePollInterval(self):
         if self._pollInterval > 0 and self.root._pollQueue is not None:

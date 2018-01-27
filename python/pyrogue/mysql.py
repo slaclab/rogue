@@ -194,7 +194,7 @@ class MysqlGw(object):
         self._varSer[variable.path] = 0
         variable.addListener(self._updateVariables)
 
-    def _updateVariables (self, var, value, disp):
+    def _updateVariables (self, path, value, disp):
         with self._dbLock:
             if self._db is None:
                 #self._log.error("Not connected to Mysql server " + self._host)
@@ -202,8 +202,8 @@ class MysqlGw(object):
 
             try:
                 cursor = self._db.cursor(MySQLdb.cursors.DictCursor)
-                sql = "update variable set value='{}', server_ts=now(),".format(mysqlString(num['disp']))
-                sql += "server_ser = (server_ser + 1) where name='{}'".format(num['path'])
+                sql = "update variable set value='{}', server_ts=now(),".format(mysqlString(disp))
+                sql += "server_ser = (server_ser + 1) where name='{}'".format(path)
                 cursor.execute(sql)
                 self._db.commit()
             except:
