@@ -158,7 +158,7 @@ class BaseVariable(pr.Node):
         Add a listener Variable or function to call when variable changes. 
         If listener is a Variable then Variable.updated() will be used as the function
         This is usefull when chaining variables together. (adc conversions, etc)
-        The variable and value will be passed as an arg: func(var,value,disp)
+        The variable, value and display string will be passed as an arg: func(var,value,disp)
         """
         if isinstance(listener, BaseVariable):
             self.__listeners.append(listener.updated)
