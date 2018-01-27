@@ -451,27 +451,13 @@ class PyroRoot(pr.PyroNode):
         self._relayListeners[path].append(listener)
 
     @Pyro4.expose
-    def varListener(self, var, value, disp):
-        print("-----------------------------")
-        locVar = pr.PyroNode(root=self,node=var,daemon=self._daemon)
-        print("here1")
-        #locVar = var
-        path   = locVar.path
-        print(path)
-
+    def varListener(self, path, value, disp):
         for f in self._varListeners:
-            print("here2")
-            f.varListener(var=locVar, value=value, disp=disp)
-            print("here3")
+            f.varListener(path=path, value=value, disp=disp)
 
         if path in self._relayListeners:
-            print("here4")
             for f in self._relayListeners[path]:
-                print("here5")
-                f.varListener(var=locVar, value=value, disp=disp)
-                print("here6")
-        print("-----------------------------")
-
+                f.varListener(path=path, value=value, disp=disp)
 
 class PyroClient(object):
     def __init__(self, group, host=None, ns=None):
