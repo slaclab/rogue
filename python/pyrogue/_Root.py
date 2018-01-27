@@ -84,8 +84,6 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
         # Variable update listener
         self._varListeners  = []
-        self._pollCount = 0
-        self._pollTime  = int(time.time())
 
         # Init after _updatedLock exists
         pr.Device.__init__(self, name=name, description=description)
@@ -390,14 +388,6 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         self.SystemLog.updated()
 
     def _varUpdated(self,path,value,disp):
-        diff = int(time.time()) - self._pollTime
-        self._pollCount += 1
-
-        if diff != 0:
-            print("Polled {} times in {} seconds".format(self._pollCount,diff))
-            self._pollTime = int(time.time())
-            self._pollCount = 0
-
         for func in self._varListeners:
 
             try:
