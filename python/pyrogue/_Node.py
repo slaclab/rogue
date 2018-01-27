@@ -438,7 +438,7 @@ class PyroNode(object):
         return self._root
 
     def addListener(self, listener):
-        self.root._addRootVarListener(self.path, listener)
+        self.root._addRelayListener(self.path, listener)
 
     def __call__(self,arg=None):
         self._node.call(arg)

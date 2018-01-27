@@ -22,6 +22,7 @@ import pyrogue as pr
 import Pyro4
 import Pyro4.naming
 import functools as ft
+import time
 
 class RootLogHandler(logging.Handler):
     """ Class to listen to log entries and add them to syslog variable"""
@@ -83,6 +84,8 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
         # Variable update listener
         self._varListeners  = []
+        self._pollCount = 0
+        self._pollTime  = int(time.time())
 
         # Init after _updatedLock exists
         pr.Device.__init__(self, name=name, description=description)
@@ -387,6 +390,14 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         self.SystemLog.updated()
 
     def _varUpdated(self,path,value,disp):
+        diff = int(time.time()) - self._pollTime
+        self._pollCount += 1
+
+        if diff != 0:
+            print("Polled {} times in {} seconds".format(self._pollCount,diff))
+            self._pollTime = int(time.time())
+            self._pollCount = 0
+
         for func in self._varListeners:
 
             try:
@@ -421,8 +432,8 @@ class PyroRoot(pr.PyroNode):
     def __init__(self, *, node,daemon):
         pr.PyroNode.__init__(self,root=self,node=node,daemon=daemon)
 
-        self._varListeners  = {}
-        self._rootListeners = {}
+        self._varListeners   = []
+        self._relayListeners = {}
 
     def addInstance(self,node):
         self._daemon.register(node)
@@ -431,27 +442,35 @@ class PyroRoot(pr.PyroNode):
         return pr.PyroNode(root=self,node=self._node.getNode(path),daemon=self._daemon)
 
     def addVarListener(self,listener):
-        self._rootListeners.append(listener)
+        self._varListeners.append(listener)
 
-    def _addRootVarListener(self, path, listener):
-        if not path in self._varListeners:
-            self._varListeners[path] = []
+    def _addRelayListener(self, path, listener):
+        if not path in self._relayListeners:
+            self._relayListeners[path] = []
 
-        self._varListeners[path].append(listener)
-
-    @Pyro4.expose
-    def rootListener(self, yml, l):
-        for f in self._rootListeners:
-            f.rootListener(yml, l)
+        self._relayListeners[path].append(listener)
 
     @Pyro4.expose
     def varListener(self, var, value, disp):
+        print("-----------------------------")
         locVar = pr.PyroNode(root=self,node=var,daemon=self._daemon)
+        print("here1")
+        #locVar = var
         path   = locVar.path
+        print(path)
 
-        if path in self._varListeners:
-            for f in self._varListeners[path]:
+        for f in self._varListeners:
+            print("here2")
+            f.varListener(var=locVar, value=value, disp=disp)
+            print("here3")
+
+        if path in self._relayListeners:
+            print("here4")
+            for f in self._relayListeners[path]:
+                print("here5")
                 f.varListener(var=locVar, value=value, disp=disp)
+                print("here6")
+        print("-----------------------------")
 
 
 class PyroClient(object):

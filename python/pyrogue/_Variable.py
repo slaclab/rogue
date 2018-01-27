@@ -49,7 +49,7 @@ class BaseVariable(pr.Node):
         self._units         = units
         self._minimum       = minimum # For base='range'
         self._maximum       = maximum # For base='range'
-        self._stream        = update
+        self._update        = update
         self._default       = value
         self._pollInterval  = pollInterval
         self.__listeners    = []
