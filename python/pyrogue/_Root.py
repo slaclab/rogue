@@ -203,7 +203,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
     def addVarListener(self,func):
         """
         Add a variable update listener function.
-        The variable, value and display string will be passed as an arg: func(var,value,disp)
+        The variable, value and display string will be passed as an arg: func(path,value,disp)
         """
         self._varListeners.append(func)
 
@@ -386,23 +386,23 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
             self.SystemLog.set(value='',write=False)
         self.SystemLog.updated()
 
-    def _varUpdated(self,var,value,disp):
+    def _varUpdated(self,path,value,disp):
         for func in self._varListeners:
             if hasattr(func,'varListener'):
-                func.varListener(var,value,disp)
+                func.varListener(path,value,disp)
             else:
-                func(var,value,disp)
+                func(path,value,disp)
 
         with self._updatedLock:
 
             # Log is active add to log
             if self._updatedDict is not None:
-                addPathToDict(self._updatedDict,var.path,disp)
+                addPathToDict(self._updatedDict,path,disp)
 
             # Otherwise act directly
             else:
                 d   = {}
-                addPathToDict(d,var.path,disp)
+                addPathToDict(d,path,disp)
                 yml = dictToYaml(d,default_flow_style=False)
                 self._sendYamlFrame(yml)
 
