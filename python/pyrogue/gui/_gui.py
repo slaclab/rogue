@@ -29,6 +29,7 @@ import pyrogue.gui.system
 import threading
 import sys
 
+
 class GuiTop(QWidget):
 
     def __init__(self,*, group,parent=None):
@@ -50,6 +51,8 @@ class GuiTop(QWidget):
         self.connect(self,SIGNAL('newTree'),self._addTree)
         self.connect(self,SIGNAL('newTree'),self.var.addTree)
         self.connect(self,SIGNAL('newTree'),self.cmd.addTree)
+
+        self._appTop = None
 
     def addTree(self,root):
         if not root.running:

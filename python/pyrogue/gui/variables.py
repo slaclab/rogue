@@ -182,6 +182,7 @@ class VariableWidget(QWidget):
             root.ReadAll()
 
     def addTreeItems(self,parent,d,expand):
+        #print("Adding variable {}".format(d.name))
 
         # First create variables
         for key,val in d.getNodes(typ=pyrogue.BaseVariable,exc=pyrogue.BaseCommand,hidden=False).items():
@@ -197,4 +198,8 @@ class VariableWidget(QWidget):
             self.addTreeItems(w,val,nxtExpand)
             self.devList.append({'dev':val,'item':w})
 
+        for i in range(0,4):
+            self.tree.resizeColumnToContents(i)
+
+        QCoreApplication.processEvents()
 

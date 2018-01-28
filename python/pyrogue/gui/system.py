@@ -369,6 +369,8 @@ class SystemWidget(QWidget):
         pb.clicked.connect(self.resetLog)
         vb.addWidget(pb)
 
+        QCoreApplication.processEvents()
+
     def resetLog(self):
         self.root.ClearLog()
 
