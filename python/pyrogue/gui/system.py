@@ -158,11 +158,12 @@ class DataLink(QObject):
     def dataFileEdited(self):
         p = QPalette()
         p.setColor(QPalette.Base,Qt.yellow)
+        #p.setColor(QPalette.Base,QColor(0xff,0xff,0xe0))
+        p.setColor(QPalette.Text,Qt.black)
         self.dataFile.setPalette(p)
 
     def dataFileChanged(self):
         p = QPalette()
-        p.setColor(QPalette.Base,Qt.white)
         self.dataFile.setPalette(p)
 
         self.block = True
@@ -177,11 +178,11 @@ class DataLink(QObject):
     def bufferSizeEdited(self):
         p = QPalette()
         p.setColor(QPalette.Base,Qt.yellow)
+        p.setColor(QPalette.Text,Qt.black)
         self.bufferSize.setPalette(p)
 
     def bufferSizeChanged(self):
         p = QPalette()
-        p.setColor(QPalette.Base,Qt.white)
         self.bufferSize.setPalette(p)
 
         self.block = True
@@ -191,11 +192,11 @@ class DataLink(QObject):
     def maxSizeEdited(self):
         p = QPalette()
         p.setColor(QPalette.Base,Qt.yellow)
+        p.setColor(QPalette.Text,Qt.black)
         self.maxSize.setPalette(p)
 
     def maxSizeChanged(self):
         p = QPalette()
-        p.setColor(QPalette.Base,Qt.white)
         self.maxSize.setPalette(p)
 
         self.block = True

@@ -116,11 +116,11 @@ class VariableLink(QObject):
         self._inEdit = True
         p = QPalette()
         p.setColor(QPalette.Base,Qt.yellow)
+        p.setColor(QPalette.Text,Qt.black)
         self._widget.setPalette(p)
 
     def returnPressed(self):
         p = QPalette()
-        p.setColor(QPalette.Base,Qt.white)
         self._widget.setPalette(p)
 
         self.guiChanged(self._widget.text())
