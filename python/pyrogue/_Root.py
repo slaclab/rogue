@@ -208,6 +208,9 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         """
         self._varListeners.append(func)
 
+        if isinstance(func,Pyro4.core.Proxy):                                    
+            func._pyroOneway.add("varListener")                                  
+
     def getYaml(self,readFirst,modes=['RW']):
         """
         Get current values as a yaml dictionary.
