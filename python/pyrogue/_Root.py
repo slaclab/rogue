@@ -405,7 +405,6 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                     self._varListeners.remove(func)
                 else:
                     self._log.error("Pyro callback failed for {}: {}".format(self.name,msg))
-                    print("Pyro callback failed for {}: {}".format(self.name,msg))
 
         with self._updatedLock:
 
