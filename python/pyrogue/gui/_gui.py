@@ -62,4 +62,6 @@ class GuiTop(QWidget):
     def _addTree(self,root):
         self.sys = pyrogue.gui.system.SystemWidget(root=root,parent=self.tab)
         self.tab.addTab(self.sys,root.name)
+        self.adjustSize()
+
 
