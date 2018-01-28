@@ -158,7 +158,6 @@ class DataLink(QObject):
     def dataFileEdited(self):
         p = QPalette()
         p.setColor(QPalette.Base,Qt.yellow)
-        #p.setColor(QPalette.Base,QColor(0xff,0xff,0xe0))
         p.setColor(QPalette.Text,Qt.black)
         self.dataFile.setPalette(p)
 
