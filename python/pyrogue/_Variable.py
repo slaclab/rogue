@@ -212,7 +212,7 @@ class BaseVariable(pr.Node):
 
     @Pyro4.expose
     def genDisp(self, value):
-        #print('{}.genDisp(read={}) disp={} value={}'.format(self.path, read, self.disp, value))
+        #print('{}.genDisp() disp={} value={}'.format(self.path, self.disp, value))
         if self.disp == 'enum':
             #print('enum: {}'.format(self.enum))
             #print('get: {}'.format(self.get(read)))
@@ -281,6 +281,7 @@ class BaseVariable(pr.Node):
         #self.get(read=True)
 
     def _setDict(self,d,writeEach,modes):
+        #print(f'{self.path}._setDict(d={d})')        
         if self._mode in modes:
             self.setDisp(d,writeEach)
 
@@ -570,6 +571,13 @@ class LinkVariable(BaseVariable):
             for arg in args:
                 if arg not in kwargs:
                     kwargs[arg] = getattr(variable, arg)
+
+        if not self._linkedSet:
+            kwargs['mode'] = 'RO'
+        if not self._linkedGet:
+            kwargs['mode'] = 'WO'
+
+        # Need to have at least 1 of linkedSet or linkedGet, otherwise error
 
         # Call super constructor
         BaseVariable.__init__(self, name=name, update=True, **kwargs)
