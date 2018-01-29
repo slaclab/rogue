@@ -21,11 +21,26 @@
 #include <rogue/GeneralError.h>
 #include <string>
 
-const uint32_t rogue::Version::Major;
-const uint32_t rogue::Version::Minor;
-const uint32_t rogue::Version::Maint;
+const char rogue::Version::_version[] = VERSION;
+uint32_t   rogue::Version::_major     = 0;
+uint32_t   rogue::Version::_minor     = 0;
+uint32_t   rogue::Version::_maint     = 0;
 
 namespace bp = boost::python;
+
+void rogue::Version::init() {
+   uint32_t diff;
+   char     dump[100];
+   char     lead;
+   int32_t  ret;
+
+   ret = sscanf(_version,"%c%i.%i.%i-%i-%s",&lead,&_major,&_minor,&_maint,&diff,dump);
+
+   if ( (ret != 4 && ret != 6) || (lead != 'v' && lead != 'V')) 
+      throw(rogue::GeneralError("Version:init","Invalid compiled version string"));
+
+   if ( ret == 6 ) _maint += diff;
+}
 
 void rogue::Version::extract(std::string compare, uint32_t *major, uint32_t *minor, uint32_t *maint) {
    if ( sscanf(compare.c_str(),"%i.%i.%i",major,minor,maint) != 3 )
@@ -33,33 +48,48 @@ void rogue::Version::extract(std::string compare, uint32_t *major, uint32_t *min
 }
 
 std::string rogue::Version::current() {
-   char buffer[100];
-
-   sprintf(buffer,"%i.%i.%i", rogue::Version::Major, rogue::Version::Minor, rogue::Version::Maint);
-   return(std::string(buffer));
+   std::string ret = _version;
+   return ret;
 }
 
 bool rogue::Version::greaterThanEqual(std::string compare) {
-   uint32_t major, minor, maint;
-   extract(compare,&major,&minor,&maint);
-   if ( major != Major ) return(Major > major);
-   if ( minor != Minor ) return(Minor > minor);
-   if ( maint != Maint ) return(Maint > maint);
+   uint32_t cmajor, cminor, cmaint;
+   init();
+   extract(compare,&cmajor,&cminor,&cmaint);
+   if ( cmajor != _major ) return(_major > cmajor);
+   if ( cminor != _minor ) return(_minor > cminor);
+   if ( cmaint != _maint ) return(_maint > cmaint);
    return(true);
 }
 
 bool rogue::Version::lessThan(std::string compare) {
-   uint32_t major, minor, maint;
-   extract(compare,&major,&minor,&maint);
-   if ( major != Major ) return(Major < major);
-   if ( minor != Minor ) return(Minor < minor);
-   if ( maint != Maint ) return(Maint < maint);
+   uint32_t cmajor, cminor, cmaint;
+   init();
+   extract(compare,&cmajor,&cminor,&cmaint);
+   if ( cmajor != _major ) return(_major < cmajor);
+   if ( cminor != _minor ) return(_minor < cminor);
+   if ( cmaint != _maint ) return(_maint < cmaint);
    return(false);
 }
 
 void rogue::Version::minVersion(std::string compare) {
    if ( lessThan(compare) ) 
-      throw(rogue::GeneralError("Version:extract","Installed rogue is less than minimum version"));
+      throw(rogue::GeneralError("Version:minVersion","Installed rogue is less than minimum version"));
+}
+
+uint32_t rogue::Version::getMajor() {
+   init();
+   return _major;
+}
+
+uint32_t rogue::Version::getMinor() {
+   init();
+   return _minor;
+}
+
+uint32_t rogue::Version::getMaint() {
+   init();
+   return _maint;
 }
 
 void rogue::Version::setup_python() {
@@ -72,9 +102,12 @@ void rogue::Version::setup_python() {
       .staticmethod("lessThan")
       .def("minVersion", &rogue::Version::minVersion)
       .staticmethod("minVersion")
-      .def_readonly("Major",&rogue::Version::Major)
-      .def_readonly("Minor",&rogue::Version::Minor)
-      .def_readonly("Maint",&rogue::Version::Maint)
+      .def("major", &rogue::Version::getMajor)
+      .staticmethod("major")
+      .def("minor", &rogue::Version::getMinor)
+      .staticmethod("minor")
+      .def("maint", &rogue::Version::getMaint)
+      .staticmethod("maint")
    ;
 }
 

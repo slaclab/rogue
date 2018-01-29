@@ -27,13 +27,17 @@ namespace rogue {
    //! Version
    class Version {
 
+         static void init   ();
          static void extract(std::string compare, uint32_t *major, uint32_t *minor, uint32_t *maint);
 
-      public:
+         //static const std::string _version = VERSION;
+         static const char _version[];
 
-         static const uint32_t Major = VER_MAJOR;
-         static const uint32_t Minor = VER_MINOR;
-         static const uint32_t Maint = VER_MAINT;
+         static uint32_t _major;
+         static uint32_t _minor;
+         static uint32_t _maint;
+
+      public:
 
          Version() {}
 
@@ -46,6 +50,10 @@ namespace rogue {
          static void minVersion(std::string compare);
 
          static void setup_python();
+
+         static uint32_t getMajor ();
+         static uint32_t getMinor ();
+         static uint32_t getMaint ();
    };
 }
 
