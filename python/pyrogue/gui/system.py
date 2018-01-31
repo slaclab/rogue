@@ -364,6 +364,7 @@ class SystemWidget(QWidget):
 
         root.SystemLog.addListener(self)
         self.connect(self,SIGNAL('updateLog'),self.systemLog.setText)
+        self.systemLog.setText(root.SystemLog.valueDisp())
         
         pb = QPushButton('Clear Log')
         pb.clicked.connect(self.resetLog)
