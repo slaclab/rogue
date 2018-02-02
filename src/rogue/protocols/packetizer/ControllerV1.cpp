@@ -3,8 +3,7 @@
  * Title      : Packetizer Controller Version 1
  * ----------------------------------------------------------------------------
  * File       : ControllerV1.h
- * Created    : 2017-01-07
- * Last update: 2017-01-07
+ * Created    : 2018-02-02
  * ----------------------------------------------------------------------------
  * Description:
  * Packetizer Controller V1
