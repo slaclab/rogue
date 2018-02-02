@@ -83,7 +83,8 @@ ris::FramePtr rpp::Controller::reqFrame ( uint32_t size, uint32_t maxBuffSize ) 
 
       // Add 8 bytes to headroom
       buff->setHeadRoom(buff->getHeadRoom() + 8);
-      
+      buff->setTailRoom(buff->getTailRoom() + 1);
+
       // Add buffer to return frame
       lFrame->appendBuffer(buff);
    }
@@ -134,8 +135,9 @@ void rpp::Controller::transportRx( ris::FramePtr frame ) {
    tmpLuser = data[buff->getPayload()-1] & 0x7F;
    tmpEof   = data[buff->getPayload()-1] & 0x80;
 
-   // Rem 8 bytes to headroom
+   // Rem 8 bytes from headroom and 1 byte from tail
    buff->setHeadRoom(buff->getHeadRoom() + 8);
+   buff->setTailRoom(buff->getTailRoom() + 1);
 
    // Shorten message by one byte
    buff->setPayload(buff->getPayload()-1);
@@ -171,6 +173,10 @@ void rpp::Controller::transportRx( ris::FramePtr frame ) {
 
    // Last of transfer
    if ( tmpEof ) {
+      flags = frame->getFlags() & 0xFFFF00FF;
+      flags += tmpLuser << 8;
+      frame->setFlags(flags);
+
       tranCount_ = 0;
       if ( app_[tranDest_] ) {
          app_[tranDest_]->pushFrame(tranFrame_);
@@ -236,8 +242,9 @@ void rpp::Controller::applicationRx ( ris::FramePtr frame, uint8_t tDest ) {
       ris::FramePtr tFrame = ris::Frame::create();
       buff = frame->getBuffer(x);
 
-      // Rem 8 bytes to headroom
+      // Rem 8 bytes from headroom
       buff->setHeadRoom(buff->getHeadRoom() - 8);
+      buff->setTailRoom(buff->getTailRoom() - 1);
       
       // Make payload one byte longer
       buff->setPayload(buff->getPayload()+1);
