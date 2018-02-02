@@ -223,10 +223,10 @@ class EpicsCaServer(object):
                 pass
 
     # Variable was updated
-    def _variableUpdated(self,var,value,disp):
+    def _variableUpdated(self,path,value,disp):
         if self._driver is None: return
 
-        d = self._pvMap[var.path]
+        d = self._pvMap[path]
 
         if d['type'] == 'enum':
             val = d['enums'].index(disp)

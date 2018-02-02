@@ -133,26 +133,28 @@ class DataLink(QObject):
         pass
 
     @Pyro4.expose
-    def varListener(self,var,value,disp):
+    def varListener(self,path,value,disp):
 
         if self.block: return
 
-        if var.name == 'dataFile':
+        name = path.split('.')[-1]
+
+        if name == 'dataFile':
             self.emit(SIGNAL("updateDataFile"),disp)
 
-        elif var.name == 'open':
+        elif name == 'open':
             self.emit(SIGNAL("updateOpenState"),self.openState.findText(disp))
 
-        elif var.name == 'bufferSize':
+        elif name == 'bufferSize':
             self.emit(SIGNAL("updateBufferSize"),disp)
 
-        elif var.name == 'maxFileSize':
+        elif name == 'maxFileSize':
             self.emit(SIGNAL("updateMaxSize"),disp)
 
-        elif var.name == 'fileSize':
+        elif name == 'fileSize':
             self.emit(SIGNAL("updateFileSize"),disp)
 
-        elif var.name == 'frameCount':
+        elif name == 'frameCount':
             self.emit(SIGNAL("updateFrameCount"),disp)
 
     def dataFileEdited(self):
