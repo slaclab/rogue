@@ -59,6 +59,7 @@ void rpp::ControllerV2::transportRx( ris::FramePtr frame ) {
    bool      tmpSof;
    bool      crcErr;
    uint32_t  flags;
+   uint32_t  last;
    uint32_t  tmpCrc;
    uint8_t * data;
 
@@ -92,6 +93,7 @@ void rpp::ControllerV2::transportRx( ris::FramePtr frame ) {
    // Tail word 0
    tmpLuser = data[size-8];
    tmpEof   = data[size-7] & 0x1;
+   last     = data[size-6];
 
    // Tail word 1
    tmpCrc  = data[size-4];
@@ -104,12 +106,13 @@ void rpp::ControllerV2::transportRx( ris::FramePtr frame ) {
    result.process_bytes(data,size-4);
    crcErr = (tmpCrc != result.checksum());
 
+   // Adjust payload 
+   if ( last != 8 ) buff->setPayload((size - 16) + last);
+   else buff->setPayload(size-8);
+
    // Rem 8 bytes from headroom
    buff->setHeadRoom(buff->getHeadRoom() + 8);
    buff->setTailRoom(buff->getTailRoom() + 8);
-
-   // Shorten message
-   buff->setPayload(buff->getPayload()-8);
 
    // Drop frame and reset state if mismatch
    if ( tmpCount > 0  && (tmpSof || crcErr || tmpCount != tranCount_[tmpDest] ) ) {
@@ -163,6 +166,7 @@ void rpp::ControllerV2::applicationRx ( ris::FramePtr frame, uint8_t tDest ) {
    uint8_t  lUser;
    uint8_t  tId;
    uint32_t crc;
+   uint32_t last;
    struct timeval startTime;
    struct timeval currTime;
    struct timeval sumTime;
@@ -202,14 +206,22 @@ void rpp::ControllerV2::applicationRx ( ris::FramePtr frame, uint8_t tDest ) {
       ris::FramePtr tFrame = ris::Frame::create();
       buff = frame->getBuffer(x);
 
+      size = buff->getPayload();
+      last = size % 8;
+
+      // Shift to 64-it alignment
+      if ( last != 0 ) size = ((size / 8) * 8) + 1;
+      else last = 8;
+
+      // Add tail to payload
+      size += 8;
+      buff->setPayload(size);
+
       // Rem 8 bytes from headroom
       buff->setHeadRoom(buff->getHeadRoom() - 8);
       buff->setTailRoom(buff->getTailRoom() - 8);
-      
-      // Make payload one byte longer
-      buff->setPayload(buff->getPayload()+1);
 
-      size = buff->getPayload();
+      // Get data pointer
       data = buff->getPayloadData();
 
       // Header word 0
@@ -227,7 +239,7 @@ void rpp::ControllerV2::applicationRx ( ris::FramePtr frame, uint8_t tDest ) {
       // Tail  word 0
       data[size-8] = lUser;
       data[size-7] = (x == (frame->getCount() - 1)) ? 0x1 : 0x0; // EOF
-      data[size-6] = ((size % 8) == 0) ? 8 : (size % 8);
+      data[size-6] = last;
       data[size-5] = 0;
 
       // Compute CRC
