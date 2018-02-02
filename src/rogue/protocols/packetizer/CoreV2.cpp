@@ -1,0 +1,85 @@
+/**
+ *-----------------------------------------------------------------------------
+ * Title      : Packetizer Core Class
+ * ----------------------------------------------------------------------------
+ * File       : CoreV2.cpp
+ * Created    : 2017-01-07
+ * ----------------------------------------------------------------------------
+ * Description:
+ * Packetizer Core V2
+ * ----------------------------------------------------------------------------
+ * This file is part of the rogue software platform. It is subject to 
+ * the license terms in the LICENSE.txt file found in the top-level directory 
+ * of this distribution and at: 
+ *    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
+ * No part of the rogue software platform, including this file, may be 
+ * copied, modified, propagated, or distributed except according to the terms 
+ * contained in the LICENSE.txt file.
+ * ----------------------------------------------------------------------------
+**/
+#include <rogue/protocols/packetizer/CoreV2.h>
+#include <rogue/protocols/packetizer/Transport.h>
+#include <rogue/protocols/packetizer/Application.h>
+#include <rogue/protocols/packetizer/ControllerV2.h>
+#include <rogue/GeneralError.h>
+#include <boost/make_shared.hpp>
+#include <rogue/GilRelease.h>
+
+namespace rpp = rogue::protocols::packetizer;
+namespace ris = rogue::interfaces::stream;
+namespace bp  = boost::python;
+
+//! Class creation
+rpp::CoreV2Ptr rpp::CoreV2::create (uint32_t segmentSize) {
+   rpp::CoreV2Ptr r = boost::make_shared<rpp::CoreV2>(segmentSize);
+   return(r);
+}
+
+void rpp::CoreV2::setup_python() {
+
+   bp::class_<rpp::CoreV2, rpp::CoreV2Ptr, boost::noncopyable >("CoreV2",bp::init<uint32_t>())
+      .def("create",         &rpp::CoreV2::create)
+      .staticmethod("create")
+      .def("transport",      &rpp::CoreV2::transport)
+      .def("application",    &rpp::CoreV2::application)
+      .def("getDropCount",   &rpp::CoreV2::getDropCount)
+
+   ;
+
+}
+
+//! Creator
+rpp::CoreV2::CoreV2 (uint32_t segmentSize) {
+   tran_  = rpp::Transport::create();
+   cntl_  = rpp::ControllerV2::create(segmentSize,tran_,app_);
+
+   tran_->setController(cntl_);
+}
+
+//! Destructor
+rpp::CoreV2::~CoreV2() { }
+
+
+//! Get transport interface
+rpp::TransportPtr rpp::CoreV2::transport() {
+   return(tran_);
+}
+
+//! Application module
+rpp::ApplicationPtr rpp::CoreV2::application(uint8_t dest) {
+   if ( ! app_[dest] ) {
+      app_[dest] = rpp::Application::create(dest);
+      app_[dest]->setController(cntl_);
+   }
+   return(app_[dest]);
+}
+
+//! Get drop count
+uint32_t rpp::CoreV2::getDropCount() {
+   return(cntl_->getDropCount());
+}
+
+void rpp::CoreV2::setTimeout(uint32_t timeout) {
+   cntl_->setTimeout(timeout);
+}
+
