@@ -2,7 +2,7 @@
  *-----------------------------------------------------------------------------
  * Title      : Packetizer Controller Version 1
  * ----------------------------------------------------------------------------
- * File       : ControllerV1.h
+ * File       : ControllerV1.cpp
  * Created    : 2018-02-02
  * ----------------------------------------------------------------------------
  * Description:
@@ -33,8 +33,7 @@ namespace ris = rogue::interfaces::stream;
 namespace bp  = boost::python;
 
 //! Class creation
-rpp::ControllerV1Ptr rpp::ControllerV1::create ( uint32_t segmentSize, 
-                                                 rpp::TransportPtr tran, rpp::ApplicationPtr * app ) {
+rpp::ControllerV1Ptr rpp::ControllerV1::create ( uint32_t segmentSize, rpp::TransportPtr tran, rpp::ApplicationPtr * app ) {
    rpp::ControllerV1Ptr r = boost::make_shared<rpp::ControllerV1>(segmentSize,tran,app);
    return(r);
 }
@@ -176,7 +175,7 @@ void rpp::ControllerV1::applicationRx ( ris::FramePtr frame, uint8_t tDest ) {
       if ( timeout_ > 0 ) {
          gettimeofday(&currTime,NULL);
          if ( timercmp(&currTime,&endTime,>))
-            throw(rogue::GeneralError::timeout("packetizer::Controller::applicationRx",timeout_));
+            throw(rogue::GeneralError::timeout("packetizer::ControllerV1::applicationRx",timeout_));
       }
    }
 

@@ -2,8 +2,8 @@
  *-----------------------------------------------------------------------------
  * Title      : Packetizer Controller Version 1
  * ----------------------------------------------------------------------------
- * File       : ControllerV2.h
- * Created    : 2017-01-07
+ * File       : ControllerV2.cpp
+ * Created    : 2018-02-02
  * ----------------------------------------------------------------------------
  * Description:
  * Packetizer Controller V1
@@ -25,6 +25,7 @@
 #include <rogue/GeneralError.h>
 #include <boost/make_shared.hpp>
 #include <boost/pointer_cast.hpp>
+#include <boost/crc.hpp>
 #include <rogue/GilRelease.h>
 #include <math.h>
 
@@ -33,14 +34,13 @@ namespace ris = rogue::interfaces::stream;
 namespace bp  = boost::python;
 
 //! Class creation
-rpp::ControllerV2Ptr rpp::ControllerV2::create ( uint32_t segmentSize, 
-                                                 rpp::TransportPtr tran, rpp::ApplicationPtr * app ) {
+rpp::ControllerV2Ptr rpp::ControllerV2::create ( uint32_t segmentSize, rpp::TransportPtr tran, rpp::ApplicationPtr * app ) {
    rpp::ControllerV2Ptr r = boost::make_shared<rpp::ControllerV2>(segmentSize,tran,app);
    return(r);
 }
 
 //! Creator
-rpp::ControllerV2::ControllerV2 ( uint32_t segmentSize, rpp::TransportPtr tran, rpp::ApplicationPtr * app ) : rpp::Controller::Controller(segmentSize, tran, app, 8, 1) {
+rpp::ControllerV2::ControllerV2 ( uint32_t segmentSize, rpp::TransportPtr tran, rpp::ApplicationPtr * app ) : rpp::Controller::Controller(segmentSize, tran, app, 8, 8) {
 }
 
 //! Destructor
@@ -49,14 +49,17 @@ rpp::ControllerV2::~ControllerV2() { }
 //! Frame received at transport interface
 void rpp::ControllerV2::transportRx( ris::FramePtr frame ) {
    ris::BufferPtr buff;
-   uint32_t  tmpIdx;
+   uint32_t  size;
    uint32_t  tmpCount;
    uint8_t   tmpFuser;
    uint8_t   tmpLuser;
    uint8_t   tmpDest;
    uint8_t   tmpId;
    bool      tmpEof;
+   bool      tmpSof;
+   bool      crcErr;
    uint32_t  flags;
+   uint32_t  tmpCrc;
    uint8_t * data;
 
    if ( frame->getCount() == 0 ) 
@@ -67,54 +70,64 @@ void rpp::ControllerV2::transportRx( ris::FramePtr frame ) {
 
    buff = frame->getBuffer(0);
    data = buff->getPayloadData();
+   size = buff->getPayload();
 
    // Drop invalid data
-   if ( frame->getError() || (buff->getPayload() < 9) || ((data[0] & 0xF) != 0) ) {
-      log_->info("Dropping frame due to contents: error=0x%x, payload=%i, Version=0x%x",frame->getError(),buff->getPayload(),data[0]&0xF);
+   if ( frame->getError() || (buff->getPayload() < 16) ) {
+      log_->info("Dropping frame due to contents: error=0x%x, payload=%i, Version=0x%x",frame->getError(),buff->getPayload());
       dropCount_++;
       return;
    }
 
-   tmpIdx  = (data[0] >> 4);
-   tmpIdx += data[1] * 16;
+   // Header word 0
+   tmpFuser = data[0];
+   tmpDest  = data[1];
+   tmpId    = data[2];
+   tmpSof   = data[3] & 0x1;
 
-   tmpCount  = data[2];
-   tmpCount += data[3] * 256;
-   tmpCount += data[4] * 0x10000;
+   // Header word 1
+   tmpCount  = data[4];
+   tmpCount += data[5] * 256;
 
-   tmpDest  = data[5];
-   tmpId    = data[6];
-   tmpFuser = data[7];
+   // Tail word 0
+   tmpLuser = data[size-8];
+   tmpEof   = data[size-7] & 0x1;
 
-   tmpLuser = data[buff->getPayload()-1] & 0x7F;
-   tmpEof   = data[buff->getPayload()-1] & 0x80;
+   // Tail word 1
+   tmpCrc  = data[size-4];
+   tmpCrc += data[size-3] * 0x100;
+   tmpCrc += data[size-2] * 0x10000;
+   tmpCrc += data[size-1] * 0x1000000;
 
-   // Rem 8 bytes from headroom and 1 byte from tail
+   // Compute CRC
+   boost::crc_32_type result;
+   result.process_bytes(data,size-4);
+   crcErr = (tmpCrc != result.checksum());
+
+   // Rem 8 bytes from headroom
    buff->setHeadRoom(buff->getHeadRoom() + 8);
-   buff->setTailRoom(buff->getTailRoom() + 1);
+   buff->setTailRoom(buff->getTailRoom() + 8);
 
-   // Shorten message by one byte
-   buff->setPayload(buff->getPayload()-1);
+   // Shorten message
+   buff->setPayload(buff->getPayload()-8);
 
    // Drop frame and reset state if mismatch
-   if ( tmpCount > 0  && ( tmpIdx != tranIndex_ || tmpCount != tranCount_[0] ) ) {
-      log_->info("Dropping frame due to state mismatch: expIdx=%i, gotIdx=%i, expCount=%i, gotCount=%i",tranIndex_,tmpIdx,tranCount_[0],tmpCount);
+   if ( tmpCount > 0  && (tmpSof || crcErr || tmpCount != tranCount_[tmpDest] ) ) {
+      log_->info("Dropping frame: gotDest=%i, gotSof=%i, crcErr=%i, expCount=%i, gotCount=%i",tmpDest, tmpSof, crcErr, tranCount_[tmpDest], tmpCount);
       dropCount_++;
-      tranCount_[0] = 0;
-      tranFrame_[0].reset();
+      tranCount_[tmpDest] = 0;
+      tranFrame_[tmpDest].reset();
       return;
    }
 
    // First frame
    if ( tmpCount == 0 ) {
 
-      if ( tranCount_[0] != 0 ) 
-         log_->info("Dropping frame due to new incoming frame: expIdx=%i, expCount=%i",tranIndex_,tranCount_[0]);
+      if ( tranCount_[tmpDest] != 0 || !tmpSof) 
+         log_->info("Dropping new incoming frame: expCount=%i, gotSof=%i",tranCount_[tmpDest],tmpSof);
 
-      tranFrame_[0] = ris::Frame::create();
-      tranIndex_    = tmpIdx;
-      tranDest_     = tmpDest;
-      tranCount_[0] = 0;
+      tranFrame_[tmpDest] = ris::Frame::create();
+      tranCount_[tmpDest] = 0;
 
       flags  = tmpFuser;
       if ( tmpEof ) flags += tmpLuser << 8;
@@ -123,7 +136,7 @@ void rpp::ControllerV2::transportRx( ris::FramePtr frame ) {
       frame->setFlags(flags);
    }
 
-   tranFrame_[0]->appendBuffer(buff);
+   tranFrame_[tmpDest]->appendBuffer(buff);
 
    // Last of transfer
    if ( tmpEof ) {
@@ -131,13 +144,13 @@ void rpp::ControllerV2::transportRx( ris::FramePtr frame ) {
       flags += tmpLuser << 8;
       frame->setFlags(flags);
 
-      tranCount_[0] = 0;
-      if ( app_[tranDest_] ) {
-         app_[tranDest_]->pushFrame(tranFrame_[0]);
+      tranCount_[tmpDest] = 0;
+      if ( app_[tmpDest] ) {
+         app_[tmpDest]->pushFrame(tranFrame_[tmpDest]);
       }
-      tranFrame_[0].reset();
+      tranFrame_[tmpDest].reset();
    }
-   else tranCount_[0]++;
+   else tranCount_[tmpDest]++;
 }
 
 //! Frame received at application interface
@@ -149,6 +162,7 @@ void rpp::ControllerV2::applicationRx ( ris::FramePtr frame, uint8_t tDest ) {
    uint8_t  fUser;
    uint8_t  lUser;
    uint8_t  tId;
+   uint32_t crc;
    struct timeval startTime;
    struct timeval currTime;
    struct timeval sumTime;
@@ -176,7 +190,7 @@ void rpp::ControllerV2::applicationRx ( ris::FramePtr frame, uint8_t tDest ) {
       if ( timeout_ > 0 ) {
          gettimeofday(&currTime,NULL);
          if ( timercmp(&currTime,&endTime,>))
-            throw(rogue::GeneralError::timeout("packetizer::Controller::applicationRx",timeout_));
+            throw(rogue::GeneralError::timeout("packetizer::ControllerV2::applicationRx",timeout_));
       }
    }
 
@@ -190,7 +204,7 @@ void rpp::ControllerV2::applicationRx ( ris::FramePtr frame, uint8_t tDest ) {
 
       // Rem 8 bytes from headroom
       buff->setHeadRoom(buff->getHeadRoom() - 8);
-      buff->setTailRoom(buff->getTailRoom() - 1);
+      buff->setTailRoom(buff->getTailRoom() - 8);
       
       // Make payload one byte longer
       buff->setPayload(buff->getPayload()+1);
@@ -198,20 +212,34 @@ void rpp::ControllerV2::applicationRx ( ris::FramePtr frame, uint8_t tDest ) {
       size = buff->getPayload();
       data = buff->getPayloadData();
 
-      data[0] = ((appIndex_ % 16) << 4);
-      data[1] = (appIndex_ / 16) & 0xFF;
+      // Header word 0
+      data[0] = fUser;
+      data[1] = tDest;
+      data[2] = tId;
+      data[3] = (x == 0) ? 0x1 : 0x0; // SOF
 
-      data[2] = x % 256;
-      data[3] = (x % 0xFFFF) / 256;
-      data[4] = x / 0xFFFF;
+      // Header word 1
+      data[4] = x % 256;
+      data[5] = (x / 0xFFFF) % 256;
+      data[6] = 0;
+      data[7] = 0;
 
-      data[5] = tDest;
-      data[6] = tId;
-      data[7] = fUser;
+      // Tail  word 0
+      data[size-8] = lUser;
+      data[size-7] = (x == (frame->getCount() - 1)) ? 0x1 : 0x0; // EOF
+      data[size-6] = ((size % 8) == 0) ? 8 : (size % 8);
+      data[size-5] = 0;
 
-      data[size-1] = lUser & 0x7F;
+      // Compute CRC
+      boost::crc_32_type result;
+      result.process_bytes(data,size-4);
+      crc = result.checksum();
 
-      if ( x == (frame->getCount()-1) ) data[size-1] |= 0x80;
+      // Tail  word 1
+      data[size-4] = crc & 0xFF;
+      data[size-3] = (crc >>  8) & 0xFF;
+      data[size-2] = (crc >> 16) & 0xFF;
+      data[size-1] = (crc >> 24) & 0xFF;
 
       tFrame->appendBuffer(buff);
       tranQueue_.push(tFrame);
