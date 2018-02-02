@@ -38,7 +38,7 @@ void rpp::Controller::setup_python() {
 }
 
 //! Creator
-rpp::Controller::Controller ( uint32_t segmentSize, rpp::TransportPtr tran, rpp::ApplicationPtr * app 
+rpp::Controller::Controller ( uint32_t segmentSize, rpp::TransportPtr tran, rpp::ApplicationPtr * app,
                               uint32_t headSize, uint32_t tailSize ) {
    uint32_t x;
 

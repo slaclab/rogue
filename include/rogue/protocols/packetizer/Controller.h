@@ -39,6 +39,8 @@ namespace rogue {
          //! Packetizer Controller Class
          class Controller {
 
+            protected:
+
                // parameters
                uint32_t segmentSize_;
                uint32_t appIndex_;

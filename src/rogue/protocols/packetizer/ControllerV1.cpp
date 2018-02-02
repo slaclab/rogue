@@ -40,19 +40,15 @@ rpp::ControllerV1Ptr rpp::ControllerV1::create ( uint32_t segmentSize,
    return(r);
 }
 
-void rpp::ControllerV1::setup_python() {
-   // Nothing to do
-}
-
 //! Creator
 rpp::ControllerV1::ControllerV1 ( uint32_t segmentSize, rpp::TransportPtr tran, rpp::ApplicationPtr * app ) : rpp::Controller::Controller(segmentSize, tran, app, 8, 1) {
 }
 
 //! Destructor
-rpp::Controller::~Controller() { }
+rpp::ControllerV1::~ControllerV1() { }
 
 //! Frame received at transport interface
-void rpp::Controller::transportRx( ris::FramePtr frame ) {
+void rpp::ControllerV1::transportRx( ris::FramePtr frame ) {
    ris::BufferPtr buff;
    uint32_t  tmpIdx;
    uint32_t  tmpCount;
@@ -65,7 +61,7 @@ void rpp::Controller::transportRx( ris::FramePtr frame ) {
    uint8_t * data;
 
    if ( frame->getCount() == 0 ) 
-      throw(rogue::GeneralError("packetizer::Controller::transportRx","Frame must not be empty"));
+      throw(rogue::GeneralError("packetizer::ControllerV1::transportRx","Frame must not be empty"));
 
    rogue::GilRelease noGil;
    boost::lock_guard<boost::mutex> lock(tranMtx_);
@@ -102,24 +98,24 @@ void rpp::Controller::transportRx( ris::FramePtr frame ) {
    buff->setPayload(buff->getPayload()-1);
 
    // Drop frame and reset state if mismatch
-   if ( tmpCount > 0  && ( tmpIdx != tranIndex_ || tmpCount != tranCount_ ) ) {
-      log_->info("Dropping frame due to state mismatch: expIdx=%i, gotIdx=%i, expCount=%i, gotCount=%i",tranIndex_,tmpIdx,tranCount_,tmpCount);
+   if ( tmpCount > 0  && ( tmpIdx != tranIndex_ || tmpCount != tranCount_[0] ) ) {
+      log_->info("Dropping frame due to state mismatch: expIdx=%i, gotIdx=%i, expCount=%i, gotCount=%i",tranIndex_,tmpIdx,tranCount_[0],tmpCount);
       dropCount_++;
-      tranCount_ = 0;
-      tranFrame_.reset();
+      tranCount_[0] = 0;
+      tranFrame_[0].reset();
       return;
    }
 
    // First frame
    if ( tmpCount == 0 ) {
 
-      if ( tranCount_ != 0 ) 
-         log_->info("Dropping frame due to new incoming frame: expIdx=%i, expCount=%i",tranIndex_,tranCount_);
+      if ( tranCount_[0] != 0 ) 
+         log_->info("Dropping frame due to new incoming frame: expIdx=%i, expCount=%i",tranIndex_,tranCount_[0]);
 
-      tranFrame_ = ris::Frame::create();
-      tranIndex_ = tmpIdx;
-      tranDest_  = tmpDest;
-      tranCount_ = 0;
+      tranFrame_[0] = ris::Frame::create();
+      tranIndex_    = tmpIdx;
+      tranDest_     = tmpDest;
+      tranCount_[0] = 0;
 
       flags  = tmpFuser;
       if ( tmpEof ) flags += tmpLuser << 8;
@@ -128,7 +124,7 @@ void rpp::Controller::transportRx( ris::FramePtr frame ) {
       frame->setFlags(flags);
    }
 
-   tranFrame_->appendBuffer(buff);
+   tranFrame_[0]->appendBuffer(buff);
 
    // Last of transfer
    if ( tmpEof ) {
@@ -136,17 +132,17 @@ void rpp::Controller::transportRx( ris::FramePtr frame ) {
       flags += tmpLuser << 8;
       frame->setFlags(flags);
 
-      tranCount_ = 0;
+      tranCount_[0] = 0;
       if ( app_[tranDest_] ) {
-         app_[tranDest_]->pushFrame(tranFrame_);
+         app_[tranDest_]->pushFrame(tranFrame_[0]);
       }
-      tranFrame_.reset();
+      tranFrame_[0].reset();
    }
-   else tranCount_++;
+   else tranCount_[0]++;
 }
 
 //! Frame received at application interface
-void rpp::Controller::applicationRx ( ris::FramePtr frame, uint8_t tDest ) {
+void rpp::ControllerV1::applicationRx ( ris::FramePtr frame, uint8_t tDest ) {
    ris::BufferPtr buff;
    uint8_t * data;
    uint32_t x;
@@ -168,7 +164,7 @@ void rpp::Controller::applicationRx ( ris::FramePtr frame, uint8_t tDest ) {
    else gettimeofday(&endTime,NULL);
 
    if ( frame->getCount() == 0 ) 
-      throw(rogue::GeneralError("packetizer::Controller::applicationRx","Frame must not be empty"));
+      throw(rogue::GeneralError("packetizer::ControllerV1::applicationRx","Frame must not be empty"));
 
    if ( frame->getError() ) return;
 

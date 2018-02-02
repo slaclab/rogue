@@ -39,7 +39,7 @@ namespace rogue {
 
 
          //! Packetizer Controller Class
-         class ControllerV1 : public Controller, boost::enable_shared_from_this<rogue::protocols::packetizer::ControllerV1> {
+         class ControllerV1 : public Controller, public boost::enable_shared_from_this<rogue::protocols::packetizer::ControllerV1> {
 
             public:
 

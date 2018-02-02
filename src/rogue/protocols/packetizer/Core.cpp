@@ -21,7 +21,7 @@
 #include <rogue/protocols/packetizer/Core.h>
 #include <rogue/protocols/packetizer/Transport.h>
 #include <rogue/protocols/packetizer/Application.h>
-#include <rogue/protocols/packetizer/Controller.h>
+#include <rogue/protocols/packetizer/ControllerV1.h>
 #include <rogue/GeneralError.h>
 #include <boost/make_shared.hpp>
 #include <rogue/GilRelease.h>
@@ -52,7 +52,7 @@ void rpp::Core::setup_python() {
 //! Creator
 rpp::Core::Core (uint32_t segmentSize) {
    tran_  = rpp::Transport::create();
-   cntl_  = rpp::Controller::create(segmentSize,tran_,app_);
+   cntl_  = rpp::ControllerV1::create(segmentSize,tran_,app_);
 
    tran_->setController(cntl_);
 }
