@@ -53,7 +53,6 @@ class BaseVariable(pr.Node):
         self._default       = value
         self._pollInterval  = pollInterval
         self.__listeners    = []
-        self._listenLock    = threading.Lock()
         self.__dependencies = []
 
         # Build enum if specified
@@ -159,13 +158,12 @@ class BaseVariable(pr.Node):
         Add a listener Variable or function to call when variable changes. 
         If listener is a Variable then Variable.updated() will be used as the function
         This is usefull when chaining variables together. (adc conversions, etc)
-        The variable and value will be passed as an arg: func(var,value)
+        The variable, value and display string will be passed as an arg: func(path,value,disp)
         """
-        with self._listenLock:
-            if isinstance(listener, BaseVariable):
-                self.__listeners.append(listener.updated)
-            else:
-                self.__listeners.append(listener)
+        if isinstance(listener, BaseVariable):
+            self.__listeners.append(listener.updated)
+        else:
+            self.__listeners.append(listener)
 
     @Pyro4.expose
     def set(self, value, write=True):
@@ -184,31 +182,24 @@ class BaseVariable(pr.Node):
         return self.get(read=False)
 
     @Pyro4.expose
-    def updated(self, var=None, value=None, disp=None):
+    def updated(self, path=None, value=None, disp=None):
         """Variable has been updated. Inform listeners."""
-        value = None
-        disp  = None
-        with self._listenLock:
-            for func in self.__listeners:
-                if value is None:
-                    value = self.value()
-                    disp  = self.valueDisp()
 
-                try:
-                    if hasattr(func,'varListener'):
-                        func.varListener(self,value,disp)
-                    else:
-                        func(self,value,disp)
-                except Pyro4.errors.CommunicationError:
-                    self._log.info("Pyro Disconnect. Removing callback")
-                    self.__listeners.remove(func)
+        if len(self.__listeners) == 0 and self._update is False:
+            return
+
+        value = self.value()
+        disp  = self.valueDisp()
+
+        for func in self.__listeners:
+            if hasattr(func,'varListener'):
+                func.varListener(self.path,value,disp)
+            else:
+                func(self.path,value,disp)
 
         # Root variable update log
         if self._update is True and self._root is not None:
-            if value is None:
-                value = self.value()
-                disp  = self.valueDisp()
-            self._root._varUpdated(self,value,disp)
+            self._root._varUpdated(self.path,value,disp)
 
     @Pyro4.expose
     def genDisp(self, value):
@@ -263,7 +254,6 @@ class BaseVariable(pr.Node):
         # Called by parent Device after _buildBlocks()
         if self._default is not None:
             self.setDisp(self._default, write=False)
-
 
     def _updatePollInterval(self):
         if self._pollInterval > 0 and self.root._pollQueue is not None:
@@ -714,7 +704,7 @@ def varFuncHelper(func,pargs,log,path):
                     inspect.getfullargspec(func).kwonlyargs 
 
             # Build overlapping arg list
-            args = {k:pargs[k] for k in fargs if k is not 'self'}
+            args = {k:pargs[k] for k in fargs if k is not 'self' and k in pargs}
 
         # handle c++ functions, no args supported for now
         except:

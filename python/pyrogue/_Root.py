@@ -79,7 +79,6 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
         # Variable update list
         self._updatedDict = None
-        self._updatedList = None
         self._updatedLock = threading.Lock()
 
         # Variable update listener
@@ -204,14 +203,9 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
     def addVarListener(self,func):
         """
         Add a variable update listener function.
-        The called function should take the following form:
-            func(yaml, list)
-                yaml = A yaml string containing updated variables and disp values
-                list = A list of variables with the following format for each entry
-                    {'path':path, 'value':rawValue, 'disp': dispValue}
+        The variable, value and display string will be passed as an arg: func(path,value,disp)
         """
-        with self._updatedLock:
-            self._varListeners.append(func)
+        self._varListeners.append(func)
 
     def getYaml(self,readFirst,modes=['RW']):
         """
@@ -292,18 +286,6 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         for key,value in self._nodes.items():
             value._setTimeout(timeout)
 
-    def _updateVarListeners(self, yml, l):
-        """Send update to listeners. Lock must be held."""
-        for tar in self._varListeners:
-            try:
-                if hasattr(tar,'rootListener'):
-                    tar.rootListener(yml,l)
-                else:
-                    tar(yml,l)
-            except Pyro4.errors.CommunicationError as e:
-                self._log.info("Pyro Disconnect. Removing callback")
-                self._varListeners.remove(tar)
-
     def _sendYamlFrame(self,yml):
         """
         Generate a frame containing the passed string.
@@ -326,19 +308,14 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         """Initialize the update tracking log before a bulk variable update"""
         with self._updatedLock:
             self._updatedDict = odict()
-            self._updatedList = []
 
     def _doneUpdatedVars(self):
         """Stream the results of a bulk variable update and update listeners"""
         with self._updatedLock:
             if self._updatedDict:
                 yml = dictToYaml(self._updatedDict,default_flow_style=False)
-
-                self._updateVarListeners(yml,self._updatedList)
                 self._sendYamlFrame(yml)
-
                 self._updatedDict = None
-                self._updatedList = None
 
     @pr.command(order=7, name='WriteAll', description='Write all values to the hardware')
     def _write(self):
@@ -409,24 +386,24 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
             self.SystemLog.set(value='',write=False)
         self.SystemLog.updated()
 
-    def _varUpdated(self,var,value,disp):
-        entry = {'path':var.path,'value':value,'disp':disp}
+    def _varUpdated(self,path,value,disp):
+        for func in self._varListeners:
+            if hasattr(func,'varListener'):
+                func.varListener(path,value,disp)
+            else:
+                func(path,value,disp)
 
         with self._updatedLock:
 
             # Log is active add to log
             if self._updatedDict is not None:
-                addPathToDict(self._updatedDict,var.path,disp)
-                self._updatedList.append(entry)
+                addPathToDict(self._updatedDict,path,disp)
 
             # Otherwise act directly
             else:
                 d   = {}
-                addPathToDict(d,var.path,disp)
+                addPathToDict(d,path,disp)
                 yml = dictToYaml(d,default_flow_style=False)
-                lst = [entry]
-
-                self._updateVarListeners(yml,lst)
                 self._sendYamlFrame(yml)
 
 

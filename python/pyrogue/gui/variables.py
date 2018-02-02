@@ -92,7 +92,7 @@ class VariableLink(QObject):
             self._tree.resizeColumnToContents(i)
 
     @Pyro4.expose
-    def varListener(self, var, value, disp):
+    def varListener(self, path, value, disp):
         #print('{} varListener ( {} {} )'.format(self.variable, type(value), value))
         with self._lock:
             if self._widget is None or self._inEdit is True:
@@ -116,11 +116,11 @@ class VariableLink(QObject):
         self._inEdit = True
         p = QPalette()
         p.setColor(QPalette.Base,Qt.yellow)
+        p.setColor(QPalette.Text,Qt.black)
         self._widget.setPalette(p)
 
     def returnPressed(self):
         p = QPalette()
-        p.setColor(QPalette.Base,Qt.white)
         self._widget.setPalette(p)
 
         self.guiChanged(self._widget.text())
