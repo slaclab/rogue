@@ -696,7 +696,7 @@ def varFuncHelper(func,pargs,log,path):
                     inspect.getfullargspec(func).kwonlyargs 
 
             # Build overlapping arg list
-            args = {k:pargs[k] for k in fargs if k is not 'self'}
+            args = {k:pargs[k] for k in fargs if k is not 'self' and k in pargs}
 
         # handle c++ functions, no args supported for now
         except:
