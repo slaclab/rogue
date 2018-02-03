@@ -23,6 +23,7 @@
 **/
 #include <rogue/interfaces/memory/Hub.h>
 #include <rogue/GilRelease.h>
+#include <rogue/ScopedGil.h>
 #include <boost/make_shared.hpp>
 #include <boost/python.hpp>
 
@@ -77,14 +78,85 @@ void rim::Hub::doTransaction(uint32_t id, boost::shared_ptr<rogue::interfaces::m
 
 void rim::Hub::setup_python() {
 
-   bp::class_<rim::Hub, rim::HubPtr, bp::bases<rim::Master,rim::Slave>, boost::noncopyable>("Hub",bp::init<uint64_t>())
+   bp::class_<rim::HubWrap, rim::HubWrapPtr, bp::bases<rim::Master,rim::Slave>, boost::noncopyable>("Hub",bp::init<uint64_t>())
       .def("create", &rim::Hub::create)
       .staticmethod("create")
-      .def("_getAddress", &rim::Hub::doAddress)
-      .def("_getOffset",  &rim::Hub::getOffset)
+       .def("_getAddress",    &rim::Hub::doAddress,     &rim::HubWrap::defDoAddress)
+       .def("_getOffset",     &rim::Hub::getOffset,     &rim::HubWrap::defGetOffset)
+       .def("_doTransaction", &rim::Hub::doTransaction, &rim::HubWrap::defDoTransaction)
    ;
 
    bp::implicitly_convertible<rim::HubPtr, rim::MasterPtr>();
+   
+}
 
+
+//! Constructor
+rim::HubWrap::HubWrap(uint64_t offset) : rim::Hub(offset) {}
+
+//! Return offset
+uint64_t rim::HubWrap::getOffset() {
+   {
+      rogue::ScopedGil gil;
+
+      if (boost::python::override pb = this->get_override("_getOffset")) {
+         try {
+            return(pb());
+         } catch (...) {
+            PyErr_Print();
+         }
+      }
+   }
+   return(rim::Hub::getOffset());
+}
+
+//! Return offset
+uint64_t rim::HubWrap::defGetOffset() {
+   return(rim::Hub::getOffset());
+}
+
+//! Return offset
+uint64_t rim::HubWrap::doAddress() {
+   {
+      rogue::ScopedGil gil;
+
+      if (boost::python::override pb = this->get_override("_doAddress")) {
+         try {
+            return(pb());
+         } catch (...) {
+            PyErr_Print();
+         }
+      }
+   }
+   return(rim::Hub::doAddress());
+}
+
+//! Return offset
+uint64_t rim::HubWrap::defDoAddress() {
+   return(rim::Hub::doAddress());
+}
+
+//! Post a transaction. Master will call this method with the access attributes.
+void rim::HubWrap::doTransaction(uint32_t id, rim::MasterPtr master,
+                                   uint64_t address, uint32_t size, uint32_t type) {
+   {
+      rogue::ScopedGil gil;
+
+      if (boost::python::override pb = this->get_override("_doTransaction")) {
+         try {
+            pb(id,master,address,size,type);
+            return;
+         } catch (...) {
+            PyErr_Print();
+         }
+      }
+   }
+   rim::Hub::doTransaction(id,master,address,size,type);
+}
+
+//! Post a transaction. Master will call this method with the access attributes.
+void rim::HubWrap::defDoTransaction(uint32_t id, rim::MasterPtr master,
+                                      uint64_t address, uint32_t size, uint32_t type) {
+   rim::Hub::doTransaction(id, master, address, size, type);
 }
 
