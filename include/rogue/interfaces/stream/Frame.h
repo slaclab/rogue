@@ -78,6 +78,9 @@ namespace rogue {
                //! Append frame to end. Passed frame is emptied.
                void appendFrame(boost::shared_ptr<rogue::interfaces::stream::Frame> frame);
 
+               //! Copy count bytes frame, starting at offset in local frame
+               uint32_t copyFrame(boost::shared_ptr<rogue::interfaces::stream::Frame> frame, uint32_t offset, uint32_t count);
+
                //! Get buffer count
                uint32_t getCount();
 
