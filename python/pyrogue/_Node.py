@@ -72,6 +72,7 @@ class Node(object):
         self._parent = None
         self._root   = None
         self._nodes  = odict()
+        self._bases  = None
 
         # Setup logging
         self._log = logInit(self,name)
@@ -176,10 +177,8 @@ class Node(object):
         pass a class type to receive a certain type of node
         class type may be a string when called over Pyro4
         """
-        isType = pr.isinstancestr if isinstance(typ,str) else isinstance
-
         return odict([(k,n) for k,n in self._nodes.items() \
-            if (isType(n, typ) and ((exc is None) or (not isType(n, exc))) and (hidden or n.hidden == False))])
+            if (n._isinstance(typ) and ((exc is None) or (not n._isinstance(exc))) and (hidden or n.hidden == False))])
 
     @Pyro4.expose
     @property
@@ -311,6 +310,13 @@ class Node(object):
         def closure(**kwargs):
             self.callRecursive(func, nodeTypes, **kwargs)
         return closure
+
+    def _isinstance(self,typ):
+        if isinstance(typ,str):
+            if self._bases is None:
+                self._bases = pr.genBaseList(self.__class__)
+            return typ in self._bases
+        else: return isinstance(self,typ)
 
     def _rootAttached(self,parent,root):
         """Called once the root node is attached."""
