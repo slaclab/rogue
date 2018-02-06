@@ -74,21 +74,21 @@ void rpp::ControllerV2::transportRx( ris::FramePtr frame ) {
    size = buff->getPayload();
 
    // Drop invalid data
-   if ( frame->getError() || (buff->getPayload() < 16) ) {
-      log_->info("Dropping frame due to contents: error=0x%x, payload=%i, Version=0x%x",frame->getError(),buff->getPayload());
+   if ( frame->getError() || (buff->getPayload() < 16) || data[0] != 0x2) {
+      log_->info("Dropping frame due to contents: error=0x%x, payload=%i, Version=0x%x",frame->getError(),buff->getPayload(),data[0]);
       dropCount_++;
       return;
    }
 
    // Header word 0
-   tmpFuser = data[0];
-   tmpDest  = data[1];
-   tmpId    = data[2];
-   tmpSof   = data[3] & 0x1;
+   tmpFuser = data[1];
+   tmpDest  = data[2];
+   tmpId    = data[3];
 
    // Header word 1
    tmpCount  = data[4];
    tmpCount += data[5] * 256;
+   tmpSof    = data[7] & 0x1;
 
    // Tail word 0
    tmpLuser = data[size-8];
@@ -225,16 +225,16 @@ void rpp::ControllerV2::applicationRx ( ris::FramePtr frame, uint8_t tDest ) {
       data = buff->getPayloadData();
 
       // Header word 0
-      data[0] = fUser;
-      data[1] = tDest;
-      data[2] = tId;
-      data[3] = (x == 0) ? 0x1 : 0x0; // SOF
+      data[0] = 0x2;
+      data[1] = fUser;
+      data[2] = tDest;
+      data[3] = tId;
 
       // Header word 1
       data[4] = x % 256;
       data[5] = (x / 0xFFFF) % 256;
       data[6] = 0;
-      data[7] = 0;
+      data[7] = (x == 0) ? 0x1 : 0x0; // SOF
 
       // Tail  word 0
       data[size-8] = lUser;
