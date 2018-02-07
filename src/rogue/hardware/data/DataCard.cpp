@@ -23,7 +23,6 @@
 #include <rogue/GeneralError.h>
 #include <boost/make_shared.hpp>
 #include <rogue/GilRelease.h>
-#include <AxisDma.h>
 
 namespace rhd = rogue::hardware::data;
 namespace ris = rogue::interfaces::stream;
@@ -334,9 +333,7 @@ void rhd::DataCard::runThread() {
             // Read was successfull
             if ( res > 0 ) {
                buff->setSize(res);
-               buff->setError(error);
                frame->appendBuffer(buff);
-               buff.reset();
                flags = frame->getFlags();
                error = frame->getError();
 
@@ -351,6 +348,8 @@ void rhd::DataCard::runThread() {
 
                frame->setError(error);
                frame->setFlags(flags);
+               buff->setError(error);
+               buff.reset();
 
                // If continue flag is not set, push frame and get a new empty frame
                if ( cont == 0 ) {
