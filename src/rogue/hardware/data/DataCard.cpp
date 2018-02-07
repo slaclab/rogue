@@ -23,6 +23,7 @@
 #include <rogue/GeneralError.h>
 #include <boost/make_shared.hpp>
 #include <rogue/GilRelease.h>
+#include <AxisDma.h>
 
 namespace rhd = rogue::hardware::data;
 namespace ris = rogue::interfaces::stream;
@@ -313,7 +314,7 @@ void rhd::DataCard::runThread() {
                res = dmaRead(fd_, buff->getRawData(), buff->getRawSize(), &rxFlags, NULL, NULL);
                fuser = axisGetFuser(rxFlags);
                luser = axisGetLuser(rxFlags);
-               cont  = axisGetConf(rxFlags);
+               cont  = axisGetCont(rxFlags);
             }
 
             // Zero copy read
