@@ -165,6 +165,7 @@ void rhd::DataCard::acceptFrame ( ris::FramePtr frame ) {
    uint32_t         flags;
    uint32_t         fuser;
    uint32_t         luser;
+   uint32_t         cont;
 
    rogue::GilRelease noGil;
 
@@ -172,16 +173,30 @@ void rhd::DataCard::acceptFrame ( ris::FramePtr frame ) {
    for (x=0; x < frame->getCount(); x++) {
       buff = frame->getBuffer(x);
 
-      // Get buffer meta field
-      meta = buff->getMeta();
-
       // Extract first and last user fields from flags
       flags = buff->getFlags();
-      fuser = flags & 0xFF;
-      luser = (flags >> 8) & 0xFF;
 
-      // SSI is enbled, set SOF
-      if ( enSsi_ ) fuser |= 0x2;
+      // First buff
+      if ( x == 0 ) {
+         fuser = flags & 0xFF;
+         if ( enSsi_ ) fuser |= 0x2;
+      }
+      else fuser = 0;
+
+      // Last buffer
+      if ( x == (frame->getCount() - 1) ) {
+         cont = 0;
+         luser = (flags >> 8) & 0xFF;
+      }
+
+      // Continue flag is set if this is not the last buffer
+      else {
+         cont = 1;
+         luser = 0;
+      }
+
+      // Get buffer meta field
+      meta = buff->getMeta();
 
       // Meta is zero copy as indicated by bit 31
       if ( (meta & 0x80000000) != 0 ) {
@@ -190,7 +205,7 @@ void rhd::DataCard::acceptFrame ( ris::FramePtr frame ) {
          if ( (meta & 0x40000000) == 0 ) {
 
             // Write by passing buffer index to driver
-            if ( dmaWriteIndex(fd_, meta & 0x3FFFFFFF, buff->getCount(), axisSetFlags(fuser, luser,0), dest_) <= 0 ) {
+            if ( dmaWriteIndex(fd_, meta & 0x3FFFFFFF, buff->getCount(), axisSetFlags(fuser, luser, cont), dest_) <= 0 ) {
                throw(rogue::GeneralError("DataCard::acceptFrame","AXIS Write Call Failed"));
             }
 
@@ -264,6 +279,7 @@ void rhd::DataCard::runThread() {
    uint32_t       fuser;
    uint32_t       luser;
    uint32_t       flags;
+   uint32_t       cont;
    uint32_t       rxFlags;
    struct timeval tout;
 
@@ -297,6 +313,7 @@ void rhd::DataCard::runThread() {
                res = dmaRead(fd_, buff->getRawData(), buff->getRawSize(), &rxFlags, NULL, NULL);
                fuser = axisGetFuser(rxFlags);
                luser = axisGetLuser(rxFlags);
+               cont  = axisGetConf(rxFlags);
             }
 
             // Zero copy read
@@ -306,30 +323,39 @@ void rhd::DataCard::runThread() {
                if ((res = dmaReadIndex(fd_, &meta, &rxFlags, NULL, NULL)) > 0) {
                   fuser = axisGetFuser(rxFlags);
                   luser = axisGetLuser(rxFlags);
+                  cont  = axisGetCont(rxFlags);
 
                   // Allocate a buffer, Mark zero copy meta with bit 31 set, lower bits are index
                   buff = createBuffer(rawBuff_[meta],0x80000000 | meta,bSize_,bSize_);
                }
             }
 
-            // Extract flags
-            flags = (fuser & 0xFF);
-            flags |= ((luser << 8) & 0xFF00);
-
-            // If SSI extract EOFE
-            if ( enSsi_ && ((luser & 0x1) != 0 )) error = 1;
-            else error = 0;
-
             // Read was successfull
             if ( res > 0 ) {
                buff->setSize(res);
                buff->setError(error);
-               frame->setError(error | frame->getError());
                frame->appendBuffer(buff);
                buff.reset();
+               flags = frame->getFlags();
+               error = frame->getError();
+
+               // First buffer of frame
+               if ( frame->getCount() == 1 ) flags |= (fuser & 0xFF);
+
+               // Last buffer of frame
+               if ( cont == 0 ) {
+                  flags |= ((luser << 8) & 0xFF00);
+                  if ( enSsi_ && ((luser & 0x1) != 0 )) error = 1;
+               }
+
+               frame->setError(error);
                frame->setFlags(flags);
-               sendFrame(frame);
-               frame = ris::Frame::create();
+
+               // If continue flag is not set, push frame and get a new empty frame
+               if ( cont == 0 ) {
+                  sendFrame(frame);
+                  frame = ris::Frame::create();
+               }
             }
          }
          boost::this_thread::interruption_point();
