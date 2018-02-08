@@ -83,14 +83,6 @@ namespace rogue {
                //! Constructor
               HubWrap(uint64_t offset);
 
-              uint64_t getOffset();
-              uint64_t defGetOffset();
-
-               //! Return offset
-               uint64_t doAddress();
-
-               //! Return offset
-               uint64_t defDoAddress();
 
                //! Post a transaction. Master will call this method with the access attributes.
                void doTransaction(uint32_t id, boost::shared_ptr<rogue::interfaces::memory::Master> master,
