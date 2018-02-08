@@ -134,7 +134,6 @@ class DataLink(QObject):
 
     @Pyro4.expose
     def varListener(self,path,value,disp):
-
         if self.block: return
 
         name = path.split('.')[-1]
@@ -268,16 +267,18 @@ class ControlLink(QObject):
         fl.addRow('Run Count:',self.runCount)
 
     @Pyro4.expose
-    def varListener(self,var,value,disp):
+    def varListener(self,path,value,disp):
         if self.block: return
 
-        if var.name == 'runState':
+        name = path.split('.')[-1]
+
+        if name == 'runState':
             self.emit(SIGNAL("updateState"),self.runState.findText(disp))
 
-        elif var.name == 'runRate':
+        elif name == 'runRate':
             self.emit(SIGNAL("updateRate"),self.runRate.findText(disp))
 
-        elif var.name == 'runCount':
+        elif name == 'runCount':
             self.emit(SIGNAL("updateCount"),disp)
 
     def runStateChanged(self,value):
@@ -363,17 +364,22 @@ class SystemWidget(QWidget):
 
         root.SystemLog.addListener(self)
         self.connect(self,SIGNAL('updateLog'),self.systemLog.setText)
+        self.systemLog.setText(root.SystemLog.valueDisp())
         
         pb = QPushButton('Clear Log')
         pb.clicked.connect(self.resetLog)
         vb.addWidget(pb)
 
+        QCoreApplication.processEvents()
+
     def resetLog(self):
         self.root.ClearLog()
 
     @Pyro4.expose
-    def varListener(self,var,value,disp):
-        if var.name == 'SystemLog':
+    def varListener(self,path,value,disp):
+        name = path.split('.')[-1]
+
+        if name == 'SystemLog':
             self.emit(SIGNAL("updateLog"),disp)
 
     def hardReset(self):
