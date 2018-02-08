@@ -25,14 +25,22 @@ import math
 import time
 
 class EnableVariable(pr.BaseVariable):
-    def __init__(self, *, enabled):
+    def __init__(self, *, enabled, deps=None):
         pr.BaseVariable.__init__(
             self,
             description='Determines if device is enabled for hardware access',            
             name='enable',
             mode='RW',
             value=enabled, 
-            disp={False: 'False', True: 'True', 'parent': 'ParentFalse'})
+            disp={False: 'False', True: 'True', 'parent': 'ParentFalse', 'deps': 'ExtDepFalse'})
+
+        if deps is None:
+            self._deps = []
+        else:
+            self._deps = deps
+
+        for d in self._deps:
+            d.addListener(self)
 
         self._value = enabled
         self._lock = threading.Lock()
@@ -43,9 +51,13 @@ class EnableVariable(pr.BaseVariable):
     @Pyro4.expose
     def get(self, read=False):
         ret = self._value
+
         with self._lock:
             if self._value is False:
                 ret = False
+            elif len(self._deps) > 0 and not all(x.value() for x in self._deps):
+                print(f'{self.path} get() deps - {self._deps} - Blocked')                
+                ret = 'deps'
             elif self._parent == self._root:
                 #print("Root enable = {}".format(self._value))
                 ret = self._value
@@ -61,13 +73,13 @@ class EnableVariable(pr.BaseVariable):
         
     @Pyro4.expose
     def set(self, value, write=True):
-        if value != 'parent':
+        if value != 'parent' and value != 'deps':
             old = self.value()
 
             with self._lock:
                 self._value = value
             
-            if old != value and old != 'parent':
+            if old != value and old != 'parent' and old != 'deps':
                 self.parent.enableChanged(value)
 
         self.updated()
@@ -95,7 +107,8 @@ class Device(pr.Node,rim.Hub):
                  variables=None,
                  expand=True,
                  enabled=True,
-                 defaults={},
+                 defaults=None,
+                 enableDeps=None,
     ):
         
         """Initialize device class"""
@@ -110,7 +123,7 @@ class Device(pr.Node,rim.Hub):
         self._memBase   = memBase
         self._memLock   = threading.RLock()
         self._size      = size
-        self._defaults  = defaults
+        self._defaults  = defaults if defaults is not None else {}
 
         # Connect to memory slave
         if memBase: self._setSlave(memBase)
@@ -129,7 +142,9 @@ class Device(pr.Node,rim.Hub):
         self.addRemoteCommands = ft.partial(self.addNodes, pr.RemoteCommand)
 
         # Variable interface to enable flag
-        self.add(EnableVariable(enabled=enabled))
+        self.add(EnableVariable(
+            enabled=enabled,
+            deps=enableDeps))
 
         if variables is not None and isinstance(variables, collections.Iterable):
             if all(isinstance(v, pr.BaseVariable) for v in variables):
@@ -216,14 +231,12 @@ class Device(pr.Node,rim.Hub):
     def enableChanged(self,value):
         if value is True:
             print(f'Enabling {self.path}')
-            modes = ['RW', 'WO']
-            cfg = self._getDict(modes=modes)
-            print(f'cfg - {cfg}')
-            self.readBlocks()
-            self._setDict(cfg, writeEach=False, modes=modes)
-            self.writeBlocks()
+            self.writeBlocks(force=True)
+            print(f'Done writeBlocks')            
             self.verifyBlocks()
+            self.readBlocks()
             self.checkBlocks()
+
 
     def writeBlocks(self, force=False, recurse=True, variable=None, checkEach=False):
         """
