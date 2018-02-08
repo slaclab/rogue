@@ -205,9 +205,7 @@ uint32_t ru::Prbs::getTxBytes() {
 
 //! Set check payload flag, default = true
 void ru::Prbs::checkPayload(bool state) {
-   rxMtx_.lock();
    checkPl_ = state;
-   rxMtx_.unlock();
 }
 
 //! Reset counters
