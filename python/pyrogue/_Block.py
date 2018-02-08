@@ -441,6 +441,16 @@ class RemoteBlock(BaseBlock, rim.Master):
 
             return True
 
+    def _setDefault(self, var, value):
+        # Stage the default data
+        self.set(var, value)
+
+        # Move stage data to block, but keep it staged as well
+        for x in range(self._size):
+            self._bData[x] = self._bData[x] & (self._sDataMask[x] ^ 0xFF)
+            self._bData[x] = self._bData[x] | (self._sDataMask[x] & self._sData[x])
+
+
     def updated(self):
         self._log.debug(f'Block {self._name} _update called')
         for v in self._variables:

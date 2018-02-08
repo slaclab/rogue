@@ -251,24 +251,18 @@ class BaseVariable(pr.Node):
         return type(self.value())
 
     def _setDefault(self):
-        # Called by parent Device after _buildBlocks()
         if self._default is not None:
-            self.setDisp(self._default, write=False)
+            self.setDisp(self._default)
 
     def _updatePollInterval(self):
         if self._pollInterval > 0 and self.root._pollQueue is not None:
             self.root._pollQueue.updatePollInterval(self)
 
     def _finishInit(self):
+        # Set the default value but dont write
         self._setDefault()
         self._updatePollInterval()
 
-
-    #def __set__(self, value):
-        #self.set(value, write=True)
-
-    #def __get__(self):
-        #self.get(read=True)
 
     def _setDict(self,d,writeEach,modes):
         #print(f'{self.path}._setDict(d={d})')        
@@ -369,13 +363,16 @@ class RemoteVariable(BaseVariable):
     def base(self):
         return self._base
 
+    def _setDefault(self):
+        if self._default is not None:
+            self._block._setDefault(self, self.parseDisp(self._default))
+
     @Pyro4.expose
     def set(self, value, write=True):
         """
         Set the value and write to hardware if applicable
         Writes to hardware are blocking. An error will result in a logged exception.
         """
-
         self._log.debug("{}.set({})".format(self, value))
         try:
 

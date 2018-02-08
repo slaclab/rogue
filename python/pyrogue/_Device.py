@@ -94,7 +94,9 @@ class Device(pr.Node,rim.Hub):
                  hidden=False,
                  variables=None,
                  expand=True,
-                 enabled=True):
+                 enabled=True,
+                 defaults={},
+    ):
         
         """Initialize device class"""
         if name is None:
@@ -108,6 +110,7 @@ class Device(pr.Node,rim.Hub):
         self._memBase   = memBase
         self._memLock   = threading.RLock()
         self._size      = size
+        self._defaults  = defaults
 
         # Connect to memory slave
         if memBase: self._setSlave(memBase)
@@ -211,9 +214,16 @@ class Device(pr.Node,rim.Hub):
         pass
 
     def enableChanged(self,value):
-        pass
-        #if value is True:
-            #self.writeAndVerifyBlocks(force=True, recurse=True, variable=None)
+        if value is True:
+            print(f'Enabling {self.path}')
+            modes = ['RW', 'WO']
+            cfg = self._getDict(modes=modes)
+            print(f'cfg - {cfg}')
+            self.readBlocks()
+            self._setDict(cfg, writeEach=False, modes=modes)
+            self.writeBlocks()
+            self.verifyBlocks()
+            self.checkBlocks()
 
     def writeBlocks(self, force=False, recurse=True, variable=None, checkEach=False):
         """
@@ -348,7 +358,7 @@ class Device(pr.Node,rim.Hub):
     def _buildBlocks(self):
         remVars = []
 
-        minSize = self._reqMinAccess()
+        minSize = self._doMinAccess()
 
         # Process all of the variables
         for k,n in self.nodes.items():
@@ -397,6 +407,14 @@ class Device(pr.Node,rim.Hub):
 
         self._buildBlocks()
 
+        # Override defaults as dictated by the _defaults dict
+        for varName, defValue in self._defaults.items():
+            print(f'Default - {varName} : {defValue}')
+            match = pr.nodeMatch(self.variables, varName)
+            print(f'Match - {match}')
+            for var in match:
+                var._default = defValue
+                
         # Some variable initialization can run until the blocks are built
         for v in self.variables.values():
             v._finishInit()
