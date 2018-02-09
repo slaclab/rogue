@@ -57,13 +57,7 @@ class GuiTop(QWidget):
     def addTree(self,root):
         if not root.running:
             raise Exception("GUI can not be attached to a tree which is not started")
-        print("Here1")
-        if isinstance(root,pyrogue.PyroRoot): 
-            root.setListenEn(False)
         self.emit(SIGNAL("newTree"),root)
-        if isinstance(root,pyrogue.PyroRoot): 
-            root.setListenEn(True)
-        print("Here2")
 
     def _addTree(self,root):
         self.sys = pyrogue.gui.system.SystemWidget(root=root,parent=self.tab)
