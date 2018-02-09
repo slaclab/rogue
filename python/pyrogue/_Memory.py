@@ -55,7 +55,7 @@ class MemoryDevice(pr.Device):
     def _getDict(self,modes):
         return None
 
-    def writeBlocks(self, force=False, recurse=True, variable=None):
+    def writeBlocks(self, force=False, recurse=True, variable=None, checkEach=False):
         if not self.enable.get(): return
 
         with self._memLock:
@@ -70,7 +70,7 @@ class MemoryDevice(pr.Device):
             self._setValues = odict()
         
 
-    def verifyBlocks(self, recurse=True, variable=None):
+    def verifyBlocks(self, recurse=True, variable=None, checkEach=False):
         if not self.enable.get(): return
 
         with self._memLock:
@@ -113,6 +113,6 @@ class MemoryDevice(pr.Device):
             self._verData = odict()
 
 
-    def readBlocks(self, recurse=True, variable=None):
+    def readBlocks(self, recurse=True, variable=None, checkEach=False):
         pass
 

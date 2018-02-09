@@ -22,6 +22,7 @@ import pyrogue as pr
 import Pyro4
 import Pyro4.naming
 import functools as ft
+import time
 
 class RootLogHandler(logging.Handler):
     """ Class to listen to log entries and add them to syslog variable"""
@@ -82,7 +83,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         self._updatedLock = threading.Lock()
 
         # Variable update listener
-        self._varListeners = []
+        self._varListeners  = []
 
         # Init after _updatedLock exists
         pr.Device.__init__(self, name=name, description=description)
@@ -126,7 +127,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
         # Start pyro server if enabled
         if pyroGroup is not None:
-            Pyro4.config.THREADPOOL_SIZE = 500
+            Pyro4.config.THREADPOOL_SIZE = 1000
             Pyro4.config.SERVERTYPE = "multiplex"
             Pyro4.config.POLLTIMEOUT = 3
 
@@ -206,6 +207,9 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         The variable, value and display string will be passed as an arg: func(path,value,disp)
         """
         self._varListeners.append(func)
+
+        if isinstance(func,Pyro4.core.Proxy):                                    
+            func._pyroOneway.add("varListener")                                  
 
     def getYaml(self,readFirst,modes=['RW']):
         """
@@ -388,10 +392,19 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
     def _varUpdated(self,path,value,disp):
         for func in self._varListeners:
-            if hasattr(func,'varListener'):
-                func.varListener(path,value,disp)
-            else:
-                func(path,value,disp)
+
+            try:
+                if hasattr(func,'varListener'):
+                    func.varListener(path,value,disp)
+                else:
+                    func(path,value,disp)
+
+            except Pyro4.errors.CommunicationError as msg:
+                if 'Connection refused' in str(msg):
+                    self._log.info("Pyro Disconnect. Removing callback")
+                    self._varListeners.remove(func)
+                else:
+                    self._log.error("Pyro callback failed for {}: {}".format(self.name,msg))
 
         with self._updatedLock:
 
@@ -409,20 +422,43 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
 class PyroRoot(pr.PyroNode):
     def __init__(self, *, node,daemon):
-        pr.PyroNode.__init__(self,node=node,daemon=daemon)
+        pr.PyroNode.__init__(self,root=self,node=node,daemon=daemon)
+
+        self._varListeners   = []
+        self._relayListeners = {}
 
     def addInstance(self,node):
         self._daemon.register(node)
 
     def getNode(self, path):
-        return pr.PyroNode(node=self._node.getNode(path),daemon=daemon)
+        return pr.PyroNode(root=self,node=self._node.getNode(path),daemon=self._daemon)
 
+    def addVarListener(self,listener):
+        self._varListeners.append(listener)
+
+    def _addRelayListener(self, path, listener):
+        if not path in self._relayListeners:
+            self._relayListeners[path] = []
+
+        self._relayListeners[path].append(listener)
+
+    @Pyro4.expose
+    def varListener(self, path, value, disp):
+        for f in self._varListeners:
+            f.varListener(path=path, value=value, disp=disp)
+
+        if path in self._relayListeners:
+            for f in self._relayListeners[path]:
+                f.varListener(path=path, value=value, disp=disp)
 
 class PyroClient(object):
     def __init__(self, group, host=None, ns=None):
         self._group = group
 
         Pyro4.config.THREADPOOL_SIZE = 100
+        Pyro4.config.SERVERTYPE = "multiplex"
+        Pyro4.config.POLLTIMEOUT = 3
+
         Pyro4.util.SerializerBase.register_dict_to_class("collections.OrderedDict", recreate_OrderedDict)
 
         try:
@@ -442,6 +478,9 @@ class PyroClient(object):
         try:
             uri = self._ns.lookup("{}.{}".format(self._group,name))
             ret = PyroRoot(node=Pyro4.Proxy(uri),daemon=self._pyroDaemon)
+            self._pyroDaemon.register(ret)
+
+            ret._node.addVarListener(ret)
             return ret
         except:
             raise pr.NodeError("PyroClient Failed to find {}.{}.".format(self._group,name))

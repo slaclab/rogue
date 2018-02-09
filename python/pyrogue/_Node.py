@@ -72,6 +72,7 @@ class Node(object):
         self._parent = None
         self._root   = None
         self._nodes  = odict()
+        self._bases  = None
 
         # Setup logging
         self._log = logInit(self,name)
@@ -165,13 +166,19 @@ class Node(object):
             self.add(nodeClass(name='{:s}[{:d}]'.format(name, i), offset=offset+(i*stride), **kwargs))
 
     @Pyro4.expose
+    @property
+    def nodeList(self):
+        return([k for k,v in self._nodes.items()])
+
+    @Pyro4.expose
     def getNodes(self,typ,exc=None,hidden=True):
         """
         Get a ordered dictionary of nodes.
         pass a class type to receive a certain type of node
+        class type may be a string when called over Pyro4
         """
         return odict([(k,n) for k,n in self._nodes.items() \
-            if (isinstance(n, typ) and ((exc is None) or (not isinstance(n, exc))) and (hidden or n.hidden == False))])
+            if (n._isinstance(typ) and ((exc is None) or (not n._isinstance(exc))) and (hidden or n.hidden == False))])
 
     @Pyro4.expose
     @property
@@ -237,7 +244,7 @@ class Node(object):
 
     @Pyro4.expose
     def node(self, path):
-        return self._nodes[path]
+        return attrHelper(self._nodes,path)
 
     @Pyro4.expose
     @property
@@ -304,6 +311,13 @@ class Node(object):
             self.callRecursive(func, nodeTypes, **kwargs)
         return closure
 
+    def _isinstance(self,typ):
+        if isinstance(typ,str):
+            if self._bases is None:
+                self._bases = pr.genBaseList(self.__class__)
+            return typ in self._bases
+        else: return isinstance(self,typ)
+
     def _rootAttached(self,parent,root):
         """Called once the root node is attached."""
         self._parent = parent
@@ -357,38 +371,32 @@ class Node(object):
         pass
 
 class PyroNode(object):
-    def __init__(self, *, node,daemon):
+    def __init__(self, *, root, node, daemon):
+        self._root   = root
         self._node   = node
-        self._nodes  = None
         self._daemon = daemon
 
     def __repr__(self):
         return self._node.path
 
     def __getattr__(self, name):
-        if self._nodes is None:
-            self._nodes = self._convert(self._node.nodes)
-
-        ret = attrHelper(self._nodes,name)
+        ret = self.node(name)
         if ret is None:
             return self._node.__getattr__(name)
         else:
             return ret
 
     def __dir__(self):
-        if self._nodes is None:
-            self._nodes = self._convert(self._node.nodes)
-
-        return(super().__dir__() + [k for k,v in self._nodes.items()])
+        return(super().__dir__() + self._node.nodeList)
 
     def _convert(self,d):
         ret = odict()
         for k,n in d.items():
 
             if isinstance(n,dict):
-                ret[k] = PyroNode(node=Pyro4.util.SerializerBase.dict_to_class(n),daemon=self._daemon)
+                ret[k] = PyroNode(root=self._root,node=Pyro4.util.SerializerBase.dict_to_class(n),daemon=self._daemon)
             else:
-                ret[k] = PyroNode(node=n,daemon=self._daemon)
+                ret[k] = PyroNode(root=self._root,node=n,daemon=self._daemon)
 
         return ret
 
@@ -399,7 +407,17 @@ class PyroNode(object):
         self._daemon.register(node)
 
     def node(self, path):
-        return PyroNode(node=self._node.node(path),daemon=self._daemon)
+        ret = self._node.node(path)
+        if ret is None: 
+            return None
+        elif isinstance(ret,odict) or isinstance(ret,dict):
+            return self._convert(ret)
+        else:
+            return PyroNode(root=self._root,node=ret,daemon=self._daemon)
+
+    def getNodes(self,typ,exc=None,hidden=True):
+        excPass = str(exc) if exc is not None else None
+        return self._convert(self._node.getNodes(str(typ),excPass,hidden))
 
     @property
     def nodes(self):
@@ -419,15 +437,14 @@ class PyroNode(object):
 
     @property
     def parent(self):
-        return PyroNode(node=self._node.parent,daemon=self._daemon)
+        return PyroNode(root=self._root,node=self._node.parent,daemon=self._daemon)
 
     @property
     def root(self):
-        return pr.PyroRoot(self._node.root,self._daemon)
+        return self._root
 
     def addListener(self, listener):
-        self._daemon.register(listener)
-        self._node.addListener(listener)
+        self.root._addRelayListener(self.path, listener)
 
     def __call__(self,arg=None):
         self._node.call(arg)
@@ -436,6 +453,7 @@ class PyroNode(object):
 def attrHelper(nodes,name):
     """
     Return a single item or a list of items matching the passed
+
     name. If the name is an exact match to a single item in the list
     then return it. Otherwise attempt to find items which match the 
     passed name, but are array entries: name[n]. Return these items

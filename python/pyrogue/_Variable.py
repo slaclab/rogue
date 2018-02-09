@@ -152,7 +152,6 @@ class BaseVariable(pr.Node):
     def dependencies(self):
         return self.__dependencies
 
-    @Pyro4.expose
     def addListener(self, listener):
         """
         Add a listener Variable or function to call when variable changes. 
