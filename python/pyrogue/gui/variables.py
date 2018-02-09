@@ -67,7 +67,7 @@ class VariableLink(QObject):
                 for i in self._variable.enum:
                     self._widget.addItem(self._variable.enum[i])
 
-            elif self._variable.disp == 'range':
+            elif self._variable.minimum is not None and self._variable.maximum is not None:
                 self._widget = QSpinBox();
                 self._widget.setMinimum(self._variable.minimum)
                 self._widget.setMaximum(self._variable.maximum)
