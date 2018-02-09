@@ -56,7 +56,6 @@ class EnableVariable(pr.BaseVariable):
             if self._value is False:
                 ret = False
             elif len(self._deps) > 0 and not all(x.value() for x in self._deps):
-                print(f'{self.path} get() deps - {self._deps} - Blocked')                
                 ret = 'deps'
             elif self._parent == self._root:
                 #print("Root enable = {}".format(self._value))
@@ -230,9 +229,7 @@ class Device(pr.Node,rim.Hub):
 
     def enableChanged(self,value):
         if value is True:
-            print(f'Enabling {self.path}')
             self.writeBlocks(force=True)
-            print(f'Done writeBlocks')            
             self.verifyBlocks()
             self.readBlocks()
             self.checkBlocks()
@@ -262,7 +259,6 @@ class Device(pr.Node,rim.Hub):
         """
         Perform background verify
         """
-        #print(f'Calling {self.path}.verifyBlocks(recurse={recurse}, variable={variable}, checkEach={checkEach}')                
 
         # Process local blocks.
         if variable is not None:
@@ -281,7 +277,6 @@ class Device(pr.Node,rim.Hub):
         Perform background reads
         """
         self._log.debug(f'Calling {self.path}._readBlocks(recurse={recurse}, variable={variable}, checkEach={checkEach}')
-        #print(f'Calling {self.path}.readBlocks(recurse={recurse}, variable={variable}, checkEach={checkEach})')        
 
         # Process local blocks. 
         if variable is not None:
@@ -422,9 +417,7 @@ class Device(pr.Node,rim.Hub):
 
         # Override defaults as dictated by the _defaults dict
         for varName, defValue in self._defaults.items():
-            print(f'Default - {varName} : {defValue}')
             match = pr.nodeMatch(self.variables, varName)
-            print(f'Match - {match}')
             for var in match:
                 var._default = defValue
                 
