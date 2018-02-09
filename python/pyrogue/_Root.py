@@ -426,9 +426,13 @@ class PyroRoot(pr.PyroNode):
 
         self._varListeners   = []
         self._relayListeners = {}
+        self._listenEn = False
 
     def addInstance(self,node):
         self._daemon.register(node)
+
+    def setListenEn(self,state):
+        self._listenEn = state
 
     def getNode(self, path):
         return pr.PyroNode(root=self,node=self._node.getNode(path),daemon=self._daemon)
@@ -444,6 +448,9 @@ class PyroRoot(pr.PyroNode):
 
     @Pyro4.expose
     def varListener(self, path, value, disp):
+        if not self._listenEn: 
+            return
+
         for f in self._varListeners:
             f.varListener(path=path, value=value, disp=disp)
 
