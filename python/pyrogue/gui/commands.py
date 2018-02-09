@@ -29,7 +29,6 @@ class CommandDev(object):
         self._tree     = tree
         self._dev      = dev
         self._children = []
-        self._done     = False
 
         self._widget = QTreeWidgetItem(parent)
         self._widget.setText(0,self._dev.name)
