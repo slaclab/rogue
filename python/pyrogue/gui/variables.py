@@ -55,12 +55,12 @@ class VariableDev(object):
     def setup(self,noExpand):
 
         # First create variables
-        for key,val in self._dev.getNodes(typ=pyrogue.BaseVariable,exc=pyrogue.BaseCommand,hidden=False).items():
+        for key,val in self._dev.visableVariables.items():
             self._children.append(VariableLink(tree=self._tree,parent=self._widget,variable=val))
             QCoreApplication.processEvents()
 
         # Then create devices
-        for key,val in self._dev.getNodes(typ=pyrogue.Device,hidden=False).items():
+        for key,val in self._dev.visableDevices.items():
             self._children.append(VariableDev(tree=self._tree,parent=self._widget,dev=val,noExpand=noExpand))
 
         for i in range(0,4):

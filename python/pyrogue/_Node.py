@@ -194,7 +194,15 @@ class Node(object):
         """
         Return an OrderedDict of the variables but not commands (which are a subclass of Variable
         """
-        return self.getNodes(typ=pr.BaseVariable,exc=pr.BaseCommand)
+        return self.getNodes(typ=pr.BaseVariable,exc=pr.BaseCommand,hidden=True)
+
+    @Pyro4.expose
+    @property
+    def visableVariables(self):
+        """
+        Return an OrderedDict of the variables but not commands (which are a subclass of Variable
+        """
+        return self.getNodes(typ=pr.BaseVariable,exc=pr.BaseCommand,hidden=False)
 
     @Pyro4.expose
     @property
@@ -216,7 +224,15 @@ class Node(object):
         """
         Return an OrderedDict of the Commands that are children of this Node
         """
-        return self.getNodes(pr.BaseCommand)
+        return self.getNodes(pr.BaseCommand,hidden=True)
+
+    @Pyro4.expose
+    @property
+    def visableCommands(self):
+        """
+        Return an OrderedDict of the Commands that are children of this Node
+        """
+        return self.getNodes(pr.BaseCommand,hidden=False)
 
     @Pyro4.expose
     @property
@@ -224,7 +240,15 @@ class Node(object):
         """
         Return an OrderedDict of the Devices that are children of this Node
         """
-        return self.getNodes(pr.Device)
+        return self.getNodes(pr.Device,hidden=True)
+
+    @Pyro4.expose
+    @property
+    def visableDevices(self):
+        """
+        Return an OrderedDict of the Devices that are children of this Node
+        """
+        return self.getNodes(pr.Device,hidden=False)
 
     @Pyro4.expose
     @property
@@ -424,16 +448,32 @@ class PyroNode(object):
         return self._convert(self._node.nodes)
 
     @property
+    def getVariables(self,hidden=True):
+        return self._convert(self._node.variables(hidden=hidden))
+
+    @property
     def variables(self):
         return self._convert(self._node.variables)
+
+    @property
+    def visableVariables(self):
+        return self._convert(self._node.visableVariables)
 
     @property
     def commands(self):
         return self._convert(self._node.commands)
 
     @property
+    def visableCommands(self):
+        return self._convert(self._node.visableCommands)
+
+    @property
     def devices(self):
         return self._convert(self._node.devices)
+
+    @property
+    def visableDevices(self):
+        return self._convert(self._node.visableDevices)
 
     @property
     def parent(self):
