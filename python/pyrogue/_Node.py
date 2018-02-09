@@ -448,10 +448,6 @@ class PyroNode(object):
         return self._convert(self._node.nodes)
 
     @property
-    def getVariables(self,hidden=True):
-        return self._convert(self._node.variables(hidden=hidden))
-
-    @property
     def variables(self):
         return self._convert(self._node.variables)
 
