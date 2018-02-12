@@ -19,8 +19,9 @@
 # contained in the LICENSE.txt file.
 # ----------------------------------------------------------------------------
 
-
-VERSION  := $(shell git describe --tags)
+VER_T    := $(shell git describe --tags)
+VER_D    := $(shell git status --short -uno | wc -l)
+VERSION  := $(if $(filter $(VER_D),0),$(VER_T),$(VER_T)-dirty)
 
 # Variables
 CC       := g++

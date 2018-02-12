@@ -60,7 +60,7 @@ class CommandLink(QObject):
                     self._widget.addItem(self._command.enum[i])
                 self._widget.setCurrentIndex(self._widget.findText(self._command.valueDisp()))
 
-            elif self._command.disp == 'range':
+            elif self._variable.minimum is not None and self._variable.maximum is not None:
                 self._widget = QSpinBox();
                 self._widget.setMinimum(self._command.minimum)
                 self._widget.setMaximum(self._command.maximum)
@@ -123,6 +123,7 @@ class CommandWidget(QWidget):
         self.addTreeItems(r,root,True)
 
     def addTreeItems(self,parent,d,expand):
+        #print("Adding command {}".format(d.name))
 
         # First create commands
         for key,val in d.getNodes(typ=pyrogue.BaseCommand,hidden=False).items():
@@ -137,4 +138,9 @@ class CommandWidget(QWidget):
             w.setExpanded(nxtExpand)
             self.addTreeItems(w,val,nxtExpand)
             self.devList.append({'dev':val,'item':w})
+
+        for i in range(0,4):
+            self.tree.resizeColumnToContents(i)
+
+        QCoreApplication.processEvents()
 

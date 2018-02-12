@@ -46,12 +46,12 @@ class VariableLink(QObject):
         if variable.units:
             self._item.setText(4,str(variable.units))
 
-        variable.addListener(self)
-
         if expand:
             self.setup(None)
         else:
             self._tree.itemExpanded.connect(self.setup)
+
+        variable.addListener(self)
 
     def setup(self,item):
         with self._lock:
@@ -67,7 +67,7 @@ class VariableLink(QObject):
                 for i in self._variable.enum:
                     self._widget.addItem(self._variable.enum[i])
 
-            elif self._variable.disp == 'range':
+            elif self._variable.minimum is not None and self._variable.maximum is not None:
                 self._widget = QSpinBox();
                 self._widget.setMinimum(self._variable.minimum)
                 self._widget.setMaximum(self._variable.maximum)
@@ -92,7 +92,7 @@ class VariableLink(QObject):
             self._tree.resizeColumnToContents(i)
 
     @Pyro4.expose
-    def varListener(self, var, value, disp):
+    def varListener(self, path, value, disp):
         #print('{} varListener ( {} {} )'.format(self.variable, type(value), value))
         with self._lock:
             if self._widget is None or self._inEdit is True:
@@ -116,11 +116,11 @@ class VariableLink(QObject):
         self._inEdit = True
         p = QPalette()
         p.setColor(QPalette.Base,Qt.yellow)
+        p.setColor(QPalette.Text,Qt.black)
         self._widget.setPalette(p)
 
     def returnPressed(self):
         p = QPalette()
-        p.setColor(QPalette.Base,Qt.white)
         self._widget.setPalette(p)
 
         self.guiChanged(self._widget.text())
@@ -182,6 +182,7 @@ class VariableWidget(QWidget):
             root.ReadAll()
 
     def addTreeItems(self,parent,d,expand):
+        #print("Adding variable {}".format(d.name))
 
         # First create variables
         for key,val in d.getNodes(typ=pyrogue.BaseVariable,exc=pyrogue.BaseCommand,hidden=False).items():
@@ -197,4 +198,8 @@ class VariableWidget(QWidget):
             self.addTreeItems(w,val,nxtExpand)
             self.devList.append({'dev':val,'item':w})
 
+        for i in range(0,4):
+            self.tree.resizeColumnToContents(i)
+
+        QCoreApplication.processEvents()
 
