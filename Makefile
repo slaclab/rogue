@@ -26,10 +26,13 @@ VERSION  := $(if $(filter $(VER_D),0),$(VER_T),$(VER_T)-dirty)
 # Variables
 CC       := g++
 DEF      := -DVERSION=\"$(VERSION)\"
-CFLAGS   := -Wall `python3-config --cflags | sed s/-Wstrict-prototypes//` -fno-strict-aliasing
-CFLAGS   += -I$(BOOST_PATH)/include -I$(PWD)/include -I$(PWD)/drivers/include -std=c++0x -fPIC
+CFLAGS   := -Wall `python3-config --cflags | sed s/-Wstrict-prototypes//` -fno-strict-aliasing -std=c++0x -fPIC
+CFLAGS   += -I$(BOOST_PATH)/include -I$(PWD)/include -I$(PWD)/drivers/include
 LFLAGS   := `python3-config --ldflags` -lboost_thread -lboost_python3 -lboost_system
 LFLAGS   += -L`python3-config --prefix`/lib/ -L$(BOOST_PATH)/lib -lbz2
+
+CFLAGS   += -I$(EPICS_BASE)/include -I$(EPICS_BASE)/include/compiler/gcc -I$(EPICS_BASE)/include/os/Linux
+LFLAGS   += -L$(EPICS_BASE)/lib/linux-x86_64/ -lcas -lca -lCom -lgdd
 
 # Rogue Library Sources
 LIB_HDR  := $(PWD)/include/rogue

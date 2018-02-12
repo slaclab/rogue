@@ -21,7 +21,7 @@
 
 #include <boost/python.hpp>
 #include <rogue/protocols/epics/module.h>
-//#include <rogue/protocols/udp/Client.h>
+#include <rogue/protocols/epics/PvAttr.h>
 
 namespace bp  = boost::python;
 namespace rpe = rogue::protocols::epics;
@@ -37,6 +37,6 @@ void rpe::setup_module() {
    // set the current scope to the new sub-module
    bp::scope io_scope = module;
 
-   //rpu::Client::setup_python();
+   rpe::PvAttr::setup_python();
 }
 
