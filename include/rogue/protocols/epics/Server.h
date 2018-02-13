@@ -27,6 +27,7 @@
 #include <gddApps.h>
 #include <gddAppFuncTable.h>
 #include <map>
+#include <boost/enable_shared_from_this.hpp>
 
 namespace rogue {
    namespace protocols {
@@ -35,13 +36,12 @@ namespace rogue {
          class Variable;
          class PvAttr;
 
-         class Server : public caServer {
+         class Server : public caServer, public boost::enable_shared_from_this<rogue::protocols::epics::Server> {
+
             private:
 
                std::map<std::string, boost::shared_ptr<rogue::protocols::epics::PvAttr>> pvByRoguePath_;
                std::map<std::string, boost::shared_ptr<rogue::protocols::epics::PvAttr>> pvByEpicsName_;
-               static gddAppFuncTable<boost::shared_ptr<rogue::protocols::epics::Variable> > funcTable_;
-
             public:
 
                //! Class creation
@@ -59,9 +59,6 @@ namespace rogue {
 
                pvCreateReturn createPV(const casCtx &ctx, const char *pvName);
 
-               static gddAppFuncTableStatus read(rogue::protocols::epics::Variable &pv, gdd &value) {
-                  return funcTable_.read(pv, value);
-               }
          };
 
          // Convienence

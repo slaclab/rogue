@@ -40,6 +40,8 @@ namespace rogue {
                boost::shared_ptr<rogue::protocols::epics::PvAttr> attr_;
                aitBool interest_;
 
+               gddAppFuncTable<rogue::protocols::epics::Variable > funcTable_;
+
             public:
 
                //! Class creation

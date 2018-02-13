@@ -31,6 +31,9 @@ namespace rogue {
    namespace protocols {
       namespace epics {
 
+         class Variable;
+         class Server;
+
          class PvAttr {
             private:
 
@@ -42,30 +45,67 @@ namespace rogue {
                uint32_t    nelms_;
                gdd       * pValue_;
 
+               double      hopr_;
+               double      lopr_;
+               double      highAlarm_;
+               double      highWarning_;
+               double      lowWarning_;
+               double      lowAlarm_;
+               double      highCtrlLimit_;
+               double      lowCtrlLimit_;
+
+               boost::shared_ptr<rogue::protocols::epics::Variable> pv_;
+               boost::shared_ptr<rogue::protocols::epics::Server> server_;
+
             public:
 
                //! Class creation
-               static boost::shared_ptr<rogue::protocols::epics::PvAttr> create (std::string roguePath, std::string epicsName, std::string base, uint32_t nelms);
+               static boost::shared_ptr<rogue::protocols::epics::PvAttr> create (
+                     std::string roguePath, std::string epicsName, std::string base, uint32_t nelms);
 
                //! Setup class in python
                static void setup_python();
 
                //! Class creation
-               PvAttr (std::string roguePath, std::string epicsName, std::string base, uint32_t nelms);
+               PvAttr ( std::string roguePath, std::string epicsName, std::string base, uint32_t nelms);
 
                std::string epicsName();
 
                std::string roguePath();
 
-               std::string units();
-
                void setUnits(std::string units);
 
-               uint16_t precision();
+               std::string getUnits();
 
                void setPrecision(uint16_t precision);
 
+               uint16_t getPrecision();
+
                gdd * getVal ();
+
+               boost::shared_ptr<rogue::protocols::epics::Variable> getPv();
+
+               void setPv(boost::shared_ptr<rogue::protocols::epics::Variable> pv);
+
+               boost::shared_ptr<rogue::protocols::epics::Server> getServer();
+
+               void setServer(boost::shared_ptr<rogue::protocols::epics::Server> server);
+
+               double getHopr ();
+
+               double getLopr ();
+
+               double getHighAlarm ();
+
+               double getHighWarning ();
+
+               double getLowWarning ();
+
+               double getLowAlarm ();
+
+               double getHighCtrl ();
+
+               double getLowCtrl ();
 
          };
 

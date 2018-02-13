@@ -21,6 +21,7 @@
 #include <boost/python.hpp>
 #include <rogue/protocols/epics/Server.h>
 #include <rogue/protocols/epics/PvAttr.h>
+#include <rogue/protocols/epics/Variable.h>
 #include <boost/make_shared.hpp>
 
 namespace rpe = rogue::protocols::epics;
@@ -38,37 +39,20 @@ void rpe::Server::setup_python() {
    bp::class_<rpe::Server, rpe::ServerPtr, boost::noncopyable >("Server",bp::init<uint32_t>())
       .def("create",         &rpe::Server::create)
       .staticmethod("create")
-      //.def("roguePath",      &rpe::Server::roguePath)
-      //.def("epicsName",      &rpe::Server::epicsName)
-      //.def("units",          &rpe::Server::units)
-      //.def("setUnits",       &rpe::Server::setUnits)
-      //.def("precision",      &rpe::Server::precision)
-      //.def("setPrecision",   &rpe::Server::setPrecision)
+      .def("addVariable",    &rpe::Server::addVariable)
    ;
 }
 
 //! Class creation
 //rpe::Server::Server (uint32_t countEstimate) : caServer(countEstimate) {
 rpe::Server::Server (uint32_t countEstimate) : caServer() {
-
-   // Populate function table
-   //funcTable.installReadFunc("severity", rpe::Variable::readSeverity);
-   //funcTable.installReadFunc("precision", rpe::Variable::readPrecision);
-   //funcTable.installReadFunc("alarmHigh", rpe::Variable::readHighAlarm);
-   //funcTable.installReadFunc("alarmHighWarning", rpe::Variable::readHighWarn);
-   //funcTable.installReadFunc("alarmLowWarning", rpe::Variable::readLowWarn);
-   //funcTable.installReadFunc("alarmLow", rpe::Variable::readLowAlarm);
-   //funcTable.installReadFunc("value", rpe::Variable::readValue);
-   //funcTable.installReadFunc("graphicHigh", rpe::Variable::readHopr);
-   //funcTable.installReadFunc("graphicLow", rpe::Variable::readLopr);
-   //funcTable.installReadFunc("controlHigh", rpe::Variable::readHighCtrl);
-   //funcTable.installReadFunc("controlLow", rpe::Variable::readLowCtrl);
-   //funcTable.installReadFunc("units", rpe::Variable::readUnits);
 }
 
 void rpe::Server::addVariable(rpe::PvAttrPtr var) {
    pvByRoguePath_[var->roguePath()] = var;
    pvByEpicsName_[var->epicsName()] = var;
+
+   var->setServer(shared_from_this());
 }
 
 pvExistReturn rpe::Server::pvExistTest(const casCtx &ctx, const char *pvName) {
@@ -82,13 +66,16 @@ pvExistReturn rpe::Server::pvExistTest(const casCtx &ctx, const char *pvName) {
 
 pvCreateReturn rpe::Server::createPV(const casCtx &ctx, const char *pvName) {
    std::map<std::string, rpe::PvAttrPtr>::iterator it;
+   rpe::VariablePtr pv;
 
    if ( (it = pvByEpicsName_.find(pvName)) == pvByEpicsName_.end())
       return S_casApp_pvNotFound;
 
-   rpe::Variable * pv = new rpe::Variable(*this, it->second);
+   if ( it->second->getPv() == NULL ) {
+      pv = rpe::Variable::create(*this, it->second);
+      it->second->setPv(pv);
+   }
 
-   return pv;
+   return *pv;
 }
-
 

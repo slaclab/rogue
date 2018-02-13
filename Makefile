@@ -32,7 +32,7 @@ LFLAGS   := `python3-config --ldflags` -lboost_thread -lboost_python3 -lboost_sy
 LFLAGS   += -L`python3-config --prefix`/lib/ -L$(BOOST_PATH)/lib -lbz2
 
 CFLAGS   += -I$(EPICS_BASE)/include -I$(EPICS_BASE)/include/compiler/gcc -I$(EPICS_BASE)/include/os/Linux
-LFLAGS   += -L$(EPICS_BASE)/lib/linux-x86_64/ -lcas -lca -lCom -lgdd
+LFLAGS   += -L$(EPICS_BASE)/lib/rhel6-x86_64/ -lcas -lca -lCom -lgdd
 
 # Rogue Library Sources
 LIB_HDR  := $(PWD)/include/rogue

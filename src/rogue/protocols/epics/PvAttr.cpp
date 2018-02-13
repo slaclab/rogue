@@ -20,6 +20,9 @@
 
 #include <boost/python.hpp>
 #include <rogue/protocols/epics/PvAttr.h>
+#include <rogue/protocols/epics/Variable.h>
+#include <rogue/protocols/epics/Server.h>
+#include <boost/make_shared.hpp>
 #include <boost/make_shared.hpp>
 
 namespace rpe = rogue::protocols::epics;
@@ -39,9 +42,9 @@ void rpe::PvAttr::setup_python() {
       .staticmethod("create")
       .def("roguePath",      &rpe::PvAttr::roguePath)
       .def("epicsName",      &rpe::PvAttr::epicsName)
-      .def("units",          &rpe::PvAttr::units)
+      .def("units",          &rpe::PvAttr::getUnits)
       .def("setUnits",       &rpe::PvAttr::setUnits)
-      .def("precision",      &rpe::PvAttr::precision)
+      .def("precision",      &rpe::PvAttr::getPrecision)
       .def("setPrecision",   &rpe::PvAttr::setPrecision)
    ;
 }
@@ -67,23 +70,55 @@ std::string rpe::PvAttr::roguePath() {
    return(roguePath_);
 }
 
-std::string rpe::PvAttr::units() {
-   return(units_);
-}
-
 void rpe::PvAttr::setUnits(std::string units) {
    units_ = units;
 }
 
-uint16_t rpe::PvAttr::precision() {
-   return(precision_);
+std::string rpe::PvAttr::getUnits() {
+   return(units_);
 }
 
 void rpe::PvAttr::setPrecision(uint16_t precision) {
    precision_ = precision;
 }
 
+uint16_t rpe::PvAttr::getPrecision() {
+   return(precision_);
+}
+
 gdd * rpe::PvAttr::getVal () {
    return(pValue_);
 }
+
+rpe::VariablePtr rpe::PvAttr::getPv() {
+   return pv_;
+}
+
+void rpe::PvAttr::setPv(rpe::VariablePtr pv) {
+   pv_ = pv;
+}
+
+rpe::ServerPtr rpe::PvAttr::getServer() {
+   return server_;
+}
+
+void rpe::PvAttr::setServer(rpe::ServerPtr srv) {
+   server_ = srv;
+}
+
+double rpe::PvAttr::getHopr () { return hopr_; }
+
+double rpe::PvAttr::getLopr () { return lopr_; }
+
+double rpe::PvAttr::getHighAlarm () { return highAlarm_; }
+
+double rpe::PvAttr::getHighWarning () { return highWarning_; }
+
+double rpe::PvAttr::getLowWarning () { return lowWarning_; }
+
+double rpe::PvAttr::getLowAlarm () { return lowAlarm_; }
+
+double rpe::PvAttr::getHighCtrl () { return highCtrlLimit_; }
+
+double rpe::PvAttr::getLowCtrl () { return lowCtrlLimit_; }
 

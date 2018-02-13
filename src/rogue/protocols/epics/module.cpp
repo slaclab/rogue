@@ -22,6 +22,8 @@
 #include <boost/python.hpp>
 #include <rogue/protocols/epics/module.h>
 #include <rogue/protocols/epics/PvAttr.h>
+#include <rogue/protocols/epics/Server.h>
+#include <rogue/protocols/epics/Variable.h>
 
 namespace bp  = boost::python;
 namespace rpe = rogue::protocols::epics;
@@ -38,5 +40,7 @@ void rpe::setup_module() {
    bp::scope io_scope = module;
 
    rpe::PvAttr::setup_python();
+   rpe::Server::setup_python();
+   rpe::Variable::setup_python();
 }
 
