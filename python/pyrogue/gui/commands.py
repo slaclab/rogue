@@ -23,11 +23,52 @@ from PyQt4.QtGui    import *
 
 import pyrogue
 
+class CommandDev(object):
+    def __init__(self,*,tree,parent,dev,noExpand):
+        self._parent   = parent
+        self._tree     = tree
+        self._dev      = dev
+        self._children = []
+
+        self._widget = QTreeWidgetItem(parent)
+        self._widget.setText(0,self._dev.name)
+
+        if (not noExpand) and self._dev.expand:
+            self._dummy = None
+            self._widget.setExpanded(True)
+            self.setup(False)
+        else:
+            self._dummy = QTreeWidgetItem(self._widget) # One dummy item to add expand control
+            self._widget.setExpanded(False)
+            self._tree.itemExpanded.connect(self.expandCb)
+
+    def expandCb(self):
+        if self._dummy is None or not self._widget.isExpanded():
+            return
+
+        self._widget.removeChild(self._dummy)
+        self._dummy = None
+        self.setup(True)
+
+    def setup(self,noExpand):
+
+        # First create commands
+        for key,val in self._dev.visableCommands.items():
+            self._children.append(CommandLink(tree=self._tree,parent=self._widget,command=val))
+            QCoreApplication.processEvents()
+
+        # Then create devices
+        for key,val in self._dev.visableDevices.items():
+            self._children.append(CommandDev(tree=self._tree,parent=self._widget,dev=val,noExpand=noExpand))
+
+        for i in range(0,4):
+            self._tree.resizeColumnToContents(i)
+
 
 class CommandLink(QObject):
     """Bridge between the pyrogue tree and the display element"""
 
-    def __init__(self,*,tree,parent,command,expand):
+    def __init__(self,*,tree,parent,command):
         QObject.__init__(self)
         self._command = command
         self._parent  = parent
@@ -38,15 +79,6 @@ class CommandLink(QObject):
         self._item = QTreeWidgetItem(parent)
         self._item.setText(0,command.name)
         self._item.setText(1,command.typeStr)
-
-        if expand:
-            self.setup(None)
-        else:
-            self._tree.itemExpanded.connect(self.setup)
-
-    def setup(self,item):
-        if self._pb is not None or (item is not None and item != self._parent):
-            return
 
         self._pb = QPushButton('Execute')
         self._tree.setItemWidget(self._item,2,self._pb)
@@ -60,7 +92,7 @@ class CommandLink(QObject):
                     self._widget.addItem(self._command.enum[i])
                 self._widget.setCurrentIndex(self._widget.findText(self._command.valueDisp()))
 
-            elif self._variable.minimum is not None and self._variable.maximum is not None:
+            elif self._command.minimum is not None and self._command.maximum is not None:
                 self._widget = QSpinBox();
                 self._widget.setMinimum(self._command.minimum)
                 self._widget.setMaximum(self._command.maximum)
@@ -71,9 +103,6 @@ class CommandLink(QObject):
                 self._widget.setText(self._command.valueDisp())
 
             self._tree.setItemWidget(self._item,3,self._widget)
-
-        for i in range(0,3):
-            self._tree.resizeColumnToContents(i)
 
     def execPressed(self):
         if self._widget is not None:
@@ -112,35 +141,9 @@ class CommandWidget(QWidget):
         hb = QHBoxLayout()
         vb.addLayout(hb)
 
-        self.devList = []
+        self.devTop = None
 
     def addTree(self,root):
         self.roots.append(root)
-
-        r = QTreeWidgetItem(self.top)
-        r.setText(0,root.name)
-        r.setExpanded(True)
-        self.addTreeItems(r,root,True)
-
-    def addTreeItems(self,parent,d,expand):
-        #print("Adding command {}".format(d.name))
-
-        # First create commands
-        for key,val in d.getNodes(typ=pyrogue.BaseCommand,hidden=False).items():
-            self.commands.append(CommandLink(tree=self.tree,parent=parent,command=val,expand=expand))
-
-        # Then create devices
-        for key,val in d.getNodes(typ=pyrogue.Device,hidden=False).items():
-            nxtExpand = expand if val.expand else False
-
-            w = QTreeWidgetItem(parent)
-            w.setText(0,val.name)
-            w.setExpanded(nxtExpand)
-            self.addTreeItems(w,val,nxtExpand)
-            self.devList.append({'dev':val,'item':w})
-
-        for i in range(0,4):
-            self.tree.resizeColumnToContents(i)
-
-        QCoreApplication.processEvents()
+        self._devTop = CommandDev(tree=self.tree,parent=self.top,dev=root,noExpand=False)
 
