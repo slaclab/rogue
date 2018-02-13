@@ -92,7 +92,7 @@ class CommandLink(QObject):
                     self._widget.addItem(self._command.enum[i])
                 self._widget.setCurrentIndex(self._widget.findText(self._command.valueDisp()))
 
-            elif self._variable.minimum is not None and self._variable.maximum is not None:
+            elif self._command.minimum is not None and self._command.maximum is not None:
                 self._widget = QSpinBox();
                 self._widget.setMinimum(self._command.minimum)
                 self._widget.setMaximum(self._command.maximum)
