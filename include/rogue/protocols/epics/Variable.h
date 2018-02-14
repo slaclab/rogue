@@ -53,6 +53,8 @@ namespace rogue {
                //! Class creation
                Variable (caServer &cas, boost::shared_ptr<rogue::protocols::epics::PvAttr> attr);
 
+               ~Variable ();
+
                const char * getName() const;
 
                caStatus interestRegister();

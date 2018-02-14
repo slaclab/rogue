@@ -47,6 +47,7 @@ void rpe::PvAttr::setup_python() {
       .def("precision",      &rpe::PvAttr::getPrecision)
       .def("setPrecision",   &rpe::PvAttr::setPrecision)
    ;
+
 }
 
 //! Class creation
@@ -88,6 +89,10 @@ uint16_t rpe::PvAttr::getPrecision() {
 
 gdd * rpe::PvAttr::getVal () {
    return(pValue_);
+}
+
+void rpe::PvAttr::updated() {
+   printf("New value set for %s\n",epicsName_.c_str());
 }
 
 rpe::VariablePtr rpe::PvAttr::getPv() {

@@ -23,12 +23,15 @@
 #include <rogue/protocols/epics/PvAttr.h>
 #include <rogue/protocols/epics/Variable.h>
 #include <boost/make_shared.hpp>
+#include <rogue/GilRelease.h>
+#include <fdManager.h>
 
 namespace rpe = rogue::protocols::epics;
 namespace bp  = boost::python;
 
 //! Class creation
 rpe::ServerPtr rpe::Server::create (uint32_t countEstimate) {
+   printf("Server create called\n");
    rpe::ServerPtr r = boost::make_shared<rpe::Server>(countEstimate);
    return(r);
 }
@@ -46,11 +49,22 @@ void rpe::Server::setup_python() {
 //! Class creation
 //rpe::Server::Server (uint32_t countEstimate) : caServer(countEstimate) {
 rpe::Server::Server (uint32_t countEstimate) : caServer() {
+   printf("Server created\n");
+   thread_ = new boost::thread(boost::bind(&rpe::Server::runThread, this));
+}
+
+rpe::Server::~Server() {
+   printf("Server destructor called\n");
+   rogue::GilRelease noGil;
+   thread_->interrupt();
+   thread_->join();
 }
 
 void rpe::Server::addVariable(rpe::PvAttrPtr var) {
    pvByRoguePath_[var->roguePath()] = var;
    pvByEpicsName_[var->epicsName()] = var;
+
+   printf("Creating epics variable %s\n",var->epicsName().c_str());
 
    var->setServer(shared_from_this());
 }
@@ -58,10 +72,16 @@ void rpe::Server::addVariable(rpe::PvAttrPtr var) {
 pvExistReturn rpe::Server::pvExistTest(const casCtx &ctx, const char *pvName) {
    std::map<std::string, rpe::PvAttrPtr>::iterator it;
 
-   if ( (it = pvByEpicsName_.find(pvName)) == pvByEpicsName_.end())
+   printf("Looking for variable %s\n",pvName);
+
+   if ( (it = pvByEpicsName_.find(pvName)) == pvByEpicsName_.end()) {
+      printf("Did not find variable %s\n",pvName);
       return pverDoesNotExistHere;
-   else
+   }
+   else {
+      printf("Found variable %s\n",pvName);
       return pverExistsHere;
+   }
 }
 
 pvCreateReturn rpe::Server::createPV(const casCtx &ctx, const char *pvName) {
@@ -76,6 +96,20 @@ pvCreateReturn rpe::Server::createPV(const casCtx &ctx, const char *pvName) {
       it->second->setPv(pv);
    }
 
+   printf("Created variable %s\n",pvName);
+
    return *pv;
+}
+
+
+//! Run thread
+void rpe::Server::runThread() {
+   try {
+      printf("Entering server loop\n");
+      while(1) {
+         fileDescriptorManager.process(0.01);
+      }
+   } catch (boost::thread_interrupted&) { }
+   printf("Exiting server loop\n");
 }
 

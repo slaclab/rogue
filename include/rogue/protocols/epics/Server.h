@@ -22,6 +22,7 @@
 #define __ROGUE_PROTOCOLS_EPICS_SERVER_H__
 
 #include <boost/python.hpp>
+#include <boost/thread.hpp>
 #include <casdef.h>
 #include <gdd.h>
 #include <gddApps.h>
@@ -42,6 +43,11 @@ namespace rogue {
 
                std::map<std::string, boost::shared_ptr<rogue::protocols::epics::PvAttr>> pvByRoguePath_;
                std::map<std::string, boost::shared_ptr<rogue::protocols::epics::PvAttr>> pvByEpicsName_;
+
+               boost::thread * thread_;
+
+               void runThread();
+
             public:
 
                //! Class creation
@@ -52,6 +58,8 @@ namespace rogue {
 
                //! Class creation
                Server (uint32_t countEstimate);
+
+               ~Server();
 
                void addVariable(boost::shared_ptr<rogue::protocols::epics::PvAttr>  var);
 

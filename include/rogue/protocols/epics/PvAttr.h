@@ -83,6 +83,8 @@ namespace rogue {
 
                gdd * getVal ();
 
+               void updated();
+
                boost::shared_ptr<rogue::protocols::epics::Variable> getPv();
 
                void setPv(boost::shared_ptr<rogue::protocols::epics::Variable> pv);

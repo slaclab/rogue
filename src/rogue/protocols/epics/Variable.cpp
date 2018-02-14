@@ -66,6 +66,10 @@ rpe::Variable::Variable (caServer &cas, rpe::PvAttrPtr attr) : casPV(cas) {
    pValue->putConvert(value);
 }
 
+rpe::Variable::~Variable () {
+   printf("Variable destroyed\n");
+}
+
 const char * rpe::Variable::getName() const {
    return attr_->epicsName().c_str();
 }
@@ -88,17 +92,18 @@ void rpe::Variable::endTransaction() {
 }
 
 caStatus rpe::Variable::read(const casCtx &ctx, gdd &prototype) {
+   printf("Read called\n");
    return funcTable_.read(*this, prototype);
 }
 
 caStatus rpe::Variable::write(const casCtx &ctx, gdd &value) {
    struct timespec t;
-   //struct timeval  t;
    gdd *pValue;
    double newVal;
 
-   //gettimeofday(&t,NULL);
-   //timespec_get(&t,0);
+   printf("Write called\n");
+
+   clock_gettime(CLOCK_REALTIME,&t);
 
    caServer *pServer = this->getCAS();
 
@@ -122,13 +127,18 @@ caStatus rpe::Variable::write(const casCtx &ctx, gdd &value) {
    value.get(newVal);
 
    if(interest_ == aitTrue){
-      casEventMask select(pServer->valueEventMask | pServer->alarmEventMask);
+      casEventMask select(pServer->valueEventMask() | pServer->alarmEventMask());
       postEvent(select, *pValue);
    }
+
+   printf("Caling update\n");
+   attr_->updated();
+
    return S_casApp_success;
 }
 
 aitEnum rpe::Variable::bestExternalType() {
+   printf("here1\n");
    gdd* pValue = attr_->getVal();
    if(!pValue)
       return aitEnumInvalid;
@@ -137,6 +147,7 @@ aitEnum rpe::Variable::bestExternalType() {
 }
 
 gddAppFuncTableStatus rpe::Variable::readStatus(gdd &value) {
+   printf("here2\n");
    gdd *pValue = attr_->getVal();
    if(pValue)
       value.putConvert(pValue->getStat());
@@ -146,6 +157,7 @@ gddAppFuncTableStatus rpe::Variable::readStatus(gdd &value) {
 }
 
 gddAppFuncTableStatus rpe::Variable::readSeverity(gdd &value) {
+   printf("here3\n");
    gdd *pValue = attr_->getVal();
    if(pValue)
       value.putConvert(pValue->getSevr());
@@ -155,64 +167,81 @@ gddAppFuncTableStatus rpe::Variable::readSeverity(gdd &value) {
 }
 
 gddAppFuncTableStatus rpe::Variable::readPrecision(gdd &value) {
+   printf("here4\n");
    value.putConvert(attr_->getPrecision());
    return S_casApp_success;
 }
 
 gddAppFuncTableStatus rpe::Variable::readHopr(gdd &value) {
+   printf("here5\n");
    value.putConvert(attr_->getHopr());
    return S_casApp_success;
 }
 
 gddAppFuncTableStatus rpe::Variable::readLopr(gdd &value) {
+   printf("here6\n");
    value.putConvert(attr_->getLopr());
    return S_casApp_success;
 }
 
 gddAppFuncTableStatus rpe::Variable::readHighAlarm(gdd &value) {
+   printf("here7\n");
    value.putConvert(attr_->getHighAlarm());
    return S_casApp_success;
 }
 
 gddAppFuncTableStatus rpe::Variable::readHighWarn(gdd &value) {
+   printf("here8\n");
    value.putConvert(attr_->getHighWarning());
    return S_casApp_success;
 }
 
 gddAppFuncTableStatus rpe::Variable::readLowWarn(gdd &value) {
+   printf("here9\n");
    value.putConvert(attr_->getLowWarning());
    return S_casApp_success;
 }
 
 gddAppFuncTableStatus rpe::Variable::readLowAlarm(gdd &value) {
+   printf("here10\n");
    value.putConvert(attr_->getLowAlarm());
    return S_casApp_success;
 }
 
 gddAppFuncTableStatus rpe::Variable::readHighCtrl(gdd &value) {
+   printf("here11\n");
    value.putConvert(attr_->getHighCtrl());
    return S_casApp_success;
 }
 
 gddAppFuncTableStatus rpe::Variable::readLowCtrl(gdd &value) {
+   printf("here12\n");
    value.putConvert(attr_->getLowCtrl());
    return S_casApp_success;
 }
 
 gddAppFuncTableStatus rpe::Variable::readValue(gdd &value) {
+   printf("here13\n");
    double currentVal;
    gdd *pValue = attr_->getVal();
+   printf("here13a\n");
 
-   if(!pValue)
+   if(!pValue) {
+      printf("here13b\n");
       return S_casApp_undefined;
+   }
    else {
+      printf("here13c\n");
       pValue->getConvert(currentVal);
+      printf("here13d\n");
       value.putConvert(currentVal);
+      printf("here13e\n");
       return S_casApp_success;
    }
 }
 
 gddAppFuncTableStatus rpe::Variable::readUnits(gdd &value) {
+   printf("here14\n");
    value.put(attr_->getUnits().c_str());
    return S_casApp_success;
 }
