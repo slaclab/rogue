@@ -93,10 +93,12 @@ caStatus rpe::Variable::read(const casCtx &ctx, gdd &prototype) {
 
 caStatus rpe::Variable::write(const casCtx &ctx, gdd &value) {
    struct timespec t;
+   //struct timeval  t;
    gdd *pValue;
    double newVal;
 
-   timespec_get(&t, TIME_UTC);
+   //gettimeofday(&t,NULL);
+   //timespec_get(&t,0);
 
    caServer *pServer = this->getCAS();
 
@@ -114,7 +116,6 @@ caStatus rpe::Variable::write(const casCtx &ctx, gdd &value) {
    pValue->reference();
 
    // Set the timespec structure to the current time stamp the gdd.
-   current.get(t.tv_sec, t.tv_nsec);
    pValue->setTimeStamp(&t);
  
    // Get the new value and set the severity and status according to its value.
