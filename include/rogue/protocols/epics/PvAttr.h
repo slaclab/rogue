@@ -22,6 +22,7 @@
 #define __ROGUE_PROTOCOLS_EPICS_PV_ATTR_H__
 
 #include <boost/python.hpp>
+#include <boost/thread.hpp>
 #include <casdef.h>
 #include <gdd.h>
 #include <gddApps.h>
@@ -37,14 +38,16 @@ namespace rogue {
          class PvAttr {
             private:
 
-               std::string roguePath_;
                std::string epicsName_;
-               std::string units_;
-               std::string base_;
-               uint16_t    precision_;
                uint32_t    nelms_;
+
                gdd       * pValue_;
 
+               std::string typeStr_;
+               aitEnum     epicsType_;
+
+               std::string units_;
+               uint16_t    precision_;
                double      hopr_;
                double      lopr_;
                double      highAlarm_;
@@ -54,61 +57,74 @@ namespace rogue {
                double      highCtrlLimit_;
                double      lowCtrlLimit_;
 
-               boost::shared_ptr<rogue::protocols::epics::Variable> pv_;
-               boost::shared_ptr<rogue::protocols::epics::Server> server_;
+               rogue::protocols::epics::Variable * pv_;
+
+               gddAppFuncTable<rogue::protocols::epics::PvAttr> funcTable_;
+
+               boost::mutex mtx_;
 
             public:
 
                //! Class creation
                static boost::shared_ptr<rogue::protocols::epics::PvAttr> create (
-                     std::string roguePath, std::string epicsName, std::string base, uint32_t nelms);
+                     std::string epicsName, std::string typeStr, uint32_t nelms);
 
                //! Setup class in python
                static void setup_python();
 
                //! Class creation
-               PvAttr ( std::string roguePath, std::string epicsName, std::string base, uint32_t nelms);
+               PvAttr ( std::string epicsName, std::string typeStr, uint32_t nelms);
 
                std::string epicsName();
 
-               std::string roguePath();
+               void varUpdated ( boost::python::object p );
 
                void setUnits(std::string units);
 
-               std::string getUnits();
-
                void setPrecision(uint16_t precision);
 
-               uint16_t getPrecision();
+               void setPv(rogue::protocols::epics::Variable * pv);
 
-               gdd * getVal ();
+               void clrPv();
+
+               rogue::protocols::epics::Variable * getPv();
+               
+               //---------------------------------------
+               // EPICS Interface
+               //---------------------------------------
+               caStatus read(gdd &value);
+
+               gddAppFuncTableStatus readValue(gdd &value);
+
+               caStatus write(gdd &value);
 
                void updated();
 
-               boost::shared_ptr<rogue::protocols::epics::Variable> getPv();
+               aitEnum bestExternalType();
 
-               void setPv(boost::shared_ptr<rogue::protocols::epics::Variable> pv);
+               gddAppFuncTableStatus readStatus(gdd &value);
 
-               boost::shared_ptr<rogue::protocols::epics::Server> getServer();
+               gddAppFuncTableStatus readSeverity(gdd &value);
 
-               void setServer(boost::shared_ptr<rogue::protocols::epics::Server> server);
+               gddAppFuncTableStatus readPrecision(gdd &value);
 
-               double getHopr ();
+               gddAppFuncTableStatus readHopr(gdd &value);
 
-               double getLopr ();
+               gddAppFuncTableStatus readLopr(gdd &value);
 
-               double getHighAlarm ();
+               gddAppFuncTableStatus readHighAlarm(gdd &value);
 
-               double getHighWarning ();
+               gddAppFuncTableStatus readHighWarn(gdd &value);
 
-               double getLowWarning ();
+               gddAppFuncTableStatus readLowWarn(gdd &value);
 
-               double getLowAlarm ();
+               gddAppFuncTableStatus readLowAlarm(gdd &value);
 
-               double getHighCtrl ();
+               gddAppFuncTableStatus readHighCtrl(gdd &value);
 
-               double getLowCtrl ();
+               gddAppFuncTableStatus readLowCtrl(gdd &value);
 
+               gddAppFuncTableStatus readUnits(gdd &value);
          };
 
          // Convienence

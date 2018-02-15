@@ -28,36 +28,35 @@
 #include <gddApps.h>
 #include <gddAppFuncTable.h>
 #include <map>
-#include <boost/enable_shared_from_this.hpp>
 
 namespace rogue {
    namespace protocols {
       namespace epics {
 
-         class Variable;
          class PvAttr;
 
-         class Server : public caServer, public boost::enable_shared_from_this<rogue::protocols::epics::Server> {
+         class Server : public caServer {
 
             private:
 
-               std::map<std::string, boost::shared_ptr<rogue::protocols::epics::PvAttr>> pvByRoguePath_;
                std::map<std::string, boost::shared_ptr<rogue::protocols::epics::PvAttr>> pvByEpicsName_;
 
                boost::thread * thread_;
+
+               boost::mutex mtx_;
 
                void runThread();
 
             public:
 
                //! Class creation
-               static boost::shared_ptr<rogue::protocols::epics::Server> create (uint32_t countEstimate);
+               static boost::shared_ptr<rogue::protocols::epics::Server> create ();
 
                //! Setup class in python
                static void setup_python();
 
                //! Class creation
-               Server (uint32_t countEstimate);
+               Server ();
 
                ~Server();
 

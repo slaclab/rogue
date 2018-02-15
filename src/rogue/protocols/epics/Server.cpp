@@ -30,16 +30,16 @@ namespace rpe = rogue::protocols::epics;
 namespace bp  = boost::python;
 
 //! Class creation
-rpe::ServerPtr rpe::Server::create (uint32_t countEstimate) {
+rpe::ServerPtr rpe::Server::create () {
    printf("Server create called\n");
-   rpe::ServerPtr r = boost::make_shared<rpe::Server>(countEstimate);
+   rpe::ServerPtr r = boost::make_shared<rpe::Server>();
    return(r);
 }
 
 //! Setup class in python
 void rpe::Server::setup_python() {
 
-   bp::class_<rpe::Server, rpe::ServerPtr, boost::noncopyable >("Server",bp::init<uint32_t>())
+   bp::class_<rpe::Server, rpe::ServerPtr, boost::noncopyable >("Server",bp::init<>())
       .def("create",         &rpe::Server::create)
       .staticmethod("create")
       .def("addVariable",    &rpe::Server::addVariable)
@@ -47,8 +47,7 @@ void rpe::Server::setup_python() {
 }
 
 //! Class creation
-//rpe::Server::Server (uint32_t countEstimate) : caServer(countEstimate) {
-rpe::Server::Server (uint32_t countEstimate) : caServer() {
+rpe::Server::Server () : caServer() {
    printf("Server created\n");
    thread_ = new boost::thread(boost::bind(&rpe::Server::runThread, this));
 }
@@ -56,51 +55,49 @@ rpe::Server::Server (uint32_t countEstimate) : caServer() {
 rpe::Server::~Server() {
    printf("Server destructor called\n");
    rogue::GilRelease noGil;
+   printf("Interrupt tread\n");
    thread_->interrupt();
+   printf("Wait join\n");
    thread_->join();
+   printf("Done\n");
 }
 
 void rpe::Server::addVariable(rpe::PvAttrPtr var) {
-   pvByRoguePath_[var->roguePath()] = var;
+   boost::lock_guard<boost::mutex> lock(mtx_);
+
    pvByEpicsName_[var->epicsName()] = var;
-
    printf("Creating epics variable %s\n",var->epicsName().c_str());
-
-   var->setServer(shared_from_this());
 }
 
 pvExistReturn rpe::Server::pvExistTest(const casCtx &ctx, const char *pvName) {
+   boost::lock_guard<boost::mutex> lock(mtx_);
+
    std::map<std::string, rpe::PvAttrPtr>::iterator it;
 
-   printf("Looking for variable %s\n",pvName);
-
    if ( (it = pvByEpicsName_.find(pvName)) == pvByEpicsName_.end()) {
-      printf("Did not find variable %s\n",pvName);
       return pverDoesNotExistHere;
    }
    else {
-      printf("Found variable %s\n",pvName);
       return pverExistsHere;
    }
 }
 
 pvCreateReturn rpe::Server::createPV(const casCtx &ctx, const char *pvName) {
+   boost::lock_guard<boost::mutex> lock(mtx_);
+
    std::map<std::string, rpe::PvAttrPtr>::iterator it;
-   rpe::VariablePtr pv;
+   rpe::Variable * pv;
 
    if ( (it = pvByEpicsName_.find(pvName)) == pvByEpicsName_.end())
       return S_casApp_pvNotFound;
 
-   if ( it->second->getPv() == NULL ) {
-      pv = rpe::Variable::create(*this, it->second);
+   if ( (pv = it->second->getPv()) == NULL ) {
+      pv = new Variable(*this, it->second);
       it->second->setPv(pv);
    }
 
-   printf("Created variable %s\n",pvName);
-
    return *pv;
 }
-
 
 //! Run thread
 void rpe::Server::runThread() {
@@ -108,6 +105,7 @@ void rpe::Server::runThread() {
       printf("Entering server loop\n");
       while(1) {
          fileDescriptorManager.process(0.01);
+         boost::this_thread::interruption_point();
       }
    } catch (boost::thread_interrupted&) { }
    printf("Exiting server loop\n");

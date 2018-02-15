@@ -22,6 +22,7 @@
 #define __ROGUE_PROTOCOLS_EPICS_VARIABLE_H__
 
 #include <boost/python.hpp>
+#include <boost/thread.hpp>
 #include <casdef.h>
 #include <gdd.h>
 #include <gddApps.h>
@@ -36,16 +37,11 @@ namespace rogue {
          class Variable : public casPV {
             private:
 
-               static int currentOps_;
                boost::shared_ptr<rogue::protocols::epics::PvAttr> attr_;
                aitBool interest_;
-
-               gddAppFuncTable<rogue::protocols::epics::Variable > funcTable_;
+               boost::mutex mtx_;
 
             public:
-
-               //! Class creation
-               static boost::shared_ptr<rogue::protocols::epics::Variable> create (caServer &cas, boost::shared_ptr<rogue::protocols::epics::PvAttr> attr);
 
                //! Setup class in python
                static void setup_python();
@@ -61,6 +57,8 @@ namespace rogue {
 
                void interestDelete();
 
+               bool interest();
+
                caStatus beginTransaction();
 
                void endTransaction();
@@ -70,37 +68,7 @@ namespace rogue {
                caStatus write(const casCtx &ctx, gdd &value);
 
                aitEnum bestExternalType();
-
-               gddAppFuncTableStatus readStatus(gdd &value);
-
-               gddAppFuncTableStatus readSeverity(gdd &value);
-
-               gddAppFuncTableStatus readPrecision(gdd &value);
-
-               gddAppFuncTableStatus readHopr(gdd &value);
-
-               gddAppFuncTableStatus readLopr(gdd &value);
-
-               gddAppFuncTableStatus readHighAlarm(gdd &value);
-
-               gddAppFuncTableStatus readHighWarn(gdd &value);
-
-               gddAppFuncTableStatus readLowWarn(gdd &value);
-
-               gddAppFuncTableStatus readLowAlarm(gdd &value);
-
-               gddAppFuncTableStatus readHighCtrl(gdd &value);
-
-               gddAppFuncTableStatus readLowCtrl(gdd &value);
-
-               gddAppFuncTableStatus readValue(gdd &value);
-
-               gddAppFuncTableStatus readUnits(gdd &value);
          };
-
-         // Convienence
-         typedef boost::shared_ptr<rogue::protocols::epics::Variable> VariablePtr;
-
       }
    }
 }
