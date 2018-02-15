@@ -137,9 +137,7 @@ std::string rpe::Value::epicsName() {
    return(epicsName_);
 }
 
-void rpe::Value::valueSet() { 
-   printf("Default valueSet called\n");
-}
+void rpe::Value::valueSet() { }
 
 void rpe::Value::setPv(rpe::Pv * pv) {
    boost::lock_guard<boost::mutex> lock(mtx_);
@@ -258,7 +256,6 @@ caStatus rpe::Value::write(gdd &value) {
 }
 
 void rpe::Value::updated() {
-   printf("Updated called\n");
    boost::lock_guard<boost::mutex> lock(mtx_);
    if ( pv_ != NULL && pv_->interest() == aitTrue ) {
       caServer *pServer = pv_->getCAS();
