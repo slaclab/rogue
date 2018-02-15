@@ -31,11 +31,16 @@ hierarchy of system componenets, including remote hardware registers
 and high speed data streams.
 
 Rogue features
+--------------
+
  * Split C++/Python code base using boost-python
+   
    * Low level interfaces writen in C++ for speed
    * Most user development with Rogue is done in Python
+     
  * All data paths operate in independent high performance threads
  * Bridge interfaces available to a number of management layers
+   
    * EPICS
    * CODE
    * Ignition (mysql)
