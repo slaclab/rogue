@@ -20,8 +20,8 @@
 
 #include <boost/python.hpp>
 #include <rogue/protocols/epics/Server.h>
-#include <rogue/protocols/epics/PvAttr.h>
-#include <rogue/protocols/epics/Variable.h>
+#include <rogue/protocols/epics/Value.h>
+#include <rogue/protocols/epics/Pv.h>
 #include <rogue/GilRelease.h>
 #include <fdManager.h>
 
@@ -32,7 +32,7 @@ namespace bp  = boost::python;
 void rpe::Server::setup_python() {
 
    bp::class_<rpe::Server, rpe::ServerPtr, boost::noncopyable >("Server",bp::init<>())
-      .def("addVariable",    &rpe::Server::addVariable)
+      .def("addValue", &rpe::Server::addValue)
    ;
 }
 
@@ -47,18 +47,18 @@ rpe::Server::~Server() {
    thread_->join();
 }
 
-void rpe::Server::addVariable(rpe::PvAttrPtr var) {
+void rpe::Server::addValue(rpe::ValuePtr value) {
    boost::lock_guard<boost::mutex> lock(mtx_);
 
-   pvByEpicsName_[var->epicsName()] = var;
+   values_[value->epicsName()] = value;
 }
 
 pvExistReturn rpe::Server::pvExistTest(const casCtx &ctx, const char *pvName) {
    boost::lock_guard<boost::mutex> lock(mtx_);
 
-   std::map<std::string, rpe::PvAttrPtr>::iterator it;
+   std::map<std::string, rpe::ValuePtr>::iterator it;
 
-   if ( (it = pvByEpicsName_.find(pvName)) == pvByEpicsName_.end()) {
+   if ( (it = values_.find(pvName)) == values_.end()) {
       return pverDoesNotExistHere;
    }
    else {
@@ -69,14 +69,14 @@ pvExistReturn rpe::Server::pvExistTest(const casCtx &ctx, const char *pvName) {
 pvCreateReturn rpe::Server::createPV(const casCtx &ctx, const char *pvName) {
    boost::lock_guard<boost::mutex> lock(mtx_);
 
-   std::map<std::string, rpe::PvAttrPtr>::iterator it;
-   rpe::Variable * pv;
+   std::map<std::string, rpe::ValuePtr>::iterator it;
+   rpe::Pv * pv;
 
-   if ( (it = pvByEpicsName_.find(pvName)) == pvByEpicsName_.end())
+   if ( (it = values_.find(pvName)) == values_.end())
       return S_casApp_pvNotFound;
 
    if ( (pv = it->second->getPv()) == NULL ) {
-      pv = new Variable(*this, it->second);
+      pv = new Pv(*this, it->second);
       it->second->setPv(pv);
    }
 

@@ -36,14 +36,14 @@ namespace rogue {
          class Server;
 
          class Value {
-            private:
+            protected:
 
                std::string epicsName_;
-
-               gdd       * pValue_;
-
                std::string typeStr_;
                aitEnum     epicsType_;
+               gdd       * pValue_;
+
+               rogue::protocols::epics::Pv * pv_;
 
                std::string units_;
                uint16_t    precision_;
@@ -56,11 +56,11 @@ namespace rogue {
                double      highCtrlLimit_;
                double      lowCtrlLimit_;
 
-               rogue::protocols::epics::Pv * pv_;
-
                gddAppFuncTable<rogue::protocols::epics::Value> funcTable_;
 
                boost::mutex mtx_;
+
+               void setType(std::string typeStr);
 
             public:
 
@@ -72,7 +72,7 @@ namespace rogue {
 
                std::string epicsName();
 
-               void varUpdated ( boost::python::object p );
+               virtual void valueSet();
 
                void setPv(rogue::protocols::epics::Pv * pv);
 
