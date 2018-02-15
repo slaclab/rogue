@@ -22,6 +22,7 @@
 #include <rogue/protocols/epics/Value.h>
 #include <rogue/protocols/epics/Pv.h>
 #include <rogue/protocols/epics/Server.h>
+#include <rogue/GeneralError.h>
 #include <boost/make_shared.hpp>
 #include <boost/make_shared.hpp>
 #include <aitTypes.h>
@@ -32,16 +33,15 @@ namespace bp  = boost::python;
 //! Setup class in python
 void rpe::Value::setup_python() {
    bp::class_<rpe::Value, rpe::ValuePtr, boost::noncopyable >("Value",bp::init<std::string>())
-      .def("epicsName",      &rpe::Value::epicsName)
+      .def("epicsName", &rpe::Value::epicsName)
    ;
 }
 
 //! Class creation
 rpe::Value::Value (std::string epicsName) {
+   uint8_t initValue;
+
    epicsName_ = epicsName;
-   typeStr_   = "";
-   //epicsType_ = aitUint8;
-   pValue_    = NULL;
    pv_        = NULL;
 
    units_         = "";
@@ -69,33 +69,77 @@ rpe::Value::Value (std::string epicsName) {
    funcTable_.installReadFunc("controlHigh",      &rpe::Value::readHighCtrl);
    funcTable_.installReadFunc("controlLow",       &rpe::Value::readLowCtrl);
    funcTable_.installReadFunc("units",            &rpe::Value::readUnits);
+
+   // Default, type
+   this->setType("UInt32");
+   pValue_ = new gddScalar(gddAppType_value, epicsType_);
+ 
+   // Default value 
+   initValue = 0;
+   pValue_->putConvert(initValue);
 }
 
 void rpe::Value::setType ( std::string typeStr ) {
-   typeStr_ = typeStr;
 
    // Determine epics type
-   //if      ( typeStr == "UInt8"   ) epicsType_ = aitUint8;
-   //else if ( typeStr == "UInt16"  ) epicsType_ = aitUint16;
-   //else if ( typeStr == "UInt32"  ) epicsType_ = aitUint32;
-   //else if ( typeStr == "UInt64"  ) epicsType_ = aitUint64;
-   //else if ( typeStr == "Int8"    ) epicsType_ = aitInt8;
-   //else if ( typeStr == "Int16"   ) epicsType_ = aitInt16;
-   //else if ( typeStr == "Int32"   ) epicsType_ = aitInt32;
-   //else if ( typeStr == "Int64"   ) epicsType_ = aitInt64;
-   //else if ( typeStr == "Float32" ) epicsType_ = aitFloat32;
-   //else if ( typeStr == "Float64" ) epicsType_ = aitFloat64;
-   //else if ( typeStr == "Bool"    ) epicsType_ = aitInt8;
-   //else {
-         // Throw an exception
-   //}
+   if ( typeStr == "UInt8"   ) {
+      epicsType_ = aitEnumUint8;
+      precision_ = 8;
+   }
+   else if ( typeStr == "UInt16"  ) {
+      epicsType_ = aitEnumUint16;
+      precision_ = 16;
+   }
+   else if ( typeStr == "UInt32"  ) {
+      epicsType_ = aitEnumUint32;
+      precision_ = 32;
+   }
+   else if ( typeStr == "UInt64"  ) {
+      //epicsType_ = aitEnumUint64;
+      epicsType_ = aitEnumUint32;
+      precision_ = 64;
+   }
+   else if ( typeStr == "Int8"    ) {
+      epicsType_ = aitEnumInt8;
+      precision_ = 8;
+   }
+   else if ( typeStr == "Int16"   ) {
+      epicsType_ = aitEnumInt16;
+      precision_ = 16;
+   }
+   else if ( typeStr == "int" or typeStr == "Int32"   ) {
+      epicsType_ = aitEnumInt32;
+      precision_ = 32;
+   }
+   else if ( typeStr == "Int64"   ) {
+      //epicsType_ = aitEnumInt64;
+      epicsType_ = aitEnumInt32;
+      precision_ = 64;
+   }
+   else if ( typeStr == "float" or typeStr == "Float32" ) {
+      epicsType_ = aitEnumFloat32;
+      precision_ = 32;
+   }
+   else if ( typeStr == "Float64" ) {
+      epicsType_ = aitEnumFloat64;
+      precision_ = 64;
+   }
+   else if ( typeStr == "Bool"    ) {
+      epicsType_ = aitEnumInt8;
+      precision_ = 8;
+   }
+   else throw rogue::GeneralError::GeneralError("Value::setType","Invalid Type String: " + typeStr);
+
+   typeStr_ = typeStr;
 }
 
 std::string rpe::Value::epicsName() {
    return(epicsName_);
 }
 
-void rpe::Value::valueSet() { }
+void rpe::Value::valueSet() { 
+   printf("Default valueSet called\n");
+}
 
 void rpe::Value::setPv(rpe::Pv * pv) {
    boost::lock_guard<boost::mutex> lock(mtx_);
@@ -120,44 +164,101 @@ caStatus rpe::Value::read(gdd &prototype) {
 }
 
 caStatus rpe::Value::readValue(gdd &value) {
-   double currentVal;
 
-   pValue_->getConvert(currentVal);
-   value.putConvert(currentVal);
+   if ( epicsType_ == aitEnumUint8 ) {
+      uint8_t nVal;
+      pValue_->getConvert(nVal);
+      value.putConvert(nVal);
+   }
+
+   else if ( epicsType_ == aitEnumUint16 ) {
+      uint16_t nVal;
+      pValue_->getConvert(nVal);
+      value.putConvert(nVal);
+   }
+
+   else if ( epicsType_ == aitEnumUint32 ) {
+      printf("here3\n");
+      uint32_t nVal;
+      pValue_->getConvert(nVal);
+      value.putConvert(nVal);
+   }
+
+   //else if ( epicsType_ == aitEnumUint64 ) {
+   //   uint64_t nVal;
+   //   pValue_->getConvert(nVal);
+   //   value.putConvert(nVal);
+   //}
+
+   else if ( epicsType_ == aitEnumInt8 ) {
+      int8_t nVal;
+      pValue_->getConvert(nVal);
+      value.putConvert(nVal);
+   }
+
+   else if ( epicsType_ == aitEnumInt16 ) {
+      int16_t nVal;
+      pValue_->getConvert(nVal);
+      value.putConvert(nVal);
+   }
+
+   else if ( epicsType_ == aitEnumInt32 ) {
+      int32_t nVal;
+      pValue_->getConvert(nVal);
+      value.putConvert(nVal);
+   }
+
+   //else if ( epicsType_ == aitEnumInt64 ) {
+   //   int64_t nVal;
+   //   pValue_->getConvert(nVal);
+   //   value.putConvert(nVal);
+   //}
+
+   else if ( epicsType_ == aitEnumFloat32 ) {
+      double nVal;
+      pValue_->getConvert(nVal);
+      value.putConvert(nVal);
+   }
+
+   else if ( epicsType_ == aitEnumFloat64 ) {
+      double nVal;
+      pValue_->getConvert(nVal);
+      value.putConvert(nVal);
+   }
+
+   else {
+      return S_casApp_noSupport;
+   }
+
    return S_casApp_success;
 }
 
 caStatus rpe::Value::write(gdd &value) {
    struct timespec t;
-   double newVal;
 
    boost::lock_guard<boost::mutex> lock(mtx_);
-   printf("Write called\n");
-
-   clock_gettime(CLOCK_REALTIME,&t);
-
-   caServer *pServer = pv_->getCAS();
 
    //// Doesn't support writing to arrays or container objects
    //// (gddAtomic or gddContainer).
+   caServer *pServer = pv_->getCAS();
    if(!(value.isScalar()) || !pServer) return S_casApp_noSupport;
 
+   // Set the new value
    pValue_->unreference();
    pValue_ = &value;
    pValue_->reference();
 
    // Set the timespec structure to the current time stamp the gdd.
+   clock_gettime(CLOCK_REALTIME,&t);
    pValue_->setTimeStamp(&t);
  
-   // Get the new value and set the severity and status according to its value.
-   value.get(newVal);
-
    this->valueSet();
    this->updated();
    return S_casApp_success;
 }
 
 void rpe::Value::updated() {
+   printf("Updated called\n");
    boost::lock_guard<boost::mutex> lock(mtx_);
    if ( pv_ != NULL && pv_->interest() == aitTrue ) {
       caServer *pServer = pv_->getCAS();
