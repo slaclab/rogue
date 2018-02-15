@@ -1,12 +1,12 @@
 /**
  *-----------------------------------------------------------------------------
- * Title      : EPICs Variable
+ * Title      : EPICs Pv
  * ----------------------------------------------------------------------------
- * File       : Variable.h
+ * File       : Pv.h
  * Created    : 2018-02-12
  * ----------------------------------------------------------------------------
  * Description:
- * EPICS Variable For Rogue System
+ * EPICS Pv For Rogue System
  * ----------------------------------------------------------------------------
  * This file is part of the rogue software platform. It is subject to 
  * the license terms in the LICENSE.txt file found in the top-level directory 
@@ -18,8 +18,8 @@
  * ----------------------------------------------------------------------------
 **/
 
-#ifndef __ROGUE_PROTOCOLS_EPICS_VARIABLE_H__
-#define __ROGUE_PROTOCOLS_EPICS_VARIABLE_H__
+#ifndef __ROGUE_PROTOCOLS_EPICS_PV_H__
+#define __ROGUE_PROTOCOLS_EPICS_PV_H__
 
 #include <boost/python.hpp>
 #include <boost/thread.hpp>
@@ -32,12 +32,12 @@ namespace rogue {
    namespace protocols {
       namespace epics {
 
-         class PvAttr;
+         class Value;
 
-         class Variable : public casPV {
+         class Pv : public casPV {
             private:
 
-               boost::shared_ptr<rogue::protocols::epics::PvAttr> attr_;
+               boost::shared_ptr<rogue::protocols::epics::Value> value_;
                aitBool interest_;
                boost::mutex mtx_;
 
@@ -47,9 +47,9 @@ namespace rogue {
                static void setup_python();
 
                //! Class creation
-               Variable (caServer &cas, boost::shared_ptr<rogue::protocols::epics::PvAttr> attr);
+               Pv (caServer &cas, boost::shared_ptr<rogue::protocols::epics::Value> value);
 
-               ~Variable ();
+               ~Pv ();
 
                const char * getName() const;
 

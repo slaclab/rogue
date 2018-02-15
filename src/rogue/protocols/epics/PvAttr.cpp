@@ -28,18 +28,10 @@
 namespace rpe = rogue::protocols::epics;
 namespace bp  = boost::python;
 
-//! Class creation
-rpe::PvAttrPtr rpe::PvAttr::create (std::string epicsName, std::string typeStr, uint32_t nelms) {
-   rpe::PvAttrPtr r = boost::make_shared<rpe::PvAttr>(epicsName,typeStr,nelms);
-   return(r);
-}
-
 //! Setup class in python
 void rpe::PvAttr::setup_python() {
 
    bp::class_<rpe::PvAttr, rpe::PvAttrPtr, boost::noncopyable >("PvAttr",bp::init<std::string,std::string,uint32_t>())
-      .def("create",         &rpe::PvAttr::create)
-      .staticmethod("create")
       .def("epicsName",      &rpe::PvAttr::epicsName)
       .def("setUnits",       &rpe::PvAttr::setUnits)
       .def("setPrecision",   &rpe::PvAttr::setPrecision)
@@ -51,8 +43,7 @@ void rpe::PvAttr::setup_python() {
 rpe::PvAttr::PvAttr (std::string epicsName, std::string typeStr, uint32_t nelms) {
    epicsName_ = epicsName;
    nelms_     = nelms;
-
-   typeStr_       = typeStr;
+   typeStr_   = typeStr;
 
    units_         = "";
    precision_     = 32;
@@ -82,7 +73,6 @@ rpe::PvAttr::PvAttr (std::string epicsName, std::string typeStr, uint32_t nelms)
    funcTable_.installReadFunc("controlLow",       &rpe::PvAttr::readLowCtrl);
    funcTable_.installReadFunc("units",            &rpe::PvAttr::readUnits);
 
-
    // Determine epics type
    switch ( typeStr_ ) {
       case "UInt8"   : epicsType_ = aitUint8;   break;
@@ -101,6 +91,7 @@ rpe::PvAttr::PvAttr (std::string epicsName, std::string typeStr, uint32_t nelms)
          break;
    }
 
+   if ( ne
    pValue_ = new gddScalar(gddAppType_value, aitEnumFloat64);
    gddScaler
    gddArray 
@@ -113,11 +104,14 @@ std::string rpe::PvAttr::epicsName() {
    return(epicsName_);
 }
 
-void rpe::PvAttr::varUpdated(boost::python::object p) {
+void rpe::PvAttr::varUpdated(std::string path, boost::python::object value, std::string disp) {
 
-   if ( 
 
-   uint32_t ret = bp::extract<uint32_t>(_root.attr("get")(path));
+
+
+   //if ( 
+
+   //uint32_t ret = bp::extract<uint32_t>(_root.attr("get")(path));
 
 
 }

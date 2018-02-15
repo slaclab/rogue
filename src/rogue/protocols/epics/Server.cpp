@@ -22,51 +22,35 @@
 #include <rogue/protocols/epics/Server.h>
 #include <rogue/protocols/epics/PvAttr.h>
 #include <rogue/protocols/epics/Variable.h>
-#include <boost/make_shared.hpp>
 #include <rogue/GilRelease.h>
 #include <fdManager.h>
 
 namespace rpe = rogue::protocols::epics;
 namespace bp  = boost::python;
 
-//! Class creation
-rpe::ServerPtr rpe::Server::create () {
-   printf("Server create called\n");
-   rpe::ServerPtr r = boost::make_shared<rpe::Server>();
-   return(r);
-}
-
 //! Setup class in python
 void rpe::Server::setup_python() {
 
    bp::class_<rpe::Server, rpe::ServerPtr, boost::noncopyable >("Server",bp::init<>())
-      .def("create",         &rpe::Server::create)
-      .staticmethod("create")
       .def("addVariable",    &rpe::Server::addVariable)
    ;
 }
 
 //! Class creation
 rpe::Server::Server () : caServer() {
-   printf("Server created\n");
    thread_ = new boost::thread(boost::bind(&rpe::Server::runThread, this));
 }
 
 rpe::Server::~Server() {
-   printf("Server destructor called\n");
    rogue::GilRelease noGil;
-   printf("Interrupt tread\n");
    thread_->interrupt();
-   printf("Wait join\n");
    thread_->join();
-   printf("Done\n");
 }
 
 void rpe::Server::addVariable(rpe::PvAttrPtr var) {
    boost::lock_guard<boost::mutex> lock(mtx_);
 
    pvByEpicsName_[var->epicsName()] = var;
-   printf("Creating epics variable %s\n",var->epicsName().c_str());
 }
 
 pvExistReturn rpe::Server::pvExistTest(const casCtx &ctx, const char *pvName) {
@@ -102,12 +86,10 @@ pvCreateReturn rpe::Server::createPV(const casCtx &ctx, const char *pvName) {
 //! Run thread
 void rpe::Server::runThread() {
    try {
-      printf("Entering server loop\n");
       while(1) {
          fileDescriptorManager.process(0.01);
          boost::this_thread::interruption_point();
       }
    } catch (boost::thread_interrupted&) { }
-   printf("Exiting server loop\n");
 }
 

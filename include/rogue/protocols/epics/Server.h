@@ -49,9 +49,6 @@ namespace rogue {
 
             public:
 
-               //! Class creation
-               static boost::shared_ptr<rogue::protocols::epics::Server> create ();
-
                //! Setup class in python
                static void setup_python();
 

@@ -2,7 +2,7 @@
  *-----------------------------------------------------------------------------
  * Title      : EPICs PV Attribute Object
  * ----------------------------------------------------------------------------
- * File       : PvAttr.h
+ * File       : Value.h
  * Created    : 2018-11-18
  * ----------------------------------------------------------------------------
  * Description:
@@ -18,8 +18,8 @@
  * ----------------------------------------------------------------------------
 **/
 
-#ifndef __ROGUE_PROTOCOLS_EPICS_PV_ATTR_H__
-#define __ROGUE_PROTOCOLS_EPICS_PV_ATTR_H__
+#ifndef __ROGUE_PROTOCOLS_EPICS_VALUE_H__
+#define __ROGUE_PROTOCOLS_EPICS_VALUE_H__
 
 #include <boost/python.hpp>
 #include <boost/thread.hpp>
@@ -32,14 +32,13 @@ namespace rogue {
    namespace protocols {
       namespace epics {
 
-         class Variable;
+         class Pv;
          class Server;
 
-         class PvAttr {
+         class Value {
             private:
 
                std::string epicsName_;
-               uint32_t    nelms_;
 
                gdd       * pValue_;
 
@@ -57,37 +56,29 @@ namespace rogue {
                double      highCtrlLimit_;
                double      lowCtrlLimit_;
 
-               rogue::protocols::epics::Variable * pv_;
+               rogue::protocols::epics::Pv * pv_;
 
-               gddAppFuncTable<rogue::protocols::epics::PvAttr> funcTable_;
+               gddAppFuncTable<rogue::protocols::epics::Value> funcTable_;
 
                boost::mutex mtx_;
 
             public:
 
-               //! Class creation
-               static boost::shared_ptr<rogue::protocols::epics::PvAttr> create (
-                     std::string epicsName, std::string typeStr, uint32_t nelms);
-
                //! Setup class in python
                static void setup_python();
 
                //! Class creation
-               PvAttr ( std::string epicsName, std::string typeStr, uint32_t nelms);
+               Value ( std::string epicsName );
 
                std::string epicsName();
 
                void varUpdated ( boost::python::object p );
 
-               void setUnits(std::string units);
-
-               void setPrecision(uint16_t precision);
-
-               void setPv(rogue::protocols::epics::Variable * pv);
+               void setPv(rogue::protocols::epics::Pv * pv);
 
                void clrPv();
 
-               rogue::protocols::epics::Variable * getPv();
+               rogue::protocols::epics::Pv * getPv();
                
                //---------------------------------------
                // EPICS Interface
@@ -128,7 +119,7 @@ namespace rogue {
          };
 
          // Convienence
-         typedef boost::shared_ptr<rogue::protocols::epics::PvAttr> PvAttrPtr;
+         typedef boost::shared_ptr<rogue::protocols::epics::Value> ValuePtr;
 
       }
    }
