@@ -128,9 +128,21 @@ void rpe::Value::setType ( std::string typeStr ) {
       epicsType_ = aitEnumInt8;
       precision_ = 8;
    }
+   else if ( typeStr == "str" ) {
+      epicsType_ = aitEnumString;
+      precision_ = 0;
+   }
    else throw rogue::GeneralError::GeneralError("Value::setType","Invalid Type String: " + typeStr);
 
    typeStr_ = typeStr;
+}
+
+void rpe::Value::updated() {
+   if ( pv_ != NULL && pv_->interest() == aitTrue ) {
+      caServer *pServer = pv_->getCAS();
+      casEventMask select(pServer->valueEventMask() | pServer->alarmEventMask());
+      pv_->postEvent(select, *pValue_);
+   }
 }
 
 std::string rpe::Value::epicsName() {
@@ -176,7 +188,6 @@ caStatus rpe::Value::readValue(gdd &value) {
    }
 
    else if ( epicsType_ == aitEnumUint32 ) {
-      printf("here3\n");
       uint32_t nVal;
       pValue_->getConvert(nVal);
       value.putConvert(nVal);
@@ -224,6 +235,12 @@ caStatus rpe::Value::readValue(gdd &value) {
       value.putConvert(nVal);
    }
 
+   else if ( epicsType_ == aitEnumString ) {
+      aitString nVal;
+      pValue_->getConvert(nVal);
+      value.putConvert(nVal);
+   }
+
    else {
       return S_casApp_noSupport;
    }
@@ -253,15 +270,6 @@ caStatus rpe::Value::write(gdd &value) {
    this->valueSet();
    this->updated();
    return S_casApp_success;
-}
-
-void rpe::Value::updated() {
-   boost::lock_guard<boost::mutex> lock(mtx_);
-   if ( pv_ != NULL && pv_->interest() == aitTrue ) {
-      caServer *pServer = pv_->getCAS();
-      casEventMask select(pServer->valueEventMask() | pServer->alarmEventMask());
-      pv_->postEvent(select, *pValue_);
-   }
 }
 
 aitEnum rpe::Value::bestExternalType() {

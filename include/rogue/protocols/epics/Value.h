@@ -62,6 +62,8 @@ namespace rogue {
 
                void setType(std::string typeStr);
 
+               void updated();
+
             public:
 
                //! Setup class in python
@@ -88,8 +90,6 @@ namespace rogue {
                gddAppFuncTableStatus readValue(gdd &value);
 
                caStatus write(gdd &value);
-
-               void updated();
 
                aitEnum bestExternalType();
 
