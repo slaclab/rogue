@@ -33,13 +33,13 @@ namespace rogue {
    namespace protocols {
       namespace epics {
 
-         class PvAttr;
+         class Value;
 
          class Server : public caServer {
 
             private:
 
-               std::map<std::string, boost::shared_ptr<rogue::protocols::epics::PvAttr>> pvByEpicsName_;
+               std::map<std::string, boost::shared_ptr<rogue::protocols::epics::Value>> values_;
 
                boost::thread * thread_;
 
@@ -57,7 +57,7 @@ namespace rogue {
 
                ~Server();
 
-               void addVariable(boost::shared_ptr<rogue::protocols::epics::PvAttr>  var);
+               void addValue(boost::shared_ptr<rogue::protocols::epics::Value> value);
 
                pvExistReturn pvExistTest (const casCtx &ctx, const char *pvName);
 
