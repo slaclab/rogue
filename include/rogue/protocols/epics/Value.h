@@ -27,6 +27,7 @@
 #include <gdd.h>
 #include <gddApps.h>
 #include <gddAppFuncTable.h>
+#include <rogue/Logging.h>
 
 namespace rogue {
    namespace protocols {
@@ -45,6 +46,8 @@ namespace rogue {
 
                std::vector<std::string> enums_;
                rogue::protocols::epics::Pv * pv_;
+
+               rogue::Logging * log_;
 
                std::string units_;
                uint16_t    precision_;
@@ -129,8 +132,12 @@ namespace rogue {
          typedef boost::shared_ptr<rogue::protocols::epics::Value> ValuePtr;
 
          // Destructor
-         class FixedStringDestructor: public gddDestructor {
-             virtual void run (void *);
+         template<typename T> 
+         class Destructor : public gddDestructor {
+            virtual void run (void * pUntyped) {
+               T ps = reinterpret_cast <T>(pUntyped);
+               delete [] ps;
+            }
          };
       }
    }

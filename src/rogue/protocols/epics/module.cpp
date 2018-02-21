@@ -23,8 +23,11 @@
 #include <rogue/protocols/epics/module.h>
 #include <rogue/protocols/epics/Value.h>
 #include <rogue/protocols/epics/Variable.h>
+#include <rogue/protocols/epics/Command.h>
 #include <rogue/protocols/epics/Server.h>
 #include <rogue/protocols/epics/Pv.h>
+#include <rogue/protocols/epics/Master.h>
+#include <rogue/protocols/epics/Slave.h>
 
 namespace bp  = boost::python;
 namespace rpe = rogue::protocols::epics;
@@ -42,7 +45,10 @@ void rpe::setup_module() {
 
    rpe::Value::setup_python();
    rpe::Variable::setup_python();
+   rpe::Command::setup_python();
    rpe::Server::setup_python();
    rpe::Pv::setup_python();
+   rpe::Master::setup_python();
+   rpe::Slave::setup_python();
 }
 

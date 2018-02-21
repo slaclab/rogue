@@ -39,7 +39,6 @@ void rpe::Value::setup_python() {
 
 //! Class creation
 rpe::Value::Value (std::string epicsName) {
-
    epicsName_ = epicsName;
    pv_        = NULL;
    pValue_    = NULL;
@@ -54,6 +53,8 @@ rpe::Value::Value (std::string epicsName) {
    lowAlarm_      = 0;
    highCtrlLimit_ = 0;
    lowCtrlLimit_  = 0;
+
+   log_ = new rogue::Logging("epics.Value");
 
    // Populate function table
    funcTable_.installReadFunc("status",           &rpe::Value::readStatus);
@@ -82,46 +83,45 @@ void rpe::Value::initGdd(std::string typeStr, bool isEnum, uint32_t count) {
    precision_ = 0;
    typeStr_   = typeStr;
 
-   // Scalar
-   if ( count == 1 ) {
+   // Enum type
+   if ( isEnum ) epicsType_ = aitEnumEnum16;
 
-      // Enum type
-      if ( isEnum ) epicsType_ = aitEnumEnum16;
+   // Int types
+   else if ( typeStr == "UInt8"   ) epicsType_ = aitEnumUint8;
+   else if ( typeStr == "UInt16"  ) epicsType_ = aitEnumUint16;
+   else if ( typeStr == "int"     ) epicsType_ = aitEnumInt32;
+   else if ( typeStr == "UInt32"  ) epicsType_ = aitEnumUint32;
+   else if ( typeStr == "UInt64"  ) epicsType_ = aitEnumUint32; // epicsType_ = aitEnumUint64;
+   else if ( typeStr == "Int8"    ) epicsType_ = aitEnumInt8;
+   else if ( typeStr == "Int16"   ) epicsType_ = aitEnumInt16;
+   else if ( typeStr == "Int32"   ) epicsType_ = aitEnumInt32;
+   else if ( typeStr == "Int64"   ) epicsType_ = aitEnumInt32;  //epicsType_ = aitEnumInt64;
 
-      // Int types
-      else if ( typeStr == "UInt8"   ) epicsType_ = aitEnumUint8;
-      else if ( typeStr == "UInt16"  ) epicsType_ = aitEnumUint16;
-      else if ( typeStr == "int"     ) epicsType_ = aitEnumInt32;
-      else if ( typeStr == "UInt32"  ) epicsType_ = aitEnumUint32;
-      else if ( typeStr == "UInt64"  ) epicsType_ = aitEnumUint32; // epicsType_ = aitEnumUint64;
-      else if ( typeStr == "Int8"    ) epicsType_ = aitEnumInt8;
-      else if ( typeStr == "Int16"   ) epicsType_ = aitEnumInt16;
-      else if ( typeStr == "Int32"   ) epicsType_ = aitEnumInt32;
-      else if ( typeStr == "Int64"   ) epicsType_ = aitEnumInt32;  //epicsType_ = aitEnumInt64;
-
-      // String type
-      else if ( typeStr == "str" ) {
-         epicsType_ = aitEnumString;
-         pValue_->setBound(0,0,400);
-      }
-
-      // 32-bit Float
-      else if ( typeStr == "float" or typeStr == "Float32" ) {
-         epicsType_ = aitEnumFloat32;
-         precision_ = 32;
-      }
-
-      // 64-bit float
-      else if ( typeStr == "Float64" ) {
-         epicsType_ = aitEnumFloat64;
-         precision_ = 64;
-      }
-
-      else throw rogue::GeneralError("Value::initGdd","Invalid Type String: " + typeStr);
-
-      pValue_ = new gddScalar(gddAppType_value, epicsType_);
+   // String type
+   else if ( typeStr == "str" ) {
+      epicsType_ = aitEnumString;
+      pValue_->setBound(0,0,400);
    }
-   else throw rogue::GeneralError("Value::initGdd","Invalid Size");
+
+   // 32-bit Float
+   else if ( typeStr == "float" or typeStr == "Float32" ) {
+      epicsType_ = aitEnumFloat32;
+      precision_ = 32;
+   }
+
+   // 64-bit float
+   else if ( typeStr == "Float64" ) {
+      epicsType_ = aitEnumFloat64;
+      precision_ = 64;
+   }
+
+   else throw rogue::GeneralError("Value::initGdd","Invalid Type String: " + typeStr);
+
+   // Scalar
+   if ( count == 1 ) pValue_ = new gddScalar(gddAppType_value, epicsType_);
+
+   // Vector
+   else pValue_ = new gddAtomic (gddAppType_value, epicsType_, 1u, count);
 }
 
 // Value lock held when this is called
@@ -280,7 +280,6 @@ gddAppFuncTableStatus rpe::Value::readUnits(gdd &value) {
 
 gddAppFuncTableStatus rpe::Value::readEnums(gdd &value) {
    aitFixedString * str;
-   rpe::FixedStringDestructor * pDes;
 
    uint32_t nstr;
    uint32_t i;
@@ -289,31 +288,17 @@ gddAppFuncTableStatus rpe::Value::readEnums(gdd &value) {
       nstr = enums_.size();
 
       str = new aitFixedString[nstr];
-      if (!str) {
-         return S_casApp_noMemory;
-      }
-
-      pDes = new rpe::FixedStringDestructor;
-      if (!pDes) {
-         delete [] str;
-         return S_casApp_noMemory;
-      }
 
       for (i=0; i < nstr; i++) 
          strncpy(str[i].fixed_string, enums_[i].c_str(), sizeof(str[i].fixed_string));
 
       value.setDimension(1);
       value.setBound (0,0,nstr);
-      value.putRef (str, pDes);
+      value.putRef (str, new rpe::Destructor<aitFixedString *>);
  
       return S_cas_success;
    }
 
    return S_cas_success;
-}
-
-void rpe::FixedStringDestructor::run ( void * pUntyped ) {
-    aitFixedString *ps = (aitFixedString *) pUntyped;
-    delete [] ps;
 }
 
