@@ -35,12 +35,14 @@ rpe::Pv::Pv (caServer &cas, rpe::ValuePtr value) : casPV(cas) {
    interest_ = aitFalse;
 }
 
-rpe::Pv::~Pv () {
-   value_->clrPv();
+rpe::Pv::~Pv () { }
+
+bool rpe::Pv::interest() {
+   return interest_;
 }
 
-const char * rpe::Pv::getName() const {
-   return value_->epicsName().c_str();
+void rpe::Pv::show(unsigned level) const {
+   //printf("PV::Show called with level = %i\n",level);
 }
 
 caStatus rpe::Pv::interestRegister() {
@@ -54,10 +56,6 @@ void rpe::Pv::interestDelete() {
    interest_ = aitFalse;
 }
 
-bool rpe::Pv::interest() {
-   return interest_;
-}
-
 caStatus rpe::Pv::beginTransaction() {
    return S_casApp_success;
 }
@@ -68,11 +66,43 @@ caStatus rpe::Pv::read(const casCtx &ctx, gdd &prototype) {
    return value_->read(prototype);
 }
 
-caStatus rpe::Pv::write(const casCtx &ctx, gdd &value) {
+caStatus rpe::Pv::write(const casCtx &ctx, const gdd &value) {
    return value_->write(value);
 }
 
-aitEnum rpe::Pv::bestExternalType() {
+caStatus rpe::Pv::writeNotify(const casCtx &ctx, const gdd &value) {
+   return value_->write(value);
+}
+
+casChannel * rpe::Pv::createChannel(const casCtx &ctx,
+                                    const char * const pUserName,
+                                    const char * const pHostName) {
+
+   return casPV::createChannel(ctx,pUserName,pHostName);
+}
+
+void rpe::Pv::destroy() {
+   value_->clrPv();
+   delete this;
+}
+
+aitEnum rpe::Pv::bestExternalType() const {
    return value_->bestExternalType();
+}
+
+unsigned rpe::Pv::maxDimension() const {
+   return(0);
+}
+
+aitIndex rpe::Pv::maxBound(unsigned dimension) const {
+   return(0);
+}
+
+const char * rpe::Pv::getName() const {
+   return value_->epicsName().c_str();
+}
+
+void rpe::Pv::postEvent ( const casEventMask & select, const gdd & event ) {
+   casPV::postEvent(select,event);
 }
 

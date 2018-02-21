@@ -43,6 +43,7 @@ namespace rogue {
                aitEnum     epicsType_;
                gdd       * pValue_;
 
+               std::vector<std::string> enums_;
                rogue::protocols::epics::Pv * pv_;
 
                std::string units_;
@@ -60,9 +61,11 @@ namespace rogue {
 
                boost::mutex mtx_;
 
-               void setType(std::string typeStr);
+               void initGdd(std::string typeStr, bool isEnum, uint32_t count);
 
                void updated();
+
+               uint32_t revEnum(std::string val);
 
             public:
 
@@ -75,6 +78,8 @@ namespace rogue {
                std::string epicsName();
 
                virtual void valueSet();
+
+               virtual void valueGet();
 
                void setPv(rogue::protocols::epics::Pv * pv);
 
@@ -89,7 +94,7 @@ namespace rogue {
 
                gddAppFuncTableStatus readValue(gdd &value);
 
-               caStatus write(gdd &value);
+               caStatus write(const gdd &value);
 
                aitEnum bestExternalType();
 
@@ -116,11 +121,17 @@ namespace rogue {
                gddAppFuncTableStatus readLowCtrl(gdd &value);
 
                gddAppFuncTableStatus readUnits(gdd &value);
+
+               gddAppFuncTableStatus readEnums(gdd &value);
          };
 
          // Convienence
          typedef boost::shared_ptr<rogue::protocols::epics::Value> ValuePtr;
 
+         // Destructor
+         class FixedStringDestructor: public gddDestructor {
+             virtual void run (void *);
+         };
       }
    }
 }

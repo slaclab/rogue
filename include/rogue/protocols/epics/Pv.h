@@ -51,13 +51,15 @@ namespace rogue {
 
                ~Pv ();
 
-               const char * getName() const;
+               bool interest();
+
+               // Virtual methods in casPV
+
+               void show (unsigned level) const;
 
                caStatus interestRegister();
 
                void interestDelete();
-
-               bool interest();
 
                caStatus beginTransaction();
 
@@ -65,9 +67,26 @@ namespace rogue {
 
                caStatus read(const casCtx &ctx, gdd &prototype);
 
-               caStatus write(const casCtx &ctx, gdd &value);
+               caStatus write(const casCtx &ctx, const gdd &value);
 
-               aitEnum bestExternalType();
+               caStatus writeNotify(const casCtx &ctx, const gdd &value);
+
+               casChannel * createChannel(const casCtx &ctx,
+                                          const char * const pUserName,
+                                          const char * const pHostName);
+
+               void destroy();
+
+               aitEnum bestExternalType() const;
+
+               unsigned maxDimension() const;
+
+               aitIndex maxBound(unsigned dimension) const;
+
+               const char * getName() const;
+
+               void postEvent ( const casEventMask & select, const gdd & event );
+
          };
       }
    }

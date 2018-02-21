@@ -39,10 +39,10 @@ void rpe::Value::setup_python() {
 
 //! Class creation
 rpe::Value::Value (std::string epicsName) {
-   uint8_t initValue;
 
    epicsName_ = epicsName;
    pv_        = NULL;
+   pValue_    = NULL;
 
    units_         = "";
    precision_     = 0;
@@ -69,74 +69,63 @@ rpe::Value::Value (std::string epicsName) {
    funcTable_.installReadFunc("controlHigh",      &rpe::Value::readHighCtrl);
    funcTable_.installReadFunc("controlLow",       &rpe::Value::readLowCtrl);
    funcTable_.installReadFunc("units",            &rpe::Value::readUnits);
+   funcTable_.installReadFunc("enums",            &rpe::Value::readEnums);
 
    // Default, type
-   this->setType("UInt32");
-   pValue_ = new gddScalar(gddAppType_value, epicsType_);
+   this->initGdd("UInt32", false, 1);
  
    // Default value 
-   initValue = 0;
-   pValue_->putConvert(initValue);
+   pValue_->putConvert((uint32_t) 0);
 }
 
-void rpe::Value::setType ( std::string typeStr ) {
+void rpe::Value::initGdd(std::string typeStr, bool isEnum, uint32_t count) {
+   precision_ = 0;
+   typeStr_   = typeStr;
 
-   // Determine epics type
-   if ( typeStr == "UInt8"   ) {
-      epicsType_ = aitEnumUint8;
-      precision_ = 8;
-   }
-   else if ( typeStr == "UInt16"  ) {
-      epicsType_ = aitEnumUint16;
-      precision_ = 16;
-   }
-   else if ( typeStr == "UInt32"  ) {
-      epicsType_ = aitEnumUint32;
-      precision_ = 32;
-   }
-   else if ( typeStr == "UInt64"  ) {
-      //epicsType_ = aitEnumUint64;
-      epicsType_ = aitEnumUint32;
-      precision_ = 64;
-   }
-   else if ( typeStr == "Int8"    ) {
-      epicsType_ = aitEnumInt8;
-      precision_ = 8;
-   }
-   else if ( typeStr == "Int16"   ) {
-      epicsType_ = aitEnumInt16;
-      precision_ = 16;
-   }
-   else if ( typeStr == "int" or typeStr == "Int32"   ) {
-      epicsType_ = aitEnumInt32;
-      precision_ = 32;
-   }
-   else if ( typeStr == "Int64"   ) {
-      //epicsType_ = aitEnumInt64;
-      epicsType_ = aitEnumInt32;
-      precision_ = 64;
-   }
-   else if ( typeStr == "float" or typeStr == "Float32" ) {
-      epicsType_ = aitEnumFloat32;
-      precision_ = 32;
-   }
-   else if ( typeStr == "Float64" ) {
-      epicsType_ = aitEnumFloat64;
-      precision_ = 64;
-   }
-   else if ( typeStr == "Bool"    ) {
-      epicsType_ = aitEnumInt8;
-      precision_ = 8;
-   }
-   else if ( typeStr == "str" ) {
-      epicsType_ = aitEnumString;
-      precision_ = 0;
-   }
-   else throw rogue::GeneralError::GeneralError("Value::setType","Invalid Type String: " + typeStr);
+   pValue_->setDimension(count);
 
-   typeStr_ = typeStr;
+   // Scalar
+   if ( count == 1 ) {
+
+      // Enum type
+      if ( isEnum ) epicsType_ = aitEnumEnum16;
+
+      // Int types
+      else if ( typeStr == "UInt8"   ) epicsType_ = aitEnumUint8;
+      else if ( typeStr == "UInt16"  ) epicsType_ = aitEnumUint16;
+      else if ( typeStr == "int"     ) epicsType_ = aitEnumInt32;
+      else if ( typeStr == "UInt32"  ) epicsType_ = aitEnumUint32;
+      else if ( typeStr == "UInt64"  ) epicsType_ = aitEnumUint32; // epicsType_ = aitEnumUint64;
+      else if ( typeStr == "Int8"    ) epicsType_ = aitEnumInt8;
+      else if ( typeStr == "Int16"   ) epicsType_ = aitEnumInt16;
+      else if ( typeStr == "Int32"   ) epicsType_ = aitEnumInt32;
+      else if ( typeStr == "Int64"   ) epicsType_ = aitEnumInt32;  //epicsType_ = aitEnumInt64;
+
+      // String type
+      else if ( typeStr == "str" ) {
+         epicsType_ = aitEnumString;
+         pValue_->setBound(0,0,400);
+      }
+
+      // 32-bit Float
+      else if ( typeStr == "float" or typeStr == "Float32" ) {
+         epicsType_ = aitEnumFloat32;
+         precision_ = 32;
+      }
+
+      // 64-bit float
+      else if ( typeStr == "Float64" ) {
+         epicsType_ = aitEnumFloat64;
+         precision_ = 64;
+      }
+
+      else throw rogue::GeneralError("Value::setType","Invalid Type String: " + typeStr);
+
+      pValue_ = new gddScalar(gddAppType_value, epicsType_);
+   }
 }
 
+// Value lock held when this is called
 void rpe::Value::updated() {
    if ( pv_ != NULL && pv_->interest() == aitTrue ) {
       caServer *pServer = pv_->getCAS();
@@ -145,11 +134,24 @@ void rpe::Value::updated() {
    }
 }
 
+uint32_t rpe::Value::revEnum(std::string val) {
+   uint32_t i;
+
+   for (i =0; i < enums_.size(); i++) {
+      if ( enums_[i] == val ) return i;
+   }
+   return(0);
+}
+
 std::string rpe::Value::epicsName() {
    return(epicsName_);
 }
 
+// Value lock held when this is called
 void rpe::Value::valueSet() { }
+
+// Value lock held when this is called
+void rpe::Value::valueGet() { }
 
 void rpe::Value::setPv(rpe::Pv * pv) {
    boost::lock_guard<boost::mutex> lock(mtx_);
@@ -174,81 +176,21 @@ caStatus rpe::Value::read(gdd &prototype) {
 }
 
 caStatus rpe::Value::readValue(gdd &value) {
+   gddStatus gdds;
 
-   if ( epicsType_ == aitEnumUint8 ) {
-      uint8_t nVal;
-      pValue_->getConvert(nVal);
-      value.putConvert(nVal);
-   }
+   boost::lock_guard<boost::mutex> lock(mtx_);
 
-   else if ( epicsType_ == aitEnumUint16 ) {
-      uint16_t nVal;
-      pValue_->getConvert(nVal);
-      value.putConvert(nVal);
-   }
+   // Call value get within lock
+   valueGet();
 
-   else if ( epicsType_ == aitEnumUint32 ) {
-      uint32_t nVal;
-      pValue_->getConvert(nVal);
-      value.putConvert(nVal);
-   }
+   gdds = gddApplicationTypeTable::app_table.smartCopy(&value, pValue_);
 
-   //else if ( epicsType_ == aitEnumUint64 ) {
-   //   uint64_t nVal;
-   //   pValue_->getConvert(nVal);
-   //   value.putConvert(nVal);
-   //}
+   if (gdds) return S_cas_noConvert;   
+   else return S_casApp_success;
 
-   else if ( epicsType_ == aitEnumInt8 ) {
-      int8_t nVal;
-      pValue_->getConvert(nVal);
-      value.putConvert(nVal);
-   }
-
-   else if ( epicsType_ == aitEnumInt16 ) {
-      int16_t nVal;
-      pValue_->getConvert(nVal);
-      value.putConvert(nVal);
-   }
-
-   else if ( epicsType_ == aitEnumInt32 ) {
-      int32_t nVal;
-      pValue_->getConvert(nVal);
-      value.putConvert(nVal);
-   }
-
-   //else if ( epicsType_ == aitEnumInt64 ) {
-   //   int64_t nVal;
-   //   pValue_->getConvert(nVal);
-   //   value.putConvert(nVal);
-   //}
-
-   else if ( epicsType_ == aitEnumFloat32 ) {
-      double nVal;
-      pValue_->getConvert(nVal);
-      value.putConvert(nVal);
-   }
-
-   else if ( epicsType_ == aitEnumFloat64 ) {
-      double nVal;
-      pValue_->getConvert(nVal);
-      value.putConvert(nVal);
-   }
-
-   else if ( epicsType_ == aitEnumString ) {
-      aitString nVal;
-      pValue_->getConvert(nVal);
-      value.putConvert(nVal);
-   }
-
-   else {
-      return S_casApp_noSupport;
-   }
-
-   return S_casApp_success;
 }
 
-caStatus rpe::Value::write(gdd &value) {
+caStatus rpe::Value::write(const gdd &value) {
    struct timespec t;
 
    boost::lock_guard<boost::mutex> lock(mtx_);
@@ -259,14 +201,13 @@ caStatus rpe::Value::write(gdd &value) {
    if(!(value.isScalar()) || !pServer) return S_casApp_noSupport;
 
    // Set the new value
-   pValue_->unreference();
-   pValue_ = &value;
-   pValue_->reference();
+   pValue_->put(&value);
 
    // Set the timespec structure to the current time stamp the gdd.
    clock_gettime(CLOCK_REALTIME,&t);
    pValue_->setTimeStamp(&t);
- 
+
+   // Cal value set and update within lock 
    this->valueSet();
    this->updated();
    return S_casApp_success;
@@ -336,5 +277,44 @@ gddAppFuncTableStatus rpe::Value::readLowCtrl(gdd &value) {
 gddAppFuncTableStatus rpe::Value::readUnits(gdd &value) {
    value.put(units_.c_str());
    return S_casApp_success;
+}
+
+gddAppFuncTableStatus rpe::Value::readEnums(gdd &value) {
+   aitFixedString * str;
+   rpe::FixedStringDestructor * pDes;
+
+   uint32_t nstr;
+   uint32_t i;
+
+   if ( epicsType_ == aitEnumEnum16 ) {
+      nstr = enums_.size();
+
+      str = new aitFixedString[nstr];
+      if (!str) {
+         return S_casApp_noMemory;
+      }
+
+      pDes = new rpe::FixedStringDestructor;
+      if (!pDes) {
+         delete [] str;
+         return S_casApp_noMemory;
+      }
+
+      for (i=0; i < nstr; i++) 
+         strncpy(str[i].fixed_string, enums_[i].c_str(), sizeof(str[i].fixed_string));
+
+      value.setDimension(1);
+      value.setBound (0,0,nstr);
+      value.putRef (str, pDes);
+ 
+      return S_cas_success;
+   }
+
+   return S_cas_success;
+}
+
+void rpe::FixedStringDestructor::run ( void * pUntyped ) {
+    aitFixedString *ps = (aitFixedString *) pUntyped;
+    delete [] ps;
 }
 

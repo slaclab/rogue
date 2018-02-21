@@ -1,12 +1,12 @@
 /**
  *-----------------------------------------------------------------------------
- * Title      : EPICs Epics Server
+ * Title      : EPICs PV Attribute Object
  * ----------------------------------------------------------------------------
- * File       : Server.h
- * Created    : 2018-02-12
+ * File       : Command.h
+ * Created    : 2018-11-18
  * ----------------------------------------------------------------------------
  * Description:
- * EPICS Server For Rogue System
+ * Class to store an EPICs PV attributes along with its current value
  * ----------------------------------------------------------------------------
  * This file is part of the rogue software platform. It is subject to 
  * the license terms in the LICENSE.txt file found in the top-level directory 
@@ -18,8 +18,8 @@
  * ----------------------------------------------------------------------------
 **/
 
-#ifndef __ROGUE_PROTOCOLS_EPICS_SERVER_H__
-#define __ROGUE_PROTOCOLS_EPICS_SERVER_H__
+#ifndef __ROGUE_PROTOCOLS_EPICS_COMMAND_H__
+#define __ROGUE_PROTOCOLS_EPICS_COMMAND_H__
 
 #include <boost/python.hpp>
 #include <boost/thread.hpp>
@@ -27,47 +27,26 @@
 #include <gdd.h>
 #include <gddApps.h>
 #include <gddAppFuncTable.h>
-#include <map>
+#include <rogue/protocols/epics/Variable.h>
 
 namespace rogue {
    namespace protocols {
       namespace epics {
 
-         class Value;
-
-         class Server : public caServer {
-
-            private:
-
-               std::map<std::string, boost::shared_ptr<rogue::protocols::epics::Value>> values_;
-
-               boost::thread * thread_;
-
-               boost::mutex mtx_;
-
-               void runThread();
-
+         class Command: public Variable {
             public:
 
                //! Setup class in python
                static void setup_python();
 
                //! Class creation
-               Server ();
-
-               ~Server();
-
-               void addValue(boost::shared_ptr<rogue::protocols::epics::Value> value);
-
-               pvExistReturn pvExistTest (const casCtx &ctx, const char *pvName);
-
-               pvCreateReturn createPV(const casCtx &ctx, const char *pvName);
-
-               pvAttachReturn pvAttach(const casCtx &ctx, const char *pvName);
+               Command ( std::string epicsName, boost::python::object p );
+               
+               ~Command ();
          };
 
          // Convienence
-         typedef boost::shared_ptr<rogue::protocols::epics::Server> ServerPtr;
+         typedef boost::shared_ptr<rogue::protocols::epics::Command> CommandPtr;
 
       }
    }
