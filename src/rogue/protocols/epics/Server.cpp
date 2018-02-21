@@ -38,7 +38,7 @@ void rpe::Server::setup_python() {
 
 //! Class creation
 rpe::Server::Server () : caServer() {
-   this->setDebugLevel(10);
+   //this->setDebugLevel(10);
    thread_ = new boost::thread(boost::bind(&rpe::Server::runThread, this));
 }
 
@@ -68,7 +68,6 @@ pvExistReturn rpe::Server::pvExistTest(const casCtx &ctx, const char *pvName) {
 }
 
 pvCreateReturn rpe::Server::createPV(const casCtx &ctx, const char *pvName) {
-   printf("Create pv called for %s\n",pvName);
    boost::lock_guard<boost::mutex> lock(mtx_);
 
    std::map<std::string, rpe::ValuePtr>::iterator it;
@@ -86,7 +85,6 @@ pvCreateReturn rpe::Server::createPV(const casCtx &ctx, const char *pvName) {
 }
 
 pvAttachReturn rpe::Server::pvAttach(const casCtx &ctx, const char *pvName) {
-   printf("Attach pv called for %s\n",pvName);
    boost::lock_guard<boost::mutex> lock(mtx_);
 
    std::map<std::string, rpe::ValuePtr>::iterator it;

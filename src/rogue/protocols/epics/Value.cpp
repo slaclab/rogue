@@ -82,8 +82,6 @@ void rpe::Value::initGdd(std::string typeStr, bool isEnum, uint32_t count) {
    precision_ = 0;
    typeStr_   = typeStr;
 
-   pValue_->setDimension(count);
-
    // Scalar
    if ( count == 1 ) {
 
@@ -119,10 +117,11 @@ void rpe::Value::initGdd(std::string typeStr, bool isEnum, uint32_t count) {
          precision_ = 64;
       }
 
-      else throw rogue::GeneralError("Value::setType","Invalid Type String: " + typeStr);
+      else throw rogue::GeneralError("Value::initGdd","Invalid Type String: " + typeStr);
 
       pValue_ = new gddScalar(gddAppType_value, epicsType_);
    }
+   else throw rogue::GeneralError("Value::initGdd","Invalid Size");
 }
 
 // Value lock held when this is called
