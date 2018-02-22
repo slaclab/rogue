@@ -1,12 +1,12 @@
 /**
  *-----------------------------------------------------------------------------
- * Title      : EPICs PV Attribute Object
+ * Title      : Rogue EPICS Interface: Stream Slave Interface
  * ----------------------------------------------------------------------------
  * File       : Slave.h
  * Created    : 2018-11-18
  * ----------------------------------------------------------------------------
  * Description:
- * Stream slave to epics gateway
+ * Stream slave to epics variables
  * ----------------------------------------------------------------------------
  * This file is part of the rogue software platform. It is subject to 
  * the license terms in the LICENSE.txt file found in the top-level directory 

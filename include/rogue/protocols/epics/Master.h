@@ -1,12 +1,12 @@
 /**
  *-----------------------------------------------------------------------------
- * Title      : EPICs PV Attribute Object
+ * Title      : Rogue EPICS Interface: Master Stream Interface
  * ----------------------------------------------------------------------------
  * File       : Master.h
  * Created    : 2018-11-18
  * ----------------------------------------------------------------------------
  * Description:
- * Stream master to epics interface
+ * Rogue stream master interface for EPICs variables
  * ----------------------------------------------------------------------------
  * This file is part of the rogue software platform. It is subject to 
  * the license terms in the LICENSE.txt file found in the top-level directory 

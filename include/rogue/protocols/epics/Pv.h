@@ -1,12 +1,12 @@
 /**
  *-----------------------------------------------------------------------------
- * Title      : EPICs Pv
+ * Title      : Rogue EPICS Interface: PV Interface
  * ----------------------------------------------------------------------------
  * File       : Pv.h
  * Created    : 2018-02-12
  * ----------------------------------------------------------------------------
  * Description:
- * EPICS Pv For Rogue System
+ * EPICS Pv For Rogue System, dynamically created and deleted as clients attach
  * ----------------------------------------------------------------------------
  * This file is part of the rogue software platform. It is subject to 
  * the license terms in the LICENSE.txt file found in the top-level directory 

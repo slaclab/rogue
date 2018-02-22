@@ -1,6 +1,6 @@
 /**
  *-----------------------------------------------------------------------------
- * Title      : Python Module
+ * Title      : Rogue EPICS Interface:
  * ----------------------------------------------------------------------------
  * File       : module.cpp
  * Author     : Ryan Herbst, rherbst@slac.stanford.edu

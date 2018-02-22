@@ -1,6 +1,6 @@
 /**
  *-----------------------------------------------------------------------------
- * Title      : EPICs PV Attribute Object
+ * Title      : Rogue EPICS Interface: Generic Value Container
  * ----------------------------------------------------------------------------
  * File       : Value.cpp
  * Created    : 2018-11-18

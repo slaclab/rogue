@@ -1,12 +1,12 @@
 /**
  *-----------------------------------------------------------------------------
- * Title      : EPICs PV Attribute Object
+ * Title      : Rogue EPICS Interface: Master Stream Interface
  * ----------------------------------------------------------------------------
  * File       : Variable.cpp
  * Created    : 2018-11-18
  * ----------------------------------------------------------------------------
  * Description:
- * Class to store an EPICs PV attributes along with its current value
+ * Rogue stream master interface for EPICs variables
  * ----------------------------------------------------------------------------
  * This file is part of the rogue software platform. It is subject to 
  * the license terms in the LICENSE.txt file found in the top-level directory 
