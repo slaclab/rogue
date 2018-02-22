@@ -18,6 +18,8 @@
  * ----------------------------------------------------------------------------
 **/
 
+#ifdef DO_EPICS
+
 #include <boost/python.hpp>
 #include <rogue/protocols/epics/Value.h>
 #include <rogue/protocols/epics/Pv.h>
@@ -73,7 +75,7 @@ rpe::Value::Value (std::string epicsName) {
    funcTable_.installReadFunc("enums",            &rpe::Value::readEnums);
 
    // Default, type
-   this->initGdd("UInt32", false, 1);
+   this->initGdd("UInt32",false,0);
  
    // Default value 
    pValue_->putConvert((uint32_t) 0);
@@ -82,46 +84,57 @@ rpe::Value::Value (std::string epicsName) {
 void rpe::Value::initGdd(std::string typeStr, bool isEnum, uint32_t count) {
    precision_ = 0;
    typeStr_   = typeStr;
+   size_      = 1;
+   max_       = 1;
+   fSize_     = 1;
 
    // Enum type
    if ( isEnum ) epicsType_ = aitEnumEnum16;
 
    // Int types
-   else if ( typeStr == "UInt8"   ) epicsType_ = aitEnumUint8;
-   else if ( typeStr == "UInt16"  ) epicsType_ = aitEnumUint16;
-   else if ( typeStr == "int"     ) epicsType_ = aitEnumInt32;
-   else if ( typeStr == "UInt32"  ) epicsType_ = aitEnumUint32;
-   else if ( typeStr == "UInt64"  ) epicsType_ = aitEnumUint32; // epicsType_ = aitEnumUint64;
-   else if ( typeStr == "Int8"    ) epicsType_ = aitEnumInt8;
-   else if ( typeStr == "Int16"   ) epicsType_ = aitEnumInt16;
-   else if ( typeStr == "Int32"   ) epicsType_ = aitEnumInt32;
-   else if ( typeStr == "Int64"   ) epicsType_ = aitEnumInt32;  //epicsType_ = aitEnumInt64;
+   else if ( typeStr == "UInt8"   ) { fSize_ = 1; epicsType_ = aitEnumUint8;  }
+   else if ( typeStr == "UInt16"  ) { fSize_ = 2; epicsType_ = aitEnumUint16; }
+   else if ( typeStr == "int"     ) { fSize_ = 4; epicsType_ = aitEnumInt32;  }
+   else if ( typeStr == "UInt32"  ) { fSize_ = 4; epicsType_ = aitEnumUint32; }
+   else if ( typeStr == "UInt64"  ) { fSize_ = 8; epicsType_ = aitEnumUint32; } // epicsType_ = aitEnumUint64;
+   else if ( typeStr == "Int8"    ) { fSize_ = 1; epicsType_ = aitEnumInt8;   }
+   else if ( typeStr == "Int16"   ) { fSize_ = 2; epicsType_ = aitEnumInt16;  }
+   else if ( typeStr == "Int32"   ) { fSize_ = 4; epicsType_ = aitEnumInt32;  }
+   else if ( typeStr == "Int64"   ) { fSize_ = 8; epicsType_ = aitEnumInt32;  }//epicsType_ = aitEnumInt64;
 
    // String type
    else if ( typeStr == "str" ) {
       epicsType_ = aitEnumString;
       pValue_->setBound(0,0,400);
+      max_   = 400;
+      size_  = 400;
    }
 
    // 32-bit Float
    else if ( typeStr == "float" or typeStr == "Float32" ) {
       epicsType_ = aitEnumFloat32;
       precision_ = 32;
+      fSize_ = 4;
    }
 
    // 64-bit float
    else if ( typeStr == "Float64" ) {
       epicsType_ = aitEnumFloat64;
       precision_ = 64;
+      fSize_ = 8;
    }
 
    else throw rogue::GeneralError("Value::initGdd","Invalid Type String: " + typeStr);
 
-   // Scalar
-   if ( count == 1 ) pValue_ = new gddScalar(gddAppType_value, epicsType_);
-
    // Vector
-   else pValue_ = new gddAtomic (gddAppType_value, epicsType_, 1u, count);
+   if ( count != 0 ) {
+      pValue_ = new gddAtomic (gddAppType_value, epicsType_, 1u, count);
+      size_ = count;
+   }
+
+   // Scalar
+   else pValue_ = new gddScalar(gddAppType_value, epicsType_);
+
 }
 
 // Value lock held when this is called
@@ -216,6 +229,15 @@ aitEnum rpe::Value::bestExternalType() {
    return pValue_->primitiveType();
 }
 
+unsigned rpe::Value::maxDimension() {
+   return 1;
+}
+
+aitIndex rpe::Value::maxBound(unsigned dimension) {
+   if (dimension==0) return max_;
+   else return 0;
+}
+
 gddAppFuncTableStatus rpe::Value::readStatus(gdd &value) {
    boost::lock_guard<boost::mutex> lock(mtx_);
    value.putConvert(pValue_->getStat());
@@ -302,3 +324,4 @@ gddAppFuncTableStatus rpe::Value::readEnums(gdd &value) {
    return S_cas_success;
 }
 
+#endif

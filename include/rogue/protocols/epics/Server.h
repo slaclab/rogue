@@ -57,6 +57,10 @@ namespace rogue {
 
                ~Server();
 
+               void start();
+
+               void stop();
+
                void addValue(boost::shared_ptr<rogue::protocols::epics::Value> value);
 
                pvExistReturn pvExistTest (const casCtx &ctx, const char *pvName);

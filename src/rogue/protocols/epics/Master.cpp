@@ -18,6 +18,8 @@
  * ----------------------------------------------------------------------------
 **/
 
+#ifdef DO_EPICS
+
 #include <boost/python.hpp>
 #include <rogue/protocols/epics/Master.h>
 #include <rogue/GeneralError.h>
@@ -41,10 +43,60 @@ void rpe::Master::setup_python() {
 
 //! Class creation
 rpe::Master::Master (std::string epicsName, uint32_t max, std::string type) : Value(epicsName) {
-   max_ = max;
 
    // Init gdd record
-   this->initGdd(type, false, max_);
+   this->initGdd(type, false, 1);
+   max_ = max;
+
+   // Determine size in bytes & init data
+   if ( epicsType_ == aitEnumUint8 ) {
+      aitUint8 * pF = new aitUint8[1];
+      pF[0] = 0;
+      pValue_->putRef(pF, new rpe::Destructor<aitUint8 *>);
+   }
+
+   else if ( epicsType_ == aitEnumUint16 ) {
+      aitUint16 * pF = new aitUint16[1];
+      pF[0] = 0;
+      pValue_->putRef(pF, new rpe::Destructor<aitUint16 *>);
+   }
+
+   else if ( epicsType_ == aitEnumUint32 ) {
+      aitUint32 * pF = new aitUint32[1];
+      pF[0] = 0;
+      pValue_->putRef(pF, new rpe::Destructor<aitUint32 *>);
+   }
+
+   else if ( epicsType_ == aitEnumInt8 ) {
+      aitInt8 * pF = new aitInt8[1];
+      pF[0] = 0;
+      pValue_->putRef(pF, new rpe::Destructor<aitInt8 *>);
+   }
+
+   else if ( epicsType_ == aitEnumInt16 ) {
+      aitInt16 * pF = new aitInt16[1];
+      pF[0] = 0;
+      pValue_->putRef(pF, new rpe::Destructor<aitInt16 *>);
+   }
+
+   else if ( epicsType_ == aitEnumInt32 ) {
+      aitInt32 * pF = new aitInt32[1];
+      pF[0] = 0;
+      pValue_->putRef(pF, new rpe::Destructor<aitInt32 *>);
+   }
+
+   else if ( epicsType_ == aitEnumFloat32 ) {
+      aitFloat32 * pF = new aitFloat32[1];
+      pF[0] = 0.0;
+      pValue_->putRef(pF, new rpe::Destructor<aitFloat32 *>);
+   }
+
+   else if ( epicsType_ == aitEnumFloat64 ) {
+      aitFloat64 * pF = new aitFloat64[1];
+      pF[0] = 0.0;
+      pValue_->putRef(pF, new rpe::Destructor<aitFloat64 *>);
+   }
+   else throw rogue::GeneralError("Master::Master","Invalid Type String: " + typeStr_);
 }
 
 rpe::Master::~Master() { }
@@ -53,8 +105,9 @@ void rpe::Master::valueGet() { }
 
 void rpe::Master::valueSet() {
 
-
-
+   // Not yet supported
+   printf("Set called\n");
 
 }
 
+#endif

@@ -36,8 +36,6 @@ namespace rogue {
       namespace epics {
 
          class Slave: public Value, public rogue::interfaces::stream::Slave {
-               uint32_t max_;
-               uint32_t fSize_;
             public:
 
                //! Setup class in python

@@ -43,6 +43,9 @@ namespace rogue {
                std::string typeStr_;
                aitEnum     epicsType_;
                gdd       * pValue_;
+               uint32_t    max_;
+               uint32_t    size_;
+               uint32_t    fSize_;
 
                std::vector<std::string> enums_;
                rogue::protocols::epics::Pv * pv_;
@@ -64,7 +67,7 @@ namespace rogue {
 
                boost::mutex mtx_;
 
-               void initGdd(std::string typeStr, bool isEnum, uint32_t count);
+               void initGdd(std::string typeStr, bool isEnum, uint32_t count );
 
                void updated();
 
@@ -100,6 +103,10 @@ namespace rogue {
                caStatus write(const gdd &value);
 
                aitEnum bestExternalType();
+
+               unsigned maxDimension();
+
+               aitIndex maxBound(unsigned dimension);
 
                gddAppFuncTableStatus readStatus(gdd &value);
 

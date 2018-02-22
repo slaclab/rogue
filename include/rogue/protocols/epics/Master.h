@@ -35,7 +35,6 @@ namespace rogue {
       namespace epics {
 
          class Master: public Value, public rogue::interfaces::stream::Master {
-               uint32_t max_;
             public:
 
                //! Setup class in python

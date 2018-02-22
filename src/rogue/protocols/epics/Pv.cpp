@@ -18,6 +18,8 @@
  * ----------------------------------------------------------------------------
 **/
 
+#ifdef DO_EPICS
+
 #include <boost/python.hpp>
 #include <rogue/protocols/epics/Pv.h>
 #include <rogue/protocols/epics/Value.h>
@@ -91,11 +93,11 @@ aitEnum rpe::Pv::bestExternalType() const {
 }
 
 unsigned rpe::Pv::maxDimension() const {
-   return(0);
+   return value_->maxDimension();
 }
 
 aitIndex rpe::Pv::maxBound(unsigned dimension) const {
-   return(0);
+   return value_->maxBound(dimension);
 }
 
 const char * rpe::Pv::getName() const {
@@ -106,3 +108,4 @@ void rpe::Pv::postEvent ( const casEventMask & select, const gdd & event ) {
    casPV::postEvent(select,event);
 }
 
+#endif
