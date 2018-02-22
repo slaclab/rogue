@@ -34,7 +34,7 @@ class EpicsCaServer(object):
         self._srv       = rogue.protocols.epics.Server()
 
         if not root.running:
-            raise Exception("Epics can be setup on a tree which is not started")
+            raise Exception("Epics can not be setup on a tree which is not started")
 
         if pvMap is None:
             doAll = True
