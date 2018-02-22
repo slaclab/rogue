@@ -394,7 +394,8 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         for func in self._varListeners:
 
             try:
-                if hasattr(func,'varListener'):
+
+                if isinstance(func,Pyro4.core.Proxy) or hasattr(func,'varListener'):
                     func.varListener(path,value,disp)
                 else:
                     func(path,value,disp)
