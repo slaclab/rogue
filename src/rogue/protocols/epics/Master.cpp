@@ -22,6 +22,7 @@
 
 #include <boost/python.hpp>
 #include <rogue/protocols/epics/Master.h>
+#include <rogue/interfaces/stream/Frame.h>
 #include <rogue/GeneralError.h>
 #include <rogue/ScopedGil.h>
 #include <rogue/GilRelease.h>
@@ -35,7 +36,7 @@ namespace bp  = boost::python;
 //! Setup class in python
 void rpe::Master::setup_python() {
 
-   bp::class_<rpe::Master, rpe::MasterPtr, boost::noncopyable >("Master",bp::init<std::string, uint32_t, std::string>());
+   bp::class_<rpe::Master, rpe::MasterPtr, bp::bases<rpe::Value, ris::Master>, boost::noncopyable >("Master",bp::init<std::string, uint32_t, std::string>());
 
    bp::implicitly_convertible<rpe::MasterPtr, ris::MasterPtr>();
    bp::implicitly_convertible<rpe::MasterPtr, rpe::ValuePtr>();
@@ -104,10 +105,67 @@ rpe::Master::~Master() { }
 void rpe::Master::valueGet() { }
 
 void rpe::Master::valueSet() {
+   ris::FramePtr frame;
+   uint32_t txSize;
+   uint32_t pos;
+   uint32_t i;
 
-   // Not yet supported
-   printf("Set called\n");
+   txSize = size_ * fSize_;
+   frame = reqFrame(txSize, true, txSize);
+   pos = 0;
 
+   // Create vector of appropriate type
+   if ( epicsType_ == aitEnumUint8 ) {
+      aitUint8 * pF = new aitUint8[size_];
+      pValue_->getRef(pF);
+      for ( i = 0; i < size_; i++ ) pos += frame->write(&(pF[i]), pos, fSize_);
+   }
+
+   else if ( epicsType_ == aitEnumUint16 ) {
+      aitUint16 * pF = new aitUint16[size_];
+      pValue_->getRef(pF);
+      for ( i = 0; i < size_; i++ ) pos += frame->write(&(pF[i]), pos, fSize_);
+   }
+
+   else if ( epicsType_ == aitEnumUint32 ) {
+      aitUint32 * pF = new aitUint32[size_];
+      pValue_->getRef(pF);
+      for ( i = 0; i < size_; i++ ) pos += frame->write(&(pF[i]), pos, fSize_);
+   }
+
+   else if ( epicsType_ == aitEnumInt8 ) {
+      aitInt8 * pF = new aitInt8[size_];
+      pValue_->getRef(pF);
+      for ( i = 0; i < size_; i++ ) pos += frame->write(&(pF[i]), pos, fSize_);
+   }
+
+   else if ( epicsType_ == aitEnumInt16 ) {
+      aitInt16 * pF = new aitInt16[size_];
+      pValue_->getRef(pF);
+      for ( i = 0; i < size_; i++ ) pos += frame->write(&(pF[i]), pos, fSize_);
+   }
+
+   else if ( epicsType_ == aitEnumInt32 ) {
+      aitInt32 * pF = new aitInt32[size_];
+      pValue_->getRef(pF);
+      for ( i = 0; i < size_; i++ ) pos += frame->write(&(pF[i]), pos, fSize_);
+   }
+
+   else if ( epicsType_ == aitEnumFloat32 ) {
+      aitFloat32 * pF = new aitFloat32[size_];
+      pValue_->getRef(pF);
+      for ( i = 0; i < size_; i++ ) pos += frame->write(&(pF[i]), pos, fSize_);
+   }
+
+   else if ( epicsType_ == aitEnumFloat64 ) {
+      aitFloat64 * pF = new aitFloat64[size_];
+      pValue_->getRef(pF);
+      for ( i = 0; i < size_; i++ ) pos += frame->write(&(pF[i]), pos, fSize_);
+   }
+
+   // Should this be pushed to a queue for a worker thread to call slaves?
+   sendFrame(frame);
 }
 
 #endif
+

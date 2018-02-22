@@ -52,6 +52,11 @@ class EpicsCaServer(object):
         self.addValue(slave)
         return slave
 
+    def createMaster(self, name, maxSize, type):
+        mast = rogue.protocols.epics.Master(self._base + ':' + name,maxSize,type)
+        self.addValue(mast)
+        return mast
+
     def stop(self):
         self._srv.stop()
 

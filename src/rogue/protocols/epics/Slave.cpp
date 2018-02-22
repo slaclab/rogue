@@ -36,7 +36,7 @@ namespace bp  = boost::python;
 //! Setup class in python
 void rpe::Slave::setup_python() {
 
-   bp::class_<rpe::Slave, rpe::SlavePtr, boost::noncopyable >("Slave",bp::init<std::string, uint32_t, std::string>());
+   bp::class_<rpe::Slave, rpe::SlavePtr, bp::bases<rpe::Value, ris::Slave>, boost::noncopyable >("Slave",bp::init<std::string, uint32_t, std::string>());
 
    bp::implicitly_convertible<rpe::SlavePtr, ris::SlavePtr>();
    bp::implicitly_convertible<rpe::SlavePtr, rpe::ValuePtr>();
@@ -142,10 +142,7 @@ void rpe::Slave::acceptFrame ( ris::FramePtr frame ) {
    // Create vector of appropriate type
    if ( epicsType_ == aitEnumUint8 ) {
       aitUint8 * pF = new aitUint8[size_];
-      for ( i = 0; i < size_; i++ ) {
-         pos += frame->read(&(pF[i]), pos, fSize_);
-         printf("pos %i = %i\n",i,pF[i]);
-      }
+      for ( i = 0; i < size_; i++ ) pos += frame->read(&(pF[i]), pos, fSize_);
       pValue_->putRef(pF, new rpe::Destructor<aitUint8 *>);
    }
 

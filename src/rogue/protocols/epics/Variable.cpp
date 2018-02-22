@@ -36,7 +36,7 @@ namespace bp  = boost::python;
 //! Setup class in python
 void rpe::Variable::setup_python() {
 
-   bp::class_<rpe::Variable, rpe::VariablePtr, boost::noncopyable >("Variable",bp::init<std::string, bp::object, bool>())
+   bp::class_<rpe::Variable, rpe::VariablePtr, bp::bases<rpe::Value>, boost::noncopyable >("Variable",bp::init<std::string, bp::object, bool>())
       .def("varUpdated", &rpe::Variable::varUpdated)
    ;
 

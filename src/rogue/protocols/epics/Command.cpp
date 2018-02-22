@@ -35,7 +35,7 @@ namespace bp  = boost::python;
 //! Setup class in python
 void rpe::Command::setup_python() {
 
-   bp::class_<rpe::Command, rpe::CommandPtr, boost::noncopyable >("Command",bp::init<std::string, bp::object>());
+   bp::class_<rpe::Command, rpe::CommandPtr, bp::bases<rpe::Variable>, boost::noncopyable >("Command",bp::init<std::string, bp::object>());
 
    bp::implicitly_convertible<rpe::CommandPtr, rpe::VariablePtr>();
 }

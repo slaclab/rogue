@@ -204,16 +204,33 @@ caStatus rpe::Value::readValue(gdd &value) {
 
 caStatus rpe::Value::write(const gdd &value) {
    struct timespec t;
+   uint32_t newSize;
 
    boost::lock_guard<boost::mutex> lock(mtx_);
 
-   //// Doesn't support writing to arrays or container objects
-   //// (gddAtomic or gddContainer).
-   caServer *pServer = pv_->getCAS();
-   if(!(value.isScalar()) || !pServer) return S_casApp_noSupport;
+   // Array
+   if ( value.isAtomic()) {
 
-   // Set the new value
-   pValue_->put(&value);
+      // Bound checking
+      if ( value.dimension() != 1 ) return S_casApp_badDimension;
+      const gddBounds* pb = value.getBounds ();
+      if ( pb[0].first() != 0 ) return S_casApp_outOfBounds;
+                      
+      // Get size      
+      newSize = pb[0].size();
+      if ( newSize > max_ ) return S_casApp_outOfBounds;
+
+      pValue_->unreference();
+      pValue_ = new gddAtomic (gddAppType_value, epicsType_, 1, newSize);
+      pValue_->put(&value);
+      size_ = newSize;
+   }
+
+   // Scalar
+   else if ( value.isScalar() ) pValue_->put(&value);
+
+   // Unsupported type
+   else return S_casApp_outOfBounds;
 
    // Set the timespec structure to the current time stamp the gdd.
    clock_gettime(CLOCK_REALTIME,&t);
