@@ -2,7 +2,7 @@
 #-----------------------------------------------------------------------------
 # Title      : PyRogue epics support
 #-----------------------------------------------------------------------------
-# File       : pyrogue/epics.py
+# File       : pyrogue/protocols/epics.py
 # Author     : Ryan Herbst, rherbst@slac.stanford.edu
 # Created    : 2016-09-29
 # Last update: 2016-09-29
