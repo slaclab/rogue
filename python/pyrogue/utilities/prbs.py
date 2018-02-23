@@ -41,6 +41,12 @@ class PrbsRx(pyrogue.Device):
                                        mode='RO', pollInterval=1, value=0,
                                        localGet=self._prbs.getRxBytes))
 
+        self.add(pyrogue.LocalVariable(name='checkPayload', description='Payload Check Enable',
+                                       mode='RW', value=True, localSet=self._plEnable))
+
+    def _plEnable(self,value,changed):
+        self._prbs.checkPayload(value)
+
     def countReset(self):
         self._prbs.resetCount()
 

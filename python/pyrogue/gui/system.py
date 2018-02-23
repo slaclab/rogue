@@ -133,36 +133,37 @@ class DataLink(QObject):
         pass
 
     @Pyro4.expose
-    def varListener(self,var,value,disp):
-
+    def varListener(self,path,value,disp):
         if self.block: return
 
-        if var.name == 'dataFile':
+        name = path.split('.')[-1]
+
+        if name == 'dataFile':
             self.emit(SIGNAL("updateDataFile"),disp)
 
-        elif var.name == 'open':
+        elif name == 'open':
             self.emit(SIGNAL("updateOpenState"),self.openState.findText(disp))
 
-        elif var.name == 'bufferSize':
+        elif name == 'bufferSize':
             self.emit(SIGNAL("updateBufferSize"),disp)
 
-        elif var.name == 'maxFileSize':
+        elif name == 'maxFileSize':
             self.emit(SIGNAL("updateMaxSize"),disp)
 
-        elif var.name == 'fileSize':
+        elif name == 'fileSize':
             self.emit(SIGNAL("updateFileSize"),disp)
 
-        elif var.name == 'frameCount':
+        elif name == 'frameCount':
             self.emit(SIGNAL("updateFrameCount"),disp)
 
     def dataFileEdited(self):
         p = QPalette()
         p.setColor(QPalette.Base,Qt.yellow)
+        p.setColor(QPalette.Text,Qt.black)
         self.dataFile.setPalette(p)
 
     def dataFileChanged(self):
         p = QPalette()
-        p.setColor(QPalette.Base,Qt.white)
         self.dataFile.setPalette(p)
 
         self.block = True
@@ -177,11 +178,11 @@ class DataLink(QObject):
     def bufferSizeEdited(self):
         p = QPalette()
         p.setColor(QPalette.Base,Qt.yellow)
+        p.setColor(QPalette.Text,Qt.black)
         self.bufferSize.setPalette(p)
 
     def bufferSizeChanged(self):
         p = QPalette()
-        p.setColor(QPalette.Base,Qt.white)
         self.bufferSize.setPalette(p)
 
         self.block = True
@@ -191,11 +192,11 @@ class DataLink(QObject):
     def maxSizeEdited(self):
         p = QPalette()
         p.setColor(QPalette.Base,Qt.yellow)
+        p.setColor(QPalette.Text,Qt.black)
         self.maxSize.setPalette(p)
 
     def maxSizeChanged(self):
         p = QPalette()
-        p.setColor(QPalette.Base,Qt.white)
         self.maxSize.setPalette(p)
 
         self.block = True
@@ -266,16 +267,18 @@ class ControlLink(QObject):
         fl.addRow('Run Count:',self.runCount)
 
     @Pyro4.expose
-    def varListener(self,var,value,disp):
+    def varListener(self,path,value,disp):
         if self.block: return
 
-        if var.name == 'runState':
+        name = path.split('.')[-1]
+
+        if name == 'runState':
             self.emit(SIGNAL("updateState"),self.runState.findText(disp))
 
-        elif var.name == 'runRate':
+        elif name == 'runRate':
             self.emit(SIGNAL("updateRate"),self.runRate.findText(disp))
 
-        elif var.name == 'runCount':
+        elif name == 'runCount':
             self.emit(SIGNAL("updateCount"),disp)
 
     def runStateChanged(self,value):
@@ -361,17 +364,22 @@ class SystemWidget(QWidget):
 
         root.SystemLog.addListener(self)
         self.connect(self,SIGNAL('updateLog'),self.systemLog.setText)
+        self.systemLog.setText(root.SystemLog.valueDisp())
         
         pb = QPushButton('Clear Log')
         pb.clicked.connect(self.resetLog)
         vb.addWidget(pb)
 
+        QCoreApplication.processEvents()
+
     def resetLog(self):
         self.root.ClearLog()
 
     @Pyro4.expose
-    def varListener(self,var,value,disp):
-        if var.name == 'SystemLog':
+    def varListener(self,path,value,disp):
+        name = path.split('.')[-1]
+
+        if name == 'SystemLog':
             self.emit(SIGNAL("updateLog"),disp)
 
     def hardReset(self):

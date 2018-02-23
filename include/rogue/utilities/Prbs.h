@@ -84,6 +84,9 @@ namespace rogue {
             //! TX bytes
             uint32_t   txBytes_;
 
+            //! Check payload
+            bool       checkPl_;
+
             //! Logger
             rogue::Logging *rxLog_;
             rogue::Logging *txLog_;
@@ -151,6 +154,9 @@ namespace rogue {
 
             //! Get tx total bytes
             uint32_t getTxBytes();
+
+            //! Set check payload flag, default = true
+            void checkPayload(bool state);
 
             //! Reset counters
             void resetCount();

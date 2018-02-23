@@ -107,7 +107,6 @@ class MysqlGw(object):
                     self._addVariable(v)
             self._db.commit()
             self._delOldEntries()
-            self._root.addVarListener(self._updateVariables)
 
     def start(self):
         self._runEn = True
@@ -193,19 +192,19 @@ class MysqlGw(object):
 
         cursor.execute(sql)
         self._varSer[variable.path] = 0
+        variable.addListener(self._updateVariables)
 
-    def _updateVariables (self, yml, lst):
-        if self._db is None:
-            #self._log.error("Not connected to Mysql server " + self._host)
-            return
-
+    def _updateVariables (self, path, value, disp):
         with self._dbLock:
+            if self._db is None:
+                #self._log.error("Not connected to Mysql server " + self._host)
+                return
+
             try:
                 cursor = self._db.cursor(MySQLdb.cursors.DictCursor)
-                for num in lst:
-                    sql = "update variable set value='{}', server_ts=now(),".format(mysqlString(num['disp']))
-                    sql += "server_ser = (server_ser + 1) where name='{}'".format(num['path'])
-                    cursor.execute(sql)
+                sql = "update variable set value='{}', server_ts=now(),".format(mysqlString(disp))
+                sql += "server_ser = (server_ser + 1) where name='{}'".format(path)
+                cursor.execute(sql)
                 self._db.commit()
             except:
                 self._log.error("Error executing sql.")

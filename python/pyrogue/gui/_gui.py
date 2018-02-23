@@ -29,6 +29,7 @@ import pyrogue.gui.system
 import threading
 import sys
 
+
 class GuiTop(QWidget):
 
     def __init__(self,*, group,parent=None):
@@ -51,6 +52,8 @@ class GuiTop(QWidget):
         self.connect(self,SIGNAL('newTree'),self.var.addTree)
         self.connect(self,SIGNAL('newTree'),self.cmd.addTree)
 
+        self._appTop = None
+
     def addTree(self,root):
         if not root.running:
             raise Exception("GUI can not be attached to a tree which is not started")
@@ -59,4 +62,6 @@ class GuiTop(QWidget):
     def _addTree(self,root):
         self.sys = pyrogue.gui.system.SystemWidget(root=root,parent=self.tab)
         self.tab.addTab(self.sys,root.name)
+        self.adjustSize()
+
 

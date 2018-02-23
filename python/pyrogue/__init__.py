@@ -119,3 +119,12 @@ def busConnect(source,dest):
 
     master._setSlave(slave)
 
+def genBaseList(cls):
+    ret = str(cls)
+
+    for l in cls.__bases__:
+        if l is not object:
+            ret += genBaseList(l)
+
+    return ret
+

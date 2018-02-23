@@ -58,6 +58,34 @@ void ris::Frame::appendFrame(ris::FramePtr frame) {
    for (x=0; x < frame->getCount(); x++) buffers_.push_back(frame->getBuffer(x));
 }
 
+//! Copy count bytes frame, starting at offset in local frame
+uint32_t ris::Frame::copyFrame(ris::FramePtr frame, uint32_t offset, uint32_t count) {
+   uint32_t x;
+   uint32_t off;
+   uint32_t rem;
+   uint32_t bsize;
+
+   ris::BufferPtr buff;
+
+   off = offset;
+   rem = count;
+
+   // Process incoming frame buffer by buffer
+   for (x=0; x < frame->getCount(); x++ ) {
+      buff = frame->getBuffer(x);
+      bsize = buff->getPayload();
+
+      if (bsize > rem) bsize = rem;
+
+      this->write ( buff->getPayloadData(), off, bsize );
+      off += bsize;
+      rem -= bsize;
+
+      if ( rem == 0 ) break;
+   }
+   return(count);
+}
+
 //! Get buffer count
 uint32_t ris::Frame::getCount() {
    return(buffers_.size());
@@ -383,6 +411,7 @@ void ris::Frame::setup_python() {
    bp::class_<ris::Frame, ris::FramePtr, boost::noncopyable>("Frame",bp::no_init)
       .def("getAvailable", &ris::Frame::getAvailable)
       .def("getPayload",   &ris::Frame::getPayload)
+      .def("copyframe",    &ris::Frame::copyFrame)
       .def("read",         &ris::Frame::readPy)
       .def("write",        &ris::Frame::writePy)
       .def("setError",     &ris::Frame::setError)
