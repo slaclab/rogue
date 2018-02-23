@@ -1,6 +1,6 @@
 /**
  *-----------------------------------------------------------------------------
- * Title      : Rogue EPICS Interface: Command Interface
+ * Title      : Rogue EPICS V3 Interface: Command Interface
  * ----------------------------------------------------------------------------
  * File       : Command.cpp
  * Created    : 2018-11-18
@@ -18,18 +18,18 @@
  * ----------------------------------------------------------------------------
 **/
 
-#ifdef DO_EPICS
+#ifdef DO_EPICSV3
 
 #include <boost/python.hpp>
-#include <rogue/protocols/epics/Command.h>
-#include <rogue/protocols/epics/Pv.h>
-#include <rogue/protocols/epics/Server.h>
+#include <rogue/protocols/epicsV3/Command.h>
+#include <rogue/protocols/epicsV3/Pv.h>
+#include <rogue/protocols/epicsV3/Server.h>
 #include <rogue/GeneralError.h>
 #include <rogue/ScopedGil.h>
 #include <boost/make_shared.hpp>
 #include <boost/make_shared.hpp>
 
-namespace rpe = rogue::protocols::epics;
+namespace rpe = rogue::protocols::epicsV3;
 namespace bp  = boost::python;
 
 //! Setup class in python

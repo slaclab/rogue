@@ -1,12 +1,12 @@
 /**
  *-----------------------------------------------------------------------------
- * Title      : Rogue EPICS Interface: Master Stream Interface
+ * Title      : Rogue EPICS V3 Interface: Variable Interface
  * ----------------------------------------------------------------------------
- * File       : Master.h
+ * File       : Variable.h
  * Created    : 2018-11-18
  * ----------------------------------------------------------------------------
  * Description:
- * Rogue stream master interface for EPICs variables
+ * Variable subclass of Value, for interfacing with rogue variables
  * ----------------------------------------------------------------------------
  * This file is part of the rogue software platform. It is subject to 
  * the license terms in the LICENSE.txt file found in the top-level directory 
@@ -18,8 +18,8 @@
  * ----------------------------------------------------------------------------
 **/
 
-#ifndef __ROGUE_PROTOCOLS_EPICS_MASTER_H__
-#define __ROGUE_PROTOCOLS_EPICS_MASTER_H__
+#ifndef __ROGUE_PROTOCOLS_EPICSV3_VARIABLE_H__
+#define __ROGUE_PROTOCOLS_EPICSV3_VARIABLE_H__
 
 #include <boost/python.hpp>
 #include <boost/thread.hpp>
@@ -27,31 +27,46 @@
 #include <gdd.h>
 #include <gddApps.h>
 #include <gddAppFuncTable.h>
-#include <rogue/protocols/epics/Value.h>
-#include <rogue/interfaces/stream/Master.h>
+#include <rogue/protocols/epicsV3/Value.h>
 
 namespace rogue {
    namespace protocols {
-      namespace epics {
+      namespace epicsV3 {
 
-         class Master: public Value, public rogue::interfaces::stream::Master {
+         class Variable: public Value {
+               boost::python::object var_;
+
+               bool inSet_;
+               bool syncRead_;
+
+               // Lock held when called
+               void fromPython(boost::python::object value);
+
+            protected:
+
+               std::string setAttr_;
+
             public:
 
                //! Setup class in python
                static void setup_python();
 
                //! Class creation
-               Master ( std::string epicsName, uint32_t max, std::string type );
+               Variable ( std::string epicsName, boost::python::object p, bool syncRead );
                
-               ~Master ();
+               ~Variable ();
 
+               void varUpdated(std::string path, boost::python::object value, boost::python::object disp);
+
+               // Lock held when called
                void valueGet();
 
+               // Lock held when called
                void valueSet();
          };
 
          // Convienence
-         typedef boost::shared_ptr<rogue::protocols::epics::Master> MasterPtr;
+         typedef boost::shared_ptr<rogue::protocols::epicsV3::Variable> VariablePtr;
 
       }
    }

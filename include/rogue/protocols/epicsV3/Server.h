@@ -1,12 +1,12 @@
 /**
  *-----------------------------------------------------------------------------
- * Title      : Rogue EPICS Interface: Variable Interface
+ * Title      : Rogue EPICS V3 Interface: Top Level Server
  * ----------------------------------------------------------------------------
- * File       : Variable.h
- * Created    : 2018-11-18
+ * File       : Server.h
+ * Created    : 2018-02-12
  * ----------------------------------------------------------------------------
  * Description:
- * Variable subclass of Value, for interfacing with rogue variables
+ * EPICS Server For Rogue System
  * ----------------------------------------------------------------------------
  * This file is part of the rogue software platform. It is subject to 
  * the license terms in the LICENSE.txt file found in the top-level directory 
@@ -18,8 +18,8 @@
  * ----------------------------------------------------------------------------
 **/
 
-#ifndef __ROGUE_PROTOCOLS_EPICS_VARIABLE_H__
-#define __ROGUE_PROTOCOLS_EPICS_VARIABLE_H__
+#ifndef __ROGUE_PROTOCOLS_EPICSV3_SERVER_H__
+#define __ROGUE_PROTOCOLS_EPICSV3_SERVER_H__
 
 #include <boost/python.hpp>
 #include <boost/thread.hpp>
@@ -27,24 +27,25 @@
 #include <gdd.h>
 #include <gddApps.h>
 #include <gddAppFuncTable.h>
-#include <rogue/protocols/epics/Value.h>
+#include <map>
 
 namespace rogue {
    namespace protocols {
-      namespace epics {
+      namespace epicsV3 {
 
-         class Variable: public Value {
-               boost::python::object var_;
+         class Value;
 
-               bool inSet_;
-               bool syncRead_;
+         class Server : public caServer {
 
-               // Lock held when called
-               void fromPython(boost::python::object value);
+            private:
 
-            protected:
+               std::map<std::string, boost::shared_ptr<rogue::protocols::epicsV3::Value>> values_;
 
-               std::string setAttr_;
+               boost::thread * thread_;
+
+               boost::mutex mtx_;
+
+               void runThread();
 
             public:
 
@@ -52,21 +53,25 @@ namespace rogue {
                static void setup_python();
 
                //! Class creation
-               Variable ( std::string epicsName, boost::python::object p, bool syncRead );
-               
-               ~Variable ();
+               Server ();
 
-               void varUpdated(std::string path, boost::python::object value, std::string disp);
+               ~Server();
 
-               // Lock held when called
-               void valueGet();
+               void start();
 
-               // Lock held when called
-               void valueSet();
+               void stop();
+
+               void addValue(boost::shared_ptr<rogue::protocols::epicsV3::Value> value);
+
+               pvExistReturn pvExistTest (const casCtx &ctx, const char *pvName);
+
+               pvCreateReturn createPV(const casCtx &ctx, const char *pvName);
+
+               pvAttachReturn pvAttach(const casCtx &ctx, const char *pvName);
          };
 
          // Convienence
-         typedef boost::shared_ptr<rogue::protocols::epics::Variable> VariablePtr;
+         typedef boost::shared_ptr<rogue::protocols::epicsV3::Server> ServerPtr;
 
       }
    }

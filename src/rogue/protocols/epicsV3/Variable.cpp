@@ -1,6 +1,6 @@
 /**
  *-----------------------------------------------------------------------------
- * Title      : Rogue EPICS Interface: Variable Interface
+ * Title      : Rogue EPICS V3 Interface: Variable Interface
  * ----------------------------------------------------------------------------
  * File       : Variable.cpp
  * Created    : 2018-11-18
@@ -18,19 +18,19 @@
  * ----------------------------------------------------------------------------
 **/
 
-#ifdef DO_EPICS
+#ifdef DO_EPICSV3
 
 #include <boost/python.hpp>
-#include <rogue/protocols/epics/Variable.h>
-#include <rogue/protocols/epics/Pv.h>
-#include <rogue/protocols/epics/Server.h>
+#include <rogue/protocols/epicsV3/Variable.h>
+#include <rogue/protocols/epicsV3/Pv.h>
+#include <rogue/protocols/epicsV3/Server.h>
 #include <rogue/GeneralError.h>
 #include <rogue/ScopedGil.h>
 #include <rogue/GilRelease.h>
 #include <boost/make_shared.hpp>
 #include <boost/make_shared.hpp>
 
-namespace rpe = rogue::protocols::epics;
+namespace rpe = rogue::protocols::epicsV3;
 namespace bp  = boost::python;
 
 //! Setup class in python
@@ -89,25 +89,34 @@ rpe::Variable::Variable (std::string epicsName, bp::object p, bool syncRead) : V
    }
 
    // Init value
-   fromPython(var_.attr("value")());
+   if ( epicsType_ == aitEnumString ) fromPython(var_.attr("valueDisp")());
+   else fromPython(var_.attr("value")());
 }
 
 rpe::Variable::~Variable() { }
 
-void rpe::Variable::varUpdated(std::string path, boost::python::object value, std::string disp) {
-   if ( inSet_ ) return;
+void rpe::Variable::varUpdated(std::string path, boost::python::object value, boost::python::object disp) {
+   log_->debug("Variable update for %s: Disp=%s", epicsName_.c_str(),(char *)bp::extract<char *>(disp));
+
+   if ( inSet_ ) {
+      log_->debug("Ignoring variable update for %s", epicsName_.c_str());
+      return;
+   }
 
    rogue::GilRelease noGil;
    boost::lock_guard<boost::mutex> lock(mtx_);
-   fromPython(value);
-   updated();
+   if ( epicsType_ == aitEnumString ) fromPython(disp);
+   else fromPython(value);
 }
 
 // Lock held when called
 void rpe::Variable::valueGet() {
    if ( syncRead_ ) {
+      rogue::ScopedGil gil;
+      log_->info("Synchronous read for %s",epicsName_.c_str());
       try {
-         fromPython(var_.attr("disp")());
+         if ( epicsType_ == aitEnumString ) fromPython(var_.attr("valueDisp")());
+         else fromPython(var_.attr("value")());
          updated();
       } catch (const std::exception & ex) {
          log_->error("Error getting values from epics: %s\n",epicsName_.c_str());
@@ -118,6 +127,7 @@ void rpe::Variable::valueGet() {
 // Lock held when called
 void rpe::Variable::fromPython(boost::python::object value) {
    struct timespec t;
+   log_->debug("Python set for %s", epicsName_.c_str());
 
    clock_gettime(CLOCK_REALTIME,&t);
    pValue_->setTimeStamp(&t);
@@ -125,24 +135,28 @@ void rpe::Variable::fromPython(boost::python::object value) {
    if ( epicsType_ == aitEnumUint8 || epicsType_ == aitEnumUint16 || epicsType_ == aitEnumUint32 ) {
       uint32_t nVal;
       nVal = bp::extract<uint32_t>(value);
+      log_->info("Python set Uint for %s: Value=%lu", epicsName_.c_str(),nVal);
       pValue_->putConvert(nVal);
    }
 
    else if ( epicsType_ == aitEnumInt8 || epicsType_ == aitEnumInt16 || epicsType_ == aitEnumInt32 ) {
       int32_t nVal;
       nVal = bp::extract<int32_t>(value);
+      log_->info("Python set Int for %s: Value=%li", epicsName_.c_str(),nVal);
       pValue_->putConvert(nVal);
    }
 
    else if ( epicsType_ == aitEnumFloat32 || epicsType_ == aitEnumFloat64 ) {
       double nVal;
       nVal = bp::extract<double>(value);
+      log_->info("Python set double for %s: Value=%f", epicsName_.c_str(),nVal);
       pValue_->putConvert(nVal);
    }
 
    else if ( epicsType_ == aitEnumString ) {
       aitString nVal;
       nVal = bp::extract<char *>(value);
+      log_->info("Python set string for %s: Value=%s", epicsName_.c_str(),(char *)nVal);
       pValue_->putConvert(nVal);
    }
 
@@ -162,6 +176,7 @@ void rpe::Variable::fromPython(boost::python::object value) {
       // Invalid
       else throw rogue::GeneralError("Variable::fromPython","Invalid enum");
 
+      log_->info("Python set enum for %s: Enum Value=%i", epicsName_.c_str(),idx);
       pValue_->putConvert(idx);
    }
 
@@ -174,6 +189,7 @@ void rpe::Variable::valueSet() {
    rogue::ScopedGil gil;
 
    inSet_ = true;
+   log_->info("Variable set for %s",epicsName_.c_str());
 
    try {
       if ( epicsType_ == aitEnumUint8 || epicsType_ == aitEnumUint16 || epicsType_ == aitEnumUint32 ) {

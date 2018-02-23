@@ -1,13 +1,12 @@
 /**
  *-----------------------------------------------------------------------------
- * Title      : Rogue EPICS Interface: Module Setup
+ * Title      : Rogue EPICS V3 Interface: Command Interface
  * ----------------------------------------------------------------------------
- * File       : module.h
- * Author     : Ryan Herbst, rherbst@slac.stanford.edu
- * Created    : 2018-01-31
+ * File       : Command.h
+ * Created    : 2018-11-18
  * ----------------------------------------------------------------------------
  * Description:
- * Python module setup
+ * Command subclass of Variable & Value, allows commands to be executed from epics
  * ----------------------------------------------------------------------------
  * This file is part of the rogue software platform. It is subject to 
  * the license terms in the LICENSE.txt file found in the top-level directory 
@@ -18,13 +17,37 @@
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
-#ifndef __ROGUE_PROTOCOLS_EPICS_MODULE_H__
-#define __ROGUE_PROTOCOLS_EPICS_MODULE_H__
+
+#ifndef __ROGUE_PROTOCOLS_EPICSV3_COMMAND_H__
+#define __ROGUE_PROTOCOLS_EPICSV3_COMMAND_H__
+
+#include <boost/python.hpp>
+#include <boost/thread.hpp>
+#include <casdef.h>
+#include <gdd.h>
+#include <gddApps.h>
+#include <gddAppFuncTable.h>
+#include <rogue/protocols/epicsV3/Variable.h>
 
 namespace rogue {
    namespace protocols {
-      namespace epics {
-         void setup_module();
+      namespace epicsV3 {
+
+         class Command: public Variable {
+            public:
+
+               //! Setup class in python
+               static void setup_python();
+
+               //! Class creation
+               Command ( std::string epicsName, boost::python::object p );
+               
+               ~Command ();
+         };
+
+         // Convienence
+         typedef boost::shared_ptr<rogue::protocols::epicsV3::Command> CommandPtr;
+
       }
    }
 }

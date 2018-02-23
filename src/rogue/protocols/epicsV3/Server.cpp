@@ -1,6 +1,6 @@
 /**
  *-----------------------------------------------------------------------------
- * Title      : Rogue EPICS Interface: Top Level Server
+ * Title      : Rogue EPICS V3 Interface: Top Level Server
  * ----------------------------------------------------------------------------
  * File       : Server.cpp
  * Created    : 2018-02-12
@@ -18,17 +18,17 @@
  * ----------------------------------------------------------------------------
 **/
 
-#ifdef DO_EPICS
+#ifdef DO_EPICSV3
 
 #include <boost/python.hpp>
-#include <rogue/protocols/epics/Server.h>
-#include <rogue/protocols/epics/Value.h>
-#include <rogue/protocols/epics/Pv.h>
+#include <rogue/protocols/epicsV3/Server.h>
+#include <rogue/protocols/epicsV3/Value.h>
+#include <rogue/protocols/epicsV3/Pv.h>
 #include <rogue/GilRelease.h>
 #include <rogue/GeneralError.h>
 #include <fdManager.h>
 
-namespace rpe = rogue::protocols::epics;
+namespace rpe = rogue::protocols::epicsV3;
 namespace bp  = boost::python;
 
 //! Setup class in python

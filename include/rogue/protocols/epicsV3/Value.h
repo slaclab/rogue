@@ -1,6 +1,6 @@
 /**
  *-----------------------------------------------------------------------------
- * Title      : Rogue EPICS Interface: Generic Value Container
+ * Title      : Rogue EPICS V3 Interface: Generic Value Container
  * ----------------------------------------------------------------------------
  * File       : Value.h
  * Created    : 2018-11-18
@@ -18,8 +18,8 @@
  * ----------------------------------------------------------------------------
 **/
 
-#ifndef __ROGUE_PROTOCOLS_EPICS_VALUE_H__
-#define __ROGUE_PROTOCOLS_EPICS_VALUE_H__
+#ifndef __ROGUE_PROTOCOLS_EPICSV3_VALUE_H__
+#define __ROGUE_PROTOCOLS_EPICSV3_VALUE_H__
 
 #include <boost/python.hpp>
 #include <boost/thread.hpp>
@@ -31,7 +31,7 @@
 
 namespace rogue {
    namespace protocols {
-      namespace epics {
+      namespace epicsV3 {
 
          class Pv;
          class Server;
@@ -48,7 +48,7 @@ namespace rogue {
                uint32_t    fSize_;
 
                std::vector<std::string> enums_;
-               rogue::protocols::epics::Pv * pv_;
+               rogue::protocols::epicsV3::Pv * pv_;
 
                rogue::Logging * log_;
 
@@ -63,7 +63,7 @@ namespace rogue {
                double      highCtrlLimit_;
                double      lowCtrlLimit_;
 
-               gddAppFuncTable<rogue::protocols::epics::Value> funcTable_;
+               gddAppFuncTable<rogue::protocols::epicsV3::Value> funcTable_;
 
                boost::mutex mtx_;
 
@@ -87,11 +87,11 @@ namespace rogue {
 
                virtual void valueGet();
 
-               void setPv(rogue::protocols::epics::Pv * pv);
+               void setPv(rogue::protocols::epicsV3::Pv * pv);
 
                void clrPv();
 
-               rogue::protocols::epics::Pv * getPv();
+               rogue::protocols::epicsV3::Pv * getPv();
                
                //---------------------------------------
                // EPICS Interface
@@ -136,7 +136,7 @@ namespace rogue {
          };
 
          // Convienence
-         typedef boost::shared_ptr<rogue::protocols::epics::Value> ValuePtr;
+         typedef boost::shared_ptr<rogue::protocols::epicsV3::Value> ValuePtr;
 
          // Destructor
          template<typename T> 

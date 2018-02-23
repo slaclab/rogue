@@ -1,12 +1,12 @@
 /**
  *-----------------------------------------------------------------------------
- * Title      : Rogue EPICS Interface: Stream Slave Interface
+ * Title      : Rogue EPICS V3 Interface: Master Stream Interface
  * ----------------------------------------------------------------------------
- * File       : Slave.h
+ * File       : Master.h
  * Created    : 2018-11-18
  * ----------------------------------------------------------------------------
  * Description:
- * Stream slave to epics variables
+ * Rogue stream master interface for EPICs variables
  * ----------------------------------------------------------------------------
  * This file is part of the rogue software platform. It is subject to 
  * the license terms in the LICENSE.txt file found in the top-level directory 
@@ -18,8 +18,8 @@
  * ----------------------------------------------------------------------------
 **/
 
-#ifndef __ROGUE_PROTOCOLS_EPICS_SLAVE_H__
-#define __ROGUE_PROTOCOLS_EPICS_SLAVE_H__
+#ifndef __ROGUE_PROTOCOLS_EPICSV3_MASTER_H__
+#define __ROGUE_PROTOCOLS_EPICSV3_MASTER_H__
 
 #include <boost/python.hpp>
 #include <boost/thread.hpp>
@@ -27,37 +27,31 @@
 #include <gdd.h>
 #include <gddApps.h>
 #include <gddAppFuncTable.h>
-#include <rogue/protocols/epics/Value.h>
-#include <rogue/interfaces/stream/Slave.h>
-#include <rogue/interfaces/stream/Frame.h>
+#include <rogue/protocols/epicsV3/Value.h>
+#include <rogue/interfaces/stream/Master.h>
 
 namespace rogue {
    namespace protocols {
-      namespace epics {
+      namespace epicsV3 {
 
-         class Slave: public Value, public rogue::interfaces::stream::Slave {
+         class Master: public Value, public rogue::interfaces::stream::Master {
             public:
 
                //! Setup class in python
                static void setup_python();
 
                //! Class creation
-               Slave ( std::string epicsName, uint32_t max, std::string type );
+               Master ( std::string epicsName, uint32_t max, std::string type );
                
-               ~Slave ();
+               ~Master ();
 
-               // Lock held when called
                void valueGet();
 
-               // Lock held when called
                void valueSet();
-
-               //! Accept a frame from master
-               void acceptFrame ( boost::shared_ptr<rogue::interfaces::stream::Frame> frame );
          };
 
          // Convienence
-         typedef boost::shared_ptr<rogue::protocols::epics::Slave> SlavePtr;
+         typedef boost::shared_ptr<rogue::protocols::epicsV3::Master> MasterPtr;
 
       }
    }

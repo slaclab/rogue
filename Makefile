@@ -48,7 +48,7 @@ endif
 ifdef EPICS_BASE
 	CFLAGS += -I$(EPICS_BASE)/include -I$(EPICS_BASE)/include/compiler/gcc -I$(EPICS_BASE)/include/os/Linux
 	LFLAGS += -L$(EPICS_BASE)/lib/rhel6-x86_64/ -lcas -lca -lCom -lgdd
-	DEF    += -DDO_EPICS
+	DEF    += -DDO_EPICSV3
 endif
 
 # Rogue Library Sources

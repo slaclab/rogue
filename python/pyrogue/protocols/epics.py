@@ -20,7 +20,7 @@
 #-----------------------------------------------------------------------------
 import pyrogue
 import time
-import rogue.protocols.epics
+import rogue.protocols.epicsV3
 
 class EpicsCaServer(object):
     """
@@ -30,8 +30,8 @@ class EpicsCaServer(object):
         self._root      = root
         self._base      = base 
         self._log       = pyrogue.logInit(self)
-        self._sync_read = sync_read
-        self._srv       = rogue.protocols.epics.Server()
+        self._syncRead  = syncRead
+        self._srv       = rogue.protocols.epicsV3.Server()
 
         if not root.running:
             raise Exception("Epics can not be setup on a tree which is not started")
@@ -48,12 +48,12 @@ class EpicsCaServer(object):
             self._addPv(v,doAll)
 
     def createSlave(self, name, maxSize, type):
-        slave = rogue.protocols.epics.Slave(self._base + ':' + name,maxSize,type)
+        slave = rogue.protocols.epicsV3.Slave(self._base + ':' + name,maxSize,type)
         self.addValue(slave)
         return slave
 
     def createMaster(self, name, maxSize, type):
-        mast = rogue.protocols.epics.Master(self._base + ':' + name,maxSize,type)
+        mast = rogue.protocols.epicsV3.Master(self._base + ':' + name,maxSize,type)
         self.addValue(mast)
         return mast
 
@@ -64,7 +64,7 @@ class EpicsCaServer(object):
         self._srv.start()
 
     def _addPv(self,node,doAll):
-        name = self._base + ':'
+        eName = self._base + ':'
 
         if doAll:
             eName += node.path.replace('.',':')
@@ -74,11 +74,11 @@ class EpicsCaServer(object):
             return
 
         if isinstance(node, pyrogue.BaseCommand):
-            evar = rogue.protocols.epics.Command(eName,node)
+            evar = rogue.protocols.epicsV3.Command(eName,node)
         else:
-            evar = rogue.protocols.epics.Variable(eName,node,self._sync_read)
+            evar = rogue.protocols.epicsV3.Variable(eName,node,self._syncRead)
             node.addListener(evar.varUpdated)
       
-        svr.addValue(evar)
+        self._srv.addValue(evar)
         self._log.info("Adding {} mapped to {}".format(node.path,eName))
 

@@ -1,6 +1,6 @@
 /**
  *-----------------------------------------------------------------------------
- * Title      : Rogue EPICS Interface:
+ * Title      : Rogue EPICS V3 Interface:
  * ----------------------------------------------------------------------------
  * File       : module.cpp
  * Author     : Ryan Herbst, rherbst@slac.stanford.edu
@@ -20,28 +20,28 @@
 **/
 
 #include <boost/python.hpp>
-#include <rogue/protocols/epics/module.h>
-namespace rpe = rogue::protocols::epics;
+#include <rogue/protocols/epicsV3/module.h>
+namespace rpe = rogue::protocols::epicsV3;
 
-#ifdef DO_EPICS
+#ifdef DO_EPICSV3
 
-#include <rogue/protocols/epics/Value.h>
-#include <rogue/protocols/epics/Variable.h>
-#include <rogue/protocols/epics/Command.h>
-#include <rogue/protocols/epics/Server.h>
-#include <rogue/protocols/epics/Pv.h>
-#include <rogue/protocols/epics/Master.h>
-#include <rogue/protocols/epics/Slave.h>
+#include <rogue/protocols/epicsV3/Value.h>
+#include <rogue/protocols/epicsV3/Variable.h>
+#include <rogue/protocols/epicsV3/Command.h>
+#include <rogue/protocols/epicsV3/Server.h>
+#include <rogue/protocols/epicsV3/Pv.h>
+#include <rogue/protocols/epicsV3/Master.h>
+#include <rogue/protocols/epicsV3/Slave.h>
 
 namespace bp  = boost::python;
 
 void rpe::setup_module() {
 
    // map the IO namespace to a sub-module
-   bp::object module(bp::handle<>(bp::borrowed(PyImport_AddModule("rogue.protocols.epics"))));
+   bp::object module(bp::handle<>(bp::borrowed(PyImport_AddModule("rogue.protocols.epicsV3"))));
 
    // make "from mypackage import class1" work
-   bp::scope().attr("epics") = module;
+   bp::scope().attr("epicsV3") = module;
 
    // set the current scope to the new sub-module
    bp::scope io_scope = module;

@@ -26,7 +26,7 @@
 #include <rogue/protocols/rssi/module.h>
 #include <rogue/protocols/srp/module.h>
 #include <rogue/protocols/udp/module.h>
-#include <rogue/protocols/epics/module.h>
+#include <rogue/protocols/epicsV3/module.h>
 
 namespace bp  = boost::python;
 
@@ -45,7 +45,7 @@ void rogue::protocols::setup_module() {
    rogue::protocols::rssi::setup_module();
    rogue::protocols::srp::setup_module();
    rogue::protocols::udp::setup_module();
-   rogue::protocols::epics::setup_module();
+   rogue::protocols::epicsV3::setup_module();
 
 }
 

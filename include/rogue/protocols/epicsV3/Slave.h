@@ -1,12 +1,12 @@
 /**
  *-----------------------------------------------------------------------------
- * Title      : Rogue EPICS Interface: Command Interface
+ * Title      : Rogue EPICS V3 Interface: Stream Slave Interface
  * ----------------------------------------------------------------------------
- * File       : Command.h
+ * File       : Slave.h
  * Created    : 2018-11-18
  * ----------------------------------------------------------------------------
  * Description:
- * Command subclass of Variable & Value, allows commands to be executed from epics
+ * Stream slave to epics variables
  * ----------------------------------------------------------------------------
  * This file is part of the rogue software platform. It is subject to 
  * the license terms in the LICENSE.txt file found in the top-level directory 
@@ -18,8 +18,8 @@
  * ----------------------------------------------------------------------------
 **/
 
-#ifndef __ROGUE_PROTOCOLS_EPICS_COMMAND_H__
-#define __ROGUE_PROTOCOLS_EPICS_COMMAND_H__
+#ifndef __ROGUE_PROTOCOLS_EPICSV3_SLAVE_H__
+#define __ROGUE_PROTOCOLS_EPICSV3_SLAVE_H__
 
 #include <boost/python.hpp>
 #include <boost/thread.hpp>
@@ -27,26 +27,37 @@
 #include <gdd.h>
 #include <gddApps.h>
 #include <gddAppFuncTable.h>
-#include <rogue/protocols/epics/Variable.h>
+#include <rogue/protocols/epicsV3/Value.h>
+#include <rogue/interfaces/stream/Slave.h>
+#include <rogue/interfaces/stream/Frame.h>
 
 namespace rogue {
    namespace protocols {
-      namespace epics {
+      namespace epicsV3 {
 
-         class Command: public Variable {
+         class Slave: public Value, public rogue::interfaces::stream::Slave {
             public:
 
                //! Setup class in python
                static void setup_python();
 
                //! Class creation
-               Command ( std::string epicsName, boost::python::object p );
+               Slave ( std::string epicsName, uint32_t max, std::string type );
                
-               ~Command ();
+               ~Slave ();
+
+               // Lock held when called
+               void valueGet();
+
+               // Lock held when called
+               void valueSet();
+
+               //! Accept a frame from master
+               void acceptFrame ( boost::shared_ptr<rogue::interfaces::stream::Frame> frame );
          };
 
          // Convienence
-         typedef boost::shared_ptr<rogue::protocols::epics::Command> CommandPtr;
+         typedef boost::shared_ptr<rogue::protocols::epicsV3::Slave> SlavePtr;
 
       }
    }
