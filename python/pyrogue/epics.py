@@ -236,8 +236,8 @@ class EpicsCaServer(object):
             # EPICS uses 32-bit signed integers, 
             # So, check if the register value is unsigned, and cast the value if so.
             # Check if it is a RemoteVariable as LocalVariables don't have base property.
-            if isinstance(var, pyrogue.RemoteVariable):
-                if var.base is pyrogue.UInt:
+            if isinstance(d['var'], pyrogue.RemoteVariable):
+                if d['var'].base is pyrogue.UInt:
                     val = ctypes.c_int(value).value
 
         self._driver.setParam(d['name'],val)
@@ -247,3 +247,4 @@ class EpicsCaServer(object):
     def _isCommand(self, var):
         # Command are instances of pyrogue.BaseCommand
         return isinstance(var, pyrogue.BaseCommand)
+
