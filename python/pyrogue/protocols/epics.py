@@ -74,11 +74,13 @@ class EpicsCaServer(object):
             return
 
         if isinstance(node, pyrogue.BaseCommand):
-            evar = rogue.protocols.epicsV3.Command(eName,node)
+            self._srv.addValue(rogue.protocols.epicsV3.Command(eName,node))
+            self._log.info("Adding command {} mapped to {}".format(node.path,eName))
         else:
+
+            # Add standard variable
             evar = rogue.protocols.epicsV3.Variable(eName,node,self._syncRead)
             node.addListener(evar.varUpdated)
-      
-        self._srv.addValue(evar)
-        self._log.info("Adding {} mapped to {}".format(node.path,eName))
+            self._srv.addValue(evar)
+            self._log.info("Adding variable {} mapped to {}".format(node.path,eName))
 
