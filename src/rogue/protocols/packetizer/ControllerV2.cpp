@@ -63,8 +63,10 @@ void rpp::ControllerV2::transportRx( ris::FramePtr frame ) {
    uint32_t  tmpCrc;
    uint8_t * data;
 
-   if ( frame->getCount() == 0 ) 
-      throw(rogue::GeneralError("packetizer::ControllerV2::transportRx","Frame must not be empty"));
+   if ( frame->getCount() == 0 ) {
+      log_->error("Bad incoming transportRx frame, size=0");
+      return;
+   }
 
    rogue::GilRelease noGil;
    boost::lock_guard<boost::mutex> lock(tranMtx_);
@@ -105,6 +107,13 @@ void rpp::ControllerV2::transportRx( ris::FramePtr frame ) {
    boost::crc_32_type result;
    result.process_bytes(data,size-4);
    crcErr = (tmpCrc != result.checksum());
+
+   log_->debug("transportRx: Raw header: 0x%x, 0x%x, 0x%x, 0x%x, 0x%x, 0x%x, 0x%x, 0x%x, 0x%x",
+         data[0],data[1],data[2],data[3],data[4],data[5],data[6],data[7]);
+   log_->debug("transportRx: Raw footer: 0x%x, 0x%x, 0x%x, 0x%x, 0x%x, 0x%x, 0x%x, 0x%x, 0x%x",
+         data[size-8],data[size-7],data[size-6],data[size-5],data[size-4],data[size-3],data[size-2],data[size-1]);
+   log_->debug("transportRx: Got frame: Fuser=0x%x, Dest=0x%x, Id=0x%x, Count=%i, Sof=%i, Luser=0x%x, Eof=%i, Last=%i, crcErr=%i",
+         tmpFuser, tmpDest, tmpId, tmpCount, tmpSof, tmpLuser, tmpEof, last, crcErr);
 
    // Adjust payload 
    if ( last != 8 ) buff->setPayload((size - 16) + last);
@@ -252,6 +261,13 @@ void rpp::ControllerV2::applicationRx ( ris::FramePtr frame, uint8_t tDest ) {
       data[size-3] = (crc >>  8) & 0xFF;
       data[size-2] = (crc >> 16) & 0xFF;
       data[size-1] = (crc >> 24) & 0xFF;
+
+      log_->debug("applicationRx: Gen frame: Fuser=0x%x, Dest=0x%x, Id=0x%x, Count=%i, Sof=%i, Luser=0x%x, Eof=%i, Last=%i",
+            fUser, tDest, tId, x, data[7], lUser, data[size-7], last);
+      log_->debug("applicationRx: Raw header: 0x%x, 0x%x, 0x%x, 0x%x, 0x%x, 0x%x, 0x%x, 0x%x, 0x%x",
+            data[0],data[1],data[2],data[3],data[4],data[5],data[6],data[7]);
+      log_->debug("applicationRx: Raw footer: 0x%x, 0x%x, 0x%x, 0x%x, 0x%x, 0x%x, 0x%x, 0x%x, 0x%x",
+            data[size-8],data[size-7],data[size-6],data[size-5],data[size-4],data[size-3],data[size-2],data[size-1]);
 
       tFrame->appendBuffer(buff);
       tranQueue_.push(tFrame);
