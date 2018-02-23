@@ -79,6 +79,7 @@ void ru::Prbs::init(uint32_t width, uint32_t tapCnt) {
    txErrCount_ = 0;
    txCount_    = 0;
    txBytes_    = 0;
+   checkPl_    = true;
    rxLog_      = new Logging("prbs.rx");
    txLog_      = new Logging("prbs.tx");
 
@@ -200,6 +201,11 @@ uint32_t ru::Prbs::getTxCount() {
 //! Get TX bytes
 uint32_t ru::Prbs::getTxBytes() {
    return(txBytes_);
+}
+
+//! Set check payload flag, default = true
+void ru::Prbs::checkPayload(bool state) {
+   checkPl_ = state;
 }
 
 //! Reset counters
@@ -334,16 +340,18 @@ void ru::Prbs::acceptFrame ( ris::FramePtr frame ) {
    expValue = frSeq;
 
    // Check payload
-   while ( cnt < size ) {
-      expValue = flfsr(expValue);
+   if ( checkPl_ ) {
+      while ( cnt < size ) {
+         expValue = flfsr(expValue);
 
-      cnt += readSingle(frame,cnt,&gotValue);
+         cnt += readSingle(frame,cnt,&gotValue);
 
-      if (expValue != gotValue) {
-         rxLog_->warning("Bad value at index %i. exp=0x%x, got=0x, count=%i%x",
-                 (cnt-byteWidth_),expValue,gotValue,rxCount_);
-         rxErrCount_++;
-         return;
+         if (expValue != gotValue) {
+            rxLog_->warning("Bad value at index %i. exp=0x%x, got=0x, count=%i%x",
+                    (cnt-byteWidth_),expValue,gotValue,rxCount_);
+            rxErrCount_++;
+            return;
+         }
       }
    }
 
@@ -365,6 +373,7 @@ void ru::Prbs::setup_python() {
       .def("getTxErrors",    &ru::Prbs::getTxErrors)
       .def("getTxCount",     &ru::Prbs::getTxCount)
       .def("getTxBytes",     &ru::Prbs::getTxBytes)
+      .def("checkPayload",   &ru::Prbs::checkPayload)
       .def("resetCount",     &ru::Prbs::resetCount)
    ;
 
