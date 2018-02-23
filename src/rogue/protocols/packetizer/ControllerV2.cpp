@@ -88,20 +88,20 @@ void rpp::ControllerV2::transportRx( ris::FramePtr frame ) {
    tmpId    = data[3];
 
    // Header word 1
-   tmpCount  = data[4];
-   tmpCount += data[5] * 256;
-   tmpSof    = data[7] & 0x1;
-
+   tmpCount  = uint32_t(data[4]) << 0;
+   tmpCount |= uint32_t(data[5]) << 8;
+   tmpSof    = ((data[7] & 0x80) ? true : false); // SOF (PACKETIZER2_HDR_SOF_BIT_C = 63)
+   
    // Tail word 0
    tmpLuser = data[size-8];
-   tmpEof   = data[size-7] & 0x1;
-   last     = data[size-6];
+   tmpEof   = ((data[size-7] & 0x1) ? true : false);
+   last     = uint32_t(data[size-6]);
 
    // Tail word 1
-   tmpCrc  = data[size-4];
-   tmpCrc += data[size-3] * 0x100;
-   tmpCrc += data[size-2] * 0x10000;
-   tmpCrc += data[size-1] * 0x1000000;
+   tmpCrc  = uint32_t(data[size-4]) << 0;
+   tmpCrc |= uint32_t(data[size-3]) << 8;
+   tmpCrc |= uint32_t(data[size-2]) << 16;
+   tmpCrc |= uint32_t(data[size-1]) << 24;
 
    // Compute CRC
    boost::crc_32_type result;
@@ -142,7 +142,7 @@ void rpp::ControllerV2::transportRx( ris::FramePtr frame ) {
       tranCount_[tmpDest] = 0;
 
       flags  = tmpFuser;
-      if ( tmpEof ) flags += tmpLuser << 8;
+      if ( tmpEof ) flags |= uint32_t(tmpLuser) << 8;
       flags += tmpId   << 16;
       flags += tmpDest << 24;
       frame->setFlags(flags);
@@ -153,7 +153,7 @@ void rpp::ControllerV2::transportRx( ris::FramePtr frame ) {
    // Last of transfer
    if ( tmpEof ) {
       flags = frame->getFlags() & 0xFFFF00FF;
-      flags += tmpLuser << 8;
+      flags |= uint32_t(tmpLuser) << 8;
       frame->setFlags(flags);
 
       tranCount_[tmpDest] = 0;
@@ -240,10 +240,10 @@ void rpp::ControllerV2::applicationRx ( ris::FramePtr frame, uint8_t tDest ) {
       data[3] = tId;
 
       // Header word 1
-      data[4] = x % 256;
-      data[5] = (x / 0xFFFF) % 256;
+      data[4] = x & 0xFF;
+      data[5] = (x >>  8) & 0xFF;
       data[6] = 0;
-      data[7] = (x == 0) ? 0x1 : 0x0; // SOF
+      data[7] = (x == 0) ? 0x80 : 0x0; // SOF (PACKETIZER2_HDR_SOF_BIT_C = 63)
 
       // Tail  word 0
       data[size-8] = lUser;
