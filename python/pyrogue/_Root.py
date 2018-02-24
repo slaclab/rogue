@@ -294,7 +294,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         """
         Generate a frame containing the passed string.
         """
-        frame = self._reqFrame(len(yml),True,0)
+        frame = self._reqFrame(len(yml),True)
         b = bytearray(yml,'utf-8')
         frame.write(b,0)
         self._sendFrame(frame)
