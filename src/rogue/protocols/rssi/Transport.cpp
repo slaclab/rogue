@@ -68,11 +68,8 @@ void rpr::Transport::setController( rpr::ControllerPtr cntl ) {
 /*
  * Pass total size required.
  * Pass flag indicating if zero copy buffers are acceptable
- * maxBuffSize indicates the largest acceptable buffer size. A larger buffer can be
- * returned but the total buffer count must assume each buffer is of size maxBuffSize
- * If maxBuffSize = 0, slave will freely determine the buffer size.
  */
-ris::FramePtr rpr::Transport::acceptReq ( uint32_t size, bool zeroCopyEn, uint32_t maxBuffSize ) {
+ris::FramePtr rpr::Transport::acceptReq ( uint32_t size, bool zeroCopyEn ) {
    throw(rogue::GeneralError("Transport::acceptReq","Invalid frame request."));
 }
 

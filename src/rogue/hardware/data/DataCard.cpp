@@ -92,7 +92,7 @@ void rhd::DataCard::dmaAck() {
 }
 
 //! Generate a buffer. Called from master
-ris::FramePtr rhd::DataCard::acceptReq ( uint32_t size, bool zeroCopyEn, uint32_t maxBuffSize) {
+ris::FramePtr rhd::DataCard::acceptReq ( uint32_t size, bool zeroCopyEn) {
    int32_t          res;
    fd_set           fds;
    struct timeval   tout;
@@ -102,12 +102,12 @@ ris::FramePtr rhd::DataCard::acceptReq ( uint32_t size, bool zeroCopyEn, uint32_
    uint32_t         buffSize;
 
    //! Adjust allocation size
-   if ( (maxBuffSize > bSize_) || (maxBuffSize == 0)) buffSize = bSize_;
-   else buffSize = maxBuffSize;
+   if ( size > bSize_) buffSize = bSize_;
+   else buffSize = size;
 
    // Zero copy is disabled. Allocate from memory.
    if ( zeroCopyEn == false || rawBuff_ == NULL ) {
-      frame = ris::Pool::acceptReq(size,false,buffSize);
+      frame = ris::Pool::acceptReq(size,false);
    }
 
    // Allocate zero copy buffers from driver

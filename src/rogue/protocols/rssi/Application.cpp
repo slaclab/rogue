@@ -67,8 +67,8 @@ void rpr::Application::setController( rpr::ControllerPtr cntl ) {
 }
 
 //! Generate a Frame. Called from master
-ris::FramePtr rpr::Application::acceptReq ( uint32_t size, bool zeroCopyEn, uint32_t maxBuffSize ) {
-   return(cntl_->reqFrame(size,maxBuffSize));
+ris::FramePtr rpr::Application::acceptReq ( uint32_t size, bool zeroCopyEn ) {
+   return(cntl_->reqFrame(size));
 }
 
 //! Accept a frame from master
