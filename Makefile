@@ -57,25 +57,27 @@ LIB_SRC  := $(PWD)/src/rogue
 LIB_CPP  := $(foreach dir,$(shell find $(LIB_SRC) -type d),$(wildcard $(dir)/*.cpp))
 LIB_OBJ  := $(patsubst %.cpp,%.o,$(LIB_CPP))
 
+# Python library sources
+PYL_SRC  := $(PWD)/src/package.cpp
+PYL_OBJ  := $(PWD)/src/package.o
+
 # Python library
 PYLIB      := $(PWD)/python/rogue.so
 PYLIB_NAME := rogue
 
 # C++ Library
-CPPLIB := $(PWD)/lib/librogue.so
+CPPDIR := $(PWD)/lib
+CPPLIB := $(CPPDIR)/librogue.so
 
 # Targets
-all: $(LIB_OBJ) $(PYLIB) $(CPPLIB)
-
-# Doxygen
-docs:
-	cd doc; doxygen
+all: $(CPPLIB) $(PYLIB)
 
 # Clean
 clean:
+	@rm -f $(PYL_OBJ)
+	@rm -f $(LIB_OBJ)
 	@rm -f $(PYLIB)
 	@rm -f $(CPPLIB)
-	@rm -f $(LIB_OBJ)
 
 # Compile sources with headers
 %.o: %.cpp %.h 
@@ -88,13 +90,13 @@ clean:
 	$(CC) -c $(CFLAGS) $(DEF) -o $@ $<
 
 # Compile Shared Library
-$(PYLIB): $(LIB_OBJ)
-	@echo "Creating Version $(VERSION) of $@"
-	$(CC) -shared -Wl,-soname,$(PYLIB_NAME) $(LIB_OBJ) $(LFLAGS) -o $@
-
-# Compile Shared Library
 $(CPPLIB): $(LIB_OBJ)
 	@mkdir -p $(PWD)/lib
 	@echo "Creating Version $(VERSION) of $@"
 	$(CC) -shared $(LIB_OBJ) $(LFLAGS) -o $@
+
+# Compile Python Library
+$(PYLIB): $(CPPLIB) $(PYL_OBJ)
+	@echo "Creating Version $(VERSION) of $@"; 
+	$(CC) -shared -Wl,-soname,$(PYLIB_NAME) $(PYL_OBJ) -L$(CPPDIR) -lrogue $(LFLAGS) -o $@
 
