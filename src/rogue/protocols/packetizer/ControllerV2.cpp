@@ -98,19 +98,19 @@ void rpp::ControllerV2::transportRx( ris::FramePtr frame ) {
    last     = uint32_t(data[size-6]);
 
    // Tail word 1
-   tmpCrc  = uint32_t(data[size-4]) << 0;
-   tmpCrc |= uint32_t(data[size-3]) << 8;
-   tmpCrc |= uint32_t(data[size-2]) << 16;
-   tmpCrc |= uint32_t(data[size-1]) << 24;
+   tmpCrc  = uint32_t(data[size-1]) << 0;
+   tmpCrc |= uint32_t(data[size-2]) << 8;
+   tmpCrc |= uint32_t(data[size-3]) << 16;
+   tmpCrc |= uint32_t(data[size-4]) << 24;
 
    // Compute CRC
    boost::crc_32_type result;
    result.process_bytes(data,size-4);
    crcErr = (tmpCrc != result.checksum());
-
-   log_->debug("transportRx: Raw header: 0x%x, 0x%x, 0x%x, 0x%x, 0x%x, 0x%x, 0x%x, 0x%x, 0x%x",
+   
+   log_->debug("transportRx: Raw header: 0x%x, 0x%x, 0x%x, 0x%x, 0x%x, 0x%x, 0x%x, 0x%x",
          data[0],data[1],data[2],data[3],data[4],data[5],data[6],data[7]);
-   log_->debug("transportRx: Raw footer: 0x%x, 0x%x, 0x%x, 0x%x, 0x%x, 0x%x, 0x%x, 0x%x, 0x%x",
+   log_->debug("transportRx: Raw footer: 0x%x, 0x%x, 0x%x, 0x%x, 0x%x, 0x%x, 0x%x, 0x%x",
          data[size-8],data[size-7],data[size-6],data[size-5],data[size-4],data[size-3],data[size-2],data[size-1]);
    log_->debug("transportRx: Got frame: Fuser=0x%x, Dest=0x%x, Id=0x%x, Count=%i, Sof=%i, Luser=0x%x, Eof=%i, Last=%i, crcErr=%i",
          tmpFuser, tmpDest, tmpId, tmpCount, tmpSof, tmpLuser, tmpEof, last, crcErr);
@@ -216,12 +216,12 @@ void rpp::ControllerV2::applicationRx ( ris::FramePtr frame, uint8_t tDest ) {
       buff = frame->getBuffer(x);
 
       size = buff->getPayload();
-      last = size % 8;
-
+      last = size & 0x7;
+      
       // Shift to 64-it alignment
-      if ( last != 0 ) size = ((size / 8) * 8) + 1;
+      if ( last != 0 ) size = (0xFFFFFFF8 & size) + 8;
       else last = 8;
-
+      
       // Add tail to payload
       size += 8;
       buff->setPayload(size);
@@ -232,6 +232,7 @@ void rpp::ControllerV2::applicationRx ( ris::FramePtr frame, uint8_t tDest ) {
 
       // Get data pointer
       data = buff->getPayloadData();
+      size = buff->getPayload();
 
       // Header word 0
       data[0] = 0x2;
@@ -250,23 +251,23 @@ void rpp::ControllerV2::applicationRx ( ris::FramePtr frame, uint8_t tDest ) {
       data[size-7] = (x == (frame->getCount() - 1)) ? 0x1 : 0x0; // EOF
       data[size-6] = last;
       data[size-5] = 0;
-
+      
       // Compute CRC
       boost::crc_32_type result;
       result.process_bytes(data,size-4);
       crc = result.checksum();
 
       // Tail  word 1
-      data[size-4] = crc & 0xFF;
-      data[size-3] = (crc >>  8) & 0xFF;
-      data[size-2] = (crc >> 16) & 0xFF;
       data[size-1] = (crc >> 24) & 0xFF;
-
+      data[size-2] = (crc >> 16) & 0xFF;
+      data[size-3] = (crc >>  8) & 0xFF;
+      data[size-4] = (crc >>  0) & 0xFF;
+      
       log_->debug("applicationRx: Gen frame: Fuser=0x%x, Dest=0x%x, Id=0x%x, Count=%i, Sof=%i, Luser=0x%x, Eof=%i, Last=%i",
             fUser, tDest, tId, x, data[7], lUser, data[size-7], last);
-      log_->debug("applicationRx: Raw header: 0x%x, 0x%x, 0x%x, 0x%x, 0x%x, 0x%x, 0x%x, 0x%x, 0x%x",
+      log_->debug("applicationRx: Raw header: 0x%x, 0x%x, 0x%x, 0x%x, 0x%x, 0x%x, 0x%x, 0x%x",
             data[0],data[1],data[2],data[3],data[4],data[5],data[6],data[7]);
-      log_->debug("applicationRx: Raw footer: 0x%x, 0x%x, 0x%x, 0x%x, 0x%x, 0x%x, 0x%x, 0x%x, 0x%x",
+      log_->debug("applicationRx: Raw footer: 0x%x, 0x%x, 0x%x, 0x%x, 0x%x, 0x%x, 0x%x, 0x%x",
             data[size-8],data[size-7],data[size-6],data[size-5],data[size-4],data[size-3],data[size-2],data[size-1]);
 
       tFrame->appendBuffer(buff);
@@ -274,4 +275,3 @@ void rpp::ControllerV2::applicationRx ( ris::FramePtr frame, uint8_t tDest ) {
    }
    appIndex_++;
 }
-
