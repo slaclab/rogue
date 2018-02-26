@@ -64,7 +64,7 @@ void rps::Cmd::sendCmd(uint8_t opCode, uint32_t context) {
    frameSize = 16;
 
    // Request frame
-   frame = reqFrame(frameSize, true, 0);
+   frame = reqFrame(frameSize, true);
 
    // First 32-bit value is context
    temp = context;
