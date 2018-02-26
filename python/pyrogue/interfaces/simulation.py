@@ -2,10 +2,8 @@
 #-----------------------------------------------------------------------------
 # Title      : PyRogue simulation support
 #-----------------------------------------------------------------------------
-# File       : pyrogue/simulation.py
-# Author     : Ryan Herbst, rherbst@slac.stanford.edu
+# File       : pyrogue/interfaces/simulation.py
 # Created    : 2016-09-29
-# Last update: 2016-09-29
 #-----------------------------------------------------------------------------
 # Description:
 # Module containing simulation support classes and routines

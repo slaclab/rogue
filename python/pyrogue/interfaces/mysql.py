@@ -2,8 +2,7 @@
 #-----------------------------------------------------------------------------
 # Title      : PyRogue mysql interface
 #-----------------------------------------------------------------------------
-# File       : pyrogue/mysql.py
-# Author     : Ryan Herbst, rherbst@slac.stanford.edu
+# File       : pyrogue/interfaces/mysql.py
 # Created    : 2016-09-29
 #-----------------------------------------------------------------------------
 # This file is part of the rogue software platform. It is subject to 

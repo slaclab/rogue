@@ -2,7 +2,7 @@
 #-----------------------------------------------------------------------------
 # Title      : PyRogue shared memory
 #-----------------------------------------------------------------------------
-# File       : pyrogue/smem.py
+# File       : pyrogue/interfaces/smem.py
 # Created    : 2017-06-07
 #-----------------------------------------------------------------------------
 # This file is part of the rogue software platform. It is subject to 
