@@ -19,17 +19,37 @@
 # contained in the LICENSE.txt file.
 # ----------------------------------------------------------------------------
 
+# Generate version
 VER_T    := $(shell git describe --tags)
 VER_D    := $(shell git status --short -uno | wc -l)
 VERSION  := $(if $(filter $(VER_D),0),$(VER_T),$(VER_T)-dirty)
 
+# To enable verbose: make VER=1
+VER      := 0
+CC_0     := @g++
+CC_1     := g++
+CC       := $(CC_$(VER))
+
 # Variables
-CC       := g++
 DEF      := -DVERSION=\"$(VERSION)\"
-CFLAGS   := -Wall `python3-config --cflags | sed s/-Wstrict-prototypes//` -fno-strict-aliasing
-CFLAGS   += -I$(BOOST_PATH)/include -I$(PWD)/include -I$(PWD)/drivers/include -std=c++0x -fPIC
+CFLAGS   := -Wall `python3-config --cflags | sed s/-Wstrict-prototypes//` 
+CFLAGS   += -fno-strict-aliasing -std=c++0x -fPIC
+CFLAGS   += -I$(PWD)/include -I$(PWD)/drivers/include
 LFLAGS   := `python3-config --ldflags` -lboost_thread -lboost_python3 -lboost_system
-LFLAGS   += -L`python3-config --prefix`/lib/ -L$(BOOST_PATH)/lib -lbz2
+LFLAGS   += -L`python3-config --prefix`/lib/ -lbz2
+
+# Sometimes boost is in a non standard location
+ifdef BOOST_PATH
+	CFLAGS += -I$(BOOST_PATH)/include
+	LFLAGS += -L$(BOOST_PATH)/lib
+endif
+
+# EPICS Support Is Optional
+ifdef EPICS_BASE
+	CFLAGS += -I$(EPICS_BASE)/include -I$(EPICS_BASE)/include/compiler/gcc -I$(EPICS_BASE)/include/os/Linux
+	LFLAGS += -L$(EPICS_BASE)/lib/rhel6-x86_64/ -lcas -lca -lCom -lgdd
+	DEF    += -DDO_EPICSV3
+endif
 
 # Rogue Library Sources
 LIB_HDR  := $(PWD)/include/rogue
@@ -61,18 +81,22 @@ clean:
 
 # Compile sources with headers
 %.o: %.cpp %.h 
-	@echo "Compiling $@"; $(CC) -c $(CFLAGS) $(DEF) -o $@ $<
+	@echo "Compiling $@"
+	$(CC) -c $(CFLAGS) $(DEF) -o $@ $<
 
 # Compile sources without headers
 %.o: %.cpp 
-	@echo "Compiling $@"; $(CC) -c $(CFLAGS) $(DEF) -o $@ $<
+	@echo "Compiling $@";
+	$(CC) -c $(CFLAGS) $(DEF) -o $@ $<
 
 # Compile Shared Library
 $(CPPLIB): $(LIB_OBJ)
 	@mkdir -p $(PWD)/lib
-	@echo "Creating Version $(VERSION) of $@"; $(CC) -shared $(LIB_OBJ) $(LFLAGS) -o $@
+	@echo "Creating Version $(VERSION) of $@"
+	$(CC) -shared $(LIB_OBJ) $(LFLAGS) -o $@
 
-# Compile Shared Library
+# Compile Python Library
 $(PYLIB): $(CPPLIB) $(PYL_OBJ)
-	@echo "Creating Version $(VERSION) of $@"; $(CC) -shared -Wl,-soname,$(PYLIB_NAME) $(PYL_OBJ) -L$(CPPDIR) -lrogue $(LFLAGS) -o $@
+	@echo "Creating Version $(VERSION) of $@"; 
+	$(CC) -shared -Wl,-soname,$(PYLIB_NAME) $(PYL_OBJ) -L$(CPPDIR) -lrogue $(LFLAGS) -o $@
 

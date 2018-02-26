@@ -538,7 +538,7 @@ class LinkVariable(BaseVariable):
                  name,
                  variable=None,
                  dependencies=None,
-                 typeStr='Linked',   
+                 typeStr='Linked',
                  linkedSet=None,
                  linkedGet=None,
                  **kwargs): # Args passed to BaseVariable
