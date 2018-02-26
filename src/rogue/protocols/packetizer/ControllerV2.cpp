@@ -76,7 +76,7 @@ void rpp::ControllerV2::transportRx( ris::FramePtr frame ) {
    size = buff->getPayload();
 
    // Drop invalid data
-   if ( frame->getError() || (buff->getPayload() < 16) || data[0] != 0x2) {
+   if ( frame->getError() || (buff->getPayload() < 24) || data[0] != 0x2) {
       log_->info("Dropping frame due to contents: error=0x%x, payload=%i, Version=0x%x",frame->getError(),buff->getPayload(),data[0]);
       dropCount_++;
       return;
@@ -105,7 +105,7 @@ void rpp::ControllerV2::transportRx( ris::FramePtr frame ) {
 
    // Compute CRC
    boost::crc_32_type result;
-   result.process_bytes(data,size-4);
+   result.process_bytes(data,size-8); // Currently firmware doesn't include 32-bit tail in CRC calculation
    crcErr = (tmpCrc != result.checksum());
    
    log_->debug("transportRx: Raw header: 0x%x, 0x%x, 0x%x, 0x%x, 0x%x, 0x%x, 0x%x, 0x%x",
@@ -254,7 +254,7 @@ void rpp::ControllerV2::applicationRx ( ris::FramePtr frame, uint8_t tDest ) {
       
       // Compute CRC
       boost::crc_32_type result;
-      result.process_bytes(data,size-4);
+      result.process_bytes(data,size-8); // Currently firmware doesn't include 32-bit tail in CRC calculation
       crc = result.checksum();
 
       // Tail  word 1
