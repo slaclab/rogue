@@ -63,7 +63,7 @@ rpp::Controller::Controller ( uint32_t segmentSize, rpp::TransportPtr tran, rpp:
 rpp::Controller::~Controller() { }
 
 //! Transport frame allocation request
-ris::FramePtr rpp::Controller::reqFrame ( uint32_t size, uint32_t maxBuffSize ) {
+ris::FramePtr rpp::Controller::reqFrame ( uint32_t size ) {
    ris::FramePtr  lFrame;
    ris::FramePtr  rFrame;
    ris::BufferPtr buff;
@@ -73,7 +73,7 @@ ris::FramePtr rpp::Controller::reqFrame ( uint32_t size, uint32_t maxBuffSize ) 
 
    // Request individual frames upstream with buffer = segmentSize_
    while ( lFrame->getAvailable() < size ) {
-      rFrame = tran_->reqFrame (segmentSize_, false, segmentSize_);
+      rFrame = tran_->reqFrame (segmentSize_, false);
       buff = rFrame->getBuffer(0);
   
       // Buffer should support our header/tail plus at least one payload byte 

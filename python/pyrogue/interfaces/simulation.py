@@ -114,7 +114,7 @@ class StreamSim(rogue.interfaces.stream.Master,
             luser = bytearray(r[1])[0]
             data  = bytearray(r[2])
 
-            frame = self._reqFrame(len(data),True,0)
+            frame = self._reqFrame(len(data),True)
 
             if ( self._ssi and (luser & 0x1)): frame.setError(1)
 

@@ -158,7 +158,7 @@ void rhe::Tem::runThread() {
          if ( select(fd_+1,&fds,NULL,NULL,&tout) > 0 ) {
 
             // Allocate frame
-            frame = acceptReq(1024*1024*2,false,0);
+            frame = acceptReq(1024*1024*2,false);
             buff = frame->getBuffer(0);
 
             // Attempt read, lane and vc not needed since only one lane/vc is open

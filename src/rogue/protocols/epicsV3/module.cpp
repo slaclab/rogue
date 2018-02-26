@@ -1,11 +1,10 @@
 /**
  *-----------------------------------------------------------------------------
- * Title      : Python Module
+ * Title      : Rogue EPICS V3 Interface:
  * ----------------------------------------------------------------------------
  * File       : module.cpp
  * Author     : Ryan Herbst, rherbst@slac.stanford.edu
- * Created    : 2016-08-08
- * Last update: 2016-08-08
+ * Created    : 2018-01-31
  * ----------------------------------------------------------------------------
  * Description:
  * Python module setup
@@ -21,31 +20,43 @@
 **/
 
 #include <boost/python.hpp>
-#include <rogue/protocols/module.h>
-#include <rogue/protocols/packetizer/module.h>
-#include <rogue/protocols/rssi/module.h>
-#include <rogue/protocols/srp/module.h>
-#include <rogue/protocols/udp/module.h>
 #include <rogue/protocols/epicsV3/module.h>
+namespace rpe = rogue::protocols::epicsV3;
+
+#ifdef DO_EPICSV3
+
+#include <rogue/protocols/epicsV3/Value.h>
+#include <rogue/protocols/epicsV3/Variable.h>
+#include <rogue/protocols/epicsV3/Command.h>
+#include <rogue/protocols/epicsV3/Server.h>
+#include <rogue/protocols/epicsV3/Pv.h>
+#include <rogue/protocols/epicsV3/Master.h>
+#include <rogue/protocols/epicsV3/Slave.h>
 
 namespace bp  = boost::python;
 
-void rogue::protocols::setup_module() {
+void rpe::setup_module() {
 
    // map the IO namespace to a sub-module
-   bp::object module(bp::handle<>(bp::borrowed(PyImport_AddModule("rogue.protocols"))));
+   bp::object module(bp::handle<>(bp::borrowed(PyImport_AddModule("rogue.protocols.epicsV3"))));
 
    // make "from mypackage import class1" work
-   bp::scope().attr("protocols") = module;
+   bp::scope().attr("epicsV3") = module;
 
    // set the current scope to the new sub-module
    bp::scope io_scope = module;
 
-   rogue::protocols::packetizer::setup_module();
-   rogue::protocols::rssi::setup_module();
-   rogue::protocols::srp::setup_module();
-   rogue::protocols::udp::setup_module();
-   rogue::protocols::epicsV3::setup_module();
-
+   rpe::Value::setup_python();
+   rpe::Variable::setup_python();
+   rpe::Command::setup_python();
+   rpe::Server::setup_python();
+   rpe::Pv::setup_python();
+   rpe::Master::setup_python();
+   rpe::Slave::setup_python();
 }
 
+#else
+
+void rpe::setup_module() {}
+
+#endif

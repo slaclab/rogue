@@ -104,7 +104,7 @@ void rpr::Controller::stop() {
 }
 
 //! Transport frame allocation request
-ris::FramePtr rpr::Controller::reqFrame ( uint32_t size, uint32_t maxBuffSize ) {
+ris::FramePtr rpr::Controller::reqFrame ( uint32_t size ) {
    ris::FramePtr  frame;
    ris::BufferPtr buffer;
    uint32_t       nSize;
@@ -117,7 +117,7 @@ ris::FramePtr rpr::Controller::reqFrame ( uint32_t size, uint32_t maxBuffSize ) 
    if ( nSize > segmentSize_  ) nSize = segmentSize_;
 
    // Forward frame request to transport slave
-   frame = tran_->reqFrame (nSize, false, nSize);
+   frame = tran_->reqFrame (nSize, false);
    buffer = frame->getBuffer(0);
 
    // Make sure there is enough room in first buffer for our header
@@ -394,7 +394,7 @@ uint32_t rpr::Controller::stateClosedWait () {
    else if ( timePassed(&stTime_,TryPeriod) ) {
 
       // Allocate frame
-      head = rpr::Header::create(tran_->reqFrame(rpr::Header::SynSize,false,rpr::Header::SynSize));
+      head = rpr::Header::create(tran_->reqFrame(rpr::Header::SynSize,false));
 
       // Set frame
       head->syn = true;
@@ -427,7 +427,7 @@ uint32_t rpr::Controller::stateSendSeqAck () {
    uint32_t x;
 
    // Allocate frame
-   rpr::HeaderPtr ack = rpr::Header::create(tran_->reqFrame(rpr::Header::HeaderSize,false,rpr::Header::HeaderSize));
+   rpr::HeaderPtr ack = rpr::Header::create(tran_->reqFrame(rpr::Header::HeaderSize,false));
 
    // Setup frame
    ack->ack = true;
@@ -477,7 +477,7 @@ uint32_t rpr::Controller::stateOpen () {
    if ( ( doNull || ackPend >= maxCumAck_ || 
         ((ackPend > 0 || appQueue_.busy()) && timePassed(&locTime,cumAckTout_)) ) ) {
 
-      head = rpr::Header::create(tran_->reqFrame(rpr::Header::HeaderSize,false,rpr::Header::HeaderSize));
+      head = rpr::Header::create(tran_->reqFrame(rpr::Header::HeaderSize,false));
       head->ack = true;
       head->nul = doNull;
 
@@ -542,7 +542,7 @@ uint32_t rpr::Controller::stateError () {
    rpr::HeaderPtr rst;
    uint32_t x;
 
-   rst = rpr::Header::create(tran_->reqFrame(rpr::Header::HeaderSize,false,rpr::Header::HeaderSize));
+   rst = rpr::Header::create(tran_->reqFrame(rpr::Header::HeaderSize,false));
    rst->rst = true;
 
    boost::unique_lock<boost::mutex> lock(txMtx_);

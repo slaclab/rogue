@@ -158,7 +158,7 @@ void rpu::Client::runThread() {
    log.info("PID=%i, TID=%li",getpid(),syscall(SYS_gettid));
 
    // Preallocate frame
-   frame = ris::Pool::acceptReq(maxSize_,false,maxSize_);
+   frame = ris::Pool::acceptReq(maxSize_,false);
 
    try {
 
@@ -173,7 +173,7 @@ void rpu::Client::runThread() {
 
             // Push frame and get a new empty frame
             sendFrame(frame);
-            frame = ris::Pool::acceptReq(maxSize_,false,maxSize_);
+            frame = ris::Pool::acceptReq(maxSize_,false);
          }
          else {
 

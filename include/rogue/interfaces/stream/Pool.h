@@ -78,11 +78,8 @@ namespace rogue {
                /*
                 * Pass total size required.
                 * Pass flag indicating if zero copy buffers are acceptable
-                * maxBuffSize indicates the largest acceptable buffer size. 
-                * If maxBuffSize = 0, slave will freely determine the buffer size.
                 */
-               virtual boost::shared_ptr<rogue::interfaces::stream::Frame>
-                  acceptReq ( uint32_t size, bool zeroCopyEn, uint32_t maxBuffSize );
+               virtual boost::shared_ptr<rogue::interfaces::stream::Frame> acceptReq ( uint32_t size, bool zeroCopyEn );
 
                //! Return a buffer
                /*

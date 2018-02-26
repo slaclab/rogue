@@ -86,7 +86,7 @@ void rps::SrpV0::doTransaction(uint32_t id, rim::MasterPtr master, uint64_t addr
       frameSize = 16;
 
    // Request frame
-   frame = reqFrame(frameSize,true,0);
+   frame = reqFrame(frameSize,true);
 
    // First 32-bit value is context
    temp = id;

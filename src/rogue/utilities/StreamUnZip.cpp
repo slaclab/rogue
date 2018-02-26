@@ -52,7 +52,7 @@ void ru::StreamUnZip::acceptFrame ( ris::FramePtr frame ) {
    int32_t ret;
    
    // First request a new frame of the same size
-   ris::FramePtr newFrame = this->reqFrame(frame->getPayload(),true,0);
+   ris::FramePtr newFrame = this->reqFrame(frame->getPayload(),true);
 
    // Setup compression
    bz_stream strm;
@@ -91,7 +91,7 @@ void ru::StreamUnZip::acceptFrame ( ris::FramePtr frame ) {
 
       // Increase the frame size if we run out of room
       if ( ! newFrame->nextWrite(writeIter) ) {
-         ris::FramePtr tmpFrame = this->reqFrame(frame->getPayload(),true,0);
+         ris::FramePtr tmpFrame = this->reqFrame(frame->getPayload(),true);
          newFrame->appendFrame(tmpFrame);
          writeIter = newFrame->startWrite(strm.total_out_lo32,frame->getPayload());
       }
@@ -107,8 +107,8 @@ void ru::StreamUnZip::acceptFrame ( ris::FramePtr frame ) {
 }
 
 //! Accept a new frame request. Forward request.
-ris::FramePtr ru::StreamUnZip::acceptReq ( uint32_t size, bool zeroCopyEn, uint32_t maxBuffSize ) {
-   return(this->reqFrame(size,zeroCopyEn,maxBuffSize));
+ris::FramePtr ru::StreamUnZip::acceptReq ( uint32_t size, bool zeroCopyEn ) {
+   return(this->reqFrame(size,zeroCopyEn));
 }
 
 void ru::StreamUnZip::setup_python() {
