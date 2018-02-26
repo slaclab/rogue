@@ -93,6 +93,7 @@ class Device(pr.Node,rim.Hub):
                  size=0,
                  hidden=False,
                  variables=None,
+                 blockSize=None,
                  expand=True,
                  enabled=True):
         
@@ -108,6 +109,7 @@ class Device(pr.Node,rim.Hub):
         self._memBase   = memBase
         self._memLock   = threading.RLock()
         self._size      = size
+        self._blockSize = blockSize
 
         # Connect to memory slave
         if memBase: self._setSlave(memBase)
@@ -346,7 +348,13 @@ class Device(pr.Node,rim.Hub):
     def _buildBlocks(self):
         remVars = []
 
-        minSize = self._reqMinAccess()
+        blkSize = self._minTxnSize
+
+        if self._blockSize is not None:
+            if self._blockSize > self._maxTxnSize:
+                blkSize = self._maxTxnSize
+            else:
+                blkSize = self._blockSize
 
         # Process all of the variables
         for k,n in self.nodes.items():
@@ -357,7 +365,7 @@ class Device(pr.Node,rim.Hub):
 
             # Align to min access, create list softed by offset 
             elif isinstance(n,pr.RemoteVariable) and n.offset is not None:
-                n._shiftOffsetDown(n.offset % minSize, minSize)
+                n._shiftOffsetDown(n.offset % blkSize, blkSize)
                 remVars += [n]
 
         # Loop until no overlaps found
@@ -374,7 +382,7 @@ class Device(pr.Node,rim.Hub):
                 # Variable overlaps the range of the previous variable
                 if (remVars[i].offset != remVars[i-1].offset) and (remVars[i].offset <= (remVars[i-1].varBytes-1)):
                     self._log.warning("Overlap detected cur offset={} prev offset={} prev bytes={}".format(remVars[i].offset,remVars[i-1].offset,remVars[i-1].varBytes))
-                    remVars[i]._shiftOffsetDown(remVars[i].offset - remVars[i-1].offset, minSize)
+                    remVars[i]._shiftOffsetDown(remVars[i].offset - remVars[i-1].offset, blkSize)
                     done = False
                     break
 
