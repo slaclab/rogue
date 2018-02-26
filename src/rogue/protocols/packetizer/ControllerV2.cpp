@@ -76,8 +76,11 @@ void rpp::ControllerV2::transportRx( ris::FramePtr frame ) {
    size = buff->getPayload();
 
    // Drop invalid data
-   if ( frame->getError() || (buff->getPayload() < 24) || data[0] != 0x2) {
-      log_->info("Dropping frame due to contents: error=0x%x, payload=%i, Version=0x%x",frame->getError(),buff->getPayload(),data[0]);
+   if ( frame->getError()    || // Check for frame ERROR
+      (size < 24)            || // Check for min. size (64-bit header + 64-bit payload + 64-bit tail) 
+      (size&0xFFFFFFF8) != 0 || // Check for non 64-bit alignment
+      data[0] != 0x2) {         // Check for invalid version
+      log_->info("Dropping frame due to contents: error=0x%x, payload=%i, Version=0x%x",frame->getError(),size,data[0]);
       dropCount_++;
       return;
    }
@@ -218,7 +221,7 @@ void rpp::ControllerV2::applicationRx ( ris::FramePtr frame, uint8_t tDest ) {
       size = buff->getPayload();
       last = size & 0x7;
       
-      // Shift to 64-it alignment
+      // Shift to 64-bit alignment
       if ( last != 0 ) size = (0xFFFFFFF8 & size) + 8;
       else last = 8;
       
