@@ -138,11 +138,16 @@ void rpp::ControllerV2::transportRx( ris::FramePtr frame ) {
    // First frame
    if ( tmpCount == 0 ) {
 
-      if ( tranCount_[tmpDest] != 0 || !tmpSof) 
-         log_->info("Dropping new incoming frame: expCount=%i, gotSof=%i",tranCount_[tmpDest],tmpSof);
+      if ( tranCount_[tmpDest] != 0 )
+         log_->info("Dropping exiting frame due new incoming frame: expCount=%i",tranCount_[tmpDest]);
 
       tranFrame_[tmpDest] = ris::Frame::create();
       tranCount_[tmpDest] = 0;
+
+      if (!tmpSof) {
+         log_->info("Dropping new incoming frame: Bad SOF");
+         return;
+      }
 
       flags  = tmpFuser;
       if ( tmpEof ) flags |= uint32_t(tmpLuser) << 8;
