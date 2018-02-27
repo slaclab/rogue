@@ -3,9 +3,7 @@
 # Title      : ROGUE makefile
 # ----------------------------------------------------------------------------
 # File       : Makefile
-# Author     : Ryan Herbst, rherbst@slac.stanford.edu
 # Created    : 2016-08-08
-# Last update: 2016-08-08
 # ----------------------------------------------------------------------------
 # Description:
 # ROGUE makefile
@@ -19,24 +17,33 @@
 # contained in the LICENSE.txt file.
 # ----------------------------------------------------------------------------
 
-# Generate version
-VER_T    := $(shell git describe --tags)
-VER_D    := $(shell git status --short -uno | wc -l)
-VERSION  := $(if $(filter $(VER_D),0),$(VER_T),$(VER_T)-dirty)
-
 # To enable verbose: make VER=1
 VER      := 0
 CC_0     := @g++
 CC_1     := g++
 CC       := $(CC_$(VER))
 
-# Variables
+# Generate version
+VER_T    := $(shell git describe --tags)
+VER_D    := $(shell git status --short -uno | wc -l)
+VERSION  := $(if $(filter $(VER_D),0),$(VER_T),$(VER_T)-dirty)
+
+# Defines
 DEF      := -DVERSION=\"$(VERSION)\"
-CFLAGS   := -Wall `python3-config --cflags | sed s/-Wstrict-prototypes//` 
-CFLAGS   += -fno-strict-aliasing -std=c++0x -fPIC
+
+# Standard directives
+CFLAGS   := -Wall -fno-strict-aliasing -std=c++0x -fPIC
 CFLAGS   += -I$(PWD)/include -I$(PWD)/drivers/include
-LFLAGS   := `python3-config --ldflags` -lboost_thread -lboost_python3 -lboost_system
-LFLAGS   += -L`python3-config --prefix`/lib/ -lbz2
+LFLAGS   := -lbz2
+
+# Python configuration
+CFLAGS   += `python3-config --cflags | sed s/-Wstrict-prototypes//` 
+LFLAGS   += `python3-config --ldflags` -L`python3-config --prefix`/lib/
+
+# Boost configuration
+LFLAGS   += -lboost_system -lboost_thread
+LFLAGS   += $(shell ld -lboost_python3     2> /dev/null && echo '-lboost_python3')
+LFLAGS   += $(shell ld -lboost_python-py35 2> /dev/null && echo '-lboost_python-py35')
 
 # Sometimes boost is in a non standard location
 ifdef BOOST_PATH
@@ -44,7 +51,7 @@ ifdef BOOST_PATH
 	LFLAGS += -L$(BOOST_PATH)/lib
 endif
 
-# EPICS Support Is Optional
+# EPICS 3 Support Is Optional
 ifdef EPICS_BASE
 	CFLAGS += -I$(EPICS_BASE)/include -I$(EPICS_BASE)/include/compiler/gcc -I$(EPICS_BASE)/include/os/Linux
 	LFLAGS += -L$(EPICS_BASE)/lib/rhel6-x86_64/ -lcas -lca -lCom -lgdd
