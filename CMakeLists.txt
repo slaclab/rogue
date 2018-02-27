@@ -43,28 +43,35 @@ endif()
 # Boost Configuration
 set(Boost_USE_MULTITHREADED ON)
 find_package(Boost 1.62 REQUIRED COMPONENTS system thread python3)
-include_directories({Boost_INCLUDE_DIRS})
 
 # Python Configuration
-find_package(Boost 1.62 REQUIRED COMPONENTS system thread python3)
+find_package(PythonLibs 3 REQUIRED)
 
 # Configuration File
 configure_file (
-   "RogueConfig.in"
-   "include/rogue/RogueConfig.h"
+   "include/rogue/RogueConfig.in"
+   "${PROJECT_BINARY_DIR}/RogueConfig.h"
 )
 
-# Set rogue library target
-set(ROGUE_LIB "rogue_lib")
+# Create rogue library target
+set(ROGUE_LIB "rogue")
 add_library(${ROGUE_LIB} SHARED "")
 TARGET_LINK_LIBRARIES(${ROGUE_LIB} ${Boost_LIBRARIES})
+TARGET_LINK_LIBRARIES(${ROGUE_LIB} ${PYTHON_LIBRARIES})
+TARGET_LINK_LIBRARIES(${ROGUE_LIB} "bz2")
 
-# Set pyrogue library target
-set(PYROGUE_LIB 3 REQURED)
+# Create pyrogue library target
+set(PYROGUE_LIB "pyrogue_lib")
 add_library(${PYROGUE_LIB} SHARED "")
-TARGET_LINK_LIBRARIES(${PYROGUE_LIB} ${Boost_LIBRARIES})
+TARGET_LINK_LIBRARIES(${PYROGUE_LIB} ${ROGUE_LIB})
 
-# Add source and include files
+# Add include directories
 include_directories("include")
+include_directories("drivers/include")
+include_directories(${PROJECT_BINARY_DIR})
+include_directories(${Boost_INCLUDE_DIRS})
+include_directories(${PYTHON_INCLUDE_DIRS})
+
+# Add sources
 add_subdirectory("src/rogue")
 

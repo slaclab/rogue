@@ -17,8 +17,8 @@
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
+#include <RogueConfig.h>
 #include <rogue/Version.h>
-#include <rogue/RogueConfig.h>
 #include <rogue/GeneralError.h>
 #include <string>
 
