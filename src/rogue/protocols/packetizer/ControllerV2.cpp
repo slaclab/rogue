@@ -76,10 +76,10 @@ void rpp::ControllerV2::transportRx( ris::FramePtr frame ) {
    size = buff->getPayload();
 
    // Drop invalid data
-   if ( frame->getError()    || // Check for frame ERROR
-      (size < 24)            || // Check for min. size (64-bit header + 64-bit payload + 64-bit tail) 
-      (size&0xFFFFFFF8) != 0 || // Check for non 64-bit alignment
-      data[0] != 0x2) {         // Check for invalid version
+   if ( frame->getError() || // Check for frame ERROR
+      (size < 24)         || // Check for min. size (64-bit header + 64-bit min. payload + 64-bit tail) 
+      ((size&0x7) > 0)    || // Check for non 64-bit alignment
+      (data[0] != 0x2) ) {   // Check for invalid version
       log_->info("Dropping frame due to contents: error=0x%x, payload=%i, Version=0x%x",frame->getError(),size,data[0]);
       dropCount_++;
       return;
@@ -108,7 +108,7 @@ void rpp::ControllerV2::transportRx( ris::FramePtr frame ) {
 
    // Compute CRC
    boost::crc_32_type result;
-   result.process_bytes(data,size-8); // Currently firmware doesn't include 32-bit tail in CRC calculation
+   result.process_bytes(data,size-4);
    crcErr = (tmpCrc != result.checksum());
    
    log_->debug("transportRx: Raw header: 0x%x, 0x%x, 0x%x, 0x%x, 0x%x, 0x%x, 0x%x, 0x%x",
@@ -137,17 +137,16 @@ void rpp::ControllerV2::transportRx( ris::FramePtr frame ) {
 
    // First frame
    if ( tmpCount == 0 ) {
-
-      if ( tranCount_[tmpDest] != 0 )
-         log_->info("Dropping exiting frame due new incoming frame: expCount=%i",tranCount_[tmpDest]);
+      if ( (tranCount_[tmpDest] != 0) || !tmpSof || crcErr) {
+         log_->info("Dropping frame: gotDest=%i, gotSof=%i, crcErr=%i, expCount=%i, gotCount=%i", tmpDest, tmpSof, crcErr, tranCount_[tmpDest], tmpCount);
+         dropCount_++;
+         tranCount_[tmpDest] = 0;
+         tranFrame_[tmpDest].reset();         
+         return;
+      }
 
       tranFrame_[tmpDest] = ris::Frame::create();
       tranCount_[tmpDest] = 0;
-
-      if (!tmpSof) {
-         log_->info("Dropping new incoming frame: Bad SOF");
-         return;
-      }
 
       flags  = tmpFuser;
       if ( tmpEof ) flags |= uint32_t(tmpLuser) << 8;
@@ -262,14 +261,14 @@ void rpp::ControllerV2::applicationRx ( ris::FramePtr frame, uint8_t tDest ) {
       
       // Compute CRC
       boost::crc_32_type result;
-      result.process_bytes(data,size-8); // Currently firmware doesn't include 32-bit tail in CRC calculation
+      result.process_bytes(data,size-4);
       crc = result.checksum();
 
       // Tail  word 1
-      data[size-1] = (crc >> 24) & 0xFF;
-      data[size-2] = (crc >> 16) & 0xFF;
-      data[size-3] = (crc >>  8) & 0xFF;
-      data[size-4] = (crc >>  0) & 0xFF;
+      data[size-1] = (crc >>  0) & 0xFF;
+      data[size-2] = (crc >>  8) & 0xFF;
+      data[size-3] = (crc >> 16) & 0xFF;
+      data[size-4] = (crc >> 24) & 0xFF;
       
       log_->debug("applicationRx: Gen frame: Fuser=0x%x, Dest=0x%x, Id=0x%x, Count=%i, Sof=%i, Luser=0x%x, Eof=%i, Last=%i",
             fUser, tDest, tId, x, data[7], lUser, data[size-7], last);
