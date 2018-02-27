@@ -16,7 +16,7 @@ In some cases on modern distributons the above packages can be
 available through the package manager:
 
 > pacman -S python3
-> pacman -S python-pip
+> pacman -S python3-pip
 > pacman -S boost
 > pacman -S zeromq (opional for mesh networking)
 > pacman -S pyqt4 (optional for GUI)
