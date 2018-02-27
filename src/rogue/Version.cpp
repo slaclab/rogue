@@ -18,10 +18,11 @@
  * ----------------------------------------------------------------------------
 **/
 #include <rogue/Version.h>
+#include <rogue/RogueConfig.h>
 #include <rogue/GeneralError.h>
 #include <string>
 
-const char rogue::Version::_version[] = VERSION;
+const char rogue::Version::_version[] = ROGUE_VERSION;
 uint32_t   rogue::Version::_major     = 0;
 uint32_t   rogue::Version::_minor     = 0;
 uint32_t   rogue::Version::_maint     = 0;
