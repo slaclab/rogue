@@ -13,11 +13,26 @@
 # contained in the LICENSE.txt file.
 # ----------------------------------------------------------------------------
 
+project(rogue)
+
+# Create rogue library
+add_library(rogue SHARED "")
+
+# Set output to TOP/lib
+set_target_properties(rogue PROPERTIES LIBRARY_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/../../lib")
+
+# Link to boost, python and bzip
+TARGET_LINK_LIBRARIES(rogue LINK_PUBLIC ${Boost_LIBRARIES})
+TARGET_LINK_LIBRARIES(rogue LINK_PUBLIC ${PYTHON_LIBRARIES})
+TARGET_LINK_LIBRARIES(rogue LINK_PUBLIC "bz2")
+
+# Add sub directories
 add_subdirectory("hardware")
 add_subdirectory("interfaces")
 add_subdirectory("protocols")
 add_subdirectory("utilities")
 
-file(GLOB local_SRC "*.cpp")
-target_sources(${ROGUE_LIB} PUBLIC ${local_SRC})
+# Local sources
+file(GLOB rogue_SRC "*.cpp")
+target_sources(rogue PUBLIC ${rogue_SRC})
 

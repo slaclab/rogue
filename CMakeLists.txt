@@ -18,7 +18,7 @@ cmake_minimum_required(VERSION 3.10)
 include(InstallRequiredSystemLibraries)
 
 # Project name
-project (rogue)
+project (rogue_pyrogue)
 
 # C/C++
 enable_language(C CXX)
@@ -49,29 +49,18 @@ find_package(PythonLibs 3 REQUIRED)
 
 # Configuration File
 configure_file (
-   "include/rogue/RogueConfig.in"
+   "${PROJECT_SOURCE_DIR}/include/rogue/RogueConfig.in"
    "${PROJECT_BINARY_DIR}/RogueConfig.h"
 )
 
-# Create rogue library target
-set(ROGUE_LIB "rogue")
-add_library(${ROGUE_LIB} SHARED "")
-TARGET_LINK_LIBRARIES(${ROGUE_LIB} ${Boost_LIBRARIES})
-TARGET_LINK_LIBRARIES(${ROGUE_LIB} ${PYTHON_LIBRARIES})
-TARGET_LINK_LIBRARIES(${ROGUE_LIB} "bz2")
-
-# Create pyrogue library target
-set(PYROGUE_LIB "pyrogue_lib")
-add_library(${PYROGUE_LIB} SHARED "")
-TARGET_LINK_LIBRARIES(${PYROGUE_LIB} ${ROGUE_LIB})
-
 # Add include directories
-include_directories("include")
-include_directories("drivers/include")
+include_directories("${PROJECT_SOURCE_DIR}/include")
+include_directories("${PROJECT_SOURCE_DIR}/drivers/include")
 include_directories(${PROJECT_BINARY_DIR})
 include_directories(${Boost_INCLUDE_DIRS})
 include_directories(${PYTHON_INCLUDE_DIRS})
 
-# Add sources
+# Create rogue library target
 add_subdirectory("src/rogue")
+add_subdirectory("src/pyrogue")
 

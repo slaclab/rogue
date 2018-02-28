@@ -1,7 +1,7 @@
 # ----------------------------------------------------------------------------
 # Title      : ROGUE CMAKE Control
 # ----------------------------------------------------------------------------
-# File       : src/CMakeLists.txt
+# File       : src/rogue/CMakeLists.txt
 # Created    : 2018-02-27
 # ----------------------------------------------------------------------------
 # This file is part of the rogue software package. It is subject to 
@@ -13,6 +13,20 @@
 # contained in the LICENSE.txt file.
 # ----------------------------------------------------------------------------
 
-add_subdirectory("rogue")
-target_sources(${PYROGUE_LIB} PUBLIC "package.cpp")
+project(pyrogue)
+
+# Create rogue library
+add_library(pyrogue SHARED "")
+
+# Set output to TOP/python
+set_target_properties(pyrogue PROPERTIES LIBRARY_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/../../python")
+
+# Link to rogue library
+TARGET_LINK_LIBRARIES(pyrogue LINK_PUBLIC ${Boost_LIBRARIES})
+TARGET_LINK_LIBRARIES(pyrogue LINK_PUBLIC ${PYTHON_LIBRARIES})
+TARGET_LINK_LIBRARIES(pyrogue LINK_PUBLIC rogue)
+
+# Local sources
+file(GLOB pyrogue_SRC "*.cpp")
+target_sources(pyrogue PUBLIC ${pyrogue_SRC})
 

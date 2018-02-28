@@ -16,6 +16,5 @@
 add_subdirectory("memory")
 add_subdirectory("stream")
 
-file(GLOB local_SRC "*.cpp")
-target_sources(${ROGUE_LIB} PUBLIC ${local_SRC})
-
+file(GLOB rogue_SRC "*.cpp")
+target_sources(rogue PUBLIC ${rogue_SRC})
