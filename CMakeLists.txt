@@ -44,8 +44,7 @@ if (${BOOST_PATH})
 endif()
 
 # Find boost
-find_package(Boost 1.62 REQUIRED COMPONENTS system thread python3)
-#find_package(Boost 1.62 REQUIRED COMPONENTS system thread)
+find_package(Boost 1.58 REQUIRED COMPONENTS system thread python3)
 
 # Find python3
 find_package(PythonInterp 3 REQUIRED)
