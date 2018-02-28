@@ -22,6 +22,7 @@ project (rogue)
 
 # C/C++
 enable_language(C CXX)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
 
 # Set version from git tag
 find_package(Git)
@@ -44,6 +45,7 @@ endif()
 
 # Find boost
 find_package(Boost 1.62 REQUIRED COMPONENTS system thread python3)
+#find_package(Boost 1.62 REQUIRED COMPONENTS system thread)
 
 # Find python3
 find_package(PythonInterp 3 REQUIRED)
