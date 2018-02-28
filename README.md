@@ -51,7 +51,7 @@ $ module load cmake-3.9.4-gcc-4.9.4-ofjqova
 $ source /afs/slac.stanford.edu/g/reseng/python/3.6.1/settings.sh
 $ source /afs/slac.stanford.edu/g/reseng/boost/1.64.0/settings.sh
 ````
-or for csh
+or for csh:
 ````
 $ setenv MODULEPATH /usr/share/Modules/modulefiles:/etc/modulefiles:/afs/slac.stanford.edu/package/spack/share/spack/modules/linux-rhel6-x86_64
 $ module load cmake-3.9.4-gcc-4.9.4-ofjqova
@@ -63,7 +63,7 @@ The rogue distribution includes a pair of setup scripts for the SLAC environment
 ````
 $ source setup_slac.sh
 ````
-or for csh
+or for csh:
 ````
 $ source setup_slac.csh
 ````
@@ -96,7 +96,7 @@ for zeromq:
 ````
 $ source /afs/slac.stanford.edu/g/reseng/zeromq/4.2.1/settings.sh
 ````
-or for csh
+or for csh:
 ````
 $ source /afs/slac.stanford.edu/g/reseng/zeromq/4.2.1/settings.csh
 ````
@@ -105,7 +105,13 @@ Epics V3 support is and optional module that will be included in the rogue build
 if the EPICS_BASE directory is set in the user's environment. Setup scripts
 for EPICs at SLAC are included in the following directory:
 
-- /slac/slac.stanford.edu/g/reseng/epics/base-R3-15-5-1-0/
+````
+$ source /slac/slac.stanford.edu/g/reseng/epics/base-R3-15-5-1-0/settings.sh
+````
+for for csh:
+````
+$ source /slac/slac.stanford.edu/g/reseng/epics/base-R3-15-5-1-0/settings.csh
+````
 
 ### Python packages required
 
@@ -156,7 +162,7 @@ scripts for both bash and c-shell are include in the rogue distribution:
 ````
 $ source setup_rogue.sh
 ````
-or for csh
+or for csh:
 ````
 $ source setup_rogue.csh
 ````
@@ -176,9 +182,9 @@ is the same as Unbuntu.
 ### Additional Notes
 
 The rogue package includes a readme file for compiling and installing local 
-versions of autoconf, python3, boost,zeromq and epics. This were created as 
+versions of python3, boost,zeromq and epics. This were created as 
 notes when installing local packages at slac. These should only be neccessary
 for outdated versions of Linux.
 
-- Readme_local_packages.txt
+- Readme_local_packages.md
 
