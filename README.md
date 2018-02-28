@@ -151,6 +151,14 @@ $ cmake ..
 $ make
 ````
 
+to update and rebuild:
+````
+$ git pull
+$ git submodule update
+$ cd build
+$ make 
+````
+
 Two libraries are output from the compute. lib/librogue-core.so is a c++ 
 core library for the various rogue classes and function. python/rogue.so
 is a shared object library for importing into python.
@@ -178,6 +186,12 @@ other environmental setups for your project.
 Rogue will compile on windows 10 under the windows subsystem for Linux
 envrionment. Once the windows subsystem for Linux is setup the environment
 is the same as Unbuntu.
+
+### Drivers
+
+Rogue is linked against the aes-stream-drivers package which is included 
+as a submodule at the drivers sub-directory. If you need to use these
+drivers please see the README.md file in that package.
 
 ### Additional Notes
 
