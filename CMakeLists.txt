@@ -14,7 +14,7 @@
 # ----------------------------------------------------------------------------
 
 # Check cmake version
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 2.8)
 include(InstallRequiredSystemLibraries)
 
 # Project name
@@ -29,22 +29,24 @@ if (GIT_FOUND)
    execute_process (
       COMMAND ${GIT_EXECUTABLE} describe --tags --dirty
       OUTPUT_VARIABLE ROGUE_VERSION
-      RESULT_VARIABLE ROGUE_VERSION_RESULT
-      OUTPUT_STRIP_TRAILING_WHITESPACE
-   )
-
-   if (NOT ROGUE_VERSION_RESULT EQUAL 0 )
-      set (ROGUE_VERSION "v0.0.0")
-   endif()
+      OUTPUT_STRIP_TRAILING_WHITESPACE)
 else()
-   set (ROGUE_VERSION "v0.0.0")
+   message(FATAL_ERROR "Git is required to build rogue")
 endif()
 
 # Boost Configuration
 set(Boost_USE_MULTITHREADED ON)
+
+# Boost may need help on SLAC machines
+if (${BOOST_PATH})
+   set(BOOST_ROOT:PATHNAME, ${BOOST_PATH})
+endif()
+
+# Find boost
 find_package(Boost 1.62 REQUIRED COMPONENTS system thread python3)
 
-# Python Configuration
+# Find python3
+find_package(PythonInterp 3 REQUIRED)
 find_package(PythonLibs 3 REQUIRED)
 
 # Configuration File
@@ -80,7 +82,7 @@ add_library(rogue SHARED "")
 # Find sources
 add_subdirectory("src")
 
-# Set output to TOP/python
+# Set output to TOP/python, remove lib prefix
 set_target_properties(rogue PROPERTIES LIBRARY_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/python")
 set_target_properties(rogue PROPERTIES PREFIX "")
 
