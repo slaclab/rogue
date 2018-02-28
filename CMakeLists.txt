@@ -18,7 +18,7 @@ cmake_minimum_required(VERSION 3.10)
 include(InstallRequiredSystemLibraries)
 
 # Project name
-project (rogue_pyrogue)
+project (rogue)
 
 # C/C++
 enable_language(C CXX)
@@ -60,30 +60,30 @@ include_directories(${PROJECT_BINARY_DIR})
 include_directories(${Boost_INCLUDE_DIRS})
 include_directories(${PYTHON_INCLUDE_DIRS})
 
-# Create rogue library
-add_library(rogue SHARED "")
+# Create rogue core library
+add_library(rogue-core SHARED "")
 
 # Find sources
 add_subdirectory("src/rogue")
 
 # Set output to TOP/lib
-set_target_properties(rogue PROPERTIES LIBRARY_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/lib")
+set_target_properties(rogue-core PROPERTIES LIBRARY_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/lib")
 
 # Link to boost, python and bzip
-TARGET_LINK_LIBRARIES(rogue LINK_PUBLIC ${Boost_LIBRARIES})
-TARGET_LINK_LIBRARIES(rogue LINK_PUBLIC ${PYTHON_LIBRARIES})
-TARGET_LINK_LIBRARIES(rogue LINK_PUBLIC bz2)
+TARGET_LINK_LIBRARIES(rogue-core LINK_PUBLIC ${Boost_LIBRARIES})
+TARGET_LINK_LIBRARIES(rogue-core LINK_PUBLIC ${PYTHON_LIBRARIES})
+TARGET_LINK_LIBRARIES(rogue-core LINK_PUBLIC bz2)
 
-# Create pyrogue library
-add_library(pyrogue SHARED "")
+# Create rogue python library
+add_library(rogue SHARED "")
 
 # Find sources
-add_subdirectory("src/pyrogue")
+add_subdirectory("src")
 
 # Set output to TOP/python
-set_target_properties(pyrogue PROPERTIES LIBRARY_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/python")
-set_target_properties(pyrogue PROPERTIES PREFIX "")
+set_target_properties(rogue PROPERTIES LIBRARY_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/python")
+set_target_properties(rogue PROPERTIES PREFIX "")
 
 # Link to rogue
-TARGET_LINK_LIBRARIES(pyrogue LINK_PUBLIC rogue)
+TARGET_LINK_LIBRARIES(rogue LINK_PUBLIC rogue-core)
 

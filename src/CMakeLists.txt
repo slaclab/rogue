@@ -1,7 +1,7 @@
 # ----------------------------------------------------------------------------
 # Title      : ROGUE CMAKE Control
 # ----------------------------------------------------------------------------
-# File       : src/rogue/CMakeLists.txt
+# File       : src/CMakeLists.txt
 # Created    : 2018-02-27
 # ----------------------------------------------------------------------------
 # This file is part of the rogue software package. It is subject to 
@@ -14,6 +14,6 @@
 # ----------------------------------------------------------------------------
 
 # Local sources
-file(GLOB pyrogue_SRC "*.cpp")
-target_sources(pyrogue PRIVATE ${pyrogue_SRC})
+file(GLOB rogue_SRC "*.cpp")
+target_sources(rogue PRIVATE ${rogue_SRC})
 

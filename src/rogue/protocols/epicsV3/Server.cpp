@@ -18,8 +18,6 @@
  * ----------------------------------------------------------------------------
 **/
 
-#ifdef DO_EPICSV3
-
 #include <boost/python.hpp>
 #include <rogue/protocols/epicsV3/Server.h>
 #include <rogue/protocols/epicsV3/Value.h>
@@ -129,4 +127,3 @@ void rpe::Server::runThread() {
    } catch (boost::thread_interrupted&) { }
 }
 
-#endif
