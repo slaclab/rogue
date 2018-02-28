@@ -39,10 +39,10 @@ endif()
 set(Boost_USE_MULTITHREADED ON)
 
 # Boost may need help on SLAC machines
-set(BOOST_ROOT:PATHNAME, ${BOOST_PATH})
+set(BOOST_ROOT:PATHNAME ${BOOST_PATH})
 
 # First try standard suffix
-find_package(Boost 1.58 QUIET COMPONENTS system thread python3)
+find_package(Boost 1.58 COMPONENTS system thread python3)
 
 # Next try Debian/Ubuntu suffix
 if (NOT Boost_FOUND)
@@ -53,18 +53,29 @@ endif()
 find_package(PythonInterp 3 REQUIRED)
 find_package(PythonLibs 3 REQUIRED)
 
+# Optional EPICS V3
+if(DEFINED ENV{EPICS_BASE})
+   set(DO_EPICS_V3 1)
+   set(EPICS_INCLUDES ${EPICS_BASE}/include ${EPICS_BASE}/include/compiler/gcc ${EPICS_BASE}/include/os/Linux)
+   set(EPICS_LIB_DIR  ${EPICS_BASE}/lib/rhel6-x86_64/)
+   set(EPICS_LIBS cas ca Com gdd)
+else()
+   set(DO_EPICS_V3 0)
+endif()
+
 # Configuration File
 configure_file (
-   "${PROJECT_SOURCE_DIR}/include/rogue/RogueConfig.in"
-   "${PROJECT_BINARY_DIR}/RogueConfig.h"
+   ${PROJECT_SOURCE_DIR}/include/rogue/RogueConfig.in
+   ${PROJECT_BINARY_DIR}/RogueConfig.h
 )
 
 # Add include directories
-include_directories("${PROJECT_SOURCE_DIR}/include")
-include_directories("${PROJECT_SOURCE_DIR}/drivers/include")
+include_directories(${PROJECT_SOURCE_DIR}/include)
+include_directories(${PROJECT_SOURCE_DIR}/drivers/include)
 include_directories(${PROJECT_BINARY_DIR})
 include_directories(${Boost_INCLUDE_DIRS})
 include_directories(${PYTHON_INCLUDE_DIRS})
+include_directories(${EPICS_INCLUDES})
 
 # Create rogue core library
 add_library(rogue-core SHARED "")
@@ -73,11 +84,12 @@ add_library(rogue-core SHARED "")
 add_subdirectory("src/rogue")
 
 # Set output to TOP/lib
-set_target_properties(rogue-core PROPERTIES LIBRARY_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/lib")
+set_target_properties(rogue-core PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/lib)
 
 # Link to boost, python and bzip
 TARGET_LINK_LIBRARIES(rogue-core LINK_PUBLIC ${Boost_LIBRARIES})
 TARGET_LINK_LIBRARIES(rogue-core LINK_PUBLIC ${PYTHON_LIBRARIES})
+TARGET_LINK_LIBRARIES(rogue-core LINK_PUBLIC ${EPICS_LIBS})
 TARGET_LINK_LIBRARIES(rogue-core LINK_PUBLIC bz2)
 
 # Create rogue python library
@@ -87,7 +99,7 @@ add_library(rogue SHARED "")
 add_subdirectory("src")
 
 # Set output to TOP/python, remove lib prefix
-set_target_properties(rogue PROPERTIES LIBRARY_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/python")
+set_target_properties(rogue PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/python)
 set_target_properties(rogue PROPERTIES PREFIX "")
 
 # Link to rogue
