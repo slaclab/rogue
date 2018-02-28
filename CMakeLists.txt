@@ -82,6 +82,7 @@ add_subdirectory("src/pyrogue")
 
 # Set output to TOP/python
 set_target_properties(pyrogue PROPERTIES LIBRARY_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/python")
+set_target_properties(pyrogue PROPERTIES PREFIX "")
 
 # Link to rogue
 TARGET_LINK_LIBRARIES(pyrogue LINK_PUBLIC rogue)
