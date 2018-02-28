@@ -151,11 +151,12 @@ $ cmake ..
 $ make
 ````
 
-to update and rebuild:
+to update from git and rebuild:
 ````
 $ git pull
 $ git submodule update
 $ cd build
+$ make rebuild_cache
 $ make 
 ````
 
