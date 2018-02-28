@@ -39,7 +39,9 @@ endif()
 set(Boost_USE_MULTITHREADED ON)
 
 # Boost may need help on SLAC machines
-if (${BOOST_PATH})
+if(TARGET_DISTRO MATCHES "Debian")
+   set(Boost_PYTHON_VERSION_TAG "-py${PYTHON_VERSION_MAJOR_MINOR}")
+elseif (${BOOST_PATH})
    set(BOOST_ROOT:PATHNAME, ${BOOST_PATH})
 endif()
 
