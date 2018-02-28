@@ -27,34 +27,34 @@ The following packages are required to build the rogue library:
 To add these packages on Ubuntu:
 
 ''''
-> apt-get install cmake
-> apt-get install python3
-> apt-get install libboost-all-dev
-> apt-get install libbz2-dev
+$ apt-get install cmake
+$ apt-get install python3
+$ apt-get install libboost-all-dev
+$ apt-get install libbz2-dev
 ''''
 
 To add these packages on archlinux:
 
 ''''
-> pacman -S cmake
-> pacman -S python3
-> pacman -S boost
-> pacman -S bzip2
+$ pacman -S cmake
+$ pacman -S python3
+$ pacman -S boost
+$ pacman -S bzip2
 ''''
 
 To use these packages on a rhel6 machine at SLAC requires some extra
 steps due to the computers being out of date:
 
 ''''
-> export MODULEPATH=/usr/share/Modules/modulefiles:/etc/modulefiles:/afs/slac.stanford.edu/package/spack/share/spack/modules/linux-rhel6-x86_64 (use setenv for csh)
-> module load cmake-3.9.4-gcc-4.9.4-ofjqova
-> source /afs/slac.stanford.edu/g/reseng/python/3.6.1/settings.sh(or .csh)
-> source /afs/slac.stanford.edu/g/reseng/boost/1.64.0/settings.sh(or .csh)
+$ export MODULEPATH=/usr/share/Modules/modulefiles:/etc/modulefiles:/afs/slac.stanford.edu/package/spack/share/spack/modules/linux-rhel6-x86_64 (use setenv for csh)
+$ module load cmake-3.9.4-gcc-4.9.4-ofjqova
+$ source /afs/slac.stanford.edu/g/reseng/python/3.6.1/settings.sh(or .csh)
+$ source /afs/slac.stanford.edu/g/reseng/boost/1.64.0/settings.sh(or .csh)
 ''''
 
 The rogue distribution includes a pair of setup scripts for the SLAC environment:
 ''''
-> source setup_slac.csh or setup_slac.sh
+$ source setup_slac.csh or setup_slac.sh
 ''''
 
 These scripts include also include the optional zeromq and epics packages
@@ -68,22 +68,22 @@ the simulation interfaces. Python QT4 is used for the GUI interface.
 On Ubuntu:
 
 ''''
-> apt-get install libzmq-dev
-> apt-get install 
+$ apt-get install libzmq-dev
+$ apt-get install 
 ''''
 
 On archlinux:
 
 ''''
-> pacman -S zeromq
-> pacman -S python-pyqt4
+$ pacman -S zeromq
+$ pacman -S python-pyqt4
 ''''
 
 At SLAC pyqt4 is already included with the centrally install python3, to add support
 for zeromq:
 
 ''''
-> source /afs/slac.stanford.edu/g/reseng/zeromq/4.2.1/settings.sh (or .csh)
+$ source /afs/slac.stanford.edu/g/reseng/zeromq/4.2.1/settings.sh (or .csh)
 ''''
 
 Epics V3 support is and optional module that will be included in the rogue build
@@ -100,19 +100,19 @@ to use your favorite python tool. These packages are already included in
 afs based SLAC python3 install mentioned above.
 
 ''''
-> pip3 install PyYAML
-> pip3 install Pyro4 
-> pip3 install parse
-> pip3 install recordclass
-> pip3 install click
+$ pip3 install PyYAML
+$ pip3 install Pyro4 
+$ pip3 install parse
+$ pip3 install recordclass
+$ pip3 install click
 ''''
 
 The following are optional:
 
 ''''
-> pip3 isntall ipython
-> pip3 install pyzmq
-> pip3 install mysqlclient
+$ pip3 isntall ipython
+$ pip3 install pyzmq
+$ pip3 install mysqlclient
 ''''
 
 ### Building Rogue
@@ -120,14 +120,14 @@ The following are optional:
 The rogue compile uses cmake. To download and build rogue:
 
 ''''
-> git clone https://github.com/slaclab/rogue.git
-> cd rogue
-> git submodule init
-> git submodule update
-> mkdir build
-> cd build
-> cmake ..
-> make
+$ git clone https://github.com/slaclab/rogue.git
+$ cd rogue
+$ git submodule init
+$ git submodule update
+$ mkdir build
+$ cd build
+$ cmake ..
+$ make
 ''''
 
 Two libraries are output from the compute. lib/librogue-core.so is a c++ 
@@ -139,7 +139,7 @@ the python subdirectory should be include in your PYTHONPATH. A pair of setup
 scripts for both bash and c-shell are include in the rogue distribution:
 
 ''''
-> source setup_rogue.sh (or .csh)
+$ source setup_rogue.sh (or .csh)
 ''''
 
 These scripts also set the ROGUE_DIR environment variable which is usefull when 
