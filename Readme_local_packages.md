@@ -107,10 +107,10 @@ $ source /path/to/python3/settings.csh (or settings.sh)
 Edit vi tools/build/src/tools/python.jam
 Change line 547 to:
 
-'''
+````
 includes ?= $(prefix)/include/python$(version)m ;
 (adding m after version)
-'''
+````
 
 ### Build
 
