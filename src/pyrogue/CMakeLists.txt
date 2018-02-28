@@ -13,20 +13,7 @@
 # contained in the LICENSE.txt file.
 # ----------------------------------------------------------------------------
 
-project(pyrogue)
-
-# Create rogue library
-add_library(pyrogue SHARED "")
-
-# Set output to TOP/python
-set_target_properties(pyrogue PROPERTIES LIBRARY_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/../../python")
-
-# Link to rogue library
-TARGET_LINK_LIBRARIES(pyrogue LINK_PUBLIC ${Boost_LIBRARIES})
-TARGET_LINK_LIBRARIES(pyrogue LINK_PUBLIC ${PYTHON_LIBRARIES})
-TARGET_LINK_LIBRARIES(pyrogue LINK_PUBLIC rogue)
-
 # Local sources
 file(GLOB pyrogue_SRC "*.cpp")
-target_sources(pyrogue PUBLIC ${pyrogue_SRC})
+target_sources(pyrogue PRIVATE ${pyrogue_SRC})
 

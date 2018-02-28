@@ -60,7 +60,29 @@ include_directories(${PROJECT_BINARY_DIR})
 include_directories(${Boost_INCLUDE_DIRS})
 include_directories(${PYTHON_INCLUDE_DIRS})
 
-# Create rogue library target
+# Create rogue library
+add_library(rogue SHARED "")
+
+# Find sources
 add_subdirectory("src/rogue")
+
+# Set output to TOP/lib
+set_target_properties(rogue PROPERTIES LIBRARY_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/lib")
+
+# Link to boost, python and bzip
+TARGET_LINK_LIBRARIES(rogue LINK_PUBLIC ${Boost_LIBRARIES})
+TARGET_LINK_LIBRARIES(rogue LINK_PUBLIC ${PYTHON_LIBRARIES})
+TARGET_LINK_LIBRARIES(rogue LINK_PUBLIC bz2)
+
+# Create pyrogue library
+add_library(pyrogue SHARED "")
+
+# Find sources
 add_subdirectory("src/pyrogue")
+
+# Set output to TOP/python
+set_target_properties(pyrogue PROPERTIES LIBRARY_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/python")
+
+# Link to rogue
+TARGET_LINK_LIBRARIES(pyrogue LINK_PUBLIC rogue)
 

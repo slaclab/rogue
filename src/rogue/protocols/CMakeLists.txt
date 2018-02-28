@@ -23,4 +23,4 @@ if (DO_EPICS_V3)
 endif()
 
 file(GLOB rogue_SRC "*.cpp")
-target_sources(rogue PUBLIC ${rogue_SRC})
+target_sources(rogue PRIVATE ${rogue_SRC})
