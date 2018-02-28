@@ -55,13 +55,19 @@ find_package(PythonLibs 3 REQUIRED)
 
 # Optional EPICS V3
 if(DEFINED ENV{EPICS_BASE})
+   set(EPICS_BASE_DIR $ENV{EPICS_BASE})
    set(DO_EPICS_V3 1)
-   set(EPICS_INCLUDES ${EPICS_BASE}/include ${EPICS_BASE}/include/compiler/gcc ${EPICS_BASE}/include/os/Linux)
-   set(EPICS_LIB_DIR  ${EPICS_BASE}/lib/rhel6-x86_64/)
+   set(EPICS_INCLUDES ${EPICS_BASE_DIR}/include ${EPICS_BASE_DIR}/include/compiler/gcc ${EPICS_BASE_DIR}/include/os/Linux)
+   set(EPICS_LIB_DIR  ${EPICS_BASE_DIR}/lib/rhel6-x86_64)
    set(EPICS_LIBS cas ca Com gdd)
+   message("Got Data: ${EPICS_BASE_DIR}")
+   message("Got Data: ${EPICS_INCLUDES}")
+   message("Got Data: ${EPICS_LIB_DIR}")
 else()
    set(DO_EPICS_V3 0)
 endif()
+
+
 
 # Configuration File
 configure_file (
