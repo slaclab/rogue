@@ -45,7 +45,7 @@ if(TARGET_DISTRO MATCHES "Debian")
 elseif (${BOOST_PATH})
    set(BOOST_ROOT:PATHNAME, ${BOOST_PATH})
    find_package(Boost 1.58 REQUIRED COMPONENTS system thread python3)
-else
+else()
    find_package(Boost 1.58 REQUIRED COMPONENTS system thread python3)
 endif()
 
