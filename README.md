@@ -1,22 +1,22 @@
 # rogue
 SLAC Python Based Hardware Abstraction &amp; Data Acquisition System
 
-Introduction presentation: 
-https://docs.google.com/presentation/d/1m2nqGzCZXsQV8ul4d0Gk7xmwn-OLW1iucTLm7LLp9eg/edit?usp=sharing
-some concepts (Blocks and Variables) are a little out of data as we have made changes.
+Email List For Announcements:
+https://listserv.slac.stanford.edu/cgi-bin/wa?A0=AIR-ROGUE-USERS
 
 JIRA:
 https://jira.slac.stanford.edu/plugins/servlet/project-config/ESROGUE
 
-Email List For Announcements:
-https://listserv.slac.stanford.edu/cgi-bin/wa?A0=AIR-ROGUE-USERS
+Introduction presentation: 
+https://docs.google.com/presentation/d/1m2nqGzCZXsQV8ul4d0Gk7xmwn-OLW1iucTLm7LLp9eg/edit?usp=sharing
+some concepts (Blocks and Variables) are a little out of data as we have made changes.
 
 For example scripts and sub-class source code examples see:
 
 https://github.com/slaclab/rogue-example
 
 ------------------------------------------------------------------------
-Required Packages For Building Rogue
+# Required Packages For Building Rogue
 
 The following packages are required to build the rogue library:
 
@@ -54,7 +54,7 @@ These scripts include also include the optional zeromq and epics packages
 described below.
 
 ------------------------------------------------------------------------
-Optional Packages
+# Optional Packages
 
 ZeroMq is used for some of the python based messaging interface, particularly
 the simulation interfaces. Python QT4 is used for the GUI interface.
@@ -81,7 +81,7 @@ for EPICs at SLAC are included in the following directory:
 /slac/slac.stanford.edu/g/reseng/epics/base-R3-15-5-1-0/
 
 ------------------------------------------------------------------------
-Python packages required
+# Python packages required
 
 The following python packages are required to use rogue in the python3
 environment. Currently I am using PIP to install these, but you are free 
@@ -101,7 +101,7 @@ The following are optional:
 > pip3 install mysqlclient
 
 ------------------------------------------------------------------------
-Building Rogue
+# Building Rogue
 
 The rogue compile uses cmake. To download and build rogue:
 
@@ -131,14 +131,14 @@ You may want to create a custom setup script to combine the rogue setup with
 other environmental setups for your project.
 
 ------------------------------------------------------------------------
-Rogue on Windows 10
+# Rogue on Windows 10
 
 Rogue will compile on windows 10 under the windows subsystem for Linux
 envrionment. Once the windows subsystem for Linux is setup the environment
 is the same as Unbuntu.
 
 ------------------------------------------------------------------------
-Additional Notes
+# Additional Notes
 
 The rogue package includes a readme file for compiling and installing local 
 versions of autoconf, python3, boost,zeromq and epics. This were created as 
