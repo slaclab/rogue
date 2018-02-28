@@ -39,21 +39,15 @@ endif()
 set(Boost_USE_MULTITHREADED ON)
 
 # Boost may need help on SLAC machines
-if(TARGET_DISTRO MATCHES "Debian")
-   set(Boost_PYTHON_VERSION_TAG "-py${PYTHON_VERSION_MAJOR_MINOR}")
-   message("Trying debian")
-   find_package(Boost 1.58 REQUIRED COMPONENTS system thread python)
-elseif (${BOOST_PATH})
-   set(BOOST_ROOT:PATHNAME, ${BOOST_PATH})
-   message("Using boost path")
-   find_package(Boost 1.58 REQUIRED COMPONENTS system thread python3)
-else()
-   message("Default find")
-   find_package(Boost 1.58 REQUIRED COMPONENTS system thread python3)
-endif()
+set(BOOST_ROOT:PATHNAME, ${BOOST_PATH})
 
-# Find boost
-find_package(Boost 1.58 REQUIRED COMPONENTS system thread python3)
+# First try standard suffix
+find_package(Boost 1.58 QUIET COMPONENTS system thread python3)
+
+# Next try Debian/Ubuntu suffix
+if (NOT Boost_FOUND)
+   find_package(Boost 1.58 REQUIRED COMPONENTS system thread python-py35)
+endif()
 
 # Find python3
 find_package(PythonInterp 3 REQUIRED)
