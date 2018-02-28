@@ -19,16 +19,14 @@ https://github.com/slaclab/rogue-example
 
 The following packages are required to build the rogue library:
 
-'''
-cmake   >= 2.8
-Boost   >= 1.58
-python3 >= 3.6
-bz2
-'''
+- cmake   >= 2.8
+- Boost   >= 1.58
+- python3 >= 3.6
+- bz2
 
 To add these packages on Ubuntu:
 
-'''
+'''console
 > apt-get install cmake
 > apt-get install python3
 > apt-get install libboost-all-dev
@@ -37,7 +35,7 @@ To add these packages on Ubuntu:
 
 To add these packages on archlinux:
 
-'''
+'''console
 > pacman -S cmake
 > pacman -S python3
 > pacman -S boost
@@ -47,7 +45,7 @@ To add these packages on archlinux:
 To use these packages on a rhel6 machine at SLAC requires some extra
 steps due to the computers being out of date:
 
-'''
+'''console
 > export MODULEPATH=/usr/share/Modules/modulefiles:/etc/modulefiles:/afs/slac.stanford.edu/package/spack/share/spack/modules/linux-rhel6-x86_64 (use setenv for csh)
 > module load cmake-3.9.4-gcc-4.9.4-ofjqova
 > source /afs/slac.stanford.edu/g/reseng/python/3.6.1/settings.sh(or .csh)
@@ -55,7 +53,7 @@ steps due to the computers being out of date:
 '''
 
 The rogue distribution includes a pair of setup scripts for the SLAC environment:
-'''
+'''console
 > source setup_slac.csh or setup_slac.sh
 '''
 
@@ -69,14 +67,14 @@ the simulation interfaces. Python QT4 is used for the GUI interface.
 
 On Ubuntu:
 
-'''
+'''console
 > apt-get install libzmq-dev
 > apt-get install 
 '''
 
 On archlinux:
 
-'''
+'''console
 > pacman -S zeromq
 > pacman -S python-pyqt4
 '''
@@ -84,7 +82,7 @@ On archlinux:
 At SLAC pyqt4 is already included with the centrally install python3, to add support
 for zeromq:
 
-'''
+'''console
 > source /afs/slac.stanford.edu/g/reseng/zeromq/4.2.1/settings.sh (or .csh)
 '''
 
@@ -101,7 +99,7 @@ environment. Currently I am using PIP to install these, but you are free
 to use your favorite python tool. These packages are already included in 
 afs based SLAC python3 install mentioned above.
 
-'''
+'''console
 > pip3 install PyYAML
 > pip3 install Pyro4 
 > pip3 install parse
@@ -111,7 +109,7 @@ afs based SLAC python3 install mentioned above.
 
 The following are optional:
 
-'''
+'''console
 > pip3 isntall ipython
 > pip3 install pyzmq
 > pip3 install mysqlclient
@@ -121,7 +119,7 @@ The following are optional:
 
 The rogue compile uses cmake. To download and build rogue:
 
-'''
+'''console
 > git clone https://github.com/slaclab/rogue.git
 > cd rogue
 > git submodule init
@@ -140,7 +138,7 @@ The lib subdirecotry of rogue should be included in your LD_LIBRARY_PATH and
 the python subdirectory should be include in your PYTHONPATH. A pair of setup
 scripts for both bash and c-shell are include in the rogue distribution:
 
-'''
+'''console
 > source setup_rogue.sh (or .csh)
 '''
 
