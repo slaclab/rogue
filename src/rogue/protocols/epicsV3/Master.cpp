@@ -109,7 +109,7 @@ void rpe::Master::valueSet() {
    uint32_t i;
 
    txSize = size_ * fSize_;
-   frame = reqFrame(txSize, true, txSize);
+   frame = reqFrame(txSize, true);
    pos = 0;
 
    // Create vector of appropriate type

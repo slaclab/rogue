@@ -21,7 +21,7 @@ include(InstallRequiredSystemLibraries)
 project (rogue)
 
 # C/C++
-enable_language(C CXX)
+enable_language(CXX)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
 
 # Set version from git tag
@@ -39,12 +39,12 @@ endif()
 set(Boost_USE_MULTITHREADED ON)
 
 # Boost may need help on SLAC machines
-set(BOOST_ROOT:PATHNAME ${BOOST_PATH})
+set(BOOST_ROOT:PATHNAME $ENV{BOOST_PATH})
 
-# First try standard suffix
+# First try standard suffix for boost
 find_package(Boost 1.58 COMPONENTS system thread python3)
 
-# Next try Debian/Ubuntu suffix
+# Next try Debian/Ubuntu suffix for boost
 if (NOT Boost_FOUND)
    find_package(Boost 1.58 REQUIRED COMPONENTS system thread python-py35)
 endif()
@@ -53,21 +53,28 @@ endif()
 find_package(PythonInterp 3 REQUIRED)
 find_package(PythonLibs 3 REQUIRED)
 
+message("----------------------------------------------------------------------")
+
 # Optional EPICS V3
 if(DEFINED ENV{EPICS_BASE})
-   set(EPICS_BASE_DIR $ENV{EPICS_BASE})
    set(DO_EPICS_V3 1)
-   set(EPICS_INCLUDES ${EPICS_BASE_DIR}/include ${EPICS_BASE_DIR}/include/compiler/gcc ${EPICS_BASE_DIR}/include/os/Linux)
-   set(EPICS_LIB_DIR  ${EPICS_BASE_DIR}/lib/rhel6-x86_64)
-   set(EPICS_LIBS cas ca Com gdd)
-   message("Got Data: ${EPICS_BASE_DIR}")
-   message("Got Data: ${EPICS_INCLUDES}")
-   message("Got Data: ${EPICS_LIB_DIR}")
+   set(EPICSV3_BASE_DIR  $ENV{EPICS_BASE})
+   set(EPICSV3_LIB_DIR   ${EPICSV3_BASE_DIR}/lib/rhel6-x86_64 )
+   set(EPICSV3_INCLUDES  ${EPICSV3_BASE_DIR}/include
+                         ${EPICSV3_BASE_DIR}/include/compiler/gcc 
+                         ${EPICSV3_BASE_DIR}/include/os/Linux)
+   set(EPICSV3_LIBRARIES ${EPICSV3_LIB_DIR}/libcas.so 
+                         ${EPICSV3_LIB_DIR}/libca.so 
+                         ${EPICSV3_LIB_DIR}/libCom.so 
+                         ${EPICSV3_LIB_DIR}/libgdd.so )
+   message("-- Found EPICS V3: ${EPICSV3_BASE_DIR}")
 else()
    set(DO_EPICS_V3 0)
 endif()
 
-
+message("-- Found boost: ${Boost_INCLUDE_DIRS}")
+message("-- Found python: ${PYTHON_LIBRARIES}")
+message("----------------------------------------------------------------------")
 
 # Configuration File
 configure_file (
@@ -81,33 +88,33 @@ include_directories(${PROJECT_SOURCE_DIR}/drivers/include)
 include_directories(${PROJECT_BINARY_DIR})
 include_directories(${Boost_INCLUDE_DIRS})
 include_directories(${PYTHON_INCLUDE_DIRS})
-include_directories(${EPICS_INCLUDES})
+include_directories(${EPICSV3_INCLUDES})
 
 # Create rogue core library
 add_library(rogue-core SHARED "")
 
-# Find sources
+# Find rogue core sources
 add_subdirectory(src/rogue)
 
 # Set output to TOP/lib
 set_target_properties(rogue-core PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/lib)
 
-# Link to boost, python and bzip
+# Link rogue core to boost, python and bzip
 TARGET_LINK_LIBRARIES(rogue-core LINK_PUBLIC ${Boost_LIBRARIES})
 TARGET_LINK_LIBRARIES(rogue-core LINK_PUBLIC ${PYTHON_LIBRARIES})
-TARGET_LINK_LIBRARIES(rogue-core LINK_PUBLIC ${EPICS_LIBS})
+TARGET_LINK_LIBRARIES(rogue-core LINK_PUBLIC ${EPICSV3_LIBRARIES})
 TARGET_LINK_LIBRARIES(rogue-core LINK_PUBLIC bz2)
 
 # Create rogue python library
 add_library(rogue SHARED "")
 
-# Find sources
+# Find python package sources
 add_subdirectory(src)
 
 # Set output to TOP/python, remove lib prefix
 set_target_properties(rogue PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/python)
 set_target_properties(rogue PROPERTIES PREFIX "")
 
-# Link to rogue
+# Link to rogue core
 TARGET_LINK_LIBRARIES(rogue LINK_PUBLIC rogue-core)
 

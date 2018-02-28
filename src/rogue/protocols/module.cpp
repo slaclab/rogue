@@ -20,6 +20,7 @@
  * ----------------------------------------------------------------------------
 **/
 
+#include <RogueConfig.h>
 #include <boost/python.hpp>
 #include <rogue/protocols/module.h>
 #include <rogue/protocols/packetizer/module.h>
