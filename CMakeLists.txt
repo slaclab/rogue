@@ -41,8 +41,12 @@ set(Boost_USE_MULTITHREADED ON)
 # Boost may need help on SLAC machines
 if(TARGET_DISTRO MATCHES "Debian")
    set(Boost_PYTHON_VERSION_TAG "-py${PYTHON_VERSION_MAJOR_MINOR}")
+   find_package(Boost 1.58 REQUIRED COMPONENTS system thread python)
 elseif (${BOOST_PATH})
    set(BOOST_ROOT:PATHNAME, ${BOOST_PATH})
+   find_package(Boost 1.58 REQUIRED COMPONENTS system thread python3)
+else
+   find_package(Boost 1.58 REQUIRED COMPONENTS system thread python3)
 endif()
 
 # Find boost
