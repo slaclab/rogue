@@ -118,3 +118,25 @@ set_target_properties(rogue PROPERTIES PREFIX "")
 # Link to rogue core
 TARGET_LINK_LIBRARIES(rogue LINK_PUBLIC rogue-core)
 
+# Create configuration (work in progress)
+
+# Add all targets to the build-tree export set
+#export(TARGETS rogue-core FILE ${PROJECT_BINARY_DIR}/RogueTargets.cmake)
+ 
+# Export the package for use from the build-tree
+# (this registers the build-tree with a global CMake-registry)
+#export(PACKAGE rogue)
+ 
+# Create the FooBarConfig.cmake and FooBarConfigVersion files
+#file(RELATIVE_PATH REL_INCLUDE_DIR ${INSTALL_CMAKE_DIR} ${INSTALL_INCLUDE_DIR})
+# ... for the build tree
+#set(CONF_INCLUDE_DIRS "${PROJECT_SOURCE_DIR}" "${PROJECT_BINARY_DIR}")
+#configure_file(FooBarConfig.cmake.in
+  "${PROJECT_BINARY_DIR}/FooBarConfig.cmake" @ONLY)
+# ... for the install tree
+#set(CONF_INCLUDE_DIRS "\${FOOBAR_CMAKE_DIR}/${REL_INCLUDE_DIR}")
+#configure_file(FooBarConfig.cmake.in
+#  "${PROJECT_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/FooBarConfig.cmake" @ONLY)
+# ... for both
+#configure_file(FooBarConfigVersion.cmake.in
+#  "${PROJECT_BINARY_DIR}/FooBarConfigVersion.cmake" @ONLY)

@@ -1,0 +1,13 @@
+# Rogue cmake configuration file. Used when compiling against the rogue library.
+
+# Compute paths
+get_filename_component(ROGUE_CMAKE_DIR ${CMAKE_CURRENT_LIST_FILE} PATH )
+set(ROGUE_INCLUDE_DIRS @CONF_INCLUDE_DIRS@)
+
+# Our library dependencies (contains definitions for IMPORTED targets)
+if(NOT TARGET rogue-core)
+   include("${ROGUE_CMAKE_DIR}/RogueTargets.cmake")
+endif()
+
+# Set librarires
+set(ROGUE_LIBRARIES rogue-core)
