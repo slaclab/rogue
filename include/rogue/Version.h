@@ -35,6 +35,7 @@ namespace rogue {
          static uint32_t _major;
          static uint32_t _minor;
          static uint32_t _maint;
+         static uint32_t _devel;
 
       public:
 
@@ -53,6 +54,7 @@ namespace rogue {
          static uint32_t getMajor ();
          static uint32_t getMinor ();
          static uint32_t getMaint ();
+         static uint32_t getDevel ();
    };
 }
 
