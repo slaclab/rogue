@@ -211,8 +211,9 @@ class Device(pr.Node,rim.Hub):
         pass
 
     def enableChanged(self,value):
-        if value is True:
-            self.writeAndVerifyBlocks(force=True, recurse=True, variable=None)
+        pass # Do nothing
+        #if value is True:
+        #    self.writeAndVerifyBlocks(force=True, recurse=True, variable=None)
 
     def writeBlocks(self, force=False, recurse=True, variable=None, checkEach=False):
         """
