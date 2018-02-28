@@ -81,7 +81,7 @@ include_directories(${EPICS_INCLUDES})
 add_library(rogue-core SHARED "")
 
 # Find sources
-add_subdirectory("src/rogue")
+add_subdirectory(src/rogue)
 
 # Set output to TOP/lib
 set_target_properties(rogue-core PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/lib)
@@ -96,7 +96,7 @@ TARGET_LINK_LIBRARIES(rogue-core LINK_PUBLIC bz2)
 add_library(rogue SHARED "")
 
 # Find sources
-add_subdirectory("src")
+add_subdirectory(src)
 
 # Set output to TOP/python, remove lib prefix
 set_target_properties(rogue PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/python)
