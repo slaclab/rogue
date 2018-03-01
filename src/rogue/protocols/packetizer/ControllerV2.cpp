@@ -108,8 +108,7 @@ void rpp::ControllerV2::transportRx( ris::FramePtr frame ) {
    tmpCrc |= uint32_t(data[size-4]) << 24;
 
    // Compute CRC
-   boost::crc_32_type result;
-   result.reset(crcInit_[tmpDest]);
+   boost::crc_basic<32> result( 0x04C11DB7, crcInit_[tmpDest], 0xFFFFFFFF, true, true );
    result.process_bytes(data,size-4);
    crc = result.checksum();
    crcInit_[tmpDest] = crc;
@@ -143,6 +142,7 @@ void rpp::ControllerV2::transportRx( ris::FramePtr frame ) {
 
    // First frame
    if ( transSof_[tmpDest] ) {
+      transSof_[tmpDest]  = false;   
       if ( (tranCount_[tmpDest] != 0) || !tmpSof || crcErr ) {
          log_->info("Dropping frame: gotDest=%i, gotSof=%i, crcErr=%i, expCount=%i, gotCount=%i", tmpDest, tmpSof, crcErr, tranCount_[tmpDest], tmpCount);
          dropCount_++;
@@ -271,8 +271,7 @@ void rpp::ControllerV2::applicationRx ( ris::FramePtr frame, uint8_t tDest ) {
       data[size-5] = 0;
       
       // Compute CRC
-      boost::crc_32_type result;
-      result.reset(crcInit);
+      boost::crc_basic<32> result( 0x04C11DB7, crcInit, 0xFFFFFFFF, true, true );
       result.process_bytes(data,size-4);
       crc = result.checksum();
       crcInit = crc;
