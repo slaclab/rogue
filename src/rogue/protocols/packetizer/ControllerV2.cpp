@@ -50,7 +50,7 @@ rpp::ControllerV2::~ControllerV2() { }
 void rpp::ControllerV2::transportRx( ris::FramePtr frame ) {
    ris::BufferPtr buff;
    uint32_t  size;
-   uint16_t  tmpCount;
+   uint32_t  tmpCount;
    uint8_t   tmpFuser;
    uint8_t   tmpLuser;
    uint8_t   tmpDest;
@@ -92,8 +92,8 @@ void rpp::ControllerV2::transportRx( ris::FramePtr frame ) {
    tmpId    = data[3];
 
    // Header word 1
-   tmpCount  = uint16_t(data[4]) << 0;
-   tmpCount |= uint16_t(data[5]) << 8;
+   tmpCount  = uint32_t(data[4]) << 0;
+   tmpCount |= uint32_t(data[5]) << 8;
    tmpSof    = ((data[7] & 0x80) ? true : false); // SOF (PACKETIZER2_HDR_SOF_BIT_C = 63)
    
    // Tail word 0
@@ -179,7 +179,10 @@ void rpp::ControllerV2::transportRx( ris::FramePtr frame ) {
       crcInit_[tmpDest]   = 0xFFFFFFFF;
       tranFrame_[tmpDest].reset();
    }
-   else tranCount_[tmpDest]++;
+   else {
+      tranCount_[tmpDest] = (tranCount_[tmpDest] + 1) & 0xFFFF;
+   }
+   
 }
 
 //! Frame received at application interface
