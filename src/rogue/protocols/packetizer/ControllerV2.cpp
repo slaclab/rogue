@@ -111,7 +111,7 @@ void rpp::ControllerV2::transportRx( ris::FramePtr frame ) {
    boost::crc_basic<32> result( 0x04C11DB7, crcInit_[tmpDest], 0xFFFFFFFF, true, true );
    result.process_bytes(data,size-4);
    crc = result.checksum();
-   crcInit_[tmpDest] = crc;
+   crcInit_[tmpDest] = result.get_interim_remainder();
    crcErr = (tmpCrc != crc);
    
    log_->debug("transportRx: Raw header: 0x%x, 0x%x, 0x%x, 0x%x, 0x%x, 0x%x, 0x%x, 0x%x",
@@ -130,7 +130,7 @@ void rpp::ControllerV2::transportRx( ris::FramePtr frame ) {
    buff->setTailRoom(buff->getTailRoom() + 8);
 
    // Drop frame and reset state if mismatch
-   if ( transSof_[tmpDest] != tmpSof) || crcErr || tmpCount != tranCount_[tmpDest] ) {
+   if ( ( transSof_[tmpDest] != tmpSof) || crcErr || tmpCount != tranCount_[tmpDest] ) {
       log_->info("Dropping frame: gotDest=%i, gotSof=%i, crcErr=%i, expCount=%i, gotCount=%i",tmpDest, tmpSof, crcErr, tranCount_[tmpDest], tmpCount);
       dropCount_++;
       transSof_[tmpDest]  = true;
@@ -277,7 +277,7 @@ void rpp::ControllerV2::applicationRx ( ris::FramePtr frame, uint8_t tDest ) {
       boost::crc_basic<32> result( 0x04C11DB7, crcInit, 0xFFFFFFFF, true, true );
       result.process_bytes(data,size-4);
       crc = result.checksum();
-      crcInit = crc;
+      crcInit = result.get_interim_remainder();
 
       // Tail  word 1
       data[size-1] = (crc >>  0) & 0xFF;
