@@ -7,7 +7,7 @@ source /afs/slac.stanford.edu/g/reseng/boost/1.64.0/settings.sh
 
 # The following are optional
 source /afs/slac.stanford.edu/g/reseng/zeromq/4.2.1/settings.sh
-source /afs/slac.stanford.edu/g/reseng/epics/base-R3-16-0/settings.sh
+source /afs/slac.stanford.edu/g/reseng/epics/base-R3-15-5-1-0/settings.sh
 
 # with local installations
 #source /path/to/python/3.5.2/settings.sh # (or) python2
