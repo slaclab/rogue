@@ -60,6 +60,7 @@ void rpp::ControllerV2::transportRx( ris::FramePtr frame ) {
    bool      crcErr;
    uint32_t  flags;
    uint32_t  last;
+   uint32_t  crc;
    uint32_t  tmpCrc;
    uint8_t * data;
 
@@ -79,7 +80,7 @@ void rpp::ControllerV2::transportRx( ris::FramePtr frame ) {
    if ( frame->getError() || // Check for frame ERROR
       (size < 24)         || // Check for min. size (64-bit header + 64-bit min. payload + 64-bit tail) 
       ((size&0x7) > 0)    || // Check for non 64-bit alignment
-      (data[0] != 0x2) ) {   // Check for invalid version
+      (data[0] != 0x82) ) {   // Check for invalid version: (Version=0x2)|(USE_CRC_HEAD_TAIL=0x80)
       log_->info("Dropping frame due to contents: error=0x%x, payload=%i, Version=0x%x",frame->getError(),size,data[0]);
       dropCount_++;
       return;
@@ -108,8 +109,11 @@ void rpp::ControllerV2::transportRx( ris::FramePtr frame ) {
 
    // Compute CRC
    boost::crc_32_type result;
+   result.reset(crcInit_[tmpDest]);
    result.process_bytes(data,size-4);
-   crcErr = (tmpCrc != result.checksum());
+   crc = result.checksum();
+   crcInit_[tmpDest] = crc;
+   crcErr = (tmpCrc != crc);
    
    log_->debug("transportRx: Raw header: 0x%x, 0x%x, 0x%x, 0x%x, 0x%x, 0x%x, 0x%x, 0x%x",
          data[0],data[1],data[2],data[3],data[4],data[5],data[6],data[7]);
@@ -127,20 +131,24 @@ void rpp::ControllerV2::transportRx( ris::FramePtr frame ) {
    buff->setTailRoom(buff->getTailRoom() + 8);
 
    // Drop frame and reset state if mismatch
-   if ( tmpCount > 0  && (tmpSof || crcErr || tmpCount != tranCount_[tmpDest] ) ) {
+   if ( (!transSof_[tmpDest])  && (tmpSof || crcErr || tmpCount != tranCount_[tmpDest] ) ) {
       log_->info("Dropping frame: gotDest=%i, gotSof=%i, crcErr=%i, expCount=%i, gotCount=%i",tmpDest, tmpSof, crcErr, tranCount_[tmpDest], tmpCount);
       dropCount_++;
+      transSof_[tmpDest]  = true;
       tranCount_[tmpDest] = 0;
+      crcInit_[tmpDest]   = 0xFFFFFFFF;
       tranFrame_[tmpDest].reset();
       return;
    }
 
    // First frame
-   if ( tmpCount == 0 ) {
-      if ( (tranCount_[tmpDest] != 0) || !tmpSof || crcErr) {
+   if ( transSof_[tmpDest] ) {
+      if ( (tranCount_[tmpDest] != 0) || !tmpSof || crcErr ) {
          log_->info("Dropping frame: gotDest=%i, gotSof=%i, crcErr=%i, expCount=%i, gotCount=%i", tmpDest, tmpSof, crcErr, tranCount_[tmpDest], tmpCount);
          dropCount_++;
+         transSof_[tmpDest]  = true;
          tranCount_[tmpDest] = 0;
+         crcInit_[tmpDest]   = 0xFFFFFFFF;
          tranFrame_[tmpDest].reset();         
          return;
       }
@@ -163,10 +171,12 @@ void rpp::ControllerV2::transportRx( ris::FramePtr frame ) {
       flags |= uint32_t(tmpLuser) << 8;
       frame->setFlags(flags);
 
+      transSof_[tmpDest]  = true;
       tranCount_[tmpDest] = 0;
       if ( app_[tmpDest] ) {
          app_[tmpDest]->pushFrame(tranFrame_[tmpDest]);
       }
+      crcInit_[tmpDest]   = 0xFFFFFFFF;
       tranFrame_[tmpDest].reset();
    }
    else tranCount_[tmpDest]++;
@@ -182,6 +192,7 @@ void rpp::ControllerV2::applicationRx ( ris::FramePtr frame, uint8_t tDest ) {
    uint8_t  lUser;
    uint8_t  tId;
    uint32_t crc;
+   uint32_t crcInit = 0xFFFFFFFF;
    uint32_t last;
    struct timeval startTime;
    struct timeval currTime;
@@ -242,7 +253,7 @@ void rpp::ControllerV2::applicationRx ( ris::FramePtr frame, uint8_t tDest ) {
       size = buff->getPayload();
 
       // Header word 0
-      data[0] = 0x2;
+      data[0] = 0x82; // (Version=0x2)|(USE_CRC_HEAD_TAIL=0x80)
       data[1] = fUser;
       data[2] = tDest;
       data[3] = tId;
@@ -261,8 +272,10 @@ void rpp::ControllerV2::applicationRx ( ris::FramePtr frame, uint8_t tDest ) {
       
       // Compute CRC
       boost::crc_32_type result;
+      result.reset(crcInit);
       result.process_bytes(data,size-4);
       crc = result.checksum();
+      crcInit = crc;
 
       // Tail  word 1
       data[size-1] = (crc >>  0) & 0xFF;

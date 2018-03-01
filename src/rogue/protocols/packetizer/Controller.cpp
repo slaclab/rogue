@@ -56,7 +56,11 @@ rpp::Controller::Controller ( uint32_t segmentSize, rpp::TransportPtr tran, rpp:
    headSize_ = headSize;
    tailSize_ = tailSize;
 
-   for ( x=0; x < 256; x++ ) tranCount_[x] = 0;
+   for ( x=0; x < 256; x++ ) {
+         transSof_[x]  = true;
+         crcInit_[x]   = 0xFFFFFFFF;
+         tranCount_[x] = 0;
+   }
 }
 
 //! Destructor
