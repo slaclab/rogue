@@ -50,7 +50,7 @@ rpp::ControllerV2::~ControllerV2() { }
 void rpp::ControllerV2::transportRx( ris::FramePtr frame ) {
    ris::BufferPtr buff;
    uint32_t  size;
-   uint32_t  tmpCount;
+   uint16_t  tmpCount;
    uint8_t   tmpFuser;
    uint8_t   tmpLuser;
    uint8_t   tmpDest;
@@ -92,8 +92,8 @@ void rpp::ControllerV2::transportRx( ris::FramePtr frame ) {
    tmpId    = data[3];
 
    // Header word 1
-   tmpCount  = uint32_t(data[4]) << 0;
-   tmpCount |= uint32_t(data[5]) << 8;
+   tmpCount  = uint16_t(data[4]) << 0;
+   tmpCount |= uint16_t(data[5]) << 8;
    tmpSof    = ((data[7] & 0x80) ? true : false); // SOF (PACKETIZER2_HDR_SOF_BIT_C = 63)
    
    // Tail word 0
@@ -120,7 +120,7 @@ void rpp::ControllerV2::transportRx( ris::FramePtr frame ) {
          data[size-8],data[size-7],data[size-6],data[size-5],data[size-4],data[size-3],data[size-2],data[size-1]);
    log_->debug("transportRx: Got frame: Fuser=0x%x, Dest=0x%x, Id=0x%x, Count=%i, Sof=%i, Luser=0x%x, Eof=%i, Last=%i, crcErr=%i",
          tmpFuser, tmpDest, tmpId, tmpCount, tmpSof, tmpLuser, tmpEof, last, crcErr);
-
+         
    // Adjust payload 
    if ( last != 8 ) buff->setPayload((size - 16) + last);
    else buff->setPayload(size-8);
@@ -130,7 +130,7 @@ void rpp::ControllerV2::transportRx( ris::FramePtr frame ) {
    buff->setTailRoom(buff->getTailRoom() + 8);
 
    // Drop frame and reset state if mismatch
-   if ( (!transSof_[tmpDest])  && (tmpSof || crcErr || tmpCount != tranCount_[tmpDest] ) ) {
+   if ( tmpSof  && ( !transSof_[tmpDest] || crcErr || tmpCount != tranCount_[tmpDest] ) ) {
       log_->info("Dropping frame: gotDest=%i, gotSof=%i, crcErr=%i, expCount=%i, gotCount=%i",tmpDest, tmpSof, crcErr, tranCount_[tmpDest], tmpCount);
       dropCount_++;
       transSof_[tmpDest]  = true;
