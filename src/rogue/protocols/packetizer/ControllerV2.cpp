@@ -130,7 +130,7 @@ void rpp::ControllerV2::transportRx( ris::FramePtr frame ) {
    buff->setTailRoom(buff->getTailRoom() + 8);
 
    // Drop frame and reset state if mismatch
-   if ( tmpSof  && ( !transSof_[tmpDest] || crcErr || tmpCount != tranCount_[tmpDest] ) ) {
+   if ( transSof_[tmpDest] != tmpSof) || crcErr || tmpCount != tranCount_[tmpDest] ) {
       log_->info("Dropping frame: gotDest=%i, gotSof=%i, crcErr=%i, expCount=%i, gotCount=%i",tmpDest, tmpSof, crcErr, tranCount_[tmpDest], tmpCount);
       dropCount_++;
       transSof_[tmpDest]  = true;
