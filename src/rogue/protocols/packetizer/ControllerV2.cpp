@@ -57,6 +57,7 @@ void rpp::ControllerV2::transportRx( ris::FramePtr frame ) {
    uint8_t   tmpId;
    bool      tmpEof;
    bool      tmpSof;
+   bool      enCrcDet;
    bool      crcErr;
    uint32_t  flags;
    uint32_t  last;
@@ -99,20 +100,24 @@ void rpp::ControllerV2::transportRx( ris::FramePtr frame ) {
    // Tail word 0
    tmpLuser = data[size-8];
    tmpEof   = ((data[size-7] & 0x1) ? true : false);
+   enCrcDet = ((data[size-7] & 0x2) ? true : false);
    last     = uint32_t(data[size-6]);
 
-   // Tail word 1
-   tmpCrc  = uint32_t(data[size-1]) << 0;
-   tmpCrc |= uint32_t(data[size-2]) << 8;
-   tmpCrc |= uint32_t(data[size-3]) << 16;
-   tmpCrc |= uint32_t(data[size-4]) << 24;
-
-   // Compute CRC
-   boost::crc_basic<32> result( 0x04C11DB7, crcInit_[tmpDest], 0xFFFFFFFF, true, true );
-   result.process_bytes(data,size-4);
-   crc = result.checksum();
-   crcInit_[tmpDest] = result.get_interim_remainder();
-   crcErr = (tmpCrc != crc);
+   if(enCrc_&&enCrcDet){
+      // Tail word 1
+      tmpCrc  = uint32_t(data[size-1]) << 0;
+      tmpCrc |= uint32_t(data[size-2]) << 8;
+      tmpCrc |= uint32_t(data[size-3]) << 16;
+      tmpCrc |= uint32_t(data[size-4]) << 24;
+      // Compute CRC
+      boost::crc_basic<32> result( 0x04C11DB7, crcInit_[tmpDest], 0xFFFFFFFF, true, true );
+      result.process_bytes(data,size-4);
+      crc = result.checksum();
+      crcInit_[tmpDest] = result.get_interim_remainder();
+      crcErr = (tmpCrc != crc);
+   } else {
+      crcErr = false;
+   }
    
    log_->debug("transportRx: Raw header: 0x%x, 0x%x, 0x%x, 0x%x, 0x%x, 0x%x, 0x%x, 0x%x",
          data[0],data[1],data[2],data[3],data[4],data[5],data[6],data[7]);
@@ -270,20 +275,27 @@ void rpp::ControllerV2::applicationRx ( ris::FramePtr frame, uint8_t tDest ) {
       // Tail  word 0
       data[size-8] = lUser;
       data[size-7] = (x == (frame->getCount() - 1)) ? 0x1 : 0x0; // EOF
+      if(enCrc_) data[size-7] |= 0x2; // Enable CRC
       data[size-6] = last;
       data[size-5] = 0;
       
-      // Compute CRC
-      boost::crc_basic<32> result( 0x04C11DB7, crcInit, 0xFFFFFFFF, true, true );
-      result.process_bytes(data,size-4);
-      crc = result.checksum();
-      crcInit = result.get_interim_remainder();
-
-      // Tail  word 1
-      data[size-1] = (crc >>  0) & 0xFF;
-      data[size-2] = (crc >>  8) & 0xFF;
-      data[size-3] = (crc >> 16) & 0xFF;
-      data[size-4] = (crc >> 24) & 0xFF;
+      if(enCrc_){
+         // Compute CRC
+         boost::crc_basic<32> result( 0x04C11DB7, crcInit, 0xFFFFFFFF, true, true );
+         result.process_bytes(data,size-4);
+         crc = result.checksum();
+         crcInit = result.get_interim_remainder();
+         // Tail  word 1
+         data[size-1] = (crc >>  0) & 0xFF;
+         data[size-2] = (crc >>  8) & 0xFF;
+         data[size-3] = (crc >> 16) & 0xFF;
+         data[size-4] = (crc >> 24) & 0xFF;
+      } else {
+         data[size-1] = 0;
+         data[size-2] = 0;
+         data[size-3] = 0;
+         data[size-4] = 0;
+      }
       
       log_->debug("applicationRx: Gen frame: Fuser=0x%x, Dest=0x%x, Id=0x%x, Count=%i, Sof=%i, Luser=0x%x, Eof=%i, Last=%i",
             fUser, tDest, tId, x, data[7], lUser, data[size-7], last);
