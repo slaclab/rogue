@@ -44,6 +44,8 @@ rhr::AxiStream::AxiStream ( std::string path, uint32_t dest ) {
    dest_    = dest;
    enSsi_   = true;
 
+   log_     = new Logging("rce.AxiStream");
+
    rogue::GilRelease noGil;
 
    if ( (fd_ = ::open(path.c_str(), O_RDWR)) < 0 )
@@ -65,6 +67,9 @@ rhr::AxiStream::AxiStream ( std::string path, uint32_t dest ) {
 
    // Start read thread
    thread_ = new boost::thread(boost::bind(&rhr::AxiStream::runThread, this));
+              
+   log_->critical("rogue.hardware.rce.AxiStream is being deprecated and will be removed in a future release.");
+   log_->critical("Please use rogue.hardware.axi.AxiStreamDma instead");
 }
 
 //! Close the device

@@ -1,12 +1,12 @@
 /**
  *-----------------------------------------------------------------------------
- * Title      : Data Card Stream Class 
+ * Title      : AXI DMA Interface Class
  * ----------------------------------------------------------------------------
- * File       : DataCard.h
+ * File       : AxiStreamDma.h
  * Created    : 2017-03-21
  * ----------------------------------------------------------------------------
  * Description:
- * Class for interfacing to DataCard Driver.
+ * Class for interfacing to AxiStreamDma Driver.
  * ----------------------------------------------------------------------------
  * This file is part of the rogue software platform. It is subject to 
  * the license terms in the LICENSE.txt file found in the top-level directory 
@@ -17,61 +17,58 @@
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
-#include <rogue/hardware/data/DataCard.h>
+#include <rogue/hardware/axi/AxiStreamDma.h>
 #include <rogue/interfaces/stream/Frame.h>
 #include <rogue/interfaces/stream/Buffer.h>
 #include <rogue/GeneralError.h>
 #include <boost/make_shared.hpp>
 #include <rogue/GilRelease.h>
 
-namespace rhd = rogue::hardware::data;
+namespace rha = rogue::hardware::axi;
 namespace ris = rogue::interfaces::stream;
 namespace bp  = boost::python;
 
 //! Class creation
-rhd::DataCardPtr rhd::DataCard::create (std::string path, uint32_t dest) {
-   rhd::DataCardPtr r = boost::make_shared<rhd::DataCard>(path,dest);
+rha::AxiStreamDmaPtr rha::AxiStreamDma::create (std::string path, uint32_t dest, bool ssiEnable) {
+   rha::AxiStreamDmaPtr r = boost::make_shared<rha::AxiStreamDma>(path,dest,ssiEnable);
    return(r);
 }
 
 //! Open the device. Pass destination.
-rhd::DataCard::DataCard ( std::string path, uint32_t dest ) {
+rha::AxiStreamDma::AxiStreamDma ( std::string path, uint32_t dest, bool ssiEnable) {
    uint8_t mask[DMA_MASK_SIZE];
 
    timeout_ = 1000000;
    dest_    = dest;
-   enSsi_   = true;
+   enSsi_   = ssiEnable;
 
-   log_     = new Logging("data.DataCard");
+   log_ = new rogue::Logging("axi.AxiStreamDma");
 
    rogue::GilRelease noGil;
 
    if ( (fd_ = ::open(path.c_str(), O_RDWR)) < 0 )
-      throw(rogue::GeneralError::open("DataCard::DataCard",path.c_str()));
+      throw(rogue::GeneralError::open("AxiStreamDma::AxiStreamDma",path.c_str()));
 
    if ( dmaCheckVersion(fd_) < 0 )
-      throw(rogue::GeneralError("DataCard::DataCard","Bad kernel driver version detected. Please re-compile kernel driver"));
+      throw(rogue::GeneralError("AxiStreamDma::AxiStreamDma","Bad kernel driver version detected. Please re-compile kernel driver"));
 
    dmaInitMaskBytes(mask);
    dmaAddMaskBytes(mask,dest_);
 
    if  ( dmaSetMaskBytes(fd_,mask) < 0 ) {
       ::close(fd_);
-      throw(rogue::GeneralError::dest("DataCard::DataCard",path.c_str(),dest_));
+      throw(rogue::GeneralError::dest("AxiStreamDma::AxiStreamDma",path.c_str(),dest_));
    }
 
    // Result may be that rawBuff_ = NULL
    rawBuff_ = dmaMapDma(fd_,&bCount_,&bSize_);
 
    // Start read thread
-   thread_ = new boost::thread(boost::bind(&rhd::DataCard::runThread, this));
-
-   log_->critical("rogue.hardware.data.DataCard is being deprecated and will be removed in a future release.");
-   log_->critical("Please use rogue.hardware.axi.AxiStreamDma instead");
+   thread_ = new boost::thread(boost::bind(&rha::AxiStreamDma::runThread, this));
 }
 
 //! Close the device
-rhd::DataCard::~DataCard() {
+rha::AxiStreamDma::~AxiStreamDma() {
    rogue::GilRelease noGil;
 
    // Stop read thread
@@ -83,22 +80,22 @@ rhd::DataCard::~DataCard() {
 }
 
 //! Set timeout for frame transmits in microseconds
-void rhd::DataCard::setTimeout(uint32_t timeout) {
+void rha::AxiStreamDma::setTimeout(uint32_t timeout) {
    timeout_ = timeout;
 }
 
-//! Enable SSI flags in first and last user fields
-void rhd::DataCard::enableSsi(bool enable) {
-   enSsi_ = enable;
+//! Set driver debug level
+void rha::AxiStreamDma::setDriverDebug(uint32_t level) {
+   dmaSetDebug(fd_,level);
 }
 
 //! Strobe ack line
-void rhd::DataCard::dmaAck() {
+void rha::AxiStreamDma::dmaAck() {
    if ( fd_ >= 0 ) axisReadAck(fd_);
 }
 
 //! Generate a buffer. Called from master
-ris::FramePtr rhd::DataCard::acceptReq ( uint32_t size, bool zeroCopyEn) {
+ris::FramePtr rha::AxiStreamDma::acceptReq ( uint32_t size, bool zeroCopyEn) {
    int32_t          res;
    fd_set           fds;
    struct timeval   tout;
@@ -140,7 +137,7 @@ ris::FramePtr rhd::DataCard::acceptReq ( uint32_t size, bool zeroCopyEn) {
             tout.tv_usec=(timeout_>0)?(timeout_ % 1000000):10000;
 
             if ( select(fd_+1,NULL,&fds,NULL,&tout) <= 0 ) {
-               if ( timeout_ > 0 ) throw(rogue::GeneralError::timeout("DataCard::acceptReq",timeout_));
+               if ( timeout_ > 0 ) throw(rogue::GeneralError::timeout("AxiStreamDma::acceptReq",timeout_));
                res = 0;
             }
             else {
@@ -161,7 +158,7 @@ ris::FramePtr rhd::DataCard::acceptReq ( uint32_t size, bool zeroCopyEn) {
 }
 
 //! Accept a frame from master
-void rhd::DataCard::acceptFrame ( ris::FramePtr frame ) {
+void rha::AxiStreamDma::acceptFrame ( ris::FramePtr frame ) {
    ris::BufferPtr buff;
    int32_t          res;
    fd_set           fds;
@@ -212,7 +209,7 @@ void rhd::DataCard::acceptFrame ( ris::FramePtr frame ) {
 
             // Write by passing buffer index to driver
             if ( dmaWriteIndex(fd_, meta & 0x3FFFFFFF, buff->getCount(), axisSetFlags(fuser, luser, cont), dest_) <= 0 ) {
-               throw(rogue::GeneralError("DataCard::acceptFrame","AXIS Write Call Failed"));
+               throw(rogue::GeneralError("AxiStreamDma::acceptFrame","AXIS Write Call Failed"));
             }
 
             // Mark buffer as stale
@@ -237,13 +234,13 @@ void rhd::DataCard::acceptFrame ( ris::FramePtr frame ) {
             tout.tv_usec=(timeout_ > 0)?(timeout_ % 1000000):10000;
 
             if ( select(fd_+1,NULL,&fds,NULL,&tout) <= 0 ) {
-               if ( timeout_ > 0) throw(rogue::GeneralError("DataCard::acceptFrame","AXIS Write Call Failed. Buffer Not Available!!!!"));
+               if ( timeout_ > 0) throw(rogue::GeneralError("AxiStreamDma::acceptFrame","AXIS Write Call Failed. Buffer Not Available!!!!"));
                res = 0;
             }
             else {
                // Write with buffer copy
                if ( (res = dmaWrite(fd_, buff->getRawData(), buff->getCount(), axisSetFlags(fuser, luser,0), dest_)) < 0 ) {
-                  throw(rogue::GeneralError("DataCard::acceptFrame","AXIS Write Call Failed!!!!"));
+                  throw(rogue::GeneralError("AxiStreamDma::acceptFrame","AXIS Write Call Failed!!!!"));
                }
             }
          }
@@ -255,7 +252,7 @@ void rhd::DataCard::acceptFrame ( ris::FramePtr frame ) {
 }
 
 //! Return a buffer
-void rhd::DataCard::retBuffer(uint8_t * data, uint32_t meta, uint32_t size) {
+void rha::AxiStreamDma::retBuffer(uint8_t * data, uint32_t meta, uint32_t size) {
    rogue::GilRelease noGil;
 
    // Buffer is zero copy as indicated by bit 31
@@ -275,7 +272,7 @@ void rhd::DataCard::retBuffer(uint8_t * data, uint32_t meta, uint32_t size) {
 }
 
 //! Run thread
-void rhd::DataCard::runThread() {
+void rha::AxiStreamDma::runThread() {
    ris::BufferPtr buff;
    ris::FramePtr  frame;
    fd_set         fds;
@@ -329,7 +326,6 @@ void rhd::DataCard::runThread() {
 
                // Attempt read, dest is not needed since only one lane/vc is open
                if ((res = dmaReadIndex(fd_, &meta, &rxFlags, &rxError, NULL)) > 0) {
-                  fuser = axisGetFuser(rxFlags);
                   luser = axisGetLuser(rxFlags);
                   cont  = axisGetCont(rxFlags);
 
@@ -340,7 +336,7 @@ void rhd::DataCard::runThread() {
 
             // Return of -1 is bad
             if ( res < 0 ) 
-               throw(rogue::GeneralError("DataCard::runThread","DMA Interface Failure!"));
+               throw(rogue::GeneralError("AxiStreamDma::runThread","DMA Interface Failure!"));
 
             // Read was successfull
             if ( res > 0 ) {
@@ -377,17 +373,17 @@ void rhd::DataCard::runThread() {
    } catch (boost::thread_interrupted&) { }
 }
 
-void rhd::DataCard::setup_python () {
+void rha::AxiStreamDma::setup_python () {
 
-   bp::class_<rhd::DataCard, rhd::DataCardPtr, bp::bases<ris::Master,ris::Slave>, boost::noncopyable >("DataCard",bp::init<std::string,uint32_t>())
-      .def("create",         &rhd::DataCard::create)
+   bp::class_<rha::AxiStreamDma, rha::AxiStreamDmaPtr, bp::bases<ris::Master,ris::Slave>, boost::noncopyable >("AxiStreamDma",bp::init<std::string,uint32_t,bool>())
+      .def("create",         &rha::AxiStreamDma::create)
       .staticmethod("create")
-      .def("enableSsi",      &rhd::DataCard::enableSsi)
-      .def("dmaAck",         &rhd::DataCard::dmaAck)
-      .def("setTimeout",     &rhd::DataCard::setTimeout)
+      .def("setDriverDebug", &rha::AxiStreamDma::setDriverDebug)
+      .def("dmaAck",         &rha::AxiStreamDma::dmaAck)
+      .def("setTimeout",     &rha::AxiStreamDma::setTimeout)
    ;
 
-   bp::implicitly_convertible<rhd::DataCardPtr, ris::MasterPtr>();
-   bp::implicitly_convertible<rhd::DataCardPtr, ris::SlavePtr>();
+   bp::implicitly_convertible<rha::AxiStreamDmaPtr, ris::MasterPtr>();
+   bp::implicitly_convertible<rha::AxiStreamDmaPtr, ris::SlavePtr>();
 }
 

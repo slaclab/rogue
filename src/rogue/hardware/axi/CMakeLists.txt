@@ -1,7 +1,7 @@
 # ----------------------------------------------------------------------------
 # Title      : ROGUE CMAKE Control
 # ----------------------------------------------------------------------------
-# File       : src/rogue/hardware/CMakeLists.txt
+# File       : src/rogue/hardware/axi/CMakeLists.txt
 # Created    : 2018-02-27
 # ----------------------------------------------------------------------------
 # This file is part of the rogue software package. It is subject to 
@@ -12,11 +12,6 @@
 # copied, modified, propagated, or distributed except according to the terms 
 # contained in the LICENSE.txt file.
 # ----------------------------------------------------------------------------
-
-add_subdirectory("data")
-add_subdirectory("pgp")
-add_subdirectory("rce")
-add_subdirectory("axi")
 
 file(GLOB rogue_SRC "*.cpp")
 target_sources(rogue-core PRIVATE ${rogue_SRC})
