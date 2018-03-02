@@ -21,10 +21,6 @@
 
 #include <boost/python.hpp>
 #include <rogue/protocols/epicsV3/module.h>
-namespace rpe = rogue::protocols::epicsV3;
-
-#ifdef DO_EPICSV3
-
 #include <rogue/protocols/epicsV3/Value.h>
 #include <rogue/protocols/epicsV3/Variable.h>
 #include <rogue/protocols/epicsV3/Command.h>
@@ -34,6 +30,7 @@ namespace rpe = rogue::protocols::epicsV3;
 #include <rogue/protocols/epicsV3/Slave.h>
 
 namespace bp  = boost::python;
+namespace rpe = rogue::protocols::epicsV3;
 
 void rpe::setup_module() {
 
@@ -55,8 +52,3 @@ void rpe::setup_module() {
    rpe::Slave::setup_python();
 }
 
-#else
-
-void rpe::setup_module() {}
-
-#endif

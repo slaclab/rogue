@@ -18,8 +18,6 @@
  * ----------------------------------------------------------------------------
 **/
 
-#ifdef DO_EPICSV3
-
 #include <boost/python.hpp>
 #include <rogue/protocols/epicsV3/Slave.h>
 #include <rogue/interfaces/stream/Frame.h>
@@ -190,4 +188,3 @@ void rpe::Slave::acceptFrame ( ris::FramePtr frame ) {
    updated();
 }
 
-#endif

@@ -18,8 +18,6 @@
  * ----------------------------------------------------------------------------
 **/
 
-#ifdef DO_EPICSV3
-
 #include <boost/python.hpp>
 #include <rogue/protocols/epicsV3/Master.h>
 #include <rogue/interfaces/stream/Frame.h>
@@ -166,6 +164,4 @@ void rpe::Master::valueSet() {
    // Should this be pushed to a queue for a worker thread to call slaves?
    sendFrame(frame);
 }
-
-#endif
 

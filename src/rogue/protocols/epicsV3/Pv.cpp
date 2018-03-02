@@ -18,8 +18,6 @@
  * ----------------------------------------------------------------------------
 **/
 
-#ifdef DO_EPICSV3
-
 #include <boost/python.hpp>
 #include <rogue/protocols/epicsV3/Pv.h>
 #include <rogue/protocols/epicsV3/Value.h>
@@ -108,4 +106,3 @@ void rpe::Pv::postEvent ( const casEventMask & select, const gdd & event ) {
    casPV::postEvent(select,event);
 }
 
-#endif
