@@ -33,10 +33,15 @@ namespace rogue {
     * in the system.
     */
    class GeneralError : public std::exception {
-         char text_[200];
+
+         static const uint32_t BuffSize = 600;
+
+         char text_[BuffSize];
+
       public:
          GeneralError (std::string src,std::string text);
 
+         static GeneralError create(std::string src, const char * fmt, ...);
          static GeneralError timeout(std::string src, uint32_t time);
          static GeneralError open(std::string src, std::string file);
          static GeneralError dest(std::string src, std::string file, uint32_t dest);
