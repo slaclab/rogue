@@ -40,6 +40,7 @@ rhd::DataCard::DataCard ( std::string path, uint32_t dest ) {
 
    timeout_ = 1000000;
    dest_    = dest;
+   enSsi_   = true;
 
    rogue::GilRelease noGil;
 
@@ -169,12 +170,12 @@ void rhd::DataCard::acceptFrame ( ris::FramePtr frame ) {
 
    rogue::GilRelease noGil;
 
+   // Get Flags
+   flags = frame->getFlags();
+
    // Go through each buffer in the frame
    for (x=0; x < frame->getCount(); x++) {
       buff = frame->getBuffer(x);
-
-      // Extract first and last user fields from flags
-      flags = buff->getFlags();
 
       // First buff
       if ( x == 0 ) {
@@ -348,7 +349,6 @@ void rhd::DataCard::runThread() {
 
                frame->setError(error);
                frame->setFlags(flags);
-               buff->setError(error);
                buff.reset();
 
                // If continue flag is not set, push frame and get a new empty frame
