@@ -63,6 +63,7 @@ rpp::Controller::Controller ( uint32_t segmentSize, rpp::TransportPtr tran, rpp:
 rpp::Controller::~Controller() { }
 
 //! Transport frame allocation request
+// Needs to be updated to support cascaded packetizers
 ris::FramePtr rpp::Controller::reqFrame ( uint32_t size ) {
    ris::FramePtr  lFrame;
    ris::FramePtr  rFrame;
@@ -72,9 +73,11 @@ ris::FramePtr rpp::Controller::reqFrame ( uint32_t size ) {
    lFrame = ris::Frame::create();
 
    // Request individual frames upstream with buffer = segmentSize_
-   // This will break cascading packetizers and needs to be fixed
    while ( lFrame->getAvailable() < size ) {
       rFrame = tran_->reqFrame (segmentSize_, false);
+
+      // Take only the first buffer. This will break a cascaded packetizer
+      // system. We need to fix this!
       buff = rFrame->getBuffer(0);
   
       // Buffer should support our header/tail plus at least one payload byte 

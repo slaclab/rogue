@@ -120,16 +120,17 @@ ris::FramePtr rpr::Controller::reqFrame ( uint32_t size ) {
    frame = tran_->reqFrame (nSize, false);
    buffer = frame->getBuffer(0);
 
-   // Make sure there is enough room in first buffer for our header
+   // Make sure there is enough room the buffer for our header
    if ( buffer->getAvailable() < rpr::Header::HeaderSize )
       throw(rogue::GeneralError::boundary("rss::Controller::reqFrame",
                                           rpr::Header::HeaderSize,
                                           buffer->getAvailable()));
 
-   // Update first buffer to include our header space.
+   // Update buffer to include our header space.
    buffer->adjustHeader(rpr::Header::HeaderSize);
 
-   // Trim multi buffer frames
+   // Trim multi buffer frames, RSSI can not work on payloads
+   // with multiple buffers.
    if ( frame->getCount() > 1 ) {
       frame = ris::Frame::create();
       frame->appendBuffer(buffer);
