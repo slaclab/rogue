@@ -287,6 +287,7 @@ void rhd::DataCard::runThread() {
 
    fuser = 0;
    luser = 0;
+   cont  = 0;
 
    // Preallocate empty frame
    frame = ris::Frame::create();
