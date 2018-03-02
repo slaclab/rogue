@@ -57,7 +57,6 @@ void rpp::ControllerV2::transportRx( ris::FramePtr frame ) {
    uint8_t   tmpId;
    bool      tmpEof;
    bool      tmpSof;
-   bool      enCrcDet;
    bool      crcErr;
    uint32_t  flags;
    uint32_t  last;
@@ -78,10 +77,10 @@ void rpp::ControllerV2::transportRx( ris::FramePtr frame ) {
    size = buff->getPayload();
 
    // Drop invalid data
-   if ( frame->getError() || // Check for frame ERROR
-      (size < 24)         || // Check for min. size (64-bit header + 64-bit min. payload + 64-bit tail) 
-      ((size&0x7) > 0)    || // Check for non 64-bit alignment
-      (data[0] != 0x82) ) {   // Check for invalid version: (Version=0x2)|(USE_CRC_HEAD_TAIL=0x80)
+   if ( frame->getError() ||     // Check for frame ERROR
+      (size < 24)         ||     // Check for min. size (64-bit header + 64-bit min. payload + 64-bit tail) 
+      ((size&0x7) > 0)    ||     // Check for non 64-bit alignment
+      ((data[0]&0xF) != 0x2) ) { // Check for invalid version only (ignore the CRC mode flag)
       log_->info("Dropping frame due to contents: error=0x%x, payload=%i, Version=0x%x",frame->getError(),size,data[0]);
       dropCount_++;
       return;
@@ -100,10 +99,9 @@ void rpp::ControllerV2::transportRx( ris::FramePtr frame ) {
    // Tail word 0
    tmpLuser = data[size-8];
    tmpEof   = ((data[size-7] & 0x1) ? true : false);
-   enCrcDet = ((data[size-7] & 0x2) ? true : false);
    last     = uint32_t(data[size-6]);
-
-   if(enCrc_&&enCrcDet){
+   
+   if(enIbCrc_){
       // Tail word 1
       tmpCrc  = uint32_t(data[size-1]) << 0;
       tmpCrc |= uint32_t(data[size-2]) << 8;
@@ -261,7 +259,8 @@ void rpp::ControllerV2::applicationRx ( ris::FramePtr frame, uint8_t tDest ) {
       size = buff->getPayload();
 
       // Header word 0
-      data[0] = 0x82; // (Version=0x2)|(USE_CRC_HEAD_TAIL=0x80)
+      data[0] = 0x2; // (Version=0x2)
+      if(enObCrc_) data[0] |= 0x20; // Enable CRC
       data[1] = fUser;
       data[2] = tDest;
       data[3] = tId;
@@ -275,11 +274,10 @@ void rpp::ControllerV2::applicationRx ( ris::FramePtr frame, uint8_t tDest ) {
       // Tail  word 0
       data[size-8] = lUser;
       data[size-7] = (x == (frame->getCount() - 1)) ? 0x1 : 0x0; // EOF
-      if(enCrc_) data[size-7] |= 0x2; // Enable CRC
       data[size-6] = last;
       data[size-5] = 0;
       
-      if(enCrc_){
+      if(enObCrc_){
          // Compute CRC
          boost::crc_basic<32> result( 0x04C11DB7, crcInit, 0xFFFFFFFF, true, true );
          result.process_bytes(data,size-4);
