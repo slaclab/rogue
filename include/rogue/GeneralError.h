@@ -33,7 +33,7 @@ namespace rogue {
     * in the system.
     */
    class GeneralError : public std::exception {
-         char text_[200];
+         char text_[600];
       public:
          GeneralError (std::string src,std::string text);
 

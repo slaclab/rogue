@@ -24,7 +24,7 @@ namespace bp = boost::python;
 PyObject * rogue::generalErrorObj = 0;
 
 rogue::GeneralError::GeneralError(std::string src,std::string text) {
-   snprintf(text_,200,"%s: General Error: %s",src.c_str(),text.c_str());
+   snprintf(text_,600,"%s: General Error: %s",src.c_str(),text.c_str());
 }
 
 rogue::GeneralError rogue::GeneralError::create(std::string src, const char * fmt, ...) {
