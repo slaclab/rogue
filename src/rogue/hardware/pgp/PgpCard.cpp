@@ -356,7 +356,6 @@ void rhp::PgpCard::runThread() {
             // Read was successfull
             if ( res > 0 ) {
                buff->setSize(res);
-               buff->setError(error);
                frame->setError(error | frame->getError());
                frame->appendBuffer(buff);
                buff.reset();
