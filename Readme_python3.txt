@@ -55,11 +55,6 @@ Install swig
 > make
 > make install
 
-Epics wrappers for python
-
-> source /path/to/epics/settings.csh (or settings.sh)
-> pip3 install pcaspy
-
 Zeromq wrappers for python (see Readme_zeromq.txt)
 
 > source /path/to/zeromq/settings.csh (or settings.sh)

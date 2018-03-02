@@ -79,8 +79,7 @@ namespace rogue {
                ~Controller();
 
                //! Transport frame allocation request
-               boost::shared_ptr<rogue::interfaces::stream::Frame>
-                  reqFrame ( uint32_t size, uint32_t maxBuffSize );
+               boost::shared_ptr<rogue::interfaces::stream::Frame> reqFrame ( uint32_t size);
 
                //! Frame received at transport interface
                virtual void transportRx( boost::shared_ptr<rogue::interfaces::stream::Frame> frame );

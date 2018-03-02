@@ -1,14 +1,13 @@
 /**
  *-----------------------------------------------------------------------------
- * Title      : Tem Card Info Class
+ * Title      : Rogue EPICS V3 Interface: Module Setup
  * ----------------------------------------------------------------------------
- * File       : Info.cpp
+ * File       : module.h
  * Author     : Ryan Herbst, rherbst@slac.stanford.edu
- * Created    : 2017-09-17
- * Last update: 2017-09-17
+ * Created    : 2018-01-31
  * ----------------------------------------------------------------------------
  * Description:
- * Wrapper for TemInfo structure
+ * Python module setup
  * ----------------------------------------------------------------------------
  * This file is part of the rogue software platform. It is subject to 
  * the license terms in the LICENSE.txt file found in the top-level directory 
@@ -19,31 +18,16 @@
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
+#ifndef __ROGUE_PROTOCOLS_EPICSV3_MODULE_H__
+#define __ROGUE_PROTOCOLS_EPICSV3_MODULE_H__
 
-#include <rogue/hardware/exo/Info.h>
-#include <boost/make_shared.hpp>
-#include <boost/python.hpp>
-
-namespace rhe = rogue::hardware::exo;
-namespace bp  = boost::python;
-
-//! Create the info class with pointer
-rhe::InfoPtr rhe::Info::create() {
-   rhe::InfoPtr r = boost::make_shared<rhe::Info>();
-   return(r);
+namespace rogue {
+   namespace protocols {
+      namespace epicsV3 {
+         void setup_module();
+      }
+   }
 }
 
-//! Return buildstring in string format
-std::string rhe::Info::buildString() {
-   return(std::string(buildStamp));
-}
-
-void rhe::Info::setup_python() {
-
-   bp::class_<rhe::Info, rhe::InfoPtr>("Info",bp::no_init)
-      .def_readonly("version",    &rhe::Info::version)
-      .def_readonly("promPrgEn",  &rhe::Info::promPrgEn)
-      .def("buildString",         &rhe::Info::buildString)
-   ; 
-}
+#endif
 

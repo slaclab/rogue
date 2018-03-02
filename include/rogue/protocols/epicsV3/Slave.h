@@ -1,14 +1,12 @@
 /**
  *-----------------------------------------------------------------------------
- * Title      : EXO TEM Base Class
+ * Title      : Rogue EPICS V3 Interface: Stream Slave Interface
  * ----------------------------------------------------------------------------
- * File       : TemData.h
- * Author     : Ryan Herbst, rherbst@slac.stanford.edu
- * Created    : 2017-09-17
- * Last update: 2017-09-17
+ * File       : Slave.h
+ * Created    : 2018-11-18
  * ----------------------------------------------------------------------------
  * Description:
- * Class for interfacing to Tem Driver.
+ * Stream slave to epics variables
  * ----------------------------------------------------------------------------
  * This file is part of the rogue software platform. It is subject to 
  * the license terms in the LICENSE.txt file found in the top-level directory 
@@ -19,41 +17,51 @@
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
-#ifndef __ROGUE_HARDWARE_EXO_TEM_DATA_H__
-#define __ROGUE_HARDWARE_EXO_TEM_DATA_H__
-#include <rogue/hardware/exo/Tem.h>
+
+#ifndef __ROGUE_PROTOCOLS_EPICSV3_SLAVE_H__
+#define __ROGUE_PROTOCOLS_EPICSV3_SLAVE_H__
+
 #include <boost/python.hpp>
 #include <boost/thread.hpp>
-#include <stdint.h>
+#include <casdef.h>
+#include <gdd.h>
+#include <gddApps.h>
+#include <gddAppFuncTable.h>
+#include <rogue/protocols/epicsV3/Value.h>
+#include <rogue/interfaces/stream/Slave.h>
+#include <rogue/interfaces/stream/Frame.h>
 
 namespace rogue {
-   namespace hardware {
-      namespace exo {
+   namespace protocols {
+      namespace epicsV3 {
 
-         //! PGP Card class
-         class TemData : public rogue::hardware::exo::Tem  {
-
+         class Slave: public Value, public rogue::interfaces::stream::Slave {
             public:
-
-               //! Class creation
-               static boost::shared_ptr<rogue::hardware::exo::TemData> create ();
 
                //! Setup class in python
                static void setup_python();
 
-               //! Creator
-               TemData();
+               //! Class creation
+               Slave ( std::string epicsName, uint32_t max, std::string type );
+               
+               ~Slave ();
 
-               //! Destructor
-               ~TemData();
+               // Lock held when called
+               void valueGet();
+
+               // Lock held when called
+               void valueSet();
+
+               //! Accept a frame from master
+               void acceptFrame ( boost::shared_ptr<rogue::interfaces::stream::Frame> frame );
          };
 
          // Convienence
-         typedef boost::shared_ptr<rogue::hardware::exo::TemData> TemDataPtr;
+         typedef boost::shared_ptr<rogue::protocols::epicsV3::Slave> SlavePtr;
 
       }
    }
-};
+}
 
 #endif
 

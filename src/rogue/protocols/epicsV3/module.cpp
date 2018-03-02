@@ -1,11 +1,10 @@
 /**
  *-----------------------------------------------------------------------------
- * Title      : Python Module
+ * Title      : Rogue EPICS V3 Interface:
  * ----------------------------------------------------------------------------
  * File       : module.cpp
  * Author     : Ryan Herbst, rherbst@slac.stanford.edu
- * Created    : 2016-08-08
- * Last update: 2016-08-08
+ * Created    : 2018-01-31
  * ----------------------------------------------------------------------------
  * Description:
  * Python module setup
@@ -20,33 +19,44 @@
  * ----------------------------------------------------------------------------
 **/
 
-#include <rogue/hardware/exo/module.h>
-#include <rogue/hardware/exo/Info.h>
-#include <rogue/hardware/exo/PciStatus.h>
-#include <rogue/hardware/exo/Tem.h>
-#include <rogue/hardware/exo/TemCmd.h>
-#include <rogue/hardware/exo/TemData.h>
 #include <boost/python.hpp>
+#include <rogue/protocols/epicsV3/module.h>
+namespace rpe = rogue::protocols::epicsV3;
+
+#ifdef DO_EPICSV3
+
+#include <rogue/protocols/epicsV3/Value.h>
+#include <rogue/protocols/epicsV3/Variable.h>
+#include <rogue/protocols/epicsV3/Command.h>
+#include <rogue/protocols/epicsV3/Server.h>
+#include <rogue/protocols/epicsV3/Pv.h>
+#include <rogue/protocols/epicsV3/Master.h>
+#include <rogue/protocols/epicsV3/Slave.h>
 
 namespace bp  = boost::python;
-namespace rhe = rogue::hardware::exo;
 
-void rhe::setup_module() {
+void rpe::setup_module() {
 
    // map the IO namespace to a sub-module
-   bp::object module(bp::handle<>(bp::borrowed(PyImport_AddModule("rogue.hardware.exo"))));
+   bp::object module(bp::handle<>(bp::borrowed(PyImport_AddModule("rogue.protocols.epicsV3"))));
 
    // make "from mypackage import class1" work
-   bp::scope().attr("exo") = module;
+   bp::scope().attr("epicsV3") = module;
 
    // set the current scope to the new sub-module
    bp::scope io_scope = module;
 
-   rhe::Info::setup_python();
-   rhe::PciStatus::setup_python();
-   rhe::Tem::setup_python();
-   rhe::TemCmd::setup_python();
-   rhe::TemData::setup_python();
-
+   rpe::Value::setup_python();
+   rpe::Variable::setup_python();
+   rpe::Command::setup_python();
+   rpe::Server::setup_python();
+   rpe::Pv::setup_python();
+   rpe::Master::setup_python();
+   rpe::Slave::setup_python();
 }
 
+#else
+
+void rpe::setup_module() {}
+
+#endif

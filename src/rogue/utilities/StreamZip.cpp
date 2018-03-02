@@ -52,7 +52,7 @@ void ru::StreamZip::acceptFrame ( ris::FramePtr frame ) {
    int32_t ret;
    
    // First request a new frame of the same size
-   ris::FramePtr newFrame = this->reqFrame(frame->getPayload(),true,0);
+   ris::FramePtr newFrame = this->reqFrame(frame->getPayload(),true);
 
    // Setup compression
    bz_stream strm;
@@ -102,8 +102,8 @@ void ru::StreamZip::acceptFrame ( ris::FramePtr frame ) {
 }
 
 //! Accept a new frame request. Forward request.
-ris::FramePtr ru::StreamZip::acceptReq ( uint32_t size, bool zeroCopyEn, uint32_t maxBuffSize ) {
-   return(this->reqFrame(size,zeroCopyEn,maxBuffSize));
+ris::FramePtr ru::StreamZip::acceptReq ( uint32_t size, bool zeroCopyEn ) {
+   return(this->reqFrame(size,zeroCopyEn));
 }
 
 void ru::StreamZip::setup_python() {

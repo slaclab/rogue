@@ -2,10 +2,8 @@
 #-----------------------------------------------------------------------------
 # Title      : PyRogue simulation support
 #-----------------------------------------------------------------------------
-# File       : pyrogue/simulation.py
-# Author     : Ryan Herbst, rherbst@slac.stanford.edu
+# File       : pyrogue/interfaces/simulation.py
 # Created    : 2016-09-29
-# Last update: 2016-09-29
 #-----------------------------------------------------------------------------
 # Description:
 # Module containing simulation support classes and routines
@@ -116,7 +114,7 @@ class StreamSim(rogue.interfaces.stream.Master,
             luser = bytearray(r[1])[0]
             data  = bytearray(r[2])
 
-            frame = self._reqFrame(len(data),True,0)
+            frame = self._reqFrame(len(data),True)
 
             if ( self._ssi and (luser & 0x1)): frame.setError(1)
 

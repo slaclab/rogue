@@ -58,20 +58,15 @@ uint32_t ris::Pool::getAllocCount() {
  * Pass total size required.
  * Pass flag indicating if zero copy buffers are acceptable
  */
-ris::FramePtr ris::Pool::acceptReq (uint32_t size, bool zeroCopyEn, uint32_t maxBuffSize ) {
+ris::FramePtr ris::Pool::acceptReq (uint32_t size, bool zeroCopyEn) {
    ris::FramePtr ret;
-   uint32_t bSize;
    uint32_t frSize;
 
    ret  = ris::Frame::create();
    frSize = 0;
 
-   // Determine buffer size
-   if ( maxBuffSize == 0 ) bSize = size;
-   else bSize = maxBuffSize;
-
-   while ( frSize < size ) ret->appendBuffer(allocBuffer(bSize,&frSize));
-
+   // Buffers may be smaller than frame
+   while ( frSize < size ) ret->appendBuffer(allocBuffer(size,&frSize));
    return(ret);
 }
 

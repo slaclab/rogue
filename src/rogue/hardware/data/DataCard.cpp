@@ -40,6 +40,7 @@ rhd::DataCard::DataCard ( std::string path, uint32_t dest ) {
 
    timeout_ = 1000000;
    dest_    = dest;
+   enSsi_   = true;
 
    rogue::GilRelease noGil;
 
@@ -92,7 +93,7 @@ void rhd::DataCard::dmaAck() {
 }
 
 //! Generate a buffer. Called from master
-ris::FramePtr rhd::DataCard::acceptReq ( uint32_t size, bool zeroCopyEn, uint32_t maxBuffSize) {
+ris::FramePtr rhd::DataCard::acceptReq ( uint32_t size, bool zeroCopyEn) {
    int32_t          res;
    fd_set           fds;
    struct timeval   tout;
@@ -102,12 +103,12 @@ ris::FramePtr rhd::DataCard::acceptReq ( uint32_t size, bool zeroCopyEn, uint32_
    uint32_t         buffSize;
 
    //! Adjust allocation size
-   if ( (maxBuffSize > bSize_) || (maxBuffSize == 0)) buffSize = bSize_;
-   else buffSize = maxBuffSize;
+   if ( size > bSize_) buffSize = bSize_;
+   else buffSize = size;
 
    // Zero copy is disabled. Allocate from memory.
    if ( zeroCopyEn == false || rawBuff_ == NULL ) {
-      frame = ris::Pool::acceptReq(size,false,buffSize);
+      frame = ris::Pool::acceptReq(size,false);
    }
 
    // Allocate zero copy buffers from driver
@@ -169,12 +170,12 @@ void rhd::DataCard::acceptFrame ( ris::FramePtr frame ) {
 
    rogue::GilRelease noGil;
 
+   // Get Flags
+   flags = frame->getFlags();
+
    // Go through each buffer in the frame
    for (x=0; x < frame->getCount(); x++) {
       buff = frame->getBuffer(x);
-
-      // Extract first and last user fields from flags
-      flags = buff->getFlags();
 
       // First buff
       if ( x == 0 ) {
@@ -281,10 +282,12 @@ void rhd::DataCard::runThread() {
    uint32_t       flags;
    uint32_t       cont;
    uint32_t       rxFlags;
+   uint32_t       rxError;
    struct timeval tout;
 
    fuser = 0;
    luser = 0;
+   cont  = 0;
 
    // Preallocate empty frame
    frame = ris::Frame::create();
@@ -310,7 +313,7 @@ void rhd::DataCard::runThread() {
                buff = allocBuffer(bSize_,NULL);
 
                // Attempt read, dest is not needed since only one lane/vc is open
-               res = dmaRead(fd_, buff->getRawData(), buff->getRawSize(), &rxFlags, NULL, NULL);
+               res = dmaRead(fd_, buff->getRawData(), buff->getRawSize(), &rxFlags, &rxError, NULL);
                fuser = axisGetFuser(rxFlags);
                luser = axisGetLuser(rxFlags);
                cont  = axisGetCont(rxFlags);
@@ -320,7 +323,7 @@ void rhd::DataCard::runThread() {
             else {
 
                // Attempt read, dest is not needed since only one lane/vc is open
-               if ((res = dmaReadIndex(fd_, &meta, &rxFlags, NULL, NULL)) > 0) {
+               if ((res = dmaReadIndex(fd_, &meta, &rxFlags, &rxError, NULL)) > 0) {
                   fuser = axisGetFuser(rxFlags);
                   luser = axisGetLuser(rxFlags);
                   cont  = axisGetCont(rxFlags);
@@ -330,6 +333,10 @@ void rhd::DataCard::runThread() {
                }
             }
 
+            // Return of -1 is bad
+            if ( res < 0 ) 
+               throw(rogue::GeneralError("DataCard::runThread","DMA Interface Failure!"));
+
             // Read was successfull
             if ( res > 0 ) {
                buff->setSize(res);
@@ -337,18 +344,20 @@ void rhd::DataCard::runThread() {
                flags = frame->getFlags();
                error = frame->getError();
 
+               // Receive error
+               error |= rxError;
+
                // First buffer of frame
                if ( frame->getCount() == 1 ) flags |= (fuser & 0xFF);
 
                // Last buffer of frame
                if ( cont == 0 ) {
                   flags |= ((luser << 8) & 0xFF00);
-                  if ( enSsi_ && ((luser & 0x1) != 0 )) error = 1;
+                  if ( enSsi_ && ((luser & 0x1) != 0 )) error |= 0x800000000;
                }
 
                frame->setError(error);
                frame->setFlags(flags);
-               buff->setError(error);
                buff.reset();
 
                // If continue flag is not set, push frame and get a new empty frame

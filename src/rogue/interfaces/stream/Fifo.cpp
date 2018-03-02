@@ -76,7 +76,7 @@ void ris::Fifo::acceptFrame ( ris::FramePtr frame ) {
    if ( trimSize_ != 0 && trimSize_ < size ) size = trimSize_;
 
    // Request a new frame to hold the data
-   nFrame = reqFrame(size,true,0);
+   nFrame = reqFrame(size,true);
 
    // Copy the frame
    nFrame->copyFrame(frame,0,size);

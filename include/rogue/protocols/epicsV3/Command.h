@@ -1,14 +1,12 @@
 /**
  *-----------------------------------------------------------------------------
- * Title      : TEM Card Info Class
+ * Title      : Rogue EPICS V3 Interface: Command Interface
  * ----------------------------------------------------------------------------
- * File       : Info.h
- * Author     : Ryan Herbst, rherbst@slac.stanford.edu
- * Created    : 2017-09-17
- * Last update: 2017-09-17
+ * File       : Command.h
+ * Created    : 2018-11-18
  * ----------------------------------------------------------------------------
  * Description:
- * Wrapper for TemInfo structure
+ * Command subclass of Variable & Value, allows commands to be executed from epics
  * ----------------------------------------------------------------------------
  * This file is part of the rogue software platform. It is subject to 
  * the license terms in the LICENSE.txt file found in the top-level directory 
@@ -19,32 +17,37 @@
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
-#ifndef __ROGUE_HARDWARE_EXO_INFO_H__
-#define __ROGUE_HARDWARE_EXO_INFO_H__
-#include <TemDriver.h>
+
+#ifndef __ROGUE_PROTOCOLS_EPICSV3_COMMAND_H__
+#define __ROGUE_PROTOCOLS_EPICSV3_COMMAND_H__
+
 #include <boost/python.hpp>
-#include <stdint.h>
+#include <boost/thread.hpp>
+#include <casdef.h>
+#include <gdd.h>
+#include <gddApps.h>
+#include <gddAppFuncTable.h>
+#include <rogue/protocols/epicsV3/Variable.h>
 
 namespace rogue {
-   namespace hardware {
-      namespace exo {
+   namespace protocols {
+      namespace epicsV3 {
 
-         //! Wrapper for TemInfo class. 
-         class Info : public TemInfo {
+         class Command: public Variable {
             public:
-
-               //! Create the info class with pointer
-               static boost::shared_ptr<rogue::hardware::exo::Info> create();
 
                //! Setup class in python
                static void setup_python();
 
-               //! Return buildstring in string format
-               std::string buildString();
+               //! Class creation
+               Command ( std::string epicsName, boost::python::object p );
+               
+               ~Command ();
          };
 
-         //! Convienence
-         typedef boost::shared_ptr<rogue::hardware::exo::Info> InfoPtr;
+         // Convienence
+         typedef boost::shared_ptr<rogue::protocols::epicsV3::Command> CommandPtr;
+
       }
    }
 }
