@@ -37,6 +37,7 @@ namespace rogue {
       public:
          GeneralError (std::string src,std::string text);
 
+         static GeneralError create(std::string src, const char * fmt, ...);
          static GeneralError timeout(std::string src, uint32_t time);
          static GeneralError open(std::string src, std::string file);
          static GeneralError dest(std::string src, std::string file, uint32_t dest);
