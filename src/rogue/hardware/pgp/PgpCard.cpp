@@ -225,6 +225,7 @@ void rhp::PgpCard::acceptFrame ( ris::FramePtr frame ) {
    // Go through each buffer in the frame
    for (x=0; x < frame->getCount(); x++) {
       buff = frame->getBuffer(x);
+      buff->zeroHeader();
 
       // Continue flag is set if this is not the last buffer
       if ( x == (frame->getCount() - 1) ) cont = 0;

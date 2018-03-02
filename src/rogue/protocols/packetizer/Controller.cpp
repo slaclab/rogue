@@ -72,6 +72,7 @@ ris::FramePtr rpp::Controller::reqFrame ( uint32_t size ) {
    lFrame = ris::Frame::create();
 
    // Request individual frames upstream with buffer = segmentSize_
+   // This will break cascading packetizers and needs to be fixed
    while ( lFrame->getAvailable() < size ) {
       rFrame = tran_->reqFrame (segmentSize_, false);
       buff = rFrame->getBuffer(0);
@@ -82,8 +83,8 @@ ris::FramePtr rpp::Controller::reqFrame ( uint32_t size ) {
                   (headSize_ + tailSize_ + 1), buff->getAvailable()));
 
       // Add 8 bytes to headroom
-      buff->setHeadRoom(buff->getHeadRoom() + headSize_);
-      buff->setTailRoom(buff->getTailRoom() + tailSize_);
+      buff->adjustHeader(headSize_);
+      buff->adjustTail(tailSize_);
 
       // Add buffer to return frame
       lFrame->appendBuffer(buff);

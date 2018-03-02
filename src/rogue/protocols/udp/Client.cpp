@@ -115,11 +115,11 @@ void rpu::Client::acceptFrame ( ris::FramePtr frame ) {
    // Go through each buffer in the frame
    for (x=0; x < frame->getCount(); x++) {
       buff = frame->getBuffer(x);
-      if ( buff->getCount() == 0 ) break;
+      if ( buff->getPayload() == 0 ) break;
 
       // Setup IOVs
-      msg_iov[0].iov_base = buff->getRawData();
-      msg_iov[0].iov_len  = buff->getCount();
+      msg_iov[0].iov_base = buff->getPayloadData();
+      msg_iov[0].iov_len  = buff->getPayload();
 
       // Keep trying since select call can fire 
       // but write fails because we did not win the buffer lock
@@ -166,10 +166,10 @@ void rpu::Client::runThread() {
 
          // Attempt receive
          buff = frame->getBuffer(0);
-         res = ::read(fd_, buff->getRawData(), maxSize_);
+         res = ::read(fd_, buff->getPayloadData(), maxSize_);
 
          if ( res > 0 ) {
-            buff->setSize(res);
+            buff->setPayload(res);
 
             // Push frame and get a new empty frame
             sendFrame(frame);

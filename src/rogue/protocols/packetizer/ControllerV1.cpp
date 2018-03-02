@@ -88,12 +88,12 @@ void rpp::ControllerV1::transportRx( ris::FramePtr frame ) {
    tmpLuser = data[buff->getPayload()-1] & 0x7F;
    tmpEof   = data[buff->getPayload()-1] & 0x80;
 
-   // Rem 8 bytes from headroom and 1 byte from tail
-   buff->setHeadRoom(buff->getHeadRoom() + 8);
-   buff->setTailRoom(buff->getTailRoom() + 1);
+   // Shorten message by one byte (before adjusting tail)
+   buff->adjustPayload(-1);
 
-   // Shorten message by one byte
-   buff->setPayload(buff->getPayload()-1);
+   // Adjust header and tail reservations
+   buff->adjustHeader(8);
+   buff->adjustTail(1);
 
    // Drop frame and reset state if mismatch
    if ( tmpCount > 0  && ( tmpIdx != tranIndex_ || tmpCount != tranCount_[0] ) ) {
@@ -187,12 +187,12 @@ void rpp::ControllerV1::applicationRx ( ris::FramePtr frame, uint8_t tDest ) {
       ris::FramePtr tFrame = ris::Frame::create();
       buff = frame->getBuffer(x);
 
-      // Rem 8 bytes from headroom
-      buff->setHeadRoom(buff->getHeadRoom() - 8);
-      buff->setTailRoom(buff->getTailRoom() - 1);
+      // Adjust header and tail, before setting new size
+      buff->adjustHeader(-8);
+      buff->adjustTail(-1);
       
       // Make payload one byte longer
-      buff->setPayload(buff->getPayload()+1);
+      buff->adjustPayload(1);
 
       size = buff->getPayload();
       data = buff->getPayloadData();

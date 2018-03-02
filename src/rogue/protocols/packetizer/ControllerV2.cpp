@@ -118,13 +118,13 @@ void rpp::ControllerV2::transportRx( ris::FramePtr frame ) {
    log_->debug("transportRx: Got frame: Fuser=0x%x, Dest=0x%x, Id=0x%x, Count=%i, Sof=%i, Luser=0x%x, Eof=%i, Last=%i, crcErr=%i",
          tmpFuser, tmpDest, tmpId, tmpCount, tmpSof, tmpLuser, tmpEof, last, crcErr);
 
-   // Adjust payload 
-   if ( last != 8 ) buff->setPayload((size - 16) + last);
-   else buff->setPayload(size-8);
+   // Shorten message by removing tail and adjusting for last value
+   // Do this before adjusting tail reservation
+   buff->adjustPayload(-8 + ((int32_t)last-8));
 
-   // Rem 8 bytes from headroom
-   buff->setHeadRoom(buff->getHeadRoom() + 8);
-   buff->setTailRoom(buff->getTailRoom() + 8);
+   // Add 8 bytes to headroom and tail reservation
+   buff->adjustHeader(8);
+   buff->adjustTail(8);
 
    // Drop frame and reset state if mismatch
    if ( tmpCount > 0  && (tmpSof || crcErr || tmpCount != tranCount_[tmpDest] ) ) {
@@ -229,14 +229,14 @@ void rpp::ControllerV2::applicationRx ( ris::FramePtr frame, uint8_t tDest ) {
       // Shift to 64-bit alignment
       if ( last != 0 ) size = (0xFFFFFFF8 & size) + 8;
       else last = 8;
-      
-      // Add tail to payload
+     
+      // Rem 8 bytes head and tail reservation before setting new size
+      buff->adjustHeader(-8);
+      buff->adjustTail(-8);
+
+      // Add tail to payload, set new size
       size += 8;
       buff->setPayload(size);
-
-      // Rem 8 bytes from headroom
-      buff->setHeadRoom(buff->getHeadRoom() - 8);
-      buff->setTailRoom(buff->getTailRoom() - 8);
 
       // Get data pointer
       data = buff->getPayloadData();

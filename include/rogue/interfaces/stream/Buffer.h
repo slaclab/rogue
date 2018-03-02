@@ -116,8 +116,22 @@ namespace rogue {
                //! Adjust header by passed value
                void adjustHeader(int32_t value);
 
+               //! Clear the header reservation
+               void zeroHeader();
+
                //! Adjust tail by passed value
                void adjustTail(int32_t value);
+
+               //! Clear the tail reservation
+               void zeroTail();
+
+               /*
+                * Get size of buffer that can hold
+                * payload data. This function 
+                * returns the full buffer size minus
+                * the head and tail reservation.
+                */
+               uint32_t getSize();
 
                /*
                 * Get available size for payload
@@ -137,23 +151,14 @@ namespace rogue {
                //! Set payload size (not including header)
                void setPayload(uint32_t size);
 
+               //! Adjust payload size
+               void adjustPayload(int32_t value);
+
                //! Set the buffer as full (minus tail reservation)
                void setPayloadFull();
 
                //! Set the buffer as empty (minus header reservation)
                void setPayloadEmpty();
-
-               //! Get flags
-               uint32_t getFlags();
-
-               //! Set flags
-               void setFlags(uint32_t flags);
-
-               //! Get error state
-               uint32_t getError();
-
-               //! Set error state
-               void setError(uint32_t error);
          };
 
          // Convienence

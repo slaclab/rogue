@@ -92,13 +92,13 @@ void ris::Buffer::setMeta(uint32_t meta) {
 void ris::Buffer::adjustHeader(int32_t value) {
 
    // Decreasing header size
-   if ( value < 0 && abs(value) > headRoom_ ) 
-         else throw(rogue::GeneralError::boundary("Buffer::adjustHeader",value,headRoom_));
+   if ( value < 0 && (uint32_t)abs(value) > headRoom_ ) 
+         throw(rogue::GeneralError::boundary("Buffer::adjustHeader",abs(value),headRoom_));
 
    // Increasing header size
-   if ( value > 0 && value > (rawSize_ - (headRoom_ + tailRoom_)) ) 
-         else throw(rogue::GeneralError::boundary("Buffer::adjustHeader",
-                    value, (rawSize_ - (headRoom_ + tailRoom_))));
+   if ( value > 0 && (uint32_t)value > (rawSize_ - (headRoom_ + tailRoom_)) ) 
+         throw(rogue::GeneralError::boundary("Buffer::adjustHeader",
+               (uint32_t)value, (rawSize_ - (headRoom_ + tailRoom_))));
 
    // Make adjustment
    headRoom_ += value;
@@ -107,20 +107,40 @@ void ris::Buffer::adjustHeader(int32_t value) {
    if ( payload_ < headRoom_ ) payload_ = headRoom_;
 }
 
+//! Clear the header reservation
+void ris::Buffer::zeroHeader() {
+   headRoom_ = 0;
+}
+
 //! Adjust tail by passed value
 void ris::Buffer::adjustTail(int32_t value) {
 
    // Decreasing tail size
-   if ( value < 0 && abs(value) > tailRoom_ ) 
-         else throw(rogue::GeneralError::boundary("Buffer::adjustTail",value,tailRoom_));
+   if ( value < 0 && (uint32_t)abs(value) > tailRoom_ ) 
+         throw(rogue::GeneralError::boundary("Buffer::adjustTail",abs(value),tailRoom_));
 
    // Increasing tail size
-   if ( value > 0 && value > (rawSize_ - (headRoom_ + tailRoom_)) ) 
-         else throw(rogue::GeneralError::boundary("Buffer::adjustTail",
-                    value, (rawSize_ - (headRoom_ + tailRoom_))));
+   if ( value > 0 && (uint32_t)value > (rawSize_ - (headRoom_ + tailRoom_)) ) 
+         throw(rogue::GeneralError::boundary("Buffer::adjustTail",
+               (uint32_t)value, (rawSize_ - (headRoom_ + tailRoom_))));
 
    // Make adjustment
    tailRoom_ += value;
+}
+
+//! Clear the tail reservation
+void ris::Buffer::zeroTail() {
+   tailRoom_ = 0;
+}
+
+/*
+ * Get size of buffer that can hold
+ * payload data. This function 
+ * returns the full buffer size minus
+ * the head and tail reservation.
+ */
+uint32_t ris::Buffer::getSize() {
+   return(payload_ - (headRoom_ + tailRoom_));
 }
 
 /*
@@ -153,10 +173,19 @@ uint32_t ris::Buffer::getPayload() {
 //! Set payload size (not including header)
 void ris::Buffer::setPayload(uint32_t size) {
    if ( size > (rawSize_ - (headRoom_ + tailRoom_) ) ) 
-      else throw(rogue::GeneralError::boundary("Buffer::setPayload",
-                 size, (rawSize_ - (headRoom_ + tailRoom_))));
+      throw(rogue::GeneralError::boundary("Buffer::setPayload",
+            size, (rawSize_ - (headRoom_ + tailRoom_))));
 
    payload_ = size + headRoom_;
+}
+
+//! Adjust payload size
+void ris::Buffer::adjustPayload(int32_t value) {
+   if ( value < 0 && (uint32_t)abs(value) > getPayload())
+      throw(rogue::GeneralError::boundary("Buffer::adjustPayload",
+            abs(value), (getPayload())));
+
+   setPayload(getPayload() + value);
 }
 
 //! Set the buffer as full (minus tail reservation)

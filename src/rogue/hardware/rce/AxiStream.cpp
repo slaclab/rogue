@@ -178,6 +178,7 @@ void rhr::AxiStream::acceptFrame ( ris::FramePtr frame ) {
    // Go through each buffer in the frame
    for (x=0; x < frame->getCount(); x++) {
       buff = frame->getBuffer(x);
+      buff->zeroHeader();
 
       // First buff
       if ( x == 0 ) {
@@ -208,7 +209,7 @@ void rhr::AxiStream::acceptFrame ( ris::FramePtr frame ) {
          if ( (meta & 0x40000000) == 0 ) {
 
             // Write by passing buffer index to driver
-            if ( dmaWriteIndex(fd_, meta & 0x3FFFFFFF, buff->getCount(), axisSetFlags(fuser, luser,0), dest_) <= 0 ) {
+            if ( dmaWriteIndex(fd_, meta & 0x3FFFFFFF, buff->getPayload(), axisSetFlags(fuser, luser,0), dest_) <= 0 ) {
                throw(rogue::GeneralError("AxiStream::acceptFrame","AXIS Write Call Failed"));
             }
 
@@ -239,7 +240,7 @@ void rhr::AxiStream::acceptFrame ( ris::FramePtr frame ) {
             }
             else {
                // Write with buffer copy
-               if ( (res = dmaWrite(fd_, buff->getRawData(), buff->getCount(), axisSetFlags(fuser, luser,cont), dest_)) < 0 ) {
+               if ( (res = dmaWrite(fd_, buff->getPayloadData(), buff->getPayload(), axisSetFlags(fuser, luser,cont), dest_)) < 0 ) {
                   throw(rogue::GeneralError("AxiStream::acceptFrame","AXIS Write Call Failed"));
                }
             }
@@ -315,7 +316,7 @@ void rhr::AxiStream::runThread() {
                buff = allocBuffer(bSize_,NULL);
 
                // Attempt read, dest is not needed since only one lane/vc is open
-               res = dmaRead(fd_, buff->getRawData(), buff->getRawSize(), &rxFlags, &rxError, NULL);
+               res = dmaRead(fd_, buff->getPayloadData(), buff->getAvailable(), &rxFlags, &rxError, NULL);
                fuser = axisGetFuser(rxFlags);
                luser = axisGetLuser(rxFlags);
                cont  = axisGetCont(rxFlags);
@@ -341,7 +342,7 @@ void rhr::AxiStream::runThread() {
 
             // Read was successfull
             if ( res > 0 ) {
-               buff->setSize(res);
+               buff->setPayload(res);
                frame->appendBuffer(buff);
                flags = frame->getFlags();
                error = frame->getError();
