@@ -282,6 +282,7 @@ void rhd::DataCard::runThread() {
    uint32_t       flags;
    uint32_t       cont;
    uint32_t       rxFlags;
+   uint32_t       rxError;
    struct timeval tout;
 
    fuser = 0;
@@ -311,7 +312,7 @@ void rhd::DataCard::runThread() {
                buff = allocBuffer(bSize_,NULL);
 
                // Attempt read, dest is not needed since only one lane/vc is open
-               res = dmaRead(fd_, buff->getRawData(), buff->getRawSize(), &rxFlags, NULL, NULL);
+               res = dmaRead(fd_, buff->getRawData(), buff->getRawSize(), &rxFlags, &rxError, NULL);
                fuser = axisGetFuser(rxFlags);
                luser = axisGetLuser(rxFlags);
                cont  = axisGetCont(rxFlags);
@@ -321,7 +322,7 @@ void rhd::DataCard::runThread() {
             else {
 
                // Attempt read, dest is not needed since only one lane/vc is open
-               if ((res = dmaReadIndex(fd_, &meta, &rxFlags, NULL, NULL)) > 0) {
+               if ((res = dmaReadIndex(fd_, &meta, &rxFlags, &rxError, NULL)) > 0) {
                   fuser = axisGetFuser(rxFlags);
                   luser = axisGetLuser(rxFlags);
                   cont  = axisGetCont(rxFlags);
@@ -331,6 +332,10 @@ void rhd::DataCard::runThread() {
                }
             }
 
+            // Return of -1 is bad
+            if ( res < 0 ) 
+               throw(rogue::GeneralError("DataCard::runThread","DMA Interface Failure!"));
+
             // Read was successfull
             if ( res > 0 ) {
                buff->setSize(res);
@@ -338,13 +343,16 @@ void rhd::DataCard::runThread() {
                flags = frame->getFlags();
                error = frame->getError();
 
+               // Receive error
+               error |= rxError;
+
                // First buffer of frame
                if ( frame->getCount() == 1 ) flags |= (fuser & 0xFF);
 
                // Last buffer of frame
                if ( cont == 0 ) {
                   flags |= ((luser << 8) & 0xFF00);
-                  if ( enSsi_ && ((luser & 0x1) != 0 )) error = 1;
+                  if ( enSsi_ && ((luser & 0x1) != 0 )) error |= 0x800000000;
                }
 
                frame->setError(error);
