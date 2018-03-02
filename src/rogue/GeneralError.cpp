@@ -24,66 +24,66 @@ namespace bp = boost::python;
 PyObject * rogue::generalErrorObj = 0;
 
 rogue::GeneralError::GeneralError(std::string src,std::string text) {
-   snprintf(text_,600,"%s: General Error: %s",src.c_str(),text.c_str());
+   snprintf(text_,BuffSize,"%s: General Error: %s",src.c_str(),text.c_str());
 }
 
 rogue::GeneralError rogue::GeneralError::create(std::string src, const char * fmt, ...) {
-   char temp[500];
+   char temp[BuffSize];
    va_list args;
 
    va_start(args,fmt);
-   vsnprintf(temp,500,fmt,args);
+   vsnprintf(temp,BuffSize,fmt,args);
    va_end(args);
 
    return(rogue::GeneralError(src,temp));
 }
 
 rogue::GeneralError rogue::GeneralError::timeout(std::string src, uint32_t time) {
-   char temp[100];
+   char temp[BuffSize];
 
-   snprintf(temp,100,"timeout after %i microseconds",time);
+   snprintf(temp,BuffSize,"timeout after %i microseconds",time);
    return(rogue::GeneralError(src,temp));
 }
 
 rogue::GeneralError rogue::GeneralError::open(std::string src, std::string file) {
-   char temp[100];
+   char temp[BuffSize];
 
-   snprintf(temp,100,"failed to open file %s",file.c_str());
+   snprintf(temp,BuffSize,"failed to open file %s",file.c_str());
    return(rogue::GeneralError(src,temp));
 }
 
 rogue::GeneralError rogue::GeneralError::dest(std::string src, std::string file, uint32_t dest) {
-   char temp[100];
+   char temp[BuffSize];
 
-   snprintf(temp,100,"failed to open file %s with dest 0x%x",file.c_str(),dest);
+   snprintf(temp,BuffSize,"failed to open file %s with dest 0x%x",file.c_str(),dest);
    return(rogue::GeneralError(src,temp));
 }
 
 rogue::GeneralError rogue::GeneralError::boundary(std::string src, uint32_t position, uint32_t limit) {
-   char temp[100];
+   char temp[BuffSize];
 
-   snprintf(temp,100,"boundary error. Position = %i, Limit = %i",position,limit);
+   snprintf(temp,BuffSize,"boundary error. Position = %i, Limit = %i",position,limit);
    return(rogue::GeneralError(src,temp));
 }
 
 rogue::GeneralError rogue::GeneralError::allocation(std::string src, uint32_t size) {
-   char temp[100];
+   char temp[BuffSize];
 
-   snprintf(temp,100,"failed to allocate size = %i",size);
+   snprintf(temp,BuffSize,"failed to allocate size = %i",size);
    return(rogue::GeneralError(src,temp));
 }
 
 rogue::GeneralError rogue::GeneralError::network(std::string src, std::string host, uint16_t port) {
-   char temp[100];
+   char temp[BuffSize];
 
-   snprintf(temp,100,"UDP connect error. Host = %s, Port = %i",host.c_str(),port);
+   snprintf(temp,BuffSize,"UDP connect error. Host = %s, Port = %i",host.c_str(),port);
    return(rogue::GeneralError(src,temp));
 }
 
 rogue::GeneralError rogue::GeneralError::ret(std::string src, std::string text, int32_t ret) {
-   char temp[100];
+   char temp[BuffSize];
 
-   snprintf(temp,100,"%s. Ret=%i",text.c_str(),ret);
+   snprintf(temp,BuffSize,"%s. Ret=%i",text.c_str(),ret);
    return(rogue::GeneralError(src,temp));
 }
 
