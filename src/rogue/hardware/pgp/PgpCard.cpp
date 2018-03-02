@@ -240,7 +240,7 @@ void rhp::PgpCard::acceptFrame ( ris::FramePtr frame ) {
          if ( (meta & 0x40000000) == 0 ) {
 
             // Write by passing buffer index to driver
-            if ( dmaWriteIndex(fd_, meta & 0x3FFFFFFF, buff->getCount(), pgpSetFlags(cont),pgpSetDest(lane_, vc_)) <= 0 )
+            if ( dmaWriteIndex(fd_, meta & 0x3FFFFFFF, buff->getPayload(), pgpSetFlags(cont),pgpSetDest(lane_, vc_)) <= 0 )
                throw(rogue::GeneralError("PgpCard::acceptFrame","PGP Write Call Failed"));
 
             // Mark buffer as stale
@@ -270,7 +270,7 @@ void rhp::PgpCard::acceptFrame ( ris::FramePtr frame ) {
             }
             else {
                // Write with buffer copy
-               if ( (res = dmaWrite(fd_, buff->getRawData(), buff->getCount(), pgpSetFlags(cont), pgpSetDest(lane_, vc_)) < 0 ) )
+               if ( (res = dmaWrite(fd_, buff->getPayloadData(), buff->getPayload(), pgpSetFlags(cont), pgpSetDest(lane_, vc_)) < 0 ) )
                   throw(rogue::GeneralError("PgpCard::acceptFrame","PGP Write Call Failed"));
             } 
          }
@@ -337,7 +337,7 @@ void rhp::PgpCard::runThread() {
                buff = allocBuffer(bSize_,NULL);
 
                // Attempt read, lane and vc not needed since only one lane/vc is open
-               res = dmaRead(fd_, buff->getRawData(), buff->getRawSize(), &flags, &error, NULL);
+               res = dmaRead(fd_, buff->getPayloadData(), buff->getAvailable(), &flags, &error, NULL);
                cont = pgpGetCont(flags);
             }
 
@@ -355,8 +355,7 @@ void rhp::PgpCard::runThread() {
 
             // Read was successfull
             if ( res > 0 ) {
-               buff->setSize(res);
-               buff->setError(error);
+               buff->setPayload(res);
                frame->setError(error | frame->getError());
                frame->appendBuffer(buff);
                buff.reset();
