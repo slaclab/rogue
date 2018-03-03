@@ -144,7 +144,7 @@ void rpu::Server::acceptFrame ( ris::FramePtr frame ) {
             res = 0;
          }
          else if ( (res = sendmsg(fd_,&msg,0)) < 0 )
-            throw(rogue::GeneralError("Server::acceptFrame","UDP Write Call Failed"));
+            log_->warning("UDP Write Call Failed");
       }
 
       // Continue while write result was zero
