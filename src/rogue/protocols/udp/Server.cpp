@@ -56,6 +56,11 @@ rpu::Server::Server (uint16_t port, uint16_t maxSize) {
    local_.sin_addr.s_addr=htonl(INADDR_ANY);
    local_.sin_port=htons(port_);
 
+   memset(&remote_,0,sizeof(struct sockaddr_in));
+
+   if (bind(fd_, (struct sockaddr *) &local_, sizeof(local_))<0) 
+      throw(rogue::GeneralError::network("Server::Server","0.0.0.0",port_));
+
    // Kernel assigns port
    if ( port_ == 0 ) {
       len = sizeof(local_);
@@ -63,11 +68,6 @@ rpu::Server::Server (uint16_t port, uint16_t maxSize) {
          throw(rogue::GeneralError::network("Server::Server","0.0.0.0",port_));
       port_ = ntohs(local_.sin_port);
    }
-
-   memset(&remote_,0,sizeof(struct sockaddr_in));
-
-   if (bind(fd_, (struct sockaddr *) &local_, sizeof(local_))<0) 
-      throw(rogue::GeneralError::network("Server::Server","0.0.0.0",port_));
 
    // Fixed size buffer pool
    enBufferPool(maxSize_,1024*256);
