@@ -38,7 +38,7 @@ namespace rogue {
          class DataCard : public rogue::interfaces::stream::Master, 
                           public rogue::interfaces::stream::Slave {
 
-                            rogue::Logging * log_;
+               rogue::Logging * log_;
 
                //! DataCard file descriptor
                int32_t  fd_;

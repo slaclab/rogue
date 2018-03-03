@@ -1,12 +1,9 @@
 /**
  *-----------------------------------------------------------------------------
- * Title      : Data Card Memory Mapped Access
+ * Title      : AXI Memory Mapped Access
  * ----------------------------------------------------------------------------
- * File       : DataMap.h
+ * File       : AxiMemMap.cpp
  * Created    : 2017-03-21
- * ----------------------------------------------------------------------------
- * Description:
- * Class for interfacing to data card mapped memory space.
  * ----------------------------------------------------------------------------
  * This file is part of the rogue software platform. It is subject to 
  * the license terms in the LICENSE.txt file found in the top-level directory 
@@ -17,7 +14,7 @@
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
-#include <rogue/hardware/data/DataMap.h>
+#include <rogue/hardware/axi/AxiMemMap.h>
 #include <rogue/interfaces/memory/Constants.h>
 #include <rogue/GeneralError.h>
 #include <boost/make_shared.hpp>
@@ -29,34 +26,31 @@
 #include <fcntl.h>
 #include <DataDriver.h>
 
-namespace rhd = rogue::hardware::data;
+namespace rha = rogue::hardware::axi;
 namespace rim = rogue::interfaces::memory;
 namespace bp  = boost::python;
 
 //! Class creation
-rhd::DataMapPtr rhd::DataMap::create (std::string path) {
-   rhd::DataMapPtr r = boost::make_shared<rhd::DataMap>(path);
+rha::AxiMemMapPtr rha::AxiMemMap::create (std::string path) {
+   rha::AxiMemMapPtr r = boost::make_shared<rha::AxiMemMap>(path);
    return(r);
 }
 
 //! Creator
-rhd::DataMap::DataMap(std::string path) : rim::Slave(4,0xFFFFFFFF) {
+rha::AxiMemMap::AxiMemMap(std::string path) : rim::Slave(4,0xFFFFFFFF) {
    fd_ = ::open(path.c_str(), O_RDWR);
-   log_ = new rogue::Logging("data.DataMap");
-   if ( fd_ < 0 ) throw(rogue::GeneralError::open("DataMap::DataMap",path));
-
-   log_->critical("rogue.hardware.data.DataMap is being deprecated and will be removed in a future release.");
-   log_->critical("Please use rogue.hardware.axi.AxiMemMap instead");
+   log_ = new rogue::Logging("axi.AxiMemMap");
+   if ( fd_ < 0 ) throw(rogue::GeneralError::open("AxiMemMap::AxiMemMap",path));
 }
 
 //! Destructor
-rhd::DataMap::~DataMap() {
+rha::AxiMemMap::~AxiMemMap() {
    ::close(fd_);
 }
 
 //! Post a transaction
-void rhd::DataMap::doTransaction(uint32_t id, boost::shared_ptr<rogue::interfaces::memory::Master> master, 
-                                   uint64_t address, uint32_t size, uint32_t type) {
+void rha::AxiMemMap::doTransaction(uint32_t id, boost::shared_ptr<rogue::interfaces::memory::Master> master, 
+                                uint64_t address, uint32_t size, uint32_t type) {
    uint32_t count;
    uint32_t data;
    int32_t  ret;
@@ -76,17 +70,20 @@ void rhd::DataMap::doTransaction(uint32_t id, boost::shared_ptr<rogue::interface
       count += 4;
    }
 
+   if ( ret != 0 ) 
+      throw rogue::GeneralError::create("AxiMemMap::doTransaction","Error accessing register space. Check driver permissions");
+
    log_->debug("Transaction id=0x%08x, addr 0x%08x. Size=%i, type=%i, data=0x%08x",id,address,size,type,data);
    master->doneTransaction(id,(ret==0)?0:1);
 }
 
-void rhd::DataMap::setup_python () {
+void rha::AxiMemMap::setup_python () {
 
-   bp::class_<rhd::DataMap, rhd::DataMapPtr, bp::bases<rim::Slave>, boost::noncopyable >("DataMap",bp::init<std::string>())
-      .def("create",         &rhd::DataMap::create)
+   bp::class_<rha::AxiMemMap, rha::AxiMemMapPtr, bp::bases<rim::Slave>, boost::noncopyable >("AxiMemMap",bp::init<std::string>())
+      .def("create",         &rha::AxiMemMap::create)
       .staticmethod("create")
    ;
 
-   bp::implicitly_convertible<rhd::DataMapPtr, rim::SlavePtr>();
+   bp::implicitly_convertible<rha::AxiMemMapPtr, rim::SlavePtr>();
 }
 

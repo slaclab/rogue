@@ -42,9 +42,13 @@ rhr::MapMemoryPtr rhr::MapMemory::create () {
 
 //! Creator
 rhr::MapMemory::MapMemory() : rim::Slave(4,0xFFFFFFFF) {
+
    fd_ = ::open("/dev/mem", O_RDWR | O_SYNC);
    log_ = new rogue::Logging("rce.MapMemory");
    if ( fd_ < 0 ) throw(rogue::GeneralError::open("MapMemory::MapMemory","/dev/mem"));
+
+   log_->critical("rogue.hardware.rce.MapMemory is being deprecated and will be removed in a future release.");
+   log_->critical("Please use rogue.hardware.axi.AxiMemMap instead");
 }
 
 //! Destructor
