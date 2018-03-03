@@ -88,6 +88,8 @@ rpr::Controller::Controller ( uint32_t segSize, rpr::TransportPtr tran, rpr::App
    remConnId_     = 0;
    segmentSize_   = segSize;
 
+   log_ = new rogue::Logging("rssi.controller");
+
    // Start read thread
    thread_ = new boost::thread(boost::bind(&rpr::Controller::runThread, this));
 }
@@ -143,12 +145,15 @@ ris::FramePtr rpr::Controller::reqFrame ( uint32_t size ) {
 void rpr::Controller::transportRx( ris::FramePtr frame ) {
    rpr::HeaderPtr head = rpr::Header::create(frame);
 
-   printf("transport frame server = %i, state = %i\n",server_,state_);
-
    if ( frame->getCount() == 0 || ! head->verify() ) {
+      log_->debug("Dumping frame state=%i server=%i",state_,server_);
       dropCount_++;
       return;
    }
+
+   log_->debug("RX frame: state=%i server=%i size=%i syn=%i ack=%i nul=%i, rst=%i, ack#=%i seq=%i, nxt=%i",
+         state_, server_,frame->getPayload(),head->syn,head->ack,head->nul,head->rst,
+         head->acknowledge,head->sequence,nextSeqRx_);
 
    // Ack set
    if ( head->ack ) lastAckRx_ = head->acknowledge;
@@ -169,12 +174,10 @@ void rpr::Controller::transportRx( ris::FramePtr frame ) {
       }
    }
 
-   // Syn frame and resets go to state machine if state = open 
-   // or we are waiting for ack replay
+   // Syn frame and resets go to state machine if state = open or we are waiting for ack replay
    else if ( ( state_ == StOpen || state_ == StWaitSyn) && ( head->syn || head->rst ) ) {
       lastSeqRx_ = head->sequence;
       nextSeqRx_ = lastSeqRx_ + 1;
-
       rogue::GilRelease noGil;
       stQueue_.push(head);
    }
@@ -289,6 +292,10 @@ void rpr::Controller::transportTx(rpr::HeaderPtr head, bool seqUpdate) {
    // Track last tx time
    gettimeofday(&txTime_,NULL);
 
+   log_->debug("TX frame: state=%i server=%i size=%i syn=%i ack=%i nul=%i, rst=%i, ack#=%i seq=%i",
+         state_,server_,head->getFrame()->getPayload(),head->syn,head->ack,head->nul,head->rst,
+         head->acknowledge,head->sequence);
+
    // Send frame
    tran_->sendFrame(head->getFrame());
 }
@@ -378,12 +385,10 @@ uint32_t rpr::Controller::stateClosedWait () {
    // got syn or reset
    if ( ! stQueue_.empty() ) {
       head = stQueue_.pop();
-      printf("Got frame\n");
 
       // Reset
       if ( head->rst ) {
          state_ = StClosed;
-         printf("Reset\n");
       }
 
       // Syn ack
@@ -396,7 +401,6 @@ uint32_t rpr::Controller::stateClosedWait () {
          maxRetran_     = head->maxRetransmissions;
          maxCumAck_     = head->maxCumulativeAck;
          prevAckRx_     = head->acknowledge;
-         printf("Got syn server=%i ack=%i\n",server_,head->ack);
 
          if ( server_ ) {
             state_ = StSendSynAck;
@@ -426,7 +430,6 @@ uint32_t rpr::Controller::stateClosedWait () {
       head->maxCumulativeAck = maxCumAck_;
       head->timeoutUnit = TimeoutUnit;
       head->connectionId = locConnId_;
-      printf("Synd syn\n");
 
       boost::unique_lock<boost::mutex> lock(txMtx_);
       transportTx(head,true);
@@ -446,8 +449,7 @@ uint32_t rpr::Controller::stateSendSynAck () {
    uint32_t x;
 
    // Allocate frame
-   rpr::HeaderPtr head = rpr::Header::create(tran_->reqFrame(rpr::Header::HeaderSize,false));
-   printf("Send syn ack\n");
+   rpr::HeaderPtr head = rpr::Header::create(tran_->reqFrame(rpr::Header::SynSize,false));
 
    // Set frame
    head->syn = true;
@@ -464,20 +466,17 @@ uint32_t rpr::Controller::stateSendSynAck () {
    head->timeoutUnit = TimeoutUnit;
    head->connectionId = locConnId_;
 
-   printf("here1\n");
    boost::unique_lock<boost::mutex> lock(txMtx_);
-   transportTx(head,false);
-   printf("here2\n");
 
    // Reset tx list
    for (x=0; x < 256; x++) txList_[x].reset();
    txListCount_ = 0;
    lock.unlock();
-   printf("here3\n");
+
+   transportTx(head,true);
 
    // Update state
    state_ = StOpen;
-   printf("here4\n");
    return(convTime(cumAckTout_/2));
 }
 
@@ -493,12 +492,13 @@ uint32_t rpr::Controller::stateSendSeqAck () {
    ack->nul = false;
 
    boost::unique_lock<boost::mutex> lock(txMtx_);
-   transportTx(ack,false);
 
    // Reset tx list
    for (x=0; x < 256; x++) txList_[x].reset();
    txListCount_ = 0;
    lock.unlock();
+
+   transportTx(ack,false);
 
    // Update state
    state_ = StOpen;
@@ -564,8 +564,12 @@ uint32_t rpr::Controller::stateOpen () {
       for ( idx=locAckRx+1; idx != ((locSeqTx+1)%256); idx++ ) {
          head = txList_[idx];
 
+         if ( head == NULL ) continue;
+
          // Busy set, reset timeout
-         if ( tranBusy_ ) head->rstTime();
+         if ( tranBusy_ ) {
+            head->rstTime();
+         }
 
          else if ( timePassed(head->getTime(),retranTout_) ) {
 
@@ -576,7 +580,6 @@ uint32_t rpr::Controller::stateOpen () {
                return(0);
             }
             else {
-
                transportTx(head,false);
                retranCount_++;
             }
@@ -600,8 +603,6 @@ uint32_t rpr::Controller::stateOpen () {
 uint32_t rpr::Controller::stateError () {
    rpr::HeaderPtr rst;
    uint32_t x;
-
-   printf("State error\n");
 
    rst = rpr::Header::create(tran_->reqFrame(rpr::Header::HeaderSize,false));
    rst->rst = true;

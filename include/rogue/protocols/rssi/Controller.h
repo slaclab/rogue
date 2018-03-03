@@ -26,6 +26,7 @@
 #include <boost/python.hpp>
 #include <stdint.h>
 #include <rogue/Queue.h>
+#include <rogue/Logging.h>
 
 namespace rogue {
    namespace protocols {
@@ -60,6 +61,8 @@ namespace rogue {
                // Interfaces
                boost::shared_ptr<rogue::protocols::rssi::Transport> tran_;
                boost::shared_ptr<rogue::protocols::rssi::Application> app_;
+
+               rogue::Logging * log_;
 
                // Is server
                bool server_;
