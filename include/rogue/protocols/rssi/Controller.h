@@ -52,9 +52,10 @@ namespace rogue {
                //! Connection states
                enum States : uint32_t { StClosed     = 0,
                                         StWaitSyn    = 1,
-                                        StSendSeqAck = 2,
-                                        StOpen       = 3,
-                                        StError      = 4 };
+                                        StSendSynAck = 2,
+                                        StSendSeqAck = 3,
+                                        StOpen       = 4,
+                                        StError      = 5 };
 
                // Interfaces
                boost::shared_ptr<rogue::protocols::rssi::Transport> tran_;
@@ -181,6 +182,9 @@ namespace rogue {
 
                //! Closed/Waiting for Syn
                uint32_t stateClosedWait ();
+
+               //! Send syn ack
+               uint32_t stateSendSynAck ();
 
                //! Send sequence ack
                uint32_t stateSendSeqAck ();

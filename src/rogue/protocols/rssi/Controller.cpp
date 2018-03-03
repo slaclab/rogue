@@ -143,6 +143,8 @@ ris::FramePtr rpr::Controller::reqFrame ( uint32_t size ) {
 void rpr::Controller::transportRx( ris::FramePtr frame ) {
    rpr::HeaderPtr head = rpr::Header::create(frame);
 
+   printf("transport frame server = %i, state = %i\n",server_,state_);
+
    if ( frame->getCount() == 0 || ! head->verify() ) {
       dropCount_++;
       return;
@@ -343,6 +345,10 @@ void rpr::Controller::runThread() {
                wait = stateClosedWait();
                break;
 
+            case StSendSynAck :
+               wait = stateSendSynAck();
+               break;
+
             case StSendSeqAck :
                wait = stateSendSeqAck();
                break;
@@ -368,15 +374,20 @@ void rpr::Controller::runThread() {
 uint32_t rpr::Controller::stateClosedWait () {
    rpr::HeaderPtr head;
 
+
    // got syn or reset
    if ( ! stQueue_.empty() ) {
       head = stQueue_.pop();
+      printf("Got frame\n");
 
       // Reset
-      if ( head->rst ) state_ = StClosed;
+      if ( head->rst ) {
+         state_ = StClosed;
+         printf("Reset\n");
+      }
 
       // Syn ack
-      else if ( head->syn && head->ack ) {
+      else if ( head->syn && (head->ack || server_) ) {
          remMaxBuffers_ = head->maxOutstandingSegments;
          remMaxSegment_ = head->maxSegmentSize;
          retranTout_    = head->retransmissionTimeout;
@@ -385,13 +396,19 @@ uint32_t rpr::Controller::stateClosedWait () {
          maxRetran_     = head->maxRetransmissions;
          maxCumAck_     = head->maxCumulativeAck;
          prevAckRx_     = head->acknowledge;
-         state_         = StSendSeqAck;
+         printf("Got syn server=%i ack=%i\n",server_,head->ack);
+
+         if ( server_ ) {
+            state_ = StSendSynAck;
+            return(0);
+         }
+         else state_ = StSendSeqAck;
          gettimeofday(&stTime_,NULL);
       }
    }
 
    // Generate syn after try period passes
-   else if ( timePassed(&stTime_,TryPeriod) ) {
+   else if ( (!server_) && timePassed(&stTime_,TryPeriod) ) {
 
       // Allocate frame
       head = rpr::Header::create(tran_->reqFrame(rpr::Header::SynSize,false));
@@ -409,6 +426,7 @@ uint32_t rpr::Controller::stateClosedWait () {
       head->maxCumulativeAck = maxCumAck_;
       head->timeoutUnit = TimeoutUnit;
       head->connectionId = locConnId_;
+      printf("Synd syn\n");
 
       boost::unique_lock<boost::mutex> lock(txMtx_);
       transportTx(head,true);
@@ -418,8 +436,49 @@ uint32_t rpr::Controller::stateClosedWait () {
       gettimeofday(&stTime_,NULL);
       state_ = StWaitSyn;
    }
+   else if ( server_ ) state_ = StWaitSyn;
 
    return(convTime(TryPeriod) / 4);
+}
+
+//! Send Syn ack
+uint32_t rpr::Controller::stateSendSynAck () {
+   uint32_t x;
+
+   // Allocate frame
+   rpr::HeaderPtr head = rpr::Header::create(tran_->reqFrame(rpr::Header::HeaderSize,false));
+   printf("Send syn ack\n");
+
+   // Set frame
+   head->syn = true;
+   head->ack = true;
+   head->version = Version;
+   head->chk = true;
+   head->maxOutstandingSegments = LocMaxBuffers;
+   head->maxSegmentSize = segmentSize_;
+   head->retransmissionTimeout = retranTout_;
+   head->cumulativeAckTimeout = cumAckTout_;
+   head->nullTimeout = nullTout_;
+   head->maxRetransmissions = maxRetran_;
+   head->maxCumulativeAck = maxCumAck_;
+   head->timeoutUnit = TimeoutUnit;
+   head->connectionId = locConnId_;
+
+   printf("here1\n");
+   boost::unique_lock<boost::mutex> lock(txMtx_);
+   transportTx(head,false);
+   printf("here2\n");
+
+   // Reset tx list
+   for (x=0; x < 256; x++) txList_[x].reset();
+   txListCount_ = 0;
+   lock.unlock();
+   printf("here3\n");
+
+   // Update state
+   state_ = StOpen;
+   printf("here4\n");
+   return(convTime(cumAckTout_/2));
 }
 
 //! Send sequence ack
@@ -541,6 +600,8 @@ uint32_t rpr::Controller::stateOpen () {
 uint32_t rpr::Controller::stateError () {
    rpr::HeaderPtr rst;
    uint32_t x;
+
+   printf("State error\n");
 
    rst = rpr::Header::create(tran_->reqFrame(rpr::Header::HeaderSize,false));
    rst->rst = true;
