@@ -64,13 +64,6 @@ namespace rogue {
                //! Setup links
                void setController ( boost::shared_ptr<rogue::protocols::rssi::Controller> cntl );
 
-               //! Generate a Frame. Called from master
-               /*
-                * Pass total size required.
-                * Pass flag indicating if zero copy buffers are acceptable
-                */
-               boost::shared_ptr<rogue::interfaces::stream::Frame> acceptReq ( uint32_t size, bool zeroCopyEn);
-
                //! Accept a frame from master
                void acceptFrame ( boost::shared_ptr<rogue::interfaces::stream::Frame> frame );
          };

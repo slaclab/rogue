@@ -66,15 +66,6 @@ void rpp::Transport::setController( rpp::ControllerPtr cntl ) {
    thread_ = new boost::thread(boost::bind(&rpp::Transport::runThread, this));
 }
 
-//! Generate a Frame. Called from master
-/*
- * Pass total size required.
- * Pass flag indicating if zero copy buffers are acceptable
- */
-ris::FramePtr rpp::Transport::acceptReq ( uint32_t size, bool zeroCopyEn) {
-   throw(rogue::GeneralError("Transport::acceptReq","Invalid frame request."));
-}
-
 //! Accept a frame from master
 void rpp::Transport::acceptFrame ( ris::FramePtr frame ) {
    cntl_->transportRx(frame);
