@@ -1,13 +1,13 @@
 /**
  *-----------------------------------------------------------------------------
- * Title      : UDP Client Class
+ * Title      : UDP Server Class
  * ----------------------------------------------------------------------------
- * File       : Client.h
+ * File       : Server.h
  * Created    : 2017-01-07
  * Last update: 2017-01-07
  * ----------------------------------------------------------------------------
  * Description:
- * UDP Client
+ * UDP Server
  * ----------------------------------------------------------------------------
  * This file is part of the rogue software platform. It is subject to 
  * the license terms in the LICENSE.txt file found in the top-level directory 
@@ -18,8 +18,8 @@
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
-#ifndef __ROGUE_PROTOCOLS_UDP_CLIENT_H__
-#define __ROGUE_PROTOCOLS_UDP_CLIENT_H__
+#ifndef __ROGUE_PROTOCOLS_UDP_SERVER_H__
+#define __ROGUE_PROTOCOLS_UDP_SERVER_H__
 #include <rogue/interfaces/stream/Master.h>
 #include <rogue/interfaces/stream/Slave.h>
 #include <rogue/Logging.h>
@@ -36,7 +36,7 @@ namespace rogue {
       namespace udp {
 
          //! PGP Card class
-         class Client : public rogue::interfaces::stream::Master, 
+         class Server : public rogue::interfaces::stream::Master, 
                         public rogue::interfaces::stream::Slave {
 
                rogue::Logging * log_;
@@ -47,14 +47,12 @@ namespace rogue {
                //! Max packet size
                uint32_t maxSize_;
 
-               //! Address, hostname or ip address
-               std::string address_;
-
                //! Remote port number
                uint16_t port_;
 
                //! Remote socket address
-               struct sockaddr_in addr_;
+               struct sockaddr_in local_;
+               struct sockaddr_in remote_;
 
                //! Timeout value
                uint32_t timeout_;
@@ -70,17 +68,20 @@ namespace rogue {
             public:
 
                //! Class creation
-               static boost::shared_ptr<rogue::protocols::udp::Client> 
-                  create (std::string host, uint16_t port, uint16_t maxSize);
+               static boost::shared_ptr<rogue::protocols::udp::Server> 
+                  create (uint16_t port, uint16_t maxSize);
 
                //! Setup class in python
                static void setup_python();
 
                //! Creator
-               Client(std::string host, uint16_t port, uint16_t maxSize);
+               Server(uint16_t port, uint16_t maxSize);
 
                //! Destructor
-               ~Client();
+               ~Server();
+
+               //! Get port number
+               uint32_t getPort();
 
                //! Set UDP RX Size
                bool setRxSize(uint32_t size);
@@ -93,7 +94,7 @@ namespace rogue {
          };
 
          // Convienence
-         typedef boost::shared_ptr<rogue::protocols::udp::Client> ClientPtr;
+         typedef boost::shared_ptr<rogue::protocols::udp::Server> ServerPtr;
 
       }
    }
