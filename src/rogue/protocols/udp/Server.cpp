@@ -26,6 +26,7 @@
 #include <rogue/Logging.h>
 #include <iostream>
 #include <sys/syscall.h>
+#include <unistd.h>
 
 namespace rpu = rogue::protocols::udp;
 namespace ris = rogue::interfaces::stream;
@@ -182,8 +183,10 @@ void rpu::Server::runThread() {
             frame = ris::Pool::acceptReq(maxSize_,false);
 
             // Lock before updating address
-            boost::lock_guard<boost::mutex> lock(mtx_);
-            remote_ = tmpAddr;
+            if ( memcmp(&remote_, &tmpAddr, sizeof(remote_)) != 0 ) {
+               boost::lock_guard<boost::mutex> lock(mtx_);
+               remote_ = tmpAddr;
+            }
          }
          else {
 
