@@ -26,6 +26,7 @@
 #include <AxisDriver.h>
 #include <boost/python.hpp>
 #include <boost/thread.hpp>
+#include <rogue/Logging.h>
 #include <stdint.h>
 
 namespace rogue {
@@ -35,6 +36,8 @@ namespace rogue {
          //! PGP Card class
          class AxiStream : public rogue::interfaces::stream::Master, 
                            public rogue::interfaces::stream::Slave {
+
+               rogue::Logging *log_; 
 
                //! PgpCard file descriptor
                int32_t  fd_;
@@ -93,12 +96,8 @@ namespace rogue {
                /*
                 * Pass total size required.
                 * Pass flag indicating if zero copy buffers are acceptable
-                * maxBuffSize indicates the largest acceptable buffer size. A larger buffer can be
-                * returned but the total buffer count must assume each buffer is of size maxBuffSize
-                * If maxBuffSize = 0, slave will freely determine the buffer size.
                 */
-               boost::shared_ptr<rogue::interfaces::stream::Frame>
-                  acceptReq ( uint32_t size, bool zeroCopyEn, uint32_t maxBufferSize );
+               boost::shared_ptr<rogue::interfaces::stream::Frame> acceptReq ( uint32_t size, bool zeroCopyEn);
 
                //! Accept a frame from master
                void acceptFrame ( boost::shared_ptr<rogue::interfaces::stream::Frame> frame );

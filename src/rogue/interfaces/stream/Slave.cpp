@@ -73,7 +73,7 @@ void ris::Slave::acceptFrame ( ris::FramePtr frame ) {
       for (x=0; (x < debug_ && x < frame->getPayload()); x++) {
          frame->read(&val,x,1);
 
-         sprintf(buffer + strlen(buffer)," 0x%.2x",val);
+         snprintf(buffer + strlen(buffer),1000-strlen(buffer)," 0x%.2x",val);
          if (( (x+1) % 8 ) == 0) {
             log_->log(100,buffer);
             sprintf(buffer,"     ");

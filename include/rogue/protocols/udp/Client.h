@@ -22,6 +22,7 @@
 #define __ROGUE_PROTOCOLS_UDP_CLIENT_H__
 #include <rogue/interfaces/stream/Master.h>
 #include <rogue/interfaces/stream/Slave.h>
+#include <rogue/Logging.h>
 #include <boost/python.hpp>
 #include <boost/thread.hpp>
 #include <stdint.h>
@@ -37,6 +38,8 @@ namespace rogue {
          //! PGP Card class
          class Client : public rogue::interfaces::stream::Master, 
                         public rogue::interfaces::stream::Slave {
+
+               rogue::Logging * log_;
 
                //! Socket
                int32_t  fd_;

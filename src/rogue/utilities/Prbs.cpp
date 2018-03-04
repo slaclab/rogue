@@ -28,6 +28,7 @@
 #include <rogue/utilities/Prbs.h>
 #include <boost/make_shared.hpp>
 #include <rogue/GilRelease.h>
+#include <rogue/GeneralError.h>
 #include <rogue/Logging.h>
 
 namespace ris = rogue::interfaces::stream;
@@ -157,6 +158,11 @@ uint32_t ru::Prbs::writeSingle ( ris::FramePtr frame, uint32_t offset, uint32_t 
 
 //! Auto run data generation
 void ru::Prbs::enable(uint32_t size) {
+
+   // Verify size first
+   if ((( size % byteWidth_ ) != 0) || size < minSize_ ) 
+      throw rogue::GeneralError("Prbs::enable","Invalid frame size");
+
    if ( txThread_ == NULL ) {
       txSize_ = size;
       txThread_ = new boost::thread(boost::bind(&Prbs::runThread, this));
@@ -233,18 +239,15 @@ void ru::Prbs::genFrame (uint32_t size) {
    uint32_t      value;
    ris::FramePtr fr;
 
+   // Verify size first
+   if ((( size % byteWidth_ ) != 0) || size < minSize_ ) 
+      throw rogue::GeneralError("Prbs::genFrame","Invalid frame size");
+
    boost::unique_lock<boost::mutex> lock(txMtx_,boost::defer_lock);
 
    rogue::GilRelease noGil;
    lock.lock();
    noGil.acquire();
-
-   // Verify size first
-   if ((( size % byteWidth_ ) != 0) || size < minSize_ ) {
-      txLog_->warning("Size violation size=%i, count=%i",size,txCount_);
-      txErrCount_++;
-      return;
-   }
 
    // Lock and update sequence
    value = txSeq_;
@@ -252,7 +255,7 @@ void ru::Prbs::genFrame (uint32_t size) {
    if ( width_ == 16 ) txSeq_ &= 0xFFFF;
 
    // Get frame
-   fr = reqFrame(size,true,0);
+   fr = reqFrame(size,true);
 
    // Frame allocation failed
    if ( fr->getAvailable() < size ) {

@@ -23,6 +23,7 @@
 #include <boost/python.hpp>
 #include <rogue/protocols/udp/module.h>
 #include <rogue/protocols/udp/Client.h>
+#include <rogue/protocols/udp/Server.h>
 
 namespace bp  = boost::python;
 namespace rpu = rogue::protocols::udp;
@@ -39,5 +40,6 @@ void rpu::setup_module() {
    bp::scope io_scope = module;
 
    rpu::Client::setup_python();
+   rpu::Server::setup_python();
 }
 
