@@ -42,6 +42,7 @@ rpu::ServerPtr rpu::Server::create (uint16_t port) {
 rpu::Server::Server (uint16_t port) {
    uint32_t len;
    int32_t  val;
+   uint32_t  size;
 
    port_    = port;
    timeout_ = 10000000;
@@ -52,8 +53,11 @@ rpu::Server::Server (uint16_t port) {
       throw(rogue::GeneralError::network("Server::Server","0.0.0.0",port_));
 
    // Disable fragmentation
-   val = 1;
-   setsockopt(fd_, IPPROTO_IP, IP_DONTFRAG, &val, sizeof(val));
+   //val = 1;
+   //setsockopt(fd_, IPPROTO_IP, IP_DONTFRAG, &val, sizeof(val));
+
+   getsockopt(fd_,IPPROTO_IP,IP_MTU,(char *)&val, &size);
+   printf("MTU --> %d\n",val); 
 
    // Setup Remote Address
    memset(&local_,0,sizeof(struct sockaddr_in));
@@ -229,7 +233,7 @@ bool rpu::Server::setRxSize(uint32_t size) {
 
 void rpu::Server::setup_python () {
 
-   bp::class_<rpu::Server, rpu::ServerPtr, bp::bases<ris::Master,ris::Slave>, boost::noncopyable >("Server",bp::init<uint16_t,uint16_t>())
+   bp::class_<rpu::Server, rpu::ServerPtr, bp::bases<ris::Master,ris::Slave>, boost::noncopyable >("Server",bp::init<uint16_t>())
       .def("create",         &rpu::Server::create)
       .staticmethod("create")
       .def("setTimeout",     &rpu::Server::setTimeout)

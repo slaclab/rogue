@@ -43,6 +43,8 @@ rpu::Client::Client ( std::string host, uint16_t port) {
    struct addrinfo*    aiList=0;
    const  sockaddr_in* addr;
    int32_t val;
+   int32_t ret;
+   uint32_t size;
 
    address_ = host;
    port_    = port;
@@ -54,8 +56,11 @@ rpu::Client::Client ( std::string host, uint16_t port) {
       throw(rogue::GeneralError::network("Client::Client",address_.c_str(),port_));
 
    // Disable fragmentation
-   val = 1;
-   setsockopt(fd_, IPPROTO_IP, IP_DONTFRAG, &val, sizeof(val));
+   //val = 1;
+   //setsockopt(fd_, IPPROTO_IP, IP_DONTFRAG, &val, sizeof(val));
+
+   ret = getsockopt(fd_, IPPROTO_IP,IP_MTU, (char *)&val, &size);
+   printf("MTU --> %d - %d = %i\n",val,size,ret); 
 
    // Lookup host address
    aiHints.ai_flags    = AI_CANONNAME;
@@ -216,7 +221,7 @@ bool rpu::Client::setRxSize(uint32_t size) {
 
 void rpu::Client::setup_python () {
 
-   bp::class_<rpu::Client, rpu::ClientPtr, bp::bases<ris::Master,ris::Slave>, boost::noncopyable >("Client",bp::init<std::string,uint16_t,uint16_t>())
+   bp::class_<rpu::Client, rpu::ClientPtr, bp::bases<ris::Master,ris::Slave>, boost::noncopyable >("Client",bp::init<std::string,uint16_t>())
       .def("create",         &rpu::Client::create)
       .staticmethod("create")
       .def("setTimeout",     &rpu::Client::setTimeout)
