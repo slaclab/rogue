@@ -161,8 +161,18 @@ void rpr::Controller::transportRx( ris::FramePtr frame ) {
    // Update busy bit
    tranBusy_ = head->busy;
 
+   // Syn or reset
+   if ( head->syn || head->rst ) {
+
+      // Syn frame and resets go to state machine if state = open or we are waiting for ack replay
+      if ( ( state_ == StOpen || state_ == StWaitSyn ) ) {
+         rogue::GilRelease noGil;
+         stQueue_.push(head);
+      }
+   }
+
    // Data or NULL in the correct sequence go to application
-   if ( state_ == StOpen && head->sequence == nextSeqRx_ && 
+   else if ( state_ == StOpen && head->sequence == nextSeqRx_ && 
         ( head->nul || frame->getPayload() > rpr::Header::HeaderSize ) ) {
       lastSeqRx_ = nextSeqRx_;
       nextSeqRx_ = nextSeqRx_ + 1;
@@ -172,14 +182,6 @@ void rpr::Controller::transportRx( ris::FramePtr frame ) {
          rogue::GilRelease noGil;
          appQueue_.push(head);
       }
-   }
-
-   // Syn frame and resets go to state machine if state = open or we are waiting for ack replay
-   else if ( ( state_ == StOpen || state_ == StWaitSyn) && ( head->syn || head->rst ) ) {
-      lastSeqRx_ = head->sequence;
-      nextSeqRx_ = lastSeqRx_ + 1;
-      rogue::GilRelease noGil;
-      stQueue_.push(head);
    }
 }
 
@@ -467,13 +469,14 @@ uint32_t rpr::Controller::stateSendSynAck () {
    head->connectionId = locConnId_;
 
    boost::unique_lock<boost::mutex> lock(txMtx_);
+   transportTx(head,true);
 
    // Reset tx list
    for (x=0; x < 256; x++) txList_[x].reset();
    txListCount_ = 0;
    lock.unlock();
 
-   transportTx(head,true);
+   //if ( locAckRx != locSeqTx ) {
 
    // Update state
    state_ = StOpen;
@@ -492,13 +495,12 @@ uint32_t rpr::Controller::stateSendSeqAck () {
    ack->nul = false;
 
    boost::unique_lock<boost::mutex> lock(txMtx_);
+   transportTx(ack,false);
 
    // Reset tx list
    for (x=0; x < 256; x++) txList_[x].reset();
    txListCount_ = 0;
    lock.unlock();
-
-   transportTx(ack,false);
 
    // Update state
    state_ = StOpen;
