@@ -34,13 +34,16 @@ namespace ris = rogue::interfaces::stream;
 namespace bp  = boost::python;
 
 //! Class creation
-rpp::ControllerV2Ptr rpp::ControllerV2::create ( uint32_t segmentSize, rpp::TransportPtr tran, rpp::ApplicationPtr * app ) {
-   rpp::ControllerV2Ptr r = boost::make_shared<rpp::ControllerV2>(segmentSize,tran,app);
+rpp::ControllerV2Ptr rpp::ControllerV2::create ( uint32_t segmentSize, bool enIbCrc, bool enObCrc, rpp::TransportPtr tran, rpp::ApplicationPtr * app ) {
+   rpp::ControllerV2Ptr r = boost::make_shared<rpp::ControllerV2>(segmentSize,enIbCrc,enObCrc,tran,app);
    return(r);
 }
 
 //! Creator
-rpp::ControllerV2::ControllerV2 ( uint32_t segmentSize, rpp::TransportPtr tran, rpp::ApplicationPtr * app ) : rpp::Controller::Controller(segmentSize, tran, app, 8, 8) {
+rpp::ControllerV2::ControllerV2 ( uint32_t segmentSize, bool enIbCrc, bool enObCrc, rpp::TransportPtr tran, rpp::ApplicationPtr * app ) : rpp::Controller::Controller(segmentSize, tran, app, 8, 8) {
+
+   enIbCrc_ = enIbCrc;
+   enObCrc_ = enObCrc;
 }
 
 //! Destructor

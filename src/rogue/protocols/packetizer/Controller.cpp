@@ -55,8 +55,6 @@ rpp::Controller::Controller ( uint32_t segmentSize, rpp::TransportPtr tran, rpp:
 
    headSize_ = headSize;
    tailSize_ = tailSize;
-   enIbCrc_ = false; // Need to bring this up to the top level
-   enObCrc_ = true;  // Need to bring this up to the top level
 
    for ( x=0; x < 256; x++ ) {
          transSof_[x]  = true;
