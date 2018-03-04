@@ -33,23 +33,27 @@ namespace ris = rogue::interfaces::stream;
 namespace bp  = boost::python;
 
 //! Class creation
-rpu::ServerPtr rpu::Server::create (uint16_t port, uint16_t maxSize) {
-   rpu::ServerPtr r = boost::make_shared<rpu::Server>(port,maxSize);
+rpu::ServerPtr rpu::Server::create (uint16_t port) {
+   rpu::ServerPtr r = boost::make_shared<rpu::Server>(port);
    return(r);
 }
 
 //! Creator
-rpu::Server::Server (uint16_t port, uint16_t maxSize) {
+rpu::Server::Server (uint16_t port) {
    uint32_t len;
+   int32_t  val;
 
    port_    = port;
-   maxSize_ = maxSize;
    timeout_ = 10000000;
    log_     = new rogue::Logging("udp.Server");
 
    // Create socket
    if ( (fd_ = socket(AF_INET,SOCK_DGRAM,0)) < 0 )
       throw(rogue::GeneralError::network("Server::Server","0.0.0.0",port_));
+
+   // Disable fragmentation
+   val = 1;
+   setsockopt(fd_, IPPROTO_IP, IP_DONTFRAG, &val, sizeof(val));
 
    // Setup Remote Address
    memset(&local_,0,sizeof(struct sockaddr_in));
@@ -71,7 +75,7 @@ rpu::Server::Server (uint16_t port, uint16_t maxSize) {
    }
 
    // Fixed size buffer pool
-   enBufferPool(maxSize_,1024*256);
+   enBufferPool(MaxBufferSize,1024*256);
 
    // Start rx thread
    thread_ = new boost::thread(boost::bind(&rpu::Server::runThread, this));
@@ -165,7 +169,7 @@ void rpu::Server::runThread() {
    log_->info("PID=%i, TID=%li",getpid(),syscall(SYS_gettid));
 
    // Preallocate frame
-   frame = ris::Pool::acceptReq(maxSize_,false);
+   frame = ris::Pool::acceptReq(MaxBufferSize,false);
 
    try {
 
@@ -173,14 +177,14 @@ void rpu::Server::runThread() {
 
          // Attempt receive
          buff = frame->getBuffer(0);
-         res = recvfrom(fd_, buff->getRawData(), maxSize_, 0 , (struct sockaddr *)&tmpAddr, &tmpLen);
+         res = recvfrom(fd_, buff->getRawData(), MaxBufferSize, 0 , (struct sockaddr *)&tmpAddr, &tmpLen);
 
          if ( res > 0 ) {
             buff->setSize(res);
 
             // Push frame and get a new empty frame
             sendFrame(frame);
-            frame = ris::Pool::acceptReq(maxSize_,false);
+            frame = ris::Pool::acceptReq(MaxBufferSize,false);
 
             // Lock before updating address
             if ( memcmp(&remote_, &tmpAddr, sizeof(remote_)) != 0 ) {

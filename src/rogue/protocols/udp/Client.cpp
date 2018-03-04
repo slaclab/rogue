@@ -32,26 +32,30 @@ namespace ris = rogue::interfaces::stream;
 namespace bp  = boost::python;
 
 //! Class creation
-rpu::ClientPtr rpu::Client::create (std::string host, uint16_t port, uint16_t maxSize) {
-   rpu::ClientPtr r = boost::make_shared<rpu::Client>(host,port,maxSize);
+rpu::ClientPtr rpu::Client::create (std::string host, uint16_t port) {
+   rpu::ClientPtr r = boost::make_shared<rpu::Client>(host,port);
    return(r);
 }
 
 //! Creator
-rpu::Client::Client ( std::string host, uint16_t port, uint16_t maxSize) {
+rpu::Client::Client ( std::string host, uint16_t port) {
    struct addrinfo     aiHints;
    struct addrinfo*    aiList=0;
    const  sockaddr_in* addr;
+   int32_t val;
 
    address_ = host;
    port_    = port;
-   maxSize_ = maxSize;
    timeout_ = 10000000;
    log_     = new rogue::Logging("udp.Client");
 
    // Create socket
    if ( (fd_ = socket(AF_INET,SOCK_DGRAM,0)) < 0 )
       throw(rogue::GeneralError::network("Client::Client",address_.c_str(),port_));
+
+   // Disable fragmentation
+   val = 1;
+   setsockopt(fd_, IPPROTO_IP, IP_DONTFRAG, &val, sizeof(val));
 
    // Lookup host address
    aiHints.ai_flags    = AI_CANONNAME;
@@ -71,7 +75,7 @@ rpu::Client::Client ( std::string host, uint16_t port, uint16_t maxSize) {
    ((struct sockaddr_in *)(&addr_))->sin_port=htons(port_);
 
    // Fixed size buffer pool
-   enBufferPool(maxSize_,1024*256);
+   enBufferPool(MaxBufferSize,1024*256);
 
    // Start rx thread
    thread_ = new boost::thread(boost::bind(&rpu::Client::runThread, this));
@@ -158,7 +162,7 @@ void rpu::Client::runThread() {
    log.info("PID=%i, TID=%li",getpid(),syscall(SYS_gettid));
 
    // Preallocate frame
-   frame = ris::Pool::acceptReq(maxSize_,false);
+   frame = ris::Pool::acceptReq(MaxBufferSize,false);
 
    try {
 
@@ -166,14 +170,14 @@ void rpu::Client::runThread() {
 
          // Attempt receive
          buff = frame->getBuffer(0);
-         res = ::read(fd_, buff->getRawData(), maxSize_);
+         res = ::read(fd_, buff->getRawData(), MaxBufferSize);
 
          if ( res > 0 ) {
             buff->setSize(res);
 
             // Push frame and get a new empty frame
             sendFrame(frame);
-            frame = ris::Pool::acceptReq(maxSize_,false);
+            frame = ris::Pool::acceptReq(MaxBufferSize,false);
          }
          else {
 

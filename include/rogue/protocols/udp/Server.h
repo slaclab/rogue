@@ -44,8 +44,7 @@ namespace rogue {
                //! Socket
                int32_t  fd_;
 
-               //! Max packet size
-               uint32_t maxSize_;
+               static const uint32_t MaxBufferSize = 9000;
 
                //! Remote port number
                uint16_t port_;
@@ -69,13 +68,13 @@ namespace rogue {
 
                //! Class creation
                static boost::shared_ptr<rogue::protocols::udp::Server> 
-                  create (uint16_t port, uint16_t maxSize);
+                  create (uint16_t port);
 
                //! Setup class in python
                static void setup_python();
 
                //! Creator
-               Server(uint16_t port, uint16_t maxSize);
+               Server(uint16_t port);
 
                //! Destructor
                ~Server();

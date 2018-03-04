@@ -28,11 +28,19 @@ class UdpRssiPack(pr.Device):
         super(self.__class__, self).__init__(**kwargs)
         self._host = host
         self._port = port
-        self._size = size
 
-        self._udp  = rogue.protocols.udp.Client(host,port,size)
-        self._rssi = rogue.protocols.rssi.Client(size)
-        self._pack = rogue.protocols.packetizer.Core(size)
+        if(size<=1500):
+            self._size = 1400
+        else:
+            self._size = 8900
+        
+        self._udp  = rogue.protocols.udp.Client(host,port)
+        self._rssi = rogue.protocols.rssi.Client(self._size)
+
+        if packVer == 2:
+            self._pack = rogue.protocols.packetizer.CoreV2(self._size)
+        else:
+            self._pack = rogue.protocols.packetizer.Core(self._size)
 
         self._udp._setSlave(self._rssi.transport())
         self._rssi.transport()._setSlave(self._udp)

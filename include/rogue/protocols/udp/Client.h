@@ -41,11 +41,10 @@ namespace rogue {
 
                rogue::Logging * log_;
 
+               static const uint32_t MaxBufferSize = 9000;
+
                //! Socket
                int32_t  fd_;
-
-               //! Max packet size
-               uint32_t maxSize_;
 
                //! Address, hostname or ip address
                std::string address_;
@@ -71,13 +70,13 @@ namespace rogue {
 
                //! Class creation
                static boost::shared_ptr<rogue::protocols::udp::Client> 
-                  create (std::string host, uint16_t port, uint16_t maxSize);
+                  create (std::string host, uint16_t port);
 
                //! Setup class in python
                static void setup_python();
 
                //! Creator
-               Client(std::string host, uint16_t port, uint16_t maxSize);
+               Client(std::string host, uint16_t port);
 
                //! Destructor
                ~Client();
