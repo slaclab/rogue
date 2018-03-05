@@ -77,9 +77,9 @@ void rogue::Logging::setFilter(std::string name, uint32_t level) {
 void rogue::Logging::intLog(uint32_t level, const char * fmt, va_list args) {
    if ( level < level_ ) return;
 
-   printf("%s: ",name_.c_str());
-   vprintf(fmt,args);
-   printf("\n");
+   char buffer[1000];
+   vsnprintf(buffer,1000,fmt,args);
+   printf(buffer,"%s: %s\n",name_.c_str(),buffer);
 }
 
 void rogue::Logging::log(uint32_t level, const char * fmt, ...) {

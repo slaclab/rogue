@@ -140,7 +140,7 @@ void ris::Buffer::zeroTail() {
  * the head and tail reservation.
  */
 uint32_t ris::Buffer::getSize() {
-   return(payload_ - (headRoom_ + tailRoom_));
+   return(rawSize_ - (headRoom_ + tailRoom_));
 }
 
 /*
