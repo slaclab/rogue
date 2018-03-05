@@ -41,9 +41,7 @@ bool rpe::Pv::interest() {
    return interest_;
 }
 
-void rpe::Pv::show(unsigned level) const {
-   //printf("PV::Show called with level = %i\n",level);
-}
+void rpe::Pv::show(unsigned level) const { }
 
 caStatus rpe::Pv::interestRegister() {
    boost::lock_guard<boost::mutex> lock(mtx_);
