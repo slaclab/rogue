@@ -218,7 +218,7 @@ ris::FrameIteratorPtr ris::Frame::startWrite(uint32_t offset, uint32_t size) {
    // Find buffer which matches offset
    for (iter->index_=0; iter->index_ < buffers_.size(); iter->index_++) {
       buff = buffers_[iter->index_];
-      temp = buff->getRawSize() - buff->getHeadRoom();
+      temp = buff->getSize();
       total += temp;
 
       // Offset is within payload range
@@ -228,7 +228,7 @@ ris::FrameIteratorPtr ris::Frame::startWrite(uint32_t offset, uint32_t size) {
       iter->offset_ -= temp;
 
       // Update payload to be full since write index is higher
-      buff->setSize(buff->getRawSize());
+      buff->setPayloadFull();
    }
 
    if ( iter->index_ == buffers_.size() ) 
@@ -258,8 +258,8 @@ bool ris::Frame::nextWrite(ris::FrameIteratorPtr iter) {
    buff = buffers_[iter->index_];
 
    // Update payload size
-   if ( iter->size_ > 0 && ((iter->offset_ + iter->completed_ + buff->getHeadRoom()) > buff->getCount()) )
-      buff->setSize(iter->offset_ + iter->completed_ + buff->getHeadRoom());
+   if ( iter->size_ > 0 && ((iter->offset_ + iter->completed_) > buff->getPayload()) )
+      buff->setPayload(iter->offset_ + iter->completed_);
 
    // We are done
    if ( iter->size_ == 0 || (iter->completed_ == iter->remaining_) ) {
@@ -284,7 +284,7 @@ bool ris::Frame::nextWrite(ris::FrameIteratorPtr iter) {
 
    // Update pointers
    buff = buffers_[iter->index_];
-   temp = buff->getRawSize() - buff->getHeadRoom();
+   temp = buff->getSize();
 
    // Adjust
    iter->remaining_ -= iter->completed_;

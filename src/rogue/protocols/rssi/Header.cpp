@@ -155,8 +155,8 @@ void rpr::Header::update() {
 
    size = (syn)?SynSize:HeaderSize;
 
-   if ( frame_->getBuffer(0)->getRawPayload() < size )
-      throw(rogue::GeneralError::boundary("Header::update",size,frame_->getBuffer(0)->getRawPayload()));
+   if ( frame_->getBuffer(0)->getSize() < size )
+      throw(rogue::GeneralError::boundary("Header::update",size,frame_->getBuffer(0)->getSize()));
 
    if ( frame_->getBuffer(0)->getPayload() == 0 )
       frame_->getBuffer(0)->setPayload(size);
@@ -218,7 +218,7 @@ std::string rpr::Header::dump() {
    std::stringstream ret("");
 
    ret << "   Total Size : " << std::dec << frame_->getBuffer(0)->getPayload() << std::endl;
-   ret << "     Raw Size : " << std::dec << frame_->getBuffer(0)->getRawPayload() << std::endl;
+   ret << "     Raw Size : " << std::dec << frame_->getBuffer(0)->getSize() << std::endl;
    ret << "   Raw Header : ";
 
    for (x=0; x < data_[1]; x++) {
