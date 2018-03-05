@@ -33,13 +33,13 @@ namespace ris = rogue::interfaces::stream;
 namespace bp  = boost::python;
 
 //! Class creation
-rpp::ControllerV1Ptr rpp::ControllerV1::create ( uint32_t segmentSize, rpp::TransportPtr tran, rpp::ApplicationPtr * app ) {
-   rpp::ControllerV1Ptr r = boost::make_shared<rpp::ControllerV1>(segmentSize,tran,app);
+rpp::ControllerV1Ptr rpp::ControllerV1::create ( rpp::TransportPtr tran, rpp::ApplicationPtr * app ) {
+   rpp::ControllerV1Ptr r = boost::make_shared<rpp::ControllerV1>(tran,app);
    return(r);
 }
 
 //! Creator
-rpp::ControllerV1::ControllerV1 ( uint32_t segmentSize, rpp::TransportPtr tran, rpp::ApplicationPtr * app ) : rpp::Controller::Controller(segmentSize, tran, app, 8, 1) {
+rpp::ControllerV1::ControllerV1 ( rpp::TransportPtr tran, rpp::ApplicationPtr * app ) : rpp::Controller::Controller(tran, app, 8, 1) {
 }
 
 //! Destructor
