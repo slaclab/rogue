@@ -36,31 +36,15 @@ namespace rogue {
       namespace udp {
 
          //! PGP Card class
-         class Server : public rogue::interfaces::stream::Master, 
+         class Server : public rogue::protocols::udp::Core,
+                        public rogue::interfaces::stream::Master, 
                         public rogue::interfaces::stream::Slave {
 
-               rogue::Logging * log_;
-
-               //! Socket
-               int32_t  fd_;
-
-               //! Jumbo frames enables
-               bool jumbo_;
-
-               //! Remote port number
+               //! Local port number
                uint16_t port_;
 
-               //! Remote socket address
-               struct sockaddr_in local_;
-               struct sockaddr_in remote_;
-
-               //! Timeout value
-               uint32_t timeout_;
-
-               boost::thread* thread_;
-
-               //! mutex
-               boost::mutex mtx_;
+               //! Local socket address
+               struct sockaddr_in locAddr_;
 
                //! Thread background
                void runThread();
@@ -82,15 +66,6 @@ namespace rogue {
 
                //! Get port number
                uint32_t getPort();
-
-               //! Return max payload
-               uint32_t maxPayload();
-
-               //! Set UDP RX Size
-               bool setRxSize(uint32_t size);
-
-               //! Set timeout for frame transmits in microseconds
-               void setTimeout(uint32_t timeout);
 
                //! Accept a frame from master
                void acceptFrame ( boost::shared_ptr<rogue::interfaces::stream::Frame> frame );

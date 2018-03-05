@@ -17,7 +17,7 @@
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
-#include <rogue/protocols/udp/Common.h>
+#include <rogue/protocols/udp/Core.h>
 #include <rogue/protocols/udp/Server.h>
 #include <rogue/interfaces/stream/Frame.h>
 #include <rogue/interfaces/stream/Buffer.h>
@@ -40,41 +40,39 @@ rpu::ServerPtr rpu::Server::create (uint16_t port, bool jumbo) {
 }
 
 //! Creator
-rpu::Server::Server (uint16_t port, bool jumbo) {
+rpu::Server::Server (uint16_t port, bool jumbo) : rpu::Core(jumbo) {
    uint32_t len;
    int32_t  val;
    uint32_t  size;
 
-   jumbo_   = jumbo;
-   port_    = port;
-   timeout_ = 10000000;
-   log_     = new rogue::Logging("udp.Server");
+   port_   = port;
+   udpLog_ = new rogue::Logging("udp.Server");
 
    // Create socket
    if ( (fd_ = socket(AF_INET,SOCK_DGRAM,0)) < 0 )
       throw(rogue::GeneralError::network("Server::Server","0.0.0.0",port_));
 
    // Setup Remote Address
-   memset(&local_,0,sizeof(struct sockaddr_in));
-   local_.sin_family=AF_INET;
-   local_.sin_addr.s_addr=htonl(INADDR_ANY);
-   local_.sin_port=htons(port_);
+   memset(&locAddr_,0,sizeof(struct sockaddr_in));
+   locAddr_.sin_family=AF_INET;
+   locAddr_.sin_addr.s_addr=htonl(INADDR_ANY);
+   locAddr_.sin_port=htons(port_);
 
-   memset(&remote_,0,sizeof(struct sockaddr_in));
+   memset(&remAddr_,0,sizeof(struct sockaddr_in));
 
-   if (bind(fd_, (struct sockaddr *) &local_, sizeof(local_))<0) 
+   if (bind(fd_, (struct sockaddr *) &locAddr_, sizeof(locAddr_))<0) 
       throw(rogue::GeneralError::network("Server::Server","0.0.0.0",port_));
 
    // Kernel assigns port
    if ( port_ == 0 ) {
-      len = sizeof(local_);
-      if (getsockname(fd_, (struct sockaddr *) &local_, &len) < 0 ) 
+      len = sizeof(locAddr_);
+      if (getsockname(fd_, (struct sockaddr *) &locAddr_, &len) < 0 ) 
          throw(rogue::GeneralError::network("Server::Server","0.0.0.0",port_));
-      port_ = ntohs(local_.sin_port);
+      port_ = ntohs(locAddr_.sin_port);
    }
 
    // Fixed size buffer pool
-   enBufferPool(maxPayload(jumbo_),1024*256);
+   enBufferPool(maxPayload(),1024*256);
 
    // Start rx thread
    thread_ = new boost::thread(boost::bind(&rpu::Server::runThread, this));
@@ -94,21 +92,6 @@ uint32_t rpu::Server::getPort() {
    return(port_);
 }
 
-//! Return max payload
-uint32_t rpu::Server::maxPayload() {
-   return rpu::maxPayload(jumbo_);
-}
-
-//! Set UDP RX Size
-bool rpu::Server::setRxSize(uint32_t size) {
-   return rpu::setRxSize(size,log_);
-}
-
-//! Set timeout for frame transmits in microseconds
-void rpu::Server::setTimeout(uint32_t timeout) {
-   timeout_ = timeout;
-}
-
 //! Accept a frame from master
 void rpu::Server::acceptFrame ( ris::FramePtr frame ) {
    ris::BufferPtr   buff;
@@ -120,10 +103,10 @@ void rpu::Server::acceptFrame ( ris::FramePtr frame ) {
    struct iovec     msg_iov[1];
 
    rogue::GilRelease noGil;
-   boost::lock_guard<boost::mutex> lock(mtx_);
+   boost::lock_guard<boost::mutex> lock(udpMtx_);
 
    // Setup message header
-   msg.msg_name       = &remote_;
+   msg.msg_name       = &remAddr_;
    msg.msg_namelen    = sizeof(struct sockaddr_in);
    msg.msg_iov        = msg_iov;
    msg.msg_iovlen     = 1;
@@ -157,7 +140,7 @@ void rpu::Server::acceptFrame ( ris::FramePtr frame ) {
             res = 0;
          }
          else if ( (res = sendmsg(fd_,&msg,0)) < 0 )
-            log_->warning("UDP Write Call Failed");
+            udpLog_->warning("UDP Write Call Failed");
       }
 
       // Continue while write result was zero
@@ -175,10 +158,10 @@ void rpu::Server::runThread() {
    struct sockaddr_in tmpAddr;
    uint32_t           tmpLen;
 
-   log_->info("PID=%i, TID=%li",getpid(),syscall(SYS_gettid));
+   udpLog_->info("PID=%i, TID=%li",getpid(),syscall(SYS_gettid));
 
    // Preallocate frame
-   frame = ris::Pool::acceptReq(MaxBufferSize,false);
+   frame = ris::Pool::acceptReq(maxPayload(),false);
 
    try {
 
@@ -186,19 +169,19 @@ void rpu::Server::runThread() {
 
          // Attempt receive
          buff = frame->getBuffer(0);
-         res = recvfrom(fd_, buff->getRawData(), MaxBufferSize, 0 , (struct sockaddr *)&tmpAddr, &tmpLen);
+         res = recvfrom(fd_, buff->getRawData(), buff->getAvailable(), 0 , (struct sockaddr *)&tmpAddr, &tmpLen);
 
          if ( res > 0 ) {
             buff->setSize(res);
 
             // Push frame and get a new empty frame
             sendFrame(frame);
-            frame = ris::Pool::acceptReq(MaxBufferSize,false);
+            frame = ris::Pool::acceptReq(maxPayload(),false);
 
             // Lock before updating address
-            if ( memcmp(&remote_, &tmpAddr, sizeof(remote_)) != 0 ) {
-               boost::lock_guard<boost::mutex> lock(mtx_);
-               remote_ = tmpAddr;
+            if ( memcmp(&remAddr_, &tmpAddr, sizeof(remAddr_)) != 0 ) {
+               boost::lock_guard<boost::mutex> lock(udpMtx_);
+               remAddr_ = tmpAddr;
             }
          }
          else {
@@ -224,12 +207,10 @@ void rpu::Server::setup_python () {
    bp::class_<rpu::Server, rpu::ServerPtr, bp::bases<ris::Master,ris::Slave>, boost::noncopyable >("Server",bp::init<uint16_t,bool>())
       .def("create",         &rpu::Server::create)
       .staticmethod("create")
-      .def("setTimeout",     &rpu::Server::setTimeout)
-      .def("setRxSize",      &rpu::Server::setRxSize)
       .def("getPort",        &rpu::Server::getPort)
-      .def("maxBuffer",      &rpu::Server::maxBuffer)
    ;
 
+   bp::implicitly_convertible<rpu::ServerPtr, rpu::CorePtr>();
    bp::implicitly_convertible<rpu::ServerPtr, ris::MasterPtr>();
    bp::implicitly_convertible<rpu::ServerPtr, ris::SlavePtr>();
 

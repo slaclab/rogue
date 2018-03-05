@@ -31,27 +31,56 @@ namespace rogue {
    namespace protocols {
       namespace udp {
 
-         // Return payload size depending on jumbo mod
-         inline uint32_t const & maxPayload ( bool jumbo ) {
-            if ( jumbo ) return (8900);
-            else return(1400);
-         }
+         //! UDP Core
+         class Core {
 
-         //! Set UDP RX Size
-         inline bool const & setRxSize(uint32_t size, rogue::Logging * log) {
-            uint32_t   rwin;
-            socklen_t  rwin_size=4;
+               static const uint32_t MaxJumboPayload = 8900;
+               static const uint32_t MaxStdPayload   = 1400;
 
-            setsockopt(fd_, SOL_SOCKET, SO_RCVBUF, (char*)&size, sizeof(size));
-            getsockopt(fd_, SOL_SOCKET, SO_RCVBUF, &rwin, &rwin_size);
-            if(size > rwin) {
-               log->critical("Error setting rx buffer size.");
-               log->critical("Wanted %i got %i",size,rwin);
-               log->critical("sudo sysctl -w net.core.rmem_max=size to increase in kernel");
-               return(false);
-            }
-            return(true);
-         }
+            protected:
+
+               rogue::Logging * udpLog_;
+
+               //! Jumbo frames enables
+               bool jumbo_;
+
+               //! Socket
+               int32_t  fd_;
+
+               //! Remote socket address
+               struct sockaddr_in remAddr_;
+
+               //! Timeout value
+               uint32_t timeout_;
+
+               boost::thread* thread_;
+
+               //! mutex
+               boost::mutex udpMtx_;
+
+            public:
+
+               //! Setup class in python
+               static void setup_python();
+
+               //! Creator
+               Core(bool jumbo);
+
+               //! Destructor
+               ~Core();
+
+               //! Return max payload
+               uint32_t maxPayload();
+
+               //! Set UDP RX Size
+               bool setRxSize(uint32_t size);
+
+               //! Set timeout for frame transmits in microseconds
+               void setTimeout(uint32_t timeout);
+         };
+
+         // Convienence
+         typedef boost::shared_ptr<rogue::protocols::udp::Core> CorePtr;
       }
    }
 };
