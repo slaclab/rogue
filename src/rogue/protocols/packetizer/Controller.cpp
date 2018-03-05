@@ -92,7 +92,7 @@ ris::FramePtr rpp::Controller::reqFrame ( uint32_t size ) {
       // Add 8 bytes to headroom
       buff->adjustHeader(headSize_);
       buff->adjustTail(tailSize_);
-
+      
       // Add buffer to return frame
       lFrame->appendBuffer(buff);
    }

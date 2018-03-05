@@ -111,6 +111,8 @@ ris::FramePtr rpr::Controller::reqFrame ( uint32_t size ) {
    ris::BufferPtr buffer;
    uint32_t       nSize;
 
+   printf("Requesting frame size = %i\n",size);
+
    // Request only single buffer frames.
    // Frame size returned is never greater than remote max size
    // or local segment size
@@ -137,6 +139,8 @@ ris::FramePtr rpr::Controller::reqFrame ( uint32_t size ) {
       frame = ris::Frame::create();
       frame->appendBuffer(buffer);
    }
+
+   printf("Created frame size = %i\n",frame->getAvailable());
 
    // Return frame
    return(frame);
@@ -207,6 +211,8 @@ ris::FramePtr rpr::Controller::applicationTx() {
 void rpr::Controller::applicationRx ( ris::FramePtr frame ) {
    ris::FramePtr tranFrame;
    struct timeval startTime;
+
+   printf("Application frame size = %i\n",frame->getPayload());
 
    gettimeofday(&startTime,NULL);
 

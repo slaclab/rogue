@@ -97,6 +97,8 @@ void rpu::Client::acceptFrame ( ris::FramePtr frame ) {
    struct msghdr    msg;
    struct iovec     msg_iov[1];
 
+   printf("Client frame = %i\n",frame->getPayload());
+
    // Setup message header
    msg.msg_name       = &remAddr_;
    msg.msg_namelen    = sizeof(struct sockaddr_in);
