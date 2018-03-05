@@ -71,13 +71,19 @@ ris::FramePtr rpp::Controller::reqFrame ( uint32_t size ) {
    ris::FramePtr  lFrame;
    ris::FramePtr  rFrame;
    ris::BufferPtr buff;
+   uint32_t fSize;
 
    // Create frame container for request response
    lFrame = ris::Frame::create();
 
    // Request individual frames upstream
    while ( lFrame->getAvailable() < size ) {
-      rFrame = tran_->reqFrame (size, false);
+
+      // Generate a new size with header and tail
+      fSize = (size - lFrame->getAvailable()) + headSize_ + tailSize_;
+
+      // Pass request
+      rFrame = tran_->reqFrame (fSize, false);
 
       // Take only the first buffer. This will break a cascaded packetizer
       // system. We need to fix this!

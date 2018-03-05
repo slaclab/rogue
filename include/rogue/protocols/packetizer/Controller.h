@@ -42,7 +42,6 @@ namespace rogue {
             protected:
 
                // parameters
-               uint32_t segmentSize_;
                uint32_t appIndex_;
                uint32_t tranIndex_;
                bool     transSof_[256];
@@ -72,8 +71,7 @@ namespace rogue {
                static void setup_python();
 
                //! Creator
-               Controller( uint32_t segmentSize,
-                           boost::shared_ptr<rogue::protocols::packetizer::Transport> tran,
+               Controller( boost::shared_ptr<rogue::protocols::packetizer::Transport> tran,
                            boost::shared_ptr<rogue::protocols::packetizer::Application> * app,
                            uint32_t headSize, uint32_t tailSize );
 

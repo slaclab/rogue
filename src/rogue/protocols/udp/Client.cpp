@@ -97,8 +97,6 @@ void rpu::Client::acceptFrame ( ris::FramePtr frame ) {
    struct msghdr    msg;
    struct iovec     msg_iov[1];
 
-   printf("Client frame = %i\n",frame->getPayload());
-
    // Setup message header
    msg.msg_name       = &remAddr_;
    msg.msg_namelen    = sizeof(struct sockaddr_in);
@@ -114,11 +112,11 @@ void rpu::Client::acceptFrame ( ris::FramePtr frame ) {
    // Go through each buffer in the frame
    for (x=0; x < frame->getCount(); x++) {
       buff = frame->getBuffer(x);
-      if ( buff->getCount() == 0 ) break;
+      if ( buff->getPayload() == 0 ) break;
 
       // Setup IOVs
-      msg_iov[0].iov_base = buff->getRawData();
-      msg_iov[0].iov_len  = buff->getCount();
+      msg_iov[0].iov_base = buff->getPayloadData();
+      msg_iov[0].iov_len  = buff->getPayload();
 
       // Keep trying since select call can fire 
       // but write fails because we did not win the buffer lock
@@ -147,11 +145,12 @@ void rpu::Client::acceptFrame ( ris::FramePtr frame ) {
 
 //! Run thread
 void rpu::Client::runThread() {
-   ris::BufferPtr buff;
-   ris::FramePtr  frame;
-   fd_set         fds;
-   int32_t        res;
-   struct timeval tout;
+   ris::BufferPtr     buff;
+   ris::FramePtr      frame;
+   fd_set             fds;
+   int32_t            res;
+   struct timeval     tout;
+   uint32_t           avail;
 
    udpLog_->info("PID=%i, TID=%li",getpid(),syscall(SYS_gettid));
 
@@ -164,13 +163,19 @@ void rpu::Client::runThread() {
 
          // Attempt receive
          buff = frame->getBuffer(0);
-         res = ::read(fd_, buff->getRawData(), buff->getAvailable());
+         avail = buff->getAvailable();
+         res = recvfrom(fd_, buff->getPayloadData(), avail, MSG_TRUNC, NULL, 0);
 
          if ( res > 0 ) {
-            buff->setSize(res);
 
-            // Push frame and get a new empty frame
-            sendFrame(frame);
+            // Message was too big
+            if (res > avail ) udpLog_->warning("Receive data was too large. Dropping.");
+            else {
+               buff->setPayload(res);
+               sendFrame(frame);
+            }
+
+            // Get new frame
             frame = ris::Pool::acceptReq(maxPayload(),false);
          }
          else {

@@ -38,7 +38,7 @@ rpp::CorePtr rpp::Core::create () {
 
 void rpp::Core::setup_python() {
 
-   bp::class_<rpp::Core, rpp::CorePtr, boost::noncopyable >("Core",bp::init<uint32_t>())
+   bp::class_<rpp::Core, rpp::CorePtr, boost::noncopyable >("Core",bp::init<>())
       .def("create",         &rpp::Core::create)
       .staticmethod("create")
       .def("transport",      &rpp::Core::transport)

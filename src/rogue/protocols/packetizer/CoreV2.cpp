@@ -37,7 +37,7 @@ rpp::CoreV2Ptr rpp::CoreV2::create (bool enIbCrc, bool enObCrc) {
 
 void rpp::CoreV2::setup_python() {
 
-   bp::class_<rpp::CoreV2, rpp::CoreV2Ptr, boost::noncopyable >("CoreV2",bp::init<uint32_t,bool,bool>())
+   bp::class_<rpp::CoreV2, rpp::CoreV2Ptr, boost::noncopyable >("CoreV2",bp::init<bool,bool>())
       .def("create",         &rpp::CoreV2::create)
       .staticmethod("create")
       .def("transport",      &rpp::CoreV2::transport)

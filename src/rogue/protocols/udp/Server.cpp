@@ -157,6 +157,7 @@ void rpu::Server::runThread() {
    struct timeval     tout;
    struct sockaddr_in tmpAddr;
    uint32_t           tmpLen;
+   uint32_t           avail;
 
    udpLog_->info("PID=%i, TID=%li",getpid(),syscall(SYS_gettid));
 
@@ -169,13 +170,19 @@ void rpu::Server::runThread() {
 
          // Attempt receive
          buff = frame->getBuffer(0);
-         res = recvfrom(fd_, buff->getRawData(), buff->getAvailable(), 0 , (struct sockaddr *)&tmpAddr, &tmpLen);
+         avail = buff->getAvailable();
+         res = recvfrom(fd_, buff->getPayloadData(), avail, MSG_TRUNC, (struct sockaddr *)&tmpAddr, &tmpLen);
 
          if ( res > 0 ) {
-            buff->setPayload(res);
 
-            // Push frame and get a new empty frame
-            sendFrame(frame);
+            // Message was too big
+            if (res > avail ) udpLog_->warning("Receive data was too large. Dropping.");
+            else {
+               buff->setPayload(res);
+               sendFrame(frame);
+            }
+
+            // Get new frame
             frame = ris::Pool::acceptReq(maxPayload(),false);
 
             // Lock before updating address
@@ -204,7 +211,7 @@ void rpu::Server::runThread() {
 
 void rpu::Server::setup_python () {
 
-   bp::class_<rpu::Server, rpu::ServerPtr, bp::bases<ris::Master,ris::Slave>, boost::noncopyable >("Server",bp::init<uint16_t,bool>())
+   bp::class_<rpu::Server, rpu::ServerPtr, bp::bases<rpu::Core,ris::Master,ris::Slave>, boost::noncopyable >("Server",bp::init<uint16_t,bool>())
       .def("create",         &rpu::Server::create)
       .staticmethod("create")
       .def("getPort",        &rpu::Server::getPort)
