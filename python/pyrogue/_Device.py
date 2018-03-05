@@ -323,28 +323,39 @@ class Device(pr.Node,rim.Hub):
 
             return ldata
 
-    def _rawWrite(self, offset, data, base=pr.UInt, stride=4, wordBitSize=32):
+    def _rawWrite(self, offset, data, base=pr.UInt, stride=4, wordBitSize=32, tryCount=1):
         with self._memLock:
-            self._rawTxnChunker(offset, data, base, stride, wordBitSize, txnType=rim.Write)
-            self._waitTransaction(0)
+            count = 0
 
-            if self._getError() > 0:
-                raise pr.MemoryError (name=self.name, address=offset|self.address, error=self._getError())
+            while ( count < tryCount ):
+                count += 1
 
+                self._rawTxnChunker(offset, data, base, stride, wordBitSize, txnType=rim.Write)
+                self._waitTransaction(0)
+
+                if self._getError() == 0: return
+
+            # If we get here an error has occured
+            raise pr.MemoryError (name=self.name, address=offset|self.address, error=self._getError())
         
-    def _rawRead(self, offset, numWords=1, base=pr.UInt, stride=4, wordBitSize=32, data=None):
+    def _rawRead(self, offset, numWords=1, base=pr.UInt, stride=4, wordBitSize=32, data=None, tryCount=1):
         with self._memLock:
-            ldata = self._rawTxnChunker(offset, data, base, stride, wordBitSize, txnType=rim.Read, numWords=numWords)
-            self._waitTransaction(0)
+            count = 0
 
-            if self._getError() > 0:
-                raise pr.MemoryError (name=self.name, address=offset|self.address, error=self._getError())
+            while ( count < tryCount ):
+                count += 1
 
-            if numWords == 1:
-                return base.fromBytes(base.mask(ldata, wordBitSize))
-            else:
-                return [base.fromBytes(base.mask(ldata[i:i+stride], wordBitSize)) for i in range(0, len(ldata), stride)]
-            
+                ldata = self._rawTxnChunker(offset, data, base, stride, wordBitSize, txnType=rim.Read, numWords=numWords)
+                self._waitTransaction(0)
+
+                if self._getError() == 0:
+                    if numWords == 1:
+                        return base.fromBytes(base.mask(ldata, wordBitSize))
+                    else:
+                        return [base.fromBytes(base.mask(ldata[i:i+stride], wordBitSize)) for i in range(0, len(ldata), stride)]
+                
+            # If we get here an error has occured
+            raise pr.MemoryError (name=self.name, address=offset|self.address, error=self._getError())
 
     def _buildBlocks(self):
         remVars = []
