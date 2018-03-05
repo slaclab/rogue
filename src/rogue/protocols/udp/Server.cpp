@@ -45,7 +45,7 @@ rpu::Server::Server (uint16_t port, bool jumbo) : rpu::Core(jumbo) {
    int32_t  val;
    uint32_t  size;
 
-   port_   = port;
+   port_    = port;
    udpLog_ = new rogue::Logging("udp.Server");
 
    // Create socket
@@ -117,11 +117,11 @@ void rpu::Server::acceptFrame ( ris::FramePtr frame ) {
    // Go through each buffer in the frame
    for (x=0; x < frame->getCount(); x++) {
       buff = frame->getBuffer(x);
-      if ( buff->getCount() == 0 ) break;
+      if ( buff->getPayload() == 0 ) break;
 
       // Setup IOVs
-      msg_iov[0].iov_base = buff->getRawData();
-      msg_iov[0].iov_len  = buff->getCount();
+      msg_iov[0].iov_base = buff->getPayloadData();
+      msg_iov[0].iov_len  = buff->getPayload();
 
       // Keep trying since select call can fire 
       // but write fails because we did not win the buffer lock
@@ -172,7 +172,7 @@ void rpu::Server::runThread() {
          res = recvfrom(fd_, buff->getRawData(), buff->getAvailable(), 0 , (struct sockaddr *)&tmpAddr, &tmpLen);
 
          if ( res > 0 ) {
-            buff->setSize(res);
+            buff->setPayload(res);
 
             // Push frame and get a new empty frame
             sendFrame(frame);
