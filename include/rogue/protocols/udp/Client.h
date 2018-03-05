@@ -41,7 +41,8 @@ namespace rogue {
 
                rogue::Logging * log_;
 
-               static const uint32_t MaxBufferSize = 9000;
+               //! Jumbo frames enables
+               bool jumbo_;
 
                //! Socket
                int32_t  fd_;
@@ -70,16 +71,19 @@ namespace rogue {
 
                //! Class creation
                static boost::shared_ptr<rogue::protocols::udp::Client> 
-                  create (std::string host, uint16_t port);
+                  create (std::string host, uint16_t port, bool jumbo);
 
                //! Setup class in python
                static void setup_python();
 
                //! Creator
-               Client(std::string host, uint16_t port);
+               Client(std::string host, uint16_t port, bool jumbo);
 
                //! Destructor
                ~Client();
+
+               //! Return max payload
+               uint32_t maxPayload();
 
                //! Set UDP RX Size
                bool setRxSize(uint32_t size);

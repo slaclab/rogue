@@ -18,6 +18,7 @@
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
+#include <rogue/protocols/udp/Common.h>
 #include <rogue/protocols/udp/Client.h>
 #include <rogue/interfaces/stream/Frame.h>
 #include <rogue/interfaces/stream/Buffer.h>
@@ -32,13 +33,13 @@ namespace ris = rogue::interfaces::stream;
 namespace bp  = boost::python;
 
 //! Class creation
-rpu::ClientPtr rpu::Client::create (std::string host, uint16_t port) {
+rpu::ClientPtr rpu::Client::create (std::string host, uint16_t port, bool jumbo) {
    rpu::ClientPtr r = boost::make_shared<rpu::Client>(host,port);
    return(r);
 }
 
 //! Creator
-rpu::Client::Client ( std::string host, uint16_t port) {
+rpu::Client::Client ( std::string host, uint16_t port, bool jumbo) {
    struct addrinfo     aiHints;
    struct addrinfo*    aiList=0;
    const  sockaddr_in* addr;
@@ -46,6 +47,7 @@ rpu::Client::Client ( std::string host, uint16_t port) {
    int32_t ret;
    uint32_t size;
 
+   jumbo_   = jumbo;
    address_ = host;
    port_    = port;
    timeout_ = 10000000;
@@ -54,15 +56,6 @@ rpu::Client::Client ( std::string host, uint16_t port) {
    // Create socket
    if ( (fd_ = socket(AF_INET,SOCK_DGRAM,0)) < 0 )
       throw(rogue::GeneralError::network("Client::Client",address_.c_str(),port_));
-
-   // Disable fragmentation
-   val = 1;
-   setsockopt(fd_, IPPROTO_IP, IP_PMTUDISC_DO, &val, sizeof(val));
-   //
-   //IP_PMTUDISC_DO
-
-   //ret = getsockopt(fd_, IPPROTO_IP,IP_MTU, (char *)&val, &size);
-   //printf("MTU --> %d - %d = %i\n",val,size,ret); 
 
    // Lookup host address
    aiHints.ai_flags    = AI_CANONNAME;
@@ -82,7 +75,7 @@ rpu::Client::Client ( std::string host, uint16_t port) {
    ((struct sockaddr_in *)(&addr_))->sin_port=htons(port_);
 
    // Fixed size buffer pool
-   enBufferPool(MaxBufferSize,1024*256);
+   enBufferPool(maxPayload(jumbo_),1024*256);
 
    // Start rx thread
    thread_ = new boost::thread(boost::bind(&rpu::Client::runThread, this));
@@ -94,6 +87,16 @@ rpu::Client::~Client() {
    thread_->join();
 
    ::close(fd_);
+}
+
+//! Return max payload
+uint32_t rpu::Client::maxPayload() {
+   return rpu::maxPayload(jumbo_);
+}
+
+//! Set UDP RX Size
+bool rpu::Client::setRxSize(uint32_t size) {
+   return rpu::setRxSize(size,log_);
 }
 
 //! Set timeout for frame transmits in microseconds
@@ -204,30 +207,14 @@ void rpu::Client::runThread() {
    } catch (boost::thread_interrupted&) { }
 }
 
-
-//! Set UDP RX Size
-bool rpu::Client::setRxSize(uint32_t size) {
-   uint32_t   rwin;
-   socklen_t  rwin_size=4;
-
-   setsockopt(fd_, SOL_SOCKET, SO_RCVBUF, (char*)&size, sizeof(size));
-   getsockopt(fd_, SOL_SOCKET, SO_RCVBUF, &rwin, &rwin_size);
-   if(size > rwin) {
-      log_->critical("Error setting rx buffer size.");
-      log_->critical("Wanted %i got %i",size,rwin);
-      log_->critical("sudo sysctl -w net.core.rmem_max=size to increase in kernel");
-      return(false);
-   }
-   return(true);
-}
-
 void rpu::Client::setup_python () {
 
-   bp::class_<rpu::Client, rpu::ClientPtr, bp::bases<ris::Master,ris::Slave>, boost::noncopyable >("Client",bp::init<std::string,uint16_t>())
+   bp::class_<rpu::Client, rpu::ClientPtr, bp::bases<ris::Master,ris::Slave>, boost::noncopyable >("Client",bp::init<std::string,uint16_t,bool>())
       .def("create",         &rpu::Client::create)
       .staticmethod("create")
       .def("setTimeout",     &rpu::Client::setTimeout)
       .def("setRxSize",      &rpu::Client::setRxSize)
+      .def("maxBuffer",      &rpu::Client::maxBuffer)
    ;
 
    bp::implicitly_convertible<rpu::ClientPtr, ris::MasterPtr>();

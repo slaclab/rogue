@@ -44,7 +44,8 @@ namespace rogue {
                //! Socket
                int32_t  fd_;
 
-               static const uint32_t MaxBufferSize = 9000;
+               //! Jumbo frames enables
+               bool jumbo_;
 
                //! Remote port number
                uint16_t port_;
@@ -68,19 +69,22 @@ namespace rogue {
 
                //! Class creation
                static boost::shared_ptr<rogue::protocols::udp::Server> 
-                  create (uint16_t port);
+                  create (uint16_t port, bool jumbo);
 
                //! Setup class in python
                static void setup_python();
 
                //! Creator
-               Server(uint16_t port);
+               Server(uint16_t port, bool jumbo);
 
                //! Destructor
                ~Server();
 
                //! Get port number
                uint32_t getPort();
+
+               //! Return max payload
+               uint32_t maxPayload();
 
                //! Set UDP RX Size
                bool setRxSize(uint32_t size);

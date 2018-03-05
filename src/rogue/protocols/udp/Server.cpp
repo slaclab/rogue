@@ -17,6 +17,7 @@
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
+#include <rogue/protocols/udp/Common.h>
 #include <rogue/protocols/udp/Server.h>
 #include <rogue/interfaces/stream/Frame.h>
 #include <rogue/interfaces/stream/Buffer.h>
@@ -33,17 +34,18 @@ namespace ris = rogue::interfaces::stream;
 namespace bp  = boost::python;
 
 //! Class creation
-rpu::ServerPtr rpu::Server::create (uint16_t port) {
-   rpu::ServerPtr r = boost::make_shared<rpu::Server>(port);
+rpu::ServerPtr rpu::Server::create (uint16_t port, bool jumbo) {
+   rpu::ServerPtr r = boost::make_shared<rpu::Server>(port,jumbo);
    return(r);
 }
 
 //! Creator
-rpu::Server::Server (uint16_t port) {
+rpu::Server::Server (uint16_t port, bool jumbo) {
    uint32_t len;
    int32_t  val;
    uint32_t  size;
 
+   jumbo_   = jumbo;
    port_    = port;
    timeout_ = 10000000;
    log_     = new rogue::Logging("udp.Server");
@@ -51,16 +53,6 @@ rpu::Server::Server (uint16_t port) {
    // Create socket
    if ( (fd_ = socket(AF_INET,SOCK_DGRAM,0)) < 0 )
       throw(rogue::GeneralError::network("Server::Server","0.0.0.0",port_));
-
-   // Disable fragmentation
-   //val = 1;
-   //setsockopt(fd_, IPPROTO_IP, IP_DONTFRAG, &val, sizeof(val));
-
-   val = 1;
-   setsockopt(fd_, IPPROTO_IP, IP_PMTUDISC_DO, &val, sizeof(val));
-
-   //getsockopt(fd_,IPPROTO_IP,IP_MTU,(char *)&val, &size);
-   //printf("MTU --> %d\n",val); 
 
    // Setup Remote Address
    memset(&local_,0,sizeof(struct sockaddr_in));
@@ -82,7 +74,7 @@ rpu::Server::Server (uint16_t port) {
    }
 
    // Fixed size buffer pool
-   enBufferPool(MaxBufferSize,1024*256);
+   enBufferPool(maxPayload(jumbo_),1024*256);
 
    // Start rx thread
    thread_ = new boost::thread(boost::bind(&rpu::Server::runThread, this));
@@ -100,6 +92,16 @@ rpu::Server::~Server() {
 //! Get port number
 uint32_t rpu::Server::getPort() {
    return(port_);
+}
+
+//! Return max payload
+uint32_t rpu::Server::maxPayload() {
+   return rpu::maxPayload(jumbo_);
+}
+
+//! Set UDP RX Size
+bool rpu::Server::setRxSize(uint32_t size) {
+   return rpu::setRxSize(size,log_);
 }
 
 //! Set timeout for frame transmits in microseconds
@@ -217,31 +219,15 @@ void rpu::Server::runThread() {
    } catch (boost::thread_interrupted&) { }
 }
 
-
-//! Set UDP RX Size
-bool rpu::Server::setRxSize(uint32_t size) {
-   uint32_t   rwin;
-   socklen_t  rwin_size=4;
-
-   setsockopt(fd_, SOL_SOCKET, SO_RCVBUF, (char*)&size, sizeof(size));
-   getsockopt(fd_, SOL_SOCKET, SO_RCVBUF, &rwin, &rwin_size);
-   if(size > rwin) {
-      log_->critical("Error setting rx buffer size.");
-      log_->critical("Wanted %i got %i",size,rwin);
-      log_->critical("sudo sysctl -w net.core.rmem_max=size to increase in kernel");
-      return(false);
-   }
-   return(true);
-}
-
 void rpu::Server::setup_python () {
 
-   bp::class_<rpu::Server, rpu::ServerPtr, bp::bases<ris::Master,ris::Slave>, boost::noncopyable >("Server",bp::init<uint16_t>())
+   bp::class_<rpu::Server, rpu::ServerPtr, bp::bases<ris::Master,ris::Slave>, boost::noncopyable >("Server",bp::init<uint16_t,bool>())
       .def("create",         &rpu::Server::create)
       .staticmethod("create")
       .def("setTimeout",     &rpu::Server::setTimeout)
       .def("setRxSize",      &rpu::Server::setRxSize)
       .def("getPort",        &rpu::Server::getPort)
+      .def("maxBuffer",      &rpu::Server::maxBuffer)
    ;
 
    bp::implicitly_convertible<rpu::ServerPtr, ris::MasterPtr>();
