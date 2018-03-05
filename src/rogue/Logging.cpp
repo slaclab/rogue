@@ -79,7 +79,7 @@ void rogue::Logging::intLog(uint32_t level, const char * fmt, va_list args) {
 
    char buffer[1000];
    vsnprintf(buffer,1000,fmt,args);
-   printf(buffer,"%s: %s\n",name_.c_str(),buffer);
+   printf("%s: %s\n",name_.c_str(),buffer);
 }
 
 void rogue::Logging::log(uint32_t level, const char * fmt, ...) {
