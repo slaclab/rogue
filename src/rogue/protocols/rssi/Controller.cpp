@@ -120,16 +120,17 @@ ris::FramePtr rpr::Controller::reqFrame ( uint32_t size ) {
    frame = tran_->reqFrame (nSize, false);
    buffer = frame->getBuffer(0);
 
-   // Make sure there is enough room in first buffer for our header
+   // Make sure there is enough room the buffer for our header
    if ( buffer->getAvailable() < rpr::Header::HeaderSize )
       throw(rogue::GeneralError::boundary("rss::Controller::reqFrame",
                                           rpr::Header::HeaderSize,
                                           buffer->getAvailable()));
 
-   // Update first buffer to include our header space.
-   buffer->setHeadRoom(buffer->getHeadRoom() + rpr::Header::HeaderSize);
+   // Update buffer to include our header space.
+   buffer->adjustHeader(rpr::Header::HeaderSize);
 
-   // Trim multi buffer frames
+   // Trim multi buffer frames, RSSI can not work on payloads
+   // with multiple buffers.
    if ( frame->getCount() > 1 ) {
       frame = ris::Frame::create();
       frame->appendBuffer(buffer);
@@ -190,7 +191,7 @@ ris::FramePtr rpr::Controller::applicationTx() {
       stCond_.notify_all();
 
       frame = head->getFrame();
-      frame->getBuffer(0)->setHeadRoom(frame->getBuffer(0)->getHeadRoom() + rpr::Header::HeaderSize);
+      frame->getBuffer(0)->adjustHeader(rpr::Header::HeaderSize);
    }
    return(frame);
 }
@@ -205,14 +206,8 @@ void rpr::Controller::applicationRx ( ris::FramePtr frame ) {
    if ( frame->getCount() == 0 ) 
       throw(rogue::GeneralError("rss::Controller::applicationRx","Frame must not be empty"));
 
-   // First buffer of frame does not have enough room for header
-   if ( frame->getBuffer(0)->getHeadRoom() < rpr::Header::HeaderSize )
-      throw(rogue::GeneralError::boundary("rss::Controller::applicationRx",
-                                          rpr::Header::HeaderSize,
-                                          frame->getBuffer(0)->getHeadRoom()));
-
    // Adjust header in first buffer
-   frame->getBuffer(0)->setHeadRoom(frame->getBuffer(0)->getHeadRoom() - rpr::Header::HeaderSize);
+   frame->getBuffer(0)->adjustHeader(-rpr::Header::HeaderSize);
 
    // Map to RSSI 
    rpr::HeaderPtr head = rpr::Header::create(frame);

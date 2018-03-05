@@ -49,7 +49,7 @@ namespace rogue {
             public:
 
                //! Header Size
-               static const uint32_t HeaderSize = 8;
+               static const  int32_t HeaderSize = 8;
                static const uint32_t SynSize    = 24;
 
             private:

@@ -80,7 +80,7 @@ void rpp::ControllerV2::transportRx( ris::FramePtr frame ) {
    size = buff->getPayload();
 
    // Drop invalid data
-   if ( frame->getError() ||     // Check for frame ERROR
+   if ( frame->getError()    || // Check for frame ERROR
       (size < 24)         ||     // Check for min. size (64-bit header + 64-bit min. payload + 64-bit tail) 
       ((size&0x7) > 0)    ||     // Check for non 64-bit alignment
       ((data[0]&0xF) != 0x2) ) { // Check for invalid version only (ignore the CRC mode flag)
@@ -103,14 +103,14 @@ void rpp::ControllerV2::transportRx( ris::FramePtr frame ) {
    tmpLuser = data[size-8];
    tmpEof   = ((data[size-7] & 0x1) ? true : false);
    last     = uint32_t(data[size-6]);
-   
+
    if(enIbCrc_){
-      // Tail word 1
-      tmpCrc  = uint32_t(data[size-1]) << 0;
-      tmpCrc |= uint32_t(data[size-2]) << 8;
-      tmpCrc |= uint32_t(data[size-3]) << 16;
-      tmpCrc |= uint32_t(data[size-4]) << 24;
-      // Compute CRC
+   // Tail word 1
+   tmpCrc  = uint32_t(data[size-1]) << 0;
+   tmpCrc |= uint32_t(data[size-2]) << 8;
+   tmpCrc |= uint32_t(data[size-3]) << 16;
+   tmpCrc |= uint32_t(data[size-4]) << 24;
+   // Compute CRC
       boost::crc_basic<32> result( 0x04C11DB7, crcInit_[tmpDest], 0xFFFFFFFF, true, true );
       result.process_bytes(data,size-4);
       crc = result.checksum();
@@ -126,14 +126,14 @@ void rpp::ControllerV2::transportRx( ris::FramePtr frame ) {
          data[size-8],data[size-7],data[size-6],data[size-5],data[size-4],data[size-3],data[size-2],data[size-1]);
    log_->debug("transportRx: Got frame: Fuser=0x%x, Dest=0x%x, Id=0x%x, Count=%i, Sof=%i, Luser=0x%x, Eof=%i, Last=%i, crcErr=%i",
          tmpFuser, tmpDest, tmpId, tmpCount, tmpSof, tmpLuser, tmpEof, last, crcErr);
-         
-   // Adjust payload 
-   if ( last != 8 ) buff->setPayload((size - 16) + last);
-   else buff->setPayload(size-8);
 
-   // Rem 8 bytes from headroom
-   buff->setHeadRoom(buff->getHeadRoom() + 8);
-   buff->setTailRoom(buff->getTailRoom() + 8);
+   // Shorten message by removing tail and adjusting for last value
+   // Do this before adjusting tail reservation
+   buff->adjustPayload(-8 + ((int32_t)last-8));
+
+   // Add 8 bytes to headroom and tail reservation
+   buff->adjustHeader(8);
+   buff->adjustTail(8);
 
    // Drop frame and reset state if mismatch
    if ( ( transSof_[tmpDest] != tmpSof) || crcErr || tmpCount != tranCount_[tmpDest] ) {
@@ -249,13 +249,13 @@ void rpp::ControllerV2::applicationRx ( ris::FramePtr frame, uint8_t tDest ) {
       if ( last != 0 ) size = (0xFFFFFFF8 & size) + 8;
       else last = 8;
       
-      // Add tail to payload
+      // Rem 8 bytes head and tail reservation before setting new size
+      buff->adjustHeader(-8);
+      buff->adjustTail(-8);
+
+      // Add tail to payload, set new size
       size += 8;
       buff->setPayload(size);
-
-      // Rem 8 bytes from headroom
-      buff->setHeadRoom(buff->getHeadRoom() - 8);
-      buff->setTailRoom(buff->getTailRoom() - 8);
 
       // Get data pointer
       data = buff->getPayloadData();
@@ -281,12 +281,12 @@ void rpp::ControllerV2::applicationRx ( ris::FramePtr frame, uint8_t tDest ) {
       data[size-5] = 0;
       
       if(enObCrc_){
-         // Compute CRC
+      // Compute CRC
          boost::crc_basic<32> result( 0x04C11DB7, crcInit, 0xFFFFFFFF, true, true );
          result.process_bytes(data,size-4);
-         crc = result.checksum();
+      crc = result.checksum();
          crcInit = result.get_interim_remainder();
-         // Tail  word 1
+      // Tail  word 1
          data[size-1] = (crc >>  0) & 0xFF;
          data[size-2] = (crc >>  8) & 0xFF;
          data[size-3] = (crc >> 16) & 0xFF;
