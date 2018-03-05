@@ -96,8 +96,6 @@ void ru::StreamZip::acceptFrame ( ris::FramePtr frame ) {
 
    BZ2_bzCompressEnd(&strm);
 
-   //printf("Zip Input frame = %i, output frame = %i\n",frame->getPayload(),newFrame->getPayload());
-
    this->sendFrame(newFrame);
 }
 
