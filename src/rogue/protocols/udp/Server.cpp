@@ -56,8 +56,11 @@ rpu::Server::Server (uint16_t port) {
    //val = 1;
    //setsockopt(fd_, IPPROTO_IP, IP_DONTFRAG, &val, sizeof(val));
 
-   getsockopt(fd_,IPPROTO_IP,IP_MTU,(char *)&val, &size);
-   printf("MTU --> %d\n",val); 
+   val = 1;
+   setsockopt(fd_, IPPROTO_IP, IP_PMTUDISC_DO, &val, sizeof(val));
+
+   //getsockopt(fd_,IPPROTO_IP,IP_MTU,(char *)&val, &size);
+   //printf("MTU --> %d\n",val); 
 
    // Setup Remote Address
    memset(&local_,0,sizeof(struct sockaddr_in));
