@@ -51,17 +51,20 @@ namespace rogue {
                //! Meta data used to track this buffer by source
                uint32_t   meta_;
 
-               //! Alloc size of buffer
+               //! Alloc size of buffer, alloc may be greater than raw size due to buffer alloctor
                uint32_t   allocSize_;
 
-               //! Raw size of buffer
+               //! Raw size of buffer, size as requested, alloc may be greater
                uint32_t   rawSize_;
 
                //! Header room of buffer
                uint32_t   headRoom_;
 
+               //! Tail room of buffer, used to keep payload from using up tail space
+               uint32_t   tailRoom_;
+
                //! Data count including header
-               uint32_t   count_;
+               uint32_t  payload_;
 
                //! Interface specific flags
                uint32_t   flags_;
@@ -95,57 +98,67 @@ namespace rogue {
                 */
                ~Buffer();
 
-               //! Get raw data pointer
+                //! Get raw data pointer
                uint8_t * getRawData();
 
-               //! Get payload data pointer
+               /* 
+                * Get data pointer
+                * Returns base + header size
+                */
                uint8_t * getPayloadData();
 
-               //! Get meta data
+               //! Get meta data, used by pool
                uint32_t getMeta();
 
-               //! Set meta data
+               //! Set meta data, used by pool
                void setMeta(uint32_t meta);
 
-               //! Get raw size of full buffer
-               uint32_t getRawSize();
+               //! Adjust header by passed value
+               void adjustHeader(int32_t value);
 
-               //! Get raw payload (rawsize - header)
-               uint32_t getRawPayload();
+               //! Clear the header reservation
+               void zeroHeader();
 
-               //! Get buffer data count (payload + headroom)
-               uint32_t getCount();
+               //! Adjust tail by passed value
+               void adjustTail(int32_t value);
 
-               //! Get header space
-               uint32_t getHeadRoom();
+               //! Clear the tail reservation
+               void zeroTail();
 
-               //! Get available size for payload
+               /*
+                * Get size of buffer that can hold
+                * payload data. This function 
+                * returns the full buffer size minus
+                * the head and tail reservation.
+                */
+               uint32_t getSize();
+
+               /*
+                * Get available size for payload
+                * This is the space remaining for payload
+                * minus the space reserved for the tail
+                */
                uint32_t getAvailable();
 
-               //! Get real payload size without header
+               /*
+                * Get real payload size without header
+                * This is the count of real data in the 
+                * packet, minus the portion reserved for
+                * the head.
+                */
                uint32_t getPayload();
-
-               //! Get flags
-               uint32_t getFlags();
-
-               //! Set flags
-               void setFlags(uint32_t flags);
-
-               //! Get error state
-               uint32_t getError();
-
-               //! Set error state
-               void setError(uint32_t error);
-
-               //! Set size including header
-               void setSize(uint32_t size);
 
                //! Set payload size (not including header)
                void setPayload(uint32_t size);
 
-               //! Set head room
-               void setHeadRoom(uint32_t offset);
+               //! Adjust payload size
+               void adjustPayload(int32_t value);
 
+               //! Set the buffer as full (minus tail reservation)
+               void setPayloadFull();
+
+               //! Set the buffer as empty (minus header reservation)
+               void setPayloadEmpty();
          };
 
          // Convienence

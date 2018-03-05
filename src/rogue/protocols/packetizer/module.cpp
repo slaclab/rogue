@@ -25,7 +25,10 @@
 #include <rogue/protocols/packetizer/Application.h>
 #include <rogue/protocols/packetizer/Transport.h>
 #include <rogue/protocols/packetizer/Controller.h>
+#include <rogue/protocols/packetizer/ControllerV1.h>
+#include <rogue/protocols/packetizer/ControllerV2.h>
 #include <rogue/protocols/packetizer/Core.h>
+#include <rogue/protocols/packetizer/CoreV2.h>
 
 namespace bp  = boost::python;
 namespace rpp = rogue::protocols::packetizer;
@@ -44,7 +47,10 @@ void rpp::setup_module() {
    rpp::Application::setup_python();
    rpp::Transport::setup_python();
    rpp::Controller::setup_python();
+   rpp::ControllerV1::setup_python();
+   rpp::ControllerV2::setup_python();
    rpp::Core::setup_python();
+   rpp::CoreV2::setup_python();
 
 }
 
