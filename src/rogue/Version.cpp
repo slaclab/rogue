@@ -17,29 +17,28 @@
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
+#include <RogueConfig.h>
 #include <rogue/Version.h>
 #include <rogue/GeneralError.h>
 #include <string>
 
-const char rogue::Version::_version[] = VERSION;
+const char rogue::Version::_version[] = ROGUE_VERSION;
 uint32_t   rogue::Version::_major     = 0;
 uint32_t   rogue::Version::_minor     = 0;
 uint32_t   rogue::Version::_maint     = 0;
+uint32_t   rogue::Version::_devel     = 0;
 
 namespace bp = boost::python;
 
 void rogue::Version::init() {
-   uint32_t diff;
    char     dump[100];
    char     lead;
    int32_t  ret;
 
-   ret = sscanf(_version,"%c%i.%i.%i-%i-%s",&lead,&_major,&_minor,&_maint,&diff,dump);
+   ret = sscanf(_version,"%c%i.%i.%i-%i-%s",&lead,&_major,&_minor,&_maint,&_devel,dump);
 
    if ( (ret != 4 && ret != 6) || (lead != 'v' && lead != 'V')) 
       throw(rogue::GeneralError("Version:init","Invalid compiled version string"));
-
-   if ( ret == 6 ) _maint += diff;
 }
 
 void rogue::Version::extract(std::string compare, uint32_t *major, uint32_t *minor, uint32_t *maint) {
@@ -92,6 +91,11 @@ uint32_t rogue::Version::getMaint() {
    return _maint;
 }
 
+uint32_t rogue::Version::getDevel() {
+   init();
+   return _devel;
+}
+
 void rogue::Version::setup_python() {
    bp::class_<rogue::Version, boost::noncopyable>("Version",bp::no_init)
       .def("current", &rogue::Version::current)
@@ -108,6 +112,9 @@ void rogue::Version::setup_python() {
       .staticmethod("minor")
       .def("maint", &rogue::Version::getMaint)
       .staticmethod("maint")
+      .def("devel", &rogue::Version::getDevel)
+      .staticmethod("devel")
    ;
+
 }
 

@@ -18,8 +18,6 @@
  * ----------------------------------------------------------------------------
 **/
 
-#ifdef DO_EPICSV3
-
 #include <boost/python.hpp>
 #include <rogue/protocols/epicsV3/Variable.h>
 #include <rogue/protocols/epicsV3/Pv.h>
@@ -229,6 +227,4 @@ void rpe::Variable::valueSet() {
    }
    inSet_ = false;
 }
-
-#endif
 

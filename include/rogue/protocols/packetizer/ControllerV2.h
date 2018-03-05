@@ -40,16 +40,19 @@ namespace rogue {
          //! Packetizer Controller Class
          class ControllerV2 : public Controller, public boost::enable_shared_from_this<rogue::protocols::packetizer::ControllerV2> {
 
+               bool     enIbCrc_;
+               bool     enObCrc_;
+
             public:
 
                //! Class creation
                static boost::shared_ptr<rogue::protocols::packetizer::ControllerV2> 
-                  create ( uint32_t segmentSize,
+                  create ( uint32_t segmentSize, bool enIbCrc, bool enObCrc,
                            boost::shared_ptr<rogue::protocols::packetizer::Transport> tran,
                            boost::shared_ptr<rogue::protocols::packetizer::Application> * app );
 
                //! Creator
-               ControllerV2( uint32_t segmentSize,
+               ControllerV2( uint32_t segmentSize, bool enIbCrc, bool enObCrc,
                            boost::shared_ptr<rogue::protocols::packetizer::Transport> tran,
                            boost::shared_ptr<rogue::protocols::packetizer::Application> * app );
 

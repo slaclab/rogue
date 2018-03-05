@@ -30,12 +30,12 @@ namespace rogue {
          static void init   ();
          static void extract(std::string compare, uint32_t *major, uint32_t *minor, uint32_t *maint);
 
-         //static const std::string _version = VERSION;
          static const char _version[];
 
          static uint32_t _major;
          static uint32_t _minor;
          static uint32_t _maint;
+         static uint32_t _devel;
 
       public:
 
@@ -54,6 +54,7 @@ namespace rogue {
          static uint32_t getMajor ();
          static uint32_t getMinor ();
          static uint32_t getMaint ();
+         static uint32_t getDevel ();
    };
 }
 

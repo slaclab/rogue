@@ -42,6 +42,8 @@ rhd::DataCard::DataCard ( std::string path, uint32_t dest ) {
    dest_    = dest;
    enSsi_   = true;
 
+   log_     = new Logging("data.DataCard");
+
    rogue::GilRelease noGil;
 
    if ( (fd_ = ::open(path.c_str(), O_RDWR)) < 0 )
@@ -63,6 +65,9 @@ rhd::DataCard::DataCard ( std::string path, uint32_t dest ) {
 
    // Start read thread
    thread_ = new boost::thread(boost::bind(&rhd::DataCard::runThread, this));
+
+   log_->critical("rogue.hardware.data.DataCard is being deprecated and will be removed in a future release.");
+   log_->critical("Please use rogue.hardware.axi.AxiStreamDma instead");
 }
 
 //! Close the device

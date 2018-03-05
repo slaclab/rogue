@@ -25,7 +25,6 @@
 #include <boost/make_shared.hpp>
 #include <rogue/GilRelease.h>
 #include <rogue/Logging.h>
-#include <iostream>
 #include <sys/syscall.h>
 
 namespace rpu = rogue::protocols::udp;
@@ -48,6 +47,7 @@ rpu::Client::Client ( std::string host, uint16_t port, uint16_t maxSize) {
    port_    = port;
    maxSize_ = maxSize;
    timeout_ = 10000000;
+   log_     = new rogue::Logging("udp.Client");
 
    // Create socket
    if ( (fd_ = socket(AF_INET,SOCK_DGRAM,0)) < 0 )
@@ -138,7 +138,7 @@ void rpu::Client::acceptFrame ( ris::FramePtr frame ) {
             res = 0;
          }
          else if ( (res = sendmsg(fd_,&msg,0)) < 0 )
-            throw(rogue::GeneralError("Client::acceptFrame","UDP Write Call Failed"));
+            log_->warning("UDP Write Call Failed");
       }
 
       // Continue while write result was zero
@@ -202,11 +202,9 @@ bool rpu::Client::setRxSize(uint32_t size) {
    setsockopt(fd_, SOL_SOCKET, SO_RCVBUF, (char*)&size, sizeof(size));
    getsockopt(fd_, SOL_SOCKET, SO_RCVBUF, &rwin, &rwin_size);
    if(size > rwin) {
-      std::cout << "----------------------------------------------------------" << std::endl;
-      std::cout << "Error setting rx buffer size."                              << std::endl;
-      std::cout << "Wanted " << std::dec << size << " Got " << std::dec << rwin << std::endl;
-      std::cout << "sysctl -w net.core.rmem_max=size to increase in kernel"     << std::endl;
-      std::cout << "----------------------------------------------------------" << std::endl;
+      log_->critical("Error setting rx buffer size.");
+      log_->critical("Wanted %i got %i",size,rwin);
+      log_->critical("sudo sysctl -w net.core.rmem_max=size to increase in kernel");
       return(false);
    }
    return(true);

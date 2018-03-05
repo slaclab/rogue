@@ -45,7 +45,9 @@ namespace rogue {
                uint32_t segmentSize_;
                uint32_t appIndex_;
                uint32_t tranIndex_;
+               bool     transSof_[256];
                uint32_t tranCount_[256];
+               uint32_t crcInit_[256];
                uint8_t  tranDest_;
                uint32_t dropCount_;
                uint32_t timeout_;

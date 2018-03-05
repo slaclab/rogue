@@ -18,8 +18,6 @@
  * ----------------------------------------------------------------------------
 **/
 
-#ifdef DO_EPICSV3
-
 #include <boost/python.hpp>
 #include <rogue/protocols/epicsV3/Value.h>
 #include <rogue/protocols/epicsV3/Pv.h>
@@ -370,4 +368,3 @@ gddAppFuncTableStatus rpe::Value::readEnums(gdd &value) {
    return S_cas_success;
 }
 
-#endif

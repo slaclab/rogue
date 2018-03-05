@@ -26,6 +26,7 @@
 #include <AxisDriver.h>
 #include <boost/python.hpp>
 #include <boost/thread.hpp>
+#include <rogue/Logging.h>
 #include <stdint.h>
 
 namespace rogue {
@@ -35,6 +36,8 @@ namespace rogue {
          //! PGP Card class
          class AxiStream : public rogue::interfaces::stream::Master, 
                            public rogue::interfaces::stream::Slave {
+
+               rogue::Logging *log_; 
 
                //! PgpCard file descriptor
                int32_t  fd_;
