@@ -2,12 +2,11 @@
  *-----------------------------------------------------------------------------
  * Title      : Packetizer Core Class
  * ----------------------------------------------------------------------------
- * File       : Core.h
- * Created    : 2017-01-07
- * Last update: 2017-01-07
+ * File       : CoreV2.cpp
+ * Created    : 2018-02-02
  * ----------------------------------------------------------------------------
  * Description:
- * Packetizer Core
+ * Packetizer Core V2
  * ----------------------------------------------------------------------------
  * This file is part of the rogue software platform. It is subject to 
  * the license terms in the LICENSE.txt file found in the top-level directory 
@@ -18,10 +17,10 @@
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
-#include <rogue/protocols/packetizer/Core.h>
+#include <rogue/protocols/packetizer/CoreV2.h>
 #include <rogue/protocols/packetizer/Transport.h>
 #include <rogue/protocols/packetizer/Application.h>
-#include <rogue/protocols/packetizer/ControllerV1.h>
+#include <rogue/protocols/packetizer/ControllerV2.h>
 #include <rogue/GeneralError.h>
 #include <boost/make_shared.hpp>
 #include <rogue/GilRelease.h>
@@ -31,43 +30,43 @@ namespace ris = rogue::interfaces::stream;
 namespace bp  = boost::python;
 
 //! Class creation
-rpp::CorePtr rpp::Core::create (uint32_t segmentSize) {
-   rpp::CorePtr r = boost::make_shared<rpp::Core>(segmentSize);
+rpp::CoreV2Ptr rpp::CoreV2::create (uint32_t segmentSize, bool enIbCrc, bool enObCrc) {
+   rpp::CoreV2Ptr r = boost::make_shared<rpp::CoreV2>(segmentSize,enIbCrc,enObCrc);
    return(r);
 }
 
-void rpp::Core::setup_python() {
+void rpp::CoreV2::setup_python() {
 
-   bp::class_<rpp::Core, rpp::CorePtr, boost::noncopyable >("Core",bp::init<uint32_t>())
-      .def("create",         &rpp::Core::create)
+   bp::class_<rpp::CoreV2, rpp::CoreV2Ptr, boost::noncopyable >("CoreV2",bp::init<uint32_t,bool,bool>())
+      .def("create",         &rpp::CoreV2::create)
       .staticmethod("create")
-      .def("transport",      &rpp::Core::transport)
-      .def("application",    &rpp::Core::application)
-      .def("getDropCount",   &rpp::Core::getDropCount)
+      .def("transport",      &rpp::CoreV2::transport)
+      .def("application",    &rpp::CoreV2::application)
+      .def("getDropCount",   &rpp::CoreV2::getDropCount)
 
    ;
 
 }
 
 //! Creator
-rpp::Core::Core (uint32_t segmentSize) {
+rpp::CoreV2::CoreV2 (uint32_t segmentSize, bool enIbCrc, bool enObCrc) {
    tran_  = rpp::Transport::create();
-   cntl_  = rpp::ControllerV1::create(segmentSize,tran_,app_);
+   cntl_  = rpp::ControllerV2::create(segmentSize,enIbCrc,enObCrc,tran_,app_);
 
    tran_->setController(cntl_);
 }
 
 //! Destructor
-rpp::Core::~Core() { }
+rpp::CoreV2::~CoreV2() { }
 
 
 //! Get transport interface
-rpp::TransportPtr rpp::Core::transport() {
+rpp::TransportPtr rpp::CoreV2::transport() {
    return(tran_);
 }
 
 //! Application module
-rpp::ApplicationPtr rpp::Core::application(uint8_t dest) {
+rpp::ApplicationPtr rpp::CoreV2::application(uint8_t dest) {
    if ( ! app_[dest] ) {
       app_[dest] = rpp::Application::create(dest);
       app_[dest]->setController(cntl_);
@@ -76,11 +75,11 @@ rpp::ApplicationPtr rpp::Core::application(uint8_t dest) {
 }
 
 //! Get drop count
-uint32_t rpp::Core::getDropCount() {
+uint32_t rpp::CoreV2::getDropCount() {
    return(cntl_->getDropCount());
 }
 
-void rpp::Core::setTimeout(uint32_t timeout) {
+void rpp::CoreV2::setTimeout(uint32_t timeout) {
    cntl_->setTimeout(timeout);
 }
 

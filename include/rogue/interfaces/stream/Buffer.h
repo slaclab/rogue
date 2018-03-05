@@ -51,14 +51,17 @@ namespace rogue {
                //! Meta data used to track this buffer by source
                uint32_t   meta_;
 
-               //! Alloc size of buffer
+               //! Alloc size of buffer, alloc may be greater than raw size due to dma buffer size
                uint32_t   allocSize_;
 
-               //! Raw size of buffer
+               //! Raw size of buffer, size as requested, alloc may be greater
                uint32_t   rawSize_;
 
                //! Header room of buffer
                uint32_t   headRoom_;
+
+               //! Tail room of buffer, used to keep payload from using up tail space
+               uint32_t   tailRoom_;
 
                //! Data count including header
                uint32_t   count_;
@@ -119,6 +122,9 @@ namespace rogue {
                //! Get header space
                uint32_t getHeadRoom();
 
+               //! Get tail space (only used in raw payload and available calculations
+               uint32_t getTailRoom();
+
                //! Get available size for payload
                uint32_t getAvailable();
 
@@ -145,6 +151,9 @@ namespace rogue {
 
                //! Set head room
                void setHeadRoom(uint32_t offset);
+
+               //! Set tail room, used to reduce rawBufferSize and available size
+               void setTailRoom(uint32_t size);
 
          };
 
