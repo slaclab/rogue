@@ -51,39 +51,21 @@ void ris::Frame::appendBuffer(ris::BufferPtr buff) {
    buffers_.push_back(buff);
 }
 
-//! Append frame to end.
+//! Append passed frame buffers to end of frame.
 void ris::Frame::appendFrame(ris::FramePtr frame) {
    uint32_t x;
 
    for (x=0; x < frame->getCount(); x++) buffers_.push_back(frame->getBuffer(x));
 }
 
-//! Copy count bytes frame, starting at offset in local frame
-uint32_t ris::Frame::copyFrame(ris::FramePtr frame, uint32_t offset, uint32_t count) {
-   uint32_t x;
-   uint32_t off;
-   uint32_t rem;
-   uint32_t bsize;
+//! Copy count bytes frame, to local frame, pass zero to copy all
+uint32_t ris::Frame::copyFrame(ris::FramePtr frame, uint32_t count) {
 
-   ris::BufferPtr buff;
 
-   off = offset;
-   rem = count;
 
-   // Process incoming frame buffer by buffer
-   for (x=0; x < frame->getCount(); x++ ) {
-      buff = frame->getBuffer(x);
-      bsize = buff->getPayload();
 
-      if (bsize > rem) bsize = rem;
 
-      this->write ( buff->getPayloadData(), off, bsize );
-      off += bsize;
-      rem -= bsize;
 
-      if ( rem == 0 ) break;
-   }
-   return(count);
 }
 
 //! Get buffer count
@@ -106,28 +88,118 @@ ris::BufferPtr ris::Frame::getBuffer(uint32_t index) {
    return(ret);
 }
 
-//! Get total available capacity (not including header space)
-uint32_t ris::Frame::getAvailable() {
-   uint32_t ret;
-   uint32_t x;
+/*
+ * Get size of buffers that can hold
+ * payload data. This function 
+ * returns the full buffer size minus
+ * the head and tail reservation.
+ */
+uint32_t ris::Frame::getSize() {
+   std::vector<ris::BufferPtr>::iterator it;
+   uint32_t ret = 0;
 
-   ret = 0;
-   for (x=0; x < buffers_.size(); x++) 
-      ret += buffers_[x]->getAvailable();
+   for (it = buffers_.begin(); it != buffer_.end(); ++it) 
+      ret += (*it)->getSize();
 
    return(ret);
 }
 
-//! Get total real payload size (not including header space)
-uint32_t ris::Frame::getPayload() {
-   uint32_t ret;
-   uint32_t x;
+/*
+ * Get available size for payload
+ * This is the space remaining for payload
+ * minus the space reserved for the tail
+ */
+uint32_t ris::Frame::getAvailable() {
+   std::vector<ris::BufferPtr>::iterator it;
+   uint32_t ret = 0;
 
-   ret = 0;
-   for (x=0; x < buffers_.size(); x++) 
-      ret += buffers_[x]->getPayload();
+   for (it = buffers_.begin(); it != buffer_.end(); ++it) 
+      ret += (*it)->geAvailable();
 
    return(ret);
+}
+
+/*
+ * Get real payload size without header
+ * This is the count of real data in the 
+ * packet, minus the portion reserved for
+ * the head.
+ */
+uint32_t ris::Frame::getPayload() {
+   std::vector<ris::BufferPtr>::iterator it;
+   uint32_t ret = 0;
+
+   for (it = buffers_.begin(); it != buffer_.end(); ++it) 
+      ret += (*it)->getPayload();
+
+   return(ret);
+}
+
+/*
+ * Set payload size (not including header)
+ * If shink flag is true, the size will be
+ * descreased if size is less than the current
+ * payload size.
+ */
+void ris::Frame::setPayload(uint32_t size, bool shrink) {
+   std::vector<ris::BufferPtr>::iterator it;
+
+   uint32_t lsize;
+   uint32_t loc;
+   uint32_t tot;
+
+   lsize = size;
+
+   for (it = buffers_.begin(); it != buffer_.end(); ++it) {
+      loc = (*it)->getSize();
+      tot += loc;
+
+      // Beyond the fill point, empty buffers if shrink = true
+      if ( lsize == 0 ) {
+         if ( shrink ) (*it)->setPayloadEmpty();
+      }
+
+      // Size exists in current buffer
+      else if ( lsize <= loc ) {
+         (*it)->setPayload(lsize,shrink);
+         lsize = 0;
+      }
+
+      // Size is beyond current buffer
+      else {
+         lsize -= loc;
+         (*it)->setPayloadFull();
+      }
+   }
+
+   if ( lsize != 0 ) 
+      throw(rogue::GeneralError::boundary("Frame::setPayload",size,tot));
+}
+
+//! Adjust payload size
+void ris::Frame::adjustPayload(int32_t value) {
+   uint32_t size = getPayload();
+
+   if ( value < 0 && (uint32_t)abs(value) > size)
+      throw(rogue::GeneralError::boundary("Frame::adjustPayload", abs(value), size));
+
+   setPayload(size + value, true);
+}
+
+//! Set the buffer as full (minus tail reservation)
+void ris::Frame::setPayloadFull() {
+   std::vector<ris::BufferPtr>::iterator it;
+
+   for (it = buffers_.begin(); it != buffer_.end(); ++it) 
+      (*it)->setPayloadFull();
+}
+
+//! Set the buffer as empty (minus header reservation)
+void ris::Frame::setPayloadEmpty() {
+   std::vector<ris::BufferPtr>::iterator it;
+
+   for (it = buffers_.begin(); it != buffer_.end(); ++it) 
+      (*it)->setPayloadEmpty();
 }
 
 //! Get flags
@@ -149,6 +221,22 @@ uint32_t ris::Frame::getError() {
 void ris::Frame::setError(uint32_t error) {
    error_ = error;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 //! Read count bytes from frame, starting from offset.
 uint32_t ris::Frame::read  ( void *p, uint32_t offset, uint32_t count ) {
@@ -193,6 +281,25 @@ void ris::Frame::writePy ( boost::python::object p, uint32_t offset ) {
    write(pyBuf.buf,offset,pyBuf.len);
    PyBuffer_Release(&pyBuf);
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 //! Start an iterative write
 /*
@@ -406,12 +513,17 @@ bool ris::Frame::nextRead(ris::FrameIteratorPtr iter) {
    return(true);
 }
 
+
+
+
+
+
 void ris::Frame::setup_python() {
 
    bp::class_<ris::Frame, ris::FramePtr, boost::noncopyable>("Frame",bp::no_init)
+      .def("getSize",      &ris::Frame::getSize)
       .def("getAvailable", &ris::Frame::getAvailable)
       .def("getPayload",   &ris::Frame::getPayload)
-      .def("copyframe",    &ris::Frame::copyFrame)
       .def("read",         &ris::Frame::readPy)
       .def("write",        &ris::Frame::writePy)
       .def("setError",     &ris::Frame::setError)
@@ -419,6 +531,5 @@ void ris::Frame::setup_python() {
       .def("setFlags",     &ris::Frame::setFlags)
       .def("getFlags",     &ris::Frame::getFlags)
    ;
-
 }
 

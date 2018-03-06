@@ -171,7 +171,11 @@ uint32_t ris::Buffer::getPayload() {
 }
 
 //! Set payload size (not including header)
-void ris::Buffer::setPayload(uint32_t size) {
+void ris::Buffer::setPayload(uint32_t size, bool shrink) {
+
+   // Shrink is disabled and size is less than current payload
+   if ( ( !shrink ) && ( size < getPayload() ) ) return;
+
    if ( size > (rawSize_ - (headRoom_ + tailRoom_) ) ) 
       throw(rogue::GeneralError::boundary("Buffer::setPayload",
             size, (rawSize_ - (headRoom_ + tailRoom_))));
@@ -185,7 +189,7 @@ void ris::Buffer::adjustPayload(int32_t value) {
       throw(rogue::GeneralError::boundary("Buffer::adjustPayload",
             abs(value), (getPayload())));
 
-   setPayload(getPayload() + value);
+   setPayload(getPayload() + value, true);
 }
 
 //! Set the buffer as full (minus tail reservation)

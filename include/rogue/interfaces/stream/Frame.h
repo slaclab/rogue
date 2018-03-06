@@ -75,11 +75,11 @@ namespace rogue {
                //! Add a buffer to end of frame
                void appendBuffer(boost::shared_ptr<rogue::interfaces::stream::Buffer> buff);
 
-               //! Append frame to end. Passed frame is emptied.
+               //! Append passed frame buffers to end of frame.
                void appendFrame(boost::shared_ptr<rogue::interfaces::stream::Frame> frame);
 
-               //! Copy count bytes frame, starting at offset in local frame
-               uint32_t copyFrame(boost::shared_ptr<rogue::interfaces::stream::Frame> frame, uint32_t offset, uint32_t count);
+               //! Copy count bytes frame, to local frame, pass zero to copy all
+               uint32_t copyFrame(boost::shared_ptr<rogue::interfaces::stream::Frame> frame, uint32_t count);
 
                //! Get buffer count
                uint32_t getCount();
@@ -90,11 +90,45 @@ namespace rogue {
                //! Get buffer at index
                boost::shared_ptr<rogue::interfaces::stream::Buffer> getBuffer(uint32_t index);
 
-               //! Get total available capacity (not including header space)
+               /*
+                * Get size of buffers that can hold
+                * payload data. This function 
+                * returns the full buffer size minus
+                * the head and tail reservation.
+                */
+               uint32_t getSize();
+
+               /*
+                * Get available size for payload
+                * This is the space remaining for payload
+                * minus the space reserved for the tail
+                */
                uint32_t getAvailable();
 
-               //! Get total real payload size (not including header space)
+               /*
+                * Get real payload size without header
+                * This is the count of real data in the 
+                * packet, minus the portion reserved for
+                * the head.
+                */
                uint32_t getPayload();
+
+               /*
+                * Set payload size (not including header)
+                * If shink flag is true, the size will be
+                * descreased if size is less than the current
+                * payload size.
+                */
+               void setPayload(uint32_t size, bool shrink);
+
+               //! Adjust payload size
+               void adjustPayload(int32_t value);
+
+               //! Set the buffer as full (minus tail reservation)
+               void setPayloadFull();
+
+               //! Set the buffer as empty (minus header reservation)
+               void setPayloadEmpty();
 
                //! Get flags
                uint32_t getFlags();
@@ -107,6 +141,25 @@ namespace rogue {
 
                //! Set error state
                void setError(uint32_t error);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
                //! Read count bytes from frame payload, starting from offset.
                /* 
@@ -134,6 +187,19 @@ namespace rogue {
                 */
                void writePy ( boost::python::object p, uint32_t offset );
 
+
+
+
+
+
+
+
+
+
+
+
+
+
                //! Start an iterative write
                /*
                 * Pass offset and total size
@@ -147,6 +213,12 @@ namespace rogue {
                //! Continue an iterative write
                bool nextWrite(boost::shared_ptr<rogue::interfaces::stream::FrameIterator> iter);
 
+
+
+
+
+
+
                //! Start an iterative read
                /*
                 * Pass offset and total size
@@ -159,6 +231,16 @@ namespace rogue {
 
                //! Continue an iterative read
                bool nextRead(boost::shared_ptr<rogue::interfaces::stream::FrameIterator> iter);
+
+
+
+
+
+
+
+
+
+
 
          };
 
