@@ -41,7 +41,7 @@ namespace rogue {
                        public rogue::interfaces::stream::Slave,
                        public rogue::interfaces::memory::Slave {
 
-               rogue::Logging * log_;
+               rogue::LoggingPtr log_;
 
             public:
 

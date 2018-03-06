@@ -41,8 +41,6 @@ void rps::Cmd::setup_python() {
 
    bp::class_<rps::Cmd, rps::CmdPtr, bp::bases<ris::Master>, boost::noncopyable >("Cmd",bp::init<>())
        .def("sendCmd", &rps::Cmd::sendCmd)
-      .def("create",         &rps::Cmd::create)
-      .staticmethod("create")
    ;
 
 }

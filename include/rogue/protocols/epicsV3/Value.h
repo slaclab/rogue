@@ -50,7 +50,7 @@ namespace rogue {
                std::vector<std::string> enums_;
                rogue::protocols::epicsV3::Pv * pv_;
 
-               rogue::Logging * log_;
+               rogue::LoggingPtr log_;
 
                std::string units_;
                uint16_t    precision_;

@@ -42,7 +42,7 @@ rhd::DataCard::DataCard ( std::string path, uint32_t dest ) {
    dest_    = dest;
    enSsi_   = true;
 
-   log_     = new Logging("data.DataCard");
+   log_     = rogue::Logging::create("data.DataCard");
 
    rogue::GilRelease noGil;
 
@@ -381,8 +381,6 @@ void rhd::DataCard::runThread() {
 void rhd::DataCard::setup_python () {
 
    bp::class_<rhd::DataCard, rhd::DataCardPtr, bp::bases<ris::Master,ris::Slave>, boost::noncopyable >("DataCard",bp::init<std::string,uint32_t>())
-      .def("create",         &rhd::DataCard::create)
-      .staticmethod("create")
       .def("enableSsi",      &rhd::DataCard::enableSsi)
       .def("dmaAck",         &rhd::DataCard::dmaAck)
       .def("setTimeout",     &rhd::DataCard::setTimeout)

@@ -39,7 +39,7 @@ namespace rogue {
          class Server : public rogue::interfaces::stream::Master, 
                         public rogue::interfaces::stream::Slave {
 
-               rogue::Logging * log_;
+               rogue::LoggingPtr log_;
 
                //! Socket
                int32_t  fd_;

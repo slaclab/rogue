@@ -78,8 +78,6 @@ void rim::Hub::doTransaction(uint32_t id, boost::shared_ptr<rogue::interfaces::m
 void rim::Hub::setup_python() {
 
    bp::class_<rim::Hub, rim::HubPtr, bp::bases<rim::Master,rim::Slave>, boost::noncopyable>("Hub",bp::init<uint64_t>())
-      .def("create", &rim::Hub::create)
-      .staticmethod("create")
       .def("_getAddress", &rim::Hub::doAddress)
       .def("_getOffset",  &rim::Hub::getOffset)
    ;

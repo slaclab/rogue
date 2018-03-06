@@ -44,16 +44,13 @@ rps::SrpV0Ptr rps::SrpV0::create () {
 //! Setup class in python
 void rps::SrpV0::setup_python() {
 
-   bp::class_<rps::SrpV0, rps::SrpV0Ptr, bp::bases<ris::Master,ris::Slave,rim::Slave>, boost::noncopyable >("SrpV0",bp::init<>())
-      .def("create",         &rps::SrpV0::create)
-      .staticmethod("create")
-   ;
+   bp::class_<rps::SrpV0, rps::SrpV0Ptr, bp::bases<ris::Master,ris::Slave,rim::Slave>, boost::noncopyable >("SrpV0",bp::init<>());
 
 }
 
 //! Creator with version constant
 rps::SrpV0::SrpV0() : ris::Master(), ris::Slave(), rim::Slave(4,2048) { 
-   log_ = new rogue::Logging("SrpV0");
+   log_ = rogue::Logging::create("SrpV0");
 }
 
 //! Deconstructor

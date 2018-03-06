@@ -88,8 +88,8 @@ namespace rogue {
             bool       checkPl_;
 
             //! Logger
-            rogue::Logging *rxLog_;
-            rogue::Logging *txLog_;
+            rogue::LoggingPtr rxLog_;
+            rogue::LoggingPtr txLog_;
 
             //! TX thread
             boost::thread* txThread_;

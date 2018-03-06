@@ -35,7 +35,7 @@ namespace rogue {
          class AxiStreamDma : public rogue::interfaces::stream::Master, 
                               public rogue::interfaces::stream::Slave {
 
-                rogue::Logging * log_;
+                rogue::LoggingPtr log_;
 
                //! AxiStreamDma file descriptor
                int32_t  fd_;

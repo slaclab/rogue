@@ -50,7 +50,7 @@ rim::Master::Master() {
    sumTime_.tv_sec  = 1;
    sumTime_.tv_usec = 0;
 
-   log_ = new Logging("memory.Master");
+   log_ = rogue::Logging::create("memory.Master");
 } 
 
 //! Destroy object

@@ -90,8 +90,6 @@ void ris::Master::sendFrame ( FramePtr frame) {
 void ris::Master::setup_python() {
 
    bp::class_<ris::Master, ris::MasterPtr, boost::noncopyable>("Master",bp::init<>())
-      .def("create",         &ris::Master::create)
-      .staticmethod("create")
       .def("_setSlave",      &ris::Master::setSlave)
       .def("_addSlave",      &ris::Master::addSlave)
       .def("_reqFrame",      &ris::Master::reqFrame)

@@ -376,8 +376,6 @@ void rhp::PgpCard::runThread() {
 void rhp::PgpCard::setup_python () {
 
    bp::class_<rhp::PgpCard, rhp::PgpCardPtr, bp::bases<ris::Master,ris::Slave>, boost::noncopyable >("PgpCard",bp::init<std::string,uint32_t,uint32_t>())
-      .def("create",         &rhp::PgpCard::create)
-      .staticmethod("create")
       .def("getInfo",        &rhp::PgpCard::getInfo)
       .def("getPciStatus",   &rhp::PgpCard::getPciStatus)
       .def("getStatus",      &rhp::PgpCard::getStatus)

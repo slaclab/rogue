@@ -45,7 +45,7 @@ rpu::Server::Server (uint16_t port, uint16_t maxSize) {
    port_    = port;
    maxSize_ = maxSize;
    timeout_ = 10000000;
-   log_     = new rogue::Logging("udp.Server");
+   log_     = rogue::Logging::create("udp.Server");
 
    // Create socket
    if ( (fd_ = socket(AF_INET,SOCK_DGRAM,0)) < 0 )
@@ -226,8 +226,6 @@ bool rpu::Server::setRxSize(uint32_t size) {
 void rpu::Server::setup_python () {
 
    bp::class_<rpu::Server, rpu::ServerPtr, bp::bases<ris::Master,ris::Slave>, boost::noncopyable >("Server",bp::init<uint16_t,uint16_t>())
-      .def("create",         &rpu::Server::create)
-      .staticmethod("create")
       .def("setTimeout",     &rpu::Server::setTimeout)
       .def("setRxSize",      &rpu::Server::setRxSize)
       .def("getPort",        &rpu::Server::getPort)

@@ -85,7 +85,7 @@ namespace rogue {
                uint32_t error_;
 
                //! Log
-               rogue::Logging * log_;
+               rogue::LoggingPtr log_;
 
             protected:
 

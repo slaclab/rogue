@@ -40,10 +40,7 @@ rpp::ApplicationPtr rpp::Application::create (uint8_t id) {
 
 void rpp::Application::setup_python() {
 
-   bp::class_<rpp::Application, rpp::ApplicationPtr, bp::bases<ris::Master,ris::Slave>, boost::noncopyable >("Application",bp::init<uint8_t>())
-      .def("create",         &rpp::Application::create)
-      .staticmethod("create")
-   ;
+   bp::class_<rpp::Application, rpp::ApplicationPtr, bp::bases<ris::Master,ris::Slave>, boost::noncopyable >("Application",bp::init<uint8_t>());
 
    bp::implicitly_convertible<rpp::ApplicationPtr, ris::MasterPtr>();
    bp::implicitly_convertible<rpp::ApplicationPtr, ris::SlavePtr>();
