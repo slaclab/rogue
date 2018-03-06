@@ -42,7 +42,7 @@ rha::AxiStreamDma::AxiStreamDma ( std::string path, uint32_t dest, bool ssiEnabl
    dest_    = dest;
    enSsi_   = ssiEnable;
 
-   log_ = new rogue::Logging("axi.AxiStreamDma");
+   log_ = rogue::Logging::create("axi.AxiStreamDma");
 
    rogue::GilRelease noGil;
 

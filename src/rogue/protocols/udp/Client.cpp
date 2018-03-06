@@ -47,7 +47,7 @@ rpu::Client::Client ( std::string host, uint16_t port, uint16_t maxSize) {
    port_    = port;
    maxSize_ = maxSize;
    timeout_ = 10000000;
-   log_     = new rogue::Logging("udp.Client");
+   log_     = rogue::Logging::create("udp.Client");
 
    // Create socket
    if ( (fd_ = socket(AF_INET,SOCK_DGRAM,0)) < 0 )
@@ -154,8 +154,7 @@ void rpu::Client::runThread() {
    int32_t        res;
    struct timeval tout;
 
-   rogue::Logging log("udp.Client");
-   log.info("PID=%i, TID=%li",getpid(),syscall(SYS_gettid));
+   log_->info("PID=%i, TID=%li",getpid(),syscall(SYS_gettid));
 
    // Preallocate frame
    frame = ris::Pool::acceptReq(maxSize_,false);

@@ -53,7 +53,7 @@ ris::Slave::~Slave() { }
 //! Set debug message size
 void ris::Slave::setDebug(uint32_t debug, std::string name) {
    debug_ = debug;
-   log_   = new Logging(name.c_str());
+   log_   = rogue::Logging::create(name.c_str());
 }
 
 //! Accept a frame from master

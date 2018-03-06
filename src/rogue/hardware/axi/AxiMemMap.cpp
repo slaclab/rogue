@@ -39,7 +39,7 @@ rha::AxiMemMapPtr rha::AxiMemMap::create (std::string path) {
 //! Creator
 rha::AxiMemMap::AxiMemMap(std::string path) : rim::Slave(4,0xFFFFFFFF) {
    fd_ = ::open(path.c_str(), O_RDWR);
-   log_ = new rogue::Logging("axi.AxiMemMap");
+   log_ = rogue::Logging::create("axi.AxiMemMap");
    if ( fd_ < 0 ) throw(rogue::GeneralError::open("AxiMemMap::AxiMemMap",path));
 }
 

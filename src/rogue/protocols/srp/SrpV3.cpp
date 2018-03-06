@@ -54,7 +54,7 @@ void rps::SrpV3::setup_python() {
 
 //! Creator with version constant
 rps::SrpV3::SrpV3() : ris::Master(), ris::Slave(), rim::Slave(4,4096) { 
-   log_ = new rogue::Logging("SrpV3");
+   log_ = rogue::Logging::create("SrpV3");
 }
 
 //! Deconstructor

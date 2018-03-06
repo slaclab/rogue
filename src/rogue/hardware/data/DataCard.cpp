@@ -42,7 +42,7 @@ rhd::DataCard::DataCard ( std::string path, uint32_t dest ) {
    dest_    = dest;
    enSsi_   = true;
 
-   log_     = new Logging("data.DataCard");
+   log_     = rogue::Logging::create("data.DataCard");
 
    rogue::GilRelease noGil;
 

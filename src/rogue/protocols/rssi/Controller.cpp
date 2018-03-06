@@ -88,7 +88,7 @@ rpr::Controller::Controller ( uint32_t segSize, rpr::TransportPtr tran, rpr::App
    remConnId_     = 0;
    segmentSize_   = segSize;
 
-   log_ = new rogue::Logging("rssi.controller");
+   log_ = rogue::Logging::create("rssi.controller");
 
    // Start read thread
    thread_ = new boost::thread(boost::bind(&rpr::Controller::runThread, this));
@@ -325,8 +325,7 @@ bool rpr::Controller::timePassed ( struct timeval *lastTime, uint32_t time, bool
 void rpr::Controller::runThread() {
    uint32_t wait;
 
-   Logging log("rssi.Controller");
-   log.info("PID=%i, TID=%li",getpid(),syscall(SYS_gettid));
+   log_->info("PID=%i, TID=%li",getpid(),syscall(SYS_gettid));
 
    wait = 0;
 

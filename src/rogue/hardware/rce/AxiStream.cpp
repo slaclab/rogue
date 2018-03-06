@@ -44,7 +44,7 @@ rhr::AxiStream::AxiStream ( std::string path, uint32_t dest ) {
    dest_    = dest;
    enSsi_   = true;
 
-   log_     = new Logging("rce.AxiStream");
+   log_     = rogue::Logging::create("rce.AxiStream");
 
    rogue::GilRelease noGil;
 

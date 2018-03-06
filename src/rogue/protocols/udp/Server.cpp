@@ -45,7 +45,7 @@ rpu::Server::Server (uint16_t port, uint16_t maxSize) {
    port_    = port;
    maxSize_ = maxSize;
    timeout_ = 10000000;
-   log_     = new rogue::Logging("udp.Server");
+   log_     = rogue::Logging::create("udp.Server");
 
    // Create socket
    if ( (fd_ = socket(AF_INET,SOCK_DGRAM,0)) < 0 )

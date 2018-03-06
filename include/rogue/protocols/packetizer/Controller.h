@@ -54,7 +54,7 @@ namespace rogue {
                uint32_t headSize_;
                uint32_t tailSize_;
 
-               rogue::Logging * log_;
+               rogue::LoggingPtr log_;
 
                boost::shared_ptr<rogue::interfaces::stream::Frame> tranFrame_[256];
 

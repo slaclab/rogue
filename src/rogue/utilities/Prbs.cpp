@@ -81,8 +81,8 @@ void ru::Prbs::init(uint32_t width, uint32_t tapCnt) {
    txCount_    = 0;
    txBytes_    = 0;
    checkPl_    = true;
-   rxLog_      = new Logging("prbs.rx");
-   txLog_      = new Logging("prbs.tx");
+   rxLog_      = rogue::Logging::create("prbs.rx");
+   txLog_      = rogue::Logging::create("prbs.tx");
 
    if ( width == 16 ) {
       width_     = 16;

@@ -54,7 +54,7 @@ rpe::Value::Value (std::string epicsName) {
    highCtrlLimit_ = 0;
    lowCtrlLimit_  = 0;
 
-   log_ = new rogue::Logging("epicsV3.Value");
+   log_ = rogue::Logging::create("epicsV3.Value");
 
    // Populate function table
    funcTable_.installReadFunc("status",           &rpe::Value::readStatus);
