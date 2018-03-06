@@ -88,6 +88,8 @@ rpr::Controller::Controller ( uint32_t segSize, rpr::TransportPtr tran, rpr::App
    remConnId_     = 0;
    segmentSize_   = segSize;
 
+   log_ = new rogue::Logging("rssi.controller");
+
    // Start read thread
    thread_ = new boost::thread(boost::bind(&rpr::Controller::runThread, this));
 }
@@ -145,9 +147,14 @@ void rpr::Controller::transportRx( ris::FramePtr frame ) {
    rpr::HeaderPtr head = rpr::Header::create(frame);
 
    if ( frame->getCount() == 0 || ! head->verify() ) {
+      log_->debug("Dumping frame state=%i server=%i",state_,server_);
       dropCount_++;
       return;
    }
+
+   log_->debug("RX frame: state=%i server=%i size=%i syn=%i ack=%i nul=%i, rst=%i, ack#=%i seq=%i, nxt=%i",
+         state_, server_,frame->getPayload(),head->syn,head->ack,head->nul,head->rst,
+         head->acknowledge,head->sequence,nextSeqRx_);
 
    // Ack set
    if ( head->ack ) lastAckRx_ = head->acknowledge;
@@ -155,8 +162,18 @@ void rpr::Controller::transportRx( ris::FramePtr frame ) {
    // Update busy bit
    tranBusy_ = head->busy;
 
+   // Syn or reset
+   if ( head->syn || head->rst ) {
+
+      // Syn frame and resets go to state machine if state = open or we are waiting for ack replay
+      if ( ( state_ == StOpen || state_ == StWaitSyn ) ) {
+         rogue::GilRelease noGil;
+         stQueue_.push(head);
+      }
+   }
+
    // Data or NULL in the correct sequence go to application
-   if ( state_ == StOpen && head->sequence == nextSeqRx_ && 
+   else if ( state_ == StOpen && head->sequence == nextSeqRx_ && 
         ( head->nul || frame->getPayload() > rpr::Header::HeaderSize ) ) {
       lastSeqRx_ = nextSeqRx_;
       nextSeqRx_ = nextSeqRx_ + 1;
@@ -166,16 +183,6 @@ void rpr::Controller::transportRx( ris::FramePtr frame ) {
          rogue::GilRelease noGil;
          appQueue_.push(head);
       }
-   }
-
-   // Syn frame and resets go to state machine if state = open 
-   // or we are waiting for ack replay
-   else if ( ( state_ == StOpen || state_ == StWaitSyn) && ( head->syn || head->rst ) ) {
-      lastSeqRx_ = head->sequence;
-      nextSeqRx_ = lastSeqRx_ + 1;
-
-      rogue::GilRelease noGil;
-      stQueue_.push(head);
    }
 }
 
@@ -282,6 +289,10 @@ void rpr::Controller::transportTx(rpr::HeaderPtr head, bool seqUpdate) {
    // Track last tx time
    gettimeofday(&txTime_,NULL);
 
+   log_->debug("TX frame: state=%i server=%i size=%i syn=%i ack=%i nul=%i, rst=%i, ack#=%i seq=%i",
+         state_,server_,head->getFrame()->getPayload(),head->syn,head->ack,head->nul,head->rst,
+         head->acknowledge,head->sequence);
+
    // Send frame
    tran_->sendFrame(head->getFrame());
 }
@@ -338,6 +349,10 @@ void rpr::Controller::runThread() {
                wait = stateClosedWait();
                break;
 
+            case StSendSynAck :
+               wait = stateSendSynAck();
+               break;
+
             case StSendSeqAck :
                wait = stateSendSeqAck();
                break;
@@ -363,15 +378,18 @@ void rpr::Controller::runThread() {
 uint32_t rpr::Controller::stateClosedWait () {
    rpr::HeaderPtr head;
 
+
    // got syn or reset
    if ( ! stQueue_.empty() ) {
       head = stQueue_.pop();
 
       // Reset
-      if ( head->rst ) state_ = StClosed;
+      if ( head->rst ) {
+         state_ = StClosed;
+      }
 
       // Syn ack
-      else if ( head->syn && head->ack ) {
+      else if ( head->syn && (head->ack || server_) ) {
          remMaxBuffers_ = head->maxOutstandingSegments;
          remMaxSegment_ = head->maxSegmentSize;
          retranTout_    = head->retransmissionTimeout;
@@ -380,13 +398,18 @@ uint32_t rpr::Controller::stateClosedWait () {
          maxRetran_     = head->maxRetransmissions;
          maxCumAck_     = head->maxCumulativeAck;
          prevAckRx_     = head->acknowledge;
-         state_         = StSendSeqAck;
+
+         if ( server_ ) {
+            state_ = StSendSynAck;
+            return(0);
+         }
+         else state_ = StSendSeqAck;
          gettimeofday(&stTime_,NULL);
       }
    }
 
    // Generate syn after try period passes
-   else if ( timePassed(&stTime_,TryPeriod) ) {
+   else if ( (!server_) && timePassed(&stTime_,TryPeriod) ) {
 
       // Allocate frame
       head = rpr::Header::create(tran_->reqFrame(rpr::Header::SynSize,false));
@@ -413,8 +436,46 @@ uint32_t rpr::Controller::stateClosedWait () {
       gettimeofday(&stTime_,NULL);
       state_ = StWaitSyn;
    }
+   else if ( server_ ) state_ = StWaitSyn;
 
    return(convTime(TryPeriod) / 4);
+}
+
+//! Send Syn ack
+uint32_t rpr::Controller::stateSendSynAck () {
+   uint32_t x;
+
+   // Allocate frame
+   rpr::HeaderPtr head = rpr::Header::create(tran_->reqFrame(rpr::Header::SynSize,false));
+
+   // Set frame
+   head->syn = true;
+   head->ack = true;
+   head->version = Version;
+   head->chk = true;
+   head->maxOutstandingSegments = LocMaxBuffers;
+   head->maxSegmentSize = segmentSize_;
+   head->retransmissionTimeout = retranTout_;
+   head->cumulativeAckTimeout = cumAckTout_;
+   head->nullTimeout = nullTout_;
+   head->maxRetransmissions = maxRetran_;
+   head->maxCumulativeAck = maxCumAck_;
+   head->timeoutUnit = TimeoutUnit;
+   head->connectionId = locConnId_;
+
+   boost::unique_lock<boost::mutex> lock(txMtx_);
+   transportTx(head,true);
+
+   // Reset tx list
+   for (x=0; x < 256; x++) txList_[x].reset();
+   txListCount_ = 0;
+   lock.unlock();
+
+   //if ( locAckRx != locSeqTx ) {
+
+   // Update state
+   state_ = StOpen;
+   return(convTime(cumAckTout_/2));
 }
 
 //! Send sequence ack
@@ -500,8 +561,12 @@ uint32_t rpr::Controller::stateOpen () {
       for ( idx=locAckRx+1; idx != ((locSeqTx+1)%256); idx++ ) {
          head = txList_[idx];
 
+         if ( head == NULL ) continue;
+
          // Busy set, reset timeout
-         if ( tranBusy_ ) head->rstTime();
+         if ( tranBusy_ ) {
+            head->rstTime();
+         }
 
          else if ( timePassed(head->getTime(),retranTout_) ) {
 
@@ -512,7 +577,6 @@ uint32_t rpr::Controller::stateOpen () {
                return(0);
             }
             else {
-
                transportTx(head,false);
                retranCount_++;
             }
