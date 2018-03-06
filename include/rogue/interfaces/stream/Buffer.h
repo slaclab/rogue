@@ -74,6 +74,8 @@ namespace rogue {
 
             public:
 
+               typedef uint8_t * iterator;
+
                //! Class creation
                /*
                 * Pass owner, raw data buffer, and meta data
@@ -98,15 +100,6 @@ namespace rogue {
                 */
                ~Buffer();
 
-                //! Get raw data pointer
-               uint8_t * getRawData();
-
-               /* 
-                * Get data pointer
-                * Returns base + header size
-                */
-               uint8_t * getPayloadData();
-
                //! Get meta data, used by pool
                uint32_t getMeta();
 
@@ -124,6 +117,24 @@ namespace rogue {
 
                //! Clear the tail reservation
                void zeroTail();
+
+               /* 
+                * Get data pointer (begin iterator)
+                * Returns base + header size
+                */
+               uint8_t * begin();
+
+               /*
+                * Get end data pointer (end iterator)
+                * This is the end of raw data buffer
+                */
+               uint8_t * end();
+
+               /*
+                * Get end payload pointer (end iterator)
+                * This is the end of payload data
+                */
+               uint8_t * endPayload();
 
                /*
                 * Get size of buffer that can hold

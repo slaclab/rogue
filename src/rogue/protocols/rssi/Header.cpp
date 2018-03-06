@@ -79,7 +79,7 @@ rpr::Header::Header(ris::FramePtr frame) {
    if ( frame->getCount() == 0 ) 
       throw(rogue::GeneralError("Header::Header","Frame must not be empty!"));
    frame_ = frame;
-   data_  = frame->getBuffer(0)->getPayloadData();
+   data_  = frame->getBuffer(0)->begin();
    count_ = 0;
 
    syn = false;

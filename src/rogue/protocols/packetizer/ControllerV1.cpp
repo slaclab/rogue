@@ -65,7 +65,7 @@ void rpp::ControllerV1::transportRx( ris::FramePtr frame ) {
    boost::lock_guard<boost::mutex> lock(tranMtx_);
 
    buff = frame->getBuffer(0);
-   data = buff->getPayloadData();
+   data = buff->begin();
 
    // Drop invalid data
    if ( frame->getError() || (buff->getPayload() < 9) || ((data[0] & 0xF) != 0) ) {
@@ -195,7 +195,7 @@ void rpp::ControllerV1::applicationRx ( ris::FramePtr frame, uint8_t tDest ) {
       buff->adjustPayload(1);
 
       size = buff->getPayload();
-      data = buff->getPayloadData();
+      data = buff->begin();
 
       data[0] = ((appIndex_ % 16) << 4);
       data[1] = (appIndex_ / 16) & 0xFF;

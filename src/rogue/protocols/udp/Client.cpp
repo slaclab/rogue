@@ -118,7 +118,7 @@ void rpu::Client::acceptFrame ( ris::FramePtr frame ) {
       if ( buff->getPayload() == 0 ) break;
 
       // Setup IOVs
-      msg_iov[0].iov_base = buff->getPayloadData();
+      msg_iov[0].iov_base = buff->begin();
       msg_iov[0].iov_len  = buff->getPayload();
 
       // Keep trying since select call can fire 
@@ -165,7 +165,7 @@ void rpu::Client::runThread() {
 
          // Attempt receive
          buff = frame->getBuffer(0);
-         res = ::read(fd_, buff->getPayloadData(), maxSize_);
+         res = ::read(fd_, buff->begin(), maxSize_);
 
          if ( res > 0 ) {
             buff->setPayload(res);
