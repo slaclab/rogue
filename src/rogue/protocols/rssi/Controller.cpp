@@ -271,7 +271,7 @@ bool rpr::Controller::getBusy() {
 }
 
 // Method to transit a frame with proper updates
-void rpr::Controller::transportTx(rpr::HeaderPtr head, bool seqUpdate, bool retran) {
+void rpr::Controller::transportTx(rpr::HeaderPtr head, bool seqUpdate, bool retransmit) {
 
    // Update sequence numbers
    if ( seqUpdate ) {
@@ -295,7 +295,7 @@ void rpr::Controller::transportTx(rpr::HeaderPtr head, bool seqUpdate, bool retr
    // Track last tx time
    gettimeofday(&txTime_,NULL);
 
-   log_->log(retran ? rogue::Logging::Info : rogue::Logging::Debug,
+   log_->log(retransmit ? rogue::Logging::Info : rogue::Logging::Debug,
          "TX frame: state=%i server=%i size=%i syn=%i ack=%i nul=%i, rst=%i, ack#=%i, seq=%i, recount=%i",
          state_,server_,head->getFrame()->getPayload(),head->syn,head->ack,head->nul,head->rst,
          head->acknowledge,head->sequence,retranCount_);

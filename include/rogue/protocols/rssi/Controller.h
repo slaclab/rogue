@@ -172,7 +172,7 @@ namespace rogue {
             private:
 
                // Method to transit a frame with proper updates
-               void transportTx(boost::shared_ptr<rogue::protocols::rssi::Header> head, bool seqUpdate, bool retran);
+               void transportTx(boost::shared_ptr<rogue::protocols::rssi::Header> head, bool seqUpdate, bool retransmit);
 
                //! Convert rssi time to microseconds
                uint32_t convTime ( uint32_t rssiTime );
