@@ -33,13 +33,13 @@ namespace ris = rogue::interfaces::stream;
 namespace bp  = boost::python;
 
 //! Class creation
-rpp::ControllerV1Ptr rpp::ControllerV1::create ( uint32_t segmentSize, rpp::TransportPtr tran, rpp::ApplicationPtr * app ) {
-   rpp::ControllerV1Ptr r = boost::make_shared<rpp::ControllerV1>(segmentSize,tran,app);
+rpp::ControllerV1Ptr rpp::ControllerV1::create ( rpp::TransportPtr tran, rpp::ApplicationPtr * app ) {
+   rpp::ControllerV1Ptr r = boost::make_shared<rpp::ControllerV1>(tran,app);
    return(r);
 }
 
 //! Creator
-rpp::ControllerV1::ControllerV1 ( uint32_t segmentSize, rpp::TransportPtr tran, rpp::ApplicationPtr * app ) : rpp::Controller::Controller(segmentSize, tran, app, 8, 1) {
+rpp::ControllerV1::ControllerV1 ( rpp::TransportPtr tran, rpp::ApplicationPtr * app ) : rpp::Controller::Controller(tran, app, 8, 1) {
 }
 
 //! Destructor
@@ -69,7 +69,7 @@ void rpp::ControllerV1::transportRx( ris::FramePtr frame ) {
 
    // Drop invalid data
    if ( frame->getError() || (buff->getPayload() < 9) || ((data[0] & 0xF) != 0) ) {
-      log_->info("Dropping frame due to contents: error=0x%x, payload=%i, Version=0x%x",frame->getError(),buff->getPayload(),data[0]&0xF);
+      log_->warning("Dropping frame due to contents: error=0x%x, payload=%i, Version=0x%x",frame->getError(),buff->getPayload(),data[0]&0xF);
       dropCount_++;
       return;
    }
@@ -97,7 +97,7 @@ void rpp::ControllerV1::transportRx( ris::FramePtr frame ) {
 
    // Drop frame and reset state if mismatch
    if ( tmpCount > 0  && ( tmpIdx != tranIndex_ || tmpCount != tranCount_[0] ) ) {
-      log_->info("Dropping frame due to state mismatch: expIdx=%i, gotIdx=%i, expCount=%i, gotCount=%i",tranIndex_,tmpIdx,tranCount_[0],tmpCount);
+      log_->warning("Dropping frame due to state mismatch: expIdx=%i, gotIdx=%i, expCount=%i, gotCount=%i",tranIndex_,tmpIdx,tranCount_[0],tmpCount);
       dropCount_++;
       tranCount_[0] = 0;
       tranFrame_[0].reset();
@@ -108,7 +108,7 @@ void rpp::ControllerV1::transportRx( ris::FramePtr frame ) {
    if ( tmpCount == 0 ) {
 
       if ( tranCount_[0] != 0 ) 
-         log_->info("Dropping frame due to new incoming frame: expIdx=%i, expCount=%i",tranIndex_,tranCount_[0]);
+         log_->warning("Dropping frame due to new incoming frame: expIdx=%i, expCount=%i",tranIndex_,tranCount_[0]);
 
       tranFrame_[0] = ris::Frame::create();
       tranIndex_    = tmpIdx;

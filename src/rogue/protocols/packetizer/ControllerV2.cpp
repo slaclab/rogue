@@ -34,13 +34,13 @@ namespace ris = rogue::interfaces::stream;
 namespace bp  = boost::python;
 
 //! Class creation
-rpp::ControllerV2Ptr rpp::ControllerV2::create ( uint32_t segmentSize, bool enIbCrc, bool enObCrc, rpp::TransportPtr tran, rpp::ApplicationPtr * app ) {
-   rpp::ControllerV2Ptr r = boost::make_shared<rpp::ControllerV2>(segmentSize,enIbCrc,enObCrc,tran,app);
+rpp::ControllerV2Ptr rpp::ControllerV2::create ( bool enIbCrc, bool enObCrc, rpp::TransportPtr tran, rpp::ApplicationPtr * app ) {
+   rpp::ControllerV2Ptr r = boost::make_shared<rpp::ControllerV2>(enIbCrc,enObCrc,tran,app);
    return(r);
 }
 
 //! Creator
-rpp::ControllerV2::ControllerV2 ( uint32_t segmentSize, bool enIbCrc, bool enObCrc, rpp::TransportPtr tran, rpp::ApplicationPtr * app ) : rpp::Controller::Controller(segmentSize, tran, app, 8, 8) {
+rpp::ControllerV2::ControllerV2 ( bool enIbCrc, bool enObCrc, rpp::TransportPtr tran, rpp::ApplicationPtr * app ) : rpp::Controller::Controller(tran, app, 8, 8) {
 
    enIbCrc_ = enIbCrc;
    enObCrc_ = enObCrc;
@@ -68,7 +68,7 @@ void rpp::ControllerV2::transportRx( ris::FramePtr frame ) {
    uint8_t * data;
 
    if ( frame->getCount() == 0 ) {
-      log_->error("Bad incoming transportRx frame, size=0");
+      log_->warning("Bad incoming transportRx frame, size=0");
       return;
    }
 
@@ -84,7 +84,7 @@ void rpp::ControllerV2::transportRx( ris::FramePtr frame ) {
       (size < 24)         ||     // Check for min. size (64-bit header + 64-bit min. payload + 64-bit tail) 
       ((size&0x7) > 0)    ||     // Check for non 64-bit alignment
       ((data[0]&0xF) != 0x2) ) { // Check for invalid version only (ignore the CRC mode flag)
-      log_->info("Dropping frame due to contents: error=0x%x, payload=%i, Version=0x%x",frame->getError(),size,data[0]);
+      log_->warning("Dropping frame due to contents: error=0x%x, payload=%i, Version=0x%x",frame->getError(),size,data[0]);
       dropCount_++;
       return;
    }
@@ -137,7 +137,7 @@ void rpp::ControllerV2::transportRx( ris::FramePtr frame ) {
 
    // Drop frame and reset state if mismatch
    if ( ( transSof_[tmpDest] != tmpSof) || crcErr || tmpCount != tranCount_[tmpDest] ) {
-      log_->info("Dropping frame: gotDest=%i, gotSof=%i, crcErr=%i, expCount=%i, gotCount=%i",tmpDest, tmpSof, crcErr, tranCount_[tmpDest], tmpCount);
+      log_->warning("Dropping frame: gotDest=%i, gotSof=%i, crcErr=%i, expCount=%i, gotCount=%i",tmpDest, tmpSof, crcErr, tranCount_[tmpDest], tmpCount);
       dropCount_++;
       transSof_[tmpDest]  = true;
       tranCount_[tmpDest] = 0;
@@ -150,7 +150,7 @@ void rpp::ControllerV2::transportRx( ris::FramePtr frame ) {
    if ( transSof_[tmpDest] ) {
       transSof_[tmpDest]  = false;   
       if ( (tranCount_[tmpDest] != 0) || !tmpSof || crcErr ) {
-         log_->info("Dropping frame: gotDest=%i, gotSof=%i, crcErr=%i, expCount=%i, gotCount=%i", tmpDest, tmpSof, crcErr, tranCount_[tmpDest], tmpCount);
+         log_->warning("Dropping frame: gotDest=%i, gotSof=%i, crcErr=%i, expCount=%i, gotCount=%i", tmpDest, tmpSof, crcErr, tranCount_[tmpDest], tmpCount);
          dropCount_++;
          transSof_[tmpDest]  = true;
          tranCount_[tmpDest] = 0;

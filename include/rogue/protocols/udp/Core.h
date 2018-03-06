@@ -1,13 +1,13 @@
 /**
  *-----------------------------------------------------------------------------
- * Title      : UDP Client Class
+ * Title      : UDP Common Functions
  * ----------------------------------------------------------------------------
- * File       : Client.h
+ * File       : Common.h
  * Created    : 2017-01-07
  * Last update: 2017-01-07
  * ----------------------------------------------------------------------------
  * Description:
- * UDP Client
+ * UDP Common
  * ----------------------------------------------------------------------------
  * This file is part of the rogue software platform. It is subject to 
  * the license terms in the LICENSE.txt file found in the top-level directory 
@@ -18,13 +18,9 @@
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
-#ifndef __ROGUE_PROTOCOLS_UDP_CLIENT_H__
-#define __ROGUE_PROTOCOLS_UDP_CLIENT_H__
-#include <rogue/interfaces/stream/Master.h>
-#include <rogue/interfaces/stream/Slave.h>
+#ifndef __ROGUE_PROTOCOLS_UDP_COMMON_H__
+#define __ROGUE_PROTOCOLS_UDP_COMMON_H__
 #include <rogue/Logging.h>
-#include <boost/python.hpp>
-#include <boost/thread.hpp>
 #include <stdint.h>
 #include <netdb.h>
 #include <sys/socket.h>
@@ -35,41 +31,56 @@ namespace rogue {
    namespace protocols {
       namespace udp {
 
-         class Client : public rogue::protocols::udp::Core,
-                        public rogue::interfaces::stream::Master, 
-                        public rogue::interfaces::stream::Slave {
+         //! UDP Core
+         class Core {
 
-               //! Address, hostname or ip address
-               std::string address_;
+               static const uint32_t MaxJumboPayload = 8900;
+               static const uint32_t MaxStdPayload   = 1400;
 
-               //! Remote port number
-               uint16_t port_;
+            protected:
 
-               //! Thread background
-               void runThread();
+               rogue::LoggingPtr udpLog_;
+
+               //! Jumbo frames enables
+               bool jumbo_;
+
+               //! Socket
+               int32_t  fd_;
+
+               //! Remote socket address
+               struct sockaddr_in remAddr_;
+
+               //! Timeout value
+               uint32_t timeout_;
+
+               boost::thread* thread_;
+
+               //! mutex
+               boost::mutex udpMtx_;
 
             public:
-
-               //! Class creation
-               static boost::shared_ptr<rogue::protocols::udp::Client> 
-                  create (std::string host, uint16_t port, bool jumbo);
 
                //! Setup class in python
                static void setup_python();
 
                //! Creator
-               Client(std::string host, uint16_t port, bool jumbo);
+               Core(bool jumbo);
 
                //! Destructor
-               ~Client();
+               ~Core();
 
-               //! Accept a frame from master
-               void acceptFrame ( boost::shared_ptr<rogue::interfaces::stream::Frame> frame );
+               //! Return max payload
+               uint32_t maxPayload();
+
+               //! Set UDP RX Size
+               bool setRxSize(uint32_t size);
+
+               //! Set timeout for frame transmits in microseconds
+               void setTimeout(uint32_t timeout);
          };
 
          // Convienence
-         typedef boost::shared_ptr<rogue::protocols::udp::Client> ClientPtr;
-
+         typedef boost::shared_ptr<rogue::protocols::udp::Core> CorePtr;
       }
    }
 };
