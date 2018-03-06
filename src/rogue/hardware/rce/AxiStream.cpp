@@ -245,7 +245,7 @@ void rhr::AxiStream::acceptFrame ( ris::FramePtr frame ) {
             }
             else {
                // Write with buffer copy
-               if ( (res = dmaWrite(fd_, buff->getPayloadData(), buff->getPayload(), axisSetFlags(fuser, luser,cont), dest_)) < 0 ) {
+               if ( (res = dmaWrite(fd_, buff->begin(), buff->getPayload(), axisSetFlags(fuser, luser,cont), dest_)) < 0 ) {
                   throw(rogue::GeneralError("AxiStream::acceptFrame","AXIS Write Call Failed"));
                }
             }
@@ -321,7 +321,7 @@ void rhr::AxiStream::runThread() {
                buff = allocBuffer(bSize_,NULL);
 
                // Attempt read, dest is not needed since only one lane/vc is open
-               res = dmaRead(fd_, buff->getPayloadData(), buff->getAvailable(), &rxFlags, &rxError, NULL);
+               res = dmaRead(fd_, buff->begin(), buff->getAvailable(), &rxFlags, &rxError, NULL);
                fuser = axisGetFuser(rxFlags);
                luser = axisGetLuser(rxFlags);
                cont  = axisGetCont(rxFlags);

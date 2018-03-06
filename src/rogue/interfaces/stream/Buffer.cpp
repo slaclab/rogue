@@ -65,19 +65,6 @@ ris::Buffer::~Buffer() {
    source_->retBuffer(data_,meta_,allocSize_);
 }
 
-//! Get raw data pointer
-uint8_t * ris::Buffer::getRawData() {
-   return(data_);
-}
-
-/* 
- * Get data pointer
- * Returns base + header size
- */
-uint8_t * ris::Buffer::getPayloadData() {
-   return(data_ + headRoom_);
-}
-
 //! Get meta data, used by pool 
 uint32_t ris::Buffer::getMeta() {
    return(meta_);
@@ -131,6 +118,30 @@ void ris::Buffer::adjustTail(int32_t value) {
 //! Clear the tail reservation
 void ris::Buffer::zeroTail() {
    tailRoom_ = 0;
+}
+
+/* 
+ * Get data pointer (begin iterator)
+ * Returns base + header size
+ */
+uint8_t * ris::Buffer::begin() {
+   return(data_ + headRoom_);
+}
+
+/*
+ * Get end data pointer (end iterator)
+ * This is the end of raw data buffer
+ */
+uint8_t * ris::Buffer::end() {
+   return(data_ + rawSize_);
+}
+
+/*
+ * Get end payload pointer (end iterator)
+ * This is the end of payload data
+ */
+uint8_t * ris::Buffer::endPayload() {
+   return(data_ + payload_);
 }
 
 /*
