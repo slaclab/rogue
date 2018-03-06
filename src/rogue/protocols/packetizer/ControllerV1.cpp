@@ -69,7 +69,7 @@ void rpp::ControllerV1::transportRx( ris::FramePtr frame ) {
 
    // Drop invalid data
    if ( frame->getError() || (buff->getPayload() < 9) || ((data[0] & 0xF) != 0) ) {
-      log_->info("Dropping frame due to contents: error=0x%x, payload=%i, Version=0x%x",frame->getError(),buff->getPayload(),data[0]&0xF);
+      log_->warning("Dropping frame due to contents: error=0x%x, payload=%i, Version=0x%x",frame->getError(),buff->getPayload(),data[0]&0xF);
       dropCount_++;
       return;
    }
@@ -97,7 +97,7 @@ void rpp::ControllerV1::transportRx( ris::FramePtr frame ) {
 
    // Drop frame and reset state if mismatch
    if ( tmpCount > 0  && ( tmpIdx != tranIndex_ || tmpCount != tranCount_[0] ) ) {
-      log_->info("Dropping frame due to state mismatch: expIdx=%i, gotIdx=%i, expCount=%i, gotCount=%i",tranIndex_,tmpIdx,tranCount_[0],tmpCount);
+      log_->warning("Dropping frame due to state mismatch: expIdx=%i, gotIdx=%i, expCount=%i, gotCount=%i",tranIndex_,tmpIdx,tranCount_[0],tmpCount);
       dropCount_++;
       tranCount_[0] = 0;
       tranFrame_[0].reset();
@@ -108,7 +108,7 @@ void rpp::ControllerV1::transportRx( ris::FramePtr frame ) {
    if ( tmpCount == 0 ) {
 
       if ( tranCount_[0] != 0 ) 
-         log_->info("Dropping frame due to new incoming frame: expIdx=%i, expCount=%i",tranIndex_,tranCount_[0]);
+         log_->warning("Dropping frame due to new incoming frame: expIdx=%i, expCount=%i",tranIndex_,tranCount_[0]);
 
       tranFrame_[0] = ris::Frame::create();
       tranIndex_    = tmpIdx;

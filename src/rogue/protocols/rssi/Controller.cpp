@@ -147,7 +147,7 @@ void rpr::Controller::transportRx( ris::FramePtr frame ) {
    rpr::HeaderPtr head = rpr::Header::create(frame);
 
    if ( frame->getCount() == 0 || ! head->verify() ) {
-      log_->debug("Dumping frame state=%i server=%i",state_,server_);
+      log_->info("Dumping frame state=%i server=%i",state_,server_);
       dropCount_++;
       return;
    }
@@ -173,16 +173,22 @@ void rpr::Controller::transportRx( ris::FramePtr frame ) {
    }
 
    // Data or NULL in the correct sequence go to application
-   else if ( state_ == StOpen && head->sequence == nextSeqRx_ && 
-        ( head->nul || frame->getPayload() > rpr::Header::HeaderSize ) ) {
-      lastSeqRx_ = nextSeqRx_;
-      nextSeqRx_ = nextSeqRx_ + 1;
-      stCond_.notify_all();
+   else if ( state_ == StOpen && ( head->nul || frame->getPayload() > rpr::Header::HeaderSize ) ) {
 
-      if ( !head->nul ) {
-         rogue::GilRelease noGil;
-         appQueue_.push(head);
+      // Sequence matches
+      if ( head->sequence == nextSeqRx_ ) {
+         lastSeqRx_ = nextSeqRx_;
+         nextSeqRx_ = nextSeqRx_ + 1;
+         stCond_.notify_all();
+
+         if ( !head->nul ) {
+            rogue::GilRelease noGil;
+            appQueue_.push(head);
+         }
       }
+      else log_->info("Out of sequence frame: server=%i size=%i syn=%i ack=%i nul=%i, rst=%i, ack#=%i seq=%i, nxt=%i",
+                       server_,frame->getPayload(),head->syn,head->ack,head->nul,head->rst,
+                       head->acknowledge,head->sequence,nextSeqRx_);
    }
 }
 
@@ -234,7 +240,7 @@ void rpr::Controller::applicationRx ( ris::FramePtr frame ) {
 
    // Transmit
    boost::unique_lock<boost::mutex> lock(txMtx_);
-   transportTx(head,true);
+   transportTx(head,true,false);
    lock.unlock();
    stCond_.notify_all();
 }
@@ -265,11 +271,11 @@ bool rpr::Controller::getBusy() {
 }
 
 // Method to transit a frame with proper updates
-void rpr::Controller::transportTx(rpr::HeaderPtr head, bool seqUpdate) {
-   head->sequence = locSequence_;
+void rpr::Controller::transportTx(rpr::HeaderPtr head, bool seqUpdate, bool retran) {
 
    // Update sequence numbers
    if ( seqUpdate ) {
+      head->sequence = locSequence_;
       txList_[locSequence_] = head;
       txListCount_++;
       locSequence_++;
@@ -289,9 +295,10 @@ void rpr::Controller::transportTx(rpr::HeaderPtr head, bool seqUpdate) {
    // Track last tx time
    gettimeofday(&txTime_,NULL);
 
-   log_->debug("TX frame: state=%i server=%i size=%i syn=%i ack=%i nul=%i, rst=%i, ack#=%i seq=%i",
+   log_->log(retran ? rogue::Logging::Info : rogue::Logging::Debug,
+         "TX frame: state=%i server=%i size=%i syn=%i ack=%i nul=%i, rst=%i, ack#=%i, seq=%i, recount=%i",
          state_,server_,head->getFrame()->getPayload(),head->syn,head->ack,head->nul,head->rst,
-         head->acknowledge,head->sequence);
+         head->acknowledge,head->sequence,retranCount_);
 
    // Send frame
    tran_->sendFrame(head->getFrame());
@@ -386,6 +393,7 @@ uint32_t rpr::Controller::stateClosedWait () {
       // Reset
       if ( head->rst ) {
          state_ = StClosed;
+         log_->warning("Closing link. Server=%i",server_);
       }
 
       // Syn ack
@@ -429,7 +437,7 @@ uint32_t rpr::Controller::stateClosedWait () {
       head->connectionId = locConnId_;
 
       boost::unique_lock<boost::mutex> lock(txMtx_);
-      transportTx(head,true);
+      transportTx(head,true,false);
       lock.unlock();
 
       // Update state
@@ -464,7 +472,7 @@ uint32_t rpr::Controller::stateSendSynAck () {
    head->connectionId = locConnId_;
 
    boost::unique_lock<boost::mutex> lock(txMtx_);
-   transportTx(head,true);
+   transportTx(head,true,false);
 
    // Reset tx list
    for (x=0; x < 256; x++) txList_[x].reset();
@@ -474,6 +482,7 @@ uint32_t rpr::Controller::stateSendSynAck () {
    //if ( locAckRx != locSeqTx ) {
 
    // Update state
+   log_->warning("State is open. Server=%i",server_);
    state_ = StOpen;
    return(convTime(cumAckTout_/2));
 }
@@ -490,7 +499,7 @@ uint32_t rpr::Controller::stateSendSeqAck () {
    ack->nul = false;
 
    boost::unique_lock<boost::mutex> lock(txMtx_);
-   transportTx(ack,false);
+   transportTx(ack,false,false);
 
    // Reset tx list
    for (x=0; x < 256; x++) txList_[x].reset();
@@ -499,6 +508,7 @@ uint32_t rpr::Controller::stateSendSeqAck () {
 
    // Update state
    state_ = StOpen;
+   log_->warning("State is open. Server=%i",server_);
    return(convTime(cumAckTout_/2));
 }
 
@@ -538,7 +548,7 @@ uint32_t rpr::Controller::stateOpen () {
       head->nul = doNull;
 
       boost::unique_lock<boost::mutex> lock(txMtx_);
-      transportTx(head,doNull);
+      transportTx(head,doNull,false);
       lock.unlock();
    }
 
@@ -564,11 +574,10 @@ uint32_t rpr::Controller::stateOpen () {
          if ( head == NULL ) continue;
 
          // Busy set, reset timeout
-         if ( tranBusy_ ) {
-            head->rstTime();
-         }
+         if ( tranBusy_ ) head->rstTime();
 
          else if ( timePassed(head->getTime(),retranTout_) ) {
+            log_->info("Found head for retransmit: server=%i id=%i", server_,idx);
 
             // Max retran count reached, close connection
             if ( head->count() >= maxRetran_ ) {
@@ -577,7 +586,7 @@ uint32_t rpr::Controller::stateOpen () {
                return(0);
             }
             else {
-               transportTx(head,false);
+               transportTx(head,false,true);
                retranCount_++;
             }
          }
@@ -601,11 +610,13 @@ uint32_t rpr::Controller::stateError () {
    rpr::HeaderPtr rst;
    uint32_t x;
 
+   log_->warning("Entering reset state. Server=%i",server_);
+
    rst = rpr::Header::create(tran_->reqFrame(rpr::Header::HeaderSize,false));
    rst->rst = true;
 
    boost::unique_lock<boost::mutex> lock(txMtx_);
-   transportTx(rst,true);
+   transportTx(rst,true,false);
 
    // Reset tx list
    for (x=0; x < 256; x++) txList_[x].reset();
@@ -614,6 +625,7 @@ uint32_t rpr::Controller::stateError () {
    lock.unlock();
 
    downCount_++;
+   log_->warning("Entering closed state. Server=%i",server_);
    state_ = StClosed;
 
    // Resest queues
