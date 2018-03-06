@@ -39,7 +39,7 @@ rha::AxiMemMapPtr rha::AxiMemMap::create (std::string path) {
 //! Creator
 rha::AxiMemMap::AxiMemMap(std::string path) : rim::Slave(4,0xFFFFFFFF) {
    fd_ = ::open(path.c_str(), O_RDWR);
-   log_ = new rogue::Logging("axi.AxiMemMap");
+   log_ = rogue::Logging::create("axi.AxiMemMap");
    if ( fd_ < 0 ) throw(rogue::GeneralError::open("AxiMemMap::AxiMemMap",path));
 }
 
@@ -79,10 +79,7 @@ void rha::AxiMemMap::doTransaction(uint32_t id, boost::shared_ptr<rogue::interfa
 
 void rha::AxiMemMap::setup_python () {
 
-   bp::class_<rha::AxiMemMap, rha::AxiMemMapPtr, bp::bases<rim::Slave>, boost::noncopyable >("AxiMemMap",bp::init<std::string>())
-      .def("create",         &rha::AxiMemMap::create)
-      .staticmethod("create")
-   ;
+   bp::class_<rha::AxiMemMap, rha::AxiMemMapPtr, bp::bases<rim::Slave>, boost::noncopyable >("AxiMemMap",bp::init<std::string>());
 
    bp::implicitly_convertible<rha::AxiMemMapPtr, rim::SlavePtr>();
 }

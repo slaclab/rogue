@@ -33,7 +33,7 @@ namespace rogue {
                int32_t  fd_;
 
                // Logging
-               rogue::Logging * log_;
+               rogue::LoggingPtr log_;
 
             public:
 

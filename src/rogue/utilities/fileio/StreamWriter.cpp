@@ -56,8 +56,6 @@ ruf::StreamWriterPtr ruf::StreamWriter::create () {
 //! Setup class in python
 void ruf::StreamWriter::setup_python() {
    bp::class_<ruf::StreamWriter, ruf::StreamWriterPtr, boost::noncopyable >("StreamWriter",bp::init<>())
-      .def("create",         &ruf::StreamWriter::create)
-      .staticmethod("create")
       .def("open",           &ruf::StreamWriter::open)
       .def("close",          &ruf::StreamWriter::close)
       .def("setBufferSize",  &ruf::StreamWriter::setBufferSize)

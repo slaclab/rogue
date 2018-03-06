@@ -39,8 +39,6 @@ rpp::CorePtr rpp::Core::create () {
 void rpp::Core::setup_python() {
 
    bp::class_<rpp::Core, rpp::CorePtr, boost::noncopyable >("Core",bp::init<>())
-      .def("create",         &rpp::Core::create)
-      .staticmethod("create")
       .def("transport",      &rpp::Core::transport)
       .def("application",    &rpp::Core::application)
       .def("getDropCount",   &rpp::Core::getDropCount)

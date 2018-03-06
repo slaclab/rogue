@@ -35,8 +35,6 @@ rpr::ServerPtr rpr::Server::create (uint32_t segSize) {
 void rpr::Server::setup_python() {
 
    bp::class_<rpr::Server, rpr::ServerPtr, boost::noncopyable >("Server",bp::init<uint32_t>())
-      .def("create",         &rpr::Server::create)
-      .staticmethod("create")
       .def("transport",      &rpr::Server::transport)
       .def("application",    &rpr::Server::application)
       .def("getOpen",        &rpr::Server::getOpen)

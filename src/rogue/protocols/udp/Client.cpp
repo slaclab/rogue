@@ -49,7 +49,7 @@ rpu::Client::Client ( std::string host, uint16_t port, bool jumbo) : rpu::Core(j
 
    address_ = host;
    port_    = port;
-   udpLog_  = new rogue::Logging("udp.Client");
+   udpLog_  = rogue::Logging::create("udp.Client");
 
    // Create socket
    if ( (fd_ = socket(AF_INET,SOCK_DGRAM,0)) < 0 )
@@ -145,11 +145,11 @@ void rpu::Client::acceptFrame ( ris::FramePtr frame ) {
 
 //! Run thread
 void rpu::Client::runThread() {
-   ris::BufferPtr     buff;
-   ris::FramePtr      frame;
-   fd_set             fds;
-   int32_t            res;
-   struct timeval     tout;
+   ris::BufferPtr buff;
+   ris::FramePtr  frame;
+   fd_set         fds;
+   int32_t        res;
+   struct timeval tout;
    uint32_t           avail;
 
    udpLog_->info("PID=%i, TID=%li",getpid(),syscall(SYS_gettid));
@@ -171,7 +171,7 @@ void rpu::Client::runThread() {
             // Message was too big
             if (res > avail ) udpLog_->warning("Receive data was too large. Dropping.");
             else {
-               buff->setPayload(res);
+            buff->setPayload(res);
                sendFrame(frame);
             }
 
@@ -198,10 +198,7 @@ void rpu::Client::runThread() {
 
 void rpu::Client::setup_python () {
 
-   bp::class_<rpu::Client, rpu::ClientPtr, bp::bases<rpu::Core,ris::Master,ris::Slave>, boost::noncopyable >("Client",bp::init<std::string,uint16_t,bool>())
-      .def("create",         &rpu::Client::create)
-      .staticmethod("create")
-   ;
+   bp::class_<rpu::Client, rpu::ClientPtr, bp::bases<rpu::Core,ris::Master,ris::Slave>, boost::noncopyable >("Client",bp::init<std::string,uint16_t,bool>());
 
    bp::implicitly_convertible<rpu::ClientPtr, rpu::CorePtr>();
    bp::implicitly_convertible<rpu::ClientPtr, ris::MasterPtr>();

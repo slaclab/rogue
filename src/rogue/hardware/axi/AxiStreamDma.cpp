@@ -42,7 +42,7 @@ rha::AxiStreamDma::AxiStreamDma ( std::string path, uint32_t dest, bool ssiEnabl
    dest_    = dest;
    enSsi_   = ssiEnable;
 
-   log_ = new rogue::Logging("axi.AxiStreamDma");
+   log_ = rogue::Logging::create("axi.AxiStreamDma");
 
    rogue::GilRelease noGil;
 
@@ -378,8 +378,6 @@ void rha::AxiStreamDma::runThread() {
 void rha::AxiStreamDma::setup_python () {
 
    bp::class_<rha::AxiStreamDma, rha::AxiStreamDmaPtr, bp::bases<ris::Master,ris::Slave>, boost::noncopyable >("AxiStreamDma",bp::init<std::string,uint32_t,bool>())
-      .def("create",         &rha::AxiStreamDma::create)
-      .staticmethod("create")
       .def("setDriverDebug", &rha::AxiStreamDma::setDriverDebug)
       .def("dmaAck",         &rha::AxiStreamDma::dmaAck)
       .def("setTimeout",     &rha::AxiStreamDma::setTimeout)

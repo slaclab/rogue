@@ -42,7 +42,7 @@ rhd::DataMapPtr rhd::DataMap::create (std::string path) {
 //! Creator
 rhd::DataMap::DataMap(std::string path) : rim::Slave(4,0xFFFFFFFF) {
    fd_ = ::open(path.c_str(), O_RDWR);
-   log_ = new rogue::Logging("data.DataMap");
+   log_ = rogue::Logging::create("data.DataMap");
    if ( fd_ < 0 ) throw(rogue::GeneralError::open("DataMap::DataMap",path));
 
    log_->critical("rogue.hardware.data.DataMap is being deprecated and will be removed in a future release.");
@@ -82,10 +82,7 @@ void rhd::DataMap::doTransaction(uint32_t id, boost::shared_ptr<rogue::interface
 
 void rhd::DataMap::setup_python () {
 
-   bp::class_<rhd::DataMap, rhd::DataMapPtr, bp::bases<rim::Slave>, boost::noncopyable >("DataMap",bp::init<std::string>())
-      .def("create",         &rhd::DataMap::create)
-      .staticmethod("create")
-   ;
+   bp::class_<rhd::DataMap, rhd::DataMapPtr, bp::bases<rim::Slave>, boost::noncopyable >("DataMap",bp::init<std::string>());
 
    bp::implicitly_convertible<rhd::DataMapPtr, rim::SlavePtr>();
 }

@@ -44,7 +44,7 @@ rhr::MapMemoryPtr rhr::MapMemory::create () {
 rhr::MapMemory::MapMemory() : rim::Slave(4,0xFFFFFFFF) {
 
    fd_ = ::open("/dev/mem", O_RDWR | O_SYNC);
-   log_ = new rogue::Logging("rce.MapMemory");
+   log_ = rogue::Logging::create("rce.MapMemory");
    if ( fd_ < 0 ) throw(rogue::GeneralError::open("MapMemory::MapMemory","/dev/mem"));
 
    log_->critical("rogue.hardware.rce.MapMemory is being deprecated and will be removed in a future release.");
@@ -127,8 +127,6 @@ void rhr::MapMemory::doTransaction(uint32_t id, boost::shared_ptr<rogue::interfa
 void rhr::MapMemory::setup_python () {
 
    bp::class_<rhr::MapMemory, rhr::MapMemoryPtr, bp::bases<rim::Slave>, boost::noncopyable >("MapMemory",bp::init<>())
-      .def("create",         &rhr::MapMemory::create)
-      .staticmethod("create")
       .def("addMap",         &rhr::MapMemory::addMap)
    ;
 

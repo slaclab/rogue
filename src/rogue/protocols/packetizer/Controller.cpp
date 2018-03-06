@@ -50,7 +50,7 @@ rpp::Controller::Controller ( rpp::TransportPtr tran, rpp::ApplicationPtr * app,
    dropCount_ = 0;
    timeout_ = 1000000;
    tranQueue_.setThold(64);
-   log_ = new rogue::Logging("packetizer.Controller");
+   log_ = rogue::Logging::create("packetizer.Controller");
 
    headSize_ = headSize;
    tailSize_ = tailSize;

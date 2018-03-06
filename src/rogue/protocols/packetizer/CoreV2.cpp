@@ -38,8 +38,6 @@ rpp::CoreV2Ptr rpp::CoreV2::create (bool enIbCrc, bool enObCrc) {
 void rpp::CoreV2::setup_python() {
 
    bp::class_<rpp::CoreV2, rpp::CoreV2Ptr, boost::noncopyable >("CoreV2",bp::init<bool,bool>())
-      .def("create",         &rpp::CoreV2::create)
-      .staticmethod("create")
       .def("transport",      &rpp::CoreV2::transport)
       .def("application",    &rpp::CoreV2::application)
       .def("getDropCount",   &rpp::CoreV2::getDropCount)

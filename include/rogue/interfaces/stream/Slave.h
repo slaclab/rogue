@@ -50,7 +50,7 @@ namespace rogue {
 
                //! Debug control
                uint32_t         debug_;
-               rogue::Logging * log_;
+               rogue::LoggingPtr log_;
 
                //! Counters
                uint64_t frameCount_;

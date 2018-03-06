@@ -44,10 +44,7 @@ rps::SrpV3Ptr rps::SrpV3::create () {
 //! Setup class in python
 void rps::SrpV3::setup_python() {
 
-   bp::class_<rps::SrpV3, rps::SrpV3Ptr, bp::bases<ris::Master,ris::Slave,rim::Slave>,boost::noncopyable >("SrpV3",bp::init<>())
-      .def("create",         &rps::SrpV3::create)
-      .staticmethod("create")
-   ;
+   bp::class_<rps::SrpV3, rps::SrpV3Ptr, bp::bases<ris::Master,ris::Slave,rim::Slave>,boost::noncopyable >("SrpV3",bp::init<>());
 
    bp::implicitly_convertible<rps::SrpV3Ptr, ris::MasterPtr>();
    bp::implicitly_convertible<rps::SrpV3Ptr, ris::SlavePtr>();
@@ -57,7 +54,7 @@ void rps::SrpV3::setup_python() {
 
 //! Creator with version constant
 rps::SrpV3::SrpV3() : ris::Master(), ris::Slave(), rim::Slave(4,4096) { 
-   log_ = new rogue::Logging("SrpV3");
+   log_ = rogue::Logging::create("SrpV3");
 }
 
 //! Deconstructor

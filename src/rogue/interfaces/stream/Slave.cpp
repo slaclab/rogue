@@ -53,7 +53,7 @@ ris::Slave::~Slave() { }
 //! Set debug message size
 void ris::Slave::setDebug(uint32_t debug, std::string name) {
    debug_ = debug;
-   log_   = new Logging(name.c_str());
+   log_   = rogue::Logging::create(name.c_str());
 }
 
 //! Accept a frame from master
@@ -120,8 +120,6 @@ uint64_t ris::Slave::getByteCount() {
 void ris::Slave::setup_python() {
 
    bp::class_<ris::SlaveWrap, ris::SlaveWrapPtr, boost::noncopyable>("Slave",bp::init<>())
-      .def("create",         &ris::Slave::create)
-      .staticmethod("create")
       .def("setDebug",       &ris::Slave::setDebug)
       .def("_acceptFrame",   &ris::Slave::acceptFrame, &ris::SlaveWrap::defAcceptFrame)
       .def("getFrameCount",  &ris::Slave::getFrameCount)

@@ -46,7 +46,7 @@ rpu::Server::Server (uint16_t port, bool jumbo) : rpu::Core(jumbo) {
    uint32_t  size;
 
    port_    = port;
-   udpLog_ = new rogue::Logging("udp.Server");
+   udpLog_ = rogue::Logging::create("udp.Server");
 
    // Create socket
    if ( (fd_ = socket(AF_INET,SOCK_DGRAM,0)) < 0 )
@@ -178,7 +178,7 @@ void rpu::Server::runThread() {
             // Message was too big
             if (res > avail ) udpLog_->warning("Receive data was too large. Dropping.");
             else {
-               buff->setPayload(res);
+            buff->setPayload(res);
                sendFrame(frame);
             }
 
@@ -212,8 +212,6 @@ void rpu::Server::runThread() {
 void rpu::Server::setup_python () {
 
    bp::class_<rpu::Server, rpu::ServerPtr, bp::bases<rpu::Core,ris::Master,ris::Slave>, boost::noncopyable >("Server",bp::init<uint16_t,bool>())
-      .def("create",         &rpu::Server::create)
-      .staticmethod("create")
       .def("getPort",        &rpu::Server::getPort)
    ;
 

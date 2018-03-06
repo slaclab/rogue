@@ -40,10 +40,7 @@ ris::FifoPtr ris::Fifo::create(uint32_t maxDepth, uint32_t trimSize) {
 
 //! Setup class in python
 void ris::Fifo::setup_python() {
-   bp::class_<ris::Fifo, ris::FifoPtr, bp::bases<ris::Master,ris::Slave>, boost::noncopyable >("Fifo",bp::init<uint32_t,uint32_t>())
-      .def("create", &ris::Fifo::create)
-      .staticmethod("create")
-   ;
+   bp::class_<ris::Fifo, ris::FifoPtr, bp::bases<ris::Master,ris::Slave>, boost::noncopyable >("Fifo",bp::init<uint32_t,uint32_t>());
 }
 
 //! Creator with version constant
@@ -53,7 +50,7 @@ ris::Fifo::Fifo(uint32_t maxDepth, uint32_t trimSize ) : ris::Master(), ris::Sla
 
    queue_.setThold(maxDepth);
 
-   log_ = new rogue::Logging("Fifo");
+   log_ = rogue::Logging::create("Fifo");
 
    // Start read thread
    thread_ = new boost::thread(boost::bind(&ris::Fifo::runThread, this));

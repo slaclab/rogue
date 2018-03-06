@@ -40,10 +40,7 @@ rpr::ApplicationPtr rpr::Application::create () {
 
 void rpr::Application::setup_python() {
 
-   bp::class_<rpr::Application, rpr::ApplicationPtr, bp::bases<ris::Master,ris::Slave>, boost::noncopyable >("Application",bp::init<>())
-      .def("create",         &rpr::Application::create)
-      .staticmethod("create")
-   ;
+   bp::class_<rpr::Application, rpr::ApplicationPtr, bp::bases<ris::Master,ris::Slave>, boost::noncopyable >("Application",bp::init<>());
 
    bp::implicitly_convertible<rpr::ApplicationPtr, ris::MasterPtr>();
    bp::implicitly_convertible<rpr::ApplicationPtr, ris::SlavePtr>();
