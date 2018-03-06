@@ -383,8 +383,6 @@ void rhr::AxiStream::runThread() {
 void rhr::AxiStream::setup_python () {
 
    bp::class_<rhr::AxiStream, rhr::AxiStreamPtr, bp::bases<ris::Master,ris::Slave>, boost::noncopyable >("AxiStream",bp::init<std::string,uint32_t>())
-      .def("create",         &rhr::AxiStream::create)
-      .staticmethod("create")
       .def("enableSsi",      &rhr::AxiStream::enableSsi)
       .def("dmaAck",         &rhr::AxiStream::dmaAck)
       .def("setTimeout",     &rhr::AxiStream::setTimeout)

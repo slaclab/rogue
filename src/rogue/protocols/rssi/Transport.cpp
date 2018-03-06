@@ -40,10 +40,7 @@ rpr::TransportPtr rpr::Transport::create () {
 
 void rpr::Transport::setup_python() {
 
-   bp::class_<rpr::Transport, rpr::TransportPtr, bp::bases<ris::Master,ris::Slave>, boost::noncopyable >("Transport",bp::init<>())
-      .def("create",         &rpr::Transport::create)
-      .staticmethod("create")
-   ;
+   bp::class_<rpr::Transport, rpr::TransportPtr, bp::bases<ris::Master,ris::Slave>, boost::noncopyable >("Transport",bp::init<>());
 
    bp::implicitly_convertible<rpr::TransportPtr, ris::MasterPtr>();
    bp::implicitly_convertible<rpr::TransportPtr, ris::SlavePtr>();

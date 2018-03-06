@@ -213,8 +213,6 @@ bool rpu::Client::setRxSize(uint32_t size) {
 void rpu::Client::setup_python () {
 
    bp::class_<rpu::Client, rpu::ClientPtr, bp::bases<ris::Master,ris::Slave>, boost::noncopyable >("Client",bp::init<std::string,uint16_t,uint16_t>())
-      .def("create",         &rpu::Client::create)
-      .staticmethod("create")
       .def("setTimeout",     &rpu::Client::setTimeout)
       .def("setRxSize",      &rpu::Client::setRxSize)
    ;

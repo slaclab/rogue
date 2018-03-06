@@ -39,8 +39,6 @@ rpp::CorePtr rpp::Core::create (uint32_t segmentSize) {
 void rpp::Core::setup_python() {
 
    bp::class_<rpp::Core, rpp::CorePtr, boost::noncopyable >("Core",bp::init<uint32_t>())
-      .def("create",         &rpp::Core::create)
-      .staticmethod("create")
       .def("transport",      &rpp::Core::transport)
       .def("application",    &rpp::Core::application)
       .def("getDropCount",   &rpp::Core::getDropCount)

@@ -127,8 +127,6 @@ void rhr::MapMemory::doTransaction(uint32_t id, boost::shared_ptr<rogue::interfa
 void rhr::MapMemory::setup_python () {
 
    bp::class_<rhr::MapMemory, rhr::MapMemoryPtr, bp::bases<rim::Slave>, boost::noncopyable >("MapMemory",bp::init<>())
-      .def("create",         &rhr::MapMemory::create)
-      .staticmethod("create")
       .def("addMap",         &rhr::MapMemory::addMap)
    ;
 

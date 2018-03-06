@@ -43,8 +43,6 @@ ruf::StreamReaderPtr ruf::StreamReader::create () {
 //! Setup class in python
 void ruf::StreamReader::setup_python() {
    bp::class_<ruf::StreamReader, ruf::StreamReaderPtr,bp::bases<ris::Master>, boost::noncopyable >("StreamReader",bp::init<>())
-      .def("create",         &ruf::StreamReader::create)
-      .staticmethod("create")
       .def("open",           &ruf::StreamReader::open)
       .def("close",          &ruf::StreamReader::close)
       .def("closeWait",      &ruf::StreamReader::closeWait)

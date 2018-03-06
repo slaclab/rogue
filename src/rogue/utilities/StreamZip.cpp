@@ -106,10 +106,7 @@ ris::FramePtr ru::StreamZip::acceptReq ( uint32_t size, bool zeroCopyEn ) {
 
 void ru::StreamZip::setup_python() {
 
-   bp::class_<ru::StreamZip, ru::StreamZipPtr, bp::bases<ris::Master,ris::Slave>, boost::noncopyable >("StreamZip",bp::init<>())
-      .def("create",         &ru::StreamZip::create)
-      .staticmethod("create")
-   ;
+   bp::class_<ru::StreamZip, ru::StreamZipPtr, bp::bases<ris::Master,ris::Slave>, boost::noncopyable >("StreamZip",bp::init<>());
 
    bp::implicitly_convertible<ru::StreamZipPtr, ris::SlavePtr>();
    bp::implicitly_convertible<ru::StreamZipPtr, ris::MasterPtr>();

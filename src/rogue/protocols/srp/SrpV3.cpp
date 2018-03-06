@@ -44,10 +44,7 @@ rps::SrpV3Ptr rps::SrpV3::create () {
 //! Setup class in python
 void rps::SrpV3::setup_python() {
 
-   bp::class_<rps::SrpV3, rps::SrpV3Ptr, bp::bases<ris::Master,ris::Slave,rim::Slave>,boost::noncopyable >("SrpV3",bp::init<>())
-      .def("create",         &rps::SrpV3::create)
-      .staticmethod("create")
-   ;
+   bp::class_<rps::SrpV3, rps::SrpV3Ptr, bp::bases<ris::Master,ris::Slave,rim::Slave>,boost::noncopyable >("SrpV3",bp::init<>());
 
    bp::implicitly_convertible<rps::SrpV3Ptr, ris::MasterPtr>();
    bp::implicitly_convertible<rps::SrpV3Ptr, ris::SlavePtr>();

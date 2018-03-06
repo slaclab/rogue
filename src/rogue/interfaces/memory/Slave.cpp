@@ -107,8 +107,6 @@ void rim::Slave::doTransaction(uint32_t id, rim::MasterPtr master, uint64_t addr
 
 void rim::Slave::setup_python() {
    bp::class_<rim::SlaveWrap, rim::SlaveWrapPtr, boost::noncopyable>("Slave",bp::init<uint32_t,uint32_t>())
-      .def("create",         &rim::Slave::create)
-      .staticmethod("create")
       .def("_addMaster",     &rim::Slave::addMaster)
       .def("_getMaster",     &rim::Slave::getMaster)
       .def("_validMaster",   &rim::Slave::validMaster)

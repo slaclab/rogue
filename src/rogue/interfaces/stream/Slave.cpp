@@ -120,8 +120,6 @@ uint64_t ris::Slave::getByteCount() {
 void ris::Slave::setup_python() {
 
    bp::class_<ris::SlaveWrap, ris::SlaveWrapPtr, boost::noncopyable>("Slave",bp::init<>())
-      .def("create",         &ris::Slave::create)
-      .staticmethod("create")
       .def("setDebug",       &ris::Slave::setDebug)
       .def("_acceptFrame",   &ris::Slave::acceptFrame, &ris::SlaveWrap::defAcceptFrame)
       .def("getFrameCount",  &ris::Slave::getFrameCount)
