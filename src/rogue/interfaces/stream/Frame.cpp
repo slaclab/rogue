@@ -57,16 +57,6 @@ void ris::Frame::appendFrame(ris::FramePtr frame) {
    std::copy(frame->beginBuffer(), frame->endBuffer(), backIt);
 }
 
-//! Remove buffers from frame
-void ris::Frame::clear() {
-   buffers_.clear();
-}
-
-//! Get buffer count
-uint32_t ris::Frame::getCount() {
-   return(buffers_.size());
-}
-
 //! Buffer begin iterator
 ris::Frame::BufferIterator ris::Frame::beginBuffer() {
    return(buffers_.begin());

@@ -85,12 +85,6 @@ namespace rogue {
                //! Append passed frame buffers to end of frame.
                void appendFrame(boost::shared_ptr<rogue::interfaces::stream::Frame> frame);
 
-               //! Remove buffers from frame
-               void clear();
-
-               //! Get buffer count
-               uint32_t getCount();
-
                //! Buffer begin iterator
                std::vector<boost::shared_ptr<rogue::interfaces::stream::Buffer> >::iterator beginBuffer();
 
