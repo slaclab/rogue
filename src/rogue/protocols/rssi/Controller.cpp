@@ -120,7 +120,7 @@ ris::FramePtr rpr::Controller::reqFrame ( uint32_t size ) {
 
    // Forward frame request to transport slave
    frame = tran_->reqFrame (nSize, false);
-   buffer = frame->getBuffer(0);
+   buffer = *(frame->beginBuffer());
 
    // Make sure there is enough room the buffer for our header
    if ( buffer->getAvailable() < rpr::Header::HeaderSize )
@@ -204,7 +204,7 @@ ris::FramePtr rpr::Controller::applicationTx() {
       stCond_.notify_all();
 
       frame = head->getFrame();
-      frame->getBuffer(0)->adjustHeader(rpr::Header::HeaderSize);
+      (*(frame->beginBuffer()))->adjustHeader(rpr::Header::HeaderSize);
    }
    return(frame);
 }
@@ -220,7 +220,7 @@ void rpr::Controller::applicationRx ( ris::FramePtr frame ) {
       throw(rogue::GeneralError("rss::Controller::applicationRx","Frame must not be empty"));
 
    // Adjust header in first buffer
-   frame->getBuffer(0)->adjustHeader(-rpr::Header::HeaderSize);
+   (*(frame->beginBuffer()))->adjustHeader(rpr::Header::HeaderSize);
 
    // Map to RSSI 
    rpr::HeaderPtr head = rpr::Header::create(frame);

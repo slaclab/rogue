@@ -3,9 +3,7 @@
  * Title      : Stream frame container
  * ----------------------------------------------------------------------------
  * File       : Frame.h
- * Author     : Ryan Herbst, rherbst@slac.stanford.edu
  * Created    : 2016-09-16
- * Last update: 2016-09-16
  * ----------------------------------------------------------------------------
  * Description:
  * Stream frame container
@@ -21,6 +19,7 @@
  * ----------------------------------------------------------------------------
 **/
 #include <rogue/interfaces/stream/Frame.h>
+#include <rogue/interfaces/stream/FrameIterator.h>
 #include <rogue/interfaces/stream/Buffer.h>
 #include <rogue/GeneralError.h>
 #include <boost/make_shared.hpp>
@@ -78,16 +77,6 @@ ris::Frame::BufferIterator ris::Frame::endBuffer() {
    return(buffers_.end());
 }
 
-//! Get buffer at index
-ris::BufferPtr ris::Frame::getBuffer(uint32_t index) {
-   ris::BufferPtr ret;
-
-   if ( index < buffers_.size() ) ret = buffers_[index];
-   else throw(rogue::GeneralError::boundary("Frame::getBuffer",index,buffers_.size()));
-
-   return(ret);
-}
-
 /*
  * Get size of buffers that can hold
  * payload data. This function 
@@ -114,7 +103,7 @@ uint32_t ris::Frame::getAvailable() {
    uint32_t ret = 0;
 
    for (it = buffers_.begin(); it != buffers_.end(); ++it) 
-      ret += (*it)->geAvailable();
+      ret += (*it)->getAvailable();
 
    return(ret);
 }
@@ -190,7 +179,7 @@ void ris::Frame::adjustPayload(int32_t value) {
 void ris::Frame::setPayloadFull() {
    ris::Frame::BufferIterator it;
 
-   for (it = buffers_.begin(); it != buffer_.end(); ++it) 
+   for (it = buffers_.begin(); it != buffers_.end(); ++it) 
       (*it)->setPayloadFull();
 }
 
@@ -198,7 +187,7 @@ void ris::Frame::setPayloadFull() {
 void ris::Frame::setPayloadEmpty() {
    ris::Frame::BufferIterator it;
 
-   for (it = buffers_.begin(); it != buffer_.end(); ++it) 
+   for (it = buffers_.begin(); it != buffers_.end(); ++it) 
       (*it)->setPayloadEmpty();
 }
 
@@ -224,25 +213,29 @@ void ris::Frame::setError(uint32_t error) {
 
 //! Get start of data iterator
 ris::Frame::iterator ris::Frame::begin() {
-   return ris::Frame::iterator(0);
+   return ris::Frame::iterator(shared_from_this(),0,false);
 }
 
 //! Get end of data iterator
 ris::Frame::iterator ris::Frame::end() {
-   return ris::Frame::iterator(getSize());
+   return ris::Frame::iterator(shared_from_this(),0,true);
 }
 
 //! Get end of payload iterator
 ris::Frame::iterator ris::Frame::endPayload() {
-   return ris::Frame::iterator(getPayload());
+   return ris::Frame::iterator(shared_from_this(),getPayload(),(getPayload() == getSize())); 
 }
 
 //! Read count bytes from frame, starting from offset.
 uint32_t ris::Frame::read  ( void *p, uint32_t offset, uint32_t count ) {
-   ris::Frame::iterator beg = ris::Frame::iterator(offset);
-   ris::Frame::iterator end = ris::Frame::iterator(offset+count);
+   uint32_t size = getPayload();
 
-   std::copy(ris::Frame::iterator(offset),end,p);
+   if ( (offset + count) > size ) count = (size - offset);
+
+   ris::Frame::iterator beg = ris::Frame::iterator(shared_from_this(),offset,false);
+   ris::Frame::iterator end = ris::Frame::iterator(shared_from_this(),offset+count,false);
+
+   //std::copy(beg,end,p);
    return(count);
 }
 
@@ -259,14 +252,17 @@ void ris::Frame::readPy ( boost::python::object p, uint32_t offset ) {
 
 //! Write count bytes to frame, starting at offset
 uint32_t ris::Frame::write ( void *p, uint32_t offset, uint32_t count ) {
+   uint32_t size = getSize();
 
+   if ( (offset + count) > size ) 
+      throw(rogue::GeneralError::boundary("Frame::write",offset+count,size));
 
-   ris::FrameIteratorPtr iter = startWrite(offset,count);
+   ris::Frame::iterator beg = ris::Frame::iterator(shared_from_this(),offset,false);
+   ris::Frame::iterator end = ris::Frame::iterator(shared_from_this(),offset+count,false);
 
-   do {
-      memcpy(iter->data(),((uint8_t *)p)+iter->total(),iter->size());
-   } while(nextWrite(iter));
+   //std::copy(p,p+count,beg);
 
+   setPayload(offset+count,false);
    return(count);
 }
 
@@ -280,242 +276,6 @@ void ris::Frame::writePy ( boost::python::object p, uint32_t offset ) {
    write(pyBuf.buf,offset,pyBuf.len);
    PyBuffer_Release(&pyBuf);
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//! Start an iterative write
-/*
- * Pass offset and total size
- * Returns iterator object.
- * Use data and size fields in object to control transaction
- * Call nextWrite to following data update.
- */
-ris::FrameIteratorPtr ris::Frame::startWrite(uint32_t offset, uint32_t size) {
-   uint32_t total;
-   uint32_t temp;
-   ris::BufferPtr buff;
-
-   ris::FrameIteratorPtr iter = boost::make_shared<ris::FrameIterator>();
-
-   iter->offset_     = offset;
-   iter->remaining_  = size;
-   iter->total_      = 0;
-
-   total = 0;
-   temp  = 0;
-
-   // Find buffer which matches offset
-   for (iter->index_=0; iter->index_ < buffers_.size(); iter->index_++) {
-      buff = buffers_[iter->index_];
-      temp = buff->getSize();
-      total += temp;
-
-      // Offset is within payload range
-      if ( iter->offset_ < temp ) break;
-
-      // Subtract buffer payload size from offset
-      iter->offset_ -= temp;
-
-      // Update payload to be full since write index is higher
-      buff->setPayloadFull();
-   }
-
-   if ( iter->index_ == buffers_.size() ) 
-      throw(rogue::GeneralError::boundary("Frame::startWrite",offset,total));
-
-   // Raw pointer
-   iter->data_ = buff->getPayloadData() + iter->offset_;
-
-   // Set size
-   if ( (temp - iter->offset_) > iter->remaining_ ) 
-      iter->size_ = iter->remaining_;
-   else
-      iter->size_ = (temp - iter->offset_);
-
-   // Set default completed
-   iter->completed_ = iter->size_;
-
-   // Return iterator
-   return(iter);
-}
-
-//! Continue an iterative write
-bool ris::Frame::nextWrite(ris::FrameIteratorPtr iter) {
-   ris::BufferPtr buff;
-   uint32_t temp;
-
-   buff = buffers_[iter->index_];
-
-   // Update payload size
-   if ( iter->size_ > 0 && ((iter->offset_ + iter->completed_) > buff->getPayload()) )
-      buff->setPayload(iter->offset_ + iter->completed_);
-
-   // We are done
-   if ( iter->size_ == 0 || (iter->completed_ == iter->remaining_) ) {
-      iter->size_ = 0;
-      iter->data_ = 0;
-      return (false);
-   }
-
-   // Completed matches buffer size
-   if ( iter->completed_ == iter->size_ ) {
-
-      // Sanity check before getting next buffer
-      if ( ++iter->index_ == buffers_.size() ) 
-         throw(rogue::GeneralError::boundary("Frame::nextWrite",iter->index_,buffers_.size()));
-
-      // Next buffer
-      iter->offset_ = 0;
-   }
-
-   // Partial read, reuse current buffer 
-   else iter->offset_ += iter->completed_;
-
-   // Update pointers
-   buff = buffers_[iter->index_];
-   temp = buff->getSize();
-
-   // Adjust
-   iter->remaining_ -= iter->completed_;
-   iter->total_     += iter->completed_;
-
-   // Raw pointer
-   iter->data_ = buff->getPayloadData() + iter->offset_;
-
-   // Set size
-   if ( (temp - iter->offset_) > iter->remaining_ ) 
-      iter->size_ = iter->remaining_;
-   else
-      iter->size_ = (temp - iter->offset_);
-
-   // Set default completed
-   iter->completed_ = iter->size_;
-
-   // Return iterator
-   return(true);
-}
-
-//! Start an iterative read
-/*
- * Pass offset and total size
- * Returns iterator object.
- * Use data and size fields in object to control transaction
- * Call nextRead to following data update.
- */
-ris::FrameIteratorPtr ris::Frame::startRead(uint32_t offset, uint32_t size) {
-   uint32_t total;
-   uint32_t temp;
-   ris::BufferPtr buff;
-
-   ris::FrameIteratorPtr iter = boost::make_shared<ris::FrameIterator>();
-
-   iter->offset_    = offset;
-   iter->remaining_ = size;
-   iter->total_     = 0;
-
-   total = 0;
-   temp  = 0;
-
-   // Find buffer which matches offset
-   for (iter->index_=0; iter->index_ < buffers_.size(); iter->index_++) {
-      buff = buffers_[iter->index_];
-      temp = buff->getPayload();
-      total += temp;
-
-      // Offset is within payload range
-      if ( iter->offset_ < temp ) break;
-      else iter->offset_ -= temp;
-   }
-
-   if ( iter->index_ == buffers_.size() ) 
-      throw(rogue::GeneralError::boundary("Frame::startRead",offset,total));
-
-   // Raw pointer
-   iter->data_ = buff->getPayloadData() + iter->offset_;
-
-   // Set size
-   if ( (temp - iter->offset_) > iter->remaining_ ) 
-      iter->size_ = iter->remaining_;
-   else
-      iter->size_ = (temp - iter->offset_);
-
-   // Set default completed
-   iter->completed_ = iter->size_;
-
-   // Return iterator
-   return(iter);
-}
-
-//! Continue an iterative read
-bool ris::Frame::nextRead(ris::FrameIteratorPtr iter) {
-   ris::BufferPtr buff;
-   uint32_t temp;
-
-   // We are done
-   if ( iter->size_ == 0 || (iter->completed_ == iter->remaining_) ) {
-      iter->size_ = 0;
-      iter->data_ = 0;
-      return(false);
-   }
-
-   // Completed matches buffer size
-   if ( iter->completed_ == iter->size_ ) {
-
-      // Sanity check before getting next buffer
-      if ( ++iter->index_ == buffers_.size() ) 
-         throw(rogue::GeneralError::boundary("Frame::nextRead",iter->index_,buffers_.size()));
-
-      // Next buffer
-      iter->offset_ = 0;
-   }
-   
-   // Partial read, reuse current buffer 
-   else iter->offset_ += iter->completed_;
-
-   // Update pointers
-   buff = buffers_[iter->index_];
-   temp = buff->getPayload();
-
-   // Adjust
-   iter->remaining_ -= iter->completed_;
-   iter->total_     += iter->completed_;
-
-   // Raw pointer
-   iter->data_ = buff->getPayloadData() + iter->offset_;
-
-   // Set size
-   if ( (temp - iter->offset_) > iter->remaining_ ) 
-      iter->size_ = iter->remaining_;
-   else
-      iter->size_ = (temp - iter->offset_);
-
-   // Set default completed
-   iter->completed_ = iter->size_;
-
-   return(true);
-}
-
-
-
-
-
 
 void ris::Frame::setup_python() {
 

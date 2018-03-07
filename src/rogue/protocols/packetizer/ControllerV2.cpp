@@ -75,7 +75,7 @@ void rpp::ControllerV2::transportRx( ris::FramePtr frame ) {
    rogue::GilRelease noGil;
    boost::lock_guard<boost::mutex> lock(tranMtx_);
 
-   buff = frame->getBuffer(0);
+   buff = *(frame->beginBuffer());
    data = buff->begin();
    size = buff->getPayload();
 
@@ -193,9 +193,9 @@ void rpp::ControllerV2::transportRx( ris::FramePtr frame ) {
 
 //! Frame received at application interface
 void rpp::ControllerV2::applicationRx ( ris::FramePtr frame, uint8_t tDest ) {
-   ris::BufferPtr buff;
+   ris::Frame::BufferIterator it;
+   uint32_t segment;
    uint8_t * data;
-   uint32_t x;
    uint32_t size;
    uint8_t  fUser;
    uint8_t  lUser;
@@ -238,11 +238,11 @@ void rpp::ControllerV2::applicationRx ( ris::FramePtr frame, uint8_t tDest ) {
    lUser = (frame->getFlags() >> 8) & 0xFF;
    tId   = (frame->getFlags() >> 16) & 0xFF;
 
-   for (x=0; x < frame->getCount(); x++ ) {
+   segment = 0;
+   for (it=frame->beginBuffer(); it != frame->endBuffer(); ++it) {
       ris::FramePtr tFrame = ris::Frame::create();
-      buff = frame->getBuffer(x);
 
-      size = buff->getPayload();
+      size = (*it)->getPayload();
       last = size & 0x7;
       
       // Shift to 64-bit alignment
@@ -250,16 +250,16 @@ void rpp::ControllerV2::applicationRx ( ris::FramePtr frame, uint8_t tDest ) {
       else last = 8;
       
       // Rem 8 bytes head and tail reservation before setting new size
-      buff->adjustHeader(-8);
-      buff->adjustTail(-8);
+      (*it)->adjustHeader(-8);
+      (*it)->adjustTail(-8);
 
       // Add tail to payload, set new size
       size += 8;
-      buff->setPayload(size);
+      (*it)->setPayload(size,true);
 
       // Get data pointer
-      data = buff->begin();
-      size = buff->getPayload();
+      data = (*it)->begin();
+      size = (*it)->getPayload();
 
       // Header word 0
       data[0] = 0x2; // (Version=0x2)
@@ -269,14 +269,14 @@ void rpp::ControllerV2::applicationRx ( ris::FramePtr frame, uint8_t tDest ) {
       data[3] = tId;
 
       // Header word 1
-      data[4] = x & 0xFF;
-      data[5] = (x >>  8) & 0xFF;
+      data[4] = segment & 0xFF;
+      data[5] = (segment >>  8) & 0xFF;
       data[6] = 0;
-      data[7] = (x == 0) ? 0x80 : 0x0; // SOF (PACKETIZER2_HDR_SOF_BIT_C = 63)
+      data[7] = (segment == 0) ? 0x80 : 0x0; // SOF (PACKETIZER2_HDR_SOF_BIT_C = 63)
 
       // Tail  word 0
       data[size-8] = lUser;
-      data[size-7] = (x == (frame->getCount() - 1)) ? 0x1 : 0x0; // EOF
+      data[size-7] = (it == (frame->endBuffer()-1)) ? 0x1 : 0x0; // EOF
       data[size-6] = last;
       data[size-5] = 0;
       
@@ -299,13 +299,13 @@ void rpp::ControllerV2::applicationRx ( ris::FramePtr frame, uint8_t tDest ) {
       }
       
       log_->debug("applicationRx: Gen frame: Fuser=0x%x, Dest=0x%x, Id=0x%x, Count=%i, Sof=%i, Luser=0x%x, Eof=%i, Last=%i",
-            fUser, tDest, tId, x, data[7], lUser, data[size-7], last);
+            fUser, tDest, tId, segment, data[7], lUser, data[size-7], last);
       log_->debug("applicationRx: Raw header: 0x%x, 0x%x, 0x%x, 0x%x, 0x%x, 0x%x, 0x%x, 0x%x",
             data[0],data[1],data[2],data[3],data[4],data[5],data[6],data[7]);
       log_->debug("applicationRx: Raw footer: 0x%x, 0x%x, 0x%x, 0x%x, 0x%x, 0x%x, 0x%x, 0x%x",
             data[size-8],data[size-7],data[size-6],data[size-5],data[size-4],data[size-3],data[size-2],data[size-1]);
 
-      tFrame->appendBuffer(buff);
+      tFrame->appendBuffer(*it);
       tranQueue_.push(tFrame);
    }
    appIndex_++;

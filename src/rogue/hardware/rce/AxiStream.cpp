@@ -164,12 +164,10 @@ ris::FramePtr rhr::AxiStream::acceptReq ( uint32_t size, bool zeroCopyEn) {
 
 //! Accept a frame from master
 void rhr::AxiStream::acceptFrame ( ris::FramePtr frame ) {
-   ris::BufferPtr buff;
    int32_t          res;
    fd_set           fds;
    struct timeval   tout;
    uint32_t         meta;
-   uint32_t         x;
    uint32_t         flags;
    uint32_t         fuser;
    uint32_t         luser;
@@ -181,31 +179,31 @@ void rhr::AxiStream::acceptFrame ( ris::FramePtr frame ) {
    flags = frame->getFlags();
 
    // Go through each buffer in the frame
-   for (x=0; x < frame->getCount(); x++) {
-      buff = frame->getBuffer(x);
-      buff->zeroHeader();
+   ris::Frame::BufferIterator it;
+   for (it = frame->beginBuffer(); it != frame->endBuffer(); ++it) {
+      (*it)->zeroHeader();
 
-      // First buff
-      if ( x == 0 ) {
+      // First (*it)
+      if ( it == frame->beginBuffer() ) {
          fuser = flags & 0xFF;
          if ( enSsi_ ) fuser |= 0x2;
       }
       else fuser = 0;
 
-      // Last buffer
-      if ( x == (frame->getCount() - 1) ) {
+      // Last (*it)er
+      if ( it == (frame->endBuffer()-1) ) {
          cont = 0;
          luser = (flags >> 8) & 0xFF;
       }
 
-      // Continue flag is set if this is not the last buffer
+      // Continue flag is set if this is not the last (*it)er
       else {
          cont = 1;
          luser = 0;
       }
 
-      // Get buffer meta field
-      meta = buff->getMeta();
+      // Get (*it)er meta field
+      meta = (*it)->getMeta();
 
       // Meta is zero copy as indicated by bit 31
       if ( (meta & 0x80000000) != 0 ) {
@@ -213,22 +211,22 @@ void rhr::AxiStream::acceptFrame ( ris::FramePtr frame ) {
          // Buffer is not already stale as indicates by bit 30
          if ( (meta & 0x40000000) == 0 ) {
 
-            // Write by passing buffer index to driver
-            if ( dmaWriteIndex(fd_, meta & 0x3FFFFFFF, buff->getPayload(), axisSetFlags(fuser, luser,0), dest_) <= 0 ) {
+            // Write by passing (*it)er index to driver
+            if ( dmaWriteIndex(fd_, meta & 0x3FFFFFFF, (*it)->getPayload(), axisSetFlags(fuser, luser,0), dest_) <= 0 ) {
                throw(rogue::GeneralError("AxiStream::acceptFrame","AXIS Write Call Failed"));
             }
 
-            // Mark buffer as stale
+            // Mark (*it)er as stale
             meta |= 0x40000000;
-            buff->setMeta(meta);
+            (*it)->setMeta(meta);
          }
       }
 
-      // Write to pgp with buffer copy in driver
+      // Write to pgp with (*it)er copy in driver
       else {
 
          // Keep trying since select call can fire 
-         // but write fails because we did not win the buffer lock
+         // but write fails because we did not win the (*it)er lock
          do {
 
             // Setup fds for select call
@@ -244,8 +242,8 @@ void rhr::AxiStream::acceptFrame ( ris::FramePtr frame ) {
                res = 0;
             }
             else {
-               // Write with buffer copy
-               if ( (res = dmaWrite(fd_, buff->begin(), buff->getPayload(), axisSetFlags(fuser, luser,cont), dest_)) < 0 ) {
+               // Write with (*it)er copy
+               if ( (res = dmaWrite(fd_, (*it)->begin(), (*it)->getPayload(), axisSetFlags(fuser, luser,cont), dest_)) < 0 ) {
                   throw(rogue::GeneralError("AxiStream::acceptFrame","AXIS Write Call Failed"));
                }
             }
@@ -347,7 +345,7 @@ void rhr::AxiStream::runThread() {
 
             // Read was successfull
             if ( res > 0 ) {
-               buff->setPayload(res);
+               buff->setPayload(res,true);
                frame->appendBuffer(buff);
                flags = frame->getFlags();
                error = frame->getError();

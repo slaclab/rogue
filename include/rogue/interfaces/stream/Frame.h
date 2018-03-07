@@ -25,6 +25,7 @@
 **/
 #ifndef __ROGUE_INTERFACES_STREAM_FRAME_H__
 #define __ROGUE_INTERFACES_STREAM_FRAME_H__
+#include <boost/enable_shared_from_this.hpp>
 #include <stdint.h>
 #include <vector>
 
@@ -44,7 +45,7 @@ namespace rogue {
           * It is assumed only one thread will interact with a buffer. Buffers 
           * are not thread safe.
          */
-         class Frame {
+         class Frame : public boost::enable_shared_from_this<rogue::interfaces::stream::Frame> {
 
                //! Interface specific flags
                uint32_t flags_;
@@ -58,7 +59,7 @@ namespace rogue {
             public:
 
                //! Itererator for buffer list
-               typedef std::vector<boost::shared_ptr<rogue::interfaces::stream::Buffer>::iterator BufferIterator;
+               typedef std::vector<boost::shared_ptr<rogue::interfaces::stream::Buffer> >::iterator BufferIterator;
 
                //! Itererator for data
                typedef rogue::interfaces::stream::FrameIterator iterator;
@@ -91,13 +92,10 @@ namespace rogue {
                uint32_t getCount();
 
                //! Buffer begin iterator
-               std::vector<boost::shared_ptr<rogue::interfaces::stream::Buffer>::iterator beginBuffer();
+               std::vector<boost::shared_ptr<rogue::interfaces::stream::Buffer> >::iterator beginBuffer();
 
                //! Buffer end iterator
-               std::vector<boost::shared_ptr<rogue::interfaces::stream::Buffer>::iterator endBuffer();
-
-               //! Get buffer at index
-               boost::shared_ptr<rogue::interfaces::stream::Buffer> getBuffer(uint32_t index);
+               std::vector<boost::shared_ptr<rogue::interfaces::stream::Buffer> >::iterator endBuffer();
 
                /*
                 * Get size of buffers that can hold
@@ -173,40 +171,8 @@ namespace rogue {
                void writePy ( boost::python::object p, uint32_t offset );
          };
 
-         //! Frame iterator
-         class FrameIterator : public iterator<forward_iterator_tag, uint8_t> {
-            friend class rogue::interfaces::stream::Frame;
-
-            protected:
-
-               //! Current buffer position
-               uint32_t buffPos_;
-
-               //! Current buffer index
-               uint32_t index_;
-
-               //! Current buffer payload
-               uint8_t * data_;
-
-               //! Createtor
-               FrameIterator(boost::shared_ptr<rogue::interface::stream::Frame> frame, uint32_t offset);
-
-            public:
-
-               //! De-reference
-               uint8_t * operator*();
-
-               //! Increment
-               const rogue::interfaces::stream::FrameIterator & operator++();
-
-               //! Not Equal
-               bool operator!=(rogue::interfaces::stream::FrameIterator & other);
-         };
-
          // Convienence
          typedef boost::shared_ptr<rogue::interfaces::stream::Frame> FramePtr;
-         typedef boost::shared_ptr<rogue::interfaces::stream::FrameIterator> FrameIteratorPtr;
-
       }
    }
 }

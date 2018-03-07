@@ -24,6 +24,7 @@
 #include <rogue/interfaces/stream/Master.h>
 #include <rogue/interfaces/stream/Slave.h>
 #include <rogue/interfaces/stream/Frame.h>
+#include <rogue/interfaces/stream/FrameIterator.h>
 #include <rogue/interfaces/stream/Buffer.h>
 #include <rogue/interfaces/stream/Fifo.h>
 #include <rogue/Logging.h>
@@ -76,7 +77,8 @@ void ris::Fifo::acceptFrame ( ris::FramePtr frame ) {
    nFrame = reqFrame(size,true);
 
    // Copy the frame
-   nFrame->copyFrame(frame,0,size);
+   //std::copy(frame->begin(), frame->begin()+size, nFrame->begin());
+   nFrame->setPayload(size,true);
 
    // Append to buffer
    queue_.push(nFrame);
