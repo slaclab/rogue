@@ -57,6 +57,12 @@ namespace rogue {
 
             public:
 
+               //! Itererator for buffer list
+               typedef std::vector<boost::shared_ptr<rogue::interfaces::stream::Buffer>::iterator BufferIterator;
+
+               //! Itererator for data
+               typedef rogue::interfaces::stream::FrameIterator iterator;
+
                //! Setup class in python
                static void setup_python();
 
@@ -78,14 +84,17 @@ namespace rogue {
                //! Append passed frame buffers to end of frame.
                void appendFrame(boost::shared_ptr<rogue::interfaces::stream::Frame> frame);
 
-               //! Copy count bytes frame, to local frame, pass zero to copy all
-               uint32_t copyFrame(boost::shared_ptr<rogue::interfaces::stream::Frame> frame, uint32_t count);
+               //! Remove buffers from frame
+               void clear();
 
                //! Get buffer count
                uint32_t getCount();
 
-               //! Remove buffers from frame
-               void clear();
+               //! Buffer begin iterator
+               std::vector<boost::shared_ptr<rogue::interfaces::stream::Buffer>::iterator beginBuffer();
+
+               //! Buffer end iterator
+               std::vector<boost::shared_ptr<rogue::interfaces::stream::Buffer>::iterator endBuffer();
 
                //! Get buffer at index
                boost::shared_ptr<rogue::interfaces::stream::Buffer> getBuffer(uint32_t index);
@@ -142,14 +151,14 @@ namespace rogue {
                //! Set error state
                void setError(uint32_t error);
 
-               //! Get start of buffer iterator
+               //! Get start of data iterator
                rogue::interfaces::stream::FrameIterator begin();
 
-               //! Get end of buffer iterator
+               //! Get end of data iterator
                rogue::interfaces::stream::FrameIterator end();
 
                //! Get end of payload iterator
-               rogue::interfaces::stream::FrameIterator end_payload();
+               rogue::interfaces::stream::FrameIterator endPayload();
 
                //! Read count bytes from frame payload, starting from offset.
                uint32_t read  ( void *p, uint32_t offset, uint32_t count );
@@ -170,9 +179,6 @@ namespace rogue {
 
             protected:
 
-               //! Current Frame position
-               bool framePos_;
-
                //! Current buffer position
                uint32_t buffPos_;
 
@@ -183,7 +189,7 @@ namespace rogue {
                uint8_t * data_;
 
                //! Createtor
-               FrameIterator(uint32_t offset);
+               FrameIterator(boost::shared_ptr<rogue::interface::stream::Frame> frame, uint32_t offset);
 
             public:
 
@@ -195,10 +201,6 @@ namespace rogue {
 
                //! Not Equal
                bool operator!=(rogue::interfaces::stream::FrameIterator & other);
-
-               //! Get current buffer
-
-
          };
 
          // Convienence

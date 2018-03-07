@@ -74,6 +74,7 @@ namespace rogue {
 
             public:
 
+               //! Iterator for data
                typedef uint8_t * iterator;
 
                //! Class creation

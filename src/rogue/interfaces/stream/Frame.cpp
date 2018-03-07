@@ -53,19 +53,14 @@ void ris::Frame::appendBuffer(ris::BufferPtr buff) {
 
 //! Append passed frame buffers to end of frame.
 void ris::Frame::appendFrame(ris::FramePtr frame) {
-   uint32_t x;
+   std::back_insert_iterator< std::vector<BufferPtr> > backIt(buffers_);
 
-   for (x=0; x < frame->getCount(); x++) buffers_.push_back(frame->getBuffer(x));
+   std::copy(frame->beginBuffer(), frame->endBuffer(), backIt);
 }
 
-//! Copy count bytes frame, to local frame, pass zero to copy all
-uint32_t ris::Frame::copyFrame(ris::FramePtr frame, uint32_t count) {
-
-
-
-
-
-
+//! Remove buffers from frame
+void ris::Frame::clear() {
+   buffers_.clear();
 }
 
 //! Get buffer count
@@ -73,9 +68,14 @@ uint32_t ris::Frame::getCount() {
    return(buffers_.size());
 }
 
-//! Remove buffers from frame
-void ris::Frame::clear() {
-   buffers_.clear();
+//! Buffer begin iterator
+ris::Frame::BufferIterator ris::Frame::beginBuffer() {
+   return(buffers_.begin());
+}
+
+//! Buffer end iterator
+ris::Frame::BufferIterator ris::Frame::endBuffer() {
+   return(buffers_.end());
 }
 
 //! Get buffer at index
@@ -95,10 +95,10 @@ ris::BufferPtr ris::Frame::getBuffer(uint32_t index) {
  * the head and tail reservation.
  */
 uint32_t ris::Frame::getSize() {
-   std::vector<ris::BufferPtr>::iterator it;
+   ris::Frame::BufferIterator it;
    uint32_t ret = 0;
 
-   for (it = buffers_.begin(); it != buffer_.end(); ++it) 
+   for (it = buffers_.begin(); it != buffers_.end(); ++it) 
       ret += (*it)->getSize();
 
    return(ret);
@@ -110,10 +110,10 @@ uint32_t ris::Frame::getSize() {
  * minus the space reserved for the tail
  */
 uint32_t ris::Frame::getAvailable() {
-   std::vector<ris::BufferPtr>::iterator it;
+   ris::Frame::BufferIterator it;
    uint32_t ret = 0;
 
-   for (it = buffers_.begin(); it != buffer_.end(); ++it) 
+   for (it = buffers_.begin(); it != buffers_.end(); ++it) 
       ret += (*it)->geAvailable();
 
    return(ret);
@@ -126,10 +126,10 @@ uint32_t ris::Frame::getAvailable() {
  * the head.
  */
 uint32_t ris::Frame::getPayload() {
-   std::vector<ris::BufferPtr>::iterator it;
+   ris::Frame::BufferIterator it;
    uint32_t ret = 0;
 
-   for (it = buffers_.begin(); it != buffer_.end(); ++it) 
+   for (it = buffers_.begin(); it != buffers_.end(); ++it) 
       ret += (*it)->getPayload();
 
    return(ret);
@@ -142,7 +142,7 @@ uint32_t ris::Frame::getPayload() {
  * payload size.
  */
 void ris::Frame::setPayload(uint32_t size, bool shrink) {
-   std::vector<ris::BufferPtr>::iterator it;
+   ris::Frame::BufferIterator it;
 
    uint32_t lsize;
    uint32_t loc;
@@ -150,7 +150,7 @@ void ris::Frame::setPayload(uint32_t size, bool shrink) {
 
    lsize = size;
 
-   for (it = buffers_.begin(); it != buffer_.end(); ++it) {
+   for (it = buffers_.begin(); it != buffers_.end(); ++it) {
       loc = (*it)->getSize();
       tot += loc;
 
@@ -188,7 +188,7 @@ void ris::Frame::adjustPayload(int32_t value) {
 
 //! Set the buffer as full (minus tail reservation)
 void ris::Frame::setPayloadFull() {
-   std::vector<ris::BufferPtr>::iterator it;
+   ris::Frame::BufferIterator it;
 
    for (it = buffers_.begin(); it != buffer_.end(); ++it) 
       (*it)->setPayloadFull();
@@ -196,7 +196,7 @@ void ris::Frame::setPayloadFull() {
 
 //! Set the buffer as empty (minus header reservation)
 void ris::Frame::setPayloadEmpty() {
-   std::vector<ris::BufferPtr>::iterator it;
+   ris::Frame::BufferIterator it;
 
    for (it = buffers_.begin(); it != buffer_.end(); ++it) 
       (*it)->setPayloadEmpty();
@@ -222,30 +222,27 @@ void ris::Frame::setError(uint32_t error) {
    error_ = error;
 }
 
+//! Get start of data iterator
+ris::Frame::iterator ris::Frame::begin() {
+   return ris::Frame::iterator(0);
+}
 
+//! Get end of data iterator
+ris::Frame::iterator ris::Frame::end() {
+   return ris::Frame::iterator(getSize());
+}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+//! Get end of payload iterator
+ris::Frame::iterator ris::Frame::endPayload() {
+   return ris::Frame::iterator(getPayload());
+}
 
 //! Read count bytes from frame, starting from offset.
 uint32_t ris::Frame::read  ( void *p, uint32_t offset, uint32_t count ) {
-   ris::FrameIteratorPtr iter = startRead(offset,count);
+   ris::Frame::iterator beg = ris::Frame::iterator(offset);
+   ris::Frame::iterator end = ris::Frame::iterator(offset+count);
 
-   do {
-      memcpy(((uint8_t *)p)+iter->total(),iter->data(),iter->size());
-   } while(nextRead(iter));
-
+   std::copy(ris::Frame::iterator(offset),end,p);
    return(count);
 }
 
@@ -262,6 +259,8 @@ void ris::Frame::readPy ( boost::python::object p, uint32_t offset ) {
 
 //! Write count bytes to frame, starting at offset
 uint32_t ris::Frame::write ( void *p, uint32_t offset, uint32_t count ) {
+
+
    ris::FrameIteratorPtr iter = startWrite(offset,count);
 
    do {
