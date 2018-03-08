@@ -36,31 +36,15 @@ namespace rogue {
       namespace udp {
 
          //! PGP Card class
-         class Server : public rogue::interfaces::stream::Master, 
+         class Server : public rogue::protocols::udp::Core,
+                        public rogue::interfaces::stream::Master, 
                         public rogue::interfaces::stream::Slave {
 
-               rogue::LoggingPtr log_;
-
-               //! Socket
-               int32_t  fd_;
-
-               //! Max packet size
-               uint32_t maxSize_;
-
-               //! Remote port number
+               //! Local port number
                uint16_t port_;
 
-               //! Remote socket address
-               struct sockaddr_in local_;
-               struct sockaddr_in remote_;
-
-               //! Timeout value
-               uint32_t timeout_;
-
-               boost::thread* thread_;
-
-               //! mutex
-               boost::mutex mtx_;
+               //! Local socket address
+               struct sockaddr_in locAddr_;
 
                //! Thread background
                void runThread();
@@ -69,25 +53,19 @@ namespace rogue {
 
                //! Class creation
                static boost::shared_ptr<rogue::protocols::udp::Server> 
-                  create (uint16_t port, uint16_t maxSize);
+                  create (uint16_t port, bool jumbo);
 
                //! Setup class in python
                static void setup_python();
 
                //! Creator
-               Server(uint16_t port, uint16_t maxSize);
+               Server(uint16_t port, bool jumbo);
 
                //! Destructor
                ~Server();
 
                //! Get port number
                uint32_t getPort();
-
-               //! Set UDP RX Size
-               bool setRxSize(uint32_t size);
-
-               //! Set timeout for frame transmits in microseconds
-               void setTimeout(uint32_t timeout);
 
                //! Accept a frame from master
                void acceptFrame ( boost::shared_ptr<rogue::interfaces::stream::Frame> frame );

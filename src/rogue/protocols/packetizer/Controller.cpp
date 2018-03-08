@@ -38,13 +38,12 @@ void rpp::Controller::setup_python() {
 }
 
 //! Creator
-rpp::Controller::Controller ( uint32_t segmentSize, rpp::TransportPtr tran, rpp::ApplicationPtr * app,
+rpp::Controller::Controller ( rpp::TransportPtr tran, rpp::ApplicationPtr * app,
                               uint32_t headSize, uint32_t tailSize ) {
    uint32_t x;
 
    app_  = app;
    tran_ = tran;
-   segmentSize_ = segmentSize;
    appIndex_ = 0;
    tranIndex_ = 0;
    tranDest_ = 0;
@@ -72,13 +71,19 @@ ris::FramePtr rpp::Controller::reqFrame ( uint32_t size ) {
    ris::FramePtr  lFrame;
    ris::FramePtr  rFrame;
    ris::BufferPtr buff;
+   uint32_t fSize;
 
    // Create frame container for request response
    lFrame = ris::Frame::create();
 
-   // Request individual frames upstream with buffer = segmentSize_
+   // Request individual frames upstream
    while ( lFrame->getAvailable() < size ) {
-      rFrame = tran_->reqFrame (segmentSize_, false);
+
+      // Generate a new size with header and tail
+      fSize = (size - lFrame->getAvailable()) + headSize_ + tailSize_;
+
+      // Pass request
+      rFrame = tran_->reqFrame (fSize, false);
 
       // Take only the first buffer. This will break a cascaded packetizer
       // system. We need to fix this!
@@ -92,7 +97,7 @@ ris::FramePtr rpp::Controller::reqFrame ( uint32_t size ) {
       // Add 8 bytes to headroom
       buff->adjustHeader(headSize_);
       buff->adjustTail(tailSize_);
-
+      
       // Add buffer to return frame
       lFrame->appendBuffer(buff);
    }
