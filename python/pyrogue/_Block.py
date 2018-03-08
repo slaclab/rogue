@@ -20,6 +20,7 @@ import math
 import textwrap
 import pyrogue as pr
 import inspect
+import copy
 
 
 class MemoryError(Exception):
@@ -72,7 +73,6 @@ class BaseBlock(object):
 
         # Setup logging
         self._log = pr.logInit(self,name)
-
 
     def __repr__(self):
         return repr(self.name)
@@ -164,7 +164,7 @@ class LocalBlock(BaseBlock):
     def set(self, value):
         with self._lock:
             changed = self._value != value
-            self._value = value
+            self._value = copy.copy(value)
 
             # If a setFunction exists, call it (Used by local variables)
             if self._localSet is not None:
@@ -183,7 +183,7 @@ class LocalBlock(BaseBlock):
 
                 self._value = pr.varFuncHelper(self._localGet,pargs, self._log, self._variable.path)
 
-        return self._value
+        return copy.copy(self._value)
 
     def updated(self):
         self._variable.updated()

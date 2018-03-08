@@ -46,6 +46,7 @@ namespace rogue {
                uint32_t    max_;
                uint32_t    size_;
                uint32_t    fSize_;
+               bool        array_;
 
                std::vector<std::string> enums_;
                rogue::protocols::epicsV3::Pv * pv_;
@@ -133,6 +134,7 @@ namespace rogue {
                gddAppFuncTableStatus readUnits(gdd &value);
 
                gddAppFuncTableStatus readEnums(gdd &value);
+
          };
 
          // Convienence

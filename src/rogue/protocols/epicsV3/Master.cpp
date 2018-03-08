@@ -22,8 +22,6 @@
 #include <rogue/protocols/epicsV3/Master.h>
 #include <rogue/interfaces/stream/Frame.h>
 #include <rogue/GeneralError.h>
-#include <rogue/ScopedGil.h>
-#include <rogue/GilRelease.h>
 #include <boost/make_shared.hpp>
 #include <boost/make_shared.hpp>
 

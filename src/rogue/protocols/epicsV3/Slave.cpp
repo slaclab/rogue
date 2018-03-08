@@ -22,7 +22,6 @@
 #include <rogue/protocols/epicsV3/Slave.h>
 #include <rogue/interfaces/stream/Frame.h>
 #include <rogue/GeneralError.h>
-#include <rogue/ScopedGil.h>
 #include <rogue/GilRelease.h>
 #include <boost/make_shared.hpp>
 #include <boost/make_shared.hpp>
@@ -185,6 +184,7 @@ void rpe::Slave::acceptFrame ( ris::FramePtr frame ) {
       for ( i = 0; i < size_; i++ ) pos += frame->read(&(pF[i]), pos, fSize_);
       pValue_->putRef(pF, new rpe::Destructor<aitFloat64 *>);
    }
+
    updated();
 }
 

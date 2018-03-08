@@ -73,7 +73,10 @@ class BaseVariable(pr.Node):
 
         # Determine typeStr from value type
         if value is not None:
-            self._typeStr = value.__class__.__name__
+            if isinstance(value, list):
+                self._typeStr = f'List[{value[0].__class__.__name__}]'
+            else:
+                self._typeStr = value.__class__.__name__
         else:
             self._typeStr = 'Unknown'
 
