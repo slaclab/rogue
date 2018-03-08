@@ -31,14 +31,14 @@ namespace ris = rogue::interfaces::stream;
 namespace bp  = boost::python;
 
 //! Class creation
-rpp::CorePtr rpp::Core::create (uint32_t segmentSize) {
-   rpp::CorePtr r = boost::make_shared<rpp::Core>(segmentSize);
+rpp::CorePtr rpp::Core::create () {
+   rpp::CorePtr r = boost::make_shared<rpp::Core>();
    return(r);
 }
 
 void rpp::Core::setup_python() {
 
-   bp::class_<rpp::Core, rpp::CorePtr, boost::noncopyable >("Core",bp::init<uint32_t>())
+   bp::class_<rpp::Core, rpp::CorePtr, boost::noncopyable >("Core",bp::init<>())
       .def("transport",      &rpp::Core::transport)
       .def("application",    &rpp::Core::application)
       .def("getDropCount",   &rpp::Core::getDropCount)
@@ -48,9 +48,9 @@ void rpp::Core::setup_python() {
 }
 
 //! Creator
-rpp::Core::Core (uint32_t segmentSize) {
+rpp::Core::Core () {
    tran_  = rpp::Transport::create();
-   cntl_  = rpp::ControllerV1::create(segmentSize,tran_,app_);
+   cntl_  = rpp::ControllerV1::create(tran_,app_);
 
    tran_->setController(cntl_);
 }

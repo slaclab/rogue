@@ -47,12 +47,12 @@ namespace rogue {
 
                //! Class creation
                static boost::shared_ptr<rogue::protocols::packetizer::ControllerV2> 
-                  create ( uint32_t segmentSize, bool enIbCrc, bool enObCrc,
+                  create ( bool enIbCrc, bool enObCrc,
                            boost::shared_ptr<rogue::protocols::packetizer::Transport> tran,
                            boost::shared_ptr<rogue::protocols::packetizer::Application> * app );
 
                //! Creator
-               ControllerV2( uint32_t segmentSize, bool enIbCrc, bool enObCrc,
+               ControllerV2( bool enIbCrc, bool enObCrc,
                            boost::shared_ptr<rogue::protocols::packetizer::Transport> tran,
                            boost::shared_ptr<rogue::protocols::packetizer::Application> * app );
 

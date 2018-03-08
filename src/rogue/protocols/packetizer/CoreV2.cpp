@@ -30,14 +30,14 @@ namespace ris = rogue::interfaces::stream;
 namespace bp  = boost::python;
 
 //! Class creation
-rpp::CoreV2Ptr rpp::CoreV2::create (uint32_t segmentSize, bool enIbCrc, bool enObCrc) {
-   rpp::CoreV2Ptr r = boost::make_shared<rpp::CoreV2>(segmentSize,enIbCrc,enObCrc);
+rpp::CoreV2Ptr rpp::CoreV2::create (bool enIbCrc, bool enObCrc) {
+   rpp::CoreV2Ptr r = boost::make_shared<rpp::CoreV2>(enIbCrc,enObCrc);
    return(r);
 }
 
 void rpp::CoreV2::setup_python() {
 
-   bp::class_<rpp::CoreV2, rpp::CoreV2Ptr, boost::noncopyable >("CoreV2",bp::init<uint32_t,bool,bool>())
+   bp::class_<rpp::CoreV2, rpp::CoreV2Ptr, boost::noncopyable >("CoreV2",bp::init<bool,bool>())
       .def("transport",      &rpp::CoreV2::transport)
       .def("application",    &rpp::CoreV2::application)
       .def("getDropCount",   &rpp::CoreV2::getDropCount)
@@ -47,9 +47,9 @@ void rpp::CoreV2::setup_python() {
 }
 
 //! Creator
-rpp::CoreV2::CoreV2 (uint32_t segmentSize, bool enIbCrc, bool enObCrc) {
+rpp::CoreV2::CoreV2 (bool enIbCrc, bool enObCrc) {
    tran_  = rpp::Transport::create();
-   cntl_  = rpp::ControllerV2::create(segmentSize,enIbCrc,enObCrc,tran_,app_);
+   cntl_  = rpp::ControllerV2::create(enIbCrc,enObCrc,tran_,app_);
 
    tran_->setController(cntl_);
 }

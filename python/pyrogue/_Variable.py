@@ -241,6 +241,8 @@ class BaseVariable(pr.Node):
                     return float(sValue)
                 elif t == bool:
                     return str.lower(sValue) == "true"
+                elif t == list or t == dict:
+                    return eval(sValue)
                 else:
                     return sValue
 
