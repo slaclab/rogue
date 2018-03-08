@@ -73,7 +73,10 @@ class BaseVariable(pr.Node):
 
         # Determine typeStr from value type
         if value is not None:
-            self._typeStr = value.__class__.__name__
+            if isinstance(value, list):
+                self._typeStr = f'List[{value[0].__class__.__name__}]'
+            else:
+                self._typeStr = value.__class__.__name__
         else:
             self._typeStr = 'Unknown'
 
@@ -501,13 +504,19 @@ class LocalVariable(BaseVariable):
         
     @Pyro4.expose
     def set(self, value, write=True):
+        print("Here1 {}".format(value))
         try:
+            print("Here2")
             self._block.set(value)
+            print("Here3")
 
         except Exception as e:
+            print("Here4")
             self._log.exception(e)
 
+        print("Here5")
         if write: self.updated()
+        print("Here6")
 
     def __set__(self, value):
         self.set(value, write=False)

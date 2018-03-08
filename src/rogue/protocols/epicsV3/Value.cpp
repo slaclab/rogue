@@ -32,7 +32,7 @@ namespace bp  = boost::python;
 
 //! Setup class in python
 void rpe::Value::setup_python() {
-   bp::class_<rpe::Value, rpe::ValuePtr, boost::noncopyable >("Value",bp::init<std::string>())
+   bp::class_<rpe::Value, rpe::ValuePtr, boost::noncopyable >("Value",bp::no_init)
       .def("epicsName", &rpe::Value::epicsName)
    ;
 }
@@ -42,6 +42,14 @@ rpe::Value::Value (std::string epicsName) {
    epicsName_ = epicsName;
    pv_        = NULL;
    pValue_    = NULL;
+
+   precision_ = 0;
+   typeStr_   = "";
+   size_      = 1;
+   max_       = 1;
+   fSize_     = 1;
+   array_     = false;
+   epicsType_ = aitEnumInvalid;
 
    units_         = "";
    precision_     = 0;
@@ -71,22 +79,10 @@ rpe::Value::Value (std::string epicsName) {
    funcTable_.installReadFunc("controlLow",       &rpe::Value::readLowCtrl);
    funcTable_.installReadFunc("units",            &rpe::Value::readUnits);
    funcTable_.installReadFunc("enums",            &rpe::Value::readEnums);
-
-   // Default, type
-   this->initGdd("UInt32",false,0);
- 
-   // Default value 
-   pValue_->putConvert((uint32_t) 0);
 }
 
 void rpe::Value::initGdd(std::string typeStr, bool isEnum, uint32_t count) {
    uint32_t bitSize;
-
-   precision_ = 0;
-   typeStr_   = typeStr;
-   size_      = 1;
-   max_       = 1;
-   fSize_     = 1;
 
    log_->info("Init GDD for %s typeStr=%s, isEnum=%i, count=%i",
          epicsName_.c_str(),typeStr.c_str(),isEnum,count);
@@ -141,26 +137,31 @@ void rpe::Value::initGdd(std::string typeStr, bool isEnum, uint32_t count) {
       fSize_ = 8;
    }
 
-   // String type for all others
-   else {
+   // Unknown type maps to string
+   if ( epicsType_ == aitEnumInvalid ) {
       log_->info("Detected string for %s typeStr=%s", epicsName_.c_str(),typeStr.c_str());
       epicsType_ = aitEnumString;
+      pValue_ = new gddScalar(gddAppType_value, epicsType_);
       pValue_->setBound(0,0,400);
       max_   = 400;
       size_  = 400;
+      array_ = false;
    }
 
    // Vector
-   if ( count != 0 ) {
+   else if ( count != 0 ) {
       log_->info("Create vector GDD for %s epicsType_=%i, size=%i",epicsName_.c_str(),epicsType_,count);
       pValue_ = new gddAtomic (gddAppType_value, epicsType_, 1u, count);
-      size_ = count;
+      size_   = count;
+      max_    = count;
+      array_  = true;
    }
 
    // Scalar
    else {
       log_->info("Create scalar GDD for %s epicsType_=%i",epicsName_.c_str(),epicsType_);
       pValue_ = new gddScalar(gddAppType_value, epicsType_);
+      array_  = false;
    }
 }
 
@@ -236,7 +237,7 @@ caStatus rpe::Value::write(const gdd &value) {
    boost::lock_guard<boost::mutex> lock(mtx_);
 
    // Array
-   if ( value.isAtomic()) {
+   if ( array_ && value.isAtomic()) {
 
       // Bound checking
       if ( value.dimension() != 1 ) return S_casApp_badDimension;
@@ -254,7 +255,9 @@ caStatus rpe::Value::write(const gdd &value) {
    }
 
    // Scalar
-   else if ( value.isScalar() ) pValue_->put(&value);
+   else if ( (!array_) && value.isScalar() ) {
+      pValue_->put(&value);
+   }
 
    // Unsupported type
    else return S_casApp_outOfBounds;
