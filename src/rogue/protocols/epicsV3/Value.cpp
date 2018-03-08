@@ -280,7 +280,7 @@ aitEnum rpe::Value::bestExternalType() {
 }
 
 unsigned rpe::Value::maxDimension() {
-   return 1;
+   return (array_)?1:0;
 }
 
 aitIndex rpe::Value::maxBound(unsigned dimension) {
