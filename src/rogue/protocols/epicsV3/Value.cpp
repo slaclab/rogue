@@ -142,10 +142,6 @@ void rpe::Value::initGdd(std::string typeStr, bool isEnum, uint32_t count) {
       log_->info("Detected string for %s typeStr=%s", epicsName_.c_str(),typeStr.c_str());
       epicsType_ = aitEnumString;
       pValue_ = new gddScalar(gddAppType_value, epicsType_);
-      //pValue_->setBound(0,0,400);
-      //max_   = 400;
-      //size_  = 400;
-      array_ = false;
    }
 
    // Vector
@@ -161,7 +157,6 @@ void rpe::Value::initGdd(std::string typeStr, bool isEnum, uint32_t count) {
    else {
       log_->info("Create scalar GDD for %s epicsType_=%i",epicsName_.c_str(),epicsType_);
       pValue_ = new gddScalar(gddAppType_value, epicsType_);
-      array_  = false;
    }
 }
 
