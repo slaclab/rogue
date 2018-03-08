@@ -23,7 +23,6 @@
 #include <rogue/protocols/epicsV3/Pv.h>
 #include <rogue/protocols/epicsV3/Server.h>
 #include <rogue/GeneralError.h>
-#include <rogue/ScopedGil.h>
 #include <boost/make_shared.hpp>
 #include <boost/make_shared.hpp>
 

@@ -142,9 +142,9 @@ void rpe::Value::initGdd(std::string typeStr, bool isEnum, uint32_t count) {
       log_->info("Detected string for %s typeStr=%s", epicsName_.c_str(),typeStr.c_str());
       epicsType_ = aitEnumString;
       pValue_ = new gddScalar(gddAppType_value, epicsType_);
-      pValue_->setBound(0,0,400);
-      max_   = 400;
-      size_  = 400;
+      //pValue_->setBound(0,0,400);
+      //max_   = 400;
+      //size_  = 400;
       array_ = false;
    }
 
@@ -220,14 +220,18 @@ caStatus rpe::Value::readValue(gdd &value) {
 
    boost::lock_guard<boost::mutex> lock(mtx_);
 
-   // Call value get within lock
-   valueGet();
+   // Make sure access types match
+   if ( (array_ && value.isAtomic()) || ((!array_) && value.isScalar()) ) {
 
-   gdds = gddApplicationTypeTable::app_table.smartCopy(&value, pValue_);
+      // Call value get within lock
+      valueGet();
 
-   if (gdds) return S_cas_noConvert;   
-   else return S_casApp_success;
+      gdds = gddApplicationTypeTable::app_table.smartCopy(&value, pValue_);
 
+      if (gdds) return S_cas_noConvert;   
+      else return S_casApp_success;
+   }
+   else return S_cas_noConvert;   
 }
 
 caStatus rpe::Value::write(const gdd &value) {
@@ -255,12 +259,11 @@ caStatus rpe::Value::write(const gdd &value) {
    }
 
    // Scalar
-   else if ( (!array_) && value.isScalar() ) {
+   else if ( (!array_) && value.isScalar() )
       pValue_->put(&value);
-   }
 
    // Unsupported type
-   else return S_casApp_outOfBounds;
+   else return S_cas_noConvert;   
 
    // Set the timespec structure to the current time stamp the gdd.
    clock_gettime(CLOCK_REALTIME,&t);

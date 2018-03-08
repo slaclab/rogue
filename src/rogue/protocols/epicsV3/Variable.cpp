@@ -101,11 +101,15 @@ rpe::Variable::Variable (std::string epicsName, bp::object p, bool syncRead) : V
    // Init value
    if ( epicsType_ == aitEnumString ) fromPython(var_.attr("valueDisp")());
    else fromPython(var_.attr("value")());
+
+   rogue::GilRelease noGil;
+   this->updated();
 }
 
 rpe::Variable::~Variable() { }
 
 void rpe::Variable::varUpdated(std::string path, bp::object value, bp::object disp) {
+
    log_->debug("Variable update for %s: Disp=%s", epicsName_.c_str(),(char *)bp::extract<char *>(disp));
 
    if ( inSet_ ) {
@@ -115,22 +119,29 @@ void rpe::Variable::varUpdated(std::string path, bp::object value, bp::object di
 
    rogue::GilRelease noGil;
    boost::lock_guard<boost::mutex> lock(mtx_);
+   noGil.acquire();
+
    if ( epicsType_ == aitEnumString ) fromPython(disp);
    else fromPython(value);
+
+   noGil.release();
+   this->updated();
 }
 
 // Lock held when called
 void rpe::Variable::valueGet() {
    if ( syncRead_ ) {
-      rogue::ScopedGil gil;
-      log_->info("Synchronous read for %s",epicsName_.c_str());
-      try {
-         if ( epicsType_ == aitEnumString ) fromPython(var_.attr("valueDisp")());
-         else fromPython(var_.attr("value")());
-         updated();
-      } catch (...) {
-         log_->error("Error getting values from epics: %s\n",epicsName_.c_str());
+      { // GIL Scope
+         rogue::ScopedGil gil;
+         log_->info("Synchronous read for %s",epicsName_.c_str());
+         try {
+            if ( epicsType_ == aitEnumString ) fromPython(var_.attr("valueDisp")());
+            else fromPython(var_.attr("value")());
+         } catch (...) {
+            log_->error("Error getting values from epics: %s\n",epicsName_.c_str());
+         }
       }
+      updated();
    }
 }
 
@@ -144,7 +155,7 @@ void rpe::Variable::fromPython(bp::object value) {
 
    if ( array_ ) {
 
-      pl = bp::extract<bp::list>(var_.attr("value")());
+      pl = bp::extract<bp::list>(value);
       size_ = len(pl);
 
       // Limit size
@@ -259,8 +270,6 @@ void rpe::Variable::fromPython(bp::object value) {
 
    clock_gettime(CLOCK_REALTIME,&t);
    pValue_->setTimeStamp(&t);
-
-   this->updated();
 }
 
 // Lock already held
@@ -273,67 +282,61 @@ void rpe::Variable::valueSet() {
    log_->info("Variable set for %s",epicsName_.c_str());
 
    try {
-
       if ( array_ ) {
+
          // Create vector of appropriate type
          if ( epicsType_ == aitEnumUint8 ) {
             aitUint8 * pF = new aitUint8[size_];
             pValue_->getRef(pF);
             for ( i = 0; i < size_; i++ ) pl.append(pF[i]);
-            delete [] pF;
          }
 
          else if ( epicsType_ == aitEnumUint16 ) {
             aitUint16 * pF = new aitUint16[size_];
             pValue_->getRef(pF);
             for ( i = 0; i < size_; i++ ) pl.append(pF[i]);
-            delete [] pF;
          }
 
          else if ( epicsType_ == aitEnumUint32 ) {
             aitUint32 * pF = new aitUint32[size_];
             pValue_->getRef(pF);
             for ( i = 0; i < size_; i++ ) pl.append(pF[i]);
-            delete [] pF;
          }
 
          else if ( epicsType_ == aitEnumInt8 ) {
             aitInt8 * pF = new aitInt8[size_];
             pValue_->getRef(pF);
             for ( i = 0; i < size_; i++ ) pl.append(pF[i]);
-            delete [] pF;
          }
 
          else if ( epicsType_ == aitEnumInt16 ) {
             aitInt16 * pF = new aitInt16[size_];
             pValue_->getRef(pF);
             for ( i = 0; i < size_; i++ ) pl.append(pF[i]);
-            delete [] pF;
          }
 
          else if ( epicsType_ == aitEnumInt32 ) {
             aitInt32 * pF = new aitInt32[size_];
             pValue_->getRef(pF);
             for ( i = 0; i < size_; i++ ) pl.append(pF[i]);
-            delete [] pF;
          }
 
          else if ( epicsType_ == aitEnumFloat32 ) {
             aitFloat32 * pF = new aitFloat32[size_];
             pValue_->getRef(pF);
             for ( i = 0; i < size_; i++ ) pl.append(pF[i]);
-            delete [] pF;
          }
 
          else if ( epicsType_ == aitEnumFloat64 ) {
             aitFloat64 * pF = new aitFloat64[size_];
             pValue_->getRef(pF);
             for ( i = 0; i < size_; i++ ) pl.append(pF[i]);
-            delete [] pF;
          }
+
          var_.attr(setAttr_.c_str())(pl);
       }
       else {
+
          if ( epicsType_ == aitEnumUint8 || epicsType_ == aitEnumUint16 || epicsType_ == aitEnumUint32 ) {
             uint32_t nVal;
             pValue_->getConvert(nVal);
@@ -355,7 +358,7 @@ void rpe::Variable::valueSet() {
          else if ( epicsType_ == aitEnumString ) {
             aitString nVal;
             pValue_->getConvert(nVal);
-            var_.attr(setAttr_.c_str())(nVal);
+            var_.attr(setAttr_.c_str())(std::string(nVal));
          }
 
          else if ( epicsType_ == aitEnumEnum16 ) {

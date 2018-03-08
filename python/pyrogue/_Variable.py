@@ -504,19 +504,13 @@ class LocalVariable(BaseVariable):
         
     @Pyro4.expose
     def set(self, value, write=True):
-        print("Here1 {}".format(value))
         try:
-            print("Here2")
             self._block.set(value)
-            print("Here3")
 
         except Exception as e:
-            print("Here4")
             self._log.exception(e)
 
-        print("Here5")
         if write: self.updated()
-        print("Here6")
 
     def __set__(self, value):
         self.set(value, write=False)
