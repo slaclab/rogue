@@ -58,7 +58,7 @@ void rpp::ControllerV1::transportRx( ris::FramePtr frame ) {
    uint32_t  flags;
    uint8_t * data;
 
-   if ( frame->getCount() == 0 ) 
+   if ( frame->isEmpty() == 0 ) 
       throw(rogue::GeneralError("packetizer::ControllerV1::transportRx","Frame must not be empty"));
 
    rogue::GilRelease noGil;
@@ -161,7 +161,7 @@ void rpp::ControllerV1::applicationRx ( ris::FramePtr frame, uint8_t tDest ) {
    }
    else gettimeofday(&endTime,NULL);
 
-   if ( frame->getCount() == 0 ) 
+   if ( frame->isEmpty() == 0 ) 
       throw(rogue::GeneralError("packetizer::ControllerV1::applicationRx","Frame must not be empty"));
 
    if ( frame->getError() ) return;

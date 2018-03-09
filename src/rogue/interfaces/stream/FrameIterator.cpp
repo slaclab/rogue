@@ -48,6 +48,12 @@ ris::FrameIterator::FrameIterator(ris::FramePtr frame, uint32_t offset, bool end
    }
 }
 
+ris::FrameIterator::FrameIterator() {
+   end_      = false;
+   buffPos_  = 0;
+   framePos_ = 0;
+}
+
 //! Copy assignment
 const ris::FrameIterator ris::FrameIterator::operator=(const ris::FrameIterator &rhs) {
    this->end_      = rhs.end_;
@@ -60,18 +66,22 @@ const ris::FrameIterator ris::FrameIterator::operator=(const ris::FrameIterator 
 
 //! De-reference
 uint8_t ris::FrameIterator::operator *() const {
-   if ( end_ ) return 0;
+   if ( frame_ == NULL ) return 0;
+   else if ( end_ ) return 0;
    else return *((*curr_)->begin());
 }
 
 //! Pointer
 uint8_t * ris::FrameIterator::operator ->() const {
-   if ( end_ ) return NULL;
+   if ( (frame_ == NULL) || end_ ) return NULL;
    else return (*curr_)->begin();
 }
 
 //! De-reference by index
 uint8_t ris::FrameIterator::operator [](const uint32_t &offset) const {
+   if ( frame_ == NULL ) 
+      throw rogue::GeneralError("FrameIterator::[]","Empty iterator");
+
    if ((offset + framePos_) >= frame_->getSize()) 
       throw rogue::GeneralError("FrameIterator::[]","Ran past end of frame!");
 
@@ -81,6 +91,9 @@ uint8_t ris::FrameIterator::operator [](const uint32_t &offset) const {
 
 //! Increment
 const ris::FrameIterator & ris::FrameIterator::operator ++() {
+   if ( frame_ == NULL ) 
+      throw rogue::GeneralError("FrameIterator::++","Empty iterator");
+
    if ( end_ ) throw rogue::GeneralError("FrameIterator::++","Ran past end of frame!");
    ++framePos_;
 
@@ -100,6 +113,9 @@ ris::FrameIterator ris::FrameIterator::operator ++(int) {
 
 //! Decrement
 const ris::FrameIterator & ris::FrameIterator::operator --() {
+   if ( frame_ == NULL ) 
+      throw rogue::GeneralError("FrameIterator::--","Empty iterator");
+
    if ( framePos_ == 0 ) throw rogue::GeneralError("FrameIterator::++","Ran past start of frame!");
    --framePos_;
 
@@ -121,36 +137,57 @@ ris::FrameIterator ris::FrameIterator::operator --(int) {
 
 //! Not Equal
 bool ris::FrameIterator::operator !=(const ris::FrameIterator & other) const {
+   if ( frame_ == NULL ) 
+      throw rogue::GeneralError("FrameIterator::!=","Empty iterator");
+
    return(other.framePos_ != framePos_ || other.frame_ != frame_);
 }
 
 //! Equal
 bool ris::FrameIterator::operator ==(const ris::FrameIterator & other) const {
+   if ( frame_ == NULL ) 
+      throw rogue::GeneralError("FrameIterator::==","Empty iterator");
+
    return(other.framePos_ == framePos_ && other.frame_ == frame_);
 }
 
 //! Less than
 bool ris::FrameIterator::operator <(const ris::FrameIterator & other) const {
+   if ( frame_ == NULL ) 
+      throw rogue::GeneralError("FrameIterator::<","Empty iterator");
+
    return ( framePos_ < other.framePos_ );
 }
 
 //! greater than
 bool ris::FrameIterator::operator >(const ris::FrameIterator & other) const {
+   if ( frame_ == NULL ) 
+      throw rogue::GeneralError("FrameIterator::>","Empty iterator");
+
    return ( framePos_ > other.framePos_ );
 }
 
 //! Less than equal
 bool ris::FrameIterator::operator <=(const ris::FrameIterator & other) const {
+   if ( frame_ == NULL ) 
+      throw rogue::GeneralError("FrameIterator::<=","Empty iterator");
+
    return ( framePos_ <= other.framePos_ );
 }
 
 //! greater than equal
 bool ris::FrameIterator::operator >=(const ris::FrameIterator & other) const {
+   if ( frame_ == NULL ) 
+      throw rogue::GeneralError("FrameIterator::>=","Empty iterator");
+
    return ( framePos_ >= other.framePos_ );
 }
 
 //! Increment by value, this can be done better
 ris::FrameIterator ris::FrameIterator::operator +(const int32_t &add) const {
+   if ( frame_ == NULL ) 
+      throw rogue::GeneralError("FrameIterator::+","Empty iterator");
+
    ris::FrameIterator ret(*this);
    int32_t loc = add;
 
@@ -162,6 +199,9 @@ ris::FrameIterator ris::FrameIterator::operator +(const int32_t &add) const {
 
 //! Descrment by value, this can be done better
 ris::FrameIterator ris::FrameIterator::operator -(const int32_t &sub) const {
+   if ( frame_ == NULL ) 
+      throw rogue::GeneralError("FrameIterator::-","Empty iterator");
+
    ris::FrameIterator ret(*this);
    int32_t loc = sub;
 
@@ -173,11 +213,17 @@ ris::FrameIterator ris::FrameIterator::operator -(const int32_t &sub) const {
 
 //! Sub incrementers
 int32_t ris::FrameIterator::operator -(const ris::FrameIterator &other) const {
+   if ( frame_ == NULL ) 
+      throw rogue::GeneralError("FrameIterator::-","Empty iterator");
+
    return(framePos_ - other.framePos_);
 }
 
 //! Increment by value, this can be done better
 ris::FrameIterator & ris::FrameIterator::operator +=(const int32_t &add) {
+   if ( frame_ == NULL ) 
+      throw rogue::GeneralError("FrameIterator::+=","Empty iterator");
+
    int32_t loc = add;
    if ( loc > 0 ) while ( --loc >= 0 ) ++(*this);
    else if ( loc < 0 ) while ( ++loc >= 0 ) --(*this);
@@ -187,6 +233,9 @@ ris::FrameIterator & ris::FrameIterator::operator +=(const int32_t &add) {
 
 //! Descrment by value, this can be done better
 ris::FrameIterator & ris::FrameIterator::operator -=(const int32_t &sub) {
+   if ( frame_ == NULL ) 
+      throw rogue::GeneralError("FrameIterator::-=","Empty iterator");
+
    int32_t loc = sub;
    if ( loc > 0 ) while ( --loc >= 0 ) --(*this);
    else if ( loc < 0 ) while ( ++loc >= 0 ) ++(*this);

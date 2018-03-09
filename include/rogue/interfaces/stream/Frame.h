@@ -92,6 +92,9 @@ namespace rogue {
                //! Buffer end iterator
                std::vector<boost::shared_ptr<rogue::interfaces::stream::Buffer> >::iterator endBuffer();
 
+               //! Buffers list is empty
+               bool isEmpty();
+
                /*
                 * Get size of buffers that can hold
                 * payload data. This function 

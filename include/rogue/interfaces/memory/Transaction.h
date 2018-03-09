@@ -17,8 +17,8 @@
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
-#ifndef __ROGUE_INTERFACES_MEMORY_MASTER_H__
-#define __ROGUE_INTERFACES_MEMORY_MASTER_H__
+#ifndef __ROGUE_INTERFACES_MEMORY_TRANSACTION_H__
+#define __ROGUE_INTERFACES_MEMORY_TRANSACTION_H__
 #include <stdint.h>
 #include <vector>
 #include <boost/python.hpp>
@@ -29,11 +29,15 @@ namespace rogue {
       namespace memory {
 
          class Master;
+         class Hub;
 
          //! Transaction
          class Transaction {
             friend rogue::interfaces::memory::Master;
-   
+            friend rogue::interfaces::memory::Hub;
+
+            public: 
+               typedef uint8_t * iterator;
             private:
 
                //! Class instance counter
@@ -44,18 +48,8 @@ namespace rogue {
 
             protected:
 
-               //! Create a transaction container
-               static boost::shared_ptr<rogue::interfaces::memory::Transaction> create (
-                  boost::shared_ptr<rogue::interfaces::memory::Master> master);
-
-               //! Setup class in python
-               static void setup_python();
-
-               //! Constructor
-               Transaction(boost::shared_ptr<rogue::interfaces::memory::Master> master);
-
                //! Associated master
-               rogue::interfaces::memory::Master master_;
+               boost::shared_ptr<rogue::interfaces::memory::Master> master_;
 
                //! Transaction start time
                struct timeval endTime_;
@@ -69,8 +63,8 @@ namespace rogue {
                //! Python buffer is valid
                bool pyValid_;
 
-               //! Transaction data
-               uint8_t * data_;
+               //! Iterator (mapped to uint8_t * for now)
+               iterator iter_;
 
                //! Transaction address
                uint64_t address_;
@@ -88,6 +82,16 @@ namespace rogue {
                uint32_t id_;
 
             public:
+
+               //! Create a transaction container
+               static boost::shared_ptr<rogue::interfaces::memory::Transaction> create (
+                  boost::shared_ptr<rogue::interfaces::memory::Master> master);
+
+               //! Setup class in python
+               static void setup_python();
+
+               //! Constructor
+               Transaction(boost::shared_ptr<rogue::interfaces::memory::Master> master);
 
                //! Transaction lock
                boost::mutex lock;
@@ -108,7 +112,7 @@ namespace rogue {
                uint32_t type();
 
                //! Complete transaction with passed error
-               void complete(uint32_t error);
+               void done(uint32_t error);
 
                //! start iterator, caller must lock around access
                rogue::interfaces::memory::Transaction::iterator begin();

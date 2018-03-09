@@ -68,8 +68,8 @@ ris::FramePtr ris::Master::reqFrame ( uint32_t size, bool zeroCopyEn ) {
 //! Push frame to slaves
 void ris::Master::sendFrame ( FramePtr frame) {
    std::vector<ris::SlavePtr> slaves;
-   std::vector<ris::SlavePtr> primary;
    std::vector<ris::SlavePtr>::iterator it;
+   ris::SlavePtr primary;
 
    {
       rogue::GilRelease noGil;

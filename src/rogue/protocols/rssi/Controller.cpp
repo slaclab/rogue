@@ -131,12 +131,9 @@ ris::FramePtr rpr::Controller::reqFrame ( uint32_t size ) {
    // Update buffer to include our header space.
    buffer->adjustHeader(rpr::Header::HeaderSize);
 
-   // Trim multi buffer frames, RSSI can not work on payloads
-   // with multiple buffers.
-   if ( frame->getCount() > 1 ) {
-      frame = ris::Frame::create();
-      frame->appendBuffer(buffer);
-   }
+   // Recreate frame to ensure outbound only has a single buffer
+   frame = ris::Frame::create();
+   frame->appendBuffer(buffer);
 
    // Return frame
    return(frame);
@@ -146,7 +143,7 @@ ris::FramePtr rpr::Controller::reqFrame ( uint32_t size ) {
 void rpr::Controller::transportRx( ris::FramePtr frame ) {
    rpr::HeaderPtr head = rpr::Header::create(frame);
 
-   if ( frame->getCount() == 0 || ! head->verify() ) {
+   if ( frame->isEmpty() == 0 || ! head->verify() ) {
       log_->info("Dumping frame state=%i server=%i",state_,server_);
       dropCount_++;
       return;
@@ -216,7 +213,7 @@ void rpr::Controller::applicationRx ( ris::FramePtr frame ) {
 
    gettimeofday(&startTime,NULL);
 
-   if ( frame->getCount() == 0 ) 
+   if ( frame->isEmpty() == 0 ) 
       throw(rogue::GeneralError("rss::Controller::applicationRx","Frame must not be empty"));
 
    // Adjust header in first buffer

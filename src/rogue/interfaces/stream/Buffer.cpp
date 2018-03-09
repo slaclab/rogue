@@ -196,7 +196,7 @@ void ris::Buffer::adjustPayload(int32_t value) {
       throw(rogue::GeneralError::boundary("Buffer::adjustPayload",
             abs(value), (getPayload())));
 
-   setPayload(getPayload() + value, true);
+   setPayload(getPayload() + value);
 }
 
 //! Set the buffer as full (minus tail reservation)

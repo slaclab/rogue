@@ -22,6 +22,7 @@
  * ----------------------------------------------------------------------------
 **/
 #include <rogue/interfaces/memory/Hub.h>
+#include <rogue/interfaces/memory/Transaction.h>
 #include <rogue/GilRelease.h>
 #include <boost/make_shared.hpp>
 #include <boost/python.hpp>
@@ -64,15 +65,13 @@ uint64_t rim::Hub::doAddress() {
 }
 
 //! Post a transaction. Master will call this method with the access attributes.
-void rim::Hub::doTransaction(uint32_t id, boost::shared_ptr<rogue::interfaces::memory::Master> master,
-                             uint64_t address, uint32_t size, uint32_t type) {
-   uint64_t outAddress;
+void rim::Hub::doTransaction(rim::TransactionPtr tran) {
 
    // Adjust address
-   outAddress = offset_ | address;
+   tran->address_ |= offset_;
 
    // Forward transaction
-   getSlave()->doTransaction(id,master,outAddress,size,type);
+   getSlave()->doTransaction(tran);
 }
 
 void rim::Hub::setup_python() {

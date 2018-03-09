@@ -76,7 +76,7 @@ void rpr::Header::setup_python() {
 
 //! Creator
 rpr::Header::Header(ris::FramePtr frame) {
-   if ( frame->getCount() == 0 ) 
+   if ( frame->isEmpty() == 0 ) 
       throw(rogue::GeneralError("Header::Header","Frame must not be empty!"));
    frame_ = frame;
    data_  = (*(frame->beginBuffer()))->begin();
@@ -160,7 +160,7 @@ void rpr::Header::update() {
    if ( buff->getSize() < size )
       throw(rogue::GeneralError::boundary("Header::update",size,buff->getSize()));
 
-   if ( buff->getPayload() == 0 ) buff->setPayload(size,true);
+   if ( buff->getPayload() == 0 ) buff->setPayload(size);
 
    memset(data_,0,size);
    data_[1] = size;

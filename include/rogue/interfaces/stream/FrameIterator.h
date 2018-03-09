@@ -46,11 +46,14 @@ namespace rogue {
                //! Current buffer position
                uint32_t buffPos_;
 
-               //! Createtor
+               //! Creator
                FrameIterator(boost::shared_ptr<rogue::interfaces::stream::Frame> frame, 
                              uint32_t offset, bool end);
 
             public:
+
+               //! Creator
+               FrameIterator();
 
                //! Setup class in python
                static void setup_python();

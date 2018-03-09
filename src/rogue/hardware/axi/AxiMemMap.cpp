@@ -16,6 +16,7 @@
 **/
 #include <rogue/hardware/axi/AxiMemMap.h>
 #include <rogue/interfaces/memory/Constants.h>
+#include <rogue/interfaces/memory/Transaction.h>
 #include <rogue/GeneralError.h>
 #include <boost/make_shared.hpp>
 #include <stdio.h>
@@ -49,32 +50,37 @@ rha::AxiMemMap::~AxiMemMap() {
 }
 
 //! Post a transaction
-void rha::AxiMemMap::doTransaction(uint32_t id, boost::shared_ptr<rogue::interfaces::memory::Master> master, 
-                                uint64_t address, uint32_t size, uint32_t type) {
+void rha::AxiMemMap::doTransaction(rim::TransactionPtr tran) {
+   rim::Transaction::iterator it;
+
    uint32_t count;
    uint32_t data;
+   uint32_t dataSize;
    int32_t  ret;
+
+   dataSize = sizeof(uint32_t);
+
+   if ( (tran->size() % dataSize) != 0 ) tran->done(rim::SizeError);
 
    count = 0;
    ret = 0;
+   it = tran->begin();
 
-   while ( (ret == 0 ) && (count < size) ) {
-      if (type == rim::Write || type == rim::Post) {
-         master->getTransactionData(id,&data,count,4);
-         ret = dmaWriteRegister(fd_,address+count,data);
+   while ( (ret == 0) && (count != tran->size()) ) {
+      if (tran->type() == rim::Write || tran->type() == rim::Post) {
+         std::copy(it,it+dataSize,&data);
+         ret = dmaWriteRegister(fd_,tran->address()+count,data);
       }
       else {
-         ret = dmaReadRegister(fd_,address+count,&data);
-         master->setTransactionData(id,&data,count,4);
+         ret = dmaReadRegister(fd_,tran->address()+count,&data);
+         std::copy(&data,&data+dataSize,it);
       }
-      count += 4;
+      count += dataSize;
+      it += dataSize;
    }
 
-   if ( ret != 0 ) 
-      throw rogue::GeneralError::create("AxiMemMap::doTransaction","Error accessing register space. Check driver permissions");
-
-   log_->debug("Transaction id=0x%08x, addr 0x%08x. Size=%i, type=%i, data=0x%08x",id,address,size,type,data);
-   master->doneTransaction(id,(ret==0)?0:1);
+   log_->debug("Transaction id=0x%08x, addr 0x%08x. Size=%i, type=%i, data=0x%08x",tran->id(),tran->address(),tran->size(),tran->type(),data);
+   tran->done((ret==0)?0:1);
 }
 
 void rha::AxiMemMap::setup_python () {

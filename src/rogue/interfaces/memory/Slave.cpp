@@ -20,6 +20,7 @@
 #include <rogue/interfaces/memory/Slave.h>
 #include <rogue/interfaces/memory/Master.h>
 #include <rogue/interfaces/memory/Constants.h>
+#include <rogue/interfaces/memory/Transaction.h>
 #include <rogue/GeneralError.h>
 #include <boost/make_shared.hpp>
 #include <rogue/GilRelease.h>
@@ -44,10 +45,10 @@ rim::Slave::Slave(uint32_t min, uint32_t max) {
 rim::Slave::~Slave() { }
 
 //! Register a master.
-void rim::Slave::addTransaction(uint32_t id, rim::TransactionPtr transaction) {
+void rim::Slave::addTransaction(rim::TransactionPtr tran) {
    rogue::GilRelease noGil;
    boost::lock_guard<boost::mutex> lock(slaveMtx_);
-   transactionMap_[id] = transaction; // Weak pointer copy
+   tranMap_[tran->id()] = tran; // Weak pointer copy
 }
 
 //! Get transaction with index, called by sub classes
@@ -63,14 +64,13 @@ rim::TransactionPtr rim::Slave::getTransaction(uint32_t index) {
    if ( ( it = tranMap_.find(index)) != tranMap_.end() ) {
 
       // Expired pointer
-      if ( (it->second.expired() ) tranMap_.erase(it);
-      else ret = it->second;
+      if ( ! (ret = it->second.lock()) ) tranMap_.erase(it);
    } 
    return ret;
 }
 
 //! Remove master from the list
-void rim::Slave::delMaster(uint32_t index) {
+void rim::Slave::delTransaction(uint32_t index) {
    TransactionMap::iterator it;
 
    rogue::GilRelease noGil;
@@ -100,7 +100,7 @@ uint64_t rim::Slave::doAddress() {
 
 //! Post a transaction
 void rim::Slave::doTransaction(rim::TransactionPtr transaction) {
-   transaction->complete(rim::Unsupported);
+   transaction->done(rim::Unsupported);
 }
 
 void rim::Slave::setup_python() {
@@ -200,6 +200,6 @@ void rim::SlaveWrap::doTransaction(rim::TransactionPtr transaction) {
 
 //! Post a transaction. Master will call this method with the access attributes.
 void rim::SlaveWrap::defDoTransaction(rim::TransactionPtr transaction) {
-   rim::Slave::doTransaction(id, master, address, size, type);
+   rim::Slave::doTransaction(transaction);
 }
 

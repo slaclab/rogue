@@ -51,10 +51,9 @@ rim::Transaction::Transaction(rim::MasterPtr master) {
    startTime_.tv_sec  = 0;
    startTime_.tv_usec = 0;
 
-   memset(pyBuf_),0,sizeof(Py_buffer);
    pyValid_ = false;
 
-   data_    = NULL;
+   iter_    = NULL;
    address_ = 0;
    size_    = 0;
    type_    = 0;
@@ -74,7 +73,7 @@ rim::Transaction::~Transaction() { }
 uint32_t rim::Transaction::id() { return id_; }
 
 //! Get address
-uint32_t rim::Transaction::address(); { return address_; }
+uint32_t rim::Transaction::address() { return address_; }
 
 //! Get size
 uint32_t rim::Transaction::size() { return size_; }
@@ -83,7 +82,7 @@ uint32_t rim::Transaction::size() { return size_; }
 uint32_t rim::Transaction::type() { return type_; }
 
 //! Complete transaction with passed error
-void rim::Transaction::complete(uint32_t error) {
+void rim::Transaction::done(uint32_t error) {
    {
       rogue::GilRelease noGil;
       boost::lock_guard<boost::mutex> lg(lock);
@@ -94,17 +93,18 @@ void rim::Transaction::complete(uint32_t error) {
 
 //! start iterator, caller must lock around access
 rim::Transaction::iterator rim::Transaction::begin() {
-   return data_;
+   return iter_;
 }
 
 //! end iterator, caller must lock around access
 rim::Transaction::iterator rim::Transaction::end() {
-   return data_ + size_;
+   return iter_ + size_;
 }
 
 //! Write data from python
 void rim::Transaction::writePy ( boost::python::object p, uint32_t offset ) {
    Py_buffer  pyBuf;
+   uint8_t *  data;
 
    rogue::GilRelease noGil;
    boost::lock_guard<boost::mutex> lg(lock);
@@ -117,16 +117,18 @@ void rim::Transaction::writePy ( boost::python::object p, uint32_t offset ) {
 
    if ( (offset + count) > size_ ) {
       PyBuffer_Release(&pyBuf);
-      throw(rogue::GeneralError::boundary("Frame::write",offset+count,size));
+      throw(rogue::GeneralError::boundary("Frame::write",offset+count,size_));
    }
 
-   std::copy(pyBuf.buf,pyBuf.buf+count,data_+offset);
+   data = (uint8_t *)pyBuf.buf;
+   std::copy(data,data+count,iter_+offset);
    PyBuffer_Release(&pyBuf);
 }
 
 //! Read data from python
 void rim::Transaction::readPy ( boost::python::object p, uint32_t offset ) {
    Py_buffer  pyBuf;
+   uint8_t *  data;
 
    rogue::GilRelease noGil;
    boost::lock_guard<boost::mutex> lg(lock);
@@ -137,12 +139,13 @@ void rim::Transaction::readPy ( boost::python::object p, uint32_t offset ) {
 
    uint32_t count = pyBuf.len;
 
-   if ( (offset + count) > size_ ) 
+   if ( (offset + count) > size_ ) {
       PyBuffer_Release(&pyBuf);
-      throw(rogue::GeneralError::boundary("Frame::readPy",offset+count,size));
+      throw(rogue::GeneralError::boundary("Frame::readPy",offset+count,size_));
    }
 
-   std::copy(data_+offset,data_+offset+count,pyBuf.buf);
+   data = (uint8_t *)pyBuf.buf;
+   std::copy(iter_+offset,iter_+offset+count,data);
    PyBuffer_Release(&pyBuf);
 }
 

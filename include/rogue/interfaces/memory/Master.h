@@ -33,6 +33,7 @@ namespace rogue {
       namespace memory {
 
          class Slave;
+         class Transaction;
 
          //! Master container
          class Master : public boost::enable_shared_from_this<rogue::interfaces::memory::Master> {
@@ -57,6 +58,9 @@ namespace rogue {
 
                //! Conditional
                boost::condition_variable cond_;
+
+               //! Error status
+               uint32_t error_;
 
                //! Log
                rogue::LoggingPtr log_;
@@ -112,7 +116,7 @@ namespace rogue {
             protected:
 
                //! Internal transaction
-               uint32_t intTransaction(boost::shared_ptr<rogue::interfaces::memory::Transaction> > tran);
+               uint32_t intTransaction(boost::shared_ptr<rogue::interfaces::memory::Transaction> tran);
 
                //! Transaction is done, called from transaction record
                void doneTransaction(uint32_t id);

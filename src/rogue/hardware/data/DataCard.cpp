@@ -343,8 +343,7 @@ void rhd::DataCard::runThread() {
 
             // Read was successfull
             if ( res > 0 ) {
-               buff->setPayload(res,true);
-               frame->appendBuffer(buff);
+               buff->setPayload(res);
                flags = frame->getFlags();
                error = frame->getError();
 
@@ -352,7 +351,7 @@ void rhd::DataCard::runThread() {
                error |= rxError;
 
                // First buffer of frame
-               if ( frame->getCount() == 1 ) flags |= (fuser & 0xFF);
+               if ( frame->isEmpty() ) flags |= (fuser & 0xFF);
 
                // Last buffer of frame
                if ( cont == 0 ) {
@@ -362,6 +361,7 @@ void rhd::DataCard::runThread() {
 
                frame->setError(error);
                frame->setFlags(flags);
+               frame->appendBuffer(buff);
                buff.reset();
 
                // If continue flag is not set, push frame and get a new empty frame
