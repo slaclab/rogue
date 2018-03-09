@@ -83,14 +83,24 @@ void rim::Slave::delTransaction(uint32_t index) {
    }
 }
 
+//! Get min size from slave
+uint32_t rim::Slave::min() {
+   return min_;
+}
+
+//! Get min size from slave
+uint32_t rim::Slave::max() {
+   return max_;
+}
+
 //! Return min access size to requesting master
 uint32_t rim::Slave::doMinAccess() {
-   return(min_);
+   return(min());
 }
 
 //! Return max access size to requesting master
 uint32_t rim::Slave::doMaxAccess() {
-   return(max_);
+   return(max());
 }
 
 //! Return offset

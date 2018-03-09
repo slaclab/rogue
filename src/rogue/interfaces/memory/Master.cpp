@@ -220,6 +220,7 @@ void rim::Master::rstTransaction(TransactionMap::iterator it, bool notify) {
 
    log_->debug("Resetting transaction id=%i",it->second->id_);
 
+   it->second->iter_ = NULL;
    if ( it->second->pyValid_ ) {
       rogue::ScopedGil gil;
       PyBuffer_Release(&(it->second->pyBuf_));

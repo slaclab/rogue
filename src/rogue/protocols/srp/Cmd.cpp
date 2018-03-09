@@ -69,7 +69,7 @@ void rps::Cmd::sendCmd(uint8_t opCode, uint32_t context) {
    it = frame->begin();
 
    // Copy frame
-   //std::copy(it,it+sizeof(txData),frame);
+   ris::toFrame(it,sizeof(txData),txData);
    sendFrame(frame);
 }
 

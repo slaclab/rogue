@@ -72,6 +72,12 @@ namespace rogue {
                //! Remove transaction from the list, also cleanup stale transactions
                void delTransaction(uint32_t index);
 
+               //! Get min size from slave
+               uint32_t min();
+
+               //! Get min size from slave
+               uint32_t max();
+
                //! Return min access size to requesting master
                virtual uint32_t doMinAccess();
 

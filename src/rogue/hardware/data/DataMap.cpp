@@ -21,7 +21,9 @@
 #include <rogue/interfaces/memory/Constants.h>
 #include <rogue/interfaces/memory/Transaction.h>
 #include <rogue/GeneralError.h>
+#include <rogue/GilRelease.h>
 #include <boost/make_shared.hpp>
+#include <boost/thread.hpp>
 #include <stdio.h>
 #include <unistd.h>
 #include <sys/types.h>
@@ -63,29 +65,35 @@ void rhd::DataMap::doTransaction(rim::TransactionPtr tran) {
    uint32_t data;
    uint32_t dataSize;
    int32_t  ret;
+   uint8_t * ptr;
 
    dataSize = sizeof(uint32_t);
+   ptr = (uint8_t*)(&data);
 
    if ( (tran->size() % dataSize) != 0 ) tran->done(rim::SizeError);
 
    count = 0;
    ret = 0;
+
+   rogue::GilRelease noGil;
+   boost::unique_lock<boost::mutex> lock(tran->lock);
    it = tran->begin();
 
    while ( (ret == 0) && (count != tran->size()) ) {
       if (tran->type() == rim::Write || tran->type() == rim::Post) {
-         std::copy(it,it+dataSize,&data);
+         std::copy(it,it+dataSize,ptr);
          ret = dmaWriteRegister(fd_,tran->address()+count,data);
       }
       else {
          ret = dmaReadRegister(fd_,tran->address()+count,&data);
-         std::copy(&data,&data+dataSize,it);
+         std::copy(ptr,ptr+dataSize,it);
       }
       count += dataSize;
       it += dataSize;
    }
 
    log_->debug("Transaction id=0x%08x, addr 0x%08x. Size=%i, type=%i, data=0x%08x",tran->id(),tran->address(),tran->size(),tran->type(),data);
+   lock.unlock();
    tran->done((ret==0)?0:1);
 }
 

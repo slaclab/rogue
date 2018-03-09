@@ -42,6 +42,18 @@ rim::TransactionPtr rim::Transaction::create (rim::MasterPtr master) {
    return(m);
 }
 
+void rim::Transaction::setup_python() {
+   bp::class_<rim::Transaction, rim::TransactionPtr, boost::noncopyable>("Master",bp::no_init)
+      .def("id",      &rim::Transaction::id)
+      .def("address", &rim::Transaction::address)
+      .def("size",    &rim::Transaction::size)
+      .def("type",    &rim::Transaction::type)
+      .def("done",    &rim::Transaction::done)
+      .def("write",   &rim::Transaction::writePy)
+      .def("read",    &rim::Transaction::readPy)
+   ;
+}
+
 //! Create object
 rim::Transaction::Transaction(rim::MasterPtr master) {
    master_ = master;
@@ -73,7 +85,7 @@ rim::Transaction::~Transaction() { }
 uint32_t rim::Transaction::id() { return id_; }
 
 //! Get address
-uint32_t rim::Transaction::address() { return address_; }
+uint64_t rim::Transaction::address() { return address_; }
 
 //! Get size
 uint32_t rim::Transaction::size() { return size_; }
@@ -93,11 +105,13 @@ void rim::Transaction::done(uint32_t error) {
 
 //! start iterator, caller must lock around access
 rim::Transaction::iterator rim::Transaction::begin() {
+   if ( iter_ == NULL ) throw(rogue::GeneralError("Transaction::begin","Invalid data"));
    return iter_;
 }
 
 //! end iterator, caller must lock around access
 rim::Transaction::iterator rim::Transaction::end() {
+   if ( iter_ == NULL ) throw(rogue::GeneralError("Transaction::end","Invalid data"));
    return iter_ + size_;
 }
 
@@ -121,7 +135,7 @@ void rim::Transaction::writePy ( boost::python::object p, uint32_t offset ) {
    }
 
    data = (uint8_t *)pyBuf.buf;
-   std::copy(data,data+count,iter_+offset);
+   std::copy(data,data+count,begin()+offset);
    PyBuffer_Release(&pyBuf);
 }
 
@@ -145,7 +159,7 @@ void rim::Transaction::readPy ( boost::python::object p, uint32_t offset ) {
    }
 
    data = (uint8_t *)pyBuf.buf;
-   std::copy(iter_+offset,iter_+offset+count,data);
+   std::copy(begin()+offset,begin()+offset+count,data);
    PyBuffer_Release(&pyBuf);
 }
 

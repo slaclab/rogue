@@ -103,7 +103,7 @@ namespace rogue {
                uint32_t id();
 
                //! Get address
-               uint32_t address();
+               uint64_t address();
 
                //! Get size
                uint32_t size();

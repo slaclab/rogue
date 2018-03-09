@@ -22,7 +22,9 @@
 #include <rogue/hardware/rce/MapMemory.h>
 #include <rogue/interfaces/memory/Constants.h>
 #include <rogue/GeneralError.h>
+#include <rogue/GilRelease.h>
 #include <boost/make_shared.hpp>
+#include <boost/thread.hpp>
 #include <stdio.h>
 #include <unistd.h>
 #include <sys/types.h>
@@ -114,6 +116,9 @@ void rhr::MapMemory::doTransaction(rim::TransactionPtr tran) {
    if ( (tran->size() % dataSize) != 0 ) tran->done(rim::SizeError);
 
    count = 0;
+
+   rogue::GilRelease noGil;
+   boost::unique_lock<boost::mutex> lock(tran->lock);
    it = tran->begin();
 
    if ((ptr = findSpace(tran->address(),tran->size())) == NULL) {
@@ -134,6 +139,7 @@ void rhr::MapMemory::doTransaction(rim::TransactionPtr tran) {
    }
 
    log_->debug("Transaction id=0x%08x, addr 0x%08x. Size=%i, type=%i, data=0x%08x",tran->id(),tran->address(),tran->size(),tran->type(),data);
+   lock.unlock();
    tran->done(0);
 }
 

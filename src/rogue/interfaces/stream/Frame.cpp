@@ -55,6 +55,7 @@ void ris::Frame::appendFrame(ris::FramePtr frame) {
    std::back_insert_iterator< std::vector<BufferPtr> > backIt(buffers_);
 
    std::copy(frame->beginBuffer(), frame->endBuffer(), backIt);
+   frame->buffers_.clear();
 }
 
 //! Buffer begin iterator

@@ -43,6 +43,16 @@ namespace rogue {
 
                rogue::LoggingPtr log_;
 
+               static const uint32_t WrHeadLen  = 8;
+               static const uint32_t RdHeadLen  = 12;
+               static const uint32_t MaxHeadLen = 12;
+               static const uint32_t RxHeadLen  = 8;
+               static const uint32_t TailLen    = 4;
+
+               // Setup header, return write flag
+               bool setupHeader(boost::shared_ptr<rogue::interfaces::memory::Transaction> tran, 
+                                uint32_t *header, uint32_t &headerLen, uint32_t &frameLen, bool tx);
+
             public:
 
                //! Class creation
