@@ -3,9 +3,7 @@
  * Title      : Memory Slave
  * ----------------------------------------------------------------------------
  * File       : Slave.h
- * Author     : Ryan Herbst, rherbst@slac.stanford.edu
  * Created    : 2016-09-20
- * Last update: 2016-09-20
  * ----------------------------------------------------------------------------
  * Description:
  * Memory slave interface.
@@ -31,24 +29,25 @@ namespace rogue {
       namespace memory {
 
          class Master;
+         class Transaction;
 
          //! Slave container
          class Slave {
 
-               //! Slave map
-               std::map<uint32_t, boost::shared_ptr<rogue::interfaces::memory::Master> > masterMap_;
+               //! Alias for map
+               typedef std::map<uint32_t, boost::weak_ptr<rogue::interfaces::memory::Transaction> > TransactionMap;
 
-               //! Slave map lock
-               boost::mutex mtx_;
+               //! Transaction map
+               TransactionMap tranMap_;
+
+               //! Slave lock
+               boost::mutex slaveMtx_;
 
                //! Min access
                uint32_t min_;
 
                //! Max access
                uint32_t max_;
-               
-               //! Enable local response
-               bool enLocDone_;
 
             public:
 
@@ -64,20 +63,14 @@ namespace rogue {
                //! Destroy object
                virtual ~Slave();
 
-               //! Register a master.
-               void addMaster(uint32_t index, boost::shared_ptr<rogue::interfaces::memory::Master> master);
+               //! Register a transaction
+               void addTransaction(boost::shared_ptr<rogue::interfaces::memory::Transaction> transaction);
 
-               //! Get master device with index
-               boost::shared_ptr<rogue::interfaces::memory::Master> getMaster(uint32_t index);
+               //! Get Transaction with index
+               boost::shared_ptr<rogue::interfaces::memory::Transaction> getTransaction(uint32_t index);
 
-               //! Return true if master is valid
-               bool validMaster(uint32_t index);
-
-               //! Remove master from the list
-               void delMaster(uint32_t index);
-
-               //! Enable local response
-               void enLocDone(bool enable);
+               //! Remove transaction from the list, also cleanup stale transactions
+               void delTransaction(uint32_t index);
 
                //! Return min access size to requesting master
                virtual uint32_t doMinAccess();
@@ -89,9 +82,7 @@ namespace rogue {
                virtual uint64_t doAddress();
 
                //! Post a transaction. Master will call this method with the access attributes.
-               virtual void doTransaction(uint32_t id, boost::shared_ptr<rogue::interfaces::memory::Master> master,
-                                          uint64_t address, uint32_t size, uint32_t type);
-
+               virtual void doTransaction(boost::shared_ptr<rogue::interfaces::memory::Transaction> transaction);
          };
 
          //! Memory slave class, wrapper to enable pyton overload of virtual methods
@@ -122,13 +113,11 @@ namespace rogue {
                //! Return offset
                uint64_t defDoAddress();
 
-               //! Post a transaction. Master will call this method with the access attributes.
-               void doTransaction(uint32_t id, boost::shared_ptr<rogue::interfaces::memory::Master> master,
-                                  uint64_t address, uint32_t size, uint32_t type);
+               //! Post a transaction. Master will call this method.
+               void doTransaction(boost::shared_ptr<rogue::interfaces::memory::Transaction> transaction);
 
-               //! Post a transaction. Master will call this method with the access attributes.
-               void defDoTransaction(uint32_t id, boost::shared_ptr<rogue::interfaces::memory::Master> master,
-                                     uint64_t address, uint32_t size, uint32_t type);
+               //! Post a transaction. Master will call this method.
+               void defDoTransaction(boost::shared_ptr<rogue::interfaces::memory::Transaction> transaction);
 
          };
 

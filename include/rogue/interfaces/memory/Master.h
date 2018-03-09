@@ -34,69 +34,32 @@ namespace rogue {
 
          class Slave;
 
-         //! Transaction tracker
-         class MasterTransaction {
-            public:
-
-               //! Transaction start time
-               struct timeval endTime;
-
-               //! Transaction start time
-               struct timeval startTime;
-
-               //! Transaction python buffer
-               Py_buffer pyBuf;
-
-               //! Python buffer is valid
-               bool pyValid;
-
-               //! Transaction data
-               uint8_t * tData;
-
-               //! Transaction size
-               uint32_t tSize;
-         };
-
-         //! Slave container
+         //! Master container
          class Master : public boost::enable_shared_from_this<rogue::interfaces::memory::Master> {
+            friend rogue::interfaces::memory::Transaction;
 
-               //! Class instance counter
-               static uint32_t classIdx_;
+            private:
 
-               //! Class instance lock
-               static boost::mutex classIdxMtx_;
+               //! Alias for map
+               typedef std::map<uint32_t, boost::shared_ptr<rogue::interfaces::memory::Transaction> > TransactionMap;
+
+               //! Transaction map
+               TransactionMap tranMap_;
 
                //! Slave. Used for request forwards.
                boost::shared_ptr<rogue::interfaces::memory::Slave> slave_;
-
-               //! Map of outstanding transactions
-               std::map<uint32_t, rogue::interfaces::memory::MasterTransaction> tran_;
 
                //! Timeout value
                struct timeval sumTime_;
 
                //! Mutex
-               boost::mutex mtx_;
+               boost::mutex mastMtx_;
 
                //! Conditional
                boost::condition_variable cond_;
 
-               //! Transaction error
-               uint32_t error_;
-
                //! Log
                rogue::LoggingPtr log_;
-
-            protected:
-
-               //! Generate a transaction id, not python safe
-               static uint32_t genId();
-
-               //! Reset transaction data
-               void rstTransaction(uint32_t id, uint32_t error, bool notify);
-
-               //! Request transaction
-               uint32_t intTransaction(uint64_t address, rogue::interfaces::memory::MasterTransaction *tran, uint32_t type);
 
             public:
 
@@ -112,8 +75,8 @@ namespace rogue {
                //! Destroy object
                virtual ~Master();
 
-               //! Get transaction count
-               uint32_t tranCount();
+               //! Get Transaction with index
+               boost::shared_ptr<rogue::interfaces::memory::Transaction> getTransaction(uint32_t index);
 
                //! Set slave
                void setSlave ( boost::shared_ptr<rogue::interfaces::memory::Slave> slave );
@@ -146,47 +109,28 @@ namespace rogue {
                // size and offset are optional to use a slice within the python buffer
                uint32_t reqTransactionPy(uint64_t address, boost::python::object p, uint32_t size, uint32_t offset, uint32_t type);
 
-               //! End current transaction, ensures data pointer is not update and de-allocates python buffer
-               void endTransaction(uint32_t id);
+            protected:
 
-               //! Transaction complete, called by slave when transaction is complete, error passed
-               virtual void doneTransaction(uint32_t id, uint32_t error);
+               //! Internal transaction
+               uint32_t intTransaction(boost::shared_ptr<rogue::interfaces::memory::Transaction> > tran);
 
-               //! Set to master from slave, called by slave to push data into master.
-               virtual void setTransactionData(uint32_t id, void *data, uint32_t offset, uint32_t size);
+               //! Transaction is done, called from transaction record
+               void doneTransaction(uint32_t id);
 
-               //! Set to master from slave, called by slave to push data into master. Python Version.
-               void setTransactionDataPy(uint32_t id, uint32_t offset, boost::python::object p);
-
-               //! Get from master to slave, called by slave to pull data from mater.
-               virtual void getTransactionData(uint32_t id, void *data, uint32_t offset, uint32_t size);
-
-               //! Get from master to slave, called by slave to pull data from mater. Python Version.
-               void getTransactionDataPy(uint32_t id, uint32_t offset, boost::python::object p);
-
-               //! wait for done or timeout, if zero wait for all transactions
-               void waitTransaction(uint32_t id);
-
-         };
-
-         //! Memory master class, wrapper to enable pyton overload of virtual methods
-         class MasterWrap : 
-            public rogue::interfaces::memory::Master,
-            public boost::python::wrapper<rogue::interfaces::memory::Master> {
+               //! Reset transaction data
+               void rstTransaction(TransactionMap::iterator it, bool notify);
 
             public:
 
-               //! Transaction complete, called by slave when transaction is complete, error passed
-               void doneTransaction(uint32_t id, uint32_t error);
+               //! End current transaction, ensures data pointer is not update and de-allocates python buffer
+               void endTransaction(uint32_t id);
 
-               //! Transaction complete, called by slave when transaction is complete, error passed
-               void defDoneTransaction(uint32_t id, uint32_t error);
+               //! wait for done or timeout, if zero wait for all transactions
+               void waitTransaction(uint32_t id);
          };
 
          // Convienence
          typedef boost::shared_ptr<rogue::interfaces::memory::Master> MasterPtr;
-         typedef boost::shared_ptr<rogue::interfaces::memory::MasterWrap> MasterWrapPtr;
-
       }
    }
 }

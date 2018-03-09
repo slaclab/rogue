@@ -116,11 +116,10 @@ uint32_t ris::Frame::getPayload() {
 
 /*
  * Set payload size (not including header)
- * If shink flag is true, the size will be
- * descreased if size is less than the current
- * payload size.
+ * If passed size is less then current, 
+ * the frame payload size will be descreased.
  */
-void ris::Frame::setPayload(uint32_t size, bool shrink) {
+void ris::Frame::setPayload(uint32_t size) {
    ris::Frame::BufferIterator it;
 
    uint32_t lsize;
@@ -133,14 +132,12 @@ void ris::Frame::setPayload(uint32_t size, bool shrink) {
       loc = (*it)->getSize();
       tot += loc;
 
-      // Beyond the fill point, empty buffers if shrink = true
-      if ( lsize == 0 ) {
-         if ( shrink ) (*it)->setPayloadEmpty();
-      }
+      // Beyond the fill point, empty buffer
+      if ( lsize == 0 ) (*it)->setPayloadEmpty();
 
       // Size exists in current buffer
       else if ( lsize <= loc ) {
-         (*it)->setPayload(lsize,shrink);
+         (*it)->setPayload(lsize);
          lsize = 0;
       }
 
@@ -155,14 +152,49 @@ void ris::Frame::setPayload(uint32_t size, bool shrink) {
       throw(rogue::GeneralError::boundary("Frame::setPayload",size,tot));
 }
 
-//! Adjust payload size
+/*
+ * Set the min payload size (not including header)
+ * If the current payload size is greater, the
+ * payload size will be unchanged.
+ */
+void ris::Frame::minPayload(uint32_t size) {
+   ris::Frame::BufferIterator it;
+
+   uint32_t lsize;
+   uint32_t loc;
+   uint32_t tot;
+
+   lsize = size;
+
+   for (it = buffers_.begin(); lsize != 0 && it != buffers_.end(); ++it) {
+      loc = (*it)->getSize();
+      tot += loc;
+
+      // Size exists in current buffer
+      if ( lsize <= loc ) {
+         if ( lsize > loc ) (*it)->setPayload(lsize);
+         lsize = 0;
+      }
+
+      // Size is beyond current buffer
+      else {
+         lsize -= loc;
+         (*it)->setPayloadFull();
+      }
+   }
+
+   if ( lsize != 0 ) 
+      throw(rogue::GeneralError::boundary("Frame::setPayload",size,tot));
+}
+
+//! Adjust payload size, TODO: Reduce iterations
 void ris::Frame::adjustPayload(int32_t value) {
    uint32_t size = getPayload();
 
    if ( value < 0 && (uint32_t)abs(value) > size)
       throw(rogue::GeneralError::boundary("Frame::adjustPayload", abs(value), size));
 
-   setPayload(size + value, true);
+   setPayload(size + value);
 }
 
 //! Set the buffer as full (minus tail reservation)
@@ -216,19 +248,6 @@ ris::Frame::iterator ris::Frame::endPayload() {
    return ris::Frame::iterator(shared_from_this(),getPayload(),(getPayload() == getSize())); 
 }
 
-//! Read count bytes from frame, starting from offset.
-uint32_t ris::Frame::read  ( void *p, uint32_t offset, uint32_t count ) {
-   uint32_t size = getPayload();
-
-   if ( (offset + count) > size ) count = (size - offset);
-
-   ris::Frame::iterator beg = ris::Frame::iterator(shared_from_this(),offset,false);
-   ris::Frame::iterator end = ris::Frame::iterator(shared_from_this(),offset+count,false);
-
-   //std::copy(beg,end,p);
-   return(count);
-}
-
 //! Read up to count bytes from frame, starting from offset. Python version.
 void ris::Frame::readPy ( boost::python::object p, uint32_t offset ) {
    Py_buffer  pyBuf;
@@ -236,24 +255,19 @@ void ris::Frame::readPy ( boost::python::object p, uint32_t offset ) {
    if ( PyObject_GetBuffer(p.ptr(),&pyBuf,PyBUF_SIMPLE) < 0 ) 
       throw(rogue::GeneralError("Frame::readPy","Python Buffer Error In Frame"));
 
-   read(pyBuf.buf,offset,pyBuf.len);
-   PyBuffer_Release(&pyBuf);
-}
+   uint32_t size = getPayload();
+   uint32_t count = pyBuf.len;
 
-//! Write count bytes to frame, starting at offset
-uint32_t ris::Frame::write ( void *p, uint32_t offset, uint32_t count ) {
-   uint32_t size = getSize();
-
-   if ( (offset + count) > size ) 
-      throw(rogue::GeneralError::boundary("Frame::write",offset+count,size));
+   if ( (offset + count) > size ) {
+      PyBuffer_Release(&pyBuf);
+      throw(rogue::GeneralError::boundary("Frame::readPy",offset+count,size));
+   }
 
    ris::Frame::iterator beg = ris::Frame::iterator(shared_from_this(),offset,false);
    ris::Frame::iterator end = ris::Frame::iterator(shared_from_this(),offset+count,false);
 
-   //std::copy(p,p+count,beg);
-
-   setPayload(offset+count,false);
-   return(count);
+   std::copy(beg,end,pyBuf.buf);
+   PyBuffer_Release(&pyBuf);
 }
 
 //! Write python buffer to frame, starting at offset. Python Version
@@ -263,7 +277,19 @@ void ris::Frame::writePy ( boost::python::object p, uint32_t offset ) {
    if ( PyObject_GetBuffer(p.ptr(),&pyBuf,PyBUF_CONTIG) < 0 )
       throw(rogue::GeneralError("Frame::writePy","Python Buffer Error In Frame"));
 
-   write(pyBuf.buf,offset,pyBuf.len);
+   uint32_t size = getSize();
+   uint32_t count = pyBuf.len;
+
+   if ( (offset + count) > size ) {
+      PyBuffer_Release(&pyBuf);
+      throw(rogue::GeneralError::boundary("Frame::writePy",offset+count,size));
+   }
+
+   ris::Frame::iterator beg = ris::Frame::iterator(shared_from_this(),offset,false);
+
+   std::copy(pyBuf.buf,pyBuf.buf+count,beg);
+
+   minPayload(offset+count);
    PyBuffer_Release(&pyBuf);
 }
 

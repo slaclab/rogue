@@ -44,6 +44,7 @@ namespace rogue {
           * payload. Calls to write and read take into account the header offset.
           * It is assumed only one thread will interact with a buffer. Buffers 
           * are not thread safe.
+          * TODO: Consider tracking size and payload in frame 
          */
          class Frame : public boost::enable_shared_from_this<rogue::interfaces::stream::Frame> {
 
@@ -116,11 +117,17 @@ namespace rogue {
 
                /*
                 * Set payload size (not including header)
-                * If shink flag is true, the size will be
-                * descreased if size is less than the current
-                * payload size.
+                * If passed size is less then current, 
+                * the frame payload size will be descreased.
                 */
-               void setPayload(uint32_t size, bool shrink);
+               void setPayload(uint32_t size);
+
+               /*
+                * Set the min payload size (not including header)
+                * If the current payload size is greater, the
+                * payload size will be unchanged.
+                */
+               void minPayload(uint32_t size);
 
                //! Adjust payload size
                void adjustPayload(int32_t value);
@@ -152,14 +159,8 @@ namespace rogue {
                //! Get end of payload iterator
                rogue::interfaces::stream::FrameIterator endPayload();
 
-               //! Read count bytes from frame payload, starting from offset.
-               uint32_t read  ( void *p, uint32_t offset, uint32_t count );
-
                //! Read count bytes from frame payload, starting from offset. Python version.
                void readPy ( boost::python::object p, uint32_t offset );
-
-               //! Write count bytes to frame payload, starting at offset
-               uint32_t write ( void *p, uint32_t offset, uint32_t count );
 
                //! Write count bytes to frame payload, starting at offset. Python Version
                void writePy ( boost::python::object p, uint32_t offset );

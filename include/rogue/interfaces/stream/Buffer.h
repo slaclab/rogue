@@ -160,13 +160,8 @@ namespace rogue {
                 */
                uint32_t getPayload();
 
-               /*
-                * Set payload size (not including header)
-                * If shink flag is true, the size will be
-                * descreased if size is less than the current
-                * payload size.
-                */
-               void setPayload(uint32_t size, bool shrink);
+               /* Set payload size (not including header) */
+               void setPayload(uint32_t size);
 
                //! Adjust payload size
                void adjustPayload(int32_t value);
