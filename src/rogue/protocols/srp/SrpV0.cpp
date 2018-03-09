@@ -127,7 +127,7 @@ void rps::SrpV0::doTransaction(rim::TransactionPtr tran) {
 
    // Write data
    if ( doWrite ) {
-      //std::copy(tIter,tIter+tran->size(),fIter);
+      std::copy(tIter,tIter+tran->size(),fIter);
       fIter += tran->size();
    }
 

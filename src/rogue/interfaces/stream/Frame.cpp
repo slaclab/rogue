@@ -274,7 +274,7 @@ void ris::Frame::readPy ( boost::python::object p, uint32_t offset ) {
    ris::Frame::iterator end = ris::Frame::iterator(shared_from_this(),offset+count,false);
 
    data = (uint8_t *)pyBuf.buf;
-   //std::copy(beg,end,data);
+   std::copy(beg,end,data);
    PyBuffer_Release(&pyBuf);
 }
 
@@ -297,7 +297,7 @@ void ris::Frame::writePy ( boost::python::object p, uint32_t offset ) {
    ris::Frame::iterator beg = ris::Frame::iterator(shared_from_this(),offset,false);
 
    data = (uint8_t *)pyBuf.buf;
-   //std::copy(data,data+count,beg);
+   std::copy(data,data+count,beg);
 
    minPayload(offset+count);
    PyBuffer_Release(&pyBuf);

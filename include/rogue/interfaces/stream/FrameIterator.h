@@ -63,7 +63,7 @@ namespace rogue {
                      const rogue::interfaces::stream::FrameIterator &rhs);
 
                //! De-reference
-               uint8_t operator *() const;
+               uint8_t & operator *() const;
 
                //! Pointer
                uint8_t * operator ->() const;
@@ -121,13 +121,13 @@ namespace rogue {
          // Helper function to copy values to a frame iterator
          // Frame iterator is incremented appropriately
          inline void toFrame ( rogue::interfaces::stream::FrameIterator & iter, uint32_t size, void * src) {
-            //iter = std::copy((uint8_t*)src, ((uint8_t*)src)+size, iter);
+            iter = std::copy((uint8_t*)src, ((uint8_t*)src)+size, iter);
          }
 
          // Helper function to copy values from a frame iterator
          // Frame iterator is incremented appropriately
          inline void fromFrame ( rogue::interfaces::stream::FrameIterator & iter, uint32_t size, void * dst) {
-            //std::copy(iter,iter+size,(uint8_t*)dst);
+            std::copy(iter,iter+size,(uint8_t*)dst);
             iter += size;
          }
       }

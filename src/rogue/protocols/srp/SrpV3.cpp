@@ -144,7 +144,7 @@ void rps::SrpV3::doTransaction(rim::TransactionPtr tran) {
    ris::toFrame(fIter,HeadLen,header);
 
    // Write data
-   // if ( doWrite ) std::copy(tIter,tIter+tran->size(),fIter);
+   if ( doWrite ) std::copy(tIter,tIter+tran->size(),fIter);
 
    lock.unlock();
    if ( tran->type() == rim::Post ) tran->done(0);

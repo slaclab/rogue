@@ -77,7 +77,7 @@ void ris::Fifo::acceptFrame ( ris::FramePtr frame ) {
    nFrame = reqFrame(size,true);
 
    // Copy the frame
-   //std::copy(frame->begin(), frame->begin()+size, nFrame->begin());
+   std::copy(frame->begin(), frame->begin()+size, nFrame->begin());
    nFrame->setPayload(size);
 
    // Append to buffer

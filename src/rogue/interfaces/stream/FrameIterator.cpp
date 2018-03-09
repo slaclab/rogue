@@ -65,7 +65,7 @@ const ris::FrameIterator ris::FrameIterator::operator=(const ris::FrameIterator 
 }
 
 //! De-reference
-uint8_t ris::FrameIterator::operator *() const {
+uint8_t & ris::FrameIterator::operator *() const {
    if ( frame_ == NULL ) return 0;
    else if ( end_ ) return 0;
    else return *((*curr_)->begin());
