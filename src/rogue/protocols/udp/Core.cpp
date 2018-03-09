@@ -36,7 +36,7 @@ rpu::Core::~Core() { }
 
 //! Return max payload
 uint32_t rpu::Core::maxPayload() {
-   return (jumbo_)?MaxJumboPayload:MaxStdPayload;
+   return (jumbo_)?(MaxJumboPayload):(MaxStdPayload);
 }
 
 //! Set UDP RX Size
