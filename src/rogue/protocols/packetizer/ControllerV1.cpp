@@ -59,7 +59,7 @@ void rpp::ControllerV1::transportRx( ris::FramePtr frame ) {
    uint8_t * data;
 
    if ( frame->isEmpty() == 0 ) 
-      throw(rogue::GeneralError("packetizer::ControllerV1::transportRx","Frame must not be empty"));
+      log_->warning("Empty frame received");
 
    rogue::GilRelease noGil;
    boost::lock_guard<boost::mutex> lock(tranMtx_);

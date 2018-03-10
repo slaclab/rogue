@@ -35,7 +35,9 @@ ris::MasterPtr ris::Master::create () {
 }
 
 //! Creator
-ris::Master::Master() { }
+ris::Master::Master() { 
+   primary_ = ris::Slave::create();
+}
 
 //! Destructor
 ris::Master::~Master() {
