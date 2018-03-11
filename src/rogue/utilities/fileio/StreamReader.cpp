@@ -169,6 +169,10 @@ void ruf::StreamReader::runThread() {
                break;
             }
 
+            // Skip next step if frame is empty
+            size -= 4;
+            if ( size == 0 ) continue;
+
             // Request frame
             frame = reqFrame(size,true);
             frame->setFlags(flags);
@@ -187,7 +191,10 @@ void ruf::StreamReader::runThread() {
                   frame->setError(0x1);
                   err = true;
                }
-               else (*it)->setPayload(bSize);
+               else {
+                  (*it)->setPayload(bSize);
+                  if ( (*it)->getAvailable() == 0 ) ++it; // Next buffer
+               }
                size -= bSize;
             }
             sendFrame(frame);

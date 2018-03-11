@@ -78,6 +78,8 @@ void ru::StreamUnZip::acceptFrame ( ris::FramePtr frame ) {
       if ( (ret != BZ_STREAM_END) && (ret != BZ_OK) ) 
          throw(rogue::GeneralError::ret("StreamUnZip::acceptFrame","Decompression runtime error",ret));
 
+      if ( ret == BZ_STREAM_END ) break;
+
       // Update read buffer if neccessary
       if ( strm.avail_in == 0 ) {
          ++rBuff;
@@ -87,20 +89,20 @@ void ru::StreamUnZip::acceptFrame ( ris::FramePtr frame ) {
 
       // Update write buffer if neccessary
       if ( strm.avail_out == 0 ) {
-         (*wBuff)->setPayloadFull();
 
-         // We ran out of room, double the frame size, should not happen
+         // We ran out of room, double the frame size
          if ( (wBuff+1) == newFrame->endBuffer() ) {
             ris::FramePtr tmpFrame = this->reqFrame(frame->getPayload(),true);
-            newFrame->appendFrame(tmpFrame);
+            wBuff = newFrame->appendFrame(tmpFrame);
          }
-         ++wBuff; // Will this work?
+         else ++wBuff;
 
          strm.next_out  = (char *)(*wBuff)->begin();
          strm.avail_out = (*wBuff)->getAvailable();
       }
-   } while ( ret != BZ_STREAM_END );
+   } while ( 1 );
 
+   newFrame->setPayload(strm.total_out_lo32);
    BZ2_bzDecompressEnd(&strm);
 
    this->sendFrame(newFrame);

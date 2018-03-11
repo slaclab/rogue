@@ -46,16 +46,22 @@ ris::Frame::~Frame() {
 }
 
 //! Add a buffer to end of frame
-void ris::Frame::appendBuffer(ris::BufferPtr buff) {
+ris::Frame::BufferIterator ris::Frame::appendBuffer(ris::BufferPtr buff) {
+   uint32_t oSize = buffers_.size();
+
    buffers_.push_back(buff);
+   return(buffers_.begin()+oSize);
 }
 
 //! Append passed frame buffers to end of frame.
-void ris::Frame::appendFrame(ris::FramePtr frame) {
+ris::Frame::BufferIterator ris::Frame::appendFrame(ris::FramePtr frame) {
+   uint32_t oSize = buffers_.size();
+
    std::back_insert_iterator< std::vector<BufferPtr> > backIt(buffers_);
 
    std::copy(frame->beginBuffer(), frame->endBuffer(), backIt);
    frame->buffers_.clear();
+   return(buffers_.begin()+oSize);
 }
 
 //! Buffer begin iterator

@@ -80,11 +80,13 @@ namespace rogue {
                //! Destroy a frame.
                ~Frame();
 
-               //! Add a buffer to end of frame
-               void appendBuffer(boost::shared_ptr<rogue::interfaces::stream::Buffer> buff);
+               //! Add a buffer to end of frame, return interator to inserted buffer
+               std::vector<boost::shared_ptr<rogue::interfaces::stream::Buffer> >::iterator
+                  appendBuffer(boost::shared_ptr<rogue::interfaces::stream::Buffer> buff);
 
-               //! Append passed frame buffers to end of frame.
-               void appendFrame(boost::shared_ptr<rogue::interfaces::stream::Frame> frame);
+               //! Append passed frame buffers to end of frame, return interator to inserted buffer
+               std::vector<boost::shared_ptr<rogue::interfaces::stream::Buffer> >::iterator
+                  appendFrame(boost::shared_ptr<rogue::interfaces::stream::Frame> frame);
 
                //! Buffer begin iterator
                std::vector<boost::shared_ptr<rogue::interfaces::stream::Buffer> >::iterator beginBuffer();

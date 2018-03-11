@@ -89,20 +89,21 @@ void ru::StreamZip::acceptFrame ( ris::FramePtr frame ) {
 
       // Update write buffer if neccessary
       if ( strm.avail_out == 0 ) {
-         (*wBuff)->setPayloadFull();
 
          // We ran out of room, double the frame size, should not happen
          if ( (wBuff+1) == newFrame->endBuffer() ) {
             ris::FramePtr tmpFrame = this->reqFrame(frame->getPayload(),true);
-            newFrame->appendFrame(tmpFrame);
+            wBuff = newFrame->appendFrame(tmpFrame);
          }
-         ++wBuff; // Will this work?
+         else ++wBuff;
 
          strm.next_out  = (char *)(*wBuff)->begin();
          strm.avail_out = (*wBuff)->getAvailable();
       }
    } while (ret != BZ_STREAM_END);
 
+   // Update output frame
+   newFrame->setPayload(strm.total_out_lo32);
    BZ2_bzCompressEnd(&strm);
 
    this->sendFrame(newFrame);
