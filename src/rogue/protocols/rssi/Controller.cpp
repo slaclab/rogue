@@ -143,7 +143,7 @@ ris::FramePtr rpr::Controller::reqFrame ( uint32_t size ) {
 void rpr::Controller::transportRx( ris::FramePtr frame ) {
    rpr::HeaderPtr head = rpr::Header::create(frame);
 
-   if ( frame->isEmpty() == 0 || ! head->verify() ) {
+   if ( frame->isEmpty() || ! head->verify() ) {
       log_->info("Dumping frame state=%i server=%i",state_,server_);
       dropCount_++;
       return;
@@ -213,11 +213,13 @@ void rpr::Controller::applicationRx ( ris::FramePtr frame ) {
 
    gettimeofday(&startTime,NULL);
 
-   if ( frame->isEmpty() == 0 ) 
-      throw(rogue::GeneralError("rss::Controller::applicationRx","Frame must not be empty"));
+   if ( frame->isEmpty() ) {
+      log_->info("Dumping empty application frame");
+      return;
+   }
 
    // Adjust header in first buffer
-   (*(frame->beginBuffer()))->adjustHeader(rpr::Header::HeaderSize);
+   (*(frame->beginBuffer()))->adjustHeader(-rpr::Header::HeaderSize);
 
    // Map to RSSI 
    rpr::HeaderPtr head = rpr::Header::create(frame);

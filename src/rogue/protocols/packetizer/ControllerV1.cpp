@@ -58,8 +58,8 @@ void rpp::ControllerV1::transportRx( ris::FramePtr frame ) {
    uint32_t  flags;
    uint8_t * data;
 
-   if ( frame->isEmpty() == 0 ) 
-      log_->warning("Empty frame received");
+   if ( frame->isEmpty() ) 
+      log_->warning("Empty frame received At Transport");
 
    rogue::GilRelease noGil;
    boost::lock_guard<boost::mutex> lock(tranMtx_);
@@ -161,8 +161,8 @@ void rpp::ControllerV1::applicationRx ( ris::FramePtr frame, uint8_t tDest ) {
    }
    else gettimeofday(&endTime,NULL);
 
-   if ( frame->isEmpty() == 0 ) 
-      throw(rogue::GeneralError("packetizer::ControllerV1::applicationRx","Frame must not be empty"));
+   if ( frame->isEmpty() ) 
+      log_->warning("Empty frame received at application");
 
    if ( frame->getError() ) return;
 

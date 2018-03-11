@@ -251,6 +251,8 @@ void ru::Prbs::genFrame (uint32_t size) {
    // Update counters
    txCount_++;
    txBytes_ += size;
+   fr->setPayload(size);
+
    sendFrame(fr);
 }
 

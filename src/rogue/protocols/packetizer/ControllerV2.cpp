@@ -67,7 +67,7 @@ void rpp::ControllerV2::transportRx( ris::FramePtr frame ) {
    uint32_t  tmpCrc;
    uint8_t * data;
 
-   if ( frame->isEmpty() == 0 ) {
+   if ( frame->isEmpty() ) {
       log_->warning("Bad incoming transportRx frame, size=0");
       return;
    }
@@ -216,8 +216,10 @@ void rpp::ControllerV2::applicationRx ( ris::FramePtr frame, uint8_t tDest ) {
    }
    else gettimeofday(&endTime,NULL);
 
-   if ( frame->isEmpty() == 0 ) 
-      throw(rogue::GeneralError("packetizer::ControllerV2::applicationRx","Frame must not be empty"));
+   if ( frame->isEmpty() ) {
+      log_->warning("Bad incoming applicationRx frame, size=0");
+      return;
+   }
 
    if ( frame->getError() ) return;
 

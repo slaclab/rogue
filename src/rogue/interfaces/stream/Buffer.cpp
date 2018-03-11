@@ -190,6 +190,14 @@ void ris::Buffer::setPayload(uint32_t size) {
    payload_ = size + headRoom_;
 }
 
+/* 
+ * Set min payload size (not including header)
+ * Payload size is updated only if size > current size
+*/
+void ris::Buffer::minPayload(uint32_t size) {
+   if ( size > getPayload() ) setPayload(size);
+}
+
 //! Adjust payload size
 void ris::Buffer::adjustPayload(int32_t value) {
    if ( value < 0 && (uint32_t)abs(value) > getPayload())

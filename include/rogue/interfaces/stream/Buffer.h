@@ -163,6 +163,12 @@ namespace rogue {
                /* Set payload size (not including header) */
                void setPayload(uint32_t size);
 
+               /* 
+                * Set min payload size (not including header)
+                * Payload size is updated only if size > current size
+                */
+               void minPayload(uint32_t size);
+
                //! Adjust payload size
                void adjustPayload(int32_t value);
 
