@@ -36,46 +36,50 @@ print('Using previous release {}'.format(prev))
 
 # Local git clone
 g = git.Git('.')
+g.fetch()
 
 # Git server
 gh = Github()
 repo = gh.get_repo('slaclab/rogue')
 
-loginfo = g.log('{}..HEAD'.format(prev),'--grep','Merge pull request')
+loginfo = g.log('{}..origin/master'.format(prev),'--grep','Merge pull request')
 
 print("Got log:")
 
-out = []
+records = []
 msgEn = False
 
 for line in loginfo.splitlines():
+    entry = {}
 
-    if line.startswith('commit'):
-        msgEn = False
-
-    elif line.startswith('Author:'):
-        out.append("--------------------------------------------------------------------------------------------------")
-        out.append(line)
+    if line.startswith('Author:'):
+        entry['author'] = line[7:]
 
     elif line.startswith('Date:'):
-        out.append(line)
+        entry['date'] = line[5:]
 
-    # get pull request
     elif 'Merge pull request' in line:
-        pr = line.split()[3]
-        src = line.split()[5]
+        entry['num'] = int(line.split()[3][1:])
+        entry['branch'] = line.split()[5]
 
         # Get PR info
-        req = repo.get_pull(int(pr[1:]))
+        req = repo.get_pull(int(entry[num]))
+        entry['title'] = req.title
+        entry['body']  = req.body
 
-        out.append('Pull Req: {}'.format(pr))
-        out.append('Branch: {}'.format(src))
-
+        # Detect JIRA
         if src.startswith('slaclab/ES'):
-            out.append('Jira: https://jira.slac.stanford.edu/issues/{}'.format(src.split('/')[1]))
+            entry['jira'] = 'https://jira.slac.stanford.edu/issues/{}'.format(entry['branch'].split('/')[1])
 
-        out.append('Title: {}'.format(req.title))
-        out.append("\n" + req.body + "\n")
+    records.append(entry)
+
+# Generate text
+txt = ''
+for entry in records:
+    txt += '--------------------------------------------------------------------------------------------------\n"
+    txt += 'Author: {}'.format(entry['author'])
+
+
 
 txt = ''
 for l in out:
