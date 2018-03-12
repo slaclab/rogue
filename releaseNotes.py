@@ -48,12 +48,12 @@ for line in loginfo.splitlines():
         req = repo.get_pull(int(pr[1:]))
 
         out.append('Pull Req: {}'.format(pr))
-        out.append('Title: {}'.format(req.title))
         out.append('Branch: {}'.format(src))
 
         if src.startswith('slaclab/ES'):
             out.append('Jira: https://jira.slac.stanford.edu/issues/{}'.format(src.split('/')[1]))
 
+        out.append('Title: {}'.format(req.title))
         out.append("\n" + req.body)
 
 txt = ''
