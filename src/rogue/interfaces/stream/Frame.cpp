@@ -44,9 +44,7 @@ ris::Frame::Frame() {
 }
 
 //! Destroy a frame.
-ris::Frame::~Frame() {
-   buffers_.clear();
-}
+ris::Frame::~Frame() { }
 
 //! Add a buffer to end of frame
 ris::Frame::BufferIterator ris::Frame::appendBuffer(ris::BufferPtr buff) {
@@ -67,6 +65,7 @@ ris::Frame::BufferIterator ris::Frame::appendFrame(ris::FramePtr frame) {
       buffers_.push_back(*it);
    }
    frame->buffers_.clear();
+   frame->updateSizes();
    updateSizes();
    return(buffers_.begin()+oSize);
 }
