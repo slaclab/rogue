@@ -52,6 +52,7 @@ ris::Frame::~Frame() {
 ris::Frame::BufferIterator ris::Frame::appendBuffer(ris::BufferPtr buff) {
    uint32_t oSize = buffers_.size();
 
+   buff->setFrame(shared_from_this());
    buffers_.push_back(buff);
    updateSizes();
    return(buffers_.begin()+oSize);
@@ -61,9 +62,10 @@ ris::Frame::BufferIterator ris::Frame::appendBuffer(ris::BufferPtr buff) {
 ris::Frame::BufferIterator ris::Frame::appendFrame(ris::FramePtr frame) {
    uint32_t oSize = buffers_.size();
 
-   std::back_insert_iterator< std::vector<BufferPtr> > backIt(buffers_);
-
-   std::copy(frame->beginBuffer(), frame->endBuffer(), backIt);
+   for (ris::Frame::BufferIterator it = frame->beginBuffer(); it != frame->endBuffer(); ++it) {
+      (*it)->setFrame(shared_from_this());
+      buffers_.push_back(*it);
+   }
    frame->buffers_.clear();
    updateSizes();
    return(buffers_.begin()+oSize);
