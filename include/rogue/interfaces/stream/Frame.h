@@ -48,6 +48,8 @@ namespace rogue {
          */
          class Frame : public boost::enable_shared_from_this<rogue::interfaces::stream::Frame> {
 
+               friend Buffer;
+
                //! Interface specific flags
                uint32_t flags_;
 
@@ -56,6 +58,23 @@ namespace rogue {
 
                //! List of buffers which hold real data
                std::vector<boost::shared_ptr<rogue::interfaces::stream::Buffer> > buffers_;
+
+               //! Total size of buffers
+               uint32_t size_;
+
+               //! Total payload size
+               uint32_t payload_;
+
+               //! Update buffer size counts
+               void updateSizes();
+
+               //! Size values dirty flage
+               bool sizeDirty_;
+
+            protected:
+
+               //! Set size values dirty
+               void setSizeDirty();
 
             public:
 

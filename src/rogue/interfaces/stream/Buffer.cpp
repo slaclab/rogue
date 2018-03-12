@@ -23,6 +23,7 @@
 
 #include <rogue/interfaces/stream/Buffer.h>
 #include <rogue/interfaces/stream/Pool.h>
+#include <rogue/interfaces/stream/Frame.h>
 #include <rogue/GeneralError.h>
 #include <boost/make_shared.hpp>
 
@@ -65,6 +66,11 @@ ris::Buffer::~Buffer() {
    source_->retBuffer(data_,meta_,allocSize_);
 }
 
+//! Set container frame
+void ris::Buffer::setFrame(ris::FramePtr frame) {
+   frame_ = frame;
+}
+
 //! Get meta data, used by pool 
 uint32_t ris::Buffer::getMeta() {
    return(meta_);
@@ -92,11 +98,14 @@ void ris::Buffer::adjustHeader(int32_t value) {
 
    // Payload can never be less than headeroom
    if ( payload_ < headRoom_ ) payload_ = headRoom_;
+
+   if ( frame_ ) frame_->setSizeDirty();
 }
 
 //! Clear the header reservation
 void ris::Buffer::zeroHeader() {
    headRoom_ = 0;
+   if ( frame_ ) frame_->setSizeDirty();
 }
 
 //! Adjust tail by passed value
@@ -113,11 +122,13 @@ void ris::Buffer::adjustTail(int32_t value) {
 
    // Make adjustment
    tailRoom_ += value;
+   if ( frame_ ) frame_->setSizeDirty();
 }
 
 //! Clear the tail reservation
 void ris::Buffer::zeroTail() {
    tailRoom_ = 0;
+   if ( frame_ ) frame_->setSizeDirty();
 }
 
 /* 
@@ -188,6 +199,7 @@ void ris::Buffer::setPayload(uint32_t size) {
             size, (rawSize_ - (headRoom_ + tailRoom_))));
 
    payload_ = size + headRoom_;
+   if ( frame_ ) frame_->setSizeDirty();
 }
 
 /* 
@@ -201,19 +213,19 @@ void ris::Buffer::minPayload(uint32_t size) {
 //! Adjust payload size
 void ris::Buffer::adjustPayload(int32_t value) {
    if ( value < 0 && (uint32_t)abs(value) > getPayload())
-      throw(rogue::GeneralError::boundary("Buffer::adjustPayload",
-            abs(value), (getPayload())));
-
+      throw(rogue::GeneralError::boundary("Buffer::adjustPayload", abs(value), (getPayload())));
    setPayload(getPayload() + value);
 }
 
 //! Set the buffer as full (minus tail reservation)
 void ris::Buffer::setPayloadFull() {
    payload_ = rawSize_ - tailRoom_;
+   if ( frame_ ) frame_->setSizeDirty();
 }
 
 //! Set the buffer as empty (minus header reservation)
 void ris::Buffer::setPayloadEmpty() {
    payload_ = headRoom_;
+   if ( frame_ ) frame_->setSizeDirty();
 }
 

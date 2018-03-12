@@ -36,8 +36,11 @@ ris::FramePtr ris::Frame::create() {
 
 //! Create an empty frame
 ris::Frame::Frame() {
-   flags_    = 0;
-   error_    = 0;
+   flags_     = 0;
+   error_     = 0;
+   size_      = 0;
+   payload_   = 0;
+   sizeDirty_ = false;
 }
 
 //! Destroy a frame.
@@ -50,6 +53,7 @@ ris::Frame::BufferIterator ris::Frame::appendBuffer(ris::BufferPtr buff) {
    uint32_t oSize = buffers_.size();
 
    buffers_.push_back(buff);
+   updateSizes();
    return(buffers_.begin()+oSize);
 }
 
@@ -61,6 +65,7 @@ ris::Frame::BufferIterator ris::Frame::appendFrame(ris::FramePtr frame) {
 
    std::copy(frame->beginBuffer(), frame->endBuffer(), backIt);
    frame->buffers_.clear();
+   updateSizes();
    return(buffers_.begin()+oSize);
 }
 
@@ -79,6 +84,25 @@ bool ris::Frame::isEmpty() {
    return(buffers_.empty());
 }
 
+//! Update buffer size counts
+void ris::Frame::updateSizes() {
+   ris::Frame::BufferIterator it;
+
+   size_      = 0;
+   payload_   = 0;
+
+   for (it = buffers_.begin(); it != buffers_.end(); ++it) {
+      payload_ += (*it)->getPayload();
+      size_    += (*it)->getSize();
+   }
+   sizeDirty_ = false;
+}
+
+//! Set size values dirty
+void ris::Frame::setSizeDirty() {
+   sizeDirty_ = true;
+}
+
 /*
  * Get size of buffers that can hold
  * payload data. This function 
@@ -86,13 +110,8 @@ bool ris::Frame::isEmpty() {
  * the head and tail reservation.
  */
 uint32_t ris::Frame::getSize() {
-   ris::Frame::BufferIterator it;
-   uint32_t ret = 0;
-
-   for (it = buffers_.begin(); it != buffers_.end(); ++it) 
-      ret += (*it)->getSize();
-
-   return(ret);
+   if ( sizeDirty_ ) updateSizes();
+   return(size_);
 }
 
 /*
@@ -101,13 +120,8 @@ uint32_t ris::Frame::getSize() {
  * minus the space reserved for the tail
  */
 uint32_t ris::Frame::getAvailable() {
-   ris::Frame::BufferIterator it;
-   uint32_t ret = 0;
-
-   for (it = buffers_.begin(); it != buffers_.end(); ++it) 
-      ret += (*it)->getAvailable();
-
-   return(ret);
+   if ( sizeDirty_ ) updateSizes();
+   return(size_-payload_);
 }
 
 /*
@@ -117,13 +131,8 @@ uint32_t ris::Frame::getAvailable() {
  * the head.
  */
 uint32_t ris::Frame::getPayload() {
-   ris::Frame::BufferIterator it;
-   uint32_t ret = 0;
-
-   for (it = buffers_.begin(); it != buffers_.end(); ++it) 
-      ret += (*it)->getPayload();
-
-   return(ret);
+   if ( sizeDirty_ ) updateSizes();
+   return(payload_);
 }
 
 /*
@@ -131,37 +140,40 @@ uint32_t ris::Frame::getPayload() {
  * If passed size is less then current, 
  * the frame payload size will be descreased.
  */
-void ris::Frame::setPayload(uint32_t size) {
+void ris::Frame::setPayload(uint32_t pSize) {
    ris::Frame::BufferIterator it;
 
-   uint32_t lsize;
+   uint32_t lSize;
    uint32_t loc;
-   uint32_t tot;
 
-   lsize = size;
-
+   lSize = pSize;
+   size_ = 0;
    for (it = buffers_.begin(); it != buffers_.end(); ++it) {
       loc = (*it)->getSize();
-      tot += loc;
+      size_ += loc;
 
       // Beyond the fill point, empty buffer
-      if ( lsize == 0 ) (*it)->setPayloadEmpty();
+      if ( lSize == 0 ) (*it)->setPayloadEmpty();
 
       // Size exists in current buffer
-      else if ( lsize <= loc ) {
-         (*it)->setPayload(lsize);
-         lsize = 0;
+      else if ( lSize <= loc ) {
+         (*it)->setPayload(lSize);
+         lSize = 0;
       }
 
       // Size is beyond current buffer
       else {
-         lsize -= loc;
+         lSize -= loc;
          (*it)->setPayloadFull();
       }
    }
 
-   if ( lsize != 0 ) 
-      throw(rogue::GeneralError::boundary("Frame::setPayload",size,tot));
+   if ( lSize != 0 ) 
+      throw(rogue::GeneralError::boundary("Frame::setPayload",pSize,size_));
+
+   // Refresh
+   payload_ = pSize;
+   sizeDirty_ = false;
 }
 
 /*
@@ -170,33 +182,7 @@ void ris::Frame::setPayload(uint32_t size) {
  * payload size will be unchanged.
  */
 void ris::Frame::minPayload(uint32_t size) {
-   ris::Frame::BufferIterator it;
-
-   uint32_t lsize;
-   uint32_t loc;
-   uint32_t tot;
-
-   lsize = size;
-
-   for (it = buffers_.begin(); lsize != 0 && it != buffers_.end(); ++it) {
-      loc = (*it)->getSize();
-      tot += loc;
-
-      // Size exists in current buffer
-      if ( lsize <= loc ) {
-         if ( lsize > loc ) (*it)->setPayload(lsize);
-         lsize = 0;
-      }
-
-      // Size is beyond current buffer
-      else {
-         lsize -= loc;
-         (*it)->setPayloadFull();
-      }
-   }
-
-   if ( lsize != 0 ) 
-      throw(rogue::GeneralError::boundary("Frame::setPayload",size,tot));
+   if ( size > getPayload() ) setPayload(size);
 }
 
 //! Adjust payload size, TODO: Reduce iterations
@@ -215,6 +201,9 @@ void ris::Frame::setPayloadFull() {
 
    for (it = buffers_.begin(); it != buffers_.end(); ++it) 
       (*it)->setPayloadFull();
+
+   // Refresh
+   updateSizes();
 }
 
 //! Set the buffer as empty (minus header reservation)
@@ -223,6 +212,9 @@ void ris::Frame::setPayloadEmpty() {
 
    for (it = buffers_.begin(); it != buffers_.end(); ++it) 
       (*it)->setPayloadEmpty();
+
+   // Refresh
+   updateSizes();
 }
 
 //! Get flags

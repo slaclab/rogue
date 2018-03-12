@@ -33,6 +33,7 @@ namespace rogue {
       namespace stream {
 
          class Pool;
+         class Frame;
 
          //! Frame buffer
          /*
@@ -43,7 +44,10 @@ namespace rogue {
          class Buffer {
 
                //! Pointer to entity which allocated this buffer
-               boost::shared_ptr<rogue::interfaces::stream::Pool> source_; 
+               boost::shared_ptr<rogue::interfaces::stream::Pool> source_;
+
+               //! Pointer to frame containing this buffer
+               boost::shared_ptr<rogue::interfaces::stream::Frame> frame_;
 
                //! Pointer to raw data buffer. Raw pointer is used here!
                uint8_t *  data_;
@@ -71,6 +75,9 @@ namespace rogue {
 
                //! Error state
                uint32_t   error_;
+
+            protected:
+
 
             public:
 
@@ -100,6 +107,9 @@ namespace rogue {
                 * Owner return buffer method is called
                 */
                ~Buffer();
+
+               //! Set ownder frame
+               void setFrame(boost::shared_ptr<rogue::interfaces::stream::Frame> frame);
 
                //! Get meta data, used by pool
                uint32_t getMeta();
