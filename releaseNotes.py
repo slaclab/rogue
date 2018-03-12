@@ -54,7 +54,7 @@ for line in loginfo.splitlines():
             out.append('Jira: https://jira.slac.stanford.edu/issues/{}'.format(src.split('/')[1]))
 
         out.append('Title: {}'.format(req.title))
-        out.append("\n" + req.body)
+        out.append("\n" + req.body + "\n")
 
 txt = ''
 for l in out:
