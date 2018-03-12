@@ -10,7 +10,7 @@ then
 fi
 
 # Package directories
-export ROGUE_DIR=${PWD}
+export ROGUE_DIR=$(dirname -- "$(readlink -f ${BASH_SOURCE[0]})")
 
 # Setup python path
 export PYTHONPATH=${ROGUE_DIR}/python:${PYTHONPATH}
