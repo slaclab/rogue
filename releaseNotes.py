@@ -1,5 +1,26 @@
 #!/usr/bin/env python3
-
+#-----------------------------------------------------------------------------
+# Title      : Release notes generation
+# ----------------------------------------------------------------------------
+# File       : releaseNotes.py
+# Created    : 2018-03-12
+# ----------------------------------------------------------------------------
+# Description:
+# Generate release notes for pull requests relative to a tag.
+# Usage: releaseNotes.py tag (i.e. releaseNotes.py v2.5.0
+#
+# Must be run within an up to date git clone with the proper branch checked out.
+# Currently github complains if you run this script too many times in a short
+# period of time. I am still looking at ssh key support for PyGithub
+# ----------------------------------------------------------------------------
+# This file is part of the rogue software platform. It is subject to 
+# the license terms in the LICENSE.txt file found in the top-level directory 
+# of this distribution and at: 
+#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
+# No part of the rogue software platform, including this file, may be 
+# copied, modified, propagated, or distributed except according to the terms 
+# contained in the LICENSE.txt file.
+# ----------------------------------------------------------------------------
 import os,sys
 import git   # GitPython
 from github import Github # PyGithub
