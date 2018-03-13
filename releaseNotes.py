@@ -34,6 +34,7 @@ if len(sys.argv) != 3:
     exit()
 
 sortByChanges = True
+useHtml = False
 
 prev = sys.argv[1]
 out  = sys.argv[2]
@@ -45,7 +46,8 @@ g = git.Git('.')
 g.fetch()
 
 # Git server
-gh = Github()
+gh = Github()  # Limited iterations
+#gh = Github('mylogin','mypass')  # Replace with password 
 repo = gh.get_repo('slaclab/rogue')
 
 loginfo = g.log('{}..origin/master'.format(prev),'--grep','Merge pull request')
@@ -77,7 +79,8 @@ for line in loginfo.splitlines():
         # Detect JIRA entry
         if entry['Branch'].startswith('slaclab/ES'):
             url = 'https://jira.slac.stanford.edu/issues/{}'.format(entry['Branch'].split('/')[1])
-            entry['Jira'] = f'<a href={url}>{url}</a>'
+            if useHtml: entry['Jira'] = f'<a href={url}>{url}</a>'
+            else: entry['Jira'] = url
         else:
             entry['Jira'] = None
 
@@ -91,12 +94,15 @@ if sortByChanges:
 md = '### Pull Requests\n'
 for entry in records:
     md += '---\n'
-    md += '<table boder=0>\n'
+    if useHtml: md += '<table boder=0>\n'
+    else: md += '|||\n|---:|:---|\n'
 
     for i in ['Title','Author','Date','Pull','Branch','Jira']:
         if entry[i] is not None:
-            md += f'<tr><td align=right><b>{i}:</b></td><td align=left>{entry[i]}</td></tr>\n'
-    md += '</table>\n'
+            if useHtml: md += f'<tr><td align=right><b>{i}:</b></td><td align=left>{entry[i]}</td></tr>\n'
+            else: md += f'|**{i}:**|{entry[i]}|\n'
+
+    if useHtml: md += '</table>\n'
 
     md += '\n' + entry['body'] + '\n\n'
 
