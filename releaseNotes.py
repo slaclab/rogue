@@ -25,32 +25,35 @@ import os,sys
 import git   # GitPython
 from github import Github # PyGithub
 import pyperclip
+import re
+import argparse
 
-if len(sys.argv) != 3:
-    print("Usage: {} prev_release out_file".format(sys.argv[0]))
-    print("    Replace out_file with - to copy to clipboard")
-    print("    Must be called in a git clone directory")
-    print("    Example {} v2.5.0 notes.txt")
-    exit()
+parser = argparse.ArgumentParser('Release notes generator')
+parser.add_argument('tag', type=str, help='reference tag or range. (i.e. v2.5.0 or v2.5.0..v2.6.0)')
+parser.add_argument('output', type=str, help='Output file or - for output to clipboard')
+parser.add_argument('--user', type=str, help='Username for github')
+parser.add_argument('--password', type=str, help='Password for github')
+parser.add_argument('--nosort', help='Disable sort by change counts', action="store_true")
+parser.add_argument('--html', help='Use html for tables', action="store_true")
+args = parser.parse_args()
 
-sortByChanges = True
-useHtml = False
+if '..' in args.tag:
+    tags = args.tag
+else:
+    tags = F"{args.tag}..HEAD"
 
-prev = sys.argv[1]
-out  = sys.argv[2]
-print('Using previous release {}'.format(prev))
-print("Please wait...")
+print(f"Using range: {tags}")
 
 # Local git clone
 g = git.Git('.')
 g.fetch()
+project = re.compile(r'slaclab/(?P<name>.*?).git').search(g.remote('get-url','origin')).group('name')
 
 # Git server
-gh = Github()  # Limited iterations
-#gh = Github('mylogin','mypass')  # Replace with password 
-repo = gh.get_repo('slaclab/rogue')
+gh = Github(args.user,args.password)
+repo = gh.get_repo(f'slaclab/{project}')
 
-loginfo = g.log('{}..origin/master'.format(prev),'--grep','Merge pull request')
+loginfo = g.log(tags,'--grep','Merge pull request')
 
 records = []
 entry = {}
@@ -69,6 +72,7 @@ for line in loginfo.splitlines():
         entry['Branch'] = line.split()[5].lstrip()
 
         # Get PR info from github
+        print(f"Found pull request {entry['Pull']}")
         req = repo.get_pull(int(entry['Pull'][1:]))
         entry['Title'] = req.title
         entry['body']  = req.body
@@ -79,7 +83,7 @@ for line in loginfo.splitlines():
         # Detect JIRA entry
         if entry['Branch'].startswith('slaclab/ES'):
             url = 'https://jira.slac.stanford.edu/issues/{}'.format(entry['Branch'].split('/')[1])
-            if useHtml: entry['Jira'] = f'<a href={url}>{url}</a>'
+            if args.html: entry['Jira'] = f'<a href={url}>{url}</a>'
             else: entry['Jira'] = url
         else:
             entry['Jira'] = None
@@ -87,26 +91,30 @@ for line in loginfo.splitlines():
         records.append(entry)
         entry = {}
 
-if sortByChanges:
+if args.nosort is False:
     records = sorted(records, key=lambda v : v['changes'], reverse=True)
 
 # Generate text
-md = '### Pull Requests\n'
+md = '# Pull Requests\n'
 for entry in records:
-    md += '---\n'
-    if useHtml: md += '<table boder=0>\n'
-    else: md += '|||\n|---:|:---|\n'
+    md += '-------\n'
+    md += f"## {entry['Title']}"
+
+    if args.html: md += '\n<table boder=0>\n'
+    else: md += '\n|||\n|---:|:---|\n'
 
     for i in ['Title','Author','Date','Pull','Branch','Jira']:
         if entry[i] is not None:
-            if useHtml: md += f'<tr><td align=right><b>{i}:</b></td><td align=left>{entry[i]}</td></tr>\n'
+            if args.html: md += f'<tr><td align=right><b>{i}:</b></td><td align=left>{entry[i]}</td></tr>\n'
             else: md += f'|**{i}:**|{entry[i]}|\n'
 
-    if useHtml: md += '</table>\n'
+    if args.html: md += '</table>\n'
 
-    md += '\n' + entry['body'] + '\n\n'
+    md += '\n**Notes:**\n'
+    md += entry['body']
+    md += '\n\n'
 
-if out == "-":
+if args.output == "-":
     try:
         pyperclip.copy(md)
         print('Release notes copied to clipboard')
@@ -114,6 +122,6 @@ if out == "-":
         print("Copy to clipboard failed, use file output instead!")
 
 else:
-    with open(out,'w') as f:
+    with open(args.output,'w') as f:
         f.write(md)
-    print('Release notes written to {}'.format(out))
+    print('Release notes written to {}'.format(args.output))
