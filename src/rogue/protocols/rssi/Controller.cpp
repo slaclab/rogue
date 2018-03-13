@@ -159,33 +159,37 @@ void rpr::Controller::transportRx( ris::FramePtr frame ) {
    // Update busy bit
    tranBusy_ = head->busy;
 
-   // Syn or reset
-   if ( head->syn || head->rst ) {
+   // Reset
+   if ( head->rst ) {
+      if ( state_ == StOpen || state_ == StWaitSyn ) {
+         rogue::GilRelease noGil;
+         stQueue_.push(head);
+      }
+   }
 
-      // Syn frame and resets go to state machine if state = open or we are waiting for ack replay
-      if ( ( state_ == StOpen || state_ == StWaitSyn ) ) {
+   // Syn frame goes to state machine if state = open 
+   // or we are waiting for ack replay
+   else if ( head->syn ) {
+      if ( state_ == StOpen || state_ == StWaitSyn ) {
+         lastSeqRx_ = head->sequence;
+         nextSeqRx_ = lastSeqRx_ + 1;
+
          rogue::GilRelease noGil;
          stQueue_.push(head);
       }
    }
 
    // Data or NULL in the correct sequence go to application
-   else if ( state_ == StOpen && ( head->nul || frame->getPayload() > rpr::Header::HeaderSize ) ) {
+   else if ( state_ == StOpen && head->sequence == nextSeqRx_ && 
+        ( head->nul || frame->getPayload() > rpr::Header::HeaderSize ) ) {
+      lastSeqRx_ = nextSeqRx_;
+      nextSeqRx_ = nextSeqRx_ + 1;
+      stCond_.notify_all();
 
-      // Sequence matches
-      if ( head->sequence == nextSeqRx_ ) {
-         lastSeqRx_ = nextSeqRx_;
-         nextSeqRx_ = nextSeqRx_ + 1;
-         stCond_.notify_all();
-
-         if ( !head->nul ) {
-            rogue::GilRelease noGil;
-            appQueue_.push(head);
-         }
+      if ( !head->nul ) {
+         rogue::GilRelease noGil;
+         appQueue_.push(head);
       }
-      else log_->info("Out of sequence frame: server=%i size=%i syn=%i ack=%i nul=%i, rst=%i, ack#=%i seq=%i, nxt=%i",
-                       server_,frame->getPayload(),head->syn,head->ack,head->nul,head->rst,
-                       head->acknowledge,head->sequence,nextSeqRx_);
    }
 }
 
@@ -271,10 +275,10 @@ bool rpr::Controller::getBusy() {
 
 // Method to transit a frame with proper updates
 void rpr::Controller::transportTx(rpr::HeaderPtr head, bool seqUpdate, bool retransmit) {
+   if ( ! retransmit ) head->sequence = locSequence_;
 
    // Update sequence numbers
    if ( seqUpdate ) {
-      head->sequence = locSequence_;
       txList_[locSequence_] = head;
       txListCount_++;
       locSequence_++;
@@ -477,6 +481,7 @@ uint32_t rpr::Controller::stateSendSynAck () {
    txListCount_ = 0;
    lock.unlock();
 
+   // We should probably wait for an ack here.
    //if ( locAckRx != locSeqTx ) {
 
    // Update state

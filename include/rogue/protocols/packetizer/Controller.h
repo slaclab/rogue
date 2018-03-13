@@ -52,6 +52,7 @@ namespace rogue {
                uint32_t timeout_;
                uint32_t headSize_;
                uint32_t tailSize_;
+               uint32_t alignSize_;
 
                rogue::LoggingPtr log_;
 
@@ -73,7 +74,7 @@ namespace rogue {
                //! Creator
                Controller( boost::shared_ptr<rogue::protocols::packetizer::Transport> tran,
                            boost::shared_ptr<rogue::protocols::packetizer::Application> * app,
-                           uint32_t headSize, uint32_t tailSize );
+                           uint32_t headSize, uint32_t tailSize, uint32_t alignSize );
 
                //! Destructor
                ~Controller();

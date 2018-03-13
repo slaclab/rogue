@@ -18,8 +18,8 @@
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
-#ifndef __ROGUE_PROTOCOLS_UDP_COMMON_H__
-#define __ROGUE_PROTOCOLS_UDP_COMMON_H__
+#ifndef __ROGUE_PROTOCOLS_UDP_CORE_H__
+#define __ROGUE_PROTOCOLS_UDP_CORE_H__
 #include <rogue/Logging.h>
 #include <stdint.h>
 #include <netdb.h>
@@ -31,11 +31,11 @@ namespace rogue {
    namespace protocols {
       namespace udp {
 
+         const uint32_t MaxJumboPayload = 8900;
+         const uint32_t MaxStdPayload   = 1400;
+
          //! UDP Core
          class Core {
-
-               static const uint32_t MaxJumboPayload = 8900;
-               static const uint32_t MaxStdPayload   = 1400;
 
             protected:
 

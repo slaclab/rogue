@@ -40,7 +40,7 @@ rpp::ControllerV2Ptr rpp::ControllerV2::create ( bool enIbCrc, bool enObCrc, rpp
 }
 
 //! Creator
-rpp::ControllerV2::ControllerV2 ( bool enIbCrc, bool enObCrc, rpp::TransportPtr tran, rpp::ApplicationPtr * app ) : rpp::Controller::Controller(tran, app, 8, 8) {
+rpp::ControllerV2::ControllerV2 ( bool enIbCrc, bool enObCrc, rpp::TransportPtr tran, rpp::ApplicationPtr * app ) : rpp::Controller::Controller(tran, app, 8, 8, 8) {
 
    enIbCrc_ = enIbCrc;
    enObCrc_ = enObCrc;
@@ -244,23 +244,20 @@ void rpp::ControllerV2::applicationRx ( ris::FramePtr frame, uint8_t tDest ) {
    for (it=frame->beginBuffer(); it != frame->endBuffer(); ++it) {
       ris::FramePtr tFrame = ris::Frame::create();
 
-      size = (*it)->getPayload();
-      last = size & 0x7;
-      
-      // Shift to 64-bit alignment
-      if ( last != 0 ) size = (0xFFFFFFF8 & size) + 8;
-      else last = 8;
-      
+      // Compute last, and alignt payload to 64-bits
+      last = (*it)->getPayload() % 8;
+      if ( last == 0 ) last = 8;
+      (*it)->adjustPayload(8-last);
+         
       // Rem 8 bytes head and tail reservation before setting new size
       (*it)->adjustHeader(-8);
       (*it)->adjustTail(-8);
 
-      // Add tail to payload, set new size
-      size += 8;
-      (*it)->setPayload(size);
+      // Add tail to payload, set new size (header reduction added 8)
+      (*it)->adjustPayload(8);
 
-      // Get data pointer
-      data = (*it)->begin();
+      // Get data pointer and new size
+      data = (*it)->getPayloadData();
       size = (*it)->getPayload();
 
       // Header word 0
@@ -283,12 +280,12 @@ void rpp::ControllerV2::applicationRx ( ris::FramePtr frame, uint8_t tDest ) {
       data[size-5] = 0;
       
       if(enObCrc_){
-      // Compute CRC
+         // Compute CRC
          boost::crc_basic<32> result( 0x04C11DB7, crcInit, 0xFFFFFFFF, true, true );
          result.process_bytes(data,size-4);
       crc = result.checksum();
          crcInit = result.get_interim_remainder();
-      // Tail  word 1
+         // Tail  word 1
          data[size-1] = (crc >>  0) & 0xFF;
          data[size-2] = (crc >>  8) & 0xFF;
          data[size-3] = (crc >> 16) & 0xFF;
@@ -300,8 +297,8 @@ void rpp::ControllerV2::applicationRx ( ris::FramePtr frame, uint8_t tDest ) {
          data[size-4] = 0;
       }
       
-      log_->debug("applicationRx: Gen frame: Fuser=0x%x, Dest=0x%x, Id=0x%x, Count=%i, Sof=%i, Luser=0x%x, Eof=%i, Last=%i",
-            fUser, tDest, tId, segment, data[7], lUser, data[size-7], last);
+      log_->debug("applicationRx: Gen frame: Size=%i, Fuser=0x%x, Dest=0x%x, Id=0x%x, Count=%i, Sof=%i, Luser=0x%x, Eof=%i, Last=%i",
+            (*it)->getPayload(), fUser, tDest, tId, segment, data[7], lUser, data[size-7], last);
       log_->debug("applicationRx: Raw header: 0x%x, 0x%x, 0x%x, 0x%x, 0x%x, 0x%x, 0x%x, 0x%x",
             data[0],data[1],data[2],data[3],data[4],data[5],data[6],data[7]);
       log_->debug("applicationRx: Raw footer: 0x%x, 0x%x, 0x%x, 0x%x, 0x%x, 0x%x, 0x%x, 0x%x",

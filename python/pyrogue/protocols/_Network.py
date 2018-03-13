@@ -24,7 +24,7 @@ import time
 
 class UdpRssiPack(pr.Device):
 
-    def __init__(self,*,host,port,size=None, jumbo=False, wait=True, **kwargs):
+    def __init__(self,*,host,port,size=None, jumbo=False, wait=True, packVer=1, **kwargs):
         super(self.__class__, self).__init__(**kwargs)
         self._host = host
         self._port = port
@@ -36,9 +36,9 @@ class UdpRssiPack(pr.Device):
         self._rssi = rogue.protocols.rssi.Client(self._udp.maxPayload())
 
         if packVer == 2:
-            self._pack = rogue.protocols.packetizer.CoreV2(self._size)
+            self._pack = rogue.protocols.packetizer.CoreV2(False,True) # ibCRC = False, obCRC = True
         else:
-            self._pack = rogue.protocols.packetizer.Core(self._size)
+            self._pack = rogue.protocols.packetizer.Core()
 
         self._udp._setSlave(self._rssi.transport())
         self._rssi.transport()._setSlave(self._udp)
