@@ -163,13 +163,27 @@ void rpr::Controller::transportRx( ris::FramePtr frame ) {
    tranBusy_ = head->busy;
 
    // Reset
-   if ( ( state_ == StOpen || state_ == StWaitSyn) && head->rst ) {
-      rogue::GilRelease noGil;
-      stQueue_.push(head);
+   if ( head->rst ) {
+      if ( state_ == StOpen || state_ == StWaitSyn ) {
+         rogue::GilRelease noGil;
+         stQueue_.push(head);
+      }
+   }
+
+   // Syn frame goes to state machine if state = open 
+   // or we are waiting for ack replay
+   else if ( head->syn ) {
+      if ( state_ == StOpen || state_ == StWaitSyn ) {
+         lastSeqRx_ = head->sequence;
+         nextSeqRx_ = lastSeqRx_ + 1;
+
+         rogue::GilRelease noGil;
+         stQueue_.push(head);
+      }
    }
 
    // Data or NULL in the correct sequence go to application
-   if ( state_ == StOpen && head->sequence == nextSeqRx_ && 
+   else if ( state_ == StOpen && head->sequence == nextSeqRx_ && 
         ( head->nul || frame->getPayload() > rpr::Header::HeaderSize ) ) {
       lastSeqRx_ = nextSeqRx_;
       nextSeqRx_ = nextSeqRx_ + 1;
@@ -179,16 +193,6 @@ void rpr::Controller::transportRx( ris::FramePtr frame ) {
          rogue::GilRelease noGil;
          appQueue_.push(head);
       }
-   }
-
-   // Syn frame goes to state machine if state = open 
-   // or we are waiting for ack replay
-   else if ( ( state_ == StOpen || state_ == StWaitSyn) && head->syn ) {
-      lastSeqRx_ = head->sequence;
-      nextSeqRx_ = lastSeqRx_ + 1;
-
-      rogue::GilRelease noGil;
-      stQueue_.push(head);
    }
 }
 
@@ -478,6 +482,7 @@ uint32_t rpr::Controller::stateSendSynAck () {
    txListCount_ = 0;
    lock.unlock();
 
+   // We should probably wait for an ack here.
    //if ( locAckRx != locSeqTx ) {
 
    // Update state

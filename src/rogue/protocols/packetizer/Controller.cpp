@@ -39,7 +39,7 @@ void rpp::Controller::setup_python() {
 
 //! Creator
 rpp::Controller::Controller ( rpp::TransportPtr tran, rpp::ApplicationPtr * app,
-                              uint32_t headSize, uint32_t tailSize ) {
+                              uint32_t headSize, uint32_t tailSize, uint32_t alignSize ) {
    uint32_t x;
 
    app_  = app;
@@ -54,6 +54,7 @@ rpp::Controller::Controller ( rpp::TransportPtr tran, rpp::ApplicationPtr * app,
 
    headSize_ = headSize;
    tailSize_ = tailSize;
+   alignSize_ = alignSize;
 
    for ( x=0; x < 256; x++ ) {
          transSof_[x]  = true;
@@ -76,6 +77,9 @@ ris::FramePtr rpp::Controller::reqFrame ( uint32_t size ) {
    // Create frame container for request response
    lFrame = ris::Frame::create();
 
+   // Align total size to configured alignment
+   if ( (size % alignSize_) != 0 ) size += (alignSize_-(size % alignSize_));
+
    // Request individual frames upstream
    while ( lFrame->getAvailable() < size ) {
 
@@ -88,19 +92,28 @@ ris::FramePtr rpp::Controller::reqFrame ( uint32_t size ) {
       // Take only the first buffer. This will break a cascaded packetizer
       // system. We need to fix this!
       buff = rFrame->getBuffer(0);
+
+      // Use buffer tail reservation to align available payload
+      if ((buff->getAvailable() % alignSize_) != 0)
+         buff->adjustTail(buff->getAvailable() % alignSize_);
   
       // Buffer should support our header/tail plus at least one payload byte 
       if ( buff->getAvailable() < (headSize_ + tailSize_ + 1) )
          throw(rogue::GeneralError::boundary("packetizer::Controller::reqFrame",
                   (headSize_ + tailSize_ + 1), buff->getAvailable()));
 
-      // Add 8 bytes to headroom
+      // Add 8 bytes to head and tail reservation
       buff->adjustHeader(headSize_);
       buff->adjustTail(tailSize_);
       
       // Add buffer to return frame
       lFrame->appendBuffer(buff);
    }
+
+   uint32_t total = lFrame->getAvailable();
+   uint32_t count = lFrame->getCount();
+   uint32_t first = lFrame->getBuffer(0)->getAvailable();
+   uint32_t last  = lFrame->getBuffer(count-1)->getAvailable();
 
    return(lFrame);
 }

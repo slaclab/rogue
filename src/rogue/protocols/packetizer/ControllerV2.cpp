@@ -40,7 +40,7 @@ rpp::ControllerV2Ptr rpp::ControllerV2::create ( bool enIbCrc, bool enObCrc, rpp
 }
 
 //! Creator
-rpp::ControllerV2::ControllerV2 ( bool enIbCrc, bool enObCrc, rpp::TransportPtr tran, rpp::ApplicationPtr * app ) : rpp::Controller::Controller(tran, app, 8, 8) {
+rpp::ControllerV2::ControllerV2 ( bool enIbCrc, bool enObCrc, rpp::TransportPtr tran, rpp::ApplicationPtr * app ) : rpp::Controller::Controller(tran, app, 8, 8, 8) {
 
    enIbCrc_ = enIbCrc;
    enObCrc_ = enObCrc;
@@ -242,22 +242,19 @@ void rpp::ControllerV2::applicationRx ( ris::FramePtr frame, uint8_t tDest ) {
       ris::FramePtr tFrame = ris::Frame::create();
       buff = frame->getBuffer(x);
 
-      size = buff->getPayload();
-      last = size & 0x7;
-      
-      // Shift to 64-bit alignment
-      if ( last != 0 ) size = (0xFFFFFFF8 & size) + 8;
-      else last = 8;
-      
+      // Compute last, and alignt payload to 64-bits
+      last = buff->getPayload() % 8;
+      if ( last == 0 ) last = 8;
+      buff->adjustPayload(8-last);
+         
       // Rem 8 bytes head and tail reservation before setting new size
       buff->adjustHeader(-8);
       buff->adjustTail(-8);
 
-      // Add tail to payload, set new size
-      size += 8;
-      buff->setPayload(size);
+      // Add tail to payload, set new size (header reduction added 8)
+      buff->adjustPayload(8);
 
-      // Get data pointer
+      // Get data pointer and new size
       data = buff->getPayloadData();
       size = buff->getPayload();
 
