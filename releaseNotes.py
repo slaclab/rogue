@@ -103,7 +103,7 @@ for entry in records:
     if args.html: md += '\n<table boder=0>\n'
     else: md += '\n|||\n|---:|:---|\n'
 
-    for i in ['Title','Author','Date','Pull','Branch','Jira']:
+    for i in ['Author','Date','Pull','Branch','Jira']:
         if entry[i] is not None:
             if args.html: md += f'<tr><td align=right><b>{i}:</b></td><td align=left>{entry[i]}</td></tr>\n'
             else: md += f'|**{i}:**|{entry[i]}|\n'
