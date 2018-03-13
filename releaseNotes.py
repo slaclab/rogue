@@ -7,7 +7,7 @@
 # ----------------------------------------------------------------------------
 # Description:
 # Generate release notes for pull requests relative to a tag.
-# Usage: releaseNotes.py tag (i.e. releaseNotes.py v2.5.0
+# Usage: releaseNotes.py tag out_file (i.e. releaseNotes.py v2.5.0 notes.txt)
 #
 # Must be run within an up to date git clone with the proper branch checked out.
 # Currently github complains if you run this script too many times in a short
@@ -26,16 +26,19 @@ import git   # GitPython
 from github import Github # PyGithub
 import pyperclip
 
-if len(sys.argv) != 2:
-    print("Usage: {} prev_release".format(sys.argv[0]))
+if len(sys.argv) != 3:
+    print("Usage: {} prev_release out_file".format(sys.argv[0]))
+    print("    Replace out_file with - to copy to clipboard")
     print("    Must be called in a git clone directory")
+    print("    Example {} v2.5.0 notes.txt")
     exit()
 
 sortByChanges = True
 
 prev = sys.argv[1]
+out  = sys.argv[2]
 print('Using previous release {}'.format(prev))
-print("Please wait...\n")
+print("Please wait...")
 
 # Local git clone
 g = git.Git('.')
@@ -97,10 +100,14 @@ for entry in records:
 
     md += '\n' + entry['body'] + '\n\n'
 
-print(md)
-pyperclip.copy(md)
-print('')
-print('---------------------------------')
-print('Release notes copied to clipboard')
-print('---------------------------------')
+if out == "-":
+    try:
+        pyperclip.copy(md)
+        print('Release notes copied to clipboard')
+    except:
+        print("Copy to clipboard failed, use file output instead!")
 
+else:
+    with open(out,'w') as f:
+        f.write(md)
+    print('Release notes written to {}'.format(out))
