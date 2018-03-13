@@ -70,7 +70,7 @@ void ris::Slave::acceptFrame ( ris::FramePtr frame ) {
    if ( debug_ > 0 ) {
       char buffer[1000];
 
-      log_->log(100,"Got Size=%i, Data:",frame->getPayload());
+      log_->critical("Got Size=%i, Data:",frame->getPayload());
       sprintf(buffer,"     ");
 
       count = 0;
@@ -80,7 +80,7 @@ void ris::Slave::acceptFrame ( ris::FramePtr frame ) {
 
          snprintf(buffer + strlen(buffer),1000-strlen(buffer)," 0x%.2x",val);
          if (( (count+1) % 8 ) == 0) {
-            log_->log(100,buffer);
+            log_->critical(buffer);
             sprintf(buffer,"     ");
          }
       }

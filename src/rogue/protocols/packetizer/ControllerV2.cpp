@@ -257,7 +257,7 @@ void rpp::ControllerV2::applicationRx ( ris::FramePtr frame, uint8_t tDest ) {
       (*it)->adjustPayload(8);
 
       // Get data pointer and new size
-      data = (*it)->getPayloadData();
+      data = (*it)->begin();
       size = (*it)->getPayload();
 
       // Header word 0

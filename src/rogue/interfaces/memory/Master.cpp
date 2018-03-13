@@ -55,6 +55,7 @@ void rim::Master::setup_python() {
 //! Create object
 rim::Master::Master() {
    error_   = 0;
+   slave_   = rim::Slave::create(4,4);
 
    sumTime_.tv_sec  = 1;
    sumTime_.tv_usec = 0;

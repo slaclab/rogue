@@ -170,8 +170,8 @@ void ruf::StreamReader::runThread() {
             }
 
             // Skip next step if frame is empty
+            if ( size <= 4 ) continue;
             size -= 4;
-            if ( size == 0 ) continue;
 
             // Request frame
             frame = reqFrame(size,true);
