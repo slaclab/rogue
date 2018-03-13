@@ -31,58 +31,74 @@ if len(sys.argv) != 2:
     print("    Must be called in a git clone directory")
     exit()
 
+sortByChanges = True
+
 prev = sys.argv[1]
 print('Using previous release {}'.format(prev))
+print("Please wait...\n")
 
 # Local git clone
 g = git.Git('.')
+g.fetch()
 
 # Git server
 gh = Github()
 repo = gh.get_repo('slaclab/rogue')
 
-loginfo = g.log('{}..HEAD'.format(prev),'--grep','Merge pull request')
+loginfo = g.log('{}..origin/master'.format(prev),'--grep','Merge pull request')
 
-print("Got log:")
+records = []
+entry = {}
 
-out = []
-msgEn = False
-
+# Parse the log entries
 for line in loginfo.splitlines():
 
-    if line.startswith('commit'):
-        msgEn = False
-
-    elif line.startswith('Author:'):
-        out.append("--------------------------------------------------------------------------------------------------")
-        out.append(line)
+    if line.startswith('Author:'):
+        entry['Author'] = line[7:].lstrip()
 
     elif line.startswith('Date:'):
-        out.append(line)
+        entry['Date'] = line[5:].lstrip()
 
-    # get pull request
     elif 'Merge pull request' in line:
-        pr = line.split()[3]
-        src = line.split()[5]
+        entry['Pull'] = line.split()[3].lstrip()
+        entry['Branch'] = line.split()[5].lstrip()
 
-        # Get PR info
-        req = repo.get_pull(int(pr[1:]))
+        # Get PR info from github
+        req = repo.get_pull(int(entry['Pull'][1:]))
+        entry['Title'] = req.title
+        entry['body']  = req.body
 
-        out.append('Pull Req: {}'.format(pr))
-        out.append('Branch: {}'.format(src))
+        entry['changes'] = req.additions + req.deletions
+        entry['Pull'] += f" ({req.additions} additions, {req.deletions} deletions, {req.changed_files} files changed)"
 
-        if src.startswith('slaclab/ES'):
-            out.append('Jira: https://jira.slac.stanford.edu/issues/{}'.format(src.split('/')[1]))
+        # Detect JIRA entry
+        if entry['Branch'].startswith('slaclab/ES'):
+            url = 'https://jira.slac.stanford.edu/issues/{}'.format(entry['Branch'].split('/')[1])
+            entry['Jira'] = f'<a href={url}>{url}</a>'
+        else:
+            entry['Jira'] = None
 
-        out.append('Title: {}'.format(req.title))
-        out.append("\n" + req.body + "\n")
+        records.append(entry)
+        entry = {}
 
-txt = ''
-for l in out:
-    print(l)
-    txt += (l + '\n')
+if sortByChanges:
+    records = sorted(records, key=lambda v : v['changes'], reverse=True)
 
-pyperclip.copy(txt)
+# Generate text
+md = '### Pull Requests\n'
+for entry in records:
+    md += '---\n'
+    md += '<table boder=0>\n'
+
+    for i in ['Title','Author','Date','Pull','Branch','Jira']:
+        if entry[i] is not None:
+            md += f'<tr><td align=right><b>{i}:</b></td><td align=left>{entry[i]}</td></tr>\n'
+    md += '</table>\n'
+
+    md += '\n' + entry['body'] + '\n\n'
+
+print(md)
+pyperclip.copy(md)
 print('')
 print('---------------------------------')
 print('Release notes copied to clipboard')
