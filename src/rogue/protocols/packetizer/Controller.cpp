@@ -109,12 +109,6 @@ ris::FramePtr rpp::Controller::reqFrame ( uint32_t size ) {
       // Add buffer to return frame
       lFrame->appendBuffer(buff);
    }
-
-   uint32_t total = lFrame->getAvailable();
-   uint32_t count = lFrame->getCount();
-   uint32_t first = lFrame->getBuffer(0)->getAvailable();
-   uint32_t last  = lFrame->getBuffer(count-1)->getAvailable();
-
    return(lFrame);
 }
 
