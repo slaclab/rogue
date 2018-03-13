@@ -400,7 +400,7 @@ class Device(pr.Node,rim.Hub):
         pr.Node._rootAttached(self, parent, root)
 
         self._maxTxnSize = self._reqMaxAccess()
-        self._minTxnSize = self._reqMinAccess()        
+        self._minTxnSize = self._doMinAccess()
 
         for key,value in self._nodes.items():
             value._rootAttached(self,root)
