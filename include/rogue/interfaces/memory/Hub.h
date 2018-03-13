@@ -72,9 +72,31 @@ namespace rogue {
                                   uint64_t address, uint32_t size, uint32_t type);
 
          };
+         
+         //! Memory Hub class, wrapper to enable pyton overload of virtual methods
+         class HubWrap : 
+            public rogue::interfaces::memory::Hub, 
+            public boost::python::wrapper<rogue::interfaces::memory::Hub> {
 
+            public:
+
+               //! Constructor
+              HubWrap(uint64_t offset);
+
+
+               //! Post a transaction. Master will call this method with the access attributes.
+               void doTransaction(uint32_t id, boost::shared_ptr<rogue::interfaces::memory::Master> master,
+                                  uint64_t address, uint32_t size, uint32_t type);
+
+               //! Post a transaction. Master will call this method with the access attributes.
+               void defDoTransaction(uint32_t id, boost::shared_ptr<rogue::interfaces::memory::Master> master,
+                                     uint64_t address, uint32_t size, uint32_t type);
+
+         };
+         
          // Convienence
          typedef boost::shared_ptr<rogue::interfaces::memory::Hub> HubPtr;
+         typedef boost::shared_ptr<rogue::interfaces::memory::HubWrap> HubWrapPtr;
 
       }
    }
