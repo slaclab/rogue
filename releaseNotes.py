@@ -30,7 +30,7 @@ import argparse
 
 parser = argparse.ArgumentParser('Release notes generator')
 parser.add_argument('tag', type=str, help='reference tag or range. (i.e. v2.5.0 or v2.5.0..v2.6.0)')
-parser.add_argument('output', type=str, help='Output file or - for output to clipboard')
+parser.add_argument('--output', '-o', type=str, help='Output file or - for output to clipboard')
 parser.add_argument('--user', type=str, help='Username for github')
 parser.add_argument('--password', type=str, help='Password for github')
 parser.add_argument('--nosort', help='Disable sort by change counts', action="store_true")
@@ -111,11 +111,15 @@ for entry in records:
     if args.html: md += '</table>\n'
 
     md += '\n**Notes:**\n'
-    md += entry['body']
+    for line in entry['body'].splitlines():
+        md += '> ' + line + '\n'
     md += '\n\n'
 
-if args.output == "-":
+if args.output is None:
+    print(md)
+elif args.output == "-":
     try:
+        print(md)
         pyperclip.copy(md)
         print('Release notes copied to clipboard')
     except:
