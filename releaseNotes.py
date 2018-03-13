@@ -31,8 +31,11 @@ if len(sys.argv) != 2:
     print("    Must be called in a git clone directory")
     exit()
 
+sortByChanges = True
+
 prev = sys.argv[1]
 print('Using previous release {}'.format(prev))
+print("Please wait...\n")
 
 # Local git clone
 g = git.Git('.')
@@ -44,49 +47,58 @@ repo = gh.get_repo('slaclab/rogue')
 
 loginfo = g.log('{}..origin/master'.format(prev),'--grep','Merge pull request')
 
-print("Got log:")
-
 records = []
-msgEn = False
+entry = {}
 
+# Parse the log entries
 for line in loginfo.splitlines():
-    entry = {}
 
     if line.startswith('Author:'):
-        entry['author'] = line[7:]
+        entry['Author'] = line[7:].lstrip()
 
     elif line.startswith('Date:'):
-        entry['date'] = line[5:]
+        entry['Date'] = line[5:].lstrip()
 
     elif 'Merge pull request' in line:
-        entry['num'] = int(line.split()[3][1:])
-        entry['branch'] = line.split()[5]
+        entry['Pull'] = line.split()[3].lstrip()
+        entry['Branch'] = line.split()[5].lstrip()
 
-        # Get PR info
-        req = repo.get_pull(int(entry[num]))
-        entry['title'] = req.title
+        # Get PR info from github
+        req = repo.get_pull(int(entry['Pull'][1:]))
+        entry['Title'] = req.title
         entry['body']  = req.body
 
-        # Detect JIRA
-        if src.startswith('slaclab/ES'):
-            entry['jira'] = 'https://jira.slac.stanford.edu/issues/{}'.format(entry['branch'].split('/')[1])
+        entry['changes'] = req.additions + req.deletions
+        entry['Pull'] += f" ({req.additions} additions, {req.deletions} deletions, {req.changed_files} files changed)"
 
-    records.append(entry)
+        # Detect JIRA entry
+        if entry['Branch'].startswith('slaclab/ES'):
+            url = 'https://jira.slac.stanford.edu/issues/{}'.format(entry['Branch'].split('/')[1])
+            entry['Jira'] = f'<a href={url}>{url}</a>'
+        else:
+            entry['Jira'] = None
+
+        records.append(entry)
+        entry = {}
+
+if sortByChanges:
+    records = sorted(records, key=lambda v : v['changes'], reverse=True)
 
 # Generate text
-txt = ''
+md = '### Pull Requests\n'
 for entry in records:
-    txt += '--------------------------------------------------------------------------------------------------\n"
-    txt += 'Author: {}'.format(entry['author'])
+    md += '---\n'
+    md += '<table boder=0>\n'
 
+    for i in ['Title','Author','Date','Pull','Branch','Jira']:
+        if entry[i] is not None:
+            md += f'<tr><td align=right><b>{i}:</b></td><td align=left>{entry[i]}</td></tr>\n'
+    md += '</table>\n'
 
+    md += '\n' + entry['body'] + '\n\n'
 
-txt = ''
-for l in out:
-    print(l)
-    txt += (l + '\n')
-
-pyperclip.copy(txt)
+print(md)
+pyperclip.copy(md)
 print('')
 print('---------------------------------')
 print('Release notes copied to clipboard')
