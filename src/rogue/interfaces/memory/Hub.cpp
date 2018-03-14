@@ -78,8 +78,6 @@ void rim::Hub::doTransaction(rim::TransactionPtr tran) {
 void rim::Hub::setup_python() {
 
    bp::class_<rim::HubWrap, rim::HubWrapPtr, bp::bases<rim::Master,rim::Slave>, boost::noncopyable>("Hub",bp::init<uint64_t>())
-      .def("create", &rim::Hub::create)
-      .staticmethod("create")
        .def("_getAddress",    &rim::Hub::doAddress)
        .def("_getOffset",     &rim::Hub::getOffset)
        .def("_doTransaction", &rim::Hub::doTransaction, &rim::HubWrap::defDoTransaction)
