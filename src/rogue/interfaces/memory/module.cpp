@@ -23,6 +23,7 @@
 #include <rogue/interfaces/memory/Master.h>
 #include <rogue/interfaces/memory/Hub.h>
 #include <rogue/interfaces/memory/Constants.h>
+#include <rogue/interfaces/memory/Transaction.h>
 #include <boost/python.hpp>
 
 namespace bp  = boost::python;
@@ -57,6 +58,7 @@ void rim::setup_module() {
    rim::Master::setup_python(); 
    rim::Slave::setup_python(); 
    rim::Hub::setup_python(); 
+   rim::Transaction::setup_python(); 
 
 }
 

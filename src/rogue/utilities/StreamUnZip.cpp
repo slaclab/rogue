@@ -45,10 +45,8 @@ ru::StreamUnZip::~StreamUnZip() { }
 
 //! Accept a frame from master
 void ru::StreamUnZip::acceptFrame ( ris::FramePtr frame ) {
-   ris::FrameIteratorPtr readIter;
-   ris::FrameIteratorPtr writeIter;
-   uint32_t writeCnt = 0;
-   uint32_t readCnt  = 0;
+   ris::Frame::BufferIterator rBuff;
+   ris::Frame::BufferIterator wBuff;
    int32_t ret;
    
    // First request a new frame of the same size
@@ -63,42 +61,48 @@ void ru::StreamUnZip::acceptFrame ( ris::FramePtr frame ) {
    if ( (ret = BZ2_bzDecompressInit(&strm,0,0)) != BZ_OK ) 
       throw(rogue::GeneralError::ret("StreamUnZip::acceptFrame","Error initializing decompressor",ret));
 
-   // Use the frame iterator in this case to avoid a copy to local memory
-   readIter  = frame->startRead(0,frame->getPayload());
-   writeIter = newFrame->startWrite(0,frame->getPayload());
+   // Setup decompression pointers
+   rBuff = frame->beginBuffer();
+   strm.next_in  = (char *)(*rBuff)->begin();
+   strm.avail_in = (*rBuff)->getPayload();
+
+   wBuff = newFrame->beginBuffer();
+   strm.next_out  = (char *)(*wBuff)->begin();
+   strm.avail_out = (*wBuff)->getAvailable();
 
    // Use the iterators to move data
    do {
-
-      // Init counters
-      readCnt  = strm.total_in_lo32;
-      writeCnt = strm.total_out_lo32;
-
-      // Setup decompression pointers
-      strm.next_in  = (char *)readIter->data();
-      strm.avail_in = readIter->size();
-
-      strm.next_out  = (char *)writeIter->data();
-      strm.avail_out = writeIter->size();
 
       ret = BZ2_bzDecompress(&strm);
 
       if ( (ret != BZ_STREAM_END) && (ret != BZ_OK) ) 
          throw(rogue::GeneralError::ret("StreamUnZip::acceptFrame","Decompression runtime error",ret));
 
-      readIter->completed(strm.total_in_lo32-readCnt);
-      writeIter->completed(strm.total_out_lo32-writeCnt);
+      if ( ret == BZ_STREAM_END ) break;
 
-      // Increase the frame size if we run out of room
-      if ( ! newFrame->nextWrite(writeIter) ) {
-         ris::FramePtr tmpFrame = this->reqFrame(frame->getPayload(),true);
-         newFrame->appendFrame(tmpFrame);
-         writeIter = newFrame->startWrite(strm.total_out_lo32,frame->getPayload());
+      // Update read buffer if neccessary
+      if ( strm.avail_in == 0 ) {
+         ++rBuff;
+         strm.next_in  = (char *)(*rBuff)->begin();
+         strm.avail_in = (*rBuff)->getPayload();
       }
-      frame->nextRead(readIter);
 
-   } while ( ret != BZ_STREAM_END );
+      // Update write buffer if neccessary
+      if ( strm.avail_out == 0 ) {
 
+         // We ran out of room, double the frame size
+         if ( (wBuff+1) == newFrame->endBuffer() ) {
+            ris::FramePtr tmpFrame = this->reqFrame(frame->getPayload(),true);
+            wBuff = newFrame->appendFrame(tmpFrame);
+         }
+         else ++wBuff;
+
+         strm.next_out  = (char *)(*wBuff)->begin();
+         strm.avail_out = (*wBuff)->getAvailable();
+      }
+   } while ( 1 );
+
+   newFrame->setPayload(strm.total_out_lo32);
    BZ2_bzDecompressEnd(&strm);
 
    this->sendFrame(newFrame);

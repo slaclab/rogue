@@ -17,6 +17,7 @@
 #ifndef __ROGUE_HARDWARE_AXI_MEM_MAP_H__
 #define __ROGUE_HARDWARE_AXI_MEM_MAP_H__
 #include <rogue/interfaces/memory/Slave.h>
+#include <rogue/interfaces/memory/Transaction.h>
 #include <boost/python.hpp>
 #include <boost/thread.hpp>
 #include <stdint.h>
@@ -50,8 +51,7 @@ namespace rogue {
                ~AxiMemMap();
 
                //! Post a transaction
-               void doTransaction(uint32_t id, boost::shared_ptr<rogue::interfaces::memory::Master> master, 
-                                  uint64_t address, uint32_t size, uint32_t type);
+               void doTransaction(boost::shared_ptr<rogue::interfaces::memory::Transaction> tran);
          };
 
          // Convienence

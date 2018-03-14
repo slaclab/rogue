@@ -416,6 +416,8 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
             # Otherwise act directly
             else:
                 d   = {}
+
+                # The following three lines are causing major slowdowns
                 addPathToDict(d,path,disp)
                 yml = dictToYaml(d,default_flow_style=False)
                 self._sendYamlFrame(yml)
