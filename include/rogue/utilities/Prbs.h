@@ -23,6 +23,7 @@
 #define __ROGUE_UTILITIES_PRBS_H__
 #include <stdint.h>
 #include <boost/thread.hpp>
+#include <boost/dynamic_bitset.hpp>
 #include <rogue/interfaces/stream/Slave.h>
 #include <rogue/interfaces/stream/Master.h>
 

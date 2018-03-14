@@ -118,21 +118,12 @@ void ru::Prbs::setTapsPy(boost::python::object p) {
 }
 
 void ru::Prbs::flfsr(ru::PrbsData & data) {
-#if 0
-   uint32_t  x;
-   uint128_t bit = 0;
-   uint128_t ret;
+   bool bit = false;
 
-   for (x=0; x < tapCnt_; x++) bit = bit ^ (input >> taps_[x]);
+   for (uint32_t x=0; x < tapCnt_; x++) bit ^= data[taps_[x]];
 
-   bit = bit & 1;
-   ret = (input << 1) | bit;
-
-   if ( width_ == 32 ) ret &= 0xFFFFFFFF;
-   else if ( width_ == 64 ) ret &= 0xFFFFFFFFFFFFFFFF;
-
-   return (ret);
-#endif
+   data <<= 1;
+   data[0] = bit;
 }
 
 //! Thread background
@@ -259,17 +250,16 @@ void ru::Prbs::genFrame (uint32_t size) {
    ris::toFrame(frIter,byteWidth_,frSize);
 
    // Init data
-   ru::PrbsData data(byteWidth_ * 8, frSeq[0];
+   ru::PrbsData data(byteWidth_ * 8, frSeq[0]);
 
    // Generate payload
    while ( frIter != frEnd ) {
       flfsr(data);
-      data.to_block_range(frIter);
+      to_block_range(data,frIter);
       frIter += byteWidth_;
    }
 
    // Update counters
-   txSeq_++;
    txCount_++;
    txBytes_ += size;
    fr->setPayload(size);
@@ -286,6 +276,7 @@ void ru::Prbs::acceptFrame ( ris::FramePtr frame ) {
    uint32_t      expSize;
    uint32_t      size;
    uint32_t      pos;
+   uint8_t       compData[16];
 
    boost::unique_lock<boost::mutex> lock(rxMtx_,boost::defer_lock);
 
@@ -306,7 +297,7 @@ void ru::Prbs::acceptFrame ( ris::FramePtr frame ) {
 
    // First word is sequence
    ris::fromFrame(frIter,byteWidth_,frSeq);
-   expSeq = rxSeq;
+   expSeq = rxSeq_;
    rxSeq_ = frSeq[0] + 1;
 
    // Second word is size
@@ -330,20 +321,20 @@ void ru::Prbs::acceptFrame ( ris::FramePtr frame ) {
    }
 
    // Init data
-   ru::PrbsData expData(byteWidth_ * 8, frSeq[0];
+   ru::PrbsData expData(byteWidth_ * 8, frSeq[0]);
    pos = 0;
 
    // Read payload
    while ( frIter != frEnd ) {
       flfsr(expData);
-      ru::PrbsData gotData(frIter,frIter+byteWidth_);
-      frIter += byteWidth_;
+      to_block_range(expData,compData);
 
-      if ( expData != gotData ) {
-         rxLog_->warning("Bad value at index %i. count=%i%x",pos,rxCount_);
+      if ( ! std::equal(frIter,frIter+byteWidth_,compData ) ) {
+         rxLog_->warning("Bad value at index %i. count=%i",pos,rxCount_);
          rxErrCount_++;
          return;
       }
+      frIter += byteWidth_;
       ++pos;
    }
 
