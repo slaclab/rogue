@@ -137,9 +137,9 @@ void rhr::MapMemory::doTransaction(rim::TransactionPtr tran) {
       count += dataSize;
       it    += dataSize;
    }
+   lock.unlock(); // Done with iterator
 
    log_->debug("Transaction id=0x%08x, addr 0x%08x. Size=%i, type=%i, data=0x%08x",tran->id(),tran->address(),tran->size(),tran->type(),data);
-   lock.unlock();
    tran->done(0);
 }
 
