@@ -137,7 +137,6 @@ class MemEmulate(rogue.interfaces.memory.Slave):
         self._data = {}
 
     def _checkRange(self, address, size):
-
         return 0
 
     def _doMaxAccess(self):
@@ -146,13 +145,16 @@ class MemEmulate(rogue.interfaces.memory.Slave):
     def _doMinAccess(self):
         return(self._minWidth)
 
-    def _doTransaction(self,tid,master,address,size,type):
+    def _doTransaction(self,transaction):
+        address = transaction.address()
+        size    = transaction.size()
+        type    = transaction.type()
 
         if (address % self._minWidth) != 0:
-            master._doneTransaction(tid,rogue.interfaces.memory.AddressError)
+            transaction.done(rogue.interfaces.memory.AddressError)
             return
         elif size > self._maxSize:
-            master._doneTransaction(tid,rogue.interfaces.memory.SizeError)
+            transaction.done(rogue.interfaces.memory.SizeError)
             return
 
         for i in range (0, size):
@@ -162,17 +164,17 @@ class MemEmulate(rogue.interfaces.memory.Slave):
         ba = bytearray(size)
 
         if type == rogue.interfaces.memory.Write or type == rogue.interfaces.memory.Post:
-            master._getTransactionData(tid,0,ba)
+            transaction.getData(ba,0)
 
             for i in range(0, size):
                 self._data[address+i] = ba[i]
 
-            master._doneTransaction(tid,0)
+            transaction.done(0)
 
         else:
             for i in range(0, size):
                 ba[i] = self._data[address+i]
 
-            master._setTransactionData(tid,0,ba)
-            master._doneTransaction(tid,0)
+            transaction.setData(ba,0)
+            transaction.done(0)
 

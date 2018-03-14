@@ -58,14 +58,14 @@ void rpp::ControllerV1::transportRx( ris::FramePtr frame ) {
    uint32_t  flags;
    uint8_t * data;
 
-   if ( frame->getCount() == 0 ) 
-      throw(rogue::GeneralError("packetizer::ControllerV1::transportRx","Frame must not be empty"));
+   if ( frame->isEmpty() ) 
+      log_->warning("Empty frame received At Transport");
 
    rogue::GilRelease noGil;
    boost::lock_guard<boost::mutex> lock(tranMtx_);
 
-   buff = frame->getBuffer(0);
-   data = buff->getPayloadData();
+   buff = *(frame->beginBuffer());
+   data = buff->begin();
 
    // Drop invalid data
    if ( frame->getError() || (buff->getPayload() < 9) || ((data[0] & 0xF) != 0) ) {
@@ -141,9 +141,9 @@ void rpp::ControllerV1::transportRx( ris::FramePtr frame ) {
 
 //! Frame received at application interface
 void rpp::ControllerV1::applicationRx ( ris::FramePtr frame, uint8_t tDest ) {
-   ris::BufferPtr buff;
+   ris::Frame::BufferIterator it;
+   uint32_t segment;
    uint8_t * data;
-   uint32_t x;
    uint32_t size;
    uint8_t  fUser;
    uint8_t  lUser;
@@ -161,8 +161,8 @@ void rpp::ControllerV1::applicationRx ( ris::FramePtr frame, uint8_t tDest ) {
    }
    else gettimeofday(&endTime,NULL);
 
-   if ( frame->getCount() == 0 ) 
-      throw(rogue::GeneralError("packetizer::ControllerV1::applicationRx","Frame must not be empty"));
+   if ( frame->isEmpty() ) 
+      log_->warning("Empty frame received at application");
 
    if ( frame->getError() ) return;
 
@@ -183,26 +183,26 @@ void rpp::ControllerV1::applicationRx ( ris::FramePtr frame, uint8_t tDest ) {
    lUser = (frame->getFlags() >> 8) & 0xFF;
    tId   = (frame->getFlags() >> 16) & 0xFF;
 
-   for (x=0; x < frame->getCount(); x++ ) {
+   segment = 0;
+   for (it=frame->beginBuffer(); it != frame->endBuffer(); ++it) {
       ris::FramePtr tFrame = ris::Frame::create();
-      buff = frame->getBuffer(x);
 
       // Adjust header and tail, before setting new size
-      buff->adjustHeader(-8);
-      buff->adjustTail(-1);
+      (*it)->adjustHeader(-8);
+      (*it)->adjustTail(-1);
       
       // Make payload one byte longer
-      buff->adjustPayload(1);
+      (*it)->adjustPayload(1);
 
-      size = buff->getPayload();
-      data = buff->getPayloadData();
+      size = (*it)->getPayload();
+      data = (*it)->begin();
 
       data[0] = ((appIndex_ % 16) << 4);
       data[1] = (appIndex_ / 16) & 0xFF;
 
-      data[2] = x % 256;
-      data[3] = (x % 0xFFFF) / 256;
-      data[4] = x / 0xFFFF;
+      data[2] = segment % 256;
+      data[3] = (segment % 0xFFFF) / 256;
+      data[4] = segment / 0xFFFF;
 
       data[5] = tDest;
       data[6] = tId;
@@ -210,10 +210,11 @@ void rpp::ControllerV1::applicationRx ( ris::FramePtr frame, uint8_t tDest ) {
 
       data[size-1] = lUser & 0x7F;
 
-      if ( x == (frame->getCount()-1) ) data[size-1] |= 0x80;
+      if ( it == (frame->endBuffer()-1) ) data[size-1] |= 0x80;
 
-      tFrame->appendBuffer(buff);
+      tFrame->appendBuffer(*it);
       tranQueue_.push(tFrame);
+      segment++;
    }
    appIndex_++;
 }

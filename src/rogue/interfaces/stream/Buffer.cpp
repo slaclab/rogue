@@ -23,6 +23,7 @@
 
 #include <rogue/interfaces/stream/Buffer.h>
 #include <rogue/interfaces/stream/Pool.h>
+#include <rogue/interfaces/stream/Frame.h>
 #include <rogue/GeneralError.h>
 #include <boost/make_shared.hpp>
 
@@ -65,17 +66,9 @@ ris::Buffer::~Buffer() {
    source_->retBuffer(data_,meta_,allocSize_);
 }
 
-//! Get raw data pointer
-uint8_t * ris::Buffer::getRawData() {
-   return(data_);
-}
-
-/* 
- * Get data pointer
- * Returns base + header size
- */
-uint8_t * ris::Buffer::getPayloadData() {
-   return(data_ + headRoom_);
+//! Set container frame
+void ris::Buffer::setFrame(ris::FramePtr frame) {
+   frame_ = frame;
 }
 
 //! Get meta data, used by pool 
@@ -105,11 +98,14 @@ void ris::Buffer::adjustHeader(int32_t value) {
 
    // Payload can never be less than headeroom
    if ( payload_ < headRoom_ ) payload_ = headRoom_;
+
+   if ( frame_ != NULL ) frame_->setSizeDirty();
 }
 
 //! Clear the header reservation
 void ris::Buffer::zeroHeader() {
    headRoom_ = 0;
+   if ( frame_ != NULL ) frame_->setSizeDirty();
 }
 
 //! Adjust tail by passed value
@@ -126,11 +122,37 @@ void ris::Buffer::adjustTail(int32_t value) {
 
    // Make adjustment
    tailRoom_ += value;
+   if ( frame_ != NULL ) frame_->setSizeDirty();
 }
 
 //! Clear the tail reservation
 void ris::Buffer::zeroTail() {
    tailRoom_ = 0;
+   if ( frame_ != NULL ) frame_->setSizeDirty();
+}
+
+/* 
+ * Get data pointer (begin iterator)
+ * Returns base + header size
+ */
+uint8_t * ris::Buffer::begin() {
+   return(data_ + headRoom_);
+}
+
+/*
+ * Get end data pointer (end iterator)
+ * This is the end of raw data buffer
+ */
+uint8_t * ris::Buffer::end() {
+   return(data_ + rawSize_);
+}
+
+/*
+ * Get end payload pointer (end iterator)
+ * This is the end of payload data
+ */
+uint8_t * ris::Buffer::endPayload() {
+   return(data_ + payload_);
 }
 
 /*
@@ -177,24 +199,33 @@ void ris::Buffer::setPayload(uint32_t size) {
             size, (rawSize_ - (headRoom_ + tailRoom_))));
 
    payload_ = size + headRoom_;
+   if ( frame_ != NULL ) frame_->setSizeDirty();
+}
+
+/* 
+ * Set min payload size (not including header)
+ * Payload size is updated only if size > current size
+*/
+void ris::Buffer::minPayload(uint32_t size) {
+   if ( size > getPayload() ) setPayload(size);
 }
 
 //! Adjust payload size
 void ris::Buffer::adjustPayload(int32_t value) {
    if ( value < 0 && (uint32_t)abs(value) > getPayload())
-      throw(rogue::GeneralError::boundary("Buffer::adjustPayload",
-            abs(value), (getPayload())));
-
+      throw(rogue::GeneralError::boundary("Buffer::adjustPayload", abs(value), (getPayload())));
    setPayload(getPayload() + value);
 }
 
 //! Set the buffer as full (minus tail reservation)
 void ris::Buffer::setPayloadFull() {
    payload_ = rawSize_ - tailRoom_;
+   if ( frame_ != NULL ) frame_->setSizeDirty();
 }
 
 //! Set the buffer as empty (minus header reservation)
 void ris::Buffer::setPayloadEmpty() {
    payload_ = headRoom_;
+   if ( frame_ != NULL ) frame_->setSizeDirty();
 }
 

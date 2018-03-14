@@ -21,6 +21,7 @@
 #include <boost/python.hpp>
 #include <rogue/protocols/epicsV3/Slave.h>
 #include <rogue/interfaces/stream/Frame.h>
+#include <rogue/interfaces/stream/FrameIterator.h>
 #include <rogue/GeneralError.h>
 #include <rogue/GilRelease.h>
 #include <boost/make_shared.hpp>
@@ -104,22 +105,23 @@ void rpe::Slave::valueGet() { }
 void rpe::Slave::valueSet() { }
 
 void rpe::Slave::acceptFrame ( ris::FramePtr frame ) {
+   ris::Frame::iterator iter;
    struct timespec t;
-   uint32_t tSize;
+   uint32_t fSize;
    uint32_t size_;
-   uint32_t pos;
    uint32_t i;
 
-   tSize = frame->getPayload();
+   fSize = frame->getPayload();
+   iter = frame->begin();
 
    // First check to see if frame is valid
-   if ( (tSize % fSize_) != 0 ) {
-      rpe::Value::log_->error("Invalid frame size (%i) from epics: %s\n",tSize,epicsName_.c_str());
+   if ( (fSize % fSize_) != 0 ) {
+      rpe::Value::log_->error("Invalid frame size (%i) from epics: %s\n",fSize,epicsName_.c_str());
       return;
    }
 
    // Compute element count
-   size_ = tSize / fSize_;
+   size_ = fSize / fSize_;
 
    // Limit size
    if ( size_ > max_ ) size_ = max_;
@@ -130,7 +132,6 @@ void rpe::Slave::acceptFrame ( ris::FramePtr frame ) {
    // Release old data
    pValue_->unreference();
    pValue_ = new gddAtomic (gddAppType_value, epicsType_, 1u, size_);
-   pos = 0;
 
    // Set timestamp
    clock_gettime(CLOCK_REALTIME,&t);
@@ -139,49 +140,49 @@ void rpe::Slave::acceptFrame ( ris::FramePtr frame ) {
    // Create vector of appropriate type
    if ( epicsType_ == aitEnumUint8 ) {
       aitUint8 * pF = new aitUint8[size_];
-      for ( i = 0; i < size_; i++ ) pos += frame->read(&(pF[i]), pos, fSize_);
+      for (i=0; i < size_; ++i) fromFrame(iter,fSize_,&(pF[i]));
       pValue_->putRef(pF, new rpe::Destructor<aitUint8 *>);
    }
 
    else if ( epicsType_ == aitEnumUint16 ) {
       aitUint16 * pF = new aitUint16[size_];
-      for ( i = 0; i < size_; i++ ) pos += frame->read(&(pF[i]), pos, fSize_);
+      for (i=0; i < size_; ++i) fromFrame(iter,fSize_,&(pF[i]));
       pValue_->putRef(pF, new rpe::Destructor<aitUint16 *>);
    }
 
    else if ( epicsType_ == aitEnumUint32 ) {
       aitUint32 * pF = new aitUint32[size_];
-      for ( i = 0; i < size_; i++ ) pos += frame->read(&(pF[i]), pos, fSize_);
+      for (i=0; i < size_; ++i) fromFrame(iter,fSize_,&(pF[i]));
       pValue_->putRef(pF, new rpe::Destructor<aitUint32 *>);
    }
 
    else if ( epicsType_ == aitEnumInt8 ) {
       aitInt8 * pF = new aitInt8[size_];
-      for ( i = 0; i < size_; i++ ) pos += frame->read(&(pF[i]), pos, fSize_);
+      for (i=0; i < size_; ++i) fromFrame(iter,fSize_,&(pF[i]));
       pValue_->putRef(pF, new rpe::Destructor<aitInt8 *>);
    }
 
    else if ( epicsType_ == aitEnumInt16 ) {
       aitInt16 * pF = new aitInt16[size_];
-      for ( i = 0; i < size_; i++ ) pos += frame->read(&(pF[i]), pos, fSize_);
+      for (i=0; i < size_; ++i) fromFrame(iter,fSize_,&(pF[i]));
       pValue_->putRef(pF, new rpe::Destructor<aitInt16 *>);
    }
 
    else if ( epicsType_ == aitEnumInt32 ) {
       aitInt32 * pF = new aitInt32[size_];
-      for ( i = 0; i < size_; i++ ) pos += frame->read(&(pF[i]), pos, fSize_);
+      for (i=0; i < size_; ++i) fromFrame(iter,fSize_,&(pF[i]));
       pValue_->putRef(pF, new rpe::Destructor<aitInt32 *>);
    }
 
    else if ( epicsType_ == aitEnumFloat32 ) {
       aitFloat32 * pF = new aitFloat32[size_];
-      for ( i = 0; i < size_; i++ ) pos += frame->read(&(pF[i]), pos, fSize_);
+      for (i=0; i < size_; ++i) fromFrame(iter,fSize_,&(pF[i]));
       pValue_->putRef(pF, new rpe::Destructor<aitFloat32 *>);
    }
 
    else if ( epicsType_ == aitEnumFloat64 ) {
       aitFloat64 * pF = new aitFloat64[size_];
-      for ( i = 0; i < size_; i++ ) pos += frame->read(&(pF[i]), pos, fSize_);
+      for (i=0; i < size_; ++i) fromFrame(iter,fSize_,&(pF[i]));
       pValue_->putRef(pF, new rpe::Destructor<aitFloat64 *>);
    }
 

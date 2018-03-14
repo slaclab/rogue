@@ -68,8 +68,7 @@ namespace rogue {
                uint64_t doAddress();
 
                //! Post a transaction. Master will call this method with the access attributes.
-               void doTransaction(uint32_t id, boost::shared_ptr<rogue::interfaces::memory::Master> master,
-                                  uint64_t address, uint32_t size, uint32_t type);
+               void doTransaction(boost::shared_ptr<rogue::interfaces::memory::Transaction> tran);
 
          };
          

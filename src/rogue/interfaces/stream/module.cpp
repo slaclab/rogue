@@ -25,6 +25,7 @@
 #include <rogue/interfaces/stream/Slave.h>
 #include <rogue/interfaces/stream/Master.h>
 #include <rogue/interfaces/stream/Frame.h>
+#include <rogue/interfaces/stream/FrameIterator.h>
 #include <rogue/interfaces/stream/Fifo.h>
 #include <rogue/interfaces/stream/module.h>
 #include <boost/python.hpp>
@@ -45,6 +46,7 @@ void ris::setup_module() {
 
    ris::Buffer::setup_python();
    ris::Frame::setup_python();
+   ris::FrameIterator::setup_python();
    ris::Master::setup_python();
    ris::Slave::setup_python();
    ris::Pool::setup_python();

@@ -44,6 +44,13 @@ namespace rogue {
 
                rogue::LoggingPtr log_;
 
+               static const uint32_t HeadLen = 20;
+               static const uint32_t TailLen = 4;
+
+               // Setup header, return write flag
+               bool setupHeader(boost::shared_ptr<rogue::interfaces::memory::Transaction> tran, 
+                                uint32_t *header, uint32_t &frameLen, bool tx);
+
             public:
 
                //! Class creation
@@ -59,8 +66,7 @@ namespace rogue {
                ~SrpV3();
 
                //! Post a transaction. Master will call this method with the access attributes.
-               void doTransaction(uint32_t id, boost::shared_ptr<rogue::interfaces::memory::Master> master,
-                                  uint64_t address, uint32_t size, uint32_t type);
+               void doTransaction(boost::shared_ptr<rogue::interfaces::memory::Transaction> tran);
 
                //! Accept a frame from master
                void acceptFrame ( boost::shared_ptr<rogue::interfaces::stream::Frame> frame );

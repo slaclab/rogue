@@ -20,7 +20,6 @@ import math
 import textwrap
 import pyrogue as pr
 import inspect
-import copy
 
 
 class MemoryError(Exception):
@@ -73,6 +72,7 @@ class BaseBlock(object):
 
         # Setup logging
         self._log = pr.logInit(self,name)
+
 
     def __repr__(self):
         return repr(self.name)
@@ -164,7 +164,7 @@ class LocalBlock(BaseBlock):
     def set(self, value):
         with self._lock:
             changed = self._value != value
-            self._value = copy.copy(value)
+            self._value = value
 
             # If a setFunction exists, call it (Used by local variables)
             if self._localSet is not None:
@@ -183,7 +183,7 @@ class LocalBlock(BaseBlock):
 
                 self._value = pr.varFuncHelper(self._localGet,pargs, self._log, self._variable.path)
 
-        return copy.copy(self._value)
+        return self._value
 
     def updated(self):
         self._variable.updated()
@@ -440,6 +440,17 @@ class RemoteBlock(BaseBlock, rim.Master):
                         setBitToBytes(self._vDataMask,var.bitOffset[x]+y,1)
 
             return True
+
+    def _setDefault(self, var, value):
+        with self._lock:
+            # Stage the default data        
+            self.set(var, value)
+
+            # Move stage data to block, but keep it staged as well
+            for x in range(self._size):
+                self._bData[x] = self._bData[x] & (self._sDataMask[x] ^ 0xFF)
+                self._bData[x] = self._bData[x] | (self._sDataMask[x] & self._sData[x])
+
 
     def updated(self):
         self._log.debug(f'Block {self._name} _update called')

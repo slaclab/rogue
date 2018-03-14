@@ -458,6 +458,10 @@ class RemoteVariable(BaseVariable):
                 return self.revEnum[sValue]
             else:
                 return self._base.fromString(sValue, sum(self._bitSize))
+            
+    def _setDefault(self):
+        if self._default is not None:
+            self._block._setDefault(self, self.parseDisp(self._default))
 
     def _shiftOffsetDown(self,amount,minSize):
         if amount != 0:
