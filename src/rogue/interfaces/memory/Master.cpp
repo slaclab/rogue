@@ -37,7 +37,6 @@ rim::MasterPtr rim::Master::create () {
 
 void rim::Master::setup_python() {
    bp::class_<rim::Master, rim::MasterPtr, boost::noncopyable>("Master",bp::init<>())
-      .def("_getTransaction",     &rim::Master::getTransaction)
       .def("_setSlave",           &rim::Master::setSlave)
       .def("_getSlave",           &rim::Master::getSlave)
       .def("_reqMinAccess",       &rim::Master::reqMinAccess)
@@ -65,22 +64,6 @@ rim::Master::Master() {
 
 //! Destroy object
 rim::Master::~Master() { }
-
-//! Get transaction with index
-rim::TransactionPtr rim::Master::getTransaction(uint32_t index) {
-   rim::TransactionPtr ret;
-   TransactionMap::iterator it;
-
-   rogue::GilRelease noGil;
-   boost::lock_guard<boost::mutex> lock(mastMtx_);
-
-   it = tranMap_.find(index);
-
-   if ( ( it = tranMap_.find(index)) != tranMap_.end() ) 
-      return it->second;
-   else
-      return NULL;
-}
 
 //! Set slave
 void rim::Master::setSlave ( rim::SlavePtr slave ) {

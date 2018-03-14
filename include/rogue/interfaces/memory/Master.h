@@ -79,9 +79,6 @@ namespace rogue {
                //! Destroy object
                virtual ~Master();
 
-               //! Get Transaction with index
-               boost::shared_ptr<rogue::interfaces::memory::Transaction> getTransaction(uint32_t index);
-
                //! Set slave
                void setSlave ( boost::shared_ptr<rogue::interfaces::memory::Slave> slave );
 
