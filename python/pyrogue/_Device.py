@@ -32,7 +32,15 @@ class EnableVariable(pr.BaseVariable):
             name='enable',
             mode='RW',
             value=enabled, 
-            disp={False: 'False', True: 'True', 'parent': 'ParentFalse'})
+            disp={False: 'False', True: 'True', 'parent': 'ParentFalse', 'deps': 'ExtDepFalse'})
+
+        if deps is None:
+            self._deps = []
+        else:
+            self._deps = deps
+
+        for d in self._deps:
+            d.addListener(self)
 
         self._value = enabled
         self._lock = threading.Lock()
@@ -43,9 +51,12 @@ class EnableVariable(pr.BaseVariable):
     @Pyro4.expose
     def get(self, read=False):
         ret = self._value
+
         with self._lock:
             if self._value is False:
                 ret = False
+            elif len(self._deps) > 0 and not all(x.value() for x in self._deps):
+                ret = 'deps'
             elif self._parent == self._root:
                 #print("Root enable = {}".format(self._value))
                 ret = self._value
@@ -61,13 +72,13 @@ class EnableVariable(pr.BaseVariable):
         
     @Pyro4.expose
     def set(self, value, write=True):
-        if value != 'parent':
+        if value != 'parent' and value != 'deps':
             old = self.value()
 
             with self._lock:
                 self._value = value
             
-            if old != value and old != 'parent':
+            if old != value and old != 'parent' and old != 'deps':
                 self.parent.enableChanged(value)
 
         self.updated()
@@ -95,7 +106,8 @@ class Device(pr.Node,rim.Hub):
                  variables=None,
                  blockSize=None,
                  expand=True,
-                 enabled=True):
+                 enabled=True,
+                 enableDeps=None):
         
         """Initialize device class"""
         if name is None:
@@ -128,7 +140,7 @@ class Device(pr.Node,rim.Hub):
         self.addRemoteCommands = ft.partial(self.addNodes, pr.RemoteCommand)
 
         # Variable interface to enable flag
-        self.add(EnableVariable(enabled=enabled))
+        self.add(EnableVariable(enabled=enabled, deps=enableDeps))
 
         if variables is not None and isinstance(variables, collections.Iterable):
             if all(isinstance(v, pr.BaseVariable) for v in variables):
