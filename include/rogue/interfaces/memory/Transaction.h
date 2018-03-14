@@ -99,6 +99,9 @@ namespace rogue {
                //! Destructor
                ~Transaction();
 
+               //! Get expired flag
+               bool expired();
+
                //! Get id
                uint32_t id();
 
@@ -120,11 +123,11 @@ namespace rogue {
                //! end iterator, caller must lock around access
                rogue::interfaces::memory::Transaction::iterator end();
 
-               //! Write data from python
-               void writePy ( boost::python::object p, uint32_t offset );
+               //! Get transaction data from python
+               void getData ( boost::python::object p, uint32_t offset );
 
-               //! Read data from python
-               void readPy ( boost::python::object p, uint32_t offset );
+               //! Set transaction data from python
+               void setData ( boost::python::object p, uint32_t offset );
          };
 
          // Convienence

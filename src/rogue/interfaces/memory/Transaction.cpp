@@ -49,8 +49,8 @@ void rim::Transaction::setup_python() {
       .def("size",    &rim::Transaction::size)
       .def("type",    &rim::Transaction::type)
       .def("done",    &rim::Transaction::done)
-      .def("write",   &rim::Transaction::writePy)
-      .def("read",    &rim::Transaction::readPy)
+      .def("setData", &rim::Transaction::setData)
+      .def("getData", &rim::Transaction::getData)
    ;
 }
 
@@ -80,6 +80,9 @@ rim::Transaction::Transaction(rim::MasterPtr master) {
 
 //! Destroy object
 rim::Transaction::~Transaction() { }
+
+//! Get expired state
+bool rim::Transaction::expired() { return (iter_ == NULL); }
 
 //! Get id
 uint32_t rim::Transaction::id() { return id_; }
@@ -115,8 +118,8 @@ rim::Transaction::iterator rim::Transaction::end() {
    return iter_ + size_;
 }
 
-//! Write data from python
-void rim::Transaction::writePy ( boost::python::object p, uint32_t offset ) {
+//! Set transaction data from python
+void rim::Transaction::setData ( boost::python::object p, uint32_t offset ) {
    Py_buffer  pyBuf;
    uint8_t *  data;
 
@@ -139,8 +142,8 @@ void rim::Transaction::writePy ( boost::python::object p, uint32_t offset ) {
    PyBuffer_Release(&pyBuf);
 }
 
-//! Read data from python
-void rim::Transaction::readPy ( boost::python::object p, uint32_t offset ) {
+//! Get transaction data from python
+void rim::Transaction::getData ( boost::python::object p, uint32_t offset ) {
    Py_buffer  pyBuf;
    uint8_t *  data;
 
