@@ -62,8 +62,6 @@ ris::FramePtr ris::Master::reqFrame ( uint32_t size, bool zeroCopyEn ) {
    rogue::GilRelease noGil;
    boost::lock_guard<boost::mutex> lock(slaveMtx_);
 
-   if ( primary_ == NULL ) return NULL;
-
    return(primary_->acceptReq(size,zeroCopyEn));
 }
 

@@ -48,7 +48,7 @@ namespace rogue {
          */
          class Frame : public boost::enable_shared_from_this<rogue::interfaces::stream::Frame> {
 
-               friend Buffer;
+               friend class Buffer;
 
                //! Interface specific flags
                uint32_t flags_;

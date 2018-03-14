@@ -33,8 +33,8 @@ namespace rogue {
 
          //! Transaction
          class Transaction {
-            friend rogue::interfaces::memory::Master;
-            friend rogue::interfaces::memory::Hub;
+            friend class Master;
+            friend class Hub;
 
             public: 
                typedef uint8_t * iterator;

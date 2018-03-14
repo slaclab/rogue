@@ -29,7 +29,7 @@ namespace rogue {
 
          //! Frame iterator
          class FrameIterator : public std::iterator<std::random_access_iterator_tag, uint8_t> {
-            friend class rogue::interfaces::stream::Frame;
+            friend class Frame;
 
                //! End flag
                bool end_;

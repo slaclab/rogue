@@ -37,7 +37,7 @@ namespace rogue {
 
          //! Master container
          class Master : public boost::enable_shared_from_this<rogue::interfaces::memory::Master> {
-            friend rogue::interfaces::memory::Transaction;
+            friend class Transaction;
 
             private:
 
