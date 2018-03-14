@@ -86,36 +86,30 @@ void rim::Hub::setup_python() {
    ;
 
    bp::implicitly_convertible<rim::HubPtr, rim::MasterPtr>();
-   
 }
-
 
 //! Constructor
 rim::HubWrap::HubWrap(uint64_t offset) : rim::Hub(offset) {}
 
-
-
 //! Post a transaction. Master will call this method with the access attributes.
-void rim::HubWrap::doTransaction(uint32_t id, rim::MasterPtr master,
-                                   uint64_t address, uint32_t size, uint32_t type) {
+void rim::HubWrap::doTransaction(rim::TransactionPtr transaction) {
    {
       rogue::ScopedGil gil;
 
       if (boost::python::override pb = this->get_override("_doTransaction")) {
          try {
-            pb(id,master,address,size,type);
+            pb(transaction);
             return;
          } catch (...) {
             PyErr_Print();
          }
       }
    }
-   rim::Hub::doTransaction(id,master,address,size,type);
+   rim::Hub::doTransaction(transaction);
 }
 
 //! Post a transaction. Master will call this method with the access attributes.
-void rim::HubWrap::defDoTransaction(uint32_t id, rim::MasterPtr master,
-                                      uint64_t address, uint32_t size, uint32_t type) {
-   rim::Hub::doTransaction(id, master, address, size, type);
+void rim::HubWrap::defDoTransaction(rim::TransactionPtr transaction) {
+   rim::Hub::doTransaction(transaction);
 }
 
