@@ -222,7 +222,7 @@ void rim::Master::rstTransaction(TransactionMap::iterator it, bool notify) {
    log_->debug("Resetting transaction id=%i",it->second->id_);
 
    // Lock the transaction
-   boost::lock_guard<boost::mutex> lock(it->lock);
+   boost::lock_guard<boost::mutex> lock(it->second->lock);
 
    it->second->iter_ = NULL;
    if ( it->second->pyValid_ ) {

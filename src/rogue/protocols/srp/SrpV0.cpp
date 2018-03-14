@@ -124,13 +124,9 @@ void rps::SrpV0::doTransaction(rim::TransactionPtr tran) {
 
    // Write header
    ris::toFrame(fIter,headerLen,header); 
-   fIter += headerLen;
 
    // Write data
-   if ( doWrite ) {
-      std::copy(tIter,tIter+tran->size(),fIter);
-      fIter += tran->size();
-   }
+   if ( doWrite ) std::copy(tIter,tIter+tran->size(),fIter);
 
    // Last field is zero
    tail[0] = 0;
