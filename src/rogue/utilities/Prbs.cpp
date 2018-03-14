@@ -59,7 +59,7 @@ ru::Prbs::Prbs() {
    rxLog_      = rogue::Logging::create("prbs.rx");
    txLog_      = rogue::Logging::create("prbs.tx");
 
-   // Assume width = 32
+   // Init width = 32
    width_     = 32;
    byteWidth_ = 4;
    minSize_   = 12;
