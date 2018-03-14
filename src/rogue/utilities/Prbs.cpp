@@ -320,22 +320,26 @@ void ru::Prbs::acceptFrame ( ris::FramePtr frame ) {
       return;
    }
 
-   // Init data
-   ru::PrbsData expData(byteWidth_ * 8, frSeq[0]);
-   pos = 0;
+   // Is payload checking enabled
+   if ( checkPl_ ) {
 
-   // Read payload
-   while ( frIter != frEnd ) {
-      flfsr(expData);
-      to_block_range(expData,compData);
+      // Init data
+      ru::PrbsData expData(byteWidth_ * 8, frSeq[0]);
+      pos = 0;
 
-      if ( ! std::equal(frIter,frIter+byteWidth_,compData ) ) {
-         rxLog_->warning("Bad value at index %i. count=%i",pos,rxCount_);
-         rxErrCount_++;
-         return;
+      // Read payload
+      while ( frIter != frEnd ) {
+         flfsr(expData);
+         to_block_range(expData,compData);
+
+         if ( ! std::equal(frIter,frIter+byteWidth_,compData ) ) {
+            rxLog_->warning("Bad value at index %i. count=%i",pos,rxCount_);
+            rxErrCount_++;
+            return;
+         }
+         frIter += byteWidth_;
+         ++pos;
       }
-      frIter += byteWidth_;
-      ++pos;
    }
 
    rxCount_++;
