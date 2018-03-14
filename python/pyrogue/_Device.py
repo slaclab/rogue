@@ -107,7 +107,9 @@ class Device(pr.Node,rim.Hub):
                  blockSize=None,
                  expand=True,
                  enabled=True,
+                 defaults=None,
                  enableDeps=None):
+
         
         """Initialize device class"""
         if name is None:
@@ -122,6 +124,7 @@ class Device(pr.Node,rim.Hub):
         self._memLock   = threading.RLock()
         self._size      = size
         self._blockSize = blockSize
+        self._defaults  = defaults if defaults is not None else {}
 
         # Connect to memory slave
         if memBase: self._setSlave(memBase)
@@ -418,6 +421,12 @@ class Device(pr.Node,rim.Hub):
             value._rootAttached(self,root)
 
         self._buildBlocks()
+
+        # Override defaults as dictated by the _defaults dict
+        for varName, defValue in self._defaults.items():
+            match = pr.nodeMatch(self.variables, varName)
+            for var in match:
+                var._default = defValue
 
         # Some variable initialization can run until the blocks are built
         for v in self.variables.values():
