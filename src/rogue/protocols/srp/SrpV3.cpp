@@ -197,6 +197,13 @@ void rps::SrpV3::acceptFrame ( ris::FramePtr frame ) {
    // Setup transaction iterator
    rogue::GilRelease noGil;
    boost::unique_lock<boost::mutex> lock(tran->lock);
+
+   // Transaction expired
+   if ( tran->expired() ) {
+      log_->debug("Transaction expired. Id=%i",id);
+      delTransaction(tran->id());
+      return;
+   }
    tIter = tran->begin();
 
    // Setup expect header and length
