@@ -39,8 +39,6 @@ rpr::ClientPtr rpr::Client::create (uint32_t segSize) {
 void rpr::Client::setup_python() {
 
    bp::class_<rpr::Client, rpr::ClientPtr, boost::noncopyable >("Client",bp::init<uint32_t>())
-      .def("create",         &rpr::Client::create)
-      .staticmethod("create")
       .def("transport",      &rpr::Client::transport)
       .def("application",    &rpr::Client::application)
       .def("getOpen",        &rpr::Client::getOpen)

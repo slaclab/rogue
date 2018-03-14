@@ -3,9 +3,7 @@
  * Title      : Stream interface master
  * ----------------------------------------------------------------------------
  * File       : Master.h
- * Author     : Ryan Herbst, rherbst@slac.stanford.edu
  * Created    : 2016-09-16
- * Last update: 2016-09-16
  * ----------------------------------------------------------------------------
  * Description:
  * Stream interface master
@@ -37,7 +35,7 @@ ris::MasterPtr ris::Master::create () {
 }
 
 //! Creator
-ris::Master::Master() {
+ris::Master::Master() { 
    primary_ = ris::Slave::create();
 }
 
@@ -49,8 +47,6 @@ ris::Master::~Master() {
 //! Set primary slave, used for buffer request forwarding
 void ris::Master::setSlave ( boost::shared_ptr<interfaces::stream::Slave> slave ) {
    rogue::GilRelease noGil;
-   boost::lock_guard<boost::mutex> lock(slaveMtx_);
-   slaves_.push_back(slave);
    primary_ = slave;
 }
 
@@ -63,35 +59,36 @@ void ris::Master::addSlave ( ris::SlavePtr slave ) {
 
 //! Request frame from primary slave
 ris::FramePtr ris::Master::reqFrame ( uint32_t size, bool zeroCopyEn ) {
-   ris::SlavePtr slave;
-
    rogue::GilRelease noGil;
    boost::lock_guard<boost::mutex> lock(slaveMtx_);
-   slave = primary_;
-   return(slave->acceptReq(size,zeroCopyEn));
+
+   return(primary_->acceptReq(size,zeroCopyEn));
 }
 
 //! Push frame to slaves
 void ris::Master::sendFrame ( FramePtr frame) {
-   uint32_t x;
-
    std::vector<ris::SlavePtr> slaves;
+   std::vector<ris::SlavePtr>::iterator it;
+   ris::SlavePtr primary;
 
    {
       rogue::GilRelease noGil;
       boost::lock_guard<boost::mutex> lock(slaveMtx_);
       slaves = slaves_;
+      primary = primary_;
    }
 
-   for (x=0; x < slaves_.size(); x++) 
-      slaves[x]->acceptFrame(frame);
+   if ( primary_ != NULL ) {
+      for (it = slaves_.begin(); it != slaves_.end(); ++it) 
+         (*it)->acceptFrame(frame);
+
+      primary_->acceptFrame(frame);
+   }
 }
 
 void ris::Master::setup_python() {
 
    bp::class_<ris::Master, ris::MasterPtr, boost::noncopyable>("Master",bp::init<>())
-      .def("create",         &ris::Master::create)
-      .staticmethod("create")
       .def("_setSlave",      &ris::Master::setSlave)
       .def("_addSlave",      &ris::Master::addSlave)
       .def("_reqFrame",      &ris::Master::reqFrame)

@@ -73,7 +73,10 @@ class BaseVariable(pr.Node):
 
         # Determine typeStr from value type
         if value is not None:
-            self._typeStr = value.__class__.__name__
+            if isinstance(value, list):
+                self._typeStr = f'List[{value[0].__class__.__name__}]'
+            else:
+                self._typeStr = value.__class__.__name__
         else:
             self._typeStr = 'Unknown'
 
@@ -238,6 +241,8 @@ class BaseVariable(pr.Node):
                     return float(sValue)
                 elif t == bool:
                     return str.lower(sValue) == "true"
+                elif t == list or t == dict:
+                    return eval(sValue)
                 else:
                     return sValue
 
@@ -453,6 +458,10 @@ class RemoteVariable(BaseVariable):
                 return self.revEnum[sValue]
             else:
                 return self._base.fromString(sValue, sum(self._bitSize))
+            
+    def _setDefault(self):
+        if self._default is not None:
+            self._block._setDefault(self, self.parseDisp(self._default))
 
     def _shiftOffsetDown(self,amount,minSize):
         if amount != 0:

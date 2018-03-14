@@ -25,10 +25,13 @@
 #include <rogue/interfaces/stream/Master.h>
 #include <rogue/interfaces/stream/Slave.h>
 #include <rogue/interfaces/stream/Frame.h>
+#include <rogue/interfaces/stream/FrameIterator.h>
 #include <rogue/interfaces/memory/Slave.h>
 #include <rogue/interfaces/memory/Constants.h>
+#include <rogue/interfaces/memory/Transaction.h>
 #include <rogue/protocols/srp/SrpV0.h>
 #include <rogue/Logging.h>
+#include <rogue/GilRelease.h>
 
 namespace bp = boost::python;
 namespace rps = rogue::protocols::srp;
@@ -44,137 +47,188 @@ rps::SrpV0Ptr rps::SrpV0::create () {
 //! Setup class in python
 void rps::SrpV0::setup_python() {
 
-   bp::class_<rps::SrpV0, rps::SrpV0Ptr, bp::bases<ris::Master,ris::Slave,rim::Slave>, boost::noncopyable >("SrpV0",bp::init<>())
-      .def("create",         &rps::SrpV0::create)
-      .staticmethod("create")
-   ;
+   bp::class_<rps::SrpV0, rps::SrpV0Ptr, bp::bases<ris::Master,ris::Slave,rim::Slave>, boost::noncopyable >("SrpV0",bp::init<>());
 
 }
 
 //! Creator with version constant
 rps::SrpV0::SrpV0() : ris::Master(), ris::Slave(), rim::Slave(4,2048) { 
-   log_ = new rogue::Logging("SrpV0");
+   log_ = rogue::Logging::create("SrpV0");
 }
 
 //! Deconstructor
 rps::SrpV0::~SrpV0() {}
 
+//! Setup header, return frame size
+bool rps::SrpV0::setupHeader(rim::TransactionPtr tran, uint32_t *header, uint32_t &headerLen, uint32_t &frameLen, bool tx) {
+   bool doWrite = false;
+
+   header[0] = tran->id();
+   header[1] = (tran->address() >> 2) & 0x3FFFFFFF;
+   header[2] = (tran->size()/4)-1; // reads
+
+   // Build header for write
+   if (tran->type() == rim::Write || tran->type() == rim::Post) {
+      header[1] |= 0x40000000;
+      frameLen  = (tran->size() + WrHeadLen + TailLen);
+      headerLen = WrHeadLen;
+      doWrite = true;
+   }
+   else if ( tx ) {
+      frameLen  = RdHeadLen + TailLen;
+      headerLen = RdHeadLen;
+   }
+   else {
+      frameLen = (tran->size() + RxHeadLen + TailLen);
+      headerLen = RxHeadLen;
+   }
+
+   return doWrite;
+}
+
 //! Post a transaction
-void rps::SrpV0::doTransaction(uint32_t id, rim::MasterPtr master, uint64_t address, uint32_t size, uint32_t type) {
-   ris::FrameIteratorPtr iter;
+void rps::SrpV0::doTransaction(rim::TransactionPtr tran) {
+   ris::Frame::iterator fIter;
+   rim::Transaction::iterator tIter;
    ris::FramePtr  frame;
-   uint32_t  frameSize;
-   uint32_t  temp;
-   uint32_t  cnt;
+   uint32_t frameSize;
+   uint32_t header[MaxHeadLen/4];
+   uint32_t tail[TailLen/4];
+   uint32_t headerLen;
+   bool     doWrite;
 
    // Size error
-   if ((address % 4) != 0 ) {
-      master->doneTransaction(id,rim::AddressError);
+   if ((tran->address() % min()) != 0 ) {
+      tran->done(rim::AddressError);
       return;
    }
 
    // Size error
-   if ((size % 4) != 0 || size < 4 || size > 2048) {
-      master->doneTransaction(id,rim::SizeError);
+   if ((tran->size() % min()) != 0 || tran->size() < min() || tran->size() > max()) {
+      tran->done(rim::SizeError);
       return;
    }
 
-   // Compute transmit frame size
-   if (type == rim::Write || type == rim::Post)
-      frameSize = (size + 12); // 2 x 32 bits for header, 1 x 32 for tail
-   else 
-      frameSize = 16;
+   // Setup header and frame size
+   doWrite = setupHeader(tran,header,headerLen,frameSize,true);
 
    // Request frame
    frame = reqFrame(frameSize,true);
+   frame->setPayload(frameSize);
 
-   // First 32-bit value is context
-   temp = id;
-   cnt  = frame->write(&(temp),0,4);
-   
-   // Second 32-bit value is address & mode
-   temp  = (type == rim::Write || type == rim::Post)?0x40000000:0x00000000;
-   temp |= (address >> 2) & 0x3FFFFFFF;
-   cnt  += frame->write(&(temp),cnt,4);
+   // Setup iterators
+   rogue::GilRelease noGil;
+   boost::unique_lock<boost::mutex> lock(tran->lock);
+   fIter = frame->begin();
+   tIter = tran->begin();
+
+   // Write header
+   ris::toFrame(fIter,headerLen,header); 
 
    // Write data
-   if ( type == rim::Write || type == rim::Post ) {
-      iter = frame->startWrite(cnt,size);
-
-      do {
-         master->getTransactionData(id,iter->data(),iter->total(),iter->size());
-      } while (frame->nextWrite(iter));
-      cnt += size;
-   }
-
-   // Read, set count value
-   else {
-      temp = (size/4)-1;
-      cnt += frame->write(&temp,cnt,4);
-   }
+   if ( doWrite ) std::copy(tIter,tIter+tran->size(),fIter);
 
    // Last field is zero
-   temp = 0;
-   cnt += frame->write(&temp,cnt,4);
+   tail[0] = 0;
+   ris::toFrame(fIter,TailLen,tail); 
 
-   if ( type == rim::Post ) master->doneTransaction(id,0);
-   else addMaster(id,master);
+   lock.unlock(); // Done with iterator
 
-   log_->debug("Send frame for id=0x%08x, addr 0x%08x. Size=%i, type=%i",id,address,size,type);
+   if ( tran->type() == rim::Post ) tran->done(0);
+   else addTransaction(tran);
+
+   log_->debug("Send frame for id=0x%08x, addr 0x%08x. Size=%i, type=%i",tran->id(),tran->address(),tran->size(),tran->type());
+   log_->debug("Send frame header: 0x%0.8x 0x%0.8x 0x%0.8x",header[0],header[1],header[2]);
    sendFrame(frame);
 }
 
 //! Accept a frame from master
 void rps::SrpV0::acceptFrame ( ris::FramePtr frame ) {
-   ris::FrameIteratorPtr iter;
-   rim::MasterPtr m;
-   uint32_t  id;
-   uint32_t  size;
-   uint32_t  cnt;
-   uint32_t  temp;
+   ris::Frame::iterator fIter;
+   rim::Transaction::iterator tIter;
+   rim::TransactionPtr tran;
+   uint32_t header[MaxHeadLen/4];
+   uint32_t tail[TailLen/4];
+   uint32_t id;
+   uint32_t expHeader[MaxHeadLen/4];
+   uint32_t expHeadLen;
+   uint32_t expFrameLen;
+   bool     doWrite;
+   uint32_t fSize;
 
    // Check frame size
-   if ( frame->getPayload() < 16 ) return; // Invalid frame, drop it
+   if ( (fSize = frame->getPayload()) < 16 ) {
+      log_->info("Got undersize frame size = %i",fSize);
+      return; // Invalid frame, drop it
+   }
+
+   // Setup frame iterator
+   fIter = frame->begin();
+
+   // Get the header
+   ris::fromFrame(fIter,RxHeadLen,header);
 
    // Extract id from frame
-   frame->read(&id,0,4);
+   id = header[0];
+   log_->debug("Got frame id=%i header: 0x%0.8x 0x%0.8x", 
+         id, header[0],header[1],header[2]);
 
-   log_->debug("Recv frame for id=0x%08x",id);
-
-   // Find master
-   if ( ! validMaster(id) ) {
+   // Find Transaction
+   if ( (tran = getTransaction(id)) == NULL ) {
      log_->debug("Invalid ID frame for id=0x%08x",id);
      return; // Bad id or post, drop frame
    }
-   else m = getMaster(id);
+
+   // Setup transaction iterator
+   rogue::GilRelease noGil;
+   boost::unique_lock<boost::mutex> lock(tran->lock);
+
+   // Transaction expired
+   if ( tran->expired() ) {
+      log_->debug("Transaction expired. Id=%i",id);
+      delTransaction(tran->id());
+      return;
+   }
+   tIter = tran->begin();
+
+   // Setup header and frame size
+   doWrite = setupHeader(tran,expHeader,expHeadLen,expFrameLen,false);
+
+   // Check frame size
+   if ( fSize != expFrameLen ) {
+      log_->debug("Bad receive length for %i exp=%i, got=%i",id,expFrameLen,fSize);
+      return;
+   }
+
+   // Check header
+   if ( memcmp(header,expHeader,RxHeadLen) != 0 ) {
+     log_->debug("Bad header for %i",id);
+     return;
+   }
 
    // Read tail error value, complete if error is set
-   frame->read(&temp,frame->getPayload()-4,4);
-   if ( temp != 0 ) {
-      delMaster(id);
+   fIter = frame->endPayload()-TailLen;
+   ris::fromFrame(fIter,TailLen,tail);
+   if ( tail[0] != 0 ) {
+      lock.unlock();
+      delTransaction(id);
 
-      if ( temp & 0x20000 ) m->doneTransaction(id,rim::AxiTimeout);
-      else if ( temp & 0x10000 ) m->doneTransaction(id,rim::AxiFail);
-      else m->doneTransaction(id,temp);
+      if ( tail[0] & 0x20000 ) tran->done(rim::AxiTimeout);
+      else if ( tail[0] & 0x10000 ) tran->done(rim::AxiFail);
+      else tran->done(tail[0]);
       log_->debug("Error detected for ID id=0x%08x",id);
       return;
    }
 
    // Copy data if read
-   frame->read(&temp,4,4);
-   if ( (temp & 0xC0000000) == 0 ) {
-      size = frame->getPayload() - 12;
-      cnt  = 8;
-
-      iter = frame->startRead(cnt,size);
-
-      do {
-         m->setTransactionData(id,iter->data(),iter->total(),iter->size());
-      } while (frame->nextRead(iter));
-      cnt += size;
+   if ( ! doWrite ) {
+      fIter = frame->begin() + RxHeadLen;
+      std::copy(fIter,fIter+tran->size(),tIter);
    }
+   lock.unlock(); // Done with iterator
 
-   delMaster(id);
-   m->doneTransaction(id,0);
+   // Done
+   delTransaction(tran->id());
+   tran->done(0);
 }
 

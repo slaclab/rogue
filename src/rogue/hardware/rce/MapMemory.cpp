@@ -22,7 +22,9 @@
 #include <rogue/hardware/rce/MapMemory.h>
 #include <rogue/interfaces/memory/Constants.h>
 #include <rogue/GeneralError.h>
+#include <rogue/GilRelease.h>
 #include <boost/make_shared.hpp>
+#include <boost/thread.hpp>
 #include <stdio.h>
 #include <unistd.h>
 #include <sys/types.h>
@@ -42,9 +44,13 @@ rhr::MapMemoryPtr rhr::MapMemory::create () {
 
 //! Creator
 rhr::MapMemory::MapMemory() : rim::Slave(4,0xFFFFFFFF) {
+
    fd_ = ::open("/dev/mem", O_RDWR | O_SYNC);
-   log_ = new rogue::Logging("rce.MapMemory");
+   log_ = rogue::Logging::create("rce.MapMemory");
    if ( fd_ < 0 ) throw(rogue::GeneralError::open("MapMemory::MapMemory","/dev/mem"));
+
+   log_->critical("rogue.hardware.rce.MapMemory is being deprecated and will be removed in a future release.");
+   log_->critical("Please use rogue.hardware.axi.AxiMemMap instead");
 }
 
 //! Destructor
@@ -97,34 +103,49 @@ uint8_t * rhr::MapMemory::findSpace (uint32_t base, uint32_t size) {
 }
 
 //! Post a transaction
-void rhr::MapMemory::doTransaction(uint32_t id, boost::shared_ptr<rogue::interfaces::memory::Master> master, 
-                                   uint64_t address, uint32_t size, uint32_t type) {
-   uint8_t * ptr;
+void rhr::MapMemory::doTransaction(rim::TransactionPtr tran) {
+   rim::Transaction::iterator it;
+
    uint32_t count;
+   uint32_t data;
+   uint32_t dataSize;
+   uint8_t * ptr;
 
-   if ((ptr = findSpace(address,size)) == NULL) {
-      master->doneTransaction(id,rim::AddressError);
+   dataSize = sizeof(uint32_t);
+
+   if ( (tran->size() % dataSize) != 0 ) tran->done(rim::SizeError);
+
+   count = 0;
+
+   rogue::GilRelease noGil;
+   boost::unique_lock<boost::mutex> lock(tran->lock);
+   it = tran->begin();
+
+   if ((ptr = findSpace(tran->address(),tran->size())) == NULL) {
+      tran->done(rim::AddressError);
+      return;
    }
-   else {
-      count = 0;
 
-      while ( count < size ) {
-         if (type == rim::Write || type == rim::Post) 
-            master->getTransactionData(id,ptr+count,count,4);
-         else 
-            master->setTransactionData(id,ptr+count,count,4);
-         count += 4;
+   while (count != tran->size()) {
+      if (tran->type() == rim::Write || tran->type() == rim::Post) {
+         std::copy(it,it+dataSize,ptr);
       }
-
-      master->doneTransaction(id,0);
+      else {
+         std::copy(ptr,ptr+count+dataSize,it);
+      }
+      ptr   += dataSize;
+      count += dataSize;
+      it    += dataSize;
    }
+   lock.unlock(); // Done with iterator
+
+   log_->debug("Transaction id=0x%08x, addr 0x%08x. Size=%i, type=%i, data=0x%08x",tran->id(),tran->address(),tran->size(),tran->type(),data);
+   tran->done(0);
 }
 
 void rhr::MapMemory::setup_python () {
 
    bp::class_<rhr::MapMemory, rhr::MapMemoryPtr, bp::bases<rim::Slave>, boost::noncopyable >("MapMemory",bp::init<>())
-      .def("create",         &rhr::MapMemory::create)
-      .staticmethod("create")
       .def("addMap",         &rhr::MapMemory::addMap)
    ;
 

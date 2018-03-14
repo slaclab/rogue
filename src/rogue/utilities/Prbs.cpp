@@ -24,10 +24,12 @@
 #include <rogue/interfaces/stream/Slave.h>
 #include <rogue/interfaces/stream/Master.h>
 #include <rogue/interfaces/stream/Frame.h>
+#include <rogue/interfaces/stream/FrameIterator.h>
 #include <rogue/interfaces/stream/Buffer.h>
 #include <rogue/utilities/Prbs.h>
 #include <boost/make_shared.hpp>
 #include <rogue/GilRelease.h>
+#include <rogue/GeneralError.h>
 #include <rogue/Logging.h>
 #include <rogue/GeneralError.h>
 
@@ -54,8 +56,8 @@ ru::Prbs::Prbs() {
    txCount_    = 0;
    txBytes_    = 0;
    checkPl_    = true;
-   rxLog_      = new Logging("prbs.rx");
-   txLog_      = new Logging("prbs.tx");
+   rxLog_      = rogue::Logging::create("prbs.rx");
+   txLog_      = rogue::Logging::create("prbs.tx");
 
    // Assume width = 32
    width_     = 32;
@@ -145,6 +147,11 @@ void ru::Prbs::runThread() {
 
 //! Auto run data generation
 void ru::Prbs::enable(uint32_t size) {
+
+   // Verify size first
+   if ((( size % byteWidth_ ) != 0) || size < minSize_ ) 
+      throw rogue::GeneralError("Prbs::enable","Invalid frame size");
+
    if ( txThread_ == NULL ) {
       txSize_ = size;
       txThread_ = new boost::thread(boost::bind(&Prbs::runThread, this));
@@ -216,14 +223,15 @@ void ru::Prbs::resetCount() {
 
 //! Generate a data frame
 void ru::Prbs::genFrame (uint32_t size) {
-   uint32_t      cnt;
-   uint32_t      frSize;
-   uint8_t       value[byteWidth_];
-   uint8_t       zeros[16];
+   ris::Frame::iterator frIter;
+   ris::Frame::iterator frEnd;
+   uint32_t      frSeq[4];
+   uint32_t      frSize[4];
    ris::FramePtr fr;
-   ru::PrbsData  data;
 
-   memset(zeros,0,16);
+   // Verify size first
+   if ((( size % byteWidth_ ) != 0) || size < minSize_ ) 
+      throw rogue::GeneralError("Prbs::genFrame","Invalid frame size");
 
    boost::unique_lock<boost::mutex> lock(txMtx_,boost::defer_lock);
 
@@ -231,56 +239,53 @@ void ru::Prbs::genFrame (uint32_t size) {
    lock.lock();
    noGil.acquire(); // Not sure we need this
 
-   // Verify size first
-   if ((( size % byteWidth_ ) != 0) || size < minSize_ ) {
-      txLog_->warning("Size violation size=%i, count=%i",size,txCount_);
-      txErrCount_++;
-      return;
-   }
+   // Setup size
+   memset(frSize,0,16);
+   frSize[0] = (size / byteWidth_) - 1;
+
+   // Setup sequence
+   memset(frSeq,0,16);
+   frSeq[0] = txSeq_++;
 
    // Get frame
    fr = reqFrame(size,true);
+   frIter = fr->begin();
+   frEnd  = fr->end();
 
-   // Frame allocation failed
-   if ( fr->getAvailable() < size ) {
-      txErrCount_++;
-      return;
-   }
-
-   // First word is sequence (from earlier)
-   cnt = fr->write(&txSeq_,0,byteWidth_);
-   if ( byteWidth_ > 4 ) cnt += fr->write(zeros,cnt,(byteWidth_-4));
+   // First word is sequence
+   ris::toFrame(frIter,byteWidth_,frSeq);
 
    // Second word is size
-   frSize = (size - byteWidth_) / byteWidth_;
-   cnt += fr->write(&frSize,cnt,4);
-   if ( byteWidth_ > 4 ) cnt += fr->write(zeros,cnt,(byteWidth_-4));
+   ris::toFrame(frIter,byteWidth_,frSize);
 
    // Init data
-   data = txSeq_;
+   ru::PrbsData data(byteWidth_ * 8, frSeq[0];
 
    // Generate payload
-   while ( cnt < size ) {
+   while ( frIter != frEnd ) {
       flfsr(data);
-      cnt += fr->write(value,cnt,byteWidth_);
+      data.to_block_range(frIter);
+      frIter += byteWidth_;
    }
 
    // Update counters
    txSeq_++;
    txCount_++;
    txBytes_ += size;
+   fr->setPayload(size);
    sendFrame(fr);
 }
 
 //! Accept a frame from master
 void ru::Prbs::acceptFrame ( ris::FramePtr frame ) {
-   uint32_t   frSize;
-   uint32_t   frSeq;
-   uint32_t   curSeq;
-   uint32_t   size;
-   uint32_t   cnt;
-   uint8_t    expValue[byteWidth_];
-   uint8_t    gotValue[byteWidth_];
+   ris::Frame::iterator frIter;
+   ris::Frame::iterator frEnd;
+   uint32_t      frSeq[4];
+   uint32_t      frSize[4];
+   uint32_t      expSeq;
+   uint32_t      expSize;
+   uint32_t      size;
+   uint32_t      pos;
 
    boost::unique_lock<boost::mutex> lock(rxMtx_,boost::defer_lock);
 
@@ -289,6 +294,8 @@ void ru::Prbs::acceptFrame ( ris::FramePtr frame ) {
    noGil.acquire(); // Not sure we need this
 
    size = frame->getPayload();
+   frIter = frame->begin();
+   frEnd  = frame->end();
 
    // Verify size
    if ((( size % byteWidth_ ) != 0) || size < minSize_ ) {
@@ -297,22 +304,18 @@ void ru::Prbs::acceptFrame ( ris::FramePtr frame ) {
       return;
    }
 
-   // Get sequence value
-   cnt = frame->read(gotValue,0,byteWidth_);
-   memcpy(&frSeq,gotValue,4);
+   // First word is sequence
+   ris::fromFrame(frIter,byteWidth_,frSeq);
+   expSeq = rxSeq;
+   rxSeq_ = frSeq[0] + 1;
 
-   // Update sequence
-   curSeq = rxSeq_;
-   rxSeq_ = frSeq + 1;
-
-   // Get size
-   cnt += frame->read(gotValue,cnt,byteWidth_);
-   memcpy(&frSize,gotValue,4);
-   frSize = (frSize * byteWidth_) + byteWidth_;
+   // Second word is size
+   ris::fromFrame(frIter,byteWidth_,frSize);
+   expSize = (frSize[0] + 1) * byteWidth_;
 
    // Check size
-   if ( frSize != size ) {
-      rxLog_->warning("Bad size. exp=%i, got=%i, count=%i",frSize,size,rxCount_);
+   if ( expSize != size ) {
+      rxLog_->warning("Bad size. exp=%i, got=%i, count=%i",expSize,size,rxCount_);
       rxErrCount_++;
       return;
    }
@@ -320,27 +323,28 @@ void ru::Prbs::acceptFrame ( ris::FramePtr frame ) {
    // Check sequence, 
    // Accept any sequence if our local count is zero
    // incoming frames with seq = 0 never cause errors and treated as a restart
-   if ( frSeq != 0 && curSeq != 0 && frSeq != curSeq ) {
-      rxLog_->warning("Bad Sequence. cur=%i, got=%i, count=%i",curSeq,frSeq,rxCount_);
+   if ( frSeq[0] != 0 && expSeq != 0 && frSeq[0] != expSeq ) {
+      rxLog_->warning("Bad Sequence. cur=%i, got=%i, count=%i",expSeq,frSeq[0],rxCount_);
       rxErrCount_++;
       return;
    }
-   memcpy(expValue,&frSeq,4);
 
-   // Check payload
-   if ( checkPl_ ) {
-      while ( cnt < size ) {
-         flfsr(expValue);
+   // Init data
+   ru::PrbsData expData(byteWidth_ * 8, frSeq[0];
+   pos = 0;
 
-         cnt += frame->read(gotValue,cnt,byteWidth_);
-         
-         if ( memcmp(expValue,gotValue,byteWidth_) ) {
-            rxLog_->warning("Bad value at index %i. exp=0x%x, got=0x, count=%i%x",
-                    (cnt-byteWidth_),expValue[0],gotValue[0],rxCount_);
-            rxErrCount_++;
-            return;
-         }
+   // Read payload
+   while ( frIter != frEnd ) {
+      flfsr(expData);
+      ru::PrbsData gotData(frIter,frIter+byteWidth_);
+      frIter += byteWidth_;
+
+      if ( expData != gotData ) {
+         rxLog_->warning("Bad value at index %i. count=%i%x",pos,rxCount_);
+         rxErrCount_++;
+         return;
       }
+      ++pos;
    }
 
    rxCount_++;
@@ -350,8 +354,6 @@ void ru::Prbs::acceptFrame ( ris::FramePtr frame ) {
 void ru::Prbs::setup_python() {
 
    bp::class_<ru::Prbs, ru::PrbsPtr, bp::bases<ris::Master,ris::Slave>, boost::noncopyable >("Prbs",bp::init<>())
-      .def("create",         &ru::Prbs::create)
-      .staticmethod("create")
       .def("genFrame",       &ru::Prbs::genFrame)
       .def("enable",         &ru::Prbs::enable)
       .def("disable",        &ru::Prbs::disable)
@@ -367,7 +369,6 @@ void ru::Prbs::setup_python() {
 
    bp::implicitly_convertible<ru::PrbsPtr, ris::SlavePtr>();
    bp::implicitly_convertible<ru::PrbsPtr, ris::MasterPtr>();
-
 }
 
 

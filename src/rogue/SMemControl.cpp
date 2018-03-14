@@ -39,8 +39,6 @@ rogue::SMemControlPtr rogue::SMemControl::create(std::string group) {
 void rogue::SMemControl::setup_python() {
 
    bp::class_<rogue::SMemControlWrap, rogue::SMemControlWrapPtr, boost::noncopyable>("SMemControl",bp::init<std::string>())
-      .def("create",         &rogue::SMemControl::create)
-      .staticmethod("create")
       .def("_doRequest",     &rogue::SMemControl::doRequest, &rogue::SMemControlWrap::defDoRequest)
       .def_readonly("Get",   &rogue::SMemControl::Get)
       .def_readonly("Set",   &rogue::SMemControl::Set)

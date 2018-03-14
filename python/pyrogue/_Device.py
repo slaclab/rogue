@@ -32,7 +32,15 @@ class EnableVariable(pr.BaseVariable):
             name='enable',
             mode='RW',
             value=enabled, 
-            disp={False: 'False', True: 'True', 'parent': 'ParentFalse'})
+            disp={False: 'False', True: 'True', 'parent': 'ParentFalse', 'deps': 'ExtDepFalse'})
+
+        if deps is None:
+            self._deps = []
+        else:
+            self._deps = deps
+
+        for d in self._deps:
+            d.addListener(self)
 
         self._value = enabled
         self._lock = threading.Lock()
@@ -43,9 +51,12 @@ class EnableVariable(pr.BaseVariable):
     @Pyro4.expose
     def get(self, read=False):
         ret = self._value
+
         with self._lock:
             if self._value is False:
                 ret = False
+            elif len(self._deps) > 0 and not all(x.value() for x in self._deps):
+                ret = 'deps'
             elif self._parent == self._root:
                 #print("Root enable = {}".format(self._value))
                 ret = self._value
@@ -61,13 +72,13 @@ class EnableVariable(pr.BaseVariable):
         
     @Pyro4.expose
     def set(self, value, write=True):
-        if value != 'parent':
+        if value != 'parent' and value != 'deps':
             old = self.value()
 
             with self._lock:
                 self._value = value
             
-            if old != value and old != 'parent':
+            if old != value and old != 'parent' and old != 'deps':
                 self.parent.enableChanged(value)
 
         self.updated()
@@ -95,7 +106,10 @@ class Device(pr.Node,rim.Hub):
                  variables=None,
                  blockSize=None,
                  expand=True,
-                 enabled=True):
+                 enabled=True,
+                 defaults=None,
+                 enableDeps=None):
+
         
         """Initialize device class"""
         if name is None:
@@ -110,6 +124,7 @@ class Device(pr.Node,rim.Hub):
         self._memLock   = threading.RLock()
         self._size      = size
         self._blockSize = blockSize
+        self._defaults  = defaults if defaults is not None else {}
 
         # Connect to memory slave
         if memBase: self._setSlave(memBase)
@@ -128,7 +143,7 @@ class Device(pr.Node,rim.Hub):
         self.addRemoteCommands = ft.partial(self.addNodes, pr.RemoteCommand)
 
         # Variable interface to enable flag
-        self.add(EnableVariable(enabled=enabled))
+        self.add(EnableVariable(enabled=enabled, deps=enableDeps))
 
         if variables is not None and isinstance(variables, collections.Iterable):
             if all(isinstance(v, pr.BaseVariable) for v in variables):
@@ -323,28 +338,31 @@ class Device(pr.Node,rim.Hub):
 
             return ldata
 
-    def _rawWrite(self, offset, data, base=pr.UInt, stride=4, wordBitSize=32):
+    def _rawWrite(self, offset, data, base=pr.UInt, stride=4, wordBitSize=32, tryCount=1):
         with self._memLock:
-            self._rawTxnChunker(offset, data, base, stride, wordBitSize, txnType=rim.Write)
-            self._waitTransaction(0)
+            for _ in range(tryCount):
+                self._rawTxnChunker(offset, data, base, stride, wordBitSize, txnType=rim.Write)
+                self._waitTransaction(0)
 
-            if self._getError() > 0:
-                raise pr.MemoryError (name=self.name, address=offset|self.address, error=self._getError())
+                if self._getError() == 0: return
 
+            # If we get here an error has occured
+            raise pr.MemoryError (name=self.name, address=offset|self.address, error=self._getError())
         
-    def _rawRead(self, offset, numWords=1, base=pr.UInt, stride=4, wordBitSize=32, data=None):
+    def _rawRead(self, offset, numWords=1, base=pr.UInt, stride=4, wordBitSize=32, data=None, tryCount=1):
         with self._memLock:
-            ldata = self._rawTxnChunker(offset, data, base, stride, wordBitSize, txnType=rim.Read, numWords=numWords)
-            self._waitTransaction(0)
+            for _ in range(tryCount):
+                ldata = self._rawTxnChunker(offset, data, base, stride, wordBitSize, txnType=rim.Read, numWords=numWords)
+                self._waitTransaction(0)
 
-            if self._getError() > 0:
-                raise pr.MemoryError (name=self.name, address=offset|self.address, error=self._getError())
-
-            if numWords == 1:
-                return base.fromBytes(base.mask(ldata, wordBitSize))
-            else:
-                return [base.fromBytes(base.mask(ldata[i:i+stride], wordBitSize)) for i in range(0, len(ldata), stride)]
-            
+                if self._getError() == 0:
+                    if numWords == 1:
+                        return base.fromBytes(base.mask(ldata, wordBitSize))
+                    else:
+                        return [base.fromBytes(base.mask(ldata[i:i+stride], wordBitSize)) for i in range(0, len(ldata), stride)]
+                
+            # If we get here an error has occured
+            raise pr.MemoryError (name=self.name, address=offset|self.address, error=self._getError())
 
     def _buildBlocks(self):
         remVars = []
@@ -396,13 +414,19 @@ class Device(pr.Node,rim.Hub):
     def _rootAttached(self, parent, root):
         pr.Node._rootAttached(self, parent, root)
 
-        self._maxTxnSize = self._reqMaxAccess()
-        self._minTxnSize = self._reqMinAccess()        
+        self._maxTxnSize = self._doMaxAccess()
+        self._minTxnSize = self._doMinAccess()
 
         for key,value in self._nodes.items():
             value._rootAttached(self,root)
 
         self._buildBlocks()
+
+        # Override defaults as dictated by the _defaults dict
+        for varName, defValue in self._defaults.items():
+            match = pr.nodeMatch(self.variables, varName)
+            for var in match:
+                var._default = defValue
 
         # Some variable initialization can run until the blocks are built
         for v in self.variables.values():

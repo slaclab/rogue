@@ -18,14 +18,11 @@
  * ----------------------------------------------------------------------------
 **/
 
-#ifdef DO_EPICSV3
-
 #include <boost/python.hpp>
 #include <rogue/protocols/epicsV3/Command.h>
 #include <rogue/protocols/epicsV3/Pv.h>
 #include <rogue/protocols/epicsV3/Server.h>
 #include <rogue/GeneralError.h>
-#include <rogue/ScopedGil.h>
 #include <boost/make_shared.hpp>
 #include <boost/make_shared.hpp>
 
@@ -47,4 +44,3 @@ rpe::Command::Command (std::string epicsName, bp::object p) : Variable(epicsName
 
 rpe::Command::~Command() { }
 
-#endif

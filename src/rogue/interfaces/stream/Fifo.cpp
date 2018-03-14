@@ -24,6 +24,7 @@
 #include <rogue/interfaces/stream/Master.h>
 #include <rogue/interfaces/stream/Slave.h>
 #include <rogue/interfaces/stream/Frame.h>
+#include <rogue/interfaces/stream/FrameIterator.h>
 #include <rogue/interfaces/stream/Buffer.h>
 #include <rogue/interfaces/stream/Fifo.h>
 #include <rogue/Logging.h>
@@ -40,10 +41,7 @@ ris::FifoPtr ris::Fifo::create(uint32_t maxDepth, uint32_t trimSize) {
 
 //! Setup class in python
 void ris::Fifo::setup_python() {
-   bp::class_<ris::Fifo, ris::FifoPtr, bp::bases<ris::Master,ris::Slave>, boost::noncopyable >("Fifo",bp::init<uint32_t,uint32_t>())
-      .def("create", &ris::Fifo::create)
-      .staticmethod("create")
-   ;
+   bp::class_<ris::Fifo, ris::FifoPtr, bp::bases<ris::Master,ris::Slave>, boost::noncopyable >("Fifo",bp::init<uint32_t,uint32_t>());
 }
 
 //! Creator with version constant
@@ -53,7 +51,7 @@ ris::Fifo::Fifo(uint32_t maxDepth, uint32_t trimSize ) : ris::Master(), ris::Sla
 
    queue_.setThold(maxDepth);
 
-   log_ = new rogue::Logging("Fifo");
+   log_ = rogue::Logging::create("Fifo");
 
    // Start read thread
    thread_ = new boost::thread(boost::bind(&ris::Fifo::runThread, this));
@@ -79,7 +77,8 @@ void ris::Fifo::acceptFrame ( ris::FramePtr frame ) {
    nFrame = reqFrame(size,true);
 
    // Copy the frame
-   nFrame->copyFrame(frame,0,size);
+   std::copy(frame->begin(), frame->begin()+size, nFrame->begin());
+   nFrame->setPayload(size);
 
    // Append to buffer
    queue_.push(nFrame);

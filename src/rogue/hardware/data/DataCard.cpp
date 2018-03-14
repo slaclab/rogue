@@ -40,6 +40,9 @@ rhd::DataCard::DataCard ( std::string path, uint32_t dest ) {
 
    timeout_ = 1000000;
    dest_    = dest;
+   enSsi_   = true;
+
+   log_     = rogue::Logging::create("data.DataCard");
 
    rogue::GilRelease noGil;
 
@@ -62,6 +65,9 @@ rhd::DataCard::DataCard ( std::string path, uint32_t dest ) {
 
    // Start read thread
    thread_ = new boost::thread(boost::bind(&rhd::DataCard::runThread, this));
+
+   log_->critical("rogue.hardware.data.DataCard is being deprecated and will be removed in a future release.");
+   log_->critical("Please use rogue.hardware.axi.AxiStreamDma instead");
 }
 
 //! Close the device
@@ -156,12 +162,10 @@ ris::FramePtr rhd::DataCard::acceptReq ( uint32_t size, bool zeroCopyEn) {
 
 //! Accept a frame from master
 void rhd::DataCard::acceptFrame ( ris::FramePtr frame ) {
-   ris::BufferPtr buff;
    int32_t          res;
    fd_set           fds;
    struct timeval   tout;
    uint32_t         meta;
-   uint32_t         x;
    uint32_t         flags;
    uint32_t         fuser;
    uint32_t         luser;
@@ -169,22 +173,23 @@ void rhd::DataCard::acceptFrame ( ris::FramePtr frame ) {
 
    rogue::GilRelease noGil;
 
-   // Go through each buffer in the frame
-   for (x=0; x < frame->getCount(); x++) {
-      buff = frame->getBuffer(x);
+   // Get Flags
+   flags = frame->getFlags();
 
-      // Extract first and last user fields from flags
-      flags = buff->getFlags();
+   // Go through each buffer in the frame
+   ris::Frame::BufferIterator it;
+   for (it = frame->beginBuffer(); it != frame->endBuffer(); ++it) {
+      (*it)->zeroHeader();
 
       // First buff
-      if ( x == 0 ) {
+      if ( it == frame->beginBuffer() ) {
          fuser = flags & 0xFF;
          if ( enSsi_ ) fuser |= 0x2;
       }
       else fuser = 0;
 
       // Last buffer
-      if ( x == (frame->getCount() - 1) ) {
+      if ( it == (frame->endBuffer()-1) ) {
          cont = 0;
          luser = (flags >> 8) & 0xFF;
       }
@@ -196,7 +201,7 @@ void rhd::DataCard::acceptFrame ( ris::FramePtr frame ) {
       }
 
       // Get buffer meta field
-      meta = buff->getMeta();
+      meta = (*it)->getMeta();
 
       // Meta is zero copy as indicated by bit 31
       if ( (meta & 0x80000000) != 0 ) {
@@ -205,13 +210,13 @@ void rhd::DataCard::acceptFrame ( ris::FramePtr frame ) {
          if ( (meta & 0x40000000) == 0 ) {
 
             // Write by passing buffer index to driver
-            if ( dmaWriteIndex(fd_, meta & 0x3FFFFFFF, buff->getCount(), axisSetFlags(fuser, luser, cont), dest_) <= 0 ) {
+            if ( dmaWriteIndex(fd_, meta & 0x3FFFFFFF, (*it)->getPayload(), axisSetFlags(fuser, luser, cont), dest_) <= 0 ) {
                throw(rogue::GeneralError("DataCard::acceptFrame","AXIS Write Call Failed"));
             }
 
             // Mark buffer as stale
             meta |= 0x40000000;
-            buff->setMeta(meta);
+            (*it)->setMeta(meta);
          }
       }
 
@@ -236,7 +241,7 @@ void rhd::DataCard::acceptFrame ( ris::FramePtr frame ) {
             }
             else {
                // Write with buffer copy
-               if ( (res = dmaWrite(fd_, buff->getRawData(), buff->getCount(), axisSetFlags(fuser, luser,0), dest_)) < 0 ) {
+               if ( (res = dmaWrite(fd_, (*it)->begin(), (*it)->getPayload(), axisSetFlags(fuser, luser,0), dest_)) < 0 ) {
                   throw(rogue::GeneralError("DataCard::acceptFrame","AXIS Write Call Failed!!!!"));
                }
             }
@@ -281,10 +286,12 @@ void rhd::DataCard::runThread() {
    uint32_t       flags;
    uint32_t       cont;
    uint32_t       rxFlags;
+   uint32_t       rxError;
    struct timeval tout;
 
    fuser = 0;
    luser = 0;
+   cont  = 0;
 
    // Preallocate empty frame
    frame = ris::Frame::create();
@@ -310,7 +317,7 @@ void rhd::DataCard::runThread() {
                buff = allocBuffer(bSize_,NULL);
 
                // Attempt read, dest is not needed since only one lane/vc is open
-               res = dmaRead(fd_, buff->getRawData(), buff->getRawSize(), &rxFlags, NULL, NULL);
+               res = dmaRead(fd_, buff->begin(), buff->getAvailable(), &rxFlags, &rxError, NULL);
                fuser = axisGetFuser(rxFlags);
                luser = axisGetLuser(rxFlags);
                cont  = axisGetCont(rxFlags);
@@ -320,7 +327,7 @@ void rhd::DataCard::runThread() {
             else {
 
                // Attempt read, dest is not needed since only one lane/vc is open
-               if ((res = dmaReadIndex(fd_, &meta, &rxFlags, NULL, NULL)) > 0) {
+               if ((res = dmaReadIndex(fd_, &meta, &rxFlags, &rxError, NULL)) > 0) {
                   fuser = axisGetFuser(rxFlags);
                   luser = axisGetLuser(rxFlags);
                   cont  = axisGetCont(rxFlags);
@@ -330,25 +337,31 @@ void rhd::DataCard::runThread() {
                }
             }
 
+            // Return of -1 is bad
+            if ( res < 0 ) 
+               throw(rogue::GeneralError("DataCard::runThread","DMA Interface Failure!"));
+
             // Read was successfull
             if ( res > 0 ) {
-               buff->setSize(res);
-               frame->appendBuffer(buff);
+               buff->setPayload(res);
                flags = frame->getFlags();
                error = frame->getError();
 
+               // Receive error
+               error |= rxError;
+
                // First buffer of frame
-               if ( frame->getCount() == 1 ) flags |= (fuser & 0xFF);
+               if ( frame->isEmpty() ) flags |= (fuser & 0xFF);
 
                // Last buffer of frame
                if ( cont == 0 ) {
                   flags |= ((luser << 8) & 0xFF00);
-                  if ( enSsi_ && ((luser & 0x1) != 0 )) error = 1;
+                  if ( enSsi_ && ((luser & 0x1) != 0 )) error |= 0x800000000;
                }
 
                frame->setError(error);
                frame->setFlags(flags);
-               buff->setError(error);
+               frame->appendBuffer(buff);
                buff.reset();
 
                // If continue flag is not set, push frame and get a new empty frame
@@ -366,8 +379,6 @@ void rhd::DataCard::runThread() {
 void rhd::DataCard::setup_python () {
 
    bp::class_<rhd::DataCard, rhd::DataCardPtr, bp::bases<ris::Master,ris::Slave>, boost::noncopyable >("DataCard",bp::init<std::string,uint32_t>())
-      .def("create",         &rhd::DataCard::create)
-      .staticmethod("create")
       .def("enableSsi",      &rhd::DataCard::enableSsi)
       .def("dmaAck",         &rhd::DataCard::dmaAck)
       .def("setTimeout",     &rhd::DataCard::setTimeout)

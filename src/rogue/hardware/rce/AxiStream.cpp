@@ -42,6 +42,9 @@ rhr::AxiStream::AxiStream ( std::string path, uint32_t dest ) {
 
    timeout_ = 1000000;
    dest_    = dest;
+   enSsi_   = true;
+
+   log_     = rogue::Logging::create("rce.AxiStream");
 
    rogue::GilRelease noGil;
 
@@ -64,6 +67,9 @@ rhr::AxiStream::AxiStream ( std::string path, uint32_t dest ) {
 
    // Start read thread
    thread_ = new boost::thread(boost::bind(&rhr::AxiStream::runThread, this));
+              
+   log_->critical("rogue.hardware.rce.AxiStream is being deprecated and will be removed in a future release.");
+   log_->critical("Please use rogue.hardware.axi.AxiStreamDma instead");
 }
 
 //! Close the device
@@ -158,32 +164,46 @@ ris::FramePtr rhr::AxiStream::acceptReq ( uint32_t size, bool zeroCopyEn) {
 
 //! Accept a frame from master
 void rhr::AxiStream::acceptFrame ( ris::FramePtr frame ) {
-   ris::BufferPtr buff;
    int32_t          res;
    fd_set           fds;
    struct timeval   tout;
    uint32_t         meta;
-   uint32_t         x;
    uint32_t         flags;
    uint32_t         fuser;
    uint32_t         luser;
+   uint32_t         cont;
 
    rogue::GilRelease noGil;
 
+   // Get Flags
+   flags = frame->getFlags();
+
    // Go through each buffer in the frame
-   for (x=0; x < frame->getCount(); x++) {
-      buff = frame->getBuffer(x);
+   ris::Frame::BufferIterator it;
+   for (it = frame->beginBuffer(); it != frame->endBuffer(); ++it) {
+      (*it)->zeroHeader();
 
-      // Get buffer meta field
-      meta = buff->getMeta();
+      // First (*it)
+      if ( it == frame->beginBuffer() ) {
+         fuser = flags & 0xFF;
+         if ( enSsi_ ) fuser |= 0x2;
+      }
+      else fuser = 0;
 
-      // Extract first and last user fields from flags
-      flags = buff->getFlags();
-      fuser = flags & 0xFF;
-      luser = (flags >> 8) & 0xFF;
+      // Last (*it)er
+      if ( it == (frame->endBuffer()-1) ) {
+         cont = 0;
+         luser = (flags >> 8) & 0xFF;
+      }
 
-      // SSI is enbled, set SOF
-      if ( enSsi_ ) fuser |= 0x2;
+      // Continue flag is set if this is not the last (*it)er
+      else {
+         cont = 1;
+         luser = 0;
+      }
+
+      // Get (*it)er meta field
+      meta = (*it)->getMeta();
 
       // Meta is zero copy as indicated by bit 31
       if ( (meta & 0x80000000) != 0 ) {
@@ -191,22 +211,22 @@ void rhr::AxiStream::acceptFrame ( ris::FramePtr frame ) {
          // Buffer is not already stale as indicates by bit 30
          if ( (meta & 0x40000000) == 0 ) {
 
-            // Write by passing buffer index to driver
-            if ( dmaWriteIndex(fd_, meta & 0x3FFFFFFF, buff->getCount(), axisSetFlags(fuser, luser,0), dest_) <= 0 ) {
+            // Write by passing (*it)er index to driver
+            if ( dmaWriteIndex(fd_, meta & 0x3FFFFFFF, (*it)->getPayload(), axisSetFlags(fuser, luser,0), dest_) <= 0 ) {
                throw(rogue::GeneralError("AxiStream::acceptFrame","AXIS Write Call Failed"));
             }
 
-            // Mark buffer as stale
+            // Mark (*it)er as stale
             meta |= 0x40000000;
-            buff->setMeta(meta);
+            (*it)->setMeta(meta);
          }
       }
 
-      // Write to pgp with buffer copy in driver
+      // Write to pgp with (*it)er copy in driver
       else {
 
          // Keep trying since select call can fire 
-         // but write fails because we did not win the buffer lock
+         // but write fails because we did not win the (*it)er lock
          do {
 
             // Setup fds for select call
@@ -222,8 +242,8 @@ void rhr::AxiStream::acceptFrame ( ris::FramePtr frame ) {
                res = 0;
             }
             else {
-               // Write with buffer copy
-               if ( (res = dmaWrite(fd_, buff->getRawData(), buff->getCount(), axisSetFlags(fuser, luser,0), dest_)) < 0 ) {
+               // Write with (*it)er copy
+               if ( (res = dmaWrite(fd_, (*it)->begin(), (*it)->getPayload(), axisSetFlags(fuser, luser,cont), dest_)) < 0 ) {
                   throw(rogue::GeneralError("AxiStream::acceptFrame","AXIS Write Call Failed"));
                }
             }
@@ -266,11 +286,14 @@ void rhr::AxiStream::runThread() {
    uint32_t       fuser;
    uint32_t       luser;
    uint32_t       flags;
+   uint32_t       cont;
    uint32_t       rxFlags;
+   uint32_t       rxError;
    struct timeval tout;
 
    fuser = 0;
    luser = 0;
+   cont  = 0;
 
    // Preallocate empty frame
    frame = ris::Frame::create();
@@ -296,42 +319,58 @@ void rhr::AxiStream::runThread() {
                buff = allocBuffer(bSize_,NULL);
 
                // Attempt read, dest is not needed since only one lane/vc is open
-               res = dmaRead(fd_, buff->getRawData(), buff->getRawSize(), &rxFlags, NULL, NULL);
+               res = dmaRead(fd_, buff->begin(), buff->getAvailable(), &rxFlags, &rxError, NULL);
                fuser = axisGetFuser(rxFlags);
                luser = axisGetLuser(rxFlags);
+               cont  = axisGetCont(rxFlags);
             }
 
             // Zero copy read
             else {
 
                // Attempt read, dest is not needed since only one lane/vc is open
-               if ((res = dmaReadIndex(fd_, &meta, &rxFlags, NULL, NULL)) > 0) {
+               if ((res = dmaReadIndex(fd_, &meta, &rxFlags, &rxError, NULL)) > 0) {
                   fuser = axisGetFuser(rxFlags);
                   luser = axisGetLuser(rxFlags);
+                  cont  = axisGetCont(rxFlags);
 
                   // Allocate a buffer, Mark zero copy meta with bit 31 set, lower bits are index
                   buff = createBuffer(rawBuff_[meta],0x80000000 | meta,bSize_,bSize_);
                }
             }
 
-            // Extract flags
-            flags = (fuser & 0xFF);
-            flags |= ((luser << 8) & 0xFF00);
-
-            // If SSI extract EOFE
-            if ( enSsi_ && ((luser & 0x1) != 0 )) error = 1;
-            else error = 0;
+            // Return of -1 is bad
+            if ( res < 0 ) 
+               throw(rogue::GeneralError("AxiStream::runThread","DMA Interface Failure!"));
 
             // Read was successfull
             if ( res > 0 ) {
-               buff->setSize(res);
-               buff->setError(error);
-               frame->setError(error | frame->getError());
+               buff->setPayload(res);
+               flags = frame->getFlags();
+               error = frame->getError();
+
+               // Receive error
+               error |= rxError;
+
+               // First buffer of frame
+               if ( frame->isEmpty() ) flags |= (fuser & 0xFF);
+
+               // Last buffer of frame
+               if ( cont == 0 ) {
+                  flags |= ((luser << 8) & 0xFF00);
+                  if ( enSsi_ && ((luser & 0x1) != 0 )) error |= 0x800000000;
+               }
+
+               frame->setError(error);
+               frame->setFlags(flags);
                frame->appendBuffer(buff);
                buff.reset();
-               frame->setFlags(flags);
-               sendFrame(frame);
-               frame = ris::Frame::create();
+
+               // If continue flag is not set, push frame and get a new empty frame
+               if ( cont == 0 ) {
+                  sendFrame(frame);
+                  frame = ris::Frame::create();
+               }
             }
          }
          boost::this_thread::interruption_point();
@@ -342,8 +381,6 @@ void rhr::AxiStream::runThread() {
 void rhr::AxiStream::setup_python () {
 
    bp::class_<rhr::AxiStream, rhr::AxiStreamPtr, bp::bases<ris::Master,ris::Slave>, boost::noncopyable >("AxiStream",bp::init<std::string,uint32_t>())
-      .def("create",         &rhr::AxiStream::create)
-      .staticmethod("create")
       .def("enableSsi",      &rhr::AxiStream::enableSsi)
       .def("dmaAck",         &rhr::AxiStream::dmaAck)
       .def("setTimeout",     &rhr::AxiStream::setTimeout)

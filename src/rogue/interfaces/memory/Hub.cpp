@@ -22,7 +22,9 @@
  * ----------------------------------------------------------------------------
 **/
 #include <rogue/interfaces/memory/Hub.h>
+#include <rogue/interfaces/memory/Transaction.h>
 #include <rogue/GilRelease.h>
+#include <rogue/ScopedGil.h>
 #include <boost/make_shared.hpp>
 #include <boost/python.hpp>
 
@@ -64,27 +66,48 @@ uint64_t rim::Hub::doAddress() {
 }
 
 //! Post a transaction. Master will call this method with the access attributes.
-void rim::Hub::doTransaction(uint32_t id, boost::shared_ptr<rogue::interfaces::memory::Master> master,
-                             uint64_t address, uint32_t size, uint32_t type) {
-   uint64_t outAddress;
+void rim::Hub::doTransaction(rim::TransactionPtr tran) {
 
    // Adjust address
-   outAddress = offset_ | address;
+   tran->address_ |= offset_;
 
    // Forward transaction
-   getSlave()->doTransaction(id,master,outAddress,size,type);
+   getSlave()->doTransaction(tran);
 }
 
 void rim::Hub::setup_python() {
 
-   bp::class_<rim::Hub, rim::HubPtr, bp::bases<rim::Master,rim::Slave>, boost::noncopyable>("Hub",bp::init<uint64_t>())
-      .def("create", &rim::Hub::create)
-      .staticmethod("create")
-      .def("_getAddress", &rim::Hub::doAddress)
-      .def("_getOffset",  &rim::Hub::getOffset)
+   bp::class_<rim::HubWrap, rim::HubWrapPtr, bp::bases<rim::Master,rim::Slave>, boost::noncopyable>("Hub",bp::init<uint64_t>())
+       .def("_getAddress",    &rim::Hub::doAddress)
+       .def("_getOffset",     &rim::Hub::getOffset)
+       .def("_doTransaction", &rim::Hub::doTransaction, &rim::HubWrap::defDoTransaction)
    ;
 
    bp::implicitly_convertible<rim::HubPtr, rim::MasterPtr>();
+}
 
+//! Constructor
+rim::HubWrap::HubWrap(uint64_t offset) : rim::Hub(offset) {}
+
+//! Post a transaction. Master will call this method with the access attributes.
+void rim::HubWrap::doTransaction(rim::TransactionPtr transaction) {
+   {
+      rogue::ScopedGil gil;
+
+      if (boost::python::override pb = this->get_override("_doTransaction")) {
+         try {
+            pb(transaction);
+            return;
+         } catch (...) {
+            PyErr_Print();
+         }
+      }
+   }
+   rim::Hub::doTransaction(transaction);
+}
+
+//! Post a transaction. Master will call this method with the access attributes.
+void rim::HubWrap::defDoTransaction(rim::TransactionPtr transaction) {
+   rim::Hub::doTransaction(transaction);
 }
 

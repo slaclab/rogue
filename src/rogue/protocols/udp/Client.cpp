@@ -18,6 +18,7 @@
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
+#include <rogue/protocols/udp/Core.h>
 #include <rogue/protocols/udp/Client.h>
 #include <rogue/interfaces/stream/Frame.h>
 #include <rogue/interfaces/stream/Buffer.h>
@@ -25,7 +26,6 @@
 #include <boost/make_shared.hpp>
 #include <rogue/GilRelease.h>
 #include <rogue/Logging.h>
-#include <iostream>
 #include <sys/syscall.h>
 
 namespace rpu = rogue::protocols::udp;
@@ -33,21 +33,23 @@ namespace ris = rogue::interfaces::stream;
 namespace bp  = boost::python;
 
 //! Class creation
-rpu::ClientPtr rpu::Client::create (std::string host, uint16_t port, uint16_t maxSize) {
-   rpu::ClientPtr r = boost::make_shared<rpu::Client>(host,port,maxSize);
+rpu::ClientPtr rpu::Client::create (std::string host, uint16_t port, bool jumbo) {
+   rpu::ClientPtr r = boost::make_shared<rpu::Client>(host,port,jumbo);
    return(r);
 }
 
 //! Creator
-rpu::Client::Client ( std::string host, uint16_t port, uint16_t maxSize) {
+rpu::Client::Client ( std::string host, uint16_t port, bool jumbo) : rpu::Core(jumbo) {
    struct addrinfo     aiHints;
    struct addrinfo*    aiList=0;
    const  sockaddr_in* addr;
+   int32_t val;
+   int32_t ret;
+   uint32_t size;
 
    address_ = host;
    port_    = port;
-   maxSize_ = maxSize;
-   timeout_ = 10000000;
+   udpLog_  = rogue::Logging::create("udp.Client");
 
    // Create socket
    if ( (fd_ = socket(AF_INET,SOCK_DGRAM,0)) < 0 )
@@ -65,13 +67,13 @@ rpu::Client::Client ( std::string host, uint16_t port, uint16_t maxSize) {
    addr = (const sockaddr_in*)(aiList->ai_addr);
 
    // Setup Remote Address
-   memset(&addr_,0,sizeof(struct sockaddr_in));
-   ((struct sockaddr_in *)(&addr_))->sin_family=AF_INET;
-   ((struct sockaddr_in *)(&addr_))->sin_addr.s_addr=addr->sin_addr.s_addr;
-   ((struct sockaddr_in *)(&addr_))->sin_port=htons(port_);
+   memset(&remAddr_,0,sizeof(struct sockaddr_in));
+   ((struct sockaddr_in *)(&remAddr_))->sin_family=AF_INET;
+   ((struct sockaddr_in *)(&remAddr_))->sin_addr.s_addr=addr->sin_addr.s_addr;
+   ((struct sockaddr_in *)(&remAddr_))->sin_port=htons(port_);
 
    // Fixed size buffer pool
-   enBufferPool(maxSize_,1024*256);
+   enBufferPool(maxPayload(),1024*256);
 
    // Start rx thread
    thread_ = new boost::thread(boost::bind(&rpu::Client::runThread, this));
@@ -85,14 +87,9 @@ rpu::Client::~Client() {
    ::close(fd_);
 }
 
-//! Set timeout for frame transmits in microseconds
-void rpu::Client::setTimeout(uint32_t timeout) {
-   timeout_ = timeout;
-}
-
 //! Accept a frame from master
 void rpu::Client::acceptFrame ( ris::FramePtr frame ) {
-   ris::BufferPtr   buff;
+   ris::Frame::BufferIterator it;
    int32_t          res;
    fd_set           fds;
    struct timeval   tout;
@@ -101,7 +98,7 @@ void rpu::Client::acceptFrame ( ris::FramePtr frame ) {
    struct iovec     msg_iov[1];
 
    // Setup message header
-   msg.msg_name       = &addr_;
+   msg.msg_name       = &remAddr_;
    msg.msg_namelen    = sizeof(struct sockaddr_in);
    msg.msg_iov        = msg_iov;
    msg.msg_iovlen     = 1;
@@ -110,19 +107,18 @@ void rpu::Client::acceptFrame ( ris::FramePtr frame ) {
    msg.msg_flags      = 0;
 
    rogue::GilRelease noGil;
-   boost::lock_guard<boost::mutex> lock(mtx_);
+   boost::lock_guard<boost::mutex> lock(udpMtx_);
 
    // Go through each buffer in the frame
-   for (x=0; x < frame->getCount(); x++) {
-      buff = frame->getBuffer(x);
-      if ( buff->getCount() == 0 ) break;
+   for (it=frame->beginBuffer(); it != frame->endBuffer(); ++it) {
+      if ( (*it)->getPayload() == 0 ) break;
 
       // Setup IOVs
-      msg_iov[0].iov_base = buff->getRawData();
-      msg_iov[0].iov_len  = buff->getCount();
+      msg_iov[0].iov_base = (*it)->begin();
+      msg_iov[0].iov_len  = (*it)->getPayload();
 
       // Keep trying since select call can fire 
-      // but write fails because we did not win the buffer lock
+      // but write fails because we did not win the (*it)er lock
       do {
 
          // Setup fds for select call
@@ -138,7 +134,7 @@ void rpu::Client::acceptFrame ( ris::FramePtr frame ) {
             res = 0;
          }
          else if ( (res = sendmsg(fd_,&msg,0)) < 0 )
-            throw(rogue::GeneralError("Client::acceptFrame","UDP Write Call Failed"));
+            udpLog_->warning("UDP Write Call Failed");
       }
 
       // Continue while write result was zero
@@ -153,27 +149,33 @@ void rpu::Client::runThread() {
    fd_set         fds;
    int32_t        res;
    struct timeval tout;
+   uint32_t           avail;
 
-   rogue::Logging log("udp.Client");
-   log.info("PID=%i, TID=%li",getpid(),syscall(SYS_gettid));
+   udpLog_->info("PID=%i, TID=%li",getpid(),syscall(SYS_gettid));
 
    // Preallocate frame
-   frame = ris::Pool::acceptReq(maxSize_,false);
+   frame = ris::Pool::acceptReq(maxPayload(),false);
 
    try {
 
       while(1) {
 
          // Attempt receive
-         buff = frame->getBuffer(0);
-         res = ::read(fd_, buff->getRawData(), maxSize_);
+         buff = *(frame->beginBuffer());
+         avail = buff->getAvailable();
+         res = recvfrom(fd_, buff->begin(), avail, MSG_TRUNC, NULL, 0);
 
          if ( res > 0 ) {
-            buff->setSize(res);
 
-            // Push frame and get a new empty frame
-            sendFrame(frame);
-            frame = ris::Pool::acceptReq(maxSize_,false);
+            // Message was too big
+            if (res > avail ) udpLog_->warning("Receive data was too large. Dropping.");
+            else {
+            buff->setPayload(res);
+               sendFrame(frame);
+            }
+
+            // Get new frame
+            frame = ris::Pool::acceptReq(maxPayload(),false);
          }
          else {
 
@@ -193,34 +195,11 @@ void rpu::Client::runThread() {
    } catch (boost::thread_interrupted&) { }
 }
 
-
-//! Set UDP RX Size
-bool rpu::Client::setRxSize(uint32_t size) {
-   uint32_t   rwin;
-   socklen_t  rwin_size=4;
-
-   setsockopt(fd_, SOL_SOCKET, SO_RCVBUF, (char*)&size, sizeof(size));
-   getsockopt(fd_, SOL_SOCKET, SO_RCVBUF, &rwin, &rwin_size);
-   if(size > rwin) {
-      std::cout << "----------------------------------------------------------" << std::endl;
-      std::cout << "Error setting rx buffer size."                              << std::endl;
-      std::cout << "Wanted " << std::dec << size << " Got " << std::dec << rwin << std::endl;
-      std::cout << "sysctl -w net.core.rmem_max=size to increase in kernel"     << std::endl;
-      std::cout << "----------------------------------------------------------" << std::endl;
-      return(false);
-   }
-   return(true);
-}
-
 void rpu::Client::setup_python () {
 
-   bp::class_<rpu::Client, rpu::ClientPtr, bp::bases<ris::Master,ris::Slave>, boost::noncopyable >("Client",bp::init<std::string,uint16_t,uint16_t>())
-      .def("create",         &rpu::Client::create)
-      .staticmethod("create")
-      .def("setTimeout",     &rpu::Client::setTimeout)
-      .def("setRxSize",      &rpu::Client::setRxSize)
-   ;
+   bp::class_<rpu::Client, rpu::ClientPtr, bp::bases<rpu::Core,ris::Master,ris::Slave>, boost::noncopyable >("Client",bp::init<std::string,uint16_t,bool>());
 
+   bp::implicitly_convertible<rpu::ClientPtr, rpu::CorePtr>();
    bp::implicitly_convertible<rpu::ClientPtr, ris::MasterPtr>();
    bp::implicitly_convertible<rpu::ClientPtr, ris::SlavePtr>();
 
