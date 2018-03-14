@@ -33,7 +33,7 @@ ris::FrameIterator::FrameIterator(ris::FramePtr frame, uint32_t offset, bool end
    frame_    = frame;
    curr_     = frame_->endBuffer();
    buffPos_  = 0;
-   framePos_ = 0;
+   framePos_ = frame_->getSize();
 
    if ( ! end ) {
       buffPos_  = offset;
@@ -170,7 +170,7 @@ ris::FrameIterator ris::FrameIterator::operator +(const int32_t &add) const {
 ris::FrameIterator ris::FrameIterator::operator -(const int32_t &sub) const {
    if ( sub < 0 ) return(*this + sub);
 
-   if ( sub < framePos_ ) 
+   if ( (uint32_t)sub > framePos_ ) 
       throw rogue::GeneralError("FrameIterator::-","Iterator underflow!");
 
    ris::FrameIterator ret(frame_, framePos_ - sub, ((framePos_ - sub) == frame_->getSize()));

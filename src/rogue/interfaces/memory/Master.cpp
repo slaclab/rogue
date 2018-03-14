@@ -55,7 +55,7 @@ void rim::Master::setup_python() {
 //! Create object
 rim::Master::Master() {
    error_   = 0;
-   slave_   = rim::Slave::create(4,4);
+   slave_   = rim::Slave::create(4,4); // Empty placeholder
 
    sumTime_.tv_sec  = 1;
    sumTime_.tv_usec = 0;
@@ -216,10 +216,13 @@ void rim::Master::doneTransaction(uint32_t id) {
    }
 }
 
-//! Reset transaction data, not python safe, needs lock
+//! Reset transaction data, not python safe, needs lock on master
 void rim::Master::rstTransaction(TransactionMap::iterator it, bool notify) {
 
    log_->debug("Resetting transaction id=%i",it->second->id_);
+
+   // Lock the transaction
+   boost::lock_guard<boost::mutex> lock(it->lock);
 
    it->second->iter_ = NULL;
    if ( it->second->pyValid_ ) {

@@ -93,7 +93,7 @@ namespace rogue {
                //! Constructor
                Transaction(boost::shared_ptr<rogue::interfaces::memory::Master> master);
 
-               //! Transaction lock
+               //! Transaction lock which must be held when using iterator
                boost::mutex lock;
 
                //! Destructor
@@ -111,7 +111,7 @@ namespace rogue {
                //! Get type
                uint32_t type();
 
-               //! Complete transaction with passed error
+               //! Complete transaction with passed error, Release lock before calling.
                void done(uint32_t error);
 
                //! start iterator, caller must lock around access
