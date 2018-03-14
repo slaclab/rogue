@@ -33,6 +33,7 @@ namespace rogue {
       namespace stream {
 
          class Pool;
+         class Frame;
 
          //! Frame buffer
          /*
@@ -43,7 +44,10 @@ namespace rogue {
          class Buffer {
 
                //! Pointer to entity which allocated this buffer
-               boost::shared_ptr<rogue::interfaces::stream::Pool> source_; 
+               boost::shared_ptr<rogue::interfaces::stream::Pool> source_;
+
+               //! Pointer to frame containing this buffer
+               boost::shared_ptr<rogue::interfaces::stream::Frame> frame_;
 
                //! Pointer to raw data buffer. Raw pointer is used here!
                uint8_t *  data_;
@@ -72,7 +76,13 @@ namespace rogue {
                //! Error state
                uint32_t   error_;
 
+            protected:
+
+
             public:
+
+               //! Iterator for data
+               typedef uint8_t * iterator;
 
                //! Class creation
                /*
@@ -98,14 +108,8 @@ namespace rogue {
                 */
                ~Buffer();
 
-                //! Get raw data pointer
-               uint8_t * getRawData();
-
-               /* 
-                * Get data pointer
-                * Returns base + header size
-                */
-               uint8_t * getPayloadData();
+               //! Set ownder frame
+               void setFrame(boost::shared_ptr<rogue::interfaces::stream::Frame> frame);
 
                //! Get meta data, used by pool
                uint32_t getMeta();
@@ -124,6 +128,24 @@ namespace rogue {
 
                //! Clear the tail reservation
                void zeroTail();
+
+               /* 
+                * Get data pointer (begin iterator)
+                * Returns base + header size
+                */
+               uint8_t * begin();
+
+               /*
+                * Get end data pointer (end iterator)
+                * This is the end of raw data buffer
+                */
+               uint8_t * end();
+
+               /*
+                * Get end payload pointer (end iterator)
+                * This is the end of payload data
+                */
+               uint8_t * endPayload();
 
                /*
                 * Get size of buffer that can hold
@@ -148,8 +170,14 @@ namespace rogue {
                 */
                uint32_t getPayload();
 
-               //! Set payload size (not including header)
+               /* Set payload size (not including header) */
                void setPayload(uint32_t size);
+
+               /* 
+                * Set min payload size (not including header)
+                * Payload size is updated only if size > current size
+                */
+               void minPayload(uint32_t size);
 
                //! Adjust payload size
                void adjustPayload(int32_t value);

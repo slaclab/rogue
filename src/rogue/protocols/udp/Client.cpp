@@ -89,7 +89,7 @@ rpu::Client::~Client() {
 
 //! Accept a frame from master
 void rpu::Client::acceptFrame ( ris::FramePtr frame ) {
-   ris::BufferPtr   buff;
+   ris::Frame::BufferIterator it;
    int32_t          res;
    fd_set           fds;
    struct timeval   tout;
@@ -110,16 +110,15 @@ void rpu::Client::acceptFrame ( ris::FramePtr frame ) {
    boost::lock_guard<boost::mutex> lock(udpMtx_);
 
    // Go through each buffer in the frame
-   for (x=0; x < frame->getCount(); x++) {
-      buff = frame->getBuffer(x);
-      if ( buff->getPayload() == 0 ) break;
+   for (it=frame->beginBuffer(); it != frame->endBuffer(); ++it) {
+      if ( (*it)->getPayload() == 0 ) break;
 
       // Setup IOVs
-      msg_iov[0].iov_base = buff->getPayloadData();
-      msg_iov[0].iov_len  = buff->getPayload();
+      msg_iov[0].iov_base = (*it)->begin();
+      msg_iov[0].iov_len  = (*it)->getPayload();
 
       // Keep trying since select call can fire 
-      // but write fails because we did not win the buffer lock
+      // but write fails because we did not win the (*it)er lock
       do {
 
          // Setup fds for select call
@@ -162,9 +161,9 @@ void rpu::Client::runThread() {
       while(1) {
 
          // Attempt receive
-         buff = frame->getBuffer(0);
+         buff = *(frame->beginBuffer());
          avail = buff->getAvailable();
-         res = recvfrom(fd_, buff->getPayloadData(), avail, MSG_TRUNC, NULL, 0);
+         res = recvfrom(fd_, buff->begin(), avail, MSG_TRUNC, NULL, 0);
 
          if ( res > 0 ) {
 

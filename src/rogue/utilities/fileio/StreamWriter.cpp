@@ -35,6 +35,7 @@
 #include <rogue/utilities/fileio/StreamWriter.h>
 #include <rogue/utilities/fileio/StreamWriterChannel.h>
 #include <rogue/interfaces/stream/Frame.h>
+#include <rogue/interfaces/stream/Buffer.h>
 #include <rogue/GeneralError.h>
 #include <stdint.h>
 #include <boost/thread.hpp>
@@ -183,9 +184,11 @@ void ruf::StreamWriter::waitFrameCount(uint32_t count) {
 
 //! Write data to file. Called from StreamWriterChannel
 void ruf::StreamWriter::writeFile ( uint8_t channel, boost::shared_ptr<rogue::interfaces::stream::Frame> frame) {
-   ris::FrameIteratorPtr iter;
+   ris::Frame::BufferIterator it;
    uint32_t value;
    uint32_t size;
+
+   if ( frame->getPayload() == 0 ) return;
 
    rogue::GilRelease noGil;
    boost::unique_lock<boost::mutex> lock(mtx_);
@@ -204,10 +207,9 @@ void ruf::StreamWriter::writeFile ( uint8_t channel, boost::shared_ptr<rogue::in
       value |= (channel << 24);
       intWrite(&value,4);
 
-      iter = frame->startRead(0,size-4);
-      do {
-         intWrite(iter->data(),iter->size());
-      } while (frame->nextRead(iter));
+      // Write buffers
+      for (it=frame->beginBuffer(); it != frame->endBuffer(); ++it) 
+         intWrite((*it)->begin(),(*it)->getPayload());
 
       // Update counters
       frameCount_ ++;

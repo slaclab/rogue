@@ -24,6 +24,7 @@
 #include <rogue/interfaces/stream/Slave.h>
 #include <rogue/interfaces/stream/Master.h>
 #include <rogue/interfaces/stream/Frame.h>
+#include <rogue/interfaces/stream/FrameIterator.h>
 #include <rogue/interfaces/stream/Buffer.h>
 #include <rogue/utilities/Prbs.h>
 #include <boost/make_shared.hpp>
@@ -122,40 +123,6 @@ void ru::Prbs::runThread() {
    } catch (boost::thread_interrupted&) {}
 }
 
-//! Read data with the appropriate width and set passed 32-bit integer pointer
-uint32_t ru::Prbs::readSingle ( ris::FramePtr frame, uint32_t offset, uint32_t * value ) {
-   uint32_t data32;
-   uint16_t data16;
-   uint32_t ret;
-
-   if ( width_ == 16 ) {
-      ret = frame->read(&data16,offset,2);
-      *value = data16;
-   }
-   else {
-      ret = frame->read(&data32,offset,4);
-      *value = data32;
-   }
-   return(ret);
-}
-
-//! Write data with the appropriate width
-uint32_t ru::Prbs::writeSingle ( ris::FramePtr frame, uint32_t offset, uint32_t value ) {
-   uint32_t data32;
-   uint16_t data16;
-   uint32_t ret;
-
-   if ( width_ == 16 ) {
-      data16 = value & 0xFFFF;
-      ret = frame->write(&data16,offset,2);
-   }
-   else {
-      data32 = value;
-      ret = frame->write(&data32,offset,4);
-   }
-   return(ret);
-}
-
 //! Auto run data generation
 void ru::Prbs::enable(uint32_t size) {
 
@@ -234,6 +201,7 @@ void ru::Prbs::resetCount() {
 
 //! Generate a data frame
 void ru::Prbs::genFrame (uint32_t size) {
+   ris::Frame::iterator iter;
    uint32_t      cnt;
    uint32_t      frSize;
    uint32_t      value;
@@ -256,6 +224,7 @@ void ru::Prbs::genFrame (uint32_t size) {
 
    // Get frame
    fr = reqFrame(size,true);
+   iter = fr->begin();
 
    // Frame allocation failed
    if ( fr->getAvailable() < size ) {
@@ -264,26 +233,32 @@ void ru::Prbs::genFrame (uint32_t size) {
    }
 
    // First word is sequence
-   cnt = writeSingle(fr,0,value);
+   ris::toFrame(iter,byteWidth_,&value);
+   cnt = byteWidth_;
 
    // Second word is size
    frSize = (size - byteWidth_) / byteWidth_;
-   cnt += writeSingle(fr,cnt,frSize);
+   ris::toFrame(iter,byteWidth_,&frSize);
+   cnt += byteWidth_;
 
    // Generate payload
    while ( cnt < size ) {
       value = flfsr(value);
-      cnt += writeSingle(fr,cnt,value);
+      ris::toFrame(iter,byteWidth_,&value);
+      cnt += byteWidth_;
    }
 
    // Update counters
    txCount_++;
    txBytes_ += size;
+   fr->setPayload(size);
+
    sendFrame(fr);
 }
 
 //! Accept a frame from master
 void ru::Prbs::acceptFrame ( ris::FramePtr frame ) {
+   ris::Frame::iterator iter;
    uint32_t   frSize;
    uint32_t   frSeq;
    uint32_t   curSeq;
@@ -300,6 +275,7 @@ void ru::Prbs::acceptFrame ( ris::FramePtr frame ) {
    noGil.acquire();
 
    size = frame->getPayload();
+   iter = frame->begin();
 
    // Verify size
    if ((( size % byteWidth_ ) != 0) || size < minSize_ ) {
@@ -309,7 +285,8 @@ void ru::Prbs::acceptFrame ( ris::FramePtr frame ) {
    }
 
    // Get sequence value
-   cnt = readSingle(frame,0,&frSeq);
+   ris::fromFrame(iter,byteWidth_,&frSeq);
+   cnt = byteWidth_;
 
    // Update sequence
    curSeq = rxSeq_;
@@ -317,17 +294,13 @@ void ru::Prbs::acceptFrame ( ris::FramePtr frame ) {
    if ( width_ == 16 ) rxSeq_ &= 0xFFFF;
 
    // Get size
-   cnt += readSingle(frame,cnt,&frSize);
+   ris::fromFrame(iter,byteWidth_,&frSize);
+   cnt += byteWidth_;
    frSize = (frSize * byteWidth_) + byteWidth_;
 
    // Check size
    if ( frSize != size ) {
       rxLog_->warning("Bad size. exp=%i, got=%i, count=%i",frSize,size,rxCount_);
-
-      for ( x=0; x < 8; x++ ) {
-         frame->read(&gotValue,x*4,4);
-         rxLog_->warning("Data: %i = 0x%.8x",x,gotValue);
-      }
       rxErrCount_++;
       return;
    }
@@ -347,7 +320,8 @@ void ru::Prbs::acceptFrame ( ris::FramePtr frame ) {
       while ( cnt < size ) {
          expValue = flfsr(expValue);
 
-         cnt += readSingle(frame,cnt,&gotValue);
+         ris::fromFrame(iter,byteWidth_,&gotValue);
+         cnt += byteWidth_;
 
          if (expValue != gotValue) {
             rxLog_->warning("Bad value at index %i. exp=0x%x, got=0x, count=%i%x",
@@ -380,7 +354,6 @@ void ru::Prbs::setup_python() {
 
    bp::implicitly_convertible<ru::PrbsPtr, ris::SlavePtr>();
    bp::implicitly_convertible<ru::PrbsPtr, ris::MasterPtr>();
-
 }
 
 

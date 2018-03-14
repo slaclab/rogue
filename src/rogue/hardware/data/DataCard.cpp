@@ -162,12 +162,10 @@ ris::FramePtr rhd::DataCard::acceptReq ( uint32_t size, bool zeroCopyEn) {
 
 //! Accept a frame from master
 void rhd::DataCard::acceptFrame ( ris::FramePtr frame ) {
-   ris::BufferPtr buff;
    int32_t          res;
    fd_set           fds;
    struct timeval   tout;
    uint32_t         meta;
-   uint32_t         x;
    uint32_t         flags;
    uint32_t         fuser;
    uint32_t         luser;
@@ -179,19 +177,19 @@ void rhd::DataCard::acceptFrame ( ris::FramePtr frame ) {
    flags = frame->getFlags();
 
    // Go through each buffer in the frame
-   for (x=0; x < frame->getCount(); x++) {
-      buff = frame->getBuffer(x);
-      buff->zeroHeader();
+   ris::Frame::BufferIterator it;
+   for (it = frame->beginBuffer(); it != frame->endBuffer(); ++it) {
+      (*it)->zeroHeader();
 
       // First buff
-      if ( x == 0 ) {
+      if ( it == frame->beginBuffer() ) {
          fuser = flags & 0xFF;
          if ( enSsi_ ) fuser |= 0x2;
       }
       else fuser = 0;
 
       // Last buffer
-      if ( x == (frame->getCount() - 1) ) {
+      if ( it == (frame->endBuffer()-1) ) {
          cont = 0;
          luser = (flags >> 8) & 0xFF;
       }
@@ -203,7 +201,7 @@ void rhd::DataCard::acceptFrame ( ris::FramePtr frame ) {
       }
 
       // Get buffer meta field
-      meta = buff->getMeta();
+      meta = (*it)->getMeta();
 
       // Meta is zero copy as indicated by bit 31
       if ( (meta & 0x80000000) != 0 ) {
@@ -212,13 +210,13 @@ void rhd::DataCard::acceptFrame ( ris::FramePtr frame ) {
          if ( (meta & 0x40000000) == 0 ) {
 
             // Write by passing buffer index to driver
-            if ( dmaWriteIndex(fd_, meta & 0x3FFFFFFF, buff->getPayload(), axisSetFlags(fuser, luser, cont), dest_) <= 0 ) {
+            if ( dmaWriteIndex(fd_, meta & 0x3FFFFFFF, (*it)->getPayload(), axisSetFlags(fuser, luser, cont), dest_) <= 0 ) {
                throw(rogue::GeneralError("DataCard::acceptFrame","AXIS Write Call Failed"));
             }
 
             // Mark buffer as stale
             meta |= 0x40000000;
-            buff->setMeta(meta);
+            (*it)->setMeta(meta);
          }
       }
 
@@ -243,7 +241,7 @@ void rhd::DataCard::acceptFrame ( ris::FramePtr frame ) {
             }
             else {
                // Write with buffer copy
-               if ( (res = dmaWrite(fd_, buff->getPayloadData(), buff->getPayload(), axisSetFlags(fuser, luser,0), dest_)) < 0 ) {
+               if ( (res = dmaWrite(fd_, (*it)->begin(), (*it)->getPayload(), axisSetFlags(fuser, luser,0), dest_)) < 0 ) {
                   throw(rogue::GeneralError("DataCard::acceptFrame","AXIS Write Call Failed!!!!"));
                }
             }
@@ -319,7 +317,7 @@ void rhd::DataCard::runThread() {
                buff = allocBuffer(bSize_,NULL);
 
                // Attempt read, dest is not needed since only one lane/vc is open
-               res = dmaRead(fd_, buff->getPayloadData(), buff->getAvailable(), &rxFlags, &rxError, NULL);
+               res = dmaRead(fd_, buff->begin(), buff->getAvailable(), &rxFlags, &rxError, NULL);
                fuser = axisGetFuser(rxFlags);
                luser = axisGetLuser(rxFlags);
                cont  = axisGetCont(rxFlags);
@@ -346,7 +344,6 @@ void rhd::DataCard::runThread() {
             // Read was successfull
             if ( res > 0 ) {
                buff->setPayload(res);
-               frame->appendBuffer(buff);
                flags = frame->getFlags();
                error = frame->getError();
 
@@ -354,7 +351,7 @@ void rhd::DataCard::runThread() {
                error |= rxError;
 
                // First buffer of frame
-               if ( frame->getCount() == 1 ) flags |= (fuser & 0xFF);
+               if ( frame->isEmpty() ) flags |= (fuser & 0xFF);
 
                // Last buffer of frame
                if ( cont == 0 ) {
@@ -364,6 +361,7 @@ void rhd::DataCard::runThread() {
 
                frame->setError(error);
                frame->setFlags(flags);
+               frame->appendBuffer(buff);
                buff.reset();
 
                // If continue flag is not set, push frame and get a new empty frame

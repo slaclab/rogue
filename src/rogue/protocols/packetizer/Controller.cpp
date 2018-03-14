@@ -91,8 +91,8 @@ ris::FramePtr rpp::Controller::reqFrame ( uint32_t size ) {
 
       // Take only the first buffer. This will break a cascaded packetizer
       // system. We need to fix this!
-      buff = rFrame->getBuffer(0);
-
+      buff = *(rFrame->beginBuffer());
+  
       // Use buffer tail reservation to align available payload
       if ((buff->getAvailable() % alignSize_) != 0)
          buff->adjustTail(buff->getAvailable() % alignSize_);
@@ -109,12 +109,6 @@ ris::FramePtr rpp::Controller::reqFrame ( uint32_t size ) {
       // Add buffer to return frame
       lFrame->appendBuffer(buff);
    }
-
-   uint32_t total = lFrame->getAvailable();
-   uint32_t count = lFrame->getCount();
-   uint32_t first = lFrame->getBuffer(0)->getAvailable();
-   uint32_t last  = lFrame->getBuffer(count-1)->getAvailable();
-
    return(lFrame);
 }
 

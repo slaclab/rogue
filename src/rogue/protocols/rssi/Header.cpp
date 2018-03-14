@@ -76,10 +76,10 @@ void rpr::Header::setup_python() {
 
 //! Creator
 rpr::Header::Header(ris::FramePtr frame) {
-   if ( frame->getCount() == 0 ) 
+   if ( frame->isEmpty() ) 
       throw(rogue::GeneralError("Header::Header","Frame must not be empty!"));
    frame_ = frame;
-   data_  = frame->getBuffer(0)->getPayloadData();
+   data_  = (*(frame->beginBuffer()))->begin();
    count_ = 0;
 
    syn = false;
@@ -114,7 +114,9 @@ ris::FramePtr rpr::Header::getFrame() {
 bool rpr::Header::verify() {
    uint8_t size;
 
-   if ( frame_->getBuffer(0)->getPayload() < HeaderSize ) return(false);
+   ris::BufferPtr buff = *(frame_->beginBuffer());
+
+   if ( buff->getPayload() < HeaderSize ) return(false);
   
    syn  = data_[0] & 0x80;
    ack  = data_[0] & 0x40;
@@ -124,9 +126,7 @@ bool rpr::Header::verify() {
 
    size = (syn)?SynSize:HeaderSize;
 
-   if ( (data_[1] != size) ||
-        (frame_->getBuffer(0)->getPayload() < size) ||
-        (getUInt16(size-2) != compSum(size))) return false;
+   if ( (data_[1] != size) || (buff->getPayload() < size) || (getUInt16(size-2) != compSum(size))) return false;
 
    sequence    = data_[2];
    acknowledge = data_[3];
@@ -153,13 +153,14 @@ bool rpr::Header::verify() {
 void rpr::Header::update() {
    uint8_t size;
 
+   ris::BufferPtr buff = *(frame_->beginBuffer());
+
    size = (syn)?SynSize:HeaderSize;
 
-   if ( frame_->getBuffer(0)->getSize() < size )
-      throw(rogue::GeneralError::boundary("Header::update",size,frame_->getBuffer(0)->getSize()));
+   if ( buff->getSize() < size )
+      throw(rogue::GeneralError::boundary("Header::update",size,buff->getSize()));
 
-   if ( frame_->getBuffer(0)->getPayload() == 0 )
-      frame_->getBuffer(0)->setPayload(size);
+   buff->minPayload(size);
 
    memset(data_,0,size);
    data_[1] = size;
@@ -217,8 +218,8 @@ std::string rpr::Header::dump() {
 
    std::stringstream ret("");
 
-   ret << "   Total Size : " << std::dec << frame_->getBuffer(0)->getPayload() << std::endl;
-   ret << "     Raw Size : " << std::dec << frame_->getBuffer(0)->getSize() << std::endl;
+   ret << "   Total Size : " << std::dec << (*(frame_->beginBuffer()))->getPayload() << std::endl;
+   ret << "     Raw Size : " << std::dec << (*(frame_->beginBuffer()))->getSize() << std::endl;
    ret << "   Raw Header : ";
 
    for (x=0; x < data_[1]; x++) {

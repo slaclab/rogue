@@ -21,6 +21,8 @@
 **/
 #include <rogue/utilities/fileio/StreamReader.h>
 #include <rogue/interfaces/stream/Frame.h>
+#include <rogue/interfaces/stream/Buffer.h>
+#include <rogue/interfaces/stream/FrameIterator.h>
 #include <rogue/GeneralError.h>
 #include <rogue/Logging.h>
 #include <rogue/GilRelease.h>
@@ -141,12 +143,14 @@ void ruf::StreamReader::runThread() {
    int32_t  ret;
    uint32_t size;
    uint32_t flags;
-   bool err;
+   uint32_t bSize;
+   bool     err;
    ris::FramePtr frame;
-   ris::FrameIteratorPtr iter;
+   ris::Frame::BufferIterator it;
+   char * bData;
    Logging log("streamReader");
 
-   err = false;
+   ret = 0;
    try {
       do {
 
@@ -165,20 +169,34 @@ void ruf::StreamReader::runThread() {
                break;
             }
 
+            // Skip next step if frame is empty
+            if ( size <= 4 ) continue;
+            size -= 4;
+
             // Request frame
             frame = reqFrame(size,true);
             frame->setFlags(flags);
+            it = frame->beginBuffer();
 
-            // Populate frame
-            iter = frame->startWrite(0,size-4);
-            do {
-               if ( (ret = read(fd_,iter->data(),iter->size())) != (int32_t)iter->size()) {
-                  log.warning("Short read. Ret = %i Req = %i after %i bytes",ret,iter->size(),iter->total());
+            while ( (err == false) && (size > 0) ) {
+               bSize = size;
+
+               // Adjust to buffer size, if neccessary
+               if ( bSize > (*it)->getSize() ) bSize = (*it)->getSize();
+
+               if ( (ret = read(fd_,(*it)->begin(),bSize)) != bSize) {
+                  log.warning("Short read. Ret = %i Req = %i after %i bytes",ret,bSize,frame->getPayload());
                   ::close(fd_);
                   fd_ = -1;
                   frame->setError(0x1);
+                  err = true;
                }
-            } while (frame->nextWrite(iter));
+               else {
+                  (*it)->setPayload(bSize);
+                  if ( (*it)->getAvailable() == 0 ) ++it; // Next buffer
+               }
+               size -= bSize;
+            }
             sendFrame(frame);
             boost::this_thread::interruption_point();
          }

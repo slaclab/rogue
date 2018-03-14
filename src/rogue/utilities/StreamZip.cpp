@@ -45,10 +45,9 @@ ru::StreamZip::~StreamZip() { }
 
 //! Accept a frame from master
 void ru::StreamZip::acceptFrame ( ris::FramePtr frame ) {
-   ris::FrameIteratorPtr readIter;
-   ris::FrameIteratorPtr writeIter;
-   uint32_t writeCnt = 0;
-   uint32_t readCnt  = 0;
+   ris::Frame::BufferIterator rBuff;
+   ris::Frame::BufferIterator wBuff;
+   bool done;
    int32_t ret;
    
    // First request a new frame of the same size
@@ -63,37 +62,48 @@ void ru::StreamZip::acceptFrame ( ris::FramePtr frame ) {
    if ( (ret = BZ2_bzCompressInit(&strm,1,0,30)) != BZ_OK ) 
       throw(rogue::GeneralError::ret("StreamZip::acceptFrame","Error initializing compressor",ret));
 
-   // Use the frame iterator in this case to avoid a copy to local memory
-   readIter  = frame->startRead(0,frame->getPayload());
-   writeIter = newFrame->startWrite(0,frame->getPayload());
+   // Setup decompression pointers
+   rBuff = frame->beginBuffer();
+   strm.next_in  = (char *)(*rBuff)->begin();
+   strm.avail_in = (*rBuff)->getPayload();
+
+   wBuff = newFrame->beginBuffer();
+   strm.next_out  = (char *)(*wBuff)->begin();
+   strm.avail_out = (*wBuff)->getAvailable();
 
    // Use the iterators to move data
+   done = false;
    do {
 
-      // Init counters
-      readCnt  = strm.total_in_lo32;
-      writeCnt = strm.total_out_lo32;
-
-      // Setup compression pointers
-      strm.next_in  = (char *)readIter->data();
-      strm.avail_in = readIter->size();
-
-      strm.next_out  = (char *)writeIter->data();
-      strm.avail_out = writeIter->size();
-
-      if ( (ret = BZ2_bzCompress(&strm,(readIter->size()>0)?BZ_RUN:BZ_FINISH)) == BZ_SEQUENCE_ERROR )
+      if ( (ret = BZ2_bzCompress(&strm,(done)?BZ_FINISH:BZ_RUN)) == BZ_SEQUENCE_ERROR )
          throw(rogue::GeneralError::ret("StreamZip::acceptFrame","Compression runtime error",ret));
 
-      readIter->completed(strm.total_in_lo32-readCnt);
-      writeIter->completed(strm.total_out_lo32-writeCnt);
+      // Update read buffer if neccessary
+      if ( strm.avail_in == 0 ) {
+         if ( ++rBuff != frame->endBuffer()) {
+            strm.next_in  = (char *)(*rBuff)->begin();
+            strm.avail_in = (*rBuff)->getPayload();
+         }
+         else done = true;
+      }
 
-      if ( ! newFrame->nextWrite(writeIter) ) 
-         throw(rogue::GeneralError("StreamZip::acceptFrame","Unexpected overflow in outbound frame"));
+      // Update write buffer if neccessary
+      if ( strm.avail_out == 0 ) {
 
-      frame->nextRead(readIter);
+         // We ran out of room, double the frame size, should not happen
+         if ( (wBuff+1) == newFrame->endBuffer() ) {
+            ris::FramePtr tmpFrame = this->reqFrame(frame->getPayload(),true);
+            wBuff = newFrame->appendFrame(tmpFrame);
+         }
+         else ++wBuff;
 
+         strm.next_out  = (char *)(*wBuff)->begin();
+         strm.avail_out = (*wBuff)->getAvailable();
+      }
    } while (ret != BZ_STREAM_END);
 
+   // Update output frame
+   newFrame->setPayload(strm.total_out_lo32);
    BZ2_bzCompressEnd(&strm);
 
    this->sendFrame(newFrame);
