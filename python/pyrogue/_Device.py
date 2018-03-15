@@ -25,7 +25,7 @@ import math
 import time
 
 class EnableVariable(pr.BaseVariable):
-    def __init__(self, *, enabled):
+    def __init__(self, *, enabled, deps):
         pr.BaseVariable.__init__(
             self,
             description='Determines if device is enabled for hardware access',            
