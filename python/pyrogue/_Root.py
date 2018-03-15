@@ -112,10 +112,10 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
         # Look for device overlaps
         tmpDevs = self.deviceList
-        tmpDevs.sort(key=lambda x: (x.memId, x.address, x.size))
+        tmpDevs.sort(key=lambda x: (x.memBaseId, x.address, x.size))
 
         for i in range(1,len(tmpDevs)):
-            if (tmpDevs[i].memId == tmpDevs[i-1].memId) and (tmpDevs[i].address <= (tmpDevs[i-1].address + tmpDevs[i-1].size)):
+            if (tmpDevs[i].memBaseId == tmpDevs[i-1].memBaseId) and (tmpDevs[i].address <= (tmpDevs[i-1].address + tmpDevs[i-1].size)):
                 self._log.critical("Device {} at address={} overlaps {} at address={} with size={}".format(
                     tmpDevs[i].path,tmpDevs[i].address,tmpDevs[i-1].path,tmpDevs[i-1].address,tmpDevs[i-1].size))
 

@@ -178,7 +178,7 @@ class Device(pr.Node,rim.Hub):
 
     @Pyro4.expose
     @property
-    def memId(self):
+    def memBaseId(self):
         return self._reqSlaveId()
 
     def add(self,node):
