@@ -205,6 +205,7 @@ class RemoteBlock(BaseBlock, rim.Master):
         self._bData     = bytearray()  # Block data
         self._vData     = bytearray()  # Verify data
         self._vDataMask = bytearray()  # Verify data mask
+        self._varMask   = bytearray()  # Variable bit mask, used to detect overlaps
         self._size      = 0
         self._offset    = variable.offset
         self._minSize   = self._reqMinAccess()
@@ -426,10 +427,18 @@ class RemoteBlock(BaseBlock, rim.Master):
                 self._bData.extend(bytearray(var.varBytes - self._size))
                 self._vData.extend(bytearray(var.varBytes - self._size))
                 self._vDataMask.extend(bytearray(var.varBytes - self._size))
+                self._varMask.extend(bytearray(var.varBytes - self._size))
                 self._size = var.varBytes
 
             self._sData = bytearray(self._size)
             self._sDataMask = bytearray(self._size)
+
+            # Update var bit mask and check for overlaps
+            for x in range(0, len(var.bitOffset)):
+                for y in range(0, var.bitSize[x]):
+                    if getBitFromBytes(self._varMask,var.bitOffset[x]+y):
+                        self._log.critical(f"Detected bit overlap for variable {var.name} in block {self.name} at offset {self.offset:#02x}")
+                    setBitToBytes(self._varMask,var.bitOffset[x]+y,1)
 
             # Update verify mask
             if var.mode == 'RW' and var.verify is True:

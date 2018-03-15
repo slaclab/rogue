@@ -171,6 +171,11 @@ class Device(pr.Node,rim.Hub):
     def offset(self):
         return self._getOffset()
 
+    @Pyro4.expose
+    @property
+    def size(self):
+        return self._size
+
     def add(self,node):
         # Call node add
         pr.Node.add(self,node)
