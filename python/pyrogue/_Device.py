@@ -414,7 +414,7 @@ class Device(pr.Node,rim.Hub):
                 
                 # Variable overlaps the range of the previous variable
                 if (remVars[i].offset != remVars[i-1].offset) and (remVars[i].offset <= (remVars[i-1].offset + remVars[i-1].varBytes - 1)):
-                    self._log.warning("Overlap detected cur offset={} prev offset={} prev bytes={}".format(remVars[i].offset,remVars[i-1].offset,remVars[i-1].varBytes))
+                    self._log.info("Overlap detected cur offset={} prev offset={} prev bytes={}".format(remVars[i].offset,remVars[i-1].offset,remVars[i-1].varBytes))
                     remVars[i]._shiftOffsetDown(remVars[i].offset - remVars[i-1].offset, blkSize)
                     done = False
                     break
