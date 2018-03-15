@@ -40,10 +40,7 @@ rpr::ApplicationPtr rpr::Application::create () {
 
 void rpr::Application::setup_python() {
 
-   bp::class_<rpr::Application, rpr::ApplicationPtr, bp::bases<ris::Master,ris::Slave>, boost::noncopyable >("Application",bp::init<>())
-      .def("create",         &rpr::Application::create)
-      .staticmethod("create")
-   ;
+   bp::class_<rpr::Application, rpr::ApplicationPtr, bp::bases<ris::Master,ris::Slave>, boost::noncopyable >("Application",bp::init<>());
 
    bp::implicitly_convertible<rpr::ApplicationPtr, ris::MasterPtr>();
    bp::implicitly_convertible<rpr::ApplicationPtr, ris::SlavePtr>();
@@ -67,8 +64,8 @@ void rpr::Application::setController( rpr::ControllerPtr cntl ) {
 }
 
 //! Generate a Frame. Called from master
-ris::FramePtr rpr::Application::acceptReq ( uint32_t size, bool zeroCopyEn, uint32_t maxBuffSize ) {
-   return(cntl_->reqFrame(size,maxBuffSize));
+ris::FramePtr rpr::Application::acceptReq ( uint32_t size, bool zeroCopyEn ) {
+   return(cntl_->reqFrame(size));
 }
 
 //! Accept a frame from master

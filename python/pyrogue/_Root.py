@@ -294,7 +294,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         """
         Generate a frame containing the passed string.
         """
-        frame = self._reqFrame(len(yml),True,0)
+        frame = self._reqFrame(len(yml),True)
         b = bytearray(yml,'utf-8')
         frame.write(b,0)
         self._sendFrame(frame)
@@ -394,7 +394,8 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         for func in self._varListeners:
 
             try:
-                if hasattr(func,'varListener'):
+
+                if isinstance(func,Pyro4.core.Proxy) or hasattr(func,'varListener'):
                     func.varListener(path,value,disp)
                 else:
                     func(path,value,disp)
@@ -415,6 +416,8 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
             # Otherwise act directly
             else:
                 d   = {}
+
+                # The following three lines are causing major slowdowns
                 addPathToDict(d,path,disp)
                 yml = dictToYaml(d,default_flow_style=False)
                 self._sendYamlFrame(yml)

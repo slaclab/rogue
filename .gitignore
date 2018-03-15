@@ -2,4 +2,10 @@
 *.o
 *.so
 *.pyc
+setup_env.csh
+setup_env.sh
 *.swp
+*.orig
+setup.csh
+setup.sh
+.__afs*

@@ -37,6 +37,12 @@ boost::mutex rogue::Logging::levelMtx_;
 // Filter list
 std::vector <rogue::LogFilter *> rogue::Logging::filters_;
 
+// Crate logger
+rogue::LoggingPtr rogue::Logging::create(std::string name) {
+   rogue::LoggingPtr log = boost::make_shared<rogue::Logging>(name);
+   return log;
+}
+
 rogue::Logging::Logging(std::string name) {
    std::vector<rogue::LogFilter *>::iterator it;
 
@@ -77,9 +83,9 @@ void rogue::Logging::setFilter(std::string name, uint32_t level) {
 void rogue::Logging::intLog(uint32_t level, const char * fmt, va_list args) {
    if ( level < level_ ) return;
 
-   printf("%s: ",name_.c_str());
-   vprintf(fmt,args);
-   printf("\n");
+   char buffer[1000];
+   vsnprintf(buffer,1000,fmt,args);
+   printf("%s: %s\n",name_.c_str(),buffer);
 }
 
 void rogue::Logging::log(uint32_t level, const char * fmt, ...) {

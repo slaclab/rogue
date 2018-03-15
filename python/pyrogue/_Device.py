@@ -104,6 +104,7 @@ class Device(pr.Node,rim.Hub):
                  size=0,
                  hidden=False,
                  variables=None,
+                 blockSize=None,
                  expand=True,
                  enabled=True,
                  defaults=None,
@@ -122,6 +123,7 @@ class Device(pr.Node,rim.Hub):
         self._memBase   = memBase
         self._memLock   = threading.RLock()
         self._size      = size
+        self._blockSize = blockSize
         self._defaults  = defaults if defaults is not None else {}
 
         # Connect to memory slave
@@ -141,9 +143,7 @@ class Device(pr.Node,rim.Hub):
         self.addRemoteCommands = ft.partial(self.addNodes, pr.RemoteCommand)
 
         # Variable interface to enable flag
-        self.add(EnableVariable(
-            enabled=enabled,
-            deps=enableDeps))
+        self.add(EnableVariable(enabled=enabled, deps=enableDeps))
 
         if variables is not None and isinstance(variables, collections.Iterable):
             if all(isinstance(v, pr.BaseVariable) for v in variables):
@@ -228,12 +228,9 @@ class Device(pr.Node,rim.Hub):
         pass
 
     def enableChanged(self,value):
-        if value is True:
-            self.writeBlocks(force=True)
-            self.verifyBlocks()
-            self.readBlocks()
-            self.checkBlocks()
-
+        pass # Do nothing
+        #if value is True:
+        #    self.writeAndVerifyBlocks(force=True, recurse=True, variable=None)
 
     def writeBlocks(self, force=False, recurse=True, variable=None, checkEach=False):
         """
@@ -307,12 +304,15 @@ class Device(pr.Node,rim.Hub):
 
     def writeAndVerifyBlocks(self, force=False, recurse=True, variable=None, checkEach=False):
         """Perform a write, verify and check. Usefull for committing any stale variables"""
-        self.readBlocks(recurse=recurse, variable=variable, checkEach=checkEach)
         self.writeBlocks(force=force, recurse=recurse, variable=variable, checkEach=checkEach)
         self.verifyBlocks(recurse=recurse, variable=variable, checkEach=checkEach)
         self.checkBlocks(recurse=recurse, variable=variable)
 
     def _rawTxnChunker(self, offset, data, base=pr.UInt, stride=4, wordBitSize=32, txnType=rim.Write, numWords=1):
+        if offset + (numWords * stride) >= self._size:
+            raise pr.MemoryError(name=self.name, address=offset|self.address,
+                                 msg='Raw transaction outside of device size')
+
         if wordBitSize > stride*8:
             raise pr.MemoryError(name=self.name, address=offset|self.address,
                                  msg='Called raw memory access with wordBitSize > stride')
@@ -340,33 +340,42 @@ class Device(pr.Node,rim.Hub):
 
             return ldata
 
-    def _rawWrite(self, offset, data, base=pr.UInt, stride=4, wordBitSize=32):
+    def _rawWrite(self, offset, data, base=pr.UInt, stride=4, wordBitSize=32, tryCount=1):
         with self._memLock:
-            self._rawTxnChunker(offset, data, base, stride, wordBitSize, txnType=rim.Write)
-            self._waitTransaction(0)
+            for _ in range(tryCount):
+                self._rawTxnChunker(offset, data, base, stride, wordBitSize, txnType=rim.Write)
+                self._waitTransaction(0)
 
-            if self._getError() > 0:
-                raise pr.MemoryError (name=self.name, address=offset|self.address, error=self._getError())
+                if self._getError() == 0: return
 
+            # If we get here an error has occured
+            raise pr.MemoryError (name=self.name, address=offset|self.address, error=self._getError())
         
-    def _rawRead(self, offset, numWords=1, base=pr.UInt, stride=4, wordBitSize=32, data=None):
+    def _rawRead(self, offset, numWords=1, base=pr.UInt, stride=4, wordBitSize=32, data=None, tryCount=1):
         with self._memLock:
-            ldata = self._rawTxnChunker(offset, data, base, stride, wordBitSize, txnType=rim.Read, numWords=numWords)
-            self._waitTransaction(0)
+            for _ in range(tryCount):
+                ldata = self._rawTxnChunker(offset, data, base, stride, wordBitSize, txnType=rim.Read, numWords=numWords)
+                self._waitTransaction(0)
 
-            if self._getError() > 0:
-                raise pr.MemoryError (name=self.name, address=offset|self.address, error=self._getError())
-
-            if numWords == 1:
-                return base.fromBytes(base.mask(ldata, wordBitSize))
-            else:
-                return [base.fromBytes(base.mask(ldata[i:i+stride], wordBitSize)) for i in range(0, len(ldata), stride)]
-            
+                if self._getError() == 0:
+                    if numWords == 1:
+                        return base.fromBytes(base.mask(ldata, wordBitSize))
+                    else:
+                        return [base.fromBytes(base.mask(ldata[i:i+stride], wordBitSize)) for i in range(0, len(ldata), stride)]
+                
+            # If we get here an error has occured
+            raise pr.MemoryError (name=self.name, address=offset|self.address, error=self._getError())
 
     def _buildBlocks(self):
         remVars = []
 
-        minSize = self._doMinAccess()
+        blkSize = self._minTxnSize
+
+        if self._blockSize is not None:
+            if self._blockSize > self._maxTxnSize:
+                blkSize = self._maxTxnSize
+            else:
+                blkSize = self._blockSize
 
         # Process all of the variables
         for k,n in self.nodes.items():
@@ -377,7 +386,7 @@ class Device(pr.Node,rim.Hub):
 
             # Align to min access, create list softed by offset 
             elif isinstance(n,pr.RemoteVariable) and n.offset is not None:
-                n._shiftOffsetDown(n.offset % minSize, minSize)
+                n._shiftOffsetDown(n.offset % blkSize, blkSize)
                 remVars += [n]
 
         # Loop until no overlaps found
@@ -390,16 +399,21 @@ class Device(pr.Node,rim.Hub):
 
             # Look for overlaps and adjust offset
             for i in range(1,len(remVars)):
-
+                
                 # Variable overlaps the range of the previous variable
-                if (remVars[i].offset != remVars[i-1].offset) and (remVars[i].offset <= (remVars[i-1].varBytes-1)):
+                if (remVars[i].offset != remVars[i-1].offset) and (remVars[i].offset <= (remVars[i-1].offset + remVars[i-1].varBytes - 1)):
                     self._log.warning("Overlap detected cur offset={} prev offset={} prev bytes={}".format(remVars[i].offset,remVars[i-1].offset,remVars[i-1].varBytes))
-                    remVars[i]._shiftOffsetDown(remVars[i].offset - remVars[i-1].offset, minSize)
+                    remVars[i]._shiftOffsetDown(remVars[i].offset - remVars[i-1].offset, blkSize)
                     done = False
                     break
 
         # Add variables
         for n in remVars:
+
+            # Adjust device size
+            if (n.offset + n.varBytes) > self._size:
+                self._size = (n.offset + n.varBytes)
+
             if not any(block._addVariable(n) for block in self._blocks):
                 self._log.debug("Adding new block {} at offset {:#02x}".format(n.name,n.offset))
                 self._blocks.append(pr.RemoteBlock(variable=n))
@@ -407,8 +421,8 @@ class Device(pr.Node,rim.Hub):
     def _rootAttached(self, parent, root):
         pr.Node._rootAttached(self, parent, root)
 
-        self._maxTxnSize = self._reqMaxAccess()
-        self._minTxnSize = self._reqMinAccess()        
+        self._maxTxnSize = self._doMaxAccess()
+        self._minTxnSize = self._doMinAccess()
 
         for key,value in self._nodes.items():
             value._rootAttached(self,root)
@@ -420,7 +434,7 @@ class Device(pr.Node,rim.Hub):
             match = pr.nodeMatch(self.variables, varName)
             for var in match:
                 var._default = defValue
-                
+
         # Some variable initialization can run until the blocks are built
         for v in self.variables.values():
             v._finishInit()

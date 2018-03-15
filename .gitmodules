@@ -1,4 +1,5 @@
 [submodule "drivers"]
 	path = drivers
 	url = https://github.com/slaclab/aes-stream-drivers
-	branch = master
+   branch = master
+   ignore = dirty

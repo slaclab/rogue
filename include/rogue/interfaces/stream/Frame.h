@@ -25,6 +25,7 @@
 **/
 #ifndef __ROGUE_INTERFACES_STREAM_FRAME_H__
 #define __ROGUE_INTERFACES_STREAM_FRAME_H__
+#include <boost/enable_shared_from_this.hpp>
 #include <stdint.h>
 #include <vector>
 
@@ -43,8 +44,11 @@ namespace rogue {
           * payload. Calls to write and read take into account the header offset.
           * It is assumed only one thread will interact with a buffer. Buffers 
           * are not thread safe.
+          * TODO: Consider tracking size and payload in frame 
          */
-         class Frame {
+         class Frame : public boost::enable_shared_from_this<rogue::interfaces::stream::Frame> {
+
+               friend class Buffer;
 
                //! Interface specific flags
                uint32_t flags_;
@@ -55,7 +59,30 @@ namespace rogue {
                //! List of buffers which hold real data
                std::vector<boost::shared_ptr<rogue::interfaces::stream::Buffer> > buffers_;
 
+               //! Total size of buffers
+               uint32_t size_;
+
+               //! Total payload size
+               uint32_t payload_;
+
+               //! Update buffer size counts
+               void updateSizes();
+
+               //! Size values dirty flage
+               bool sizeDirty_;
+
+            protected:
+
+               //! Set size values dirty
+               void setSizeDirty();
+
             public:
+
+               //! Itererator for buffer list
+               typedef std::vector<boost::shared_ptr<rogue::interfaces::stream::Buffer> >::iterator BufferIterator;
+
+               //! Itererator for data
+               typedef rogue::interfaces::stream::FrameIterator iterator;
 
                //! Setup class in python
                static void setup_python();
@@ -72,26 +99,68 @@ namespace rogue {
                //! Destroy a frame.
                ~Frame();
 
-               //! Add a buffer to end of frame
-               void appendBuffer(boost::shared_ptr<rogue::interfaces::stream::Buffer> buff);
+               //! Add a buffer to end of frame, return interator to inserted buffer
+               std::vector<boost::shared_ptr<rogue::interfaces::stream::Buffer> >::iterator
+                  appendBuffer(boost::shared_ptr<rogue::interfaces::stream::Buffer> buff);
 
-               //! Append frame to end. Passed frame is emptied.
-               void appendFrame(boost::shared_ptr<rogue::interfaces::stream::Frame> frame);
+               //! Append passed frame buffers to end of frame, return interator to inserted buffer
+               std::vector<boost::shared_ptr<rogue::interfaces::stream::Buffer> >::iterator
+                  appendFrame(boost::shared_ptr<rogue::interfaces::stream::Frame> frame);
 
-               //! Get buffer count
-               uint32_t getCount();
+               //! Buffer begin iterator
+               std::vector<boost::shared_ptr<rogue::interfaces::stream::Buffer> >::iterator beginBuffer();
 
-               //! Remove buffers from frame
-               void clear();
+               //! Buffer end iterator
+               std::vector<boost::shared_ptr<rogue::interfaces::stream::Buffer> >::iterator endBuffer();
 
-               //! Get buffer at index
-               boost::shared_ptr<rogue::interfaces::stream::Buffer> getBuffer(uint32_t index);
+               //! Buffers list is empty
+               bool isEmpty();
 
-               //! Get total available capacity (not including header space)
+               /*
+                * Get size of buffers that can hold
+                * payload data. This function 
+                * returns the full buffer size minus
+                * the head and tail reservation.
+                */
+               uint32_t getSize();
+
+               /*
+                * Get available size for payload
+                * This is the space remaining for payload
+                * minus the space reserved for the tail
+                */
                uint32_t getAvailable();
 
-               //! Get total real payload size (not including header space)
+               /*
+                * Get real payload size without header
+                * This is the count of real data in the 
+                * packet, minus the portion reserved for
+                * the head.
+                */
                uint32_t getPayload();
+
+               /*
+                * Set payload size (not including header)
+                * If passed size is less then current, 
+                * the frame payload size will be descreased.
+                */
+               void setPayload(uint32_t size);
+
+               /*
+                * Set the min payload size (not including header)
+                * If the current payload size is greater, the
+                * payload size will be unchanged.
+                */
+               void minPayload(uint32_t size);
+
+               //! Adjust payload size
+               void adjustPayload(int32_t value);
+
+               //! Set the buffer as full (minus tail reservation)
+               void setPayloadFull();
+
+               //! Set the buffer as empty (minus header reservation)
+               void setPayloadEmpty();
 
                //! Get flags
                uint32_t getFlags();
@@ -105,112 +174,24 @@ namespace rogue {
                //! Set error state
                void setError(uint32_t error);
 
-               //! Read count bytes from frame payload, starting from offset.
-               /* 
-                * Frame reads can be from random offsets
-                */
-               uint32_t read  ( void *p, uint32_t offset, uint32_t count );
+               //! Get start of data iterator
+               rogue::interfaces::stream::FrameIterator begin();
+
+               //! Get end of data iterator
+               rogue::interfaces::stream::FrameIterator end();
+
+               //! Get end of payload iterator
+               rogue::interfaces::stream::FrameIterator endPayload();
 
                //! Read count bytes from frame payload, starting from offset. Python version.
-               /* 
-                * Frame reads can be from random offsets
-                */
                void readPy ( boost::python::object p, uint32_t offset );
 
-               //! Write count bytes to frame payload, starting at offset
-               /* 
-                * Frame writes can be at random offsets. Payload size will
-                * be set to highest write offset.
-                */
-               uint32_t write ( void *p, uint32_t offset, uint32_t count );
-
                //! Write count bytes to frame payload, starting at offset. Python Version
-               /* 
-                * Frame writes can be at random offsets. Payload size will
-                * be set to highest write offset.
-                */
                void writePy ( boost::python::object p, uint32_t offset );
-
-               //! Start an iterative write
-               /*
-                * Pass offset and total size
-                * Returns iterator object.
-                * Use data and size fields in object to control transaction
-                * Call writeNext to following data update.
-                */
-               boost::shared_ptr<rogue::interfaces::stream::FrameIterator> 
-                   startWrite(uint32_t offset, uint32_t size);
-
-               //! Continue an iterative write
-               bool nextWrite(boost::shared_ptr<rogue::interfaces::stream::FrameIterator> iter);
-
-               //! Start an iterative read
-               /*
-                * Pass offset and total size
-                * Returns iterator object.
-                * Use data and size fields in object to control transaction
-                * Call readNext to following data update.
-                */
-                boost::shared_ptr<rogue::interfaces::stream::FrameIterator> 
-                   startRead(uint32_t offset, uint32_t size);
-
-               //! Continue an iterative read
-               bool nextRead(boost::shared_ptr<rogue::interfaces::stream::FrameIterator> iter);
-
-         };
-
-         //! Frame iterator
-         /*
-          * Tracks accesses within a frame while iterating.
-          * data is pointer to raw buffer to act on
-          * size is the transaction size allowed for pointer
-          */
-         class FrameIterator {
-            friend class rogue::interfaces::stream::Frame;
-            protected:
-
-               //! Buffer index
-               uint32_t index_;
-
-               //! Remaining bytes in transaction
-               uint32_t remaining_;
-
-               //! Buffer pointer
-               uint8_t * data_;
-
-               //! Buffer offset
-               uint32_t offset_;
-
-               //! Size of pointer
-               uint32_t size_;
-
-               //! Amount completed in transaction
-               uint32_t completed_;
-
-               //! Transaction total
-               uint32_t total_;
-
-            public:
-
-               //! Get pointer
-               uint8_t * data() { return(data_); }
-
-               //! Get size
-               uint32_t size() { return(size_); }
-
-               //! Transaction total
-               uint32_t total() {return(total_);}
-
-               //! Update the amount accessed
-               void completed(uint32_t value) {
-                  if ( value < size_ ) completed_ = value;
-               }
          };
 
          // Convienence
          typedef boost::shared_ptr<rogue::interfaces::stream::Frame> FramePtr;
-         typedef boost::shared_ptr<rogue::interfaces::stream::FrameIterator> FrameIteratorPtr;
-
       }
    }
 }

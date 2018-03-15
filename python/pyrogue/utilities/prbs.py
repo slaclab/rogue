@@ -41,12 +41,23 @@ class PrbsRx(pyrogue.Device):
                                        mode='RO', pollInterval=1, value=0,
                                        localGet=self._prbs.getRxBytes))
 
+        self.add(pyrogue.LocalVariable(name='checkPayload', description='Payload Check Enable',
+                                       mode='RW', value=True, localSet=self._plEnable))
+
+    def _plEnable(self,value,changed):
+        self._prbs.checkPayload(value)
+
     def countReset(self):
         self._prbs.resetCount()
 
     def _getStreamSlave(self):
         return self._prbs
 
+    def setWidth(self,width):
+        self._prbs.setWidth(width)
+
+    def setTaps(self,taps):
+        self._prbs.setTaps(taps)
 
 class PrbsTx(pyrogue.Device):
     """PRBS TX Wrapper"""
@@ -90,4 +101,10 @@ class PrbsTx(pyrogue.Device):
 
     def _getStreamMaster(self):
         return self._prbs
+
+    def setWidth(self,width):
+        self._prbs.setWidth(width)
+
+    def setTaps(self,taps):
+        self._prbs.setTaps(taps)
 

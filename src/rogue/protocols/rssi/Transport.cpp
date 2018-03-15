@@ -40,10 +40,7 @@ rpr::TransportPtr rpr::Transport::create () {
 
 void rpr::Transport::setup_python() {
 
-   bp::class_<rpr::Transport, rpr::TransportPtr, bp::bases<ris::Master,ris::Slave>, boost::noncopyable >("Transport",bp::init<>())
-      .def("create",         &rpr::Transport::create)
-      .staticmethod("create")
-   ;
+   bp::class_<rpr::Transport, rpr::TransportPtr, bp::bases<ris::Master,ris::Slave>, boost::noncopyable >("Transport",bp::init<>());
 
    bp::implicitly_convertible<rpr::TransportPtr, ris::MasterPtr>();
    bp::implicitly_convertible<rpr::TransportPtr, ris::SlavePtr>();
@@ -62,18 +59,6 @@ void rpr::Transport::setController( rpr::ControllerPtr cntl ) {
 
    // Start read thread
    thread_ = new boost::thread(boost::bind(&rpr::Transport::runThread, this));
-}
-
-//! Generate a Frame. Called from master
-/*
- * Pass total size required.
- * Pass flag indicating if zero copy buffers are acceptable
- * maxBuffSize indicates the largest acceptable buffer size. A larger buffer can be
- * returned but the total buffer count must assume each buffer is of size maxBuffSize
- * If maxBuffSize = 0, slave will freely determine the buffer size.
- */
-ris::FramePtr rpr::Transport::acceptReq ( uint32_t size, bool zeroCopyEn, uint32_t maxBuffSize ) {
-   throw(rogue::GeneralError("Transport::acceptReq","Invalid frame request."));
 }
 
 //! Accept a frame from master

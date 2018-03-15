@@ -149,7 +149,7 @@ void rhp::PgpCard::sendOpCode(uint8_t code) {
 }
 
 //! Generate a buffer. Called from master
-ris::FramePtr rhp::PgpCard::acceptReq ( uint32_t size, bool zeroCopyEn, uint32_t maxBuffSize ) {
+ris::FramePtr rhp::PgpCard::acceptReq ( uint32_t size, bool zeroCopyEn) {
    int32_t          res;
    fd_set           fds;
    struct timeval   tout;
@@ -159,12 +159,12 @@ ris::FramePtr rhp::PgpCard::acceptReq ( uint32_t size, bool zeroCopyEn, uint32_t
    uint32_t         buffSize;
 
    //! Adjust allocation size
-   if ( (maxBuffSize > bSize_) || (maxBuffSize == 0)) buffSize = bSize_;
-   else buffSize = maxBuffSize;
+   if ( size > bSize_) buffSize = bSize_;
+   else buffSize = size;
 
    // Zero copy is disabled. Allocate from memory.
    if ( zeroCopyEn_ == false || zeroCopyEn == false || rawBuff_ == NULL ) {
-      frame = ris::Pool::acceptReq(size,false,buffSize);
+      frame = ris::Pool::acceptReq(size,false);
    }
 
    // Allocate zero copy buffers from driver
@@ -212,26 +212,25 @@ ris::FramePtr rhp::PgpCard::acceptReq ( uint32_t size, bool zeroCopyEn, uint32_t
 
 //! Accept a frame from master
 void rhp::PgpCard::acceptFrame ( ris::FramePtr frame ) {
-   ris::BufferPtr buff;
    int32_t          res;
    fd_set           fds;
    struct timeval   tout;
    uint32_t         meta;
-   uint32_t         x;
    uint32_t         cont;
 
    rogue::GilRelease noGil;
 
-   // Go through each buffer in the frame
-   for (x=0; x < frame->getCount(); x++) {
-      buff = frame->getBuffer(x);
+   // Go through each (*it)er in the frame
+   ris::Frame::BufferIterator it;
+   for (it = frame->beginBuffer(); it != frame->endBuffer(); ++it) {
+      (*it)->zeroHeader();
 
-      // Continue flag is set if this is not the last buffer
-      if ( x == (frame->getCount() - 1) ) cont = 0;
+      // Continue flag is set if this is not the last (*it)er
+      if ( it == (frame->endBuffer()-1) ) cont = 0;
       else cont = 1;
 
-      // Get buffer meta field
-      meta = buff->getMeta();
+      // Get (*it)er meta field
+      meta = (*it)->getMeta();
 
       // Meta is zero copy as indicated by bit 31
       if ( (meta & 0x80000000) != 0 ) {
@@ -239,21 +238,21 @@ void rhp::PgpCard::acceptFrame ( ris::FramePtr frame ) {
          // Buffer is not already stale as indicates by bit 30
          if ( (meta & 0x40000000) == 0 ) {
 
-            // Write by passing buffer index to driver
-            if ( dmaWriteIndex(fd_, meta & 0x3FFFFFFF, buff->getCount(), pgpSetFlags(cont),pgpSetDest(lane_, vc_)) <= 0 )
+            // Write by passing (*it)er index to driver
+            if ( dmaWriteIndex(fd_, meta & 0x3FFFFFFF, (*it)->getPayload(), pgpSetFlags(cont),pgpSetDest(lane_, vc_)) <= 0 )
                throw(rogue::GeneralError("PgpCard::acceptFrame","PGP Write Call Failed"));
 
-            // Mark buffer as stale
+            // Mark (*it)er as stale
             meta |= 0x40000000;
-            buff->setMeta(meta);
+            (*it)->setMeta(meta);
          }
       }
 
-      // Write to pgp with buffer copy in driver
+      // Write to pgp with (*it)er copy in driver
       else {
 
          // Keep trying since select call can fire 
-         // but write fails because we did not win the buffer lock
+         // but write fails because we did not win the (*it)er lock
          do {
 
             // Setup fds for select call
@@ -269,8 +268,8 @@ void rhp::PgpCard::acceptFrame ( ris::FramePtr frame ) {
                res = 0;
             }
             else {
-               // Write with buffer copy
-               if ( (res = dmaWrite(fd_, buff->getRawData(), buff->getCount(), pgpSetFlags(cont), pgpSetDest(lane_, vc_)) < 0 ) )
+               // Write with (*it)er copy
+               if ( (res = dmaWrite(fd_, (*it)->begin(), (*it)->getPayload(), pgpSetFlags(cont), pgpSetDest(lane_, vc_)) < 0 ) )
                   throw(rogue::GeneralError("PgpCard::acceptFrame","PGP Write Call Failed"));
             } 
          }
@@ -337,7 +336,7 @@ void rhp::PgpCard::runThread() {
                buff = allocBuffer(bSize_,NULL);
 
                // Attempt read, lane and vc not needed since only one lane/vc is open
-               res = dmaRead(fd_, buff->getRawData(), buff->getRawSize(), &flags, &error, NULL);
+               res = dmaRead(fd_, buff->begin(), buff->getAvailable(), &flags, &error, NULL);
                cont = pgpGetCont(flags);
             }
 
@@ -355,8 +354,7 @@ void rhp::PgpCard::runThread() {
 
             // Read was successfull
             if ( res > 0 ) {
-               buff->setSize(res);
-               buff->setError(error);
+               buff->setPayload(res);
                frame->setError(error | frame->getError());
                frame->appendBuffer(buff);
                buff.reset();
@@ -376,8 +374,6 @@ void rhp::PgpCard::runThread() {
 void rhp::PgpCard::setup_python () {
 
    bp::class_<rhp::PgpCard, rhp::PgpCardPtr, bp::bases<ris::Master,ris::Slave>, boost::noncopyable >("PgpCard",bp::init<std::string,uint32_t,uint32_t>())
-      .def("create",         &rhp::PgpCard::create)
-      .staticmethod("create")
       .def("getInfo",        &rhp::PgpCard::getInfo)
       .def("getPciStatus",   &rhp::PgpCard::getPciStatus)
       .def("getStatus",      &rhp::PgpCard::getStatus)

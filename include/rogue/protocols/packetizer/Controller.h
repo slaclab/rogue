@@ -36,22 +36,27 @@ namespace rogue {
          class Transport;
          class Header;
 
-
          //! Packetizer Controller Class
-         class Controller : public boost::enable_shared_from_this<rogue::protocols::packetizer::Controller> {
+         class Controller {
+
+            protected:
 
                // parameters
-               uint32_t segmentSize_;
                uint32_t appIndex_;
                uint32_t tranIndex_;
-               uint32_t tranCount_;
+               bool     transSof_[256];
+               uint32_t tranCount_[256];
+               uint32_t crcInit_[256];
                uint8_t  tranDest_;
                uint32_t dropCount_;
                uint32_t timeout_;
+               uint32_t headSize_;
+               uint32_t tailSize_;
+               uint32_t alignSize_;
 
-               rogue::Logging * log_;
+               rogue::LoggingPtr log_;
 
-               boost::shared_ptr<rogue::interfaces::stream::Frame> tranFrame_;
+               boost::shared_ptr<rogue::interfaces::stream::Frame> tranFrame_[256];
 
                boost::mutex appMtx_;
                boost::mutex tranMtx_;
@@ -63,35 +68,28 @@ namespace rogue {
 
             public:
 
-               //! Class creation
-               static boost::shared_ptr<rogue::protocols::packetizer::Controller> 
-                  create ( uint32_t segmentSize,
-                           boost::shared_ptr<rogue::protocols::packetizer::Transport> tran,
-                           boost::shared_ptr<rogue::protocols::packetizer::Application> * app );
-
                //! Setup class in python
                static void setup_python();
 
                //! Creator
-               Controller( uint32_t segmentSize,
-                           boost::shared_ptr<rogue::protocols::packetizer::Transport> tran,
-                           boost::shared_ptr<rogue::protocols::packetizer::Application> * app );
+               Controller( boost::shared_ptr<rogue::protocols::packetizer::Transport> tran,
+                           boost::shared_ptr<rogue::protocols::packetizer::Application> * app,
+                           uint32_t headSize, uint32_t tailSize, uint32_t alignSize );
 
                //! Destructor
                ~Controller();
 
                //! Transport frame allocation request
-               boost::shared_ptr<rogue::interfaces::stream::Frame>
-                  reqFrame ( uint32_t size, uint32_t maxBuffSize );
+               boost::shared_ptr<rogue::interfaces::stream::Frame> reqFrame ( uint32_t size);
 
                //! Frame received at transport interface
-               void transportRx( boost::shared_ptr<rogue::interfaces::stream::Frame> frame );
+               virtual void transportRx( boost::shared_ptr<rogue::interfaces::stream::Frame> frame );
 
                //! Interface for transport transmitter thread
                boost::shared_ptr<rogue::interfaces::stream::Frame> transportTx ();
 
                //! Frame received at application interface
-               void applicationRx( boost::shared_ptr<rogue::interfaces::stream::Frame> frame, uint8_t id);
+               virtual void applicationRx( boost::shared_ptr<rogue::interfaces::stream::Frame> frame, uint8_t id);
 
                //! Get drop count
                uint32_t getDropCount();
