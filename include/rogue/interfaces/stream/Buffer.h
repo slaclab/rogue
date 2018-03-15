@@ -28,6 +28,8 @@
 #include <stdint.h>
 
 #include <boost/python.hpp>
+#include <rogue/interfaces/stream/Frame.h>
+
 namespace rogue {
    namespace interfaces {
       namespace stream {
@@ -47,7 +49,7 @@ namespace rogue {
                boost::shared_ptr<rogue::interfaces::stream::Pool> source_;
 
                //! Pointer to frame containing this buffer
-               boost::shared_ptr<rogue::interfaces::stream::Frame> frame_;
+               boost::weak_ptr<rogue::interfaces::stream::Frame> frame_;
 
                //! Pointer to raw data buffer. Raw pointer is used here!
                uint8_t *  data_;
