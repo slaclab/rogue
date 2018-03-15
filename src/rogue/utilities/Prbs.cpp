@@ -352,6 +352,8 @@ void ru::Prbs::setup_python() {
       .def("genFrame",       &ru::Prbs::genFrame)
       .def("enable",         &ru::Prbs::enable)
       .def("disable",        &ru::Prbs::disable)
+      .def("setWidth",       &ru::Prbs::setWidth)
+      .def("setTaps",        &ru::Prbs::setTaps)
       .def("getRxErrors",    &ru::Prbs::getRxErrors)
       .def("getRxCount",     &ru::Prbs::getRxCount)
       .def("getRxBytes",     &ru::Prbs::getRxBytes)
