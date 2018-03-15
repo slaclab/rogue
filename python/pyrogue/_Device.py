@@ -412,10 +412,6 @@ class Device(pr.Node,rim.Hub):
             # Look for overlaps and adjust offset
             for i in range(1,len(remVars)):
                 
-                # Adjust device size
-                if remVars[i].offset + remVars[i].varBytes > self._size:
-                    self_size = remVars[i].offset + remVars[i].varBytes
-
                 # Variable overlaps the range of the previous variable
                 if (remVars[i].offset != remVars[i-1].offset) and (remVars[i].offset <= (remVars[i-1].offset + remVars[i-1].varBytes - 1)):
                     self._log.warning("Overlap detected cur offset={} prev offset={} prev bytes={}".format(remVars[i].offset,remVars[i-1].offset,remVars[i-1].varBytes))
@@ -425,6 +421,11 @@ class Device(pr.Node,rim.Hub):
 
         # Add variables
         for n in remVars:
+
+            # Adjust device size
+            if (n.offset + n.varBytes) > self._size:
+                self._size = (n.offset + n.varBytes)
+
             if not any(block._addVariable(n) for block in self._blocks):
                 self._log.debug("Adding new block {} at offset {:#02x}".format(n.name,n.offset))
                 self._blocks.append(pr.RemoteBlock(variable=n))
