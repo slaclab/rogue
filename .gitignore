@@ -9,3 +9,4 @@ setup_env.sh
 setup.csh
 setup.sh
 .__afs*
+lib/*
