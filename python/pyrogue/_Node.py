@@ -220,6 +220,20 @@ class Node(object):
 
     @Pyro4.expose
     @property
+    def deviceList(self):
+        """
+        Get a recursive list of devices
+        """
+        lst = []
+        for key,value in self._nodes.items():
+            if isinstance(value,pr.Device):
+                lst.append(value)
+            else:
+                lst.extend(value.deviceList)
+        return lst
+
+    @Pyro4.expose
+    @property
     def commands(self):
         """
         Return an OrderedDict of the Commands that are children of this Node

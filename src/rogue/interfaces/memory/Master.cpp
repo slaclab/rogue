@@ -39,6 +39,7 @@ void rim::Master::setup_python() {
    bp::class_<rim::Master, rim::MasterPtr, boost::noncopyable>("Master",bp::init<>())
       .def("_setSlave",           &rim::Master::setSlave)
       .def("_getSlave",           &rim::Master::getSlave)
+      .def("_reqSlaveId",         &rim::Master::reqSlaveId)
       .def("_reqMinAccess",       &rim::Master::reqMinAccess)
       .def("_reqMaxAccess",       &rim::Master::reqMaxAccess)
       .def("_reqAddress",         &rim::Master::reqAddress)
@@ -75,6 +76,11 @@ void rim::Master::setSlave ( rim::SlavePtr slave ) {
 //! Get slave
 rim::SlavePtr rim::Master::getSlave () {
    return(slave_);
+}
+
+//! Query the slave id
+uint32_t rim::Master::reqSlaveId() {
+   return(slave_->doSlaveId());
 }
 
 //! Query the minimum access size in bytes for interface

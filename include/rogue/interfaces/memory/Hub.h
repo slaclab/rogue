@@ -58,6 +58,9 @@ namespace rogue {
                //! Get offset
                uint64_t getOffset();
 
+               //! Return ID to requesting master
+               uint32_t doSlaveId();
+
                //! Return min access size to requesting master
                uint32_t doMinAccess();
 

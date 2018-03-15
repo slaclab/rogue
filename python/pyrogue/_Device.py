@@ -176,6 +176,11 @@ class Device(pr.Node,rim.Hub):
     def size(self):
         return self._size
 
+    @Pyro4.expose
+    @property
+    def memId(self):
+        return self._reqSlaveId()
+
     def add(self,node):
         # Call node add
         pr.Node.add(self,node)
