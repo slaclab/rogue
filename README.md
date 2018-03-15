@@ -157,6 +157,7 @@ $ git pull
 $ git submodule update
 $ cd build
 $ make rebuild_cache
+$ make clean
 $ make 
 ````
 
