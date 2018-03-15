@@ -311,6 +311,10 @@ class Device(pr.Node,rim.Hub):
         self.checkBlocks(recurse=recurse, variable=variable)
 
     def _rawTxnChunker(self, offset, data, base=pr.UInt, stride=4, wordBitSize=32, txnType=rim.Write, numWords=1):
+        if offset + (numWords * stride) >= self._size:
+            raise pr.MemoryError(name=self.name, address=offset|self.address,
+                                 msg='Raw transaction outside of device size')
+
         if wordBitSize > stride*8:
             raise pr.MemoryError(name=self.name, address=offset|self.address,
                                  msg='Called raw memory access with wordBitSize > stride')
@@ -397,9 +401,9 @@ class Device(pr.Node,rim.Hub):
 
             # Look for overlaps and adjust offset
             for i in range(1,len(remVars)):
-
+                
                 # Variable overlaps the range of the previous variable
-                if (remVars[i].offset != remVars[i-1].offset) and (remVars[i].offset <= (remVars[i-1].varBytes-1)):
+                if (remVars[i].offset != remVars[i-1].offset) and (remVars[i].offset <= (remVars[i-1].offset + remVars[i-1].varBytes - 1)):
                     self._log.warning("Overlap detected cur offset={} prev offset={} prev bytes={}".format(remVars[i].offset,remVars[i-1].offset,remVars[i-1].varBytes))
                     remVars[i]._shiftOffsetDown(remVars[i].offset - remVars[i-1].offset, blkSize)
                     done = False
@@ -407,6 +411,11 @@ class Device(pr.Node,rim.Hub):
 
         # Add variables
         for n in remVars:
+
+            # Adjust device size
+            if (n.offset + n.varBytes) > self._size:
+                self._size = (n.offset + n.varBytes)
+
             if not any(block._addVariable(n) for block in self._blocks):
                 self._log.debug("Adding new block {} at offset {:#02x}".format(n.name,n.offset))
                 self._blocks.append(pr.RemoteBlock(variable=n))
