@@ -115,8 +115,9 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         tmpDevs.sort(key=lambda x: (x.memBaseId, x.address, x.size))
 
         for i in range(1,len(tmpDevs)):
-            if (tmpDevs[i].memBaseId == tmpDevs[i-1].memBaseId) and (tmpDevs[i].address <= (tmpDevs[i-1].address + tmpDevs[i-1].size)):
-                self._log.critical("Device {} at address={} overlaps {} at address={} with size={}".format(
+            if (tmpDevs[i].memBaseId == tmpDevs[i-1].memBaseId) and \
+                (tmpDevs[i].address <= (tmpDevs[i-1].address + tmpDevs[i-1].size)):
+                raise pr.NodeError("Device {} at address={} overlaps {} at address={} with size={}".format(
                     tmpDevs[i].path,tmpDevs[i].address,tmpDevs[i-1].path,tmpDevs[i-1].address,tmpDevs[i-1].size))
 
         # Get list of deprecated nodes
