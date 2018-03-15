@@ -23,6 +23,7 @@
 #define __ROGUE_UTILITIES_PRBS_H__
 #include <stdint.h>
 #include <boost/thread.hpp>
+#include <boost/dynamic_bitset.hpp>
 #include <rogue/interfaces/stream/Slave.h>
 #include <rogue/interfaces/stream/Master.h>
 
@@ -37,7 +38,7 @@ namespace rogue {
       class Prbs : public rogue::interfaces::stream::Slave, public rogue::interfaces::stream::Master {
 
             //! PRBS taps
-            uint32_t * taps_;
+            uint8_t  * taps_;
 
             //! PRBS tap count
             uint32_t   tapCnt_;
@@ -95,21 +96,10 @@ namespace rogue {
             boost::thread* txThread_;
 
             //! Internal computation 
-            uint32_t flfsr(uint32_t input);
+            void flfsr(boost::dynamic_bitset<uint8_t> & data);
 
             //! Thread background
             void runThread();
-
-            //! Init state
-            void init(uint32_t width, uint32_t tapCnt);
-
-            //! Read data with the appropriate width and set passed 32-bit integer pointer
-            uint32_t readSingle ( boost::shared_ptr<rogue::interfaces::stream::Frame> frame, 
-                                  uint32_t offset, uint32_t * value );
-
-            //! Write data with the appropriate width
-            uint32_t writeSingle ( boost::shared_ptr<rogue::interfaces::stream::Frame> frame, 
-                                   uint32_t offset, uint32_t value );
 
          public:
 
@@ -119,14 +109,20 @@ namespace rogue {
             //! Setup class in python
             static void setup_python();
 
-            //! Creator with width and variable taps
-            Prbs(uint32_t width, uint32_t tapCnt, ... );
-
             //! Creator with default taps and size
             Prbs();
 
             //! Deconstructor
             ~Prbs();
+
+            //! Set width
+            void setWidth(uint32_t width);
+
+            //! Set taps
+            void setTaps(uint32_t tapCnt, uint8_t * taps);
+
+            //! Set taps, python
+            void setTapsPy(boost::python::object p);
 
             //! Generate a data frame
             void genFrame (uint32_t size);
@@ -167,6 +163,9 @@ namespace rogue {
 
       // Convienence
       typedef boost::shared_ptr<rogue::utilities::Prbs> PrbsPtr;
+
+      typedef boost::dynamic_bitset<uint8_t> PrbsData;
+
    }
 }
 #endif

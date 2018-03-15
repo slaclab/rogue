@@ -53,6 +53,11 @@ class PrbsRx(pyrogue.Device):
     def _getStreamSlave(self):
         return self._prbs
 
+    def setWidth(self,width):
+        self._prbs.setWidth(width)
+
+    def setTaps(self,taps):
+        self._prbs.setTaps(taps)
 
 class PrbsTx(pyrogue.Device):
     """PRBS TX Wrapper"""
@@ -96,4 +101,10 @@ class PrbsTx(pyrogue.Device):
 
     def _getStreamMaster(self):
         return self._prbs
+
+    def setWidth(self,width):
+        self._prbs.setWidth(width)
+
+    def setTaps(self,taps):
+        self._prbs.setTaps(taps)
 
