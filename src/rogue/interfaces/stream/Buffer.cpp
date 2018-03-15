@@ -99,7 +99,7 @@ void ris::Buffer::adjustHeader(int32_t value) {
    // Payload can never be less than headeroom
    if ( payload_ < headRoom_ ) payload_ = headRoom_;
 
-   if ( frame_ != NULL ) frame_->setSizeDirty();
+   if ( (ris::FramePtr tmpPtr = frame_.convert() ) tmpPtr->setSizeDirty(); 
 }
 
 //! Clear the header reservation
@@ -122,13 +122,13 @@ void ris::Buffer::adjustTail(int32_t value) {
 
    // Make adjustment
    tailRoom_ += value;
-   if ( frame_ != NULL ) frame_->setSizeDirty();
+   if ( (ris::FramePtr tmpPtr = frame_.convert() ) tmpPtr->setSizeDirty(); 
 }
 
 //! Clear the tail reservation
 void ris::Buffer::zeroTail() {
    tailRoom_ = 0;
-   if ( frame_ != NULL ) frame_->setSizeDirty();
+   if ( (ris::FramePtr tmpPtr = frame_.convert() ) tmpPtr->setSizeDirty(); 
 }
 
 /* 
@@ -199,7 +199,7 @@ void ris::Buffer::setPayload(uint32_t size) {
             size, (rawSize_ - (headRoom_ + tailRoom_))));
 
    payload_ = size + headRoom_;
-   if ( frame_ != NULL ) frame_->setSizeDirty();
+   if ( (ris::FramePtr tmpPtr = frame_.convert() ) tmpPtr->setSizeDirty(); 
 }
 
 /* 
@@ -220,12 +220,12 @@ void ris::Buffer::adjustPayload(int32_t value) {
 //! Set the buffer as full (minus tail reservation)
 void ris::Buffer::setPayloadFull() {
    payload_ = rawSize_ - tailRoom_;
-   if ( frame_ != NULL ) frame_->setSizeDirty();
+   if ( (ris::FramePtr tmpPtr = frame_.convert() ) tmpPtr->setSizeDirty(); 
 }
 
 //! Set the buffer as empty (minus header reservation)
 void ris::Buffer::setPayloadEmpty() {
    payload_ = headRoom_;
-   if ( frame_ != NULL ) frame_->setSizeDirty();
+   if ( (ris::FramePtr tmpPtr = frame_.convert() ) tmpPtr->setSizeDirty(); 
 }
 
