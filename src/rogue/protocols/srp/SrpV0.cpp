@@ -126,7 +126,10 @@ void rps::SrpV0::doTransaction(rim::TransactionPtr tran) {
    ris::toFrame(fIter,headerLen,header); 
 
    // Write data
-   if ( doWrite ) std::copy(tIter,tIter+tran->size(),fIter);
+   if ( doWrite ) {
+      std::copy(tIter,tIter+tran->size(),fIter);
+      fIter += tran->size();
+   }
 
    // Last field is zero
    tail[0] = 0;
@@ -137,8 +140,9 @@ void rps::SrpV0::doTransaction(rim::TransactionPtr tran) {
    if ( tran->type() == rim::Post ) tran->done(0);
    else addTransaction(tran);
 
-   log_->debug("Send frame for id=0x%08x, addr 0x%08x. Size=%i, type=%i",tran->id(),tran->address(),tran->size(),tran->type());
+   log_->debug("Send frame for id=0x%08x, addr 0x%08x. Size=%i, type=%i, doWrite=%i",tran->id(),tran->address(),tran->size(),tran->type(),doWrite);
    log_->debug("Send frame header: 0x%0.8x 0x%0.8x 0x%0.8x",header[0],header[1],header[2]);
+
    sendFrame(frame);
 }
 
