@@ -159,6 +159,8 @@ class Device(pr.Node,rim.Hub):
             args = getattr(cmd, 'PyrogueCommandArgs')
             if 'name' not in args:
                 args['name'] = cmd.__name__
+
+            print("Adding command {} using depcreated decorator. Please use __init__ decorators instead!".format(args['name']))
             self.add(pr.LocalCommand(function=cmd, **args))
 
     @Pyro4.expose
