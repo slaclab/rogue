@@ -78,9 +78,6 @@ namespace rogue {
                //! Error state
                uint32_t   error_;
 
-            protected:
-
-
             public:
 
                //! Iterator for data

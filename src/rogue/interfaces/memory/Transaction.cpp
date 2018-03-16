@@ -49,6 +49,7 @@ void rim::Transaction::setup_python() {
       .def("size",    &rim::Transaction::size)
       .def("type",    &rim::Transaction::type)
       .def("done",    &rim::Transaction::done)
+      .def("expired", &rim::Transaction::expired)
       .def("setData", &rim::Transaction::setData)
       .def("getData", &rim::Transaction::getData)
    ;
@@ -70,6 +71,7 @@ rim::Transaction::Transaction(rim::MasterPtr master) {
    size_    = 0;
    type_    = 0;
    error_   = 0;
+   done_    = false;
 
    classMtx_.lock();
    if ( classIdx_ == 0 ) classIdx_ = 1;
@@ -81,8 +83,22 @@ rim::Transaction::Transaction(rim::MasterPtr master) {
 //! Destroy object
 rim::Transaction::~Transaction() { }
 
+//! Reset the transaction
+void rim::Transaction::reset() {
+   rogue::GilRelease noGil;
+   boost::lock_guard<boost::mutex> lg(lock);
+
+   iter_ = NULL;
+   if ( pyValid_ ) {
+      rogue::ScopedGil gil;
+      PyBuffer_Release(&(pyBuf_));
+   }
+}
+
 //! Get expired state
-bool rim::Transaction::expired() { return (iter_ == NULL); }
+bool rim::Transaction::expired() { 
+   return (iter_ == NULL); 
+}
 
 //! Get id
 uint32_t rim::Transaction::id() { return id_; }
@@ -98,11 +114,8 @@ uint32_t rim::Transaction::type() { return type_; }
 
 //! Complete transaction with passed error
 void rim::Transaction::done(uint32_t error) {
-   {
-      rogue::GilRelease noGil;
-      boost::lock_guard<boost::mutex> lg(lock);
-      error_ = error;
-   }
+   error_ = error;
+   done_  = true;
    master_->doneTransaction(id_);
 }
 

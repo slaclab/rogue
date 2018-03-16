@@ -81,6 +81,12 @@ namespace rogue {
                //! Transaction id
                uint32_t id_;
 
+               //! Done state
+               bool done_;
+
+               //! Reset the transaction
+               void reset();
+
             public:
 
                //! Create a transaction container
@@ -114,7 +120,7 @@ namespace rogue {
                //! Get type
                uint32_t type();
 
-               //! Complete transaction with passed error, Release lock before calling.
+               //! Complete transaction with passed error
                void done(uint32_t error);
 
                //! start iterator, caller must lock around access
