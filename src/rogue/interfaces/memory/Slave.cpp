@@ -29,6 +29,12 @@
 namespace rim = rogue::interfaces::memory;
 namespace bp = boost::python;
 
+// Init class counter
+uint32_t rim::Slave::classIdx_ = 0;
+
+//! Class instance lock
+boost::mutex rim::Slave::classMtx_;
+
 //! Create a slave container
 rim::SlavePtr rim::Slave::create (uint32_t min, uint32_t max) {
    rim::SlavePtr s = boost::make_shared<rim::Slave>(min,max);
@@ -39,6 +45,12 @@ rim::SlavePtr rim::Slave::create (uint32_t min, uint32_t max) {
 rim::Slave::Slave(uint32_t min, uint32_t max) { 
    min_ = min;
    max_ = max;
+
+   classMtx_.lock();
+   if ( classIdx_ == 0 ) classIdx_ = 1;
+   id_ = classIdx_;
+   classIdx_++;
+   classMtx_.unlock();
 } 
 
 //! Destroy object
@@ -91,6 +103,16 @@ uint32_t rim::Slave::min() {
 //! Get min size from slave
 uint32_t rim::Slave::max() {
    return max_;
+}
+
+//! Get id from slave
+uint32_t rim::Slave::id() {
+   return id_;
+}
+
+//! Return id to requesting master
+uint32_t rim::Slave::doSlaveId() {
+   return(id());
 }
 
 //! Return min access size to requesting master

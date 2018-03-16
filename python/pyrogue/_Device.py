@@ -171,6 +171,16 @@ class Device(pr.Node,rim.Hub):
     def offset(self):
         return self._getOffset()
 
+    @Pyro4.expose
+    @property
+    def size(self):
+        return self._size
+
+    @Pyro4.expose
+    @property
+    def memBaseId(self):
+        return self._reqSlaveId()
+
     def add(self,node):
         # Call node add
         pr.Node.add(self,node)
@@ -401,10 +411,12 @@ class Device(pr.Node,rim.Hub):
 
             # Look for overlaps and adjust offset
             for i in range(1,len(remVars)):
-                
+
                 # Variable overlaps the range of the previous variable
-                if (remVars[i].offset != remVars[i-1].offset) and (remVars[i].offset <= (remVars[i-1].offset + remVars[i-1].varBytes - 1)):
-                    self._log.warning("Overlap detected cur offset={} prev offset={} prev bytes={}".format(remVars[i].offset,remVars[i-1].offset,remVars[i-1].varBytes))
+                if (remVars[i].offset != remVars[i-1].offset) and \
+                   (remVars[i].offset <= (remVars[i-1].offset + remVars[i-1].varBytes - 1)):
+                    self._log.info("Overlap detected cur offset={} prev offset={} prev bytes={}".format(
+                        remVars[i].offset,remVars[i-1].offset,remVars[i-1].varBytes))
                     remVars[i]._shiftOffsetDown(remVars[i].offset - remVars[i-1].offset, blkSize)
                     done = False
                     break

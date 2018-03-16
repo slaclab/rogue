@@ -50,6 +50,11 @@ uint64_t rim::Hub::getOffset() {
    return offset_;
 }
 
+//! Return id to requesting master
+uint32_t rim::Hub::doSlaveId() {
+   return(reqSlaveId());
+}
+
 //! Return min access size to requesting master
 uint32_t rim::Hub::doMinAccess() {
    return(reqMinAccess());

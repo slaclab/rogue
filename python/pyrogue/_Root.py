@@ -110,6 +110,16 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         for key,value in self._nodes.items():
             value._rootAttached(self,self)
 
+        # Look for device overlaps
+        tmpDevs = self.deviceList
+        tmpDevs.sort(key=lambda x: (x.memBaseId, x.address, x.size))
+
+        for i in range(1,len(tmpDevs)):
+            if (tmpDevs[i].size != 0) and (tmpDevs[i].memBaseId == tmpDevs[i-1].memBaseId) and \
+                (tmpDevs[i].address <= (tmpDevs[i-1].address + tmpDevs[i-1].size)):
+                raise pr.NodeError("Device {} at address={} overlaps {} at address={} with size={}".format(
+                    tmpDevs[i].path,tmpDevs[i].address,tmpDevs[i-1].path,tmpDevs[i-1].address,tmpDevs[i-1].size))
+
         # Get list of deprecated nodes
         lst = self._getDepWarn()
 

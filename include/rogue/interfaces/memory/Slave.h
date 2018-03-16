@@ -34,6 +34,15 @@ namespace rogue {
          //! Slave container
          class Slave {
 
+               //! Class instance counter
+               static uint32_t classIdx_;
+
+               //! Class instance lock
+               static boost::mutex classMtx_;
+
+               //! Unique slave ID
+               uint32_t id_;
+
                //! Alias for map
                typedef std::map<uint32_t, boost::weak_ptr<rogue::interfaces::memory::Transaction> > TransactionMap;
 
@@ -77,6 +86,12 @@ namespace rogue {
 
                //! Get min size from slave
                uint32_t max();
+
+               //! Get ID
+               uint32_t id();
+
+               //! Return ID to requesting master
+               virtual uint32_t doSlaveId();
 
                //! Return min access size to requesting master
                virtual uint32_t doMinAccess();

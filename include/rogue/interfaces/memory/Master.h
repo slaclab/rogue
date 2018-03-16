@@ -85,6 +85,9 @@ namespace rogue {
                //! Get slave
                boost::shared_ptr<rogue::interfaces::memory::Slave> getSlave();
 
+               //! Query the slave ID
+               uint32_t reqSlaveId();
+
                //! Query the minimum access size in bytes for interface
                uint32_t reqMinAccess();
 
