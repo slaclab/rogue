@@ -205,7 +205,6 @@ void rim::Master::waitTransaction(uint32_t id) {
          if ( it->second->error_ != 0 ) error_ = it->second->error_;
          it->second->reset();
          tranMap_.erase(it);
-         printf("Got here!!!!!!!!!!!!!!!!!1\n");
       }
       
       // Transaction is still pending. wait for timeout or completion
