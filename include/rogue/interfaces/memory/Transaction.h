@@ -49,7 +49,7 @@ namespace rogue {
             protected:
 
                //! Associated master
-               boost::shared_ptr<rogue::interfaces::memory::Master> master_;
+               boost::weak_ptr<rogue::interfaces::memory::Master> master_;
 
                //! Transaction start time
                struct timeval endTime_;

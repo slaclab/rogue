@@ -114,9 +114,10 @@ uint32_t rim::Transaction::type() { return type_; }
 
 //! Complete transaction with passed error
 void rim::Transaction::done(uint32_t error) {
+   rim::MasterPtr mast;
    error_ = error;
    done_  = true;
-   master_->doneTransaction(id_);
+   if (mast = master_.lock()) mast->doneTransaction(id_);
 }
 
 //! start iterator, caller must lock around access
