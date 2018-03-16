@@ -47,7 +47,6 @@ void rim::Master::setup_python() {
       .def("_setError",           &rim::Master::setError)
       .def("_setTimeout",         &rim::Master::setTimeout)
       .def("_reqTransaction",     &rim::Master::reqTransactionPy)
-      .def("_endTransaction",     &rim::Master::endTransaction)
       .def("_waitTransaction",    &rim::Master::waitTransaction)
    ;
 }
@@ -178,72 +177,18 @@ uint32_t rim::Master::intTransaction(rim::TransactionPtr tran) {
 
    slave->doTransaction(tran);
 
-   // Update time after transaction is started, but not if transaction has already completed
-   rogue::GilRelease noGil;
-   boost::lock_guard<boost::mutex> lock(mastMtx_);
-
-   it = tranMap_.find(tran->id_);
-   if ( it != tranMap_.end() ) {
-      gettimeofday(&currTime,NULL);
-      timeradd(&currTime,&sumTime_,&(tran->endTime_));
-   }
+   // Update time after transaction is started
+   gettimeofday(&currTime,NULL);
+   timeradd(&currTime,&sumTime_,&(tran->endTime_));
    return(tran->id_);
 }
 
 //! Transaction complete,
 void rim::Master::doneTransaction(uint32_t id) {
-   TransactionMap::iterator it;
-
+   log_->debug("Done transaction id=%i",id);
    rogue::GilRelease noGil;
    boost::lock_guard<boost::mutex> lock(mastMtx_);
-
-   if ( (it = tranMap_.find(id)) == tranMap_.end() ) {
-      log_->info("Done transaction failed to find transaction id=%i",id);
-   } else {
-      log_->debug("Done transaction id=%i",id);
-      rstTransaction(it,true);
-   }
-}
-
-//! Reset transaction data, not python safe, needs lock on master
-void rim::Master::rstTransaction(TransactionMap::iterator it, bool notify) {
-
-   log_->debug("Resetting transaction id=%i",it->second->id_);
-
-   // Lock the transaction
-   boost::lock_guard<boost::mutex> lock(it->second->lock);
-
-   it->second->iter_ = NULL;
-   if ( it->second->pyValid_ ) {
-      rogue::ScopedGil gil;
-      PyBuffer_Release(&(it->second->pyBuf_));
-   }
-
-   if ( it->second->error_ != 0 ) error_ = it->second->error_;
-
-   tranMap_.erase(it);
-   if ( notify ) cond_.notify_all();
-}
-
-//! End current transaction, ensures data pointer is not update and de-allocates python buffer
-void rim::Master::endTransaction(uint32_t id) {
-   TransactionMap::iterator it;
-
-   rogue::GilRelease noGil;
-   boost::lock_guard<boost::mutex> lock(mastMtx_);
-
-   log_->debug("End transaction id=%i",id);
-
-   if ( id == 0 ) {
-      for ( it=tranMap_.begin(); it != tranMap_.end(); ++it ) rstTransaction(it,false);
-   } 
-   else {
-
-      if ( (it = tranMap_.find(id)) == tranMap_.end() ) {
-         log_->info("Done transaction failed to find transaction id=%i",id);
-      }
-      else rstTransaction(it,true);
-   }
+   cond_.notify_all();
 }
 
 // Wait for transaction. Timeout in seconds
@@ -255,30 +200,43 @@ void rim::Master::waitTransaction(uint32_t id) {
    rogue::GilRelease noGil;
    boost::unique_lock<boost::mutex> lock(mastMtx_);
 
-   // No id means wait for all
-   if ( id == 0 ) it = tranMap_.begin();
-   else it = tranMap_.find(id);
+   // Init iterator
+   if ( id != 0 ) it = tranMap_.find(id);
+   else it = tranMap_.begin();
 
-   while (it != tranMap_.end()) {
+   while ( it != tranMap_.end() ){
 
-      // Timeout?
-      gettimeofday(&currTime,NULL);
-      if ( it->second->endTime_.tv_sec  != 0 && 
-           it->second->endTime_.tv_usec != 0 && 
-           timercmp(&currTime,&(it->second->endTime_),>) ) {
-
-         log_->info("Transaction timeout id=%i start =%i:%i end=%i:%i curr=%i:%i",
-               it->first, it->second->startTime_.tv_sec, it->second->startTime_.tv_usec,
-               it->second->endTime_.tv_sec,it->second->endTime_.tv_usec,
-               currTime.tv_sec,currTime.tv_usec);
-
-         it->second->error_ = rim::TimeoutError;
-         rstTransaction(it,false);
+      // Transaction is done
+      if ( it->second->done_ ) {
+         if ( it->second->error_ != 0 ) error_ = it->second->error_;
+         it->second->reset();
+         tranMap_.erase(it);
       }
-      else cond_.timed_wait(lock,boost::posix_time::microseconds(1000));
+      
+      // Transaction is still pending. wait for timeout or completion
+      else {
 
-      if ( id == 0 ) it = tranMap_.begin();
-      else break;
+         // Timeout?
+         gettimeofday(&currTime,NULL);
+         if ( it->second->endTime_.tv_sec  != 0 && 
+              it->second->endTime_.tv_usec != 0 && 
+              timercmp(&currTime,&(it->second->endTime_),>) ) {
+
+            log_->info("Transaction timeout id=%i start =%i:%i end=%i:%i curr=%i:%i",
+                  it->first, it->second->startTime_.tv_sec, it->second->startTime_.tv_usec,
+                  it->second->endTime_.tv_sec,it->second->endTime_.tv_usec,
+                  currTime.tv_sec,currTime.tv_usec);
+
+            error_ = rim::TimeoutError;
+            it->second->reset();
+            tranMap_.erase(it);
+         }
+         else cond_.timed_wait(lock,boost::posix_time::microseconds(1000));
+      }
+
+      // Refresh iterator
+      if ( id != 0 ) it = tranMap_.find(id);
+      else it = tranMap_.begin();
    }
 }
 

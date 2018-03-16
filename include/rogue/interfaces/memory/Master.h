@@ -121,13 +121,7 @@ namespace rogue {
                //! Transaction is done, called from transaction record
                void doneTransaction(uint32_t id);
 
-               //! Reset transaction data
-               void rstTransaction(TransactionMap::iterator it, bool notify);
-
             public:
-
-               //! End current transaction, ensures data pointer is not update and de-allocates python buffer
-               void endTransaction(uint32_t id);
 
                //! wait for done or timeout, if zero wait for all transactions
                void waitTransaction(uint32_t id);
