@@ -79,7 +79,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         self._pyroDaemon = None
 
         # Variable update list
-        self._updatedDict = None
+        self._updatedYaml = None
         self._updatedLock = threading.Lock()
 
         # Variable update listener
@@ -243,6 +243,11 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         for key, value in d.items():
             if key == self.name:
                 self._setDict(value,writeEach,modes)
+            else:
+                try:
+                    self._getPath(key).setDisp(value)
+                except:
+                    self._log.error("Entry {} not found".format(key))
 
         self._doneUpdatedVars()
 
@@ -311,15 +316,14 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
     def _initUpdatedVars(self):
         """Initialize the update tracking log before a bulk variable update"""
         with self._updatedLock:
-            self._updatedDict = odict()
+            self._updatedYaml = ""
 
     def _doneUpdatedVars(self):
         """Stream the results of a bulk variable update and update listeners"""
         with self._updatedLock:
-            if self._updatedDict:
-                yml = dictToYaml(self._updatedDict,default_flow_style=False)
-                self._sendYamlFrame(yml)
-                self._updatedDict = None
+            if self._updatedYaml:
+                self._sendYamlFrame(self._updatedYaml)
+                self._updatedYaml = None
 
     @pr.command(order=7, name='WriteAll', description='Write all values to the hardware')
     def _write(self):
@@ -408,19 +412,13 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                     self._log.error("Pyro callback failed for {}: {}".format(self.name,msg))
 
         with self._updatedLock:
+            yml = (f"{path}:{disp}" + "\n")
 
             # Log is active add to log
-            if self._updatedDict is not None:
-                addPathToDict(self._updatedDict,path,disp)
+            if self._updatedYaml is not None: self._updatedYaml += yml
 
             # Otherwise act directly
-            else:
-                d   = {}
-
-                # The following three lines are causing major slowdowns
-                addPathToDict(d,path,disp)
-                yml = dictToYaml(d,default_flow_style=False)
-                self._sendYamlFrame(yml)
+            else: self._sendYamlFrame(yml)
 
 
 class PyroRoot(pr.PyroNode):
@@ -487,26 +485,6 @@ class PyroClient(object):
             return ret
         except:
             raise pr.NodeError("PyroClient Failed to find {}.{}.".format(self._group,name))
-
-
-def addPathToDict(d, path, value):
-    """Helper function to add a path/value pair to a dictionary tree"""
-    npath = path
-    sd = d
-
-    # Transit through levels
-    while '.' in npath:
-        base  = npath[:npath.find('.')]
-        npath = npath[npath.find('.')+1:]
-
-        if base in sd:
-           sd = sd[base]
-        else:
-           sd[base] = odict()
-           sd = sd[base]
-
-    # Add final node
-    sd[npath] = value
 
 
 def yamlToDict(stream, Loader=yaml.Loader, object_pairs_hook=odict):
