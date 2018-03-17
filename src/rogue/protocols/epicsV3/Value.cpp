@@ -49,6 +49,7 @@ rpe::Value::Value (std::string epicsName) {
    max_       = 1;
    fSize_     = 1;
    array_     = false;
+   isString_  = false;
    epicsType_ = aitEnumInvalid;
 
    units_         = "";
@@ -86,6 +87,9 @@ void rpe::Value::initGdd(std::string typeStr, bool isEnum, uint32_t count) {
 
    log_->info("Init GDD for %s typeStr=%s, isEnum=%i, count=%i",
          epicsName_.c_str(),typeStr.c_str(),isEnum,count);
+
+   // Save current type
+   typeStr_ = typeStr;
 
    // Enum type
    if ( isEnum ) {
@@ -141,13 +145,25 @@ void rpe::Value::initGdd(std::string typeStr, bool isEnum, uint32_t count) {
 
    // Unknown type maps to string
    if ( epicsType_ == aitEnumInvalid ) {
-      log_->info("Detected string for %s typeStr=%s", epicsName_.c_str(),typeStr.c_str());
+      log_->info("Detected unknow type for %s typeStr=%s. I wil be map to string.", epicsName_.c_str(),typeStr.c_str());
       epicsType_ = aitEnumString;
-      pValue_ = new gddScalar(gddAppType_value, epicsType_);
+   }
+
+   // String are limited to 40 chars, so let's use an array of char instead for strings
+   if (epicsType_ == aitEnumString)
+   {
+      if ( count != 0 ) {
+         log_->error("Vector of string not supported in EPICS. Ignoring %\n", epicsName_.c_str());
+      } else {
+         log_->info("Treating String as waveform of chars for %s typeStr=%s\n", epicsName_.c_str(),typeStr.c_str());
+         epicsType_ = aitEnumUint8;
+         count      = 300;
+         isString_  = true;
+      }
    }
 
    // Vector
-   else if ( count != 0 ) {
+   if ( count != 0 ) {
       log_->info("Create vector GDD for %s epicsType_=%i, size=%i",epicsName_.c_str(),epicsType_,count);
       pValue_ = new gddAtomic (gddAppType_value, epicsType_, 1u, count);
       size_   = count;
