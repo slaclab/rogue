@@ -86,7 +86,7 @@ rim::Transaction::~Transaction() { }
 
 //! Get lock
 rim::TransactionLockPtr rim::Transaction::lock() {
-   //return(rim::TransactionLock::create(shared_from_this()));
+   return(rim::TransactionLock::create(shared_from_this()));
 }
 
 //! Reset the transaction
@@ -143,10 +143,6 @@ void rim::Transaction::setData ( boost::python::object p, uint32_t offset ) {
    Py_buffer  pyBuf;
    uint8_t *  data;
 
-   rogue::GilRelease noGil;
-   boost::lock_guard<boost::mutex> lg(lock_);
-   noGil.acquire();
-
    if ( PyObject_GetBuffer(p.ptr(),&pyBuf,PyBUF_CONTIG) < 0 )
       throw(rogue::GeneralError("Transaction::writePy","Python Buffer Error In Frame"));
 
@@ -166,10 +162,6 @@ void rim::Transaction::setData ( boost::python::object p, uint32_t offset ) {
 void rim::Transaction::getData ( boost::python::object p, uint32_t offset ) {
    Py_buffer  pyBuf;
    uint8_t *  data;
-
-   rogue::GilRelease noGil;
-   boost::lock_guard<boost::mutex> lg(lock_);
-   noGil.acquire();
 
    if ( PyObject_GetBuffer(p.ptr(),&pyBuf,PyBUF_SIMPLE) < 0 ) 
       throw(rogue::GeneralError("Transaction::readPy","Python Buffer Error In Frame"));
