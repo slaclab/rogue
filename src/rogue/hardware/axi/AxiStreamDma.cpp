@@ -19,6 +19,7 @@
 **/
 #include <rogue/hardware/axi/AxiStreamDma.h>
 #include <rogue/interfaces/stream/Frame.h>
+#include <rogue/interfaces/stream/FrameLock.h>
 #include <rogue/interfaces/stream/Buffer.h>
 #include <rogue/GeneralError.h>
 #include <boost/make_shared.hpp>
@@ -169,6 +170,7 @@ void rha::AxiStreamDma::acceptFrame ( ris::FramePtr frame ) {
    uint32_t         cont;
 
    rogue::GilRelease noGil;
+   ris::FrameLockPtr lock = frame->lock();
 
    // Get Flags
    flags = frame->getFlags();

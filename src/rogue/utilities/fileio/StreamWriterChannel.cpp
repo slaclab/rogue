@@ -24,6 +24,7 @@
 #include <rogue/utilities/fileio/StreamWriterChannel.h>
 #include <rogue/utilities/fileio/StreamWriter.h>
 #include <rogue/interfaces/stream/Frame.h>
+#include <rogue/interfaces/stream/FrameLock.h>
 #include <stdint.h>
 #include <boost/thread.hpp>
 #include <boost/make_shared.hpp>
@@ -60,12 +61,13 @@ ruf::StreamWriterChannel::~StreamWriterChannel() { }
 
 //! Accept a frame from master
 void ruf::StreamWriterChannel::acceptFrame ( ris::FramePtr frame ) {
-  rogue::GilRelease noGil;
-  boost::unique_lock<boost::mutex> lock(mtx_);
-  writer_->writeFile (channel_, frame);
-  frameCount_++;
-  lock.unlock();
-  cond_.notify_all();
+   rogue::GilRelease noGil;
+   ris::FrameLockPtr fLock = frame->lock();
+   boost::unique_lock<boost::mutex> lock(mtx_);
+   writer_->writeFile (channel_, frame);
+   frameCount_++;
+   lock.unlock();
+   cond_.notify_all();
 }
 
 uint32_t ruf::StreamWriterChannel::getFrameCount() {

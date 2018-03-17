@@ -24,6 +24,7 @@
 #include <rogue/interfaces/stream/Slave.h>
 #include <rogue/interfaces/stream/Master.h>
 #include <rogue/interfaces/stream/Frame.h>
+#include <rogue/interfaces/stream/FrameLock.h>
 #include <rogue/interfaces/stream/FrameIterator.h>
 #include <rogue/interfaces/stream/Buffer.h>
 #include <rogue/utilities/Prbs.h>
@@ -281,6 +282,7 @@ void ru::Prbs::acceptFrame ( ris::FramePtr frame ) {
    boost::unique_lock<boost::mutex> lock(rxMtx_,boost::defer_lock);
 
    rogue::GilRelease noGil;
+   ris::FrameLockPtr fLock = frame->lock();
    lock.lock();
    noGil.acquire(); // Not sure we need this
 

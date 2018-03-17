@@ -26,6 +26,7 @@
 #include <rogue/hardware/pgp/EvrStatus.h>
 #include <rogue/hardware/pgp/EvrControl.h>
 #include <rogue/interfaces/stream/Frame.h>
+#include <rogue/interfaces/stream/FrameLock.h>
 #include <rogue/interfaces/stream/Buffer.h>
 #include <rogue/GeneralError.h>
 #include <boost/make_shared.hpp>
@@ -219,6 +220,7 @@ void rhp::PgpCard::acceptFrame ( ris::FramePtr frame ) {
    uint32_t         cont;
 
    rogue::GilRelease noGil;
+   ris::FrameLockPtr lock = frame->lock();
 
    // Go through each (*it)er in the frame
    ris::Frame::BufferIterator it;

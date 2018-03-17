@@ -21,9 +21,11 @@
 #include <rogue/interfaces/stream/Slave.h>
 #include <rogue/interfaces/stream/Master.h>
 #include <rogue/interfaces/stream/Frame.h>
+#include <rogue/interfaces/stream/FrameLock.h>
 #include <rogue/interfaces/stream/Buffer.h>
 #include <rogue/utilities/StreamUnZip.h>
 #include <rogue/GeneralError.h>
+#include <rogue/GilRelease.h>
 #include <boost/make_shared.hpp>
 #include <bzlib.h>
 
@@ -48,7 +50,10 @@ void ru::StreamUnZip::acceptFrame ( ris::FramePtr frame ) {
    ris::Frame::BufferIterator rBuff;
    ris::Frame::BufferIterator wBuff;
    int32_t ret;
-   
+
+   rogue::GilRelease noGil;
+   ris::FrameLockPtr lock = frame->lock();
+
    // First request a new frame of the same size
    ris::FramePtr newFrame = this->reqFrame(frame->getPayload(),true);
 
