@@ -17,27 +17,27 @@
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
-#include <rogue/interfaces/stream/TransactionLock.h>
-#include <rogue/interfaces/stream/Transaction.h>
+#include <rogue/interfaces/memory/TransactionLock.h>
+#include <rogue/interfaces/memory/Transaction.h>
 
 namespace rim = rogue::interfaces::memory;
 namespace bp  = boost::python;
 
 //! Create a container
 rim::TransactionLockPtr rim::TransactionLock::create (rim::TransactionPtr tran) {
-   rim::TransactionLockPtr tranLock = boost::make_shared<rim::TransactionLock>();
+   rim::TransactionLockPtr tranLock = boost::make_shared<rim::TransactionLock>(tran);
    return(tranLock);
 }
 
 //! Constructor
-rim:TransactionLock::TransactionLock(rim::TransactionPtr tran) {
+rim::TransactionLock::TransactionLock(rim::TransactionPtr tran) {
    tran_ = tran;
    tran_->lock_.lock();
    locked_ = true;
 }
 
 //! Setup class in python
-static void rim::TransactionLock::setup_python() {
+void rim::TransactionLock::setup_python() {
 
    bp::class_<rim::TransactionLock, rim::TransactionLockPtr, boost::noncopyable>("TransactionLock",bp::no_init)
       .def("lock",      &rim::TransactionLock::lock)
@@ -46,7 +46,7 @@ static void rim::TransactionLock::setup_python() {
 }
 
 //! Destructor
-rim::TransactionLock::~Transaction() {
+rim::TransactionLock::~TransactionLock() {
    if ( locked_ ) tran_->lock_.unlock();
 }
 
