@@ -25,6 +25,7 @@
 #include <rogue/interfaces/stream/Master.h>
 #include <rogue/interfaces/stream/Slave.h>
 #include <rogue/interfaces/stream/Frame.h>
+#include <rogue/interfaces/stream/FrameLock.h>
 #include <rogue/interfaces/stream/FrameIterator.h>
 #include <rogue/interfaces/memory/Slave.h>
 #include <rogue/interfaces/memory/Constants.h>
@@ -137,7 +138,7 @@ void rps::SrpV3::doTransaction(rim::TransactionPtr tran) {
    frame->setPayload(frameSize);
 
    // Setup iterators
-   rogue::GilRelease noGil;
+   rogue::GilRelease noGil();
    rim::TransactionLockPtr lock = tran->lock();
    fIter = frame->begin();
    tIter = tran->begin();
@@ -170,6 +171,9 @@ void rps::SrpV3::acceptFrame ( ris::FramePtr frame ) {
    bool     doWrite;
    uint32_t fSize;
 
+   rogue::GilRelease noGil();
+   ris::FrameLockPtr frLock = frame->lock();
+
    // Check frame size
    if ( (fSize = frame->getPayload()) < HeadLen ) {
       log_->info("Got undersize frame size = %i",fSize);
@@ -194,7 +198,6 @@ void rps::SrpV3::acceptFrame ( ris::FramePtr frame ) {
    }
 
    // Setup transaction iterator
-   rogue::GilRelease noGil;
    rim::TransactionLockPtr lock = tran->lock();
 
    // Transaction expired

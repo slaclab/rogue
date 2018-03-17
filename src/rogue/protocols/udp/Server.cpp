@@ -20,6 +20,7 @@
 #include <rogue/protocols/udp/Core.h>
 #include <rogue/protocols/udp/Server.h>
 #include <rogue/interfaces/stream/Frame.h>
+#include <rogue/interfaces/stream/FrameLock.h>
 #include <rogue/interfaces/stream/Buffer.h>
 #include <rogue/GeneralError.h>
 #include <boost/make_shared.hpp>
@@ -103,6 +104,7 @@ void rpu::Server::acceptFrame ( ris::FramePtr frame ) {
    struct iovec     msg_iov[1];
 
    rogue::GilRelease noGil;
+   ris::FrameLockPtr frLock = frame->lock();
    boost::lock_guard<boost::mutex> lock(udpMtx_);
 
    // Setup message header

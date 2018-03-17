@@ -25,6 +25,7 @@
 #include <rogue/interfaces/stream/Master.h>
 #include <rogue/interfaces/stream/Slave.h>
 #include <rogue/interfaces/stream/Frame.h>
+#include <rogue/interfaces/stream/FrameLock.h>
 #include <rogue/interfaces/stream/FrameIterator.h>
 #include <rogue/interfaces/memory/Slave.h>
 #include <rogue/interfaces/memory/Constants.h>
@@ -159,6 +160,9 @@ void rps::SrpV0::acceptFrame ( ris::FramePtr frame ) {
    bool     doWrite;
    uint32_t fSize;
 
+   rogue::GilRelease noGil();
+   ris::FrameLockPtr fLock = frame->lock();
+
    // Check frame size
    if ( (fSize = frame->getPayload()) < 16 ) {
       log_->info("Got undersize frame size = %i",fSize);
@@ -183,7 +187,6 @@ void rps::SrpV0::acceptFrame ( ris::FramePtr frame ) {
    }
 
    // Setup transaction iterator
-   rogue::GilRelease noGil;
    rim::TransactionLockPtr lock = tran->lock();
 
    // Transaction expired
