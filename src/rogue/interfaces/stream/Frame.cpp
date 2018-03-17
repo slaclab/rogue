@@ -49,7 +49,7 @@ ris::Frame::~Frame() { }
 
 //! Get lock
 ris::FrameLockPtr ris::Frame::lock() {
-   //return(ris::FrameLock::create(shared_from_this()));
+   return(ris::FrameLock::create(shared_from_this()));
 }
 
 //! Add a buffer to end of frame

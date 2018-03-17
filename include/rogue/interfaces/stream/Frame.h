@@ -106,7 +106,7 @@ namespace rogue {
                ~Frame();
 
                //! Get lock
-               static boost::shared_ptr<rogue::interfaces::stream::FrameLock> lock();
+               boost::shared_ptr<rogue::interfaces::stream::FrameLock> lock();
 
                //! Add a buffer to end of frame, return interator to inserted buffer
                std::vector<boost::shared_ptr<rogue::interfaces::stream::Buffer> >::iterator

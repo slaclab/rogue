@@ -109,7 +109,7 @@ namespace rogue {
                ~Transaction();
 
                //! Get lock
-               static boost::shared_ptr<rogue::interfaces::memory::TransactionLock> lock();
+               boost::shared_ptr<rogue::interfaces::memory::TransactionLock> lock();
 
                //! Get expired flag
                bool expired();
