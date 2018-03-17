@@ -122,6 +122,9 @@ namespace rogue {
                //! Buffer end iterator
                std::vector<boost::shared_ptr<rogue::interfaces::stream::Buffer> >::iterator endBuffer();
 
+               //! Clear the list
+               void clear();
+
                //! Buffers list is empty
                bool isEmpty();
 

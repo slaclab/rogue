@@ -23,15 +23,16 @@
 namespace rim = rogue::interfaces::memory;
 namespace bp  = boost::python;
 
-//! Create a frame container
-rim::TransactionLockPtr rim::TransactionLock::create (rim::TransactionPtr frame) {
-   rim::TransactionLockPtr frameLock = boost::make_shared<rim::TransactionLock>();
-   return(frameLock);
+//! Create a container
+rim::TransactionLockPtr rim::TransactionLock::create (rim::TransactionPtr tran) {
+   rim::TransactionLockPtr tranLock = boost::make_shared<rim::TransactionLock>();
+   return(tranLock);
 }
 
 //! Constructor
-rim:TransactionLock::TransactionLock(rim::TransactionPtr frame) {
-   frame->lock_.lock();
+rim:TransactionLock::TransactionLock(rim::TransactionPtr tran) {
+   tran_ = tran;
+   tran_->lock_.lock();
    locked_ = true;
 }
 
@@ -46,13 +47,13 @@ static void rim::TransactionLock::setup_python() {
 
 //! Destructor
 rim::TransactionLock::~Transaction() {
-   if ( locked_ ) frame->lock_.unlock();
+   if ( locked_ ) tran_->lock_.unlock();
 }
 
 //! lock
 void rim::TransactionLock::lock() {
    if ( ! locked_ ) {
-      frame->lock_.unlock();
+      tran_->lock_.unlock();
       locked_ = false;
    }
 }
@@ -60,8 +61,9 @@ void rim::TransactionLock::lock() {
 //! lock
 void rim::TransactionLock::unlock() {
    if ( locked_ ) {
-      frame->lock_.lock();
+      tran_->lock_.lock();
       locked_ = true;
    }
 }
+
 
