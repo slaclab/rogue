@@ -20,6 +20,7 @@
  * ----------------------------------------------------------------------------
 **/
 #include <rogue/interfaces/memory/Transaction.h>
+#include <rogue/interfaces/memory/TransactionLock.h>
 #include <rogue/interfaces/memory/Master.h>
 #include <rogue/interfaces/memory/Constants.h>
 #include <rogue/GeneralError.h>
@@ -83,10 +84,15 @@ rim::Transaction::Transaction(rim::MasterPtr master) {
 //! Destroy object
 rim::Transaction::~Transaction() { }
 
+//! Get lock
+rim::TransactionLockPtr rim::Transaction::lock() {
+   //return(rim::TransactionLock::create(shared_from_this()));
+}
+
 //! Reset the transaction
 void rim::Transaction::reset() {
    rogue::GilRelease noGil;
-   boost::lock_guard<boost::mutex> lg(lock);
+   boost::lock_guard<boost::mutex> lg(lock_);
 
    iter_ = NULL;
    if ( pyValid_ ) {
@@ -138,7 +144,7 @@ void rim::Transaction::setData ( boost::python::object p, uint32_t offset ) {
    uint8_t *  data;
 
    rogue::GilRelease noGil;
-   boost::lock_guard<boost::mutex> lg(lock);
+   boost::lock_guard<boost::mutex> lg(lock_);
    noGil.acquire();
 
    if ( PyObject_GetBuffer(p.ptr(),&pyBuf,PyBUF_CONTIG) < 0 )
@@ -162,7 +168,7 @@ void rim::Transaction::getData ( boost::python::object p, uint32_t offset ) {
    uint8_t *  data;
 
    rogue::GilRelease noGil;
-   boost::lock_guard<boost::mutex> lg(lock);
+   boost::lock_guard<boost::mutex> lg(lock_);
    noGil.acquire();
 
    if ( PyObject_GetBuffer(p.ptr(),&pyBuf,PyBUF_SIMPLE) < 0 ) 

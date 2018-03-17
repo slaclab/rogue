@@ -29,6 +29,7 @@
 #include <rogue/interfaces/memory/Slave.h>
 #include <rogue/interfaces/memory/Constants.h>
 #include <rogue/interfaces/memory/Transaction.h>
+#include <rogue/interfaces/memory/TransactionLock.h>
 #include <rogue/protocols/srp/SrpV3.h>
 #include <rogue/Logging.h>
 #include <rogue/GilRelease.h>
@@ -137,7 +138,7 @@ void rps::SrpV3::doTransaction(rim::TransactionPtr tran) {
 
    // Setup iterators
    rogue::GilRelease noGil;
-   boost::unique_lock<boost::mutex> lock(tran->lock);
+   rim::TransactionLockPtr lock = tran->lock();
    fIter = frame->begin();
    tIter = tran->begin();
 
@@ -146,8 +147,6 @@ void rps::SrpV3::doTransaction(rim::TransactionPtr tran) {
 
    // Write data
    if ( doWrite ) std::copy(tIter,tIter+tran->size(),fIter);
-
-   lock.unlock(); // Done with iterator
 
    if ( tran->type() == rim::Post ) tran->done(0);
    else addTransaction(tran);
@@ -196,7 +195,7 @@ void rps::SrpV3::acceptFrame ( ris::FramePtr frame ) {
 
    // Setup transaction iterator
    rogue::GilRelease noGil;
-   boost::unique_lock<boost::mutex> lock(tran->lock);
+   rim::TransactionLockPtr lock = tran->lock();
 
    // Transaction expired
    if ( tran->expired() ) {
@@ -243,7 +242,6 @@ void rps::SrpV3::acceptFrame ( ris::FramePtr frame ) {
       fIter = frame->begin() + HeadLen;
       std::copy(fIter,fIter+tran->size(),tIter);
    }
-   lock.unlock(); // Done with iterator
 
    delTransaction(tran->id());
    tran->done(0);

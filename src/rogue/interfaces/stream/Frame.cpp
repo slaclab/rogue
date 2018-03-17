@@ -19,6 +19,7 @@
  * ----------------------------------------------------------------------------
 **/
 #include <rogue/interfaces/stream/Frame.h>
+#include <rogue/interfaces/stream/FrameLock.h>
 #include <rogue/interfaces/stream/FrameIterator.h>
 #include <rogue/interfaces/stream/Buffer.h>
 #include <rogue/GeneralError.h>
@@ -45,6 +46,11 @@ ris::Frame::Frame() {
 
 //! Destroy a frame.
 ris::Frame::~Frame() { }
+
+//! Get lock
+ris::FrameLockPtr ris::Frame::lock() {
+   //return(ris::FrameLock::create(shared_from_this()));
+}
 
 //! Add a buffer to end of frame
 ris::Frame::BufferIterator ris::Frame::appendBuffer(ris::BufferPtr buff) {

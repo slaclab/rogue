@@ -19,6 +19,7 @@
 **/
 #ifndef __ROGUE_INTERFACES_MEMORY_TRANSACTION_H__
 #define __ROGUE_INTERFACES_MEMORY_TRANSACTION_H__
+#include <boost/enable_shared_from_this.hpp>
 #include <stdint.h>
 #include <vector>
 #include <boost/python.hpp>
@@ -28,11 +29,13 @@ namespace rogue {
    namespace interfaces {
       namespace memory {
 
+         class TransactionLock;
          class Master;
          class Hub;
 
          //! Transaction
-         class Transaction {
+         class Transaction : public boost::enable_shared_from_this<rogue::interfaces::memory::Transaction> {
+            friend class TransactionLock;
             friend class Master;
             friend class Hub;
 
@@ -87,6 +90,9 @@ namespace rogue {
                //! Reset the transaction
                void reset();
 
+               //! Transaction lock
+               boost::mutex lock_;
+
             public:
 
                //! Create a transaction container
@@ -99,11 +105,11 @@ namespace rogue {
                //! Constructor
                Transaction(boost::shared_ptr<rogue::interfaces::memory::Master> master);
 
-               //! Transaction lock which must be held when using iterator
-               boost::mutex lock;
-
                //! Destructor
                ~Transaction();
+
+               //! Get lock
+               static boost::shared_ptr<rogue::interfaces::memory::TransactionLock> lock();
 
                //! Get expired flag
                bool expired();

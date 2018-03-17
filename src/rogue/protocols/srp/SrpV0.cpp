@@ -29,6 +29,7 @@
 #include <rogue/interfaces/memory/Slave.h>
 #include <rogue/interfaces/memory/Constants.h>
 #include <rogue/interfaces/memory/Transaction.h>
+#include <rogue/interfaces/memory/TransactionLock.h>
 #include <rogue/protocols/srp/SrpV0.h>
 #include <rogue/Logging.h>
 #include <rogue/GilRelease.h>
@@ -118,7 +119,7 @@ void rps::SrpV0::doTransaction(rim::TransactionPtr tran) {
 
    // Setup iterators
    rogue::GilRelease noGil;
-   boost::unique_lock<boost::mutex> lock(tran->lock);
+   rim::TransactionLockPtr lock = tran->lock();
    fIter = frame->begin();
    tIter = tran->begin();
 
@@ -134,8 +135,6 @@ void rps::SrpV0::doTransaction(rim::TransactionPtr tran) {
    // Last field is zero
    tail[0] = 0;
    ris::toFrame(fIter,TailLen,tail); 
-
-   lock.unlock(); // Done with iterator
 
    if ( tran->type() == rim::Post ) tran->done(0);
    else addTransaction(tran);
@@ -185,7 +184,7 @@ void rps::SrpV0::acceptFrame ( ris::FramePtr frame ) {
 
    // Setup transaction iterator
    rogue::GilRelease noGil;
-   boost::unique_lock<boost::mutex> lock(tran->lock);
+   rim::TransactionLockPtr lock = tran->lock();
 
    // Transaction expired
    if ( tran->expired() ) {
@@ -214,7 +213,6 @@ void rps::SrpV0::acceptFrame ( ris::FramePtr frame ) {
    fIter = frame->endPayload()-TailLen;
    ris::fromFrame(fIter,TailLen,tail);
    if ( tail[0] != 0 ) {
-      lock.unlock();
       delTransaction(id);
 
       if ( tail[0] & 0x20000 ) tran->done(rim::AxiTimeout);
@@ -229,7 +227,6 @@ void rps::SrpV0::acceptFrame ( ris::FramePtr frame ) {
       fIter = frame->begin() + RxHeadLen;
       std::copy(fIter,fIter+tran->size(),tIter);
    }
-   lock.unlock(); // Done with iterator
 
    // Done
    delTransaction(tran->id());
