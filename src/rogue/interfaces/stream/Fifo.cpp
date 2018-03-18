@@ -69,6 +69,9 @@ void ris::Fifo::acceptFrame ( ris::FramePtr frame ) {
    // FIFO is full, drop frame
    if ( queue_.busy()  ) return;
 
+   rogue::GilRelease noGil;
+   ris::FrameLockPtr lock = frame->lock();
+
    // Get size, adjust if trim is enabled
    size = frame->getPayload();
    if ( trimSize_ != 0 && trimSize_ < size ) size = trimSize_;

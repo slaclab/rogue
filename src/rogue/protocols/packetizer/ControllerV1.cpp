@@ -62,6 +62,7 @@ void rpp::ControllerV1::transportRx( ris::FramePtr frame ) {
       log_->warning("Empty frame received At Transport");
 
    rogue::GilRelease noGil;
+   ris::FrameLockPtr lock = frame->lock();
    boost::lock_guard<boost::mutex> lock(tranMtx_);
 
    buff = *(frame->beginBuffer());
