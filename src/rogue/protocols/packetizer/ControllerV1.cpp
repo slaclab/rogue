@@ -123,7 +123,7 @@ void rpp::ControllerV1::transportRx( ris::FramePtr frame ) {
    }
 
    tranFrame_[0]->appendBuffer(buff);
-   frame->clear();
+   //frame->clear();
 
    // Last of transfer
    if ( tmpEof ) {
@@ -218,6 +218,6 @@ void rpp::ControllerV1::applicationRx ( ris::FramePtr frame, uint8_t tDest ) {
       segment++;
    }
    appIndex_++;
-   frame->clear();
+   //frame->clear();
 }
 

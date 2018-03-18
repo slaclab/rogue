@@ -170,13 +170,13 @@ void rpp::ControllerV2::transportRx( ris::FramePtr frame ) {
    }
 
    tranFrame_[tmpDest]->appendBuffer(buff);
-   frame->clear();
+   //frame->clear();
 
    // Last of transfer
    if ( tmpEof ) {
       flags = tranFrame_[tmpDest]->getFlags() & 0xFFFF00FF;
       flags |= uint32_t(tmpLuser) << 8;
-      tranFram_[tmpDest]->setFlags(flags);
+      tranFrame_[tmpDest]->setFlags(flags);
 
       transSof_[tmpDest]  = true;
       tranCount_[tmpDest] = 0;
@@ -309,6 +309,6 @@ void rpp::ControllerV2::applicationRx ( ris::FramePtr frame, uint8_t tDest ) {
       tranQueue_.push(tFrame);
    }
    appIndex_++;
-   frame->clear();
+   //frame->clear();
 }
 
