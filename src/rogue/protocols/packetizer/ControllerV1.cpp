@@ -18,6 +18,7 @@
  * ----------------------------------------------------------------------------
 **/
 #include <rogue/interfaces/stream/Frame.h>
+#include <rogue/interfaces/stream/FrameLock.h>
 #include <rogue/interfaces/stream/Buffer.h>
 #include <rogue/protocols/packetizer/ControllerV1.h>
 #include <rogue/protocols/packetizer/Transport.h>
@@ -62,7 +63,7 @@ void rpp::ControllerV1::transportRx( ris::FramePtr frame ) {
       log_->warning("Empty frame received At Transport");
 
    rogue::GilRelease noGil;
-   ris::FrameLockPtr lock = frame->lock();
+   ris::FrameLockPtr flock = frame->lock();
    boost::lock_guard<boost::mutex> lock(tranMtx_);
 
    buff = *(frame->beginBuffer());
@@ -169,7 +170,7 @@ void rpp::ControllerV1::applicationRx ( ris::FramePtr frame, uint8_t tDest ) {
    if ( frame->getError() ) return;
 
    rogue::GilRelease noGil;
-   ris::FrameLockPtr lock = frame->lock();
+   ris::FrameLockPtr flock = frame->lock();
    boost::lock_guard<boost::mutex> lock(appMtx_);
 
    // Wait while queue is busy

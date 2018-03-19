@@ -126,7 +126,7 @@ bool rpr::Header::verify() {
 
    size = (syn)?SynSize:HeaderSize;
 
-   if ( (data[1] != size) || (buff->getPayload() < size) || (getUInt16(data,size-2) != compSum(size))) return false;
+   if ( (data[1] != size) || (buff->getPayload() < size) || (getUInt16(data,size-2) != compSum(data,size))) return false;
 
    sequence    = data[2];
    acknowledge = data[3];
@@ -193,7 +193,7 @@ void rpr::Header::update() {
       data[18] = connectionId;
    }
 
-   setUInt16(data,size-2,compSum(size));
+   setUInt16(data,size-2,compSum(data,size));
    gettimeofday(&time_,NULL);
    count_++;
 }
@@ -216,6 +216,9 @@ void rpr::Header::rstTime() {
 //! Dump message
 std::string rpr::Header::dump() {
    uint32_t   x;
+
+   ris::BufferPtr buff = *(frame_->beginBuffer());
+   uint8_t * data = buff->begin();
 
    std::stringstream ret("");
 

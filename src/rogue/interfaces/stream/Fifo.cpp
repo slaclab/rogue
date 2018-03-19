@@ -24,10 +24,12 @@
 #include <rogue/interfaces/stream/Master.h>
 #include <rogue/interfaces/stream/Slave.h>
 #include <rogue/interfaces/stream/Frame.h>
+#include <rogue/interfaces/stream/FrameLock.h>
 #include <rogue/interfaces/stream/FrameIterator.h>
 #include <rogue/interfaces/stream/Buffer.h>
 #include <rogue/interfaces/stream/Fifo.h>
 #include <rogue/Logging.h>
+#include <rogue/GilRelease.h>
 #include <sys/syscall.h>
 
 namespace bp = boost::python;

@@ -20,6 +20,7 @@
  * ----------------------------------------------------------------------------
 **/
 #include <rogue/interfaces/stream/Frame.h>
+#include <rogue/interfaces/stream/FrameLock.h>
 #include <rogue/interfaces/stream/Buffer.h>
 #include <rogue/protocols/rssi/Header.h>
 #include <rogue/protocols/rssi/Controller.h>
@@ -144,7 +145,7 @@ void rpr::Controller::transportRx( ris::FramePtr frame ) {
    rpr::HeaderPtr head = rpr::Header::create(frame);
 
    rogue::GilRelease noGil;
-   ris::FrameLockPtr lock = frame->lock();
+   ris::FrameLockPtr flock = frame->lock();
 
    if ( frame->isEmpty() || ! head->verify() ) {
       log_->info("Dumping frame state=%i server=%i",state_,server_);
@@ -205,7 +206,7 @@ ris::FramePtr rpr::Controller::applicationTx() {
       stCond_.notify_all();
 
       frame = head->getFrame();
-      ris::FrameLockPtr lock = frame->lock();
+      ris::FrameLockPtr flock = frame->lock();
       (*(frame->beginBuffer()))->adjustHeader(rpr::Header::HeaderSize);
    }
    return(frame);
@@ -219,7 +220,7 @@ void rpr::Controller::applicationRx ( ris::FramePtr frame ) {
    gettimeofday(&startTime,NULL);
 
    rogue::GilRelease noGil;
-   ris::FrameLockPtr lock = frame->lock();
+   ris::FrameLockPtr flock = frame->lock();
 
    if ( frame->isEmpty() ) {
       log_->info("Dumping empty application frame");
