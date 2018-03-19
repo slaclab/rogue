@@ -143,6 +143,9 @@ ris::FramePtr rpr::Controller::reqFrame ( uint32_t size ) {
 void rpr::Controller::transportRx( ris::FramePtr frame ) {
    rpr::HeaderPtr head = rpr::Header::create(frame);
 
+   rogue::GilRelease noGil;
+   ris::FrameLockPtr lock = frame->lock();
+
    if ( frame->isEmpty() || ! head->verify() ) {
       log_->info("Dumping frame state=%i server=%i",state_,server_);
       dropCount_++;
@@ -162,7 +165,6 @@ void rpr::Controller::transportRx( ris::FramePtr frame ) {
    // Reset
    if ( head->rst ) {
       if ( state_ == StOpen || state_ == StWaitSyn ) {
-         rogue::GilRelease noGil;
          stQueue_.push(head);
       }
    }
@@ -174,7 +176,6 @@ void rpr::Controller::transportRx( ris::FramePtr frame ) {
          lastSeqRx_ = head->sequence;
          nextSeqRx_ = lastSeqRx_ + 1;
 
-         rogue::GilRelease noGil;
          stQueue_.push(head);
       }
    }
@@ -187,7 +188,6 @@ void rpr::Controller::transportRx( ris::FramePtr frame ) {
       stCond_.notify_all();
 
       if ( !head->nul ) {
-         rogue::GilRelease noGil;
          appQueue_.push(head);
       }
    }
@@ -205,6 +205,7 @@ ris::FramePtr rpr::Controller::applicationTx() {
       stCond_.notify_all();
 
       frame = head->getFrame();
+      ris::FrameLockPtr lock = frame->lock();
       (*(frame->beginBuffer()))->adjustHeader(rpr::Header::HeaderSize);
    }
    return(frame);
@@ -216,6 +217,9 @@ void rpr::Controller::applicationRx ( ris::FramePtr frame ) {
    struct timeval startTime;
 
    gettimeofday(&startTime,NULL);
+
+   rogue::GilRelease noGil;
+   ris::FrameLockPtr lock = frame->lock();
 
    if ( frame->isEmpty() ) {
       log_->info("Dumping empty application frame");
@@ -231,8 +235,6 @@ void rpr::Controller::applicationRx ( ris::FramePtr frame ) {
 
    // Connection is closed
    if ( state_ != StOpen ) return;
-
-   rogue::GilRelease noGil;
 
    // Wait while busy either by flow control or buffer starvation
    while ( txListCount_ >= remMaxBuffers_ ) {
@@ -293,6 +295,9 @@ void rpr::Controller::transportTx(rpr::HeaderPtr head, bool seqUpdate, bool retr
       lastAckTx_ = lastSeqRx_;
       head->busy = false;
    }
+ 
+   rogue::GilRelease noGil;
+   ris::FrameLockPtr lock = head->getFrame()->lock();
    head->update();
 
    // Track last tx time
@@ -304,6 +309,7 @@ void rpr::Controller::transportTx(rpr::HeaderPtr head, bool seqUpdate, bool retr
          head->acknowledge,head->sequence,retranCount_);
 
    // Send frame
+   lock->unlock();
    tran_->sendFrame(head->getFrame());
 }
 

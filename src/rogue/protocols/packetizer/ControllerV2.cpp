@@ -73,6 +73,7 @@ void rpp::ControllerV2::transportRx( ris::FramePtr frame ) {
    }
 
    rogue::GilRelease noGil;
+   ris::FrameLockPtr lock = frame->lock();
    boost::lock_guard<boost::mutex> lock(tranMtx_);
 
    buff = *(frame->beginBuffer());
@@ -170,6 +171,7 @@ void rpp::ControllerV2::transportRx( ris::FramePtr frame ) {
    }
 
    tranFrame_[tmpDest]->appendBuffer(buff);
+   frame->clear(); // Empty old frame
 
    // Last of transfer
    if ( tmpEof ) {
@@ -224,6 +226,7 @@ void rpp::ControllerV2::applicationRx ( ris::FramePtr frame, uint8_t tDest ) {
    if ( frame->getError() ) return;
 
    rogue::GilRelease noGil;
+   ris::FrameLockPtr lock = frame->lock();
    boost::lock_guard<boost::mutex> lock(appMtx_);
 
    // Wait while queue is busy
@@ -308,4 +311,5 @@ void rpp::ControllerV2::applicationRx ( ris::FramePtr frame, uint8_t tDest ) {
       tranQueue_.push(tFrame);
    }
    appIndex_++;
+   frame->clear(); // Empty old frame
 }
