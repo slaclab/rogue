@@ -55,6 +55,8 @@ namespace rogue {
          static uint32_t getMinor ();
          static uint32_t getMaint ();
          static uint32_t getDevel ();
+
+         static std::string pythonVersion();
    };
 }
 
