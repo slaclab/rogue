@@ -357,6 +357,7 @@ class Device(pr.Node,rim.Hub):
     def _rawWrite(self, offset, data, base=pr.UInt, stride=4, wordBitSize=32, tryCount=1):
         with self._memLock:
             for _ in range(tryCount):
+                self._setError(0)
                 self._rawTxnChunker(offset, data, base, stride, wordBitSize, txnType=rim.Write)
                 self._waitTransaction(0)
 
@@ -368,6 +369,7 @@ class Device(pr.Node,rim.Hub):
     def _rawRead(self, offset, numWords=1, base=pr.UInt, stride=4, wordBitSize=32, data=None, tryCount=1):
         with self._memLock:
             for _ in range(tryCount):
+                self._setError(0)
                 ldata = self._rawTxnChunker(offset, data, base, stride, wordBitSize, txnType=rim.Read, numWords=numWords)
                 self._waitTransaction(0)
 
