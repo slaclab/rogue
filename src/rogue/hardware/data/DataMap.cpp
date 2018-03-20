@@ -20,6 +20,7 @@
 #include <rogue/hardware/data/DataMap.h>
 #include <rogue/interfaces/memory/Constants.h>
 #include <rogue/interfaces/memory/Transaction.h>
+#include <rogue/interfaces/memory/TransactionLock.h>
 #include <rogue/GeneralError.h>
 #include <rogue/GilRelease.h>
 #include <boost/make_shared.hpp>
@@ -76,7 +77,7 @@ void rhd::DataMap::doTransaction(rim::TransactionPtr tran) {
    ret = 0;
 
    rogue::GilRelease noGil;
-   boost::unique_lock<boost::mutex> lock(tran->lock);
+   rim::TransactionLockPtr lock = tran->lock();
    it = tran->begin();
 
    while ( (ret == 0) && (count != tran->size()) ) {
@@ -91,7 +92,6 @@ void rhd::DataMap::doTransaction(rim::TransactionPtr tran) {
       count += dataSize;
       it += dataSize;
    }
-   lock.unlock(); // Done with iterator
 
    log_->debug("Transaction id=0x%08x, addr 0x%08x. Size=%i, type=%i, data=0x%08x",tran->id(),tran->address(),tran->size(),tran->type(),data);
    tran->done((ret==0)?0:1);

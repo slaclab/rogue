@@ -26,6 +26,7 @@
 #ifndef __ROGUE_INTERFACES_STREAM_FRAME_H__
 #define __ROGUE_INTERFACES_STREAM_FRAME_H__
 #include <boost/enable_shared_from_this.hpp>
+#include <boost/thread.hpp>
 #include <stdint.h>
 #include <vector>
 
@@ -36,6 +37,7 @@ namespace rogue {
 
          class Buffer;
          class FrameIterator;
+         class FrameLock;
 
          //! Frame container
          /*
@@ -49,6 +51,7 @@ namespace rogue {
          class Frame : public boost::enable_shared_from_this<rogue::interfaces::stream::Frame> {
 
                friend class Buffer;
+               friend class FrameLock;
 
                //! Interface specific flags
                uint32_t flags_;
@@ -76,6 +79,9 @@ namespace rogue {
                //! Set size values dirty
                void setSizeDirty();
 
+               //! Frame lock
+               boost::mutex lock_;
+
             public:
 
                //! Itererator for buffer list
@@ -99,6 +105,9 @@ namespace rogue {
                //! Destroy a frame.
                ~Frame();
 
+               //! Get lock
+               boost::shared_ptr<rogue::interfaces::stream::FrameLock> lock();
+
                //! Add a buffer to end of frame, return interator to inserted buffer
                std::vector<boost::shared_ptr<rogue::interfaces::stream::Buffer> >::iterator
                   appendBuffer(boost::shared_ptr<rogue::interfaces::stream::Buffer> buff);
@@ -112,6 +121,9 @@ namespace rogue {
 
                //! Buffer end iterator
                std::vector<boost::shared_ptr<rogue::interfaces::stream::Buffer> >::iterator endBuffer();
+
+               //! Clear the list
+               void clear();
 
                //! Buffers list is empty
                bool isEmpty();

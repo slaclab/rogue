@@ -80,6 +80,7 @@ class StreamSim(rogue.interfaces.stream.Master,
     def _acceptFrame(self,frame):
         """ Forward frame to simulation """
 
+        flock = frame.lock();
         flags = frame.getFlags()
         fuser = flags & 0xFF
         luser = (flags >> 8) & 0xFF

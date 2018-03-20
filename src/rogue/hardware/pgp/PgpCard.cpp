@@ -26,6 +26,7 @@
 #include <rogue/hardware/pgp/EvrStatus.h>
 #include <rogue/hardware/pgp/EvrControl.h>
 #include <rogue/interfaces/stream/Frame.h>
+#include <rogue/interfaces/stream/FrameLock.h>
 #include <rogue/interfaces/stream/Buffer.h>
 #include <rogue/GeneralError.h>
 #include <boost/make_shared.hpp>
@@ -217,8 +218,11 @@ void rhp::PgpCard::acceptFrame ( ris::FramePtr frame ) {
    struct timeval   tout;
    uint32_t         meta;
    uint32_t         cont;
+   bool             emptyFrame;
 
    rogue::GilRelease noGil;
+   ris::FrameLockPtr lock = frame->lock();
+   emptyFrame = false;
 
    // Go through each (*it)er in the frame
    ris::Frame::BufferIterator it;
@@ -234,6 +238,7 @@ void rhp::PgpCard::acceptFrame ( ris::FramePtr frame ) {
 
       // Meta is zero copy as indicated by bit 31
       if ( (meta & 0x80000000) != 0 ) {
+         emptyFrame = true;
 
          // Buffer is not already stale as indicates by bit 30
          if ( (meta & 0x40000000) == 0 ) {
@@ -278,6 +283,8 @@ void rhp::PgpCard::acceptFrame ( ris::FramePtr frame ) {
          while ( res == 0 );
       }
    }
+
+   if ( emptyFrame ) frame->clear();
 }
 
 //! Return a buffer

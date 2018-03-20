@@ -19,6 +19,7 @@
 **/
 #include <rogue/hardware/axi/AxiStreamDma.h>
 #include <rogue/interfaces/stream/Frame.h>
+#include <rogue/interfaces/stream/FrameLock.h>
 #include <rogue/interfaces/stream/Buffer.h>
 #include <rogue/GeneralError.h>
 #include <boost/make_shared.hpp>
@@ -167,8 +168,11 @@ void rha::AxiStreamDma::acceptFrame ( ris::FramePtr frame ) {
    uint32_t         fuser;
    uint32_t         luser;
    uint32_t         cont;
+   bool             emptyFrame;
 
    rogue::GilRelease noGil;
+   ris::FrameLockPtr lock = frame->lock();
+   emptyFrame = false;
 
    // Get Flags
    flags = frame->getFlags();
@@ -202,6 +206,7 @@ void rha::AxiStreamDma::acceptFrame ( ris::FramePtr frame ) {
 
       // Meta is zero copy as indicated by bit 31
       if ( (meta & 0x80000000) != 0 ) {
+         emptyFrame = true;
 
          // Buffer is not already stale as indicates by bit 30
          if ( (meta & 0x40000000) == 0 ) {
@@ -248,6 +253,8 @@ void rha::AxiStreamDma::acceptFrame ( ris::FramePtr frame ) {
          while ( res == 0 );
       }
    }
+
+   if ( emptyFrame ) frame->clear();
 }
 
 //! Return a buffer

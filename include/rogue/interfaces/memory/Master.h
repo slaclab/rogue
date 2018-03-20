@@ -23,7 +23,6 @@
 #define __ROGUE_INTERFACES_MEMORY_MASTER_H__
 #include <stdint.h>
 #include <vector>
-#include <boost/enable_shared_from_this.hpp>
 #include <boost/python.hpp>
 #include <boost/thread.hpp>
 #include <rogue/Logging.h>
@@ -36,7 +35,7 @@ namespace rogue {
          class Transaction;
 
          //! Master container
-         class Master : public boost::enable_shared_from_this<rogue::interfaces::memory::Master> {
+         class Master {
             friend class Transaction;
 
             private:
@@ -55,9 +54,6 @@ namespace rogue {
 
                //! Mutex
                boost::mutex mastMtx_;
-
-               //! Conditional
-               boost::condition_variable cond_;
 
                //! Error status
                uint32_t error_;
@@ -117,9 +113,6 @@ namespace rogue {
 
                //! Internal transaction
                uint32_t intTransaction(boost::shared_ptr<rogue::interfaces::memory::Transaction> tran);
-
-               //! Transaction is done, called from transaction record
-               void doneTransaction(uint32_t id);
 
             public:
 

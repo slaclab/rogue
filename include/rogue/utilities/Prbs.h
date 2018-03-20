@@ -52,8 +52,8 @@ namespace rogue {
             //! Min size
             uint32_t   minSize_;
 
-            //! RX Count
-            boost::mutex rxMtx_;
+            //! Lock
+            boost::mutex pMtx_;
 
             //! rx sequence tracking
             uint32_t   rxSeq_;
@@ -66,9 +66,6 @@ namespace rogue {
 
             //! Rx bytes
             uint32_t   rxBytes_;
-
-            //! TX Mutex
-            boost::mutex txMtx_;
 
             //! tx sequence tracking
             uint32_t   txSeq_;

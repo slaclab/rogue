@@ -25,10 +25,12 @@
 #include <rogue/interfaces/stream/Master.h>
 #include <rogue/interfaces/stream/Slave.h>
 #include <rogue/interfaces/stream/Frame.h>
+#include <rogue/interfaces/stream/FrameLock.h>
 #include <rogue/interfaces/stream/FrameIterator.h>
 #include <rogue/interfaces/memory/Slave.h>
 #include <rogue/interfaces/memory/Constants.h>
 #include <rogue/interfaces/memory/Transaction.h>
+#include <rogue/interfaces/memory/TransactionLock.h>
 #include <rogue/protocols/srp/SrpV0.h>
 #include <rogue/Logging.h>
 #include <rogue/GilRelease.h>
@@ -118,7 +120,7 @@ void rps::SrpV0::doTransaction(rim::TransactionPtr tran) {
 
    // Setup iterators
    rogue::GilRelease noGil;
-   boost::unique_lock<boost::mutex> lock(tran->lock);
+   rim::TransactionLockPtr lock = tran->lock();
    fIter = frame->beginWrite();
    tIter = tran->begin();
 
@@ -134,8 +136,6 @@ void rps::SrpV0::doTransaction(rim::TransactionPtr tran) {
    // Last field is zero
    tail[0] = 0;
    ris::toFrame(fIter,TailLen,tail); 
-
-   lock.unlock(); // Done with iterator
 
    if ( tran->type() == rim::Post ) tran->done(0);
    else addTransaction(tran);
@@ -160,6 +160,9 @@ void rps::SrpV0::acceptFrame ( ris::FramePtr frame ) {
    bool     doWrite;
    uint32_t fSize;
 
+   rogue::GilRelease noGil();
+   ris::FrameLockPtr fLock = frame->lock();
+
    // Check frame size
    if ( (fSize = frame->getPayload()) < 16 ) {
       log_->info("Got undersize frame size = %i",fSize);
@@ -182,15 +185,14 @@ void rps::SrpV0::acceptFrame ( ris::FramePtr frame ) {
      log_->debug("Invalid ID frame for id=0x%08x",id);
      return; // Bad id or post, drop frame
    }
+   delTransaction(id);
 
    // Setup transaction iterator
-   rogue::GilRelease noGil;
-   boost::unique_lock<boost::mutex> lock(tran->lock);
+   rim::TransactionLockPtr lock = tran->lock();
 
    // Transaction expired
    if ( tran->expired() ) {
       log_->debug("Transaction expired. Id=%i",id);
-      delTransaction(tran->id());
       return;
    }
    tIter = tran->begin();
@@ -200,13 +202,13 @@ void rps::SrpV0::acceptFrame ( ris::FramePtr frame ) {
 
    // Check frame size
    if ( fSize != expFrameLen ) {
-      log_->debug("Bad receive length for %i exp=%i, got=%i",id,expFrameLen,fSize);
+      log_->warning("Bad receive length for %i exp=%i, got=%i",id,expFrameLen,fSize);
       return;
    }
 
    // Check header
    if ( memcmp(header,expHeader,RxHeadLen) != 0 ) {
-     log_->debug("Bad header for %i",id);
+     log_->warning("Bad header for %i",id);
      return;
    }
 
@@ -214,13 +216,10 @@ void rps::SrpV0::acceptFrame ( ris::FramePtr frame ) {
    fIter = frame->endRead()-TailLen;
    ris::fromFrame(fIter,TailLen,tail);
    if ( tail[0] != 0 ) {
-      lock.unlock();
-      delTransaction(id);
-
       if ( tail[0] & 0x20000 ) tran->done(rim::AxiTimeout);
       else if ( tail[0] & 0x10000 ) tran->done(rim::AxiFail);
       else tran->done(tail[0]);
-      log_->debug("Error detected for ID id=0x%08x",id);
+      log_->warning("Error detected for ID id=0x%08x",id);
       return;
    }
 
@@ -229,10 +228,8 @@ void rps::SrpV0::acceptFrame ( ris::FramePtr frame ) {
       fIter = frame->beginRead() + RxHeadLen;
       std::copy(fIter,fIter+tran->size(),tIter);
    }
-   lock.unlock(); // Done with iterator
 
    // Done
-   delTransaction(tran->id());
    tran->done(0);
 }
 

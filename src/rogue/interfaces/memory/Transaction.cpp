@@ -20,6 +20,7 @@
  * ----------------------------------------------------------------------------
 **/
 #include <rogue/interfaces/memory/Transaction.h>
+#include <rogue/interfaces/memory/TransactionLock.h>
 #include <rogue/interfaces/memory/Master.h>
 #include <rogue/interfaces/memory/Constants.h>
 #include <rogue/GeneralError.h>
@@ -37,13 +38,14 @@ uint32_t rim::Transaction::classIdx_ = 0;
 boost::mutex rim::Transaction::classMtx_;
 
 //! Create a master container
-rim::TransactionPtr rim::Transaction::create (rim::MasterPtr master) {
-   rim::TransactionPtr m = boost::make_shared<rim::Transaction>(master);
+rim::TransactionPtr rim::Transaction::create () {
+   rim::TransactionPtr m = boost::make_shared<rim::Transaction>();
    return(m);
 }
 
 void rim::Transaction::setup_python() {
    bp::class_<rim::Transaction, rim::TransactionPtr, boost::noncopyable>("Transaction",bp::no_init)
+      .def("lock",    &rim::Transaction::lock)
       .def("id",      &rim::Transaction::id)
       .def("address", &rim::Transaction::address)
       .def("size",    &rim::Transaction::size)
@@ -56,9 +58,7 @@ void rim::Transaction::setup_python() {
 }
 
 //! Create object
-rim::Transaction::Transaction(rim::MasterPtr master) {
-   master_ = master;
-
+rim::Transaction::Transaction() {
    endTime_.tv_sec    = 0;
    endTime_.tv_usec   = 0;
    startTime_.tv_sec  = 0;
@@ -83,16 +83,9 @@ rim::Transaction::Transaction(rim::MasterPtr master) {
 //! Destroy object
 rim::Transaction::~Transaction() { }
 
-//! Reset the transaction
-void rim::Transaction::reset() {
-   rogue::GilRelease noGil;
-   boost::lock_guard<boost::mutex> lg(lock);
-
-   iter_ = NULL;
-   if ( pyValid_ ) {
-      rogue::ScopedGil gil;
-      PyBuffer_Release(&(pyBuf_));
-   }
+//! Get lock
+rim::TransactionLockPtr rim::Transaction::lock() {
+   return(rim::TransactionLock::create(shared_from_this()));
 }
 
 //! Get expired state
@@ -112,12 +105,42 @@ uint32_t rim::Transaction::size() { return size_; }
 //! Get type
 uint32_t rim::Transaction::type() { return type_; }
 
-//! Complete transaction with passed error
+//! Complete transaction with passed error, lock must be held
 void rim::Transaction::done(uint32_t error) {
-   rim::MasterPtr mast;
+   if (error != 0 ) printf("\n\n\nError = 0x%x\n\n\n\n",error);
    error_ = error;
    done_  = true;
-   if (mast = master_.lock()) mast->doneTransaction(id_);
+   cond_.notify_all();
+}
+
+//! Wait for the transaction to complete
+uint32_t rim::Transaction::wait() {
+   struct timeval currTime;
+
+   boost::unique_lock<boost::mutex> lock(lock_);
+
+   while (! done_) {
+
+      // Timeout?
+      gettimeofday(&currTime,NULL);
+      if ( endTime_.tv_sec  != 0 && endTime_.tv_usec != 0 && 
+           timercmp(&currTime,&(endTime_),>) ) {
+
+         done_  = true;
+         error_ = rim::TimeoutError;
+      }
+      else cond_.timed_wait(lock,boost::posix_time::microseconds(1000));
+   }
+
+   // Reset
+   if ( pyValid_ ) {
+      rogue::ScopedGil gil;
+      PyBuffer_Release(&(pyBuf_));
+   }
+   iter_    = NULL;
+   pyValid_ = false;
+
+   return (error_);
 }
 
 //! start iterator, caller must lock around access
@@ -136,10 +159,6 @@ rim::Transaction::iterator rim::Transaction::end() {
 void rim::Transaction::setData ( boost::python::object p, uint32_t offset ) {
    Py_buffer  pyBuf;
    uint8_t *  data;
-
-   rogue::GilRelease noGil;
-   boost::lock_guard<boost::mutex> lg(lock);
-   noGil.acquire();
 
    if ( PyObject_GetBuffer(p.ptr(),&pyBuf,PyBUF_CONTIG) < 0 )
       throw(rogue::GeneralError("Transaction::writePy","Python Buffer Error In Frame"));
@@ -160,10 +179,6 @@ void rim::Transaction::setData ( boost::python::object p, uint32_t offset ) {
 void rim::Transaction::getData ( boost::python::object p, uint32_t offset ) {
    Py_buffer  pyBuf;
    uint8_t *  data;
-
-   rogue::GilRelease noGil;
-   boost::lock_guard<boost::mutex> lg(lock);
-   noGil.acquire();
 
    if ( PyObject_GetBuffer(p.ptr(),&pyBuf,PyBUF_SIMPLE) < 0 ) 
       throw(rogue::GeneralError("Transaction::readPy","Python Buffer Error In Frame"));

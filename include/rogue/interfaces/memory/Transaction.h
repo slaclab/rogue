@@ -19,6 +19,7 @@
 **/
 #ifndef __ROGUE_INTERFACES_MEMORY_TRANSACTION_H__
 #define __ROGUE_INTERFACES_MEMORY_TRANSACTION_H__
+#include <boost/enable_shared_from_this.hpp>
 #include <stdint.h>
 #include <vector>
 #include <boost/python.hpp>
@@ -28,11 +29,13 @@ namespace rogue {
    namespace interfaces {
       namespace memory {
 
+         class TransactionLock;
          class Master;
          class Hub;
 
          //! Transaction
-         class Transaction {
+         class Transaction : public boost::enable_shared_from_this<rogue::interfaces::memory::Transaction> {
+            friend class TransactionLock;
             friend class Master;
             friend class Hub;
 
@@ -46,10 +49,10 @@ namespace rogue {
                //! Class instance lock
                static boost::mutex classMtx_;
 
-            protected:
+               //! Conditional
+               boost::condition_variable cond_;
 
-               //! Associated master
-               boost::weak_ptr<rogue::interfaces::memory::Master> master_;
+            protected:
 
                //! Transaction start time
                struct timeval endTime_;
@@ -84,26 +87,25 @@ namespace rogue {
                //! Done state
                bool done_;
 
-               //! Reset the transaction
-               void reset();
+               //! Transaction lock
+               boost::mutex lock_;
 
             public:
 
                //! Create a transaction container
-               static boost::shared_ptr<rogue::interfaces::memory::Transaction> create (
-                  boost::shared_ptr<rogue::interfaces::memory::Master> master);
+               static boost::shared_ptr<rogue::interfaces::memory::Transaction> create ();
 
                //! Setup class in python
                static void setup_python();
 
                //! Constructor
-               Transaction(boost::shared_ptr<rogue::interfaces::memory::Master> master);
-
-               //! Transaction lock which must be held when using iterator
-               boost::mutex lock;
+               Transaction();
 
                //! Destructor
                ~Transaction();
+
+               //! Get lock
+               boost::shared_ptr<rogue::interfaces::memory::TransactionLock> lock();
 
                //! Get expired flag
                bool expired();
@@ -122,6 +124,9 @@ namespace rogue {
 
                //! Complete transaction with passed error
                void done(uint32_t error);
+
+               //! Wait for the transaction to complete
+               uint32_t wait();
 
                //! start iterator, caller must lock around access
                rogue::interfaces::memory::Transaction::iterator begin();

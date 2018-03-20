@@ -21,6 +21,7 @@
 #include <boost/python.hpp>
 #include <rogue/protocols/epicsV3/Slave.h>
 #include <rogue/interfaces/stream/Frame.h>
+#include <rogue/interfaces/stream/FrameLock.h>
 #include <rogue/interfaces/stream/FrameIterator.h>
 #include <rogue/GeneralError.h>
 #include <rogue/GilRelease.h>
@@ -111,6 +112,9 @@ void rpe::Slave::acceptFrame ( ris::FramePtr frame ) {
    uint32_t size_;
    uint32_t i;
 
+   rogue::GilRelease noGil();
+   ris::FrameLockPtr fLock = frame->lock();
+
    fSize = frame->getPayload();
    iter = frame->beginRead();
 
@@ -126,7 +130,7 @@ void rpe::Slave::acceptFrame ( ris::FramePtr frame ) {
    // Limit size
    if ( size_ > max_ ) size_ = max_;
 
-   rogue::GilRelease noGil;
+   rogue::GilRelease noGil();
    boost::lock_guard<boost::mutex> lock(rpe::Value::mtx_);
 
    // Release old data

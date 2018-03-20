@@ -19,6 +19,7 @@
  * ----------------------------------------------------------------------------
 **/
 #include <rogue/interfaces/stream/Frame.h>
+#include <rogue/interfaces/stream/FrameLock.h>
 #include <rogue/interfaces/stream/FrameIterator.h>
 #include <rogue/interfaces/stream/Buffer.h>
 #include <rogue/GeneralError.h>
@@ -45,6 +46,11 @@ ris::Frame::Frame() {
 
 //! Destroy a frame.
 ris::Frame::~Frame() { }
+
+//! Get lock
+ris::FrameLockPtr ris::Frame::lock() {
+   return(ris::FrameLock::create(shared_from_this()));
+}
 
 //! Add a buffer to end of frame
 ris::Frame::BufferIterator ris::Frame::appendBuffer(ris::BufferPtr buff) {
@@ -78,6 +84,13 @@ ris::Frame::BufferIterator ris::Frame::beginBuffer() {
 //! Buffer end iterator
 ris::Frame::BufferIterator ris::Frame::endBuffer() {
    return(buffers_.end());
+}
+
+//! Clear the list
+void ris::Frame::clear() {
+   buffers_.clear();
+   size_    = 0;
+   payload_ = 0;
 }
 
 //! Buffer list is empty
@@ -310,6 +323,7 @@ void ris::Frame::writePy ( boost::python::object p, uint32_t offset ) {
 void ris::Frame::setup_python() {
 
    bp::class_<ris::Frame, ris::FramePtr, boost::noncopyable>("Frame",bp::no_init)
+      .def("lock",         &ris::Frame::lock)
       .def("getSize",      &ris::Frame::getSize)
       .def("getAvailable", &ris::Frame::getAvailable)
       .def("getPayload",   &ris::Frame::getPayload)

@@ -21,6 +21,7 @@
 #include <rogue/protocols/udp/Core.h>
 #include <rogue/protocols/udp/Client.h>
 #include <rogue/interfaces/stream/Frame.h>
+#include <rogue/interfaces/stream/FrameLock.h>
 #include <rogue/interfaces/stream/Buffer.h>
 #include <rogue/GeneralError.h>
 #include <boost/make_shared.hpp>
@@ -107,6 +108,7 @@ void rpu::Client::acceptFrame ( ris::FramePtr frame ) {
    msg.msg_flags      = 0;
 
    rogue::GilRelease noGil;
+   ris::FrameLockPtr frLock = frame->lock();
    boost::lock_guard<boost::mutex> lock(udpMtx_);
 
    // Go through each buffer in the frame

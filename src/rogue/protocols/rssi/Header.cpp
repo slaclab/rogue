@@ -32,32 +32,32 @@ namespace ris = rogue::interfaces::stream;
 namespace bp  = boost::python;
 
 //! Set 16-bit uint value
-void rpr::Header::setUInt16 ( uint8_t byte, uint16_t value) {
-   *((uint16_t *)(&(data_[byte]))) = htons(value);
+void rpr::Header::setUInt16 ( uint8_t *data, uint8_t byte, uint16_t value) {
+   *((uint16_t *)(&(data[byte]))) = htons(value);
 }
 
 //! Get 16-bit uint value
-uint16_t rpr::Header::getUInt16 ( uint8_t byte ) {
-   return(ntohs(*((uint16_t *)(&(data_[byte])))));
+uint16_t rpr::Header::getUInt16 ( uint8_t *data, uint8_t byte ) {
+   return(ntohs(*((uint16_t *)(&(data[byte])))));
 }
 
 //! Set 32-bit uint value
-void rpr::Header::setUInt32 ( uint8_t byte, uint32_t value) {
-   *((uint32_t *)(&(data_[byte]))) = htonl(value);
+void rpr::Header::setUInt32 ( uint8_t *data, uint8_t byte, uint32_t value) {
+   *((uint32_t *)(&(data[byte]))) = htonl(value);
 }
 
 //! Get 32-bit uint value
-uint32_t rpr::Header::getUInt32 ( uint8_t byte ) {
-   return(ntohl(*((uint32_t *)(&(data_[byte])))));
+uint32_t rpr::Header::getUInt32 ( uint8_t *data, uint8_t byte ) {
+   return(ntohl(*((uint32_t *)(&(data[byte])))));
 }
 
 //! compute checksum
-uint16_t rpr::Header::compSum (uint8_t size) {
+uint16_t rpr::Header::compSum (uint8_t *data, uint8_t size) {
    uint8_t  x;
    uint32_t sum;
 
    sum = 0;
-   for (x=0; x < size-2; x = x+2) sum += getUInt16(x);
+   for (x=0; x < size-2; x = x+2) sum += getUInt16(data,x);
 
    sum = (sum % 0x10000) + (sum / 0x10000);
    sum = sum ^ 0xFFFF;
@@ -79,7 +79,6 @@ rpr::Header::Header(ris::FramePtr frame) {
    if ( frame->isEmpty() ) 
       throw(rogue::GeneralError("Header::Header","Frame must not be empty!"));
    frame_ = frame;
-   data_  = (*(frame->beginBuffer()))->begin();
    count_ = 0;
 
    syn = false;
@@ -115,36 +114,37 @@ bool rpr::Header::verify() {
    uint8_t size;
 
    ris::BufferPtr buff = *(frame_->beginBuffer());
+   uint8_t * data = buff->begin();
 
    if ( buff->getPayload() < HeaderSize ) return(false);
   
-   syn  = data_[0] & 0x80;
-   ack  = data_[0] & 0x40;
-   rst  = data_[0] & 0x10;
-   nul  = data_[0] & 0x08;
-   busy = data_[0] & 0x01;
+   syn  = data[0] & 0x80;
+   ack  = data[0] & 0x40;
+   rst  = data[0] & 0x10;
+   nul  = data[0] & 0x08;
+   busy = data[0] & 0x01;
 
    size = (syn)?SynSize:HeaderSize;
 
-   if ( (data_[1] != size) || (buff->getPayload() < size) || (getUInt16(size-2) != compSum(size))) return false;
+   if ( (data[1] != size) || (buff->getPayload() < size) || (getUInt16(data,size-2) != compSum(data,size))) return false;
 
-   sequence    = data_[2];
-   acknowledge = data_[3];
+   sequence    = data[2];
+   acknowledge = data[3];
 
    if ( ! syn ) return true;
 
-   version = data_[4] >> 4;
-   chk  = data_[4] & 0x04;
+   version = data[4] >> 4;
+   chk  = data[4] & 0x04;
 
-   maxOutstandingSegments = data_[5];
-   maxSegmentSize = getUInt16(6);
-   retransmissionTimeout = getUInt16(8);
-   cumulativeAckTimeout = getUInt16(10);
-   nullTimeout = getUInt16(12);
-   maxRetransmissions = data_[14];
-   maxCumulativeAck = data_[15];
-   timeoutUnit = data_[17];
-   connectionId = data_[18];
+   maxOutstandingSegments = data[5];
+   maxSegmentSize = getUInt16(data,6);
+   retransmissionTimeout = getUInt16(data,8);
+   cumulativeAckTimeout = getUInt16(data,10);
+   nullTimeout = getUInt16(data,12);
+   maxRetransmissions = data[14];
+   maxCumulativeAck = data[15];
+   timeoutUnit = data[17];
+   connectionId = data[18];
 
    return(true);
 }
@@ -154,6 +154,7 @@ void rpr::Header::update() {
    uint8_t size;
 
    ris::BufferPtr buff = *(frame_->beginBuffer());
+   uint8_t * data = buff->begin();
 
    size = (syn)?SynSize:HeaderSize;
 
@@ -162,37 +163,37 @@ void rpr::Header::update() {
 
    buff->minPayload(size);
 
-   memset(data_,0,size);
-   data_[1] = size;
+   memset(data,0,size);
+   data[1] = size;
 
-   if ( ack  ) data_[0] |= 0x40;
-   if ( rst  ) data_[0] |= 0x10;
-   if ( nul  ) data_[0] |= 0x08;
-   if ( busy ) data_[0] |= 0x01;
+   if ( ack  ) data[0] |= 0x40;
+   if ( rst  ) data[0] |= 0x10;
+   if ( nul  ) data[0] |= 0x08;
+   if ( busy ) data[0] |= 0x01;
 
-   data_[2] = sequence;
-   data_[3] = acknowledge;
+   data[2] = sequence;
+   data[3] = acknowledge;
 
    if ( syn ) {
-      data_[0] |= 0x80;
-      data_[4] |= 0x08;
-      data_[4] |= (version << 4);
-      if ( chk ) data_[4] |= 0x04;
+      data[0] |= 0x80;
+      data[4] |= 0x08;
+      data[4] |= (version << 4);
+      if ( chk ) data[4] |= 0x04;
 
-      data_[5] = maxOutstandingSegments;
+      data[5] = maxOutstandingSegments;
 
-      setUInt16(6,maxSegmentSize);
-      setUInt16(8,retransmissionTimeout);
-      setUInt16(10,cumulativeAckTimeout);
-      setUInt16(12,nullTimeout);
+      setUInt16(data,6,maxSegmentSize);
+      setUInt16(data,8,retransmissionTimeout);
+      setUInt16(data,10,cumulativeAckTimeout);
+      setUInt16(data,12,nullTimeout);
 
-      data_[14] = maxRetransmissions;
-      data_[15] = maxCumulativeAck;
-      data_[17] = timeoutUnit;
-      data_[18] = connectionId;
+      data[14] = maxRetransmissions;
+      data[15] = maxCumulativeAck;
+      data[17] = timeoutUnit;
+      data[18] = connectionId;
    }
 
-   setUInt16(size-2,compSum(size));
+   setUInt16(data,size-2,compSum(data,size));
    gettimeofday(&time_,NULL);
    count_++;
 }
@@ -216,15 +217,18 @@ void rpr::Header::rstTime() {
 std::string rpr::Header::dump() {
    uint32_t   x;
 
+   ris::BufferPtr buff = *(frame_->beginBuffer());
+   uint8_t * data = buff->begin();
+
    std::stringstream ret("");
 
    ret << "   Total Size : " << std::dec << (*(frame_->beginBuffer()))->getPayload() << std::endl;
    ret << "     Raw Size : " << std::dec << (*(frame_->beginBuffer()))->getSize() << std::endl;
    ret << "   Raw Header : ";
 
-   for (x=0; x < data_[1]; x++) {
-      ret << "0x" << std::hex << std::setw(2) << std::setfill('0') << (uint32_t)data_[x] << " ";
-      if ( (x % 8) == 7 && (x+1) != data_[1]) ret << std::endl << "                ";
+   for (x=0; x < data[1]; x++) {
+      ret << "0x" << std::hex << std::setw(2) << std::setfill('0') << (uint32_t)data[x] << " ";
+      if ( (x % 8) == 7 && (x+1) != data[1]) ret << std::endl << "                ";
    }
    ret << std::endl;
 

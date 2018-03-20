@@ -19,6 +19,7 @@
  * ----------------------------------------------------------------------------
 **/
 #include <rogue/interfaces/stream/Frame.h>
+#include <rogue/interfaces/stream/FrameLock.h>
 #include <rogue/interfaces/stream/Buffer.h>
 #include <rogue/protocols/packetizer/Controller.h>
 #include <rogue/protocols/packetizer/Transport.h>
