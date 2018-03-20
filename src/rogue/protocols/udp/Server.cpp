@@ -104,7 +104,7 @@ void rpu::Server::acceptFrame ( ris::FramePtr frame ) {
    struct iovec     msg_iov[1];
 
    rogue::GilRelease noGil;
-   //ris::FrameLockPtr frLock = frame->lock();
+   ris::FrameLockPtr frLock = frame->lock();
    boost::lock_guard<boost::mutex> lock(udpMtx_);
 
    // Setup message header

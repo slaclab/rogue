@@ -108,7 +108,7 @@ void rpu::Client::acceptFrame ( ris::FramePtr frame ) {
    msg.msg_flags      = 0;
 
    rogue::GilRelease noGil;
-   //ris::FrameLockPtr frLock = frame->lock();
+   ris::FrameLockPtr frLock = frame->lock();
    boost::lock_guard<boost::mutex> lock(udpMtx_);
 
    // Go through each buffer in the frame
