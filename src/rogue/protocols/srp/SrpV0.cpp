@@ -140,8 +140,10 @@ void rps::SrpV0::doTransaction(rim::TransactionPtr tran) {
    if ( tran->type() == rim::Post ) tran->done(0);
    else addTransaction(tran);
 
-   log_->debug("Send frame for id=0x%08x, addr 0x%08x. Size=%i, type=%i, doWrite=%i",tran->id(),tran->address(),tran->size(),tran->type(),doWrite);
-   log_->debug("Send frame header: 0x%0.8x 0x%0.8x 0x%0.8x",header[0],header[1],header[2]);
+   log_->debug("Send frame for id=%i, addr 0x%0.8x. Size=%i, type=%i, doWrite=%i",
+               tran->id(),tran->address(),tran->size(),tran->type(),doWrite);
+   log_->debug("Send frame for id=%i, header: 0x%0.8x 0x%0.8x 0x%0.8x",
+               tran->id(),header[0],header[1],header[2]);
 
    sendFrame(frame);
 }
@@ -177,12 +179,12 @@ void rps::SrpV0::acceptFrame ( ris::FramePtr frame ) {
 
    // Extract id from frame
    id = header[0];
-   log_->debug("Got frame id=%i header: 0x%0.8x 0x%0.8x", 
-         id, header[0],header[1],header[2]);
+   log_->debug("Got frame id=%i header: 0x%0.8x 0x%0.8x 0x%0.8x", 
+               id, header[0],header[1],header[2]);
 
    // Find Transaction
    if ( (tran = getTransaction(id)) == NULL ) {
-     log_->debug("Invalid ID frame for id=0x%08x",id);
+     log_->debug("Invalid ID frame for id=%i",id);
      return; // Bad id or post, drop frame
    }
    delTransaction(id);
@@ -219,7 +221,7 @@ void rps::SrpV0::acceptFrame ( ris::FramePtr frame ) {
       if ( tail[0] & 0x20000 ) tran->done(rim::AxiTimeout);
       else if ( tail[0] & 0x10000 ) tran->done(rim::AxiFail);
       else tran->done(tail[0]);
-      log_->warning("Error detected for ID id=0x%08x",id);
+      log_->warning("Error detected for ID id=%i, tail=0x%0.8x",id,tail[0]);
       return;
    }
 

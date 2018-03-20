@@ -152,9 +152,10 @@ void rps::SrpV3::doTransaction(rim::TransactionPtr tran) {
    if ( tran->type() == rim::Post ) tran->done(0);
    else addTransaction(tran);
 
-   log_->debug("Send frame for id=%i, addr 0x%08x. Size=%i, type=%i",tran->id(),tran->address(),tran->size(),tran->type());
-   log_->debug("Send frame header: 0x%0.8x 0x%0.8x 0x%0.8x 0x%0.8x 0x%0.8x",
-         header[0],header[1],header[2],header[3],header[4]);
+   log_->debug("Send frame for id=%i, addr 0x%0.8x. Size=%i, type=%i",
+               tran->id(),tran->address(),tran->size(),tran->type());
+   log_->debug("Send frame for id=%i, header: 0x%0.8x 0x%0.8x 0x%0.8x 0x%0.8x 0x%0.8x",
+               tran->id(), header[0],header[1],header[2],header[3],header[4]);
    sendFrame(frame);
 }
 
@@ -189,7 +190,7 @@ void rps::SrpV3::acceptFrame ( ris::FramePtr frame ) {
    // Extract the id
    id = header[1];
    log_->debug("Got frame id=%i, header: 0x%0.8x 0x%0.8x 0x%0.8x 0x%0.8x 0x%0.8x",
-         id, header[0],header[1],header[2],header[3],header[4]);
+               id, header[0],header[1],header[2],header[3],header[4]);
 
    // Find Transaction
    if ( (tran = getTransaction(id)) == NULL ) {
@@ -228,18 +229,15 @@ void rps::SrpV3::acceptFrame ( ris::FramePtr frame ) {
    }
 
    // Read tail error value, complete if error is set
-   fIter = frame->beginRead()+(fSize - TailLen);
+   fIter = frame->endRead()-TailLen;
    ris::fromFrame(fIter,TailLen,tail);
-
-   log_->debug("Got id=%i, tail: 0x%0.8x", id, tail[0]);
-
    if ( tail[0] != 0 ) {
       delTransaction(tran->id());
 
       if ( tail[0] & 0xFF) tran->done(rim::AxiFail | (tail[0] & 0xFF));
       else if ( tail[0] & 0x100 ) tran->done(rim::AxiTimeout);
       else tran->done(tail[0]);
-      log_->warning("Error detect id=%i",id);
+      log_->warning("Error detected for ID id=%i, tail=0x%0.8x",id,tail[0]);
       return;
    }
 

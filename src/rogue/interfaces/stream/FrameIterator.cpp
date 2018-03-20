@@ -90,14 +90,15 @@ void ris::FrameIterator::adjust(int32_t diff) {
       if ( diff > framePos_ ) 
          throw rogue::GeneralError("FrameIterator::adjust","Iterator underflow!");
 
-      // Frame is at end, adjust pointer to one entry before end
+      // Frame is at end, rewind and reset position to relative offset
       if ( framePos_ == frameSize_ ) {
-         framePos_ = frameSize_ - 1;
-         buff_ = frame_->endBuffer() - 1;
-         buffSize_ = (write_) ? (*buff_)->getSize() : (*buff_)->getPayload();
-         buffPos_ = buffSize_ - 1;
-         data_ = (*buff_)->end() - 1;
-         diff -= 1;
+         framePos_  = 0;
+         buffPos_   = 0;
+         buff_      = frame_->beginBuffer();
+         buffSize_  = (write_) ? (*buff_)->getSize() : (*buff_)->getPayload();
+         data_      = (*buff_)->begin();
+         this->adjust(frameSize_ - diff); // Recursion
+         diff = 0;
       }
 
       // Iterate through decrements
@@ -105,8 +106,8 @@ void ris::FrameIterator::adjust(int32_t diff) {
 
          // Jump to previous buffer
          if ( diff > buffPos_ ) {
-            framePos_ -= buffPos_;
-            diff -= buffPos_;
+            framePos_ -= (buffPos_ + 1);
+            diff -= (buffPos_ + 1);
             buff_--;
             buffSize_  = (write_) ? (*buff_)->getSize() : (*buff_)->getPayload();
             buffPos_ = buffSize_-1;
