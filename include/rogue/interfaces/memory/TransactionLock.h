@@ -33,7 +33,7 @@ namespace rogue {
          class TransactionLock {
 
                boost::shared_ptr<rogue::interfaces::memory::Transaction> tran_;
-               bool locked_ = false;
+               bool locked_;
 
             public:
 

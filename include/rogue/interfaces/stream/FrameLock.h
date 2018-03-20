@@ -33,7 +33,7 @@ namespace rogue {
          class FrameLock {
 
                boost::shared_ptr<rogue::interfaces::stream::Frame> frame_;
-               bool locked_ = false;
+               bool locked_;
 
             public:
 
