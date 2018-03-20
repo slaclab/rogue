@@ -41,7 +41,6 @@ class BaseCommand(pr.BaseVariable):
             self,
             name=name,
             description=description,
-            update=False,
             mode='WO',
             value=value,
             enum=enum,

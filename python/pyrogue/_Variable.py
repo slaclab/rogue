@@ -32,7 +32,6 @@ class BaseVariable(pr.Node):
     def __init__(self, *,
                  name,
                  description='',
-                 update=True,
                  mode='RW',
                  value=None,
                  disp='{}',
@@ -49,7 +48,6 @@ class BaseVariable(pr.Node):
         self._units         = units
         self._minimum       = minimum # For base='range'
         self._maximum       = maximum # For base='range'
-        self._update        = update
         self._default       = value
         self._pollInterval  = pollInterval
         self.__listeners    = []
@@ -187,9 +185,6 @@ class BaseVariable(pr.Node):
     def updated(self, path=None, value=None, disp=None):
         """Variable has been updated. Inform listeners."""
 
-        if len(self.__listeners) == 0 and self._update is False:
-            return
-
         value = self.value()
         disp  = self.valueDisp()
 
@@ -200,7 +195,7 @@ class BaseVariable(pr.Node):
                 func(self.path,value,disp)
 
         # Root variable update log
-        if self._update is True and self._root is not None:
+        if self._root is not None:
             self._root._varUpdated(self.path,value,disp)
 
     @Pyro4.expose
@@ -291,7 +286,6 @@ class RemoteVariable(BaseVariable):
     def __init__(self, *,
                  name,
                  description='',
-                 update=True,                 
                  mode='RW',
                  value=None,
                  disp=None,
@@ -311,7 +305,7 @@ class RemoteVariable(BaseVariable):
             disp = base.defaultdisp
 
         BaseVariable.__init__(self, name=name, description=description, 
-                              mode=mode, value=value, disp=disp, update=update,
+                              mode=mode, value=value, disp=disp, 
                               enum=enum, units=units, hidden=hidden,
                               minimum=minimum, maximum=maximum,
                               pollInterval=pollInterval)
@@ -483,7 +477,6 @@ class LocalVariable(BaseVariable):
     def __init__(self, *,
                  name,
                  description='',
-                 update=True,                 
                  mode='RW',
                  value=None,
                  disp='{}',
@@ -500,7 +493,7 @@ class LocalVariable(BaseVariable):
             raise VariableError(f'LocalVariable {self.path} must specify value= argument in constructor')
 
         BaseVariable.__init__(self, name=name, description=description, 
-                              mode=mode, value=value, disp=disp, update=update,
+                              mode=mode, value=value, disp=disp, 
                               enum=enum, units=units, hidden=hidden,
                               minimum=minimum, maximum=maximum,
                               pollInterval=pollInterval)
@@ -570,7 +563,7 @@ class LinkVariable(BaseVariable):
                     kwargs[arg] = getattr(variable, arg)
 
         # Call super constructor
-        BaseVariable.__init__(self, name=name, update=True, **kwargs)
+        BaseVariable.__init__(self, name=name, **kwargs)
 
         # Must be done after super cunstructor to override it
         self._typeStr = typeStr        
