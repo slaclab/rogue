@@ -176,7 +176,6 @@ void rpr::Controller::transportRx( ris::FramePtr frame ) {
       if ( state_ == StOpen || state_ == StWaitSyn ) {
          lastSeqRx_ = head->sequence;
          nextSeqRx_ = lastSeqRx_ + 1;
-
          stQueue_.push(head);
       }
    }
