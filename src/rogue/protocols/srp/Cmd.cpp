@@ -66,7 +66,7 @@ void rps::Cmd::sendCmd(uint8_t opCode, uint32_t context) {
 
    // Request frame
    frame = reqFrame(sizeof(txData), true);
-   it = frame->begin();
+   it = frame->beginWrite();
 
    // Copy frame
    ris::toFrame(it,sizeof(txData),txData);

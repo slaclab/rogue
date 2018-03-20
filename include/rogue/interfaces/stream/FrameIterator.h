@@ -21,8 +21,8 @@
 #define __ROGUE_INTERFACES_STREAM_FRAME_ITERATOR_H__
 #include <stdint.h>
 #include <vector>
-
 #include <boost/python.hpp>
+
 namespace rogue {
    namespace interfaces {
       namespace stream {
@@ -31,24 +31,36 @@ namespace rogue {
          class FrameIterator : public std::iterator<std::random_access_iterator_tag, uint8_t> {
             friend class Frame;
 
-               //! End flag
-               bool end_;
-
-               //! Frame position
-               uint32_t framePos_;
+               //! write flag
+               bool write_;
 
                //! Associated frame
                boost::shared_ptr<rogue::interfaces::stream::Frame> frame_;
 
-               //! current buffer
-               std::vector<boost::shared_ptr<rogue::interfaces::stream::Buffer> >::iterator curr_;
+               //! Frame position
+               uint32_t framePos_;
 
-               //! Current buffer position
+               //! Frame size
+               uint32_t frameSize_;
+
+               //! current buffer
+               std::vector<boost::shared_ptr<rogue::interfaces::stream::Buffer> >::iterator buff_;
+
+               //! Buffer position
                uint32_t buffPos_;
+
+               //! Buffer size
+               uint32_t buffSize_;
+
+               //! Current buffer iterator
+               uint8_t * data_;
 
                //! Creator
                FrameIterator(boost::shared_ptr<rogue::interfaces::stream::Frame> frame, 
-                             uint32_t offset, bool end);
+                             bool write, bool end);
+
+               //! adjust position
+               void adjust(int32_t diff);
 
             public:
 

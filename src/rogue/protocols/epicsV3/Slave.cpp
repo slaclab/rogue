@@ -112,7 +112,7 @@ void rpe::Slave::acceptFrame ( ris::FramePtr frame ) {
    uint32_t i;
 
    fSize = frame->getPayload();
-   iter = frame->begin();
+   iter = frame->beginRead();
 
    // First check to see if frame is valid
    if ( (fSize % fSize_) != 0 ) {
