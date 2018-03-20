@@ -80,7 +80,7 @@ void rpp::ControllerV2::transportRx( ris::FramePtr frame ) {
    size = buff->getPayload();
 
    // Drop invalid data
-   if ( frame->getError()    || // Check for frame ERROR
+   if ( frame->getError() ||     // Check for frame ERROR
       (size < 24)         ||     // Check for min. size (64-bit header + 64-bit min. payload + 64-bit tail) 
       ((size&0x7) > 0)    ||     // Check for non 64-bit alignment
       ((data[0]&0xF) != 0x2) ) { // Check for invalid version only (ignore the CRC mode flag)
@@ -105,20 +105,19 @@ void rpp::ControllerV2::transportRx( ris::FramePtr frame ) {
    last     = uint32_t(data[size-6]);
 
    if(enIbCrc_){
-   // Tail word 1
-   tmpCrc  = uint32_t(data[size-1]) << 0;
-   tmpCrc |= uint32_t(data[size-2]) << 8;
-   tmpCrc |= uint32_t(data[size-3]) << 16;
-   tmpCrc |= uint32_t(data[size-4]) << 24;
-   // Compute CRC
+      // Tail word 1
+      tmpCrc  = uint32_t(data[size-1]) << 0;
+      tmpCrc |= uint32_t(data[size-2]) << 8;
+      tmpCrc |= uint32_t(data[size-3]) << 16;
+      tmpCrc |= uint32_t(data[size-4]) << 24;
+      // Compute CRC
       boost::crc_basic<32> result( 0x04C11DB7, crcInit_[tmpDest], 0xFFFFFFFF, true, true );
       result.process_bytes(data,size-4);
       crc = result.checksum();
       crcInit_[tmpDest] = result.get_interim_remainder();
       crcErr = (tmpCrc != crc);
-   } else {
-      crcErr = false;
-   }
+   } 
+   else crcErr = false;
    
    log_->debug("transportRx: Raw header: 0x%x, 0x%x, 0x%x, 0x%x, 0x%x, 0x%x, 0x%x, 0x%x",
          data[0],data[1],data[2],data[3],data[4],data[5],data[6],data[7]);
@@ -283,7 +282,7 @@ void rpp::ControllerV2::applicationRx ( ris::FramePtr frame, uint8_t tDest ) {
          // Compute CRC
          boost::crc_basic<32> result( 0x04C11DB7, crcInit, 0xFFFFFFFF, true, true );
          result.process_bytes(data,size-4);
-      crc = result.checksum();
+         crc = result.checksum();
          crcInit = result.get_interim_remainder();
          // Tail  word 1
          data[size-1] = (crc >>  0) & 0xFF;
@@ -306,6 +305,7 @@ void rpp::ControllerV2::applicationRx ( ris::FramePtr frame, uint8_t tDest ) {
 
       tFrame->appendBuffer(*it);
       tranQueue_.push(tFrame);
+      segment++;
    }
    appIndex_++;
 }
