@@ -274,8 +274,8 @@ void ris::Frame::readPy ( boost::python::object p, uint32_t offset ) {
       throw(rogue::GeneralError::boundary("Frame::readPy",offset+count,size));
    }
 
-   ris::Frame::iterator beg = ris::Frame::iterator(shared_from_this(),offset,false);
-   ris::Frame::iterator end = ris::Frame::iterator(shared_from_this(),offset+count,false);
+   ris::Frame::iterator beg = this->beginRead() + offset;
+   ris::Frame::iterator end = this->beginRead() + (offset + count);
 
    data = (uint8_t *)pyBuf.buf;
    std::copy(beg,end,data);
@@ -298,7 +298,7 @@ void ris::Frame::writePy ( boost::python::object p, uint32_t offset ) {
       throw(rogue::GeneralError::boundary("Frame::writePy",offset+count,size));
    }
 
-   ris::Frame::iterator beg = ris::Frame::iterator(shared_from_this(),offset,false);
+   ris::Frame::iterator beg = this->beginWrite() + offset;
 
    data = (uint8_t *)pyBuf.buf;
    std::copy(data,data+count,beg);
