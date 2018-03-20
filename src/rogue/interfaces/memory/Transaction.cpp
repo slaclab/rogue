@@ -38,8 +38,8 @@ uint32_t rim::Transaction::classIdx_ = 0;
 boost::mutex rim::Transaction::classMtx_;
 
 //! Create a master container
-rim::TransactionPtr rim::Transaction::create (rim::MasterPtr master) {
-   rim::TransactionPtr m = boost::make_shared<rim::Transaction>(master);
+rim::TransactionPtr rim::Transaction::create () {
+   rim::TransactionPtr m = boost::make_shared<rim::Transaction>();
    return(m);
 }
 
@@ -58,9 +58,7 @@ void rim::Transaction::setup_python() {
 }
 
 //! Create object
-rim::Transaction::Transaction(rim::MasterPtr master) {
-   master_ = master;
-
+rim::Transaction::Transaction() {
    endTime_.tv_sec    = 0;
    endTime_.tv_usec   = 0;
    startTime_.tv_sec  = 0;
@@ -90,18 +88,6 @@ rim::TransactionLockPtr rim::Transaction::lock() {
    return(rim::TransactionLock::create(shared_from_this()));
 }
 
-//! Reset the transaction
-void rim::Transaction::reset() {
-   rogue::GilRelease noGil;
-   boost::lock_guard<boost::mutex> lg(lock_);
-
-   iter_ = NULL;
-   if ( pyValid_ ) {
-      rogue::ScopedGil gil;
-      PyBuffer_Release(&(pyBuf_));
-   }
-}
-
 //! Get expired state
 bool rim::Transaction::expired() { 
    return (iter_ == NULL); 
@@ -119,12 +105,42 @@ uint32_t rim::Transaction::size() { return size_; }
 //! Get type
 uint32_t rim::Transaction::type() { return type_; }
 
-//! Complete transaction with passed error
+//! Complete transaction with passed error, lock must be held
 void rim::Transaction::done(uint32_t error) {
-   rim::MasterPtr mast;
+   if (error != 0 ) printf("\n\n\nError = 0x%x\n\n\n\n",error);
    error_ = error;
    done_  = true;
-   if (mast = master_.lock()) mast->doneTransaction(id_);
+   cond_.notify_all();
+}
+
+//! Wait for the transaction to complete
+uint32_t rim::Transaction::wait() {
+   struct timeval currTime;
+
+   boost::unique_lock<boost::mutex> lock(lock_);
+
+   while (! done_) {
+
+      // Timeout?
+      gettimeofday(&currTime,NULL);
+      if ( endTime_.tv_sec  != 0 && endTime_.tv_usec != 0 && 
+           timercmp(&currTime,&(endTime_),>) ) {
+
+         done_  = true;
+         error_ = rim::TimeoutError;
+      }
+      else cond_.timed_wait(lock,boost::posix_time::microseconds(1000));
+   }
+
+   // Reset
+   if ( pyValid_ ) {
+      rogue::ScopedGil gil;
+      PyBuffer_Release(&(pyBuf_));
+   }
+   iter_    = NULL;
+   pyValid_ = false;
+
+   return (error_);
 }
 
 //! start iterator, caller must lock around access

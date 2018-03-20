@@ -19,6 +19,7 @@
 **/
 #include <rogue/interfaces/memory/TransactionLock.h>
 #include <rogue/interfaces/memory/Transaction.h>
+#include <rogue/GilRelease.h>
 
 namespace rim = rogue::interfaces::memory;
 namespace bp  = boost::python;
@@ -31,6 +32,7 @@ rim::TransactionLockPtr rim::TransactionLock::create (rim::TransactionPtr tran) 
 
 //! Constructor
 rim::TransactionLock::TransactionLock(rim::TransactionPtr tran) {
+   rogue::GilRelease noGil;
    tran_ = tran;
    tran_->lock_.lock();
    locked_ = true;
@@ -53,6 +55,7 @@ rim::TransactionLock::~TransactionLock() {
 //! lock
 void rim::TransactionLock::lock() {
    if ( ! locked_ ) {
+      rogue::GilRelease noGil;
       tran_->lock_.lock();
       locked_ = true;
    }
