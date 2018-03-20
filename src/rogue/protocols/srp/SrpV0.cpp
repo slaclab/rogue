@@ -185,6 +185,7 @@ void rps::SrpV0::acceptFrame ( ris::FramePtr frame ) {
      log_->debug("Invalid ID frame for id=0x%08x",id);
      return; // Bad id or post, drop frame
    }
+   delTransaction(id);
 
    // Setup transaction iterator
    rim::TransactionLockPtr lock = tran->lock();
@@ -192,7 +193,6 @@ void rps::SrpV0::acceptFrame ( ris::FramePtr frame ) {
    // Transaction expired
    if ( tran->expired() ) {
       log_->debug("Transaction expired. Id=%i",id);
-      delTransaction(tran->id());
       return;
    }
    tIter = tran->begin();
@@ -202,13 +202,13 @@ void rps::SrpV0::acceptFrame ( ris::FramePtr frame ) {
 
    // Check frame size
    if ( fSize != expFrameLen ) {
-      log_->debug("Bad receive length for %i exp=%i, got=%i",id,expFrameLen,fSize);
+      log_->warning("Bad receive length for %i exp=%i, got=%i",id,expFrameLen,fSize);
       return;
    }
 
    // Check header
    if ( memcmp(header,expHeader,RxHeadLen) != 0 ) {
-     log_->debug("Bad header for %i",id);
+     log_->warning("Bad header for %i",id);
      return;
    }
 
@@ -216,12 +216,10 @@ void rps::SrpV0::acceptFrame ( ris::FramePtr frame ) {
    fIter = frame->endRead()-TailLen;
    ris::fromFrame(fIter,TailLen,tail);
    if ( tail[0] != 0 ) {
-      delTransaction(id);
-
       if ( tail[0] & 0x20000 ) tran->done(rim::AxiTimeout);
       else if ( tail[0] & 0x10000 ) tran->done(rim::AxiFail);
       else tran->done(tail[0]);
-      log_->debug("Error detected for ID id=0x%08x",id);
+      log_->warning("Error detected for ID id=0x%08x",id);
       return;
    }
 
@@ -232,7 +230,6 @@ void rps::SrpV0::acceptFrame ( ris::FramePtr frame ) {
    }
 
    // Done
-   delTransaction(tran->id());
    tran->done(0);
 }
 

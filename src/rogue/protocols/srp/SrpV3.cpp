@@ -215,7 +215,7 @@ void rps::SrpV3::acceptFrame ( ris::FramePtr frame ) {
    if ( (fSize != expFrameLen) ||
         (header[4]+1) != tran->size() ) {
       delTransaction(id);
-      log_->debug("Size mismatch id=0x%08x",id);
+      log_->warning("Size mismatch id=0x%08x",id);
       return;
    }
 
@@ -223,7 +223,7 @@ void rps::SrpV3::acceptFrame ( ris::FramePtr frame ) {
    if ( ((header[0] & 0xFFFFC3FF) != expHeader[0]) ||
          (header[1] != expHeader[1]) || (header[2] != expHeader[2]) ||
          (header[3] != expHeader[3]) || (header[4] != expHeader[4]) ) {
-     log_->debug("Bad header for %i",id);
+     log_->warning("Bad header for %i",id);
      return;
    }
 
@@ -236,7 +236,7 @@ void rps::SrpV3::acceptFrame ( ris::FramePtr frame ) {
       if ( tail[0] & 0xFF) tran->done(rim::AxiFail | (tail[0] & 0xFF));
       else if ( tail[0] & 0x100 ) tran->done(rim::AxiTimeout);
       else tran->done(tail[0]);
-      log_->debug("Error detect id=0x%08x",id);
+      log_->warning("Error detect id=0x%08x",id);
       return;
    }
 
