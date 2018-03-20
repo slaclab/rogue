@@ -89,6 +89,8 @@ ris::Frame::BufferIterator ris::Frame::endBuffer() {
 //! Clear the list
 void ris::Frame::clear() {
    buffers_.clear();
+   size_    = 0;
+   payload_ = 0;
 }
 
 //! Buffer list is empty
