@@ -40,9 +40,7 @@ ris::Master::Master() {
 }
 
 //! Destructor
-ris::Master::~Master() {
-   slaves_.clear();
-}
+ris::Master::~Master() { }
 
 //! Set primary slave, used for buffer request forwarding
 void ris::Master::setSlave ( boost::shared_ptr<interfaces::stream::Slave> slave ) {
