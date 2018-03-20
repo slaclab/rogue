@@ -45,6 +45,7 @@ rim::TransactionPtr rim::Transaction::create (rim::MasterPtr master) {
 
 void rim::Transaction::setup_python() {
    bp::class_<rim::Transaction, rim::TransactionPtr, boost::noncopyable>("Transaction",bp::no_init)
+      .def("lock",    &rim::Transaction::lock)
       .def("id",      &rim::Transaction::id)
       .def("address", &rim::Transaction::address)
       .def("size",    &rim::Transaction::size)

@@ -321,6 +321,7 @@ void ris::Frame::writePy ( boost::python::object p, uint32_t offset ) {
 void ris::Frame::setup_python() {
 
    bp::class_<ris::Frame, ris::FramePtr, boost::noncopyable>("Frame",bp::no_init)
+      .def("lock",         &ris::Frame::lock)
       .def("getSize",      &ris::Frame::getSize)
       .def("getAvailable", &ris::Frame::getAvailable)
       .def("getPayload",   &ris::Frame::getPayload)
