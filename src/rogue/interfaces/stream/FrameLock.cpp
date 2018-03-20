@@ -53,16 +53,16 @@ ris::FrameLock::~FrameLock() {
 //! lock
 void ris::FrameLock::lock() {
    if ( ! locked_ ) {
-      frame_->lock_.unlock();
-      locked_ = false;
+      frame_->lock_.lock();
+      locked_ = true;
    }
 }
 
 //! lock
 void ris::FrameLock::unlock() {
    if ( locked_ ) {
-      frame_->lock_.lock();
-      locked_ = true;
+      frame_->lock_.unlock();
+      locked_ = false;
    }
 }
 

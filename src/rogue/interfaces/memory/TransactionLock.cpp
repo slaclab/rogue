@@ -53,16 +53,16 @@ rim::TransactionLock::~TransactionLock() {
 //! lock
 void rim::TransactionLock::lock() {
    if ( ! locked_ ) {
-      tran_->lock_.unlock();
-      locked_ = false;
+      tran_->lock_.lock();
+      locked_ = true;
    }
 }
 
 //! lock
 void rim::TransactionLock::unlock() {
    if ( locked_ ) {
-      tran_->lock_.lock();
-      locked_ = true;
+      tran_->lock_.unlock();
+      locked_ = false;
    }
 }
 

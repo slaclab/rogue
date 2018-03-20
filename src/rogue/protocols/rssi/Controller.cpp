@@ -233,6 +233,7 @@ void rpr::Controller::applicationRx ( ris::FramePtr frame ) {
    // Map to RSSI 
    rpr::HeaderPtr head = rpr::Header::create(frame);
    head->ack = true;
+   flock->unlock();
 
    // Connection is closed
    if ( state_ != StOpen ) return;
@@ -298,8 +299,9 @@ void rpr::Controller::transportTx(rpr::HeaderPtr head, bool seqUpdate, bool retr
    }
  
    rogue::GilRelease noGil;
-   ris::FrameLockPtr lock = head->getFrame()->lock();
+   ris::FrameLockPtr flock = head->getFrame()->lock();
    head->update();
+   flock->unlock();
 
    // Track last tx time
    gettimeofday(&txTime_,NULL);
@@ -310,7 +312,6 @@ void rpr::Controller::transportTx(rpr::HeaderPtr head, bool seqUpdate, bool retr
          head->acknowledge,head->sequence,retranCount_);
 
    // Send frame
-   lock->unlock();
    tran_->sendFrame(head->getFrame());
 }
 
