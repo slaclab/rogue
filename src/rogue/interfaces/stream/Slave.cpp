@@ -78,7 +78,7 @@ void ris::Slave::acceptFrame ( ris::FramePtr frame ) {
       sprintf(buffer,"     ");
 
       count = 0;
-      for (it = frame->begin(); (count < debug_) && (it != frame->end()); ++it) {
+      for (it = frame->beginRead(); (count < debug_) && (it != frame->endRead()); ++it) {
          count++;
          val = *it;
 

@@ -116,7 +116,7 @@ void rpe::Slave::acceptFrame ( ris::FramePtr frame ) {
    ris::FrameLockPtr fLock = frame->lock();
 
    fSize = frame->getPayload();
-   iter = frame->begin();
+   iter = frame->beginRead();
 
    // First check to see if frame is valid
    if ( (fSize % fSize_) != 0 ) {

@@ -19,6 +19,7 @@
 **/
 #include <rogue/Logging.h>
 #include <sys/syscall.h>
+#include <boost/make_shared.hpp>
 
 const uint32_t rogue::Logging::Critical;
 const uint32_t rogue::Logging::Error;

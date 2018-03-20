@@ -249,19 +249,24 @@ void ris::Frame::setError(uint32_t error) {
    error_ = error;
 }
 
-//! Get start of data iterator
-ris::Frame::iterator ris::Frame::begin() {
-   return ris::Frame::iterator(shared_from_this(),0,false);
+//! Get write start iterator
+ris::Frame::iterator ris::Frame::beginRead() {
+   return ris::Frame::iterator(shared_from_this(),false,false);
 }
 
-//! Get end of data iterator
-ris::Frame::iterator ris::Frame::end() {
-   return ris::Frame::iterator(shared_from_this(),0,true);
+//! Get write end iterator
+ris::Frame::iterator ris::Frame::endRead() {
+   return ris::Frame::iterator(shared_from_this(),false,true);
+}
+
+//! Get read start iterator
+ris::Frame::iterator ris::Frame::beginWrite() {
+   return ris::Frame::iterator(shared_from_this(),true,false);
 }
 
 //! Get end of payload iterator
-ris::Frame::iterator ris::Frame::endPayload() {
-   return ris::Frame::iterator(shared_from_this(),getPayload(),(getPayload() == getSize())); 
+ris::Frame::iterator ris::Frame::endWrite() {
+   return ris::Frame::iterator(shared_from_this(),true,true);
 }
 
 //! Read up to count bytes from frame, starting from offset. Python version.

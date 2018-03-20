@@ -121,7 +121,7 @@ void rps::SrpV0::doTransaction(rim::TransactionPtr tran) {
    // Setup iterators
    rogue::GilRelease noGil;
    rim::TransactionLockPtr lock = tran->lock();
-   fIter = frame->begin();
+   fIter = frame->beginWrite();
    tIter = tran->begin();
 
    // Write header
@@ -170,7 +170,7 @@ void rps::SrpV0::acceptFrame ( ris::FramePtr frame ) {
    }
 
    // Setup frame iterator
-   fIter = frame->begin();
+   fIter = frame->beginRead();
 
    // Get the header
    ris::fromFrame(fIter,RxHeadLen,header);
@@ -213,7 +213,7 @@ void rps::SrpV0::acceptFrame ( ris::FramePtr frame ) {
    }
 
    // Read tail error value, complete if error is set
-   fIter = frame->endPayload()-TailLen;
+   fIter = frame->endRead()-TailLen;
    ris::fromFrame(fIter,TailLen,tail);
    if ( tail[0] != 0 ) {
       delTransaction(id);
@@ -227,7 +227,7 @@ void rps::SrpV0::acceptFrame ( ris::FramePtr frame ) {
 
    // Copy data if read
    if ( ! doWrite ) {
-      fIter = frame->begin() + RxHeadLen;
+      fIter = frame->beginRead() + RxHeadLen;
       std::copy(fIter,fIter+tran->size(),tIter);
    }
 

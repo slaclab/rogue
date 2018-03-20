@@ -241,8 +241,9 @@ void ru::Prbs::genFrame (uint32_t size) {
 
    // Get frame
    fr = reqFrame(size,true);
-   frIter = fr->begin();
-   frEnd  = fr->end();
+
+   frIter = fr->beginWrite();
+   frEnd  = frIter + size;
 
    // First word is sequence
    ris::toFrame(frIter,byteWidth_,frSeq);
@@ -259,11 +260,11 @@ void ru::Prbs::genFrame (uint32_t size) {
       to_block_range(data,frIter);
       frIter += byteWidth_;
    }
+   fr->setPayload(size);
 
    // Update counters
    txCount_++;
    txBytes_ += size;
-   fr->setPayload(size);
    sendFrame(fr);
 }
 
@@ -287,8 +288,8 @@ void ru::Prbs::acceptFrame ( ris::FramePtr frame ) {
    noGil.acquire(); // Not sure we need this
 
    size = frame->getPayload();
-   frIter = frame->begin();
-   frEnd  = frame->end();
+   frIter = frame->beginRead();
+   frEnd  = frame->endRead();
 
    // Verify size
    if ((( size % byteWidth_ ) != 0) || size < minSize_ ) {
@@ -335,7 +336,7 @@ void ru::Prbs::acceptFrame ( ris::FramePtr frame ) {
          to_block_range(expData,compData);
 
          if ( ! std::equal(frIter,frIter+byteWidth_,compData ) ) {
-            rxLog_->warning("Bad value at index %i. count=%i",pos,rxCount_);
+            rxLog_->warning("Bad value at index %i. count=%i, size=%i",pos,rxCount_,(size/byteWidth_)-1);
             rxErrCount_++;
             return;
          }

@@ -109,7 +109,7 @@ void rpe::Master::valueSet() {
 
    txSize = size_ * fSize_;
    frame = reqFrame(txSize, true);
-   iter = frame->begin();
+   iter = frame->beginWrite();
 
    // Create vector of appropriate type
    if ( epicsType_ == aitEnumUint8 ) {

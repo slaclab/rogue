@@ -96,6 +96,18 @@ uint32_t rogue::Version::getDevel() {
    return _devel;
 }
 
+std::string rogue::Version::pythonVersion() {
+   init();
+   std::stringstream ret;
+
+   ret << std::dec << _major;
+   ret << "." << std::dec << _minor;
+   ret << "." << std::dec << _maint;
+
+   if ( _devel > 0 ) ret << ".dev" << std::dec << _devel;
+   return ret.str();
+}
+
 void rogue::Version::setup_python() {
    bp::class_<rogue::Version, boost::noncopyable>("Version",bp::no_init)
       .def("current", &rogue::Version::current)
@@ -114,6 +126,8 @@ void rogue::Version::setup_python() {
       .staticmethod("maint")
       .def("devel", &rogue::Version::getDevel)
       .staticmethod("devel")
+      .def("pythonVersion", &rogue::Version::pythonVersion)
+      .staticmethod("pythonVersion")
    ;
 
 }

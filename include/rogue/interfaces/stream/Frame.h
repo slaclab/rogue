@@ -186,14 +186,17 @@ namespace rogue {
                //! Set error state
                void setError(uint32_t error);
 
-               //! Get start of data iterator
-               rogue::interfaces::stream::FrameIterator begin();
+               //! Get read start iterator
+               rogue::interfaces::stream::FrameIterator beginRead();
 
-               //! Get end of data iterator
-               rogue::interfaces::stream::FrameIterator end();
+               //! Get read end iterator
+               rogue::interfaces::stream::FrameIterator endRead();
 
-               //! Get end of payload iterator
-               rogue::interfaces::stream::FrameIterator endPayload();
+               //! Get write start iterator
+               rogue::interfaces::stream::FrameIterator beginWrite();
+
+               //! Get write end iterator
+               rogue::interfaces::stream::FrameIterator endWrite();
 
                //! Read count bytes from frame payload, starting from offset. Python version.
                void readPy ( boost::python::object p, uint32_t offset );
