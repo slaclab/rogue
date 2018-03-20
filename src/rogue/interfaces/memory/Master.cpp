@@ -181,7 +181,7 @@ uint32_t rim::Master::intTransaction(rim::TransactionPtr tran) {
 // Wait for transaction. Timeout in seconds
 void rim::Master::waitTransaction(uint32_t id) {
    TransactionMap::iterator it;
-   rim::TransactionPtr tran = NULL;
+   rim::TransactionPtr tran;
    uint32_t error;
 
    rogue::GilRelease noGil;
