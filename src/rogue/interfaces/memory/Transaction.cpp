@@ -107,7 +107,6 @@ uint32_t rim::Transaction::type() { return type_; }
 
 //! Complete transaction with passed error, lock must be held
 void rim::Transaction::done(uint32_t error) {
-   if (error != 0 ) printf("\n\n\nError = 0x%x\n\n\n\n",error);
    error_ = error;
    done_  = true;
    cond_.notify_all();
