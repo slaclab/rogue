@@ -88,10 +88,16 @@ void rim::Slave::delTransaction(uint32_t index) {
    rogue::GilRelease noGil;
    boost::lock_guard<boost::mutex> lock(slaveMtx_);
 
-   for (it = tranMap_.begin(); it != tranMap_.end(); ++it) {
+   it = tranMap_.begin();
+
+   while ( it != tranMap_.end() ) {
 
       // Weak pointer or matching index
-      if ( it->second.expired() || it->first == index ) tranMap_.erase(it);
+      if ( it->second.expired() || it->first == index ) {
+         tranMap_.erase(it); // Iterator no longer valid
+         it = tranMap_.begin();
+      }
+      else ++it;
    }
 }
 
