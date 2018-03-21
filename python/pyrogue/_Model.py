@@ -80,7 +80,7 @@ class UInt(Model):
         return value.to_bytes(byteCount(bitSize), 'little', signed=False)
 
     @classmethod
-    def fromBytes(cls, ba):
+    def fromBytes(cls, ba, bitSize):
         return int.from_bytes(ba, 'little', signed=False)
 
 
@@ -106,11 +106,26 @@ class Int(Model):
 
     @classmethod
     def toBytes(cls, value, bitSize):
-        return value.to_bytes(byteCount(bitSize), 'little', signed=True)
+        if (value < 0) and (bitSize < (byteCount(bitSize) * 8)):
+            newValue = value & (2**(bitSize)-1) # Strip upper bits
+            ba = newValue.to_bytes(byteCount(bitSize), 'little', signed=False)
+        else:
+            ba = value.to_bytes(byteCount(bitSize), 'little', signed=True)
+
+        return ba
 
     @classmethod
-    def fromBytes(cls,ba):
-        return int.from_bytes(ba, 'little', signed=True)
+    def fromBytes(cls,ba,bitSize):
+        if (bitSize < (byteCount(bitSize)*8)):
+            value = int.from_bytes(ba, 'little', signed=False)
+
+            if value >= 2**(bitSize-1):
+                value -= 2**bitSize
+
+        else:
+            value = int.from_bytes(ba, 'little', signed=True)
+
+        return value
 
     @staticmethod
     def fromString(string, bitSize):
@@ -123,7 +138,6 @@ class Int(Model):
     @classmethod
     def name(cls, bitSize):
         return '{}{}'.format(cls.__name__, bitSize)
-    
 
 @Pyro4.expose
 class Bool(Model):
@@ -140,7 +154,7 @@ class Bool(Model):
         return value.to_bytes(1, 'little', signed=False)
 
     @classmethod
-    def fromBytes(cls, ba):
+    def fromBytes(cls, ba, bitSize):
         return bool(int.from_bytes(ba, 'little', signed=False))
 
     @staticmethod
@@ -170,7 +184,7 @@ class String(Model):
         return ba
 
     @classmethod
-    def fromBytes(cls, ba):
+    def fromBytes(cls, ba, bitSize):
         s = ba.rstrip(bytearray(1))
         return s.decode(String.encoding)
 
@@ -205,7 +219,7 @@ class Float(Model):
         return bytearray(struct.pack(fstring, value))
 
     @classmethod
-    def fromBytes(cls, ba):
+    def fromBytes(cls, ba, bitSize):
         if len(ba) == 4:
             return struct.unpack('f', ba)
         elif len(ba) == 8:
