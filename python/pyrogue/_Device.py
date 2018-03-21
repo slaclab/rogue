@@ -375,9 +375,9 @@ class Device(pr.Node,rim.Hub):
 
                 if self._getError() == 0:
                     if numWords == 1:
-                        return base.fromBytes(base.mask(ldata, wordBitSize))
+                        return base.fromBytes(base.mask(ldata, wordBitSize),wordBitSize)
                     else:
-                        return [base.fromBytes(base.mask(ldata[i:i+stride], wordBitSize)) for i in range(0, len(ldata), stride)]
+                        return [base.fromBytes(base.mask(ldata[i:i+stride], wordBitSize),wordBitSize) for i in range(0, len(ldata), stride)]
                 
             # If we get here an error has occured
             raise pr.MemoryError (name=self.name, address=offset|self.address, error=self._getError())
