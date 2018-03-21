@@ -106,8 +106,8 @@ class Int(Model):
 
     @classmethod
     def toBytes(cls, value, bitSize):
-        if (value < 0) and (bitSize < (byteCount(bitSize) * 8)):
-            newValue = value & (2**(bitSize)-1) # Strip upper bits
+        if (value < 0) and (sum(bitSize) < (byteCount(bitSize) * 8)):
+            newValue = value & (2**(sum(bitSize))-1) # Strip upper bits
             ba = newValue.to_bytes(byteCount(bitSize), 'little', signed=False)
         else:
             ba = value.to_bytes(byteCount(bitSize), 'little', signed=True)
@@ -116,11 +116,11 @@ class Int(Model):
 
     @classmethod
     def fromBytes(cls,ba,bitSize):
-        if (bitSize < (byteCount(bitSize)*8)):
+        if (sum(bitSize) < (byteCount(sum(bitSize))*8)):
             value = int.from_bytes(ba, 'little', signed=False)
 
-            if value >= 2**(bitSize-1):
-                value -= 2**bitSize
+            if value >= 2**(sum(bitSize)-1):
+                value -= 2**sum(bitSize)
 
         else:
             value = int.from_bytes(ba, 'little', signed=True)
