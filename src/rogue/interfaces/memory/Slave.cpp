@@ -90,15 +90,14 @@ void rim::Slave::delTransaction(uint32_t index) {
 
    it = tranMap_.begin();
 
-   while ( it != tranMap._end() ) {
+   while ( it != tranMap_.end() ) {
 
-         // Weak pointer or matching index
-         if ( it->second.expired() || it->first == index ) {
-            tranMap_.erase(it); // Iterator no longer valid
-            it = tranMap_.begin();
-         }
-         else ++it;
+      // Weak pointer or matching index
+      if ( it->second.expired() || it->first == index ) {
+         tranMap_.erase(it); // Iterator no longer valid
+         it = tranMap_.begin();
       }
+      else ++it;
    }
 }
 
