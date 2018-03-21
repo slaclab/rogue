@@ -116,7 +116,7 @@ class Int(Model):
 
     @classmethod
     def fromBytes(cls,ba,bitSize):
-        if (sum(bitSize) < (byteCount(sum(bitSize))*8)):
+        if (sum(bitSize) < (byteCount(bitSize)*8)):
             value = int.from_bytes(ba, 'little', signed=False)
 
             if value >= 2**(sum(bitSize)-1):
