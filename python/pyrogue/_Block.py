@@ -437,8 +437,13 @@ class RemoteBlock(BaseBlock, rim.Master):
             for x in range(0, len(var.bitOffset)):
                 for y in range(0, var.bitSize[x]):
                     if getBitFromBytes(self._varMask,var.bitOffset[x]+y):
-                        msg = f"Detected bit overlap for variable {var.name}"
-                        raise MemoryError(name=self.name, address=self.address, msg=msg)
+
+                        print("\n\n\n------------------------ Variable Overlap Warning !!! --------------------------------")
+                        print(f"Detected bit overlap for variable {var.name} in block {self.name} at address {self.address}")
+                        print("This warning will be replaced with an exception in the next release!!!!!!!!")
+                        #msg = f"Detected bit overlap for variable {var.name}"
+                        #raise MemoryError(name=self.name, address=self.address, msg=msg)
+
                     setBitToBytes(self._varMask,var.bitOffset[x]+y,1)
 
             # Update verify mask
