@@ -197,6 +197,7 @@ void rps::SrpV3::acceptFrame ( ris::FramePtr frame ) {
      log_->debug("Invalid ID frame for id=%i",id);
      return; // Bad id or post, drop frame
    }
+   delTransaction(tran->id());
 
    // Setup transaction iterator
    rim::TransactionLockPtr lock = tran->lock();
@@ -204,7 +205,6 @@ void rps::SrpV3::acceptFrame ( ris::FramePtr frame ) {
    // Transaction expired
    if ( tran->expired() ) {
       log_->debug("Transaction expired. Id=%i",id);
-      delTransaction(tran->id());
       return;
    }
    tIter = tran->begin();
@@ -215,7 +215,6 @@ void rps::SrpV3::acceptFrame ( ris::FramePtr frame ) {
    // Verify frame size, drop frame
    if ( (fSize != expFrameLen) ||
         (header[4]+1) != tran->size() ) {
-      delTransaction(id);
       log_->warning("Size mismatch id=%i",id);
       return;
    }
@@ -232,8 +231,6 @@ void rps::SrpV3::acceptFrame ( ris::FramePtr frame ) {
    fIter = frame->endRead()-TailLen;
    ris::fromFrame(fIter,TailLen,tail);
    if ( tail[0] != 0 ) {
-      delTransaction(tran->id());
-
       if ( tail[0] & 0xFF) tran->done(rim::AxiFail | (tail[0] & 0xFF));
       else if ( tail[0] & 0x100 ) tran->done(rim::AxiTimeout);
       else tran->done(tail[0]);
@@ -247,7 +244,6 @@ void rps::SrpV3::acceptFrame ( ris::FramePtr frame ) {
       std::copy(fIter,fIter+tran->size(),tIter);
    }
 
-   delTransaction(tran->id());
    tran->done(0);
 }
 

@@ -130,7 +130,6 @@ void rpe::Slave::acceptFrame ( ris::FramePtr frame ) {
    // Limit size
    if ( size_ > max_ ) size_ = max_;
 
-   rogue::GilRelease noGil();
    boost::lock_guard<boost::mutex> lock(rpe::Value::mtx_);
 
    // Release old data
