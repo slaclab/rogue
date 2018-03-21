@@ -26,12 +26,14 @@ import git   # GitPython
 from github import Github # PyGithub
 import re
 import argparse
+import pyperclip
 
 parser = argparse.ArgumentParser('Release notes generator')
 parser.add_argument('tag', type=str, help='reference tag or range. (i.e. v2.5.0 or v2.5.0..v2.6.0)')
 parser.add_argument('--user', type=str, help='Username for github')
 parser.add_argument('--password', type=str, help='Password for github')
 parser.add_argument('--nosort', help='Disable sort by change counts', action="store_true")
+parser.add_argument('--copy', help='Copy to clipboard', action="store_true")
 args = parser.parse_args()
 
 if '..' in args.tag:
@@ -116,5 +118,11 @@ for entry in records:
     md += '-------\n'         
     md += '\n\n'
 
+if args.copy:
+    try:	
+        pyperclip.copy(md)	
+        print('Release notes copied to clipboard')	
+    except:	
+        print("Copy to clipboard failed!")
 
 print(md)
