@@ -300,7 +300,7 @@ class RemoteBlock(BaseBlock, rim.Master):
                         setBitToBytes(ba,bit,getBitFromBytes(self._bData,var.bitOffset[x]+y))
                         bit += 1
 
-                return var._base.fromBytes(ba,var.bitsize)
+                return var._base.fromBytes(ba,var.bitSize)
 
     def startTransaction(self, type, check=False):
         """
