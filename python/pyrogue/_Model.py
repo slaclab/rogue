@@ -25,36 +25,11 @@ def wordCount(bits, wordSize):
 def byteCount(bits):
     return wordCount(bits, 8)
 
-# class ModelMeta(type):
-#     def __init__(cls, *args, **kwargs):
-#         super().__init__(*args, **kwargs)
-#         cls.cache = {}
 
-#     def __call__(cls, *args, **kwargs):
-#         key = str(args) + str(kwargs)
-#         if key not in cls.cache:
-#             inst = super().__call__(*args, **kwargs)
-#             cls.cache[key] = inst
-#         return cls.cache[key]
-
-# # Python magic so that only one instance of each Model 
-# # with a specific set of args is ever created
-# class Model(metaclass=ModelMeta):
-#     pass
 class Model(object):
 
-#     @staticmethod
-#     def getMask(bitSize):
-#         # For now all models are little endian so we can get away with this
-#         i = (2**bitSize-1)
-#         return i.to_bytes(byteCount(bitSize), 'little', signed=False)
-
-    @classmethod
-    def mask(cls, ba, bitSize):
-        #m = cls.getMask(bitSize)
-        #for i in range(len(ba)):
-            #ba[i] = ba[i] & m[i]
-        return ba
+    defaultdisp = '{:#x}'
+    pytype = int
 
 @Pyro4.expose   
 class UInt(Model):

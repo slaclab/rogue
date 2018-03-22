@@ -335,9 +335,9 @@ class Device(pr.Node,rim.Hub):
             if isinstance(data, bytearray):
                 ldata = data
             elif isinstance(data, collections.Iterable):
-                ldata = b''.join(base.mask(base.toBytes(word, wordBitSize), wordBitSize) for word in data)
+                ldata = b''.join(base.toBytes(word, wordBitSize) for word in data)
             else:
-                ldata = base.mask(base.toBytes(data, wordBitSize), wordBitSize)
+                ldata = base.toBytes(data, wordBitSize)
 
         else:
             if data is not None:
@@ -375,9 +375,9 @@ class Device(pr.Node,rim.Hub):
 
                 if self._getError() == 0:
                     if numWords == 1:
-                        return base.fromBytes(base.mask(ldata, wordBitSize),wordBitSize)
+                        return base.fromBytes(ldata, wordBitSize)
                     else:
-                        return [base.fromBytes(base.mask(ldata[i:i+stride], wordBitSize),wordBitSize) for i in range(0, len(ldata), stride)]
+                        return [base.fromBytes(ldata[i:i+stride], wordBitSize) for i in range(0, len(ldata), stride)]
                 
             # If we get here an error has occured
             raise pr.MemoryError (name=self.name, address=offset|self.address, error=self._getError())
