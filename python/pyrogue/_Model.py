@@ -43,11 +43,11 @@ def byteCount(bits):
 #     pass
 class Model(object):
 
-    @staticmethod
-    def getMask(bitSize):
-        # For now all models are little endian so we can get away with this
-        i = (2**bitSize-1)
-        return i.to_bytes(byteCount(bitSize), 'little', signed=False)
+#     @staticmethod
+#     def getMask(bitSize):
+#         # For now all models are little endian so we can get away with this
+#         i = (2**bitSize-1)
+#         return i.to_bytes(byteCount(bitSize), 'little', signed=False)
 
     @classmethod
     def mask(cls, ba, bitSize):
@@ -56,32 +56,25 @@ class Model(object):
             #ba[i] = ba[i] & m[i]
         return ba
 
-@Pyro4.expose
+@Pyro4.expose   
 class UInt(Model):
-    """Converts Unsigned Integer to and from bytearray"""
-#     def __init__(self, numBits=1, signed=False, endianness='little'):
-#         self.numBits = numBits
-#         self.numBytes = byteCount(numBits)
-#         self.defaultdisp = '{:x}'
-#         self.signed = signed
-#         self.endianness = endianness
-
-#     def clone(self, numBits):
-#         return IntModel(numBits, self.signed, self.endianness)
+    
     defaultdisp = '{:#x}'
     pytype = int
-
-    @staticmethod
-    def check(value,bitSize):
-        return (type(value) == UInt.pytype and bitSize >= value.bit_length())
+    signed = False
+    endianness = 'little'
+    
+    @classmethod
+    def check(cls, value, bitSize):
+        return (type(value) == cls.pytype and bitSize >= value.bit_length())
 
     @classmethod
     def toBytes(cls, value, bitSize):
-        return value.to_bytes(byteCount(bitSize), 'little', signed=False)
+        return value.to_bytes(byteCount(bitSize), cls.endianness, signed=cls.signed)
 
     @classmethod
     def fromBytes(cls, ba, bitSize):
-        return int.from_bytes(ba, 'little', signed=False)
+        return int.from_bytes(ba, cls.endianness, signed=cls.signed)
 
 
     @staticmethod
@@ -93,40 +86,37 @@ class UInt(Model):
     def name(cls, bitSize):
         return '{}{}'.format(cls.__name__, bitSize)
 
-
+ 
 @Pyro4.expose
-class Int(Model):
+class Int(UInt):
 
+    # Override these and inherit everything else from UInt
     defaultdisp = '{:d}'
-    pytype = int
+    signed = True
 
-    @staticmethod
-    def check(value,bitSize):
-        return (type(value) == Int.pytype and bitSize >= value.bit_length())
-
-    @classmethod
+    @clasmethod
     def toBytes(cls, value, bitSize):
         if (value < 0) and (bitSize < (byteCount(bitSize) * 8)):
             newValue = value & (2**(bitSize)-1) # Strip upper bits
-            ba = newValue.to_bytes(byteCount(bitSize), 'little', signed=False)
+            ba = newValue.to_bytes(byteCount(bitSize), cls.endianness, signed=False)
         else:
-            ba = value.to_bytes(byteCount(bitSize), 'little', signed=True)
+            ba = value.to_bytes(byteCount(bitSize), cls.endianness, signed=True)
 
         return ba
-
+    
     @classmethod
     def fromBytes(cls,ba,bitSize):
         if (bitSize < (byteCount(bitSize)*8)):
-            value = int.from_bytes(ba, 'little', signed=False)
+            value = int.from_bytes(ba, cls.endianness, signed=False)
 
             if value >= 2**(bitSize-1):
                 value -= 2**bitSize
 
         else:
-            value = int.from_bytes(ba, 'little', signed=True)
+            value = int.from_bytes(ba, cls.endianness, signed=True)
 
         return value
-
+    
     @staticmethod
     def fromString(string, bitSize):
         i = int(string, 0)
@@ -135,9 +125,11 @@ class Int(Model):
             i = i - (1 << bitSize)
         return i
 
-    @classmethod
-    def name(cls, bitSize):
-        return '{}{}'.format(cls.__name__, bitSize)
+class UIntBE(UInt):
+    endianness = 'big'
+
+class IntBE(Int):
+    endianness = 'big'
 
 @Pyro4.expose
 class Bool(Model):
@@ -145,9 +137,9 @@ class Bool(Model):
     defaultdisp = {False: 'False', True: 'True'}
     pytype = bool
 
-    @staticmethod
-    def check(value,bitSize):
-        return (type(value) == Bool.pytype and bitSize == 1)
+    @classmethod
+    def check(cls,value,bitSize):
+        return (type(value) == cls.pytype and bitSize == 1)
 
     @classmethod
     def toBytes(cls, value, bitSize):
@@ -173,9 +165,9 @@ class String(Model):
     defaultdisp = '{}'
     pytype = str
 
-    @staticmethod
-    def check(value,bitSize):
-        return (type(val) == String.pytype and bitSize >= (len(value) * 8))
+    @classmethod
+    def check(cls, value,bitSize):
+        return (type(val) == cls.pytype and bitSize >= (len(value) * 8))
 
     @classmethod
     def toBytes(cls, value, bitSize):
@@ -186,7 +178,7 @@ class String(Model):
     @classmethod
     def fromBytes(cls, ba, bitSize):
         s = ba.rstrip(bytearray(1))
-        return s.decode(String.encoding)
+        return s.decode(cls.encoding)
 
     @staticmethod
     def fromString(string, bitSize):
@@ -203,30 +195,20 @@ class Float(Model):
 
     defaultdisp = '{:f}'
     pytype = float
-#    endianness='little'
-#    fstring = 'f' # use '!f' for big endian
+    fstring = 'f' # use '!f' for big endian
+    size = 32
 
-    @staticmethod
-    def check(value,bitSize):
-        return (type(val) == Float.pytype and (bitSize == 32 or bitSize == 64))
+    @classmethod
+    def check(cls,value,bitSize):
+        return (type(val) == cls.pytype) and (bitSize = cls.size)
 
     @classmethod
     def toBytes(cls, value, bitSize):
-        if bitSize == 32:
-            fstring = 'f'
-        elif bitsize == 64:
-            fstring = 'd'
-        return bytearray(struct.pack(fstring, value))
+        return bytearray(struct.pack(cls.fstring, value))
 
     @classmethod
     def fromBytes(cls, ba, bitSize):
-        if len(ba) == 4:
-            return struct.unpack('f', ba)
-        elif len(ba) == 8:
-            return struct.unpack('d', ba)
-
-        # Need better error handling
-        return struct.unpack('d', ba)        
+        return struct.unpack(cls.fstring, ba)
 
     @staticmethod
     def fromString(string, bitSize):
@@ -235,3 +217,14 @@ class Float(Model):
     @classmethod
     def name(cls, bitSize):
         return '{}{}'.format(cls.__name__, bitSize)
+
+class Double(Float):
+    fstring = 'd'
+    size = 64
+
+class FloatBE(Float):
+    fstring = '!f'
+
+class DoubleBE(Double):
+    fstring = '!d'
+                
