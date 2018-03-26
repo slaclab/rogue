@@ -12,6 +12,17 @@
 # Must be run within an up to date git clone with the proper branch checked out.
 # Currently github complains if you run this script too many times in a short
 # period of time. I am still looking at ssh key support for PyGithub
+#
+# Release steps:
+#    - Merge pre-release into master
+#       > git fetch
+#       > git co master
+#       > git merge origin/master
+#       > git merge origin/pre-release
+#    - Tag the release in master: 
+#       > git tag -a vMAJOR.MINOR.0
+#       > git push --tags
+#    - Create release using tag on github.com, use this script to generate notes
 # ----------------------------------------------------------------------------
 # This file is part of the rogue software platform. It is subject to 
 # the license terms in the LICENSE.txt file found in the top-level directory 
