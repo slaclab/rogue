@@ -69,7 +69,7 @@ class Int(UInt):
     defaultdisp = '{:d}'
     signed = True
 
-    @clasmethod
+    @classmethod
     def toBytes(cls, value, bitSize):
         if (value < 0) and (bitSize < (byteCount(bitSize) * 8)):
             newValue = value & (2**(bitSize)-1) # Strip upper bits
@@ -175,7 +175,7 @@ class Float(Model):
 
     @classmethod
     def check(cls,value,bitSize):
-        return (type(val) == cls.pytype) and (bitSize = cls.size)
+        return (type(val) == cls.pytype) and (bitSize == cls.size)
 
     @classmethod
     def toBytes(cls, value, bitSize):
