@@ -257,12 +257,12 @@ class RemoteBlock(BaseBlock, rim.Master):
         Update block with bitSize bits from passed byte array.
         Offset sets the starting point in the block array.
         """
-        if not var._base.check(value,sum(var.bitSize)):
+        if not var._base.check(value):
             msg = "Invalid value '{}' for base type {} with bit size {}".format(value,var._base.pytype,sum(var.bitSize))
             raise MemoryError(name=var.name, address=self.address, msg=msg)
 
         with self._lock:
-            ba = var._base.toBytes(value, sum(var.bitSize))
+            ba = var._base.toBytes(value)
 
             # Access is fully byte aligned
             if len(var.bitOffset) == 1 and (var.bitOffset[0] % 8) == 0 and (var.bitSize[0] % 8) == 0:
@@ -288,7 +288,7 @@ class RemoteBlock(BaseBlock, rim.Master):
 
             # Access is fully byte aligned
             if len(var.bitOffset) == 1 and (var.bitOffset[0] % 8) == 0 and (var.bitSize[0] % 8) == 0:
-                return var._base.fromBytes(self._bData[int(var.bitOffset[0]/8):int((var.bitOffset[0]+var.bitSize[0])/8)],sum(var.bitSize))
+                return var._base.fromBytes(self._bData[int(var.bitOffset[0]/8):int((var.bitOffset[0]+var.bitSize[0])/8)])
 
             # Bit level access
             else:
@@ -300,7 +300,7 @@ class RemoteBlock(BaseBlock, rim.Master):
                         setBitToBytes(ba,bit,getBitFromBytes(self._bData,var.bitOffset[x]+y))
                         bit += 1
 
-                return var._base.fromBytes(ba,sum(var.bitSize))
+                return var._base.fromBytes(ba)
 
     def startTransaction(self, type, check=False):
         """
