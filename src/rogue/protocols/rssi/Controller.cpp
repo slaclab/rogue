@@ -142,6 +142,7 @@ ris::FramePtr rpr::Controller::reqFrame ( uint32_t size ) {
 
 //! Frame received at transport interface
 void rpr::Controller::transportRx( ris::FramePtr frame ) {
+
    rpr::HeaderPtr head = rpr::Header::create(frame);
 
    rogue::GilRelease noGil;
