@@ -167,14 +167,19 @@ uint32_t rim::Master::intTransaction(rim::TransactionPtr tran) {
       rogue::GilRelease noGil;
       boost::lock_guard<boost::mutex> lock(mastMtx_);
       slave = slave_;
-
-      gettimeofday(&(tran->startTime_),NULL);
-      timeradd(&(tran->startTime_),&sumTime_,&(tran->endTime_));
       tranMap_[tran->id_] = tran;
    }
 
+   // Initial time update
+   gettimeofday(&(tran->startTime_),NULL);
+   timeradd(&(tran->startTime_),&sumTime_,&(tran->endTime_));
+
    log_->debug("Request transaction type=%i id=%i",tran->type_,tran->id_);
    slave->doTransaction(tran);
+
+   // Refresh timer after transaction start
+   gettimeofday(&(tran->startTime_),NULL);
+   timeradd(&(tran->startTime_),&sumTime_,&(tran->endTime_));
    return(tran->id_);
 }
 
