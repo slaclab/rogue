@@ -149,7 +149,7 @@ void rpr::Controller::transportRx( ris::FramePtr frame ) {
    ris::FrameLockPtr flock = frame->lock();
 
    if ( frame->isEmpty() || ! head->verify() ) {
-      log_->info("Dumping frame state=%i server=%i",state_,server_);
+      log_->warning("Dumping bad frame state=%i server=%i",state_,server_);
       dropCount_++;
       return;
    }
@@ -182,14 +182,20 @@ void rpr::Controller::transportRx( ris::FramePtr frame ) {
    }
 
    // Data or NULL in the correct sequence go to application
-   else if ( state_ == StOpen && head->sequence == nextSeqRx_ && 
-        ( head->nul || frame->getPayload() > rpr::Header::HeaderSize ) ) {
-      lastSeqRx_ = nextSeqRx_;
-      nextSeqRx_ = nextSeqRx_ + 1;
-      stCond_.notify_all();
+   else if ( state_ == StOpen && ( head->nul || frame->getPayload() > rpr::Header::HeaderSize ) ) {
+      if ( head->sequence == nextSeqRx_ ) {
 
-      if ( !head->nul ) {
-         appQueue_.push(head);
+         lastSeqRx_ = nextSeqRx_;
+         nextSeqRx_ = nextSeqRx_ + 1;
+         stCond_.notify_all();
+
+         if ( !head->nul ) {
+            appQueue_.push(head);
+         }
+      }
+      else {
+         log_->warning("Dropping out of sequence frame. server=%i",server_);
+         dropCount_++;
       }
    }
 }
@@ -223,7 +229,7 @@ void rpr::Controller::applicationRx ( ris::FramePtr frame ) {
    ris::FrameLockPtr flock = frame->lock();
 
    if ( frame->isEmpty() ) {
-      log_->info("Dumping empty application frame");
+      log_->warning("Dumping empty application frame");
       return;
    }
 
@@ -306,7 +312,7 @@ void rpr::Controller::transportTx(rpr::HeaderPtr head, bool seqUpdate, bool retr
    // Track last tx time
    gettimeofday(&txTime_,NULL);
 
-   log_->log(retransmit ? rogue::Logging::Info : rogue::Logging::Debug,
+   log_->log(retransmit ? rogue::Logging::Warning : rogue::Logging::Debug,
          "TX frame: state=%i server=%i size=%i syn=%i ack=%i nul=%i, rst=%i, ack#=%i, seq=%i, recount=%i",
          state_,server_,head->getFrame()->getPayload(),head->syn,head->ack,head->nul,head->rst,
          head->acknowledge,head->sequence,retranCount_);
