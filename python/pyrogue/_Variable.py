@@ -51,6 +51,7 @@ class BaseVariable(pr.Node):
         self._default       = value
         self._pollInterval  = pollInterval
         self.__listeners    = []
+        self.__dependents   = []
         self.__dependencies = []
 
         # Build enum if specified
@@ -153,6 +154,10 @@ class BaseVariable(pr.Node):
     def dependencies(self):
         return self.__dependencies
 
+    @property
+    def dependents(self):
+        return self.__dependents
+
     def addListener(self, listener):
         """
         Add a listener Variable or function to call when variable changes. 
@@ -161,7 +166,7 @@ class BaseVariable(pr.Node):
         The variable, value and display string will be passed as an arg: func(path,value,disp)
         """
         if isinstance(listener, BaseVariable):
-            self.__listeners.append(listener.updated)
+            self.__dependents.append(listener)
         else:
             self.__listeners.append(listener)
 
@@ -182,7 +187,7 @@ class BaseVariable(pr.Node):
         return self.get(read=False)
 
     @Pyro4.expose
-    def updated(self, path=None, value=None, disp=None):
+    def updated(self):
         """Variable has been updated. Inform listeners."""
 
         value = self.value()
