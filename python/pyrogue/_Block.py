@@ -186,7 +186,7 @@ class LocalBlock(BaseBlock):
         return self._value
 
     def updated(self):
-        self._variable.updated()
+        self._variable._queueUpdate()
 
 
 class RemoteBlock(BaseBlock, rim.Master):
@@ -470,7 +470,7 @@ class RemoteBlock(BaseBlock, rim.Master):
     def updated(self):
         self._log.debug(f'Block {self._name} _update called')
         for v in self._variables:
-            v.updated()
+            v._queueUpdate()
 
         
 def setBitToBytes(ba, bitOffset, value):

@@ -51,7 +51,7 @@ class BaseVariable(pr.Node):
         self._default       = value
         self._pollInterval  = pollInterval
         self.__listeners    = []
-        self.__dependents   = []
+        self.__functions    = []
         self.__dependencies = []
 
         # Build enum if specified
@@ -161,14 +161,13 @@ class BaseVariable(pr.Node):
     def addListener(self, listener):
         """
         Add a listener Variable or function to call when variable changes. 
-        If listener is a Variable then Variable.updated() will be used as the function
         This is usefull when chaining variables together. (adc conversions, etc)
         The variable, value and display string will be passed as an arg: func(path,value,disp)
         """
         if isinstance(listener, BaseVariable):
-            self.__dependents.append(listener)
-        else:
             self.__listeners.append(listener)
+        else:
+            self.__functions.append(listener)
 
     @Pyro4.expose
     def set(self, value, write=True):
@@ -185,23 +184,6 @@ class BaseVariable(pr.Node):
     @Pyro4.expose
     def value(self):
         return self.get(read=False)
-
-    @Pyro4.expose
-    def updated(self):
-        """Variable has been updated. Inform listeners."""
-
-        value = self.value()
-        disp  = self.valueDisp()
-
-        for func in self.__listeners:
-            if hasattr(func,'varListener'):
-                func.varListener(self.path,value,disp)
-            else:
-                func(self.path,value,disp)
-
-        # Root variable update log
-        if self._root is not None:
-            self._root._varUpdated(self.path,value,disp)
 
     @Pyro4.expose
     def genDisp(self, value):
@@ -283,6 +265,25 @@ class BaseVariable(pr.Node):
             return self.valueDisp()
         else:
             return None
+
+    def _queueUpdate(self):
+        if self._root is not None:
+            self._root._queueUpdate(self)
+
+        for var in self.__listeners:
+            var._queueUpdate()
+
+    def _doUpdate(self):
+        value = self.value()
+        disp  = self.valueDisp()
+
+        for func in self.__functions:
+            if hasattr(func,'varListener'):
+                func.varListener(self.path,value,disp)
+            else:
+                func(self.path,value,disp)
+
+        return value,disp
 
 
 @Pyro4.expose
@@ -514,7 +515,7 @@ class LocalVariable(BaseVariable):
         except Exception as e:
             self._log.exception(e)
 
-        if write: self.updated()
+        if write: self._queueUpdate()
 
     def __set__(self, value):
         self.set(value, write=False)
@@ -532,7 +533,7 @@ class LocalVariable(BaseVariable):
             self._log.exception(e)
             return None
 
-        if read: self.updated()
+        if read: self._queueUpdate()
         return ret
 
     def __get__(self):

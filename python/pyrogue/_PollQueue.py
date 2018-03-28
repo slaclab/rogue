@@ -116,7 +116,7 @@ class PollQueue(object):
                     return
 
                 # Start update capture
-                self._root._initUpdatedVars()
+                self._root._startUpdate()
 
                 # Pop all timed out entries from the queue
                 now = datetime.datetime.now()
@@ -140,8 +140,9 @@ class PollQueue(object):
                         entry.block._checkTransaction()
                 except Exception as e:
                     self._log.exception(e)
+
                 # End update capture
-                self._root._doneUpdatedVars()
+                self._root._doneUpdate()
 
     def _expiredEntries(self, time=None):
         """An iterator of all entries that expire by a given time. 
