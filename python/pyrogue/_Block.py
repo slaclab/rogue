@@ -161,7 +161,7 @@ class LocalBlock(BaseBlock):
     def stale(self):
         return False
 
-    def set(self, value):
+    def set(self, var, value):
         with self._lock:
             changed = self._value != value
             self._value = value
@@ -174,7 +174,7 @@ class LocalBlock(BaseBlock):
 
                 pr.varFuncHelper(self._localSet, pargs, self._log, self._variable.path)
 
-    def get(self):
+    def get(self, var):
         if self._localGet is not None:
             with self._lock:
 
