@@ -155,10 +155,6 @@ class BaseVariable(pr.Node):
     def dependencies(self):
         return self.__dependencies
 
-    @property
-    def dependents(self):
-        return self.__dependents
-
     def addListener(self, listener):
         """
         Add a listener Variable or function to call when variable changes. 
@@ -176,7 +172,6 @@ class BaseVariable(pr.Node):
         Set the value and write to hardware if applicable
         Writes to hardware are blocking. An error will result in a logged exception.
         """
-
         self._log.debug("{}.set({})".format(self, value))
         try:
             if self._block is not None:
@@ -229,7 +224,7 @@ class BaseVariable(pr.Node):
         except Exception as e:
             self._log.exception(e)
             self._log.error("Error reading value from variable '{}'".format(self.path))
-            return None
+            ret = None
 
         return ret
 
