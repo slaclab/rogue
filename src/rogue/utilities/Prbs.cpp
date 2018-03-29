@@ -225,6 +225,9 @@ void ru::Prbs::genFrame (uint32_t size) {
    uint32_t      wCount[4];
    ris::FramePtr fr;
 
+   rogue::GilRelease noGil;
+   boost::lock_guard<boost::mutex> lock(pMtx_);
+
    // Verify size first
    if ((( size % byteWidth_ ) != 0) || size < minSize_ ) 
       throw rogue::GeneralError("Prbs::genFrame","Invalid frame size");
@@ -273,7 +276,6 @@ void ru::Prbs::genFrame (uint32_t size) {
    sendFrame(fr);
 
    // Update counters
-   boost::lock_guard<boost::mutex> lock(pMtx_);
    txSeq_++;
    txCount_++;
    txBytes_ += size;
