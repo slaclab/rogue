@@ -56,7 +56,6 @@ ru::Prbs::Prbs() {
    txErrCount_ = 0;
    txCount_    = 0;
    txBytes_    = 0;
-   txWords_    = 0;
    checkPl_    = true;
    rxLog_      = rogue::Logging::create("prbs.rx");
    txLog_      = rogue::Logging::create("prbs.tx");
@@ -237,7 +236,6 @@ void ru::Prbs::genFrame (uint32_t size) {
    // Setup sequence
    memset(frSeq,0,16);
    frSeq[0]  = txSeq_;
-   wCount[0] = txWords_;
 
    // Setup counter
    memset(wCount,0,16);
@@ -279,7 +277,6 @@ void ru::Prbs::genFrame (uint32_t size) {
    txSeq_++;
    txCount_++;
    txBytes_ += size;
-   txWords_ = wCount[0];
 }
 
 //! Accept a frame from master

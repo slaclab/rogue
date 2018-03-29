@@ -82,9 +82,6 @@ namespace rogue {
             //! TX bytes
             uint32_t   txBytes_;
 
-            //! TX words
-            uint32_t   txWords_;
-
             //! Check payload
             bool       checkPl_;
 
