@@ -116,7 +116,7 @@ class PollQueue(object):
                     return
 
                 # Start update capture
-                with self._root._trackUpdates:
+                with self._root._trackUpdates():
 
                     # Pop all timed out entries from the queue
                     now = datetime.datetime.now()

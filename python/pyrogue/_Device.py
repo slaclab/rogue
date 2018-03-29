@@ -79,7 +79,7 @@ class EnableVariable(pr.BaseVariable):
             if old != value and old != 'parent' and old != 'deps':
                 self.parent.enableChanged(value)
 
-        with parent_.root._trackUpdates:
+        with self.parent.root._trackUpdates():
             self._queueUpdate()
 
     def _rootAttached(self,parent,root):
@@ -304,7 +304,7 @@ class Device(pr.Node,rim.Hub):
         """Check errors in all blocks and generate variable update nofifications"""
         self._log.debug(f'Calling {self.path}._checkBlocks')
 
-        with self._root._trackUpdates:
+        with self._root._trackUpdates():
 
             # Process local blocks
             if variable is not None:

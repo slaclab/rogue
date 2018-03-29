@@ -314,7 +314,7 @@ class BaseVariable(pr.Node):
             return None
 
     def _queueUpdate(self):
-        self._root._queueUpdate(self)
+        self._root._queueUpdates(self)
 
         for var in self.__listeners:
             var._queueUpdate()
