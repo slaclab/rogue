@@ -329,7 +329,7 @@ class BaseVariable(pr.Node):
             else:
                 func(self.path,value,disp)
 
-        return value,disp
+        return self.path,value,disp
 
 
 @Pyro4.expose

@@ -79,8 +79,9 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         self._pyroDaemon = None
 
         # Variable update list
-        self._updatedYaml = None
-        self._updatedLock = threading.Lock()
+        self._updatedLock = threading.RLock()
+        self._updatedCnt  = 0
+        self._updatedVars = {}
 
         # Variable update listener
         self._varListeners  = []
@@ -280,20 +281,18 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         quanitty of variables.
         """
         d = yamlToDict(yml)
-        self._initUpdatedVars()
+        with self._trackUpdates:
 
-        for key, value in d.items():
-            if key == self.name:
-                self._setDict(value,writeEach,modes)
-            else:
-                try:
-                    self._getPath(key).setDisp(value)
-                except:
-                    self._log.error("Entry {} not found".format(key))
+            for key, value in d.items():
+                if key == self.name:
+                    self._setDict(value,writeEach,modes)
+                else:
+                    try:
+                        self._getPath(key).setDisp(value)
+                    except:
+                        self._log.error("Entry {} not found".format(key))
 
-        self._doneUpdatedVars()
-
-        if not writeEach: self._write()
+            if not writeEach: self._write()
 
     @Pyro4.expose
     def get(self,path):
@@ -355,42 +354,30 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         """
         self._sendYamlFrame(self.getYaml(False,modes))
 
-    def _initUpdatedVars(self):
-        """Initialize the update tracking log before a bulk variable update"""
-        with self._updatedLock:
-            self._updatedYaml = ""
-
-    def _doneUpdatedVars(self):
-        """Stream the results of a bulk variable update and update listeners"""
-        with self._updatedLock:
-            if self._updatedYaml:
-                self._sendYamlFrame(self._updatedYaml)
-                self._updatedYaml = None
-
     def _write(self):
         """Write all blocks"""
         self._log.info("Start root write")
-        try:
-            self.writeBlocks(force=self.ForceWrite.value(), recurse=True)
-            self._log.info("Verify root read")
-            self.verifyBlocks(recurse=True)
-            self._log.info("Check root read")
-            self.checkBlocks(recurse=True)
-        except Exception as e:
-            self._log.exception(e)
+        with self._trackUpdates:
+            try:
+                self.writeBlocks(force=self.ForceWrite.value(), recurse=True)
+                self._log.info("Verify root read")
+                self.verifyBlocks(recurse=True)
+                self._log.info("Check root read")
+                self.checkBlocks(recurse=True)
+            except Exception as e:
+                self._log.exception(e)
         self._log.info("Done root write")
 
     def _read(self):
         """Read all blocks"""
         self._log.info("Start root read")
-        self._initUpdatedVars()
-        try:
-            self.readBlocks(recurse=True)
-            self._log.info("Check root read")
-            self.checkBlocks(recurse=True)
-        except Exception as e:
-            self._log.exception(e)
-        self._doneUpdatedVars()
+        with self._trackUpdates:
+            try:
+                self.readBlocks(recurse=True)
+                self._log.info("Check root read")
+                self.checkBlocks(recurse=True)
+            except Exception as e:
+                self._log.exception(e)
         self._log.info("Done root read")
 
     def _writeConfig(self,arg):
@@ -428,31 +415,55 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
             self.SystemLog.set(value='',write=False)
         self.SystemLog.updated()
 
-    def _varUpdated(self,path,value,disp):
-        for func in self._varListeners:
+    def _trackUpdates(self):
 
-            try:
-
-                if isinstance(func,Pyro4.core.Proxy) or hasattr(func,'varListener'):
-                    func.varListener(path,value,disp)
-                else:
-                    func(path,value,disp)
-
-            except Pyro4.errors.CommunicationError as msg:
-                if 'Connection refused' in str(msg):
-                    self._log.info("Pyro Disconnect. Removing callback")
-                    self._varListeners.remove(func)
-                else:
-                    self._log.error("Pyro callback failed for {}: {}".format(self.name,msg))
-
+        # At wtih call
         with self._updatedLock:
-            yml = (f"{path}:{disp}" + "\n")
+            self._updatedCnt += 1
 
-            # Log is active add to log
-            if self._updatedYaml is not None: self._updatedYaml += yml
+            # Return to block within with call
+            try:
+                yield
+            finally:
 
-            # Otherwise act directly
-            else: self._sendYamlFrame(yml)
+                # After with is done
+                self._updatedCnt -= 1
+
+                # Done with updates
+                if self._updatedCnt == 0:
+                    self._doUpdates()
+
+    def _doUpdates(self):
+        yml = ""
+
+        for p,v in self._updatedVars.items():
+            path,value,disp = v._doUpdate()
+
+            # Update yaml string
+            yml += (f"{path}:{disp}" + "\n")
+
+            # Call listener functions, (should this be a list)
+            for func in self._varListeners:
+                try:
+
+                    if isinstance(func,Pyro4.core.Proxy) or hasattr(func,'varListener'):
+                        func.varListener(path,value,disp)
+                    else:
+                        func(path,value,disp)
+
+                except Pyro4.errors.CommunicationError as msg:
+                    if 'Connection refused' in str(msg):
+                        self._log.info("Pyro Disconnect. Removing callback")
+                        self._varListeners.remove(func)
+                    else:
+                        self._log.error("Pyro callback failed for {}: {}".format(self.name,msg))
+
+            # Generate yaml stream
+            self._sendYamlFrame(yml)
+
+    def _queueUpdates(self,var):
+        with self._updatedLock:
+            self._updatedVars[var.path] = var
 
 
 class PyroRoot(pr.PyroNode):
