@@ -299,7 +299,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         quanitty of variables.
         """
         d = yamlToDict(yml)
-        with self._trackUpdates():
+        with self.updateGroup():
 
             for key, value in d.items():
                 if key == self.name:
@@ -375,7 +375,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
     def _write(self):
         """Write all blocks"""
         self._log.info("Start root write")
-        with self._trackUpdates():
+        with self.updateGroup():
             try:
                 self.writeBlocks(force=self.ForceWrite.value(), recurse=True)
                 self._log.info("Verify root read")
@@ -389,7 +389,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
     def _read(self):
         """Read all blocks"""
         self._log.info("Start root read")
-        with self._trackUpdates():
+        with self.updateGroup():
             try:
                 self.readBlocks(recurse=True)
                 self._log.info("Check root read")
@@ -434,7 +434,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         self.SystemLog.updated()
 
     @contextmanager
-    def _trackUpdates(self):
+    def updateGroup(self):
 
         # At wtih call
         with self._updatedLock:
