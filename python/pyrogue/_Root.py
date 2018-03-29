@@ -92,7 +92,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         self._updatedVars = {}
 
         # Variable update worker
-        self._updateQueue = queue.Queue(maxsize=100)
+        self._updateQueue = queue.Queue()
         self._updateThread = None
 
         # Init after _updatedLock exists
