@@ -24,10 +24,16 @@ import pyrogue
 class PrbsRx(pyrogue.Device):
     """PRBS RX Wrapper"""
 
-    def __init__(self, *, name):
+    def __init__(self, *, name, width=None, taps=None, **kwargs ):
 
-        pyrogue.Device.__init__(self, name=name, description='PRBS Software Receiver')
+        pyrogue.Device.__init__(self, name=name, description='PRBS Software Receiver', **kwargs)
         self._prbs = rogue.utilities.Prbs()
+
+        if width is not None:
+            self._prbs.setWidth(width)
+
+        if taps is not None:
+            self._prbs.setTaps(taps)
 
         self.add(pyrogue.LocalVariable(name='rxErrors', description='RX Error Count',
                                        mode='RO', pollInterval=1, value=0,
@@ -62,11 +68,16 @@ class PrbsRx(pyrogue.Device):
 class PrbsTx(pyrogue.Device):
     """PRBS TX Wrapper"""
 
-    def __init__(self, *, name):
+    def __init__(self, *, name, width=None, taps=None, **kwargs ):
 
-        pyrogue.Device.__init__(self, name=name, description='PRBS Software Transmitter')
-
+        pyrogue.Device.__init__(self, name=name, description='PRBS Software Transmitter', **kwargs)
         self._prbs = rogue.utilities.Prbs()
+
+        if width is not None:
+            self._prbs.setWidth(width)
+
+        if taps is not None:
+            self._prbs.setTaps(taps)
 
         self.add(pyrogue.LocalVariable(name='txSize', description='PRBS Frame Size', 
                                        mode='RW', value=0))
