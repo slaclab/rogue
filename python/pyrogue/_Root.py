@@ -347,6 +347,26 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         obj = self.getNode(path)
         return obj.call(arg)
 
+    @contextmanager
+    def updateGroup(self):
+
+        # At wtih call
+        with self._updatedLock:
+            self._updatedCnt += 1
+
+            # Return to block within with call
+            try:
+                yield
+            finally:
+
+                # After with is done
+                self._updatedCnt -= 1
+
+                # Done with updates, queue to worker
+                if self._updatedCnt == 0:
+                    self._updateQueue.put(self._updatedVars)
+                    self._updatedVars = {}
+
     def setTimeout(self,timeout):
         """
         Set timeout value on all devices & blocks
@@ -432,26 +452,6 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         with self._sysLogLock:
             self.SystemLog.set(value='',write=False)
         self.SystemLog.updated()
-
-    @contextmanager
-    def updateGroup(self):
-
-        # At wtih call
-        with self._updatedLock:
-            self._updatedCnt += 1
-
-            # Return to block within with call
-            try:
-                yield
-            finally:
-
-                # After with is done
-                self._updatedCnt -= 1
-
-                # Done with updates, queue to worker
-                if self._updatedCnt == 0:
-                    self._updateQueue.put(self._updatedVars)
-                    self._updatedVars = {}
 
     def _queueUpdates(self,var):
         with self._updatedLock:
