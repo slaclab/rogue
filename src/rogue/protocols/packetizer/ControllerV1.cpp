@@ -70,18 +70,20 @@ void rpp::ControllerV1::transportRx( ris::FramePtr frame ) {
    data = buff->begin();
 
    // Drop invalid data
-   if ( frame->getError() || (buff->getPayload() < 9) || ((data[0] & 0xF) != 0) ) {
+   if ( frame->getError() ||       // Check for frame ERROR
+      (buff->getPayload() < 10) || // Check for min. size (64-bit header + 8-bit min. payload + 8-bit tail)
+      ((data[0] & 0xF) != 0) ) {   // Check for invalid version only
       log_->warning("Dropping frame due to contents: error=0x%x, payload=%i, Version=0x%x",frame->getError(),buff->getPayload(),data[0]&0xF);
       dropCount_++;
       return;
    }
 
-   tmpIdx  = (data[0] >> 4);
-   tmpIdx += data[1] * 16;
+   tmpIdx  = uint32_t(data[0]) >> 4;
+   tmpIdx |= uint32_t(data[1]) << 4;
 
-   tmpCount  = data[2];
-   tmpCount += data[3] * 256;
-   tmpCount += data[4] * 0x10000;
+   tmpCount  = uint32_t(data[2]);
+   tmpCount |= uint32_t(data[3]) << 8;
+   tmpCount |= uint32_t(data[4]) << 16;
 
    tmpDest  = data[5];
    tmpId    = data[6];
@@ -201,12 +203,12 @@ void rpp::ControllerV1::applicationRx ( ris::FramePtr frame, uint8_t tDest ) {
       size = (*it)->getPayload();
       data = (*it)->begin();
 
-      data[0] = ((appIndex_ % 16) << 4);
-      data[1] = (appIndex_ / 16) & 0xFF;
+      data[0] = (appIndex_ & 0xF) << 4; // Note: BIT3:0 = 0x0 (Version)
+      data[1] = (appIndex_ >> 4)  & 0xFF;
 
-      data[2] = segment % 256;
-      data[3] = (segment % 0xFFFF) / 256;
-      data[4] = segment / 0xFFFF;
+      data[2] = (segment >> 0)  & 0xFF;
+      data[3] = (segment >> 8)  & 0xFF;
+      data[4] = (segment >> 16) & 0xFF;
 
       data[5] = tDest;
       data[6] = tId;
