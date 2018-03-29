@@ -68,7 +68,7 @@ class PrbsRx(pyrogue.Device):
 class PrbsTx(pyrogue.Device):
     """PRBS TX Wrapper"""
 
-    def __init__(self, *, name, width=None, taps=None, **kwargs ):
+    def __init__(self, *, name, sendCount=False, width=None, taps=None, **kwargs ):
 
         pyrogue.Device.__init__(self, name=name, description='PRBS Software Transmitter', **kwargs)
         self._prbs = rogue.utilities.Prbs()
@@ -78,6 +78,8 @@ class PrbsTx(pyrogue.Device):
 
         if taps is not None:
             self._prbs.setTaps(taps)
+
+        self._prbs.sendCount(sendCount)
 
         self.add(pyrogue.LocalVariable(name='txSize', description='PRBS Frame Size', 
                                        mode='RW', value=0))
@@ -118,4 +120,7 @@ class PrbsTx(pyrogue.Device):
 
     def setTaps(self,taps):
         self._prbs.setTaps(taps)
+
+    def sendCount(self,en):
+        self._prbs.sendCount(en)
 
