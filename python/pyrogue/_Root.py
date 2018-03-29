@@ -23,6 +23,7 @@ import Pyro4
 import Pyro4.naming
 import functools as ft
 import time
+from contextlib import contextmanager
 
 class RootLogHandler(logging.Handler):
     """ Class to listen to log entries and add them to syslog variable"""
@@ -415,6 +416,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
             self.SystemLog.set(value='',write=False)
         self.SystemLog.updated()
 
+    @contextmanager
     def _trackUpdates(self):
 
         # At wtih call
