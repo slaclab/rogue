@@ -70,7 +70,7 @@ namespace rogue {
                void setTimeout(uint32_t timeout);
          };
 
-         // Convienence
+         // Convenience
          typedef boost::shared_ptr<rogue::protocols::packetizer::CoreV2> CoreV2Ptr;
 
       }

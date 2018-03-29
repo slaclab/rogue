@@ -82,7 +82,7 @@ namespace rogue {
                void acceptFrame ( boost::shared_ptr<rogue::interfaces::stream::Frame> frame );
          };
 
-         // Convienence
+         // Convenience
          typedef boost::shared_ptr<rogue::protocols::packetizer::Application> ApplicationPtr;
 
       }
