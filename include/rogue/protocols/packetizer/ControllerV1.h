@@ -61,7 +61,7 @@ namespace rogue {
                void applicationRx( boost::shared_ptr<rogue::interfaces::stream::Frame> frame, uint8_t id);
          };
 
-         // Convienence
+         // Convenience
          typedef boost::shared_ptr<rogue::protocols::packetizer::ControllerV1> ControllerV1Ptr;
 
       }
