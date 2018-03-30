@@ -38,11 +38,11 @@ from github import Github # PyGithub
 import re
 import argparse
 import pyperclip
+from getpass import getpass
 
 parser = argparse.ArgumentParser('Release notes generator')
 parser.add_argument('tag', type=str, help='reference tag or range. (i.e. v2.5.0 or v2.5.0..v2.6.0)')
-parser.add_argument('--user', type=str, help='Username for github')
-parser.add_argument('--password', type=str, help='Password for github')
+parser.add_argument('--user', type=str, help='Username for github, password will be prompted')
 parser.add_argument('--nosort', help='Disable sort by change counts', action="store_true")
 parser.add_argument('--copy', help='Copy to clipboard', action="store_true")
 args = parser.parse_args()
@@ -59,8 +59,14 @@ g = git.Git('.')
 g.fetch()
 project = re.compile(r'slaclab/(?P<name>.*?).git').search(g.remote('get-url','origin')).group('name')
 
+user = args.user
+password = None
+
+if user is not None:
+    password = getpass("Password for github: ")
+
 # Git server
-gh = Github(args.user,args.password)
+gh = Github(user,password)
 repo = gh.get_repo(f'slaclab/{project}')
 
 loginfo = g.log(tags,'--grep','Merge pull request')
