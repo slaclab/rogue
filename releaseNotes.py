@@ -109,7 +109,7 @@ if args.nosort is False:
 md = '# Pull Requests\n'
 
 for i, entry in enumerate(records):
-    md += f" {i+1}. {entry['PR']} - {entry['Title']}\n"
+    md += f" 1. {entry['PR']} - {entry['Title']}\n"
 
 md += '## Pull Request Details\n'
 
@@ -126,8 +126,10 @@ for entry in records:
     md += '\n**Notes:**\n'
     for line in entry['body'].splitlines():
         md += '> ' + line + '\n'
-    md += '-------\n'         
+    md += '\n-------\n'         
     md += '\n\n'
+
+print(md)
 
 if args.copy:
     try:	
@@ -136,4 +138,3 @@ if args.copy:
     except:	
         print("Copy to clipboard failed!")
 
-print(md)
