@@ -163,13 +163,13 @@ uint32_t rim::Master::intTransaction(rim::TransactionPtr tran) {
    struct timeval currTime;
    rim::SlavePtr slave;
 
+   gettimeofday(&(tran->startTime_),NULL);
+   timeradd(&(tran->startTime_),&sumTime_,&(tran->endTime_));
+
    {
       rogue::GilRelease noGil;
       boost::lock_guard<boost::mutex> lock(mastMtx_);
       slave = slave_;
-
-      gettimeofday(&(tran->startTime_),NULL);
-      timeradd(&(tran->startTime_),&sumTime_,&(tran->endTime_));
       tranMap_[tran->id_] = tran;
    }
 

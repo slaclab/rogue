@@ -363,6 +363,7 @@ class Device(pr.Node,rim.Hub):
                 self._waitTransaction(0)
 
                 if self._getError() == 0: return
+                self._log.warning("Retrying raw write transaction")
 
             # If we get here an error has occured
             raise pr.MemoryError (name=self.name, address=offset|self.address, error=self._getError())
@@ -379,6 +380,7 @@ class Device(pr.Node,rim.Hub):
                         return base.fromBytes(base.mask(ldata, wordBitSize),wordBitSize)
                     else:
                         return [base.fromBytes(base.mask(ldata[i:i+stride], wordBitSize),wordBitSize) for i in range(0, len(ldata), stride)]
+                self._log.warning("Retrying raw read transaction")
                 
             # If we get here an error has occured
             raise pr.MemoryError (name=self.name, address=offset|self.address, error=self._getError())
