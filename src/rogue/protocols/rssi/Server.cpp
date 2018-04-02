@@ -42,6 +42,7 @@ void rpr::Server::setup_python() {
       .def("getDropCount",   &rpr::Server::getDropCount)
       .def("getRetranCount", &rpr::Server::getRetranCount)
       .def("getBusy",        &rpr::Server::getBusy)
+      .def("stop",           &rpr::Server::stop)
    ;
 
 }
@@ -99,5 +100,10 @@ bool rpr::Server::getBusy() {
 //! Set timeout for frame transmits in microseconds
 void rpr::Server::setTimeout(uint32_t timeout) {
    cntl_->setTimeout(timeout);
+}
+
+//! Send reset
+void rpr::Server::stop() {
+   return(cntl_->stop());
 }
 
