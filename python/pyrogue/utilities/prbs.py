@@ -82,7 +82,7 @@ class PrbsTx(pyrogue.Device):
         self._prbs.sendCount(sendCount)
 
         self.add(pyrogue.LocalVariable(name='txSize', description='PRBS Frame Size', 
-                                       mode='RW', value=0))
+                                       localSet=self._txSize, mode='RW', value=0))
 
         self.add(pyrogue.LocalVariable(name='txEnable', description='PRBS Run Enable', mode='RW',
                                        value=False, localSet=self._txEnable))
@@ -104,6 +104,11 @@ class PrbsTx(pyrogue.Device):
 
     def _genFrame(self):
         self._prbs.genFrame(self.txSize.value())
+
+    def _txSize(self,value,changed):
+        if changed and int(self.txEnable.value()) == 1:
+            self._prbs.disable()
+            self._prbs.enable(value)
 
     def _txEnable(self,value,changed):
         if changed:
