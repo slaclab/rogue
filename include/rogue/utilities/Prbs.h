@@ -85,6 +85,9 @@ namespace rogue {
             //! Check payload
             bool       checkPl_;
 
+            //! Send count
+            bool       sendCount_;
+
             //! Logger
             rogue::LoggingPtr rxLog_;
             rogue::LoggingPtr txLog_;
@@ -120,6 +123,9 @@ namespace rogue {
 
             //! Set taps, python
             void setTapsPy(boost::python::object p);
+
+            //! Send counter value
+            void sendCount(bool state);
 
             //! Generate a data frame
             void genFrame (uint32_t size);
