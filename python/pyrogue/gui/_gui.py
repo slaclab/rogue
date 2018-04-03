@@ -18,8 +18,13 @@
 # copied, modified, propagated, or distributed except according to the terms 
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
-from PyQt4.QtCore   import *
-from PyQt4.QtGui    import *
+try:
+    from PyQt5.QtWidgets import *
+    from PyQt5.QtCore    import *
+    from PyQt5.QtGui     import *
+except:
+    from PyQt4.QtCore    import *
+    from PyQt4.QtGui     import *
 
 import pyrogue
 import pyrogue.gui
@@ -30,7 +35,12 @@ import threading
 import sys
 
 
+def application(argv):
+    return QApplication(argv)
+
 class GuiTop(QWidget):
+
+    newTree = pyqtSignal(pyrogue.Root)
 
     def __init__(self,*, group,parent=None):
         super(GuiTop,self).__init__(parent)
@@ -48,17 +58,22 @@ class GuiTop(QWidget):
         self.tab.addTab(self.cmd,'Commands')
         self.show()
 
-        self.connect(self,SIGNAL('newTree'),self._addTree)
-        self.connect(self,SIGNAL('newTree'),self.var.addTree)
-        self.connect(self,SIGNAL('newTree'),self.cmd.addTree)
+        self.newTree.connect(self._addTree)
+        self.newTree.connect(self.var.addTree)
+        self.newTree.connect(self.cmd.addTree)
+
+        #self.connect(self.newTree,self._addTree)
+        #self.connect(self.newTree,self.var.addTree)
+        #self.connect(self.newTree,self.cmd.addTree)
 
         self._appTop = None
 
     def addTree(self,root):
         if not root.running:
             raise Exception("GUI can not be attached to a tree which is not started")
-        self.emit(SIGNAL("newTree"),root)
+        self.newTree.emit(root)
 
+    @pyqtSlot(pyrogue.Root)
     def _addTree(self,root):
         self.sys = pyrogue.gui.system.SystemWidget(root=root,parent=self.tab)
         self.tab.addTab(self.sys,root.name)
