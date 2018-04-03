@@ -167,7 +167,8 @@ class VariableLink(QObject):
         self._inEdit = False
         self.updateGui.emit(self._variable.valueDisp())
 
-    @pyqtSlot()
+    @pyqtSlot(int)
+    @pyqtSlot(str)
     def guiChanged(self, value):
         if self._swSet:
             return

@@ -421,7 +421,7 @@ class SystemWidget(QWidget):
         name = path.split('.')[-1]
 
         if name == 'SystemLog':
-            self.updateLog(disp)
+            self.updateLog.emit(disp)
 
     @pyqtSlot()
     def hardReset(self):
@@ -439,7 +439,7 @@ class SystemWidget(QWidget):
     def loadSettings(self):
         dlg = QFileDialog()
         dlg.setFileMode(QFileDialog.AnyFile)
-        dlg.setFilter('Config Files (*.yml)')
+        dlg.setNameFilter('Config Files (*.yml)')
 
         if dlg.exec_():
             loadFile = str(dlg.selectedFiles()[0])
@@ -449,7 +449,7 @@ class SystemWidget(QWidget):
     def saveSettings(self):
         dlg = QFileDialog()
         dlg.setFileMode(QFileDialog.AnyFile)
-        dlg.setFilter('Config Files (*.yml)')
+        dlg.setNameFilter('Config Files (*.yml)')
 
         if dlg.exec_():
             saveFile = str(dlg.selectedFiles()[0])
