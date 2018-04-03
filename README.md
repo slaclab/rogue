@@ -74,12 +74,15 @@ described below.
 ### Optional Packages
 
 ZeroMq is used for some of the python based messaging interface, particularly
-the simulation interfaces. Python QT4 is used for the GUI interface.
+the simulation interfaces. To use the GUI interface you will need to install
+either pyqt5 or pyqt4.
+
 
 On Ubuntu:
 
 ````
 $ apt-get install libzmq-dev
+$ apt-get install python3-pyqt5
 $ apt-get install python3-pyqt4
 ````
 
@@ -87,6 +90,7 @@ On archlinux:
 
 ````
 $ pacman -S zeromq
+$ pacman -S python-pyqt5
 $ pacman -S python-pyqt4
 ````
 
