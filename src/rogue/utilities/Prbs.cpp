@@ -375,6 +375,7 @@ void ru::Prbs::setup_python() {
       .def("getTxBytes",     &ru::Prbs::getTxBytes)
       .def("checkPayload",   &ru::Prbs::checkPayload)
       .def("resetCount",     &ru::Prbs::resetCount)
+      .def("sendCount",      &ru::Prbs::sendCount)
    ;
 
    bp::implicitly_convertible<ru::PrbsPtr, ris::SlavePtr>();
