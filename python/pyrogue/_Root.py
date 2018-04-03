@@ -470,7 +470,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                 self._log.info("Stopping update thread")
                 return
 
-            self._log.info(F"Got update entry. Length={len(vlist)}. Entry={list(vlist.keys())[0]}")
+            self._log.info(F"Got update entry. Length={len(vlist)}.")
 
             for p,v in vlist.items():
                 path,value,disp = v._doUpdate()
