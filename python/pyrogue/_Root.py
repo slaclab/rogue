@@ -33,11 +33,11 @@ class RootLogHandler(logging.Handler):
         self._root = root
 
     def emit(self,record):
-        with self._root._sysLogLock:
-            val = self._root.SystemLog.value()
-            val += (self.format(record).splitlines()[0] + '\n')
-            self._root.SystemLog.set(write=False,value=val)
-        self._root.SystemLog.updated() # Update outside of lock
+        with self._root.updateGroup():
+            with self._root._sysLogLock:
+                val = self._root.SystemLog.value()
+                val += (self.format(record).splitlines()[0] + '\n')
+                self._root.SystemLog.set(val)
 
 class Root(rogue.interfaces.stream.Master,pr.Device):
     """
@@ -449,9 +449,9 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
     def _clearLog(self):
         """Clear the system log"""
-        with self._sysLogLock:
-            self.SystemLog.set(value='',write=False)
-        self.SystemLog.updated()
+        with self.updateGroup():
+            with self._sysLogLock:
+                self.SystemLog.set('')
 
     def _queueUpdates(self,var):
         with self._updatedLock:
@@ -470,7 +470,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                 self._log.info("Stopping update thread")
                 return
 
-            self._log.info(F"Got update entry. Length={len(vlist)}. Entry={list(vlist.keys())[0]}")
+            self._log.info(F"Got update entry. Length={len(vlist)}.")
 
             for p,v in vlist.items():
                 path,value,disp = v._doUpdate()

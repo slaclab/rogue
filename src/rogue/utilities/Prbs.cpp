@@ -64,6 +64,7 @@ ru::Prbs::Prbs() {
    width_     = 32;
    byteWidth_ = 4;
    minSize_   = 12;
+   sendCount_ = false;
 
    // Init 4 taps
    tapCnt_  = 4;
@@ -114,6 +115,15 @@ void ru::Prbs::setTapsPy(boost::python::object p) {
 
    setTaps(pyBuf.len,(uint8_t *)pyBuf.buf);
    PyBuffer_Release(&pyBuf);
+}
+
+
+//! Send counter value
+void ru::Prbs::sendCount(bool state) {
+   rogue::GilRelease noGil;
+   boost::lock_guard<boost::mutex> lockT(pMtx_);
+
+   sendCount_ = state;
 }
 
 void ru::Prbs::flfsr(ru::PrbsData & data) {
@@ -212,7 +222,11 @@ void ru::Prbs::genFrame (uint32_t size) {
    ris::Frame::iterator frEnd;
    uint32_t      frSeq[4];
    uint32_t      frSize[4];
+   uint32_t      wCount[4];
    ris::FramePtr fr;
+
+   rogue::GilRelease noGil;
+   boost::lock_guard<boost::mutex> lock(pMtx_);
 
    // Verify size first
    if ((( size % byteWidth_ ) != 0) || size < minSize_ ) 
@@ -224,7 +238,10 @@ void ru::Prbs::genFrame (uint32_t size) {
 
    // Setup sequence
    memset(frSeq,0,16);
-   frSeq[0] = txSeq_;
+   frSeq[0]  = txSeq_;
+
+   // Setup counter
+   memset(wCount,0,16);
 
    // Get frame
    fr = reqFrame(size,true);
@@ -234,25 +251,31 @@ void ru::Prbs::genFrame (uint32_t size) {
 
    // First word is sequence
    ris::toFrame(frIter,byteWidth_,frSeq);
+   ++wCount[0];
 
    // Second word is size
    ris::toFrame(frIter,byteWidth_,frSize);
+   ++wCount[0];
 
    // Init data
    ru::PrbsData data(byteWidth_ * 8, frSeq[0]);
 
    // Generate payload
    while ( frIter != frEnd ) {
-      flfsr(data);
-      to_block_range(data,frIter);
-      frIter += byteWidth_;
+      
+      if ( sendCount_ ) ris::toFrame(frIter,byteWidth_,wCount);
+      else {
+         flfsr(data);
+         to_block_range(data,frIter);
+         frIter += byteWidth_;
+      }
+      ++wCount[0];
    }
    fr->setPayload(size);
 
    sendFrame(fr);
 
    // Update counters
-   boost::lock_guard<boost::mutex> lock(pMtx_);
    txSeq_++;
    txCount_++;
    txBytes_ += size;
@@ -352,6 +375,7 @@ void ru::Prbs::setup_python() {
       .def("getTxBytes",     &ru::Prbs::getTxBytes)
       .def("checkPayload",   &ru::Prbs::checkPayload)
       .def("resetCount",     &ru::Prbs::resetCount)
+      .def("sendCount",      &ru::Prbs::sendCount)
    ;
 
    bp::implicitly_convertible<ru::PrbsPtr, ris::SlavePtr>();
