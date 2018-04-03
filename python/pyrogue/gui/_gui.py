@@ -62,10 +62,6 @@ class GuiTop(QWidget):
         self.newTree.connect(self.var.addTree)
         self.newTree.connect(self.cmd.addTree)
 
-        #self.connect(self.newTree,self._addTree)
-        #self.connect(self.newTree,self.var.addTree)
-        #self.connect(self.newTree,self.cmd.addTree)
-
         self._appTop = None
 
     def addTree(self,root):

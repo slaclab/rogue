@@ -61,8 +61,7 @@ class DataLink(QObject):
         self.dataFile.textEdited.connect(self.dataFileEdited)
         self.dataFile.returnPressed.connect(self.dataFileChanged)
 
-        #self.updateDataFile.connect(self.dataFile.setText)
-        self.connect(self.updateDataFile,self.dataFile.setText)
+        self.updateDataFile.connect(self.dataFile.setText)
 
         fl.addRow('Data File:',self.dataFile)
 
@@ -82,8 +81,7 @@ class DataLink(QObject):
         self.openState.setCurrentIndex(0)
         self.openState.activated.connect(self.openStateChanged)
 
-        #self.updateOpenState.connect(self.openState.setCurrentIndex)
-        self.connect(self.updateOpenState,self.openState.setCurrentIndex)
+        self.updateOpenState.connect(self.openState.setCurrentIndex)
 
         fl.addRow('File Open:',self.openState)
 
@@ -93,8 +91,7 @@ class DataLink(QObject):
         self.bufferSize.textEdited.connect(self.bufferSizeEdited)
         self.bufferSize.returnPressed.connect(self.bufferSizeChanged)
 
-        #self.updateBufferSize.connect(self.bufferSize.setText)
-        self.connect(self.updateBufferSize,self.bufferSize.setText)
+        self.updateBufferSize.connect(self.bufferSize.setText)
 
         fl.addRow('Buffer Size:',self.bufferSize)
 
@@ -103,8 +100,7 @@ class DataLink(QObject):
         self.totSize.setText(self.writer.fileSize.valueDisp())
         self.totSize.setReadOnly(True)
 
-        #self.updateFileSize.connect(self.totSize.setText)
-        self.connect(self.updateFileSize,self.totSize.setText)
+        self.updateFileSize.connect(self.totSize.setText)
 
         fl.addRow('Total File Size:',self.totSize)
 
@@ -127,8 +123,7 @@ class DataLink(QObject):
         self.maxSize.textEdited.connect(self.maxSizeEdited)
         self.maxSize.returnPressed.connect(self.maxSizeChanged)
 
-        #self.updateMaxSize.connect(self.maxSize.setText)
-        self.connect(self.updateMaxSize,self.maxSize.setText)
+        self.updateMaxSize.connect(self.maxSize.setText)
 
         fl.addRow('Max Size:',self.maxSize)
 
@@ -137,8 +132,7 @@ class DataLink(QObject):
         self.frameCount.setText(self.writer.frameCount.valueDisp())
         self.frameCount.setReadOnly(True)
 
-        #self.updateFrameCount.connect(self.frameCount.setText)
-        self.connect(updateFrameCount,self.frameCount.setText)
+        self.updateFrameCount.connect(self.frameCount.setText)
 
         fl.addRow('Frame Count:',self.frameCount)
 
