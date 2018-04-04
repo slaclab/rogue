@@ -157,22 +157,22 @@ class DataLink(QObject):
         name = path.split('.')[-1]
 
         if name == 'dataFile':
-            self.emit.updateDataFile(disp)
+            self.updateDataFile.emit(disp)
 
         elif name == 'open':
-            self.emit.updateOpenState(self.openState.findText(disp))
+            self.updateOpenState.emit(self.openState.findText(disp))
 
         elif name == 'bufferSize':
-            self.emit.updateBufferSize(disp)
+            self.updateBufferSize.emit(disp)
 
         elif name == 'maxFileSize':
-            self.emit.updateMaxSize(disp)
+            self.updateMaxSize.emit(disp)
 
         elif name == 'fileSize':
-            self.emit.updateFileSize(disp)
+            self.updateFileSize.emit(disp)
 
         elif name == 'frameCount':
-            self.emit.updateFrameCount(disp)
+            self.updateFrameCount.emit(disp)
 
     @pyqtSlot()
     def dataFileEdited(self):
@@ -302,13 +302,13 @@ class ControlLink(QObject):
         name = path.split('.')[-1]
 
         if name == 'runState':
-            self.emit.updateState(self.runState.findText(disp))
+            self.updateState.emit(self.runState.findText(disp))
 
         elif name == 'runRate':
-            self.emit.updateRate(self.runRate.findText(disp))
+            self.updateRate.emit(self.runRate.findText(disp))
 
         elif name == 'runCount':
-            self.emit.updateCount(disp)
+            self.updateCount.emit(disp)
 
     @pyqtSlot(int)
     def runStateChanged(self,value):
