@@ -76,8 +76,6 @@ void rpr::Header::setup_python() {
 
 //! Creator
 rpr::Header::Header(ris::FramePtr frame) {
-   if ( frame->isEmpty() ) 
-      throw(rogue::GeneralError("Header::Header","Frame must not be empty!"));
    frame_ = frame;
    count_ = 0;
 
@@ -112,6 +110,8 @@ ris::FramePtr rpr::Header::getFrame() {
 //! Verify header contents
 bool rpr::Header::verify() {
    uint8_t size;
+
+   if ( frame_->isEmpty() ) return(false);
 
    ris::BufferPtr buff = *(frame_->beginBuffer());
    uint8_t * data = buff->begin();
@@ -152,6 +152,9 @@ bool rpr::Header::verify() {
 //! Update checksum, set tx time and increment tx count
 void rpr::Header::update() {
    uint8_t size;
+
+   if ( frame_->isEmpty() )
+      throw(rogue::GeneralError("Header::update","Frame is empty!"));
 
    ris::BufferPtr buff = *(frame_->beginBuffer());
    uint8_t * data = buff->begin();

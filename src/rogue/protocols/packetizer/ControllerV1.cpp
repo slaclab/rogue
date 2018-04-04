@@ -40,7 +40,7 @@ rpp::ControllerV1Ptr rpp::ControllerV1::create ( rpp::TransportPtr tran, rpp::Ap
 }
 
 //! Creator
-rpp::ControllerV1::ControllerV1 ( rpp::TransportPtr tran, rpp::ApplicationPtr * app ) : rpp::Controller::Controller(tran, app, 8, 1, 1) {
+rpp::ControllerV1::ControllerV1 ( rpp::TransportPtr tran, rpp::ApplicationPtr * app ) : rpp::Controller::Controller(tran, app, 8, 1, 8) {
 }
 
 //! Destructor
@@ -49,6 +49,7 @@ rpp::ControllerV1::~ControllerV1() { }
 //! Frame received at transport interface
 void rpp::ControllerV1::transportRx( ris::FramePtr frame ) {
    ris::BufferPtr buff;
+   uint32_t  size;
    uint32_t  tmpIdx;
    uint32_t  tmpCount;
    uint8_t   tmpFuser;
@@ -68,27 +69,37 @@ void rpp::ControllerV1::transportRx( ris::FramePtr frame ) {
 
    buff = *(frame->beginBuffer());
    data = buff->begin();
+   size = buff->getPayload();
 
    // Drop invalid data
-   if ( frame->getError() || (buff->getPayload() < 9) || ((data[0] & 0xF) != 0) ) {
-      log_->warning("Dropping frame due to contents: error=0x%x, payload=%i, Version=0x%x",frame->getError(),buff->getPayload(),data[0]&0xF);
+   if ( frame->getError() ||     // Check for frame ERROR
+      (size < 10) ||             // Check for min. size (64-bit header + 8-bit min. payload + 8-bit tail)
+      ((data[0] & 0xF) != 0) ) { // Check for invalid version only
+      log_->warning("Dropping frame due to contents: error=0x%x, payload=%i, Version=0x%x",frame->getError(),size,data[0]&0xF);
       dropCount_++;
       return;
    }
 
-   tmpIdx  = (data[0] >> 4);
-   tmpIdx += data[1] * 16;
+   tmpIdx  = uint32_t(data[0]) >> 4;
+   tmpIdx |= uint32_t(data[1]) << 4;
 
-   tmpCount  = data[2];
-   tmpCount += data[3] * 256;
-   tmpCount += data[4] * 0x10000;
+   tmpCount  = uint32_t(data[2]);
+   tmpCount |= uint32_t(data[3]) << 8;
+   tmpCount |= uint32_t(data[4]) << 16;
 
    tmpDest  = data[5];
    tmpId    = data[6];
    tmpFuser = data[7];
 
-   tmpLuser = data[buff->getPayload()-1] & 0x7F;
-   tmpEof   = data[buff->getPayload()-1] & 0x80;
+   tmpLuser = data[size-1] & 0x7F;
+   tmpEof   = data[size-1] & 0x80;
+
+   log_->debug("transportRx: Raw header: 0x%x, 0x%x, 0x%x, 0x%x, 0x%x, 0x%x, 0x%x, 0x%x",
+         data[0],data[1],data[2],data[3],data[4],data[5],data[6],data[7]);
+   log_->debug("transportRx: Raw footer: 0x%x",
+         data[size-1]);
+   log_->debug("transportRx: Got frame: Fuser=0x%x, Dest=0x%x, Id=0x%x, Count=%i, Luser=0x%x, Eof=%i, size=%i",
+         tmpFuser, tmpDest, tmpIdx, tmpCount, tmpLuser, tmpEof, size);
 
    // Shorten message by one byte (before adjusting tail)
    buff->adjustPayload(-1);
@@ -201,12 +212,12 @@ void rpp::ControllerV1::applicationRx ( ris::FramePtr frame, uint8_t tDest ) {
       size = (*it)->getPayload();
       data = (*it)->begin();
 
-      data[0] = ((appIndex_ % 16) << 4);
-      data[1] = (appIndex_ / 16) & 0xFF;
+      data[0] = (appIndex_ & 0xF) << 4; // Note: BIT3:0 = 0x0 (Version)
+      data[1] = (appIndex_ >> 4)  & 0xFF;
 
-      data[2] = segment % 256;
-      data[3] = (segment % 0xFFFF) / 256;
-      data[4] = segment / 0xFFFF;
+      data[2] = (segment >> 0)  & 0xFF;
+      data[3] = (segment >> 8)  & 0xFF;
+      data[4] = (segment >> 16) & 0xFF;
 
       data[5] = tDest;
       data[6] = tId;

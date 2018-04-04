@@ -49,8 +49,10 @@ class BaseVariable(pr.Node):
         self._minimum       = minimum # For base='range'
         self._maximum       = maximum # For base='range'
         self._default       = value
+        self._block         = None
         self._pollInterval  = pollInterval
         self.__listeners    = []
+        self.__functions    = []
         self.__dependencies = []
 
         # Build enum if specified
@@ -156,47 +158,79 @@ class BaseVariable(pr.Node):
     def addListener(self, listener):
         """
         Add a listener Variable or function to call when variable changes. 
-        If listener is a Variable then Variable.updated() will be used as the function
         This is usefull when chaining variables together. (adc conversions, etc)
         The variable, value and display string will be passed as an arg: func(path,value,disp)
         """
         if isinstance(listener, BaseVariable):
-            self.__listeners.append(listener.updated)
-        else:
             self.__listeners.append(listener)
+        else:
+            self.__functions.append(listener)
 
     @Pyro4.expose
     def set(self, value, write=True):
-        pass
+        """
+        Set the value and write to hardware if applicable
+        Writes to hardware are blocking. An error will result in a logged exception.
+        """
+        self._log.debug("{}.set({})".format(self, value))
+        try:
+            if self._block is not None:
+                self._block.set(self, value)
+
+                if write:
+                    self._parent.writeBlocks(force=False, recurse=False, variable=self)
+                    self._parent.verifyBlocks(recurse=False, variable=self)
+                    self._parent.checkBlocks(recurse=False, variable=self)
+
+        except Exception as e:
+            self._log.exception(e)
+            self._log.error("Error setting value '{}' to variable '{}' with type {}".format(value,self.path,self.typeStr))
 
     @Pyro4.expose
     def post(self,value):
-        pass
+        """
+        Set the value and write to hardware if applicable using a posted write.
+        This method does not call through parent.writeBlocks(), but rather
+        calls on self._block directly.
+        """
+        self._log.debug("{}.post({})".format(self, value))
+
+        try:
+            if self._block is not None:
+                self._block.set(self, value)
+                self._block.startTransaction(rogue.interfaces.memory.Post, check=True)
+
+        except Exception as e:
+            self._log.exception(e)
+            self._log.error("Error posting value '{}' to variable '{}' with type {}".format(value,self.path,self.typeStr))
 
     @Pyro4.expose
     def get(self,read=True):
-        return self._default
+        """ 
+        Return the value after performing a read from hardware if applicable.
+        Hardware read is blocking. An error will result in a logged exception.
+        Listeners will be informed of the update.
+        """
+        try:
+            if self._block is not None:
+                if read:
+                    self._parent.readBlocks(recurse=False, variable=self)
+                    self._parent.checkBlocks(recurse=False, variable=self)
+
+                ret = self._block.get(self)
+            else:
+                ret = None
+
+        except Exception as e:
+            self._log.exception(e)
+            self._log.error("Error reading value from variable '{}'".format(self.path))
+            ret = None
+
+        return ret
 
     @Pyro4.expose
     def value(self):
         return self.get(read=False)
-
-    @Pyro4.expose
-    def updated(self, path=None, value=None, disp=None):
-        """Variable has been updated. Inform listeners."""
-
-        value = self.value()
-        disp  = self.valueDisp()
-
-        for func in self.__listeners:
-            if hasattr(func,'varListener'):
-                func.varListener(self.path,value,disp)
-            else:
-                func(self.path,value,disp)
-
-        # Root variable update log
-        if self._root is not None:
-            self._root._varUpdated(self.path,value,disp)
 
     @Pyro4.expose
     def genDisp(self, value):
@@ -278,6 +312,24 @@ class BaseVariable(pr.Node):
             return self.valueDisp()
         else:
             return None
+
+    def _queueUpdate(self):
+        self._root._queueUpdates(self)
+
+        for var in self.__listeners:
+            var._queueUpdate()
+
+    def _doUpdate(self):
+        value = self.value()
+        disp  = self.valueDisp()
+
+        for func in self.__functions:
+            if hasattr(func,'varListener'):
+                func.varListener(self.path,value,disp)
+            else:
+                func(self.path,value,disp)
+
+        return self.path,value,disp
 
 
 @Pyro4.expose
@@ -367,82 +419,6 @@ class RemoteVariable(BaseVariable):
         return self._base
 
     @Pyro4.expose
-    def set(self, value, write=True):
-        """
-        Set the value and write to hardware if applicable
-        Writes to hardware are blocking. An error will result in a logged exception.
-        """
-
-        self._log.debug("{}.set({})".format(self, value))
-        try:
-
-            if self._block is None:
-                raise VariableError("set called before tree is started")
-
-            self._block.set(self, value)
-
-            if write and self._block.mode != 'RO':
-                self._parent.writeBlocks(force=False, recurse=False, variable=self)
-
-                if self._block.mode == 'RW':
-                    self._parent.verifyBlocks(recurse=False, variable=self)
-
-                self._parent.checkBlocks(recurse=False, variable=self)
-
-        except Exception as e:
-            self._log.exception(e)
-            self._log.error("Error setting value '{}' to variable '{}' with type {}".format(value,self.path,self.typeStr))
-
-    @Pyro4.expose
-    def post(self,value):
-        """
-        Set the value and write to hardware if applicable using a posted write.
-        This method does not call through parent.writeBlocks(), but rather
-        calls on self._block directly.
-        """
-        self._log.debug("{}.post({})".format(self, value))
-
-        try:
-
-            if self._block is None:
-                raise VariableError("post called before tree is started")
-
-            self._block.set(self, value)
-
-
-            if self._block.mode != 'RO':
-                self._block.startTransaction(rogue.interfaces.memory.Post, check=False)
-                self._block._checkTransaction()
-
-        except Exception as e:
-            self._log.exception(e)
-            self._log.error("Error posting value '{}' to variable '{}' with type {}".format(value,self.path,self.typeStr))
-
-    @Pyro4.expose
-    def get(self,read=True):
-        """ 
-        Return the value after performing a read from hardware if applicable.
-        Hardware read is blocking. An error will result in a logged exception.
-        Listeners will be informed of the update.
-        """
-        try:
-            if self._block is None:
-                raise VariableError("get called before tree is started")
-
-            if read and self._block.mode != 'WO':
-                self._parent.readBlocks(recurse=False, variable=self)
-                self._parent.checkBlocks(recurse=False, variable=self)
-
-            ret = self._block.get(self)
-
-        except Exception as e:
-            self._log.exception(e)
-            self._log.error("Error reading value from variable '{}'".format(self.path))
-            return None
-
-        return ret
-
-    @Pyro4.expose
     def parseDisp(self, sValue):
         if sValue is None or isinstance(sValue, self.nativeType()):
             return sValue
@@ -499,36 +475,6 @@ class LocalVariable(BaseVariable):
                               pollInterval=pollInterval)
 
         self._block = pr.LocalBlock(variable=self,localSet=localSet,localGet=localGet,value=self._default)
-
-        
-    @Pyro4.expose
-    def set(self, value, write=True):
-        try:
-            self._block.set(value)
-
-        except Exception as e:
-            self._log.exception(e)
-
-        if write: self.updated()
-
-    def __set__(self, value):
-        self.set(value, write=False)
-
-    @Pyro4.expose
-    def post(self,value):
-        self.set(self, value)
-
-    @Pyro4.expose
-    def get(self,read=True):
-        try:
-            ret = self._block.get()
-
-        except Exception as e:
-            self._log.exception(e)
-            return None
-
-        if read: self.updated()
-        return ret
 
     def __get__(self):
         return self.get(read=False)
