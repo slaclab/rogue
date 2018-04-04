@@ -46,6 +46,7 @@ void rpr::Client::setup_python() {
       .def("getDropCount",   &rpr::Client::getDropCount)
       .def("getRetranCount", &rpr::Client::getRetranCount)
       .def("getBusy",        &rpr::Client::getBusy)
+      .def("stop",           &rpr::Client::stop)
    ;
 
 }
@@ -105,3 +106,7 @@ void rpr::Client::setTimeout(uint32_t timeout) {
    cntl_->setTimeout(timeout);
 }
 
+//! Send reset
+void rpr::Client::stop() {
+   return(cntl_->stop());
+}

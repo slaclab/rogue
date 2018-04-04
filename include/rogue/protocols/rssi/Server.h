@@ -78,6 +78,9 @@ namespace rogue {
                //! Set timeout in microseconds for frame transmits
                void setTimeout(uint32_t timeout);
 
+               //! Stop
+               void stop();
+
          };
 
          // Convienence

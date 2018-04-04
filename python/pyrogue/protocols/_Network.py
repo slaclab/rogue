@@ -85,3 +85,5 @@ class UdpRssiPack(pr.Device):
     def getRssiBusy(self,dev=None,cmd=None):
         return(self._rssi.getBusy())
 
+    def stop(self):
+        self._rssi.stop()
