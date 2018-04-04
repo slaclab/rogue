@@ -187,12 +187,6 @@ setting up the example projects or some SLAC projects.
 You may want to create a custom setup script to combine the rogue setup with 
 other environmental setups for your project.
 
-### Rogue on Windows 10
-
-Rogue will compile on windows 10 under the windows subsystem for Linux
-envrionment. Once the windows subsystem for Linux is setup the environment
-is the same as Unbuntu.
-
 ### Drivers
 
 Rogue is linked against the aes-stream-drivers package which is included 
