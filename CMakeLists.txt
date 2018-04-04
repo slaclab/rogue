@@ -13,6 +13,11 @@
 # contained in the LICENSE.txt file.
 # ----------------------------------------------------------------------------
 
+# Add support for building in conda environment
+if (DEFINED ENV{CONDA_PREFIX})
+   set(CMAKE_PREFIX_PATH "$ENV{CONDA_PREFIX}")
+endif()
+
 # Check cmake version
 cmake_minimum_required(VERSION 2.8)
 include(InstallRequiredSystemLibraries)
