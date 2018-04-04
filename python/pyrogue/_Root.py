@@ -86,16 +86,11 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         self._varListeners  = []
         self._varListenLock = threading.Lock()
 
-        # Variable update list
-        self._updatedLock = threading.RLock()
-        self._updatedCnt  = 0
-        self._updatedVars = {}
-
         # Variable update worker
         self._updateQueue = queue.Queue()
         self._updateThread = None
 
-        # Init after _updatedLock exists
+        # Init 
         pr.Device.__init__(self, name=name, description=description)
 
         # Variables
@@ -351,21 +346,15 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
     def updateGroup(self):
 
         # At wtih call
-        with self._updatedLock:
-            self._updatedCnt += 1
+        self._updateQueue.put(True)
 
-            # Return to block within with call
-            try:
-                yield
-            finally:
+        # Return to block within with call
+        try:
+            yield
+        finally:
 
-                # After with is done
-                self._updatedCnt -= 1
-
-                # Done with updates, queue to worker
-                if self._updatedCnt == 0:
-                    self._updateQueue.put(self._updatedVars)
-                    self._updatedVars = {}
+            # After with is done
+            self._updateQueue.put(False)
 
     def setTimeout(self,timeout):
         """
@@ -454,49 +443,71 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                 self.SystemLog.set('')
 
     def _queueUpdates(self,var):
-        with self._updatedLock:
-            self._updatedVars[var.path] = var
+        self._updateQueue.put(var)
 
     # Worker thread
     def _updateWorker(self):
         self._log.info("Starting update thread")
 
+        # Init
+        count = 0
+        uvars = {}
+
         while True:
-            yml = ""
-            vlist = self._updateQueue.get()
+            ent = self._updateQueue.get()
 
             # Done
-            if vlist is None:
+            if ent is None:
                 self._log.info("Stopping update thread")
                 return
 
-            self._log.info(F"Got update entry. Length={len(vlist)}.")
+            # Increment
+            elif ent is True:
+                count += 1
 
-            for p,v in vlist.items():
-                path,value,disp = v._doUpdate()
+            # Decrement
+            elif ent is False:
+                if count > 0:
+                    count -= 1
 
-                # Update yaml string
-                yml += (f"{path}:{disp}" + "\n")
+            # Variable
+            else:
+                uvars[ent.path] = ent
 
-                # Call listener functions, (should this be a list)
-                with self._varListenLock:
-                    for func in self._varListeners:
-                        try:
+            # Process list if count = 0
+            if count == 0 and len(uvars) > 0:
 
-                            if isinstance(func,Pyro4.core.Proxy) or hasattr(func,'varListener'):
-                                func.varListener(path,value,disp)
-                            else:
-                                func(path,value,disp)
+                self._log.debug(F"Process update group. Length={len(uvars)}. Entry={list(uvars.keys())[0]}")
+                yml = ""
 
-                        except Pyro4.errors.CommunicationError as msg:
-                            if 'Connection refused' in str(msg):
-                                self._log.info("Pyro Disconnect. Removing callback")
-                                self._varListeners.remove(func)
-                            else:
-                                self._log.error("Pyro callback failed for {}: {}".format(self.name,msg))
+                for p,v in uvars.items():
+                    path,value,disp = v._doUpdate()
+
+                    # Update yaml string
+                    yml += (f"{path}:{disp}" + "\n")
+
+                    # Call listener functions,
+                    with self._varListenLock:
+                        for func in self._varListeners:
+                            try:
+
+                                if isinstance(func,Pyro4.core.Proxy) or hasattr(func,'varListener'):
+                                    func.varListener(path,value,disp)
+                                else:
+                                    func(path,value,disp)
+
+                            except Pyro4.errors.CommunicationError as msg:
+                                if 'Connection refused' in str(msg):
+                                    self._log.info("Pyro Disconnect. Removing callback")
+                                    self._varListeners.remove(func)
+                                else:
+                                    self._log.error("Pyro callback failed for {}: {}".format(self.name,msg))
 
                 # Generate yaml stream
                 self._sendYamlFrame(yml)
+
+                # Init var list
+                uvars = {}
 
             # Set done
             self._updateQueue.task_done()
