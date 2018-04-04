@@ -55,8 +55,8 @@ if (NOT Boost_FOUND)
 endif()
 
 # Find python3
-find_package(PythonInterp 3 REQUIRED)
-find_package(PythonLibs 3 REQUIRED)
+find_package(PythonInterp 3.6 REQUIRED)
+find_package(PythonLibs 3.6 REQUIRED)
 
 message("----------------------------------------------------------------------")
 
