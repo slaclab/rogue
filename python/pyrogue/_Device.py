@@ -66,8 +66,6 @@ class EnableVariable(pr.BaseVariable):
                 else:
                     ret = True
 
-        if read:
-            self.updated()
         return ret
         
     @Pyro4.expose
@@ -81,7 +79,8 @@ class EnableVariable(pr.BaseVariable):
             if old != value and old != 'parent' and old != 'deps':
                 self.parent.enableChanged(value)
 
-        self.updated()
+        with self.parent.root.updateGroup():
+            self._queueUpdate()
 
     def _rootAttached(self,parent,root):
         pr.Node._rootAttached(self,parent,root)
@@ -305,16 +304,18 @@ class Device(pr.Node,rim.Hub):
         """Check errors in all blocks and generate variable update nofifications"""
         self._log.debug(f'Calling {self.path}._checkBlocks')
 
-        # Process local blocks
-        if variable is not None:
-            variable._block._checkTransaction()
-        else:
-            for block in self._blocks:
-                block._checkTransaction()
+        with self.root.updateGroup():
 
-            if recurse:
-                for key,value in self.devices.items():
-                        value.checkBlocks(recurse=True)
+            # Process local blocks
+            if variable is not None:
+                variable._block._checkTransaction()
+            else:
+                for block in self._blocks:
+                    block._checkTransaction()
+
+                if recurse:
+                    for key,value in self.devices.items():
+                            value.checkBlocks(recurse=True)
 
     def writeAndVerifyBlocks(self, force=False, recurse=True, variable=None, checkEach=False):
         """Perform a write, verify and check. Usefull for committing any stale variables"""
@@ -362,6 +363,7 @@ class Device(pr.Node,rim.Hub):
                 self._waitTransaction(0)
 
                 if self._getError() == 0: return
+                self._log.warning("Retrying raw write transaction")
 
             # If we get here an error has occured
             raise pr.MemoryError (name=self.name, address=offset|self.address, error=self._getError())
@@ -378,6 +380,7 @@ class Device(pr.Node,rim.Hub):
                         return base.fromBytes(base.mask(ldata, wordBitSize),wordBitSize)
                     else:
                         return [base.fromBytes(base.mask(ldata[i:i+stride], wordBitSize),wordBitSize) for i in range(0, len(ldata), stride)]
+                self._log.warning("Retrying raw read transaction")
                 
             # If we get here an error has occured
             raise pr.MemoryError (name=self.name, address=offset|self.address, error=self._getError())

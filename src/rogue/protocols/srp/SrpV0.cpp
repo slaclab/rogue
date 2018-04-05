@@ -167,7 +167,7 @@ void rps::SrpV0::acceptFrame ( ris::FramePtr frame ) {
 
    // Check frame size
    if ( (fSize = frame->getPayload()) < 16 ) {
-      log_->info("Got undersize frame size = %i",fSize);
+      log_->warning("Got undersize frame size = %i",fSize);
       return; // Invalid frame, drop it
    }
 
@@ -184,7 +184,7 @@ void rps::SrpV0::acceptFrame ( ris::FramePtr frame ) {
 
    // Find Transaction
    if ( (tran = getTransaction(id)) == NULL ) {
-     log_->debug("Invalid ID frame for id=%i",id);
+     log_->warning("Invalid ID frame for id=%i",id);
      return; // Bad id or post, drop frame
    }
    delTransaction(id);
@@ -194,7 +194,7 @@ void rps::SrpV0::acceptFrame ( ris::FramePtr frame ) {
 
    // Transaction expired
    if ( tran->expired() ) {
-      log_->debug("Transaction expired. Id=%i",id);
+      log_->warning("Transaction expired. Id=%i",id);
       return;
    }
    tIter = tran->begin();

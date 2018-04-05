@@ -116,32 +116,30 @@ class PollQueue(object):
                     return
 
                 # Start update capture
-                self._root._initUpdatedVars()
+                with self._root.updateGroup():
 
-                # Pop all timed out entries from the queue
-                now = datetime.datetime.now()
-                blockEntries = []
-                for entry in self._expiredEntries(now):
-                    self._log.debug(f'Polling Block {entry.block.name}')
-                    blockEntries.append(entry)
+                    # Pop all timed out entries from the queue
+                    now = datetime.datetime.now()
+                    blockEntries = []
+                    for entry in self._expiredEntries(now):
+                        self._log.debug(f'Polling Block {entry.block.name}')
+                        blockEntries.append(entry)
+                        try:
+                            entry.block.startTransaction(rogue.interfaces.memory.Read, check=False)
+                        except Exception as e:
+                            self._log.exception(e)
+
+                        # Update the entry with new read time
+                        entry = entry._replace(readTime=(entry.readTime + entry.interval),
+                                               count=next(self._counter))
+                        # Push the updated entry back into the queue
+                        heapq.heappush(self._pq, entry)
+
                     try:
-                        entry.block.startTransaction(rogue.interfaces.memory.Read, check=False)
+                        for entry in blockEntries:
+                            entry.block._checkTransaction()
                     except Exception as e:
                         self._log.exception(e)
-
-                    # Update the entry with new read time
-                    entry = entry._replace(readTime=(entry.readTime + entry.interval),
-                                           count=next(self._counter))
-                    # Push the updated entry back into the queue
-                    heapq.heappush(self._pq, entry)
-
-                try:
-                    for entry in blockEntries:
-                        entry.block._checkTransaction()
-                except Exception as e:
-                    self._log.exception(e)
-                # End update capture
-                self._root._doneUpdatedVars()
 
     def _expiredEntries(self, time=None):
         """An iterator of all entries that expire by a given time. 

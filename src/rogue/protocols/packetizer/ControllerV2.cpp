@@ -247,7 +247,7 @@ void rpp::ControllerV2::applicationRx ( ris::FramePtr frame, uint8_t tDest ) {
    for (it=frame->beginBuffer(); it != frame->endBuffer(); ++it) {
       ris::FramePtr tFrame = ris::Frame::create();
 
-      // Compute last, and alignt payload to 64-bits
+      // Compute last, and aligned payload to 64-bits
       last = (*it)->getPayload() % 8;
       if ( last == 0 ) last = 8;
       (*it)->adjustPayload(8-last);

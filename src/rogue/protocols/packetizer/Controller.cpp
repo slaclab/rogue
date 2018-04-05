@@ -95,8 +95,8 @@ ris::FramePtr rpp::Controller::reqFrame ( uint32_t size ) {
       buff = *(rFrame->beginBuffer());
   
       // Use buffer tail reservation to align available payload
-      if ((buff->getAvailable() % alignSize_) != 0)
-         buff->adjustTail(buff->getAvailable() % alignSize_);
+      if (((buff->getAvailable()-tailSize_) % alignSize_) != 0)
+         buff->adjustTail((buff->getAvailable()-tailSize_) % alignSize_);  
   
       // Buffer should support our header/tail plus at least one payload byte 
       if ( buff->getAvailable() < (headSize_ + tailSize_ + 1) )

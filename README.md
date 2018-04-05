@@ -74,12 +74,15 @@ described below.
 ### Optional Packages
 
 ZeroMq is used for some of the python based messaging interface, particularly
-the simulation interfaces. Python QT4 is used for the GUI interface.
+the simulation interfaces. To use the GUI interface you will need to install
+either pyqt5 or pyqt4.
+
 
 On Ubuntu:
 
 ````
 $ apt-get install libzmq-dev
+$ apt-get install python3-pyqt5
 $ apt-get install python3-pyqt4
 ````
 
@@ -87,6 +90,7 @@ On archlinux:
 
 ````
 $ pacman -S zeromq
+$ pacman -S python-pyqt5
 $ pacman -S python-pyqt4
 ````
 
@@ -182,12 +186,6 @@ setting up the example projects or some SLAC projects.
 
 You may want to create a custom setup script to combine the rogue setup with 
 other environmental setups for your project.
-
-### Rogue on Windows 10
-
-Rogue will compile on windows 10 under the windows subsystem for Linux
-envrionment. Once the windows subsystem for Linux is setup the environment
-is the same as Unbuntu.
 
 ### Drivers
 

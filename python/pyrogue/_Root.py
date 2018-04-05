@@ -23,6 +23,8 @@ import Pyro4
 import Pyro4.naming
 import functools as ft
 import time
+import queue
+from contextlib import contextmanager
 
 class RootLogHandler(logging.Handler):
     """ Class to listen to log entries and add them to syslog variable"""
@@ -31,11 +33,11 @@ class RootLogHandler(logging.Handler):
         self._root = root
 
     def emit(self,record):
-        with self._root._sysLogLock:
-            val = self._root.SystemLog.value()
-            val += (self.format(record).splitlines()[0] + '\n')
-            self._root.SystemLog.set(write=False,value=val)
-        self._root.SystemLog.updated() # Update outside of lock
+        with self._root.updateGroup():
+            with self._root._sysLogLock:
+                val = self._root.SystemLog.value()
+                val += (self.format(record).splitlines()[0] + '\n')
+                self._root.SystemLog.set(val)
 
 class Root(rogue.interfaces.stream.Master,pr.Device):
     """
@@ -70,22 +72,25 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         # Keep of list of errors, exposed as a variable
         self._sysLogLock = threading.Lock()
 
-        # Background threads
+        # Running status
+        self._running = False
+
+        # Polling worker
         self._pollQueue = None
-        self._running   = False
 
         # Remote object export
         self._pyroThread = None
         self._pyroDaemon = None
 
-        # Variable update list
-        self._updatedYaml = None
-        self._updatedLock = threading.Lock()
-
-        # Variable update listener
+        # List of variable listeners
         self._varListeners  = []
+        self._varListenLock = threading.Lock()
 
-        # Init after _updatedLock exists
+        # Variable update worker
+        self._updateQueue = queue.Queue()
+        self._updateThread = None
+
+        # Init 
         pr.Device.__init__(self, name=name, description=description)
 
         # Variables
@@ -209,6 +214,10 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         if initWrite:
             self._write()
 
+        # Start update thread
+        self._updateThread = threading.Thread(target=self._updateWorker)
+        self._updateThread.start()
+
         # Start poller if enabled
         if pollEn:
             self._pollQueue._start()
@@ -217,10 +226,14 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
     def stop(self):
         """Stop the polling thread. Must be called for clean exit."""
+        self._updateQueue.put(None)
+
         if self._pollQueue:
             self._pollQueue.stop()
+
         if self._pyroDaemon:
             self._pyroDaemon.shutdown()
+
         self._running=False
 
     @Pyro4.expose
@@ -248,10 +261,11 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         Add a variable update listener function.
         The variable, value and display string will be passed as an arg: func(path,value,disp)
         """
-        self._varListeners.append(func)
+        with self._varListenLock:
+            self._varListeners.append(func)
 
-        if isinstance(func,Pyro4.core.Proxy):                                    
-            func._pyroOneway.add("varListener")                                  
+            if isinstance(func,Pyro4.core.Proxy):                                    
+                func._pyroOneway.add("varListener")                                  
 
     def getYaml(self,readFirst,modes=['RW']):
         """
@@ -280,20 +294,18 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         quanitty of variables.
         """
         d = yamlToDict(yml)
-        self._initUpdatedVars()
+        with self.updateGroup():
 
-        for key, value in d.items():
-            if key == self.name:
-                self._setDict(value,writeEach,modes)
-            else:
-                try:
-                    self._getPath(key).setDisp(value)
-                except:
-                    self._log.error("Entry {} not found".format(key))
+            for key, value in d.items():
+                if key == self.name:
+                    self._setDict(value,writeEach,modes)
+                else:
+                    try:
+                        self._getPath(key).setDisp(value)
+                    except:
+                        self._log.error("Entry {} not found".format(key))
 
-        self._doneUpdatedVars()
-
-        if not writeEach: self._write()
+            if not writeEach: self._write()
 
     @Pyro4.expose
     def get(self,path):
@@ -330,6 +342,20 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         obj = self.getNode(path)
         return obj.call(arg)
 
+    @contextmanager
+    def updateGroup(self):
+
+        # At wtih call
+        self._updateQueue.put(True)
+
+        # Return to block within with call
+        try:
+            yield
+        finally:
+
+            # After with is done
+            self._updateQueue.put(False)
+
     def setTimeout(self,timeout):
         """
         Set timeout value on all devices & blocks
@@ -355,42 +381,30 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         """
         self._sendYamlFrame(self.getYaml(False,modes))
 
-    def _initUpdatedVars(self):
-        """Initialize the update tracking log before a bulk variable update"""
-        with self._updatedLock:
-            self._updatedYaml = ""
-
-    def _doneUpdatedVars(self):
-        """Stream the results of a bulk variable update and update listeners"""
-        with self._updatedLock:
-            if self._updatedYaml:
-                self._sendYamlFrame(self._updatedYaml)
-                self._updatedYaml = None
-
     def _write(self):
         """Write all blocks"""
         self._log.info("Start root write")
-        try:
-            self.writeBlocks(force=self.ForceWrite.value(), recurse=True)
-            self._log.info("Verify root read")
-            self.verifyBlocks(recurse=True)
-            self._log.info("Check root read")
-            self.checkBlocks(recurse=True)
-        except Exception as e:
-            self._log.exception(e)
+        with self.updateGroup():
+            try:
+                self.writeBlocks(force=self.ForceWrite.value(), recurse=True)
+                self._log.info("Verify root read")
+                self.verifyBlocks(recurse=True)
+                self._log.info("Check root read")
+                self.checkBlocks(recurse=True)
+            except Exception as e:
+                self._log.exception(e)
         self._log.info("Done root write")
 
     def _read(self):
         """Read all blocks"""
         self._log.info("Start root read")
-        self._initUpdatedVars()
-        try:
-            self.readBlocks(recurse=True)
-            self._log.info("Check root read")
-            self.checkBlocks(recurse=True)
-        except Exception as e:
-            self._log.exception(e)
-        self._doneUpdatedVars()
+        with self.updateGroup():
+            try:
+                self.readBlocks(recurse=True)
+                self._log.info("Check root read")
+                self.checkBlocks(recurse=True)
+            except Exception as e:
+                self._log.exception(e)
         self._log.info("Done root read")
 
     def _writeConfig(self,arg):
@@ -424,35 +438,79 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
     def _clearLog(self):
         """Clear the system log"""
-        with self._sysLogLock:
-            self.SystemLog.set(value='',write=False)
-        self.SystemLog.updated()
+        with self.updateGroup():
+            with self._sysLogLock:
+                self.SystemLog.set('')
 
-    def _varUpdated(self,path,value,disp):
-        for func in self._varListeners:
+    def _queueUpdates(self,var):
+        self._updateQueue.put(var)
 
-            try:
+    # Worker thread
+    def _updateWorker(self):
+        self._log.info("Starting update thread")
 
-                if isinstance(func,Pyro4.core.Proxy) or hasattr(func,'varListener'):
-                    func.varListener(path,value,disp)
-                else:
-                    func(path,value,disp)
+        # Init
+        count = 0
+        uvars = {}
 
-            except Pyro4.errors.CommunicationError as msg:
-                if 'Connection refused' in str(msg):
-                    self._log.info("Pyro Disconnect. Removing callback")
-                    self._varListeners.remove(func)
-                else:
-                    self._log.error("Pyro callback failed for {}: {}".format(self.name,msg))
+        while True:
+            ent = self._updateQueue.get()
 
-        with self._updatedLock:
-            yml = (f"{path}:{disp}" + "\n")
+            # Done
+            if ent is None:
+                self._log.info("Stopping update thread")
+                return
 
-            # Log is active add to log
-            if self._updatedYaml is not None: self._updatedYaml += yml
+            # Increment
+            elif ent is True:
+                count += 1
 
-            # Otherwise act directly
-            else: self._sendYamlFrame(yml)
+            # Decrement
+            elif ent is False:
+                if count > 0:
+                    count -= 1
+
+            # Variable
+            else:
+                uvars[ent.path] = ent
+
+            # Process list if count = 0
+            if count == 0 and len(uvars) > 0:
+
+                self._log.debug(F"Process update group. Length={len(uvars)}. Entry={list(uvars.keys())[0]}")
+                yml = ""
+
+                for p,v in uvars.items():
+                    path,value,disp = v._doUpdate()
+
+                    # Update yaml string
+                    yml += (f"{path}:{disp}" + "\n")
+
+                    # Call listener functions,
+                    with self._varListenLock:
+                        for func in self._varListeners:
+                            try:
+
+                                if isinstance(func,Pyro4.core.Proxy) or hasattr(func,'varListener'):
+                                    func.varListener(path,value,disp)
+                                else:
+                                    func(path,value,disp)
+
+                            except Pyro4.errors.CommunicationError as msg:
+                                if 'Connection refused' in str(msg):
+                                    self._log.info("Pyro Disconnect. Removing callback")
+                                    self._varListeners.remove(func)
+                                else:
+                                    self._log.error("Pyro callback failed for {}: {}".format(self.name,msg))
+
+                # Generate yaml stream
+                self._sendYamlFrame(yml)
+
+                # Init var list
+                uvars = {}
+
+            # Set done
+            self._updateQueue.task_done()
 
 
 class PyroRoot(pr.PyroNode):
