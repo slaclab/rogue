@@ -24,6 +24,9 @@ install:
   # - cd ..
   # - source setup_rogue.sh
 
+script:
+  - pwd
+
 cache:
   directories:
     - packages
