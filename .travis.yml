@@ -18,10 +18,10 @@ install:
   - cd ../..
   - git submodule update --init --recursive
   - mkdir build; cd build
-  - cmake ..
-  - make
-  - cd ..
-  - source setup_rogue.sh
+  # - cmake ..
+  # - make
+  # - cd ..
+  # - source setup_rogue.sh
 
 cache:
   directories:
@@ -29,4 +29,4 @@ cache:
 
 after_success:
   - python3 -V
-  - python3 -c "import pyrogue"
+  # - python3 -c "import pyrogue"
