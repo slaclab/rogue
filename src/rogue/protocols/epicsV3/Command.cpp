@@ -39,7 +39,7 @@ void rpe::Command::setup_python() {
 
 //! Class creation
 rpe::Command::Command (std::string epicsName, bp::object p) : Variable(epicsName,p,false) {
-   setAttr_  = "exec";
+   setAttr_  = "call";
 }
 
 rpe::Command::~Command() { }
