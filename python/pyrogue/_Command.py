@@ -146,6 +146,8 @@ class BaseCommand(pr.BaseVariable):
     def _getDict(self,modes):
         return None
 
+    def get(self,read=True):
+        return self._default
 
 # LocalCommand is the same as BaseCommand
 LocalCommand = BaseCommand
