@@ -18,7 +18,7 @@ install:
   - cd ../..
   - git submodule update --init --recursive
   - mkdir build; cd build
-  # - cmake ..
+  - cmake ..
   # - make
   # - cd ..
   # - source setup_rogue.sh
