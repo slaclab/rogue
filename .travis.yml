@@ -10,8 +10,8 @@ install:
   - sudo wget -O boost_1_64_0.tar.gz http://sourceforge.net/projects/boost/files/boost/1.64.0/boost_1_64_0.tar.gz/download
   - sudo tar xzf boost_1_64_0.tar.gz
   - cd boost_1_64_0/
-  - export CPLUS_INCLUDE_PATH=$PY_PATH/include
-  - ls $CPLUS_INCLUDE_PATH
+  - export CPLUS_INCLUDE_PATH=$PY_PATH/include/python3.6m
+  - ls h
   - sudo ./bootstrap.sh
   - sudo ./b2
   - ls stage/lib
