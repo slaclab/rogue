@@ -21,6 +21,7 @@ install:
   - ls stage/lib
   # - sudo ./b2 install -d0
   - export LD_LIBRARY_PATH=$TRAVIS_BUILD_DIR/packages/boost_1_64_0/stage/lib:$LD_LIBRARY_PATH
+  - export BOOST_ROOT=$TRAVIS_BUILD_DIR/packages/boost_1_64_0
   - cd ../..
   - git submodule update --init --recursive
   - mkdir build; cd build
@@ -42,4 +43,3 @@ after_success:
 
 env:
   - PY_PATH=/home/travis/virtualenv/python3.6.3
-  - BOOST_ROOT=$TRAVIS_BUILD_DIR/packages/boost_1_64_0
