@@ -128,7 +128,7 @@ void rpe::Value::initGdd(std::string typeStr, bool isEnum, uint32_t count) {
    }
  
    // 32-bit Float
-   else if ( typeStr == "float" or typeStr == "Float32" ) {
+   else if ( typeStr == "Float32" ) {
       log_->info("Detected 32-bit float %s: typeStr=%s", epicsName_.c_str(),typeStr.c_str());
       epicsType_ = aitEnumFloat32;
       precision_ = 32;
@@ -136,7 +136,7 @@ void rpe::Value::initGdd(std::string typeStr, bool isEnum, uint32_t count) {
    }
 
    // 64-bit float
-   else if ( typeStr == "Float64" ) {
+   else if ( typeStr == "float" or typeStr == "Float64" ) {
       log_->info("Detected 64-bit float %s: typeStr=%s", epicsName_.c_str(),typeStr.c_str());
       epicsType_ = aitEnumFloat64;
       precision_ = 64;
