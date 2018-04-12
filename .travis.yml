@@ -6,6 +6,7 @@ python:
   - 3.6
 
 install:
+  - pip install PyYAML Pyro4 parse recordclass click
   - cd packages
   - sudo wget -O boost_1_64_0.tar.gz http://sourceforge.net/projects/boost/files/boost/1.64.0/boost_1_64_0.tar.gz/download
   - sudo tar xzf boost_1_64_0.tar.gz
