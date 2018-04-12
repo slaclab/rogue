@@ -45,4 +45,3 @@ env:
   - USER=jesusvasquez333
   - PROJECT=rogue
   - BOOST_PATH=/home/travis/$USER/$PROJECT
-  -
