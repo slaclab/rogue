@@ -15,6 +15,7 @@ install:
   - ls stage/lib
   - export LD_LIBRARY_PATH=$TRAVIS_BUILD_DIR/packages/boost_1_64_0/stage/lib:$PY_PATH/lib:$LD_LIBRARY_PATH
   - export BOOST_ROOT=$TRAVIS_BUILD_DIR/packages/boost_1_64_0
+  - export CPLUS_INCLUDE_PATH=$PY_PATH/include
   - cd ../..
   - git submodule update --init --recursive
   - mkdir build; cd build
