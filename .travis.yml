@@ -34,7 +34,7 @@ cache:
 
 after_success:
   - python3 -V
-  # - python3 -c "import pyrogue"
+  - python3 -c "import pyrogue"
 
 env:
   - PY_PATH=/home/travis/virtualenv/python3.6.3
