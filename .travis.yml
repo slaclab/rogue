@@ -19,7 +19,8 @@ install:
   - sudo ./bootstrap.sh --prefix=/usr/local --with-python=python3 --with-libraries=system,thread,python
   - sudo ./b2
   - ls stage/lib
-  - sudo ./b2 install -d0
+  # - sudo ./b2 install -d0
+  - LD_LIBRARY_PATH=$BOOST_PATH/lib:$LD_LIBRARY_PATH
   - cd ../..
   - git submodule update --init --recursive
   - mkdir build; cd build
@@ -41,3 +42,7 @@ after_success:
 
 env:
   - PY_PATH=/home/travis/virtualenv/python3.6.3
+  - USER=jesusvasquez333
+  - PROJECT=rogue
+  - BOOST_PATH=/home/travis/$USER/$PROJECT
+  -
