@@ -22,7 +22,7 @@ install:
   - cd ../..
   - git submodule update --init --recursive
   - mkdir build; cd build
-  - cmake .. -DPYTHON_LIBRARY=/home/travis/virtualenv/python3.6.3/lib -DPYTHON_INCLUDE_DIR=/home/travis/virtualenv/python3.6.3/include
+  - cmake .. -DPYTHON_LIBRARY=$PY_PATH/lib -DPYTHON_INCLUDE_DIR=$PY_PATH/include
   # - make
   # - cd ..
   # - source setup_rogue.sh
@@ -37,3 +37,6 @@ cache:
 after_success:
   - python3 -V
   # - python3 -c "import pyrogue"
+
+env:
+  - PY_PATH=/home/travis/virtualenv/python3.6.3
