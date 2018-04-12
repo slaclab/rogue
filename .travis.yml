@@ -18,7 +18,7 @@ install:
   - cd ../..
   - git submodule update --init --recursive
   - mkdir build; cd build
-  - cmake .. -DPYTHON_LIBRARY=$PY_PATH/lib -DPYTHON_INCLUDE_DIR=$PY_PATH/include
+  - cmake .. -DPYTHON_LIBRARY=$PY_PATH/lib/python3.6 -DPYTHON_INCLUDE_DIR=$PY_PATH/include
   - make
   - cd ..
   - source setup_rogue.sh
