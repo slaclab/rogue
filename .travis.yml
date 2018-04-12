@@ -6,7 +6,7 @@ python:
   - 3.6
 
 install:
-  - ls ~
+  - echo $TRAVIS_BUILD_DIR
   - ls /home/travis/virtualenv/python3.6.3/
   - ls /home/travis/virtualenv/python3.6.3/lib
   - ls /home/travis/virtualenv/python3.6.3/include
@@ -20,7 +20,7 @@ install:
   - sudo ./b2
   - ls stage/lib
   # - sudo ./b2 install -d0
-  - LD_LIBRARY_PATH=$BOOST_PATH/lib:$LD_LIBRARY_PATH
+  - LD_LIBRARY_PATH=$TRAVIS_BUILD_DIR/packages/boost_1_64_0/stage/lib:$LD_LIBRARY_PATH
   - cd ../..
   - git submodule update --init --recursive
   - mkdir build; cd build
@@ -42,6 +42,3 @@ after_success:
 
 env:
   - PY_PATH=/home/travis/virtualenv/python3.6.3
-  - USER=jesusvasquez333
-  - PROJECT=rogue
-  - BOOST_PATH=/home/travis/$USER/$PROJECT
