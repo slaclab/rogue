@@ -10,7 +10,7 @@ install:
   - sudo wget -O boost_1_64_0.tar.gz http://sourceforge.net/projects/boost/files/boost/1.64.0/boost_1_64_0.tar.gz/download
   - sudo tar xzf boost_1_64_0.tar.gz
   - cd boost_1_64_0/
-  - sudo ./bootstrap.sh --prefix=/usr/local --with-python=python3 --with-libraries=system,thread,python
+  - sudo ./bootstrap.sh --prefix=/usr/local --with-python=python3 --with-libraries=system,thread,python3
   - sudo ./b2
   - ls stage/lib
   - export LD_LIBRARY_PATH=$TRAVIS_BUILD_DIR/packages/boost_1_64_0/stage/lib:$PY_PATH/lib:$LD_LIBRARY_PATH
