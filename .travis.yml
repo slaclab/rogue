@@ -16,6 +16,7 @@ before_install:
   - export CPLUS_INCLUDE_PATH=$PY_PATH/include/python3.6m
   - export LD_LIBRARY_PATH=$TRAVIS_BUILD_DIR/packages/boost_1_64_0/stage/lib:$PY_PATH/lib:$LD_LIBRARY_PATH
   - export BOOST_ROOT=$TRAVIS_BUILD_DIR/packages/boost_1_64_0
+  - git describe --tags
 
 install:
   - pip install -r requirements.txt
@@ -29,6 +30,8 @@ install:
   - mkdir build; cd build
   - cmake .. -DPYTHON_LIBRARY=$PY_PATH/lib/python3.6 -DPYTHON_INCLUDE_DIR=$PY_PATH/include
   - make
+  - ls
+  - cat RogueConfig.h
 
 before_script:
   - cd $TRAVIS_BUILD_DIR
