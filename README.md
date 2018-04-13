@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/jesusvasquez333/rogue.svg?branch=master)](https://travis-ci.org/jesusvasquez333/rogue) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/05ccf8297cc2426bb3f7ffca5ad82430)](https://www.codacy.com/app/jesusvasquez333/rogue?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=jesusvasquez333/rogue&amp;utm_campaign=Badge_Grade) [![Codacy Badge](https://api.codacy.com/project/badge/Coverage/05ccf8297cc2426bb3f7ffca5ad82430)](https://www.codacy.com/app/jesusvasquez333/rogue?utm_source=github.com&utm_medium=referral&utm_content=jesusvasquez333/rogue&utm_campaign=Badge_Coverage)
+
 # rogue
 SLAC Python Based Hardware Abstraction &amp; Data Acquisition System
 
@@ -7,7 +9,7 @@ https://listserv.slac.stanford.edu/cgi-bin/wa?A0=AIR-ROGUE-USERS
 JIRA:
 https://jira.slac.stanford.edu/plugins/servlet/project-config/ESROGUE
 
-Introduction presentation: 
+Introduction presentation:
 https://docs.google.com/presentation/d/1m2nqGzCZXsQV8ul4d0Gk7xmwn-OLW1iucTLm7LLp9eg/edit?usp=sharing
 some concepts (Blocks and Variables) are a little out of data as we have made changes.
 
@@ -120,13 +122,13 @@ $ source /slac/slac.stanford.edu/g/reseng/epics/base-R3-15-5-1-0/settings.csh
 ### Python packages required
 
 The following python packages are required to use rogue in the python3
-environment. Currently I am using PIP to install these, but you are free 
-to use your favorite python tool. These packages are already included in 
+environment. Currently I am using PIP to install these, but you are free
+to use your favorite python tool. These packages are already included in
 afs based SLAC python3 install mentioned above.
 
 ````
 $ pip3 install PyYAML
-$ pip3 install Pyro4 
+$ pip3 install Pyro4
 $ pip3 install parse
 $ pip3 install recordclass
 $ pip3 install click
@@ -162,10 +164,10 @@ $ git submodule update
 $ cd build
 $ make rebuild_cache
 $ make clean
-$ make 
+$ make
 ````
 
-Two libraries are output from the compute. lib/librogue-core.so is a c++ 
+Two libraries are output from the compute. lib/librogue-core.so is a c++
 core library for the various rogue classes and function. python/rogue.so
 is a shared object library for importing into python.
 
@@ -181,22 +183,22 @@ or for csh:
 $ source setup_rogue.csh
 ````
 
-These scripts also set the ROGUE_DIR environment variable which is usefull when 
+These scripts also set the ROGUE_DIR environment variable which is usefull when
 setting up the example projects or some SLAC projects.
 
-You may want to create a custom setup script to combine the rogue setup with 
+You may want to create a custom setup script to combine the rogue setup with
 other environmental setups for your project.
 
 ### Drivers
 
-Rogue is linked against the aes-stream-drivers package which is included 
+Rogue is linked against the aes-stream-drivers package which is included
 as a submodule at the drivers sub-directory. If you need to use these
 drivers please see the README.md file in that package.
 
 ### Additional Notes
 
-The rogue package includes a readme file for compiling and installing local 
-versions of python3, boost,zeromq and epics. This were created as 
+The rogue package includes a readme file for compiling and installing local
+versions of python3, boost,zeromq and epics. This were created as
 notes when installing local packages at slac. These should only be neccessary
 for outdated versions of Linux.
 
