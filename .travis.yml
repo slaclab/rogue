@@ -16,7 +16,7 @@ before_install:
 
 install:
   - pip install -r requirements.txt
-  - pip install coverage codecov
+  - pip install coverage codecov codacy-coverage
   - mkdir packages; cd packages
   - wget -O boost_1_64_0.tar.gz http://sourceforge.net/projects/boost/files/boost/1.64.0/boost_1_64_0.tar.gz/download
   - tar xzf boost_1_64_0.tar.gz; cd boost_1_64_0
@@ -38,3 +38,6 @@ script:
 after_success:
   - codecov
   - coverage report -m
+  - export CODACY_PROJECT_TOKEN=0289f074bfd144798e1e640d799db48a
+  - coverage xml
+  - python-codacy-coverage -r coverage.xml
