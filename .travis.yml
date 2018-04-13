@@ -1,0 +1,43 @@
+sudo: false
+
+language: python
+
+python:
+  - 3.6
+
+env:
+  - PY_PATH=/home/travis/virtualenv/python3.6.3
+
+before_install:
+  - export CPLUS_INCLUDE_PATH=$PY_PATH/include/python3.6m
+  - export LD_LIBRARY_PATH=$TRAVIS_BUILD_DIR/packages/boost_1_64_0/stage/lib:$PY_PATH/lib:$LD_LIBRARY_PATH
+  - export BOOST_ROOT=$TRAVIS_BUILD_DIR/packages/boost_1_64_0
+  - git pull --unshallow
+
+install:
+  - pip install -r requirements.txt
+  - pip install coverage codecov codacy-coverage
+  - mkdir packages; cd packages
+  - wget -O boost_1_64_0.tar.gz http://sourceforge.net/projects/boost/files/boost/1.64.0/boost_1_64_0.tar.gz/download
+  - tar xzf boost_1_64_0.tar.gz; cd boost_1_64_0
+  - ./bootstrap.sh --with-libraries=system,thread,python
+  - travis_wait ./b2 link=shared threading=multi variant=release -d0
+  - cd $TRAVIS_BUILD_DIR
+  - mkdir build; cd build
+  - cmake .. -DPYTHON_LIBRARY=$PY_PATH/lib/python3.6 -DPYTHON_INCLUDE_DIR=$PY_PATH/include
+  - make
+
+before_script:
+  - cd $TRAVIS_BUILD_DIR
+  - source setup_rogue.sh
+
+script:
+  # - python3 tests/test.py
+  - coverage run tests/cov_test.py
+
+after_success:
+  - codecov
+  - coverage report -m
+  - export CODACY_PROJECT_TOKEN=0289f074bfd144798e1e640d799db48a
+  - coverage xml
+  - python-codacy-coverage -r coverage.xml
