@@ -27,7 +27,7 @@ class Root(unittest.TestCase):
     def test_pyrogue_loc_var(self):
         root = LocalRoot()
         root.start()
-        reutl = root.myDevice.var.get()
+        result = root.myDevice.var.get()
         root.stop()
         self.assertEqual(result, 3.14)
 
