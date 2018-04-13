@@ -23,12 +23,13 @@ class Root(unittest.TestCase):
     """
     Test Pyrogue
     """
-    root = LocalRoot()
-    root.start()
-    reutl = root.myDevice.var.get()
-    root.stop()
 
-    self.assertEqual(result, 3.14)
+    def test_pyrogue_loc_var(self):
+        root = LocalRoot()
+        root.start()
+        reutl = root.myDevice.var.get()
+        root.stop()
+        self.assertEqual(result, 3.14)
 
 if __name__ == "__main__":
     unittest.main()
