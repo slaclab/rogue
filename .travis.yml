@@ -16,7 +16,7 @@ before_install:
   - export CPLUS_INCLUDE_PATH=$PY_PATH/include/python3.6m
   - export LD_LIBRARY_PATH=$TRAVIS_BUILD_DIR/packages/boost_1_64_0/stage/lib:$PY_PATH/lib:$LD_LIBRARY_PATH
   - export BOOST_ROOT=$TRAVIS_BUILD_DIR/packages/boost_1_64_0
-  - git describe --tags
+  - git describe
 
 install:
   - pip install -r requirements.txt
