@@ -25,7 +25,7 @@ install:
   - make
   - cd ..
 
-after_install:
+before_install:
   - source setup_rogue.sh
 
 script:
