@@ -14,10 +14,8 @@ install:
   - sudo wget -O boost_1_64_0.tar.gz http://sourceforge.net/projects/boost/files/boost/1.64.0/boost_1_64_0.tar.gz/download
   - sudo tar xzf boost_1_64_0.tar.gz
   - cd boost_1_64_0/
-  - ls $CPLUS_INCLUDE_PATH
   - sudo ./bootstrap.sh
   - sudo ./b2
-  - ls stage/lib
   - export LD_LIBRARY_PATH=$TRAVIS_BUILD_DIR/packages/boost_1_64_0/stage/lib:$PY_PATH/lib:$LD_LIBRARY_PATH
   - export BOOST_ROOT=$TRAVIS_BUILD_DIR/packages/boost_1_64_0
   - cd ../..
@@ -31,7 +29,7 @@ after_install:
   - source setup_rogue.sh
 
 script:
-  - pwd
+  - python3 tests/test.py
 
 cache:
   directories:
@@ -39,7 +37,6 @@ cache:
 
 after_success:
   - python3 -V
-  - python3 -c "import pyrogue"
 
 env:
   - PY_PATH=/home/travis/virtualenv/python3.6.3
