@@ -8,9 +8,9 @@ python:
 env:
   - PY_PATH=/home/travis/virtualenv/python3.6.3
 
-cache:
-  directories:
-    - packages
+# cache:
+#   directories:
+#     - packages
 
 before_install:
   - export CPLUS_INCLUDE_PATH=$PY_PATH/include/python3.6m
