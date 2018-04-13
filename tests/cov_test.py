@@ -25,10 +25,10 @@ class Root(unittest.TestCase):
     """
     root = LocalRoot()
     root.start()
-
-    print(root.myDevice.var.get())
-
+    reutl = root.myDevice.var.get()
     root.stop()
+
+    self.assertEqual(result, 3.14)
 
 if __name__ == "__main__":
     unittest.main()
