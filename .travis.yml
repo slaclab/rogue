@@ -7,6 +7,10 @@ python:
 
 before_install:
   - export CPLUS_INCLUDE_PATH=$PY_PATH/include/python3.6m
+  - export LD_LIBRARY_PATH=$TRAVIS_BUILD_DIR/packages/boost_1_64_0/stage/lib:$PY_PATH/lib:$LD_LIBRARY_PATH
+  - export BOOST_ROOT=$TRAVIS_BUILD_DIR/packages/boost_1_64_0
+  - export PYTHON_LIBRARY=$PY_PATH/lib/python3.6
+  - export PYTHON_INCLUDE_DIR=$PY_PATH/include
 
 install:
   - pip install -r requirements.txt
@@ -16,12 +20,10 @@ install:
   - cd boost_1_64_0/
   - sudo ./bootstrap.sh
   - sudo ./b2
-  - export LD_LIBRARY_PATH=$TRAVIS_BUILD_DIR/packages/boost_1_64_0/stage/lib:$PY_PATH/lib:$LD_LIBRARY_PATH
-  - export BOOST_ROOT=$TRAVIS_BUILD_DIR/packages/boost_1_64_0
   - cd ../..
   - git submodule update --init --recursive
   - mkdir build; cd build
-  - cmake .. -DPYTHON_LIBRARY=$PY_PATH/lib/python3.6 -DPYTHON_INCLUDE_DIR=$PY_PATH/include
+  - cmake ..
   - make
   - cd ..
 
