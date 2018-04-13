@@ -5,6 +5,13 @@ language: python
 python:
   - 3.6
 
+env:
+  - PY_PATH=/home/travis/virtualenv/python3.6.3
+
+cache:
+  directories:
+    - packages
+
 before_install:
   - export CPLUS_INCLUDE_PATH=$PY_PATH/include/python3.6m
   - export LD_LIBRARY_PATH=$TRAVIS_BUILD_DIR/packages/boost_1_64_0/stage/lib:$PY_PATH/lib:$LD_LIBRARY_PATH
@@ -30,12 +37,5 @@ before_script:
 script:
   - python3 tests/test.py
 
-cache:
-  directories:
-    - packages
-
 after_success:
   - python3 -V
-
-env:
-  - PY_PATH=/home/travis/virtualenv/python3.6.3
