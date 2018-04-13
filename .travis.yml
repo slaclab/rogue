@@ -5,13 +5,15 @@ language: python
 python:
   - 3.6
 
+before_install:
+  - export CPLUS_INCLUDE_PATH=$PY_PATH/include/python3.6m
+
 install:
   - pip install -r requirements.txt
   - cd packages
   - sudo wget -O boost_1_64_0.tar.gz http://sourceforge.net/projects/boost/files/boost/1.64.0/boost_1_64_0.tar.gz/download
   - sudo tar xzf boost_1_64_0.tar.gz
   - cd boost_1_64_0/
-  - export CPLUS_INCLUDE_PATH=$PY_PATH/include/python3.6m
   - ls $CPLUS_INCLUDE_PATH
   - sudo ./bootstrap.sh
   - sudo ./b2
@@ -24,6 +26,8 @@ install:
   - cmake .. -DPYTHON_LIBRARY=$PY_PATH/lib/python3.6 -DPYTHON_INCLUDE_DIR=$PY_PATH/include
   - make
   - cd ..
+
+after_install:
   - source setup_rogue.sh
 
 script:
