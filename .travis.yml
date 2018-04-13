@@ -14,11 +14,10 @@ install:
   - pip install -r requirements.txt
   - cd packages
   - sudo wget -O boost_1_64_0.tar.gz http://sourceforge.net/projects/boost/files/boost/1.64.0/boost_1_64_0.tar.gz/download
-  - sudo tar xzf boost_1_64_0.tar.gz
-  - cd boost_1_64_0/
+  - sudo tar xzf boost_1_64_0.tar.gz; cd boost_1_64_0
   - sudo ./bootstrap.sh
   - sudo ./b2
-  - cd ../..
+  - cd $TRAVIS_BUILD_DIR
   - git submodule update --init --recursive
   - mkdir build; cd build
   - cmake .. -DPYTHON_LIBRARY=$PY_PATH/lib/python3.6 -DPYTHON_INCLUDE_DIR=$PY_PATH/include
