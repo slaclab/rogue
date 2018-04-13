@@ -8,12 +8,12 @@
  * Description:
  * Version helpers for Rogue
  * ----------------------------------------------------------------------------
- * This file is part of the rogue software platform. It is subject to 
- * the license terms in the LICENSE.txt file found in the top-level directory 
- * of this distribution and at: 
- *    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
- * No part of the rogue software platform, including this file, may be 
- * copied, modified, propagated, or distributed except according to the terms 
+ * This file is part of the rogue software platform. It is subject to
+ * the license terms in the LICENSE.txt file found in the top-level directory
+ * of this distribution and at:
+ *    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+ * No part of the rogue software platform, including this file, may be
+ * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
@@ -35,9 +35,11 @@ void rogue::Version::init() {
    char     lead;
    int32_t  ret;
 
+   a = 5;
+
    ret = sscanf(_version,"%c%i.%i.%i-%i-%s",&lead,&_major,&_minor,&_maint,&_devel,dump);
 
-   if ( (ret != 4 && ret != 6) || (lead != 'v' && lead != 'V')) 
+   if ( (ret != 4 && ret != 6) || (lead != 'v' && lead != 'V'))
       throw(rogue::GeneralError("Version:init","Invalid compiled version string"));
 }
 
@@ -72,7 +74,7 @@ bool rogue::Version::lessThan(std::string compare) {
 }
 
 void rogue::Version::minVersion(std::string compare) {
-   if ( lessThan(compare) ) 
+   if ( lessThan(compare) )
       throw(rogue::GeneralError("Version:minVersion","Installed rogue is less than minimum version"));
 }
 
