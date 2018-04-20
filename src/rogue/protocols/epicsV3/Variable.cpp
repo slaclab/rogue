@@ -135,8 +135,8 @@ void rpe::Variable::valueGet() {
          rogue::ScopedGil gil;
          log_->info("Synchronous read for %s",epicsName_.c_str());
          try {
-            if ( isString_ ) fromPython(var_.attr("valueDisp")());
-            else fromPython(var_.attr("value")());
+            if ( isString_ ) fromPython(var_.attr("disp")());
+            else fromPython(var_.attr("get")());
          } catch (...) {
             log_->error("Error getting values from epics: %s\n",epicsName_.c_str());
          }
