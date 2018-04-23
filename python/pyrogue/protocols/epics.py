@@ -63,11 +63,19 @@ class EpicsCaServer(object):
     def start(self):
         self._srv.start()
 
+    def list(self):
+        return self._pvMap
+
+    def dump(self):
+        for k,v in self._pvMap.items():
+            print("{} -> {}".format(v,k))
+
     def _addPv(self,node,doAll):
         eName = self._base + ':'
 
         if doAll:
             eName += node.path.replace('.',':')
+            self._pvMap[node.path] = eName
         elif node.path in self._pvMap:
             eName = self._pvMap[node.path]
         else:
