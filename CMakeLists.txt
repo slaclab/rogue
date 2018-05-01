@@ -51,7 +51,12 @@ find_package(Boost 1.58 COMPONENTS system thread python3)
 
 # Next try Debian/Ubuntu suffix for boost
 if (NOT Boost_FOUND)
-   find_package(Boost 1.58 REQUIRED COMPONENTS system thread python-py35)
+   find_package(Boost 1.58  COMPONENTS system thread python-py35)
+endif()
+
+# Next try Mac with homebrew boost/python36
+if (NOT Boost_FOUND)
+   find_package(Boost 1.58 REQUIRED COMPONENTS system thread python36)
 endif()
 
 # Find python3
