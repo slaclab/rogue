@@ -18,7 +18,7 @@
  * ----------------------------------------------------------------------------
 **/
 #ifndef __ROGUE_HARDWARE_DATA_MODULE_H__
-#define __ROGUE_HAREWARE_DATA_MODULE_H__
+#define __ROGUE_HARDWARE_DATA_MODULE_H__
 
 namespace rogue {
    namespace hardware {
