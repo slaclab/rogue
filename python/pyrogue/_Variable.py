@@ -351,6 +351,7 @@ class RemoteVariable(BaseVariable):
                  bitSize=32,
                  bitOffset=0,
                  pollInterval=0, 
+                 overlapEn=False,
                  verify=True, ):
 
         if disp is None:
@@ -387,6 +388,7 @@ class RemoteVariable(BaseVariable):
         self._verify    = verify
         self._typeStr   = base.name(sum(bitSize))
         self._bytes     = int(math.ceil(float(self._bitOffset[-1] + self._bitSize[-1]) / 8.0))
+        self._overlapEn = overlapEn
 
 
     @property

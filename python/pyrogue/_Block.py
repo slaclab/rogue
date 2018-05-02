@@ -207,6 +207,7 @@ class RemoteBlock(BaseBlock, rim.Master):
         self._vDataMask = bytearray()  # Verify data mask
         self._varMask   = bytearray()  # Variable bit mask, used to detect overlaps
         self._size      = 0
+        self._overlapEn = False
         self._offset    = variable.offset
         self._minSize   = self._reqMinAccess()
         self._maxSize   = self._reqMaxAccess()
@@ -412,7 +413,7 @@ class RemoteBlock(BaseBlock, rim.Master):
             
             if not isinstance(var, pr.BaseCommand):
                 self._bulkEn = True
-                
+
             self._variables.append(var)
 
             self._log.debug(f"Adding variable {var.name} to block {self.name} at offset {self.offset:#02x}")
@@ -433,18 +434,25 @@ class RemoteBlock(BaseBlock, rim.Master):
             self._sData = bytearray(self._size)
             self._sDataMask = bytearray(self._size)
 
+            # Overlaps allowed only if all variables allow it
+            if len(self._variables) == 0:
+                self._overlapEn = var._overlapEn
+            elif not var._overlapEn:
+                self._overlapEn = False
+
             # Update var bit mask and check for overlaps
-            for x in range(0, len(var.bitOffset)):
-                for y in range(0, var.bitSize[x]):
-                    if getBitFromBytes(self._varMask,var.bitOffset[x]+y):
+            if not self._overlapEn:
+                for x in range(0, len(var.bitOffset)):
+                    for y in range(0, var.bitSize[x]):
+                        if getBitFromBytes(self._varMask,var.bitOffset[x]+y):
 
-                        print("\n\n\n------------------------ Variable Overlap Warning !!! --------------------------------")
-                        print(f"Detected bit overlap for variable {var.name} in block {self.name} at address {self.address}")
-                        print("This warning will be replaced with an exception in the next release!!!!!!!!")
-                        #msg = f"Detected bit overlap for variable {var.name}"
-                        #raise MemoryError(name=self.name, address=self.address, msg=msg)
+                            print("\n\n\n------------------------ Variable Overlap Warning !!! --------------------------------")
+                            print(f"Detected bit overlap for variable {var.name} in block {self.name} at address {self.address}")
+                            print("This warning will be replaced with an exception in the next release!!!!!!!!")
+                            #msg = f"Detected bit overlap for variable {var.name}"
+                            #raise MemoryError(name=self.name, address=self.address, msg=msg)
 
-                    setBitToBytes(self._varMask,var.bitOffset[x]+y,1)
+                        setBitToBytes(self._varMask,var.bitOffset[x]+y,1)
 
             # Update verify mask
             if var.mode == 'RW' and var.verify is True:
