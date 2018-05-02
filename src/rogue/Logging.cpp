@@ -145,6 +145,8 @@ void rogue::Logging::logThreadId(uint32_t level) {
    uint64_t tid64;
    pthread_threadid_np(NULL,&tid64);
    tid = (uint32_t)tid64;
+#else
+   tid = 0;
 #endif
 
    this->log(level, "PID=%i, TID=%i", getpid(), tid);
