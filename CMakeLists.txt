@@ -37,10 +37,12 @@ if (GIT_FOUND)
       OUTPUT_VARIABLE ROGUE_VERSION
       OUTPUT_STRIP_TRAILING_WHITESPACE)
 else()
-   message(FATAL_ERROR "Git is required to build rogue")
+   message(FATAL_ERROR "Git is required to build rogue!")
 endif()
 
+#####################################
 # Boost Configuration
+#####################################
 set(Boost_USE_MULTITHREADED ON)
 
 # Boost may need help on SLAC machines
@@ -51,16 +53,28 @@ find_package(Boost 1.58 COMPONENTS system thread python3)
 
 # Next try Debian/Ubuntu suffix for boost
 if (NOT Boost_FOUND)
-   find_package(Boost 1.58 REQUIRED COMPONENTS system thread python-py35)
+   find_package(Boost 1.58 COMPONENTS system thread python-py35)
 endif()
 
+# Next try Mac with homebrew boost/python36
+if (NOT Boost_FOUND)
+   find_package(Boost 1.58 COMPONENTS system thread python36)
+endif()
+
+# Nothing worked
+if (NOT Boost_FOUND)
+   message(FATAL_ERROR "Failed to find boost libraries with python3 support!")
+endif()
+
+#####################################
 # Find python3
+#####################################
 find_package(PythonInterp 3.6 REQUIRED)
 find_package(PythonLibs 3.6 REQUIRED)
 
-message("----------------------------------------------------------------------")
-
+#####################################
 # Optional EPICS V3
+#####################################
 if(DEFINED ENV{EPICS_BASE})
    set(DO_EPICS_V3 1)
    set(EPICSV3_BASE_DIR  $ENV{EPICS_BASE})
@@ -72,14 +86,13 @@ if(DEFINED ENV{EPICS_BASE})
                          ${EPICSV3_LIB_DIR}/libca.so 
                          ${EPICSV3_LIB_DIR}/libCom.so 
                          ${EPICSV3_LIB_DIR}/libgdd.so )
-   message("-- Found EPICS V3: ${EPICSV3_BASE_DIR}")
 else()
    set(DO_EPICS_V3 0)
 endif()
 
-message("-- Found boost: ${Boost_INCLUDE_DIRS}")
-message("-- Found python: ${PYTHON_LIBRARIES}")
-message("----------------------------------------------------------------------")
+#####################################
+# Setup build
+#####################################
 
 # Configuration File
 configure_file (
@@ -129,4 +142,20 @@ set(CONF_LIBRARIES    ${PROJECT_SOURCE_DIR}/lib/librogue-core.so)
 
 # Create the config file
 configure_file(RogueConfig.cmake.in ${PROJECT_SOURCE_DIR}/lib/RogueConfig.cmake @ONLY)
+
+
+message("")
+message("----------------------------------------------------------------------")
+message("-- Success!")
+message("-- Found boost: ${Boost_INCLUDE_DIRS}")
+message("-- Found python: ${PYTHON_LIBRARIES}")
+
+if (DO_EPICS_V3)
+   message("-- Found EPICS V3: ${EPICSV3_BASE_DIR}")
+else()
+   message("-- EPICS V3 not included")
+endif()
+
+message("----------------------------------------------------------------------")
+message("")
 
