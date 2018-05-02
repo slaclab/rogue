@@ -138,7 +138,7 @@ void rps::SrpV3::doTransaction(rim::TransactionPtr tran) {
    frame->setPayload(frameSize);
 
    // Setup iterators
-   rogue::GilRelease noGil();
+   rogue::GilRelease noGil;
    rim::TransactionLockPtr lock = tran->lock();
    fIter = frame->beginWrite();
    tIter = tran->begin();
@@ -172,7 +172,7 @@ void rps::SrpV3::acceptFrame ( ris::FramePtr frame ) {
    bool     doWrite;
    uint32_t fSize;
 
-   rogue::GilRelease noGil();
+   rogue::GilRelease noGil;
    ris::FrameLockPtr frLock = frame->lock();
 
    // Check frame size
