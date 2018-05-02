@@ -20,6 +20,12 @@
 #include <rogue/Logging.h>
 #include <boost/make_shared.hpp>
 
+#if defined(__linux__)
+#include <sys/syscall.h>
+#elif defined(__APPLE__) && defined(__MACH__)
+#include <pthread.h>
+#endif
+
 const uint32_t rogue::Logging::Critical;
 const uint32_t rogue::Logging::Error;
 const uint32_t rogue::Logging::Warning;
@@ -131,9 +137,17 @@ void rogue::Logging::debug(const char * fmt, ...) {
 }
 
 void rogue::Logging::logThreadId(uint32_t level) {
-   std::string id = boost::lexical_cast<std::string>(boost::this_thread::get_id());
+   uint32_t tid;
 
-   this->log(level, "PID=%i, TID=%s", getpid(), id.c_str());
+#if defined(__linux__)
+   tid = syscall(SYS_gettid);
+#elif defined(__APPLE__) && defined(__MACH__)
+   uint64_t tid64;
+   pthread_threadid_np(NULL,&tid64);
+   tid = (uint32_t)tid64;
+#endif
+
+   this->log(level, "PID=%i, TID=%i", getpid(), tid);
 }
 
 void rogue::Logging::setup_python() {
