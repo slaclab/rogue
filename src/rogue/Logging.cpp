@@ -18,7 +18,6 @@
  * ----------------------------------------------------------------------------
 **/
 #include <rogue/Logging.h>
-#include <sys/syscall.h>
 #include <boost/make_shared.hpp>
 
 const uint32_t rogue::Logging::Critical;
@@ -129,6 +128,12 @@ void rogue::Logging::debug(const char * fmt, ...) {
    va_start(arg,fmt);
    intLog(rogue::Logging::Debug,fmt,arg);
    va_end(arg);
+}
+
+void rogue::Logging::logThreadId(uint32_t level) {
+   std::string id = boost::lexical_cast<std::string>(boost::this_thread::get_id());
+
+   this->log(level, "PID=%i, TID=%s", getpid(), id.c_str());
 }
 
 void rogue::Logging::setup_python() {

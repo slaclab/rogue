@@ -18,7 +18,6 @@
  * ----------------------------------------------------------------------------
 **/
 #include <rogue/GeneralError.h>
-#include <sys/syscall.h>
 namespace bp = boost::python;
 
 PyObject * rogue::generalErrorObj = 0;

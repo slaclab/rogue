@@ -26,7 +26,6 @@
 #include <boost/make_shared.hpp>
 #include <rogue/GilRelease.h>
 #include <rogue/Logging.h>
-#include <sys/syscall.h>
 
 namespace rpp = rogue::protocols::packetizer;
 namespace ris = rogue::interfaces::stream;
@@ -71,7 +70,7 @@ void rpp::Transport::acceptFrame ( ris::FramePtr frame ) {
 //! Thread background
 void rpp::Transport::runThread() {
    Logging log("packetizer.Transport");
-   log.info("PID=%i, TID=%li",getpid(),syscall(SYS_gettid));
+   log.logThreadId(rogue::Logging::Info);
 
    try {
       while(1) {

@@ -82,6 +82,8 @@ namespace rogue {
          void info(const char * fmt, ...);
          void debug(const char * fmt, ...);
 
+         void logThreadId(uint32_t level);
+
          static void setup_python();
    };
 
