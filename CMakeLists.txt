@@ -141,7 +141,7 @@ TARGET_LINK_LIBRARIES(rogue LINK_PUBLIC rogue-core)
 
 # Setup configuration file
 set(CONF_INCLUDE_DIRS ${PROJECT_SOURCE_DIR}/include)
-set(CONF_LIBRARIES    ${PROJECT_SOURCE_DIR}/lib/librogue-core.so)
+set(CONF_LIBRARIES    ${PROJECT_SOURCE_DIR}/lib/librogue-core.so.${ROGUE_SOVER})
 
 # Create the config file
 configure_file(RogueConfig.cmake.in ${PROJECT_SOURCE_DIR}/lib/RogueConfig.cmake @ONLY)
