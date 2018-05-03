@@ -26,7 +26,6 @@
 #include <boost/make_shared.hpp>
 #include <rogue/GilRelease.h>
 #include <rogue/Logging.h>
-#include <sys/syscall.h>
 
 namespace rpr = rogue::protocols::rssi;
 namespace ris = rogue::interfaces::stream;
@@ -76,7 +75,7 @@ void rpr::Application::acceptFrame ( ris::FramePtr frame ) {
 //! Thread background
 void rpr::Application::runThread() {
    Logging log("rssi.Application");
-   log.info("PID=%i, TID=%li",getpid(),syscall(SYS_gettid));
+   log.logThreadId(rogue::Logging::Info);
 
    try {
       while(1) {

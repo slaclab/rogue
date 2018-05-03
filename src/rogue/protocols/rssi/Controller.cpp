@@ -31,7 +31,6 @@
 #include <boost/pointer_cast.hpp>
 #include <rogue/GilRelease.h>
 #include <rogue/Logging.h>
-#include <sys/syscall.h>
 #include <math.h>
 
 namespace rpr = rogue::protocols::rssi;
@@ -349,7 +348,7 @@ bool rpr::Controller::timePassed ( struct timeval *lastTime, uint32_t time, bool
 void rpr::Controller::runThread() {
    uint32_t wait;
 
-   log_->info("PID=%i, TID=%li",getpid(),syscall(SYS_gettid));
+   log_->logThreadId(rogue::Logging::Info);
 
    wait = 0;
 

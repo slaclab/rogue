@@ -162,7 +162,7 @@ void rps::SrpV0::acceptFrame ( ris::FramePtr frame ) {
    bool     doWrite;
    uint32_t fSize;
 
-   rogue::GilRelease noGil();
+   rogue::GilRelease noGil;
    ris::FrameLockPtr fLock = frame->lock();
 
    // Check frame size

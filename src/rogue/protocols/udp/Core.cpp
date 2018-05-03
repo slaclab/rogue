@@ -19,7 +19,6 @@
 **/
 #include <rogue/protocols/udp/Core.h>
 #include <rogue/Logging.h>
-#include <sys/syscall.h>
 #include <unistd.h>
 
 namespace rpu = rogue::protocols::udp;

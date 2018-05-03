@@ -27,7 +27,6 @@
 #include <rogue/GilRelease.h>
 #include <rogue/Logging.h>
 #include <iostream>
-#include <sys/syscall.h>
 #include <unistd.h>
 
 namespace rpu = rogue::protocols::udp;
@@ -160,7 +159,7 @@ void rpu::Server::runThread() {
    uint32_t           tmpLen;
    uint32_t           avail;
 
-   udpLog_->info("PID=%i, TID=%li",getpid(),syscall(SYS_gettid));
+   udpLog_->logThreadId(rogue::Logging::Info);
 
    // Preallocate frame
    frame = ris::Pool::acceptReq(maxPayload(),false);

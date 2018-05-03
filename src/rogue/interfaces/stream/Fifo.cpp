@@ -30,7 +30,6 @@
 #include <rogue/interfaces/stream/Fifo.h>
 #include <rogue/Logging.h>
 #include <rogue/GilRelease.h>
-#include <sys/syscall.h>
 
 namespace bp = boost::python;
 namespace ris = rogue::interfaces::stream;
@@ -91,7 +90,7 @@ void ris::Fifo::acceptFrame ( ris::FramePtr frame ) {
 
 //! Thread background
 void ris::Fifo::runThread() {
-   log_->info("PID=%i, TID=%li",getpid(),syscall(SYS_gettid));
+   log_->logThreadId(rogue::Logging::Info);
 
    try {
       while(1) {

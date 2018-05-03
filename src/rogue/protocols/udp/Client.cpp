@@ -27,7 +27,6 @@
 #include <boost/make_shared.hpp>
 #include <rogue/GilRelease.h>
 #include <rogue/Logging.h>
-#include <sys/syscall.h>
 
 namespace rpu = rogue::protocols::udp;
 namespace ris = rogue::interfaces::stream;
@@ -151,9 +150,9 @@ void rpu::Client::runThread() {
    fd_set         fds;
    int32_t        res;
    struct timeval tout;
-   uint32_t           avail;
+   uint32_t       avail;
 
-   udpLog_->info("PID=%i, TID=%li",getpid(),syscall(SYS_gettid));
+   udpLog_->logThreadId(rogue::Logging::Info);
 
    // Preallocate frame
    frame = ris::Pool::acceptReq(maxPayload(),false);
