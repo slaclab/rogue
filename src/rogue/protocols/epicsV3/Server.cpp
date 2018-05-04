@@ -59,10 +59,13 @@ void rpe::Server::stop() {
 
 void rpe::Server::addValue(rpe::ValuePtr value) {
    std::map<std::string, rpe::ValuePtr>::iterator it;
-
+   rpe::Pv * pv;
+   
    boost::lock_guard<boost::mutex> lock(mtx_);
 
    if ( (it = values_.find(value->epicsName())) == values_.end()) {
+      pv = new Pv(*this, value);
+      value->setPv(pv);
       values_[value->epicsName()] = value;
    }
    else {
@@ -87,17 +90,11 @@ pvCreateReturn rpe::Server::createPV(const casCtx &ctx, const char *pvName) {
    boost::lock_guard<boost::mutex> lock(mtx_);
 
    std::map<std::string, rpe::ValuePtr>::iterator it;
-   rpe::Pv * pv;
 
    if ( (it = values_.find(pvName)) == values_.end())
       return S_casApp_pvNotFound;
 
-   if ( (pv = it->second->getPv()) == NULL ) {
-      pv = new Pv(*this, it->second);
-      it->second->setPv(pv);
-   }
-
-   return *pv;
+   return *(it->second->getPv());
 }
 
 pvAttachReturn rpe::Server::pvAttach(const casCtx &ctx, const char *pvName) {
@@ -109,12 +106,7 @@ pvAttachReturn rpe::Server::pvAttach(const casCtx &ctx, const char *pvName) {
    if ( (it = values_.find(pvName)) == values_.end())
       return S_casApp_pvNotFound;
 
-   if ( (pv = it->second->getPv()) == NULL ) {
-      pv = new Pv(*this, it->second);
-      it->second->setPv(pv);
-   }
-
-   return *pv;
+   return *(it->second->getPv());
 }
 
 //! Run thread
