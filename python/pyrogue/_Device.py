@@ -265,7 +265,7 @@ class Device(pr.Node,rim.Hub):
 
         # Process local blocks.
         if variable is not None:
-            for b in getBlocksFromVariables(variable):
+            for b in pr.getBlocksFromVariables(variable):
                 b.startTransaction(rim.Write, check=checkEach)
 
         else:
@@ -286,7 +286,7 @@ class Device(pr.Node,rim.Hub):
 
         # Process local blocks.
         if variable is not None:
-            for b in getBlocksFromVariables(variable):
+            for b in pr.getBlocksFromVariables(variable):
                 b.startTransaction(rim.Verify, checkEach)
 
         else:
@@ -307,7 +307,7 @@ class Device(pr.Node,rim.Hub):
 
         # Process local blocks. 
         if variable is not None:
-            for b in getBlocksFromVariables(variable):
+            for b in pr.getBlocksFromVariables(variable):
                 b.startTransaction(rim.Read, checkEach)
 
         else:
@@ -327,7 +327,7 @@ class Device(pr.Node,rim.Hub):
 
             # Process local blocks
             if variable is not None:
-                for b in getBlocksFromVariables(variable):
+                for b in pr.getBlocksFromVariables(variable):
                     b._checkTransaction()
 
             else:
