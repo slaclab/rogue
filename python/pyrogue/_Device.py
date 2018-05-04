@@ -92,6 +92,19 @@ class DeviceError(Exception):
     """ Exception for device manipulation errors."""
     pass
 
+
+# Get a list of unique blocks from a variable list
+def getBlocksFromVariables(variables):
+    blocks = []
+
+    if isinstance(variables,list):
+        for v in variables:
+            if not v._block in blocks:
+                blocks.append(v._block)
+    else:
+        blocks.append(variables._block)
+
+
 class Device(pr.Node,rim.Hub):
     """Device class holder. TODO: Update comments"""
 
@@ -252,7 +265,9 @@ class Device(pr.Node,rim.Hub):
 
         # Process local blocks.
         if variable is not None:
-            variable._block.startTransaction(rim.Write, check=checkEach)
+            for b in getBlocksFromVariables(variable):
+                b.startTransaction(rim.Write, check=checkEach)
+
         else:
             for block in self._blocks:
                 if force or block.stale:
@@ -271,7 +286,9 @@ class Device(pr.Node,rim.Hub):
 
         # Process local blocks.
         if variable is not None:
-            variable._block.startTransaction(rim.Verify, checkEach)
+            for b in getBlocksFromVariables(variable):
+                b.startTransaction(rim.Verify, checkEach)
+
         else:
             for block in self._blocks:
                 if block.bulkEn:
@@ -290,7 +307,9 @@ class Device(pr.Node,rim.Hub):
 
         # Process local blocks. 
         if variable is not None:
-            variable._block.startTransaction(rim.Read, checkEach)
+            for b in getBlocksFromVariables(variable):
+                b.startTransaction(rim.Read, checkEach)
+
         else:
             for block in self._blocks:
                 if block.bulkEn:
@@ -308,7 +327,9 @@ class Device(pr.Node,rim.Hub):
 
             # Process local blocks
             if variable is not None:
-                variable._block._checkTransaction()
+                for b in getBlocksFromVariables(variable):
+                    b._checkTransaction()
+
             else:
                 for block in self._blocks:
                     block._checkTransaction()
