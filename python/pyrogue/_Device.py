@@ -104,6 +104,8 @@ def getBlocksFromVariables(variables):
     else:
         blocks.append(variables._block)
 
+    return blocks
+
 
 class Device(pr.Node,rim.Hub):
     """Device class holder. TODO: Update comments"""
