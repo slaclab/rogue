@@ -36,6 +36,8 @@ if (GIT_FOUND)
       COMMAND ${GIT_EXECUTABLE} describe --tags --dirty
       OUTPUT_VARIABLE ROGUE_VERSION
       OUTPUT_STRIP_TRAILING_WHITESPACE)
+
+   string(REGEX MATCH "^v([0-9]+)\\.([0-9]+)" ROGUE_SOVER ${ROGUE_VERSION})
 else()
    message(FATAL_ERROR "Git is required to build rogue!")
 endif()
@@ -115,7 +117,8 @@ add_library(rogue-core SHARED "")
 add_subdirectory(src/rogue)
 
 # Set output to TOP/lib
-set_target_properties(rogue-core PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/lib)
+set_target_properties(rogue-core PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/lib 
+                                 VERSION ${ROGUE_VERSION} SOVERSION ${ROGUE_SOVER})
 
 # Link rogue core to boost, python and bzip
 TARGET_LINK_LIBRARIES(rogue-core LINK_PUBLIC ${Boost_LIBRARIES})
@@ -138,17 +141,20 @@ TARGET_LINK_LIBRARIES(rogue LINK_PUBLIC rogue-core)
 
 # Setup configuration file
 set(CONF_INCLUDE_DIRS ${PROJECT_SOURCE_DIR}/include)
-set(CONF_LIBRARIES    ${PROJECT_SOURCE_DIR}/lib/librogue-core.so)
+set(CONF_LIBRARIES    ${PROJECT_SOURCE_DIR}/lib/librogue-core.so.${ROGUE_SOVER})
 
 # Create the config file
 configure_file(RogueConfig.cmake.in ${PROJECT_SOURCE_DIR}/lib/RogueConfig.cmake @ONLY)
 
-
 message("")
 message("----------------------------------------------------------------------")
 message("-- Success!")
+message("")
+message("-- Rogue Version: ${ROGUE_VERSION}")
+message("")
 message("-- Found boost: ${Boost_INCLUDE_DIRS}")
 message("-- Found python: ${PYTHON_LIBRARIES}")
+message("")
 
 if (DO_EPICS_V3)
    message("-- Found EPICS V3: ${EPICSV3_BASE_DIR}")
