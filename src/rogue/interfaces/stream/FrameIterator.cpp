@@ -146,6 +146,13 @@ const ris::FrameIterator ris::FrameIterator::operator=(const ris::FrameIterator 
    return *this;
 }
 
+//! Get iterator to end of buffer or end of frame, whichever is lower
+ris::FrameIterator ris::FrameIterator::endBuffer() {
+   ris::FrameIterator ret(*this);
+   ret.adjust(buffSize_-buffPos_);
+   return ret;
+}
+
 //! De-reference
 uint8_t & ris::FrameIterator::operator *() const {
    if ( framePos_ == frameSize_ ) 
