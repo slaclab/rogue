@@ -91,8 +91,6 @@ namespace rogue {
 
                void setPv(rogue::protocols::epicsV3::Pv * pv);
 
-               void clrPv();
-
                rogue::protocols::epicsV3::Pv * getPv();
                
                //---------------------------------------
