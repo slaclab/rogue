@@ -178,13 +178,8 @@ void rpe::Value::initGdd(std::string typeStr, bool isEnum, uint32_t count) {
    }
 }
 
-// Value lock held when this is called
 void rpe::Value::updated() {
-   if ( pv_ != NULL && pv_->interest() == aitTrue ) {
-      caServer *pServer = pv_->getCAS();
-      casEventMask select(pServer->valueEventMask() | pServer->alarmEventMask());
-      pv_->postEvent(select, *pValue_);
-   }
+   pv_->updated(*pValue_);
 }
 
 uint32_t rpe::Value::revEnum(std::string val) {
@@ -207,17 +202,10 @@ void rpe::Value::valueSet() { }
 void rpe::Value::valueGet() { }
 
 void rpe::Value::setPv(rpe::Pv * pv) {
-   boost::lock_guard<boost::mutex> lock(mtx_);
    pv_ = pv;
 }
 
-void rpe::Value::clrPv() {
-   boost::lock_guard<boost::mutex> lock(mtx_);
-   pv_ = NULL;
-}
-
 rpe::Pv * rpe::Value::getPv() {
-   boost::lock_guard<boost::mutex> lock(mtx_);
    return pv_;
 }
 
@@ -225,7 +213,10 @@ rpe::Pv * rpe::Value::getPv() {
 // EPICS Interface
 //---------------------------------------
 caStatus rpe::Value::read(gdd &prototype) {
-   return funcTable_.read(*this, prototype);
+   caStatus ret;
+
+   ret = funcTable_.read(*this, prototype);
+   return ret;
 }
 
 caStatus rpe::Value::readValue(gdd &value) {
@@ -272,8 +263,9 @@ caStatus rpe::Value::write(const gdd &value) {
    }
 
    // Scalar
-   else if ( (!array_) && value.isScalar() )
+   else if ( (!array_) && value.isScalar() ) {
       pValue_->put(&value);
+   }
 
    // Unsupported type
    else return S_cas_noConvert;   
@@ -284,7 +276,6 @@ caStatus rpe::Value::write(const gdd &value) {
 
    // Cal value set and update within lock 
    this->valueSet();
-   this->updated();
    return S_casApp_success;
 }
 
