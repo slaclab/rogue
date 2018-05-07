@@ -93,18 +93,13 @@ class DeviceError(Exception):
     pass
 
 
-# Get a list of unique blocks from a variable list
+
 def getBlocksFromVariables(variables):
-    blocks = []
-
-    if isinstance(variables,list):
-        for v in variables:
-            if not v._block in blocks:
-                blocks.append(v._block)
+    """Get a list of unique blocks from a list of Variables. """
+    if isinstance(variables, collections.Iterable):
+        return list(set(v._block for v in variables))
     else:
-        blocks.append(variables._block)
-
-    return blocks
+        return [variables._block]
 
 
 class Device(pr.Node,rim.Hub):
