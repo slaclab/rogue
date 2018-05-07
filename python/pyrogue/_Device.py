@@ -93,15 +93,6 @@ class DeviceError(Exception):
     pass
 
 
-
-def getBlocksFromVariables(variables):
-    """Get a list of unique blocks from a list of Variables. """
-    if isinstance(variables, collections.Iterable):
-        return list(set(v._block for v in variables))
-    else:
-        return [variables._block]
-
-
 class Device(pr.Node,rim.Hub):
     """Device class holder. TODO: Update comments"""
 
@@ -262,7 +253,7 @@ class Device(pr.Node,rim.Hub):
 
         # Process local blocks.
         if variable is not None:
-            for b in pr.getBlocksFromVariables(variable):
+            for b in self._getBlocks(variable):
                 b.startTransaction(rim.Write, check=checkEach)
 
         else:
@@ -283,7 +274,7 @@ class Device(pr.Node,rim.Hub):
 
         # Process local blocks.
         if variable is not None:
-            for b in pr.getBlocksFromVariables(variable):
+            for b in self._getBlocks(variable):
                 b.startTransaction(rim.Verify, checkEach)
 
         else:
@@ -304,7 +295,7 @@ class Device(pr.Node,rim.Hub):
 
         # Process local blocks. 
         if variable is not None:
-            for b in pr.getBlocksFromVariables(variable):
+            for b in self._getBlocks(variable):
                 b.startTransaction(rim.Read, checkEach)
 
         else:
@@ -324,7 +315,7 @@ class Device(pr.Node,rim.Hub):
 
             # Process local blocks
             if variable is not None:
-                for b in pr.getBlocksFromVariables(variable):
+                for b in self._getBlocks(variable):
                     b._checkTransaction()
 
             else:
@@ -402,6 +393,26 @@ class Device(pr.Node,rim.Hub):
                 
             # If we get here an error has occured
             raise pr.MemoryError (name=self.name, address=offset|self.address, error=self._getError())
+
+
+    def _getBlocks(self, variables):
+        """
+        Get a list of unique blocks from a list of Variables. 
+        Variables must belong to this device!
+        """
+        if isinstance(variables, pr.BaseVariable):
+            variables = [variables]
+
+        blocks = []
+        for v in variables:
+            if v not in self:
+                raise DeviceError(
+                    f'Variable {v.path} passed to {self.path}._getBlocks() is not a member of {self.path}')
+            else:
+                if v._block not in blocks:
+                    b.append(v._block)
+                
+        return blocks
 
     def _buildBlocks(self):
         remVars = []
