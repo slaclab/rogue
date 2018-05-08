@@ -405,7 +405,7 @@ class Device(pr.Node,rim.Hub):
 
         blocks = []
         for v in variables:
-            if v not in self:
+            if v.parent is not self:
                 raise DeviceError(
                     f'Variable {v.path} passed to {self.path}._getBlocks() is not a member of {self.path}')
             else:
