@@ -45,7 +45,7 @@ class MemoryError(Exception):
             self._value += "AXI timeout."
 
         elif (error & 0xFF000000) == rim.AxiFail:
-            self._value += "AXI fail."
+            self._value += "AXI Error: {:#02x}".format(error & 0xFF)
 
         elif (error & 0xFF000000) == rim.Unsupported:
             self._value += "Unsupported Transaction."
