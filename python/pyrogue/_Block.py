@@ -50,6 +50,9 @@ class MemoryError(Exception):
         elif (error & 0xFF000000) == rim.Unsupported:
             self._value += "Unsupported Transaction."
 
+        elif (error & 0xFF000000) == rim.ProtocolError:
+            self._value += "Protocol Error."
+
         elif error != 0:
             self._value += f"Unknown error {error:#02x}."
 
