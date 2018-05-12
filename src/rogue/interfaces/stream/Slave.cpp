@@ -133,6 +133,12 @@ void ris::Slave::setup_python() {
       .def("_acceptFrame",   &ris::Slave::acceptFrame, &ris::SlaveWrap::defAcceptFrame)
       .def("getFrameCount",  &ris::Slave::getFrameCount)
       .def("getByteCount",   &ris::Slave::getByteCount)
+      .def("getAllocCount",  &ris::Pool::getAllocCount)
+      .def("getAllocBytes",  &ris::Pool::getAllocBytes)
+      .def("setFixedSize",   &ris::Pool::setFixedSize)
+      .def("getFixedSize",   &ris::Pool::getFixedSize)
+      .def("setPoolSize",    &ris::Pool::setPoolSize)
+      .def("getPoolSize",    &ris::Pool::getPoolSize)
    ;
 
    bp::implicitly_convertible<ris::SlavePtr, ris::PoolPtr>();

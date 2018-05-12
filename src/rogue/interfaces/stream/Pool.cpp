@@ -120,7 +120,7 @@ void ris::Pool::setPoolSize(uint32_t size) {
 
 //! Get pool size
 uint32_t ris::Pool::getPoolSize() {
-   return fixedSize_;
+   return poolSize_;
 }
 
 //! Allocate a buffer passed size
