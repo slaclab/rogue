@@ -48,12 +48,15 @@ class UdpRssiPack(pr.Device):
         self._rssi.application()._setSlave(self._pack.transport())
         self._pack.transport()._setSlave(self._rssi.application())
 
-        self.add(pr.LocalVariable(name='rssiOpen',        mode='RO', value=0, pollInterval=1, localGet=self.getRssiOpen))
-        self.add(pr.LocalVariable(name='rssiDownCount',   mode='RO', value=0, pollInterval=1, localGet=self.getRssiDownCount))
-        self.add(pr.LocalVariable(name='rssiDropCount',   mode='RO', value=0, pollInterval=1, localGet=self.getRssiDropCount))
-        self.add(pr.LocalVariable(name='rssiRetranCount', mode='RO', value=0, pollInterval=1, localGet=self.getRssiRetranCount))
-        self.add(pr.LocalVariable(name='packDropCount',   mode='RO', value=0, pollInterval=1, localGet=self.getPackDropCount))
-        self.add(pr.LocalVariable(name='rssiBusy',        mode='RO', value=0, pollInterval=1, localGet=self.getRssiBusy))
+        self.add(pr.LocalVariable(name='rssiOpen',        mode='RO', value=False, pollInterval=1, disp="{}", localGet=self.getRssiOpen))
+        self.add(pr.LocalVariable(name='rssiDownCount',   mode='RO', value=0,     pollInterval=1, disp="{}", localGet=self.getRssiDownCount))
+        self.add(pr.LocalVariable(name='rssiDropCount',   mode='RO', value=0,     pollInterval=1, disp="{}", localGet=self.getRssiDropCount))
+        self.add(pr.LocalVariable(name='rssiRetranCount', mode='RO', value=0,     pollInterval=1, disp="{}", localGet=self.getRssiRetranCount))
+        self.add(pr.LocalVariable(name='packDropCount',   mode='RO', value=0,     pollInterval=1, disp="{}", localGet=self.getPackDropCount))
+        self.add(pr.LocalVariable(name='rssiBusy',        mode='RO', value=False, pollInterval=1, disp="{}", localGet=self.getRssiBusy))
+        self.add(pr.LocalVariable(name='maxPayload',      mode='RO', value=0,     pollInterval=1, disp="{}", localGet=self.getMaxPayload))
+        self.add(pr.LocalVariable(name='fixedSize',       mode='RO', value=0,     pollInterval=1, disp="{}", localGet=self.getFixedSize))
+        self.add(pr.LocalVariable(name='poolSize',        mode='RO', value=0,     pollInterval=1, disp="{}", localGet=self.getPoolSize))
 
         if wait:
             curr = int(time.time())
@@ -86,6 +89,15 @@ class UdpRssiPack(pr.Device):
 
     def getRssiBusy(self,dev=None,cmd=None):
         return(self._rssi.getBusy())
+
+    def getMaxPayload(self,dev=None,cmd=None):
+        return(self._udp.maxPayload())
+
+    def getFixedSize(self,dev=None,cmd=None):
+        return(self._udp.getFixedSize())
+
+    def getPoolSize(self,dev=None,cmd=None):
+        return(self._udp.getPoolSize())
 
     def stop(self):
         self._rssi.stop()
