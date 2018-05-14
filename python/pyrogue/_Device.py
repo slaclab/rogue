@@ -410,7 +410,7 @@ class Device(pr.Node,rim.Hub):
                     f'Variable {v.path} passed to {self.path}._getBlocks() is not a member of {self.path}')
             else:
                 if v._block not in blocks:
-                    b.append(v._block)
+                    blocks.append(v._block)
                 
         return blocks
 
