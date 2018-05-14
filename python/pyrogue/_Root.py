@@ -33,11 +33,17 @@ class RootLogHandler(logging.Handler):
         self._root = root
 
     def emit(self,record):
-        with self._root.updateGroup():
-            with self._root._sysLogLock:
-                val = self._root.SystemLog.value()
-                val += (self.format(record).splitlines()[0] + '\n')
-                self._root.SystemLog.set(val)
+        pass
+#        with self._root.updateGroup():
+#            with self._root._sysLogLock:
+#                try:
+#                    val = self._root.SystemLog.value()
+#                    val += (self.format(record).splitlines()[0] + '\n')
+#                    self._root.SystemLog.set(val)
+#                except e:
+#                    print("-----------Error Logging Exception -------------")
+#                    print(e)
+#                    print("------------------------------------------------")
 
 class Root(rogue.interfaces.stream.Master,pr.Device):
     """
