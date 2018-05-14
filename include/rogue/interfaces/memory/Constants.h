@@ -27,13 +27,14 @@ namespace rogue {
       namespace memory {
 
          // Error constants
-         static const uint32_t TimeoutError = 0x01000000;
-         static const uint32_t VerifyError  = 0x02000000;
-         static const uint32_t AddressError = 0x03000000;
-         static const uint32_t AxiTimeout   = 0x04000000;
-         static const uint32_t AxiFail      = 0x05000000;
-         static const uint32_t Unsupported  = 0x06000000;
-         static const uint32_t SizeError    = 0x07000000;
+         static const uint32_t TimeoutError  = 0x01000000;
+         static const uint32_t VerifyError   = 0x02000000;
+         static const uint32_t AddressError  = 0x03000000;
+         static const uint32_t BusTimeout    = 0x04000000;
+         static const uint32_t BusFail       = 0x05000000;
+         static const uint32_t Unsupported   = 0x06000000;
+         static const uint32_t SizeError     = 0x07000000;
+         static const uint32_t ProtocolError = 0x08000000;
 
          // Transaction constants
          static const uint32_t Read   = 0x1;

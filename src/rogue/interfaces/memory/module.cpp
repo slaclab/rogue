@@ -46,8 +46,8 @@ void rim::setup_module() {
    bp::scope().attr("VerifyError")  = VerifyError;
    bp::scope().attr("AddressError") = AddressError;
    bp::scope().attr("SizeError")    = SizeError;
-   bp::scope().attr("AxiTimeout")   = AxiTimeout;
-   bp::scope().attr("AxiFail")      = AxiFail;
+   bp::scope().attr("BusTimeout")   = BusTimeout;
+   bp::scope().attr("BusFail")      = BusFail;
    bp::scope().attr("Unsupported")  = Unsupported;
 
    // Transaction constants
