@@ -225,8 +225,8 @@ void rps::SrpV3::acceptFrame ( ris::FramePtr frame ) {
 
    // Check tail
    if ( tail[0] != 0 ) {
-      if ( tail[0] & 0xFF) tran->done(rim::AxiFail | (tail[0] & 0xFF));
-      else if ( tail[0] & 0x100 ) tran->done(rim::AxiTimeout);
+      if ( tail[0] & 0xFF) tran->done(rim::BusFail | (tail[0] & 0xFF));
+      else if ( tail[0] & 0x100 ) tran->done(rim::BusTimeout);
       else tran->done(tail[0]);
       log_->warning("Error detected for ID id=%i, tail=0x%0.8x",id,tail[0]);
       return;

@@ -41,11 +41,11 @@ class MemoryError(Exception):
         elif (error & 0xFF000000) == rim.SizeError:
             self._value += f"Size error. Size={size}."
 
-        elif (error & 0xFF000000) == rim.AxiTimeout:
-            self._value += "AXI timeout."
+        elif (error & 0xFF000000) == rim.BusTimeout:
+            self._value += "Bus timeout."
 
-        elif (error & 0xFF000000) == rim.AxiFail:
-            self._value += "AXI Error: {:#02x}".format(error & 0xFF)
+        elif (error & 0xFF000000) == rim.BusFail:
+            self._value += "Bus Error: {:#02x}".format(error & 0xFF)
 
         elif (error & 0xFF000000) == rim.Unsupported:
             self._value += "Unsupported Transaction."
