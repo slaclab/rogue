@@ -124,6 +124,7 @@ class UdpRssiPack(pr.Device):
             value       = 0, 
             localGet    = lambda: self._rssi.getRemMaxSegment(),
             disp        = '{:#x}',
+            units       = 'Bytes', 
             pollInterval= 5, 
         ))   
 
