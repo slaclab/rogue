@@ -255,25 +255,28 @@ class BaseVariable(pr.Node):
 
     @Pyro4.expose
     def parseDisp(self, sValue):
-        if sValue is None or isinstance(sValue, self.nativeType()):
-            return sValue
-        else:        
-            if sValue is '':
-                return ''
-            elif self.disp == 'enum':
-                return self.revEnum[sValue]
-            else:
-                t = self.nativeType()
-                if t == int:
-                    return int(sValue, 0)
-                elif t == float:
-                    return float(sValue)
-                elif t == bool:
-                    return str.lower(sValue) == "true"
-                elif t == list or t == dict:
-                    return eval(sValue)
+        try:
+            if sValue is None or isinstance(sValue, self.nativeType()):
+                return sValue
+            else:        
+                if sValue is '':
+                    return ''
+                elif self.disp == 'enum':
+                    return self.revEnum[sValue]
                 else:
-                    return sValue
+                    t = self.nativeType()
+                    if t == int:
+                        return int(sValue, 0)
+                    elif t == float:
+                        return float(sValue)
+                    elif t == bool:
+                        return str.lower(sValue) == "true"
+                    elif t == list or t == dict:
+                        return eval(sValue)
+                    else:
+                        return sValue
+        except:
+            raise VariableError("Invalid value {} for variable {} with type {}".format(sValue,self.name,self.nativeType()))
 
     @Pyro4.expose
     def setDisp(self, sValue, write=True):
