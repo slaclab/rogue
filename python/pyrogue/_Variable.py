@@ -484,6 +484,45 @@ class LocalVariable(BaseVariable):
     def __get__(self):
         return self.get(read=False)
 
+    def __iadd__(self, other):
+        return self._block.__iadd__(other)
+
+    def __isub__(self, other):
+        return self._block.__isub__(other)
+
+    def __imul__(self, other):
+        return self._block.__imul__(other)
+
+    def __imatmul__(self, other):
+        return self._block.__imatmul__(other)
+
+    def __itruediv__(self, other):
+        return self._block.__itruediv__(other)
+
+    def __ifloordiv__(self, other):
+        return self._block.__ifloordiv__(other)
+
+    def __imod__(self, other):
+        return self._block.__imod__(other)
+
+    def __ipow__(self, other[, modulo]):
+        return self._block.__ipow__(other)
+
+    def __ilshift__(self, other):
+        return self._block.__ilshift__(other)
+
+    def __irshift__(self, other):
+        return self._block.__irshift__(other)
+
+    def __iand__(self, other):
+        return self._block.__iand__(other)
+
+    def __ixor__(self, other):
+        return self._block.__ixor__(other)
+
+    def __ior__(self, other):
+        return self._block.__ior__(other)
+
 @Pyro4.expose
 class LinkVariable(BaseVariable):
 
