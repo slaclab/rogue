@@ -194,66 +194,79 @@ class LocalBlock(BaseBlock):
     def __iadd__(self, other):
         with self._lock:
             self.set(None, self.get(None) + other)
+            self.updated()
             return self.get(None)
 
     def __isub__(self, other):
         with self._lock:
             self.set(None, self.get(None) - other)
+            self.updated()
             return self.get(None)
 
     def __imul__(self, other):
         with self._lock:
             self.set(None, self.get(None) * other)
+            self.updated()
             return self.get(None)
 
     def __imatmul__(self, other):
         with self._lock:
             self.set(None, self.get(None) @ other)
+            self.updated()
             return self.get(None)
 
     def __itruediv__(self, other):
         with self._lock:
             self.set(None, self.get(None) / other)
+            self.updated()
             return self.get(None)
 
     def __ifloordiv__(self, other):
         with self._lock:
             self.set(None, self.get(None) // other)
+            self.updated()
             return self.get(None)
 
     def __imod__(self, other):
         with self._lock:
             self.set(None, self.get(None) % other)
+            self.updated()
             return self.get(None)
 
-    def __ipow__(self, other[, modulo]):
-        with self._lock:
-            self.set(None, self.get(None) ** other)
-            return self.get(None)
+#    def __ipow__(self, other[, modulo]):
+#        with self._lock:
+#            self.set(None, self.get(None) ** other)
+#            self.updated()
+#            return self.get(None)
 
     def __ilshift__(self, other):
         with self._lock:
             self.set(None, self.get(None) << other)
+            self.updated()
             return self.get(None)
 
     def __irshift__(self, other):
         with self._lock:
             self.set(None, self.get(None) >> other)
+            self.updated()
             return self.get(None)
 
     def __iand__(self, other):
         with self._lock:
             self.set(None, self.get(None) & other)
+            self.updated()
             return self.get(None)
 
     def __ixor__(self, other):
         with self._lock:
             self.set(None, self.get(None) ^ other)
+            self.updated()
             return self.get(None)
 
     def __ior__(self, other):
         with self._lock:
             self.set(None, self.get(None) | other)
+            self.updated()
             return self.get(None)
 
 
