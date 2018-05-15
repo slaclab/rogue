@@ -191,83 +191,71 @@ class LocalBlock(BaseBlock):
     def updated(self):
         self._variable._queueUpdate()
 
-    def __iadd__(self, other):
+    def _iadd(self, other):
         with self._lock:
             self.set(None, self.get(None) + other)
             self.updated()
-            return self.get(None)
 
-    def __isub__(self, other):
+    def _isub(self, other):
         with self._lock:
             self.set(None, self.get(None) - other)
             self.updated()
-            return self.get(None)
 
-    def __imul__(self, other):
+    def _imul(self, other):
         with self._lock:
             self.set(None, self.get(None) * other)
             self.updated()
-            return self.get(None)
 
-    def __imatmul__(self, other):
+    def _imatmul(self, other):
         with self._lock:
             self.set(None, self.get(None) @ other)
             self.updated()
-            return self.get(None)
 
-    def __itruediv__(self, other):
+    def _itruediv(self, other):
         with self._lock:
             self.set(None, self.get(None) / other)
             self.updated()
-            return self.get(None)
 
-    def __ifloordiv__(self, other):
+    def _ifloordiv(self, other):
         with self._lock:
             self.set(None, self.get(None) // other)
             self.updated()
-            return self.get(None)
 
-    def __imod__(self, other):
+    def _imod(self, other):
         with self._lock:
             self.set(None, self.get(None) % other)
             self.updated()
-            return self.get(None)
 
-#    def __ipow__(self, other[, modulo]):
+#    def _ipow(self, other[, modulo]):
 #        with self._lock:
 #            self.set(None, self.get(None) ** other)
 #            self.updated()
 #            return self.get(None)
 
-    def __ilshift__(self, other):
+    def _ilshift(self, other):
         with self._lock:
             self.set(None, self.get(None) << other)
             self.updated()
-            return self.get(None)
 
-    def __irshift__(self, other):
+    def _irshift(self, other):
         with self._lock:
             self.set(None, self.get(None) >> other)
             self.updated()
-            return self.get(None)
 
-    def __iand__(self, other):
+    def _iand(self, other):
         with self._lock:
             self.set(None, self.get(None) & other)
             self.updated()
-            return self.get(None)
 
-    def __ixor__(self, other):
+    def _ixor(self, other):
         with self._lock:
             self.set(None, self.get(None) ^ other)
             self.updated()
-            return self.get(None)
 
-    def __ior__(self, other):
+    def _ior(self, other):
         with self._lock:
             self.set(None, self.get(None) | other)
             self.updated()
-            return self.get(None)
 
 
 class RemoteBlock(BaseBlock, rim.Master):
