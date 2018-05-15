@@ -39,14 +39,22 @@ rpr::ClientPtr rpr::Client::create (uint32_t segSize) {
 void rpr::Client::setup_python() {
 
    bp::class_<rpr::Client, rpr::ClientPtr, boost::noncopyable >("Client",bp::init<uint32_t>())
-      .def("transport",      &rpr::Client::transport)
-      .def("application",    &rpr::Client::application)
-      .def("getOpen",        &rpr::Client::getOpen)
-      .def("getDownCount",   &rpr::Client::getDownCount)
-      .def("getDropCount",   &rpr::Client::getDropCount)
-      .def("getRetranCount", &rpr::Client::getRetranCount)
-      .def("getBusy",        &rpr::Client::getBusy)
-      .def("stop",           &rpr::Client::stop)
+      .def("transport",       &rpr::Client::transport)
+      .def("application",     &rpr::Client::application)
+      .def("getOpen",         &rpr::Client::getOpen)
+      .def("getDownCount",    &rpr::Client::getDownCount)
+      .def("getDropCount",    &rpr::Client::getDropCount)
+      .def("getRetranCount",  &rpr::Client::getRetranCount)
+      .def("getBusy",         &rpr::Client::getBusy)
+      .def("stop",            &rpr::Client::stop)
+      .def("getMaxRetran",    &rpr::Client::getMaxRetran)
+      .def("getRemMaxBuffers",&rpr::Client::getRemMaxBuffers)
+      .def("getRemMaxSegment",&rpr::Client::getRemMaxSegment)
+      .def("getRetranTout",   &rpr::Client::getRetranTout)
+      .def("getCumAckTout",   &rpr::Client::getCumAckTout)
+      .def("getNullTout",     &rpr::Client::getNullTout)
+      .def("getMaxCumAck",    &rpr::Client::getMaxCumAck)
+      .def("getSegmentSize",  &rpr::Client::getSegmentSize)
    ;
 
 }
@@ -99,6 +107,46 @@ uint32_t rpr::Client::getRetranCount() {
 //! Get busy
 bool rpr::Client::getBusy() {
    return(cntl_->getBusy());
+}
+
+//! Get maxRetran
+uint32_t rpr::Client::getMaxRetran() {
+   return(cntl_->getMaxRetran());
+}
+
+//! Get remMaxBuffers
+uint32_t rpr::Client::getRemMaxBuffers() {
+   return(cntl_->getRemMaxBuffers());
+}
+
+//! Get remMaxSegment
+uint32_t rpr::Client::getRemMaxSegment() {
+   return(cntl_->getRemMaxSegment());
+}
+
+//! Get retranTout
+uint32_t rpr::Client::getRetranTout() {
+   return(cntl_->getRetranTout());
+}
+
+//! Get cumAckTout
+uint32_t rpr::Client::getCumAckTout() {
+   return(cntl_->getCumAckTout());
+}
+
+//! Get nullTout
+uint32_t rpr::Client::getNullTout() {
+   return(cntl_->getNullTout());
+}
+
+//! Get maxCumAck
+uint32_t rpr::Client::getMaxCumAck() {
+   return(cntl_->getMaxCumAck());
+}
+
+//! Get segmentSize
+uint32_t rpr::Client::getSegmentSize() {
+   return(cntl_->getSegmentSize());
 }
 
 //! Set timeout for frame transmits in microseconds

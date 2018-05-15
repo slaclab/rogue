@@ -282,6 +282,46 @@ bool rpr::Controller::getBusy() {
    return(appQueue_.busy());
 }
 
+//! Get maxRetran
+uint32_t rpr::Controller::getMaxRetran() {
+   return(uint32_t(maxRetran_));
+}
+
+//! Get remMaxBuffers
+uint32_t rpr::Controller::getRemMaxBuffers() {
+   return(uint32_t(remMaxBuffers_));
+}
+
+//! Get remMaxSegment
+uint32_t rpr::Controller::getRemMaxSegment() {
+   return(uint32_t(remMaxSegment_));
+}
+
+//! Get retranTout
+uint32_t rpr::Controller::getRetranTout() {
+   return(uint32_t(retranTout_));
+}
+
+//! Get cumAckTout
+uint32_t rpr::Controller::getCumAckTout() {
+   return(uint32_t(cumAckTout_));
+}
+
+//! Get nullTout
+uint32_t rpr::Controller::getNullTout() {
+   return(uint32_t(nullTout_));
+}
+
+//! Get maxCumAck
+uint32_t rpr::Controller::getMaxCumAck() {
+   return(uint32_t(maxCumAck_));
+}
+
+//! Get segmentSize
+uint32_t rpr::Controller::getSegmentSize() {
+   return(uint32_t(segmentSize_));
+}
+
 // Method to transit a frame with proper updates
 void rpr::Controller::transportTx(rpr::HeaderPtr head, bool seqUpdate, bool retransmit) {
    if ( ! retransmit ) head->sequence = locSequence_;

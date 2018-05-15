@@ -47,17 +47,7 @@ class UdpRssiPack(pr.Device):
 
         self._rssi.application()._setSlave(self._pack.transport())
         self._pack.transport()._setSlave(self._rssi.application())
-
-        self.add(pr.LocalVariable(name='rssiOpen',        mode='RO', value=False, pollInterval=1, disp="{}", localGet=self.getRssiOpen))
-        self.add(pr.LocalVariable(name='rssiDownCount',   mode='RO', value=0,     pollInterval=1, disp="{}", localGet=self.getRssiDownCount))
-        self.add(pr.LocalVariable(name='rssiDropCount',   mode='RO', value=0,     pollInterval=1, disp="{}", localGet=self.getRssiDropCount))
-        self.add(pr.LocalVariable(name='rssiRetranCount', mode='RO', value=0,     pollInterval=1, disp="{}", localGet=self.getRssiRetranCount))
-        self.add(pr.LocalVariable(name='packDropCount',   mode='RO', value=0,     pollInterval=1, disp="{}", localGet=self.getPackDropCount))
-        self.add(pr.LocalVariable(name='rssiBusy',        mode='RO', value=False, pollInterval=1, disp="{}", localGet=self.getRssiBusy))
-        self.add(pr.LocalVariable(name='maxPayload',      mode='RO', value=0,     pollInterval=1, disp="{}", localGet=self.getMaxPayload))
-        self.add(pr.LocalVariable(name='fixedSize',       mode='RO', value=0,     pollInterval=1, disp="{}", localGet=self.getFixedSize))
-        self.add(pr.LocalVariable(name='poolSize',        mode='RO', value=0,     pollInterval=1, disp="{}", localGet=self.getPoolSize))
-
+        
         if wait:
             curr = int(time.time())
             last = curr
@@ -69,35 +59,122 @@ class UdpRssiPack(pr.Device):
                     self._log.warning("host=%s, port=%d -> Establishing link ..." % (host,port))
                     last = curr
 
+        # Add variables
+        self.add(pr.LocalVariable(
+            name        = 'rssiOpen',
+            mode        = 'RO', 
+            value       = False, 
+            localGet    = lambda: self._rssi.getOpen(),
+            pollInterval= 5, 
+        ))
+        
+        self.add(pr.LocalVariable(
+            name        = 'rssiDownCount',
+            mode        = 'RO', 
+            value       = 0, 
+            localGet    = lambda: self._rssi.getDownCount(),
+            pollInterval= 5, 
+        )) 
+
+        self.add(pr.LocalVariable(
+            name        = 'rssiDropCount',
+            mode        = 'RO', 
+            value       = 0, 
+            localGet    = lambda: self._rssi.getDropCount(),
+            pollInterval= 5, 
+        ))  
+
+        self.add(pr.LocalVariable(
+            name        = 'rssiRetranCount',
+            mode        = 'RO', 
+            value       = 0, 
+            localGet    = lambda: self._rssi.getRetranCount(),
+            pollInterval= 5, 
+        ))  
+        
+        self.add(pr.LocalVariable(
+            name        = 'rssiBusy',
+            mode        = 'RO', 
+            value       = False, 
+            localGet    = lambda: self._rssi.getBusy(),
+            pollInterval= 5, 
+        )) 
+
+        self.add(pr.LocalVariable(
+            name        = 'maxRetran',
+            mode        = 'RO', 
+            value       = 0, 
+            localGet    = lambda: self._rssi.getMaxRetran(),
+            disp        = '{:#x}',
+            pollInterval= 5, 
+        ))    
+
+        self.add(pr.LocalVariable(
+            name        = 'remMaxBuffers',
+            mode        = 'RO', 
+            value       = 0, 
+            localGet    = lambda: self._rssi.getRemMaxBuffers(),
+            disp        = '{:#x}',
+            pollInterval= 5, 
+        )) 
+
+        self.add(pr.LocalVariable(
+            name        = 'remMaxSegment',
+            mode        = 'RO', 
+            value       = 0, 
+            localGet    = lambda: self._rssi.getRemMaxSegment(),
+            disp        = '{:#x}',
+            units       = 'Bytes', 
+            pollInterval= 5, 
+        ))   
+
+        self.add(pr.LocalVariable(
+            name        = 'retranTout',
+            mode        = 'RO', 
+            value       = 0, 
+            localGet    = lambda: self._rssi.getRetranTout(),
+            # disp        = '{:#x}',
+            pollInterval= 5, 
+        ))  
+
+        self.add(pr.LocalVariable(
+            name        = 'cumAckTout',
+            mode        = 'RO', 
+            value       = 0, 
+            localGet    = lambda: self._rssi.getCumAckTout(),
+            # disp        = '{:#x}',
+            pollInterval= 5, 
+        ))  
+
+        self.add(pr.LocalVariable(
+            name        = 'nullTout',
+            mode        = 'RO', 
+            value       = 0, 
+            localGet    = lambda: self._rssi.getNullTout(),
+            # disp        = '{:#x}',
+            pollInterval= 5, 
+        ))
+
+        self.add(pr.LocalVariable(
+            name        = 'maxCumAck',
+            mode        = 'RO', 
+            value       = 0, 
+            localGet    = lambda: self._rssi.getMaxCumAck(),
+            disp        = '{:#x}',
+            pollInterval= 5, 
+        ))  
+
+        self.add(pr.LocalVariable(
+            name        = 'segmentSize',
+            mode        = 'RO', 
+            value       = 0, 
+            disp        = '{:#x}',
+            localGet    = lambda: self._rssi.getSegmentSize(),
+            pollInterval= 5, 
+        ))                    
+                            
     def application(self,dest):
         return(self._pack.application(dest))
-
-    def getRssiOpen(self,dev=None,cmd=None):
-        return(self._rssi.getOpen())
-
-    def getRssiDownCount(self,dev=None,cmd=None):
-        return(self._rssi.getDownCount())
-
-    def getRssiDropCount(self,dev=None,cmd=None):
-        return(self._rssi.getDropCount())
-
-    def getRssiRetranCount(self,dev=None,cmd=None):
-        return(self._rssi.getRetranCount())
-
-    def getPackDropCount(self,dev=None,cmd=None):
-        return(self._pack.getDropCount())
-
-    def getRssiBusy(self,dev=None,cmd=None):
-        return(self._rssi.getBusy())
-
-    def getMaxPayload(self,dev=None,cmd=None):
-        return(self._udp.maxPayload())
-
-    def getFixedSize(self,dev=None,cmd=None):
-        return(self._udp.getFixedSize())
-
-    def getPoolSize(self,dev=None,cmd=None):
-        return(self._udp.getPoolSize())
 
     def stop(self):
         self._rssi.stop()
