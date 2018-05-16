@@ -512,9 +512,9 @@ class LocalVariable(BaseVariable):
         self._block._imod(other)
         return self
 
-#    def __ipow__(self, other[, modulo]):
-#        self._block._ipow(other)
-#        return self
+    def __ipow__(self, other):
+        self._block._ipow(other)
+        return self
 
     def __ilshift__(self, other):
         self._block._ilshift(other)

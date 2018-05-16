@@ -226,11 +226,10 @@ class LocalBlock(BaseBlock):
             self.set(None, self.get(None) % other)
             self.updated()
 
-#    def _ipow(self, other[, modulo]):
-#        with self._lock:
-#            self.set(None, self.get(None) ** other)
-#            self.updated()
-#            return self.get(None)
+    def _ipow(self, other):
+        with self._lock:
+            self.set(None, self.get(None) ** other)
+            self.updated()
 
     def _ilshift(self, other):
         with self._lock:
