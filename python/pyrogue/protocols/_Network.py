@@ -93,12 +93,36 @@ class UdpRssiPack(pr.Device):
         ))  
         
         self.add(pr.LocalVariable(
-            name        = 'rssiBusy',
+            name        = 'locBusy',
             mode        = 'RO', 
             value       = False, 
-            localGet    = lambda: self._rssi.getBusy(),
+            localGet    = lambda: self._rssi.getLocBusy(),
             pollInterval= 5, 
         )) 
+        
+        self.add(pr.LocalVariable(
+            name        = 'locBusyCnt',
+            mode        = 'RO', 
+            value       = 0, 
+            localGet    = lambda: self._rssi.getLocBusyCnt(),
+            pollInterval= 5, 
+        ))         
+        
+        self.add(pr.LocalVariable(
+            name        = 'remBusy',
+            mode        = 'RO', 
+            value       = False, 
+            localGet    = lambda: self._rssi.getRemBusy(),
+            pollInterval= 5, 
+        )) 
+        
+        self.add(pr.LocalVariable(
+            name        = 'remBusyCnt',
+            mode        = 'RO', 
+            value       = 0, 
+            localGet    = lambda: self._rssi.getRemBusyCnt(),
+            pollInterval= 5, 
+        ))                 
 
         self.add(pr.LocalVariable(
             name        = 'maxRetran',
