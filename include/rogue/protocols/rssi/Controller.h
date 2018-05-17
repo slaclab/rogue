@@ -41,14 +41,19 @@ namespace rogue {
 
                static const uint8_t  Version       = 1;
                static const uint8_t  TimeoutUnit   = 3; // 1e-3
+               
                static const uint8_t  LocMaxBuffers = 32;
+               static const uint32_t BusyThold     = 16;
+               
+               // RSSI Timeouts (units of TimeoutUnit)
+               static const uint8_t  ReqMaxRetran  = 15;
+               static const uint32_t TryPeriod     = 100;
+               static const uint16_t ReqNullTout   = 3000;
+               
+               // Counters
                static const uint16_t ReqRetranTout = 10;
                static const uint16_t ReqCumAckTout = 5;
-               static const uint16_t ReqNullTout   = 3000;
-               static const uint8_t  ReqMaxRetran  = 15;
                static const uint8_t  ReqMaxCumAck  = 2;
-               static const uint32_t TryPeriod     = 100;
-               static const uint32_t BusyThold     = 16;
 
                //! Connection states
                enum States : uint32_t { StClosed     = 0,
@@ -71,7 +76,8 @@ namespace rogue {
                uint32_t dropCount_;
                uint8_t  nextSeqRx_;
                uint8_t  lastAckRx_;
-               bool     tranBusy_;
+               bool     remBusy_;
+               bool     locBusy_;
 
                // Application queue
                rogue::Queue<boost::shared_ptr<rogue::protocols::rssi::Header>> appQueue_;
@@ -110,6 +116,8 @@ namespace rogue {
                uint8_t  maxCumAck_;
                uint32_t remConnId_;
                uint32_t segmentSize_;
+               uint32_t locBusyCnt_;
+               uint32_t remBusyCnt_;
 
                // State thread
                boost::thread* thread_;
@@ -159,9 +167,18 @@ namespace rogue {
 
                //! Get Retran Count
                uint32_t getRetranCount();
+               
+               //! Get locBusy
+               bool getLocBusy();
 
-               //! Get busy
-               bool getBusy();
+               //! Get locBusyCnt
+               uint32_t getLocBusyCnt();
+
+               //! Get remBusy
+               bool getRemBusy();
+
+               //! Get remBusyCnt
+               uint32_t getRemBusyCnt();
                
                //! Get maxRetran
                uint32_t getMaxRetran();

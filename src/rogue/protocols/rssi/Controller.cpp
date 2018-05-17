@@ -62,7 +62,8 @@ rpr::Controller::Controller ( uint32_t segSize, rpr::TransportPtr tran, rpr::App
    dropCount_   = 0;
    nextSeqRx_   = 0;
    lastAckRx_   = 0;
-   tranBusy_    = false;
+   locBusy_     = false;
+   remBusy_     = false;
 
    lastSeqRx_   = 0;
 
@@ -87,6 +88,9 @@ rpr::Controller::Controller ( uint32_t segSize, rpr::TransportPtr tran, rpr::App
    maxCumAck_     = ReqMaxCumAck;
    remConnId_     = 0;
    segmentSize_   = segSize;
+   
+   locBusyCnt_ = 0;
+   remBusyCnt_ = 0;   
 
    log_ = rogue::Logging::create("rssi.controller");
 
@@ -160,8 +164,11 @@ void rpr::Controller::transportRx( ris::FramePtr frame ) {
    // Ack set
    if ( head->ack ) lastAckRx_ = head->acknowledge;
 
+   // Check for busy state transition
+   if (!remBusy_ && head->busy) remBusyCnt_++;
+   
    // Update busy bit
-   tranBusy_ = head->busy;
+   remBusy_ = head->busy;
 
    // Reset
    if ( head->rst ) {
@@ -193,7 +200,7 @@ void rpr::Controller::transportRx( ris::FramePtr frame ) {
          }
       }
       else {
-         log_->warning("Dropping out of sequence frame. server=%i",server_);
+         log_->warning("Dropping out of sequence frame. server=%i, head->sequence=0x%x, nextSeqRx_=0x%x",server_,head->sequence,nextSeqRx_);
          dropCount_++;
       }
    }
@@ -277,9 +284,24 @@ uint32_t rpr::Controller::getRetranCount() {
    return(retranCount_);
 }
 
-//! Get busy
-bool rpr::Controller::getBusy() {
-   return(appQueue_.busy());
+//! Get locBusy
+bool rpr::Controller::getLocBusy() {
+   return(locBusy_);
+}
+
+//! Get locBusyCnt
+uint32_t rpr::Controller::getLocBusyCnt() {
+   return(locBusyCnt_);
+}
+
+//! Get remBusy
+bool rpr::Controller::getRemBusy() {
+   return(remBusy_);
+}
+
+//! Get remBusyCnt
+uint32_t rpr::Controller::getRemBusyCnt() {
+   return(remBusyCnt_);
 }
 
 //! Get maxRetran
@@ -335,11 +357,14 @@ void rpr::Controller::transportTx(rpr::HeaderPtr head, bool seqUpdate, bool retr
 
    if ( appQueue_.busy() ) {
       head->acknowledge = lastAckTx_;
+      if(!locBusy_) locBusyCnt_++;
+      locBusy_   = true;
       head->busy = true;
    }
    else {
       head->acknowledge = lastSeqRx_;
       lastAckTx_ = lastSeqRx_;
+      locBusy_   = false;
       head->busy = false;
    }
  
@@ -630,7 +655,7 @@ uint32_t rpr::Controller::stateOpen () {
          if ( head == NULL ) continue;
 
          // Busy set, reset timeout
-         if ( tranBusy_ ) head->rstTime();
+         if ( remBusy_ ) head->rstTime();
 
          else if ( timePassed(head->getTime(),retranTout_) ) {
             log_->info("Found head for retransmit: server=%i id=%i", server_,idx);

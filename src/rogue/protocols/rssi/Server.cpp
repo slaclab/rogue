@@ -41,7 +41,10 @@ void rpr::Server::setup_python() {
       .def("getDownCount",    &rpr::Server::getDownCount)
       .def("getDropCount",    &rpr::Server::getDropCount)
       .def("getRetranCount",  &rpr::Server::getRetranCount)
-      .def("getBusy",         &rpr::Server::getBusy)
+      .def("getLocBusy",      &rpr::Server::getLocBusy)
+      .def("getLocBusyCnt",   &rpr::Server::getLocBusyCnt)
+      .def("getRemBusy",      &rpr::Server::getRemBusy)
+      .def("getRemBusyCnt",   &rpr::Server::getRemBusyCnt)
       .def("stop",            &rpr::Server::stop)
       .def("getMaxRetran",    &rpr::Server::getMaxRetran)
       .def("getRemMaxBuffers",&rpr::Server::getRemMaxBuffers)
@@ -100,9 +103,24 @@ uint32_t rpr::Server::getRetranCount() {
    return(cntl_->getRetranCount());
 }
 
-//! Get busy
-bool rpr::Server::getBusy() {
-   return(cntl_->getBusy());
+//! Get locBusy
+bool rpr::Server::getLocBusy() {
+   return(cntl_->getLocBusy());
+}
+
+//! Get locBusyCnt
+uint32_t rpr::Server::getLocBusyCnt() {
+   return(cntl_->getLocBusyCnt());
+}
+
+//! Get remBusy
+bool rpr::Server::getRemBusy() {
+   return(cntl_->getRemBusy());
+}
+
+//! Get remBusyCnt
+uint32_t rpr::Server::getRemBusyCnt() {
+   return(cntl_->getRemBusyCnt());
 }
 
 //! Get maxRetran

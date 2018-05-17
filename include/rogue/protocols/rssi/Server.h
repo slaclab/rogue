@@ -72,8 +72,17 @@ namespace rogue {
                //! Get Retran Count
                uint32_t getRetranCount();
 
-               //! Get Busy
-               bool getBusy();
+               //! Get locBusy
+               bool getLocBusy();
+
+               //! Get locBusyCnt
+               uint32_t getLocBusyCnt();
+
+               //! Get remBusy
+               bool getRemBusy();
+
+               //! Get remBusyCnt
+               uint32_t getRemBusyCnt();
                
                //! Get maxRetran
                uint32_t getMaxRetran();
