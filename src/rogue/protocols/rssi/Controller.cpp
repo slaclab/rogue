@@ -249,10 +249,10 @@ void rpr::Controller::transportRx( ris::FramePtr frame ) {
                      }
                   }
                }
-               // Prevent being in the loop for too long
-               if (seqDet >= ReqMaxCumAck){
-                  break;
-               }
+               // // Prevent being in the loop for too long
+               // if (seqDet > ReqMaxCumAck){
+                  // break;
+               // }
             }
          }    
      
