@@ -32,6 +32,7 @@
 #include <rogue/GilRelease.h>
 #include <rogue/Logging.h>
 #include <math.h>
+#include <stdlib.h>
 
 namespace rpr = rogue::protocols::rssi;
 namespace ris = rogue::interfaces::stream;
@@ -181,6 +182,7 @@ void rpr::Controller::transportRx( ris::FramePtr frame ) {
    // or we are waiting for ack replay
    else if ( head->syn ) {
       if ( state_ == StOpen || state_ == StWaitSyn ) {
+         // log_->warning("Syn frame goes to state machine if state = open or we are waiting for ack replay");
          lastSeqRx_ = head->sequence;
          nextSeqRx_ = lastSeqRx_ + 1;
          stQueue_.push(head);
@@ -190,6 +192,7 @@ void rpr::Controller::transportRx( ris::FramePtr frame ) {
    // Data or NULL in the correct sequence go to application
    else if ( state_ == StOpen && ( head->nul || frame->getPayload() > rpr::Header::HeaderSize ) ) {
       if ( head->sequence == nextSeqRx_ ) {
+         // log_->warning("Data or NULL in the correct sequence go to application: nextSeqRx_=0x%x", nextSeqRx_);
 
          lastSeqRx_ = nextSeqRx_;
          nextSeqRx_ = nextSeqRx_ + 1;
@@ -200,8 +203,44 @@ void rpr::Controller::transportRx( ris::FramePtr frame ) {
          }
       }
       else {
-         log_->warning("Dropping out of sequence frame. server=%i, head->sequence=0x%x, nextSeqRx_=0x%x",server_,head->sequence,nextSeqRx_);
-         dropCount_++;
+         // Push into out of order queue
+         oooQueue_.push(head);
+         
+         // Search through the queue for possible matches
+         for (uint32_t i = 0; i<oooQueue_.size();i++){
+            for (uint32_t j = 0; j<oooQueue_.size();j++){
+               
+               // Check if queue is not empty
+               if ( ! oooQueue_.empty() ) {
+               
+                  // Get the frame from queue
+                  head = oooQueue_.pop();
+                  
+                  // Check the sequence number
+                  if ( head->sequence == nextSeqRx_ ) {
+                     
+                     lastSeqRx_ = nextSeqRx_;
+                     nextSeqRx_ = nextSeqRx_ + 1;
+                     stCond_.notify_all();
+
+                     if ( !head->nul ) {
+                        appQueue_.push(head);
+                     }            
+                     
+                  // Check if frame sequence behind in time (assumes max segments < 128)
+                  } else if ( (head->sequence - nextSeqRx_)&0x80 ) {
+                     log_->warning("Dropping out of sequence frame. server=%i, head->sequence=0x%x, nextSeqRx_=0x%x,oooQueue_.size()=%d",server_,head->sequence,nextSeqRx_,oooQueue_.size());
+                     dropCount_++;
+                  } else {
+                     // Push back into out of order queue
+                     oooQueue_.push(head);                     
+                  }
+               }
+            }
+         }
+         
+         // log_->warning("Dropping out of sequence frame. server=%i, head->sequence=0x%x, nextSeqRx_=0x%x",server_,head->sequence,nextSeqRx_);
+         // dropCount_++;         
       }
    }
 }
@@ -402,8 +441,12 @@ bool rpr::Controller::timePassed ( struct timeval *lastTime, uint32_t time, bool
 
    gettimeofday(&currTime,NULL);
 
-   sumTime.tv_sec = (usec / 1000000);
-   sumTime.tv_usec = (usec % 1000000);
+   // sumTime.tv_sec = (usec / 1000000);
+   // sumTime.tv_usec = (usec % 1000000);
+   div_t divResult = div(usec,1000000);
+   sumTime.tv_sec  = divResult.quot;
+   sumTime.tv_usec = divResult.rem; 
+   
    timeradd(lastTime,&sumTime,&endTime);
 
    return(timercmp(&currTime,&endTime,>));
@@ -699,7 +742,7 @@ uint32_t rpr::Controller::stateError () {
    boost::unique_lock<boost::mutex> lock(txMtx_);
    transportTx(rst,true,false);
 
-   // Reset tx list
+   // Reset TX list
    for (x=0; x < 256; x++) txList_[x].reset();
    txListCount_ = 0;
 
@@ -709,8 +752,9 @@ uint32_t rpr::Controller::stateError () {
    log_->warning("Entering closed state. Server=%i",server_);
    state_ = StClosed;
 
-   // Resest queues
+   // Reset queues
    appQueue_.reset();
+   oooQueue_.reset();
    stQueue_.reset();
 
    gettimeofday(&stTime_,NULL);

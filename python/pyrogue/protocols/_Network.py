@@ -24,7 +24,7 @@ import time
 
 class UdpRssiPack(pr.Device):
 
-    def __init__(self,*,host,port,size=None, jumbo=False, wait=True, packVer=1, **kwargs):
+    def __init__(self,*,host,port,size=None, jumbo=False, wait=True, packVer=1, pollInterval=1, **kwargs):
         super(self.__class__, self).__init__(**kwargs)
         self._host = host
         self._port = port
@@ -65,7 +65,7 @@ class UdpRssiPack(pr.Device):
             mode        = 'RO', 
             value       = False, 
             localGet    = lambda: self._rssi.getOpen(),
-            pollInterval= 5, 
+            pollInterval= pollInterval, 
         ))
         
         self.add(pr.LocalVariable(
@@ -73,7 +73,7 @@ class UdpRssiPack(pr.Device):
             mode        = 'RO', 
             value       = 0, 
             localGet    = lambda: self._rssi.getDownCount(),
-            pollInterval= 5, 
+            pollInterval= pollInterval, 
         )) 
 
         self.add(pr.LocalVariable(
@@ -81,7 +81,7 @@ class UdpRssiPack(pr.Device):
             mode        = 'RO', 
             value       = 0, 
             localGet    = lambda: self._rssi.getDropCount(),
-            pollInterval= 5, 
+            pollInterval= pollInterval, 
         ))  
 
         self.add(pr.LocalVariable(
@@ -89,7 +89,7 @@ class UdpRssiPack(pr.Device):
             mode        = 'RO', 
             value       = 0, 
             localGet    = lambda: self._rssi.getRetranCount(),
-            pollInterval= 5, 
+            pollInterval= pollInterval, 
         ))  
         
         self.add(pr.LocalVariable(
@@ -98,7 +98,7 @@ class UdpRssiPack(pr.Device):
             value       = False, 
             localGet    = lambda: self._rssi.getLocBusy(),
             hidden      = True,
-            pollInterval= 5, 
+            pollInterval= pollInterval, 
         )) 
         
         self.add(pr.LocalVariable(
@@ -106,7 +106,7 @@ class UdpRssiPack(pr.Device):
             mode        = 'RO', 
             value       = 0, 
             localGet    = lambda: self._rssi.getLocBusyCnt(),
-            pollInterval= 5, 
+            pollInterval= pollInterval, 
         ))         
         
         self.add(pr.LocalVariable(
@@ -115,7 +115,7 @@ class UdpRssiPack(pr.Device):
             value       = False, 
             localGet    = lambda: self._rssi.getRemBusy(),
             hidden      = True,
-            pollInterval= 5, 
+            pollInterval= pollInterval, 
         )) 
         
         self.add(pr.LocalVariable(
@@ -123,7 +123,7 @@ class UdpRssiPack(pr.Device):
             mode        = 'RO', 
             value       = 0, 
             localGet    = lambda: self._rssi.getRemBusyCnt(),
-            pollInterval= 5, 
+            pollInterval= pollInterval, 
         ))                 
 
         self.add(pr.LocalVariable(
@@ -131,8 +131,7 @@ class UdpRssiPack(pr.Device):
             mode        = 'RO', 
             value       = 0, 
             localGet    = lambda: self._rssi.getMaxRetran(),
-            disp        = '{:#x}',
-            pollInterval= 5, 
+            pollInterval= pollInterval, 
         ))    
 
         self.add(pr.LocalVariable(
@@ -140,8 +139,7 @@ class UdpRssiPack(pr.Device):
             mode        = 'RO', 
             value       = 0, 
             localGet    = lambda: self._rssi.getRemMaxBuffers(),
-            disp        = '{:#x}',
-            pollInterval= 5, 
+            pollInterval= pollInterval, 
         )) 
 
         self.add(pr.LocalVariable(
@@ -149,9 +147,8 @@ class UdpRssiPack(pr.Device):
             mode        = 'RO', 
             value       = 0, 
             localGet    = lambda: self._rssi.getRemMaxSegment(),
-            disp        = '{:#x}',
             units       = 'Bytes', 
-            pollInterval= 5, 
+            pollInterval= pollInterval, 
         ))   
 
         self.add(pr.LocalVariable(
@@ -159,8 +156,8 @@ class UdpRssiPack(pr.Device):
             mode        = 'RO', 
             value       = 0, 
             localGet    = lambda: self._rssi.getRetranTout(),
-            # disp        = '{:#x}',
-            pollInterval= 5, 
+            units       = 'ms', 
+            pollInterval= pollInterval, 
         ))  
 
         self.add(pr.LocalVariable(
@@ -168,8 +165,8 @@ class UdpRssiPack(pr.Device):
             mode        = 'RO', 
             value       = 0, 
             localGet    = lambda: self._rssi.getCumAckTout(),
-            # disp        = '{:#x}',
-            pollInterval= 5, 
+            units       = 'ms', 
+            pollInterval= pollInterval, 
         ))  
 
         self.add(pr.LocalVariable(
@@ -177,8 +174,8 @@ class UdpRssiPack(pr.Device):
             mode        = 'RO', 
             value       = 0, 
             localGet    = lambda: self._rssi.getNullTout(),
-            # disp        = '{:#x}',
-            pollInterval= 5, 
+            units       = 'ms', 
+            pollInterval= pollInterval, 
         ))
 
         self.add(pr.LocalVariable(
@@ -186,17 +183,16 @@ class UdpRssiPack(pr.Device):
             mode        = 'RO', 
             value       = 0, 
             localGet    = lambda: self._rssi.getMaxCumAck(),
-            disp        = '{:#x}',
-            pollInterval= 5, 
+            pollInterval= pollInterval, 
         ))  
 
         self.add(pr.LocalVariable(
             name        = 'segmentSize',
             mode        = 'RO', 
             value       = 0, 
-            disp        = '{:#x}',
             localGet    = lambda: self._rssi.getSegmentSize(),
-            pollInterval= 5, 
+            units       = 'Bytes',
+            pollInterval= pollInterval, 
         ))                    
                             
     def application(self,dest):

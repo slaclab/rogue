@@ -40,7 +40,7 @@ namespace rogue {
          class Controller : public boost::enable_shared_from_this<rogue::protocols::rssi::Controller> {
 
                static const uint8_t  Version       = 1;
-               static const uint8_t  TimeoutUnit   = 3; // 1e-3
+               static const uint8_t  TimeoutUnit   = 3; // rssiTime * std::pow(10,TimeoutUnit) = units of ms
                
                static const uint8_t  LocMaxBuffers = 32;
                static const uint32_t BusyThold     = 16;
@@ -81,6 +81,9 @@ namespace rogue {
 
                // Application queue
                rogue::Queue<boost::shared_ptr<rogue::protocols::rssi::Header>> appQueue_;
+               
+               // Sequence Out of Order ("OOO") queue
+               rogue::Queue<boost::shared_ptr<rogue::protocols::rssi::Header>> oooQueue_;               
 
                // State queue
                rogue::Queue<boost::shared_ptr<rogue::protocols::rssi::Header>> stQueue_;
@@ -241,7 +244,7 @@ namespace rogue {
 
          };
 
-         // Convienence
+         // Convenience
          typedef boost::shared_ptr<rogue::protocols::rssi::Controller> ControllerPtr;
 
       }
