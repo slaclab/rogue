@@ -216,6 +216,7 @@ void rpr::Controller::transportRx( ris::FramePtr frame ) {
          } else {
          
             // Search through the queue for possible matches
+            uint32_t seqDet = 0;
             for (uint32_t i = 0; i<oooQueue_.size();i++){
                for (uint32_t j = 0; j<oooQueue_.size();j++){
                   
@@ -227,6 +228,8 @@ void rpr::Controller::transportRx( ris::FramePtr frame ) {
                      
                      // Check the sequence number
                      if ( head->sequence == nextSeqRx_ ) {
+                        
+                        seqDet++;
                         
                         lastSeqRx_ = nextSeqRx_;
                         nextSeqRx_ = nextSeqRx_ + 1;
@@ -245,6 +248,10 @@ void rpr::Controller::transportRx( ris::FramePtr frame ) {
                         oooQueue_.push(head);                     
                      }
                   }
+               }
+               // Prevent being in the loop for too long
+               if (seqDet >= ReqMaxCumAck){
+                  break;
                }
             }
          }    
