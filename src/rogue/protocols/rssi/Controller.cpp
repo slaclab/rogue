@@ -286,6 +286,9 @@ uint32_t rpr::Controller::getRetranCount() {
 
 //! Get locBusy
 bool rpr::Controller::getLocBusy() {
+   bool queueBusy = appQueue_.busy();
+   if(!locBusy_ && queueBusy) locBusyCnt_++;   
+   locBusy_ = queueBusy;
    return(locBusy_);
 }
 
@@ -355,16 +358,13 @@ void rpr::Controller::transportTx(rpr::HeaderPtr head, bool seqUpdate, bool retr
       locSequence_++;
    }
 
-   if ( appQueue_.busy() ) {
+   if ( getLocBusy() ) {
       head->acknowledge = lastAckTx_;
-      if(!locBusy_) locBusyCnt_++;
-      locBusy_   = true;
       head->busy = true;
    }
    else {
       head->acknowledge = lastSeqRx_;
       lastAckTx_ = lastSeqRx_;
-      locBusy_   = false;
       head->busy = false;
    }
  
@@ -622,7 +622,7 @@ uint32_t rpr::Controller::stateOpen () {
 
    // Outbound frame required
    if ( ( doNull || ackPend >= maxCumAck_ || 
-        ((ackPend > 0 || appQueue_.busy()) && timePassed(&locTime,cumAckTout_)) ) ) {
+        ((ackPend > 0 || getLocBusy()) && timePassed(&locTime,cumAckTout_)) ) ) {
 
       head = rpr::Header::create(tran_->reqFrame(rpr::Header::HeaderSize,false));
       head->ack = true;
