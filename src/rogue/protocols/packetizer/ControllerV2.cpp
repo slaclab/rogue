@@ -29,6 +29,7 @@
 #include <boost/crc.hpp>
 #include <rogue/GilRelease.h>
 #include <math.h>
+#include <stdlib.h>
 
 namespace rpp = rogue::protocols::packetizer;
 namespace ris = rogue::interfaces::stream;
@@ -212,8 +213,13 @@ void rpp::ControllerV2::applicationRx ( ris::FramePtr frame, uint8_t tDest ) {
 
    if ( timeout_ > 0 ) {
       gettimeofday(&startTime,NULL);
-      sumTime.tv_sec = (timeout_ / 1000000);
-      sumTime.tv_usec = (timeout_ % 1000000);
+            
+      // sumTime.tv_sec = (timeout_ / 1000000);
+      // sumTime.tv_usec = (timeout_ % 1000000);
+      div_t divResult = div(timeout_,1000000);
+      sumTime.tv_sec  = divResult.quot;
+      sumTime.tv_usec = divResult.rem;      
+
       timeradd(&startTime,&sumTime,&endTime);
    }
    else gettimeofday(&endTime,NULL);

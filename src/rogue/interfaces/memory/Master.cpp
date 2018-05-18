@@ -25,6 +25,7 @@
 #include <boost/make_shared.hpp>
 #include <rogue/GilRelease.h>
 #include <rogue/ScopedGil.h>
+#include <stdlib.h>
 
 namespace rim = rogue::interfaces::memory;
 namespace bp  = boost::python;
@@ -118,8 +119,13 @@ void rim::Master::setTimeout(uint64_t timeout) {
       sumTime_.tv_sec  = 1;
       sumTime_.tv_usec = 0;
    } else {
-      sumTime_.tv_sec = (timeout / 1000000);
-      sumTime_.tv_usec = (timeout % 1000000);
+            
+      // sumTime_.tv_sec = (timeout / 1000000);
+      // sumTime_.tv_usec = (timeout % 1000000);
+      div_t divResult = div(timeout,1000000);
+      sumTime_.tv_sec  = divResult.quot;
+      sumTime_.tv_usec = divResult.rem;       
+
    }
 }
 
