@@ -206,41 +206,49 @@ void rpr::Controller::transportRx( ris::FramePtr frame ) {
          // Push into out of order queue
          oooQueue_.push(head);
          
-         // Search through the queue for possible matches
-         for (uint32_t i = 0; i<oooQueue_.size();i++){
-            for (uint32_t j = 0; j<oooQueue_.size();j++){
-               
-               // Check if queue is not empty
-               if ( ! oooQueue_.empty() ) {
-               
-                  // Get the frame from queue
-                  head = oooQueue_.pop();
+         // Prevent memory leak for a on a lossy link 
+         if ( oooQueue_.size() > 0x80){
+            
+            dropCount_ += oooQueue_.size();    
+            log_->warning("Dropping out of sequence frame. server=%i, head->sequence=0x%x, nextSeqRx_=0x%x",server_,head->sequence,nextSeqRx_);
+            oooQueue_.reset();
+            
+         } else {
+         
+            // Search through the queue for possible matches
+            for (uint32_t i = 0; i<oooQueue_.size();i++){
+               for (uint32_t j = 0; j<oooQueue_.size();j++){
                   
-                  // Check the sequence number
-                  if ( head->sequence == nextSeqRx_ ) {
+                  // Check if queue is not empty
+                  if ( ! oooQueue_.empty() ) {
+                  
+                     // Get the frame from queue
+                     head = oooQueue_.pop();
                      
-                     lastSeqRx_ = nextSeqRx_;
-                     nextSeqRx_ = nextSeqRx_ + 1;
-                     stCond_.notify_all();
+                     // Check the sequence number
+                     if ( head->sequence == nextSeqRx_ ) {
+                        
+                        lastSeqRx_ = nextSeqRx_;
+                        nextSeqRx_ = nextSeqRx_ + 1;
+                        stCond_.notify_all();
 
-                     if ( !head->nul ) {
-                        appQueue_.push(head);
-                     }            
-                     
-                  // Check if frame sequence behind in time (assumes max segments < 128)
-                  } else if ( (head->sequence - nextSeqRx_)&0x80 ) {
-                     log_->warning("Dropping out of sequence frame. server=%i, head->sequence=0x%x, nextSeqRx_=0x%x,oooQueue_.size()=%d",server_,head->sequence,nextSeqRx_,oooQueue_.size());
-                     dropCount_++;
-                  } else {
-                     // Push back into out of order queue
-                     oooQueue_.push(head);                     
+                        if ( !head->nul ) {
+                           appQueue_.push(head);
+                        }            
+                        
+                     // Check if frame sequence behind in time (assumes max segments < 128)
+                     } else if ( (head->sequence - nextSeqRx_)&0x80 ) {
+                        log_->warning("Dropping out of sequence frame. server=%i, head->sequence=0x%x, nextSeqRx_=0x%x,oooQueue_.size()=%d",server_,head->sequence,nextSeqRx_,oooQueue_.size());
+                        dropCount_++;
+                     } else {
+                        // Push back into out of order queue
+                        oooQueue_.push(head);                     
+                     }
                   }
                }
             }
-         }
-         
-         // log_->warning("Dropping out of sequence frame. server=%i, head->sequence=0x%x, nextSeqRx_=0x%x",server_,head->sequence,nextSeqRx_);
-         // dropCount_++;         
+         }    
+     
       }
    }
 }
