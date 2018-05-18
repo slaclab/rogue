@@ -179,10 +179,13 @@ uint32_t rim::Master::intTransaction(rim::TransactionPtr tran) {
       tranMap_[tran->id_] = tran;
    }
 
+   
    log_->debug("Request transaction type=%i id=%i",tran->type_,tran->id_);
    slave->doTransaction(tran);
+   gettimeofday(&(tran->startTime_),NULL);  
+   timeradd(&(tran->startTime_),&sumTime_,&(tran->endTime_));
    return(tran->id_);
-}
+}   
 
 // Wait for transaction. Timeout in seconds
 void rim::Master::waitTransaction(uint32_t id) {
