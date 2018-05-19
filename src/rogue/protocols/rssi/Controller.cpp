@@ -204,6 +204,9 @@ void rpr::Controller::transportRx( ris::FramePtr frame ) {
          // There are elements in ooo queue
          if ( ! oooQueue_.empty() ) {
 
+            // First remove received sequence number from queue to avoid dupilicates
+            if ( ( it = oooQueue_.find(nextSeqRx_)) != oooQueue_.end() ) oooQueue_.erase(it);
+
             // Get next entries from ooo queue if they exist
             // This works because max outstanding will never be the full range of ids
             // otherwise this could be stale data from previous ids
@@ -213,9 +216,6 @@ void rpr::Controller::transportRx( ris::FramePtr frame ) {
 
                if ( ! (it->second)->nul ) appQueue_.push(it->second);
             }
-
-            // Empty the out of order queue
-            oooQueue_.clear();
          }
 
          // Notify after the last sequence update
@@ -223,9 +223,18 @@ void rpr::Controller::transportRx( ris::FramePtr frame ) {
       }
 
       // Add to out of order queue in case things arrive out of order
-      else oooQueue_.insert(std::make_pair(head->sequence,head));
-   }
+      // Make sure received sequence is in window. There may be a better way
+      // to do this while hanlding the 8 bit rollover
+      else {
+         uint8_t x = nextSeqRx_ + 1;
+         uint8_t windowEnd = (nextSeqRx_ + LocMaxBuffers + 1);
 
+         while ( ++x != windowEnd ) {
+            if (head->sequence == x) oooQueue_.insert(std::make_pair(head->sequence,head));
+            break;
+         }
+      }
+   }
 }
 
 //! Frame transmit at application interface
