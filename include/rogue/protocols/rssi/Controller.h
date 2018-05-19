@@ -83,7 +83,7 @@ namespace rogue {
                rogue::Queue<boost::shared_ptr<rogue::protocols::rssi::Header>> appQueue_;
                
                // Sequence Out of Order ("OOO") queue
-               rogue::Queue<boost::shared_ptr<rogue::protocols::rssi::Header>> oooQueue_;               
+               std::map<uint8_t, boost::shared_ptr<rogue::protocols::rssi::Header>> oooQueue_;
 
                // State queue
                rogue::Queue<boost::shared_ptr<rogue::protocols::rssi::Header>> stQueue_;

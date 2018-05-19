@@ -146,6 +146,7 @@ ris::FramePtr rpr::Controller::reqFrame ( uint32_t size ) {
 
 //! Frame received at transport interface
 void rpr::Controller::transportRx( ris::FramePtr frame ) {
+   std::map<uint8_t, rpr::HeaderPtr>::iterator it;
 
    rpr::HeaderPtr head = rpr::Header::create(frame);
 
@@ -191,73 +192,40 @@ void rpr::Controller::transportRx( ris::FramePtr frame ) {
 
    // Data or NULL in the correct sequence go to application
    else if ( state_ == StOpen && ( head->nul || frame->getPayload() > rpr::Header::HeaderSize ) ) {
+
       if ( head->sequence == nextSeqRx_ ) {
          // log_->warning("Data or NULL in the correct sequence go to application: nextSeqRx_=0x%x", nextSeqRx_);
 
          lastSeqRx_ = nextSeqRx_;
          nextSeqRx_ = nextSeqRx_ + 1;
-         stCond_.notify_all();
 
-         if ( !head->nul ) {
-            appQueue_.push(head);
-         }
-      }
-      else {
-         // Push into out of order queue
-         oooQueue_.push(head);
-         
-         // Prevent memory leak for a on a lossy link 
-         if ( oooQueue_.size() > 0x80){
-            
-            dropCount_ += oooQueue_.size();    
-            log_->warning("Dropping out of sequence frame. server=%i, head->sequence=0x%x, nextSeqRx_=0x%x",server_,head->sequence,nextSeqRx_);
-            oooQueue_.reset();
-            
-         } else {
-         
-            // Search through the queue for possible matches
-            uint32_t seqDet = 0;
-            for (uint32_t i = 0; i<oooQueue_.size();i++){
-               for (uint32_t j = 0; j<oooQueue_.size();j++){
-                  
-                  // Check if queue is not empty
-                  if ( ! oooQueue_.empty() ) {
-                  
-                     // Get the frame from queue
-                     head = oooQueue_.pop();
-                     
-                     // Check the sequence number
-                     if ( head->sequence == nextSeqRx_ ) {
-                        
-                        seqDet++;
-                        
-                        lastSeqRx_ = nextSeqRx_;
-                        nextSeqRx_ = nextSeqRx_ + 1;
-                        stCond_.notify_all();
+         if ( !head->nul ) appQueue_.push(head);
 
-                        if ( !head->nul ) {
-                           appQueue_.push(head);
-                        }            
-                        
-                     // Check if frame sequence behind in time (assumes max segments < 128)
-                     } else if ( (head->sequence - nextSeqRx_)&0x80 ) {
-                        log_->warning("Dropping out of sequence frame. server=%i, head->sequence=0x%x, nextSeqRx_=0x%x,oooQueue_.size()=%d",server_,head->sequence,nextSeqRx_,oooQueue_.size());
-                        dropCount_++;
-                     } else {
-                        // Push back into out of order queue
-                        oooQueue_.push(head);                     
-                     }
-                  }
-               }
-               // // Prevent being in the loop for too long
-               // if (seqDet > ReqMaxCumAck){
-                  // break;
-               // }
+         // There are elements in ooo queue
+         if ( ! oooQueue_.empty() ) {
+
+            // Get next entries from ooo queue if they exist
+            // This works because max outstanding will never be the full range of ids
+            // otherwise this could be stale data from previous ids
+            while ( ( it = oooQueue_.find(nextSeqRx_)) != oooQueue_.end() ) {
+               lastSeqRx_ = nextSeqRx_;
+               nextSeqRx_ = nextSeqRx_ + 1;
+
+               if ( ! (it->second)->nul ) appQueue_.push(it->second);
             }
-         }    
-     
+
+            // Empty the out of order queue
+            oooQueue_.clear();
+         }
+
+         // Notify after the last sequence update
+         stCond_.notify_all();
       }
+
+      // Add to out of order queue in case things arrive out of order
+      else oooQueue_.insert(std::make_pair(head->sequence,head));
    }
+
 }
 
 //! Frame transmit at application interface
@@ -769,7 +737,7 @@ uint32_t rpr::Controller::stateError () {
 
    // Reset queues
    appQueue_.reset();
-   oooQueue_.reset();
+   oooQueue_.clear();
    stQueue_.reset();
 
    gettimeofday(&stTime_,NULL);
