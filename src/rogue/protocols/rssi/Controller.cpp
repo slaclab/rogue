@@ -220,6 +220,7 @@ void rpr::Controller::transportRx( ris::FramePtr frame ) {
                nextSeqRx_ = nextSeqRx_ + 1;
 
                if ( ! (it->second)->nul ) appQueue_.push(it->second);
+               log_->info("Using frame from ooo queue. server=%i, head->sequence=%i", server_, (it->second)->sequence);
                oooQueue_.erase(it);
             }
          }
@@ -245,6 +246,8 @@ void rpr::Controller::transportRx( ris::FramePtr frame ) {
          while ( ++x != windowEnd ) {
             if (head->sequence == x) {
                oooQueue_.insert(std::make_pair(head->sequence,head));
+               log_->info("Adding frame to ooo queue. server=%i, head->sequence=%i, nextSeqRx_=%i, windowsEnd=%i",
+                     server_, head->sequence, nextSeqRx_, windowEnd);
                break;
             }
          }
