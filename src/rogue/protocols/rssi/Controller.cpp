@@ -219,6 +219,7 @@ void rpr::Controller::transportRx( ris::FramePtr frame ) {
                nextSeqRx_ = nextSeqRx_ + 1;
 
                if ( ! (it->second)->nul ) appQueue_.push(it->second);
+               oooQueue_.erase(it);
             }
          }
 
