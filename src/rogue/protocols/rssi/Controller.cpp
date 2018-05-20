@@ -240,8 +240,10 @@ void rpr::Controller::transportRx( ris::FramePtr frame ) {
          uint8_t windowEnd = (nextSeqRx_ + LocMaxBuffers + 1);
 
          while ( ++x != windowEnd ) {
-            if (head->sequence == x) oooQueue_.insert(std::make_pair(head->sequence,head));
-            break;
+            if (head->sequence == x) {
+               oooQueue_.insert(std::make_pair(head->sequence,head));
+               break;
+            }
          }
 
          if ( x == windowEnd ) {
