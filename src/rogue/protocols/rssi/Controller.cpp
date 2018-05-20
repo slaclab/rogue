@@ -205,8 +205,9 @@ void rpr::Controller::transportRx( ris::FramePtr frame ) {
          if ( ! oooQueue_.empty() ) {
 
             // First remove received sequence number from queue to avoid dupilicates
-            if ( ( it = oooQueue_.find(nextSeqRx_)) != oooQueue_.end() ) {
-               log_->warning("Removed duplicate frame. server=%i, head->sequence=%i", server_, head->sequence);
+            if ( ( it = oooQueue_.find(head->sequence)) != oooQueue_.end() ) {
+               log_->warning("Removed duplicate frame. server=%i, head->sequence=%i, next sequence=%i", 
+                     server_, head->sequence, nextSeqRx_);
                dropCount_++;
                oooQueue_.erase(it);
             }
@@ -229,7 +230,8 @@ void rpr::Controller::transportRx( ris::FramePtr frame ) {
 
       // Check if received frame is already in out of order queue
       else if ( ( it = oooQueue_.find(head->sequence)) != oooQueue_.end() ) {
-         log_->warning("Dropped duplicate frame. server=%i, head->sequence=%i", server_, head->sequence);
+         log_->warning("Dropped duplicate frame. server=%i, head->sequence=%i, next sequence=%i", 
+               server_, head->sequence, nextSeqRx_);
          dropCount_++;
       }
 
