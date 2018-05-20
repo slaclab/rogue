@@ -205,7 +205,11 @@ void rpr::Controller::transportRx( ris::FramePtr frame ) {
          if ( ! oooQueue_.empty() ) {
 
             // First remove received sequence number from queue to avoid dupilicates
-            if ( ( it = oooQueue_.find(nextSeqRx_)) != oooQueue_.end() ) oooQueue_.erase(it);
+            if ( ( it = oooQueue_.find(nextSeqRx_)) != oooQueue_.end() ) {
+               log_->warning("Removed duplicate frame. server=%i, head->sequence=%i", server_, head->sequence);
+               dropCount_++;
+               oooQueue_.erase(it);
+            }
 
             // Get next entries from ooo queue if they exist
             // This works because max outstanding will never be the full range of ids
@@ -222,6 +226,12 @@ void rpr::Controller::transportRx( ris::FramePtr frame ) {
          stCond_.notify_all();
       }
 
+      // Check if received frame is already in out of order queue
+      else if ( ( it = oooQueue_.find(head->sequence)) != oooQueue_.end() ) {
+         log_->warning("Dropped duplicate frame. server=%i, head->sequence=%i", server_, head->sequence);
+         dropCount_++;
+      }
+
       // Add to out of order queue in case things arrive out of order
       // Make sure received sequence is in window. There may be a better way
       // to do this while hanlding the 8 bit rollover
@@ -232,6 +242,12 @@ void rpr::Controller::transportRx( ris::FramePtr frame ) {
          while ( ++x != windowEnd ) {
             if (head->sequence == x) oooQueue_.insert(std::make_pair(head->sequence,head));
             break;
+         }
+
+         if ( x == windowEnd ) {
+            log_->warning("Dropping out of window frame. server=%i, head->sequence=%i, nextSeqRx_=%i, windowsEnd=%i",
+                  server_, head->sequence, nextSeqRx_, windowEnd);
+            dropCount_++;
          }
       }
    }
