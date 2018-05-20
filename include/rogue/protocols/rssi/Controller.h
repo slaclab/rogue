@@ -42,18 +42,18 @@ namespace rogue {
                static const uint8_t  Version       = 1;
                static const uint8_t  TimeoutUnit   = 3; // rssiTime * std::pow(10,TimeoutUnit) = units of ms
                
-               static const uint8_t  LocMaxBuffers = 32;
+               static const uint8_t  LocMaxBuffers = 32; // MAX_NUM_OUTS_SEG_G in FW
                static const uint32_t BusyThold     = 16;
                
                // RSSI Timeouts (units of TimeoutUnit)
-               static const uint8_t  ReqMaxRetran  = 15;
                static const uint32_t TryPeriod     = 100;
-               static const uint16_t ReqNullTout   = 3000;
+               static const uint16_t ReqCumAckTout = 5;    // ACK_TOUT_G in FW
+               static const uint16_t ReqRetranTout = 10;   // RETRANS_TOUT_G in FW
+               static const uint16_t ReqNullTout   = 3000; // NULL_TOUT_G in FW
                
                // Counters
-               static const uint16_t ReqRetranTout = 10;
-               static const uint16_t ReqCumAckTout = 5;
-               static const uint8_t  ReqMaxCumAck  = 2;
+               static const uint8_t  ReqMaxRetran  = 15;   // MAX_RETRANS_CNT_G in FW
+               static const uint8_t  ReqMaxCumAck  = 2;    // MAX_CUM_ACK_CNT_G in FW
 
                //! Connection states
                enum States : uint32_t { StClosed     = 0,
