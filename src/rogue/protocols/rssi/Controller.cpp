@@ -246,7 +246,7 @@ void rpr::Controller::transportRx( ris::FramePtr frame ) {
       // Make sure received sequence is in window. There may be a better way
       // to do this while hanlding the 8 bit rollover
       else {
-         uint8_t x = nextSeqRx_ + 1;
+         uint8_t x = nextSeqRx_;
          uint8_t windowEnd = (nextSeqRx_ + LocMaxBuffers + 1);
 
          while ( ++x != windowEnd ) {
