@@ -96,7 +96,6 @@ namespace rogue {
                boost::mutex stMtx_;
                uint32_t state_;
                struct timeval stTime_;
-               uint8_t prevAckRx_;
                uint32_t downCount_;
                uint32_t retranCount_;
 
@@ -216,7 +215,10 @@ namespace rogue {
             private:
 
                // Method to transit a frame with proper updates
-               void transportTx(boost::shared_ptr<rogue::protocols::rssi::Header> head, bool seqUpdate, bool retransmit);
+               void transportTx(boost::shared_ptr<rogue::protocols::rssi::Header> head, bool seqUpdate, bool txReset);
+
+               // Method to retransmit a frame
+               int8_t retransmit(uint8_t id);
 
                //! Convert rssi time to microseconds
                uint32_t convTime ( uint32_t rssiTime );
