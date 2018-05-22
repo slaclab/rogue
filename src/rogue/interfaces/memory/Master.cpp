@@ -131,7 +131,7 @@ void rim::Master::setTimeout(uint64_t timeout) {
 
 //! Post a transaction, called locally, forwarded to slave
 uint32_t rim::Master::reqTransaction(uint64_t address, uint32_t size, void *data, uint32_t type) {
-   rim::TransactionPtr tran = rim::Transaction::create();
+   rim::TransactionPtr tran = rim::Transaction::create(sumTime_);
 
    tran->iter_    = (uint8_t *)data;
    tran->size_    = size;
@@ -143,7 +143,7 @@ uint32_t rim::Master::reqTransaction(uint64_t address, uint32_t size, void *data
 
 //! Post a transaction, called locally, forwarded to slave, python version
 uint32_t rim::Master::reqTransactionPy(uint64_t address, boost::python::object p, uint32_t size, uint32_t offset, uint32_t type) {
-   rim::TransactionPtr tran = rim::Transaction::create();
+   rim::TransactionPtr tran = rim::Transaction::create(sumTime_);
 
    if ( PyObject_GetBuffer(p.ptr(),&(tran->pyBuf_),PyBUF_SIMPLE) < 0 )
       throw(rogue::GeneralError("Master::reqTransactionPy","Python Buffer Error"));
@@ -169,9 +169,6 @@ uint32_t rim::Master::intTransaction(rim::TransactionPtr tran) {
    struct timeval currTime;
    rim::SlavePtr slave;
 
-   gettimeofday(&(tran->startTime_),NULL);
-   timeradd(&(tran->startTime_),&sumTime_,&(tran->endTime_));
-
    {
       rogue::GilRelease noGil;
       boost::lock_guard<boost::mutex> lock(mastMtx_);
@@ -182,10 +179,9 @@ uint32_t rim::Master::intTransaction(rim::TransactionPtr tran) {
    
    log_->debug("Request transaction type=%i id=%i",tran->type_,tran->id_);
    slave->doTransaction(tran);
-   gettimeofday(&(tran->startTime_),NULL);  
-   timeradd(&(tran->startTime_),&sumTime_,&(tran->endTime_));
+   tran->refreshTimer();
    return(tran->id_);
-}   
+}
 
 // Wait for transaction. Timeout in seconds
 void rim::Master::waitTransaction(uint32_t id) {
