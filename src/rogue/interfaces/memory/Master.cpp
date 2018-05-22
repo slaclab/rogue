@@ -248,7 +248,7 @@ void rim::Master::copyBits(boost::python::object dst, uint32_t dstLsb, boost::py
    srcData = (uint8_t *)srcBuf.buf;
    dstByte = dstLsb / 8;
    dstBit  = dstLsb % 8;
-   dstData = (uint8_t *)srcBuf.buf;
+   dstData = (uint8_t *)dstBuf.buf;
    rem = size;
 
    do {
@@ -258,7 +258,6 @@ void rim::Master::copyBits(boost::python::object dst, uint32_t dstLsb, boost::py
          dstData[dstByte] = srcData[srcByte];
          ++dstByte;
          ++srcByte;
-         printf("Full byte copy. rem=%i\n",rem);
          rem -= 8;
       }
 
@@ -269,7 +268,6 @@ void rim::Master::copyBits(boost::python::object dst, uint32_t dstLsb, boost::py
          dstByte += (++dstBit / 8);
          srcBit %= 8;
          dstBit %= 8;
-         printf("Bit level copy. rem=%i\n",rem);
          rem -= 1;
       }
    } while (rem != 0);
