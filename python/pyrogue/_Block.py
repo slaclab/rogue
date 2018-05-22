@@ -268,19 +268,11 @@ class RemoteBlock(BaseBlock, rim.Master):
         with self._lock:
             ba = var._base.toBytes(value, sum(var.bitSize))
 
-            # Access is fully byte aligned
-            if len(var.bitOffset) == 1 and (var.bitOffset[0] % 8) == 0 and (var.bitSize[0] % 8) == 0:
-                self._sData[var.bitOffset[0]//8:(var.bitOffset[0]+var.bitSize[0])//8] = ba
-                self._sDataMask[var.bitOffset[0]//8:(var.bitOffset[0]+var.bitSize[0])//8] = bytearray([0xff] * (var.bitSize[0] // 8))
-
-            # Bit level access
-            else:
-                bit = 0
-                for x in range(0, len(var.bitOffset)):
-                    for y in range(0, var.bitSize[x]):
-                        setBitToBytes(self._sData,var.bitOffset[x]+y,getBitFromBytes(ba,bit))
-                        setBitToBytes(self._sDataMask,var.bitOffset[x]+y,1)
-                        bit += 1
+            srcBit = 0
+            for x in range(len(var.bitOffset)):
+                self._copyBits(self._sData, var.bitOffset[x], ba, srcBit, var.bitSize[x])
+                self._setBits( self._sDataMask, var.bitOffset[x], var.bitSize[x])
+                srcBit += var.bitSize[x]
 
     def get(self, var):
         """
@@ -289,22 +281,14 @@ class RemoteBlock(BaseBlock, rim.Master):
         bytearray is returned
         """
         with self._lock:
+            ba = bytearray(int(math.ceil(float(sum(var.bitSize)) / 8.0)))
 
-            # Access is fully byte aligned
-            if len(var.bitOffset) == 1 and (var.bitOffset[0] % 8) == 0 and (var.bitSize[0] % 8) == 0:
-                return var._base.fromBytes(self._bData[int(var.bitOffset[0]/8):int((var.bitOffset[0]+var.bitSize[0])/8)],sum(var.bitSize))
+            dstBit = 0
+            for x in range(len(var.bitOffset)):
+                self._copyBits(ba, dstBit, self._bData, var.bitOffset[x], var.bitSize[x])
+                dstBit += var.bitSize[x]
 
-            # Bit level access
-            else:
-                ba = bytearray(int(math.ceil(float(sum(var.bitSize)) / 8.0)))
-
-                bit = 0
-                for x in range(0, len(var.bitOffset)):
-                    for y in range(0, var.bitSize[x]):
-                        setBitToBytes(ba,bit,getBitFromBytes(self._bData,var.bitOffset[x]+y))
-                        bit += 1
-
-                return var._base.fromBytes(ba,sum(var.bitSize))
+            return var._base.fromBytes(ba,sum(var.bitSize))
 
     def startTransaction(self, type, check=False):
         """
@@ -439,35 +423,31 @@ class RemoteBlock(BaseBlock, rim.Master):
             self._sDataMask = bytearray(self._size)
 
             # Update var bit mask and check for overlaps
-            for x in range(0, len(var.bitOffset)):
-                for y in range(0, var.bitSize[x]):
+            for x in range(len(var.bitOffset)):
 
-                    # Bit overlaps previous variable or bit overlaps an overlap enable bit 
-                    # and new variable does not allow overlaps
-                    if getBitFromBytes(self._varMask,var.bitOffset[x]+y) or \
-                          (getBitFromBytes(self._oleMask,var.bitOffset[x]+y) and (not var._overlapEn)):
+                # Bit overlaps previous variable or bit overlaps an overlap enable bit 
+                # and new variable does not allow overlaps
+                if self._anyBits(self._varMask, var.bitOffset[x], var.bitSize[x]) or \
+                    (self._anyBits(self._oleMask, var.bitOffset[x], var.bitSize[x]) and (not var._overlapEn)):
+                
+                    print("\n\n\n------------------------ Variable Overlap Warning !!! --------------------------------")
+                    print(f"Detected bit overlap for variable {var.name} in block {self.name} at address {self.address}")
+                    print("This warning will be replaced with an exception in the next release!!!!!!!!")
 
-                        print("\n\n\n------------------------ Variable Overlap Warning !!! --------------------------------")
-                        print(f"Detected bit overlap for variable {var.name} in block {self.name} at address {self.address}")
-                        print("This warning will be replaced with an exception in the next release!!!!!!!!")
-                        #msg = f"Detected bit overlap for variable {var.name}"
-                        #raise MemoryError(name=self.name, address=self.address, msg=msg)
+                # Variable allows overlaps, add to overlap enable mask
+                if var._overlapEn:
+                    self._setBits(self._oleMask,var.bitOffset[x],var.bitSize[x])
 
-                    # Variable allows overlaps, add to overlap enable mask
-                    if var._overlapEn:
-                        setBitToBytes(self._oleMask,var.bitOffset[x]+y,1)
-
-                    # Otherwise add to standard mask
-                    else:
-                        setBitToBytes(self._varMask,var.bitOffset[x]+y,1)
+                # Otherwise add to standard mask
+                else:
+                    self._setBits(self._varMask,var.bitOffset[x],var.bitSize[x])
 
             # Update verify mask
             if var.mode == 'RW' and var.verify is True:
                 self._verifyEn = True
 
-                for x in range(0, len(var.bitOffset)):
-                    for y in range(0, var.bitSize[x]):
-                        setBitToBytes(self._vDataMask,var.bitOffset[x]+y,1)
+                for x in range(len(var.bitOffset)):
+                    self._setBits(self._vDataMask,var.bitOffset[x],var.bitSize[x])
 
             return True
 
@@ -486,27 +466,4 @@ class RemoteBlock(BaseBlock, rim.Master):
         self._log.debug(f'Block {self._name} _update called')
         for v in self._variables:
             v._queueUpdate()
-
-        
-def setBitToBytes(ba, bitOffset, value):
-    """
-    Set a bit to a specific location in an array of bytes
-    """
-    byte = int(bitOffset / 8)
-    bit  = bitOffset % 8
-
-    if value > 0:
-        ba[byte] |= (1 << bit)
-    else:
-        ba[byte] &= (0xFF ^ (1 << bit))
-
-
-def getBitFromBytes(ba, bitOffset):
-    """
-    Get a bit from a specific location in an array of bytes
-    """
-    byte = int(bitOffset / 8)
-    bit  = bitOffset % 8
-
-    return ((ba[byte] >> bit) & 0x1)
 
