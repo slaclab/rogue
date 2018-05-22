@@ -60,6 +60,7 @@ rim::Slave::~Slave() { }
 void rim::Slave::addTransaction(rim::TransactionPtr tran) {
    rogue::GilRelease noGil;
    boost::lock_guard<boost::mutex> lock(slaveMtx_);
+   printf("Adding transaction %i\n",tran->id());
    tranList_.push_back(tran); // Weak pointer copy
 }
 
@@ -70,6 +71,8 @@ rim::TransactionPtr rim::Slave::getTransaction(uint32_t index) {
 
    rogue::GilRelease noGil;
    boost::lock_guard<boost::mutex> lock(slaveMtx_);
+
+   printf("Looking for transaction %i\n",index);
 
    // Transaction should be first in the list, 
    // remove and error out transactions leading up to the current
