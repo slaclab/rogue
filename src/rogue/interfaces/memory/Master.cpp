@@ -221,6 +221,7 @@ void rim::Master::copyBits(boost::python::object dst, uint32_t dstLsb, boost::py
    uint32_t  dstByte;
    uint8_t * dstData;
    uint32_t  rem;
+   uint32_t  bytes;
 
    if ( PyObject_GetBuffer(dst.ptr(),&dstBuf,PyBUF_SIMPLE) < 0 )
       throw(rogue::GeneralError("Master::copyBits","Python Buffer Error"));
@@ -250,13 +251,14 @@ void rim::Master::copyBits(boost::python::object dst, uint32_t dstLsb, boost::py
    rem = size;
 
    do {
+      bytes = rem / 8;
 
       // Aligned
-      if ( (srcBit == 0) && (dstBit == 0) && rem >= 8 ) {
-         dstData[dstByte] = srcData[srcByte];
-         ++dstByte;
-         ++srcByte;
-         rem -= 8;
+      if ( (srcBit == 0) && (dstBit == 0) && (bytes > 0) ) {
+         memcpy(&(dstData[dstByte]),&(srcData[srcByte]),bytes);
+         dstByte += bytes;
+         srcByte += bytes;
+         rem -= (bytes * 8);
       }
 
       // Not aligned
@@ -281,6 +283,7 @@ void rim::Master::setBits(boost::python::object dst, uint32_t lsb, uint32_t size
    uint32_t  dstByte;
    uint8_t * dstData;
    uint32_t  rem;
+   uint32_t  bytes;
 
    if ( PyObject_GetBuffer(dst.ptr(),&dstBuf,PyBUF_SIMPLE) < 0 )
       throw(rogue::GeneralError("Master::setBits","Python Buffer Error"));
@@ -296,12 +299,13 @@ void rim::Master::setBits(boost::python::object dst, uint32_t lsb, uint32_t size
    rem = size;
 
    do {
+      bytes = rem / 8;
 
       // Aligned
-      if ( (dstBit == 0) && rem >= 8 ) {
-         dstData[dstByte] = 0xFF;
-         ++dstByte;
-         rem -= 8;
+      if ( (dstBit == 0) && (bytes > 0) ) {
+         memset(&(dstData[dstByte]),0xFF,bytes);
+         dstByte += bytes;
+         rem -= (bytes * 8);
       }
 
       // Not aligned
