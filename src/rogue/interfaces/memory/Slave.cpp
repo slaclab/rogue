@@ -79,7 +79,10 @@ rim::TransactionPtr rim::Slave::getTransaction(uint32_t index) {
       if ( (*it)->id() == index ) ret = *it;
 
       // Non expired transactions should immediatly timeout
-      else if ( ! (*it)->expired() ) (*it)->done(rim::TimeoutError);
+      else if ( ! (*it)->expired() ) {
+         printf("Removed out of order entry. Looking for %i, got %i\n",index,(*it)->id());
+         (*it)->done(rim::TimeoutError);
+      }
 
       // Remove transaction
       tranList_.erase(it); // Iterator no longer valid
