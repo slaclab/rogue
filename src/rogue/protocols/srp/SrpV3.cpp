@@ -199,7 +199,6 @@ void rps::SrpV3::acceptFrame ( ris::FramePtr frame ) {
      log_->warning("Invalid ID frame for id=%i",id);
      return; // Bad id or post, drop frame
    }
-   delTransaction(tran->id());
 
    // Lock transaction
    rim::TransactionLockPtr lock = tran->lock();
