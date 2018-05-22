@@ -60,45 +60,34 @@ rim::Slave::~Slave() { }
 void rim::Slave::addTransaction(rim::TransactionPtr tran) {
    rogue::GilRelease noGil;
    boost::lock_guard<boost::mutex> lock(slaveMtx_);
-   tranMap_[tran->id()] = tran; // Weak pointer copy
+   tranList_.push_back(tran); // Weak pointer copy
 }
 
 //! Get transaction with index, called by sub classes
 rim::TransactionPtr rim::Slave::getTransaction(uint32_t index) {
    rim::TransactionPtr ret;
-   TransactionMap::iterator it;
+   TransactionList::iterator it;
 
    rogue::GilRelease noGil;
    boost::lock_guard<boost::mutex> lock(slaveMtx_);
 
-   it = tranMap_.find(index);
+   // Transaction should be first in the list, 
+   // remove and error out transactions leading up to the current
+   while ( (ret == NULL) && ((it = tranList_.begin()) != tranList_.end()) ) {
 
-   if ( ( it = tranMap_.find(index)) != tranMap_.end() ) {
+      // Transaction found
+      if ( (*it)->id() == index ) ret = *it;
 
-      // Expired pointer
-      if ( ! (ret = it->second.lock()) ) tranMap_.erase(it);
-   } 
-   return ret;
-}
+      // Non expired transactions should immediatly timeout
+      else if ( ! (*it)->expired() ) (*it)->done(rim::TimeoutError);
 
-//! Remove master from the list
-void rim::Slave::delTransaction(uint32_t index) {
-   TransactionMap::iterator it;
-
-   rogue::GilRelease noGil;
-   boost::lock_guard<boost::mutex> lock(slaveMtx_);
-
-   it = tranMap_.begin();
-
-   while ( it != tranMap_.end() ) {
-
-      // Weak pointer or matching index
-      if ( it->second.expired() || it->first == index ) {
-         tranMap_.erase(it); // Iterator no longer valid
-         it = tranMap_.begin();
-      }
-      else ++it;
+      // Remove transaction
+      tranList_.erase(it); // Iterator no longer valid
    }
+
+   // Update timers of all others
+   for (it = tranList_.begin(); it != tranList_.end(); ++it) (*it)->refreshTimer();
+   return ret;
 }
 
 //! Get min size from slave
@@ -145,7 +134,6 @@ void rim::Slave::setup_python() {
    bp::class_<rim::SlaveWrap, rim::SlaveWrapPtr, boost::noncopyable>("Slave",bp::init<uint32_t,uint32_t>())
       .def("_addTransaction", &rim::Slave::addTransaction)
       .def("_getTransaction", &rim::Slave::getTransaction)
-      .def("_delTransaction", &rim::Slave::delTransaction)
       .def("_doMinAccess",    &rim::Slave::doMinAccess,   &rim::SlaveWrap::defDoMinAccess)
       .def("_doMaxAccess",    &rim::Slave::doMaxAccess,   &rim::SlaveWrap::defDoMaxAccess)
       .def("_doAddress",      &rim::Slave::doAddress,     &rim::SlaveWrap::defDoAddress)
