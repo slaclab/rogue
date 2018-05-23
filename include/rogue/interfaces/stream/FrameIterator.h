@@ -21,7 +21,6 @@
 #define __ROGUE_INTERFACES_STREAM_FRAME_ITERATOR_H__
 #include <stdint.h>
 #include <vector>
-#include <boost/python.hpp>
 
 namespace rogue {
    namespace interfaces {

@@ -23,9 +23,12 @@
 #define __ROGUE_INTERFACES_MEMORY_MASTER_H__
 #include <stdint.h>
 #include <vector>
-#include <boost/python.hpp>
 #include <boost/thread.hpp>
 #include <rogue/Logging.h>
+
+#ifndef NO_PYTHON
+#include <boost/python.hpp>
+#endif
 
 namespace rogue {
    namespace interfaces {
@@ -105,9 +108,12 @@ namespace rogue {
                //! Post a transaction, called locally, forwarded to slave, data pointer is optional
                uint32_t reqTransaction(uint64_t address, uint32_t size, void *data, uint32_t type);
 
+#ifndef NO_PYTHON
+
                //! Post a transaction, called locally, forwarded to slave, python version
                // size and offset are optional to use a slice within the python buffer
                uint32_t reqTransactionPy(uint64_t address, boost::python::object p, uint32_t size, uint32_t offset, uint32_t type);
+#endif
 
             protected:
 

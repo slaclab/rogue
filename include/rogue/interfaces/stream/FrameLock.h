@@ -20,7 +20,6 @@
 #ifndef __ROGUE_INTERFACES_MEMORY_FRAME_LOCK_H__
 #define __ROGUE_INTERFACES_MEMORY_FRAME_LOCK_H__
 #include <stdint.h>
-#include <boost/python.hpp>
 #include <boost/thread.hpp>
 
 namespace rogue {

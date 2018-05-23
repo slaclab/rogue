@@ -23,7 +23,6 @@
 #include <rogue/interfaces/stream/Master.h>
 #include <rogue/interfaces/stream/Slave.h>
 #include <boost/enable_shared_from_this.hpp>
-#include <boost/python.hpp>
 #include <stdint.h>
 #include <rogue/Queue.h>
 #include <rogue/Logging.h>

@@ -24,7 +24,6 @@
 #include <rogue/interfaces/stream/Master.h>
 #include <rogue/interfaces/stream/Slave.h>
 #include <PgpDriver.h>
-#include <boost/python.hpp>
 #include <boost/thread.hpp>
 #include <stdint.h>
 

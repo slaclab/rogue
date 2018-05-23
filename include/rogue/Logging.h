@@ -20,7 +20,6 @@
 #ifndef __ROGUE_LOGGING_H__
 #define __ROGUE_LOGGING_H__
 #include <exception>
-#include <boost/python.hpp>
 #include <stdint.h>
 #include <boost/thread.hpp>
 

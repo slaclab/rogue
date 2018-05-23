@@ -16,9 +16,12 @@
 **/
 #ifndef __ROGUE_SMEM_CONTROL_H__
 #define __ROGUE_SMEM_CONTROL_H__
-#include <boost/python.hpp>
 #include <boost/thread.hpp>
 #include <rogue/RogueSMemFunctions.h>
+
+#ifndef NO_PYTHON
+#include <boost/python.hpp>
+#endif
 
 namespace rogue {
 
@@ -47,6 +50,9 @@ namespace rogue {
 
          virtual std::string doRequest ( uint8_t type, std::string path, std::string arg );
    };
+   typedef boost::shared_ptr<rogue::SMemControl> SMemControlPtr;
+
+#ifndef NO_PYTHON
 
    //! Stream slave class, wrapper to enable pyton overload of virtual methods
    class SMemControlWrap : 
@@ -62,8 +68,9 @@ namespace rogue {
          std::string defDoRequest ( uint8_t type, std::string path, std::string arg );
    };
 
-   typedef boost::shared_ptr<rogue::SMemControl> SMemControlPtr;
    typedef boost::shared_ptr<rogue::SMemControlWrap> SMemControlWrapPtr;
+
+#endif
 }
 
 #endif

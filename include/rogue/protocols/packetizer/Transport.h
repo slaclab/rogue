@@ -22,7 +22,6 @@
 #define __ROGUE_PROTOCOLS_PACKETIZER_TRANSPORT_H__
 #include <rogue/interfaces/stream/Master.h>
 #include <rogue/interfaces/stream/Slave.h>
-#include <boost/python.hpp>
 #include <stdint.h>
 
 namespace rogue {

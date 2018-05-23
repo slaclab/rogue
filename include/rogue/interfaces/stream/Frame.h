@@ -30,7 +30,10 @@
 #include <stdint.h>
 #include <vector>
 
+#ifndef NO_PYTHON
 #include <boost/python.hpp>
+#endif
+
 namespace rogue {
    namespace interfaces {
       namespace stream {
@@ -198,11 +201,14 @@ namespace rogue {
                //! Get write end iterator
                rogue::interfaces::stream::FrameIterator endWrite();
 
+#ifndef NO_PYTHON
+
                //! Read count bytes from frame payload, starting from offset. Python version.
                void readPy ( boost::python::object p, uint32_t offset );
 
                //! Write count bytes to frame payload, starting at offset. Python Version
                void writePy ( boost::python::object p, uint32_t offset );
+#endif
          };
 
          // Convienence

@@ -24,7 +24,6 @@
 #define __ROGUE_INTERFACES_STREAM_POOL_H__
 #include <stdint.h>
 
-#include <boost/python.hpp>
 #include <boost/thread.hpp>
 #include <boost/enable_shared_from_this.hpp>
 #include <rogue/Queue.h>

@@ -19,14 +19,21 @@
 **/
 #ifndef __ROGUE_GIL_RELEASE_H__
 #define __ROGUE_GIL_RELEASE_H__
-#include <boost/python.hpp>
 #include <stdint.h>
+
+#ifndef NO_PYTHON
+#include <boost/python.hpp>
+#endif
 
 namespace rogue {
 
    //! Logging
    class GilRelease {
+
+#ifndef NO_PYTHON
          PyThreadState *state_;
+#endif
+
       public:
          GilRelease();
          ~GilRelease();

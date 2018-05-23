@@ -23,7 +23,6 @@
 #define __ROGUE_HARDWARE_RCE_MAP_MEMORY_H__
 #include <rogue/interfaces/memory/Slave.h>
 #include <rogue/interfaces/memory/Transaction.h>
-#include <boost/python.hpp>
 #include <boost/thread.hpp>
 #include <stdint.h>
 #include <rogue/Logging.h>

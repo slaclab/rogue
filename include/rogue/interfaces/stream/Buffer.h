@@ -27,7 +27,6 @@
 #define __ROGUE_INTERFACES_STREAM_BUFFER_H__
 #include <stdint.h>
 
-#include <boost/python.hpp>
 #include <rogue/interfaces/stream/Frame.h>
 
 namespace rogue {

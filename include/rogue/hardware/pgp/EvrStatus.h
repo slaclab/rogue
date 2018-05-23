@@ -22,7 +22,6 @@
 #ifndef __ROGUE_HARDWARE_PGP_EVR_STATUS_H__
 #define __ROGUE_HARDWARE_PGP_EVR_STATUS_H__
 #include <PgpDriver.h>
-#include <boost/python.hpp>
 #include <stdint.h>
 
 namespace rogue {

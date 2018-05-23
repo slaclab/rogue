@@ -20,12 +20,17 @@
 #ifndef __ROGUE_GENERAL_ERROR_H__
 #define __ROGUE_GENERAL_ERROR_H__
 #include <exception>
-#include <boost/python.hpp>
 #include <stdint.h>
+
+#ifndef NO_PYTHON
+#include <boost/python.hpp>
+#endif
 
 namespace rogue {
 
+#ifndef NO_PYTHON
    extern PyObject * generalErrorObj;
+#endif
 
    //! General exception
    /*

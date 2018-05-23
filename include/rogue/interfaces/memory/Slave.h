@@ -22,7 +22,10 @@
 #include <stdint.h>
 #include <vector>
 #include <rogue/interfaces/memory/Master.h>
+
+#ifndef NO_PYTHON
 #include <boost/python.hpp>
+#endif
 
 namespace rogue {
    namespace interfaces {
@@ -106,6 +109,11 @@ namespace rogue {
                virtual void doTransaction(boost::shared_ptr<rogue::interfaces::memory::Transaction> transaction);
          };
 
+         // Convienence
+         typedef boost::shared_ptr<rogue::interfaces::memory::Slave> SlavePtr;
+
+#ifndef NO_PYTHON
+
          //! Memory slave class, wrapper to enable pyton overload of virtual methods
          class SlaveWrap : 
             public rogue::interfaces::memory::Slave, 
@@ -142,9 +150,8 @@ namespace rogue {
 
          };
 
-         // Convienence
-         typedef boost::shared_ptr<rogue::interfaces::memory::Slave> SlavePtr;
          typedef boost::shared_ptr<rogue::interfaces::memory::SlaveWrap> SlaveWrapPtr;
+#endif
 
       }
    }

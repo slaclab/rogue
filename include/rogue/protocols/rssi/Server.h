@@ -16,7 +16,6 @@
 **/
 #ifndef __ROGUE_PROTOCOLS_RSSI_SERVER_H__
 #define __ROGUE_PROTOCOLS_RSSI_SERVER_H__
-#include <boost/python.hpp>
 #include <boost/thread.hpp>
 #include <stdint.h>
 
