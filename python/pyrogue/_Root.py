@@ -33,17 +33,14 @@ class RootLogHandler(logging.Handler):
         self._root = root
 
     def emit(self,record):
-        pass
-#        with self._root.updateGroup():
-#            with self._root._sysLogLock:
-#                try:
-#                    val = self._root.SystemLog.value()
-#                    val += (self.format(record).splitlines()[0] + '\n')
-#                    self._root.SystemLog.set(val)
-#                except e:
-#                    print("-----------Error Logging Exception -------------")
-#                    print(e)
-#                    print("------------------------------------------------")
+        with self._root.updateGroup():
+           try:
+               val = (self.format(record).splitlines()[0] + '\n')
+               self._root.SystemLog += val
+           except e:
+               print("-----------Error Logging Exception -------------")
+               print(e)
+               print("------------------------------------------------")
 
 class Root(rogue.interfaces.stream.Master,pr.Device):
     """
@@ -74,9 +71,6 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         handler.setFormatter(formatter)
         self._logger = logging.getLogger('pyrogue')
         self._logger.addHandler(handler)
-
-        # Keep of list of errors, exposed as a variable
-        self._sysLogLock = threading.Lock()
 
         # Running status
         self._running = False
@@ -442,9 +436,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
     def _clearLog(self):
         """Clear the system log"""
-        with self.updateGroup():
-            with self._sysLogLock:
-                self.SystemLog.set('')
+        self.SystemLog.set('')
 
     def _queueUpdates(self,var):
         self._updateQueue.put(var)
