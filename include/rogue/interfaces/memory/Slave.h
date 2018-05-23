@@ -44,10 +44,10 @@ namespace rogue {
                uint32_t id_;
 
                //! Alias for map
-               typedef std::vector<boost::shared_ptr<rogue::interfaces::memory::Transaction> > TransactionList;
+               typedef std::map<uint32_t, boost::shared_ptr<rogue::interfaces::memory::Transaction> > TransactionMap;
 
                //! Transaction map
-               TransactionList tranList_;
+               TransactionMap tranMap_;
 
                //! Slave lock
                boost::mutex slaveMtx_;

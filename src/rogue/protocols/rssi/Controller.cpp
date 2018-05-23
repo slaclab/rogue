@@ -32,6 +32,7 @@
 #include <rogue/GilRelease.h>
 #include <rogue/Logging.h>
 #include <math.h>
+#include <stdlib.h>
 
 namespace rpr = rogue::protocols::rssi;
 namespace ris = rogue::interfaces::stream;
@@ -69,7 +70,6 @@ rpr::Controller::Controller ( uint32_t segSize, rpr::TransportPtr tran, rpr::App
 
    state_       = StClosed;
    gettimeofday(&stTime_,NULL);
-   prevAckRx_   = 0;
    downCount_   = 0;
    retranCount_ = 0;
 
@@ -145,6 +145,7 @@ ris::FramePtr rpr::Controller::reqFrame ( uint32_t size ) {
 
 //! Frame received at transport interface
 void rpr::Controller::transportRx( ris::FramePtr frame ) {
+   std::map<uint8_t, rpr::HeaderPtr>::iterator it;
 
    rpr::HeaderPtr head = rpr::Header::create(frame);
 
@@ -162,7 +163,14 @@ void rpr::Controller::transportRx( ris::FramePtr frame ) {
          head->acknowledge,head->sequence,nextSeqRx_);
 
    // Ack set
-   if ( head->ack ) lastAckRx_ = head->acknowledge;
+   if ( head->ack && (head->acknowledge != lastAckRx_) ) {
+      boost::unique_lock<boost::mutex> lock(txMtx_);
+
+      do {
+         txList_[++lastAckRx_].reset();
+         txListCount_--;
+      } while (lastAckRx_ != head->acknowledge);
+   }
 
    // Check for busy state transition
    if (!remBusy_ && head->busy) remBusyCnt_++;
@@ -181,6 +189,7 @@ void rpr::Controller::transportRx( ris::FramePtr frame ) {
    // or we are waiting for ack replay
    else if ( head->syn ) {
       if ( state_ == StOpen || state_ == StWaitSyn ) {
+         // log_->warning("Syn frame goes to state machine if state = open or we are waiting for ack replay");
          lastSeqRx_ = head->sequence;
          nextSeqRx_ = lastSeqRx_ + 1;
          stQueue_.push(head);
@@ -189,19 +198,71 @@ void rpr::Controller::transportRx( ris::FramePtr frame ) {
 
    // Data or NULL in the correct sequence go to application
    else if ( state_ == StOpen && ( head->nul || frame->getPayload() > rpr::Header::HeaderSize ) ) {
+
       if ( head->sequence == nextSeqRx_ ) {
+         // log_->warning("Data or NULL in the correct sequence go to application: nextSeqRx_=0x%x", nextSeqRx_);
 
          lastSeqRx_ = nextSeqRx_;
          nextSeqRx_ = nextSeqRx_ + 1;
-         stCond_.notify_all();
 
-         if ( !head->nul ) {
-            appQueue_.push(head);
+         if ( !head->nul ) appQueue_.push(head);
+
+         // There are elements in ooo queue
+         if ( ! oooQueue_.empty() ) {
+
+            // First remove received sequence number from queue to avoid dupilicates
+            if ( ( it = oooQueue_.find(head->sequence)) != oooQueue_.end() ) {
+               log_->warning("Removed duplicate frame. server=%i, head->sequence=%i, next sequence=%i", 
+                     server_, head->sequence, nextSeqRx_);
+               dropCount_++;
+               oooQueue_.erase(it);
+            }
+
+            // Get next entries from ooo queue if they exist
+            // This works because max outstanding will never be the full range of ids
+            // otherwise this could be stale data from previous ids
+            while ( ( it = oooQueue_.find(nextSeqRx_)) != oooQueue_.end() ) {
+               lastSeqRx_ = nextSeqRx_;
+               nextSeqRx_ = nextSeqRx_ + 1;
+
+               if ( ! (it->second)->nul ) appQueue_.push(it->second);
+               log_->info("Using frame from ooo queue. server=%i, head->sequence=%i", server_, (it->second)->sequence);
+               oooQueue_.erase(it);
+            }
          }
+
+         // Notify after the last sequence update
+         stCond_.notify_all();
       }
-      else {
-         log_->warning("Dropping out of sequence frame. server=%i, head->sequence=0x%x, nextSeqRx_=0x%x",server_,head->sequence,nextSeqRx_);
+
+      // Check if received frame is already in out of order queue
+      else if ( ( it = oooQueue_.find(head->sequence)) != oooQueue_.end() ) {
+         log_->warning("Dropped duplicate frame. server=%i, head->sequence=%i, next sequence=%i", 
+               server_, head->sequence, nextSeqRx_);
          dropCount_++;
+      }
+
+      // Add to out of order queue in case things arrive out of order
+      // Make sure received sequence is in window. There may be a better way
+      // to do this while hanlding the 8 bit rollover
+      else {
+         uint8_t x = nextSeqRx_;
+         uint8_t windowEnd = (nextSeqRx_ + LocMaxBuffers + 1);
+
+         while ( ++x != windowEnd ) {
+            if (head->sequence == x) {
+               oooQueue_.insert(std::make_pair(head->sequence,head));
+               log_->info("Adding frame to ooo queue. server=%i, head->sequence=%i, nextSeqRx_=%i, windowsEnd=%i",
+                     server_, head->sequence, nextSeqRx_, windowEnd);
+               break;
+            }
+         }
+
+         if ( x == windowEnd ) {
+            log_->warning("Dropping out of window frame. server=%i, head->sequence=%i, nextSeqRx_=%i, windowsEnd=%i",
+                  server_, head->sequence, nextSeqRx_, windowEnd);
+            dropCount_++;
+         }
       }
    }
 }
@@ -258,9 +319,7 @@ void rpr::Controller::applicationRx ( ris::FramePtr frame ) {
    }
 
    // Transmit
-   boost::unique_lock<boost::mutex> lock(txMtx_);
    transportTx(head,true,false);
-   lock.unlock();
    stCond_.notify_all();
 }
 
@@ -286,6 +345,9 @@ uint32_t rpr::Controller::getRetranCount() {
 
 //! Get locBusy
 bool rpr::Controller::getLocBusy() {
+   bool queueBusy = appQueue_.busy();
+   if(!locBusy_ && queueBusy) locBusyCnt_++;   
+   locBusy_ = queueBusy;
    return(locBusy_);
 }
 
@@ -345,8 +407,10 @@ uint32_t rpr::Controller::getSegmentSize() {
 }
 
 // Method to transit a frame with proper updates
-void rpr::Controller::transportTx(rpr::HeaderPtr head, bool seqUpdate, bool retransmit) {
-   if ( ! retransmit ) head->sequence = locSequence_;
+void rpr::Controller::transportTx(rpr::HeaderPtr head, bool seqUpdate, bool txReset) {
+   boost::unique_lock<boost::mutex> lock(txMtx_);
+
+   head->sequence = locSequence_;
 
    // Update sequence numbers
    if ( seqUpdate ) {
@@ -355,39 +419,98 @@ void rpr::Controller::transportTx(rpr::HeaderPtr head, bool seqUpdate, bool retr
       locSequence_++;
    }
 
-   if ( appQueue_.busy() ) {
+   // Reset tx list
+   if ( txReset ) {
+      for (uint32_t x=0; x < 256; x++) txList_[x].reset();
+      txListCount_ = 0;
+   }
+
+   if ( getLocBusy() ) {
       head->acknowledge = lastAckTx_;
-      if(!locBusy_) locBusyCnt_++;
-      locBusy_   = true;
       head->busy = true;
    }
    else {
       head->acknowledge = lastSeqRx_;
       lastAckTx_ = lastSeqRx_;
-      locBusy_   = false;
       head->busy = false;
    }
- 
-   rogue::GilRelease noGil;
-   ris::FrameLockPtr flock = head->getFrame()->lock();
-   head->update();
-   flock->unlock();
 
    // Track last tx time
    gettimeofday(&txTime_,NULL);
 
-   log_->log(retransmit ? rogue::Logging::Warning : rogue::Logging::Debug,
-         "TX frame: state=%i server=%i size=%i syn=%i ack=%i nul=%i, rst=%i, ack#=%i, seq=%i, recount=%i",
+   log_->log(rogue::Logging::Debug,
+         "TX frame: state=%i server=%i size=%i syn=%i ack=%i nul=%i, rst=%i, ack#=%i, seq=%i, recount=%i, ptr=%p",
          state_,server_,head->getFrame()->getPayload(),head->syn,head->ack,head->nul,head->rst,
-         head->acknowledge,head->sequence,retranCount_);
+         head->acknowledge,head->sequence,retranCount_,head->getFrame().get());
+
+   ris::FrameLockPtr flock = head->getFrame()->lock();
+   head->update();
+   flock->unlock();
+   lock.unlock();
 
    // Send frame
    tran_->sendFrame(head->getFrame());
+   if (head->getFrame()->isEmpty()) printf("Frame is empty! seq=%i\n",head->sequence);
+}
+
+// Method to retransmit a frame
+int8_t rpr::Controller::retransmit(uint8_t id) {
+   boost::unique_lock<boost::mutex> lock(txMtx_);
+
+   rpr::HeaderPtr head = txList_[id];
+   if ( head == NULL ) return 0;
+
+   // Busy set, reset timeout
+   if ( remBusy_ ) {
+      head->rstTime();
+      return 0;
+   }
+
+   // retransmit timer has not expired
+   if ( ! timePassed(head->getTime(),retranTout_) ) return 0;
+
+   // max retransmission count has been reached
+   if ( head->count() >= maxRetran_ ) return -1;
+
+   retranCount_++;
+
+   if ( getLocBusy() ) {
+      head->acknowledge = lastAckTx_;
+      head->busy = true;
+   }
+   else {
+      head->acknowledge = lastSeqRx_;
+      lastAckTx_ = lastSeqRx_;
+      head->busy = false;
+   }
+ 
+   // Track last tx time
+   gettimeofday(&txTime_,NULL);
+
+   log_->log(rogue::Logging::Warning,
+         "Retran frame: state=%i server=%i size=%i syn=%i ack=%i nul=%i, rst=%i, ack#=%i, seq=%i, recount=%i, ptr=%p",
+         state_,server_,head->getFrame()->getPayload(),head->syn,head->ack,head->nul,head->rst,
+         head->acknowledge,head->sequence,retranCount_,head->getFrame().get());
+
+   ris::FrameLockPtr flock = head->getFrame()->lock();
+   head->update();
+   flock->unlock();
+   lock.unlock();
+
+   // Send frame
+   tran_->sendFrame(head->getFrame());
+   if (head->getFrame()->isEmpty()) printf("Frame is empty! seq=%i\n",head->sequence);
+   return 1;
 }
 
 //! Convert rssi time to microseconds
 uint32_t rpr::Controller::convTime ( uint32_t rssiTime ) {
-   return(rssiTime * std::pow(10,TimeoutUnit));
+   float units = std::pow(10,-TimeoutUnit);
+   float value = units * (float)rssiTime;
+
+   uint32_t ret = (uint32_t)(value / 1e-6);
+
+   return(ret);
 }
 
 //! Helper function to determine if time has elapsed
@@ -402,8 +525,12 @@ bool rpr::Controller::timePassed ( struct timeval *lastTime, uint32_t time, bool
 
    gettimeofday(&currTime,NULL);
 
-   sumTime.tv_sec = (usec / 1000000);
-   sumTime.tv_usec = (usec % 1000000);
+   // sumTime.tv_sec = (usec / 1000000);
+   // sumTime.tv_usec = (usec % 1000000);
+   div_t divResult = div(usec,1000000);
+   sumTime.tv_sec  = divResult.quot;
+   sumTime.tv_usec = divResult.rem; 
+   
    timeradd(lastTime,&sumTime,&endTime);
 
    return(timercmp(&currTime,&endTime,>));
@@ -485,7 +612,7 @@ uint32_t rpr::Controller::stateClosedWait () {
          nullTout_      = head->nullTimeout;
          maxRetran_     = head->maxRetransmissions;
          maxCumAck_     = head->maxCumulativeAck;
-         prevAckRx_     = head->acknowledge;
+         lastAckRx_     = head->acknowledge;
 
          if ( server_ ) {
             state_ = StSendSynAck;
@@ -516,9 +643,7 @@ uint32_t rpr::Controller::stateClosedWait () {
       head->timeoutUnit = TimeoutUnit;
       head->connectionId = locConnId_;
 
-      boost::unique_lock<boost::mutex> lock(txMtx_);
       transportTx(head,true,false);
-      lock.unlock();
 
       // Update state
       gettimeofday(&stTime_,NULL);
@@ -551,16 +676,7 @@ uint32_t rpr::Controller::stateSendSynAck () {
    head->timeoutUnit = TimeoutUnit;
    head->connectionId = locConnId_;
 
-   boost::unique_lock<boost::mutex> lock(txMtx_);
-   transportTx(head,true,false);
-
-   // Reset tx list
-   for (x=0; x < 256; x++) txList_[x].reset();
-   txListCount_ = 0;
-   lock.unlock();
-
-   // We should probably wait for an ack here.
-   //if ( locAckRx != locSeqTx ) {
+   transportTx(head,true,true);
 
    // Update state
    log_->warning("State is open. Server=%i",server_);
@@ -579,13 +695,7 @@ uint32_t rpr::Controller::stateSendSeqAck () {
    ack->ack = true;
    ack->nul = false;
 
-   boost::unique_lock<boost::mutex> lock(txMtx_);
-   transportTx(ack,false,false);
-
-   // Reset tx list
-   for (x=0; x < 256; x++) txList_[x].reset();
-   txListCount_ = 0;
-   lock.unlock();
+   transportTx(ack,false,true);
 
    // Update state
    state_ = StOpen;
@@ -598,22 +708,22 @@ uint32_t rpr::Controller::stateOpen () {
    rpr::HeaderPtr head;
    uint8_t idx;
    bool doNull;
-   uint8_t locAckRx;
-   uint8_t locSeqRx;
-   uint8_t locSeqTx;
    uint8_t ackPend;
    struct timeval locTime;
 
-   // Sample once
-   locAckRx = lastAckRx_; // Sample once
-   locSeqRx = lastSeqRx_; // Sample once
-   locSeqTx = locSequence_-1;
+   // Pending frame is an error
+   if ( ! stQueue_.empty() ) {
+      head = stQueue_.pop();
+      state_ = StError;
+      gettimeofday(&stTime_,NULL);
+      return(0);
+   }
 
    // Sample transmit time and compute pending ack count under lock
    {
       boost::unique_lock<boost::mutex> lock(txMtx_);
       locTime = txTime_;
-      ackPend = locSeqRx - lastAckTx_;
+      ackPend = lastSeqRx_ - lastAckTx_;
    }
 
    // NULL required
@@ -622,65 +732,23 @@ uint32_t rpr::Controller::stateOpen () {
 
    // Outbound frame required
    if ( ( doNull || ackPend >= maxCumAck_ || 
-        ((ackPend > 0 || appQueue_.busy()) && timePassed(&locTime,cumAckTout_)) ) ) {
+        ((ackPend > 0 || getLocBusy()) && timePassed(&locTime,cumAckTout_)) ) ) {
 
       head = rpr::Header::create(tran_->reqFrame(rpr::Header::HeaderSize,false));
       head->ack = true;
       head->nul = doNull;
 
-      boost::unique_lock<boost::mutex> lock(txMtx_);
       transportTx(head,doNull,false);
-      lock.unlock();
-   }
-
-   // Update ack states
-   if ( locAckRx != prevAckRx_ ) {
-      boost::unique_lock<boost::mutex> lock(txMtx_);
-      while ( locAckRx != prevAckRx_ ) {
-         prevAckRx_++;
-         txList_[prevAckRx_].reset();
-         txListCount_--;
-      }
-      lock.unlock();
    }
 
    // Retransmission processing
-   if ( locAckRx != locSeqTx ) {
-      boost::unique_lock<boost::mutex> lock(txMtx_);
-
-      // Walk through each frame in list, looking for first expired
-      for ( idx=locAckRx+1; idx != ((locSeqTx+1)%256); idx++ ) {
-         head = txList_[idx];
-
-         if ( head == NULL ) continue;
-
-         // Busy set, reset timeout
-         if ( remBusy_ ) head->rstTime();
-
-         else if ( timePassed(head->getTime(),retranTout_) ) {
-            log_->info("Found head for retransmit: server=%i id=%i", server_,idx);
-
-            // Max retran count reached, close connection
-            if ( head->count() >= maxRetran_ ) {
-               state_ = StError;
-               gettimeofday(&stTime_,NULL);
-               return(0);
-            }
-            else {
-               transportTx(head,false,true);
-               retranCount_++;
-            }
-         }
+   idx = lastAckRx_;
+   while ( idx != locSequence_ ) {
+      if ( retransmit(idx++) < 0 ) {
+         state_ = StError;
+         gettimeofday(&stTime_,NULL);
+         return(0);
       }
-      lock.unlock();
-   }
-
-   // Pending frame is an error
-   if ( ! stQueue_.empty() ) {
-      head = stQueue_.pop();
-      state_ = StError;
-      gettimeofday(&stTime_,NULL);
-      return(0);
    }
 
    return(convTime(cumAckTout_/2));
@@ -696,21 +764,15 @@ uint32_t rpr::Controller::stateError () {
    rst = rpr::Header::create(tran_->reqFrame(rpr::Header::HeaderSize,false));
    rst->rst = true;
 
-   boost::unique_lock<boost::mutex> lock(txMtx_);
-   transportTx(rst,true,false);
-
-   // Reset tx list
-   for (x=0; x < 256; x++) txList_[x].reset();
-   txListCount_ = 0;
-
-   lock.unlock();
+   transportTx(rst,true,true);
 
    downCount_++;
    log_->warning("Entering closed state. Server=%i",server_);
    state_ = StClosed;
 
-   // Resest queues
+   // Reset queues
    appQueue_.reset();
+   oooQueue_.clear();
    stQueue_.reset();
 
    gettimeofday(&stTime_,NULL);
