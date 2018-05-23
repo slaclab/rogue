@@ -505,7 +505,12 @@ int8_t rpr::Controller::retransmit(uint8_t id) {
 
 //! Convert rssi time to microseconds
 uint32_t rpr::Controller::convTime ( uint32_t rssiTime ) {
-   return(rssiTime * std::pow(10,TimeoutUnit));
+   float units = std::pow(10,-TimeoutUnit);
+   float value = units * (float)rssiTime;
+
+   uint32_t ret = (uint32_t)(value / 1e-6);
+
+   return(ret);
 }
 
 //! Helper function to determine if time has elapsed
