@@ -74,6 +74,15 @@ rim::TransactionPtr rim::Slave::getTransaction(uint32_t index) {
 
    printf("Looking for transaction %i\n",index);
 
+   // First see if transaction even exists
+   for (it = tranList_.begin(); it != tranList_.end(); ++it) {
+      if ( (*it)->id() == index ) break;
+   }
+   if ( it == tranList_.end() ) {
+      printf("Received transaction %i is lost.\n",index);
+      return(ret);
+   }
+
    // Transaction should be first in the list, 
    // remove and error out transactions leading up to the current
    while ( (ret == NULL) && ((it = tranList_.begin()) != tranList_.end()) ) {
