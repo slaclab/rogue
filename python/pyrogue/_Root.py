@@ -59,7 +59,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         """Root exit."""
         self.stop()
 
-    def __init__(self, *, name, description):
+    def __init__(self, *, name=None, description=''):
         """Init the node with passed attributes"""
 
         rogue.interfaces.stream.Master.__init__(self)
