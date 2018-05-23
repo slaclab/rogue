@@ -179,7 +179,7 @@ uint32_t rim::Master::intTransaction(rim::TransactionPtr tran) {
    
    log_->debug("Request transaction type=%i id=%i",tran->type_,tran->id_);
    slave->doTransaction(tran);
-   tran->refreshTimer();
+   tran->refreshTimer(NULL);
    return(tran->id_);
 }
 

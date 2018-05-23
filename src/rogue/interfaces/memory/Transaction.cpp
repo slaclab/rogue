@@ -143,11 +143,14 @@ uint32_t rim::Transaction::wait() {
 }
 
 //! Refresh the timer
-void rim::Transaction::refreshTimer() {
+void rim::Transaction::refreshTimer(rim::TransactionPtr ref) {
    struct timeval currTime;
    gettimeofday(&currTime,NULL);
    boost::lock_guard<boost::mutex> lock(lock_);
-   timeradd(&currTime,&timeout_,&endTime_);
+
+   // Refresh if start time is later then the reference
+   if ( ref == NULL || timercmp(&startTime_,&(ref->startTime_),>) )
+      timeradd(&currTime,&timeout_,&endTime_);
 }
 
 //! start iterator, caller must lock around access

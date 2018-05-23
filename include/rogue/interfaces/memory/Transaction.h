@@ -132,7 +132,7 @@ namespace rogue {
                uint32_t wait();
 
                //! Refresh timer
-               void refreshTimer();
+               void refreshTimer(boost::shared_ptr<rogue::interfaces::memory::Transaction> reference);
 
                //! start iterator, caller must lock around access
                rogue::interfaces::memory::Transaction::iterator begin();

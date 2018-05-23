@@ -60,48 +60,36 @@ rim::Slave::~Slave() { }
 void rim::Slave::addTransaction(rim::TransactionPtr tran) {
    rogue::GilRelease noGil;
    boost::lock_guard<boost::mutex> lock(slaveMtx_);
-   printf("Adding transaction %i\n",tran->id());
-   tranList_.push_back(tran); // Weak pointer copy
+   tranMap_[tran->id()] = tran;
 }
 
 //! Get transaction with index, called by sub classes
 rim::TransactionPtr rim::Slave::getTransaction(uint32_t index) {
    rim::TransactionPtr ret;
-   TransactionList::iterator it;
+   TransactionMap::iterator it;
 
    rogue::GilRelease noGil;
    boost::lock_guard<boost::mutex> lock(slaveMtx_);
 
-   printf("Looking for transaction %i\n",index);
+   if ( (it = tranMap_.find(index)) != tranMap_.end() ) {
+      ret = it->second;
 
-   // First see if transaction even exists
-   for (it = tranList_.begin(); it != tranList_.end(); ++it) {
-      if ( (*it)->id() == index ) break;
-   }
-   if ( it == tranList_.end() ) {
-      printf("Received transaction %i is lost.\n",index);
-      return(ret);
-   }
+      // Remove from list
+      tranMap_.erase(it);
 
-   // Transaction should be first in the list, 
-   // remove and error out transactions leading up to the current
-   while ( (ret == NULL) && ((it = tranList_.begin()) != tranList_.end()) ) {
-
-      // Transaction found
-      if ( (*it)->id() == index ) ret = *it;
-
-      // Non expired transactions should immediatly timeout
-      else if ( ! (*it)->expired() ) {
-         printf("Removed out of order entry. Looking for %i, got %i\n",index,(*it)->id());
-         (*it)->done(rim::TimeoutError);
+      // Cleanup the list, update timers
+      it = tranMap_.begin();
+      while ( it != tranMap_.end() ) {
+         if ( it->second->expired() ) {
+            tranMap_.erase(it); // Iterator no longer valid
+            it = tranMap_.begin();
+         }
+         else {
+            it->second->refreshTimer(ret);
+            ++it;
+         }
       }
-
-      // Remove transaction
-      tranList_.erase(it); // Iterator no longer valid
    }
-
-   // Update timers of all others
-   for (it = tranList_.begin(); it != tranList_.end(); ++it) (*it)->refreshTimer();
    return ret;
 }
 
