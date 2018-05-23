@@ -132,7 +132,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                                  description='Clear the message log cntained in the SystemLog variable'))
 
 
-    def start(self, initRead=False, initWrite=False, pollEn=True, pyroGroup=None, pyroHost=None, pyroNs=None):
+    def start(self, timeout=1.0, initRead=False, initWrite=False, pollEn=True, pyroGroup=None, pyroHost=None, pyroNs=None):
         """Setup the tree. Start the polling thread."""
 
         # Create poll queue object
@@ -177,6 +177,11 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                 print("   " + n)
 
             print("----------------------------------------------------------------")
+
+        # Set timeout if not default
+        if timeout != 1.0:
+            for key,value in self._nodes.items():
+                value._setTimeout(timeout)
 
         # Start pyro server if enabled
         if pyroGroup is not None:
@@ -361,13 +366,6 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
             # After with is done
             self._updateQueue.put(False)
-
-    def setTimeout(self,timeout):
-        """
-        Set timeout value on all devices & blocks
-        """
-        for key,value in self._nodes.items():
-            value._setTimeout(timeout)
 
     def _sendYamlFrame(self,yml):
         """
