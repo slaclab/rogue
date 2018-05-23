@@ -149,7 +149,7 @@ void rim::Transaction::refreshTimer(rim::TransactionPtr ref) {
    boost::lock_guard<boost::mutex> lock(lock_);
 
    // Refresh if start time is later then the reference
-   if ( ref == NULL || timercmp(&startTime_,&(ref->startTime_),>) )
+   if ( ref == NULL || timercmp(&startTime_,&(ref->startTime_),>=) )
       timeradd(&currTime,&timeout_,&endTime_);
 }
 
