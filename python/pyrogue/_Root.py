@@ -132,7 +132,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                                  description='Clear the message log cntained in the SystemLog variable'))
 
 
-    def start(self, timeout=None, initRead=False, initWrite=False, pollEn=True, pyroGroup=None, pyroHost=None, pyroNs=None):
+    def start(self, timeout=1.0, initRead=False, initWrite=False, pollEn=True, pyroGroup=None, pyroHost=None, pyroNs=None):
         """Setup the tree. Start the polling thread."""
 
         # Create poll queue object
@@ -178,8 +178,8 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
             print("----------------------------------------------------------------")
 
-        # Set timeout
-        if timeout is not None:
+        # Set timeout if not default
+        if timeout != 1.0:
             for key,value in self._nodes.items():
                 value._setTimeout(timeout)
 
