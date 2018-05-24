@@ -143,9 +143,6 @@ class BaseBlock(object):
     def updated(self):
         pass
 
-    def _addVariable(self,var):
-        return False
-
 class LocalBlock(BaseBlock):
     def __init__(self, *, variable, localSet, localGet, value):
         BaseBlock.__init__(self, name=variable.path, mode=variable.mode, device=variable.parent)
@@ -193,7 +190,7 @@ class LocalBlock(BaseBlock):
 
 
 class RemoteBlock(BaseBlock, rim.Master):
-    def __init__(self, *, variable):
+    def __init__(self, *, offset, size, variables):
      
         rim.Master.__init__(self)
         self._setSlave(variable.parent)
@@ -203,23 +200,65 @@ class RemoteBlock(BaseBlock, rim.Master):
         self._bulkEn    = False
         self._doVerify  = False
         self._verifyWr  = False
-        self._sData     = bytearray()  # Set data
-        self._sDataMask = bytearray()  # Set data mask
-        self._bData     = bytearray()  # Block data
-        self._vData     = bytearray()  # Verify data
-        self._vDataMask = bytearray()  # Verify data mask
-        self._varMask   = bytearray()  # Variable bit mask, used to detect overlaps
-        self._oleMask   = bytearray()  # Variable mask for bits which allow overlap
-        self._size      = 0
-        self._offset    = variable.offset
+        self._sData     = bytearray(size)  # Set data
+        self._sDataMask = bytearray(size)  # Set data mask
+        self._bData     = bytearray(size)  # Block data
+        self._vData     = bytearray(size)  # Verify data
+        self._vDataMask = bytearray(size)  # Verify data mask
+        self._excMask   = bytearray(size)  # Variable bit mask for exclusive variables
+        self._oleMask   = bytearray(size)  # Variable bit mask for overlap enabled variables
+        self._size      = size
+        self._offset    = offset
         self._minSize   = self._reqMinAccess()
         self._maxSize   = self._reqMaxAccess()
-        self._variables = []
+        self._variables = variables
 
         if self._minSize == 0 or self._maxSize == 0:
             raise MemoryError(name=self.name, address=self.address, msg="Invalid min/max size")
 
-        self._addVariable(variable)
+        # Go through variables
+        for var in variables:
+
+            # Range check
+            if var.varBytes > self._maxSize:
+                msg = f'Variable {var.name} size {var.varBytes} exceeds maxSize {self._maxSize}'
+                raise MemoryError(name=self.name, address=self.address, msg=msg)
+
+            # Link variable to block
+            var._block = self
+
+            if not isinstance(var, pr.BaseCommand):
+                self._bulkEn = True
+
+            self._log.debug(f"Adding variable {var.name} to block {self.name} at offset {self.offset:#02x}")
+
+            # If variable modes mismatch, set block to read/write
+            if var.mode != self._mode:
+                self._mode = 'RW'
+
+            # Update variable masks
+            for x in range(len(var.bitOffset)):
+
+                # Variable allows overlaps, add to overlap enable mask
+                if var._overlapEn:
+                    self._setBits(self._oleMask,var.bitOffset[x],var.bitSize[x])
+
+                # Otherwise add to exclusive mask
+                else:
+                    self._setBits(self._excMask,var.bitOffset[x],var.bitSize[x])
+
+                # update verify mask
+                if var.mode == 'RW' and var.verify is True:
+                    self._verifyEn = True
+                    self._setBits(self._vDataMask,var.bitOffset[x],var.bitSize[x])
+
+        # Check for overlaps
+        for b1, b2 in zip(self._oleMask, self._excMask):
+            if b1 & b2 != 0:
+                print("\n\n\n------------------------ Variable Overlap Warning !!! --------------------------------")
+                print(f"Detected bit overlap in block {self.name} at address {self.address}")
+                print("This warning will be replaced with an exception in the next release!!!!!!!!")
+                break;
 
     def __repr__(self):
         return repr(self._variables)
@@ -378,78 +417,6 @@ class RemoteBlock(BaseBlock, rim.Master):
 
         # Update variables outside of lock
         if doUpdate: self.updated()
-
-    def _addVariable(self,var):
-        """
-        Add a variable to the block. Called from Device for BlockMemory
-        """
-
-        with self._lock:
-
-            # Return false if offset does not match
-            if len(self._variables) != 0 and var.offset != self._variables[0].offset:
-                return False
-    
-            # Range check
-            if var.varBytes > self._maxSize:
-                msg = f'Variable {var.name} size {var.varBytes} exceeds maxSize {self._maxSize}'
-                raise MemoryError(name=self.name, address=self.address, msg=msg)
-
-            # Link variable to block
-            var._block = self
-            
-            if not isinstance(var, pr.BaseCommand):
-                self._bulkEn = True
-
-            self._variables.append(var)
-
-            self._log.debug(f"Adding variable {var.name} to block {self.name} at offset {self.offset:#02x}")
-
-            # If variable modes mismatch, set block to read/write
-            if var.mode != self._mode:
-                self._mode = 'RW'
-
-            # Adjust size to hold variable. Underlying class will adjust
-            # size to align to minimum protocol access size 
-            if self._size < var.varBytes:
-                self._bData.extend(bytearray(var.varBytes - self._size))
-                self._vData.extend(bytearray(var.varBytes - self._size))
-                self._vDataMask.extend(bytearray(var.varBytes - self._size))
-                self._varMask.extend(bytearray(var.varBytes - self._size))
-                self._oleMask.extend(bytearray(var.varBytes - self._size))
-                self._size = var.varBytes
-
-            self._sData = bytearray(self._size)
-            self._sDataMask = bytearray(self._size)
-
-            # Update var bit mask and check for overlaps
-            for x in range(len(var.bitOffset)):
-
-                # Bit overlaps previous variable or bit overlaps an overlap enable bit 
-                # and new variable does not allow overlaps
-                if self._anyBits(self._varMask, var.bitOffset[x], var.bitSize[x]) or \
-                    (self._anyBits(self._oleMask, var.bitOffset[x], var.bitSize[x]) and (not var._overlapEn)):
-                
-                    print("\n\n\n------------------------ Variable Overlap Warning !!! --------------------------------")
-                    print(f"Detected bit overlap for variable {var.name} in block {self.name} at address {self.address}")
-                    print("This warning will be replaced with an exception in the next release!!!!!!!!")
-
-                # Variable allows overlaps, add to overlap enable mask
-                if var._overlapEn:
-                    self._setBits(self._oleMask,var.bitOffset[x],var.bitSize[x])
-
-                # Otherwise add to standard mask
-                else:
-                    self._setBits(self._varMask,var.bitOffset[x],var.bitSize[x])
-
-            # Update verify mask
-            if var.mode == 'RW' and var.verify is True:
-                self._verifyEn = True
-
-                for x in range(len(var.bitOffset)):
-                    self._setBits(self._vDataMask,var.bitOffset[x],var.bitSize[x])
-
-            return True
 
     def _setDefault(self, var, value):
         with self._lock:
