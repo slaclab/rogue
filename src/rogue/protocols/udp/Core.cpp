@@ -48,8 +48,6 @@ bool rpu::Core::setRxBufferCount(uint32_t count) {
    setsockopt(fd_, SOL_SOCKET, SO_RCVBUF, (char*)&size, sizeof(size));
    getsockopt(fd_, SOL_SOCKET, SO_RCVBUF, &rwin, &rwin_size);
 
-   printf("Rx buffer count=%i, size = %i, rwin = %i\n",count,size,rwin);
-
    if(size > rwin) {
       udpLog_->critical("----------------------------------------------------------");
       udpLog_->critical("Error setting rx buffer size.");
