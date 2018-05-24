@@ -33,9 +33,9 @@ class UdpRssiPack(pr.Device):
             self._log.critical("Size arg is deprecated. Use jumbo arg instead")
 
         self._udp  = rogue.protocols.udp.Client(host,port,jumbo)
-        self._udp.setRxBufferCount(self._rssi.getRemMaxSegment());
 
         self._rssi = rogue.protocols.rssi.Client(self._udp.maxPayload())
+        self._udp.setRxBufferCount(self._rssi.getRemMaxSegment());
 
         if packVer == 2:
             self._pack = rogue.protocols.packetizer.CoreV2(False,True) # ibCRC = False, obCRC = True
