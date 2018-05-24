@@ -205,8 +205,6 @@ class RemoteBlock(BaseBlock, rim.Master):
         self._bData     = bytearray(size)  # Block data
         self._vData     = bytearray(size)  # Verify data
         self._vDataMask = bytearray(size)  # Verify data mask
-        self._excMask   = bytearray(size)  # Variable bit mask for exclusive variables
-        self._oleMask   = bytearray(size)  # Variable bit mask for overlap enabled variables
         self._size      = size
         self._offset    = offset
         self._minSize   = self._reqMinAccess()
@@ -220,6 +218,10 @@ class RemoteBlock(BaseBlock, rim.Master):
         if self._size > self._maxSize:
             msg = f'Block {self._name} size {self._size} exceeds maxSize {self._maxSize}'
             raise MemoryError(name=self._name, address=self.address, msg=msg)
+
+        # Temp bit masks
+        excMask = bytearray(size)  # Variable bit mask for exclusive variables
+        oleMask = bytearray(size)  # Variable bit mask for overlap enabled variables
 
         # Go through variables
         for var in variables:
@@ -241,19 +243,19 @@ class RemoteBlock(BaseBlock, rim.Master):
 
                 # Variable allows overlaps, add to overlap enable mask
                 if var._overlapEn:
-                    self._setBits(self._oleMask,var.bitOffset[x],var.bitSize[x])
+                    self._setBits(oleMask,var.bitOffset[x],var.bitSize[x])
 
                 # Otherwise add to exclusive mask
                 else:
-                    self._setBits(self._excMask,var.bitOffset[x],var.bitSize[x])
+                    self._setBits(excMask,var.bitOffset[x],var.bitSize[x])
 
                 # update verify mask
                 if var.mode == 'RW' and var.verify is True:
                     self._verifyEn = True
                     self._setBits(self._vDataMask,var.bitOffset[x],var.bitSize[x])
 
-        # Check for overlaps
-        for b1, b2 in zip(self._oleMask, self._excMask):
+        # Check for overlaps by anding exclusive and overmap bit vectors
+        for b1, b2 in zip(oleMask, excMask):
             if b1 & b2 != 0:
                 print("\n\n\n------------------------ Variable Overlap Warning !!! --------------------------------")
                 print(f"Detected bit overlap in block {self.name} at address {self.address}")

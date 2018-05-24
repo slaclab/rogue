@@ -432,24 +432,24 @@ class Device(pr.Node,rim.Hub):
             if isinstance(n,pr.LocalVariable):
                 self._blocks.append(n._block)
 
-            # Align to min access, create list softed by offset 
+            # Align to min access, create list sorted by offset 
             elif isinstance(n,pr.RemoteVariable) and n.offset is not None:
                 n._shiftOffsetDown(n.offset % blkSize, blkSize)
                 remVars += [n]
 
-        # Sort by offset and size
+        # Sort var list by offset, size
         remVars.sort(key=lambda x: (x.offset, x.varBytes))
         blocks = []
         blk = None
 
-        # Go through sorted variable list, look for overlaps
+        # Go through sorted variable list, look for overlaps, group into blocks
         for n in remVars:
-            if blk is not None and ( (blk['offset'] + blk['size']) <= n.offset):
+            if blk is not None and ( (blk['offset'] + blk['size']) > n.offset):
                 self._log.info("Overlap detected var offset={} block offset={} block bytes={}".format(n.offset,blk['offset'],blk['size']))
                 n._shiftOffsetDown(n.offset - blk['offset'], blkSize)
                 blk['vars'].append(n)
 
-                if n.size > blk['size']: blk['size'] = n.size
+                if n.varBytes > blk['size']: blk['size'] = n.varBytes
 
             else:
                 blk = {'offset':n.offset, 'size':n.varBytes, 'vars':[n]}
@@ -457,12 +457,12 @@ class Device(pr.Node,rim.Hub):
 
         # Create blocks
         for b in blocks:
-            self._blocks.append(pr.RemoteBlock(offset=blk['offset'], size=blk['size'], variables=blk['vars']))
-            self._log.debug("Adding new block {} at offset {:#02x}, size {}".format(blk['offset'], size=blk['size']))
+            self._blocks.append(pr.RemoteBlock(offset=b['offset'], size=b['size'], variables=b['vars']))
+            self._log.debug("Adding new block at offset {:#02x}, size {}".format(b['offset'], b['size']))
 
             # Adjust device size
-            if (blk['offset'] + blk['size']) > self._size:
-                self._size = (blk['offset'] + blk['size'])
+            if (b['offset'] + b['size']) > self._size:
+                self._size = (b['offset'] + b['size'])
 
     def _rootAttached(self, parent, root):
         pr.Node._rootAttached(self, parent, root)
