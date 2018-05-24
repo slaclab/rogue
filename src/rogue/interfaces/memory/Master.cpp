@@ -52,8 +52,6 @@ void rim::Master::setup_python() {
       .staticmethod("_copyBits")
       .def("_setBits",            &rim::Master::setBits)
       .staticmethod("_setBits")
-      .def("_anyBits",            &rim::Master::anyBits)
-      .staticmethod("_anyBits")
    ;
 }
 
@@ -208,7 +206,6 @@ void rim::Master::waitTransaction(uint32_t id) {
    }
 }
 
-
 //! Copy bits from src to dst with lsbs and size
 void rim::Master::copyBits(boost::python::object dst, uint32_t dstLsb, boost::python::object src, uint32_t srcLsb, uint32_t size) {
 
@@ -318,54 +315,5 @@ void rim::Master::setBits(boost::python::object dst, uint32_t lsb, uint32_t size
    } while (rem != 0);
 
    PyBuffer_Release(&dstBuf);
-}
-
-//! Return true if any of the bits in a given range are set
-bool rim::Master::anyBits(boost::python::object src, uint32_t lsb, uint32_t size) {
-   Py_buffer srcBuf;
-   uint32_t  srcBit;
-   uint32_t  srcByte;
-   uint8_t * srcData;
-   uint32_t  rem;
-
-   if ( PyObject_GetBuffer(src.ptr(),&srcBuf,PyBUF_SIMPLE) < 0 )
-      throw(rogue::GeneralError("Master::setBits","Python Buffer Error"));
-
-   if ( (lsb + size) > (srcBuf.len*8) ) {
-      PyBuffer_Release(&srcBuf);
-      throw(rogue::GeneralError::boundary("Master::setBits",(lsb + size),(srcBuf.len*8)));
-   }
-
-   srcByte = lsb / 8;
-   srcBit  = lsb % 8;
-   srcData = (uint8_t *)srcBuf.buf;
-   rem = size;
-
-   do {
-
-      // Aligned
-      if ( (srcBit == 0) && rem >= 8 ) {
-         if ( srcData[srcByte] != 0 ) {
-            PyBuffer_Release(&srcBuf);
-            return true;
-         }
-         ++srcByte;
-         rem -= 8;
-      }
-
-      // Not aligned
-      else {
-         if ( ((srcData[srcByte] >> srcBit) & 0x1) != 0 ) {
-            PyBuffer_Release(&srcBuf);
-            return true;
-         }
-         srcByte += (++srcBit / 8);
-         srcBit %= 8;
-         rem -= 1;
-      }
-   } while (rem != 0);
-
-   PyBuffer_Release(&srcBuf);
-   return false;
 }
 

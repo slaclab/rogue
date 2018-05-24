@@ -437,36 +437,32 @@ class Device(pr.Node,rim.Hub):
                 n._shiftOffsetDown(n.offset % blkSize, blkSize)
                 remVars += [n]
 
-        # Loop until no overlaps found
-        done = False
-        while done == False:
-            done = True
+        # Sort by offset and size
+        remVars.sort(key=lambda x: (x.offset, x.varBytes))
+        blocks = []
+        blk = None
 
-            # Sort byte offset and size
-            remVars.sort(key=lambda x: (x.offset, x.varBytes))
-
-            # Look for overlaps and adjust offset
-            for i in range(1,len(remVars)):
-
-                # Variable overlaps the range of the previous variable
-                if (remVars[i].offset != remVars[i-1].offset) and \
-                   (remVars[i].offset <= (remVars[i-1].offset + remVars[i-1].varBytes - 1)):
-                    self._log.info("Overlap detected cur offset={} prev offset={} prev bytes={}".format(
-                        remVars[i].offset,remVars[i-1].offset,remVars[i-1].varBytes))
-                    remVars[i]._shiftOffsetDown(remVars[i].offset - remVars[i-1].offset, blkSize)
-                    done = False
-                    break
-
-        # Add variables
+        # Go through sorted variable list, look for overlaps
         for n in remVars:
+            if blk is not None and ( (blk['offset'] + blk['size']) <= n.offset):
+                self._log.info("Overlap detected var offset={} block offset={} block bytes={}".format(n.offset,blk['offset'],blk['size']))
+                n._shiftOffsetDown(n.offset - blk['offset'], blkSize)
+                blk['vars'].append(n)
+
+                if n.size > blk['size']: blk['size'] = n.size
+
+            else:
+                blk = {'offset':n.offset, 'size':n.varBytes, 'vars':[n]}
+                blocks.append(blk)
+
+        # Create blocks
+        for b in blocks:
+            self._blocks.append(pr.RemoteBlock(offset=blk['offset'], size=blk['size'], variables=blk['vars']))
+            self._log.debug("Adding new block {} at offset {:#02x}, size {}".format(blk['offset'], size=blk['size']))
 
             # Adjust device size
-            if (n.offset + n.varBytes) > self._size:
-                self._size = (n.offset + n.varBytes)
-
-            if not any(block._addVariable(n) for block in self._blocks):
-                self._log.debug("Adding new block {} at offset {:#02x}".format(n.name,n.offset))
-                self._blocks.append(pr.RemoteBlock(variable=n))
+            if (blk['offset'] + blk['size']) > self._size:
+                self._size = (blk['offset'] + blk['size'])
 
     def _rootAttached(self, parent, root):
         pr.Node._rootAttached(self, parent, root)
