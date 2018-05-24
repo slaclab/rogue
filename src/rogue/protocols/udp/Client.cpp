@@ -75,7 +75,7 @@ rpu::Client::Client ( std::string host, uint16_t port, bool jumbo) : rpu::Core(j
 
    // Fixed size buffer pool
    setFixedSize(maxPayload());
-   setPoolSize(1024); // Initial value
+   setPoolSize(10000); // Initial value, 10K frames
 
    // Start rx thread
    thread_ = new boost::thread(boost::bind(&rpu::Client::runThread, this));

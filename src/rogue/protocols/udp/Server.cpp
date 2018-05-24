@@ -74,7 +74,7 @@ rpu::Server::Server (uint16_t port, bool jumbo) : rpu::Core(jumbo) {
 
    // Fixed size buffer pool
    setFixedSize(maxPayload());
-   setPoolSize(1024); // Initial value
+   setPoolSize(10000); // Initial value, 10K frames
 
    // Start rx thread
    thread_ = new boost::thread(boost::bind(&rpu::Server::runThread, this));

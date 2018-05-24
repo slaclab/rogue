@@ -57,6 +57,7 @@ ru::Prbs::Prbs() {
    txCount_    = 0;
    txBytes_    = 0;
    checkPl_    = true;
+   genPl_      = true;
    rxLog_      = rogue::Logging::create("prbs.rx");
    txLog_      = rogue::Logging::create("prbs.tx");
 
@@ -137,6 +138,8 @@ void ru::Prbs::flfsr(ru::PrbsData & data) {
 
 //! Thread background
 void ru::Prbs::runThread() {
+   txLog_->logThreadId(rogue::Logging::Info);
+
    try {
       while(1) {
          genFrame(txSize_);
@@ -203,6 +206,11 @@ void ru::Prbs::checkPayload(bool state) {
    checkPl_ = state;
 }
 
+//! Set generate payload flag, default = true
+void ru::Prbs::genPayload(bool state) {
+   genPl_ = state;
+}
+
 //! Reset counters
 // Counters should really be locked!
 void ru::Prbs::resetCount() {
@@ -257,22 +265,25 @@ void ru::Prbs::genFrame (uint32_t size) {
    ris::toFrame(frIter,byteWidth_,frSize);
    ++wCount[0];
 
-   // Init data
-   ru::PrbsData data(byteWidth_ * 8, frSeq[0]);
+   if ( genPl_ ) {
 
-   // Generate payload
-   while ( frIter != frEnd ) {
-      
-      if ( sendCount_ ) ris::toFrame(frIter,byteWidth_,wCount);
-      else {
-         flfsr(data);
-         to_block_range(data,frIter);
-         frIter += byteWidth_;
+      // Init data
+      ru::PrbsData data(byteWidth_ * 8, frSeq[0]);
+
+      // Generate payload
+      while ( frIter != frEnd ) {
+         
+         if ( sendCount_ ) ris::toFrame(frIter,byteWidth_,wCount);
+         else {
+            flfsr(data);
+            to_block_range(data,frIter);
+            frIter += byteWidth_;
+         }
+         ++wCount[0];
       }
-      ++wCount[0];
    }
-   fr->setPayload(size);
 
+   fr->setPayload(size);
    sendFrame(fr);
 
    // Update counters
@@ -374,6 +385,7 @@ void ru::Prbs::setup_python() {
       .def("getTxCount",     &ru::Prbs::getTxCount)
       .def("getTxBytes",     &ru::Prbs::getTxBytes)
       .def("checkPayload",   &ru::Prbs::checkPayload)
+      .def("genPayload",     &ru::Prbs::genPayload)
       .def("resetCount",     &ru::Prbs::resetCount)
       .def("sendCount",      &ru::Prbs::sendCount)
    ;

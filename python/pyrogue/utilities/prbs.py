@@ -99,6 +99,12 @@ class PrbsTx(pyrogue.Device):
         self.add(pyrogue.LocalVariable(name='txBytes', description='TX Bytes', mode='RO', pollInterval = 1,
                                        value=0, localGet=self._prbs.getTxBytes))
 
+        self.add(pyrogue.LocalVariable(name='genPayload', description='Payload Generate Enable',
+                                       mode='RW', value=True, localSet=self._plEnable))
+
+    def _plEnable(self,value,changed):
+        self._prbs.genPayload(value)
+
     def countReset(self):
         self._prbs.resetCount()
 

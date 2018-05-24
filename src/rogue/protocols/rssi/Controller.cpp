@@ -80,7 +80,7 @@ rpr::Controller::Controller ( uint32_t segSize, rpr::TransportPtr tran, rpr::App
 
    locConnId_     = 0x12345678;
    remMaxBuffers_ = 0;
-   remMaxSegment_ = 100;
+   remMaxSegment_ = LocMaxBuffers;
    retranTout_    = ReqRetranTout;
    cumAckTout_    = ReqCumAckTout;
    nullTout_      = ReqNullTout;
