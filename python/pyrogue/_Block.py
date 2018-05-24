@@ -193,9 +193,9 @@ class RemoteBlock(BaseBlock, rim.Master):
     def __init__(self, *, offset, size, variables):
      
         rim.Master.__init__(self)
-        self._setSlave(variable.parent)
+        self._setSlave(variables[0].parent)
         
-        BaseBlock.__init__(self, name=variable.path, mode=variable.mode, device=variable.parent)
+        BaseBlock.__init__(self, name=variables[0].path, mode=variables[0].mode, device=variables[0].parent)
         self._verifyEn  = False
         self._bulkEn    = False
         self._doVerify  = False
@@ -216,13 +216,13 @@ class RemoteBlock(BaseBlock, rim.Master):
         if self._minSize == 0 or self._maxSize == 0:
             raise MemoryError(name=self.name, address=self.address, msg="Invalid min/max size")
 
+        # Range check
+        if self._size > self._maxSize:
+            msg = f'Block {self._name} size {self._size} exceeds maxSize {self._maxSize}'
+            raise MemoryError(name=self._name, address=self.address, msg=msg)
+
         # Go through variables
         for var in variables:
-
-            # Range check
-            if var.varBytes > self._maxSize:
-                msg = f'Variable {var.name} size {var.varBytes} exceeds maxSize {self._maxSize}'
-                raise MemoryError(name=self.name, address=self.address, msg=msg)
 
             # Link variable to block
             var._block = self
