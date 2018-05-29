@@ -31,6 +31,8 @@ $ apt-get install cmake
 $ apt-get install python3
 $ apt-get install libboost-all-dev
 $ apt-get install libbz2-dev
+$ apt-get install python-pip
+$ apt-get install git
 ````
 
 To add these packages on archlinux:
@@ -40,6 +42,8 @@ $ pacman -S cmake
 $ pacman -S python3
 $ pacman -S boost
 $ pacman -S bzip2
+$ pacman -S python-pip
+$ pacman -S git
 ````
 
 To use these packages on a rhel6 machine at SLAC requires some extra
