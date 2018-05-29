@@ -47,6 +47,7 @@ class VariableDev(object):
         else:
             self._dummy = QTreeWidgetItem(self._widget) # One dummy item to add expand control
             self._widget.setExpanded(False)
+            print(f"Processing {self._dev.name}")
             self._tree.itemExpanded.connect(self.expandCb)
 
     @pyqtSlot()
@@ -212,6 +213,7 @@ class VariableWidget(QWidget):
         self.devTop = None
 
     @pyqtSlot(pyrogue.Root)
+    @pyqtSlot(pyrogue.PyroRoot)
     def addTree(self,root):
         self.roots.append(root)
         self.devTop = VariableDev(tree=self.tree,parent=self.top,dev=root,noExpand=False)

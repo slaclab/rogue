@@ -40,7 +40,8 @@ def application(argv):
 
 class GuiTop(QWidget):
 
-    newTree = pyqtSignal(pyrogue.Root)
+    newRoot = pyqtSignal(pyrogue.Root)
+    newPyro = pyqtSignal(pyrogue.PyroRoot)
 
     def __init__(self,*, group,parent=None):
         super(GuiTop,self).__init__(parent)
@@ -58,21 +59,29 @@ class GuiTop(QWidget):
         self.tab.addTab(self.cmd,'Commands')
         self.show()
 
-        self.newTree.connect(self._addTree)
-        self.newTree.connect(self.var.addTree)
-        self.newTree.connect(self.cmd.addTree)
+        self.newRoot.connect(self._addTree)
+        self.newRoot.connect(self.var.addTree)
+        self.newRoot.connect(self.cmd.addTree)
+
+        self.newPyro.connect(self._addTree)
+        self.newPyro.connect(self.var.addTree)
+        self.newPyro.connect(self.cmd.addTree)
 
         self._appTop = None
 
     def addTree(self,root):
         if not root.running:
             raise Exception("GUI can not be attached to a tree which is not started")
-        self.newTree.emit(root)
+
+        if isinstance(root,pyrogue.PyroRoot):
+            self.newPyro.emit(root)
+        else:
+            self.newRoot.emit(root)
 
     @pyqtSlot(pyrogue.Root)
+    @pyqtSlot(pyrogue.PyroRoot)
     def _addTree(self,root):
         self.sys = pyrogue.gui.system.SystemWidget(root=root,parent=self.tab)
         self.tab.addTab(self.sys,root.name)
         self.adjustSize()
-
 
