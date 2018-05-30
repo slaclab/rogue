@@ -49,7 +49,6 @@ class VariableDev(QObject):
         else:
             self._dummy = QTreeWidgetItem(self._widget) # One dummy item to add expand control
             self._widget.setExpanded(False)
-            print(f"Processing {self._dev.name}")
             self._tree.itemExpanded.connect(self.expandCb)
 
     @pyqtSlot()
