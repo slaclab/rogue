@@ -178,7 +178,7 @@ class BaseVariable(pr.Node):
                 self._block.set(self, value)
 
                 if write:
-                    self._parent.writeBlocks(force=False, recurse=False, variable=self)
+                    self._parent.writeBlocks(force=True, recurse=False, variable=self)
                     self._parent.verifyBlocks(recurse=False, variable=self)
                     self._parent.checkBlocks(recurse=False, variable=self)
 
