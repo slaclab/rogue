@@ -21,11 +21,13 @@ import itertools
 import heapq
 import rogue.interfaces.memory
 import pyrogue as pr
-import recordclass
+
+READ_TIME = 0
+COUNT = 1
+INTERVAL = 2
+BLOCK = 3
 
 class PollQueue(object):
-
-    Entry = recordclass.recordclass('PollQueueEntry', ['readTime', 'count', 'interval', 'block'])
 
     def __init__(self,*, root):
         self._pq = [] # The heap queue
@@ -51,7 +53,7 @@ class PollQueue(object):
             # (rounded up to the next second)
             readTime = datetime.datetime.now()
             readTime = readTime.replace(microsecond=0)
-            entry = PollQueue.Entry(readTime, next(self._counter), timedelta, block)
+            entry = [readTime, next(self._counter), timedelta, block]
             self._entries[block] = entry
             heapq.heappush(self._pq, entry)
             # Wake up the thread
@@ -125,19 +127,19 @@ class PollQueue(object):
                         self._log.debug(f'Polling Block {entry.block.name}')
                         blockEntries.append(entry)
                         try:
-                            entry.block.startTransaction(rogue.interfaces.memory.Read, check=False)
+                            entry[BLOCK].startTransaction(rogue.interfaces.memory.Read, check=False)
                         except Exception as e:
                             self._log.exception(e)
 
                         # Update the entry with new read time
-                        entry = entry._replace(readTime=(entry.readTime + entry.interval),
-                                               count=next(self._counter))
+                        entry[READ_TIME] = entry[READ_TIME] + entry[INTERVAL]
+                        entry[COUNT] = next(self._counter)
                         # Push the updated entry back into the queue
                         heapq.heappush(self._pq, entry)
 
                     try:
                         for entry in blockEntries:
-                            entry.block._checkTransaction()
+                            entry[BLOCK]._checkTransaction()
                     except Exception as e:
                         self._log.exception(e)
 
@@ -151,7 +153,7 @@ class PollQueue(object):
                 time = datetime.datetime.now()
             while self.empty() is False and self.peek().readTime <= time:
                 entry = heapq.heappop(self._pq)
-                if entry.block is not None:
+                if entry[BLOCK] is not None:
                     yield entry
 
 
