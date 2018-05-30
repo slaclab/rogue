@@ -178,7 +178,7 @@ class BaseVariable(pr.Node):
                 self._block.set(self, value)
 
                 if write:
-                    self._parent.writeBlocks(force=False, recurse=False, variable=self)
+                    self._parent.writeBlocks(force=True, recurse=False, variable=self)
                     self._parent.verifyBlocks(recurse=False, variable=self)
                     self._parent.checkBlocks(recurse=False, variable=self)
 
@@ -483,6 +483,58 @@ class LocalVariable(BaseVariable):
 
     def __get__(self):
         return self.get(read=False)
+
+    def __iadd__(self, other):
+        self._block._iadd(other)
+        return self
+
+    def __isub__(self, other):
+        self._block._isub(other)
+        return self
+
+    def __imul__(self, other):
+        self._block._imul(other)
+        return self
+
+    def __imatmul__(self, other):
+        self._block._imatmul(other)
+        return self
+
+    def __itruediv__(self, other):
+        self._block._itruediv(other)
+        return self
+
+    def __ifloordiv__(self, other):
+        self._block._ifloordiv(other)
+        return self
+
+    def __imod__(self, other):
+        self._block._imod(other)
+        return self
+
+    def __ipow__(self, other):
+        self._block._ipow(other)
+        return self
+
+    def __ilshift__(self, other):
+        self._block._ilshift(other)
+        return self
+
+    def __irshift__(self, other):
+        self._block._irshift(other)
+        return self
+
+    def __iand__(self, other):
+        self._block._iand(other)
+        return self
+
+    def __ixor__(self, other):
+        self._block._ixor(other)
+        return self
+
+    def __ior__(self, other):
+        self._block._ior(other)
+        return self
 
 @Pyro4.expose
 class LinkVariable(BaseVariable):

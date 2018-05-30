@@ -60,33 +60,36 @@ rim::Slave::~Slave() { }
 void rim::Slave::addTransaction(rim::TransactionPtr tran) {
    rogue::GilRelease noGil;
    boost::lock_guard<boost::mutex> lock(slaveMtx_);
-   tranList_.push_back(tran); // Weak pointer copy
+   tranMap_[tran->id()] = tran;
 }
 
 //! Get transaction with index, called by sub classes
 rim::TransactionPtr rim::Slave::getTransaction(uint32_t index) {
    rim::TransactionPtr ret;
-   TransactionList::iterator it;
+   TransactionMap::iterator it;
 
    rogue::GilRelease noGil;
    boost::lock_guard<boost::mutex> lock(slaveMtx_);
 
-   // Transaction should be first in the list, 
-   // remove and error out transactions leading up to the current
-   while ( (ret == NULL) && ((it = tranList_.begin()) != tranList_.end()) ) {
+   if ( (it = tranMap_.find(index)) != tranMap_.end() ) {
+      ret = it->second;
 
-      // Transaction found
-      if ( (*it)->id() == index ) ret = *it;
+      // Remove from list
+      tranMap_.erase(it);
 
-      // Non expired transactions should immediatly timeout
-      else if ( ! (*it)->expired() ) (*it)->done(rim::TimeoutError);
-
-      // Remove transaction
-      tranList_.erase(it); // Iterator no longer valid
+      // Cleanup the list, update timers
+      it = tranMap_.begin();
+      while ( it != tranMap_.end() ) {
+         if ( it->second->expired() ) {
+            tranMap_.erase(it); // Iterator no longer valid
+            it = tranMap_.begin();
+         }
+         else {
+            it->second->refreshTimer(ret);
+            ++it;
+         }
+      }
    }
-
-   // Update timers of all others
-   for (it = tranList_.begin(); it != tranList_.end(); ++it) (*it)->refreshTimer();
    return ret;
 }
 

@@ -85,6 +85,9 @@ namespace rogue {
             //! Check payload
             bool       checkPl_;
 
+            //! Gen payload
+            bool       genPl_;
+
             //! Send count
             bool       sendCount_;
 
@@ -156,6 +159,9 @@ namespace rogue {
 
             //! Set check payload flag, default = true
             void checkPayload(bool state);
+
+            //! Set check generate flag, default = true
+            void genPayload(bool state);
 
             //! Reset counters
             void resetCount();

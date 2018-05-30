@@ -43,10 +43,11 @@ bool rpu::Core::setRxBufferCount(uint32_t count) {
    uint32_t   rwin;
    socklen_t  rwin_size=4;
 
-   uint32_t size = count * (jumbo_)?(JumboMTU):(StdMTU);
+   uint32_t size = count * ((jumbo_)?(JumboMTU):(StdMTU));
 
    setsockopt(fd_, SOL_SOCKET, SO_RCVBUF, (char*)&size, sizeof(size));
    getsockopt(fd_, SOL_SOCKET, SO_RCVBUF, &rwin, &rwin_size);
+
    if(size > rwin) {
       udpLog_->critical("----------------------------------------------------------");
       udpLog_->critical("Error setting rx buffer size.");

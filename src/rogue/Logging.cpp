@@ -89,9 +89,11 @@ void rogue::Logging::setFilter(std::string name, uint32_t level) {
 void rogue::Logging::intLog(uint32_t level, const char * fmt, va_list args) {
    if ( level < level_ ) return;
 
+   struct timeval tme;
    char buffer[1000];
    vsnprintf(buffer,1000,fmt,args);
-   printf("%s: %s\n",name_.c_str(),buffer);
+   gettimeofday(&tme,NULL);
+   printf("%i.%i:%s: %s\n",tme.tv_sec,tme.tv_usec,name_.c_str(),buffer);
 }
 
 void rogue::Logging::log(uint32_t level, const char * fmt, ...) {

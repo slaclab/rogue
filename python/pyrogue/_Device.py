@@ -254,13 +254,13 @@ class Device(pr.Node,rim.Hub):
         # Process local blocks.
         if variable is not None:
             for b in self._getBlocks(variable):
-                b.startTransaction(rim.Write, check=checkEach)
+                if (force or block.stale):                
+                    b.startTransaction(rim.Write, check=checkEach)
 
         else:
             for block in self._blocks:
-                if force or block.stale:
-                    if block.bulkEn:
-                        block.startTransaction(rim.Write, check=checkEach)
+                if (force or block.stale) and block.bulkEn:
+                    block.startTransaction(rim.Write, check=checkEach)
 
             if recurse:
                 for key,value in self.devices.items():

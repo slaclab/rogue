@@ -196,7 +196,7 @@ void rps::SrpV3::acceptFrame ( ris::FramePtr frame ) {
 
    // Find Transaction
    if ( (tran = getTransaction(id)) == NULL ) {
-     log_->warning("Invalid ID frame for id=%i",id);
+     log_->warning("Failed to find transaction id=%i",id);
      return; // Bad id or post, drop frame
    }
 

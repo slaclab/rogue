@@ -40,20 +40,20 @@ namespace rogue {
          class Controller : public boost::enable_shared_from_this<rogue::protocols::rssi::Controller> {
 
                static const uint8_t  Version       = 1;
-               static const uint8_t  TimeoutUnit   = 3; // 1e-3
+               static const uint8_t  TimeoutUnit   = 3; // rssiTime * std::pow(10,-TimeoutUnit) = 3 = ms
                
-               static const uint8_t  LocMaxBuffers = 32;
+               static const uint8_t  LocMaxBuffers = 32; // MAX_NUM_OUTS_SEG_G in FW
                static const uint32_t BusyThold     = 16;
                
                // RSSI Timeouts (units of TimeoutUnit)
-               static const uint8_t  ReqMaxRetran  = 15;
                static const uint32_t TryPeriod     = 100;
-               static const uint16_t ReqNullTout   = 3000;
+               static const uint16_t ReqCumAckTout = 5;    // ACK_TOUT_G in FW
+               static const uint16_t ReqRetranTout = 10;   // RETRANS_TOUT_G in FW
+               static const uint16_t ReqNullTout   = 3000; // NULL_TOUT_G in FW
                
                // Counters
-               static const uint16_t ReqRetranTout = 10;
-               static const uint16_t ReqCumAckTout = 5;
-               static const uint8_t  ReqMaxCumAck  = 2;
+               static const uint8_t  ReqMaxRetran  = 15;   // MAX_RETRANS_CNT_G in FW
+               static const uint8_t  ReqMaxCumAck  = 2;    // MAX_CUM_ACK_CNT_G in FW
 
                //! Connection states
                enum States : uint32_t { StClosed     = 0,
@@ -81,6 +81,9 @@ namespace rogue {
 
                // Application queue
                rogue::Queue<boost::shared_ptr<rogue::protocols::rssi::Header>> appQueue_;
+               
+               // Sequence Out of Order ("OOO") queue
+               std::map<uint8_t, boost::shared_ptr<rogue::protocols::rssi::Header>> oooQueue_;
 
                // State queue
                rogue::Queue<boost::shared_ptr<rogue::protocols::rssi::Header>> stQueue_;
@@ -93,7 +96,6 @@ namespace rogue {
                boost::mutex stMtx_;
                uint32_t state_;
                struct timeval stTime_;
-               uint8_t prevAckRx_;
                uint32_t downCount_;
                uint32_t retranCount_;
 
@@ -213,7 +215,10 @@ namespace rogue {
             private:
 
                // Method to transit a frame with proper updates
-               void transportTx(boost::shared_ptr<rogue::protocols::rssi::Header> head, bool seqUpdate, bool retransmit);
+               void transportTx(boost::shared_ptr<rogue::protocols::rssi::Header> head, bool seqUpdate, bool txReset);
+
+               // Method to retransmit a frame
+               int8_t retransmit(uint8_t id);
 
                //! Convert rssi time to microseconds
                uint32_t convTime ( uint32_t rssiTime );
@@ -241,7 +246,7 @@ namespace rogue {
 
          };
 
-         // Convienence
+         // Convenience
          typedef boost::shared_ptr<rogue::protocols::rssi::Controller> ControllerPtr;
 
       }

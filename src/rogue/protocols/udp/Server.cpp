@@ -28,6 +28,7 @@
 #include <rogue/Logging.h>
 #include <iostream>
 #include <unistd.h>
+#include <stdlib.h>
 
 namespace rpu = rogue::protocols::udp;
 namespace ris = rogue::interfaces::stream;
@@ -73,7 +74,7 @@ rpu::Server::Server (uint16_t port, bool jumbo) : rpu::Core(jumbo) {
 
    // Fixed size buffer pool
    setFixedSize(maxPayload());
-   setPoolSize(1024); // Initial value
+   setPoolSize(10000); // Initial value, 10K frames
 
    // Start rx thread
    thread_ = new boost::thread(boost::bind(&rpu::Server::runThread, this));
@@ -133,8 +134,12 @@ void rpu::Server::acceptFrame ( ris::FramePtr frame ) {
          FD_SET(fd_,&fds);
 
          // Setup select timeout
-         tout.tv_sec=(timeout_>0)?(timeout_ / 1000000):0;
-         tout.tv_usec=(timeout_>0)?(timeout_ % 1000000):10000;
+         
+         // tout.tv_sec=(timeout_>0)?(timeout_ / 1000000):0;
+         // tout.tv_usec=(timeout_>0)?(timeout_ % 1000000):10000;
+         div_t divResult = div(timeout_,1000000);
+         tout.tv_sec  = (timeout_>0)?(divResult.quot):0;
+         tout.tv_usec = (timeout_>0)?(divResult.rem):10000;        
 
          if ( select(fd_+1,NULL,&fds,NULL,&tout) <= 0 ) {
             if ( timeout_ > 0 ) throw(rogue::GeneralError::timeout("Server::acceptFrame",timeout_));

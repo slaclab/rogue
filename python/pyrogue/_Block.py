@@ -188,6 +188,71 @@ class LocalBlock(BaseBlock):
     def updated(self):
         self._variable._queueUpdate()
 
+    def _iadd(self, other):
+        with self._lock:
+            self.set(None, self.get(None) + other)
+            self.updated()
+
+    def _isub(self, other):
+        with self._lock:
+            self.set(None, self.get(None) - other)
+            self.updated()
+
+    def _imul(self, other):
+        with self._lock:
+            self.set(None, self.get(None) * other)
+            self.updated()
+
+    def _imatmul(self, other):
+        with self._lock:
+            self.set(None, self.get(None) @ other)
+            self.updated()
+
+    def _itruediv(self, other):
+        with self._lock:
+            self.set(None, self.get(None) / other)
+            self.updated()
+
+    def _ifloordiv(self, other):
+        with self._lock:
+            self.set(None, self.get(None) // other)
+            self.updated()
+
+    def _imod(self, other):
+        with self._lock:
+            self.set(None, self.get(None) % other)
+            self.updated()
+
+    def _ipow(self, other):
+        with self._lock:
+            self.set(None, self.get(None) ** other)
+            self.updated()
+
+    def _ilshift(self, other):
+        with self._lock:
+            self.set(None, self.get(None) << other)
+            self.updated()
+
+    def _irshift(self, other):
+        with self._lock:
+            self.set(None, self.get(None) >> other)
+            self.updated()
+
+    def _iand(self, other):
+        with self._lock:
+            self.set(None, self.get(None) & other)
+            self.updated()
+
+    def _ixor(self, other):
+        with self._lock:
+            self.set(None, self.get(None) ^ other)
+            self.updated()
+
+    def _ior(self, other):
+        with self._lock:
+            self.set(None, self.get(None) | other)
+            self.updated()
+
 
 class RemoteBlock(BaseBlock, rim.Master):
     def __init__(self, *, offset, size, variables):
