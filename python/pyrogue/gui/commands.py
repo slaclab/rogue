@@ -28,8 +28,9 @@ except ImportError:
 
 import pyrogue
 
-class CommandDev(object):
+class CommandDev(QObject):
     def __init__(self,*,tree,parent,dev,noExpand):
+        QObject.__init__(self)
         self._parent   = parent
         self._tree     = tree
         self._dev      = dev

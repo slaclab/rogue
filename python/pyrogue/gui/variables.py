@@ -30,8 +30,10 @@ import pyrogue
 import Pyro4
 import threading
 
-class VariableDev(object):
+class VariableDev(QObject):
+
     def __init__(self,*,tree,parent,dev,noExpand):
+        QObject.__init__(self)
         self._parent   = parent
         self._tree     = tree
         self._dev      = dev
