@@ -91,6 +91,19 @@ namespace rogue {
             //! Send count
             bool       sendCount_;
 
+            // Stats
+            uint32_t lastRxCount_;
+            uint32_t lastRxBytes_;
+            struct timeval lastRxTime_;
+            double   rxRate_;
+            double   rxBw_;
+
+            uint32_t lastTxCount_;
+            uint32_t lastTxBytes_;
+            struct timeval lastTxTime_;
+            double   txRate_;
+            double   txBw_;
+
             //! Logger
             rogue::LoggingPtr rxLog_;
             rogue::LoggingPtr txLog_;
@@ -103,6 +116,8 @@ namespace rogue {
 
             //! Thread background
             void runThread();
+
+            static double updateTime ( struct timeval *last );
 
          public:
 
@@ -147,6 +162,18 @@ namespace rogue {
 
             //! Get rx total bytes
             uint32_t getRxBytes();
+
+            //! Get rx rate
+            double getRxRate();
+
+            //! Get rx bw
+            double getRxBw();
+
+            //! Get tx rate
+            double getTxRate();
+
+            //! Get tx bw
+            double getTxBw();
 
             //! Get tx errors
             uint32_t getTxErrors();
