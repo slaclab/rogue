@@ -30,7 +30,11 @@
 
 namespace rhr = rogue::hardware::rce;
 namespace ris = rogue::interfaces::stream;
+
+#ifndef NO_PYTHON
+#include <boost/python.hpp>
 namespace bp  = boost::python;
+#endif
 
 //! Class creation
 rhr::AxiStreamPtr rhr::AxiStream::create (std::string path, uint32_t dest) {
@@ -394,6 +398,7 @@ void rhr::AxiStream::runThread() {
 }
 
 void rhr::AxiStream::setup_python () {
+#ifndef NO_PYTHON
 
    bp::class_<rhr::AxiStream, rhr::AxiStreamPtr, bp::bases<ris::Master,ris::Slave>, boost::noncopyable >("AxiStream",bp::init<std::string,uint32_t>())
       .def("enableSsi",      &rhr::AxiStream::enableSsi)
@@ -403,5 +408,6 @@ void rhr::AxiStream::setup_python () {
 
    bp::implicitly_convertible<rhr::AxiStreamPtr, ris::MasterPtr>();
    bp::implicitly_convertible<rhr::AxiStreamPtr, ris::SlavePtr>();
+#endif
 }
 

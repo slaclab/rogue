@@ -32,7 +32,11 @@
 
 namespace rha = rogue::hardware::axi;
 namespace rim = rogue::interfaces::memory;
+
+#ifndef NO_PYTHON
+#include <boost/python.hpp>
 namespace bp  = boost::python;
+#endif
 
 //! Class creation
 rha::AxiMemMapPtr rha::AxiMemMap::create (std::string path) {
@@ -92,9 +96,11 @@ void rha::AxiMemMap::doTransaction(rim::TransactionPtr tran) {
 }
 
 void rha::AxiMemMap::setup_python () {
+#ifndef NO_PYTHON
 
    bp::class_<rha::AxiMemMap, rha::AxiMemMapPtr, bp::bases<rim::Slave>, boost::noncopyable >("AxiMemMap",bp::init<std::string>());
 
    bp::implicitly_convertible<rha::AxiMemMapPtr, rim::SlavePtr>();
+#endif
 }
 

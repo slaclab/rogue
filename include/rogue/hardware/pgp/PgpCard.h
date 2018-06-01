@@ -26,6 +26,7 @@
 #include <PgpDriver.h>
 #include <boost/thread.hpp>
 #include <stdint.h>
+#include <boost/shared_ptr.hpp>
 
 
 namespace rogue {

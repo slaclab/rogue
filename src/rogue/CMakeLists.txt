@@ -14,7 +14,7 @@
 # ----------------------------------------------------------------------------
 
 # Add sub directories
-#add_subdirectory("hardware")
+add_subdirectory("hardware")
 add_subdirectory("interfaces")
 #add_subdirectory("protocols")
 #add_subdirectory("utilities")

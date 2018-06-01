@@ -35,7 +35,11 @@
 
 namespace rhp = rogue::hardware::pgp;
 namespace ris = rogue::interfaces::stream;
+
+#ifndef NO_PYTHON
+#include <boost/python.hpp>
 namespace bp  = boost::python;
+#endif
 
 //! Class creation
 rhp::PgpCardPtr rhp::PgpCard::create (std::string path, uint32_t lane, uint32_t vc) {
@@ -388,6 +392,7 @@ void rhp::PgpCard::runThread() {
 }
 
 void rhp::PgpCard::setup_python () {
+#ifndef NO_PYTHON
 
    bp::class_<rhp::PgpCard, rhp::PgpCardPtr, bp::bases<ris::Master,ris::Slave>, boost::noncopyable >("PgpCard",bp::init<std::string,uint32_t,uint32_t>())
       .def("getInfo",        &rhp::PgpCard::getInfo)
@@ -405,6 +410,6 @@ void rhp::PgpCard::setup_python () {
 
    bp::implicitly_convertible<rhp::PgpCardPtr, ris::MasterPtr>();
    bp::implicitly_convertible<rhp::PgpCardPtr, ris::SlavePtr>();
-
+#endif
 }
 

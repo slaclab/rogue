@@ -36,7 +36,11 @@
 
 namespace rhr = rogue::hardware::rce;
 namespace rim = rogue::interfaces::memory;
+
+#ifndef NO_PYTHON
+#include <boost/python.hpp>
 namespace bp  = boost::python;
+#endif
 
 //! Class creation
 rhr::MapMemoryPtr rhr::MapMemory::create () {
@@ -145,11 +149,13 @@ void rhr::MapMemory::doTransaction(rim::TransactionPtr tran) {
 }
 
 void rhr::MapMemory::setup_python () {
+#ifndef NO_PYTHON
 
    bp::class_<rhr::MapMemory, rhr::MapMemoryPtr, bp::bases<rim::Slave>, boost::noncopyable >("MapMemory",bp::init<>())
       .def("addMap",         &rhr::MapMemory::addMap)
    ;
 
    bp::implicitly_convertible<rhr::MapMemoryPtr, rim::SlavePtr>();
+#endif
 }
 

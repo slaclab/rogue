@@ -23,6 +23,7 @@
 #define __ROGUE_HARDWARE_PGP_INFO_H__
 #include <PgpDriver.h>
 #include <stdint.h>
+#include <boost/shared_ptr.hpp>
 
 namespace rogue {
    namespace hardware {

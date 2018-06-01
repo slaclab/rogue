@@ -28,7 +28,11 @@
 
 namespace rhd = rogue::hardware::data;
 namespace ris = rogue::interfaces::stream;
+
+#ifndef NO_PYTHON
+#include <boost/python.hpp>
 namespace bp  = boost::python;
+#endif
 
 //! Class creation
 rhd::DataCardPtr rhd::DataCard::create (std::string path, uint32_t dest) {
@@ -393,6 +397,7 @@ void rhd::DataCard::runThread() {
 }
 
 void rhd::DataCard::setup_python () {
+#ifndef NO_PYTHON
 
    bp::class_<rhd::DataCard, rhd::DataCardPtr, bp::bases<ris::Master,ris::Slave>, boost::noncopyable >("DataCard",bp::init<std::string,uint32_t>())
       .def("enableSsi",      &rhd::DataCard::enableSsi)
@@ -402,5 +407,6 @@ void rhd::DataCard::setup_python () {
 
    bp::implicitly_convertible<rhd::DataCardPtr, ris::MasterPtr>();
    bp::implicitly_convertible<rhd::DataCardPtr, ris::SlavePtr>();
+#endif
 }
 

@@ -35,7 +35,11 @@
 
 namespace rhd = rogue::hardware::data;
 namespace rim = rogue::interfaces::memory;
+
+#ifndef NO_PYTHON
+#include <boost/python.hpp>
 namespace bp  = boost::python;
+#endif
 
 //! Class creation
 rhd::DataMapPtr rhd::DataMap::create (std::string path) {
@@ -98,9 +102,11 @@ void rhd::DataMap::doTransaction(rim::TransactionPtr tran) {
 }
 
 void rhd::DataMap::setup_python () {
+#ifndef NO_PYTHON
 
    bp::class_<rhd::DataMap, rhd::DataMapPtr, bp::bases<rim::Slave>, boost::noncopyable >("DataMap",bp::init<std::string>());
 
    bp::implicitly_convertible<rhd::DataMapPtr, rim::SlavePtr>();
+#endif
 }
 
