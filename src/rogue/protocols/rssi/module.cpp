@@ -20,7 +20,6 @@
  * ----------------------------------------------------------------------------
 **/
 
-#include <boost/python.hpp>
 #include <rogue/protocols/rssi/module.h>
 #include <rogue/protocols/rssi/Application.h>
 #include <rogue/protocols/rssi/Controller.h>
@@ -28,9 +27,10 @@
 #include <rogue/protocols/rssi/Server.h>
 #include <rogue/protocols/rssi/Header.h>
 #include <rogue/protocols/rssi/Transport.h>
+#include <boost/python.hpp>
 
-namespace bp  = boost::python;
 namespace rpr = rogue::protocols::rssi;
+namespace bp  = boost::python;
 
 void rpr::setup_module() {
 

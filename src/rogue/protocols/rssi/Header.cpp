@@ -29,7 +29,11 @@
 
 namespace rpr = rogue::protocols::rssi;
 namespace ris = rogue::interfaces::stream;
+
+#ifndef NO_PYTHON
+#include <boost/python.hpp>
 namespace bp  = boost::python;
+#endif
 
 //! Set 16-bit uint value
 void rpr::Header::setUInt16 ( uint8_t *data, uint8_t byte, uint16_t value) {

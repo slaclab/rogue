@@ -22,7 +22,11 @@
 #include <unistd.h>
 
 namespace rpu = rogue::protocols::udp;
+
+#ifndef NO_PYTHON
+#include <boost/python.hpp>
 namespace bp  = boost::python;
+#endif
 
 //! Creator
 rpu::Core::Core (bool jumbo) {
@@ -65,10 +69,12 @@ void rpu::Core::setTimeout(uint32_t timeout) {
 }
 
 void rpu::Core::setup_python () {
+#ifndef NO_PYTHON
    bp::class_<rpu::Core, rpu::CorePtr, boost::noncopyable >("Core",bp::no_init)
       .def("maxPayload",        &rpu::Core::maxPayload)
       .def("setRxBufferCount",  &rpu::Core::setRxBufferCount)
       .def("setTimeout",        &rpu::Core::setTimeout)
    ;
+#endif
 }
 
