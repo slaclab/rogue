@@ -69,9 +69,6 @@ namespace rogue {
                static boost::shared_ptr<rogue::protocols::rssi::Header>
                   create(boost::shared_ptr<rogue::interfaces::stream::Frame> frame);
 
-               //! Setup class in python
-               static void setup_python();
-
                //! Creator
                Header(boost::shared_ptr<rogue::interfaces::stream::Frame> frame);
 

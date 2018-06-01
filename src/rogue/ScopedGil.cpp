@@ -31,5 +31,3 @@ rogue::ScopedGil::~ScopedGil() {
 #endif
 }
 
-void rogue::ScopedGil::setup_python() {}
-

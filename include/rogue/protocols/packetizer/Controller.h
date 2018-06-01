@@ -67,9 +67,6 @@ namespace rogue {
 
             public:
 
-               //! Setup class in python
-               static void setup_python();
-
                //! Creator
                Controller( boost::shared_ptr<rogue::protocols::packetizer::Transport> tran,
                            boost::shared_ptr<rogue::protocols::packetizer::Application> * app,

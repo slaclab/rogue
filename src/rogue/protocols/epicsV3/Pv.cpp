@@ -27,9 +27,6 @@ namespace rpe = rogue::protocols::epicsV3;
 #include <boost/python.hpp>
 namespace bp  = boost::python;
 
-//! Setup class in python
-void rpe::Pv::setup_python() { }
-
 //! Class creation
 rpe::Pv::Pv (caServer &cas, rpe::ValuePtr value) : casPV(cas) {
    value_    = value;

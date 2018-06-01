@@ -36,7 +36,6 @@ namespace rogue {
       public:
          ScopedGil();
          ~ScopedGil();
-         static void setup_python();
    };
 }
 

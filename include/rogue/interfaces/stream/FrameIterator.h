@@ -66,9 +66,6 @@ namespace rogue {
                //! Creator
                FrameIterator();
 
-               //! Setup class in python
-               static void setup_python();
-
                //! Copy assignment
                const rogue::interfaces::stream::FrameIterator operator =(
                      const rogue::interfaces::stream::FrameIterator &rhs);

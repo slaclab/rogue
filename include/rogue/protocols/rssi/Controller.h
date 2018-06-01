@@ -134,9 +134,6 @@ namespace rogue {
                            boost::shared_ptr<rogue::protocols::rssi::Transport> tran,
                            boost::shared_ptr<rogue::protocols::rssi::Application> app, bool server );
 
-               //! Setup class in python
-               static void setup_python();
-
                //! Creator
                Controller( uint32_t segSize,
                            boost::shared_ptr<rogue::protocols::rssi::Transport> tran,

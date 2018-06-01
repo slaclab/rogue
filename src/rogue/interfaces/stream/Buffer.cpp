@@ -38,10 +38,6 @@ ris::BufferPtr ris::Buffer::create ( ris::PoolPtr source, void * data, uint32_t 
    return(buff);
 }
 
-void ris::Buffer::setup_python() {
-   // Nothing to do
-}
-
 //! Create a buffer.
 /*
  * Pass owner, raw data buffer, and meta data

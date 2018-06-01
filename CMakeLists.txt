@@ -47,15 +47,15 @@ endif()
 #####################################
 set(DO_PYTHON 0)
 
-#find_package(PythonInterp 3.6)
+find_package(PythonInterp 3.6)
 
-#if (PYTHONINTERP_FOUND)
-#   find_package(PythonLibs 3.6)
-#
-#   if (PYTHONLIBS_FOUND)
-#      set(DO_PYTHON 1)
-#   endif()
-#endif()
+if (PYTHONINTERP_FOUND)
+   find_package(PythonLibs 3.6)
+
+   if (PYTHONLIBS_FOUND)
+      set(DO_PYTHON 1)
+   endif()
+endif()
 
 #####################################
 # Boost Configuration
@@ -94,7 +94,7 @@ endif()
 #####################################
 # Optional EPICS V3
 #####################################
-if(DEFINED ENV{EPICS_BASE})
+if(DO_PYTHON AND DEFINED ENV{EPICS_BASE})
    set(DO_EPICS_V3 1)
    set(EPICSV3_BASE_DIR  $ENV{EPICS_BASE})
    set(EPICSV3_LIB_DIR   ${EPICSV3_BASE_DIR}/lib/rhel6-x86_64 )

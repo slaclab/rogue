@@ -39,7 +39,6 @@ namespace rogue {
          ~GilRelease();
          void acquire();
          void release();
-         static void setup_python();
    };
 }
 

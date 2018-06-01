@@ -33,11 +33,6 @@
 namespace rpp = rogue::protocols::packetizer;
 namespace ris = rogue::interfaces::stream;
 
-#ifndef NO_PYTHON
-#include <boost/python.hpp>
-namespace bp  = boost::python;
-#endif
-
 //! Class creation
 rpp::ControllerV1Ptr rpp::ControllerV1::create ( rpp::TransportPtr tran, rpp::ApplicationPtr * app ) {
    rpp::ControllerV1Ptr r = boost::make_shared<rpp::ControllerV1>(tran,app);

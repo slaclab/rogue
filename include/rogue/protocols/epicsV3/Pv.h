@@ -44,9 +44,6 @@ namespace rogue {
 
             public:
 
-               //! Setup class in python
-               static void setup_python();
-
                //! Class creation
                Pv (caServer &cas, boost::shared_ptr<rogue::protocols::epicsV3::Value> value);
 

@@ -57,5 +57,3 @@ void rogue::GilRelease::release() {
 #endif
 }
 
-void rogue::GilRelease::setup_python() {}
-

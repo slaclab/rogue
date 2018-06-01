@@ -24,11 +24,6 @@
 
 namespace ris = rogue::interfaces::stream;
 
-#ifndef NO_PYTHON
-#include <boost/python.hpp>
-namespace bp  = boost::python;
-#endif
-
 ris::FrameIterator::FrameIterator(ris::FramePtr frame, bool write, bool end) {
    write_     = write;
    frame_     = frame;
@@ -264,5 +259,4 @@ ris::FrameIterator & ris::FrameIterator::operator -=(const int32_t &sub) {
    return *this;
 }
 
-void ris::FrameIterator::setup_python() { }
 
