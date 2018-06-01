@@ -46,7 +46,11 @@
 
 namespace ris = rogue::interfaces::stream;
 namespace ruf = rogue::utilities::fileio;
-namespace bp  = boost::python;
+
+#ifndef NO_PYTHON
+#include <boost/python.hpp>
+namespace bp = boost::python;
+#endif
 
 //! Class creation
 ruf::StreamWriterPtr ruf::StreamWriter::create () {
@@ -56,6 +60,7 @@ ruf::StreamWriterPtr ruf::StreamWriter::create () {
 
 //! Setup class in python
 void ruf::StreamWriter::setup_python() {
+#ifndef NO_PYTHON
    bp::class_<ruf::StreamWriter, ruf::StreamWriterPtr, boost::noncopyable >("StreamWriter",bp::init<>())
       .def("open",           &ruf::StreamWriter::open)
       .def("close",          &ruf::StreamWriter::close)
@@ -66,6 +71,7 @@ void ruf::StreamWriter::setup_python() {
       .def("getFrameCount",  &ruf::StreamWriter::getFrameCount)
       .def("waitFrameCount", &ruf::StreamWriter::waitFrameCount)
    ;
+#endif
 }
 
 //! Creator

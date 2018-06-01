@@ -34,7 +34,11 @@
 
 namespace ris = rogue::interfaces::stream;
 namespace ruf = rogue::utilities::fileio;
-namespace bp  = boost::python;
+
+#ifndef NO_PYTHON
+#include <boost/python.hpp>
+namespace bp = boost::python;
+#endif
 
 //! Class creation
 ruf::StreamReaderPtr ruf::StreamReader::create () {
@@ -44,12 +48,14 @@ ruf::StreamReaderPtr ruf::StreamReader::create () {
 
 //! Setup class in python
 void ruf::StreamReader::setup_python() {
+#ifndef NO_PYTHON
    bp::class_<ruf::StreamReader, ruf::StreamReaderPtr,bp::bases<ris::Master>, boost::noncopyable >("StreamReader",bp::init<>())
       .def("open",           &ruf::StreamReader::open)
       .def("close",          &ruf::StreamReader::close)
       .def("closeWait",      &ruf::StreamReader::closeWait)
       .def("isActive",       &ruf::StreamReader::isActive)
    ;
+#endif
 }
 
 //! Creator

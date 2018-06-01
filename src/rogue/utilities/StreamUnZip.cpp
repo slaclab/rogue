@@ -31,7 +31,11 @@
 
 namespace ris = rogue::interfaces::stream;
 namespace ru  = rogue::utilities;
-namespace bp  = boost::python;
+
+#ifndef NO_PYTHON
+#include <boost/python.hpp>
+namespace bp = boost::python;
+#endif
 
 //! Class creation
 ru::StreamUnZipPtr ru::StreamUnZip::create () {
@@ -119,12 +123,13 @@ ris::FramePtr ru::StreamUnZip::acceptReq ( uint32_t size, bool zeroCopyEn ) {
 }
 
 void ru::StreamUnZip::setup_python() {
+#ifndef NO_PYTHON
 
    bp::class_<ru::StreamUnZip, ru::StreamUnZipPtr, bp::bases<ris::Master,ris::Slave>, boost::noncopyable >("StreamUnZip",bp::init<>());
 
    bp::implicitly_convertible<ru::StreamUnZipPtr, ris::SlavePtr>();
    bp::implicitly_convertible<ru::StreamUnZipPtr, ris::MasterPtr>();
-
+#endif
 }
 
 

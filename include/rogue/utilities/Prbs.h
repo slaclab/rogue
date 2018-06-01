@@ -139,8 +139,10 @@ namespace rogue {
             //! Set taps
             void setTaps(uint32_t tapCnt, uint8_t * taps);
 
+#ifndef NO_PYTHON
             //! Set taps, python
             void setTapsPy(boost::python::object p);
+#endif
 
             //! Send counter value
             void sendCount(bool state);

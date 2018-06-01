@@ -17,7 +17,7 @@
 add_subdirectory("hardware")
 add_subdirectory("interfaces")
 #add_subdirectory("protocols")
-#add_subdirectory("utilities")
+add_subdirectory("utilities")
 
 target_sources(rogue-core PRIVATE "${CMAKE_CURRENT_LIST_DIR}/GeneralError.cpp")
 target_sources(rogue-core PRIVATE "${CMAKE_CURRENT_LIST_DIR}/GilRelease.cpp")
