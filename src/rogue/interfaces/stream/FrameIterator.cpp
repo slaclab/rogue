@@ -21,10 +21,13 @@
 #include <rogue/interfaces/stream/FrameIterator.h>
 #include <rogue/interfaces/stream/Buffer.h>
 #include <rogue/GeneralError.h>
-#include <boost/python.hpp>
 
 namespace ris = rogue::interfaces::stream;
+
+#ifndef NO_PYTHON
+#include <boost/python.hpp>
 namespace bp  = boost::python;
+#endif
 
 ris::FrameIterator::FrameIterator(ris::FramePtr frame, bool write, bool end) {
    write_     = write;

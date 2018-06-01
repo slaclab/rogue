@@ -24,10 +24,13 @@
 #include <rogue/interfaces/stream/Buffer.h>
 #include <rogue/GeneralError.h>
 #include <boost/make_shared.hpp>
-#include <boost/python.hpp>
 
-namespace ris = rogue::interfaces::stream;
+namespace ris  = rogue::interfaces::stream;
+
+#ifndef NO_PYTHON
+#include <boost/python.hpp>
 namespace bp  = boost::python;
+#endif
 
 //! Create an empty frame
 ris::FramePtr ris::Frame::create() {
@@ -280,6 +283,8 @@ ris::Frame::iterator ris::Frame::endWrite() {
    return ris::Frame::iterator(shared_from_this(),true,true);
 }
 
+#ifndef NO_PYTHON
+
 //! Read up to count bytes from frame, starting from offset. Python version.
 void ris::Frame::readPy ( boost::python::object p, uint32_t offset ) {
    Py_buffer pyBuf;
@@ -329,7 +334,10 @@ void ris::Frame::writePy ( boost::python::object p, uint32_t offset ) {
    PyBuffer_Release(&pyBuf);
 }
 
+#endif
+
 void ris::Frame::setup_python() {
+#ifndef NO_PYTHON
 
    bp::class_<ris::Frame, ris::FramePtr, boost::noncopyable>("Frame",bp::no_init)
       .def("lock",         &ris::Frame::lock)
@@ -343,5 +351,6 @@ void ris::Frame::setup_python() {
       .def("setFlags",     &ris::Frame::setFlags)
       .def("getFlags",     &ris::Frame::getFlags)
    ;
+#endif
 }
 

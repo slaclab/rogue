@@ -20,6 +20,7 @@
 #ifndef __ROGUE_VERSION_H__
 #define __ROGUE_VERSION_H__
 #include <stdint.h>
+#include <string>
 
 namespace rogue {
 

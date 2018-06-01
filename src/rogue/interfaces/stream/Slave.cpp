@@ -34,7 +34,11 @@
 #include <rogue/Logging.h>
 
 namespace ris = rogue::interfaces::stream;
+
+#ifndef NO_PYTHON
+#include <boost/python.hpp>
 namespace bp  = boost::python;
+#endif
 
 //! Class creation
 ris::SlavePtr ris::Slave::create () {
@@ -93,6 +97,8 @@ void ris::Slave::acceptFrame ( ris::FramePtr frame ) {
    }
 }
 
+#ifndef NO_PYTHON
+
 //! Accept frame
 void ris::SlaveWrap::acceptFrame ( ris::FramePtr frame ) {
    {
@@ -115,6 +121,7 @@ void ris::SlaveWrap::defAcceptFrame ( ris::FramePtr frame ) {
    ris::Slave::acceptFrame(frame);
 }
 
+#endif
 
 //! Get frame counter
 uint64_t ris::Slave::getFrameCount() {
@@ -127,6 +134,7 @@ uint64_t ris::Slave::getByteCount() {
 }
 
 void ris::Slave::setup_python() {
+#ifndef NO_PYTHON
 
    bp::class_<ris::SlaveWrap, ris::SlaveWrapPtr, boost::noncopyable>("Slave",bp::init<>())
       .def("setDebug",       &ris::Slave::setDebug)
@@ -142,6 +150,6 @@ void ris::Slave::setup_python() {
    ;
 
    bp::implicitly_convertible<ris::SlavePtr, ris::PoolPtr>();
-
+#endif
 }
 

@@ -66,8 +66,10 @@ namespace rogue {
                //! Transaction start time
                struct timeval startTime_;
 
+#ifndef NO_PYTHON
                //! Transaction python buffer
                Py_buffer pyBuf_;
+#endif
 
                //! Python buffer is valid
                bool pyValid_;

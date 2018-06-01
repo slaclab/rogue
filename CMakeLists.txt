@@ -47,15 +47,15 @@ endif()
 #####################################
 set(DO_PYTHON 0)
 
-find_package(PythonInterp 3.6)
+#find_package(PythonInterp 3.6)
 
-if (PYTHONINTERP_FOUND)
-   find_package(PythonLibs 3.6)
-
-   if (PYTHONLIBS_FOUND)
-      set(DO_PYTHON 1)
-   endif()
-endif()
+#if (PYTHONINTERP_FOUND)
+#   find_package(PythonLibs 3.6)
+#
+#   if (PYTHONLIBS_FOUND)
+#      set(DO_PYTHON 1)
+#   endif()
+#endif()
 
 #####################################
 # Boost Configuration
@@ -145,20 +145,23 @@ TARGET_LINK_LIBRARIES(rogue-core LINK_PUBLIC bz2)
 
 if (DO_PYTHON)
 
-# Create rogue python library
-add_library(rogue SHARED "")
+   # Create rogue python library
+   add_library(rogue SHARED "")
 
-# Find python package sources
-add_subdirectory(src)
+   # Find python package sources
+   add_subdirectory(src)
 
-# Set output to TOP/python, remove lib prefix
-set_target_properties(rogue PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/python)
-set_target_properties(rogue PROPERTIES PREFIX "")
+   # Set output to TOP/python, remove lib prefix
+   set_target_properties(rogue PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/python)
+   set_target_properties(rogue PROPERTIES PREFIX "")
 
-# Link to rogue core
-TARGET_LINK_LIBRARIES(rogue LINK_PUBLIC rogue-core)
+   # Link to rogue core
+   TARGET_LINK_LIBRARIES(rogue LINK_PUBLIC rogue-core)
 
+else()
+   add_definitions( -DNO_PYTHON )
 endif()
+
 
 # Setup configuration file
 set(CONF_INCLUDE_DIRS ${PROJECT_SOURCE_DIR}/include)

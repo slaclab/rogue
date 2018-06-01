@@ -1,12 +1,14 @@
 /**
  *-----------------------------------------------------------------------------
- * Title      : Scoped GIL 
+ * Title      : Python Module
  * ----------------------------------------------------------------------------
- * File       : ScopedGil.h
- * Created    : 2017-06-08
+ * File       : module.h
+ * Author     : Ryan Herbst, rherbst@slac.stanford.edu
+ * Created    : 2016-08-08
+ * Last update: 2016-08-08
  * ----------------------------------------------------------------------------
  * Description:
- * Acquire the GIL for the scope of this class.
+ * Python module setup
  * ----------------------------------------------------------------------------
  * This file is part of the rogue software platform. It is subject to 
  * the license terms in the LICENSE.txt file found in the top-level directory 
@@ -17,19 +19,12 @@
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
-#include <rogue/ScopedGil.h>
+#ifndef __ROGUE_MODULE_H__
+#define __ROGUE_MODULE_H__
 
-rogue::ScopedGil::ScopedGil() {
-#ifndef NO_PYTHON
-   state_ = PyGILState_Ensure();
-#endif
+namespace rogue {
+   void setup_module();
 }
 
-rogue::ScopedGil::~ScopedGil() {
-#ifndef NO_PYTHON
-   PyGILState_Release(state_);
 #endif
-}
-
-void rogue::ScopedGil::setup_python() {}
 

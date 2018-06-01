@@ -19,6 +19,7 @@
 **/
 #include <rogue/Logging.h>
 #include <boost/make_shared.hpp>
+#include <stdarg.h>
 
 #if defined(__linux__)
 #include <sys/syscall.h>
@@ -26,13 +27,16 @@
 #include <pthread.h>
 #endif
 
+#ifndef NO_PYTHON
+#include <boost/python.hpp>
+namespace bp = boost::python;
+#endif
+
 const uint32_t rogue::Logging::Critical;
 const uint32_t rogue::Logging::Error;
 const uint32_t rogue::Logging::Warning;
 const uint32_t rogue::Logging::Info;
 const uint32_t rogue::Logging::Debug;
-
-namespace bp = boost::python;
 
 // Logging level
 uint32_t rogue::Logging::gblLevel_ = rogue::Logging::Error;
@@ -155,6 +159,7 @@ void rogue::Logging::logThreadId(uint32_t level) {
 }
 
 void rogue::Logging::setup_python() {
+#ifndef NO_PYTHON
    bp::class_<rogue::Logging, rogue::LoggingPtr, boost::noncopyable>("Logging",bp::no_init)
       .def("setLevel", &rogue::Logging::setLevel)
       .staticmethod("setLevel")
@@ -166,6 +171,7 @@ void rogue::Logging::setup_python() {
       .def_readonly("Info",     &rogue::Logging::Info)
       .def_readonly("Debug",    &rogue::Logging::Debug)
    ;
+#endif
 }
 
 

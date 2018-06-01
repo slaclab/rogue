@@ -21,7 +21,12 @@
 #include <rogue/interfaces/stream/Frame.h>
 
 namespace ris = rogue::interfaces::stream;
+
+#ifndef NO_PYTHON
+#include <boost/python.hpp>
 namespace bp  = boost::python;
+#endif
+
 
 //! Create a frame container
 ris::FrameLockPtr ris::FrameLock::create (ris::FramePtr frame) {
@@ -38,11 +43,13 @@ ris::FrameLock::FrameLock(ris::FramePtr frame) {
 
 //! Setup class in python
 void ris::FrameLock::setup_python() {
+#ifndef NO_PYTHON
 
    bp::class_<ris::FrameLock, ris::FrameLockPtr, boost::noncopyable>("FrameLock",bp::no_init)
       .def("lock",      &ris::FrameLock::lock)
       .def("unlock",    &ris::FrameLock::unlock)
    ;
+#endif
 }
 
 //! Destructor

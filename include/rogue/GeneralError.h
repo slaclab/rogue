@@ -21,6 +21,7 @@
 #define __ROGUE_GENERAL_ERROR_H__
 #include <exception>
 #include <stdint.h>
+#include <string>
 
 #ifndef NO_PYTHON
 #include <boost/python.hpp>

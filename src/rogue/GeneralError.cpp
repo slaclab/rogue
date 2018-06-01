@@ -18,9 +18,16 @@
  * ----------------------------------------------------------------------------
 **/
 #include <rogue/GeneralError.h>
+#include <stdarg.h>
+
+#ifndef NO_PYTHON
+
+#include <boost/python.hpp>
 namespace bp = boost::python;
 
 PyObject * rogue::generalErrorObj = 0;
+
+#endif
 
 rogue::GeneralError::GeneralError(std::string src,std::string text) {
    snprintf(text_,BuffSize,"%s: General Error: %s",src.c_str(),text.c_str());
@@ -91,6 +98,9 @@ char const * rogue::GeneralError::what() const throw() {
 }
 
 void rogue::GeneralError::setup_python() {
+
+#ifndef NO_PYTHON
+
    bp::class_<rogue::GeneralError>("GeneralError",bp::init<std::string,std::string>());
 
    PyObject * typeObj = PyErr_NewException((char *)"rogue.GeneralError", PyExc_Exception, 0);
@@ -99,14 +109,20 @@ void rogue::GeneralError::setup_python() {
    rogue::generalErrorObj = typeObj;
 
    bp::register_exception_translator<rogue::GeneralError>(&(rogue::GeneralError::translate));
+
+#endif
 }
 
 void rogue::GeneralError::translate(GeneralError const &e) {
+
+#ifndef NO_PYTHON
+
    bp::object exc(e); // wrap the C++ exception
 
    bp::object exc_t(bp::handle<>(bp::borrowed(rogue::generalErrorObj)));
    exc_t.attr("cause") = exc; // add the wrapped exception to the Python exception
 
    PyErr_SetString(rogue::generalErrorObj, e.what());
+#endif
 }
 

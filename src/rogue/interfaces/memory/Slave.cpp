@@ -26,8 +26,12 @@
 #include <rogue/GilRelease.h>
 #include <rogue/ScopedGil.h>
 
+#ifndef NO_PYTHON
+#include <boost/python.hpp>
+namespace bp  = boost::python;
+#endif
+
 namespace rim = rogue::interfaces::memory;
-namespace bp = boost::python;
 
 // Init class counter
 uint32_t rim::Slave::classIdx_ = 0;
@@ -134,6 +138,7 @@ void rim::Slave::doTransaction(rim::TransactionPtr transaction) {
 }
 
 void rim::Slave::setup_python() {
+#ifndef NO_PYTHON
    bp::class_<rim::SlaveWrap, rim::SlaveWrapPtr, boost::noncopyable>("Slave",bp::init<uint32_t,uint32_t>())
       .def("_addTransaction", &rim::Slave::addTransaction)
       .def("_getTransaction", &rim::Slave::getTransaction)
@@ -142,7 +147,10 @@ void rim::Slave::setup_python() {
       .def("_doAddress",      &rim::Slave::doAddress,     &rim::SlaveWrap::defDoAddress)
       .def("_doTransaction",  &rim::Slave::doTransaction, &rim::SlaveWrap::defDoTransaction)
    ;
+#endif
 }
+
+#ifndef NO_PYTHON
 
 //! Constructor
 rim::SlaveWrap::SlaveWrap(uint32_t min, uint32_t max) : rim::Slave(min,max) {}
@@ -231,4 +239,6 @@ void rim::SlaveWrap::doTransaction(rim::TransactionPtr transaction) {
 void rim::SlaveWrap::defDoTransaction(rim::TransactionPtr transaction) {
    rim::Slave::doTransaction(transaction);
 }
+
+#endif
 

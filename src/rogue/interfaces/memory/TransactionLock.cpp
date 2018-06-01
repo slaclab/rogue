@@ -22,7 +22,11 @@
 #include <rogue/GilRelease.h>
 
 namespace rim = rogue::interfaces::memory;
+
+#ifndef NO_PYTHON
+#include <boost/python.hpp>
 namespace bp  = boost::python;
+#endif
 
 //! Create a container
 rim::TransactionLockPtr rim::TransactionLock::create (rim::TransactionPtr tran) {
@@ -40,11 +44,13 @@ rim::TransactionLock::TransactionLock(rim::TransactionPtr tran) {
 
 //! Setup class in python
 void rim::TransactionLock::setup_python() {
+#ifndef NO_PYTHON
 
    bp::class_<rim::TransactionLock, rim::TransactionLockPtr, boost::noncopyable>("TransactionLock",bp::no_init)
       .def("lock",      &rim::TransactionLock::lock)
       .def("unlock",    &rim::TransactionLock::unlock)
    ;
+#endif
 }
 
 //! Destructor

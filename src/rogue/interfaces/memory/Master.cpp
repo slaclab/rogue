@@ -28,7 +28,11 @@
 #include <stdlib.h>
 
 namespace rim = rogue::interfaces::memory;
+
+#ifndef NO_PYTHON
+#include <boost/python.hpp>
 namespace bp  = boost::python;
+#endif
 
 //! Create a master container
 rim::MasterPtr rim::Master::create () {
@@ -37,6 +41,7 @@ rim::MasterPtr rim::Master::create () {
 }
 
 void rim::Master::setup_python() {
+#ifndef NO_PYTHON
    bp::class_<rim::Master, rim::MasterPtr, boost::noncopyable>("Master",bp::init<>())
       .def("_setSlave",           &rim::Master::setSlave)
       .def("_getSlave",           &rim::Master::getSlave)
@@ -54,6 +59,7 @@ void rim::Master::setup_python() {
       .def("_setBits",            &rim::Master::setBits)
       .staticmethod("_setBits")
    ;
+#endif
 }
 
 //! Create object
@@ -145,6 +151,8 @@ uint32_t rim::Master::reqTransaction(uint64_t address, uint32_t size, void *data
    return(intTransaction(tran));
 }
 
+#ifndef NO_PYTHON
+
 //! Post a transaction, called locally, forwarded to slave, python version
 uint32_t rim::Master::reqTransactionPy(uint64_t address, boost::python::object p, uint32_t size, uint32_t offset, uint32_t type) {
    rim::TransactionPtr tran = rim::Transaction::create(sumTime_);
@@ -167,6 +175,8 @@ uint32_t rim::Master::reqTransactionPy(uint64_t address, boost::python::object p
 
    return(intTransaction(tran));
 }
+
+#endif
 
 uint32_t rim::Master::intTransaction(rim::TransactionPtr tran) {
    TransactionMap::iterator it;
@@ -212,6 +222,8 @@ void rim::Master::waitTransaction(uint32_t id) {
       if ( (error = tran->wait()) != 0 ) error_ = error;
    }
 }
+
+#ifndef NO_PYTHON
 
 //! Copy bits from src to dst with lsbs and size
 void rim::Master::copyBits(boost::python::object dst, uint32_t dstLsb, boost::python::object src, uint32_t srcLsb, uint32_t size) {
@@ -323,4 +335,6 @@ void rim::Master::setBits(boost::python::object dst, uint32_t lsb, uint32_t size
 
    PyBuffer_Release(&dstBuf);
 }
+
+#endif
 

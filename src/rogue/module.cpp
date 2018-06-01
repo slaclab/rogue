@@ -1,14 +1,14 @@
 /**
  *-----------------------------------------------------------------------------
- * Title      : Python Package
+ * Title      : Python Module
  * ----------------------------------------------------------------------------
- * File       : package.cpp
+ * File       : module.cpp
  * Author     : Ryan Herbst, rherbst@slac.stanford.edu
  * Created    : 2016-08-08
  * Last update: 2016-08-08
  * ----------------------------------------------------------------------------
  * Description:
- * Python package setup
+ * Python module setup
  * ----------------------------------------------------------------------------
  * This file is part of the rogue software platform. It is subject to 
  * the license terms in the LICENSE.txt file found in the top-level directory 
@@ -21,15 +21,32 @@
 **/
 
 #include <boost/python.hpp>
-#include <rogue/module.h>
+#include <rogue/interfaces/module.h>
+#include <rogue/hardware/module.h>
+#include <rogue/utilities/module.h>
+#include <rogue/protocols/module.h>
+#include <rogue/GeneralError.h>
+#include <rogue/Logging.h>
+#include <rogue/SMemControl.h>
+#include <rogue/GilRelease.h>
+#include <rogue/ScopedGil.h>
+#include <rogue/Version.h>
 
-BOOST_PYTHON_MODULE(rogue) {
+namespace bp  = boost::python;
 
-   PyEval_InitThreads();
+void rogue::hardware::setup_module() {
 
-   rogue::setup_module();
+   rogue::interfaces::setup_module();
+   rogue::protocols::setup_module();
+   rogue::hardware::setup_module();
+   rogue::utilities::setup_module();
 
-   printf("Rogue/pyrogue version %s. https://github.com/slaclab/rogue\n",rogue::Version::current().c_str());
+   rogue::GeneralError::setup_python();
+   rogue::Logging::setup_python();
+   rogue::GilRelease::setup_python();
+   rogue::ScopedGil::setup_python();
+   rogue::Version::setup_python();
+   rogue::SMemControl::setup_python();
 
-};
+}
 
