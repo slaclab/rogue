@@ -92,6 +92,7 @@ class DeviceError(Exception):
     """ Exception for device manipulation errors."""
     pass
 
+
 class Device(pr.Node,rim.Hub):
     """Device class holder. TODO: Update comments"""
 
@@ -252,12 +253,14 @@ class Device(pr.Node,rim.Hub):
 
         # Process local blocks.
         if variable is not None:
-            variable._block.startTransaction(rim.Write, check=checkEach)
+            for b in self._getBlocks(variable):
+                if (force or block.stale):                
+                    b.startTransaction(rim.Write, check=checkEach)
+
         else:
             for block in self._blocks:
-                if force or block.stale:
-                    if block.bulkEn:
-                        block.startTransaction(rim.Write, check=checkEach)
+                if (force or block.stale) and block.bulkEn:
+                    block.startTransaction(rim.Write, check=checkEach)
 
             if recurse:
                 for key,value in self.devices.items():
@@ -271,7 +274,9 @@ class Device(pr.Node,rim.Hub):
 
         # Process local blocks.
         if variable is not None:
-            variable._block.startTransaction(rim.Verify, checkEach)
+            for b in self._getBlocks(variable):
+                b.startTransaction(rim.Verify, checkEach)
+
         else:
             for block in self._blocks:
                 if block.bulkEn:
@@ -290,7 +295,9 @@ class Device(pr.Node,rim.Hub):
 
         # Process local blocks. 
         if variable is not None:
-            variable._block.startTransaction(rim.Read, checkEach)
+            for b in self._getBlocks(variable):
+                b.startTransaction(rim.Read, checkEach)
+
         else:
             for block in self._blocks:
                 if block.bulkEn:
@@ -308,7 +315,9 @@ class Device(pr.Node,rim.Hub):
 
             # Process local blocks
             if variable is not None:
-                variable._block._checkTransaction()
+                for b in self._getBlocks(variable):
+                    b._checkTransaction()
+
             else:
                 for block in self._blocks:
                     block._checkTransaction()
@@ -385,6 +394,26 @@ class Device(pr.Node,rim.Hub):
             # If we get here an error has occured
             raise pr.MemoryError (name=self.name, address=offset|self.address, error=self._getError())
 
+
+    def _getBlocks(self, variables):
+        """
+        Get a list of unique blocks from a list of Variables. 
+        Variables must belong to this device!
+        """
+        if isinstance(variables, pr.BaseVariable):
+            variables = [variables]
+
+        blocks = []
+        for v in variables:
+            if v.parent is not self:
+                raise DeviceError(
+                    f'Variable {v.path} passed to {self.path}._getBlocks() is not a member of {self.path}')
+            else:
+                if v._block not in blocks:
+                    blocks.append(v._block)
+                
+        return blocks
+
     def _buildBlocks(self):
         remVars = []
 
@@ -403,41 +432,37 @@ class Device(pr.Node,rim.Hub):
             if isinstance(n,pr.LocalVariable):
                 self._blocks.append(n._block)
 
-            # Align to min access, create list softed by offset 
+            # Align to min access, create list sorted by offset 
             elif isinstance(n,pr.RemoteVariable) and n.offset is not None:
                 n._shiftOffsetDown(n.offset % blkSize, blkSize)
                 remVars += [n]
 
-        # Loop until no overlaps found
-        done = False
-        while done == False:
-            done = True
+        # Sort var list by offset, size
+        remVars.sort(key=lambda x: (x.offset, x.varBytes))
+        blocks = []
+        blk = None
 
-            # Sort byte offset and size
-            remVars.sort(key=lambda x: (x.offset, x.varBytes))
-
-            # Look for overlaps and adjust offset
-            for i in range(1,len(remVars)):
-
-                # Variable overlaps the range of the previous variable
-                if (remVars[i].offset != remVars[i-1].offset) and \
-                   (remVars[i].offset <= (remVars[i-1].offset + remVars[i-1].varBytes - 1)):
-                    self._log.info("Overlap detected cur offset={} prev offset={} prev bytes={}".format(
-                        remVars[i].offset,remVars[i-1].offset,remVars[i-1].varBytes))
-                    remVars[i]._shiftOffsetDown(remVars[i].offset - remVars[i-1].offset, blkSize)
-                    done = False
-                    break
-
-        # Add variables
+        # Go through sorted variable list, look for overlaps, group into blocks
         for n in remVars:
+            if blk is not None and ( (blk['offset'] + blk['size']) > n.offset):
+                self._log.info("Overlap detected var offset={} block offset={} block bytes={}".format(n.offset,blk['offset'],blk['size']))
+                n._shiftOffsetDown(n.offset - blk['offset'], blkSize)
+                blk['vars'].append(n)
+
+                if n.varBytes > blk['size']: blk['size'] = n.varBytes
+
+            else:
+                blk = {'offset':n.offset, 'size':n.varBytes, 'vars':[n]}
+                blocks.append(blk)
+
+        # Create blocks
+        for b in blocks:
+            self._blocks.append(pr.RemoteBlock(offset=b['offset'], size=b['size'], variables=b['vars']))
+            self._log.debug("Adding new block at offset {:#02x}, size {}".format(b['offset'], b['size']))
 
             # Adjust device size
-            if (n.offset + n.varBytes) > self._size:
-                self._size = (n.offset + n.varBytes)
-
-            if not any(block._addVariable(n) for block in self._blocks):
-                self._log.debug("Adding new block {} at offset {:#02x}".format(n.name,n.offset))
-                self._blocks.append(pr.RemoteBlock(variable=n))
+            if (b['offset'] + b['size']) > self._size:
+                self._size = (b['offset'] + b['size'])
 
     def _rootAttached(self, parent, root):
         pr.Node._rootAttached(self, parent, root)

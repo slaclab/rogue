@@ -25,6 +25,7 @@
 #include <boost/make_shared.hpp>
 #include <rogue/GilRelease.h>
 #include <rogue/ScopedGil.h>
+#include <stdlib.h>
 
 namespace rim = rogue::interfaces::memory;
 namespace bp  = boost::python;
@@ -48,6 +49,10 @@ void rim::Master::setup_python() {
       .def("_setTimeout",         &rim::Master::setTimeout)
       .def("_reqTransaction",     &rim::Master::reqTransactionPy)
       .def("_waitTransaction",    &rim::Master::waitTransaction)
+      .def("_copyBits",           &rim::Master::copyBits)
+      .staticmethod("_copyBits")
+      .def("_setBits",            &rim::Master::setBits)
+      .staticmethod("_setBits")
    ;
 }
 
@@ -118,14 +123,19 @@ void rim::Master::setTimeout(uint64_t timeout) {
       sumTime_.tv_sec  = 1;
       sumTime_.tv_usec = 0;
    } else {
-      sumTime_.tv_sec = (timeout / 1000000);
-      sumTime_.tv_usec = (timeout % 1000000);
+            
+      // sumTime_.tv_sec = (timeout / 1000000);
+      // sumTime_.tv_usec = (timeout % 1000000);
+      div_t divResult = div(timeout,1000000);
+      sumTime_.tv_sec  = divResult.quot;
+      sumTime_.tv_usec = divResult.rem;       
+
    }
 }
 
 //! Post a transaction, called locally, forwarded to slave
 uint32_t rim::Master::reqTransaction(uint64_t address, uint32_t size, void *data, uint32_t type) {
-   rim::TransactionPtr tran = rim::Transaction::create();
+   rim::TransactionPtr tran = rim::Transaction::create(sumTime_);
 
    tran->iter_    = (uint8_t *)data;
    tran->size_    = size;
@@ -137,7 +147,7 @@ uint32_t rim::Master::reqTransaction(uint64_t address, uint32_t size, void *data
 
 //! Post a transaction, called locally, forwarded to slave, python version
 uint32_t rim::Master::reqTransactionPy(uint64_t address, boost::python::object p, uint32_t size, uint32_t offset, uint32_t type) {
-   rim::TransactionPtr tran = rim::Transaction::create();
+   rim::TransactionPtr tran = rim::Transaction::create(sumTime_);
 
    if ( PyObject_GetBuffer(p.ptr(),&(tran->pyBuf_),PyBUF_SIMPLE) < 0 )
       throw(rogue::GeneralError("Master::reqTransactionPy","Python Buffer Error"));
@@ -163,9 +173,6 @@ uint32_t rim::Master::intTransaction(rim::TransactionPtr tran) {
    struct timeval currTime;
    rim::SlavePtr slave;
 
-   gettimeofday(&(tran->startTime_),NULL);
-   timeradd(&(tran->startTime_),&sumTime_,&(tran->endTime_));
-
    {
       rogue::GilRelease noGil;
       boost::lock_guard<boost::mutex> lock(mastMtx_);
@@ -173,8 +180,10 @@ uint32_t rim::Master::intTransaction(rim::TransactionPtr tran) {
       tranMap_[tran->id_] = tran;
    }
 
+   
    log_->debug("Request transaction type=%i id=%i",tran->type_,tran->id_);
    slave->doTransaction(tran);
+   tran->refreshTimer(tran);
    return(tran->id_);
 }
 
@@ -202,5 +211,116 @@ void rim::Master::waitTransaction(uint32_t id) {
       // Outside of lock
       if ( (error = tran->wait()) != 0 ) error_ = error;
    }
+}
+
+//! Copy bits from src to dst with lsbs and size
+void rim::Master::copyBits(boost::python::object dst, uint32_t dstLsb, boost::python::object src, uint32_t srcLsb, uint32_t size) {
+
+   Py_buffer srcBuf;
+   Py_buffer dstBuf;
+   uint32_t  srcBit;
+   uint32_t  srcByte;
+   uint8_t * srcData;
+   uint32_t  dstBit;
+   uint32_t  dstByte;
+   uint8_t * dstData;
+   uint32_t  rem;
+   uint32_t  bytes;
+
+   if ( PyObject_GetBuffer(dst.ptr(),&dstBuf,PyBUF_SIMPLE) < 0 )
+      throw(rogue::GeneralError("Master::copyBits","Python Buffer Error"));
+
+   if ( (dstLsb + size) > (dstBuf.len*8) ) {
+      PyBuffer_Release(&dstBuf);
+      throw(rogue::GeneralError::boundary("Master::copyBits",(dstLsb + size),(dstBuf.len*8)));
+   }
+
+   if ( PyObject_GetBuffer(src.ptr(),&srcBuf,PyBUF_SIMPLE) < 0 ) {
+      PyBuffer_Release(&dstBuf);
+      throw(rogue::GeneralError("Master::copyBits","Python Buffer Error"));
+   }
+
+   if ( (srcLsb + size) > (srcBuf.len*8) ) {
+      PyBuffer_Release(&srcBuf);
+      PyBuffer_Release(&dstBuf);
+      throw(rogue::GeneralError::boundary("Master::copyBits",(srcLsb + size),(srcBuf.len*8)));
+   }
+
+   srcByte = srcLsb / 8;
+   srcBit  = srcLsb % 8;
+   srcData = (uint8_t *)srcBuf.buf;
+   dstByte = dstLsb / 8;
+   dstBit  = dstLsb % 8;
+   dstData = (uint8_t *)dstBuf.buf;
+   rem = size;
+
+   do {
+      bytes = rem / 8;
+
+      // Aligned
+      if ( (srcBit == 0) && (dstBit == 0) && (bytes > 0) ) {
+         memcpy(&(dstData[dstByte]),&(srcData[srcByte]),bytes);
+         dstByte += bytes;
+         srcByte += bytes;
+         rem -= (bytes * 8);
+      }
+
+      // Not aligned
+      else {
+         dstData[dstByte] |= ((srcData[srcByte] >> srcBit) & 0x1) << dstBit;
+         srcByte += (++srcBit / 8);
+         dstByte += (++dstBit / 8);
+         srcBit %= 8;
+         dstBit %= 8;
+         rem -= 1;
+      }
+   } while (rem != 0);
+
+   PyBuffer_Release(&srcBuf);
+   PyBuffer_Release(&dstBuf);
+}
+
+//! Set all bits in dest with lbs and size
+void rim::Master::setBits(boost::python::object dst, uint32_t lsb, uint32_t size) {
+   Py_buffer dstBuf;
+   uint32_t  dstBit;
+   uint32_t  dstByte;
+   uint8_t * dstData;
+   uint32_t  rem;
+   uint32_t  bytes;
+
+   if ( PyObject_GetBuffer(dst.ptr(),&dstBuf,PyBUF_SIMPLE) < 0 )
+      throw(rogue::GeneralError("Master::setBits","Python Buffer Error"));
+
+   if ( (lsb + size) > (dstBuf.len*8) ) {
+      PyBuffer_Release(&dstBuf);
+      throw(rogue::GeneralError::boundary("Master::setBits",(lsb + size),(dstBuf.len*8)));
+   }
+
+   dstByte = lsb / 8;
+   dstBit  = lsb % 8;
+   dstData = (uint8_t *)dstBuf.buf;
+   rem = size;
+
+   do {
+      bytes = rem / 8;
+
+      // Aligned
+      if ( (dstBit == 0) && (bytes > 0) ) {
+         memset(&(dstData[dstByte]),0xFF,bytes);
+         dstByte += bytes;
+         rem -= (bytes * 8);
+      }
+
+      // Not aligned
+      else {
+         dstData[dstByte] |= (0x1 << dstBit);
+         dstByte += (++dstBit / 8);
+         dstBit %= 8;
+         rem -= 1;
+      }
+   } while (rem != 0);
+
+   PyBuffer_Release(&dstBuf);
 }
 

@@ -30,8 +30,10 @@ import pyrogue
 import Pyro4
 import threading
 
-class VariableDev(object):
+class VariableDev(QObject):
+
     def __init__(self,*,tree,parent,dev,noExpand):
+        QObject.__init__(self)
         self._parent   = parent
         self._tree     = tree
         self._dev      = dev
@@ -212,6 +214,7 @@ class VariableWidget(QWidget):
         self.devTop = None
 
     @pyqtSlot(pyrogue.Root)
+    @pyqtSlot(pyrogue.PyroRoot)
     def addTree(self,root):
         self.roots.append(root)
         self.devTop = VariableDev(tree=self.tree,parent=self.top,dev=root,noExpand=False)

@@ -47,7 +47,7 @@ namespace rogue {
                uint32_t id_;
 
                //! Alias for map
-               typedef std::map<uint32_t, boost::weak_ptr<rogue::interfaces::memory::Transaction> > TransactionMap;
+               typedef std::map<uint32_t, boost::shared_ptr<rogue::interfaces::memory::Transaction> > TransactionMap;
 
                //! Transaction map
                TransactionMap tranMap_;
@@ -80,9 +80,6 @@ namespace rogue {
 
                //! Get Transaction with index
                boost::shared_ptr<rogue::interfaces::memory::Transaction> getTransaction(uint32_t index);
-
-               //! Remove transaction from the list, also cleanup stale transactions
-               void delTransaction(uint32_t index);
 
                //! Get min size from slave
                uint32_t min();

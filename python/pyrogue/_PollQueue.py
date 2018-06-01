@@ -21,11 +21,21 @@ import itertools
 import heapq
 import rogue.interfaces.memory
 import pyrogue as pr
-import recordclass
+
+class PollQueueEntry(object):
+    def __init__(self, readTime, count, interval, block):
+        self.readTime = readTime
+        self.count    = count
+        self.interval = interval
+        self.block    = block
+
+    def __lt__(self,other):
+        return self.readTime < other.readTime
+
+    def __gt__(self,other):
+        return self.readTime > other.readTime
 
 class PollQueue(object):
-
-    Entry = recordclass.recordclass('PollQueueEntry', ['readTime', 'count', 'interval', 'block'])
 
     def __init__(self,*, root):
         self._pq = [] # The heap queue
@@ -51,7 +61,7 @@ class PollQueue(object):
             # (rounded up to the next second)
             readTime = datetime.datetime.now()
             readTime = readTime.replace(microsecond=0)
-            entry = PollQueue.Entry(readTime, next(self._counter), timedelta, block)
+            entry = PollQueueEntry(readTime, next(self._counter), timedelta, block)
             self._entries[block] = entry
             heapq.heappush(self._pq, entry)
             # Wake up the thread
@@ -130,8 +140,8 @@ class PollQueue(object):
                             self._log.exception(e)
 
                         # Update the entry with new read time
-                        entry = entry._replace(readTime=(entry.readTime + entry.interval),
-                                               count=next(self._counter))
+                        entry.readTime += entry.interval
+                        entry.count = next(self._counter)
                         # Push the updated entry back into the queue
                         heapq.heappush(self._pq, entry)
 

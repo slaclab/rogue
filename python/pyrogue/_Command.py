@@ -167,7 +167,8 @@ class RemoteCommand(BaseCommand, pr.RemoteVariable):
                  base=pr.UInt,
                  offset=None,
                  bitSize=32,
-                 bitOffset=0):
+                 bitOffset=0,
+                 overlapEn=False):
 
         # RemoteVariable constructor will handle assignment of most params
         BaseCommand.__init__(
@@ -189,6 +190,7 @@ class RemoteCommand(BaseCommand, pr.RemoteVariable):
             offset=offset,
             bitSize=bitSize,
             bitOffset=bitOffset,
+            overlapEn=overlapEn,
             verify=False)
 
 

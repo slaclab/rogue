@@ -67,7 +67,7 @@ set(BOOST_ROOT:PATHNAME $ENV{BOOST_PATH})
 
 # First try standard suffix for boost
 if (DO_PYTHON)
-   find_package(Boost 1.58 COMPONENTS system thread python3)
+find_package(Boost 1.58 COMPONENTS system thread python3)
 endif()
 
 # Next try Debian/Ubuntu suffix for boost
@@ -145,18 +145,18 @@ TARGET_LINK_LIBRARIES(rogue-core LINK_PUBLIC bz2)
 
 if (DO_PYTHON)
 
-   # Create rogue python library
-   add_library(rogue SHARED "")
+# Create rogue python library
+add_library(rogue SHARED "")
 
-   # Find python package sources
-   add_subdirectory(src)
+# Find python package sources
+add_subdirectory(src)
 
-   # Set output to TOP/python, remove lib prefix
-   set_target_properties(rogue PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/python)
-   set_target_properties(rogue PROPERTIES PREFIX "")
+# Set output to TOP/python, remove lib prefix
+set_target_properties(rogue PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/python)
+set_target_properties(rogue PROPERTIES PREFIX "")
 
-   # Link to rogue core
-   TARGET_LINK_LIBRARIES(rogue LINK_PUBLIC rogue-core)
+# Link to rogue core
+TARGET_LINK_LIBRARIES(rogue LINK_PUBLIC rogue-core)
 
 endif()
 

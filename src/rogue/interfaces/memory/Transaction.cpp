@@ -38,8 +38,8 @@ uint32_t rim::Transaction::classIdx_ = 0;
 boost::mutex rim::Transaction::classMtx_;
 
 //! Create a master container
-rim::TransactionPtr rim::Transaction::create () {
-   rim::TransactionPtr m = boost::make_shared<rim::Transaction>();
+rim::TransactionPtr rim::Transaction::create (struct timeval timeout) {
+   rim::TransactionPtr m = boost::make_shared<rim::Transaction>(timeout);
    return(m);
 }
 
@@ -58,11 +58,11 @@ void rim::Transaction::setup_python() {
 }
 
 //! Create object
-rim::Transaction::Transaction() {
+rim::Transaction::Transaction(struct timeval timeout) : timeout_(timeout) {
+   gettimeofday(&startTime_,NULL);
+
    endTime_.tv_sec    = 0;
    endTime_.tv_usec   = 0;
-   startTime_.tv_sec  = 0;
-   startTime_.tv_usec = 0;
 
    pyValid_ = false;
 
@@ -90,7 +90,7 @@ rim::TransactionLockPtr rim::Transaction::lock() {
 
 //! Get expired state
 bool rim::Transaction::expired() { 
-   return (iter_ == NULL); 
+   return (iter_ == NULL || done_); 
 }
 
 //! Get id
@@ -140,6 +140,17 @@ uint32_t rim::Transaction::wait() {
    pyValid_ = false;
 
    return (error_);
+}
+
+//! Refresh the timer
+void rim::Transaction::refreshTimer(rim::TransactionPtr ref) {
+   struct timeval currTime;
+   gettimeofday(&currTime,NULL);
+   boost::lock_guard<boost::mutex> lock(lock_);
+
+   // Refresh if start time is later then the reference
+   if ( ref == NULL || timercmp(&startTime_,&(ref->startTime_),>=) )
+      timeradd(&currTime,&timeout_,&endTime_);
 }
 
 //! start iterator, caller must lock around access

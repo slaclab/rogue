@@ -178,7 +178,7 @@ class BaseVariable(pr.Node):
                 self._block.set(self, value)
 
                 if write:
-                    self._parent.writeBlocks(force=False, recurse=False, variable=self)
+                    self._parent.writeBlocks(force=True, recurse=False, variable=self)
                     self._parent.verifyBlocks(recurse=False, variable=self)
                     self._parent.checkBlocks(recurse=False, variable=self)
 
@@ -255,25 +255,28 @@ class BaseVariable(pr.Node):
 
     @Pyro4.expose
     def parseDisp(self, sValue):
-        if sValue is None or isinstance(sValue, self.nativeType()):
-            return sValue
-        else:        
-            if sValue is '':
-                return ''
-            elif self.disp == 'enum':
-                return self.revEnum[sValue]
-            else:
-                t = self.nativeType()
-                if t == int:
-                    return int(sValue, 0)
-                elif t == float:
-                    return float(sValue)
-                elif t == bool:
-                    return str.lower(sValue) == "true"
-                elif t == list or t == dict:
-                    return eval(sValue)
+        try:
+            if sValue is None or isinstance(sValue, self.nativeType()):
+                return sValue
+            else:        
+                if sValue is '':
+                    return ''
+                elif self.disp == 'enum':
+                    return self.revEnum[sValue]
                 else:
-                    return sValue
+                    t = self.nativeType()
+                    if t == int:
+                        return int(sValue, 0)
+                    elif t == float:
+                        return float(sValue)
+                    elif t == bool:
+                        return str.lower(sValue) == "true"
+                    elif t == list or t == dict:
+                        return eval(sValue)
+                    else:
+                        return sValue
+        except:
+            raise VariableError("Invalid value {} for variable {} with type {}".format(sValue,self.name,self.nativeType()))
 
     @Pyro4.expose
     def setDisp(self, sValue, write=True):
@@ -351,6 +354,7 @@ class RemoteVariable(BaseVariable):
                  bitSize=32,
                  bitOffset=0,
                  pollInterval=0, 
+                 overlapEn=False,
                  verify=True, ):
 
         if disp is None:
@@ -387,6 +391,7 @@ class RemoteVariable(BaseVariable):
         self._verify    = verify
         self._typeStr   = base.name(sum(bitSize))
         self._bytes     = int(math.ceil(float(self._bitOffset[-1] + self._bitSize[-1]) / 8.0))
+        self._overlapEn = overlapEn
 
 
     @property
@@ -478,6 +483,58 @@ class LocalVariable(BaseVariable):
 
     def __get__(self):
         return self.get(read=False)
+
+    def __iadd__(self, other):
+        self._block._iadd(other)
+        return self
+
+    def __isub__(self, other):
+        self._block._isub(other)
+        return self
+
+    def __imul__(self, other):
+        self._block._imul(other)
+        return self
+
+    def __imatmul__(self, other):
+        self._block._imatmul(other)
+        return self
+
+    def __itruediv__(self, other):
+        self._block._itruediv(other)
+        return self
+
+    def __ifloordiv__(self, other):
+        self._block._ifloordiv(other)
+        return self
+
+    def __imod__(self, other):
+        self._block._imod(other)
+        return self
+
+    def __ipow__(self, other):
+        self._block._ipow(other)
+        return self
+
+    def __ilshift__(self, other):
+        self._block._ilshift(other)
+        return self
+
+    def __irshift__(self, other):
+        self._block._irshift(other)
+        return self
+
+    def __iand__(self, other):
+        self._block._iand(other)
+        return self
+
+    def __ixor__(self, other):
+        self._block._ixor(other)
+        return self
+
+    def __ior__(self, other):
+        self._block._ior(other)
+        return self
 
 @Pyro4.expose
 class LinkVariable(BaseVariable):

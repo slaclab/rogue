@@ -27,7 +27,7 @@
 #include <boost/make_shared.hpp>
 #include <rogue/GilRelease.h>
 #include <rogue/Logging.h>
-#include <sys/syscall.h>
+#include <stdlib.h>
 
 namespace rpu = rogue::protocols::udp;
 namespace ris = rogue::interfaces::stream;
@@ -74,7 +74,8 @@ rpu::Client::Client ( std::string host, uint16_t port, bool jumbo) : rpu::Core(j
    ((struct sockaddr_in *)(&remAddr_))->sin_port=htons(port_);
 
    // Fixed size buffer pool
-   enBufferPool(maxPayload(),1024*256);
+   setFixedSize(maxPayload());
+   setPoolSize(10000); // Initial value, 10K frames
 
    // Start rx thread
    thread_ = new boost::thread(boost::bind(&rpu::Client::runThread, this));
@@ -128,8 +129,12 @@ void rpu::Client::acceptFrame ( ris::FramePtr frame ) {
          FD_SET(fd_,&fds);
 
          // Setup select timeout
-         tout.tv_sec=(timeout_>0)?(timeout_ / 1000000):0;
-         tout.tv_usec=(timeout_>0)?(timeout_ % 1000000):10000;
+         
+         // tout.tv_sec=(timeout_>0)?(timeout_ / 1000000):0;
+         // tout.tv_usec=(timeout_>0)?(timeout_ % 1000000):10000;
+         div_t divResult = div(timeout_,1000000);
+         tout.tv_sec  = (timeout_>0)?(divResult.quot):0;
+         tout.tv_usec = (timeout_>0)?(divResult.rem):10000;
 
          if ( select(fd_+1,NULL,&fds,NULL,&tout) <= 0 ) {
             if ( timeout_ > 0 ) throw(rogue::GeneralError::timeout("Client::acceptFrame",timeout_));
@@ -151,9 +156,9 @@ void rpu::Client::runThread() {
    fd_set         fds;
    int32_t        res;
    struct timeval tout;
-   uint32_t           avail;
+   uint32_t       avail;
 
-   udpLog_->info("PID=%i, TID=%li",getpid(),syscall(SYS_gettid));
+   udpLog_->logThreadId(rogue::Logging::Info);
 
    // Preallocate frame
    frame = ris::Pool::acceptReq(maxPayload(),false);

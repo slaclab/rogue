@@ -47,6 +47,14 @@ class PrbsRx(pyrogue.Device):
                                        mode='RO', pollInterval=1, value=0,
                                        localGet=self._prbs.getRxBytes))
 
+        self.add(pyrogue.LocalVariable(name='rxRate', description='RX Rate', disp="{:.3e}",
+                                       mode='RO', pollInterval=1, value=0,
+                                       localGet=self._prbs.getRxRate))
+
+        self.add(pyrogue.LocalVariable(name='rxBw', description='RX BW', disp="{:.3e}",
+                                       mode='RO', pollInterval=1, value=0,
+                                       localGet=self._prbs.getRxBw))
+
         self.add(pyrogue.LocalVariable(name='checkPayload', description='Payload Check Enable',
                                        mode='RW', value=True, localSet=self._plEnable))
 
@@ -98,6 +106,20 @@ class PrbsTx(pyrogue.Device):
 
         self.add(pyrogue.LocalVariable(name='txBytes', description='TX Bytes', mode='RO', pollInterval = 1,
                                        value=0, localGet=self._prbs.getTxBytes))
+
+        self.add(pyrogue.LocalVariable(name='genPayload', description='Payload Generate Enable',
+                                       mode='RW', value=True, localSet=self._plEnable))
+
+        self.add(pyrogue.LocalVariable(name='txRate', description='TX Rate',  disp="{:.3e}",
+                                       mode='RO', pollInterval=1, value=0,
+                                       localGet=self._prbs.getTxRate))
+
+        self.add(pyrogue.LocalVariable(name='txBw', description='TX BW',  disp="{:.3e}",
+                                       mode='RO', pollInterval=1, value=0,
+                                       localGet=self._prbs.getTxBw))
+
+    def _plEnable(self,value,changed):
+        self._prbs.genPayload(value)
 
     def countReset(self):
         self._prbs.resetCount()

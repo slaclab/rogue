@@ -115,6 +115,12 @@ namespace rogue {
                uint32_t reqTransactionPy(uint64_t address, boost::python::object p, uint32_t size, uint32_t offset, uint32_t type);
 #endif
 
+               //! Copy bits from src to dst with lsbs and size
+               static void copyBits(boost::python::object dst, uint32_t dstLsb, boost::python::object src, uint32_t srcLsb, uint32_t size);
+
+               //! Set all bits in dest with lbs and size
+               static void setBits(boost::python::object dst, uint32_t lsb, uint32_t size);
+
             protected:
 
                //! Internal transaction

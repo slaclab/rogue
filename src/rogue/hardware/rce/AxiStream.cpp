@@ -26,6 +26,7 @@
 #include <rogue/GeneralError.h>
 #include <boost/make_shared.hpp>
 #include <rogue/GilRelease.h>
+#include <stdlib.h>
 
 namespace rhr = rogue::hardware::rce;
 namespace ris = rogue::interfaces::stream;
@@ -139,8 +140,12 @@ ris::FramePtr rhr::AxiStream::acceptReq ( uint32_t size, bool zeroCopyEn) {
             FD_SET(fd_,&fds);
 
             // Setup select timeout
-            tout.tv_sec=(timeout_>0)?(timeout_ / 1000000):0;
-            tout.tv_usec=(timeout_>0)?(timeout_ % 1000000):10000;
+            
+            // tout.tv_sec=(timeout_ > 0)?(timeout_ / 1000000):0;
+            // tout.tv_usec=(timeout_ > 0)?(timeout_ % 1000000):10000;
+            div_t divResult = div(timeout_,1000000);
+            tout.tv_sec  = (timeout_>0)?(divResult.quot):0;
+            tout.tv_usec = (timeout_>0)?(divResult.rem):10000;   
 
             if ( select(fd_+1,NULL,&fds,NULL,&tout) <= 0 ) {
                if ( timeout_ > 0 ) throw(rogue::GeneralError::timeout("AxiStream::acceptReq",timeout_));
@@ -239,8 +244,12 @@ void rhr::AxiStream::acceptFrame ( ris::FramePtr frame ) {
             FD_SET(fd_,&fds);
 
             // Setup select timeout
-            tout.tv_sec=(timeout_ > 0)?(timeout_ / 1000000):0;
-            tout.tv_usec=(timeout_ > 0)?(timeout_ % 1000000):10000;
+
+            // tout.tv_sec=(timeout_ > 0)?(timeout_ / 1000000):0;
+            // tout.tv_usec=(timeout_ > 0)?(timeout_ % 1000000):10000;
+            div_t divResult = div(timeout_,1000000);
+            tout.tv_sec  = (timeout_>0)?(divResult.quot):0;
+            tout.tv_usec = (timeout_>0)?(divResult.rem):10000; 
 
             if ( select(fd_+1,NULL,&fds,NULL,&tout) <= 0 ) {
                if ( timeout_ > 0) throw(rogue::GeneralError("AxiStream::acceptFrame","AXIS Write Call Failed. Buffer Not Available!!!!"));

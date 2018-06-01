@@ -138,7 +138,7 @@ void rps::SrpV3::doTransaction(rim::TransactionPtr tran) {
    frame->setPayload(frameSize);
 
    // Setup iterators
-   rogue::GilRelease noGil();
+   rogue::GilRelease noGil;
    rim::TransactionLockPtr lock = tran->lock();
    fIter = frame->beginWrite();
    tIter = tran->begin();
@@ -172,34 +172,35 @@ void rps::SrpV3::acceptFrame ( ris::FramePtr frame ) {
    bool     doWrite;
    uint32_t fSize;
 
-   rogue::GilRelease noGil();
+   rogue::GilRelease noGil;
    ris::FrameLockPtr frLock = frame->lock();
 
    // Check frame size
-   if ( (fSize = frame->getPayload()) < HeadLen ) {
+   if ( (fSize = frame->getPayload()) < (HeadLen+TailLen) ) {
       log_->warning("Got undersize frame size = %i",fSize);
       return; // Invalid frame, drop it
    }
 
-   // Setup Frame iterator
-   fIter = frame->beginRead();
+   // Get the tail
+   fIter = frame->endRead()-TailLen;
+   ris::fromFrame(fIter,TailLen,tail);
 
    // Get the header
+   fIter = frame->beginRead();
    ris::fromFrame(fIter,HeadLen,header);
 
    // Extract the id
    id = header[1];
-   log_->debug("Got frame id=%i, header: 0x%0.8x 0x%0.8x 0x%0.8x 0x%0.8x 0x%0.8x",
-               id, header[0],header[1],header[2],header[3],header[4]);
+   log_->debug("Got frame id=%i, header: 0x%0.8x 0x%0.8x 0x%0.8x 0x%0.8x 0x%0.8x tail: 0x%0.8x",
+               id, header[0],header[1],header[2],header[3],header[4],tail[0]);
 
    // Find Transaction
    if ( (tran = getTransaction(id)) == NULL ) {
-     log_->warning("Invalid ID frame for id=%i",id);
+     log_->warning("Failed to find transaction id=%i",id);
      return; // Bad id or post, drop frame
    }
-   delTransaction(tran->id());
 
-   // Setup transaction iterator
+   // Lock transaction
    rim::TransactionLockPtr lock = tran->lock();
 
    // Transaction expired
@@ -212,37 +213,33 @@ void rps::SrpV3::acceptFrame ( ris::FramePtr frame ) {
    // Setup expect header and length
    doWrite = setupHeader(tran,expHeader,expFrameLen,false);
 
-   // Verify frame size, drop frame
-   if ( (fSize != expFrameLen) ||
-        (header[4]+1) != tran->size() ) {
-      log_->warning("Size mismatch id=%i",id);
-      return;
-   }
-
    // Check header
    if ( ((header[0] & 0xFFFFC3FF) != expHeader[0]) ||
          (header[1] != expHeader[1]) || (header[2] != expHeader[2]) ||
          (header[3] != expHeader[3]) || (header[4] != expHeader[4]) ) {
      log_->warning("Bad header for %i",id);
+     tran->done(rim::ProtocolError);
      return;
    }
 
-   // Read tail error value, complete if error is set
-   fIter = frame->endRead()-TailLen;
-   ris::fromFrame(fIter,TailLen,tail);
+   // Check tail
    if ( tail[0] != 0 ) {
-      if ( tail[0] & 0xFF) tran->done(rim::AxiFail | (tail[0] & 0xFF));
-      else if ( tail[0] & 0x100 ) tran->done(rim::AxiTimeout);
+      if ( tail[0] & 0xFF) tran->done(rim::BusFail | (tail[0] & 0xFF));
+      else if ( tail[0] & 0x100 ) tran->done(rim::BusTimeout);
       else tran->done(tail[0]);
       log_->warning("Error detected for ID id=%i, tail=0x%0.8x",id,tail[0]);
       return;
    }
 
-   // Copy data if read
-   if ( ! doWrite ) {
-      fIter = frame->beginRead() + HeadLen;
-      std::copy(fIter,fIter+tran->size(),tIter);
+   // Verify frame size, drop frame
+   if ( (fSize != expFrameLen) || (header[4]+1) != tran->size() ) {
+      log_->warning("Size mismatch id=%i. fsize=%i, exp=%i, tsize=%i, header=%i",id, fSize, expFrameLen, tran->size(),header[4]+1);
+      tran->done(rim::ProtocolError);
+      return;
    }
+
+   // Copy data if read
+   if ( ! doWrite ) std::copy(fIter,fIter+tran->size(),tIter);
 
    tran->done(0);
 }

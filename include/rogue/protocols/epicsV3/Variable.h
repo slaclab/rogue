@@ -36,7 +36,6 @@ namespace rogue {
          class Variable: public Value {
                boost::python::object var_;
 
-               bool inSet_;
                bool syncRead_;
 
                // Lock held when called

@@ -57,6 +57,9 @@ namespace rogue {
 
             protected:
 
+               //! Transaction timeout 
+               struct timeval timeout_;
+
                //! Transaction start time
                struct timeval endTime_;
 
@@ -96,13 +99,13 @@ namespace rogue {
             public:
 
                //! Create a transaction container
-               static boost::shared_ptr<rogue::interfaces::memory::Transaction> create ();
+               static boost::shared_ptr<rogue::interfaces::memory::Transaction> create (struct timeval timeout);
 
                //! Setup class in python
                static void setup_python();
 
                //! Constructor
-               Transaction();
+               Transaction(struct timeval timeout);
 
                //! Destructor
                ~Transaction();
@@ -130,6 +133,9 @@ namespace rogue {
 
                //! Wait for the transaction to complete
                uint32_t wait();
+
+               //! Refresh timer
+               void refreshTimer(boost::shared_ptr<rogue::interfaces::memory::Transaction> reference);
 
                //! start iterator, caller must lock around access
                rogue::interfaces::memory::Transaction::iterator begin();

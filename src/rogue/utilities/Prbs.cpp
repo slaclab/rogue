@@ -57,6 +57,7 @@ ru::Prbs::Prbs() {
    txCount_    = 0;
    txBytes_    = 0;
    checkPl_    = true;
+   genPl_      = true;
    rxLog_      = rogue::Logging::create("prbs.rx");
    txLog_      = rogue::Logging::create("prbs.tx");
 
@@ -73,11 +74,47 @@ ru::Prbs::Prbs() {
    taps_[1] = 2;
    taps_[2] = 6;
    taps_[3] = 31;
+
+   gettimeofday(&lastRxTime_,NULL);
+   gettimeofday(&lastTxTime_,NULL);
+
+   lastRxCount_ = 0;
+   lastRxBytes_ = 0;
+   rxRate_ = 0.0;
+   rxBw_ = 0.0;
+
+   lastTxCount_ = 0;
+   lastTxBytes_ = 0;
+   txRate_ = 0.0;
+   txBw_ = 0.0;
 }
 
 //! Deconstructor
 ru::Prbs::~Prbs() {
    free(taps_);
+}
+
+//! Compute period
+double ru::Prbs::updateTime ( struct timeval *last ) {
+   struct timeval cmp;
+   struct timeval now;
+   struct timeval per;
+   double ret;
+
+   cmp.tv_sec  = 1;
+   cmp.tv_usec = 0;
+
+   gettimeofday(&now,NULL);
+
+   timersub(&now,last,&per);
+
+   if ( timercmp(&per,&cmp,>) ) {
+      ret = (float)per.tv_sec + (float(per.tv_usec) / 1e6);
+      gettimeofday(last,NULL);
+   }
+   else ret = 0.0;
+
+   return ret;
 }
 
 //! Set width
@@ -137,6 +174,8 @@ void ru::Prbs::flfsr(ru::PrbsData & data) {
 
 //! Thread background
 void ru::Prbs::runThread() {
+   txLog_->logThreadId(rogue::Logging::Info);
+
    try {
       while(1) {
          genFrame(txSize_);
@@ -193,6 +232,26 @@ uint32_t ru::Prbs::getTxCount() {
    return(txCount_);
 }
 
+//! Get rx rate
+double ru::Prbs::getRxRate() {
+   return rxRate_;
+}
+
+//! Get rx bw
+double ru::Prbs::getRxBw() {
+   return rxBw_;
+}
+
+//! Get tx rate
+double ru::Prbs::getTxRate() {
+   return txRate_;
+}
+
+//! Get tx bw
+double ru::Prbs::getTxBw() {
+   return txBw_;
+}
+
 //! Get TX bytes
 uint32_t ru::Prbs::getTxBytes() {
    return(txBytes_);
@@ -201,6 +260,11 @@ uint32_t ru::Prbs::getTxBytes() {
 //! Set check payload flag, default = true
 void ru::Prbs::checkPayload(bool state) {
    checkPl_ = state;
+}
+
+//! Set generate payload flag, default = true
+void ru::Prbs::genPayload(bool state) {
+   genPl_ = state;
 }
 
 //! Reset counters
@@ -223,6 +287,7 @@ void ru::Prbs::genFrame (uint32_t size) {
    uint32_t      frSeq[4];
    uint32_t      frSize[4];
    uint32_t      wCount[4];
+   double        per;
    ris::FramePtr fr;
 
    rogue::GilRelease noGil;
@@ -257,28 +322,38 @@ void ru::Prbs::genFrame (uint32_t size) {
    ris::toFrame(frIter,byteWidth_,frSize);
    ++wCount[0];
 
-   // Init data
-   ru::PrbsData data(byteWidth_ * 8, frSeq[0]);
+   if ( genPl_ ) {
 
-   // Generate payload
-   while ( frIter != frEnd ) {
-      
-      if ( sendCount_ ) ris::toFrame(frIter,byteWidth_,wCount);
-      else {
-         flfsr(data);
-         to_block_range(data,frIter);
-         frIter += byteWidth_;
+      // Init data
+      ru::PrbsData data(byteWidth_ * 8, frSeq[0]);
+
+      // Generate payload
+      while ( frIter != frEnd ) {
+         
+         if ( sendCount_ ) ris::toFrame(frIter,byteWidth_,wCount);
+         else {
+            flfsr(data);
+            to_block_range(data,frIter);
+            frIter += byteWidth_;
+         }
+         ++wCount[0];
       }
-      ++wCount[0];
    }
-   fr->setPayload(size);
 
+   fr->setPayload(size);
    sendFrame(fr);
 
    // Update counters
    txSeq_++;
    txCount_++;
    txBytes_ += size;
+
+   if ( (per = updateTime(&lastTxTime_)) > 0.0 ) {
+      txRate_ = (float)(txCount_ - lastTxCount_) / per;
+      txBw_   = (float)(txBytes_ - lastTxBytes_) / per;
+      lastTxCount_ = txCount_;
+      lastTxBytes_ = txBytes_;
+   }
 }
 
 //! Accept a frame from master
@@ -292,6 +367,7 @@ void ru::Prbs::acceptFrame ( ris::FramePtr frame ) {
    uint32_t      size;
    uint32_t      pos;
    uint8_t       compData[16];
+   double        per;
 
    rogue::GilRelease noGil;
    ris::FrameLockPtr fLock = frame->lock();
@@ -357,6 +433,13 @@ void ru::Prbs::acceptFrame ( ris::FramePtr frame ) {
 
    rxCount_++;
    rxBytes_ += size;
+
+   if ( (per = updateTime(&lastRxTime_)) > 0.0 ) {
+      rxRate_ = (float)(rxCount_ - lastRxCount_) / per;
+      rxBw_   = (float)(rxBytes_ - lastRxBytes_) / per;
+      lastRxCount_ = rxCount_;
+      lastRxBytes_ = rxBytes_;
+   }
 }
 
 void ru::Prbs::setup_python() {
@@ -369,11 +452,16 @@ void ru::Prbs::setup_python() {
       .def("setTaps",        &ru::Prbs::setTaps)
       .def("getRxErrors",    &ru::Prbs::getRxErrors)
       .def("getRxCount",     &ru::Prbs::getRxCount)
+      .def("getRxRate",      &ru::Prbs::getRxRate)
+      .def("getRxBw",        &ru::Prbs::getRxBw)
       .def("getRxBytes",     &ru::Prbs::getRxBytes)
       .def("getTxErrors",    &ru::Prbs::getTxErrors)
       .def("getTxCount",     &ru::Prbs::getTxCount)
       .def("getTxBytes",     &ru::Prbs::getTxBytes)
+      .def("getTxRate",      &ru::Prbs::getTxRate)
+      .def("getTxBw",        &ru::Prbs::getTxBw)
       .def("checkPayload",   &ru::Prbs::checkPayload)
+      .def("genPayload",     &ru::Prbs::genPayload)
       .def("resetCount",     &ru::Prbs::resetCount)
       .def("sendCount",      &ru::Prbs::sendCount)
    ;

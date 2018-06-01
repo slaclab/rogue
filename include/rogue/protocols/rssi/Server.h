@@ -71,8 +71,41 @@ namespace rogue {
                //! Get Retran Count
                uint32_t getRetranCount();
 
-               //! Get Busy
-               bool getBusy();
+               //! Get locBusy
+               bool getLocBusy();
+
+               //! Get locBusyCnt
+               uint32_t getLocBusyCnt();
+
+               //! Get remBusy
+               bool getRemBusy();
+
+               //! Get remBusyCnt
+               uint32_t getRemBusyCnt();
+               
+               //! Get maxRetran
+               uint32_t getMaxRetran();
+               
+               //! Get remMaxBuffers
+               uint32_t getRemMaxBuffers();           
+
+               //! Get remMaxSegment
+               uint32_t getRemMaxSegment();    
+
+               //! Get retranTout
+               uint32_t getRetranTout();
+
+               //! Get cumAckTout
+               uint32_t getCumAckTout();               
+               
+               //! Get nullTout
+               uint32_t getNullTout();
+               
+               //! Get maxCumAck
+               uint32_t getMaxCumAck();
+
+               //! Get segmentSize
+               uint32_t getSegmentSize();               
 
                //! Set timeout in microseconds for frame transmits
                void setTimeout(uint32_t timeout);

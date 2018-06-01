@@ -20,7 +20,7 @@
  * ----------------------------------------------------------------------------
 **/
 #ifndef __ROGUE_HARDWARE_RCE_MODULE_H__
-#define __ROGUE_HAREWARE_RCE_MODULE_H__
+#define __ROGUE_HARDWARE_RCE_MODULE_H__
 
 namespace rogue {
    namespace hardware {

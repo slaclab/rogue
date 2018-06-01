@@ -73,6 +73,9 @@ namespace rogue {
                const rogue::interfaces::stream::FrameIterator operator =(
                      const rogue::interfaces::stream::FrameIterator &rhs);
 
+               //! Get iterator to end of buffer or end of frame, whichever is lower
+               rogue::interfaces::stream::FrameIterator endBuffer();
+
                //! De-reference
                uint8_t & operator *() const;
 

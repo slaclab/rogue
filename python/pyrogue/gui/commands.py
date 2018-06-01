@@ -28,8 +28,9 @@ except ImportError:
 
 import pyrogue
 
-class CommandDev(object):
+class CommandDev(QObject):
     def __init__(self,*,tree,parent,dev,noExpand):
+        QObject.__init__(self)
         self._parent   = parent
         self._tree     = tree
         self._dev      = dev
@@ -152,6 +153,7 @@ class CommandWidget(QWidget):
         self.devTop = None
 
     @pyqtSlot(pyrogue.Root)
+    @pyqtSlot(pyrogue.PyroRoot)
     def addTree(self,root):
         self.roots.append(root)
         self._devTop = CommandDev(tree=self.tree,parent=self.top,dev=root,noExpand=False)

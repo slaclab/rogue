@@ -18,8 +18,13 @@
  * ----------------------------------------------------------------------------
 **/
 #include <rogue/Logging.h>
-#include <sys/syscall.h>
 #include <boost/make_shared.hpp>
+
+#if defined(__linux__)
+#include <sys/syscall.h>
+#elif defined(__APPLE__) && defined(__MACH__)
+#include <pthread.h>
+#endif
 
 const uint32_t rogue::Logging::Critical;
 const uint32_t rogue::Logging::Error;
@@ -84,9 +89,11 @@ void rogue::Logging::setFilter(std::string name, uint32_t level) {
 void rogue::Logging::intLog(uint32_t level, const char * fmt, va_list args) {
    if ( level < level_ ) return;
 
+   struct timeval tme;
    char buffer[1000];
    vsnprintf(buffer,1000,fmt,args);
-   printf("%s: %s\n",name_.c_str(),buffer);
+   gettimeofday(&tme,NULL);
+   printf("%i.%i:%s: %s\n",tme.tv_sec,tme.tv_usec,name_.c_str(),buffer);
 }
 
 void rogue::Logging::log(uint32_t level, const char * fmt, ...) {
@@ -129,6 +136,22 @@ void rogue::Logging::debug(const char * fmt, ...) {
    va_start(arg,fmt);
    intLog(rogue::Logging::Debug,fmt,arg);
    va_end(arg);
+}
+
+void rogue::Logging::logThreadId(uint32_t level) {
+   uint32_t tid;
+
+#if defined(__linux__)
+   tid = syscall(SYS_gettid);
+#elif defined(__APPLE__) && defined(__MACH__)
+   uint64_t tid64;
+   pthread_threadid_np(NULL,&tid64);
+   tid = (uint32_t)tid64;
+#else
+   tid = 0;
+#endif
+
+   this->log(level, "PID=%i, TID=%i", getpid(), tid);
 }
 
 void rogue::Logging::setup_python() {

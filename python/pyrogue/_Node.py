@@ -125,6 +125,9 @@ class Node(object):
     def __dir__(self):
         return(super().__dir__() + [k for k,v in self._nodes.items()])
 
+    def __contains__(self, item):
+        return item in self._nodes.values()
+
     def add(self,node):
         """Add node as sub-node"""
 

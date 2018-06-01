@@ -19,6 +19,7 @@
 #       > git co master
 #       > git merge origin/master
 #       > git merge origin/pre-release
+#       > git push
 #    - Tag the release in master: 
 #       > git tag -a vMAJOR.MINOR.0
 #       > git push --tags
