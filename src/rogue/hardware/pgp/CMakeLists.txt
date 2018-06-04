@@ -13,6 +13,13 @@
 # contained in the LICENSE.txt file.
 # ----------------------------------------------------------------------------
 
-file(GLOB rogue_SRC "*.cpp")
-target_sources(rogue-core PRIVATE ${rogue_SRC})
+target_sources(rogue-core PRIVATE "${CMAKE_CURRENT_LIST_DIR}/EvrControl.cpp")
+target_sources(rogue-core PRIVATE "${CMAKE_CURRENT_LIST_DIR}/EvrStatus.cpp")
+target_sources(rogue-core PRIVATE "${CMAKE_CURRENT_LIST_DIR}/Info.cpp")
+target_sources(rogue-core PRIVATE "${CMAKE_CURRENT_LIST_DIR}/PciStatus.cpp")
+target_sources(rogue-core PRIVATE "${CMAKE_CURRENT_LIST_DIR}/PgpCard.cpp")
+target_sources(rogue-core PRIVATE "${CMAKE_CURRENT_LIST_DIR}/Status.cpp")
 
+if (DO_PYTHON)
+   target_sources(rogue-core PRIVATE "${CMAKE_CURRENT_LIST_DIR}/module.cpp")
+endif()

@@ -13,6 +13,9 @@
 # contained in the LICENSE.txt file.
 # ----------------------------------------------------------------------------
 
-file(GLOB rogue_SRC "*.cpp")
-target_sources(rogue-core PRIVATE ${rogue_SRC})
+target_sources(rogue-core PRIVATE "${CMAKE_CURRENT_LIST_DIR}/AxiStream.cpp")
+target_sources(rogue-core PRIVATE "${CMAKE_CURRENT_LIST_DIR}/MapMemory.cpp")
 
+if (DO_PYTHON)
+   target_sources(rogue-core PRIVATE "${CMAKE_CURRENT_LIST_DIR}/module.cpp")
+endif()

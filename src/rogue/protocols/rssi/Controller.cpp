@@ -36,7 +36,6 @@
 
 namespace rpr = rogue::protocols::rssi;
 namespace ris = rogue::interfaces::stream;
-namespace bp  = boost::python;
 
 //! Class creation
 rpr::ControllerPtr rpr::Controller::create ( uint32_t segSize, 
@@ -44,10 +43,6 @@ rpr::ControllerPtr rpr::Controller::create ( uint32_t segSize,
                                              rpr::ApplicationPtr app, bool server ) {
    rpr::ControllerPtr r = boost::make_shared<rpr::Controller>(segSize,tran,app,server);
    return(r);
-}
-
-void rpr::Controller::setup_python() {
-   // Nothing to do
 }
 
 //! Creator

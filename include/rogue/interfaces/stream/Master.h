@@ -26,8 +26,6 @@
 #include <pthread.h>
 #include <string>
 #include <vector>
-
-#include <boost/python.hpp>
 #include <boost/thread.hpp>
 
 namespace rogue {

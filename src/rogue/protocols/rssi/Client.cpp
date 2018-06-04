@@ -28,7 +28,11 @@
 
 namespace rpr = rogue::protocols::rssi;
 namespace ris = rogue::interfaces::stream;
+
+#ifndef NO_PYTHON
+#include <boost/python.hpp>
 namespace bp  = boost::python;
+#endif
 
 //! Class creation
 rpr::ClientPtr rpr::Client::create (uint32_t segSize) {
@@ -37,6 +41,7 @@ rpr::ClientPtr rpr::Client::create (uint32_t segSize) {
 }
 
 void rpr::Client::setup_python() {
+#ifndef NO_PYTHON
 
    bp::class_<rpr::Client, rpr::ClientPtr, boost::noncopyable >("Client",bp::init<uint32_t>())
       .def("transport",       &rpr::Client::transport)
@@ -59,7 +64,7 @@ void rpr::Client::setup_python() {
       .def("getMaxCumAck",    &rpr::Client::getMaxCumAck)
       .def("getSegmentSize",  &rpr::Client::getSegmentSize)
    ;
-
+#endif
 }
 
 //! Creator

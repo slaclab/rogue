@@ -18,7 +18,6 @@
  * ----------------------------------------------------------------------------
 **/
 
-#include <boost/python.hpp>
 #include <rogue/protocols/epicsV3/Slave.h>
 #include <rogue/interfaces/stream/Frame.h>
 #include <rogue/interfaces/stream/FrameLock.h>
@@ -30,6 +29,8 @@
 
 namespace ris = rogue::interfaces::stream;
 namespace rpe = rogue::protocols::epicsV3;
+
+#include <boost/python.hpp>
 namespace bp  = boost::python;
 
 //! Setup class in python

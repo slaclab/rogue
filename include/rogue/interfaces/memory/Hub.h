@@ -28,8 +28,11 @@
 
 #include <rogue/interfaces/memory/Master.h>
 #include <rogue/interfaces/memory/Slave.h>
-#include <boost/python.hpp>
 #include <boost/thread.hpp>
+
+#ifndef NO_PYTHON
+#include <boost/python.hpp>
+#endif
 
 namespace rogue {
    namespace interfaces {
@@ -73,7 +76,12 @@ namespace rogue {
                //! Post a transaction. Master will call this method with the access attributes.
                virtual void doTransaction(boost::shared_ptr<rogue::interfaces::memory::Transaction> transaction);
          };
-         
+
+         // Convienence
+         typedef boost::shared_ptr<rogue::interfaces::memory::Hub> HubPtr;
+       
+#ifndef NO_PYTHON
+
          //! Memory Hub class, wrapper to enable pyton overload of virtual methods
          class HubWrap : 
             public rogue::interfaces::memory::Hub, 
@@ -92,8 +100,8 @@ namespace rogue {
          };
          
          // Convienence
-         typedef boost::shared_ptr<rogue::interfaces::memory::Hub> HubPtr;
          typedef boost::shared_ptr<rogue::interfaces::memory::HubWrap> HubWrapPtr;
+#endif
 
       }
    }

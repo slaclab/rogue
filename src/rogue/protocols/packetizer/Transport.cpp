@@ -29,7 +29,11 @@
 
 namespace rpp = rogue::protocols::packetizer;
 namespace ris = rogue::interfaces::stream;
+
+#ifndef NO_PYTHON
+#include <boost/python.hpp>
 namespace bp  = boost::python;
+#endif
 
 //! Class creation
 rpp::TransportPtr rpp::Transport::create () {
@@ -38,11 +42,13 @@ rpp::TransportPtr rpp::Transport::create () {
 }
 
 void rpp::Transport::setup_python() {
+#ifndef NO_PYTHON
 
    bp::class_<rpp::Transport, rpp::TransportPtr, bp::bases<ris::Master,ris::Slave>, boost::noncopyable >("Transport",bp::init<>());
 
    bp::implicitly_convertible<rpp::TransportPtr, ris::MasterPtr>();
    bp::implicitly_convertible<rpp::TransportPtr, ris::SlavePtr>();
+#endif
 }
 
 //! Creator

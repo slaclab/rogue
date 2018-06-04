@@ -27,7 +27,11 @@
 
 namespace rpp = rogue::protocols::packetizer;
 namespace ris = rogue::interfaces::stream;
+
+#ifndef NO_PYTHON
+#include <boost/python.hpp>
 namespace bp  = boost::python;
+#endif
 
 //! Class creation
 rpp::CoreV2Ptr rpp::CoreV2::create (bool enIbCrc, bool enObCrc) {
@@ -36,6 +40,7 @@ rpp::CoreV2Ptr rpp::CoreV2::create (bool enIbCrc, bool enObCrc) {
 }
 
 void rpp::CoreV2::setup_python() {
+#ifndef NO_PYTHON
 
    bp::class_<rpp::CoreV2, rpp::CoreV2Ptr, boost::noncopyable >("CoreV2",bp::init<bool,bool>())
       .def("transport",      &rpp::CoreV2::transport)
@@ -43,7 +48,7 @@ void rpp::CoreV2::setup_python() {
       .def("getDropCount",   &rpp::CoreV2::getDropCount)
 
    ;
-
+#endif
 }
 
 //! Creator

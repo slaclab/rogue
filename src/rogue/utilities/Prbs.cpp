@@ -36,7 +36,11 @@
 
 namespace ris = rogue::interfaces::stream;
 namespace ru  = rogue::utilities;
-namespace bp  = boost::python;
+
+#ifndef NO_PYTHON
+#include <boost/python.hpp>
+namespace bp = boost::python;
+#endif
 
 //! Class creation
 ru::PrbsPtr ru::Prbs::create () {
@@ -143,6 +147,8 @@ void ru::Prbs::setTaps(uint32_t tapCnt, uint8_t * taps) {
    for (i=0; i < tapCnt_; i++) taps_[i] = taps[i];
 }
 
+#ifndef NO_PYTHON
+
 //! Set taps, python
 void ru::Prbs::setTapsPy(boost::python::object p) {
    Py_buffer pyBuf;
@@ -154,6 +160,7 @@ void ru::Prbs::setTapsPy(boost::python::object p) {
    PyBuffer_Release(&pyBuf);
 }
 
+#endif
 
 //! Send counter value
 void ru::Prbs::sendCount(bool state) {
@@ -443,6 +450,7 @@ void ru::Prbs::acceptFrame ( ris::FramePtr frame ) {
 }
 
 void ru::Prbs::setup_python() {
+#ifndef NO_PYTHON
 
    bp::class_<ru::Prbs, ru::PrbsPtr, bp::bases<ris::Master,ris::Slave>, boost::noncopyable >("Prbs",bp::init<>())
       .def("genFrame",       &ru::Prbs::genFrame)
@@ -468,6 +476,7 @@ void ru::Prbs::setup_python() {
 
    bp::implicitly_convertible<ru::PrbsPtr, ris::SlavePtr>();
    bp::implicitly_convertible<ru::PrbsPtr, ris::MasterPtr>();
+#endif
 }
 
 

@@ -23,7 +23,6 @@
 #include <rogue/interfaces/stream/Master.h>
 #include <rogue/interfaces/stream/Slave.h>
 #include <boost/enable_shared_from_this.hpp>
-#include <boost/python.hpp>
 #include <stdint.h>
 #include <rogue/Queue.h>
 #include <rogue/Logging.h>
@@ -67,9 +66,6 @@ namespace rogue {
                rogue::Queue<boost::shared_ptr<rogue::interfaces::stream::Frame>> tranQueue_;
 
             public:
-
-               //! Setup class in python
-               static void setup_python();
 
                //! Creator
                Controller( boost::shared_ptr<rogue::protocols::packetizer::Transport> tran,

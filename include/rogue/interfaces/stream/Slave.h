@@ -26,10 +26,13 @@
 #define __ROGUE_INTERFACES_STREAM_SLAVE_H__
 #include <stdint.h>
 
-#include <boost/python.hpp>
 #include <boost/thread.hpp>
 #include <rogue/interfaces/stream/Pool.h>
 #include <rogue/Logging.h>
+
+#ifndef NO_PYTHON
+#include <boost/python.hpp>
+#endif
 
 namespace rogue {
    namespace interfaces {
@@ -84,6 +87,11 @@ namespace rogue {
 
          };
 
+         // Convienence
+         typedef boost::shared_ptr<rogue::interfaces::stream::Slave> SlavePtr;
+
+#ifndef NO_PYTHON
+
          //! Stream slave class, wrapper to enable pyton overload of virtual methods
          class SlaveWrap : 
             public rogue::interfaces::stream::Slave, 
@@ -98,9 +106,9 @@ namespace rogue {
                void defAcceptFrame ( boost::shared_ptr<rogue::interfaces::stream::Frame> frame );
          };
 
-         // Convienence
-         typedef boost::shared_ptr<rogue::interfaces::stream::Slave> SlavePtr;
          typedef boost::shared_ptr<rogue::interfaces::stream::SlaveWrap> SlaveWrapPtr;
+#endif
+
       }
    }
 }

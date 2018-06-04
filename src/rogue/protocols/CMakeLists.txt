@@ -22,5 +22,6 @@ if (DO_EPICS_V3)
    add_subdirectory("epicsV3")
 endif()
 
-file(GLOB rogue_SRC "*.cpp")
-target_sources(rogue-core PRIVATE ${rogue_SRC})
+if (DO_PYTHON)
+   target_sources(rogue-core PRIVATE "${CMAKE_CURRENT_LIST_DIR}/module.cpp")
+endif()

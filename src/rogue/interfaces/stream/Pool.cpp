@@ -29,7 +29,11 @@
 #include <rogue/GilRelease.h>
 
 namespace ris = rogue::interfaces::stream;
+
+#ifndef NO_PYTHON
+#include <boost/python.hpp>
 namespace bp  = boost::python;
+#endif
 
 //! Creator
 ris::Pool::Pool() { 
@@ -87,6 +91,7 @@ void ris::Pool::retBuffer(uint8_t * data, uint32_t meta, uint32_t rawSize) {
 }
 
 void ris::Pool::setup_python() {
+#ifndef NO_PYTHON
    bp::class_<ris::Pool, ris::PoolPtr, boost::noncopyable>("Pool",bp::init<>())
       .def("getAllocCount",  &ris::Pool::getAllocCount)
       .def("getAllocBytes",  &ris::Pool::getAllocBytes)
@@ -95,6 +100,7 @@ void ris::Pool::setup_python() {
       .def("setPoolSize",    &ris::Pool::setPoolSize)
       .def("getPoolSize",    &ris::Pool::getPoolSize)
    ;
+#endif
 }
 
 //! Set fixed size mode

@@ -32,11 +32,6 @@
 
 namespace rpp = rogue::protocols::packetizer;
 namespace ris = rogue::interfaces::stream;
-namespace bp  = boost::python;
-
-void rpp::Controller::setup_python() {
-   // Nothing to do
-}
 
 //! Creator
 rpp::Controller::Controller ( rpp::TransportPtr tran, rpp::ApplicationPtr * app,

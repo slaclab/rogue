@@ -31,7 +31,11 @@
 
 namespace rpu = rogue::protocols::udp;
 namespace ris = rogue::interfaces::stream;
+
+#ifndef NO_PYTHON
+#include <boost/python.hpp>
 namespace bp  = boost::python;
+#endif
 
 //! Class creation
 rpu::ClientPtr rpu::Client::create (std::string host, uint16_t port, bool jumbo) {
@@ -203,12 +207,13 @@ void rpu::Client::runThread() {
 }
 
 void rpu::Client::setup_python () {
+#ifndef NO_PYTHON
 
    bp::class_<rpu::Client, rpu::ClientPtr, bp::bases<rpu::Core,ris::Master,ris::Slave>, boost::noncopyable >("Client",bp::init<std::string,uint16_t,bool>());
 
    bp::implicitly_convertible<rpu::ClientPtr, rpu::CorePtr>();
    bp::implicitly_convertible<rpu::ClientPtr, ris::MasterPtr>();
    bp::implicitly_convertible<rpu::ClientPtr, ris::SlavePtr>();
-
+#endif
 }
 

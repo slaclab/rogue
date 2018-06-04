@@ -20,7 +20,6 @@
 #ifndef __ROGUE_HARDWARE_DATA_DATA_MAP_H__
 #define __ROGUE_HARDWARE_DATA_DATA_MAP_H__
 #include <rogue/interfaces/memory/Slave.h>
-#include <boost/python.hpp>
 #include <boost/thread.hpp>
 #include <stdint.h>
 #include <rogue/Logging.h>

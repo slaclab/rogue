@@ -21,7 +21,6 @@
 #include <rogue/interfaces/stream/Master.h>
 #include <rogue/interfaces/stream/Slave.h>
 #include <DataDriver.h>
-#include <boost/python.hpp>
 #include <boost/thread.hpp>
 #include <stdint.h>
 #include <rogue/Logging.h>

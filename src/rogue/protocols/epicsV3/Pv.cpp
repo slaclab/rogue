@@ -18,16 +18,14 @@
  * ----------------------------------------------------------------------------
 **/
 
-#include <boost/python.hpp>
 #include <rogue/protocols/epicsV3/Pv.h>
 #include <rogue/protocols/epicsV3/Value.h>
 #include <time.h>
 
 namespace rpe = rogue::protocols::epicsV3;
-namespace bp  = boost::python;
 
-//! Setup class in python
-void rpe::Pv::setup_python() { }
+#include <boost/python.hpp>
+namespace bp  = boost::python;
 
 //! Class creation
 rpe::Pv::Pv (caServer &cas, rpe::ValuePtr value) : casPV(cas) {

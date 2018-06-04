@@ -24,7 +24,11 @@
 
 namespace rpr = rogue::protocols::rssi;
 namespace ris = rogue::interfaces::stream;
+
+#ifndef NO_PYTHON
+#include <boost/python.hpp>
 namespace bp  = boost::python;
+#endif
 
 //! Class creation
 rpr::ServerPtr rpr::Server::create (uint32_t segSize) {
@@ -33,6 +37,7 @@ rpr::ServerPtr rpr::Server::create (uint32_t segSize) {
 }
 
 void rpr::Server::setup_python() {
+#ifndef NO_PYTHON
 
    bp::class_<rpr::Server, rpr::ServerPtr, boost::noncopyable >("Server",bp::init<uint32_t>())
       .def("transport",       &rpr::Server::transport)
@@ -55,7 +60,7 @@ void rpr::Server::setup_python() {
       .def("getMaxCumAck",    &rpr::Server::getMaxCumAck)
       .def("getSegmentSize",  &rpr::Server::getSegmentSize)      
    ;
-
+#endif
 }
 
 //! Creator

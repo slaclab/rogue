@@ -21,7 +21,6 @@
 #define __ROGUE_INTERFACES_STREAM_FRAME_ITERATOR_H__
 #include <stdint.h>
 #include <vector>
-#include <boost/python.hpp>
 
 namespace rogue {
    namespace interfaces {
@@ -66,9 +65,6 @@ namespace rogue {
 
                //! Creator
                FrameIterator();
-
-               //! Setup class in python
-               static void setup_python();
 
                //! Copy assignment
                const rogue::interfaces::stream::FrameIterator operator =(

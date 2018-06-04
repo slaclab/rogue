@@ -23,7 +23,6 @@
 #include <rogue/interfaces/stream/Master.h>
 #include <rogue/interfaces/stream/Slave.h>
 #include <boost/enable_shared_from_this.hpp>
-#include <boost/python.hpp>
 #include <stdint.h>
 #include <rogue/Queue.h>
 #include <rogue/Logging.h>
@@ -134,9 +133,6 @@ namespace rogue {
                   create ( uint32_t segSize,
                            boost::shared_ptr<rogue::protocols::rssi::Transport> tran,
                            boost::shared_ptr<rogue::protocols::rssi::Application> app, bool server );
-
-               //! Setup class in python
-               static void setup_python();
 
                //! Creator
                Controller( uint32_t segSize,

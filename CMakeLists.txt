@@ -19,7 +19,7 @@ if (DEFINED ENV{CONDA_PREFIX})
 endif()
 
 # Check cmake version
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 3.9)
 include(InstallRequiredSystemLibraries)
 
 # Project name
@@ -43,6 +43,21 @@ else()
 endif()
 
 #####################################
+# Find python3
+#####################################
+set(DO_PYTHON 0)
+
+find_package(PythonInterp 3.6)
+
+if (PYTHONINTERP_FOUND)
+   find_package(PythonLibs 3.6)
+
+   if (PYTHONLIBS_FOUND)
+      set(DO_PYTHON 1)
+   endif()
+endif()
+
+#####################################
 # Boost Configuration
 #####################################
 set(Boost_USE_MULTITHREADED ON)
@@ -51,33 +66,35 @@ set(Boost_USE_MULTITHREADED ON)
 set(BOOST_ROOT:PATHNAME $ENV{BOOST_PATH})
 
 # First try standard suffix for boost
+if (DO_PYTHON)
 find_package(Boost 1.58 COMPONENTS system thread python3)
+endif()
 
 # Next try Debian/Ubuntu suffix for boost
-if (NOT Boost_FOUND)
-   find_package(Boost 1.58 COMPONENTS system thread python-py35)
+if ((NOT Boost_FOUND) AND DO_PYTHON)
+   find_package(Boost 1.58 COMPONENTS system thread python-py36)
 endif()
 
 # Next try Mac with homebrew boost/python36
-if (NOT Boost_FOUND)
+if ((NOT Boost_FOUND) AND DO_PYTHON)
    find_package(Boost 1.58 COMPONENTS system thread python36)
+endif()
+
+# Try without python
+if (NOT Boost_FOUND)
+   set(DO_PYTHON 0)
+   find_package(Boost 1.58 COMPONENTS system thread)
 endif()
 
 # Nothing worked
 if (NOT Boost_FOUND)
-   message(FATAL_ERROR "Failed to find boost libraries with python3 support!")
+   message(FATAL_ERROR "Failed to find boost libraries!")
 endif()
-
-#####################################
-# Find python3
-#####################################
-find_package(PythonInterp 3.6 REQUIRED)
-find_package(PythonLibs 3.6 REQUIRED)
 
 #####################################
 # Optional EPICS V3
 #####################################
-if(DEFINED ENV{EPICS_BASE})
+if(DO_PYTHON AND DEFINED ENV{EPICS_BASE})
    set(DO_EPICS_V3 1)
    set(EPICSV3_BASE_DIR  $ENV{EPICS_BASE})
    set(EPICSV3_LIB_DIR   ${EPICSV3_BASE_DIR}/lib/rhel6-x86_64 )
@@ -126,18 +143,25 @@ TARGET_LINK_LIBRARIES(rogue-core LINK_PUBLIC ${PYTHON_LIBRARIES})
 TARGET_LINK_LIBRARIES(rogue-core LINK_PUBLIC ${EPICSV3_LIBRARIES})
 TARGET_LINK_LIBRARIES(rogue-core LINK_PUBLIC bz2)
 
-# Create rogue python library
-add_library(rogue SHARED "")
+if (DO_PYTHON)
 
-# Find python package sources
-add_subdirectory(src)
+   # Create rogue python library
+   add_library(rogue SHARED "")
 
-# Set output to TOP/python, remove lib prefix
-set_target_properties(rogue PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/python)
-set_target_properties(rogue PROPERTIES PREFIX "")
+   # Find python package sources
+   add_subdirectory(src)
 
-# Link to rogue core
-TARGET_LINK_LIBRARIES(rogue LINK_PUBLIC rogue-core)
+   # Set output to TOP/python, remove lib prefix
+   set_target_properties(rogue PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/python)
+   set_target_properties(rogue PROPERTIES PREFIX "")
+
+   # Link to rogue core
+   TARGET_LINK_LIBRARIES(rogue LINK_PUBLIC rogue-core)
+
+else()
+   add_definitions( -DNO_PYTHON )
+endif()
+
 
 # Setup configuration file
 set(CONF_INCLUDE_DIRS ${PROJECT_SOURCE_DIR}/include)
@@ -153,13 +177,20 @@ message("")
 message("-- Rogue Version: ${ROGUE_VERSION}")
 message("")
 message("-- Found boost: ${Boost_INCLUDE_DIRS}")
-message("-- Found python: ${PYTHON_LIBRARIES}")
+message("")
+
+if (DO_PYTHON)
+   message("-- Found python: ${PYTHON_LIBRARIES}")
+else()
+   message("-- Compiling without python!")
+endif()
+
 message("")
 
 if (DO_EPICS_V3)
    message("-- Found EPICS V3: ${EPICSV3_BASE_DIR}")
 else()
-   message("-- EPICS V3 not included")
+   message("-- EPICS V3 not included!")
 endif()
 
 message("----------------------------------------------------------------------")

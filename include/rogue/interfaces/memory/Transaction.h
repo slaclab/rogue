@@ -22,8 +22,11 @@
 #include <boost/enable_shared_from_this.hpp>
 #include <stdint.h>
 #include <vector>
-#include <boost/python.hpp>
 #include <boost/thread.hpp>
+
+#ifndef NO_PYTHON
+#include <boost/python.hpp>
+#endif
 
 namespace rogue {
    namespace interfaces {
@@ -63,8 +66,10 @@ namespace rogue {
                //! Transaction start time
                struct timeval startTime_;
 
+#ifndef NO_PYTHON
                //! Transaction python buffer
                Py_buffer pyBuf_;
+#endif
 
                //! Python buffer is valid
                bool pyValid_;
@@ -140,11 +145,14 @@ namespace rogue {
                //! end iterator, caller must lock around access
                rogue::interfaces::memory::Transaction::iterator end();
 
+#ifndef NO_PYTHON
+
                //! Get transaction data from python
                void getData ( boost::python::object p, uint32_t offset );
 
                //! Set transaction data from python
                void setData ( boost::python::object p, uint32_t offset );
+#endif
          };
 
          // Convienence

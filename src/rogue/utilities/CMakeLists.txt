@@ -15,5 +15,10 @@
 
 add_subdirectory("fileio")
 
-file(GLOB rogue_SRC "*.cpp")
-target_sources(rogue-core PRIVATE ${rogue_SRC})
+target_sources(rogue-core PRIVATE "${CMAKE_CURRENT_LIST_DIR}/Prbs.cpp")
+target_sources(rogue-core PRIVATE "${CMAKE_CURRENT_LIST_DIR}/StreamUnZip.cpp")
+target_sources(rogue-core PRIVATE "${CMAKE_CURRENT_LIST_DIR}/StreamZip.cpp")
+
+if (DO_PYTHON)
+   target_sources(rogue-core PRIVATE "${CMAKE_CURRENT_LIST_DIR}/module.cpp")
+endif()

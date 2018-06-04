@@ -21,30 +21,29 @@
 **/
 
 #include <boost/python.hpp>
-#include <rogue/protocols/packetizer/module.h>
-#include <rogue/protocols/packetizer/Application.h>
-#include <rogue/protocols/packetizer/Transport.h>
-#include <rogue/protocols/packetizer/Core.h>
-#include <rogue/protocols/packetizer/CoreV2.h>
+#include <rogue/module.h>
+#include <rogue/interfaces/module.h>
+#include <rogue/hardware/module.h>
+#include <rogue/utilities/module.h>
+#include <rogue/protocols/module.h>
+#include <rogue/GeneralError.h>
+#include <rogue/Logging.h>
+#include <rogue/SMemControl.h>
+#include <rogue/Version.h>
 
 namespace bp  = boost::python;
-namespace rpp = rogue::protocols::packetizer;
 
-void rpp::setup_module() {
+void rogue::setup_module() {
 
-   // map the IO namespace to a sub-module
-   bp::object module(bp::handle<>(bp::borrowed(PyImport_AddModule("rogue.protocols.packetizer"))));
+   rogue::interfaces::setup_module();
+   rogue::protocols::setup_module();
+   rogue::hardware::setup_module();
+   rogue::utilities::setup_module();
 
-   // make "from mypackage import class1" work
-   bp::scope().attr("packetizer") = module;
-
-   // set the current scope to the new sub-module
-   bp::scope io_scope = module;
-
-   rpp::Application::setup_python();
-   rpp::Transport::setup_python();
-   rpp::Core::setup_python();
-   rpp::CoreV2::setup_python();
+   rogue::GeneralError::setup_python();
+   rogue::Logging::setup_python();
+   rogue::Version::setup_python();
+   rogue::SMemControl::setup_python();
 
 }
 

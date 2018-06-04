@@ -35,10 +35,14 @@
 #include <rogue/Logging.h>
 #include <rogue/GilRelease.h>
 
-namespace bp = boost::python;
 namespace rps = rogue::protocols::srp;
 namespace rim = rogue::interfaces::memory;
 namespace ris = rogue::interfaces::stream;
+
+#ifndef NO_PYTHON
+#include <boost/python.hpp>
+namespace bp  = boost::python;
+#endif
 
 //! Class creation
 rps::SrpV0Ptr rps::SrpV0::create () {
@@ -48,9 +52,10 @@ rps::SrpV0Ptr rps::SrpV0::create () {
 
 //! Setup class in python
 void rps::SrpV0::setup_python() {
+#ifndef NO_PYTHON
 
    bp::class_<rps::SrpV0, rps::SrpV0Ptr, bp::bases<ris::Master,ris::Slave,rim::Slave>, boost::noncopyable >("SrpV0",bp::init<>());
-
+#endif
 }
 
 //! Creator with version constant

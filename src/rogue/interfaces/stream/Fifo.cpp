@@ -31,8 +31,12 @@
 #include <rogue/Logging.h>
 #include <rogue/GilRelease.h>
 
-namespace bp = boost::python;
 namespace ris = rogue::interfaces::stream;
+
+#ifndef NO_PYTHON
+#include <boost/python.hpp>
+namespace bp  = boost::python;
+#endif
 
 //! Class creation
 ris::FifoPtr ris::Fifo::create(uint32_t maxDepth, uint32_t trimSize) {
@@ -42,7 +46,9 @@ ris::FifoPtr ris::Fifo::create(uint32_t maxDepth, uint32_t trimSize) {
 
 //! Setup class in python
 void ris::Fifo::setup_python() {
+#ifndef NO_PYTHON
    bp::class_<ris::Fifo, ris::FifoPtr, bp::bases<ris::Master,ris::Slave>, boost::noncopyable >("Fifo",bp::init<uint32_t,uint32_t>());
+#endif
 }
 
 //! Creator with version constant

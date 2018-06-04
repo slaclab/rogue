@@ -28,7 +28,11 @@
 
 namespace rha = rogue::hardware::axi;
 namespace ris = rogue::interfaces::stream;
+
+#ifndef NO_PYTHON
+#include <boost/python.hpp>
 namespace bp  = boost::python;
+#endif
 
 //! Class creation
 rha::AxiStreamDmaPtr rha::AxiStreamDma::create (std::string path, uint32_t dest, bool ssiEnable) {
@@ -390,6 +394,7 @@ void rha::AxiStreamDma::runThread() {
 }
 
 void rha::AxiStreamDma::setup_python () {
+#ifndef NO_PYTHON
 
    bp::class_<rha::AxiStreamDma, rha::AxiStreamDmaPtr, bp::bases<ris::Master,ris::Slave>, boost::noncopyable >("AxiStreamDma",bp::init<std::string,uint32_t,bool>())
       .def("setDriverDebug", &rha::AxiStreamDma::setDriverDebug)
@@ -399,5 +404,6 @@ void rha::AxiStreamDma::setup_python () {
 
    bp::implicitly_convertible<rha::AxiStreamDmaPtr, ris::MasterPtr>();
    bp::implicitly_convertible<rha::AxiStreamDmaPtr, ris::SlavePtr>();
+#endif
 }
 
