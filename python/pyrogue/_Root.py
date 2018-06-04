@@ -150,7 +150,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                 (tmpDevs[i].address <= (tmpDevs[i-1].address + tmpDevs[i-1].size)):
 
                 print("\n\n\n------------------------ Device Overlap Warning !!! --------------------------------")
-                print("Device {} at address={} overlaps {} at address={} with size={}".format(
+                print("Device {} at address={:#x} overlaps {} at address={:#x} with size={}".format(
                       tmpDevs[i].path,tmpDevs[i].address,tmpDevs[i-1].path,tmpDevs[i-1].address,tmpDevs[i-1].size))
                 print("This warning will be replaced with an exception in the next release!!!!!!!!")
 
