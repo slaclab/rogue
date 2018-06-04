@@ -92,7 +92,7 @@ class MemoryDevice(pr.Device):
 
             # Convert the read verfiy data back to the natic type
             checkValues = odict()
-            print(self._verData.items())
+            #print(self._verData.items())
             for offset, ba in self._verData.items():
                 checkValues[offset] = [self._base.mask(self._base.fromBytes(ba[i:i+self._stride]), self._wordBitSize)
                                        for i in range(0, len(ba), self._stride)]
