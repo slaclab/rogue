@@ -147,7 +147,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
         for i in range(1,len(tmpDevs)):
             if (tmpDevs[i].size != 0) and (tmpDevs[i].memBaseId == tmpDevs[i-1].memBaseId) and \
-                (tmpDevs[i].address <= (tmpDevs[i-1].address + tmpDevs[i-1].size)):
+                (tmpDevs[i].address < (tmpDevs[i-1].address + tmpDevs[i-1].size)):
 
                 print("\n\n\n------------------------ Device Overlap Warning !!! --------------------------------")
                 print("Device {} at address={} overlaps {} at address={} with size={}".format(
