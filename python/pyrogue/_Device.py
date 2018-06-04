@@ -341,7 +341,7 @@ class Device(pr.Node,rim.Hub):
             raise pr.MemoryError(name=self.name, address=offset|self.address,
                                  msg='Called raw memory access with wordBitSize > stride')
 
-        if txnType == rim.Write:
+        if txnType == rim.Write or txnType == rim.Post:
             if isinstance(data, bytearray):
                 ldata = data
             elif isinstance(data, collections.Iterable):
@@ -364,18 +364,22 @@ class Device(pr.Node,rim.Hub):
 
             return ldata
 
-    def _rawWrite(self, offset, data, base=pr.UInt, stride=4, wordBitSize=32, tryCount=1):
+    def _rawWrite(self, offset, data, base=pr.UInt, stride=4, wordBitSize=32, tryCount=1, posted=False):
         with self._memLock:
-            for _ in range(tryCount):
-                self._setError(0)
-                self._rawTxnChunker(offset, data, base, stride, wordBitSize, txnType=rim.Write)
-                self._waitTransaction(0)
+            # Check if posted write
+            if (posted):
+                self._rawTxnChunker(offset, data, base, stride, wordBitSize, txnType=rim.Post)
+            else:
+                for _ in range(tryCount):
+                    self._setError(0)
+                    self._rawTxnChunker(offset, data, base, stride, wordBitSize, txnType=rim.Write)
+                    self._waitTransaction(0)
 
-                if self._getError() == 0: return
-                self._log.warning("Retrying raw write transaction")
+                    if self._getError() == 0: return
+                    self._log.warning("Retrying raw write transaction")
 
-            # If we get here an error has occured
-            raise pr.MemoryError (name=self.name, address=offset|self.address, error=self._getError())
+                # If we get here an error has occured
+                raise pr.MemoryError (name=self.name, address=offset|self.address, error=self._getError())
         
     def _rawRead(self, offset, numWords=1, base=pr.UInt, stride=4, wordBitSize=32, data=None, tryCount=1):
         with self._memLock:
