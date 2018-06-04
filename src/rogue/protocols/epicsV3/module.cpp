@@ -25,7 +25,6 @@
 #include <rogue/protocols/epicsV3/Variable.h>
 #include <rogue/protocols/epicsV3/Command.h>
 #include <rogue/protocols/epicsV3/Server.h>
-#include <rogue/protocols/epicsV3/Pv.h>
 #include <rogue/protocols/epicsV3/Master.h>
 #include <rogue/protocols/epicsV3/Slave.h>
 
@@ -47,7 +46,6 @@ void rpe::setup_module() {
    rpe::Variable::setup_python();
    rpe::Command::setup_python();
    rpe::Server::setup_python();
-   rpe::Pv::setup_python();
    rpe::Master::setup_python();
    rpe::Slave::setup_python();
 }
