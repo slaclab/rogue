@@ -73,6 +73,9 @@ namespace rogue {
                //! Get iterator to end of buffer or end of frame, whichever is lower
                rogue::interfaces::stream::FrameIterator endBuffer();
 
+               //! Get remaining bytes in current buffer
+               uint32_t remBuffer();
+
                //! De-reference
                uint8_t & operator *() const;
 

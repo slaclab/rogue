@@ -151,6 +151,12 @@ ris::FrameIterator ris::FrameIterator::endBuffer() {
    return ret;
 }
 
+//! Get remaining bytes in current buffer
+uint32_t ris::FrameIterator::remBuffer() {
+   if ( framePos_ == frameSize_ ) return(0);
+   else return (buffSize_-buffPos_);
+}
+
 //! De-reference
 uint8_t & ris::FrameIterator::operator *() const {
    if ( framePos_ == frameSize_ ) 
