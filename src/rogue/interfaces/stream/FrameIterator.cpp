@@ -20,7 +20,6 @@
 #include <rogue/interfaces/stream/Frame.h>
 #include <rogue/interfaces/stream/FrameIterator.h>
 #include <rogue/interfaces/stream/Buffer.h>
-#include <rogue/GeneralError.h>
 
 namespace ris = rogue::interfaces::stream;
 
@@ -29,7 +28,11 @@ ris::FrameIterator::FrameIterator(ris::FramePtr frame, bool write, bool end) {
    frame_     = frame;
    frameSize_ = (write_) ? frame_->getSize() : frame_->getPayload();
 
-   if ( end ) framePos_ = frameSize_;
+   // Invalid or end
+   if ( end || frameSize_ == 0 ) {
+      framePos_ = frameSize_;
+      data_     = NULL;
+   }
    else {
       framePos_  = 0;
       buffPos_   = 0;
@@ -42,82 +45,84 @@ ris::FrameIterator::FrameIterator(ris::FramePtr frame, bool write, bool end) {
 //! adjust position
 void ris::FrameIterator::adjust(int32_t diff) {
 
-   if ( frameSize_ == 0 ) 
-      throw rogue::GeneralError("FrameIterator::adjust","Invalid iterator reference!");
+   if ( frameSize_ != 0 ) {
 
-   // Increment
-   if ( diff > 0 ) {
-      if ( (framePos_ + diff) > frameSize_ ) 
-         throw rogue::GeneralError("FrameIterator::adjust","Iterator overflow!");
+      // Increment
+      if ( diff > 0 ) {
 
-      // Adustment puts us at the end
-      if ( (framePos_ + diff) == frameSize_ ) {
-         framePos_ = frameSize_;
-         diff = 0;
-      }
+         // Adustment puts us at the end, or overflow
+         if ( (framePos_ + diff) >= frameSize_ ) {
+            framePos_ = frameSize_;
+            data_ = NULL;
+            diff = 0;
+         }
 
-      // Iterate through increments
-      while ( diff > 0 ) {
+         // Iterate through increments
+         while ( diff > 0 ) {
 
-         // Jump to next buffer
-         if ( (buffPos_ + diff) >= buffSize_ ) {
-            framePos_ += (buffSize_ - buffPos_);
-            diff -= (buffSize_ - buffPos_);
-            buff_++;
-            buffPos_ = 0;
-            buffSize_ = (write_) ? (*buff_)->getSize() : (*buff_)->getPayload();
-            data_ = (*buff_)->begin();
+            // Jump to next buffer
+            if ( (buffPos_ + diff) >= buffSize_ ) {
+               framePos_ += (buffSize_ - buffPos_);
+               diff -= (buffSize_ - buffPos_);
+               buff_++;
+               buffPos_ = 0;
+               buffSize_ = (write_) ? (*buff_)->getSize() : (*buff_)->getPayload();
+               data_ = (*buff_)->begin();
+            } 
+            
+            // Adjust within buffer 
+            else {
+               framePos_ += diff;
+               buffPos_ += diff;
+               data_ += diff;
+            }
          } 
-         
-         // Adjust within buffer 
-         else {
-            framePos_ += diff;
-            buffPos_ += diff;
-            data_ += diff;
-            diff = 0;
-         }
-      } 
-   }
-
-   // Decrement
-   else if ( diff < 0 ) {
-
-      // Invert
-      diff *= -1;
-
-      if ( diff > framePos_ ) 
-         throw rogue::GeneralError("FrameIterator::adjust","Iterator underflow!");
-
-      // Frame is at end, rewind and reset position to relative offset
-      if ( framePos_ == frameSize_ ) {
-         framePos_  = 0;
-         buffPos_   = 0;
-         buff_      = frame_->beginBuffer();
-         buffSize_  = (write_) ? (*buff_)->getSize() : (*buff_)->getPayload();
-         data_      = (*buff_)->begin();
-         this->adjust(frameSize_ - diff); // Recursion
-         diff = 0;
       }
 
-      // Iterate through decrements
-      while ( diff > 0 ) {
+      // Decrement
+      else if ( diff < 0 ) {
 
-         // Jump to previous buffer
-         if ( diff > buffPos_ ) {
-            framePos_ -= (buffPos_ + 1);
-            diff -= (buffPos_ + 1);
-            buff_--;
-            buffSize_  = (write_) ? (*buff_)->getSize() : (*buff_)->getPayload();
-            buffPos_ = buffSize_-1;
-            data_ = (*buff_)->begin() + buffPos_;
-         }
-         
-         // Adjust within buffer 
-         else {
-            framePos_ -= diff;
-            buffPos_ -= diff;
-            data_ -= diff;
+         // Invert
+         diff *= -1;
+
+         // Underflow
+         if ( diff > framePos_ ) {
+            framePos_ = frameSize_;
+            data_ = NULL;
             diff = 0;
+         }
+
+         // Frame is at end, rewind and reset position to relative offset
+         else if ( framePos_ == frameSize_ ) {
+            framePos_  = 0;
+            buffPos_   = 0;
+            buff_      = frame_->beginBuffer();
+            buffSize_  = (write_) ? (*buff_)->getSize() : (*buff_)->getPayload();
+            data_      = (*buff_)->begin();
+            this->adjust(frameSize_ - diff); // Recursion
+            diff = 0;
+         }
+
+         // Iterate through decrements
+         while ( diff > 0 ) {
+
+            // Jump to previous buffer
+            if ( diff > buffPos_ ) {
+               framePos_ -= (buffPos_ + 1);
+               diff -= (buffPos_ + 1);
+               buff_--;
+               buffSize_  = (write_) ? (*buff_)->getSize() : (*buff_)->getPayload();
+               buffPos_ = buffSize_-1;
+               data_ = (*buff_)->begin() + buffPos_;
+            }
+            
+            // Adjust within buffer 
+            else {
+               framePos_ -= diff;
+               buffPos_ -= diff;
+               data_ -= diff;
+               diff = 0;
+            }
          }
       }
    }
@@ -129,6 +134,7 @@ ris::FrameIterator::FrameIterator() {
    frameSize_ = 0;
    buffPos_   = 0;
    buffSize_  = 0;
+   data_      = NULL;
 }
 
 //! Copy assignment
@@ -159,16 +165,18 @@ uint32_t ris::FrameIterator::remBuffer() {
 
 //! De-reference
 uint8_t & ris::FrameIterator::operator *() const {
-   if ( framePos_ == frameSize_ ) 
-      throw rogue::GeneralError("FrameIterator::*","Invalid iterator reference!");
-   else return *data_;
+   return *data_;
 }
 
 //! Pointer
 uint8_t * ris::FrameIterator::operator ->() const {
-   if ( framePos_ == frameSize_ ) 
-      throw rogue::GeneralError("FrameIterator::->","Invalid iterator reference!");
-   else return data_;
+   return data_;
+}
+
+
+//! Pointer
+uint8_t * ris::FrameIterator::ptr() const {
+   return data_;
 }
 
 //! De-reference by index

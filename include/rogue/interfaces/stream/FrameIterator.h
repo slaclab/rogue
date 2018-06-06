@@ -82,6 +82,9 @@ namespace rogue {
                //! Pointer
                uint8_t * operator ->() const;
 
+               //! Pointer
+               uint8_t * ptr() const;
+
                //! De-reference by index
                uint8_t operator [](const uint32_t &offset) const;
 
