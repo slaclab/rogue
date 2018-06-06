@@ -139,7 +139,7 @@ $ pip3 install click
 The following are optional:
 
 ````
-$ pip3 isntall ipython
+$ pip3 install ipython
 $ pip3 install pyzmq
 $ pip3 install mysqlclient
 ````
