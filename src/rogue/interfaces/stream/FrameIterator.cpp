@@ -73,6 +73,7 @@ void ris::FrameIterator::adjust(int32_t diff) {
             framePos_ += diff;
             buffPos_ += diff;
             data_ += diff;
+            diff = 0;
          }
       } 
    }
