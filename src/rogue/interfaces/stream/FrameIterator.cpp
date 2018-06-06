@@ -45,84 +45,81 @@ ris::FrameIterator::FrameIterator(ris::FramePtr frame, bool write, bool end) {
 //! adjust position
 void ris::FrameIterator::adjust(int32_t diff) {
 
-   if ( frameSize_ != 0 ) {
+   // Increment
+   if ( diff > 0 ) {
 
-      // Increment
-      if ( diff > 0 ) {
-
-         // Adustment puts us at the end, or overflow
-         if ( (framePos_ + diff) >= frameSize_ ) {
-            framePos_ = frameSize_;
-            data_ = NULL;
-            diff = 0;
-         }
-
-         // Iterate through increments
-         while ( diff > 0 ) {
-
-            // Jump to next buffer
-            if ( (buffPos_ + diff) >= buffSize_ ) {
-               framePos_ += (buffSize_ - buffPos_);
-               diff -= (buffSize_ - buffPos_);
-               buff_++;
-               buffPos_ = 0;
-               buffSize_ = (write_) ? (*buff_)->getSize() : (*buff_)->getPayload();
-               data_ = (*buff_)->begin();
-            } 
-            
-            // Adjust within buffer 
-            else {
-               framePos_ += diff;
-               buffPos_ += diff;
-               data_ += diff;
-            }
-         } 
+      // Adustment puts us at the end, or overflow
+      if ( (framePos_ + diff) >= frameSize_ ) {
+         framePos_ = frameSize_;
+         data_ = NULL;
+         diff = 0;
       }
 
-      // Decrement
-      else if ( diff < 0 ) {
+      // Iterate through increments
+      while ( diff > 0 ) {
 
-         // Invert
-         diff *= -1;
-
-         // Underflow
-         if ( diff > framePos_ ) {
-            framePos_ = frameSize_;
-            data_ = NULL;
-            diff = 0;
+         // Jump to next buffer
+         if ( (buffPos_ + diff) >= buffSize_ ) {
+            framePos_ += (buffSize_ - buffPos_);
+            diff -= (buffSize_ - buffPos_);
+            buff_++;
+            buffPos_ = 0;
+            buffSize_ = (write_) ? (*buff_)->getSize() : (*buff_)->getPayload();
+            data_ = (*buff_)->begin();
+         } 
+         
+         // Adjust within buffer 
+         else {
+            framePos_ += diff;
+            buffPos_ += diff;
+            data_ += diff;
          }
+      } 
+   }
 
-         // Frame is at end, rewind and reset position to relative offset
-         else if ( framePos_ == frameSize_ ) {
-            framePos_  = 0;
-            buffPos_   = 0;
-            buff_      = frame_->beginBuffer();
+   // Decrement
+   else if ( diff < 0 ) {
+
+      // Invert
+      diff *= -1;
+
+      // Underflow
+      if ( diff > framePos_ ) {
+         framePos_ = frameSize_;
+         data_ = NULL;
+         diff = 0;
+      }
+
+      // Frame is at end, rewind and reset position to relative offset
+      else if ( framePos_ == frameSize_ ) {
+         framePos_  = 0;
+         buffPos_   = 0;
+         buff_      = frame_->beginBuffer();
+         buffSize_  = (write_) ? (*buff_)->getSize() : (*buff_)->getPayload();
+         data_      = (*buff_)->begin();
+         this->adjust(frameSize_ - diff); // Recursion
+         diff = 0;
+      }
+
+      // Iterate through decrements
+      while ( diff > 0 ) {
+
+         // Jump to previous buffer
+         if ( diff > buffPos_ ) {
+            framePos_ -= (buffPos_ + 1);
+            diff -= (buffPos_ + 1);
+            buff_--;
             buffSize_  = (write_) ? (*buff_)->getSize() : (*buff_)->getPayload();
-            data_      = (*buff_)->begin();
-            this->adjust(frameSize_ - diff); // Recursion
-            diff = 0;
+            buffPos_ = buffSize_-1;
+            data_ = (*buff_)->begin() + buffPos_;
          }
-
-         // Iterate through decrements
-         while ( diff > 0 ) {
-
-            // Jump to previous buffer
-            if ( diff > buffPos_ ) {
-               framePos_ -= (buffPos_ + 1);
-               diff -= (buffPos_ + 1);
-               buff_--;
-               buffSize_  = (write_) ? (*buff_)->getSize() : (*buff_)->getPayload();
-               buffPos_ = buffSize_-1;
-               data_ = (*buff_)->begin() + buffPos_;
-            }
-            
-            // Adjust within buffer 
-            else {
-               framePos_ -= diff;
-               buffPos_ -= diff;
-               data_ -= diff;
-               diff = 0;
-            }
+         
+         // Adjust within buffer 
+         else {
+            framePos_ -= diff;
+            buffPos_ -= diff;
+            data_ -= diff;
+            diff = 0;
          }
       }
    }
