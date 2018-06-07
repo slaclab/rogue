@@ -24,7 +24,7 @@ The following packages are required to build the rogue library:
 - python3 >= 3.6
 - bz2
 
-To add these packages on Ubuntu:
+To add these packages on Ubuntu 17.04 (or later):
 
 ````
 $ apt-get install cmake
@@ -82,10 +82,10 @@ the simulation interfaces. To use the GUI interface you will need to install
 either pyqt5 or pyqt4.
 
 
-On Ubuntu:
+On Ubuntu 17.04 (or later):
 
 ````
-$ apt-get install libzmq-dev
+$ apt-get install libzmq3-dev
 $ apt-get install python3-pyqt5
 $ apt-get install python3-pyqt4
 ````
