@@ -31,7 +31,7 @@ $ apt-get install cmake
 $ apt-get install python3
 $ apt-get install libboost-all-dev
 $ apt-get install libbz2-dev
-$ apt-get install python-pip
+$ apt-get install python3-pip
 $ apt-get install git
 ````
 
@@ -132,7 +132,6 @@ afs based SLAC python3 install mentioned above.
 $ pip3 install PyYAML
 $ pip3 install Pyro4 
 $ pip3 install parse
-$ pip3 install recordclass
 $ pip3 install click
 ````
 
