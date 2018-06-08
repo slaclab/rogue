@@ -65,7 +65,6 @@ class Node(object):
         self._description = description
         self._hidden      = hidden
         self._path        = name
-        self._depWarn     = False
         self._expand      = expand
 
         # Tracking
@@ -386,17 +385,6 @@ class Node(object):
             return None
         else:
             return data
-
-    def _getDepWarn(self):
-        ret = []
-
-        if self._depWarn:
-            ret += [self.path]
-
-        for key,value in self._nodes.items():
-            ret += value._getDepWarn()
-
-        return ret
 
     def _setDict(self,d,writeEach,modes=['RW']):
         for key, value in d.items():

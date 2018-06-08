@@ -135,11 +135,6 @@ class Device(pr.Node,rim.Hub):
         self._log.info("Making device {:s}".format(name))
 
         # Convenience methods
-        self.addVariable = ft.partial(self.addNode, pr.Variable) # Legacy
-        self.addVariables = ft.partial(self.addNodes, pr.Variable) # Legacy
-
-        self.addCommand = ft.partial(self.addNode, pr.Command) # Legacy
-        self.addCommands = ft.partial(self.addNodes, pr.Command) # Legacy
         self.addRemoteCommands = ft.partial(self.addNodes, pr.RemoteCommand)
 
         # Variable interface to enable flag
@@ -152,16 +147,6 @@ class Device(pr.Node,rim.Hub):
             elif all(isinstance(v, dict) for v in variables):
                 # create Variable objects from a dict list
                 self.add(pr.Variable(**v) for v in variables)
-
-        cmds = sorted((d for d in (getattr(self, c) for c in dir(self)) if hasattr(d, 'PyrogueCommandArgs')),
-                      key=lambda x: x.PyrogueCommandOrder)
-        for cmd in cmds:
-            args = getattr(cmd, 'PyrogueCommandArgs')
-            if 'name' not in args:
-                args['name'] = cmd.__name__
-
-            print("Adding command {} using depcreated decorator. Please use __init__ decorators instead!".format(args['name']))
-            self.add(pr.LocalCommand(function=cmd, **args))
 
     @Pyro4.expose
     @property

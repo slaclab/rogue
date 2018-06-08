@@ -219,52 +219,10 @@ class RemoteCommand(BaseCommand, pr.RemoteVariable):
 
         return ret
             
-# Legacy Support
-def Command(offset=None, **kwargs):
-    if offset is None:
-
-        # Get list of possible class args
-        cargs = inspect.getfullargspec(LocalCommand.__init__).args + \
-                inspect.getfullargspec(LocalCommand.__init__).kwonlyargs
-
-        # Pass supported args
-        args = {k:kwargs[k] for k in kwargs if k in cargs}
-
-        ret = LocalCommand(**args)
-        ret._depWarn = True
-        return(ret)
-    else:
-
-        # Get list of possible class args
-        cargs = inspect.getfullargspec(RemoteCommand.__init__).args + \
-                inspect.getfullargspec(RemoteCommand.__init__).kwonlyargs
-
-        # Pass supported args
-        args = {k:kwargs[k] for k in kwargs if k in cargs}
-
-        ret = RemoteCommand(offset=offset,**args)
-        ret._depWarn = True
-        return(ret)
-
 Command.nothing = BaseCommand.nothing
 Command.toggle = BaseCommand.toggle
 Command.touch = BaseCommand.touch
 Command.touchZero = BaseCommand.touchZero
 Command.touchOne = BaseCommand.touchOne
 Command.postedTouch = BaseCommand.postedTouch
-
-
-###################################
-# (Hopefully) useful Command stuff
-##################################
-BLANK_COMMAND = Command(name='Blank', description='A singleton command that does nothing')
-
-def command(order=0, **cmdArgs):
-    def wrapper(func):
-        func.PyrogueCommandOrder = order
-        func.PyrogueCommandArgs = cmdArgs
-        return func
-    return wrapper
-################################
-
 

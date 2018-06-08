@@ -605,63 +605,6 @@ class LinkVariable(BaseVariable):
             return None
 
 
-# Legacy Support
-def Variable(local=False, setFunction=None, getFunction=None, **kwargs):
-        
-    # Local Variables override get and set functions
-    if local or setFunction is not None or getFunction is not None:
-
-        # Get list of possible class args
-        cargs = inspect.getfullargspec(LocalVariable.__init__).args + \
-                inspect.getfullargspec(LocalVariable.__init__).kwonlyargs
-
-        # Pass supported args
-        args = {k:kwargs[k] for k in kwargs if k in cargs}
-
-        ret = LocalVariable(localSet=setFunction, localGet=getFunction, **args)
-        ret._depWarn = True
-        return(ret)
-
-    # Otherwise assume remote
-    else:
-        if 'base' not in kwargs:
-            kwargs['base'] = pr.UInt
-            
-        base = kwargs['base']
-
-        if isinstance(base, str):
-            if base == 'hex' or base == 'uint' or base == 'bin' or base == 'enum' or base == 'range':
-                kwargs['base'] = pr.UInt
-            elif base == 'int':
-                kwargs['base'] = pr.Int
-            elif base == 'bool':
-                kwargs['base'] = pr.Bool
-            elif base == 'string':
-                kwargs['base'] = pr.String
-            elif base == 'float':
-                kwargs['base'] = pr.Float
-
-
-        if 'disp' not in kwargs and isinstance(base, str):
-            if base == 'uint':
-                kwargs['disp'] = '{:d}'
-            elif base == 'bin':
-                kwargs['disp'] = '{:#b}'
-#             else:
-#                 kwargs['disp'] = kwargs['base'].defaultdisp     # or None?       
-
-        # Get list of possible class args
-        cargs = inspect.getfullargspec(RemoteVariable.__init__).args + \
-                inspect.getfullargspec(RemoteVariable.__init__).kwonlyargs
-
-        # Pass supported args
-        args = {k:kwargs[k] for k in kwargs if k in cargs}
-
-        ret = RemoteVariable(**args)
-        ret._depWarn = True
-        return(ret)
-
-
 # Function helper
 def varFuncHelper(func,pargs,log,path):
 
