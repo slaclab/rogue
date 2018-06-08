@@ -103,7 +103,6 @@ class Device(pr.Node,rim.Hub):
                  offset=0,
                  size=0,
                  hidden=False,
-                 variables=None,
                  blockSize=None,
                  expand=True,
                  enabled=True,
@@ -139,14 +138,6 @@ class Device(pr.Node,rim.Hub):
 
         # Variable interface to enable flag
         self.add(EnableVariable(enabled=enabled, deps=enableDeps))
-
-        if variables is not None and isinstance(variables, collections.Iterable):
-            if all(isinstance(v, pr.BaseVariable) for v in variables):
-                # add the list of Variable objects
-                self.add(variables)
-            elif all(isinstance(v, dict) for v in variables):
-                # create Variable objects from a dict list
-                self.add(pr.Variable(**v) for v in variables)
 
     @Pyro4.expose
     @property
