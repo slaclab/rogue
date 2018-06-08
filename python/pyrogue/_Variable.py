@@ -85,10 +85,6 @@ class BaseVariable(pr.Node):
         if self._enum is not None:
             self._revEnum = {v:k for k,v in self._enum.items()}
 
-        # Legacy SL and CMD become RW
-        if self._mode == 'SL': self._mode = 'RW'
-        if self._mode == 'CMD' : self._mode = 'RW'
-
         # Check modes
         if (self._mode != 'RW') and (self._mode != 'RO') and \
            (self._mode != 'WO'):
