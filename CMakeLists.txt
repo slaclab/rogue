@@ -127,6 +127,8 @@ include_directories(${Boost_INCLUDE_DIRS})
 include_directories(${PYTHON_INCLUDE_DIRS})
 include_directories(${EPICSV3_INCLUDES})
 
+SET(CMAKE_SHARED_LIBRARY_SUFFIX ".so")
+
 # Create rogue core library
 add_library(rogue-core SHARED "")
 
