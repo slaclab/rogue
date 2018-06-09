@@ -295,13 +295,6 @@ class BaseVariable(pr.Node):
         self._setDefault()
         self._updatePollInterval()
 
-
-    #def __set__(self, value):
-        #self.set(value, write=True)
-
-    #def __get__(self):
-        #self.get(read=True)
-
     def _setDict(self,d,writeEach,modes):
         if self._mode in modes:
             self.setDisp(d,writeEach)
