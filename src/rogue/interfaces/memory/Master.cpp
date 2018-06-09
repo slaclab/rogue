@@ -67,8 +67,7 @@ rim::Master::Master() {
    error_   = 0;
    slave_   = rim::Slave::create(4,4); // Empty placeholder
 
-   sumTime_.tv_sec  = 1;
-   sumTime_.tv_usec = 0;
+   rogue::defaultTimeout(&sumTime_);
 
    log_ = rogue::Logging::create("memory.Master");
 } 
@@ -125,17 +124,10 @@ void rim::Master::setTimeout(uint64_t timeout) {
    rogue::GilRelease noGil;
    boost::lock_guard<boost::mutex> lock(mastMtx_);
 
-   if (timeout == 0 ) {
-      sumTime_.tv_sec  = 1;
-      sumTime_.tv_usec = 0;
-   } else {
-            
-      // sumTime_.tv_sec = (timeout / 1000000);
-      // sumTime_.tv_usec = (timeout % 1000000);
+   if (timeout != 0 ) {
       div_t divResult = div(timeout,1000000);
       sumTime_.tv_sec  = divResult.quot;
       sumTime_.tv_usec = divResult.rem;       
-
    }
 }
 
