@@ -475,7 +475,7 @@ class Device(pr.Node,rim.Hub):
         for block in self._blocks:
             block.timeout = timeout
 
-        rim.Master._setTimeout(self, timeout*1000000)
+        rim.Master._setTimeout(self, int(timeout*1000000))
 
         for key,value in self._nodes.items():
             if isinstance(value,Device):
