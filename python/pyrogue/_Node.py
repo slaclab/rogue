@@ -65,7 +65,6 @@ class Node(object):
         self._description = description
         self._hidden      = hidden
         self._path        = name
-        self._depWarn     = False
         self._expand      = expand
 
         # Tracking
@@ -179,6 +178,7 @@ class Node(object):
         Get a ordered dictionary of nodes.
         pass a class type to receive a certain type of node
         class type may be a string when called over Pyro4
+        exc is a class type to exclude, if hidden = False, only visable nodes are returned
         """
         return odict([(k,n) for k,n in self._nodes.items() \
             if (n._isinstance(typ) and ((exc is None) or (not n._isinstance(exc))) and (hidden or n.hidden == False))])
@@ -386,17 +386,6 @@ class Node(object):
             return None
         else:
             return data
-
-    def _getDepWarn(self):
-        ret = []
-
-        if self._depWarn:
-            ret += [self.path]
-
-        for key,value in self._nodes.items():
-            ret += value._getDepWarn()
-
-        return ret
 
     def _setDict(self,d,writeEach,modes=['RW']):
         for key, value in d.items():

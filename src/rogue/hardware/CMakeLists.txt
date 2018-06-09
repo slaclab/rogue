@@ -13,9 +13,7 @@
 # contained in the LICENSE.txt file.
 # ----------------------------------------------------------------------------
 
-add_subdirectory("data")
 add_subdirectory("pgp")
-add_subdirectory("rce")
 add_subdirectory("axi")
 
 if (DO_PYTHON)

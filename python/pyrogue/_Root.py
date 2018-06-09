@@ -157,21 +157,6 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                 #raise pr.NodeError("Device {} at address={} overlaps {} at address={} with size={}".format(
                 #    tmpDevs[i].path,tmpDevs[i].address,tmpDevs[i-1].path,tmpDevs[i-1].address,tmpDevs[i-1].size))
 
-        # Get list of deprecated nodes
-        lst = self._getDepWarn()
-
-        cnt=len(lst)
-        if cnt > 0:
-            print("----------- Deprecation Warning --------------------------------")
-            print("The following nodes were created with deprecated calls:")
-            if cnt > 50:
-                print("   (Only showing 50 out of {} total deprecated nodes)".format(cnt))
-
-            for n in lst[:50]:
-                print("   " + n)
-
-            print("----------------------------------------------------------------")
-
         # Set timeout if not default
         if timeout != 1.0:
             for key,value in self._nodes.items():

@@ -85,10 +85,6 @@ class BaseVariable(pr.Node):
         if self._enum is not None:
             self._revEnum = {v:k for k,v in self._enum.items()}
 
-        # Legacy SL and CMD become RW
-        if self._mode == 'SL': self._mode = 'RW'
-        if self._mode == 'CMD' : self._mode = 'RW'
-
         # Check modes
         if (self._mode != 'RW') and (self._mode != 'RO') and \
            (self._mode != 'WO'):
@@ -298,13 +294,6 @@ class BaseVariable(pr.Node):
     def _finishInit(self):
         self._setDefault()
         self._updatePollInterval()
-
-
-    #def __set__(self, value):
-        #self.set(value, write=True)
-
-    #def __get__(self):
-        #self.get(read=True)
 
     def _setDict(self,d,writeEach,modes):
         if self._mode in modes:
@@ -603,63 +592,6 @@ class LinkVariable(BaseVariable):
             return varFuncHelper(self._linkedGet,pargs,self._log,self.path)
         else:
             return None
-
-
-# Legacy Support
-def Variable(local=False, setFunction=None, getFunction=None, **kwargs):
-        
-    # Local Variables override get and set functions
-    if local or setFunction is not None or getFunction is not None:
-
-        # Get list of possible class args
-        cargs = inspect.getfullargspec(LocalVariable.__init__).args + \
-                inspect.getfullargspec(LocalVariable.__init__).kwonlyargs
-
-        # Pass supported args
-        args = {k:kwargs[k] for k in kwargs if k in cargs}
-
-        ret = LocalVariable(localSet=setFunction, localGet=getFunction, **args)
-        ret._depWarn = True
-        return(ret)
-
-    # Otherwise assume remote
-    else:
-        if 'base' not in kwargs:
-            kwargs['base'] = pr.UInt
-            
-        base = kwargs['base']
-
-        if isinstance(base, str):
-            if base == 'hex' or base == 'uint' or base == 'bin' or base == 'enum' or base == 'range':
-                kwargs['base'] = pr.UInt
-            elif base == 'int':
-                kwargs['base'] = pr.Int
-            elif base == 'bool':
-                kwargs['base'] = pr.Bool
-            elif base == 'string':
-                kwargs['base'] = pr.String
-            elif base == 'float':
-                kwargs['base'] = pr.Float
-
-
-        if 'disp' not in kwargs and isinstance(base, str):
-            if base == 'uint':
-                kwargs['disp'] = '{:d}'
-            elif base == 'bin':
-                kwargs['disp'] = '{:#b}'
-#             else:
-#                 kwargs['disp'] = kwargs['base'].defaultdisp     # or None?       
-
-        # Get list of possible class args
-        cargs = inspect.getfullargspec(RemoteVariable.__init__).args + \
-                inspect.getfullargspec(RemoteVariable.__init__).kwonlyargs
-
-        # Pass supported args
-        args = {k:kwargs[k] for k in kwargs if k in cargs}
-
-        ret = RemoteVariable(**args)
-        ret._depWarn = True
-        return(ret)
 
 
 # Function helper
