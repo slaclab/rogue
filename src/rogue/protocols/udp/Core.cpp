@@ -19,6 +19,7 @@
 **/
 #include <rogue/protocols/udp/Core.h>
 #include <rogue/Logging.h>
+#include <rogue/GeneralError.h>
 #include <unistd.h>
 
 namespace rpu = rogue::protocols::udp;
@@ -31,7 +32,7 @@ namespace bp  = boost::python;
 //! Creator
 rpu::Core::Core (bool jumbo) {
    jumbo_   = jumbo;
-   timeout_ = 10000000;
+   rogue::defaultTimeout(timeout_);
 }
 
 //! Destructor
@@ -65,7 +66,9 @@ bool rpu::Core::setRxBufferCount(uint32_t count) {
 
 //! Set timeout for frame transmits in microseconds
 void rpu::Core::setTimeout(uint32_t timeout) {
-   timeout_ = timeout;
+   div_t divResult = div(timeout,1000000);
+   timeout_.tv_sec  = divResult.quot;
+   timeout_.tv_usec = divResult.rem;
 }
 
 void rpu::Core::setup_python () {

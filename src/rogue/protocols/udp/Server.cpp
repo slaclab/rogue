@@ -138,15 +138,10 @@ void rpu::Server::acceptFrame ( ris::FramePtr frame ) {
          FD_SET(fd_,&fds);
 
          // Setup select timeout
+         tout = timeout_;
          
-         // tout.tv_sec=(timeout_>0)?(timeout_ / 1000000):0;
-         // tout.tv_usec=(timeout_>0)?(timeout_ % 1000000):10000;
-         div_t divResult = div(timeout_,1000000);
-         tout.tv_sec  = (timeout_>0)?(divResult.quot):0;
-         tout.tv_usec = (timeout_>0)?(divResult.rem):10000;        
-
          if ( select(fd_+1,NULL,&fds,NULL,&tout) <= 0 ) {
-            if ( timeout_ > 0 ) throw(rogue::GeneralError::timeout("Server::acceptFrame",timeout_));
+            throw(rogue::GeneralError::timeout("Server::acceptFrame",timeout_));
             res = 0;
          }
          else if ( (res = sendmsg(fd_,&msg,0)) < 0 )

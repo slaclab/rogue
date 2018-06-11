@@ -55,7 +55,7 @@ rhp::PgpCard::PgpCard ( std::string path, uint32_t lane, uint32_t vc ) {
    vc_         = vc;
    zeroCopyEn_ = true;
 
-   rogue::defaultTimeout(&timeout_);
+   rogue::defaultTimeout(timeout_);
 
    rogue::GilRelease noGil;
 

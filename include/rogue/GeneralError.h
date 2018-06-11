@@ -27,13 +27,18 @@
 #include <boost/python.hpp>
 #endif
 
+#define DEFAULT_TIMEOUT 1000000
+
 namespace rogue {
 
 #ifndef NO_PYTHON
    extern PyObject * generalErrorObj;
 #endif
 
-   //! General exception
+   // Set default timeout value
+   void defaultTimeout(struct timeval &tout);
+
+   //! General exception 
    /*
     * Called for all general errors that should not occur
     * in the system.
@@ -48,7 +53,8 @@ namespace rogue {
          GeneralError (std::string src,std::string text);
 
          static GeneralError create(std::string src, const char * fmt, ...);
-         static GeneralError timeout(std::string src, uint32_t time);
+         static GeneralError timeout(std::string src, struct timeval & tout);
+         static GeneralError timeout(std::string src, uint32_t tout);
          static GeneralError open(std::string src, std::string file);
          static GeneralError dest(std::string src, std::string file, uint32_t dest);
          static GeneralError boundary(std::string src, uint32_t position, uint32_t limit);

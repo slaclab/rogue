@@ -51,7 +51,8 @@ rpr::Controller::Controller ( uint32_t segSize, rpr::TransportPtr tran, rpr::App
    tran_   = tran;
    server_ = server;
 
-   timeout_ = 0;
+   timeout_.tv_sec  = 0;
+   timeout_.tv_usec = 0;
 
    appQueue_.setThold(BusyThold);
 
@@ -520,8 +521,6 @@ bool rpr::Controller::timePassed ( struct timeval *lastTime, uint32_t time, bool
 
    gettimeofday(&currTime,NULL);
 
-   // sumTime.tv_sec = (usec / 1000000);
-   // sumTime.tv_usec = (usec % 1000000);
    div_t divResult = div(usec,1000000);
    sumTime.tv_sec  = divResult.quot;
    sumTime.tv_usec = divResult.rem; 

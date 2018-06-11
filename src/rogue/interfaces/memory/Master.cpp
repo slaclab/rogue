@@ -67,7 +67,7 @@ rim::Master::Master() {
    error_   = 0;
    slave_   = rim::Slave::create(4,4); // Empty placeholder
 
-   rogue::defaultTimeout(&sumTime_);
+   rogue::defaultTimeout(sumTime_);
 
    log_ = rogue::Logging::create("memory.Master");
 } 
