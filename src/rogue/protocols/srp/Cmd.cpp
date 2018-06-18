@@ -70,6 +70,7 @@ void rps::Cmd::sendCmd(uint8_t opCode, uint32_t context) {
 
    // Copy frame
    ris::toFrame(it,sizeof(txData),txData);
+   frame->setPayload(sizeof(txData));
    sendFrame(frame);
 }
 
