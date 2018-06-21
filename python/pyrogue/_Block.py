@@ -348,7 +348,7 @@ class RemoteBlock(BaseBlock, rim.Master):
 
     @timeout.setter
     def timeout(self,value):
-        self._setTimeout(value*1000000)
+        self._setTimeout(int(value*1000000))
 
     @property
     def error(self):
