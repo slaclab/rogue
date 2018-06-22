@@ -120,11 +120,20 @@ namespace rogue {
                uint32_t locBusyCnt_;
                uint32_t remBusyCnt_;
 
+               // Time values
+               struct timeval retranToutD1_;  // retranTout_ / 1
+               struct timeval tryPeriodD1_;   // TryPeriod   / 1
+               struct timeval tryPeriodD4_;   // TryPeriod   / 4
+               struct timeval cumAckToutD1_;  // cumAckTout_ / 1 
+               struct timeval cumAckToutD2_;  // cumAckTout_ / 2 
+               struct timeval nullToutD3_;    // nullTout_   / 3 
+               struct timeval zeroTme_;       // 0
+
                // State thread
                boost::thread* thread_;
 
                // Application frame transmit timeout
-               uint32_t timeout_;
+               struct timeval timeout_;
 
             public:
 
@@ -216,29 +225,29 @@ namespace rogue {
                // Method to retransmit a frame
                int8_t retransmit(uint8_t id);
 
-               //! Convert rssi time to microseconds
-               uint32_t convTime ( uint32_t rssiTime );
+               //! Convert rssi time to time structure
+               static void convTime ( struct timeval &tme, uint32_t rssiTime );
 
                //! Helper function to determine if time has elapsed in current state
-               bool timePassed ( struct timeval *lastTime, uint32_t time, bool rawTime=false);
+               static bool timePassed ( struct timeval &lastTime, struct timeval &tme);
 
                //! Thread background
                void runThread();
 
                //! Closed/Waiting for Syn
-               uint32_t stateClosedWait ();
+               struct timeval & stateClosedWait ();
 
                //! Send syn ack
-               uint32_t stateSendSynAck ();
+               struct timeval & stateSendSynAck ();
 
                //! Send sequence ack
-               uint32_t stateSendSeqAck ();
+               struct timeval & stateSendSeqAck ();
 
                //! Open state
-               uint32_t stateOpen ();
+               struct timeval & stateOpen ();
 
                //! Error state
-               uint32_t stateError ();
+               struct timeval & stateError ();
 
          };
 

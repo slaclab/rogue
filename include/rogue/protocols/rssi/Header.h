@@ -85,7 +85,7 @@ namespace rogue {
                void update();
 
                //! Get time
-               struct timeval * getTime();
+               struct timeval & getTime();
 
                //! Get Count
                uint32_t count();

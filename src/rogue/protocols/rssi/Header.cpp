@@ -197,8 +197,8 @@ void rpr::Header::update() {
 }
 
 //! Get time
-struct timeval * rpr::Header::getTime() {
-   return(&time_);
+struct timeval & rpr::Header::getTime() {
+   return(time_);
 }
 
 //! Get Count
