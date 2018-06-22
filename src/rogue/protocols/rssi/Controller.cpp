@@ -545,7 +545,7 @@ void rpr::Controller::runThread() {
             boost::unique_lock<boost::mutex> lock(stMtx_);
 
             // Adjustable wait
-            stCond_.timed_wait(lock,boost::posix_time::microseconds((wait.tv_sec * 1000000) + wait.tv_usec));
+            stCond_.timed_wait(lock, boost::posix_time::microseconds(wait.tv_usec) + boost::posix_time::seconds(wait.tv_sec));
          }
 
          switch(state_) {
