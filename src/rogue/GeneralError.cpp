@@ -54,7 +54,7 @@ rogue::GeneralError rogue::GeneralError::create(std::string src, const char * fm
 rogue::GeneralError rogue::GeneralError::timeout(std::string src, struct timeval & tout) {
    char temp[BuffSize];
 
-   snprintf(temp,BuffSize,"timeout after %l.%l Seconds",tout.tv_sec, tout.tv_usec);
+   snprintf(temp,BuffSize,"timeout after %li.%li Seconds",tout.tv_sec, tout.tv_usec);
    return(rogue::GeneralError(src,temp));
 }
 

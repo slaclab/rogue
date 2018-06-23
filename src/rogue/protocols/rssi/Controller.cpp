@@ -90,7 +90,8 @@ rpr::Controller::Controller ( uint32_t segSize, rpr::TransportPtr tran, rpr::App
    convTime(nullToutD3_,   nullTout_ / 3);
 
    memset(&zeroTme_, 0, sizeof(struct timeval));
-   memset(&timeout_, 0, sizeof(struct timeval));
+   
+   rogue::defaultTimeout(timeout_);
 
    locBusyCnt_ = 0;
    remBusyCnt_ = 0;   
