@@ -51,8 +51,6 @@ rpr::Controller::Controller ( uint32_t segSize, rpr::TransportPtr tran, rpr::App
    tran_   = tran;
    server_ = server;
 
-   timeout_ = 0;
-
    appQueue_.setThold(BusyThold);
 
    dropCount_   = 0;
@@ -83,7 +81,18 @@ rpr::Controller::Controller ( uint32_t segSize, rpr::TransportPtr tran, rpr::App
    maxCumAck_     = ReqMaxCumAck;
    remConnId_     = 0;
    segmentSize_   = segSize;
+  
+   convTime(retranToutD1_, retranTout_);
+   convTime(tryPeriodD1_,  TryPeriod);
+   convTime(tryPeriodD4_,  TryPeriod / 4);
+   convTime(cumAckToutD1_, cumAckTout_);
+   convTime(cumAckToutD2_, cumAckTout_ / 2);
+   convTime(nullToutD3_,   nullTout_ / 3);
+
+   memset(&zeroTme_, 0, sizeof(struct timeval));
    
+   rogue::defaultTimeout(timeout_);
+
    locBusyCnt_ = 0;
    remBusyCnt_ = 0;   
 
@@ -309,7 +318,7 @@ void rpr::Controller::applicationRx ( ris::FramePtr frame ) {
    // Wait while busy either by flow control or buffer starvation
    while ( txListCount_ >= remMaxBuffers_ ) {
       usleep(10);
-      if ( timeout_ > 0 && timePassed(&startTime,timeout_,true) ) 
+      if ( timePassed(startTime,timeout_) ) 
          throw(rogue::GeneralError::timeout("rssi::Controller::applicationRx",timeout_));
    }
 
@@ -462,7 +471,7 @@ int8_t rpr::Controller::retransmit(uint8_t id) {
    }
 
    // retransmit timer has not expired
-   if ( ! timePassed(head->getTime(),retranTout_) ) return 0;
+   if ( ! timePassed(head->getTime(),retranToutD1_) ) return 0;
 
    // max retransmission count has been reached
    if ( head->count() >= maxRetran_ ) return -1;
@@ -499,56 +508,45 @@ int8_t rpr::Controller::retransmit(uint8_t id) {
 }
 
 //! Convert rssi time to microseconds
-uint32_t rpr::Controller::convTime ( uint32_t rssiTime ) {
+void rpr::Controller::convTime ( struct timeval &tme, uint32_t rssiTime ) {
    float units = std::pow(10,-TimeoutUnit);
    float value = units * (float)rssiTime;
 
-   uint32_t ret = (uint32_t)(value / 1e-6);
+   uint32_t usec = (uint32_t)(value / 1e-6);
 
-   return(ret);
+   div_t divResult = div(usec,1000000);
+   tme.tv_sec  = divResult.quot;
+   tme.tv_usec = divResult.rem; 
 }
 
 //! Helper function to determine if time has elapsed
-bool rpr::Controller::timePassed ( struct timeval *lastTime, uint32_t time, bool rawTime ) {
+bool rpr::Controller::timePassed ( struct timeval &lastTime, struct timeval &tme ) {
    struct timeval endTime;
-   struct timeval sumTime;
    struct timeval currTime;
-   uint32_t usec;
-
-   if ( rawTime ) usec = time;
-   else usec = convTime(time);
 
    gettimeofday(&currTime,NULL);
-
-   // sumTime.tv_sec = (usec / 1000000);
-   // sumTime.tv_usec = (usec % 1000000);
-   div_t divResult = div(usec,1000000);
-   sumTime.tv_sec  = divResult.quot;
-   sumTime.tv_usec = divResult.rem; 
-   
-   timeradd(lastTime,&sumTime,&endTime);
-
-   return(timercmp(&currTime,&endTime,>));
+   timeradd(&lastTime,&tme,&endTime);
+   return(timercmp(&currTime,&endTime,>=));
 }
 
 //! Background thread
 void rpr::Controller::runThread() {
-   uint32_t wait;
+   struct timeval wait;
 
    log_->logThreadId(rogue::Logging::Info);
 
-   wait = 0;
+   wait = zeroTme_;
 
    try {
       while(1) {
 
          // Lock context
-         if ( wait > 0 ) {
+         if ( wait.tv_sec != 0 && wait.tv_usec != 0 ) {
             // Wait on condition or timeout
             boost::unique_lock<boost::mutex> lock(stMtx_);
 
             // Adjustable wait
-            stCond_.timed_wait(lock,boost::posix_time::microseconds(wait));
+            stCond_.timed_wait(lock, boost::posix_time::microseconds(wait.tv_usec) + boost::posix_time::seconds(wait.tv_sec));
          }
 
          switch(state_) {
@@ -584,9 +582,8 @@ void rpr::Controller::runThread() {
 }
 
 //! Closed/Waiting for Syn
-uint32_t rpr::Controller::stateClosedWait () {
+struct timeval & rpr::Controller::stateClosedWait () {
    rpr::HeaderPtr head;
-
 
    // got syn or reset
    if ( ! stQueue_.empty() ) {
@@ -609,9 +606,17 @@ uint32_t rpr::Controller::stateClosedWait () {
          maxCumAck_     = head->maxCumulativeAck;
          lastAckRx_     = head->acknowledge;
 
+         // Convert times
+         convTime(retranToutD1_, retranTout_);
+         convTime(tryPeriodD1_,  TryPeriod);
+         convTime(tryPeriodD4_,  TryPeriod / 4);
+         convTime(cumAckToutD1_, cumAckTout_);
+         convTime(cumAckToutD2_, cumAckTout_ / 2);
+         convTime(nullToutD3_,   nullTout_ / 3);
+
          if ( server_ ) {
             state_ = StSendSynAck;
-            return(0);
+            return(zeroTme_);
          }
          else state_ = StSendSeqAck;
          gettimeofday(&stTime_,NULL);
@@ -619,7 +624,7 @@ uint32_t rpr::Controller::stateClosedWait () {
    }
 
    // Generate syn after try period passes
-   else if ( (!server_) && timePassed(&stTime_,TryPeriod) ) {
+   else if ( (!server_) && timePassed(stTime_,tryPeriodD1_) ) {
 
       // Allocate frame
       head = rpr::Header::create(tran_->reqFrame(rpr::Header::SynSize,false));
@@ -646,11 +651,11 @@ uint32_t rpr::Controller::stateClosedWait () {
    }
    else if ( server_ ) state_ = StWaitSyn;
 
-   return(convTime(TryPeriod) / 4);
+   return(tryPeriodD4_);
 }
 
 //! Send Syn ack
-uint32_t rpr::Controller::stateSendSynAck () {
+struct timeval & rpr::Controller::stateSendSynAck () {
    uint32_t x;
 
    // Allocate frame
@@ -676,11 +681,11 @@ uint32_t rpr::Controller::stateSendSynAck () {
    // Update state
    log_->warning("State is open. Server=%i",server_);
    state_ = StOpen;
-   return(convTime(cumAckTout_/2));
+   return(cumAckToutD2_);
 }
 
 //! Send sequence ack
-uint32_t rpr::Controller::stateSendSeqAck () {
+struct timeval & rpr::Controller::stateSendSeqAck () {
    uint32_t x;
 
    // Allocate frame
@@ -695,11 +700,11 @@ uint32_t rpr::Controller::stateSendSeqAck () {
    // Update state
    state_ = StOpen;
    log_->warning("State is open. Server=%i",server_);
-   return(convTime(cumAckTout_/2));
+   return(cumAckToutD2_);
 }
 
 //! Idle with open state
-uint32_t rpr::Controller::stateOpen () {
+struct timeval & rpr::Controller::stateOpen () {
    rpr::HeaderPtr head;
    uint8_t idx;
    bool doNull;
@@ -711,7 +716,7 @@ uint32_t rpr::Controller::stateOpen () {
       head = stQueue_.pop();
       state_ = StError;
       gettimeofday(&stTime_,NULL);
-      return(0);
+      return(zeroTme_);
    }
 
    // Sample transmit time and compute pending ack count under lock
@@ -722,12 +727,12 @@ uint32_t rpr::Controller::stateOpen () {
    }
 
    // NULL required
-   if ( timePassed(&locTime,nullTout_/3) ) doNull = true;
+   if ( timePassed(locTime,nullToutD3_)) doNull = true;
    else doNull = false;
 
    // Outbound frame required
    if ( ( doNull || ackPend >= maxCumAck_ || 
-        ((ackPend > 0 || getLocBusy()) && timePassed(&locTime,cumAckTout_)) ) ) {
+        ((ackPend > 0 || getLocBusy()) && timePassed(locTime,cumAckToutD1_)) ) ) {
 
       head = rpr::Header::create(tran_->reqFrame(rpr::Header::HeaderSize,false));
       head->ack = true;
@@ -742,15 +747,15 @@ uint32_t rpr::Controller::stateOpen () {
       if ( retransmit(idx++) < 0 ) {
          state_ = StError;
          gettimeofday(&stTime_,NULL);
-         return(0);
+         return(zeroTme_);
       }
    }
 
-   return(convTime(cumAckTout_/2));
+   return(cumAckToutD2_);
 }
 
 //! Error
-uint32_t rpr::Controller::stateError () {
+struct timeval & rpr::Controller::stateError () {
    rpr::HeaderPtr rst;
    uint32_t x;
 
@@ -771,11 +776,13 @@ uint32_t rpr::Controller::stateError () {
    stQueue_.reset();
 
    gettimeofday(&stTime_,NULL);
-   return(convTime(TryPeriod));
+   return(tryPeriodD1_);
 }
 
 //! Set timeout for frame transmits in microseconds
 void rpr::Controller::setTimeout(uint32_t timeout) {
-   timeout_ = timeout;
+   div_t divResult = div(timeout,1000000);
+   timeout_.tv_sec  = divResult.quot;
+   timeout_.tv_usec = divResult.rem; 
 }
 

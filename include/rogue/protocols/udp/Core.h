@@ -54,7 +54,7 @@ namespace rogue {
                struct sockaddr_in remAddr_;
 
                //! Timeout value
-               uint32_t timeout_;
+               struct timeval timeout_;
 
                boost::thread* thread_;
 

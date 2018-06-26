@@ -49,7 +49,7 @@ namespace rogue {
                uint32_t bSize_;
 
                //! Timeout for frame transmits
-               uint32_t timeout_;
+               struct timeval timeout_;
 
                //! ssi insertion enable
                bool enSsi_;

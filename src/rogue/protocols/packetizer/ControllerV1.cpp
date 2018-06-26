@@ -164,21 +164,10 @@ void rpp::ControllerV1::applicationRx ( ris::FramePtr frame, uint8_t tDest ) {
    uint8_t  tId;
    struct timeval startTime;
    struct timeval currTime;
-   struct timeval sumTime;
    struct timeval endTime;
 
-   if ( timeout_ > 0 ) {
-      gettimeofday(&startTime,NULL);
-      
-      // sumTime.tv_sec = (timeout_ / 1000000);
-      // sumTime.tv_usec = (timeout_ % 1000000);
-      div_t divResult = div(timeout_,1000000);
-      sumTime.tv_sec  = divResult.quot;
-      sumTime.tv_usec = divResult.rem; 
-      
-      timeradd(&startTime,&sumTime,&endTime);
-   }
-   else gettimeofday(&endTime,NULL);
+   gettimeofday(&startTime,NULL);
+   timeradd(&startTime,&timeout_,&endTime);
 
    if ( frame->isEmpty() ) 
       log_->warning("Empty frame received at application");
@@ -192,11 +181,9 @@ void rpp::ControllerV1::applicationRx ( ris::FramePtr frame, uint8_t tDest ) {
    // Wait while queue is busy
    while ( tranQueue_.busy() ) {
       usleep(10);
-      if ( timeout_ > 0 ) {
-         gettimeofday(&currTime,NULL);
-         if ( timercmp(&currTime,&endTime,>))
-            throw(rogue::GeneralError::timeout("packetizer::ControllerV1::applicationRx",timeout_));
-      }
+      gettimeofday(&currTime,NULL);
+      if ( timercmp(&currTime,&endTime,>))
+         throw(rogue::GeneralError::timeout("packetizer::ControllerV1::applicationRx",timeout_));
    }
 
    fUser = frame->getFlags() & 0xFF;

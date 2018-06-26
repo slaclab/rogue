@@ -48,10 +48,11 @@ namespace rogue {
                uint32_t crcInit_[256];
                uint8_t  tranDest_;
                uint32_t dropCount_;
-               uint32_t timeout_;
                uint32_t headSize_;
                uint32_t tailSize_;
                uint32_t alignSize_;
+
+               struct timeval timeout_;
 
                rogue::LoggingPtr log_;
 

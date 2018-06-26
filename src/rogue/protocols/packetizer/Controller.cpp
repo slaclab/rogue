@@ -44,9 +44,10 @@ rpp::Controller::Controller ( rpp::TransportPtr tran, rpp::ApplicationPtr * app,
    tranIndex_ = 0;
    tranDest_ = 0;
    dropCount_ = 0;
-   timeout_ = 1000000;
    tranQueue_.setThold(64);
    log_ = rogue::Logging::create("packetizer.Controller");
+
+   rogue::defaultTimeout(timeout_);
 
    headSize_ = headSize;
    tailSize_ = tailSize;
@@ -129,6 +130,8 @@ uint32_t rpp::Controller::getDropCount() {
 
 //! Set timeout for frame transmits in microseconds
 void rpp::Controller::setTimeout(uint32_t timeout) {
-    timeout_ = timeout;
+   div_t divResult = div(timeout,1000000);
+   timeout_.tv_sec  = divResult.quot;
+   timeout_.tv_usec = divResult.rem; 
 }
 
