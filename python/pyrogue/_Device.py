@@ -309,7 +309,7 @@ class Device(pr.Node,rim.Hub):
         self.checkBlocks(recurse=recurse, variable=variable)
 
     def _rawTxnChunker(self, offset, data, base=pr.UInt, stride=4, wordBitSize=32, txnType=rim.Write, numWords=1):
-        if offset + (numWords * stride) >= self._size:
+        if offset + (numWords * stride) > self._size:
             raise pr.MemoryError(name=self.name, address=offset|self.address,
                                  msg='Raw transaction outside of device size')
 
