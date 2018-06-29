@@ -273,7 +273,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
         return ret
 
-    def setYaml(self,yml,writeEach,modes=['RW']):
+    def setYaml(self,yml,writeEach,modes=['RW','WO']):
         """
         Set variable values or execute commands from a dictionary.
         modes is a list of variable modes to act on.
@@ -402,7 +402,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         """Read YAML configuration from a file. Called from command"""
         try:
             with open(arg,'r') as f:
-                self.setYaml(f.read(),False,['RW'])
+                self.setYaml(f.read(),False,['RW','WO'])
         except Exception as e:
             self._log.exception(e)
 
