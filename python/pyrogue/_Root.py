@@ -402,7 +402,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         """Read YAML configuration from a file. Called from command"""
         try:
             with open(arg,'r') as f:
-                self.setYaml(f.read(),False,['RW'])
+                self.setYaml(f.read(),False,['RW','WO'])
         except Exception as e:
             self._log.exception(e)
 
