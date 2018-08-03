@@ -58,7 +58,7 @@ class UdpRssiPack(pr.Device):
                     self._log.warning("host=%s, port=%d -> Establishing link ..." % (host,port))
                     last = curr
 
-        self._udp.setRxBufferCount(self._rssi.getRemMaxSegment());
+        self._udp.setRxBufferCount(self._rssi.getRemMaxBuffers());
 
         # Add variables
         self.add(pr.LocalVariable(
