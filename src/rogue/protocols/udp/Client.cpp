@@ -157,7 +157,7 @@ void rpu::Client::runThread() {
    struct timeval tout;
    uint32_t       avail;
 
-   udpLog_->logThreadId(rogue::Logging::Info);
+   udpLog_->logThreadId();
 
    // Preallocate frame
    frame = ris::Pool::acceptReq(maxPayload(),false);

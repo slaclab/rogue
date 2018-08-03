@@ -76,7 +76,7 @@ void rpp::Transport::acceptFrame ( ris::FramePtr frame ) {
 //! Thread background
 void rpp::Transport::runThread() {
    Logging log("packetizer.Transport");
-   log.logThreadId(rogue::Logging::Info);
+   log.logThreadId();
 
    try {
       while(1) {

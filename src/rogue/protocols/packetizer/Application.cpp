@@ -86,7 +86,7 @@ void rpp::Application::pushFrame( ris::FramePtr frame ) {
 //! Thread background
 void rpp::Application::runThread() {
    Logging log("packetizer.Application");
-   log.logThreadId(rogue::Logging::Info);
+   log.logThreadId();
 
    try {
       while(1) {

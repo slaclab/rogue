@@ -42,7 +42,7 @@ namespace rogue {
                static const uint8_t  TimeoutUnit   = 3; // rssiTime * std::pow(10,-TimeoutUnit) = 3 = ms
                
                static const uint8_t  LocMaxBuffers = 32; // MAX_NUM_OUTS_SEG_G in FW
-               static const uint32_t BusyThold     = 16;
+               static const uint32_t BusyThold     = 64;
                
                // RSSI Timeouts (units of TimeoutUnit)
                static const uint32_t TryPeriod     = 100;

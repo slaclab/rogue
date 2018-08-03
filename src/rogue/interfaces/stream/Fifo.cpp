@@ -96,7 +96,7 @@ void ris::Fifo::acceptFrame ( ris::FramePtr frame ) {
 
 //! Thread background
 void ris::Fifo::runThread() {
-   log_->logThreadId(rogue::Logging::Info);
+   log_->logThreadId();
 
    try {
       while(1) {
