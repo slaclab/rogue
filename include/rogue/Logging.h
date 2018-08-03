@@ -62,6 +62,7 @@ namespace rogue {
 
          static const uint32_t Critical = 50;
          static const uint32_t Error    = 40;
+         static const uint32_t Thread   = 35;
          static const uint32_t Warning  = 30;
          static const uint32_t Info     = 20;
          static const uint32_t Debug    = 10;
@@ -81,7 +82,7 @@ namespace rogue {
          void info(const char * fmt, ...);
          void debug(const char * fmt, ...);
 
-         void logThreadId(uint32_t level);
+         void logThreadId();
 
          static void setup_python();
    };

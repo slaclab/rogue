@@ -35,7 +35,6 @@ class UdpRssiPack(pr.Device):
         self._udp  = rogue.protocols.udp.Client(host,port,jumbo)
 
         self._rssi = rogue.protocols.rssi.Client(self._udp.maxPayload())
-        self._udp.setRxBufferCount(self._rssi.getRemMaxSegment());
 
         if packVer == 2:
             self._pack = rogue.protocols.packetizer.CoreV2(False,True) # ibCRC = False, obCRC = True
@@ -47,7 +46,7 @@ class UdpRssiPack(pr.Device):
 
         self._rssi.application()._setSlave(self._pack.transport())
         self._pack.transport()._setSlave(self._rssi.application())
-        
+
         if wait:
             curr = int(time.time())
             last = curr
@@ -58,6 +57,8 @@ class UdpRssiPack(pr.Device):
                 if last != curr:
                     self._log.warning("host=%s, port=%d -> Establishing link ..." % (host,port))
                     last = curr
+
+        self._udp.setRxBufferCount(self._rssi.getRemMaxBuffers());
 
         # Add variables
         self.add(pr.LocalVariable(

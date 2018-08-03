@@ -42,13 +42,13 @@ namespace rogue {
                static const uint8_t  TimeoutUnit   = 3; // rssiTime * std::pow(10,-TimeoutUnit) = 3 = ms
                
                static const uint8_t  LocMaxBuffers = 32; // MAX_NUM_OUTS_SEG_G in FW
-               static const uint32_t BusyThold     = 16;
+               static const uint32_t BusyThold     = 64;
                
                // RSSI Timeouts (units of TimeoutUnit)
-               static const uint32_t TryPeriod     = 100;
-               static const uint16_t ReqCumAckTout = 5;    // ACK_TOUT_G in FW
-               static const uint16_t ReqRetranTout = 10;   // RETRANS_TOUT_G in FW
-               static const uint16_t ReqNullTout   = 3000; // NULL_TOUT_G in FW
+               static const uint32_t TryPeriod     = 100;  // 100 mS
+               static const uint16_t ReqCumAckTout = 5;    // ACK_TOUT_G in FW, 5mS
+               static const uint16_t ReqRetranTout = 20;   // RETRANS_TOUT_G in FW, 2hmS
+               static const uint16_t ReqNullTout   = 1000; // NULL_TOUT_G in FW, 1S
                
                // Counters
                static const uint8_t  ReqMaxRetran  = 15;   // MAX_RETRANS_CNT_G in FW

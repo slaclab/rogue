@@ -34,11 +34,12 @@ namespace bp = boost::python;
 
 const uint32_t rogue::Logging::Critical;
 const uint32_t rogue::Logging::Error;
+const uint32_t rogue::Logging::Thread;
 const uint32_t rogue::Logging::Warning;
 const uint32_t rogue::Logging::Info;
 const uint32_t rogue::Logging::Debug;
 
-// Logging level
+// Default Logging level Is Error
 uint32_t rogue::Logging::gblLevel_ = rogue::Logging::Error;
 
 // Logging level lock
@@ -142,7 +143,7 @@ void rogue::Logging::debug(const char * fmt, ...) {
    va_end(arg);
 }
 
-void rogue::Logging::logThreadId(uint32_t level) {
+void rogue::Logging::logThreadId() {
    uint32_t tid;
 
 #if defined(__linux__)
@@ -155,7 +156,7 @@ void rogue::Logging::logThreadId(uint32_t level) {
    tid = 0;
 #endif
 
-   this->log(level, "PID=%i, TID=%i", getpid(), tid);
+   this->log(Thread, "PID=%i, TID=%i", getpid(), tid);
 }
 
 void rogue::Logging::setup_python() {
@@ -167,6 +168,7 @@ void rogue::Logging::setup_python() {
       .staticmethod("setFilter")
       .def_readonly("Critical", &rogue::Logging::Critical)
       .def_readonly("Error",    &rogue::Logging::Error)
+      .def_readonly("Thread",   &rogue::Logging::Thread)
       .def_readonly("Warning",  &rogue::Logging::Warning)
       .def_readonly("Info",     &rogue::Logging::Info)
       .def_readonly("Debug",    &rogue::Logging::Debug)

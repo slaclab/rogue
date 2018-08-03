@@ -278,14 +278,12 @@ ris::FramePtr rpr::Controller::applicationTx() {
    rpr::HeaderPtr head;
 
    rogue::GilRelease noGil;
-   while(!frame) {
-      head = appQueue_.pop();
-      stCond_.notify_all();
+   head = appQueue_.pop();
+   stCond_.notify_all();
 
-      frame = head->getFrame();
-      ris::FrameLockPtr flock = frame->lock();
-      (*(frame->beginBuffer()))->adjustHeader(rpr::Header::HeaderSize);
-   }
+   frame = head->getFrame();
+   ris::FrameLockPtr flock = frame->lock();
+   (*(frame->beginBuffer()))->adjustHeader(rpr::Header::HeaderSize);
    return(frame);
 }
 
@@ -533,7 +531,7 @@ bool rpr::Controller::timePassed ( struct timeval &lastTime, struct timeval &tme
 void rpr::Controller::runThread() {
    struct timeval wait;
 
-   log_->logThreadId(rogue::Logging::Info);
+   log_->logThreadId();
 
    wait = zeroTme_;
 
@@ -541,7 +539,7 @@ void rpr::Controller::runThread() {
       while(1) {
 
          // Lock context
-         if ( wait.tv_sec != 0 && wait.tv_usec != 0 ) {
+         if ( wait.tv_sec != 0 || wait.tv_usec != 0 ) {
             // Wait on condition or timeout
             boost::unique_lock<boost::mutex> lock(stMtx_);
 

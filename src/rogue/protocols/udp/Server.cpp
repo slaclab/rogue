@@ -164,7 +164,7 @@ void rpu::Server::runThread() {
    uint32_t           tmpLen;
    uint32_t           avail;
 
-   udpLog_->logThreadId(rogue::Logging::Info);
+   udpLog_->logThreadId();
 
    // Preallocate frame
    frame = ris::Pool::acceptReq(maxPayload(),false);
