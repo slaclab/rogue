@@ -113,6 +113,9 @@ namespace rogue {
                //! Stop
                void stop();
 
+               //! Start
+               void start();
+
          };
 
          // Convienence

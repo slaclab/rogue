@@ -178,3 +178,8 @@ void rpr::Server::stop() {
    return(cntl_->stop());
 }
 
+//! Start
+void rpr::Server::start() {
+   return(cntl_->start());
+}
+

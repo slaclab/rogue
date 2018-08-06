@@ -117,6 +117,9 @@ namespace rogue {
                //! Stop connection
                void stop();
 
+               //! Start connection
+               void start();
+
          };
 
          // Convienence
