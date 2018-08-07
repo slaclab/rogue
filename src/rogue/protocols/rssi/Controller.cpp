@@ -583,6 +583,7 @@ void rpr::Controller::runThread() {
             default :
                break;
          }    
+         boost::this_thread::interruption_point();
       }
    } catch (boost::thread_interrupted&) { }
 
