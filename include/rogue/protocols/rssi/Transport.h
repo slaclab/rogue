@@ -38,14 +38,6 @@ namespace rogue {
                //! Core module
                boost::shared_ptr<rogue::protocols::rssi::Controller> cntl_;
 
-               rogue::Queue<boost::shared_ptr<rogue::interfaces::stream::Frame>> rxQueue_;
-
-               // Thread
-               boost::thread* thread_;
-
-               //! Thread background
-               void runThread();
-
             public:
 
                //! Class creation

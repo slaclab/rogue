@@ -81,7 +81,7 @@ void rpr::Application::acceptFrame ( ris::FramePtr frame ) {
 //! Thread background
 void rpr::Application::runThread() {
    Logging log("rssi.Application");
-   log.logThreadId(rogue::Logging::Info);
+   log.logThreadId();
 
    try {
       while(1) {

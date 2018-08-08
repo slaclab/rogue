@@ -181,7 +181,7 @@ void ru::Prbs::flfsr(ru::PrbsData & data) {
 
 //! Thread background
 void ru::Prbs::runThread() {
-   txLog_->logThreadId(rogue::Logging::Info);
+   txLog_->logThreadId();
 
    try {
       while(1) {

@@ -48,7 +48,8 @@ bool rpu::Core::setRxBufferCount(uint32_t count) {
    uint32_t   rwin;
    socklen_t  rwin_size=4;
 
-   uint32_t size = count * ((jumbo_)?(JumboMTU):(StdMTU));
+   uint32_t per  = (jumbo_)?(JumboMTU):(StdMTU);
+   uint32_t size = count * per;
 
    setsockopt(fd_, SOL_SOCKET, SO_RCVBUF, (char*)&size, sizeof(size));
    getsockopt(fd_, SOL_SOCKET, SO_RCVBUF, &rwin, &rwin_size);
@@ -56,7 +57,7 @@ bool rpu::Core::setRxBufferCount(uint32_t count) {
    if(size > rwin) {
       udpLog_->critical("----------------------------------------------------------");
       udpLog_->critical("Error setting rx buffer size.");
-      udpLog_->critical("Wanted %i Got %i",size,rwin);
+      udpLog_->critical("Wanted %i (%i * %i) Got %i",size,count,per,rwin);
       udpLog_->critical("sysctl -w net.core.rmem_max=size to increase in kernel");
       udpLog_->critical("----------------------------------------------------------");
       return(false);

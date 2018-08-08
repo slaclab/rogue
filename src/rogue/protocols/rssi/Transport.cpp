@@ -60,27 +60,10 @@ rpr::Transport::~Transport() { }
 //! Setup links
 void rpr::Transport::setController( rpr::ControllerPtr cntl ) {
    cntl_ = cntl;
-   rxQueue_.setMax(4);
-
-   // Start read thread
-   thread_ = new boost::thread(boost::bind(&rpr::Transport::runThread, this));
 }
 
 //! Accept a frame from master
 void rpr::Transport::acceptFrame ( ris::FramePtr frame ) {
-   //cntl_->transportRx(frame);
-   rxQueue_.push(frame);
-}
-
-//! Thread background
-void rpr::Transport::runThread() {
-   Logging log("rssi.Transport");
-   log.logThreadId(rogue::Logging::Info);
-
-   try {
-      while(1) {
-         cntl_->transportRx(rxQueue_.pop());
-      }
-   } catch (boost::thread_interrupted&) { }
+   cntl_->transportRx(frame);
 }
 
