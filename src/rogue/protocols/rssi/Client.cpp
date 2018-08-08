@@ -55,6 +55,7 @@ void rpr::Client::setup_python() {
       .def("getRemBusy",      &rpr::Client::getRemBusy)
       .def("getRemBusyCnt",   &rpr::Client::getRemBusyCnt)
       .def("stop",            &rpr::Client::stop)
+      .def("start",           &rpr::Client::start)
       .def("getMaxRetran",    &rpr::Client::getMaxRetran)
       .def("getRemMaxBuffers",&rpr::Client::getRemMaxBuffers)
       .def("getRemMaxSegment",&rpr::Client::getRemMaxSegment)
@@ -177,7 +178,13 @@ void rpr::Client::setTimeout(uint32_t timeout) {
    cntl_->setTimeout(timeout);
 }
 
-//! Send reset
+//! Send reset and close
 void rpr::Client::stop() {
    return(cntl_->stop());
 }
+
+//! Start 
+void rpr::Client::start() {
+   return(cntl_->start());
+}
+

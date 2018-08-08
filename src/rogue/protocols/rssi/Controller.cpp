@@ -98,8 +98,7 @@ rpr::Controller::Controller ( uint32_t segSize, rpr::TransportPtr tran, rpr::App
 
    log_ = rogue::Logging::create("rssi.controller");
 
-   // Start read thread
-   thread_ = new boost::thread(boost::bind(&rpr::Controller::runThread, this));
+   thread_ = NULL;
 }
 
 //! Destructor
@@ -109,8 +108,20 @@ rpr::Controller::~Controller() {
 
 //! Close
 void rpr::Controller::stop() {
-   thread_->interrupt();
-   thread_->join();
+   if ( thread_ != NULL ) {
+      thread_->interrupt();
+      thread_->join();
+      thread_ = NULL;
+      state_ = StClosed;
+   }
+}
+
+//! Start
+void rpr::Controller::start() {
+   if ( thread_ == NULL ) {
+      state_ = StClosed;
+      thread_ = new boost::thread(boost::bind(&rpr::Controller::runThread, this));
+   }
 }
 
 //! Transport frame allocation request
@@ -452,7 +463,6 @@ void rpr::Controller::transportTx(rpr::HeaderPtr head, bool seqUpdate, bool txRe
 
    // Send frame
    tran_->sendFrame(head->getFrame());
-   if (head->getFrame()->isEmpty()) printf("Frame is empty! seq=%i\n",head->sequence);
 }
 
 // Method to retransmit a frame
@@ -501,7 +511,6 @@ int8_t rpr::Controller::retransmit(uint8_t id) {
 
    // Send frame
    tran_->sendFrame(head->getFrame());
-   if (head->getFrame()->isEmpty()) printf("Frame is empty! seq=%i\n",head->sequence);
    return 1;
 }
 
@@ -572,6 +581,7 @@ void rpr::Controller::runThread() {
             default :
                break;
          }    
+         boost::this_thread::interruption_point();
       }
    } catch (boost::thread_interrupted&) { }
 
@@ -709,12 +719,14 @@ struct timeval & rpr::Controller::stateOpen () {
    uint8_t ackPend;
    struct timeval locTime;
 
-   // Pending frame is an error
-   if ( ! stQueue_.empty() ) {
+   // Pending frame may be reset
+   while ( ! stQueue_.empty() ) {
       head = stQueue_.pop();
-      state_ = StError;
-      gettimeofday(&stTime_,NULL);
-      return(zeroTme_);
+      if ( head->rst ) {
+         state_ = StError;
+         gettimeofday(&stTime_,NULL);
+         return(zeroTme_);
+      }
    }
 
    // Sample transmit time and compute pending ack count under lock

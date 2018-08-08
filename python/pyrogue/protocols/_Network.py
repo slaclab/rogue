@@ -47,6 +47,8 @@ class UdpRssiPack(pr.Device):
         self._rssi.application()._setSlave(self._pack.transport())
         self._pack.transport()._setSlave(self._rssi.application())
 
+        self._rssi.start()
+
         if wait:
             curr = int(time.time())
             last = curr
@@ -196,8 +198,20 @@ class UdpRssiPack(pr.Device):
             pollInterval= pollInterval, 
         ))                    
                             
+        self.add(pr.LocalCommand(
+            name        = 'stop',
+            function    = self._stop
+        ))
+
+        self.add(pr.LocalCommand(
+            name        = 'start',
+            function    = lambda: self._rssi.start()
+        ))
+
     def application(self,dest):
         return(self._pack.application(dest))
 
-    def stop(self):
+    def _stop(self):
         self._rssi.stop()
+        self.rssiOpen.get()
+

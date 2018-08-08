@@ -217,6 +217,9 @@ namespace rogue {
                //! Stop connection
                void stop();
 
+               //! Start connection
+               void start();
+
             private:
 
                // Method to transit a frame with proper updates
