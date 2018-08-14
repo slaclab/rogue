@@ -81,6 +81,7 @@ void rpp::Transport::runThread() {
    try {
       while(1) {
          sendFrame(cntl_->transportTx());
+         boost::this_thread::interruption_point();
       }
    } catch (boost::thread_interrupted&) { }
 }
