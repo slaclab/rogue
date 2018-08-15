@@ -58,16 +58,17 @@ rpu::Client::Client ( std::string host, uint16_t port, bool jumbo) : rpu::Core(j
 
    // Create socket
    if ( (fd_ = socket(AF_INET,SOCK_DGRAM,0)) < 0 )
-      throw(rogue::GeneralError::network("Client::Client",address_.c_str(),port_));
+      throw(rogue::GeneralError::network("Client::Client(socket)",address_.c_str(),port_));
 
    // Lookup host address
+   bzero(&aiHints, sizeof(aiHints));
    aiHints.ai_flags    = AI_CANONNAME;
    aiHints.ai_family   = AF_INET;
    aiHints.ai_socktype = SOCK_DGRAM;
    aiHints.ai_protocol = IPPROTO_UDP;
 
    if ( ::getaddrinfo(address_.c_str(), 0, &aiHints, &aiList) || !aiList)
-      throw(rogue::GeneralError::network("Client::Client",address_.c_str(),port_));
+      throw(rogue::GeneralError::network("Client::Client(getaddrinfo)",address_.c_str(),port_));
 
    addr = (const sockaddr_in*)(aiList->ai_addr);
 
