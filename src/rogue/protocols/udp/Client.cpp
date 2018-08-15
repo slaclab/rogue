@@ -136,7 +136,7 @@ void rpu::Client::acceptFrame ( ris::FramePtr frame ) {
          tout = timeout_;
          
          if ( select(fd_+1,NULL,&fds,NULL,&tout) <= 0 ) {
-            throw(rogue::GeneralError::timeout("Client::acceptFrame",timeout_));
+            log_->timeout("Client::acceptFrame",timeout_);
             res = 0;
          }
          else if ( (res = sendmsg(fd_,&msg,0)) < 0 )

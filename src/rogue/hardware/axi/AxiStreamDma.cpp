@@ -147,8 +147,8 @@ ris::FramePtr rha::AxiStreamDma::acceptReq ( uint32_t size, bool zeroCopyEn) {
             tout = timeout_;
 
             if ( select(fd_+1,NULL,&fds,NULL,&tout) <= 0 ) {
-               throw(rogue::GeneralError::timeout("AxiStreamDma::acceptReq",timeout_));
-               res = 0;
+               log_.timeout("AxiStreamDma::acceptReq", timeout_);
+               res = -1;
             }
             else {
                // Attempt to get index.
@@ -246,7 +246,7 @@ void rha::AxiStreamDma::acceptFrame ( ris::FramePtr frame ) {
             tout = timeout_;
             
             if ( select(fd_+1,NULL,&fds,NULL,&tout) <= 0 ) {
-               throw(rogue::GeneralError("AxiStreamDma::acceptFrame","AXIS Write Call Failed. Buffer Not Available!!!!"));
+               log_.timeout("AxiStreamDma::acceptFrame", timeout_);
                res = 0;
             }
             else {
@@ -308,6 +308,8 @@ void rha::AxiStreamDma::runThread() {
    // Preallocate empty frame
    frame = ris::Frame::create();
 
+   log_.logThreadId();
+
    try {
       while(1) {
 
@@ -350,7 +352,7 @@ void rha::AxiStreamDma::runThread() {
             }
 
             // Return of -1 is bad
-            if ( res < 0 ) 
+            if ( res < 0 )
                throw(rogue::GeneralError("AxiStreamDma::runThread","DMA Interface Failure!"));
 
             // Read was successfull

@@ -59,6 +59,9 @@ namespace rogue {
 
                boost::thread* thread_;
 
+               //! Log 
+               rogue::LoggingPtr log_;
+
                //! Thread background
                void runThread();
 

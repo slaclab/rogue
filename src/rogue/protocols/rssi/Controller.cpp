@@ -327,8 +327,10 @@ void rpr::Controller::applicationRx ( ris::FramePtr frame ) {
    // Wait while busy either by flow control or buffer starvation
    while ( txListCount_ >= remMaxBuffers_ ) {
       usleep(10);
-      if ( timePassed(startTime,timeout_) ) 
-         throw(rogue::GeneralError::timeout("rssi::Controller::applicationRx",timeout_));
+      if ( timePassed(startTime,timeout_) ) {
+         gettimeofday(&startTime,NULL);
+         log_->timeout("Controller::applicationRx",timeout_);
+      }
    }
 
    // Transmit

@@ -59,6 +59,8 @@ rhp::PgpCard::PgpCard ( std::string path, uint32_t lane, uint32_t vc ) {
 
    rogue::GilRelease noGil;
 
+   log_ = rogue::Logging::create("hardware.PgpCard");
+
    if ( (fd_ = ::open(path.c_str(), O_RDWR)) < 0 ) 
       throw(rogue::GeneralError::open("PgpCard::PgpCard",path.c_str()));
 
@@ -201,8 +203,8 @@ ris::FramePtr rhp::PgpCard::acceptReq ( uint32_t size, bool zeroCopyEn) {
             tout = timeout_;
 
             if ( select(fd_+1,NULL,&fds,NULL,&tout) <= 0 ) {
-               throw(rogue::GeneralError::timeout("PgpCard::acceptReq",timeout_));
-               res = 0;
+               log_.timeout("PgpCard::acceptReq", timeout_);
+               res = -1;
             }
             else {
                // Attempt to get index.
@@ -277,7 +279,7 @@ void rhp::PgpCard::acceptFrame ( ris::FramePtr frame ) {
             tout = timeout_;
 
             if ( select(fd_+1,NULL,&fds,NULL,&tout) <= 0 ) {
-               throw(rogue::GeneralError("PgpCard::acceptFrame","PGP Write Call Failed. Buffer Not Available!!!!"));
+               log_.timeout("PgpCard::acceptFrame", timeout_);
                res = 0;
             }
             else {
@@ -329,6 +331,8 @@ void rhp::PgpCard::runThread() {
    // Preallocate empty frame
    frame = ris::Frame::create();
 
+   log_.logThreadId();
+
    try {
 
       while(1) {
@@ -366,6 +370,10 @@ void rhp::PgpCard::runThread() {
                   buff = createBuffer(rawBuff_[meta],0x80000000 | meta,bSize_,bSize_);
                }
             }
+
+            // Return of -1 is bad
+            if ( res < 0 )
+               throw(rogue::GeneralError("PgpCard::runThread","DMA Interface Failure!"));
 
             // Read was successfull
             if ( res > 0 ) {
