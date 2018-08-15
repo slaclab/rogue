@@ -91,6 +91,7 @@ void rpp::Application::runThread() {
    try {
       while(1) {
          sendFrame(queue_.pop());
+         boost::this_thread::interruption_point();
       }
    } catch (boost::thread_interrupted&) { }
 }

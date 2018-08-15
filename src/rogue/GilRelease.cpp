@@ -24,9 +24,6 @@
 
 #include <boost/python.hpp>
 namespace bp = boost::python;
-
-extern PyThreadState * _PyThreadState_Current;
-
 #endif
 
 rogue::GilRelease::GilRelease() {
@@ -51,8 +48,7 @@ void rogue::GilRelease::acquire() {
 
 void rogue::GilRelease::release() {
 #ifndef NO_PYTHON
-   PyThreadState * tstate = _PyThreadState_Current;
-   if ( tstate && (tstate == PyGILState_GetThisThreadState()) ) state_ = PyEval_SaveThread();
+   if ( PyGILState_Check() ) state_ = PyEval_SaveThread();
    else state_ = NULL;
 #endif
 }
