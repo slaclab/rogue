@@ -352,7 +352,7 @@ void rha::AxiStreamDma::runThread() {
             }
 
             // Return of -1 is bad
-            if ( res < 0 )
+            if ( res < 0 ) 
                throw(rogue::GeneralError("AxiStreamDma::runThread","DMA Interface Failure!"));
 
             // Read was successfull
