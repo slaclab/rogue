@@ -90,6 +90,10 @@ class BaseCommand(pr.BaseVariable):
         pass
 
     @staticmethod
+    def read(cmd):
+        cmd.get(read=True)
+
+    @staticmethod
     def createToggle(sets):
         def toggle(cmd):
             for s in sets:
