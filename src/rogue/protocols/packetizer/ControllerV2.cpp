@@ -227,8 +227,11 @@ void rpp::ControllerV2::applicationRx ( ris::FramePtr frame, uint8_t tDest ) {
    while ( tranQueue_.busy() ) {
       usleep(10);
       gettimeofday(&currTime,NULL);
-      if ( timercmp(&currTime,&endTime,>))
-         throw(rogue::GeneralError::timeout("packetizer::ControllerV2::applicationRx",timeout_));
+      if ( timercmp(&currTime,&endTime,>)) {
+         log_->timeout("ControllerV2::applicationRx",timeout_);
+         gettimeofday(&startTime,NULL);
+         timeradd(&startTime,&timeout_,&endTime);
+      }
    }
 
    fUser = frame->getFlags() & 0xFF;

@@ -143,6 +143,14 @@ void rogue::Logging::debug(const char * fmt, ...) {
    va_end(arg);
 }
 
+void rogue::Logging::timeout(const char *txt, struct timeval & tout) {
+   rogue::Logging::critical("%s: Timeout after %li.%li seconds", txt, tout.tv_sec, tout.tv_usec);
+}
+
+void rogue::Logging::timeout(const char *txt, uint32_t tout) {
+   rogue::Logging::critical("%s: Timeout after %i microseconds", txt, tout);
+}
+
 void rogue::Logging::logThreadId() {
    uint32_t tid;
 
