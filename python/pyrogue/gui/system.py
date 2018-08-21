@@ -141,6 +141,10 @@ class DataLink(QObject):
 
         dataFile = dlg.getSaveFileName(caption='Select data file', filter='Data Files(*.dat);;All Files(*.*)')[0]
 
+        # Detect QT5 return
+        if isinstance(dataFile,tuple):
+            dataFile = dataFile[0]
+
         if dataFile != '':
             print("Setting file {}".format(dataFile))
             self.writer.dataFile.setDisp(dataFile)
@@ -435,6 +439,9 @@ class SystemWidget(QWidget):
         loadFile = dlg.getOpenFileName(caption='Read config file', filter='Config Files(*.yml);;All Files(*.*)')
 
         # Detect QT5 return
+        if isinstance(loadFile,tuple):
+            loadFile = loadFile[0]
+
         if loadFile != '':
             print("Reading file {}".format(loadFile))
             self.root.ReadConfig(loadFile)
@@ -445,7 +452,10 @@ class SystemWidget(QWidget):
 
         saveFile = dlg.getSaveFileName(caption='Save config file', filter='Config Files(*.yml);;All Files(*.*)')
 
-        print("type: {}".format(type(saveFile)))
+        # Detect QT5 return
+        if isinstance(saveFile,tuple):
+            saveFile = saveFile[0]
+
         if saveFile != '':
             print("Writing file {}".format(saveFile))
             self.root.WriteConfig(saveFile)
