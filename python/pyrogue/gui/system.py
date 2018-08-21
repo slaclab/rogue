@@ -139,7 +139,7 @@ class DataLink(QObject):
     def _browse(self):
         dlg = QFileDialog()
 
-        dataFile = dlg.getSaveFileName(options=QFileDialog.DontConfirmOverwrite, caption='Select data file', filter='Data Files(*.dat);;All Files(*.*)')[0]
+        dataFile = dlg.getSaveFileName(options=QFileDialog.DontConfirmOverwrite, caption='Select data file', filter='Data Files(*.dat);;All Files(*.*)')
 
         # Detect QT5 return
         if isinstance(dataFile,tuple):
