@@ -432,8 +432,9 @@ class SystemWidget(QWidget):
     def loadSettings(self):
         dlg = QFileDialog()
 
-        loadFile = dlg.getOpenFileName(caption='Read config file', filter='Config Files(*.yml);;All Files(*.*)')[0]
+        loadFile = dlg.getOpenFileName(caption='Read config file', filter='Config Files(*.yml);;All Files(*.*)')
 
+        # Detect QT5 return
         if loadFile != '':
             print("Reading file {}".format(loadFile))
             self.root.ReadConfig(loadFile)
@@ -442,8 +443,9 @@ class SystemWidget(QWidget):
     def saveSettings(self):
         dlg = QFileDialog()
 
-        saveFile = dlg.getSaveFileName(caption='Save config file', filter='Config Files(*.yml);;All Files(*.*)')[0]
+        saveFile = dlg.getSaveFileName(caption='Save config file', filter='Config Files(*.yml);;All Files(*.*)')
 
+        print("type: {}".format(type(saveFile)))
         if saveFile != '':
             print("Writing file {}".format(saveFile))
             self.root.WriteConfig(saveFile)
