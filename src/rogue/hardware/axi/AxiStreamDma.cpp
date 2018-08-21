@@ -147,7 +147,7 @@ ris::FramePtr rha::AxiStreamDma::acceptReq ( uint32_t size, bool zeroCopyEn) {
             tout = timeout_;
 
             if ( select(fd_+1,NULL,&fds,NULL,&tout) <= 0 ) {
-               log_.timeout("AxiStreamDma::acceptReq", timeout_);
+               log_->timeout("AxiStreamDma::acceptReq", timeout_);
                res = -1;
             }
             else {
@@ -246,7 +246,7 @@ void rha::AxiStreamDma::acceptFrame ( ris::FramePtr frame ) {
             tout = timeout_;
             
             if ( select(fd_+1,NULL,&fds,NULL,&tout) <= 0 ) {
-               log_.timeout("AxiStreamDma::acceptFrame", timeout_);
+               log_->timeout("AxiStreamDma::acceptFrame", timeout_);
                res = 0;
             }
             else {
@@ -308,7 +308,7 @@ void rha::AxiStreamDma::runThread() {
    // Preallocate empty frame
    frame = ris::Frame::create();
 
-   log_.logThreadId();
+   log_->logThreadId();
 
    try {
       while(1) {
