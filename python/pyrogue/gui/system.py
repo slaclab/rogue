@@ -138,13 +138,12 @@ class DataLink(QObject):
 
     def _browse(self):
         dlg = QFileDialog()
-        dlg.setFileMode(QFileDialog.AnyFile)
-        dlg.setFilter('Data Files (*.dat)')
 
-        if dlg.exec_():
-           dataFile = str(dlg.selectedFiles()[0])
-           self.writer.dataFile.setDisp(dataFile)
-        pass
+        dataFile = dlg.getSaveFileName(caption='Select data file', filter='Data Files(*.dat);;All Files(*.*)')[0]
+
+        if dataFile != '':
+            print("Setting file {}".format(dataFile))
+            self.writer.dataFile.setDisp(dataFile)
     
     def _genName(self):
         self.writer.autoName()
@@ -432,20 +431,20 @@ class SystemWidget(QWidget):
     @pyqtSlot()
     def loadSettings(self):
         dlg = QFileDialog()
-        dlg.setFileMode(QFileDialog.AnyFile)
-        dlg.setNameFilter('Config Files (*.yml)')
 
-        if dlg.exec_():
-            loadFile = str(dlg.selectedFiles()[0])
+        loadFile = dlg.getOpenFileName(caption='Read config file', filter='Config Files(*.yml);;All Files(*.*)')[0]
+
+        if loadFile != '':
+            print("Reading file {}".format(loadFile))
             self.root.ReadConfig(loadFile)
 
     @pyqtSlot()
     def saveSettings(self):
         dlg = QFileDialog()
-        dlg.setFileMode(QFileDialog.AnyFile)
-        dlg.setNameFilter('Config Files (*.yml)')
 
-        if dlg.exec_():
-            saveFile = str(dlg.selectedFiles()[0])
+        saveFile = dlg.getSaveFileName(caption='Save config file', filter='Config Files(*.yml);;All Files(*.*)')[0]
+
+        if saveFile != '':
+            print("Writing file {}".format(saveFile))
             self.root.WriteConfig(saveFile)
 
