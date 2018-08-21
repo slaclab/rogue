@@ -139,14 +139,13 @@ class DataLink(QObject):
     def _browse(self):
         dlg = QFileDialog()
 
-        dataFile = dlg.getSaveFileName(caption='Select data file', filter='Data Files(*.dat);;All Files(*.*)')[0]
+        dataFile = dlg.getSaveFileName(options=QFileDialog.DontConfirmOverwrite, caption='Select data file', filter='Data Files(*.dat);;All Files(*.*)')[0]
 
         # Detect QT5 return
         if isinstance(dataFile,tuple):
             dataFile = dataFile[0]
 
         if dataFile != '':
-            print("Setting file {}".format(dataFile))
             self.writer.dataFile.setDisp(dataFile)
     
     def _genName(self):
@@ -443,7 +442,6 @@ class SystemWidget(QWidget):
             loadFile = loadFile[0]
 
         if loadFile != '':
-            print("Reading file {}".format(loadFile))
             self.root.ReadConfig(loadFile)
 
     @pyqtSlot()
@@ -457,6 +455,5 @@ class SystemWidget(QWidget):
             saveFile = saveFile[0]
 
         if saveFile != '':
-            print("Writing file {}".format(saveFile))
             self.root.WriteConfig(saveFile)
 
