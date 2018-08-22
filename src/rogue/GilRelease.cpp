@@ -48,7 +48,8 @@ void rogue::GilRelease::acquire() {
 
 void rogue::GilRelease::release() {
 #ifndef NO_PYTHON
-   if ( PyGILState_Check() ) state_ = PyEval_SaveThread();
+   if ( PyEval_ThreadsInitialized() && PyGILState_Check() ) 
+      state_ = PyEval_SaveThread();
    else state_ = NULL;
 #endif
 }
