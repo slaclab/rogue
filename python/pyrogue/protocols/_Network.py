@@ -60,13 +60,12 @@ class UdpRssiPack(pr.Device):
                     self._log.warning("host=%s, port=%d -> Establishing link ..." % (host,port))
                     last = curr
 
-        self._udp.setRxBufferCount(self._rssi.getRemMaxBuffers());
+        self._udp.setRxBufferCount(self._rssi.curMaxBuffers());
 
         # Add variables
         self.add(pr.LocalVariable(
             name        = 'rssiOpen',
             mode        = 'RO', 
-            value       = False, 
             localGet    = lambda: self._rssi.getOpen(),
             pollInterval= pollInterval, 
         ))
@@ -74,7 +73,6 @@ class UdpRssiPack(pr.Device):
         self.add(pr.LocalVariable(
             name        = 'rssiDownCount',
             mode        = 'RO', 
-            value       = 0, 
             localGet    = lambda: self._rssi.getDownCount(),
             pollInterval= pollInterval, 
         )) 
@@ -82,7 +80,6 @@ class UdpRssiPack(pr.Device):
         self.add(pr.LocalVariable(
             name        = 'rssiDropCount',
             mode        = 'RO', 
-            value       = 0, 
             localGet    = lambda: self._rssi.getDropCount(),
             pollInterval= pollInterval, 
         ))  
@@ -90,7 +87,6 @@ class UdpRssiPack(pr.Device):
         self.add(pr.LocalVariable(
             name        = 'rssiRetranCount',
             mode        = 'RO', 
-            value       = 0, 
             localGet    = lambda: self._rssi.getRetranCount(),
             pollInterval= pollInterval, 
         ))  
@@ -98,7 +94,6 @@ class UdpRssiPack(pr.Device):
         self.add(pr.LocalVariable(
             name        = 'locBusy',
             mode        = 'RO', 
-            value       = False, 
             localGet    = lambda: self._rssi.getLocBusy(),
             hidden      = True,
             pollInterval= pollInterval, 
@@ -107,7 +102,6 @@ class UdpRssiPack(pr.Device):
         self.add(pr.LocalVariable(
             name        = 'locBusyCnt',
             mode        = 'RO', 
-            value       = 0, 
             localGet    = lambda: self._rssi.getLocBusyCnt(),
             pollInterval= pollInterval, 
         ))         
@@ -115,7 +109,6 @@ class UdpRssiPack(pr.Device):
         self.add(pr.LocalVariable(
             name        = 'remBusy',
             mode        = 'RO', 
-            value       = False, 
             localGet    = lambda: self._rssi.getRemBusy(),
             hidden      = True,
             pollInterval= pollInterval, 
@@ -124,79 +117,120 @@ class UdpRssiPack(pr.Device):
         self.add(pr.LocalVariable(
             name        = 'remBusyCnt',
             mode        = 'RO', 
-            value       = 0, 
             localGet    = lambda: self._rssi.getRemBusyCnt(),
             pollInterval= pollInterval, 
         ))                 
 
         self.add(pr.LocalVariable(
-            name        = 'maxRetran',
+            name        = 'locTryPeriod',
             mode        = 'RO', 
-            value       = 0, 
-            localGet    = lambda: self._rssi.getMaxRetran(),
-            pollInterval= pollInterval, 
-        ))    
+            localGet    = lambda: self._rssi.getLocTryPeriod(),
+            localSet    = lambda value: self._rssi.setLocTryPeriod(value)
+        ))                 
 
         self.add(pr.LocalVariable(
-            name        = 'remMaxBuffers',
-            mode        = 'RO', 
-            value       = 0, 
-            localGet    = lambda: self._rssi.getRemMaxBuffers(),
-            pollInterval= pollInterval, 
-        )) 
+            name        = 'locBusyThold',
+            mode        = 'RW', 
+            localGet    = lambda: self._rssi.getLocBusyThold(),
+            localSet    = lambda value: self._rssi.setLocBusyThold(value)
+        ))                 
 
         self.add(pr.LocalVariable(
-            name        = 'remMaxSegment',
-            mode        = 'RO', 
-            value       = 0, 
-            localGet    = lambda: self._rssi.getRemMaxSegment(),
-            units       = 'Bytes', 
-            pollInterval= pollInterval, 
-        ))   
+            name        = 'locMaxBuffers',
+            mode        = 'RW', 
+            localGet    = lambda: self._rssi.getLocMaxBuffers(),
+            localSet    = lambda value: self._rssi.setLocMaxBuffers(value)
+        ))                 
 
         self.add(pr.LocalVariable(
-            name        = 'retranTout',
+            name        = 'locMaxSegment',
             mode        = 'RO', 
-            value       = 0, 
-            localGet    = lambda: self._rssi.getRetranTout(),
-            units       = 'ms', 
-            pollInterval= pollInterval, 
-        ))  
+            localGet    = lambda: self._rssi.getLocMaxSegment()
+        ))                 
 
         self.add(pr.LocalVariable(
-            name        = 'cumAckTout',
-            mode        = 'RO', 
-            value       = 0, 
-            localGet    = lambda: self._rssi.getCumAckTout(),
-            units       = 'ms', 
-            pollInterval= pollInterval, 
-        ))  
+            name        = 'locCumAckTout',
+            mode        = 'RW', 
+            localGet    = lambda: self._rssi.getLocCumAckTout(),
+            localSet    = lambda value: self._rssi.setLocCumAckTout(value)
+        ))                 
 
         self.add(pr.LocalVariable(
-            name        = 'nullTout',
-            mode        = 'RO', 
-            value       = 0, 
-            localGet    = lambda: self._rssi.getNullTout(),
-            units       = 'ms', 
-            pollInterval= pollInterval, 
-        ))
+            name        = 'locRetranTout',
+            mode        = 'RW', 
+            localGet    = lambda: self._rssi.getLocRetranTout(),
+            localSet    = lambda value: self._rssi.setLocRetranTout(value)
+        ))                 
 
         self.add(pr.LocalVariable(
-            name        = 'maxCumAck',
-            mode        = 'RO', 
-            value       = 0, 
-            localGet    = lambda: self._rssi.getMaxCumAck(),
-            pollInterval= pollInterval, 
-        ))  
+            name        = 'locNullTout',
+            mode        = 'RW', 
+            localGet    = lambda: self._rssi.getLocNullTout(),
+            localSet    = lambda value: self._rssi.setLocNullTout(value)
+        ))                 
 
         self.add(pr.LocalVariable(
-            name        = 'segmentSize',
+            name        = 'locMaxRetran',
+            mode        = 'RW', 
+            localGet    = lambda: self._rssi.getLocMaxRetran(),
+            localSet    = lambda value: self._rssi.setLocMaxRetran(value)
+        ))                 
+
+        self.add(pr.LocalVariable(
+            name        = 'locMaxCumAck',
+            mode        = 'RW', 
+            localGet    = lambda: self._rssi.getLocMaxCumAck(),
+            localSet    = lambda value: self._rssi.setLocMaxCumAck(value)
+        ))                 
+
+        self.add(pr.LocalVariable(
+            name        = 'curMaxBuffers',
             mode        = 'RO', 
-            value       = 0, 
-            localGet    = lambda: self._rssi.getSegmentSize(),
-            units       = 'Bytes',
-            pollInterval= pollInterval, 
-        ))                    
+            localGet    = lambda: self._rssi.curMaxBuffers(),
+            pollInterval= pollInterval 
+        ))                 
+
+        self.add(pr.LocalVariable(
+            name        = 'curMaxSegment',
+            mode        = 'RO', 
+            localGet    = lambda: self._rssi.curMaxSegment(),
+            pollInterval= pollInterval 
+        ))                 
+
+        self.add(pr.LocalVariable(
+            name        = 'curCumAckTout',
+            mode        = 'RO', 
+            localGet    = lambda: self._rssi.curCumAckTout(),
+            pollInterval= pollInterval 
+        ))                 
+
+        self.add(pr.LocalVariable(
+            name        = 'curRetranTout',
+            mode        = 'RO', 
+            localGet    = lambda: self._rssi.curRetranTout(),
+            pollInterval= pollInterval 
+        ))                 
+
+        self.add(pr.LocalVariable(
+            name        = 'curNullTout',
+            mode        = 'RO', 
+            localGet    = lambda: self._rssi.curNullTout(),
+            pollInterval= pollInterval 
+        ))                 
+
+        self.add(pr.LocalVariable(
+            name        = 'curMaxRetran',
+            mode        = 'RO', 
+            localGet    = lambda: self._rssi.curMaxRetran(),
+            pollInterval= pollInterval 
+        ))                 
+
+        self.add(pr.LocalVariable(
+            name        = 'curMaxCumAck',
+            mode        = 'RO', 
+            localGet    = lambda: self._rssi.curMaxCumAck(),
+            pollInterval= pollInterval 
+        ))                 
                             
         self.add(pr.LocalCommand(
             name        = 'stop',

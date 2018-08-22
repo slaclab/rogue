@@ -44,26 +44,43 @@ void rpr::Client::setup_python() {
 #ifndef NO_PYTHON
 
    bp::class_<rpr::Client, rpr::ClientPtr, boost::noncopyable >("Client",bp::init<uint32_t>())
-      .def("transport",       &rpr::Client::transport)
-      .def("application",     &rpr::Client::application)
-      .def("getOpen",         &rpr::Client::getOpen)
-      .def("getDownCount",    &rpr::Client::getDownCount)
-      .def("getDropCount",    &rpr::Client::getDropCount)
-      .def("getRetranCount",  &rpr::Client::getRetranCount)
-      .def("getLocBusy",      &rpr::Client::getLocBusy)
-      .def("getLocBusyCnt",   &rpr::Client::getLocBusyCnt)
-      .def("getRemBusy",      &rpr::Client::getRemBusy)
-      .def("getRemBusyCnt",   &rpr::Client::getRemBusyCnt)
-      .def("stop",            &rpr::Client::stop)
-      .def("start",           &rpr::Client::start)
-      .def("getMaxRetran",    &rpr::Client::getMaxRetran)
-      .def("getRemMaxBuffers",&rpr::Client::getRemMaxBuffers)
-      .def("getRemMaxSegment",&rpr::Client::getRemMaxSegment)
-      .def("getRetranTout",   &rpr::Client::getRetranTout)
-      .def("getCumAckTout",   &rpr::Client::getCumAckTout)
-      .def("getNullTout",     &rpr::Client::getNullTout)
-      .def("getMaxCumAck",    &rpr::Client::getMaxCumAck)
-      .def("getSegmentSize",  &rpr::Client::getSegmentSize)
+      .def("transport",        &rpr::Client::transport)
+      .def("application",      &rpr::Client::application)
+      .def("getOpen",          &rpr::Client::getOpen)
+      .def("getDownCount",     &rpr::Client::getDownCount)
+      .def("getDropCount",     &rpr::Client::getDropCount)
+      .def("getRetranCount",   &rpr::Client::getRetranCount)
+      .def("getLocBusy",       &rpr::Client::getLocBusy)
+      .def("getLocBusyCnt",    &rpr::Client::getLocBusyCnt)
+      .def("getRemBusy",       &rpr::Client::getRemBusy)
+      .def("getRemBusyCnt",    &rpr::Client::getRemBusyCnt)
+      .def("setLocTryPeriod",  &rpr::Client::setLocTryPeriod)
+      .def("getLocTryPeriod",  &rpr::Client::getLocTryPeriod)
+      .def("setLocBusyThold",  &rpr::Client::setLocBusyThold)
+      .def("getLocBusyThold",  &rpr::Client::getLocBusyThold)
+      .def("setLocMaxBuffers", &rpr::Client::setLocMaxBuffers)
+      .def("getLocMaxBuffers", &rpr::Client::getLocMaxBuffers)
+      .def("getLocMaxSegment", &rpr::Client::getLocMaxSegment)
+      .def("setLocCumAckTout", &rpr::Client::setLocCumAckTout)
+      .def("getLocCumAckTout", &rpr::Client::getLocCumAckTout)
+      .def("setLocRetranTout", &rpr::Client::setLocRetranTout)
+      .def("getLocRetranTout", &rpr::Client::getLocRetranTout)
+      .def("setLocNullTout",   &rpr::Client::setLocNullTout)
+      .def("getLocNullTout",   &rpr::Client::getLocNullTout)
+      .def("setLocMaxRetran",  &rpr::Client::setLocMaxRetran)
+      .def("getLocMaxRetran",  &rpr::Client::getLocMaxRetran)
+      .def("setLocMaxCumAck",  &rpr::Client::setLocMaxCumAck)
+      .def("getLocMaxCumAck",  &rpr::Client::getLocMaxCumAck)
+      .def("curMaxBuffers",    &rpr::Client::curMaxBuffers)
+      .def("curMaxSegment",    &rpr::Client::curMaxSegment)
+      .def("curCumAckTout",    &rpr::Client::curCumAckTout)
+      .def("curRetranTout",    &rpr::Client::curRetranTout)
+      .def("curNullTout",      &rpr::Client::curNullTout)
+      .def("curMaxRetran",     &rpr::Client::curMaxRetran)
+      .def("curMaxCumAck",     &rpr::Client::curMaxCumAck)
+      .def("setTimeout",       &rpr::Client::setTimeout)
+      .def("stop",             &rpr::Client::stop)
+      .def("start",            &rpr::Client::start)
    ;
 #endif
 }
@@ -133,44 +150,100 @@ uint32_t rpr::Client::getRemBusyCnt() {
    return(cntl_->getRemBusyCnt());
 }
 
-//! Get maxRetran
-uint32_t rpr::Client::getMaxRetran() {
-   return(cntl_->getMaxRetran());
+void rpr::Client::setLocTryPeriod(uint32_t val) {
+   cntl_->setLocTryPeriod(val);
 }
 
-//! Get remMaxBuffers
-uint32_t rpr::Client::getRemMaxBuffers() {
-   return(cntl_->getRemMaxBuffers());
+uint32_t rpr::Client::getLocTryPeriod() {
+   return cntl_->getLocTryPeriod();
 }
 
-//! Get remMaxSegment
-uint32_t rpr::Client::getRemMaxSegment() {
-   return(cntl_->getRemMaxSegment());
+void rpr::Client::setLocBusyThold(uint32_t val) {
+   cntl_->setLocBusyThold(val);
 }
 
-//! Get retranTout
-uint32_t rpr::Client::getRetranTout() {
-   return(cntl_->getRetranTout());
+uint32_t rpr::Client::getLocBusyThold() {
+   return cntl_->getLocBusyThold();
 }
 
-//! Get cumAckTout
-uint32_t rpr::Client::getCumAckTout() {
-   return(cntl_->getCumAckTout());
+void rpr::Client::setLocMaxBuffers(uint8_t val) {
+   cntl_->setLocMaxBuffers(val);
 }
 
-//! Get nullTout
-uint32_t rpr::Client::getNullTout() {
-   return(cntl_->getNullTout());
+uint8_t rpr::Client::getLocMaxBuffers() {
+   return cntl_->getLocMaxBuffers();
 }
 
-//! Get maxCumAck
-uint32_t rpr::Client::getMaxCumAck() {
-   return(cntl_->getMaxCumAck());
+uint16_t rpr::Client::getLocMaxSegment() {
+   return cntl_->getLocMaxSegment();
 }
 
-//! Get segmentSize
-uint32_t rpr::Client::getSegmentSize() {
-   return(cntl_->getSegmentSize());
+void rpr::Client::setLocCumAckTout(uint16_t val) {
+   cntl_->setLocCumAckTout(val);
+}
+
+uint16_t rpr::Client::getLocCumAckTout() {
+   return cntl_->getLocCumAckTout();
+}
+
+void rpr::Client::setLocRetranTout(uint16_t val) {
+   cntl_->setLocRetranTout(val);
+}
+
+uint16_t rpr::Client::getLocRetranTout() {
+   return cntl_->getLocRetranTout();
+}
+
+void rpr::Client::setLocNullTout(uint16_t val) {
+   cntl_->setLocNullTout(val);
+}
+
+uint16_t rpr::Client::getLocNullTout() {
+   return cntl_->getLocNullTout();
+}
+
+void rpr::Client::setLocMaxRetran(uint8_t val) {
+   cntl_->setLocMaxRetran(val);
+}
+
+uint8_t rpr::Client::getLocMaxRetran() {
+   return cntl_->getLocMaxRetran();
+}
+
+void rpr::Client::setLocMaxCumAck(uint8_t val) {
+   cntl_->setLocMaxCumAck(val);
+}
+
+uint8_t  rpr::Client::getLocMaxCumAck() {
+   return cntl_->getLocMaxCumAck();
+}
+
+uint8_t  rpr::Client::curMaxBuffers() {
+   return cntl_->curMaxBuffers();
+}
+
+uint16_t rpr::Client::curMaxSegment() {
+   return cntl_->curMaxSegment();
+}
+
+uint16_t rpr::Client::curCumAckTout() {
+   return cntl_->curCumAckTout();
+}
+
+uint16_t rpr::Client::curRetranTout() {
+   return cntl_->curRetranTout();
+}
+
+uint16_t rpr::Client::curNullTout() {
+   return cntl_->curNullTout();
+}
+
+uint8_t  rpr::Client::curMaxRetran() {
+   return cntl_->curMaxRetran();
+}
+
+uint8_t  rpr::Client::curMaxCumAck() {
+   return cntl_->curMaxCumAck();
 }
 
 //! Set timeout for frame transmits in microseconds

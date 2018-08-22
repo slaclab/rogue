@@ -38,21 +38,31 @@ namespace rogue {
          //! RSSI Controller Class
          class Controller : public boost::enable_shared_from_this<rogue::protocols::rssi::Controller> {
 
+               //! Hard coded values
                static const uint8_t  Version       = 1;
                static const uint8_t  TimeoutUnit   = 3; // rssiTime * std::pow(10,-TimeoutUnit) = 3 = ms
-               
-               static const uint8_t  LocMaxBuffers = 32; // MAX_NUM_OUTS_SEG_G in FW
-               static const uint32_t BusyThold     = 64;
-               
-               // RSSI Timeouts (units of TimeoutUnit)
-               static const uint32_t TryPeriod     = 100;  // 100 mS
-               static const uint16_t ReqCumAckTout = 5;    // ACK_TOUT_G in FW, 5mS
-               static const uint16_t ReqRetranTout = 20;   // RETRANS_TOUT_G in FW, 2hmS
-               static const uint16_t ReqNullTout   = 1000; // NULL_TOUT_G in FW, 1S
-               
-               // Counters
-               static const uint8_t  ReqMaxRetran  = 15;   // MAX_RETRANS_CNT_G in FW
-               static const uint8_t  ReqMaxCumAck  = 2;    // MAX_CUM_ACK_CNT_G in FW
+
+               //! Local parameters
+               uint32_t locTryPeriod_;
+               uint32_t locBusyThold_;
+
+               //! Configurable parameters, requested by software
+               uint8_t  locMaxBuffers_;
+               uint16_t locMaxSegment_;
+               uint16_t locCumAckTout_;
+               uint16_t locRetranTout_;
+               uint16_t locNullTout_;
+               uint8_t  locMaxRetran_;
+               uint8_t  locMaxCumAck_;
+
+               //! Negotiated parameters
+               uint8_t  curMaxBuffers_;
+               uint16_t curMaxSegment_;
+               uint16_t curCumAckTout_;
+               uint16_t curRetranTout_;
+               uint16_t curNullTout_;
+               uint8_t  curMaxRetran_;
+               uint8_t  curMaxCumAck_;
 
                //! Connection states
                enum States : uint32_t { StClosed     = 0,
@@ -97,6 +107,10 @@ namespace rogue {
                struct timeval stTime_;
                uint32_t downCount_;
                uint32_t retranCount_;
+               uint32_t locBusyCnt_;
+               uint32_t remBusyCnt_;
+               uint32_t locConnId_;
+               uint32_t remConnId_;
 
                // Transmit tracking
                boost::shared_ptr<rogue::protocols::rssi::Header> txList_[256];
@@ -105,20 +119,6 @@ namespace rogue {
                uint8_t lastAckTx_;
                uint8_t locSequence_;
                struct timeval txTime_;
-
-               // Connection parameters
-               uint32_t locConnId_;
-               uint8_t  remMaxBuffers_;
-               uint16_t remMaxSegment_;
-               uint32_t retranTout_;
-               uint16_t cumAckTout_;
-               uint16_t nullTout_;
-               uint8_t  maxRetran_;
-               uint8_t  maxCumAck_;
-               uint32_t remConnId_;
-               uint32_t segmentSize_;
-               uint32_t locBusyCnt_;
-               uint32_t remBusyCnt_;
 
                // Time values
                struct timeval retranToutD1_;  // retranTout_ / 1
@@ -186,30 +186,40 @@ namespace rogue {
 
                //! Get remBusyCnt
                uint32_t getRemBusyCnt();
-               
-               //! Get maxRetran
-               uint32_t getMaxRetran();
-               
-               //! Get remMaxBuffers
-               uint32_t getRemMaxBuffers();           
 
-               //! Get remMaxSegment
-               uint32_t getRemMaxSegment();    
+               void     setLocTryPeriod(uint32_t val);
+               uint32_t getLocTryPeriod();
 
-               //! Get retranTout
-               uint32_t getRetranTout();
+               void     setLocBusyThold(uint32_t val);
+               uint32_t getLocBusyThold();
 
-               //! Get cumAckTout
-               uint32_t getCumAckTout();               
-               
-               //! Get nullTout
-               uint32_t getNullTout();
-               
-               //! Get maxCumAck
-               uint32_t getMaxCumAck();
+               void     setLocMaxBuffers(uint8_t val);
+               uint8_t  getLocMaxBuffers();
 
-               //! Get segmentSize
-               uint32_t getSegmentSize();
+               uint16_t getLocMaxSegment();
+
+               void     setLocCumAckTout(uint16_t val);
+               uint16_t getLocCumAckTout();
+
+               void     setLocRetranTout(uint16_t val);
+               uint16_t getLocRetranTout();
+
+               void     setLocNullTout(uint16_t val);
+               uint16_t getLocNullTout();
+
+               void     setLocMaxRetran(uint8_t val);
+               uint8_t  getLocMaxRetran();
+
+               void     setLocMaxCumAck(uint8_t val);
+               uint8_t  getLocMaxCumAck();
+
+               uint8_t  curMaxBuffers();
+               uint16_t curMaxSegment();
+               uint16_t curCumAckTout();
+               uint16_t curRetranTout();
+               uint16_t curNullTout();
+               uint8_t  curMaxRetran();
+               uint8_t  curMaxCumAck();
 
                //! Set timeout in microseconds for frame transmits
                void setTimeout(uint32_t timeout);
