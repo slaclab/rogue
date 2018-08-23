@@ -459,8 +459,8 @@ class LocalVariable(BaseVariable):
                  localGet=None,
                  pollInterval=0):
 
-        if value is None:
-            raise VariableError(f'LocalVariable {self.path} must specify value= argument in constructor')
+        if value is None and localGet is None:
+            raise VariableError(f'LocalVariable {self.path} without localGet() must specify value= argument in constructor')
 
         BaseVariable.__init__(self, name=name, description=description, 
                               mode=mode, value=value, disp=disp, 
