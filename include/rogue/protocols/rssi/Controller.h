@@ -196,6 +196,7 @@ namespace rogue {
                void     setLocMaxBuffers(uint8_t val);
                uint8_t  getLocMaxBuffers();
 
+               void     setLocMaxSegment(uint16_t val);
                uint16_t getLocMaxSegment();
 
                void     setLocCumAckTout(uint16_t val);

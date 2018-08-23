@@ -60,6 +60,7 @@ void rpr::Client::setup_python() {
       .def("getLocBusyThold",  &rpr::Client::getLocBusyThold)
       .def("setLocMaxBuffers", &rpr::Client::setLocMaxBuffers)
       .def("getLocMaxBuffers", &rpr::Client::getLocMaxBuffers)
+      .def("setLocMaxSegment", &rpr::Client::setLocMaxSegment)
       .def("getLocMaxSegment", &rpr::Client::getLocMaxSegment)
       .def("setLocCumAckTout", &rpr::Client::setLocCumAckTout)
       .def("getLocCumAckTout", &rpr::Client::getLocCumAckTout)
@@ -172,6 +173,10 @@ void rpr::Client::setLocMaxBuffers(uint8_t val) {
 
 uint8_t rpr::Client::getLocMaxBuffers() {
    return cntl_->getLocMaxBuffers();
+}
+
+void rpr::Client::setLocMaxSegment(uint16_t val) {
+   cntl_->setLocMaxSegment(val);
 }
 
 uint16_t rpr::Client::getLocMaxSegment() {

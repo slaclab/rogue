@@ -123,7 +123,7 @@ class UdpRssiPack(pr.Device):
 
         self.add(pr.LocalVariable(
             name        = 'locTryPeriod',
-            mode        = 'RO', 
+            mode        = 'RW', 
             localGet    = lambda: self._rssi.getLocTryPeriod(),
             localSet    = lambda value: self._rssi.setLocTryPeriod(value)
         ))                 
@@ -144,8 +144,9 @@ class UdpRssiPack(pr.Device):
 
         self.add(pr.LocalVariable(
             name        = 'locMaxSegment',
-            mode        = 'RO', 
-            localGet    = lambda: self._rssi.getLocMaxSegment()
+            mode        = 'RW', 
+            localGet    = lambda: self._rssi.getLocMaxSegment(),
+            localSet    = lambda value: self._rssi.setLocMaxSegment(value)
         ))                 
 
         self.add(pr.LocalVariable(

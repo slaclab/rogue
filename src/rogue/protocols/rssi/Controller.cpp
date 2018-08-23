@@ -419,6 +419,10 @@ uint8_t rpr::Controller::getLocMaxBuffers() {
    return locMaxBuffers_;
 }
 
+void rpr::Controller::setLocMaxSegment(uint16_t val) {
+   locMaxSegment_ = val;
+}
+
 uint16_t rpr::Controller::getLocMaxSegment() {
    return locMaxSegment_;
 }
