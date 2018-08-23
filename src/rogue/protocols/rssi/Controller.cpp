@@ -51,7 +51,10 @@ rpr::Controller::Controller ( uint32_t segSize, rpr::TransportPtr tran, rpr::App
    tran_   = tran;
    server_ = server;
 
-   appQueue_.setThold(BusyThold);
+   locTryPeriod_ = 100;
+   locBusyThold_ = 64;
+
+   appQueue_.setThold(locBusyThold_);
 
    dropCount_   = 0;
    nextSeqRx_   = 0;
@@ -71,23 +74,31 @@ rpr::Controller::Controller ( uint32_t segSize, rpr::TransportPtr tran, rpr::App
    locSequence_ = 100;
    gettimeofday(&txTime_,NULL);
 
+   locMaxBuffers_ = 32;   // MAX_NUM_OUTS_SEG_G in FW
+   locMaxSegment_ = segSize;
+   locCumAckTout_ = 5;    // ACK_TOUT_G in FW, 5mS
+   locRetranTout_ = 20;   // RETRANS_TOUT_G in FW, 2hmS
+   locNullTout_   = 1000; // NULL_TOUT_G in FW, 1S
+   locMaxRetran_  = 15;   // MAX_RETRANS_CNT_G in FW
+   locMaxCumAck_  = 2;    // MAX_CUM_ACK_CNT_G in FW
+
+   curMaxBuffers_ = 32;   // MAX_NUM_OUTS_SEG_G in FW
+   curMaxSegment_ = segSize;
+   curCumAckTout_ = 5;    // ACK_TOUT_G in FW, 5mS
+   curRetranTout_ = 20;   // RETRANS_TOUT_G in FW, 2hmS
+   curNullTout_   = 1000; // NULL_TOUT_G in FW, 1S
+   curMaxRetran_  = 15;   // MAX_RETRANS_CNT_G in FW
+   curMaxCumAck_  = 2;    // MAX_CUM_ACK_CNT_G in FW
+
    locConnId_     = 0x12345678;
-   remMaxBuffers_ = 0;
-   remMaxSegment_ = LocMaxBuffers;
-   retranTout_    = ReqRetranTout;
-   cumAckTout_    = ReqCumAckTout;
-   nullTout_      = ReqNullTout;
-   maxRetran_     = ReqMaxRetran;
-   maxCumAck_     = ReqMaxCumAck;
    remConnId_     = 0;
-   segmentSize_   = segSize;
   
-   convTime(retranToutD1_, retranTout_);
-   convTime(tryPeriodD1_,  TryPeriod);
-   convTime(tryPeriodD4_,  TryPeriod / 4);
-   convTime(cumAckToutD1_, cumAckTout_);
-   convTime(cumAckToutD2_, cumAckTout_ / 2);
-   convTime(nullToutD3_,   nullTout_ / 3);
+   convTime(tryPeriodD1_,  locTryPeriod_);
+   convTime(tryPeriodD4_,  locTryPeriod_ / 4);
+   convTime(retranToutD1_, curRetranTout_);
+   convTime(nullToutD3_,   curNullTout_ / 3);
+   convTime(cumAckToutD1_, curCumAckTout_);
+   convTime(cumAckToutD2_, curCumAckTout_ / 2);
 
    memset(&zeroTme_, 0, sizeof(struct timeval));
    
@@ -134,8 +145,8 @@ ris::FramePtr rpr::Controller::reqFrame ( uint32_t size ) {
    // Frame size returned is never greater than remote max size
    // or local segment size
    nSize = size + rpr::Header::HeaderSize;
-   if ( nSize > remMaxSegment_ && remMaxSegment_ > 0 ) nSize = remMaxSegment_;
-   if ( nSize > segmentSize_  ) nSize = segmentSize_;
+   if ( nSize > curMaxSegment_ && curMaxSegment_ > 0 ) nSize = curMaxSegment_;
+   if ( nSize > locMaxSegment_ ) nSize = locMaxSegment_;
 
    // Forward frame request to transport slave
    frame = tran_->reqFrame (nSize, false);
@@ -262,7 +273,7 @@ void rpr::Controller::transportRx( ris::FramePtr frame ) {
       // to do this while hanlding the 8 bit rollover
       else {
          uint8_t x = nextSeqRx_;
-         uint8_t windowEnd = (nextSeqRx_ + LocMaxBuffers + 1);
+         uint8_t windowEnd = (nextSeqRx_ + curMaxBuffers_ + 1);
 
          while ( ++x != windowEnd ) {
             if (head->sequence == x) {
@@ -325,7 +336,7 @@ void rpr::Controller::applicationRx ( ris::FramePtr frame ) {
    if ( state_ != StOpen ) return;
 
    // Wait while busy either by flow control or buffer starvation
-   while ( txListCount_ >= remMaxBuffers_ ) {
+   while ( txListCount_ >= curMaxBuffers_ ) {
       usleep(10);
       if ( timePassed(startTime,timeout_) ) {
          gettimeofday(&startTime,NULL);
@@ -381,44 +392,107 @@ uint32_t rpr::Controller::getRemBusyCnt() {
    return(remBusyCnt_);
 }
 
-//! Get maxRetran
-uint32_t rpr::Controller::getMaxRetran() {
-   return(uint32_t(maxRetran_));
+void rpr::Controller::setLocTryPeriod(uint32_t val) {
+   locTryPeriod_ = val;
+   convTime(tryPeriodD1_,  locTryPeriod_);
+   convTime(tryPeriodD4_,  locTryPeriod_ / 4);
 }
 
-//! Get remMaxBuffers
-uint32_t rpr::Controller::getRemMaxBuffers() {
-   return(uint32_t(remMaxBuffers_));
+uint32_t rpr::Controller::getLocTryPeriod() {
+   return locTryPeriod_;
 }
 
-//! Get remMaxSegment
-uint32_t rpr::Controller::getRemMaxSegment() {
-   return(uint32_t(remMaxSegment_));
+void rpr::Controller::setLocBusyThold(uint32_t val) {
+   locBusyThold_ = val;
+   appQueue_.setThold(locBusyThold_);
 }
 
-//! Get retranTout
-uint32_t rpr::Controller::getRetranTout() {
-   return(uint32_t(retranTout_));
+uint32_t rpr::Controller::getLocBusyThold() {
+   return locBusyThold_;
 }
 
-//! Get cumAckTout
-uint32_t rpr::Controller::getCumAckTout() {
-   return(uint32_t(cumAckTout_));
+void rpr::Controller::setLocMaxBuffers(uint8_t val) {
+   locMaxBuffers_ = val;
 }
 
-//! Get nullTout
-uint32_t rpr::Controller::getNullTout() {
-   return(uint32_t(nullTout_));
+uint8_t rpr::Controller::getLocMaxBuffers() {
+   return locMaxBuffers_;
 }
 
-//! Get maxCumAck
-uint32_t rpr::Controller::getMaxCumAck() {
-   return(uint32_t(maxCumAck_));
+void rpr::Controller::setLocMaxSegment(uint16_t val) {
+   locMaxSegment_ = val;
 }
 
-//! Get segmentSize
-uint32_t rpr::Controller::getSegmentSize() {
-   return(uint32_t(segmentSize_));
+uint16_t rpr::Controller::getLocMaxSegment() {
+   return locMaxSegment_;
+}
+
+void rpr::Controller::setLocCumAckTout(uint16_t val) {
+   locCumAckTout_ = val;
+}
+
+uint16_t rpr::Controller::getLocCumAckTout() {
+   return locCumAckTout_;
+}
+
+void rpr::Controller::setLocRetranTout(uint16_t val) {
+   locRetranTout_ = val;
+}
+
+uint16_t rpr::Controller::getLocRetranTout() {
+   return locRetranTout_;
+}
+
+void rpr::Controller::setLocNullTout(uint16_t val) {
+   locNullTout_ = val;
+}
+
+uint16_t rpr::Controller::getLocNullTout() {
+   return locNullTout_;
+}
+
+void rpr::Controller::setLocMaxRetran(uint8_t val) {
+   locMaxRetran_ = val;
+}
+
+uint8_t rpr::Controller::getLocMaxRetran() {
+   return locMaxRetran_;
+}
+
+void rpr::Controller::setLocMaxCumAck(uint8_t val) {
+   locMaxCumAck_ = val;
+}
+
+uint8_t  rpr::Controller::getLocMaxCumAck() {
+   return locMaxCumAck_;
+}
+
+uint8_t  rpr::Controller::curMaxBuffers() {
+   return curMaxBuffers_;
+}
+
+uint16_t rpr::Controller::curMaxSegment() {
+   return curMaxSegment_;
+}
+
+uint16_t rpr::Controller::curCumAckTout() {
+   return curCumAckTout_;
+}
+
+uint16_t rpr::Controller::curRetranTout() {
+   return curRetranTout_;
+}
+
+uint16_t rpr::Controller::curNullTout() {
+   return curNullTout_;
+}
+
+uint8_t  rpr::Controller::curMaxRetran() {
+   return curMaxRetran_;
+}
+
+uint8_t  rpr::Controller::curMaxCumAck() {
+   return curMaxCumAck_;
 }
 
 // Method to transit a frame with proper updates
@@ -484,7 +558,7 @@ int8_t rpr::Controller::retransmit(uint8_t id) {
    if ( ! timePassed(head->getTime(),retranToutD1_) ) return 0;
 
    // max retransmission count has been reached
-   if ( head->count() >= maxRetran_ ) return -1;
+   if ( head->count() >= curMaxRetran_ ) return -1;
 
    retranCount_++;
 
@@ -607,22 +681,20 @@ struct timeval & rpr::Controller::stateClosedWait () {
 
       // Syn ack
       else if ( head->syn && (head->ack || server_) ) {
-         remMaxBuffers_ = head->maxOutstandingSegments;
-         remMaxSegment_ = head->maxSegmentSize;
-         retranTout_    = head->retransmissionTimeout;
-         cumAckTout_    = head->cumulativeAckTimeout;
-         nullTout_      = head->nullTimeout;
-         maxRetran_     = head->maxRetransmissions;
-         maxCumAck_     = head->maxCumulativeAck;
+         curMaxBuffers_ = head->maxOutstandingSegments;
+         curMaxSegment_ = head->maxSegmentSize;
+         curCumAckTout_ = head->cumulativeAckTimeout;
+         curRetranTout_ = head->retransmissionTimeout;
+         curNullTout_   = head->nullTimeout;
+         curMaxRetran_  = head->maxRetransmissions;
+         curMaxCumAck_  = head->maxCumulativeAck;
          lastAckRx_     = head->acknowledge;
 
          // Convert times
-         convTime(retranToutD1_, retranTout_);
-         convTime(tryPeriodD1_,  TryPeriod);
-         convTime(tryPeriodD4_,  TryPeriod / 4);
-         convTime(cumAckToutD1_, cumAckTout_);
-         convTime(cumAckToutD2_, cumAckTout_ / 2);
-         convTime(nullToutD3_,   nullTout_ / 3);
+         convTime(retranToutD1_, curRetranTout_);
+         convTime(cumAckToutD1_, curCumAckTout_);
+         convTime(cumAckToutD2_, curCumAckTout_ / 2);
+         convTime(nullToutD3_,   curNullTout_ / 3);
 
          if ( server_ ) {
             state_ = StSendSynAck;
@@ -630,6 +702,17 @@ struct timeval & rpr::Controller::stateClosedWait () {
          }
          else state_ = StSendSeqAck;
          gettimeofday(&stTime_,NULL);
+      }
+
+      // Init counters
+      else {
+         curMaxBuffers_ = locMaxBuffers_;
+         curMaxSegment_ = locMaxSegment_;
+         curCumAckTout_ = locCumAckTout_;
+         curRetranTout_ = locRetranTout_;
+         curNullTout_   = locNullTout_;
+         curMaxRetran_  = locMaxRetran_;
+         curMaxCumAck_  = locMaxCumAck_;
       }
    }
 
@@ -643,15 +726,15 @@ struct timeval & rpr::Controller::stateClosedWait () {
       head->syn = true;
       head->version = Version;
       head->chk = true;
-      head->maxOutstandingSegments = LocMaxBuffers;
-      head->maxSegmentSize = segmentSize_;
-      head->retransmissionTimeout = retranTout_;
-      head->cumulativeAckTimeout = cumAckTout_;
-      head->nullTimeout = nullTout_;
-      head->maxRetransmissions = maxRetran_;
-      head->maxCumulativeAck = maxCumAck_;
-      head->timeoutUnit = TimeoutUnit;
-      head->connectionId = locConnId_;
+      head->maxOutstandingSegments = locMaxBuffers_;
+      head->maxSegmentSize         = locMaxSegment_;
+      head->retransmissionTimeout  = locRetranTout_;
+      head->cumulativeAckTimeout   = locCumAckTout_;
+      head->nullTimeout            = locNullTout_;
+      head->maxRetransmissions     = locMaxRetran_;
+      head->maxCumulativeAck       = locMaxCumAck_;
+      head->timeoutUnit            = TimeoutUnit;
+      head->connectionId           = locConnId_;
 
       transportTx(head,true,false);
 
@@ -676,15 +759,15 @@ struct timeval & rpr::Controller::stateSendSynAck () {
    head->ack = true;
    head->version = Version;
    head->chk = true;
-   head->maxOutstandingSegments = LocMaxBuffers;
-   head->maxSegmentSize = segmentSize_;
-   head->retransmissionTimeout = retranTout_;
-   head->cumulativeAckTimeout = cumAckTout_;
-   head->nullTimeout = nullTout_;
-   head->maxRetransmissions = maxRetran_;
-   head->maxCumulativeAck = maxCumAck_;
-   head->timeoutUnit = TimeoutUnit;
-   head->connectionId = locConnId_;
+   head->maxOutstandingSegments = curMaxBuffers_;
+   head->maxSegmentSize         = curMaxSegment_;
+   head->retransmissionTimeout  = curRetranTout_;
+   head->cumulativeAckTimeout   = curCumAckTout_;
+   head->nullTimeout            = curNullTout_;
+   head->maxRetransmissions     = curMaxRetran_;
+   head->maxCumulativeAck       = curMaxCumAck_;
+   head->timeoutUnit            = TimeoutUnit;
+   head->connectionId           = locConnId_;
 
    transportTx(head,true,true);
 
@@ -743,7 +826,7 @@ struct timeval & rpr::Controller::stateOpen () {
    else doNull = false;
 
    // Outbound frame required
-   if ( ( doNull || ackPend >= maxCumAck_ || 
+   if ( ( doNull || ackPend >= curMaxCumAck_ || 
         ((ackPend > 0 || getLocBusy()) && timePassed(locTime,cumAckToutD1_)) ) ) {
 
       head = rpr::Header::create(tran_->reqFrame(rpr::Header::HeaderSize,false));

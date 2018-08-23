@@ -82,40 +82,50 @@ namespace rogue {
 
                //! Get remBusyCnt
                uint32_t getRemBusyCnt();
-               
-               //! Get maxRetran
-               uint32_t getMaxRetran();
-               
-               //! Get remMaxBuffers
-               uint32_t getRemMaxBuffers();           
 
-               //! Get remMaxSegment
-               uint32_t getRemMaxSegment();    
+               void     setLocTryPeriod(uint32_t val);
+               uint32_t getLocTryPeriod();
 
-               //! Get retranTout
-               uint32_t getRetranTout();
+               void     setLocBusyThold(uint32_t val);
+               uint32_t getLocBusyThold();
 
-               //! Get cumAckTout
-               uint32_t getCumAckTout();               
-               
-               //! Get nullTout
-               uint32_t getNullTout();
-               
-               //! Get maxCumAck
-               uint32_t getMaxCumAck();
+               void     setLocMaxBuffers(uint8_t val);
+               uint8_t  getLocMaxBuffers();
 
-               //! Get segmentSize
-               uint32_t getSegmentSize();               
+               void     setLocMaxSegment(uint16_t val);
+               uint16_t getLocMaxSegment();
+
+               void     setLocCumAckTout(uint16_t val);
+               uint16_t getLocCumAckTout();
+
+               void     setLocRetranTout(uint16_t val);
+               uint16_t getLocRetranTout();
+
+               void     setLocNullTout(uint16_t val);
+               uint16_t getLocNullTout();
+
+               void     setLocMaxRetran(uint8_t val);
+               uint8_t  getLocMaxRetran();
+
+               void     setLocMaxCumAck(uint8_t val);
+               uint8_t  getLocMaxCumAck();
+
+               uint8_t  curMaxBuffers();
+               uint16_t curMaxSegment();
+               uint16_t curCumAckTout();
+               uint16_t curRetranTout();
+               uint16_t curNullTout();
+               uint8_t  curMaxRetran();
+               uint8_t  curMaxCumAck();
 
                //! Set timeout in microseconds for frame transmits
                void setTimeout(uint32_t timeout);
 
-               //! Stop
+               //! Stop connection
                void stop();
 
-               //! Start
+               //! Start connection
                void start();
-
          };
 
          // Convienence
