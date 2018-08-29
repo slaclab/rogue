@@ -230,16 +230,22 @@ class BaseVariable(pr.Node):
 
     @Pyro4.expose
     def genDisp(self, value):
-        #print('{}.genDisp(read={}) disp={} value={}'.format(self.path, read, self.disp, value))
-        if self.disp == 'enum':
-            #print('enum: {}'.format(self.enum))
-            #print('get: {}'.format(self.get(read)))
-            return self.enum[value]
-        else:
-            if value == '' or value is None:
-                return value
+        try:
+            #print('{}.genDisp(read={}) disp={} value={}'.format(self.path, read, self.disp, value))
+            if self.disp == 'enum':
+                ret = self.enum[value]
             else:
-                return self.disp.format(value)
+                if value == '' or value is None:
+                    ret = value
+                else:
+                    ret = self.disp.format(value)
+
+        except Exception as e:
+            self._log.exception(e)
+            self._log.error("Error generating disp value in variable '{}'".format(self.path))
+            ret = None
+
+        return ret
 
     @Pyro4.expose
     def getDisp(self, read=True):
