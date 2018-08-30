@@ -97,7 +97,12 @@ endif()
 if(DO_PYTHON AND DEFINED ENV{EPICS_BASE})
    set(DO_EPICS_V3 1)
    set(EPICSV3_BASE_DIR  $ENV{EPICS_BASE})
-   set(EPICSV3_ARCH      $ENV{EPICS_HOST_ARCH})
+   if(DEFINED ENV{EPICS_HOST_ARCH})
+       set(EPICSV3_ARCH      $ENV{EPICS_HOST_ARCH})
+   else()
+       execute_process(COMMAND ${EPICSV3_BASE_DIR}/startup/EpicsHostArch OUTPUT_VARIABLE EPICSV3_ARCH OUTPUT_STRIP_TRAILING_WHITESPACE)
+       string(REGEX REPLACE "\n$" "" EPICSV3_ARCH "${EPICSV3_ARCH}")
+   endif()
    set(EPICSV3_LIB_DIR   ${EPICSV3_BASE_DIR}/lib/${EPICSV3_ARCH} )
    set(EPICSV3_INCLUDES  ${EPICSV3_BASE_DIR}/include
                          ${EPICSV3_BASE_DIR}/include/compiler/gcc 
