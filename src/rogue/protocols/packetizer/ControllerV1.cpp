@@ -72,10 +72,11 @@ void rpp::ControllerV1::transportRx( ris::FramePtr frame ) {
    size = buff->getPayload();
 
    // Drop invalid data
-   if ( frame->getError() ||     // Check for frame ERROR
-      (size < 10) ||             // Check for min. size (64-bit header + 8-bit min. payload + 8-bit tail)
-      ((data[0] & 0xF) != 0) ) { // Check for invalid version only
-      log_->warning("Dropping frame due to contents: error=0x%x, payload=%i, Version=0x%x",frame->getError(),size,data[0]&0xF);
+   if ( frame->getError() ||           // Check for frame ERROR
+      ( frame->bufferCount() != 1 ) || // Incoming frame can only have one buffer
+      (size < 10) ||                   // Check for min. size (64-bit header + 8-bit min. payload + 8-bit tail)
+      ((data[0] & 0xF) != 0) ) {       // Check for invalid version only
+      log_->warning("Dropping frame due to contents: error=0x%x, payload=%i, buffers=%i, Version=0x%x",frame->getError(),size,frame->bufferCount(),data[0]&0xF);
       dropCount_++;
       return;
    }
