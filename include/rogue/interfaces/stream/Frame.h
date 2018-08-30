@@ -125,6 +125,9 @@ namespace rogue {
                //! Buffer end iterator
                std::vector<boost::shared_ptr<rogue::interfaces::stream::Buffer> >::iterator endBuffer();
 
+               //! Buffer counter
+               uint32_t bufferCount();
+
                //! Clear the list
                void clear();
 
