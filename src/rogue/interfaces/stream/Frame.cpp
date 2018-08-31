@@ -88,6 +88,11 @@ ris::Frame::BufferIterator ris::Frame::endBuffer() {
    return(buffers_.end());
 }
 
+//! Buffer count
+uint32_t ris::Frame::bufferCount() {
+   return(buffers_.size());
+}
+
 //! Clear the list
 void ris::Frame::clear() {
    buffers_.clear();
