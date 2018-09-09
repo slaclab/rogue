@@ -10,6 +10,7 @@ env:
         - PY_PATH=/home/travis/virtualenv/python3.6.3
         - PACKAGE_DIR=/home/travis/packages
         - BOOST_DIR=$PACKAGE_DIR/boost_1_64_0
+        - CODECOV_TOKEN="12610828-8d74-4c99-bf1d-24b17a7253e2"
 
 before_install:
   - export CPLUS_INCLUDE_PATH=$PY_PATH/include/python3.6m
