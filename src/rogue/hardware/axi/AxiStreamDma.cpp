@@ -44,8 +44,9 @@ rha::AxiStreamDmaPtr rha::AxiStreamDma::create (std::string path, uint32_t dest,
 rha::AxiStreamDma::AxiStreamDma ( std::string path, uint32_t dest, bool ssiEnable) {
    uint8_t mask[DMA_MASK_SIZE];
 
-   dest_    = dest;
-   enSsi_   = ssiEnable;
+   dest_       = dest;
+   enSsi_      = ssiEnable;
+   zeroCopyEn_ = true;
 
    rogue::defaultTimeout(timeout_);
 
@@ -100,6 +101,11 @@ void rha::AxiStreamDma::setDriverDebug(uint32_t level) {
    dmaSetDebug(fd_,level);
 }
 
+//! Enable / disable zero copy
+void rha::AxiStreamDma::setZeroCopyEn(bool state) {
+   zeroCopyEn_ = state;
+}
+
 //! Strobe ack line
 void rha::AxiStreamDma::dmaAck() {
    if ( fd_ >= 0 ) axisReadAck(fd_);
@@ -120,7 +126,7 @@ ris::FramePtr rha::AxiStreamDma::acceptReq ( uint32_t size, bool zeroCopyEn) {
    else buffSize = size;
 
    // Zero copy is disabled. Allocate from memory.
-   if ( zeroCopyEn == false || rawBuff_ == NULL ) {
+   if ( zeroCopyEn_ == false || zeroCopyEn == false || rawBuff_ == NULL ) {
       frame = ris::Pool::acceptReq(size,false);
    }
 
@@ -325,7 +331,7 @@ void rha::AxiStreamDma::runThread() {
          if ( select(fd_+1,&fds,NULL,NULL,&tout) > 0 ) {
 
             // Zero copy buffers were not allocated
-            if ( rawBuff_ == NULL ) {
+            if ( zeroCopyEn_ == false || rawBuff_ == NULL ) {
 
                // Allocate a buffer
                buff = allocBuffer(bSize_,NULL);
@@ -397,6 +403,7 @@ void rha::AxiStreamDma::setup_python () {
       .def("setDriverDebug", &rha::AxiStreamDma::setDriverDebug)
       .def("dmaAck",         &rha::AxiStreamDma::dmaAck)
       .def("setTimeout",     &rha::AxiStreamDma::setTimeout)
+      .def("setZeroCopyEn",  &rha::AxiStreamDma::setZeroCopyEn)
    ;
 
    bp::implicitly_convertible<rha::AxiStreamDmaPtr, ris::MasterPtr>();
