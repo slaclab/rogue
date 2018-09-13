@@ -29,6 +29,10 @@ def test_local_root():
     Test Pyrogue
     """
     with LocalRoot() as root:
-        result = root.myDevice.var.get()
-        if result != 3.14:
+        
+        # Test RW a variable holding an scalar value
+        test_value=3.14
+        root.myDevice.var.set(test_value)
+        test_result=root.myDevice.var.get()
+        if test_result != test_value:
             raise AssertionError()
