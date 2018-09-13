@@ -14,16 +14,21 @@ class myDevice(pyrogue.Device):
 class LocalRoot(pyrogue.Root):
     def __init__(self):
         pyrogue.Root.__init__(self, name='LocalRoot', description='Local root')
-        my_device = myDevice()
+        my_device=myDevice()
         self.add(my_device)
+
+    def __enter__(self):
+        self.start()
+        return self
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        self.stop()
 
 def test_local_root():
     """
     Test Pyrogue
     """
-    root = LocalRoot()
-    root.start()
-    result = root.myDevice.var.get()
-    root.stop()
-    if result != 3.14:
-        raise AssertionError()
+    with LocalRoot() as root:
+        result = root.myDevice.var.get()
+        if result != 3.14:
+            raise AssertionError()
