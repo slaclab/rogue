@@ -1,4 +1,8 @@
-[![Build Status](https://travis-ci.org/slaclab/rogue.svg?branch=master)](https://travis-ci.org/slaclab/rogue) [![codecov](https://codecov.io/gh/slaclab/rogue/branch/master/graph/badge.svg)](https://codecov.io/gh/slaclab/rogue)
+| branch      | status
+|-------------|--------
+| master      |[![Build Status](https://travis-ci.org/slaclab/rogue.svg?branch=master)](https://travis-ci.org/slaclab/rogue) [![codecov](https://codecov.io/gh/slaclab/rogue/branch/master/graph/badge.svg)](https://codecov.io/gh/slaclab/rogue)
+| pre-release |[![Build Status](https://travis-ci.org/slaclab/rogue.svg?branch=pre-release)](https://travis-ci.org/slaclab/rogue) [![codecov](https://codecov.io/gh/slaclab/rogue/branch/pre-release/graph/badge.svg)](https://codecov.io/gh/slaclab/rogue)
+
 
 # rogue
 SLAC Python Based Hardware Abstraction &amp; Data Acquisition System
