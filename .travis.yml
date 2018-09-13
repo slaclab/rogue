@@ -36,7 +36,7 @@ before_script:
   - source setup_rogue.sh
 
 script:
-   - pytest --cov
+   - python3 -m pytest --cov
 
 after_success:
   - codecov
