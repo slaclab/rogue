@@ -37,7 +37,7 @@ class RootLogHandler(logging.Handler):
            try:
                val = (self.format(record).splitlines()[0] + '\n')
                self._root.SystemLog += val
-           except e:
+           except Exception as e:
                print("-----------Error Logging Exception -------------")
                print(e)
                print("------------------------------------------------")
