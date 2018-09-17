@@ -11,3 +11,6 @@ setup.sh
 .__afs*
 lib/*
 build/*
+.cache
+.coverage
+.pytest_cache*
