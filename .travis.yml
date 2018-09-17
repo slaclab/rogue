@@ -10,22 +10,37 @@ env:
         - PY_PATH=/home/travis/virtualenv/python3.6.3
         - PACKAGE_DIR=/home/travis/packages
         - BOOST_DIR=$PACKAGE_DIR/boost_1_64_0
+        - EPICS_DIR=$PACKAGE_DIR/epics/base-3.15.5
         - CODECOV_TOKEN="12610828-8d74-4c99-bf1d-24b17a7253e2"
 
 before_install:
   - export CPLUS_INCLUDE_PATH=$PY_PATH/include/python3.6m
   - export LD_LIBRARY_PATH=$BOOST_DIR/stage/lib:$PY_PATH/lib:$LD_LIBRARY_PATH
   - export BOOST_ROOT=$BOOST_DIR
+  - export EPICS_BASE=$EPICS_DIR
+  - export EPICS_CA_ADDR_LIST=127.0.0.1
   - mkdir -p $BOOST_DIR
+  - mkdir -p $EPICS_DIR
   - git pull --unshallow
 
 install:
+  # Tools
   - pip install -r requirements.txt
+
+  # Boost
   - cd $BOOST_DIR
   - wget -O boost_1_64_0.tar.gz http://sourceforge.net/projects/boost/files/boost/1.64.0/boost_1_64_0.tar.gz/download
   - tar xzf boost_1_64_0.tar.gz --strip 1
   - ./bootstrap.sh --with-libraries=system,thread,python
   - travis_wait ./b2 link=shared threading=multi variant=release -d0
+
+  # EPICS base
+  - cd $EPICS_DIR
+  - wget -O base-3.15.5.tar.gz https://epics.anl.gov/download/base/base-3.15.5.tar.gz
+  - tar xzf base-3.15.5.tar.gz --strip 1
+  - make clean && make && make install
+
+  # Rogue
   - cd $TRAVIS_BUILD_DIR
   - mkdir build; cd build
   - cmake .. -DPYTHON_LIBRARY=$PY_PATH/lib/python3.6 -DPYTHON_INCLUDE_DIR=$PY_PATH/include
