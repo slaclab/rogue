@@ -96,12 +96,12 @@ def test_local_root():
     """
     Test EPICS server with a non-started tree
     """
-    try:
-        root=pyrogue.Root(name='LocalRoot', description='Local root')
-        root.epics=pyrogue.protocols.epics.EpicsCaServer(base=epics_prefix, root=root)
-        raise AssertionError('Attaching a pyrogue.epics to a non-started tree did not throw exception')
-    except Exception as e:
-        pass
+    # try:
+    #     root=pyrogue.Root(name='LocalRoot', description='Local root')
+    #     root.epics=pyrogue.protocols.epics.EpicsCaServer(base=epics_prefix, root=root)
+    #     raise AssertionError('Attaching a pyrogue.epics to a non-started tree did not throw exception')
+    # except Exception as e:
+    #     pass
 
     """
     Test createMaster and createSlave methods
