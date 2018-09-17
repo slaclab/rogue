@@ -8,12 +8,12 @@
  * Description:
  * EPICS Server For Rogue System
  * ----------------------------------------------------------------------------
- * This file is part of the rogue software platform. It is subject to 
- * the license terms in the LICENSE.txt file found in the top-level directory 
- * of this distribution and at: 
- *    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
- * No part of the rogue software platform, including this file, may be 
- * copied, modified, propagated, or distributed except according to the terms 
+ * This file is part of the rogue software platform. It is subject to
+ * the license terms in the LICENSE.txt file found in the top-level directory
+ * of this distribution and at:
+ *    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+ * No part of the rogue software platform, including this file, may be
+ * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
@@ -41,7 +41,7 @@ void rpe::Server::setup_python() {
 }
 
 //! Class creation
-rpe::Server::Server () : caServer() { }
+rpe::Server::Server () : caServer(), running_(false) { }
 
 rpe::Server::~Server() {
    stop();
@@ -50,18 +50,22 @@ rpe::Server::~Server() {
 void rpe::Server::start() {
    //this->setDebugLevel(10);
    thread_ = new boost::thread(boost::bind(&rpe::Server::runThread, this));
+   running_ = true;
 }
 
 void rpe::Server::stop() {
-   rogue::GilRelease noGil;
-   thread_->interrupt();
-   thread_->join();
+   if (running_) {
+      rogue::GilRelease noGil;
+      thread_->interrupt();
+      thread_->join();
+      running_ = false;
+  }
 }
 
 void rpe::Server::addValue(rpe::ValuePtr value) {
    std::map<std::string, rpe::ValuePtr>::iterator it;
    rpe::Pv * pv;
-   
+
    boost::lock_guard<boost::mutex> lock(mtx_);
 
    if ( (it = values_.find(value->epicsName())) == values_.end()) {
@@ -119,4 +123,3 @@ void rpe::Server::runThread() {
       }
    } catch (boost::thread_interrupted&) { }
 }
-
