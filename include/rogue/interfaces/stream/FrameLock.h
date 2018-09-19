@@ -1,12 +1,12 @@
 /**
  *-----------------------------------------------------------------------------
- * Title      : Data Card Memory Mapped Access
+ * Title      : Memory Frame Lock
  * ----------------------------------------------------------------------------
- * File       : DataMap.h
- * Created    : 2017-03-21
+ * File       : FrameLock.h
+ * Created    : 2018-03-16
  * ----------------------------------------------------------------------------
  * Description:
- * Class for interfacing to data card mapped memory space.
+ * Memory Frame lock
  * ----------------------------------------------------------------------------
  * This file is part of the rogue software platform. It is subject to 
  * the license terms in the LICENSE.txt file found in the top-level directory 
@@ -17,51 +17,52 @@
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
-#ifndef __ROGUE_HARDWARE_DATA_DATA_MAP_H__
-#define __ROGUE_HARDWARE_DATA_DATA_MAP_H__
-#include <rogue/interfaces/memory/Slave.h>
-#include <boost/python.hpp>
-#include <boost/thread.hpp>
+#ifndef __ROGUE_INTERFACES_MEMORY_FRAME_LOCK_H__
+#define __ROGUE_INTERFACES_MEMORY_FRAME_LOCK_H__
 #include <stdint.h>
-#include <rogue/Logging.h>
+#include <boost/thread.hpp>
 
 namespace rogue {
-   namespace hardware {
-      namespace data {
+   namespace interfaces {
+      namespace stream {
 
-         //! PGP Card class
-         class DataMap : public rogue::interfaces::memory::Slave {
+         class Frame;
 
-               //! DataMap file descriptor
-               int32_t  fd_;
+         //! Frame
+         class FrameLock {
 
-               // Logging
-               rogue::LoggingPtr log_;
+               boost::shared_ptr<rogue::interfaces::stream::Frame> frame_;
+               bool locked_;
 
             public:
 
-               //! Class creation
-               static boost::shared_ptr<rogue::hardware::data::DataMap> create (std::string path);
+               //! Create a frame container
+               static boost::shared_ptr<rogue::interfaces::stream::FrameLock> create (
+                  boost::shared_ptr<rogue::interfaces::stream::Frame> frame);
+
+               //! Constructor
+               FrameLock(boost::shared_ptr<rogue::interfaces::stream::Frame> frame);
 
                //! Setup class in python
                static void setup_python();
 
-               //! Creator
-               DataMap(std::string path);
-
                //! Destructor
-               ~DataMap();
+               ~FrameLock();
 
-               //! Post a transaction
-               void doTransaction(boost::shared_ptr<rogue::interfaces::memory::Transaction> tran);
+               //! lock
+               void lock();
+
+               //! lock
+               void unlock();
+
          };
 
          // Convienence
-         typedef boost::shared_ptr<rogue::hardware::data::DataMap> DataMapPtr;
+         typedef boost::shared_ptr<rogue::interfaces::stream::FrameLock> FrameLockPtr;
 
       }
    }
-};
+}
 
 #endif
 

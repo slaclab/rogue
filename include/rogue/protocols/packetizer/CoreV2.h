@@ -19,7 +19,6 @@
 **/
 #ifndef __ROGUE_PROTOCOLS_PACKETIZER_CORE_V2_H__
 #define __ROGUE_PROTOCOLS_PACKETIZER_CORE_V2_H__
-#include <boost/python.hpp>
 #include <boost/thread.hpp>
 #include <stdint.h>
 
@@ -70,7 +69,7 @@ namespace rogue {
                void setTimeout(uint32_t timeout);
          };
 
-         // Convienence
+         // Convenience
          typedef boost::shared_ptr<rogue::protocols::packetizer::CoreV2> CoreV2Ptr;
 
       }

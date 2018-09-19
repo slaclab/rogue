@@ -80,6 +80,7 @@ class StreamSim(rogue.interfaces.stream.Master,
     def _acceptFrame(self,frame):
         """ Forward frame to simulation """
 
+        flock = frame.lock();
         flags = frame.getFlags()
         fuser = flags & 0xFF
         luser = (flags >> 8) & 0xFF
@@ -119,7 +120,6 @@ class StreamSim(rogue.interfaces.stream.Master,
             if ( self._ssi and (luser & 0x1)): frame.setError(1)
 
             frame.write(data,0)
-            self._sendFrame(frame)
             self.rxCount += 1
 
             # Send ack
@@ -127,6 +127,7 @@ class StreamSim(rogue.interfaces.stream.Master,
             ba[0] = 0xFF
             self._ibSock.send(ba)
 
+            self._sendFrame(frame)
 
 class MemEmulate(rogue.interfaces.memory.Slave):
 

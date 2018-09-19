@@ -19,16 +19,20 @@
 **/
 #include <rogue/protocols/udp/Core.h>
 #include <rogue/Logging.h>
-#include <sys/syscall.h>
+#include <rogue/GeneralError.h>
 #include <unistd.h>
 
 namespace rpu = rogue::protocols::udp;
+
+#ifndef NO_PYTHON
+#include <boost/python.hpp>
 namespace bp  = boost::python;
+#endif
 
 //! Creator
 rpu::Core::Core (bool jumbo) {
    jumbo_   = jumbo;
-   timeout_ = 10000000;
+   rogue::defaultTimeout(timeout_);
 }
 
 //! Destructor
@@ -40,16 +44,20 @@ uint32_t rpu::Core::maxPayload() {
 }
 
 //! Set UDP RX Size
-bool rpu::Core::setRxSize(uint32_t size) {
+bool rpu::Core::setRxBufferCount(uint32_t count) {
    uint32_t   rwin;
    socklen_t  rwin_size=4;
 
+   uint32_t per  = (jumbo_)?(JumboMTU):(StdMTU);
+   uint32_t size = count * per;
+
    setsockopt(fd_, SOL_SOCKET, SO_RCVBUF, (char*)&size, sizeof(size));
    getsockopt(fd_, SOL_SOCKET, SO_RCVBUF, &rwin, &rwin_size);
+
    if(size > rwin) {
       udpLog_->critical("----------------------------------------------------------");
       udpLog_->critical("Error setting rx buffer size.");
-      udpLog_->critical("Wanted %i Got %i",size,rwin);
+      udpLog_->critical("Wanted %i (%i * %i) Got %i",size,count,per,rwin);
       udpLog_->critical("sysctl -w net.core.rmem_max=size to increase in kernel");
       udpLog_->critical("----------------------------------------------------------");
       return(false);
@@ -59,14 +67,18 @@ bool rpu::Core::setRxSize(uint32_t size) {
 
 //! Set timeout for frame transmits in microseconds
 void rpu::Core::setTimeout(uint32_t timeout) {
-   timeout_ = timeout;
+   div_t divResult = div(timeout,1000000);
+   timeout_.tv_sec  = divResult.quot;
+   timeout_.tv_usec = divResult.rem;
 }
 
 void rpu::Core::setup_python () {
+#ifndef NO_PYTHON
    bp::class_<rpu::Core, rpu::CorePtr, boost::noncopyable >("Core",bp::no_init)
       .def("maxPayload",        &rpu::Core::maxPayload)
-      .def("setRxSize",         &rpu::Core::setRxSize)
+      .def("setRxBufferCount",  &rpu::Core::setRxBufferCount)
       .def("setTimeout",        &rpu::Core::setTimeout)
    ;
+#endif
 }
 

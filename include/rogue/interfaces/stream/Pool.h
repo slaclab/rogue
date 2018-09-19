@@ -24,7 +24,6 @@
 #define __ROGUE_INTERFACES_STREAM_POOL_H__
 #include <stdint.h>
 
-#include <boost/python.hpp>
 #include <boost/thread.hpp>
 #include <boost/enable_shared_from_this.hpp>
 #include <rogue/Queue.h>
@@ -58,7 +57,7 @@ namespace rogue {
                uint32_t fixedSize_;
 
                //! Buffer queue count
-               uint32_t maxCount_;
+               uint32_t poolSize_;
 
             public:
 
@@ -90,10 +89,19 @@ namespace rogue {
                //! Setup class in python
                static void setup_python();
 
-            protected:
-
                //! Set fixed size mode
-               void enBufferPool(uint32_t size, uint32_t count);
+               void setFixedSize(uint32_t size);
+               
+               //! Get fixed size mode
+               uint32_t getFixedSize();
+
+               //! Set buffer pool size
+               void setPoolSize(uint32_t size);
+               
+               //! Get pool size
+               uint32_t getPoolSize();
+
+            protected:
 
                //! Allocate and Create a Buffer
                boost::shared_ptr<rogue::interfaces::stream::Buffer> allocBuffer ( uint32_t size, uint32_t *total );

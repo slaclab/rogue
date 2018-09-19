@@ -22,11 +22,14 @@
 #include <rogue/interfaces/stream/Master.h>
 #include <rogue/interfaces/stream/Frame.h>
 #include <rogue/GilRelease.h>
-#include <boost/python.hpp>
 #include <boost/make_shared.hpp>
 
-namespace ris = rogue::interfaces::stream;
+namespace ris  = rogue::interfaces::stream;
+
+#ifndef NO_PYTHON
+#include <boost/python.hpp>
 namespace bp  = boost::python;
+#endif
 
 //! Class creation
 ris::MasterPtr ris::Master::create () {
@@ -40,9 +43,7 @@ ris::Master::Master() {
 }
 
 //! Destructor
-ris::Master::~Master() {
-   slaves_.clear();
-}
+ris::Master::~Master() { }
 
 //! Set primary slave, used for buffer request forwarding
 void ris::Master::setSlave ( boost::shared_ptr<interfaces::stream::Slave> slave ) {
@@ -87,6 +88,7 @@ void ris::Master::sendFrame ( FramePtr frame) {
 }
 
 void ris::Master::setup_python() {
+#ifndef NO_PYTHON
 
    bp::class_<ris::Master, ris::MasterPtr, boost::noncopyable>("Master",bp::init<>())
       .def("_setSlave",      &ris::Master::setSlave)
@@ -94,5 +96,6 @@ void ris::Master::setup_python() {
       .def("_reqFrame",      &ris::Master::reqFrame)
       .def("_sendFrame",     &ris::Master::sendFrame)
    ;
+#endif
 }
 

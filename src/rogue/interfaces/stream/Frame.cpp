@@ -19,14 +19,18 @@
  * ----------------------------------------------------------------------------
 **/
 #include <rogue/interfaces/stream/Frame.h>
+#include <rogue/interfaces/stream/FrameLock.h>
 #include <rogue/interfaces/stream/FrameIterator.h>
 #include <rogue/interfaces/stream/Buffer.h>
 #include <rogue/GeneralError.h>
 #include <boost/make_shared.hpp>
-#include <boost/python.hpp>
 
-namespace ris = rogue::interfaces::stream;
+namespace ris  = rogue::interfaces::stream;
+
+#ifndef NO_PYTHON
+#include <boost/python.hpp>
 namespace bp  = boost::python;
+#endif
 
 //! Create an empty frame
 ris::FramePtr ris::Frame::create() {
@@ -46,13 +50,18 @@ ris::Frame::Frame() {
 //! Destroy a frame.
 ris::Frame::~Frame() { }
 
+//! Get lock
+ris::FrameLockPtr ris::Frame::lock() {
+   return(ris::FrameLock::create(shared_from_this()));
+}
+
 //! Add a buffer to end of frame
 ris::Frame::BufferIterator ris::Frame::appendBuffer(ris::BufferPtr buff) {
    uint32_t oSize = buffers_.size();
 
    buff->setFrame(shared_from_this());
    buffers_.push_back(buff);
-   updateSizes();
+   sizeDirty_ = true;
    return(buffers_.begin()+oSize);
 }
 
@@ -64,9 +73,8 @@ ris::Frame::BufferIterator ris::Frame::appendFrame(ris::FramePtr frame) {
       (*it)->setFrame(shared_from_this());
       buffers_.push_back(*it);
    }
-   frame->buffers_.clear();
-   frame->updateSizes();
-   updateSizes();
+   frame->clear();
+   sizeDirty_ = true;
    return(buffers_.begin()+oSize);
 }
 
@@ -80,6 +88,18 @@ ris::Frame::BufferIterator ris::Frame::endBuffer() {
    return(buffers_.end());
 }
 
+//! Buffer count
+uint32_t ris::Frame::bufferCount() {
+   return(buffers_.size());
+}
+
+//! Clear the list
+void ris::Frame::clear() {
+   buffers_.clear();
+   size_    = 0;
+   payload_ = 0;
+}
+
 //! Buffer list is empty
 bool ris::Frame::isEmpty() {
    return(buffers_.empty());
@@ -89,8 +109,8 @@ bool ris::Frame::isEmpty() {
 void ris::Frame::updateSizes() {
    ris::Frame::BufferIterator it;
 
-   size_      = 0;
-   payload_   = 0;
+   size_    = 0;
+   payload_ = 0;
 
    for (it = buffers_.begin(); it != buffers_.end(); ++it) {
       payload_ += (*it)->getPayload();
@@ -186,7 +206,7 @@ void ris::Frame::minPayload(uint32_t size) {
    if ( size > getPayload() ) setPayload(size);
 }
 
-//! Adjust payload size, TODO: Reduce iterations
+//! Adjust payload size
 void ris::Frame::adjustPayload(int32_t value) {
    uint32_t size = getPayload();
 
@@ -200,22 +220,32 @@ void ris::Frame::adjustPayload(int32_t value) {
 void ris::Frame::setPayloadFull() {
    ris::Frame::BufferIterator it;
 
-   for (it = buffers_.begin(); it != buffers_.end(); ++it) 
+   size_    = 0;
+   payload_ = 0;
+
+   for (it = buffers_.begin(); it != buffers_.end(); ++it) {
       (*it)->setPayloadFull();
 
-   // Refresh
-   updateSizes();
+      payload_ += (*it)->getPayload();
+      size_    += (*it)->getSize();
+   }
+   sizeDirty_ = false;
 }
 
 //! Set the buffer as empty (minus header reservation)
 void ris::Frame::setPayloadEmpty() {
    ris::Frame::BufferIterator it;
 
-   for (it = buffers_.begin(); it != buffers_.end(); ++it) 
+   size_      = 0;
+   payload_   = 0;
+
+   for (it = buffers_.begin(); it != buffers_.end(); ++it) {
       (*it)->setPayloadEmpty();
 
-   // Refresh
-   updateSizes();
+      payload_ += (*it)->getPayload();
+      size_    += (*it)->getSize();
+   }
+   sizeDirty_ = false;
 }
 
 //! Get flags
@@ -238,20 +268,27 @@ void ris::Frame::setError(uint32_t error) {
    error_ = error;
 }
 
-//! Get start of data iterator
-ris::Frame::iterator ris::Frame::begin() {
-   return ris::Frame::iterator(shared_from_this(),0,false);
+//! Get write start iterator
+ris::Frame::iterator ris::Frame::beginRead() {
+   return ris::Frame::iterator(shared_from_this(),false,false);
 }
 
-//! Get end of data iterator
-ris::Frame::iterator ris::Frame::end() {
-   return ris::Frame::iterator(shared_from_this(),0,true);
+//! Get write end iterator
+ris::Frame::iterator ris::Frame::endRead() {
+   return ris::Frame::iterator(shared_from_this(),false,true);
+}
+
+//! Get read start iterator
+ris::Frame::iterator ris::Frame::beginWrite() {
+   return ris::Frame::iterator(shared_from_this(),true,false);
 }
 
 //! Get end of payload iterator
-ris::Frame::iterator ris::Frame::endPayload() {
-   return ris::Frame::iterator(shared_from_this(),getPayload(),(getPayload() == getSize())); 
+ris::Frame::iterator ris::Frame::endWrite() {
+   return ris::Frame::iterator(shared_from_this(),true,true);
 }
+
+#ifndef NO_PYTHON
 
 //! Read up to count bytes from frame, starting from offset. Python version.
 void ris::Frame::readPy ( boost::python::object p, uint32_t offset ) {
@@ -269,8 +306,8 @@ void ris::Frame::readPy ( boost::python::object p, uint32_t offset ) {
       throw(rogue::GeneralError::boundary("Frame::readPy",offset+count,size));
    }
 
-   ris::Frame::iterator beg = ris::Frame::iterator(shared_from_this(),offset,false);
-   ris::Frame::iterator end = ris::Frame::iterator(shared_from_this(),offset+count,false);
+   ris::Frame::iterator beg = this->beginRead() + offset;
+   ris::Frame::iterator end = this->beginRead() + (offset + count);
 
    data = (uint8_t *)pyBuf.buf;
    std::copy(beg,end,data);
@@ -293,7 +330,7 @@ void ris::Frame::writePy ( boost::python::object p, uint32_t offset ) {
       throw(rogue::GeneralError::boundary("Frame::writePy",offset+count,size));
    }
 
-   ris::Frame::iterator beg = ris::Frame::iterator(shared_from_this(),offset,false);
+   ris::Frame::iterator beg = this->beginWrite() + offset;
 
    data = (uint8_t *)pyBuf.buf;
    std::copy(data,data+count,beg);
@@ -302,9 +339,13 @@ void ris::Frame::writePy ( boost::python::object p, uint32_t offset ) {
    PyBuffer_Release(&pyBuf);
 }
 
+#endif
+
 void ris::Frame::setup_python() {
+#ifndef NO_PYTHON
 
    bp::class_<ris::Frame, ris::FramePtr, boost::noncopyable>("Frame",bp::no_init)
+      .def("lock",         &ris::Frame::lock)
       .def("getSize",      &ris::Frame::getSize)
       .def("getAvailable", &ris::Frame::getAvailable)
       .def("getPayload",   &ris::Frame::getPayload)
@@ -315,5 +356,6 @@ void ris::Frame::setup_python() {
       .def("setFlags",     &ris::Frame::setFlags)
       .def("getFlags",     &ris::Frame::getFlags)
    ;
+#endif
 }
 

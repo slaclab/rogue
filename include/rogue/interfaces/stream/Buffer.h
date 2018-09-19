@@ -27,7 +27,8 @@
 #define __ROGUE_INTERFACES_STREAM_BUFFER_H__
 #include <stdint.h>
 
-#include <boost/python.hpp>
+#include <rogue/interfaces/stream/Frame.h>
+
 namespace rogue {
    namespace interfaces {
       namespace stream {
@@ -47,7 +48,7 @@ namespace rogue {
                boost::shared_ptr<rogue::interfaces::stream::Pool> source_;
 
                //! Pointer to frame containing this buffer
-               boost::shared_ptr<rogue::interfaces::stream::Frame> frame_;
+               boost::weak_ptr<rogue::interfaces::stream::Frame> frame_;
 
                //! Pointer to raw data buffer. Raw pointer is used here!
                uint8_t *  data_;
@@ -76,9 +77,6 @@ namespace rogue {
                //! Error state
                uint32_t   error_;
 
-            protected:
-
-
             public:
 
                //! Iterator for data
@@ -91,9 +89,6 @@ namespace rogue {
                static boost::shared_ptr<rogue::interfaces::stream::Buffer> create (
                      boost::shared_ptr<rogue::interfaces::stream::Pool> source, 
                         void * data, uint32_t meta, uint32_t size, uint32_t alloc);
-
-               //! Setup class in python
-               static void setup_python();
 
                //! Create a buffer.
                /*

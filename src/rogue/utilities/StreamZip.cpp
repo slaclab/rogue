@@ -21,15 +21,21 @@
 #include <rogue/interfaces/stream/Slave.h>
 #include <rogue/interfaces/stream/Master.h>
 #include <rogue/interfaces/stream/Frame.h>
+#include <rogue/interfaces/stream/FrameLock.h>
 #include <rogue/interfaces/stream/Buffer.h>
 #include <rogue/utilities/StreamZip.h>
 #include <rogue/GeneralError.h>
+#include <rogue/GilRelease.h>
 #include <boost/make_shared.hpp>
 #include <bzlib.h>
 
 namespace ris = rogue::interfaces::stream;
 namespace ru  = rogue::utilities;
-namespace bp  = boost::python;
+
+#ifndef NO_PYTHON
+#include <boost/python.hpp>
+namespace bp = boost::python;
+#endif
 
 //! Class creation
 ru::StreamZipPtr ru::StreamZip::create () {
@@ -49,7 +55,10 @@ void ru::StreamZip::acceptFrame ( ris::FramePtr frame ) {
    ris::Frame::BufferIterator wBuff;
    bool done;
    int32_t ret;
-   
+
+   rogue::GilRelease noGil;
+   ris::FrameLockPtr lock = frame->lock();
+
    // First request a new frame of the same size
    ris::FramePtr newFrame = this->reqFrame(frame->getPayload(),true);
 
@@ -115,12 +124,13 @@ ris::FramePtr ru::StreamZip::acceptReq ( uint32_t size, bool zeroCopyEn ) {
 }
 
 void ru::StreamZip::setup_python() {
+#ifndef NO_PYTHON
 
    bp::class_<ru::StreamZip, ru::StreamZipPtr, bp::bases<ris::Master,ris::Slave>, boost::noncopyable >("StreamZip",bp::init<>());
 
    bp::implicitly_convertible<ru::StreamZipPtr, ris::SlavePtr>();
    bp::implicitly_convertible<ru::StreamZipPtr, ris::MasterPtr>();
-
+#endif
 }
 
 

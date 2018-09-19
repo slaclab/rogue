@@ -23,7 +23,6 @@
 #include <rogue/interfaces/stream/Master.h>
 #include <rogue/interfaces/stream/Slave.h>
 #include <boost/enable_shared_from_this.hpp>
-#include <boost/python.hpp>
 #include <stdint.h>
 #include <rogue/Queue.h>
 #include <rogue/Logging.h>
@@ -61,7 +60,7 @@ namespace rogue {
                void applicationRx( boost::shared_ptr<rogue::interfaces::stream::Frame> frame, uint8_t id);
          };
 
-         // Convienence
+         // Convenience
          typedef boost::shared_ptr<rogue::protocols::packetizer::ControllerV1> ControllerV1Ptr;
 
       }

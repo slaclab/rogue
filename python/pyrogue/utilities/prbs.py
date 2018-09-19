@@ -24,10 +24,16 @@ import pyrogue
 class PrbsRx(pyrogue.Device):
     """PRBS RX Wrapper"""
 
-    def __init__(self, *, name):
+    def __init__(self, *, name, width=None, taps=None, **kwargs ):
 
-        pyrogue.Device.__init__(self, name=name, description='PRBS Software Receiver')
+        pyrogue.Device.__init__(self, name=name, description='PRBS Software Receiver', **kwargs)
         self._prbs = rogue.utilities.Prbs()
+
+        if width is not None:
+            self._prbs.setWidth(width)
+
+        if taps is not None:
+            self._prbs.setTaps(taps)
 
         self.add(pyrogue.LocalVariable(name='rxErrors', description='RX Error Count',
                                        mode='RO', pollInterval=1, value=0,
@@ -40,6 +46,14 @@ class PrbsRx(pyrogue.Device):
         self.add(pyrogue.LocalVariable(name='rxBytes', description='RX Bytes',
                                        mode='RO', pollInterval=1, value=0,
                                        localGet=self._prbs.getRxBytes))
+
+        self.add(pyrogue.LocalVariable(name='rxRate', description='RX Rate', disp="{:.3e}",
+                                       mode='RO', pollInterval=1, value=0,
+                                       localGet=self._prbs.getRxRate))
+
+        self.add(pyrogue.LocalVariable(name='rxBw', description='RX BW', disp="{:.3e}",
+                                       mode='RO', pollInterval=1, value=0,
+                                       localGet=self._prbs.getRxBw))
 
         self.add(pyrogue.LocalVariable(name='checkPayload', description='Payload Check Enable',
                                        mode='RW', value=True, localSet=self._plEnable))
@@ -62,14 +76,21 @@ class PrbsRx(pyrogue.Device):
 class PrbsTx(pyrogue.Device):
     """PRBS TX Wrapper"""
 
-    def __init__(self, *, name):
+    def __init__(self, *, name, sendCount=False, width=None, taps=None, **kwargs ):
 
-        pyrogue.Device.__init__(self, name=name, description='PRBS Software Transmitter')
-
+        pyrogue.Device.__init__(self, name=name, description='PRBS Software Transmitter', **kwargs)
         self._prbs = rogue.utilities.Prbs()
 
+        if width is not None:
+            self._prbs.setWidth(width)
+
+        if taps is not None:
+            self._prbs.setTaps(taps)
+
+        self._prbs.sendCount(sendCount)
+
         self.add(pyrogue.LocalVariable(name='txSize', description='PRBS Frame Size', 
-                                       mode='RW', value=0))
+                                       localSet=self._txSize, mode='RW', value=0))
 
         self.add(pyrogue.LocalVariable(name='txEnable', description='PRBS Run Enable', mode='RW',
                                        value=False, localSet=self._txEnable))
@@ -86,11 +107,30 @@ class PrbsTx(pyrogue.Device):
         self.add(pyrogue.LocalVariable(name='txBytes', description='TX Bytes', mode='RO', pollInterval = 1,
                                        value=0, localGet=self._prbs.getTxBytes))
 
+        self.add(pyrogue.LocalVariable(name='genPayload', description='Payload Generate Enable',
+                                       mode='RW', value=True, localSet=self._plEnable))
+
+        self.add(pyrogue.LocalVariable(name='txRate', description='TX Rate',  disp="{:.3e}",
+                                       mode='RO', pollInterval=1, value=0,
+                                       localGet=self._prbs.getTxRate))
+
+        self.add(pyrogue.LocalVariable(name='txBw', description='TX BW',  disp="{:.3e}",
+                                       mode='RO', pollInterval=1, value=0,
+                                       localGet=self._prbs.getTxBw))
+
+    def _plEnable(self,value,changed):
+        self._prbs.genPayload(value)
+
     def countReset(self):
         self._prbs.resetCount()
 
     def _genFrame(self):
         self._prbs.genFrame(self.txSize.value())
+
+    def _txSize(self,value,changed):
+        if changed and int(self.txEnable.value()) == 1:
+            self._prbs.disable()
+            self._prbs.enable(value)
 
     def _txEnable(self,value,changed):
         if changed:
@@ -107,4 +147,7 @@ class PrbsTx(pyrogue.Device):
 
     def setTaps(self,taps):
         self._prbs.setTaps(taps)
+
+    def sendCount(self,en):
+        self._prbs.sendCount(en)
 

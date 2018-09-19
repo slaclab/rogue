@@ -21,14 +21,18 @@
 #include <rogue/Version.h>
 #include <rogue/GeneralError.h>
 #include <string>
+#include <sstream>
+
+#ifndef NO_PYTHON
+#include <boost/python.hpp>
+namespace bp = boost::python;
+#endif
 
 const char rogue::Version::_version[] = ROGUE_VERSION;
 uint32_t   rogue::Version::_major     = 0;
 uint32_t   rogue::Version::_minor     = 0;
 uint32_t   rogue::Version::_maint     = 0;
 uint32_t   rogue::Version::_devel     = 0;
-
-namespace bp = boost::python;
 
 void rogue::Version::init() {
    char     dump[100];
@@ -96,7 +100,20 @@ uint32_t rogue::Version::getDevel() {
    return _devel;
 }
 
+std::string rogue::Version::pythonVersion() {
+   init();
+   std::stringstream ret;
+
+   ret << std::dec << _major;
+   ret << "." << std::dec << _minor;
+   ret << "." << std::dec << _maint;
+
+   if ( _devel > 0 ) ret << ".dev" << std::dec << _devel;
+   return ret.str();
+}
+
 void rogue::Version::setup_python() {
+#ifndef NO_PYTHON
    bp::class_<rogue::Version, boost::noncopyable>("Version",bp::no_init)
       .def("current", &rogue::Version::current)
       .staticmethod("current")
@@ -114,7 +131,9 @@ void rogue::Version::setup_python() {
       .staticmethod("maint")
       .def("devel", &rogue::Version::getDevel)
       .staticmethod("devel")
+      .def("pythonVersion", &rogue::Version::pythonVersion)
+      .staticmethod("pythonVersion")
    ;
-
+#endif
 }
 

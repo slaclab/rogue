@@ -18,34 +18,31 @@
  * ----------------------------------------------------------------------------
 **/
 
-#include <boost/python.hpp>
 #include <rogue/protocols/epicsV3/Pv.h>
 #include <rogue/protocols/epicsV3/Value.h>
 #include <time.h>
 
 namespace rpe = rogue::protocols::epicsV3;
-namespace bp  = boost::python;
 
-//! Setup class in python
-void rpe::Pv::setup_python() { }
+#include <boost/python.hpp>
+namespace bp  = boost::python;
 
 //! Class creation
 rpe::Pv::Pv (caServer &cas, rpe::ValuePtr value) : casPV(cas) {
    value_    = value;
    interest_ = aitFalse;
+
+//   valueMask_ = casEventMask(this->getCAS()->valueEventMask());
 }
 
 rpe::Pv::~Pv () { }
-
-bool rpe::Pv::interest() {
-   return interest_;
-}
 
 void rpe::Pv::show(unsigned level) const { }
 
 caStatus rpe::Pv::interestRegister() {
    boost::lock_guard<boost::mutex> lock(mtx_);
    interest_ = aitTrue;
+   valueMask_ = casEventMask(this->getCAS()->valueEventMask());
    return S_casApp_success;
 }
 
@@ -80,8 +77,7 @@ casChannel * rpe::Pv::createChannel(const casCtx &ctx,
 }
 
 void rpe::Pv::destroy() {
-   value_->clrPv();
-   delete this;
+   // Do nothing since we pre-allocate
 }
 
 aitEnum rpe::Pv::bestExternalType() const {
@@ -100,7 +96,7 @@ const char * rpe::Pv::getName() const {
    return value_->epicsName().c_str();
 }
 
-void rpe::Pv::postEvent ( const casEventMask & select, const gdd & event ) {
-   casPV::postEvent(select,event);
+void rpe::Pv::updated ( const gdd & event ) {
+   if ( interest_ == aitTrue ) casPV::postEvent(valueMask_,event);
 }
 

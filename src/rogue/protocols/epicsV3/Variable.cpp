@@ -18,7 +18,6 @@
  * ----------------------------------------------------------------------------
 **/
 
-#include <boost/python.hpp>
 #include <rogue/protocols/epicsV3/Variable.h>
 #include <rogue/protocols/epicsV3/Pv.h>
 #include <rogue/protocols/epicsV3/Server.h>
@@ -29,6 +28,8 @@
 #include <boost/make_shared.hpp>
 
 namespace rpe = rogue::protocols::epicsV3;
+
+#include <boost/python.hpp>
 namespace bp  = boost::python;
 
 //! Setup class in python
@@ -52,7 +53,6 @@ rpe::Variable::Variable (std::string epicsName, bp::object p, bool syncRead) : V
    char        tmpType[50];
    uint32_t    count;
 
-   inSet_    = false;
    var_      = bp::object(p);
    syncRead_ = syncRead;
    setAttr_  = "setDisp";
@@ -99,31 +99,23 @@ rpe::Variable::Variable (std::string epicsName, bp::object p, bool syncRead) : V
    }
 
    // Init value
-   if ( epicsType_ == aitEnumString ) fromPython(var_.attr("valueDisp")());
+   if ( isString_ ) fromPython(var_.attr("valueDisp")());
    else fromPython(var_.attr("value")());
-
-   rogue::GilRelease noGil;
-   this->updated();
 }
 
 rpe::Variable::~Variable() { }
 
 void rpe::Variable::varUpdated(std::string path, bp::object value, bp::object disp) {
+   rogue::GilRelease noGil;
 
    log_->debug("Variable update for %s: Disp=%s", epicsName_.c_str(),(char *)bp::extract<char *>(disp));
+   {
+      boost::lock_guard<boost::mutex> lock(mtx_);
+      noGil.acquire();
 
-   if ( inSet_ ) {
-      log_->debug("Ignoring variable update for %s", epicsName_.c_str());
-      return;
+      if (  isString_ ) fromPython(disp);
+      else fromPython(value);
    }
-
-   rogue::GilRelease noGil;
-   boost::lock_guard<boost::mutex> lock(mtx_);
-   noGil.acquire();
-
-   if ( epicsType_ == aitEnumString ) fromPython(disp);
-   else fromPython(value);
-
    noGil.release();
    this->updated();
 }
@@ -135,13 +127,12 @@ void rpe::Variable::valueGet() {
          rogue::ScopedGil gil;
          log_->info("Synchronous read for %s",epicsName_.c_str());
          try {
-            if ( epicsType_ == aitEnumString ) fromPython(var_.attr("valueDisp")());
-            else fromPython(var_.attr("value")());
+            if ( isString_ ) fromPython(var_.attr("getDisp")());
+            else fromPython(var_.attr("get")());
          } catch (...) {
             log_->error("Error getting values from epics: %s\n",epicsName_.c_str());
          }
       }
-      updated();
    }
 }
 
@@ -149,14 +140,20 @@ void rpe::Variable::valueGet() {
 void rpe::Variable::fromPython(bp::object value) {
    struct timespec t;
    bp::list pl;
+   std::string ps;
    uint32_t i;
 
    log_->debug("Python set for %s", epicsName_.c_str());
 
    if ( array_ ) {
 
-      pl = bp::extract<bp::list>(value);
-      size_ = len(pl);
+      if ( isString_ ) {
+         ps    = bp::extract<std::string>(value);
+         size_ = ps.size();
+      } else {
+         pl    = bp::extract<bp::list>(value);
+         size_ = len(pl);
+      }
 
       // Limit size
       if ( size_ > max_ ) size_ = max_;
@@ -168,7 +165,13 @@ void rpe::Variable::fromPython(bp::object value) {
       // Create vector of appropriate type
       if ( epicsType_ == aitEnumUint8 ) {
          aitUint8 * pF = new aitUint8[size_];
-         for ( i = 0; i < size_; i++ ) pF[i] = bp::extract<uint8_t>(pl[i]);
+       
+         if ( isString_ ) {
+            ps.copy((char *)pF, size_);
+         } else {
+            for ( i = 0; i < size_; i++ ) pF[i] = bp::extract<uint8_t>(pl[i]);
+         }
+
          pValue_->putRef(pF, new rpe::Destructor<aitUint8 *>);
       }
 
@@ -238,13 +241,6 @@ void rpe::Variable::fromPython(bp::object value) {
          pValue_->putConvert(nVal);
       }
 
-      else if ( epicsType_ == aitEnumString ) {
-         aitString nVal;
-         nVal = bp::extract<char *>(value);
-         log_->info("Python set string for %s: Value=%s", epicsName_.c_str(),(char *)nVal);
-         pValue_->putConvert(nVal);
-      }
-
       else if ( epicsType_ == aitEnumEnum16 ) {
          std::string val;
          uint8_t idx;
@@ -278,11 +274,17 @@ void rpe::Variable::valueSet() {
    bp::list pl;
    uint32_t i;
 
-   inSet_ = true;
    log_->info("Variable set for %s",epicsName_.c_str());
 
    try {
-      if ( array_ ) {
+      if ( isString_ ) {
+
+         // Process values that are exposed as string in EPICS 
+         aitUint8 * pF = new aitUint8[size_];
+         pValue_->getRef(pF);
+         var_.attr(setAttr_.c_str())(std::string((char*)pF));
+
+      } else if ( array_ ) {
 
          // Create vector of appropriate type
          if ( epicsType_ == aitEnumUint8 ) {
@@ -355,12 +357,6 @@ void rpe::Variable::valueSet() {
             var_.attr(setAttr_.c_str())(nVal);
          }
 
-         else if ( epicsType_ == aitEnumString ) {
-            aitString nVal;
-            pValue_->getConvert(nVal);
-            var_.attr(setAttr_.c_str())(std::string(nVal));
-         }
-
          else if ( epicsType_ == aitEnumEnum16 ) {
             aitString nVal;
             uint8_t idx;
@@ -373,6 +369,5 @@ void rpe::Variable::valueSet() {
    } catch (...) {
       log_->error("Error setting value from epics: %s\n",epicsName_.c_str());
    }
-   inSet_ = false;
 }
 

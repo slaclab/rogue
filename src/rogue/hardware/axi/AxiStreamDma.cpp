@@ -19,14 +19,20 @@
 **/
 #include <rogue/hardware/axi/AxiStreamDma.h>
 #include <rogue/interfaces/stream/Frame.h>
+#include <rogue/interfaces/stream/FrameLock.h>
 #include <rogue/interfaces/stream/Buffer.h>
 #include <rogue/GeneralError.h>
 #include <boost/make_shared.hpp>
 #include <rogue/GilRelease.h>
+#include <stdlib.h>
 
 namespace rha = rogue::hardware::axi;
 namespace ris = rogue::interfaces::stream;
+
+#ifndef NO_PYTHON
+#include <boost/python.hpp>
 namespace bp  = boost::python;
+#endif
 
 //! Class creation
 rha::AxiStreamDmaPtr rha::AxiStreamDma::create (std::string path, uint32_t dest, bool ssiEnable) {
@@ -38,9 +44,11 @@ rha::AxiStreamDmaPtr rha::AxiStreamDma::create (std::string path, uint32_t dest,
 rha::AxiStreamDma::AxiStreamDma ( std::string path, uint32_t dest, bool ssiEnable) {
    uint8_t mask[DMA_MASK_SIZE];
 
-   timeout_ = 1000000;
-   dest_    = dest;
-   enSsi_   = ssiEnable;
+   dest_       = dest;
+   enSsi_      = ssiEnable;
+   zeroCopyEn_ = true;
+
+   rogue::defaultTimeout(timeout_);
 
    log_ = rogue::Logging::create("axi.AxiStreamDma");
 
@@ -81,12 +89,21 @@ rha::AxiStreamDma::~AxiStreamDma() {
 
 //! Set timeout for frame transmits in microseconds
 void rha::AxiStreamDma::setTimeout(uint32_t timeout) {
-   timeout_ = timeout;
+   if ( timeout > 0 ) {
+      div_t divResult = div(timeout,1000000);
+      timeout_.tv_sec  = divResult.quot;
+      timeout_.tv_usec = divResult.rem;
+   }
 }
 
 //! Set driver debug level
 void rha::AxiStreamDma::setDriverDebug(uint32_t level) {
    dmaSetDebug(fd_,level);
+}
+
+//! Enable / disable zero copy
+void rha::AxiStreamDma::setZeroCopyEn(bool state) {
+   zeroCopyEn_ = state;
 }
 
 //! Strobe ack line
@@ -109,7 +126,7 @@ ris::FramePtr rha::AxiStreamDma::acceptReq ( uint32_t size, bool zeroCopyEn) {
    else buffSize = size;
 
    // Zero copy is disabled. Allocate from memory.
-   if ( zeroCopyEn == false || rawBuff_ == NULL ) {
+   if ( zeroCopyEn_ == false || zeroCopyEn == false || rawBuff_ == NULL ) {
       frame = ris::Pool::acceptReq(size,false);
    }
 
@@ -133,12 +150,11 @@ ris::FramePtr rha::AxiStreamDma::acceptReq ( uint32_t size, bool zeroCopyEn) {
             FD_SET(fd_,&fds);
 
             // Setup select timeout
-            tout.tv_sec=(timeout_>0)?(timeout_ / 1000000):0;
-            tout.tv_usec=(timeout_>0)?(timeout_ % 1000000):10000;
+            tout = timeout_;
 
             if ( select(fd_+1,NULL,&fds,NULL,&tout) <= 0 ) {
-               if ( timeout_ > 0 ) throw(rogue::GeneralError::timeout("AxiStreamDma::acceptReq",timeout_));
-               res = 0;
+               log_->timeout("AxiStreamDma::acceptReq", timeout_);
+               res = -1;
             }
             else {
                // Attempt to get index.
@@ -167,8 +183,11 @@ void rha::AxiStreamDma::acceptFrame ( ris::FramePtr frame ) {
    uint32_t         fuser;
    uint32_t         luser;
    uint32_t         cont;
+   bool             emptyFrame;
 
    rogue::GilRelease noGil;
+   ris::FrameLockPtr lock = frame->lock();
+   emptyFrame = false;
 
    // Get Flags
    flags = frame->getFlags();
@@ -202,6 +221,7 @@ void rha::AxiStreamDma::acceptFrame ( ris::FramePtr frame ) {
 
       // Meta is zero copy as indicated by bit 31
       if ( (meta & 0x80000000) != 0 ) {
+         emptyFrame = true;
 
          // Buffer is not already stale as indicates by bit 30
          if ( (meta & 0x40000000) == 0 ) {
@@ -229,11 +249,10 @@ void rha::AxiStreamDma::acceptFrame ( ris::FramePtr frame ) {
             FD_SET(fd_,&fds);
 
             // Setup select timeout
-            tout.tv_sec=(timeout_ > 0)?(timeout_ / 1000000):0;
-            tout.tv_usec=(timeout_ > 0)?(timeout_ % 1000000):10000;
-
+            tout = timeout_;
+            
             if ( select(fd_+1,NULL,&fds,NULL,&tout) <= 0 ) {
-               if ( timeout_ > 0) throw(rogue::GeneralError("AxiStreamDma::acceptFrame","AXIS Write Call Failed. Buffer Not Available!!!!"));
+               log_->timeout("AxiStreamDma::acceptFrame", timeout_);
                res = 0;
             }
             else {
@@ -248,6 +267,8 @@ void rha::AxiStreamDma::acceptFrame ( ris::FramePtr frame ) {
          while ( res == 0 );
       }
    }
+
+   if ( emptyFrame ) frame->clear();
 }
 
 //! Return a buffer
@@ -293,6 +314,8 @@ void rha::AxiStreamDma::runThread() {
    // Preallocate empty frame
    frame = ris::Frame::create();
 
+   log_->logThreadId();
+
    try {
       while(1) {
 
@@ -308,7 +331,7 @@ void rha::AxiStreamDma::runThread() {
          if ( select(fd_+1,&fds,NULL,NULL,&tout) > 0 ) {
 
             // Zero copy buffers were not allocated
-            if ( rawBuff_ == NULL ) {
+            if ( zeroCopyEn_ == false || rawBuff_ == NULL ) {
 
                // Allocate a buffer
                buff = allocBuffer(bSize_,NULL);
@@ -374,14 +397,17 @@ void rha::AxiStreamDma::runThread() {
 }
 
 void rha::AxiStreamDma::setup_python () {
+#ifndef NO_PYTHON
 
    bp::class_<rha::AxiStreamDma, rha::AxiStreamDmaPtr, bp::bases<ris::Master,ris::Slave>, boost::noncopyable >("AxiStreamDma",bp::init<std::string,uint32_t,bool>())
       .def("setDriverDebug", &rha::AxiStreamDma::setDriverDebug)
       .def("dmaAck",         &rha::AxiStreamDma::dmaAck)
       .def("setTimeout",     &rha::AxiStreamDma::setTimeout)
+      .def("setZeroCopyEn",  &rha::AxiStreamDma::setZeroCopyEn)
    ;
 
    bp::implicitly_convertible<rha::AxiStreamDmaPtr, ris::MasterPtr>();
    bp::implicitly_convertible<rha::AxiStreamDmaPtr, ris::SlavePtr>();
+#endif
 }
 

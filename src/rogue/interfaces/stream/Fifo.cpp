@@ -24,14 +24,19 @@
 #include <rogue/interfaces/stream/Master.h>
 #include <rogue/interfaces/stream/Slave.h>
 #include <rogue/interfaces/stream/Frame.h>
+#include <rogue/interfaces/stream/FrameLock.h>
 #include <rogue/interfaces/stream/FrameIterator.h>
 #include <rogue/interfaces/stream/Buffer.h>
 #include <rogue/interfaces/stream/Fifo.h>
 #include <rogue/Logging.h>
-#include <sys/syscall.h>
+#include <rogue/GilRelease.h>
 
-namespace bp = boost::python;
 namespace ris = rogue::interfaces::stream;
+
+#ifndef NO_PYTHON
+#include <boost/python.hpp>
+namespace bp  = boost::python;
+#endif
 
 //! Class creation
 ris::FifoPtr ris::Fifo::create(uint32_t maxDepth, uint32_t trimSize) {
@@ -41,7 +46,9 @@ ris::FifoPtr ris::Fifo::create(uint32_t maxDepth, uint32_t trimSize) {
 
 //! Setup class in python
 void ris::Fifo::setup_python() {
+#ifndef NO_PYTHON
    bp::class_<ris::Fifo, ris::FifoPtr, bp::bases<ris::Master,ris::Slave>, boost::noncopyable >("Fifo",bp::init<uint32_t,uint32_t>());
+#endif
 }
 
 //! Creator with version constant
@@ -69,6 +76,9 @@ void ris::Fifo::acceptFrame ( ris::FramePtr frame ) {
    // FIFO is full, drop frame
    if ( queue_.busy()  ) return;
 
+   rogue::GilRelease noGil;
+   ris::FrameLockPtr lock = frame->lock();
+
    // Get size, adjust if trim is enabled
    size = frame->getPayload();
    if ( trimSize_ != 0 && trimSize_ < size ) size = trimSize_;
@@ -77,7 +87,7 @@ void ris::Fifo::acceptFrame ( ris::FramePtr frame ) {
    nFrame = reqFrame(size,true);
 
    // Copy the frame
-   std::copy(frame->begin(), frame->begin()+size, nFrame->begin());
+   std::copy(frame->beginRead(), frame->beginRead()+size, nFrame->beginWrite());
    nFrame->setPayload(size);
 
    // Append to buffer
@@ -86,11 +96,12 @@ void ris::Fifo::acceptFrame ( ris::FramePtr frame ) {
 
 //! Thread background
 void ris::Fifo::runThread() {
-   log_->info("PID=%i, TID=%li",getpid(),syscall(SYS_gettid));
+   log_->logThreadId();
 
    try {
       while(1) {
          sendFrame(queue_.pop());
+         boost::this_thread::interruption_point();
       }
    } catch (boost::thread_interrupted&) { }
 }

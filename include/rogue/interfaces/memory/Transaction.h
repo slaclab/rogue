@@ -19,20 +19,26 @@
 **/
 #ifndef __ROGUE_INTERFACES_MEMORY_TRANSACTION_H__
 #define __ROGUE_INTERFACES_MEMORY_TRANSACTION_H__
+#include <boost/enable_shared_from_this.hpp>
 #include <stdint.h>
 #include <vector>
-#include <boost/python.hpp>
 #include <boost/thread.hpp>
+
+#ifndef NO_PYTHON
+#include <boost/python.hpp>
+#endif
 
 namespace rogue {
    namespace interfaces {
       namespace memory {
 
+         class TransactionLock;
          class Master;
          class Hub;
 
          //! Transaction
-         class Transaction {
+         class Transaction : public boost::enable_shared_from_this<rogue::interfaces::memory::Transaction> {
+            friend class TransactionLock;
             friend class Master;
             friend class Hub;
 
@@ -46,10 +52,13 @@ namespace rogue {
                //! Class instance lock
                static boost::mutex classMtx_;
 
+               //! Conditional
+               boost::condition_variable cond_;
+
             protected:
 
-               //! Associated master
-               boost::shared_ptr<rogue::interfaces::memory::Master> master_;
+               //! Transaction timeout 
+               struct timeval timeout_;
 
                //! Transaction start time
                struct timeval endTime_;
@@ -57,8 +66,10 @@ namespace rogue {
                //! Transaction start time
                struct timeval startTime_;
 
+#ifndef NO_PYTHON
                //! Transaction python buffer
                Py_buffer pyBuf_;
+#endif
 
                //! Python buffer is valid
                bool pyValid_;
@@ -81,23 +92,28 @@ namespace rogue {
                //! Transaction id
                uint32_t id_;
 
+               //! Done state
+               bool done_;
+
+               //! Transaction lock
+               boost::mutex lock_;
+
             public:
 
                //! Create a transaction container
-               static boost::shared_ptr<rogue::interfaces::memory::Transaction> create (
-                  boost::shared_ptr<rogue::interfaces::memory::Master> master);
+               static boost::shared_ptr<rogue::interfaces::memory::Transaction> create (struct timeval timeout);
 
                //! Setup class in python
                static void setup_python();
 
                //! Constructor
-               Transaction(boost::shared_ptr<rogue::interfaces::memory::Master> master);
-
-               //! Transaction lock which must be held when using iterator
-               boost::mutex lock;
+               Transaction(struct timeval timeout);
 
                //! Destructor
                ~Transaction();
+
+               //! Get lock
+               boost::shared_ptr<rogue::interfaces::memory::TransactionLock> lock();
 
                //! Get expired flag
                bool expired();
@@ -114,8 +130,14 @@ namespace rogue {
                //! Get type
                uint32_t type();
 
-               //! Complete transaction with passed error, Release lock before calling.
+               //! Complete transaction with passed error
                void done(uint32_t error);
+
+               //! Wait for the transaction to complete
+               uint32_t wait();
+
+               //! Refresh timer
+               void refreshTimer(boost::shared_ptr<rogue::interfaces::memory::Transaction> reference);
 
                //! start iterator, caller must lock around access
                rogue::interfaces::memory::Transaction::iterator begin();
@@ -123,11 +145,14 @@ namespace rogue {
                //! end iterator, caller must lock around access
                rogue::interfaces::memory::Transaction::iterator end();
 
+#ifndef NO_PYTHON
+
                //! Get transaction data from python
                void getData ( boost::python::object p, uint32_t offset );
 
                //! Set transaction data from python
                void setData ( boost::python::object p, uint32_t offset );
+#endif
          };
 
          // Convienence

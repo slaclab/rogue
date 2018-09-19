@@ -65,7 +65,6 @@ class Node(object):
         self._description = description
         self._hidden      = hidden
         self._path        = name
-        self._depWarn     = False
         self._expand      = expand
 
         # Tracking
@@ -125,6 +124,9 @@ class Node(object):
     def __dir__(self):
         return(super().__dir__() + [k for k,v in self._nodes.items()])
 
+    def __contains__(self, item):
+        return item in self._nodes.values()
+
     def add(self,node):
         """Add node as sub-node"""
 
@@ -176,6 +178,7 @@ class Node(object):
         Get a ordered dictionary of nodes.
         pass a class type to receive a certain type of node
         class type may be a string when called over Pyro4
+        exc is a class type to exclude, if hidden = False, only visable nodes are returned
         """
         return odict([(k,n) for k,n in self._nodes.items() \
             if (n._isinstance(typ) and ((exc is None) or (not n._isinstance(exc))) and (hidden or n.hidden == False))])
@@ -216,6 +219,20 @@ class Node(object):
                 lst.append(value)
             else:
                 lst.extend(value.variableList)
+        return lst
+
+    @Pyro4.expose
+    @property
+    def deviceList(self):
+        """
+        Get a recursive list of devices
+        """
+        lst = []
+        for key,value in self._nodes.items():
+            if isinstance(value,pr.Device):
+                lst.append(value)
+            else:
+                lst.extend(value.deviceList)
         return lst
 
     @Pyro4.expose
@@ -369,17 +386,6 @@ class Node(object):
             return None
         else:
             return data
-
-    def _getDepWarn(self):
-        ret = []
-
-        if self._depWarn:
-            ret += [self.path]
-
-        for key,value in self._nodes.items():
-            ret += value._getDepWarn()
-
-        return ret
 
     def _setDict(self,d,writeEach,modes=['RW']):
         for key, value in d.items():

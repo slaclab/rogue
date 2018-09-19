@@ -26,11 +26,14 @@
 #include <boost/make_shared.hpp>
 #include <rogue/GilRelease.h>
 #include <rogue/Logging.h>
-#include <sys/syscall.h>
 
 namespace rpp = rogue::protocols::packetizer;
 namespace ris = rogue::interfaces::stream;
+
+#ifndef NO_PYTHON
+#include <boost/python.hpp>
 namespace bp  = boost::python;
+#endif
 
 //! Class creation
 rpp::ApplicationPtr rpp::Application::create (uint8_t id) {
@@ -39,11 +42,13 @@ rpp::ApplicationPtr rpp::Application::create (uint8_t id) {
 }
 
 void rpp::Application::setup_python() {
+#ifndef NO_PYTHON
 
    bp::class_<rpp::Application, rpp::ApplicationPtr, bp::bases<ris::Master,ris::Slave>, boost::noncopyable >("Application",bp::init<uint8_t>());
 
    bp::implicitly_convertible<rpp::ApplicationPtr, ris::MasterPtr>();
    bp::implicitly_convertible<rpp::ApplicationPtr, ris::SlavePtr>();
+#endif
 }
 
 //! Creator
@@ -81,11 +86,12 @@ void rpp::Application::pushFrame( ris::FramePtr frame ) {
 //! Thread background
 void rpp::Application::runThread() {
    Logging log("packetizer.Application");
-   log.info("PID=%i, TID=%li",getpid(),syscall(SYS_gettid));
+   log.logThreadId();
 
    try {
       while(1) {
          sendFrame(queue_.pop());
+         boost::this_thread::interruption_point();
       }
    } catch (boost::thread_interrupted&) { }
 }

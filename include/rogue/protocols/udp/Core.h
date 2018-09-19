@@ -34,6 +34,9 @@ namespace rogue {
          const uint32_t MaxJumboPayload = 8900;
          const uint32_t MaxStdPayload   = 1400;
 
+         const uint32_t JumboMTU = 9000;
+         const uint32_t StdMTU   = 1500;
+
          //! UDP Core
          class Core {
 
@@ -51,7 +54,7 @@ namespace rogue {
                struct sockaddr_in remAddr_;
 
                //! Timeout value
-               uint32_t timeout_;
+               struct timeval timeout_;
 
                boost::thread* thread_;
 
@@ -72,8 +75,8 @@ namespace rogue {
                //! Return max payload
                uint32_t maxPayload();
 
-               //! Set UDP RX Size
-               bool setRxSize(uint32_t size);
+               //! Set number of expected incoming buffers
+               bool setRxBufferCount(uint32_t count);
 
                //! Set timeout for frame transmits in microseconds
                void setTimeout(uint32_t timeout);

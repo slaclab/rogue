@@ -17,6 +17,7 @@
 #include <rogue/hardware/axi/AxiMemMap.h>
 #include <rogue/interfaces/memory/Constants.h>
 #include <rogue/interfaces/memory/Transaction.h>
+#include <rogue/interfaces/memory/TransactionLock.h>
 #include <rogue/GeneralError.h>
 #include <rogue/GilRelease.h>
 #include <boost/make_shared.hpp>
@@ -31,7 +32,11 @@
 
 namespace rha = rogue::hardware::axi;
 namespace rim = rogue::interfaces::memory;
+
+#ifndef NO_PYTHON
+#include <boost/python.hpp>
 namespace bp  = boost::python;
+#endif
 
 //! Class creation
 rha::AxiMemMapPtr rha::AxiMemMap::create (std::string path) {
@@ -70,7 +75,7 @@ void rha::AxiMemMap::doTransaction(rim::TransactionPtr tran) {
    ret = 0;
 
    rogue::GilRelease noGil;
-   boost::unique_lock<boost::mutex> lock(tran->lock);
+   rim::TransactionLockPtr lock = tran->lock();
    it = tran->begin();
 
    while ( (ret == 0) && (count != tran->size()) ) {
@@ -85,16 +90,17 @@ void rha::AxiMemMap::doTransaction(rim::TransactionPtr tran) {
       count += dataSize;
       it += dataSize;
    }
-   lock.unlock(); // Done with iterator
 
    log_->debug("Transaction id=0x%08x, addr 0x%08x. Size=%i, type=%i, data=0x%08x",tran->id(),tran->address(),tran->size(),tran->type(),data);
    tran->done((ret==0)?0:1);
 }
 
 void rha::AxiMemMap::setup_python () {
+#ifndef NO_PYTHON
 
    bp::class_<rha::AxiMemMap, rha::AxiMemMapPtr, bp::bases<rim::Slave>, boost::noncopyable >("AxiMemMap",bp::init<std::string>());
 
    bp::implicitly_convertible<rha::AxiMemMapPtr, rim::SlavePtr>();
+#endif
 }
 

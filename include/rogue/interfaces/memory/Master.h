@@ -23,10 +23,12 @@
 #define __ROGUE_INTERFACES_MEMORY_MASTER_H__
 #include <stdint.h>
 #include <vector>
-#include <boost/enable_shared_from_this.hpp>
-#include <boost/python.hpp>
 #include <boost/thread.hpp>
 #include <rogue/Logging.h>
+
+#ifndef NO_PYTHON
+#include <boost/python.hpp>
+#endif
 
 namespace rogue {
    namespace interfaces {
@@ -36,7 +38,7 @@ namespace rogue {
          class Transaction;
 
          //! Master container
-         class Master : public boost::enable_shared_from_this<rogue::interfaces::memory::Master> {
+         class Master {
             friend class Transaction;
 
             private:
@@ -55,9 +57,6 @@ namespace rogue {
 
                //! Mutex
                boost::mutex mastMtx_;
-
-               //! Conditional
-               boost::condition_variable cond_;
 
                //! Error status
                uint32_t error_;
@@ -85,6 +84,9 @@ namespace rogue {
                //! Get slave
                boost::shared_ptr<rogue::interfaces::memory::Slave> getSlave();
 
+               //! Query the slave ID
+               uint32_t reqSlaveId();
+
                //! Query the minimum access size in bytes for interface
                uint32_t reqMinAccess();
 
@@ -106,25 +108,26 @@ namespace rogue {
                //! Post a transaction, called locally, forwarded to slave, data pointer is optional
                uint32_t reqTransaction(uint64_t address, uint32_t size, void *data, uint32_t type);
 
+#ifndef NO_PYTHON
+
                //! Post a transaction, called locally, forwarded to slave, python version
                // size and offset are optional to use a slice within the python buffer
                uint32_t reqTransactionPy(uint64_t address, boost::python::object p, uint32_t size, uint32_t offset, uint32_t type);
+
+               //! Copy bits from src to dst with lsbs and size
+               static void copyBits(boost::python::object dst, uint32_t dstLsb, boost::python::object src, uint32_t srcLsb, uint32_t size);
+
+               //! Set all bits in dest with lbs and size
+               static void setBits(boost::python::object dst, uint32_t lsb, uint32_t size);
+
+#endif
 
             protected:
 
                //! Internal transaction
                uint32_t intTransaction(boost::shared_ptr<rogue::interfaces::memory::Transaction> tran);
 
-               //! Transaction is done, called from transaction record
-               void doneTransaction(uint32_t id);
-
-               //! Reset transaction data
-               void rstTransaction(TransactionMap::iterator it, bool notify);
-
             public:
-
-               //! End current transaction, ensures data pointer is not update and de-allocates python buffer
-               void endTransaction(uint32_t id);
 
                //! wait for done or timeout, if zero wait for all transactions
                void waitTransaction(uint32_t id);

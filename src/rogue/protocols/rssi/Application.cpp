@@ -26,11 +26,14 @@
 #include <boost/make_shared.hpp>
 #include <rogue/GilRelease.h>
 #include <rogue/Logging.h>
-#include <sys/syscall.h>
 
 namespace rpr = rogue::protocols::rssi;
 namespace ris = rogue::interfaces::stream;
+
+#ifndef NO_PYTHON
+#include <boost/python.hpp>
 namespace bp  = boost::python;
+#endif
 
 //! Class creation
 rpr::ApplicationPtr rpr::Application::create () {
@@ -39,11 +42,13 @@ rpr::ApplicationPtr rpr::Application::create () {
 }
 
 void rpr::Application::setup_python() {
+#ifndef NO_PYTHON
 
    bp::class_<rpr::Application, rpr::ApplicationPtr, bp::bases<ris::Master,ris::Slave>, boost::noncopyable >("Application",bp::init<>());
 
    bp::implicitly_convertible<rpr::ApplicationPtr, ris::MasterPtr>();
    bp::implicitly_convertible<rpr::ApplicationPtr, ris::SlavePtr>();
+#endif
 }
 
 //! Creator
@@ -76,11 +81,12 @@ void rpr::Application::acceptFrame ( ris::FramePtr frame ) {
 //! Thread background
 void rpr::Application::runThread() {
    Logging log("rssi.Application");
-   log.info("PID=%i, TID=%li",getpid(),syscall(SYS_gettid));
+   log.logThreadId();
 
    try {
       while(1) {
          sendFrame(cntl_->applicationTx());
+         boost::this_thread::interruption_point();
       }
    } catch (boost::thread_interrupted&) { }
 }

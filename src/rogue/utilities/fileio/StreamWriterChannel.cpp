@@ -24,6 +24,7 @@
 #include <rogue/utilities/fileio/StreamWriterChannel.h>
 #include <rogue/utilities/fileio/StreamWriter.h>
 #include <rogue/interfaces/stream/Frame.h>
+#include <rogue/interfaces/stream/FrameLock.h>
 #include <stdint.h>
 #include <boost/thread.hpp>
 #include <boost/make_shared.hpp>
@@ -31,7 +32,11 @@
 
 namespace ris = rogue::interfaces::stream;
 namespace ruf = rogue::utilities::fileio;
-namespace bp  = boost::python;
+
+#ifndef NO_PYTHON
+#include <boost/python.hpp>
+namespace bp = boost::python;
+#endif
 
 //! Class creation
 ruf::StreamWriterChannelPtr ruf::StreamWriterChannel::create (ruf::StreamWriterPtr writer, uint8_t channel) {
@@ -41,11 +46,13 @@ ruf::StreamWriterChannelPtr ruf::StreamWriterChannel::create (ruf::StreamWriterP
 
 //! Setup class in python
 void ruf::StreamWriterChannel::setup_python() {
+#ifndef NO_PYTHON
    bp::class_<ruf::StreamWriterChannel, ruf::StreamWriterChannelPtr, bp::bases<ris::Slave>, boost::noncopyable >("StreamWriterChannel",bp::no_init)
        .def("getFrameCount", &ruf::StreamWriterChannel::getFrameCount)
        .def("waitFrameCount", &ruf::StreamWriterChannel::waitFrameCount)
        ;
    bp::implicitly_convertible<ruf::StreamWriterChannelPtr, ris::SlavePtr>();
+#endif
 }
 
 //! Creator
@@ -60,12 +67,13 @@ ruf::StreamWriterChannel::~StreamWriterChannel() { }
 
 //! Accept a frame from master
 void ruf::StreamWriterChannel::acceptFrame ( ris::FramePtr frame ) {
-  rogue::GilRelease noGil;
-  boost::unique_lock<boost::mutex> lock(mtx_);
-  writer_->writeFile (channel_, frame);
-  frameCount_++;
-  lock.unlock();
-  cond_.notify_all();
+   rogue::GilRelease noGil;
+   ris::FrameLockPtr fLock = frame->lock();
+   boost::unique_lock<boost::mutex> lock(mtx_);
+   writer_->writeFile (channel_, frame);
+   frameCount_++;
+   lock.unlock();
+   cond_.notify_all();
 }
 
 uint32_t ruf::StreamWriterChannel::getFrameCount() {

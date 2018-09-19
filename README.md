@@ -19,18 +19,20 @@ https://github.com/slaclab/rogue-example
 
 The following packages are required to build the rogue library:
 
-- cmake   >= 2.8
+- cmake   >= 3.5
 - Boost   >= 1.58
 - python3 >= 3.6
 - bz2
 
-To add these packages on Ubuntu:
+To add these packages on Ubuntu 17.04 (or later):
 
 ````
-$ apt-get install cmake
+$ apt-get install cmake (or cmake3)
 $ apt-get install python3
 $ apt-get install libboost-all-dev
 $ apt-get install libbz2-dev
+$ apt-get install python3-pip
+$ apt-get install git
 ````
 
 To add these packages on archlinux:
@@ -40,6 +42,8 @@ $ pacman -S cmake
 $ pacman -S python3
 $ pacman -S boost
 $ pacman -S bzip2
+$ pacman -S python-pip
+$ pacman -S git
 ````
 
 To use these packages on a rhel6 machine at SLAC requires some extra
@@ -74,19 +78,23 @@ described below.
 ### Optional Packages
 
 ZeroMq is used for some of the python based messaging interface, particularly
-the simulation interfaces. Python QT4 is used for the GUI interface.
+the simulation interfaces. To use the GUI interface you will need to install
+either pyqt5 or pyqt4.
 
-On Ubuntu:
+
+On Ubuntu 17.04 (or later):
 
 ````
-$ apt-get install libzmq-dev
-$ apt-get install 
+$ apt-get install libzmq3-dev
+$ apt-get install python3-pyqt5
+$ apt-get install python3-pyqt4
 ````
 
 On archlinux:
 
 ````
 $ pacman -S zeromq
+$ pacman -S python-pyqt5
 $ pacman -S python-pyqt4
 ````
 
@@ -124,14 +132,13 @@ afs based SLAC python3 install mentioned above.
 $ pip3 install PyYAML
 $ pip3 install Pyro4 
 $ pip3 install parse
-$ pip3 install recordclass
 $ pip3 install click
 ````
 
 The following are optional:
 
 ````
-$ pip3 isntall ipython
+$ pip3 install ipython
 $ pip3 install pyzmq
 $ pip3 install mysqlclient
 ````
@@ -147,7 +154,7 @@ $ git submodule init
 $ git submodule update
 $ mkdir build
 $ cd build
-$ cmake ..
+$ cmake ..  (or cmake3)
 $ make
 ````
 
@@ -182,12 +189,6 @@ setting up the example projects or some SLAC projects.
 
 You may want to create a custom setup script to combine the rogue setup with 
 other environmental setups for your project.
-
-### Rogue on Windows 10
-
-Rogue will compile on windows 10 under the windows subsystem for Linux
-envrionment. Once the windows subsystem for Linux is setup the environment
-is the same as Unbuntu.
 
 ### Drivers
 

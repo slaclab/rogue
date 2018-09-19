@@ -10,3 +10,4 @@ setup.csh
 setup.sh
 .__afs*
 lib/*
+build/*

@@ -22,7 +22,6 @@
 #define __ROGUE_PROTOCOLS_PACKETIZER_APPLICATION_H__
 #include <rogue/interfaces/stream/Master.h>
 #include <rogue/interfaces/stream/Slave.h>
-#include <boost/python.hpp>
 #include <stdint.h>
 #include <rogue/Queue.h>
 
@@ -82,7 +81,7 @@ namespace rogue {
                void acceptFrame ( boost::shared_ptr<rogue::interfaces::stream::Frame> frame );
          };
 
-         // Convienence
+         // Convenience
          typedef boost::shared_ptr<rogue::protocols::packetizer::Application> ApplicationPtr;
 
       }

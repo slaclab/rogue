@@ -32,19 +32,19 @@ namespace rogue {
          class Header {
 
                //! Set 16-bit uint value
-               inline void setUInt16 ( uint8_t byte, uint16_t value);
+               inline void setUInt16 ( uint8_t *data, uint8_t byte, uint16_t value);
 
                //! Get 16-bit uint value
-               inline uint16_t getUInt16 ( uint8_t byte );
+               inline uint16_t getUInt16 ( uint8_t *data, uint8_t byte );
 
                //! Set 32-bit uint value
-               inline void setUInt32 ( uint8_t byte, uint32_t value);
+               inline void setUInt32 ( uint8_t *data, uint8_t byte, uint32_t value);
 
                //! Get 32-bit uint value
-               inline uint32_t getUInt32 ( uint8_t byte );
+               inline uint32_t getUInt32 ( uint8_t *data, uint8_t byte );
 
                //! compute checksum
-               uint16_t compSum (uint8_t size);
+               uint16_t compSum (uint8_t *data, uint8_t size);
 
             public:
 
@@ -57,9 +57,6 @@ namespace rogue {
                //! Frame pointer
                boost::shared_ptr<rogue::interfaces::stream::Frame> frame_;
 
-               //! Raw data
-               uint8_t * data_;
-
                //! Time last transmitted
                struct timeval time_;
 
@@ -71,9 +68,6 @@ namespace rogue {
                //! Create
                static boost::shared_ptr<rogue::protocols::rssi::Header>
                   create(boost::shared_ptr<rogue::interfaces::stream::Frame> frame);
-
-               //! Setup class in python
-               static void setup_python();
 
                //! Creator
                Header(boost::shared_ptr<rogue::interfaces::stream::Frame> frame);
@@ -91,7 +85,7 @@ namespace rogue {
                void update();
 
                //! Get time
-               struct timeval * getTime();
+               struct timeval & getTime();
 
                //! Get Count
                uint32_t count();

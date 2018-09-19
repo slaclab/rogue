@@ -18,10 +18,23 @@
  * ----------------------------------------------------------------------------
 **/
 #include <rogue/GeneralError.h>
-#include <sys/syscall.h>
+#include <stdarg.h>
+
+#ifndef NO_PYTHON
+
+#include <boost/python.hpp>
 namespace bp = boost::python;
 
 PyObject * rogue::generalErrorObj = 0;
+
+#endif
+
+// Set default timeout value
+void rogue::defaultTimeout(struct timeval &tout) {
+   div_t divResult = div(DEFAULT_TIMEOUT,1000000);
+   tout.tv_sec  = divResult.quot;
+   tout.tv_usec = divResult.rem;
+}
 
 rogue::GeneralError::GeneralError(std::string src,std::string text) {
    snprintf(text_,BuffSize,"%s: General Error: %s",src.c_str(),text.c_str());
@@ -38,10 +51,17 @@ rogue::GeneralError rogue::GeneralError::create(std::string src, const char * fm
    return(rogue::GeneralError(src,temp));
 }
 
-rogue::GeneralError rogue::GeneralError::timeout(std::string src, uint32_t time) {
+rogue::GeneralError rogue::GeneralError::timeout(std::string src, struct timeval & tout) {
    char temp[BuffSize];
 
-   snprintf(temp,BuffSize,"timeout after %i microseconds",time);
+   snprintf(temp,BuffSize,"timeout after %li.%li Seconds",tout.tv_sec, tout.tv_usec);
+   return(rogue::GeneralError(src,temp));
+}
+
+rogue::GeneralError rogue::GeneralError::timeout(std::string src, uint32_t tout) {
+   char temp[BuffSize];
+
+   snprintf(temp,BuffSize,"timeout after %i Microseconds",tout);
    return(rogue::GeneralError(src,temp));
 }
 
@@ -92,6 +112,9 @@ char const * rogue::GeneralError::what() const throw() {
 }
 
 void rogue::GeneralError::setup_python() {
+
+#ifndef NO_PYTHON
+
    bp::class_<rogue::GeneralError>("GeneralError",bp::init<std::string,std::string>());
 
    PyObject * typeObj = PyErr_NewException((char *)"rogue.GeneralError", PyExc_Exception, 0);
@@ -100,14 +123,20 @@ void rogue::GeneralError::setup_python() {
    rogue::generalErrorObj = typeObj;
 
    bp::register_exception_translator<rogue::GeneralError>(&(rogue::GeneralError::translate));
+
+#endif
 }
 
 void rogue::GeneralError::translate(GeneralError const &e) {
+
+#ifndef NO_PYTHON
+
    bp::object exc(e); // wrap the C++ exception
 
    bp::object exc_t(bp::handle<>(bp::borrowed(rogue::generalErrorObj)));
    exc_t.attr("cause") = exc; // add the wrapped exception to the Python exception
 
    PyErr_SetString(rogue::generalErrorObj, e.what());
+#endif
 }
 

@@ -52,8 +52,8 @@ namespace rogue {
             //! Min size
             uint32_t   minSize_;
 
-            //! RX Count
-            boost::mutex rxMtx_;
+            //! Lock
+            boost::mutex pMtx_;
 
             //! rx sequence tracking
             uint32_t   rxSeq_;
@@ -66,9 +66,6 @@ namespace rogue {
 
             //! Rx bytes
             uint32_t   rxBytes_;
-
-            //! TX Mutex
-            boost::mutex txMtx_;
 
             //! tx sequence tracking
             uint32_t   txSeq_;
@@ -88,6 +85,25 @@ namespace rogue {
             //! Check payload
             bool       checkPl_;
 
+            //! Gen payload
+            bool       genPl_;
+
+            //! Send count
+            bool       sendCount_;
+
+            // Stats
+            uint32_t lastRxCount_;
+            uint32_t lastRxBytes_;
+            struct timeval lastRxTime_;
+            double   rxRate_;
+            double   rxBw_;
+
+            uint32_t lastTxCount_;
+            uint32_t lastTxBytes_;
+            struct timeval lastTxTime_;
+            double   txRate_;
+            double   txBw_;
+
             //! Logger
             rogue::LoggingPtr rxLog_;
             rogue::LoggingPtr txLog_;
@@ -100,6 +116,8 @@ namespace rogue {
 
             //! Thread background
             void runThread();
+
+            static double updateTime ( struct timeval *last );
 
          public:
 
@@ -121,8 +139,13 @@ namespace rogue {
             //! Set taps
             void setTaps(uint32_t tapCnt, uint8_t * taps);
 
+#ifndef NO_PYTHON
             //! Set taps, python
             void setTapsPy(boost::python::object p);
+#endif
+
+            //! Send counter value
+            void sendCount(bool state);
 
             //! Generate a data frame
             void genFrame (uint32_t size);
@@ -142,6 +165,18 @@ namespace rogue {
             //! Get rx total bytes
             uint32_t getRxBytes();
 
+            //! Get rx rate
+            double getRxRate();
+
+            //! Get rx bw
+            double getRxBw();
+
+            //! Get tx rate
+            double getTxRate();
+
+            //! Get tx bw
+            double getTxBw();
+
             //! Get tx errors
             uint32_t getTxErrors();
 
@@ -153,6 +188,9 @@ namespace rogue {
 
             //! Set check payload flag, default = true
             void checkPayload(bool state);
+
+            //! Set check generate flag, default = true
+            void genPayload(bool state);
 
             //! Reset counters
             void resetCount();

@@ -20,187 +20,255 @@
 #include <rogue/interfaces/stream/Frame.h>
 #include <rogue/interfaces/stream/FrameIterator.h>
 #include <rogue/interfaces/stream/Buffer.h>
-#include <rogue/GeneralError.h>
-#include <boost/python.hpp>
 
 namespace ris = rogue::interfaces::stream;
-namespace bp  = boost::python;
 
-ris::FrameIterator::FrameIterator(ris::FramePtr frame, uint32_t offset, bool end) {
-   ris::Frame::BufferIterator it;
-  
-   end_      = end; 
-   frame_    = frame;
-   curr_     = frame_->endBuffer();
-   buffPos_  = 0;
-   framePos_ = frame_->getSize();
+ris::FrameIterator::FrameIterator(ris::FramePtr frame, bool write, bool end) {
+   write_     = write;
+   frame_     = frame;
+   frameSize_ = (write_) ? frame_->getSize() : frame_->getPayload();
 
-   if ( ! end ) {
-      buffPos_  = offset;
-      framePos_ = offset;
+   // Invalid or end
+   if ( end || frameSize_ == 0 ) {
+      framePos_ = frameSize_;
+      data_     = NULL;
+   }
+   else {
+      framePos_  = 0;
+      buffPos_   = 0;
+      buff_      = frame_->beginBuffer();
+      buffSize_  = (write_) ? (*buff_)->getSize() : (*buff_)->getPayload();
+      data_      = (*buff_)->begin();
+   }
+}
 
-      for ( it=frame_->beginBuffer(); it != frame_->endBuffer(); ++it ) {
-         curr_ = it;
+//! adjust position
+void ris::FrameIterator::adjust(int32_t diff) {
 
-         if ( (*it)->getSize() > buffPos_ ) break;
-         else buffPos_ -= (*it)->getSize();
+   // Increment
+   if ( diff > 0 ) {
+
+      // Adustment puts us at the end, or overflow
+      if ( (framePos_ + diff) >= frameSize_ ) {
+         framePos_ = frameSize_;
+         data_ = NULL;
+         diff = 0;
+      }
+
+      // Iterate through increments
+      while ( diff > 0 ) {
+
+         // Jump to next buffer
+         if ( (buffPos_ + diff) >= buffSize_ ) {
+            framePos_ += (buffSize_ - buffPos_);
+            diff -= (buffSize_ - buffPos_);
+            buff_++;
+            buffPos_ = 0;
+            buffSize_ = (write_) ? (*buff_)->getSize() : (*buff_)->getPayload();
+            data_ = (*buff_)->begin();
+         } 
+         
+         // Adjust within buffer 
+         else {
+            framePos_ += diff;
+            buffPos_ += diff;
+            data_ += diff;
+            diff = 0;
+         }
+      } 
+   }
+
+   // Decrement
+   else if ( diff < 0 ) {
+
+      // Invert
+      diff *= -1;
+
+      // Underflow
+      if ( diff > framePos_ ) {
+         framePos_ = frameSize_;
+         data_ = NULL;
+         diff = 0;
+      }
+
+      // Frame is at end, rewind and reset position to relative offset
+      else if ( framePos_ == frameSize_ ) {
+         framePos_  = 0;
+         buffPos_   = 0;
+         buff_      = frame_->beginBuffer();
+         buffSize_  = (write_) ? (*buff_)->getSize() : (*buff_)->getPayload();
+         data_      = (*buff_)->begin();
+         this->adjust(frameSize_ - diff); // Recursion
+         diff = 0;
+      }
+
+      // Iterate through decrements
+      while ( diff > 0 ) {
+
+         // Jump to previous buffer
+         if ( diff > buffPos_ ) {
+            framePos_ -= (buffPos_ + 1);
+            diff -= (buffPos_ + 1);
+            buff_--;
+            buffSize_  = (write_) ? (*buff_)->getSize() : (*buff_)->getPayload();
+            buffPos_ = buffSize_-1;
+            data_ = (*buff_)->begin() + buffPos_;
+         }
+         
+         // Adjust within buffer 
+         else {
+            framePos_ -= diff;
+            buffPos_ -= diff;
+            data_ -= diff;
+            diff = 0;
+         }
       }
    }
 }
 
 ris::FrameIterator::FrameIterator() {
-   end_      = true;
-   buffPos_  = 0;
-   framePos_ = 0;
+   write_     = false;
+   framePos_  = 0;
+   frameSize_ = 0;
+   buffPos_   = 0;
+   buffSize_  = 0;
+   data_      = NULL;
 }
 
 //! Copy assignment
 const ris::FrameIterator ris::FrameIterator::operator=(const ris::FrameIterator &rhs) {
-   this->end_      = rhs.end_;
-   this->frame_    = rhs.frame_;
-   this->curr_     = rhs.curr_;
-   this->buffPos_  = rhs.buffPos_;
-   this->framePos_ = rhs.framePos_;
+   this->write_     = rhs.write_;
+   this->frame_     = rhs.frame_;
+   this->framePos_  = rhs.framePos_;
+   this->frameSize_ = rhs.frameSize_;
+   this->buff_      = rhs.buff_;
+   this->buffPos_   = rhs.buffPos_;
+   this->buffSize_  = rhs.buffSize_;
+   this->data_      = rhs.data_;
    return *this;
+}
+
+//! Get iterator to end of buffer or end of frame, whichever is lower
+ris::FrameIterator ris::FrameIterator::endBuffer() {
+   ris::FrameIterator ret(*this);
+   ret.adjust(buffSize_-buffPos_);
+   return ret;
+}
+
+//! Get remaining bytes in current buffer
+uint32_t ris::FrameIterator::remBuffer() {
+   if ( framePos_ == frameSize_ ) return(0);
+   else return (buffSize_-buffPos_);
 }
 
 //! De-reference
 uint8_t & ris::FrameIterator::operator *() const {
-   if ( end_ ) throw rogue::GeneralError("FrameIterator::*","Iterator overflow!");
-   else return *((*curr_)->begin() + buffPos_);
+   return *data_;
 }
 
 //! Pointer
 uint8_t * ris::FrameIterator::operator ->() const {
-   if ( end_ ) throw rogue::GeneralError("FrameIterator::->","Iterator overflow!");
-   else return ((*curr_)->begin() + buffPos_);
+   return data_;
+}
+
+
+//! Pointer
+uint8_t * ris::FrameIterator::ptr() const {
+   return data_;
 }
 
 //! De-reference by index
 uint8_t ris::FrameIterator::operator [](const uint32_t &offset) const {
-   if ((offset + framePos_) >= frame_->getSize()) 
-      throw rogue::GeneralError("FrameIterator::[]","Iterator overflow!");
-
-   ris::FrameIterator ret(frame_, (framePos_ + offset), false);
+   ris::FrameIterator ret(*this);
+   ret.adjust((int32_t)offset);
    return *ret;
 }
 
 //! Increment
 const ris::FrameIterator & ris::FrameIterator::operator ++() {
-   if ( end_ ) throw rogue::GeneralError("FrameIterator::++","Iterator overflow!");
-   ++framePos_;
-
-   if ( ++buffPos_ == (*curr_)->getSize() ) {
-      buffPos_ = 0;
-      if ( ++curr_ == frame_->endBuffer() ) end_ = true;
-   }
+   this->adjust(1);
    return *this;
 }
 
 //! post Increment
 ris::FrameIterator ris::FrameIterator::operator ++(int) {
    ris::FrameIterator ret(*this);
-   ++(*this);
+   ret.adjust(1);
    return ret;
 }
 
 //! Decrement
 const ris::FrameIterator & ris::FrameIterator::operator --() {
-   if ( framePos_ == 0 ) throw rogue::GeneralError("FrameIterator::--","Iterator overflow!");
-   --framePos_;
-
-   if ( end_ || buffPos_ == 0 ) {
-      curr_--;
-      end_ = false;
-      buffPos_ = (*curr_)->getSize()-1;
-   }
-   else --buffPos_;
+   this->adjust(-1);
    return *this;
 }
 
 //! post Decrement
 ris::FrameIterator ris::FrameIterator::operator --(int) {
    ris::FrameIterator ret(*this);
-   --(*this);
+   ret.adjust(-1);
    return ret;
 }
 
 //! Not Equal
 bool ris::FrameIterator::operator !=(const ris::FrameIterator & other) const {
-   return(other.framePos_ != framePos_);
+   return(this->framePos_ != other.framePos_);
 }
 
 //! Equal
 bool ris::FrameIterator::operator ==(const ris::FrameIterator & other) const {
-   return(other.framePos_ == framePos_);
+   return(this->framePos_ == other.framePos_);
 }
 
 //! Less than
 bool ris::FrameIterator::operator <(const ris::FrameIterator & other) const {
-   return ( framePos_ < other.framePos_ );
+   return(this->framePos_ < other.framePos_);
 }
 
 //! greater than
 bool ris::FrameIterator::operator >(const ris::FrameIterator & other) const {
-   return ( framePos_ > other.framePos_ );
+   return(this->framePos_ > other.framePos_);
 }
 
 //! Less than equal
 bool ris::FrameIterator::operator <=(const ris::FrameIterator & other) const {
-   return ( framePos_ <= other.framePos_ );
+   return(this->framePos_ <= other.framePos_);
 }
 
 //! greater than equal
 bool ris::FrameIterator::operator >=(const ris::FrameIterator & other) const {
-   return ( framePos_ >= other.framePos_ );
+   return(this->framePos_ >= other.framePos_);
 }
 
 //! Increment by value
 ris::FrameIterator ris::FrameIterator::operator +(const int32_t &add) const {
-   if ( add < 0 ) return(*this - add);
-
-   if ( (framePos_ + add) > (int32_t)frame_->getSize() )
-      throw rogue::GeneralError("FrameIterator::+","Iterator overflow!");
-
-   ris::FrameIterator ret(frame_, framePos_ + add, ((framePos_ + add) == frame_->getSize()));
+   ris::FrameIterator ret(*this);
+   ret.adjust(add);
    return ret;
 }
 
 //! Descrment by value
 ris::FrameIterator ris::FrameIterator::operator -(const int32_t &sub) const {
-   if ( sub < 0 ) return(*this + sub);
-
-   if ( (uint32_t)sub > framePos_ ) 
-      throw rogue::GeneralError("FrameIterator::-","Iterator underflow!");
-
-   ris::FrameIterator ret(frame_, framePos_ - sub, ((framePos_ - sub) == frame_->getSize()));
+   ris::FrameIterator ret(*this);
+   ret.adjust(-sub);
    return ret;
 }
 
 //! Sub incrementers
 int32_t ris::FrameIterator::operator -(const ris::FrameIterator &other) const {
-   return(framePos_ - other.framePos_);
+   return(this->framePos_ - other.framePos_);
 }
 
-//! Increment by value, need more effecient version
+//! Increment by value
 ris::FrameIterator & ris::FrameIterator::operator +=(const int32_t &add) {
-   if ( add < 0 ) return(*this -= add);
-
-   int32_t lAdd = add;
-
-   do ++(*this);
-   while ( --lAdd > 0 );
+   this->adjust(add);
+   return *this;
 }
 
-//! Descrment by value, need more effecient version
+//! Descrment by value
 ris::FrameIterator & ris::FrameIterator::operator -=(const int32_t &sub) {
-   if ( sub < 0 ) return(*this += sub);
-
-   int32_t lSub = sub;
-
-   do --(*this);
-   while ( --lSub > 0 );
+   this->adjust(-sub);
+   return *this;
 }
 
-void ris::FrameIterator::setup_python() { }
 

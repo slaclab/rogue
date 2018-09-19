@@ -40,18 +40,14 @@ namespace rogue {
                boost::shared_ptr<rogue::protocols::epicsV3::Value> value_;
                aitBool interest_;
                boost::mutex mtx_;
+               casEventMask valueMask_;
 
             public:
-
-               //! Setup class in python
-               static void setup_python();
 
                //! Class creation
                Pv (caServer &cas, boost::shared_ptr<rogue::protocols::epicsV3::Value> value);
 
                ~Pv ();
-
-               bool interest();
 
                // Virtual methods in casPV
 
@@ -85,7 +81,7 @@ namespace rogue {
 
                const char * getName() const;
 
-               void postEvent ( const casEventMask & select, const gdd & event );
+               void updated(const gdd & event);
 
          };
       }

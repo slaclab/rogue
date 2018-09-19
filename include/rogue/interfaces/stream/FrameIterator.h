@@ -22,7 +22,6 @@
 #include <stdint.h>
 #include <vector>
 
-#include <boost/python.hpp>
 namespace rogue {
    namespace interfaces {
       namespace stream {
@@ -31,42 +30,60 @@ namespace rogue {
          class FrameIterator : public std::iterator<std::random_access_iterator_tag, uint8_t> {
             friend class Frame;
 
-               //! End flag
-               bool end_;
-
-               //! Frame position
-               uint32_t framePos_;
+               //! write flag
+               bool write_;
 
                //! Associated frame
                boost::shared_ptr<rogue::interfaces::stream::Frame> frame_;
 
-               //! current buffer
-               std::vector<boost::shared_ptr<rogue::interfaces::stream::Buffer> >::iterator curr_;
+               //! Frame position
+               uint32_t framePos_;
 
-               //! Current buffer position
+               //! Frame size
+               uint32_t frameSize_;
+
+               //! current buffer
+               std::vector<boost::shared_ptr<rogue::interfaces::stream::Buffer> >::iterator buff_;
+
+               //! Buffer position
                uint32_t buffPos_;
+
+               //! Buffer size
+               uint32_t buffSize_;
+
+               //! Current buffer iterator
+               uint8_t * data_;
 
                //! Creator
                FrameIterator(boost::shared_ptr<rogue::interfaces::stream::Frame> frame, 
-                             uint32_t offset, bool end);
+                             bool write, bool end);
+
+               //! adjust position
+               void adjust(int32_t diff);
 
             public:
 
                //! Creator
                FrameIterator();
 
-               //! Setup class in python
-               static void setup_python();
-
                //! Copy assignment
                const rogue::interfaces::stream::FrameIterator operator =(
                      const rogue::interfaces::stream::FrameIterator &rhs);
+
+               //! Get iterator to end of buffer or end of frame, whichever is lower
+               rogue::interfaces::stream::FrameIterator endBuffer();
+
+               //! Get remaining bytes in current buffer
+               uint32_t remBuffer();
 
                //! De-reference
                uint8_t & operator *() const;
 
                //! Pointer
                uint8_t * operator ->() const;
+
+               //! Pointer
+               uint8_t * ptr() const;
 
                //! De-reference by index
                uint8_t operator [](const uint32_t &offset) const;

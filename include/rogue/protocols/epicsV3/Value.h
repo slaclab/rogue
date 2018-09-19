@@ -47,6 +47,7 @@ namespace rogue {
                uint32_t    size_;
                uint32_t    fSize_;
                bool        array_;
+               bool        isString_;
 
                std::vector<std::string> enums_;
                rogue::protocols::epicsV3::Pv * pv_;
@@ -89,8 +90,6 @@ namespace rogue {
                virtual void valueGet();
 
                void setPv(rogue::protocols::epicsV3::Pv * pv);
-
-               void clrPv();
 
                rogue::protocols::epicsV3::Pv * getPv();
                

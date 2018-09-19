@@ -23,7 +23,6 @@
 #include <rogue/interfaces/stream/Master.h>
 #include <rogue/interfaces/stream/Slave.h>
 #include <boost/enable_shared_from_this.hpp>
-#include <boost/python.hpp>
 #include <stdint.h>
 #include <rogue/Queue.h>
 #include <rogue/Logging.h>
@@ -49,10 +48,11 @@ namespace rogue {
                uint32_t crcInit_[256];
                uint8_t  tranDest_;
                uint32_t dropCount_;
-               uint32_t timeout_;
                uint32_t headSize_;
                uint32_t tailSize_;
                uint32_t alignSize_;
+
+               struct timeval timeout_;
 
                rogue::LoggingPtr log_;
 
@@ -67,9 +67,6 @@ namespace rogue {
                rogue::Queue<boost::shared_ptr<rogue::interfaces::stream::Frame>> tranQueue_;
 
             public:
-
-               //! Setup class in python
-               static void setup_python();
 
                //! Creator
                Controller( boost::shared_ptr<rogue::protocols::packetizer::Transport> tran,
@@ -98,7 +95,7 @@ namespace rogue {
                void setTimeout(uint32_t timeout);
          };
 
-         // Convienence
+         // Convenience
          typedef boost::shared_ptr<rogue::protocols::packetizer::Controller> ControllerPtr;
 
       }

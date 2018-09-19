@@ -29,7 +29,11 @@
 #include <rogue/GilRelease.h>
 
 namespace ris = rogue::interfaces::stream;
+
+#ifndef NO_PYTHON
+#include <boost/python.hpp>
 namespace bp  = boost::python;
+#endif
 
 //! Creator
 ris::Pool::Pool() { 
@@ -37,7 +41,7 @@ ris::Pool::Pool() {
    allocBytes_ = 0;
    allocCount_ = 0;
    fixedSize_  = 0;
-   maxCount_   = 0;
+   poolSize_   = 0;
 }
 
 //! Destructor
@@ -79,7 +83,7 @@ void ris::Pool::retBuffer(uint8_t * data, uint32_t meta, uint32_t rawSize) {
    boost::lock_guard<boost::mutex> lock(mtx_);
 
    if ( data != NULL ) {
-      if ( rawSize == fixedSize_ && maxCount_ > dataQ_.size() ) dataQ_.push(data);
+      if ( rawSize == fixedSize_ && poolSize_ > dataQ_.size() ) dataQ_.push(data);
       else free(data);
    }
    allocBytes_ -= rawSize;
@@ -87,18 +91,42 @@ void ris::Pool::retBuffer(uint8_t * data, uint32_t meta, uint32_t rawSize) {
 }
 
 void ris::Pool::setup_python() {
+#ifndef NO_PYTHON
    bp::class_<ris::Pool, ris::PoolPtr, boost::noncopyable>("Pool",bp::init<>())
       .def("getAllocCount",  &ris::Pool::getAllocCount)
       .def("getAllocBytes",  &ris::Pool::getAllocBytes)
+      .def("setFixedSize",   &ris::Pool::setFixedSize)
+      .def("getFixedSize",   &ris::Pool::getFixedSize)
+      .def("setPoolSize",    &ris::Pool::setPoolSize)
+      .def("getPoolSize",    &ris::Pool::getPoolSize)
    ;
+#endif
 }
 
 //! Set fixed size mode
-void ris::Pool::enBufferPool(uint32_t size, uint32_t count) {
-   if ( fixedSize_ != 0 ) 
-      throw(rogue::GeneralError("Pool::enBufferPool","Method can only be called once!"));
-   fixedSize_  = size;
-   maxCount_   = count;
+void ris::Pool::setFixedSize(uint32_t size) {
+   rogue::GilRelease noGil;
+   boost::lock_guard<boost::mutex> lock(mtx_);
+
+   fixedSize_ = size;
+}
+
+//! Get fixed size mode
+uint32_t ris::Pool::getFixedSize() {
+   return fixedSize_;
+}
+
+//! Set buffer pool size
+void ris::Pool::setPoolSize(uint32_t size) {
+   rogue::GilRelease noGil;
+   boost::lock_guard<boost::mutex> lock(mtx_);
+
+   poolSize_ = size;
+}
+
+//! Get pool size
+uint32_t ris::Pool::getPoolSize() {
+   return poolSize_;
 }
 
 //! Allocate a buffer passed size

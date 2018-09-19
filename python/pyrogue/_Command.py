@@ -41,7 +41,6 @@ class BaseCommand(pr.BaseVariable):
             self,
             name=name,
             description=description,
-            update=False,
             mode='WO',
             value=value,
             enum=enum,
@@ -89,6 +88,10 @@ class BaseCommand(pr.BaseVariable):
     @staticmethod
     def nothing():
         pass
+
+    @staticmethod
+    def read(cmd):
+        cmd.get(read=True)
 
     @staticmethod
     def createToggle(sets):
@@ -147,6 +150,8 @@ class BaseCommand(pr.BaseVariable):
     def _getDict(self,modes):
         return None
 
+    def get(self,read=True):
+        return self._default
 
 # LocalCommand is the same as BaseCommand
 LocalCommand = BaseCommand
@@ -166,7 +171,8 @@ class RemoteCommand(BaseCommand, pr.RemoteVariable):
                  base=pr.UInt,
                  offset=None,
                  bitSize=32,
-                 bitOffset=0):
+                 bitOffset=0,
+                 overlapEn=False):
 
         # RemoteVariable constructor will handle assignment of most params
         BaseCommand.__init__(
@@ -188,6 +194,7 @@ class RemoteCommand(BaseCommand, pr.RemoteVariable):
             offset=offset,
             bitSize=bitSize,
             bitOffset=bitOffset,
+            overlapEn=overlapEn,
             verify=False)
 
 
@@ -215,53 +222,7 @@ class RemoteCommand(BaseCommand, pr.RemoteVariable):
             return None
 
         return ret
-            
-# Legacy Support
-def Command(offset=None, **kwargs):
-    if offset is None:
 
-        # Get list of possible class args
-        cargs = inspect.getfullargspec(LocalCommand.__init__).args + \
-                inspect.getfullargspec(LocalCommand.__init__).kwonlyargs
-
-        # Pass supported args
-        args = {k:kwargs[k] for k in kwargs if k in cargs}
-
-        ret = LocalCommand(**args)
-        ret._depWarn = True
-        return(ret)
-    else:
-
-        # Get list of possible class args
-        cargs = inspect.getfullargspec(RemoteCommand.__init__).args + \
-                inspect.getfullargspec(RemoteCommand.__init__).kwonlyargs
-
-        # Pass supported args
-        args = {k:kwargs[k] for k in kwargs if k in cargs}
-
-        ret = RemoteCommand(offset=offset,**args)
-        ret._depWarn = True
-        return(ret)
-
-Command.nothing = BaseCommand.nothing
-Command.toggle = BaseCommand.toggle
-Command.touch = BaseCommand.touch
-Command.touchZero = BaseCommand.touchZero
-Command.touchOne = BaseCommand.touchOne
-Command.postedTouch = BaseCommand.postedTouch
-
-
-###################################
-# (Hopefully) useful Command stuff
-##################################
-BLANK_COMMAND = Command(name='Blank', description='A singleton command that does nothing')
-
-def command(order=0, **cmdArgs):
-    def wrapper(func):
-        func.PyrogueCommandOrder = order
-        func.PyrogueCommandArgs = cmdArgs
-        return func
-    return wrapper
-################################
-
+# Alias
+Command = BaseCommand
 

@@ -21,7 +21,6 @@
 #include <rogue/interfaces/stream/Master.h>
 #include <rogue/interfaces/stream/Slave.h>
 #include <DataDriver.h>
-#include <boost/python.hpp>
 #include <boost/thread.hpp>
 #include <stdint.h>
 #include <rogue/Logging.h>
@@ -34,8 +33,6 @@ namespace rogue {
          //! Axi DMA Class
          class AxiStreamDma : public rogue::interfaces::stream::Master, 
                               public rogue::interfaces::stream::Slave {
-
-                rogue::LoggingPtr log_;
 
                //! AxiStreamDma file descriptor
                int32_t  fd_;
@@ -50,7 +47,7 @@ namespace rogue {
                uint32_t bSize_;
 
                //! Timeout for frame transmits
-               uint32_t timeout_;
+               struct timeval timeout_;
 
                //! ssi insertion enable
                bool enSsi_;
@@ -59,6 +56,9 @@ namespace rogue {
                void  ** rawBuff_;
 
                boost::thread* thread_;
+
+               //! Log 
+               rogue::LoggingPtr log_;
 
                //! Thread background
                void runThread();

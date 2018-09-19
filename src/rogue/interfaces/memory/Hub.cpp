@@ -26,10 +26,13 @@
 #include <rogue/GilRelease.h>
 #include <rogue/ScopedGil.h>
 #include <boost/make_shared.hpp>
-#include <boost/python.hpp>
 
 namespace rim = rogue::interfaces::memory;
+
+#ifndef NO_PYTHON
+#include <boost/python.hpp>
 namespace bp  = boost::python;
+#endif
 
 //! Create a block, class creator
 rim::HubPtr rim::Hub::create (uint64_t offset) {
@@ -48,6 +51,11 @@ rim::Hub::~Hub() { }
 //! Get offset
 uint64_t rim::Hub::getOffset() {
    return offset_;
+}
+
+//! Return id to requesting master
+uint32_t rim::Hub::doSlaveId() {
+   return(reqSlaveId());
 }
 
 //! Return min access size to requesting master
@@ -77,6 +85,7 @@ void rim::Hub::doTransaction(rim::TransactionPtr tran) {
 
 void rim::Hub::setup_python() {
 
+#ifndef NO_PYTHON
    bp::class_<rim::HubWrap, rim::HubWrapPtr, bp::bases<rim::Master,rim::Slave>, boost::noncopyable>("Hub",bp::init<uint64_t>())
        .def("_getAddress",    &rim::Hub::doAddress)
        .def("_getOffset",     &rim::Hub::getOffset)
@@ -84,7 +93,10 @@ void rim::Hub::setup_python() {
    ;
 
    bp::implicitly_convertible<rim::HubPtr, rim::MasterPtr>();
+#endif
 }
+
+#ifndef NO_PYTHON
 
 //! Constructor
 rim::HubWrap::HubWrap(uint64_t offset) : rim::Hub(offset) {}
@@ -110,4 +122,6 @@ void rim::HubWrap::doTransaction(rim::TransactionPtr transaction) {
 void rim::HubWrap::defDoTransaction(rim::TransactionPtr transaction) {
    rim::Hub::doTransaction(transaction);
 }
+
+#endif
 

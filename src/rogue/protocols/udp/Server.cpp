@@ -20,18 +20,23 @@
 #include <rogue/protocols/udp/Core.h>
 #include <rogue/protocols/udp/Server.h>
 #include <rogue/interfaces/stream/Frame.h>
+#include <rogue/interfaces/stream/FrameLock.h>
 #include <rogue/interfaces/stream/Buffer.h>
 #include <rogue/GeneralError.h>
 #include <boost/make_shared.hpp>
 #include <rogue/GilRelease.h>
 #include <rogue/Logging.h>
 #include <iostream>
-#include <sys/syscall.h>
 #include <unistd.h>
+#include <stdlib.h>
 
 namespace rpu = rogue::protocols::udp;
 namespace ris = rogue::interfaces::stream;
+
+#ifndef NO_PYTHON
+#include <boost/python.hpp>
 namespace bp  = boost::python;
+#endif
 
 //! Class creation
 rpu::ServerPtr rpu::Server::create (uint16_t port, bool jumbo) {
@@ -72,7 +77,8 @@ rpu::Server::Server (uint16_t port, bool jumbo) : rpu::Core(jumbo) {
    }
 
    // Fixed size buffer pool
-   enBufferPool(maxPayload(),1024*256);
+   setFixedSize(maxPayload());
+   setPoolSize(10000); // Initial value, 10K frames
 
    // Start rx thread
    thread_ = new boost::thread(boost::bind(&rpu::Server::runThread, this));
@@ -103,6 +109,7 @@ void rpu::Server::acceptFrame ( ris::FramePtr frame ) {
    struct iovec     msg_iov[1];
 
    rogue::GilRelease noGil;
+   ris::FrameLockPtr frLock = frame->lock();
    boost::lock_guard<boost::mutex> lock(udpMtx_);
 
    // Setup message header
@@ -131,11 +138,10 @@ void rpu::Server::acceptFrame ( ris::FramePtr frame ) {
          FD_SET(fd_,&fds);
 
          // Setup select timeout
-         tout.tv_sec=(timeout_>0)?(timeout_ / 1000000):0;
-         tout.tv_usec=(timeout_>0)?(timeout_ % 1000000):10000;
-
+         tout = timeout_;
+         
          if ( select(fd_+1,NULL,&fds,NULL,&tout) <= 0 ) {
-            if ( timeout_ > 0 ) throw(rogue::GeneralError::timeout("Server::acceptFrame",timeout_));
+            udpLog_->timeout("Server::acceptFrame",timeout_);
             res = 0;
          }
          else if ( (res = sendmsg(fd_,&msg,0)) < 0 )
@@ -158,7 +164,7 @@ void rpu::Server::runThread() {
    uint32_t           tmpLen;
    uint32_t           avail;
 
-   udpLog_->info("PID=%i, TID=%li",getpid(),syscall(SYS_gettid));
+   udpLog_->logThreadId();
 
    // Preallocate frame
    frame = ris::Pool::acceptReq(maxPayload(),false);
@@ -209,6 +215,7 @@ void rpu::Server::runThread() {
 }
 
 void rpu::Server::setup_python () {
+#ifndef NO_PYTHON
 
    bp::class_<rpu::Server, rpu::ServerPtr, bp::bases<rpu::Core,ris::Master,ris::Slave>, boost::noncopyable >("Server",bp::init<uint16_t,bool>())
       .def("getPort",        &rpu::Server::getPort)
@@ -217,6 +224,6 @@ void rpu::Server::setup_python () {
    bp::implicitly_convertible<rpu::ServerPtr, rpu::CorePtr>();
    bp::implicitly_convertible<rpu::ServerPtr, ris::MasterPtr>();
    bp::implicitly_convertible<rpu::ServerPtr, ris::SlavePtr>();
-
+#endif
 }
 

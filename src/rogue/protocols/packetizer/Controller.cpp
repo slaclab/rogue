@@ -19,6 +19,7 @@
  * ----------------------------------------------------------------------------
 **/
 #include <rogue/interfaces/stream/Frame.h>
+#include <rogue/interfaces/stream/FrameLock.h>
 #include <rogue/interfaces/stream/Buffer.h>
 #include <rogue/protocols/packetizer/Controller.h>
 #include <rogue/protocols/packetizer/Transport.h>
@@ -31,11 +32,6 @@
 
 namespace rpp = rogue::protocols::packetizer;
 namespace ris = rogue::interfaces::stream;
-namespace bp  = boost::python;
-
-void rpp::Controller::setup_python() {
-   // Nothing to do
-}
 
 //! Creator
 rpp::Controller::Controller ( rpp::TransportPtr tran, rpp::ApplicationPtr * app,
@@ -48,9 +44,10 @@ rpp::Controller::Controller ( rpp::TransportPtr tran, rpp::ApplicationPtr * app,
    tranIndex_ = 0;
    tranDest_ = 0;
    dropCount_ = 0;
-   timeout_ = 1000000;
    tranQueue_.setThold(64);
    log_ = rogue::Logging::create("packetizer.Controller");
+
+   rogue::defaultTimeout(timeout_);
 
    headSize_ = headSize;
    tailSize_ = tailSize;
@@ -94,8 +91,8 @@ ris::FramePtr rpp::Controller::reqFrame ( uint32_t size ) {
       buff = *(rFrame->beginBuffer());
   
       // Use buffer tail reservation to align available payload
-      if ((buff->getAvailable() % alignSize_) != 0)
-         buff->adjustTail(buff->getAvailable() % alignSize_);
+      if (((buff->getAvailable()-tailSize_) % alignSize_) != 0)
+         buff->adjustTail((buff->getAvailable()-tailSize_) % alignSize_);  
   
       // Buffer should support our header/tail plus at least one payload byte 
       if ( buff->getAvailable() < (headSize_ + tailSize_ + 1) )
@@ -133,6 +130,8 @@ uint32_t rpp::Controller::getDropCount() {
 
 //! Set timeout for frame transmits in microseconds
 void rpp::Controller::setTimeout(uint32_t timeout) {
-    timeout_ = timeout;
+   div_t divResult = div(timeout,1000000);
+   timeout_.tv_sec  = divResult.quot;
+   timeout_.tv_usec = divResult.rem; 
 }
 
