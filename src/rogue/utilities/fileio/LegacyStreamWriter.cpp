@@ -2,7 +2,7 @@
  *-----------------------------------------------------------------------------
  * Title         : Data file writer utility.
  * ----------------------------------------------------------------------------
- * File          : LegacyStreamWriter.h
+ * File          : LegacyStreamWriter.cpp
  * Author        : Ryan Herbst <rherbst@slac.stanford.edu>
  * Created       : 09/28/2016
  * Last update   : 09/28/2016
@@ -99,28 +99,30 @@ void ruf::LegacyStreamWriter::writeFile ( uint8_t channel, boost::shared_ptr<rog
    boost::unique_lock<boost::mutex> lock(mtx_);
 
    if ( fd_ >= 0 ) {
-      size = frame->getPayload() + 4;
+     size = frame->getPayload() + 4; // Double check the +4
 
-      // Check file size
-      checkSize(size);
+     if (size & 0xF0000000) {
+       // Frame size too large for this stream type
+       // Do something
+     }
 
-      // First write size
-      intWrite(&size,4);
+     // Check file size
+     checkSize(size);
 
-      // Create EVIO header
-      value  = frame->getFlags() & 0xFFFFFF;
-      value |= (channel << 24);
-      intWrite(&value,4);
+     // First write size and channel/type
+     size &= 0x0FFFFFFF;
+     size |= ((channel << 28) & 0xF0000000);
+     intWrite(&size,4);
 
-      iter = frame->startRead(0,size-4);
-      do {
-         intWrite(iter->data(),iter->size());
-      } while (frame->nextRead(iter));
-
-      // Update counters
-      frameCount_ ++;
-      lock.unlock();
-      cond_.notify_all();
+     // Write buffers
+     for (it=frame->beginBuffer(); it != frame->endBuffer(); ++it) {
+       intWrite((*it)->begin(),(*it)->getPayload());
+     }
+     
+     // Update counters
+     frameCount_ ++;
+     lock.unlock();
+     cond_.notify_all();
    }
 }
 
