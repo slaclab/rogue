@@ -88,7 +88,6 @@ ruf::StreamWriterChannelPtr ruf::LegacyStreamWriter::getYamlChannel() {
   return getChannel(LegacyStreamWriter::YamlData);
 }
 
-
 //! Write data to file. Called from StreamWriterChannel
 void ruf::LegacyStreamWriter::writeFile ( uint8_t channel, boost::shared_ptr<rogue::interfaces::stream::Frame> frame) {
    ris::FrameIteratorPtr iter;
@@ -98,12 +97,22 @@ void ruf::LegacyStreamWriter::writeFile ( uint8_t channel, boost::shared_ptr<rog
    rogue::GilRelease noGil;
    boost::unique_lock<boost::mutex> lock(mtx_);
 
+   if ( channel != DataType.RawData and channel != DataType.YamlData ) {
+     throw(rogue:GeneralError("LegacyStreamWriter::writeFile", "Invalid channel"));
+   }
+
    if ( fd_ >= 0 ) {
-     size = frame->getPayload() + 4; // Double check the +4
+
+     size = frame->getPayload(); // Double check the +4
+
+     // Data count is number of 32-bit words
+     if ( channel == DataType.RawData ) {
+       size = size/4; 
+     }
 
      if (size & 0xF0000000) {
        // Frame size too large for this stream type
-       // Do something
+       throw(rogue::GeneralError("LegacyStreamWriter::writeFile", "FrameSize is too large. Cannot exceede 2^28"));
      }
 
      // Check file size
