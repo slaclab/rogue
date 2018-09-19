@@ -102,7 +102,7 @@ class UInt(Model):
         return '{}{}'.format(cls.__name__, bitSize)
 
 @Pyro4.expose
-class UIntReversed(pr.UInt):
+class UIntReversed(UInt):
     """Converts Unsigned Integer to and from bytearray with reserved bit ordering"""
 
     @classmethod
