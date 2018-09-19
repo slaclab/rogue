@@ -93,6 +93,27 @@ class UInt(Model):
     def name(cls, bitSize):
         return '{}{}'.format(cls.__name__, bitSize)
 
+@Pyro4.expose
+class UIntReversed(pr.UInt):
+    """Converts Unsigned Integer to and from bytearray with reserved bit ordering"""
+
+    def reverseBits(value, bitSize):
+        result = 0
+        for i in range(bitSize):
+            result <<= 1
+            result |= value & 1
+            value >>= 1
+        return result
+
+    @classmethod
+    def toBytes(cls, value, bitSize):
+        valueReverse = cls.reverseBits(value,bitSize)
+        return super().toBytes(valueReverse, bitSize)
+
+    @classmethod
+    def fromBytes(cls, ba, bitSize):
+        valueReverse = super().fromBytes(ba, bitSize)
+        return cls.reverseBits(valueReverse,bitSize)
 
 @Pyro4.expose
 class Int(Model):
