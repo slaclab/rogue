@@ -35,6 +35,7 @@
 #include <rogue/utilities/fileio/LegacyStreamWriter.h>
 #include <rogue/utilities/fileio/StreamWriterChannel.h>
 #include <rogue/interfaces/stream/Frame.h>
+#include <rogue/interfaces/stream/Buffer.h>
 #include <rogue/GeneralError.h>
 #include <stdint.h>
 #include <boost/thread.hpp>
@@ -45,7 +46,12 @@
 
 namespace ris = rogue::interfaces::stream;
 namespace ruf = rogue::utilities::fileio;
-namespace bp  = boost::python;
+
+#ifndef NO_PYTHON
+#include <boost/python.hpp>
+namespace bp = boost::python;
+#endif
+
 
 //! Class creation
 ruf::LegacyStreamWriterPtr ruf::LegacyStreamWriter::create () {
@@ -55,6 +61,7 @@ ruf::LegacyStreamWriterPtr ruf::LegacyStreamWriter::create () {
 
 //! Setup class in python
 void ruf::LegacyStreamWriter::setup_python() {
+#ifndef NO_PYTHON
    bp::class_<ruf::LegacyStreamWriter, ruf::LegacyStreamWriterPtr, boost::noncopyable >("LegacyStreamWriter",bp::init<>())
       .def("create",         &ruf::LegacyStreamWriter::create)
       .staticmethod("create")
@@ -67,6 +74,7 @@ void ruf::LegacyStreamWriter::setup_python() {
       .def("getFrameCount",  &ruf::StreamWriter::getFrameCount)
       .def("waitFrameCount", &ruf::StreamWriter::waitFrameCount)
    ;
+#endif
 }
 
 //! Creator
@@ -90,23 +98,25 @@ ruf::StreamWriterChannelPtr ruf::LegacyStreamWriter::getYamlChannel() {
 
 //! Write data to file. Called from StreamWriterChannel
 void ruf::LegacyStreamWriter::writeFile ( uint8_t channel, boost::shared_ptr<rogue::interfaces::stream::Frame> frame) {
-   ris::FrameIteratorPtr iter;
+  ris::Frame::BufferIterator it;
    uint32_t value;
    uint32_t size;
 
+   if ( frame->getPayload() == 0 ) return;
+
+   if ( channel != RawData and channel != YamlData ) {
+     throw(rogue::GeneralError("LegacyStreamWriter::writeFile", "Invalid channel"));
+   }
+
    rogue::GilRelease noGil;
    boost::unique_lock<boost::mutex> lock(mtx_);
-
-   if ( channel != DataType.RawData and channel != DataType.YamlData ) {
-     throw(rogue:GeneralError("LegacyStreamWriter::writeFile", "Invalid channel"));
-   }
 
    if ( fd_ >= 0 ) {
 
      size = frame->getPayload(); // Double check the +4
 
      // Data count is number of 32-bit words
-     if ( channel == DataType.RawData ) {
+     if ( channel == RawData ) {
        size = size/4; 
      }
 
