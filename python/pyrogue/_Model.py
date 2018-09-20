@@ -25,6 +25,14 @@ def wordCount(bits, wordSize):
 def byteCount(bits):
     return wordCount(bits, 8)
 
+def reverseBits(value, bitSize):
+    result = 0
+    for i in range(bitSize):
+        result <<= 1
+        result |= value & 1
+        value >>= 1
+    return result
+
 # class ModelMeta(type):
 #     def __init__(cls, *args, **kwargs):
 #         super().__init__(*args, **kwargs)
@@ -93,6 +101,19 @@ class UInt(Model):
     def name(cls, bitSize):
         return '{}{}'.format(cls.__name__, bitSize)
 
+@Pyro4.expose
+class UIntReversed(UInt):
+    """Converts Unsigned Integer to and from bytearray with reserved bit ordering"""
+
+    @classmethod
+    def toBytes(cls, value, bitSize):
+        valueReverse = reverseBits(value,bitSize)
+        return super().toBytes(valueReverse, bitSize)
+
+    @classmethod
+    def fromBytes(cls, ba, bitSize):
+        valueReverse = super().fromBytes(ba, bitSize)
+        return reverseBits(valueReverse,bitSize)
 
 @Pyro4.expose
 class Int(Model):
