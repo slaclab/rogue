@@ -33,6 +33,7 @@
  *-----------------------------------------------------------------------------
 **/
 #include <rogue/utilities/fileio/LegacyStreamWriter.h>
+#include <rogue/utilities/fileio/StreamWriter.h>
 #include <rogue/utilities/fileio/StreamWriterChannel.h>
 #include <rogue/interfaces/stream/Frame.h>
 #include <rogue/interfaces/stream/Buffer.h>
@@ -66,6 +67,7 @@ void ruf::LegacyStreamWriter::setup_python() {
       .def("getDataChannel",     &ruf::LegacyStreamWriter::getDataChannel)
       .def("getYamlChannel",     &ruf::LegacyStreamWriter::getYamlChannel)      
    ;
+  bp::implicitly_convertible<ruf::LegacyStreamWriterPtr, ruf::StreamWriterPtr>();
 #endif
 }
 

@@ -41,7 +41,7 @@ namespace rogue {
          class StreamWriterChannel;
 
          //! Stream writer central class
-         class LegacyStreamWriter : public rogue::utilities::fileio::StreamWriter {
+         class LegacyStreamWriter : public StreamWriter {
 
             protected:
 

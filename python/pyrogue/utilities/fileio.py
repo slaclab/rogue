@@ -61,6 +61,17 @@ class StreamWriter(pyrogue.DataWriter):
     def getChannel(self,chan):
         return self._writer.getChannel(chan)
 
+class LegacyStreamWriter(StreamWriter):
+    def __init__(self, *, configEn=False, **kwargs):
+        pyrogue.DataWriter.__init__(self, **kwargs)
+        self._writer   = rogue.utilities.fileio.LegacyStreamWriter()
+        self._configEn = configEn
+
+    def getDataChannel(self):
+        return self._writer.getDataChannel()
+
+    def getYamlChannel(self):
+        return self._writer.getYamlChannel()
 
 class StreamReader(pyrogue.Device):
     """Stream Reader Wrapper"""

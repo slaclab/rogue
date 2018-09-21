@@ -114,7 +114,7 @@ namespace rogue {
                StreamWriter();
 
                //! Deconstructor
-               ~StreamWriter();
+               virtual ~StreamWriter();
 
                //! Open a data file
                void open(std::string file);
