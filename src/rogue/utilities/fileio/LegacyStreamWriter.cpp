@@ -62,17 +62,9 @@ ruf::LegacyStreamWriterPtr ruf::LegacyStreamWriter::create () {
 //! Setup class in python
 void ruf::LegacyStreamWriter::setup_python() {
 #ifndef NO_PYTHON
-   bp::class_<ruf::LegacyStreamWriter, ruf::LegacyStreamWriterPtr, boost::noncopyable >("LegacyStreamWriter",bp::init<>())
-      .def("create",         &ruf::LegacyStreamWriter::create)
-      .staticmethod("create")
-      .def("open",           &ruf::StreamWriter::open)
-      .def("close",          &ruf::StreamWriter::close)
-      .def("setBufferSize",  &ruf::StreamWriter::setBufferSize)
-      .def("setMaxSize",     &ruf::StreamWriter::setMaxSize)
-      .def("getChannel",     &ruf::StreamWriter::getChannel)
-      .def("getSize",        &ruf::StreamWriter::getSize)
-      .def("getFrameCount",  &ruf::StreamWriter::getFrameCount)
-      .def("waitFrameCount", &ruf::StreamWriter::waitFrameCount)
+  bp::class_<ruf::LegacyStreamWriter, ruf::LegacyStreamWriterPtr, bp::bases<ruf::StreamWriter>, boost::noncopyable >("LegacyStreamWriter",bp::init<>())
+      .def("getDataChannel",     &ruf::LegacyStreamWriter::getDataChannel)
+      .def("getYamlChannel",     &ruf::LegacyStreamWriter::getYamlChannel)      
    ;
 #endif
 }
@@ -115,6 +107,9 @@ void ruf::LegacyStreamWriter::writeFile ( uint8_t channel, boost::shared_ptr<rog
 
      size = frame->getPayload(); // Double check the +4
 
+     // Check file size
+     checkSize(size);
+
      // Data count is number of 32-bit words
      if ( channel == RawData ) {
        size = size/4; 
@@ -125,8 +120,6 @@ void ruf::LegacyStreamWriter::writeFile ( uint8_t channel, boost::shared_ptr<rog
        throw(rogue::GeneralError("LegacyStreamWriter::writeFile", "FrameSize is too large. Cannot exceede 2^28"));
      }
 
-     // Check file size
-     checkSize(size);
 
      // First write size and channel/type
      size &= 0x0FFFFFFF;
