@@ -202,7 +202,7 @@ source path/to/aconda/bin/activate root
 Create the rogue environment (required once):
 
 ````
-conda env create -n rogue_env -f rogue_conda.yaml
+conda env create -n rogue_env -f rogue_conda.yml
 ````
 
 Activate the rogue environement
