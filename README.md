@@ -169,7 +169,7 @@ for for csh:
 $ source /slac/slac.stanford.edu/g/reseng/epics/base-R3-15-5-1-0/settings.csh
 ````
 
-## Python packages required
+### Python packages required
 
 The following python packages are required to use rogue in the python3
 environment. Currently I am using PIP to install these, but you are free 
@@ -191,7 +191,7 @@ $ pip3 install pyzmq
 $ pip3 install mysqlclient
 ````
 
-### Using aconda environments
+## Using aconda environments
 
 Activate aconda:
 
