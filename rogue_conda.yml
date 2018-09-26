@@ -3,6 +3,8 @@ channels:
   - conda-forge
   - bioconda
 dependencies:
+  - gcc_linux-64
+  - python=3.6
   - pyyaml
   - pyzmq
   - parse
