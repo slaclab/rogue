@@ -16,6 +16,7 @@
 # Add support for building in conda environment
 if (DEFINED ENV{CONDA_PREFIX})
    set(CMAKE_PREFIX_PATH "$ENV{CONDA_PREFIX}")
+   link_directories($ENV{CONDA_PREFIX}/lib)
 endif()
 
 # Check cmake version

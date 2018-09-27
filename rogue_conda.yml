@@ -5,6 +5,7 @@ channels:
   - paulscherrerinstitute
 dependencies:
   - gcc_linux-64
+  - gxx_linux-64
   - python=3.6
   - pyyaml
   - pyzmq
@@ -15,4 +16,5 @@ dependencies:
   - pyqt
   - boost=1.66
   - cmake
+  - bzip2
   - epics-base=3.14.12.8
