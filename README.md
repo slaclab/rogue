@@ -17,7 +17,7 @@ https://github.com/slaclab/rogue-example
 
 ## Building Rogue
 Before building and using rogue you will need to either install the required support packages 
-and modules or setup a conda environment. See below for instructions.
+and modules or setup an anaconda environment. See below for instructions.
 
 The rogue compile uses cmake. To download and build rogue:
 
@@ -191,32 +191,50 @@ $ pip3 install pyzmq
 $ pip3 install mysqlclient
 ````
 
-## Using aconda environments
+## Using anaconda environments
 
-Activate aconda:
+### Installing anaconda
+
+Download and install miniconda if you don't already have it installed on your machine:
 
 ````
-source path/to/aconda/bin/activate root
+# wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh
+# bash Miniconda3-latest-Linux-x86_64.sh
 ````
+
+Choose an install location with a lot of available diskspace.
+
+You can setup miniconda with the following command:
+
+````
+$ source /path/to/my/miniconda3/etc/profile.d/conda.csh
+````
+
+or for bash:
+
+````
+$ source /path/to/my/miniconda3/etc/profile.d/conda.sh
+````
+
+### Using anaconda
 
 Create the rogue environment (required once):
 
 ````
-conda env create -n rogue_env -f rogue_conda.yml
+$ conda env create -n rogue_env -f rogue_conda.yml
 ````
 
 Activate the rogue environement
 
 ````
-conda activate rogue_env 
+$ conda activate rogue_env 
 ````
 
 You can then build and use rogue within the conda environment. To deactive the
 environment:
 
 ````
-conda deactivate
-source path/to/aconda/bin/deactivate root
+$ conda deactivate
 ````
 
 ## Drivers

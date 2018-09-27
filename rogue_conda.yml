@@ -1,7 +1,6 @@
 channels:
   - defaults
   - conda-forge
-  - bioconda
   - paulscherrerinstitute
 dependencies:
   - gcc_linux-64
@@ -14,7 +13,7 @@ dependencies:
   - pyro4
   - numpy
   - pyqt
-  - boost=1.66
+  - boost
   - cmake
   - bzip2
   - epics-base=3.14.12.8
