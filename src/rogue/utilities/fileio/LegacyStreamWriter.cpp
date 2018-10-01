@@ -116,7 +116,7 @@ void ruf::LegacyStreamWriter::writeFile ( uint8_t channel, boost::shared_ptr<rog
      if ( channel == RawData ) {
        size = size/4; 
      }
-
+     
      if (size & 0xF0000000) {
        // Frame size too large for this stream type
        throw(rogue::GeneralError("LegacyStreamWriter::writeFile", "FrameSize is too large. Cannot exceede 2^28"));

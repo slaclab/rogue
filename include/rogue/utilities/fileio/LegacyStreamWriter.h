@@ -58,7 +58,8 @@ namespace rogue {
                  XmlStatus   = 2,
                  XmlRunStart = 3,
                  XmlRunStop  = 4,
-                 YamlData    = 5
+                 XmlRunTime  = 5,
+                 YamlData    = 6
                };
 
                //! Class creation
