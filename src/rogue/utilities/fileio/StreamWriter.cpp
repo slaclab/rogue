@@ -66,6 +66,7 @@ void ruf::StreamWriter::setup_python() {
       .def("close",          &ruf::StreamWriter::close)
       .def("setBufferSize",  &ruf::StreamWriter::setBufferSize)
       .def("setMaxSize",     &ruf::StreamWriter::setMaxSize)
+      .def("setDropErrors",  &ruf::StreamWriter::setDropErrors)
       .def("getChannel",     &ruf::StreamWriter::getChannel)
       .def("getSize",        &ruf::StreamWriter::getSize)
       .def("getFrameCount",  &ruf::StreamWriter::getFrameCount)
@@ -85,6 +86,7 @@ ruf::StreamWriter::StreamWriter() {
    buffer_     = NULL;
    frameCount_ = 0;
    currBuffer_ = 0;
+   dropErrors_ = false;
 }
 
 //! Deconstructor
@@ -158,6 +160,11 @@ void ruf::StreamWriter::setMaxSize(uint32_t size) {
    sizeLimit_ = size;
 }
 
+//! Set drop errors flag
+void ruf::StreamWriter::setDropErrors(bool drop) {
+   dropErrors_ = drop;
+}
+
 //! Get a slave port
 ruf::StreamWriterChannelPtr ruf::StreamWriter::getChannel(uint8_t channel) {
   rogue::GilRelease noGil;
@@ -194,7 +201,7 @@ void ruf::StreamWriter::writeFile ( uint8_t channel, boost::shared_ptr<rogue::in
    uint32_t value;
    uint32_t size;
 
-   if ( frame->getPayload() == 0 ) return;
+   if ( (frame->getPayload() == 0) || (dropErrors_ && (frame->getError() != 0)) ) return;
 
    rogue::GilRelease noGil;
    boost::unique_lock<boost::mutex> lock(mtx_);
