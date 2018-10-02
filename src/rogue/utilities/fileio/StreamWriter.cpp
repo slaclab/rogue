@@ -20,7 +20,8 @@
  *          [31:0] = Length of data block in bytes
  *       headerB
  *          31:24  = Channel ID
- *          23:o   = Frame flags
+ *          23:16  = Frame error
+ *          15:0   = Frame flags
  *
  *-----------------------------------------------------------------------------
  * This file is part of the rogue software platform. It is subject to 
@@ -209,7 +210,8 @@ void ruf::StreamWriter::writeFile ( uint8_t channel, boost::shared_ptr<rogue::in
       intWrite(&size,4);
 
       // Create EVIO header
-      value  = frame->getFlags() & 0xFFFFFF;
+      value  = frame->getFlags();
+      value |= (frame->getError() << 16);
       value |= (channel << 24);
       intWrite(&value,4);
 
