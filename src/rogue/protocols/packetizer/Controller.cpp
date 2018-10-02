@@ -38,7 +38,7 @@ rpp::Controller::Controller ( rpp::TransportPtr tran, rpp::ApplicationPtr * app,
                               uint32_t headSize, uint32_t tailSize, uint32_t alignSize, bool enSsi ) {
    uint32_t x;
 
-   enSsi_ = enSsi
+   enSsi_ = enSsi;
    app_   = app;
    tran_  = tran;
    appIndex_ = 0;

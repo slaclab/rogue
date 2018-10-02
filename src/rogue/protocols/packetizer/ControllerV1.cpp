@@ -40,7 +40,7 @@ rpp::ControllerV1Ptr rpp::ControllerV1::create (bool enSsi, rpp::TransportPtr tr
 }
 
 //! Creator
-rpp::ControllerV1::ControllerV1 (bool enSsi, rpp::TransportPtr tran, rpp::ApplicationPtr * app ) : rpp::Controller::Controller(enSsi, tran, app, 8, 1, 8) {
+rpp::ControllerV1::ControllerV1 (bool enSsi, rpp::TransportPtr tran, rpp::ApplicationPtr * app ) : rpp::Controller::Controller(tran, app, 8, 1, 8, enSsi) {
 }
 
 //! Destructor
@@ -152,7 +152,7 @@ void rpp::ControllerV1::transportRx( ris::FramePtr frame ) {
       tranFrame_[0].reset();
 
       // Detect SSI error
-      if ( enSsi_ & (tmpLuser & 0x1) ) tranFrame_[tmpDest].setError(0x80);
+      if ( enSsi_ & (tmpLuser & 0x1) ) tranFrame_[tmpDest]->setError(0x80);
    }
    else tranCount_[0]++;
 }
