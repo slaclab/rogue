@@ -282,7 +282,11 @@ class BaseVariable(pr.Node):
 
     @Pyro4.expose
     def setDisp(self, sValue, write=True):
-        self.set(self.parseDisp(sValue), write)
+        try:
+            self.set(self.parseDisp(sValue), write)
+        except Exception as e:
+            self._log.exception(e)
+            self._log.error("Error setting value '{}' to variable '{}' with type {}".format(sValue,self.path,self.typeStr))
 
     @Pyro4.expose
     def nativeType(self):
