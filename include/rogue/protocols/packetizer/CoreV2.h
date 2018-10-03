@@ -45,13 +45,13 @@ namespace rogue {
             public:
 
                //! Class creation
-               static boost::shared_ptr<rogue::protocols::packetizer::CoreV2> create (bool enIbCrc, bool enObCrc);
+               static boost::shared_ptr<rogue::protocols::packetizer::CoreV2> create (bool enIbCrc, bool enObCrc, bool enSsi);
 
                //! Setup class in python
                static void setup_python();
 
                //! Creator
-               CoreV2(bool enIbCrc, bool enObCrc);
+               CoreV2(bool enIbCrc, bool enObCrc, bool enSsi);
 
                //! Destructor
                ~CoreV2();

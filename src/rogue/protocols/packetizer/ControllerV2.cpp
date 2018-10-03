@@ -35,13 +35,13 @@ namespace rpp = rogue::protocols::packetizer;
 namespace ris = rogue::interfaces::stream;
 
 //! Class creation
-rpp::ControllerV2Ptr rpp::ControllerV2::create ( bool enIbCrc, bool enObCrc, rpp::TransportPtr tran, rpp::ApplicationPtr * app ) {
-   rpp::ControllerV2Ptr r = boost::make_shared<rpp::ControllerV2>(enIbCrc,enObCrc,tran,app);
+rpp::ControllerV2Ptr rpp::ControllerV2::create ( bool enIbCrc, bool enObCrc, bool enSsi, rpp::TransportPtr tran, rpp::ApplicationPtr * app ) {
+   rpp::ControllerV2Ptr r = boost::make_shared<rpp::ControllerV2>(enIbCrc,enObCrc,enSsi,tran,app);
    return(r);
 }
 
 //! Creator
-rpp::ControllerV2::ControllerV2 ( bool enIbCrc, bool enObCrc, rpp::TransportPtr tran, rpp::ApplicationPtr * app ) : rpp::Controller::Controller(tran, app, 8, 8, 8) {
+rpp::ControllerV2::ControllerV2 ( bool enIbCrc, bool enObCrc, bool enSsi, rpp::TransportPtr tran, rpp::ApplicationPtr * app ) : rpp::Controller::Controller(tran, app, 8, 8, 8, enSsi) {
 
    enIbCrc_ = enIbCrc;
    enObCrc_ = enObCrc;
@@ -180,6 +180,9 @@ void rpp::ControllerV2::transportRx( ris::FramePtr frame ) {
       }
       crcInit_[tmpDest]   = 0xFFFFFFFF;
       tranFrame_[tmpDest].reset();
+
+      // Detect SSI error
+      if ( enSsi_ & (tmpLuser & 0x1) ) tranFrame_[tmpDest]->setError(0x80);
    }
    else {
       tranCount_[tmpDest] = (tranCount_[tmpDest] + 1) & 0xFFFF;
@@ -229,6 +232,9 @@ void rpp::ControllerV2::applicationRx ( ris::FramePtr frame, uint8_t tDest ) {
 
    fUser = frame->getFirstUser();
    lUser = frame->getLastUser();
+
+   // Inject SOF
+   if ( enSsi_ ) fUser |= 0x2;
 
    segment = 0;
    for (it=frame->beginBuffer(); it != frame->endBuffer(); ++it) {

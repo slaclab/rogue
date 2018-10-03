@@ -43,12 +43,14 @@ namespace rogue {
 
                //! Class creation
                static boost::shared_ptr<rogue::protocols::packetizer::ControllerV1> 
-                  create ( boost::shared_ptr<rogue::protocols::packetizer::Transport> tran,
+                  create ( bool enSsi,
+                           boost::shared_ptr<rogue::protocols::packetizer::Transport> tran,
                            boost::shared_ptr<rogue::protocols::packetizer::Application> * app );
 
                //! Creator
-               ControllerV1( boost::shared_ptr<rogue::protocols::packetizer::Transport> tran,
-                           boost::shared_ptr<rogue::protocols::packetizer::Application> * app );
+               ControllerV1( bool enSsi,
+                             boost::shared_ptr<rogue::protocols::packetizer::Transport> tran,
+                             boost::shared_ptr<rogue::protocols::packetizer::Application> * app );
 
                //! Destructor
                ~ControllerV1();
