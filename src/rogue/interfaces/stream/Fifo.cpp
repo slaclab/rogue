@@ -39,22 +39,23 @@ namespace bp  = boost::python;
 #endif
 
 //! Class creation
-ris::FifoPtr ris::Fifo::create(uint32_t maxDepth, uint32_t trimSize) {
-   ris::FifoPtr p = boost::make_shared<ris::Fifo>(maxDepth,trimSize);
+ris::FifoPtr ris::Fifo::create(uint32_t maxDepth, uint32_t trimSize, bool noCopy) {
+   ris::FifoPtr p = boost::make_shared<ris::Fifo>(maxDepth,trimSize,noCopy);
    return(p);
 }
 
 //! Setup class in python
 void ris::Fifo::setup_python() {
 #ifndef NO_PYTHON
-   bp::class_<ris::Fifo, ris::FifoPtr, bp::bases<ris::Master,ris::Slave>, boost::noncopyable >("Fifo",bp::init<uint32_t,uint32_t>());
+   bp::class_<ris::Fifo, ris::FifoPtr, bp::bases<ris::Master,ris::Slave>, boost::noncopyable >("Fifo",bp::init<uint32_t,uint32_t,bool>());
 #endif
 }
 
 //! Creator with version constant
-ris::Fifo::Fifo(uint32_t maxDepth, uint32_t trimSize ) : ris::Master(), ris::Slave() { 
+ris::Fifo::Fifo(uint32_t maxDepth, uint32_t trimSize, bool noCopy ) : ris::Master(), ris::Slave() { 
    maxDepth_ = maxDepth;
    trimSize_ = trimSize;
+   noCopy_   = noCopy;
 
    queue_.setThold(maxDepth);
 
@@ -72,6 +73,8 @@ void ris::Fifo::acceptFrame ( ris::FramePtr frame ) {
    uint32_t       size;
    ris::BufferPtr buff;
    ris::FramePtr  nFrame;
+   ris::Frame::BufferIterator src;
+   ris::Frame::iterator dst;
 
    // FIFO is full, drop frame
    if ( queue_.busy()  ) return;
@@ -79,16 +82,26 @@ void ris::Fifo::acceptFrame ( ris::FramePtr frame ) {
    rogue::GilRelease noGil;
    ris::FrameLockPtr lock = frame->lock();
 
-   // Get size, adjust if trim is enabled
-   size = frame->getPayload();
-   if ( trimSize_ != 0 && trimSize_ < size ) size = trimSize_;
+   // Do we copy the frame?
+   if ( noCopy_ ) nFrame = frame;
+   else{
 
-   // Request a new frame to hold the data
-   nFrame = reqFrame(size,true);
+      // Get size, adjust if trim is enabled
+      size = frame->getPayload();
+      if ( trimSize_ != 0 && trimSize_ < size ) size = trimSize_;
 
-   // Copy the frame
-   std::copy(frame->beginRead(), frame->beginRead()+size, nFrame->beginWrite());
-   nFrame->setPayload(size);
+      // Request a new frame to hold the data
+      nFrame = reqFrame(size,true);
+
+      // Get destination pointer
+      dst = nFrame->beginWrite();
+
+      // Copy the frame, attempt to be effecient by iterating through source buffers
+      for (src=frame->beginBuffer(); src != frame->endBuffer(); ++src) 
+         dst = std::copy((*src)->begin(), (*src)->endPayload(), dst);
+
+      nFrame->setPayload(size);
+   }
 
    // Append to buffer
    queue_.push(nFrame);
