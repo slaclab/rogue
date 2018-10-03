@@ -179,7 +179,6 @@ void rha::AxiStreamDma::acceptFrame ( ris::FramePtr frame ) {
    fd_set           fds;
    struct timeval   tout;
    uint32_t         meta;
-   uint32_t         flags;
    uint32_t         fuser;
    uint32_t         luser;
    uint32_t         cont;
@@ -189,9 +188,6 @@ void rha::AxiStreamDma::acceptFrame ( ris::FramePtr frame ) {
    ris::FrameLockPtr lock = frame->lock();
    emptyFrame = false;
 
-   // Get Flags
-   flags = frame->getFlags();
-
    // Go through each (*it)er in the frame
    ris::Frame::BufferIterator it;
    for (it = frame->beginBuffer(); it != frame->endBuffer(); ++it) {
@@ -199,7 +195,7 @@ void rha::AxiStreamDma::acceptFrame ( ris::FramePtr frame ) {
 
       // First buffer
       if ( it == frame->beginBuffer() ) {
-         fuser = flags & 0xFF;
+         fuser = frame->getFirstUser();
          if ( enSsi_ ) fuser |= 0x2;
       }
       else fuser = 0;
@@ -207,7 +203,7 @@ void rha::AxiStreamDma::acceptFrame ( ris::FramePtr frame ) {
       // Last Buffer
       if ( it == (frame->endBuffer()-1) ) {
          cont = 0;
-         luser = (flags >> 8) & 0xFF;
+         luser = frame->getLastUser();
       }
 
       // Continue flag is set if this is not the last (*it)er
@@ -297,11 +293,10 @@ void rha::AxiStreamDma::runThread() {
    ris::FramePtr  frame;
    fd_set         fds;
    int32_t        res;
-   uint32_t       error;
+   uint8_t        error;
    uint32_t       meta;
    uint32_t       fuser;
    uint32_t       luser;
-   uint32_t       flags;
    uint32_t       cont;
    uint32_t       rxFlags;
    uint32_t       rxError;
@@ -364,23 +359,22 @@ void rha::AxiStreamDma::runThread() {
             // Read was successfull
             if ( res > 0 ) {
                buff->setPayload(res);
-               flags = frame->getFlags();
+
                error = frame->getError();
 
                // Receive error
-               error |= rxError;
+               error |= (rxError & 0xFF);
 
                // First buffer of frame
-               if ( frame->isEmpty() ) flags |= (fuser & 0xFF);
+               if ( frame->isEmpty() ) frame->setFirstUser(fuser&0xFF);
 
                // Last buffer of frame
                if ( cont == 0 ) {
-                  flags |= ((luser << 8) & 0xFF00);
-                  if ( enSsi_ && ((luser & 0x1) != 0 )) error |= 0x800000000;
+                  frame->setLastUser(luser&0xFF);
+                  if ( enSsi_ && ((luser & 0x1) != 0 )) error |= 0x80;
                }
 
                frame->setError(error);
-               frame->setFlags(flags);
                frame->appendBuffer(buff);
                buff.reset();
 

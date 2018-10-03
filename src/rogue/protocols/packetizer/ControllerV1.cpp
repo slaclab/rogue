@@ -129,11 +129,7 @@ void rpp::ControllerV1::transportRx( ris::FramePtr frame ) {
       tranDest_     = tmpDest;
       tranCount_[0] = 0;
 
-      flags  = tmpFuser;
-      if ( tmpEof ) flags += tmpLuser << 8;
-      flags += tmpId   << 16;
-      flags += tmpDest << 24;
-      tranFrame_[0]->setFlags(flags);
+      tranFrame_[0]->setFirstUser(tmpFuser);
    }
 
    tranFrame_[0]->appendBuffer(buff);
@@ -141,10 +137,7 @@ void rpp::ControllerV1::transportRx( ris::FramePtr frame ) {
 
    // Last of transfer
    if ( tmpEof ) {
-      flags = tranFrame_[0]->getFlags() & 0xFFFF00FF;
-      flags += tmpLuser << 8;
-      tranFrame_[0]->setFlags(flags);
-
+      tranFrame_[0]->setLastUser(tmpLuser);
       tranCount_[0] = 0;
       if ( app_[tranDest_] ) {
          app_[tranDest_]->pushFrame(tranFrame_[0]);
@@ -162,7 +155,6 @@ void rpp::ControllerV1::applicationRx ( ris::FramePtr frame, uint8_t tDest ) {
    uint32_t size;
    uint8_t  fUser;
    uint8_t  lUser;
-   uint8_t  tId;
    struct timeval startTime;
    struct timeval currTime;
    struct timeval endTime;
@@ -190,9 +182,9 @@ void rpp::ControllerV1::applicationRx ( ris::FramePtr frame, uint8_t tDest ) {
       }
    }
 
-   fUser = frame->getFlags() & 0xFF;
-   lUser = (frame->getFlags() >> 8) & 0xFF;
-   tId   = (frame->getFlags() >> 16) & 0xFF;
+   // User fields
+   fUser = frame->getFirstUser();
+   lUser = frame->getLastUser();
 
    segment = 0;
    for (it=frame->beginBuffer(); it != frame->endBuffer(); ++it) {
@@ -216,7 +208,7 @@ void rpp::ControllerV1::applicationRx ( ris::FramePtr frame, uint8_t tDest ) {
       data[4] = (segment >> 16) & 0xFF;
 
       data[5] = tDest;
-      data[6] = tId;
+      data[6] = 0; // TID Unused
       data[7] = fUser;
 
       data[size-1] = lUser & 0x7F;

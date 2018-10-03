@@ -164,11 +164,7 @@ void rpp::ControllerV2::transportRx( ris::FramePtr frame ) {
       tranFrame_[tmpDest] = ris::Frame::create();
       tranCount_[tmpDest] = 0;
 
-      flags  = tmpFuser;
-      if ( tmpEof ) flags |= uint32_t(tmpLuser) << 8;
-      flags += tmpId   << 16;
-      flags += tmpDest << 24;
-      tranFrame_[tmpDest]->setFlags(flags);
+      tranFrame_[tmpDest]->setFirstUser(tmpFuser);
    }
 
    tranFrame_[tmpDest]->appendBuffer(buff);
@@ -176,10 +172,7 @@ void rpp::ControllerV2::transportRx( ris::FramePtr frame ) {
 
    // Last of transfer
    if ( tmpEof ) {
-      flags = tranFrame_[tmpDest]->getFlags() & 0xFFFF00FF;
-      flags |= uint32_t(tmpLuser) << 8;
-      tranFrame_[tmpDest]->setFlags(flags);
-
+      tranFrame_[tmpDest]->setLastUser(tmpLuser);
       transSof_[tmpDest]  = true;
       tranCount_[tmpDest] = 0;
       if ( app_[tmpDest] ) {
@@ -202,7 +195,6 @@ void rpp::ControllerV2::applicationRx ( ris::FramePtr frame, uint8_t tDest ) {
    uint32_t size;
    uint8_t  fUser;
    uint8_t  lUser;
-   uint8_t  tId;
    uint32_t crc;
    uint32_t crcInit = 0xFFFFFFFF;
    uint32_t last;
@@ -235,9 +227,8 @@ void rpp::ControllerV2::applicationRx ( ris::FramePtr frame, uint8_t tDest ) {
       }
    }
 
-   fUser = frame->getFlags() & 0xFF;
-   lUser = (frame->getFlags() >> 8) & 0xFF;
-   tId   = (frame->getFlags() >> 16) & 0xFF;
+   fUser = frame->getFirstUser();
+   lUser = frame->getLastUser();
 
    segment = 0;
    for (it=frame->beginBuffer(); it != frame->endBuffer(); ++it) {
@@ -264,7 +255,7 @@ void rpp::ControllerV2::applicationRx ( ris::FramePtr frame, uint8_t tDest ) {
       if(enObCrc_) data[0] |= 0x20; // Enable CRC
       data[1] = fUser;
       data[2] = tDest;
-      data[3] = tId;
+      data[3] = 0; // TID Unused
 
       // Header word 1
       data[4] = segment & 0xFF;
@@ -296,8 +287,8 @@ void rpp::ControllerV2::applicationRx ( ris::FramePtr frame, uint8_t tDest ) {
          data[size-4] = 0;
       }
       
-      log_->debug("applicationRx: Gen frame: Size=%i, Fuser=0x%x, Dest=0x%x, Id=0x%x, Count=%i, Sof=%i, Luser=0x%x, Eof=%i, Last=%i",
-            (*it)->getPayload(), fUser, tDest, tId, segment, data[7], lUser, data[size-7], last);
+      log_->debug("applicationRx: Gen frame: Size=%i, Fuser=0x%x, Dest=0x%x, Count=%i, Sof=%i, Luser=0x%x, Eof=%i, Last=%i",
+            (*it)->getPayload(), fUser, tDest, segment, data[7], lUser, data[size-7], last);
       log_->debug("applicationRx: Raw header: 0x%x, 0x%x, 0x%x, 0x%x, 0x%x, 0x%x, 0x%x, 0x%x",
             data[0],data[1],data[2],data[3],data[4],data[5],data[6],data[7]);
       log_->debug("applicationRx: Raw footer: 0x%x, 0x%x, 0x%x, 0x%x, 0x%x, 0x%x, 0x%x, 0x%x",

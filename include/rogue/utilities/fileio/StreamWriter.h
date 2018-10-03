@@ -20,7 +20,8 @@
  *          [31:0] = Length of data block in bytes
  *       headerB
  *          31:24  = Channel ID
- *          23:9   = Frame flags
+ *          23:16  = Frame error
+ *          15:0   = Frame flags
  *
  *-----------------------------------------------------------------------------
  * This file is part of the rogue software platform. It is subject to 
