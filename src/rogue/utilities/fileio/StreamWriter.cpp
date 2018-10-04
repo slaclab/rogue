@@ -194,7 +194,7 @@ void ruf::StreamWriter::writeFile ( uint8_t channel, boost::shared_ptr<rogue::in
    uint32_t value;
    uint32_t size;
 
-   if ( frame->getPayload() == 0 ) return;
+   if ( frame->getPayload() == 0 || frame->getError() || (frame->getFlags() & 0x100) ) return;
 
    rogue::GilRelease noGil;
    boost::unique_lock<boost::mutex> lock(mtx_);
