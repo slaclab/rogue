@@ -123,7 +123,7 @@ double ru::Prbs::updateTime ( struct timeval *last ) {
 
 //! Set width
 void ru::Prbs::setWidth(uint32_t width) {
-   if ( width != 32 && width != 64 && width != 128 )
+   if ( width < 32 || width > (MaxBytes*8) || (width % 32) != 0) 
       throw(rogue::GeneralError("Prbs::setWidth","Invalid width."));
 
    rogue::GilRelease noGil;
@@ -291,9 +291,9 @@ void ru::Prbs::resetCount() {
 void ru::Prbs::genFrame (uint32_t size) {
    ris::Frame::iterator frIter;
    ris::Frame::iterator frEnd;
-   uint32_t      frSeq[4];
-   uint32_t      frSize[4];
-   uint32_t      wCount[4];
+   uint32_t      frSeq[MaxBytes/4];
+   uint32_t      frSize[MaxBytes/4];
+   uint32_t      wCount[MaxBytes/4];
    double        per;
    ris::FramePtr fr;
 
@@ -309,11 +309,11 @@ void ru::Prbs::genFrame (uint32_t size) {
    frSize[0] = (size / byteWidth_) - 1;
 
    // Setup sequence
-   memset(frSeq,0,16);
+   memset(frSeq,0,MaxBytes);
    frSeq[0]  = txSeq_;
 
    // Setup counter
-   memset(wCount,0,16);
+   memset(wCount,0,MaxBytes);
 
    // Get frame
    fr = reqFrame(size,true);
@@ -367,13 +367,13 @@ void ru::Prbs::genFrame (uint32_t size) {
 void ru::Prbs::acceptFrame ( ris::FramePtr frame ) {
    ris::Frame::iterator frIter;
    ris::Frame::iterator frEnd;
-   uint32_t      frSeq[4];
-   uint32_t      frSize[4];
+   uint32_t      frSeq[MaxBytes/4];
+   uint32_t      frSize[MaxBytes/4];
    uint32_t      expSeq;
    uint32_t      expSize;
    uint32_t      size;
    uint32_t      pos;
-   uint8_t       compData[16];
+   uint8_t       compData[MaxBytes];
    double        per;
 
    rogue::GilRelease noGil;
