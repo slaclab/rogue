@@ -123,7 +123,7 @@ double ru::Prbs::updateTime ( struct timeval *last ) {
 
 //! Set width
 void ru::Prbs::setWidth(uint32_t width) {
-   if ( width < 32 || width > (MaxBytes*8) || (width % 32) != 0) 
+   if ( (width > (MaxBytes*8)) || (width % 32) != 0) 
       throw(rogue::GeneralError("Prbs::setWidth","Invalid width."));
 
    rogue::GilRelease noGil;
