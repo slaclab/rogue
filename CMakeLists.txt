@@ -16,6 +16,7 @@
 # Add support for building in conda environment
 if (DEFINED ENV{CONDA_PREFIX})
    set(CMAKE_PREFIX_PATH "$ENV{CONDA_PREFIX}")
+   link_directories($ENV{CONDA_PREFIX}/lib)
 endif()
 
 # Check cmake version
@@ -27,7 +28,7 @@ project (rogue)
 
 # C/C++
 enable_language(CXX)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x -Wno-deprecated")
 
 # Set version from git tag
 find_package(Git)

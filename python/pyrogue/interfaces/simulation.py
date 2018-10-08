@@ -81,9 +81,8 @@ class StreamSim(rogue.interfaces.stream.Master,
         """ Forward frame to simulation """
 
         flock = frame.lock();
-        flags = frame.getFlags()
-        fuser = flags & 0xFF
-        luser = (flags >> 8) & 0xFF
+        fuser = frame.getFirstUser();
+        luser = frame.getLastUser();
 
         if ( self._ssi ):
             fuser = fuser | 0x2 # SOF
@@ -117,7 +116,10 @@ class StreamSim(rogue.interfaces.stream.Master,
 
             frame = self._reqFrame(len(data),True)
 
-            if ( self._ssi and (luser & 0x1)): frame.setError(1)
+            frame.setFirstUser(fuser);
+            frame.setLastUser(luser);
+
+            if ( self._ssi and (luser & 0x1)): frame.setError(0x80)
 
             frame.write(data,0)
             self.rxCount += 1

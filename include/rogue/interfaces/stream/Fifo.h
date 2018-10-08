@@ -39,6 +39,7 @@ namespace rogue {
                // Configurations
                uint32_t trimSize_;
                uint32_t maxDepth_;
+               bool     noCopy_;
 
                // Queue
                rogue::Queue<boost::shared_ptr<rogue::interfaces::stream::Frame>> queue_;
@@ -53,13 +54,13 @@ namespace rogue {
 
                //! Class creation
                static boost::shared_ptr<rogue::interfaces::stream::Fifo> 
-                  create(uint32_t maxDepth, uint32_t trimSize);
+                  create(uint32_t maxDepth, uint32_t trimSize, bool noCopy);
 
                //! Setup class in python
                static void setup_python();
 
                //! Creator
-               Fifo(uint32_t maxDepth, uint32_t trimSize);
+               Fifo(uint32_t maxDepth, uint32_t trimSize, bool noCopy);
 
                //! Deconstructor
                ~Fifo();

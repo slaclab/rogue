@@ -15,7 +15,56 @@ For example scripts and sub-class source code examples see:
 
 https://github.com/slaclab/rogue-example
 
-### Required Packages For Building Rogue
+## Building Rogue
+Before building and using rogue you will need to either install the required support packages 
+and modules or setup an anaconda environment. See below for instructions.
+
+The rogue compile uses cmake. To download and build rogue:
+
+````
+$ git clone https://github.com/slaclab/rogue.git
+$ cd rogue
+$ git submodule init
+$ git submodule update
+$ mkdir build
+$ cd build
+$ cmake ..  (or cmake3)
+$ make
+````
+
+to update from git and rebuild:
+````
+$ git pull
+$ git submodule update
+$ cd build
+$ make rebuild_cache
+$ make clean
+$ make 
+````
+
+Two libraries are output from the compute. lib/librogue-core.so is a c++ 
+core library for the various rogue classes and function. python/rogue.so
+is a shared object library for importing into python.
+
+The lib subdirecotry of rogue should be included in your LD_LIBRARY_PATH and
+the python subdirectory should be include in your PYTHONPATH. A pair of setup
+scripts for both bash and c-shell are include in the rogue distribution:
+
+````
+$ source setup_rogue.sh
+````
+or for csh:
+````
+$ source setup_rogue.csh
+````
+
+These scripts also set the ROGUE_DIR environment variable which is usefull when 
+setting up the example projects or some SLAC projects.
+
+You may want to create a custom setup script to combine the rogue setup with 
+other environmental setups for your project.
+
+## Installing Packages Required For Rogue
 
 The following packages are required to build the rogue library:
 
@@ -81,7 +130,6 @@ ZeroMq is used for some of the python based messaging interface, particularly
 the simulation interfaces. To use the GUI interface you will need to install
 either pyqt5 or pyqt4.
 
-
 On Ubuntu 17.04 (or later):
 
 ````
@@ -143,60 +191,59 @@ $ pip3 install pyzmq
 $ pip3 install mysqlclient
 ````
 
-### Building Rogue
+## Using anaconda environments
 
-The rogue compile uses cmake. To download and build rogue:
+### Installing anaconda
 
-````
-$ git clone https://github.com/slaclab/rogue.git
-$ cd rogue
-$ git submodule init
-$ git submodule update
-$ mkdir build
-$ cd build
-$ cmake ..  (or cmake3)
-$ make
-````
-
-to update from git and rebuild:
-````
-$ git pull
-$ git submodule update
-$ cd build
-$ make rebuild_cache
-$ make clean
-$ make 
-````
-
-Two libraries are output from the compute. lib/librogue-core.so is a c++ 
-core library for the various rogue classes and function. python/rogue.so
-is a shared object library for importing into python.
-
-The lib subdirecotry of rogue should be included in your LD_LIBRARY_PATH and
-the python subdirectory should be include in your PYTHONPATH. A pair of setup
-scripts for both bash and c-shell are include in the rogue distribution:
+Download and install miniconda if you don't already have it installed on your machine:
 
 ````
-$ source setup_rogue.sh
-````
-or for csh:
-````
-$ source setup_rogue.csh
+# wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh
+# bash Miniconda3-latest-Linux-x86_64.sh
 ````
 
-These scripts also set the ROGUE_DIR environment variable which is usefull when 
-setting up the example projects or some SLAC projects.
+Choose an install location with a lot of available diskspace.
 
-You may want to create a custom setup script to combine the rogue setup with 
-other environmental setups for your project.
+You can setup miniconda with the following command:
 
-### Drivers
+````
+$ source /path/to/my/miniconda3/etc/profile.d/conda.csh
+````
+
+or for bash:
+
+````
+$ source /path/to/my/miniconda3/etc/profile.d/conda.sh
+````
+
+### Using anaconda
+
+Create the rogue environment (required once):
+
+````
+$ conda env create -n rogue_env -f rogue_conda.yml
+````
+
+Activate the rogue environement
+
+````
+$ conda activate rogue_env 
+````
+
+You can then build and use rogue within the conda environment. To deactive the
+environment:
+
+````
+$ conda deactivate
+````
+
+## Drivers
 
 Rogue is linked against the aes-stream-drivers package which is included 
 as a submodule at the drivers sub-directory. If you need to use these
 drivers please see the README.md file in that package.
 
-### Additional Notes
+## Additional Notes
 
 The rogue package includes a readme file for compiling and installing local 
 versions of python3, boost,zeromq and epics. This were created as 

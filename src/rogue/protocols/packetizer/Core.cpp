@@ -35,15 +35,15 @@ namespace bp  = boost::python;
 #endif
 
 //! Class creation
-rpp::CorePtr rpp::Core::create () {
-   rpp::CorePtr r = boost::make_shared<rpp::Core>();
+rpp::CorePtr rpp::Core::create (bool enSsi) {
+   rpp::CorePtr r = boost::make_shared<rpp::Core>(enSsi);
    return(r);
 }
 
 void rpp::Core::setup_python() {
 #ifndef NO_PYTHON
 
-   bp::class_<rpp::Core, rpp::CorePtr, boost::noncopyable >("Core",bp::init<>())
+   bp::class_<rpp::Core, rpp::CorePtr, boost::noncopyable >("Core",bp::init<bool>())
       .def("transport",      &rpp::Core::transport)
       .def("application",    &rpp::Core::application)
       .def("getDropCount",   &rpp::Core::getDropCount)
@@ -53,9 +53,9 @@ void rpp::Core::setup_python() {
 }
 
 //! Creator
-rpp::Core::Core () {
+rpp::Core::Core (bool enSsi) {
    tran_  = rpp::Transport::create();
-   cntl_  = rpp::ControllerV1::create(tran_,app_);
+   cntl_  = rpp::ControllerV1::create(enSsi,tran_,app_);
 
    tran_->setController(cntl_);
 }
