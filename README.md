@@ -223,25 +223,23 @@ Create the rogue environment (required once):
 $ conda env create -n rogue_env -f rogue_conda.yml
 ````
 
-Activate the rogue environement
+Activate the rogue environment
 
 ````
 $ conda activate rogue_env 
 ````
 
-You can then build and use rogue within the conda environment. To deactive the
-environment:
-
-````
-$ conda deactivate
-````
-
-To automate the conda environement you can add the following lines to the top of the setup_rogue.csh(.sh) scripts:
+To automate the conda environment you can add the following lines to the top of the setup_rogue.csh(.sh) scripts:
 
 ````
 source /path/to/my/miniconda3/etc/profile.d/conda.csh(.sh) activate
 conda activate rogue_env
+````
 
+If you need to deactivate the anaconda environment:
+
+````
+conda deactivate 
 ````
 
 ## Drivers
