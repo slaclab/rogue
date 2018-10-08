@@ -379,6 +379,10 @@ class RemoteVariable(BaseVariable):
         if len(offset) != len(bitOffset) != len(bitSize):
             raise VariableError('Lengths of offset: {}, bitOffset: {}, bitSize {} must match'.format(offset, bitOffset, bitSize))        
 
+        # Check for invalid values
+        if 0 in bitSize:
+            raise VariableError('BitSize of 0 is invalid')
+
         # Normalize bitOffsets relative to the smallest offset
         baseAddr = min(offset)
         bitOffset = [x+((y-baseAddr)*8) for x,y in zip(bitOffset, offset)]
