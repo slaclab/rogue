@@ -22,10 +22,8 @@ and modules or setup an anaconda environment. See below for instructions.
 The rogue compile uses cmake. To download and build rogue:
 
 ````
-$ git clone https://github.com/slaclab/rogue.git
+$ git clone --recursive https://github.com/slaclab/rogue.git
 $ cd rogue
-$ git submodule init
-$ git submodule update
 $ mkdir build
 $ cd build
 $ cmake ..  (or cmake3)
@@ -65,6 +63,7 @@ You may want to create a custom setup script to combine the rogue setup with
 other environmental setups for your project.
 
 ## Installing Packages Required For Rogue
+See section below to use anaconda to manage the environment.
 
 The following packages are required to build the rogue library:
 
@@ -207,13 +206,13 @@ Choose an install location with a lot of available diskspace.
 You can setup miniconda with the following command:
 
 ````
-$ source /path/to/my/miniconda3/etc/profile.d/conda.csh
+$ source /path/to/my/miniconda3/etc/profile.d/conda.csh activate
 ````
 
 or for bash:
 
 ````
-$ source /path/to/my/miniconda3/etc/profile.d/conda.sh
+$ source /path/to/my/miniconda3/etc/profile.d/conda.sh activate
 ````
 
 ### Using anaconda
@@ -237,6 +236,14 @@ environment:
 $ conda deactivate
 ````
 
+To automate the conda environement you can add the following lines to the top of the setup_rogue.csh(.sh) scripts:
+
+````
+source /path/to/my/miniconda3/etc/profile.d/conda.csh(.sh) activate
+conda activate rogue_env
+
+````
+
 ## Drivers
 
 Rogue is linked against the aes-stream-drivers package which is included 
@@ -251,4 +258,30 @@ notes when installing local packages at slac. These should only be neccessary
 for outdated versions of Linux.
 
 - Readme_local_packages.md
+
+## Installing Rogue and Anaconda behind a proxy
+
+To install rogue and anaconda behind a firewall you will need an ssl capable https proxy. I have used mitmproxy with success:
+
+````
+$ mitmproxy --list-host=gateway.machine.com --list-port=8080
+````
+
+You will execute a number of steps to enable proxy for wget, git and anaconda
+
+````
+$ setenv https_proxy gateway.machine.com:8080
+$ git config --global https.proxy https://gateway.machine.com:8080
+$ git config --global http.sslVerify false
+````
+
+Create a file $HOME/.condarc and add the following lines:
+
+````
+proxy_servers:
+   http:http://gateway.machine.com:8080
+   https:https://gateway.machine.com:8080
+
+ssl_verify: false
+````
 
