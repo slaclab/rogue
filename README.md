@@ -194,25 +194,18 @@ $ pip3 install mysqlclient
 
 ### Installing anaconda
 
-Download and install miniconda if you don't already have it installed on your machine:
+Download and install miniconda if you don't already have it installed on your machine. Choose an install location with a lot of available diskspace.
 
 ````
-# wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh
-# bash Miniconda3-latest-Linux-x86_64.sh
+# wget https://repo.anaconda.com/archive/Anaconda3-5.3.0-Linux-x86_64.sh
+# bash Anaconda3-5.3.0-Linux-x86_64.sh
 ````
-
-Choose an install location with a lot of available diskspace.
+Anaconda appears to only work reliably in the bash shell. 
 
 You can setup miniconda with the following command:
 
 ````
-$ source /path/to/my/miniconda3/etc/profile.d/conda.csh activate
-````
-
-or for bash:
-
-````
-$ source /path/to/my/miniconda3/etc/profile.d/conda.sh activate
+$ source /path/to/my/anaconda3/etc/profile.d/conda.sh
 ````
 
 ### Using anaconda
@@ -229,10 +222,10 @@ Activate the rogue environment
 $ conda activate rogue_env 
 ````
 
-To automate the conda environment you can add the following lines to the top of the setup_rogue.csh(.sh) scripts:
+To automate the conda environment you can add the following lines to the top of the setup_rogue.sh script:
 
 ````
-source /path/to/my/miniconda3/etc/profile.d/conda.csh(.sh) activate
+source /path/to/my/anaconda3/etc/profile.d/conda.sh
 conda activate rogue_env
 ````
 
