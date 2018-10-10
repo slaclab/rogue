@@ -465,7 +465,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                     path,value,disp = v._doUpdate()
 
                     # Update yaml string
-                    yml += (f"{path}:{disp}" + "\n")
+                    yml += (f"{path}: {disp}" + "\n")
 
                     # Call listener functions,
                     with self._varListenLock:
@@ -561,7 +561,6 @@ class PyroClient(object):
             return ret
         except:
             raise pr.NodeError("PyroClient Failed to find {}.{}.".format(self._group,name))
-
 
 def yamlToDict(stream, Loader=yaml.Loader, object_pairs_hook=odict):
     """Load yaml to ordered dictionary"""
