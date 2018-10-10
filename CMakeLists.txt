@@ -171,10 +171,18 @@ else()
    add_definitions( -DNO_PYTHON )
 endif()
 
-
 # Setup configuration file
-set(CONF_INCLUDE_DIRS ${PROJECT_SOURCE_DIR}/include)
-set(CONF_LIBRARIES    ${PROJECT_SOURCE_DIR}/lib/librogue-core.so.${ROGUE_SOVER})
+set(CONF_INCLUDE_DIRS ${PROJECT_SOURCE_DIR}/include
+                      ${PROJECT_SOURCE_DIR}/drivers/include
+                      ${Boost_INCLUDE_DIRS}
+                      ${PYTHON_INCLUDE_DIRS}
+                      ${EPICSV3_INCLUDES})
+
+set(CONF_LIBRARIES    ${PROJECT_SOURCE_DIR}/lib/librogue-core.so.${ROGUE_SOVER}
+                      ${Boost_LIBRARIES}
+                      ${PYTHON_LIBRARIES}
+                      ${EPICSV3_LIBRARIES}
+                      LINK_PUBLIC bz2)
 
 # Create the config file
 configure_file(RogueConfig.cmake.in ${PROJECT_SOURCE_DIR}/lib/RogueConfig.cmake @ONLY)
