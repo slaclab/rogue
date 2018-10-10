@@ -16,4 +16,5 @@ dependencies:
   - boost
   - cmake
   - bzip2
+  - matplotlib
   - epics-base=3.14.12.8
