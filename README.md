@@ -81,6 +81,8 @@ $ apt-get install libboost-all-dev
 $ apt-get install libbz2-dev
 $ apt-get install python3-pip
 $ apt-get install git
+$ apt-get install libzmq3-dev
+$ apt-get install python3-pyqt5 (or python3-pyqt4)
 ````
 
 To add these packages on archlinux:
@@ -92,100 +94,24 @@ $ pacman -S boost
 $ pacman -S bzip2
 $ pacman -S python-pip
 $ pacman -S git
-````
-
-To use these packages on a rhel6 machine at SLAC requires some extra
-steps due to the computers being out of date:
-
-````
-$ export MODULEPATH=/usr/share/Modules/modulefiles:/etc/modulefiles:/afs/slac.stanford.edu/package/spack/share/spack/modules/linux-rhel6-x86_64
-$ module load cmake-3.9.4-gcc-4.9.4-ofjqova
-$ source /afs/slac.stanford.edu/g/reseng/python/3.6.1/settings.sh
-$ source /afs/slac.stanford.edu/g/reseng/boost/1.64.0/settings.sh
-````
-or for csh:
-````
-$ setenv MODULEPATH /usr/share/Modules/modulefiles:/etc/modulefiles:/afs/slac.stanford.edu/package/spack/share/spack/modules/linux-rhel6-x86_64
-$ module load cmake-3.9.4-gcc-4.9.4-ofjqova
-$ source /afs/slac.stanford.edu/g/reseng/python/3.6.1/settings.csh
-$ source /afs/slac.stanford.edu/g/reseng/boost/1.64.0/settings.csh
-````
-
-The rogue distribution includes a pair of setup scripts for the SLAC environment:
-````
-$ source setup_slac.sh
-````
-or for csh:
-````
-$ source setup_slac.csh
-````
-
-These scripts include also include the optional zeromq and epics packages
-described below.
-
-### Optional Packages
-
-ZeroMq is used for some of the python based messaging interface, particularly
-the simulation interfaces. To use the GUI interface you will need to install
-either pyqt5 or pyqt4.
-
-On Ubuntu 17.04 (or later):
-
-````
-$ apt-get install libzmq3-dev
-$ apt-get install python3-pyqt5
-$ apt-get install python3-pyqt4
-````
-
-On archlinux:
-
-````
 $ pacman -S zeromq
-$ pacman -S python-pyqt5
-$ pacman -S python-pyqt4
-````
-
-At SLAC pyqt4 is already included with the centrally install python3, to add support
-for zeromq:
-
-````
-$ source /afs/slac.stanford.edu/g/reseng/zeromq/4.2.1/settings.sh
-````
-or for csh:
-````
-$ source /afs/slac.stanford.edu/g/reseng/zeromq/4.2.1/settings.csh
+$ pacman -S python-pyqt5 (or python-pyqt4)
 ````
 
 Epics V3 support is and optional module that will be included in the rogue build
-if the EPICS_BASE directory is set in the user's environment. Setup scripts
-for EPICs at SLAC are included in the following directory:
-
-````
-$ source /slac/slac.stanford.edu/g/reseng/epics/base-R3-15-5-1-0/settings.sh
-````
-for for csh:
-````
-$ source /slac/slac.stanford.edu/g/reseng/epics/base-R3-15-5-1-0/settings.csh
-````
+if the EPICS_BASE directory is set in the user's environment.
 
 ### Python packages required
 
 The following python packages are required to use rogue in the python3
 environment. Currently I am using PIP to install these, but you are free 
-to use your favorite python tool. These packages are already included in 
-afs based SLAC python3 install mentioned above.
+to use your favorite python tool.
 
 ````
 $ pip3 install PyYAML
 $ pip3 install Pyro4 
 $ pip3 install parse
 $ pip3 install click
-````
-
-The following are optional:
-
-````
-$ pip3 install ipython
 $ pip3 install pyzmq
 $ pip3 install mysqlclient
 ````
@@ -240,15 +166,6 @@ conda deactivate
 Rogue is linked against the aes-stream-drivers package which is included 
 as a submodule at the drivers sub-directory. If you need to use these
 drivers please see the README.md file in that package.
-
-## Additional Notes
-
-The rogue package includes a readme file for compiling and installing local 
-versions of python3, boost,zeromq and epics. This were created as 
-notes when installing local packages at slac. These should only be neccessary
-for outdated versions of Linux.
-
-- Readme_local_packages.md
 
 ## Installing Rogue and Anaconda behind a proxy
 
