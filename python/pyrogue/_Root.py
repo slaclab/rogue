@@ -459,13 +459,13 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
             if count == 0 and len(uvars) > 0:
 
                 self._log.debug(F"Process update group. Length={len(uvars)}. Entry={list(uvars.keys())[0]}")
-                yml = ""
+                d = odict()
 
                 for p,v in uvars.items():
                     path,value,disp = v._doUpdate()
 
                     # Update yaml string
-                    yml += (f"{path}: {disp}" + "\n")
+                    d[path] = disp
 
                     # Call listener functions,
                     with self._varListenLock:
@@ -485,7 +485,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                                     self._log.error("Pyro callback failed for {}: {}".format(self.name,msg))
 
                 # Generate yaml stream
-                self._sendYamlFrame(yml)
+                self._sendYamlFrame(dictToYaml(d,default_flow_style=False))
 
                 # Init var list
                 uvars = {}
