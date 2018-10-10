@@ -30,6 +30,10 @@ project (rogue)
 enable_language(CXX)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x -Wno-deprecated")
 
+#####################################
+# Generate version with GIT
+#####################################
+
 # Set version from git tag
 find_package(Git)
 if (GIT_FOUND)
@@ -117,7 +121,7 @@ else()
 endif()
 
 #####################################
-# Setup build
+# Setup build, core library
 #####################################
 
 # Configuration File
@@ -152,6 +156,10 @@ TARGET_LINK_LIBRARIES(rogue-core LINK_PUBLIC ${PYTHON_LIBRARIES})
 TARGET_LINK_LIBRARIES(rogue-core LINK_PUBLIC ${EPICSV3_LIBRARIES})
 TARGET_LINK_LIBRARIES(rogue-core LINK_PUBLIC bz2)
 
+#####################################
+# Setup build, python library
+#####################################
+
 if (DO_PYTHON)
 
    # Create rogue python library
@@ -171,6 +179,10 @@ else()
    add_definitions( -DNO_PYTHON )
 endif()
 
+#####################################
+# Export cmake configuration file 
+#####################################
+
 # Setup configuration file
 set(CONF_INCLUDE_DIRS ${PROJECT_SOURCE_DIR}/include
                       ${PROJECT_SOURCE_DIR}/drivers/include
@@ -185,7 +197,11 @@ set(CONF_LIBRARIES    ${PROJECT_SOURCE_DIR}/lib/librogue-core.so.${ROGUE_SOVER}
                       LINK_PUBLIC bz2)
 
 # Create the config file
-configure_file(RogueConfig.cmake.in ${PROJECT_SOURCE_DIR}/lib/RogueConfig.cmake @ONLY)
+configure_file(${PROJECT_SOURCE_DIR}/src/RogueConfig.cmake.in ${PROJECT_SOURCE_DIR}/lib/RogueConfig.cmake @ONLY)
+
+#####################################
+# Print status
+#####################################
 
 message("")
 message("----------------------------------------------------------------------")
