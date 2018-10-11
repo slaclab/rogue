@@ -21,7 +21,7 @@
 **/
 #ifndef __ROGUE_HARDWARE_PGP_INFO_H__
 #define __ROGUE_HARDWARE_PGP_INFO_H__
-#include <PgpDriver.h>
+#include <rogue/hardware/drivers/PgpDriver.h>
 #include <stdint.h>
 #include <boost/shared_ptr.hpp>
 

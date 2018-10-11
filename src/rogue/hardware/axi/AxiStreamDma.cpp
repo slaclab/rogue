@@ -18,6 +18,7 @@
  * ----------------------------------------------------------------------------
 **/
 #include <rogue/hardware/axi/AxiStreamDma.h>
+#include <rogue/hardware/drivers/AxisDriver.h>
 #include <rogue/interfaces/stream/Frame.h>
 #include <rogue/interfaces/stream/FrameLock.h>
 #include <rogue/interfaces/stream/Buffer.h>
