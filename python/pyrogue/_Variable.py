@@ -28,7 +28,7 @@ class VariableError(Exception):
     pass
 
 
-class VariableValue(object):
+class _VariableValue(object):
     def __init__(self, var):
         self.value     = var.value()
         self.valueDisp = var.genDisp(self.value)
@@ -323,7 +323,7 @@ class BaseVariable(pr.Node):
 
     def _getDict(self,modes):
         if self._mode in modes:
-            return VariableValue(self)
+            return _VariableValue(self)
         else:
             return None
 
@@ -335,7 +335,7 @@ class BaseVariable(pr.Node):
 
     def _doUpdate(self):
 
-        val = VariableValue(self)
+        val = _VariableValue(self)
 
         for func in self.__functions:
             if hasattr(func,'varListener'):

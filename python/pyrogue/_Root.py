@@ -597,7 +597,7 @@ def dictToYaml(data, stream=None, Dumper=yaml.Dumper, **kwds):
     def _dict_representer(dumper, data):
         return dumper.represent_mapping(yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG, data.items())
 
-    OrderedDumper.add_representer(pr.VariableValue, _var_representer)
+    OrderedDumper.add_representer(pr._VariableValue, _var_representer)
     OrderedDumper.add_representer(odict, _dict_representer)
 
     try:
