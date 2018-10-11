@@ -126,7 +126,7 @@ endif()
 
 # Configuration File
 configure_file (
-   ${PROJECT_SOURCE_DIR}/include/rogue/RogueConfig.in
+   ${PROJECT_SOURCE_DIR}/templates/RogueConfig.h.in
    ${PROJECT_BINARY_DIR}/RogueConfig.h
 )
 
@@ -146,8 +146,8 @@ add_library(rogue-core SHARED "")
 add_subdirectory(src/rogue)
 
 # Set output to TOP/lib
-set_target_properties(rogue-core PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/lib 
-                                 VERSION ${ROGUE_VERSION} SOVERSION ${ROGUE_SOVER})
+#set_target_properties(rogue-core PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/lib 
+#                                 VERSION ${ROGUE_VERSION} SOVERSION ${ROGUE_SOVER})
 
 # Link rogue core to boost, python and bzip
 TARGET_LINK_LIBRARIES(rogue-core LINK_PUBLIC ${Boost_LIBRARIES})
@@ -168,7 +168,7 @@ if (DO_PYTHON)
    add_subdirectory(src)
 
    # Set output to TOP/python, remove lib prefix
-   set_target_properties(rogue PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/python)
+#   set_target_properties(rogue PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/python)
    set_target_properties(rogue PROPERTIES PREFIX "")
 
    # Link to rogue core
@@ -195,7 +195,7 @@ set(CONF_LIBRARIES    ${PROJECT_SOURCE_DIR}/lib/librogue-core.so.${ROGUE_SOVER}
                       LINK_PUBLIC bz2)
 
 # Create the config file
-configure_file(${PROJECT_SOURCE_DIR}/src/RogueConfig.cmake.in ${PROJECT_SOURCE_DIR}/lib/RogueConfig.cmake @ONLY)
+#configure_file(${PROJECT_SOURCE_DIR}/templates/RogueConfig.cmake.in ${PROJECT_SOURCE_DIR}/lib/RogueConfig.cmake @ONLY)
 
 #####################################
 # Print status
