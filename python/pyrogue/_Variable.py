@@ -29,9 +29,11 @@ class VariableError(Exception):
 
 
 class VariableValue(object):
-    def __init__(self, raw, disp):
-        self.raw  = raw
-        self.disp = disp
+    def __init__(self, var):
+        self.value     = var.value()
+        self.valueDisp = var.genDisp(self.value)
+        self.disp      = var.disp
+        self.enum      = var.enum
 
 
 class BaseVariable(pr.Node):
@@ -321,7 +323,7 @@ class BaseVariable(pr.Node):
 
     def _getDict(self,modes):
         if self._mode in modes:
-            return VariableValue(self.value(), self.valueDisp())
+            return VariableValue(self)
         else:
             return None
 
@@ -333,13 +335,13 @@ class BaseVariable(pr.Node):
 
     def _doUpdate(self):
 
-        val = VariableValue(self.value(), self.valueDisp())
+        val = VariableValue(self)
 
         for func in self.__functions:
             if hasattr(func,'varListener'):
-                func.varListener(self.path,val.raw,val.disp)
+                func.varListener(self.path,val.value,val.valueDisp)
             else:
-                func(self.path,val.raw,val.disp)
+                func(self.path,val.value,val.valueDisp)
 
         return val
 

@@ -471,9 +471,9 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                             try:
 
                                 if isinstance(func,Pyro4.core.Proxy) or hasattr(func,'varListener'):
-                                    func.varListener(p,val.raw,val.disp)
+                                    func.varListener(p,val.value,val.valueDisp)
                                 else:
-                                    func(p,val.raw,val.disp)
+                                    func(p,val.value.val.valueDisp)
 
                             except Pyro4.errors.CommunicationError as msg:
                                 if 'Connection refused' in str(msg):
@@ -581,14 +581,18 @@ def dictToYaml(data, stream=None, Dumper=yaml.Dumper, **kwds):
         pass
 
     def _var_representer(dumper, data):
-        if type(data.raw) == int:
+        if type(data.value) == bool:
+            enc = 'tag:yaml.org,2002:bool'
+        elif data.enum is not None:
+            enc = 'tag:yaml.org,2002:str'
+        elif type(data.value) == int:
             enc = 'tag:yaml.org,2002:int'
-        elif type(data.raw) == float:
+        elif type(data.value) == float:
             enc = 'tag:yaml.org,2002:float'
         else:
             enc = 'tag:yaml.org,2002:str'
 
-        return dumper.represent_scalar(enc, data.disp)
+        return dumper.represent_scalar(enc, data.valueDisp)
 
     def _dict_representer(dumper, data):
         return dumper.represent_mapping(yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG, data.items())
