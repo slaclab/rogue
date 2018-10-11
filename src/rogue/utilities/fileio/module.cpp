@@ -24,6 +24,7 @@
 #include <rogue/utilities/fileio/StreamWriterChannel.h>
 #include <rogue/utilities/fileio/StreamWriter.h>
 #include <rogue/utilities/fileio/LegacyStreamWriter.h>
+#include <rogue/utilities/fileio/LegacyStreamReader.h>
 #include <rogue/utilities/fileio/module.h>
 #include <boost/python.hpp>
 
@@ -42,8 +43,9 @@ void ruf::setup_module() {
    bp::scope io_scope = module;
 
    ruf::StreamReader::setup_python();
+   ruf::LegacyStreamReader::setup_python();         
    ruf::StreamWriter::setup_python();
-   ruf::LegacyStreamWriter::setup_python();   
+   ruf::LegacyStreamWriter::setup_python();
    ruf::StreamWriterChannel::setup_python();   
 
 }
