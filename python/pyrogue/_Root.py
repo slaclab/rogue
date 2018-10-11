@@ -473,7 +473,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                                 if isinstance(func,Pyro4.core.Proxy) or hasattr(func,'varListener'):
                                     func.varListener(p,val.value,val.valueDisp)
                                 else:
-                                    func(p,val.value.val.valueDisp)
+                                    func(p,val.value.val,valueDisp)
 
                             except Pyro4.errors.CommunicationError as msg:
                                 if 'Connection refused' in str(msg):
