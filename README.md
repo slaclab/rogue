@@ -38,7 +38,7 @@ $ cd rogue
 $ mkdir build
 $ cd build
 $ cmake .. -DROGUE_INSTALL=local
-$ make install (or make -j #cpus install)
+$ make install
 $ source ../setup_rogue.csh (or .sh)
 ````
 
@@ -50,7 +50,7 @@ $ cd rogue
 $ mkdir build
 $ cd build
 $ cmake .. -DROGUE_INSTALL=custom -DROGUE_DIR=/path/to/custom/dir
-$ make install (or make -j #cpus install)
+$ make install
 $ source /path/to/custom/dir/setup_rogue.csh (or .sh)
 ````
 
@@ -63,7 +63,7 @@ $ cd rogue
 $ mkdir build
 $ cd build
 $ cmake .. -DROGUE_INSTALL=system
-$ make install (or make -j #cpus install)
+$ make install
 ````
 
 ### Updating rogue
