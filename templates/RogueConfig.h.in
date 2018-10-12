@@ -20,7 +20,7 @@
 #ifndef __ROGUE_CONFIG_H__
 #define __ROGUE_CONFIG_H__
 
-#define ROGUE_VERSION "${PACKAGE_VERSION}"
+#define ROGUE_VERSION "${ROGUE_VERSION}"
 #define DO_EPICS_V3    ${DO_EPICS_V3}
 
 #endif

@@ -24,9 +24,9 @@ spack = path.split(path.split(pip_loc)[0])[0]
 
 setup(
     name='rogue',
-    version='${PACKAGE_VERSION}',
+    version='${ROGUE_VERSION}',
     packages=['pyrogue', 'pyrogue.gui', 'pyrogue.utilities', 'pyrogue.interfaces', 'pyrogue.protocols'],
     package_dir={'':'${PROJECT_SOURCE_DIR}/python'},
-    data_files=[(spack,['${PROJECT_BINARY_DIR}/rogue.so'])],
+    data_files=[(spack,['${PROJECT_SOURCE_DIR}/python/rogue.so'])],
 )
 

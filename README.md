@@ -16,19 +16,55 @@ For example scripts and sub-class source code examples see:
 https://github.com/slaclab/rogue-example
 
 ## Building & Installing Rogue
-There are three modes for building/installing rogue. The first is for running directly from the git checkout location, 'local'. The second is for installing in a custom directory 'custom' and the third is for installing in a system directory, possibly within anaconda,'system'. The 'local' and 'custom' installs require a setup script to be executed in order to use rogue.
+Before building and using rogue you will need to either install the required support packages 
+and modules or setup an anaconda environment. See sections below for instructions.
+
+There are three possible modes for building/installing rogue:
+
+- Local:
+   Used when rogue is going to be used in the local checkout directory. A setup script is generated to add rogue to the system environment.
+
+- Custom:
+   Used when rogue is going to be installed in a custom non-system directory. A setup script is generated to add rogue to the system environment.
+
+- System:
+   The rogue headers and libraries will be installed to a standard system directory and the python filed will be installed using the system python package installed.
 
 ### Local Install
-The local install is for compiling and runnnig rogue within the checkout directory.
 
+````
+$ git clone https://github.com/slaclab/rogue.git
+$ cd rogue
+$ mkdir build
+$ cd build
+$ cmake .. -DROGUE_INSTALL=local
+$ make install (or make -j #cpus install)
+$ source ../setup_rogue.csh (or .sh)
+````
 
 ### Custom Install
-The custom install will install rogue into the specified path and requires a setup script to add rogue to the environment.
 
+````
+$ git clone https://github.com/slaclab/rogue.git
+$ cd rogue
+$ mkdir build
+$ cd build
+$ cmake .. -DROGUE_INSTALL=custom -DROGUE_DIR=/path/to/custom/dir
+$ make install (or make -j #cpus install)
+$ source /path/to/custom/dir/setup_rogue.csh (or .sh)
+````
 
 ### System Install
 The system install will install rogue into the standard system environment.
 
+````
+$ git clone https://github.com/slaclab/rogue.git
+$ cd rogue
+$ mkdir build
+$ cd build
+$ cmake .. -DROGUE_INSTALL=system
+$ make install (or make -j #cpus install)
+````
 
 
 

@@ -17,6 +17,21 @@
 if (DEFINED ENV{CONDA_PREFIX})
    set(CMAKE_PREFIX_PATH "$ENV{CONDA_PREFIX}")
    link_directories($ENV{CONDA_PREFIX}/lib)
+   set(ROGUE_PREFIX "$ENV{CONDA_PREFIX}")
+else
+   set(ROGUE_PREFIX "")
+endif()
+
+# Default install type
+if ( NOT ROGUE_INSTALL ) 
+   set (ROGUE_INSTALL "local")
+endif()
+
+# Default Install directory
+if (${ROGUE_INSTALL} STREQUAL "local")
+   set (ROGUE_DIR ${PROJECT_SOURCE_DIR})
+elseif ( NOT ROGUE_DIR ) 
+   set (ROGUE_DIR "${ROGUE_PREFIX}/${CMAKE_INSTALL_PREFIX}")
 endif()
 
 # Check cmake version
@@ -152,9 +167,8 @@ TARGET_LINK_LIBRARIES(rogue-core LINK_PUBLIC ${PYTHON_LIBRARIES})
 TARGET_LINK_LIBRARIES(rogue-core LINK_PUBLIC ${EPICSV3_LIBRARIES})
 TARGET_LINK_LIBRARIES(rogue-core LINK_PUBLIC bz2)
 
-# Set output to TOP/lib
-set_target_properties(rogue-core PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/lib 
-                                 VERSION ${ROGUE_VERSION} SOVERSION ${ROGUE_SOVER})
+# Set output library names
+set_target_properties(rogue-core PROPERTIES VERSION ${ROGUE_VERSION} SOVERSION ${ROGUE_SOVER})
 
 #####################################
 # Setup build, python library
@@ -169,7 +183,6 @@ if (DO_PYTHON)
    add_subdirectory(src)
 
    # Set output to TOP/python, remove lib prefix
-   set_target_properties(rogue PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/python)
    set_target_properties(rogue PROPERTIES PREFIX "")
 
    # Link to rogue core
@@ -180,45 +193,16 @@ else()
 endif()
 
 #########################################
-# Local Install Configuration & Setup
+# Configuration & Setup Script Generation
 #########################################
 
 # Setup configuration file
-set(CONF_INCLUDE_DIRS ${PROJECT_SOURCE_DIR}/include
+set(CONF_INCLUDE_DIRS ${ROGUE_DIR}/include
                       ${Boost_INCLUDE_DIRS}
                       ${PYTHON_INCLUDE_DIRS}
                       ${EPICSV3_INCLUDES})
  
-set(CONF_LIBRARIES    ${PROJECT_SOURCE_DIR}/lib/librogue-core.so.${ROGUE_SOVER}
-                      ${Boost_LIBRARIES}
-                      ${PYTHON_LIBRARIES}
-                      ${EPICSV3_LIBRARIES}
-                      LINK_PUBLIC bz2)
-
-# Create the config file
-configure_file(${PROJECT_SOURCE_DIR}/templates/RogueConfig.cmake.in 
-               ${PROJECT_SOURCE_DIR}/lib/RogueConfig.cmake @ONLY)
-
-# Rogue directory
-set(ROGUE_DIR ${PROJECT_SOURCE_DIR})
-
-# Create the setup files
-configure_file(${PROJECT_SOURCE_DIR}/templates/setup_rogue.csh.in
-               ${PROJECT_SOURCE_DIR}/setup_rogue.csh @ONLY)
-configure_file(${PROJECT_SOURCE_DIR}/templates/setup_rogue.sh.in
-               ${PROJECT_SOURCE_DIR}/setup_rogue.sh @ONLY)
-
-#####################################################
-# Custom / System Install Configuration & Setup
-#####################################################
-
-# Setup configuration file
-set(CONF_INCLUDE_DIRS ${CMAKE_INSTALL_PREFIX}/include
-                      ${Boost_INCLUDE_DIRS}
-                      ${PYTHON_INCLUDE_DIRS}
-                      ${EPICSV3_INCLUDES})
- 
-set(CONF_LIBRARIES    ${CMAKE_INSTALL_PREFIX}/lib/librogue-core.so.${ROGUE_SOVER}
+set(CONF_LIBRARIES    ${ROGUE_DIR}/lib/librogue-core.so.${ROGUE_SOVER}
                       ${Boost_LIBRARIES}
                       ${PYTHON_LIBRARIES}
                       ${EPICSV3_LIBRARIES}
@@ -228,42 +212,56 @@ set(CONF_LIBRARIES    ${CMAKE_INSTALL_PREFIX}/lib/librogue-core.so.${ROGUE_SOVER
 configure_file(${PROJECT_SOURCE_DIR}/templates/RogueConfig.cmake.in 
                ${PROJECT_BINARY_DIR}/RogueConfig.cmake @ONLY)
 
-# Rogue directory
-set(ROGUE_DIR ${CMAKE_INSTALL_PREFIX})
-
 # Create the setup files
 configure_file(${PROJECT_SOURCE_DIR}/templates/setup_rogue.csh.in
                ${PROJECT_BINARY_DIR}/setup_rogue.csh @ONLY)
 configure_file(${PROJECT_SOURCE_DIR}/templates/setup_rogue.sh.in
                ${PROJECT_BINARY_DIR}/setup_rogue.sh @ONLY)
 
+# Python distutils setup script
+configure_file ( ${PROJECT_SOURCE_DIR}/templates/setup.py.in
+                 ${PROJECT_BINARY_DIR}/setup.py
+)
+
 #####################################
 # Install Setup
 #####################################
 
-# Python distutils setup script
-configure_file (
-   ${PROJECT_SOURCE_DIR}/templates/setup.py.in
-   ${PROJECT_BINARY_DIR}/setup.py
-)
+# Always install core libraries and config files
+install(TARGETS rogue-core LIBRARY DESTINATION ${ROGUE_DIR}/lib)
+install(FILES   ${PROJECT_BINARY_DIR}/RogueConfig.cmake DESTINATION ${ROGUE_DIR}/lib)
 
-install(TARGETS rogue-core LIBRARY DESTINATION lib)
-install(FILES   ${PROJECT_BINARY_DIR}/RogueConfig.cmake DESTINATION lib)
-install(DIRECTORY ${PROJECT_SOURCE_DIR}/include/rogue
-        DESTINATION include FILES_MATCHING PATTERN "*.h")
-
-# Custom only
-install(FILES ${PROJECT_BINARY_DIR}/setup_rogue.sh ${PROJECT_BINARY_DIR}/setup_rogue.csh DESTINATION .)
-
-if (DO_PYTHON)
-   install(DIRECTORY ${PROJECT_SOURCE_DIR}/python DESTINATION . FILES_MATCHING PATTERN "*.py" PATTERN "*.so")
-   install(CODE "execute_process(COMMAND python3 -m compileall ${CMAKE_INSTALL_PREFIX}/python)")
+# Copy setup files for local or custom
+if ((${ROGUE_INSTALL} STREQUAL "custom") OR (${ROGUE_INSTALL} STREQUAL "local"))
+   install(FILES ${PROJECT_BINARY_DIR}/setup_rogue.sh ${PROJECT_BINARY_DIR}/setup_rogue.csh DESTINATION ${ROGUE_DIR})
 endif()
 
-# System only
-#if (DO_PYTHON)
-   #install(CODE "execute_process(COMMAND ${PYTHON} ${PROJECT_BINARY_DIR}/setup.py install)")
-#endif()
+# Install header files for custom or system
+if ((${ROGUE_INSTALL} STREQUAL "custom") OR (${ROGUE_INSTALL} STREQUAL "system"))
+   install(DIRECTORY ${PROJECT_SOURCE_DIR}/include/rogue
+           DESTINATION ${ROGUE_DIR}/include FILES_MATCHING PATTERN "*.h")
+endif()
+
+
+# Python file install
+if (DO_PYTHON)
+
+   # Install python files directly for custom install
+   if (${ROGUE_INSTALL} STREQUAL "custom")
+      install(DIRECTORY ${PROJECT_SOURCE_DIR}/python/pyrogue DESTINATION ${ROGUE_DIR}/python FILES_MATCHING PATTERN "*.py")
+      install(CODE "execute_process(COMMAND python3 -m compileall ${ROGUE_DIR}/python)")
+
+   # Use distutils to isntall python for system install
+   elseif (${ROGUE_INSTALL} STREQUAL "system")
+      install(CODE "execute_process(COMMAND python3 ${PROJECT_BINARY_DIR}/setup.py install)")
+   endif()
+
+   # Copy library for custom or local
+   if ((${ROGUE_INSTALL} STREQUAL "custom") OR (${ROGUE_INSTALL} STREQUAL "local"))
+      install(TARGETS rogue LIBRARY DESTINATION ${ROGUE_DIR}/python)
+   endif()   
+
+endif()
 
 #####################################
 # Print status
@@ -271,13 +269,12 @@ endif()
 
 message("")
 message("----------------------------------------------------------------------")
-message("-- Success!")
 message("")
 message("-- Rogue Version: ${ROGUE_VERSION}")
 message("")
-message("-- Install Path: ${CMAKE_INSTALL_PREFIX}")
+message("-- Install Type: ${ROGUE_INSTALL}")
 message("")
-message("-- Found boost: ${Boost_INCLUDE_DIRS}")
+message("-- Install Path: ${ROGUE_DIR}")
 message("")
 
 if (DO_PYTHON)
