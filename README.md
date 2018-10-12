@@ -25,7 +25,7 @@ There are three possible modes for building/installing rogue:
    Rogue is going to be used in the local checkout directory. A setup script is generated to add rogue to the system environment.
 
 - Custom:
-   Used when rogue is going to be installed in a custom non-system directory. A setup script is generated to add rogue to the system environment.
+   Rogue is going to be installed in a custom non-system directory. A setup script is generated to add rogue to the system environment.
 
 - System:
    The rogue headers and libraries will be installed to a standard system directory and the python filed will be installed using the system python package installed.
