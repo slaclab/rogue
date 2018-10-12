@@ -39,8 +39,10 @@ find_package(Git)
 if (GIT_FOUND)
    execute_process (
       COMMAND ${GIT_EXECUTABLE} describe --tags --dirty
-      OUTPUT_VARIABLE PACKAGE_VERSION
+      OUTPUT_VARIABLE ROGUE_VERSION
       OUTPUT_STRIP_TRAILING_WHITESPACE)
+
+   string(REGEX MATCH "^v([0-9]+)\\.([0-9]+)" ROGUE_SOVER ${ROGUE_VERSION})
 else()
    message(FATAL_ERROR "Git is required to build rogue!")
 endif()
@@ -103,7 +105,8 @@ if(DO_PYTHON AND DEFINED ENV{EPICS_BASE})
    if(DEFINED ENV{EPICS_HOST_ARCH})
        set(EPICSV3_ARCH      $ENV{EPICS_HOST_ARCH})
    else()
-       execute_process(COMMAND ${EPICSV3_BASE_DIR}/startup/EpicsHostArch OUTPUT_VARIABLE EPICSV3_ARCH OUTPUT_STRIP_TRAILING_WHITESPACE)
+       execute_process(COMMAND ${EPICSV3_BASE_DIR}/startup/EpicsHostArch 
+                       OUTPUT_VARIABLE EPICSV3_ARCH OUTPUT_STRIP_TRAILING_WHITESPACE)
        string(REGEX REPLACE "\n$" "" EPICSV3_ARCH "${EPICSV3_ARCH}")
    endif()
    set(EPICSV3_LIB_DIR   ${EPICSV3_BASE_DIR}/lib/${EPICSV3_ARCH} )
@@ -149,6 +152,10 @@ TARGET_LINK_LIBRARIES(rogue-core LINK_PUBLIC ${PYTHON_LIBRARIES})
 TARGET_LINK_LIBRARIES(rogue-core LINK_PUBLIC ${EPICSV3_LIBRARIES})
 TARGET_LINK_LIBRARIES(rogue-core LINK_PUBLIC bz2)
 
+# Set output to TOP/lib
+set_target_properties(rogue-core PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/lib 
+                                 VERSION ${ROGUE_VERSION} SOVERSION ${ROGUE_SOVER})
+
 #####################################
 # Setup build, python library
 #####################################
@@ -162,6 +169,7 @@ if (DO_PYTHON)
    add_subdirectory(src)
 
    # Set output to TOP/python, remove lib prefix
+   set_target_properties(rogue PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/python)
    set_target_properties(rogue PROPERTIES PREFIX "")
 
    # Link to rogue core
@@ -171,39 +179,91 @@ else()
    add_definitions( -DNO_PYTHON )
 endif()
 
+#########################################
+# Local Install Configuration & Setup
+#########################################
+
+# Setup configuration file
+set(CONF_INCLUDE_DIRS ${PROJECT_SOURCE_DIR}/include
+                      ${Boost_INCLUDE_DIRS}
+                      ${PYTHON_INCLUDE_DIRS}
+                      ${EPICSV3_INCLUDES})
+ 
+set(CONF_LIBRARIES    ${PROJECT_SOURCE_DIR}/lib/librogue-core.so.${ROGUE_SOVER}
+                      ${Boost_LIBRARIES}
+                      ${PYTHON_LIBRARIES}
+                      ${EPICSV3_LIBRARIES}
+                      LINK_PUBLIC bz2)
+
+# Create the config file
+configure_file(${PROJECT_SOURCE_DIR}/templates/RogueConfig.cmake.in 
+               ${PROJECT_SOURCE_DIR}/lib/RogueConfig.cmake @ONLY)
+
+# Rogue directory
+set(ROGUE_DIR ${PROJECT_SOURCE_DIR})
+
+# Create the setup files
+configure_file(${PROJECT_SOURCE_DIR}/templates/setup_rogue.csh.in
+               ${PROJECT_SOURCE_DIR}/setup_rogue.csh @ONLY)
+configure_file(${PROJECT_SOURCE_DIR}/templates/setup_rogue.sh.in
+               ${PROJECT_SOURCE_DIR}/setup_rogue.sh @ONLY)
+
+#####################################################
+# Custom / System Install Configuration & Setup
+#####################################################
+
+# Setup configuration file
+set(CONF_INCLUDE_DIRS ${CMAKE_INSTALL_PREFIX}/include
+                      ${Boost_INCLUDE_DIRS}
+                      ${PYTHON_INCLUDE_DIRS}
+                      ${EPICSV3_INCLUDES})
+ 
+set(CONF_LIBRARIES    ${CMAKE_INSTALL_PREFIX}/lib/librogue-core.so.${ROGUE_SOVER}
+                      ${Boost_LIBRARIES}
+                      ${PYTHON_LIBRARIES}
+                      ${EPICSV3_LIBRARIES}
+                      LINK_PUBLIC bz2)
+
+# Create the config file
+configure_file(${PROJECT_SOURCE_DIR}/templates/RogueConfig.cmake.in 
+               ${PROJECT_BINARY_DIR}/RogueConfig.cmake @ONLY)
+
+# Rogue directory
+set(ROGUE_DIR ${CMAKE_INSTALL_PREFIX})
+
+# Create the setup files
+configure_file(${PROJECT_SOURCE_DIR}/templates/setup_rogue.csh.in
+               ${PROJECT_BINARY_DIR}/setup_rogue.csh @ONLY)
+configure_file(${PROJECT_SOURCE_DIR}/templates/setup_rogue.sh.in
+               ${PROJECT_BINARY_DIR}/setup_rogue.sh @ONLY)
+
 #####################################
-# Install Targets
+# Install Setup
 #####################################
+
+# Python distutils setup script
 configure_file (
    ${PROJECT_SOURCE_DIR}/templates/setup.py.in
    ${PROJECT_BINARY_DIR}/setup.py
 )
 
-install(TARGETS rogue-core EXPORT Rogue LIBRARY DESTINATION lib)
+install(TARGETS rogue-core LIBRARY DESTINATION lib)
+install(FILES   ${PROJECT_BINARY_DIR}/RogueConfig.cmake DESTINATION lib)
 install(DIRECTORY ${PROJECT_SOURCE_DIR}/include/rogue
         DESTINATION include FILES_MATCHING PATTERN "*.h")
-     #install(EXPORT Rogue DESTINATION lib)
-     
-     #install(CODE "execute_process(COMMAND ${PYTHON} ${PROJECT_BINARY_DIR}/setup.py install)")
 
-#####################################
-# Export cmake configuration file 
-#####################################
+# Custom only
+install(FILES ${PROJECT_BINARY_DIR}/setup_rogue.sh ${PROJECT_BINARY_DIR}/setup_rogue.csh DESTINATION .)
 
-# Setup configuration file
-#set(CONF_INCLUDE_DIRS ${PROJECT_SOURCE_DIR}/include
-#                      ${Boost_INCLUDE_DIRS}
-#                      ${PYTHON_INCLUDE_DIRS}
-#                      ${EPICSV3_INCLUDES})
-#
-#set(CONF_LIBRARIES    ${PROJECT_SOURCE_DIR}/lib/librogue-core.so.${ROGUE_SOVER}
-#                      ${Boost_LIBRARIES}
-#                      ${PYTHON_LIBRARIES}
-#                      ${EPICSV3_LIBRARIES}
-#                      LINK_PUBLIC bz2)
+if (DO_PYTHON)
+   install(DIRECTORY ${PROJECT_SOURCE_DIR}/python DESTINATION . FILES_MATCHING PATTERN "*.py" PATTERN "*.so")
+   install(CODE "execute_process(COMMAND python3 -m compileall ${CMAKE_INSTALL_PREFIX}/python)")
+endif()
 
-# Create the config file
-#configure_file(${PROJECT_SOURCE_DIR}/templates/RogueConfig.cmake.in ${PROJECT_SOURCE_DIR}/lib/RogueConfig.cmake @ONLY)
+# System only
+#if (DO_PYTHON)
+   #install(CODE "execute_process(COMMAND ${PYTHON} ${PROJECT_BINARY_DIR}/setup.py install)")
+#endif()
 
 #####################################
 # Print status
@@ -213,7 +273,7 @@ message("")
 message("----------------------------------------------------------------------")
 message("-- Success!")
 message("")
-message("-- Rogue Version: ${PACKAGE_VERSION}")
+message("-- Rogue Version: ${ROGUE_VERSION}")
 message("")
 message("-- Install Path: ${CMAKE_INSTALL_PREFIX}")
 message("")

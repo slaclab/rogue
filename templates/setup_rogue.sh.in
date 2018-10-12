@@ -1,0 +1,21 @@
+
+if [ -z "$LD_LIBRARY_PATH" ]
+then
+   LD_LIBRARY_PATH=""
+fi
+
+if [ -z "$PYTHONPATH" ]
+then
+   PYTHONPATH=""
+fi
+
+# Rogue directory
+export ROGUE_DIR=@ROGUE_DIR@
+export ROGUE_VERSION=@ROGUE_VERSION@
+
+# Setup python path
+export PYTHONPATH=${ROGUE_DIR}/python:${PYTHONPATH}
+
+# Setup library path
+export LD_LIBRARY_PATH=${ROGUE_DIR}/lib:${LD_LIBRARY_PATH}
+
