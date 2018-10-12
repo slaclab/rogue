@@ -55,7 +55,6 @@ $ source /path/to/custom/dir/setup_rogue.csh (or .sh)
 ````
 
 ### System Install
-The system install will install rogue into the standard system environment.
 
 ````
 $ git clone https://github.com/slaclab/rogue.git
@@ -74,7 +73,7 @@ $ git pull
 $ cd build
 $ make rebuild_cache
 $ make clean
-$ make install (or make -j #cpus install)
+$ make install
 ````
 
 ## Installing Packages Required For Rogue
