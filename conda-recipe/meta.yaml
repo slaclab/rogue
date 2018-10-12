@@ -9,16 +9,18 @@ requirements:
    build:
      - gcc_linux-64
      - gxx_linux-64
-     - python=3.6
+     - python
+     - setuptools
      - boost
      - cmake
      - bzip2
      - epics-base=3.14.12.8
+     - git
 
    run:
      - gcc_linux-64
      - gxx_linux-64
-     - python=3.6
+     - python
      - pyyaml
      - pyzmq
      - parse
@@ -27,7 +29,6 @@ requirements:
      - numpy
      - pyqt
      - boost
-     - cmake
      - bzip2
      - matplotlib
      - epics-base=3.14.12.8

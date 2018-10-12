@@ -27,6 +27,6 @@ setup(
     version='${ROGUE_VERSION}',
     packages=['pyrogue', 'pyrogue.gui', 'pyrogue.utilities', 'pyrogue.interfaces', 'pyrogue.protocols'],
     package_dir={'':'${PROJECT_SOURCE_DIR}/python'},
-    data_files=[(spack,['${PROJECT_SOURCE_DIR}/python/rogue.so'])],
+    data_files=[(spack,['${PROJECT_BINARY_DIR}/rogue.so'])],
 )
 
