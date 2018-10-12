@@ -14,8 +14,8 @@ set SCRIPT_DIR=`dirname "$SCRIPT_PATH"`
 setenv ROGUE_DIR ${SCRIPT_DIR}
 
 # Setup python path
-setenv PYTHONPATH ${ROGUE_DIR}/python:${PYTHONPATH}
+setenv PYTHONPATH ${ROGUE_DIR}/python:${ROGUE_DIR}/build:${PYTHONPATH}
 
 # Setup library path
-setenv LD_LIBRARY_PATH ${ROGUE_DIR}/lib:${LD_LIBRARY_PATH}
+setenv LD_LIBRARY_PATH ${ROGUE_DIR}/build:${LD_LIBRARY_PATH}
 

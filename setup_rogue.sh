@@ -13,8 +13,8 @@ fi
 export ROGUE_DIR=$(dirname -- "$(readlink -f ${BASH_SOURCE[0]})")
 
 # Setup python path
-export PYTHONPATH=${ROGUE_DIR}/python:${PYTHONPATH}
+export PYTHONPATH=${ROGUE_DIR}/python:${ROGUE_DIR}/build:${PYTHONPATH}
 
 # Setup library path
-export LD_LIBRARY_PATH=${ROGUE_DIR}/lib:${LD_LIBRARY_PATH}
+export LD_LIBRARY_PATH=${ROGUE_DIR}/build:${LD_LIBRARY_PATH}
 

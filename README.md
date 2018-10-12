@@ -15,7 +15,25 @@ For example scripts and sub-class source code examples see:
 
 https://github.com/slaclab/rogue-example
 
-## Building Rogue
+## Building & Installing Rogue
+There are three modes for building/installing rogue. The first is for running directly from the git checkout location, 'local'. The second is for installing in a custom directory 'custom' and the third is for installing in a system directory, possibly within anaconda,'system'. The 'local' and 'custom' installs require a setup script to be executed in order to use rogue.
+
+### Local Install
+The local install is for compiling and runnnig rogue within the checkout directory.
+
+
+### Custom Install
+The custom install will install rogue into the specified path and requires a setup script to add rogue to the environment.
+
+
+### System Install
+The system install will install rogue into the standard system environment.
+
+
+
+
+
+
 Before building and using rogue you will need to either install the required support packages 
 and modules or setup an anaconda environment. See below for instructions.
 

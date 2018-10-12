@@ -39,10 +39,8 @@ find_package(Git)
 if (GIT_FOUND)
    execute_process (
       COMMAND ${GIT_EXECUTABLE} describe --tags --dirty
-      OUTPUT_VARIABLE ROGUE_VERSION
+      OUTPUT_VARIABLE PACKAGE_VERSION
       OUTPUT_STRIP_TRAILING_WHITESPACE)
-
-   string(REGEX MATCH "^v([0-9]+)\\.([0-9]+)" ROGUE_SOVER ${ROGUE_VERSION})
 else()
    message(FATAL_ERROR "Git is required to build rogue!")
 endif()
@@ -145,10 +143,6 @@ add_library(rogue-core SHARED "")
 # Find rogue core sources
 add_subdirectory(src/rogue)
 
-# Set output to TOP/lib
-#set_target_properties(rogue-core PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/lib 
-#                                 VERSION ${ROGUE_VERSION} SOVERSION ${ROGUE_SOVER})
-
 # Link rogue core to boost, python and bzip
 TARGET_LINK_LIBRARIES(rogue-core LINK_PUBLIC ${Boost_LIBRARIES})
 TARGET_LINK_LIBRARIES(rogue-core LINK_PUBLIC ${PYTHON_LIBRARIES})
@@ -168,7 +162,6 @@ if (DO_PYTHON)
    add_subdirectory(src)
 
    # Set output to TOP/python, remove lib prefix
-#   set_target_properties(rogue PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/python)
    set_target_properties(rogue PROPERTIES PREFIX "")
 
    # Link to rogue core
@@ -179,20 +172,35 @@ else()
 endif()
 
 #####################################
+# Install Targets
+#####################################
+configure_file (
+   ${PROJECT_SOURCE_DIR}/templates/setup.py.in
+   ${PROJECT_BINARY_DIR}/setup.py
+)
+
+install(TARGETS rogue-core EXPORT Rogue LIBRARY DESTINATION lib)
+install(DIRECTORY ${PROJECT_SOURCE_DIR}/include/rogue
+        DESTINATION include FILES_MATCHING PATTERN "*.h")
+     #install(EXPORT Rogue DESTINATION lib)
+     
+     #install(CODE "execute_process(COMMAND ${PYTHON} ${PROJECT_BINARY_DIR}/setup.py install)")
+
+#####################################
 # Export cmake configuration file 
 #####################################
 
 # Setup configuration file
-set(CONF_INCLUDE_DIRS ${PROJECT_SOURCE_DIR}/include
-                      ${Boost_INCLUDE_DIRS}
-                      ${PYTHON_INCLUDE_DIRS}
-                      ${EPICSV3_INCLUDES})
-
-set(CONF_LIBRARIES    ${PROJECT_SOURCE_DIR}/lib/librogue-core.so.${ROGUE_SOVER}
-                      ${Boost_LIBRARIES}
-                      ${PYTHON_LIBRARIES}
-                      ${EPICSV3_LIBRARIES}
-                      LINK_PUBLIC bz2)
+#set(CONF_INCLUDE_DIRS ${PROJECT_SOURCE_DIR}/include
+#                      ${Boost_INCLUDE_DIRS}
+#                      ${PYTHON_INCLUDE_DIRS}
+#                      ${EPICSV3_INCLUDES})
+#
+#set(CONF_LIBRARIES    ${PROJECT_SOURCE_DIR}/lib/librogue-core.so.${ROGUE_SOVER}
+#                      ${Boost_LIBRARIES}
+#                      ${PYTHON_LIBRARIES}
+#                      ${EPICSV3_LIBRARIES}
+#                      LINK_PUBLIC bz2)
 
 # Create the config file
 #configure_file(${PROJECT_SOURCE_DIR}/templates/RogueConfig.cmake.in ${PROJECT_SOURCE_DIR}/lib/RogueConfig.cmake @ONLY)
@@ -205,7 +213,9 @@ message("")
 message("----------------------------------------------------------------------")
 message("-- Success!")
 message("")
-message("-- Rogue Version: ${ROGUE_VERSION}")
+message("-- Rogue Version: ${PACKAGE_VERSION}")
+message("")
+message("-- Install Path: ${CMAKE_INSTALL_PREFIX}")
 message("")
 message("-- Found boost: ${Boost_INCLUDE_DIRS}")
 message("")
