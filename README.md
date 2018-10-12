@@ -22,7 +22,7 @@ and modules or setup an anaconda environment. See sections below for instruction
 There are three possible modes for building/installing rogue:
 
 - Local:
-   Used when rogue is going to be used in the local checkout directory. A setup script is generated to add rogue to the system environment.
+   Rogue is going to be used in the local checkout directory. A setup script is generated to add rogue to the system environment.
 
 - Custom:
    Used when rogue is going to be installed in a custom non-system directory. A setup script is generated to add rogue to the system environment.
@@ -66,55 +66,16 @@ $ cmake .. -DROGUE_INSTALL=system
 $ make install (or make -j #cpus install)
 ````
 
-
-
-
-
-Before building and using rogue you will need to either install the required support packages 
-and modules or setup an anaconda environment. See below for instructions.
-
-The rogue compile uses cmake. To download and build rogue:
-
-````
-$ git clone --recursive https://github.com/slaclab/rogue.git
-$ cd rogue
-$ mkdir build
-$ cd build
-$ cmake ..  (or cmake3)
-$ make
-````
+### Updating rogue
 
 to update from git and rebuild:
 ````
 $ git pull
-$ git submodule update
 $ cd build
 $ make rebuild_cache
 $ make clean
-$ make 
+$ make install (or make -j #cpus install)
 ````
-
-Two libraries are output from the compute. lib/librogue-core.so is a c++ 
-core library for the various rogue classes and function. python/rogue.so
-is a shared object library for importing into python.
-
-The lib subdirecotry of rogue should be included in your LD_LIBRARY_PATH and
-the python subdirectory should be include in your PYTHONPATH. A pair of setup
-scripts for both bash and c-shell are include in the rogue distribution:
-
-````
-$ source setup_rogue.sh
-````
-or for csh:
-````
-$ source setup_rogue.csh
-````
-
-These scripts also set the ROGUE_DIR environment variable which is usefull when 
-setting up the example projects or some SLAC projects.
-
-You may want to create a custom setup script to combine the rogue setup with 
-other environmental setups for your project.
 
 ## Installing Packages Required For Rogue
 See section below to use anaconda to manage the environment.
@@ -214,12 +175,6 @@ If you need to deactivate the anaconda environment:
 ````
 conda deactivate 
 ````
-
-## Drivers
-
-Rogue is linked against the aes-stream-drivers package which is included 
-as a submodule at the drivers sub-directory. If you need to use these
-drivers please see the README.md file in that package.
 
 ## Installing Rogue and Anaconda behind a proxy
 

@@ -17,21 +17,6 @@
 if (DEFINED ENV{CONDA_PREFIX})
    set(CMAKE_PREFIX_PATH "$ENV{CONDA_PREFIX}")
    link_directories($ENV{CONDA_PREFIX}/lib)
-   set(ROGUE_PREFIX "$ENV{CONDA_PREFIX}")
-else
-   set(ROGUE_PREFIX "")
-endif()
-
-# Default install type
-if ( NOT ROGUE_INSTALL ) 
-   set (ROGUE_INSTALL "local")
-endif()
-
-# Default Install directory
-if (${ROGUE_INSTALL} STREQUAL "local")
-   set (ROGUE_DIR ${PROJECT_SOURCE_DIR})
-elseif ( NOT ROGUE_DIR ) 
-   set (ROGUE_DIR "${ROGUE_PREFIX}/${CMAKE_INSTALL_PREFIX}")
 endif()
 
 # Check cmake version
@@ -44,23 +29,6 @@ project (rogue)
 # C/C++
 enable_language(CXX)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x -Wno-deprecated")
-
-#####################################
-# Generate version with GIT
-#####################################
-
-# Set version from git tag
-find_package(Git)
-if (GIT_FOUND)
-   execute_process (
-      COMMAND ${GIT_EXECUTABLE} describe --tags --dirty
-      OUTPUT_VARIABLE ROGUE_VERSION
-      OUTPUT_STRIP_TRAILING_WHITESPACE)
-
-   string(REGEX MATCH "^v([0-9]+)\\.([0-9]+)" ROGUE_SOVER ${ROGUE_VERSION})
-else()
-   message(FATAL_ERROR "Git is required to build rogue!")
-endif()
 
 #####################################
 # Find python3
@@ -134,6 +102,43 @@ if(DO_PYTHON AND DEFINED ENV{EPICS_BASE})
                          ${EPICSV3_LIB_DIR}/libgdd.so )
 else()
    set(DO_EPICS_V3 0)
+endif()
+
+#####################################
+# Generate version with GIT
+#####################################
+
+# Set version from git tag
+find_package(Git)
+if (GIT_FOUND)
+   execute_process (
+      COMMAND ${GIT_EXECUTABLE} describe --tags --dirty
+      OUTPUT_VARIABLE ROGUE_VERSION
+      OUTPUT_STRIP_TRAILING_WHITESPACE)
+
+   string(REGEX MATCH "^v([0-9]+)\\.([0-9]+)" ROGUE_SOVER ${ROGUE_VERSION})
+else()
+   message(FATAL_ERROR "Git is required to build rogue!")
+endif()
+
+#####################################
+# Setup Type and Directories
+#####################################
+
+# Default install type
+if ( NOT ROGUE_INSTALL ) 
+   set (ROGUE_INSTALL "local")
+endif()
+
+# Default Install directory
+if (${ROGUE_INSTALL} STREQUAL "local")
+   set (ROGUE_DIR ${PROJECT_SOURCE_DIR})
+elseif (NOT ROGUE_DIR) 
+   if (${ROGUE_INSTALL} STREQUAL "custom")
+      set (ROGUE_DIR "$ENV{CONDA_PREFIX}/${CMAKE_INSTALL_PREFIX}/rogue")
+   else()
+      set (ROGUE_DIR "$ENV{CONDA_PREFIX}/${CMAKE_INSTALL_PREFIX}")
+   endif()
 endif()
 
 #####################################
@@ -242,23 +247,22 @@ if ((${ROGUE_INSTALL} STREQUAL "custom") OR (${ROGUE_INSTALL} STREQUAL "system")
            DESTINATION ${ROGUE_DIR}/include FILES_MATCHING PATTERN "*.h")
 endif()
 
-
 # Python file install
 if (DO_PYTHON)
 
    # Install python files directly for custom install
    if (${ROGUE_INSTALL} STREQUAL "custom")
       install(DIRECTORY ${PROJECT_SOURCE_DIR}/python/pyrogue DESTINATION ${ROGUE_DIR}/python FILES_MATCHING PATTERN "*.py")
-      install(CODE "execute_process(COMMAND python3 -m compileall ${ROGUE_DIR}/python)")
 
    # Use distutils to isntall python for system install
    elseif (${ROGUE_INSTALL} STREQUAL "system")
       install(CODE "execute_process(COMMAND python3 ${PROJECT_BINARY_DIR}/setup.py install)")
    endif()
 
-   # Copy library for custom or local
+   # Copy library for custom or local, do byte compiles
    if ((${ROGUE_INSTALL} STREQUAL "custom") OR (${ROGUE_INSTALL} STREQUAL "local"))
       install(TARGETS rogue LIBRARY DESTINATION ${ROGUE_DIR}/python)
+      install(CODE "execute_process(COMMAND python3 -m compileall ${ROGUE_DIR}/python)")
    endif()   
 
 endif()
@@ -269,7 +273,6 @@ endif()
 
 message("")
 message("----------------------------------------------------------------------")
-message("")
 message("-- Rogue Version: ${ROGUE_VERSION}")
 message("")
 message("-- Install Type: ${ROGUE_INSTALL}")
