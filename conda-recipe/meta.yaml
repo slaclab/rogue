@@ -1,12 +1,11 @@
 package: 
   name: rogue
-  version: {{ data.get{'version'}}}
+  version: v2.12.1
 
 source:
    path: ..
 
 requirements:
-
    build:
      - gcc_linux-64
      - gxx_linux-64
