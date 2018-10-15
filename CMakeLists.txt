@@ -95,11 +95,30 @@ if(DO_PYTHON AND DEFINED ENV{EPICS_BASE})
    set(EPICSV3_LIB_DIR   ${EPICSV3_BASE_DIR}/lib/${EPICSV3_ARCH} )
    set(EPICSV3_INCLUDES  ${EPICSV3_BASE_DIR}/include
                          ${EPICSV3_BASE_DIR}/include/compiler/gcc 
-                         ${EPICSV3_BASE_DIR}/include/os/Linux)
-   set(EPICSV3_LIBRARIES ${EPICSV3_LIB_DIR}/libcas.so 
-                         ${EPICSV3_LIB_DIR}/libca.so 
-                         ${EPICSV3_LIB_DIR}/libCom.so 
-                         ${EPICSV3_LIB_DIR}/libgdd.so )
+                         ${EPICSV3_BASE_DIR}/include/os/Linux
+                         ${EPICSV3_BASE_DIR}/include/os/Darwin)
+
+   if(APPLE)
+
+      set(EPICSV3_INCLUDES  ${EPICSV3_BASE_DIR}/include
+                            ${EPICSV3_BASE_DIR}/include/compiler/gcc 
+                            ${EPICSV3_BASE_DIR}/include/os/Darwin)
+
+      set(EPICSV3_LIBRARIES ${EPICSV3_LIB_DIR}/libcas.dylib 
+                            ${EPICSV3_LIB_DIR}/libca.dylib 
+                            ${EPICSV3_LIB_DIR}/libCom.dylib 
+                            ${EPICSV3_LIB_DIR}/libgdd.dylib)
+   else()
+
+      set(EPICSV3_INCLUDES  ${EPICSV3_BASE_DIR}/include
+                            ${EPICSV3_BASE_DIR}/include/compiler/gcc 
+                            ${EPICSV3_BASE_DIR}/include/os/Linux)
+
+      set(EPICSV3_LIBRARIES ${EPICSV3_LIB_DIR}/libcas.so 
+                            ${EPICSV3_LIB_DIR}/libca.so 
+                            ${EPICSV3_LIB_DIR}/libCom.so 
+                            ${EPICSV3_LIB_DIR}/libgdd.so )
+   endif()
 else()
    set(DO_EPICS_V3 0)
 endif()
@@ -158,7 +177,11 @@ include_directories(${Boost_INCLUDE_DIRS})
 include_directories(${PYTHON_INCLUDE_DIRS})
 include_directories(${EPICSV3_INCLUDES})
 
-SET(CMAKE_SHARED_LIBRARY_SUFFIX ".so")
+if (APPLE)
+   SET(CMAKE_SHARED_LIBRARY_SUFFIX ".dylib")
+else()
+   SET(CMAKE_SHARED_LIBRARY_SUFFIX ".so")
+endif()
 
 # Create rogue core library
 add_library(rogue-core SHARED "")
@@ -207,7 +230,11 @@ if (${ROGUE_INSTALL} STREQUAL "system")
    set(CONF_LIBRARIES LINK_PUBLIC rogue-core)
 else()
    set(CONF_INCLUDE_DIRS ${ROGUE_DIR}/include)
-   set(CONF_LIBRARIES    ${ROGUE_DIR}/lib/librogue-core.so.${ROGUE_SOVER})
+   if (APPLE)
+      set(CONF_LIBRARIES ${ROGUE_DIR}/lib/librogue-core.${ROGUE_SOVER}.dylib)
+   else()
+      set(CONF_LIBRARIES ${ROGUE_DIR}/lib/librogue-core.so.${ROGUE_SOVER})
+   endif()
 endif()
 
 # Create the config file
