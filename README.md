@@ -170,6 +170,7 @@ $ source /path/to/my/anaconda3/etc/profile.d/conda.sh
 Create the rogue environment (required once):
 
 ````
+$ cd rogue
 $ conda env create -n rogue_env -f rogue_conda.yml
 ````
 
@@ -178,6 +179,8 @@ Activate the rogue environment
 ````
 $ conda activate rogue_env 
 ````
+
+You can then build the project using the instructions above.
 
 ## Installing Rogue and Anaconda behind a proxy
 
