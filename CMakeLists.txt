@@ -93,10 +93,6 @@ if(DO_PYTHON AND DEFINED ENV{EPICS_BASE})
        string(REGEX REPLACE "\n$" "" EPICSV3_ARCH "${EPICSV3_ARCH}")
    endif()
    set(EPICSV3_LIB_DIR   ${EPICSV3_BASE_DIR}/lib/${EPICSV3_ARCH} )
-   set(EPICSV3_INCLUDES  ${EPICSV3_BASE_DIR}/include
-                         ${EPICSV3_BASE_DIR}/include/compiler/gcc 
-                         ${EPICSV3_BASE_DIR}/include/os/Linux
-                         ${EPICSV3_BASE_DIR}/include/os/Darwin)
 
    if(APPLE)
 
