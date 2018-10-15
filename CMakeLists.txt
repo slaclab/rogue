@@ -132,7 +132,6 @@ configure_file (
 
 # Add include directories
 include_directories(${PROJECT_SOURCE_DIR}/include)
-include_directories(${PROJECT_SOURCE_DIR}/drivers/include)
 include_directories(${PROJECT_BINARY_DIR})
 include_directories(${Boost_INCLUDE_DIRS})
 include_directories(${PYTHON_INCLUDE_DIRS})
@@ -185,7 +184,6 @@ endif()
 
 # Setup configuration file
 set(CONF_INCLUDE_DIRS ${PROJECT_SOURCE_DIR}/include
-                      ${PROJECT_SOURCE_DIR}/drivers/include
                       ${Boost_INCLUDE_DIRS}
                       ${PYTHON_INCLUDE_DIRS}
                       ${EPICSV3_INCLUDES})
