@@ -206,7 +206,7 @@ if (DO_PYTHON)
    add_subdirectory(src)
 
    # Set output to TOP/python, remove lib prefix
-   set_target_properties(rogue PROPERTIES PREFIX "")
+   set_target_properties(rogue PROPERTIES PREFIX "" SUFFIX ".so")
    set_target_properties(rogue PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/python)
 
    # Link to rogue core
