@@ -15,18 +15,12 @@
 # contained in the LICENSE.txt file.
 # ----------------------------------------------------------------------------
 
-from distutils.core import setup
-from distutils.extension import Extension
-from pip import __file__ as pip_loc
-from os import path
+from setuptools import setup
 
-spack = path.split(path.split(pip_loc)[0])[0]
-
-setup(
+setup (
     name='rogue',
     version='${ROGUE_VERSION}',
     packages=['pyrogue', 'pyrogue.gui', 'pyrogue.utilities', 'pyrogue.interfaces', 'pyrogue.protocols'],
     package_dir={'':'${PROJECT_SOURCE_DIR}/python'},
-    data_files=[(spack,['${PROJECT_BINARY_DIR}/rogue.so'])],
+    package_data={'':['../rogue.so']},
 )
-

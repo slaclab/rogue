@@ -189,6 +189,7 @@ if (DO_PYTHON)
 
    # Set output to TOP/python, remove lib prefix
    set_target_properties(rogue PROPERTIES PREFIX "")
+   set_target_properties(rogue PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/python)
 
    # Link to rogue core
    TARGET_LINK_LIBRARIES(rogue LINK_PUBLIC rogue-core)
@@ -223,10 +224,9 @@ configure_file(${PROJECT_SOURCE_DIR}/templates/setup_rogue.csh.in
 configure_file(${PROJECT_SOURCE_DIR}/templates/setup_rogue.sh.in
                ${PROJECT_BINARY_DIR}/setup_rogue.sh @ONLY)
 
-# Python distutils setup script
-configure_file ( ${PROJECT_SOURCE_DIR}/templates/setup.py.in
-                 ${PROJECT_BINARY_DIR}/setup.py
-)
+# Create the python install script
+configure_file(${PROJECT_SOURCE_DIR}/templates/setup.py.in
+               ${PROJECT_BINARY_DIR}/setup.py)
 
 #####################################
 # Install Setup
@@ -241,8 +241,8 @@ if ((${ROGUE_INSTALL} STREQUAL "custom") OR (${ROGUE_INSTALL} STREQUAL "local"))
    install(FILES ${PROJECT_BINARY_DIR}/setup_rogue.sh ${PROJECT_BINARY_DIR}/setup_rogue.csh DESTINATION ${ROGUE_DIR})
 endif()
 
-# Install header files for custom, system or conda
-if ((${ROGUE_INSTALL} STREQUAL "custom") OR (${ROGUE_INSTALL} STREQUAL "system") OR (${ROGUE_INSTALL} STREQUAL "conda"))
+# Install header files for custom or system
+if ((${ROGUE_INSTALL} STREQUAL "custom") OR (${ROGUE_INSTALL} STREQUAL "system"))
    install(DIRECTORY ${PROJECT_SOURCE_DIR}/include/rogue
            DESTINATION ${ROGUE_DIR}/include FILES_MATCHING PATTERN "*.h")
 endif()
@@ -253,15 +253,15 @@ if (DO_PYTHON)
    # Install python files directly for custom install
    if (${ROGUE_INSTALL} STREQUAL "custom")
       install(DIRECTORY ${PROJECT_SOURCE_DIR}/python/pyrogue DESTINATION ${ROGUE_DIR}/python FILES_MATCHING PATTERN "*.py")
+      install(TARGETS rogue LIBRARY DESTINATION ${ROGUE_DIR}/python)
 
-   # Use distutils to isntall python for system install
+   # Use distutils to install python for system install
    elseif (${ROGUE_INSTALL} STREQUAL "system")
-      install(CODE "execute_process(COMMAND python3 ${PROJECT_BINARY_DIR}/setup.py install)")
+      install(CODE "execute_process(COMMAND python ${PROJECT_SOURCE_DIR}/scripts/setup.py install --prefix=${ROGUE_DIR})")
    endif()
 
-   # Copy library for custom or local, do byte compiles
+   # Do byte compile for custom or local
    if ((${ROGUE_INSTALL} STREQUAL "custom") OR (${ROGUE_INSTALL} STREQUAL "local"))
-      install(TARGETS rogue LIBRARY DESTINATION ${ROGUE_DIR}/python)
       install(CODE "execute_process(COMMAND python3 -m compileall ${ROGUE_DIR}/python)")
    endif()   
 
@@ -276,8 +276,10 @@ message("----------------------------------------------------------------------"
 message("-- Rogue Version: ${ROGUE_VERSION}")
 message("")
 message("-- Install Type: ${ROGUE_INSTALL}")
+message("--    -DROGUE_INSTALL=<type> to change")
 message("")
 message("-- Install Path: ${ROGUE_DIR}")
+message("--    -DROGUE_DIR=<new_dir> to change")
 message("")
 
 if (DO_PYTHON)
