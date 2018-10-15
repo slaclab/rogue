@@ -148,7 +148,14 @@ You can setup miniconda with the following command:
 $ source /path/to/my/anaconda3/etc/profile.d/conda.sh
 ````
 
-### Using anaconda
+### Using anaconda with pre-built rogue
+
+````
+$ conda create -n rogue_env -c slacrherbst -c paulscherrerinstitute -c conda-forge python=3.6 rogue
+$ conda activate rogue_env
+````
+
+### Using anaconda to build rogue
 
 Create the rogue environment (required once):
 
