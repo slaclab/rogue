@@ -278,6 +278,8 @@ message("")
 message("-- Install Path: ${ROGUE_DIR}")
 message("--    -DROGUE_DIR=<new_dir> to change")
 message("")
+message("-- Found boost: ${Boost_INCLUDE_DIRS}")
+message("")
 
 if (DO_PYTHON)
    message("-- Found python: ${PYTHON_LIBRARIES}")
