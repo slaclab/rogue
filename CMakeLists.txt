@@ -204,7 +204,7 @@ endif()
 # Setup configuration file
 if (${ROGUE_INSTALL} STREQUAL "system")
    set(CONF_INCLUDE_DIRS "")
-   set(CONF_LIBRARIES    librogue-core.so.${ROGUE_SOVER})
+   set(CONF_LIBRARIES LINK_PUBLIC rogue-core)
 else()
    set(CONF_INCLUDE_DIRS ${ROGUE_DIR}/include)
    set(CONF_LIBRARIES    ${ROGUE_DIR}/lib/librogue-core.so.${ROGUE_SOVER})
