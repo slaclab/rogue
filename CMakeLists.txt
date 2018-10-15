@@ -203,16 +203,9 @@ endif()
 #########################################
 
 # Setup configuration file
-set(CONF_INCLUDE_DIRS ${ROGUE_DIR}/include
-                      ${Boost_INCLUDE_DIRS}
-                      ${PYTHON_INCLUDE_DIRS}
-                      ${EPICSV3_INCLUDES})
+set(CONF_INCLUDE_DIRS ${ROGUE_DIR}/include)
  
-set(CONF_LIBRARIES    ${ROGUE_DIR}/lib/librogue-core.so.${ROGUE_SOVER}
-                      ${Boost_LIBRARIES}
-                      ${PYTHON_LIBRARIES}
-                      ${EPICSV3_LIBRARIES}
-                      LINK_PUBLIC bz2)
+set(CONF_LIBRARIES    ${ROGUE_DIR}/lib/librogue-core.so.${ROGUE_SOVER})
 
 # Create the config file
 configure_file(${PROJECT_SOURCE_DIR}/templates/RogueConfig.cmake.in 
