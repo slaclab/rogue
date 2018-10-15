@@ -61,6 +61,9 @@ class StreamWriter(pyrogue.DataWriter):
     def getChannel(self,chan):
         return self._writer.getChannel(chan)
 
+    def setDropErrors(self,drop):
+        self._writer.setDropErrors(drop)
+
 class LegacyStreamWriter(StreamWriter):
     def __init__(self, *, configEn=False, **kwargs):
         pyrogue.DataWriter.__init__(self, **kwargs)

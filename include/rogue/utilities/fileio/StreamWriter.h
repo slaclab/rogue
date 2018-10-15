@@ -79,6 +79,9 @@ namespace rogue {
                //! Write buffer count
                uint32_t currBuffer_;
 
+               //! Drop errors flag
+               bool dropErrors_;
+
                //! File access lock
                boost::mutex mtx_;
 
@@ -128,6 +131,9 @@ namespace rogue {
 
                //! Set max file size, 0 for unlimited
                void setMaxSize(uint32_t size);
+
+               //! Set drop errors flag
+               void setDropErrors(bool drop);
 
                //! Get a port
                boost::shared_ptr<rogue::utilities::fileio::StreamWriterChannel> getChannel(uint8_t channel);

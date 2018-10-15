@@ -30,6 +30,10 @@ project (rogue)
 enable_language(CXX)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x -Wno-deprecated")
 
+#####################################
+# Generate version with GIT
+#####################################
+
 # Set version from git tag
 find_package(Git)
 if (GIT_FOUND)
@@ -117,7 +121,7 @@ else()
 endif()
 
 #####################################
-# Setup build
+# Setup build, core library
 #####################################
 
 # Configuration File
@@ -128,7 +132,6 @@ configure_file (
 
 # Add include directories
 include_directories(${PROJECT_SOURCE_DIR}/include)
-include_directories(${PROJECT_SOURCE_DIR}/drivers/include)
 include_directories(${PROJECT_BINARY_DIR})
 include_directories(${Boost_INCLUDE_DIRS})
 include_directories(${PYTHON_INCLUDE_DIRS})
@@ -152,6 +155,10 @@ TARGET_LINK_LIBRARIES(rogue-core LINK_PUBLIC ${PYTHON_LIBRARIES})
 TARGET_LINK_LIBRARIES(rogue-core LINK_PUBLIC ${EPICSV3_LIBRARIES})
 TARGET_LINK_LIBRARIES(rogue-core LINK_PUBLIC bz2)
 
+#####################################
+# Setup build, python library
+#####################################
+
 if (DO_PYTHON)
 
    # Create rogue python library
@@ -171,13 +178,28 @@ else()
    add_definitions( -DNO_PYTHON )
 endif()
 
+#####################################
+# Export cmake configuration file 
+#####################################
 
 # Setup configuration file
-set(CONF_INCLUDE_DIRS ${PROJECT_SOURCE_DIR}/include)
-set(CONF_LIBRARIES    ${PROJECT_SOURCE_DIR}/lib/librogue-core.so.${ROGUE_SOVER})
+set(CONF_INCLUDE_DIRS ${PROJECT_SOURCE_DIR}/include
+                      ${Boost_INCLUDE_DIRS}
+                      ${PYTHON_INCLUDE_DIRS}
+                      ${EPICSV3_INCLUDES})
+
+set(CONF_LIBRARIES    ${PROJECT_SOURCE_DIR}/lib/librogue-core.so.${ROGUE_SOVER}
+                      ${Boost_LIBRARIES}
+                      ${PYTHON_LIBRARIES}
+                      ${EPICSV3_LIBRARIES}
+                      LINK_PUBLIC bz2)
 
 # Create the config file
-configure_file(RogueConfig.cmake.in ${PROJECT_SOURCE_DIR}/lib/RogueConfig.cmake @ONLY)
+configure_file(${PROJECT_SOURCE_DIR}/src/RogueConfig.cmake.in ${PROJECT_SOURCE_DIR}/lib/RogueConfig.cmake @ONLY)
+
+#####################################
+# Print status
+#####################################
 
 message("")
 message("----------------------------------------------------------------------")

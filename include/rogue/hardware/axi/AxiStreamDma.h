@@ -20,7 +20,6 @@
 #define __ROGUE_HARDWARE_AXI_AXI_STREAM_DMA_H__
 #include <rogue/interfaces/stream/Master.h>
 #include <rogue/interfaces/stream/Slave.h>
-#include <DataDriver.h>
 #include <boost/thread.hpp>
 #include <stdint.h>
 #include <rogue/Logging.h>
