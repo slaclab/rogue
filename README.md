@@ -15,6 +15,28 @@ For example scripts and sub-class source code examples see:
 
 https://github.com/slaclab/rogue-example
 
+## Getting Rogue Using Anaconda
+
+Download and install miniconda if you don't already have it installed on your machine. Choose an install location with a lot of available diskspace. Anaconda appears to only work reliably in the bash shell. 
+
+````
+# wget https://repo.anaconda.com/archive/Anaconda3-5.3.0-Linux-x86_64.sh
+# bash Anaconda3-5.3.0-Linux-x86_64.sh
+````
+
+You can setup anaconda with the following command:
+
+````
+$ source /path/to/my/anaconda3/etc/profile.d/conda.sh
+````
+
+Create and activate a rouge environment:
+
+````
+$ conda create -n rogue_env -c slacrherbst -c paulscherrerinstitute -c conda-forge python=3.6 rogue
+$ conda activate rogue_env
+````
+
 ## Building & Installing Rogue
 Before building and using rogue you will need to either install the required support packages 
 and modules or setup an anaconda environment. See sections below for instructions.
@@ -130,32 +152,20 @@ $ pip3 install pyzmq
 $ pip3 install mysqlclient
 ````
 
-## Using anaconda environments
+## Building Inside An Anaconda Environment
 
-### Installing anaconda
-
-Download and install miniconda if you don't already have it installed on your machine. Choose an install location with a lot of available diskspace.
+Download and install miniconda if you don't already have it installed on your machine. Choose an install location with a lot of available diskspace. Anaconda appears to only work reliably in the bash shell. 
 
 ````
 # wget https://repo.anaconda.com/archive/Anaconda3-5.3.0-Linux-x86_64.sh
 # bash Anaconda3-5.3.0-Linux-x86_64.sh
 ````
-Anaconda appears to only work reliably in the bash shell. 
 
-You can setup miniconda with the following command:
+You can setup anaconda with the following command:
 
 ````
 $ source /path/to/my/anaconda3/etc/profile.d/conda.sh
 ````
-
-### Using anaconda with pre-built rogue
-
-````
-$ conda create -n rogue_env -c slacrherbst -c paulscherrerinstitute -c conda-forge python=3.6 rogue
-$ conda activate rogue_env
-````
-
-### Using anaconda to build rogue
 
 Create the rogue environment (required once):
 
@@ -167,19 +177,6 @@ Activate the rogue environment
 
 ````
 $ conda activate rogue_env 
-````
-
-To automate the conda environment you can add the following lines to the top of the setup_rogue.sh script:
-
-````
-source /path/to/my/anaconda3/etc/profile.d/conda.sh
-conda activate rogue_env
-````
-
-If you need to deactivate the anaconda environment:
-
-````
-conda deactivate 
 ````
 
 ## Installing Rogue and Anaconda behind a proxy
