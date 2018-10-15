@@ -7,9 +7,9 @@ source:
 
 requirements:
    build:
+     - python=3.6
      - gcc_linux-64
      - gxx_linux-64
-     - python
      - setuptools
      - boost
      - cmake
@@ -18,9 +18,9 @@ requirements:
      - git
 
    run:
+     - python=3.6
      - gcc_linux-64
      - gxx_linux-64
-     - python
      - pyyaml
      - pyzmq
      - parse

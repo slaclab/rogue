@@ -3,9 +3,9 @@ channels:
   - conda-forge
   - paulscherrerinstitute
 dependencies:
+  - python=3.6
   - gcc_linux-64
   - gxx_linux-64
-  - python=3.6
   - pyyaml
   - pyzmq
   - parse
