@@ -178,7 +178,6 @@ set_target_properties(rogue-core PROPERTIES VERSION ${ROGUE_VERSION} SOVERSION $
 #####################################
 # Setup build, python library
 #####################################
-
 if (DO_PYTHON)
 
    # Create rogue python library
@@ -203,9 +202,13 @@ endif()
 #########################################
 
 # Setup configuration file
-set(CONF_INCLUDE_DIRS ${ROGUE_DIR}/include)
- 
-set(CONF_LIBRARIES    ${ROGUE_DIR}/lib/librogue-core.so.${ROGUE_SOVER})
+if (${ROGUE_INSTALL} STREQUAL "system")
+   set(CONF_INCLUDE_DIRS "")
+   set(CONF_LIBRARIES    librogue-core.so.${ROGUE_SOVER})
+else()
+   set(CONF_INCLUDE_DIRS ${ROGUE_DIR}/include)
+   set(CONF_LIBRARIES    ${ROGUE_DIR}/lib/librogue-core.so.${ROGUE_SOVER})
+endif()
 
 # Create the config file
 configure_file(${PROJECT_SOURCE_DIR}/templates/RogueConfig.cmake.in 
@@ -250,7 +253,8 @@ if (DO_PYTHON)
 
    # Use distutils to install python for system install
    elseif (${ROGUE_INSTALL} STREQUAL "system")
-      install(CODE "execute_process(COMMAND python ${PROJECT_SOURCE_DIR}/build/setup.py install --prefix=${ROGUE_DIR} --single-version-externally-managed --record=record.txt)")
+      install(CODE "execute_process(COMMAND python 
+              ${PROJECT_SOURCE_DIR}/build/setup.py install --prefix=${ROGUE_DIR} --single-version-externally-managed --record=record.txt)")
    endif()
 
    # Do byte compile for custom or local
