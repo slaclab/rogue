@@ -257,7 +257,7 @@ if (DO_PYTHON)
 
    # Use distutils to install python for system install
    elseif (${ROGUE_INSTALL} STREQUAL "system")
-      install(CODE "execute_process(COMMAND python ${PROJECT_SOURCE_DIR}/scripts/setup.py install --prefix=${ROGUE_DIR})")
+      install(CODE "execute_process(COMMAND python ${PROJECT_SOURCE_DIR}/build/setup.py install --prefix=${ROGUE_DIR} --single-version-externally-managed --record=record.txt)")
    endif()
 
    # Do byte compile for custom or local

@@ -2,5 +2,6 @@ channels:
   - defaults
   - conda-forge
   - paulscherrerinstitute
+  - slacrherbst
 dependencies:
   - rogue
