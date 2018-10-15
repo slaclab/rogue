@@ -11,7 +11,7 @@ requirements:
      - gcc_linux-64
      - gxx_linux-64
      - setuptools
-     - boost
+     - boost=1.67
      - cmake
      - bzip2
      - epics-base=3.14.12.8
@@ -28,7 +28,7 @@ requirements:
      - pyro4
      - numpy
      - pyqt
-     - boost
+     - boost=1.67
      - bzip2
      - matplotlib
      - epics-base=3.14.12.8

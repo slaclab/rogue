@@ -33,7 +33,7 @@ $ source /path/to/my/anaconda3/etc/profile.d/conda.sh
 Create and activate a rouge environment:
 
 ````
-$ conda create -n rogue_env -c slacrherbst -c paulscherrerinstitute -c conda-forge python=3.6 rogue
+$ conda create -n rogue_env -c slacrherbst -c defaults -c conda-forge -c paulscherrerinstitute python=3.6 rogue
 $ conda activate rogue_env
 ````
 
