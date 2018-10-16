@@ -11,6 +11,8 @@ The following packages are required to build the rogue library:
 - python3 >= 3.6
 - bz2
 
+### Package Manager Install
+
 To add these packages on Ubuntu 17.04 (or later):
 
 ````
@@ -54,6 +56,12 @@ $ pip3 install click
 $ pip3 install pyzmq
 $ pip3 install mysqlclient
 ````
+
+### Manual Package Install
+
+The previous instructions assume the required packages are available on your linux distribution. If you need to install these packages manually see the following instructions:
+
+[Manual Package Installation](README_manual_packages.md)
 
 ## Building & Installing Rogue
 
