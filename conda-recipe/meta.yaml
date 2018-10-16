@@ -1,9 +1,12 @@
 package: 
   name: rogue
-  version: {{ GIT_BUILD_STR }}
+  version: {{ GIT_DESCRIBE_TAG }}
 
 source:
    path: ..
+
+build:
+   number: {{ GIT_DESCRIBE_NUMBER|int }}
 
 requirements:
    build:
