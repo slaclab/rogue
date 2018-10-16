@@ -4,7 +4,7 @@ This README provides instructions for downloading and building rogue inside an a
 
 ## Getting Anaconda
 
-Download and install miniconda if you don't already have it installed on your machine. Choose an install location with a lot of available diskspace (> 5GB). Anaconda appears to only work reliably in the bash shell. 
+Download and install anaconda (or miniconda) if you don't already have it installed on your machine. Choose an install location with a lot of available diskspace (> 5GB). Anaconda appears to only work reliably in the bash shell. 
 
 Go to https://www.anaconda.com/download to get the latest version of anaconda. Example steps for installing anaconda are included below:
 
