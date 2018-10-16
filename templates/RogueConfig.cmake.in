@@ -80,13 +80,28 @@ if(DO_PYTHON AND DEFINED ENV{EPICS_BASE})
        string(REGEX REPLACE "\n$" "" EPICSV3_ARCH "${EPICSV3_ARCH}")
    endif()
    set(EPICSV3_LIB_DIR   ${EPICSV3_BASE_DIR}/lib/${EPICSV3_ARCH} )
-   set(EPICSV3_INCLUDES  ${EPICSV3_BASE_DIR}/include
-                         ${EPICSV3_BASE_DIR}/include/compiler/gcc 
-                         ${EPICSV3_BASE_DIR}/include/os/Linux)
-   set(EPICSV3_LIBRARIES ${EPICSV3_LIB_DIR}/libcas.so 
-                         ${EPICSV3_LIB_DIR}/libca.so 
-                         ${EPICSV3_LIB_DIR}/libCom.so 
-                         ${EPICSV3_LIB_DIR}/libgdd.so )
+
+   if(APPLE)
+
+      set(EPICSV3_INCLUDES  ${EPICSV3_BASE_DIR}/include
+                            ${EPICSV3_BASE_DIR}/include/compiler/gcc 
+                            ${EPICSV3_BASE_DIR}/include/os/Darwin)
+
+      set(EPICSV3_LIBRARIES ${EPICSV3_LIB_DIR}/libcas.dylib 
+                            ${EPICSV3_LIB_DIR}/libca.dylib 
+                            ${EPICSV3_LIB_DIR}/libCom.dylib 
+                            ${EPICSV3_LIB_DIR}/libgdd.dylib)
+   else()
+
+      set(EPICSV3_INCLUDES  ${EPICSV3_BASE_DIR}/include
+                            ${EPICSV3_BASE_DIR}/include/compiler/gcc 
+                            ${EPICSV3_BASE_DIR}/include/os/Linux)
+
+      set(EPICSV3_LIBRARIES ${EPICSV3_LIB_DIR}/libcas.so 
+                            ${EPICSV3_LIB_DIR}/libca.so 
+                            ${EPICSV3_LIB_DIR}/libCom.so 
+                            ${EPICSV3_LIB_DIR}/libgdd.so )
+   endif()
 else()
    set(DO_EPICS_V3 0)
 endif()
