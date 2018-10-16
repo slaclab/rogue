@@ -187,9 +187,15 @@ add_subdirectory(src/rogue)
 
 # Link rogue core to boost, python and bzip
 TARGET_LINK_LIBRARIES(rogue-core LINK_PUBLIC ${Boost_LIBRARIES})
-TARGET_LINK_LIBRARIES(rogue-core LINK_PUBLIC ${PYTHON_LIBRARIES})
 TARGET_LINK_LIBRARIES(rogue-core LINK_PUBLIC ${EPICSV3_LIBRARIES})
 TARGET_LINK_LIBRARIES(rogue-core LINK_PUBLIC bz2)
+
+# Do not link directly against python in macos
+if (APPLE)
+   set_target_properties(rogue-core PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
+else()
+   TARGET_LINK_LIBRARIES(rogue-core LINK_PUBLIC ${PYTHON_LIBRARIES})
+endif()
 
 # Set output library names
 set_target_properties(rogue-core PROPERTIES VERSION ${ROGUE_VERSION} SOVERSION ${ROGUE_SOVER})
