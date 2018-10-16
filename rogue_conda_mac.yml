@@ -4,6 +4,9 @@ channels:
   - paulscherrerinstitute
 dependencies:
   - python=3.6
+  - clangxx_osx-64
+  - cmake
+  - make
   - pyyaml
   - pyzmq
   - parse
@@ -12,7 +15,6 @@ dependencies:
   - numpy
   - pyqt
   - boost
-  - cmake
   - bzip2
   - matplotlib
   - epics-base=3.14.12.8

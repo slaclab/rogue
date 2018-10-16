@@ -6,6 +6,8 @@ dependencies:
   - python=3.6
   - gcc_linux-64
   - gxx_linux-64
+  - make
+  - cmake
   - pyyaml
   - pyzmq
   - parse
@@ -14,7 +16,6 @@ dependencies:
   - numpy
   - pyqt
   - boost
-  - cmake
   - bzip2
   - matplotlib
   - epics-base=3.14.12.8
