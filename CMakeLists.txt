@@ -151,6 +151,8 @@ if (${ROGUE_INSTALL} STREQUAL "local")
 elseif (NOT ROGUE_DIR) 
    if (${ROGUE_INSTALL} STREQUAL "custom")
       set (ROGUE_DIR "$ENV{CONDA_PREFIX}/${CMAKE_INSTALL_PREFIX}/rogue")
+   elseif (${ROGUE_INSTALL} STREQUAL "conda")
+      set (ROGUE_DIR "$ENV{CONDA_PREFIX}")
    else()
       set (ROGUE_DIR "$ENV{CONDA_PREFIX}/${CMAKE_INSTALL_PREFIX}")
    endif()
@@ -231,7 +233,7 @@ endif()
 #########################################
 
 # Setup configuration file
-if (${ROGUE_INSTALL} STREQUAL "system")
+if ((${ROGUE_INSTALL} STREQUAL "system") OR (${ROGUE_INSTALL} STREQUAL "conda"))
    set(CONF_INCLUDE_DIRS "")
    set(CONF_LIBRARIES LINK_PUBLIC rogue-core)
 else()
@@ -270,8 +272,8 @@ if ((${ROGUE_INSTALL} STREQUAL "custom") OR (${ROGUE_INSTALL} STREQUAL "local"))
    install(FILES ${PROJECT_BINARY_DIR}/setup_rogue.sh ${PROJECT_BINARY_DIR}/setup_rogue.csh DESTINATION ${ROGUE_DIR})
 endif()
 
-# Install header files for custom or system
-if ((${ROGUE_INSTALL} STREQUAL "custom") OR (${ROGUE_INSTALL} STREQUAL "system"))
+# Install header files for non local installs
+if (NOT (${ROGUE_INSTALL} STREQUAL "local"))
    install(DIRECTORY ${PROJECT_SOURCE_DIR}/include/rogue
            DESTINATION ${ROGUE_DIR}/include FILES_MATCHING PATTERN "*.h")
 endif()
@@ -284,8 +286,8 @@ if (DO_PYTHON)
       install(DIRECTORY ${PROJECT_SOURCE_DIR}/python/pyrogue DESTINATION ${ROGUE_DIR}/python FILES_MATCHING PATTERN "*.py")
       install(TARGETS rogue LIBRARY DESTINATION ${ROGUE_DIR}/python)
 
-   # Use distutils to install python for system install
-   elseif (${ROGUE_INSTALL} STREQUAL "system")
+   # Use distutils to install python for system or conda install
+   elseif ((${ROGUE_INSTALL} STREQUAL "system") OR (${ROGUE_INSTALL} STREQUAL "conda"))
       install(CODE "execute_process(COMMAND python 
               ${PROJECT_SOURCE_DIR}/build/setup.py install --prefix=${ROGUE_DIR} --single-version-externally-managed --record=record.txt)")
    endif()
@@ -305,11 +307,9 @@ message("")
 message("----------------------------------------------------------------------")
 message("-- Rogue Version: ${ROGUE_VERSION}")
 message("")
-message("-- Install Type: ${ROGUE_INSTALL}")
-message("--    -DROGUE_INSTALL=<type> to change")
+message("-- Install Type: -DROGUE_INSTALL=${ROGUE_INSTALL}")
 message("")
-message("-- Install Path: ${ROGUE_DIR}")
-message("--    -DROGUE_DIR=<new_dir> to change")
+message("-- Install Path: -DROGUE_DIR=${ROGUE_DIR}")
 message("")
 message("-- Found boost: ${Boost_INCLUDE_DIRS}")
 message("")
