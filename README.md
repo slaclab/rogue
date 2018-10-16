@@ -17,10 +17,9 @@ https://github.com/slaclab/rogue-example
 
 # Getting Rogue
 
-There are three possible ways to obtain rogue. The recommended way is to install rogue as a pre-built anaconda package in an anaconda environment:
+The recommended way is to install rogue is to use a pre-built anaconda package in an anaconda environment:
 
 [Installing rogue with anaconda](README_anaconda.md)
-
 
 Alternatively you can download and build your own copy of rogue within an anaconda environment. This is usefull if you may want to contribute to the rogue development.
 
