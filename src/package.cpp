@@ -26,20 +26,10 @@
 
 BOOST_PYTHON_MODULE(rogue) {
 
-   printf("Here 1 ----- \n");
-   printf("Here 2 ----- \n");
-   printf("Here 3 ----- \n");
-   if ( !PyEval_ThreadsInitialized() ) {
-      printf("Here 3a ----- \n");
-      PyEval_InitThreads();
-      printf("Here 3b ----- \n");
-   }
-   printf("Here 4 ----- \n");
-   printf("Here 5 ----- \n");
+   PyEval_InitThreads();
 
    rogue::setup_module();
 
-   printf("Here 6 ----- \n");
    printf("Rogue/pyrogue version %s. https://github.com/slaclab/rogue\n",rogue::Version::current().c_str());
 
 };
