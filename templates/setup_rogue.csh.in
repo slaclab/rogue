@@ -7,11 +7,9 @@ if ( ! $?LD_LIBRARY_PATH ) then
    setenv LD_LIBRARY_PATH ""
 endif
 
-# Package directories
-set CMD=($_)
-set SCRIPT_PATH=`readlink -f "$CMD[2]"`
-set SCRIPT_DIR=`dirname "$SCRIPT_PATH"`
-setenv ROGUE_DIR ${SCRIPT_DIR}
+# Rogue directory
+setenv ROGUE_DIR @ROGUE_DIR@
+setenv ROGUE_VERSION @ROGUE_VERSION@
 
 # Setup python path
 setenv PYTHONPATH ${ROGUE_DIR}/python:${PYTHONPATH}

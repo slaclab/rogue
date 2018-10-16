@@ -1,0 +1,26 @@
+# ----------------------------------------------------------------------------
+# Title      : Rogue Python Install Script
+# ----------------------------------------------------------------------------
+# File       : setup.py.in
+# ----------------------------------------------------------------------------
+# Description:
+# Rogue python install script to be overridden by Cmake.
+# ----------------------------------------------------------------------------
+# This file is part of the rogue software platform. It is subject to 
+# the license terms in the LICENSE.txt file found in the top-level directory 
+# of this distribution and at: 
+#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
+# No part of the rogue software platform, including this file, may be 
+# copied, modified, propagated, or distributed except according to the terms 
+# contained in the LICENSE.txt file.
+# ----------------------------------------------------------------------------
+
+from setuptools import setup
+
+setup (
+    name='rogue',
+    version='${ROGUE_VERSION}',
+    packages=['pyrogue', 'pyrogue.gui', 'pyrogue.utilities', 'pyrogue.interfaces', 'pyrogue.protocols'],
+    package_dir={'':'${PROJECT_SOURCE_DIR}/python'},
+    package_data={'':['../rogue.so']},
+)

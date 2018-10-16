@@ -9,8 +9,9 @@ then
    PYTHONPATH=""
 fi
 
-# Package directories
-export ROGUE_DIR=$(dirname -- "$(readlink -f ${BASH_SOURCE[0]})")
+# Rogue directory
+export ROGUE_DIR=@ROGUE_DIR@
+export ROGUE_VERSION=@ROGUE_VERSION@
 
 # Setup python path
 export PYTHONPATH=${ROGUE_DIR}/python:${PYTHONPATH}
