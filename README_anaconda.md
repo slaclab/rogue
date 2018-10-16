@@ -27,7 +27,7 @@ $ source /path/to/my/anaconda3/etc/profile.d/conda.sh
 The next step is to create ana anaconda environment which includes the rogue package.
 
 ````
-$ conda create -n rogue_env -c defaults -c conda-roge -c paulscherrerinstitute -c slacrherbst python=3.6 rogue
+$ conda create -n rogue_env -c defaults -c conda-forge -c paulscherrerinstitute -c slacrherbst python=3.6 rogue
 ````
 
 The order of the args is important. slacrherbst is the channel from which the rogue package is downloaded. 
