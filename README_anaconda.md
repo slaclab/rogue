@@ -1,6 +1,6 @@
-# Building Rogue Inside Anaconda
+# Installing Rogue With Anaconda
 
-This README provides instructions for downloading and building rogue inside an anaconda environment.
+This README provides instructions for installing a pre-built rogue package inside an anaconda environment.
 This currently only works for Linux-x64. Macos is not yet supported.
 
 ## Getting Anaconda
@@ -22,37 +22,17 @@ Use the following command to add anaconda to your environment. This can be added
 $ source /path/to/my/anaconda3/etc/profile.d/conda.sh
 ````
 
-## Downloading Rogue & Creating Anaconda Envrionment
+## Creating A Rogue Environment
 
-The next step is to download rogue and create a rogue compatable anaconda environment.
-
-````
-$ git clone https://github.com/slaclab/rogue.git
-$ cd rogue
-$ conda env create -n rogue_env -f rogue_conda.yml
-````
-
-You now have an anaconda environment named rogue_env which contains all of the packages required to build and run rogue.
-
-To activate this environment:
+The next step is to create ana anaconda environment which includes the rogue package.
 
 ````
-$ conda activate rogue_env
+$ conda create -n rogue_env -c defaults -c conda-roge -c paulscherrerinstitute -c slacrherbst python=3.6 rogue
 ````
 
-## Building Rogue
+The order of the args is important. slacrherbst is the channel from which the rogue package is downloaded. 
 
-Once the rogue environment is activated, you can build and install rogue
-
-````
-$ mkdir build
-$ cd build
-$ cmake .. -DROGUE_INSTALL=conda
-$ make
-$ make install
-````
-
-Rogue is now installed within the anaconda rogue environment. The download directory is no longer required and can be removed.
+You now have an anaconda environment named rogue_env which contains all of the packages required to run rogue.
 
 ## Using Rogue
 
