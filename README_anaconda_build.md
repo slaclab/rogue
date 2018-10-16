@@ -1,6 +1,7 @@
 # Building Rogue Inside Anaconda
 
 This README provides instructions for downloading and building rogue inside an anaconda environment.
+This currently only works for Linux-x64. Macos is not yet supported.
 
 ## Getting Anaconda
 
