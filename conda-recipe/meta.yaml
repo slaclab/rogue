@@ -1,6 +1,6 @@
 package: 
   name: rogue
-  version: {{ GIT_DESCRIBE_TAG }}
+  version: {{ GIT_DESCRIBE_HASH }}
 
 source:
    path: ..
