@@ -209,6 +209,10 @@ if (DO_PYTHON)
    set_target_properties(rogue PROPERTIES PREFIX "" SUFFIX ".so")
    set_target_properties(rogue PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/python)
 
+   if (APPLE)
+      set_target_properties(rogue PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
+   endif()
+
    # Link to rogue core
    TARGET_LINK_LIBRARIES(rogue LINK_PUBLIC rogue-core)
 

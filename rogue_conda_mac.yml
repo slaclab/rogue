@@ -4,8 +4,6 @@ channels:
   - paulscherrerinstitute
 dependencies:
   - python=3.6
-  - gcc_linux-64
-  - gxx_linux-64
   - pyyaml
   - pyzmq
   - parse

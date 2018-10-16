@@ -21,7 +21,9 @@
 
 rogue::ScopedGil::ScopedGil() {
 #ifndef NO_PYTHON
+   printf("here1\n");
    state_ = PyGILState_Ensure();
+   printf("here2\n");
 #endif
 }
 
