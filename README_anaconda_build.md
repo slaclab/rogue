@@ -51,9 +51,11 @@ $ make
 $ make install
 ````
 
+Rogue is now installed within the anaconda rogue environment. The download directory is no longer required and can be removed.
+
 ## Using Rogue
 
-Rogue is now installed within the anaconda rogue environment. No additional setup scripts need to be run. In the future to activate and de-activate the rogue environment you can use the following commands:
+No additional setup scripts need to be run rogue in an anaconda environment. In the future to activate and de-activate the rogue environment you can use the following commands:
 
 To activate:
 
