@@ -1,4 +1,4 @@
-# Installing Rogue and Anaconda behind a proxy
+# Rogue and Anaconda behind a firewall
 
 To install rogue and anaconda behind a firewall you will need an ssl capable https proxy. I have used mitmproxy with success:
 

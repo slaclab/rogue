@@ -19,12 +19,12 @@ https://github.com/slaclab/rogue-example
 
 There are three possible ways to obtain rogue. The recommended way is to install rogue as a pre-built anaconda package in an anaconda environment:
 
-[Downloading rogue in anaconda](README_anaconda.md)
+[Installing rogue with anaconda](README_anaconda.md)
 
 
 Alternatively you can download and build your own copy of rogue within an anaconda environment. This is usefull if you may want to contribute to the rogue development.
 
-[Building rogue in anaconda](README_anaconda_build.md)
+[Building rogue inside anaconda](README_anaconda_build.md)
 
 You may choose to build and run rogue outside of the anaconda environment. Instructions for doing so can be found here:
 
@@ -32,5 +32,5 @@ You may choose to build and run rogue outside of the anaconda environment. Instr
 
 If you need to install rogue behind a firewall you can use the following instructions:
 
-[Rogue behind a firewall](README_firewall.md)
+[Rogue and anaconda behind a firewall](README_firewall.md)
 
