@@ -15,6 +15,7 @@ dependencies:
   - pyro4
   - numpy
   - pyqt
+  - pyepics
   - boost
   - bzip2
   - matplotlib
