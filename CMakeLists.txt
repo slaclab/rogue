@@ -290,8 +290,7 @@ if (DO_PYTHON)
 
    # Use setuptools with python3 for system
    elseif (${ROGUE_INSTALL} STREQUAL "system")
-      install(CODE "execute_process(COMMAND python3 
-              ${PROJECT_SOURCE_DIR}/build/setup.py install --single-version-externally-managed --record=record.txt)")
+      install(CODE "execute_process(COMMAND python3 ${PROJECT_SOURCE_DIR}/build/setup.py install)")
    
    # Use setuptools with python for anaconda
    elseif (${ROGUE_INSTALL} STREQUAL "conda")
