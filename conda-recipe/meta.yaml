@@ -13,7 +13,6 @@ requirements:
      - python=3.6
      - gcc_linux-64
      - gxx_linux-64
-     - setuptools
      - boost
      - cmake
      - make
