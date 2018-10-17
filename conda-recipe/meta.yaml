@@ -40,4 +40,6 @@ requirements:
 about:
    home: https://github.com/slaclab/rogue
    license: SLAC Open License
+   license_file: LICENSE.txt
+   summary: SLAC Python Based Hardware Abstraction And Data Acquisition System
 
