@@ -5,6 +5,8 @@ copy of the python3, boost, zeromq or epics packages. These
 packages already exist on most modern Linux distributions (except epics).
 These packages are also already available on AFS at SLAC.
 
+The following instructions may not be fully up to date. Use at your own risk. Please consider using anaconda!
+
 ## autoconf
 
 A recent version of autoconf is required for some of the packages needed
