@@ -43,8 +43,9 @@ install:
   # Rogue
   - cd $TRAVIS_BUILD_DIR
   - mkdir build; cd build
-  - cmake .. -DPYTHON_LIBRARY=$PY_PATH/lib/python3.6 -DPYTHON_INCLUDE_DIR=$PY_PATH/include
+  - cmake .. -DROGUE_INSTALL=local -DPYTHON_LIBRARY=$PY_PATH/lib/python3.6 -DPYTHON_INCLUDE_DIR=$PY_PATH/include
   - make
+  - make install
 
 before_script:
   - cd $TRAVIS_BUILD_DIR
