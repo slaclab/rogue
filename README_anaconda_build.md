@@ -29,7 +29,18 @@ The next step is to download rogue and create a rogue compatable anaconda enviro
 ````
 $ git clone https://github.com/slaclab/rogue.git
 $ cd rogue
+````
+
+For Linux:
+
+````
 $ conda env create -n rogue_env -f rogue_conda.yml
+````
+
+For MacOS:
+
+````
+$ conda env create -n rogue_env -f rogue_conda_mac.yml
 ````
 
 You now have an anaconda environment named rogue_env which contains all of the packages required to build and run rogue.
