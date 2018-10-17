@@ -1,7 +1,7 @@
 # Building Rogue Inside Anaconda
 
 This README provides instructions for downloading and building rogue inside an anaconda environment.
-This currently only works for Linux-x64. Macos is not yet supported.
+See MacOS section at the bottom for additional steps required for building rogue in MacOS.
 
 ## Getting Anaconda
 
@@ -91,5 +91,21 @@ Run the following commands to delete the anaconda environment.
 
 ````
 $ conda env remove -n rogue_env
+````
+
+## Special Steps For MacOS
+
+In order to compile rogue in MacOS you first need to download an install an older version of the MacOS SDK
+
+````
+$ git clone https://github.com/phracker/MacOSX-SDKs
+$ sudo mv MacOSX-SDKs/MacOSX10.9.sdk /opt/
+````
+
+You must set the following environment variables to setup anaconda in build mode before creating and activating the rogue environment.
+
+````
+$ export CONDA_BUILD_SYSROOT=/opt/MacOSX10.9.sdk
+$ export CONDA_BUILD=1
 ````
 
