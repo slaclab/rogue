@@ -1,7 +1,6 @@
 # Installing Rogue With Anaconda
 
 This README provides instructions for installing a pre-built rogue package inside an anaconda environment.
-This currently only works for Linux-x64. Macos is not yet supported.
 
 ## Getting Anaconda
 
