@@ -55,27 +55,28 @@ set(BOOST_ROOT:PATHNAME $ENV{BOOST_PATH})
 
 # First try standard suffix for boost
 if (DO_PYTHON)
-find_package(Boost 1.58 COMPONENTS system thread python3)
+   find_package(Boost 1.58 QUIET COMPONENTS system thread python3)
 endif()
 
 # Next try Debian/Ubuntu suffix for boost
 if ((NOT Boost_FOUND) AND DO_PYTHON)
-   find_package(Boost 1.58 COMPONENTS system thread python-py36)
+   find_package(Boost 1.58 QUIET COMPONENTS system thread python-py36)
 endif()
 
 # Next try Mac with homebrew boost/python36
 if ((NOT Boost_FOUND) AND DO_PYTHON)
-   find_package(Boost 1.58 COMPONENTS system thread python36)
+   find_package(Boost 1.58 QUIET COMPONENTS system thread python36)
 endif()
 
 # Try without python
 if (NOT Boost_FOUND)
    set(DO_PYTHON 0)
-   find_package(Boost 1.58 COMPONENTS system thread)
+   find_package(Boost 1.58 QUIET COMPONENTS system thread)
 endif()
 
 # Nothing worked
 if (NOT Boost_FOUND)
+   message("")
    message(FATAL_ERROR "Failed to find boost libraries!")
 endif()
 
@@ -133,6 +134,7 @@ if (GIT_FOUND)
 
    string(REGEX MATCH "^v([0-9]+)\\.([0-9]+)" ROGUE_SOVER ${ROGUE_VERSION})
 else()
+   message("")
    message(FATAL_ERROR "Git is required to build rogue!")
 endif()
 
@@ -289,7 +291,7 @@ if (DO_PYTHON)
    # Use setuptools with python3 for system
    elseif (${ROGUE_INSTALL} STREQUAL "system")
       install(CODE "execute_process(COMMAND python3 
-              ${PROJECT_SOURCE_DIR}/build/setup.py install --prefix=${ROGUE_DIR} --single-version-externally-managed --record=record.txt)")
+              ${PROJECT_SOURCE_DIR}/build/setup.py install --single-version-externally-managed --record=record.txt)")
    
    # Use setuptools with python for anaconda
    elseif (${ROGUE_INSTALL} STREQUAL "conda")

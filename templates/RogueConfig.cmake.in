@@ -42,23 +42,23 @@ set(BOOST_ROOT:PATHNAME $ENV{BOOST_PATH})
 
 # First try standard suffix for boost
 if (DO_PYTHON)
-find_package(Boost 1.58 COMPONENTS system thread python3)
+   find_package(Boost 1.58 QUIET COMPONENTS system thread python3)
 endif()
 
 # Next try Debian/Ubuntu suffix for boost
 if ((NOT Boost_FOUND) AND DO_PYTHON)
-   find_package(Boost 1.58 COMPONENTS system thread python-py36)
+   find_package(Boost 1.58 QUIET COMPONENTS system thread python-py36)
 endif()
 
 # Next try Mac with homebrew boost/python36
 if ((NOT Boost_FOUND) AND DO_PYTHON)
-   find_package(Boost 1.58 COMPONENTS system thread python36)
+   find_package(Boost 1.58 QUIET COMPONENTS system thread python36)
 endif()
 
 # Try without python
 if (NOT Boost_FOUND)
    set(DO_PYTHON 0)
-   find_package(Boost 1.58 COMPONENTS system thread)
+   find_package(Boost 1.58 QUIET COMPONENTS system thread)
 endif()
 
 # Nothing worked
@@ -122,4 +122,40 @@ set(ROGUE_LIBRARIES @CONF_LIBRARIES@
                     ${PYTHON_LIBRARIES}
                     ${EPICSV3_LIBRARIES}
                     LINK_PUBLIC bz2)
+
+# Set Version
+set(ROGUE_VERSION @ROGUE_VERSION@)
+
+# Set Install Directory
+set(ROGUE_DIR @ROGUE_DIR@)
+
+#####################################
+# Print status
+#####################################
+
+message("")
+message("----------------------------------------------------------------------")
+message("-- Rogue Version: ${ROGUE_VERSION}")
+message("")
+message("-- Rogue Directory: ${ROGUE_DIR}")
+message("")
+message("-- Found boost: ${Boost_INCLUDE_DIRS}")
+message("")
+
+if (DO_PYTHON)
+   message("-- Found python: ${PYTHON_LIBRARIES}")
+else()
+   message("-- Compiling without python!")
+endif()
+
+message("")
+
+if (DO_EPICS_V3)
+   message("-- Found EPICS V3: ${EPICSV3_BASE_DIR}")
+else()
+   message("-- EPICS V3 not included!")
+endif()
+
+message("----------------------------------------------------------------------")
+message("")
 
