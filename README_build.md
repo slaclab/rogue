@@ -55,7 +55,6 @@ $ pip3 install parse
 $ pip3 install click
 $ pip3 install pyzmq
 $ pip3 install numpy
-$ pip3 install setuptools
 ````
 
 ### Manual Package Install
