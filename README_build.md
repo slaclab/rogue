@@ -54,7 +54,6 @@ $ pip3 install Pyro4
 $ pip3 install parse
 $ pip3 install click
 $ pip3 install pyzmq
-$ pip3 install mysqlclient
 ````
 
 ### Manual Package Install
