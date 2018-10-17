@@ -286,8 +286,13 @@ if (DO_PYTHON)
       install(DIRECTORY ${PROJECT_SOURCE_DIR}/python/pyrogue DESTINATION ${ROGUE_DIR}/python FILES_MATCHING PATTERN "*.py")
       install(TARGETS rogue LIBRARY DESTINATION ${ROGUE_DIR}/python)
 
-   # Use distutils to install python for system or conda install
-   elseif ((${ROGUE_INSTALL} STREQUAL "system") OR (${ROGUE_INSTALL} STREQUAL "conda"))
+   # Use setuptools with python3 for system
+   elseif (${ROGUE_INSTALL} STREQUAL "system")
+      install(CODE "execute_process(COMMAND python3 
+              ${PROJECT_SOURCE_DIR}/build/setup.py install --prefix=${ROGUE_DIR} --single-version-externally-managed --record=record.txt)")
+   
+   # Use setuptools with python for anaconda
+   elseif (${ROGUE_INSTALL} STREQUAL "conda")
       install(CODE "execute_process(COMMAND python 
               ${PROJECT_SOURCE_DIR}/build/setup.py install --prefix=${ROGUE_DIR} --single-version-externally-managed --record=record.txt)")
    endif()
