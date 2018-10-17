@@ -295,7 +295,7 @@ if (DO_PYTHON)
    # Use setuptools with python for anaconda
    elseif (${ROGUE_INSTALL} STREQUAL "conda")
       install(CODE "execute_process(COMMAND python 
-              ${PROJECT_SOURCE_DIR}/build/setup.py install --prefix=${ROGUE_DIR} --single-version-externally-managed --record=record.txt)")
+              ${PROJECT_SOURCE_DIR}/build/setup.py install --prefix=${ROGUE_DIR})")
    endif()
 
    # Do byte compile for custom or local
