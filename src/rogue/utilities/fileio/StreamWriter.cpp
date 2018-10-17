@@ -20,7 +20,8 @@
  *          [31:0] = Length of data block in bytes
  *       headerB
  *          31:24  = Channel ID
- *          23:o   = Frame flags
+ *          23:16  = Frame error
+ *          15:0   = Frame flags
  *
  *-----------------------------------------------------------------------------
  * This file is part of the rogue software platform. It is subject to 
@@ -66,6 +67,7 @@ void ruf::StreamWriter::setup_python() {
       .def("close",          &ruf::StreamWriter::close)
       .def("setBufferSize",  &ruf::StreamWriter::setBufferSize)
       .def("setMaxSize",     &ruf::StreamWriter::setMaxSize)
+      .def("setDropErrors",  &ruf::StreamWriter::setDropErrors)
       .def("getChannel",     &ruf::StreamWriter::getChannel)
       .def("getSize",        &ruf::StreamWriter::getSize)
       .def("getFrameCount",  &ruf::StreamWriter::getFrameCount)
@@ -85,6 +87,7 @@ ruf::StreamWriter::StreamWriter() {
    buffer_     = NULL;
    frameCount_ = 0;
    currBuffer_ = 0;
+   dropErrors_ = false;
 }
 
 //! Deconstructor
@@ -158,6 +161,11 @@ void ruf::StreamWriter::setMaxSize(uint32_t size) {
    sizeLimit_ = size;
 }
 
+//! Set drop errors flag
+void ruf::StreamWriter::setDropErrors(bool drop) {
+   dropErrors_ = drop;
+}
+
 //! Get a slave port
 ruf::StreamWriterChannelPtr ruf::StreamWriter::getChannel(uint8_t channel) {
   rogue::GilRelease noGil;
@@ -194,7 +202,7 @@ void ruf::StreamWriter::writeFile ( uint8_t channel, boost::shared_ptr<rogue::in
    uint32_t value;
    uint32_t size;
 
-   if ( frame->getPayload() == 0 ) return;
+   if ( (frame->getPayload() == 0) || (dropErrors_ && (frame->getError() != 0)) ) return;
 
    rogue::GilRelease noGil;
    boost::unique_lock<boost::mutex> lock(mtx_);
@@ -209,7 +217,8 @@ void ruf::StreamWriter::writeFile ( uint8_t channel, boost::shared_ptr<rogue::in
       intWrite(&size,4);
 
       // Create EVIO header
-      value  = frame->getFlags() & 0xFFFFFF;
+      value  = frame->getFlags();
+      value |= (frame->getError() << 16);
       value |= (channel << 24);
       intWrite(&value,4);
 

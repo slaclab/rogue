@@ -527,13 +527,14 @@ void rpr::Controller::transportTx(rpr::HeaderPtr head, bool seqUpdate, bool txRe
    // Track last tx time
    gettimeofday(&txTime_,NULL);
 
+   ris::FrameLockPtr flock = head->getFrame()->lock();
+   head->update();
+
    log_->log(rogue::Logging::Debug,
          "TX frame: state=%i server=%i size=%i syn=%i ack=%i nul=%i, rst=%i, ack#=%i, seq=%i, recount=%i, ptr=%p",
          state_,server_,head->getFrame()->getPayload(),head->syn,head->ack,head->nul,head->rst,
          head->acknowledge,head->sequence,retranCount_,head->getFrame().get());
 
-   ris::FrameLockPtr flock = head->getFrame()->lock();
-   head->update();
    flock->unlock();
    lock.unlock();
 
@@ -704,7 +705,7 @@ struct timeval & rpr::Controller::stateClosedWait () {
          gettimeofday(&stTime_,NULL);
       }
 
-      // Init counters
+      // reset counters
       else {
          curMaxBuffers_ = locMaxBuffers_;
          curMaxSegment_ = locMaxSegment_;
@@ -807,7 +808,9 @@ struct timeval & rpr::Controller::stateOpen () {
    // Pending frame may be reset
    while ( ! stQueue_.empty() ) {
       head = stQueue_.pop();
-      if ( head->rst ) {
+
+      // Reset or syn without ack is an error
+      if (( head->rst ) || ( head->syn && (! head->ack))) {
          state_ = StError;
          gettimeofday(&stTime_,NULL);
          return(zeroTme_);

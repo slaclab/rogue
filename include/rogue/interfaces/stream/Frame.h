@@ -57,10 +57,13 @@ namespace rogue {
                friend class FrameLock;
 
                //! Interface specific flags
-               uint32_t flags_;
+               uint16_t flags_;
 
                //! Error state
-               uint32_t error_;
+               uint8_t error_;
+
+               //! Channel
+               uint8_t chan_;
 
                //! List of buffers which hold real data
                std::vector<boost::shared_ptr<rogue::interfaces::stream::Buffer> > buffers_;
@@ -181,16 +184,34 @@ namespace rogue {
                void setPayloadEmpty();
 
                //! Get flags
-               uint32_t getFlags();
+               uint16_t getFlags();
 
                //! Set flags
-               void setFlags(uint32_t flags);
+               void setFlags(uint16_t flags);
+
+               //! Get channel
+               uint8_t getChannel();
+
+               //! Set channel
+               void setChannel(uint8_t channel);
+
+               // Get first user field portion of flags (SSI/axi-stream)
+               uint8_t getFirstUser();
+
+               // Set first user field portion of flags (SSI/axi-stream)
+               void setFirstUser(uint8_t fuser);
+
+               // Get last user field portion of flags (SSI/axi-stream)
+               uint8_t getLastUser();
+
+               // Set last user field portion of flags (SSI/axi-stream)
+               void setLastUser(uint8_t fuser);
 
                //! Get error state
-               uint32_t getError();
+               uint8_t getError();
 
                //! Set error state
-               void setError(uint32_t error);
+               void setError(uint8_t error);
 
                //! Get read start iterator
                rogue::interfaces::stream::FrameIterator beginRead();

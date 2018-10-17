@@ -15,6 +15,7 @@
  * ----------------------------------------------------------------------------
 **/
 #include <rogue/hardware/axi/AxiMemMap.h>
+#include <rogue/hardware/drivers/AxisDriver.h>
 #include <rogue/interfaces/memory/Constants.h>
 #include <rogue/interfaces/memory/Transaction.h>
 #include <rogue/interfaces/memory/TransactionLock.h>
@@ -28,7 +29,6 @@
 #include <sys/stat.h>
 #include <sys/mman.h>
 #include <fcntl.h>
-#include <DataDriver.h>
 
 namespace rha = rogue::hardware::axi;
 namespace rim = rogue::interfaces::memory;

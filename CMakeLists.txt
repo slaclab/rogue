@@ -16,6 +16,7 @@
 # Add support for building in conda environment
 if (DEFINED ENV{CONDA_PREFIX})
    set(CMAKE_PREFIX_PATH "$ENV{CONDA_PREFIX}")
+   link_directories($ENV{CONDA_PREFIX}/lib)
 endif()
 
 # Check cmake version
@@ -27,20 +28,7 @@ project (rogue)
 
 # C/C++
 enable_language(CXX)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
-
-# Set version from git tag
-find_package(Git)
-if (GIT_FOUND)
-   execute_process (
-      COMMAND ${GIT_EXECUTABLE} describe --tags --dirty
-      OUTPUT_VARIABLE ROGUE_VERSION
-      OUTPUT_STRIP_TRAILING_WHITESPACE)
-
-   string(REGEX MATCH "^v([0-9]+)\\.([0-9]+)" ROGUE_SOVER ${ROGUE_VERSION})
-else()
-   message(FATAL_ERROR "Git is required to build rogue!")
-endif()
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x -Wno-deprecated")
 
 #####################################
 # Find python3
@@ -67,27 +55,28 @@ set(BOOST_ROOT:PATHNAME $ENV{BOOST_PATH})
 
 # First try standard suffix for boost
 if (DO_PYTHON)
-find_package(Boost 1.58 COMPONENTS system thread python3)
+   find_package(Boost 1.58 QUIET COMPONENTS system thread python3)
 endif()
 
 # Next try Debian/Ubuntu suffix for boost
 if ((NOT Boost_FOUND) AND DO_PYTHON)
-   find_package(Boost 1.58 COMPONENTS system thread python-py36)
+   find_package(Boost 1.58 QUIET COMPONENTS system thread python-py36)
 endif()
 
 # Next try Mac with homebrew boost/python36
 if ((NOT Boost_FOUND) AND DO_PYTHON)
-   find_package(Boost 1.58 COMPONENTS system thread python36)
+   find_package(Boost 1.58 QUIET COMPONENTS system thread python36)
 endif()
 
 # Try without python
 if (NOT Boost_FOUND)
    set(DO_PYTHON 0)
-   find_package(Boost 1.58 COMPONENTS system thread)
+   find_package(Boost 1.58 QUIET COMPONENTS system thread)
 endif()
 
 # Nothing worked
 if (NOT Boost_FOUND)
+   message("")
    message(FATAL_ERROR "Failed to find boost libraries!")
 endif()
 
@@ -100,40 +89,99 @@ if(DO_PYTHON AND DEFINED ENV{EPICS_BASE})
    if(DEFINED ENV{EPICS_HOST_ARCH})
        set(EPICSV3_ARCH      $ENV{EPICS_HOST_ARCH})
    else()
-       execute_process(COMMAND ${EPICSV3_BASE_DIR}/startup/EpicsHostArch OUTPUT_VARIABLE EPICSV3_ARCH OUTPUT_STRIP_TRAILING_WHITESPACE)
+       execute_process(COMMAND ${EPICSV3_BASE_DIR}/startup/EpicsHostArch 
+                       OUTPUT_VARIABLE EPICSV3_ARCH OUTPUT_STRIP_TRAILING_WHITESPACE)
        string(REGEX REPLACE "\n$" "" EPICSV3_ARCH "${EPICSV3_ARCH}")
    endif()
    set(EPICSV3_LIB_DIR   ${EPICSV3_BASE_DIR}/lib/${EPICSV3_ARCH} )
-   set(EPICSV3_INCLUDES  ${EPICSV3_BASE_DIR}/include
-                         ${EPICSV3_BASE_DIR}/include/compiler/gcc 
-                         ${EPICSV3_BASE_DIR}/include/os/Linux)
-   set(EPICSV3_LIBRARIES ${EPICSV3_LIB_DIR}/libcas.so 
-                         ${EPICSV3_LIB_DIR}/libca.so 
-                         ${EPICSV3_LIB_DIR}/libCom.so 
-                         ${EPICSV3_LIB_DIR}/libgdd.so )
+
+   if(APPLE)
+
+      set(EPICSV3_INCLUDES  ${EPICSV3_BASE_DIR}/include
+                            ${EPICSV3_BASE_DIR}/include/compiler/gcc 
+                            ${EPICSV3_BASE_DIR}/include/os/Darwin)
+
+      set(EPICSV3_LIBRARIES ${EPICSV3_LIB_DIR}/libcas.dylib 
+                            ${EPICSV3_LIB_DIR}/libca.dylib 
+                            ${EPICSV3_LIB_DIR}/libCom.dylib 
+                            ${EPICSV3_LIB_DIR}/libgdd.dylib)
+   else()
+
+      set(EPICSV3_INCLUDES  ${EPICSV3_BASE_DIR}/include
+                            ${EPICSV3_BASE_DIR}/include/compiler/gcc 
+                            ${EPICSV3_BASE_DIR}/include/os/Linux)
+
+      set(EPICSV3_LIBRARIES ${EPICSV3_LIB_DIR}/libcas.so 
+                            ${EPICSV3_LIB_DIR}/libca.so 
+                            ${EPICSV3_LIB_DIR}/libCom.so 
+                            ${EPICSV3_LIB_DIR}/libgdd.so )
+   endif()
 else()
    set(DO_EPICS_V3 0)
 endif()
 
 #####################################
-# Setup build
+# Generate version with GIT
+#####################################
+
+# Set version from git tag
+find_package(Git)
+if (GIT_FOUND)
+   execute_process (
+      COMMAND ${GIT_EXECUTABLE} describe --tags --dirty
+      OUTPUT_VARIABLE ROGUE_VERSION
+      OUTPUT_STRIP_TRAILING_WHITESPACE)
+
+   string(REGEX MATCH "^v([0-9]+)\\.([0-9]+)" ROGUE_SOVER ${ROGUE_VERSION})
+else()
+   message("")
+   message(FATAL_ERROR "Git is required to build rogue!")
+endif()
+
+#####################################
+# Setup Type and Directories
+#####################################
+
+# Default install type
+if ( NOT ROGUE_INSTALL ) 
+   set (ROGUE_INSTALL "local")
+endif()
+
+# Default Install directory
+if (${ROGUE_INSTALL} STREQUAL "local")
+   set (ROGUE_DIR ${PROJECT_SOURCE_DIR})
+elseif (NOT ROGUE_DIR) 
+   if (${ROGUE_INSTALL} STREQUAL "custom")
+      set (ROGUE_DIR "$ENV{CONDA_PREFIX}/${CMAKE_INSTALL_PREFIX}/rogue")
+   elseif (${ROGUE_INSTALL} STREQUAL "conda")
+      set (ROGUE_DIR "$ENV{CONDA_PREFIX}")
+   else()
+      set (ROGUE_DIR "$ENV{CONDA_PREFIX}/${CMAKE_INSTALL_PREFIX}")
+   endif()
+endif()
+
+#####################################
+# Setup build, core library
 #####################################
 
 # Configuration File
 configure_file (
-   ${PROJECT_SOURCE_DIR}/include/rogue/RogueConfig.in
+   ${PROJECT_SOURCE_DIR}/templates/RogueConfig.h.in
    ${PROJECT_BINARY_DIR}/RogueConfig.h
 )
 
 # Add include directories
 include_directories(${PROJECT_SOURCE_DIR}/include)
-include_directories(${PROJECT_SOURCE_DIR}/drivers/include)
 include_directories(${PROJECT_BINARY_DIR})
 include_directories(${Boost_INCLUDE_DIRS})
 include_directories(${PYTHON_INCLUDE_DIRS})
 include_directories(${EPICSV3_INCLUDES})
 
-SET(CMAKE_SHARED_LIBRARY_SUFFIX ".so")
+if (APPLE)
+   SET(CMAKE_SHARED_LIBRARY_SUFFIX ".dylib")
+else()
+   SET(CMAKE_SHARED_LIBRARY_SUFFIX ".so")
+endif()
 
 # Create rogue core library
 add_library(rogue-core SHARED "")
@@ -141,16 +189,24 @@ add_library(rogue-core SHARED "")
 # Find rogue core sources
 add_subdirectory(src/rogue)
 
-# Set output to TOP/lib
-set_target_properties(rogue-core PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/lib 
-                                 VERSION ${ROGUE_VERSION} SOVERSION ${ROGUE_SOVER})
-
 # Link rogue core to boost, python and bzip
 TARGET_LINK_LIBRARIES(rogue-core LINK_PUBLIC ${Boost_LIBRARIES})
-TARGET_LINK_LIBRARIES(rogue-core LINK_PUBLIC ${PYTHON_LIBRARIES})
 TARGET_LINK_LIBRARIES(rogue-core LINK_PUBLIC ${EPICSV3_LIBRARIES})
 TARGET_LINK_LIBRARIES(rogue-core LINK_PUBLIC bz2)
 
+# Do not link directly against python in macos
+if (APPLE)
+   set_target_properties(rogue-core PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
+else()
+   TARGET_LINK_LIBRARIES(rogue-core LINK_PUBLIC ${PYTHON_LIBRARIES})
+endif()
+
+# Set output library names
+set_target_properties(rogue-core PROPERTIES VERSION ${ROGUE_VERSION} SOVERSION ${ROGUE_SOVER})
+
+#####################################
+# Setup build, python library
+#####################################
 if (DO_PYTHON)
 
    # Create rogue python library
@@ -160,8 +216,12 @@ if (DO_PYTHON)
    add_subdirectory(src)
 
    # Set output to TOP/python, remove lib prefix
+   set_target_properties(rogue PROPERTIES PREFIX "" SUFFIX ".so")
    set_target_properties(rogue PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/python)
-   set_target_properties(rogue PROPERTIES PREFIX "")
+
+   if (APPLE)
+      set_target_properties(rogue PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
+   endif()
 
    # Link to rogue core
    TARGET_LINK_LIBRARIES(rogue LINK_PUBLIC rogue-core)
@@ -170,19 +230,92 @@ else()
    add_definitions( -DNO_PYTHON )
 endif()
 
+#########################################
+# Configuration & Setup Script Generation
+#########################################
 
 # Setup configuration file
-set(CONF_INCLUDE_DIRS ${PROJECT_SOURCE_DIR}/include)
-set(CONF_LIBRARIES    ${PROJECT_SOURCE_DIR}/lib/librogue-core.so.${ROGUE_SOVER})
+if ((${ROGUE_INSTALL} STREQUAL "system") OR (${ROGUE_INSTALL} STREQUAL "conda"))
+   set(CONF_INCLUDE_DIRS "")
+   set(CONF_LIBRARIES LINK_PUBLIC rogue-core)
+else()
+   set(CONF_INCLUDE_DIRS ${ROGUE_DIR}/include)
+   if (APPLE)
+      set(CONF_LIBRARIES ${ROGUE_DIR}/lib/librogue-core.${ROGUE_SOVER}.dylib)
+   else()
+      set(CONF_LIBRARIES ${ROGUE_DIR}/lib/librogue-core.so.${ROGUE_SOVER})
+   endif()
+endif()
 
 # Create the config file
-configure_file(RogueConfig.cmake.in ${PROJECT_SOURCE_DIR}/lib/RogueConfig.cmake @ONLY)
+configure_file(${PROJECT_SOURCE_DIR}/templates/RogueConfig.cmake.in 
+               ${PROJECT_BINARY_DIR}/RogueConfig.cmake @ONLY)
+
+# Create the setup files
+configure_file(${PROJECT_SOURCE_DIR}/templates/setup_rogue.csh.in
+               ${PROJECT_BINARY_DIR}/setup_rogue.csh @ONLY)
+configure_file(${PROJECT_SOURCE_DIR}/templates/setup_rogue.sh.in
+               ${PROJECT_BINARY_DIR}/setup_rogue.sh @ONLY)
+
+# Create the python install script
+configure_file(${PROJECT_SOURCE_DIR}/templates/setup.py.in
+               ${PROJECT_BINARY_DIR}/setup.py)
+
+#####################################
+# Install Setup
+#####################################
+
+# Always install core libraries and config files
+install(TARGETS rogue-core LIBRARY DESTINATION ${ROGUE_DIR}/lib)
+install(FILES   ${PROJECT_BINARY_DIR}/RogueConfig.cmake DESTINATION ${ROGUE_DIR}/lib)
+
+# Copy setup files for local or custom
+if ((${ROGUE_INSTALL} STREQUAL "custom") OR (${ROGUE_INSTALL} STREQUAL "local"))
+   install(FILES ${PROJECT_BINARY_DIR}/setup_rogue.sh ${PROJECT_BINARY_DIR}/setup_rogue.csh DESTINATION ${ROGUE_DIR})
+endif()
+
+# Install header files for non local installs
+if (NOT (${ROGUE_INSTALL} STREQUAL "local"))
+   install(DIRECTORY ${PROJECT_SOURCE_DIR}/include/rogue
+           DESTINATION ${ROGUE_DIR}/include FILES_MATCHING PATTERN "*.h")
+endif()
+
+# Python file install
+if (DO_PYTHON)
+
+   # Install python files directly for custom install
+   if (${ROGUE_INSTALL} STREQUAL "custom")
+      install(DIRECTORY ${PROJECT_SOURCE_DIR}/python/pyrogue DESTINATION ${ROGUE_DIR}/python FILES_MATCHING PATTERN "*.py")
+      install(TARGETS rogue LIBRARY DESTINATION ${ROGUE_DIR}/python)
+
+   # Use setuptools with python3 for system
+   elseif (${ROGUE_INSTALL} STREQUAL "system")
+      install(CODE "execute_process(COMMAND python3 ${PROJECT_SOURCE_DIR}/build/setup.py install)")
+   
+   # Use setuptools with python for anaconda
+   elseif (${ROGUE_INSTALL} STREQUAL "conda")
+      install(CODE "execute_process(COMMAND python 
+              ${PROJECT_SOURCE_DIR}/build/setup.py install --prefix=${ROGUE_DIR})")
+   endif()
+
+   # Do byte compile for custom or local
+   if ((${ROGUE_INSTALL} STREQUAL "custom") OR (${ROGUE_INSTALL} STREQUAL "local"))
+      install(CODE "execute_process(COMMAND python3 -m compileall ${ROGUE_DIR}/python)")
+   endif()   
+
+endif()
+
+#####################################
+# Print status
+#####################################
 
 message("")
 message("----------------------------------------------------------------------")
-message("-- Success!")
-message("")
 message("-- Rogue Version: ${ROGUE_VERSION}")
+message("")
+message("-- Install Type: -DROGUE_INSTALL=${ROGUE_INSTALL}")
+message("")
+message("-- Install Path: -DROGUE_DIR=${ROGUE_DIR}")
 message("")
 message("-- Found boost: ${Boost_INCLUDE_DIRS}")
 message("")

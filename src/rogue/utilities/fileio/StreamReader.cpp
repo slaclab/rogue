@@ -148,7 +148,10 @@ bool ruf::StreamReader::isActive() {
 void ruf::StreamReader::runThread() {
    int32_t  ret;
    uint32_t size;
-   uint32_t flags;
+   uint32_t meta;
+   uint16_t flags;
+   uint8_t  error;
+   uint8_t  chan;
    uint32_t bSize;
    bool     err;
    ris::FramePtr frame;
@@ -157,6 +160,7 @@ void ruf::StreamReader::runThread() {
    Logging log("streamReader");
 
    ret = 0;
+   err = false;
    try {
       do {
 
@@ -169,7 +173,7 @@ void ruf::StreamReader::runThread() {
             }
 
             // Read flags
-            if ( read(fd_,&flags,4) != 4 ) {
+            if ( read(fd_,&meta, 4) != 4 ) {
                log.warning("Failed to read flags");
                err = true;
                break;
@@ -179,9 +183,16 @@ void ruf::StreamReader::runThread() {
             if ( size <= 4 ) continue;
             size -= 4;
 
+            // Extract meta data
+            flags = meta & 0xFFFF;
+            error = (meta >> 16) & 0xFF;
+            chan  = (meta >> 24) & 0xFF;
+
             // Request frame
             frame = reqFrame(size,true);
             frame->setFlags(flags);
+            frame->setError(error);
+            frame->setChannel(chan);
             it = frame->beginBuffer();
 
             while ( (err == false) && (size > 0) ) {
@@ -199,7 +210,7 @@ void ruf::StreamReader::runThread() {
                }
                else {
                   (*it)->setPayload(bSize);
-                  if ( (*it)->getAvailable() == 0 ) ++it; // Next buffer
+                  ++it; // Next buffer
                }
                size -= bSize;
             }

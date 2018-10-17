@@ -230,7 +230,7 @@ class Device(pr.Node,rim.Hub):
         # Process local blocks.
         if variable is not None:
             for b in self._getBlocks(variable):
-                if (force or block.stale):                
+                if (force or b.stale):                
                     b.startTransaction(rim.Write, check=checkEach)
 
         else:

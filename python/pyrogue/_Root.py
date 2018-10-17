@@ -459,13 +459,11 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
             if count == 0 and len(uvars) > 0:
 
                 self._log.debug(F"Process update group. Length={len(uvars)}. Entry={list(uvars.keys())[0]}")
-                yml = ""
+                d = odict()
 
                 for p,v in uvars.items():
-                    path,value,disp = v._doUpdate()
-
-                    # Update yaml string
-                    yml += (f"{path}:{disp}" + "\n")
+                    val = v._doUpdate()
+                    d[p] = val
 
                     # Call listener functions,
                     with self._varListenLock:
@@ -473,9 +471,9 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                             try:
 
                                 if isinstance(func,Pyro4.core.Proxy) or hasattr(func,'varListener'):
-                                    func.varListener(path,value,disp)
+                                    func.varListener(p,val.value,val.valueDisp)
                                 else:
-                                    func(path,value,disp)
+                                    func(p,val.value.val,valueDisp)
 
                             except Pyro4.errors.CommunicationError as msg:
                                 if 'Connection refused' in str(msg):
@@ -485,7 +483,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                                     self._log.error("Pyro callback failed for {}: {}".format(self.name,msg))
 
                 # Generate yaml stream
-                self._sendYamlFrame(yml)
+                self._sendYamlFrame(dictToYaml(d,default_flow_style=False))
 
                 # Init var list
                 uvars = {}
@@ -567,23 +565,41 @@ def yamlToDict(stream, Loader=yaml.Loader, object_pairs_hook=odict):
     """Load yaml to ordered dictionary"""
     class OrderedLoader(Loader):
         pass
+
     def construct_mapping(loader, node):
         loader.flatten_mapping(node)
         return object_pairs_hook(loader.construct_pairs(node))
-    OrderedLoader.add_constructor(
-        yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG,
-        construct_mapping)
-    return yaml.load(stream, OrderedLoader)
 
+    OrderedLoader.add_constructor(yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG,construct_mapping)
+
+    return yaml.load(stream, OrderedLoader)
 
 def dictToYaml(data, stream=None, Dumper=yaml.Dumper, **kwds):
     """Convert ordered dictionary to yaml"""
+
     class OrderedDumper(Dumper):
         pass
+
+    def _var_representer(dumper, data):
+        if type(data.value) == bool:
+            enc = 'tag:yaml.org,2002:bool'
+        elif data.enum is not None:
+            enc = 'tag:yaml.org,2002:str'
+        elif type(data.value) == int:
+            enc = 'tag:yaml.org,2002:int'
+        elif type(data.value) == float:
+            enc = 'tag:yaml.org,2002:float'
+        else:
+            enc = 'tag:yaml.org,2002:str'
+
+        return dumper.represent_scalar(enc, data.valueDisp)
+
     def _dict_representer(dumper, data):
-        return dumper.represent_mapping(
-            yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG,data.items())
+        return dumper.represent_mapping(yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG, data.items())
+
+    OrderedDumper.add_representer(pr.VariableValue, _var_representer)
     OrderedDumper.add_representer(odict, _dict_representer)
+
     try:
         ret = yaml.dump(data, stream, OrderedDumper, **kwds)
     except Exception as e:
