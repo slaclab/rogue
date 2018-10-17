@@ -91,6 +91,8 @@ $ source ../setup_rogue.csh (or .sh)
 
 ### Custom Install
 
+Make sure you have permission to install into the passed install directory, if not use sudo.
+
 ````
 $ git clone https://github.com/slaclab/rogue.git
 $ cd rogue
@@ -103,6 +105,8 @@ $ source /path/to/custom/dir/setup_rogue.csh (or .sh)
 ````
 
 ### System Install
+
+Make sure you have permission to install into the /usr/local/ directory, if not use sudo.
 
 ````
 $ git clone https://github.com/slaclab/rogue.git
