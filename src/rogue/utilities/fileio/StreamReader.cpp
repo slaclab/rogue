@@ -160,6 +160,7 @@ void ruf::StreamReader::runThread() {
    Logging log("streamReader");
 
    ret = 0;
+   err = false;
    try {
       do {
 
@@ -209,7 +210,7 @@ void ruf::StreamReader::runThread() {
                }
                else {
                   (*it)->setPayload(bSize);
-                  if ( (*it)->getAvailable() == 0 ) ++it; // Next buffer
+                  ++it; // Next buffer
                }
                size -= bSize;
             }
