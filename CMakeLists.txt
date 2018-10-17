@@ -12,6 +12,8 @@
 # copied, modified, propagated, or distributed except according to the terms 
 # contained in the LICENSE.txt file.
 # ----------------------------------------------------------------------------
+# See notes for compiling on macos under anaconda:
+#    https://conda.io/docs/user-guide/tasks/build-packages/compiler-tools.html
 
 # Add support for building in conda environment
 if (DEFINED ENV{CONDA_PREFIX})
