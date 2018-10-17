@@ -70,3 +70,26 @@ To deactivate:
 $ conda deactivate
 ````
 
+## Updating Rogue
+
+If you want to update and re-install rogue, run the following commands.
+
+````
+$ cd rogue
+$ rm -rf build
+$ git pull
+$ mkdir build
+$ cd build
+$ cmake .. -DROGUE_INSTALL=conda
+$ make
+$ make install
+````
+
+## Deleting Anaconda Environment
+
+Run the following commands to delete the anaconda environment.
+
+````
+$ conda env remove -n rogue_env
+````
+

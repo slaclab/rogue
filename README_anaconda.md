@@ -50,3 +50,20 @@ To deactivate:
 $ conda deactivate
 ````
 
+## Updating Rogue
+
+If you want to update rogue, run the following command after activating the rogue environment
+
+````
+$ conda update rogue
+````
+
+## Deleting Anaconda Environment
+
+Run the following commands to delete the anaconda environment.
+
+````
+$ conda env remove -n rogue_env
+````
+
+
