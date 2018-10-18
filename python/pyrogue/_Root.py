@@ -607,6 +607,25 @@ def dictToYaml(data, stream=None, Dumper=yaml.Dumper, **kwds):
         return None
     return ret
 
+def keyValueUpdate(old, key, value):
+    d = old
+    parts = key.split('.')
+    for part in parts[:-1]:
+        d = d[part]
+    d[parts[-1]] = value
+
+def dictUpdate(old, new):
+    for k,v in new.items():
+        if '.' in k:
+            keyValueUpdate(old, k, v)
+        elif k in old:
+            old[k].update(v)
+        else:
+            old[k] = v
+
+def yamlUpdate(old, new):
+    dictUpdate(old, yamlToDict(new))
+
 def recreate_OrderedDict(name, values):
     return odict(values['items'])
 
