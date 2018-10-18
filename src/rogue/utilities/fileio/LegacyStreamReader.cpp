@@ -158,6 +158,7 @@ void ruf::LegacyStreamReader::runThread() {
    Logging log("LegacyStreamReader");
 
    ret = 0;
+   err = false;
    try {
       do {
 
