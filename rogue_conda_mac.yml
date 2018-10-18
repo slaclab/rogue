@@ -3,9 +3,11 @@ channels:
   - conda-forge
   - paulscherrerinstitute
 dependencies:
-  - gcc_linux-64
-  - gxx_linux-64
   - python=3.6
+  - clang_osx-64
+  - clangxx_osx-64
+  - make
+  - cmake
   - pyyaml
   - pyzmq
   - parse
@@ -13,9 +15,8 @@ dependencies:
   - pyro4
   - numpy
   - pyqt
+  - pyepics
   - boost
-  - cmake
   - bzip2
   - matplotlib
   - epics-base=3.14.12.8
-

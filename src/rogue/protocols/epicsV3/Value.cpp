@@ -26,6 +26,11 @@
 #include <boost/make_shared.hpp>
 #include <aitTypes.h>
 
+#ifdef __MACH__
+#include <mach/clock.h>
+#include <mach/mach.h>
+#endif
+
 namespace rpe = rogue::protocols::epicsV3;
 
 #include <boost/python.hpp>
@@ -272,7 +277,17 @@ caStatus rpe::Value::write(const gdd &value) {
    else return S_cas_noConvert;   
 
    // Set the timespec structure to the current time stamp the gdd.
+#ifdef __MACH__ // OSX does not have clock_gettime
+   clock_serv_t cclock;
+   mach_timespec_t mts;
+   host_get_clock_service(mach_host_self(), CALENDAR_CLOCK, &cclock);
+   clock_get_time(cclock, &mts);
+   mach_port_deallocate(mach_task_self(), cclock);
+   t.tv_sec = mts.tv_sec;
+   t.tv_nsec = mts.tv_nsec;
+#else      
    clock_gettime(CLOCK_REALTIME,&t);
+#endif
    pValue_->setTimeStamp(&t);
 
    // Cal value set and update within lock 
