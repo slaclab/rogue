@@ -35,7 +35,7 @@ jobs:
               - export DOCKER_TAG=`git describe --tags`
               - export DOCKER_IMAGE_NAME=$DOCKER_IMAGE_NAME/rogue
               - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ORG_NAME" --password-stdin;
-              - travis_wait docker build -qt $DOCKER_IMAGE_NAME .;
+              - travis_wait docker build -qt --build-arg branch=$DOCKER_TAG $DOCKER_IMAGE_NAME .;
               - docker push $DOCKER_IMAGE_NAME;
               - docker tag $DOCKER_IMAGE_NAME $DOCKER_IMAGE_NAME:$DOCKER_TAG;
               - docker push $DOCKER_IMAGE_NAME:$DOCKER_TAG;
@@ -50,7 +50,7 @@ jobs:
               - export DOCKER_TAG=`git describe --tags`
               - export DOCKER_IMAGE_NAME=$DOCKER_IMAGE_NAME/rogue-dev
               - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ORG_NAME" --password-stdin;
-              - travis_wait docker build -qt $DOCKER_IMAGE_NAME .;
+              - travis_wait docker build -qt --build-arg branch=pre-release $DOCKER_IMAGE_NAME .;
               - docker push $DOCKER_IMAGE_NAME;
               - docker tag $DOCKER_IMAGE_NAME $DOCKER_IMAGE_NAME:$DOCKER_TAG;
               - docker push $DOCKER_IMAGE_NAME:$DOCKER_TAG;
