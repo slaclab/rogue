@@ -40,6 +40,21 @@ jobs:
               - docker tag $DOCKER_IMAGE_NAME $DOCKER_IMAGE_NAME:$DOCKER_TAG;
               - docker push $DOCKER_IMAGE_NAME:$DOCKER_TAG;
 
+        - stage: Deploy         # Deploy stage (only for pre-release versions)
+          name: "Deploy Dev Version"
+          if: branch = pre-release
+          install: skip
+          after_success: skip
+          before_scrip: skip
+          script:
+              - export DOCKER_TAG=`git describe --tags`
+              - export DOCKER_IMAGE_NAME=$DOCKER_IMAGE_NAME/rogue-dev
+              - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ORG_NAME" --password-stdin;
+              - travis_wait docker build -qt $DOCKER_IMAGE_NAME .;
+              - docker push $DOCKER_IMAGE_NAME;
+              - docker tag $DOCKER_IMAGE_NAME $DOCKER_IMAGE_NAME:$DOCKER_TAG;
+              - docker push $DOCKER_IMAGE_NAME:$DOCKER_TAG;
+
 before_install:
   - export CPLUS_INCLUDE_PATH=$PY_PATH/include/python3.6m
   - export LD_LIBRARY_PATH=$BOOST_DIR/stage/lib:$PY_PATH/lib:$LD_LIBRARY_PATH
