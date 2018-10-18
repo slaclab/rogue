@@ -252,7 +252,7 @@ class BaseVariable(pr.Node):
 
         except Exception as e:
             self._log.exception(e)
-            self._log.error("Error generating disp value in variable '{}'".format(self.path))
+            self._log.error(f"Error generating disp for value {value} in variable {self.path}")
             ret = None
 
         return ret
