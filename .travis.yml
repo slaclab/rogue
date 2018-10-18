@@ -1,6 +1,9 @@
-sudo: false
+sudo: required
 
 language: python
+
+services:
+    - docker
 
 python:
   - 3.6
@@ -12,6 +15,8 @@ env:
         - BOOST_DIR=$PACKAGE_DIR/boost_1_64_0
         - EPICS_DIR=$PACKAGE_DIR/epics/base-3.15.5
         - CODECOV_TOKEN="12610828-8d74-4c99-bf1d-24b17a7253e2"
+        - DOCKER_ORG_NAME=tidair
+        - secure: MT097iUqx7b75YjLdR4xAKIzT87/hxQci4uy4kOpog+LyE8FNSj82pkRu9sfxNJ0bdYVa4agjKSm3+NULnDGE+4hJ3bsUhPT+lRpebb3V9pFH5/C4HkkAQ71g2vrVdruHt02oYylmkhDIqjPno+FKfX4Sq6Bvjtnbx4XEjDkTePpBJ+UluprpdkXdLskm2csg4QdInfyWXLlFMcYVPHXqRtrctLZMLlZJFck94VhtocjuXu41XE7w7uP1p8TtuD7ILUE1fR1ZdL3HBLtYndrAvRCCdp3c2BHXFIcts3Aqi56z0jLg4/JIklJfEwpD46JViH4/7DXbAg1W94i7Spb3Edu+/fKFfhVuLkuM55tBQbYQ8Vw2HZrDJo+klF6VJ2Qn2aX9JHvJ8+RMwNzXhxE1eI0qugCGbBUmb3AIXsnbPw1aBZcDpadCgCdiXeKC33rlO1kC9MjDuFc1fI/0241vjPiCUUZk1KEYJ0s0IZAMgR/YEuogDg7273SMRL5mbdwzYAnBETxKHDa8IM90yk4QByZn+zl2/WXtBCumrP758R6ikcEtaeJR5fszSdsq1Na1lMWL+xOA/3ilXc2+m6urrU49Si3Nv5hQ0qFax59azh8WBHcaKULcPSsus3/Iz2v7cDP+w02UBS3UUXpsIbD9HbRYrBjoB61ApRAb6POUeM=
 
 before_install:
   - export CPLUS_INCLUDE_PATH=$PY_PATH/include/python3.6m
