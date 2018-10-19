@@ -25,9 +25,9 @@ jobs:
           script:
               - python3 -m pytest --cov
 
-        - stage: Deploy         # Deploy stage (dev versions: from pre-release)
+        - stage: Deploy         # Deploy stage (dev versions: from not tagged pre-release)
           name: "Deploy Dev Version"
-          if: branch = pre-release
+          if: branch = pre-release AND tag is blank
           install: skip
           after_success: skip
           before_scrip: skip
