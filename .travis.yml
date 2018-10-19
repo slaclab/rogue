@@ -84,6 +84,9 @@ jobs:
               - docker push $DOCKER_IMAGE_NAME;
               - docker tag $DOCKER_IMAGE_NAME $DOCKER_IMAGE_NAME:$DOCKER_TAG;
               - docker push $DOCKER_IMAGE_NAME:$DOCKER_TAG;
+        - name: "Deploy Conda"
+          script:
+              - echo "Deploy dev conda package"
 
         - stage: deploy_tag
           name: "Deploy Docker"
@@ -95,3 +98,6 @@ jobs:
               - docker push $DOCKER_IMAGE_NAME;
               - docker tag $DOCKER_IMAGE_NAME $DOCKER_IMAGE_NAME:$DOCKER_TAG;
               - docker push $DOCKER_IMAGE_NAME:$DOCKER_TAG;
+        - name: "Deploy Conda"
+          script:
+              - echo "Deploy tagged conda package"
