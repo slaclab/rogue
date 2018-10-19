@@ -20,8 +20,8 @@ env:
 
 jobs:
     include:
-        - stage: Test           # Test stage
-          name: "Unit Tests"    # - First test stage job: Unit test with coverage report
+        - stage: test
+          name: "Unit Tests"
           before_install:
             - export CPLUS_INCLUDE_PATH=$PY_PATH/include/python3.6m
             - export LD_LIBRARY_PATH=$BOOST_DIR/stage/lib:$PY_PATH/lib:$LD_LIBRARY_PATH
@@ -67,8 +67,8 @@ jobs:
             - codecov
             - coverage report -m
 
-        - stage: Deploy         # Deploy stage (dev versions: from not tagged pre-release)
-          name: "Deploy Dev Version"
+        - stage: deploy_dev
+          name: "Deploy Docker"
           if: branch = pre-release AND tag is blank
           script:
               - export DOCKER_TAG=`git describe --tags`
@@ -79,8 +79,8 @@ jobs:
               - docker tag $DOCKER_IMAGE_NAME $DOCKER_IMAGE_NAME:$DOCKER_TAG;
               - docker push $DOCKER_IMAGE_NAME:$DOCKER_TAG;
 
-        - stage: Deploy         # Deploy stage (tagged versions)
-          name: "Deploy Tagged Version"
+        - stage: deploy_tag
+          name: "Deploy Docker"
           if: tag IS present
           script:
               - export DOCKER_TAG=`git describe --tags`
