@@ -22,15 +22,54 @@ jobs:
     include:
         - stage: Test           # Test stage
           name: "Unit Tests"    # - First test stage job: Unit test with coverage report
+          before_install:
+            - export CPLUS_INCLUDE_PATH=$PY_PATH/include/python3.6m
+            - export LD_LIBRARY_PATH=$BOOST_DIR/stage/lib:$PY_PATH/lib:$LD_LIBRARY_PATH
+            - export BOOST_ROOT=$BOOST_DIR
+            - export EPICS_BASE=$EPICS_DIR
+            - export EPICS_CA_ADDR_LIST=127.0.0.1
+            - mkdir -p $BOOST_DIR
+            - mkdir -p $EPICS_DIR
+            - git pull --unshallow
+
+          install:
+            # Tools
+            - pip install -r requirements.txt
+
+            # Boost
+            - cd $BOOST_DIR
+            - wget -O boost_1_64_0.tar.gz http://sourceforge.net/projects/boost/files/boost/1.64.0/boost_1_64_0.tar.gz/download
+            - tar xzf boost_1_64_0.tar.gz --strip 1
+            - ./bootstrap.sh --with-libraries=system,thread,python
+            - travis_wait ./b2 link=shared threading=multi variant=release -d0
+
+            # EPICS base
+            - cd $EPICS_DIR
+            - wget -O base-3.15.5.tar.gz https://epics.anl.gov/download/base/base-3.15.5.tar.gz
+            - tar xzf base-3.15.5.tar.gz --strip 1
+            - make clean && make && make install
+
+            # Rogue
+            - cd $TRAVIS_BUILD_DIR
+            - mkdir build; cd build
+            - cmake .. -DROGUE_INSTALL=local -DPYTHON_LIBRARY=$PY_PATH/lib/python3.6 -DPYTHON_INCLUDE_DIR=$PY_PATH/include
+            - make
+            - make install
+
+          before_script:
+            - cd $TRAVIS_BUILD_DIR
+            - source setup_rogue.sh
+
           script:
               - python3 -m pytest --cov
+
+          after_success:
+            - codecov
+            - coverage report -m
 
         - stage: Deploy         # Deploy stage (dev versions: from not tagged pre-release)
           name: "Deploy Dev Version"
           if: branch = pre-release AND tag is blank
-          install: skip
-          after_success: skip
-          before_scrip: skip
           script:
               - export DOCKER_TAG=`git describe --tags`
               - export DOCKER_IMAGE_NAME=$DOCKER_IMAGE_NAME/rogue-dev
@@ -43,9 +82,6 @@ jobs:
         - stage: Deploy         # Deploy stage (tagged versions)
           name: "Deploy Tagged Version"
           if: tag IS present
-          install: skip
-          after_success: skip
-          before_scrip: skip
           script:
               - export DOCKER_TAG=`git describe --tags`
               - export DOCKER_IMAGE_NAME=$DOCKER_IMAGE_NAME/rogue
@@ -54,45 +90,3 @@ jobs:
               - docker push $DOCKER_IMAGE_NAME;
               - docker tag $DOCKER_IMAGE_NAME $DOCKER_IMAGE_NAME:$DOCKER_TAG;
               - docker push $DOCKER_IMAGE_NAME:$DOCKER_TAG;
-
-before_install:
-  - export CPLUS_INCLUDE_PATH=$PY_PATH/include/python3.6m
-  - export LD_LIBRARY_PATH=$BOOST_DIR/stage/lib:$PY_PATH/lib:$LD_LIBRARY_PATH
-  - export BOOST_ROOT=$BOOST_DIR
-  - export EPICS_BASE=$EPICS_DIR
-  - export EPICS_CA_ADDR_LIST=127.0.0.1
-  - mkdir -p $BOOST_DIR
-  - mkdir -p $EPICS_DIR
-  - git pull --unshallow
-
-install:
-  # Tools
-  - pip install -r requirements.txt
-
-  # Boost
-  - cd $BOOST_DIR
-  - wget -O boost_1_64_0.tar.gz http://sourceforge.net/projects/boost/files/boost/1.64.0/boost_1_64_0.tar.gz/download
-  - tar xzf boost_1_64_0.tar.gz --strip 1
-  - ./bootstrap.sh --with-libraries=system,thread,python
-  - travis_wait ./b2 link=shared threading=multi variant=release -d0
-
-  # EPICS base
-  - cd $EPICS_DIR
-  - wget -O base-3.15.5.tar.gz https://epics.anl.gov/download/base/base-3.15.5.tar.gz
-  - tar xzf base-3.15.5.tar.gz --strip 1
-  - make clean && make && make install
-
-  # Rogue
-  - cd $TRAVIS_BUILD_DIR
-  - mkdir build; cd build
-  - cmake .. -DROGUE_INSTALL=local -DPYTHON_LIBRARY=$PY_PATH/lib/python3.6 -DPYTHON_INCLUDE_DIR=$PY_PATH/include
-  - make
-  - make install
-
-before_script:
-  - cd $TRAVIS_BUILD_DIR
-  - source setup_rogue.sh
-
-after_success:
-  - codecov
-  - coverage report -m
