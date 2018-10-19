@@ -1,5 +1,4 @@
 FROM ubuntu:18.04
-ARG branch
 
 # Install system tools
 RUN apt-get update && apt-get -y    install wget git \
@@ -8,6 +7,7 @@ RUN apt-get update && apt-get -y    install wget git \
 RUN pip3 install PyYAML Pyro4 parse click ipython pyzmq packaging
 
 # Install Rogue
+ARG branch
 WORKDIR /
 RUN git clone https://github.com/slaclab/rogue.git -b $branch
 WORKDIR rogue
