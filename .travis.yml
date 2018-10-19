@@ -8,6 +8,13 @@ services:
 python:
   - 3.6
 
+stages:
+    - test
+    - name: deploy_dev
+      if: branch = pre-release AND tag is blank
+    - name: deploy_tag
+      if: tag IS present
+
 env:
     global:
         - PY_PATH=/home/travis/virtualenv/python3.6.3
@@ -69,7 +76,6 @@ jobs:
 
         - stage: deploy_dev
           name: "Deploy Docker"
-          if: branch = pre-release AND tag is blank
           script:
               - export DOCKER_TAG=`git describe --tags`
               - export DOCKER_IMAGE_NAME=$DOCKER_IMAGE_NAME/rogue-dev
@@ -81,7 +87,6 @@ jobs:
 
         - stage: deploy_tag
           name: "Deploy Docker"
-          if: tag IS present
           script:
               - export DOCKER_TAG=`git describe --tags`
               - export DOCKER_IMAGE_NAME=$DOCKER_IMAGE_NAME/rogue
