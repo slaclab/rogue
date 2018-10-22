@@ -81,9 +81,12 @@ jobs:
               - export DOCKER_IMAGE_NAME=$DOCKER_ORG_NAME/rogue-dev
               - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ORG_NAME" --password-stdin;
               - travis_wait docker build -q --build-arg branch=ESROGUE-273 -t $DOCKER_IMAGE_NAME .;
+
+          after_success:
               - docker push $DOCKER_IMAGE_NAME;
               - docker tag $DOCKER_IMAGE_NAME $DOCKER_IMAGE_NAME:$DOCKER_TAG;
               - docker push $DOCKER_IMAGE_NAME:$DOCKER_TAG;
+
         - name: "Deploy Conda"
           script:
               - echo "Deploy dev conda package"
@@ -95,9 +98,12 @@ jobs:
               - export DOCKER_IMAGE_NAME=$DOCKER_ORG_NAME/rogue
               - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ORG_NAME" --password-stdin;
               - travis_wait docker build -q --build-arg branch=$DOCKER_TAG -t $DOCKER_IMAGE_NAME .;
+
+          after_success:
               - docker push $DOCKER_IMAGE_NAME;
               - docker tag $DOCKER_IMAGE_NAME $DOCKER_IMAGE_NAME:$DOCKER_TAG;
               - docker push $DOCKER_IMAGE_NAME:$DOCKER_TAG;
+
         - name: "Deploy Conda"
           script:
               - echo "Deploy tagged conda package"
