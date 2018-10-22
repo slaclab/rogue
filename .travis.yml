@@ -21,6 +21,7 @@ env:
         - PACKAGE_DIR=/home/travis/packages
         - BOOST_DIR=$PACKAGE_DIR/boost_1_64_0
         - EPICS_DIR=$PACKAGE_DIR/epics/base-3.15.5
+        - MINICONDA_DIR=$PACKAGE_DIR/miniconda
         - CODECOV_TOKEN="12610828-8d74-4c99-bf1d-24b17a7253e2"
         - DOCKER_ORG_NAME=tidair
         - secure: MT097iUqx7b75YjLdR4xAKIzT87/hxQci4uy4kOpog+LyE8FNSj82pkRu9sfxNJ0bdYVa4agjKSm3+NULnDGE+4hJ3bsUhPT+lRpebb3V9pFH5/C4HkkAQ71g2vrVdruHt02oYylmkhDIqjPno+FKfX4Sq6Bvjtnbx4XEjDkTePpBJ+UluprpdkXdLskm2csg4QdInfyWXLlFMcYVPHXqRtrctLZMLlZJFck94VhtocjuXu41XE7w7uP1p8TtuD7ILUE1fR1ZdL3HBLtYndrAvRCCdp3c2BHXFIcts3Aqi56z0jLg4/JIklJfEwpD46JViH4/7DXbAg1W94i7Spb3Edu+/fKFfhVuLkuM55tBQbYQ8Vw2HZrDJo+klF6VJ2Qn2aX9JHvJ8+RMwNzXhxE1eI0qugCGbBUmb3AIXsnbPw1aBZcDpadCgCdiXeKC33rlO1kC9MjDuFc1fI/0241vjPiCUUZk1KEYJ0s0IZAMgR/YEuogDg7273SMRL5mbdwzYAnBETxKHDa8IM90yk4QByZn+zl2/WXtBCumrP758R6ikcEtaeJR5fszSdsq1Na1lMWL+xOA/3ilXc2+m6urrU49Si3Nv5hQ0qFax59azh8WBHcaKULcPSsus3/Iz2v7cDP+w02UBS3UUXpsIbD9HbRYrBjoB61ApRAb6POUeM=
@@ -88,8 +89,26 @@ jobs:
               - docker push $DOCKER_IMAGE_NAME:$DOCKER_TAG;
 
         - name: "Deploy Conda"
+          before_install:
+              - mkdir -p $MINICONDA_DIR
+              - git pull --unshallow
+
+          install:
+              # Install Anaconda
+              - cd $MINICONDA_DIR
+              - wget -O miniconda.sh https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh
+              - bash miniconda.sh -b -p $HOME/miniconda
+              - export PATH="$HOME/miniconda/bin:$PATH"
+              - hash -r
+              - conda config --set always_yes yes
+              - conda install conda-build
+              - conda update -q conda conda-build
+
           script:
-              - echo "Deploy dev conda package"
+              - cd $TRAVIS_BUILD_DIR
+              - conda build -q conda-recipe --python=3.6 --output-folder bld-dir -c defaults -c conda-forge -c paulscherrerinstitute
+              - conda activate
+              #- anaconda upload -t $CONDA_UPLOAD_TOKEN -u tidair-dev bld-dir/linux-64/*.tar.bz2
 
         - stage: deploy_tag
           name: "Deploy Docker"
