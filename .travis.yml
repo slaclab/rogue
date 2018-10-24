@@ -24,7 +24,7 @@ env:
         - MINICONDA_DIR=$PACKAGE_DIR/miniconda
         - CODECOV_TOKEN="12610828-8d74-4c99-bf1d-24b17a7253e2"
         - DOCKER_ORG_NAME=tidair
-        
+
 jobs:
     include:
         - stage: test
@@ -107,7 +107,7 @@ jobs:
               - cd $TRAVIS_BUILD_DIR
               - conda build -q conda-recipe --python=3.6 --output-folder bld-dir -c defaults -c conda-forge -c paulscherrerinstitute
               - conda activate
-              #- anaconda upload -t $CONDA_UPLOAD_TOKEN -u tidair-dev bld-dir/linux-64/*.tar.bz2
+              - anaconda upload -t $CONDA_DEV_UPLOAD_TOKEN bld-dir/linux-64/*.tar.bz2
 
         - stage: deploy_tag
           name: "Deploy Docker"
