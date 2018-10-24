@@ -76,6 +76,11 @@ jobs:
 
         - stage: deploy_dev
           name: "Deploy Docker"
+          before_install:
+              # Bring all the tags
+              - git pull --unshallow
+              - git pull
+
           script:
               - export DOCKER_TAG=`git describe --tags`
               - export DOCKER_IMAGE_NAME=$DOCKER_ORG_NAME/rogue-dev
@@ -90,7 +95,9 @@ jobs:
         - name: "Deploy Conda"
           before_install:
               - mkdir -p $MINICONDA_DIR
+              # Bring all the tags
               - git pull --unshallow
+              - git pull
 
           install:
               # Install Anaconda
