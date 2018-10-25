@@ -110,8 +110,10 @@ jobs:
               - conda install conda-build anaconda-client
               - conda update -q conda conda-build
 
-          script:
+          before_script:
               - cd $TRAVIS_BUILD_DIR
+
+          script:
               - conda build -q conda-recipe --python=3.6 --output-folder bld-dir -c defaults -c conda-forge -c paulscherrerinstitute
 
           after_success:
@@ -153,8 +155,10 @@ jobs:
               - conda install conda-build anaconda-client
               - conda update -q conda conda-build
 
-          script:
+          before_script:
               - cd $TRAVIS_BUILD_DIR
+
+          script:
               - conda build -q conda-recipe --python=3.6 --output-folder bld-dir -c defaults -c conda-forge -c paulscherrerinstitute
 
           after_success:
