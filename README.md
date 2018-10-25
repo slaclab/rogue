@@ -37,3 +37,7 @@ You may choose to build and run rogue outside of the anaconda environment. Instr
 If you need to install rogue behind a firewall you can use the following instructions:
 
 [Rogue and anaconda behind a firewall](README_firewall.md)
+
+You can also use rogue with Docker containers:
+
+[Run rogue with Dockers](README_docker.md)
