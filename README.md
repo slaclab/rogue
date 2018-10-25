@@ -26,7 +26,7 @@ The recommended way is to install rogue is to use a pre-built anaconda package i
 
 [Installing rogue with anaconda](README_anaconda.md)
 
-Alternatively you can download and build your own copy of rogue within an anaconda environment. This is usefull if you may want to contribute to the rogue development.
+Alternatively you can download and build your own copy of rogue within an anaconda environment. This is useful if you may want to contribute to the rogue development.
 
 [Building rogue inside anaconda](README_anaconda_build.md)
 
