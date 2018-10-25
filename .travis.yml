@@ -11,7 +11,7 @@ python:
 stages:
     - test
     - name: deploy_dev
-      if: branch = ESROGUE-273 AND tag is blank
+      if: branch = pre-release AND tag is blank
     - name: deploy_tag
       if: tag IS present
 
@@ -85,7 +85,7 @@ jobs:
               - export DOCKER_TAG=`git describe --tags`
               - export DOCKER_IMAGE_NAME=$DOCKER_ORG_NAME/rogue-dev
               - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin;
-              - travis_wait docker build -q --build-arg branch=ESROGUE-273 -t $DOCKER_IMAGE_NAME .;
+              - travis_wait docker build -q --build-arg branch=pre-release -t $DOCKER_IMAGE_NAME .;
 
           after_success:
               - docker push $DOCKER_IMAGE_NAME;
