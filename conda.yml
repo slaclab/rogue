@@ -7,6 +7,9 @@ dependencies:
   - gcc_linux-64
   - gxx_linux-64
   - make
+  - git
+  - git-lfs
+  - ipython
   - cmake
   - pyyaml
   - pyzmq

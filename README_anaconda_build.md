@@ -27,6 +27,8 @@ $ source /path/to/my/anaconda3/etc/profile.d/conda.sh
 The next step is to download rogue and create a rogue compatable anaconda environment.
 
 ````
+$ conda activate
+$ conda install git
 $ git clone https://github.com/slaclab/rogue.git
 $ cd rogue
 ````
