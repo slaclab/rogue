@@ -11,9 +11,9 @@ python:
 stages:
     - test
     - name: deploy_dev
-      if: branch = pre-release AND tag is blank
+      if: branch = pre-release AND tag IS blank
     - name: deploy_tag
-      if: tag IS present
+      if: branch = master AND tag IS present
 
 env:
     global:
