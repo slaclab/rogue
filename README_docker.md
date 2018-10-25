@@ -1,6 +1,6 @@
 # Docker Image with Rogue
 
-Docker images with Rogue are automatically generated and uploaded to Docekr hub, in the following repositories:
+Docker images with Rogue are automatically generated and uploaded to Docker hub, in the following repositories:
 
 - Docker images with tagged (stable) version of Rogue:
 https://hub.docker.com/r/tidair/rogue/
@@ -12,26 +12,27 @@ The images can be used to run Rogue applications as one would normally do using 
 
 ## How to get the container
 
-To get the most recent version of the docker container, first you will need to install docker in you host OS and be logged in. Then you can get a copy of this docker container by running:
+To get the most recent version of the docker image, first you will need to install docker in you host OS and be logged in. Then you can get a copy by running:
 
 ```
 docker pull tidair/rogue
 ```
 
-to get the latest version availbale, or:
+to get the latest version available, or:
 
 ```
 docker pull tidair/rogue:$TAG
 ```
-to get an specific tagged version.
+
+to get a specific tagged version.
 
 **Notes:**
-- The docker images are tagged usging the same Rogue tag.
+- The docker images are tagged using the same Rogue tag.
 - You can also pull development version using `tidair/rogue-dev` instead.
 
 ## How to run the container
 
-To run a Rogue application inside a container, you must first have a copy of the application in in your host. Also, your host must have a direct connection to your target FPGA.
+To run a Rogue application inside a container, you must first have a copy of the application in in your host OS. Also, your host must have a direct connection to your target FPGA.
 
 Then you can run the container, for example, like this:
 
@@ -43,10 +44,10 @@ tidair/rogue \
 ```
 
 where:
-- **APP_DIR** is the full path you the folder containing you application,
+- **APP_DIR** is the full path to the folder containing your application,
 - **APP_NAME** is the name of your application script.
 
-If you application uses a graphical interface, then you need to pass additional argument to docker in order to properly forward X:
+If your application uses a graphical interface, then you need to pass additional arguments in order to properly forward X:
 
 ### On a Linux OS:
 
@@ -79,12 +80,12 @@ tidair/rogue \
 ```
 
 Notes:
-- The `-v` option maps a folder in your host OS inside the docker container. In this example we are mapping our local folder containing the Rogue application application in `/python/` inside the docker. Then, when the docker runs, we are able to access the Rogue application which is now located at `/python`. You can, of course, map more than one folder inside the container, and can use different locations inside the container.
-- You can also run a specific tagged version of rogue charing `tidair/rogue` for `tidair/rogue:<TAG>` in the docker run command. Moreover, you can run development version using `tidair/rogue-dev` (lastest version) or `tidair/rogue-dev:<TAG>` (an espedific version).
+- The `-v` option maps a folder in your host OS inside the docker container. In this example we are mapping our local folder containing the Rogue application to `/python/` inside the container. Then, when the container runs, we are able to access the Rogue application which is now located at `/python/`. You can, of course, map more than one folder inside the container, as well as using different locations inside the container.
+- You can also run a specific tagged version of rogue changing `tidair/rogue` for `tidair/rogue:<TAG>` in the docker run command. Moreover, you can run development version using `tidair/rogue-dev` (latest version) or `tidair/rogue-dev:<TAG>` (a specific version).
 
 ## How to build a custom docker image with Rogue
 
-You can create custom docker image, using the Docker image containing Rogue as a starting point. Just start your `Dockerfile` with:
+You can create custom docker image, using the Docker image containing Rogue as a starting point. Just start your `Dockerfile` with this line:
 
 ```
 FROM tidair/rogue:<TAG>
