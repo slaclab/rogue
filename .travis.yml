@@ -113,6 +113,8 @@ jobs:
           script:
               - cd $TRAVIS_BUILD_DIR
               - conda build -q conda-recipe --python=3.6 --output-folder bld-dir -c defaults -c conda-forge -c paulscherrerinstitute
+
+          after_success:
               - anaconda -t $CONDA_UPLOAD_TOKEN_DEV upload bld-dir/linux-64/*.tar.bz2
 
         - stage: deploy_tag
@@ -154,4 +156,6 @@ jobs:
           script:
               - cd $TRAVIS_BUILD_DIR
               - conda build -q conda-recipe --python=3.6 --output-folder bld-dir -c defaults -c conda-forge -c paulscherrerinstitute
+
+          after_success:
               - anaconda -t $CONDA_UPLOAD_TOKEN_TAG upload bld-dir/linux-64/*.tar.bz2
