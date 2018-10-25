@@ -41,7 +41,7 @@ jobs:
 
           install:
             # Tools
-            - pip install -r requirements.txt
+            - pip install -r pip_requirements.txt
 
             # Boost
             - cd $BOOST_DIR
