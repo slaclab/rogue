@@ -14,3 +14,4 @@ build/*
 .cache
 .coverage
 .pytest_cache*
+setup_rogue.*
