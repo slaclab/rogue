@@ -88,7 +88,7 @@ void ru::StreamZip::acceptFrame ( ris::FramePtr frame ) {
          throw(rogue::GeneralError::ret("StreamZip::acceptFrame","Compression runtime error",ret));
 
       // Update read buffer if neccessary
-      if ( strm.avail_in == 0 ) {
+      if ( strm.avail_in == 0 && (!done)) {
          if ( ++rBuff != frame->endBuffer()) {
             strm.next_in  = (char *)(*rBuff)->begin();
             strm.avail_in = (*rBuff)->getPayload();
