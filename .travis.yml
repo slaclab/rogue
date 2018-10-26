@@ -22,7 +22,6 @@ env:
         - BOOST_DIR=$PACKAGE_DIR/boost_1_64_0
         - EPICS_DIR=$PACKAGE_DIR/epics/base-3.15.5
         - MINICONDA_DIR=$PACKAGE_DIR/miniconda
-        - CODECOV_TOKEN="12610828-8d74-4c99-bf1d-24b17a7253e2"
         - DOCKER_ORG_NAME=tidair
 
 jobs:
