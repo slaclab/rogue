@@ -67,7 +67,7 @@ jobs:
             - source setup_rogue.sh
 
           script:
-              - python3 -m pytest --cov -s
+              - python3 -m pytest --cov
 
           after_success:
             - codecov
