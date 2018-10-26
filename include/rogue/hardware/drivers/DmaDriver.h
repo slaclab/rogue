@@ -218,9 +218,9 @@ static inline ssize_t dmaReadIndex(int32_t fd, uint32_t * index, uint32_t * flag
 
    if ( dest  != NULL ) *dest  = r.dest;
    if ( flags != NULL ) *flags = r.flags;
-   if ( index != NULL ) *index = r.index;
    if ( error != NULL ) *error = r.error;
 
+   *index = r.index;
    return(r.ret);
 }
 
@@ -238,9 +238,10 @@ static inline ssize_t dmaReadBulkIndex(int32_t fd, uint32_t count, int32_t *ret,
    for (x = 0; x < res; ++x) {
       if ( dest  != NULL ) dest[x]  = r[x].dest;
       if ( flags != NULL ) flags[x] = r[x].flags;
-      if ( index != NULL ) index[x] = r[x].index;
       if ( error != NULL ) error[x] = r[x].error;
-      if ( ret   != NULL ) ret[x]   = r[x].ret;
+
+      index[x] = r[x].index;
+      ret[x]   = r[x].ret;
    }
    return(res);
 }
