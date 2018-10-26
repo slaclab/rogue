@@ -26,7 +26,7 @@ import rogue
 
 #rogue.Logging.setLevel(rogue.Logging.Debug)
 
-FrameCount = 100000
+FrameCount = 10000
 FrameSize  = 1000
 BufferSize = 100004
 MaxSize    = 1000003
