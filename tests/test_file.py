@@ -52,6 +52,7 @@ def write_files():
     fwrC.open("compressed.dat")
     fwrU.open("uncompressed.dat")
 
+    print("Writing data files")
     for _ in range(FrameCount):
         prbs.genFrame(FrameSize)
 
@@ -77,6 +78,7 @@ def read_files():
     frdU.open("uncompressed.dat.1")
     frdC.open("compressed.dat.1")
 
+    print("Reading data files")
     frdU.closeWait()
     frdC.closeWait()
 
