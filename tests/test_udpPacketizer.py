@@ -19,7 +19,7 @@ import rogue.interfaces.stream
 import pyrogue
 import time
 
-FrameCount = 100000
+FrameCount = 10000
 FrameSize  = 10000
 
 def data_path(ver,jumbo):
@@ -30,7 +30,7 @@ def data_path(ver,jumbo):
     port = serv.getPort()
 
     # UDP Client
-    client = rogue.protocols.udp.Client("localhost",port,jumbo);
+    client = rogue.protocols.udp.Client("127.0.0.1",port,jumbo);
 
     # RSSI
     sRssi = rogue.protocols.rssi.Server(serv.maxPayload())
