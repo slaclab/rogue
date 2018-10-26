@@ -36,13 +36,13 @@ $ cd rogue
 For Linux:
 
 ````
-$ conda env create -n rogue_env -f rogue_conda.yml
+$ conda env create -n rogue_env -f conda.yml
 ````
 
 For MacOS:
 
 ````
-$ conda env create -n rogue_env -f rogue_conda_mac.yml
+$ conda env create -n rogue_env -f conda_mac.yml
 ````
 
 You now have an anaconda environment named rogue_env which contains all of the packages required to build and run rogue.

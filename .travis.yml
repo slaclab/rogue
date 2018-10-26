@@ -1,0 +1,164 @@
+sudo: required
+
+language: python
+
+services:
+    - docker
+
+python:
+  - 3.6
+
+stages:
+    - test
+    - name: deploy_dev
+      if: branch = pre-release AND tag IS blank AND NOT (type = pull_request)
+    - name: deploy_tag
+      if: branch = master AND tag IS present
+
+env:
+    global:
+        - PY_PATH=/home/travis/virtualenv/python3.6.3
+        - PACKAGE_DIR=/home/travis/packages
+        - BOOST_DIR=$PACKAGE_DIR/boost_1_64_0
+        - EPICS_DIR=$PACKAGE_DIR/epics/base-3.15.5
+        - MINICONDA_DIR=$PACKAGE_DIR/miniconda
+        - DOCKER_ORG_NAME=tidair
+
+jobs:
+    include:
+        - stage: test
+          name: "Unit Tests"
+          before_install:
+            - export CPLUS_INCLUDE_PATH=$PY_PATH/include/python3.6m
+            - export LD_LIBRARY_PATH=$BOOST_DIR/stage/lib:$PY_PATH/lib:$LD_LIBRARY_PATH
+            - export BOOST_ROOT=$BOOST_DIR
+            - export EPICS_BASE=$EPICS_DIR
+            - export EPICS_CA_ADDR_LIST=127.0.0.1
+            - mkdir -p $BOOST_DIR
+            - mkdir -p $EPICS_DIR
+            - git pull --unshallow
+
+          install:
+            # Tools
+            - pip install -r pip_requirements.txt
+
+            # Boost
+            - cd $BOOST_DIR
+            - wget -O boost_1_64_0.tar.gz http://sourceforge.net/projects/boost/files/boost/1.64.0/boost_1_64_0.tar.gz/download
+            - tar xzf boost_1_64_0.tar.gz --strip 1
+            - ./bootstrap.sh --with-libraries=system,thread,python
+            - travis_wait ./b2 link=shared threading=multi variant=release -d0
+
+            # EPICS base
+            - cd $EPICS_DIR
+            - wget -O base-3.15.5.tar.gz https://epics.anl.gov/download/base/base-3.15.5.tar.gz
+            - tar xzf base-3.15.5.tar.gz --strip 1
+            - make clean && make && make install
+
+            # Rogue
+            - cd $TRAVIS_BUILD_DIR
+            - mkdir build; cd build
+            - cmake .. -DROGUE_INSTALL=local -DPYTHON_LIBRARY=$PY_PATH/lib/python3.6 -DPYTHON_INCLUDE_DIR=$PY_PATH/include
+            - make
+            - make install
+
+          before_script:
+            - cd $TRAVIS_BUILD_DIR
+            - source setup_rogue.sh
+
+          script:
+              - python3 -m pytest --cov
+
+          after_success:
+            - codecov
+            - coverage report -m
+
+        - stage: deploy_dev
+          name: "Deploy Docker"
+          before_install:
+              # Bring all the tags
+              - git pull --unshallow
+              - git pull
+
+          script:
+              - export DOCKER_TAG=`git describe --tags`
+              - export DOCKER_IMAGE_NAME=$DOCKER_ORG_NAME/rogue-dev
+              - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin;
+              - travis_wait docker build -q --build-arg branch=pre-release -t $DOCKER_IMAGE_NAME .;
+
+          after_success:
+              - docker push $DOCKER_IMAGE_NAME;
+              - docker tag $DOCKER_IMAGE_NAME $DOCKER_IMAGE_NAME:$DOCKER_TAG;
+              - docker push $DOCKER_IMAGE_NAME:$DOCKER_TAG;
+
+        - name: "Deploy Conda"
+          before_install:
+              - mkdir -p $MINICONDA_DIR
+              # Bring all the tags
+              - git pull --unshallow
+              - git pull
+
+          install:
+              # Install Anaconda
+              - cd $MINICONDA_DIR
+              - wget -O miniconda.sh https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh
+              - bash miniconda.sh -b -p $HOME/miniconda
+              - export PATH="$HOME/miniconda/bin:$PATH"
+              - hash -r
+              - conda config --set always_yes yes
+              - conda install conda-build anaconda-client
+              - conda update -q conda conda-build
+
+          before_script:
+              - cd $TRAVIS_BUILD_DIR
+
+          script:
+              - conda build -q conda-recipe --python=3.6 --output-folder bld-dir -c defaults -c conda-forge -c paulscherrerinstitute
+
+          after_success:
+              - anaconda -t $CONDA_UPLOAD_TOKEN_DEV upload bld-dir/linux-64/*.tar.bz2
+
+        - stage: deploy_tag
+          name: "Deploy Docker"
+          before_install:
+              # Bring all the tags
+              - git pull --unshallow
+              - git pull
+
+          script:
+              - export DOCKER_TAG=`git describe --tags`
+              - export DOCKER_IMAGE_NAME=$DOCKER_ORG_NAME/rogue
+              - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin;
+              - travis_wait docker build -q --build-arg branch=$DOCKER_TAG -t $DOCKER_IMAGE_NAME .;
+
+          after_success:
+              - docker push $DOCKER_IMAGE_NAME;
+              - docker tag $DOCKER_IMAGE_NAME $DOCKER_IMAGE_NAME:$DOCKER_TAG;
+              - docker push $DOCKER_IMAGE_NAME:$DOCKER_TAG;
+
+        - name: "Deploy Conda"
+          before_install:
+              - mkdir -p $MINICONDA_DIR
+              # Bring all the tags
+              - git pull --unshallow
+              - git pull
+
+          install:
+              # Install Anaconda
+              - cd $MINICONDA_DIR
+              - wget -O miniconda.sh https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh
+              - bash miniconda.sh -b -p $HOME/miniconda
+              - export PATH="$HOME/miniconda/bin:$PATH"
+              - hash -r
+              - conda config --set always_yes yes
+              - conda install conda-build anaconda-client
+              - conda update -q conda conda-build
+
+          before_script:
+              - cd $TRAVIS_BUILD_DIR
+
+          script:
+              - conda build -q conda-recipe --python=3.6 --output-folder bld-dir -c defaults -c conda-forge -c paulscherrerinstitute
+
+          after_success:
+              - anaconda -t $CONDA_UPLOAD_TOKEN_TAG upload bld-dir/linux-64/*.tar.bz2

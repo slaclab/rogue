@@ -58,7 +58,10 @@ rpp::Application::Application (uint8_t id) {
 }
 
 //! Destructor
-rpp::Application::~Application() { }
+rpp::Application::~Application() { 
+   thread_->interrupt();
+   thread_->join();
+}
 
 //! Setup links
 void rpp::Application::setController( rpp::ControllerPtr cntl ) {
