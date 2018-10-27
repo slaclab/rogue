@@ -105,7 +105,7 @@ jobs:
         # Bring all the tags
         - git pull --unshallow
         - git pull
-        # on OSX wd need an older version of the MacOS SDK
+        # on OSX rogue needs an older version of the MacOS SDK
         - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
             git clone https://github.com/phracker/MacOSX-SDKs;
             sudo mv MacOSX-SDKs/MacOSX10.9.sdk /opt/;
@@ -114,7 +114,7 @@ jobs:
           fi
 
       install:
-        # Install Anaconda for the right architecture
+        # Install Anaconda for the right architecture (linux or osx)
         - cd $MINICONDA_DIR
         - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
             wget -O miniconda.sh https://repo.continuum.io/miniconda/Miniconda3-latest-MacOSX-x86_64.sh;
@@ -137,7 +137,7 @@ jobs:
       after_success:
         - anaconda -t $CONDA_TOKEN upload bld-dir/`echo $TRAVIS_OS_NAME`-64/*.tar.bz2
 
-    - <<: *deploy-conda-stage # Conda for MacOS
+    - <<: *deploy-conda-stage   # Conda for MacOS
       os: osx
       language: ruby  # osx does not support language=python
 
