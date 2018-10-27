@@ -89,7 +89,7 @@ jobs:
         - export DOCKER_TAG=`git describe --tags`
         - export DOCKER_IMAGE_NAME=$DOCKER_ORG_NAME/$DOCKER_REPO
         - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin;
-        - travis_wait docker build -q --build-arg branch=pre-release -t $DOCKER_IMAGE_NAME .;
+        - travis_wait docker build -q --build-arg branch=$TRAVIS_BRANCH -t $DOCKER_IMAGE_NAME .;
 
       after_success:
         - docker push $DOCKER_IMAGE_NAME;
