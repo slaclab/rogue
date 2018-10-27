@@ -31,14 +31,18 @@ jobs:
     - stage: test
       name: "Unit Tests"
       before_install:
+        # Prepare enviroment
         - export CPLUS_INCLUDE_PATH=$PY_PATH/include/python3.6m
         - export LD_LIBRARY_PATH=$BOOST_DIR/stage/lib:$PY_PATH/lib:$LD_LIBRARY_PATH
         - export BOOST_ROOT=$BOOST_DIR
         - export EPICS_BASE=$EPICS_DIR
         - export EPICS_CA_ADDR_LIST=127.0.0.1
+        # Prepare folders
         - mkdir -p $BOOST_DIR
         - mkdir -p $EPICS_DIR
+        # Bring all the tags
         - git pull --unshallow
+        - git pull
 
       install:
         # Tools
@@ -65,13 +69,16 @@ jobs:
         - make install
 
       before_script:
+        # Prepare rogue enviroment
         - cd $TRAVIS_BUILD_DIR
         - source setup_rogue.sh
 
       script:
+        # Run tests with coverage
         - python3 -m pytest --cov
 
       after_success:
+        # Upload coverage report
         - codecov
         - coverage report -m
 
@@ -86,12 +93,15 @@ jobs:
         - git pull
 
       script:
+        # Prepare enviroment
         - export DOCKER_TAG=`git describe --tags`
         - export DOCKER_IMAGE_NAME=$DOCKER_ORG_NAME/$DOCKER_REPO
+        # Build docker image
         - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin;
         - travis_wait docker build -q --build-arg branch=$TRAVIS_BRANCH -t $DOCKER_IMAGE_NAME .;
 
       after_success:
+        # Upload docker image (as tagged and latest version)
         - docker push $DOCKER_IMAGE_NAME;
         - docker tag $DOCKER_IMAGE_NAME $DOCKER_IMAGE_NAME:$DOCKER_TAG;
         - docker push $DOCKER_IMAGE_NAME:$DOCKER_TAG;
@@ -101,6 +111,7 @@ jobs:
       name: "Deploy Conda"
       env: CONDA_TOKEN=$CONDA_UPLOAD_TOKEN_DEV
       before_install:
+        # Prepare folders
         - mkdir -p $MINICONDA_DIR
         # Bring all the tags
         - git pull --unshallow
@@ -129,12 +140,15 @@ jobs:
         - conda update -q conda conda-build
 
       before_script:
+        # Go back to top directory
         - cd $TRAVIS_BUILD_DIR
 
       script:
+        # Build conda package
         - conda build -q conda-recipe --python=3.6 --output-folder bld-dir -c defaults -c conda-forge -c paulscherrerinstitute
 
       after_success:
+        # Upload conda package
         - anaconda -t $CONDA_TOKEN upload bld-dir/`echo $TRAVIS_OS_NAME`-64/*.tar.bz2
 
     - <<: *deploy-conda-stage   # Conda for MacOS
