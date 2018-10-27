@@ -88,16 +88,19 @@ jobs:
       name: "Deploy Docker"
       env: DOCKER_REPO=rogue-dev
       before_install:
+        # Prepare enviroment
+        - export DOCKER_TAG=`git describe --tags`
+        - export DOCKER_IMAGE_NAME=$DOCKER_ORG_NAME/$DOCKER_REPO
         # Bring all the tags
         - git pull --unshallow
         - git pull
 
-      script:
-        # Prepare enviroment
-        - export DOCKER_TAG=`git describe --tags`
-        - export DOCKER_IMAGE_NAME=$DOCKER_ORG_NAME/$DOCKER_REPO
-        # Build docker image
+      before_script:
+        # Login to docker
         - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin;
+
+      script:
+        # Build docker image
         - travis_wait docker build -q --build-arg branch=$TRAVIS_BRANCH -t $DOCKER_IMAGE_NAME .;
 
       after_success:
