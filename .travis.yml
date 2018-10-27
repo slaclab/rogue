@@ -105,7 +105,6 @@ jobs:
 
       after_success:
         # Upload docker image (as tagged and latest version)
-        - echo "Pushing $DOCKER_IMAGE_NAME..."
         - docker push $DOCKER_IMAGE_NAME;
         - docker tag $DOCKER_IMAGE_NAME $DOCKER_IMAGE_NAME:$DOCKER_TAG;
         - docker push $DOCKER_IMAGE_NAME:$DOCKER_TAG;
@@ -153,7 +152,6 @@ jobs:
 
       after_success:
         # Upload conda package
-        - echo "Uploading bld-dir/`echo $TRAVIS_OS_NAME`-64/*.tar.bz2"
         - anaconda -t $CONDA_TOKEN upload bld-dir/`echo $TRAVIS_OS_NAME`-64/*.tar.bz2
 
     - <<: *deploy-conda-stage   # Conda for MacOS
