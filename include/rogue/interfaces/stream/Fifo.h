@@ -1,6 +1,6 @@
 /**
  *-----------------------------------------------------------------------------
- * Title         : SLAC Register Protocol (SRP) Fifo
+ * Title         : AXI Stream FIFO
  * ----------------------------------------------------------------------------
  * File          : Fifo.h
  * Author        : Ryan Herbst <rherbst@slac.stanford.edu>
