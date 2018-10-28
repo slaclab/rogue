@@ -549,12 +549,6 @@ int8_t rpr::Controller::retransmit(uint8_t id) {
    rpr::HeaderPtr head = txList_[id];
    if ( head == NULL ) return 0;
 
-   // Busy set, reset timeout
-   if ( remBusy_ ) {
-      head->rstTime();
-      return 0;
-   }
-
    // retransmit timer has not expired
    if ( ! timePassed(head->getTime(),retranToutD1_) ) return 0;
 
@@ -839,9 +833,9 @@ struct timeval & rpr::Controller::stateOpen () {
       transportTx(head,doNull,false);
    }
 
-   // Retransmission processing
+   // Retransmission processing, don't process when busy
    idx = lastAckRx_;
-   while ( idx != locSequence_ ) {
+   while ( (! remBusy_) && (idx != locSequence_) ) {
       if ( retransmit(idx++) < 0 ) {
          state_ = StError;
          gettimeofday(&stTime_,NULL);
