@@ -38,7 +38,7 @@ namespace rogue {
          public:
 
             //! Class creation
-            static boost::shared_ptr<rogue::interfaces::stream::BatcherV1> create();
+            static boost::shared_ptr<rogue::protocols::BatcherV1> create();
 
             //! Setup class in python
             static void setup_python();
@@ -55,7 +55,7 @@ namespace rogue {
       };
 
       // Convienence
-      typedef boost::shared_ptr<rogue::interfaces::stream::BatcherV1> BatcherV1Ptr;
+      typedef boost::shared_ptr<rogue::protocols::BatcherV1> BatcherV1Ptr;
    }
 }
 #endif

@@ -18,6 +18,8 @@ add_subdirectory("rssi")
 add_subdirectory("srp")
 add_subdirectory("udp")
 
+target_sources(rogue-core PRIVATE "${CMAKE_CURRENT_LIST_DIR}/BatcherV1.cpp")
+
 if (DO_EPICS_V3)
    add_subdirectory("epicsV3")
 endif()

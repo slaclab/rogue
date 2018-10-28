@@ -51,7 +51,7 @@
 #include <rogue/interfaces/stream/FrameLock.h>
 #include <rogue/interfaces/stream/FrameIterator.h>
 #include <rogue/interfaces/stream/Buffer.h>
-#include <rogue/interfaces/stream/BatcherV2.h>
+#include <rogue/protocols/BatcherV1.h>
 #include <rogue/Logging.h>
 #include <rogue/GilRelease.h>
 #include <math.h>
@@ -65,33 +65,35 @@ namespace bp  = boost::python;
 #endif
 
 //! Class creation
-rp::BatcherV2Ptr rp::BatcherV2::create() {
-   rp::BatcherV2Ptr p = boost::make_shared<rp::BatcherV2>();
+rp::BatcherV1Ptr rp::BatcherV1::create() {
+   rp::BatcherV1Ptr p = boost::make_shared<rp::BatcherV1>();
    return(p);
 }
 
 //! Setup class in python
-void rp::BatcherV2::setup_python() {
+void rp::BatcherV1::setup_python() {
 #ifndef NO_PYTHON
-   bp::class_<rp::BatcherV2, rp::BatcherV2Ptr, bp::bases<ris::Master,ris::Slave>, boost::noncopyable >("BatcherV1",bp::init<>());
+   bp::class_<rp::BatcherV1, rp::BatcherV1Ptr, bp::bases<ris::Master,ris::Slave>, boost::noncopyable >("BatcherV1",bp::init<>());
 #endif
 }
 
 //! Creator with version constant
-rp::BatcherV2::BatcherV2() : ris::Master(), ris::Slave() { 
-   log_ = rogue::Logging::create("BatcherV2");
+rp::BatcherV1::BatcherV1() : ris::Master(), ris::Slave() { 
+   log_ = rogue::Logging::create("BatcherV1");
 }
 
 //! Deconstructor
-rp::BatcherV2::~BatcherV2() {}
+rp::BatcherV1::~BatcherV1() {}
 
 //! Accept a frame from master
-void rp::BatcherV2::acceptFrame ( ris::FramePtr frame ) {
+void rp::BatcherV1::acceptFrame ( ris::FramePtr frame ) {
    uint8_t  temp;
    uint8_t  width;
    uint8_t  tSize;
    uint8_t  sequence;
    uint32_t fSize;
+   uint32_t fJump;
+   uint32_t flags;
    uint8_t  dest;
    uint8_t  fUser;
    uint8_t  lUser;
@@ -103,16 +105,25 @@ void rp::BatcherV2::acceptFrame ( ris::FramePtr frame ) {
    std::vector<ris::FramePtr> list;
    std::vector<ris::FramePtr>::iterator lIter;
 
-   rip::FrameIterator beg;
-   rip::FrameIterator mark;
-   rip::FrameIterator tail;
+   ris::FrameIterator beg;
+   ris::FrameIterator mark;
+   ris::FrameIterator tail;
 
    // Lock frame
    rogue::GilRelease noGil;
    ris::FrameLockPtr lock = frame->lock();
-  
-   // Drop errored frames or small frames, assign remaining size
-   if ( (frame->getError()) || ((rem = frame->getPayload()) < 16) ) return;
+ 
+   // Drop errored frames
+   if ( (frame->getError()) ) {
+      log_->warning("Dropping frame due to error: 0x%x",frame->getError());
+      return;
+   }
+
+   // Drop small frames
+   if ( (rem = frame->getPayload()) < 16)  {
+      log_->warning("Dropping small frame size = %i",frame->getPayload());
+      return;
+   }
 
    // Get version & size
    beg = frame->beginRead();
@@ -129,20 +140,26 @@ void rp::BatcherV2::acceptFrame ( ris::FramePtr frame ) {
    ris::fromFrame(beg, 1, &sequence);
 
    // Frame needs to large enough for header + 1 tail
-   if ( rem < (width + tSize)) return;
+   if ( rem < (width + tSize)) {
+      log_->warning("Not enough space (%i) for tail (%i) + header (%i)",rem,width,tSize);
+      return;
+   }
 
    // Skip the rest of the header, compute remaining frame size
    beg += (width-16);
    rem -= width;
 
    // Set marker to end of frame
-   mark = end;
+   mark = frame->endRead();
 
    // Process each frame, stop when we have reached just after the header
    while (mark != beg) {
 
       // sanity check
-      if ( rem < tSize ) return;
+      if ( rem < tSize ) {
+         log_->warning("Not enough space (%i) for tail (%i)",rem,tSize);
+         return;
+      }
 
       // Jump to start of the tail
       mark -= tSize;
@@ -155,21 +172,31 @@ void rp::BatcherV2::acceptFrame ( ris::FramePtr frame ) {
       ris::fromFrame(tail, 1, &fUser);
       ris::fromFrame(tail, 1, &lUser);
       ris::fromFrame(tail, 1, &lSize);
-      tail = mark;
 
-      // Not enough data for passed length
-      if ( fSize > rem ) return;
+      // Round up rewind amount to width
+      if ( (fSize % width) == 0) fJump = fSize;
+      else fJump = ((fSize / width) + 1) * width;
 
-      // Set marker to start of data
-      // need to adjust this
-      mark -= fSize;
-      rem  -= fSize;
+      // Not enough data for rewind value
+      if ( fJump > rem ) {
+         log_->warning("Not enough space (%i) for frame (%i)",rem,fJump);
+         return;
+      }
+
+      // Set marker to start of data 
+      mark -= fJump;
+      rem  -= fJump;
 
       // Create a new frame, add to vector
-      newFrame = requestFrame(fSize,true);
-      std::copy(mark,tail,newFrame->begWrite());
-      newFrame->setPayload(fSize);
-      list.append(newFrame);
+      nFrame = reqFrame(fSize,true);
+      std::copy(mark,(mark+fSize),nFrame->beginWrite());
+      nFrame->setPayload(fSize);
+
+      // Set flags
+      nFrame->setFirstUser(fUser);
+      nFrame->setLastUser(lUser);
+      nFrame->setChannel(dest);
+      list.push_back(nFrame);
    }
 
    // Walk through vector backwards and send frames
