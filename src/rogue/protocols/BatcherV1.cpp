@@ -130,7 +130,10 @@ void rp::BatcherV1::acceptFrame ( ris::FramePtr frame ) {
    ris::fromFrame(beg, 1, &temp);
 
    // Check version, convert width
-   if ( (temp & 0x4) != 1 ) return;
+   if ( (temp & 0x4) != 1 ) {
+      log_->warning("Version mismatch. Got %i",(temp&0x4));
+      return;
+   }
    width = (uint32_t)pow(float((temp >> 4) & 0xF),2.0) * 2;
 
    // Set tail size, min 64-bits
@@ -146,7 +149,7 @@ void rp::BatcherV1::acceptFrame ( ris::FramePtr frame ) {
    }
 
    // Skip the rest of the header, compute remaining frame size
-   beg += (width-16);
+   beg += (width-2);
    rem -= width;
 
    // Set marker to end of frame
@@ -187,7 +190,7 @@ void rp::BatcherV1::acceptFrame ( ris::FramePtr frame ) {
       mark -= fJump;
       rem  -= fJump;
 
-      // Create a new frame, add to vector
+      // Create a new frame
       nFrame = reqFrame(fSize,true);
       std::copy(mark,(mark+fSize),nFrame->beginWrite());
       nFrame->setPayload(fSize);
@@ -196,6 +199,8 @@ void rp::BatcherV1::acceptFrame ( ris::FramePtr frame ) {
       nFrame->setFirstUser(fUser);
       nFrame->setLastUser(lUser);
       nFrame->setChannel(dest);
+      
+      // Add to vector
       list.push_back(nFrame);
    }
 
