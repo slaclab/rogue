@@ -27,6 +27,15 @@ class VariableError(Exception):
     """ Exception for variable access errors."""
     pass
 
+
+class VariableValue(object):
+    def __init__(self, var):
+        self.value     = var.value()
+        self.valueDisp = var.genDisp(self.value)
+        self.disp      = var.disp
+        self.enum      = var.enum
+
+
 class BaseVariable(pr.Node):
 
     def __init__(self, *,
@@ -51,6 +60,7 @@ class BaseVariable(pr.Node):
         self._default       = value
         self._block         = None
         self._pollInterval  = pollInterval
+        self._nativeType    = None
         self.__listeners    = []
         self.__functions    = []
         self.__dependencies = []
@@ -282,11 +292,17 @@ class BaseVariable(pr.Node):
 
     @Pyro4.expose
     def setDisp(self, sValue, write=True):
-        self.set(self.parseDisp(sValue), write)
+        try:
+            self.set(self.parseDisp(sValue), write)
+        except Exception as e:
+            self._log.exception(e)
+            self._log.error("Error setting value '{}' to variable '{}' with type {}".format(sValue,self.path,self.typeStr))
 
     @Pyro4.expose
     def nativeType(self):
-        return type(self.value())
+        if self._nativeType is None:
+            self._nativeType = type(self.value())
+        return self._nativeType
 
     def _setDefault(self):
         if self._default is not None:
@@ -308,7 +324,7 @@ class BaseVariable(pr.Node):
 
     def _getDict(self,modes):
         if self._mode in modes:
-            return self.valueDisp()
+            return VariableValue(self)
         else:
             return None
 
@@ -319,16 +335,16 @@ class BaseVariable(pr.Node):
             var._queueUpdate()
 
     def _doUpdate(self):
-        value = self.value()
-        disp  = self.valueDisp()
+
+        val = VariableValue(self)
 
         for func in self.__functions:
             if hasattr(func,'varListener'):
-                func.varListener(self.path,value,disp)
+                func.varListener(self.path,val.value,val.valueDisp)
             else:
-                func(self.path,value,disp)
+                func(self.path,val.value,val.valueDisp)
 
-        return self.path,value,disp
+        return val
 
 
 @Pyro4.expose
@@ -375,6 +391,10 @@ class RemoteVariable(BaseVariable):
         # Verify the the list lengths match
         if len(offset) != len(bitOffset) != len(bitSize):
             raise VariableError('Lengths of offset: {}, bitOffset: {}, bitSize {} must match'.format(offset, bitOffset, bitSize))        
+
+        # Check for invalid values
+        if 0 in bitSize:
+            raise VariableError('BitSize of 0 is invalid')
 
         # Normalize bitOffsets relative to the smallest offset
         baseAddr = min(offset)

@@ -176,6 +176,7 @@ void rpu::Server::runThread() {
          // Attempt receive
          buff = *(frame->beginBuffer());
          avail = buff->getAvailable();
+         tmpLen = sizeof(struct sockaddr_in);
          res = recvfrom(fd_, buff->begin(), avail, MSG_TRUNC, (struct sockaddr *)&tmpAddr, &tmpLen);
 
          if ( res > 0 ) {

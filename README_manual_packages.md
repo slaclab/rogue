@@ -1,9 +1,11 @@
-# Local package installation
+# Manual Package Installation
 
 This readme file is only neccessary if you need to install your own
 copy of the python3, boost, zeromq or epics packages. These
 packages already exist on most modern Linux distributions (except epics).
 These packages are also already available on AFS at SLAC.
+
+The following instructions may not be fully up to date. Use at your own risk. Please consider using anaconda!
 
 ## autoconf
 

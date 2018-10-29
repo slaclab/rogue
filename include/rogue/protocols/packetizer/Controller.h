@@ -41,6 +41,7 @@ namespace rogue {
             protected:
 
                // parameters
+               bool     enSsi_;
                uint32_t appIndex_;
                uint32_t tranIndex_;
                bool     transSof_[256];
@@ -71,7 +72,7 @@ namespace rogue {
                //! Creator
                Controller( boost::shared_ptr<rogue::protocols::packetizer::Transport> tran,
                            boost::shared_ptr<rogue::protocols::packetizer::Application> * app,
-                           uint32_t headSize, uint32_t tailSize, uint32_t alignSize );
+                           uint32_t headSize, uint32_t tailSize, uint32_t alignSize, bool enSsi );
 
                //! Destructor
                ~Controller();

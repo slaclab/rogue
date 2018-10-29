@@ -46,13 +46,13 @@ namespace rogue {
             public:
 
                //! Class creation
-               static boost::shared_ptr<rogue::protocols::packetizer::Core> create ();
+               static boost::shared_ptr<rogue::protocols::packetizer::Core> create (bool enSsi);
 
                //! Setup class in python
                static void setup_python();
 
                //! Creator
-               Core();
+               Core(bool enSsi);
 
                //! Destructor
                ~Core();

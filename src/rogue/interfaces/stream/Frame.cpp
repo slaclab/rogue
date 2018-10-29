@@ -43,6 +43,7 @@ ris::Frame::Frame() {
    flags_     = 0;
    error_     = 0;
    size_      = 0;
+   chan_      = 0;
    payload_   = 0;
    sizeDirty_ = false;
 }
@@ -249,23 +250,56 @@ void ris::Frame::setPayloadEmpty() {
 }
 
 //! Get flags
-uint32_t ris::Frame::getFlags() {
+uint16_t ris::Frame::getFlags() {
    return(flags_);
 }
 
 //! Set error state
-void ris::Frame::setFlags(uint32_t flags) {
+void ris::Frame::setFlags(uint16_t flags) {
    flags_ = flags;
 }
 
+// Get first user field portion of flags (SSI/axi-stream)
+uint8_t ris::Frame::getFirstUser() {
+   uint8_t ret = flags_ & 0xFF;
+   return ret;
+}
+
+// Set first user field portion of flags (SSI/axi-stream)
+void ris::Frame::setFirstUser(uint8_t fuser) {
+    flags_ |= fuser;
+}
+
+// Get last user field portion of flags (SSI/axi-stream)
+uint8_t ris::Frame::getLastUser() {
+   uint8_t ret = (flags_ >> 8) & 0xFF;
+   return ret;
+}
+
+// Set last user field portion of flags (SSI/axi-stream)
+void ris::Frame::setLastUser(uint8_t fuser) {
+    uint16_t tmp = fuser;
+    flags_ |= (tmp << 8) & 0xFF00;
+}
+
 //! Get error state
-uint32_t ris::Frame::getError() {
+uint8_t ris::Frame::getError() {
    return(error_);
 }
 
 //! Set error state
-void ris::Frame::setError(uint32_t error) {
+void ris::Frame::setError(uint8_t error) {
    error_ = error;
+}
+
+//! Get channel
+uint8_t ris::Frame::getChannel() {
+   return chan_;
+}
+
+//! Set channel
+void ris::Frame::setChannel(uint8_t channel) {
+   chan_ = channel;
 }
 
 //! Get write start iterator
@@ -355,6 +389,12 @@ void ris::Frame::setup_python() {
       .def("getError",     &ris::Frame::getError)
       .def("setFlags",     &ris::Frame::setFlags)
       .def("getFlags",     &ris::Frame::getFlags)
+      .def("setFirstUser", &ris::Frame::setFirstUser)
+      .def("getFirstUser", &ris::Frame::getFirstUser)
+      .def("setLastUser",  &ris::Frame::setLastUser)
+      .def("getLastUser",  &ris::Frame::getLastUser)
+      .def("setChannel",   &ris::Frame::setChannel)
+      .def("getChannel",   &ris::Frame::getChannel)
    ;
 #endif
 }

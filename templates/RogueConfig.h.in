@@ -2,7 +2,7 @@
  *-----------------------------------------------------------------------------
  * Title      : Rogue Configuration File
  * ----------------------------------------------------------------------------
- * File       : RogueConfig.h
+ * File       : RogueConfig.h.in
  * ----------------------------------------------------------------------------
  * Description:
  * Rogue configuration file to be overridden by Cmake.
