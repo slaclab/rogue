@@ -314,10 +314,10 @@ ris::FramePtr rpr::Controller::applicationTx() {
          head.reset();
          frame.reset();
       }
+      else (*(frame->beginBuffer()))->adjustHeader(rpr::Header::HeaderSize);
 
    } while (! frame);
 
-   (*(frame->beginBuffer()))->adjustHeader(rpr::Header::HeaderSize);
    return(frame);
 }
 
