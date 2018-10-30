@@ -185,8 +185,8 @@ void rpr::Controller::transportRx( ris::FramePtr frame ) {
       return;
    }
 
-   log_->debug("RX frame: state=%i server=%i size=%i syn=%i ack=%i nul=%i, rst=%i, ack#=%i seq=%i, nxt=%i",
-         state_, server_,frame->getPayload(),head->syn,head->ack,head->nul,head->rst,
+   log_->debug("RX frame: state=%i server=%i size=%i syn=%i ack=%i nul=%i, bst=%i, rst=%i, ack#=%i seq=%i, nxt=%i",
+         state_, server_,frame->getPayload(),head->syn,head->ack,head->nul,head->busy,head->rst,
          head->acknowledge,head->sequence,nextSeqRx_);
 
    // Ack set
@@ -195,7 +195,7 @@ void rpr::Controller::transportRx( ris::FramePtr frame ) {
 
       do {
          txList_[++lastAckRx_].reset();
-         txListCount_--;
+         if ( txListCount_ != 0 ) txListCount_--;
       } while (lastAckRx_ != head->acknowledge);
    }
 
@@ -534,8 +534,8 @@ void rpr::Controller::transportTx(rpr::HeaderPtr head, bool seqUpdate, bool txRe
    head->update();
 
    log_->log(rogue::Logging::Debug,
-         "TX frame: state=%i server=%i size=%i syn=%i ack=%i nul=%i, rst=%i, ack#=%i, seq=%i, recount=%i, ptr=%p",
-         state_,server_,head->getFrame()->getPayload(),head->syn,head->ack,head->nul,head->rst,
+         "TX frame: state=%i server=%i size=%i syn=%i ack=%i nul=%i, bsy=%i, rst=%i, ack#=%i, seq=%i, recount=%i, ptr=%p",
+         state_,server_,head->getFrame()->getPayload(),head->syn,head->ack,head->nul,head->busy,head->rst,
          head->acknowledge,head->sequence,retranCount_,head->getFrame().get());
 
    flock->unlock();
@@ -833,7 +833,6 @@ struct timeval & rpr::Controller::stateOpen () {
       head = rpr::Header::create(tran_->reqFrame(rpr::Header::HeaderSize,false));
       head->ack = true;
       head->nul = doNull;
-
       transportTx(head,doNull,false);
    }
 
