@@ -309,8 +309,13 @@ ris::FramePtr rpr::Controller::applicationTx() {
 
       ackSeqRx_ = head->sequence;
 
-   // Drop NULL frames
-   } while (head->nul);
+      // Drop NULL frames
+      if (head->nul) {
+         head.reset();
+         frame.reset();
+      }
+
+   } while (! frame);
 
    (*(frame->beginBuffer()))->adjustHeader(rpr::Header::HeaderSize);
    return(frame);
