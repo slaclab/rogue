@@ -827,7 +827,7 @@ struct timeval & rpr::Controller::stateOpen () {
    else doNull = false;
 
    // Outbound frame required
-   if ( ( doNull || ackPend >= curMaxCumAck_ || 
+   if ( ( doNull || ((! getLocBusy()) && ackPend >= curMaxCumAck_) || 
         ((ackPend > 0 || getLocBusy()) && timePassed(locTime,cumAckToutD1_)) ) ) {
 
       head = rpr::Header::create(tran_->reqFrame(rpr::Header::HeaderSize,false));
