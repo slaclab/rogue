@@ -7,7 +7,6 @@ RUN apt-get update && apt-get -y    install wget git \
                                     libreadline6-dev
 
 # Install EPICS
-ARG branch
 WORKDIR /
 RUN mkdir epics
 WORKDIR epics
@@ -19,16 +18,14 @@ RUN make clean && make && make install
 ENV EPICS_BASE /epics/base-3.15.5/
 
 # PIP Packages
-ARG branch
 RUN pip3 install PyYAML Pyro4 parse click ipython pyzmq packaging matplotlib numpy pyepics
 
 # Install Rogue
 ARG branch
 WORKDIR /usr/src
-RUN git clone https://github.com/slaclab/rogue.git -b pre-release
+RUN git clone https://github.com/slaclab/rogue.git -b $branch
 WORKDIR rogue
 RUN mkdir build
 WORKDIR build
 RUN cmake .. -DROGUE_INSTALL=system
 RUN make install
-
