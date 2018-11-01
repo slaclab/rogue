@@ -19,17 +19,12 @@
  *-----------------------------------------------------------------------------
 **/
 #include <stdint.h>
-#include <boost/thread.hpp>
 #include <boost/make_shared.hpp>
 #include <rogue/interfaces/stream/Master.h>
 #include <rogue/interfaces/stream/Slave.h>
 #include <rogue/interfaces/stream/Frame.h>
-#include <rogue/interfaces/stream/FrameLock.h>
-#include <rogue/interfaces/stream/FrameIterator.h>
-#include <rogue/interfaces/stream/Buffer.h>
 #include <rogue/interfaces/stream/Filter.h>
 #include <rogue/Logging.h>
-#include <rogue/GilRelease.h>
 
 namespace ris = rogue::interfaces::stream;
 

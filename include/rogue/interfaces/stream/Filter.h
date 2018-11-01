@@ -21,7 +21,6 @@
 #ifndef __ROGUE_INTERFACES_STREAM_FILTER_H__
 #define __ROGUE_INTERFACES_STREAM_FILTER_H__
 #include <stdint.h>
-#include <boost/thread.hpp>
 #include <rogue/interfaces/stream/Master.h>
 #include <rogue/interfaces/stream/Slave.h>
 #include <rogue/Logging.h>
@@ -43,8 +42,7 @@ namespace rogue {
             public:
 
                //! Class creation
-               static boost::shared_ptr<rogue::interfaces::stream::Filter> 
-                  create(bool dropErrors, uint8_t channel);
+               static boost::shared_ptr<rogue::interfaces::stream::Filter> create(bool dropErrors, uint8_t channel);
 
                //! Setup class in python
                static void setup_python();
