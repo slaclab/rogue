@@ -74,7 +74,7 @@ void ruf::StreamWriterChannel::acceptFrame ( ris::FramePtr frame ) {
    boost::unique_lock<boost::mutex> lock(mtx_);
 
    // Support for channelized traffic
-   if ( (channel_ == 0) && (frame->getChannel() != 0) ) ichan = frame->getChannel();
+   if ( channel_ == 0 ) ichan = frame->getChannel();
    else ichan = channel_;
 
    writer_->writeFile (ichan, frame);
