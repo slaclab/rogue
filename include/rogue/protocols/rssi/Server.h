@@ -86,9 +86,6 @@ namespace rogue {
                void     setLocTryPeriod(uint32_t val);
                uint32_t getLocTryPeriod();
 
-               void     setLocBusyThold(uint32_t val);
-               uint32_t getLocBusyThold();
-
                void     setLocMaxBuffers(uint8_t val);
                uint8_t  getLocMaxBuffers();
 
