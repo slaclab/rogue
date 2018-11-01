@@ -33,6 +33,7 @@ make -j 6 install
 # Update config files
 sed -i.bak s/#source/source/g ${DEST}/setup_rogue.sh
 sed -i.bak s/#source/source/g ${DEST}/setup_rogue.csh
+ln -sf ${DEST} ${BUILD}/master
 
 # Cleanup
 cd ${BUILD}
