@@ -14,7 +14,7 @@ stages:
   - name: deploy_dev
     if: branch = pre-release AND tag IS blank AND NOT (type = pull_request)
   - name: deploy_tag
-    if: branch = master AND tag IS present
+    if: tag IS present
 
 env:
   global:
