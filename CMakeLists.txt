@@ -146,7 +146,11 @@ endif()
 
 # Default install type
 if ( NOT ROGUE_INSTALL ) 
-   set (ROGUE_INSTALL "local")
+   if (DEFINED ENV{CONDA_PREFIX})
+      set (ROGUE_INSTALL "conda")
+   else()
+      set (ROGUE_INSTALL "local")
+   endif()
 endif()
 
 # Default Install directory
