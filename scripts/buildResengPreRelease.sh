@@ -1,6 +1,6 @@
 #!/bin/bash
 
-BASE=/afs/slac.stanford.edu/g/reseng/rogue/
+BASE=/afs/slac.stanford.edu/g/reseng/rogue
 BUILD=/tmp/
 
 # Setup environment

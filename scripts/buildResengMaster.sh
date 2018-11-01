@@ -1,7 +1,7 @@
 #!/bin/bash
 
-BASE=/afs/slac.stanford.edu/g/reseng/rogue/
-BUILD=/tmp/
+BASE=/afs/slac.stanford.edu/g/reseng/rogue
+BUILD=/tmp
 
 # Setup environment
 export MODULEPATH=/usr/share/Modules/modulefiles:/etc/modulefiles:/afs/slac.stanford.edu/package/spack/share/spack/modules/linux-rhel6-x86_64
@@ -33,6 +33,7 @@ make -j 6 install
 # Update config files
 sed -i.bak s/#source/source/g ${DEST}/setup_rogue.sh
 sed -i.bak s/#source/source/g ${DEST}/setup_rogue.csh
+rm -rf ${BASE}/master
 ln -sf ${DEST} ${BASE}/master
 
 # Cleanup
