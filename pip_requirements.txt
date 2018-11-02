@@ -1,7 +1,6 @@
 PyYAML
 Pyro4
 parse
-recordclass
 click
 coverage
 codecov
