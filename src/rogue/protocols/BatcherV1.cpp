@@ -128,13 +128,29 @@ void rp::BatcherV1::acceptFrame ( ris::FramePtr frame ) {
    // Get version & size
    beg = frame->beginRead();
    ris::fromFrame(beg, 1, &temp);
+   
+   /////////////////////////////////////////////////////////////////////////
+   // Super-Frame Header in firmware
+   /////////////////////////////////////////////////////////////////////////
+   // v.txMaster.tValid               := '1';
+   // v.txMaster.tData(3 downto 0)    := x"1";  -- Version = 0x1
+   // v.txMaster.tData(7 downto 4)    := toSlv(log2(AXIS_WORD_SIZE_C/2), 4);
+   // v.txMaster.tData(15 downto 8)   := r.seqCnt;
+   // v.txMaster.tData(511 downto 16) := (others => '0');
+   // ssiSetUserSof(AXIS_CONFIG_G, v.txMaster, '1');   
+   /////////////////////////////////////////////////////////////////////////
 
    // Check version, convert width
-   if ( (temp & 0x4) != 1 ) {
-      log_->warning("Version mismatch. Got %i",(temp&0x4));
+   if ( (temp & 0xF) != 1 ) {
+      log_->warning("Version mismatch. Got %i",(temp&0xF));
       return;
    }
-   width = (uint32_t)pow(float((temp >> 4) & 0xF),2.0) * 2;
+   
+   /////////////////////////////////////////////////////////////////////////
+   // width = (uint32_t)pow(2,float( ( (temp >> 4) & 0xF) + 1) );
+   /////////////////////////////////////////////////////////////////////////
+   // Integer pow() when powers of 2 (more efficient than floating point)
+   width = 1 << ( ((temp >> 4) & 0xF) + 1);
 
    // Set tail size, min 64-bits
    tSize = (width < 8)?8:width;
