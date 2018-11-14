@@ -4,8 +4,11 @@ channels:
   - paulscherrerinstitute
 dependencies:
   - python=3.6
-  - gcc_linux-64
-  - gxx_linux-64
+  - clang_osx-64
+  - clangxx_osx-64
+  - git
+  - git-lfs
+  - ipython
   - make
   - cmake
   - pyyaml

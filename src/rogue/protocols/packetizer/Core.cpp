@@ -61,8 +61,14 @@ rpp::Core::Core (bool enSsi) {
 }
 
 //! Destructor
-rpp::Core::~Core() { }
+rpp::Core::~Core() { 
+   uint32_t x;
 
+   tran_.reset();
+   cntl_.reset();
+
+   for(x=0; x < 256; x++) app_[x].reset();
+}
 
 //! Get transport interface
 rpp::TransportPtr rpp::Core::transport() {

@@ -52,8 +52,6 @@ void rpr::Server::setup_python() {
       .def("getRemBusyCnt",    &rpr::Server::getRemBusyCnt)
       .def("setLocTryPeriod",  &rpr::Server::setLocTryPeriod)
       .def("getLocTryPeriod",  &rpr::Server::getLocTryPeriod)
-      .def("setLocBusyThold",  &rpr::Server::setLocBusyThold)
-      .def("getLocBusyThold",  &rpr::Server::getLocBusyThold)
       .def("setLocMaxBuffers", &rpr::Server::setLocMaxBuffers)
       .def("getLocMaxBuffers", &rpr::Server::getLocMaxBuffers)
       .def("setLocMaxSegment", &rpr::Server::setLocMaxSegment)
@@ -153,14 +151,6 @@ void rpr::Server::setLocTryPeriod(uint32_t val) {
 
 uint32_t rpr::Server::getLocTryPeriod() {
    return cntl_->getLocTryPeriod();
-}
-
-void rpr::Server::setLocBusyThold(uint32_t val) {
-   cntl_->setLocBusyThold(val);
-}
-
-uint32_t rpr::Server::getLocBusyThold() {
-   return cntl_->getLocBusyThold();
 }
 
 void rpr::Server::setLocMaxBuffers(uint8_t val) {

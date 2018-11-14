@@ -20,7 +20,7 @@
 #       > git merge origin/master
 #       > git merge origin/pre-release
 #       > git push
-#    - Tag the release in master: 
+#    - Tag the release in master and upload:  
 #       > git tag -a vMAJOR.MINOR.0
 #       > git push --tags
 #    - Create release using tag on github.com, use this script to generate notes

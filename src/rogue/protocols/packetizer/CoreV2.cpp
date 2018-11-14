@@ -60,8 +60,14 @@ rpp::CoreV2::CoreV2 (bool enIbCrc, bool enObCrc, bool enSsi) {
 }
 
 //! Destructor
-rpp::CoreV2::~CoreV2() { }
+rpp::CoreV2::~CoreV2() {
+   uint32_t x;
 
+   tran_.reset();
+   cntl_.reset();
+
+   for(x=0; x < 256; x++) app_[x].reset();
+}
 
 //! Get transport interface
 rpp::TransportPtr rpp::CoreV2::transport() {

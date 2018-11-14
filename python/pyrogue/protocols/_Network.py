@@ -129,13 +129,6 @@ class UdpRssiPack(pr.Device):
         ))                 
 
         self.add(pr.LocalVariable(
-            name        = 'locBusyThold',
-            mode        = 'RW', 
-            localGet    = lambda: self._rssi.getLocBusyThold(),
-            localSet    = lambda value: self._rssi.setLocBusyThold(value)
-        ))                 
-
-        self.add(pr.LocalVariable(
             name        = 'locMaxBuffers',
             mode        = 'RW', 
             localGet    = lambda: self._rssi.getLocMaxBuffers(),

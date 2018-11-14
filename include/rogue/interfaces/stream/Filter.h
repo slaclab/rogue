@@ -1,13 +1,13 @@
 /**
  *-----------------------------------------------------------------------------
- * Title         : AXI Stream FIFO
+ * Title         : SLAC Register Protocol (SRP) Filter
  * ----------------------------------------------------------------------------
- * File          : Fifo.h
+ * File          : Filter.h
  * Author        : Ryan Herbst <rherbst@slac.stanford.edu>
- * Created       : 02/02/2018
+ * Created       : 11/01/2018
  *-----------------------------------------------------------------------------
  * Description :
- *    AXI Stream FIFO
+ *    AXI Stream Filter
  *-----------------------------------------------------------------------------
  * This file is part of the rogue software platform. It is subject to 
  * the license terms in the LICENSE.txt file found in the top-level directory 
@@ -18,10 +18,9 @@
  * contained in the LICENSE.txt file.
  *-----------------------------------------------------------------------------
 **/
-#ifndef __ROGUE_INTERFACES_STREAM_FIFO_H__
-#define __ROGUE_INTERFACES_STREAM_FIFO_H__
+#ifndef __ROGUE_INTERFACES_STREAM_FILTER_H__
+#define __ROGUE_INTERFACES_STREAM_FILTER_H__
 #include <stdint.h>
-#include <boost/thread.hpp>
 #include <rogue/interfaces/stream/Master.h>
 #include <rogue/interfaces/stream/Slave.h>
 #include <rogue/Logging.h>
@@ -31,39 +30,28 @@ namespace rogue {
       namespace stream {
 
          //!  AXI Stream FIFO
-         class Fifo : public rogue::interfaces::stream::Master,
-                      public rogue::interfaces::stream::Slave {
+         class Filter : public rogue::interfaces::stream::Master,
+                        public rogue::interfaces::stream::Slave {
 
                rogue::LoggingPtr log_;
 
                // Configurations
-               uint32_t trimSize_;
-               uint32_t maxDepth_;
-               bool     noCopy_;
-
-               // Queue
-               rogue::Queue<boost::shared_ptr<rogue::interfaces::stream::Frame>> queue_;
-
-               // Transmission thread
-               boost::thread* thread_;
-
-               //! Thread background
-               void runThread();
+               bool     dropErrors_;
+               uint8_t  channel_;
 
             public:
 
                //! Class creation
-               static boost::shared_ptr<rogue::interfaces::stream::Fifo> 
-                  create(uint32_t maxDepth, uint32_t trimSize, bool noCopy);
+               static boost::shared_ptr<rogue::interfaces::stream::Filter> create(bool dropErrors, uint8_t channel);
 
                //! Setup class in python
                static void setup_python();
 
                //! Creator
-               Fifo(uint32_t maxDepth, uint32_t trimSize, bool noCopy);
+               Filter(bool dropErrors, uint8_t channel);
 
                //! Deconstructor
-               ~Fifo();
+               ~Filter();
 
                //! Accept a frame from master
                void acceptFrame ( boost::shared_ptr<rogue::interfaces::stream::Frame> frame );
@@ -71,7 +59,7 @@ namespace rogue {
          };
 
          // Convienence
-         typedef boost::shared_ptr<rogue::interfaces::stream::Fifo> FifoPtr;
+         typedef boost::shared_ptr<rogue::interfaces::stream::Filter> FilterPtr;
       }
    }
 }
