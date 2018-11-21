@@ -39,22 +39,23 @@ namespace bp  = boost::python;
 #endif
 
 //! Class creation
-ris::FifoPtr ris::Fifo::create(uint32_t maxDepth, uint32_t trimSize) {
-   ris::FifoPtr p = boost::make_shared<ris::Fifo>(maxDepth,trimSize);
+ris::FifoPtr ris::Fifo::create(uint32_t maxDepth, uint32_t trimSize, bool noCopy) {
+   ris::FifoPtr p = boost::make_shared<ris::Fifo>(maxDepth,trimSize, noCopy);
    return(p);
 }
 
 //! Setup class in python
 void ris::Fifo::setup_python() {
 #ifndef NO_PYTHON
-   bp::class_<ris::Fifo, ris::FifoPtr, bp::bases<ris::Master,ris::Slave>, boost::noncopyable >("Fifo",bp::init<uint32_t,uint32_t>());
+   bp::class_<ris::Fifo, ris::FifoPtr, bp::bases<ris::Master,ris::Slave>, boost::noncopyable >("Fifo",bp::init<uint32_t,uint32_t,bool>());
 #endif
 }
 
 //! Creator with version constant
-ris::Fifo::Fifo(uint32_t maxDepth, uint32_t trimSize ) : ris::Master(), ris::Slave() { 
+ris::Fifo::Fifo(uint32_t maxDepth, uint32_t trimSize, bool noCopy ) : ris::Master(), ris::Slave() { 
    maxDepth_ = maxDepth;
    trimSize_ = trimSize;
+   noCopy_   = noCopy;
 
    queue_.setThold(maxDepth);
 
@@ -79,16 +80,19 @@ void ris::Fifo::acceptFrame ( ris::FramePtr frame ) {
    rogue::GilRelease noGil;
    ris::FrameLockPtr lock = frame->lock();
 
-   // Get size, adjust if trim is enabled
-   size = frame->getPayload();
-   if ( trimSize_ != 0 && trimSize_ < size ) size = trimSize_;
-
-   // Request a new frame to hold the data
-   nFrame = reqFrame(size,true);
-
-   // Copy the frame
-   std::copy(frame->beginRead(), frame->beginRead()+size, nFrame->beginWrite());
-   nFrame->setPayload(size);
+   if ( noCopy_ ) nFrame = frame;
+   else{
+      // Get size, adjust if trim is enabled
+      size = frame->getPayload();
+      if ( trimSize_ != 0 && trimSize_ < size ) size = trimSize_;
+   
+      // Request a new frame to hold the data
+      nFrame = reqFrame(size,true);
+   
+      // Copy the frame
+      std::copy(frame->beginRead(), frame->beginRead()+size, nFrame->beginWrite());
+      nFrame->setPayload(size);
+   }
 
    // Append to buffer
    queue_.push(nFrame);
