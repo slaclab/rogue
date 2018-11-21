@@ -17,9 +17,11 @@ dependencies:
   - click
   - pyro4
   - numpy
+  - scipy  
   - pyqt
   - pyepics
   - boost
   - bzip2
   - matplotlib
   - epics-base=3.14.12.8
+
