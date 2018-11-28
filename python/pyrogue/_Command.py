@@ -20,6 +20,7 @@ from collections import OrderedDict as odict
 import pyrogue as pr
 import inspect
 import Pyro4
+import threading
 
 class CommandError(Exception):
     """ Exception for command errors."""
@@ -35,7 +36,8 @@ class BaseCommand(pr.BaseVariable):
                  hidden=False,                 
                  minimum=None,
                  maximum=None,
-                 function=None):
+                 function=None,
+                 background=False):
 
         pr.BaseVariable.__init__(
             self,
@@ -49,6 +51,9 @@ class BaseCommand(pr.BaseVariable):
             maximum=maximum)
         
         self._function = function if function is not None else BaseCommand.nothing
+        self._thread = None
+        self._lock = threading.Lock()
+        self._background = background
 
         # args flag
         try:
@@ -65,6 +70,18 @@ class BaseCommand(pr.BaseVariable):
 
     @Pyro4.expose
     def call(self,arg=None):
+        if self._background:
+            with self._lock:
+                if self._thread is not None and self._thread.isAlive():
+                    self._log.exception('Command execution is already in progress!')
+                    return
+                else:
+                    self._thread = threading.Thread(target=_doFunc, args=(arg,))
+        else:
+            self._doFunc(arg)
+
+    @Pyro4.expose
+    def _doFunc(self,arg):
         """Execute command: TODO: Update comments"""
         if (self.parent.enable.value() is not True):
             return
