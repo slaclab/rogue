@@ -21,6 +21,8 @@
 **/
 #include <rogue/utilities/fileio/StreamReader.h>
 #include <rogue/interfaces/stream/Frame.h>
+#include <rogue/interfaces/stream/Buffer.h>
+#include <rogue/interfaces/stream/FrameIterator.h>
 #include <rogue/GeneralError.h>
 #include <rogue/Logging.h>
 #include <rogue/GilRelease.h>
@@ -32,7 +34,11 @@
 
 namespace ris = rogue::interfaces::stream;
 namespace ruf = rogue::utilities::fileio;
-namespace bp  = boost::python;
+
+#ifndef NO_PYTHON
+#include <boost/python.hpp>
+namespace bp = boost::python;
+#endif
 
 //! Class creation
 ruf::StreamReaderPtr ruf::StreamReader::create () {
@@ -42,14 +48,14 @@ ruf::StreamReaderPtr ruf::StreamReader::create () {
 
 //! Setup class in python
 void ruf::StreamReader::setup_python() {
+#ifndef NO_PYTHON
    bp::class_<ruf::StreamReader, ruf::StreamReaderPtr,bp::bases<ris::Master>, boost::noncopyable >("StreamReader",bp::init<>())
-      .def("create",         &ruf::StreamReader::create)
-      .staticmethod("create")
       .def("open",           &ruf::StreamReader::open)
       .def("close",          &ruf::StreamReader::close)
       .def("closeWait",      &ruf::StreamReader::closeWait)
       .def("isActive",       &ruf::StreamReader::isActive)
    ;
+#endif
 }
 
 //! Creator
@@ -142,12 +148,18 @@ bool ruf::StreamReader::isActive() {
 void ruf::StreamReader::runThread() {
    int32_t  ret;
    uint32_t size;
-   uint32_t flags;
-   bool err;
+   uint32_t meta;
+   uint16_t flags;
+   uint8_t  error;
+   uint8_t  chan;
+   uint32_t bSize;
+   bool     err;
    ris::FramePtr frame;
-   ris::FrameIteratorPtr iter;
+   ris::Frame::BufferIterator it;
+   char * bData;
    Logging log("streamReader");
 
+   ret = 0;
    err = false;
    try {
       do {
@@ -161,26 +173,47 @@ void ruf::StreamReader::runThread() {
             }
 
             // Read flags
-            if ( read(fd_,&flags,4) != 4 ) {
+            if ( read(fd_,&meta, 4) != 4 ) {
                log.warning("Failed to read flags");
                err = true;
                break;
             }
 
-            // Request frame
-            frame = reqFrame(size,true,0);
-            frame->setFlags(flags);
+            // Skip next step if frame is empty
+            if ( size <= 4 ) continue;
+            size -= 4;
 
-            // Populate frame
-            iter = frame->startWrite(0,size-4);
-            do {
-               if ( (ret = read(fd_,iter->data(),iter->size())) != (int32_t)iter->size()) {
-                  log.warning("Short read. Ret = %i Req = %i after %i bytes",ret,iter->size(),iter->total());
+            // Extract meta data
+            flags = meta & 0xFFFF;
+            error = (meta >> 16) & 0xFF;
+            chan  = (meta >> 24) & 0xFF;
+
+            // Request frame
+            frame = reqFrame(size,true);
+            frame->setFlags(flags);
+            frame->setError(error);
+            frame->setChannel(chan);
+            it = frame->beginBuffer();
+
+            while ( (err == false) && (size > 0) ) {
+               bSize = size;
+
+               // Adjust to buffer size, if neccessary
+               if ( bSize > (*it)->getSize() ) bSize = (*it)->getSize();
+
+               if ( (ret = read(fd_,(*it)->begin(),bSize)) != bSize) {
+                  log.warning("Short read. Ret = %i Req = %i after %i bytes",ret,bSize,frame->getPayload());
                   ::close(fd_);
                   fd_ = -1;
                   frame->setError(0x1);
+                  err = true;
                }
-            } while (frame->nextWrite(iter));
+               else {
+                  (*it)->setPayload(bSize);
+                  ++it; // Next buffer
+               }
+               size -= bSize;
+            }
             sendFrame(frame);
             boost::this_thread::interruption_point();
          }

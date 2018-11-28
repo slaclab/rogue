@@ -128,3 +128,6 @@ def genBaseList(cls):
 
     return ret
 
+# Add __version__ attribute with the module version number
+__version__ = rogue.Version.pythonVersion()
+

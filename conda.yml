@@ -1,0 +1,25 @@
+channels:
+  - defaults
+  - conda-forge
+  - paulscherrerinstitute
+dependencies:
+  - python=3.6
+  - gcc_linux-64
+  - gxx_linux-64
+  - make
+  - git
+  - git-lfs
+  - ipython
+  - cmake
+  - pyyaml
+  - pyzmq
+  - parse
+  - click
+  - pyro4
+  - numpy
+  - pyqt
+  - pyepics
+  - boost
+  - bzip2
+  - matplotlib
+  - epics-base=3.14.12.8

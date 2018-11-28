@@ -21,15 +21,21 @@
 #include <rogue/interfaces/stream/Slave.h>
 #include <rogue/interfaces/stream/Master.h>
 #include <rogue/interfaces/stream/Frame.h>
+#include <rogue/interfaces/stream/FrameLock.h>
 #include <rogue/interfaces/stream/Buffer.h>
 #include <rogue/utilities/StreamUnZip.h>
 #include <rogue/GeneralError.h>
+#include <rogue/GilRelease.h>
 #include <boost/make_shared.hpp>
 #include <bzlib.h>
 
 namespace ris = rogue::interfaces::stream;
 namespace ru  = rogue::utilities;
-namespace bp  = boost::python;
+
+#ifndef NO_PYTHON
+#include <boost/python.hpp>
+namespace bp = boost::python;
+#endif
 
 //! Class creation
 ru::StreamUnZipPtr ru::StreamUnZip::create () {
@@ -45,14 +51,15 @@ ru::StreamUnZip::~StreamUnZip() { }
 
 //! Accept a frame from master
 void ru::StreamUnZip::acceptFrame ( ris::FramePtr frame ) {
-   ris::FrameIteratorPtr readIter;
-   ris::FrameIteratorPtr writeIter;
-   uint32_t writeCnt = 0;
-   uint32_t readCnt  = 0;
+   ris::Frame::BufferIterator rBuff;
+   ris::Frame::BufferIterator wBuff;
    int32_t ret;
-   
+
+   rogue::GilRelease noGil;
+   ris::FrameLockPtr lock = frame->lock();
+
    // First request a new frame of the same size
-   ris::FramePtr newFrame = this->reqFrame(frame->getPayload(),true,0);
+   ris::FramePtr newFrame = this->reqFrame(frame->getPayload(),true);
 
    // Setup compression
    bz_stream strm;
@@ -63,64 +70,66 @@ void ru::StreamUnZip::acceptFrame ( ris::FramePtr frame ) {
    if ( (ret = BZ2_bzDecompressInit(&strm,0,0)) != BZ_OK ) 
       throw(rogue::GeneralError::ret("StreamUnZip::acceptFrame","Error initializing decompressor",ret));
 
-   // Use the frame iterator in this case to avoid a copy to local memory
-   readIter  = frame->startRead(0,frame->getPayload());
-   writeIter = newFrame->startWrite(0,frame->getPayload());
+   // Setup decompression pointers
+   rBuff = frame->beginBuffer();
+   strm.next_in  = (char *)(*rBuff)->begin();
+   strm.avail_in = (*rBuff)->getPayload();
+
+   wBuff = newFrame->beginBuffer();
+   strm.next_out  = (char *)(*wBuff)->begin();
+   strm.avail_out = (*wBuff)->getAvailable();
 
    // Use the iterators to move data
    do {
-
-      // Init counters
-      readCnt  = strm.total_in_lo32;
-      writeCnt = strm.total_out_lo32;
-
-      // Setup decompression pointers
-      strm.next_in  = (char *)readIter->data();
-      strm.avail_in = readIter->size();
-
-      strm.next_out  = (char *)writeIter->data();
-      strm.avail_out = writeIter->size();
 
       ret = BZ2_bzDecompress(&strm);
 
       if ( (ret != BZ_STREAM_END) && (ret != BZ_OK) ) 
          throw(rogue::GeneralError::ret("StreamUnZip::acceptFrame","Decompression runtime error",ret));
 
-      readIter->completed(strm.total_in_lo32-readCnt);
-      writeIter->completed(strm.total_out_lo32-writeCnt);
+      if ( ret == BZ_STREAM_END ) break;
 
-      // Increase the frame size if we run out of room
-      if ( ! newFrame->nextWrite(writeIter) ) {
-         ris::FramePtr tmpFrame = this->reqFrame(frame->getPayload(),true,0);
-         newFrame->appendFrame(tmpFrame);
-         writeIter = newFrame->startWrite(strm.total_out_lo32,frame->getPayload());
+      // Update read buffer if neccessary
+      if ( strm.avail_in == 0 ) {
+         ++rBuff;
+         strm.next_in  = (char *)(*rBuff)->begin();
+         strm.avail_in = (*rBuff)->getPayload();
       }
-      frame->nextRead(readIter);
 
-   } while ( ret != BZ_STREAM_END );
+      // Update write buffer if neccessary
+      if ( strm.avail_out == 0 ) {
 
+         // We ran out of room, double the frame size
+         if ( (wBuff+1) == newFrame->endBuffer() ) {
+            ris::FramePtr tmpFrame = this->reqFrame(frame->getPayload(),true);
+            wBuff = newFrame->appendFrame(tmpFrame);
+         }
+         else ++wBuff;
+
+         strm.next_out  = (char *)(*wBuff)->begin();
+         strm.avail_out = (*wBuff)->getAvailable();
+      }
+   } while ( 1 );
+
+   newFrame->setPayload(strm.total_out_lo32);
    BZ2_bzDecompressEnd(&strm);
-
-   //printf("Unzip Input frame = %i, output frame = %i\n",frame->getPayload(),newFrame->getPayload());
 
    this->sendFrame(newFrame);
 }
 
 //! Accept a new frame request. Forward request.
-ris::FramePtr ru::StreamUnZip::acceptReq ( uint32_t size, bool zeroCopyEn, uint32_t maxBuffSize ) {
-   return(this->reqFrame(size,zeroCopyEn,maxBuffSize));
+ris::FramePtr ru::StreamUnZip::acceptReq ( uint32_t size, bool zeroCopyEn ) {
+   return(this->reqFrame(size,zeroCopyEn));
 }
 
 void ru::StreamUnZip::setup_python() {
+#ifndef NO_PYTHON
 
-   bp::class_<ru::StreamUnZip, ru::StreamUnZipPtr, bp::bases<ris::Master,ris::Slave>, boost::noncopyable >("StreamUnZip",bp::init<>())
-      .def("create",         &ru::StreamUnZip::create)
-      .staticmethod("create")
-   ;
+   bp::class_<ru::StreamUnZip, ru::StreamUnZipPtr, bp::bases<ris::Master,ris::Slave>, boost::noncopyable >("StreamUnZip",bp::init<>());
 
    bp::implicitly_convertible<ru::StreamUnZipPtr, ris::SlavePtr>();
    bp::implicitly_convertible<ru::StreamUnZipPtr, ris::MasterPtr>();
-
+#endif
 }
 
 

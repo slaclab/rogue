@@ -28,8 +28,11 @@
 
 #include <rogue/interfaces/memory/Master.h>
 #include <rogue/interfaces/memory/Slave.h>
-#include <boost/python.hpp>
 #include <boost/thread.hpp>
+
+#ifndef NO_PYTHON
+#include <boost/python.hpp>
+#endif
 
 namespace rogue {
    namespace interfaces {
@@ -58,6 +61,9 @@ namespace rogue {
                //! Get offset
                uint64_t getOffset();
 
+               //! Return ID to requesting master
+               uint32_t doSlaveId();
+
                //! Return min access size to requesting master
                uint32_t doMinAccess();
 
@@ -68,13 +74,34 @@ namespace rogue {
                uint64_t doAddress();
 
                //! Post a transaction. Master will call this method with the access attributes.
-               void doTransaction(uint32_t id, boost::shared_ptr<rogue::interfaces::memory::Master> master,
-                                  uint64_t address, uint32_t size, uint32_t type);
-
+               virtual void doTransaction(boost::shared_ptr<rogue::interfaces::memory::Transaction> transaction);
          };
 
          // Convienence
          typedef boost::shared_ptr<rogue::interfaces::memory::Hub> HubPtr;
+       
+#ifndef NO_PYTHON
+
+         //! Memory Hub class, wrapper to enable pyton overload of virtual methods
+         class HubWrap : 
+            public rogue::interfaces::memory::Hub, 
+            public boost::python::wrapper<rogue::interfaces::memory::Hub> {
+
+            public:
+
+               //! Constructor
+               HubWrap(uint64_t offset);
+
+               //! Post a transaction. Master will call this method with the access attributes.
+               void doTransaction(boost::shared_ptr<rogue::interfaces::memory::Transaction> transaction);
+
+               //! Post a transaction. Master will call this method with the access attributes.
+               void defDoTransaction(boost::shared_ptr<rogue::interfaces::memory::Transaction> transaction);
+         };
+         
+         // Convienence
+         typedef boost::shared_ptr<rogue::interfaces::memory::HubWrap> HubWrapPtr;
+#endif
 
       }
    }

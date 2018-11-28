@@ -26,11 +26,14 @@
 #include <boost/make_shared.hpp>
 #include <rogue/GilRelease.h>
 #include <rogue/Logging.h>
-#include <sys/syscall.h>
 
 namespace rpp = rogue::protocols::packetizer;
 namespace ris = rogue::interfaces::stream;
+
+#ifndef NO_PYTHON
+#include <boost/python.hpp>
 namespace bp  = boost::python;
+#endif
 
 //! Class creation
 rpp::TransportPtr rpp::Transport::create () {
@@ -39,14 +42,13 @@ rpp::TransportPtr rpp::Transport::create () {
 }
 
 void rpp::Transport::setup_python() {
+#ifndef NO_PYTHON
 
-   bp::class_<rpp::Transport, rpp::TransportPtr, bp::bases<ris::Master,ris::Slave>, boost::noncopyable >("Transport",bp::init<>())
-      .def("create",         &rpp::Transport::create)
-      .staticmethod("create")
-   ;
+   bp::class_<rpp::Transport, rpp::TransportPtr, bp::bases<ris::Master,ris::Slave>, boost::noncopyable >("Transport",bp::init<>());
 
    bp::implicitly_convertible<rpp::TransportPtr, ris::MasterPtr>();
    bp::implicitly_convertible<rpp::TransportPtr, ris::SlavePtr>();
+#endif
 }
 
 //! Creator
@@ -66,18 +68,6 @@ void rpp::Transport::setController( rpp::ControllerPtr cntl ) {
    thread_ = new boost::thread(boost::bind(&rpp::Transport::runThread, this));
 }
 
-//! Generate a Frame. Called from master
-/*
- * Pass total size required.
- * Pass flag indicating if zero copy buffers are acceptable
- * maxBuffSize indicates the largest acceptable buffer size. A larger buffer can be
- * returned but the total buffer count must assume each buffer is of size maxBuffSize
- * If maxBuffSize = 0, slave will freely determine the buffer size.
- */
-ris::FramePtr rpp::Transport::acceptReq ( uint32_t size, bool zeroCopyEn, uint32_t maxBuffSize ) {
-   throw(rogue::GeneralError("Transport::acceptReq","Invalid frame request."));
-}
-
 //! Accept a frame from master
 void rpp::Transport::acceptFrame ( ris::FramePtr frame ) {
    cntl_->transportRx(frame);
@@ -86,11 +76,12 @@ void rpp::Transport::acceptFrame ( ris::FramePtr frame ) {
 //! Thread background
 void rpp::Transport::runThread() {
    Logging log("packetizer.Transport");
-   log.info("PID=%i, TID=%li",getpid(),syscall(SYS_gettid));
+   log.logThreadId();
 
    try {
       while(1) {
          sendFrame(cntl_->transportTx());
+         boost::this_thread::interruption_point();
       }
    } catch (boost::thread_interrupted&) { }
 }

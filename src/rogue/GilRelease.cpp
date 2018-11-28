@@ -17,41 +17,40 @@
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
-#include <boost/python.hpp>
 #include <stdint.h>
 #include <rogue/GilRelease.h>
 
-extern PyThreadState * _PyThreadState_Current;
+#ifndef NO_PYTHON
+
+#include <boost/python.hpp>
+namespace bp = boost::python;
+#endif
 
 rogue::GilRelease::GilRelease() {
+#ifndef NO_PYTHON
    state_ = NULL;
    release();
+#endif
 }
 
 rogue::GilRelease::~GilRelease() {
+#ifndef NO_PYTHON
    acquire();
+#endif
 }
 
 void rogue::GilRelease::acquire() {
-   if ( state_ != NULL ) {
-      PyEval_RestoreThread(state_);
-      //printf("Reacquire GIL\n");
-   }
-   //else printf("Did not have GIL\n");
+#ifndef NO_PYTHON
+   if ( state_ != NULL ) PyEval_RestoreThread(state_);
    state_ = NULL;
+#endif
 }
 
 void rogue::GilRelease::release() {
-   PyThreadState * tstate = _PyThreadState_Current;
-   if ( tstate && (tstate == PyGILState_GetThisThreadState()) ) {
-      //printf("Releasing GIL\n");
+#ifndef NO_PYTHON
+   if ( PyEval_ThreadsInitialized() && PyGILState_Check() ) 
       state_ = PyEval_SaveThread();
-   }
-   else {
-      //printf("Did not have GIL\n");
-      state_ = NULL;
-   }
+   else state_ = NULL;
+#endif
 }
-
-void rogue::GilRelease::setup_python() {}
 

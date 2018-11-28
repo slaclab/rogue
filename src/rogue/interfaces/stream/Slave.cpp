@@ -25,6 +25,8 @@
 #include <rogue/interfaces/stream/Master.h>
 #include <rogue/interfaces/stream/Buffer.h>
 #include <rogue/interfaces/stream/Frame.h>
+#include <rogue/interfaces/stream/FrameLock.h>
+#include <rogue/interfaces/stream/FrameIterator.h>
 #include <rogue/GeneralError.h>
 #include <boost/make_shared.hpp>
 #include <rogue/GilRelease.h>
@@ -32,7 +34,11 @@
 #include <rogue/Logging.h>
 
 namespace ris = rogue::interfaces::stream;
+
+#ifndef NO_PYTHON
+#include <boost/python.hpp>
 namespace bp  = boost::python;
+#endif
 
 //! Class creation
 ris::SlavePtr ris::Slave::create () {
@@ -53,13 +59,18 @@ ris::Slave::~Slave() { }
 //! Set debug message size
 void ris::Slave::setDebug(uint32_t debug, std::string name) {
    debug_ = debug;
-   log_   = new Logging(name.c_str());
+   log_   = rogue::Logging::create(name.c_str());
 }
 
 //! Accept a frame from master
 void ris::Slave::acceptFrame ( ris::FramePtr frame ) {
-   uint32_t x;
+   ris::Frame::iterator it;
+
+   uint32_t count;
    uint8_t  val;
+
+   rogue::GilRelease noGil;
+   ris::FrameLockPtr lock = frame->lock();
 
    frameCount_++;
    frameBytes_ += frame->getPayload();
@@ -67,15 +78,17 @@ void ris::Slave::acceptFrame ( ris::FramePtr frame ) {
    if ( debug_ > 0 ) {
       char buffer[1000];
 
-      log_->log(100,"Got Size=%i, Data:",frame->getPayload());
+      log_->critical("Got Size=%i, Data:",frame->getPayload());
       sprintf(buffer,"     ");
 
-      for (x=0; (x < debug_ && x < frame->getPayload()); x++) {
-         frame->read(&val,x,1);
+      count = 0;
+      for (it = frame->beginRead(); (count < debug_) && (it != frame->endRead()); ++it) {
+         count++;
+         val = *it;
 
-         sprintf(buffer + strlen(buffer)," 0x%.2x",val);
-         if (( (x+1) % 8 ) == 0) {
-            log_->log(100,buffer);
+         snprintf(buffer + strlen(buffer),1000-strlen(buffer)," 0x%.2x",val);
+         if (( (count+1) % 8 ) == 0) {
+            log_->critical(buffer);
             sprintf(buffer,"     ");
          }
       }
@@ -83,6 +96,8 @@ void ris::Slave::acceptFrame ( ris::FramePtr frame ) {
       if ( strlen(buffer) > 5 ) log_->log(100,buffer);
    }
 }
+
+#ifndef NO_PYTHON
 
 //! Accept frame
 void ris::SlaveWrap::acceptFrame ( ris::FramePtr frame ) {
@@ -106,6 +121,7 @@ void ris::SlaveWrap::defAcceptFrame ( ris::FramePtr frame ) {
    ris::Slave::acceptFrame(frame);
 }
 
+#endif
 
 //! Get frame counter
 uint64_t ris::Slave::getFrameCount() {
@@ -118,17 +134,22 @@ uint64_t ris::Slave::getByteCount() {
 }
 
 void ris::Slave::setup_python() {
+#ifndef NO_PYTHON
 
    bp::class_<ris::SlaveWrap, ris::SlaveWrapPtr, boost::noncopyable>("Slave",bp::init<>())
-      .def("create",         &ris::Slave::create)
-      .staticmethod("create")
       .def("setDebug",       &ris::Slave::setDebug)
       .def("_acceptFrame",   &ris::Slave::acceptFrame, &ris::SlaveWrap::defAcceptFrame)
       .def("getFrameCount",  &ris::Slave::getFrameCount)
       .def("getByteCount",   &ris::Slave::getByteCount)
+      .def("getAllocCount",  &ris::Pool::getAllocCount)
+      .def("getAllocBytes",  &ris::Pool::getAllocBytes)
+      .def("setFixedSize",   &ris::Pool::setFixedSize)
+      .def("getFixedSize",   &ris::Pool::getFixedSize)
+      .def("setPoolSize",    &ris::Pool::setPoolSize)
+      .def("getPoolSize",    &ris::Pool::getPoolSize)
    ;
 
    bp::implicitly_convertible<ris::SlavePtr, ris::PoolPtr>();
-
+#endif
 }
 

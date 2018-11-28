@@ -16,7 +16,6 @@
 **/
 #ifndef __ROGUE_PROTOCOLS_RSSI_SERVER_H__
 #define __ROGUE_PROTOCOLS_RSSI_SERVER_H__
-#include <boost/python.hpp>
 #include <boost/thread.hpp>
 #include <stdint.h>
 
@@ -72,12 +71,61 @@ namespace rogue {
                //! Get Retran Count
                uint32_t getRetranCount();
 
-               //! Get Busy
-               bool getBusy();
+               //! Get locBusy
+               bool getLocBusy();
+
+               //! Get locBusyCnt
+               uint32_t getLocBusyCnt();
+
+               //! Get remBusy
+               bool getRemBusy();
+
+               //! Get remBusyCnt
+               uint32_t getRemBusyCnt();
+
+               void     setLocTryPeriod(uint32_t val);
+               uint32_t getLocTryPeriod();
+
+               void     setLocBusyThold(uint32_t val);
+               uint32_t getLocBusyThold();
+
+               void     setLocMaxBuffers(uint8_t val);
+               uint8_t  getLocMaxBuffers();
+
+               void     setLocMaxSegment(uint16_t val);
+               uint16_t getLocMaxSegment();
+
+               void     setLocCumAckTout(uint16_t val);
+               uint16_t getLocCumAckTout();
+
+               void     setLocRetranTout(uint16_t val);
+               uint16_t getLocRetranTout();
+
+               void     setLocNullTout(uint16_t val);
+               uint16_t getLocNullTout();
+
+               void     setLocMaxRetran(uint8_t val);
+               uint8_t  getLocMaxRetran();
+
+               void     setLocMaxCumAck(uint8_t val);
+               uint8_t  getLocMaxCumAck();
+
+               uint8_t  curMaxBuffers();
+               uint16_t curMaxSegment();
+               uint16_t curCumAckTout();
+               uint16_t curRetranTout();
+               uint16_t curNullTout();
+               uint8_t  curMaxRetran();
+               uint8_t  curMaxCumAck();
 
                //! Set timeout in microseconds for frame transmits
                void setTimeout(uint32_t timeout);
 
+               //! Stop connection
+               void stop();
+
+               //! Start connection
+               void start();
          };
 
          // Convienence

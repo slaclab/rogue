@@ -23,10 +23,10 @@
 #define __ROGUE_HARDWARE_PGP_PGP_CARD_H__
 #include <rogue/interfaces/stream/Master.h>
 #include <rogue/interfaces/stream/Slave.h>
-#include <PgpDriver.h>
-#include <boost/python.hpp>
+#include <rogue/hardware/drivers/PgpDriver.h>
 #include <boost/thread.hpp>
 #include <stdint.h>
+#include <boost/shared_ptr.hpp>
 
 
 namespace rogue {
@@ -59,12 +59,15 @@ namespace rogue {
                uint32_t bSize_;
 
                //! Timeout for frame transmits
-               uint32_t timeout_;
+               struct timeval timeout_;
 
                //! Pointer to zero copy buffers
                void  ** rawBuff_;
 
                boost::thread* thread_;
+
+               //! Log 
+               rogue::LoggingPtr log_;
 
                //! Thread background
                void runThread();
@@ -124,12 +127,8 @@ namespace rogue {
                /*
                 * Pass total size required.
                 * Pass flag indicating if zero copy buffers are acceptable
-                * maxBuffSize indicates the largest acceptable buffer size. A larger buffer can be
-                * returned but the total buffer count must assume each buffer is of size maxBuffSize
-                * If maxBuffSize = 0, slave will freely determine the buffer size.
                 */
-               boost::shared_ptr<rogue::interfaces::stream::Frame>
-                  acceptReq ( uint32_t size, bool zeroCopyEn, uint32_t maxBuffSize );
+               boost::shared_ptr<rogue::interfaces::stream::Frame> acceptReq ( uint32_t size, bool zeroCopyEn);
 
                //! Accept a frame from master
                /* 

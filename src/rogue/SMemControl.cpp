@@ -14,7 +14,6 @@
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
-#include <boost/python.hpp>
 #include <rogue/RogueSMemFunctions.h>
 #include <rogue/SMemControl.h>
 #include <rogue/GeneralError.h>
@@ -23,7 +22,10 @@
 #include <rogue/ScopedGil.h>
 #include <string>
 
+#ifndef NO_PYTHON
+#include <boost/python.hpp>
 namespace bp = boost::python;
+#endif
 
 const uint8_t rogue::SMemControl::Get;
 const uint8_t rogue::SMemControl::Set;
@@ -37,16 +39,16 @@ rogue::SMemControlPtr rogue::SMemControl::create(std::string group) {
 
 //! Setup class in python
 void rogue::SMemControl::setup_python() {
+#ifndef NO_PYTHON
 
    bp::class_<rogue::SMemControlWrap, rogue::SMemControlWrapPtr, boost::noncopyable>("SMemControl",bp::init<std::string>())
-      .def("create",         &rogue::SMemControl::create)
-      .staticmethod("create")
       .def("_doRequest",     &rogue::SMemControl::doRequest, &rogue::SMemControlWrap::defDoRequest)
       .def_readonly("Get",   &rogue::SMemControl::Get)
       .def_readonly("Set",   &rogue::SMemControl::Set)
       .def_readonly("Exec",  &rogue::SMemControl::Exec)
       .def_readonly("Value", &rogue::SMemControl::Value)
    ;
+#endif
 }
 
 rogue::SMemControl::SMemControl (std::string group) {
@@ -70,6 +72,8 @@ std::string rogue::SMemControl::doRequest ( uint8_t type, std::string path, std:
    return(std::string(""));
 }
 
+#ifndef NO_PYTHON
+
 rogue::SMemControlWrap::SMemControlWrap (std::string group) : rogue::SMemControl(group) {}
 
 std::string rogue::SMemControlWrap::doRequest ( uint8_t type, std::string path, std::string arg ) {
@@ -90,6 +94,8 @@ std::string rogue::SMemControlWrap::doRequest ( uint8_t type, std::string path, 
 std::string rogue::SMemControlWrap::defDoRequest ( uint8_t type, std::string path, std::string arg ) {
    return(rogue::SMemControl::doRequest(type,path,arg));
 }
+
+#endif
 
 void rogue::SMemControl::runThread() {
    std::string ret;

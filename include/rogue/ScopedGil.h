@@ -19,17 +19,23 @@
 **/
 #ifndef __ROGUE_SCOPED_GIL_H__
 #define __ROGUE_SCOPED_GIL_H__
+
+#ifndef NO_PYTHON
 #include <boost/python.hpp>
+#endif
 
 namespace rogue {
 
    //! Logging
    class ScopedGil {
+
+#ifndef NO_PYTHON
          PyGILState_STATE state_;
+#endif
+
       public:
          ScopedGil();
          ~ScopedGil();
-         static void setup_python();
    };
 }
 

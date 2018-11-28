@@ -23,9 +23,7 @@
 #include <boost/python.hpp>
 #include <rogue/hardware/module.h>
 #include <rogue/hardware/pgp/module.h>
-#include <rogue/hardware/rce/module.h>
-#include <rogue/hardware/exo/module.h>
-#include <rogue/hardware/data/module.h>
+#include <rogue/hardware/axi/module.h>
 
 namespace bp  = boost::python;
 
@@ -41,9 +39,7 @@ void rogue::hardware::setup_module() {
    bp::scope io_scope = module;
 
    rogue::hardware::pgp::setup_module();
-   rogue::hardware::rce::setup_module();
-   rogue::hardware::exo::setup_module();
-   rogue::hardware::data::setup_module();
+   rogue::hardware::axi::setup_module();
 
 }
 

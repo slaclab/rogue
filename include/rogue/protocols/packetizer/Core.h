@@ -20,7 +20,6 @@
 **/
 #ifndef __ROGUE_PROTOCOLS_PACKETIZER_CORE_H__
 #define __ROGUE_PROTOCOLS_PACKETIZER_CORE_H__
-#include <boost/python.hpp>
 #include <boost/thread.hpp>
 #include <stdint.h>
 
@@ -47,13 +46,13 @@ namespace rogue {
             public:
 
                //! Class creation
-               static boost::shared_ptr<rogue::protocols::packetizer::Core> create (uint32_t segmentSize);
+               static boost::shared_ptr<rogue::protocols::packetizer::Core> create (bool enSsi);
 
                //! Setup class in python
                static void setup_python();
 
                //! Creator
-               Core(uint32_t segmentSize);
+               Core(bool enSsi);
 
                //! Destructor
                ~Core();
@@ -71,7 +70,7 @@ namespace rogue {
                void setTimeout(uint32_t timeout);
          };
 
-         // Convienence
+         // Convenience
          typedef boost::shared_ptr<rogue::protocols::packetizer::Core> CorePtr;
 
       }

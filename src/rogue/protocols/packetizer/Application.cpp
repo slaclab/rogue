@@ -26,11 +26,14 @@
 #include <boost/make_shared.hpp>
 #include <rogue/GilRelease.h>
 #include <rogue/Logging.h>
-#include <sys/syscall.h>
 
 namespace rpp = rogue::protocols::packetizer;
 namespace ris = rogue::interfaces::stream;
+
+#ifndef NO_PYTHON
+#include <boost/python.hpp>
 namespace bp  = boost::python;
+#endif
 
 //! Class creation
 rpp::ApplicationPtr rpp::Application::create (uint8_t id) {
@@ -39,14 +42,13 @@ rpp::ApplicationPtr rpp::Application::create (uint8_t id) {
 }
 
 void rpp::Application::setup_python() {
+#ifndef NO_PYTHON
 
-   bp::class_<rpp::Application, rpp::ApplicationPtr, bp::bases<ris::Master,ris::Slave>, boost::noncopyable >("Application",bp::init<uint8_t>())
-      .def("create",         &rpp::Application::create)
-      .staticmethod("create")
-   ;
+   bp::class_<rpp::Application, rpp::ApplicationPtr, bp::bases<ris::Master,ris::Slave>, boost::noncopyable >("Application",bp::init<uint8_t>());
 
    bp::implicitly_convertible<rpp::ApplicationPtr, ris::MasterPtr>();
    bp::implicitly_convertible<rpp::ApplicationPtr, ris::SlavePtr>();
+#endif
 }
 
 //! Creator
@@ -56,7 +58,10 @@ rpp::Application::Application (uint8_t id) {
 }
 
 //! Destructor
-rpp::Application::~Application() { }
+rpp::Application::~Application() { 
+   thread_->interrupt();
+   thread_->join();
+}
 
 //! Setup links
 void rpp::Application::setController( rpp::ControllerPtr cntl ) {
@@ -67,8 +72,8 @@ void rpp::Application::setController( rpp::ControllerPtr cntl ) {
 }
 
 //! Generate a Frame. Called from master
-ris::FramePtr rpp::Application::acceptReq ( uint32_t size, bool zeroCopyEn, uint32_t maxBuffSize ) {
-   return(cntl_->reqFrame(size,maxBuffSize));
+ris::FramePtr rpp::Application::acceptReq ( uint32_t size, bool zeroCopyEn) {
+   return(cntl_->reqFrame(size));
 }
 
 //! Accept a frame from master
@@ -84,11 +89,12 @@ void rpp::Application::pushFrame( ris::FramePtr frame ) {
 //! Thread background
 void rpp::Application::runThread() {
    Logging log("packetizer.Application");
-   log.info("PID=%i, TID=%li",getpid(),syscall(SYS_gettid));
+   log.logThreadId();
 
    try {
       while(1) {
          sendFrame(queue_.pop());
+         boost::this_thread::interruption_point();
       }
    } catch (boost::thread_interrupted&) { }
 }

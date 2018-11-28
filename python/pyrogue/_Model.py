@@ -25,6 +25,14 @@ def wordCount(bits, wordSize):
 def byteCount(bits):
     return wordCount(bits, 8)
 
+def reverseBits(value, bitSize):
+    result = 0
+    for i in range(bitSize):
+        result <<= 1
+        result |= value & 1
+        value >>= 1
+    return result
+
 # class ModelMeta(type):
 #     def __init__(cls, *args, **kwargs):
 #         super().__init__(*args, **kwargs)
@@ -80,7 +88,7 @@ class UInt(Model):
         return value.to_bytes(byteCount(bitSize), 'little', signed=False)
 
     @classmethod
-    def fromBytes(cls, ba):
+    def fromBytes(cls, ba, bitSize):
         return int.from_bytes(ba, 'little', signed=False)
 
 
@@ -93,6 +101,19 @@ class UInt(Model):
     def name(cls, bitSize):
         return '{}{}'.format(cls.__name__, bitSize)
 
+@Pyro4.expose
+class UIntReversed(UInt):
+    """Converts Unsigned Integer to and from bytearray with reserved bit ordering"""
+
+    @classmethod
+    def toBytes(cls, value, bitSize):
+        valueReverse = reverseBits(value,bitSize)
+        return super().toBytes(valueReverse, bitSize)
+
+    @classmethod
+    def fromBytes(cls, ba, bitSize):
+        valueReverse = super().fromBytes(ba, bitSize)
+        return reverseBits(valueReverse,bitSize)
 
 @Pyro4.expose
 class Int(Model):
@@ -106,11 +127,26 @@ class Int(Model):
 
     @classmethod
     def toBytes(cls, value, bitSize):
-        return value.to_bytes(byteCount(bitSize), 'little', signed=True)
+        if (value < 0) and (bitSize < (byteCount(bitSize) * 8)):
+            newValue = value & (2**(bitSize)-1) # Strip upper bits
+            ba = newValue.to_bytes(byteCount(bitSize), 'little', signed=False)
+        else:
+            ba = value.to_bytes(byteCount(bitSize), 'little', signed=True)
+
+        return ba
 
     @classmethod
-    def fromBytes(cls,ba):
-        return int.from_bytes(ba, 'little', signed=True)
+    def fromBytes(cls,ba,bitSize):
+        if (bitSize < (byteCount(bitSize)*8)):
+            value = int.from_bytes(ba, 'little', signed=False)
+
+            if value >= 2**(bitSize-1):
+                value -= 2**bitSize
+
+        else:
+            value = int.from_bytes(ba, 'little', signed=True)
+
+        return value
 
     @staticmethod
     def fromString(string, bitSize):
@@ -123,7 +159,6 @@ class Int(Model):
     @classmethod
     def name(cls, bitSize):
         return '{}{}'.format(cls.__name__, bitSize)
-    
 
 @Pyro4.expose
 class Bool(Model):
@@ -140,7 +175,7 @@ class Bool(Model):
         return value.to_bytes(1, 'little', signed=False)
 
     @classmethod
-    def fromBytes(cls, ba):
+    def fromBytes(cls, ba, bitSize):
         return bool(int.from_bytes(ba, 'little', signed=False))
 
     @staticmethod
@@ -170,7 +205,7 @@ class String(Model):
         return ba
 
     @classmethod
-    def fromBytes(cls, ba):
+    def fromBytes(cls, ba, bitSize):
         s = ba.rstrip(bytearray(1))
         return s.decode(String.encoding)
 
@@ -205,7 +240,7 @@ class Float(Model):
         return bytearray(struct.pack(fstring, value))
 
     @classmethod
-    def fromBytes(cls, ba):
+    def fromBytes(cls, ba, bitSize):
         if len(ba) == 4:
             return struct.unpack('f', ba)
         elif len(ba) == 8:

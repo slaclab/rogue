@@ -21,10 +21,11 @@
 **/
 
 #include <rogue/interfaces/module.h>
-#include <rogue/interfaces/stream/Buffer.h>
 #include <rogue/interfaces/stream/Slave.h>
 #include <rogue/interfaces/stream/Master.h>
 #include <rogue/interfaces/stream/Frame.h>
+#include <rogue/interfaces/stream/FrameLock.h>
+#include <rogue/interfaces/stream/Fifo.h>
 #include <rogue/interfaces/stream/module.h>
 #include <boost/python.hpp>
 
@@ -42,11 +43,12 @@ void ris::setup_module() {
    // set the current scope to the new sub-module
    bp::scope io_scope = module;
 
-   ris::Buffer::setup_python();
    ris::Frame::setup_python();
+   ris::FrameLock::setup_python();
    ris::Master::setup_python();
    ris::Slave::setup_python();
    ris::Pool::setup_python();
+   ris::Fifo::setup_python();
 
 }
 

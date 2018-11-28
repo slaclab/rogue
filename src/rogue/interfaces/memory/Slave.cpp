@@ -3,9 +3,7 @@
  * Title      : Memory Slave
  * ----------------------------------------------------------------------------
  * File       : Slave.cpp
- * Author     : Ryan Herbst, rherbst@slac.stanford.edu
  * Created    : 2016-09-20
- * Last update: 2016-09-20
  * ----------------------------------------------------------------------------
  * Description:
  * Memory slave interface.
@@ -22,13 +20,24 @@
 #include <rogue/interfaces/memory/Slave.h>
 #include <rogue/interfaces/memory/Master.h>
 #include <rogue/interfaces/memory/Constants.h>
+#include <rogue/interfaces/memory/Transaction.h>
 #include <rogue/GeneralError.h>
 #include <boost/make_shared.hpp>
 #include <rogue/GilRelease.h>
 #include <rogue/ScopedGil.h>
 
+#ifndef NO_PYTHON
+#include <boost/python.hpp>
+namespace bp  = boost::python;
+#endif
+
 namespace rim = rogue::interfaces::memory;
-namespace bp = boost::python;
+
+// Init class counter
+uint32_t rim::Slave::classIdx_ = 0;
+
+//! Class instance lock
+boost::mutex rim::Slave::classMtx_;
 
 //! Create a slave container
 rim::SlavePtr rim::Slave::create (uint32_t min, uint32_t max) {
@@ -40,58 +49,82 @@ rim::SlavePtr rim::Slave::create (uint32_t min, uint32_t max) {
 rim::Slave::Slave(uint32_t min, uint32_t max) { 
    min_ = min;
    max_ = max;
-   enLocDone_ = false;
+
+   classMtx_.lock();
+   if ( classIdx_ == 0 ) classIdx_ = 1;
+   id_ = classIdx_;
+   classIdx_++;
+   classMtx_.unlock();
 } 
 
 //! Destroy object
 rim::Slave::~Slave() { }
 
-//! Enable local response
-void rim::Slave::enLocDone(bool enable) {
-   rogue::GilRelease noGil;
-   boost::lock_guard<boost::mutex> lock(mtx_);
-   enLocDone_ = enable;
-}
-
 //! Register a master.
-void rim::Slave::addMaster(uint32_t id, rim::MasterPtr master) {
+void rim::Slave::addTransaction(rim::TransactionPtr tran) {
    rogue::GilRelease noGil;
-   boost::lock_guard<boost::mutex> lock(mtx_);
-   masterMap_[id] = master;
+   boost::lock_guard<boost::mutex> lock(slaveMtx_);
+   tranMap_[tran->id()] = tran;
 }
 
-//! Get master device with index, called by sub classes
-rim::MasterPtr rim::Slave::getMaster(uint32_t index) {
-   rogue::GilRelease noGil;
-   boost::lock_guard<boost::mutex> lock(mtx_);
+//! Get transaction with index, called by sub classes
+rim::TransactionPtr rim::Slave::getTransaction(uint32_t index) {
+   rim::TransactionPtr ret;
+   TransactionMap::iterator it;
 
-   if ( masterMap_.find(index) != masterMap_.end() ) return(masterMap_[index]);
-   else throw(rogue::GeneralError("Slave::getMaster","Memory Master Not Linked To Slave"));
+   rogue::GilRelease noGil;
+   boost::lock_guard<boost::mutex> lock(slaveMtx_);
+
+   if ( (it = tranMap_.find(index)) != tranMap_.end() ) {
+      ret = it->second;
+
+      // Remove from list
+      tranMap_.erase(it);
+
+      // Cleanup the list, update timers
+      it = tranMap_.begin();
+      while ( it != tranMap_.end() ) {
+         if ( it->second->expired() ) {
+            tranMap_.erase(it); // Iterator no longer valid
+            it = tranMap_.begin();
+         }
+         else {
+            it->second->refreshTimer(ret);
+            ++it;
+         }
+      }
+   }
+   return ret;
 }
 
-//! Return true if master is valid
-bool rim::Slave::validMaster(uint32_t index) {
-   rogue::GilRelease noGil;
-   boost::lock_guard<boost::mutex> lock(mtx_);
-   if ( masterMap_.find(index) != masterMap_.end() ) return(true);
-   else return(false);
+//! Get min size from slave
+uint32_t rim::Slave::min() {
+   return min_;
 }
 
-//! Remove master from the list
-void rim::Slave::delMaster(uint32_t index) {
-   rogue::GilRelease noGil;
-   boost::lock_guard<boost::mutex> lock(mtx_);
-   if ( masterMap_.find(index) != masterMap_.end() ) masterMap_.erase(index);
+//! Get min size from slave
+uint32_t rim::Slave::max() {
+   return max_;
+}
+
+//! Get id from slave
+uint32_t rim::Slave::id() {
+   return id_;
+}
+
+//! Return id to requesting master
+uint32_t rim::Slave::doSlaveId() {
+   return(id());
 }
 
 //! Return min access size to requesting master
 uint32_t rim::Slave::doMinAccess() {
-   return(min_);
+   return(min());
 }
 
 //! Return max access size to requesting master
 uint32_t rim::Slave::doMaxAccess() {
-   return(max_);
+   return(max());
 }
 
 //! Return offset
@@ -100,26 +133,24 @@ uint64_t rim::Slave::doAddress() {
 }
 
 //! Post a transaction
-void rim::Slave::doTransaction(uint32_t id, rim::MasterPtr master, uint64_t address, uint32_t size, uint32_t type) {
-   if ( enLocDone_ ) master->doneTransaction(id,0);
-   else master->doneTransaction(id,rim::Unsupported);
+void rim::Slave::doTransaction(rim::TransactionPtr transaction) {
+   transaction->done(rim::Unsupported);
 }
 
 void rim::Slave::setup_python() {
+#ifndef NO_PYTHON
    bp::class_<rim::SlaveWrap, rim::SlaveWrapPtr, boost::noncopyable>("Slave",bp::init<uint32_t,uint32_t>())
-      .def("create",         &rim::Slave::create)
-      .staticmethod("create")
-      .def("_addMaster",     &rim::Slave::addMaster)
-      .def("_getMaster",     &rim::Slave::getMaster)
-      .def("_validMaster",   &rim::Slave::validMaster)
-      .def("_delMaster",     &rim::Slave::delMaster)
-      .def("enLocDone",      &rim::Slave::enLocDone)
-      .def("_doMinAccess",   &rim::Slave::doMinAccess,   &rim::SlaveWrap::defDoMinAccess)
-      .def("_doMaxAccess",   &rim::Slave::doMaxAccess,   &rim::SlaveWrap::defDoMaxAccess)
-      .def("_doAddress",     &rim::Slave::doAddress,     &rim::SlaveWrap::defDoAddress)
-      .def("_doTransaction", &rim::Slave::doTransaction, &rim::SlaveWrap::defDoTransaction)
+      .def("_addTransaction", &rim::Slave::addTransaction)
+      .def("_getTransaction", &rim::Slave::getTransaction)
+      .def("_doMinAccess",    &rim::Slave::doMinAccess,   &rim::SlaveWrap::defDoMinAccess)
+      .def("_doMaxAccess",    &rim::Slave::doMaxAccess,   &rim::SlaveWrap::defDoMaxAccess)
+      .def("_doAddress",      &rim::Slave::doAddress,     &rim::SlaveWrap::defDoAddress)
+      .def("_doTransaction",  &rim::Slave::doTransaction, &rim::SlaveWrap::defDoTransaction)
    ;
+#endif
 }
+
+#ifndef NO_PYTHON
 
 //! Constructor
 rim::SlaveWrap::SlaveWrap(uint32_t min, uint32_t max) : rim::Slave(min,max) {}
@@ -188,26 +219,26 @@ uint64_t rim::SlaveWrap::defDoAddress() {
 }
 
 //! Post a transaction. Master will call this method with the access attributes.
-void rim::SlaveWrap::doTransaction(uint32_t id, rim::MasterPtr master,
-                                   uint64_t address, uint32_t size, uint32_t type) {
+void rim::SlaveWrap::doTransaction(rim::TransactionPtr transaction) {
    {
       rogue::ScopedGil gil;
 
       if (boost::python::override pb = this->get_override("_doTransaction")) {
          try {
-            pb(id,master,address,size,type);
+            pb(transaction);
             return;
          } catch (...) {
             PyErr_Print();
          }
       }
    }
-   rim::Slave::doTransaction(id,master,address,size,type);
+   rim::Slave::doTransaction(transaction);
 }
 
 //! Post a transaction. Master will call this method with the access attributes.
-void rim::SlaveWrap::defDoTransaction(uint32_t id, rim::MasterPtr master,
-                                      uint64_t address, uint32_t size, uint32_t type) {
-   rim::Slave::doTransaction(id, master, address, size, type);
+void rim::SlaveWrap::defDoTransaction(rim::TransactionPtr transaction) {
+   rim::Slave::doTransaction(transaction);
 }
+
+#endif
 

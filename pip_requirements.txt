@@ -1,0 +1,9 @@
+PyYAML
+Pyro4
+parse
+click
+coverage
+codecov
+pytest
+pytest-cov
+pyepics

@@ -23,6 +23,8 @@ import Pyro4
 import Pyro4.naming
 import functools as ft
 import time
+import queue
+from contextlib import contextmanager
 
 class RootLogHandler(logging.Handler):
     """ Class to listen to log entries and add them to syslog variable"""
@@ -31,11 +33,14 @@ class RootLogHandler(logging.Handler):
         self._root = root
 
     def emit(self,record):
-        with self._root._sysLogLock:
-            val = self._root.SystemLog.value()
-            val += (self.format(record).splitlines()[0] + '\n')
-            self._root.SystemLog.set(write=False,value=val)
-        self._root.SystemLog.updated() # Update outside of lock
+        with self._root.updateGroup():
+           try:
+               val = (self.format(record).splitlines()[0] + '\n')
+               self._root.SystemLog += val
+           except Exception as e:
+               print("-----------Error Logging Exception -------------")
+               print(e)
+               print("------------------------------------------------")
 
 class Root(rogue.interfaces.stream.Master,pr.Device):
     """
@@ -54,7 +59,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         """Root exit."""
         self.stop()
 
-    def __init__(self, *, name, description):
+    def __init__(self, *, name=None, description=''):
         """Init the node with passed attributes"""
 
         rogue.interfaces.stream.Master.__init__(self)
@@ -67,25 +72,25 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         self._logger = logging.getLogger('pyrogue')
         self._logger.addHandler(handler)
 
-        # Keep of list of errors, exposed as a variable
-        self._sysLogLock = threading.Lock()
+        # Running status
+        self._running = False
 
-        # Background threads
+        # Polling worker
         self._pollQueue = None
-        self._running   = False
 
         # Remote object export
         self._pyroThread = None
         self._pyroDaemon = None
 
-        # Variable update list
-        self._updatedDict = None
-        self._updatedLock = threading.Lock()
-
-        # Variable update listener
+        # List of variable listeners
         self._varListeners  = []
+        self._varListenLock = threading.Lock()
 
-        # Init after _updatedLock exists
+        # Variable update worker
+        self._updateQueue = queue.Queue()
+        self._updateThread = None
+
+        # Init 
         pr.Device.__init__(self, name=name, description=description)
 
         # Variables
@@ -95,7 +100,33 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         self.add(pr.LocalVariable(name='ForceWrite', value=False, mode='RW', hidden=True,
             description='Configuration Flag To Control Write All Block'))
 
-    def start(self, initRead=False, initWrite=False, pollEn=True, pyroGroup=None, pyroHost=None, pyroNs=None):
+        # Commands
+        self.add(pr.LocalCommand(name='WriteAll', function=self._write, 
+                                 description='Write all values to the hardware'))
+
+        self.add(pr.LocalCommand(name="ReadAll", function=self._read,
+                                 description='Read all values from the hardware'))
+
+        self.add(pr.LocalCommand(name='WriteConfig', value='', function=self._writeConfig,
+                                 description='Write configuration to passed filename in YAML format'))
+
+        self.add(pr.LocalCommand(name='ReadConfig', value='', function=self._readConfig,
+                                 description='Read configuration from passed filename in YAML format'))
+
+        self.add(pr.LocalCommand(name='SoftReset', function=self._softReset,
+                                 description='Generate a soft reset to each device in the tree'))
+
+        self.add(pr.LocalCommand(name='HardReset', function=self._hardReset,
+                                 description='Generate a hard reset to each device in the tree'))
+
+        self.add(pr.LocalCommand(name='CountReset', function=self._countReset,
+                                 description='Generate a count reset to each device in the tree'))
+
+        self.add(pr.LocalCommand(name='ClearLog', function=self._clearLog,
+                                 description='Clear the message log cntained in the SystemLog variable'))
+
+
+    def start(self, timeout=1.0, initRead=False, initWrite=False, pollEn=True, pyroGroup=None, pyroAddr=None, pyroNsAddr=None):
         """Setup the tree. Start the polling thread."""
 
         # Create poll queue object
@@ -110,20 +141,26 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         for key,value in self._nodes.items():
             value._rootAttached(self,self)
 
-        # Get list of deprecated nodes
-        lst = self._getDepWarn()
+        # Look for device overlaps
+        tmpDevs = self.deviceList
+        tmpDevs.sort(key=lambda x: (x.memBaseId, x.address, x.size))
 
-        cnt=len(lst)
-        if cnt > 0:
-            print("----------- Deprecation Warning --------------------------------")
-            print("The following nodes were created with deprecated calls:")
-            if cnt > 50:
-                print("   (Only showing 50 out of {} total deprecated nodes)".format(cnt))
+        for i in range(1,len(tmpDevs)):
+            if (tmpDevs[i].size != 0) and (tmpDevs[i].memBaseId == tmpDevs[i-1].memBaseId) and \
+                (tmpDevs[i].address < (tmpDevs[i-1].address + tmpDevs[i-1].size)):
 
-            for n in lst[:50]:
-                print("   " + n)
+                print("\n\n\n------------------------ Device Overlap Warning !!! --------------------------------")
+                print("Device {} at address={:#x} overlaps {} at address={:#x} with size={}".format(
+                      tmpDevs[i].path,tmpDevs[i].address,tmpDevs[i-1].path,tmpDevs[i-1].address,tmpDevs[i-1].size))
+                print("This warning will be replaced with an exception in the next release!!!!!!!!")
 
-            print("----------------------------------------------------------------")
+                #raise pr.NodeError("Device {} at address={} overlaps {} at address={} with size={}".format(
+                #    tmpDevs[i].path,tmpDevs[i].address,tmpDevs[i-1].path,tmpDevs[i-1].address,tmpDevs[i-1].size))
+
+        # Set timeout if not default
+        if timeout != 1.0:
+            for key,value in self._nodes.items():
+                value._setTimeout(timeout)
 
         # Start pyro server if enabled
         if pyroGroup is not None:
@@ -133,22 +170,22 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
             Pyro4.util.SerializerBase.register_dict_to_class("collections.OrderedDict", recreate_OrderedDict)
 
-            self._pyroDaemon = Pyro4.Daemon(host=pyroHost)
+            self._pyroDaemon = Pyro4.Daemon(host=pyroAddr)
 
             uri = self._pyroDaemon.register(self)
 
             # Do we create our own nameserver?
             try:
-                if pyroNs is None:
-                    nsUri, nsDaemon, nsBcast = Pyro4.naming.startNS(host=pyroHost)
+                if pyroNsAddr is None:
+                    nsUri, nsDaemon, nsBcast = Pyro4.naming.startNS(host=pyroAddr)
                     self._pyroDaemon.combine(nsDaemon)
                     if nsBcast is not None:
                         self._pyroDaemon.combine(nsBcast)
                     ns = nsDaemon.nameserver
                     self._log.info("Started pyro4 nameserver: {}".format(nsUri))
                 else:
-                    ns = Pyro4.locateNS(pyroNs)
-                    self._log.info("Using pyro4 nameserver at host: {}".format(pyroNs))
+                    ns = Pyro4.locateNS(pyroNsAddr)
+                    self._log.info("Using pyro4 nameserver at addr: {}".format(pyroNsAddr))
 
                 ns.register('{}.{}'.format(pyroGroup,self.name),uri)
                 self._exportNodes(self._pyroDaemon)
@@ -167,6 +204,10 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         if initWrite:
             self._write()
 
+        # Start update thread
+        self._updateThread = threading.Thread(target=self._updateWorker)
+        self._updateThread.start()
+
         # Start poller if enabled
         if pollEn:
             self._pollQueue._start()
@@ -175,10 +216,14 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
     def stop(self):
         """Stop the polling thread. Must be called for clean exit."""
+        self._updateQueue.put(None)
+
         if self._pollQueue:
             self._pollQueue.stop()
+
         if self._pyroDaemon:
             self._pyroDaemon.shutdown()
+
         self._running=False
 
     @Pyro4.expose
@@ -206,10 +251,11 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         Add a variable update listener function.
         The variable, value and display string will be passed as an arg: func(path,value,disp)
         """
-        self._varListeners.append(func)
+        with self._varListenLock:
+            self._varListeners.append(func)
 
-        if isinstance(func,Pyro4.core.Proxy):                                    
-            func._pyroOneway.add("varListener")                                  
+            if isinstance(func,Pyro4.core.Proxy):                                    
+                func._pyroOneway.add("varListener")                                  
 
     def getYaml(self,readFirst,modes=['RW']):
         """
@@ -227,7 +273,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
         return ret
 
-    def setYaml(self,yml,writeEach,modes=['RW']):
+    def setYaml(self,yml,writeEach,modes=['RW','WO']):
         """
         Set variable values or execute commands from a dictionary.
         modes is a list of variable modes to act on.
@@ -238,15 +284,18 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         quanitty of variables.
         """
         d = yamlToDict(yml)
-        self._initUpdatedVars()
+        with self.updateGroup():
 
-        for key, value in d.items():
-            if key == self.name:
-                self._setDict(value,writeEach,modes)
+            for key, value in d.items():
+                if key == self.name:
+                    self._setDict(value,writeEach,modes)
+                else:
+                    try:
+                        self._getPath(key).setDisp(value)
+                    except:
+                        self._log.error("Entry {} not found".format(key))
 
-        self._doneUpdatedVars()
-
-        if not writeEach: self._write()
+            if not writeEach: self._write()
 
     @Pyro4.expose
     def get(self,path):
@@ -283,19 +332,26 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         obj = self.getNode(path)
         return obj.call(arg)
 
-    def setTimeout(self,timeout):
-        """
-        Set timeout value on all devices & blocks
-        """
-        for key,value in self._nodes.items():
-            value._setTimeout(timeout)
+    @contextmanager
+    def updateGroup(self):
+
+        # At wtih call
+        self._updateQueue.put(True)
+
+        # Return to block within with call
+        try:
+            yield
+        finally:
+
+            # After with is done
+            self._updateQueue.put(False)
 
     def _sendYamlFrame(self,yml):
         """
         Generate a frame containing the passed string.
         """
-        frame = self._reqFrame(len(yml),True,0)
         b = bytearray(yml,'utf-8')
+        frame = self._reqFrame(len(b),True)
         frame.write(b,0)
         self._sendFrame(frame)
 
@@ -308,48 +364,32 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         """
         self._sendYamlFrame(self.getYaml(False,modes))
 
-    def _initUpdatedVars(self):
-        """Initialize the update tracking log before a bulk variable update"""
-        with self._updatedLock:
-            self._updatedDict = odict()
-
-    def _doneUpdatedVars(self):
-        """Stream the results of a bulk variable update and update listeners"""
-        with self._updatedLock:
-            if self._updatedDict:
-                yml = dictToYaml(self._updatedDict,default_flow_style=False)
-                self._sendYamlFrame(yml)
-                self._updatedDict = None
-
-    @pr.command(order=7, name='WriteAll', description='Write all values to the hardware')
     def _write(self):
         """Write all blocks"""
         self._log.info("Start root write")
-        try:
-            self.writeBlocks(force=self.ForceWrite.value(), recurse=True)
-            self._log.info("Verify root read")
-            self.verifyBlocks(recurse=True)
-            self._log.info("Check root read")
-            self.checkBlocks(recurse=True)
-        except Exception as e:
-            self._log.exception(e)
+        with self.updateGroup():
+            try:
+                self.writeBlocks(force=self.ForceWrite.value(), recurse=True)
+                self._log.info("Verify root read")
+                self.verifyBlocks(recurse=True)
+                self._log.info("Check root read")
+                self.checkBlocks(recurse=True)
+            except Exception as e:
+                self._log.exception(e)
         self._log.info("Done root write")
 
-    @pr.command(order=6, name="ReadAll", description='Read all values from the hardware')
     def _read(self):
         """Read all blocks"""
         self._log.info("Start root read")
-        self._initUpdatedVars()
-        try:
-            self.readBlocks(recurse=True)
-            self._log.info("Check root read")
-            self.checkBlocks(recurse=True)
-        except Exception as e:
-            self._log.exception(e)
-        self._doneUpdatedVars()
+        with self.updateGroup():
+            try:
+                self.readBlocks(recurse=True)
+                self._log.info("Check root read")
+                self.checkBlocks(recurse=True)
+            except Exception as e:
+                self._log.exception(e)
         self._log.info("Done root read")
 
-    @pr.command(order=0, name='WriteConfig', value='', description='Write configuration to passed filename in YAML format')
     def _writeConfig(self,arg):
         """Write YAML configuration to a file. Called from command"""
         try:
@@ -358,67 +398,98 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         except Exception as e:
             self._log.exception(e)
 
-    @pr.command(order=1, name='ReadConfig', value='', description='Read configuration from passed filename in YAML format')
     def _readConfig(self,arg):
         """Read YAML configuration from a file. Called from command"""
         try:
             with open(arg,'r') as f:
-                self.setYaml(f.read(),False,['RW'])
+                self.setYaml(f.read(),False,['RW','WO'])
         except Exception as e:
             self._log.exception(e)
 
-    @pr.command(order=3, name='SoftReset', description='Generate a soft reset to each device in the tree')
     def _softReset(self):
         """Generate a soft reset on all devices"""
         self.callRecursive('softReset', nodeTypes=[pr.Device])
 
-    @pr.command(order=2, name='HardReset', description='Generate a hard reset to each device in the tree')
     def _hardReset(self):
         """Generate a hard reset on all devices"""
         self.callRecursive('hardReset', nodeTypes=[pr.Device])        
         self._clearLog()
 
-    @pr.command(order=4, name='CountReset', description='Generate a count reset to each device in the tree')
     def _countReset(self):
         """Generate a count reset on all devices"""
         self.callRecursive('countReset', nodeTypes=[pr.Device])        
 
-    @pr.command(order=5, name='ClearLog', description='Clear the message log cntained in the SystemLog variable')
     def _clearLog(self):
         """Clear the system log"""
-        with self._sysLogLock:
-            self.SystemLog.set(value='',write=False)
-        self.SystemLog.updated()
+        self.SystemLog.set('')
 
-    def _varUpdated(self,path,value,disp):
-        for func in self._varListeners:
+    def _queueUpdates(self,var):
+        self._updateQueue.put(var)
 
-            try:
+    # Worker thread
+    def _updateWorker(self):
+        self._log.info("Starting update thread")
 
-                if isinstance(func,Pyro4.core.Proxy) or hasattr(func,'varListener'):
-                    func.varListener(path,value,disp)
-                else:
-                    func(path,value,disp)
+        # Init
+        count = 0
+        uvars = {}
 
-            except Pyro4.errors.CommunicationError as msg:
-                if 'Connection refused' in str(msg):
-                    self._log.info("Pyro Disconnect. Removing callback")
-                    self._varListeners.remove(func)
-                else:
-                    self._log.error("Pyro callback failed for {}: {}".format(self.name,msg))
+        while True:
+            ent = self._updateQueue.get()
 
-        with self._updatedLock:
+            # Done
+            if ent is None:
+                self._log.info("Stopping update thread")
+                return
 
-            # Log is active add to log
-            if self._updatedDict is not None:
-                addPathToDict(self._updatedDict,path,disp)
+            # Increment
+            elif ent is True:
+                count += 1
 
-            # Otherwise act directly
+            # Decrement
+            elif ent is False:
+                if count > 0:
+                    count -= 1
+
+            # Variable
             else:
-                d   = {}
-                addPathToDict(d,path,disp)
-                yml = dictToYaml(d,default_flow_style=False)
-                self._sendYamlFrame(yml)
+                uvars[ent.path] = ent
+
+            # Process list if count = 0
+            if count == 0 and len(uvars) > 0:
+
+                self._log.debug(F"Process update group. Length={len(uvars)}. Entry={list(uvars.keys())[0]}")
+                d = odict()
+
+                for p,v in uvars.items():
+                    val = v._doUpdate()
+                    d[p] = val
+
+                    # Call listener functions,
+                    with self._varListenLock:
+                        for func in self._varListeners:
+                            try:
+
+                                if isinstance(func,Pyro4.core.Proxy) or hasattr(func,'varListener'):
+                                    func.varListener(p,val.value,val.valueDisp)
+                                else:
+                                    func(p,val.value.val,valueDisp)
+
+                            except Pyro4.errors.CommunicationError as msg:
+                                if 'Connection refused' in str(msg):
+                                    self._log.info("Pyro Disconnect. Removing callback")
+                                    self._varListeners.remove(func)
+                                else:
+                                    self._log.error("Pyro callback failed for {}: {}".format(self.name,msg))
+
+                # Generate yaml stream
+                self._sendYamlFrame(dictToYaml(d,default_flow_style=False))
+
+                # Init var list
+                uvars = {}
+
+            # Set done
+            self._updateQueue.task_done()
 
 
 class PyroRoot(pr.PyroNode):
@@ -453,7 +524,7 @@ class PyroRoot(pr.PyroNode):
                 f.varListener(path=path, value=value, disp=disp)
 
 class PyroClient(object):
-    def __init__(self, group, host=None, ns=None):
+    def __init__(self, group, localAddr=None, nsAddr=None):
         self._group = group
 
         Pyro4.config.THREADPOOL_SIZE = 100
@@ -462,12 +533,15 @@ class PyroClient(object):
 
         Pyro4.util.SerializerBase.register_dict_to_class("collections.OrderedDict", recreate_OrderedDict)
 
+        if nsAddr is None:
+            nsAddr = localAddr
+
         try:
-            self._ns = Pyro4.locateNS(host=ns)
+            self._ns = Pyro4.locateNS(host=nsAddr)
         except:
             raise pr.NodeError("PyroClient Failed to find nameserver")
 
-        self._pyroDaemon = Pyro4.Daemon(host=host)
+        self._pyroDaemon = Pyro4.Daemon(host=localAddr)
 
         self._pyroThread = threading.Thread(target=self._pyroDaemon.requestLoop)
         self._pyroThread.start()
@@ -487,47 +561,45 @@ class PyroClient(object):
             raise pr.NodeError("PyroClient Failed to find {}.{}.".format(self._group,name))
 
 
-def addPathToDict(d, path, value):
-    """Helper function to add a path/value pair to a dictionary tree"""
-    npath = path
-    sd = d
-
-    # Transit through levels
-    while '.' in npath:
-        base  = npath[:npath.find('.')]
-        npath = npath[npath.find('.')+1:]
-
-        if base in sd:
-           sd = sd[base]
-        else:
-           sd[base] = odict()
-           sd = sd[base]
-
-    # Add final node
-    sd[npath] = value
-
-
 def yamlToDict(stream, Loader=yaml.Loader, object_pairs_hook=odict):
     """Load yaml to ordered dictionary"""
     class OrderedLoader(Loader):
         pass
+
     def construct_mapping(loader, node):
         loader.flatten_mapping(node)
         return object_pairs_hook(loader.construct_pairs(node))
-    OrderedLoader.add_constructor(
-        yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG,
-        construct_mapping)
-    return yaml.load(stream, OrderedLoader)
 
+    OrderedLoader.add_constructor(yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG,construct_mapping)
+
+    return yaml.load(stream, OrderedLoader)
 
 def dictToYaml(data, stream=None, Dumper=yaml.Dumper, **kwds):
     """Convert ordered dictionary to yaml"""
+
     class OrderedDumper(Dumper):
         pass
+
+    def _var_representer(dumper, data):
+        if type(data.value) == bool:
+            enc = 'tag:yaml.org,2002:bool'
+        elif data.enum is not None:
+            enc = 'tag:yaml.org,2002:str'
+        elif type(data.value) == int:
+            enc = 'tag:yaml.org,2002:int'
+        elif type(data.value) == float:
+            enc = 'tag:yaml.org,2002:float'
+        else:
+            enc = 'tag:yaml.org,2002:str'
+
+        return dumper.represent_scalar(enc, data.valueDisp)
+
     def _dict_representer(dumper, data):
-        return dumper.represent_mapping(
-            yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG,data.items())
+        return dumper.represent_mapping(yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG, data.items())
+
+    OrderedDumper.add_representer(pr.VariableValue, _var_representer)
     OrderedDumper.add_representer(odict, _dict_representer)
+
     try:
         ret = yaml.dump(data, stream, OrderedDumper, **kwds)
     except Exception as e:

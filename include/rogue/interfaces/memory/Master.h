@@ -23,80 +23,46 @@
 #define __ROGUE_INTERFACES_MEMORY_MASTER_H__
 #include <stdint.h>
 #include <vector>
-#include <boost/enable_shared_from_this.hpp>
-#include <boost/python.hpp>
 #include <boost/thread.hpp>
 #include <rogue/Logging.h>
+
+#ifndef NO_PYTHON
+#include <boost/python.hpp>
+#endif
 
 namespace rogue {
    namespace interfaces {
       namespace memory {
 
          class Slave;
+         class Transaction;
 
-         //! Transaction tracker
-         class MasterTransaction {
-            public:
+         //! Master container
+         class Master {
+            friend class Transaction;
 
-               //! Transaction start time
-               struct timeval endTime;
+            private:
 
-               //! Transaction start time
-               struct timeval startTime;
+               //! Alias for map
+               typedef std::map<uint32_t, boost::shared_ptr<rogue::interfaces::memory::Transaction> > TransactionMap;
 
-               //! Transaction python buffer
-               Py_buffer pyBuf;
-
-               //! Python buffer is valid
-               bool pyValid;
-
-               //! Transaction data
-               uint8_t * tData;
-
-               //! Transaction size
-               uint32_t tSize;
-         };
-
-         //! Slave container
-         class Master : public boost::enable_shared_from_this<rogue::interfaces::memory::Master> {
-
-               //! Class instance counter
-               static uint32_t classIdx_;
-
-               //! Class instance lock
-               static boost::mutex classIdxMtx_;
+               //! Transaction map
+               TransactionMap tranMap_;
 
                //! Slave. Used for request forwards.
                boost::shared_ptr<rogue::interfaces::memory::Slave> slave_;
-
-               //! Map of outstanding transactions
-               std::map<uint32_t, rogue::interfaces::memory::MasterTransaction> tran_;
 
                //! Timeout value
                struct timeval sumTime_;
 
                //! Mutex
-               boost::mutex mtx_;
+               boost::mutex mastMtx_;
 
-               //! Conditional
-               boost::condition_variable cond_;
-
-               //! Transaction error
+               //! Error status
                uint32_t error_;
 
                //! Log
-               rogue::Logging * log_;
-
-            protected:
-
-               //! Generate a transaction id, not python safe
-               static uint32_t genId();
-
-               //! Reset transaction data
-               void rstTransaction(uint32_t id, uint32_t error, bool notify);
-
-               //! Request transaction
-               uint32_t intTransaction(uint64_t address, rogue::interfaces::memory::MasterTransaction *tran, uint32_t type);
+               rogue::LoggingPtr log_;
 
             public:
 
@@ -112,14 +78,14 @@ namespace rogue {
                //! Destroy object
                virtual ~Master();
 
-               //! Get transaction count
-               uint32_t tranCount();
-
                //! Set slave
                void setSlave ( boost::shared_ptr<rogue::interfaces::memory::Slave> slave );
 
                //! Get slave
                boost::shared_ptr<rogue::interfaces::memory::Slave> getSlave();
+
+               //! Query the slave ID
+               uint32_t reqSlaveId();
 
                //! Query the minimum access size in bytes for interface
                uint32_t reqMinAccess();
@@ -142,51 +108,33 @@ namespace rogue {
                //! Post a transaction, called locally, forwarded to slave, data pointer is optional
                uint32_t reqTransaction(uint64_t address, uint32_t size, void *data, uint32_t type);
 
+#ifndef NO_PYTHON
+
                //! Post a transaction, called locally, forwarded to slave, python version
                // size and offset are optional to use a slice within the python buffer
                uint32_t reqTransactionPy(uint64_t address, boost::python::object p, uint32_t size, uint32_t offset, uint32_t type);
 
-               //! End current transaction, ensures data pointer is not update and de-allocates python buffer
-               void endTransaction(uint32_t id);
+               //! Copy bits from src to dst with lsbs and size
+               static void copyBits(boost::python::object dst, uint32_t dstLsb, boost::python::object src, uint32_t srcLsb, uint32_t size);
 
-               //! Transaction complete, called by slave when transaction is complete, error passed
-               virtual void doneTransaction(uint32_t id, uint32_t error);
+               //! Set all bits in dest with lbs and size
+               static void setBits(boost::python::object dst, uint32_t lsb, uint32_t size);
 
-               //! Set to master from slave, called by slave to push data into master.
-               virtual void setTransactionData(uint32_t id, void *data, uint32_t offset, uint32_t size);
+#endif
 
-               //! Set to master from slave, called by slave to push data into master. Python Version.
-               void setTransactionDataPy(uint32_t id, uint32_t offset, boost::python::object p);
+            protected:
 
-               //! Get from master to slave, called by slave to pull data from mater.
-               virtual void getTransactionData(uint32_t id, void *data, uint32_t offset, uint32_t size);
-
-               //! Get from master to slave, called by slave to pull data from mater. Python Version.
-               void getTransactionDataPy(uint32_t id, uint32_t offset, boost::python::object p);
-
-               //! wait for done or timeout, if zero wait for all transactions
-               void waitTransaction(uint32_t id);
-
-         };
-
-         //! Memory master class, wrapper to enable pyton overload of virtual methods
-         class MasterWrap : 
-            public rogue::interfaces::memory::Master,
-            public boost::python::wrapper<rogue::interfaces::memory::Master> {
+               //! Internal transaction
+               uint32_t intTransaction(boost::shared_ptr<rogue::interfaces::memory::Transaction> tran);
 
             public:
 
-               //! Transaction complete, called by slave when transaction is complete, error passed
-               void doneTransaction(uint32_t id, uint32_t error);
-
-               //! Transaction complete, called by slave when transaction is complete, error passed
-               void defDoneTransaction(uint32_t id, uint32_t error);
+               //! wait for done or timeout, if zero wait for all transactions
+               void waitTransaction(uint32_t id);
          };
 
          // Convienence
          typedef boost::shared_ptr<rogue::interfaces::memory::Master> MasterPtr;
-         typedef boost::shared_ptr<rogue::interfaces::memory::MasterWrap> MasterWrapPtr;
-
       }
    }
 }

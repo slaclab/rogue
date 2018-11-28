@@ -24,11 +24,16 @@
 #include <boost/make_shared.hpp>
 #include <rogue/interfaces/stream/Master.h>
 #include <rogue/interfaces/stream/Frame.h>
+#include <rogue/interfaces/stream/FrameIterator.h>
 #include <rogue/protocols/srp/Cmd.h>
 
-namespace bp = boost::python;
 namespace rps = rogue::protocols::srp;
 namespace ris = rogue::interfaces::stream;
+
+#ifndef NO_PYTHON
+#include <boost/python.hpp>
+namespace bp  = boost::python;
+#endif
 
 //! Class creation
 rps::CmdPtr rps::Cmd::create () {
@@ -38,13 +43,12 @@ rps::CmdPtr rps::Cmd::create () {
 
 //! Setup class in python
 void rps::Cmd::setup_python() {
+#ifndef NO_PYTHON
 
    bp::class_<rps::Cmd, rps::CmdPtr, bp::bases<ris::Master>, boost::noncopyable >("Cmd",bp::init<>())
        .def("sendCmd", &rps::Cmd::sendCmd)
-      .def("create",         &rps::Cmd::create)
-      .staticmethod("create")
    ;
-
+#endif
 }
 
 //! Creator with version constant
@@ -55,32 +59,23 @@ rps::Cmd::~Cmd() {}
 
 //! Post a transaction
 void rps::Cmd::sendCmd(uint8_t opCode, uint32_t context) {
-   ris::FramePtr  frame;
-   uint32_t  frameSize;
-   uint32_t  temp;
-   uint32_t  cnt;
+   ris::Frame::iterator it;
+   ris::FramePtr frame;
+   uint32_t txData[4];
 
-   // Always 4x 32-bit words
-   frameSize = 16;
+   // Build frame
+   txData[0] = context;
+   txData[1] = opCode;
+   txData[2] = 0;
+   txData[3] = 0;
 
    // Request frame
-   frame = reqFrame(frameSize, true, 0);
+   frame = reqFrame(sizeof(txData), true);
+   it = frame->beginWrite();
 
-   // First 32-bit value is context
-   temp = context;
-   cnt  = frame->write(&(temp), 0, 4);
-   
-   // Second 32-bit value is opcode
-   temp = opCode;
-   cnt  += frame->write(&(temp), cnt, 4);
-
-   // Last two fields are zero
-   temp = 0;
-   cnt += frame->write(&temp, cnt, 4);
-   cnt += frame->write(&temp, cnt, 4);   
-
+   // Copy frame
+   ris::toFrame(it,sizeof(txData),txData);
+   frame->setPayload(sizeof(txData));
    sendFrame(frame);
 }
-
-
 

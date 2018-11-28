@@ -1,0 +1,174 @@
+sudo: required
+
+services:
+  - docker
+
+language:
+  - python
+
+python:
+  - 3.6
+
+stages:
+  - test
+  - name: deploy_dev
+    if: branch = pre-release AND tag IS blank AND NOT (type = pull_request)
+  - name: deploy_tag
+    if: tag IS present
+
+env:
+  global:
+    - PY_PATH=$HOME/virtualenv/python3.6.3
+    - PACKAGE_DIR=$HOME/packages
+    - BOOST_DIR=$PACKAGE_DIR/boost_1_64_0
+    - EPICS_DIR=$PACKAGE_DIR/epics/base-3.15.5
+    - MINICONDA_DIR=$PACKAGE_DIR/miniconda
+    - DOCKER_ORG_NAME=tidair
+
+jobs:
+  include:
+    # Test stage
+    - stage: test
+      name: "Unit Tests"
+      before_install:
+        # Prepare enviroment
+        - export CPLUS_INCLUDE_PATH=$PY_PATH/include/python3.6m
+        - export LD_LIBRARY_PATH=$BOOST_DIR/stage/lib:$PY_PATH/lib:$LD_LIBRARY_PATH
+        - export BOOST_ROOT=$BOOST_DIR
+        - export EPICS_BASE=$EPICS_DIR
+        - export EPICS_CA_ADDR_LIST=127.0.0.1
+        # Prepare folders
+        - mkdir -p $BOOST_DIR
+        - mkdir -p $EPICS_DIR
+        # Bring all the tags
+        - git pull --unshallow
+        - git pull
+
+      install:
+        # Tools
+        - pip install -r pip_requirements.txt
+
+        # Boost
+        - cd $BOOST_DIR
+        - wget -O boost_1_64_0.tar.gz http://sourceforge.net/projects/boost/files/boost/1.64.0/boost_1_64_0.tar.gz/download
+        - tar xzf boost_1_64_0.tar.gz --strip 1
+        - ./bootstrap.sh --with-libraries=system,thread,python
+        - travis_wait ./b2 link=shared threading=multi variant=release -d0
+
+        # EPICS base
+        - cd $EPICS_DIR
+        - wget -O base-3.15.5.tar.gz https://epics.anl.gov/download/base/base-3.15.5.tar.gz
+        - tar xzf base-3.15.5.tar.gz --strip 1
+        - make clean && make && make install
+
+        # Rogue
+        - cd $TRAVIS_BUILD_DIR
+        - mkdir build; cd build
+        - cmake .. -DROGUE_INSTALL=local -DPYTHON_LIBRARY=$PY_PATH/lib/python3.6 -DPYTHON_INCLUDE_DIR=$PY_PATH/include
+        - make
+        - make install
+
+      before_script:
+        # Prepare rogue enviroment
+        - cd $TRAVIS_BUILD_DIR
+        - source setup_rogue.sh
+
+      script:
+        # Run tests with coverage
+        - python3 -m pytest --cov
+
+      after_success:
+        # Upload coverage report
+        - codecov
+        - coverage report -m
+
+    # Deploy development version stage (deploy_dev)
+    - &deploy-docker-stage      # Docker
+      stage: deploy_dev
+      name: "Deploy Docker"
+      env: DOCKER_REPO=rogue-dev
+      before_install:
+        # Prepare enviroment
+        - export DOCKER_TAG=`git describe --tags`
+        - export DOCKER_IMAGE_NAME=$DOCKER_ORG_NAME/$DOCKER_REPO
+        # Bring all the tags
+        - git pull --unshallow
+        - git pull
+
+      before_script:
+        # Login to docker
+        - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin;
+
+      script:
+        # Build docker image
+        - travis_wait docker build -q --build-arg branch=$TRAVIS_BRANCH -t $DOCKER_IMAGE_NAME .;
+
+      after_success:
+        # Upload docker image (as tagged and latest version)
+        - docker push $DOCKER_IMAGE_NAME;
+        - docker tag $DOCKER_IMAGE_NAME $DOCKER_IMAGE_NAME:$DOCKER_TAG;
+        - docker push $DOCKER_IMAGE_NAME:$DOCKER_TAG;
+
+    - &deploy-conda-stage       # Conda for linux
+      stage: deploy_dev
+      name: "Deploy Conda"
+      env: CONDA_TOKEN=$CONDA_UPLOAD_TOKEN_DEV
+      before_install:
+        # Prepare folders
+        - mkdir -p $MINICONDA_DIR
+        # Bring all the tags
+        - git pull --unshallow
+        - git pull
+        # on OSX rogue needs an older version of the MacOS SDK
+        - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
+            git clone https://github.com/phracker/MacOSX-SDKs;
+            sudo mv MacOSX-SDKs/MacOSX10.9.sdk /opt/;
+            export CONDA_BUILD_SYSROOT=/opt/MacOSX10.9.sdk;
+            export CONDA_BUILD=1;
+          fi
+
+      install:
+        # Install Anaconda for the right architecture (linux or osx)
+        - cd $MINICONDA_DIR
+        - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
+            wget -O miniconda.sh https://repo.continuum.io/miniconda/Miniconda3-latest-MacOSX-x86_64.sh;
+          else
+            wget -O miniconda.sh https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh;
+          fi
+        - bash miniconda.sh -b -p $HOME/miniconda
+        - export PATH="$HOME/miniconda/bin:$PATH"
+        - hash -r
+        - conda config --set always_yes yes
+        - conda install conda-build anaconda-client
+        - conda update -q conda conda-build
+
+      before_script:
+        # Go back to top directory
+        - cd $TRAVIS_BUILD_DIR
+
+      script:
+        # Build conda package
+        - conda build -q conda-recipe --python=3.6 --output-folder bld-dir -c defaults -c conda-forge -c paulscherrerinstitute
+
+      after_success:
+        # Upload conda package
+        - anaconda -t $CONDA_TOKEN upload bld-dir/`echo $TRAVIS_OS_NAME`-64/*.tar.bz2
+
+    - <<: *deploy-conda-stage   # Conda for MacOS
+      os: osx
+      language: ruby  # osx does not support language=python
+
+    # Deploy tagged version stage (deploy_tag)
+    - <<: *deploy-docker-stage  # Docker
+      stage: deploy_tag
+      env: DOCKER_REPO=rogue
+
+    - <<: *deploy-conda-stage   # Conda for Linux
+      stage: deploy_tag
+      env: CONDA_TOKEN=$CONDA_UPLOAD_TOKEN_TAG
+
+    - <<: *deploy-conda-stage   # Conda for macOS
+      stage: deploy_tag
+      os: osx
+      language: ruby  # osx does not support language=python
+      env: CONDA_TOKEN=$CONDA_UPLOAD_TOKEN_TAG

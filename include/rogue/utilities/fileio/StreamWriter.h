@@ -20,7 +20,8 @@
  *          [31:0] = Length of data block in bytes
  *       headerB
  *          31:24  = Channel ID
- *          23:9   = Frame flags
+ *          23:16  = Frame error
+ *          15:0   = Frame flags
  *
  *-----------------------------------------------------------------------------
  * This file is part of the rogue software platform. It is subject to 
@@ -77,6 +78,9 @@ namespace rogue {
                //! Write buffer count
                uint32_t currBuffer_;
 
+               //! Drop errors flag
+               bool dropErrors_;
+
                //! File access lock
                boost::mutex mtx_;
 
@@ -127,6 +131,9 @@ namespace rogue {
 
                //! Set max file size, 0 for unlimited
                void setMaxSize(uint32_t size);
+
+               //! Set drop errors flag
+               void setDropErrors(bool drop);
 
                //! Get a port
                boost::shared_ptr<rogue::utilities::fileio::StreamWriterChannel> getChannel(uint8_t channel);

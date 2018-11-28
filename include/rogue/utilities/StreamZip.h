@@ -47,8 +47,7 @@ namespace rogue {
             void acceptFrame ( boost::shared_ptr<rogue::interfaces::stream::Frame> frame );
 
             //! Accept a new frame request
-            boost::shared_ptr<rogue::interfaces::stream::Frame>
-               acceptReq ( uint32_t size, bool zeroCopyEn, uint32_t maxBuffSize );
+            boost::shared_ptr<rogue::interfaces::stream::Frame> acceptReq ( uint32_t size, bool zeroCopyEn );
       };
 
       // Convienence
