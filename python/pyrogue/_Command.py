@@ -73,14 +73,14 @@ class BaseCommand(pr.BaseVariable):
         if self._background:
             with self._lock:
                 if self._thread is not None and self._thread.isAlive():
-                    self._log.exception('Command execution is already in progress!')
+                    self._log.warning('Command execution is already in progress!')
                     return
                 else:
-                    self._thread = threading.Thread(target=_doFunc, args=(arg,))
+                    self._thread = threading.Thread(target=self._doFunc, args=(arg,))
+                    self._thread.start()
         else:
             self._doFunc(arg)
 
-    @Pyro4.expose
     def _doFunc(self,arg):
         """Execute command: TODO: Update comments"""
         if (self.parent.enable.value() is not True):
