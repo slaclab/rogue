@@ -1,5 +1,15 @@
 sudo: required
 
+branches:
+  except:
+    - gh-pages
+
+addons:
+  apt:
+    packages:
+      - doxygen
+      - doxygen-doc
+
 services:
   - docker
 
