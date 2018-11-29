@@ -23,3 +23,9 @@ Rogue features
    * CODE
    * Ignition (mysql)
    * EuDaq
+
+Test
+----
+
+.. doxygenclass:: rogue::protocols::udp::Client
+   :members:

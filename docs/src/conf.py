@@ -182,6 +182,6 @@ texinfo_documents = [
 intersphinx_mapping = {'https://docs.python.org/': None}
 
 # Breath configuration
-breath_projects = { 'rogue' : 'build/doxyxml' }
-breath_default_project = 'rogue'
+breathe_projects = { 'rogue' : '../build/doxyxml' }
+breathe_default_project = 'rogue'
 
