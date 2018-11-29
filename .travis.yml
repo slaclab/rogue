@@ -68,6 +68,7 @@ jobs:
         - cmake .. -DROGUE_INSTALL=local -DPYTHON_LIBRARY=$PY_PATH/lib/python3.6 -DPYTHON_INCLUDE_DIR=$PY_PATH/include
         - make
         - make install
+        - cd ..
 
       before_script:
         # Prepare rogue enviroment
@@ -79,9 +80,9 @@ jobs:
         - python3 -m pytest --cov
         # Build Docs
         - set -e
-        - pushd docs
+        - cd docs
         - make html
-        - popd
+        - cd ..
         # Publish docs.
         - doctr deploy . --built-docs docs/build/html --deploy-branch-name gh-pages --no-require-master
 
