@@ -1,0 +1,288 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Rogue &mdash; Rogue v3.0.2-22-g080db28 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="PyRogue" href="pyrogue.html" />
+    <link rel="prev" title="Welcome to Rogue’s documentation!" href="index.html" /> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> Rogue
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                v3.0.2
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Rogue</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#rogue-features">Rogue features</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#test">Test</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="pyrogue.html">PyRogue</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Rogue</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Rogue</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/overview.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="rogue">
+<h1>Rogue<a class="headerlink" href="#rogue" title="Permalink to this headline">¶</a></h1>
+<p>Rogue is a software package for interfacing with hardware.</p>
+<p>Rogue provides simple, layered, composable interfaces for connecting
+software to hardware. It has a flexible structure for creating a
+hierarchy of system componenets, including remote hardware registers
+and high speed data streams.</p>
+<div class="section" id="rogue-features">
+<h2>Rogue features<a class="headerlink" href="#rogue-features" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><ul class="simple">
+<li>Split C++/Python code base using boost-python<ul>
+<li>Low level interfaces writen in C++ for speed</li>
+<li>Most user development with Rogue is done in Python</li>
+</ul>
+</li>
+<li>All data paths operate in independent high performance threads</li>
+<li>Bridge interfaces available to a number of management layers<ul>
+<li>EPICS</li>
+<li>CODE</li>
+<li>Ignition (mysql)</li>
+<li>EuDaq</li>
+</ul>
+</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="test">
+<h2>Test<a class="headerlink" href="#test" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="_CPPv3N5rogue9protocols3udp6ClientE">
+<span id="_CPPv2N5rogue9protocols3udp6ClientE"></span><span id="rogue::protocols::udp::Client"></span><span class="target" id="classrogue_1_1protocols_1_1udp_1_1Client"></span><em class="property">class </em><code class="descname">Client</code> : <em class="property">public</em> rogue::protocols::udp::Core, <em class="property">public</em> rogue::interfaces::stream::Master, <em class="property">public</em> rogue::interfaces::stream::Slave<a class="headerlink" href="#_CPPv3N5rogue9protocols3udp6ClientE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Functions</p>
+<dl class="function">
+<dt id="_CPPv3N5rogue9protocols3udp6Client6ClientENSt6stringE8uint16_tb">
+<span id="_CPPv2N5rogue9protocols3udp6Client6ClientENSt6stringE8uint16_tb"></span><span id="rogue::protocols::udp::Client::Client__ss.uint16_t.b"></span><span class="target" id="classrogue_1_1protocols_1_1udp_1_1Client_1a190b5e0fdaccbd21cf27302214df60c7"></span><code class="descname">Client</code><span class="sig-paren">(</span>std::string <em>host</em>, uint16_t <em>port</em>, bool <em>jumbo</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv3N5rogue9protocols3udp6Client6ClientENSt6stringE8uint16_tb" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Creator. </p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv3N5rogue9protocols3udp6ClientD0Ev">
+<span id="_CPPv2N5rogue9protocols3udp6ClientD0Ev"></span><span id="rogue::protocols::udp::Client::~Client"></span><span class="target" id="classrogue_1_1protocols_1_1udp_1_1Client_1a2c8bfd1417cb59444620e2ae50766eff"></span><code class="descname">~Client</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv3N5rogue9protocols3udp6ClientD0Ev" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Destructor. </p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv3N5rogue9protocols3udp6Client11acceptFrameEPN5rogue10interfaces6stream5FrameE">
+<span id="_CPPv2N5rogue9protocols3udp6Client11acceptFrameEPN5rogue10interfaces6stream5FrameE"></span><span id="rogue::protocols::udp::Client::acceptFrame__rogue::interfaces::stream::FrameP"></span><span class="target" id="classrogue_1_1protocols_1_1udp_1_1Client_1a536f721219c1acedbb54e46a5f35d905"></span>void <code class="descname">acceptFrame</code><span class="sig-paren">(</span>rogue::interfaces::stream::Frame *<em>frame</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv3N5rogue9protocols3udp6Client11acceptFrameEPN5rogue10interfaces6stream5FrameE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Accept a frame from master. </p>
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Static Functions</p>
+<dl class="function">
+<dt id="_CPPv3N5rogue9protocols3udp6Client6createENSt6stringE8uint16_tb">
+<span id="_CPPv2N5rogue9protocols3udp6Client6createENSt6stringE8uint16_tb"></span><span id="rogue::protocols::udp::Client::create__ss.uint16_t.b"></span><span class="target" id="classrogue_1_1protocols_1_1udp_1_1Client_1ae5ba9b10146bde810a42c49f2cc0de3d"></span><em class="property">static</em> rogue::protocols::udp::<a class="reference internal" href="#_CPPv3N5rogue9protocols3udp6ClientE" title="rogue::protocols::udp::Client">Client</a> *<code class="descname">create</code><span class="sig-paren">(</span>std::string <em>host</em>, uint16_t <em>port</em>, bool <em>jumbo</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv3N5rogue9protocols3udp6Client6createENSt6stringE8uint16_tb" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Class creation. </p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv3N5rogue9protocols3udp6Client12setup_pythonEv">
+<span id="_CPPv2N5rogue9protocols3udp6Client12setup_pythonEv"></span><span id="rogue::protocols::udp::Client::setup_python"></span><span class="target" id="classrogue_1_1protocols_1_1udp_1_1Client_1a8018e6a5829d5dd1a6e827f7f75a88ef"></span><em class="property">static</em> void <code class="descname">setup_python</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv3N5rogue9protocols3udp6Client12setup_pythonEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Setup class in python. </p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="pyrogue.html" class="btn btn-neutral float-right" title="PyRogue" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="index.html" class="btn btn-neutral" title="Welcome to Rogue’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, SLAC National Accelerator Laboratory
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+    
+
+  
+
+  <script type="text/javascript" src="_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
