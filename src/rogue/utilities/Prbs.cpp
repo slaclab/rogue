@@ -373,8 +373,11 @@ void ru::Prbs::acceptFrame ( ris::FramePtr frame ) {
    uint32_t      expSize;
    uint32_t      size;
    uint32_t      pos;
+   uint32_t      x;
    uint8_t       compData[MaxBytes];
    double        per;
+   char          debugA[1000];
+   char          debugB[200];
 
    rogue::GilRelease noGil;
    ris::FrameLockPtr fLock = frame->lock();
@@ -400,18 +403,12 @@ void ru::Prbs::acceptFrame ( ris::FramePtr frame ) {
    ris::fromFrame(frIter,byteWidth_,frSize);
    expSize = (frSize[0] + 1) * byteWidth_;
 
-   // Check size
-   if ( expSize != size ) {
-      rxLog_->warning("Bad size. exp=%i, got=%i, count=%i",expSize,size,rxCount_);
-      rxErrCount_++;
-      return;
-   }
-
-   // Check sequence, 
+   // Check size and sequence
    // Accept any sequence if our local count is zero
    // incoming frames with seq = 0 never cause errors and treated as a restart
-   if ( frSeq[0] != 0 && expSeq != 0 && frSeq[0] != expSeq ) {
-      rxLog_->warning("Bad Sequence. cur=%i, got=%i, count=%i",expSeq,frSeq[0],rxCount_);
+   if ( ( expSize != size ) || ( frSeq[0] != 0 && expSeq != 0 && frSeq[0] != expSeq ) ) {
+      rxLog_->warning("Bad header. expSize=%u gotSize=%u expSeq=%u gotSeq=%u nxtSeq=%u count=%i",
+            expSize,size,expSeq,frSeq[0],rxSeq_,rxCount_);
       rxErrCount_++;
       return;
    }
@@ -429,7 +426,12 @@ void ru::Prbs::acceptFrame ( ris::FramePtr frame ) {
          to_block_range(expData,compData);
 
          if ( ! std::equal(frIter,frIter+byteWidth_,compData ) ) {
-            rxLog_->warning("Bad value at index %i. count=%i, size=%i",pos,rxCount_,(size/byteWidth_)-1);
+            sprintf(debugA,"Bad value at index %i. count=%i, size=%i",pos,rxCount_,(size/byteWidth_)-1);
+            for (x=0; x < byteWidth_; x++) {
+               sprintf(debugB,"\n   %i:%i Got=0x%x Exp=0x%x",pos,x,*(frIter+x),*(compData+x));
+               strcat(debugA,debugB);
+            }
+            rxLog_->warning(debugA);
             rxErrCount_++;
             return;
          }
