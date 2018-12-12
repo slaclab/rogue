@@ -33,6 +33,9 @@ namespace rogue {
          class AxiStreamDma : public rogue::interfaces::stream::Master, 
                               public rogue::interfaces::stream::Slave {
 
+               //! Max number of buffers to receive at once
+               static const uint32_t RxBufferCount = 100;
+
                //! AxiStreamDma file descriptor
                int32_t  fd_;
 
