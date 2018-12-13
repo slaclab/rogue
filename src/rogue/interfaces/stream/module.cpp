@@ -26,6 +26,7 @@
 #include <rogue/interfaces/stream/Frame.h>
 #include <rogue/interfaces/stream/FrameLock.h>
 #include <rogue/interfaces/stream/Fifo.h>
+#include <rogue/interfaces/stream/Filter.h>
 #include <rogue/interfaces/stream/module.h>
 #include <boost/python.hpp>
 
@@ -49,6 +50,7 @@ void ris::setup_module() {
    ris::Slave::setup_python();
    ris::Pool::setup_python();
    ris::Fifo::setup_python();
+   ris::Filter::setup_python();
 
 }
 

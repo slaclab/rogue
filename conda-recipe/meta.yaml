@@ -42,7 +42,6 @@ requirements:
      - numpy
      - pyqt
      - pyepics
-     - matplotlib
 
 about:
    home: https://github.com/slaclab/rogue

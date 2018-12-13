@@ -16,8 +16,11 @@
 import rogue.utilities 
 import rogue.protocols.udp
 import rogue.interfaces.stream
+import rogue
 import pyrogue
 import time
+
+#rogue.Logging.setLevel(rogue.Logging.Debug)
 
 FrameCount = 10000
 FrameSize  = 10000

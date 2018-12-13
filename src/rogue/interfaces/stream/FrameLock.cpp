@@ -19,6 +19,7 @@
 **/
 #include <rogue/interfaces/stream/FrameLock.h>
 #include <rogue/interfaces/stream/Frame.h>
+#include <boost/make_shared.hpp>
 
 namespace ris = rogue::interfaces::stream;
 

@@ -27,6 +27,7 @@
 #include <rogue/protocols/rssi/module.h>
 #include <rogue/protocols/srp/module.h>
 #include <rogue/protocols/udp/module.h>
+#include <rogue/protocols/BatcherV1.h>
 
 #if DO_EPICS_V3
    #include <rogue/protocols/epicsV3/module.h>
@@ -49,6 +50,8 @@ void rogue::protocols::setup_module() {
    rogue::protocols::rssi::setup_module();
    rogue::protocols::srp::setup_module();
    rogue::protocols::udp::setup_module();
+
+   rogue::protocols::BatcherV1::setup_python();
 
 #if DO_EPICS_V3
    rogue::protocols::epicsV3::setup_module();
