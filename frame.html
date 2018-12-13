@@ -1,0 +1,399 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Frames &mdash; Rogue v3.0.2-60-g6fc01d2 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> Rogue
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                v3.0.2
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pyrogue.html">PyRogue</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Rogue</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Frames</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/frame.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="frames">
+<h1>Frames<a class="headerlink" href="#frames" title="Permalink to this headline">¶</a></h1>
+<p>In the stream interface the Frame class is a container for moving streaming data
+through the system. A single Frame instance exists for each frame of data
+being transferred. The frame object itself does not contain any data, instead
+it is a container for one or more blocks of data contained within the Buffer class.</p>
+<p>The Frame class contains methods for accessing the frame data contained within
+the buffers as well as overall information about the frame itself.</p>
+<dl class="class">
+<dt id="_CPPv3N5rogue10interfaces6stream5FrameE">
+<span id="_CPPv2N5rogue10interfaces6stream5FrameE"></span><span id="rogue::interfaces::stream::Frame"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Frame"></span><em class="property">class </em><code class="descname">Frame</code> : <em class="property">public</em> boost::enable_shared_from_this&lt;rogue::interfaces::stream::<a class="reference internal" href="#_CPPv3N5rogue10interfaces6stream5FrameE" title="rogue::interfaces::stream::Frame">Frame</a>&gt;<a class="headerlink" href="#_CPPv3N5rogue10interfaces6stream5FrameE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p><a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a> container. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Types</p>
+<dl class="type">
+<dt id="_CPPv3N5rogue10interfaces6stream5Frame14BufferIteratorE">
+<span id="_CPPv2N5rogue10interfaces6stream5Frame14BufferIteratorE"></span><span id="rogue::interfaces::stream::Frame::BufferIterator"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1ac86bc5f919e322494759e815d155d1c1"></span><em class="property">typedef </em>std::vector&lt;rogue::interfaces::stream::Buffer *&gt;::iterator <code class="descname">BufferIterator</code><a class="headerlink" href="#_CPPv3N5rogue10interfaces6stream5Frame14BufferIteratorE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Itererator for buffer list. </p>
+</dd></dl>
+
+<dl class="type">
+<dt id="_CPPv3N5rogue10interfaces6stream5Frame8iteratorE">
+<span id="_CPPv2N5rogue10interfaces6stream5Frame8iteratorE"></span><span id="rogue::interfaces::stream::Frame::iterator"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1af1fd6ef9edc9216ff358c849ace25cb9"></span><em class="property">typedef </em>rogue::interfaces::stream::FrameIterator <code class="descname">iterator</code><a class="headerlink" href="#_CPPv3N5rogue10interfaces6stream5Frame8iteratorE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Itererator for data. </p>
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Functions</p>
+<dl class="function">
+<dt id="_CPPv3N5rogue10interfaces6stream5Frame5FrameEv">
+<span id="_CPPv2N5rogue10interfaces6stream5Frame5FrameEv"></span><span id="rogue::interfaces::stream::Frame::Frame"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1a5d63afba0513bee7ac5cafb60a0476b8"></span><code class="descname">Frame</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv3N5rogue10interfaces6stream5Frame5FrameEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Create an empty frame. </p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv3N5rogue10interfaces6stream5FrameD0Ev">
+<span id="_CPPv2N5rogue10interfaces6stream5FrameD0Ev"></span><span id="rogue::interfaces::stream::Frame::~Frame"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1ad929bf5a0ef04651a748a0a35feeebcc"></span><code class="descname">~Frame</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv3N5rogue10interfaces6stream5FrameD0Ev" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Destroy a frame. </p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv3N5rogue10interfaces6stream5Frame4lockEv">
+<span id="_CPPv2N5rogue10interfaces6stream5Frame4lockEv"></span><span id="rogue::interfaces::stream::Frame::lock"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1a0a3e8886bb50654dd0efee66957748c6"></span>rogue::interfaces::stream::FrameLock *<code class="descname">lock</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv3N5rogue10interfaces6stream5Frame4lockEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Get lock. </p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv3N5rogue10interfaces6stream5Frame12appendBufferEPN5rogue10interfaces6stream6BufferE">
+<span id="_CPPv2N5rogue10interfaces6stream5Frame12appendBufferEPN5rogue10interfaces6stream6BufferE"></span><span id="rogue::interfaces::stream::Frame::appendBuffer__rogue::interfaces::stream::BufferP"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1a3b309c14b76b130d7964d24c22b0e59e"></span>std::vector&lt;rogue::interfaces::stream::Buffer *&gt;::iterator <code class="descname">appendBuffer</code><span class="sig-paren">(</span>rogue::interfaces::stream::Buffer *<em>buff</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv3N5rogue10interfaces6stream5Frame12appendBufferEPN5rogue10interfaces6stream6BufferE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Add a buffer to end of frame, return interator to inserted buffer. </p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv3N5rogue10interfaces6stream5Frame11appendFrameEPN5rogue10interfaces6stream5FrameE">
+<span id="_CPPv2N5rogue10interfaces6stream5Frame11appendFrameEPN5rogue10interfaces6stream5FrameE"></span><span id="rogue::interfaces::stream::Frame::appendFrame__rogue::interfaces::stream::FrameP"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1a576b3a2c21519dc0a383227406bd04e5"></span>std::vector&lt;rogue::interfaces::stream::Buffer *&gt;::iterator <code class="descname">appendFrame</code><span class="sig-paren">(</span>rogue::interfaces::stream::<a class="reference internal" href="#_CPPv3N5rogue10interfaces6stream5FrameE" title="rogue::interfaces::stream::Frame">Frame</a> *<em>frame</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv3N5rogue10interfaces6stream5Frame11appendFrameEPN5rogue10interfaces6stream5FrameE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Append passed frame buffers to end of frame, return interator to inserted buffer. </p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv3N5rogue10interfaces6stream5Frame11beginBufferEv">
+<span id="_CPPv2N5rogue10interfaces6stream5Frame11beginBufferEv"></span><span id="rogue::interfaces::stream::Frame::beginBuffer"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1a6cfe6d574f83cd3ec3d54f75fe6b7f7c"></span>std::vector&lt;rogue::interfaces::stream::Buffer *&gt;::iterator <code class="descname">beginBuffer</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv3N5rogue10interfaces6stream5Frame11beginBufferEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Buffer begin iterator. </p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv3N5rogue10interfaces6stream5Frame9endBufferEv">
+<span id="_CPPv2N5rogue10interfaces6stream5Frame9endBufferEv"></span><span id="rogue::interfaces::stream::Frame::endBuffer"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1a1f699150a96d64efa33a50329fdd0fc7"></span>std::vector&lt;rogue::interfaces::stream::Buffer *&gt;::iterator <code class="descname">endBuffer</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv3N5rogue10interfaces6stream5Frame9endBufferEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Buffer end iterator. </p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv3N5rogue10interfaces6stream5Frame11bufferCountEv">
+<span id="_CPPv2N5rogue10interfaces6stream5Frame11bufferCountEv"></span><span id="rogue::interfaces::stream::Frame::bufferCount"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1a72b21b83111b76963f8a0c487df5c154"></span>uint32_t <code class="descname">bufferCount</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv3N5rogue10interfaces6stream5Frame11bufferCountEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Buffer counter. </p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv3N5rogue10interfaces6stream5Frame5clearEv">
+<span id="_CPPv2N5rogue10interfaces6stream5Frame5clearEv"></span><span id="rogue::interfaces::stream::Frame::clear"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1abb77abc689a3ce1f04e3a727490db83a"></span>void <code class="descname">clear</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv3N5rogue10interfaces6stream5Frame5clearEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Clear the list. </p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv3N5rogue10interfaces6stream5Frame7isEmptyEv">
+<span id="_CPPv2N5rogue10interfaces6stream5Frame7isEmptyEv"></span><span id="rogue::interfaces::stream::Frame::isEmpty"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1abeaa1812591830ce728a83075bcb400e"></span>bool <code class="descname">isEmpty</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv3N5rogue10interfaces6stream5Frame7isEmptyEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Buffers list is empty. </p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv3N5rogue10interfaces6stream5Frame13adjustPayloadE7int32_t">
+<span id="_CPPv2N5rogue10interfaces6stream5Frame13adjustPayloadE7int32_t"></span><span id="rogue::interfaces::stream::Frame::adjustPayload__int32_t"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1ac0a596f34fcbdcaf1488121a52ae989c"></span>void <code class="descname">adjustPayload</code><span class="sig-paren">(</span>int32_t <em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv3N5rogue10interfaces6stream5Frame13adjustPayloadE7int32_t" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Adjust payload size. </p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv3N5rogue10interfaces6stream5Frame14setPayloadFullEv">
+<span id="_CPPv2N5rogue10interfaces6stream5Frame14setPayloadFullEv"></span><span id="rogue::interfaces::stream::Frame::setPayloadFull"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1aba2378680daedbcc5452cf474e06597e"></span>void <code class="descname">setPayloadFull</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv3N5rogue10interfaces6stream5Frame14setPayloadFullEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Set the buffer as full (minus tail reservation) </p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv3N5rogue10interfaces6stream5Frame15setPayloadEmptyEv">
+<span id="_CPPv2N5rogue10interfaces6stream5Frame15setPayloadEmptyEv"></span><span id="rogue::interfaces::stream::Frame::setPayloadEmpty"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1aae025cc94c81b1d7c32174a5ab520354"></span>void <code class="descname">setPayloadEmpty</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv3N5rogue10interfaces6stream5Frame15setPayloadEmptyEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Set the buffer as empty (minus header reservation) </p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv3N5rogue10interfaces6stream5Frame8getFlagsEv">
+<span id="_CPPv2N5rogue10interfaces6stream5Frame8getFlagsEv"></span><span id="rogue::interfaces::stream::Frame::getFlags"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1af06fb1ca0017c196d03a9843c6e2ce1b"></span>uint16_t <code class="descname">getFlags</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv3N5rogue10interfaces6stream5Frame8getFlagsEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Get flags. </p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv3N5rogue10interfaces6stream5Frame8setFlagsE8uint16_t">
+<span id="_CPPv2N5rogue10interfaces6stream5Frame8setFlagsE8uint16_t"></span><span id="rogue::interfaces::stream::Frame::setFlags__uint16_t"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1a72b9b5f1fba5a053f43daf71b6e7ff6c"></span>void <code class="descname">setFlags</code><span class="sig-paren">(</span>uint16_t <em>flags</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv3N5rogue10interfaces6stream5Frame8setFlagsE8uint16_t" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Set flags. </p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv3N5rogue10interfaces6stream5Frame10getChannelEv">
+<span id="_CPPv2N5rogue10interfaces6stream5Frame10getChannelEv"></span><span id="rogue::interfaces::stream::Frame::getChannel"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1a69a180c5ee97b4cbec23888387d6fef6"></span>uint8_t <code class="descname">getChannel</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv3N5rogue10interfaces6stream5Frame10getChannelEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Get channel. </p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv3N5rogue10interfaces6stream5Frame10setChannelE7uint8_t">
+<span id="_CPPv2N5rogue10interfaces6stream5Frame10setChannelE7uint8_t"></span><span id="rogue::interfaces::stream::Frame::setChannel__uint8_t"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1ae4f4ad8000d05381f5cd06b7353c2106"></span>void <code class="descname">setChannel</code><span class="sig-paren">(</span>uint8_t <em>channel</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv3N5rogue10interfaces6stream5Frame10setChannelE7uint8_t" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Set channel. </p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv3N5rogue10interfaces6stream5Frame8getErrorEv">
+<span id="_CPPv2N5rogue10interfaces6stream5Frame8getErrorEv"></span><span id="rogue::interfaces::stream::Frame::getError"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1a7762575ce42e07c04eba9ecd160de55d"></span>uint8_t <code class="descname">getError</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv3N5rogue10interfaces6stream5Frame8getErrorEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Get error state. </p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv3N5rogue10interfaces6stream5Frame8setErrorE7uint8_t">
+<span id="_CPPv2N5rogue10interfaces6stream5Frame8setErrorE7uint8_t"></span><span id="rogue::interfaces::stream::Frame::setError__uint8_t"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1a2f2b7dad7c5b1bf0a97e757f85e927e0"></span>void <code class="descname">setError</code><span class="sig-paren">(</span>uint8_t <em>error</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv3N5rogue10interfaces6stream5Frame8setErrorE7uint8_t" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Set error state. </p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv3N5rogue10interfaces6stream5Frame9beginReadEv">
+<span id="_CPPv2N5rogue10interfaces6stream5Frame9beginReadEv"></span><span id="rogue::interfaces::stream::Frame::beginRead"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1a3ce0fb9b3a6bce92a4da65cdc02c6e31"></span>rogue::interfaces::stream::FrameIterator <code class="descname">beginRead</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv3N5rogue10interfaces6stream5Frame9beginReadEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Get read start iterator. </p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv3N5rogue10interfaces6stream5Frame7endReadEv">
+<span id="_CPPv2N5rogue10interfaces6stream5Frame7endReadEv"></span><span id="rogue::interfaces::stream::Frame::endRead"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1a999963d876be5bd5946fd1f9497611bd"></span>rogue::interfaces::stream::FrameIterator <code class="descname">endRead</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv3N5rogue10interfaces6stream5Frame7endReadEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Get read end iterator. </p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv3N5rogue10interfaces6stream5Frame10beginWriteEv">
+<span id="_CPPv2N5rogue10interfaces6stream5Frame10beginWriteEv"></span><span id="rogue::interfaces::stream::Frame::beginWrite"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1a5d6b7dd95ee4300853fc13201342daed"></span>rogue::interfaces::stream::FrameIterator <code class="descname">beginWrite</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv3N5rogue10interfaces6stream5Frame10beginWriteEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Get write start iterator. </p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv3N5rogue10interfaces6stream5Frame8endWriteEv">
+<span id="_CPPv2N5rogue10interfaces6stream5Frame8endWriteEv"></span><span id="rogue::interfaces::stream::Frame::endWrite"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1a475dbc60413e797dc8e8e8f649ebf641"></span>rogue::interfaces::stream::FrameIterator <code class="descname">endWrite</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv3N5rogue10interfaces6stream5Frame8endWriteEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Get write end iterator. </p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv3N5rogue10interfaces6stream5Frame6readPyEN5boost6python6objectE8uint32_t">
+<span id="_CPPv2N5rogue10interfaces6stream5Frame6readPyEN5boost6python6objectE8uint32_t"></span><span id="rogue::interfaces::stream::Frame::readPy__boost::python::object.uint32_t"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1af320eb307d9043eb62fd137d807a62c7"></span>void <code class="descname">readPy</code><span class="sig-paren">(</span>boost::python::object <em>p</em>, uint32_t <em>offset</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv3N5rogue10interfaces6stream5Frame6readPyEN5boost6python6objectE8uint32_t" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Read count bytes from frame payload, starting from offset. Python version. </p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv3N5rogue10interfaces6stream5Frame7writePyEN5boost6python6objectE8uint32_t">
+<span id="_CPPv2N5rogue10interfaces6stream5Frame7writePyEN5boost6python6objectE8uint32_t"></span><span id="rogue::interfaces::stream::Frame::writePy__boost::python::object.uint32_t"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1a2d8dc04f70a9e8cc0274bd3763209604"></span>void <code class="descname">writePy</code><span class="sig-paren">(</span>boost::python::object <em>p</em>, uint32_t <em>offset</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv3N5rogue10interfaces6stream5Frame7writePyEN5boost6python6objectE8uint32_t" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Write count bytes to frame payload, starting at offset. Python Version. </p>
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Static Functions</p>
+<dl class="function">
+<dt id="_CPPv3N5rogue10interfaces6stream5Frame12setup_pythonEv">
+<span id="_CPPv2N5rogue10interfaces6stream5Frame12setup_pythonEv"></span><span id="rogue::interfaces::stream::Frame::setup_python"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1ad6c499960b9eb7de72b2feea900b3e37"></span><em class="property">static</em> void <code class="descname">setup_python</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv3N5rogue10interfaces6stream5Frame12setup_pythonEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Setup class in python. </p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv3N5rogue10interfaces6stream5Frame6createEv">
+<span id="_CPPv2N5rogue10interfaces6stream5Frame6createEv"></span><span id="rogue::interfaces::stream::Frame::create"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1a5eea6c9c00c7f5b7102794330d7e5233"></span><em class="property">static</em> rogue::interfaces::stream::<a class="reference internal" href="#_CPPv3N5rogue10interfaces6stream5FrameE" title="rogue::interfaces::stream::Frame">Frame</a> *<code class="descname">create</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv3N5rogue10interfaces6stream5Frame6createEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Create an empty frame. </p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, SLAC National Accelerator Laboratory
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+    
+
+  
+
+  <script type="text/javascript" src="_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
