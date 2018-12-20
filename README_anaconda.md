@@ -54,8 +54,10 @@ $ conda deactivate
 If you want to update rogue, run the following command after activating the rogue environment
 
 ````
-$ conda update rogue
+$ conda update rogue -c tidair-tag
 ````
+
+Replace tidair-tag with tidair-dev for pre-release
 
 ## Deleting Anaconda Environment
 
