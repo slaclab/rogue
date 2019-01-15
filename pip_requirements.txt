@@ -4,6 +4,6 @@ parse
 click
 coverage
 codecov
-pytest>=2.6
+pytest>=3.6
 pytest-cov
 pyepics
