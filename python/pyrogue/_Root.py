@@ -147,8 +147,8 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
         for i in range(1,len(tmpDevs)):
 
-            print("Comparing Device {} at address={:#x} to {} at address={:#x} with size={}".format(
-                  tmpDevs[i].path,tmpDevs[i].address,tmpDevs[i-1].path,tmpDevs[i-1].address,tmpDevs[i-1].size))
+            self._log.debug("Comparing Device {} at address={:#x} to {} at address={:#x} with size={}".format(
+                            tmpDevs[i].path,tmpDevs[i].address,tmpDevs[i-1].path,tmpDevs[i-1].address,tmpDevs[i-1].size))
 
             if (tmpDevs[i].size != 0) and (tmpDevs[i].memBaseId == tmpDevs[i-1].memBaseId) and \
                 (tmpDevs[i].address < (tmpDevs[i-1].address + tmpDevs[i-1].size)):
