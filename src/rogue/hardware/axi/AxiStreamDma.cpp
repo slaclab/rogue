@@ -278,7 +278,8 @@ void rha::AxiStreamDma::retBuffer(uint8_t * data, uint32_t meta, uint32_t size) 
       // Device is open and buffer is not stale
       // Bit 30 indicates buffer has already been returned to hardware
       if ( (fd_ >= 0) && ((meta & 0x40000000) == 0) ) {
-         dmaRetIndex(fd_,meta & 0x3FFFFFFF); // Return to hardware
+         if ( dmaRetIndex(fd_,meta & 0x3FFFFFFF) < 0 ) 
+            throw(rogue::GeneralError("AxiStreamDma::retBuffer","AXIS Return Buffer Call Failed!!!!"));
       }
 
       decCounter(size);
