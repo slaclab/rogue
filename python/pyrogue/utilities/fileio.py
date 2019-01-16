@@ -73,10 +73,10 @@ class StreamReader(pyrogue.Device):
         self._reader = rogue.utilities.fileio.StreamReader()
 
         self.add(pyrogue.LocalVariable(name='dataFile', description='Data File',
-                                       base='string', mode='RW', value=''))
+                                       mode='RW', value=''))
 
         self.add(pyrogue.LocalVariable(name='open', description='Data file open state',
-                                  bitSize=1, bitOffset=0, base='bool', mode='RW',
+                                  bitSize=1, bitOffset=0, mode='RW', value=False,
                                   localSet=self._setOpen))
 
     def _setOpen(self,value,changed):
