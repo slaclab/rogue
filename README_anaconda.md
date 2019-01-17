@@ -29,9 +29,22 @@ The next step is to create ana anaconda environment which includes the rogue pac
 $ conda create -n rogue_env -c defaults -c conda-forge -c paulscherrerinstitute -c tidair-tag python=3.6 rogue
 ````
 
-The order of the args is important. tidair-tag is the channel from which the rogue package is downloaded. Replace tidair-tag with tidair-dev to download the latest pre-release development version.
+The order of the args is important. tidair-tag is the channel from which the rogue package is downloaded.
 
 You now have an anaconda environment named rogue_env which contains all of the packages required to run rogue.
+
+The above command will install the latest version of rogue from the master branch. If you want to insteall the pre-release
+version of Rogue, run the following:
+
+````
+$ conda create -n rogue_env -c defaults -c conda-forge -c paulscherrerinstitute -c tidair-dev python=3.6 rogue
+````
+
+Alternatively you can install a specific released version of Rogue:
+
+````
+$ conda create -n rogue_env -c defaults -c conda-forge -c paulscherrerinstitute -c tidair-tag python=3.6 rogue=v3.0.2
+````
 
 ## Using Rogue
 
