@@ -243,7 +243,11 @@ class BaseVariable(pr.Node):
         try:
             #print('{}.genDisp(read={}) disp={} value={}'.format(self.path, read, self.disp, value))
             if self.disp == 'enum':
-                ret = self.enum[value]
+                if value in self.enum:
+                    ret = self.enum[value]
+                else:
+                    self._log.error("Invalid enum value {} in variable '{}'".format(value,self.path))
+                    ret = 'INV'
             else:
                 if value == '' or value is None:
                     ret = value
