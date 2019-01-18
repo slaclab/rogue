@@ -107,6 +107,9 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         self.add(pr.LocalCommand(name="ReadAll", function=self._read,
                                  description='Read all values from the hardware'))
 
+        self.add(pr.LocalCommand(name='WriteState', value='', function=self._writeState,
+                                 description='Write state to passed filename in YAML format'))
+
         self.add(pr.LocalCommand(name='WriteConfig', value='', function=self._writeConfig,
                                  description='Write configuration to passed filename in YAML format'))
 
