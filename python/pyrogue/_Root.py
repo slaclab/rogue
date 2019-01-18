@@ -390,11 +390,29 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                 self._log.exception(e)
         self._log.info("Done root read")
 
-    def _writeConfig(self,arg):
-        """Write YAML configuration to a file. Called from command"""
+    def _writeState(self,arg):
+        """Write YAML configuration/status to a file. Called from command"""
+
+        # Auto generate name if no arg
+        if arg is None or arg == '':
+            arg = datetime.datetime.now().strftime("state_%Y%m%d_%H%M%S.yml")
+
         try:
             with open(arg,'w') as f:
-                f.write(self.getYaml(True,modes=['RW']))
+                f.write(self.getYaml(True,modes=['RW','RO','WO']))
+        except Exception as e:
+            self._log.exception(e)
+
+    def _writeConfig(self,arg):
+        """Write YAML configuration to a file. Called from command"""
+
+        # Auto generate name if no arg
+        if arg is None or arg == '':
+            arg = datetime.datetime.now().strftime("config_%Y%m%d_%H%M%S.yml") 
+
+        try:
+            with open(arg,'w') as f:
+                f.write(self.getYaml(True,modes=['RW','WO']))
         except Exception as e:
             self._log.exception(e)
 
