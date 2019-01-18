@@ -591,7 +591,7 @@ class DataWriter(Device):
         else:
             base = self.dataFile.value()[:idx+1]
 
-        self.dataFile.set(base + datetime.datetime.now().strftime("%Y%m%d_%H%M%S.dat")) 
+        self.dataFile.set(base + datetime.datetime.now().strftime("data_%Y%m%d_%H%M%S.dat")) 
 
 class RunControl(Device):
     """Special base class to control runs. TODO: Update comments."""

@@ -107,6 +107,9 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         self.add(pr.LocalCommand(name="ReadAll", function=self._read,
                                  description='Read all values from the hardware'))
 
+        self.add(pr.LocalCommand(name='WriteState', value='', function=self._writeState,
+                                 description='Write state to passed filename in YAML format'))
+
         self.add(pr.LocalCommand(name='WriteConfig', value='', function=self._writeConfig,
                                  description='Write configuration to passed filename in YAML format'))
 
@@ -394,11 +397,29 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                 self._log.exception(e)
         self._log.info("Done root read")
 
-    def _writeConfig(self,arg):
-        """Write YAML configuration to a file. Called from command"""
+    def _writeState(self,arg):
+        """Write YAML configuration/status to a file. Called from command"""
+
+        # Auto generate name if no arg
+        if arg is None or arg == '':
+            arg = datetime.datetime.now().strftime("state_%Y%m%d_%H%M%S.yml")
+
         try:
             with open(arg,'w') as f:
-                f.write(self.getYaml(True,modes=['RW']))
+                f.write(self.getYaml(True,modes=['RW','RO','WO']))
+        except Exception as e:
+            self._log.exception(e)
+
+    def _writeConfig(self,arg):
+        """Write YAML configuration to a file. Called from command"""
+
+        # Auto generate name if no arg
+        if arg is None or arg == '':
+            arg = datetime.datetime.now().strftime("config_%Y%m%d_%H%M%S.yml") 
+
+        try:
+            with open(arg,'w') as f:
+                f.write(self.getYaml(True,modes=['RW','WO']))
         except Exception as e:
             self._log.exception(e)
 
