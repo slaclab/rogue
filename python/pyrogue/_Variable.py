@@ -247,7 +247,7 @@ class BaseVariable(pr.Node):
                     ret = self.enum[value]
                 else:
                     self._log.error("Invalid enum value {} in variable '{}'".format(value,self.path))
-                    ret = 'INV'
+                    ret = 'INVALID: {:#x}'.format(value)
             else:
                 if value == '' or value is None:
                     ret = value
