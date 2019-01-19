@@ -84,9 +84,10 @@ std::string rogue::SMemControlWrap::doRequest ( uint8_t type, std::string path, 
          try {
             if ( type == ROGUE_CMD_GET || type == ROGUE_CMD_VALUE ) 
                return(f(type,path,arg));
-            else
+            else {
                f(type,path,arg);
                return std::string("");
+            }
          } catch (...) {
             PyErr_Print();
          }
