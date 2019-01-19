@@ -199,6 +199,7 @@ add_subdirectory(src/rogue)
 TARGET_LINK_LIBRARIES(rogue-core LINK_PUBLIC ${Boost_LIBRARIES})
 TARGET_LINK_LIBRARIES(rogue-core LINK_PUBLIC ${EPICSV3_LIBRARIES})
 TARGET_LINK_LIBRARIES(rogue-core LINK_PUBLIC bz2)
+TARGET_LINK_LIBRARIES(rogue-core LINK_PUBLIC rt)
 
 # Do not link directly against python in macos
 if (APPLE)
