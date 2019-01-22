@@ -424,6 +424,11 @@ class RemoteVariable(BaseVariable):
 
     @Pyro4.expose
     @property
+    def address(self):
+        return self._block.address
+
+    @Pyro4.expose
+    @property
     def bitSize(self):
         return self._bitSize
 

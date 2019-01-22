@@ -660,9 +660,11 @@ def generateAddressMap(root,fname):
     with open(fname,'w') as f:
         f.write("Path\t")
         f.write("Type\t")
-        f.write("Offset\t")
-        f.write("BitOffset\t")
-        f.write("BitSize\t")
+        f.write("Full Address\t")
+        f.write("Device Offset\t")
+        f.write("Mode\t")
+        f.write("Bit Offset\t")
+        f.write("Bit Size\t")
         f.write("Enum\t")
         f.write("Description\n")
 
@@ -670,7 +672,9 @@ def generateAddressMap(root,fname):
             if isinstance(v, pr.RemoteVariable):
                 f.write("{}\t".format(v.path))
                 f.write("{}\t".format(type(v)))
+                f.write("{:#x}\t".format(v.address))
                 f.write("{:#x}\t".format(v.offset))
+                f.write("{}\t".format(v.mode))
                 f.write("{}\t".format(v.bitOffset))
                 f.write("{}\t".format(v.bitSize))
                 f.write("{}\t".format(v.enum))
