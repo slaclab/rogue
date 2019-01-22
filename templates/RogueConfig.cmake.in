@@ -121,8 +121,7 @@ set(ROGUE_LIBRARIES @CONF_LIBRARIES@
                     ${Boost_LIBRARIES}
                     ${PYTHON_LIBRARIES}
                     ${EPICSV3_LIBRARIES}
-                    LINK_PUBLIC bz2
-                    LINK_PUBLIC rt)
+                    LINK_PUBLIC bz2)
 
 # Set Version
 set(ROGUE_VERSION @ROGUE_VERSION@)
