@@ -32,6 +32,8 @@ requirements:
      - git-lfs
      - ipython
      - boost
+     - cmake
+     - make
      - bzip2
      - epics-base=3.14.12.8
      - pyyaml
