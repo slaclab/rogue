@@ -144,6 +144,10 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         for key,value in self._nodes.items():
             value._rootAttached(self,self)
 
+        # Some variable initialization can run until the blocks are built
+        for v in self.variables.values():
+            v._finishInit()
+
         # Look for device overlaps
         tmpDevs = self.deviceList
         tmpDevs.sort(key=lambda x: (x.memBaseId, x.address, x.size))
