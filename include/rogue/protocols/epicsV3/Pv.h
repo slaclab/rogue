@@ -38,6 +38,7 @@ namespace rogue {
             private:
 
                boost::shared_ptr<rogue::protocols::epicsV3::Value> value_;
+               rogue::protocols::epicsV3::Server server_;
                aitBool interest_;
                boost::mutex mtx_;
                casEventMask valueMask_;
@@ -45,7 +46,8 @@ namespace rogue {
             public:
 
                //! Class creation
-               Pv (caServer &cas, boost::shared_ptr<rogue::protocols::epicsV3::Value> value);
+               Pv (rogue::protocols::epicsV3::Server *server, 
+                   boost::shared_ptr<rogue::protocols::epicsV3::Value> value);
 
                ~Pv ();
 

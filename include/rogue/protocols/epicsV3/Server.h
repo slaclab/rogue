@@ -28,6 +28,7 @@
 #include <gddApps.h>
 #include <gddAppFuncTable.h>
 #include <map>
+#include <rogue/Queue.h>
 
 namespace rogue {
    namespace protocols {
@@ -43,11 +44,17 @@ namespace rogue {
 
                boost::thread * thread_;
 
+               boost::thread ** workers_;
+
                boost::mutex mtx_;
+
+               rogue::Queue<boost::shared_ptr<rogue::protocols::epicsV3::Work> > workQueue_;
 
                bool running_;
 
                void runThread();
+
+               void runWorker();
 
             public:
 
