@@ -278,7 +278,8 @@ void rha::AxiStreamDma::retBuffer(uint8_t * data, uint32_t meta, uint32_t size) 
       // Device is open and buffer is not stale
       // Bit 30 indicates buffer has already been returned to hardware
       if ( (fd_ >= 0) && ((meta & 0x40000000) == 0) ) {
-         dmaRetIndex(fd_,meta & 0x3FFFFFFF); // Return to hardware
+         if ( dmaRetIndex(fd_,meta & 0x3FFFFFFF) < 0 ) 
+            throw(rogue::GeneralError("AxiStreamDma::retBuffer","AXIS Return Buffer Call Failed!!!!"));
       }
 
       decCounter(size);
@@ -290,17 +291,19 @@ void rha::AxiStreamDma::retBuffer(uint8_t * data, uint32_t meta, uint32_t size) 
 
 //! Run thread
 void rha::AxiStreamDma::runThread() {
-   ris::BufferPtr buff;
+   ris::BufferPtr buff[RxBufferCount];
+   uint32_t       meta[RxBufferCount];
+   uint32_t       rxFlags[RxBufferCount];
+   uint32_t       rxError[RxBufferCount];
+   int32_t        rxSize[RxBufferCount];
+   int32_t        rxCount;
+   int32_t        x;
    ris::FramePtr  frame;
    fd_set         fds;
-   int32_t        res;
    uint8_t        error;
-   uint32_t       meta;
    uint32_t       fuser;
    uint32_t       luser;
    uint32_t       cont;
-   uint32_t       rxFlags;
-   uint32_t       rxError;
    struct timeval tout;
 
    fuser = 0;
@@ -330,41 +333,42 @@ void rha::AxiStreamDma::runThread() {
             if ( zeroCopyEn_ == false || rawBuff_ == NULL ) {
 
                // Allocate a buffer
-               buff = allocBuffer(bSize_,NULL);
+               buff[0] = allocBuffer(bSize_,NULL);
 
                // Attempt read, dest is not needed since only one lane/vc is open
-               res = dmaRead(fd_, buff->begin(), buff->getAvailable(), &rxFlags, &rxError, NULL);
-               fuser = axisGetFuser(rxFlags);
-               luser = axisGetLuser(rxFlags);
-               cont  = axisGetCont(rxFlags);
+               rxSize[0] = dmaRead(fd_, buff[0]->begin(), buff[0]->getAvailable(), rxFlags, rxError, NULL);
+               if ( rxSize[0] <= 0 ) rxCount = rxSize[0];
+               else rxCount = 1;
             }
 
             // Zero copy read
             else {
 
                // Attempt read, dest is not needed since only one lane/vc is open
-               if ((res = dmaReadIndex(fd_, &meta, &rxFlags, &rxError, NULL)) > 0) {
-                  fuser = axisGetFuser(rxFlags);
-                  luser = axisGetLuser(rxFlags);
-                  cont  = axisGetCont(rxFlags);
+               rxCount = dmaReadBulkIndex(fd_, RxBufferCount, rxSize, meta, rxFlags, rxError, NULL);
 
-                  // Allocate a buffer, Mark zero copy meta with bit 31 set, lower bits are index
-                  buff = createBuffer(rawBuff_[meta],0x80000000 | meta,bSize_,bSize_);
-               }
+               // Allocate a buffer, Mark zero copy meta with bit 31 set, lower bits are index
+               for (x=0; x < rxCount; x++) 
+                  buff[x] = createBuffer(rawBuff_[meta[x]],0x80000000 | meta[x],bSize_,bSize_);
             }
 
             // Return of -1 is bad
-            if ( res < 0 ) 
+            if ( rxCount < 0 ) 
                throw(rogue::GeneralError("AxiStreamDma::runThread","DMA Interface Failure!"));
 
             // Read was successfull
-            if ( res > 0 ) {
-               buff->setPayload(res);
+            for (x=0; x < rxCount; x++) {
+
+               fuser = axisGetFuser(rxFlags[x]);
+               luser = axisGetLuser(rxFlags[x]);
+               cont  = axisGetCont(rxFlags[x]);
+
+               buff[x]->setPayload(rxSize[x]);
 
                error = frame->getError();
 
                // Receive error
-               error |= (rxError & 0xFF);
+               error |= (rxError[x] & 0xFF);
 
                // First buffer of frame
                if ( frame->isEmpty() ) frame->setFirstUser(fuser&0xFF);
@@ -376,8 +380,8 @@ void rha::AxiStreamDma::runThread() {
                }
 
                frame->setError(error);
-               frame->appendBuffer(buff);
-               buff.reset();
+               frame->appendBuffer(buff[x]);
+               buff[x].reset();
 
                // If continue flag is not set, push frame and get a new empty frame
                if ( cont == 0 ) {
