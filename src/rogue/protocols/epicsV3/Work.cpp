@@ -43,18 +43,16 @@ rpe::Work::Work ( rpe::ValuePtr value, const gdd & wValue, casAsyncWriteIO *writ
    value_  = value;
    write_  = write;
    read_   = NULL;
-   gValue_ = new gdd;
-
-   gddApplicationTypeTable::app_table.smartCopy(gValue_, &wValue);
+   gValue_ = (gdd *)(&wValue);
+   gValue_->reference();
 }
 
 rpe::Work::Work ( rpe::ValuePtr value, gdd & rValue, casAsyncReadIO *read) {
    value_  = value;
    write_  = NULL;
    read_   = read;
-   gValue_ = new gdd;
-
-   gddApplicationTypeTable::app_table.smartCopy(gValue_, &rValue);
+   gValue_ = (gdd *)(&rValue);
+   gValue_->reference();
 }
 
 rpe::Work::~Work() {

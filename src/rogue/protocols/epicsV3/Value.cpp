@@ -225,7 +225,6 @@ caStatus rpe::Value::read(gdd &prototype) {
 
 caStatus rpe::Value::readValue(gdd &value) {
    gddStatus gdds;
-   printf("value read 3\n");
 
    boost::lock_guard<boost::mutex> lock(mtx_);
 

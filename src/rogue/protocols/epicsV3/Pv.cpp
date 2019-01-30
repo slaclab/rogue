@@ -61,11 +61,10 @@ caStatus rpe::Pv::beginTransaction() {
 void rpe::Pv::endTransaction() { }
 
 caStatus rpe::Pv::read(const casCtx &ctx, gdd &value) {
-   //casAsyncReadIO * rio = new casAsyncReadIO(ctx);
-   //rpe::WorkPtr work = rpe::Work::createRead(value_, value, rio);
-   ////server_->addWork(work);
-   ////server_->addWork(work);
-   return value_->read(value);
+   casAsyncReadIO * rio = new casAsyncReadIO(ctx);
+   rpe::WorkPtr work = rpe::Work::createRead(value_, value, rio);
+   server_->addWork(work);
+   return S_casApp_asyncCompletion;
 }
 
 caStatus rpe::Pv::write(const casCtx &ctx, const gdd &value) {
