@@ -21,6 +21,7 @@
 #include <rogue/protocols/epicsV3/Server.h>
 #include <rogue/protocols/epicsV3/Value.h>
 #include <rogue/protocols/epicsV3/Pv.h>
+#include <rogue/protocols/epicsV3/Work.h>
 #include <rogue/GilRelease.h>
 #include <rogue/GeneralError.h>
 #include <fdManager.h>
@@ -33,7 +34,7 @@ namespace bp  = boost::python;
 //! Setup class in python
 void rpe::Server::setup_python() {
 
-   bp::class_<rpe::Server, rpe::ServerPtr, boost::noncopyable >("Server",bp::init<>(uint32_t))
+   bp::class_<rpe::Server, rpe::ServerPtr, boost::noncopyable >("Server",bp::init<uint32_t>())
       .def("addValue", &rpe::Server::addValue)
       .def("start",    &rpe::Server::start)
       .def("stop",     &rpe::Server::stop)
@@ -51,8 +52,11 @@ rpe::Server::~Server() {
 
    stop();
 
-   for ( it = values_.begin(); it != values_.end(); ++it ) delete *it;
-   values_.reset();
+   for ( it = values_.begin(); it != values_.end(); ++it ) {
+      delete it->second->getPv();
+      it->second.reset();
+   }
+   values_.clear();
    free(workers_);
 }
 
@@ -62,12 +66,14 @@ void rpe::Server::start() {
    thread_ = new boost::thread(boost::bind(&rpe::Server::runThread, this));
 
    for (x=0; x < workCnt_; x++) 
-      workers_[x] = new boost::thread(boost::bind(&rpe::Server::workThread, this));
+      workers_[x] = new boost::thread(boost::bind(&rpe::Server::runWorker, this));
 
    running_ = true;
 }
 
 void rpe::Server::stop() {
+   uint32_t x;
+
    if (running_) {
       rogue::GilRelease noGil;
       thread_->interrupt();
@@ -78,7 +84,7 @@ void rpe::Server::stop() {
 
       for (x=0; x < workCnt_; x++) {
          workers_[x]->interrupt();
-         workers_[x]_->join();
+         workers_[x]->join();
       }
       running_ = false;
    }
@@ -151,7 +157,7 @@ void rpe::Server::runThread() {
 }
 
 //! Work thread
-void rpe::Server::workThread() {
+void rpe::Server::runWorker() {
    rpe::WorkPtr work;
 
    try {

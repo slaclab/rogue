@@ -63,7 +63,7 @@ namespace rogue {
 
                void endTransaction();
 
-               caStatus read(const casCtx &ctx, gdd &prototype);
+               caStatus read(const casCtx &ctx, gdd &value);
 
                caStatus write(const casCtx &ctx, const gdd &value);
 
