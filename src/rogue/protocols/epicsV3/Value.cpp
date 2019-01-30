@@ -219,13 +219,13 @@ rpe::Pv * rpe::Value::getPv() {
 //---------------------------------------
 caStatus rpe::Value::read(gdd &prototype) {
    caStatus ret;
-
    ret = funcTable_.read(*this, prototype);
    return ret;
 }
 
 caStatus rpe::Value::readValue(gdd &value) {
    gddStatus gdds;
+   printf("value read 3\n");
 
    boost::lock_guard<boost::mutex> lock(mtx_);
 

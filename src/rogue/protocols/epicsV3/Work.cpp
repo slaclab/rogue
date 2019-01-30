@@ -28,39 +28,49 @@ namespace rpe = rogue::protocols::epicsV3;
 namespace bp  = boost::python;
 
 //! Create a work container for write
-rpe::WorkPtr rpe::Work::createWrite ( rpe::ValuePtr value, const gdd * wValue, casAsyncWriteIO *write) {
+rpe::WorkPtr rpe::Work::createWrite ( rpe::ValuePtr value, const gdd & wValue, casAsyncWriteIO *write) {
    rpe::WorkPtr m = boost::make_shared<rpe::Work>(value,wValue,write);
    return(m);
 }
 
 //! Create a work container for read
-rpe::WorkPtr rpe::Work::createRead ( rpe::ValuePtr value, gdd * rValue, casAsyncReadIO *read) {
+rpe::WorkPtr rpe::Work::createRead ( rpe::ValuePtr value, gdd & rValue, casAsyncReadIO *read) {
    rpe::WorkPtr m = boost::make_shared<rpe::Work>(value,rValue,read);
    return(m);
 }
 
-rpe::Work::Work ( rpe::ValuePtr value, const gdd * wValue, casAsyncWriteIO *write)
-   : value_(value), wValue_(wValue), write_(write), rValue_(NULL), read_(NULL)
-{
+rpe::Work::Work ( rpe::ValuePtr value, const gdd & wValue, casAsyncWriteIO *write) {
+   value_  = value;
+   write_  = write;
+   read_   = NULL;
+   gValue_ = new gdd;
+
+   gddApplicationTypeTable::app_table.smartCopy(gValue_, &wValue);
 }
 
-rpe::Work::Work ( rpe::ValuePtr value, gdd * rValue, casAsyncReadIO *read) 
-   : value_(value), wValue_(NULL), write_(NULL), rValue_(rValue), read_(read)
-{
+rpe::Work::Work ( rpe::ValuePtr value, gdd & rValue, casAsyncReadIO *read) {
+   value_  = value;
+   write_  = NULL;
+   read_   = read;
+   gValue_ = new gdd;
+
+   gddApplicationTypeTable::app_table.smartCopy(gValue_, &rValue);
 }
 
-rpe::Work::~Work() {}
+rpe::Work::~Work() {
+   gValue_->unreference();
+}
 
 void rpe::Work::execute () {
    caStatus ret;
 
    if ( this->read_ != NULL ) {
-      ret = this->value_->read(*(this->rValue_));
-      this->read_->postIOCompletion(ret, *(this->rValue_));
+      ret = this->value_->read(*(this->gValue_));
+      this->read_->postIOCompletion(ret, *(this->gValue_));
    }
    
    else if ( this->write_ != NULL ) {
-      ret = this->value_->write(*(this->wValue_));
+      ret = this->value_->write(*(this->gValue_));
       this->write_->postIOCompletion(ret);
    }
 }
