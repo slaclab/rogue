@@ -20,6 +20,8 @@
 
 #include <rogue/protocols/epicsV3/Pv.h>
 #include <rogue/protocols/epicsV3/Value.h>
+#include <rogue/protocols/epicsV3/Server.h>
+#include <rogue/protocols/epicsV3/Work.h>
 #include <time.h>
 
 namespace rpe = rogue::protocols::epicsV3;
@@ -28,9 +30,10 @@ namespace rpe = rogue::protocols::epicsV3;
 namespace bp  = boost::python;
 
 //! Class creation
-rpe::Pv::Pv (caServer &cas, rpe::ValuePtr value) : casPV(cas) {
+rpe::Pv::Pv (rpe::Server *server, rpe::ValuePtr value) : casPV(*server) {
    value_    = value;
    interest_ = aitFalse;
+   server_   = server;
 
 //   valueMask_ = casEventMask(this->getCAS()->valueEventMask());
 }
@@ -58,15 +61,24 @@ caStatus rpe::Pv::beginTransaction() {
 void rpe::Pv::endTransaction() { }
 
 caStatus rpe::Pv::read(const casCtx &ctx, gdd &prototype) {
-   return value_->read(prototype);
+   casAsyncReadIO * rio = new casAsyncReadIO(ctx);
+   rpe::WorkPtr work = rpe::Work::create(value_, prototype, rio, NULL);
+   server_->addWork(work);
+   return S_casApp_asyncCompletion;
 }
 
 caStatus rpe::Pv::write(const casCtx &ctx, const gdd &value) {
-   return value_->write(value);
+   casAsyncWriteIO * wio = new casAsyncWriteIO(ctx);
+   rpe::WorkPtr work = rpe::Work::create(value_, prototype, NULL, wio);
+   server_->addWork(work);
+   return S_casApp_asyncCompletion;
 }
 
 caStatus rpe::Pv::writeNotify(const casCtx &ctx, const gdd &value) {
-   return value_->write(value);
+   casAsyncWriteIO * wio = new casAsyncWriteIO(ctx);
+   rpe::WorkPtr work = rpe::Work::create(value_, prototype, NULL, wio);
+   server_->addWork(work);
+   return S_casApp_asyncCompletion;
 }
 
 casChannel * rpe::Pv::createChannel(const casCtx &ctx,

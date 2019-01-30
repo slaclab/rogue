@@ -34,7 +34,6 @@ namespace rogue {
       namespace epicsV3 {
 
          class Pv;
-         class Server;
 
          class Value {
             protected:
@@ -92,7 +91,7 @@ namespace rogue {
                void setPv(rogue::protocols::epicsV3::Pv * pv);
 
                rogue::protocols::epicsV3::Pv * getPv();
-               
+
                //---------------------------------------
                // EPICS Interface
                //---------------------------------------

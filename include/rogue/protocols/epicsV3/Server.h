@@ -35,6 +35,7 @@ namespace rogue {
       namespace epicsV3 {
 
          class Value;
+         class Work;
 
          class Server : public caServer {
 
@@ -45,6 +46,7 @@ namespace rogue {
                boost::thread * thread_;
 
                boost::thread ** workers_;
+               uint32_t         workCnt_;
 
                boost::mutex mtx_;
 
@@ -62,7 +64,7 @@ namespace rogue {
                static void setup_python();
 
                //! Class creation
-               Server ();
+               Server (uint32_t threadCnt);
 
                ~Server();
 
@@ -71,6 +73,8 @@ namespace rogue {
                void stop();
 
                void addValue(boost::shared_ptr<rogue::protocols::epicsV3::Value> value);
+
+               void addWork(boost::shared_ptr<rogue::protocols::epicsV3::Work> work);
 
                pvExistReturn pvExistTest (const casCtx &ctx, const char *pvName);
 
