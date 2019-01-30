@@ -20,6 +20,7 @@
 #include <RogueConfig.h>
 #include <rogue/Version.h>
 #include <rogue/GeneralError.h>
+#include <rogue/GilRelease.h>
 #include <string>
 #include <sstream>
 
@@ -112,6 +113,16 @@ std::string rogue::Version::pythonVersion() {
    return ret.str();
 }
 
+void rogue::Version::sleep(uint32_t seconds) {
+   rogue::GilRelease noGil;
+   ::sleep(seconds);
+}
+
+void rogue::Version::usleep(uint32_t useconds) {
+   rogue::GilRelease noGil;
+   ::usleep(useconds);
+}
+
 void rogue::Version::setup_python() {
 #ifndef NO_PYTHON
    bp::class_<rogue::Version, boost::noncopyable>("Version",bp::no_init)
@@ -133,6 +144,10 @@ void rogue::Version::setup_python() {
       .staticmethod("devel")
       .def("pythonVersion", &rogue::Version::pythonVersion)
       .staticmethod("pythonVersion")
+      .def("sleep", &rogue::Version::sleep)
+      .staticmethod("sleep")
+      .def("usleep", &rogue::Version::usleep)
+      .staticmethod("usleep")
    ;
 #endif
 }
