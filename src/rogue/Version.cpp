@@ -146,6 +146,8 @@ void rogue::Version::setup_python() {
       .staticmethod("pythonVersion")
       .def("sleep", &rogue::Version::sleep)
       .staticmethod("sleep")
+      .def("usleep", &rogue::Version::usleep)
+      .staticmethod("usleep")
    ;
 #endif
 }
