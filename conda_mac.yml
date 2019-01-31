@@ -17,7 +17,6 @@ dependencies:
   - click
   - pyro4
   - numpy
-  - scipy
   - pyqt
   - pyepics
   - boost
