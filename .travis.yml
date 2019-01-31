@@ -37,6 +37,8 @@ jobs:
         - export BOOST_ROOT=$BOOST_DIR
         - export EPICS_BASE=$EPICS_DIR
         - export EPICS_CA_ADDR_LIST=127.0.0.1
+        # Install zeromq
+        - sudo apt-get install -qq libzmq3-dev
         # Prepare folders
         - mkdir -p $BOOST_DIR
         - mkdir -p $EPICS_DIR
