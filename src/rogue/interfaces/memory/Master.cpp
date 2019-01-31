@@ -58,6 +58,8 @@ void rim::Master::setup_python() {
       .staticmethod("_copyBits")
       .def("_setBits",            &rim::Master::setBits)
       .staticmethod("_setBits")
+      .def("_anyBits",            &rim::Master::anyBits)
+      .staticmethod("_anyBits")
    ;
 #endif
 }
