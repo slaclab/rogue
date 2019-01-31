@@ -391,7 +391,7 @@ class RemoteBlock(BaseBlock, rim.Master):
 
             dstBit = 0
             for x in range(len(var.bitOffset)):
-                if self._anyBits(self._sDataMask, var.bitOffset[x], bar.bitSize[x]):
+                if self._anyBits(self._sDataMask, var.bitOffset[x], var.bitSize[x]):
                     self._copyBits(ba, dstBit, self._sData, var.bitOffset[x], var.bitSize[x])
                 else:
                     self._copyBits(ba, dstBit, self._bData, var.bitOffset[x], var.bitSize[x])
