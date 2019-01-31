@@ -56,6 +56,10 @@ namespace rogue {
          static uint32_t getMaint ();
          static uint32_t getDevel ();
 
+         // For debugging
+         static void sleep(uint32_t seconds);
+         static void usleep(uint32_t useconds);
+
          static std::string pythonVersion();
    };
 }
