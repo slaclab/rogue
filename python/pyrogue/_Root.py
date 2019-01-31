@@ -511,6 +511,8 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                                 else:
                                     self._log.error("Pyro callback failed for {}: {}".format(self.name,msg))
 
+                self._log.debug(F"Done update group. Length={len(uvars)}. Entry={list(uvars.keys())[0]}")
+
                 # Generate yaml stream
                 self._sendYamlFrame(dictToYaml(d,default_flow_style=False))
 
