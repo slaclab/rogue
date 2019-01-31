@@ -328,5 +328,52 @@ void rim::Master::setBits(boost::python::object dst, uint32_t lsb, uint32_t size
    PyBuffer_Release(&dstBuf);
 }
 
+//! Return true if any bits are set in range
+bool rim::Master::anyBits(boost::python::object dst, uint32_t lsb, uint32_t size) {
+   Py_buffer dstBuf;
+   uint32_t  dstBit;
+   uint32_t  dstByte;
+   uint8_t * dstData;
+   uint32_t  rem;
+   uint32_t  bytes;
+   bool      ret;
+
+   if ( PyObject_GetBuffer(dst.ptr(),&dstBuf,PyBUF_SIMPLE) < 0 )
+      throw(rogue::GeneralError("Master::anyBits","Python Buffer Error"));
+
+   if ( (lsb + size) > (dstBuf.len*8) ) {
+      PyBuffer_Release(&dstBuf);
+      throw(rogue::GeneralError::boundary("Master::anyBits",(lsb + size),(dstBuf.len*8)));
+   }
+
+   dstByte = lsb / 8;
+   dstBit  = lsb % 8;
+   dstData = (uint8_t *)dstBuf.buf;
+   rem = size;
+   ret = false;
+
+   do {
+      bytes = rem / 8;
+
+      // Aligned
+      if ( (dstBit == 0) && (bytes > 0) ) {
+         if (dstData[dstByte] != 0) ret = true;
+         dstByte += 1;
+         rem -= 8;
+      }
+
+      // Not aligned
+      else {
+         if ( (dstData[dstByte] & (0x1 << dstBit)) != 0) ret = true;
+         dstByte += (++dstBit / 8);
+         dstBit %= 8;
+         rem -= 1;
+      }
+   } while (ret == false && rem != 0);
+
+   PyBuffer_Release(&dstBuf);
+   return ret;
+}
+
 #endif
 
