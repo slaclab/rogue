@@ -3,6 +3,7 @@
 import pyrogue
 import pyrogue.protocols.epics
 from epics import caget, caput
+import time
 
 epics_prefix='test_ioc'
 
@@ -27,12 +28,6 @@ class LocalRoot(pyrogue.Root):
         self.add(my_device)
         self.start()
 
-    def __enter__(self):
-        return self
-
-    def __exit__(self, exc_type, exc_value, traceback):
-        self.stop()
-
 class LocalRootWithEpics(LocalRoot):
     def __init__(self, use_map=False):
         LocalRoot.__init__(self)
@@ -48,12 +43,10 @@ class LocalRootWithEpics(LocalRoot):
         self.epics=pyrogue.protocols.epics.EpicsCaServer(base=epics_prefix, root=self, pvMap=pv_map)
         self.epics.start()
 
-    def __enter__(self):
-        return self
-
-    def __exit__(self, exc_type, exc_value, traceback):
+    def stop(self):
         self.epics.stop()
-        LocalRoot.__exit__(self, exc_type, exc_value, traceback)
+        self.epics=None
+        pyrogue.Root.stop(self)
 
 def test_local_root():
     """
@@ -93,6 +86,9 @@ def test_local_root():
                raise AssertionError('pv_name={}: test_value={}; test_result={}'.format(\
                                        pv_name, test_value, test_result))
 
+        # Allow epics client to reset
+        time.sleep(5)
+
     """
     Test EPICS server with a non-started tree
     """
@@ -109,3 +105,5 @@ def test_local_root():
     with LocalRootWithEpics() as root:
         slave=root.epics.createSlave(name='slave', maxSize=1000, type='UInt16')
         master=root.epics.createMaster(name='master', maxSize=1000, type='UInt16')
+
+

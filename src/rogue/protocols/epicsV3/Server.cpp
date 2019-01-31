@@ -76,8 +76,6 @@ void rpe::Server::stop() {
 
    if (running_) {
       rogue::GilRelease noGil;
-      thread_->interrupt();
-      thread_->join();
 
       for (x=0; x < workCnt_; x++) 
          workQueue_.push(NULL);
@@ -86,6 +84,9 @@ void rpe::Server::stop() {
          workers_[x]->interrupt();
          workers_[x]->join();
       }
+
+      thread_->interrupt();
+      thread_->join();
       running_ = false;
    }
 }
