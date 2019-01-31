@@ -29,26 +29,22 @@ namespace rogue {
       namespace memory {
 
          //! PGP Card class
-         class BridgeSlave : public rogue::interfaces::stream::Master, 
-                        public rogue::interfaces::stream::Slave {
+         class BridgeSlave : public rogue::interfaces::memory::Slave {
 
                //! Inbound Address
-               std::string pullAddr_;
+               std::string reqAddr_;
 
                //! Outbound Address
-               std::string pushAddr_;
-
-               //! Server mode
-               bool server_;
+               std::string respAddr_;
 
                //! Zeromq Context
                void * zmqCtx_;
 
                //! Zeromq inbound port
-               void * zmqPull_;
+               void * zmqReq_;
 
                //! Zeromq outbound port
-               void * zmqPush_;
+               void * zmqResp_;
 
                //! Thread background
                void runThread();
@@ -65,24 +61,24 @@ namespace rogue {
             public:
 
                //! Class creation
-               static boost::shared_ptr<rogue::interfaces::stream::BridgeSlave> 
-                  create (std::string addr, uint16_t port, bool server);
+               static boost::shared_ptr<rogue::interfaces::master::BridgeSlave> 
+                      create (std::string addr, uint16_t port);
 
                //! Setup class in python
                static void setup_python();
 
                //! Creator
-               BridgeSlave(std::string addr, uint16_t port, bool server);
+               BridgeSlave(std::string addr, uint16_t port);
 
                //! Destructor
                ~BridgeSlave();
 
-               //! Accept a frame from master
-               void acceptFrame ( boost::shared_ptr<rogue::interfaces::stream::Frame> frame );
+               //! Post a transaction. Master will call this method with the access attributes.
+               void doTransaction(boost::shared_ptr<rogue::interfaces::memory::Transaction> tran);
          };
 
          // Convienence
-         typedef boost::shared_ptr<rogue::interfaces::stream::BridgeSlave> BridgeSlavePtr;
+         typedef boost::shared_ptr<rogue::interfaces::master::BridgeSlave> BridgeSlavePtr;
 
       }
    }
