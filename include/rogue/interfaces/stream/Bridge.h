@@ -40,9 +40,6 @@ namespace rogue {
                //! Outbound Address
                std::string pushAddr_;
 
-               //! Server mode
-               bool server_;
-
                //! Zeromq Context
                void * zmqCtx_;
 

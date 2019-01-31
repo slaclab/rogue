@@ -61,7 +61,7 @@ namespace rogue {
             public:
 
                //! Class creation
-               static boost::shared_ptr<rogue::interfaces::master::BridgeSlave> 
+               static boost::shared_ptr<rogue::interfaces::memory::BridgeSlave> 
                       create (std::string addr, uint16_t port);
 
                //! Setup class in python
@@ -78,7 +78,7 @@ namespace rogue {
          };
 
          // Convienence
-         typedef boost::shared_ptr<rogue::interfaces::master::BridgeSlave> BridgeSlavePtr;
+         typedef boost::shared_ptr<rogue::interfaces::memory::BridgeSlave> BridgeSlavePtr;
 
       }
    }
