@@ -195,6 +195,21 @@ class Device(pr.Node,rim.Hub):
             self.add(lv)
 
 
+    def addArrayDevice(self, name, nodeClass, offset, number, stride, nodeArgs, **kwargs):
+        class _GenericDevice(Device):
+            def __init__(gdself, **gdkwargs):
+                super().__init__(**gdkwargs)
+                for i in range(number):
+                    gdself.add(nodeClass(
+                        name=f'{nodeClass.__name__}[{i:d}]',
+                        offset=i*stride,
+                        **nodeArgs))
+                
+        self.add(_GenericDevice(
+            name=name,
+            offset=offset,
+            **kwargs))
+
     def hideVariables(self, hidden, variables=None):
         """Hide a list of Variables (or Variable names)"""
         if variables is None:
