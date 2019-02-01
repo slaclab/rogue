@@ -21,6 +21,7 @@ env:
   global:
     - PY_PATH=$HOME/virtualenv/python3.6.7
     - PACKAGE_DIR=$HOME/packages
+    - BOOST_DIR=$PACKAGE_DIR/boost_1_64_0
     - EPICS_DIR=$PACKAGE_DIR/epics/base-3.15.5
     - MINICONDA_DIR=$PACKAGE_DIR/miniconda
     - DOCKER_ORG_NAME=tidair
@@ -34,11 +35,13 @@ jobs:
         # Prepare enviroment
         - export CPLUS_INCLUDE_PATH=$PY_PATH/include/python3.6m
         - export LD_LIBRARY_PATH=$BOOST_DIR/stage/lib:$PY_PATH/lib:$LD_LIBRARY_PATH
+        - export BOOST_ROOT=$BOOST_DIR
         - export EPICS_BASE=$EPICS_DIR
         - export EPICS_CA_ADDR_LIST=127.0.0.1
         # Install zeromq
-        - sudo apt-get install -qq libzmq3-dev libboost-all-dev
+        - sudo apt-get install -qq libzmq3-dev
         # Prepare folders
+        - mkdir -p $BOOST_DIR
         - mkdir -p $EPICS_DIR
         # Bring all the tags
         - git pull --unshallow
@@ -47,6 +50,13 @@ jobs:
       install:
         # Tools
         - pip install -r pip_requirements.txt
+
+        # Boost	
+        - cd $BOOST_DIR	
+        - wget -O boost_1_64_0.tar.gz http://sourceforge.net/projects/boost/files/boost/1.64.0/boost_1_64_0.tar.gz/download	
+        - tar xzf boost_1_64_0.tar.gz --strip 1	
+        - ./bootstrap.sh --with-libraries=system,thread,python	
+        - travis_wait ./b2 link=shared threading=multi variant=release -d0	
 
         # EPICS base
         - cd $EPICS_DIR
