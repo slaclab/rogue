@@ -19,6 +19,7 @@ requirements:
      - cmake
      - make
      - bzip2
+     - zeromq
      - epics-base=3.14.12.8
      - git
 
@@ -36,6 +37,7 @@ requirements:
      - make
      - bzip2
      - epics-base=3.14.12.8
+     - zeromq
      - pyyaml
      - pyzmq
      - parse
