@@ -19,7 +19,7 @@ stages:
 
 env:
   global:
-    - PY_PATH=$HOME/virtualenv/python3.6.3
+    - PY_PATH=$HOME/virtualenv/python3.6.7
     - PACKAGE_DIR=$HOME/packages
     - EPICS_DIR=$PACKAGE_DIR/epics/base-3.15.5
     - MINICONDA_DIR=$PACKAGE_DIR/miniconda
