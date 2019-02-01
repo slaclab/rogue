@@ -1,3 +1,4 @@
+dist: xenial
 sudo: required
 
 services:
@@ -18,7 +19,7 @@ stages:
 
 env:
   global:
-    - PY_PATH=$HOME/virtualenv/python3.6.3
+    - PY_PATH=$HOME/virtualenv/python3.6.7
     - PACKAGE_DIR=$HOME/packages
     - BOOST_DIR=$PACKAGE_DIR/boost_1_64_0
     - EPICS_DIR=$PACKAGE_DIR/epics/base-3.15.5

@@ -21,6 +21,7 @@
 #include <rogue/Version.h>
 #include <rogue/GeneralError.h>
 #include <rogue/GilRelease.h>
+#include <unistd.h>
 #include <string>
 #include <sstream>
 
