@@ -70,6 +70,11 @@ if ((NOT Boost_FOUND) AND DO_PYTHON)
    find_package(Boost 1.58 QUIET COMPONENTS system thread python36)
 endif()
 
+# Next try anaconda with python 3.7
+if ((NOT Boost_FOUND) AND DO_PYTHON)
+   find_package(Boost 1.58 QUIET COMPONENTS system thread python37)
+endif()
+
 # Try without python
 if (NOT Boost_FOUND)
    set(DO_PYTHON 0)

@@ -10,7 +10,7 @@ build:
 
 requirements:
    build:
-     - python=3.6
+     - python
      - gcc_linux-64   [linux]
      - gxx_linux-64   [linux]
      - clang_osx-64   [osx]
@@ -24,7 +24,7 @@ requirements:
      - git
 
    run:
-     - python=3.6
+     - python
      - gcc_linux-64   [linux]
      - gxx_linux-64   [linux]
      - clang_osx-64   [osx]

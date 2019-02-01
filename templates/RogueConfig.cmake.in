@@ -55,6 +55,11 @@ if ((NOT Boost_FOUND) AND DO_PYTHON)
    find_package(Boost 1.58 QUIET COMPONENTS system thread python36)
 endif()
 
+# Next try anaconda with python 3.7
+if ((NOT Boost_FOUND) AND DO_PYTHON)
+   find_package(Boost 1.58 QUIET COMPONENTS system thread python37)
+endif()
+
 # Try without python
 if (NOT Boost_FOUND)
    set(DO_PYTHON 0)
@@ -121,7 +126,8 @@ set(ROGUE_LIBRARIES @CONF_LIBRARIES@
                     ${Boost_LIBRARIES}
                     ${PYTHON_LIBRARIES}
                     ${EPICSV3_LIBRARIES}
-                    LINK_PUBLIC bz2)
+                    LINK_PUBLIC bz2
+                    LINK_PUBLIC zmq)
 
 # Set Version
 set(ROGUE_VERSION @ROGUE_VERSION@)
