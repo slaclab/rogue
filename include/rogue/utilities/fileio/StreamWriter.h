@@ -50,7 +50,8 @@ namespace rogue {
          //! Stream writer central class
          class StreamWriter : public boost::enable_shared_from_this<rogue::utilities::fileio::StreamWriter> {
             friend class StreamWriterChannel;
-
+            
+            protected:
                //! File descriptor
                int32_t fd_;
 
@@ -101,10 +102,9 @@ namespace rogue {
 
                std::map<uint32_t,boost::shared_ptr<rogue::utilities::fileio::StreamWriterChannel>> channelMap_;
 
-            protected:
 
                //! Write data to file. Called from StreamWriterChannel
-               void writeFile ( uint8_t channel, boost::shared_ptr<rogue::interfaces::stream::Frame> frame);
+               virtual void writeFile ( uint8_t channel, boost::shared_ptr<rogue::interfaces::stream::Frame> frame);
 
             public:
 
@@ -118,7 +118,7 @@ namespace rogue {
                StreamWriter();
 
                //! Deconstructor
-               ~StreamWriter();
+               virtual ~StreamWriter();
 
                //! Open a data file
                void open(std::string file);

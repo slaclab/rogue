@@ -100,6 +100,9 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         self.add(pr.LocalVariable(name='ForceWrite', value=False, mode='RW', hidden=True,
             description='Configuration Flag To Control Write All Block'))
 
+        self.add(pr.LocalVariable(name='Time', value=0.0, mode='RO', hidden=False,
+                 localGet=lambda: time.time(), pollInterval=1.0, description='Current Time In Seconds Since EPOCH UTC'))
+
         # Commands
         self.add(pr.LocalCommand(name='WriteAll', function=self._write, 
                                  description='Write all values to the hardware'))
