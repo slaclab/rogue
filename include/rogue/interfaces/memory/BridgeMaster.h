@@ -29,26 +29,22 @@ namespace rogue {
       namespace memory {
 
          //! PGP Card class
-         class BridgeMaster : public rogue::interfaces::stream::Master, 
-                        public rogue::interfaces::stream::Slave {
+         class BridgeMaster : public rogue::interfaces::memory::Master {
 
                //! Inbound Address
-               std::string pullAddr_;
+               std::string reqAddr_;
 
                //! Outbound Address
-               std::string pushAddr_;
-
-               //! Server mode
-               bool server_;
+               std::string respAddr_;
 
                //! Zeromq Context
                void * zmqCtx_;
 
                //! Zeromq inbound port
-               void * zmqPull_;
+               void * zmqReq_;
 
                //! Zeromq outbound port
-               void * zmqPush_;
+               void * zmqResp_;
 
                //! Thread background
                void runThread();
@@ -59,30 +55,25 @@ namespace rogue {
                //! Thread
                boost::thread * thread_;
 
-               //! Lock
-               boost::mutex bridgeMtx_;
-
             public:
 
                //! Class creation
-               static boost::shared_ptr<rogue::interfaces::stream::BridgeMaster> 
-                  create (std::string addr, uint16_t port, bool server);
+               static boost::shared_ptr<rogue::interfaces::memory::BridgeMaster> 
+                      create (std::string addr, uint16_t port);
 
                //! Setup class in python
                static void setup_python();
 
                //! Creator
-               BridgeMaster(std::string addr, uint16_t port, bool server);
+               BridgeMaster(std::string addr, uint16_t port);
 
                //! Destructor
                ~BridgeMaster();
 
-               //! Accept a frame from master
-               void acceptFrame ( boost::shared_ptr<rogue::interfaces::stream::Frame> frame );
          };
 
          // Convienence
-         typedef boost::shared_ptr<rogue::interfaces::stream::BridgeMaster> BridgeMasterPtr;
+         typedef boost::shared_ptr<rogue::interfaces::memory::BridgeMaster> BridgeMasterPtr;
 
       }
    }

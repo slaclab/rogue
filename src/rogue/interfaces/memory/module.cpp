@@ -26,7 +26,7 @@
 #include <rogue/interfaces/memory/Transaction.h>
 #include <rogue/interfaces/memory/TransactionLock.h>
 #include <rogue/interfaces/memory/BridgeSlave.h>
-//#include <rogue/interfaces/memory/BridgeMaster.h>
+#include <rogue/interfaces/memory/BridgeMaster.h>
 #include <boost/python.hpp>
 
 namespace bp  = boost::python;
@@ -65,7 +65,7 @@ void rim::setup_module() {
    rim::Transaction::setup_python(); 
    rim::TransactionLock::setup_python(); 
    rim::BridgeSlave::setup_python(); 
-   //rim::BridgeMaster::setup_python(); 
+   rim::BridgeMaster::setup_python(); 
 
 }
 

@@ -17,18 +17,15 @@
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
-#include <rogue/interfaces/stream/BridgeMaster.h>
-#include <rogue/interfaces/stream/Frame.h>
-#include <rogue/interfaces/stream/FrameIterator.h>
-#include <rogue/interfaces/stream/FrameLock.h>
-#include <rogue/interfaces/stream/Buffer.h>
+#include <rogue/interfaces/memory/BridgeMaster.h>
+#include <rogue/interfaces/memory/Constants.h>
 #include <rogue/GeneralError.h>
 #include <boost/make_shared.hpp>
 #include <rogue/GilRelease.h>
 #include <rogue/Logging.h>
 #include <zmq.h>
 
-namespace ris = rogue::interfaces::stream;
+namespace rim = rogue::interfaces::memory;
 
 #ifndef NO_PYTHON
 #include <boost/python.hpp>
@@ -36,145 +33,158 @@ namespace bp  = boost::python;
 #endif
 
 //! Class creation
-ris::BridgeMasterPtr ris::BridgeMaster::create (std::string addr, uint16_t port, bool server) {
-   ris::BridgeMasterPtr r = boost::make_shared<ris::BridgeMaster>(addr,port,server);
+rim::BridgeMasterPtr rim::BridgeMaster::create (std::string addr, uint16_t port) {
+   rim::BridgeMasterPtr r = boost::make_shared<rim::BridgeMaster>(addr,port);
    return(r);
 }
 
 //! Creator
-ris::BridgeMaster::BridgeMaster (std::string addr, uint16_t port, bool server) {
+rim::BridgeMaster::BridgeMaster (std::string addr, uint16_t port) {
    uint32_t to;
 
-   this->server_ = server;
-
-   this->bridgeLog_ = rogue::Logging::create("stream.BridgeMaster");
+   this->bridgeLog_ = rogue::Logging::create("memory.BridgeMaster");
 
    // Format address
-   this->pullAddr_ = "tcp://";
-   this->pullAddr_.append(addr);
-   this->pullAddr_.append(":");
-   this->pushAddr_ = this->pullAddr_;
+   this->respAddr_ = "tcp://";
+   this->respAddr_.append(addr);
+   this->respAddr_.append(":");
+   this->reqAddr_ = this->respAddr_;
 
    this->zmqCtx_  = zmq_ctx_new();
-   this->zmqPull_ = zmq_socket(this->zmqCtx_,ZMQ_PULL);
-   this->zmqPush_ = zmq_socket(this->zmqCtx_,ZMQ_PUSH);
+   this->zmqResp_ = zmq_socket(this->zmqCtx_,ZMQ_PUSH);
+   this->zmqReq_  = zmq_socket(this->zmqCtx_,ZMQ_PULL);
 
    // Receive timeout
    to = 10;
-   zmq_setsockopt (this->zmqPull_, ZMQ_RCVTIMEO, &to, sizeof(to));
+   zmq_setsockopt (this->zmqResp_, ZMQ_RCVTIMEO, &to, sizeof(to));
 
-   // Server mode
-   if (server) {
-      this->pullAddr_.append(std::to_string(port));
-      this->pushAddr_.append(std::to_string(port+1));
+   this->respAddr_.append(std::to_string(port+1));
+   this->reqAddr_.append(std::to_string(port));
 
-      this->bridgeLog_->debug("Creating pull server port: %s",this->pullAddr_.c_str());
+   this->bridgeLog_->debug("Creating response client port: %s",this->respAddr_.c_str());
 
-      if ( zmq_bind(this->zmqPull_,this->pullAddr_.c_str()) < 0 ) 
-         throw(rogue::GeneralError::network("BridgeMaster::BridgeMaster",addr,port));
+   if ( zmq_bind(this->zmqResp_,this->respAddr_.c_str()) < 0 ) 
+      throw(rogue::GeneralError::network("BridgeMaster::BridgeMaster",addr,port+1));
 
-      this->bridgeLog_->debug("Creating push server port: %s",this->pushAddr_.c_str());
+   this->bridgeLog_->debug("Creating request client port: %s",this->reqAddr_.c_str());
 
-      if ( zmq_bind(this->zmqPush_,this->pushAddr_.c_str()) < 0 ) 
-         throw(rogue::GeneralError::network("BridgeMaster::BridgeMaster",addr,port+1));
-   }
-
-   // Client mode
-   else {
-      this->pullAddr_.append(std::to_string(port+1));
-      this->pushAddr_.append(std::to_string(port));
-
-      if ( zmq_connect(this->zmqPull_,this->pullAddr_.c_str()) < 0 ) 
-         throw(rogue::GeneralError::network("BridgeMaster::BridgeMaster",addr,port+1));
-
-      this->bridgeLog_->debug("Creating pull client port: %s",this->pullAddr_.c_str());
-
-      if ( zmq_connect(this->zmqPush_,this->pushAddr_.c_str()) < 0 ) 
-         throw(rogue::GeneralError::network("BridgeMaster::BridgeMaster",addr,port));
-
-      this->bridgeLog_->debug("Creating push client port: %s",this->pushAddr_.c_str());
-   }
+   if ( zmq_bind(this->zmqReq_,this->reqAddr_.c_str()) < 0 ) 
+      throw(rogue::GeneralError::network("BridgeMaster::BridgeMaster",addr,port));
 
    // Start rx thread
-   this->thread_ = new boost::thread(boost::bind(&ris::BridgeMaster::runThread, this));
+   this->thread_ = new boost::thread(boost::bind(&rim::BridgeMaster::runThread, this));
 }
 
 //! Destructor
-ris::BridgeMaster::~BridgeMaster() {
+rim::BridgeMaster::~BridgeMaster() {
    thread_->interrupt();
    thread_->join();
 
-   zmq_close(this->zmqPull_);
-   zmq_close(this->zmqPush_);
+   zmq_close(this->zmqResp_);
+   zmq_close(this->zmqReq_);
    zmq_term(this->zmqCtx_);
 }
 
-//! Accept a frame from master
-void ris::BridgeMaster::acceptFrame ( ris::FramePtr frame ) {
-   uint8_t * data;
-   zmq_msg_t msg;
-
-   rogue::GilRelease noGil;
-   ris::FrameLockPtr frLock = frame->lock();
-   boost::lock_guard<boost::mutex> lock(bridgeMtx_);
-
-   if ( zmq_msg_init_size (&msg, frame->getPayload()) < 0 ) {
-      bridgeLog_->warning("Failed to init message with size %i",frame->getPayload());
-      return;
-   }
-
-   // Copy data
-   data = (uint8_t *)zmq_msg_data(&msg);
-   std::copy(frame->beginRead(), frame->endRead(), data);
-    
-   // Send data
-   if ( zmq_sendmsg(this->zmqPush_,&msg,0) < 0 )
-      bridgeLog_->warning("Failed to send message with size %i",frame->getPayload());
-}
-
 //! Run thread
-void ris::BridgeMaster::runThread() {
-   ris::FramePtr frame;
+void rim::BridgeMaster::runThread() {
    uint8_t * data;
+   uint64_t  more;
+   size_t    moreSize;
+   uint32_t  x;
+   uint32_t  msgCnt;
+   zmq_msg_t msg[5];
+   uint32_t  id;
+   uint64_t  addr;
    uint32_t  size;
-   zmq_msg_t msg;
+   uint32_t  type;
+   uint32_t  result;
 
    bridgeLog_->logThreadId();
 
    try {
 
       while(1) {
-         zmq_msg_init(&msg);
 
-         if ( zmq_recvmsg(this->zmqPull_,&msg,0) > 0 ) {
+         for (x=0; x < 6; x++) zmq_msg_init(&(msg[x]));
+         msgCnt = 0;
+         x = 0;
 
-            // Get message info
-            data = (uint8_t *)zmq_msg_data(&msg);
-            size = zmq_msg_size(&msg);
+         // Get message
+         do {
 
-            // Generate frame
-            frame = ris::Pool::acceptReq(size,false);
+            // Get the message
+            if ( zmq_recvmsg(this->zmqReq_,&(msg[x]),0) > 0 ) {
+               if ( x != 4 ) x++;
+               msgCnt++;
 
-            // Copy data
-            std::copy(data,data+size,frame->beginWrite());
-            zmq_msg_close(&msg);
+               // Is there more data?
+               more = 0;
+               moreSize = 8;
+               zmq_getsockopt(this->zmqReq_, ZMQ_RCVMORE, &more, &moreSize);
+            } else more = 1;
+         } while ( more );
 
-            // Set frame size and send
-            frame->setPayload(size);
-            sendFrame(frame);
+         // Proper message received
+         if ( msgCnt == 4 || msgCnt == 5) {
+
+            // Check sizes
+            if ( (zmq_msg_size(&(msg[0])) != 4) || (zmq_msg_size(&(msg[1])) != 8) ||
+                 (zmq_msg_size(&(msg[2])) != 4) || (zmq_msg_size(&(msg[3])) != 4) ) {
+               bridgeLog_->warning("Bad message sizes");
+               for (x=0; x < msgCnt; x++) zmq_msg_close(&(msg[x]));
+               continue; // while (1)
+            }
+
+            // Get return fields
+            memcpy(&id,   zmq_msg_data(&(msg[0])), 4);
+            memcpy(&addr, zmq_msg_data(&(msg[1])), 8);
+            memcpy(&size, zmq_msg_data(&(msg[2])), 4);
+            memcpy(&type, zmq_msg_data(&(msg[3])), 4);
+
+            // Write data is expected
+            if ( (type == rim::Write) || (type == rim::Post) ) {
+               if ((msgCnt != 5) || (zmq_msg_size(&(msg[4])) != size) ) {
+                  bridgeLog_->warning("Transaction write data error. Id=%i",id);
+                  for (x=0; x < msgCnt; x++) zmq_msg_close(&(msg[x]));
+                  continue; // while (1)
+               }
+            }
+            else zmq_msg_init_size(&(msg[4]),size);
+
+            // Data pointer
+            data = (uint8_t *)zmq_msg_data(&(msg[4]));
+
+            bridgeLog_->debug("Starting transaction id=%i, addr=0x%x, size=%i, type=%i",id,addr,size,type);
+
+            // Execute transaction and wait for result
+            this->setError(0);
+            reqTransaction(addr,size,data,type);
+            waitTransaction(0);
+            result = getError();
+
+            bridgeLog_->debug("Done transaction id=%i, addr=0x%x, size=%i, type=%i, result=%i",id,addr,size,type,result);
+
+            // Result message
+            zmq_msg_init_size(&(msg[5]),4);
+            memcpy(zmq_msg_data(&(msg[5])),&result, 4);
+
+            // Send message
+            for (x=0; x < 6; x++) 
+               zmq_sendmsg(this->zmqResp_,&(msg[x]),(x==5)?0:ZMQ_SNDMORE);
          }
+         else for (x=0; x < msgCnt; x++) zmq_msg_close(&(msg[x]));
+
          boost::this_thread::interruption_point();
       }
    } catch (boost::thread_interrupted&) { }
 }
 
-void ris::BridgeMaster::setup_python () {
+void rim::BridgeMaster::setup_python () {
 #ifndef NO_PYTHON
 
-   bp::class_<ris::BridgeMaster, ris::BridgeMasterPtr, bp::bases<ris::Master,ris::Master>, boost::noncopyable >("BridgeMaster",bp::init<std::string,uint16_t,bool>());
+   bp::class_<rim::BridgeMaster, rim::BridgeMasterPtr, bp::bases<rim::Master>, boost::noncopyable >("BridgeMaster",bp::init<std::string,uint16_t>());
 
-   bp::implicitly_convertible<ris::BridgeMasterPtr, ris::MasterPtr>();
-   bp::implicitly_convertible<ris::BridgeMasterPtr, ris::MasterPtr>();
+   bp::implicitly_convertible<rim::BridgeMasterPtr, rim::MasterPtr>();
 #endif
 }
 
