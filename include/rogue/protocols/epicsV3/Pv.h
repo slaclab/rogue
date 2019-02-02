@@ -33,11 +33,13 @@ namespace rogue {
       namespace epicsV3 {
 
          class Value;
+         class Server;
 
          class Pv : public casPV {
             private:
 
                boost::shared_ptr<rogue::protocols::epicsV3::Value> value_;
+               rogue::protocols::epicsV3::Server *server_;
                aitBool interest_;
                boost::mutex mtx_;
                casEventMask valueMask_;
@@ -45,7 +47,7 @@ namespace rogue {
             public:
 
                //! Class creation
-               Pv (caServer &cas, boost::shared_ptr<rogue::protocols::epicsV3::Value> value);
+               Pv (rogue::protocols::epicsV3::Server *server, boost::shared_ptr<rogue::protocols::epicsV3::Value> value);
 
                ~Pv ();
 
@@ -61,7 +63,7 @@ namespace rogue {
 
                void endTransaction();
 
-               caStatus read(const casCtx &ctx, gdd &prototype);
+               caStatus read(const casCtx &ctx, gdd &value);
 
                caStatus write(const casCtx &ctx, const gdd &value);
 
