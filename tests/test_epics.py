@@ -106,4 +106,5 @@ def test_local_root():
         slave=root.epics.createSlave(name='slave', maxSize=1000, type='UInt16')
         master=root.epics.createMaster(name='master', maxSize=1000, type='UInt16')
 
-
+if __name__ == "__main__":
+    test_local_root()

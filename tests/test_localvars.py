@@ -166,3 +166,7 @@ def test_local_root():
         max_read=root.myDevice.var_with_properties.maximum
         if max_read != max_set:
             raise AssertionError('Minimum was set to {} but was read as {}'.format(max_set, max_read))
+
+if __name__ == "__main__":
+    test_local_root()
+
