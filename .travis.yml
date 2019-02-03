@@ -1,3 +1,4 @@
+dist: xenial
 sudo: required
 
 branches:
@@ -28,7 +29,7 @@ stages:
 
 env:
   global:
-    - PY_PATH=$HOME/virtualenv/python3.6.3
+    - PY_PATH=$HOME/virtualenv/python3.6.7
     - PACKAGE_DIR=$HOME/packages
     - BOOST_DIR=$PACKAGE_DIR/boost_1_64_0
     - EPICS_DIR=$PACKAGE_DIR/epics/base-3.15.5
@@ -48,6 +49,8 @@ jobs:
         - export BOOST_ROOT=$BOOST_DIR
         - export EPICS_BASE=$EPICS_DIR
         - export EPICS_CA_ADDR_LIST=127.0.0.1
+        # Install zeromq
+        - sudo apt-get install -qq libzmq3-dev
         # Prepare folders
         - mkdir -p $BOOST_DIR
         - mkdir -p $EPICS_DIR

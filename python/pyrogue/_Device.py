@@ -125,6 +125,8 @@ class Device(pr.Node,rim.Hub):
         self._blockSize = blockSize
         self._defaults  = defaults if defaults is not None else {}
 
+        self.forceCheckEach = False
+
         # Connect to memory slave
         if memBase: self._setSlave(memBase)
 
@@ -225,7 +227,8 @@ class Device(pr.Node,rim.Hub):
         Write all of the blocks held by this Device to memory
         """
         self._log.debug(f'Calling {self.path}._writeBlocks')
-        #print(f'Calling {self.path}.writeBlocks(recurse={recurse}, variable={variable}, checkEach={checkEach}')                
+
+        checkEach = checkEach or self.forceCheckEach
 
         # Process local blocks.
         if variable is not None:
@@ -246,7 +249,9 @@ class Device(pr.Node,rim.Hub):
         """
         Perform background verify
         """
-        #print(f'Calling {self.path}.verifyBlocks(recurse={recurse}, variable={variable}, checkEach={checkEach}')                
+        #print(f'Calling {self.path}.verifyBlocks(recurse={recurse}, variable={variable}, checkEach={checkEach}')
+
+        checkEach = checkEach or self.forceCheckEach        
 
         # Process local blocks.
         if variable is not None:
@@ -267,7 +272,9 @@ class Device(pr.Node,rim.Hub):
         Perform background reads
         """
         self._log.debug(f'Calling {self.path}._readBlocks(recurse={recurse}, variable={variable}, checkEach={checkEach}')
-        #print(f'Calling {self.path}.readBlocks(recurse={recurse}, variable={variable}, checkEach={checkEach})')        
+        #print(f'Calling {self.path}.readBlocks(recurse={recurse}, variable={variable}, checkEach={checkEach})')
+
+        checkEach = checkEach or self.forceCheckEach        
 
         # Process local blocks. 
         if variable is not None:
@@ -390,7 +397,7 @@ class Device(pr.Node,rim.Hub):
                 raise DeviceError(
                     f'Variable {v.path} passed to {self.path}._getBlocks() is not a member of {self.path}')
             else:
-                if v._block not in blocks:
+                if v._block not in blocks and v._block is not None:
                     blocks.append(v._block)
                 
         return blocks
@@ -591,7 +598,7 @@ class DataWriter(Device):
         else:
             base = self.dataFile.value()[:idx+1]
 
-        self.dataFile.set(base + datetime.datetime.now().strftime("%Y%m%d_%H%M%S.dat")) 
+        self.dataFile.set(base + datetime.datetime.now().strftime("data_%Y%m%d_%H%M%S.dat")) 
 
 class RunControl(Device):
     """Special base class to control runs. TODO: Update comments."""

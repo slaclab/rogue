@@ -3,7 +3,7 @@ channels:
   - conda-forge
   - paulscherrerinstitute
 dependencies:
-  - python=3.6
+  - python
   - clang_osx-64
   - clangxx_osx-64
   - git
@@ -21,4 +21,5 @@ dependencies:
   - pyepics
   - boost
   - bzip2
+  - zeromq
   - epics-base=3.14.12.8

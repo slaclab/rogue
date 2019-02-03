@@ -64,6 +64,17 @@ class StreamWriter(pyrogue.DataWriter):
     def setDropErrors(self,drop):
         self._writer.setDropErrors(drop)
 
+class LegacyStreamWriter(StreamWriter):
+    def __init__(self, *, configEn=False, **kwargs):
+        pyrogue.DataWriter.__init__(self, **kwargs)
+        self._writer   = rogue.utilities.fileio.LegacyStreamWriter()
+        self._configEn = configEn
+
+    def getDataChannel(self):
+        return self._writer.getDataChannel()
+
+    def getYamlChannel(self):
+        return self._writer.getYamlChannel()
 
 class StreamReader(pyrogue.Device):
     """Stream Reader Wrapper"""
@@ -73,10 +84,10 @@ class StreamReader(pyrogue.Device):
         self._reader = rogue.utilities.fileio.StreamReader()
 
         self.add(pyrogue.LocalVariable(name='dataFile', description='Data File',
-                                       base='string', mode='RW', value=''))
+                                       mode='RW', value=''))
 
         self.add(pyrogue.LocalVariable(name='open', description='Data file open state',
-                                  bitSize=1, bitOffset=0, base='bool', mode='RW',
+                                  bitSize=1, bitOffset=0, mode='RW', value=False,
                                   localSet=self._setOpen))
 
     def _setOpen(self,value,changed):

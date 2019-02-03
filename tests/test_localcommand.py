@@ -34,13 +34,7 @@ class LocalRoot(pyrogue.Root):
         pyrogue.Root.__init__(self, name='LocalRoot', description='Local root')
         my_device=myDevice()
         self.add(my_device)
-
-    def __enter__(self):
         self.start()
-        return self
-
-    def __exit__(self, exc_type, exc_value, traceback):
-        self.stop()
 
 def test_local_cmd():
     """
@@ -65,3 +59,7 @@ def test_local_cmd():
         if duration > delay:
             raise AssertionError('Comamnd running in background returned too late: '
                 'delay was set to {} s, and the command took {} s.'.format(delay, duration))
+
+if __name__ == "__main__":
+    test_local_cmd()
+

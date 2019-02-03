@@ -120,6 +120,9 @@ namespace rogue {
                //! Set all bits in dest with lbs and size
                static void setBits(boost::python::object dst, uint32_t lsb, uint32_t size);
 
+               //! Return true if any bits are set in range
+               static bool anyBits(boost::python::object dst, uint32_t lsb, uint32_t size);
+
 #endif
 
             protected:

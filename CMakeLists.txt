@@ -70,6 +70,11 @@ if ((NOT Boost_FOUND) AND DO_PYTHON)
    find_package(Boost 1.58 QUIET COMPONENTS system thread python36)
 endif()
 
+# Next try anaconda with python 3.7
+if ((NOT Boost_FOUND) AND DO_PYTHON)
+   find_package(Boost 1.58 QUIET COMPONENTS system thread python37)
+endif()
+
 # Try without python
 if (NOT Boost_FOUND)
    set(DO_PYTHON 0)
@@ -199,6 +204,7 @@ add_subdirectory(src/rogue)
 TARGET_LINK_LIBRARIES(rogue-core LINK_PUBLIC ${Boost_LIBRARIES})
 TARGET_LINK_LIBRARIES(rogue-core LINK_PUBLIC ${EPICSV3_LIBRARIES})
 TARGET_LINK_LIBRARIES(rogue-core LINK_PUBLIC bz2)
+TARGET_LINK_LIBRARIES(rogue-core LINK_PUBLIC zmq)
 
 # Do not link directly against python in macos
 if (APPLE)
