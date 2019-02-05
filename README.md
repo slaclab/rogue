@@ -6,6 +6,9 @@
 # rogue
 SLAC Python Based Hardware Abstraction &amp; Data Acquisition System
 
+Current documenation can be found at:
+https://slaclab.github.io/rogue/
+
 Email List For Announcements:
 https://listserv.slac.stanford.edu/cgi-bin/wa?A0=AIR-ROGUE-USERS
 
