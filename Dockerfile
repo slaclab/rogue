@@ -9,7 +9,7 @@ RUN apt-get update && apt-get -y    install wget git \
 # Install EPICS
 RUN mkdir -p /usr/src/epics/base-3.15.5
 WORKDIR /usr/src/epics/base-3.15.5
-RUN wget -O base-3.15.5.tar.gz https://epics.anl.gov/download/base/base-3.15.5.tar.gz
+RUN wget -O base-3.15.5.tar.gz https://github.com/epics-base/epics-base/archive/R3.15.5.tar.gz
 RUN tar xzf base-3.15.5.tar.gz --strip 1
 RUN make clean && make && make install
 ENV EPICS_BASE /usr/src/epics/base-3.15.5
