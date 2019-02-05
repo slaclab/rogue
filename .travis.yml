@@ -173,7 +173,7 @@ jobs:
 
       script:
         # Build conda package
-        - conda build -q conda-recipe --python=3.6 --output-folder bld-dir -c defaults -c conda-forge -c paulscherrerinstitute
+        - conda build -q conda-recipe --output-folder bld-dir -c defaults -c conda-forge -c paulscherrerinstitute
 
       after_success:
         # Upload conda package
