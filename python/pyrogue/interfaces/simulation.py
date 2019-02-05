@@ -22,30 +22,114 @@ import rogue.interfaces.stream
 import time
 import zmq
 
-class SidebandSim():
+class StreamSim(rogue.interfaces.stream.Master, 
+                rogue.interfaces.stream.Slave, 
+                threading.Thread):
 
-    def __init__(self,*,host,port):
+    def __init__(self,*,host,dest,uid,ssi=False):
+        rogue.interfaces.stream.Master.__init__(self)
+        rogue.interfaces.stream.Slave.__init__(self)
+        threading.Thread.__init__(self)
+
+        self._log = pyrogue.logInit(self)
+
+        ibPort = 5000 + dest + uid*100
+        obPort = 6000 + dest + uid*100
+        ocPort = 7000 + dest + uid*100
+        sbPort = 8000 + dest + uid*100
+
         self._ctx = zmq.Context()
+        self._ibSock = self._ctx.socket(zmq.REP)
         self._obSock = self._ctx.socket(zmq.REQ)
-        self._obSock.connect("tcp://%s:%i" % (host,port))
+        self._ocSock = self._ctx.socket(zmq.REQ)
+        self._sbSock = self._ctx.socket(zmq.REQ)
+        self._ibSock.connect("tcp://%s:%i" % (host,ibPort))
+        self._obSock.connect("tcp://%s:%i" % (host,obPort))
+        self._ocSock.connect("tcp://%s:%i" % (host,ocPort))
+        self._sbSock.connect("tcp://%s:%i" % (host,sbPort))
+
+        self._log.info("Destination %i : id = %i, ib = %i, ob = %i, Code = %i, Side Data = %i" %
+              (dest,uid,ibPort,obPort,ocPort,sbPort))
+
+        self._ssi     = ssi
+        self._enable  = True
+        self.rxCount  = 0
+        self.txCount  = 0
+
+        self.start()
+
+    def stop(self):
+        self._enable = False
 
     def sendOpCode(self,opCode):
-        ba = bytearray(2)
-        ba[0] = 0xAA
-        ba[1] = opCode
+        ba = bytearray(1)
+        ba[0] = opCode
         self._ocSock.send(ba)
 
         # Wait for ack
         self._ocSock.recv_multipart()
 
     def setData(self,data):
-        ba = bytearray(2)
-        ba[0] = 0xBB
-        ba[1] = data
+        ba = bytearray(1)
+        ba[0] = data
         self._sbSock.send(ba)
 
         # Wait for ack
         self._sbSock.recv_multipart()
+
+    def _acceptFrame(self,frame):
+        """ Forward frame to simulation """
+
+        flock = frame.lock();
+        fuser = frame.getFirstUser();
+        luser = frame.getLastUser();
+
+        if ( self._ssi ):
+            fuser = fuser | 0x2 # SOF
+            if ( frame.getError() ): luser = luser | 0x1 # EOFE
+
+        ba = bytearray(1)
+        bb = bytearray(1)
+        bc = bytearray(frame.getPayload())
+
+        ba[0] = fuser
+        bb[0] = luser
+        frame.read(bc,0)
+
+        self._obSock.send(ba,zmq.SNDMORE)
+        self._obSock.send(bb,zmq.SNDMORE)
+        self._obSock.send(bc)
+        self.txCount += 1
+
+        # Wait for ack
+        self._obSock.recv_multipart()
+
+    def run(self):
+        """Receive frame from simulation"""
+
+        while(self._enable):
+            r = self._ibSock.recv_multipart()
+
+            fuser = bytearray(r[0])[0]
+            luser = bytearray(r[1])[0]
+            data  = bytearray(r[2])
+
+            frame = self._reqFrame(len(data),True)
+
+            frame.setFirstUser(fuser);
+            frame.setLastUser(luser);
+
+            if ( self._ssi and (luser & 0x1)): frame.setError(0x80)
+
+            frame.write(data,0)
+            self.rxCount += 1
+
+            # Send ack
+            ba = bytearray(1)
+            ba[0] = 0xFF
+            self._ibSock.send(ba)
+
+            self._sendFrame(frame)
 
 class MemEmulate(rogue.interfaces.memory.Slave):
 
