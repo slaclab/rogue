@@ -293,6 +293,7 @@ static inline void ** dmaMapDma(int32_t fd, uint32_t *count, uint32_t *size) {
    uint32_t bCount;
    uint32_t gCount;
    uint32_t bSize;
+   off_t    offset;
 
    bSize  = ioctl(fd,DMA_Get_Buff_Size,0);
    bCount = ioctl(fd,DMA_Get_Buff_Count,0);
@@ -304,9 +305,9 @@ static inline void ** dmaMapDma(int32_t fd, uint32_t *count, uint32_t *size) {
 
    // Attempt to map
    while ( gCount < bCount ) {
-      if ( (temp = mmap (0, bSize, PROT_READ | PROT_WRITE, MAP_SHARED, fd, (bSize*gCount))) == MAP_FAILED) {
-         break;
-      }
+      offset = (off_t)bSize * (off_t)gCount;
+
+      if ( (temp = mmap (0, bSize, PROT_READ | PROT_WRITE, MAP_SHARED, fd, offset)) == MAP_FAILED) break;
       ret[gCount++] = temp;
    }
 
