@@ -71,6 +71,9 @@ rha::AxiStreamDma::AxiStreamDma ( std::string path, uint32_t dest, bool ssiEnabl
 
    // Result may be that rawBuff_ = NULL
    rawBuff_ = dmaMapDma(fd_,&bCount_,&bSize_);
+   if ( rawBuff_ == NULL ) {
+      throw(rogue::GeneralError("AxiStreamDma::AxiStreamDma","Failed to map dma buffers. Increase vm map limit: sysctl -w vm.max_map_count=262144"));
+   }
 
    // Start read thread
    thread_ = new boost::thread(boost::bind(&rha::AxiStreamDma::runThread, this));
