@@ -188,6 +188,7 @@ void ris::Bridge::runThread() {
                moreSize = 8;
                zmq_getsockopt(this->zmqPull_, ZMQ_RCVMORE, &more, &moreSize);
             } else more = 1;
+            boost::this_thread::interruption_point();
          } while ( more );
 
          // Proper message received

@@ -186,6 +186,7 @@ void rim::BridgeSlave::runThread() {
                moreSize = 8;
                zmq_getsockopt(this->zmqResp_, ZMQ_RCVMORE, &more, &moreSize);
             } else more = 1;
+            boost::this_thread::interruption_point();
          } while ( more );
 
          // Proper message received
