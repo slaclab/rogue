@@ -304,6 +304,7 @@ static inline void ** dmaMapDma(int32_t fd, uint32_t *count, uint32_t *size) {
    if ( (ret = (void **)malloc(sizeof(void *) * bCount)) == 0 ) return(NULL);
 
    // Attempt to map
+   gCount = 0;
    while ( gCount < bCount ) {
       offset = (off_t)bSize * (off_t)gCount;
 
