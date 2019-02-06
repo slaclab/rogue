@@ -136,13 +136,13 @@ void ris::Bridge::acceptFrame ( ris::FramePtr frame ) {
    memcpy(zmq_msg_data(&(msg[0])), &flags, 2);
 
    chan = frame->getChannel();
-   memcpy(zmq_msg_data(&(msg[0])), &chan,  1);
+   memcpy(zmq_msg_data(&(msg[1])), &chan,  1);
 
    err = frame->getError();
-   memcpy(zmq_msg_data(&(msg[0])), &err,   1);
+   memcpy(zmq_msg_data(&(msg[2])), &err,   1);
 
    // Copy data
-   data = (uint8_t *)zmq_msg_data(&msg);
+   data = (uint8_t *)zmq_msg_data(&(msg[3]));
    std::copy(frame->beginRead(), frame->endRead(), data);
     
    // Send data
@@ -207,8 +207,8 @@ void ris::Bridge::runThread() {
             memcpy(&err,   zmq_msg_data(&(msg[2])), 1);
 
             // Get message info
-            data = (uint8_t *)zmq_msg_data(&msg);
-            size = zmq_msg_size(&msg);
+            data = (uint8_t *)zmq_msg_data(&(msg[3]));
+            size = zmq_msg_size(&(msg[3]));
 
             // Generate frame
             frame = ris::Pool::acceptReq(size,false);
