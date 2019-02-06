@@ -92,7 +92,7 @@ void rim::BridgeMaster::runThread() {
    size_t    moreSize;
    uint32_t  x;
    uint32_t  msgCnt;
-   zmq_msg_t msg[5];
+   zmq_msg_t msg[6];
    uint32_t  id;
    uint64_t  addr;
    uint32_t  size;
