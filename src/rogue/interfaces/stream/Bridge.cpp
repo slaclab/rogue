@@ -109,42 +109,102 @@ ris::Bridge::~Bridge() {
 
 //! Accept a frame from master
 void ris::Bridge::acceptFrame ( ris::FramePtr frame ) {
+   uint32_t  x;
    uint8_t * data;
-   zmq_msg_t msg;
+   uint16_t  flags;
+   uint8_t   chan;
+   uint8_t   err;
+   zmq_msg_t msg[4];
 
    rogue::GilRelease noGil;
    ris::FrameLockPtr frLock = frame->lock();
    boost::lock_guard<boost::mutex> lock(bridgeMtx_);
 
-   if ( zmq_msg_init_size (&msg, frame->getPayload()) < 0 ) {
+   if ( (zmq_msg_init_size(&(msg[0]),2) < 0) ||  // Flags
+        (zmq_msg_init_size(&(msg[1]),1) < 0) ||  // Channel
+        (zmq_msg_init_size(&(msg[2]),1) < 0) ) { // Error
+      bridgeLog_->warning("Failed to init message header");
+      return;
+   }
+
+   if ( zmq_msg_init_size (&(msg[3]), frame->getPayload()) < 0 ) {
       bridgeLog_->warning("Failed to init message with size %i",frame->getPayload());
       return;
    }
+
+   flags = frame->getFlags();
+   memcpy(zmq_msg_data(&(msg[0])), &flags, 2);
+
+   chan = frame->getChannel();
+   memcpy(zmq_msg_data(&(msg[0])), &chan,  1);
+
+   err = frame->getError();
+   memcpy(zmq_msg_data(&(msg[0])), &err,   1);
 
    // Copy data
    data = (uint8_t *)zmq_msg_data(&msg);
    std::copy(frame->beginRead(), frame->endRead(), data);
     
    // Send data
-   if ( zmq_sendmsg(this->zmqPush_,&msg,0) < 0 )
-      bridgeLog_->warning("Failed to send message with size %i",frame->getPayload());
+   for (x=0; x < 4; x++) {
+      if ( zmq_sendmsg(this->zmqPush_,&(msg[x]),(x==3)?0:ZMQ_SNDMORE) < 0 )
+         bridgeLog_->warning("Failed to send message with size %i",frame->getPayload());
+   }
 }
 
 //! Run thread
 void ris::Bridge::runThread() {
    ris::FramePtr frame;
+   uint64_t  more;
+   size_t    moreSize;
    uint8_t * data;
    uint32_t  size;
-   zmq_msg_t msg;
+   uint32_t  msgCnt;
+   uint32_t  x;
+   zmq_msg_t msg[4];
+   uint16_t  flags;
+   uint8_t   chan;
+   uint8_t   err;
 
    bridgeLog_->logThreadId();
 
    try {
 
       while(1) {
-         zmq_msg_init(&msg);
+         for (x=0; x < 4; x++) zmq_msg_init(&(msg[x]));
+         msgCnt = 0;
+         x = 0;
 
-         if ( zmq_recvmsg(this->zmqPull_,&msg,0) > 0 ) {
+         // Get message
+         do {
+
+            // Get the message
+            if ( zmq_recvmsg(this->zmqPull_,&(msg[x]),0) > 0 ) {
+               if ( x != 3 ) x++;
+               msgCnt++;
+
+               // Is there more data?
+               more = 0;
+               moreSize = 8;
+               zmq_getsockopt(this->zmqPull_, ZMQ_RCVMORE, &more, &moreSize);
+            } else more = 1;
+         } while ( more );
+
+         // Proper message received
+         if ( msgCnt == 4 ) {
+
+            // Check sizes
+            if ( (zmq_msg_size(&(msg[0])) != 2) || (zmq_msg_size(&(msg[1])) != 1) ||
+                 (zmq_msg_size(&(msg[2])) != 1) ) {
+               bridgeLog_->warning("Bad message sizes");
+               for (x=0; x < msgCnt; x++) zmq_msg_close(&(msg[x]));
+               continue; // while (1)
+            }
+
+            // Get fields
+            memcpy(&flags, zmq_msg_data(&(msg[0])), 2);
+            memcpy(&chan,  zmq_msg_data(&(msg[1])), 1);
+            memcpy(&err,   zmq_msg_data(&(msg[2])), 1);
 
             // Get message info
             data = (uint8_t *)zmq_msg_data(&msg);
@@ -155,12 +215,16 @@ void ris::Bridge::runThread() {
 
             // Copy data
             std::copy(data,data+size,frame->beginWrite());
-            zmq_msg_close(&msg);
 
             // Set frame size and send
             frame->setPayload(size);
+            frame->setFlags(flags);
+            frame->setChannel(chan);
+            frame->setError(err);
             sendFrame(frame);
          }
+
+         for (x=0; x < msgCnt; x++) zmq_msg_close(&(msg[x]));
          boost::this_thread::interruption_point();
       }
    } catch (boost::thread_interrupted&) { }
