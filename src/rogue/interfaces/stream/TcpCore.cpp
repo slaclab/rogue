@@ -1,12 +1,12 @@
 /**
  *-----------------------------------------------------------------------------
- * Title      : Stream Network Bridge Class
+ * Title      : Stream Network Core
  * ----------------------------------------------------------------------------
- * File       : Bridge.h
+ * File       : TcpCore.h
  * Created    : 2019-01-30
  * ----------------------------------------------------------------------------
  * Description:
- * Stream Network Bridge
+ * Stream Network Core
  * ----------------------------------------------------------------------------
  * This file is part of the rogue software platform. It is subject to 
  * the license terms in the LICENSE.txt file found in the top-level directory 
@@ -17,7 +17,7 @@
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
-#include <rogue/interfaces/stream/Bridge.h>
+#include <rogue/interfaces/stream/TcpCore.h>
 #include <rogue/interfaces/stream/Frame.h>
 #include <rogue/interfaces/stream/FrameIterator.h>
 #include <rogue/interfaces/stream/FrameLock.h>
@@ -36,16 +36,16 @@ namespace bp  = boost::python;
 #endif
 
 //! Class creation
-ris::BridgePtr ris::Bridge::create (std::string addr, uint16_t port, bool server) {
-   ris::BridgePtr r = boost::make_shared<ris::Bridge>(addr,port,server);
+ris::TcpCorePtr ris::TcpCore::create (std::string addr, uint16_t port, bool server) {
+   ris::TcpCorePtr r = boost::make_shared<ris::TcpCore>(addr,port,server);
    return(r);
 }
 
 //! Creator
-ris::Bridge::Bridge (std::string addr, uint16_t port, bool server) {
+ris::TcpCore::TcpCore (std::string addr, uint16_t port, bool server) {
    uint32_t to;
 
-   this->bridgeLog_ = rogue::Logging::create("stream.Bridge");
+   this->bridgeLog_ = rogue::Logging::create("stream.TcpCore");
 
    // Format address
    this->pullAddr_ = "tcp://";
@@ -69,12 +69,12 @@ ris::Bridge::Bridge (std::string addr, uint16_t port, bool server) {
       this->bridgeLog_->debug("Creating pull server port: %s",this->pullAddr_.c_str());
 
       if ( zmq_bind(this->zmqPull_,this->pullAddr_.c_str()) < 0 ) 
-         throw(rogue::GeneralError::network("Bridge::Bridge",addr,port));
+         throw(rogue::GeneralError::network("TcpCore::TcpCore",addr,port));
 
       this->bridgeLog_->debug("Creating push server port: %s",this->pushAddr_.c_str());
 
       if ( zmq_bind(this->zmqPush_,this->pushAddr_.c_str()) < 0 ) 
-         throw(rogue::GeneralError::network("Bridge::Bridge",addr,port+1));
+         throw(rogue::GeneralError::network("TcpCore::TcpCore",addr,port+1));
    }
 
    // Client mode
@@ -85,20 +85,20 @@ ris::Bridge::Bridge (std::string addr, uint16_t port, bool server) {
       this->bridgeLog_->debug("Creating pull client port: %s",this->pullAddr_.c_str());
 
       if ( zmq_connect(this->zmqPull_,this->pullAddr_.c_str()) < 0 ) 
-         throw(rogue::GeneralError::network("Bridge::Bridge",addr,port+1));
+         throw(rogue::GeneralError::network("TcpCore::TcpCore",addr,port+1));
 
       this->bridgeLog_->debug("Creating push client port: %s",this->pushAddr_.c_str());
 
       if ( zmq_connect(this->zmqPush_,this->pushAddr_.c_str()) < 0 ) 
-         throw(rogue::GeneralError::network("Bridge::Bridge",addr,port));
+         throw(rogue::GeneralError::network("TcpCore::TcpCore",addr,port));
    }
 
    // Start rx thread
-   this->thread_ = new boost::thread(boost::bind(&ris::Bridge::runThread, this));
+   this->thread_ = new boost::thread(boost::bind(&ris::TcpCore::runThread, this));
 }
 
 //! Destructor
-ris::Bridge::~Bridge() {
+ris::TcpCore::~TcpCore() {
    thread_->interrupt();
    thread_->join();
 
@@ -108,7 +108,7 @@ ris::Bridge::~Bridge() {
 }
 
 //! Accept a frame from master
-void ris::Bridge::acceptFrame ( ris::FramePtr frame ) {
+void ris::TcpCore::acceptFrame ( ris::FramePtr frame ) {
    uint32_t  x;
    uint8_t * data;
    uint16_t  flags;
@@ -153,7 +153,7 @@ void ris::Bridge::acceptFrame ( ris::FramePtr frame ) {
 }
 
 //! Run thread
-void ris::Bridge::runThread() {
+void ris::TcpCore::runThread() {
    ris::FramePtr frame;
    uint64_t  more;
    size_t    moreSize;
@@ -231,13 +231,13 @@ void ris::Bridge::runThread() {
    } catch (boost::thread_interrupted&) { }
 }
 
-void ris::Bridge::setup_python () {
+void ris::TcpCore::setup_python () {
 #ifndef NO_PYTHON
 
-   bp::class_<ris::Bridge, ris::BridgePtr, bp::bases<ris::Master,ris::Slave>, boost::noncopyable >("Bridge",bp::init<std::string,uint16_t,bool>());
+   bp::class_<ris::TcpCore, ris::TcpCorePtr, bp::bases<ris::Master,ris::Slave>, boost::noncopyable >("TcpCore",bp::no_init);
 
-   bp::implicitly_convertible<ris::BridgePtr, ris::MasterPtr>();
-   bp::implicitly_convertible<ris::BridgePtr, ris::SlavePtr>();
+   bp::implicitly_convertible<ris::TcpCorePtr, ris::MasterPtr>();
+   bp::implicitly_convertible<ris::TcpCorePtr, ris::SlavePtr>();
 #endif
 }
 
