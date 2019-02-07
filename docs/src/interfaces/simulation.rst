@@ -9,8 +9,4 @@ the server side of this bridge link.
 Stream Simulation
 -----------------
 
-To create a stream simulation interface, first isntantiate the server side of the
-stream interface bridge in the simulation test bench. This can be done by using the 
-existing RogueStream.vhd module contained in the simulation section of the SLAC
-surf library.
 
