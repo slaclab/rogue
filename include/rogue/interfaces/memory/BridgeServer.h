@@ -1,12 +1,12 @@
 /**
  *-----------------------------------------------------------------------------
- * Title      : Memory Master Network Bridge
+ * Title      : Memory Server Network Bridge
  * ----------------------------------------------------------------------------
- * File       : BridgeMaster.h
+ * File       : BridgeServer.h
  * Created    : 2019-01-30
  * ----------------------------------------------------------------------------
  * Description:
- * Memory Master Network Bridge
+ * Memory Server Network Bridge
  * ----------------------------------------------------------------------------
  * This file is part of the rogue software platform. It is subject to 
  * the license terms in the LICENSE.txt file found in the top-level directory 
@@ -17,8 +17,8 @@
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
-#ifndef __ROGUE_INTERFACES_MEMORY_BRIDGE_MASTER_H__
-#define __ROGUE_INTERFACES_MEMORY_BRIDGE_MASTER_H__
+#ifndef __ROGUE_INTERFACES_MEMORY_BRIDGE_SERVER_H__
+#define __ROGUE_INTERFACES_MEMORY_BRIDGE_SERVER_H__
 #include <rogue/interfaces/memory/Master.h>
 #include <rogue/Logging.h>
 #include <boost/thread.hpp>
@@ -28,8 +28,7 @@ namespace rogue {
    namespace interfaces {
       namespace memory {
 
-         //! PGP Card class
-         class BridgeMaster : public rogue::interfaces::memory::Master {
+         class BridgeServer : public rogue::interfaces::memory::Master {
 
                //! Inbound Address
                std::string reqAddr_;
@@ -58,22 +57,22 @@ namespace rogue {
             public:
 
                //! Class creation
-               static boost::shared_ptr<rogue::interfaces::memory::BridgeMaster> 
+               static boost::shared_ptr<rogue::interfaces::memory::BridgeServer> 
                       create (std::string addr, uint16_t port);
 
                //! Setup class in python
                static void setup_python();
 
                //! Creator
-               BridgeMaster(std::string addr, uint16_t port);
+               BridgeServer(std::string addr, uint16_t port);
 
                //! Destructor
-               ~BridgeMaster();
+               ~BridgeServer();
 
          };
 
          // Convienence
-         typedef boost::shared_ptr<rogue::interfaces::memory::BridgeMaster> BridgeMasterPtr;
+         typedef boost::shared_ptr<rogue::interfaces::memory::BridgeServer> BridgeServerPtr;
 
       }
    }

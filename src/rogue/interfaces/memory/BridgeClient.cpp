@@ -1,12 +1,12 @@
 /**
  *-----------------------------------------------------------------------------
- * Title      : Memory Slave Network Bridge
+ * Title      : Memory Client Network Bridge
  * ----------------------------------------------------------------------------
- * File       : BridgeSlave.cpp
+ * File       : BridgeClient.cpp
  * Created    : 2019-01-30
  * ----------------------------------------------------------------------------
  * Description:
- * Memory Slave Network Bridge
+ * Memory Client Network Bridge
  * ----------------------------------------------------------------------------
  * This file is part of the rogue software platform. It is subject to 
  * the license terms in the LICENSE.txt file found in the top-level directory 
@@ -17,7 +17,7 @@
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
-#include <rogue/interfaces/memory/BridgeSlave.h>
+#include <rogue/interfaces/memory/BridgeClient.h>
 #include <rogue/interfaces/memory/Transaction.h>
 #include <rogue/interfaces/memory/TransactionLock.h>
 #include <rogue/interfaces/memory/Constants.h>
@@ -35,16 +35,16 @@ namespace bp  = boost::python;
 #endif
 
 //! Class creation
-rim::BridgeSlavePtr rim::BridgeSlave::create (std::string addr, uint16_t port) {
-   rim::BridgeSlavePtr r = boost::make_shared<rim::BridgeSlave>(addr,port);
+rim::BridgeClientPtr rim::BridgeClient::create (std::string addr, uint16_t port) {
+   rim::BridgeClientPtr r = boost::make_shared<rim::BridgeClient>(addr,port);
    return(r);
 }
 
 //! Creator
-rim::BridgeSlave::BridgeSlave (std::string addr, uint16_t port) : rim::Slave(4,0xFFFFFFFF) {
+rim::BridgeClient::BridgeClient (std::string addr, uint16_t port) : rim::Slave(4,0xFFFFFFFF) {
    uint32_t to;
 
-   this->bridgeLog_ = rogue::Logging::create("memory.BridgeSlave");
+   this->bridgeLog_ = rogue::Logging::create("memory.BridgeClient");
 
    // Format address
    this->respAddr_ = "tcp://";
@@ -66,19 +66,19 @@ rim::BridgeSlave::BridgeSlave (std::string addr, uint16_t port) : rim::Slave(4,0
    this->bridgeLog_->debug("Creating response client port: %s",this->respAddr_.c_str());
 
    if ( zmq_connect(this->zmqResp_,this->respAddr_.c_str()) < 0 ) 
-      throw(rogue::GeneralError::network("BridgeSlave::BridgeSlave",addr,port+1));
+      throw(rogue::GeneralError::network("BridgeClient::BridgeClient",addr,port+1));
 
    this->bridgeLog_->debug("Creating request client port: %s",this->reqAddr_.c_str());
 
    if ( zmq_connect(this->zmqReq_,this->reqAddr_.c_str()) < 0 ) 
-      throw(rogue::GeneralError::network("BridgeSlave::BridgeSlave",addr,port));
+      throw(rogue::GeneralError::network("BridgeClient::BridgeClient",addr,port));
 
    // Start rx thread
-   this->thread_ = new boost::thread(boost::bind(&rim::BridgeSlave::runThread, this));
+   this->thread_ = new boost::thread(boost::bind(&rim::BridgeClient::runThread, this));
 }
 
 //! Destructor
-rim::BridgeSlave::~BridgeSlave() {
+rim::BridgeClient::~BridgeClient() {
    thread_->interrupt();
    thread_->join();
 
@@ -88,7 +88,7 @@ rim::BridgeSlave::~BridgeSlave() {
 }
 
 //! Post a transaction
-void rim::BridgeSlave::doTransaction(rim::TransactionPtr tran) {
+void rim::BridgeClient::doTransaction(rim::TransactionPtr tran) {
    uint8_t * data;
    uint32_t  x;
    uint32_t  msgCnt;
@@ -147,7 +147,7 @@ void rim::BridgeSlave::doTransaction(rim::TransactionPtr tran) {
 }
 
 //! Run thread
-void rim::BridgeSlave::runThread() {
+void rim::BridgeClient::runThread() {
    rim::Transaction::iterator tIter;
    rim::TransactionPtr tran;
    uint8_t * data;
@@ -254,12 +254,12 @@ void rim::BridgeSlave::runThread() {
    } catch (boost::thread_interrupted&) { }
 }
 
-void rim::BridgeSlave::setup_python () {
+void rim::BridgeClient::setup_python () {
 #ifndef NO_PYTHON
 
-   bp::class_<rim::BridgeSlave, rim::BridgeSlavePtr, bp::bases<rim::Slave>, boost::noncopyable >("BridgeSlave",bp::init<std::string,uint16_t>());
+   bp::class_<rim::BridgeClient, rim::BridgeClientPtr, bp::bases<rim::Slave>, boost::noncopyable >("BridgeClient",bp::init<std::string,uint16_t>());
 
-   bp::implicitly_convertible<rim::BridgeSlavePtr, rim::SlavePtr>();
+   bp::implicitly_convertible<rim::BridgeClientPtr, rim::SlavePtr>();
 #endif
 }
 

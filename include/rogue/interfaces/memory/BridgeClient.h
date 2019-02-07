@@ -1,12 +1,12 @@
 /**
  *-----------------------------------------------------------------------------
- * Title      : Memory Slave Network Bridge
+ * Title      : Memory Client Network Bridge
  * ----------------------------------------------------------------------------
- * File       : BridgeSlave.h
+ * File       : BridgeClient.h
  * Created    : 2019-01-30
  * ----------------------------------------------------------------------------
  * Description:
- * Memory Slave Network Bridge
+ * Memory Client Network Bridge
  * ----------------------------------------------------------------------------
  * This file is part of the rogue software platform. It is subject to 
  * the license terms in the LICENSE.txt file found in the top-level directory 
@@ -17,8 +17,8 @@
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
-#ifndef __ROGUE_INTERFACES_MEMORY_BRIDGE_SLAVE_H__
-#define __ROGUE_INTERFACES_MEMORY_BRIDGE_SLAVE_H__
+#ifndef __ROGUE_INTERFACES_MEMORY_BRIDGE_CLIENT_H__
+#define __ROGUE_INTERFACES_MEMORY_BRIDGE_CLIENT_H__
 #include <rogue/interfaces/memory/Slave.h>
 #include <rogue/Logging.h>
 #include <boost/thread.hpp>
@@ -29,7 +29,7 @@ namespace rogue {
       namespace memory {
 
          //! PGP Card class
-         class BridgeSlave : public rogue::interfaces::memory::Slave {
+         class BridgeClient : public rogue::interfaces::memory::Slave {
 
                //! Inbound Address
                std::string reqAddr_;
@@ -61,24 +61,24 @@ namespace rogue {
             public:
 
                //! Class creation
-               static boost::shared_ptr<rogue::interfaces::memory::BridgeSlave> 
+               static boost::shared_ptr<rogue::interfaces::memory::BridgeClient> 
                       create (std::string addr, uint16_t port);
 
                //! Setup class in python
                static void setup_python();
 
                //! Creator
-               BridgeSlave(std::string addr, uint16_t port);
+               BridgeClient(std::string addr, uint16_t port);
 
                //! Destructor
-               ~BridgeSlave();
+               ~BridgeClient();
 
                //! Post a transaction. Master will call this method with the access attributes.
                void doTransaction(boost::shared_ptr<rogue::interfaces::memory::Transaction> tran);
          };
 
          // Convienence
-         typedef boost::shared_ptr<rogue::interfaces::memory::BridgeSlave> BridgeSlavePtr;
+         typedef boost::shared_ptr<rogue::interfaces::memory::BridgeClient> BridgeClientPtr;
 
       }
    }
