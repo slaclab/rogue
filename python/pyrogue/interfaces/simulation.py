@@ -29,6 +29,7 @@ class SideBandSim():
         self._log = pyrogue.logInit(self)
 
         self._ctx = zmq.Context()
+        self._sbSock = self._ctx.socket(zmq.REQ)
         self._sbSock.connect("tcp://%s:%i" % (host,port))
 
         self._log.info("Connected to port {} on host {}".format(port,host))

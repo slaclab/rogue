@@ -2,7 +2,7 @@
  *-----------------------------------------------------------------------------
  * Title      : Memory Server Network Bridge
  * ----------------------------------------------------------------------------
- * File       : BridgeServer.cpp
+ * File       : TcpServer.cpp
  * Created    : 2019-01-30
  * ----------------------------------------------------------------------------
  * Description:
@@ -17,7 +17,7 @@
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
-#include <rogue/interfaces/memory/BridgeServer.h>
+#include <rogue/interfaces/memory/TcpServer.h>
 #include <rogue/interfaces/memory/Constants.h>
 #include <rogue/GeneralError.h>
 #include <boost/make_shared.hpp>
@@ -33,16 +33,16 @@ namespace bp  = boost::python;
 #endif
 
 //! Class creation
-rim::BridgeServerPtr rim::BridgeServer::create (std::string addr, uint16_t port) {
-   rim::BridgeServerPtr r = boost::make_shared<rim::BridgeServer>(addr,port);
+rim::TcpServerPtr rim::TcpServer::create (std::string addr, uint16_t port) {
+   rim::TcpServerPtr r = boost::make_shared<rim::TcpServer>(addr,port);
    return(r);
 }
 
 //! Creator
-rim::BridgeServer::BridgeServer (std::string addr, uint16_t port) {
+rim::TcpServer::TcpServer (std::string addr, uint16_t port) {
    uint32_t to;
 
-   this->bridgeLog_ = rogue::Logging::create("memory.BridgeServer");
+   this->bridgeLog_ = rogue::Logging::create("memory.TcpServer");
 
    // Format address
    this->respAddr_ = "tcp://";
@@ -64,19 +64,19 @@ rim::BridgeServer::BridgeServer (std::string addr, uint16_t port) {
    this->bridgeLog_->debug("Creating response client port: %s",this->respAddr_.c_str());
 
    if ( zmq_bind(this->zmqResp_,this->respAddr_.c_str()) < 0 ) 
-      throw(rogue::GeneralError::network("BridgeServer::BridgeServer",addr,port+1));
+      throw(rogue::GeneralError::network("TcpServer::TcpServer",addr,port+1));
 
    this->bridgeLog_->debug("Creating request client port: %s",this->reqAddr_.c_str());
 
    if ( zmq_bind(this->zmqReq_,this->reqAddr_.c_str()) < 0 ) 
-      throw(rogue::GeneralError::network("BridgeServer::BridgeServer",addr,port));
+      throw(rogue::GeneralError::network("TcpServer::TcpServer",addr,port));
 
    // Start rx thread
-   this->thread_ = new boost::thread(boost::bind(&rim::BridgeServer::runThread, this));
+   this->thread_ = new boost::thread(boost::bind(&rim::TcpServer::runThread, this));
 }
 
 //! Destructor
-rim::BridgeServer::~BridgeServer() {
+rim::TcpServer::~TcpServer() {
    thread_->interrupt();
    thread_->join();
 
@@ -86,7 +86,7 @@ rim::BridgeServer::~BridgeServer() {
 }
 
 //! Run thread
-void rim::BridgeServer::runThread() {
+void rim::TcpServer::runThread() {
    uint8_t * data;
    uint64_t  more;
    size_t    moreSize;
@@ -180,12 +180,12 @@ void rim::BridgeServer::runThread() {
    } catch (boost::thread_interrupted&) { }
 }
 
-void rim::BridgeServer::setup_python () {
+void rim::TcpServer::setup_python () {
 #ifndef NO_PYTHON
 
-   bp::class_<rim::BridgeServer, rim::BridgeServerPtr, bp::bases<rim::Master>, boost::noncopyable >("BridgeServer",bp::init<std::string,uint16_t>());
+   bp::class_<rim::TcpServer, rim::TcpServerPtr, bp::bases<rim::Master>, boost::noncopyable >("TcpServer",bp::init<std::string,uint16_t>());
 
-   bp::implicitly_convertible<rim::BridgeServerPtr, rim::MasterPtr>();
+   bp::implicitly_convertible<rim::TcpServerPtr, rim::MasterPtr>();
 #endif
 }
 

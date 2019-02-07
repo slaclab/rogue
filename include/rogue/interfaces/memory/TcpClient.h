@@ -1,12 +1,12 @@
 /**
  *-----------------------------------------------------------------------------
- * Title      : Memory Server Network Bridge
+ * Title      : Memory Client Network Bridge
  * ----------------------------------------------------------------------------
- * File       : BridgeServer.h
+ * File       : TcpClient.h
  * Created    : 2019-01-30
  * ----------------------------------------------------------------------------
  * Description:
- * Memory Server Network Bridge
+ * Memory Client Network Bridge
  * ----------------------------------------------------------------------------
  * This file is part of the rogue software platform. It is subject to 
  * the license terms in the LICENSE.txt file found in the top-level directory 
@@ -17,9 +17,9 @@
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
-#ifndef __ROGUE_INTERFACES_MEMORY_BRIDGE_SERVER_H__
-#define __ROGUE_INTERFACES_MEMORY_BRIDGE_SERVER_H__
-#include <rogue/interfaces/memory/Master.h>
+#ifndef __ROGUE_INTERFACES_MEMORY_TCP_CLIENT_H__
+#define __ROGUE_INTERFACES_MEMORY_TCP_CLIENT_H__
+#include <rogue/interfaces/memory/Slave.h>
 #include <rogue/Logging.h>
 #include <boost/thread.hpp>
 #include <stdint.h>
@@ -28,7 +28,8 @@ namespace rogue {
    namespace interfaces {
       namespace memory {
 
-         class BridgeServer : public rogue::interfaces::memory::Master {
+         //! PGP Card class
+         class TcpClient : public rogue::interfaces::memory::Slave {
 
                //! Inbound Address
                std::string reqAddr_;
@@ -54,25 +55,30 @@ namespace rogue {
                //! Thread
                boost::thread * thread_;
 
+               //! Lock
+               boost::mutex bridgeMtx_;
+
             public:
 
                //! Class creation
-               static boost::shared_ptr<rogue::interfaces::memory::BridgeServer> 
+               static boost::shared_ptr<rogue::interfaces::memory::TcpClient> 
                       create (std::string addr, uint16_t port);
 
                //! Setup class in python
                static void setup_python();
 
                //! Creator
-               BridgeServer(std::string addr, uint16_t port);
+               TcpClient(std::string addr, uint16_t port);
 
                //! Destructor
-               ~BridgeServer();
+               ~TcpClient();
 
+               //! Post a transaction. Master will call this method with the access attributes.
+               void doTransaction(boost::shared_ptr<rogue::interfaces::memory::Transaction> tran);
          };
 
          // Convienence
-         typedef boost::shared_ptr<rogue::interfaces::memory::BridgeServer> BridgeServerPtr;
+         typedef boost::shared_ptr<rogue::interfaces::memory::TcpClient> TcpClientPtr;
 
       }
    }
