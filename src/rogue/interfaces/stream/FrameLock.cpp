@@ -49,6 +49,8 @@ void ris::FrameLock::setup_python() {
    bp::class_<ris::FrameLock, ris::FrameLockPtr, boost::noncopyable>("FrameLock",bp::no_init)
       .def("lock",      &ris::FrameLock::lock)
       .def("unlock",    &ris::FrameLock::unlock)
+      .def("__enter__", &ris::FrameLock::enter)
+      .def("__exit__",  &ris::FrameLock::exit)
    ;
 #endif
 }
@@ -74,3 +76,8 @@ void ris::FrameLock::unlock() {
    }
 }
 
+//! Enter method for python, do nothing
+void ris::FrameLock::enter() { }
+
+//! Exit method for python, do nothing
+void ris::FrameLock::exit(void *, void *, void *) { }
