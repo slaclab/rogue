@@ -1,12 +1,12 @@
 /**
  *-----------------------------------------------------------------------------
- * Title      : Memory Master Network Bridge
+ * Title      : Stream Network Client
  * ----------------------------------------------------------------------------
- * File       : BridgeMaster.h
+ * File       : TcpClient.h
  * Created    : 2019-01-30
  * ----------------------------------------------------------------------------
  * Description:
- * Memory Master Network Bridge
+ * Stream Network Client
  * ----------------------------------------------------------------------------
  * This file is part of the rogue software platform. It is subject to 
  * the license terms in the LICENSE.txt file found in the top-level directory 
@@ -17,63 +17,41 @@
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
-#ifndef __ROGUE_INTERFACES_MEMORY_BRIDGE_MASTER_H__
-#define __ROGUE_INTERFACES_MEMORY_BRIDGE_MASTER_H__
-#include <rogue/interfaces/memory/Master.h>
+#ifndef __ROGUE_INTERFACES_STREAM_TCP_CLIENT_H__
+#define __ROGUE_INTERFACES_STREAM_TCP_CLIENT_H__
+#include <rogue/interfaces/stream/Master.h>
+#include <rogue/interfaces/stream/Slave.h>
+#include <rogue/interfaces/stream/Frame.h>
+#include <rogue/interfaces/stream/TcpCore.h>
 #include <rogue/Logging.h>
 #include <boost/thread.hpp>
 #include <stdint.h>
 
 namespace rogue {
    namespace interfaces {
-      namespace memory {
+      namespace stream {
 
          //! PGP Card class
-         class BridgeMaster : public rogue::interfaces::memory::Master {
-
-               //! Inbound Address
-               std::string reqAddr_;
-
-               //! Outbound Address
-               std::string respAddr_;
-
-               //! Zeromq Context
-               void * zmqCtx_;
-
-               //! Zeromq inbound port
-               void * zmqReq_;
-
-               //! Zeromq outbound port
-               void * zmqResp_;
-
-               //! Thread background
-               void runThread();
-
-               //! Log
-               rogue::LoggingPtr bridgeLog_;
-
-               //! Thread
-               boost::thread * thread_;
+         class TcpClient : public rogue::interfaces::stream::TcpCore {
 
             public:
 
                //! Class creation
-               static boost::shared_ptr<rogue::interfaces::memory::BridgeMaster> 
-                      create (std::string addr, uint16_t port);
+               static boost::shared_ptr<rogue::interfaces::stream::TcpClient> 
+                  create (std::string addr, uint16_t port);
 
                //! Setup class in python
                static void setup_python();
 
                //! Creator
-               BridgeMaster(std::string addr, uint16_t port);
+               TcpClient(std::string addr, uint16_t port);
 
                //! Destructor
-               ~BridgeMaster();
-
+               ~TcpClient();
          };
 
          // Convienence
-         typedef boost::shared_ptr<rogue::interfaces::memory::BridgeMaster> BridgeMasterPtr;
+         typedef boost::shared_ptr<rogue::interfaces::stream::TcpClient> TcpClientPtr;
 
       }
    }

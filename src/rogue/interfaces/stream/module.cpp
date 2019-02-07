@@ -27,7 +27,9 @@
 #include <rogue/interfaces/stream/FrameLock.h>
 #include <rogue/interfaces/stream/Fifo.h>
 #include <rogue/interfaces/stream/Filter.h>
-#include <rogue/interfaces/stream/Bridge.h>
+#include <rogue/interfaces/stream/TcpCore.h>
+#include <rogue/interfaces/stream/TcpClient.h>
+#include <rogue/interfaces/stream/TcpServer.h>
 #include <rogue/interfaces/stream/module.h>
 #include <boost/python.hpp>
 
@@ -52,6 +54,8 @@ void ris::setup_module() {
    ris::Pool::setup_python();
    ris::Fifo::setup_python();
    ris::Filter::setup_python();
-   ris::Bridge::setup_python();
+   ris::TcpCore::setup_python();
+   ris::TcpClient::setup_python();
+   ris::TcpServer::setup_python();
 }
 
