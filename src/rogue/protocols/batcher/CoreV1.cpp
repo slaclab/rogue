@@ -1,8 +1,8 @@
 /**
  *-----------------------------------------------------------------------------
- * Title         : SLAC Batcher Version 1
+ * Title         : SLAC Batcher Core, Version 1
  * ----------------------------------------------------------------------------
- * File          : BatcherV1.h
+ * File          : CoreV1.h
  * Author        : Ryan Herbst <rherbst@slac.stanford.edu>
  * Created       : 10/26/2018
  *-----------------------------------------------------------------------------
@@ -45,84 +45,110 @@
 #include <stdint.h>
 #include <boost/thread.hpp>
 #include <boost/make_shared.hpp>
-#include <rogue/interfaces/stream/Master.h>
-#include <rogue/interfaces/stream/Slave.h>
 #include <rogue/interfaces/stream/Frame.h>
-#include <rogue/interfaces/stream/FrameLock.h>
 #include <rogue/interfaces/stream/FrameIterator.h>
-#include <rogue/interfaces/stream/Buffer.h>
-#include <rogue/protocols/BatcherV1.h>
-#include <rogue/Logging.h>
-#include <rogue/GilRelease.h>
+#include <rogue/protocols/batcher/CoreV1.h>
 #include <math.h>
 
-namespace rp  = rogue::protocols;
+namespace rpb  = rogue::protocols:batcher;
 namespace ris = rogue::interfaces::stream;
 
-#ifndef NO_PYTHON
-#include <boost/python.hpp>
-namespace bp  = boost::python;
-#endif
-
 //! Class creation
-rp::BatcherV1Ptr rp::BatcherV1::create() {
-   rp::BatcherV1Ptr p = boost::make_shared<rp::BatcherV1>();
+rpb::CoreV1Ptr rp::CoreV1::create() {
+   rp::CoreV1Ptr p = boost::make_shared<rp::CoreV1>();
    return(p);
 }
 
 //! Setup class in python
-void rp::BatcherV1::setup_python() {
-#ifndef NO_PYTHON
-   bp::class_<rp::BatcherV1, rp::BatcherV1Ptr, bp::bases<ris::Master,ris::Slave>, boost::noncopyable >("BatcherV1",bp::init<>());
-#endif
+void rpb::CoreV1::setup_python() { }
+
+//! Create class
+rpb::CoreV1Ptr rpb::CoreV1::create() {
+   rpb::CoreV1Ptr p = boost::make_shared<rpb::CorePtr>();
+   return(p);
 }
 
 //! Creator with version constant
-rp::BatcherV1::BatcherV1() : ris::Master(), ris::Slave() { 
-   log_ = rogue::Logging::create("BatcherV1");
+rpb::CoreV1::CoreV1() {
+   log_ = rogue::Logging::create("batcher.CoreV1");
+
+   headerSize_ = 0;
+   tailSize_   = 0;
+   seq_        = 0;
 }
 
 //! Deconstructor
-rp::BatcherV1::~BatcherV1() {}
+rpb::CoreV1::~CoreV1() {}
 
-//! Accept a frame from master
-void rp::BatcherV1::acceptFrame ( ris::FramePtr frame ) {
+//! Record count
+uint32_t rpb::CoreV1::count();
+
+//! Get header size
+uint32_t rpb::CoreV1::headerSize() {
+   return headerSize_;
+}
+
+//! Get header iterator
+ris::FrameIterator rpb::CoreV1::header() {
+   return frame_->beginRead();
+}
+
+//! Get tail size
+uint32_t rpb::CoreV1::tailSize() {
+   return tailSize_;
+}
+
+//! Get tail iterator
+ris::FrameIterator & rpb::CoreV1::tail(uint32_t index) {
+   if ( index >= tails_.size() ) 
+      throw rogue::GeneralError::boundary("batcher::CoreV1::tail", index, tails_.size());
+
+   // Invert order on return
+   return tails_[(tails_.size()-1) - index];
+}
+
+//! Get data
+rpb::DataPtr & rpb::CoreV1::record(uint32_t index) {
+   if ( index >= list_.size() ) 
+      throw rogue::GeneralError::boundary("batcher::CoreV1::record", index, list_.size());
+
+   // Invert order on return
+   return list_[(list_.size()-1) - index];
+}
+
+//! Return sequence
+uint32_t rpb::CoreV1::sequence() {
+   return seq_;
+}
+
+//! Process a frame
+bool rpb::CoreV1::processFrame ( ris::FramePtr frame ) {
    uint8_t  temp;
-   uint8_t  width;
-   uint8_t  tSize;
-   uint8_t  sequence;
+   uint32_t rem;
    uint32_t fSize;
-   uint32_t fJump;
-   uint32_t flags;
    uint8_t  dest;
    uint8_t  fUser;
    uint8_t  lUser;
    uint8_t  lSize;
-   uint32_t rem;
+   uint32_t fJump;
 
-   ris::FramePtr  nFrame;
-
-   std::vector<ris::FramePtr> list;
-   std::vector<ris::FramePtr>::iterator lIter;
+   // Reset old data
+   reset();
 
    ris::FrameIterator beg;
    ris::FrameIterator mark;
    ris::FrameIterator tail;
 
-   // Lock frame
-   rogue::GilRelease noGil;
-   ris::FrameLockPtr lock = frame->lock();
- 
    // Drop errored frames
    if ( (frame->getError()) ) {
       log_->warning("Dropping frame due to error: 0x%x",frame->getError());
-      return;
+      return false;
    }
 
    // Drop small frames
    if ( (rem = frame->getPayload()) < 16)  {
       log_->warning("Dropping small frame size = %i",frame->getPayload());
-      return;
+      return false;
    }
 
    // Get version & size
@@ -143,30 +169,31 @@ void rp::BatcherV1::acceptFrame ( ris::FramePtr frame ) {
    // Check version, convert width
    if ( (temp & 0xF) != 1 ) {
       log_->warning("Version mismatch. Got %i",(temp&0xF));
-      return;
+      return false;
    }
    
    /////////////////////////////////////////////////////////////////////////
-   // width = (uint32_t)pow(2,float( ( (temp >> 4) & 0xF) + 1) );
+   // headerSize = (uint32_t)pow(2,float( ( (temp >> 4) & 0xF) + 1) );
    /////////////////////////////////////////////////////////////////////////
    // Integer pow() when powers of 2 (more efficient than floating point)
-   width = 1 << ( ((temp >> 4) & 0xF) + 1);
+   headerSize_ = 1 << ( ((temp >> 4) & 0xF) + 1);
 
    // Set tail size, min 64-bits
-   tSize = (width < 8)?8:width;
+   tailSize_ = (headerSize_ < 8)?8:headerSize_;
 
    // Get sequence #
-   ris::fromFrame(beg, 1, &sequence);
+   ris::fromFrame(beg, 1, &seq_);
 
    // Frame needs to large enough for header + 1 tail
-   if ( rem < (width + tSize)) {
-      log_->warning("Not enough space (%i) for tail (%i) + header (%i)",rem,width,tSize);
-      return;
+   if ( rem < (headerSize_ + tailSize_)) {
+      log_->warning("Not enough space (%i) for tail (%i) + header (%i)",rem,headerSize_,tailSize_);
+      reset();
+      return false;
    }
 
    // Skip the rest of the header, compute remaining frame size
-   beg += (width-2);
-   rem -= width;
+   beg += (headerSize_-2); // Aready read 2 bytes from frame
+   rem -= headerSize_;
 
    // Set marker to end of frame
    mark = frame->endRead();
@@ -175,14 +202,18 @@ void rp::BatcherV1::acceptFrame ( ris::FramePtr frame ) {
    while (mark != beg) {
 
       // sanity check
-      if ( rem < tSize ) {
-         log_->warning("Not enough space (%i) for tail (%i)",rem,tSize);
-         return;
+      if ( rem < tailSize_ ) {
+         log_->warning("Not enough space (%i) for tail (%i)",rem,tailSize_);
+         reset();
+         return false;
       }
 
       // Jump to start of the tail
-      mark -= tSize;
-      rem  -= tSize;
+      mark -= tailSize_;
+      rem  -= tailSize_;
+
+      // Add tail iterator to end of list
+      tails_.push_back(mark);
       
       // Get tail data, use a new iterator
       tail = mark;
@@ -193,40 +224,34 @@ void rp::BatcherV1::acceptFrame ( ris::FramePtr frame ) {
       ris::fromFrame(tail, 1, &lSize);
 
       // Round up rewind amount to width
-      if ( (fSize % width) == 0) fJump = fSize;
-      else fJump = ((fSize / width) + 1) * width;
+      if ( (fSize % headerSize_) == 0) fJump = fSize;
+      else fJump = ((fSize / headerSize_) + 1) * headerSize_;
 
       // Not enough data for rewind value
       if ( fJump > rem ) {
          log_->warning("Not enough space (%i) for frame (%i)",rem,fJump);
-         return;
+         reset();
+         return false;
       }
 
       // Set marker to start of data 
       mark -= fJump;
       rem  -= fJump;
 
-      // Create a new frame
-      nFrame = reqFrame(fSize,true);
-      std::copy(mark,(mark+fSize),nFrame->beginWrite());
-      nFrame->setPayload(fSize);
-
-      // Set flags
-      nFrame->setFirstUser(fUser);
-      nFrame->setLastUser(lUser);
-      nFrame->setChannel(dest);
-      
-      // Add to vector
-      list.push_back(nFrame);
+      // Create data record and add it to end of list
+      list_.push_back(rpb::Data::create(mark,fSize,dest,fUser,lUser));
    }
+   return true;
+}
 
-   // Walk through vector backwards and send frames
-   if ( list.size() > 0 ) {
-      lIter = list.end();
-      do {
-         lIter--;
-         sendFrame(*lIter);
-      } while(lIter != list.begin());
-   }
+//! Reset data
+void rpb::CoreV1::reset() {
+   frame_.reset();
+   list_.clear();
+   tails_.clear();
+
+   headerSize_ = 0;
+   tailSize_   = 0;
+   seq_        = 0;
 }
 
