@@ -1,13 +1,13 @@
 /**
  *-----------------------------------------------------------------------------
- * Title         : SLAC Batcher Version 1
+ * Title         : SLAC Splitter Version 1
  * ----------------------------------------------------------------------------
- * File          : BatcherV1.h
+ * File          : SplitterV1.h
  * Author        : Ryan Herbst <rherbst@slac.stanford.edu>
  * Created       : 10/26/2018
  *-----------------------------------------------------------------------------
  * Description :
- *    AXI Batcher V1
+ *    AXI Splitter V1
  *-----------------------------------------------------------------------------
  * This file is part of the rogue software platform. It is subject to 
  * the license terms in the LICENSE.txt file found in the top-level directory 
@@ -30,24 +30,22 @@ namespace rogue {
    namespace protocols {
 
       //!  AXI Stream FIFO
-      class BatcherV1 : public rogue::interfaces::stream::Master,
-                        public rogue::interfaces::stream::Slave {
-
-            rogue::LoggingPtr log_;
+      class SplitterV1 : public rogue::interfaces::stream::Master,
+                         public rogue::interfaces::stream::Slave {
 
          public:
 
             //! Class creation
-            static boost::shared_ptr<rogue::protocols::BatcherV1> create();
+            static boost::shared_ptr<rogue::protocols::SplitterV1> create();
 
             //! Setup class in python
             static void setup_python();
 
             //! Creator
-            BatcherV1();
+            SplitterV1();
 
             //! Deconstructor
-            ~BatcherV1();
+            ~SplitterV1();
 
             //! Accept a frame from master
             void acceptFrame ( boost::shared_ptr<rogue::interfaces::stream::Frame> frame );
@@ -55,7 +53,7 @@ namespace rogue {
       };
 
       // Convienence
-      typedef boost::shared_ptr<rogue::protocols::BatcherV1> BatcherV1Ptr;
+      typedef boost::shared_ptr<rogue::protocols::SplitterV1> SplitterV1Ptr;
    }
 }
 #endif
