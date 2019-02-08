@@ -1,12 +1,12 @@
 /**
  *-----------------------------------------------------------------------------
- * Title      : Memory Slave Network Bridge
+ * Title      : Stream Network Core
  * ----------------------------------------------------------------------------
- * File       : BridgeSlave.h
+ * File       : TcpCore.h
  * Created    : 2019-01-30
  * ----------------------------------------------------------------------------
  * Description:
- * Memory Slave Network Bridge
+ * Stream Network Core
  * ----------------------------------------------------------------------------
  * This file is part of the rogue software platform. It is subject to 
  * the license terms in the LICENSE.txt file found in the top-level directory 
@@ -17,34 +17,39 @@
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
-#ifndef __ROGUE_INTERFACES_MEMORY_BRIDGE_SLAVE_H__
-#define __ROGUE_INTERFACES_MEMORY_BRIDGE_SLAVE_H__
-#include <rogue/interfaces/memory/Slave.h>
+#ifndef __ROGUE_INTERFACES_STREAM_TCP_CORE_H__
+#define __ROGUE_INTERFACES_STREAM_TCP_CORE_H__
+#include <rogue/interfaces/stream/Master.h>
+#include <rogue/interfaces/stream/Slave.h>
+#include <rogue/interfaces/stream/Frame.h>
 #include <rogue/Logging.h>
 #include <boost/thread.hpp>
 #include <stdint.h>
 
 namespace rogue {
    namespace interfaces {
-      namespace memory {
+      namespace stream {
 
          //! PGP Card class
-         class BridgeSlave : public rogue::interfaces::memory::Slave {
+         class TcpCore : public rogue::interfaces::stream::Master, 
+                         public rogue::interfaces::stream::Slave {
+
+            protected:
 
                //! Inbound Address
-               std::string reqAddr_;
+               std::string pullAddr_;
 
                //! Outbound Address
-               std::string respAddr_;
+               std::string pushAddr_;
 
                //! Zeromq Context
                void * zmqCtx_;
 
                //! Zeromq inbound port
-               void * zmqReq_;
+               void * zmqPull_;
 
                //! Zeromq outbound port
-               void * zmqResp_;
+               void * zmqPush_;
 
                //! Thread background
                void runThread();
@@ -61,24 +66,24 @@ namespace rogue {
             public:
 
                //! Class creation
-               static boost::shared_ptr<rogue::interfaces::memory::BridgeSlave> 
-                      create (std::string addr, uint16_t port);
+               static boost::shared_ptr<rogue::interfaces::stream::TcpCore> 
+                  create (std::string addr, uint16_t port, bool server);
 
                //! Setup class in python
                static void setup_python();
 
                //! Creator
-               BridgeSlave(std::string addr, uint16_t port);
+               TcpCore(std::string addr, uint16_t port, bool server);
 
                //! Destructor
-               ~BridgeSlave();
+               ~TcpCore();
 
-               //! Post a transaction. Master will call this method with the access attributes.
-               void doTransaction(boost::shared_ptr<rogue::interfaces::memory::Transaction> tran);
+               //! Accept a frame from master
+               void acceptFrame ( boost::shared_ptr<rogue::interfaces::stream::Frame> frame );
          };
 
          // Convienence
-         typedef boost::shared_ptr<rogue::interfaces::memory::BridgeSlave> BridgeSlavePtr;
+         typedef boost::shared_ptr<rogue::interfaces::stream::TcpCore> TcpCorePtr;
 
       }
    }

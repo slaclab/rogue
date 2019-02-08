@@ -55,6 +55,12 @@ namespace rogue {
                //! lock
                void unlock();
 
+               //! Enter method for python, do nothing
+               void enter();
+
+               //! Exit method for python, do nothing
+               void exit(void *, void *, void *);
+
          };
 
          // Convienence

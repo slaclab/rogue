@@ -26,10 +26,10 @@ FrameSize  = 10000
 def data_path():
 
     # Bridge server
-    serv = rogue.interfaces.stream.Bridge("127.0.0.1",9000,True)
+    serv = rogue.interfaces.stream.TcpServer("127.0.0.1",9000)
 
     # Bridge client
-    client = rogue.interfaces.stream.Bridge("127.0.0.1",9000,False)
+    client = rogue.interfaces.stream.TcpClient("127.0.0.1",9000)
 
     # PRBS
     prbsTx = rogue.utilities.Prbs()

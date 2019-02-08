@@ -1,12 +1,12 @@
 /**
  *-----------------------------------------------------------------------------
- * Title      : Memory Master Network Bridge
+ * Title      : Memory Server Network Bridge
  * ----------------------------------------------------------------------------
- * File       : BridgeMaster.cpp
+ * File       : TcpServer.cpp
  * Created    : 2019-01-30
  * ----------------------------------------------------------------------------
  * Description:
- * Memory Master Network Bridge
+ * Memory Server Network Bridge
  * ----------------------------------------------------------------------------
  * This file is part of the rogue software platform. It is subject to 
  * the license terms in the LICENSE.txt file found in the top-level directory 
@@ -17,7 +17,7 @@
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
-#include <rogue/interfaces/memory/BridgeMaster.h>
+#include <rogue/interfaces/memory/TcpServer.h>
 #include <rogue/interfaces/memory/Constants.h>
 #include <rogue/GeneralError.h>
 #include <boost/make_shared.hpp>
@@ -33,16 +33,16 @@ namespace bp  = boost::python;
 #endif
 
 //! Class creation
-rim::BridgeMasterPtr rim::BridgeMaster::create (std::string addr, uint16_t port) {
-   rim::BridgeMasterPtr r = boost::make_shared<rim::BridgeMaster>(addr,port);
+rim::TcpServerPtr rim::TcpServer::create (std::string addr, uint16_t port) {
+   rim::TcpServerPtr r = boost::make_shared<rim::TcpServer>(addr,port);
    return(r);
 }
 
 //! Creator
-rim::BridgeMaster::BridgeMaster (std::string addr, uint16_t port) {
+rim::TcpServer::TcpServer (std::string addr, uint16_t port) {
    uint32_t to;
 
-   this->bridgeLog_ = rogue::Logging::create("memory.BridgeMaster");
+   this->bridgeLog_ = rogue::Logging::create("memory.TcpServer");
 
    // Format address
    this->respAddr_ = "tcp://";
@@ -64,19 +64,19 @@ rim::BridgeMaster::BridgeMaster (std::string addr, uint16_t port) {
    this->bridgeLog_->debug("Creating response client port: %s",this->respAddr_.c_str());
 
    if ( zmq_bind(this->zmqResp_,this->respAddr_.c_str()) < 0 ) 
-      throw(rogue::GeneralError::network("BridgeMaster::BridgeMaster",addr,port+1));
+      throw(rogue::GeneralError::network("TcpServer::TcpServer",addr,port+1));
 
    this->bridgeLog_->debug("Creating request client port: %s",this->reqAddr_.c_str());
 
    if ( zmq_bind(this->zmqReq_,this->reqAddr_.c_str()) < 0 ) 
-      throw(rogue::GeneralError::network("BridgeMaster::BridgeMaster",addr,port));
+      throw(rogue::GeneralError::network("TcpServer::TcpServer",addr,port));
 
    // Start rx thread
-   this->thread_ = new boost::thread(boost::bind(&rim::BridgeMaster::runThread, this));
+   this->thread_ = new boost::thread(boost::bind(&rim::TcpServer::runThread, this));
 }
 
 //! Destructor
-rim::BridgeMaster::~BridgeMaster() {
+rim::TcpServer::~TcpServer() {
    thread_->interrupt();
    thread_->join();
 
@@ -86,13 +86,13 @@ rim::BridgeMaster::~BridgeMaster() {
 }
 
 //! Run thread
-void rim::BridgeMaster::runThread() {
+void rim::TcpServer::runThread() {
    uint8_t * data;
    uint64_t  more;
    size_t    moreSize;
    uint32_t  x;
    uint32_t  msgCnt;
-   zmq_msg_t msg[5];
+   zmq_msg_t msg[6];
    uint32_t  id;
    uint64_t  addr;
    uint32_t  size;
@@ -122,6 +122,7 @@ void rim::BridgeMaster::runThread() {
                moreSize = 8;
                zmq_getsockopt(this->zmqReq_, ZMQ_RCVMORE, &more, &moreSize);
             } else more = 1;
+            boost::this_thread::interruption_point();
          } while ( more );
 
          // Proper message received
@@ -179,12 +180,12 @@ void rim::BridgeMaster::runThread() {
    } catch (boost::thread_interrupted&) { }
 }
 
-void rim::BridgeMaster::setup_python () {
+void rim::TcpServer::setup_python () {
 #ifndef NO_PYTHON
 
-   bp::class_<rim::BridgeMaster, rim::BridgeMasterPtr, bp::bases<rim::Master>, boost::noncopyable >("BridgeMaster",bp::init<std::string,uint16_t>());
+   bp::class_<rim::TcpServer, rim::TcpServerPtr, bp::bases<rim::Master>, boost::noncopyable >("TcpServer",bp::init<std::string,uint16_t>());
 
-   bp::implicitly_convertible<rim::BridgeMasterPtr, rim::MasterPtr>();
+   bp::implicitly_convertible<rim::TcpServerPtr, rim::MasterPtr>();
 #endif
 }
 
