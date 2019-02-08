@@ -73,4 +73,100 @@ Implementing a Master subclass in python is easy, but may result in a lower leve
 C++ Master Subclass
 -------------------
 
+Creating a Master sub-class in c++ is done in a similiar fashion. A new frame is 
+requested just as it is in python and the sendFrame() method is used to pass the
+frame to the connected Slaves. The main difference is that accessing the Frame
+data can be done more directly using an interator. 
+
+The example below shows the most direct method for updating data within a frame using 
+an iterator. Here we both de-reference the iterator directly to update specific locations 
+and we use std::copy to move data from data buffer into the Frame.
+
+.. code-block:: c
+
+   #import <rogue/interfaces/stream/Master.h>
+   #import <rogue/interfaces/stream/Frame.h>
+   #import <rogue/interfaces/stream/FrameIterator.h>
+
+   class MyCustomMaster : public rogue::interfaces::stream::Master {
+      public:
+
+         MyCustomMaster() : rogue::interfaces::stream::Master() { }
+
+         void myFrameGen() {
+            rogue::interfaces::stream::FramePtr frame;
+            rogue::interfaces::stream::FrameIterator it;
+            uint32_t x;
+
+            // First request an empty from from the primary slave
+            // The first arg is the size, the second arg is a boolean
+            // indicating if we can allow zero copy buffers, usually set to true
+
+            // Here we request a frame capable of holding 100 bytes
+            frame = reqFrame(100,true);
+
+            // Here we get an iterator to the frame data in write mode
+            it = frame->beginWrite();
+
+            // Set an incrementing value to the first 10 locations
+            for (x=0; x < 10; x++) {
+               *it = x;
+               it++;
+            }
+
+            // Use std::copy to copy data from a data buffer
+            // Here we copy 10 bytes starting a the current position of 10
+            // Update the iterator
+            it = std::copy(data, data+10, it);
+
+            // Unlink the python API we must now specify the new payload size
+            frame->setPayload(20);
+
+            //Send frame
+            sendFrame(frame);
+         }
+   };
+
+The std::copy call works very well for moving data between two standard C++ iterators. It will
+properly deal with iterators which manage non-contigous buffers, which may be the case when allocating 
+new Frames. For example when sending large data frames over a UDP interface, the Slave which allocates the 
+buffer may create a Frame consistaing up a number of 1500 byte frames which may exist at random locations
+in memory. If we are to use std::copy in this case, it will detect that the passed iterator range is non-contigous, and default to a less performant method of copying data byte by byte.
+
+In order to ensure the best possible performance, the Rogue :ref:`interfaces_stream_frame_iterator` provides
+mechanisms for iterating through each contigous buffer. The following example performs a data copy from 
+a passed data buffer into the Rogue frame, ensuring that the most effeciant copy methods are used:
+
+.. code-block:: c
+
+   #import <rogue/interfaces/stream/Frame.h>
+   #import <rogue/interfaces/stream/FrameIterator.h>
+
+   rogue::interfaces::stream::FrameIterator it;
+   rogue::interfaces::stream::FramePtr frame;
+   uint32_t  size;
+   uint8_t * data;
+
+   // Request a new buffer with 100 bytes
+   frame = reqFrame(100,true);
+
+   // Get an iterator to the start of the Frame
+   it = frame->beginWrite();
+
+   // Keep going until we get to the end of the Frame, assume the passed data pointer has 100 bytes
+   while ( it != frame->endWrite() ) {
+
+      // The rem buffer method returns the number of bytes left in the current contigous buffer
+      size = it->remBuffer();
+
+      // Copy size number of bytes, updating both pointers
+      it = std::copy(data, data+size; it);
+      data += size;
+   }
+
+   // Remember to update the new payload size 
+   frame->setPayload(100);
+     
+Further study of the :ref:`interfaces_stream_frame` and :ref:`interfaces_stream_buffer` APIs will reveal more 
+advanced methods of access frame and buffer data. 
 

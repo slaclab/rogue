@@ -50,8 +50,75 @@ Implementing a Slave subclass in python is easy, but may result in a lower level
            print("First byte is {:#}".format(fullData[0]))
            print("Byte 6 is {:#}".format(partialData[1]))
 
-
 C++ Slave Subclass
 ------------------
 
+Creating a Slave sub-class in c++ is done in a similiar fashion. 
+
+The example below shows the most direct method for receiving data from a Frame using 
+an iterator. Here we both de-reference the iterator directly to update specific locations 
+and we use std::copy to move data from the Frame to a data buffer.
+
+.. code-block:: c
+
+   #import <rogue/interfaces/stream/Slave.h>
+   #import <rogue/interfaces/stream/Frame.h>
+   #import <rogue/interfaces/stream/FrameIterator.h>
+
+   class MyCustomSlave : public rogue::interfaces::stream::Slave {
+      public:
+
+         MyCustomSlave() : rogue::interfaces::stream::Slave() { }
+
+         void acceptFrame ( boost::shared_ptr<rogue::interfaces::stream::Frame> frame ) {
+            rogue::interfaces::stream::FrameIterator it;
+            uint32_t x;
+
+            // Here we get an iterator to the frame data in read mode
+            it = frame->beginRead();
+
+            // Print the values in the first 10 locations
+            for (x=0; x < 10; x++) {
+               printf("Loaction %i = 0x%x\n", *it);
+               it++;
+            }
+
+            // Use std::copy to copy data to a data buffer
+            // Here we copy the entire frame payload to the data buffer
+            std::copy(frame->beginRead(), frame->endRead, data);
+         }
+   };
+
+The std::copy call works very well for moving data between two standard C++ iterators. It will
+properly deal with iterators which manage non-contigous buffers, which may be the case when receving
+Frames. For example when receiving large data frames from a UDP interface, the incoming data may
+exist within a number of 1500 byte Buffers which may exist at random locations in memory. If we are to 
+use std::copy in this case, it will detect that the passed iterator range is non-contigous, and default to a 
+less performant method of copying data byte by byte.
+
+In order to ensure the best possible performance, the Rogue :ref:`interfaces_stream_frame_iterator` provides
+mechanisms for iterating through each contigous buffer. The following example performs a copy from 
+the received Frame to a memory array.
+
+.. code-block:: c
+
+   #import <rogue/interfaces/stream/Frame.h>
+   #import <rogue/interfaces/stream/FrameIterator.h>
+
+   rogue::interfaces::stream::FrameIterator it;
+   uint8_t * data;
+
+   // Get an iterator to the start of the Frame
+   it = frame->beginRead();
+
+   // Keep going until we get to the end of the Frame
+   while ( it != frame->endRead() ) {
+
+      // Copy the buffer data
+      data = std::copy(it, it->endBuffer(), data);
+      it = it->endBuffer();
+   }
+
+Further study of the :ref:`interfaces_stream_frame` and :ref:`interfaces_stream_buffer` APIs will reveal more 
+advanced methods of access frame and buffer data. 
 
