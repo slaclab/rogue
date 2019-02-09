@@ -31,7 +31,7 @@ namespace rogue {
    namespace interfaces {
       namespace stream {
 
-         //! PGP Card class
+         //! TCP Server Class
          class TcpServer : public rogue::interfaces::stream::TcpCore {
 
             public:

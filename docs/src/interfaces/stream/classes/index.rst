@@ -16,6 +16,8 @@ The following are detailed descriptions of the various C++ classes that make up 
    master
    slave
    pool
-   bridge
+   tcpSlave
+   tcpMaster
    fifo
    filter
+   helpers
