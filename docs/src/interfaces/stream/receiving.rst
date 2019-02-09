@@ -53,7 +53,9 @@ Implementing a Slave subclass in python is easy, but may result in a lower level
 C++ Slave Subclass
 ------------------
 
-Creating a Slave sub-class in c++ is done in a similiar fashion. 
+Creating a Slave sub-class in c++ is done in a similiar fashion. In order to use a custom
+c++ Slave subclass in python, you will need to build it into a c++ python module. See the
+section on :ref:`installing_custom`.
 
 The example below shows the most direct method for receiving data from a Frame using 
 an iterator. Here we both de-reference the iterator directly to update specific locations 
@@ -61,9 +63,10 @@ and we use std::copy to move data from the Frame to a data buffer.
 
 .. code-block:: c
 
-   #import <rogue/interfaces/stream/Slave.h>
-   #import <rogue/interfaces/stream/Frame.h>
-   #import <rogue/interfaces/stream/FrameIterator.h>
+   #include <rogue/interfaces/stream/Slave.h>
+   #include <rogue/interfaces/stream/Frame.h>
+   #include <rogue/interfaces/stream/FrameIterator.h>
+   #include <rogue/interfaces/stream/FrameLock.h>
 
    class MyCustomSlave : public rogue::interfaces::stream::Slave {
       public:
@@ -73,6 +76,9 @@ and we use std::copy to move data from the Frame to a data buffer.
          void acceptFrame ( boost::shared_ptr<rogue::interfaces::stream::Frame> frame ) {
             rogue::interfaces::stream::FrameIterator it;
             uint32_t x;
+
+            // Acquire lock on frame. Will be release when lock class goes out of scope
+            rogue::interfaces::stream::FrameLock lock = frame->lock();
 
             // Here we get an iterator to the frame data in read mode
             it = frame->beginRead();
@@ -102,12 +108,6 @@ the received Frame to a memory array.
 
 .. code-block:: c
 
-   #import <rogue/interfaces/stream/Frame.h>
-   #import <rogue/interfaces/stream/FrameIterator.h>
-
-   rogue::interfaces::stream::FrameIterator it;
-   uint8_t * data;
-
    // Get an iterator to the start of the Frame
    it = frame->beginRead();
 
@@ -118,6 +118,26 @@ the received Frame to a memory array.
       data = std::copy(it, it->endBuffer(), data);
       it = it->endBuffer();
    }
+
+Alternatively if the user wishes to access individual values in the data frame at various offsets, 
+they can make use of the fromFrame helper function defined in :ref:`interfaces_stream_helpers`. 
+
+.. code-block:: c
+
+   uint64_t data64;
+   uint32_t data32;
+   uint8_t  data8;
+  
+   it = frame->beginRead(); 
+
+   // Read 64-bits and advance iterator 8 bytes 
+   fromFrame(it, 8, &data64); 
+
+   // Read 32-bits and advance iterator 4 bytes
+   fromFrame(it, 4, &data32);
+
+   // Read 8-bits and advance iterator 1 byte
+   fromFrame(it, 1, &data8);
 
 Further study of the :ref:`interfaces_stream_frame` and :ref:`interfaces_stream_buffer` APIs will reveal more 
 advanced methods of access frame and buffer data. 

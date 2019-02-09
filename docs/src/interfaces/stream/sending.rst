@@ -78,6 +78,9 @@ requested just as it is in python and the sendFrame() method is used to pass the
 frame to the connected Slaves. The main difference is that accessing the Frame
 data can be done more directly using an interator. 
 
+In order to use a custom c++ Master subclass in python, you will need to build it 
+into a c++ python module. See the section on :ref:`installing_custom`.
+
 The example below shows the most direct method for updating data within a frame using 
 an iterator. Here we both de-reference the iterator directly to update specific locations 
 and we use std::copy to move data from data buffer into the Frame.
@@ -139,11 +142,6 @@ a passed data buffer into the Rogue frame, ensuring that the most effeciant copy
 
 .. code-block:: c
 
-   #import <rogue/interfaces/stream/Frame.h>
-   #import <rogue/interfaces/stream/FrameIterator.h>
-
-   rogue::interfaces::stream::FrameIterator it;
-   rogue::interfaces::stream::FramePtr frame;
    uint32_t  size;
    uint8_t * data;
 
@@ -166,7 +164,30 @@ a passed data buffer into the Rogue frame, ensuring that the most effeciant copy
 
    // Remember to update the new payload size 
    frame->setPayload(100);
-     
+
+Alternatively if the user wishes to access individual values in the data frame at various offsets, 
+they can make use of the toFrame helper function defined in :ref:`interfaces_stream_helpers`. 
+
+.. code-block:: c
+
+   uint64_t data64;
+   uint32_t data32;
+   uint8_t  data8;
+  
+   it = frame->beginWrite(); 
+
+   // Write 64-bits and advance iterator 8 bytes 
+   toFrame(it, 8, &data64); 
+
+   // Write 32-bits and advance iterator 4 bytes
+   torame(it, 4, &data32);
+
+   // Write 8-bits and advance iterator 1 byte
+   toFrame(it, 1, &data8);
+
+   // Update frame payload size
+   frame->setPayload(13);
+
 Further study of the :ref:`interfaces_stream_frame` and :ref:`interfaces_stream_buffer` APIs will reveal more 
 advanced methods of access frame and buffer data. 
 

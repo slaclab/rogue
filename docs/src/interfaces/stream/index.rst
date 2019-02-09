@@ -17,17 +17,4 @@ is the destination of the Frame.
    sending
    receiving
 
-.. toctree::
-   :maxdepth: 1
-   :caption: Stream Classes:
-
-   frame
-   frameIterator
-   frameLock
-   buffer
-   master
-   slave
-   pool
-   bridge
-   fifo
-   filter
+   classes/index
