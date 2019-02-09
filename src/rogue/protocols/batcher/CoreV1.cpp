@@ -48,25 +48,21 @@
 #include <rogue/interfaces/stream/Frame.h>
 #include <rogue/interfaces/stream/FrameIterator.h>
 #include <rogue/protocols/batcher/CoreV1.h>
+#include <rogue/protocols/batcher/Data.h>
+#include <rogue/GeneralError.h>
 #include <math.h>
 
-namespace rpb  = rogue::protocols:batcher;
+namespace rpb = rogue::protocols::batcher;
 namespace ris = rogue::interfaces::stream;
 
 //! Class creation
-rpb::CoreV1Ptr rp::CoreV1::create() {
-   rp::CoreV1Ptr p = boost::make_shared<rp::CoreV1>();
+rpb::CoreV1Ptr rpb::CoreV1::create() {
+   rpb::CoreV1Ptr p = boost::make_shared<rpb::CoreV1>();
    return(p);
 }
 
 //! Setup class in python
 void rpb::CoreV1::setup_python() { }
-
-//! Create class
-rpb::CoreV1Ptr rpb::CoreV1::create() {
-   rpb::CoreV1Ptr p = boost::make_shared<rpb::CorePtr>();
-   return(p);
-}
 
 //! Creator with version constant
 rpb::CoreV1::CoreV1() {
@@ -81,7 +77,9 @@ rpb::CoreV1::CoreV1() {
 rpb::CoreV1::~CoreV1() {}
 
 //! Record count
-uint32_t rpb::CoreV1::count();
+uint32_t rpb::CoreV1::count() {
+   return list_.size();
+}
 
 //! Get header size
 uint32_t rpb::CoreV1::headerSize() {
@@ -129,7 +127,6 @@ bool rpb::CoreV1::processFrame ( ris::FramePtr frame ) {
    uint8_t  dest;
    uint8_t  fUser;
    uint8_t  lUser;
-   uint8_t  lSize;
    uint32_t fJump;
 
    // Reset old data
@@ -221,7 +218,6 @@ bool rpb::CoreV1::processFrame ( ris::FramePtr frame ) {
       ris::fromFrame(tail, 1, &dest);
       ris::fromFrame(tail, 1, &fUser);
       ris::fromFrame(tail, 1, &lUser);
-      ris::fromFrame(tail, 1, &lSize);
 
       // Round up rewind amount to width
       if ( (fSize % headerSize_) == 0) fJump = fSize;

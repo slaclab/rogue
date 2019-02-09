@@ -24,11 +24,13 @@
 #include <rogue/interfaces/stream/FrameLock.h>
 #include <rogue/interfaces/stream/FrameIterator.h>
 #include <rogue/protocols/batcher/SplitterV1.h>
+#include <rogue/protocols/batcher/CoreV1.h>
+#include <rogue/protocols/batcher/Data.h>
 #include <rogue/Logging.h>
 #include <rogue/GilRelease.h>
 #include <math.h>
 
-namespace rpb  = rogue::protocols::batcher;
+namespace rpb = rogue::protocols::batcher;
 namespace ris = rogue::interfaces::stream;
 
 #ifndef NO_PYTHON
@@ -72,14 +74,14 @@ void rpb::SplitterV1::acceptFrame ( ris::FramePtr frame ) {
       data = core.record(x);
 
       // Create a new frame
-      nFrame = reqFrame(data.size(),true);
-      std::copy(data.iterator(), data.iterator()+data.size(), nFrame->beginWrite);
-      nFrame->setPayload(data.size());
+      nFrame = reqFrame(data->size(),true);
+      std::copy(data->iterator(), data->iterator()+data->size(), nFrame->beginWrite());
+      nFrame->setPayload(data->size());
 
       // Set flags
-      nFrame->setFirstUser(data.fUser());
-      nFrame->setLastUser(data.lUser());
-      nFrame->setChannel(data.dest());
+      nFrame->setFirstUser(data->fUser());
+      nFrame->setLastUser(data->lUser());
+      nFrame->setChannel(data->dest());
       
       sendFrame(nFrame);
    }

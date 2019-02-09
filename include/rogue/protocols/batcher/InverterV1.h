@@ -1,13 +1,13 @@
 /**
  *-----------------------------------------------------------------------------
- * Title         : SLAC Splitter Version 1
+ * Title         : SLAC Inverter Version 1
  * ----------------------------------------------------------------------------
- * File          : SplitterV1.h
+ * File          : InverterV1.h
  * Author        : Ryan Herbst <rherbst@slac.stanford.edu>
  * Created       : 10/26/2018
  *-----------------------------------------------------------------------------
  * Description :
- *    AXI Splitter V1
+ *    AXI Inverter V1
  *-----------------------------------------------------------------------------
  * This file is part of the rogue software platform. It is subject to 
  * the license terms in the LICENSE.txt file found in the top-level directory 
@@ -18,8 +18,8 @@
  * contained in the LICENSE.txt file.
  *-----------------------------------------------------------------------------
 **/
-#ifndef __ROGUE_PROTOCOLS_BATCHER_SPLITTER_V1_H__
-#define __ROGUE_PROTOCOLS_BATCHER_SPLITTER_V1_H__
+#ifndef __ROGUE_PROTOCOLS_BATCHER_INVERTER_V1_H__
+#define __ROGUE_PROTOCOLS_BATCHER_INVERTER_V1_H__
 #include <stdint.h>
 #include <boost/thread.hpp>
 #include <rogue/interfaces/stream/Master.h>
@@ -31,22 +31,22 @@ namespace rogue {
       namespace batcher {
 
          //!  AXI Stream FIFO
-         class SplitterV1 : public rogue::interfaces::stream::Master,
+         class InverterV1 : public rogue::interfaces::stream::Master,
                             public rogue::interfaces::stream::Slave {
 
             public:
 
                //! Class creation
-               static boost::shared_ptr<rogue::protocols::batcher::SplitterV1> create();
+               static boost::shared_ptr<rogue::protocols::batcher::InverterV1> create();
 
                //! Setup class in python
                static void setup_python();
 
                //! Creator
-               SplitterV1();
+               InverterV1();
 
                //! Deconstructor
-               ~SplitterV1();
+               ~InverterV1();
 
                //! Accept a frame from master
                void acceptFrame ( boost::shared_ptr<rogue::interfaces::stream::Frame> frame );
@@ -54,7 +54,7 @@ namespace rogue {
          };
 
          // Convienence
-         typedef boost::shared_ptr<rogue::protocols::batcher::SplitterV1> SplitterV1Ptr;
+         typedef boost::shared_ptr<rogue::protocols::batcher::InverterV1> InverterV1Ptr;
       }
    }
 }

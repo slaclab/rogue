@@ -16,6 +16,7 @@
 target_sources(rogue-core PRIVATE "${CMAKE_CURRENT_LIST_DIR}/SplitterV1.cpp")
 target_sources(rogue-core PRIVATE "${CMAKE_CURRENT_LIST_DIR}/CoreV1.cpp")
 target_sources(rogue-core PRIVATE "${CMAKE_CURRENT_LIST_DIR}/Data.cpp")
+target_sources(rogue-core PRIVATE "${CMAKE_CURRENT_LIST_DIR}/InverterV1.cpp")
 
 if (DO_PYTHON)
    target_sources(rogue-core PRIVATE "${CMAKE_CURRENT_LIST_DIR}/module.cpp")

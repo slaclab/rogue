@@ -40,7 +40,7 @@ namespace rogue {
                boost::shared_ptr<rogue::interfaces::stream::Frame> frame_;
 
                //! Data List
-               std::vector< <boost::shared_ptr<rogue::protocols::batcher::Data> > list_;
+               std::vector< boost::shared_ptr<rogue::protocols::batcher::Data> > list_;
 
                //! Header size
                uint32_t headerSize_;
@@ -60,7 +60,7 @@ namespace rogue {
                static void setup_python();
 
                //! Create class
-               boost::shared_ptr<rogue::protocols::batcher::CoreV1> create();
+               static boost::shared_ptr<rogue::protocols::batcher::CoreV1> create();
 
                //! Creator
                CoreV1();
@@ -96,8 +96,9 @@ namespace rogue {
                void reset();
          };
 
-      // Convienence
-      typedef boost::shared_ptr<rogue::protocols::Batcher::CoreV1> CoreV1Ptr;
+         // Convienence
+         typedef boost::shared_ptr<rogue::protocols::batcher::CoreV1> CoreV1Ptr;
+      }
    }
 }
 #endif

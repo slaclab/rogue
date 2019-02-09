@@ -26,10 +26,11 @@
 #include <rogue/protocols/batcher/CoreV1.h>
 #include <rogue/protocols/batcher/Data.h>
 #include <rogue/protocols/batcher/SplitterV1.h>
+#include <rogue/protocols/batcher/InverterV1.h>
 
 namespace bp  = boost::python;
 
-void rogue::protocols::setup_module() {
+void rogue::protocols::batcher::setup_module() {
 
    // map the IO namespace to a sub-module
    bp::object module(bp::handle<>(bp::borrowed(PyImport_AddModule("rogue.protocols.batcher"))));
@@ -43,6 +44,7 @@ void rogue::protocols::setup_module() {
    rogue::protocols::batcher::CoreV1::setup_python();
    rogue::protocols::batcher::Data::setup_python();
    rogue::protocols::batcher::SplitterV1::setup_python();
+   rogue::protocols::batcher::InverterV1::setup_python();
 
 }
 
