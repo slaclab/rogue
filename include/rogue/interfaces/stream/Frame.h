@@ -39,9 +39,9 @@ namespace rogue {
          class FrameLock;
 
          //! Frame container
-         /** This class is a container for a vector of buffers which make up a frame
-          * container. Each buffer within the frame has a reserved header area, a reserved
-          * tail area and a payload. Calls to write and read take into account the head and tail offset.
+         /** This class is a container for an array of Buffer class objects which contain
+          * the stream data. A FrameIterator object is used to read and write data from and
+          * to the Frame.
          */
          class Frame : public boost::enable_shared_from_this<rogue::interfaces::stream::Frame> {
 
@@ -82,22 +82,25 @@ namespace rogue {
 
             public:
 
-               //! Alias for Buffer list iterator
+               //! Alias for using std::vector<boost::shared_ptr<rogue::interfaces::stream::Buffer> >::iterator as Buffer::iterator
                typedef std::vector<boost::shared_ptr<rogue::interfaces::stream::Buffer> >::iterator BufferIterator;
 
-               //! Alias for frame data itererator
+               //! Alias for using FrameIterator as Frame::iterator
                typedef rogue::interfaces::stream::FrameIterator iterator;
 
-               //! Setup class in python
+               //! Setup class for use in python
+               /* Not exposed to Python
+                */
                static void setup_python();
 
-               //! Class factory which returns a pointer to an empty Frame
+               //! Class factory which returns a FramePtr to an empty Frame
                /** Not exposed to Python
                 */
                static boost::shared_ptr<rogue::interfaces::stream::Frame> create();
 
                //! Create an empty Frame.
-               /** Do not call directly. Use creat() class method instead.
+               /** Do not call directly. Use the create() class method instead.
+                *
                 * Not available in Python
                 */
                Frame();
@@ -105,15 +108,16 @@ namespace rogue {
                //! Destroy the Frame.
                ~Frame();
 
-               //! Lock frame and return a FrameLock object
+               //! Lock frame and return a FrameLockPtr object
                /** Exposed as lock() to Python
+                *  @return FrameLock pointer (FrameLockPtr)
                 */
                boost::shared_ptr<rogue::interfaces::stream::FrameLock> lock();
 
                //! Add a buffer to end of frame,
                /** Not exposed to Python
-                * @param buff The buffer to append to the end of the frame
-                * @return Buffer list iterator pointing to the added buffer
+                * @param buff The buffer pointer (BufferPtr) to append to the end of the frame
+                * @return Buffer list iterator (Frame::BufferIterator) pointing to the added buffer
                 */
                std::vector<boost::shared_ptr<rogue::interfaces::stream::Buffer> >::iterator
                   appendBuffer(boost::shared_ptr<rogue::interfaces::stream::Buffer> buff);
@@ -123,21 +127,21 @@ namespace rogue {
                 * will be removed from the source frame.
                 *
                 * Not exposed to Python
-                * @param frame Source frame to append
-                * @return Buffer list iterator pointing to the first inserted buffer from passed frame
+                * @param frame Source frame pointer (FramePtr) to append
+                * @return Buffer list iterator (Frame::BufferIterator) pointing to the first inserted buffer from passed frame
                 */
                std::vector<boost::shared_ptr<rogue::interfaces::stream::Buffer> >::iterator
                   appendFrame(boost::shared_ptr<rogue::interfaces::stream::Frame> frame);
 
                //! Get Buffer list begin iterator
                /** Not exposed to Python
-                * @return Buffer list iterator pointing to the start of the Buffer list
+                * @return Buffer list iterator (Frame::BufferIterator) pointing to the start of the Buffer list
                 */
                std::vector<boost::shared_ptr<rogue::interfaces::stream::Buffer> >::iterator beginBuffer();
 
                //! Get Buffer list end iterator
                /** Not exposed to Python
-                * @return Buffer list iterator pointing to the end of the Buffer list
+                * @return Buffer list iterator (Frame::BufferIterator) pointing to the end of the Buffer list
                 */
                std::vector<boost::shared_ptr<rogue::interfaces::stream::Buffer> >::iterator endBuffer();
 
@@ -159,7 +163,7 @@ namespace rogue {
                bool isEmpty();
 
                //! Get total size of the Frame
-               /** This function returns the full buffer size minus the head and tail reservations.
+               /** This function returns the full buffer size
                 *
                 * Exposed as getSize() to Python
                 * @return Total raw Buffer size of Frame in bytes
@@ -167,7 +171,7 @@ namespace rogue {
                uint32_t getSize();
 
                //! Get total available size of the Frame
-               /** This is the space remaining for payload minus the space reserved for the tail.
+               /** This is the space remaining for payload
                 *
                 * Exposed as getAvailable() to Python
                 * @return Remaining bytes available for payload in the Frame
@@ -175,9 +179,7 @@ namespace rogue {
                uint32_t getAvailable();
 
                //! Get total payload size of the Frame
-               /** Does not included reserved header and tail data of each Buffer
-                *
-                * Exposed as getPayload() to Python
+               /** Exposed as getPayload() to Python
                 * @return Total paylaod bytes in the Frame
                 */
                uint32_t getPayload();
@@ -207,8 +209,7 @@ namespace rogue {
 
                //! Set the Frame payload to full 
                /** Set the current payload size to equal the total
-                * available size of the buffers, minus the header and
-                * tail reservation.
+                * available size of the buffers.
                 *
                 * Not exposed to Python
                 */
@@ -355,7 +356,7 @@ namespace rogue {
 #endif
          };
 
-         //! Alias for FramePtr
+         //! Alias for using shared pointer as FramePtr
          typedef boost::shared_ptr<rogue::interfaces::stream::Frame> FramePtr;
       }
    }

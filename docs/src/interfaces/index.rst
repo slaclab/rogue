@@ -12,5 +12,4 @@ the stream interface and the memory interface.
    :caption: Interfaces:
 
    stream/index
-   memory/index
 

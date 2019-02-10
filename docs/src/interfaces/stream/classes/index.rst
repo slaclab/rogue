@@ -1,7 +1,7 @@
 .. _interfaces_classes:
 
-Stream Interface Reference
-==========================
+Stream Interface Classes
+========================
 
 The following are detailed descriptions of the various C++ classes that make up the Rogue stream interface.
 
@@ -10,14 +10,15 @@ The following are detailed descriptions of the various C++ classes that make up 
    :caption: Stream Classes:
 
    frame
-   frameIterator
    frameLock
-   buffer
+   frameIterator
+   helpers
    master
    slave
-   pool
+   fifo
    tcpSlave
    tcpMaster
-   fifo
    filter
-   helpers
+   buffer
+   pool
+

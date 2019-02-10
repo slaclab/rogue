@@ -5,14 +5,10 @@
  * File       : Buffer.h
  * Author     : Ryan Herbst, rherbst@slac.stanford.edu
  * Created    : 2016-09-16
- * Last update: 2016-09-16
  * ----------------------------------------------------------------------------
  * Description:
  * Stream frame container
  * Some concepts borrowed from CPSW by Till Straumann
- * TODO:
- *    Add locking for thread safety. May not be needed since the source will
- *    set things up once before handing off to the various threads.
  * ----------------------------------------------------------------------------
  * This file is part of the rogue software platform. It is subject to 
  * the license terms in the LICENSE.txt file found in the top-level directory 
@@ -79,7 +75,7 @@ namespace rogue {
 
             public:
 
-               //! Iterator for data
+               //! Alias for using uint8_t * as Buffer::iterator
                typedef uint8_t * iterator;
 
                //! Class creation
@@ -184,7 +180,7 @@ namespace rogue {
                void setPayloadEmpty();
          };
 
-         // Convienence
+         //! Alias for using shared pointer as BufferPtr
          typedef boost::shared_ptr<rogue::interfaces::stream::Buffer> BufferPtr;
       }
    }

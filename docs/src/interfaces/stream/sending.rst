@@ -180,7 +180,7 @@ they can make use of the toFrame helper function defined in :ref:`interfaces_str
    toFrame(it, 8, &data64); 
 
    // Write 32-bits and advance iterator 4 bytes
-   torame(it, 4, &data32);
+   toFrame(it, 4, &data32);
 
    // Write 8-bits and advance iterator 1 byte
    toFrame(it, 1, &data8);
