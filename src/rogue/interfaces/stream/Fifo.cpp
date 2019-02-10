@@ -59,7 +59,7 @@ ris::Fifo::Fifo(uint32_t maxDepth, uint32_t trimSize, bool noCopy ) : ris::Maste
 
    queue_.setThold(maxDepth);
 
-   log_ = rogue::Logging::create("Fifo");
+   log_ = rogue::Logging::create("stream.Fifo");
 
    // Start read thread
    thread_ = new boost::thread(boost::bind(&ris::Fifo::runThread, this));

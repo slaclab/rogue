@@ -4,7 +4,6 @@
  * ----------------------------------------------------------------------------
  * File       : Buffer.h
  * Author     : Ryan Herbst, rherbst@slac.stanford.edu
- * Created    : 2016-09-16
  * ----------------------------------------------------------------------------
  * Description:
  * Stream frame container
@@ -40,37 +39,37 @@ namespace rogue {
          */
          class Buffer {
 
-               //! Pointer to entity which allocated this buffer
+               // Pointer to entity which allocated this buffer
                boost::shared_ptr<rogue::interfaces::stream::Pool> source_;
 
-               //! Pointer to frame containing this buffer
+               // Pointer to frame containing this buffer
                boost::weak_ptr<rogue::interfaces::stream::Frame> frame_;
 
-               //! Pointer to raw data buffer. Raw pointer is used here!
+               // Pointer to raw data buffer. Raw pointer is used here!
                uint8_t *  data_;
 
-               //! Meta data used to track this buffer by source
+               // Meta data used to track this buffer by source
                uint32_t   meta_;
 
-               //! Alloc size of buffer, alloc may be greater than raw size due to buffer alloctor
+               // Alloc size of buffer, alloc may be greater than raw size due to buffer alloctor
                uint32_t   allocSize_;
 
-               //! Raw size of buffer, size as requested, alloc may be greater
+               // Raw size of buffer, size as requested, alloc may be greater
                uint32_t   rawSize_;
 
-               //! Header room of buffer
+               // Header room of buffer
                uint32_t   headRoom_;
 
-               //! Tail room of buffer, used to keep payload from using up tail space
+               // Tail room of buffer, used to keep payload from using up tail space
                uint32_t   tailRoom_;
 
-               //! Data count including header
+               // Data count including header
                uint32_t  payload_;
 
-               //! Interface specific flags
+               // Interface specific flags
                uint32_t   flags_;
 
-               //! Error state
+               // Error state
                uint32_t   error_;
 
             public:
@@ -120,9 +119,11 @@ namespace rogue {
                //! Clear the tail reservation
                void zeroTail();
 
-               /* 
-                * Get data pointer (begin iterator)
-                * Returns base + header size
+               //! Get beginning buffer iterator
+               /** Get an interator which indicates the start of
+                * the buffer space, not included the header
+                * reservation.
+                * @return Begin buffer iterator
                 */
                uint8_t * begin();
 
@@ -132,51 +133,57 @@ namespace rogue {
                 */
                uint8_t * end();
 
-               /*
-                * Get end payload pointer (end iterator)
-                * This is the end of payload data
+               //! Get end payload iterator
+               /** Get an interator which indicates the end of the the
+                * payload space. 
+                * @return End payload iterator
                 */
                uint8_t * endPayload();
 
-               /*
-                * Get size of buffer that can hold
-                * payload data. This function 
-                * returns the full buffer size minus
-                * the head and tail reservation.
+               //! Get Buffer size
+               /** Get size of buffer that can hold  payload data. This function 
+                * returns the full buffer size minus the head and tail reservation.
+                * @return Buffer size in bytes
                 */
                uint32_t getSize();
 
-               /*
-                * Get available size for payload
-                * This is the space remaining for payload
-                * minus the space reserved for the tail
-                */
-               uint32_t getAvailable();
-
-               /*
-                * Get real payload size without header
-                * This is the count of real data in the 
-                * packet, minus the portion reserved for
-                * the head.
+               //! Get the payload size
+               /** This method will return the amount of
+                * payload data in the buffer.
+                * @return Payload size in bytes
                 */
                uint32_t getPayload();
 
-               /* Set payload size (not including header) */
+               //! Set the payload size
+               /** Set the payload size to the passed value.
+                * @param size New payload size in bytes
+                */
                void setPayload(uint32_t size);
 
-               /* 
-                * Set min payload size (not including header)
-                * Payload size is updated only if size > current size
+               //! Set minimum payload size.
+               /** This method sets the payload size to be at least
+                * the passed value. If the current payload size exceeds
+                * the passed value, the size is unchanged.
+                * @param size Min payload size in bytes
                 */
                void minPayload(uint32_t size);
 
-               //! Adjust payload size
+               //! Adjust the payload size
+               /** This method adjusts the payload size by the
+                * passed positive or negative value.
+                * @param value Value to adjust payload by in bytes
+                */
                void adjustPayload(int32_t value);
 
-               //! Set the buffer as full (minus tail reservation)
+               //! Set the pyalod size to fill the buffer
+               /**This method sets the buffer payload size to fill the buffer,
+                * minus the header and tail reservation.
+                */
                void setPayloadFull();
 
-               //! Set the buffer as empty (minus header reservation)
+               //! Set the buffer as empty
+               /**This method sets the buffer payload size as empty.
+                */
                void setPayloadEmpty();
          };
 

@@ -8,6 +8,8 @@ flow over a TCP network interface. The server listems for connections from a cli
 the TcpClient and TcpServer serve as both stream :ref:`interfaces_stream_slave` and :ref:`interfaces_stream_master`
 interfaces.
 
+The TcpCore class generates log entries with the path: "pyrogue.stream.TcpCore"
+
 Examples of using a TCP stream bridge are described in :ref:`interfaces_stream_using_tcp`.
 
 TcpCore objects in C++ are referenced by the following shared pointer typedef:

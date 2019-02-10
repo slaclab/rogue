@@ -8,6 +8,8 @@ in server mode. The server listens for connections from a client to form a strea
 
 Examples of using a TCP stream bridge are described in :ref:`interfaces_stream_using_tcp`.
 
+The TcpServer class generates log entries with the path: "pyrogue.stream.TcpCore"
+
 TcpServer objects in C++ are referenced by the following shared pointer typedef:
 
 .. doxygentypedef:: rogue::interfaces::stream::TcpServerPtr
