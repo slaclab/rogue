@@ -30,59 +30,98 @@ namespace rogue {
    namespace interfaces {
       namespace stream {
 
-         //! TCP Core Class
+         //! Stream TCP Bridge Core
+         /** This class implements the core functionality of the TcpClient and TcpServer
+          * classes which implment a Rogue stream bridge over a TCP network. This core
+          * can operation in either client or server mode. The TcpClient and TcpServer
+          * classes are thin wrapper which define which mode flag to pass to this base
+          * class.
+          */
          class TcpCore : public rogue::interfaces::stream::Master, 
                          public rogue::interfaces::stream::Slave {
 
             protected:
 
-               //! Inbound Address
+               // Inbound Address
                std::string pullAddr_;
 
-               //! Outbound Address
+               // Outbound Address
                std::string pushAddr_;
 
-               //! Zeromq Context
+               // Zeromq Context
                void * zmqCtx_;
 
-               //! Zeromq inbound port
+               // Zeromq inbound port
                void * zmqPull_;
 
-               //! Zeromq outbound port
+               // Zeromq outbound port
                void * zmqPush_;
 
-               //! Thread background
+               // Thread background
                void runThread();
 
-               //! Log
+               // Log
                rogue::LoggingPtr bridgeLog_;
 
-               //! Thread
+               // Thread
                boost::thread * thread_;
 
-               //! Lock
+               // Lock
                boost::mutex bridgeMtx_;
 
             public:
 
-               //! Class creation
+               //! Create a TcpCore object and return as a TcpCorePtr
+               /**The creator takes an address, port and server mode flag. The passed
+                * address can either be an IP address or hostname. When running in server
+                * mode the address string defines which network interface the socket server
+                * will listen on. A string of "*" results in all network interfaces being
+                * listened on. The stream bridge requires two TCP ports. The pased port is the 
+                * base number of these two ports. A passed value of 8000 will result in both
+                * 8000 and 8001 being used by this bridge.
+                *
+                * Not exposed to Python
+                * @param addr Interface address for server, remote server address for client.
+                * @param port Base port number of use for connection.
+                * @param server Server flag. Set to True to run in server mode.
+                * @return TcpCore object as a TcpCorePtr
+                */
                static boost::shared_ptr<rogue::interfaces::stream::TcpCore> 
                   create (std::string addr, uint16_t port, bool server);
 
-               //! Setup class in python
+               //! Setup class for use in python
+               /** Not exposed to Python
+                */
                static void setup_python();
 
-               //! Creator
+               //! Create a TcpCore object
+               /**The creator takes an address, port and server mode flag. The passed
+                * address can either be an IP address or hostname. When running in server
+                * mode the address string defines which network interface the socket server
+                * will listen on. A string of "*" results in all network interfaces being
+                * listened on. The stream bridge requires two TCP ports. The pased port is the 
+                * base number of these two ports. A passed value of 8000 will result in both
+                * 8000 and 8001 being used by this bridge.
+                *
+                * Not exposed to Python
+                * @param addr Interface address for server, remote server address for client.
+                * @param port Base port number of use for connection.
+                * @param server Server flag. Set to True to run in server mode.
+                */
                TcpCore(std::string addr, uint16_t port, bool server);
 
-               //! Destructor
+               //! Destroy the TcpCore
                ~TcpCore();
 
                //! Accept a frame from master
+               /** This method is called by the Master object to which this Slave is attached when
+                * passing a Frame.
+                * @param frame Frame pointer (FramePtr)
+                */
                void acceptFrame ( boost::shared_ptr<rogue::interfaces::stream::Frame> frame );
          };
 
-         // Convienence
+         //! Alias for using shared pointer as TcpCorePtr
          typedef boost::shared_ptr<rogue::interfaces::stream::TcpCore> TcpCorePtr;
 
       }

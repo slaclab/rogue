@@ -31,26 +31,49 @@ namespace rogue {
    namespace interfaces {
       namespace stream {
 
-         //! TCP Client Class
+         //! Stream TCP Bridge Client
+         /** This class is a wrapper around TcpCore which operates in client mode.
+          */
          class TcpClient : public rogue::interfaces::stream::TcpCore {
 
             public:
 
-               //! Class creation
+               //! Create a TcpClient object and return as a TcpClientPtr
+               /**The creator takes an address and port. The passed server address can either 
+                * be an IP address or hostname. The stream bridge requires two TCP ports. 
+                * The pased port is the base number of these two ports. A passed value of 8000 
+                * will result in both 8000 and 8001 being used by this bridge.
+                *
+                * Not exposed to Python
+                * @param addr Interface address for server, remote server address for client.
+                * @param port Base port number of use for connection.
+                * @return TcpClient object as a TcpClientPtr
+                */
                static boost::shared_ptr<rogue::interfaces::stream::TcpClient> 
                   create (std::string addr, uint16_t port);
 
-               //! Setup class in python
+               //! Setup class for use in python
+               /** Not exposed to Python
+                */
                static void setup_python();
 
-               //! Creator
+               //! Create a TcpClient object
+               /**The creator takes an address and port. The passed server address can either 
+                * be an IP address or hostname. The stream bridge requires two TCP ports. 
+                * The pased port is the base number of these two ports. A passed value of 8000 
+                * will result in both 8000 and 8001 being used by this bridge.
+                *
+                * Exposed to Python as rogue.interfaces.stream.TcpClient
+                * @param addr Interface address for server, remote server address for client.
+                * @param port Base port number of use for connection.
+                */
                TcpClient(std::string addr, uint16_t port);
 
-               //! Destructor
+               //! Destroy the TcpClient
                ~TcpClient();
          };
 
-         // Convienence
+         //! Alias for using shared pointer as TcpClientPtr
          typedef boost::shared_ptr<rogue::interfaces::stream::TcpClient> TcpClientPtr;
 
       }

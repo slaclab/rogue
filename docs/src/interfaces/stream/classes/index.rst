@@ -1,7 +1,7 @@
 .. _interfaces_classes:
 
-Stream Interface Classes
-========================
+Stream Interface Class Descriptions
+===================================
 
 The following are detailed descriptions of the various C++ classes that make up the Rogue stream interface.
 
@@ -16,8 +16,9 @@ The following are detailed descriptions of the various C++ classes that make up 
    master
    slave
    fifo
-   tcpSlave
-   tcpMaster
+   tcpCore
+   tcpClient
+   tcpServer
    filter
    buffer
    pool

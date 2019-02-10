@@ -66,8 +66,7 @@ namespace rogue {
             public:
 
                //! Create a Fifo object and return as a FifoPtr
-               /** Exposed as rogue.interfaces.stream.Fifo() to Python
-                * @param maxDepth Set to a non-zero value to configured fixed size mode.
+               /** @param maxDepth Set to a non-zero value to configured fixed size mode.
                 * @param trimSize Set to a non-zero vaue to limit the amount of data copied.
                 * @param noCopy Set to true to disable Frame copy
                 * @return Fifo object as a FifoPtr
@@ -93,17 +92,14 @@ namespace rogue {
 
                //! Accept a frame from master
                /** This method is called by the Master object to which this Slave is attached when
-                * passing a Frame. By default this method will print debug information if enabled
-                * and is typically re-implemented by a Slave sub-class.
-                *
-                * Re-implemented as _acceptFrame() in a Python subclass
+                * passing a Frame.
                 * @param frame Frame pointer (FramePtr)
                 */
                void acceptFrame ( boost::shared_ptr<rogue::interfaces::stream::Frame> frame );
 
          };
 
-         // Convienence
+         //! Alias for using shared pointer as FifoPtr
          typedef boost::shared_ptr<rogue::interfaces::stream::Fifo> FifoPtr;
       }
    }
