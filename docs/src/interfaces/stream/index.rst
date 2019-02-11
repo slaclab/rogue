@@ -16,8 +16,8 @@ is the destination of the Frame.
    connecting
    sending
    receiving
-   usingFifo
    usingTcp
+   usingFifo
    usingFilter
    debugStreams
    classes/index
