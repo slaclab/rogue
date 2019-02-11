@@ -174,6 +174,12 @@ namespace rogue {
                 */
                uint32_t getSize();
 
+               //! Get the available space for payload
+               /** Get the remaining data available for payload. 
+                * @return The amount of available space for payload in bytes.
+                */
+               uint32_t getAvailable();
+
                //! Get the payload size
                /** This method will return the amount of
                 * payload data in the buffer.

@@ -20,9 +20,10 @@ The following python example shows how to read channel 1 data from a data file.
    import rogue.interfaces.stream
    import rogue.utilities.fileio
    import pyrogue
+   import pyrogue.utilities.fileio
 
    # Data file reader, using pyrogue wrapper
-   src = pyrogue.utilities.fileio.StreamRead()
+   src = pyrogue.utilities.fileio.StreamReader()
 
    # Filter, channel=1, drop errors
    filt = rogue.interfaces.stream.Filter(1,True)
