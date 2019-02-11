@@ -47,6 +47,8 @@ if (PYTHONINTERP_FOUND)
    endif()
 endif()
 
+find_package(ZeroMQ REQUIRED)
+
 #####################################
 # Boost Configuration
 #####################################
