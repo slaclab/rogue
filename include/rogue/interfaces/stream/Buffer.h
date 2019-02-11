@@ -33,9 +33,12 @@ namespace rogue {
 
          //! Frame buffer
          /*
-          * This class is a container for buffers which make up a frame.
-          * Each buffer within the frame has a reserved header area and a 
-          * payload. 
+          * This class is a container for buffers which make up a frame. Each buffer is associated
+          * with a contigous block of memory allocated by an instance of the Pool class.
+          * Each buffer within the frame has a reserved header and tail area to pre-reserve
+          * space which may be required by protocol layers. Direct interaction with the Buffer
+          * class is an advanced topic, most users will simply use a FrameIterator to access 
+          * Frame and Buffer data.
          */
          class Buffer {
 
@@ -77,71 +80,95 @@ namespace rogue {
                //! Alias for using uint8_t * as Buffer::iterator
                typedef uint8_t * iterator;
 
-               //! Class creation
-               /*
-                * Pass owner, raw data buffer, and meta data
+               //! Class factory which returns a BufferPtr
+               /** Create a new Buffer with associated data.
+                * @param data Pointer to raw data block associated with Buffer
+                * @param meta Meta data to track allocation
+                * @param size Size of raw data block usuable by Buffer
+                * @param alloc Total memory allocated, may be greater than size
                 */
                static boost::shared_ptr<rogue::interfaces::stream::Buffer> create (
                      boost::shared_ptr<rogue::interfaces::stream::Pool> source, 
                         void * data, uint32_t meta, uint32_t size, uint32_t alloc);
 
                //! Create a buffer.
-               /*
-                * Pass owner, raw data buffer, and meta data
+               /** Create a new Buffer with associated data.
+                *
+                * Do not call directly. Use the create() class method instead.
+                * @param data Pointer to raw data block associated with Buffer
+                * @param meta Meta data to track allocation
+                * @param size Size of raw data block usuable by Buffer
+                * @param alloc Total memory allocated, may be greater than size
                 */
                Buffer(boost::shared_ptr<rogue::interfaces::stream::Pool> source, 
                       void * data, uint32_t meta, uint32_t size, uint32_t alloc);
 
                //! Destroy a buffer
-               /*
-                * Owner return buffer method is called
+               /** The data associated with the Buffer is returned to the Pool which 
+                * allocated it.
                 */
                ~Buffer();
 
-               //! Set ownder frame
+               //! Set owner frame
+               /** Set the Frame object that this Buffer is contained in.
+                * This allows the Buffer to inform the containing Frame when its size or
+                * other parameters have changed.
+                * @param Frame Pointer to frame (FramePtr)
+                */
                void setFrame(boost::shared_ptr<rogue::interfaces::stream::Frame> frame);
 
-               //! Get meta data, used by pool
+               //! Get meta data
+               /** The meta data field is used by the Pool class or sub-class to 
+                * track the allocated data.
+                * @return Meta data value
+                */ 
                uint32_t getMeta();
 
-               //! Set meta data, used by pool
+               //! Set meta data
+               /** The meta data field is used by the Pool class or sub-class to 
+                * track the allocated data.
+                * @param meta Meta data value
+                */ 
                void setMeta(uint32_t meta);
 
                //! Adjust header by passed value
+               /** @param value Head adjustment amount
+                */
                void adjustHeader(int32_t value);
 
                //! Clear the header reservation
                void zeroHeader();
 
-               //! Adjust tail by passed value
+               //! Adjust tail reservation by passed value
+               /** @param value Tail adjustment amount
+                */
                void adjustTail(int32_t value);
 
                //! Clear the tail reservation
                void zeroTail();
 
                //! Get beginning buffer iterator
-               /** Get an interator which indicates the start of
-                * the buffer space, not included the header
-                * reservation.
+               /** Get an interator which indicates the start of the
+                * buffer space, not including the header reservation.
                 * @return Begin buffer iterator
                 */
                uint8_t * begin();
 
-               /*
-                * Get end data pointer (end iterator)
-                * This is the end of raw data buffer
+               //! Get end buffer iterator
+               /** Get an interator which indicates the end of the the buffer minus
+                * the tail reservation.
+                * @return End buffer iterator
                 */
                uint8_t * end();
 
                //! Get end payload iterator
-               /** Get an interator which indicates the end of the the
-                * payload space. 
+               /** Get an interator which indicates the end of the the payload space. 
                 * @return End payload iterator
                 */
                uint8_t * endPayload();
 
                //! Get Buffer size
-               /** Get size of buffer that can hold  payload data. This function 
+               /** Get size of buffer that can hold payload data. This function 
                 * returns the full buffer size minus the head and tail reservation.
                 * @return Buffer size in bytes
                 */
