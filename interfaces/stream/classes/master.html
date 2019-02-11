@@ -1,0 +1,365 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Master &mdash; Rogue v3.2.1-61-g9adf784a documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="Slave" href="slave.html" />
+    <link rel="prev" title="Frame Helpers" href="helpers.html" /> 
+
+  
+  <script src="../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> Rogue
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                v3.2.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../../index.html">Interfaces</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../index.html">Stream Interface</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../connecting.html">Connecting Streams</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sending.html">Sending Frames</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../receiving.html">Receiving Frames</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../usingTcp.html">Using The TCP Bridge</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../usingFifo.html">Using A Fifo</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../usingFilter.html">Using A Filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../debugStreams.html">Debugging Streams</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="index.html">Stream Interface Class Descriptions</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="frame.html">Frame</a></li>
+<li class="toctree-l4"><a class="reference internal" href="frameLock.html">Frame Lock</a></li>
+<li class="toctree-l4"><a class="reference internal" href="frameIterator.html">Frame Iterator</a></li>
+<li class="toctree-l4"><a class="reference internal" href="helpers.html">Frame Helpers</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">Master</a></li>
+<li class="toctree-l4"><a class="reference internal" href="slave.html">Slave</a></li>
+<li class="toctree-l4"><a class="reference internal" href="fifo.html">Fifo</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcpCore.html">TcpCore</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcpClient.html">TcpClient</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcpServer.html">TcpServer</a></li>
+<li class="toctree-l4"><a class="reference internal" href="filter.html">Filter</a></li>
+<li class="toctree-l4"><a class="reference internal" href="buffer.html">Buffer</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pool.html">Pool</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Rogue</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Interfaces</a> &raquo;</li>
+        
+          <li><a href="../index.html">Stream Interface</a> &raquo;</li>
+        
+          <li><a href="index.html">Stream Interface Class Descriptions</a> &raquo;</li>
+        
+      <li>Master</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../../_sources/interfaces/stream/classes/master.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="master">
+<span id="interfaces-stream-master"></span><h1>Master<a class="headerlink" href="#master" title="Permalink to this headline">¶</a></h1>
+<p>The stream interface Master class is the interface for sending a Frame. Examples of using the
+Master class can be found at <a class="reference internal" href="../sending.html#interfaces-stream-sending"><span class="std std-ref">Sending Frames</span></a>. Each Master class object will
+be coupled with one or more <a class="reference internal" href="slave.html#interfaces-stream-slave"><span class="std std-ref">Slave</span></a> objects.</p>
+<p>Master objects in C++ are referenced by the following shared pointer typedef:</p>
+<dl class="type">
+<dt id="_CPPv4N5rogue10interfaces6stream9MasterPtrE">
+<span id="_CPPv3N5rogue10interfaces6stream9MasterPtrE"></span><span id="_CPPv2N5rogue10interfaces6stream9MasterPtrE"></span><span id="rogue::interfaces::stream::MasterPtr"></span><span class="target" id="namespacerogue_1_1interfaces_1_1stream_1a0915988a99eb05d7f348373879e9015a"></span><em class="property">typedef </em>boost::shared_ptr&lt;rogue::interfaces::stream::<a class="reference internal" href="#_CPPv4N5rogue10interfaces6stream6MasterE" title="rogue::interfaces::stream::Master">Master</a>&gt; <code class="descclassname">rogue::interfaces::stream<code class="descclassname">::</code></code><code class="descname">MasterPtr</code><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream9MasterPtrE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Alias for using shared pointer as MasterPtr. </p>
+</dd></dl>
+
+<p>The class description is shown below:</p>
+<dl class="class">
+<dt id="_CPPv4N5rogue10interfaces6stream6MasterE">
+<span id="_CPPv3N5rogue10interfaces6stream6MasterE"></span><span id="_CPPv2N5rogue10interfaces6stream6MasterE"></span><span id="rogue::interfaces::stream::Master"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Master"></span><em class="property">class </em><code class="descname">Master</code><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream6MasterE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Stream master class. </p>
+<p>This class serves as the source for sending <a class="reference internal" href="frame.html#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a> data to a <a class="reference internal" href="slave.html#classrogue_1_1interfaces_1_1stream_1_1Slave"><span class="std std-ref">Slave</span></a>. Each master interfaces to a primary stream <a class="reference internal" href="slave.html#classrogue_1_1interfaces_1_1stream_1_1Slave"><span class="std std-ref">Slave</span></a> and multiple secondar stream <a class="reference internal" href="slave.html#classrogue_1_1interfaces_1_1stream_1_1Slave"><span class="std std-ref">Slave</span></a> ojects. The primary stream <a class="reference internal" href="slave.html#classrogue_1_1interfaces_1_1stream_1_1Slave"><span class="std std-ref">Slave</span></a> is used to allocated new <a class="reference internal" href="frame.html#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a> objects and it the last <a class="reference internal" href="slave.html#classrogue_1_1interfaces_1_1stream_1_1Slave"><span class="std std-ref">Slave</span></a> to receive frame data. </p>
+<p>Subclassed by rogue::hardware::axi::AxiStreamDma, rogue::hardware::pgp::PgpCard, <a class="reference internal" href="fifo.html#classrogue_1_1interfaces_1_1stream_1_1Fifo"><span class="std std-ref">rogue::interfaces::stream::Fifo</span></a>, <a class="reference internal" href="filter.html#classrogue_1_1interfaces_1_1stream_1_1Filter"><span class="std std-ref">rogue::interfaces::stream::Filter</span></a>, <a class="reference internal" href="tcpCore.html#classrogue_1_1interfaces_1_1stream_1_1TcpCore"><span class="std std-ref">rogue::interfaces::stream::TcpCore</span></a>, rogue::protocols::BatcherV1, rogue::protocols::epicsV3::Master, rogue::protocols::packetizer::Application, rogue::protocols::packetizer::Transport, rogue::protocols::rssi::Application, rogue::protocols::rssi::Transport, rogue::protocols::srp::Cmd, rogue::protocols::srp::SrpV0, rogue::protocols::srp::SrpV3, rogue::protocols::udp::Client, rogue::protocols::udp::Server, rogue::utilities::fileio::LegacyStreamReader, rogue::utilities::fileio::StreamReader, rogue::utilities::Prbs, rogue::utilities::StreamUnZip, rogue::utilities::StreamZip</p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Functions</p>
+<dl class="function">
+<dt id="_CPPv4N5rogue10interfaces6stream6Master6MasterEv">
+<span id="_CPPv3N5rogue10interfaces6stream6Master6MasterEv"></span><span id="_CPPv2N5rogue10interfaces6stream6Master6MasterEv"></span><span id="rogue::interfaces::stream::Master::Master"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Master_1af6f5b686d275b5545ac7feefceab8dd3"></span><code class="descname">Master</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream6Master6MasterEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Class creator. </p>
+<p>Exposed as <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Master"><span class="std std-ref">rogue.interfaces.stream.Master()</span></a> to Python </p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4N5rogue10interfaces6stream6MasterD0Ev">
+<span id="_CPPv3N5rogue10interfaces6stream6MasterD0Ev"></span><span id="_CPPv2N5rogue10interfaces6stream6MasterD0Ev"></span><span id="rogue::interfaces::stream::Master::~Master"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Master_1af391073d7d1e1125e9563991de0b0991"></span><em class="property">virtual</em> <code class="descname">~Master</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream6MasterD0Ev" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Destroy the object. </p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4N5rogue10interfaces6stream6Master8setSlaveEN5boost10shared_ptrIN5rogue10interfaces6stream5SlaveEEE">
+<span id="_CPPv3N5rogue10interfaces6stream6Master8setSlaveEN5boost10shared_ptrIN5rogue10interfaces6stream5SlaveEEE"></span><span id="_CPPv2N5rogue10interfaces6stream6Master8setSlaveEN5boost10shared_ptrIN5rogue10interfaces6stream5SlaveEEE"></span><span id="rogue::interfaces::stream::Master::setSlave__boost::shared_ptr:rogue::interfaces::stream::Slave:"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Master_1ac728332abc83adbf5a7aeb4002c56018"></span>void <code class="descname">setSlave</code><span class="sig-paren">(</span>boost::shared_ptr&lt;rogue::interfaces::stream::<a class="reference internal" href="slave.html#_CPPv4N5rogue10interfaces6stream5SlaveE" title="rogue::interfaces::stream::Slave">Slave</a>&gt; <em>slave</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream6Master8setSlaveEN5boost10shared_ptrIN5rogue10interfaces6stream5SlaveEEE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Set primary slave. </p>
+<p>The primary slave is the <a class="reference internal" href="slave.html#classrogue_1_1interfaces_1_1stream_1_1Slave"><span class="std std-ref">Slave</span></a> object from which the <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Master"><span class="std std-ref">Master</span></a> will request new <a class="reference internal" href="frame.html#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a> allocations. The primary <a class="reference internal" href="slave.html#classrogue_1_1interfaces_1_1stream_1_1Slave"><span class="std std-ref">Slave</span></a> is also the last <a class="reference internal" href="slave.html#classrogue_1_1interfaces_1_1stream_1_1Slave"><span class="std std-ref">Slave</span></a> object which will receive the <a class="reference internal" href="frame.html#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a>. Only one <a class="reference internal" href="slave.html#classrogue_1_1interfaces_1_1stream_1_1Slave"><span class="std std-ref">Slave</span></a> can be set as Primary.</p>
+<p>Exposed as _setSlave() to Python. Called in Python by the pyrogue.streamConnect() and pyrogue.streamConnectBiDir() methods. <dl class="docutils">
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">slave</span></code>: Stream <a class="reference internal" href="slave.html#classrogue_1_1interfaces_1_1stream_1_1Slave"><span class="std std-ref">Slave</span></a> pointer (SlavePtr) </li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4N5rogue10interfaces6stream6Master8addSlaveEN5boost10shared_ptrIN5rogue10interfaces6stream5SlaveEEE">
+<span id="_CPPv3N5rogue10interfaces6stream6Master8addSlaveEN5boost10shared_ptrIN5rogue10interfaces6stream5SlaveEEE"></span><span id="_CPPv2N5rogue10interfaces6stream6Master8addSlaveEN5boost10shared_ptrIN5rogue10interfaces6stream5SlaveEEE"></span><span id="rogue::interfaces::stream::Master::addSlave__boost::shared_ptr:rogue::interfaces::stream::Slave:"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Master_1a5e6b563b4d5b78a31360c5cd42829fb8"></span>void <code class="descname">addSlave</code><span class="sig-paren">(</span>boost::shared_ptr&lt;rogue::interfaces::stream::<a class="reference internal" href="slave.html#_CPPv4N5rogue10interfaces6stream5SlaveE" title="rogue::interfaces::stream::Slave">Slave</a>&gt; <em>slave</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream6Master8addSlaveEN5boost10shared_ptrIN5rogue10interfaces6stream5SlaveEEE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Add secondary slave. </p>
+<p>Multiple secondary slaves are allowed.</p>
+<p>Exposed as _addSlave() to Python. Called in Python by the pyrogue.streamTop() method. <dl class="docutils">
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">slave</span></code>: Stream <a class="reference internal" href="slave.html#classrogue_1_1interfaces_1_1stream_1_1Slave"><span class="std std-ref">Slave</span></a> pointer (SlavePtr) </li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4N5rogue10interfaces6stream6Master8reqFrameE8uint32_tb">
+<span id="_CPPv3N5rogue10interfaces6stream6Master8reqFrameE8uint32_tb"></span><span id="_CPPv2N5rogue10interfaces6stream6Master8reqFrameE8uint32_tb"></span><span id="rogue::interfaces::stream::Master::reqFrame__uint32_t.b"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Master_1ae92afb1ba21988c11057737e82dcd28b"></span>boost::shared_ptr&lt;rogue::interfaces::stream::<a class="reference internal" href="frame.html#_CPPv4N5rogue10interfaces6stream5FrameE" title="rogue::interfaces::stream::Frame">Frame</a>&gt; <code class="descname">reqFrame</code><span class="sig-paren">(</span>uint32_t <em>size</em>, bool <em>zeroCopyEn</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream6Master8reqFrameE8uint32_tb" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Request new <a class="reference internal" href="frame.html#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a> to be allocated by primary <a class="reference internal" href="slave.html#classrogue_1_1interfaces_1_1stream_1_1Slave"><span class="std std-ref">Slave</span></a>. </p>
+<p>This method is called to create a new <a class="reference internal" href="frame.html#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a> oject. An empty <a class="reference internal" href="frame.html#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a> with the requested payload capacity is create. The <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Master"><span class="std std-ref">Master</span></a> will forward this request to the primary <a class="reference internal" href="slave.html#classrogue_1_1interfaces_1_1stream_1_1Slave"><span class="std std-ref">Slave</span></a> oject. The request for a new <a class="reference internal" href="frame.html#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a> inclues a flag which indicates if a zeroCopy frame is allowed. In most cases this flag can be set to True. Non zero copy frames are requsted if the <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Master"><span class="std std-ref">Master</span></a> may need to transmit the same frame multiple times.</p>
+<p>Exposed as _reqFrame() to Python. <dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>Newly allocated <a class="reference internal" href="frame.html#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a> pointer (FramePtr) </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">size</span></code>: Minimum size for requsted <a class="reference internal" href="frame.html#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a>, larger <a class="reference internal" href="frame.html#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a> may be allocated </li>
+<li><code class="docutils literal notranslate"><span class="pre">zeroCopyEn</span></code>: Flag which indicates if a zero copy mode <a class="reference internal" href="frame.html#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a> is allowed. </li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4N5rogue10interfaces6stream6Master9sendFrameEN5boost10shared_ptrIN5rogue10interfaces6stream5FrameEEE">
+<span id="_CPPv3N5rogue10interfaces6stream6Master9sendFrameEN5boost10shared_ptrIN5rogue10interfaces6stream5FrameEEE"></span><span id="_CPPv2N5rogue10interfaces6stream6Master9sendFrameEN5boost10shared_ptrIN5rogue10interfaces6stream5FrameEEE"></span><span id="rogue::interfaces::stream::Master::sendFrame__boost::shared_ptr:rogue::interfaces::stream::Frame:"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Master_1a6080ac0047e92d5659d218b25cf64872"></span>void <code class="descname">sendFrame</code><span class="sig-paren">(</span>boost::shared_ptr&lt;rogue::interfaces::stream::<a class="reference internal" href="frame.html#_CPPv4N5rogue10interfaces6stream5FrameE" title="rogue::interfaces::stream::Frame">Frame</a>&gt; <em>frame</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream6Master9sendFrameEN5boost10shared_ptrIN5rogue10interfaces6stream5FrameEEE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Push frame to all slaves. </p>
+<p>This method sends the passed <a class="reference internal" href="frame.html#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a> to all of the attached <a class="reference internal" href="slave.html#classrogue_1_1interfaces_1_1stream_1_1Slave"><span class="std std-ref">Slave</span></a> objects by calling their acceptFrame() method. First the secondary Slaves are called in order of attachment, followed last by the primary <a class="reference internal" href="slave.html#classrogue_1_1interfaces_1_1stream_1_1Slave"><span class="std std-ref">Slave</span></a>. If the <a class="reference internal" href="frame.html#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a> is a zero copy frame it will most likely be empty when the <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Master_1a6080ac0047e92d5659d218b25cf64872"><span class="std std-ref">sendFrame()</span></a> method returns.</p>
+<p>Exposed as _sendFrame to Python <dl class="docutils">
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">frame</span></code>: <a class="reference internal" href="frame.html#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a> pointer (FramePtr) to send </li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Static Functions</p>
+<dl class="function">
+<dt id="_CPPv4N5rogue10interfaces6stream6Master6createEv">
+<span id="_CPPv3N5rogue10interfaces6stream6Master6createEv"></span><span id="_CPPv2N5rogue10interfaces6stream6Master6createEv"></span><span id="rogue::interfaces::stream::Master::create"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Master_1afe2e487454bfc7849918bbc93c5335b8"></span><em class="property">static</em> boost::shared_ptr&lt;rogue::interfaces::stream::<a class="reference internal" href="#_CPPv4N5rogue10interfaces6stream6MasterE" title="rogue::interfaces::stream::Master">Master</a>&gt; <code class="descname">create</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream6Master6createEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Class factory which returns a pointer to a <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Master"><span class="std std-ref">Master</span></a> object (MasterPtr) </p>
+<p>Create a new <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Master"><span class="std std-ref">Master</span></a></p>
+<p>Not exposed to Python </p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4N5rogue10interfaces6stream6Master12setup_pythonEv">
+<span id="_CPPv3N5rogue10interfaces6stream6Master12setup_pythonEv"></span><span id="_CPPv2N5rogue10interfaces6stream6Master12setup_pythonEv"></span><span id="rogue::interfaces::stream::Master::setup_python"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Master_1ae31a50b5154c16b79afa501d2c98c297"></span><em class="property">static</em> void <code class="descname">setup_python</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream6Master12setup_pythonEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Setup class for use in python. </p>
+<p>Not exposed to Python </p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="slave.html" class="btn btn-neutral float-right" title="Slave" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="helpers.html" class="btn btn-neutral" title="Frame Helpers" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, SLAC National Accelerator Laboratory
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../_static/language_data.js"></script>
+    
+
+  
+
+  <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

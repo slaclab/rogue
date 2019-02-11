@@ -1,0 +1,462 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Pool &mdash; Rogue v3.2.1-61-g9adf784a documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="prev" title="Buffer" href="buffer.html" /> 
+
+  
+  <script src="../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> Rogue
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                v3.2.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../../index.html">Interfaces</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../index.html">Stream Interface</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../connecting.html">Connecting Streams</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sending.html">Sending Frames</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../receiving.html">Receiving Frames</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../usingTcp.html">Using The TCP Bridge</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../usingFifo.html">Using A Fifo</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../usingFilter.html">Using A Filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../debugStreams.html">Debugging Streams</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="index.html">Stream Interface Class Descriptions</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="frame.html">Frame</a></li>
+<li class="toctree-l4"><a class="reference internal" href="frameLock.html">Frame Lock</a></li>
+<li class="toctree-l4"><a class="reference internal" href="frameIterator.html">Frame Iterator</a></li>
+<li class="toctree-l4"><a class="reference internal" href="helpers.html">Frame Helpers</a></li>
+<li class="toctree-l4"><a class="reference internal" href="master.html">Master</a></li>
+<li class="toctree-l4"><a class="reference internal" href="slave.html">Slave</a></li>
+<li class="toctree-l4"><a class="reference internal" href="fifo.html">Fifo</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcpCore.html">TcpCore</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcpClient.html">TcpClient</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcpServer.html">TcpServer</a></li>
+<li class="toctree-l4"><a class="reference internal" href="filter.html">Filter</a></li>
+<li class="toctree-l4"><a class="reference internal" href="buffer.html">Buffer</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">Pool</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Rogue</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Interfaces</a> &raquo;</li>
+        
+          <li><a href="../index.html">Stream Interface</a> &raquo;</li>
+        
+          <li><a href="index.html">Stream Interface Class Descriptions</a> &raquo;</li>
+        
+      <li>Pool</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../../_sources/interfaces/stream/classes/pool.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="pool">
+<span id="interfaces-stream-pool"></span><h1>Pool<a class="headerlink" href="#pool" title="Permalink to this headline">¶</a></h1>
+<p>The Pool class is the base class for Buffer and Frame allocation. This base class
+supports fully dynamic or fixed size buffer pool mode. Its functions can be
+re-implemented by a sub-class in order to support custom buffer allocation
+mechanisms.</p>
+<p>Pool objects in C++ are referenced by the following shared pointer typedef:</p>
+<dl class="type">
+<dt id="_CPPv4N5rogue10interfaces6stream7PoolPtrE">
+<span id="_CPPv3N5rogue10interfaces6stream7PoolPtrE"></span><span id="_CPPv2N5rogue10interfaces6stream7PoolPtrE"></span><span id="rogue::interfaces::stream::PoolPtr"></span><span class="target" id="namespacerogue_1_1interfaces_1_1stream_1abb7c3ead1b3fa5ad49ab8d39e9c989df"></span><em class="property">typedef </em>boost::shared_ptr&lt;rogue::interfaces::stream::<a class="reference internal" href="#_CPPv4N5rogue10interfaces6stream4PoolE" title="rogue::interfaces::stream::Pool">Pool</a>&gt; <code class="descclassname">rogue::interfaces::stream<code class="descclassname">::</code></code><code class="descname">PoolPtr</code><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream7PoolPtrE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Alias for using shared pointer as PoolPtr. </p>
+</dd></dl>
+
+<p>The class description is shown below:</p>
+<dl class="class">
+<dt id="_CPPv4N5rogue10interfaces6stream4PoolE">
+<span id="_CPPv3N5rogue10interfaces6stream4PoolE"></span><span id="_CPPv2N5rogue10interfaces6stream4PoolE"></span><span id="rogue::interfaces::stream::Pool"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Pool"></span><em class="property">class </em><code class="descname">Pool</code> : <em class="property">public</em> boost::enable_shared_from_this&lt;rogue::interfaces::stream::<a class="reference internal" href="#_CPPv4N5rogue10interfaces6stream4PoolE" title="rogue::interfaces::stream::Pool">Pool</a>&gt;<a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream4PoolE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Stream pool class. </p>
+<p>The stream <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Pool"><span class="std std-ref">Pool</span></a> class is responsible for allocating and garbage collecting <a class="reference internal" href="frame.html#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a> objects and the <a class="reference internal" href="buffer.html#classrogue_1_1interfaces_1_1stream_1_1Buffer"><span class="std std-ref">Buffer</span></a> objects they contain. The default mode is to allocate a <a class="reference internal" href="frame.html#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a> with a single <a class="reference internal" href="buffer.html#classrogue_1_1interfaces_1_1stream_1_1Buffer"><span class="std std-ref">Buffer</span></a> of the requsted sized. Alternatively the <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Pool"><span class="std std-ref">Pool</span></a> class can operate in fixed buffer size mode. In this mode <a class="reference internal" href="buffer.html#classrogue_1_1interfaces_1_1stream_1_1Buffer"><span class="std std-ref">Buffer</span></a> objects of a fixed sized are allocated, with a <a class="reference internal" href="frame.html#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a> containing enough <a class="reference internal" href="buffer.html#classrogue_1_1interfaces_1_1stream_1_1Buffer"><span class="std std-ref">Buffer</span></a> to satisfy the original request. Normally <a class="reference internal" href="buffer.html#classrogue_1_1interfaces_1_1stream_1_1Buffer"><span class="std std-ref">Buffer</span></a> data is freed when returned back to the Poo class. Alternatively a pool can be enabled if operating in fixed size mode. When a pool is enabled returned buffer data is stored in the pool for later allocation to a new requester. The pool size defines the maximum number of entries to allow in the pool.</p>
+<p>A subclass can be created with intercepts the <a class="reference internal" href="frame.html#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a> requests and allocates <a class="reference internal" href="frame.html#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a> and <a class="reference internal" href="buffer.html#classrogue_1_1interfaces_1_1stream_1_1Buffer"><span class="std std-ref">Buffer</span></a> objects from an alternative source such as a hardware DMA driver. </p>
+<p>Subclassed by <a class="reference internal" href="slave.html#classrogue_1_1interfaces_1_1stream_1_1Slave"><span class="std std-ref">rogue::interfaces::stream::Slave</span></a></p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Functions</p>
+<dl class="function">
+<dt id="_CPPv4N5rogue10interfaces6stream4Pool4PoolEv">
+<span id="_CPPv3N5rogue10interfaces6stream4Pool4PoolEv"></span><span id="_CPPv2N5rogue10interfaces6stream4Pool4PoolEv"></span><span id="rogue::interfaces::stream::Pool::Pool"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Pool_1ac099f47e3db8287ec15628c726aad19c"></span><code class="descname">Pool</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream4Pool4PoolEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Class creator. </p>
+<p>Not exposed to Python </p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4N5rogue10interfaces6stream4PoolD0Ev">
+<span id="_CPPv3N5rogue10interfaces6stream4PoolD0Ev"></span><span id="_CPPv2N5rogue10interfaces6stream4PoolD0Ev"></span><span id="rogue::interfaces::stream::Pool::~Pool"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Pool_1aa3335da5e11c507b423f0dc73ccbded1"></span><em class="property">virtual</em> <code class="descname">~Pool</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream4PoolD0Ev" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Destroy the object. </p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4N5rogue10interfaces6stream4Pool13getAllocBytesEv">
+<span id="_CPPv3N5rogue10interfaces6stream4Pool13getAllocBytesEv"></span><span id="_CPPv2N5rogue10interfaces6stream4Pool13getAllocBytesEv"></span><span id="rogue::interfaces::stream::Pool::getAllocBytes"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Pool_1a694f6e2bafd0e1bde90027c158685f72"></span>uint32_t <code class="descname">getAllocBytes</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream4Pool13getAllocBytesEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Get allocated memory. </p>
+<p>Return the total bytes currently allocated. This value is incremented as buffers are allocated and decremented as buffers are freed.</p>
+<p>Exposed as <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Pool_1a694f6e2bafd0e1bde90027c158685f72"><span class="std std-ref">getAllocBytes()</span></a> to Python <dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>Total currently allocated bytes </dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4N5rogue10interfaces6stream4Pool13getAllocCountEv">
+<span id="_CPPv3N5rogue10interfaces6stream4Pool13getAllocCountEv"></span><span id="_CPPv2N5rogue10interfaces6stream4Pool13getAllocCountEv"></span><span id="rogue::interfaces::stream::Pool::getAllocCount"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Pool_1a843fe5351d94a90fe8ef1aa792799a21"></span>uint32_t <code class="descname">getAllocCount</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream4Pool13getAllocCountEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Get allocated buffer count. </p>
+<p>Return the total number of buffers currently allocated. This value is incremented as buffers are allocated and decremented as buffers are freed.</p>
+<p>Exposed as <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Pool_1a843fe5351d94a90fe8ef1aa792799a21"><span class="std std-ref">getAllocCount()</span></a> to Python <dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>Total currently allocated buffers </dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4N5rogue10interfaces6stream4Pool9acceptReqE8uint32_tb">
+<span id="_CPPv3N5rogue10interfaces6stream4Pool9acceptReqE8uint32_tb"></span><span id="_CPPv2N5rogue10interfaces6stream4Pool9acceptReqE8uint32_tb"></span><span id="rogue::interfaces::stream::Pool::acceptReq__uint32_t.b"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Pool_1a57ad49aeccf60f7a6a01cdc843fb7cc3"></span><em class="property">virtual</em> boost::shared_ptr&lt;rogue::interfaces::stream::<a class="reference internal" href="frame.html#_CPPv4N5rogue10interfaces6stream5FrameE" title="rogue::interfaces::stream::Frame">Frame</a>&gt; <code class="descname">acceptReq</code><span class="sig-paren">(</span>uint32_t <em>size</em>, bool <em>zeroCopyEn</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream4Pool9acceptReqE8uint32_tb" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Process a frame request. </p>
+<p>Method to service a frame request, called by the <a class="reference internal" href="master.html#classrogue_1_1interfaces_1_1stream_1_1Master"><span class="std std-ref">Master</span></a> class through the reqFrame() method.</p>
+<p>Not exposed to Python. <dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>Newly allocated <a class="reference internal" href="frame.html#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a> pointer (FramePtr) </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">size</span></code>: Minimum size for requsted <a class="reference internal" href="frame.html#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a>, larger <a class="reference internal" href="frame.html#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a> may be allocated </li>
+<li><code class="docutils literal notranslate"><span class="pre">zeroCopyEn</span></code>: Flag which indicates if a zero copy mode <a class="reference internal" href="frame.html#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a> is allowed. </li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4N5rogue10interfaces6stream4Pool9retBufferEP7uint8_t8uint32_t8uint32_t">
+<span id="_CPPv3N5rogue10interfaces6stream4Pool9retBufferEP7uint8_t8uint32_t8uint32_t"></span><span id="_CPPv2N5rogue10interfaces6stream4Pool9retBufferEP7uint8_t8uint32_t8uint32_t"></span><span id="rogue::interfaces::stream::Pool::retBuffer__uint8_tP.uint32_t.uint32_t"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Pool_1a9aa628b56ba13631eca0e7cef44c9d80"></span><em class="property">virtual</em> void <code class="descname">retBuffer</code><span class="sig-paren">(</span>uint8_t *<em>data</em>, uint32_t <em>meta</em>, uint32_t <em>size</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream4Pool9retBufferEP7uint8_t8uint32_t8uint32_t" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Method called to return <a class="reference internal" href="buffer.html#classrogue_1_1interfaces_1_1stream_1_1Buffer"><span class="std std-ref">Buffer</span></a> data. </p>
+<p>This method is called by the <a class="reference internal" href="buffer.html#classrogue_1_1interfaces_1_1stream_1_1Buffer"><span class="std std-ref">Buffer</span></a> desctructor in order to free the associated <a class="reference internal" href="buffer.html#classrogue_1_1interfaces_1_1stream_1_1Buffer"><span class="std std-ref">Buffer</span></a> memory.</p>
+<p>Not exposed to Python <dl class="docutils">
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">data</span></code>: Data pointer to release </li>
+<li><code class="docutils literal notranslate"><span class="pre">meta</span></code>: Meta data specific to the allocator </li>
+<li><code class="docutils literal notranslate"><span class="pre">size</span></code>: Size of data buffer </li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4N5rogue10interfaces6stream4Pool12setFixedSizeE8uint32_t">
+<span id="_CPPv3N5rogue10interfaces6stream4Pool12setFixedSizeE8uint32_t"></span><span id="_CPPv2N5rogue10interfaces6stream4Pool12setFixedSizeE8uint32_t"></span><span id="rogue::interfaces::stream::Pool::setFixedSize__uint32_t"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Pool_1a1180466e6f42279a8c9adb9c689711cd"></span>void <code class="descname">setFixedSize</code><span class="sig-paren">(</span>uint32_t <em>size</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream4Pool12setFixedSizeE8uint32_t" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Set fixed size mode. </p>
+<p>This method puts the allocator into fixed size mode.</p>
+<p>Exposed as <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Pool_1a1180466e6f42279a8c9adb9c689711cd"><span class="std std-ref">setFixedSize()</span></a> to Python <dl class="docutils">
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">size</span></code>: Fixed size value. </li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4N5rogue10interfaces6stream4Pool12getFixedSizeEv">
+<span id="_CPPv3N5rogue10interfaces6stream4Pool12getFixedSizeEv"></span><span id="_CPPv2N5rogue10interfaces6stream4Pool12getFixedSizeEv"></span><span id="rogue::interfaces::stream::Pool::getFixedSize"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Pool_1a2254a049f7825fbc82a2093c18820a3a"></span>uint32_t <code class="descname">getFixedSize</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream4Pool12getFixedSizeEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Get fixed size mode. </p>
+<p>Return state of fixed size mode.</p>
+<p>Exposed as <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Pool_1a2254a049f7825fbc82a2093c18820a3a"><span class="std std-ref">getFixedSize()</span></a> to Python <dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>Fixed size value or 0 if not in fixed size mode </dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4N5rogue10interfaces6stream4Pool11setPoolSizeE8uint32_t">
+<span id="_CPPv3N5rogue10interfaces6stream4Pool11setPoolSizeE8uint32_t"></span><span id="_CPPv2N5rogue10interfaces6stream4Pool11setPoolSizeE8uint32_t"></span><span id="rogue::interfaces::stream::Pool::setPoolSize__uint32_t"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Pool_1a4fc6d967cadc1799712e7fe7d56878f5"></span>void <code class="descname">setPoolSize</code><span class="sig-paren">(</span>uint32_t <em>size</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream4Pool11setPoolSizeE8uint32_t" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Set buffer pool size. </p>
+<p>Set the buffer pool size.</p>
+<p>Exposed as <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Pool_1a4fc6d967cadc1799712e7fe7d56878f5"><span class="std std-ref">setPoolSize()</span></a> to Python <dl class="docutils">
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">size</span></code>: Number of entries to keep in the pool </li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4N5rogue10interfaces6stream4Pool11getPoolSizeEv">
+<span id="_CPPv3N5rogue10interfaces6stream4Pool11getPoolSizeEv"></span><span id="_CPPv2N5rogue10interfaces6stream4Pool11getPoolSizeEv"></span><span id="rogue::interfaces::stream::Pool::getPoolSize"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Pool_1a73c526e6d724d2d69393cbe77db353bf"></span>uint32_t <code class="descname">getPoolSize</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream4Pool11getPoolSizeEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Get pool size. </p>
+<p>Return configured pool size</p>
+<p>Exposed as <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Pool_1a73c526e6d724d2d69393cbe77db353bf"><span class="std std-ref">getPoolSize()</span></a> to Python <dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd><a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Pool"><span class="std std-ref">Pool</span></a> size </dd>
+</dl>
+</p>
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Static Functions</p>
+<dl class="function">
+<dt id="_CPPv4N5rogue10interfaces6stream4Pool12setup_pythonEv">
+<span id="_CPPv3N5rogue10interfaces6stream4Pool12setup_pythonEv"></span><span id="_CPPv2N5rogue10interfaces6stream4Pool12setup_pythonEv"></span><span id="rogue::interfaces::stream::Pool::setup_python"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Pool_1ac3107fc197e5acdc1c6d559cf5455f6e"></span><em class="property">static</em> void <code class="descname">setup_python</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream4Pool12setup_pythonEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Setup class for use in python. </p>
+<p>Not exposed to Python </p>
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Protected Functions</p>
+<dl class="function">
+<dt id="_CPPv4N5rogue10interfaces6stream4Pool11allocBufferE8uint32_tP8uint32_t">
+<span id="_CPPv3N5rogue10interfaces6stream4Pool11allocBufferE8uint32_tP8uint32_t"></span><span id="_CPPv2N5rogue10interfaces6stream4Pool11allocBufferE8uint32_tP8uint32_t"></span><span id="rogue::interfaces::stream::Pool::allocBuffer__uint32_t.uint32_tP"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Pool_1af78fa7c5a99083ad211ab1d379616ce3"></span>boost::shared_ptr&lt;rogue::interfaces::stream::<a class="reference internal" href="buffer.html#_CPPv4N5rogue10interfaces6stream6BufferE" title="rogue::interfaces::stream::Buffer">Buffer</a>&gt; <code class="descname">allocBuffer</code><span class="sig-paren">(</span>uint32_t <em>size</em>, uint32_t *<em>total</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream4Pool11allocBufferE8uint32_tP8uint32_t" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Allocate and Create a <a class="reference internal" href="buffer.html#classrogue_1_1interfaces_1_1stream_1_1Buffer"><span class="std std-ref">Buffer</span></a>. </p>
+<p>This method is the default <a class="reference internal" href="buffer.html#classrogue_1_1interfaces_1_1stream_1_1Buffer"><span class="std std-ref">Buffer</span></a> allocator. The requested buffer is created from either a malloc call or fulling a free entry from the memory pool if it is enabled. If fixed size is configured the size parameter is ignored and a <a class="reference internal" href="buffer.html#classrogue_1_1interfaces_1_1stream_1_1Buffer"><span class="std std-ref">Buffer</span></a> is returned with the fixed size amount of memory. The passed total value is incremented by the allocated <a class="reference internal" href="buffer.html#classrogue_1_1interfaces_1_1stream_1_1Buffer"><span class="std std-ref">Buffer</span></a> size. This method is protected to allow it to be called by a sub-class of <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Pool"><span class="std std-ref">Pool</span></a>.</p>
+<p>Not exposed to Python <dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>Allocated <a class="reference internal" href="buffer.html#classrogue_1_1interfaces_1_1stream_1_1Buffer"><span class="std std-ref">Buffer</span></a> pointer as BufferPtr </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">size</span></code>: <a class="reference internal" href="buffer.html#classrogue_1_1interfaces_1_1stream_1_1Buffer"><span class="std std-ref">Buffer</span></a> size requsted </li>
+<li><code class="docutils literal notranslate"><span class="pre">total</span></code>: Pointer to current total size </li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4N5rogue10interfaces6stream4Pool12createBufferEPv8uint32_t8uint32_t8uint32_t">
+<span id="_CPPv3N5rogue10interfaces6stream4Pool12createBufferEPv8uint32_t8uint32_t8uint32_t"></span><span id="_CPPv2N5rogue10interfaces6stream4Pool12createBufferEPv8uint32_t8uint32_t8uint32_t"></span><span id="rogue::interfaces::stream::Pool::createBuffer__voidP.uint32_t.uint32_t.uint32_t"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Pool_1ad157a92c5914727d133264fc80c16ce3"></span>boost::shared_ptr&lt;rogue::interfaces::stream::<a class="reference internal" href="buffer.html#_CPPv4N5rogue10interfaces6stream6BufferE" title="rogue::interfaces::stream::Buffer">Buffer</a>&gt; <code class="descname">createBuffer</code><span class="sig-paren">(</span>void *<em>data</em>, uint32_t <em>meta</em>, uint32_t <em>size</em>, uint32_t <em>alloc</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream4Pool12createBufferEPv8uint32_t8uint32_t8uint32_t" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Create a <a class="reference internal" href="buffer.html#classrogue_1_1interfaces_1_1stream_1_1Buffer"><span class="std std-ref">Buffer</span></a> with passed data block. </p>
+<p>This method is used to create a <a class="reference internal" href="buffer.html#classrogue_1_1interfaces_1_1stream_1_1Buffer"><span class="std std-ref">Buffer</span></a> with a pre-allocated block of memory. This can be used when the block of memory is allocated by a hadware DMA driver. This method is protected to allow it to be called by a sub-class of <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Pool"><span class="std std-ref">Pool</span></a>.</p>
+<p>Not exposted to Python <dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>Allocated <a class="reference internal" href="buffer.html#classrogue_1_1interfaces_1_1stream_1_1Buffer"><span class="std std-ref">Buffer</span></a> pointer as BufferPtr </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">data</span></code>: Data pointer to pre-allocated memory block </li>
+<li><code class="docutils literal notranslate"><span class="pre">meta</span></code>: Meta data associated with pre-allocated memory block </li>
+<li><code class="docutils literal notranslate"><span class="pre">size</span></code>: Usable size of memory block (may be smaller than allocated size) </li>
+<li><code class="docutils literal notranslate"><span class="pre">alloc</span></code>: Allocated size of memory block (may be greater than requested size) </li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4N5rogue10interfaces6stream4Pool10decCounterE8uint32_t">
+<span id="_CPPv3N5rogue10interfaces6stream4Pool10decCounterE8uint32_t"></span><span id="_CPPv2N5rogue10interfaces6stream4Pool10decCounterE8uint32_t"></span><span id="rogue::interfaces::stream::Pool::decCounter__uint32_t"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Pool_1a01e306fd690bbfcfaec95fd90326564f"></span>void <code class="descname">decCounter</code><span class="sig-paren">(</span>uint32_t <em>alloc</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream4Pool10decCounterE8uint32_t" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Decrement Allocation counter. </p>
+<p>Called in a sub-class to decerement the allocated byte count</p>
+<p>Not exposted to Python <dl class="docutils">
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">alloc</span></code>: Amount of memory be de-allocated. </li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="buffer.html" class="btn btn-neutral" title="Buffer" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, SLAC National Accelerator Laboratory
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../_static/language_data.js"></script>
+    
+
+  
+
+  <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

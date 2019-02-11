@@ -6,14 +6,14 @@
 Welcome to Rogue's documentation!
 =================================
 
+This is currently a work in progress and updated from the doc_updates
+branch of Rogue. New documentation is being added incrementally over time.
+
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
 
-   overview
-   pyrogue
-
-
+   interfaces/index
 
 Indices and tables
 ==================
@@ -21,6 +21,4 @@ Indices and tables
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
-
-
 

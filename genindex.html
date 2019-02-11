@@ -9,7 +9,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Index &mdash; Rogue v3.2.0-22-g9ca89ad documentation</title>
+  <title>Index &mdash; Rogue v3.2.1-61-g9adf784a documentation</title>
   
 
   
@@ -57,7 +57,7 @@
             
             
               <div class="version">
-                v3.2.0
+                v3.2.1
               </div>
             
           
@@ -83,8 +83,7 @@
             
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="overview.html">Rogue</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pyrogue.html">PyRogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interfaces/index.html">Interfaces</a></li>
 </ul>
 
             
@@ -157,79 +156,337 @@
 <h2 id="R">R</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="frame.html#_CPPv3N5rogue10interfaces6stream5FrameE">rogue::interfaces::stream::Frame (C++ class)</a>
+      <li><a href="interfaces/stream/classes/buffer.html#_CPPv4N5rogue10interfaces6stream6BufferE">rogue::interfaces::stream::Buffer (C++ class)</a>
 </li>
-      <li><a href="frame.html#_CPPv3N5rogue10interfaces6stream5Frame13adjustPayloadE7int32_t">rogue::interfaces::stream::Frame::adjustPayload (C++ function)</a>
+      <li><a href="interfaces/stream/classes/buffer.html#_CPPv4N5rogue10interfaces6stream6Buffer12adjustHeaderE7int32_t">rogue::interfaces::stream::Buffer::adjustHeader (C++ function)</a>
 </li>
-      <li><a href="frame.html#_CPPv3N5rogue10interfaces6stream5Frame12appendBufferEPN5rogue10interfaces6stream6BufferE">rogue::interfaces::stream::Frame::appendBuffer (C++ function)</a>
+      <li><a href="interfaces/stream/classes/buffer.html#_CPPv4N5rogue10interfaces6stream6Buffer13adjustPayloadE7int32_t">rogue::interfaces::stream::Buffer::adjustPayload (C++ function)</a>
 </li>
-      <li><a href="frame.html#_CPPv3N5rogue10interfaces6stream5Frame11appendFrameEPN5rogue10interfaces6stream5FrameE">rogue::interfaces::stream::Frame::appendFrame (C++ function)</a>
+      <li><a href="interfaces/stream/classes/buffer.html#_CPPv4N5rogue10interfaces6stream6Buffer10adjustTailE7int32_t">rogue::interfaces::stream::Buffer::adjustTail (C++ function)</a>
 </li>
-      <li><a href="frame.html#_CPPv3N5rogue10interfaces6stream5Frame11beginBufferEv">rogue::interfaces::stream::Frame::beginBuffer (C++ function)</a>
+      <li><a href="interfaces/stream/classes/buffer.html#_CPPv4N5rogue10interfaces6stream6Buffer5beginEv">rogue::interfaces::stream::Buffer::begin (C++ function)</a>
 </li>
-      <li><a href="frame.html#_CPPv3N5rogue10interfaces6stream5Frame9beginReadEv">rogue::interfaces::stream::Frame::beginRead (C++ function)</a>
+      <li><a href="interfaces/stream/classes/buffer.html#_CPPv4N5rogue10interfaces6stream6Buffer6BufferEN5boost10shared_ptrIN5rogue10interfaces6stream4PoolEEEPv8uint32_t8uint32_t8uint32_t">rogue::interfaces::stream::Buffer::Buffer (C++ function)</a>
 </li>
-      <li><a href="frame.html#_CPPv3N5rogue10interfaces6stream5Frame10beginWriteEv">rogue::interfaces::stream::Frame::beginWrite (C++ function)</a>
+      <li><a href="interfaces/stream/classes/buffer.html#_CPPv4N5rogue10interfaces6stream6Buffer6createEN5boost10shared_ptrIN5rogue10interfaces6stream4PoolEEEPv8uint32_t8uint32_t8uint32_t">rogue::interfaces::stream::Buffer::create (C++ function)</a>
 </li>
-      <li><a href="frame.html#_CPPv3N5rogue10interfaces6stream5Frame11bufferCountEv">rogue::interfaces::stream::Frame::bufferCount (C++ function)</a>
+      <li><a href="interfaces/stream/classes/buffer.html#_CPPv4N5rogue10interfaces6stream6Buffer3endEv">rogue::interfaces::stream::Buffer::end (C++ function)</a>
 </li>
-      <li><a href="frame.html#_CPPv3N5rogue10interfaces6stream5Frame14BufferIteratorE">rogue::interfaces::stream::Frame::BufferIterator (C++ type)</a>
+      <li><a href="interfaces/stream/classes/buffer.html#_CPPv4N5rogue10interfaces6stream6Buffer10endPayloadEv">rogue::interfaces::stream::Buffer::endPayload (C++ function)</a>
 </li>
-      <li><a href="frame.html#_CPPv3N5rogue10interfaces6stream5Frame5clearEv">rogue::interfaces::stream::Frame::clear (C++ function)</a>
+      <li><a href="interfaces/stream/classes/buffer.html#_CPPv4N5rogue10interfaces6stream6Buffer12getAvailableEv">rogue::interfaces::stream::Buffer::getAvailable (C++ function)</a>
 </li>
-      <li><a href="frame.html#_CPPv3N5rogue10interfaces6stream5Frame6createEv">rogue::interfaces::stream::Frame::create (C++ function)</a>
+      <li><a href="interfaces/stream/classes/buffer.html#_CPPv4N5rogue10interfaces6stream6Buffer7getMetaEv">rogue::interfaces::stream::Buffer::getMeta (C++ function)</a>
 </li>
-      <li><a href="frame.html#_CPPv3N5rogue10interfaces6stream5Frame9endBufferEv">rogue::interfaces::stream::Frame::endBuffer (C++ function)</a>
+      <li><a href="interfaces/stream/classes/buffer.html#_CPPv4N5rogue10interfaces6stream6Buffer10getPayloadEv">rogue::interfaces::stream::Buffer::getPayload (C++ function)</a>
 </li>
-      <li><a href="frame.html#_CPPv3N5rogue10interfaces6stream5Frame7endReadEv">rogue::interfaces::stream::Frame::endRead (C++ function)</a>
+      <li><a href="interfaces/stream/classes/buffer.html#_CPPv4N5rogue10interfaces6stream6Buffer7getSizeEv">rogue::interfaces::stream::Buffer::getSize (C++ function)</a>
 </li>
-      <li><a href="frame.html#_CPPv3N5rogue10interfaces6stream5Frame8endWriteEv">rogue::interfaces::stream::Frame::endWrite (C++ function)</a>
+      <li><a href="interfaces/stream/classes/buffer.html#_CPPv4N5rogue10interfaces6stream6Buffer8iteratorE">rogue::interfaces::stream::Buffer::iterator (C++ type)</a>, <a href="interfaces/stream/classes/buffer.html#_CPPv4N5rogue10interfaces6stream6Buffer8iteratorE">[1]</a>
 </li>
-      <li><a href="frame.html#_CPPv3N5rogue10interfaces6stream5Frame5FrameEv">rogue::interfaces::stream::Frame::Frame (C++ function)</a>
+      <li><a href="interfaces/stream/classes/buffer.html#_CPPv4N5rogue10interfaces6stream6Buffer10minPayloadE8uint32_t">rogue::interfaces::stream::Buffer::minPayload (C++ function)</a>
 </li>
-      <li><a href="frame.html#_CPPv3N5rogue10interfaces6stream5Frame10getChannelEv">rogue::interfaces::stream::Frame::getChannel (C++ function)</a>
+      <li><a href="interfaces/stream/classes/buffer.html#_CPPv4N5rogue10interfaces6stream6Buffer8setFrameEN5boost10shared_ptrIN5rogue10interfaces6stream5FrameEEE">rogue::interfaces::stream::Buffer::setFrame (C++ function)</a>
 </li>
-      <li><a href="frame.html#_CPPv3N5rogue10interfaces6stream5Frame8getErrorEv">rogue::interfaces::stream::Frame::getError (C++ function)</a>
+      <li><a href="interfaces/stream/classes/buffer.html#_CPPv4N5rogue10interfaces6stream6Buffer7setMetaE8uint32_t">rogue::interfaces::stream::Buffer::setMeta (C++ function)</a>
 </li>
-      <li><a href="frame.html#_CPPv3N5rogue10interfaces6stream5Frame8getFlagsEv">rogue::interfaces::stream::Frame::getFlags (C++ function)</a>
+      <li><a href="interfaces/stream/classes/buffer.html#_CPPv4N5rogue10interfaces6stream6Buffer10setPayloadE8uint32_t">rogue::interfaces::stream::Buffer::setPayload (C++ function)</a>
+</li>
+      <li><a href="interfaces/stream/classes/buffer.html#_CPPv4N5rogue10interfaces6stream6Buffer15setPayloadEmptyEv">rogue::interfaces::stream::Buffer::setPayloadEmpty (C++ function)</a>
+</li>
+      <li><a href="interfaces/stream/classes/buffer.html#_CPPv4N5rogue10interfaces6stream6Buffer14setPayloadFullEv">rogue::interfaces::stream::Buffer::setPayloadFull (C++ function)</a>
+</li>
+      <li><a href="interfaces/stream/classes/buffer.html#_CPPv4N5rogue10interfaces6stream6Buffer10zeroHeaderEv">rogue::interfaces::stream::Buffer::zeroHeader (C++ function)</a>
+</li>
+      <li><a href="interfaces/stream/classes/buffer.html#_CPPv4N5rogue10interfaces6stream6Buffer8zeroTailEv">rogue::interfaces::stream::Buffer::zeroTail (C++ function)</a>
+</li>
+      <li><a href="interfaces/stream/classes/buffer.html#_CPPv4N5rogue10interfaces6stream6BufferD0Ev">rogue::interfaces::stream::Buffer::~Buffer (C++ function)</a>
+</li>
+      <li><a href="interfaces/stream/classes/buffer.html#_CPPv4N5rogue10interfaces6stream9BufferPtrE">rogue::interfaces::stream::BufferPtr (C++ type)</a>
+</li>
+      <li><a href="interfaces/stream/classes/fifo.html#_CPPv4N5rogue10interfaces6stream4FifoE">rogue::interfaces::stream::Fifo (C++ class)</a>
+</li>
+      <li><a href="interfaces/stream/classes/fifo.html#_CPPv4N5rogue10interfaces6stream4Fifo11acceptFrameEN5boost10shared_ptrIN5rogue10interfaces6stream5FrameEEE">rogue::interfaces::stream::Fifo::acceptFrame (C++ function)</a>
+</li>
+      <li><a href="interfaces/stream/classes/fifo.html#_CPPv4N5rogue10interfaces6stream4Fifo6createE8uint32_t8uint32_tb">rogue::interfaces::stream::Fifo::create (C++ function)</a>
+</li>
+      <li><a href="interfaces/stream/classes/fifo.html#_CPPv4N5rogue10interfaces6stream4Fifo4FifoE8uint32_t8uint32_tb">rogue::interfaces::stream::Fifo::Fifo (C++ function)</a>
+</li>
+      <li><a href="interfaces/stream/classes/fifo.html#_CPPv4N5rogue10interfaces6stream4Fifo12setup_pythonEv">rogue::interfaces::stream::Fifo::setup_python (C++ function)</a>
+</li>
+      <li><a href="interfaces/stream/classes/fifo.html#_CPPv4N5rogue10interfaces6stream4FifoD0Ev">rogue::interfaces::stream::Fifo::~Fifo (C++ function)</a>
+</li>
+      <li><a href="interfaces/stream/classes/fifo.html#_CPPv4N5rogue10interfaces6stream7FifoPtrE">rogue::interfaces::stream::FifoPtr (C++ type)</a>
+</li>
+      <li><a href="interfaces/stream/classes/filter.html#_CPPv4N5rogue10interfaces6stream6FilterE">rogue::interfaces::stream::Filter (C++ class)</a>
+</li>
+      <li><a href="interfaces/stream/classes/filter.html#_CPPv4N5rogue10interfaces6stream6Filter11acceptFrameEN5boost10shared_ptrIN5rogue10interfaces6stream5FrameEEE">rogue::interfaces::stream::Filter::acceptFrame (C++ function)</a>
+</li>
+      <li><a href="interfaces/stream/classes/filter.html#_CPPv4N5rogue10interfaces6stream6Filter6createEb7uint8_t">rogue::interfaces::stream::Filter::create (C++ function)</a>
+</li>
+      <li><a href="interfaces/stream/classes/filter.html#_CPPv4N5rogue10interfaces6stream6Filter6FilterEb7uint8_t">rogue::interfaces::stream::Filter::Filter (C++ function)</a>
+</li>
+      <li><a href="interfaces/stream/classes/filter.html#_CPPv4N5rogue10interfaces6stream6Filter12setup_pythonEv">rogue::interfaces::stream::Filter::setup_python (C++ function)</a>
+</li>
+      <li><a href="interfaces/stream/classes/filter.html#_CPPv4N5rogue10interfaces6stream6FilterD0Ev">rogue::interfaces::stream::Filter::~Filter (C++ function)</a>
+</li>
+      <li><a href="interfaces/stream/classes/filter.html#_CPPv4N5rogue10interfaces6stream9FilterPtrE">rogue::interfaces::stream::FilterPtr (C++ type)</a>
+</li>
+      <li><a href="interfaces/stream/classes/frame.html#_CPPv4N5rogue10interfaces6stream5FrameE">rogue::interfaces::stream::Frame (C++ class)</a>
+</li>
+      <li><a href="interfaces/stream/classes/frame.html#_CPPv4N5rogue10interfaces6stream5Frame13adjustPayloadE7int32_t">rogue::interfaces::stream::Frame::adjustPayload (C++ function)</a>
+</li>
+      <li><a href="interfaces/stream/classes/frame.html#_CPPv4N5rogue10interfaces6stream5Frame12appendBufferEN5boost10shared_ptrIN5rogue10interfaces6stream6BufferEEE">rogue::interfaces::stream::Frame::appendBuffer (C++ function)</a>
+</li>
+      <li><a href="interfaces/stream/classes/frame.html#_CPPv4N5rogue10interfaces6stream5Frame11appendFrameEN5boost10shared_ptrIN5rogue10interfaces6stream5FrameEEE">rogue::interfaces::stream::Frame::appendFrame (C++ function)</a>
+</li>
+      <li><a href="interfaces/stream/classes/frame.html#_CPPv4N5rogue10interfaces6stream5Frame11beginBufferEv">rogue::interfaces::stream::Frame::beginBuffer (C++ function)</a>
+</li>
+      <li><a href="interfaces/stream/classes/frame.html#_CPPv4N5rogue10interfaces6stream5Frame9beginReadEv">rogue::interfaces::stream::Frame::beginRead (C++ function)</a>
+</li>
+      <li><a href="interfaces/stream/classes/frame.html#_CPPv4N5rogue10interfaces6stream5Frame10beginWriteEv">rogue::interfaces::stream::Frame::beginWrite (C++ function)</a>
+</li>
+      <li><a href="interfaces/stream/classes/frame.html#_CPPv4N5rogue10interfaces6stream5Frame11bufferCountEv">rogue::interfaces::stream::Frame::bufferCount (C++ function)</a>
+</li>
+      <li><a href="interfaces/stream/classes/buffer.html#_CPPv4N5rogue10interfaces6stream5Frame14BufferIteratorE">rogue::interfaces::stream::Frame::BufferIterator (C++ type)</a>, <a href="interfaces/stream/classes/frame.html#_CPPv4N5rogue10interfaces6stream5Frame14BufferIteratorE">[1]</a>
+</li>
+      <li><a href="interfaces/stream/classes/frame.html#_CPPv4N5rogue10interfaces6stream5Frame5clearEv">rogue::interfaces::stream::Frame::clear (C++ function)</a>
+</li>
+      <li><a href="interfaces/stream/classes/frame.html#_CPPv4N5rogue10interfaces6stream5Frame6createEv">rogue::interfaces::stream::Frame::create (C++ function)</a>
+</li>
+      <li><a href="interfaces/stream/classes/frame.html#_CPPv4N5rogue10interfaces6stream5Frame9endBufferEv">rogue::interfaces::stream::Frame::endBuffer (C++ function)</a>
+</li>
+      <li><a href="interfaces/stream/classes/frame.html#_CPPv4N5rogue10interfaces6stream5Frame7endReadEv">rogue::interfaces::stream::Frame::endRead (C++ function)</a>
+</li>
+      <li><a href="interfaces/stream/classes/frame.html#_CPPv4N5rogue10interfaces6stream5Frame8endWriteEv">rogue::interfaces::stream::Frame::endWrite (C++ function)</a>
+</li>
+      <li><a href="interfaces/stream/classes/frame.html#_CPPv4N5rogue10interfaces6stream5Frame5FrameEv">rogue::interfaces::stream::Frame::Frame (C++ function)</a>
+</li>
+      <li><a href="interfaces/stream/classes/frame.html#_CPPv4N5rogue10interfaces6stream5Frame12getAvailableEv">rogue::interfaces::stream::Frame::getAvailable (C++ function)</a>
+</li>
+      <li><a href="interfaces/stream/classes/frame.html#_CPPv4N5rogue10interfaces6stream5Frame10getChannelEv">rogue::interfaces::stream::Frame::getChannel (C++ function)</a>
+</li>
+      <li><a href="interfaces/stream/classes/frame.html#_CPPv4N5rogue10interfaces6stream5Frame8getErrorEv">rogue::interfaces::stream::Frame::getError (C++ function)</a>
+</li>
+      <li><a href="interfaces/stream/classes/frame.html#_CPPv4N5rogue10interfaces6stream5Frame12getFirstUserEv">rogue::interfaces::stream::Frame::getFirstUser (C++ function)</a>
+</li>
+      <li><a href="interfaces/stream/classes/frame.html#_CPPv4N5rogue10interfaces6stream5Frame8getFlagsEv">rogue::interfaces::stream::Frame::getFlags (C++ function)</a>
+</li>
+      <li><a href="interfaces/stream/classes/frame.html#_CPPv4N5rogue10interfaces6stream5Frame11getLastUserEv">rogue::interfaces::stream::Frame::getLastUser (C++ function)</a>
+</li>
+      <li><a href="interfaces/stream/classes/frame.html#_CPPv4N5rogue10interfaces6stream5Frame10getPayloadEv">rogue::interfaces::stream::Frame::getPayload (C++ function)</a>
+</li>
+      <li><a href="interfaces/stream/classes/frame.html#_CPPv4N5rogue10interfaces6stream5Frame7getSizeEv">rogue::interfaces::stream::Frame::getSize (C++ function)</a>
+</li>
+      <li><a href="interfaces/stream/classes/frame.html#_CPPv4N5rogue10interfaces6stream5Frame7isEmptyEv">rogue::interfaces::stream::Frame::isEmpty (C++ function)</a>
+</li>
+      <li><a href="interfaces/stream/classes/frame.html#_CPPv4N5rogue10interfaces6stream5Frame8iteratorE">rogue::interfaces::stream::Frame::iterator (C++ type)</a>, <a href="interfaces/stream/classes/frameIterator.html#_CPPv4N5rogue10interfaces6stream5Frame8iteratorE">[1]</a>
+</li>
+      <li><a href="interfaces/stream/classes/frame.html#_CPPv4N5rogue10interfaces6stream5Frame4lockEv">rogue::interfaces::stream::Frame::lock (C++ function)</a>
+</li>
+      <li><a href="interfaces/stream/classes/frame.html#_CPPv4N5rogue10interfaces6stream5Frame10minPayloadE8uint32_t">rogue::interfaces::stream::Frame::minPayload (C++ function)</a>
+</li>
+      <li><a href="interfaces/stream/classes/frame.html#_CPPv4N5rogue10interfaces6stream5Frame6readPyEN5boost6python6objectE8uint32_t">rogue::interfaces::stream::Frame::readPy (C++ function)</a>
+</li>
+      <li><a href="interfaces/stream/classes/frame.html#_CPPv4N5rogue10interfaces6stream5Frame10setChannelE7uint8_t">rogue::interfaces::stream::Frame::setChannel (C++ function)</a>
+</li>
+      <li><a href="interfaces/stream/classes/frame.html#_CPPv4N5rogue10interfaces6stream5Frame8setErrorE7uint8_t">rogue::interfaces::stream::Frame::setError (C++ function)</a>
+</li>
+      <li><a href="interfaces/stream/classes/frame.html#_CPPv4N5rogue10interfaces6stream5Frame12setFirstUserE7uint8_t">rogue::interfaces::stream::Frame::setFirstUser (C++ function)</a>
+</li>
+      <li><a href="interfaces/stream/classes/frame.html#_CPPv4N5rogue10interfaces6stream5Frame8setFlagsE8uint16_t">rogue::interfaces::stream::Frame::setFlags (C++ function)</a>
+</li>
+      <li><a href="interfaces/stream/classes/frame.html#_CPPv4N5rogue10interfaces6stream5Frame11setLastUserE7uint8_t">rogue::interfaces::stream::Frame::setLastUser (C++ function)</a>
+</li>
+      <li><a href="interfaces/stream/classes/frame.html#_CPPv4N5rogue10interfaces6stream5Frame10setPayloadE8uint32_t">rogue::interfaces::stream::Frame::setPayload (C++ function)</a>
+</li>
+      <li><a href="interfaces/stream/classes/frame.html#_CPPv4N5rogue10interfaces6stream5Frame15setPayloadEmptyEv">rogue::interfaces::stream::Frame::setPayloadEmpty (C++ function)</a>
+</li>
+      <li><a href="interfaces/stream/classes/frame.html#_CPPv4N5rogue10interfaces6stream5Frame14setPayloadFullEv">rogue::interfaces::stream::Frame::setPayloadFull (C++ function)</a>
+</li>
+      <li><a href="interfaces/stream/classes/frame.html#_CPPv4N5rogue10interfaces6stream5Frame12setup_pythonEv">rogue::interfaces::stream::Frame::setup_python (C++ function)</a>
+</li>
+      <li><a href="interfaces/stream/classes/frame.html#_CPPv4N5rogue10interfaces6stream5Frame7writePyEN5boost6python6objectE8uint32_t">rogue::interfaces::stream::Frame::writePy (C++ function)</a>
+</li>
+      <li><a href="interfaces/stream/classes/frame.html#_CPPv4N5rogue10interfaces6stream5FrameD0Ev">rogue::interfaces::stream::Frame::~Frame (C++ function)</a>
+</li>
+      <li><a href="interfaces/stream/classes/frameIterator.html#_CPPv4N5rogue10interfaces6stream13FrameIteratorE">rogue::interfaces::stream::FrameIterator (C++ class)</a>
+</li>
+      <li><a href="interfaces/stream/classes/frameIterator.html#_CPPv4N5rogue10interfaces6stream13FrameIterator9endBufferEv">rogue::interfaces::stream::FrameIterator::endBuffer (C++ function)</a>
+</li>
+      <li><a href="interfaces/stream/classes/frameIterator.html#_CPPv4N5rogue10interfaces6stream13FrameIterator13FrameIteratorEv">rogue::interfaces::stream::FrameIterator::FrameIterator (C++ function)</a>
+</li>
+      <li><a href="interfaces/stream/classes/frameIterator.html#_CPPv4NK5rogue10interfaces6stream13FrameIteratorneERKN5rogue10interfaces6stream13FrameIteratorE">rogue::interfaces::stream::FrameIterator::operator!= (C++ function)</a>
+</li>
+      <li><a href="interfaces/stream/classes/frameIterator.html#_CPPv4NK5rogue10interfaces6stream13FrameIteratormlEv">rogue::interfaces::stream::FrameIterator::operator* (C++ function)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="frame.html#_CPPv3N5rogue10interfaces6stream5Frame7isEmptyEv">rogue::interfaces::stream::Frame::isEmpty (C++ function)</a>
+      <li><a href="interfaces/stream/classes/frameIterator.html#_CPPv4NK5rogue10interfaces6stream13FrameIteratorplERK7int32_t">rogue::interfaces::stream::FrameIterator::operator+ (C++ function)</a>
 </li>
-      <li><a href="frame.html#_CPPv3N5rogue10interfaces6stream5Frame8iteratorE">rogue::interfaces::stream::Frame::iterator (C++ type)</a>
+      <li><a href="interfaces/stream/classes/frameIterator.html#_CPPv4N5rogue10interfaces6stream13FrameIteratorppEi">rogue::interfaces::stream::FrameIterator::operator++ (C++ function)</a>, <a href="interfaces/stream/classes/frameIterator.html#_CPPv4N5rogue10interfaces6stream13FrameIteratorppEv">[1]</a>
 </li>
-      <li><a href="frame.html#_CPPv3N5rogue10interfaces6stream5Frame4lockEv">rogue::interfaces::stream::Frame::lock (C++ function)</a>
+      <li><a href="interfaces/stream/classes/frameIterator.html#_CPPv4N5rogue10interfaces6stream13FrameIteratorpLERK7int32_t">rogue::interfaces::stream::FrameIterator::operator+= (C++ function)</a>
 </li>
-      <li><a href="frame.html#_CPPv3N5rogue10interfaces6stream5Frame6readPyEN5boost6python6objectE8uint32_t">rogue::interfaces::stream::Frame::readPy (C++ function)</a>
+      <li><a href="interfaces/stream/classes/frameIterator.html#_CPPv4NK5rogue10interfaces6stream13FrameIteratormiERK7int32_t">rogue::interfaces::stream::FrameIterator::operator- (C++ function)</a>, <a href="interfaces/stream/classes/frameIterator.html#_CPPv4NK5rogue10interfaces6stream13FrameIteratormiERKN5rogue10interfaces6stream13FrameIteratorE">[1]</a>
 </li>
-      <li><a href="frame.html#_CPPv3N5rogue10interfaces6stream5Frame10setChannelE7uint8_t">rogue::interfaces::stream::Frame::setChannel (C++ function)</a>
+      <li><a href="interfaces/stream/classes/frameIterator.html#_CPPv4N5rogue10interfaces6stream13FrameIteratormmEi">rogue::interfaces::stream::FrameIterator::operator-- (C++ function)</a>, <a href="interfaces/stream/classes/frameIterator.html#_CPPv4N5rogue10interfaces6stream13FrameIteratormmEv">[1]</a>
 </li>
-      <li><a href="frame.html#_CPPv3N5rogue10interfaces6stream5Frame8setErrorE7uint8_t">rogue::interfaces::stream::Frame::setError (C++ function)</a>
+      <li><a href="interfaces/stream/classes/frameIterator.html#_CPPv4N5rogue10interfaces6stream13FrameIteratormIERK7int32_t">rogue::interfaces::stream::FrameIterator::operator-= (C++ function)</a>
 </li>
-      <li><a href="frame.html#_CPPv3N5rogue10interfaces6stream5Frame8setFlagsE8uint16_t">rogue::interfaces::stream::Frame::setFlags (C++ function)</a>
+      <li><a href="interfaces/stream/classes/frameIterator.html#_CPPv4NK5rogue10interfaces6stream13FrameIteratorltERKN5rogue10interfaces6stream13FrameIteratorE">rogue::interfaces::stream::FrameIterator::operator&lt; (C++ function)</a>
 </li>
-      <li><a href="frame.html#_CPPv3N5rogue10interfaces6stream5Frame15setPayloadEmptyEv">rogue::interfaces::stream::Frame::setPayloadEmpty (C++ function)</a>
+      <li><a href="interfaces/stream/classes/frameIterator.html#_CPPv4NK5rogue10interfaces6stream13FrameIteratorleERKN5rogue10interfaces6stream13FrameIteratorE">rogue::interfaces::stream::FrameIterator::operator&lt;= (C++ function)</a>
 </li>
-      <li><a href="frame.html#_CPPv3N5rogue10interfaces6stream5Frame14setPayloadFullEv">rogue::interfaces::stream::Frame::setPayloadFull (C++ function)</a>
+      <li><a href="interfaces/stream/classes/frameIterator.html#_CPPv4N5rogue10interfaces6stream13FrameIteratoraSERKN5rogue10interfaces6stream13FrameIteratorE">rogue::interfaces::stream::FrameIterator::operator= (C++ function)</a>
 </li>
-      <li><a href="frame.html#_CPPv3N5rogue10interfaces6stream5Frame12setup_pythonEv">rogue::interfaces::stream::Frame::setup_python (C++ function)</a>
+      <li><a href="interfaces/stream/classes/frameIterator.html#_CPPv4NK5rogue10interfaces6stream13FrameIteratoreqERKN5rogue10interfaces6stream13FrameIteratorE">rogue::interfaces::stream::FrameIterator::operator== (C++ function)</a>
 </li>
-      <li><a href="frame.html#_CPPv3N5rogue10interfaces6stream5Frame7writePyEN5boost6python6objectE8uint32_t">rogue::interfaces::stream::Frame::writePy (C++ function)</a>
+      <li><a href="interfaces/stream/classes/frameIterator.html#_CPPv4NK5rogue10interfaces6stream13FrameIteratorgtERKN5rogue10interfaces6stream13FrameIteratorE">rogue::interfaces::stream::FrameIterator::operator&gt; (C++ function)</a>
 </li>
-      <li><a href="frame.html#_CPPv3N5rogue10interfaces6stream5FrameD0Ev">rogue::interfaces::stream::Frame::~Frame (C++ function)</a>
+      <li><a href="interfaces/stream/classes/frameIterator.html#_CPPv4NK5rogue10interfaces6stream13FrameIteratorgeERKN5rogue10interfaces6stream13FrameIteratorE">rogue::interfaces::stream::FrameIterator::operator&gt;= (C++ function)</a>
 </li>
-      <li><a href="overview.html#_CPPv3N5rogue9protocols3udp6ClientE">rogue::protocols::udp::Client (C++ class)</a>
+      <li><a href="interfaces/stream/classes/frameIterator.html#_CPPv4NK5rogue10interfaces6stream13FrameIteratorixERK8uint32_t">rogue::interfaces::stream::FrameIterator::operator[] (C++ function)</a>
 </li>
-      <li><a href="overview.html#_CPPv3N5rogue9protocols3udp6Client11acceptFrameEPN5rogue10interfaces6stream5FrameE">rogue::protocols::udp::Client::acceptFrame (C++ function)</a>
+      <li><a href="interfaces/stream/classes/frameIterator.html#_CPPv4NK5rogue10interfaces6stream13FrameIterator3ptrEv">rogue::interfaces::stream::FrameIterator::ptr (C++ function)</a>
 </li>
-      <li><a href="overview.html#_CPPv3N5rogue9protocols3udp6Client6ClientENSt6stringE8uint16_tb">rogue::protocols::udp::Client::Client (C++ function)</a>
+      <li><a href="interfaces/stream/classes/frameIterator.html#_CPPv4N5rogue10interfaces6stream13FrameIterator9remBufferEv">rogue::interfaces::stream::FrameIterator::remBuffer (C++ function)</a>
 </li>
-      <li><a href="overview.html#_CPPv3N5rogue9protocols3udp6Client6createENSt6stringE8uint16_tb">rogue::protocols::udp::Client::create (C++ function)</a>
+      <li><a href="interfaces/stream/classes/frameLock.html#_CPPv4N5rogue10interfaces6stream9FrameLockE">rogue::interfaces::stream::FrameLock (C++ class)</a>
 </li>
-      <li><a href="overview.html#_CPPv3N5rogue9protocols3udp6Client12setup_pythonEv">rogue::protocols::udp::Client::setup_python (C++ function)</a>
+      <li><a href="interfaces/stream/classes/frameLock.html#_CPPv4N5rogue10interfaces6stream9FrameLock6createEN5boost10shared_ptrIN5rogue10interfaces6stream5FrameEEE">rogue::interfaces::stream::FrameLock::create (C++ function)</a>
 </li>
-      <li><a href="overview.html#_CPPv3N5rogue9protocols3udp6ClientD0Ev">rogue::protocols::udp::Client::~Client (C++ function)</a>
+      <li><a href="interfaces/stream/classes/frameLock.html#_CPPv4N5rogue10interfaces6stream9FrameLock5enterEv">rogue::interfaces::stream::FrameLock::enter (C++ function)</a>
+</li>
+      <li><a href="interfaces/stream/classes/frameLock.html#_CPPv4N5rogue10interfaces6stream9FrameLock4exitEPvPvPv">rogue::interfaces::stream::FrameLock::exit (C++ function)</a>
+</li>
+      <li><a href="interfaces/stream/classes/frameLock.html#_CPPv4N5rogue10interfaces6stream9FrameLock9FrameLockEN5boost10shared_ptrIN5rogue10interfaces6stream5FrameEEE">rogue::interfaces::stream::FrameLock::FrameLock (C++ function)</a>
+</li>
+      <li><a href="interfaces/stream/classes/frameLock.html#_CPPv4N5rogue10interfaces6stream9FrameLock4lockEv">rogue::interfaces::stream::FrameLock::lock (C++ function)</a>
+</li>
+      <li><a href="interfaces/stream/classes/frameLock.html#_CPPv4N5rogue10interfaces6stream9FrameLock12setup_pythonEv">rogue::interfaces::stream::FrameLock::setup_python (C++ function)</a>
+</li>
+      <li><a href="interfaces/stream/classes/frameLock.html#_CPPv4N5rogue10interfaces6stream9FrameLock6unlockEv">rogue::interfaces::stream::FrameLock::unlock (C++ function)</a>
+</li>
+      <li><a href="interfaces/stream/classes/frameLock.html#_CPPv4N5rogue10interfaces6stream9FrameLockD0Ev">rogue::interfaces::stream::FrameLock::~FrameLock (C++ function)</a>
+</li>
+      <li><a href="interfaces/stream/classes/frameLock.html#_CPPv4N5rogue10interfaces6stream12FrameLockPtrE">rogue::interfaces::stream::FrameLockPtr (C++ type)</a>
+</li>
+      <li><a href="interfaces/stream/classes/frame.html#_CPPv4N5rogue10interfaces6stream8FramePtrE">rogue::interfaces::stream::FramePtr (C++ type)</a>
+</li>
+      <li><a href="interfaces/stream/classes/helpers.html#_CPPv4N5rogue10interfaces6stream9fromFrameERN5rogue10interfaces6stream13FrameIteratorE8uint32_tPv">rogue::interfaces::stream::fromFrame (C++ function)</a>
+</li>
+      <li><a href="interfaces/stream/classes/master.html#_CPPv4N5rogue10interfaces6stream6MasterE">rogue::interfaces::stream::Master (C++ class)</a>
+</li>
+      <li><a href="interfaces/stream/classes/master.html#_CPPv4N5rogue10interfaces6stream6Master8addSlaveEN5boost10shared_ptrIN5rogue10interfaces6stream5SlaveEEE">rogue::interfaces::stream::Master::addSlave (C++ function)</a>
+</li>
+      <li><a href="interfaces/stream/classes/master.html#_CPPv4N5rogue10interfaces6stream6Master6createEv">rogue::interfaces::stream::Master::create (C++ function)</a>
+</li>
+      <li><a href="interfaces/stream/classes/master.html#_CPPv4N5rogue10interfaces6stream6Master6MasterEv">rogue::interfaces::stream::Master::Master (C++ function)</a>
+</li>
+      <li><a href="interfaces/stream/classes/master.html#_CPPv4N5rogue10interfaces6stream6Master8reqFrameE8uint32_tb">rogue::interfaces::stream::Master::reqFrame (C++ function)</a>
+</li>
+      <li><a href="interfaces/stream/classes/master.html#_CPPv4N5rogue10interfaces6stream6Master9sendFrameEN5boost10shared_ptrIN5rogue10interfaces6stream5FrameEEE">rogue::interfaces::stream::Master::sendFrame (C++ function)</a>
+</li>
+      <li><a href="interfaces/stream/classes/master.html#_CPPv4N5rogue10interfaces6stream6Master8setSlaveEN5boost10shared_ptrIN5rogue10interfaces6stream5SlaveEEE">rogue::interfaces::stream::Master::setSlave (C++ function)</a>
+</li>
+      <li><a href="interfaces/stream/classes/master.html#_CPPv4N5rogue10interfaces6stream6Master12setup_pythonEv">rogue::interfaces::stream::Master::setup_python (C++ function)</a>
+</li>
+      <li><a href="interfaces/stream/classes/master.html#_CPPv4N5rogue10interfaces6stream6MasterD0Ev">rogue::interfaces::stream::Master::~Master (C++ function)</a>
+</li>
+      <li><a href="interfaces/stream/classes/master.html#_CPPv4N5rogue10interfaces6stream9MasterPtrE">rogue::interfaces::stream::MasterPtr (C++ type)</a>
+</li>
+      <li><a href="interfaces/stream/classes/pool.html#_CPPv4N5rogue10interfaces6stream4PoolE">rogue::interfaces::stream::Pool (C++ class)</a>
+</li>
+      <li><a href="interfaces/stream/classes/pool.html#_CPPv4N5rogue10interfaces6stream4Pool9acceptReqE8uint32_tb">rogue::interfaces::stream::Pool::acceptReq (C++ function)</a>
+</li>
+      <li><a href="interfaces/stream/classes/pool.html#_CPPv4N5rogue10interfaces6stream4Pool11allocBufferE8uint32_tP8uint32_t">rogue::interfaces::stream::Pool::allocBuffer (C++ function)</a>
+</li>
+      <li><a href="interfaces/stream/classes/pool.html#_CPPv4N5rogue10interfaces6stream4Pool12createBufferEPv8uint32_t8uint32_t8uint32_t">rogue::interfaces::stream::Pool::createBuffer (C++ function)</a>
+</li>
+      <li><a href="interfaces/stream/classes/pool.html#_CPPv4N5rogue10interfaces6stream4Pool10decCounterE8uint32_t">rogue::interfaces::stream::Pool::decCounter (C++ function)</a>
+</li>
+      <li><a href="interfaces/stream/classes/pool.html#_CPPv4N5rogue10interfaces6stream4Pool13getAllocBytesEv">rogue::interfaces::stream::Pool::getAllocBytes (C++ function)</a>
+</li>
+      <li><a href="interfaces/stream/classes/pool.html#_CPPv4N5rogue10interfaces6stream4Pool13getAllocCountEv">rogue::interfaces::stream::Pool::getAllocCount (C++ function)</a>
+</li>
+      <li><a href="interfaces/stream/classes/pool.html#_CPPv4N5rogue10interfaces6stream4Pool12getFixedSizeEv">rogue::interfaces::stream::Pool::getFixedSize (C++ function)</a>
+</li>
+      <li><a href="interfaces/stream/classes/pool.html#_CPPv4N5rogue10interfaces6stream4Pool11getPoolSizeEv">rogue::interfaces::stream::Pool::getPoolSize (C++ function)</a>
+</li>
+      <li><a href="interfaces/stream/classes/pool.html#_CPPv4N5rogue10interfaces6stream4Pool4PoolEv">rogue::interfaces::stream::Pool::Pool (C++ function)</a>
+</li>
+      <li><a href="interfaces/stream/classes/pool.html#_CPPv4N5rogue10interfaces6stream4Pool9retBufferEP7uint8_t8uint32_t8uint32_t">rogue::interfaces::stream::Pool::retBuffer (C++ function)</a>
+</li>
+      <li><a href="interfaces/stream/classes/pool.html#_CPPv4N5rogue10interfaces6stream4Pool12setFixedSizeE8uint32_t">rogue::interfaces::stream::Pool::setFixedSize (C++ function)</a>
+</li>
+      <li><a href="interfaces/stream/classes/pool.html#_CPPv4N5rogue10interfaces6stream4Pool11setPoolSizeE8uint32_t">rogue::interfaces::stream::Pool::setPoolSize (C++ function)</a>
+</li>
+      <li><a href="interfaces/stream/classes/pool.html#_CPPv4N5rogue10interfaces6stream4Pool12setup_pythonEv">rogue::interfaces::stream::Pool::setup_python (C++ function)</a>
+</li>
+      <li><a href="interfaces/stream/classes/pool.html#_CPPv4N5rogue10interfaces6stream4PoolD0Ev">rogue::interfaces::stream::Pool::~Pool (C++ function)</a>
+</li>
+      <li><a href="interfaces/stream/classes/pool.html#_CPPv4N5rogue10interfaces6stream7PoolPtrE">rogue::interfaces::stream::PoolPtr (C++ type)</a>
+</li>
+      <li><a href="interfaces/stream/classes/slave.html#_CPPv4N5rogue10interfaces6stream5SlaveE">rogue::interfaces::stream::Slave (C++ class)</a>
+</li>
+      <li><a href="interfaces/stream/classes/slave.html#_CPPv4N5rogue10interfaces6stream5Slave11acceptFrameEN5boost10shared_ptrIN5rogue10interfaces6stream5FrameEEE">rogue::interfaces::stream::Slave::acceptFrame (C++ function)</a>
+</li>
+      <li><a href="interfaces/stream/classes/slave.html#_CPPv4N5rogue10interfaces6stream5Slave6createEv">rogue::interfaces::stream::Slave::create (C++ function)</a>
+</li>
+      <li><a href="interfaces/stream/classes/slave.html#_CPPv4N5rogue10interfaces6stream5Slave12getByteCountEv">rogue::interfaces::stream::Slave::getByteCount (C++ function)</a>
+</li>
+      <li><a href="interfaces/stream/classes/slave.html#_CPPv4N5rogue10interfaces6stream5Slave13getFrameCountEv">rogue::interfaces::stream::Slave::getFrameCount (C++ function)</a>
+</li>
+      <li><a href="interfaces/stream/classes/slave.html#_CPPv4N5rogue10interfaces6stream5Slave8setDebugE8uint32_tNSt6stringE">rogue::interfaces::stream::Slave::setDebug (C++ function)</a>
+</li>
+      <li><a href="interfaces/stream/classes/slave.html#_CPPv4N5rogue10interfaces6stream5Slave12setup_pythonEv">rogue::interfaces::stream::Slave::setup_python (C++ function)</a>
+</li>
+      <li><a href="interfaces/stream/classes/slave.html#_CPPv4N5rogue10interfaces6stream5Slave5SlaveEv">rogue::interfaces::stream::Slave::Slave (C++ function)</a>
+</li>
+      <li><a href="interfaces/stream/classes/slave.html#_CPPv4N5rogue10interfaces6stream5SlaveD0Ev">rogue::interfaces::stream::Slave::~Slave (C++ function)</a>
+</li>
+      <li><a href="interfaces/stream/classes/slave.html#_CPPv4N5rogue10interfaces6stream8SlavePtrE">rogue::interfaces::stream::SlavePtr (C++ type)</a>
+</li>
+      <li><a href="interfaces/stream/classes/tcpClient.html#_CPPv4N5rogue10interfaces6stream9TcpClientE">rogue::interfaces::stream::TcpClient (C++ class)</a>
+</li>
+      <li><a href="interfaces/stream/classes/tcpClient.html#_CPPv4N5rogue10interfaces6stream9TcpClient6createENSt6stringE8uint16_t">rogue::interfaces::stream::TcpClient::create (C++ function)</a>
+</li>
+      <li><a href="interfaces/stream/classes/tcpClient.html#_CPPv4N5rogue10interfaces6stream9TcpClient12setup_pythonEv">rogue::interfaces::stream::TcpClient::setup_python (C++ function)</a>
+</li>
+      <li><a href="interfaces/stream/classes/tcpClient.html#_CPPv4N5rogue10interfaces6stream9TcpClient9TcpClientENSt6stringE8uint16_t">rogue::interfaces::stream::TcpClient::TcpClient (C++ function)</a>
+</li>
+      <li><a href="interfaces/stream/classes/tcpClient.html#_CPPv4N5rogue10interfaces6stream9TcpClientD0Ev">rogue::interfaces::stream::TcpClient::~TcpClient (C++ function)</a>
+</li>
+      <li><a href="interfaces/stream/classes/tcpClient.html#_CPPv4N5rogue10interfaces6stream12TcpClientPtrE">rogue::interfaces::stream::TcpClientPtr (C++ type)</a>
+</li>
+      <li><a href="interfaces/stream/classes/tcpCore.html#_CPPv4N5rogue10interfaces6stream7TcpCoreE">rogue::interfaces::stream::TcpCore (C++ class)</a>
+</li>
+      <li><a href="interfaces/stream/classes/tcpCore.html#_CPPv4N5rogue10interfaces6stream7TcpCore11acceptFrameEN5boost10shared_ptrIN5rogue10interfaces6stream5FrameEEE">rogue::interfaces::stream::TcpCore::acceptFrame (C++ function)</a>
+</li>
+      <li><a href="interfaces/stream/classes/tcpCore.html#_CPPv4N5rogue10interfaces6stream7TcpCore6createENSt6stringE8uint16_tb">rogue::interfaces::stream::TcpCore::create (C++ function)</a>
+</li>
+      <li><a href="interfaces/stream/classes/tcpCore.html#_CPPv4N5rogue10interfaces6stream7TcpCore12setup_pythonEv">rogue::interfaces::stream::TcpCore::setup_python (C++ function)</a>
+</li>
+      <li><a href="interfaces/stream/classes/tcpCore.html#_CPPv4N5rogue10interfaces6stream7TcpCore7TcpCoreENSt6stringE8uint16_tb">rogue::interfaces::stream::TcpCore::TcpCore (C++ function)</a>
+</li>
+      <li><a href="interfaces/stream/classes/tcpCore.html#_CPPv4N5rogue10interfaces6stream7TcpCoreD0Ev">rogue::interfaces::stream::TcpCore::~TcpCore (C++ function)</a>
+</li>
+      <li><a href="interfaces/stream/classes/tcpCore.html#_CPPv4N5rogue10interfaces6stream10TcpCorePtrE">rogue::interfaces::stream::TcpCorePtr (C++ type)</a>
+</li>
+      <li><a href="interfaces/stream/classes/tcpServer.html#_CPPv4N5rogue10interfaces6stream9TcpServerE">rogue::interfaces::stream::TcpServer (C++ class)</a>
+</li>
+      <li><a href="interfaces/stream/classes/tcpServer.html#_CPPv4N5rogue10interfaces6stream9TcpServer6createENSt6stringE8uint16_t">rogue::interfaces::stream::TcpServer::create (C++ function)</a>
+</li>
+      <li><a href="interfaces/stream/classes/tcpServer.html#_CPPv4N5rogue10interfaces6stream9TcpServer12setup_pythonEv">rogue::interfaces::stream::TcpServer::setup_python (C++ function)</a>
+</li>
+      <li><a href="interfaces/stream/classes/tcpServer.html#_CPPv4N5rogue10interfaces6stream9TcpServer9TcpServerENSt6stringE8uint16_t">rogue::interfaces::stream::TcpServer::TcpServer (C++ function)</a>
+</li>
+      <li><a href="interfaces/stream/classes/tcpServer.html#_CPPv4N5rogue10interfaces6stream9TcpServerD0Ev">rogue::interfaces::stream::TcpServer::~TcpServer (C++ function)</a>
+</li>
+      <li><a href="interfaces/stream/classes/tcpServer.html#_CPPv4N5rogue10interfaces6stream12TcpServerPtrE">rogue::interfaces::stream::TcpServerPtr (C++ type)</a>
+</li>
+      <li><a href="interfaces/stream/classes/helpers.html#_CPPv4N5rogue10interfaces6stream7toFrameERN5rogue10interfaces6stream13FrameIteratorE8uint32_tPv">rogue::interfaces::stream::toFrame (C++ function)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -246,7 +503,7 @@
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2018, SLAC National Accelerator Laboratory
+        &copy; Copyright 2019, SLAC National Accelerator Laboratory
 
     </p>
   </div>
