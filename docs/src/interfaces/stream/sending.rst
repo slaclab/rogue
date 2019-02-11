@@ -94,6 +94,15 @@ and we use std::copy to move data from data buffer into the Frame.
    class MyCustomMaster : public rogue::interfaces::stream::Master {
       public:
 
+         // Create a static class creator to return our custom class
+         // wrapped with a shared pointer
+         static boost::shared_ptr<MyCustomMaster> create() {
+            static boost::shared_ptr<MyCustomMaster> ret =
+               boost::make_shared<MyCustomMaster>();
+            return(ret);
+         }
+
+         // Standard class creator which is called by create 
          MyCustomMaster() : rogue::interfaces::stream::Master() { }
 
          void myFrameGen() {
@@ -129,6 +138,10 @@ and we use std::copy to move data from data buffer into the Frame.
             sendFrame(frame);
          }
    };
+
+   // Shared pointer alias
+   typedef boost::shared_ptr<MyCustomMaster> MyCustomMasterPtr;
+
 
 The std::copy call works very well for moving data between two standard C++ iterators. It will
 properly deal with iterators which manage non-contigous buffers, which may be the case when allocating 

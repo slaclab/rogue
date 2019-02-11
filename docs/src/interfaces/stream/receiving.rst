@@ -71,6 +71,14 @@ and we use std::copy to move data from the Frame to a data buffer.
    class MyCustomSlave : public rogue::interfaces::stream::Slave {
       public:
 
+         // Create a static class creator to return our custom class
+         // wrapped with a shared pointer
+         static boost::shared_ptr<MyCustomSlave> create() {
+            static boost::shared_ptr<MyCustomSlave> ret =
+               boost::make_shared<MyCustomSlave>();
+            return(ret);
+         }
+
          MyCustomSlave() : rogue::interfaces::stream::Slave() { }
 
          void acceptFrame ( boost::shared_ptr<rogue::interfaces::stream::Frame> frame ) {
@@ -94,6 +102,9 @@ and we use std::copy to move data from the Frame to a data buffer.
             std::copy(frame->beginRead(), frame->endRead, data);
          }
    };
+
+   // Shared pointer alias
+   typedef boost::shared_ptr<MyCustomSlave> MyCustomSlavePtr;
 
 The std::copy call works very well for moving data between two standard C++ iterators. It will
 properly deal with iterators which manage non-contigous buffers, which may be the case when receving
