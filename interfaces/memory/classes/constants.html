@@ -1,0 +1,322 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Constants &mdash; Rogue v3.2.1-92-g2130f976 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="Transaction" href="transaction.html" />
+    <link rel="prev" title="Memory Interface Class Descriptions" href="index.html" /> 
+
+  
+  <script src="../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> Rogue
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                v3.2.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../../index.html">Interfaces</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../stream/index.html">Stream Interface</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../index.html">Memory Interface</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../connecting.html">Connecting Memory Elements</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="index.html">Memory Interface Class Descriptions</a><ul class="current">
+<li class="toctree-l4 current"><a class="current reference internal" href="#">Constants</a></li>
+<li class="toctree-l4"><a class="reference internal" href="transaction.html">Transaction</a></li>
+<li class="toctree-l4"><a class="reference internal" href="transactionLock.html">TransactionLock</a></li>
+<li class="toctree-l4"><a class="reference internal" href="master.html">Master</a></li>
+<li class="toctree-l4"><a class="reference internal" href="slave.html">Slave</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hub.html">Hub</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcpClient.html">TcpClient</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcpServer.html">TcpServer</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../installing/index.html">Installing &amp; Compiling Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../custom_module/index.html">Creating Custom Modules</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Rogue</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Interfaces</a> &raquo;</li>
+        
+          <li><a href="../index.html">Memory Interface</a> &raquo;</li>
+        
+          <li><a href="index.html">Memory Interface Class Descriptions</a> &raquo;</li>
+        
+      <li>Constants</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../../_sources/interfaces/memory/classes/constants.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="constants">
+<span id="interfaces-memory-constants"></span><h1>Constants<a class="headerlink" href="#constants" title="Permalink to this headline">¶</a></h1>
+<p>The following constants are defined for use with the memory interface.</p>
+<div class="section" id="transaction-types">
+<h2>Transaction Types<a class="headerlink" href="#transaction-types" title="Permalink to this headline">¶</a></h2>
+<p>The following memory transaction types are defined:</p>
+<dl class="member">
+<dt id="_CPPv4N5rogue10interfaces6memory4ReadE">
+<span id="_CPPv3N5rogue10interfaces6memory4ReadE"></span><span id="_CPPv2N5rogue10interfaces6memory4ReadE"></span><span id="rogue::interfaces::memory::Read__uint32_tC"></span><span class="target" id="namespacerogue_1_1interfaces_1_1memory_1a406ea981edc535342fc2a3a3a9ce3573"></span><em class="property">const</em> uint32_t <code class="descclassname">rogue::interfaces::memory<code class="descclassname">::</code></code><code class="descname">Read</code> = 0x1<a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory4ReadE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Memory read transaction. </p>
+</dd></dl>
+
+<dl class="member">
+<dt id="_CPPv4N5rogue10interfaces6memory5WriteE">
+<span id="_CPPv3N5rogue10interfaces6memory5WriteE"></span><span id="_CPPv2N5rogue10interfaces6memory5WriteE"></span><span id="rogue::interfaces::memory::Write__uint32_tC"></span><span class="target" id="namespacerogue_1_1interfaces_1_1memory_1a796fe0c4657923682a90289e6693c1c9"></span><em class="property">const</em> uint32_t <code class="descclassname">rogue::interfaces::memory<code class="descclassname">::</code></code><code class="descname">Write</code> = 0x2<a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory5WriteE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Memory write transaction. </p>
+</dd></dl>
+
+<dl class="member">
+<dt id="_CPPv4N5rogue10interfaces6memory4PostE">
+<span id="_CPPv3N5rogue10interfaces6memory4PostE"></span><span id="_CPPv2N5rogue10interfaces6memory4PostE"></span><span id="rogue::interfaces::memory::Post__uint32_tC"></span><span class="target" id="namespacerogue_1_1interfaces_1_1memory_1ad08ddd52279b6001b8502c14264dbe4e"></span><em class="property">const</em> uint32_t <code class="descclassname">rogue::interfaces::memory<code class="descclassname">::</code></code><code class="descname">Post</code> = 0x3<a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory4PostE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Memory posted write transaction. </p>
+</dd></dl>
+
+<dl class="member">
+<dt id="_CPPv4N5rogue10interfaces6memory6VerifyE">
+<span id="_CPPv3N5rogue10interfaces6memory6VerifyE"></span><span id="_CPPv2N5rogue10interfaces6memory6VerifyE"></span><span id="rogue::interfaces::memory::Verify__uint32_tC"></span><span class="target" id="namespacerogue_1_1interfaces_1_1memory_1aa86de079c79f5b478b72cd482fe652e1"></span><em class="property">const</em> uint32_t <code class="descclassname">rogue::interfaces::memory<code class="descclassname">::</code></code><code class="descname">Verify</code> = 0x4<a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory6VerifyE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Memory verify readback transaction. </p>
+</dd></dl>
+
+</div>
+<div class="section" id="transaction-errors">
+<h2>Transaction Errors<a class="headerlink" href="#transaction-errors" title="Permalink to this headline">¶</a></h2>
+<p>The following transaction errors are defined:</p>
+<dl class="member">
+<dt id="_CPPv4N5rogue10interfaces6memory12TimeoutErrorE">
+<span id="_CPPv3N5rogue10interfaces6memory12TimeoutErrorE"></span><span id="_CPPv2N5rogue10interfaces6memory12TimeoutErrorE"></span><span id="rogue::interfaces::memory::TimeoutError__uint32_tC"></span><span class="target" id="namespacerogue_1_1interfaces_1_1memory_1a5fbb2c4f38d69bb76d0ee6a32d2bbfc5"></span><em class="property">const</em> uint32_t <code class="descclassname">rogue::interfaces::memory<code class="descclassname">::</code></code><code class="descname">TimeoutError</code> = 0x01000000<a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory12TimeoutErrorE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>This is a software level timeout that is triggered if the memory <a class="reference internal" href="slave.html#classrogue_1_1interfaces_1_1memory_1_1Slave"><span class="std std-ref">Slave</span></a> never completed the transaction. </p>
+</dd></dl>
+
+<dl class="member">
+<dt id="_CPPv4N5rogue10interfaces6memory11VerifyErrorE">
+<span id="_CPPv3N5rogue10interfaces6memory11VerifyErrorE"></span><span id="_CPPv2N5rogue10interfaces6memory11VerifyErrorE"></span><span id="rogue::interfaces::memory::VerifyError__uint32_tC"></span><span class="target" id="namespacerogue_1_1interfaces_1_1memory_1aacb1dd6f8ec8a060ca090a1022e97a8d"></span><em class="property">const</em> uint32_t <code class="descclassname">rogue::interfaces::memory<code class="descclassname">::</code></code><code class="descname">VerifyError</code> = 0x02000000<a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory11VerifyErrorE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>The readback verify value did not match the written value. </p>
+</dd></dl>
+
+<dl class="member">
+<dt id="_CPPv4N5rogue10interfaces6memory12AddressErrorE">
+<span id="_CPPv3N5rogue10interfaces6memory12AddressErrorE"></span><span id="_CPPv2N5rogue10interfaces6memory12AddressErrorE"></span><span id="rogue::interfaces::memory::AddressError__uint32_tC"></span><span class="target" id="namespacerogue_1_1interfaces_1_1memory_1a02be8508e5dfa1845310a4e0b24ee4d8"></span><em class="property">const</em> uint32_t <code class="descclassname">rogue::interfaces::memory<code class="descclassname">::</code></code><code class="descname">AddressError</code> = 0x03000000<a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory12AddressErrorE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>The <a class="reference internal" href="slave.html#classrogue_1_1interfaces_1_1memory_1_1Slave"><span class="std std-ref">Slave</span></a> has declared an address error. This can occur if the address is at an alignment not support by the memory <a class="reference internal" href="slave.html#classrogue_1_1interfaces_1_1memory_1_1Slave"><span class="std std-ref">Slave</span></a> </p>
+</dd></dl>
+
+<dl class="member">
+<dt id="_CPPv4N5rogue10interfaces6memory10BusTimeoutE">
+<span id="_CPPv3N5rogue10interfaces6memory10BusTimeoutE"></span><span id="_CPPv2N5rogue10interfaces6memory10BusTimeoutE"></span><span id="rogue::interfaces::memory::BusTimeout__uint32_tC"></span><span class="target" id="namespacerogue_1_1interfaces_1_1memory_1aedb4f7d4296a286fc7ee8b4188435c23"></span><em class="property">const</em> uint32_t <code class="descclassname">rogue::interfaces::memory<code class="descclassname">::</code></code><code class="descname">BusTimeout</code> = 0x04000000<a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory10BusTimeoutE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>A bus timeout is declared at the hardware level indicating the bus transaction has timed out. </p>
+</dd></dl>
+
+<dl class="member">
+<dt id="_CPPv4N5rogue10interfaces6memory7BusFailE">
+<span id="_CPPv3N5rogue10interfaces6memory7BusFailE"></span><span id="_CPPv2N5rogue10interfaces6memory7BusFailE"></span><span id="rogue::interfaces::memory::BusFail__uint32_tC"></span><span class="target" id="namespacerogue_1_1interfaces_1_1memory_1a776a9a25dd2dc2876cf4282f147a6ded"></span><em class="property">const</em> uint32_t <code class="descclassname">rogue::interfaces::memory<code class="descclassname">::</code></code><code class="descname">BusFail</code> = 0x05000000<a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory7BusFailE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>A bus failure is declared at the hardware level. </p>
+</dd></dl>
+
+<dl class="member">
+<dt id="_CPPv4N5rogue10interfaces6memory11UnsupportedE">
+<span id="_CPPv3N5rogue10interfaces6memory11UnsupportedE"></span><span id="_CPPv2N5rogue10interfaces6memory11UnsupportedE"></span><span id="rogue::interfaces::memory::Unsupported__uint32_tC"></span><span class="target" id="namespacerogue_1_1interfaces_1_1memory_1a08949956c8e3cb9d7babb6fd3050b7ae"></span><em class="property">const</em> uint32_t <code class="descclassname">rogue::interfaces::memory<code class="descclassname">::</code></code><code class="descname">Unsupported</code> = 0x06000000<a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory11UnsupportedE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>The transaction is not unsupported. </p>
+</dd></dl>
+
+<dl class="member">
+<dt id="_CPPv4N5rogue10interfaces6memory9SizeErrorE">
+<span id="_CPPv3N5rogue10interfaces6memory9SizeErrorE"></span><span id="_CPPv2N5rogue10interfaces6memory9SizeErrorE"></span><span id="rogue::interfaces::memory::SizeError__uint32_tC"></span><span class="target" id="namespacerogue_1_1interfaces_1_1memory_1a842e57189c2382f3731427a210374339"></span><em class="property">const</em> uint32_t <code class="descclassname">rogue::interfaces::memory<code class="descclassname">::</code></code><code class="descname">SizeError</code> = 0x07000000<a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory9SizeErrorE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>The <a class="reference internal" href="slave.html#classrogue_1_1interfaces_1_1memory_1_1Slave"><span class="std std-ref">Slave</span></a> has declared a size violation. This can occur when the requested transaction size exceeds the maximum transaction supported by the <a class="reference internal" href="slave.html#classrogue_1_1interfaces_1_1memory_1_1Slave"><span class="std std-ref">Slave</span></a>. </p>
+</dd></dl>
+
+<dl class="member">
+<dt id="_CPPv4N5rogue10interfaces6memory13ProtocolErrorE">
+<span id="_CPPv3N5rogue10interfaces6memory13ProtocolErrorE"></span><span id="_CPPv2N5rogue10interfaces6memory13ProtocolErrorE"></span><span id="rogue::interfaces::memory::ProtocolError__uint32_tC"></span><span class="target" id="namespacerogue_1_1interfaces_1_1memory_1a224951991346551f1fb0e6ae3df6e557"></span><em class="property">const</em> uint32_t <code class="descclassname">rogue::interfaces::memory<code class="descclassname">::</code></code><code class="descname">ProtocolError</code> = 0x08000000<a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory13ProtocolErrorE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>The <a class="reference internal" href="slave.html#classrogue_1_1interfaces_1_1memory_1_1Slave"><span class="std std-ref">Slave</span></a> has declared a protocol error. This can occur if the transaction data was corrupted while the transaction was in progress. </p>
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="transaction.html" class="btn btn-neutral float-right" title="Transaction" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="index.html" class="btn btn-neutral" title="Memory Interface Class Descriptions" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, SLAC National Accelerator Laboratory
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../_static/language_data.js"></script>
+    
+
+  
+
+  <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

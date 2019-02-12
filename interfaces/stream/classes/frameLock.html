@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Frame Lock &mdash; Rogue v3.2.1-89-gd9272bc8 documentation</title>
+  <title>Frame Lock &mdash; Rogue v3.2.1-92-g2130f976 documentation</title>
   
 
   
@@ -111,6 +111,7 @@
 </li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="../../memory/index.html">Memory Interface</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../../installing/index.html">Installing &amp; Compiling Rogue</a></li>
@@ -210,7 +211,14 @@ FrameLock oject is deleted.</p>
 <span id="_CPPv3N5rogue10interfaces6stream9FrameLock9FrameLockEN5boost10shared_ptrIN5rogue10interfaces6stream5FrameEEE"></span><span id="_CPPv2N5rogue10interfaces6stream9FrameLock9FrameLockEN5boost10shared_ptrIN5rogue10interfaces6stream5FrameEEE"></span><span id="rogue::interfaces::stream::FrameLock::FrameLock__boost::shared_ptr:rogue::interfaces::stream::Frame:"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1FrameLock_1ab73e62e8ea6fbdeb13b2df1ce30b3b01"></span><code class="descname">FrameLock</code><span class="sig-paren">(</span>boost::shared_ptr&lt;rogue::interfaces::stream::<a class="reference internal" href="frame.html#_CPPv4N5rogue10interfaces6stream5FrameE" title="rogue::interfaces::stream::Frame">Frame</a>&gt; <em>frame</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream9FrameLock9FrameLockEN5boost10shared_ptrIN5rogue10interfaces6stream5FrameEEE" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p><a class="reference internal" href="frame.html#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a> lock constructor. </p>
 <p>Do not call directly. Use the <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1FrameLock_1ad4c7485c3626cc0ac894dfd533d17e16"><span class="std std-ref">create()</span></a> class method instead.</p>
-<p>Not available in Python </p>
+<p>Not available in Python <dl class="docutils">
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">frame</span></code>: <a class="reference internal" href="frame.html#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a> pointer (FramePtr) to create a lock on </li>
+</ul>
+</dd>
+</dl>
+</p>
 </dd></dl>
 
 <dl class="function">
@@ -229,7 +237,7 @@ FrameLock oject is deleted.</p>
 <dl class="function">
 <dt id="_CPPv4N5rogue10interfaces6stream9FrameLock6unlockEv">
 <span id="_CPPv3N5rogue10interfaces6stream9FrameLock6unlockEv"></span><span id="_CPPv2N5rogue10interfaces6stream9FrameLock6unlockEv"></span><span id="rogue::interfaces::stream::FrameLock::unlock"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1FrameLock_1a8208a7df89daa87a82c8f527e7ce6a4f"></span>void <code class="descname">unlock</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream9FrameLock6unlockEv" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>UnLock associated frame is locked. </p>
+<dd><p>UnLock associated frame if locked. </p>
 <p>Exposed as <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1FrameLock_1a8208a7df89daa87a82c8f527e7ce6a4f"><span class="std std-ref">unlock()</span></a> to Python </p>
 </dd></dl>
 

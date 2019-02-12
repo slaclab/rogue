@@ -1,0 +1,334 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>TransactionLock &mdash; Rogue v3.2.1-92-g2130f976 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="Master" href="master.html" />
+    <link rel="prev" title="Transaction" href="transaction.html" /> 
+
+  
+  <script src="../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> Rogue
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                v3.2.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../../index.html">Interfaces</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../stream/index.html">Stream Interface</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../index.html">Memory Interface</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../connecting.html">Connecting Memory Elements</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="index.html">Memory Interface Class Descriptions</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="constants.html">Constants</a></li>
+<li class="toctree-l4"><a class="reference internal" href="transaction.html">Transaction</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">TransactionLock</a></li>
+<li class="toctree-l4"><a class="reference internal" href="master.html">Master</a></li>
+<li class="toctree-l4"><a class="reference internal" href="slave.html">Slave</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hub.html">Hub</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcpClient.html">TcpClient</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcpServer.html">TcpServer</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../installing/index.html">Installing &amp; Compiling Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../custom_module/index.html">Creating Custom Modules</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Rogue</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Interfaces</a> &raquo;</li>
+        
+          <li><a href="../index.html">Memory Interface</a> &raquo;</li>
+        
+          <li><a href="index.html">Memory Interface Class Descriptions</a> &raquo;</li>
+        
+      <li>TransactionLock</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../../_sources/interfaces/memory/classes/transactionLock.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="transactionlock">
+<span id="interfaces-memory-transaction-lock"></span><h1>TransactionLock<a class="headerlink" href="#transactionlock" title="Permalink to this headline">¶</a></h1>
+<p>TransactionLock objects in C++ are referenced by the following shared pointer typedef:</p>
+<dl class="type">
+<dt id="_CPPv4N5rogue10interfaces6memory18TransactionLockPtrE">
+<span id="_CPPv3N5rogue10interfaces6memory18TransactionLockPtrE"></span><span id="_CPPv2N5rogue10interfaces6memory18TransactionLockPtrE"></span><span id="rogue::interfaces::memory::TransactionLockPtr"></span><span class="target" id="namespacerogue_1_1interfaces_1_1memory_1a0db972f73c0c18e007b9eca1b6f88b54"></span><em class="property">typedef </em>boost::shared_ptr&lt;rogue::interfaces::memory::<a class="reference internal" href="#_CPPv4N5rogue10interfaces6memory15TransactionLockE" title="rogue::interfaces::memory::TransactionLock">TransactionLock</a>&gt; <code class="descclassname">rogue::interfaces::memory<code class="descclassname">::</code></code><code class="descname">TransactionLockPtr</code><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory18TransactionLockPtrE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Alias for using shared pointer as TransactionLockPtr. </p>
+</dd></dl>
+
+<p>The class description is shown below:</p>
+<dl class="class">
+<dt id="_CPPv4N5rogue10interfaces6memory15TransactionLockE">
+<span id="_CPPv3N5rogue10interfaces6memory15TransactionLockE"></span><span id="_CPPv2N5rogue10interfaces6memory15TransactionLockE"></span><span id="rogue::interfaces::memory::TransactionLock"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1TransactionLock"></span><em class="property">class </em><code class="descname">TransactionLock</code><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory15TransactionLockE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p><a class="reference internal" href="transaction.html#classrogue_1_1interfaces_1_1memory_1_1Transaction"><span class="std std-ref">Transaction</span></a> Lock. </p>
+<p>The <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1TransactionLock"><span class="std std-ref">TransactionLock</span></a> is a container for holding a lock on <a class="reference internal" href="transaction.html#classrogue_1_1interfaces_1_1memory_1_1Transaction"><span class="std std-ref">Transaction</span></a> data while accessing that data. This lock ensures that <a class="reference internal" href="transaction.html#classrogue_1_1interfaces_1_1memory_1_1Transaction"><span class="std std-ref">Transaction</span></a> is not destroyed when the <a class="reference internal" href="slave.html#classrogue_1_1interfaces_1_1memory_1_1Slave"><span class="std std-ref">Slave</span></a> is updating its data and result. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Functions</p>
+<dl class="function">
+<dt id="_CPPv4N5rogue10interfaces6memory15TransactionLock15TransactionLockEN5boost10shared_ptrIN5rogue10interfaces6memory11TransactionEEE">
+<span id="_CPPv3N5rogue10interfaces6memory15TransactionLock15TransactionLockEN5boost10shared_ptrIN5rogue10interfaces6memory11TransactionEEE"></span><span id="_CPPv2N5rogue10interfaces6memory15TransactionLock15TransactionLockEN5boost10shared_ptrIN5rogue10interfaces6memory11TransactionEEE"></span><span id="rogue::interfaces::memory::TransactionLock::TransactionLock__boost::shared_ptr:rogue::interfaces::memory::Transaction:"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1TransactionLock_1a023fc65e6c1adf65f074a935f1f2ca11"></span><code class="descname">TransactionLock</code><span class="sig-paren">(</span>boost::shared_ptr&lt;rogue::interfaces::memory::<a class="reference internal" href="transaction.html#_CPPv4N5rogue10interfaces6memory11TransactionE" title="rogue::interfaces::memory::Transaction">Transaction</a>&gt; <em>transaction</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory15TransactionLock15TransactionLockEN5boost10shared_ptrIN5rogue10interfaces6memory11TransactionEEE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p><a class="reference internal" href="transaction.html#classrogue_1_1interfaces_1_1memory_1_1Transaction"><span class="std std-ref">Transaction</span></a> lock constructor. </p>
+<p>Do not call directly. Use the <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1TransactionLock_1a9dea733478990af96ed95743b06d6445"><span class="std std-ref">create()</span></a> class method instead.</p>
+<p>Not available in Python <dl class="docutils">
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">transaction</span></code>: <a class="reference internal" href="transaction.html#classrogue_1_1interfaces_1_1memory_1_1Transaction"><span class="std std-ref">Transaction</span></a> pointer (TransactionPtr) to create a lock on </li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4N5rogue10interfaces6memory15TransactionLockD0Ev">
+<span id="_CPPv3N5rogue10interfaces6memory15TransactionLockD0Ev"></span><span id="_CPPv2N5rogue10interfaces6memory15TransactionLockD0Ev"></span><span id="rogue::interfaces::memory::TransactionLock::~TransactionLock"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1TransactionLock_1ac6cdb3dfa5d808c3680a2b0868959dc0"></span><code class="descname">~TransactionLock</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory15TransactionLockD0Ev" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Destroy and release the transaction lock. </p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4N5rogue10interfaces6memory15TransactionLock4lockEv">
+<span id="_CPPv3N5rogue10interfaces6memory15TransactionLock4lockEv"></span><span id="_CPPv2N5rogue10interfaces6memory15TransactionLock4lockEv"></span><span id="rogue::interfaces::memory::TransactionLock::lock"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1TransactionLock_1a944eab05ce6a2ae233ce7110b4c00c0b"></span>void <code class="descname">lock</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory15TransactionLock4lockEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Lock associated <a class="reference internal" href="transaction.html#classrogue_1_1interfaces_1_1memory_1_1Transaction"><span class="std std-ref">Transaction</span></a> if not locked. </p>
+<p>Exposed as <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1TransactionLock_1a944eab05ce6a2ae233ce7110b4c00c0b"><span class="std std-ref">lock()</span></a> to Python </p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4N5rogue10interfaces6memory15TransactionLock6unlockEv">
+<span id="_CPPv3N5rogue10interfaces6memory15TransactionLock6unlockEv"></span><span id="_CPPv2N5rogue10interfaces6memory15TransactionLock6unlockEv"></span><span id="rogue::interfaces::memory::TransactionLock::unlock"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1TransactionLock_1a689be9da11fef5fa95bfdb4e39c6eb7f"></span>void <code class="descname">unlock</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory15TransactionLock6unlockEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>UnLock associated transaction if locked. </p>
+<p>Exposed as <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1TransactionLock_1a689be9da11fef5fa95bfdb4e39c6eb7f"><span class="std std-ref">unlock()</span></a> to Python </p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4N5rogue10interfaces6memory15TransactionLock5enterEv">
+<span id="_CPPv3N5rogue10interfaces6memory15TransactionLock5enterEv"></span><span id="_CPPv2N5rogue10interfaces6memory15TransactionLock5enterEv"></span><span id="rogue::interfaces::memory::TransactionLock::enter"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1TransactionLock_1abed16ae4763e8599bb796393bf9c2148"></span>void <code class="descname">enter</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory15TransactionLock5enterEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Enter method for python, does nothing. </p>
+<p>This exists only to support the with call in python.</p>
+<p>Exposed as <strong>enter</strong>() to Python </p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4N5rogue10interfaces6memory15TransactionLock4exitEPvPvPv">
+<span id="_CPPv3N5rogue10interfaces6memory15TransactionLock4exitEPvPvPv"></span><span id="_CPPv2N5rogue10interfaces6memory15TransactionLock4exitEPvPvPv"></span><span id="rogue::interfaces::memory::TransactionLock::exit__voidP.voidP.voidP"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1TransactionLock_1adf323de935a5893ecaa03c1d8e90088e"></span>void <code class="descname">exit</code><span class="sig-paren">(</span>void *, void *, void *<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory15TransactionLock4exitEPvPvPv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Exit method for python, does nothing. </p>
+<p>This exists only to support the with call in python.</p>
+<p>Exposed as <strong>exit</strong>() to Python </p>
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Static Functions</p>
+<dl class="function">
+<dt id="_CPPv4N5rogue10interfaces6memory15TransactionLock6createEN5boost10shared_ptrIN5rogue10interfaces6memory11TransactionEEE">
+<span id="_CPPv3N5rogue10interfaces6memory15TransactionLock6createEN5boost10shared_ptrIN5rogue10interfaces6memory11TransactionEEE"></span><span id="_CPPv2N5rogue10interfaces6memory15TransactionLock6createEN5boost10shared_ptrIN5rogue10interfaces6memory11TransactionEEE"></span><span id="rogue::interfaces::memory::TransactionLock::create__boost::shared_ptr:rogue::interfaces::memory::Transaction:"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1TransactionLock_1a9dea733478990af96ed95743b06d6445"></span><em class="property">static</em> boost::shared_ptr&lt;rogue::interfaces::memory::<a class="reference internal" href="#_CPPv4N5rogue10interfaces6memory15TransactionLockE" title="rogue::interfaces::memory::TransactionLock">TransactionLock</a>&gt; <code class="descname">create</code><span class="sig-paren">(</span>boost::shared_ptr&lt;rogue::interfaces::memory::<a class="reference internal" href="transaction.html#_CPPv4N5rogue10interfaces6memory11TransactionE" title="rogue::interfaces::memory::Transaction">Transaction</a>&gt; <em>transaction</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory15TransactionLock6createEN5boost10shared_ptrIN5rogue10interfaces6memory11TransactionEEE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Class factory which returns a pointer to a <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1TransactionLock"><span class="std std-ref">TransactionLock</span></a> (TransactionLockPtr) </p>
+<p>Create a new <a class="reference internal" href="transaction.html#classrogue_1_1interfaces_1_1memory_1_1Transaction"><span class="std std-ref">Transaction</span></a> lock on the passed <a class="reference internal" href="transaction.html#classrogue_1_1interfaces_1_1memory_1_1Transaction"><span class="std std-ref">Transaction</span></a>.</p>
+<p>Not exposed to Python <dl class="docutils">
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">transaction</span></code>: <a class="reference internal" href="transaction.html#classrogue_1_1interfaces_1_1memory_1_1Transaction"><span class="std std-ref">Transaction</span></a> pointer (TransactionPtr) to create a lock on </li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4N5rogue10interfaces6memory15TransactionLock12setup_pythonEv">
+<span id="_CPPv3N5rogue10interfaces6memory15TransactionLock12setup_pythonEv"></span><span id="_CPPv2N5rogue10interfaces6memory15TransactionLock12setup_pythonEv"></span><span id="rogue::interfaces::memory::TransactionLock::setup_python"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1TransactionLock_1aa08c8dc0379360e45e81f2d5ed7fffb6"></span><em class="property">static</em> void <code class="descname">setup_python</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory15TransactionLock12setup_pythonEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Setup class for use in python. </p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="master.html" class="btn btn-neutral float-right" title="Master" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="transaction.html" class="btn btn-neutral" title="Transaction" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, SLAC National Accelerator Laboratory
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../_static/language_data.js"></script>
+    
+
+  
+
+  <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
