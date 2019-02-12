@@ -153,7 +153,7 @@ latex_elements = {
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
     (master_doc, 'Rogue.tex', 'Rogue Documentation',
-     'Ryan Herbst, Ben Reese', 'manual'),
+     'TID-AIR Electronics Systems Department', 'manual'),
 ]
 
 
