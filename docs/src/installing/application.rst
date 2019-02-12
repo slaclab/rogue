@@ -1,19 +1,18 @@
-.. _custom_makefile:
+.. _installing_application:
 
-Custom Module CMakeLists.txt
-============================
+Compiling A Rogue Application
+=============================
+
+The following describes how to compiled a c++ application against the Rogue libraries. 
 
 The following is an example custom CMakeLists.txt which will setup the environment
-for building a custom Rogue module using existing Rogue libraries. It is assumed
+for compiling application code using existing Rogue libraries. It is assumed
 that the ROGUE_DIR environment variable points to the non-standard Rogue
 location if not using an Anaconda environment, Docker or System install.
 
-Replace MyModule with your module name globally in this file. 
-
-This file assumes that the source file MyModule.cpp exists in the **src**
-subdirectory relative to this file's location.  This file can be used to 
-compile the :ref:`custom_sourcefile` described in this section.  This 
-CMakeLists can be used to compile the custom module with the following commands:
+This CMakeLists.txt file assumes a **src** sub-directory exists with a single
+.cpp file for each application being compiled. The following commands will
+compile the applications:
 
 .. code::
 
@@ -22,9 +21,7 @@ CMakeLists can be used to compile the custom module with the following commands:
    $ cmake ..
    $ make
 
-The output shared library MyModule.so will be created in the **python**
-sub-directory. This directory will need to be included in the PYTHONPATH
-environment variable.
+The outputs will be placed in a **bin* sub-directory.
 
 .. code:: cmake
 
@@ -38,8 +35,8 @@ environment variable.
    cmake_minimum_required(VERSION 3.5)
    include(InstallRequiredSystemLibraries)
 
-   # Project name, Replace with your name
-   project (MyModule)
+   # Project name
+   project (RssiSinK)
 
    # C/C++
    enable_language(CXX)
@@ -62,13 +59,14 @@ environment variable.
    # Include files
    include_directories(${ROGUE_INCLUDE_DIRS})
 
-   # Create rogue python library, point to your source file
-   add_library(MyModule SHARED src/MyModule.cpp)
+   # Set output directory
+   set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin)
 
-   # Set output to TOP/lib, remove lib prefix
-   set_target_properties(MyModule PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/python)
-   set_target_properties(MyModule PROPERTIES PREFIX "")
-
-   # Link to rogue core
-   TARGET_LINK_LIBRARIES(MyModule LINK_PUBLIC ${ROGUE_LIBRARIES})
+   # Compile each source
+   file(GLOB APP_SOURCES ${PROJECT_SOURCE_DIR}/src/*.cpp)
+   foreach (srcFile ${APP_SOURCES})
+      get_filename_component(binName ${srcFile} NAME_WE)
+      add_executable(${binName} ${srcFile})
+      TARGET_LINK_LIBRARIES(${binName} LINK_PUBLIC ${ROGUE_LIBRARIES})
+   endforeach ()
 

@@ -12,6 +12,7 @@ This section describes how to obtain and install Rogue.
    anaconda
    anaconda_build
    docker
-   full_build
+   build
+   application
    firewall
 
