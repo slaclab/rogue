@@ -1,12 +1,13 @@
 .. _interfaces_memory_constants:
 
+=========
 Constants
 =========
 
 The following constants are defined for use with the memory interface.
 
 Transaction Types
------------------
+=================
 
 The following memory transaction types are defined:
 
@@ -19,7 +20,7 @@ The following memory transaction types are defined:
 .. doxygenvariable:: rogue::interfaces::memory::Verify
 
 Transaction Errors
-------------------
+==================
 
 The following transaction errors are defined:
 

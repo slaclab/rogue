@@ -1,5 +1,6 @@
 .. _installing_docker:
 
+=======================
 Installing Rogue Docker
 =======================
 
@@ -14,7 +15,7 @@ https://hub.docker.com/r/tidair/rogue-dev/
 The images can be used to run rogue applications as one would normally do using a local installation of rogue.
 
 How To Get The Container
-------------------------
+========================
 
 To get the most recent version of the docker image, first you will need to install docker in you host OS and be logged in. Then you can get a copy by running:
 
@@ -36,7 +37,7 @@ to get a specific tagged version.
 * You can also pull development version using `tidair/rogue-dev` instead.
 
 How To Run The Container
-------------------------
+========================
 
 To run a rogue application inside a container, you must first have a copy of the application in in your host OS. Also, your host must have a direct connection to your target FPGA.
 
@@ -54,7 +55,7 @@ where:
 If your application uses a graphical interface, then you need to pass additional arguments in order to properly forward X:
 
 On A Linux OS
--------------
+=============
 
 .. code::
 
@@ -68,7 +69,7 @@ On A Linux OS
       tidair/rogue /python/<APP_NAME>
 
 On A MAX OS
------------
+===========
 
 First install XQuartz. Then run it from the command line using `open -a XQuartz`. In the XQuartz preferences, go to the “Security” tab and make sure you’ve got “Allow connections from network clients” ticked.
 
@@ -86,7 +87,7 @@ Now run:
 * You can also run a specific tagged version of rogue changing `tidair/rogue` for `tidair/rogue:<TAG>` in the docker run command. Moreover, you can run development version using `tidair/rogue-dev` (latest version) or `tidair/rogue-dev:<TAG>` (a specific version).
 
 How To Build A Custom Docker Image With Rogue
----------------------------------------------
+=============================================
 
 You can create custom docker image, using the Docker image containing rogue as a starting point. Just start your `Dockerfile` with this line:
 

@@ -1,5 +1,6 @@
 .. _interfaces_memory_connecting:
 
+==========================
 Connecting Memory Elements
 ==========================
 

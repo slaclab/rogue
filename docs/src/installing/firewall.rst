@@ -1,5 +1,6 @@
 .. _installing_firewall:
 
+####################################
 Rogue and Anaconda behind a firewall
 ####################################
 

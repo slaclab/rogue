@@ -1,5 +1,6 @@
 .. _installing:
 
+============================
 Installing & Compiling Rogue
 ============================
 

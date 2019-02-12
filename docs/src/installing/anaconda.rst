@@ -1,12 +1,13 @@
 .. _installing_anaconda:
 
+==============================
 Installing Rogue With Anaconda
 ==============================
 
 The following instructions describe how to install a pre-built Rogue package inside an anaconda environment.
 
 Getting Anaconda
-----------------
+================
 
 Download and install anaconda (or miniconda) if you don't already have it installed on your machine. Choose an install location with a lot of available diskspace (> 5GB). Anaconda appears to only work reliably in the bash shell. 
 
@@ -26,7 +27,7 @@ Use the following command to add anaconda to your environment. This can be added
    $ source /path/to/my/anaconda3/etc/profile.d/conda.sh
 
 Creating A Rogue Environment
-----------------------------
+============================
 
 The next step is to create ana anaconda environment which includes the Rogue package.
 
@@ -55,7 +56,7 @@ Alternatively you can install a specific released version of Rogue:
    $ conda create -n rogue_env -c defaults -c conda-forge -c paulscherrerinstitute -c tidair-tag rogue=v3.0.2
 
 Using Rogue
------------
+===========
 
 No additional setup scripts need to be run Rogue in an anaconda environment. To activate and de-activate the Rogue environment you can use the following commands:
 
@@ -72,13 +73,13 @@ To deactivate:
    $ conda deactivate
 
 Installing Rogue In Existing Environment
-----------------------------------------
+========================================
 
 The following command is used to install Rogue inside and existing anaconda environment.
 
 
 Updating Rogue
---------------
+==============
 
 If you want to update Rogue, run the following command after activating the Rogue environment
 
@@ -89,7 +90,7 @@ If you want to update Rogue, run the following command after activating the Rogu
 Replace tidair-tag with tidair-dev for pre-release
 
 Deleting Anaconda Environment
------------------------------
+=============================
 
 Run the following commands to delete the anaconda environment.
 

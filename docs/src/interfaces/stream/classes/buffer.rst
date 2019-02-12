@@ -1,5 +1,6 @@
 .. _interfaces_stream_buffer:
 
+======
 Buffer
 ======
 

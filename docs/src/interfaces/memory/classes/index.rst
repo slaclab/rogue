@@ -1,5 +1,6 @@
 .. _interfaces_memory_classes:
 
+===================================
 Memory Interface Class Descriptions
 ===================================
 

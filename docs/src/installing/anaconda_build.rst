@@ -1,5 +1,6 @@
 .. _installing_anaconda_build:
 
+==============================
 Building Rogue Inside Anaconda
 ==============================
 
@@ -7,7 +8,7 @@ This section provides instructions for downloading and building rogue inside an 
 See MacOS section at the bottom for additional steps required for building rogue in MacOS.
 
 Getting Anaconda
-----------------
+================
 
 Download and install anaconda (or miniconda) if you don't already have it installed on your machine. Choose an install location with a lot of available diskspace (> 5GB). Anaconda appears to only work reliably in the bash shell. 
 
@@ -27,7 +28,7 @@ Use the following command to add anaconda to your environment. This can be added
    $ source /path/to/my/anaconda3/etc/profile.d/conda.sh
 
 Downloading Rogue & Creating Anaconda Envrionment
--------------------------------------------------
+=================================================
 
 The next step is to download rogue and create a rogue compatable anaconda environment.
 
@@ -60,7 +61,7 @@ To activate this environment:
    $ conda activate rogue_env
 
 Building Rogue
---------------
+==============
 
 Once the rogue environment is activated, you can build and install rogue
 
@@ -76,7 +77,7 @@ The Rogue build system will automatically detect that it is in a conda environme
 within the anaconda rogue environment.
 
 Using Rogue
------------
+===========
 
 No additional setup scripts need to be run rogue in an anaconda environment. To activate and de-activate the rogue environment you can use the following commands:
 
@@ -93,7 +94,7 @@ To deactivate:
    $ conda deactivate
 
 Updating Rogue
---------------
+==============
 
 If you want to update and re-install rogue, run the following commands.
 
@@ -109,7 +110,7 @@ If you want to update and re-install rogue, run the following commands.
    $ make install
 
 Deleting Anaconda Environment
------------------------------
+=============================
 
 Run the following commands to delete the anaconda environment.
 
@@ -118,7 +119,7 @@ Run the following commands to delete the anaconda environment.
    $ conda env remove -n rogue_env
 
 Special Steps For MacOS
------------------------
+=======================
 
 In order to compile rogue in MacOS you first need to download an install an older version of the MacOS SDK
 

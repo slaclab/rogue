@@ -1,5 +1,6 @@
 .. _interfaces_stream_using_fifo:
 
+============
 Using A Fifo
 ============
 
@@ -19,7 +20,7 @@ the Fifo size is unlimied and Frames are never dropped. When maxDepth != 0 Frame
 once the Fifo Frame count reaches the maxDepth size.
 
 In Line Fifo Example
---------------------
+====================
 
 The following python example shows how to add a noCopy FIFO with maxDepth of 100 between a master
 and a slave. The first arg maxDepth is set to 100, trimSize is set to 0, and noCopy is set True.
@@ -69,7 +70,7 @@ Below is the equivalent code in C++
    streamConnect(fifo, dst);
 
 Stream Tap Fifo Example
------------------------
+=======================
 
 The following python example shows how to add a copy  FIFO with maxDepth of 150 between a master
 and a slave. This Fifo is configured to only copy the first 20 bytes of the Frame data.

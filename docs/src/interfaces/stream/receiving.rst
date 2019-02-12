@@ -1,5 +1,6 @@
 .. _interfaces_stream_receiving:
 
+================
 Receiving Frames
 ================
 
@@ -10,7 +11,7 @@ and C++ subclasses of the Slave class can be used interchagably, allowing c++ su
 to receive frames from python masters and python subclasses to receive frames from c++ masters.
 
 Python Slave Subclass
----------------------
+=====================
 
 Implementing a Slave subclass in python is easy, but may result in a lower level of performance.
 
@@ -51,7 +52,7 @@ Implementing a Slave subclass in python is easy, but may result in a lower level
            print("Byte 6 is {:#}".format(partialData[1]))
 
 C++ Slave Subclass
-------------------
+==================
 
 Creating a Slave sub-class in c++ is done in a similiar fashion. In order to use a custom
 c++ Slave subclass, you will need to build it into a c++ python module or into

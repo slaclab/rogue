@@ -1,5 +1,6 @@
 .. _installing_application:
 
+=============================
 Compiling A Rogue Application
 =============================
 

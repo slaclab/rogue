@@ -1,5 +1,6 @@
 .. _custom_module:
 
+=======================
 Creating Custom Modules
 =======================
 
