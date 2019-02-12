@@ -1,6 +1,7 @@
 ./_sources/custom_module/index.rst.txt
 ./_sources/custom_module/makefile.rst.txt
 ./_sources/custom_module/sourcefile.rst.txt
+./_sources/custom_module/testing.rst.txt
 ./_sources/custom_module/wrapper.rst.txt
 ./_sources/index.rst.txt
 ./_sources/installing/anaconda.rst.txt
@@ -97,6 +98,7 @@
 ./custom_module/index.html
 ./custom_module/makefile.html
 ./custom_module/sourcefile.html
+./custom_module/testing.html
 ./custom_module/wrapper.html
 ./genindex.html
 ./index.html

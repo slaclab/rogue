@@ -20,6 +20,7 @@ This module is compiled with the :ref:`custom_makefile` described in this sectio
    #include <rogue/interfaces/stream/Master.h>
    #include <rogue/interfaces/stream/Frame.h>
    #include <rogue/interfaces/stream/FrameLock.h>
+   #include <rogue/interfaces/stream/FrameIterator.h>
 
    // Custom stream slave class
    class MyCustomSlave : public rogue::interfaces::stream::Slave {
@@ -48,7 +49,7 @@ This module is compiled with the :ref:`custom_makefile` described in this sectio
             return byteCount_;
          }
 
-         MyCustomSlave() : rogue::interfaces::stream::Slave() { 
+         MyCustomSlave() : rogue::interfaces::stream::Slave() {
             frameCount_ = 0;
             byteCount_  = 0;
          }
@@ -57,7 +58,7 @@ This module is compiled with the :ref:`custom_makefile` described in this sectio
          void acceptFrame ( boost::shared_ptr<rogue::interfaces::stream::Frame> frame ) {
 
             // Acquire lock on frame. Will be release when lock class goes out of scope
-            rogue::interfaces::stream::FrameLock lock = frame->lock();
+            rogue::interfaces::stream::FrameLockPtr lock = frame->lock();
 
             // Increment frame counter
             frameCount_++;
@@ -68,11 +69,15 @@ This module is compiled with the :ref:`custom_makefile` described in this sectio
 
          // Expose methods to python
          static void setup_python() {
-            bp::class_<MyCustomSlave, boost::shared_ptr<MyCustomSlave>, bp::bases<ris::Slave>, boost::noncopyable >("MyCustomSlave",bp::init<>())
+            boost::python::class_<MyCustomSlave, boost::shared_ptr<MyCustomSlave>, 
+                                                 boost::python::bases<rogue::interfaces::stream::Slave>, 
+                                                 boost::noncopyable >("MyCustomSlave",
+                                                 boost::python::init<>())
                .def("getFrameCount", &MyCustomSlave::getFrameCount)
                .def("getTotalBytes", &MyCustomSlave::getTotalBytes)
             ;
-            bp::implicitly_convertible<boost::shared_ptr<MyCustomSlave>, ris::SlavePtr>();
+            boost::python::implicitly_convertible<boost::shared_ptr<MyCustomSlave>, 
+                                                 rogue::interfaces::stream::SlavePtr>();
          };
    };
 
@@ -86,7 +91,7 @@ This module is compiled with the :ref:`custom_makefile` described in this sectio
          uint32_t byteCount_;
 
          // Frame size configuration
-         uing32_t frameSize_;
+         uint32_t frameSize_;
 
       public:
 
@@ -96,8 +101,8 @@ This module is compiled with the :ref:`custom_makefile` described in this sectio
             return(ret);
          }
 
-         // Standard class creator which is called by create 
-         MyCustomMaster() : rogue::interfaces::stream::Master() { 
+         // Standard class creator which is called by create
+         MyCustomMaster() : rogue::interfaces::stream::Master() {
             frameCount_ = 0;
             byteCount_  = 0;
             frameSize_  = 0;
@@ -135,7 +140,7 @@ This module is compiled with the :ref:`custom_makefile` described in this sectio
             // Set an incrementing value to the first 10 locations
             x = 0;
             for ( it=frame->beginWrite(); it < frame->endWrite(); ++it ) *it = x++;
-               
+
             // Unlink the python API we must now specify the new payload size
             frame->setPayload(frameSize_);
 
@@ -151,14 +156,18 @@ This module is compiled with the :ref:`custom_makefile` described in this sectio
 
          // Expose methods to python
          static void setup_python() {
-            bp::class_<MyCustomMaster, boost::shared_ptr<MyCustomMaster>, bp::bases<ris::Master>, boost::noncopyable >("MyCustomMaster",bp::init<>())
+            boost::python::class_<MyCustomMaster, boost::shared_ptr<MyCustomMaster>, 
+                                                  boost::python::bases<rogue::interfaces::stream::Master>, 
+                                                  boost::noncopyable >("MyCustomMaster",
+                                                  boost::python::init<>())
                .def("getFrameCount", &MyCustomMaster::getFrameCount)
                .def("getTotalBytes", &MyCustomMaster::getTotalBytes)
                .def("setFrameSize",  &MyCustomMaster::setFrameSize)
                .def("getFrameSize",  &MyCustomMaster::getFrameSize)
                .def("myFrameGen",    &MyCustomMaster::myFrameGen)
             ;
-            bp::implicitly_convertible<boost::shared_ptr<MyCustomMaster>, ris::MasterPtr>();
+            boost::python::implicitly_convertible<boost::shared_ptr<MyCustomMaster>, 
+                                                  rogue::interfaces::stream::MasterPtr>();
          };
    };
 

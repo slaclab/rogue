@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Custom Module Source &mdash; Rogue v3.2.1-74-g2e7ecd84 documentation</title>
+  <title>Custom Module Source &mdash; Rogue v3.2.1-86-g8800ec64 documentation</title>
   
 
   
@@ -29,7 +29,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Custom Module CMakeLists.txt" href="makefile.html" />
-    <link rel="prev" title="Using Custom Modules" href="index.html" /> 
+    <link rel="prev" title="Creating Custom Modules" href="index.html" /> 
 
   
   <script src="../_static/js/modernizr.min.js"></script>
@@ -86,10 +86,11 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../interfaces/index.html">Interfaces</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../installing/index.html">Installing &amp; Compiling Rogue</a></li>
-<li class="toctree-l1 current"><a class="reference internal" href="index.html">Using Custom Modules</a><ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Creating Custom Modules</a><ul class="current">
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Custom Module Source</a></li>
 <li class="toctree-l2"><a class="reference internal" href="makefile.html">Custom Module CMakeLists.txt</a></li>
 <li class="toctree-l2"><a class="reference internal" href="wrapper.html">Wrapping Custom Module With PyRogue Device</a></li>
+<li class="toctree-l2"><a class="reference internal" href="testing.html">Testing The Custom Module</a></li>
 </ul>
 </li>
 </ul>
@@ -137,7 +138,7 @@
     
       <li><a href="../index.html">Docs</a> &raquo;</li>
         
-          <li><a href="index.html">Using Custom Modules</a> &raquo;</li>
+          <li><a href="index.html">Creating Custom Modules</a> &raquo;</li>
         
       <li>Custom Module Source</li>
     
@@ -174,6 +175,7 @@ are included in <a class="reference internal" href="wrapper.html#custom-wrapper"
 <span class="c1">#include &lt;rogue/interfaces/stream/Master.h&gt;</span>
 <span class="c1">#include &lt;rogue/interfaces/stream/Frame.h&gt;</span>
 <span class="c1">#include &lt;rogue/interfaces/stream/FrameLock.h&gt;</span>
+<span class="c1">#include &lt;rogue/interfaces/stream/FrameIterator.h&gt;</span>
 
 <span class="o">//</span> <span class="n">Custom</span> <span class="n">stream</span> <span class="n">slave</span> <span class="k">class</span>
 <span class="nc">class</span> <span class="n">MyCustomSlave</span> <span class="p">:</span> <span class="n">public</span> <span class="n">rogue</span><span class="p">::</span><span class="n">interfaces</span><span class="p">::</span><span class="n">stream</span><span class="p">::</span><span class="n">Slave</span> <span class="p">{</span>
@@ -211,7 +213,7 @@ are included in <a class="reference internal" href="wrapper.html#custom-wrapper"
       <span class="n">void</span> <span class="n">acceptFrame</span> <span class="p">(</span> <span class="n">boost</span><span class="p">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">rogue</span><span class="p">::</span><span class="n">interfaces</span><span class="p">::</span><span class="n">stream</span><span class="p">::</span><span class="n">Frame</span><span class="o">&gt;</span> <span class="n">frame</span> <span class="p">)</span> <span class="p">{</span>
 
          <span class="o">//</span> <span class="n">Acquire</span> <span class="n">lock</span> <span class="n">on</span> <span class="n">frame</span><span class="o">.</span> <span class="n">Will</span> <span class="n">be</span> <span class="n">release</span> <span class="n">when</span> <span class="n">lock</span> <span class="k">class</span> <span class="nc">goes</span> <span class="n">out</span> <span class="n">of</span> <span class="n">scope</span>
-         <span class="n">rogue</span><span class="p">::</span><span class="n">interfaces</span><span class="p">::</span><span class="n">stream</span><span class="p">::</span><span class="n">FrameLock</span> <span class="n">lock</span> <span class="o">=</span> <span class="n">frame</span><span class="o">-&gt;</span><span class="n">lock</span><span class="p">();</span>
+         <span class="n">rogue</span><span class="p">::</span><span class="n">interfaces</span><span class="p">::</span><span class="n">stream</span><span class="p">::</span><span class="n">FrameLockPtr</span> <span class="n">lock</span> <span class="o">=</span> <span class="n">frame</span><span class="o">-&gt;</span><span class="n">lock</span><span class="p">();</span>
 
          <span class="o">//</span> <span class="n">Increment</span> <span class="n">frame</span> <span class="n">counter</span>
          <span class="n">frameCount_</span><span class="o">++</span><span class="p">;</span>
@@ -222,11 +224,15 @@ are included in <a class="reference internal" href="wrapper.html#custom-wrapper"
 
       <span class="o">//</span> <span class="n">Expose</span> <span class="n">methods</span> <span class="n">to</span> <span class="n">python</span>
       <span class="n">static</span> <span class="n">void</span> <span class="n">setup_python</span><span class="p">()</span> <span class="p">{</span>
-         <span class="n">bp</span><span class="p">::</span><span class="n">class_</span><span class="o">&lt;</span><span class="n">MyCustomSlave</span><span class="p">,</span> <span class="n">boost</span><span class="p">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">MyCustomSlave</span><span class="o">&gt;</span><span class="p">,</span> <span class="n">bp</span><span class="p">::</span><span class="n">bases</span><span class="o">&lt;</span><span class="n">ris</span><span class="p">::</span><span class="n">Slave</span><span class="o">&gt;</span><span class="p">,</span> <span class="n">boost</span><span class="p">::</span><span class="n">noncopyable</span> <span class="o">&gt;</span><span class="p">(</span><span class="s2">&quot;MyCustomSlave&quot;</span><span class="p">,</span><span class="n">bp</span><span class="p">::</span><span class="n">init</span><span class="o">&lt;&gt;</span><span class="p">())</span>
+         <span class="n">boost</span><span class="p">::</span><span class="n">python</span><span class="p">::</span><span class="n">class_</span><span class="o">&lt;</span><span class="n">MyCustomSlave</span><span class="p">,</span> <span class="n">boost</span><span class="p">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">MyCustomSlave</span><span class="o">&gt;</span><span class="p">,</span>
+                                              <span class="n">boost</span><span class="p">::</span><span class="n">python</span><span class="p">::</span><span class="n">bases</span><span class="o">&lt;</span><span class="n">rogue</span><span class="p">::</span><span class="n">interfaces</span><span class="p">::</span><span class="n">stream</span><span class="p">::</span><span class="n">Slave</span><span class="o">&gt;</span><span class="p">,</span>
+                                              <span class="n">boost</span><span class="p">::</span><span class="n">noncopyable</span> <span class="o">&gt;</span><span class="p">(</span><span class="s2">&quot;MyCustomSlave&quot;</span><span class="p">,</span>
+                                              <span class="n">boost</span><span class="p">::</span><span class="n">python</span><span class="p">::</span><span class="n">init</span><span class="o">&lt;&gt;</span><span class="p">())</span>
             <span class="o">.</span><span class="n">def</span><span class="p">(</span><span class="s2">&quot;getFrameCount&quot;</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">MyCustomSlave</span><span class="p">::</span><span class="n">getFrameCount</span><span class="p">)</span>
             <span class="o">.</span><span class="n">def</span><span class="p">(</span><span class="s2">&quot;getTotalBytes&quot;</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">MyCustomSlave</span><span class="p">::</span><span class="n">getTotalBytes</span><span class="p">)</span>
          <span class="p">;</span>
-         <span class="n">bp</span><span class="p">::</span><span class="n">implicitly_convertible</span><span class="o">&lt;</span><span class="n">boost</span><span class="p">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">MyCustomSlave</span><span class="o">&gt;</span><span class="p">,</span> <span class="n">ris</span><span class="p">::</span><span class="n">SlavePtr</span><span class="o">&gt;</span><span class="p">();</span>
+         <span class="n">boost</span><span class="p">::</span><span class="n">python</span><span class="p">::</span><span class="n">implicitly_convertible</span><span class="o">&lt;</span><span class="n">boost</span><span class="p">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">MyCustomSlave</span><span class="o">&gt;</span><span class="p">,</span>
+                                              <span class="n">rogue</span><span class="p">::</span><span class="n">interfaces</span><span class="p">::</span><span class="n">stream</span><span class="p">::</span><span class="n">SlavePtr</span><span class="o">&gt;</span><span class="p">();</span>
       <span class="p">};</span>
 <span class="p">};</span>
 
@@ -240,7 +246,7 @@ are included in <a class="reference internal" href="wrapper.html#custom-wrapper"
       <span class="n">uint32_t</span> <span class="n">byteCount_</span><span class="p">;</span>
 
       <span class="o">//</span> <span class="n">Frame</span> <span class="n">size</span> <span class="n">configuration</span>
-      <span class="n">uing32_t</span> <span class="n">frameSize_</span><span class="p">;</span>
+      <span class="n">uint32_t</span> <span class="n">frameSize_</span><span class="p">;</span>
 
    <span class="n">public</span><span class="p">:</span>
 
@@ -305,14 +311,18 @@ are included in <a class="reference internal" href="wrapper.html#custom-wrapper"
 
       <span class="o">//</span> <span class="n">Expose</span> <span class="n">methods</span> <span class="n">to</span> <span class="n">python</span>
       <span class="n">static</span> <span class="n">void</span> <span class="n">setup_python</span><span class="p">()</span> <span class="p">{</span>
-         <span class="n">bp</span><span class="p">::</span><span class="n">class_</span><span class="o">&lt;</span><span class="n">MyCustomMaster</span><span class="p">,</span> <span class="n">boost</span><span class="p">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">MyCustomMaster</span><span class="o">&gt;</span><span class="p">,</span> <span class="n">bp</span><span class="p">::</span><span class="n">bases</span><span class="o">&lt;</span><span class="n">ris</span><span class="p">::</span><span class="n">Master</span><span class="o">&gt;</span><span class="p">,</span> <span class="n">boost</span><span class="p">::</span><span class="n">noncopyable</span> <span class="o">&gt;</span><span class="p">(</span><span class="s2">&quot;MyCustomMaster&quot;</span><span class="p">,</span><span class="n">bp</span><span class="p">::</span><span class="n">init</span><span class="o">&lt;&gt;</span><span class="p">())</span>
+         <span class="n">boost</span><span class="p">::</span><span class="n">python</span><span class="p">::</span><span class="n">class_</span><span class="o">&lt;</span><span class="n">MyCustomMaster</span><span class="p">,</span> <span class="n">boost</span><span class="p">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">MyCustomMaster</span><span class="o">&gt;</span><span class="p">,</span>
+                                               <span class="n">boost</span><span class="p">::</span><span class="n">python</span><span class="p">::</span><span class="n">bases</span><span class="o">&lt;</span><span class="n">rogue</span><span class="p">::</span><span class="n">interfaces</span><span class="p">::</span><span class="n">stream</span><span class="p">::</span><span class="n">Master</span><span class="o">&gt;</span><span class="p">,</span>
+                                               <span class="n">boost</span><span class="p">::</span><span class="n">noncopyable</span> <span class="o">&gt;</span><span class="p">(</span><span class="s2">&quot;MyCustomMaster&quot;</span><span class="p">,</span>
+                                               <span class="n">boost</span><span class="p">::</span><span class="n">python</span><span class="p">::</span><span class="n">init</span><span class="o">&lt;&gt;</span><span class="p">())</span>
             <span class="o">.</span><span class="n">def</span><span class="p">(</span><span class="s2">&quot;getFrameCount&quot;</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">MyCustomMaster</span><span class="p">::</span><span class="n">getFrameCount</span><span class="p">)</span>
             <span class="o">.</span><span class="n">def</span><span class="p">(</span><span class="s2">&quot;getTotalBytes&quot;</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">MyCustomMaster</span><span class="p">::</span><span class="n">getTotalBytes</span><span class="p">)</span>
             <span class="o">.</span><span class="n">def</span><span class="p">(</span><span class="s2">&quot;setFrameSize&quot;</span><span class="p">,</span>  <span class="o">&amp;</span><span class="n">MyCustomMaster</span><span class="p">::</span><span class="n">setFrameSize</span><span class="p">)</span>
             <span class="o">.</span><span class="n">def</span><span class="p">(</span><span class="s2">&quot;getFrameSize&quot;</span><span class="p">,</span>  <span class="o">&amp;</span><span class="n">MyCustomMaster</span><span class="p">::</span><span class="n">getFrameSize</span><span class="p">)</span>
             <span class="o">.</span><span class="n">def</span><span class="p">(</span><span class="s2">&quot;myFrameGen&quot;</span><span class="p">,</span>    <span class="o">&amp;</span><span class="n">MyCustomMaster</span><span class="p">::</span><span class="n">myFrameGen</span><span class="p">)</span>
          <span class="p">;</span>
-         <span class="n">bp</span><span class="p">::</span><span class="n">implicitly_convertible</span><span class="o">&lt;</span><span class="n">boost</span><span class="p">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">MyCustomMaster</span><span class="o">&gt;</span><span class="p">,</span> <span class="n">ris</span><span class="p">::</span><span class="n">MasterPtr</span><span class="o">&gt;</span><span class="p">();</span>
+         <span class="n">boost</span><span class="p">::</span><span class="n">python</span><span class="p">::</span><span class="n">implicitly_convertible</span><span class="o">&lt;</span><span class="n">boost</span><span class="p">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">MyCustomMaster</span><span class="o">&gt;</span><span class="p">,</span>
+                                               <span class="n">rogue</span><span class="p">::</span><span class="n">interfaces</span><span class="p">::</span><span class="n">stream</span><span class="p">::</span><span class="n">MasterPtr</span><span class="o">&gt;</span><span class="p">();</span>
       <span class="p">};</span>
 <span class="p">};</span>
 
@@ -342,7 +352,7 @@ are included in <a class="reference internal" href="wrapper.html#custom-wrapper"
         <a href="makefile.html" class="btn btn-neutral float-right" title="Custom Module CMakeLists.txt" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="index.html" class="btn btn-neutral" title="Using Custom Modules" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="index.html" class="btn btn-neutral" title="Creating Custom Modules" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

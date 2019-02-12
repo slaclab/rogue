@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Sending Frames &mdash; Rogue v3.2.1-74-g2e7ecd84 documentation</title>
+  <title>Sending Frames &mdash; Rogue v3.2.1-86-g8800ec64 documentation</title>
   
 
   
@@ -103,7 +103,7 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../installing/index.html">Installing &amp; Compiling Rogue</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../custom_module/index.html">Using Custom Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../custom_module/index.html">Creating Custom Modules</a></li>
 </ul>
 
             
@@ -244,7 +244,7 @@ requested just as it is in python and the sendFrame() method is used to pass the
 frame to the connected Slaves. The main difference is that accessing the Frame
 data can be done more directly using an interator.</p>
 <p>In order to use a custom c++ Master subclass in python, you will need to build it
-into a c++ python module. See the section on <a class="reference internal" href="../../custom_module/index.html#custom-module"><span class="std std-ref">Using Custom Modules</span></a>.</p>
+into a c++ python module. See the section on <a class="reference internal" href="../../custom_module/index.html#custom-module"><span class="std std-ref">Creating Custom Modules</span></a>.</p>
 <p>The example below shows the most direct method for updating data within a frame using
 an iterator. Here we both de-reference the iterator directly to update specific locations
 and we use std::copy to move data from data buffer into the Frame.</p>

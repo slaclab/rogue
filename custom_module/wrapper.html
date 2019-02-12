@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Wrapping Custom Module With PyRogue Device &mdash; Rogue v3.2.1-74-g2e7ecd84 documentation</title>
+  <title>Wrapping Custom Module With PyRogue Device &mdash; Rogue v3.2.1-86-g8800ec64 documentation</title>
   
 
   
@@ -28,6 +28,7 @@
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Testing The Custom Module" href="testing.html" />
     <link rel="prev" title="Custom Module CMakeLists.txt" href="makefile.html" /> 
 
   
@@ -85,10 +86,11 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../interfaces/index.html">Interfaces</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../installing/index.html">Installing &amp; Compiling Rogue</a></li>
-<li class="toctree-l1 current"><a class="reference internal" href="index.html">Using Custom Modules</a><ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Creating Custom Modules</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="sourcefile.html">Custom Module Source</a></li>
 <li class="toctree-l2"><a class="reference internal" href="makefile.html">Custom Module CMakeLists.txt</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Wrapping Custom Module With PyRogue Device</a></li>
+<li class="toctree-l2"><a class="reference internal" href="testing.html">Testing The Custom Module</a></li>
 </ul>
 </li>
 </ul>
@@ -136,7 +138,7 @@
     
       <li><a href="../index.html">Docs</a> &raquo;</li>
         
-          <li><a href="index.html">Using Custom Modules</a> &raquo;</li>
+          <li><a href="index.html">Creating Custom Modules</a> &raquo;</li>
         
       <li>Wrapping Custom Module With PyRogue Device</li>
     
@@ -159,65 +161,70 @@
             
   <div class="section" id="wrapping-custom-module-with-pyrogue-device">
 <span id="custom-wrapper"></span><h1>Wrapping Custom Module With PyRogue Device<a class="headerlink" href="#wrapping-custom-module-with-pyrogue-device" title="Permalink to this headline">¶</a></h1>
-<p>The following demonstraes the implemenation of a PyRogue Device wrapper for
+<p>The following demonstrates the implemenation of a PyRogue Device wrapper for
 the classes contained within the <a class="reference internal" href="sourcefile.html#custom-sourcefile"><span class="std std-ref">Custom Module Source</span></a>. The variables and commands
-associated with the custom module are exposed to the PyRogue management
-layer.</p>
-<div class="code python highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">MyCustomSlave</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">Device</span><span class="p">):</span>
+associated with the custom module are exposed to the PyRogue management layer. This
+file can be created as MyWrapper.py and included in the same python directory as
+the output of the <a class="reference internal" href="makefile.html#custom-makefile"><span class="std std-ref">Custom Module CMakeLists.txt</span></a> step.</p>
+<div class="code python highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">rogue</span>
+<span class="kn">import</span> <span class="nn">pyrogue</span>
+<span class="kn">import</span> <span class="nn">MyModule</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span> <span class="p">):</span>
+<span class="k">class</span> <span class="nc">MyCustomSlave</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">Device</span><span class="p">):</span>
 
-        <span class="n">pyrogue</span><span class="o">.</span><span class="n">Device</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">&#39;My Custom Stream Slave&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+   <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span> <span class="p">):</span>
 
-        <span class="c1"># Create an instance of MyCustomSlave from MyModule</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_mySlave</span> <span class="o">=</span> <span class="n">MyModule</span><span class="o">.</span><span class="n">MyCustomSlave</span><span class="p">()</span>
+       <span class="n">pyrogue</span><span class="o">.</span><span class="n">Device</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">&#39;My Custom Stream Slave&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
-        <span class="c1"># Add read only frame count variable</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;FrameCount&#39;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Total Frames Received&#39;</span><span class="p">,</span>
-                                       <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RO&#39;</span><span class="p">,</span> <span class="n">pollInterval</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-                                       <span class="n">localGet</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_mySlave</span><span class="o">.</span><span class="n">getFrameCount</span><span class="p">))</span>
+       <span class="c1"># Create an instance of MyCustomSlave from MyModule</span>
+       <span class="bp">self</span><span class="o">.</span><span class="n">_mySlave</span> <span class="o">=</span> <span class="n">MyModule</span><span class="o">.</span><span class="n">MyCustomSlave</span><span class="p">()</span>
 
-        <span class="c1"># Add read only byte count variable</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;ByteCount&#39;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Total Bytes Received&#39;</span><span class="p">,</span>
-                                       <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RO&#39;</span><span class="p">,</span> <span class="n">pollInterval</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-                                       <span class="n">localGet</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_mySlave</span><span class="o">.</span><span class="n">getTotalBytes</span><span class="p">))</span>
+       <span class="c1"># Add read only frame count variable</span>
+       <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;FrameCount&#39;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Total Frames Received&#39;</span><span class="p">,</span>
+                                      <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RO&#39;</span><span class="p">,</span> <span class="n">pollInterval</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                                      <span class="n">localGet</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_mySlave</span><span class="o">.</span><span class="n">getFrameCount</span><span class="p">))</span>
 
-    <span class="c1"># Method called by streamConnect, streamTap and streamConnectBiDir to access slave</span>
-    <span class="k">def</span> <span class="nf">_getStreamSlave</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mySlave</span>
+       <span class="c1"># Add read only byte count variable</span>
+       <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;ByteCount&#39;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Total Bytes Received&#39;</span><span class="p">,</span>
+                                      <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RO&#39;</span><span class="p">,</span> <span class="n">pollInterval</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                                      <span class="n">localGet</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_mySlave</span><span class="o">.</span><span class="n">getTotalBytes</span><span class="p">))</span>
+
+   <span class="c1"># Method called by streamConnect, streamTap and streamConnectBiDir to access slave</span>
+   <span class="k">def</span> <span class="nf">_getStreamSlave</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+       <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mySlave</span>
 
 <span class="k">class</span> <span class="nc">MyCustomMaster</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">Device</span><span class="p">):</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span> <span class="p">):</span>
+   <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span> <span class="p">):</span>
 
-        <span class="n">pyrogue</span><span class="o">.</span><span class="n">Device</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">&#39;My Custom Stream Master&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+       <span class="n">pyrogue</span><span class="o">.</span><span class="n">Device</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">&#39;My Custom Stream Master&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
-        <span class="c1"># Create an instance of MyCustomSlave from MyModule</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_myMast</span> <span class="o">=</span> <span class="n">MyModule</span><span class="o">.</span><span class="n">MyCustomMaster</span><span class="p">()</span>
+       <span class="c1"># Create an instance of MyCustomSlave from MyModule</span>
+       <span class="bp">self</span><span class="o">.</span><span class="n">_myMast</span> <span class="o">=</span> <span class="n">MyModule</span><span class="o">.</span><span class="n">MyCustomMaster</span><span class="p">()</span>
 
-        <span class="c1"># Add read only frame count variable</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;FrameCount&#39;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Total Frames Received&#39;</span><span class="p">,</span>
-                                       <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RO&#39;</span><span class="p">,</span> <span class="n">pollInterval</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-                                       <span class="n">localGet</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_myMast</span><span class="o">.</span><span class="n">getFrameCount</span><span class="p">))</span>
+       <span class="c1"># Add read only frame count variable</span>
+       <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;FrameCount&#39;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Total Frames Received&#39;</span><span class="p">,</span>
+                                      <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RO&#39;</span><span class="p">,</span> <span class="n">pollInterval</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                                      <span class="n">localGet</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_myMast</span><span class="o">.</span><span class="n">getFrameCount</span><span class="p">))</span>
 
-        <span class="c1"># Add read only byte count variable</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;ByteCount&#39;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Total Bytes Received&#39;</span><span class="p">,</span>
-                                       <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RO&#39;</span><span class="p">,</span> <span class="n">pollInterval</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-                                       <span class="n">localGet</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_myMast</span><span class="o">.</span><span class="n">getTotalBytes</span><span class="p">))</span>
+       <span class="c1"># Add read only byte count variable</span>
+       <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;ByteCount&#39;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Total Bytes Received&#39;</span><span class="p">,</span>
+                                      <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RO&#39;</span><span class="p">,</span> <span class="n">pollInterval</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                                      <span class="n">localGet</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_myMast</span><span class="o">.</span><span class="n">getTotalBytes</span><span class="p">))</span>
 
-        <span class="c1"># Add read write frame size variable</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;FrameSize&#39;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Transmit Frame Size&#39;</span><span class="p">,</span>
-                                       <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RW&#39;</span><span class="p">,</span> <span class="n">pollInterval</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-                                       <span class="n">localGet</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_myMast</span><span class="o">.</span><span class="n">getFrameSize</span><span class="p">,</span>
-                                       <span class="n">localSet</span><span class="o">=</span><span class="k">lambda</span> <span class="n">value</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_myMast</span><span class="o">.</span><span class="n">setFrameSize</span><span class="p">(</span><span class="n">value</span><span class="p">)))</span>
+       <span class="c1"># Add read write frame size variable</span>
+       <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;FrameSize&#39;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Transmit Frame Size&#39;</span><span class="p">,</span>
+                                      <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RW&#39;</span><span class="p">,</span> <span class="n">pollInterval</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                                      <span class="n">localGet</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_myMast</span><span class="o">.</span><span class="n">getFrameSize</span><span class="p">,</span>
+                                      <span class="n">localSet</span><span class="o">=</span><span class="k">lambda</span> <span class="n">value</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_myMast</span><span class="o">.</span><span class="n">setFrameSize</span><span class="p">(</span><span class="n">value</span><span class="p">)))</span>
 
-        <span class="c1"># Frame generation command</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">LocalCommand</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;myFrameGen&#39;</span><span class="p">,</span><span class="n">description</span><span class="o">=</span><span class="s1">&#39;Generate a single frame&#39;</span><span class="p">,</span>
-                                      <span class="n">function</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_myFrameGet</span><span class="p">))</span>
+       <span class="c1"># Frame generation command</span>
+       <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">LocalCommand</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;MyFrameGen&#39;</span><span class="p">,</span><span class="n">description</span><span class="o">=</span><span class="s1">&#39;Generate a single frame&#39;</span><span class="p">,</span>
+                                     <span class="n">function</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_myMast</span><span class="o">.</span><span class="n">myFrameGen</span><span class="p">))</span>
 
-    <span class="c1"># Method called by streamConnect, streamTap and streamConnectBiDir to access master</span>
-    <span class="k">def</span> <span class="nf">_getStreamMaster</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_myMast</span>
+   <span class="c1"># Method called by streamConnect, streamTap and streamConnectBiDir to access master</span>
+   <span class="k">def</span> <span class="nf">_getStreamMaster</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+       <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_myMast</span>
 </pre></div>
 </div>
 </div>
@@ -229,6 +236,8 @@ layer.</p>
           <footer>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="testing.html" class="btn btn-neutral float-right" title="Testing The Custom Module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="makefile.html" class="btn btn-neutral" title="Custom Module CMakeLists.txt" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
