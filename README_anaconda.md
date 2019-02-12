@@ -26,7 +26,7 @@ $ source /path/to/my/anaconda3/etc/profile.d/conda.sh
 The next step is to create ana anaconda environment which includes the rogue package.
 
 ````
-$ conda create -n rogue_env -c defaults -c conda-forge -c paulscherrerinstitute -c tidair-tag python rogue
+$ conda create -n rogue_env -c defaults -c conda-forge -c paulscherrerinstitute -c tidair-tag rogue
 ````
 
 The order of the args is important. tidair-tag is the channel from which the rogue package is downloaded.
@@ -37,13 +37,13 @@ The above command will install the latest version of rogue from the master branc
 version of Rogue, run the following:
 
 ````
-$ conda create -n rogue_env -c defaults -c conda-forge -c paulscherrerinstitute -c tidair-dev python rogue
+$ conda create -n rogue_env -c defaults -c conda-forge -c paulscherrerinstitute -c tidair-dev rogue
 ````
 
 Alternatively you can install a specific released version of Rogue:
 
 ````
-$ conda create -n rogue_env -c defaults -c conda-forge -c paulscherrerinstitute -c tidair-tag python rogue=v3.0.2
+$ conda create -n rogue_env -c defaults -c conda-forge -c paulscherrerinstitute -c tidair-tag rogue=v3.0.2
 ````
 
 ## Using Rogue

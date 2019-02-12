@@ -207,6 +207,7 @@ void ru::Prbs::enable(uint32_t size) {
 //! Disable auto generation
 void ru::Prbs::disable() {
    if ( txThread_ != NULL ) {
+      rogue::GilRelease noGil;
       txThread_->interrupt();
       txThread_->join();
       delete txThread_;

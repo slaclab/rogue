@@ -13,15 +13,10 @@
 # contained in the LICENSE.txt file.
 # ----------------------------------------------------------------------------
 
-add_subdirectory("packetizer")
-add_subdirectory("rssi")
-add_subdirectory("srp")
-add_subdirectory("udp")
-add_subdirectory("batcher")
-
-if (DO_EPICS_V3)
-   add_subdirectory("epicsV3")
-endif()
+target_sources(rogue-core PRIVATE "${CMAKE_CURRENT_LIST_DIR}/SplitterV1.cpp")
+target_sources(rogue-core PRIVATE "${CMAKE_CURRENT_LIST_DIR}/CoreV1.cpp")
+target_sources(rogue-core PRIVATE "${CMAKE_CURRENT_LIST_DIR}/Data.cpp")
+target_sources(rogue-core PRIVATE "${CMAKE_CURRENT_LIST_DIR}/InverterV1.cpp")
 
 if (DO_PYTHON)
    target_sources(rogue-core PRIVATE "${CMAKE_CURRENT_LIST_DIR}/module.cpp")
