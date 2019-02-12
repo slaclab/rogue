@@ -165,7 +165,8 @@ namespace rogue {
                uint32_t size();
 
                //! Get Transaction type
-               /** Exposed as type() to Python
+               /** The transaction type values are defined in Constants
+                * Exposed as type() to Python
                 * @return 32-bit Transaction type
                 */
                uint32_t type();
@@ -181,7 +182,8 @@ namespace rogue {
                void refreshTimer(boost::shared_ptr<rogue::interfaces::memory::Transaction> reference);
 
                //! Complete transaction with passed error
-               /** Lock must be held before calling this method.
+               /** Lock must be held before calling this method. The
+                * error types are defined in Constants.
                 *
                 * Exposted as done() to Python
                 * @param error Transaction error value or 0 for no error.
