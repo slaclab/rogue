@@ -55,6 +55,7 @@ namespace rogue {
                /** Do not call directly. Use the create() class method instead.
                 *
                 * Not available in Python
+                * @param frame Frame pointer (FramePtr) to create a lock on
                 */
                FrameLock(boost::shared_ptr<rogue::interfaces::stream::Frame> frame);
 
@@ -71,7 +72,7 @@ namespace rogue {
                 */
                void lock();
 
-               //! UnLock associated frame is locked
+               //! UnLock associated frame if locked
                /** Exposed as unlock() to Python
                 */
                void unlock();

@@ -40,7 +40,7 @@ namespace rogue {
          /** The Transaction is passed between the Master and Slave to initiate a transaction. 
           * The Transaction class contains information about the transaction as well as the 
           * transaction data pointer. Each created transaction object has a unique 32-bit 
-          * transaction ID.
+          * transaction ID which is used to track the transaction.
           */ 
          class Transaction : public boost::enable_shared_from_this<rogue::interfaces::memory::Transaction> {
             friend class TransactionLock;
@@ -109,9 +109,6 @@ namespace rogue {
                // Create a transaction container and return a TransactionPtr, called by Master
                static boost::shared_ptr<rogue::interfaces::memory::Transaction> create (struct timeval timeout);
 
-               // Refresh timer, called by Master
-               void refreshTimer(boost::shared_ptr<rogue::interfaces::memory::Transaction> reference);
-
                // Wait for the transaction to complete, called by Master
                uint32_t wait();
 
@@ -172,6 +169,16 @@ namespace rogue {
                 * @return 32-bit Transaction type
                 */
                uint32_t type();
+
+               //! Refresh transaction timer
+               /** Called to refresh the Transaction timer. If the passed reference
+                * Transaction is NULL or the Transaction start time is later than the 
+                * reference transaction, the Transaction timer will be refreshed.
+                *
+                * Not exposed to Python
+                * @param reference Reference TransactionPtr
+                */
+               void refreshTimer(boost::shared_ptr<rogue::interfaces::memory::Transaction> reference);
 
                //! Complete transaction with passed error
                /** Lock must be held before calling this method.
