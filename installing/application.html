@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Installing &amp; Compiling Rogue &mdash; Rogue v3.2.1-87-g11802664 documentation</title>
+  <title>Compiling A Rogue Application &mdash; Rogue v3.2.1-87-g11802664 documentation</title>
   
 
   
@@ -28,8 +28,8 @@
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Installing Rogue With Anaconda" href="anaconda.html" />
-    <link rel="prev" title="Pool" href="../interfaces/stream/classes/pool.html" /> 
+    <link rel="next" title="Rogue and Anaconda behind a firewall" href="firewall.html" />
+    <link rel="prev" title="Building Rogue From Source" href="build.html" /> 
 
   
   <script src="../_static/js/modernizr.min.js"></script>
@@ -85,12 +85,12 @@
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../interfaces/index.html">Interfaces</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Installing &amp; Compiling Rogue</a><ul>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Installing &amp; Compiling Rogue</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="anaconda.html">Installing Rogue With Anaconda</a></li>
 <li class="toctree-l2"><a class="reference internal" href="anaconda_build.html">Building Rogue Inside Anaconda</a></li>
 <li class="toctree-l2"><a class="reference internal" href="docker.html">Installing Rogue Docker</a></li>
 <li class="toctree-l2"><a class="reference internal" href="build.html">Building Rogue From Source</a></li>
-<li class="toctree-l2"><a class="reference internal" href="application.html">Compiling A Rogue Application</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Compiling A Rogue Application</a></li>
 <li class="toctree-l2"><a class="reference internal" href="firewall.html">Rogue and Anaconda behind a firewall</a></li>
 </ul>
 </li>
@@ -140,13 +140,15 @@
     
       <li><a href="../index.html">Docs</a> &raquo;</li>
         
-      <li>Installing &amp; Compiling Rogue</li>
+          <li><a href="index.html">Installing &amp; Compiling Rogue</a> &raquo;</li>
+        
+      <li>Compiling A Rogue Application</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../_sources/installing/index.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../_sources/installing/application.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -159,19 +161,68 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="installing-compiling-rogue">
-<span id="installing"></span><h1>Installing &amp; Compiling Rogue<a class="headerlink" href="#installing-compiling-rogue" title="Permalink to this headline">¶</a></h1>
-<p>This section describes how to obtain and install Rogue.</p>
-<div class="toctree-wrapper compound">
-<p class="caption"><span class="caption-text">Install Options:</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="anaconda.html">Installing Rogue With Anaconda</a></li>
-<li class="toctree-l1"><a class="reference internal" href="anaconda_build.html">Building Rogue Inside Anaconda</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docker.html">Installing Rogue Docker</a></li>
-<li class="toctree-l1"><a class="reference internal" href="build.html">Building Rogue From Source</a></li>
-<li class="toctree-l1"><a class="reference internal" href="application.html">Compiling A Rogue Application</a></li>
-<li class="toctree-l1"><a class="reference internal" href="firewall.html">Rogue and Anaconda behind a firewall</a></li>
-</ul>
+  <div class="section" id="compiling-a-rogue-application">
+<span id="installing-application"></span><h1>Compiling A Rogue Application<a class="headerlink" href="#compiling-a-rogue-application" title="Permalink to this headline">¶</a></h1>
+<p>The following describes how to compiled a c++ application against the Rogue libraries.</p>
+<p>The following is an example custom CMakeLists.txt which will setup the environment
+for compiling application code using existing Rogue libraries. It is assumed
+that the ROGUE_DIR environment variable points to the non-standard Rogue
+location if not using an Anaconda environment, Docker or System install.</p>
+<p>This CMakeLists.txt file assumes a <strong>src</strong> sub-directory exists with a single
+.cpp file for each application being compiled. The following commands will
+compile the applications:</p>
+<div class="code highlight-default notranslate"><div class="highlight"><pre><span></span>$ mkdir build
+$ cd build
+$ cmake ..
+$ make
+</pre></div>
+</div>
+<p>The outputs will be placed in a <a href="#id1"><span class="problematic" id="id2">**</span></a>bin* sub-directory.</p>
+<div class="code cmake highlight-default notranslate"><div class="highlight"><pre><span></span># Add support for building in conda environment
+if (DEFINED ENV{CONDA_PREFIX})
+   set(CMAKE_PREFIX_PATH &quot;$ENV{CONDA_PREFIX}&quot;)
+   link_directories($ENV{CONDA_PREFIX}/lib)
+endif()
+
+# Check cmake version
+cmake_minimum_required(VERSION 3.5)
+include(InstallRequiredSystemLibraries)
+
+# Project name
+project (RssiSinK)
+
+# C/C++
+enable_language(CXX)
+set(CMAKE_CXX_FLAGS &quot;${CMAKE_CXX_FLAGS} -std=c++0x -Wno-deprecated&quot;)
+
+#####################################
+# Find Rogue &amp; Support Libraries
+#####################################
+if (DEFINED ENV{ROGUE_DIR})
+   set(Rogue_DIR $ENV{ROGUE_DIR}/lib)
+else()
+   set(Rogue_DIR ${CMAKE_PREFIX_PATH}/lib)
+endif()
+find_package(Rogue)
+
+#####################################
+# Setup build
+#####################################
+
+# Include files
+include_directories(${ROGUE_INCLUDE_DIRS})
+
+# Set output directory
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin)
+
+# Compile each source
+file(GLOB APP_SOURCES ${PROJECT_SOURCE_DIR}/src/*.cpp)
+foreach (srcFile ${APP_SOURCES})
+   get_filename_component(binName ${srcFile} NAME_WE)
+   add_executable(${binName} ${srcFile})
+   TARGET_LINK_LIBRARIES(${binName} LINK_PUBLIC ${ROGUE_LIBRARIES})
+endforeach ()
+</pre></div>
 </div>
 </div>
 
@@ -183,10 +234,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="anaconda.html" class="btn btn-neutral float-right" title="Installing Rogue With Anaconda" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="firewall.html" class="btn btn-neutral float-right" title="Rogue and Anaconda behind a firewall" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="../interfaces/stream/classes/pool.html" class="btn btn-neutral" title="Pool" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="build.html" class="btn btn-neutral" title="Building Rogue From Source" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

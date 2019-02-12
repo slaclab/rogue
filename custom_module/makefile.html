@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Custom Module CMakeLists.txt &mdash; Rogue v3.2.1-86-g8800ec64 documentation</title>
+  <title>Custom Module CMakeLists.txt &mdash; Rogue v3.2.1-87-g11802664 documentation</title>
   
 
   
@@ -166,7 +166,7 @@ for building a custom Rogue module using existing Rogue libraries. It is assumed
 that the ROGUE_DIR environment variable points to the non-standard Rogue
 location if not using an Anaconda environment, Docker or System install.</p>
 <p>Replace MyModule with your module name globally in this file.</p>
-<p>This file assumes that the source file MyModule.cpp exists in the src
+<p>This file assumes that the source file MyModule.cpp exists in the <strong>src</strong>
 subdirectory relative to this file’s location.  This file can be used to
 compile the <a class="reference internal" href="sourcefile.html#custom-sourcefile"><span class="std std-ref">Custom Module Source</span></a> described in this section.  This
 CMakeLists can be used to compile the custom module with the following commands:</p>
@@ -176,7 +176,7 @@ $ cmake ..
 $ make
 </pre></div>
 </div>
-<p>The output shared library MyModule.so will be created in the python
+<p>The output shared library MyModule.so will be created in the <strong>python</strong>
 sub-directory. This directory will need to be included in the PYTHONPATH
 environment variable.</p>
 <div class="code cmake highlight-default notranslate"><div class="highlight"><pre><span></span># Add support for building in conda environment

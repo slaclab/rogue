@@ -78,8 +78,8 @@ requested just as it is in python and the sendFrame() method is used to pass the
 frame to the connected Slaves. The main difference is that accessing the Frame
 data can be done more directly using an interator. 
 
-In order to use a custom c++ Master subclass in python, you will need to build it 
-into a c++ python module. See the section on :ref:`custom_module`.
+In order to use a custom c++ Master subclass, you will need to build it into a c++ python module or into
+a c++ application. See the sections :ref:`custom_module` and :ref:`installing_application`.
 
 The example below shows the most direct method for updating data within a frame using 
 an iterator. Here we both de-reference the iterator directly to update specific locations 

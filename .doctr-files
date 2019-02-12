@@ -6,9 +6,10 @@
 ./_sources/index.rst.txt
 ./_sources/installing/anaconda.rst.txt
 ./_sources/installing/anaconda_build.rst.txt
+./_sources/installing/application.rst.txt
+./_sources/installing/build.rst.txt
 ./_sources/installing/docker.rst.txt
 ./_sources/installing/firewall.rst.txt
-./_sources/installing/full_build.rst.txt
 ./_sources/installing/index.rst.txt
 ./_sources/interfaces/index.rst.txt
 ./_sources/interfaces/stream/classes/buffer.rst.txt
@@ -104,9 +105,10 @@
 ./index.html
 ./installing/anaconda.html
 ./installing/anaconda_build.html
+./installing/application.html
+./installing/build.html
 ./installing/docker.html
 ./installing/firewall.html
-./installing/full_build.html
 ./installing/index.html
 ./interfaces/index.html
 ./interfaces/stream/classes/buffer.html

@@ -1,7 +1,7 @@
 .. _installing_full_build:
 
-Building Rogue
-==============
+Building Rogue From Source
+==========================
 
 The following instructions demonstrate how to build rogue outside of the anaconda environment.
 
