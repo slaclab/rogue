@@ -78,7 +78,8 @@ void rpe::Server::stop() {
       rogue::GilRelease noGil;
 
       for (x=0; x < workCnt_; x++) 
-         workQueue_.push(NULL);
+         workQueue_.push(boost::shared_ptr<rogue::protocols::epicsV3::Work>());
+        // workQueue_.push(NULL);
 
       for (x=0; x < workCnt_; x++) {
          workers_[x]->interrupt();

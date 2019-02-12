@@ -60,8 +60,8 @@ rim::TcpClient::TcpClient (std::string addr, uint16_t port) : rim::Slave(4,0xFFF
    to = 10;
    zmq_setsockopt (this->zmqResp_, ZMQ_RCVTIMEO, &to, sizeof(to));
 
-   this->respAddr_.append(std::to_string(port+1));
-   this->reqAddr_.append(std::to_string(port));
+   this->respAddr_.append(std::to_string(static_cast<long long>(port+1)));
+   this->reqAddr_.append(std::to_string(static_cast<long long>(port)));
 
    this->bridgeLog_->debug("Creating response client port: %s",this->respAddr_.c_str());
 
