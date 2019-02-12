@@ -3,12 +3,6 @@
 Buffer
 ======
 
-A Buffer is a class which wraps a raw block of memory. One or more Buffer objects
-will make up a Frame. The Buffer object supports the ability to reserve header
-and tail space for protocol layers which will process the Buffer data. Interaction with
-the Buffer class is for advanced developers. Most users will interact with Frame and Buffer
-data using the :ref:`interfaces_stream_frame_iterator` class.
-
 The list of Buffer objects in a Frame is iterated using a the following typedef:
 
 .. doxygentypedef:: rogue::interfaces::stream::Frame::BufferIterator
