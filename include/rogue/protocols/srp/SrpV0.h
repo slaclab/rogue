@@ -41,7 +41,7 @@ namespace rogue {
                        public rogue::interfaces::stream::Slave,
                        public rogue::interfaces::memory::Slave {
 
-               boost::shard_ptr>rogue::Logging> log_;
+               boost::shared_ptr<rogue::Logging> log_;
 
                static const uint32_t WrHeadLen  = 8;
                static const uint32_t RdHeadLen  = 12;
