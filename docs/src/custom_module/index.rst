@@ -1,7 +1,10 @@
 .. _custom_module:
 
-Custom Components
-=================
+Using Custom Modules
+====================
+
+This section describes to to create, compile and wrap a custom c++
+module for use in PyRogue.
 
 .. toctree::
    :maxdepth: 1
@@ -9,4 +12,5 @@ Custom Components
 
    sourcefile
    makefile
+   wrapper
 

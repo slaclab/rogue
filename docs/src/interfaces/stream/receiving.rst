@@ -55,7 +55,7 @@ C++ Slave Subclass
 
 Creating a Slave sub-class in c++ is done in a similiar fashion. In order to use a custom
 c++ Slave subclass in python, you will need to build it into a c++ python module. See the
-section on :ref:`installing_custom`.
+section on :ref:`custom_module`.
 
 The example below shows the most direct method for receiving data from a Frame using 
 an iterator. Here we both de-reference the iterator directly to update specific locations 

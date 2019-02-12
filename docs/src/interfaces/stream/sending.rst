@@ -79,7 +79,7 @@ frame to the connected Slaves. The main difference is that accessing the Frame
 data can be done more directly using an interator. 
 
 In order to use a custom c++ Master subclass in python, you will need to build it 
-into a c++ python module. See the section on :ref:`installing_custom`.
+into a c++ python module. See the section on :ref:`custom_module`.
 
 The example below shows the most direct method for updating data within a frame using 
 an iterator. Here we both de-reference the iterator directly to update specific locations 

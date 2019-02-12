@@ -1,18 +1,18 @@
-.. _installing_custom_module:
+.. _custom_sourcefile:
 
-Custom Module
-=============
+Custom Module Source
+====================
 
 The following is an example source code file for a custom module which implements
 a custom stream transmitter and receiver as described in stream interfaces
 documenation. This source code expands the example to expose status variables
 to the Python layer. Instructions for wrapping these modules in PyRogue Devices
-are included in :ref:`installing_custom_python`.
+are included in :ref:`custom_wrapper`.
 
 * :ref:`interfaces_stream_sending`
 * :ref:`interfaces_stream_receiving`
 
-This module is compiled with the :ref:`installing_custom_makefile` described in this section.
+This module is compiled with the :ref:`custom_makefile` described in this section.
 
 .. code:: cmake
 
@@ -21,7 +21,7 @@ This module is compiled with the :ref:`installing_custom_makefile` described in 
    #include <rogue/interfaces/stream/Frame.h>
    #include <rogue/interfaces/stream/FrameLock.h>
 
-   // Custom slave class
+   // Custom stream slave class
    class MyCustomSlave : public rogue::interfaces::stream::Slave {
 
          // Total frame counter, exposed to Python
@@ -76,7 +76,7 @@ This module is compiled with the :ref:`installing_custom_makefile` described in 
          };
    };
 
-   // Custom master class
+   // Custom stream master class
    class MyCustomMaster : public rogue::interfaces::stream::Master {
 
          // Total frame counter, exposed to Python
@@ -131,9 +131,6 @@ This module is compiled with the :ref:`installing_custom_makefile` described in 
 
             // Here we request a frame capable of holding 100 bytes
             frame = reqFrame(frameSize_,true);
-
-            // Here we get an iterator to the frame data in write mode
-            it = frame->beginWrite();
 
             // Set an incrementing value to the first 10 locations
             x = 0;

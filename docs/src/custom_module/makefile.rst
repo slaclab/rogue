@@ -1,20 +1,30 @@
-.. _installing_custom_makefile:
+.. _custom_makefile:
 
-Custom CMakeLists.txt
-=====================
+Custom Module CMakeLists.txt
+============================
 
 The following is an example custom CMakeLists.txt which will setup the environment
 for building a custom Rogue module using existing Rogue libraries. It is assumed
 that the ROGUE_DIR environment variable points to the non-standard Rogue
 location if not using an Anaconda environment, Docker or System install.
 
+Replace MyModule with your module name globally in this file. 
+
 This file assumes that the source file MyModule.cpp exists in the src
-subdirectory relative to this file's location. The output library will be 
-generated in the python sub-directory.
+subdirectory relative to this file's location.  This file can be used to 
+compile the :ref:`custom_sourcefile` described in this section.  This 
+CMakeLists can be used to compile the custom module with the following commands:
 
-Replace MyModule with your module name globally in this file.
+.. code::
 
-This file can be used to compile the :ref:`installing_custom_module` described in this section.
+   $ mkdir build
+   $ cd build
+   $ cmake ..
+   $ make
+
+The output shared library MyModule.so will be created in the python
+sub-directory. This directory will need to be included in the PYTHONPATH
+environment variable.
 
 .. code:: cmake
 
