@@ -14,6 +14,7 @@ branch of Rogue. New documentation is being added incrementally over time.
    :caption: Contents:
 
    interfaces/index
+   building/index
 
 Indices and tables
 ==================

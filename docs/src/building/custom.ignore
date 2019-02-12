@@ -1,0 +1,7 @@
+.. _installing_custom:
+
+Building Custom Modules
+=======================
+
+This section describes how to build a custom module in c++ and use it in pyrogue.
+
