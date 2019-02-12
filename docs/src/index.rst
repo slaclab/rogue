@@ -15,7 +15,7 @@ branch of Rogue. New documentation is being added incrementally over time.
 
    interfaces/index
    installing/index
-   custom/index
+   custom_module/index
 
 Indices and tables
 ==================
