@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Frame &mdash; Rogue v3.2.1-94-gac964551 documentation</title>
+  <title>Frame &mdash; Rogue v3.2.1-95-g75d9f93c documentation</title>
   
 
   
@@ -17,34 +17,36 @@
   
 
   
+  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
-  
-  
     
 
   
-
   <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
     <link rel="next" title="Frame Lock" href="frameLock.html" />
     <link rel="prev" title="Stream Interface Class Descriptions" href="index.html" /> 
-
-  
-  <script src="../../../_static/js/modernizr.min.js"></script>
-
 </head>
 
 <body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
-
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
           
 
           
@@ -188,13 +190,6 @@
             
   <div class="section" id="frame">
 <span id="interfaces-stream-frame"></span><h1>Frame<a class="headerlink" href="#frame" title="Permalink to this headline">¶</a></h1>
-<p>In the stream interface the Frame class is a container for moving streaming data
-through the system. A single Frame instance exists for each frame of data
-being transferred. The frame object itself does not contain any data, instead
-it is a container for one or more blocks of data contained within the <a class="reference internal" href="buffer.html#interfaces-stream-buffer"><span class="std std-ref">Buffer</span></a> class.</p>
-<p>Frame data access in C++ uses a <a class="reference internal" href="frameIterator.html#interfaces-stream-frame-iterator"><span class="std std-ref">Frame Iterator</span></a> object, which operations
-as a standard C++ iteration object. Frames are usually accessed in write mode starting with a
-newly created Frame in a stream Master, or in read mode when receiving a Frame in a stream Slave.</p>
 <p>Frame objects in C++ are referenced by the following shared pointer typedef:</p>
 <dl class="type">
 <dt id="_CPPv4N5rogue10interfaces6stream8FramePtrE">
@@ -207,6 +202,7 @@ newly created Frame in a stream Master, or in read mode when receiving a Frame i
 <dt id="_CPPv4N5rogue10interfaces6stream5FrameE">
 <span id="_CPPv3N5rogue10interfaces6stream5FrameE"></span><span id="_CPPv2N5rogue10interfaces6stream5FrameE"></span><span id="rogue::interfaces::stream::Frame"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Frame"></span><em class="property">class </em><code class="descname">Frame</code> : <em class="property">public</em> boost::enable_shared_from_this&lt;rogue::interfaces::stream::<a class="reference internal" href="#_CPPv4N5rogue10interfaces6stream5FrameE" title="rogue::interfaces::stream::Frame">Frame</a>&gt;<a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream5FrameE" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p><a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a> container. </p>
+<p>In the stream interface the <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a> class is a container for moving streaming data through the system. A single <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a> instance exists for each frame of data being transferred. The frame object itself does not contain any data, instead it is a container for one or more blocks of data contained within the <a class="reference internal" href="buffer.html#classrogue_1_1interfaces_1_1stream_1_1Buffer"><span class="std std-ref">Buffer</span></a> class.</p>
 <p>This class is a container for an array of <a class="reference internal" href="buffer.html#classrogue_1_1interfaces_1_1stream_1_1Buffer"><span class="std std-ref">Buffer</span></a> class objects which contain the stream data. A <a class="reference internal" href="frameIterator.html#classrogue_1_1interfaces_1_1stream_1_1FrameIterator"><span class="std std-ref">FrameIterator</span></a> object is used to read and write data from and to the <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a>. </p>
 <div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric">Public Types</p>
@@ -661,7 +657,7 @@ newly created Frame in a stream Master, or in read mode when receiving a Frame i
         <a href="frameLock.html" class="btn btn-neutral float-right" title="Frame Lock" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="index.html" class="btn btn-neutral" title="Stream Interface Class Descriptions" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="index.html" class="btn btn-neutral float-left" title="Stream Interface Class Descriptions" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -687,26 +683,16 @@ newly created Frame in a stream Master, or in read mode when receiving a Frame i
   
 
 
-  
-
-    
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../../../_static/jquery.js"></script>
-        <script type="text/javascript" src="../../../_static/underscore.js"></script>
-        <script type="text/javascript" src="../../../_static/doctools.js"></script>
-        <script type="text/javascript" src="../../../_static/language_data.js"></script>
-    
-
-  
-
-  <script type="text/javascript" src="../../../_static/js/theme.js"></script>
-
   <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
+  </script>
+
+  
+  
+    
+   
 
 </body>
 </html>

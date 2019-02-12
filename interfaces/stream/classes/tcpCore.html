@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>TcpCore &mdash; Rogue v3.2.1-94-gac964551 documentation</title>
+  <title>TcpCore &mdash; Rogue v3.2.1-95-g75d9f93c documentation</title>
   
 
   
@@ -17,34 +17,36 @@
   
 
   
+  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
-  
-  
     
 
   
-
   <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
     <link rel="next" title="TcpClient" href="tcpClient.html" />
     <link rel="prev" title="Fifo" href="fifo.html" /> 
-
-  
-  <script src="../../../_static/js/modernizr.min.js"></script>
-
 </head>
 
 <body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
-
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
           
 
           
@@ -188,10 +190,6 @@
             
   <div class="section" id="tcpcore">
 <span id="interfaces-stream-tcp-core"></span><h1>TcpCore<a class="headerlink" href="#tcpcore" title="Permalink to this headline">¶</a></h1>
-<p>The TcpCore serves as the base class for the <a class="reference internal" href="tcpServer.html#interfaces-stream-tcp-server"><span class="std std-ref">TcpServer</span></a> and <a class="reference internal" href="tcpClient.html#interfaces-stream-tcp-client"><span class="std std-ref">TcpClient</span></a> objects whch form the two ends of a TCP stream bridge. This bridge allows bi-directional stream traffic to
-flow over a TCP network interface. The server listems for connections from a client. Once the connection is formed
-the TcpClient and TcpServer serve as both stream <a class="reference internal" href="slave.html#interfaces-stream-slave"><span class="std std-ref">Slave</span></a> and <a class="reference internal" href="master.html#interfaces-stream-master"><span class="std std-ref">Master</span></a>
-interfaces.</p>
 <p>The TcpCore class generates log entries with the path: “pyrogue.stream.TcpCore”</p>
 <p>Examples of using a TCP stream bridge are described in <a class="reference internal" href="../usingTcp.html#interfaces-stream-using-tcp"><span class="std std-ref">Using The TCP Bridge</span></a>.</p>
 <p>TcpCore objects in C++ are referenced by the following shared pointer typedef:</p>
@@ -292,7 +290,7 @@ interfaces.</p>
         <a href="tcpClient.html" class="btn btn-neutral float-right" title="TcpClient" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="fifo.html" class="btn btn-neutral" title="Fifo" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="fifo.html" class="btn btn-neutral float-left" title="Fifo" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -318,26 +316,16 @@ interfaces.</p>
   
 
 
-  
-
-    
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../../../_static/jquery.js"></script>
-        <script type="text/javascript" src="../../../_static/underscore.js"></script>
-        <script type="text/javascript" src="../../../_static/doctools.js"></script>
-        <script type="text/javascript" src="../../../_static/language_data.js"></script>
-    
-
-  
-
-  <script type="text/javascript" src="../../../_static/js/theme.js"></script>
-
   <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
+  </script>
+
+  
+  
+    
+   
 
 </body>
 </html>

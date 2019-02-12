@@ -3,9 +3,6 @@
 Filter
 ======
 
-A Filter allows :ref:`interfaces_stream_frame` objects to be filtered, only allow 
-frames for a particular channel to be passed. Optionally errored frames can be filtered as well.
-
 Examples of using a Filter are described in :ref:`interfaces_stream_using_filter`.
 
 The Filter class generates log entries with the path: "pyrogue.stream.Filter"
