@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Using The TCP Bridge &mdash; Rogue v3.2.1-95-g75d9f93c documentation</title>
+  <title>Using The TCP Bridge &mdash; Rogue v3.2.1-96-gedab2cd1 documentation</title>
   
 
   
@@ -251,7 +251,7 @@ on the client.  The C++ server is able to interface with either a Python or C++ 
 
 <span class="c1">// Start a TCP Bridge Server, Listen on all interfaces, ports 8000 &amp; 8001.</span>
 <span class="c1">// Pass an address of 192.168.1.1 to listen on only that specific interface</span>
-<span class="n">rogue</span><span class="o">::</span><span class="n">interfaces</span><span class="o">::</span><span class="n">stream</span><span class="o">::</span><span class="n">TcpServerPtr</span> <span class="n">tcp</span> <span class="o">=</span> <span class="n">rogue</span><span class="o">::</span><span class="n">intefaces</span><span class="o">::</span><span class="n">stream</span><span class="o">::</span><span class="n">TcpServer</span><span class="o">::</span><span class="n">create</span><span class="p">(</span><span class="s">&quot;*&quot;</span><span class="p">,</span><span class="mi">8000</span><span class="p">)</span>
+<span class="n">rogue</span><span class="o">::</span><span class="n">interfaces</span><span class="o">::</span><span class="n">stream</span><span class="o">::</span><span class="n">TcpServerPtr</span> <span class="n">tcp</span> <span class="o">=</span> <span class="n">rogue</span><span class="o">::</span><span class="n">interfaces</span><span class="o">::</span><span class="n">stream</span><span class="o">::</span><span class="n">TcpServer</span><span class="o">::</span><span class="n">create</span><span class="p">(</span><span class="s">&quot;*&quot;</span><span class="p">,</span><span class="mi">8000</span><span class="p">)</span>
 
 <span class="c1">// Connect the transmitter</span>
 <span class="n">streamConnect</span><span class="p">(</span><span class="n">src</span><span class="p">,</span><span class="n">tcp</span><span class="p">)</span>
@@ -276,7 +276,7 @@ on the server.  The C++ client is able to interface with either a Python or C++ 
 <span class="n">MyCustomSlavePtr</span> <span class="n">dst</span> <span class="o">=</span> <span class="n">MyCustomSlave</span><span class="o">::</span><span class="n">create</span><span class="p">()</span>
 
 <span class="c1">// Start a TCP Bridge Client, Connect remote server at 192.168.1.1 ports 8000 &amp; 8001.</span>
-<span class="n">rogue</span><span class="o">::</span><span class="n">interfaces</span><span class="o">::</span><span class="n">stream</span><span class="o">::</span><span class="n">TcpClientPtr</span> <span class="n">tcp</span> <span class="o">=</span> <span class="n">rogue</span><span class="o">::</span><span class="n">intefaces</span><span class="o">::</span><span class="n">stream</span><span class="o">::</span><span class="n">TcpClient</span><span class="o">::</span><span class="n">create</span><span class="p">(</span><span class="s">&quot;192.168.1.1&quot;</span><span class="p">,</span><span class="mi">8000</span><span class="p">)</span>
+<span class="n">rogue</span><span class="o">::</span><span class="n">interfaces</span><span class="o">::</span><span class="n">stream</span><span class="o">::</span><span class="n">TcpClientPtr</span> <span class="n">tcp</span> <span class="o">=</span> <span class="n">rogue</span><span class="o">::</span><span class="n">interfaces</span><span class="o">::</span><span class="n">stream</span><span class="o">::</span><span class="n">TcpClient</span><span class="o">::</span><span class="n">create</span><span class="p">(</span><span class="s">&quot;192.168.1.1&quot;</span><span class="p">,</span><span class="mi">8000</span><span class="p">)</span>
 
 <span class="c1">// Connect the transmitter</span>
 <span class="n">streamConnect</span><span class="p">(</span><span class="n">src</span><span class="p">,</span><span class="n">tcp</span><span class="p">)</span>

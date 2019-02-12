@@ -6,8 +6,12 @@ Memory Interface
 
 .. toctree::
    :maxdepth: 1
-   :caption: Using Streams:
+   :caption: Using The Memory Interface:
 
    connecting
+   master
+   slave 
+   hub 
+   usingTcp
    classes/index
 

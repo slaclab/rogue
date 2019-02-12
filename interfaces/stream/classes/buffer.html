@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Buffer &mdash; Rogue v3.2.1-95-g75d9f93c documentation</title>
+  <title>Buffer &mdash; Rogue v3.2.1-96-gedab2cd1 documentation</title>
   
 
   
@@ -216,6 +216,7 @@
 <dt id="_CPPv4N5rogue10interfaces6stream6BufferE">
 <span id="_CPPv3N5rogue10interfaces6stream6BufferE"></span><span id="_CPPv2N5rogue10interfaces6stream6BufferE"></span><span id="rogue::interfaces::stream::Buffer"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Buffer"></span><em class="property">class </em><code class="descname">Buffer</code><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream6BufferE" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p><a class="reference internal" href="frame.html#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a> buffer. </p>
+<p>This class is a container for buffers which make up a frame. Each buffer is associated with a contigous block of memory allocated by an instance of the <a class="reference internal" href="pool.html#classrogue_1_1interfaces_1_1stream_1_1Pool"><span class="std std-ref">Pool</span></a> class. Each buffer within the frame has a reserved header and tail area to pre-reserve space which may be required by protocol layers. Direct interaction with the <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Buffer"><span class="std std-ref">Buffer</span></a> class is an advanced topic, most users will simply use a <a class="reference internal" href="frameIterator.html#classrogue_1_1interfaces_1_1stream_1_1FrameIterator"><span class="std std-ref">FrameIterator</span></a> to access <a class="reference internal" href="frame.html#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a> and <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Buffer"><span class="std std-ref">Buffer</span></a> data. The <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Buffer"><span class="std std-ref">Buffer</span></a> class is not vailable in Python. </p>
 <div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric">Public Types</p>
 <dl class="type">

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Master &mdash; Rogue v3.2.1-95-g75d9f93c documentation</title>
+  <title>Master &mdash; Rogue v3.2.1-96-gedab2cd1 documentation</title>
   
 
   
@@ -90,6 +90,10 @@
 <li class="toctree-l2"><a class="reference internal" href="../../stream/index.html">Stream Interface</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="../index.html">Memory Interface</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="../connecting.html">Connecting Memory Elements</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../master.html">Memory Master Example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../slave.html">Memory Slave Example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../hub.html">Memory Hub Example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../usingTcp.html">Using The TCP Bridge</a></li>
 <li class="toctree-l3 current"><a class="reference internal" href="index.html">Memory Interface Class Descriptions</a><ul class="current">
 <li class="toctree-l4"><a class="reference internal" href="constants.html">Constants</a></li>
 <li class="toctree-l4"><a class="reference internal" href="transaction.html">Transaction</a></li>
@@ -354,6 +358,7 @@ Each Master class object will be coupled with one or more <a class="reference in
 <li><code class="docutils literal notranslate"><span class="pre">address</span></code>: 64-bit transaction offset address </li>
 <li><code class="docutils literal notranslate"><span class="pre">p</span></code>: Byte array used for transaction data </li>
 <li><code class="docutils literal notranslate"><span class="pre">size</span></code>: <a class="reference internal" href="transaction.html#classrogue_1_1interfaces_1_1memory_1_1Transaction"><span class="std std-ref">Transaction</span></a> size in bytes </li>
+<li><code class="docutils literal notranslate"><span class="pre">offset</span></code>: Offset within byte array for transaction </li>
 <li><code class="docutils literal notranslate"><span class="pre">type</span></code>: <a class="reference internal" href="transaction.html#classrogue_1_1interfaces_1_1memory_1_1Transaction"><span class="std std-ref">Transaction</span></a> type </li>
 </ul>
 </dd>

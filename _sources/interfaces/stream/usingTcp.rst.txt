@@ -84,7 +84,7 @@ on the client.  The C++ server is able to interface with either a Python or C++ 
 
    // Start a TCP Bridge Server, Listen on all interfaces, ports 8000 & 8001.
    // Pass an address of 192.168.1.1 to listen on only that specific interface
-   rogue::interfaces::stream::TcpServerPtr tcp = rogue::intefaces::stream::TcpServer::create("*",8000)
+   rogue::interfaces::stream::TcpServerPtr tcp = rogue::interfaces::stream::TcpServer::create("*",8000)
 
    // Connect the transmitter
    streamConnect(src,tcp)
@@ -111,7 +111,7 @@ on the server.  The C++ client is able to interface with either a Python or C++ 
    MyCustomSlavePtr dst = MyCustomSlave::create()
 
    // Start a TCP Bridge Client, Connect remote server at 192.168.1.1 ports 8000 & 8001.
-   rogue::interfaces::stream::TcpClientPtr tcp = rogue::intefaces::stream::TcpClient::create("192.168.1.1",8000)
+   rogue::interfaces::stream::TcpClientPtr tcp = rogue::interfaces::stream::TcpClient::create("192.168.1.1",8000)
 
    // Connect the transmitter
    streamConnect(src,tcp)

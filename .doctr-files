@@ -22,7 +22,11 @@
 ./_sources/interfaces/memory/classes/transaction.rst.txt
 ./_sources/interfaces/memory/classes/transactionLock.rst.txt
 ./_sources/interfaces/memory/connecting.rst.txt
+./_sources/interfaces/memory/hub.rst.txt
 ./_sources/interfaces/memory/index.rst.txt
+./_sources/interfaces/memory/master.rst.txt
+./_sources/interfaces/memory/slave.rst.txt
+./_sources/interfaces/memory/usingTcp.rst.txt
 ./_sources/interfaces/stream/classes/buffer.rst.txt
 ./_sources/interfaces/stream/classes/fifo.rst.txt
 ./_sources/interfaces/stream/classes/filter.rst.txt
@@ -132,7 +136,11 @@
 ./interfaces/memory/classes/transaction.html
 ./interfaces/memory/classes/transactionLock.html
 ./interfaces/memory/connecting.html
+./interfaces/memory/hub.html
 ./interfaces/memory/index.html
+./interfaces/memory/master.html
+./interfaces/memory/slave.html
+./interfaces/memory/usingTcp.html
 ./interfaces/stream/classes/buffer.html
 ./interfaces/stream/classes/fifo.html
 ./interfaces/stream/classes/filter.html
