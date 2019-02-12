@@ -63,8 +63,8 @@ ris::TcpCore::TcpCore (std::string addr, uint16_t port, bool server) {
 
    // Server mode
    if (server) {
-      this->pullAddr_.append(std::to_string(port));
-      this->pushAddr_.append(std::to_string(port+1));
+      this->pullAddr_.append(std::to_string(static_cast<long long>(port)));
+      this->pushAddr_.append(std::to_string(static_cast<long long>(port+1)));
 
       this->bridgeLog_->debug("Creating pull server port: %s",this->pullAddr_.c_str());
 
@@ -79,8 +79,8 @@ ris::TcpCore::TcpCore (std::string addr, uint16_t port, bool server) {
 
    // Client mode
    else {
-      this->pullAddr_.append(std::to_string(port+1));
-      this->pushAddr_.append(std::to_string(port));
+      this->pullAddr_.append(std::to_string(static_cast<long long>(port+1)));
+      this->pushAddr_.append(std::to_string(static_cast<long long>(port)));
 
       this->bridgeLog_->debug("Creating pull client port: %s",this->pullAddr_.c_str());
 
