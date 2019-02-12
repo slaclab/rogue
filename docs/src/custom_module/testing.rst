@@ -39,3 +39,13 @@ by the :ref:`custom_sourcefile`, :ref:`custom_makefile` and :ref:`custom_wrapper
        print("Sent {} bytes in {} frames".format(r.testMaster.ByteCount.get(),r.testMaster.FrameCount.get()))
        print("Got  {} bytes in {} frames".format(r.testSlave.ByteCount.get(),r.testSlave.FrameCount.get()))
 
+
+The output of this python script should be the following (with a different rogue version):
+
+.. code::
+
+   Rogue/pyrogue version v3.2.1. https://github.com/slaclab/rogue
+   Loaded my module
+   Sent 400 bytes in 2 frames
+   Got  400 bytes in 2 frames
+
