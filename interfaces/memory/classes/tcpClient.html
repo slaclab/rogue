@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>TcpClient &mdash; Rogue v3.2.1-92-g2130f976 documentation</title>
+  <title>TcpClient &mdash; Rogue v3.2.1-94-gac964551 documentation</title>
   
 
   
@@ -177,6 +177,7 @@
             
   <div class="section" id="tcpclient">
 <span id="interfaces-memory-tcp-client"></span><h1>TcpClient<a class="headerlink" href="#tcpclient" title="Permalink to this headline">¶</a></h1>
+<p>The Master class generates log entries with the path: “pyrogue.memory.TcpClient”</p>
 <p>TcpClient objects in C++ are referenced by the following shared pointer typedef:</p>
 <dl class="type">
 <dt id="_CPPv4N5rogue10interfaces6memory12TcpClientPtrE">
@@ -187,25 +188,38 @@
 <dl class="class">
 <dt id="_CPPv4N5rogue10interfaces6memory9TcpClientE">
 <span id="_CPPv3N5rogue10interfaces6memory9TcpClientE"></span><span id="_CPPv2N5rogue10interfaces6memory9TcpClientE"></span><span id="rogue::interfaces::memory::TcpClient"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1TcpClient"></span><em class="property">class </em><code class="descname">TcpClient</code> : <em class="property">public</em> rogue::interfaces::memory::<a class="reference internal" href="slave.html#_CPPv4N5rogue10interfaces6memory5SlaveE" title="rogue::interfaces::memory::Slave">Slave</a><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory9TcpClientE" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>PGP Card class. </p>
+<dd><p>Memory TCP Bridge Client. </p>
+<p>This class implements a TCP bridge between a memory <a class="reference internal" href="master.html#classrogue_1_1interfaces_1_1memory_1_1Master"><span class="std std-ref">Master</span></a> and a memory <a class="reference internal" href="slave.html#classrogue_1_1interfaces_1_1memory_1_1Slave"><span class="std std-ref">Slave</span></a>. The client side of the TCP bridge accepts a memory <a class="reference internal" href="transaction.html#classrogue_1_1interfaces_1_1memory_1_1Transaction"><span class="std std-ref">Transaction</span></a> from an attached master and forwards that <a class="reference internal" href="transaction.html#classrogue_1_1interfaces_1_1memory_1_1Transaction"><span class="std std-ref">Transaction</span></a> to a remote <a class="reference internal" href="tcpServer.html#classrogue_1_1interfaces_1_1memory_1_1TcpServer"><span class="std std-ref">TcpServer</span></a>. The server side of the TCP bridge implments a memory <a class="reference internal" href="master.html#classrogue_1_1interfaces_1_1memory_1_1Master"><span class="std std-ref">Master</span></a> device which executes the memory <a class="reference internal" href="transaction.html#classrogue_1_1interfaces_1_1memory_1_1Transaction"><span class="std std-ref">Transaction</span></a> to an attached <a class="reference internal" href="slave.html#classrogue_1_1interfaces_1_1memory_1_1Slave"><span class="std std-ref">Slave</span></a>. </p>
 <div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric">Public Functions</p>
 <dl class="function">
 <dt id="_CPPv4N5rogue10interfaces6memory9TcpClient9TcpClientENSt6stringE8uint16_t">
 <span id="_CPPv3N5rogue10interfaces6memory9TcpClient9TcpClientENSt6stringE8uint16_t"></span><span id="_CPPv2N5rogue10interfaces6memory9TcpClient9TcpClientENSt6stringE8uint16_t"></span><span id="rogue::interfaces::memory::TcpClient::TcpClient__ss.uint16_t"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1TcpClient_1aa02f80051d173065c727830c3d950307"></span><code class="descname">TcpClient</code><span class="sig-paren">(</span>std::string <em>addr</em>, uint16_t <em>port</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory9TcpClient9TcpClientENSt6stringE8uint16_t" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>Creator. </p>
+<dd><p>Create a <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1TcpClient"><span class="std std-ref">TcpClient</span></a> object. </p>
+<p>The creator takes an address and port. The passed address is the address of the remote <a class="reference internal" href="tcpServer.html#classrogue_1_1interfaces_1_1memory_1_1TcpServer"><span class="std std-ref">TcpServer</span></a> to connect to, and can either be an IP address or hostname. The memory bridge requires two TCP ports. The pased port is the base number of these two ports. A passed value of 8000 will result in both 8000 and 8001 being used by this bridge.</p>
+<p>Exposted as <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1TcpClient"><span class="std std-ref">TcpClient</span></a> to Python <dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd><a class="reference internal" href="tcpServer.html#classrogue_1_1interfaces_1_1memory_1_1TcpServer"><span class="std std-ref">TcpServer</span></a> object as a TcpServerPtr </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">addr</span></code>: Interface address </li>
+<li><code class="docutils literal notranslate"><span class="pre">port</span></code>: Base port number to use for connection. </li>
+</ul>
+</dd>
+</dl>
+</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="_CPPv4N5rogue10interfaces6memory9TcpClientD0Ev">
 <span id="_CPPv3N5rogue10interfaces6memory9TcpClientD0Ev"></span><span id="_CPPv2N5rogue10interfaces6memory9TcpClientD0Ev"></span><span id="rogue::interfaces::memory::TcpClient::~TcpClient"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1TcpClient_1a320e732a8c2796339534be197817e790"></span><code class="descname">~TcpClient</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory9TcpClientD0Ev" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>Destructor. </p>
+<dd><p>Destroy the <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1TcpClient"><span class="std std-ref">TcpClient</span></a>. </p>
 </dd></dl>
 
 <dl class="function">
 <dt id="_CPPv4N5rogue10interfaces6memory9TcpClient13doTransactionEN5boost10shared_ptrIN5rogue10interfaces6memory11TransactionEEE">
 <span id="_CPPv3N5rogue10interfaces6memory9TcpClient13doTransactionEN5boost10shared_ptrIN5rogue10interfaces6memory11TransactionEEE"></span><span id="_CPPv2N5rogue10interfaces6memory9TcpClient13doTransactionEN5boost10shared_ptrIN5rogue10interfaces6memory11TransactionEEE"></span><span id="rogue::interfaces::memory::TcpClient::doTransaction__boost::shared_ptr:rogue::interfaces::memory::Transaction:"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1TcpClient_1a5c6b5c819692e26e8ab051672049f5b4"></span>void <code class="descname">doTransaction</code><span class="sig-paren">(</span>boost::shared_ptr&lt;rogue::interfaces::memory::<a class="reference internal" href="transaction.html#_CPPv4N5rogue10interfaces6memory11TransactionE" title="rogue::interfaces::memory::Transaction">Transaction</a>&gt; <em>tran</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory9TcpClient13doTransactionEN5boost10shared_ptrIN5rogue10interfaces6memory11TransactionEEE" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>Post a transaction. <a class="reference internal" href="master.html#classrogue_1_1interfaces_1_1memory_1_1Master"><span class="std std-ref">Master</span></a> will call this method with the access attributes. </p>
+<dd><p>Accept as transaction from the memory <a class="reference internal" href="master.html#classrogue_1_1interfaces_1_1memory_1_1Master"><span class="std std-ref">Master</span></a> as defined in the <a class="reference internal" href="slave.html#classrogue_1_1interfaces_1_1memory_1_1Slave"><span class="std std-ref">Slave</span></a> class. </p>
 </dd></dl>
 
 </div>
@@ -214,7 +228,19 @@
 <dl class="function">
 <dt id="_CPPv4N5rogue10interfaces6memory9TcpClient6createENSt6stringE8uint16_t">
 <span id="_CPPv3N5rogue10interfaces6memory9TcpClient6createENSt6stringE8uint16_t"></span><span id="_CPPv2N5rogue10interfaces6memory9TcpClient6createENSt6stringE8uint16_t"></span><span id="rogue::interfaces::memory::TcpClient::create__ss.uint16_t"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1TcpClient_1afa0eb3cc1975f63398d72b16d86c37d2"></span><em class="property">static</em> boost::shared_ptr&lt;rogue::interfaces::memory::<a class="reference internal" href="#_CPPv4N5rogue10interfaces6memory9TcpClientE" title="rogue::interfaces::memory::TcpClient">TcpClient</a>&gt; <code class="descname">create</code><span class="sig-paren">(</span>std::string <em>addr</em>, uint16_t <em>port</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory9TcpClient6createENSt6stringE8uint16_t" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>Class creation. </p>
+<dd><p>Create a <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1TcpClient"><span class="std std-ref">TcpClient</span></a> object and return as a TcpServerPtr. </p>
+<p>The creator takes an address and port. The passed address is the address of the remote <a class="reference internal" href="tcpServer.html#classrogue_1_1interfaces_1_1memory_1_1TcpServer"><span class="std std-ref">TcpServer</span></a> to connect to, and can either be an IP address or hostname. The memory bridge requires two TCP ports. The pased port is the base number of these two ports. A passed value of 8000 will result in both 8000 and 8001 being used by this bridge.</p>
+<p>Not exposed to Python <dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd><a class="reference internal" href="tcpServer.html#classrogue_1_1interfaces_1_1memory_1_1TcpServer"><span class="std std-ref">TcpServer</span></a> object as a TcpServerPtr </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">addr</span></code>: Interface address </li>
+<li><code class="docutils literal notranslate"><span class="pre">port</span></code>: Base port number to use for connection. </li>
+</ul>
+</dd>
+</dl>
+</p>
 </dd></dl>
 
 <dl class="function">

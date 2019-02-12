@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Transaction &mdash; Rogue v3.2.1-92-g2130f976 documentation</title>
+  <title>Transaction &mdash; Rogue v3.2.1-94-gac964551 documentation</title>
   
 
   
@@ -282,7 +282,7 @@
 <dt id="_CPPv4N5rogue10interfaces6memory11Transaction4typeEv">
 <span id="_CPPv3N5rogue10interfaces6memory11Transaction4typeEv"></span><span id="_CPPv2N5rogue10interfaces6memory11Transaction4typeEv"></span><span id="rogue::interfaces::memory::Transaction::type"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Transaction_1ac03d3ff263b5a59ddbc8ab67bdc2758e"></span>uint32_t <code class="descname">type</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory11Transaction4typeEv" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Get <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Transaction"><span class="std std-ref">Transaction</span></a> type. </p>
-<p>Exposed as <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Transaction_1ac03d3ff263b5a59ddbc8ab67bdc2758e"><span class="std std-ref">type()</span></a> to Python <dl class="docutils">
+<p>The transaction type values are defined in Constants Exposed as <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Transaction_1ac03d3ff263b5a59ddbc8ab67bdc2758e"><span class="std std-ref">type()</span></a> to Python <dl class="docutils">
 <dt><strong>Return</strong></dt>
 <dd>32-bit <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Transaction"><span class="std std-ref">Transaction</span></a> type </dd>
 </dl>
@@ -308,7 +308,7 @@
 <dt id="_CPPv4N5rogue10interfaces6memory11Transaction4doneE8uint32_t">
 <span id="_CPPv3N5rogue10interfaces6memory11Transaction4doneE8uint32_t"></span><span id="_CPPv2N5rogue10interfaces6memory11Transaction4doneE8uint32_t"></span><span id="rogue::interfaces::memory::Transaction::done__uint32_t"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Transaction_1a9e82dc61dcf2111d5d6418a4621be32e"></span>void <code class="descname">done</code><span class="sig-paren">(</span>uint32_t <em>error</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory11Transaction4doneE8uint32_t" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Complete transaction with passed error. </p>
-<p>Lock must be held before calling this method.</p>
+<p>Lock must be held before calling this method. The error types are defined in Constants.</p>
 <p>Exposted as <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Transaction_1a9e82dc61dcf2111d5d6418a4621be32e"><span class="std std-ref">done()</span></a> to Python <dl class="docutils">
 <dt><strong>Parameters</strong></dt>
 <dd><ul class="breatheparameterlist first last simple">

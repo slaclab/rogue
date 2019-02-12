@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Slave &mdash; Rogue v3.2.1-92-g2130f976 documentation</title>
+  <title>Slave &mdash; Rogue v3.2.1-94-gac964551 documentation</title>
   
 
   
@@ -181,86 +181,168 @@
 <dl class="type">
 <dt id="_CPPv4N5rogue10interfaces6memory8SlavePtrE">
 <span id="_CPPv3N5rogue10interfaces6memory8SlavePtrE"></span><span id="_CPPv2N5rogue10interfaces6memory8SlavePtrE"></span><span id="rogue::interfaces::memory::SlavePtr"></span><span class="target" id="namespacerogue_1_1interfaces_1_1memory_1a5ddcc0d2bf72f0f036e10361f49ce68a"></span><em class="property">typedef </em>boost::shared_ptr&lt;rogue::interfaces::memory::<a class="reference internal" href="#_CPPv4N5rogue10interfaces6memory5SlaveE" title="rogue::interfaces::memory::Slave">Slave</a>&gt; <code class="descclassname">rogue::interfaces::memory<code class="descclassname">::</code></code><code class="descname">SlavePtr</code><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory8SlavePtrE" title="Permalink to this definition">¶</a><br /></dt>
-<dd></dd></dl>
+<dd><p>Alias for using shared pointer as SlavePtr. </p>
+</dd></dl>
 
 <p>The class description is shown below:</p>
 <dl class="class">
 <dt id="_CPPv4N5rogue10interfaces6memory5SlaveE">
 <span id="_CPPv3N5rogue10interfaces6memory5SlaveE"></span><span id="_CPPv2N5rogue10interfaces6memory5SlaveE"></span><span id="rogue::interfaces::memory::Slave"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Slave"></span><em class="property">class </em><code class="descname">Slave</code><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory5SlaveE" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p><a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Slave"><span class="std std-ref">Slave</span></a> container. </p>
+<dd><p>Memory <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Slave"><span class="std std-ref">Slave</span></a> device. </p>
+<p>The memory <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Slave"><span class="std std-ref">Slave</span></a> device accepts and services transactions from one or more <a class="reference internal" href="master.html#classrogue_1_1interfaces_1_1memory_1_1Master"><span class="std std-ref">Master</span></a> devices. The <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Slave"><span class="std std-ref">Slave</span></a> device is normally sub-classesed in either C++ or Python to provide an interfaces to hardware or the next level memory transaction protocol, such as SrpV0 or SrpV3. Examples of <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Slave"><span class="std std-ref">Slave</span></a> sub-class implementations are included elsewhere in this document.</p>
+<p>The <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Slave"><span class="std std-ref">Slave</span></a> object provides mechanisms for tracking current transactions. </p>
 <p>Subclassed by rogue::hardware::axi::AxiMemMap, <a class="reference internal" href="hub.html#classrogue_1_1interfaces_1_1memory_1_1Hub"><span class="std std-ref">rogue::interfaces::memory::Hub</span></a>, rogue::interfaces::memory::SlaveWrap, <a class="reference internal" href="tcpClient.html#classrogue_1_1interfaces_1_1memory_1_1TcpClient"><span class="std std-ref">rogue::interfaces::memory::TcpClient</span></a>, rogue::protocols::srp::SrpV0, rogue::protocols::srp::SrpV3</p>
 <div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric">Public Functions</p>
 <dl class="function">
 <dt id="_CPPv4N5rogue10interfaces6memory5Slave5SlaveE8uint32_t8uint32_t">
 <span id="_CPPv3N5rogue10interfaces6memory5Slave5SlaveE8uint32_t8uint32_t"></span><span id="_CPPv2N5rogue10interfaces6memory5Slave5SlaveE8uint32_t8uint32_t"></span><span id="rogue::interfaces::memory::Slave::Slave__uint32_t.uint32_t"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Slave_1a8957d9bc3be4fd66028d296f03a2db94"></span><code class="descname">Slave</code><span class="sig-paren">(</span>uint32_t <em>min</em>, uint32_t <em>max</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory5Slave5SlaveE8uint32_t8uint32_t" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>Create object. </p>
+<dd><p>Create <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Slave"><span class="std std-ref">Slave</span></a> object. </p>
+<p>Not exposed to Python</p>
+<p><dl class="docutils">
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">min</span></code>: Minimum transaction this <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Slave"><span class="std std-ref">Slave</span></a> can accept. </li>
+<li><code class="docutils literal notranslate"><span class="pre">max</span></code>: Maximum transaction this <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Slave"><span class="std std-ref">Slave</span></a> can accept. </li>
+</ul>
+</dd>
+</dl>
+</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="_CPPv4N5rogue10interfaces6memory5SlaveD0Ev">
 <span id="_CPPv3N5rogue10interfaces6memory5SlaveD0Ev"></span><span id="_CPPv2N5rogue10interfaces6memory5SlaveD0Ev"></span><span id="rogue::interfaces::memory::Slave::~Slave"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Slave_1a0b97756687857c4825e02b7538eb4ae5"></span><em class="property">virtual</em> <code class="descname">~Slave</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory5SlaveD0Ev" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>Destroy object. </p>
+<dd><p>Destroy the <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Slave"><span class="std std-ref">Slave</span></a>. </p>
 </dd></dl>
 
 <dl class="function">
 <dt id="_CPPv4N5rogue10interfaces6memory5Slave14addTransactionEN5boost10shared_ptrIN5rogue10interfaces6memory11TransactionEEE">
 <span id="_CPPv3N5rogue10interfaces6memory5Slave14addTransactionEN5boost10shared_ptrIN5rogue10interfaces6memory11TransactionEEE"></span><span id="_CPPv2N5rogue10interfaces6memory5Slave14addTransactionEN5boost10shared_ptrIN5rogue10interfaces6memory11TransactionEEE"></span><span id="rogue::interfaces::memory::Slave::addTransaction__boost::shared_ptr:rogue::interfaces::memory::Transaction:"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Slave_1a6d46873c40e7e08c284a61a74aeb7676"></span>void <code class="descname">addTransaction</code><span class="sig-paren">(</span>boost::shared_ptr&lt;rogue::interfaces::memory::<a class="reference internal" href="transaction.html#_CPPv4N5rogue10interfaces6memory11TransactionE" title="rogue::interfaces::memory::Transaction">Transaction</a>&gt; <em>transaction</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory5Slave14addTransactionEN5boost10shared_ptrIN5rogue10interfaces6memory11TransactionEEE" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>Register a transaction. </p>
+<dd><p>Add a transaction to the internal tracking map. </p>
+<p>This method is called by the sub-class to add a transaction into the local tracking map for later retrieval. This is used when the transaction will be completed later as the result of protocol data being returned to the <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Slave"><span class="std std-ref">Slave</span></a>.</p>
+<p>Exposed to python as _addTransaction() <dl class="docutils">
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">transaction</span></code>: Pointer to transaction as TransactionPtr </li>
+</ul>
+</dd>
+</dl>
+</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="_CPPv4N5rogue10interfaces6memory5Slave14getTransactionE8uint32_t">
 <span id="_CPPv3N5rogue10interfaces6memory5Slave14getTransactionE8uint32_t"></span><span id="_CPPv2N5rogue10interfaces6memory5Slave14getTransactionE8uint32_t"></span><span id="rogue::interfaces::memory::Slave::getTransaction__uint32_t"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Slave_1a752da91c9c6cbc741ac37260ef825679"></span>boost::shared_ptr&lt;rogue::interfaces::memory::<a class="reference internal" href="transaction.html#_CPPv4N5rogue10interfaces6memory11TransactionE" title="rogue::interfaces::memory::Transaction">Transaction</a>&gt; <code class="descname">getTransaction</code><span class="sig-paren">(</span>uint32_t <em>index</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory5Slave14getTransactionE8uint32_t" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>Get <a class="reference internal" href="transaction.html#classrogue_1_1interfaces_1_1memory_1_1Transaction"><span class="std std-ref">Transaction</span></a> with index. </p>
+<dd><p>Get a transaction from the internal tracking map. </p>
+<p>This method is called by the sub-class to retrieve an existing transaction using the unique transaction ID. If the transaction exists in the list the pointer to that transaction will be returned. If not a NULL pointer will be returned. When <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Slave_1a752da91c9c6cbc741ac37260ef825679"><span class="std std-ref">getTransaction()</span></a> is called the map will also be checked for stale transactions which will be removed from the map.</p>
+<p>Exposed to python as _getTransaction() <dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>Pointer to transaction as TransactionPtr or NULL if not found </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">index</span></code>: ID of transaction to lookup </li>
+</ul>
+</dd>
+</dl>
+</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="_CPPv4N5rogue10interfaces6memory5Slave3minEv">
 <span id="_CPPv3N5rogue10interfaces6memory5Slave3minEv"></span><span id="_CPPv2N5rogue10interfaces6memory5Slave3minEv"></span><span id="rogue::interfaces::memory::Slave::min"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Slave_1afcc3624c3622839e96cf5861593c255c"></span>uint32_t <code class="descname">min</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory5Slave3minEv" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Get min size from slave. </p>
+<p>Not exposted to Python <dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>Minimum transaction size </dd>
+</dl>
+</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="_CPPv4N5rogue10interfaces6memory5Slave3maxEv">
 <span id="_CPPv3N5rogue10interfaces6memory5Slave3maxEv"></span><span id="_CPPv2N5rogue10interfaces6memory5Slave3maxEv"></span><span id="rogue::interfaces::memory::Slave::max"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Slave_1a7214283697192866d04f4fd84e6952d5"></span>uint32_t <code class="descname">max</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory5Slave3maxEv" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>Get min size from slave. </p>
+<dd><p>Get max size from slave. </p>
+<p>Not exposted to Python <dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>Maximum transaction size </dd>
+</dl>
+</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="_CPPv4N5rogue10interfaces6memory5Slave2idEv">
 <span id="_CPPv3N5rogue10interfaces6memory5Slave2idEv"></span><span id="_CPPv2N5rogue10interfaces6memory5Slave2idEv"></span><span id="rogue::interfaces::memory::Slave::id"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Slave_1a470bd4cecb4444fd59b553825cd67129"></span>uint32_t <code class="descname">id</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory5Slave2idEv" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>Get ID. </p>
+<dd><p>Get unique slave ID. </p>
+<p>Not exposted to Python <dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>Unique slave ID </dd>
+</dl>
+</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="_CPPv4N5rogue10interfaces6memory5Slave9doSlaveIdEv">
 <span id="_CPPv3N5rogue10interfaces6memory5Slave9doSlaveIdEv"></span><span id="_CPPv2N5rogue10interfaces6memory5Slave9doSlaveIdEv"></span><span id="rogue::interfaces::memory::Slave::doSlaveId"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Slave_1af5ce81bef7de4de74c1e3cede21d8919"></span><em class="property">virtual</em> uint32_t <code class="descname">doSlaveId</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory5Slave9doSlaveIdEv" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>Return ID to requesting master. </p>
+<dd><p>Interface to service SlaveId request from <a class="reference internal" href="master.html#classrogue_1_1interfaces_1_1memory_1_1Master"><span class="std std-ref">Master</span></a>. </p>
+<p>Called by memory <a class="reference internal" href="master.html#classrogue_1_1interfaces_1_1memory_1_1Master"><span class="std std-ref">Master</span></a>. May be overriden by <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Slave"><span class="std std-ref">Slave</span></a> sub-class. By default returns the local <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Slave"><span class="std std-ref">Slave</span></a> ID</p>
+<p>Not exposted to Python <dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>Unique <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Slave"><span class="std std-ref">Slave</span></a> ID </dd>
+</dl>
+</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="_CPPv4N5rogue10interfaces6memory5Slave11doMinAccessEv">
 <span id="_CPPv3N5rogue10interfaces6memory5Slave11doMinAccessEv"></span><span id="_CPPv2N5rogue10interfaces6memory5Slave11doMinAccessEv"></span><span id="rogue::interfaces::memory::Slave::doMinAccess"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Slave_1ae690bb54ec073edbd751d8362617a7f9"></span><em class="property">virtual</em> uint32_t <code class="descname">doMinAccess</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory5Slave11doMinAccessEv" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>Return min access size to requesting master. </p>
+<dd><p>Interface to service the getMinAccess request from an attached master. </p>
+<p>By default the local min access value will be returned. A <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Slave"><span class="std std-ref">Slave</span></a> sub-class is allowed to override this method.</p>
+<p>Exposed as _doMinAccess() to Python <dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>Min transaction access size </dd>
+</dl>
+</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="_CPPv4N5rogue10interfaces6memory5Slave11doMaxAccessEv">
 <span id="_CPPv3N5rogue10interfaces6memory5Slave11doMaxAccessEv"></span><span id="_CPPv2N5rogue10interfaces6memory5Slave11doMaxAccessEv"></span><span id="rogue::interfaces::memory::Slave::doMaxAccess"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Slave_1aaa9fdbb5cc041f56343344e1c32db679"></span><em class="property">virtual</em> uint32_t <code class="descname">doMaxAccess</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory5Slave11doMaxAccessEv" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>Return max access size to requesting master. </p>
+<dd><p>Interface to service the getMaxAccess request from an attached master. </p>
+<p>By default the local max access value will be returned. A <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Slave"><span class="std std-ref">Slave</span></a> sub-class is allowed to override this method.</p>
+<p>Exposed as _doMaxAccess() to Python <dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>Max transaction access size </dd>
+</dl>
+</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="_CPPv4N5rogue10interfaces6memory5Slave9doAddressEv">
 <span id="_CPPv3N5rogue10interfaces6memory5Slave9doAddressEv"></span><span id="_CPPv2N5rogue10interfaces6memory5Slave9doAddressEv"></span><span id="rogue::interfaces::memory::Slave::doAddress"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Slave_1a435848e7e20020e67ec76a9ef157b990"></span><em class="property">virtual</em> uint64_t <code class="descname">doAddress</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory5Slave9doAddressEv" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>Return address. </p>
+<dd><p>Interface to service the getAddress request from an attached master. </p>
+<p>This <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Slave"><span class="std std-ref">Slave</span></a> will return 0 byt default. A <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Slave"><span class="std std-ref">Slave</span></a> sub-class is allowed to override this method.</p>
+<p>Exposed as _doAddress() to Python <dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>Address </dd>
+</dl>
+</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="_CPPv4N5rogue10interfaces6memory5Slave13doTransactionEN5boost10shared_ptrIN5rogue10interfaces6memory11TransactionEEE">
 <span id="_CPPv3N5rogue10interfaces6memory5Slave13doTransactionEN5boost10shared_ptrIN5rogue10interfaces6memory11TransactionEEE"></span><span id="_CPPv2N5rogue10interfaces6memory5Slave13doTransactionEN5boost10shared_ptrIN5rogue10interfaces6memory11TransactionEEE"></span><span id="rogue::interfaces::memory::Slave::doTransaction__boost::shared_ptr:rogue::interfaces::memory::Transaction:"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Slave_1a7243cd5139eea7faec90b2bb2155067e"></span><em class="property">virtual</em> void <code class="descname">doTransaction</code><span class="sig-paren">(</span>boost::shared_ptr&lt;rogue::interfaces::memory::<a class="reference internal" href="transaction.html#_CPPv4N5rogue10interfaces6memory11TransactionE" title="rogue::interfaces::memory::Transaction">Transaction</a>&gt; <em>transaction</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory5Slave13doTransactionEN5boost10shared_ptrIN5rogue10interfaces6memory11TransactionEEE" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>Post a transaction. <a class="reference internal" href="master.html#classrogue_1_1interfaces_1_1memory_1_1Master"><span class="std std-ref">Master</span></a> will call this method with the access attributes. </p>
+<dd><p>Interface to service the transaction request from an attached master. </p>
+<p>By default the <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Slave"><span class="std std-ref">Slave</span></a> class will return an Unsupported error.</p>
+<p>It is possible for this method to be overriden in either a Python or C++ subclass. Examples of sub-classing a Slaveare included elsewhere in this document.</p>
+<p>Exposted to Python as _doTransaction() <dl class="docutils">
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">transaction</span></code>: <a class="reference internal" href="transaction.html#classrogue_1_1interfaces_1_1memory_1_1Transaction"><span class="std std-ref">Transaction</span></a> pointer as TransactionPtr </li>
+</ul>
+</dd>
+</dl>
+</p>
 </dd></dl>
 
 </div>
@@ -269,13 +351,23 @@
 <dl class="function">
 <dt id="_CPPv4N5rogue10interfaces6memory5Slave6createE8uint32_t8uint32_t">
 <span id="_CPPv3N5rogue10interfaces6memory5Slave6createE8uint32_t8uint32_t"></span><span id="_CPPv2N5rogue10interfaces6memory5Slave6createE8uint32_t8uint32_t"></span><span id="rogue::interfaces::memory::Slave::create__uint32_t.uint32_t"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Slave_1a3c74cb7ab289793d8e474c559159929d"></span><em class="property">static</em> boost::shared_ptr&lt;rogue::interfaces::memory::<a class="reference internal" href="#_CPPv4N5rogue10interfaces6memory5SlaveE" title="rogue::interfaces::memory::Slave">Slave</a>&gt; <code class="descname">create</code><span class="sig-paren">(</span>uint32_t <em>min</em>, uint32_t <em>max</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory5Slave6createE8uint32_t8uint32_t" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>Create a slave container. </p>
+<dd><p>Class factory which returns a pointer to a <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Slave"><span class="std std-ref">Slave</span></a> (SlavePtr) </p>
+<p>Not exposed to Python</p>
+<p><dl class="docutils">
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">min</span></code>: Minimum transaction this <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Slave"><span class="std std-ref">Slave</span></a> can accept. </li>
+<li><code class="docutils literal notranslate"><span class="pre">max</span></code>: Maximum transaction this <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Slave"><span class="std std-ref">Slave</span></a> can accept. </li>
+</ul>
+</dd>
+</dl>
+</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="_CPPv4N5rogue10interfaces6memory5Slave12setup_pythonEv">
 <span id="_CPPv3N5rogue10interfaces6memory5Slave12setup_pythonEv"></span><span id="_CPPv2N5rogue10interfaces6memory5Slave12setup_pythonEv"></span><span id="rogue::interfaces::memory::Slave::setup_python"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Slave_1afebd18e8302957664356d6d7e05bcd88"></span><em class="property">static</em> void <code class="descname">setup_python</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory5Slave12setup_pythonEv" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>Setup class in python. </p>
+<dd><p>Setup class for use in python. </p>
 </dd></dl>
 
 </div>
