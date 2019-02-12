@@ -1,13 +1,13 @@
 /**
  *-----------------------------------------------------------------------------
- * Title         : SLAC Batcher Version 1
+ * Title         : SLAC Splitter Version 1
  * ----------------------------------------------------------------------------
- * File          : BatcherV1.h
+ * File          : SplitterV1.h
  * Author        : Ryan Herbst <rherbst@slac.stanford.edu>
  * Created       : 10/26/2018
  *-----------------------------------------------------------------------------
  * Description :
- *    AXI Batcher V1
+ *    AXI Splitter V1
  *-----------------------------------------------------------------------------
  * This file is part of the rogue software platform. It is subject to 
  * the license terms in the LICENSE.txt file found in the top-level directory 
@@ -18,8 +18,8 @@
  * contained in the LICENSE.txt file.
  *-----------------------------------------------------------------------------
 **/
-#ifndef __ROGUE_PROTOCOLS_BATCHER_V1_H__
-#define __ROGUE_PROTOCOLS_BATCHER_V1_H__
+#ifndef __ROGUE_PROTOCOLS_BATCHER_SPLITTER_V1_H__
+#define __ROGUE_PROTOCOLS_BATCHER_SPLITTER_V1_H__
 #include <stdint.h>
 #include <boost/thread.hpp>
 #include <rogue/interfaces/stream/Master.h>
@@ -28,34 +28,34 @@
 
 namespace rogue {
    namespace protocols {
+      namespace batcher {
 
-      //!  AXI Stream FIFO
-      class BatcherV1 : public rogue::interfaces::stream::Master,
-                        public rogue::interfaces::stream::Slave {
+         //!  AXI Stream FIFO
+         class SplitterV1 : public rogue::interfaces::stream::Master,
+                            public rogue::interfaces::stream::Slave {
 
-            rogue::LoggingPtr log_;
+            public:
 
-         public:
+               //! Class creation
+               static boost::shared_ptr<rogue::protocols::batcher::SplitterV1> create();
 
-            //! Class creation
-            static boost::shared_ptr<rogue::protocols::BatcherV1> create();
+               //! Setup class in python
+               static void setup_python();
 
-            //! Setup class in python
-            static void setup_python();
+               //! Creator
+               SplitterV1();
 
-            //! Creator
-            BatcherV1();
+               //! Deconstructor
+               ~SplitterV1();
 
-            //! Deconstructor
-            ~BatcherV1();
+               //! Accept a frame from master
+               void acceptFrame ( boost::shared_ptr<rogue::interfaces::stream::Frame> frame );
 
-            //! Accept a frame from master
-            void acceptFrame ( boost::shared_ptr<rogue::interfaces::stream::Frame> frame );
+         };
 
-      };
-
-      // Convienence
-      typedef boost::shared_ptr<rogue::protocols::BatcherV1> BatcherV1Ptr;
+         // Convienence
+         typedef boost::shared_ptr<rogue::protocols::batcher::SplitterV1> SplitterV1Ptr;
+      }
    }
 }
 #endif
