@@ -38,7 +38,7 @@ namespace rogue {
           * Each buffer within the frame has a reserved header and tail area to pre-reserve
           * space which may be required by protocol layers. Direct interaction with the Buffer
           * class is an advanced topic, most users will simply use a FrameIterator to access 
-          * Frame and Buffer data.
+          * Frame and Buffer data. The Buffer class is not vailable in Python.
          */
          class Buffer {
 
