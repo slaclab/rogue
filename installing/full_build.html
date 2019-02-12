@@ -1,0 +1,364 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Building Rogue &mdash; Rogue v3.2.1-68-gd0238c42 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Rogue and Anaconda behind a firewall" href="firewall.html" />
+    <link rel="prev" title="Installing Rogue Docker" href="docker.html" /> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> Rogue
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                v3.2.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../interfaces/index.html">Interfaces</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Installing &amp; Compiling Rogue</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="anaconda.html">Installing Rogue With Anaconda</a></li>
+<li class="toctree-l2"><a class="reference internal" href="anaconda_build.html">Building Rogue Inside Anaconda</a></li>
+<li class="toctree-l2"><a class="reference internal" href="docker.html">Installing Rogue Docker</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Building Rogue</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#installing-packages-required-for-rogue">Installing Packages Required For Rogue</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#package-manager-install">Package Manager Install</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#python-packages-required">Python Packages Required</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#building-installing-rogue">Building &amp; Installing Rogue</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#local-install">Local Install</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#custom-install">Custom Install</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#system-install">System Install</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#updating-rogue">Updating Rogue</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="firewall.html">Rogue and Anaconda behind a firewall</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../custom_module/index.html">Using Custom Modules</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Rogue</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="index.html">Installing &amp; Compiling Rogue</a> &raquo;</li>
+        
+      <li>Building Rogue</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/installing/full_build.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="building-rogue">
+<span id="installing-full-build"></span><h1>Building Rogue<a class="headerlink" href="#building-rogue" title="Permalink to this headline">¶</a></h1>
+<p>The following instructions demonstrate how to build rogue outside of the anaconda environment.</p>
+<div class="section" id="installing-packages-required-for-rogue">
+<h2>Installing Packages Required For Rogue<a class="headerlink" href="#installing-packages-required-for-rogue" title="Permalink to this headline">¶</a></h2>
+<p>The following packages are required to build the rogue library:</p>
+<ul class="simple">
+<li>cmake   &gt;= 3.5</li>
+<li>Boost   &gt;= 1.58</li>
+<li>python3 &gt;= 3.6</li>
+<li>bz2</li>
+</ul>
+<div class="section" id="package-manager-install">
+<h3>Package Manager Install<a class="headerlink" href="#package-manager-install" title="Permalink to this headline">¶</a></h3>
+<p>To add these packages on Ubuntu 17.04 (or later):</p>
+<div class="code highlight-default notranslate"><div class="highlight"><pre><span></span>$ apt-get install cmake (or cmake3)
+$ apt-get install python3
+$ apt-get install libboost-all-dev
+$ apt-get install libbz2-dev
+$ apt-get install python3-pip
+$ apt-get install git
+$ apt-get install libzmq3-dev
+$ apt-get install python3-pyqt5 (or python3-pyqt4)
+</pre></div>
+</div>
+<p>To add these packages on archlinux:</p>
+<div class="code highlight-default notranslate"><div class="highlight"><pre><span></span>$ pacman -S cmake
+$ pacman -S python3
+$ pacman -S boost
+$ pacman -S bzip2
+$ pacman -S python-pip
+$ pacman -S git
+$ pacman -S zeromq
+$ pacman -S python-pyqt5 (or python-pyqt4)
+</pre></div>
+</div>
+<p>Epics V3 support is and optional module that will be included in the rogue build
+if the EPICS_BASE directory is set in the user’s environment.</p>
+</div>
+<div class="section" id="python-packages-required">
+<h3>Python Packages Required<a class="headerlink" href="#python-packages-required" title="Permalink to this headline">¶</a></h3>
+<p>The following python packages are required to use rogue in the python3
+environment. Currently I am using PIP to install these, but you are free
+to use your favorite python tool.</p>
+<div class="code highlight-default notranslate"><div class="highlight"><pre><span></span>$ pip3 install PyYAML
+$ pip3 install Pyro4
+$ pip3 install parse
+$ pip3 install click
+$ pip3 install pyzmq
+$ pip3 install numpy
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="building-installing-rogue">
+<h2>Building &amp; Installing Rogue<a class="headerlink" href="#building-installing-rogue" title="Permalink to this headline">¶</a></h2>
+<p>There are three possible modes for building/installing rogue:</p>
+<ul class="simple">
+<li><dl class="first docutils">
+<dt>Local:</dt>
+<dd>Rogue is going to be used in the local checkout directory. A setup script is generated to add rogue to the system environment.</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>Custom:</dt>
+<dd>Rogue is going to be installed in a custom non-system directory. A setup script is generated to add rogue to the system environment.</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>System:</dt>
+<dd>The rogue headers and libraries will be installed to a standard system directory and the python filed will be installed using the system python package installed.</dd>
+</dl>
+</li>
+</ul>
+<div class="section" id="local-install">
+<h3>Local Install<a class="headerlink" href="#local-install" title="Permalink to this headline">¶</a></h3>
+<div class="code highlight-default notranslate"><div class="highlight"><pre><span></span>$ git clone https://github.com/slaclab/rogue.git
+$ cd rogue
+$ mkdir build
+$ cd build
+$ cmake .. -DROGUE_INSTALL=local
+$ make
+$ make install
+$ source ../setup_rogue.csh (or .sh)
+</pre></div>
+</div>
+</div>
+<div class="section" id="custom-install">
+<h3>Custom Install<a class="headerlink" href="#custom-install" title="Permalink to this headline">¶</a></h3>
+<p>Make sure you have permission to install into the passed install directory, if not use sudo.</p>
+<div class="code highlight-default notranslate"><div class="highlight"><pre><span></span>$ git clone https://github.com/slaclab/rogue.git
+$ cd rogue
+$ mkdir build
+$ cd build
+$ cmake .. -DROGUE_INSTALL=custom -DROGUE_DIR=/path/to/custom/dir
+$ make
+$ make install
+$ source /path/to/custom/dir/setup_rogue.csh (or .sh)
+</pre></div>
+</div>
+</div>
+<div class="section" id="system-install">
+<h3>System Install<a class="headerlink" href="#system-install" title="Permalink to this headline">¶</a></h3>
+<p>Make sure you have permission to install into the /usr/local/ directory, if not use sudo.</p>
+<div class="code highlight-default notranslate"><div class="highlight"><pre><span></span>$ git clone https://github.com/slaclab/rogue.git
+$ cd rogue
+$ mkdir build
+$ cd build
+$ cmake .. -DROGUE_INSTALL=system
+$ make
+$ make install
+</pre></div>
+</div>
+</div>
+<div class="section" id="updating-rogue">
+<h3>Updating Rogue<a class="headerlink" href="#updating-rogue" title="Permalink to this headline">¶</a></h3>
+<p>to update from git and rebuild:</p>
+<div class="code highlight-default notranslate"><div class="highlight"><pre><span></span>$ git pull
+$ cd build
+$ make rebuild_cache
+$ make clean
+$ make install
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="firewall.html" class="btn btn-neutral float-right" title="Rogue and Anaconda behind a firewall" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="docker.html" class="btn btn-neutral" title="Installing Rogue Docker" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, SLAC National Accelerator Laboratory
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/language_data.js"></script>
+    
+
+  
+
+  <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

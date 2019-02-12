@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Interfaces &mdash; Rogue v3.2.1-68-gd0238c42 documentation</title>
+  <title>Using Custom Modules &mdash; Rogue v3.2.1-68-gd0238c42 documentation</title>
   
 
   
@@ -28,8 +28,8 @@
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Stream Interface" href="stream/index.html" />
-    <link rel="prev" title="Welcome to Rogue’s documentation!" href="../index.html" /> 
+    <link rel="next" title="Custom Module Source" href="sourcefile.html" />
+    <link rel="prev" title="Rogue and Anaconda behind a firewall" href="../installing/firewall.html" /> 
 
   
   <script src="../_static/js/modernizr.min.js"></script>
@@ -84,12 +84,14 @@
             
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Interfaces</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="stream/index.html">Stream Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../interfaces/index.html">Interfaces</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installing/index.html">Installing &amp; Compiling Rogue</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Using Custom Modules</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="sourcefile.html">Custom Module Source</a></li>
+<li class="toctree-l2"><a class="reference internal" href="makefile.html">Custom Module CMakeLists.txt</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wrapper.html">Wrapping Custom Module With PyRogue Device</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../installing/index.html">Installing &amp; Compiling Rogue</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../custom_module/index.html">Using Custom Modules</a></li>
 </ul>
 
             
@@ -135,13 +137,13 @@
     
       <li><a href="../index.html">Docs</a> &raquo;</li>
         
-      <li>Interfaces</li>
+      <li>Using Custom Modules</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../_sources/interfaces/index.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../_sources/custom_module/index.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -154,15 +156,16 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="interfaces">
-<span id="id1"></span><h1>Interfaces<a class="headerlink" href="#interfaces" title="Permalink to this headline">¶</a></h1>
-<p>Rogue is built around a series of interfaces which serve as the glue
-between many modules within Rogue. The primary interfaces in Rogue include
-the stream interface and the memory interface.</p>
+  <div class="section" id="using-custom-modules">
+<span id="custom-module"></span><h1>Using Custom Modules<a class="headerlink" href="#using-custom-modules" title="Permalink to this headline">¶</a></h1>
+<p>This section describes to to create, compile and wrap a custom c++
+module for use in PyRogue.</p>
 <div class="toctree-wrapper compound">
-<p class="caption"><span class="caption-text">Interfaces:</span></p>
+<p class="caption"><span class="caption-text">Example:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="stream/index.html">Stream Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sourcefile.html">Custom Module Source</a></li>
+<li class="toctree-l1"><a class="reference internal" href="makefile.html">Custom Module CMakeLists.txt</a></li>
+<li class="toctree-l1"><a class="reference internal" href="wrapper.html">Wrapping Custom Module With PyRogue Device</a></li>
 </ul>
 </div>
 </div>
@@ -175,10 +178,10 @@ the stream interface and the memory interface.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="stream/index.html" class="btn btn-neutral float-right" title="Stream Interface" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="sourcefile.html" class="btn btn-neutral float-right" title="Custom Module Source" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="../index.html" class="btn btn-neutral" title="Welcome to Rogue’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="../installing/firewall.html" class="btn btn-neutral" title="Rogue and Anaconda behind a firewall" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

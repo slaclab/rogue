@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Interfaces &mdash; Rogue v3.2.1-68-gd0238c42 documentation</title>
+  <title>Rogue and Anaconda behind a firewall &mdash; Rogue v3.2.1-68-gd0238c42 documentation</title>
   
 
   
@@ -28,8 +28,8 @@
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Stream Interface" href="stream/index.html" />
-    <link rel="prev" title="Welcome to Rogue’s documentation!" href="../index.html" /> 
+    <link rel="next" title="Using Custom Modules" href="../custom_module/index.html" />
+    <link rel="prev" title="Building Rogue" href="full_build.html" /> 
 
   
   <script src="../_static/js/modernizr.min.js"></script>
@@ -84,11 +84,15 @@
             
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Interfaces</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="stream/index.html">Stream Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../interfaces/index.html">Interfaces</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Installing &amp; Compiling Rogue</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="anaconda.html">Installing Rogue With Anaconda</a></li>
+<li class="toctree-l2"><a class="reference internal" href="anaconda_build.html">Building Rogue Inside Anaconda</a></li>
+<li class="toctree-l2"><a class="reference internal" href="docker.html">Installing Rogue Docker</a></li>
+<li class="toctree-l2"><a class="reference internal" href="full_build.html">Building Rogue</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Rogue and Anaconda behind a firewall</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../installing/index.html">Installing &amp; Compiling Rogue</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../custom_module/index.html">Using Custom Modules</a></li>
 </ul>
 
@@ -135,13 +139,15 @@
     
       <li><a href="../index.html">Docs</a> &raquo;</li>
         
-      <li>Interfaces</li>
+          <li><a href="index.html">Installing &amp; Compiling Rogue</a> &raquo;</li>
+        
+      <li>Rogue and Anaconda behind a firewall</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../_sources/interfaces/index.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../_sources/installing/firewall.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -154,16 +160,25 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="interfaces">
-<span id="id1"></span><h1>Interfaces<a class="headerlink" href="#interfaces" title="Permalink to this headline">¶</a></h1>
-<p>Rogue is built around a series of interfaces which serve as the glue
-between many modules within Rogue. The primary interfaces in Rogue include
-the stream interface and the memory interface.</p>
-<div class="toctree-wrapper compound">
-<p class="caption"><span class="caption-text">Interfaces:</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="stream/index.html">Stream Interface</a></li>
-</ul>
+  <div class="section" id="rogue-and-anaconda-behind-a-firewall">
+<span id="installing-firewall"></span><h1>Rogue and Anaconda behind a firewall<a class="headerlink" href="#rogue-and-anaconda-behind-a-firewall" title="Permalink to this headline">¶</a></h1>
+<p>To install rogue and anaconda behind a firewall you will need an ssl capable https proxy. I have used mitmproxy with success:</p>
+<div class="code highlight-default notranslate"><div class="highlight"><pre><span></span>$ mitmproxy --list-host=gateway.machine.com --list-port=8080
+</pre></div>
+</div>
+<p>You will execute a number of steps to enable proxy for wget, git and anaconda</p>
+<div class="code highlight-default notranslate"><div class="highlight"><pre><span></span>$ setenv https_proxy gateway.machine.com:8080
+$ git config --global https.proxy https://gateway.machine.com:8080
+$ git config --global http.sslVerify false
+</pre></div>
+</div>
+<p>Create a file $HOME/.condarc and add the following lines:</p>
+<div class="code highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">proxy_servers</span><span class="p">:</span>
+   <span class="n">http</span><span class="p">:</span><span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">gateway</span><span class="o">.</span><span class="n">machine</span><span class="o">.</span><span class="n">com</span><span class="p">:</span><span class="mi">8080</span>
+   <span class="n">https</span><span class="p">:</span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">gateway</span><span class="o">.</span><span class="n">machine</span><span class="o">.</span><span class="n">com</span><span class="p">:</span><span class="mi">8080</span>
+
+<span class="n">ssl_verify</span><span class="p">:</span> <span class="n">false</span>
+</pre></div>
 </div>
 </div>
 
@@ -175,10 +190,10 @@ the stream interface and the memory interface.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="stream/index.html" class="btn btn-neutral float-right" title="Stream Interface" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="../custom_module/index.html" class="btn btn-neutral float-right" title="Using Custom Modules" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="../index.html" class="btn btn-neutral" title="Welcome to Rogue’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="full_build.html" class="btn btn-neutral" title="Building Rogue" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

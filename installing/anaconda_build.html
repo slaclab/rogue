@@ -1,0 +1,333 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Building Rogue Inside Anaconda &mdash; Rogue v3.2.1-68-gd0238c42 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Installing Rogue Docker" href="docker.html" />
+    <link rel="prev" title="Installing Rogue With Anaconda" href="anaconda.html" /> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> Rogue
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                v3.2.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../interfaces/index.html">Interfaces</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Installing &amp; Compiling Rogue</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="anaconda.html">Installing Rogue With Anaconda</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Building Rogue Inside Anaconda</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#getting-anaconda">Getting Anaconda</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#downloading-rogue-creating-anaconda-envrionment">Downloading Rogue &amp; Creating Anaconda Envrionment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#building-rogue">Building Rogue</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#using-rogue">Using Rogue</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#updating-rogue">Updating Rogue</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#deleting-anaconda-environment">Deleting Anaconda Environment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#special-steps-for-macos">Special Steps For MacOS</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="docker.html">Installing Rogue Docker</a></li>
+<li class="toctree-l2"><a class="reference internal" href="full_build.html">Building Rogue</a></li>
+<li class="toctree-l2"><a class="reference internal" href="firewall.html">Rogue and Anaconda behind a firewall</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../custom_module/index.html">Using Custom Modules</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Rogue</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="index.html">Installing &amp; Compiling Rogue</a> &raquo;</li>
+        
+      <li>Building Rogue Inside Anaconda</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/installing/anaconda_build.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="building-rogue-inside-anaconda">
+<span id="installing-anaconda-build"></span><h1>Building Rogue Inside Anaconda<a class="headerlink" href="#building-rogue-inside-anaconda" title="Permalink to this headline">¶</a></h1>
+<p>This section provides instructions for downloading and building rogue inside an anaconda environment.
+See MacOS section at the bottom for additional steps required for building rogue in MacOS.</p>
+<div class="section" id="getting-anaconda">
+<h2>Getting Anaconda<a class="headerlink" href="#getting-anaconda" title="Permalink to this headline">¶</a></h2>
+<p>Download and install anaconda (or miniconda) if you don’t already have it installed on your machine. Choose an install location with a lot of available diskspace (&gt; 5GB). Anaconda appears to only work reliably in the bash shell.</p>
+<p>Go to <a class="reference external" href="https://www.anaconda.com/download">https://www.anaconda.com/download</a> to get the latest version of anaconda. Example steps for installing anaconda are included below:</p>
+<div class="code highlight-default notranslate"><div class="highlight"><pre><span></span>$ wget https://repo.anaconda.com/archive/Anaconda3-5.3.0-Linux-x86_64.sh
+$ bash Anaconda3-5.3.0-Linux-x86_64.sh
+</pre></div>
+</div>
+<p>You do not need to install visual studio.</p>
+<p>Use the following command to add anaconda to your environment. This can be added to your .bash_profile.</p>
+<div class="code highlight-default notranslate"><div class="highlight"><pre><span></span>$ source /path/to/my/anaconda3/etc/profile.d/conda.sh
+</pre></div>
+</div>
+</div>
+<div class="section" id="downloading-rogue-creating-anaconda-envrionment">
+<h2>Downloading Rogue &amp; Creating Anaconda Envrionment<a class="headerlink" href="#downloading-rogue-creating-anaconda-envrionment" title="Permalink to this headline">¶</a></h2>
+<p>The next step is to download rogue and create a rogue compatable anaconda environment.</p>
+<div class="code highlight-default notranslate"><div class="highlight"><pre><span></span>$ conda activate
+$ conda install git
+$ git clone https://github.com/slaclab/rogue.git
+$ cd rogue
+</pre></div>
+</div>
+<p>For Linux:</p>
+<div class="code highlight-default notranslate"><div class="highlight"><pre><span></span>$ conda env create -n rogue_env -f conda.yml
+</pre></div>
+</div>
+<p>For MacOS:</p>
+<div class="code highlight-default notranslate"><div class="highlight"><pre><span></span>$ conda env create -n rogue_env -f conda_mac.yml
+</pre></div>
+</div>
+<p>You now have an anaconda environment named rogue_env which contains all of the packages required to build and run rogue.</p>
+<p>To activate this environment:</p>
+<div class="code highlight-default notranslate"><div class="highlight"><pre><span></span>$ conda activate rogue_env
+</pre></div>
+</div>
+</div>
+<div class="section" id="building-rogue">
+<h2>Building Rogue<a class="headerlink" href="#building-rogue" title="Permalink to this headline">¶</a></h2>
+<p>Once the rogue environment is activated, you can build and install rogue</p>
+<div class="code highlight-default notranslate"><div class="highlight"><pre><span></span>$ mkdir build
+$ cd build
+$ cmake ..
+$ make
+$ make install
+</pre></div>
+</div>
+<p>The Rogue build system will automatically detect that it is in a conda environment and it will be installed
+within the anaconda rogue environment.</p>
+</div>
+<div class="section" id="using-rogue">
+<h2>Using Rogue<a class="headerlink" href="#using-rogue" title="Permalink to this headline">¶</a></h2>
+<p>No additional setup scripts need to be run rogue in an anaconda environment. To activate and de-activate the rogue environment you can use the following commands:</p>
+<p>To activate:</p>
+<div class="code highlight-default notranslate"><div class="highlight"><pre><span></span>$ conda activate rogue_env
+</pre></div>
+</div>
+<p>To deactivate:</p>
+<div class="code highlight-default notranslate"><div class="highlight"><pre><span></span>$ conda deactivate
+</pre></div>
+</div>
+</div>
+<div class="section" id="updating-rogue">
+<h2>Updating Rogue<a class="headerlink" href="#updating-rogue" title="Permalink to this headline">¶</a></h2>
+<p>If you want to update and re-install rogue, run the following commands.</p>
+<div class="code highlight-default notranslate"><div class="highlight"><pre><span></span>$ cd rogue
+$ rm -rf build
+$ git pull
+$ mkdir build
+$ cd build
+$ cmake ..
+$ make
+$ make install
+</pre></div>
+</div>
+</div>
+<div class="section" id="deleting-anaconda-environment">
+<h2>Deleting Anaconda Environment<a class="headerlink" href="#deleting-anaconda-environment" title="Permalink to this headline">¶</a></h2>
+<p>Run the following commands to delete the anaconda environment.</p>
+<div class="code highlight-default notranslate"><div class="highlight"><pre><span></span>$ conda env remove -n rogue_env
+</pre></div>
+</div>
+</div>
+<div class="section" id="special-steps-for-macos">
+<h2>Special Steps For MacOS<a class="headerlink" href="#special-steps-for-macos" title="Permalink to this headline">¶</a></h2>
+<p>In order to compile rogue in MacOS you first need to download an install an older version of the MacOS SDK</p>
+<div class="code highlight-default notranslate"><div class="highlight"><pre><span></span>$ git clone https://github.com/phracker/MacOSX-SDKs
+$ sudo mv MacOSX-SDKs/MacOSX10.9.sdk /opt/
+</pre></div>
+</div>
+<p>You must set the following environment variables to setup anaconda in build mode before creating and activating the rogue environment.</p>
+<div class="code highlight-default notranslate"><div class="highlight"><pre><span></span>$ export CONDA_BUILD_SYSROOT=/opt/MacOSX10.9.sdk
+$ export CONDA_BUILD=1
+</pre></div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="docker.html" class="btn btn-neutral float-right" title="Installing Rogue Docker" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="anaconda.html" class="btn btn-neutral" title="Installing Rogue With Anaconda" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, SLAC National Accelerator Laboratory
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/language_data.js"></script>
+    
+
+  
+
+  <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
