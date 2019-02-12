@@ -13,4 +13,5 @@ module for use in PyRogue.
    sourcefile
    makefile
    wrapper
+   testing
 
