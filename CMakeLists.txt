@@ -91,8 +91,16 @@ endif()
 # Additional Libraries
 #####################################
 
-find_package(ZeroMQ REQUIRED)
 find_package(BZip2  REQUIRED)
+
+#find_package(ZeroMQ REQUIRED)
+find_package(ZeroMQ)
+
+# Old systems (travis) don't support zeromq find
+if (NOT ZeroMQ_FOUND)
+   set(ZeroMQ_INCLUDE_DIR "")
+   set(ZeroMQ_LIBRARY "zmq")
+endif()
 
 #####################################
 # Optional EPICS V3
