@@ -1,7 +1,7 @@
 .. _custom_makefile:
 
-Custom Module CMakeLists.txt
-============================
+Building The Custom Module
+==========================
 
 The following is an example custom CMakeLists.txt which will setup the environment
 for building a custom Rogue module using existing Rogue libraries. It is assumed
