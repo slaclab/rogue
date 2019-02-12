@@ -47,7 +47,7 @@ namespace rogue {
          class Fifo : public rogue::interfaces::stream::Master,
                       public rogue::interfaces::stream::Slave {
 
-               rogue::LoggingPtr log_;
+               boost::shard_ptr<rogue::Logging> log_;
 
                // Configurations
                uint32_t trimSize_;

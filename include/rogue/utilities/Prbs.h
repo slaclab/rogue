@@ -108,8 +108,8 @@ namespace rogue {
             double   txBw_;
 
             //! Logger
-            rogue::LoggingPtr rxLog_;
-            rogue::LoggingPtr txLog_;
+            boost::shared_ptr<rogue::Logging> rxLog_;
+            boost::shared_ptr<rogue::Logging> txLog_;
 
             //! TX thread
             boost::thread* txThread_;

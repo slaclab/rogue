@@ -42,7 +42,7 @@ namespace rogue {
                        public rogue::interfaces::memory::Slave {
 
 
-               rogue::LoggingPtr log_;
+               boost::shared_ptr<rogue::Logging> log_;
 
                static const uint32_t HeadLen = 20;
                static const uint32_t TailLen = 4;

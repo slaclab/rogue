@@ -42,7 +42,7 @@ namespace rogue {
 
             protected:
 
-               rogue::LoggingPtr udpLog_;
+               boost::shared_ptr<rogue::Logging> udpLog_;
 
                //! Jumbo frames enables
                bool jumbo_;

@@ -21,6 +21,7 @@
 #define __ROGUE_QUEUE_H__
 #include <boost/thread/mutex.hpp>
 #include <boost/thread/condition_variable.hpp>
+#include <stdint.h>
 #include <queue>
 
 namespace rogue {

@@ -40,7 +40,7 @@ namespace rogue {
          class Filter : public rogue::interfaces::stream::Master,
                         public rogue::interfaces::stream::Slave {
 
-               rogue::LoggingPtr log_;
+               boost::shared_ptr<rogue::Logging> log_;
 
                // Configurations
                bool     dropErrors_;

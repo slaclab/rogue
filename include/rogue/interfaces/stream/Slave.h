@@ -49,7 +49,7 @@ namespace rogue {
 
                // Debug control
                uint32_t         debug_;
-               rogue::LoggingPtr log_;
+               boost::shared_ptr<rogue::Logging> log_;
 
                // Counters
                uint64_t frameCount_;

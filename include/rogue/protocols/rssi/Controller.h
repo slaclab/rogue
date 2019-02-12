@@ -75,7 +75,7 @@ namespace rogue {
                boost::shared_ptr<rogue::protocols::rssi::Transport> tran_;
                boost::shared_ptr<rogue::protocols::rssi::Application> app_;
 
-               rogue::LoggingPtr log_;
+               boost::shared_ptr<rogue::Logging> log_;
 
                // Is server
                bool server_;
