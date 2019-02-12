@@ -167,9 +167,9 @@ uint8_t & ris::FrameIterator::operator *() const {
 }
 
 //! Pointer
-uint8_t * ris::FrameIterator::operator ->() const {
-   return data_;
-}
+//uint8_t * ris::FrameIterator::operator ->() const {
+   //return data_;
+//}
 
 
 //! Pointer

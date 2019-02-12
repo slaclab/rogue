@@ -34,7 +34,7 @@ namespace rogue {
          //!  AXI Stream FIFO
          class CoreV1 {
 
-               rogue::LoggingPtr log_;
+               boost::shared_ptr<rogue::Logging> log_;
 
                //! Frame pointers
                boost::shared_ptr<rogue::interfaces::stream::Frame> frame_;

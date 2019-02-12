@@ -57,8 +57,8 @@ master_doc = 'index'
 
 # General information about the project.
 project = 'Rogue'
-copyright = '2018, SLAC National Accelerator Laboratory'
-author = 'Ryan Herbst, Ben Reese'
+copyright = '2019, SLAC National Accelerator Laboratory'
+author = 'SLAC TID-AIR'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -153,7 +153,7 @@ latex_elements = {
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
     (master_doc, 'Rogue.tex', 'Rogue Documentation',
-     'Ryan Herbst, Ben Reese', 'manual'),
+     'TID-AIR Electronics Systems Department', 'manual'),
 ]
 
 

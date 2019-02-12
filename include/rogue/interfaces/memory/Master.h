@@ -62,7 +62,7 @@ namespace rogue {
                uint32_t error_;
 
                //! Log
-               rogue::LoggingPtr log_;
+               boost::shared_ptr<rogue::Logging> log_;
 
             public:
 

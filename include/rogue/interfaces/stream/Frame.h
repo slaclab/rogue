@@ -5,14 +5,10 @@
  * File       : Frame.h
  * Author     : Ryan Herbst, rherbst@slac.stanford.edu
  * Created    : 2016-09-16
- * Last update: 2016-09-16
  * ----------------------------------------------------------------------------
  * Description:
  * Stream frame container
  * Some concepts borrowed from CPSW by Till Straumann
- * TODO:
- *    Add locking for thread safety. May not be needed since the source will
- *    set things up once before handing off to the various threads.
  * ----------------------------------------------------------------------------
  * This file is part of the rogue software platform. It is subject to 
  * the license terms in the LICENSE.txt file found in the top-level directory 
@@ -43,199 +39,324 @@ namespace rogue {
          class FrameLock;
 
          //! Frame container
-         /*
-          * This class is a container for a vector of buffers which make up a frame
-          * container. Each buffer within the frame has a reserved header area and a 
-          * payload. Calls to write and read take into account the header offset.
-          * It is assumed only one thread will interact with a buffer. Buffers 
-          * are not thread safe.
-          * TODO: Consider tracking size and payload in frame 
+         /** This class is a container for an array of Buffer class objects which contain
+          * the stream data. A FrameIterator object is used to read and write data from and
+          * to the Frame.
          */
          class Frame : public boost::enable_shared_from_this<rogue::interfaces::stream::Frame> {
 
                friend class Buffer;
                friend class FrameLock;
 
-               //! Interface specific flags
+               // Interface specific flags
                uint16_t flags_;
 
-               //! Error state
+               // Error state
                uint8_t error_;
 
-               //! Channel
+               // Channel
                uint8_t chan_;
 
-               //! List of buffers which hold real data
+               // List of buffers which hold real data
                std::vector<boost::shared_ptr<rogue::interfaces::stream::Buffer> > buffers_;
 
-               //! Total size of buffers
+               // Total size of buffers
                uint32_t size_;
 
-               //! Total payload size
+               // Total payload size
                uint32_t payload_;
 
-               //! Update buffer size counts
+               // Update buffer size counts
                void updateSizes();
 
-               //! Size values dirty flage
+               // Size values dirty flage
                bool sizeDirty_;
 
             protected:
 
-               //! Set size values dirty
+               // Set size values dirty
                void setSizeDirty();
 
-               //! Frame lock
+               // Frame lock
                boost::mutex lock_;
 
             public:
 
-               //! Itererator for buffer list
+               //! Alias for using std::vector<boost::shared_ptr<rogue::interfaces::stream::Buffer> >::iterator as Buffer::iterator
                typedef std::vector<boost::shared_ptr<rogue::interfaces::stream::Buffer> >::iterator BufferIterator;
 
-               //! Itererator for data
+               //! Alias for using FrameIterator as Frame::iterator
                typedef rogue::interfaces::stream::FrameIterator iterator;
 
-               //! Setup class in python
+               //! Setup class for use in python
+               /* Not exposed to Python
+                */
                static void setup_python();
 
-               //! Create an empty frame
-               /*
-                * Pass owner and zero copy status
+               //! Class factory which returns a FramePtr to an empty Frame
+               /** Not exposed to Python
                 */
                static boost::shared_ptr<rogue::interfaces::stream::Frame> create();
 
-               //! Create an empty frame
+               //! Create an empty Frame.
+               /** Do not call directly. Use the create() class method instead.
+                *
+                * Not available in Python
+                */
                Frame();
 
-               //! Destroy a frame.
+               //! Destroy the Frame.
                ~Frame();
 
-               //! Get lock
+               //! Lock frame and return a FrameLockPtr object
+               /** Exposed as lock() to Python
+                *  @return FrameLock pointer (FrameLockPtr)
+                */
                boost::shared_ptr<rogue::interfaces::stream::FrameLock> lock();
 
-               //! Add a buffer to end of frame, return interator to inserted buffer
+               //! Add a buffer to end of frame,
+               /** Not exposed to Python
+                * @param buff The buffer pointer (BufferPtr) to append to the end of the frame
+                * @return Buffer list iterator (Frame::BufferIterator) pointing to the added buffer
+                */
                std::vector<boost::shared_ptr<rogue::interfaces::stream::Buffer> >::iterator
                   appendBuffer(boost::shared_ptr<rogue::interfaces::stream::Buffer> buff);
 
-               //! Append passed frame buffers to end of frame, return interator to inserted buffer
+               //! Append passed frame to the end of this frame.
+               /** Buffers from the passed frame are appened to the end of this frame and
+                * will be removed from the source frame.
+                *
+                * Not exposed to Python
+                * @param frame Source frame pointer (FramePtr) to append
+                * @return Buffer list iterator (Frame::BufferIterator) pointing to the first inserted buffer from passed frame
+                */
                std::vector<boost::shared_ptr<rogue::interfaces::stream::Buffer> >::iterator
                   appendFrame(boost::shared_ptr<rogue::interfaces::stream::Frame> frame);
 
-               //! Buffer begin iterator
+               //! Get Buffer list begin iterator
+               /** Not exposed to Python
+                * @return Buffer list iterator (Frame::BufferIterator) pointing to the start of the Buffer list
+                */
                std::vector<boost::shared_ptr<rogue::interfaces::stream::Buffer> >::iterator beginBuffer();
 
-               //! Buffer end iterator
+               //! Get Buffer list end iterator
+               /** Not exposed to Python
+                * @return Buffer list iterator (Frame::BufferIterator) pointing to the end of the Buffer list
+                */
                std::vector<boost::shared_ptr<rogue::interfaces::stream::Buffer> >::iterator endBuffer();
 
-               //! Buffer counter
+               //! Get Buffer list count
+               /** Not exposed to Python
+                * @return Number of buffers in the Buffer list
+                */
                uint32_t bufferCount();
 
-               //! Clear the list
+               //! Empty the frame, removing all buffers
+               /** Not exposed to Python
+                */
                void clear();
 
-               //! Buffers list is empty
+               //! Buffer list empty state
+               /** Not exposed to Python
+                * @return True if frame Buffer list is empty.
+                */
                bool isEmpty();
 
-               /*
-                * Get size of buffers that can hold
-                * payload data. This function 
-                * returns the full buffer size minus
-                * the head and tail reservation.
+               //! Get total size of the Frame
+               /** This function returns the full buffer size
+                *
+                * Exposed as getSize() to Python
+                * @return Total raw Buffer size of Frame in bytes
                 */
                uint32_t getSize();
 
-               /*
-                * Get available size for payload
-                * This is the space remaining for payload
-                * minus the space reserved for the tail
+               //! Get total available size of the Frame
+               /** This is the space remaining for payload
+                *
+                * Exposed as getAvailable() to Python
+                * @return Remaining bytes available for payload in the Frame
                 */
                uint32_t getAvailable();
 
-               /*
-                * Get real payload size without header
-                * This is the count of real data in the 
-                * packet, minus the portion reserved for
-                * the head.
+               //! Get total payload size of the Frame
+               /** Exposed as getPayload() to Python
+                * @return Total paylaod bytes in the Frame
                 */
                uint32_t getPayload();
 
-               /*
-                * Set payload size (not including header)
-                * If passed size is less then current, 
-                * the frame payload size will be descreased.
+               //! Set payload size 
+               /** Not exposed to Python
+                * @param size New payload size
                 */
                void setPayload(uint32_t size);
 
-               /*
-                * Set the min payload size (not including header)
-                * If the current payload size is greater, the
-                * payload size will be unchanged.
+               //! Set payload size to at least the passed value
+               /** If current payload size is larger then passed value,
+                * the payload size is unchanged. 
+                *
+                * Not exposed to Python
+                * @param size New minimum size
                 */
                void minPayload(uint32_t size);
 
                //! Adjust payload size
+               /** Pass is a positive or negative size adjustment.
+                *
+                * Not exposed to Python
+                * @param value Size adjustment value
+                */
                void adjustPayload(int32_t value);
 
-               //! Set the buffer as full (minus tail reservation)
+               //! Set the Frame payload to full 
+               /** Set the current payload size to equal the total
+                * available size of the buffers.
+                *
+                * Not exposed to Python
+                */
                void setPayloadFull();
 
-               //! Set the buffer as empty (minus header reservation)
+               //! Set the Frame payload to zero
                void setPayloadEmpty();
 
-               //! Get flags
+               //! Get Frame flags
+               /** The Frame flags field is a 16-bit application specific field
+                * for passing data between a stream Master and Slave.
+                * A typical use in Rogue is to pass the first and last user
+                * Axi-Stream fields.
+                *
+                * Exposed as getFlags() to Python
+                * @return 16-bit Flag value
+                */
                uint16_t getFlags();
 
-               //! Set flags
+               //! Set Frame flags
+               /** Exposed as setFlags() to Python
+                * @param flags 16-bit flag value
+                */
                void setFlags(uint16_t flags);
 
+               // Get the first user field portion of flags (SSI/Axi-Stream)
+               /** The first user value is stored in the lower 8-bits of the flag field.
+                *
+                * Exposed as getFirstuser() to Python
+                * @return 8-bit lirst user value
+                */
+               uint8_t getFirstUser();
+
+               // Set the first user field portion of flags (SSI/Axi-Stream)
+               /** Exposed as setFirstUser() to Python
+                * @param fuser 8-bit lirst user value
+                */
+               void setFirstUser(uint8_t fuser);
+
+               // Get the last user field portion of flags (SSI/Axi-Stream)
+               /** The last user value is stored in the upper 8-bits of the flag field.
+                *
+                * Exposed as getLastUser() to Python
+                * @return 8-bit last user value
+                */
+               uint8_t getLastUser();
+
+               // Set the last user field portion of flags (SSI/Axi-Stream)
+               /** Exposed as setLastUser() to Python
+                * @param luser 8-bit last user value
+                */
+               void setLastUser(uint8_t fuser);
+
                //! Get channel
+               /** Most Frames in Rogue will not use this channel field since most
+                * Master to Slave connections are not channelized. Exceptions include
+                * data coming out of a data file reader.
+                *
+                * Exposed as getChannel() to Python
+                * @return 8-bit channel ID
+                */
                uint8_t getChannel();
 
                //! Set channel
+               /** Exposed as setChannel() to Python
+                * @param channel 8-bit channel ID
+                */
                void setChannel(uint8_t channel);
 
-               // Get first user field portion of flags (SSI/axi-stream)
-               uint8_t getFirstUser();
-
-               // Set first user field portion of flags (SSI/axi-stream)
-               void setFirstUser(uint8_t fuser);
-
-               // Get last user field portion of flags (SSI/axi-stream)
-               uint8_t getLastUser();
-
-               // Set last user field portion of flags (SSI/axi-stream)
-               void setLastUser(uint8_t fuser);
-
                //! Get error state
+               /** The error value is application specific, depnding on the stream Master
+                * implementation. A non-zero value is considered an error.
+                * 
+                * Exposed as getError() to Python
+                */
                uint8_t getError();
 
                //! Set error state
+               /** Exposed as setError() to Python
+                * @param error New error value
+                */
                void setError(uint8_t error);
 
-               //! Get read start iterator
+               //! Get read start FrameIterator
+               /** The read start iterator points to the start of the Frame
+                * and operates in read mode. This iterator should not be used 
+                * for updating the frame.
+                * 
+                * Not exposed to Python
+                * @return FrameIterator pointing to beginning of payload
+                */
                rogue::interfaces::stream::FrameIterator beginRead();
 
-               //! Get read end iterator
+               //! Get read end FrameIterator
+                /** This iterator is used to detect when the end of the 
+                * Frame payload is reached when iterating through the Frame 
+                * during a read operation.
+                * 
+                * Not exposed to Python
+                * @return FrameIterator read end position
+                */
                rogue::interfaces::stream::FrameIterator endRead();
 
-               //! Get write start iterator
+               //! Get write start FrameIterator
+               /** The write start iterator points to the start of the Frame
+                * and operates in write mode. This iterator should not be used 
+                * for reading from the frame. Using this iterator to update
+                * the frame does not adjust the Frame payload size.
+                * 
+                * Not exposed to Python
+                * @return FrameIterator pointing to beginning of payload
+                */
                rogue::interfaces::stream::FrameIterator beginWrite();
 
-               //! Get write end iterator
+               //! Get write end FrameIterator
+                /** This iterator is used to detect when the end of the 
+                * available frame space is reached when iterator through
+                * the frame during a write operation.
+                * 
+                * Not exposed to Python
+                * @return FrameIterator write end position
+                */
                rogue::interfaces::stream::FrameIterator endWrite();
 
 #ifndef NO_PYTHON
 
-               //! Read count bytes from frame payload, starting from offset. Python version.
+               //! Python Frame data read function
+               /** Read data from Frame into passed Python byte array.
+                *
+                * Exposed as read() to Python
+                * @param p Python object containing byte array
+                * @param offset First location of Frame data to copy to byte array
+                */
                void readPy ( boost::python::object p, uint32_t offset );
 
-               //! Write count bytes to frame payload, starting at offset. Python Version
+               //! Python Frame data write function
+               /** Write data into from Frame from passed Python byte array.
+                *
+                * Exposed as write() to Python
+                * @param p Python object containing byte array
+                * @param offset First location to write byte array into Frame
+                */
                void writePy ( boost::python::object p, uint32_t offset );
 #endif
          };
 
-         // Convienence
+         //! Alias for using shared pointer as FramePtr
          typedef boost::shared_ptr<rogue::interfaces::stream::Frame> FramePtr;
       }
    }

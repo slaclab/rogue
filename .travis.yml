@@ -105,7 +105,7 @@ jobs:
         - codecov
         - coverage report -m
         # Publish docs.
-        - doctr deploy . --built-docs docs/build/html --deploy-branch-name gh-pages
+        - doctr deploy . --built-docs docs/build/html --deploy-branch-name gh-pages --branch-whitelist doc_updates
 
     # Deploy development version stage (deploy_dev)
     - &deploy-docker-stage      # Docker
@@ -197,3 +197,4 @@ jobs:
       os: osx
       language: ruby  # osx does not support language=python
       env: CONDA_TOKEN=$CONDA_UPLOAD_TOKEN_TAG
+

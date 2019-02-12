@@ -51,7 +51,7 @@ ris::Filter::Filter(bool dropErrors, uint8_t channel) : ris::Master(), ris::Slav
    dropErrors_ = dropErrors;
    channel_ = channel;
 
-   log_ = rogue::Logging::create("Filter");
+   log_ = rogue::Logging::create("stream.Filter");
 }
 
 //! Deconstructor

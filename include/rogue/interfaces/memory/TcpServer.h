@@ -49,7 +49,7 @@ namespace rogue {
                void runThread();
 
                //! Log
-               rogue::LoggingPtr bridgeLog_;
+               boost::shared_ptr<rogue::Logging> bridgeLog_;
 
                //! Thread
                boost::thread * thread_;
