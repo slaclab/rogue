@@ -199,6 +199,7 @@ namespace rogue {
                 * @param address 64-bit transaction offset address
                 * @param p Byte array used for transaction data
                 * @param size Transaction size in bytes
+                * @param offset Offset within byte array for transaction
                 * @param type Transaction type
                 * @return 32-bit transaction id
                 */
