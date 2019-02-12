@@ -13,11 +13,3 @@ Installing & Compiling Rogue
    full_build
    firewall
 
-.. toctree::
-   :maxdepth: 1
-   :caption: Custom Components:
-
-   custom
-   custom_module
-   custom_makefile
-
