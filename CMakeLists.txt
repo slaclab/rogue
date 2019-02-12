@@ -47,8 +47,6 @@ if (PYTHONINTERP_FOUND)
    endif()
 endif()
 
-find_package(ZeroMQ REQUIRED)
-
 #####################################
 # Boost Configuration
 #####################################
@@ -88,6 +86,13 @@ if (NOT Boost_FOUND)
    message("")
    message(FATAL_ERROR "Failed to find boost libraries!")
 endif()
+
+#####################################
+# Additional Libraries
+#####################################
+
+find_package(ZeroMQ REQUIRED)
+find_package(BZip2  REQUIRED)
 
 #####################################
 # Optional EPICS V3
@@ -188,6 +193,8 @@ include_directories(${PROJECT_SOURCE_DIR}/include)
 include_directories(${PROJECT_BINARY_DIR})
 include_directories(${Boost_INCLUDE_DIRS})
 include_directories(${PYTHON_INCLUDE_DIRS})
+include_directories(${ZeroMQ_INCLUDE_DIR})
+include_directories(${BZIP2_INCLUDE_DIR})
 include_directories(${EPICSV3_INCLUDES})
 
 if (APPLE)
@@ -204,9 +211,9 @@ add_subdirectory(src/rogue)
 
 # Link rogue core to boost, python and bzip
 TARGET_LINK_LIBRARIES(rogue-core LINK_PUBLIC ${Boost_LIBRARIES})
+TARGET_LINK_LIBRARIES(rogue-core LINK_PUBLIC ${ZeroMQ_LIBRARY})
 TARGET_LINK_LIBRARIES(rogue-core LINK_PUBLIC ${EPICSV3_LIBRARIES})
-TARGET_LINK_LIBRARIES(rogue-core LINK_PUBLIC bz2)
-TARGET_LINK_LIBRARIES(rogue-core LINK_PUBLIC zmq)
+TARGET_LINK_LIBRARIES(rogue-core LINK_PUBLIC ${BZIP2_LIBRARIES})
 
 # Do not link directly against python in macos
 if (APPLE)
