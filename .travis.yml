@@ -105,7 +105,7 @@ jobs:
         - codecov
         - coverage report -m
         # Publish docs.
-        - doctr deploy . --built-docs docs/build/html --deploy-branch-name gh-pages --branch-whitelist doc_updates
+        - doctr deploy . --built-docs docs/build/html --deploy-branch-name gh-pages --branch-whitelist documentation
 
     # Deploy development version stage (deploy_dev)
     - &deploy-docker-stage      # Docker
