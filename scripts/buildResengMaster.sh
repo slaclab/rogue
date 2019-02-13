@@ -8,7 +8,7 @@ export MODULEPATH=/usr/share/Modules/modulefiles:/etc/modulefiles:/afs/slac.stan
 module load cmake-3.9.4-gcc-4.9.4-ofjqova
 source /afs/slac.stanford.edu/g/reseng/python/3.6.1/settings.sh
 source /afs/slac.stanford.edu/g/reseng/boost/1.64.0/settings.sh
-source /afs/slac.stanford.edu/g/reseng/zeromq/4.2.0/settings.sh
+source /afs/slac.stanford.edu/g/reseng/zeromq/4.3.1/settings.sh
 source /afs/slac.stanford.edu/g/reseng/epics/base-R3-15-5-1-0/settings.sh
 
 # Remove old build
