@@ -86,8 +86,7 @@ endif()
 # Additional Libraries
 #####################################
 
-find_package(PkgConfig REQUIRED)
-find_package(BZip2 REQUIRED)
+find_package(BZip2 QUIET REQUIRED)
 
 #####################################
 # ZeroMQ
@@ -96,21 +95,29 @@ find_package(BZip2 REQUIRED)
 # First try with Cmake packages
 find_package(ZeroMQ QUIET)
 
-# ZeroMQ does not always support cmake, use pkgconfig
+# ZeroMQ does not always support cmake, use brute force
 if (NOT ZeroMQ_FOUND)
-   pkg_check_modules(PC_ZeroMQ QUIET zmq)
+   
+   # Convert LD_LIBRARY PATH for search
+   string(REPLACE ":" ";" HINT_PATHS $ENV{LD_LIBRARY_PATH})
 
-   # use the hint from above to find where 'zmq.hpp' is located
-   find_path(ZeroMQ_INCLUDE_DIR
-           NAMES zmq.hpp
-           PATHS ${PC_ZeroMQ_INCLUDE_DIRS}
-           )
+   # See if zmq library is in LD_LIBRARY_PATH
+   find_library(ZeroMQ_LIBRARY 
+                NAMES zmq 
+                PATHS ${HINT_PATHS})
 
-   # use the hint from about to find the location of libzmq
-   find_library(ZeroMQ_LIBRARY
-           NAMES zmq
-           PATHS ${PC_ZeroMQ_LIBRARY_DIRS}
-           )
+   # Found it
+   if (ZeroMQ_LIBRARY) 
+
+      # Get the base diretory
+      get_filename_component(ZMQ_LIBDIR ${ZeroMQ_LIBRARY} DIRECTORY)
+
+      # See if we can find the header in a relative path
+      find_path(ZeroMQ_INCLUDE_DIR
+              NAMES zmq.h
+              PATHS ${ZMQ_LIBDIR}/../include
+              )
+   endif()
 
    # Failed to find it
    if (NOT ZeroMQ_INCLUDE_DIR)
