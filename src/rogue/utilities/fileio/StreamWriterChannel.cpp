@@ -67,10 +67,17 @@ ruf::StreamWriterChannel::~StreamWriterChannel() { }
 
 //! Accept a frame from master
 void ruf::StreamWriterChannel::acceptFrame ( ris::FramePtr frame ) {
+   uint8_t ichan;
+
    rogue::GilRelease noGil;
    ris::FrameLockPtr fLock = frame->lock();
    boost::unique_lock<boost::mutex> lock(mtx_);
-   writer_->writeFile (channel_, frame);
+
+   // Support for channelized traffic
+   if ( channel_ == 0 ) ichan = frame->getChannel();
+   else ichan = channel_;
+
+   writer_->writeFile (ichan, frame);
    frameCount_++;
    lock.unlock();
    cond_.notify_all();

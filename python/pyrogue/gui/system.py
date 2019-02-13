@@ -28,6 +28,7 @@ except ImportError:
 
 import pyrogue
 import Pyro4
+import datetime
 
 class DataLink(QObject):
 
@@ -138,8 +139,9 @@ class DataLink(QObject):
 
     def _browse(self):
         dlg = QFileDialog()
+        sug = datetime.datetime.now().strftime("data_%Y%m%d_%H%M%S.dat") 
 
-        dataFile = dlg.getSaveFileName(options=QFileDialog.DontConfirmOverwrite, caption='Select data file', filter='Data Files(*.dat);;All Files(*.*)')
+        dataFile = dlg.getSaveFileName(options=QFileDialog.DontConfirmOverwrite, directory=sug, caption='Select data file', filter='Data Files(*.dat);;All Files(*.*)')
 
         # Detect QT5 return
         if isinstance(dataFile,tuple):
@@ -373,6 +375,10 @@ class SystemWidget(QWidget):
         pb.clicked.connect(self.saveSettings)
         hb.addWidget(pb)
 
+        pb = QPushButton('Save State')
+        pb.clicked.connect(self.saveState)
+        hb.addWidget(pb)
+
         ###################
         # Data Controllers
         ###################
@@ -447,8 +453,9 @@ class SystemWidget(QWidget):
     @pyqtSlot()
     def saveSettings(self):
         dlg = QFileDialog()
+        sug = datetime.datetime.now().strftime("config_%Y%m%d_%H%M%S.yml") 
 
-        saveFile = dlg.getSaveFileName(caption='Save config file', filter='Config Files(*.yml);;All Files(*.*)')
+        saveFile = dlg.getSaveFileName(caption='Save config file', directory=sug, filter='Config Files(*.yml);;All Files(*.*)')
 
         # Detect QT5 return
         if isinstance(saveFile,tuple):
@@ -456,4 +463,18 @@ class SystemWidget(QWidget):
 
         if saveFile != '':
             self.root.WriteConfig(saveFile)
+
+    @pyqtSlot()
+    def saveState(self):
+        dlg = QFileDialog()
+        sug = datetime.datetime.now().strftime("state_%Y%m%d_%H%M%S.yml") 
+
+        stateFile = dlg.getSaveFileName(caption='Save State file', directory=sug, filter='State Files(*.yml);;All Files(*.*)')
+
+        # Detect QT5 return
+        if isinstance(stateFile,tuple):
+            stateFile = stateFile[0]
+
+        if stateFile != '':
+            self.root.WriteState(stateFile)
 

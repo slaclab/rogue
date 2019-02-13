@@ -33,7 +33,7 @@ namespace rogue {
                int32_t  fd_;
 
                // Logging
-               rogue::LoggingPtr log_;
+               boost::shared_ptr<rogue::Logging> log_;
 
             public:
 

@@ -6,38 +6,21 @@
 # rogue
 SLAC Python Based Hardware Abstraction &amp; Data Acquisition System
 
-Email List For Announcements:
-https://listserv.slac.stanford.edu/cgi-bin/wa?A0=AIR-ROGUE-USERS
+*Current documenation can be found at:*
 
-JIRA:
-https://jira.slac.stanford.edu/plugins/servlet/project-config/ESROGUE
+   https://slaclab.github.io/rogue/
 
-Introduction presentation:
-https://docs.google.com/presentation/d/1m2nqGzCZXsQV8ul4d0Gk7xmwn-OLW1iucTLm7LLp9eg/edit?usp=sharing
-some concepts (Blocks and Variables) are a little out of data as we have made changes.
+*Email List For Announcements:*
 
-For example scripts and sub-class source code examples see:
+   https://listserv.slac.stanford.edu/cgi-bin/wa?A0=AIR-ROGUE-USERS
 
-https://github.com/slaclab/rogue-example
+*JIRA:*
+
+   https://jira.slac.stanford.edu/plugins/servlet/project-config/ESROGUE
 
 # Getting Rogue
 
-The recommended way is to install rogue is to use a pre-built anaconda package in an anaconda environment:
+Instructions for getting and installing Rogue can be found here:
 
-[Installing rogue with anaconda](README_anaconda.md)
+https://slaclab.github.io/rogue/installing/index.html
 
-Alternatively you can download and build your own copy of rogue within an anaconda environment. This is useful if you may want to contribute to the rogue development.
-
-[Building rogue inside anaconda](README_anaconda_build.md)
-
-You may choose to build and run rogue outside of the anaconda environment. Instructions for doing so can be found here:
-
-[Building rogue](README_build.md)
-
-If you need to install rogue behind a firewall you can use the following instructions:
-
-[Rogue and anaconda behind a firewall](README_firewall.md)
-
-You can also use rogue with Docker containers:
-
-[Run rogue with Dockers](README_docker.md)

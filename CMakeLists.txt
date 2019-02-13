@@ -70,6 +70,11 @@ if ((NOT Boost_FOUND) AND DO_PYTHON)
    find_package(Boost 1.58 QUIET COMPONENTS system thread python36)
 endif()
 
+# Next try anaconda with python 3.7
+if ((NOT Boost_FOUND) AND DO_PYTHON)
+   find_package(Boost 1.58 QUIET COMPONENTS system thread python37)
+endif()
+
 # Try without python
 if (NOT Boost_FOUND)
    set(DO_PYTHON 0)
@@ -225,6 +230,8 @@ include_directories(${PROJECT_SOURCE_DIR}/include)
 include_directories(${PROJECT_BINARY_DIR})
 include_directories(${Boost_INCLUDE_DIRS})
 include_directories(${PYTHON_INCLUDE_DIRS})
+include_directories(${ZeroMQ_INCLUDE_DIR})
+include_directories(${BZIP2_INCLUDE_DIR})
 include_directories(${EPICSV3_INCLUDES})
 
 if (APPLE)
@@ -241,8 +248,9 @@ add_subdirectory(src/rogue)
 
 # Link rogue core to boost, python and bzip
 TARGET_LINK_LIBRARIES(rogue-core LINK_PUBLIC ${Boost_LIBRARIES})
+TARGET_LINK_LIBRARIES(rogue-core LINK_PUBLIC ${ZeroMQ_LIBRARY})
 TARGET_LINK_LIBRARIES(rogue-core LINK_PUBLIC ${EPICSV3_LIBRARIES})
-TARGET_LINK_LIBRARIES(rogue-core LINK_PUBLIC bz2)
+TARGET_LINK_LIBRARIES(rogue-core LINK_PUBLIC ${BZIP2_LIBRARIES})
 
 # Do not link directly against python in macos
 if (APPLE)

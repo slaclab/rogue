@@ -21,6 +21,7 @@
 #include <rogue/protocols/epicsV3/Server.h>
 #include <rogue/protocols/epicsV3/Value.h>
 #include <rogue/protocols/epicsV3/Pv.h>
+#include <rogue/protocols/epicsV3/Work.h>
 #include <rogue/GilRelease.h>
 #include <rogue/GeneralError.h>
 #include <fdManager.h>
@@ -33,7 +34,7 @@ namespace bp  = boost::python;
 //! Setup class in python
 void rpe::Server::setup_python() {
 
-   bp::class_<rpe::Server, rpe::ServerPtr, boost::noncopyable >("Server",bp::init<>())
+   bp::class_<rpe::Server, rpe::ServerPtr, boost::noncopyable >("Server",bp::init<uint32_t>())
       .def("addValue", &rpe::Server::addValue)
       .def("start",    &rpe::Server::start)
       .def("stop",     &rpe::Server::stop)
@@ -41,25 +42,54 @@ void rpe::Server::setup_python() {
 }
 
 //! Class creation
-rpe::Server::Server () : caServer(), running_(false) { }
+rpe::Server::Server (uint32_t count) : caServer(), running_(false) { 
+   workCnt_ = count;
+   workers_ = (boost::thread **)malloc(workCnt_ * sizeof(boost::thread *));
+}
 
 rpe::Server::~Server() {
+   std::map<std::string, rpe::ValuePtr>::iterator it;
+
    stop();
+
+   for ( it = values_.begin(); it != values_.end(); ++it ) {
+      delete it->second->getPv();
+      it->second.reset();
+   }
+   values_.clear();
+   free(workers_);
 }
 
 void rpe::Server::start() {
+   uint32_t x;
    //this->setDebugLevel(10);
    thread_ = new boost::thread(boost::bind(&rpe::Server::runThread, this));
+
+   for (x=0; x < workCnt_; x++) 
+      workers_[x] = new boost::thread(boost::bind(&rpe::Server::runWorker, this));
+
    running_ = true;
 }
 
 void rpe::Server::stop() {
+   uint32_t x;
+
    if (running_) {
       rogue::GilRelease noGil;
+
+      for (x=0; x < workCnt_; x++) 
+         workQueue_.push(boost::shared_ptr<rogue::protocols::epicsV3::Work>());
+        // workQueue_.push(NULL);
+
+      for (x=0; x < workCnt_; x++) {
+         workers_[x]->interrupt();
+         workers_[x]->join();
+      }
+
       thread_->interrupt();
       thread_->join();
       running_ = false;
-  }
+   }
 }
 
 void rpe::Server::addValue(rpe::ValuePtr value) {
@@ -69,13 +99,17 @@ void rpe::Server::addValue(rpe::ValuePtr value) {
    boost::lock_guard<boost::mutex> lock(mtx_);
 
    if ( (it = values_.find(value->epicsName())) == values_.end()) {
-      pv = new Pv(*this, value);
+      pv = new Pv(this, value);
       value->setPv(pv);
       values_[value->epicsName()] = value;
    }
    else {
       throw rogue::GeneralError("Server::addValue","EPICs name already exists: " + value->epicsName());
    }
+}
+
+void rpe::Server::addWork(rpe::WorkPtr work) {
+   workQueue_.push(work);
 }
 
 pvExistReturn rpe::Server::pvExistTest(const casCtx &ctx, const char *pvName) {
@@ -123,3 +157,18 @@ void rpe::Server::runThread() {
       }
    } catch (boost::thread_interrupted&) { }
 }
+
+//! Work thread
+void rpe::Server::runWorker() {
+   rpe::WorkPtr work;
+
+   try {
+      while(1) {
+         work = workQueue_.pop();
+         if (work == NULL) break;
+         work->execute();
+         boost::this_thread::interruption_point();
+      }
+   } catch (boost::thread_interrupted&) { }
+}
+

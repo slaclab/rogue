@@ -55,6 +55,11 @@ if ((NOT Boost_FOUND) AND DO_PYTHON)
    find_package(Boost 1.58 QUIET COMPONENTS system thread python36)
 endif()
 
+# Next try anaconda with python 3.7
+if ((NOT Boost_FOUND) AND DO_PYTHON)
+   find_package(Boost 1.58 QUIET COMPONENTS system thread python37)
+endif()
+
 # Try without python
 if (NOT Boost_FOUND)
    set(DO_PYTHON 0)
@@ -63,6 +68,7 @@ endif()
 
 # Nothing worked
 if (NOT Boost_FOUND)
+   message("")
    message(FATAL_ERROR "Failed to find boost libraries!")
 endif()
 
@@ -158,14 +164,18 @@ endif()
 set(ROGUE_INCLUDE_DIRS @CONF_INCLUDE_DIRS@
                        ${Boost_INCLUDE_DIRS}
                        ${PYTHON_INCLUDE_DIRS}
+                       ${ZeroMQ_INCLUDE_DIR}
+                       ${BZIP2_INCLUDE_DIR}
+                       ${PYTHON_INCLUDE_DIRS}
                        ${EPICSV3_INCLUDES})
 
 # Set librarires
 set(ROGUE_LIBRARIES @CONF_LIBRARIES@
                     ${Boost_LIBRARIES}
                     ${PYTHON_LIBRARIES}
-                    ${EPICSV3_LIBRARIES}
-                    LINK_PUBLIC bz2)
+                    ${ZeroMQ_LIBRARY}
+                    ${BZIP2_LIBRARIES}
+                    ${EPICSV3_LIBRARIES})
 
 # Set Version
 set(ROGUE_VERSION @ROGUE_VERSION@)

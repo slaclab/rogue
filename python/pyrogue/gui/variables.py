@@ -141,8 +141,12 @@ class VariableLink(QObject):
             self._swSet = True
 
             if isinstance(self._widget, QComboBox):
-                if self._widget.currentIndex() != self._widget.findText(disp):
-                    self.updateGui.emit(self._widget.findText(disp))
+                i = self._widget.findText(disp)
+
+                if i < 0: i = 0
+
+                if self._widget.currentIndex() != i:
+                    self.updateGui.emit(i)
             elif isinstance(self._widget, QSpinBox):
                 if self._widget.value != value:
                     self.updateGui.emit(value)

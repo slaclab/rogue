@@ -4,6 +4,12 @@ parse
 click
 coverage
 codecov
-pytest
+pytest>=3.6
 pytest-cov
 pyepics
+doctr
+sphinx
+sphinx_rtd_theme
+sphinxcontrib-napoleon
+breathe
+pyzmq

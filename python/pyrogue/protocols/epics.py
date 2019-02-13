@@ -26,12 +26,12 @@ class EpicsCaServer(object):
     """
     Class to contain an epics ca server
     """
-    def __init__(self,*,base,root,pvMap=None, syncRead=True):
+    def __init__(self,*,base,root,pvMap=None, syncRead=True, threadCount=1):
         self._root      = root
         self._base      = base 
         self._log       = pyrogue.logInit(self)
         self._syncRead  = syncRead
-        self._srv       = rogue.protocols.epicsV3.Server()
+        self._srv       = rogue.protocols.epicsV3.Server(threadCount)
 
         if not root.running:
             raise Exception("Epics can not be setup on a tree which is not started")

@@ -1,4 +1,15 @@
+dist: xenial
 sudo: required
+
+branches:
+  except:
+    - gh-pages
+
+addons:
+  apt:
+    packages:
+      - doxygen
+      - doxygen-doc
 
 services:
   - docker
@@ -11,6 +22,8 @@ python:
 
 stages:
   - test
+  - name: deploy_doc
+    if: tag IS present
   - name: deploy_dev
     if: branch = pre-release AND tag IS blank AND NOT (type = pull_request)
   - name: deploy_tag
@@ -18,12 +31,13 @@ stages:
 
 env:
   global:
-    - PY_PATH=$HOME/virtualenv/python3.6.3
+    - PY_PATH=$HOME/virtualenv/python3.6.7
     - PACKAGE_DIR=$HOME/packages
     - BOOST_DIR=$PACKAGE_DIR/boost_1_64_0
     - EPICS_DIR=$PACKAGE_DIR/epics/base-3.15.5
     - MINICONDA_DIR=$PACKAGE_DIR/miniconda
     - DOCKER_ORG_NAME=tidair
+    - secure: "mAihaScn+WBYUb+SPZUO3g6qbsFXOaiLHWtcO3uY3KBYO1FLWQ9y9PHGDNfh+ZUp874Gws+q923PrJikRR+43zy4hmC/hSt6zgCd2GqgysqB/Mhpdenz1tUwknA1JLVfGYc4K/AUncNoA5/V6ZdEQZxnetduGyuJkL0ysswQcu4Vlaels2gWC8uKS1kkYerCbwVhRu5j3cPTj2/kk244/NdlejK2u+XMOyybJ+Q4eKqWPxCIoo36ofJvD1g3ZI/fLats1t6F+cK2pXGkDUh38KHE36+cg90jNVo35BN4NlNZHbPJN77ibSQaL2bV4RHmooTlwkXr9F8dlNyy83xQ2LgNZHfo/XeQFIWjQg3MfJ3YzBHBL8hYRhmiHePjKxLa7JTqcTvtxIdAcihnfOzpvfV0thC16RUvURX/a7k9BD7/75lD9zyDc/LXhNB0ZmkZpf1N4JPOJCZNj/UC1KHjAb9NrfYRFHYf8o/YrEWqNjXi81RrBRCmcUNHucJ07MeTXQ9hOZfL7KSpVUAzhVKU3xB/BCDY4bTcZcLsMZQY+cVh4DS9xWQYCNBGscp0ipgeJ7Wh/VRi2zvsZ3F9N7W0ntOPkqSouPIy9O2W0ASWzYpt3kG073xNhDDUsNSGLh4vqkOxKHqQ1WgfpVw9WT0kWq0hNX3mln71V4uVAWdJb0o="
 
 jobs:
   include:
@@ -37,6 +51,8 @@ jobs:
         - export BOOST_ROOT=$BOOST_DIR
         - export EPICS_BASE=$EPICS_DIR
         - export EPICS_CA_ADDR_LIST=127.0.0.1
+        # Install zeromq
+        - sudo apt-get install -qq libzmq3-dev
         # Prepare folders
         - mkdir -p $BOOST_DIR
         - mkdir -p $EPICS_DIR
@@ -57,7 +73,7 @@ jobs:
 
         # EPICS base
         - cd $EPICS_DIR
-        - wget -O base-3.15.5.tar.gz https://epics.anl.gov/download/base/base-3.15.5.tar.gz
+        - wget -O base-3.15.5.tar.gz https://github.com/epics-base/epics-base/archive/R3.15.5.tar.gz
         - tar xzf base-3.15.5.tar.gz --strip 1
         - make clean && make && make install
 
@@ -68,6 +84,12 @@ jobs:
         - make
         - make install
 
+        # Build Docs
+        - cd $TRAVIS_BUILD_DIR
+        - source setup_rogue.sh
+        - cd docs
+        - make html
+
       before_script:
         # Prepare rogue enviroment
         - cd $TRAVIS_BUILD_DIR
@@ -75,12 +97,15 @@ jobs:
 
       script:
         # Run tests with coverage
+        - cd $TRAVIS_BUILD_DIR
         - python3 -m pytest --cov
 
       after_success:
         # Upload coverage report
         - codecov
         - coverage report -m
+        # Publish docs.
+        - doctr deploy . --built-docs docs/build/html --deploy-branch-name gh-pages --branch-whitelist doc_updates
 
     # Deploy development version stage (deploy_dev)
     - &deploy-docker-stage      # Docker
@@ -148,7 +173,7 @@ jobs:
 
       script:
         # Build conda package
-        - conda build -q conda-recipe --python=3.6 --output-folder bld-dir -c defaults -c conda-forge -c paulscherrerinstitute
+        - conda build -q conda-recipe --output-folder bld-dir -c defaults -c conda-forge -c paulscherrerinstitute
 
       after_success:
         # Upload conda package
@@ -172,3 +197,4 @@ jobs:
       os: osx
       language: ruby  # osx does not support language=python
       env: CONDA_TOKEN=$CONDA_UPLOAD_TOKEN_TAG
+
