@@ -231,7 +231,6 @@ class Node(object):
         for key,value in self._nodes.items():
             if isinstance(value,pr.Device):
                 lst.append(value)
-            else:
                 lst.extend(value.deviceList)
         return lst
 

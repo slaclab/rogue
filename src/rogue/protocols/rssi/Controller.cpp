@@ -52,9 +52,9 @@ rpr::Controller::Controller ( uint32_t segSize, rpr::TransportPtr tran, rpr::App
    server_ = server;
 
    locTryPeriod_ = 100;
-   locBusyThold_ = 64;
 
-   appQueue_.setThold(locBusyThold_);
+   // Busy after two entries
+   appQueue_.setThold(2);
 
    dropCount_   = 0;
    nextSeqRx_   = 0;
@@ -63,6 +63,7 @@ rpr::Controller::Controller ( uint32_t segSize, rpr::TransportPtr tran, rpr::App
    remBusy_     = false;
 
    lastSeqRx_   = 0;
+   ackSeqRx_    = 0;
 
    state_       = StClosed;
    gettimeofday(&stTime_,NULL);
@@ -184,8 +185,8 @@ void rpr::Controller::transportRx( ris::FramePtr frame ) {
       return;
    }
 
-   log_->debug("RX frame: state=%i server=%i size=%i syn=%i ack=%i nul=%i, rst=%i, ack#=%i seq=%i, nxt=%i",
-         state_, server_,frame->getPayload(),head->syn,head->ack,head->nul,head->rst,
+   log_->debug("RX frame: state=%i server=%i size=%i syn=%i ack=%i nul=%i, bst=%i, rst=%i, ack#=%i seq=%i, nxt=%i",
+         state_, server_,frame->getPayload(),head->syn,head->ack,head->nul,head->busy,head->rst,
          head->acknowledge,head->sequence,nextSeqRx_);
 
    // Ack set
@@ -194,7 +195,7 @@ void rpr::Controller::transportRx( ris::FramePtr frame ) {
 
       do {
          txList_[++lastAckRx_].reset();
-         txListCount_--;
+         if ( txListCount_ != 0 ) txListCount_--;
       } while (lastAckRx_ != head->acknowledge);
    }
 
@@ -215,7 +216,6 @@ void rpr::Controller::transportRx( ris::FramePtr frame ) {
    // or we are waiting for ack replay
    else if ( head->syn ) {
       if ( state_ == StOpen || state_ == StWaitSyn ) {
-         // log_->warning("Syn frame goes to state machine if state = open or we are waiting for ack replay");
          lastSeqRx_ = head->sequence;
          nextSeqRx_ = lastSeqRx_ + 1;
          stQueue_.push(head);
@@ -230,8 +230,7 @@ void rpr::Controller::transportRx( ris::FramePtr frame ) {
 
          lastSeqRx_ = nextSeqRx_;
          nextSeqRx_ = nextSeqRx_ + 1;
-
-         if ( !head->nul ) appQueue_.push(head);
+         appQueue_.push(head);
 
          // There are elements in ooo queue
          if ( ! oooQueue_.empty() ) {
@@ -251,7 +250,7 @@ void rpr::Controller::transportRx( ris::FramePtr frame ) {
                lastSeqRx_ = nextSeqRx_;
                nextSeqRx_ = nextSeqRx_ + 1;
 
-               if ( ! (it->second)->nul ) appQueue_.push(it->second);
+               appQueue_.push(it->second);
                log_->info("Using frame from ooo queue. server=%i, head->sequence=%i", server_, (it->second)->sequence);
                oooQueue_.erase(it);
             }
@@ -300,12 +299,25 @@ ris::FramePtr rpr::Controller::applicationTx() {
    rpr::HeaderPtr head;
 
    rogue::GilRelease noGil;
-   head = appQueue_.pop();
-   stCond_.notify_all();
 
-   frame = head->getFrame();
-   ris::FrameLockPtr flock = frame->lock();
-   (*(frame->beginBuffer()))->adjustHeader(rpr::Header::HeaderSize);
+   do {
+      head = appQueue_.pop();
+      stCond_.notify_all();
+
+      frame = head->getFrame();
+      ris::FrameLockPtr flock = frame->lock();
+
+      ackSeqRx_ = head->sequence;
+
+      // Drop NULL frames
+      if (head->nul) {
+         head.reset();
+         frame.reset();
+      }
+      else (*(frame->beginBuffer()))->adjustHeader(rpr::Header::HeaderSize);
+
+   } while (! frame);
+
    return(frame);
 }
 
@@ -400,15 +412,6 @@ void rpr::Controller::setLocTryPeriod(uint32_t val) {
 
 uint32_t rpr::Controller::getLocTryPeriod() {
    return locTryPeriod_;
-}
-
-void rpr::Controller::setLocBusyThold(uint32_t val) {
-   locBusyThold_ = val;
-   appQueue_.setThold(locBusyThold_);
-}
-
-uint32_t rpr::Controller::getLocBusyThold() {
-   return locBusyThold_;
 }
 
 void rpr::Controller::setLocMaxBuffers(uint8_t val) {
@@ -519,8 +522,8 @@ void rpr::Controller::transportTx(rpr::HeaderPtr head, bool seqUpdate, bool txRe
       head->busy = true;
    }
    else {
-      head->acknowledge = lastSeqRx_;
-      lastAckTx_ = lastSeqRx_;
+      head->acknowledge = ackSeqRx_;
+      lastAckTx_ = ackSeqRx_;
       head->busy = false;
    }
 
@@ -531,8 +534,8 @@ void rpr::Controller::transportTx(rpr::HeaderPtr head, bool seqUpdate, bool txRe
    head->update();
 
    log_->log(rogue::Logging::Debug,
-         "TX frame: state=%i server=%i size=%i syn=%i ack=%i nul=%i, rst=%i, ack#=%i, seq=%i, recount=%i, ptr=%p",
-         state_,server_,head->getFrame()->getPayload(),head->syn,head->ack,head->nul,head->rst,
+         "TX frame: state=%i server=%i size=%i syn=%i ack=%i nul=%i, bsy=%i, rst=%i, ack#=%i, seq=%i, recount=%i, ptr=%p",
+         state_,server_,head->getFrame()->getPayload(),head->syn,head->ack,head->nul,head->busy,head->rst,
          head->acknowledge,head->sequence,retranCount_,head->getFrame().get());
 
    flock->unlock();
@@ -549,12 +552,6 @@ int8_t rpr::Controller::retransmit(uint8_t id) {
    rpr::HeaderPtr head = txList_[id];
    if ( head == NULL ) return 0;
 
-   // Busy set, reset timeout
-   if ( remBusy_ ) {
-      head->rstTime();
-      return 0;
-   }
-
    // retransmit timer has not expired
    if ( ! timePassed(head->getTime(),retranToutD1_) ) return 0;
 
@@ -568,8 +565,8 @@ int8_t rpr::Controller::retransmit(uint8_t id) {
       head->busy = true;
    }
    else {
-      head->acknowledge = lastSeqRx_;
-      lastAckTx_ = lastSeqRx_;
+      head->acknowledge = ackSeqRx_;
+      lastAckTx_ = ackSeqRx_;
       head->busy = false;
    }
  
@@ -786,8 +783,9 @@ struct timeval & rpr::Controller::stateSendSeqAck () {
    rpr::HeaderPtr ack = rpr::Header::create(tran_->reqFrame(rpr::Header::HeaderSize,false));
 
    // Setup frame
-   ack->ack = true;
-   ack->nul = false;
+   ack->ack  = true;
+   ack->nul  = false;
+   ackSeqRx_ = lastSeqRx_;
 
    transportTx(ack,false,true);
 
@@ -821,7 +819,7 @@ struct timeval & rpr::Controller::stateOpen () {
    {
       boost::unique_lock<boost::mutex> lock(txMtx_);
       locTime = txTime_;
-      ackPend = lastSeqRx_ - lastAckTx_;
+      ackPend = ackSeqRx_ - lastAckTx_;
    }
 
    // NULL required
@@ -829,19 +827,18 @@ struct timeval & rpr::Controller::stateOpen () {
    else doNull = false;
 
    // Outbound frame required
-   if ( ( doNull || ackPend >= curMaxCumAck_ || 
+   if ( ( doNull || ((! getLocBusy()) && ackPend >= curMaxCumAck_) || 
         ((ackPend > 0 || getLocBusy()) && timePassed(locTime,cumAckToutD1_)) ) ) {
 
       head = rpr::Header::create(tran_->reqFrame(rpr::Header::HeaderSize,false));
       head->ack = true;
       head->nul = doNull;
-
       transportTx(head,doNull,false);
    }
 
-   // Retransmission processing
+   // Retransmission processing, don't process when busy
    idx = lastAckRx_;
-   while ( idx != locSequence_ ) {
+   while ( (! remBusy_) && (idx != locSequence_) ) {
       if ( retransmit(idx++) < 0 ) {
          state_ = StError;
          gettimeofday(&stTime_,NULL);

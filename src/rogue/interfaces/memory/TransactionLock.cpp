@@ -20,6 +20,7 @@
 #include <rogue/interfaces/memory/TransactionLock.h>
 #include <rogue/interfaces/memory/Transaction.h>
 #include <rogue/GilRelease.h>
+#include <boost/make_shared.hpp>
 
 namespace rim = rogue::interfaces::memory;
 
@@ -49,6 +50,8 @@ void rim::TransactionLock::setup_python() {
    bp::class_<rim::TransactionLock, rim::TransactionLockPtr, boost::noncopyable>("TransactionLock",bp::no_init)
       .def("lock",      &rim::TransactionLock::lock)
       .def("unlock",    &rim::TransactionLock::unlock)
+      .def("__enter__", &rim::TransactionLock::enter)
+      .def("__exit__",  &rim::TransactionLock::exit)
    ;
 #endif
 }
@@ -75,4 +78,9 @@ void rim::TransactionLock::unlock() {
    }
 }
 
+//! Enter method for python, do nothing
+void rim::TransactionLock::enter() { }
+
+//! Exit method for python, do nothing
+void rim::TransactionLock::exit(void *, void *, void *) { }
 

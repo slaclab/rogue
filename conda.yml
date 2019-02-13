@@ -3,7 +3,7 @@ channels:
   - conda-forge
   - paulscherrerinstitute
 dependencies:
-  - python=3.6
+  - python
   - gcc_linux-64
   - gxx_linux-64
   - make
@@ -21,5 +21,8 @@ dependencies:
   - pyepics
   - boost
   - bzip2
-  - matplotlib
+  - zeromq
   - epics-base=3.14.12.8
+  - sphinx
+  - sphinx_rtd_theme
+  - breathe

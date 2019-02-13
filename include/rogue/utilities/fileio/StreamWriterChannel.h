@@ -40,7 +40,7 @@ namespace rogue {
                boost::shared_ptr<rogue::utilities::fileio::StreamWriter> writer_;
 
                //! Channel information
-               uint16_t channel_;
+               uint8_t channel_;
 
                //! Number of frames received by channel
                uint32_t frameCount_;

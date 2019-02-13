@@ -44,7 +44,6 @@ namespace rogue {
 
                //! Local parameters
                uint32_t locTryPeriod_;
-               uint32_t locBusyThold_;
 
                //! Configurable parameters, requested by software
                uint8_t  locMaxBuffers_;
@@ -76,7 +75,7 @@ namespace rogue {
                boost::shared_ptr<rogue::protocols::rssi::Transport> tran_;
                boost::shared_ptr<rogue::protocols::rssi::Application> app_;
 
-               rogue::LoggingPtr log_;
+               boost::shared_ptr<rogue::Logging> log_;
 
                // Is server
                bool server_;
@@ -99,6 +98,7 @@ namespace rogue {
 
                // Application tracking
                uint8_t lastSeqRx_;
+               uint8_t ackSeqRx_;
 
                // State Tracking
                boost::condition_variable stCond_;
@@ -189,9 +189,6 @@ namespace rogue {
 
                void     setLocTryPeriod(uint32_t val);
                uint32_t getLocTryPeriod();
-
-               void     setLocBusyThold(uint32_t val);
-               uint32_t getLocBusyThold();
 
                void     setLocMaxBuffers(uint8_t val);
                uint8_t  getLocMaxBuffers();
