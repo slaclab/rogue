@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Installing Rogue Docker &mdash; Rogue v3.2.1-96-gedab2cd1 documentation</title>
+  <title>Installing Rogue Docker &mdash; Rogue v3.2.1-99-g608ec5c1 documentation</title>
   
 
   
@@ -87,14 +87,15 @@
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../interfaces/index.html">Interfaces</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../custom_module/index.html">Creating Custom Modules</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">Installing &amp; Compiling Rogue</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="anaconda.html">Installing Rogue With Anaconda</a></li>
 <li class="toctree-l2"><a class="reference internal" href="anaconda_build.html">Building Rogue Inside Anaconda</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Installing Rogue Docker</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#how-to-get-the-container">How To Get The Container</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#how-to-run-the-container">How To Run The Container</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#on-a-linux-os">On A Linux OS</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#on-a-max-os">On A MAX OS</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#gui-on-a-linux-os">GUI On A Linux OS</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#gui-on-a-max-os">GUI On A MAX OS</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#how-to-build-a-custom-docker-image-with-rogue">How To Build A Custom Docker Image With Rogue</a></li>
 </ul>
 </li>
@@ -103,7 +104,6 @@
 <li class="toctree-l2"><a class="reference internal" href="firewall.html">Rogue and Anaconda behind a firewall</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../custom_module/index.html">Creating Custom Modules</a></li>
 </ul>
 
             
@@ -209,8 +209,8 @@
 </ul>
 <p>If your application uses a graphical interface, then you need to pass additional arguments in order to properly forward X:</p>
 </div>
-<div class="section" id="on-a-linux-os">
-<h2>On A Linux OS<a class="headerlink" href="#on-a-linux-os" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="gui-on-a-linux-os">
+<h2>GUI On A Linux OS<a class="headerlink" href="#gui-on-a-linux-os" title="Permalink to this headline">¶</a></h2>
 <div class="code highlight-default notranslate"><div class="highlight"><pre><span></span>$ docker run -ti \
    -u $(id -u) \
    -e DISPLAY=unix$DISPLAY \
@@ -222,8 +222,8 @@
 </pre></div>
 </div>
 </div>
-<div class="section" id="on-a-max-os">
-<h2>On A MAX OS<a class="headerlink" href="#on-a-max-os" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="gui-on-a-max-os">
+<h2>GUI On A MAX OS<a class="headerlink" href="#gui-on-a-max-os" title="Permalink to this headline">¶</a></h2>
 <p>First install XQuartz. Then run it from the command line using <cite>open -a XQuartz</cite>. In the XQuartz preferences, go to the “Security” tab and make sure you’ve got “Allow connections from network clients” ticked.</p>
 <p>Now run:</p>
 <div class="code highlight-default notranslate"><div class="highlight"><pre><span></span>$ IP=$(ifconfig en0 | grep inet | awk &#39;$1==&quot;inet&quot; {print $2}&#39;)

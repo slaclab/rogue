@@ -1,5 +1,6 @@
 .. _interfaces_stream_using_filter:
 
+==============
 Using A Filter
 ==============
 
@@ -11,7 +12,7 @@ have a configured channel id. The Frame filter can also be configured to drop fr
 have a non zero error field. This may be a usefull utlility for non-channelized data as well.
 
 Filter Example
---------------
+==============
 
 The following python example shows how to read channel 1 data from a data file.
 

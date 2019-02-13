@@ -1,5 +1,6 @@
 .. _interfaces_memory_transaction_lock:
 
+===============
 TransactionLock
 ===============
 

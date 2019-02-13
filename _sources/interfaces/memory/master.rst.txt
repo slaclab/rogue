@@ -1,5 +1,6 @@
 .. _interfaces_memory_master_ex:
 
+=====================
 Memory Master Example
 =====================
 

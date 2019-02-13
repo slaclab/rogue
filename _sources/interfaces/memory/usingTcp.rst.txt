@@ -1,5 +1,6 @@
 .. _interfaces_memory_using_tcp:
 
+====================
 Using The TCP Bridge
 ====================
 
@@ -9,7 +10,7 @@ incoming connections on a pair ot TCP ports.  The client, :ref:`interfaces_memor
 the server at a specific address. The client will accept memory bus transactions and forward them to the server.
 
 Python Server
--------------
+=============
 
 The following code demonstrates a Python server with a local memory slave.  The Python server is 
 able to interface with either a Python or C++ client.
@@ -31,7 +32,7 @@ able to interface with either a Python or C++ client.
    pyrogue.busConnect(tcp, srpv3)
 
 Python Client
--------------
+=============
 
 The following code demonstrates a Python client with a local memory bus master. The Python client is able 
 to interface with either a Python or C++ server. 
@@ -51,7 +52,7 @@ to interface with either a Python or C++ server.
    pyrogue.busConnect(mst, tcp)
 
 C++ Server
-----------
+==========
 
 The following code demonstrates a C++ server with a local memory slave.  The C++ server is 
 able to interface with either a Python or C++ client.
@@ -73,7 +74,7 @@ able to interface with either a Python or C++ client.
    busConnect(tcp, srpv3);
 
 C++ Client
-----------
+==========
 
 The following code demonstrates a C++ client with a local memory bus master. The C++ client is able 
 to interface with either a Python or C++ server. 
