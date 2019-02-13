@@ -11,7 +11,7 @@ This is currently a work in progress and updated from the doc_updates
 branch of Rogue. New documentation is being added incrementally over time.
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 3
    :caption: Contents:
 
    interfaces/index

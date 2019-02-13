@@ -60,8 +60,8 @@ To activate this environment:
 
    $ conda activate rogue_env
 
-Building Rogue
-==============
+Building Rogue In Anaconda
+==========================
 
 Once the rogue environment is activated, you can build and install rogue
 
@@ -76,8 +76,8 @@ Once the rogue environment is activated, you can build and install rogue
 The Rogue build system will automatically detect that it is in a conda environment and it will be installed 
 within the anaconda rogue environment.
 
-Using Rogue
-===========
+Using Rogue In Anaconda
+=======================
 
 No additional setup scripts need to be run rogue in an anaconda environment. To activate and de-activate the rogue environment you can use the following commands:
 
@@ -93,8 +93,8 @@ To deactivate:
 
    $ conda deactivate
 
-Updating Rogue
-==============
+Updating Rogue In Anaconda
+==========================
 
 If you want to update and re-install rogue, run the following commands.
 

@@ -55,8 +55,8 @@ Alternatively you can install a specific released version of Rogue:
 
    $ conda create -n rogue_env -c defaults -c conda-forge -c paulscherrerinstitute -c tidair-tag rogue=v3.0.2
 
-Using Rogue
-===========
+Using Rogue In Anaconda
+=======================
 
 No additional setup scripts need to be run Rogue in an anaconda environment. To activate and de-activate the Rogue environment you can use the following commands:
 
@@ -78,8 +78,8 @@ Installing Rogue In Existing Environment
 The following command is used to install Rogue inside and existing anaconda environment.
 
 
-Updating Rogue
-==============
+Updating Rogue In Anaconda
+==========================
 
 If you want to update Rogue, run the following command after activating the Rogue environment
 

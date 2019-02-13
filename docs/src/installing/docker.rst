@@ -54,8 +54,8 @@ where:
 
 If your application uses a graphical interface, then you need to pass additional arguments in order to properly forward X:
 
-On A Linux OS
-=============
+GUI On A Linux OS
+=================
 
 .. code::
 
@@ -68,8 +68,8 @@ On A Linux OS
       -v <APP_DIR>:/python \
       tidair/rogue /python/<APP_NAME>
 
-On A MAX OS
-===========
+GUI On A MAX OS
+===============
 
 First install XQuartz. Then run it from the command line using `open -a XQuartz`. In the XQuartz preferences, go to the “Security” tab and make sure you’ve got “Allow connections from network clients” ticked.
 
