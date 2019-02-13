@@ -83,6 +83,43 @@ if (NOT Boost_FOUND)
 endif()
 
 #####################################
+# Additional Libraries
+#####################################
+
+find_package(PkgConfig REQUIRED)
+find_package(BZip2 REQUIRED)
+
+#####################################
+# ZeroMQ
+#####################################
+
+# First try with Cmake packages
+find_package(ZeroMQ QUIET)
+
+# ZeroMQ does not always support cmake, use pkgconfig
+if (NOT ZeroMQ_FOUND)
+   pkg_check_modules(PC_ZeroMQ QUIET zmq)
+
+   # use the hint from above to find where 'zmq.hpp' is located
+   find_path(ZeroMQ_INCLUDE_DIR
+           NAMES zmq.hpp
+           PATHS ${PC_ZeroMQ_INCLUDE_DIRS}
+           )
+
+   # use the hint from about to find the location of libzmq
+   find_library(ZeroMQ_LIBRARY
+           NAMES zmq
+           PATHS ${PC_ZeroMQ_LIBRARY_DIRS}
+           )
+
+   # Failed to find it
+   if (NOT ZeroMQ_INCLUDE_DIR)
+      message("")
+      message(FATAL_ERROR "Failed to find zeroMQ!")
+   endif()
+endif()
+
+#####################################
 # Optional EPICS V3
 #####################################
 if(DO_PYTHON AND DEFINED ENV{EPICS_BASE})
@@ -339,6 +376,11 @@ if (DO_EPICS_V3)
 else()
    message("-- EPICS V3 not included!")
 endif()
+
+message("")
+message("-- Found ZeroMq: ${ZeroMQ_INCLUDE_DIR}")
+message("")
+message("-- Found Bzip2: ${BZIP2_INCLUDE_DIR}")
 
 message("----------------------------------------------------------------------")
 message("")
