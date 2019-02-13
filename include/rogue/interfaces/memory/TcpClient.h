@@ -28,52 +28,80 @@ namespace rogue {
    namespace interfaces {
       namespace memory {
 
-         //! PGP Card class
+         //! Memory TCP Bridge Client
+         /** This class implements a TCP bridge between a memory Master and a memory Slave.
+          * The client side of the TCP bridge accepts a memory Transaction from an attached
+          * master and forwards that Transaction to a remote TcpServer. The server side of the 
+          * TCP bridge implments a memory Master device which executes the memory Transaction 
+          * to an attached Slave.
+          */
          class TcpClient : public rogue::interfaces::memory::Slave {
 
-               //! Inbound Address
+               // Inbound Address
                std::string reqAddr_;
 
-               //! Outbound Address
+               // Outbound Address
                std::string respAddr_;
 
-               //! Zeromq Context
+               // Zeromq Context
                void * zmqCtx_;
 
-               //! Zeromq inbound port
+               // Zeromq inbound port
                void * zmqReq_;
 
-               //! Zeromq outbound port
+               // Zeromq outbound port
                void * zmqResp_;
 
-               //! Thread background
+               // Thread background
                void runThread();
 
-               //! Log
+               // Log
                boost::shared_ptr<rogue::Logging> bridgeLog_;
 
-               //! Thread
+               // Thread
                boost::thread * thread_;
 
-               //! Lock
+               // Lock
                boost::mutex bridgeMtx_;
 
             public:
 
-               //! Class creation
+               //! Create a TcpClient object and return as a TcpServerPtr
+               /**The creator takes an address and port. The passed address is the address of
+                * the remote TcpServer to connect to, and can either be an IP address or hostname. 
+                * The memory bridge requires two TCP ports. The pased port is the 
+                * base number of these two ports. A passed value of 8000 will result in both
+                * 8000 and 8001 being used by this bridge.
+                *
+                * Not exposed to Python
+                * @param addr Interface address
+                * @param port Base port number to use for connection.
+                * @return TcpServer object as a TcpServerPtr
+                */
                static boost::shared_ptr<rogue::interfaces::memory::TcpClient> 
                       create (std::string addr, uint16_t port);
 
                //! Setup class in python
                static void setup_python();
 
-               //! Creator
+               //! Create a TcpClient object
+               /**The creator takes an address and port. The passed address is the address of
+                * the remote TcpServer to connect to, and can either be an IP address or hostname. 
+                * The memory bridge requires two TCP ports. The pased port is the 
+                * base number of these two ports. A passed value of 8000 will result in both
+                * 8000 and 8001 being used by this bridge.
+                *
+                * Exposted as TcpClient to Python
+                * @param addr Interface address
+                * @param port Base port number to use for connection.
+                * @return TcpServer object as a TcpServerPtr
+                */
                TcpClient(std::string addr, uint16_t port);
 
-               //! Destructor
+               //! Destroy the TcpClient
                ~TcpClient();
 
-               //! Post a transaction. Master will call this method with the access attributes.
+               //! Accept as transaction from the memory Master as defined in the Slave class.
                void doTransaction(boost::shared_ptr<rogue::interfaces::memory::Transaction> tran);
          };
 

@@ -1,0 +1,203 @@
+.. _interfaces_memory_hub_ex:
+
+==================
+Memory Hub Example
+==================
+
+The memory Hub interfaces between an upstream memory Master object and a downstream Memory
+slave oject. The Hub can be used to group Masters together with a common offset, as is done 
+in the pyrogue.Device class. It can also be used to manipulate a memory bus transaction.
+
+In this example we service incoming read and write requests and forward them to a memory
+slave which implements a paged memory space. This means there is a write register for the 
+address (0x100), a write register for the write data (0x104), and a read register for 
+read data (0x108). This example is not very effeciant in that it only allows a single 
+transaction to be executed at a time.
+
+See :ref:`interfaces_memory_hub` for more detail on the Hub class.
+
+.. code-block:: python
+
+    import pyrogue
+    import rogue.interfaces.memory
+
+    # Create a subclass of a memory Hub
+    # This hub has an offset of 0
+    class MyHub(rogue.interfaces.memory.Hub):
+
+        # Init method must call the parent class init
+        def __init__(self):
+
+            # Here we set the offset
+            super().__init__(0)
+
+        # Entry point for incoming transaction
+        def _doTransaction(self,transaction):
+
+            # First we lock the transaction data
+            with transaction.lock():
+
+                # Put address into byte array
+                addr = transaction.address().to_bytes(4, 'little', signed=False)
+
+                # Clear any existing errors
+                self._setError(0)
+
+                # Create transaction setting address register (offset 0x100)
+                id = self._reqTransaction(0x100, addr, 4, 0, rogue.interfaces.memory.Write)
+
+                # Wait for transaction to complete
+                self._wait(id)
+
+                # Check transaction result, forward error to incoming transaction
+                if self._getError() != 0:
+                    transaction.done(self._getError())
+                    return False
+
+                # Handle write or post
+                if transaction.type() == rogue.interfaces.memory.Write or
+                   transaction.type() == rogue.interfaces.memory.Post:
+
+                   # Copy data into byte array
+                   data = bytearray(transaction.size())
+                   transaction.getData(data,0)
+
+                   # Create transaction setting write data register (offset 0x104)
+                   id = self._reqTransaction(0x104, data, 4, 0, rogue.interfaces.memory.Write)
+
+                   # Wait for transaction to complete
+                   self._wait(id)
+
+                   # Check transaction result, forward error to incoming transaction
+                   if self._getError() != 0:
+                       transaction.done(self._getError())
+                       return False
+
+                   # Success
+                   transaction.done(0)
+
+                # Handle read or verify read
+                else:
+
+                   # Create read data byte array
+                   data = bytearray(transaction.size())
+
+                   # Create transaction reading read data register (offset 0x108)
+                   id = self._reqTransaction(0x108, data, 4, 0, rogue.interfaces.memory.Read)
+
+                   # Wait for transaction to complete
+                   self._wait(id)
+
+                   # Check transaction result, forward error to incoming transaction
+                   if self._getError() != 0:
+                       transaction->done(self._getError())
+                       return False
+
+                   # Copy data into original transaction and complete
+                   transaction.setData(data,0)
+                   transaction.done(0)
+
+        # Respond to min transaction size
+        def _doMinAccess(self):
+            return 4
+
+        # Respond to max transaction size
+        def _doMaxAccess(self):
+            return 4
+
+The equivelent code in C++ is show below:
+
+.. code-block:: c
+
+   #include <rogue/interfaces/memory/Constants.h>
+   #include <rogue/interfaces/memory/Hub.h>
+
+   // Create a subclass of a memory Hub
+   class MyHub : public rogue::interfaces::memory::Hub {
+      public:
+
+         // Create a static class creator to return our custom class
+         // wrapped with a shared pointer
+         static boost::shared_ptr<MyHub> create() {
+            static boost::shared_ptr<MyHub> ret =
+               boost::make_shared<MyHub>();
+            return(ret);
+         }
+
+         // Standard class creator which is called by create 
+         // Here we set offset
+         MyHub() : rogue::interfaces::memory::Hub(0) {}
+
+         // Entry point for incoming transaction
+         void doTransaction(rogue::interfaces::memory::TransactionPtr tran) {
+             uint32_t id;
+
+            // First we lock the transaction data with a scoped lock
+            rogue::interfaces::memory::TransactionLockPtr lock = tran->lock();
+
+            // Clear any existing errors
+            this->setError(0)
+
+            // Create transaction setting address register (offset 0x100)
+            id = this->reqTransaction(0x100, 4, transaction->address(),
+                                      rogue::interfaces::memory::Write);
+
+            // Wait for transaction to complete
+            this->wait(id);
+
+            // Check transaction result, forward error to incoming transaction
+            if ( this->getError() != 0 ) {
+               transaction->done(this->getError());
+               return false
+            }
+
+            // Handle write or post
+            if ( tran->type() == rogue::interfaces::memory::Write ||
+                 tran->type() == rogue::interfaces::memory::Post ) {
+
+               // Create transaction setting write data register (offset 0x104)
+               // Forward data pointer from original transaction
+               id = this->reqTransaction(0x104, 4, transaction->begin(),
+                                         rogue::interfaces::memory::Write);
+
+               // Wait for transaction to complete
+               this->wait(id);
+
+               // Check transaction result, forward error to incoming transaction
+               if ( this->getError() != 0 ) {
+                  transaction->done(this->getError());
+                  return false
+               }
+               else transaction->done(0);
+            }
+
+            // Handle read or verify read
+            else {
+
+               // Create transaction getting read data register (offset 0x108)
+               // Forward data pointer from original transaction
+               id = this->reqTransaction(0x104, 4, transaction->begin(),
+                                         rogue::interfaces::memory::Write);
+
+               // Wait for transaction to complete
+               this->wait(id);
+
+               // Check transaction result, forward error to incoming transaction
+               if ( this->getError() != 0 ) {
+                  transaction->done(this->getError());
+                  return false
+               }
+               else transaction->done(0);
+            }
+
+         // Respond to min transaction size
+         uint32_t doMinAccess() {
+            return 4;
+         }
+
+         // Respond to max transaction size
+         uint32_t doMaxAccess() {
+            return 4;
+         }
+   };
+

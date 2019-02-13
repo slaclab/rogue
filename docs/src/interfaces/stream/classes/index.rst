@@ -1,5 +1,6 @@
-.. _interfaces_classes:
+.. _interfaces_stream_classes:
 
+===================================
 Stream Interface Class Descriptions
 ===================================
 

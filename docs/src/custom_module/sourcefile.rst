@@ -1,5 +1,6 @@
 .. _custom_sourcefile:
 
+====================
 Custom Module Source
 ====================
 

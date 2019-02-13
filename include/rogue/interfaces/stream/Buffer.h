@@ -32,13 +32,12 @@ namespace rogue {
          class Frame;
 
          //! Frame buffer
-         /*
-          * This class is a container for buffers which make up a frame. Each buffer is associated
+         /** This class is a container for buffers which make up a frame. Each buffer is associated
           * with a contigous block of memory allocated by an instance of the Pool class.
           * Each buffer within the frame has a reserved header and tail area to pre-reserve
           * space which may be required by protocol layers. Direct interaction with the Buffer
           * class is an advanced topic, most users will simply use a FrameIterator to access 
-          * Frame and Buffer data.
+          * Frame and Buffer data. The Buffer class is not vailable in Python.
          */
          class Buffer {
 

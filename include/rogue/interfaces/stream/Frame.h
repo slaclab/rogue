@@ -39,7 +39,12 @@ namespace rogue {
          class FrameLock;
 
          //! Frame container
-         /** This class is a container for an array of Buffer class objects which contain
+         /** In the stream interface the Frame class is a container for moving streaming data
+          * through the system. A single Frame instance exists for each frame of data 
+          * being transferred. The frame object itself does not contain any data, instead
+          * it is a container for one or more blocks of data contained within the Buffer class.
+          *
+          * This class is a container for an array of Buffer class objects which contain
           * the stream data. A FrameIterator object is used to read and write data from and
           * to the Frame.
          */

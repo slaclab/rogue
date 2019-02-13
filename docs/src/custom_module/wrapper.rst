@@ -1,5 +1,6 @@
 .. _custom_wrapper:
 
+==========================================
 Wrapping Custom Module With PyRogue Device
 ==========================================
 

@@ -1,5 +1,6 @@
 .. _interfaces_stream:
 
+================
 Stream Interface
 ================
 

@@ -1,5 +1,6 @@
 .. _interfaces_stream_sending:
 
+==============
 Sending Frames
 ==============
 
@@ -18,7 +19,7 @@ Python and C++ subclasses of the Master class can be used interchagably, allowin
 to receive Frames from python masters and python subclasses to receive Frames from c++ masters.
 
 Python Master Subclass
-----------------------
+======================
 
 Implementing a Master subclass in python is easy, but may result in a lower level of performance.
 
@@ -71,7 +72,7 @@ Implementing a Master subclass in python is easy, but may result in a lower leve
            self._sendFrame(frame)
 
 C++ Master Subclass
--------------------
+===================
 
 Creating a Master sub-class in c++ is done in a similiar fashion. A new frame is 
 requested just as it is in python and the sendFrame() method is used to pass the

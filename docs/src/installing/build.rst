@@ -1,12 +1,13 @@
 .. _installing_full_build:
 
+==========================
 Building Rogue From Source
 ==========================
 
 The following instructions demonstrate how to build rogue outside of the anaconda environment.
 
 Installing Packages Required For Rogue
---------------------------------------
+======================================
 
 The following packages are required to build the rogue library:
 
@@ -16,7 +17,7 @@ The following packages are required to build the rogue library:
 * bz2
 
 Package Manager Install
-^^^^^^^^^^^^^^^^^^^^^^^
+-----------------------
 
 To add these packages on Ubuntu 17.04 (or later):
 
@@ -48,7 +49,7 @@ Epics V3 support is and optional module that will be included in the rogue build
 if the EPICS_BASE directory is set in the user's environment.
 
 Python Packages Required
-^^^^^^^^^^^^^^^^^^^^^^^^
+------------------------
 
 The following python packages are required to use rogue in the python3
 environment. Currently I am using PIP to install these, but you are free 
@@ -64,7 +65,7 @@ to use your favorite python tool.
    $ pip3 install numpy
 
 Building & Installing Rogue
----------------------------
+===========================
 
 There are three possible modes for building/installing rogue:
 
@@ -78,7 +79,7 @@ There are three possible modes for building/installing rogue:
    The rogue headers and libraries will be installed to a standard system directory and the python filed will be installed using the system python package installed.
 
 Local Install
-^^^^^^^^^^^^^
+-------------
 
 .. code::
 
@@ -92,7 +93,7 @@ Local Install
    $ source ../setup_rogue.csh (or .sh)
 
 Custom Install
-^^^^^^^^^^^^^^
+--------------
 
 Make sure you have permission to install into the passed install directory, if not use sudo.
 
@@ -109,7 +110,7 @@ Make sure you have permission to install into the passed install directory, if n
 
 
 System Install
-^^^^^^^^^^^^^^
+--------------
 
 Make sure you have permission to install into the /usr/local/ directory, if not use sudo.
 
@@ -124,7 +125,7 @@ Make sure you have permission to install into the /usr/local/ directory, if not 
    $ make install
 
 Updating Rogue
-^^^^^^^^^^^^^^
+--------------
 
 to update from git and rebuild:
 
