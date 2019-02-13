@@ -6,7 +6,7 @@ Memory Master Example
 
 In most cases the user will take advantage of the pyrogue.RemoteVariable, 
 pyrogue.Device, pyrogue.RemoteCommand and pyrogue.MemoryBlock classes to
-interact with memory busses. In some cases it may be neccessary to write
+interact with memory busses. In rare cases it may be neccessary to write
 custom memory Master modules in Python or C++.
 
 Python and C++ subclasses of the Master class can be used interchagably, 
