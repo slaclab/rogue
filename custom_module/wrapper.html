@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Wrapping Custom Module With PyRogue Device &mdash; Rogue v3.3.1-4-gf2ed2a19 documentation</title>
+  <title>Wrapping Custom Module With PyRogue Device &mdash; Rogue v3.3.1-5-gfd0c473a documentation</title>
   
 
   
@@ -92,6 +92,8 @@
 <li class="toctree-l2"><a class="reference internal" href="makefile.html">Building The Custom Module</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Wrapping Custom Module With PyRogue Device</a></li>
 <li class="toctree-l2"><a class="reference internal" href="testing.html">Testing The Custom Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="testing.html#testing-with-epics">Testing With EPICS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="testing.html#testing-with-a-gui">Testing With A GUI</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../installing/index.html">Installing &amp; Compiling Rogue</a></li>
@@ -168,7 +170,9 @@ the classes contained within the <a class="reference internal" href="sourcefile.
 associated with the custom module are exposed to the PyRogue management layer. This
 file can be created as MyWrapper.py and included in the same python directory as
 the output of the <a class="reference internal" href="makefile.html#custom-makefile"><span class="std std-ref">Building The Custom Module</span></a> step.</p>
-<div class="code python highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">rogue</span>
+<div class="code python highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Source Code For MyWrapper.py</span>
+
+<span class="kn">import</span> <span class="nn">rogue</span>
 <span class="kn">import</span> <span class="nn">pyrogue</span>
 <span class="kn">import</span> <span class="nn">MyModule</span>
 

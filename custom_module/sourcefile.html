@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Custom Module Source &mdash; Rogue v3.3.1-4-gf2ed2a19 documentation</title>
+  <title>Custom Module Source &mdash; Rogue v3.3.1-5-gfd0c473a documentation</title>
   
 
   
@@ -92,6 +92,8 @@
 <li class="toctree-l2"><a class="reference internal" href="makefile.html">Building The Custom Module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="wrapper.html">Wrapping Custom Module With PyRogue Device</a></li>
 <li class="toctree-l2"><a class="reference internal" href="testing.html">Testing The Custom Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="testing.html#testing-with-epics">Testing With EPICS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="testing.html#testing-with-a-gui">Testing With A GUI</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../installing/index.html">Installing &amp; Compiling Rogue</a></li>
@@ -173,7 +175,9 @@ are included in <a class="reference internal" href="wrapper.html#custom-wrapper"
 <li><a class="reference internal" href="../interfaces/stream/receiving.html#interfaces-stream-receiving"><span class="std std-ref">Receiving Frames</span></a></li>
 </ul>
 <p>This module is compiled with the <a class="reference internal" href="makefile.html#custom-makefile"><span class="std std-ref">Building The Custom Module</span></a> described in this section.</p>
-<div class="code cmake highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1">#include &lt;rogue/interfaces/stream/Slave.h&gt;</span>
+<div class="code cmake highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">//</span> <span class="n">Source</span> <span class="k">for</span> <span class="n">MyModule</span><span class="o">.</span><span class="n">cpp</span>
+
+<span class="c1">#include &lt;rogue/interfaces/stream/Slave.h&gt;</span>
 <span class="c1">#include &lt;rogue/interfaces/stream/Master.h&gt;</span>
 <span class="c1">#include &lt;rogue/interfaces/stream/Frame.h&gt;</span>
 <span class="c1">#include &lt;rogue/interfaces/stream/FrameLock.h&gt;</span>

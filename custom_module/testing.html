@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Testing The Custom Module &mdash; Rogue v3.3.1-4-gf2ed2a19 documentation</title>
+  <title>Testing The Custom Module &mdash; Rogue v3.3.1-5-gfd0c473a documentation</title>
   
 
   
@@ -92,6 +92,8 @@
 <li class="toctree-l2"><a class="reference internal" href="makefile.html">Building The Custom Module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="wrapper.html">Wrapping Custom Module With PyRogue Device</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Testing The Custom Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#testing-with-epics">Testing With EPICS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#testing-with-a-gui">Testing With A GUI</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../installing/index.html">Installing &amp; Compiling Rogue</a></li>
@@ -165,13 +167,15 @@
 <span id="custom-testing"></span><h1>Testing The Custom Module<a class="headerlink" href="#testing-the-custom-module" title="Permalink to this headline">¶</a></h1>
 <p>The following script tests the MyModule and MyWrapper implementations created
 by the <a class="reference internal" href="sourcefile.html#custom-sourcefile"><span class="std std-ref">Custom Module Source</span></a>, <a class="reference internal" href="makefile.html#custom-makefile"><span class="std std-ref">Building The Custom Module</span></a> and <a class="reference internal" href="wrapper.html#custom-wrapper"><span class="std std-ref">Wrapping Custom Module With PyRogue Device</span></a> steps.</p>
-<div class="code python highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pyrogue</span>
+<div class="code python highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Source for myTest.py</span>
+
+<span class="kn">import</span> <span class="nn">pyrogue</span>
 <span class="kn">import</span> <span class="nn">MyWrapper</span>
 
 <span class="k">class</span> <span class="nc">TestRoot</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">Root</span><span class="p">):</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;My Root&quot;</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;MyRoot&quot;</span><span class="p">)</span>
 
         <span class="c1"># Add master and slave devices</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">MyWrapper</span><span class="o">.</span><span class="n">MyCustomMaster</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;testMaster&quot;</span><span class="p">))</span>
@@ -198,10 +202,169 @@ by the <a class="reference internal" href="sourcefile.html#custom-sourcefile"><s
 </pre></div>
 </div>
 <p>The output of this python script should be the following (with a different rogue version):</p>
-<div class="code highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Rogue</span><span class="o">/</span><span class="n">pyrogue</span> <span class="n">version</span> <span class="n">v3</span><span class="o">.</span><span class="mf">2.1</span><span class="o">.</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">slaclab</span><span class="o">/</span><span class="n">rogue</span>
-<span class="n">Loaded</span> <span class="n">my</span> <span class="n">module</span>
-<span class="n">Sent</span> <span class="mi">400</span> <span class="nb">bytes</span> <span class="ow">in</span> <span class="mi">2</span> <span class="n">frames</span>
-<span class="n">Got</span>  <span class="mi">400</span> <span class="nb">bytes</span> <span class="ow">in</span> <span class="mi">2</span> <span class="n">frames</span>
+<div class="code highlight-default notranslate"><div class="highlight"><pre><span></span>$ python myTest.py
+Rogue/pyrogue version v3.2.1. https://github.com/slaclab/rogue
+Loaded my module
+Sent 400 bytes in 2 frames
+Got  400 bytes in 2 frames
+</pre></div>
+</div>
+</div>
+<div class="section" id="testing-with-epics">
+<h1>Testing With EPICS<a class="headerlink" href="#testing-with-epics" title="Permalink to this headline">¶</a></h1>
+<p>The following scripts is similiar to the above but exposes the variables
+to epics to allow external control.</p>
+<div class="code python highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Source for myEpicsTest.py</span>
+
+<span class="kn">import</span> <span class="nn">pyrogue</span>
+<span class="kn">import</span> <span class="nn">MyWrapper</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">pyrogue.protocols.epics</span>
+
+<span class="k">class</span> <span class="nc">TestRoot</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">Root</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;MyRoot&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Add master and slave devices</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">MyWrapper</span><span class="o">.</span><span class="n">MyCustomMaster</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;testMaster&quot;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">MyWrapper</span><span class="o">.</span><span class="n">MyCustomSlave</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;testSlave&quot;</span><span class="p">))</span>
+
+        <span class="c1"># Connect master to slave</span>
+        <span class="n">pyrogue</span><span class="o">.</span><span class="n">streamConnect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">testMaster</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">testSlave</span><span class="p">)</span>
+
+        <span class="c1"># Start the tree</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+
+        <span class="c1"># Add Epics</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">epics</span> <span class="o">=</span> <span class="n">pyrogue</span><span class="o">.</span><span class="n">protocols</span><span class="o">.</span><span class="n">epics</span><span class="o">.</span><span class="n">EpicsCaServer</span><span class="p">(</span><span class="n">base</span><span class="o">=</span><span class="s1">&#39;myTest&#39;</span><span class="p">,</span><span class="n">root</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">epics</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">epics</span><span class="o">.</span><span class="n">dump</span><span class="p">()</span>
+
+<span class="k">with</span> <span class="n">TestRoot</span><span class="p">()</span> <span class="k">as</span> <span class="n">r</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Running&quot;</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">KeyboardInterrupt</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Exiting&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Start the above script and generate frames using epics caput commands. You can also
+monitor the counters as well. See below for an example:</p>
+<p>In the first terminal:</p>
+<div class="code highlight-default notranslate"><div class="highlight"><pre><span></span>$ python myEpicsTest.py
+Rogue/pyrogue version v3.3.1-4-gd384a633. https://github.com/slaclab/rogue
+Loaded my module
+myTest:My Root:enable -&gt; My Root.enable
+myTest:My Root:SystemLog -&gt; My Root.SystemLog
+myTest:My Root:ForceWrite -&gt; My Root.ForceWrite
+myTest:My Root:Time -&gt; My Root.Time
+myTest:My Root:WriteAll -&gt; My Root.WriteAll
+myTest:My Root:ReadAll -&gt; My Root.ReadAll
+myTest:My Root:WriteState -&gt; My Root.WriteState
+myTest:My Root:WriteConfig -&gt; My Root.WriteConfig
+myTest:My Root:ReadConfig -&gt; My Root.ReadConfig
+myTest:My Root:SoftReset -&gt; My Root.SoftReset
+myTest:My Root:HardReset -&gt; My Root.HardReset
+myTest:My Root:CountReset -&gt; My Root.CountReset
+myTest:My Root:ClearLog -&gt; My Root.ClearLog
+myTest:My Root:testMaster:enable -&gt; My Root.testMaster.enable
+myTest:My Root:testMaster:FrameCount -&gt; My Root.testMaster.FrameCount
+myTest:My Root:testMaster:ByteCount -&gt; My Root.testMaster.ByteCount
+myTest:My Root:testMaster:FrameSize -&gt; My Root.testMaster.FrameSize
+myTest:My Root:testMaster:MyFrameGen -&gt; My Root.testMaster.MyFrameGen
+myTest:My Root:testSlave:enable -&gt; My Root.testSlave.enable
+myTest:My Root:testSlave:FrameCount -&gt; My Root.testSlave.FrameCount
+myTest:My Root:testSlave:ByteCount -&gt; My Root.testSlave.ByteCount
+Running
+</pre></div>
+</div>
+<p>In the second terminal we generate two frames from epics. Commands in
+Rogue are exposed as Variables and a caput will initiate the Command
+executation. Since our MyFrameGen Command does not take an arg we
+pass a value of 0 to keep epics happy.</p>
+<div class="code highlight-default notranslate"><div class="highlight"><pre><span></span>$ caget myTest:MyRoot:testMaster:FrameCount
+myTest:MyRoot:testMaster:FrameCount 0
+
+$ caget myTest:MyRoot:testSlave:FrameCount
+myTest:MyRoot:testSlave:FrameCount 0
+
+$ caput myTest:MyRoot:testMaster:FrameSize 210
+Old : myTest:MyRoot:testMaster:FrameSize 0
+New : myTest:MyRoot:testMaster:FrameSize 210
+
+$ caput myTest:MyRoot:testMaster:MyFrameGen 0
+Old : myTest:MyRoot:testMaster:MyFrameGen 0
+New : myTest:MyRoot:testMaster:MyFrameGen 0
+
+$ caput myTest:MyRoot:testMaster:MyFrameGen 0
+Old : myTest:MyRoot:testMaster:MyFrameGen 0
+New : myTest:MyRoot:testMaster:MyFrameGen 0
+
+$ caget myTest:MyRoot:testMaster:FrameCount
+myTest:MyRoot:testMaster:FrameCount 2
+
+$ caget myTest:MyRoot:testMaster:ByteCount
+myTest:MyRoot:testMaster:ByteCount 420
+
+$ caget myTest:MyRoot:testSlave:FrameCount
+myTest:MyRoot:testSlave:FrameCount 2
+
+$ caget myTest:MyRoot:testSlave:ByteCount
+myTest:MyRoot:testSlave:ByteCount 420
+</pre></div>
+</div>
+</div>
+<div class="section" id="testing-with-a-gui">
+<h1>Testing With A GUI<a class="headerlink" href="#testing-with-a-gui" title="Permalink to this headline">¶</a></h1>
+<p>In the last test we will add a locally attached GUI along with EPICS. This will allow
+you to experiment with how bot the GUI and EPICS can manipulate variables in parrallel.
+In this test we start the GUI in the main script with the core Rogue. It is also possible
+to start one or more remote GUIs. That process is described in TBD.</p>
+<div class="code python highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Source for myEpicsGuiTest.py</span>
+
+<span class="kn">import</span> <span class="nn">pyrogue</span>
+<span class="kn">import</span> <span class="nn">MyWrapper</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">pyrogue.protocols.epics</span>
+<span class="kn">import</span> <span class="nn">pyrogue.gui</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+
+<span class="k">class</span> <span class="nc">TestRoot</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">Root</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;MyRoot&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Add master and slave devices</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">MyWrapper</span><span class="o">.</span><span class="n">MyCustomMaster</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;testMaster&quot;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">MyWrapper</span><span class="o">.</span><span class="n">MyCustomSlave</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;testSlave&quot;</span><span class="p">))</span>
+
+        <span class="c1"># Connect master to slave</span>
+        <span class="n">pyrogue</span><span class="o">.</span><span class="n">streamConnect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">testMaster</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">testSlave</span><span class="p">)</span>
+
+        <span class="c1"># Start the tree</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+
+        <span class="c1"># Add Epics</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">epics</span> <span class="o">=</span> <span class="n">pyrogue</span><span class="o">.</span><span class="n">protocols</span><span class="o">.</span><span class="n">epics</span><span class="o">.</span><span class="n">EpicsCaServer</span><span class="p">(</span><span class="n">base</span><span class="o">=</span><span class="s1">&#39;myTest&#39;</span><span class="p">,</span><span class="n">root</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">epics</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">epics</span><span class="o">.</span><span class="n">dump</span><span class="p">()</span>
+
+<span class="k">with</span> <span class="n">TestRoot</span><span class="p">()</span> <span class="k">as</span> <span class="n">r</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Running&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Create GUI</span>
+    <span class="n">appTop</span> <span class="o">=</span> <span class="n">pyrogue</span><span class="o">.</span><span class="n">gui</span><span class="o">.</span><span class="n">application</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span>
+    <span class="n">guiTop</span> <span class="o">=</span> <span class="n">pyrogue</span><span class="o">.</span><span class="n">gui</span><span class="o">.</span><span class="n">GuiTop</span><span class="p">(</span><span class="n">group</span><span class="o">=</span><span class="s1">&#39;myTest&#39;</span><span class="p">)</span>
+    <span class="n">guiTop</span><span class="o">.</span><span class="n">addTree</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
+
+    <span class="c1"># Run gui</span>
+    <span class="n">appTop</span><span class="o">.</span><span class="n">exec_</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>You can then start the server:</p>
+<div class="code highlight-default notranslate"><div class="highlight"><pre><span></span>$ python myEpicsGuiTest.py
 </pre></div>
 </div>
 </div>

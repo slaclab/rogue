@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Building The Custom Module &mdash; Rogue v3.3.1-4-gf2ed2a19 documentation</title>
+  <title>Building The Custom Module &mdash; Rogue v3.3.1-5-gfd0c473a documentation</title>
   
 
   
@@ -92,6 +92,8 @@
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Building The Custom Module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="wrapper.html">Wrapping Custom Module With PyRogue Device</a></li>
 <li class="toctree-l2"><a class="reference internal" href="testing.html">Testing The Custom Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="testing.html#testing-with-epics">Testing With EPICS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="testing.html#testing-with-a-gui">Testing With A GUI</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../installing/index.html">Installing &amp; Compiling Rogue</a></li>
@@ -181,7 +183,9 @@ $ make
 <p>The output shared library MyModule.so will be created in the <strong>python</strong>
 sub-directory. This directory will need to be included in the PYTHONPATH
 environment variable.</p>
-<div class="code cmake highlight-default notranslate"><div class="highlight"><pre><span></span># Add support for building in conda environment
+<div class="code cmake highlight-default notranslate"><div class="highlight"><pre><span></span># Source for CMakeLists.txt
+
+# Add support for building in conda environment
 if (DEFINED ENV{CONDA_PREFIX})
    set(CMAKE_PREFIX_PATH &quot;$ENV{CONDA_PREFIX}&quot;)
    link_directories($ENV{CONDA_PREFIX}/lib)
