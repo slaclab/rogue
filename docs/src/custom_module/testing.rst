@@ -53,7 +53,6 @@ The output of this python script should be the following (with a different rogue
    Sent 400 bytes in 2 frames
    Got  400 bytes in 2 frames
 
-==================
 Testing With EPICS
 ==================
 
@@ -172,7 +171,6 @@ pass a value of 0 to keep epics happy.
    $ caget myTest:MyRoot:testSlave:ByteCount
    myTest:MyRoot:testSlave:ByteCount 420
 
-==================
 Testing With A GUI
 ==================
 
