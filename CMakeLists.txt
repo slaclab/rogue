@@ -37,10 +37,10 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x -Wno-deprecated")
 #####################################
 set(DO_PYTHON 0)
 
-find_package(PythonInterp 3.6)
+find_package(PythonInterp QUIET 3.6)
 
 if (PYTHONINTERP_FOUND)
-   find_package(PythonLibs 3.6)
+   find_package(PythonLibs QUIET 3.6)
 
    if (PYTHONLIBS_FOUND)
       set(DO_PYTHON 1)
@@ -176,7 +176,7 @@ endif()
 #####################################
 
 # Set version from git tag
-find_package(Git)
+find_package(Git QUIET)
 if (GIT_FOUND)
    execute_process (
       COMMAND ${GIT_EXECUTABLE} describe --tags --dirty
