@@ -112,27 +112,27 @@ In the first terminal:
    $ python myEpicsTest.py 
    Rogue/pyrogue version v3.3.1-4-gd384a633. https://github.com/slaclab/rogue
    Loaded my module
-   myTest:My Root:enable -> My Root.enable
-   myTest:My Root:SystemLog -> My Root.SystemLog
-   myTest:My Root:ForceWrite -> My Root.ForceWrite
-   myTest:My Root:Time -> My Root.Time
-   myTest:My Root:WriteAll -> My Root.WriteAll
-   myTest:My Root:ReadAll -> My Root.ReadAll
-   myTest:My Root:WriteState -> My Root.WriteState
-   myTest:My Root:WriteConfig -> My Root.WriteConfig
-   myTest:My Root:ReadConfig -> My Root.ReadConfig
-   myTest:My Root:SoftReset -> My Root.SoftReset
-   myTest:My Root:HardReset -> My Root.HardReset
-   myTest:My Root:CountReset -> My Root.CountReset
-   myTest:My Root:ClearLog -> My Root.ClearLog
-   myTest:My Root:testMaster:enable -> My Root.testMaster.enable
-   myTest:My Root:testMaster:FrameCount -> My Root.testMaster.FrameCount
-   myTest:My Root:testMaster:ByteCount -> My Root.testMaster.ByteCount
-   myTest:My Root:testMaster:FrameSize -> My Root.testMaster.FrameSize
-   myTest:My Root:testMaster:MyFrameGen -> My Root.testMaster.MyFrameGen
-   myTest:My Root:testSlave:enable -> My Root.testSlave.enable
-   myTest:My Root:testSlave:FrameCount -> My Root.testSlave.FrameCount
-   myTest:My Root:testSlave:ByteCount -> My Root.testSlave.ByteCount
+   myTest:MyRoot:enable -> MyRoot.enable
+   myTest:MyRoot:SystemLog -> MyRoot.SystemLog
+   myTest:MyRoot:ForceWrite -> MyRoot.ForceWrite
+   myTest:MyRoot:Time -> MyRoot.Time
+   myTest:MyRoot:WriteAll -> MyRoot.WriteAll
+   myTest:MyRoot:ReadAll -> MyRoot.ReadAll
+   myTest:MyRoot:WriteState -> MyRoot.WriteState
+   myTest:MyRoot:WriteConfig -> MyRoot.WriteConfig
+   myTest:MyRoot:ReadConfig -> MyRoot.ReadConfig
+   myTest:MyRoot:SoftReset -> MyRoot.SoftReset
+   myTest:MyRoot:HardReset -> MyRoot.HardReset
+   myTest:MyRoot:CountReset -> MyRoot.CountReset
+   myTest:MyRoot:ClearLog -> MyRoot.ClearLog
+   myTest:MyRoot:testMaster:enable -> MyRoot.testMaster.enable
+   myTest:MyRoot:testMaster:FrameCount -> MyRoot.testMaster.FrameCount
+   myTest:MyRoot:testMaster:ByteCount -> MyRoot.testMaster.ByteCount
+   myTest:MyRoot:testMaster:FrameSize -> MyRoot.testMaster.FrameSize
+   myTest:MyRoot:testMaster:MyFrameGen -> MyRoot.testMaster.MyFrameGen
+   myTest:MyRoot:testSlave:enable -> MyRoot.testSlave.enable
+   myTest:MyRoot:testSlave:FrameCount -> MyRoot.testSlave.FrameCount
+   myTest:MyRoot:testSlave:ByteCount -> MyRoot.testSlave.ByteCount
    Running
 
 In the second terminal we generate two frames from epics. Commands in
