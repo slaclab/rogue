@@ -89,6 +89,11 @@ to epics to allow external control.
            self.epics.start()
            self.epics.dump()
 
+       # Override root class stop method to stop epics on exit
+       def stop(self):
+           self.epics.stop()
+           super().stop()
+
    with TestRoot() as r:
        print("Running")
        try:
@@ -206,6 +211,11 @@ to start one or more remote GUIs. That process is described in TBD.
            self.epics = pyrogue.protocols.epics.EpicsCaServer(base='myTest',root=self)
            self.epics.start()
            self.epics.dump()
+
+       # Override root class stop method to stop epics on exit
+       def stop(self):
+           self.epics.stop()
+           super().stop()
 
    with TestRoot() as r:
        print("Running")
