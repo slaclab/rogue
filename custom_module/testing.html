@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Testing The Custom Module &mdash; Rogue v3.3.1-5-gfd0c473a documentation</title>
+  <title>Testing The Custom Module &mdash; Rogue v3.3.1-8-gc1d90652 documentation</title>
   
 
   
@@ -91,9 +91,11 @@
 <li class="toctree-l2"><a class="reference internal" href="sourcefile.html">Custom Module Source</a></li>
 <li class="toctree-l2"><a class="reference internal" href="makefile.html">Building The Custom Module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="wrapper.html">Wrapping Custom Module With PyRogue Device</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Testing The Custom Module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#testing-with-epics">Testing With EPICS</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#testing-with-a-gui">Testing With A GUI</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Testing The Custom Module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#testing-with-epics">Testing With EPICS</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#testing-with-a-gui">Testing With A GUI</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../installing/index.html">Installing &amp; Compiling Rogue</a></li>
@@ -209,9 +211,8 @@ Sent 400 bytes in 2 frames
 Got  400 bytes in 2 frames
 </pre></div>
 </div>
-</div>
 <div class="section" id="testing-with-epics">
-<h1>Testing With EPICS<a class="headerlink" href="#testing-with-epics" title="Permalink to this headline">¶</a></h1>
+<h2>Testing With EPICS<a class="headerlink" href="#testing-with-epics" title="Permalink to this headline">¶</a></h2>
 <p>The following scripts is similiar to the above but exposes the variables
 to epics to allow external control.</p>
 <div class="code python highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Source for myEpicsTest.py</span>
@@ -241,6 +242,11 @@ to epics to allow external control.</p>
         <span class="bp">self</span><span class="o">.</span><span class="n">epics</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">epics</span><span class="o">.</span><span class="n">dump</span><span class="p">()</span>
 
+    <span class="c1"># Override root class stop method to stop epics on exit</span>
+    <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">epics</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+
 <span class="k">with</span> <span class="n">TestRoot</span><span class="p">()</span> <span class="k">as</span> <span class="n">r</span><span class="p">:</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Running&quot;</span><span class="p">)</span>
     <span class="k">try</span><span class="p">:</span>
@@ -256,27 +262,27 @@ monitor the counters as well. See below for an example:</p>
 <div class="code highlight-default notranslate"><div class="highlight"><pre><span></span>$ python myEpicsTest.py
 Rogue/pyrogue version v3.3.1-4-gd384a633. https://github.com/slaclab/rogue
 Loaded my module
-myTest:My Root:enable -&gt; My Root.enable
-myTest:My Root:SystemLog -&gt; My Root.SystemLog
-myTest:My Root:ForceWrite -&gt; My Root.ForceWrite
-myTest:My Root:Time -&gt; My Root.Time
-myTest:My Root:WriteAll -&gt; My Root.WriteAll
-myTest:My Root:ReadAll -&gt; My Root.ReadAll
-myTest:My Root:WriteState -&gt; My Root.WriteState
-myTest:My Root:WriteConfig -&gt; My Root.WriteConfig
-myTest:My Root:ReadConfig -&gt; My Root.ReadConfig
-myTest:My Root:SoftReset -&gt; My Root.SoftReset
-myTest:My Root:HardReset -&gt; My Root.HardReset
-myTest:My Root:CountReset -&gt; My Root.CountReset
-myTest:My Root:ClearLog -&gt; My Root.ClearLog
-myTest:My Root:testMaster:enable -&gt; My Root.testMaster.enable
-myTest:My Root:testMaster:FrameCount -&gt; My Root.testMaster.FrameCount
-myTest:My Root:testMaster:ByteCount -&gt; My Root.testMaster.ByteCount
-myTest:My Root:testMaster:FrameSize -&gt; My Root.testMaster.FrameSize
-myTest:My Root:testMaster:MyFrameGen -&gt; My Root.testMaster.MyFrameGen
-myTest:My Root:testSlave:enable -&gt; My Root.testSlave.enable
-myTest:My Root:testSlave:FrameCount -&gt; My Root.testSlave.FrameCount
-myTest:My Root:testSlave:ByteCount -&gt; My Root.testSlave.ByteCount
+myTest:MyRoot:enable -&gt; MyRoot.enable
+myTest:MyRoot:SystemLog -&gt; MyRoot.SystemLog
+myTest:MyRoot:ForceWrite -&gt; MyRoot.ForceWrite
+myTest:MyRoot:Time -&gt; MyRoot.Time
+myTest:MyRoot:WriteAll -&gt; MyRoot.WriteAll
+myTest:MyRoot:ReadAll -&gt; MyRoot.ReadAll
+myTest:MyRoot:WriteState -&gt; MyRoot.WriteState
+myTest:MyRoot:WriteConfig -&gt; MyRoot.WriteConfig
+myTest:MyRoot:ReadConfig -&gt; MyRoot.ReadConfig
+myTest:MyRoot:SoftReset -&gt; MyRoot.SoftReset
+myTest:MyRoot:HardReset -&gt; MyRoot.HardReset
+myTest:MyRoot:CountReset -&gt; MyRoot.CountReset
+myTest:MyRoot:ClearLog -&gt; MyRoot.ClearLog
+myTest:MyRoot:testMaster:enable -&gt; MyRoot.testMaster.enable
+myTest:MyRoot:testMaster:FrameCount -&gt; MyRoot.testMaster.FrameCount
+myTest:MyRoot:testMaster:ByteCount -&gt; MyRoot.testMaster.ByteCount
+myTest:MyRoot:testMaster:FrameSize -&gt; MyRoot.testMaster.FrameSize
+myTest:MyRoot:testMaster:MyFrameGen -&gt; MyRoot.testMaster.MyFrameGen
+myTest:MyRoot:testSlave:enable -&gt; MyRoot.testSlave.enable
+myTest:MyRoot:testSlave:FrameCount -&gt; MyRoot.testSlave.FrameCount
+myTest:MyRoot:testSlave:ByteCount -&gt; MyRoot.testSlave.ByteCount
 Running
 </pre></div>
 </div>
@@ -317,7 +323,7 @@ myTest:MyRoot:testSlave:ByteCount 420
 </div>
 </div>
 <div class="section" id="testing-with-a-gui">
-<h1>Testing With A GUI<a class="headerlink" href="#testing-with-a-gui" title="Permalink to this headline">¶</a></h1>
+<h2>Testing With A GUI<a class="headerlink" href="#testing-with-a-gui" title="Permalink to this headline">¶</a></h2>
 <p>In the last test we will add a locally attached GUI along with EPICS. This will allow
 you to experiment with how bot the GUI and EPICS can manipulate variables in parrallel.
 In this test we start the GUI in the main script with the core Rogue. It is also possible
@@ -351,6 +357,11 @@ to start one or more remote GUIs. That process is described in TBD.</p>
         <span class="bp">self</span><span class="o">.</span><span class="n">epics</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">epics</span><span class="o">.</span><span class="n">dump</span><span class="p">()</span>
 
+    <span class="c1"># Override root class stop method to stop epics on exit</span>
+    <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">epics</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+
 <span class="k">with</span> <span class="n">TestRoot</span><span class="p">()</span> <span class="k">as</span> <span class="n">r</span><span class="p">:</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Running&quot;</span><span class="p">)</span>
 
@@ -366,6 +377,7 @@ to start one or more remote GUIs. That process is described in TBD.</p>
 <p>You can then start the server:</p>
 <div class="code highlight-default notranslate"><div class="highlight"><pre><span></span>$ python myEpicsGuiTest.py
 </pre></div>
+</div>
 </div>
 </div>
 
