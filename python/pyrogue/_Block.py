@@ -343,6 +343,14 @@ class RemoteBlock(BaseBlock, rim.Master):
         return self._offset | self._reqAddress()
 
     @property
+    def size(self):
+        return self._size
+
+    @property
+    def memBaseId(self):
+        return self._reqSlaveId()
+
+    @property
     def timeout(self):
         return float(self._getTimeout()) / 1000000.0
 

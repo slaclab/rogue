@@ -151,25 +151,36 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         for v in self.variables.values():
             v._finishInit()
 
-        # Look for device overlaps
-        tmpDevs = self.deviceList
-        tmpDevs.sort(key=lambda x: (x.memBaseId, x.address, x.size))
+        # Get full list of Devices and Blocks
+        tmpList = []
+        for d in self.deviceList:
+            tmpList.append(d)
+            for b in d._blocks:
+                if isinstance(b, pr.RemoteBlock):
+                    tmpList.append(b)
 
-        for i in range(1,len(tmpDevs)):
+        # Sort the list by address/size
+        tmpList.sort(key=lambda x: (x.memBaseId, x.address, x.size))
 
-            self._log.debug("Comparing Device {} at address={:#x} to {} at address={:#x} with size={}".format(
-                            tmpDevs[i].path,tmpDevs[i].address,tmpDevs[i-1].path,tmpDevs[i-1].address,tmpDevs[i-1].size))
+        # Look for overlaps
+        for i in range(1,len(tmpList)):
 
-            if (tmpDevs[i].size != 0) and (tmpDevs[i].memBaseId == tmpDevs[i-1].memBaseId) and \
-                (tmpDevs[i].address < (tmpDevs[i-1].address + tmpDevs[i-1].size)):
+            self._log.debug("Comparing {} with address={:#x} to {} with address={:#x} and size={}".format(
+                            tmpList[i].name,  tmpList[i].address,
+                            tmpList[i-1].name,tmpList[i-1].address, tmpList[i-1].size))
 
-                print("\n\n\n------------------------ Device Overlap Warning !!! --------------------------------")
-                print("Device {} at address={:#x} overlaps {} at address={:#x} with size={}".format(
-                      tmpDevs[i].path,tmpDevs[i].address,tmpDevs[i-1].path,tmpDevs[i-1].address,tmpDevs[i-1].size))
+            if (tmpList[i].size != 0) and (tmpList[i].memBaseId == tmpList[i-1].memBaseId) and \
+               (tmpList[i].address < (tmpList[i-1].address + tmpList[i-1].size)):
+
+                print("\n\n\n------------------------ Memory Overlap Warning !!! --------------------------------")
+                print("{} at address={:#x} overlaps {} at address={:#x} with size={}".format(
+                      tmpList[i].name,tmpList[i].address,
+                      tmpList[i-1].name,tmpList[i-1].address,tmpList[i-1].size))
                 print("This warning will be replaced with an exception in the next release!!!!!!!!")
 
-                #raise pr.NodeError("Device {} at address={} overlaps {} at address={} with size={}".format(
-                #    tmpDevs[i].path,tmpDevs[i].address,tmpDevs[i-1].path,tmpDevs[i-1].address,tmpDevs[i-1].size))
+                #raise pr.NodeError("{} at address={:#x} overlaps {} at address={:#x} with size={}".format(
+                #                   tmpList[i].name,tmpList[i].address,
+                #                   tmpList[i-1].name,tmpList[i-1].address,tmpList[i-1].size))
 
         # Set timeout if not default
         if timeout != 1.0:

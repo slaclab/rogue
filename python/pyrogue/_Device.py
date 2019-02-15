@@ -448,10 +448,6 @@ class Device(pr.Node,rim.Hub):
             self._blocks.append(pr.RemoteBlock(offset=b['offset'], size=b['size'], variables=b['vars']))
             self._log.debug("Adding new block at offset {:#02x}, size {}".format(b['offset'], b['size']))
 
-            # Adjust device size
-            if (b['offset'] + b['size']) > self._size:
-                self._size = (b['offset'] + b['size'])
-
     def _rootAttached(self, parent, root):
         pr.Node._rootAttached(self, parent, root)
 
