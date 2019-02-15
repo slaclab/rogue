@@ -5,7 +5,6 @@
  * File       : Master.h
  * Author     : Ryan Herbst, rherbst@slac.stanford.edu
  * Created    : 2016-09-16
- * Last update: 2016-09-16
  * ----------------------------------------------------------------------------
  * Description:
  * Stream interface master
@@ -36,52 +35,92 @@ namespace rogue {
       class Frame;
 
          //! Stream master class
-         /*
-          * This class pushes frame data to a slave interface.
+         /** This class serves as the source for sending Frame data to a Slave. Each master
+          * interfaces to a primary stream Slave and multiple secondar stream Slave ojects.
+          * The primary stream Slave is used to allocated new Frame objects and it the
+          * last Slave to receive frame data.
           */
          class Master {
 
-               //! Primary slave. Used for request forwards.
+               // Primary slave. Used for request forwards.
                boost::shared_ptr<rogue::interfaces::stream::Slave> primary_;
 
-               //! Vector of slaves
+               // Vector of slaves
                std::vector<boost::shared_ptr<rogue::interfaces::stream::Slave> > slaves_;
 
-               //! Slave mutex
+               // Slave mutex
                boost::mutex slaveMtx_;
 
             public:
 
-               //! Class creation
+               //! Class factory which returns a pointer to a Master object (MasterPtr)
+               /** Create a new Master
+                *
+                * Not exposed to Python
+                */
                static boost::shared_ptr<rogue::interfaces::stream::Master> create ();
 
-               //! Setup class in python
+               //! Setup class for use in python
+               /** Not exposed to Python
+                */
                static void setup_python();
 
-               //! Creator
+               //! Class creator
+               /** Exposed as rogue.interfaces.stream.Master() to Python
+                */
                Master();
 
-               //! Destructor
+               //! Destroy the object
                virtual ~Master();
 
-               //! Set primary slave, used for buffer request forwarding
+               //! Set primary slave
+               /** The primary slave is the Slave object from which the Master will request
+                * new Frame allocations. The primary Slave is also the last Slave object
+                * which will receive the Frame. Only one Slave can be set as Primary.
+                *
+                * Exposed as _setSlave() to Python. Called in Python by the
+                * pyrogue.streamConnect() and pyrogue.streamConnectBiDir() methods.
+                * @param slave Stream Slave pointer (SlavePtr)
+                */
                void setSlave ( boost::shared_ptr<rogue::interfaces::stream::Slave> slave );
 
                //! Add secondary slave
+               /** Multiple secondary slaves are allowed.
+                *
+                * Exposed as _addSlave() to Python. Called in Python by the
+                * pyrogue.streamTop() method.
+                * @param slave Stream Slave pointer (SlavePtr)
+                */
                void addSlave ( boost::shared_ptr<rogue::interfaces::stream::Slave> slave );
 
-               //! Get frame from slave
-               /*
-                * An allocate command will be issued to the primary slave set with setSlave()
-                * Pass size and flag indicating if zero copy buffers are allowed
+               //! Request new Frame to be allocated by primary Slave
+               /** This method is called to create a new Frame oject. An empty Frame with 
+                * the requested payload capacity is create. The Master will forward this
+                * request to the primary Slave oject. The request for a new Frame inclues
+                * a flag which indicates if a zeroCopy frame is allowed. In most cases this
+                * flag can be set to True. Non zero copy frames are requsted if the Master may
+                * need to transmit the same frame multiple times.
+                *
+                * Exposed as _reqFrame() to Python.
+                * @param size Minimum size for requsted Frame, larger Frame may be allocated
+                * @param zeroCopyEn Flag which indicates if a zero copy mode Frame is allowed.
+                * @return Newly allocated Frame pointer (FramePtr)
                 */
                boost::shared_ptr<rogue::interfaces::stream::Frame> reqFrame ( uint32_t size, bool zeroCopyEn);
 
                //! Push frame to all slaves
+               /** This method sends the passed Frame to all of the attached Slave objects by
+                * calling their acceptFrame() method. First the secondary Slaves are called in 
+                * order of attachment, followed last by the primary Slave. If the Frame is a
+                * zero copy frame it will most likely be empty when the sendFrame() method returns.
+                *
+                * Exposed as _sendFrame to Python
+                * @param frame Frame pointer (FramePtr) to send
+                */
                void sendFrame ( boost::shared_ptr<rogue::interfaces::stream::Frame> frame );
          };
 
-         // Convienence
+         //! Alias for using shared pointer as MasterPtr
          typedef boost::shared_ptr<rogue::interfaces::stream::Master> MasterPtr;
       }
    }

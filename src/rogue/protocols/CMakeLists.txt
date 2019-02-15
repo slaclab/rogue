@@ -17,6 +17,7 @@ add_subdirectory("packetizer")
 add_subdirectory("rssi")
 add_subdirectory("srp")
 add_subdirectory("udp")
+add_subdirectory("batcher")
 
 if (DO_EPICS_V3)
    add_subdirectory("epicsV3")

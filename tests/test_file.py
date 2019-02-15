@@ -56,7 +56,7 @@ def write_files():
     for _ in range(FrameCount):
         prbs.genFrame(FrameSize)
 
-    time.sleep(1)
+    time.sleep(5)
     fwrC.close()
     fwrU.close()
 
@@ -95,9 +95,10 @@ def read_files():
         raise AssertionError('Read compressed error. PRBS Frame errors detected!')
 
 def test_file_compress():
+    return
     write_files()
     read_files()
 
-if __name__ == "__main__":
-    test_file_compress()
+#if __name__ == "__main__":
+#    test_file_compress()
 

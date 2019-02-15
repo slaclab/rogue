@@ -147,7 +147,7 @@ uint8_t * ris::Buffer::begin() {
  * This is the end of raw data buffer
  */
 uint8_t * ris::Buffer::end() {
-   return(data_ + rawSize_);
+   return(data_ + (rawSize_-tailRoom_));
 }
 
 /*

@@ -100,12 +100,18 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         self.add(pr.LocalVariable(name='ForceWrite', value=False, mode='RW', hidden=True,
             description='Configuration Flag To Control Write All Block'))
 
+        self.add(pr.LocalVariable(name='Time', value=0.0, mode='RO', hidden=False,
+                 localGet=lambda: time.time(), pollInterval=1.0, description='Current Time In Seconds Since EPOCH UTC'))
+
         # Commands
         self.add(pr.LocalCommand(name='WriteAll', function=self._write, 
                                  description='Write all values to the hardware'))
 
         self.add(pr.LocalCommand(name="ReadAll", function=self._read,
                                  description='Read all values from the hardware'))
+
+        self.add(pr.LocalCommand(name='WriteState', value='', function=self._writeState,
+                                 description='Write state to passed filename in YAML format'))
 
         self.add(pr.LocalCommand(name='WriteConfig', value='', function=self._writeConfig,
                                  description='Write configuration to passed filename in YAML format'))
@@ -141,11 +147,19 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         for key,value in self._nodes.items():
             value._rootAttached(self,self)
 
+        # Some variable initialization can run until the blocks are built
+        for v in self.variables.values():
+            v._finishInit()
+
         # Look for device overlaps
         tmpDevs = self.deviceList
         tmpDevs.sort(key=lambda x: (x.memBaseId, x.address, x.size))
 
         for i in range(1,len(tmpDevs)):
+
+            self._log.debug("Comparing Device {} at address={:#x} to {} at address={:#x} with size={}".format(
+                            tmpDevs[i].path,tmpDevs[i].address,tmpDevs[i-1].path,tmpDevs[i-1].address,tmpDevs[i-1].size))
+
             if (tmpDevs[i].size != 0) and (tmpDevs[i].memBaseId == tmpDevs[i-1].memBaseId) and \
                 (tmpDevs[i].address < (tmpDevs[i-1].address + tmpDevs[i-1].size)):
 
@@ -390,11 +404,29 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                 self._log.exception(e)
         self._log.info("Done root read")
 
-    def _writeConfig(self,arg):
-        """Write YAML configuration to a file. Called from command"""
+    def _writeState(self,arg):
+        """Write YAML configuration/status to a file. Called from command"""
+
+        # Auto generate name if no arg
+        if arg is None or arg == '':
+            arg = datetime.datetime.now().strftime("state_%Y%m%d_%H%M%S.yml")
+
         try:
             with open(arg,'w') as f:
-                f.write(self.getYaml(True,modes=['RW']))
+                f.write(self.getYaml(True,modes=['RW','RO','WO']))
+        except Exception as e:
+            self._log.exception(e)
+
+    def _writeConfig(self,arg):
+        """Write YAML configuration to a file. Called from command"""
+
+        # Auto generate name if no arg
+        if arg is None or arg == '':
+            arg = datetime.datetime.now().strftime("config_%Y%m%d_%H%M%S.yml") 
+
+        try:
+            with open(arg,'w') as f:
+                f.write(self.getYaml(True,modes=['RW','WO']))
         except Exception as e:
             self._log.exception(e)
 
@@ -481,6 +513,8 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                                     self._varListeners.remove(func)
                                 else:
                                     self._log.error("Pyro callback failed for {}: {}".format(self.name,msg))
+
+                self._log.debug(F"Done update group. Length={len(uvars)}. Entry={list(uvars.keys())[0]}")
 
                 # Generate yaml stream
                 self._sendYamlFrame(dictToYaml(d,default_flow_style=False))
@@ -613,6 +647,25 @@ def dictToYaml(data, stream=None, Dumper=yaml.Dumper, **kwds):
         return None
     return ret
 
+def keyValueUpdate(old, key, value):
+    d = old
+    parts = key.split('.')
+    for part in parts[:-1]:
+        d = d[part]
+    d[parts[-1]] = value
+
+def dictUpdate(old, new):
+    for k,v in new.items():
+        if '.' in k:
+            keyValueUpdate(old, k, v)
+        elif k in old:
+            old[k].update(v)
+        else:
+            old[k] = v
+
+def yamlUpdate(old, new):
+    dictUpdate(old, yamlToDict(new))
+
 def recreate_OrderedDict(name, values):
     return odict(values['items'])
 
@@ -622,9 +675,11 @@ def generateAddressMap(root,fname):
     with open(fname,'w') as f:
         f.write("Path\t")
         f.write("Type\t")
-        f.write("Offset\t")
-        f.write("BitOffset\t")
-        f.write("BitSize\t")
+        f.write("Full Address\t")
+        f.write("Device Offset\t")
+        f.write("Mode\t")
+        f.write("Bit Offset\t")
+        f.write("Bit Size\t")
         f.write("Enum\t")
         f.write("Description\n")
 
@@ -632,7 +687,9 @@ def generateAddressMap(root,fname):
             if isinstance(v, pr.RemoteVariable):
                 f.write("{}\t".format(v.path))
                 f.write("{}\t".format(type(v)))
+                f.write("{:#x}\t".format(v.address))
                 f.write("{:#x}\t".format(v.offset))
+                f.write("{}\t".format(v.mode))
                 f.write("{}\t".format(v.bitOffset))
                 f.write("{}\t".format(v.bitSize))
                 f.write("{}\t".format(v.enum))

@@ -243,7 +243,11 @@ class BaseVariable(pr.Node):
         try:
             #print('{}.genDisp(read={}) disp={} value={}'.format(self.path, read, self.disp, value))
             if self.disp == 'enum':
-                ret = self.enum[value]
+                if value in self.enum:
+                    ret = self.enum[value]
+                else:
+                    self._log.error("Invalid enum value {} in variable '{}'".format(value,self.path))
+                    ret = 'INVALID: {:#x}'.format(value)
             else:
                 if value == '' or value is None:
                     ret = value
@@ -252,7 +256,7 @@ class BaseVariable(pr.Node):
 
         except Exception as e:
             self._log.exception(e)
-            self._log.error("Error generating disp value in variable '{}'".format(self.path))
+            self._log.error(f"Error generating disp for value {value} in variable {self.path}")
             ret = None
 
         return ret
@@ -418,6 +422,11 @@ class RemoteVariable(BaseVariable):
     @property
     def offset(self):
         return self._offset
+
+    @Pyro4.expose
+    @property
+    def address(self):
+        return self._block.address
 
     @Pyro4.expose
     @property

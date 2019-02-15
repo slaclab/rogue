@@ -20,7 +20,6 @@
 
 #include <rogue/protocols/epicsV3/Value.h>
 #include <rogue/protocols/epicsV3/Pv.h>
-#include <rogue/protocols/epicsV3/Server.h>
 #include <rogue/GeneralError.h>
 #include <boost/make_shared.hpp>
 #include <boost/make_shared.hpp>
@@ -220,7 +219,6 @@ rpe::Pv * rpe::Value::getPv() {
 //---------------------------------------
 caStatus rpe::Value::read(gdd &prototype) {
    caStatus ret;
-
    ret = funcTable_.read(*this, prototype);
    return ret;
 }

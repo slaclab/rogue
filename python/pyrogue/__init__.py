@@ -106,13 +106,13 @@ def busConnect(source,dest):
     """
 
     # Is object a native master or wrapped?
-    if isinstance(source,rogue.interfaces.stream.Master):
+    if isinstance(source,rogue.interfaces.memory.Master):
         master = source
     else:
         master = source._getMemoryMaster()
 
     # Is object a native slave or wrapped?
-    if isinstance(dest,rogue.interfaces.stream.Slave):
+    if isinstance(dest,rogue.interfaces.memory.Slave):
         slave = dest
     else:
         slave = dest._getMemorySlave()

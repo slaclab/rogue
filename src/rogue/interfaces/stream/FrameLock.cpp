@@ -19,6 +19,8 @@
 **/
 #include <rogue/interfaces/stream/FrameLock.h>
 #include <rogue/interfaces/stream/Frame.h>
+#include <rogue/GilRelease.h>
+#include <boost/make_shared.hpp>
 
 namespace ris = rogue::interfaces::stream;
 
@@ -36,6 +38,7 @@ ris::FrameLockPtr ris::FrameLock::create (ris::FramePtr frame) {
 
 //! Constructor
 ris::FrameLock::FrameLock(ris::FramePtr frame) {
+   rogue::GilRelease noGil;
    frame_ = frame;
    frame_->lock_.lock();
    locked_ = true;
@@ -48,6 +51,8 @@ void ris::FrameLock::setup_python() {
    bp::class_<ris::FrameLock, ris::FrameLockPtr, boost::noncopyable>("FrameLock",bp::no_init)
       .def("lock",      &ris::FrameLock::lock)
       .def("unlock",    &ris::FrameLock::unlock)
+      .def("__enter__", &ris::FrameLock::enter)
+      .def("__exit__",  &ris::FrameLock::exit)
    ;
 #endif
 }
@@ -60,6 +65,7 @@ ris::FrameLock::~FrameLock() {
 //! lock
 void ris::FrameLock::lock() {
    if ( ! locked_ ) {
+      rogue::GilRelease noGil;
       frame_->lock_.lock();
       locked_ = true;
    }
@@ -73,3 +79,8 @@ void ris::FrameLock::unlock() {
    }
 }
 
+//! Enter method for python, do nothing
+void ris::FrameLock::enter() { }
+
+//! Exit method for python, do nothing
+void ris::FrameLock::exit(void *, void *, void *) { }

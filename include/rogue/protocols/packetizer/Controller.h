@@ -55,7 +55,7 @@ namespace rogue {
 
                struct timeval timeout_;
 
-               rogue::LoggingPtr log_;
+               boost::shared_ptr<rogue::Logging> log_;
 
                boost::shared_ptr<rogue::interfaces::stream::Frame> tranFrame_[256];
 
