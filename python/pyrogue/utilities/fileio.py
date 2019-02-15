@@ -56,10 +56,10 @@ class StreamWriter(pyrogue.DataWriter):
         return self._writer.getFrameCount()
 
     def _waitFrameCount(self, count, timeout=0):
-        self._writer.waitFrameCount(count,timeout*1000000)
+        return self._writer.waitFrameCount(count,timeout*1000000)
 
     def _waitFrameChannelCount(self, chan, count, timeout=0):
-        self._writer.getChannel(chan).waitFrameCount(count,timeout*1000000)
+        return self._writer.getChannel(chan).waitFrameCount(count,timeout*1000000)
 
     def getChannel(self,chan):
         return self._writer.getChannel(chan)
