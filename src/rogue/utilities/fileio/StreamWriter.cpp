@@ -188,12 +188,20 @@ uint32_t ruf::StreamWriter::getFrameCount() {
    return(frameCount_);
 }
 
-void ruf::StreamWriter::waitFrameCount(uint32_t count) {
+bool ruf::StreamWriter::waitFrameCount(uint32_t count, uint64_t timeout) {
   rogue::GilRelease noGil;
   boost::unique_lock<boost::mutex> lock(mtx_);
   while (frameCount_ < count) {
     cond_.timed_wait(lock, boost::posix_time::microseconds(1000));
   }
+
+
+   //if (timeout != 0 ) {
+      //div_t divResult = div(timeout,1000000);
+      //sumTime_.tv_sec  = divResult.quot;
+      //sumTime_.tv_usec = divResult.rem;       
+   //}
+
 }
 
 //! Write data to file. Called from StreamWriterChannel
