@@ -100,6 +100,7 @@ bool ruf::StreamWriterChannel::waitFrameCount(uint32_t count, uint64_t timeout) 
   while (frameCount_ < count) {
     cond_.timed_wait(lock, boost::posix_time::microseconds(1000));
   }
+  return true;
 
    //if (timeout != 0 ) {
       //div_t divResult = div(timeout,1000000);
