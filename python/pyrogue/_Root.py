@@ -131,7 +131,6 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         self.add(pr.LocalCommand(name='ClearLog', function=self._clearLog,
                                  description='Clear the message log cntained in the SystemLog variable'))
 
-
     def start(self, timeout=1.0, initRead=False, initWrite=False, pollEn=True, pyroGroup=None, pyroAddr=None, pyroNsAddr=None):
         """Setup the tree. Start the polling thread."""
 
@@ -139,17 +138,8 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         if pollEn:
             self._pollQueue = pr.PollQueue(root=self)
 
-        # Set myself as root
-        self._parent = self
-        self._root   = self
-        self._path   = self.name
-
-        for key,value in self._nodes.items():
-            value._rootAttached(self,self)
-
-        # Some variable initialization can run until the blocks are built
-        for v in self.variables.values():
-            v._finishInit()
+        # Call special root level rootAttached
+        self._rootAttached()
 
         # Get full list of Devices and Blocks
         tmpList = []
@@ -370,6 +360,23 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
             # After with is done
             self._updateQueue.put(False)
+
+    def _rootAttached(self):
+        self._parent = self
+        self._root   = self
+        self._path   = self.name
+
+        self._maxTxnSize = 4
+        self._minTxnSize = 4
+
+        for key,value in self._nodes.items():
+            value._rootAttached(self,self)
+
+        self._buildBlocks()
+
+        # Some variable initialization can run until the blocks are built
+        for v in self.variables.values():
+            v._finishInit()
 
     def _sendYamlFrame(self,yml):
         """
