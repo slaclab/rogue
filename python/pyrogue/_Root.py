@@ -100,8 +100,12 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         self.add(pr.LocalVariable(name='ForceWrite', value=False, mode='RW', hidden=True,
             description='Configuration Flag To Control Write All Block'))
 
-        self.add(pr.LocalVariable(name='Time', value=0.0, mode='RO', hidden=False,
+        self.add(pr.LocalVariable(name='Time', value=0.0, mode='RO', hidden=True,
                  localGet=lambda: time.time(), pollInterval=1.0, description='Current Time In Seconds Since EPOCH UTC'))
+
+        self.add(pr.LocalVariable(name='LocalTime', value='', mode='RO', hidden=False,
+                 localGet=lambda: time.strftime("%Y-%m-%d %H:%M:%S %Z", time.localtime(time.time())),
+                 pollInterval=1.0, description='Local Time'))
 
         # Commands
         self.add(pr.LocalCommand(name='WriteAll', function=self._write, 
