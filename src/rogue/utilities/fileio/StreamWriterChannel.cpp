@@ -94,11 +94,33 @@ void ruf::StreamWriterChannel::setFrameCount(uint32_t count) {
   frameCount_ = count;
 }
 
-void ruf::StreamWriterChannel::waitFrameCount(uint32_t count) {
-  rogue::GilRelease noGil;
-  boost::unique_lock<boost::mutex> lock(mtx_);
-  while (frameCount_ < count) {
-    cond_.timed_wait(lock, boost::posix_time::microseconds(1000));
-  }
+bool ruf::StreamWriterChannel::waitFrameCount(uint32_t count, uint64_t timeout) {
+   struct timeval endTime;
+   struct timeval sumTime;
+   struct timeval curTime;
+
+   rogue::GilRelease noGil;
+   boost::unique_lock<boost::mutex> lock(mtx_);
+
+   if (timeout != 0 ) {
+      gettimeofday(&curTime,NULL);
+
+      div_t divResult = div(timeout,1000000);
+      sumTime.tv_sec  = divResult.quot;
+      sumTime.tv_usec = divResult.rem;       
+
+      timeradd(&curTime,&sumTime,&endTime);
+   }
+
+   while (frameCount_ < count) {
+      cond_.timed_wait(lock, boost::posix_time::microseconds(1000));
+
+      if ( timeout != 0 ) {
+         gettimeofday(&curTime,NULL);
+         if ( timercmp(&curTime,&endTime,>) ) return false;
+      }
+   }
+
+   return true;
 }
 

@@ -37,10 +37,10 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x -Wno-deprecated")
 #####################################
 set(DO_PYTHON 0)
 
-find_package(PythonInterp 3.6)
+find_package(PythonInterp QUIET 3.6)
 
 if (PYTHONINTERP_FOUND)
-   find_package(PythonLibs 3.6)
+   find_package(PythonLibs QUIET 3.6)
 
    if (PYTHONLIBS_FOUND)
       set(DO_PYTHON 1)
@@ -91,15 +91,44 @@ endif()
 # Additional Libraries
 #####################################
 
-find_package(BZip2  REQUIRED)
+find_package(BZip2 QUIET REQUIRED)
 
-#find_package(ZeroMQ REQUIRED)
-find_package(ZeroMQ)
+#####################################
+# ZeroMQ
+#####################################
 
-# Old systems (travis) don't support zeromq find
+# First try with Cmake packages
+find_package(ZeroMQ QUIET)
+
+# ZeroMQ does not always support cmake, use brute force
 if (NOT ZeroMQ_FOUND)
-   set(ZeroMQ_INCLUDE_DIR "")
-   set(ZeroMQ_LIBRARY "zmq")
+   
+   # Convert LD_LIBRARY PATH for search
+   string(REPLACE ":" ";" HINT_PATHS $ENV{LD_LIBRARY_PATH})
+
+   # See if zmq library is in LD_LIBRARY_PATH
+   find_library(ZeroMQ_LIBRARY 
+                NAMES zmq 
+                PATHS ${HINT_PATHS})
+
+   # Found it
+   if (ZeroMQ_LIBRARY) 
+
+      # Get the base diretory
+      get_filename_component(ZMQ_LIBDIR ${ZeroMQ_LIBRARY} DIRECTORY)
+
+      # See if we can find the header in a relative path
+      find_path(ZeroMQ_INCLUDE_DIR
+              NAMES zmq.h
+              PATHS ${ZMQ_LIBDIR}/../include
+              )
+   endif()
+
+   # Failed to find it
+   if (NOT ZeroMQ_INCLUDE_DIR)
+      message("")
+      message(FATAL_ERROR "Failed to find zeroMQ!")
+   endif()
 endif()
 
 #####################################
@@ -147,7 +176,7 @@ endif()
 #####################################
 
 # Set version from git tag
-find_package(Git)
+find_package(Git QUIET)
 if (GIT_FOUND)
    execute_process (
       COMMAND ${GIT_EXECUTABLE} describe --tags --dirty
@@ -362,6 +391,11 @@ if (DO_EPICS_V3)
 else()
    message("-- EPICS V3 not included!")
 endif()
+
+message("")
+message("-- Found ZeroMq: ${ZeroMQ_INCLUDE_DIR}")
+message("")
+message("-- Found Bzip2: ${BZIP2_INCLUDE_DIR}")
 
 message("----------------------------------------------------------------------")
 message("")
