@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Using The TCP Bridge &mdash; Rogue v3.3.1-8-gc1d90652 documentation</title>
+  <title>Using The TCP Bridge &mdash; Rogue v3.3.1-9-g20360ac7 documentation</title>
   
 
   
@@ -192,7 +192,7 @@ able to interface with either a Python or C++ client.</p>
 <span class="c1"># Local memory SrpV3 bridge</span>
 <span class="n">srpv3</span> <span class="o">=</span> <span class="n">rogue</span><span class="o">.</span><span class="n">protocols</span><span class="o">.</span><span class="n">srp</span><span class="o">.</span><span class="n">SrpV3</span><span class="p">()</span>
 
-<span class="c1"># Start a TCP Bridge Server, Listen on ports 8001 &amp; 8002 on all interfaces</span>
+<span class="c1"># Start a TCP Bridge Server, Listen on ports 8000 &amp; 8001 on all interfaces</span>
 <span class="c1"># Pass an address of 192.168.1.1 to listen on only that specific interface</span>
 <span class="n">tcp</span> <span class="o">=</span> <span class="n">rogue</span><span class="o">.</span><span class="n">interfaces</span><span class="o">.</span><span class="n">memory</span><span class="o">.</span><span class="n">TcpServer</span><span class="p">(</span><span class="s2">&quot;*&quot;</span><span class="p">,</span><span class="mi">8000</span><span class="p">)</span>
 
@@ -212,7 +212,7 @@ to interface with either a Python or C++ server.</p>
 <span class="n">mst</span> <span class="o">=</span> <span class="n">MyMaster</span><span class="p">()</span>
 
 <span class="c1"># Start a TCP Bridge Client, Connect remote server at 192.168.1.1 ports 8000 &amp; 8001.</span>
-<span class="n">tcp</span> <span class="o">=</span> <span class="n">rogue</span><span class="o">.</span><span class="n">interfaces</span><span class="o">.</span><span class="n">memory</span><span class="o">.</span><span class="n">TcpServer</span><span class="p">(</span><span class="s2">&quot;192.168.1.1&quot;</span><span class="p">,</span><span class="mi">8000</span><span class="p">)</span>
+<span class="n">tcp</span> <span class="o">=</span> <span class="n">rogue</span><span class="o">.</span><span class="n">interfaces</span><span class="o">.</span><span class="n">memory</span><span class="o">.</span><span class="n">TcpClient</span><span class="p">(</span><span class="s2">&quot;192.168.1.1&quot;</span><span class="p">,</span><span class="mi">8000</span><span class="p">)</span>
 
 <span class="c1"># Connect the bus</span>
 <span class="n">pyrogue</span><span class="o">.</span><span class="n">busConnect</span><span class="p">(</span><span class="n">mst</span><span class="p">,</span> <span class="n">tcp</span><span class="p">)</span>
@@ -230,7 +230,7 @@ able to interface with either a Python or C++ client.</p>
 <span class="c1">// Local memory SrpV3 bridge</span>
 <span class="n">rogue</span><span class="o">::</span><span class="n">protocols</span><span class="o">::</span><span class="n">srp</span><span class="o">::</span><span class="n">SrpV3Ptr</span> <span class="n">srpv3</span> <span class="o">=</span> <span class="n">rogue</span><span class="p">.</span><span class="n">protocols</span><span class="p">.</span><span class="n">srp</span><span class="p">.</span><span class="n">SrpV3</span><span class="o">::</span><span class="n">create</span><span class="p">();</span>
 
-<span class="c1">// Start a TCP Bridge Server, Listen on ports 8001 &amp; 8002 on all interfaces</span>
+<span class="c1">// Start a TCP Bridge Server, Listen on ports 8000 &amp; 8001 on all interfaces</span>
 <span class="c1">// Pass an address of 192.168.1.1 to listen on only that specific interface</span>
 <span class="n">rogue</span><span class="o">::</span><span class="n">interfaces</span><span class="o">::</span><span class="n">memory</span><span class="o">::</span><span class="n">TcpServerPtr</span> <span class="n">tcp</span> <span class="o">=</span> <span class="n">rogue</span><span class="p">.</span><span class="n">interfaces</span><span class="p">.</span><span class="n">memory</span><span class="p">.</span><span class="n">TcpServer</span><span class="o">::</span><span class="n">create</span><span class="p">(</span><span class="s">&quot;*&quot;</span><span class="p">,</span><span class="mi">8000</span><span class="p">);</span>
 
