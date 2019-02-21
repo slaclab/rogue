@@ -15,6 +15,7 @@ branch of Rogue. New documentation is being added incrementally over time.
    :caption: Contents:
 
    interfaces/index
+   hardware/index
    custom_module/index
    installing/index
 
