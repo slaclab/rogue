@@ -8,10 +8,10 @@
 ./_sources/hardware/axi/classes/index.rst.txt
 ./_sources/hardware/axi/index.rst.txt
 ./_sources/hardware/index.rst.txt
-./_sources/hardware/pgp/classes/Info.rst.txt
 ./_sources/hardware/pgp/classes/evrControl.rst.txt
 ./_sources/hardware/pgp/classes/evrStatus.rst.txt
 ./_sources/hardware/pgp/classes/index.rst.txt
+./_sources/hardware/pgp/classes/info.rst.txt
 ./_sources/hardware/pgp/classes/pciStatus.rst.txt
 ./_sources/hardware/pgp/classes/pgpCard.rst.txt
 ./_sources/hardware/pgp/classes/status.rst.txt
@@ -62,6 +62,7 @@
 ./_sources/interfaces/stream/usingFifo.rst.txt
 ./_sources/interfaces/stream/usingFilter.rst.txt
 ./_sources/interfaces/stream/usingTcp.rst.txt
+./_sources/logging/index.rst.txt
 ./_static/ajax-loader.gif
 ./_static/basic.css
 ./_static/comment-bright.png
@@ -135,10 +136,10 @@
 ./hardware/axi/classes/index.html
 ./hardware/axi/index.html
 ./hardware/index.html
-./hardware/pgp/classes/Info.html
 ./hardware/pgp/classes/evrControl.html
 ./hardware/pgp/classes/evrStatus.html
 ./hardware/pgp/classes/index.html
+./hardware/pgp/classes/info.html
 ./hardware/pgp/classes/pciStatus.html
 ./hardware/pgp/classes/pgpCard.html
 ./hardware/pgp/classes/status.html
@@ -189,6 +190,7 @@
 ./interfaces/stream/usingFifo.html
 ./interfaces/stream/usingFilter.html
 ./interfaces/stream/usingTcp.html
+./logging/index.html
 ./objects.inv
 ./search.html
 ./searchindex.js

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Installing &amp; Compiling Rogue &mdash; Rogue v3.3.1-11-g7ab292f3 documentation</title>
+  <title>Logging In Rogue &mdash; Rogue v3.3.1-11-g7ab292f3 documentation</title>
   
 
   
@@ -35,8 +35,8 @@
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Installing Rogue With Anaconda" href="anaconda.html" />
-    <link rel="prev" title="Testing The Custom Module" href="../custom_module/testing.html" /> 
+    <link rel="next" title="Creating Custom Modules" href="../custom_module/index.html" />
+    <link rel="prev" title="EvrControl" href="../hardware/pgp/classes/evrControl.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -88,17 +88,9 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../interfaces/index.html">Interfaces</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../hardware/index.html">Hardware</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../logging/index.html">Logging In Rogue</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Logging In Rogue</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../custom_module/index.html">Creating Custom Modules</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Installing &amp; Compiling Rogue</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="anaconda.html">Installing Rogue With Anaconda</a></li>
-<li class="toctree-l2"><a class="reference internal" href="anaconda_build.html">Building Rogue Inside Anaconda</a></li>
-<li class="toctree-l2"><a class="reference internal" href="docker.html">Installing Rogue Docker</a></li>
-<li class="toctree-l2"><a class="reference internal" href="build.html">Building Rogue From Source</a></li>
-<li class="toctree-l2"><a class="reference internal" href="application.html">Compiling A Rogue Application</a></li>
-<li class="toctree-l2"><a class="reference internal" href="firewall.html">Rogue and Anaconda behind a firewall</a></li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="../installing/index.html">Installing &amp; Compiling Rogue</a></li>
 </ul>
 
             
@@ -144,13 +136,13 @@
     
       <li><a href="../index.html">Docs</a> &raquo;</li>
         
-      <li>Installing &amp; Compiling Rogue</li>
+      <li>Logging In Rogue</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../_sources/installing/index.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../_sources/logging/index.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -163,21 +155,81 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="installing-compiling-rogue">
-<span id="installing"></span><h1>Installing &amp; Compiling Rogue<a class="headerlink" href="#installing-compiling-rogue" title="Permalink to this headline">¶</a></h1>
-<p>The recommended method for installing rogue is to <a class="reference internal" href="anaconda.html#installing-anaconda"><span class="std std-ref">Installing Rogue With Anaconda</span></a>.</p>
-<p>This section describes how to obtain and install Rogue.</p>
-<div class="toctree-wrapper compound">
-<p class="caption"><span class="caption-text">Install Options:</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="anaconda.html">Installing Rogue With Anaconda</a></li>
-<li class="toctree-l1"><a class="reference internal" href="anaconda_build.html">Building Rogue Inside Anaconda</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docker.html">Installing Rogue Docker</a></li>
-<li class="toctree-l1"><a class="reference internal" href="build.html">Building Rogue From Source</a></li>
-<li class="toctree-l1"><a class="reference internal" href="application.html">Compiling A Rogue Application</a></li>
-<li class="toctree-l1"><a class="reference internal" href="firewall.html">Rogue and Anaconda behind a firewall</a></li>
-</ul>
-</div>
+  <div class="section" id="logging-in-rogue">
+<span id="logging"></span><h1>Logging In Rogue<a class="headerlink" href="#logging-in-rogue" title="Permalink to this headline">¶</a></h1>
+<p>The following table are the known logging paths for enetities within Rogue.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="9%" />
+<col width="30%" />
+<col width="21%" />
+<col width="39%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Type</th>
+<th class="head">Section</th>
+<th class="head">Class</th>
+<th class="head">Log Path</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>C++</td>
+<td>interfaces/stream</td>
+<td>Fifo</td>
+<td>pyrogue.stream.Fifo</td>
+</tr>
+<tr class="row-odd"><td>C++</td>
+<td>interfaces/stream</td>
+<td>Filter</td>
+<td>pyrogue.stream.Filter</td>
+</tr>
+<tr class="row-even"><td>C++</td>
+<td>interfaces/stream</td>
+<td>TcpCore</td>
+<td>pyrogue.stream.TcpCore</td>
+</tr>
+<tr class="row-odd"><td>C++</td>
+<td>interfaces/stream</td>
+<td>TcpClient</td>
+<td>pyrogue.stream.TcpCore</td>
+</tr>
+<tr class="row-even"><td>C++</td>
+<td>interfaces/stream</td>
+<td>TcpServer</td>
+<td>pyrogue.stream.TcpCore</td>
+</tr>
+<tr class="row-odd"><td>C++</td>
+<td>interfaces/memory</td>
+<td>Master</td>
+<td>pyrogue.memory.Master</td>
+</tr>
+<tr class="row-even"><td>C++</td>
+<td>interfaces/memory</td>
+<td>TcpClient</td>
+<td>pyrogue.memory.TcpClient</td>
+</tr>
+<tr class="row-odd"><td>C++</td>
+<td>interfaces/memory</td>
+<td>TcpServer</td>
+<td>pyrogue.memory.TcpServer</td>
+</tr>
+<tr class="row-even"><td>C++</td>
+<td>hardware/axi</td>
+<td>AxiMemMap</td>
+<td>pyrogue.axi.AxiMemMap</td>
+</tr>
+<tr class="row-odd"><td>C++</td>
+<td>hardware/axi</td>
+<td>AxiStreamDma</td>
+<td>pyrogue.axi.AxiStreamDma</td>
+</tr>
+<tr class="row-even"><td>C++</td>
+<td>hardware/pgp</td>
+<td>PgpCard</td>
+<td>pyrogue.hardware.PgpCard</td>
+</tr>
+</tbody>
+</table>
 </div>
 
 
@@ -188,10 +240,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="anaconda.html" class="btn btn-neutral float-right" title="Installing Rogue With Anaconda" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="../custom_module/index.html" class="btn btn-neutral float-right" title="Creating Custom Modules" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="../custom_module/testing.html" class="btn btn-neutral float-left" title="Testing The Custom Module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="../hardware/pgp/classes/evrControl.html" class="btn btn-neutral float-left" title="EvrControl" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
