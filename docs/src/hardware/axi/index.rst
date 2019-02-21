@@ -1,10 +1,10 @@
 .. _hardware_axi:
 
-======================
-AXI Hardware Interface
-======================
+===============================
+Generic AXI Hardware Interface
+===============================
 
-AXI Hardware Description
+Generic AXI Hardware Description
 
 .. toctree::
    :maxdepth: 1

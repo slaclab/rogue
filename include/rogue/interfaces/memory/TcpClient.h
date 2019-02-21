@@ -105,7 +105,7 @@ namespace rogue {
                void doTransaction(boost::shared_ptr<rogue::interfaces::memory::Transaction> tran);
          };
 
-         // Convienence
+         //! Alias for using shared pointer as TcpClientPtr
          typedef boost::shared_ptr<rogue::interfaces::memory::TcpClient> TcpClientPtr;
 
       }

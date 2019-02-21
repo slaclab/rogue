@@ -29,7 +29,15 @@ namespace rogue {
    namespace hardware {
       namespace axi {
 
-         //! Axi DMA Class
+         //! AXI Stream DMA Class
+         /** This class provides a bridge between the Rogue stream interface and one
+          * of the AES Stream Drivers device drivers. This bridge allows Rogue Frames
+          * to be sent and received to PCIE Express boards (using the data_dev driver)
+          * or Zynq ZXI4 FPGA fabrics (using the rce_stream drvier). This interface
+          * will allocate Frame and Buffer objects using memory mapped DMA buffers
+          * or from a local memory pool when zero copy mode is disabled or a Frame
+          * with is requested with the zero copy flag set to false.
+          */
          class AxiStreamDma : public rogue::interfaces::stream::Master, 
                               public rogue::interfaces::stream::Slave {
 
@@ -70,29 +78,95 @@ namespace rogue {
 
             public:
 
-               //! Class creation
+               //! Class factory which returns a AxiStreamDmaPtr to a newly created AxiMemMap object
+               /** Not exposed to Python
+                *
+                * The destination field is a sideband signal provided in the AxiStream
+                * protocol which allows a single interface to handle multiple frames
+                * with different purposes. The use of this field is driver specific, but
+                * the lower 8-bits are typically passed in the tDest field of the hardware
+                * frame and bits 8 and up are used to index the dma channel in the 
+                * lower level hardware.
+                *
+                * The SSI Enable flag determines if the hardware frame follows the SLAC Streaming
+                * itnerface standard. This standard defines a SOF flag in the first user field
+                * at bit 1 and and EOFE flag in the last user field bit 0.
+                * @param path Path to device. i.e /dev/datadev_0
+                * @param dest Destination index for dma transactions
+                * @param ssiEnable Enable SSI user fields
+                * @return AxiStreamDma pointer (AxiStreamDmaPtr)
+                */
                static boost::shared_ptr<rogue::hardware::axi::AxiStreamDma> 
                   create (std::string path, uint32_t dest, bool ssiEnable);
 
                //! Setup class in python
                static void setup_python();
 
-               //! Creator
+               //! Class Creator
+               /** Exposed to Python as AxiStreamDma()
+                *
+                * The destination field is a sideband signal provided in the AxiStream
+                * protocol which allows a single interface to handle multiple frames
+                * with different purposes. The use of this field is driver specific, but
+                * the lower 8-bits are typically passed in the tDest field of the hardware
+                * frame and bits 8 and up are used to index the dma channel in the 
+                * lower level hardware.
+                *
+                * The SSI Enable flag determines if the hardware frame follows the SLAC Streaming
+                * itnerface standard. This standard defines a SOF flag in the first user field
+                * at bit 1 and and EOFE flag in the last user field bit 0.
+                * @param path Path to device. i.e /dev/datadev_0
+                * @param dest Destination index for dma transactions
+                * @param ssiEnable Enable SSI user fields
+                * @return AxiStreamDma pointer (AxiStreamDmaPtr)
+                */
                AxiStreamDma(std::string path, uint32_t dest, bool ssiEnable);
 
                //! Destructor
                ~AxiStreamDma();
 
                //! Set timeout for frame transmits in microseconds
+               /** This setting defines how long to wait for the lower level
+                * driver to be ready to send data. 
+                *
+                * Exposed to python as SetTimeout()
+                * @param timeout Timeout value in microseconds
+                */
                void setTimeout(uint32_t timeout);
 
                //! Set driver debug level
+               /** This function forwards the passed level value as a debug
+                * level to the lower level driver. Current drivers have a single
+                * level of 1, but any positive value will enable debug. Debug
+                * messages can be reviewed using the linux command 'dmesg'
+                *
+                * Exposed to python as setDriverDebug()
+                * @param level Debug level, >= 1 enabled debug
+                */
                void setDriverDebug(uint32_t level);
 
                //! Enable / disable zero copy
+               /** By default the AxiStreamDma class attempts to take advantage of
+                * the zero copy mode of the lower level driver if supported. In zero
+                * copy mode the Frame Buffer objects are mapped directly to the DMA
+                * buffers allocated by the kernel. This allows for direct user space
+                * access to the memory which the lower level DMA engines uses.
+                * When zero copy mode is disabled a memory buffer will be allocated
+                * using the Pool class and the DMA data will be coped to or from this
+                * buffer. 
+                *
+                * Exposed to python as setZeroCopyEn()
+                * @param state Boolean indicating zero copy mode
+                */
                void setZeroCopyEn(bool state);
 
                //! Strobe ack line (hardware specific)
+               /** This method forwards an ack command to the lower
+                * level driver. This is used in some cases to generate
+                * a hardware strobe on the dma interface. 
+                *
+                * Exposed to python as dmaAck()
+                */
                void dmaAck();
 
                //! Generate a Frame. Called from master
@@ -103,20 +177,22 @@ namespace rogue {
                boost::shared_ptr<rogue::interfaces::stream::Frame> acceptReq ( uint32_t size, bool zeroCopyEn);
 
                //! Accept a frame from master
-               /* 
-                * Returns true on success
+               /** This method is called by the Master object to which this Slave is attached when
+                * passing a Frame.
+                * @param frame Frame pointer (FramePtr)
                 */
                void acceptFrame ( boost::shared_ptr<rogue::interfaces::stream::Frame> frame );
 
-               //! Return a buffer
-               /*
-                * Called when this instance is marked as owner of a Buffer entity that is deleted.
+               //! Process Buffer Return
+               /** This method is an override of the lower level Pool class retBuffer() method. 
+                * This is used to return the zero copy buffer to the driver and is called 
+                * automatically when the Buffer object is deleted.
                 */
                void retBuffer(uint8_t * data, uint32_t meta, uint32_t rawSize);
 
          };
 
-         // Convienence
+         //! Alias for using shared pointer as AxiStreamDmaPtr
          typedef boost::shared_ptr<rogue::hardware::axi::AxiStreamDma> AxiStreamDmaPtr;
 
       }
