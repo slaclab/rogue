@@ -1,0 +1,358 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>PgpCard &mdash; Rogue v3.3.1-10-g97542e23 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="Status" href="status.html" />
+    <link rel="prev" title="PGP Hardware Interface Class Descriptions" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> Rogue
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                v3.3.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../interfaces/index.html">Interfaces</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../index.html">Hardware</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../axi/index.html">AXI Hardware Interface</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../index.html">PGP Card Hardware Interface</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="index.html">PGP Hardware Interface Class Descriptions</a><ul class="current">
+<li class="toctree-l4 current"><a class="current reference internal" href="#">PgpCard</a></li>
+<li class="toctree-l4"><a class="reference internal" href="status.html">Status</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pciStatus.html">PciStatus</a></li>
+<li class="toctree-l4"><a class="reference internal" href="evrStatus.html">EvrStatus</a></li>
+<li class="toctree-l4"><a class="reference internal" href="evrControl.html">EvrControl</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../custom_module/index.html">Creating Custom Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../installing/index.html">Installing &amp; Compiling Rogue</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Rogue</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Hardware</a> &raquo;</li>
+        
+          <li><a href="../index.html">PGP Card Hardware Interface</a> &raquo;</li>
+        
+          <li><a href="index.html">PGP Hardware Interface Class Descriptions</a> &raquo;</li>
+        
+      <li>PgpCard</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../../_sources/hardware/pgp/classes/pgpCard.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="pgpcard">
+<span id="hardware-pgp-pgp-cardp"></span><h1>PgpCard<a class="headerlink" href="#pgpcard" title="Permalink to this headline">¶</a></h1>
+<p>The PgpCard class generates log entries with the path: “pyrogue.hardware.PgpCard”</p>
+<p>PgpCard objects in C++ are referenced by the following shared pointer typedef:</p>
+<dl class="type">
+<dt id="_CPPv4N5rogue8hardware3pgp10PgpCardPtrE">
+<span id="_CPPv3N5rogue8hardware3pgp10PgpCardPtrE"></span><span id="_CPPv2N5rogue8hardware3pgp10PgpCardPtrE"></span><span id="rogue::hardware::pgp::PgpCardPtr"></span><span class="target" id="namespacerogue_1_1hardware_1_1pgp_1ae6e7ba8b892fc209bfd2a715b8bfa96d"></span><em class="property">typedef </em>boost::shared_ptr&lt;rogue::hardware::pgp::<a class="reference internal" href="#_CPPv4N5rogue8hardware3pgp7PgpCardE" title="rogue::hardware::pgp::PgpCard">PgpCard</a>&gt; <code class="descclassname">rogue::hardware::pgp<code class="descclassname">::</code></code><code class="descname">PgpCardPtr</code><a class="headerlink" href="#_CPPv4N5rogue8hardware3pgp10PgpCardPtrE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<p>The class description is shown below:</p>
+<dl class="class">
+<dt id="_CPPv4N5rogue8hardware3pgp7PgpCardE">
+<span id="_CPPv3N5rogue8hardware3pgp7PgpCardE"></span><span id="_CPPv2N5rogue8hardware3pgp7PgpCardE"></span><span id="rogue::hardware::pgp::PgpCard"></span><span class="target" id="classrogue_1_1hardware_1_1pgp_1_1PgpCard"></span><em class="property">class </em><code class="descname">PgpCard</code> : <em class="property">public</em> rogue::interfaces::stream::<a class="reference internal" href="../../../interfaces/stream/classes/master.html#_CPPv4N5rogue10interfaces6stream6MasterE" title="rogue::interfaces::stream::Master">Master</a>, <em class="property">public</em> rogue::interfaces::stream::<a class="reference internal" href="../../../interfaces/stream/classes/slave.html#_CPPv4N5rogue10interfaces6stream5SlaveE" title="rogue::interfaces::stream::Slave">Slave</a><a class="headerlink" href="#_CPPv4N5rogue8hardware3pgp7PgpCardE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>PGP Card class. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Functions</p>
+<dl class="function">
+<dt id="_CPPv4N5rogue8hardware3pgp7PgpCard7PgpCardENSt6stringE8uint32_t8uint32_t">
+<span id="_CPPv3N5rogue8hardware3pgp7PgpCard7PgpCardENSt6stringE8uint32_t8uint32_t"></span><span id="_CPPv2N5rogue8hardware3pgp7PgpCard7PgpCardENSt6stringE8uint32_t8uint32_t"></span><span id="rogue::hardware::pgp::PgpCard::PgpCard__ss.uint32_t.uint32_t"></span><span class="target" id="classrogue_1_1hardware_1_1pgp_1_1PgpCard_1a6d7e8a75de3f657314baa9745b5b335c"></span><code class="descname">PgpCard</code><span class="sig-paren">(</span>std::string <em>path</em>, uint32_t <em>lane</em>, uint32_t <em>vc</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue8hardware3pgp7PgpCard7PgpCardENSt6stringE8uint32_t8uint32_t" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Creator. </p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4N5rogue8hardware3pgp7PgpCardD0Ev">
+<span id="_CPPv3N5rogue8hardware3pgp7PgpCardD0Ev"></span><span id="_CPPv2N5rogue8hardware3pgp7PgpCardD0Ev"></span><span id="rogue::hardware::pgp::PgpCard::~PgpCard"></span><span class="target" id="classrogue_1_1hardware_1_1pgp_1_1PgpCard_1a5cb871febb9d3f2c836a4d139de25ac1"></span><code class="descname">~PgpCard</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue8hardware3pgp7PgpCardD0Ev" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Destructor. </p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4N5rogue8hardware3pgp7PgpCard10setTimeoutE8uint32_t">
+<span id="_CPPv3N5rogue8hardware3pgp7PgpCard10setTimeoutE8uint32_t"></span><span id="_CPPv2N5rogue8hardware3pgp7PgpCard10setTimeoutE8uint32_t"></span><span id="rogue::hardware::pgp::PgpCard::setTimeout__uint32_t"></span><span class="target" id="classrogue_1_1hardware_1_1pgp_1_1PgpCard_1a0c35c236912e15f61c59c305c6dd48b2"></span>void <code class="descname">setTimeout</code><span class="sig-paren">(</span>uint32_t <em>timeout</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue8hardware3pgp7PgpCard10setTimeoutE8uint32_t" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Set timeout for frame transmits in microseconds. </p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4N5rogue8hardware3pgp7PgpCard13setZeroCopyEnEb">
+<span id="_CPPv3N5rogue8hardware3pgp7PgpCard13setZeroCopyEnEb"></span><span id="_CPPv2N5rogue8hardware3pgp7PgpCard13setZeroCopyEnEb"></span><span id="rogue::hardware::pgp::PgpCard::setZeroCopyEn__b"></span><span class="target" id="classrogue_1_1hardware_1_1pgp_1_1PgpCard_1a6bf7ddc1fc7339d2b1467a58c524020a"></span>void <code class="descname">setZeroCopyEn</code><span class="sig-paren">(</span>bool <em>state</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue8hardware3pgp7PgpCard13setZeroCopyEnEb" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Enable / disable zero copy. </p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4N5rogue8hardware3pgp7PgpCard7getInfoEv">
+<span id="_CPPv3N5rogue8hardware3pgp7PgpCard7getInfoEv"></span><span id="_CPPv2N5rogue8hardware3pgp7PgpCard7getInfoEv"></span><span id="rogue::hardware::pgp::PgpCard::getInfo"></span><span class="target" id="classrogue_1_1hardware_1_1pgp_1_1PgpCard_1a78f3cafe241c927bfb6553fb90738da7"></span>boost::shared_ptr&lt;rogue::hardware::pgp::<a class="reference internal" href="Info.html#_CPPv4N5rogue8hardware3pgp4InfoE" title="rogue::hardware::pgp::Info">Info</a>&gt; <code class="descname">getInfo</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue8hardware3pgp7PgpCard7getInfoEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Get card info. </p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4N5rogue8hardware3pgp7PgpCard12getPciStatusEv">
+<span id="_CPPv3N5rogue8hardware3pgp7PgpCard12getPciStatusEv"></span><span id="_CPPv2N5rogue8hardware3pgp7PgpCard12getPciStatusEv"></span><span id="rogue::hardware::pgp::PgpCard::getPciStatus"></span><span class="target" id="classrogue_1_1hardware_1_1pgp_1_1PgpCard_1a7b74bf1ff444da4940d9a287a65e52ed"></span>boost::shared_ptr&lt;rogue::hardware::pgp::<a class="reference internal" href="pciStatus.html#_CPPv4N5rogue8hardware3pgp9PciStatusE" title="rogue::hardware::pgp::PciStatus">PciStatus</a>&gt; <code class="descname">getPciStatus</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue8hardware3pgp7PgpCard12getPciStatusEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Get pci status. </p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4N5rogue8hardware3pgp7PgpCard9getStatusEv">
+<span id="_CPPv3N5rogue8hardware3pgp7PgpCard9getStatusEv"></span><span id="_CPPv2N5rogue8hardware3pgp7PgpCard9getStatusEv"></span><span id="rogue::hardware::pgp::PgpCard::getStatus"></span><span class="target" id="classrogue_1_1hardware_1_1pgp_1_1PgpCard_1a4c5dfdd99e4c076ee91c5477556685a9"></span>boost::shared_ptr&lt;rogue::hardware::pgp::<a class="reference internal" href="status.html#_CPPv4N5rogue8hardware3pgp6StatusE" title="rogue::hardware::pgp::Status">Status</a>&gt; <code class="descname">getStatus</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue8hardware3pgp7PgpCard9getStatusEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Get status of open lane. </p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4N5rogue8hardware3pgp7PgpCard13getEvrControlEv">
+<span id="_CPPv3N5rogue8hardware3pgp7PgpCard13getEvrControlEv"></span><span id="_CPPv2N5rogue8hardware3pgp7PgpCard13getEvrControlEv"></span><span id="rogue::hardware::pgp::PgpCard::getEvrControl"></span><span class="target" id="classrogue_1_1hardware_1_1pgp_1_1PgpCard_1a94bac886f202a375f9b6ef26ae9b023f"></span>boost::shared_ptr&lt;rogue::hardware::pgp::<a class="reference internal" href="evrControl.html#_CPPv4N5rogue8hardware3pgp10EvrControlE" title="rogue::hardware::pgp::EvrControl">EvrControl</a>&gt; <code class="descname">getEvrControl</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue8hardware3pgp7PgpCard13getEvrControlEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Get evr control for open lane. </p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4N5rogue8hardware3pgp7PgpCard13setEvrControlEN5boost10shared_ptrIN5rogue8hardware3pgp10EvrControlEEE">
+<span id="_CPPv3N5rogue8hardware3pgp7PgpCard13setEvrControlEN5boost10shared_ptrIN5rogue8hardware3pgp10EvrControlEEE"></span><span id="_CPPv2N5rogue8hardware3pgp7PgpCard13setEvrControlEN5boost10shared_ptrIN5rogue8hardware3pgp10EvrControlEEE"></span><span id="rogue::hardware::pgp::PgpCard::setEvrControl__boost::shared_ptr:rogue::hardware::pgp::EvrControl:"></span><span class="target" id="classrogue_1_1hardware_1_1pgp_1_1PgpCard_1adfadfc513ce082d60b206d58955025f6"></span>void <code class="descname">setEvrControl</code><span class="sig-paren">(</span>boost::shared_ptr&lt;rogue::hardware::pgp::<a class="reference internal" href="evrControl.html#_CPPv4N5rogue8hardware3pgp10EvrControlE" title="rogue::hardware::pgp::EvrControl">EvrControl</a>&gt; <em>r</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue8hardware3pgp7PgpCard13setEvrControlEN5boost10shared_ptrIN5rogue8hardware3pgp10EvrControlEEE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Set evr control for open lane. </p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4N5rogue8hardware3pgp7PgpCard12getEvrStatusEv">
+<span id="_CPPv3N5rogue8hardware3pgp7PgpCard12getEvrStatusEv"></span><span id="_CPPv2N5rogue8hardware3pgp7PgpCard12getEvrStatusEv"></span><span id="rogue::hardware::pgp::PgpCard::getEvrStatus"></span><span class="target" id="classrogue_1_1hardware_1_1pgp_1_1PgpCard_1a13a8f058573da7e39c072f7296a179f1"></span>boost::shared_ptr&lt;rogue::hardware::pgp::<a class="reference internal" href="evrStatus.html#_CPPv4N5rogue8hardware3pgp9EvrStatusE" title="rogue::hardware::pgp::EvrStatus">EvrStatus</a>&gt; <code class="descname">getEvrStatus</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue8hardware3pgp7PgpCard12getEvrStatusEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Get evr status for open lane. </p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4N5rogue8hardware3pgp7PgpCard7setLoopEb">
+<span id="_CPPv3N5rogue8hardware3pgp7PgpCard7setLoopEb"></span><span id="_CPPv2N5rogue8hardware3pgp7PgpCard7setLoopEb"></span><span id="rogue::hardware::pgp::PgpCard::setLoop__b"></span><span class="target" id="classrogue_1_1hardware_1_1pgp_1_1PgpCard_1aa6f7d33c13d6dfe49735dac9d05f64fa"></span>void <code class="descname">setLoop</code><span class="sig-paren">(</span>bool <em>enable</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue8hardware3pgp7PgpCard7setLoopEb" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Set loopback for open lane. </p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4N5rogue8hardware3pgp7PgpCard7setDataE7uint8_t">
+<span id="_CPPv3N5rogue8hardware3pgp7PgpCard7setDataE7uint8_t"></span><span id="_CPPv2N5rogue8hardware3pgp7PgpCard7setDataE7uint8_t"></span><span id="rogue::hardware::pgp::PgpCard::setData__uint8_t"></span><span class="target" id="classrogue_1_1hardware_1_1pgp_1_1PgpCard_1af43d3370ef95c9120ba74af56135fbe5"></span>void <code class="descname">setData</code><span class="sig-paren">(</span>uint8_t <em>data</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue8hardware3pgp7PgpCard7setDataE7uint8_t" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Set lane data for open lane. </p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4N5rogue8hardware3pgp7PgpCard10sendOpCodeE7uint8_t">
+<span id="_CPPv3N5rogue8hardware3pgp7PgpCard10sendOpCodeE7uint8_t"></span><span id="_CPPv2N5rogue8hardware3pgp7PgpCard10sendOpCodeE7uint8_t"></span><span id="rogue::hardware::pgp::PgpCard::sendOpCode__uint8_t"></span><span class="target" id="classrogue_1_1hardware_1_1pgp_1_1PgpCard_1ab34cad3cfff64cfb2aaca8cbe5b1c8cb"></span>void <code class="descname">sendOpCode</code><span class="sig-paren">(</span>uint8_t <em>code</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue8hardware3pgp7PgpCard10sendOpCodeE7uint8_t" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Send an opcode. </p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4N5rogue8hardware3pgp7PgpCard9acceptReqE8uint32_tb">
+<span id="_CPPv3N5rogue8hardware3pgp7PgpCard9acceptReqE8uint32_tb"></span><span id="_CPPv2N5rogue8hardware3pgp7PgpCard9acceptReqE8uint32_tb"></span><span id="rogue::hardware::pgp::PgpCard::acceptReq__uint32_t.b"></span><span class="target" id="classrogue_1_1hardware_1_1pgp_1_1PgpCard_1a2a37d9311ecae4af0342bc42347abefe"></span>boost::shared_ptr&lt;rogue::interfaces::stream::<a class="reference internal" href="../../../interfaces/stream/classes/frame.html#_CPPv4N5rogue10interfaces6stream5FrameE" title="rogue::interfaces::stream::Frame">Frame</a>&gt; <code class="descname">acceptReq</code><span class="sig-paren">(</span>uint32_t <em>size</em>, bool <em>zeroCopyEn</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue8hardware3pgp7PgpCard9acceptReqE8uint32_tb" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Generate a Frame. Called from master. </p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4N5rogue8hardware3pgp7PgpCard11acceptFrameEN5boost10shared_ptrIN5rogue10interfaces6stream5FrameEEE">
+<span id="_CPPv3N5rogue8hardware3pgp7PgpCard11acceptFrameEN5boost10shared_ptrIN5rogue10interfaces6stream5FrameEEE"></span><span id="_CPPv2N5rogue8hardware3pgp7PgpCard11acceptFrameEN5boost10shared_ptrIN5rogue10interfaces6stream5FrameEEE"></span><span id="rogue::hardware::pgp::PgpCard::acceptFrame__boost::shared_ptr:rogue::interfaces::stream::Frame:"></span><span class="target" id="classrogue_1_1hardware_1_1pgp_1_1PgpCard_1a5f96d164422a905175c216b81e7bc87d"></span>void <code class="descname">acceptFrame</code><span class="sig-paren">(</span>boost::shared_ptr&lt;rogue::interfaces::stream::<a class="reference internal" href="../../../interfaces/stream/classes/frame.html#_CPPv4N5rogue10interfaces6stream5FrameE" title="rogue::interfaces::stream::Frame">Frame</a>&gt; <em>frame</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue8hardware3pgp7PgpCard11acceptFrameEN5boost10shared_ptrIN5rogue10interfaces6stream5FrameEEE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Accept a frame from master. </p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4N5rogue8hardware3pgp7PgpCard9retBufferEP7uint8_t8uint32_t8uint32_t">
+<span id="_CPPv3N5rogue8hardware3pgp7PgpCard9retBufferEP7uint8_t8uint32_t8uint32_t"></span><span id="_CPPv2N5rogue8hardware3pgp7PgpCard9retBufferEP7uint8_t8uint32_t8uint32_t"></span><span id="rogue::hardware::pgp::PgpCard::retBuffer__uint8_tP.uint32_t.uint32_t"></span><span class="target" id="classrogue_1_1hardware_1_1pgp_1_1PgpCard_1aa7e78f8988db5329fe739ef1f415aa71"></span>void <code class="descname">retBuffer</code><span class="sig-paren">(</span>uint8_t *<em>data</em>, uint32_t <em>meta</em>, uint32_t <em>rawSize</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue8hardware3pgp7PgpCard9retBufferEP7uint8_t8uint32_t8uint32_t" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Return a buffer. </p>
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Static Functions</p>
+<dl class="function">
+<dt id="_CPPv4N5rogue8hardware3pgp7PgpCard6createENSt6stringE8uint32_t8uint32_t">
+<span id="_CPPv3N5rogue8hardware3pgp7PgpCard6createENSt6stringE8uint32_t8uint32_t"></span><span id="_CPPv2N5rogue8hardware3pgp7PgpCard6createENSt6stringE8uint32_t8uint32_t"></span><span id="rogue::hardware::pgp::PgpCard::create__ss.uint32_t.uint32_t"></span><span class="target" id="classrogue_1_1hardware_1_1pgp_1_1PgpCard_1a6d707554674e40244aa55cecfa4032b2"></span><em class="property">static</em> boost::shared_ptr&lt;rogue::hardware::pgp::<a class="reference internal" href="#_CPPv4N5rogue8hardware3pgp7PgpCardE" title="rogue::hardware::pgp::PgpCard">PgpCard</a>&gt; <code class="descname">create</code><span class="sig-paren">(</span>std::string <em>path</em>, uint32_t <em>lane</em>, uint32_t <em>vc</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue8hardware3pgp7PgpCard6createENSt6stringE8uint32_t8uint32_t" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Class creation. </p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4N5rogue8hardware3pgp7PgpCard12setup_pythonEv">
+<span id="_CPPv3N5rogue8hardware3pgp7PgpCard12setup_pythonEv"></span><span id="_CPPv2N5rogue8hardware3pgp7PgpCard12setup_pythonEv"></span><span id="rogue::hardware::pgp::PgpCard::setup_python"></span><span class="target" id="classrogue_1_1hardware_1_1pgp_1_1PgpCard_1ae2967685c342f4446fd50ee83f4490a8"></span><em class="property">static</em> void <code class="descname">setup_python</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue8hardware3pgp7PgpCard12setup_pythonEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Setup class in python. </p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="status.html" class="btn btn-neutral float-right" title="Status" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="index.html" class="btn btn-neutral float-left" title="PGP Hardware Interface Class Descriptions" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, SLAC National Accelerator Laboratory
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
