@@ -8,4 +8,4 @@ WORKDIR rogue
 RUN mkdir build
 WORKDIR build
 RUN cmake .. -DROGUE_INSTALL=system
-RUN make install
+RUN make -j4 install
