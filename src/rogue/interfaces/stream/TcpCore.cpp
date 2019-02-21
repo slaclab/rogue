@@ -43,7 +43,7 @@ ris::TcpCorePtr ris::TcpCore::create (std::string addr, uint16_t port, bool serv
 
 //! Creator
 ris::TcpCore::TcpCore (std::string addr, uint16_t port, bool server) {
-   uint32_t to;
+   int32_t to;
 
    this->bridgeLog_ = rogue::Logging::create("stream.TcpCore");
 
@@ -58,8 +58,9 @@ ris::TcpCore::TcpCore (std::string addr, uint16_t port, bool server) {
    this->zmqPush_ = zmq_socket(this->zmqCtx_,ZMQ_PUSH);
 
    // Receive timeout
-   to = 10;
-   zmq_setsockopt (this->zmqPull_, ZMQ_RCVTIMEO, &to, sizeof(to));
+   to = 100;
+   if ( zmq_setsockopt (this->zmqPull_, ZMQ_RCVTIMEO, &to, sizeof(int32_t)) != 0 ) 
+         throw(rogue::GeneralError("TcpCore::TcpCore","Failed to set socket timeout"));
 
    // Server mode
    if (server) {
@@ -150,6 +151,7 @@ void ris::TcpCore::acceptFrame ( ris::FramePtr frame ) {
       if ( zmq_sendmsg(this->zmqPush_,&(msg[x]),(x==3)?0:ZMQ_SNDMORE) < 0 )
          bridgeLog_->warning("Failed to send message with size %i",frame->getPayload());
    }
+   bridgeLog_->debug("Accept frame with size %i",frame->getPayload());
 }
 
 //! Run thread
@@ -222,6 +224,8 @@ void ris::TcpCore::runThread() {
             frame->setFlags(flags);
             frame->setChannel(chan);
             frame->setError(err);
+
+            bridgeLog_->debug("Sending frame with size %i",frame->getPayload());
             sendFrame(frame);
          }
 

@@ -40,7 +40,7 @@ rim::TcpServerPtr rim::TcpServer::create (std::string addr, uint16_t port) {
 
 //! Creator
 rim::TcpServer::TcpServer (std::string addr, uint16_t port) {
-   uint32_t to;
+   int32_t to;
 
    this->bridgeLog_ = rogue::Logging::create("memory.TcpServer");
 
@@ -55,8 +55,9 @@ rim::TcpServer::TcpServer (std::string addr, uint16_t port) {
    this->zmqReq_  = zmq_socket(this->zmqCtx_,ZMQ_PULL);
 
    // Receive timeout
-   to = 10;
-   zmq_setsockopt (this->zmqResp_, ZMQ_RCVTIMEO, &to, sizeof(to));
+   to = 100;
+   if ( zmq_setsockopt (this->zmqReq_, ZMQ_RCVTIMEO, &to, sizeof(int32_t)) != 0 ) 
+         throw(rogue::GeneralError("TcpServer::TcpServer","Failed to set socket timeout"));
 
    this->respAddr_.append(std::to_string(static_cast<long long>(port+1)));
    this->reqAddr_.append(std::to_string(static_cast<long long>(port)));
