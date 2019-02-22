@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>TcpServer &mdash; Rogue v3.3.1-11-g7ab292f3 documentation</title>
+  <title>TcpServer &mdash; Rogue v3.3.1-12-g249f8d1d documentation</title>
   
 
   
@@ -193,7 +193,6 @@
   <div class="section" id="tcpserver">
 <span id="interfaces-stream-tcp-server"></span><h1>TcpServer<a class="headerlink" href="#tcpserver" title="Permalink to this headline">¶</a></h1>
 <p>Examples of using a TCP stream bridge are described in <a class="reference internal" href="../usingTcp.html#interfaces-stream-using-tcp"><span class="std std-ref">Using The TCP Bridge</span></a>.</p>
-<p>The TcpServer class generates log entries with the path: “pyrogue.stream.TcpCore”</p>
 <p>TcpServer objects in C++ are referenced by the following shared pointer typedef:</p>
 <dl class="type">
 <dt id="_CPPv4N5rogue10interfaces6stream12TcpServerPtrE">
@@ -208,38 +207,13 @@
 <dd><p>Stream TCP Bridge Server. </p>
 <p>This class is a wrapper around <a class="reference internal" href="tcpCore.html#classrogue_1_1interfaces_1_1stream_1_1TcpCore"><span class="std std-ref">TcpCore</span></a> which operates in server mode. </p>
 <div class="breathe-sectiondef docutils container">
-<p class="breathe-sectiondef-title rubric">Public Functions</p>
-<dl class="function">
-<dt id="_CPPv4N5rogue10interfaces6stream9TcpServer9TcpServerENSt6stringE8uint16_t">
-<span id="_CPPv3N5rogue10interfaces6stream9TcpServer9TcpServerENSt6stringE8uint16_t"></span><span id="_CPPv2N5rogue10interfaces6stream9TcpServer9TcpServerENSt6stringE8uint16_t"></span><span id="rogue::interfaces::stream::TcpServer::TcpServer__ss.uint16_t"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1TcpServer_1ad048185817341ad9951b945104a4f7ce"></span><code class="descname">TcpServer</code><span class="sig-paren">(</span>std::string <em>addr</em>, uint16_t <em>port</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream9TcpServer9TcpServerENSt6stringE8uint16_t" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>Create a <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1TcpServer"><span class="std std-ref">TcpServer</span></a> object. </p>
-<p>The creator takes an address and port. The passed address can either be an IP address or hostname. The address string defines which network interface the socket server will listen on. A string of “*” results in all network interfaces being listened on. The stream bridge requires two TCP ports. The pased port is the base number of these two ports. A passed value of 8000 will result in both 8000 and 8001 being used by this bridge.</p>
-<p>Exposed to Python as <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1TcpServer"><span class="std std-ref">rogue.interfaces.stream.TcpServer</span></a> <dl class="docutils">
-<dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last simple">
-<li><code class="docutils literal notranslate"><span class="pre">addr</span></code>: Interface address for server, remote server address for client. </li>
-<li><code class="docutils literal notranslate"><span class="pre">port</span></code>: Base port number of use for connection. </li>
-</ul>
-</dd>
-</dl>
-</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="_CPPv4N5rogue10interfaces6stream9TcpServerD0Ev">
-<span id="_CPPv3N5rogue10interfaces6stream9TcpServerD0Ev"></span><span id="_CPPv2N5rogue10interfaces6stream9TcpServerD0Ev"></span><span id="rogue::interfaces::stream::TcpServer::~TcpServer"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1TcpServer_1a573a0c6d222d66a1be007b5ba8ffe5f7"></span><code class="descname">~TcpServer</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream9TcpServerD0Ev" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>Destroy the <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1TcpServer"><span class="std std-ref">TcpServer</span></a>. </p>
-</dd></dl>
-
-</div>
-<div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric">Public Static Functions</p>
 <dl class="function">
 <dt id="_CPPv4N5rogue10interfaces6stream9TcpServer6createENSt6stringE8uint16_t">
 <span id="_CPPv3N5rogue10interfaces6stream9TcpServer6createENSt6stringE8uint16_t"></span><span id="_CPPv2N5rogue10interfaces6stream9TcpServer6createENSt6stringE8uint16_t"></span><span id="rogue::interfaces::stream::TcpServer::create__ss.uint16_t"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1TcpServer_1af53c7c88b05a77e860f194d1ea003fda"></span><em class="property">static</em> boost::shared_ptr&lt;rogue::interfaces::stream::<a class="reference internal" href="#_CPPv4N5rogue10interfaces6stream9TcpServerE" title="rogue::interfaces::stream::TcpServer">TcpServer</a>&gt; <code class="descname">create</code><span class="sig-paren">(</span>std::string <em>addr</em>, uint16_t <em>port</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream9TcpServer6createENSt6stringE8uint16_t" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Create a <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1TcpServer"><span class="std std-ref">TcpServer</span></a> object and return as a TcpServerPtr. </p>
 <p>The creator takes an address and port. The passed address can either be an IP address or hostname. The address string defines which network interface the socket server will listen on. A string of “*” results in all network interfaces being listened on. The stream bridge requires two TCP ports. The pased port is the base number of these two ports. A passed value of 8000 will result in both 8000 and 8001 being used by this bridge.</p>
-<p>Not exposed to Python <dl class="docutils">
+<p>Exposed to Python as <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1TcpServer"><span class="std std-ref">rogue.interfaces.stream.TcpServer</span></a> <dl class="docutils">
 <dt><strong>Return</strong></dt>
 <dd><a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1TcpServer"><span class="std std-ref">TcpServer</span></a> object as a TcpServerPtr </dd>
 <dt><strong>Parameters</strong></dt>
@@ -250,12 +224,6 @@
 </dd>
 </dl>
 </p>
-</dd></dl>
-
-<dl class="function">
-<dt id="_CPPv4N5rogue10interfaces6stream9TcpServer12setup_pythonEv">
-<span id="_CPPv3N5rogue10interfaces6stream9TcpServer12setup_pythonEv"></span><span id="_CPPv2N5rogue10interfaces6stream9TcpServer12setup_pythonEv"></span><span id="rogue::interfaces::stream::TcpServer::setup_python"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1TcpServer_1a735eee827a16d929fe502e3e9e325bbf"></span><em class="property">static</em> void <code class="descname">setup_python</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream9TcpServer12setup_pythonEv" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>Setup class in python. </p>
 </dd></dl>
 
 </div>

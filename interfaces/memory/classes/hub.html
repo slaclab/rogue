@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Hub &mdash; Rogue v3.3.1-11-g7ab292f3 documentation</title>
+  <title>Hub &mdash; Rogue v3.3.1-12-g249f8d1d documentation</title>
   
 
   
@@ -204,27 +204,6 @@
 <div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric">Public Functions</p>
 <dl class="function">
-<dt id="_CPPv4N5rogue10interfaces6memory3Hub3HubE8uint64_t">
-<span id="_CPPv3N5rogue10interfaces6memory3Hub3HubE8uint64_t"></span><span id="_CPPv2N5rogue10interfaces6memory3Hub3HubE8uint64_t"></span><span id="rogue::interfaces::memory::Hub::Hub__uint64_t"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Hub_1aa38764baf4db32d27ace94a4581eae84"></span><code class="descname">Hub</code><span class="sig-paren">(</span>uint64_t <em>offset</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory3Hub3HubE8uint64_t" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>Create a <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Hub"><span class="std std-ref">Hub</span></a> device with a given offset. </p>
-<p>Exposed to Python as <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Hub_1aa38764baf4db32d27ace94a4581eae84"><span class="std std-ref">Hub()</span></a></p>
-<p>Do not call directly. Only called from the <a class="reference internal" href="master.html#classrogue_1_1interfaces_1_1memory_1_1Master"><span class="std std-ref">Master</span></a> class. <dl class="docutils">
-<dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last simple">
-<li><code class="docutils literal notranslate"><span class="pre">offset</span></code>: The offset of this <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Hub"><span class="std std-ref">Hub</span></a> device </li>
-</ul>
-</dd>
-</dl>
-</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="_CPPv4N5rogue10interfaces6memory3HubD0Ev">
-<span id="_CPPv3N5rogue10interfaces6memory3HubD0Ev"></span><span id="_CPPv2N5rogue10interfaces6memory3HubD0Ev"></span><span id="rogue::interfaces::memory::Hub::~Hub"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Hub_1a04a81f6ec684782adc80df11de4f3e7c"></span><code class="descname">~Hub</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory3HubD0Ev" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>Destroy the <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Hub"><span class="std std-ref">Hub</span></a>. </p>
-</dd></dl>
-
-<dl class="function">
 <dt id="_CPPv4N5rogue10interfaces6memory3Hub9getOffsetEv">
 <span id="_CPPv3N5rogue10interfaces6memory3Hub9getOffsetEv"></span><span id="_CPPv2N5rogue10interfaces6memory3Hub9getOffsetEv"></span><span id="rogue::interfaces::memory::Hub::getOffset"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Hub_1a276ca14dadf9aee86764d0a9a78a75fa"></span>uint64_t <code class="descname">getOffset</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory3Hub9getOffsetEv" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Get offset of this <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Hub"><span class="std std-ref">Hub</span></a>. </p>
@@ -306,7 +285,7 @@
 <dt id="_CPPv4N5rogue10interfaces6memory3Hub6createE8uint64_t">
 <span id="_CPPv3N5rogue10interfaces6memory3Hub6createE8uint64_t"></span><span id="_CPPv2N5rogue10interfaces6memory3Hub6createE8uint64_t"></span><span id="rogue::interfaces::memory::Hub::create__uint64_t"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Hub_1a3a04f0566d1ef45f3ab442f8b8de775e"></span><em class="property">static</em> boost::shared_ptr&lt;rogue::interfaces::memory::<a class="reference internal" href="#_CPPv4N5rogue10interfaces6memory3HubE" title="rogue::interfaces::memory::Hub">Hub</a>&gt; <code class="descname">create</code><span class="sig-paren">(</span>uint64_t <em>offset</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory3Hub6createE8uint64_t" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Class factory which returns a pointer to a <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Hub"><span class="std std-ref">Hub</span></a> (HubPtr) </p>
-<p>Not exposed to Python</p>
+<p>Exposed to Python as <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Hub"><span class="std std-ref">rogue.interfaces.memory.Hub()</span></a></p>
 <p><dl class="docutils">
 <dt><strong>Parameters</strong></dt>
 <dd><ul class="breatheparameterlist first last simple">
@@ -315,12 +294,6 @@
 </dd>
 </dl>
 </p>
-</dd></dl>
-
-<dl class="function">
-<dt id="_CPPv4N5rogue10interfaces6memory3Hub12setup_pythonEv">
-<span id="_CPPv3N5rogue10interfaces6memory3Hub12setup_pythonEv"></span><span id="_CPPv2N5rogue10interfaces6memory3Hub12setup_pythonEv"></span><span id="rogue::interfaces::memory::Hub::setup_python"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Hub_1acb928b036cf30e48bd0d84e048023015"></span><em class="property">static</em> void <code class="descname">setup_python</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory3Hub12setup_pythonEv" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>Setup class for use in python. </p>
 </dd></dl>
 
 </div>

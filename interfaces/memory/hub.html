@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Memory Hub Example &mdash; Rogue v3.3.1-11-g7ab292f3 documentation</title>
+  <title>Memory Hub Example &mdash; Rogue v3.3.1-12-g249f8d1d documentation</title>
   
 
   
@@ -195,71 +195,79 @@ transaction to be executed at a time.</p>
         <span class="c1"># Here we set the offset</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 
+        <span class="c1"># Create a lock</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Lock</span><span class="p">()</span>
+
     <span class="c1"># Entry point for incoming transaction</span>
     <span class="k">def</span> <span class="nf">_doTransaction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">transaction</span><span class="p">):</span>
 
-        <span class="c1"># First we lock the transaction data</span>
-        <span class="k">with</span> <span class="n">transaction</span><span class="o">.</span><span class="n">lock</span><span class="p">():</span>
+        <span class="c1"># First lock the memory space to avoid</span>
+        <span class="c1"># overlapping paged transactions</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span><span class="p">:</span>
 
-            <span class="c1"># Put address into byte array</span>
-            <span class="n">addr</span> <span class="o">=</span> <span class="n">transaction</span><span class="o">.</span><span class="n">address</span><span class="p">()</span><span class="o">.</span><span class="n">to_bytes</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="s1">&#39;little&#39;</span><span class="p">,</span> <span class="n">signed</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+           <span class="c1"># Next we lock the transaction data</span>
+           <span class="c1"># Here it is held until the downstream transaction completes.</span>
+           <span class="k">with</span> <span class="n">transaction</span><span class="o">.</span><span class="n">lock</span><span class="p">():</span>
 
-            <span class="c1"># Clear any existing errors</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_setError</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+               <span class="c1"># Put address into byte array</span>
+               <span class="n">addr</span> <span class="o">=</span> <span class="n">transaction</span><span class="o">.</span><span class="n">address</span><span class="p">()</span><span class="o">.</span><span class="n">to_bytes</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="s1">&#39;little&#39;</span><span class="p">,</span> <span class="n">signed</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
 
-            <span class="c1"># Create transaction setting address register (offset 0x100)</span>
-            <span class="nb">id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reqTransaction</span><span class="p">(</span><span class="mh">0x100</span><span class="p">,</span> <span class="n">addr</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">rogue</span><span class="o">.</span><span class="n">interfaces</span><span class="o">.</span><span class="n">memory</span><span class="o">.</span><span class="n">Write</span><span class="p">)</span>
+               <span class="c1"># Clear any existing errors</span>
+               <span class="bp">self</span><span class="o">.</span><span class="n">_setError</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 
-            <span class="c1"># Wait for transaction to complete</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_wait</span><span class="p">(</span><span class="nb">id</span><span class="p">)</span>
-
-            <span class="c1"># Check transaction result, forward error to incoming transaction</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getError</span><span class="p">()</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="n">transaction</span><span class="o">.</span><span class="n">done</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_getError</span><span class="p">())</span>
-                <span class="k">return</span> <span class="bp">False</span>
-
-            <span class="c1"># Handle write or post</span>
-            <span class="k">if</span> <span class="n">transaction</span><span class="o">.</span><span class="n">type</span><span class="p">()</span> <span class="o">==</span> <span class="n">rogue</span><span class="o">.</span><span class="n">interfaces</span><span class="o">.</span><span class="n">memory</span><span class="o">.</span><span class="n">Write</span> <span class="ow">or</span>
-               <span class="n">transaction</span><span class="o">.</span><span class="n">type</span><span class="p">()</span> <span class="o">==</span> <span class="n">rogue</span><span class="o">.</span><span class="n">interfaces</span><span class="o">.</span><span class="n">memory</span><span class="o">.</span><span class="n">Post</span><span class="p">:</span>
-
-               <span class="c1"># Copy data into byte array</span>
-               <span class="n">data</span> <span class="o">=</span> <span class="nb">bytearray</span><span class="p">(</span><span class="n">transaction</span><span class="o">.</span><span class="n">size</span><span class="p">())</span>
-               <span class="n">transaction</span><span class="o">.</span><span class="n">getData</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
-
-               <span class="c1"># Create transaction setting write data register (offset 0x104)</span>
-               <span class="nb">id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reqTransaction</span><span class="p">(</span><span class="mh">0x104</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">rogue</span><span class="o">.</span><span class="n">interfaces</span><span class="o">.</span><span class="n">memory</span><span class="o">.</span><span class="n">Write</span><span class="p">)</span>
+               <span class="c1"># Create transaction setting address register (offset 0x100)</span>
+               <span class="nb">id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reqTransaction</span><span class="p">(</span><span class="mh">0x100</span><span class="p">,</span> <span class="n">addr</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">rogue</span><span class="o">.</span><span class="n">interfaces</span><span class="o">.</span><span class="n">memory</span><span class="o">.</span><span class="n">Write</span><span class="p">)</span>
 
                <span class="c1"># Wait for transaction to complete</span>
-               <span class="bp">self</span><span class="o">.</span><span class="n">_wait</span><span class="p">(</span><span class="nb">id</span><span class="p">)</span>
+               <span class="bp">self</span><span class="o">.</span><span class="n">_waitTransaction</span><span class="p">(</span><span class="nb">id</span><span class="p">)</span>
 
                <span class="c1"># Check transaction result, forward error to incoming transaction</span>
                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getError</span><span class="p">()</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
                    <span class="n">transaction</span><span class="o">.</span><span class="n">done</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_getError</span><span class="p">())</span>
                    <span class="k">return</span> <span class="bp">False</span>
 
-               <span class="c1"># Success</span>
-               <span class="n">transaction</span><span class="o">.</span><span class="n">done</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+               <span class="c1"># Handle write or post</span>
+               <span class="k">if</span> <span class="n">transaction</span><span class="o">.</span><span class="n">type</span><span class="p">()</span> <span class="o">==</span> <span class="n">rogue</span><span class="o">.</span><span class="n">interfaces</span><span class="o">.</span><span class="n">memory</span><span class="o">.</span><span class="n">Write</span> <span class="ow">or</span>
+                  <span class="n">transaction</span><span class="o">.</span><span class="n">type</span><span class="p">()</span> <span class="o">==</span> <span class="n">rogue</span><span class="o">.</span><span class="n">interfaces</span><span class="o">.</span><span class="n">memory</span><span class="o">.</span><span class="n">Post</span><span class="p">:</span>
 
-            <span class="c1"># Handle read or verify read</span>
-            <span class="k">else</span><span class="p">:</span>
+                  <span class="c1"># Copy data into byte array</span>
+                  <span class="n">data</span> <span class="o">=</span> <span class="nb">bytearray</span><span class="p">(</span><span class="n">transaction</span><span class="o">.</span><span class="n">size</span><span class="p">())</span>
+                  <span class="n">transaction</span><span class="o">.</span><span class="n">getData</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
 
-               <span class="c1"># Create read data byte array</span>
-               <span class="n">data</span> <span class="o">=</span> <span class="nb">bytearray</span><span class="p">(</span><span class="n">transaction</span><span class="o">.</span><span class="n">size</span><span class="p">())</span>
+                  <span class="c1"># Create transaction setting write data register (offset 0x104)</span>
+                  <span class="nb">id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reqTransaction</span><span class="p">(</span><span class="mh">0x104</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">rogue</span><span class="o">.</span><span class="n">interfaces</span><span class="o">.</span><span class="n">memory</span><span class="o">.</span><span class="n">Write</span><span class="p">)</span>
 
-               <span class="c1"># Create transaction reading read data register (offset 0x108)</span>
-               <span class="nb">id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reqTransaction</span><span class="p">(</span><span class="mh">0x108</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">rogue</span><span class="o">.</span><span class="n">interfaces</span><span class="o">.</span><span class="n">memory</span><span class="o">.</span><span class="n">Read</span><span class="p">)</span>
+                  <span class="c1"># Wait for transaction to complete</span>
+                  <span class="bp">self</span><span class="o">.</span><span class="n">_waitTransaction</span><span class="p">(</span><span class="nb">id</span><span class="p">)</span>
 
-               <span class="c1"># Wait for transaction to complete</span>
-               <span class="bp">self</span><span class="o">.</span><span class="n">_wait</span><span class="p">(</span><span class="nb">id</span><span class="p">)</span>
+                  <span class="c1"># Check transaction result, forward error to incoming transaction</span>
+                  <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getError</span><span class="p">()</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+                      <span class="n">transaction</span><span class="o">.</span><span class="n">done</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_getError</span><span class="p">())</span>
+                      <span class="k">return</span> <span class="bp">False</span>
 
-               <span class="c1"># Check transaction result, forward error to incoming transaction</span>
-               <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getError</span><span class="p">()</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
-                   <span class="n">transaction</span><span class="o">-&gt;</span><span class="n">done</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_getError</span><span class="p">())</span>
-                   <span class="k">return</span> <span class="bp">False</span>
+                  <span class="c1"># Success</span>
+                  <span class="n">transaction</span><span class="o">.</span><span class="n">done</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 
-               <span class="c1"># Copy data into original transaction and complete</span>
-               <span class="n">transaction</span><span class="o">.</span><span class="n">setData</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
-               <span class="n">transaction</span><span class="o">.</span><span class="n">done</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+               <span class="c1"># Handle read or verify read</span>
+               <span class="k">else</span><span class="p">:</span>
+
+                  <span class="c1"># Create read data byte array</span>
+                  <span class="n">data</span> <span class="o">=</span> <span class="nb">bytearray</span><span class="p">(</span><span class="n">transaction</span><span class="o">.</span><span class="n">size</span><span class="p">())</span>
+
+                  <span class="c1"># Create transaction reading read data register (offset 0x108)</span>
+                  <span class="nb">id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reqTransaction</span><span class="p">(</span><span class="mh">0x108</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">rogue</span><span class="o">.</span><span class="n">interfaces</span><span class="o">.</span><span class="n">memory</span><span class="o">.</span><span class="n">Read</span><span class="p">)</span>
+
+                  <span class="c1"># Wait for transaction to complete</span>
+                  <span class="bp">self</span><span class="o">.</span><span class="n">_waitTransaction</span><span class="p">(</span><span class="nb">id</span><span class="p">)</span>
+
+                  <span class="c1"># Check transaction result, forward error to incoming transaction</span>
+                  <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getError</span><span class="p">()</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+                      <span class="n">transaction</span><span class="o">-&gt;</span><span class="n">done</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_getError</span><span class="p">())</span>
+                      <span class="k">return</span> <span class="bp">False</span>
+
+                  <span class="c1"># Copy data into original transaction and complete</span>
+                  <span class="n">transaction</span><span class="o">.</span><span class="n">setData</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+                  <span class="n">transaction</span><span class="o">.</span><span class="n">done</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 
     <span class="c1"># Respond to min transaction size</span>
     <span class="k">def</span> <span class="nf">_doMinAccess</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -273,9 +281,14 @@ transaction to be executed at a time.</p>
 <p>The equivelent code in C++ is show below:</p>
 <div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;rogue/interfaces/memory/Constants.h&gt;</span><span class="cp"></span>
 <span class="cp">#include</span> <span class="cpf">&lt;rogue/interfaces/memory/Hub.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;boost/thread.hpp&gt;</span><span class="cp"></span>
 
 <span class="c1">// Create a subclass of a memory Hub</span>
 <span class="n">class</span> <span class="nl">MyHub</span> <span class="p">:</span> <span class="n">public</span> <span class="n">rogue</span><span class="o">::</span><span class="n">interfaces</span><span class="o">::</span><span class="n">memory</span><span class="o">::</span><span class="n">Hub</span> <span class="p">{</span>
+
+      <span class="c1">// Mutex</span>
+      <span class="n">boost</span><span class="o">::</span><span class="n">mutex</span> <span class="n">mtx_</span><span class="p">;</span>
+
    <span class="nl">public</span><span class="p">:</span>
 
       <span class="c1">// Create a static class creator to return our custom class</span>
@@ -292,9 +305,12 @@ transaction to be executed at a time.</p>
 
       <span class="c1">// Entry point for incoming transaction</span>
       <span class="kt">void</span> <span class="n">doTransaction</span><span class="p">(</span><span class="n">rogue</span><span class="o">::</span><span class="n">interfaces</span><span class="o">::</span><span class="n">memory</span><span class="o">::</span><span class="n">TransactionPtr</span> <span class="n">tran</span><span class="p">)</span> <span class="p">{</span>
-          <span class="kt">uint32_t</span> <span class="n">id</span><span class="p">;</span>
+         <span class="kt">uint32_t</span> <span class="n">id</span><span class="p">;</span>
 
-         <span class="c1">// First we lock the transaction data with a scoped lock</span>
+         <span class="c1">// First lock the memory space to avoid overlapping paged transactions</span>
+         <span class="n">boost</span><span class="o">::</span><span class="n">lock_guard</span><span class="o">&lt;</span><span class="n">boost</span><span class="o">::</span><span class="n">mutex</span><span class="o">&gt;</span> <span class="n">lock</span><span class="p">(</span><span class="n">slaveMtx_</span><span class="p">);</span>
+
+         <span class="c1">// Next we lock the transaction data with a scoped lock</span>
          <span class="n">rogue</span><span class="o">::</span><span class="n">interfaces</span><span class="o">::</span><span class="n">memory</span><span class="o">::</span><span class="n">TransactionLockPtr</span> <span class="n">lock</span> <span class="o">=</span> <span class="n">tran</span><span class="o">-&gt;</span><span class="n">lock</span><span class="p">();</span>
 
          <span class="c1">// Clear any existing errors</span>
@@ -305,7 +321,7 @@ transaction to be executed at a time.</p>
                                    <span class="n">rogue</span><span class="o">::</span><span class="n">interfaces</span><span class="o">::</span><span class="n">memory</span><span class="o">::</span><span class="n">Write</span><span class="p">);</span>
 
          <span class="c1">// Wait for transaction to complete</span>
-         <span class="n">this</span><span class="o">-&gt;</span><span class="n">wait</span><span class="p">(</span><span class="n">id</span><span class="p">);</span>
+         <span class="n">this</span><span class="o">-&gt;</span><span class="n">waitTransaction</span><span class="p">(</span><span class="n">id</span><span class="p">);</span>
 
          <span class="c1">// Check transaction result, forward error to incoming transaction</span>
          <span class="k">if</span> <span class="p">(</span> <span class="n">this</span><span class="o">-&gt;</span><span class="n">getError</span><span class="p">()</span> <span class="o">!=</span> <span class="mi">0</span> <span class="p">)</span> <span class="p">{</span>
@@ -323,7 +339,7 @@ transaction to be executed at a time.</p>
                                       <span class="n">rogue</span><span class="o">::</span><span class="n">interfaces</span><span class="o">::</span><span class="n">memory</span><span class="o">::</span><span class="n">Write</span><span class="p">);</span>
 
             <span class="c1">// Wait for transaction to complete</span>
-            <span class="n">this</span><span class="o">-&gt;</span><span class="n">wait</span><span class="p">(</span><span class="n">id</span><span class="p">);</span>
+            <span class="n">this</span><span class="o">-&gt;</span><span class="n">waitTransaction</span><span class="p">(</span><span class="n">id</span><span class="p">);</span>
 
             <span class="c1">// Check transaction result, forward error to incoming transaction</span>
             <span class="k">if</span> <span class="p">(</span> <span class="n">this</span><span class="o">-&gt;</span><span class="n">getError</span><span class="p">()</span> <span class="o">!=</span> <span class="mi">0</span> <span class="p">)</span> <span class="p">{</span>
@@ -342,7 +358,7 @@ transaction to be executed at a time.</p>
                                       <span class="n">rogue</span><span class="o">::</span><span class="n">interfaces</span><span class="o">::</span><span class="n">memory</span><span class="o">::</span><span class="n">Write</span><span class="p">);</span>
 
             <span class="c1">// Wait for transaction to complete</span>
-            <span class="n">this</span><span class="o">-&gt;</span><span class="n">wait</span><span class="p">(</span><span class="n">id</span><span class="p">);</span>
+            <span class="n">this</span><span class="o">-&gt;</span><span class="n">waitTransaction</span><span class="p">(</span><span class="n">id</span><span class="p">);</span>
 
             <span class="c1">// Check transaction result, forward error to incoming transaction</span>
             <span class="k">if</span> <span class="p">(</span> <span class="n">this</span><span class="o">-&gt;</span><span class="n">getError</span><span class="p">()</span> <span class="o">!=</span> <span class="mi">0</span> <span class="p">)</span> <span class="p">{</span>
@@ -364,6 +380,15 @@ transaction to be executed at a time.</p>
 <span class="p">};</span>
 </pre></div>
 </div>
+<p>A few notes on the above examples.</p>
+<p>The incoming transaction source thread will be stalled as we wait
+on the downstream transaction to complete. It may be better to queue the transaction and service
+it with a seperate thread. Also in the C++ example the original data buffer is passed to the
+new transaction. This requires that the lock be held on the transaction until the downstream
+transaction is complete. Instead it may be better to create a new buffer and copy the data
+as is done in the Python example. See the <a class="reference internal" href="slave.html#interfaces-memory-slave-ex"><span class="std std-ref">Memory Slave Example</span></a> example for
+ways to store and later retrive the Transaction record while the downstream transaction is
+in progress.</p>
 </div>
 
 

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Transaction &mdash; Rogue v3.3.1-11-g7ab292f3 documentation</title>
+  <title>Transaction &mdash; Rogue v3.3.1-12-g249f8d1d documentation</title>
   
 
   
@@ -197,7 +197,7 @@
 <dt id="_CPPv4N5rogue10interfaces6memory11TransactionE">
 <span id="_CPPv3N5rogue10interfaces6memory11TransactionE"></span><span id="_CPPv2N5rogue10interfaces6memory11TransactionE"></span><span id="rogue::interfaces::memory::Transaction"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Transaction"></span><em class="property">class </em><code class="descname">Transaction</code> : <em class="property">public</em> boost::enable_shared_from_this&lt;rogue::interfaces::memory::<a class="reference internal" href="#_CPPv4N5rogue10interfaces6memory11TransactionE" title="rogue::interfaces::memory::Transaction">Transaction</a>&gt;<a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory11TransactionE" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p><a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Transaction"><span class="std std-ref">Transaction</span></a> Container. </p>
-<p>The <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Transaction"><span class="std std-ref">Transaction</span></a> is passed between the <a class="reference internal" href="master.html#classrogue_1_1interfaces_1_1memory_1_1Master"><span class="std std-ref">Master</span></a> and <a class="reference internal" href="slave.html#classrogue_1_1interfaces_1_1memory_1_1Slave"><span class="std std-ref">Slave</span></a> to initiate a transaction. The <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Transaction"><span class="std std-ref">Transaction</span></a> class contains information about the transaction as well as the transaction data pointer. Each created transaction object has a unique 32-bit transaction ID which is used to track the transaction. </p>
+<p>The <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Transaction"><span class="std std-ref">Transaction</span></a> is passed between the <a class="reference internal" href="master.html#classrogue_1_1interfaces_1_1memory_1_1Master"><span class="std std-ref">Master</span></a> and <a class="reference internal" href="slave.html#classrogue_1_1interfaces_1_1memory_1_1Slave"><span class="std std-ref">Slave</span></a> to initiate a transaction. The <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Transaction"><span class="std std-ref">Transaction</span></a> class contains information about the transaction as well as the transaction data pointer. Each created transaction object has a unique 32-bit transaction ID which is used to track the transaction. Transactions are never created directly, instead they are created in the Master() class. </p>
 <div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric">Public Types</p>
 <dl class="type">
@@ -209,27 +209,6 @@
 </div>
 <div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric">Public Functions</p>
-<dl class="function">
-<dt id="_CPPv4N5rogue10interfaces6memory11Transaction11TransactionE7timeval">
-<span id="_CPPv3N5rogue10interfaces6memory11Transaction11TransactionE7timeval"></span><span id="_CPPv2N5rogue10interfaces6memory11Transaction11TransactionE7timeval"></span><span id="rogue::interfaces::memory::Transaction::Transaction__timeval"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Transaction_1a99603b75776c2bf4c783af29e624f73b"></span><code class="descname">Transaction</code><span class="sig-paren">(</span><em class="property">struct</em> timeval <em>timeout</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory11Transaction11TransactionE7timeval" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>Create a <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Transaction"><span class="std std-ref">Transaction</span></a>. </p>
-<p>Do not call directly. Only called from the <a class="reference internal" href="master.html#classrogue_1_1interfaces_1_1memory_1_1Master"><span class="std std-ref">Master</span></a> class.</p>
-<p>Not available in Python <dl class="docutils">
-<dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last simple">
-<li><code class="docutils literal notranslate"><span class="pre">timeout</span></code>: Timeout value as a struct timeval </li>
-</ul>
-</dd>
-</dl>
-</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="_CPPv4N5rogue10interfaces6memory11TransactionD0Ev">
-<span id="_CPPv3N5rogue10interfaces6memory11TransactionD0Ev"></span><span id="_CPPv2N5rogue10interfaces6memory11TransactionD0Ev"></span><span id="rogue::interfaces::memory::Transaction::~Transaction"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Transaction_1a589e1bc8dd91b5c6c001bc7533b2b02c"></span><code class="descname">~Transaction</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory11TransactionD0Ev" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>Destroy the <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Transaction"><span class="std std-ref">Transaction</span></a>. </p>
-</dd></dl>
-
 <dl class="function">
 <dt id="_CPPv4N5rogue10interfaces6memory11Transaction4lockEv">
 <span id="_CPPv3N5rogue10interfaces6memory11Transaction4lockEv"></span><span id="_CPPv2N5rogue10interfaces6memory11Transaction4lockEv"></span><span id="rogue::interfaces::memory::Transaction::lock"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Transaction_1a0c9321843695cc10e9adf26e42bc07f8"></span>boost::shared_ptr&lt;rogue::interfaces::memory::<a class="reference internal" href="transactionLock.html#_CPPv4N5rogue10interfaces6memory15TransactionLockE" title="rogue::interfaces::memory::TransactionLock">TransactionLock</a>&gt; <code class="descname">lock</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory11Transaction4lockEv" title="Permalink to this definition">¶</a><br /></dt>
@@ -381,15 +360,6 @@
 </dd>
 </dl>
 </p>
-</dd></dl>
-
-</div>
-<div class="breathe-sectiondef docutils container">
-<p class="breathe-sectiondef-title rubric">Public Static Functions</p>
-<dl class="function">
-<dt id="_CPPv4N5rogue10interfaces6memory11Transaction12setup_pythonEv">
-<span id="_CPPv3N5rogue10interfaces6memory11Transaction12setup_pythonEv"></span><span id="_CPPv2N5rogue10interfaces6memory11Transaction12setup_pythonEv"></span><span id="rogue::interfaces::memory::Transaction::setup_python"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Transaction_1a3123d9e91bc562c4df62d27cc636f17c"></span><em class="property">static</em> void <code class="descname">setup_python</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory11Transaction12setup_pythonEv" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>Setup class for use in python. </p>
 </dd></dl>
 
 </div>

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>AxiStreamDma &mdash; Rogue v3.3.1-11-g7ab292f3 documentation</title>
+  <title>AxiStreamDma &mdash; Rogue v3.3.1-12-g249f8d1d documentation</title>
   
 
   
@@ -89,6 +89,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../interfaces/index.html">Interfaces</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../../index.html">Hardware</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="../index.html">Generic AXI Hardware Interface</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../stream.html">Using The AxiStreamDma Class</a></li>
 <li class="toctree-l3 current"><a class="reference internal" href="index.html">AXI Hardware Interface Class Descriptions</a><ul class="current">
 <li class="toctree-l4 current"><a class="current reference internal" href="#">AxiStreamDma</a></li>
 <li class="toctree-l4"><a class="reference internal" href="axiMemMap.html">AxiMemMap</a></li>
@@ -174,7 +175,7 @@
             
   <div class="section" id="axistreamdma">
 <span id="hardware-axi-axi-stream-dma"></span><h1>AxiStreamDma<a class="headerlink" href="#axistreamdma" title="Permalink to this headline">¶</a></h1>
-<p>The AxiStreamDma class generates log entries with the path: “pyrogue.axi.AxiStreamDma”</p>
+<p>Examples of using the AxiStreamDma class are included in <a class="reference internal" href="../stream.html#hardware-axi-stream"><span class="std std-ref">Using The AxiStreamDma Class</span></a>.</p>
 <p>AxiStreamDma objects in C++ are referenced by the following shared pointer typedef:</p>
 <dl class="type">
 <dt id="_CPPv4N5rogue8hardware3axi15AxiStreamDmaPtrE">
@@ -190,32 +191,6 @@
 <p>This class provides a bridge between the Rogue stream interface and one of the AES Stream Drivers device drivers. This bridge allows Rogue Frames to be sent and received to PCIE Express boards (using the data_dev driver) or Zynq ZXI4 FPGA fabrics (using the rce_stream drvier). This interface will allocate Frame and Buffer objects using memory mapped DMA buffers or from a local memory pool when zero copy mode is disabled or a Frame with is requested with the zero copy flag set to false. </p>
 <div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric">Public Functions</p>
-<dl class="function">
-<dt id="_CPPv4N5rogue8hardware3axi12AxiStreamDma12AxiStreamDmaENSt6stringE8uint32_tb">
-<span id="_CPPv3N5rogue8hardware3axi12AxiStreamDma12AxiStreamDmaENSt6stringE8uint32_tb"></span><span id="_CPPv2N5rogue8hardware3axi12AxiStreamDma12AxiStreamDmaENSt6stringE8uint32_tb"></span><span id="rogue::hardware::axi::AxiStreamDma::AxiStreamDma__ss.uint32_t.b"></span><span class="target" id="classrogue_1_1hardware_1_1axi_1_1AxiStreamDma_1a94a1a93fb0f066f030e53c7d02c24259"></span><code class="descname">AxiStreamDma</code><span class="sig-paren">(</span>std::string <em>path</em>, uint32_t <em>dest</em>, bool <em>ssiEnable</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue8hardware3axi12AxiStreamDma12AxiStreamDmaENSt6stringE8uint32_tb" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>Class Creator. </p>
-<p>Exposed to Python as <a class="reference internal" href="#classrogue_1_1hardware_1_1axi_1_1AxiStreamDma_1a94a1a93fb0f066f030e53c7d02c24259"><span class="std std-ref">AxiStreamDma()</span></a></p>
-<p>The destination field is a sideband signal provided in the AxiStream protocol which allows a single interface to handle multiple frames with different purposes. The use of this field is driver specific, but the lower 8-bits are typically passed in the tDest field of the hardware frame and bits 8 and up are used to index the dma channel in the lower level hardware.</p>
-<p>The SSI Enable flag determines if the hardware frame follows the SLAC Streaming itnerface standard. This standard defines a SOF flag in the first user field at bit 1 and and EOFE flag in the last user field bit 0. <dl class="docutils">
-<dt><strong>Return</strong></dt>
-<dd><a class="reference internal" href="#classrogue_1_1hardware_1_1axi_1_1AxiStreamDma"><span class="std std-ref">AxiStreamDma</span></a> pointer (AxiStreamDmaPtr) </dd>
-<dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last simple">
-<li><code class="docutils literal notranslate"><span class="pre">path</span></code>: Path to device. i.e /dev/datadev_0 </li>
-<li><code class="docutils literal notranslate"><span class="pre">dest</span></code>: Destination index for dma transactions </li>
-<li><code class="docutils literal notranslate"><span class="pre">ssiEnable</span></code>: Enable SSI user fields </li>
-</ul>
-</dd>
-</dl>
-</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="_CPPv4N5rogue8hardware3axi12AxiStreamDmaD0Ev">
-<span id="_CPPv3N5rogue8hardware3axi12AxiStreamDmaD0Ev"></span><span id="_CPPv2N5rogue8hardware3axi12AxiStreamDmaD0Ev"></span><span id="rogue::hardware::axi::AxiStreamDma::~AxiStreamDma"></span><span class="target" id="classrogue_1_1hardware_1_1axi_1_1AxiStreamDma_1a68aad150acfa77323c751755016935a3"></span><code class="descname">~AxiStreamDma</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue8hardware3axi12AxiStreamDmaD0Ev" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>Destructor. </p>
-</dd></dl>
-
 <dl class="function">
 <dt id="_CPPv4N5rogue8hardware3axi12AxiStreamDma10setTimeoutE8uint32_t">
 <span id="_CPPv3N5rogue8hardware3axi12AxiStreamDma10setTimeoutE8uint32_t"></span><span id="_CPPv2N5rogue8hardware3axi12AxiStreamDma10setTimeoutE8uint32_t"></span><span id="rogue::hardware::axi::AxiStreamDma::setTimeout__uint32_t"></span><span class="target" id="classrogue_1_1hardware_1_1axi_1_1AxiStreamDma_1a93a4844ca269864d2ef7fd618d9f8d7c"></span>void <code class="descname">setTimeout</code><span class="sig-paren">(</span>uint32_t <em>timeout</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue8hardware3axi12AxiStreamDma10setTimeoutE8uint32_t" title="Permalink to this definition">¶</a><br /></dt>
@@ -269,33 +244,6 @@
 <p>Exposed to python as <a class="reference internal" href="#classrogue_1_1hardware_1_1axi_1_1AxiStreamDma_1a136a233d1e378f89e585a67fbc033f5c"><span class="std std-ref">dmaAck()</span></a> </p>
 </dd></dl>
 
-<dl class="function">
-<dt id="_CPPv4N5rogue8hardware3axi12AxiStreamDma9acceptReqE8uint32_tb">
-<span id="_CPPv3N5rogue8hardware3axi12AxiStreamDma9acceptReqE8uint32_tb"></span><span id="_CPPv2N5rogue8hardware3axi12AxiStreamDma9acceptReqE8uint32_tb"></span><span id="rogue::hardware::axi::AxiStreamDma::acceptReq__uint32_t.b"></span><span class="target" id="classrogue_1_1hardware_1_1axi_1_1AxiStreamDma_1a2c1362f21d99f8d41e34816e8adb4e56"></span>boost::shared_ptr&lt;rogue::interfaces::stream::<a class="reference internal" href="../../../interfaces/stream/classes/frame.html#_CPPv4N5rogue10interfaces6stream5FrameE" title="rogue::interfaces::stream::Frame">Frame</a>&gt; <code class="descname">acceptReq</code><span class="sig-paren">(</span>uint32_t <em>size</em>, bool <em>zeroCopyEn</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue8hardware3axi12AxiStreamDma9acceptReqE8uint32_tb" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>Generate a Frame. Called from master. </p>
-</dd></dl>
-
-<dl class="function">
-<dt id="_CPPv4N5rogue8hardware3axi12AxiStreamDma11acceptFrameEN5boost10shared_ptrIN5rogue10interfaces6stream5FrameEEE">
-<span id="_CPPv3N5rogue8hardware3axi12AxiStreamDma11acceptFrameEN5boost10shared_ptrIN5rogue10interfaces6stream5FrameEEE"></span><span id="_CPPv2N5rogue8hardware3axi12AxiStreamDma11acceptFrameEN5boost10shared_ptrIN5rogue10interfaces6stream5FrameEEE"></span><span id="rogue::hardware::axi::AxiStreamDma::acceptFrame__boost::shared_ptr:rogue::interfaces::stream::Frame:"></span><span class="target" id="classrogue_1_1hardware_1_1axi_1_1AxiStreamDma_1a889415f0a50591383ef4d6b6570308b9"></span>void <code class="descname">acceptFrame</code><span class="sig-paren">(</span>boost::shared_ptr&lt;rogue::interfaces::stream::<a class="reference internal" href="../../../interfaces/stream/classes/frame.html#_CPPv4N5rogue10interfaces6stream5FrameE" title="rogue::interfaces::stream::Frame">Frame</a>&gt; <em>frame</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue8hardware3axi12AxiStreamDma11acceptFrameEN5boost10shared_ptrIN5rogue10interfaces6stream5FrameEEE" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>Accept a frame from master. </p>
-<p>This method is called by the Master object to which this Slave is attached when passing a Frame. <dl class="docutils">
-<dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last simple">
-<li><code class="docutils literal notranslate"><span class="pre">frame</span></code>: Frame pointer (FramePtr) </li>
-</ul>
-</dd>
-</dl>
-</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="_CPPv4N5rogue8hardware3axi12AxiStreamDma9retBufferEP7uint8_t8uint32_t8uint32_t">
-<span id="_CPPv3N5rogue8hardware3axi12AxiStreamDma9retBufferEP7uint8_t8uint32_t8uint32_t"></span><span id="_CPPv2N5rogue8hardware3axi12AxiStreamDma9retBufferEP7uint8_t8uint32_t8uint32_t"></span><span id="rogue::hardware::axi::AxiStreamDma::retBuffer__uint8_tP.uint32_t.uint32_t"></span><span class="target" id="classrogue_1_1hardware_1_1axi_1_1AxiStreamDma_1a21f3cde9f41ada7a96bd524ab3b2fda6"></span>void <code class="descname">retBuffer</code><span class="sig-paren">(</span>uint8_t *<em>data</em>, uint32_t <em>meta</em>, uint32_t <em>rawSize</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue8hardware3axi12AxiStreamDma9retBufferEP7uint8_t8uint32_t8uint32_t" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>Process Buffer Return. </p>
-<p>This method is an override of the lower level Pool class <a class="reference internal" href="#classrogue_1_1hardware_1_1axi_1_1AxiStreamDma_1a21f3cde9f41ada7a96bd524ab3b2fda6"><span class="std std-ref">retBuffer()</span></a> method. This is used to return the zero copy buffer to the driver and is called automatically when the Buffer object is deleted. </p>
-</dd></dl>
-
 </div>
 <div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric">Public Static Functions</p>
@@ -303,7 +251,7 @@
 <dt id="_CPPv4N5rogue8hardware3axi12AxiStreamDma6createENSt6stringE8uint32_tb">
 <span id="_CPPv3N5rogue8hardware3axi12AxiStreamDma6createENSt6stringE8uint32_tb"></span><span id="_CPPv2N5rogue8hardware3axi12AxiStreamDma6createENSt6stringE8uint32_tb"></span><span id="rogue::hardware::axi::AxiStreamDma::create__ss.uint32_t.b"></span><span class="target" id="classrogue_1_1hardware_1_1axi_1_1AxiStreamDma_1af0022415e07ad44f3f8121db3b18d0b0"></span><em class="property">static</em> boost::shared_ptr&lt;rogue::hardware::axi::<a class="reference internal" href="#_CPPv4N5rogue8hardware3axi12AxiStreamDmaE" title="rogue::hardware::axi::AxiStreamDma">AxiStreamDma</a>&gt; <code class="descname">create</code><span class="sig-paren">(</span>std::string <em>path</em>, uint32_t <em>dest</em>, bool <em>ssiEnable</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue8hardware3axi12AxiStreamDma6createENSt6stringE8uint32_tb" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Class factory which returns a AxiStreamDmaPtr to a newly created <a class="reference internal" href="axiMemMap.html#classrogue_1_1hardware_1_1axi_1_1AxiMemMap"><span class="std std-ref">AxiMemMap</span></a> object. </p>
-<p>Not exposed to Python</p>
+<p>Exposed to Python as <a class="reference internal" href="#classrogue_1_1hardware_1_1axi_1_1AxiStreamDma"><span class="std std-ref">rogue.hardware.axi.AxiStreamDma()</span></a></p>
 <p>The destination field is a sideband signal provided in the AxiStream protocol which allows a single interface to handle multiple frames with different purposes. The use of this field is driver specific, but the lower 8-bits are typically passed in the tDest field of the hardware frame and bits 8 and up are used to index the dma channel in the lower level hardware.</p>
 <p>The SSI Enable flag determines if the hardware frame follows the SLAC Streaming itnerface standard. This standard defines a SOF flag in the first user field at bit 1 and and EOFE flag in the last user field bit 0. <dl class="docutils">
 <dt><strong>Return</strong></dt>
@@ -317,12 +265,6 @@
 </dd>
 </dl>
 </p>
-</dd></dl>
-
-<dl class="function">
-<dt id="_CPPv4N5rogue8hardware3axi12AxiStreamDma12setup_pythonEv">
-<span id="_CPPv3N5rogue8hardware3axi12AxiStreamDma12setup_pythonEv"></span><span id="_CPPv2N5rogue8hardware3axi12AxiStreamDma12setup_pythonEv"></span><span id="rogue::hardware::axi::AxiStreamDma::setup_python"></span><span class="target" id="classrogue_1_1hardware_1_1axi_1_1AxiStreamDma_1a11fc408624bed1e354a955e19ba7170a"></span><em class="property">static</em> void <code class="descname">setup_python</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue8hardware3axi12AxiStreamDma12setup_pythonEv" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>Setup class in python. </p>
 </dd></dl>
 
 </div>

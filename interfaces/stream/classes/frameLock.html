@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Frame Lock &mdash; Rogue v3.3.1-11-g7ab292f3 documentation</title>
+  <title>Frame Lock &mdash; Rogue v3.3.1-12-g249f8d1d documentation</title>
   
 
   
@@ -204,30 +204,9 @@
 <dt id="_CPPv4N5rogue10interfaces6stream9FrameLockE">
 <span id="_CPPv3N5rogue10interfaces6stream9FrameLockE"></span><span id="_CPPv2N5rogue10interfaces6stream9FrameLockE"></span><span id="rogue::interfaces::stream::FrameLock"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1FrameLock"></span><em class="property">class </em><code class="descname">FrameLock</code><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream9FrameLockE" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p><a class="reference internal" href="frame.html#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a> Lock. </p>
-<p>The <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1FrameLock"><span class="std std-ref">FrameLock</span></a> is a container for holding a lock on <a class="reference internal" href="frame.html#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a> data while accessing that data. This lock allows multiple stream <a class="reference internal" href="slave.html#classrogue_1_1interfaces_1_1stream_1_1Slave"><span class="std std-ref">Slave</span></a> objects to read and update <a class="reference internal" href="frame.html#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a> data while ensuring only one thread is updating at a time. The lock is relased when the <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1FrameLock"><span class="std std-ref">FrameLock</span></a> object is destroyed. </p>
+<p>The <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1FrameLock"><span class="std std-ref">FrameLock</span></a> is a container for holding a lock on <a class="reference internal" href="frame.html#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a> data while accessing that data. This lock allows multiple stream <a class="reference internal" href="slave.html#classrogue_1_1interfaces_1_1stream_1_1Slave"><span class="std std-ref">Slave</span></a> objects to read and update <a class="reference internal" href="frame.html#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a> data while ensuring only one thread is updating at a time. The lock is relased when the <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1FrameLock"><span class="std std-ref">FrameLock</span></a> object is destroyed. The <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1FrameLock"><span class="std std-ref">FrameLock</span></a> oject is never created directly, instead it is returned by the <a class="reference internal" href="frame.html#classrogue_1_1interfaces_1_1stream_1_1Frame_1a762a4d77b4f4168912fd5afaeb1a00f4"><span class="std std-ref">Frame::lock()</span></a> method. </p>
 <div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric">Public Functions</p>
-<dl class="function">
-<dt id="_CPPv4N5rogue10interfaces6stream9FrameLock9FrameLockEN5boost10shared_ptrIN5rogue10interfaces6stream5FrameEEE">
-<span id="_CPPv3N5rogue10interfaces6stream9FrameLock9FrameLockEN5boost10shared_ptrIN5rogue10interfaces6stream5FrameEEE"></span><span id="_CPPv2N5rogue10interfaces6stream9FrameLock9FrameLockEN5boost10shared_ptrIN5rogue10interfaces6stream5FrameEEE"></span><span id="rogue::interfaces::stream::FrameLock::FrameLock__boost::shared_ptr:rogue::interfaces::stream::Frame:"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1FrameLock_1ab73e62e8ea6fbdeb13b2df1ce30b3b01"></span><code class="descname">FrameLock</code><span class="sig-paren">(</span>boost::shared_ptr&lt;rogue::interfaces::stream::<a class="reference internal" href="frame.html#_CPPv4N5rogue10interfaces6stream5FrameE" title="rogue::interfaces::stream::Frame">Frame</a>&gt; <em>frame</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream9FrameLock9FrameLockEN5boost10shared_ptrIN5rogue10interfaces6stream5FrameEEE" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p><a class="reference internal" href="frame.html#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a> lock constructor. </p>
-<p>Do not call directly. Use the <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1FrameLock_1ad4c7485c3626cc0ac894dfd533d17e16"><span class="std std-ref">create()</span></a> class method instead.</p>
-<p>Not available in Python <dl class="docutils">
-<dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last simple">
-<li><code class="docutils literal notranslate"><span class="pre">frame</span></code>: <a class="reference internal" href="frame.html#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a> pointer (FramePtr) to create a lock on </li>
-</ul>
-</dd>
-</dl>
-</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="_CPPv4N5rogue10interfaces6stream9FrameLockD0Ev">
-<span id="_CPPv3N5rogue10interfaces6stream9FrameLockD0Ev"></span><span id="_CPPv2N5rogue10interfaces6stream9FrameLockD0Ev"></span><span id="rogue::interfaces::stream::FrameLock::~FrameLock"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1FrameLock_1a3c996fa46f7c20aee342b1a63514e8b7"></span><code class="descname">~FrameLock</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream9FrameLockD0Ev" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>Destroy and release the frame lock. </p>
-</dd></dl>
-
 <dl class="function">
 <dt id="_CPPv4N5rogue10interfaces6stream9FrameLock4lockEv">
 <span id="_CPPv3N5rogue10interfaces6stream9FrameLock4lockEv"></span><span id="_CPPv2N5rogue10interfaces6stream9FrameLock4lockEv"></span><span id="rogue::interfaces::stream::FrameLock::lock"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1FrameLock_1aec723c30883fbc0e4cb64895c741c531"></span>void <code class="descname">lock</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream9FrameLock4lockEv" title="Permalink to this definition">¶</a><br /></dt>
@@ -256,30 +235,6 @@
 <dd><p>Exit method for python, does nothing. </p>
 <p>This exists only to support the with call in python.</p>
 <p>Exposed as <strong>exit</strong>() to Python </p>
-</dd></dl>
-
-</div>
-<div class="breathe-sectiondef docutils container">
-<p class="breathe-sectiondef-title rubric">Public Static Functions</p>
-<dl class="function">
-<dt id="_CPPv4N5rogue10interfaces6stream9FrameLock6createEN5boost10shared_ptrIN5rogue10interfaces6stream5FrameEEE">
-<span id="_CPPv3N5rogue10interfaces6stream9FrameLock6createEN5boost10shared_ptrIN5rogue10interfaces6stream5FrameEEE"></span><span id="_CPPv2N5rogue10interfaces6stream9FrameLock6createEN5boost10shared_ptrIN5rogue10interfaces6stream5FrameEEE"></span><span id="rogue::interfaces::stream::FrameLock::create__boost::shared_ptr:rogue::interfaces::stream::Frame:"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1FrameLock_1ad4c7485c3626cc0ac894dfd533d17e16"></span><em class="property">static</em> boost::shared_ptr&lt;rogue::interfaces::stream::<a class="reference internal" href="#_CPPv4N5rogue10interfaces6stream9FrameLockE" title="rogue::interfaces::stream::FrameLock">FrameLock</a>&gt; <code class="descname">create</code><span class="sig-paren">(</span>boost::shared_ptr&lt;rogue::interfaces::stream::<a class="reference internal" href="frame.html#_CPPv4N5rogue10interfaces6stream5FrameE" title="rogue::interfaces::stream::Frame">Frame</a>&gt; <em>frame</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream9FrameLock6createEN5boost10shared_ptrIN5rogue10interfaces6stream5FrameEEE" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>Class factory which returns a pointer to a <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1FrameLock"><span class="std std-ref">FrameLock</span></a> (FrameLockPtr) </p>
-<p>Create a new <a class="reference internal" href="frame.html#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a> lock on the passed <a class="reference internal" href="frame.html#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a>.</p>
-<p>Not exposed to Python <dl class="docutils">
-<dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last simple">
-<li><code class="docutils literal notranslate"><span class="pre">frame</span></code>: <a class="reference internal" href="frame.html#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a> pointer (FramePtr) to create a lock on </li>
-</ul>
-</dd>
-</dl>
-</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="_CPPv4N5rogue10interfaces6stream9FrameLock12setup_pythonEv">
-<span id="_CPPv3N5rogue10interfaces6stream9FrameLock12setup_pythonEv"></span><span id="_CPPv2N5rogue10interfaces6stream9FrameLock12setup_pythonEv"></span><span id="rogue::interfaces::stream::FrameLock::setup_python"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1FrameLock_1ab5cdd97ffdf6e0541d0e003a73e8c30e"></span><em class="property">static</em> void <code class="descname">setup_python</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream9FrameLock12setup_pythonEv" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>Setup class for use in python. </p>
 </dd></dl>
 
 </div>

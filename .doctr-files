@@ -7,6 +7,8 @@
 ./_sources/hardware/axi/classes/axiStreamDma.rst.txt
 ./_sources/hardware/axi/classes/index.rst.txt
 ./_sources/hardware/axi/index.rst.txt
+./_sources/hardware/axi/memory.rst.txt
+./_sources/hardware/axi/stream.rst.txt
 ./_sources/hardware/index.rst.txt
 ./_sources/hardware/pgp/classes/evrControl.rst.txt
 ./_sources/hardware/pgp/classes/evrStatus.rst.txt
@@ -135,6 +137,8 @@
 ./hardware/axi/classes/axiStreamDma.html
 ./hardware/axi/classes/index.html
 ./hardware/axi/index.html
+./hardware/axi/memory.html
+./hardware/axi/stream.html
 ./hardware/index.html
 ./hardware/pgp/classes/evrControl.html
 ./hardware/pgp/classes/evrStatus.html

@@ -10,5 +10,6 @@ Generic AXI Hardware Description
    :maxdepth: 1
    :caption: AXI Hardware:
 
+   stream
    classes/index
 

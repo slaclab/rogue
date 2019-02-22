@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Master &mdash; Rogue v3.3.1-11-g7ab292f3 documentation</title>
+  <title>Master &mdash; Rogue v3.3.1-12-g249f8d1d documentation</title>
   
 
   
@@ -187,7 +187,6 @@
 <span id="interfaces-memory-master"></span><h1>Master<a class="headerlink" href="#master" title="Permalink to this headline">¶</a></h1>
 <p>The memory interface Master class is the interface for initiating a memory transaction.
 Each Master class object will be coupled with one or more <a class="reference internal" href="slave.html#interfaces-memory-slave"><span class="std std-ref">Slave</span></a> objects.</p>
-<p>The Master class generates log entries with the path: “pyrogue.memory.Master”</p>
 <p>Master objects in C++ are referenced by the following shared pointer typedef:</p>
 <dl class="type">
 <dt id="_CPPv4N5rogue10interfaces6memory9MasterPtrE">
@@ -204,19 +203,6 @@ Each Master class object will be coupled with one or more <a class="reference in
 <p>Subclassed by <a class="reference internal" href="hub.html#classrogue_1_1interfaces_1_1memory_1_1Hub"><span class="std std-ref">rogue::interfaces::memory::Hub</span></a>, <a class="reference internal" href="tcpServer.html#classrogue_1_1interfaces_1_1memory_1_1TcpServer"><span class="std std-ref">rogue::interfaces::memory::TcpServer</span></a></p>
 <div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric">Public Functions</p>
-<dl class="function">
-<dt id="_CPPv4N5rogue10interfaces6memory6Master6MasterEv">
-<span id="_CPPv3N5rogue10interfaces6memory6Master6MasterEv"></span><span id="_CPPv2N5rogue10interfaces6memory6Master6MasterEv"></span><span id="rogue::interfaces::memory::Master::Master"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Master_1a9899ebfecc6e7e35cebdbca4d0e40f6e"></span><code class="descname">Master</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory6Master6MasterEv" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>Create a <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Master"><span class="std std-ref">Master</span></a> instance. </p>
-<p>Not exposed to Python </p>
-</dd></dl>
-
-<dl class="function">
-<dt id="_CPPv4N5rogue10interfaces6memory6MasterD0Ev">
-<span id="_CPPv3N5rogue10interfaces6memory6MasterD0Ev"></span><span id="_CPPv2N5rogue10interfaces6memory6MasterD0Ev"></span><span id="rogue::interfaces::memory::Master::~Master"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Master_1a80a2fce11f04d0e2dd6202958ef377a0"></span><em class="property">virtual</em> <code class="descname">~Master</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory6MasterD0Ev" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>Destroy the <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Master"><span class="std std-ref">Master</span></a>. </p>
-</dd></dl>
-
 <dl class="function">
 <dt id="_CPPv4N5rogue10interfaces6memory6Master8setSlaveEN5boost10shared_ptrIN5rogue10interfaces6memory5SlaveEEE">
 <span id="_CPPv3N5rogue10interfaces6memory6Master8setSlaveEN5boost10shared_ptrIN5rogue10interfaces6memory5SlaveEEE"></span><span id="_CPPv2N5rogue10interfaces6memory6Master8setSlaveEN5boost10shared_ptrIN5rogue10interfaces6memory5SlaveEEE"></span><span id="rogue::interfaces::memory::Master::setSlave__boost::shared_ptr:rogue::interfaces::memory::Slave:"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Master_1a3f74bd1689a8512c074df5bbae40a86e"></span>void <code class="descname">setSlave</code><span class="sig-paren">(</span>boost::shared_ptr&lt;rogue::interfaces::memory::<a class="reference internal" href="slave.html#_CPPv4N5rogue10interfaces6memory5SlaveE" title="rogue::interfaces::memory::Slave">Slave</a>&gt; <em>slave</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory6Master8setSlaveEN5boost10shared_ptrIN5rogue10interfaces6memory5SlaveEEE" title="Permalink to this definition">¶</a><br /></dt>
@@ -390,13 +376,7 @@ Each Master class object will be coupled with one or more <a class="reference in
 <dt id="_CPPv4N5rogue10interfaces6memory6Master6createEv">
 <span id="_CPPv3N5rogue10interfaces6memory6Master6createEv"></span><span id="_CPPv2N5rogue10interfaces6memory6Master6createEv"></span><span id="rogue::interfaces::memory::Master::create"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Master_1af63a71d1bb64251cc69ba87015766b2b"></span><em class="property">static</em> boost::shared_ptr&lt;rogue::interfaces::memory::<a class="reference internal" href="#_CPPv4N5rogue10interfaces6memory6MasterE" title="rogue::interfaces::memory::Master">Master</a>&gt; <code class="descname">create</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory6Master6createEv" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Class factory which returns a pointer to a <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Master"><span class="std std-ref">Master</span></a> (MasterPtr) </p>
-<p>Not exposed to Python </p>
-</dd></dl>
-
-<dl class="function">
-<dt id="_CPPv4N5rogue10interfaces6memory6Master12setup_pythonEv">
-<span id="_CPPv3N5rogue10interfaces6memory6Master12setup_pythonEv"></span><span id="_CPPv2N5rogue10interfaces6memory6Master12setup_pythonEv"></span><span id="rogue::interfaces::memory::Master::setup_python"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Master_1a86b7fc0c1e1f314d3b60cdbe29e9c19b"></span><em class="property">static</em> void <code class="descname">setup_python</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory6Master12setup_pythonEv" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>Setup class for use in python. </p>
+<p>Exposed as <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Master"><span class="std std-ref">rogue.interfaces.memory.Master()</span></a> to Python </p>
 </dd></dl>
 
 <dl class="function">

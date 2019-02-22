@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Fifo &mdash; Rogue v3.3.1-11-g7ab292f3 documentation</title>
+  <title>Fifo &mdash; Rogue v3.3.1-12-g249f8d1d documentation</title>
   
 
   
@@ -193,7 +193,6 @@
   <div class="section" id="fifo">
 <span id="interfaces-stream-fifo"></span><h1>Fifo<a class="headerlink" href="#fifo" title="Permalink to this headline">¶</a></h1>
 <p>Examples of using a Fifo are described in <a class="reference internal" href="../usingFifo.html#interfaces-stream-using-fifo"><span class="std std-ref">Using A Fifo</span></a>.</p>
-<p>The Fifo class generates log entries with the path: “pyrogue.stream.Fifo”</p>
 <p>Fifo objects in C++ are referenced by the following shared pointer typedef:</p>
 <dl class="type">
 <dt id="_CPPv4N5rogue10interfaces6stream7FifoPtrE">
@@ -211,51 +210,12 @@
 <p>The copied data can be configured to be a fixed size to limit the amount of data copied.</p>
 <p>The <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Fifo"><span class="std std-ref">Fifo</span></a> supports a maximum depth to be configured. After this depth is reached new incoming <a class="reference internal" href="frame.html#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a> objects are dropped. </p>
 <div class="breathe-sectiondef docutils container">
-<p class="breathe-sectiondef-title rubric">Public Functions</p>
-<dl class="function">
-<dt id="_CPPv4N5rogue10interfaces6stream4Fifo4FifoE8uint32_t8uint32_tb">
-<span id="_CPPv3N5rogue10interfaces6stream4Fifo4FifoE8uint32_t8uint32_tb"></span><span id="_CPPv2N5rogue10interfaces6stream4Fifo4FifoE8uint32_t8uint32_tb"></span><span id="rogue::interfaces::stream::Fifo::Fifo__uint32_t.uint32_t.b"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Fifo_1ac9df79442320fa6d863d5678632231f0"></span><code class="descname">Fifo</code><span class="sig-paren">(</span>uint32_t <em>maxDepth</em>, uint32_t <em>trimSize</em>, bool <em>noCopy</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream4Fifo4FifoE8uint32_t8uint32_tb" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>Create a <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Fifo"><span class="std std-ref">Fifo</span></a> object. </p>
-<p>Exposed as <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Fifo"><span class="std std-ref">rogue.interfaces.stream.Fifo()</span></a> to Python <dl class="docutils">
-<dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last simple">
-<li><code class="docutils literal notranslate"><span class="pre">maxDepth</span></code>: Set to a non-zero value to configured fixed size mode. </li>
-<li><code class="docutils literal notranslate"><span class="pre">trimSize</span></code>: Set to a non-zero vaue to limit the amount of data copied. </li>
-<li><code class="docutils literal notranslate"><span class="pre">noCopy</span></code>: Set to true to disable <a class="reference internal" href="frame.html#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a> copy </li>
-</ul>
-</dd>
-</dl>
-</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="_CPPv4N5rogue10interfaces6stream4FifoD0Ev">
-<span id="_CPPv3N5rogue10interfaces6stream4FifoD0Ev"></span><span id="_CPPv2N5rogue10interfaces6stream4FifoD0Ev"></span><span id="rogue::interfaces::stream::Fifo::~Fifo"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Fifo_1add3d0712e1e3358ab13715a47eb1e80c"></span><code class="descname">~Fifo</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream4FifoD0Ev" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>Destroy the <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Fifo"><span class="std std-ref">Fifo</span></a>. </p>
-</dd></dl>
-
-<dl class="function">
-<dt id="_CPPv4N5rogue10interfaces6stream4Fifo11acceptFrameEN5boost10shared_ptrIN5rogue10interfaces6stream5FrameEEE">
-<span id="_CPPv3N5rogue10interfaces6stream4Fifo11acceptFrameEN5boost10shared_ptrIN5rogue10interfaces6stream5FrameEEE"></span><span id="_CPPv2N5rogue10interfaces6stream4Fifo11acceptFrameEN5boost10shared_ptrIN5rogue10interfaces6stream5FrameEEE"></span><span id="rogue::interfaces::stream::Fifo::acceptFrame__boost::shared_ptr:rogue::interfaces::stream::Frame:"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Fifo_1a98d4b89c0df632d502d28a125179a05d"></span>void <code class="descname">acceptFrame</code><span class="sig-paren">(</span>boost::shared_ptr&lt;rogue::interfaces::stream::<a class="reference internal" href="frame.html#_CPPv4N5rogue10interfaces6stream5FrameE" title="rogue::interfaces::stream::Frame">Frame</a>&gt; <em>frame</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream4Fifo11acceptFrameEN5boost10shared_ptrIN5rogue10interfaces6stream5FrameEEE" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>Accept a frame from master. </p>
-<p>This method is called by the <a class="reference internal" href="master.html#classrogue_1_1interfaces_1_1stream_1_1Master"><span class="std std-ref">Master</span></a> object to which this <a class="reference internal" href="slave.html#classrogue_1_1interfaces_1_1stream_1_1Slave"><span class="std std-ref">Slave</span></a> is attached when passing a <a class="reference internal" href="frame.html#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a>. <dl class="docutils">
-<dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last simple">
-<li><code class="docutils literal notranslate"><span class="pre">frame</span></code>: <a class="reference internal" href="frame.html#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a> pointer (FramePtr) </li>
-</ul>
-</dd>
-</dl>
-</p>
-</dd></dl>
-
-</div>
-<div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric">Public Static Functions</p>
 <dl class="function">
 <dt id="_CPPv4N5rogue10interfaces6stream4Fifo6createE8uint32_t8uint32_tb">
 <span id="_CPPv3N5rogue10interfaces6stream4Fifo6createE8uint32_t8uint32_tb"></span><span id="_CPPv2N5rogue10interfaces6stream4Fifo6createE8uint32_t8uint32_tb"></span><span id="rogue::interfaces::stream::Fifo::create__uint32_t.uint32_t.b"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Fifo_1aa7f7527fbf49866bb3907506d98debfd"></span><em class="property">static</em> boost::shared_ptr&lt;rogue::interfaces::stream::<a class="reference internal" href="#_CPPv4N5rogue10interfaces6stream4FifoE" title="rogue::interfaces::stream::Fifo">Fifo</a>&gt; <code class="descname">create</code><span class="sig-paren">(</span>uint32_t <em>maxDepth</em>, uint32_t <em>trimSize</em>, bool <em>noCopy</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream4Fifo6createE8uint32_t8uint32_tb" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Create a <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Fifo"><span class="std std-ref">Fifo</span></a> object and return as a FifoPtr. </p>
-<p><dl class="docutils">
+<p>Exposed as <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Fifo"><span class="std std-ref">rogue.interfaces.stream.Fifo()</span></a> to Python <dl class="docutils">
 <dt><strong>Return</strong></dt>
 <dd><a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Fifo"><span class="std std-ref">Fifo</span></a> object as a FifoPtr </dd>
 <dt><strong>Parameters</strong></dt>
@@ -267,13 +227,6 @@
 </dd>
 </dl>
 </p>
-</dd></dl>
-
-<dl class="function">
-<dt id="_CPPv4N5rogue10interfaces6stream4Fifo12setup_pythonEv">
-<span id="_CPPv3N5rogue10interfaces6stream4Fifo12setup_pythonEv"></span><span id="_CPPv2N5rogue10interfaces6stream4Fifo12setup_pythonEv"></span><span id="rogue::interfaces::stream::Fifo::setup_python"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Fifo_1a33287176d57ef19fa4eafa381d2b47d2"></span><em class="property">static</em> void <code class="descname">setup_python</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream4Fifo12setup_pythonEv" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>Setup class for use in python. </p>
-<p>Not exposed to Python </p>
 </dd></dl>
 
 </div>

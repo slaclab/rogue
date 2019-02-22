@@ -4,8 +4,6 @@
 PgpCard
 =======
 
-The PgpCard class generates log entries with the path: "pyrogue.hardware.PgpCard"
-
 PgpCard objects in C++ are referenced by the following shared pointer typedef:
 
 .. doxygentypedef:: rogue::hardware::pgp::PgpCardPtr

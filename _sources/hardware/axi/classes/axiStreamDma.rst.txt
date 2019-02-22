@@ -4,7 +4,7 @@
 AxiStreamDma
 ============
 
-The AxiStreamDma class generates log entries with the path: "pyrogue.axi.AxiStreamDma"
+Examples of using the AxiStreamDma class are included in :ref:`hardware_axi_stream`.
 
 AxiStreamDma objects in C++ are referenced by the following shared pointer typedef:
 

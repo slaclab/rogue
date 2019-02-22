@@ -13,3 +13,9 @@ The class description is shown below:
 .. doxygenclass:: rogue::hardware::pgp::Status
    :members:
 
+The structure which the above class wraps is shown below. All of these
+members are exposed in the above class.
+
+.. doxygenstruct:: PgpStatus
+   :members:
+

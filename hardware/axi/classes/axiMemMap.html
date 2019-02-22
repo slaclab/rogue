@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>AxiMemMap &mdash; Rogue v3.3.1-11-g7ab292f3 documentation</title>
+  <title>AxiMemMap &mdash; Rogue v3.3.1-12-g249f8d1d documentation</title>
   
 
   
@@ -89,6 +89,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../interfaces/index.html">Interfaces</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../../index.html">Hardware</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="../index.html">Generic AXI Hardware Interface</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../stream.html">Using The AxiStreamDma Class</a></li>
 <li class="toctree-l3 current"><a class="reference internal" href="index.html">AXI Hardware Interface Class Descriptions</a><ul class="current">
 <li class="toctree-l4"><a class="reference internal" href="axiStreamDma.html">AxiStreamDma</a></li>
 <li class="toctree-l4 current"><a class="current reference internal" href="#">AxiMemMap</a></li>
@@ -174,7 +175,7 @@
             
   <div class="section" id="aximemmap">
 <span id="hardware-axi-axi-mem-map"></span><h1>AxiMemMap<a class="headerlink" href="#aximemmap" title="Permalink to this headline">¶</a></h1>
-<p>The AxiMemMap class generates log entries with the path: “pyrogue.axi.AxiMemMap”</p>
+<p>Examples of using the AxiMemMap class are included in <a class="reference internal" href="../memory.html#hardware-axi-memory"><span class="std std-ref">Using The AximemMap Class</span></a>.</p>
 <p>AxiMemMap objects in C++ are referenced by the following shared pointer typedef:</p>
 <dl class="type">
 <dt id="_CPPv4N5rogue8hardware3axi12AxiMemMapPtrE">
@@ -189,41 +190,12 @@
 <dd><p>AXI Memory Map Class. </p>
 <p>This class provides a bridge between the Rogue memory interface and one of the AES Stream Drivers device drivers. This bridge allows for read and write transactions to PCI Express boards (using the data_dev driver) or Zynq AXI4 register space (using the rce_memmap driver). The driver controls which space is availablet to the user. Multiple <a class="reference internal" href="#classrogue_1_1hardware_1_1axi_1_1AxiMemMap"><span class="std std-ref">AxiMemMap</span></a> classes are allowed to be attached to the driver at the same time. </p>
 <div class="breathe-sectiondef docutils container">
-<p class="breathe-sectiondef-title rubric">Public Functions</p>
-<dl class="function">
-<dt id="_CPPv4N5rogue8hardware3axi9AxiMemMap9AxiMemMapENSt6stringE">
-<span id="_CPPv3N5rogue8hardware3axi9AxiMemMap9AxiMemMapENSt6stringE"></span><span id="_CPPv2N5rogue8hardware3axi9AxiMemMap9AxiMemMapENSt6stringE"></span><span id="rogue::hardware::axi::AxiMemMap::AxiMemMap__ss"></span><span class="target" id="classrogue_1_1hardware_1_1axi_1_1AxiMemMap_1ab7ca9270e4dd85199f95b82fabcc7e89"></span><code class="descname">AxiMemMap</code><span class="sig-paren">(</span>std::string <em>path</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue8hardware3axi9AxiMemMap9AxiMemMapENSt6stringE" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>Class Creator. </p>
-<p>Exposed to Python as <a class="reference internal" href="#classrogue_1_1hardware_1_1axi_1_1AxiMemMap_1ab7ca9270e4dd85199f95b82fabcc7e89"><span class="std std-ref">AxiMemMap()</span></a> <dl class="docutils">
-<dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last simple">
-<li><code class="docutils literal notranslate"><span class="pre">path</span></code>: Path to device. i.e /dev/datadev_0 </li>
-</ul>
-</dd>
-</dl>
-</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="_CPPv4N5rogue8hardware3axi9AxiMemMapD0Ev">
-<span id="_CPPv3N5rogue8hardware3axi9AxiMemMapD0Ev"></span><span id="_CPPv2N5rogue8hardware3axi9AxiMemMapD0Ev"></span><span id="rogue::hardware::axi::AxiMemMap::~AxiMemMap"></span><span class="target" id="classrogue_1_1hardware_1_1axi_1_1AxiMemMap_1a407b4fa6b6dddacc8c6034841e4c466d"></span><code class="descname">~AxiMemMap</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue8hardware3axi9AxiMemMapD0Ev" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>Destructor. </p>
-</dd></dl>
-
-<dl class="function">
-<dt id="_CPPv4N5rogue8hardware3axi9AxiMemMap13doTransactionEN5boost10shared_ptrIN5rogue10interfaces6memory11TransactionEEE">
-<span id="_CPPv3N5rogue8hardware3axi9AxiMemMap13doTransactionEN5boost10shared_ptrIN5rogue10interfaces6memory11TransactionEEE"></span><span id="_CPPv2N5rogue8hardware3axi9AxiMemMap13doTransactionEN5boost10shared_ptrIN5rogue10interfaces6memory11TransactionEEE"></span><span id="rogue::hardware::axi::AxiMemMap::doTransaction__boost::shared_ptr:rogue::interfaces::memory::Transaction:"></span><span class="target" id="classrogue_1_1hardware_1_1axi_1_1AxiMemMap_1ada0848a99167aa4b3727562d7069e057"></span>void <code class="descname">doTransaction</code><span class="sig-paren">(</span>boost::shared_ptr&lt;rogue::interfaces::memory::<a class="reference internal" href="../../../interfaces/memory/classes/transaction.html#_CPPv4N5rogue10interfaces6memory11TransactionE" title="rogue::interfaces::memory::Transaction">Transaction</a>&gt; <em>tran</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue8hardware3axi9AxiMemMap13doTransactionEN5boost10shared_ptrIN5rogue10interfaces6memory11TransactionEEE" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>Accept as transaction from the memory Master as defined in the Slave class. </p>
-</dd></dl>
-
-</div>
-<div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric">Public Static Functions</p>
 <dl class="function">
 <dt id="_CPPv4N5rogue8hardware3axi9AxiMemMap6createENSt6stringE">
 <span id="_CPPv3N5rogue8hardware3axi9AxiMemMap6createENSt6stringE"></span><span id="_CPPv2N5rogue8hardware3axi9AxiMemMap6createENSt6stringE"></span><span id="rogue::hardware::axi::AxiMemMap::create__ss"></span><span class="target" id="classrogue_1_1hardware_1_1axi_1_1AxiMemMap_1a6c129871fe4cea01bb8edccb5532b870"></span><em class="property">static</em> boost::shared_ptr&lt;rogue::hardware::axi::<a class="reference internal" href="#_CPPv4N5rogue8hardware3axi9AxiMemMapE" title="rogue::hardware::axi::AxiMemMap">AxiMemMap</a>&gt; <code class="descname">create</code><span class="sig-paren">(</span>std::string <em>path</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue8hardware3axi9AxiMemMap6createENSt6stringE" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Class factory which returns a AxiMemMapPtr to a newly created <a class="reference internal" href="#classrogue_1_1hardware_1_1axi_1_1AxiMemMap"><span class="std std-ref">AxiMemMap</span></a> object. </p>
-<p>Not exposed to Python <dl class="docutils">
+<p>Exposed to Python as <a class="reference internal" href="#classrogue_1_1hardware_1_1axi_1_1AxiMemMap"><span class="std std-ref">rogue.hardware.axi.AxiMemMap()</span></a> <dl class="docutils">
 <dt><strong>Return</strong></dt>
 <dd><a class="reference internal" href="#classrogue_1_1hardware_1_1axi_1_1AxiMemMap"><span class="std std-ref">AxiMemMap</span></a> pointer (AxiMemMapPtr) </dd>
 <dt><strong>Parameters</strong></dt>
@@ -233,12 +205,6 @@
 </dd>
 </dl>
 </p>
-</dd></dl>
-
-<dl class="function">
-<dt id="_CPPv4N5rogue8hardware3axi9AxiMemMap12setup_pythonEv">
-<span id="_CPPv3N5rogue8hardware3axi9AxiMemMap12setup_pythonEv"></span><span id="_CPPv2N5rogue8hardware3axi9AxiMemMap12setup_pythonEv"></span><span id="rogue::hardware::axi::AxiMemMap::setup_python"></span><span class="target" id="classrogue_1_1hardware_1_1axi_1_1AxiMemMap_1a05a4a55982fe71044be0ebefb779e5db"></span><em class="property">static</em> void <code class="descname">setup_python</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue8hardware3axi9AxiMemMap12setup_pythonEv" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>Setup class for use in python. </p>
 </dd></dl>
 
 </div>

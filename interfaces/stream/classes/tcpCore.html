@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>TcpCore &mdash; Rogue v3.3.1-11-g7ab292f3 documentation</title>
+  <title>TcpCore &mdash; Rogue v3.3.1-12-g249f8d1d documentation</title>
   
 
   
@@ -192,7 +192,6 @@
             
   <div class="section" id="tcpcore">
 <span id="interfaces-stream-tcp-core"></span><h1>TcpCore<a class="headerlink" href="#tcpcore" title="Permalink to this headline">¶</a></h1>
-<p>The TcpCore class generates log entries with the path: “pyrogue.stream.TcpCore”</p>
 <p>Examples of using a TCP stream bridge are described in <a class="reference internal" href="../usingTcp.html#interfaces-stream-using-tcp"><span class="std std-ref">Using The TCP Bridge</span></a>.</p>
 <p>TcpCore objects in C++ are referenced by the following shared pointer typedef:</p>
 <dl class="type">
@@ -208,46 +207,6 @@
 <dd><p>Stream TCP Bridge Core. </p>
 <p>This class implements the core functionality of the <a class="reference internal" href="tcpClient.html#classrogue_1_1interfaces_1_1stream_1_1TcpClient"><span class="std std-ref">TcpClient</span></a> and <a class="reference internal" href="tcpServer.html#classrogue_1_1interfaces_1_1stream_1_1TcpServer"><span class="std std-ref">TcpServer</span></a> classes which implment a Rogue stream bridge over a TCP network. This core can operation in either client or server mode. The <a class="reference internal" href="tcpClient.html#classrogue_1_1interfaces_1_1stream_1_1TcpClient"><span class="std std-ref">TcpClient</span></a> and <a class="reference internal" href="tcpServer.html#classrogue_1_1interfaces_1_1stream_1_1TcpServer"><span class="std std-ref">TcpServer</span></a> classes are thin wrapper which define which mode flag to pass to this base class. </p>
 <p>Subclassed by <a class="reference internal" href="tcpClient.html#classrogue_1_1interfaces_1_1stream_1_1TcpClient"><span class="std std-ref">rogue::interfaces::stream::TcpClient</span></a>, <a class="reference internal" href="tcpServer.html#classrogue_1_1interfaces_1_1stream_1_1TcpServer"><span class="std std-ref">rogue::interfaces::stream::TcpServer</span></a></p>
-<div class="breathe-sectiondef docutils container">
-<p class="breathe-sectiondef-title rubric">Public Functions</p>
-<dl class="function">
-<dt id="_CPPv4N5rogue10interfaces6stream7TcpCore7TcpCoreENSt6stringE8uint16_tb">
-<span id="_CPPv3N5rogue10interfaces6stream7TcpCore7TcpCoreENSt6stringE8uint16_tb"></span><span id="_CPPv2N5rogue10interfaces6stream7TcpCore7TcpCoreENSt6stringE8uint16_tb"></span><span id="rogue::interfaces::stream::TcpCore::TcpCore__ss.uint16_t.b"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1TcpCore_1a78f4c472b29c40554cb696e8520f0aa2"></span><code class="descname">TcpCore</code><span class="sig-paren">(</span>std::string <em>addr</em>, uint16_t <em>port</em>, bool <em>server</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream7TcpCore7TcpCoreENSt6stringE8uint16_tb" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>Create a <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1TcpCore"><span class="std std-ref">TcpCore</span></a> object. </p>
-<p>The creator takes an address, port and server mode flag. The passed address can either be an IP address or hostname. When running in server mode the address string defines which network interface the socket server will listen on. A string of “*” results in all network interfaces being listened on. The stream bridge requires two TCP ports. The pased port is the base number of these two ports. A passed value of 8000 will result in both 8000 and 8001 being used by this bridge.</p>
-<p>Not exposed to Python <dl class="docutils">
-<dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last simple">
-<li><code class="docutils literal notranslate"><span class="pre">addr</span></code>: Interface address for server, remote server address for client. </li>
-<li><code class="docutils literal notranslate"><span class="pre">port</span></code>: Base port number of use for connection. </li>
-<li><code class="docutils literal notranslate"><span class="pre">server</span></code>: Server flag. Set to True to run in server mode. </li>
-</ul>
-</dd>
-</dl>
-</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="_CPPv4N5rogue10interfaces6stream7TcpCoreD0Ev">
-<span id="_CPPv3N5rogue10interfaces6stream7TcpCoreD0Ev"></span><span id="_CPPv2N5rogue10interfaces6stream7TcpCoreD0Ev"></span><span id="rogue::interfaces::stream::TcpCore::~TcpCore"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1TcpCore_1ac01385174662946a7ee5af18614e1fd8"></span><code class="descname">~TcpCore</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream7TcpCoreD0Ev" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>Destroy the <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1TcpCore"><span class="std std-ref">TcpCore</span></a>. </p>
-</dd></dl>
-
-<dl class="function">
-<dt id="_CPPv4N5rogue10interfaces6stream7TcpCore11acceptFrameEN5boost10shared_ptrIN5rogue10interfaces6stream5FrameEEE">
-<span id="_CPPv3N5rogue10interfaces6stream7TcpCore11acceptFrameEN5boost10shared_ptrIN5rogue10interfaces6stream5FrameEEE"></span><span id="_CPPv2N5rogue10interfaces6stream7TcpCore11acceptFrameEN5boost10shared_ptrIN5rogue10interfaces6stream5FrameEEE"></span><span id="rogue::interfaces::stream::TcpCore::acceptFrame__boost::shared_ptr:rogue::interfaces::stream::Frame:"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1TcpCore_1a23ff2c6561f24968eda02b5c9023f3d3"></span>void <code class="descname">acceptFrame</code><span class="sig-paren">(</span>boost::shared_ptr&lt;rogue::interfaces::stream::<a class="reference internal" href="frame.html#_CPPv4N5rogue10interfaces6stream5FrameE" title="rogue::interfaces::stream::Frame">Frame</a>&gt; <em>frame</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream7TcpCore11acceptFrameEN5boost10shared_ptrIN5rogue10interfaces6stream5FrameEEE" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>Accept a frame from master. </p>
-<p>This method is called by the <a class="reference internal" href="master.html#classrogue_1_1interfaces_1_1stream_1_1Master"><span class="std std-ref">Master</span></a> object to which this <a class="reference internal" href="slave.html#classrogue_1_1interfaces_1_1stream_1_1Slave"><span class="std std-ref">Slave</span></a> is attached when passing a <a class="reference internal" href="frame.html#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a>. <dl class="docutils">
-<dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last simple">
-<li><code class="docutils literal notranslate"><span class="pre">frame</span></code>: <a class="reference internal" href="frame.html#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a> pointer (FramePtr) </li>
-</ul>
-</dd>
-</dl>
-</p>
-</dd></dl>
-
-</div>
 <div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric">Public Static Functions</p>
 <dl class="function">
@@ -267,13 +226,6 @@
 </dd>
 </dl>
 </p>
-</dd></dl>
-
-<dl class="function">
-<dt id="_CPPv4N5rogue10interfaces6stream7TcpCore12setup_pythonEv">
-<span id="_CPPv3N5rogue10interfaces6stream7TcpCore12setup_pythonEv"></span><span id="_CPPv2N5rogue10interfaces6stream7TcpCore12setup_pythonEv"></span><span id="rogue::interfaces::stream::TcpCore::setup_python"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1TcpCore_1aaae8e2ea22a555813919872009af17ee"></span><em class="property">static</em> void <code class="descname">setup_python</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream7TcpCore12setup_pythonEv" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>Setup class for use in python. </p>
-<p>Not exposed to Python </p>
 </dd></dl>
 
 </div>

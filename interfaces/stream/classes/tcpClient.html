@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>TcpClient &mdash; Rogue v3.3.1-11-g7ab292f3 documentation</title>
+  <title>TcpClient &mdash; Rogue v3.3.1-12-g249f8d1d documentation</title>
   
 
   
@@ -193,7 +193,6 @@
   <div class="section" id="tcpclient">
 <span id="interfaces-stream-tcp-client"></span><h1>TcpClient<a class="headerlink" href="#tcpclient" title="Permalink to this headline">¶</a></h1>
 <p>Examples of using a TCP stream bridge are described in <a class="reference internal" href="../usingTcp.html#interfaces-stream-using-tcp"><span class="std std-ref">Using The TCP Bridge</span></a>.</p>
-<p>The TcpClient class generates log entries with the path: “pyrogue.stream.TcpCore”</p>
 <p>TcpClient objects in C++ are referenced by the following shared pointer typedef:</p>
 <dl class="type">
 <dt id="_CPPv4N5rogue10interfaces6stream12TcpClientPtrE">
@@ -208,38 +207,13 @@
 <dd><p>Stream TCP Bridge Client. </p>
 <p>This class is a wrapper around <a class="reference internal" href="tcpCore.html#classrogue_1_1interfaces_1_1stream_1_1TcpCore"><span class="std std-ref">TcpCore</span></a> which operates in client mode. </p>
 <div class="breathe-sectiondef docutils container">
-<p class="breathe-sectiondef-title rubric">Public Functions</p>
-<dl class="function">
-<dt id="_CPPv4N5rogue10interfaces6stream9TcpClient9TcpClientENSt6stringE8uint16_t">
-<span id="_CPPv3N5rogue10interfaces6stream9TcpClient9TcpClientENSt6stringE8uint16_t"></span><span id="_CPPv2N5rogue10interfaces6stream9TcpClient9TcpClientENSt6stringE8uint16_t"></span><span id="rogue::interfaces::stream::TcpClient::TcpClient__ss.uint16_t"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1TcpClient_1ad7a57627c690c8ccd2aadccd336c6e3d"></span><code class="descname">TcpClient</code><span class="sig-paren">(</span>std::string <em>addr</em>, uint16_t <em>port</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream9TcpClient9TcpClientENSt6stringE8uint16_t" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>Create a <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1TcpClient"><span class="std std-ref">TcpClient</span></a> object. </p>
-<p>The creator takes an address and port. The passed server address can either be an IP address or hostname. The stream bridge requires two TCP ports. The pased port is the base number of these two ports. A passed value of 8000 will result in both 8000 and 8001 being used by this bridge.</p>
-<p>Exposed to Python as <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1TcpClient"><span class="std std-ref">rogue.interfaces.stream.TcpClient</span></a> <dl class="docutils">
-<dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last simple">
-<li><code class="docutils literal notranslate"><span class="pre">addr</span></code>: Interface address for server, remote server address for client. </li>
-<li><code class="docutils literal notranslate"><span class="pre">port</span></code>: Base port number of use for connection. </li>
-</ul>
-</dd>
-</dl>
-</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="_CPPv4N5rogue10interfaces6stream9TcpClientD0Ev">
-<span id="_CPPv3N5rogue10interfaces6stream9TcpClientD0Ev"></span><span id="_CPPv2N5rogue10interfaces6stream9TcpClientD0Ev"></span><span id="rogue::interfaces::stream::TcpClient::~TcpClient"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1TcpClient_1a352d23228a2a6043b40d671f667c4b15"></span><code class="descname">~TcpClient</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream9TcpClientD0Ev" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>Destroy the <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1TcpClient"><span class="std std-ref">TcpClient</span></a>. </p>
-</dd></dl>
-
-</div>
-<div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric">Public Static Functions</p>
 <dl class="function">
 <dt id="_CPPv4N5rogue10interfaces6stream9TcpClient6createENSt6stringE8uint16_t">
 <span id="_CPPv3N5rogue10interfaces6stream9TcpClient6createENSt6stringE8uint16_t"></span><span id="_CPPv2N5rogue10interfaces6stream9TcpClient6createENSt6stringE8uint16_t"></span><span id="rogue::interfaces::stream::TcpClient::create__ss.uint16_t"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1TcpClient_1a85ed4efbded7ba7dda5179e8db2be254"></span><em class="property">static</em> boost::shared_ptr&lt;rogue::interfaces::stream::<a class="reference internal" href="#_CPPv4N5rogue10interfaces6stream9TcpClientE" title="rogue::interfaces::stream::TcpClient">TcpClient</a>&gt; <code class="descname">create</code><span class="sig-paren">(</span>std::string <em>addr</em>, uint16_t <em>port</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream9TcpClient6createENSt6stringE8uint16_t" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Create a <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1TcpClient"><span class="std std-ref">TcpClient</span></a> object and return as a TcpClientPtr. </p>
 <p>The creator takes an address and port. The passed server address can either be an IP address or hostname. The stream bridge requires two TCP ports. The pased port is the base number of these two ports. A passed value of 8000 will result in both 8000 and 8001 being used by this bridge.</p>
-<p>Not exposed to Python <dl class="docutils">
+<p>Exposed to Python as <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1TcpClient"><span class="std std-ref">rogue.interfaces.stream.TcpClient</span></a> <dl class="docutils">
 <dt><strong>Return</strong></dt>
 <dd><a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1TcpClient"><span class="std std-ref">TcpClient</span></a> object as a TcpClientPtr </dd>
 <dt><strong>Parameters</strong></dt>
@@ -250,13 +224,6 @@
 </dd>
 </dl>
 </p>
-</dd></dl>
-
-<dl class="function">
-<dt id="_CPPv4N5rogue10interfaces6stream9TcpClient12setup_pythonEv">
-<span id="_CPPv3N5rogue10interfaces6stream9TcpClient12setup_pythonEv"></span><span id="_CPPv2N5rogue10interfaces6stream9TcpClient12setup_pythonEv"></span><span id="rogue::interfaces::stream::TcpClient::setup_python"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1TcpClient_1aa15242c6cb674b0137fb8999223e71e4"></span><em class="property">static</em> void <code class="descname">setup_python</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream9TcpClient12setup_pythonEv" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>Setup class for use in python. </p>
-<p>Not exposed to Python </p>
 </dd></dl>
 
 </div>
