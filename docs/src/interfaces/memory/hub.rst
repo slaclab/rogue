@@ -31,71 +31,79 @@ See :ref:`interfaces_memory_hub` for more detail on the Hub class.
             # Here we set the offset
             super().__init__(0)
 
+            # Create a lock
+            self._lock = threading.Lock()
+
         # Entry point for incoming transaction
         def _doTransaction(self,transaction):
 
-            # First we lock the transaction data
-            with transaction.lock():
+            # First lock the memory space to avoid
+            # overlapping paged transactions
+            with self._lock:
 
-                # Put address into byte array
-                addr = transaction.address().to_bytes(4, 'little', signed=False)
+               # Next we lock the transaction data 
+               # Here it is held until the downstream transaction completes. 
+               with transaction.lock():
 
-                # Clear any existing errors
-                self._setError(0)
+                   # Put address into byte array
+                   addr = transaction.address().to_bytes(4, 'little', signed=False)
 
-                # Create transaction setting address register (offset 0x100)
-                id = self._reqTransaction(0x100, addr, 4, 0, rogue.interfaces.memory.Write)
+                   # Clear any existing errors
+                   self._setError(0)
 
-                # Wait for transaction to complete
-                self._wait(id)
-
-                # Check transaction result, forward error to incoming transaction
-                if self._getError() != 0:
-                    transaction.done(self._getError())
-                    return False
-
-                # Handle write or post
-                if transaction.type() == rogue.interfaces.memory.Write or
-                   transaction.type() == rogue.interfaces.memory.Post:
-
-                   # Copy data into byte array
-                   data = bytearray(transaction.size())
-                   transaction.getData(data,0)
-
-                   # Create transaction setting write data register (offset 0x104)
-                   id = self._reqTransaction(0x104, data, 4, 0, rogue.interfaces.memory.Write)
+                   # Create transaction setting address register (offset 0x100)
+                   id = self._reqTransaction(0x100, addr, 4, 0, rogue.interfaces.memory.Write)
 
                    # Wait for transaction to complete
-                   self._wait(id)
+                   self._waitTransaction(id)
 
                    # Check transaction result, forward error to incoming transaction
                    if self._getError() != 0:
                        transaction.done(self._getError())
                        return False
 
-                   # Success
-                   transaction.done(0)
+                   # Handle write or post
+                   if transaction.type() == rogue.interfaces.memory.Write or
+                      transaction.type() == rogue.interfaces.memory.Post:
 
-                # Handle read or verify read
-                else:
+                      # Copy data into byte array
+                      data = bytearray(transaction.size())
+                      transaction.getData(data,0)
 
-                   # Create read data byte array
-                   data = bytearray(transaction.size())
+                      # Create transaction setting write data register (offset 0x104)
+                      id = self._reqTransaction(0x104, data, 4, 0, rogue.interfaces.memory.Write)
 
-                   # Create transaction reading read data register (offset 0x108)
-                   id = self._reqTransaction(0x108, data, 4, 0, rogue.interfaces.memory.Read)
+                      # Wait for transaction to complete
+                      self._waitTransaction(id)
 
-                   # Wait for transaction to complete
-                   self._wait(id)
+                      # Check transaction result, forward error to incoming transaction
+                      if self._getError() != 0:
+                          transaction.done(self._getError())
+                          return False
 
-                   # Check transaction result, forward error to incoming transaction
-                   if self._getError() != 0:
-                       transaction->done(self._getError())
-                       return False
+                      # Success
+                      transaction.done(0)
 
-                   # Copy data into original transaction and complete
-                   transaction.setData(data,0)
-                   transaction.done(0)
+                   # Handle read or verify read
+                   else:
+
+                      # Create read data byte array
+                      data = bytearray(transaction.size())
+
+                      # Create transaction reading read data register (offset 0x108)
+                      id = self._reqTransaction(0x108, data, 4, 0, rogue.interfaces.memory.Read)
+
+                      # Wait for transaction to complete
+                      self._waitTransaction(id)
+
+                      # Check transaction result, forward error to incoming transaction
+                      if self._getError() != 0:
+                          transaction->done(self._getError())
+                          return False
+
+                      # Copy data into original transaction and complete
+                      transaction.setData(data,0)
+                      transaction.done(0)
 
         # Respond to min transaction size
         def _doMinAccess(self):
@@ -111,9 +119,14 @@ The equivelent code in C++ is show below:
 
    #include <rogue/interfaces/memory/Constants.h>
    #include <rogue/interfaces/memory/Hub.h>
+   #include <boost/thread.hpp>
 
    // Create a subclass of a memory Hub
    class MyHub : public rogue::interfaces::memory::Hub {
+
+         // Mutex
+         boost::mutex mtx_;
+
       public:
 
          // Create a static class creator to return our custom class
@@ -130,9 +143,12 @@ The equivelent code in C++ is show below:
 
          // Entry point for incoming transaction
          void doTransaction(rogue::interfaces::memory::TransactionPtr tran) {
-             uint32_t id;
+            uint32_t id;
 
-            // First we lock the transaction data with a scoped lock
+            // First lock the memory space to avoid overlapping paged transactions
+            boost::lock_guard<boost::mutex> lock(slaveMtx_);
+
+            // Next we lock the transaction data with a scoped lock
             rogue::interfaces::memory::TransactionLockPtr lock = tran->lock();
 
             // Clear any existing errors
@@ -142,8 +158,8 @@ The equivelent code in C++ is show below:
             id = this->reqTransaction(0x100, 4, transaction->address(),
                                       rogue::interfaces::memory::Write);
 
-            // Wait for transaction to complete
-            this->wait(id);
+            // Wait for transaction to complete 
+            this->waitTransaction(id);
 
             // Check transaction result, forward error to incoming transaction
             if ( this->getError() != 0 ) {
@@ -160,8 +176,8 @@ The equivelent code in C++ is show below:
                id = this->reqTransaction(0x104, 4, transaction->begin(),
                                          rogue::interfaces::memory::Write);
 
-               // Wait for transaction to complete
-               this->wait(id);
+               // Wait for transaction to complete 
+               this->waitTransaction(id);
 
                // Check transaction result, forward error to incoming transaction
                if ( this->getError() != 0 ) {
@@ -179,8 +195,8 @@ The equivelent code in C++ is show below:
                id = this->reqTransaction(0x104, 4, transaction->begin(),
                                          rogue::interfaces::memory::Write);
 
-               // Wait for transaction to complete
-               this->wait(id);
+               // Wait for transaction to complete 
+               this->waitTransaction(id);
 
                // Check transaction result, forward error to incoming transaction
                if ( this->getError() != 0 ) {
@@ -200,4 +216,15 @@ The equivelent code in C++ is show below:
             return 4;
          }
    };
+
+A few notes on the above examples. 
+
+The incoming transaction source thread will be stalled as we wait
+on the downstream transaction to complete. It may be better to queue the transaction and service
+it with a seperate thread. Also in the C++ example the original data buffer is passed to the
+new transaction. This requires that the lock be held on the transaction until the downstream
+transaction is complete. Instead it may be better to create a new buffer and copy the data
+as is done in the Python example. See the :ref:`interfaces_memory_slave_ex` example for
+ways to store and later retrive the Transaction record while the downstream transaction is
+in progress.
 

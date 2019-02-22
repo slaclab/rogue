@@ -89,35 +89,16 @@ namespace rogue {
                static boost::shared_ptr<rogue::interfaces::stream::TcpCore> 
                   create (std::string addr, uint16_t port, bool server);
 
-               //! Setup class for use in python
-               /** Not exposed to Python
-                */
+               // Setup class for use in python
                static void setup_python();
 
-               //! Create a TcpCore object
-               /**The creator takes an address, port and server mode flag. The passed
-                * address can either be an IP address or hostname. When running in server
-                * mode the address string defines which network interface the socket server
-                * will listen on. A string of "*" results in all network interfaces being
-                * listened on. The stream bridge requires two TCP ports. The pased port is the 
-                * base number of these two ports. A passed value of 8000 will result in both
-                * 8000 and 8001 being used by this bridge.
-                *
-                * Not exposed to Python
-                * @param addr Interface address for server, remote server address for client.
-                * @param port Base port number of use for connection.
-                * @param server Server flag. Set to True to run in server mode.
-                */
+               // Create a TcpCore object
                TcpCore(std::string addr, uint16_t port, bool server);
 
-               //! Destroy the TcpCore
+               // Destroy the TcpCore
                ~TcpCore();
 
-               //! Accept a frame from master
-               /** This method is called by the Master object to which this Slave is attached when
-                * passing a Frame.
-                * @param frame Frame pointer (FramePtr)
-                */
+               // Receive frame from Master
                void acceptFrame ( boost::shared_ptr<rogue::interfaces::stream::Frame> frame );
          };
 

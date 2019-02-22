@@ -58,26 +58,19 @@ namespace rogue {
             public:
 
                //! Class factory which returns a pointer to a Hub (HubPtr)
-               /**Not exposed to Python
+               /** Exposed to Python as rogue.interfaces.memory.Hub()
                 *
                 * @param offset The offset of this Hub device
                 */
                static boost::shared_ptr<rogue::interfaces::memory::Hub> create (uint64_t offset);
 
-               //! Setup class for use in python
-               /* Not exposed to Python
-                */
+               // Setup class for use in python
                static void setup_python();
 
-               //! Create a Hub device with a given offset
-               /** Exposed to Python as Hub()
-                *
-                * Do not call directly. Only called from the Master class.
-                * @param offset The offset of this Hub device
-                */
+               // Create a Hub device with a given offset
                Hub(uint64_t offset);
 
-               //! Destroy the Hub
+               // Destroy the Hub
                ~Hub();
 
                //! Get offset of this Hub

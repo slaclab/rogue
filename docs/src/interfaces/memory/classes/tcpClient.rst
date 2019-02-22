@@ -4,8 +4,6 @@
 TcpClient
 =========
 
-The Master class generates log entries with the path: "pyrogue.memory.TcpClient"
-
 TcpClient objects in C++ are referenced by the following shared pointer typedef:
 
 .. doxygentypedef:: rogue::interfaces::memory::TcpClientPtr

@@ -45,27 +45,22 @@ namespace rogue {
             public:
 
                //! Class factory which returns a AxiMemMapPtr to a newly created AxiMemMap object
-               /** Not exposed to Python
+               /** Exposed to Python as rogue.hardware.axi.AxiMemMap()
                 * @param path Path to device. i.e /dev/datadev_0
                 * @return AxiMemMap pointer (AxiMemMapPtr)
                 */
                static boost::shared_ptr<rogue::hardware::axi::AxiMemMap> create (std::string path);
 
-               //! Setup class for use in python
-               /* Not exposed to Python
-                */
+               // Setup class for use in python
                static void setup_python();
 
-               //! Class Creator
-               /** Exposed to Python as AxiMemMap()
-                * @param path Path to device. i.e /dev/datadev_0
-                */
+               // Class Creator
                AxiMemMap(std::string path);
 
-               //! Destructor
+               // Destructor
                ~AxiMemMap();
 
-               //! Accept as transaction from the memory Master as defined in the Slave class.
+               // Accept as transaction from the memory Master as defined in the Slave class.
                void doTransaction(boost::shared_ptr<rogue::interfaces::memory::Transaction> tran);
          };
 

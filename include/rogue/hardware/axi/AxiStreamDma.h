@@ -79,7 +79,7 @@ namespace rogue {
             public:
 
                //! Class factory which returns a AxiStreamDmaPtr to a newly created AxiMemMap object
-               /** Not exposed to Python
+               /** Exposed to Python as rogue.hardware.axi.AxiStreamDma()
                 *
                 * The destination field is a sideband signal provided in the AxiStream
                 * protocol which allows a single interface to handle multiple frames
@@ -99,30 +99,13 @@ namespace rogue {
                static boost::shared_ptr<rogue::hardware::axi::AxiStreamDma> 
                   create (std::string path, uint32_t dest, bool ssiEnable);
 
-               //! Setup class in python
+               // Setup class in python
                static void setup_python();
 
-               //! Class Creator
-               /** Exposed to Python as AxiStreamDma()
-                *
-                * The destination field is a sideband signal provided in the AxiStream
-                * protocol which allows a single interface to handle multiple frames
-                * with different purposes. The use of this field is driver specific, but
-                * the lower 8-bits are typically passed in the tDest field of the hardware
-                * frame and bits 8 and up are used to index the dma channel in the 
-                * lower level hardware.
-                *
-                * The SSI Enable flag determines if the hardware frame follows the SLAC Streaming
-                * itnerface standard. This standard defines a SOF flag in the first user field
-                * at bit 1 and and EOFE flag in the last user field bit 0.
-                * @param path Path to device. i.e /dev/datadev_0
-                * @param dest Destination index for dma transactions
-                * @param ssiEnable Enable SSI user fields
-                * @return AxiStreamDma pointer (AxiStreamDmaPtr)
-                */
+               // Class Creator
                AxiStreamDma(std::string path, uint32_t dest, bool ssiEnable);
 
-               //! Destructor
+               // Destructor
                ~AxiStreamDma();
 
                //! Set timeout for frame transmits in microseconds
@@ -169,25 +152,13 @@ namespace rogue {
                 */
                void dmaAck();
 
-               //! Generate a Frame. Called from master
-               /*
-                * Pass total size required.
-                * Pass flag indicating if zero copy buffers are acceptable
-                */
+               // Generate a Frame. Called from master
                boost::shared_ptr<rogue::interfaces::stream::Frame> acceptReq ( uint32_t size, bool zeroCopyEn);
 
-               //! Accept a frame from master
-               /** This method is called by the Master object to which this Slave is attached when
-                * passing a Frame.
-                * @param frame Frame pointer (FramePtr)
-                */
+               // Accept a frame from master
                void acceptFrame ( boost::shared_ptr<rogue::interfaces::stream::Frame> frame );
 
-               //! Process Buffer Return
-               /** This method is an override of the lower level Pool class retBuffer() method. 
-                * This is used to return the zero copy buffer to the driver and is called 
-                * automatically when the Buffer object is deleted.
-                */
+               // Process Buffer Return
                void retBuffer(uint8_t * data, uint32_t meta, uint32_t rawSize);
 
          };

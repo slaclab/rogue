@@ -73,7 +73,7 @@ namespace rogue {
                 * base number of these two ports. A passed value of 8000 will result in both
                 * 8000 and 8001 being used by this bridge.
                 *
-                * Not exposed to Python
+                * Exposed as rogue.interfaces.memory.TcpClient() to Python
                 * @param addr Interface address
                 * @param port Base port number to use for connection.
                 * @return TcpServer object as a TcpServerPtr
@@ -81,27 +81,16 @@ namespace rogue {
                static boost::shared_ptr<rogue::interfaces::memory::TcpClient> 
                       create (std::string addr, uint16_t port);
 
-               //! Setup class in python
+               // Setup class in python
                static void setup_python();
 
-               //! Create a TcpClient object
-               /**The creator takes an address and port. The passed address is the address of
-                * the remote TcpServer to connect to, and can either be an IP address or hostname. 
-                * The memory bridge requires two TCP ports. The pased port is the 
-                * base number of these two ports. A passed value of 8000 will result in both
-                * 8000 and 8001 being used by this bridge.
-                *
-                * Exposted as TcpClient to Python
-                * @param addr Interface address
-                * @param port Base port number to use for connection.
-                * @return TcpServer object as a TcpServerPtr
-                */
+               // Create a TcpClient object
                TcpClient(std::string addr, uint16_t port);
 
-               //! Destroy the TcpClient
+               // Destroy the TcpClient
                ~TcpClient();
 
-               //! Accept as transaction from the memory Master as defined in the Slave class.
+               // Process transaction from Master
                void doTransaction(boost::shared_ptr<rogue::interfaces::memory::Transaction> tran);
          };
 

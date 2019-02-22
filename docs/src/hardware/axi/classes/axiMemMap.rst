@@ -4,7 +4,7 @@
 AxiMemMap
 =========
 
-The AxiMemMap class generates log entries with the path: "pyrogue.axi.AxiMemMap"
+Examples of using the AxiMemMap class are included in :ref:`hardware_axi_memory`.
 
 AxiMemMap objects in C++ are referenced by the following shared pointer typedef:
 

@@ -71,21 +71,17 @@ namespace rogue {
             public:
 
                //! Class factory which returns a pointer to a Master (MasterPtr)
-               /**Not exposed to Python
+               /** Exposed as rogue.interfaces.memory.Master() to Python
                 */
                static boost::shared_ptr<rogue::interfaces::memory::Master> create ();
 
-               //! Setup class for use in python
-               /* Not exposed to Python
-                */
+               // Setup class for use in python
                static void setup_python();
 
-               //! Create a Master instance
-               /**Not exposed to Python
-                */
+               // Create a Master instance
                Master();
 
-               //! Destroy the Master
+               // Destroy the Master
                virtual ~Master();
 
                //! Set slave or Hub device
