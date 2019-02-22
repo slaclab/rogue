@@ -35,14 +35,15 @@ namespace bp  = boost::python;
 #endif
 
 //! Create a block, class creator
-rim::HubPtr rim::Hub::create (uint64_t offset) {
-   rim::HubPtr b = boost::make_shared<rim::Hub>(offset);
+rim::HubPtr rim::Hub::create (uint64_t offset, uint32_t min, uint32_t max) {
+   rim::HubPtr b = boost::make_shared<rim::Hub>(offset,min,max);
    return(b);
 }
 
 //! Create an block
-rim::Hub::Hub(uint64_t offset) : Master (), Slave(0,0) { 
+rim::Hub::Hub(uint64_t offset, uint32_t min, uint32_t max) : Master (), Slave(min,max) { 
    offset_ = offset;
+   root_   = (min != 0 && max != 0);
 }
 
 //! Destroy a block
@@ -53,24 +54,33 @@ uint64_t rim::Hub::getOffset() {
    return offset_;
 }
 
+//! Get address
+uint64_t rim::Hub::getAddress() {
+   return(reqAddress() | offset_);
+}
+
 //! Return id to requesting master
 uint32_t rim::Hub::doSlaveId() {
-   return(reqSlaveId());
+   if ( root_ ) return(doSlaveId());
+   else return(reqSlaveId());
 }
 
 //! Return min access size to requesting master
 uint32_t rim::Hub::doMinAccess() {
-   return(reqMinAccess());
+   if ( root_ ) return(doMinAccess());
+   else return(reqMinAccess());
 }
 
 //! Return max access size to requesting master
 uint32_t rim::Hub::doMaxAccess() {
-   return(reqMaxAccess());
+   if ( root_ ) return(doMaxAccess());
+   else return(reqMaxAccess());
 }
 
-//! Return offset
+//! Return address
 uint64_t rim::Hub::doAddress() {
-   return(reqAddress() | offset_);
+   if ( root_ ) return(0);
+   else return(reqAddress() | offset_);
 }
 
 //! Post a transaction. Master will call this method with the access attributes.
@@ -86,8 +96,10 @@ void rim::Hub::doTransaction(rim::TransactionPtr tran) {
 void rim::Hub::setup_python() {
 
 #ifndef NO_PYTHON
-   bp::class_<rim::HubWrap, rim::HubWrapPtr, bp::bases<rim::Master,rim::Slave>, boost::noncopyable>("Hub",bp::init<uint64_t>())
-       .def("_getAddress",    &rim::Hub::doAddress)
+   bp::class_<rim::HubWrap, rim::HubWrapPtr, bp::bases<rim::Master,rim::Slave>, boost::noncopyable>("Hub",bp::init<uint64_t,uint32_t,uint32_t>())
+       .def("_blkMinAccess",  &rim::Hub::doMinAccess)
+       .def("_blkMaxAccess",  &rim::Hub::doMaxAccess)
+       .def("_getAddress",    &rim::Hub::getAddress)
        .def("_getOffset",     &rim::Hub::getOffset)
        .def("_doTransaction", &rim::Hub::doTransaction, &rim::HubWrap::defDoTransaction)
    ;
@@ -99,7 +111,7 @@ void rim::Hub::setup_python() {
 #ifndef NO_PYTHON
 
 //! Constructor
-rim::HubWrap::HubWrap(uint64_t offset) : rim::Hub(offset) {}
+rim::HubWrap::HubWrap(uint64_t offset, uint32_t min, uint32_t max) : rim::Hub(offset,min,max) {}
 
 //! Post a transaction. Master will call this method with the access attributes.
 void rim::HubWrap::doTransaction(rim::TransactionPtr transaction) {
