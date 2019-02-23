@@ -48,12 +48,19 @@ namespace rogue {
           * transactions to the next level. This can be usefull to hide complex windows memory 
           * spaces or transactions that require multipled steps be performed in hardware.
           *
+          * If a non zero min and max transaction size are passed at creation this Hub will
+          * behave as if it is a new root Slave memory device in the tree. This is usefull in
+          * cases where this Hub will master a paged address or other virtual address space.
+          *
           * A pyrogue.Device instance is the most typical Hub used in Rogue.
           */
          class Hub : public Master, public Slave {
 
-               //! Offset address of hub
+               // Offset address of hub
                uint64_t offset_;
+
+               // Flag if this is a base slave
+               bool root_;
 
             public:
 
@@ -61,14 +68,16 @@ namespace rogue {
                /** Exposed to Python as rogue.interfaces.memory.Hub()
                 *
                 * @param offset The offset of this Hub device
+                * @param min The min transaction size, 0 if not a virtual memory space root
+                * @param min The max transaction size, 0 if not a virtual memory space root
                 */
-               static boost::shared_ptr<rogue::interfaces::memory::Hub> create (uint64_t offset);
+               static boost::shared_ptr<rogue::interfaces::memory::Hub> create (uint64_t offset, uint32_t min, uint32_t max);
 
                // Setup class for use in python
                static void setup_python();
 
                // Create a Hub device with a given offset
-               Hub(uint64_t offset);
+               Hub(uint64_t offset, uint32_t min, uint32_t max);
 
                // Destroy the Hub
                ~Hub();
@@ -80,6 +89,14 @@ namespace rogue {
                 * @return 64-bit address offset
                 */
                uint64_t getOffset();
+
+               //! Get full address of this Hub
+               /** Return the full address of this Hub
+                *
+                * Exposted as _getAddress() to Python
+                * @return 64-bit address
+                */
+               uint64_t getAddress();
 
                //! Interface to service the getSlaveId request from an attached master
                /** By default the Hub will forward this request to the next level.
@@ -144,7 +161,7 @@ namespace rogue {
             public:
 
                // Constructor
-               HubWrap(uint64_t offset);
+               HubWrap(uint64_t offset, uint32_t min, uint32_t max);
 
                // Post a transaction. Master will call this method with the access attributes.
                void doTransaction(boost::shared_ptr<rogue::interfaces::memory::Transaction> transaction);

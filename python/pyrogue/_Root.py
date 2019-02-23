@@ -100,8 +100,12 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         self.add(pr.LocalVariable(name='ForceWrite', value=False, mode='RW', hidden=True,
             description='Configuration Flag To Control Write All Block'))
 
-        self.add(pr.LocalVariable(name='Time', value=0.0, mode='RO', hidden=False,
+        self.add(pr.LocalVariable(name='Time', value=0.0, mode='RO', hidden=True,
                  localGet=lambda: time.time(), pollInterval=1.0, description='Current Time In Seconds Since EPOCH UTC'))
+
+        self.add(pr.LocalVariable(name='LocalTime', value='', mode='RO', hidden=False,
+                 localGet=lambda: time.strftime("%Y-%m-%d %H:%M:%S %Z", time.localtime(time.time())),
+                 pollInterval=1.0, description='Local Time'))
 
         # Commands
         self.add(pr.LocalCommand(name='WriteAll', function=self._write, 
@@ -131,7 +135,6 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         self.add(pr.LocalCommand(name='ClearLog', function=self._clearLog,
                                  description='Clear the message log cntained in the SystemLog variable'))
 
-
     def start(self, timeout=1.0, initRead=False, initWrite=False, pollEn=True, pyroGroup=None, pyroAddr=None, pyroNsAddr=None):
         """Setup the tree. Start the polling thread."""
 
@@ -139,37 +142,39 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         if pollEn:
             self._pollQueue = pr.PollQueue(root=self)
 
-        # Set myself as root
-        self._parent = self
-        self._root   = self
-        self._path   = self.name
+        # Call special root level rootAttached
+        self._rootAttached()
 
-        for key,value in self._nodes.items():
-            value._rootAttached(self,self)
+        # Get full list of Devices and Blocks
+        tmpList = []
+        for d in self.deviceList:
+            tmpList.append(d)
+            for b in d._blocks:
+                if isinstance(b, pr.RemoteBlock):
+                    tmpList.append(b)
 
-        # Some variable initialization can run until the blocks are built
-        for v in self.variables.values():
-            v._finishInit()
+        # Sort the list by address/size
+        tmpList.sort(key=lambda x: (x.memBaseId, x.address, x.size))
 
-        # Look for device overlaps
-        tmpDevs = self.deviceList
-        tmpDevs.sort(key=lambda x: (x.memBaseId, x.address, x.size))
+        # Look for overlaps
+        for i in range(1,len(tmpList)):
 
-        for i in range(1,len(tmpDevs)):
+            self._log.debug("Comparing {} with address={:#x} to {} with address={:#x} and size={}".format(
+                            tmpList[i].name,  tmpList[i].address,
+                            tmpList[i-1].name,tmpList[i-1].address, tmpList[i-1].size))
 
-            self._log.debug("Comparing Device {} at address={:#x} to {} at address={:#x} with size={}".format(
-                            tmpDevs[i].path,tmpDevs[i].address,tmpDevs[i-1].path,tmpDevs[i-1].address,tmpDevs[i-1].size))
+            if (tmpList[i].size != 0) and (tmpList[i].memBaseId == tmpList[i-1].memBaseId) and \
+               (tmpList[i].address < (tmpList[i-1].address + tmpList[i-1].size)):
 
-            if (tmpDevs[i].size != 0) and (tmpDevs[i].memBaseId == tmpDevs[i-1].memBaseId) and \
-                (tmpDevs[i].address < (tmpDevs[i-1].address + tmpDevs[i-1].size)):
-
-                print("\n\n\n------------------------ Device Overlap Warning !!! --------------------------------")
-                print("Device {} at address={:#x} overlaps {} at address={:#x} with size={}".format(
-                      tmpDevs[i].path,tmpDevs[i].address,tmpDevs[i-1].path,tmpDevs[i-1].address,tmpDevs[i-1].size))
+                print("\n\n\n------------------------ Memory Overlap Warning !!! --------------------------------")
+                print("{} at address={:#x} overlaps {} at address={:#x} with size={}".format(
+                      tmpList[i].name,tmpList[i].address,
+                      tmpList[i-1].name,tmpList[i-1].address,tmpList[i-1].size))
                 print("This warning will be replaced with an exception in the next release!!!!!!!!")
 
-                #raise pr.NodeError("Device {} at address={} overlaps {} at address={} with size={}".format(
-                #    tmpDevs[i].path,tmpDevs[i].address,tmpDevs[i-1].path,tmpDevs[i-1].address,tmpDevs[i-1].size))
+                #raise pr.NodeError("{} at address={:#x} overlaps {} at address={:#x} with size={}".format(
+                #                   tmpList[i].name,tmpList[i].address,
+                #                   tmpList[i-1].name,tmpList[i-1].address,tmpList[i-1].size))
 
         # Set timeout if not default
         if timeout != 1.0:
@@ -359,6 +364,20 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
             # After with is done
             self._updateQueue.put(False)
+
+    def _rootAttached(self):
+        self._parent = self
+        self._root   = self
+        self._path   = self.name
+
+        for key,value in self._nodes.items():
+            value._rootAttached(self,self)
+
+        self._buildBlocks()
+
+        # Some variable initialization can run until the blocks are built
+        for v in self.variables.values():
+            v._finishInit()
 
     def _sendYamlFrame(self,yml):
         """

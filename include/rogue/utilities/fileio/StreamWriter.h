@@ -145,7 +145,7 @@ namespace rogue {
                uint32_t getFrameCount();
 
                //! Block until a frame count is reached
-               void waitFrameCount(uint32_t count);
+               bool waitFrameCount(uint32_t count, uint64_t timeout);
 
          };
 
