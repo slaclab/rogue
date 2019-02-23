@@ -12,13 +12,10 @@ The set of hardware which use this include but are not limited to:
 - KCU1500 board
 - Zynq7000 FPGA with TID-AIRs RCe core firmware
 
-The following examples assume there are two destination fields in the underlying
-hardware. One which will be associated with a register protocol (SRPV3 in this case)
-and the other will be a bi-directional data channel. This channel will be connected to
-the custom sender and receiver described in :ref:`interfaces_stream_sending` and
-:ref:`interfaces_stream_receiving`.
+The following example assumes a single card is being accessed by a single master,
+with the master being the device created in the :ref:`interface_memory_master_ex`.
 
-See :ref:`hardware_axi_axi_stream_dma` for more information about the AxiStreamDma class methods.
+See :ref:`hardware_axi_axi_mem_map` for more information about the AxiMemMap class methods.
 
 .. code-block:: python
 

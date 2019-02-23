@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Hub &mdash; Rogue v3.3.1-12-g249f8d1d documentation</title>
+  <title>Hub &mdash; Rogue v3.3.1-37-gfc56724a documentation</title>
   
 
   
@@ -199,6 +199,7 @@
 <dd><p>Memory interface <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Hub"><span class="std std-ref">Hub</span></a> device. </p>
 <p>The memory bus <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Hub"><span class="std std-ref">Hub</span></a> serves as both a <a class="reference internal" href="slave.html#classrogue_1_1interfaces_1_1memory_1_1Slave"><span class="std std-ref">Slave</span></a> and a <a class="reference internal" href="master.html#classrogue_1_1interfaces_1_1memory_1_1Master"><span class="std std-ref">Master</span></a> for memory transactions. It will accept a <a class="reference internal" href="transaction.html#classrogue_1_1interfaces_1_1memory_1_1Transaction"><span class="std std-ref">Transaction</span></a> from an attached <a class="reference internal" href="master.html#classrogue_1_1interfaces_1_1memory_1_1Master"><span class="std std-ref">Master</span></a> and pass it down to the next level <a class="reference internal" href="slave.html#classrogue_1_1interfaces_1_1memory_1_1Slave"><span class="std std-ref">Slave</span></a> or <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Hub"><span class="std std-ref">Hub</span></a> device. It will apply its local offset address to the transaction as it is passed down to the next level.</p>
 <p>A <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Hub"><span class="std std-ref">Hub</span></a> can be sub-classed in either Python or C++ is order to further manipulate the transaction data on the way down or convert the initial <a class="reference internal" href="transaction.html#classrogue_1_1interfaces_1_1memory_1_1Transaction"><span class="std std-ref">Transaction</span></a> into multiple transactions to the next level. This can be usefull to hide complex windows memory spaces or transactions that require multipled steps be performed in hardware.</p>
+<p>If a non zero min and max transaction size are passed at creation this <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Hub"><span class="std std-ref">Hub</span></a> will behave as if it is a new root <a class="reference internal" href="slave.html#classrogue_1_1interfaces_1_1memory_1_1Slave"><span class="std std-ref">Slave</span></a> memory device in the tree. This is usefull in cases where this <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Hub"><span class="std std-ref">Hub</span></a> will master a paged address or other virtual address space.</p>
 <p>A pyrogue.Device instance is the most typical <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Hub"><span class="std std-ref">Hub</span></a> used in Rogue. </p>
 <p>Subclassed by rogue::interfaces::memory::HubWrap</p>
 <div class="breathe-sectiondef docutils container">
@@ -216,10 +217,22 @@
 </dd></dl>
 
 <dl class="function">
+<dt id="_CPPv4N5rogue10interfaces6memory3Hub10getAddressEv">
+<span id="_CPPv3N5rogue10interfaces6memory3Hub10getAddressEv"></span><span id="_CPPv2N5rogue10interfaces6memory3Hub10getAddressEv"></span><span id="rogue::interfaces::memory::Hub::getAddress"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Hub_1a61e0a391dee817370a8733a29559032e"></span>uint64_t <code class="descname">getAddress</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory3Hub10getAddressEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Get full address of this <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Hub"><span class="std std-ref">Hub</span></a>. </p>
+<p>Return the full address of this <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Hub"><span class="std std-ref">Hub</span></a></p>
+<p>Exposted as _getAddress() to Python <dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>64-bit address </dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
 <dt id="_CPPv4N5rogue10interfaces6memory3Hub9doSlaveIdEv">
 <span id="_CPPv3N5rogue10interfaces6memory3Hub9doSlaveIdEv"></span><span id="_CPPv2N5rogue10interfaces6memory3Hub9doSlaveIdEv"></span><span id="rogue::interfaces::memory::Hub::doSlaveId"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Hub_1a2192bbbcdca36e580095d8f7de584a83"></span>uint32_t <code class="descname">doSlaveId</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory3Hub9doSlaveIdEv" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Interface to service the getSlaveId request from an attached master. </p>
-<p>This <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Hub"><span class="std std-ref">Hub</span></a> will foward this request to the next level device.</p>
+<p>By default the <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Hub"><span class="std std-ref">Hub</span></a> will forward this request to the next level. A hub may want to override this when mastering a virtual address space such as a paged address map. Otherwise incorrect overlap errors may be generated by the PyRogue Root.</p>
 <p>Not exposted to Python <dl class="docutils">
 <dt><strong>Return</strong></dt>
 <dd>32-bit slave ID </dd>
@@ -282,14 +295,16 @@
 <div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric">Public Static Functions</p>
 <dl class="function">
-<dt id="_CPPv4N5rogue10interfaces6memory3Hub6createE8uint64_t">
-<span id="_CPPv3N5rogue10interfaces6memory3Hub6createE8uint64_t"></span><span id="_CPPv2N5rogue10interfaces6memory3Hub6createE8uint64_t"></span><span id="rogue::interfaces::memory::Hub::create__uint64_t"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Hub_1a3a04f0566d1ef45f3ab442f8b8de775e"></span><em class="property">static</em> boost::shared_ptr&lt;rogue::interfaces::memory::<a class="reference internal" href="#_CPPv4N5rogue10interfaces6memory3HubE" title="rogue::interfaces::memory::Hub">Hub</a>&gt; <code class="descname">create</code><span class="sig-paren">(</span>uint64_t <em>offset</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory3Hub6createE8uint64_t" title="Permalink to this definition">¶</a><br /></dt>
+<dt id="_CPPv4N5rogue10interfaces6memory3Hub6createE8uint64_t8uint32_t8uint32_t">
+<span id="_CPPv3N5rogue10interfaces6memory3Hub6createE8uint64_t8uint32_t8uint32_t"></span><span id="_CPPv2N5rogue10interfaces6memory3Hub6createE8uint64_t8uint32_t8uint32_t"></span><span id="rogue::interfaces::memory::Hub::create__uint64_t.uint32_t.uint32_t"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Hub_1aca87ad267665481cfd2633266533299e"></span><em class="property">static</em> boost::shared_ptr&lt;rogue::interfaces::memory::<a class="reference internal" href="#_CPPv4N5rogue10interfaces6memory3HubE" title="rogue::interfaces::memory::Hub">Hub</a>&gt; <code class="descname">create</code><span class="sig-paren">(</span>uint64_t <em>offset</em>, uint32_t <em>min</em>, uint32_t <em>max</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory3Hub6createE8uint64_t8uint32_t8uint32_t" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Class factory which returns a pointer to a <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Hub"><span class="std std-ref">Hub</span></a> (HubPtr) </p>
 <p>Exposed to Python as <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Hub"><span class="std std-ref">rogue.interfaces.memory.Hub()</span></a></p>
 <p><dl class="docutils">
 <dt><strong>Parameters</strong></dt>
 <dd><ul class="breatheparameterlist first last simple">
 <li><code class="docutils literal notranslate"><span class="pre">offset</span></code>: The offset of this <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Hub"><span class="std std-ref">Hub</span></a> device </li>
+<li><code class="docutils literal notranslate"><span class="pre">min</span></code>: The min transaction size, 0 if not a virtual memory space root </li>
+<li><code class="docutils literal notranslate"><span class="pre">min</span></code>: The max transaction size, 0 if not a virtual memory space root </li>
 </ul>
 </dd>
 </dl>

@@ -28,8 +28,9 @@ See :ref:`interfaces_memory_hub` for more detail on the Hub class.
         # Init method must call the parent class init
         def __init__(self):
 
-            # Here we set the offset
-            super().__init__(0)
+            # Here we set the offset and a new root min and 
+            # max transaction size
+            super().__init__(0,4,4)
 
             # Create a lock
             self._lock = threading.Lock()
@@ -52,7 +53,7 @@ See :ref:`interfaces_memory_hub` for more detail on the Hub class.
                    self._setError(0)
 
                    # Create transaction setting address register (offset 0x100)
-                   id = self._reqTransaction(0x100, addr, 4, 0, rogue.interfaces.memory.Write)
+                   id = self._reqTransaction(self._getAddress() | 0x100, addr, 4, 0, rogue.interfaces.memory.Write)
 
                    # Wait for transaction to complete
                    self._waitTransaction(id)
@@ -71,7 +72,7 @@ See :ref:`interfaces_memory_hub` for more detail on the Hub class.
                       transaction.getData(data,0)
 
                       # Create transaction setting write data register (offset 0x104)
-                      id = self._reqTransaction(0x104, data, 4, 0, rogue.interfaces.memory.Write)
+                      id = self._reqTransaction(self._getAddress() | 0x104, data, 4, 0, rogue.interfaces.memory.Write)
 
                       # Wait for transaction to complete
                       self._waitTransaction(id)
@@ -91,7 +92,7 @@ See :ref:`interfaces_memory_hub` for more detail on the Hub class.
                       data = bytearray(transaction.size())
 
                       # Create transaction reading read data register (offset 0x108)
-                      id = self._reqTransaction(0x108, data, 4, 0, rogue.interfaces.memory.Read)
+                      id = self._reqTransaction(self._getAddress() | 0x108, data, 4, 0, rogue.interfaces.memory.Read)
 
                       # Wait for transaction to complete
                       self._waitTransaction(id)
@@ -104,14 +105,6 @@ See :ref:`interfaces_memory_hub` for more detail on the Hub class.
                       # Copy data into original transaction and complete
                       transaction.setData(data,0)
                       transaction.done(0)
-
-        # Respond to min transaction size
-        def _doMinAccess(self):
-            return 4
-
-        # Respond to max transaction size
-        def _doMaxAccess(self):
-            return 4
 
 The equivelent code in C++ is show below:
 
@@ -155,7 +148,7 @@ The equivelent code in C++ is show below:
             this->setError(0)
 
             // Create transaction setting address register (offset 0x100)
-            id = this->reqTransaction(0x100, 4, transaction->address(),
+            id = this->reqTransaction(this->getAddress() | 0x100, 4, transaction->address(),
                                       rogue::interfaces::memory::Write);
 
             // Wait for transaction to complete 
@@ -173,7 +166,7 @@ The equivelent code in C++ is show below:
 
                // Create transaction setting write data register (offset 0x104)
                // Forward data pointer from original transaction
-               id = this->reqTransaction(0x104, 4, transaction->begin(),
+               id = this->reqTransaction(this->getAddress() | 0x104, 4, transaction->begin(),
                                          rogue::interfaces::memory::Write);
 
                // Wait for transaction to complete 
@@ -192,7 +185,7 @@ The equivelent code in C++ is show below:
 
                // Create transaction getting read data register (offset 0x108)
                // Forward data pointer from original transaction
-               id = this->reqTransaction(0x104, 4, transaction->begin(),
+               id = this->reqTransaction(this->getAddress() | 0x104, 4, transaction->begin(),
                                          rogue::interfaces::memory::Write);
 
                // Wait for transaction to complete 
@@ -206,15 +199,6 @@ The equivelent code in C++ is show below:
                else transaction->done(0);
             }
 
-         // Respond to min transaction size
-         uint32_t doMinAccess() {
-            return 4;
-         }
-
-         // Respond to max transaction size
-         uint32_t doMaxAccess() {
-            return 4;
-         }
    };
 
 A few notes on the above examples. 

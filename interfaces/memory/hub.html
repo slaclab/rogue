@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Memory Hub Example &mdash; Rogue v3.3.1-12-g249f8d1d documentation</title>
+  <title>Memory Hub Example &mdash; Rogue v3.3.1-37-gfc56724a documentation</title>
   
 
   
@@ -192,8 +192,9 @@ transaction to be executed at a time.</p>
     <span class="c1"># Init method must call the parent class init</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 
-        <span class="c1"># Here we set the offset</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="c1"># Here we set the offset and a new root min and</span>
+        <span class="c1"># max transaction size</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">4</span><span class="p">)</span>
 
         <span class="c1"># Create a lock</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Lock</span><span class="p">()</span>
@@ -216,7 +217,7 @@ transaction to be executed at a time.</p>
                <span class="bp">self</span><span class="o">.</span><span class="n">_setError</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 
                <span class="c1"># Create transaction setting address register (offset 0x100)</span>
-               <span class="nb">id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reqTransaction</span><span class="p">(</span><span class="mh">0x100</span><span class="p">,</span> <span class="n">addr</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">rogue</span><span class="o">.</span><span class="n">interfaces</span><span class="o">.</span><span class="n">memory</span><span class="o">.</span><span class="n">Write</span><span class="p">)</span>
+               <span class="nb">id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reqTransaction</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_getAddress</span><span class="p">()</span> <span class="o">|</span> <span class="mh">0x100</span><span class="p">,</span> <span class="n">addr</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">rogue</span><span class="o">.</span><span class="n">interfaces</span><span class="o">.</span><span class="n">memory</span><span class="o">.</span><span class="n">Write</span><span class="p">)</span>
 
                <span class="c1"># Wait for transaction to complete</span>
                <span class="bp">self</span><span class="o">.</span><span class="n">_waitTransaction</span><span class="p">(</span><span class="nb">id</span><span class="p">)</span>
@@ -235,7 +236,7 @@ transaction to be executed at a time.</p>
                   <span class="n">transaction</span><span class="o">.</span><span class="n">getData</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
 
                   <span class="c1"># Create transaction setting write data register (offset 0x104)</span>
-                  <span class="nb">id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reqTransaction</span><span class="p">(</span><span class="mh">0x104</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">rogue</span><span class="o">.</span><span class="n">interfaces</span><span class="o">.</span><span class="n">memory</span><span class="o">.</span><span class="n">Write</span><span class="p">)</span>
+                  <span class="nb">id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reqTransaction</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_getAddress</span><span class="p">()</span> <span class="o">|</span> <span class="mh">0x104</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">rogue</span><span class="o">.</span><span class="n">interfaces</span><span class="o">.</span><span class="n">memory</span><span class="o">.</span><span class="n">Write</span><span class="p">)</span>
 
                   <span class="c1"># Wait for transaction to complete</span>
                   <span class="bp">self</span><span class="o">.</span><span class="n">_waitTransaction</span><span class="p">(</span><span class="nb">id</span><span class="p">)</span>
@@ -255,7 +256,7 @@ transaction to be executed at a time.</p>
                   <span class="n">data</span> <span class="o">=</span> <span class="nb">bytearray</span><span class="p">(</span><span class="n">transaction</span><span class="o">.</span><span class="n">size</span><span class="p">())</span>
 
                   <span class="c1"># Create transaction reading read data register (offset 0x108)</span>
-                  <span class="nb">id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reqTransaction</span><span class="p">(</span><span class="mh">0x108</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">rogue</span><span class="o">.</span><span class="n">interfaces</span><span class="o">.</span><span class="n">memory</span><span class="o">.</span><span class="n">Read</span><span class="p">)</span>
+                  <span class="nb">id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reqTransaction</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_getAddress</span><span class="p">()</span> <span class="o">|</span> <span class="mh">0x108</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">rogue</span><span class="o">.</span><span class="n">interfaces</span><span class="o">.</span><span class="n">memory</span><span class="o">.</span><span class="n">Read</span><span class="p">)</span>
 
                   <span class="c1"># Wait for transaction to complete</span>
                   <span class="bp">self</span><span class="o">.</span><span class="n">_waitTransaction</span><span class="p">(</span><span class="nb">id</span><span class="p">)</span>
@@ -268,14 +269,6 @@ transaction to be executed at a time.</p>
                   <span class="c1"># Copy data into original transaction and complete</span>
                   <span class="n">transaction</span><span class="o">.</span><span class="n">setData</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
                   <span class="n">transaction</span><span class="o">.</span><span class="n">done</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-
-    <span class="c1"># Respond to min transaction size</span>
-    <span class="k">def</span> <span class="nf">_doMinAccess</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="mi">4</span>
-
-    <span class="c1"># Respond to max transaction size</span>
-    <span class="k">def</span> <span class="nf">_doMaxAccess</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="mi">4</span>
 </pre></div>
 </div>
 <p>The equivelent code in C++ is show below:</p>
@@ -317,7 +310,7 @@ transaction to be executed at a time.</p>
          <span class="n">this</span><span class="o">-&gt;</span><span class="n">setError</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 
          <span class="c1">// Create transaction setting address register (offset 0x100)</span>
-         <span class="n">id</span> <span class="o">=</span> <span class="n">this</span><span class="o">-&gt;</span><span class="n">reqTransaction</span><span class="p">(</span><span class="mh">0x100</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="n">transaction</span><span class="o">-&gt;</span><span class="n">address</span><span class="p">(),</span>
+         <span class="n">id</span> <span class="o">=</span> <span class="n">this</span><span class="o">-&gt;</span><span class="n">reqTransaction</span><span class="p">(</span><span class="n">this</span><span class="o">-&gt;</span><span class="n">getAddress</span><span class="p">()</span> <span class="o">|</span> <span class="mh">0x100</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="n">transaction</span><span class="o">-&gt;</span><span class="n">address</span><span class="p">(),</span>
                                    <span class="n">rogue</span><span class="o">::</span><span class="n">interfaces</span><span class="o">::</span><span class="n">memory</span><span class="o">::</span><span class="n">Write</span><span class="p">);</span>
 
          <span class="c1">// Wait for transaction to complete</span>
@@ -335,7 +328,7 @@ transaction to be executed at a time.</p>
 
             <span class="c1">// Create transaction setting write data register (offset 0x104)</span>
             <span class="c1">// Forward data pointer from original transaction</span>
-            <span class="n">id</span> <span class="o">=</span> <span class="n">this</span><span class="o">-&gt;</span><span class="n">reqTransaction</span><span class="p">(</span><span class="mh">0x104</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="n">transaction</span><span class="o">-&gt;</span><span class="n">begin</span><span class="p">(),</span>
+            <span class="n">id</span> <span class="o">=</span> <span class="n">this</span><span class="o">-&gt;</span><span class="n">reqTransaction</span><span class="p">(</span><span class="n">this</span><span class="o">-&gt;</span><span class="n">getAddress</span><span class="p">()</span> <span class="o">|</span> <span class="mh">0x104</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="n">transaction</span><span class="o">-&gt;</span><span class="n">begin</span><span class="p">(),</span>
                                       <span class="n">rogue</span><span class="o">::</span><span class="n">interfaces</span><span class="o">::</span><span class="n">memory</span><span class="o">::</span><span class="n">Write</span><span class="p">);</span>
 
             <span class="c1">// Wait for transaction to complete</span>
@@ -354,7 +347,7 @@ transaction to be executed at a time.</p>
 
             <span class="c1">// Create transaction getting read data register (offset 0x108)</span>
             <span class="c1">// Forward data pointer from original transaction</span>
-            <span class="n">id</span> <span class="o">=</span> <span class="n">this</span><span class="o">-&gt;</span><span class="n">reqTransaction</span><span class="p">(</span><span class="mh">0x104</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="n">transaction</span><span class="o">-&gt;</span><span class="n">begin</span><span class="p">(),</span>
+            <span class="n">id</span> <span class="o">=</span> <span class="n">this</span><span class="o">-&gt;</span><span class="n">reqTransaction</span><span class="p">(</span><span class="n">this</span><span class="o">-&gt;</span><span class="n">getAddress</span><span class="p">()</span> <span class="o">|</span> <span class="mh">0x104</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="n">transaction</span><span class="o">-&gt;</span><span class="n">begin</span><span class="p">(),</span>
                                       <span class="n">rogue</span><span class="o">::</span><span class="n">interfaces</span><span class="o">::</span><span class="n">memory</span><span class="o">::</span><span class="n">Write</span><span class="p">);</span>
 
             <span class="c1">// Wait for transaction to complete</span>
@@ -368,15 +361,6 @@ transaction to be executed at a time.</p>
             <span class="k">else</span> <span class="n">transaction</span><span class="o">-&gt;</span><span class="n">done</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
          <span class="p">}</span>
 
-      <span class="c1">// Respond to min transaction size</span>
-      <span class="kt">uint32_t</span> <span class="n">doMinAccess</span><span class="p">()</span> <span class="p">{</span>
-         <span class="k">return</span> <span class="mi">4</span><span class="p">;</span>
-      <span class="p">}</span>
-
-      <span class="c1">// Respond to max transaction size</span>
-      <span class="kt">uint32_t</span> <span class="n">doMaxAccess</span><span class="p">()</span> <span class="p">{</span>
-         <span class="k">return</span> <span class="mi">4</span><span class="p">;</span>
-      <span class="p">}</span>
 <span class="p">};</span>
 </pre></div>
 </div>
