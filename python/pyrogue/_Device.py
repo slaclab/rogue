@@ -341,9 +341,9 @@ class Device(pr.Node,rim.Hub):
                 ldata = bytearray(numWords*stride)
             
         with self._memLock:
-            for i in range(offset, offset+len(ldata), self._reqMaxAccess):
+            for i in range(offset, offset+len(ldata), self._reqMaxAccess()):
                 sliceOffset = i | self.offset
-                txnSize = min(self._reqMaxAccess, len(ldata)-(i-offset))
+                txnSize = min(self._reqMaxAccess(), len(ldata)-(i-offset))
                 #print(f'sliceOffset: {sliceOffset:#x}, ldata: {ldata}, txnSize: {txnSize}, buffOffset: {i-offset}')
                 self._reqTransaction(sliceOffset, ldata, txnSize, i-offset, txnType)
 
@@ -407,11 +407,11 @@ class Device(pr.Node,rim.Hub):
     def _buildBlocks(self):
         remVars = []
 
-        blkSize = self._blkMinAccess
+        blkSize = self._blkMinAccess()
 
         if self._blockSize is not None:
-            if self._blockSize > self._blkMaxAccess:
-                blkSize = self._blkMaxAccess
+            if self._blockSize > self._blkMaxAccess():
+                blkSize = self._blkMaxAccess()
             else:
                 blkSize = self._blockSize
 
