@@ -61,19 +61,19 @@ uint64_t rim::Hub::getAddress() {
 
 //! Return id to requesting master
 uint32_t rim::Hub::doSlaveId() {
-   if ( root_ ) return(doSlaveId());
+   if ( root_ ) return(rim::Slave::doSlaveId());
    else return(reqSlaveId());
 }
 
 //! Return min access size to requesting master
 uint32_t rim::Hub::doMinAccess() {
-   if ( root_ ) return(doMinAccess());
+   if ( root_ ) return(rim::Slave::doMinAccess());
    else return(reqMinAccess());
 }
 
 //! Return max access size to requesting master
 uint32_t rim::Hub::doMaxAccess() {
-   if ( root_ ) return(doMaxAccess());
+   if ( root_ ) return(rim::Slave::doMaxAccess());
    else return(reqMaxAccess());
 }
 
