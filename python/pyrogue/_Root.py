@@ -370,9 +370,6 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         self._root   = self
         self._path   = self.name
 
-        self._maxTxnSize = 4
-        self._minTxnSize = 4
-
         for key,value in self._nodes.items():
             value._rootAttached(self,self)
 

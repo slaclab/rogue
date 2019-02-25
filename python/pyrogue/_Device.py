@@ -35,15 +35,17 @@ class EnableVariable(pr.BaseVariable):
             disp={False: 'False', True: 'True', 'parent': 'ParentFalse', 'deps': 'ExtDepFalse'})
 
         if deps is None:
-            self._deps = []
+            self._deps   = []
+            self._depDis = False
         else:
-            self._deps = deps
+            self._deps   = deps
+            self._depDis = True
 
         for d in self._deps:
             d.addListener(self)
 
-        self._value = enabled
-        self._lock = threading.Lock()
+        self._value  = enabled
+        self._lock   = threading.RLock()
 
     def nativeType(self):
         return bool
@@ -55,7 +57,7 @@ class EnableVariable(pr.BaseVariable):
         with self._lock:
             if self._value is False:
                 ret = False
-            elif len(self._deps) > 0 and not all(x.value() for x in self._deps):
+            elif self._depDis:
                 ret = 'deps'
             elif self._parent == self._root:
                 #print("Root enable = {}".format(self._value))
@@ -82,6 +84,19 @@ class EnableVariable(pr.BaseVariable):
         with self.parent.root.updateGroup():
             self._queueUpdate()
 
+    def _doUpdate(self):
+        if len(self._deps) != 0:
+
+            with self._lock:
+                oldEn = (self.value() == True)
+                self._depDis = not all(x.value() for x in self._deps)
+                newEn = (self.value() == True)
+
+                if oldEn != newEn:
+                    self.parent.enableChanged(self.value())
+
+        super()._doUpdate()
+
     def _rootAttached(self,parent,root):
         pr.Node._rootAttached(self,parent,root)
 
@@ -107,7 +122,9 @@ class Device(pr.Node,rim.Hub):
                  expand=True,
                  enabled=True,
                  defaults=None,
-                 enableDeps=None):
+                 enableDeps=None,
+                 hubMin=0,
+                 hubMax=0):
 
         
         """Initialize device class"""
@@ -115,7 +132,7 @@ class Device(pr.Node,rim.Hub):
             name = self.__class__.__name__
 
         # Hub.__init__ must be called first for _setSlave to work below
-        rim.Hub.__init__(self,offset)
+        rim.Hub.__init__(self,offset,hubMin,hubMax)
 
         # Blocks
         self._blocks    = []
@@ -340,9 +357,9 @@ class Device(pr.Node,rim.Hub):
                 ldata = bytearray(numWords*stride)
             
         with self._memLock:
-            for i in range(offset, offset+len(ldata), self._maxTxnSize):
+            for i in range(offset, offset+len(ldata), self._reqMaxAccess()):
                 sliceOffset = i | self.offset
-                txnSize = min(self._maxTxnSize, len(ldata)-(i-offset))
+                txnSize = min(self._reqMaxAccess(), len(ldata)-(i-offset))
                 #print(f'sliceOffset: {sliceOffset:#x}, ldata: {ldata}, txnSize: {txnSize}, buffOffset: {i-offset}')
                 self._reqTransaction(sliceOffset, ldata, txnSize, i-offset, txnType)
 
@@ -406,11 +423,11 @@ class Device(pr.Node,rim.Hub):
     def _buildBlocks(self):
         remVars = []
 
-        blkSize = self._minTxnSize
+        blkSize = self._blkMinAccess()
 
         if self._blockSize is not None:
-            if self._blockSize > self._maxTxnSize:
-                blkSize = self._maxTxnSize
+            if self._blockSize > self._blkMaxAccess():
+                blkSize = self._blkMaxAccess()
             else:
                 blkSize = self._blockSize
 
@@ -451,9 +468,6 @@ class Device(pr.Node,rim.Hub):
 
     def _rootAttached(self, parent, root):
         pr.Node._rootAttached(self, parent, root)
-
-        self._maxTxnSize = self._doMaxAccess()
-        self._minTxnSize = self._doMinAccess()
 
         for key,value in self._nodes.items():
             value._rootAttached(self,root)
