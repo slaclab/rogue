@@ -104,7 +104,11 @@ find_package(ZeroMQ QUIET)
 if (NOT ZeroMQ_FOUND)
    
    # Convert LD_LIBRARY PATH for search
-   string(REPLACE ":" ";" HINT_PATHS $ENV{LD_LIBRARY_PATH})
+   if(ENV{LD_LIBRARY_PATH})
+      string(REPLACE ":" ";" HINT_PATHS $ENV{LD_LIBRARY_PATH})
+   else()
+      set(HINT_PATHS, "")
+   endif()
 
    # See if zmq library is in LD_LIBRARY_PATH
    find_library(ZeroMQ_LIBRARY 
