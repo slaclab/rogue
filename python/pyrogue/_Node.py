@@ -24,14 +24,20 @@ import functools as ft
 import parse
 import collections
 
-def logInit(cls=None,name=None):
+def logInit(cls=None,name=None,path=None):
     """Init a logging pbject. Set global options."""
     logging.basicConfig(
         #level=logging.NOTSET,
         format="%(levelname)s:%(name)s:%(message)s",
         stream=sys.stdout)
 
+    print("logInit called for {}:{}: {}".format(cls,name,inspect.getmro(cls.__class__)))
+
     msg = 'pyrogue'
+
+#    if cls is not None:
+#        for c in inspect.getmro(cls)[:-1]
+
     if cls: msg += "." + cls.__class__.__name__
     if name: msg += "." + name
     return logging.getLogger(msg)
@@ -74,7 +80,7 @@ class Node(object):
         self._bases  = None
 
         # Setup logging
-        self._log = logInit(self,name)
+        self._log = logInit(cls=self,name=name,path=None)
 
     @Pyro4.expose
     @property
@@ -363,6 +369,7 @@ class Node(object):
         self._parent = parent
         self._root   = root
         self._path   = parent.path + '.' + self.name
+        self._log    = logInit(cls=self,name=self._name,path=self._path)
 
     def _exportNodes(self,daemon):
         for k,n in self._nodes.items():

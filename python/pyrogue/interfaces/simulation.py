@@ -26,7 +26,7 @@ class SideBandSim():
 
     def __init__(self,*,host,port):
 
-        self._log = pyrogue.logInit(self)
+        self._log = pyrogue.logInit(cls=self)
 
         self._ctx = zmq.Context()
         self._sbSock = self._ctx.socket(zmq.REQ)
