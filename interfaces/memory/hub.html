@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Memory Hub Example &mdash; Rogue v3.3.1-37-gfc56724a documentation</title>
+  <title>Memory Hub Example &mdash; Rogue v3.3.1-40-g48e95f36 documentation</title>
   
 
   
@@ -92,7 +92,12 @@
 <li class="toctree-l3"><a class="reference internal" href="connecting.html">Connecting Memory Elements</a></li>
 <li class="toctree-l3"><a class="reference internal" href="master.html">Memory Master Example</a></li>
 <li class="toctree-l3"><a class="reference internal" href="slave.html">Memory Slave Example</a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">Memory Hub Example</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Memory Hub Example</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#python-raw-hub-example">Python Raw Hub Example</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#python-device-hub-example">Python Device Hub Example</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#c-raw-hub-example">C++ Raw Hub Example</a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="usingTcp.html">Using The TCP Bridge</a></li>
 <li class="toctree-l3"><a class="reference internal" href="classes/index.html">Memory Interface Class Descriptions</a></li>
 </ul>
@@ -182,6 +187,10 @@ address (0x100), a write register for the write data (0x104), and a read registe
 read data (0x108). This example is not very effeciant in that it only allows a single
 transaction to be executed at a time.</p>
 <p>See <a class="reference internal" href="classes/hub.html#interfaces-memory-hub"><span class="std std-ref">Hub</span></a> for more detail on the Hub class.</p>
+<div class="section" id="python-raw-hub-example">
+<h2>Python Raw Hub Example<a class="headerlink" href="#python-raw-hub-example" title="Permalink to this headline">¶</a></h2>
+<p>Below is an example of creating a raw Hub device which translates memory
+transctions in Python.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pyrogue</span>
 <span class="kn">import</span> <span class="nn">rogue.interfaces.memory</span>
 
@@ -210,7 +219,8 @@ transaction to be executed at a time.</p>
            <span class="c1"># Here it is held until the downstream transaction completes.</span>
            <span class="k">with</span> <span class="n">transaction</span><span class="o">.</span><span class="n">lock</span><span class="p">():</span>
 
-               <span class="c1"># Put address into byte array</span>
+               <span class="c1"># Put address into byte array, we do this because we will</span>
+               <span class="c1"># need to pass it as the data field of a transation later</span>
                <span class="n">addr</span> <span class="o">=</span> <span class="n">transaction</span><span class="o">.</span><span class="n">address</span><span class="p">()</span><span class="o">.</span><span class="n">to_bytes</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="s1">&#39;little&#39;</span><span class="p">,</span> <span class="n">signed</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
 
                <span class="c1"># Clear any existing errors</span>
@@ -271,7 +281,50 @@ transaction to be executed at a time.</p>
                   <span class="n">transaction</span><span class="o">.</span><span class="n">done</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>The equivelent code in C++ is show below:</p>
+</div>
+<div class="section" id="python-device-hub-example">
+<h2>Python Device Hub Example<a class="headerlink" href="#python-device-hub-example" title="Permalink to this headline">¶</a></h2>
+<p>Below is an example of implementing the above example in a Device subclass. This allows
+the Hub to interact in a standard PyRogue tree. It will have its own base address and
+size in the downstream address map, but expose a seperate upstream address map for
+translated transactions. More information about the Device class is included at TBD.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pyrogue</span>
+<span class="kn">import</span> <span class="nn">rogue.interfaces.memory</span>
+
+<span class="c1"># Create a subclass of a Device</span>
+<span class="k">class</span> <span class="nc">MyTranslationDevice</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">Device</span><span class="p">):</span>
+
+    <span class="c1"># Init method with the same signature as a Device</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span>
+                 <span class="n">name</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                 <span class="n">description</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+                 <span class="n">memBase</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                 <span class="n">offset</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                 <span class="n">hidden</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+                 <span class="n">expand</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+                 <span class="n">enabled</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+                 <span class="n">enableDeps</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+
+        <span class="c1"># Setup base class with size of 3*8 bytes for our local 3 registers and a</span>
+        <span class="c1"># upstream min and max transaction size of 4 bytes.</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="n">description</span><span class="p">,</span> <span class="n">memBase</span><span class="o">=</span><span class="n">memBase</span><span class="p">,</span>
+                         <span class="n">offset</span><span class="o">=</span><span class="n">offset</span><span class="p">,</span> <span class="n">hidden</span><span class="o">=</span><span class="n">hidden</span><span class="p">,</span> <span class="n">expand</span><span class="o">=</span><span class="n">expand</span><span class="p">,</span> <span class="n">enabled</span><span class="o">=</span><span class="n">enabled</span><span class="p">,</span>
+                         <span class="n">enableDeps</span><span class="o">=</span><span class="n">enableDeps</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">hubMin</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">hubMax</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+
+    <span class="c1"># Same code from previous section with the exception that the existing Device</span>
+    <span class="c1"># lock is used instead of a seperate lock as above.</span>
+    <span class="k">def</span> <span class="nf">_doTransaction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">transaction</span><span class="p">):</span>
+
+        <span class="c1"># First lock the memory space to avoid</span>
+        <span class="c1"># overlapping paged transactions</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_memLock</span><span class="p">:</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="c-raw-hub-example">
+<h2>C++ Raw Hub Example<a class="headerlink" href="#c-raw-hub-example" title="Permalink to this headline">¶</a></h2>
+<p>Below is an example of creating a raw Hub device which translates memory
+transctions in C++.</p>
 <div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;rogue/interfaces/memory/Constants.h&gt;</span><span class="cp"></span>
 <span class="cp">#include</span> <span class="cpf">&lt;rogue/interfaces/memory/Hub.h&gt;</span><span class="cp"></span>
 <span class="cp">#include</span> <span class="cpf">&lt;boost/thread.hpp&gt;</span><span class="cp"></span>
@@ -373,6 +426,7 @@ transaction is complete. Instead it may be better to create a new buffer and cop
 as is done in the Python example. See the <a class="reference internal" href="slave.html#interfaces-memory-slave-ex"><span class="std std-ref">Memory Slave Example</span></a> example for
 ways to store and later retrive the Transaction record while the downstream transaction is
 in progress.</p>
+</div>
 </div>
 
 
