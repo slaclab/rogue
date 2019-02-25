@@ -35,15 +35,16 @@ class EnableVariable(pr.BaseVariable):
             disp={False: 'False', True: 'True', 'parent': 'ParentFalse', 'deps': 'ExtDepFalse'})
 
         if deps is None:
-            self._deps = []
+            self._deps   = []
+            self._depDis = False
         else:
-            self._deps = deps
+            self._deps   = deps
+            self._depDis = True
 
         for d in self._deps:
             d.addListener(self)
 
         self._value  = enabled
-        self._depDis = (len(self._deps) != 0)
         self._lock   = threading.RLock()
 
     def nativeType(self):
