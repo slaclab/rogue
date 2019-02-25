@@ -142,7 +142,7 @@ translated transactions. More information about the Device class is included at 
                      enableDeps=None):
 
             # Setup base class with size of 3*8 bytes for our local 3 registers and a
-            # upstream min and max transaction size of 4*8 bytes.
+            # upstream min and max transaction size of 4 bytes.
             super().__init__(name=name, description=description, memBase=memBase,
                              offset=offset, hidden=hidden, expand=expand, enabled=enabled, 
                              enableDeps=enableDeps, size=12, hubMin=4, hubMax=4)
