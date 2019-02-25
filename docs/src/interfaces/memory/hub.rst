@@ -16,6 +16,12 @@ transaction to be executed at a time.
 
 See :ref:`interfaces_memory_hub` for more detail on the Hub class.
 
+Python Raw Hub Example
+======================
+
+Below is an example of creating a raw Hub device which translates memory
+transctions in Python. 
+
 .. code-block:: python
 
     import pyrogue
@@ -46,7 +52,8 @@ See :ref:`interfaces_memory_hub` for more detail on the Hub class.
                # Here it is held until the downstream transaction completes. 
                with transaction.lock():
 
-                   # Put address into byte array
+                   # Put address into byte array, we do this because we will
+                   # need to pass it as the data field of a transation later
                    addr = transaction.address().to_bytes(4, 'little', signed=False)
 
                    # Clear any existing errors
@@ -106,7 +113,54 @@ See :ref:`interfaces_memory_hub` for more detail on the Hub class.
                       transaction.setData(data,0)
                       transaction.done(0)
 
-The equivelent code in C++ is show below:
+
+Python Device Hub Example
+=========================
+
+Below is an example of implementing the above example in a Device subclass. This allows 
+the Hub to interact in a standard PyRogue tree. It will have its own base address and
+size in the downstream address map, but expose a seperate upstream address map for
+translated transactions. More information about the Device class is included at TBD.
+
+.. code-block:: python
+
+    import pyrogue
+    import rogue.interfaces.memory
+
+    # Create a subclass of a Device
+    class MyTranslationDevice(pyrogue.Device):
+
+        # Init method with the same signature as a Device
+        def __init__(self, *,
+                     name=None,
+                     description='',
+                     memBase=None,
+                     offset=0,
+                     hidden=False,
+                     expand=True,
+                     enabled=True,
+                     enableDeps=None):
+
+            # Setup base class with size of 3*8 bytes for our local 3 registers and a
+            # upstream min and max transaction size of 4*8 bytes.
+            super().__init__(name=name, description=description, memBase=memBase,
+                             offset=offset, hidden=hidden, expand=expand, enabled=enabled, 
+                             enableDeps=enableDeps, size=12, hubMin=4, hubMax=4)
+
+        # Same code from previous section with the exception that the existing Device
+        # lock is used instead of a seperate lock as above.
+        def _doTransaction(self,transaction):
+
+            # First lock the memory space to avoid
+            # overlapping paged transactions
+            with self._memLock:
+
+
+C++ Raw Hub Example
+===================
+
+Below is an example of created a raw Hub device which translates memory
+transctions in C++.
 
 .. code-block:: c
 
