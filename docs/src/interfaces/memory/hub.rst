@@ -159,7 +159,7 @@ translated transactions. More information about the Device class is included at 
 C++ Raw Hub Example
 ===================
 
-Below is an example of created a raw Hub device which translates memory
+Below is an example of creating a raw Hub device which translates memory
 transctions in C++.
 
 .. code-block:: c
