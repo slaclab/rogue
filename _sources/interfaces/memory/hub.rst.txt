@@ -155,6 +155,32 @@ translated transactions. More information about the Device class is included at 
             # overlapping paged transactions
             with self._memLock:
 
+Using Python Device Hub
+=======================
+
+Below is an example of how the above Device would be used in a PyRogue tree.
+More information about the PyRogue Root class is included at TBD.
+
+.. code-block:: python
+
+    import pyrogue
+
+    class ExampleRoot(pyrogue.Root):
+
+        def __init__(self):
+            super().__init__(name="MyRoot")
+
+            # Add FPGA device at 0x1000 which hosts paged master
+            self.add(SomeFpgaDevice(name="Fpga", offset=0x1000))
+            
+            # Add our translation device to the FPGA with relative offset 0x10
+            # its new address becomes 0x1010 and it owns a new address space
+            self.Fpga.add(MyTranslationDevice(name="TranBase", offset=0x10))
+
+            # Add sub device which exists in paged address space
+            # its address is 0x200 in the spaced mastered by TranBase
+            self.TranBase.add(SomeDevice(name="devA", offset=0x200))
+
 
 C++ Raw Hub Example
 ===================

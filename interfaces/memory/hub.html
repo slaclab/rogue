@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Memory Hub Example &mdash; Rogue v3.3.1-40-g48e95f36 documentation</title>
+  <title>Memory Hub Example &mdash; Rogue v3.3.1-41-g1006e4c6 documentation</title>
   
 
   
@@ -95,6 +95,7 @@
 <li class="toctree-l3 current"><a class="current reference internal" href="#">Memory Hub Example</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#python-raw-hub-example">Python Raw Hub Example</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#python-device-hub-example">Python Device Hub Example</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#using-python-device-hub">Using Python Device Hub</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#c-raw-hub-example">C++ Raw Hub Example</a></li>
 </ul>
 </li>
@@ -318,6 +319,30 @@ translated transactions. More information about the Device class is included at 
         <span class="c1"># First lock the memory space to avoid</span>
         <span class="c1"># overlapping paged transactions</span>
         <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_memLock</span><span class="p">:</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="using-python-device-hub">
+<h2>Using Python Device Hub<a class="headerlink" href="#using-python-device-hub" title="Permalink to this headline">¶</a></h2>
+<p>Below is an example of how the above Device would be used in a PyRogue tree.
+More information about the PyRogue Root class is included at TBD.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pyrogue</span>
+
+<span class="k">class</span> <span class="nc">ExampleRoot</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">Root</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;MyRoot&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Add FPGA device at 0x1000 which hosts paged master</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">SomeFpgaDevice</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;Fpga&quot;</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="mh">0x1000</span><span class="p">))</span>
+
+        <span class="c1"># Add our translation device to the FPGA with relative offset 0x10</span>
+        <span class="c1"># its new address becomes 0x1010 and it owns a new address space</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Fpga</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">MyTranslationDevice</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;TranBase&quot;</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="mh">0x10</span><span class="p">))</span>
+
+        <span class="c1"># Add sub device which exists in paged address space</span>
+        <span class="c1"># its address is 0x200 in the spaced mastered by TranBase</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">TranBase</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">SomeDevice</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;devA&quot;</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="mh">0x200</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
