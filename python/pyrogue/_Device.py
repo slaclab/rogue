@@ -45,7 +45,7 @@ class EnableVariable(pr.BaseVariable):
             d.addListener(self)
 
         self._value  = enabled
-        self._lock   = threading.RLock()
+        self._lock   = threading.Lock()
 
     def nativeType(self):
         return bool
@@ -86,14 +86,15 @@ class EnableVariable(pr.BaseVariable):
 
     def _doUpdate(self):
         if len(self._deps) != 0:
+            oldEn = (self.value() == True)
 
             with self._lock:
-                oldEn = (self.value() == True)
                 self._depDis = not all(x.value() for x in self._deps)
-                newEn = (self.value() == True)
 
-                if oldEn != newEn:
-                    self.parent.enableChanged(newEn)
+            newEn = (self.value() == True)
+
+            if oldEn != newEn:
+                self.parent.enableChanged(newEn)
 
         super()._doUpdate()
 
