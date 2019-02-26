@@ -29,7 +29,7 @@ class EpicsCaServer(object):
     def __init__(self,*,base,root,pvMap=None, syncRead=True, threadCount=1):
         self._root      = root
         self._base      = base 
-        self._log       = pyrogue.logInit(self)
+        self._log       = pyrogue.logInit(cls=self)
         self._syncRead  = syncRead
         self._srv       = rogue.protocols.epicsV3.Server(threadCount)
 
