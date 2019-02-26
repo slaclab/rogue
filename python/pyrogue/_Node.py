@@ -25,22 +25,39 @@ import parse
 import collections
 
 def logInit(cls=None,name=None,path=None):
+
+    # Support base class in order of precedence
+    baseClasses = odict({pr.BaseCommand : 'Command', pr.BaseVariable : 'Variable',
+                         pr.BaseBlock : 'Block', pr.Root : 'Root', pr.Device : 'Device'})
+
     """Init a logging pbject. Set global options."""
     logging.basicConfig(
         #level=logging.NOTSET,
         format="%(levelname)s:%(name)s:%(message)s",
         stream=sys.stdout)
 
-    print("logInit called for {}:{}: {}".format(cls.__class__.__name__,name,inspect.getmro(cls.__class__)))
+    # All logging starts with rogue prefix
+    ln = 'pyrogue'
 
-    msg = 'pyrogue'
+    # Next add the highest ranking base class
+    if cls is not None:
+        for k,v in baseClasses.items():
+            if isinstance(cls,k):
+                ln += f'.{v}'
+                break
 
-#    if cls is not None:
-#        for c in inspect.getmro(cls)[:-1]
+        # Next subclass name
+        ln += f'.{cls.__class__.__name__}'
 
-    if cls: msg += "." + cls.__class__.__name__
-    if name: msg += "." + name
-    return logging.getLogger(msg)
+    # Add full path if passed
+    if path is not None:
+        ln += f'.{path}'
+
+    # Otherwise just add name if passed
+    elif name is not None:
+        ln += f'.{name}'
+
+    return logging.getLogger(ln)
 
 
 class NodeError(Exception):
