@@ -24,17 +24,40 @@ import functools as ft
 import parse
 import collections
 
-def logInit(cls=None,name=None):
+def logInit(cls=None,name=None,path=None):
+
+    # Support base class in order of precedence
+    baseClasses = odict({pr.BaseCommand : 'Command', pr.BaseVariable : 'Variable',
+                         pr.BaseBlock : 'Block', pr.Root : 'Root', pr.Device : 'Device'})
+
     """Init a logging pbject. Set global options."""
     logging.basicConfig(
         #level=logging.NOTSET,
         format="%(levelname)s:%(name)s:%(message)s",
         stream=sys.stdout)
 
-    msg = 'pyrogue'
-    if cls: msg += "." + cls.__class__.__name__
-    if name: msg += "." + name
-    return logging.getLogger(msg)
+    # All logging starts with rogue prefix
+    ln = 'pyrogue'
+
+    # Next add the highest ranking base class
+    if cls is not None:
+        for k,v in baseClasses.items():
+            if isinstance(cls,k):
+                ln += f'.{v}'
+                break
+
+        # Next subclass name
+        ln += f'.{cls.__class__.__name__}'
+
+    # Add full path if passed
+    if path is not None:
+        ln += f'.{path}'
+
+    # Otherwise just add name if passed
+    elif name is not None:
+        ln += f'.{name}'
+
+    return logging.getLogger(ln)
 
 
 class NodeError(Exception):
@@ -74,7 +97,7 @@ class Node(object):
         self._bases  = None
 
         # Setup logging
-        self._log = logInit(self,name)
+        self._log = logInit(cls=self,name=name,path=None)
 
     @Pyro4.expose
     @property
@@ -363,6 +386,7 @@ class Node(object):
         self._parent = parent
         self._root   = root
         self._path   = parent.path + '.' + self.name
+        self._log    = logInit(cls=self,name=self._name,path=self._path)
 
     def _exportNodes(self,daemon):
         for k,n in self._nodes.items():

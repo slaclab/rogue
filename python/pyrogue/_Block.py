@@ -74,7 +74,7 @@ class BaseBlock(object):
         self._doUpdate  = False
 
         # Setup logging
-        self._log = pr.logInit(self,name)
+        self._log = pr.logInit(cls=self,name=name)
 
 
     def __repr__(self):

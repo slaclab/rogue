@@ -20,6 +20,7 @@
 #include <rogue/interfaces/memory/TcpServer.h>
 #include <rogue/interfaces/memory/Constants.h>
 #include <rogue/GeneralError.h>
+#include <inttypes.h>
 #include <boost/make_shared.hpp>
 #include <rogue/GilRelease.h>
 #include <rogue/Logging.h>
@@ -146,7 +147,7 @@ void rim::TcpServer::runThread() {
             // Write data is expected
             if ( (type == rim::Write) || (type == rim::Post) ) {
                if ((msgCnt != 5) || (zmq_msg_size(&(msg[4])) != size) ) {
-                  bridgeLog_->warning("Transaction write data error. Id=%i",id);
+                  bridgeLog_->warning("Transaction write data error. Id=%" PRIu32,id);
                   for (x=0; x < msgCnt; x++) zmq_msg_close(&(msg[x]));
                   continue; // while (1)
                }
@@ -156,7 +157,7 @@ void rim::TcpServer::runThread() {
             // Data pointer
             data = (uint8_t *)zmq_msg_data(&(msg[4]));
 
-            bridgeLog_->debug("Starting transaction id=%u, addr=0x%x, size=%u, type=%i",id,addr,size,type);
+            bridgeLog_->debug("Starting transaction id=%" PRIu32 ", addr=0x%" PRIx64 ", size=%" PRIu32 ", type=%" PRIu32,id,addr,size,type);
 
             // Execute transaction and wait for result
             this->setError(0);
@@ -164,7 +165,7 @@ void rim::TcpServer::runThread() {
             waitTransaction(0);
             result = getError();
 
-            bridgeLog_->debug("Done transaction id=%u, addr=0x%x, size=%u, type=%i, result=%i",id,addr,size,type,result);
+            bridgeLog_->debug("Done transaction id=%" PRIu32 ", addr=0x%" PRIx64 ", size=%" PRIu32 ", type=%" PRIu32 ", result=%" PRIu32,id,addr,size,type,result);
 
             // Result message
             zmq_msg_init_size(&(msg[5]),4);
