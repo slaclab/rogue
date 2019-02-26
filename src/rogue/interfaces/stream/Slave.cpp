@@ -28,7 +28,7 @@
 #include <rogue/interfaces/stream/FrameLock.h>
 #include <rogue/interfaces/stream/FrameIterator.h>
 #include <rogue/GeneralError.h>
-#include <boost/make_shared.hpp>
+#include <memory>
 #include <rogue/GilRelease.h>
 #include <rogue/ScopedGil.h>
 #include <rogue/Logging.h>
@@ -42,7 +42,7 @@ namespace bp  = boost::python;
 
 //! Class creation
 ris::SlavePtr ris::Slave::create () {
-   ris::SlavePtr slv = boost::make_shared<ris::Slave>();
+   ris::SlavePtr slv = std::make_shared<ris::Slave>();
    return(slv);
 }
 

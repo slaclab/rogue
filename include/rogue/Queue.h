@@ -19,8 +19,7 @@
 **/
 #ifndef __ROGUE_QUEUE_H__
 #define __ROGUE_QUEUE_H__
-#include <boost/thread/mutex.hpp>
-#include <boost/thread/condition_variable.hpp>
+#include <condition_variable>
 #include <stdint.h>
 #include <queue>
 
@@ -29,9 +28,9 @@ namespace rogue {
    class Queue {
       private:
           std::queue<T> queue_;
-          mutable boost::mutex mtx_;
-          boost::condition_variable pushCond_;
-          boost::condition_variable popCond_;
+          mutable std::mutex mtx_;
+          std::condition_variable pushCond_;
+          std::condition_variable popCond_;
           uint32_t max_;
           uint32_t thold_;
           bool     busy_;
@@ -48,7 +47,7 @@ namespace rogue {
           void setThold(uint32_t thold) { thold_ = thold; }
 
           void push(T const &data) {
-             boost::mutex::scoped_lock lock(mtx_);
+             std::mutex::scoped_lock lock(mtx_);
    
              while(max_ > 0 && queue_.size() >= max_) 
                 pushCond_.wait(lock);
@@ -64,7 +63,7 @@ namespace rogue {
           }
 
           uint32_t size() {
-             boost::mutex::scoped_lock lock(mtx_);
+             std::mutex::scoped_lock lock(mtx_);
              return queue_.size();
           }
 
@@ -73,7 +72,7 @@ namespace rogue {
           }
 
           void reset() {
-             boost::mutex::scoped_lock lock(mtx_);
+             std::mutex::scoped_lock lock(mtx_);
              while(!queue_.empty()) queue_.pop();
              busy_ = false;
              lock.unlock();
@@ -82,7 +81,7 @@ namespace rogue {
 
           T pop() {
              T ret;
-             boost::mutex::scoped_lock lock(mtx_);
+             std::mutex::scoped_lock lock(mtx_);
              while(queue_.empty()) popCond_.wait(lock);
              ret=queue_.front();
              queue_.pop();

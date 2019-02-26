@@ -21,7 +21,7 @@
 #ifndef __ROGUE_PROTOCOLS_BATCHER_CORE_V1_H__
 #define __ROGUE_PROTOCOLS_BATCHER_CORE_V1_H__
 #include <stdint.h>
-#include <boost/thread.hpp>
+#include <thread>
 #include <rogue/interfaces/stream/Frame.h>
 #include <rogue/Logging.h>
 
@@ -34,13 +34,13 @@ namespace rogue {
          //!  AXI Stream FIFO
          class CoreV1 {
 
-               boost::shared_ptr<rogue::Logging> log_;
+               std::shared_ptr<rogue::Logging> log_;
 
                //! Frame pointers
-               boost::shared_ptr<rogue::interfaces::stream::Frame> frame_;
+               std::shared_ptr<rogue::interfaces::stream::Frame> frame_;
 
                //! Data List
-               std::vector< boost::shared_ptr<rogue::protocols::batcher::Data> > list_;
+               std::vector< std::shared_ptr<rogue::protocols::batcher::Data> > list_;
 
                //! Header size
                uint32_t headerSize_;
@@ -60,7 +60,7 @@ namespace rogue {
                static void setup_python();
 
                //! Create class
-               static boost::shared_ptr<rogue::protocols::batcher::CoreV1> create();
+               static std::shared_ptr<rogue::protocols::batcher::CoreV1> create();
 
                //! Creator
                CoreV1();
@@ -84,20 +84,20 @@ namespace rogue {
                rogue::interfaces::stream::FrameIterator & tail(uint32_t index);
 
                //! Get data
-               boost::shared_ptr<rogue::protocols::batcher::Data> & record(uint32_t index);
+               std::shared_ptr<rogue::protocols::batcher::Data> & record(uint32_t index);
 
                //! Return sequence
                uint32_t sequence();
 
                //! Process a frame
-               bool processFrame ( boost::shared_ptr<rogue::interfaces::stream::Frame> frame );
+               bool processFrame ( std::shared_ptr<rogue::interfaces::stream::Frame> frame );
 
                //! Reset data
                void reset();
          };
 
          // Convienence
-         typedef boost::shared_ptr<rogue::protocols::batcher::CoreV1> CoreV1Ptr;
+         typedef std::shared_ptr<rogue::protocols::batcher::CoreV1> CoreV1Ptr;
       }
    }
 }

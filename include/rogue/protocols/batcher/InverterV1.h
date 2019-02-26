@@ -21,7 +21,7 @@
 #ifndef __ROGUE_PROTOCOLS_BATCHER_INVERTER_V1_H__
 #define __ROGUE_PROTOCOLS_BATCHER_INVERTER_V1_H__
 #include <stdint.h>
-#include <boost/thread.hpp>
+#include <thread>
 #include <rogue/interfaces/stream/Master.h>
 #include <rogue/interfaces/stream/Slave.h>
 #include <rogue/Logging.h>
@@ -37,7 +37,7 @@ namespace rogue {
             public:
 
                //! Class creation
-               static boost::shared_ptr<rogue::protocols::batcher::InverterV1> create();
+               static std::shared_ptr<rogue::protocols::batcher::InverterV1> create();
 
                //! Setup class in python
                static void setup_python();
@@ -49,12 +49,12 @@ namespace rogue {
                ~InverterV1();
 
                //! Accept a frame from master
-               void acceptFrame ( boost::shared_ptr<rogue::interfaces::stream::Frame> frame );
+               void acceptFrame ( std::shared_ptr<rogue::interfaces::stream::Frame> frame );
 
          };
 
          // Convienence
-         typedef boost::shared_ptr<rogue::protocols::batcher::InverterV1> InverterV1Ptr;
+         typedef std::shared_ptr<rogue::protocols::batcher::InverterV1> InverterV1Ptr;
       }
    }
 }

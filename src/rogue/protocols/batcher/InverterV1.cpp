@@ -16,8 +16,8 @@
  *-----------------------------------------------------------------------------
 **/
 #include <stdint.h>
-#include <boost/thread.hpp>
-#include <boost/make_shared.hpp>
+#include <thread>
+#include <memory>
 #include <rogue/interfaces/stream/Master.h>
 #include <rogue/interfaces/stream/Slave.h>
 #include <rogue/interfaces/stream/Frame.h>
@@ -40,7 +40,7 @@ namespace bp  = boost::python;
 
 //! Class creation
 rpb::InverterV1Ptr rpb::InverterV1::create() {
-   rpb::InverterV1Ptr p = boost::make_shared<rpb::InverterV1>();
+   rpb::InverterV1Ptr p = std::make_shared<rpb::InverterV1>();
    return(p);
 }
 

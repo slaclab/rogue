@@ -24,9 +24,9 @@
 #include <rogue/interfaces/stream/Master.h>
 #include <rogue/interfaces/stream/Slave.h>
 #include <rogue/hardware/drivers/PgpDriver.h>
-#include <boost/thread.hpp>
+#include <thread>
 #include <stdint.h>
-#include <boost/shared_ptr.hpp>
+#include <memory>
 
 
 namespace rogue {
@@ -64,10 +64,11 @@ namespace rogue {
                //! Pointer to zero copy buffers
                void  ** rawBuff_;
 
-               boost::thread* thread_;
+               std::thread* thread_;
+               bool threadEn_;
 
                //! Log 
-               boost::shared_ptr<rogue::Logging> log_;
+               std::shared_ptr<rogue::Logging> log_;
 
                //! Thread background
                void runThread();
@@ -78,7 +79,7 @@ namespace rogue {
             public:
 
                //! Class creation
-               static boost::shared_ptr<rogue::hardware::pgp::PgpCard> 
+               static std::shared_ptr<rogue::hardware::pgp::PgpCard> 
                   create (std::string path, uint32_t lane, uint32_t vc);
 
                //! Setup class in python
@@ -97,22 +98,22 @@ namespace rogue {
                void setZeroCopyEn(bool state);
 
                //! Get card info.
-               boost::shared_ptr<rogue::hardware::pgp::Info> getInfo();
+               std::shared_ptr<rogue::hardware::pgp::Info> getInfo();
 
                //! Get pci status.
-               boost::shared_ptr<rogue::hardware::pgp::PciStatus> getPciStatus();
+               std::shared_ptr<rogue::hardware::pgp::PciStatus> getPciStatus();
 
                //! Get status of open lane.
-               boost::shared_ptr<rogue::hardware::pgp::Status> getStatus();
+               std::shared_ptr<rogue::hardware::pgp::Status> getStatus();
 
                //! Get evr control for open lane.
-               boost::shared_ptr<rogue::hardware::pgp::EvrControl> getEvrControl();
+               std::shared_ptr<rogue::hardware::pgp::EvrControl> getEvrControl();
 
                //! Set evr control for open lane.
-               void setEvrControl(boost::shared_ptr<rogue::hardware::pgp::EvrControl> r);
+               void setEvrControl(std::shared_ptr<rogue::hardware::pgp::EvrControl> r);
 
                //! Get evr status for open lane.
-               boost::shared_ptr<rogue::hardware::pgp::EvrStatus> getEvrStatus();
+               std::shared_ptr<rogue::hardware::pgp::EvrStatus> getEvrStatus();
 
                //! Set loopback for open lane
                void setLoop(bool enable);
@@ -128,13 +129,13 @@ namespace rogue {
                 * Pass total size required.
                 * Pass flag indicating if zero copy buffers are acceptable
                 */
-               boost::shared_ptr<rogue::interfaces::stream::Frame> acceptReq ( uint32_t size, bool zeroCopyEn);
+               std::shared_ptr<rogue::interfaces::stream::Frame> acceptReq ( uint32_t size, bool zeroCopyEn);
 
                //! Accept a frame from master
                /* 
                 * Returns true on success
                 */
-               void acceptFrame ( boost::shared_ptr<rogue::interfaces::stream::Frame> frame );
+               void acceptFrame ( std::shared_ptr<rogue::interfaces::stream::Frame> frame );
 
                //! Return a buffer
                /*
@@ -144,7 +145,7 @@ namespace rogue {
          };
 
          // Convienence
-         typedef boost::shared_ptr<rogue::hardware::pgp::PgpCard> PgpCardPtr;
+         typedef std::shared_ptr<rogue::hardware::pgp::PgpCard> PgpCardPtr;
 
       }
    }

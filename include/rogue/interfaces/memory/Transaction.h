@@ -19,10 +19,10 @@
 **/
 #ifndef __ROGUE_INTERFACES_MEMORY_TRANSACTION_H__
 #define __ROGUE_INTERFACES_MEMORY_TRANSACTION_H__
-#include <boost/enable_shared_from_this.hpp>
+#include <memory>
 #include <stdint.h>
 #include <vector>
-#include <boost/thread.hpp>
+#include <thread>
 
 #ifndef NO_PYTHON
 #include <boost/python.hpp>
@@ -42,7 +42,7 @@ namespace rogue {
           * transaction data pointer. Each created transaction object has a unique 32-bit 
           * transaction ID which is used to track the transaction.
           */ 
-         class Transaction : public boost::enable_shared_from_this<rogue::interfaces::memory::Transaction> {
+         class Transaction : public std::enable_shared_from_this<rogue::interfaces::memory::Transaction> {
             friend class TransactionLock;
             friend class Master;
             friend class Hub;
@@ -58,10 +58,10 @@ namespace rogue {
                static uint32_t classIdx_;
 
                // Class instance lock
-               static boost::mutex classMtx_;
+               static std::mutex classMtx_;
 
                // Conditional
-               boost::condition_variable cond_;
+               std::condition_variable cond_;
 
             protected:
 
@@ -104,10 +104,10 @@ namespace rogue {
                bool done_;
 
                // Transaction lock
-               boost::mutex lock_;
+               std::mutex lock_;
 
                // Create a transaction container and return a TransactionPtr, called by Master
-               static boost::shared_ptr<rogue::interfaces::memory::Transaction> create (struct timeval timeout);
+               static std::shared_ptr<rogue::interfaces::memory::Transaction> create (struct timeval timeout);
 
                // Wait for the transaction to complete, called by Master
                uint32_t wait();
@@ -134,7 +134,7 @@ namespace rogue {
                /** Exposed as lock() to Python
                 *  @return TransactionLock pointer (TransactonLockPtr)
                 */
-               boost::shared_ptr<rogue::interfaces::memory::TransactionLock> lock();
+               std::shared_ptr<rogue::interfaces::memory::TransactionLock> lock();
 
                //! Get expired flag
                /** The expired flag is set by the Master when the Transaction times out
@@ -179,7 +179,7 @@ namespace rogue {
                 * Not exposed to Python
                 * @param reference Reference TransactionPtr
                 */
-               void refreshTimer(boost::shared_ptr<rogue::interfaces::memory::Transaction> reference);
+               void refreshTimer(std::shared_ptr<rogue::interfaces::memory::Transaction> reference);
 
                //! Complete transaction with passed error
                /** Lock must be held before calling this method. The
@@ -233,7 +233,7 @@ namespace rogue {
          };
 
          //! Alias for using shared pointer as TransactionPtr
-         typedef boost::shared_ptr<rogue::interfaces::memory::Transaction> TransactionPtr;
+         typedef std::shared_ptr<rogue::interfaces::memory::Transaction> TransactionPtr;
 
       }
    }

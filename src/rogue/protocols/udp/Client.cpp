@@ -24,7 +24,7 @@
 #include <rogue/interfaces/stream/FrameLock.h>
 #include <rogue/interfaces/stream/Buffer.h>
 #include <rogue/GeneralError.h>
-#include <boost/make_shared.hpp>
+#include <memory>
 #include <rogue/GilRelease.h>
 #include <rogue/Logging.h>
 #include <stdlib.h>
@@ -39,7 +39,7 @@ namespace bp  = boost::python;
 
 //! Class creation
 rpu::ClientPtr rpu::Client::create (std::string host, uint16_t port, bool jumbo) {
-   rpu::ClientPtr r = boost::make_shared<rpu::Client>(host,port,jumbo);
+   rpu::ClientPtr r = std::make_shared<rpu::Client>(host,port,jumbo);
    return(r);
 }
 
@@ -83,12 +83,13 @@ rpu::Client::Client ( std::string host, uint16_t port, bool jumbo) : rpu::Core(j
    setPoolSize(10000); // Initial value, 10K frames
 
    // Start rx thread
-   thread_ = new boost::thread(boost::bind(&rpu::Client::runThread, this));
+   threadEn_ = true;
+   thread_ = new std::thread(&rpu::Client::runThread, this);
 }
 
 //! Destructor
 rpu::Client::~Client() {
-   thread_->interrupt();
+   threadEn_ = false;
    thread_->join();
 
    ::close(fd_);
@@ -115,7 +116,7 @@ void rpu::Client::acceptFrame ( ris::FramePtr frame ) {
 
    rogue::GilRelease noGil;
    ris::FrameLockPtr frLock = frame->lock();
-   boost::lock_guard<boost::mutex> lock(udpMtx_);
+   std::lock_guard<std::mutex> lock(udpMtx_);
 
    // Go through each buffer in the frame
    for (it=frame->beginBuffer(); it != frame->endBuffer(); ++it) {
@@ -163,43 +164,39 @@ void rpu::Client::runThread() {
    // Preallocate frame
    frame = ris::Pool::acceptReq(maxPayload(),false);
 
-   try {
+   while(threadEn_) {
 
-      while(1) {
+      // Attempt receive
+      buff = *(frame->beginBuffer());
+      avail = buff->getAvailable();
+      res = recvfrom(fd_, buff->begin(), avail, MSG_TRUNC, NULL, 0);
 
-         // Attempt receive
-         buff = *(frame->beginBuffer());
-         avail = buff->getAvailable();
-         res = recvfrom(fd_, buff->begin(), avail, MSG_TRUNC, NULL, 0);
+      if ( res > 0 ) {
 
-         if ( res > 0 ) {
-
-            // Message was too big
-            if (res > avail ) udpLog_->warning("Receive data was too large. Dropping.");
-            else {
-            buff->setPayload(res);
-               sendFrame(frame);
-            }
-
-            // Get new frame
-            frame = ris::Pool::acceptReq(maxPayload(),false);
-         }
+         // Message was too big
+         if (res > avail ) udpLog_->warning("Receive data was too large. Dropping.");
          else {
-
-            // Setup fds for select call
-            FD_ZERO(&fds);
-            FD_SET(fd_,&fds);
-
-            // Setup select timeout
-            tout.tv_sec  = 0;
-            tout.tv_usec = 100;
-
-            // Select returns with available buffer
-            select(fd_+1,&fds,NULL,NULL,&tout);
+         buff->setPayload(res);
+            sendFrame(frame);
          }
-         boost::this_thread::interruption_point();
+
+         // Get new frame
+         frame = ris::Pool::acceptReq(maxPayload(),false);
       }
-   } catch (boost::thread_interrupted&) { }
+      else {
+
+         // Setup fds for select call
+         FD_ZERO(&fds);
+         FD_SET(fd_,&fds);
+
+         // Setup select timeout
+         tout.tv_sec  = 0;
+         tout.tv_usec = 100;
+
+         // Select returns with available buffer
+         select(fd_+1,&fds,NULL,NULL,&tout);
+      }
+   }
 }
 
 void rpu::Client::setup_python () {

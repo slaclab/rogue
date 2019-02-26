@@ -26,8 +26,8 @@
 #include <rogue/interfaces/stream/Frame.h>
 #include <rogue/interfaces/stream/FrameLock.h>
 #include <stdint.h>
-#include <boost/thread.hpp>
-#include <boost/make_shared.hpp>
+#include <thread>
+#include <memory>
 #include <rogue/GilRelease.h>
 
 namespace ris = rogue::interfaces::stream;
@@ -40,7 +40,7 @@ namespace bp = boost::python;
 
 //! Class creation
 ruf::StreamWriterChannelPtr ruf::StreamWriterChannel::create (ruf::StreamWriterPtr writer, uint8_t channel) {
-   ruf::StreamWriterChannelPtr s = boost::make_shared<ruf::StreamWriterChannel>(writer,channel);
+   ruf::StreamWriterChannelPtr s = std::make_shared<ruf::StreamWriterChannel>(writer,channel);
    return(s);
 }
 
@@ -71,7 +71,7 @@ void ruf::StreamWriterChannel::acceptFrame ( ris::FramePtr frame ) {
 
    rogue::GilRelease noGil;
    ris::FrameLockPtr fLock = frame->lock();
-   boost::unique_lock<boost::mutex> lock(mtx_);
+   std::unique_lock<std::mutex> lock(mtx_);
 
    // Support for channelized traffic
    if ( channel_ == 0 ) ichan = frame->getChannel();
@@ -90,7 +90,7 @@ uint32_t ruf::StreamWriterChannel::getFrameCount() {
 
 void ruf::StreamWriterChannel::setFrameCount(uint32_t count) {
   rogue::GilRelease noGil;
-  boost::unique_lock<boost::mutex> lock(mtx_);
+  std::unique_lock<std::mutex> lock(mtx_);
   frameCount_ = count;
 }
 
@@ -100,7 +100,7 @@ bool ruf::StreamWriterChannel::waitFrameCount(uint32_t count, uint64_t timeout) 
    struct timeval curTime;
 
    rogue::GilRelease noGil;
-   boost::unique_lock<boost::mutex> lock(mtx_);
+   std::unique_lock<std::mutex> lock(mtx_);
 
    if (timeout != 0 ) {
       gettimeofday(&curTime,NULL);
@@ -113,7 +113,7 @@ bool ruf::StreamWriterChannel::waitFrameCount(uint32_t count, uint64_t timeout) 
    }
 
    while (frameCount_ < count) {
-      cond_.timed_wait(lock, boost::posix_time::microseconds(1000));
+      cond_.timed_wait(lock, std::chrono::microseconds(1000));
 
       if ( timeout != 0 ) {
          gettimeofday(&curTime,NULL);

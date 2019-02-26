@@ -22,7 +22,7 @@
 #define __ROGUE_INTERFACES_MEMORY_MASTER_H__
 #include <stdint.h>
 #include <vector>
-#include <boost/thread.hpp>
+#include <thread>
 #include <rogue/Logging.h>
 
 #ifndef NO_PYTHON
@@ -48,32 +48,32 @@ namespace rogue {
             private:
 
                //! Alias for map
-               typedef std::map<uint32_t, boost::shared_ptr<rogue::interfaces::memory::Transaction> > TransactionMap;
+               typedef std::map<uint32_t, std::shared_ptr<rogue::interfaces::memory::Transaction> > TransactionMap;
 
                //! Transaction map
                TransactionMap tranMap_;
 
                //! Slave. Used for request forwards.
-               boost::shared_ptr<rogue::interfaces::memory::Slave> slave_;
+               std::shared_ptr<rogue::interfaces::memory::Slave> slave_;
 
                //! Timeout value
                struct timeval sumTime_;
 
                //! Mutex
-               boost::mutex mastMtx_;
+               std::mutex mastMtx_;
 
                //! Error status
                uint32_t error_;
 
                //! Log
-               boost::shared_ptr<rogue::Logging> log_;
+               std::shared_ptr<rogue::Logging> log_;
 
             public:
 
                //! Class factory which returns a pointer to a Master (MasterPtr)
                /**Not exposed to Python
                 */
-               static boost::shared_ptr<rogue::interfaces::memory::Master> create ();
+               static std::shared_ptr<rogue::interfaces::memory::Master> create ();
 
                //! Setup class for use in python
                /* Not exposed to Python
@@ -96,13 +96,13 @@ namespace rogue {
                 * Exposted to python as _setSlave()
                 * @param slave Slave device pointer SlavePtr
                 */
-               void setSlave ( boost::shared_ptr<rogue::interfaces::memory::Slave> slave );
+               void setSlave ( std::shared_ptr<rogue::interfaces::memory::Slave> slave );
 
                //! Get next level Slave or Hub device
                /** Exposted to python as _getSlave()
                 * @return Slave device pointer SlavePtr
                 */
-               boost::shared_ptr<rogue::interfaces::memory::Slave> getSlave();
+               std::shared_ptr<rogue::interfaces::memory::Slave> getSlave();
 
                //! Query the slave ID
                /* Each Slave in the system has a unique 32-bit ID. This 
@@ -242,7 +242,7 @@ namespace rogue {
             protected:
 
                //! Internal transaction
-               uint32_t intTransaction(boost::shared_ptr<rogue::interfaces::memory::Transaction> tran);
+               uint32_t intTransaction(std::shared_ptr<rogue::interfaces::memory::Transaction> tran);
 
             public:
 
@@ -258,7 +258,7 @@ namespace rogue {
          };
 
          //! Alias for using shared pointer as MasterPtr
-         typedef boost::shared_ptr<rogue::interfaces::memory::Master> MasterPtr;
+         typedef std::shared_ptr<rogue::interfaces::memory::Master> MasterPtr;
       }
    }
 }

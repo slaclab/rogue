@@ -26,7 +26,7 @@
 #include <rogue/utilities/StreamUnZip.h>
 #include <rogue/GeneralError.h>
 #include <rogue/GilRelease.h>
-#include <boost/make_shared.hpp>
+#include <memory>
 #include <bzlib.h>
 
 namespace ris = rogue::interfaces::stream;
@@ -39,7 +39,7 @@ namespace bp = boost::python;
 
 //! Class creation
 ru::StreamUnZipPtr ru::StreamUnZip::create () {
-   ru::StreamUnZipPtr p = boost::make_shared<ru::StreamUnZip>();
+   ru::StreamUnZipPtr p = std::make_shared<ru::StreamUnZip>();
    return(p);
 }
 

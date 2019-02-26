@@ -21,8 +21,8 @@
 **/
 #ifndef __ROGUE_INTERFACES_STREAM_FRAME_H__
 #define __ROGUE_INTERFACES_STREAM_FRAME_H__
-#include <boost/enable_shared_from_this.hpp>
-#include <boost/thread.hpp>
+#include <memory>
+#include <thread>
 #include <stdint.h>
 #include <vector>
 
@@ -48,7 +48,7 @@ namespace rogue {
           * the stream data. A FrameIterator object is used to read and write data from and
           * to the Frame.
          */
-         class Frame : public boost::enable_shared_from_this<rogue::interfaces::stream::Frame> {
+         class Frame : public std::enable_shared_from_this<rogue::interfaces::stream::Frame> {
 
                friend class Buffer;
                friend class FrameLock;
@@ -63,7 +63,7 @@ namespace rogue {
                uint8_t chan_;
 
                // List of buffers which hold real data
-               std::vector<boost::shared_ptr<rogue::interfaces::stream::Buffer> > buffers_;
+               std::vector<std::shared_ptr<rogue::interfaces::stream::Buffer> > buffers_;
 
                // Total size of buffers
                uint32_t size_;
@@ -83,12 +83,12 @@ namespace rogue {
                void setSizeDirty();
 
                // Frame lock
-               boost::mutex lock_;
+               std::mutex lock_;
 
             public:
 
-               //! Alias for using std::vector<boost::shared_ptr<rogue::interfaces::stream::Buffer> >::iterator as Buffer::iterator
-               typedef std::vector<boost::shared_ptr<rogue::interfaces::stream::Buffer> >::iterator BufferIterator;
+               //! Alias for using std::vector<std::shared_ptr<rogue::interfaces::stream::Buffer> >::iterator as Buffer::iterator
+               typedef std::vector<std::shared_ptr<rogue::interfaces::stream::Buffer> >::iterator BufferIterator;
 
                //! Alias for using FrameIterator as Frame::iterator
                typedef rogue::interfaces::stream::FrameIterator iterator;
@@ -101,7 +101,7 @@ namespace rogue {
                //! Class factory which returns a FramePtr to an empty Frame
                /** Not exposed to Python
                 */
-               static boost::shared_ptr<rogue::interfaces::stream::Frame> create();
+               static std::shared_ptr<rogue::interfaces::stream::Frame> create();
 
                //! Create an empty Frame.
                /** Do not call directly. Use the create() class method instead.
@@ -117,15 +117,15 @@ namespace rogue {
                /** Exposed as lock() to Python
                 *  @return FrameLock pointer (FrameLockPtr)
                 */
-               boost::shared_ptr<rogue::interfaces::stream::FrameLock> lock();
+               std::shared_ptr<rogue::interfaces::stream::FrameLock> lock();
 
                //! Add a buffer to end of frame,
                /** Not exposed to Python
                 * @param buff The buffer pointer (BufferPtr) to append to the end of the frame
                 * @return Buffer list iterator (Frame::BufferIterator) pointing to the added buffer
                 */
-               std::vector<boost::shared_ptr<rogue::interfaces::stream::Buffer> >::iterator
-                  appendBuffer(boost::shared_ptr<rogue::interfaces::stream::Buffer> buff);
+               std::vector<std::shared_ptr<rogue::interfaces::stream::Buffer> >::iterator
+                  appendBuffer(std::shared_ptr<rogue::interfaces::stream::Buffer> buff);
 
                //! Append passed frame to the end of this frame.
                /** Buffers from the passed frame are appened to the end of this frame and
@@ -135,20 +135,20 @@ namespace rogue {
                 * @param frame Source frame pointer (FramePtr) to append
                 * @return Buffer list iterator (Frame::BufferIterator) pointing to the first inserted buffer from passed frame
                 */
-               std::vector<boost::shared_ptr<rogue::interfaces::stream::Buffer> >::iterator
-                  appendFrame(boost::shared_ptr<rogue::interfaces::stream::Frame> frame);
+               std::vector<std::shared_ptr<rogue::interfaces::stream::Buffer> >::iterator
+                  appendFrame(std::shared_ptr<rogue::interfaces::stream::Frame> frame);
 
                //! Get Buffer list begin iterator
                /** Not exposed to Python
                 * @return Buffer list iterator (Frame::BufferIterator) pointing to the start of the Buffer list
                 */
-               std::vector<boost::shared_ptr<rogue::interfaces::stream::Buffer> >::iterator beginBuffer();
+               std::vector<std::shared_ptr<rogue::interfaces::stream::Buffer> >::iterator beginBuffer();
 
                //! Get Buffer list end iterator
                /** Not exposed to Python
                 * @return Buffer list iterator (Frame::BufferIterator) pointing to the end of the Buffer list
                 */
-               std::vector<boost::shared_ptr<rogue::interfaces::stream::Buffer> >::iterator endBuffer();
+               std::vector<std::shared_ptr<rogue::interfaces::stream::Buffer> >::iterator endBuffer();
 
                //! Get Buffer list count
                /** Not exposed to Python
@@ -362,7 +362,7 @@ namespace rogue {
          };
 
          //! Alias for using shared pointer as FramePtr
-         typedef boost::shared_ptr<rogue::interfaces::stream::Frame> FramePtr;
+         typedef std::shared_ptr<rogue::interfaces::stream::Frame> FramePtr;
       }
    }
 }

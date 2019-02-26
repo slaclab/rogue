@@ -24,8 +24,8 @@
 #include <rogue/GeneralError.h>
 #include <rogue/ScopedGil.h>
 #include <rogue/GilRelease.h>
-#include <boost/make_shared.hpp>
-#include <boost/make_shared.hpp>
+#include <memory>
+#include <memory>
 
 #ifdef __MACH__
 #include <mach/clock.h>
@@ -115,7 +115,7 @@ void rpe::Variable::varUpdated(std::string path, bp::object value, bp::object di
 
    log_->debug("Variable update for %s: Disp=%s", epicsName_.c_str(),(char *)bp::extract<char *>(disp));
    {
-      boost::lock_guard<boost::mutex> lock(mtx_);
+      std::lock_guard<std::mutex> lock(mtx_);
       noGil.acquire();
 
       if (  isString_ ) fromPython(disp);

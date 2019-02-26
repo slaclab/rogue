@@ -23,7 +23,7 @@
 #define __ROGUE_HARDWARE_PGP_PCI_STATUS_H__
 #include <rogue/hardware/drivers/PgpDriver.h>
 #include <stdint.h>
-#include <boost/shared_ptr.hpp>
+#include <memory>
 
 namespace rogue {
    namespace hardware {
@@ -34,14 +34,14 @@ namespace rogue {
             public:
 
                //! Create the info class with pointer
-               static boost::shared_ptr<rogue::hardware::pgp::PciStatus> create();
+               static std::shared_ptr<rogue::hardware::pgp::PciStatus> create();
 
                //! Setup class in python
                static void setup_python();
          };
 
          //! Convienence
-         typedef boost::shared_ptr<rogue::hardware::pgp::PciStatus> PciStatusPtr;
+         typedef std::shared_ptr<rogue::hardware::pgp::PciStatus> PciStatusPtr;
       }
    }
 }

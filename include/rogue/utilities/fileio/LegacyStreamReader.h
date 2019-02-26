@@ -22,7 +22,7 @@
 #ifndef __ROGUE_UTILITIES_FILEIO_LEGACY_STREAM_READER_H__
 #define __ROGUE_UTILITIES_FILEIO_LEGACY_STREAM_READER_H__
 #include <rogue/interfaces/stream/Master.h>
-#include <boost/thread.hpp>
+#include <thread>
 #include <stdint.h>
 #include <map>
 
@@ -46,7 +46,8 @@ namespace rogue {
                bool active_;
               
                //! Read thread
-               boost::thread* readThread_;
+               std::thread* readThread_;
+               bool threadEn_;
 
                //! Thread background
                void runThread();
@@ -58,15 +59,15 @@ namespace rogue {
                void intClose();
 
                //! Active condition
-               boost::condition_variable cond_;
+               std::condition_variable cond_;
 
                //! Active lock
-               boost::mutex mtx_;
+               std::mutex mtx_;
 
             public:
 
                //! Class creation
-               static boost::shared_ptr<rogue::utilities::fileio::LegacyStreamReader> create ();
+               static std::shared_ptr<rogue::utilities::fileio::LegacyStreamReader> create ();
 
                //! Setup class in python
                static void setup_python();
@@ -91,7 +92,7 @@ namespace rogue {
          };
 
          // Convienence
-         typedef boost::shared_ptr<rogue::utilities::fileio::LegacyStreamReader> LegacyStreamReaderPtr;
+         typedef std::shared_ptr<rogue::utilities::fileio::LegacyStreamReader> LegacyStreamReaderPtr;
       }
    }
 }

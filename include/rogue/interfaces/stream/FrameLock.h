@@ -20,7 +20,7 @@
 #ifndef __ROGUE_INTERFACES_MEMORY_FRAME_LOCK_H__
 #define __ROGUE_INTERFACES_MEMORY_FRAME_LOCK_H__
 #include <stdint.h>
-#include <boost/thread.hpp>
+#include <thread>
 
 namespace rogue {
    namespace interfaces {
@@ -37,7 +37,7 @@ namespace rogue {
           */
          class FrameLock {
 
-               boost::shared_ptr<rogue::interfaces::stream::Frame> frame_;
+               std::shared_ptr<rogue::interfaces::stream::Frame> frame_;
                bool locked_;
 
             public:
@@ -48,8 +48,8 @@ namespace rogue {
                 * Not exposed to Python
                 * @param frame Frame pointer (FramePtr) to create a lock on
                 */
-               static boost::shared_ptr<rogue::interfaces::stream::FrameLock> create (
-                  boost::shared_ptr<rogue::interfaces::stream::Frame> frame);
+               static std::shared_ptr<rogue::interfaces::stream::FrameLock> create (
+                  std::shared_ptr<rogue::interfaces::stream::Frame> frame);
 
                //! Frame lock constructor
                /** Do not call directly. Use the create() class method instead.
@@ -57,7 +57,7 @@ namespace rogue {
                 * Not available in Python
                 * @param frame Frame pointer (FramePtr) to create a lock on
                 */
-               FrameLock(boost::shared_ptr<rogue::interfaces::stream::Frame> frame);
+               FrameLock(std::shared_ptr<rogue::interfaces::stream::Frame> frame);
 
                //! Setup class for use in python
                /* Not exposed to Python
@@ -96,7 +96,7 @@ namespace rogue {
          };
 
          //! Alias for using shared pointer as FrameLockPtr
-         typedef boost::shared_ptr<rogue::interfaces::stream::FrameLock> FrameLockPtr;
+         typedef std::shared_ptr<rogue::interfaces::stream::FrameLock> FrameLockPtr;
 
       }
    }

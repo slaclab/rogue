@@ -24,9 +24,8 @@
 #include <rogue/Logging.h>
 #include <rogue/GilRelease.h>
 #include <stdint.h>
-#include <boost/thread.hpp>
-#include <boost/make_shared.hpp>
-#include <boost/lexical_cast.hpp>
+#include <thread>
+#include <memory>
 #include <fcntl.h>
 #include <iostream>
 #include <stdio.h>
@@ -41,7 +40,7 @@ namespace bp = boost::python;
 
 //! Class creation
 ruf::LegacyStreamReaderPtr ruf::LegacyStreamReader::create () {
-   ruf::LegacyStreamReaderPtr s = boost::make_shared<ruf::LegacyStreamReader>();
+   ruf::LegacyStreamReaderPtr s = std::make_shared<ruf::LegacyStreamReader>();
    return(s);
 }
 
@@ -72,7 +71,7 @@ ruf::LegacyStreamReader::~LegacyStreamReader() {
 //! Open a data file
 void ruf::LegacyStreamReader::open(std::string file) {
    rogue::GilRelease noGil;
-   boost::unique_lock<boost::mutex> lock(mtx_);
+   std::unique_lock<std::mutex> lock(mtx_);
    intClose();
 
    // Determine if we read a group of files
@@ -89,12 +88,13 @@ void ruf::LegacyStreamReader::open(std::string file) {
       throw(rogue::GeneralError::open("LegacyStreamReader::open",file));
 
    active_ = true;
-   readThread_ = new boost::thread(boost::bind(&LegacyStreamReader::runThread, this));
+   threadEn_ = true;
+   readThread_ = new std::thread(&LegacyStreamReader::runThread, this);
 }
 
 //! Open file
 bool ruf::LegacyStreamReader::nextFile() {
-   boost::unique_lock<boost::mutex> lock(mtx_);
+   std::unique_lock<std::mutex> lock(mtx_);
    std::string name;
 
    if ( fd_ >= 0 ) {
@@ -105,7 +105,7 @@ bool ruf::LegacyStreamReader::nextFile() {
    if ( fdIdx_ == 0 ) return(false);
 
    fdIdx_++;
-   name = baseName_ + "." + boost::lexical_cast<std::string>(fdIdx_);
+   name = baseName_ + "." + to_string(fdIdx_);
 
    if ( (fd_ = ::open(name.c_str(),O_RDONLY)) < 0 ) return(false);
    return(true);
@@ -114,14 +114,14 @@ bool ruf::LegacyStreamReader::nextFile() {
 //! Close a data file
 void ruf::LegacyStreamReader::close() {
    rogue::GilRelease noGil;
-   boost::unique_lock<boost::mutex> lock(mtx_);
+   std::unique_lock<std::mutex> lock(mtx_);
    intClose();
 }
 
 //! Close a data file
 void ruf::LegacyStreamReader::intClose() {
    if ( readThread_ != NULL ) {
-      readThread_->interrupt();
+      threadEn_ = false;
       readThread_->join();
       delete readThread_;
       readThread_ = NULL;
@@ -132,8 +132,8 @@ void ruf::LegacyStreamReader::intClose() {
 //! Close when done
 void ruf::LegacyStreamReader::closeWait() {
    rogue::GilRelease noGil;
-   boost::unique_lock<boost::mutex> lock(mtx_);
-   while ( active_ ) cond_.timed_wait(lock,boost::posix_time::microseconds(1000));
+   std::unique_lock<std::mutex> lock(mtx_);
+   while ( active_ ) cond_.timed_wait(lock,std::chrono::microseconds(1000));
    intClose();
 }
 
@@ -159,62 +159,59 @@ void ruf::LegacyStreamReader::runThread() {
 
    ret = 0;
    err = false;
-   try {
-      do {
+   do {
 
-         // Read size of each frame
-         while ( (fd_ >= 0) && (read(fd_,&header,4) == 4) ) {
-            size = header & 0x0FFFFFFF;
-            chan = header >> 28;
+      // Read size of each frame
+      while ( (fd_ >= 0) && (read(fd_,&header,4) == 4) ) {
+         size = header & 0x0FFFFFFF;
+         chan = header >> 28;
 
-            if (chan == 0) {
-              size = size*4;
-            }
-
-            //cout << "Frame with size" << size << "and channel" << chan;
-            log.info("Got frame with header %x, size %i and channel %i", header, size, chan);
-            printf("Got frame with size %i and channel %i\n", size, chan);            
-            if ( size == 0 ) {
-               log.warning("Bad size read %i",size);
-               err = true;
-               break;
-            }
-
-            // Skip next step if frame is empty
-            if ( size <= 4 ) continue;
-            //size -= 4;
-
-            // Request frame
-            frame = reqFrame(size,true);
-            frame->setChannel(chan);
-            it = frame->beginBuffer();
-
-            while ( (err == false) && (size > 0) ) {
-               bSize = size;
-
-               // Adjust to buffer size, if neccessary
-               if ( bSize > (*it)->getSize() ) bSize = (*it)->getSize();
-
-               if ( (ret = read(fd_,(*it)->begin(),bSize)) != bSize) {
-                  log.warning("Short read. Ret = %i Req = %i after %i bytes",ret,bSize,frame->getPayload());
-                  ::close(fd_);
-                  fd_ = -1;
-                  frame->setError(0x1);
-                  err = true;
-               }
-               else {
-                  (*it)->setPayload(bSize);
-                  if ( (*it)->getAvailable() == 0 ) ++it; // Next buffer
-               }
-               size -= bSize;
-            }
-            sendFrame(frame);
-            boost::this_thread::interruption_point();
+         if (chan == 0) {
+           size = size*4;
          }
-      } while ( (err == false) && nextFile() );
-   } catch (boost::thread_interrupted&) {}
 
-   boost::unique_lock<boost::mutex> lock(mtx_);
+         //cout << "Frame with size" << size << "and channel" << chan;
+         log.info("Got frame with header %x, size %i and channel %i", header, size, chan);
+         printf("Got frame with size %i and channel %i\n", size, chan);            
+         if ( size == 0 ) {
+            log.warning("Bad size read %i",size);
+            err = true;
+            break;
+         }
+
+         // Skip next step if frame is empty
+         if ( size <= 4 ) continue;
+         //size -= 4;
+
+         // Request frame
+         frame = reqFrame(size,true);
+         frame->setChannel(chan);
+         it = frame->beginBuffer();
+
+         while ( (err == false) && (size > 0) ) {
+            bSize = size;
+
+            // Adjust to buffer size, if neccessary
+            if ( bSize > (*it)->getSize() ) bSize = (*it)->getSize();
+
+            if ( (ret = read(fd_,(*it)->begin(),bSize)) != bSize) {
+               log.warning("Short read. Ret = %i Req = %i after %i bytes",ret,bSize,frame->getPayload());
+               ::close(fd_);
+               fd_ = -1;
+               frame->setError(0x1);
+               err = true;
+            }
+            else {
+               (*it)->setPayload(bSize);
+               if ( (*it)->getAvailable() == 0 ) ++it; // Next buffer
+            }
+            size -= bSize;
+         }
+         sendFrame(frame);
+      }
+   } while ( threadEn_ && (err == false) && nextFile() );
+
+   std::unique_lock<std::mutex> lock(mtx_);
    if ( fd_ >= 0 ) ::close(fd_);
    fd_ = -1;
    active_ = false;

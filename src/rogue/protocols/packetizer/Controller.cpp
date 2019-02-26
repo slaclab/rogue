@@ -25,8 +25,7 @@
 #include <rogue/protocols/packetizer/Transport.h>
 #include <rogue/protocols/packetizer/Application.h>
 #include <rogue/GeneralError.h>
-#include <boost/make_shared.hpp>
-#include <boost/pointer_cast.hpp>
+#include <memory>
 #include <rogue/GilRelease.h>
 #include <math.h>
 

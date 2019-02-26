@@ -22,7 +22,7 @@
 #ifndef __ROGUE_UTILITIES_PRBS_H__
 #define __ROGUE_UTILITIES_PRBS_H__
 #include <stdint.h>
-#include <boost/thread.hpp>
+#include <thread>
 #include <boost/dynamic_bitset.hpp>
 #include <rogue/interfaces/stream/Slave.h>
 #include <rogue/interfaces/stream/Master.h>
@@ -56,7 +56,7 @@ namespace rogue {
             uint32_t   minSize_;
 
             //! Lock
-            boost::mutex pMtx_;
+            std::mutex pMtx_;
 
             //! rx sequence tracking
             uint32_t   rxSeq_;
@@ -108,11 +108,12 @@ namespace rogue {
             double   txBw_;
 
             //! Logger
-            boost::shared_ptr<rogue::Logging> rxLog_;
-            boost::shared_ptr<rogue::Logging> txLog_;
+            std::shared_ptr<rogue::Logging> rxLog_;
+            std::shared_ptr<rogue::Logging> txLog_;
 
             //! TX thread
-            boost::thread* txThread_;
+            std::thread* txThread_;
+            bool threadEn_;
 
             //! Internal computation 
             void flfsr(boost::dynamic_bitset<uint8_t> & data);
@@ -125,7 +126,7 @@ namespace rogue {
          public:
 
             //! Class creation
-            static boost::shared_ptr<rogue::utilities::Prbs> create ();
+            static std::shared_ptr<rogue::utilities::Prbs> create ();
 
             //! Setup class in python
             static void setup_python();
@@ -199,11 +200,11 @@ namespace rogue {
             void resetCount();
 
             //! Accept a frame from master
-            void acceptFrame ( boost::shared_ptr<rogue::interfaces::stream::Frame> frame );
+            void acceptFrame ( std::shared_ptr<rogue::interfaces::stream::Frame> frame );
       };
 
       // Convienence
-      typedef boost::shared_ptr<rogue::utilities::Prbs> PrbsPtr;
+      typedef std::shared_ptr<rogue::utilities::Prbs> PrbsPtr;
 
       typedef boost::dynamic_bitset<uint8_t> PrbsData;
 

@@ -44,7 +44,7 @@ void rpe::Server::setup_python() {
 //! Class creation
 rpe::Server::Server (uint32_t count) : caServer(), running_(false) { 
    workCnt_ = count;
-   workers_ = (boost::thread **)malloc(workCnt_ * sizeof(boost::thread *));
+   workers_ = (std::thread **)malloc(workCnt_ * sizeof(std::thread *));
 }
 
 rpe::Server::~Server() {
@@ -63,10 +63,12 @@ rpe::Server::~Server() {
 void rpe::Server::start() {
    uint32_t x;
    //this->setDebugLevel(10);
-   thread_ = new boost::thread(boost::bind(&rpe::Server::runThread, this));
+   threadEn_ = true;
+   thread_ = new std::thread(&rpe::Server::runThread, this);
 
+   workersEn_ = true;
    for (x=0; x < workCnt_; x++) 
-      workers_[x] = new boost::thread(boost::bind(&rpe::Server::runWorker, this));
+      workers_[x] = new std::thread(&rpe::Server::runWorker, this);
 
    running_ = true;
 }
@@ -78,15 +80,12 @@ void rpe::Server::stop() {
       rogue::GilRelease noGil;
 
       for (x=0; x < workCnt_; x++) 
-         workQueue_.push(boost::shared_ptr<rogue::protocols::epicsV3::Work>());
-        // workQueue_.push(NULL);
+         workQueue_.push(std::shared_ptr<rogue::protocols::epicsV3::Work>());
 
-      for (x=0; x < workCnt_; x++) {
-         workers_[x]->interrupt();
-         workers_[x]->join();
-      }
+      workersEn_ = false;
+      for (x=0; x < workCnt_; x++) workers_[x]->join();
 
-      thread_->interrupt();
+      threadEn_ = false;
       thread_->join();
       running_ = false;
    }
@@ -96,7 +95,7 @@ void rpe::Server::addValue(rpe::ValuePtr value) {
    std::map<std::string, rpe::ValuePtr>::iterator it;
    rpe::Pv * pv;
 
-   boost::lock_guard<boost::mutex> lock(mtx_);
+   std::lock_guard<std::mutex> lock(mtx_);
 
    if ( (it = values_.find(value->epicsName())) == values_.end()) {
       pv = new Pv(this, value);
@@ -113,7 +112,7 @@ void rpe::Server::addWork(rpe::WorkPtr work) {
 }
 
 pvExistReturn rpe::Server::pvExistTest(const casCtx &ctx, const char *pvName) {
-   boost::lock_guard<boost::mutex> lock(mtx_);
+   std::lock_guard<std::mutex> lock(mtx_);
 
    std::map<std::string, rpe::ValuePtr>::iterator it;
 
@@ -126,7 +125,7 @@ pvExistReturn rpe::Server::pvExistTest(const casCtx &ctx, const char *pvName) {
 }
 
 pvCreateReturn rpe::Server::createPV(const casCtx &ctx, const char *pvName) {
-   boost::lock_guard<boost::mutex> lock(mtx_);
+   std::lock_guard<std::mutex> lock(mtx_);
 
    std::map<std::string, rpe::ValuePtr>::iterator it;
 
@@ -137,7 +136,7 @@ pvCreateReturn rpe::Server::createPV(const casCtx &ctx, const char *pvName) {
 }
 
 pvAttachReturn rpe::Server::pvAttach(const casCtx &ctx, const char *pvName) {
-   boost::lock_guard<boost::mutex> lock(mtx_);
+   std::lock_guard<std::mutex> lock(mtx_);
 
    std::map<std::string, rpe::ValuePtr>::iterator it;
    rpe::Pv * pv;
@@ -150,25 +149,19 @@ pvAttachReturn rpe::Server::pvAttach(const casCtx &ctx, const char *pvName) {
 
 //! Run thread
 void rpe::Server::runThread() {
-   try {
-      while(1) {
-         fileDescriptorManager.process(0.01);
-         boost::this_thread::interruption_point();
-      }
-   } catch (boost::thread_interrupted&) { }
+   while(threadEn_) {
+      fileDescriptorManager.process(0.01);
+   }
 }
 
 //! Work thread
 void rpe::Server::runWorker() {
    rpe::WorkPtr work;
 
-   try {
-      while(1) {
-         work = workQueue_.pop();
-         if (work == NULL) break;
-         work->execute();
-         boost::this_thread::interruption_point();
-      }
-   } catch (boost::thread_interrupted&) { }
+   while(workersEn_) {
+      work = workQueue_.pop();
+      if (work == NULL) break;
+      work->execute();
+   }
 }
 

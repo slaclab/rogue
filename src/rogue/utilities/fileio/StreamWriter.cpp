@@ -39,9 +39,8 @@
 #include <rogue/interfaces/stream/Buffer.h>
 #include <rogue/GeneralError.h>
 #include <stdint.h>
-#include <boost/thread.hpp>
-#include <boost/make_shared.hpp>
-#include <boost/lexical_cast.hpp>
+#include <thread>
+#include <memory>
 #include <fcntl.h>
 #include <rogue/GilRelease.h>
 
@@ -55,7 +54,7 @@ namespace bp = boost::python;
 
 //! Class creation
 ruf::StreamWriterPtr ruf::StreamWriter::create () {
-   ruf::StreamWriterPtr s = boost::make_shared<ruf::StreamWriter>();
+   ruf::StreamWriterPtr s = std::make_shared<ruf::StreamWriter>();
    return(s);
 }
 
@@ -122,7 +121,7 @@ void ruf::StreamWriter::open(std::string file) {
 //! Close a data file
 void ruf::StreamWriter::close() {
    rogue::GilRelease noGil;
-   boost::lock_guard<boost::mutex> lock(mtx_);
+   std::lock_guard<std::mutex> lock(mtx_);
    flush();
    if ( fd_ >= 0 ) ::close(fd_);
    fd_ = -1;
@@ -131,7 +130,7 @@ void ruf::StreamWriter::close() {
 //! Set buffering size, 0 to disable
 void ruf::StreamWriter::setBufferSize(uint32_t size) {
    rogue::GilRelease noGil;
-   boost::lock_guard<boost::mutex> lock(mtx_);
+   std::lock_guard<std::mutex> lock(mtx_);
 
    // No change
    if ( size != buffSize_ ) {
@@ -157,7 +156,7 @@ void ruf::StreamWriter::setBufferSize(uint32_t size) {
 //! Set max file size, 0 for unlimited
 void ruf::StreamWriter::setMaxSize(uint32_t size) {
    rogue::GilRelease noGil;
-   boost::lock_guard<boost::mutex> lock(mtx_);
+   std::lock_guard<std::mutex> lock(mtx_);
    sizeLimit_ = size;
 }
 
@@ -169,7 +168,7 @@ void ruf::StreamWriter::setDropErrors(bool drop) {
 //! Get a slave port
 ruf::StreamWriterChannelPtr ruf::StreamWriter::getChannel(uint8_t channel) {
   rogue::GilRelease noGil;
-  boost::lock_guard<boost::mutex> lock(mtx_);
+  std::lock_guard<std::mutex> lock(mtx_);
   if (channelMap_.count(channel) == 0) {
     channelMap_[channel] = ruf::StreamWriterChannel::create(shared_from_this(),channel);
   }
@@ -179,7 +178,7 @@ ruf::StreamWriterChannelPtr ruf::StreamWriter::getChannel(uint8_t channel) {
 //! Get current file size
 uint32_t ruf::StreamWriter::getSize() {
    rogue::GilRelease noGil;
-   boost::lock_guard<boost::mutex> lock(mtx_);
+   std::lock_guard<std::mutex> lock(mtx_);
    return(totSize_ + currBuffer_);
 }
 
@@ -194,7 +193,7 @@ bool ruf::StreamWriter::waitFrameCount(uint32_t count, uint64_t timeout) {
    struct timeval curTime;
 
    rogue::GilRelease noGil;
-   boost::unique_lock<boost::mutex> lock(mtx_);
+   std::unique_lock<std::mutex> lock(mtx_);
 
    if (timeout != 0 ) {
       gettimeofday(&curTime,NULL);
@@ -207,7 +206,7 @@ bool ruf::StreamWriter::waitFrameCount(uint32_t count, uint64_t timeout) {
    }
   
    while (frameCount_ < count) {
-      cond_.timed_wait(lock, boost::posix_time::microseconds(1000));
+      cond_.timed_wait(lock, std::chrono::microseconds(1000));
 
       if ( timeout != 0 ) {
          gettimeofday(&curTime,NULL);
@@ -219,7 +218,7 @@ bool ruf::StreamWriter::waitFrameCount(uint32_t count, uint64_t timeout) {
 }
 
 //! Write data to file. Called from StreamWriterChannel
-void ruf::StreamWriter::writeFile ( uint8_t channel, boost::shared_ptr<rogue::interfaces::stream::Frame> frame) {
+void ruf::StreamWriter::writeFile ( uint8_t channel, std::shared_ptr<rogue::interfaces::stream::Frame> frame) {
    ris::Frame::BufferIterator it;
    uint32_t value;
    uint32_t size;
@@ -227,7 +226,7 @@ void ruf::StreamWriter::writeFile ( uint8_t channel, boost::shared_ptr<rogue::in
    if ( (frame->getPayload() == 0) || (dropErrors_ && (frame->getError() != 0)) ) return;
 
    rogue::GilRelease noGil;
-   boost::unique_lock<boost::mutex> lock(mtx_);
+   std::unique_lock<std::mutex> lock(mtx_);
 
    if ( fd_ >= 0 ) {
       size = frame->getPayload() + 4;
@@ -298,7 +297,7 @@ void ruf::StreamWriter::checkSize(uint32_t size) {
       ::close(fd_);
       fdIdx_++;
 
-      name = baseName_ + "." + boost::lexical_cast<std::string>(fdIdx_);
+      name = baseName_ + "." + to_string(fdIdx_);
 
       // Open new file
       if ( (fd_ = ::open(name.c_str(),O_RDWR|O_CREAT|O_APPEND,S_IRUSR|S_IWUSR|S_IRGRP|S_IWGRP|S_IROTH|S_IWOTH)) < 0 )

@@ -22,7 +22,7 @@
 #define __ROGUE_PROTOCOLS_RSSI_CONTROLLER_H__
 #include <rogue/interfaces/stream/Master.h>
 #include <rogue/interfaces/stream/Slave.h>
-#include <boost/enable_shared_from_this.hpp>
+#include <memory>
 #include <stdint.h>
 #include <rogue/Queue.h>
 #include <rogue/Logging.h>
@@ -36,7 +36,7 @@ namespace rogue {
          class Header;
 
          //! RSSI Controller Class
-         class Controller : public boost::enable_shared_from_this<rogue::protocols::rssi::Controller> {
+         class Controller : public std::enable_shared_from_this<rogue::protocols::rssi::Controller> {
 
                //! Hard coded values
                static const uint8_t  Version       = 1;
@@ -72,10 +72,10 @@ namespace rogue {
                                         StError      = 5 };
 
                // Interfaces
-               boost::shared_ptr<rogue::protocols::rssi::Transport> tran_;
-               boost::shared_ptr<rogue::protocols::rssi::Application> app_;
+               std::shared_ptr<rogue::protocols::rssi::Transport> tran_;
+               std::shared_ptr<rogue::protocols::rssi::Application> app_;
 
-               boost::shared_ptr<rogue::Logging> log_;
+               std::shared_ptr<rogue::Logging> log_;
 
                // Is server
                bool server_;
@@ -88,21 +88,21 @@ namespace rogue {
                bool     locBusy_;
 
                // Application queue
-               rogue::Queue<boost::shared_ptr<rogue::protocols::rssi::Header>> appQueue_;
+               rogue::Queue<std::shared_ptr<rogue::protocols::rssi::Header>> appQueue_;
                
                // Sequence Out of Order ("OOO") queue
-               std::map<uint8_t, boost::shared_ptr<rogue::protocols::rssi::Header>> oooQueue_;
+               std::map<uint8_t, std::shared_ptr<rogue::protocols::rssi::Header>> oooQueue_;
 
                // State queue
-               rogue::Queue<boost::shared_ptr<rogue::protocols::rssi::Header>> stQueue_;
+               rogue::Queue<std::shared_ptr<rogue::protocols::rssi::Header>> stQueue_;
 
                // Application tracking
                uint8_t lastSeqRx_;
                uint8_t ackSeqRx_;
 
                // State Tracking
-               boost::condition_variable stCond_;
-               boost::mutex stMtx_;
+               std::condition_variable stCond_;
+               std::mutex stMtx_;
                uint32_t state_;
                struct timeval stTime_;
                uint32_t downCount_;
@@ -113,8 +113,8 @@ namespace rogue {
                uint32_t remConnId_;
 
                // Transmit tracking
-               boost::shared_ptr<rogue::protocols::rssi::Header> txList_[256];
-               boost::mutex txMtx_;
+               std::shared_ptr<rogue::protocols::rssi::Header> txList_[256];
+               std::mutex txMtx_;
                uint8_t txListCount_;
                uint8_t lastAckTx_;
                uint8_t locSequence_;
@@ -130,7 +130,8 @@ namespace rogue {
                struct timeval zeroTme_;       // 0
 
                // State thread
-               boost::thread* thread_;
+               std::thread* thread_;
+               bool threadEn_;
 
                // Application frame transmit timeout
                struct timeval timeout_;
@@ -138,30 +139,30 @@ namespace rogue {
             public:
 
                //! Class creation
-               static boost::shared_ptr<rogue::protocols::rssi::Controller> 
+               static std::shared_ptr<rogue::protocols::rssi::Controller> 
                   create ( uint32_t segSize,
-                           boost::shared_ptr<rogue::protocols::rssi::Transport> tran,
-                           boost::shared_ptr<rogue::protocols::rssi::Application> app, bool server );
+                           std::shared_ptr<rogue::protocols::rssi::Transport> tran,
+                           std::shared_ptr<rogue::protocols::rssi::Application> app, bool server );
 
                //! Creator
                Controller( uint32_t segSize,
-                           boost::shared_ptr<rogue::protocols::rssi::Transport> tran,
-                           boost::shared_ptr<rogue::protocols::rssi::Application> app, bool server );
+                           std::shared_ptr<rogue::protocols::rssi::Transport> tran,
+                           std::shared_ptr<rogue::protocols::rssi::Application> app, bool server );
 
                //! Destructor
                ~Controller();
 
                //! Transport frame allocation request
-               boost::shared_ptr<rogue::interfaces::stream::Frame> reqFrame ( uint32_t size );
+               std::shared_ptr<rogue::interfaces::stream::Frame> reqFrame ( uint32_t size );
 
                //! Frame received at transport interface
-               void transportRx( boost::shared_ptr<rogue::interfaces::stream::Frame> frame );
+               void transportRx( std::shared_ptr<rogue::interfaces::stream::Frame> frame );
 
                //! Interface for application transmitter thread
-               boost::shared_ptr<rogue::interfaces::stream::Frame> applicationTx ();
+               std::shared_ptr<rogue::interfaces::stream::Frame> applicationTx ();
 
                //! Frame received at application interface
-               void applicationRx( boost::shared_ptr<rogue::interfaces::stream::Frame> frame );
+               void applicationRx( std::shared_ptr<rogue::interfaces::stream::Frame> frame );
 
                //! Get state
                bool getOpen();
@@ -231,7 +232,7 @@ namespace rogue {
             private:
 
                // Method to transit a frame with proper updates
-               void transportTx(boost::shared_ptr<rogue::protocols::rssi::Header> head, bool seqUpdate, bool txReset);
+               void transportTx(std::shared_ptr<rogue::protocols::rssi::Header> head, bool seqUpdate, bool txReset);
 
                // Method to retransmit a frame
                int8_t retransmit(uint8_t id);
@@ -263,7 +264,7 @@ namespace rogue {
          };
 
          // Convenience
-         typedef boost::shared_ptr<rogue::protocols::rssi::Controller> ControllerPtr;
+         typedef std::shared_ptr<rogue::protocols::rssi::Controller> ControllerPtr;
 
       }
    }

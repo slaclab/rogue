@@ -22,7 +22,7 @@
 #include <rogue/interfaces/memory/TransactionLock.h>
 #include <rogue/interfaces/memory/Constants.h>
 #include <rogue/GeneralError.h>
-#include <boost/make_shared.hpp>
+#include <memory>
 #include <rogue/GilRelease.h>
 #include <rogue/Logging.h>
 #include <zmq.h>
@@ -36,7 +36,7 @@ namespace bp  = boost::python;
 
 //! Class creation
 rim::TcpClientPtr rim::TcpClient::create (std::string addr, uint16_t port) {
-   rim::TcpClientPtr r = boost::make_shared<rim::TcpClient>(addr,port);
+   rim::TcpClientPtr r = std::make_shared<rim::TcpClient>(addr,port);
    return(r);
 }
 
@@ -75,12 +75,13 @@ rim::TcpClient::TcpClient (std::string addr, uint16_t port) : rim::Slave(4,0xFFF
       throw(rogue::GeneralError::network("TcpClient::TcpClient",addr,port));
 
    // Start rx thread
-   this->thread_ = new boost::thread(boost::bind(&rim::TcpClient::runThread, this));
+   threadEn_ = true;
+   this->thread_ = new std::thread(&rim::TcpClient::runThread, this);
 }
 
 //! Destructor
 rim::TcpClient::~TcpClient() {
-   thread_->interrupt();
+   threadEn_ = false;
    thread_->join();
 
    zmq_close(this->zmqResp_);
@@ -102,7 +103,7 @@ void rim::TcpClient::doTransaction(rim::TransactionPtr tran) {
    rim::Transaction::iterator tIter;
 
    rogue::GilRelease noGil;
-   boost::lock_guard<boost::mutex> block(bridgeMtx_);
+   std::lock_guard<std::mutex> block(bridgeMtx_);
    rim::TransactionLockPtr lock = tran->lock();
 
    // ID message
@@ -166,93 +167,88 @@ void rim::TcpClient::runThread() {
 
    bridgeLog_->logThreadId();
 
-   try {
+   while(threadEn_) {
 
-      while(1) {
+      for (x=0; x < 6; x++) zmq_msg_init(&(msg[x]));
+      msgCnt = 0;
+      x = 0;
 
-         for (x=0; x < 6; x++) zmq_msg_init(&(msg[x]));
-         msgCnt = 0;
-         x = 0;
+      // Get message
+      do {
 
-         // Get message
-         do {
+         // Get the message
+         if ( zmq_recvmsg(this->zmqResp_,&(msg[x]),0) > 0 ) {
+            if ( x != 5 ) x++;
+            msgCnt++;
 
-            // Get the message
-            if ( zmq_recvmsg(this->zmqResp_,&(msg[x]),0) > 0 ) {
-               if ( x != 5 ) x++;
-               msgCnt++;
+            // Is there more data?
+            more = 0;
+            moreSize = 8;
+            zmq_getsockopt(this->zmqResp_, ZMQ_RCVMORE, &more, &moreSize);
+         } else more = 1;
+      } while ( threadEn_ && more );
 
-               // Is there more data?
-               more = 0;
-               moreSize = 8;
-               zmq_getsockopt(this->zmqResp_, ZMQ_RCVMORE, &more, &moreSize);
-            } else more = 1;
-            boost::this_thread::interruption_point();
-         } while ( more );
+      // Proper message received
+      if ( msgCnt == 6 ) {
 
-         // Proper message received
-         if ( msgCnt == 6 ) {
+         // Check sizes
+         if ( (zmq_msg_size(&(msg[0])) != 4) || (zmq_msg_size(&(msg[1])) != 8) ||
+              (zmq_msg_size(&(msg[2])) != 4) || (zmq_msg_size(&(msg[3])) != 4) ||
+              (zmq_msg_size(&(msg[5])) != 4) ) {
+            bridgeLog_->warning("Bad message sizes");
+            for (x=0; x < msgCnt; x++) zmq_msg_close(&(msg[x]));
+            continue; // while (1)
+         }
 
-            // Check sizes
-            if ( (zmq_msg_size(&(msg[0])) != 4) || (zmq_msg_size(&(msg[1])) != 8) ||
-                 (zmq_msg_size(&(msg[2])) != 4) || (zmq_msg_size(&(msg[3])) != 4) ||
-                 (zmq_msg_size(&(msg[5])) != 4) ) {
-               bridgeLog_->warning("Bad message sizes");
-               for (x=0; x < msgCnt; x++) zmq_msg_close(&(msg[x]));
-               continue; // while (1)
-            }
+         // Get return fields
+         memcpy(&id,     zmq_msg_data(&(msg[0])), 4);
+         memcpy(&addr,   zmq_msg_data(&(msg[1])), 8);
+         memcpy(&size,   zmq_msg_data(&(msg[2])), 4);
+         memcpy(&type,   zmq_msg_data(&(msg[3])), 4);
+         memcpy(&result, zmq_msg_data(&(msg[5])), 4);
 
-            // Get return fields
-            memcpy(&id,     zmq_msg_data(&(msg[0])), 4);
-            memcpy(&addr,   zmq_msg_data(&(msg[1])), 8);
-            memcpy(&size,   zmq_msg_data(&(msg[2])), 4);
-            memcpy(&type,   zmq_msg_data(&(msg[3])), 4);
-            memcpy(&result, zmq_msg_data(&(msg[5])), 4);
+         // Find Transaction
+         if ( (tran = getTransaction(id)) == NULL ) {
+            bridgeLog_->warning("Failed to find transaction id=%i",id);
+            for (x=0; x < msgCnt; x++) zmq_msg_close(&(msg[x]));
+            continue; // while (1)
+         }
 
-            // Find Transaction
-            if ( (tran = getTransaction(id)) == NULL ) {
-               bridgeLog_->warning("Failed to find transaction id=%i",id);
-               for (x=0; x < msgCnt; x++) zmq_msg_close(&(msg[x]));
-               continue; // while (1)
-            }
+         // Lock transaction
+         rim::TransactionLockPtr lock = tran->lock();
 
-            // Lock transaction
-            rim::TransactionLockPtr lock = tran->lock();
+         // Transaction expired
+         if ( tran->expired() ) {
+            bridgeLog_->warning("Transaction expired. Id=%i",id);
+            for (x=0; x < msgCnt; x++) zmq_msg_close(&(msg[x]));
+            continue; // while (1)
+         }
+         tIter = tran->begin();
 
-            // Transaction expired
-            if ( tran->expired() ) {
-               bridgeLog_->warning("Transaction expired. Id=%i",id);
-               for (x=0; x < msgCnt; x++) zmq_msg_close(&(msg[x]));
-               continue; // while (1)
-            }
-            tIter = tran->begin();
+         // Double check transaction
+         if ( (addr != tran->address()) || (size != tran->size()) || (type != tran->type()) ) {
+            bridgeLog_->warning("Transaction data mistmatch. Id=%i",id);
+            tran->done(rim::ProtocolError);
+            for (x=0; x < msgCnt; x++) zmq_msg_close(&(msg[x]));
+            continue; // while (1)
+         }
 
-            // Double check transaction
-            if ( (addr != tran->address()) || (size != tran->size()) || (type != tran->type()) ) {
-               bridgeLog_->warning("Transaction data mistmatch. Id=%i",id);
+         // Copy data if read
+         if ( type != rim::Write ) {
+            if (zmq_msg_size(&(msg[4])) != size) {
+               bridgeLog_->warning("Transaction size mistmatch. Id=%i",id);
                tran->done(rim::ProtocolError);
                for (x=0; x < msgCnt; x++) zmq_msg_close(&(msg[x]));
                continue; // while (1)
             }
-
-            // Copy data if read
-            if ( type != rim::Write ) {
-               if (zmq_msg_size(&(msg[4])) != size) {
-                  bridgeLog_->warning("Transaction size mistmatch. Id=%i",id);
-                  tran->done(rim::ProtocolError);
-                  for (x=0; x < msgCnt; x++) zmq_msg_close(&(msg[x]));
-                  continue; // while (1)
-               }
-               data = (uint8_t *)zmq_msg_data(&(msg[4]));
-               std::copy(data,data+size,tIter);
-            }
-            tran->done(result);
-            bridgeLog_->debug("Response for transaction id=%i, addr=0x%x, size=%i, type=%i, cnt=%i",id,addr,size,type,msgCnt);
+            data = (uint8_t *)zmq_msg_data(&(msg[4]));
+            std::copy(data,data+size,tIter);
          }
-         for (x=0; x < msgCnt; x++) zmq_msg_close(&(msg[x]));
-         boost::this_thread::interruption_point();
+         tran->done(result);
+         bridgeLog_->debug("Response for transaction id=%i, addr=0x%x, size=%i, type=%i, cnt=%i",id,addr,size,type,msgCnt);
       }
-   } catch (boost::thread_interrupted&) { }
+      for (x=0; x < msgCnt; x++) zmq_msg_close(&(msg[x]));
+   }
 }
 
 void rim::TcpClient::setup_python () {

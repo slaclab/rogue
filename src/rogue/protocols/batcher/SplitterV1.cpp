@@ -16,8 +16,8 @@
  *-----------------------------------------------------------------------------
 **/
 #include <stdint.h>
-#include <boost/thread.hpp>
-#include <boost/make_shared.hpp>
+#include <thread>
+#include <memory>
 #include <rogue/interfaces/stream/Master.h>
 #include <rogue/interfaces/stream/Slave.h>
 #include <rogue/interfaces/stream/Frame.h>
@@ -40,7 +40,7 @@ namespace bp  = boost::python;
 
 //! Class creation
 rpb::SplitterV1Ptr rpb::SplitterV1::create() {
-   rpb::SplitterV1Ptr p = boost::make_shared<rpb::SplitterV1>();
+   rpb::SplitterV1Ptr p = std::make_shared<rpb::SplitterV1>();
    return(p);
 }
 

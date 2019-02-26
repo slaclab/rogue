@@ -20,7 +20,7 @@
 **/
 #include <rogue/protocols/rssi/Header.h>
 #include <rogue/GeneralError.h>
-#include <boost/make_shared.hpp>
+#include <memory>
 #include <rogue/GilRelease.h>
 #include <stdint.h>
 #include <iomanip>
@@ -65,7 +65,7 @@ uint16_t rpr::Header::compSum (uint8_t *data, uint8_t size) {
 
 //! Create
 rpr::HeaderPtr rpr::Header::create(ris::FramePtr frame) {
-   rpr::HeaderPtr r = boost::make_shared<rpr::Header>(frame);
+   rpr::HeaderPtr r = std::make_shared<rpr::Header>(frame);
    return(r);
 }
 

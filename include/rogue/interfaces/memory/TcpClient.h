@@ -21,7 +21,7 @@
 #define __ROGUE_INTERFACES_MEMORY_TCP_CLIENT_H__
 #include <rogue/interfaces/memory/Slave.h>
 #include <rogue/Logging.h>
-#include <boost/thread.hpp>
+#include <thread>
 #include <stdint.h>
 
 namespace rogue {
@@ -56,13 +56,14 @@ namespace rogue {
                void runThread();
 
                // Log
-               boost::shared_ptr<rogue::Logging> bridgeLog_;
+               std::shared_ptr<rogue::Logging> bridgeLog_;
 
                // Thread
-               boost::thread * thread_;
+               std::thread * thread_;
+               bool threadEn_;
 
                // Lock
-               boost::mutex bridgeMtx_;
+               std::mutex bridgeMtx_;
 
             public:
 
@@ -78,7 +79,7 @@ namespace rogue {
                 * @param port Base port number to use for connection.
                 * @return TcpServer object as a TcpServerPtr
                 */
-               static boost::shared_ptr<rogue::interfaces::memory::TcpClient> 
+               static std::shared_ptr<rogue::interfaces::memory::TcpClient> 
                       create (std::string addr, uint16_t port);
 
                //! Setup class in python
@@ -102,11 +103,11 @@ namespace rogue {
                ~TcpClient();
 
                //! Accept as transaction from the memory Master as defined in the Slave class.
-               void doTransaction(boost::shared_ptr<rogue::interfaces::memory::Transaction> tran);
+               void doTransaction(std::shared_ptr<rogue::interfaces::memory::Transaction> tran);
          };
 
          // Convienence
-         typedef boost::shared_ptr<rogue::interfaces::memory::TcpClient> TcpClientPtr;
+         typedef std::shared_ptr<rogue::interfaces::memory::TcpClient> TcpClientPtr;
 
       }
    }

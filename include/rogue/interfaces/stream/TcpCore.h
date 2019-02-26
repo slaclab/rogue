@@ -23,7 +23,7 @@
 #include <rogue/interfaces/stream/Slave.h>
 #include <rogue/interfaces/stream/Frame.h>
 #include <rogue/Logging.h>
-#include <boost/thread.hpp>
+#include <thread>
 #include <stdint.h>
 
 namespace rogue {
@@ -61,13 +61,14 @@ namespace rogue {
                void runThread();
 
                // Log
-               boost::shared_ptr<rogue::Logging> bridgeLog_;
+               std::shared_ptr<rogue::Logging> bridgeLog_;
 
                // Thread
-               boost::thread * thread_;
+               std::thread * thread_;
+               bool threadEn_;
 
                // Lock
-               boost::mutex bridgeMtx_;
+               std::mutex bridgeMtx_;
 
             public:
 
@@ -86,7 +87,7 @@ namespace rogue {
                 * @param server Server flag. Set to True to run in server mode.
                 * @return TcpCore object as a TcpCorePtr
                 */
-               static boost::shared_ptr<rogue::interfaces::stream::TcpCore> 
+               static std::shared_ptr<rogue::interfaces::stream::TcpCore> 
                   create (std::string addr, uint16_t port, bool server);
 
                //! Setup class for use in python
@@ -118,11 +119,11 @@ namespace rogue {
                 * passing a Frame.
                 * @param frame Frame pointer (FramePtr)
                 */
-               void acceptFrame ( boost::shared_ptr<rogue::interfaces::stream::Frame> frame );
+               void acceptFrame ( std::shared_ptr<rogue::interfaces::stream::Frame> frame );
          };
 
          //! Alias for using shared pointer as TcpCorePtr
-         typedef boost::shared_ptr<rogue::interfaces::stream::TcpCore> TcpCorePtr;
+         typedef std::shared_ptr<rogue::interfaces::stream::TcpCore> TcpCorePtr;
 
       }
    }

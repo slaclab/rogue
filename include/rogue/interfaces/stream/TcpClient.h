@@ -24,7 +24,7 @@
 #include <rogue/interfaces/stream/Frame.h>
 #include <rogue/interfaces/stream/TcpCore.h>
 #include <rogue/Logging.h>
-#include <boost/thread.hpp>
+#include <thread>
 #include <stdint.h>
 
 namespace rogue {
@@ -49,7 +49,7 @@ namespace rogue {
                 * @param port Base port number of use for connection.
                 * @return TcpClient object as a TcpClientPtr
                 */
-               static boost::shared_ptr<rogue::interfaces::stream::TcpClient> 
+               static std::shared_ptr<rogue::interfaces::stream::TcpClient> 
                   create (std::string addr, uint16_t port);
 
                //! Setup class for use in python
@@ -74,7 +74,7 @@ namespace rogue {
          };
 
          //! Alias for using shared pointer as TcpClientPtr
-         typedef boost::shared_ptr<rogue::interfaces::stream::TcpClient> TcpClientPtr;
+         typedef std::shared_ptr<rogue::interfaces::stream::TcpClient> TcpClientPtr;
 
       }
    }

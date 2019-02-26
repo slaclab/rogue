@@ -18,7 +18,7 @@
 #define __ROGUE_HARDWARE_AXI_MEM_MAP_H__
 #include <rogue/interfaces/memory/Slave.h>
 #include <rogue/interfaces/memory/Transaction.h>
-#include <boost/thread.hpp>
+#include <thread>
 #include <stdint.h>
 #include <rogue/Logging.h>
 
@@ -33,12 +33,12 @@ namespace rogue {
                int32_t  fd_;
 
                // Logging
-               boost::shared_ptr<rogue::Logging> log_;
+               std::shared_ptr<rogue::Logging> log_;
 
             public:
 
                //! Class creation
-               static boost::shared_ptr<rogue::hardware::axi::AxiMemMap> create (std::string path);
+               static std::shared_ptr<rogue::hardware::axi::AxiMemMap> create (std::string path);
 
                //! Setup class in python
                static void setup_python();
@@ -50,11 +50,11 @@ namespace rogue {
                ~AxiMemMap();
 
                //! Post a transaction
-               void doTransaction(boost::shared_ptr<rogue::interfaces::memory::Transaction> tran);
+               void doTransaction(std::shared_ptr<rogue::interfaces::memory::Transaction> tran);
          };
 
          // Convienence
-         typedef boost::shared_ptr<rogue::hardware::axi::AxiMemMap> AxiMemMapPtr;
+         typedef std::shared_ptr<rogue::hardware::axi::AxiMemMap> AxiMemMapPtr;
 
       }
    }

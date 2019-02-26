@@ -21,7 +21,7 @@
 #define __ROGUE_INTERFACES_MEMORY_TCP_SERVER_H__
 #include <rogue/interfaces/memory/Master.h>
 #include <rogue/Logging.h>
-#include <boost/thread.hpp>
+#include <thread>
 #include <stdint.h>
 
 namespace rogue {
@@ -56,10 +56,11 @@ namespace rogue {
                void runThread();
 
                // Log
-               boost::shared_ptr<rogue::Logging> bridgeLog_;
+               std::shared_ptr<rogue::Logging> bridgeLog_;
 
                // Thread
-               boost::thread * thread_;
+               std::thread * thread_;
+               bool threadEn_;
 
             public:
 
@@ -76,7 +77,7 @@ namespace rogue {
                 * @param port Base port number to use for connection.
                 * @return TcpServer object as a TcpServerPtr
                 */
-               static boost::shared_ptr<rogue::interfaces::memory::TcpServer> 
+               static std::shared_ptr<rogue::interfaces::memory::TcpServer> 
                       create (std::string addr, uint16_t port);
 
                //! Setup class in python
@@ -103,7 +104,7 @@ namespace rogue {
          };
 
          //! Alias for using shared pointer as TcpServerPtr
-         typedef boost::shared_ptr<rogue::interfaces::memory::TcpServer> TcpServerPtr;
+         typedef std::shared_ptr<rogue::interfaces::memory::TcpServer> TcpServerPtr;
 
       }
    }

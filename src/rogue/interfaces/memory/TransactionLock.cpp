@@ -20,7 +20,7 @@
 #include <rogue/interfaces/memory/TransactionLock.h>
 #include <rogue/interfaces/memory/Transaction.h>
 #include <rogue/GilRelease.h>
-#include <boost/make_shared.hpp>
+#include <memory>
 
 namespace rim = rogue::interfaces::memory;
 
@@ -31,7 +31,7 @@ namespace bp  = boost::python;
 
 //! Create a container
 rim::TransactionLockPtr rim::TransactionLock::create (rim::TransactionPtr tran) {
-   rim::TransactionLockPtr tranLock = boost::make_shared<rim::TransactionLock>(tran);
+   rim::TransactionLockPtr tranLock = std::make_shared<rim::TransactionLock>(tran);
    return(tranLock);
 }
 

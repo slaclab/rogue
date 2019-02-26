@@ -23,7 +23,7 @@
 #include <rogue/protocols/packetizer/Controller.h>
 #include <rogue/protocols/packetizer/Transport.h>
 #include <rogue/GeneralError.h>
-#include <boost/make_shared.hpp>
+#include <memory>
 #include <rogue/GilRelease.h>
 #include <rogue/Logging.h>
 
@@ -37,7 +37,7 @@ namespace bp  = boost::python;
 
 //! Class creation
 rpp::TransportPtr rpp::Transport::create () {
-   rpp::TransportPtr r = boost::make_shared<rpp::Transport>();
+   rpp::TransportPtr r = std::make_shared<rpp::Transport>();
    return(r);
 }
 
@@ -56,7 +56,7 @@ rpp::Transport::Transport () { }
 
 //! Destructor
 rpp::Transport::~Transport() { 
-   thread_->interrupt();
+   threadEn_ = false;
    thread_->join();
 }
 
@@ -65,7 +65,8 @@ void rpp::Transport::setController( rpp::ControllerPtr cntl ) {
    cntl_ = cntl;
 
    // Start read thread
-   thread_ = new boost::thread(boost::bind(&rpp::Transport::runThread, this));
+   threadEn_ = true;
+   thread_ = new std::thread(&rpp::Transport::runThread, this);
 }
 
 //! Accept a frame from master
@@ -78,11 +79,8 @@ void rpp::Transport::runThread() {
    Logging log("packetizer.Transport");
    log.logThreadId();
 
-   try {
-      while(1) {
-         sendFrame(cntl_->transportTx());
-         boost::this_thread::interruption_point();
-      }
-   } catch (boost::thread_interrupted&) { }
+   while(threadEn_) {
+      sendFrame(cntl_->transportTx());
+   }
 }
 

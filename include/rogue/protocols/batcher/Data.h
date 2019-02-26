@@ -21,7 +21,7 @@
 #ifndef __ROGUE_PROTOCOLS_BATCHER_DATA_H__
 #define __ROGUE_PROTOCOLS_BATCHER_DATA_H__
 #include <stdint.h>
-#include <boost/thread.hpp>
+#include <thread>
 #include <rogue/interfaces/stream/Frame.h>
 #include <rogue/interfaces/stream/FrameIterator.h>
 
@@ -53,7 +53,7 @@ namespace rogue {
                static void setup_python();
 
                //! Create object
-               static boost::shared_ptr<rogue::protocols::batcher::Data> create (
+               static std::shared_ptr<rogue::protocols::batcher::Data> create (
                   rogue::interfaces::stream::FrameIterator it,
                   uint32_t size, uint8_t dest, uint8_t fUser, uint8_t lUser);
 
@@ -82,7 +82,7 @@ namespace rogue {
          };
 
          // Convienence
-         typedef boost::shared_ptr<rogue::protocols::batcher::Data> DataPtr;
+         typedef std::shared_ptr<rogue::protocols::batcher::Data> DataPtr;
       }
    }
 }
