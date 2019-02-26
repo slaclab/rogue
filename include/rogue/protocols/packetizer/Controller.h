@@ -83,6 +83,9 @@ namespace rogue {
                //! Frame received at transport interface
                virtual void transportRx( boost::shared_ptr<rogue::interfaces::stream::Frame> frame );
 
+               //! Stop transmit queue
+               void stopQueue();
+
                //! Interface for transport transmitter thread
                boost::shared_ptr<rogue::interfaces::stream::Frame> transportTx ();
 

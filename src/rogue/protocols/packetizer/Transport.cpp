@@ -57,6 +57,7 @@ rpp::Transport::Transport () { }
 //! Destructor
 rpp::Transport::~Transport() { 
    thread_->interrupt();
+   cntl_->stopTx();
    thread_->join();
 }
 
@@ -75,12 +76,13 @@ void rpp::Transport::acceptFrame ( ris::FramePtr frame ) {
 
 //! Thread background
 void rpp::Transport::runThread() {
+   ris::FramePtr frame;
    Logging log("packetizer.Transport");
    log.logThreadId();
 
    try {
       while(1) {
-         sendFrame(cntl_->transportTx());
+         if ( (frame=cntl_->transportTx()) != NULL ) sendFrame(frame);
          boost::this_thread::interruption_point();
       }
    } catch (boost::thread_interrupted&) { }

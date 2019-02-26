@@ -151,6 +151,9 @@ namespace rogue {
                //! Destructor
                ~Controller();
 
+               //! Stop Queues
+               void stopQueue();
+
                //! Transport frame allocation request
                boost::shared_ptr<rogue::interfaces::stream::Frame> reqFrame ( uint32_t size );
 
