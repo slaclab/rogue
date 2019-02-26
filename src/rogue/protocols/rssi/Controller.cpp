@@ -119,7 +119,7 @@ rpr::Controller::~Controller() {
 }
 
 //! Stop queues
-rpr::Controller::stopQueue() {
+void rpr::Controller::stopQueue() {
    appQueue_.stop();
 }
 

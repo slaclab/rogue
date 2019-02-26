@@ -65,7 +65,7 @@ rpp::Controller::Controller ( rpp::TransportPtr tran, rpp::ApplicationPtr * app,
 rpp::Controller::~Controller() { }
 
 //! Stop TX
-rpp::Controller::stopQueue() { 
+void rpp::Controller::stopQueue() { 
    tranQueue_.stop();
 }
 
