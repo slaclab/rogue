@@ -57,7 +57,7 @@ rpp::Transport::Transport () { }
 //! Destructor
 rpp::Transport::~Transport() { 
    thread_->interrupt();
-   cntl_->stopTx();
+   cntl_->stopQueue();
    thread_->join();
 }
 
