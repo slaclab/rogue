@@ -22,6 +22,7 @@
 #include <rogue/interfaces/memory/TransactionLock.h>
 #include <rogue/interfaces/memory/Constants.h>
 #include <rogue/GeneralError.h>
+#include <inttypes.h>
 #include <boost/make_shared.hpp>
 #include <rogue/GilRelease.h>
 #include <rogue/Logging.h>
@@ -136,7 +137,7 @@ void rim::TcpClient::doTransaction(rim::TransactionPtr tran) {
    // Read transaction
    else msgCnt = 4;
 
-   bridgeLog_->debug("Forwarding transaction id=%i, addr=0x%x, size=%i, type=%i, cnt=%i",id,addr,size,type,msgCnt);
+   bridgeLog_->debug("Forwarding transaction id=%" PRIu32 ", addr=0x%" PRIx64 ", size=%" PRIu32 ", type=%" PRIu32 ", cnt=%" PRIu32 ,id,addr,size,type,msgCnt);
 
    // Send message
    for (x=0; x < msgCnt; x++) 
@@ -211,7 +212,7 @@ void rim::TcpClient::runThread() {
 
             // Find Transaction
             if ( (tran = getTransaction(id)) == NULL ) {
-               bridgeLog_->warning("Failed to find transaction id=%i",id);
+               bridgeLog_->warning("Failed to find transaction id=%" PRIu32,id);
                for (x=0; x < msgCnt; x++) zmq_msg_close(&(msg[x]));
                continue; // while (1)
             }
@@ -221,7 +222,7 @@ void rim::TcpClient::runThread() {
 
             // Transaction expired
             if ( tran->expired() ) {
-               bridgeLog_->warning("Transaction expired. Id=%i",id);
+               bridgeLog_->warning("Transaction expired. Id=%" PRIu32,id);
                for (x=0; x < msgCnt; x++) zmq_msg_close(&(msg[x]));
                continue; // while (1)
             }
@@ -229,7 +230,7 @@ void rim::TcpClient::runThread() {
 
             // Double check transaction
             if ( (addr != tran->address()) || (size != tran->size()) || (type != tran->type()) ) {
-               bridgeLog_->warning("Transaction data mistmatch. Id=%i",id);
+               bridgeLog_->warning("Transaction data mistmatch. Id=%" PRIu32,id);
                tran->done(rim::ProtocolError);
                for (x=0; x < msgCnt; x++) zmq_msg_close(&(msg[x]));
                continue; // while (1)
@@ -238,7 +239,7 @@ void rim::TcpClient::runThread() {
             // Copy data if read
             if ( type != rim::Write ) {
                if (zmq_msg_size(&(msg[4])) != size) {
-                  bridgeLog_->warning("Transaction size mistmatch. Id=%i",id);
+                  bridgeLog_->warning("Transaction size mistmatch. Id=%" PRIu32,id);
                   tran->done(rim::ProtocolError);
                   for (x=0; x < msgCnt; x++) zmq_msg_close(&(msg[x]));
                   continue; // while (1)
@@ -247,7 +248,8 @@ void rim::TcpClient::runThread() {
                std::copy(data,data+size,tIter);
             }
             tran->done(result);
-            bridgeLog_->debug("Response for transaction id=%i, addr=0x%x, size=%i, type=%i, cnt=%i",id,addr,size,type,msgCnt);
+            bridgeLog_->debug("Response for transaction id=%" PRIu32 ", addr=0x%" PRIx64 ", size=%" PRIu32 ", type=%" PRIu32 ", cnt=%" PRIu32,
+                               id,addr,size,type,msgCnt);
          }
          for (x=0; x < msgCnt; x++) zmq_msg_close(&(msg[x]));
          boost::this_thread::interruption_point();

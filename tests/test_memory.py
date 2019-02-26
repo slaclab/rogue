@@ -8,7 +8,7 @@ import pyrogue.interfaces.simulation
 import rogue.interfaces.memory
 import time
 
-#rogue.Logging.setLevel(rogue.Logging.Debug)
+rogue.Logging.setLevel(rogue.Logging.Debug)
 #import logging
 #logger = logging.getLogger('pyrogue')
 #logger.setLevel(logging.DEBUG)
