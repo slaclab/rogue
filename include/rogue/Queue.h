@@ -42,7 +42,7 @@ namespace rogue {
              max_   = 0; 
              thold_ = 0;
              busy_  = false;
-             run_   = false;
+             run_   = true;
           }
 
           void stop() {
