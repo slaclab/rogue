@@ -27,6 +27,7 @@
 #include <gdd.h>
 #include <gddApps.h>
 #include <gddAppFuncTable.h>
+#include <mutex>
 
 namespace rogue {
    namespace protocols {

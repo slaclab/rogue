@@ -105,7 +105,7 @@ bool ruf::LegacyStreamReader::nextFile() {
    if ( fdIdx_ == 0 ) return(false);
 
    fdIdx_++;
-   name = baseName_ + "." + to_string(fdIdx_);
+   name = baseName_ + "." + std::to_string(fdIdx_);
 
    if ( (fd_ = ::open(name.c_str(),O_RDONLY)) < 0 ) return(false);
    return(true);
@@ -133,7 +133,7 @@ void ruf::LegacyStreamReader::intClose() {
 void ruf::LegacyStreamReader::closeWait() {
    rogue::GilRelease noGil;
    std::unique_lock<std::mutex> lock(mtx_);
-   while ( active_ ) cond_.timed_wait(lock,std::chrono::microseconds(1000));
+   while ( active_ ) cond_.wait_for(lock,std::chrono::microseconds(1000));
    intClose();
 }
 

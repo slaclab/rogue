@@ -22,6 +22,7 @@
 #include <condition_variable>
 #include <stdint.h>
 #include <queue>
+#include <mutex>
 
 namespace rogue {
    template<typename T> 
@@ -47,7 +48,7 @@ namespace rogue {
           void setThold(uint32_t thold) { thold_ = thold; }
 
           void push(T const &data) {
-             std::mutex::scoped_lock lock(mtx_);
+             std::unique_lock lock(mtx_);
    
              while(max_ > 0 && queue_.size() >= max_) 
                 pushCond_.wait(lock);
@@ -63,7 +64,7 @@ namespace rogue {
           }
 
           uint32_t size() {
-             std::mutex::scoped_lock lock(mtx_);
+             std::scoped_lock lock(mtx_);
              return queue_.size();
           }
 
@@ -72,7 +73,7 @@ namespace rogue {
           }
 
           void reset() {
-             std::mutex::scoped_lock lock(mtx_);
+             std::unique_lock lock(mtx_);
              while(!queue_.empty()) queue_.pop();
              busy_ = false;
              lock.unlock();
@@ -81,7 +82,7 @@ namespace rogue {
 
           T pop() {
              T ret;
-             std::mutex::scoped_lock lock(mtx_);
+             std::unique_lock lock(mtx_);
              while(queue_.empty()) popCond_.wait(lock);
              ret=queue_.front();
              queue_.pop();

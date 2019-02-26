@@ -626,7 +626,7 @@ void rpr::Controller::runThread() {
          std::unique_lock<std::mutex> lock(stMtx_);
 
          // Adjustable wait
-         stCond_.timed_wait(lock, std::chrono::microseconds(wait.tv_usec) + std::chrono::seconds(wait.tv_sec));
+         stCond_.wait_for(lock, std::chrono::microseconds(wait.tv_usec) + std::chrono::seconds(wait.tv_sec));
       }
 
       switch(state_) {

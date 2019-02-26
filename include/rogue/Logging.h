@@ -22,6 +22,8 @@
 #include <exception>
 #include <stdint.h>
 #include <thread>
+#include <mutex>
+#include <vector>
 
 namespace rogue {
 

@@ -22,10 +22,10 @@
 #define __ROGUE_INTERFACES_STREAM_MASTER_H__
 #include <stdint.h>
 #include <stdio.h>
-//#include <pthread.h>
 #include <string>
 #include <vector>
 #include <thread>
+#include <mutex>
 
 namespace rogue {
    namespace interfaces {

@@ -113,7 +113,7 @@ bool ruf::StreamWriterChannel::waitFrameCount(uint32_t count, uint64_t timeout) 
    }
 
    while (frameCount_ < count) {
-      cond_.timed_wait(lock, std::chrono::microseconds(1000));
+      cond_.wait_for(lock, std::chrono::microseconds(1000));
 
       if ( timeout != 0 ) {
          gettimeofday(&curTime,NULL);

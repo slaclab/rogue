@@ -23,6 +23,8 @@
 #include <stdint.h>
 #include <vector>
 #include <thread>
+#include <mutex>
+#include <condition_variable>
 
 #ifndef NO_PYTHON
 #include <boost/python.hpp>

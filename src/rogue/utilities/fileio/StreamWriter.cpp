@@ -206,7 +206,7 @@ bool ruf::StreamWriter::waitFrameCount(uint32_t count, uint64_t timeout) {
    }
   
    while (frameCount_ < count) {
-      cond_.timed_wait(lock, std::chrono::microseconds(1000));
+      cond_.wait_for(lock, std::chrono::microseconds(1000));
 
       if ( timeout != 0 ) {
          gettimeofday(&curTime,NULL);
@@ -297,7 +297,7 @@ void ruf::StreamWriter::checkSize(uint32_t size) {
       ::close(fd_);
       fdIdx_++;
 
-      name = baseName_ + "." + to_string(fdIdx_);
+      name = baseName_ + "." + std::to_string(fdIdx_);
 
       // Open new file
       if ( (fd_ = ::open(name.c_str(),O_RDWR|O_CREAT|O_APPEND,S_IRUSR|S_IWUSR|S_IRGRP|S_IWGRP|S_IROTH|S_IWOTH)) < 0 )

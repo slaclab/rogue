@@ -39,6 +39,8 @@
 #include <rogue/interfaces/stream/Frame.h>
 #include <stdint.h>
 #include <thread>
+#include <mutex>
+#include <condition_variable>
 #include <map>
 
 namespace rogue {

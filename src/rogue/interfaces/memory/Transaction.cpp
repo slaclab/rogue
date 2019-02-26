@@ -134,7 +134,7 @@ uint32_t rim::Transaction::wait() {
          done_  = true;
          error_ = rim::TimeoutError;
       }
-      else cond_.timed_wait(lock,std::chrono::microseconds(1000));
+      else cond_.wait_for(lock,std::chrono::microseconds(1000));
    }
 
    // Reset

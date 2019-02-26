@@ -99,6 +99,7 @@ def test_file_compress():
     write_files()
     read_files()
 
-#if __name__ == "__main__":
-#    test_file_compress()
+if __name__ == "__main__":
+    write_files()
+    read_files()
 

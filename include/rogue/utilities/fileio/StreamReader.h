@@ -24,6 +24,8 @@
 #include <rogue/interfaces/stream/Master.h>
 #include <thread>
 #include <stdint.h>
+#include <mutex>
+#include <condition_variable>
 #include <map>
 
 namespace rogue {

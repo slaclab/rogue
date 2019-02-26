@@ -25,6 +25,7 @@
 #include <thread>
 #include <stdint.h>
 #include <map>
+#include <condition_variable>
 
 namespace rogue {
    namespace utilities {

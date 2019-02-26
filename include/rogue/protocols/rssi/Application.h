@@ -39,6 +39,7 @@ namespace rogue {
 
                // Transmission thread
                std::thread* thread_;
+               bool threadEn_;
 
                //! Thread background
                void runThread();

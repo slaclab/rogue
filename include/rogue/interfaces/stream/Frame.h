@@ -25,6 +25,7 @@
 #include <thread>
 #include <stdint.h>
 #include <vector>
+#include <mutex>
 
 #ifndef NO_PYTHON
 #include <boost/python.hpp>
