@@ -91,7 +91,6 @@ rpu::Server::~Server() {
    thread_->join();
 
    ::close(fd_);
-   printf("UDP server done\n");
 }
 
 

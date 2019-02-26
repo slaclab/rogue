@@ -172,7 +172,6 @@ void ruf::LegacyStreamReader::runThread() {
 
          //cout << "Frame with size" << size << "and channel" << chan;
          log.info("Got frame with header %x, size %i and channel %i", header, size, chan);
-         printf("Got frame with size %i and channel %i\n", size, chan);            
          if ( size == 0 ) {
             log.warning("Bad size read %i",size);
             err = true;

@@ -114,9 +114,7 @@ rpr::Controller::Controller ( uint32_t segSize, rpr::TransportPtr tran, rpr::App
 
 //! Destructor
 rpr::Controller::~Controller() { 
-   printf("RSSI destructor\n");
    stop();
-   printf("RSSI controller done\n");
 }
 
 //! Stop queues
@@ -131,7 +129,6 @@ void rpr::Controller::stop() {
       thread_->join();
       thread_ = NULL;
       state_ = StClosed;
-      printf("RSSI controller done\n");
    }
 }
 

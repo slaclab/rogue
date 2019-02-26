@@ -56,11 +56,9 @@ rpr::Application::Application () { }
 
 //! Destructor
 rpr::Application::~Application() { 
-   printf("rssi transport destructor\n");
    threadEn_ = false;
    cntl_->stopQueue();
    thread_->join();
-   printf("RSSI application done\n");
 }
 
 //! Setup links
