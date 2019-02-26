@@ -119,6 +119,11 @@ rpr::Controller::~Controller() {
    printf("RSSI controller done\n");
 }
 
+//! Stop queues
+void rpr::Controller::stopQueue() {
+   appQueue_.stop();
+}
+
 //! Close
 void rpr::Controller::stop() {
    if ( thread_ != NULL ) {
@@ -304,7 +309,7 @@ ris::FramePtr rpr::Controller::applicationTx() {
    rogue::GilRelease noGil;
 
    do {
-      head = appQueue_.pop();
+      if ((head = appQueue_.pop()) == NULL) return(frame);
       stCond_.notify_all();
 
       frame = head->getFrame();

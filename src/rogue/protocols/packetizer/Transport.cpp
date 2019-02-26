@@ -56,10 +56,9 @@ rpp::Transport::Transport () { }
 
 //! Destructor
 rpp::Transport::~Transport() { 
-   printf("packetizer transport destructor\n");
    threadEn_ = false;
+   cntl_->stopQueue();
    thread_->join();
-   printf("packetizer transport done\n");
 }
 
 //! Setup links
@@ -78,11 +77,12 @@ void rpp::Transport::acceptFrame ( ris::FramePtr frame ) {
 
 //! Thread background
 void rpp::Transport::runThread() {
+   ris::FramePtr frame;
    Logging log("packetizer.Transport");
    log.logThreadId();
 
    while(threadEn_) {
-      sendFrame(cntl_->transportTx());
+      if ( (frame=cntl_->transportTx()) != NULL ) sendFrame(frame);
    }
 }
 

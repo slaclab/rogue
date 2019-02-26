@@ -63,7 +63,7 @@ namespace rogue {
              while(run_ && max_ > 0 && queue_.size() >= max_) 
                 pushCond_.wait(lock);
 
-             queue_.push(data);
+             if ( run_ ) queue_.push(data);
              busy_ = ( thold_ > 0 && queue_.size() > thold_ );
              lock.unlock();
              popCond_.notify_all();

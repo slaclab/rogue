@@ -59,11 +59,9 @@ rpp::Application::Application (uint8_t id) {
 
 //! Destructor
 rpp::Application::~Application() { 
-   printf("packetizer application destructor\n");
-   queue_.stop();
    threadEn_ = false;
+   queue_.stop();
    thread_->join();
-   printf("packetizer application done\n");
 }
 
 //! Setup links
@@ -97,7 +95,7 @@ void rpp::Application::runThread() {
    log.logThreadId();
 
    while(threadEn_) {
-      if ( (frame=queue_.pop()) != NULL ) sendFrame(frame);
+      if ( (frame = queue_.pop()) != NULL ) sendFrame(frame);
    }
 }
 

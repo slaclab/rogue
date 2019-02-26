@@ -58,6 +58,7 @@ rpr::Application::Application () { }
 rpr::Application::~Application() { 
    printf("rssi transport destructor\n");
    threadEn_ = false;
+   cntl_->stopQueue();
    thread_->join();
    printf("RSSI application done\n");
 }
@@ -83,11 +84,12 @@ void rpr::Application::acceptFrame ( ris::FramePtr frame ) {
 
 //! Thread background
 void rpr::Application::runThread() {
+   ris::FramePtr frame;
    Logging log("rssi.Application");
    log.logThreadId();
 
    while(threadEn_) {
-      sendFrame(cntl_->applicationTx());
+      if ( (frame=cntl_->applicationTx()) != NULL ) sendFrame(frame);
    }
 }
 
