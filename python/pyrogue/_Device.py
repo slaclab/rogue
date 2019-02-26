@@ -93,7 +93,7 @@ class EnableVariable(pr.BaseVariable):
                 newEn = (self.value() == True)
 
                 if oldEn != newEn:
-                    self.parent.enableChanged(self.value())
+                    self.parent.enableChanged(newEn)
 
         super()._doUpdate()
 
