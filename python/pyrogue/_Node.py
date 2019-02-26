@@ -31,7 +31,7 @@ def logInit(cls=None,name=None,path=None):
         format="%(levelname)s:%(name)s:%(message)s",
         stream=sys.stdout)
 
-    print("logInit called for {}:{}: {}".format(cls,name,inspect.getmro(cls.__class__)))
+    print("logInit called for {}:{}: {}".format(cls.__class__.__name__,name,inspect.getmro(cls.__class__)))
 
     msg = 'pyrogue'
 
