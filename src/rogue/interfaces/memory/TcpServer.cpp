@@ -156,7 +156,7 @@ void rim::TcpServer::runThread() {
             // Data pointer
             data = (uint8_t *)zmq_msg_data(&(msg[4]));
 
-            bridgeLog_->debug("Starting transaction id=%i, addr=0x%x, size=%i, type=%i",id,addr,size,type);
+            bridgeLog_->debug("Starting transaction id=%u, addr=0x%x, size=%u, type=%i",id,addr,size,type);
 
             // Execute transaction and wait for result
             this->setError(0);
@@ -164,7 +164,7 @@ void rim::TcpServer::runThread() {
             waitTransaction(0);
             result = getError();
 
-            bridgeLog_->debug("Done transaction id=%i, addr=0x%x, size=%i, type=%i, result=%i",id,addr,size,type,result);
+            bridgeLog_->debug("Done transaction id=%u, addr=0x%x, size=%u, type=%i, result=%i",id,addr,size,type,result);
 
             // Result message
             zmq_msg_init_size(&(msg[5]),4);

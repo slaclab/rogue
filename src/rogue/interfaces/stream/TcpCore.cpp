@@ -151,7 +151,7 @@ void ris::TcpCore::acceptFrame ( ris::FramePtr frame ) {
       if ( zmq_sendmsg(this->zmqPush_,&(msg[x]),(x==3)?0:ZMQ_SNDMORE) < 0 )
          bridgeLog_->warning("Failed to send message with size %i",frame->getPayload());
    }
-   bridgeLog_->debug("Accept frame with size %i",frame->getPayload());
+   bridgeLog_->debug("Sent TCP frame with size %i",frame->getPayload());
 }
 
 //! Run thread
@@ -225,7 +225,7 @@ void ris::TcpCore::runThread() {
             frame->setChannel(chan);
             frame->setError(err);
 
-            bridgeLog_->debug("Sending frame with size %i",frame->getPayload());
+            bridgeLog_->debug("Received TCP frame with size %i",frame->getPayload());
             sendFrame(frame);
          }
 
