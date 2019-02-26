@@ -68,7 +68,8 @@ ris::Fifo::Fifo(uint32_t maxDepth, uint32_t trimSize, bool noCopy ) : ris::Maste
 
 //! Deconstructor
 ris::Fifo::~Fifo() {
-   threadEn_ = true;
+   //queue_.stop();
+   threadEn_ = false;
    thread_->join();
 }
 
@@ -113,10 +114,11 @@ void ris::Fifo::acceptFrame ( ris::FramePtr frame ) {
 
 //! Thread background
 void ris::Fifo::runThread() {
+   ris::FramePtr frame;
    log_->logThreadId();
 
    while(threadEn_) {
-      sendFrame(queue_.pop());
+      if ( (frame = queue_.pop()) != NULL ) sendFrame(queue_.pop());
    }
 }
 

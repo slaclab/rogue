@@ -56,8 +56,10 @@ rpp::Transport::Transport () { }
 
 //! Destructor
 rpp::Transport::~Transport() { 
+   printf("packetizer transport destructor\n");
    threadEn_ = false;
    thread_->join();
+   printf("packetizer transport done\n");
 }
 
 //! Setup links

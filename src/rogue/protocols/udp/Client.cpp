@@ -93,6 +93,7 @@ rpu::Client::~Client() {
    thread_->join();
 
    ::close(fd_);
+   printf("UDP client done\n");
 }
 
 //! Accept a frame from master
