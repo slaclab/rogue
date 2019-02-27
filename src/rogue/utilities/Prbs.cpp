@@ -346,7 +346,7 @@ void ru::Prbs::genFrame (uint32_t size) {
    if ( genPl_ ) {
 
       // Init data
-      memcpy(data,frSeq,byteWidth);
+      memcpy(data,frSeq,byteWidth_);
 
       // Generate payload
       while ( frIter != frEnd ) {
@@ -354,7 +354,7 @@ void ru::Prbs::genFrame (uint32_t size) {
          if ( sendCount_ ) ris::toFrame(frIter,byteWidth_,wCount);
          else {
             flfsr(data);
-            frIter = std::copy(data,data+byteWidth,frIter);
+            frIter = std::copy(data,data+byteWidth_,frIter);
          }
          ++wCount[0];
       }
@@ -430,7 +430,7 @@ void ru::Prbs::acceptFrame ( ris::FramePtr frame ) {
    if ( checkPl_ ) {
 
       // Init data
-      memcpy(expData,frSeq,byteWidth);
+      memcpy(expData,frSeq,byteWidth_);
       pos = 0;
 
       // Read payload
