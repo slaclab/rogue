@@ -23,6 +23,7 @@
 #include <rogue/interfaces/stream/Master.h>
 #include <rogue/interfaces/stream/Slave.h>
 #include <memory>
+#include <map>
 #include <stdint.h>
 #include <rogue/Queue.h>
 #include <rogue/Logging.h>
