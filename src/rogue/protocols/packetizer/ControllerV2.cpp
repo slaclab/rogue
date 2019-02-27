@@ -29,7 +29,6 @@
 #include <math.h>
 #include <stdlib.h>
 
-#define crcpp_uint32
 #include <rogue/protocols/packetizer/CRC.h>
 
 namespace rpp = rogue::protocols::packetizer;
