@@ -48,8 +48,8 @@ rpp::ControllerV2Ptr rpp::ControllerV2::create ( bool enIbCrc, bool enObCrc, boo
 //! Creator
 rpp::ControllerV2::ControllerV2 ( bool enIbCrc, bool enObCrc, bool enSsi, rpp::TransportPtr tran, rpp::ApplicationPtr * app ) : rpp::Controller::Controller(tran, app, 8, 8, 8, enSsi) {
 
-   enIbCrc_  = enIbCrc;
-   enObCrc_  = enObCrc;
+   enIbCrc_ = enIbCrc;
+   enObCrc_ = enObCrc;
 }
 
 //! Destructor
@@ -72,8 +72,6 @@ void rpp::ControllerV2::transportRx( ris::FramePtr frame ) {
    uint32_t  crc;
    uint32_t  tmpCrc;
    uint8_t * data;
-
-   //CRC::Table<std::uint32_t, 32> crcTable(CRC::CRC_32());
 
    if ( frame->isEmpty() ) {
       log_->warning("Bad incoming transportRx frame, size=0");
@@ -208,8 +206,6 @@ void rpp::ControllerV2::applicationRx ( ris::FramePtr frame, uint8_t tDest ) {
    struct timeval startTime;
    struct timeval currTime;
    struct timeval endTime;
-
-   //CRC::Table<uint32_t, 32> crcTable(CRC::CRC_32());
 
    gettimeofday(&startTime,NULL);
    timeradd(&startTime,&timeout_,&endTime);
