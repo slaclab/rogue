@@ -45,8 +45,6 @@ namespace rogue {
                bool     enIbCrc_;
                bool     enObCrc_;
 
-               //CRC::Table<std::uint32_t, 32> crcTable_(CRC::CRC_32());
-
             public:
 
                //! Class creation
