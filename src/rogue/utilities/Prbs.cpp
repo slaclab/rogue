@@ -170,13 +170,25 @@ void ru::Prbs::sendCount(bool state) {
    sendCount_ = state;
 }
 
-void ru::Prbs::flfsr(ru::PrbsData & data) {
-   bool bit = false;
+void ru::Prbs::flfsr(uint8_t * data) {
+   uint32_t iByte;
+   uint32_t iBit;
+   uint32_t x;
+   bool msbOut;
+   bool lsbIn = false;
 
-   for (uint32_t x=0; x < tapCnt_; x++) bit ^= data[taps_[x]];
+   for (x=0; x < tapCnt_; x++) {
+      iByte = taps_[x] / 8;
+      iBit  = taps_[x] % 8;
+      lsbIn ^= ((data[iByte] >> iBit) & 0x1);
+   }
 
-   data <<= 1;
-   data[0] = bit;
+   for (x=0; x < byteWidth_; x++) {
+      msbOut = data[x] & 0x80;
+      data[x] <<= 1;
+      data[x] |= lsbIn;
+      lsbIn = msbOut;
+   }
 }
 
 //! Thread background
@@ -293,6 +305,7 @@ void ru::Prbs::genFrame (uint32_t size) {
    uint32_t      frSeq[MaxBytes/4];
    uint32_t      frSize[MaxBytes/4];
    uint32_t      wCount[MaxBytes/4];
+   uint8_t       data[MaxBytes];
    double        per;
    ris::FramePtr fr;
 
@@ -331,7 +344,7 @@ void ru::Prbs::genFrame (uint32_t size) {
    if ( genPl_ ) {
 
       // Init data
-      ru::PrbsData data(byteWidth_ * 8, frSeq[0]);
+      memcpy(data,frSeq,byteWidth_);
 
       // Generate payload
       while ( frIter != frEnd ) {
@@ -339,8 +352,7 @@ void ru::Prbs::genFrame (uint32_t size) {
          if ( sendCount_ ) ris::toFrame(frIter,byteWidth_,wCount);
          else {
             flfsr(data);
-            to_block_range(data,frIter);
-            frIter += byteWidth_;
+            frIter = std::copy(data,data+byteWidth_,frIter);
          }
          ++wCount[0];
       }
@@ -373,7 +385,7 @@ void ru::Prbs::acceptFrame ( ris::FramePtr frame ) {
    uint32_t      size;
    uint32_t      pos;
    uint32_t      x;
-   uint8_t       compData[MaxBytes];
+   uint8_t       expData[MaxBytes];
    double        per;
    char          debugA[1000];
    char          debugB[200];
@@ -416,18 +428,17 @@ void ru::Prbs::acceptFrame ( ris::FramePtr frame ) {
    if ( checkPl_ ) {
 
       // Init data
-      ru::PrbsData expData(byteWidth_ * 8, frSeq[0]);
+      memcpy(expData,frSeq,byteWidth_);
       pos = 0;
 
       // Read payload
       while ( frIter != frEnd ) {
          flfsr(expData);
-         to_block_range(expData,compData);
 
-         if ( ! std::equal(frIter,frIter+byteWidth_,compData ) ) {
+         if ( ! std::equal(frIter,frIter+byteWidth_,expData ) ) {
             sprintf(debugA,"Bad value at index %i. count=%i, size=%i",pos,rxCount_,(size/byteWidth_)-1);
             for (x=0; x < byteWidth_; x++) {
-               sprintf(debugB,"\n   %i:%i Got=0x%x Exp=0x%x",pos,x,*(frIter+x),*(compData+x));
+               sprintf(debugB,"\n   %i:%i Got=0x%x Exp=0x%x",pos,x,*(frIter+x),*(expData+x));
                strcat(debugA,debugB);
             }
             rxLog_->warning(debugA);

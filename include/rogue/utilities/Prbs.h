@@ -23,7 +23,6 @@
 #define __ROGUE_UTILITIES_PRBS_H__
 #include <stdint.h>
 #include <thread>
-#include <boost/dynamic_bitset.hpp>
 #include <rogue/interfaces/stream/Slave.h>
 #include <rogue/interfaces/stream/Master.h>
 
@@ -116,7 +115,7 @@ namespace rogue {
             bool threadEn_;
 
             //! Internal computation 
-            void flfsr(boost::dynamic_bitset<uint8_t> & data);
+            void flfsr(uint8_t * data);
 
             //! Thread background
             void runThread();
@@ -205,8 +204,6 @@ namespace rogue {
 
       // Convienence
       typedef std::shared_ptr<rogue::utilities::Prbs> PrbsPtr;
-
-      typedef boost::dynamic_bitset<uint8_t> PrbsData;
 
    }
 }
