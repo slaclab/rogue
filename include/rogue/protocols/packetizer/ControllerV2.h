@@ -27,9 +27,6 @@
 #include <rogue/Queue.h>
 #include <rogue/Logging.h>
 
-#define CRCPP_USE_CPP11
-#include <rogue/protocols/packetizer/CRC.h>
-
 namespace rogue {
    namespace protocols {
       namespace packetizer {
@@ -37,7 +34,6 @@ namespace rogue {
          class Application;
          class Transport;
          class Header;
-
 
          //! Packetizer Controller Class
          class ControllerV2 : public Controller, public std::enable_shared_from_this<rogue::protocols::packetizer::ControllerV2> {

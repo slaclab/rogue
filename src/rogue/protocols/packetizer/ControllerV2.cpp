@@ -32,6 +32,10 @@
 namespace rpp = rogue::protocols::packetizer;
 namespace ris = rogue::interfaces::stream;
 
+// Local CRC library
+#define CRCPP_USE_CPP11
+#include <rogue/protocols/packetizer/CRC.h>
+
 // CRC Lookup table for later use
 static const CRC::Table<uint32_t, 32> crcTable_(CRC::CRC_32());
 
