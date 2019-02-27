@@ -29,8 +29,6 @@
 #include <math.h>
 #include <stdlib.h>
 
-#include <rogue/protocols/packetizer/CRC.h>
-
 namespace rpp = rogue::protocols::packetizer;
 namespace ris = rogue::interfaces::stream;
 
@@ -43,8 +41,8 @@ rpp::ControllerV2Ptr rpp::ControllerV2::create ( bool enIbCrc, bool enObCrc, boo
 //! Creator
 rpp::ControllerV2::ControllerV2 ( bool enIbCrc, bool enObCrc, bool enSsi, rpp::TransportPtr tran, rpp::ApplicationPtr * app ) : rpp::Controller::Controller(tran, app, 8, 8, 8, enSsi) {
 
-   enIbCrc_ = enIbCrc;
-   enObCrc_ = enObCrc;
+   enIbCrc_  = enIbCrc;
+   enObCrc_  = enObCrc;
 }
 
 //! Destructor
@@ -67,6 +65,8 @@ void rpp::ControllerV2::transportRx( ris::FramePtr frame ) {
    uint32_t  crc;
    uint32_t  tmpCrc;
    uint8_t * data;
+
+   CRC::Table<std::uint32_t, 32> crcTable(CRC::CRC_32());
 
    if ( frame->isEmpty() ) {
       log_->warning("Bad incoming transportRx frame, size=0");
@@ -116,8 +116,8 @@ void rpp::ControllerV2::transportRx( ris::FramePtr frame ) {
       tmpCrc |= uint32_t(data[size-4]) << 24;
 
       // Compute CRC
-      if ( tmpSof ) crc_[tmpDest] = CRC::Calculate(data, size-4, CRC::CRC_32());
-      else crc_[tmpDest] = CRC::Calculate(data, size-4, CRC::CRC_32(), crc_[tmpDest]);
+      if ( tmpSof ) crc_[tmpDest] = CRC::Calculate(data, size-4, crcTable);
+      else crc_[tmpDest] = CRC::Calculate(data, size-4, crcTable, crc_[tmpDest]);
 
       crcErr = (tmpCrc != crc_[tmpDest]);
    } 
@@ -202,6 +202,8 @@ void rpp::ControllerV2::applicationRx ( ris::FramePtr frame, uint8_t tDest ) {
    struct timeval currTime;
    struct timeval endTime;
 
+   CRC::Table<uint32_t, 32> crcTable(CRC::CRC_32());
+
    gettimeofday(&startTime,NULL);
    timeradd(&startTime,&timeout_,&endTime);
 
@@ -275,14 +277,15 @@ void rpp::ControllerV2::applicationRx ( ris::FramePtr frame, uint8_t tDest ) {
       if(enObCrc_){
 
          // Compute CRC
-         if ( segment == 0 ) crc = CRC::Calculate(data, size-4, CRC::CRC_32());
-         else crc = CRC::Calculate(data, size-4, CRC::CRC_32(), crc);
+         if ( segment == 0 ) crc = CRC::Calculate(data, size-4, crcTable);
+         else crc = CRC::Calculate(data, size-4, crcTable, crc);
 
          // Tail  word 1
          data[size-1] = (crc >>  0) & 0xFF;
          data[size-2] = (crc >>  8) & 0xFF;
          data[size-3] = (crc >> 16) & 0xFF;
          data[size-4] = (crc >> 24) & 0xFF;
+
       } else {
          data[size-1] = 0;
          data[size-2] = 0;

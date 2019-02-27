@@ -27,6 +27,9 @@
 #include <rogue/Queue.h>
 #include <rogue/Logging.h>
 
+#define CRCPP_USE_CPP11
+#include <rogue/protocols/packetizer/CRC.h>
+
 namespace rogue {
    namespace protocols {
       namespace packetizer {
@@ -41,6 +44,8 @@ namespace rogue {
 
                bool     enIbCrc_;
                bool     enObCrc_;
+
+               //CRC::Table<std::uint32_t, 32> crcTable_(CRC::CRC_32());
 
             public:
 
