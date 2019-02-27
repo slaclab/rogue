@@ -55,7 +55,7 @@ rpp::Controller::Controller ( rpp::TransportPtr tran, rpp::ApplicationPtr * app,
 
    for ( x=0; x < 256; x++ ) {
          transSof_[x]  = true;
-         crcInit_[x]   = 0xFFFFFFFF;
+         crc_[x]       = 0;
          tranCount_[x] = 0;
    }
 }
