@@ -21,6 +21,7 @@
 #define __ROGUE_INTERFACES_MEMORY_SLAVE_H__
 #include <stdint.h>
 #include <vector>
+#include <map>
 #include <rogue/interfaces/memory/Master.h>
 
 #ifndef NO_PYTHON

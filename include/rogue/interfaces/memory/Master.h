@@ -22,6 +22,7 @@
 #define __ROGUE_INTERFACES_MEMORY_MASTER_H__
 #include <stdint.h>
 #include <vector>
+#include <map>
 #include <thread>
 #include <rogue/Logging.h>
 
