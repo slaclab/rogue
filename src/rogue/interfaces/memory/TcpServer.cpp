@@ -21,6 +21,7 @@
 #include <rogue/interfaces/memory/Constants.h>
 #include <rogue/GeneralError.h>
 #include <memory>
+#include <inttypes.h>
 #include <rogue/GilRelease.h>
 #include <rogue/Logging.h>
 #include <zmq.h>
@@ -105,75 +106,75 @@ void rim::TcpServer::runThread() {
 
    while(threadEn_) {
 
-      for (x=0; x < 6; x++) zmq_msg_init(&(msg[x]));
-      msgCnt = 0;
-      x = 0;
+         for (x=0; x < 6; x++) zmq_msg_init(&(msg[x]));
+         msgCnt = 0;
+         x = 0;
 
-      // Get message
-      do {
+         // Get message
+         do {
 
-         // Get the message
-         if ( zmq_recvmsg(this->zmqReq_,&(msg[x]),0) > 0 ) {
-            if ( x != 4 ) x++;
-            msgCnt++;
+            // Get the message
+            if ( zmq_recvmsg(this->zmqReq_,&(msg[x]),0) > 0 ) {
+               if ( x != 4 ) x++;
+               msgCnt++;
 
-            // Is there more data?
-            more = 0;
-            moreSize = 8;
-            zmq_getsockopt(this->zmqReq_, ZMQ_RCVMORE, &more, &moreSize);
-         } else more = 1;
+               // Is there more data?
+               more = 0;
+               moreSize = 8;
+               zmq_getsockopt(this->zmqReq_, ZMQ_RCVMORE, &more, &moreSize);
+            } else more = 1;
       } while ( threadEn_ && more );
 
-      // Proper message received
-      if ( msgCnt == 4 || msgCnt == 5) {
+         // Proper message received
+         if ( msgCnt == 4 || msgCnt == 5) {
 
-         // Check sizes
-         if ( (zmq_msg_size(&(msg[0])) != 4) || (zmq_msg_size(&(msg[1])) != 8) ||
-              (zmq_msg_size(&(msg[2])) != 4) || (zmq_msg_size(&(msg[3])) != 4) ) {
-            bridgeLog_->warning("Bad message sizes");
-            for (x=0; x < msgCnt; x++) zmq_msg_close(&(msg[x]));
-            continue; // while (1)
-         }
-
-         // Get return fields
-         memcpy(&id,   zmq_msg_data(&(msg[0])), 4);
-         memcpy(&addr, zmq_msg_data(&(msg[1])), 8);
-         memcpy(&size, zmq_msg_data(&(msg[2])), 4);
-         memcpy(&type, zmq_msg_data(&(msg[3])), 4);
-
-         // Write data is expected
-         if ( (type == rim::Write) || (type == rim::Post) ) {
-            if ((msgCnt != 5) || (zmq_msg_size(&(msg[4])) != size) ) {
-               bridgeLog_->warning("Transaction write data error. Id=%i",id);
+            // Check sizes
+            if ( (zmq_msg_size(&(msg[0])) != 4) || (zmq_msg_size(&(msg[1])) != 8) ||
+                 (zmq_msg_size(&(msg[2])) != 4) || (zmq_msg_size(&(msg[3])) != 4) ) {
+               bridgeLog_->warning("Bad message sizes");
                for (x=0; x < msgCnt; x++) zmq_msg_close(&(msg[x]));
                continue; // while (1)
             }
+
+            // Get return fields
+            memcpy(&id,   zmq_msg_data(&(msg[0])), 4);
+            memcpy(&addr, zmq_msg_data(&(msg[1])), 8);
+            memcpy(&size, zmq_msg_data(&(msg[2])), 4);
+            memcpy(&type, zmq_msg_data(&(msg[3])), 4);
+
+            // Write data is expected
+            if ( (type == rim::Write) || (type == rim::Post) ) {
+               if ((msgCnt != 5) || (zmq_msg_size(&(msg[4])) != size) ) {
+                  bridgeLog_->warning("Transaction write data error. Id=%" PRIu32,id);
+                  for (x=0; x < msgCnt; x++) zmq_msg_close(&(msg[x]));
+                  continue; // while (1)
+               }
+            }
+            else zmq_msg_init_size(&(msg[4]),size);
+
+            // Data pointer
+            data = (uint8_t *)zmq_msg_data(&(msg[4]));
+
+            bridgeLog_->debug("Starting transaction id=%" PRIu32 ", addr=0x%" PRIx64 ", size=%" PRIu32 ", type=%" PRIu32,id,addr,size,type);
+
+            // Execute transaction and wait for result
+            this->setError(0);
+            reqTransaction(addr,size,data,type);
+            waitTransaction(0);
+            result = getError();
+
+            bridgeLog_->debug("Done transaction id=%" PRIu32 ", addr=0x%" PRIx64 ", size=%" PRIu32 ", type=%" PRIu32 ", result=%" PRIu32,id,addr,size,type,result);
+
+            // Result message
+            zmq_msg_init_size(&(msg[5]),4);
+            memcpy(zmq_msg_data(&(msg[5])),&result, 4);
+
+            // Send message
+            for (x=0; x < 6; x++) 
+               zmq_sendmsg(this->zmqResp_,&(msg[x]),(x==5)?0:ZMQ_SNDMORE);
          }
-         else zmq_msg_init_size(&(msg[4]),size);
-
-         // Data pointer
-         data = (uint8_t *)zmq_msg_data(&(msg[4]));
-
-         bridgeLog_->debug("Starting transaction id=%i, addr=0x%x, size=%i, type=%i",id,addr,size,type);
-
-         // Execute transaction and wait for result
-         this->setError(0);
-         reqTransaction(addr,size,data,type);
-         waitTransaction(0);
-         result = getError();
-
-         bridgeLog_->debug("Done transaction id=%i, addr=0x%x, size=%i, type=%i, result=%i",id,addr,size,type,result);
-
-         // Result message
-         zmq_msg_init_size(&(msg[5]),4);
-         memcpy(zmq_msg_data(&(msg[5])),&result, 4);
-
-         // Send message
-         for (x=0; x < 6; x++) 
-            zmq_sendmsg(this->zmqResp_,&(msg[x]),(x==5)?0:ZMQ_SNDMORE);
+         else for (x=0; x < msgCnt; x++) zmq_msg_close(&(msg[x]));
       }
-      else for (x=0; x < msgCnt; x++) zmq_msg_close(&(msg[x]));
-   }
 }
 
 void rim::TcpServer::setup_python () {

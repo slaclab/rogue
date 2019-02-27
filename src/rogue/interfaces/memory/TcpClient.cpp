@@ -23,6 +23,7 @@
 #include <rogue/interfaces/memory/Constants.h>
 #include <rogue/GeneralError.h>
 #include <memory>
+#include <inttypes.h>
 #include <rogue/GilRelease.h>
 #include <rogue/Logging.h>
 #include <zmq.h>
@@ -137,7 +138,7 @@ void rim::TcpClient::doTransaction(rim::TransactionPtr tran) {
    // Read transaction
    else msgCnt = 4;
 
-   bridgeLog_->debug("Forwarding transaction id=%i, addr=0x%x, size=%i, type=%i, cnt=%i",id,addr,size,type,msgCnt);
+   bridgeLog_->debug("Forwarding transaction id=%" PRIu32 ", addr=0x%" PRIx64 ", size=%" PRIu32 ", type=%" PRIu32 ", cnt=%" PRIu32 ,id,addr,size,type,msgCnt);
 
    // Send message
    for (x=0; x < msgCnt; x++) 
@@ -169,86 +170,87 @@ void rim::TcpClient::runThread() {
 
    while(threadEn_) {
 
-      for (x=0; x < 6; x++) zmq_msg_init(&(msg[x]));
-      msgCnt = 0;
-      x = 0;
+         for (x=0; x < 6; x++) zmq_msg_init(&(msg[x]));
+         msgCnt = 0;
+         x = 0;
 
-      // Get message
-      do {
+         // Get message
+         do {
 
-         // Get the message
-         if ( zmq_recvmsg(this->zmqResp_,&(msg[x]),0) > 0 ) {
-            if ( x != 5 ) x++;
-            msgCnt++;
+            // Get the message
+            if ( zmq_recvmsg(this->zmqResp_,&(msg[x]),0) > 0 ) {
+               if ( x != 5 ) x++;
+               msgCnt++;
 
-            // Is there more data?
-            more = 0;
-            moreSize = 8;
-            zmq_getsockopt(this->zmqResp_, ZMQ_RCVMORE, &more, &moreSize);
-         } else more = 1;
+               // Is there more data?
+               more = 0;
+               moreSize = 8;
+               zmq_getsockopt(this->zmqResp_, ZMQ_RCVMORE, &more, &moreSize);
+            } else more = 1;
       } while ( threadEn_ && more );
 
-      // Proper message received
-      if ( msgCnt == 6 ) {
+         // Proper message received
+         if ( msgCnt == 6 ) {
 
-         // Check sizes
-         if ( (zmq_msg_size(&(msg[0])) != 4) || (zmq_msg_size(&(msg[1])) != 8) ||
-              (zmq_msg_size(&(msg[2])) != 4) || (zmq_msg_size(&(msg[3])) != 4) ||
-              (zmq_msg_size(&(msg[5])) != 4) ) {
-            bridgeLog_->warning("Bad message sizes");
-            for (x=0; x < msgCnt; x++) zmq_msg_close(&(msg[x]));
-            continue; // while (1)
-         }
+            // Check sizes
+            if ( (zmq_msg_size(&(msg[0])) != 4) || (zmq_msg_size(&(msg[1])) != 8) ||
+                 (zmq_msg_size(&(msg[2])) != 4) || (zmq_msg_size(&(msg[3])) != 4) ||
+                 (zmq_msg_size(&(msg[5])) != 4) ) {
+               bridgeLog_->warning("Bad message sizes");
+               for (x=0; x < msgCnt; x++) zmq_msg_close(&(msg[x]));
+               continue; // while (1)
+            }
 
-         // Get return fields
-         memcpy(&id,     zmq_msg_data(&(msg[0])), 4);
-         memcpy(&addr,   zmq_msg_data(&(msg[1])), 8);
-         memcpy(&size,   zmq_msg_data(&(msg[2])), 4);
-         memcpy(&type,   zmq_msg_data(&(msg[3])), 4);
-         memcpy(&result, zmq_msg_data(&(msg[5])), 4);
+            // Get return fields
+            memcpy(&id,     zmq_msg_data(&(msg[0])), 4);
+            memcpy(&addr,   zmq_msg_data(&(msg[1])), 8);
+            memcpy(&size,   zmq_msg_data(&(msg[2])), 4);
+            memcpy(&type,   zmq_msg_data(&(msg[3])), 4);
+            memcpy(&result, zmq_msg_data(&(msg[5])), 4);
 
-         // Find Transaction
-         if ( (tran = getTransaction(id)) == NULL ) {
-            bridgeLog_->warning("Failed to find transaction id=%i",id);
-            for (x=0; x < msgCnt; x++) zmq_msg_close(&(msg[x]));
-            continue; // while (1)
-         }
+            // Find Transaction
+            if ( (tran = getTransaction(id)) == NULL ) {
+               bridgeLog_->warning("Failed to find transaction id=%" PRIu32,id);
+               for (x=0; x < msgCnt; x++) zmq_msg_close(&(msg[x]));
+               continue; // while (1)
+            }
 
-         // Lock transaction
-         rim::TransactionLockPtr lock = tran->lock();
+            // Lock transaction
+            rim::TransactionLockPtr lock = tran->lock();
 
-         // Transaction expired
-         if ( tran->expired() ) {
-            bridgeLog_->warning("Transaction expired. Id=%i",id);
-            for (x=0; x < msgCnt; x++) zmq_msg_close(&(msg[x]));
-            continue; // while (1)
-         }
-         tIter = tran->begin();
+            // Transaction expired
+            if ( tran->expired() ) {
+               bridgeLog_->warning("Transaction expired. Id=%" PRIu32,id);
+               for (x=0; x < msgCnt; x++) zmq_msg_close(&(msg[x]));
+               continue; // while (1)
+            }
+            tIter = tran->begin();
 
-         // Double check transaction
-         if ( (addr != tran->address()) || (size != tran->size()) || (type != tran->type()) ) {
-            bridgeLog_->warning("Transaction data mistmatch. Id=%i",id);
-            tran->done(rim::ProtocolError);
-            for (x=0; x < msgCnt; x++) zmq_msg_close(&(msg[x]));
-            continue; // while (1)
-         }
-
-         // Copy data if read
-         if ( type != rim::Write ) {
-            if (zmq_msg_size(&(msg[4])) != size) {
-               bridgeLog_->warning("Transaction size mistmatch. Id=%i",id);
+            // Double check transaction
+            if ( (addr != tran->address()) || (size != tran->size()) || (type != tran->type()) ) {
+               bridgeLog_->warning("Transaction data mistmatch. Id=%" PRIu32,id);
                tran->done(rim::ProtocolError);
                for (x=0; x < msgCnt; x++) zmq_msg_close(&(msg[x]));
                continue; // while (1)
             }
-            data = (uint8_t *)zmq_msg_data(&(msg[4]));
-            std::copy(data,data+size,tIter);
+
+            // Copy data if read
+            if ( type != rim::Write ) {
+               if (zmq_msg_size(&(msg[4])) != size) {
+                  bridgeLog_->warning("Transaction size mistmatch. Id=%" PRIu32,id);
+                  tran->done(rim::ProtocolError);
+                  for (x=0; x < msgCnt; x++) zmq_msg_close(&(msg[x]));
+                  continue; // while (1)
+               }
+               data = (uint8_t *)zmq_msg_data(&(msg[4]));
+               std::copy(data,data+size,tIter);
+            }
+            tran->done(result);
+            bridgeLog_->debug("Response for transaction id=%" PRIu32 ", addr=0x%" PRIx64 ", size=%" PRIu32 ", type=%" PRIu32 ", cnt=%" PRIu32,
+                               id,addr,size,type,msgCnt);
          }
-         tran->done(result);
-         bridgeLog_->debug("Response for transaction id=%i, addr=0x%x, size=%i, type=%i, cnt=%i",id,addr,size,type,msgCnt);
+         for (x=0; x < msgCnt; x++) zmq_msg_close(&(msg[x]));
       }
-      for (x=0; x < msgCnt; x++) zmq_msg_close(&(msg[x]));
-   }
 }
 
 void rim::TcpClient::setup_python () {
