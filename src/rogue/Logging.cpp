@@ -20,6 +20,10 @@
 #include <rogue/Logging.h>
 #include <memory>
 #include <stdarg.h>
+#include <string.h>
+#include <sys/time.h>
+#include <sys/syscall.h>
+#include <unistd.h>
 
 #if defined(__linux__)
 #include <sys/syscall.h>

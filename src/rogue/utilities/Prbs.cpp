@@ -33,6 +33,8 @@
 #include <rogue/GeneralError.h>
 #include <rogue/Logging.h>
 #include <rogue/GeneralError.h>
+#include <sys/time.h>
+#include <string.h>
 
 namespace ris = rogue::interfaces::stream;
 namespace ru  = rogue::utilities;

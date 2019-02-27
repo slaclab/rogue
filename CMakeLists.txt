@@ -34,112 +34,99 @@ enable_language(CXX)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wno-deprecated")
 
 #####################################
-# Find python3
+# Boost + Python
 #####################################
-set(DO_PYTHON 0)
+if ( NOT NO_PYTHON ) 
+   find_package(PythonInterp QUIET REQUIRED 3.6)
+   find_package(PythonLibs QUIET REQUIRED 3.6)
 
-find_package(PythonInterp QUIET 3.6)
+   set(Boost_USE_MULTITHREADED ON)
 
-if (PYTHONINTERP_FOUND)
-   find_package(PythonLibs QUIET 3.6)
+   # Boost may need help on SLAC machines
+   set(BOOST_ROOT:PATHNAME $ENV{BOOST_PATH})
 
-   if (PYTHONLIBS_FOUND)
-      set(DO_PYTHON 1)
-   endif()
-endif()
-
-#####################################
-# Boost Configuration
-#####################################
-set(Boost_USE_MULTITHREADED ON)
-
-# Boost may need help on SLAC machines
-set(BOOST_ROOT:PATHNAME $ENV{BOOST_PATH})
-
-# First try standard suffix for boost
-if (DO_PYTHON)
+   # First try standard suffix for boost
    find_package(Boost 1.58 QUIET COMPONENTS system thread python3)
-endif()
 
-# Next try Debian/Ubuntu suffix for boost
-if ((NOT Boost_FOUND) AND DO_PYTHON)
-   find_package(Boost 1.58 QUIET COMPONENTS system thread python-py36)
-endif()
+   # Next try Debian/Ubuntu suffix for boost
+   if (NOT Boost_FOUND)
+      find_package(Boost 1.58 QUIET COMPONENTS system thread python-py36)
+   endif()
 
-# Next try Mac with homebrew boost/python36
-if ((NOT Boost_FOUND) AND DO_PYTHON)
-   find_package(Boost 1.58 QUIET COMPONENTS system thread python36)
-endif()
+   # Next try Mac with homebrew boost/python36
+   if (NOT Boost_FOUND)
+      find_package(Boost 1.58 QUIET COMPONENTS system thread python36)
+   endif()
 
-# Next try anaconda with python 3.7
-if ((NOT Boost_FOUND) AND DO_PYTHON)
-   find_package(Boost 1.58 QUIET COMPONENTS system thread python37)
-endif()
+   # Next try anaconda with python 3.7
+   if (NOT Boost_FOUND)
+      find_package(Boost 1.58 QUIET COMPONENTS system thread python37)
+   endif()
 
-# Try without python
-if (NOT Boost_FOUND)
-   set(DO_PYTHON 0)
-   find_package(Boost 1.58 QUIET COMPONENTS system thread)
-endif()
-
-# Nothing worked
-if (NOT Boost_FOUND)
-   message("")
-   message(FATAL_ERROR "Failed to find boost libraries!")
+   # Nothing worked
+   if (NOT Boost_FOUND)
+      message("")
+      message(FATAL_ERROR "Failed to find boost libraries!")
+   endif()
+else()
+   add_definitions( -DNO_PYTHON )
 endif()
 
 #####################################
-# Additional Libraries
+# BZIP2
 #####################################
-
-find_package(BZip2 QUIET REQUIRED)
+if ( NOT NO_BZIP ) 
+   find_package(BZip2 QUIET REQUIRED)
+endif()
 
 #####################################
 # ZeroMQ
 #####################################
+if ( NOT NO_ZMQ )
 
-# First try with Cmake packages
-find_package(ZeroMQ QUIET)
+   # First try with Cmake packages
+   find_package(ZeroMQ QUIET)
 
-# ZeroMQ does not always support cmake, use brute force
-if (NOT ZeroMQ_FOUND)
-   
-   # Convert LD_LIBRARY PATH for search
-   if(ENV{LD_LIBRARY_PATH})
-      string(REPLACE ":" ";" HINT_PATHS $ENV{LD_LIBRARY_PATH})
-   else()
-      set(HINT_PATHS, "")
-   endif()
+   # ZeroMQ does not always support cmake, use brute force
+   if (NOT ZeroMQ_FOUND)
+      
+      # Convert LD_LIBRARY PATH for search
+      if(ENV{LD_LIBRARY_PATH})
+         string(REPLACE ":" ";" HINT_PATHS $ENV{LD_LIBRARY_PATH})
+      else()
+         set(HINT_PATHS, "")
+      endif()
 
-   # See if zmq library is in LD_LIBRARY_PATH
-   find_library(ZeroMQ_LIBRARY 
-                NAMES zmq 
-                PATHS ${HINT_PATHS})
+      # See if zmq library is in LD_LIBRARY_PATH
+      find_library(ZeroMQ_LIBRARY 
+                   NAMES zmq 
+                   PATHS ${HINT_PATHS})
 
-   # Found it
-   if (ZeroMQ_LIBRARY) 
+      # Found it
+      if (ZeroMQ_LIBRARY) 
 
-      # Get the base diretory
-      get_filename_component(ZMQ_LIBDIR ${ZeroMQ_LIBRARY} DIRECTORY)
+         # Get the base diretory
+         get_filename_component(ZMQ_LIBDIR ${ZeroMQ_LIBRARY} DIRECTORY)
 
-      # See if we can find the header in a relative path
-      find_path(ZeroMQ_INCLUDE_DIR
-              NAMES zmq.h
-              PATHS ${ZMQ_LIBDIR}/../include
-              )
-   endif()
+         # See if we can find the header in a relative path
+         find_path(ZeroMQ_INCLUDE_DIR
+                 NAMES zmq.h
+                 PATHS ${ZMQ_LIBDIR}/../include
+                 )
+      endif()
 
-   # Failed to find it
-   if (NOT ZeroMQ_INCLUDE_DIR)
-      message("")
-      message(FATAL_ERROR "Failed to find zeroMQ!")
+      # Failed to find it
+      if (NOT ZeroMQ_INCLUDE_DIR)
+         message("")
+         message(FATAL_ERROR "Failed to find zeroMQ!")
+      endif()
    endif()
 endif()
 
 #####################################
-# Optional EPICS V3
+# EPICS V3
 #####################################
-if(DO_PYTHON AND DEFINED ENV{EPICS_BASE})
+if((NOT NO_PYTHON) AND (NOT NO_EPICS) AND DEFINED ENV{EPICS_BASE})
    set(DO_EPICS_V3 1)
    set(EPICSV3_BASE_DIR  $ENV{EPICS_BASE})
    if(DEFINED ENV{EPICS_HOST_ARCH})
@@ -270,7 +257,7 @@ set_target_properties(rogue-core PROPERTIES VERSION ${ROGUE_VERSION} SOVERSION $
 #####################################
 # Setup build, python library
 #####################################
-if (DO_PYTHON)
+if (NOT NO_PYTHON)
 
    # Create rogue python library
    add_library(rogue SHARED "")
@@ -344,7 +331,7 @@ if (NOT (${ROGUE_INSTALL} STREQUAL "local"))
 endif()
 
 # Python file install
-if (DO_PYTHON)
+if (NOT NO_PYTHON)
 
    # Install python files directly for custom install
    if (${ROGUE_INSTALL} STREQUAL "custom")
@@ -380,13 +367,13 @@ message("-- Install Type: -DROGUE_INSTALL=${ROGUE_INSTALL}")
 message("")
 message("-- Install Path: -DROGUE_DIR=${ROGUE_DIR}")
 message("")
-message("-- Found boost: ${Boost_INCLUDE_DIRS}")
-message("")
 
-if (DO_PYTHON)
-   message("-- Found python: ${PYTHON_LIBRARIES}")
+if (NO_PYTHON)
+   message("-- Compiling without boost & python!")
 else()
-   message("-- Compiling without python!")
+   message("-- Found boost: ${Boost_INCLUDE_DIRS}")
+   message("")
+   message("-- Found python: ${PYTHON_LIBRARIES}")
 endif()
 
 message("")
@@ -398,9 +385,20 @@ else()
 endif()
 
 message("")
-message("-- Found ZeroMq: ${ZeroMQ_INCLUDE_DIR}")
+
+if (NO_ZMQ)
+   message("-- ZeroMQ not included!")
+else()
+   message("-- Found ZeroMq: ${ZeroMQ_INCLUDE_DIR}")
+endif()
+
 message("")
-message("-- Found Bzip2: ${BZIP2_INCLUDE_DIR}")
+
+if (NO_BZIP)
+   message("-- Bzip2 not included!")
+else()
+   message("-- Found Bzip2: ${BZIP2_INCLUDE_DIR}")
+endif()
 
 message("----------------------------------------------------------------------")
 message("")

@@ -34,6 +34,7 @@
 #include <rogue/protocols/srp/SrpV0.h>
 #include <rogue/Logging.h>
 #include <rogue/GilRelease.h>
+#include <string.h>
 
 namespace rps = rogue::protocols::srp;
 namespace rim = rogue::interfaces::memory;

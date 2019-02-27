@@ -28,6 +28,8 @@
 #include <rogue/GilRelease.h>
 #include <math.h>
 #include <stdlib.h>
+#include <unistd.h>
+#include <sys/time.h>
 
 namespace rpp = rogue::protocols::packetizer;
 namespace ris = rogue::interfaces::stream;

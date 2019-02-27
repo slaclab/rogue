@@ -29,6 +29,7 @@
 #include <iostream>
 #include <unistd.h>
 #include <stdlib.h>
+#include <string.h>
 
 namespace rpu = rogue::protocols::udp;
 namespace ris = rogue::interfaces::stream;

@@ -29,6 +29,7 @@
 #include <thread>
 #include <memory>
 #include <rogue/GilRelease.h>
+#include <sys/time.h>
 
 namespace ris = rogue::interfaces::stream;
 namespace ruf = rogue::utilities::fileio;

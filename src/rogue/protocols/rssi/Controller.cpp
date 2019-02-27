@@ -32,6 +32,9 @@
 #include <rogue/Logging.h>
 #include <math.h>
 #include <stdlib.h>
+#include <unistd.h>
+#include <sys/time.h>
+#include <string.h>
 
 namespace rpr = rogue::protocols::rssi;
 namespace ris = rogue::interfaces::stream;

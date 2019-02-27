@@ -28,6 +28,8 @@
 #include <rogue/GilRelease.h>
 #include <rogue/Logging.h>
 #include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
 
 namespace rpu = rogue::protocols::udp;
 namespace ris = rogue::interfaces::stream;

@@ -26,6 +26,10 @@
 #include <iomanip>
 #include <rogue/interfaces/stream/Buffer.h>
 #include <arpa/inet.h>
+#include <iostream>
+#include <sstream>
+#include <string.h>
+#include <sys/time.h>
 
 namespace rpr = rogue::protocols::rssi;
 namespace ris = rogue::interfaces::stream;

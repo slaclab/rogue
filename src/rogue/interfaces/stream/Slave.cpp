@@ -32,6 +32,7 @@
 #include <rogue/GilRelease.h>
 #include <rogue/ScopedGil.h>
 #include <rogue/Logging.h>
+#include <string.h>
 
 namespace ris = rogue::interfaces::stream;
 

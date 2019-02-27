@@ -43,6 +43,7 @@
 #include <memory>
 #include <fcntl.h>
 #include <rogue/GilRelease.h>
+#include <unistd.h>
 
 namespace ris = rogue::interfaces::stream;
 namespace ruf = rogue::utilities::fileio;

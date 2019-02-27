@@ -29,6 +29,7 @@
 #include <fcntl.h>
 #include <iostream>
 #include <stdio.h>
+#include <unistd.h>
 
 namespace ris = rogue::interfaces::stream;
 namespace ruf = rogue::utilities::fileio;
