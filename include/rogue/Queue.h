@@ -46,7 +46,7 @@ namespace rogue {
           }
 
           void stop() { 
-             std::unique_lock lock(mtx_);
+             std::unique_lock<std::mutex> lock(mtx_);
              run_ = false;
              lock.unlock();
              pushCond_.notify_all();
@@ -58,7 +58,7 @@ namespace rogue {
           void setThold(uint32_t thold) { thold_ = thold; }
 
           void push(T const &data) {
-             std::unique_lock lock(mtx_);
+             std::unique_lock<std::mutex> lock(mtx_);
    
              while(run_ && max_ > 0 && queue_.size() >= max_) 
                 pushCond_.wait(lock);
@@ -74,7 +74,7 @@ namespace rogue {
           }
 
           uint32_t size() {
-             std::scoped_lock lock(mtx_);
+             std::unique_lock<std::mutex> lock(mtx_);
              return queue_.size();
           }
 
@@ -83,7 +83,7 @@ namespace rogue {
           }
 
           void reset() {
-             std::unique_lock lock(mtx_);
+             std::unique_lock<std::mutex> lock(mtx_);
              while(!queue_.empty()) queue_.pop();
              busy_ = false;
              lock.unlock();
@@ -92,7 +92,7 @@ namespace rogue {
 
           T pop() {
              T ret;
-             std::unique_lock lock(mtx_);
+             std::unique_lock<std::mutex> lock(mtx_);
              while(run_ && queue_.empty()) popCond_.wait(lock);
              if ( run_ ) {
                 ret=queue_.front();
