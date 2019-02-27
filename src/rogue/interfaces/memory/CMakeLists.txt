@@ -24,7 +24,7 @@ if (NOT NO_ZMQ)
    target_sources(rogue-core PRIVATE "${CMAKE_CURRENT_LIST_DIR}/TcpServer.cpp")
 endif()
 
-if (DO_PYTHON)
+if (NOT NO_PYTHON)
    target_sources(rogue-core PRIVATE "${CMAKE_CURRENT_LIST_DIR}/module.cpp")
 endif()
 

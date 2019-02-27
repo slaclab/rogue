@@ -21,6 +21,6 @@ target_sources(rogue-core PRIVATE "${CMAKE_CURRENT_LIST_DIR}/Core.cpp")
 target_sources(rogue-core PRIVATE "${CMAKE_CURRENT_LIST_DIR}/CoreV2.cpp")
 target_sources(rogue-core PRIVATE "${CMAKE_CURRENT_LIST_DIR}/Transport.cpp")
 
-if (DO_PYTHON)
+if (NOT NO_PYTHON)
    target_sources(rogue-core PRIVATE "${CMAKE_CURRENT_LIST_DIR}/module.cpp")
 endif()
