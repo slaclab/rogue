@@ -73,6 +73,7 @@ rim::TcpServer::TcpServer (std::string addr, uint16_t port) {
       throw(rogue::GeneralError::network("TcpServer::TcpServer",addr,port));
 
    // Start rx thread
+   threadEn_ = true;
    this->thread_ = new std::thread(&rim::TcpServer::runThread, this);
 }
 
