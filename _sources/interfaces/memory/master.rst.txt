@@ -26,7 +26,7 @@ Below is an example class which will initiate a read followed by a write.
     # Create a subclass of a memory Master
     # This master will initiate a read from a passed adddress and
     # increment that value at that address by a passed value
-    class MyMaster(rogue.interfaces.memory.Master):
+    class MyMemMaster(rogue.interfaces.memory.Master):
 
         # Init method must call the parent class init
         def __init__(self):
@@ -82,19 +82,19 @@ The equivelent code in C++ is show below:
    // Create a subclass of a memory Master
    // This master will initiate a read from a passed adddress and
    // increment that value at that address by a passed value
-   class MyMaster : public rogue::interfaces::memory::Master {
+   class MyMemMaster : public rogue::interfaces::memory::Master {
       public:
 
          // Create a static class creator to return our custom class
          // wrapped with a shared pointer
-         static boost::shared_ptr<MyMaster> create() {
-            static boost::shared_ptr<MyMaster> ret =
-               boost::make_shared<MyMaster>();
+         static std::shared_ptr<MyMemMaster> create() {
+            static std::shared_ptr<MyMemMaster> ret =
+               std::make_shared<MyMemMaster>();
             return(ret);
          }
 
          // Standard class creator which is called by create 
-         MyMaster() : rogue::interfaces::memory::Master() {}
+         MyMemMaster() : rogue::interfaces::memory::Master() {}
 
          // Start a sequence with passed address and increment value
          bool incAtAddress(uint64_t address, uint32_t value) {
@@ -133,6 +133,9 @@ The equivelent code in C++ is show below:
 
          }
    };
+
+   // Shared pointer alias
+   typedef std::shared_ptr<MyMemMaster> MyMemMasterPtr;
 
 Of course neither of the above classes ensure that the memory does not get modified by
 another process between the read and write. The pyrogue device management tree manages

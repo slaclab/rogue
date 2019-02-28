@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Memory Master Example &mdash; Rogue v3.3.1-76-g4830cc3e documentation</title>
+  <title>Memory Master Example &mdash; Rogue v3.3.1-80-g99de57ad documentation</title>
   
 
   
@@ -189,7 +189,7 @@ initated by c++ masters.</p>
 <span class="c1"># Create a subclass of a memory Master</span>
 <span class="c1"># This master will initiate a read from a passed adddress and</span>
 <span class="c1"># increment that value at that address by a passed value</span>
-<span class="k">class</span> <span class="nc">MyMaster</span><span class="p">(</span><span class="n">rogue</span><span class="o">.</span><span class="n">interfaces</span><span class="o">.</span><span class="n">memory</span><span class="o">.</span><span class="n">Master</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">MyMemMaster</span><span class="p">(</span><span class="n">rogue</span><span class="o">.</span><span class="n">interfaces</span><span class="o">.</span><span class="n">memory</span><span class="o">.</span><span class="n">Master</span><span class="p">):</span>
 
     <span class="c1"># Init method must call the parent class init</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -243,19 +243,19 @@ initated by c++ masters.</p>
 <span class="c1">// Create a subclass of a memory Master</span>
 <span class="c1">// This master will initiate a read from a passed adddress and</span>
 <span class="c1">// increment that value at that address by a passed value</span>
-<span class="n">class</span> <span class="nl">MyMaster</span> <span class="p">:</span> <span class="n">public</span> <span class="n">rogue</span><span class="o">::</span><span class="n">interfaces</span><span class="o">::</span><span class="n">memory</span><span class="o">::</span><span class="n">Master</span> <span class="p">{</span>
+<span class="n">class</span> <span class="nl">MyMemMaster</span> <span class="p">:</span> <span class="n">public</span> <span class="n">rogue</span><span class="o">::</span><span class="n">interfaces</span><span class="o">::</span><span class="n">memory</span><span class="o">::</span><span class="n">Master</span> <span class="p">{</span>
    <span class="nl">public</span><span class="p">:</span>
 
       <span class="c1">// Create a static class creator to return our custom class</span>
       <span class="c1">// wrapped with a shared pointer</span>
-      <span class="k">static</span> <span class="n">boost</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">MyMaster</span><span class="o">&gt;</span> <span class="n">create</span><span class="p">()</span> <span class="p">{</span>
-         <span class="k">static</span> <span class="n">boost</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">MyMaster</span><span class="o">&gt;</span> <span class="n">ret</span> <span class="o">=</span>
-            <span class="n">boost</span><span class="o">::</span><span class="n">make_shared</span><span class="o">&lt;</span><span class="n">MyMaster</span><span class="o">&gt;</span><span class="p">();</span>
+      <span class="k">static</span> <span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">MyMemMaster</span><span class="o">&gt;</span> <span class="n">create</span><span class="p">()</span> <span class="p">{</span>
+         <span class="k">static</span> <span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">MyMemMaster</span><span class="o">&gt;</span> <span class="n">ret</span> <span class="o">=</span>
+            <span class="n">std</span><span class="o">::</span><span class="n">make_shared</span><span class="o">&lt;</span><span class="n">MyMemMaster</span><span class="o">&gt;</span><span class="p">();</span>
          <span class="k">return</span><span class="p">(</span><span class="n">ret</span><span class="p">);</span>
       <span class="p">}</span>
 
       <span class="c1">// Standard class creator which is called by create</span>
-      <span class="n">MyMaster</span><span class="p">()</span> <span class="o">:</span> <span class="n">rogue</span><span class="o">::</span><span class="n">interfaces</span><span class="o">::</span><span class="n">memory</span><span class="o">::</span><span class="n">Master</span><span class="p">()</span> <span class="p">{}</span>
+      <span class="n">MyMemMaster</span><span class="p">()</span> <span class="o">:</span> <span class="n">rogue</span><span class="o">::</span><span class="n">interfaces</span><span class="o">::</span><span class="n">memory</span><span class="o">::</span><span class="n">Master</span><span class="p">()</span> <span class="p">{}</span>
 
       <span class="c1">// Start a sequence with passed address and increment value</span>
       <span class="kt">bool</span> <span class="n">incAtAddress</span><span class="p">(</span><span class="kt">uint64_t</span> <span class="n">address</span><span class="p">,</span> <span class="kt">uint32_t</span> <span class="n">value</span><span class="p">)</span> <span class="p">{</span>
@@ -294,6 +294,9 @@ initated by c++ masters.</p>
 
       <span class="p">}</span>
 <span class="p">};</span>
+
+<span class="c1">// Shared pointer alias</span>
+<span class="k">typedef</span> <span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">MyMemMaster</span><span class="o">&gt;</span> <span class="n">MyMemMasterPtr</span><span class="p">;</span>
 </pre></div>
 </div>
 <p>Of course neither of the above classes ensure that the memory does not get modified by

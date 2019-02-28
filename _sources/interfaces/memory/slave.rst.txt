@@ -33,7 +33,7 @@ See :ref:`interfaces_memory_slave` for more detail on the Slave class.
 
     # Create a subclass of a memory Slave
     # Assume our min size = 4 bytes and our max size is 1024 bytes
-    class MySlave(rogue.interfaces.memory.Slave):
+    class MyMemSlave(rogue.interfaces.memory.Slave):
 
         # Init method must call the parent class init
         def __init__(self):
@@ -135,20 +135,20 @@ The equivelent code in C++ is show below:
 
    // Create a subclass of a memory Slave
    // Assume our min size = 4 bytes and our max size is 1024 bytes
-   class MyMaster : public rogue::interfaces::memory::Slave {
+   class MyMemSlave : public rogue::interfaces::memory::Slave {
       public:
 
          // Create a static class creator to return our custom class
          // wrapped with a shared pointer
-         static boost::shared_ptr<MySlave> create() {
-            static boost::shared_ptr<MySlave> ret =
-               boost::make_shared<MySlave>();
+         static std::shared_ptr<MyMemSlave> create() {
+            static std::shared_ptr<MyMemSlave> ret =
+               std::make_shared<MyMemSlave>();
             return(ret);
          }
 
          // Standard class creator which is called by create 
          // Here we set min and max size
-         MySlave() : rogue::interfaces::memory::Slave(4,1024) {}
+         MyMemSlave() : rogue::interfaces::memory::Slave(4,1024) {}
 
          // Entry point for incoming transaction
          void doTransaction(rogue::interfaces::memory::TransactionPtr tran) {
@@ -227,4 +227,7 @@ The equivelent code in C++ is show below:
             }
          }
    };
+
+   // Shared pointer alias
+   typedef std::shared_ptr<MyMemSlave> MyMemSlavePtr;
 

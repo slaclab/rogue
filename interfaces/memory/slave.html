@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Memory Slave Example &mdash; Rogue v3.3.1-76-g4830cc3e documentation</title>
+  <title>Memory Slave Example &mdash; Rogue v3.3.1-80-g99de57ad documentation</title>
   
 
   
@@ -196,7 +196,7 @@ initiate a read and write transaction:</p>
 
 <span class="c1"># Create a subclass of a memory Slave</span>
 <span class="c1"># Assume our min size = 4 bytes and our max size is 1024 bytes</span>
-<span class="k">class</span> <span class="nc">MySlave</span><span class="p">(</span><span class="n">rogue</span><span class="o">.</span><span class="n">interfaces</span><span class="o">.</span><span class="n">memory</span><span class="o">.</span><span class="n">Slave</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">MyMemSlave</span><span class="p">(</span><span class="n">rogue</span><span class="o">.</span><span class="n">interfaces</span><span class="o">.</span><span class="n">memory</span><span class="o">.</span><span class="n">Slave</span><span class="p">):</span>
 
     <span class="c1"># Init method must call the parent class init</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -296,20 +296,20 @@ initiate a read and write transaction:</p>
 
 <span class="c1">// Create a subclass of a memory Slave</span>
 <span class="c1">// Assume our min size = 4 bytes and our max size is 1024 bytes</span>
-<span class="n">class</span> <span class="nl">MyMaster</span> <span class="p">:</span> <span class="n">public</span> <span class="n">rogue</span><span class="o">::</span><span class="n">interfaces</span><span class="o">::</span><span class="n">memory</span><span class="o">::</span><span class="n">Slave</span> <span class="p">{</span>
+<span class="n">class</span> <span class="nl">MyMemSlave</span> <span class="p">:</span> <span class="n">public</span> <span class="n">rogue</span><span class="o">::</span><span class="n">interfaces</span><span class="o">::</span><span class="n">memory</span><span class="o">::</span><span class="n">Slave</span> <span class="p">{</span>
    <span class="nl">public</span><span class="p">:</span>
 
       <span class="c1">// Create a static class creator to return our custom class</span>
       <span class="c1">// wrapped with a shared pointer</span>
-      <span class="k">static</span> <span class="n">boost</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">MySlave</span><span class="o">&gt;</span> <span class="n">create</span><span class="p">()</span> <span class="p">{</span>
-         <span class="k">static</span> <span class="n">boost</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">MySlave</span><span class="o">&gt;</span> <span class="n">ret</span> <span class="o">=</span>
-            <span class="n">boost</span><span class="o">::</span><span class="n">make_shared</span><span class="o">&lt;</span><span class="n">MySlave</span><span class="o">&gt;</span><span class="p">();</span>
+      <span class="k">static</span> <span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">MyMemSlave</span><span class="o">&gt;</span> <span class="n">create</span><span class="p">()</span> <span class="p">{</span>
+         <span class="k">static</span> <span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">MyMemSlave</span><span class="o">&gt;</span> <span class="n">ret</span> <span class="o">=</span>
+            <span class="n">std</span><span class="o">::</span><span class="n">make_shared</span><span class="o">&lt;</span><span class="n">MyMemSlave</span><span class="o">&gt;</span><span class="p">();</span>
          <span class="k">return</span><span class="p">(</span><span class="n">ret</span><span class="p">);</span>
       <span class="p">}</span>
 
       <span class="c1">// Standard class creator which is called by create</span>
       <span class="c1">// Here we set min and max size</span>
-      <span class="n">MySlave</span><span class="p">()</span> <span class="o">:</span> <span class="n">rogue</span><span class="o">::</span><span class="n">interfaces</span><span class="o">::</span><span class="n">memory</span><span class="o">::</span><span class="n">Slave</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="mi">1024</span><span class="p">)</span> <span class="p">{}</span>
+      <span class="n">MyMemSlave</span><span class="p">()</span> <span class="o">:</span> <span class="n">rogue</span><span class="o">::</span><span class="n">interfaces</span><span class="o">::</span><span class="n">memory</span><span class="o">::</span><span class="n">Slave</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="mi">1024</span><span class="p">)</span> <span class="p">{}</span>
 
       <span class="c1">// Entry point for incoming transaction</span>
       <span class="kt">void</span> <span class="n">doTransaction</span><span class="p">(</span><span class="n">rogue</span><span class="o">::</span><span class="n">interfaces</span><span class="o">::</span><span class="n">memory</span><span class="o">::</span><span class="n">TransactionPtr</span> <span class="n">tran</span><span class="p">)</span> <span class="p">{</span>
@@ -388,6 +388,9 @@ initiate a read and write transaction:</p>
          <span class="p">}</span>
       <span class="p">}</span>
 <span class="p">};</span>
+
+<span class="c1">// Shared pointer alias</span>
+<span class="k">typedef</span> <span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">MyMemSlave</span><span class="o">&gt;</span> <span class="n">MyMemSlavePtr</span><span class="p">;</span>
 </pre></div>
 </div>
 </div>

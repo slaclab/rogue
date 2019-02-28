@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Receiving Frames &mdash; Rogue v3.3.1-76-g4830cc3e documentation</title>
+  <title>Receiving Frames &mdash; Rogue v3.3.1-80-g99de57ad documentation</title>
   
 
   
@@ -241,15 +241,15 @@ and we use std::copy to move data from the Frame to a data buffer.</p>
 
       <span class="c1">// Create a static class creator to return our custom class</span>
       <span class="c1">// wrapped with a shared pointer</span>
-      <span class="k">static</span> <span class="n">boost</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">MyCustomSlave</span><span class="o">&gt;</span> <span class="n">create</span><span class="p">()</span> <span class="p">{</span>
-         <span class="k">static</span> <span class="n">boost</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">MyCustomSlave</span><span class="o">&gt;</span> <span class="n">ret</span> <span class="o">=</span>
-            <span class="n">boost</span><span class="o">::</span><span class="n">make_shared</span><span class="o">&lt;</span><span class="n">MyCustomSlave</span><span class="o">&gt;</span><span class="p">();</span>
+      <span class="k">static</span> <span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">MyCustomSlave</span><span class="o">&gt;</span> <span class="n">create</span><span class="p">()</span> <span class="p">{</span>
+         <span class="k">static</span> <span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">MyCustomSlave</span><span class="o">&gt;</span> <span class="n">ret</span> <span class="o">=</span>
+            <span class="n">std</span><span class="o">::</span><span class="n">make_shared</span><span class="o">&lt;</span><span class="n">MyCustomSlave</span><span class="o">&gt;</span><span class="p">();</span>
          <span class="k">return</span><span class="p">(</span><span class="n">ret</span><span class="p">);</span>
       <span class="p">}</span>
 
       <span class="n">MyCustomSlave</span><span class="p">()</span> <span class="o">:</span> <span class="n">rogue</span><span class="o">::</span><span class="n">interfaces</span><span class="o">::</span><span class="n">stream</span><span class="o">::</span><span class="n">Slave</span><span class="p">()</span> <span class="p">{</span> <span class="p">}</span>
 
-      <span class="kt">void</span> <span class="n">acceptFrame</span> <span class="p">(</span> <span class="n">boost</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">rogue</span><span class="o">::</span><span class="n">interfaces</span><span class="o">::</span><span class="n">stream</span><span class="o">::</span><span class="n">Frame</span><span class="o">&gt;</span> <span class="n">frame</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="kt">void</span> <span class="n">acceptFrame</span> <span class="p">(</span> <span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">rogue</span><span class="o">::</span><span class="n">interfaces</span><span class="o">::</span><span class="n">stream</span><span class="o">::</span><span class="n">Frame</span><span class="o">&gt;</span> <span class="n">frame</span> <span class="p">)</span> <span class="p">{</span>
          <span class="n">rogue</span><span class="o">::</span><span class="n">interfaces</span><span class="o">::</span><span class="n">stream</span><span class="o">::</span><span class="n">FrameIterator</span> <span class="n">it</span><span class="p">;</span>
          <span class="kt">uint32_t</span> <span class="n">x</span><span class="p">;</span>
 
@@ -272,7 +272,7 @@ and we use std::copy to move data from the Frame to a data buffer.</p>
 <span class="p">};</span>
 
 <span class="c1">// Shared pointer alias</span>
-<span class="k">typedef</span> <span class="n">boost</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">MyCustomSlave</span><span class="o">&gt;</span> <span class="n">MyCustomSlavePtr</span><span class="p">;</span>
+<span class="k">typedef</span> <span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">MyCustomSlave</span><span class="o">&gt;</span> <span class="n">MyCustomSlavePtr</span><span class="p">;</span>
 </pre></div>
 </div>
 <p>The std::copy call works very well for moving data between two standard C++ iterators. It will

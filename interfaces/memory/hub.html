@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Memory Hub Example &mdash; Rogue v3.3.1-76-g4830cc3e documentation</title>
+  <title>Memory Hub Example &mdash; Rogue v3.3.1-80-g99de57ad documentation</title>
   
 
   
@@ -222,6 +222,7 @@ transctions in Python.</p>
 
                <span class="c1"># Put address into byte array, we do this because we will</span>
                <span class="c1"># need to pass it as the data field of a transation later</span>
+               <span class="c1"># The address the HUB sees is always relative, not absolute</span>
                <span class="n">addr</span> <span class="o">=</span> <span class="n">transaction</span><span class="o">.</span><span class="n">address</span><span class="p">()</span><span class="o">.</span><span class="n">to_bytes</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="s1">&#39;little&#39;</span><span class="p">,</span> <span class="n">signed</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
 
                <span class="c1"># Clear any existing errors</span>
@@ -388,6 +389,7 @@ transctions in C++.</p>
          <span class="n">this</span><span class="o">-&gt;</span><span class="n">setError</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 
          <span class="c1">// Create transaction setting address register (offset 0x100)</span>
+         <span class="c1">// The address the HUB sees is always relative, not absolute</span>
          <span class="n">id</span> <span class="o">=</span> <span class="n">this</span><span class="o">-&gt;</span><span class="n">reqTransaction</span><span class="p">(</span><span class="n">this</span><span class="o">-&gt;</span><span class="n">getAddress</span><span class="p">()</span> <span class="o">|</span> <span class="mh">0x100</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="n">transaction</span><span class="o">-&gt;</span><span class="n">address</span><span class="p">(),</span>
                                    <span class="n">rogue</span><span class="o">::</span><span class="n">interfaces</span><span class="o">::</span><span class="n">memory</span><span class="o">::</span><span class="n">Write</span><span class="p">);</span>
 
