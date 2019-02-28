@@ -43,7 +43,7 @@ ris::TcpCorePtr ris::TcpCore::create (std::string addr, uint16_t port, bool serv
 
 //! Creator
 ris::TcpCore::TcpCore (std::string addr, uint16_t port, bool server) {
-   int32_t to;
+   int32_t opt;
 
    this->bridgeLog_ = rogue::Logging::create("stream.TcpCore");
 
@@ -58,9 +58,14 @@ ris::TcpCore::TcpCore (std::string addr, uint16_t port, bool server) {
    this->zmqPush_ = zmq_socket(this->zmqCtx_,ZMQ_PUSH);
 
    // Receive timeout
-   to = 100;
-   if ( zmq_setsockopt (this->zmqPull_, ZMQ_RCVTIMEO, &to, sizeof(int32_t)) != 0 ) 
+   opt = 100;
+   if ( zmq_setsockopt (this->zmqPull_, ZMQ_RCVTIMEO, &opt, sizeof(int32_t)) != 0 ) 
          throw(rogue::GeneralError("TcpCore::TcpCore","Failed to set socket timeout"));
+
+   // Don't buffer when no connection
+   opt = 1;
+   if ( zmq_setsockopt (this->zmqPush_, ZMQ_IMMEDIATE, &opt, sizeof(int32_t)) != 0 ) 
+         throw(rogue::GeneralError("TcpCore::TcpCore","Failed to set socket immediate"));
 
    // Server mode
    if (server) {
