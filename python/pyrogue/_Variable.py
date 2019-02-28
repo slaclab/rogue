@@ -49,7 +49,8 @@ class BaseVariable(pr.Node):
                  hidden=False,
                  minimum=None,
                  maximum=None,
-                 pollInterval=0
+                 pollInterval=0,
+                 offset=0
                 ):
 
         # Public Attributes
