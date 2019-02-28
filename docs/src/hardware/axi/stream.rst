@@ -20,9 +20,13 @@ The following examples assume there are two destination fields in the underlying
 hardware. One which will be associated with a register protocol (SRPV3 in this case)
 and the other will be a bi-directional data channel. This channel will be connected to
 the custom sender and receiver described in :ref:`interfaces_stream_sending` and
-:ref:`interfaces_stream_receiving`.
+:ref:`interfaces_stream_receiving`. The example also uses the memory master 
+created in :ref:`interface_memory_master_ex`.
 
 See :ref:`hardware_axi_axi_stream_dma` for more information about the AxiStreamDma class methods.
+
+Python AxiStreamDma Example
+===========================
 
 .. code-block:: python
 
@@ -39,6 +43,12 @@ See :ref:`hardware_axi_axi_stream_dma` for more information about the AxiStreamD
    # Connect the SRP engine to the register DMA
    pyrogue.streamConnectBiDir(regChan, srp)
 
+   # Create a memory master
+   memMast = MyMemMaster()
+
+   # Connect memory master to SRP
+   pyrogue.busConnect(memMast,srp)
+
    # Next attach to destination 1 for data traffic
    dataChan = rogue.hardware.axi.AxiStreamDma('/dev/datadev_0', 1)
 
@@ -53,6 +63,9 @@ See :ref:`hardware_axi_axi_stream_dma` for more information about the AxiStreamD
 
    # Connect the dma as data soruce to the slave
    pyrogue.streamConnect(dataChan, mySlave)
+
+C++ AxiStreamDma Example
+========================
 
 The equivelent code in C++ is show below:
 
@@ -71,6 +84,12 @@ The equivelent code in C++ is show below:
    // Connect the SRP engine to the register DMA
    streamConnectBiDir(regChan, srp);
 
+   // Create a memory master
+   MyMemMasterPtr memMast = MyMemMaster.create();
+
+   // Connect memory master to SRP
+   busConnect(memMast,srp);
+
    // Next attach to destination 1 for data traffic
    rogue::hardware::axi::AxiStreamDmaPtr dataChan = rogue::hardware::axi::AxiStreamDma::create("/dev/datadev_0", 1);
 
@@ -80,9 +99,9 @@ The equivelent code in C++ is show below:
    // Connect the master as data source to the DMA
    streamConnect(myMast, dataChan);
 
-   # Create a slave
+   // Create a slave
    MyCustomSlavePtr mySlave = MyCustomSlave::create();
 
-   # Connect the dma as data soruce to the slave
+   // Connect the dma as data soruce to the slave
    streamConnect(dataChan, mySlave);
 

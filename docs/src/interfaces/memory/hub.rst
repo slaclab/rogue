@@ -54,6 +54,7 @@ transctions in Python.
 
                    # Put address into byte array, we do this because we will
                    # need to pass it as the data field of a transation later
+                   # The address the HUB sees is always relative, not absolute
                    addr = transaction.address().to_bytes(4, 'little', signed=False)
 
                    # Clear any existing errors
@@ -228,6 +229,7 @@ transctions in C++.
             this->setError(0)
 
             // Create transaction setting address register (offset 0x100)
+            // The address the HUB sees is always relative, not absolute
             id = this->reqTransaction(this->getAddress() | 0x100, 4, transaction->address(),
                                       rogue::interfaces::memory::Write);
 

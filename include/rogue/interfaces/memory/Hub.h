@@ -91,7 +91,7 @@ namespace rogue {
                uint64_t getOffset();
 
                //! Get full address of this Hub
-               /** Return the full address of this Hub
+               /** Return the full address of this Hub, including local offset.
                 *
                 * Exposted as _getAddress() to Python
                 * @return 64-bit address

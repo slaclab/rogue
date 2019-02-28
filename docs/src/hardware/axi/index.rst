@@ -11,5 +11,6 @@ Generic AXI Hardware Description
    :caption: AXI Hardware:
 
    stream
+   memory
    classes/index
 

@@ -33,7 +33,10 @@ namespace rogue {
           * The client side of the TCP bridge accepts a memory Transaction from an attached
           * master and forwards that Transaction to a remote TcpServer. The server side of the 
           * TCP bridge implments a memory Master device which executes the memory Transaction 
-          * to an attached Slave.
+          * to an attached Slave. 
+          *
+          * The TcpClient memory interface will drop transactions when the remote server is not 
+          * present or when the pipeline backs up.
           */
          class TcpClient : public rogue::interfaces::memory::Slave {
 
