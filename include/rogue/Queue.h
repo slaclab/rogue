@@ -35,12 +35,22 @@ namespace rogue {
           uint32_t max_;
           uint32_t thold_;
           bool     busy_;
+          bool     run_;
       public:
 
           Queue() { 
              max_   = 0; 
              thold_ = 0;
              busy_  = false;
+             run_   = true;
+          }
+
+          void stop() {
+             boost::mutex::scoped_lock lock(mtx_);
+             run_ = false;
+             lock.unlock();
+             popCond_.notify_all();
+             pushCond_.notify_all();
           }
 
           void setMax(uint32_t max) { max_ = max; }
@@ -50,10 +60,10 @@ namespace rogue {
           void push(T const &data) {
              boost::mutex::scoped_lock lock(mtx_);
    
-             while(max_ > 0 && queue_.size() >= max_) 
+             while(run_ && max_ > 0 && queue_.size() >= max_) 
                 pushCond_.wait(lock);
 
-             queue_.push(data);
+             if ( run_ ) queue_.push(data);
              busy_ = ( thold_ > 0 && queue_.size() > thold_ );
              lock.unlock();
              popCond_.notify_all();
@@ -83,9 +93,11 @@ namespace rogue {
           T pop() {
              T ret;
              boost::mutex::scoped_lock lock(mtx_);
-             while(queue_.empty()) popCond_.wait(lock);
-             ret=queue_.front();
-             queue_.pop();
+             while(run_ && queue_.empty()) popCond_.wait(lock);
+             if ( run_ ) {
+                ret=queue_.front();
+                queue_.pop();
+             }
              busy_ = ( thold_ > 0 && queue_.size() > thold_ );
              lock.unlock();
              pushCond_.notify_all();
