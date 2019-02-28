@@ -244,6 +244,7 @@ TARGET_LINK_LIBRARIES(rogue-core LINK_PUBLIC ${Boost_LIBRARIES})
 TARGET_LINK_LIBRARIES(rogue-core LINK_PUBLIC ${ZeroMQ_LIBRARY})
 TARGET_LINK_LIBRARIES(rogue-core LINK_PUBLIC ${EPICSV3_LIBRARIES})
 TARGET_LINK_LIBRARIES(rogue-core LINK_PUBLIC ${BZIP2_LIBRARIES})
+TARGET_LINK_LIBRARIES(rogue-core LINK_PUBLIC rt)
 
 # Do not link directly against python in macos
 if (APPLE)
@@ -284,13 +285,12 @@ endif()
 #########################################
 # Configuration & Setup Script Generation
 #########################################
+set(CONF_INCLUDE_DIRS ${ROGUE_DIR}/include)
 
 # Setup configuration file
 if ((${ROGUE_INSTALL} STREQUAL "system") OR (${ROGUE_INSTALL} STREQUAL "conda"))
-   set(CONF_INCLUDE_DIRS "")
    set(CONF_LIBRARIES LINK_PUBLIC rogue-core)
 else()
-   set(CONF_INCLUDE_DIRS ${ROGUE_DIR}/include)
    if (APPLE)
       set(CONF_LIBRARIES ${ROGUE_DIR}/lib/librogue-core.${ROGUE_SOVER}.dylib)
    else()
