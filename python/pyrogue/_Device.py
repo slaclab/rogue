@@ -35,15 +35,17 @@ class EnableVariable(pr.BaseVariable):
             disp={False: 'False', True: 'True', 'parent': 'ParentFalse', 'deps': 'ExtDepFalse'})
 
         if deps is None:
-            self._deps = []
+            self._deps   = []
+            self._depDis = False
         else:
-            self._deps = deps
+            self._deps   = deps
+            self._depDis = True
 
         for d in self._deps:
             d.addListener(self)
 
-        self._value = enabled
-        self._lock = threading.Lock()
+        self._value  = enabled
+        self._lock   = threading.Lock()
 
     def nativeType(self):
         return bool
@@ -55,7 +57,7 @@ class EnableVariable(pr.BaseVariable):
         with self._lock:
             if self._value is False:
                 ret = False
-            elif len(self._deps) > 0 and not all(x.value() for x in self._deps):
+            elif self._depDis:
                 ret = 'deps'
             elif self._parent == self._root:
                 #print("Root enable = {}".format(self._value))
@@ -81,6 +83,20 @@ class EnableVariable(pr.BaseVariable):
 
         with self.parent.root.updateGroup():
             self._queueUpdate()
+
+    def _doUpdate(self):
+        if len(self._deps) != 0:
+            oldEn = (self.value() == True)
+
+            with self._lock:
+                self._depDis = not all(x.value() for x in self._deps)
+
+            newEn = (self.value() == True)
+
+            if oldEn != newEn:
+                self.parent.enableChanged(newEn)
+
+        super()._doUpdate()
 
     def _rootAttached(self,parent,root):
         pr.Node._rootAttached(self,parent,root)

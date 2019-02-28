@@ -57,6 +57,7 @@ rpr::Application::Application () { }
 //! Destructor
 rpr::Application::~Application() { 
    thread_->interrupt();
+   cntl_->stopQueue();
    thread_->join();
 }
 
@@ -80,12 +81,13 @@ void rpr::Application::acceptFrame ( ris::FramePtr frame ) {
 
 //! Thread background
 void rpr::Application::runThread() {
+   ris::FramePtr frame;
    Logging log("rssi.Application");
    log.logThreadId();
 
    try {
       while(1) {
-         sendFrame(cntl_->applicationTx());
+         if ( (frame=cntl_->applicationTx()) != NULL ) sendFrame(frame);
          boost::this_thread::interruption_point();
       }
    } catch (boost::thread_interrupted&) { }

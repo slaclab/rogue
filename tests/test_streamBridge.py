@@ -18,7 +18,7 @@ import rogue
 import pyrogue
 import time
 
-rogue.Logging.setLevel(rogue.Logging.Debug)
+#rogue.Logging.setLevel(rogue.Logging.Debug)
 
 FrameCount = 10000
 FrameSize  = 10000

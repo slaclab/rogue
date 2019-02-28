@@ -48,7 +48,7 @@ class PollQueue(object):
         self._pollThread = threading.Thread(target=self._poll)
 
         # Setup logging
-        self._log = pr.logInit(self)
+        self._log = pr.logInit(cls=self)
 
     def _start(self):
         self._pollThread.start()

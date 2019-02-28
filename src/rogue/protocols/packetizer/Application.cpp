@@ -60,6 +60,7 @@ rpp::Application::Application (uint8_t id) {
 //! Destructor
 rpp::Application::~Application() { 
    thread_->interrupt();
+   queue_.stop();
    thread_->join();
 }
 
@@ -88,12 +89,13 @@ void rpp::Application::pushFrame( ris::FramePtr frame ) {
 
 //! Thread background
 void rpp::Application::runThread() {
+   ris::FramePtr frame;
    Logging log("packetizer.Application");
    log.logThreadId();
 
    try {
       while(1) {
-         sendFrame(queue_.pop());
+         if ( (frame = queue_.pop()) != NULL ) sendFrame(frame);
          boost::this_thread::interruption_point();
       }
    } catch (boost::thread_interrupted&) { }
