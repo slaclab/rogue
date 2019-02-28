@@ -24,9 +24,9 @@ import pyrogue
 class PrbsRx(pyrogue.Device):
     """PRBS RX Wrapper"""
 
-    def __init__(self, *, name, width=None, taps=None, **kwargs ):
+    def __init__(self, *, width=None, taps=None, stream=None, **kwargs ):
 
-        pyrogue.Device.__init__(self, name=name, description='PRBS Software Receiver', **kwargs)
+        pyrogue.Device.__init__(self, description='PRBS Software Receiver', **kwargs)
         self._prbs = rogue.utilities.Prbs()
 
         if width is not None:
@@ -34,6 +34,10 @@ class PrbsRx(pyrogue.Device):
 
         if taps is not None:
             self._prbs.setTaps(taps)
+
+        if stream is not None:
+            pyrogue.streamConnect(stream, self)
+            
 
         self.add(pyrogue.LocalVariable(name='rxErrors', description='RX Error Count',
                                        mode='RO', pollInterval=1, value=0,
@@ -76,9 +80,9 @@ class PrbsRx(pyrogue.Device):
 class PrbsTx(pyrogue.Device):
     """PRBS TX Wrapper"""
 
-    def __init__(self, *, name, sendCount=False, width=None, taps=None, **kwargs ):
+    def __init__(self, *, sendCount=False, width=None, taps=None, stream=None, **kwargs ):
 
-        pyrogue.Device.__init__(self, name=name, description='PRBS Software Transmitter', **kwargs)
+        pyrogue.Device.__init__(self, description='PRBS Software Transmitter', **kwargs)
         self._prbs = rogue.utilities.Prbs()
 
         if width is not None:
@@ -86,6 +90,9 @@ class PrbsTx(pyrogue.Device):
 
         if taps is not None:
             self._prbs.setTaps(taps)
+
+        if stream is not None:
+            pyrogue.streamConnect(self, stream)
 
         self._prbs.sendCount(sendCount)
 
@@ -151,3 +158,27 @@ class PrbsTx(pyrogue.Device):
     def sendCount(self,en):
         self._prbs.sendCount(en)
 
+
+class PrbsPair(pyrogue.Device):
+    def __init__(self, width=None, taps=None, sendCount=False, txStream=None, rxStream=None, **kwargs):
+        super().__init__(self, **kwargs)
+        self.add(PrbsTx(width=width, taps=taps, stream=txStream))
+        self.add(PrbsRx(sendCount=sendCount, width=width, taps=taps, stream=rxStream))
+
+    def setWidth(self, width):
+        self.PrbsTx.setWidth(width)
+        self.PrbsRx.setWidth(width)
+
+    def setTaps(self, taps):
+        self.PrbsTx.setTaps(taps)
+        self.PrbsRx.setTaps(taps)
+
+    def setCount(self, count):
+        self.PrbsRx.setCount(count)
+
+    def _getStreamMaster(self):
+        return self.PrbsRx._getStreamMaster()
+
+    def _getStreamSlave(self):
+        return self.PrbsTx._getStreamSlave()
+    
