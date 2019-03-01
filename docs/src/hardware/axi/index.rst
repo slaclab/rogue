@@ -12,5 +12,6 @@ Generic AXI Hardware Description
 
    stream
    memory
+   features
    classes/index
 

@@ -110,7 +110,9 @@ namespace rogue {
 
                //! Set timeout for frame transmits in microseconds
                /** This setting defines how long to wait for the lower level
-                * driver to be ready to send data. 
+                * driver to be ready to send data. The current implementation
+                * will geenrate a warning message after each timeout but will
+                * continue to wait for the driver.
                 *
                 * Exposed to python as SetTimeout()
                 * @param timeout Timeout value in microseconds
