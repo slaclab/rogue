@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>AxiStreamDma &mdash; Rogue v3.3.1-80-g99de57ad documentation</title>
+  <title>AxiStreamDma &mdash; Rogue v3.3.1-81-g3a85d987 documentation</title>
   
 
   
@@ -91,6 +91,7 @@
 <li class="toctree-l2 current"><a class="reference internal" href="../index.html">Generic AXI Hardware Interface</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="../stream.html">Using The AxiStreamDma Class</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../memory.html">Using The AxiMemMap Class</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../features.html">Additional AxiStreamDma Features</a></li>
 <li class="toctree-l3 current"><a class="reference internal" href="index.html">AXI Hardware Interface Class Descriptions</a><ul class="current">
 <li class="toctree-l4 current"><a class="current reference internal" href="#">AxiStreamDma</a></li>
 <li class="toctree-l4"><a class="reference internal" href="axiMemMap.html">AxiMemMap</a></li>
@@ -196,7 +197,7 @@
 <dt id="_CPPv4N5rogue8hardware3axi12AxiStreamDma10setTimeoutE8uint32_t">
 <span id="_CPPv3N5rogue8hardware3axi12AxiStreamDma10setTimeoutE8uint32_t"></span><span id="_CPPv2N5rogue8hardware3axi12AxiStreamDma10setTimeoutE8uint32_t"></span><span id="rogue::hardware::axi::AxiStreamDma::setTimeout__uint32_t"></span><span class="target" id="classrogue_1_1hardware_1_1axi_1_1AxiStreamDma_1a93a4844ca269864d2ef7fd618d9f8d7c"></span>void <code class="descname">setTimeout</code><span class="sig-paren">(</span>uint32_t <em>timeout</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue8hardware3axi12AxiStreamDma10setTimeoutE8uint32_t" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Set timeout for frame transmits in microseconds. </p>
-<p>This setting defines how long to wait for the lower level driver to be ready to send data.</p>
+<p>This setting defines how long to wait for the lower level driver to be ready to send data. The current implementation will geenrate a warning message after each timeout but will continue to wait for the driver.</p>
 <p>Exposed to python as SetTimeout() <dl class="docutils">
 <dt><strong>Parameters</strong></dt>
 <dd><ul class="breatheparameterlist first last simple">

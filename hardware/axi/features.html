@@ -1,0 +1,297 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Additional AxiStreamDma Features &mdash; Rogue v3.3.1-81-g3a85d987 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="AXI Hardware Interface Class Descriptions" href="classes/index.html" />
+    <link rel="prev" title="Using The AxiMemMap Class" href="memory.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> Rogue
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                v3.3.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../interfaces/index.html">Interfaces</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Hardware</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Generic AXI Hardware Interface</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="stream.html">Using The AxiStreamDma Class</a></li>
+<li class="toctree-l3"><a class="reference internal" href="memory.html">Using The AxiMemMap Class</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Additional AxiStreamDma Features</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#kernel-module-debug">Kernel Module Debug</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#zerocopy-enable">ZeroCopy Enable</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#dma-acknowledge">Dma Acknowledge</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#frame-send-timeout">Frame Send Timeout</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="classes/index.html">AXI Hardware Interface Class Descriptions</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../pgp/index.html">PGP Card Hardware Interface</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../logging/index.html">Logging In Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../custom_module/index.html">Creating Custom Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../installing/index.html">Installing &amp; Compiling Rogue</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Rogue</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Hardware</a> &raquo;</li>
+        
+          <li><a href="index.html">Generic AXI Hardware Interface</a> &raquo;</li>
+        
+      <li>Additional AxiStreamDma Features</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/hardware/axi/features.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="additional-axistreamdma-features">
+<span id="hardware-axi-features"></span><h1>Additional AxiStreamDma Features<a class="headerlink" href="#additional-axistreamdma-features" title="Permalink to this headline">¶</a></h1>
+<p>The following features are available in the AxiStreamDma class which
+may be neccessary for some operation modes.</p>
+<p>All of these features are described in detail at <a class="reference internal" href="classes/axiStreamDma.html#hardware-axi-axi-stream-dma"><span class="std std-ref">AxiStreamDma</span></a>.</p>
+<div class="section" id="kernel-module-debug">
+<h2>Kernel Module Debug<a class="headerlink" href="#kernel-module-debug" title="Permalink to this headline">¶</a></h2>
+<p>Most of the lower level kernel modules which are used with the AxiStreamDma
+class have a debugging mode. This can be enabled by the user with the following
+calls:</p>
+<p>In Python:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">axiStream</span><span class="o">.</span><span class="n">setDriverDebug</span><span class="p">(</span><span class="bp">True</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>In C++:</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="n">axiStream</span><span class="o">-&gt;</span><span class="n">setDriverDebug</span><span class="p">(</span><span class="nb">true</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>The debug messages can then be viewed using the dmesg command in linux:</p>
+</div>
+<div class="section" id="zerocopy-enable">
+<h2>ZeroCopy Enable<a class="headerlink" href="#zerocopy-enable" title="Permalink to this headline">¶</a></h2>
+<p>By default the AxiStreamDma class interacts with the underlying driver using
+its zero copy buffer mode if available. The user’s implementation may choose
+to avoid this by asserting rogue::interface::memory::reqFrame() calls with
+the zeroCopyEn flag set to false.</p>
+<p>Alternatively the zero copy mode can be disabled globally for all interactions
+with the AxiStreamDma class using the following call:</p>
+<p>In Python:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">axiStream</span><span class="o">.</span><span class="n">setZeroCopyEn</span><span class="p">(</span><span class="bp">False</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>In C++:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">axiStream</span><span class="o">-&gt;</span><span class="n">setZeroCopyEn</span><span class="p">(</span><span class="n">false</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="dma-acknowledge">
+<h2>Dma Acknowledge<a class="headerlink" href="#dma-acknowledge" title="Permalink to this headline">¶</a></h2>
+<p>Some versions of the lower level driver and the underlying hardware will support
+a DMA Acknowledge function which pulses a logic signal in the lower level firmware.
+This was used in some experiments which need more complex handshakes between software
+and firmware. The following method can be used to trigger this acknowledge.</p>
+<p>In Python:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">axiStream</span><span class="o">.</span><span class="n">dmaAck</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>In C++:</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="n">axiStream</span><span class="o">-&gt;</span><span class="n">dmaAck</span><span class="p">();</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="frame-send-timeout">
+<h2>Frame Send Timeout<a class="headerlink" href="#frame-send-timeout" title="Permalink to this headline">¶</a></h2>
+<p>In some cases the lower level driver will not be ready when allocating new
+buffers or sending frames. After a defined timeout the AxiStreamDma class
+will generate a warning message but continue to wait for the driver. The following
+method will adjust the period between warning messages. The passed value is the
+timeout period in microseconds.</p>
+<p>In Python:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">axiStream</span><span class="o">.</span><span class="n">setTimeout</span><span class="p">(</span><span class="mi">1500</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>In C++:</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="n">axiStream</span><span class="o">-&gt;</span><span class="n">setTimeout</span><span class="p">(</span><span class="mi">1500</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="classes/index.html" class="btn btn-neutral float-right" title="AXI Hardware Interface Class Descriptions" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="memory.html" class="btn btn-neutral float-left" title="Using The AxiMemMap Class" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, SLAC National Accelerator Laboratory
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

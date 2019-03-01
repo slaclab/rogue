@@ -6,6 +6,7 @@
 ./_sources/hardware/axi/classes/axiMemMap.rst.txt
 ./_sources/hardware/axi/classes/axiStreamDma.rst.txt
 ./_sources/hardware/axi/classes/index.rst.txt
+./_sources/hardware/axi/features.rst.txt
 ./_sources/hardware/axi/index.rst.txt
 ./_sources/hardware/axi/memory.rst.txt
 ./_sources/hardware/axi/stream.rst.txt
@@ -136,6 +137,7 @@
 ./hardware/axi/classes/axiMemMap.html
 ./hardware/axi/classes/axiStreamDma.html
 ./hardware/axi/classes/index.html
+./hardware/axi/features.html
 ./hardware/axi/index.html
 ./hardware/axi/memory.html
 ./hardware/axi/stream.html
