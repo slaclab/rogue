@@ -145,8 +145,11 @@ void rim::TcpClient::doTransaction(rim::TransactionPtr tran) {
    bridgeLog_->debug("Forwarding transaction id=%" PRIu32 ", addr=0x%" PRIx64 ", size=%" PRIu32 ", type=%" PRIu32 ", cnt=%" PRIu32 ,id,addr,size,type,msgCnt);
 
    // Send message
-   for (x=0; x < msgCnt; x++) 
-      zmq_sendmsg(this->zmqReq_,&(msg[x]),((x==(msgCnt-1)?0:ZMQ_SNDMORE))|ZMQ_DONTWAIT);
+   for (x=0; x < msgCnt; x++) {
+      if ( zmq_sendmsg(this->zmqReq_,&(msg[x]),((x==(msgCnt-1)?0:ZMQ_SNDMORE))|ZMQ_DONTWAIT) < 0 ) {
+         bridgeLog_->warning("Failed to send transaction %" PRIu32", msg %" PRIu32, id, x);
+      }
+   }
 
    // Add transaction
    if ( type == rim::Post ) tran->done(0);
