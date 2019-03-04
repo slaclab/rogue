@@ -158,17 +158,33 @@ endif()
 #####################################
 # Set Rogue Variables
 #####################################
+# These variables are now defined
+# ${Boost_INCLUDE_DIRS}
+# ${Boost_LIBRARIES}
+# ${PYTHON_INCLUDE_DIRS}
+# ${PYTHON_LIBRARIES}
+# ${ZeroMQ_INCLUDE_DIR}
+# ${ZeroMQ_LIBRARY}
+# ${BZIP2_INCLUDE_DIR}
+# ${BZIP2_LIBRARIES}
+# ${EPICSV3_INCLUDES})
+# ${EPICSV3_LIBRARIES})
 
-# Include paths
+# Rogue Include paths
+set(ROGUE_INCLUDE_ONLY @CONF_INCLUDE_DIRS@)
+
+# Rogue librarires
+set(ROGUE_LIBRARIES_ONLY @CONF_LIBRARIES@)
+
+# Rogue Include paths
 set(ROGUE_INCLUDE_DIRS @CONF_INCLUDE_DIRS@
                        ${Boost_INCLUDE_DIRS}
                        ${PYTHON_INCLUDE_DIRS}
                        ${ZeroMQ_INCLUDE_DIR}
                        ${BZIP2_INCLUDE_DIR}
-                       ${PYTHON_INCLUDE_DIRS}
                        ${EPICSV3_INCLUDES})
 
-# Set librarires
+# Rogue librarires
 set(ROGUE_LIBRARIES @CONF_LIBRARIES@
                     ${Boost_LIBRARIES}
                     ${PYTHON_LIBRARIES}

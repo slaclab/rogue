@@ -221,11 +221,11 @@ configure_file (
 # Add include directories
 include_directories(${PROJECT_SOURCE_DIR}/include)
 include_directories(${PROJECT_BINARY_DIR})
-include_directories(${Boost_INCLUDE_DIRS})
-include_directories(${PYTHON_INCLUDE_DIRS})
-include_directories(${ZeroMQ_INCLUDE_DIR})
-include_directories(${BZIP2_INCLUDE_DIR})
-include_directories(${EPICSV3_INCLUDES})
+include_directories(system ${Boost_INCLUDE_DIRS})
+include_directories(system ${PYTHON_INCLUDE_DIRS})
+include_directories(system ${ZeroMQ_INCLUDE_DIR})
+include_directories(system ${BZIP2_INCLUDE_DIR})
+include_directories(system ${EPICSV3_INCLUDES})
 
 if (APPLE)
    SET(CMAKE_SHARED_LIBRARY_SUFFIX ".dylib")
