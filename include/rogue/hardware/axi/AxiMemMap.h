@@ -26,7 +26,14 @@ namespace rogue {
    namespace hardware {
       namespace axi {
 
-         //! PGP Card class
+         //! AXI Memory Map Class
+         /** This class provides a bridge between the Rogue memory interface and one
+          * of the AES Stream Drivers device drivers. This bridge allows for read and
+          * write transactions to PCI Express boards (using the data_dev driver)
+          * or Zynq AXI4 register space (using the rce_memmap driver). The driver
+          * controls which space is availablet to the user. Multiple AxiMemMap classes
+          * are allowed to be attached to the driver at the same time.
+          */
          class AxiMemMap : public rogue::interfaces::memory::Slave {
 
                //! AxiMemMap file descriptor
@@ -37,23 +44,27 @@ namespace rogue {
 
             public:
 
-               //! Class creation
+               //! Class factory which returns a AxiMemMapPtr to a newly created AxiMemMap object
+               /** Exposed to Python as rogue.hardware.axi.AxiMemMap()
+                * @param path Path to device. i.e /dev/datadev_0
+                * @return AxiMemMap pointer (AxiMemMapPtr)
+                */
                static boost::shared_ptr<rogue::hardware::axi::AxiMemMap> create (std::string path);
 
-               //! Setup class in python
+               // Setup class for use in python
                static void setup_python();
 
-               //! Creator
+               // Class Creator
                AxiMemMap(std::string path);
 
-               //! Destructor
+               // Destructor
                ~AxiMemMap();
 
-               //! Post a transaction
+               // Accept as transaction from the memory Master as defined in the Slave class.
                void doTransaction(boost::shared_ptr<rogue::interfaces::memory::Transaction> tran);
          };
 
-         // Convienence
+         //! Alias for using shared pointer as TcpClientPtr
          typedef boost::shared_ptr<rogue::hardware::axi::AxiMemMap> AxiMemMapPtr;
 
       }

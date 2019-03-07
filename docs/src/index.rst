@@ -15,8 +15,14 @@ branch of Rogue. New documentation is being added incrementally over time.
    :caption: Contents:
 
    interfaces/index
+   hardware/index
+   logging/index 
    custom_module/index
    installing/index
+
+Please email rherbst@slac.stanford.edu if you see any errors or have any 
+questions about anything in the current documenation. We are still adding 
+content and flushing out errors and typos.
 
 Indices and tables
 ==================

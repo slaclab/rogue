@@ -12,6 +12,8 @@ the output of the :ref:`custom_makefile` step.
 
 .. code:: python
 
+   # Source Code For MyWrapper.py
+
    import rogue
    import pyrogue
    import MyModule

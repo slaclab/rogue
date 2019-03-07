@@ -29,21 +29,28 @@ namespace rogue {
    namespace hardware {
       namespace pgp {
 
-         //! Wrapper for PgpInfo class. 
+         //! PGP Card Info
+         /** This class contains the build & version information for the PGP card.
+          * This class is a C++ wrapper around the PgpInfo structure used by the 
+          * lower level driver. All structure members are exposed to Python using 
+          * their original names and can be read directly. 
+          */
          class Info : public PgpInfo {
             public:
 
-               //! Create the info class with pointer
+               // Create the info class with pointer
                static boost::shared_ptr<rogue::hardware::pgp::Info> create();
 
-               //! Setup class in python
+               // Setup class in python
                static void setup_python();
 
                //! Return buildstring in string format
+               /** Exposed to python as buildString()
+                */
                std::string buildString();
          };
 
-         //! Convienence
+         //! Alias for using shared pointer as InfoPtr
          typedef boost::shared_ptr<rogue::hardware::pgp::Info> InfoPtr;
       }
    }

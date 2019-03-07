@@ -29,19 +29,24 @@ namespace rogue {
    namespace hardware {
       namespace pgp {
 
-         //! Wrapper for PgpInfo class. 
+         //! PGP Status Class
+         /** This class contains the current PGP status for one of the 8 lanes
+          * on a PGP card. This class is a C++ wrapper around the PgpStatus 
+          * structure used by the lower level driver. All structure members are 
+          * exposed to Python using their original names and can be read directly. 
+          */
          class Status : public PgpStatus {
             public:
 
-               //! Create the info class with pointer
+               // Create the info class with pointer
                static boost::shared_ptr<rogue::hardware::pgp::Status> create();
 
-               //! Setup class in python
+               // Setup class in python
                static void setup_python();
 
          };
 
-         //! Convienence
+         //! Alias for using shared pointer as StatusPtr
          typedef boost::shared_ptr<rogue::hardware::pgp::Status> StatusPtr;
       }
    }

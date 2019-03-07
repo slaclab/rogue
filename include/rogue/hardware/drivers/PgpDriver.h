@@ -23,79 +23,185 @@
 #define __PGP_DRIVER_H__
 #include "DmaDriver.h"
 
-// Card Info
+//! PGP Card Info
 struct PgpInfo {
+
+   //! PGP Card Serial #
    uint64_t serial;
+
+   //! PGP Card Type
    uint32_t type;
+
+   //! PGP Card Version
    uint32_t version;
+
+   //! PGP Card Lane Mask
    uint32_t laneMask;
+
+   //! PGP Card VCs per Lane Mask
    uint32_t vcPerMask;
+
+   //! PGP Card Line Rate
    uint32_t pgpRate;
+
+   //! PGP Card Prom Programming Support Flag
    uint32_t promPrgEn;
+
+   //! PGP Card EVR Support Flag
    uint32_t evrSupport;
+
    uint32_t pad;
+
    char     buildStamp[256];
 };
 
-// PCI Info
+//! PCI Status
 struct PciStatus {
+
+   //! PCI Express Command Field
    uint32_t pciCommand;
+
+   //! PCI Express Status Field
    uint32_t pciStatus;
+
+   //! PCI Express D Command Field
    uint32_t pciDCommand;
+
+   //! PCI Express D Status Field
    uint32_t pciDStatus;
+
+   //! PCI Express L Command Field
    uint32_t pciLCommand;
+
+   //! PCI Express L Status Field
    uint32_t pciLStatus;
+
+   //! PCI Express Link State
    uint32_t pciLinkState;
+
+   //! PCI Express Function Number
    uint32_t pciFunction;
+
+   //! PCI Express Device Number
    uint32_t pciDevice;
+
+   //! PCI Express Bus Number
    uint32_t pciBus;
+
+   //! Number Of PCI Lanes
    uint32_t pciLanes;
+
    uint32_t pad;
 };
 
-// Lane status
+//! PGP Lane Status
 struct PgpStatus {
+
+   //! Lane number assocaited with this record
    uint32_t lane;
+
+   //! Lane loopback status
    uint32_t loopBack;
+
+   //! Lane local link ready status
    uint32_t locLinkReady;
+
+   //! Lane remote link ready status
    uint32_t remLinkReady;
+
+   //! Lane receive PLL ready status
    uint32_t rxReady;
+
+   //! Lane transmit PLL ready status
    uint32_t txReady;
+
+   //! Lane receive frame counter
    uint32_t rxCount;
+
+   //! Lane cell error counter
    uint32_t cellErrCnt;
+
+   //! Lane link lost transition counter
    uint32_t linkDownCnt;
+
+   //! Lane link error counter
    uint32_t linkErrCnt;
+
+   //! Lane FIFO error counter
    uint32_t fifoErr;
+
+   //! Lane current received remote sideband data
    uint32_t remData;
+
+   //! Lane remote buffer status
    uint32_t remBuffStatus;
+
    uint32_t pad;
 };
 
-// EVR Control, per lane
+//! EVR Control, one per lane
 struct PgpEvrControl {
+
+   //! Lane number associated with this record
    uint32_t  lane;
-   uint32_t  evrEnable;     // Global flag
-   uint32_t  laneRunMask;   // 1 = Run trigger enable
-   uint32_t  evrSyncEn;     // 1 = Start, 0 = Stop
-   uint32_t  evrSyncSel;    // 0 = async, 1 = sync for start/stop
-   uint32_t  headerMask;    // 1 = Enable header data checking, one bit per VC (4 bits)
-   uint32_t  evrSyncWord;   // fiducial to transition start stop
-   uint32_t  runCode;       // Run code
-   uint32_t  runDelay;      // Run delay
-   uint32_t  acceptCode;    // Accept code
+
+   //! Global EVR enable for all lanes, 1 = enable, 0 = disabled
+   uint32_t  evrEnable;
+
+   //! Run trigger enable for this lane, 1 = enable, 0 = disable
+   uint32_t  laneRunMask;
+
+   //! EVR Sync enable, 1 = start, 0 = stop
+   uint32_t  evrSyncEn;
+
+   //! Sync select, 0 = async, 1 = sync for start/stop
+   uint32_t  evrSyncSel;
+
+   //! Header checking mask, 1 enable bit for each of 4 virtual channels.
+   uint32_t  headerMask;
+
+   //! EVR Sync word, 32-bit timing fidicial to transition start/stop on
+   uint32_t  evrSyncWord;
+
+   //! 8-bit timing code to assert run trigger
+   uint32_t  runCode;
+
+   //! Delay between timing code reception and assertion of run trigger
+   uint32_t  runDelay;
+
+   //! 8-bit timing code to assert accept trigger
+   uint32_t  acceptCode;
+
+   //! Delay between timing code reception and assertion of accept trigger
    uint32_t  acceptDelay;   // Accept delay
+
    uint32_t  pad;
 };
 
-// EVR Status, per lane
+//! EVR Status, one per lane
 struct PgpEvrStatus {
+
+   //! Lane number associated with this record
    uint32_t  lane;
+
+   //! EVR link error counter
    uint32_t  linkErrors;
+
+   //! EVR link up state, 0 = down, 1 = up
    uint32_t  linkUp;
-   uint32_t  runStatus;    // 1 = Running, 0 = Stopped
+
+   //! EVR running status, 0 = stopped, 1 = running
+   uint32_t  runStatus;
+
+   //! Current distributed timing seconds value
    uint32_t  evrSeconds;
+
+   //! Number of run triggers received
    uint32_t  runCounter;
+
+   //! Number of accepts triggers received
    uint32_t  acceptCounter;
+
    uint32_t  pad;
 };
 
