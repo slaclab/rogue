@@ -41,34 +41,34 @@ if ( NOT NO_PYTHON )
    find_package(PythonInterp QUIET REQUIRED 3.6)
    find_package(PythonLibs QUIET REQUIRED 3.6)
 
-set(Boost_USE_MULTITHREADED ON)
+   set(Boost_USE_MULTITHREADED ON)
 
-# Boost may need help on SLAC machines
-set(BOOST_ROOT:PATHNAME $ENV{BOOST_PATH})
+   # Boost may need help on SLAC machines
+   set(BOOST_ROOT:PATHNAME $ENV{BOOST_PATH})
 
-# First try standard suffix for boost
+   # First try standard suffix for boost
    find_package(Boost 1.58 QUIET COMPONENTS system thread python3)
 
-# Next try Debian/Ubuntu suffix for boost
+   # Next try Debian/Ubuntu suffix for boost
    if (NOT Boost_FOUND)
-   find_package(Boost 1.58 QUIET COMPONENTS system thread python-py36)
-endif()
+      find_package(Boost 1.58 QUIET COMPONENTS system thread python-py36)
+   endif()
 
-# Next try Mac with homebrew boost/python36
+   # Next try Mac with homebrew boost/python36
    if (NOT Boost_FOUND)
-   find_package(Boost 1.58 QUIET COMPONENTS system thread python36)
-endif()
+      find_package(Boost 1.58 QUIET COMPONENTS system thread python36)
+   endif()
 
-# Next try anaconda with python 3.7
+   # Next try anaconda with python 3.7
    if (NOT Boost_FOUND)
-   find_package(Boost 1.58 QUIET COMPONENTS system thread python37)
-endif()
+      find_package(Boost 1.58 QUIET COMPONENTS system thread python37)
+   endif()
 
-# Nothing worked
-if (NOT Boost_FOUND)
-   message("")
-   message(FATAL_ERROR "Failed to find boost libraries!")
-endif()
+   # Nothing worked
+   if (NOT Boost_FOUND)
+      message("")
+      message(FATAL_ERROR "Failed to find boost libraries!")
+   endif()
 else()
    add_definitions( -DNO_PYTHON )
 endif()
@@ -77,7 +77,7 @@ endif()
 # BZIP2
 #####################################
 if ( NOT NO_BZIP ) 
-find_package(BZip2 QUIET REQUIRED)
+   find_package(BZip2 QUIET REQUIRED)
 endif()
 
 #####################################
@@ -85,43 +85,43 @@ endif()
 #####################################
 if ( NOT NO_ZMQ )
 
-# First try with Cmake packages
-find_package(ZeroMQ QUIET)
+   # First try with Cmake packages
+   find_package(ZeroMQ QUIET)
 
-# ZeroMQ does not always support cmake, use brute force
-if (NOT ZeroMQ_FOUND)
-   
-   # Convert LD_LIBRARY PATH for search
-   if(ENV{LD_LIBRARY_PATH})
-      string(REPLACE ":" ";" HINT_PATHS $ENV{LD_LIBRARY_PATH})
-   else()
-      set(HINT_PATHS, "")
+   # ZeroMQ does not always support cmake, use brute force
+   if (NOT ZeroMQ_FOUND)
+      
+      # Convert LD_LIBRARY PATH for search
+      if(ENV{LD_LIBRARY_PATH})
+         string(REPLACE ":" ";" HINT_PATHS $ENV{LD_LIBRARY_PATH})
+      else()
+         set(HINT_PATHS, "")
+      endif()
+
+      # See if zmq library is in LD_LIBRARY_PATH
+      find_library(ZeroMQ_LIBRARY 
+                   NAMES zmq 
+                   PATHS ${HINT_PATHS})
+
+      # Found it
+      if (ZeroMQ_LIBRARY) 
+
+         # Get the base diretory
+         get_filename_component(ZMQ_LIBDIR ${ZeroMQ_LIBRARY} DIRECTORY)
+
+         # See if we can find the header in a relative path
+         find_path(ZeroMQ_INCLUDE_DIR
+                 NAMES zmq.h
+                 PATHS ${ZMQ_LIBDIR}/../include
+                 )
+      endif()
+
+      # Failed to find it
+      if (NOT ZeroMQ_INCLUDE_DIR)
+         message("")
+         message(FATAL_ERROR "Failed to find zeroMQ!")
+      endif()
    endif()
-
-   # See if zmq library is in LD_LIBRARY_PATH
-   find_library(ZeroMQ_LIBRARY 
-                NAMES zmq 
-                PATHS ${HINT_PATHS})
-
-   # Found it
-   if (ZeroMQ_LIBRARY) 
-
-      # Get the base diretory
-      get_filename_component(ZMQ_LIBDIR ${ZeroMQ_LIBRARY} DIRECTORY)
-
-      # See if we can find the header in a relative path
-      find_path(ZeroMQ_INCLUDE_DIR
-              NAMES zmq.h
-              PATHS ${ZMQ_LIBDIR}/../include
-              )
-   endif()
-
-   # Failed to find it
-   if (NOT ZeroMQ_INCLUDE_DIR)
-      message("")
-      message(FATAL_ERROR "Failed to find zeroMQ!")
-   endif()
-endif()
 endif()
 
 #####################################
