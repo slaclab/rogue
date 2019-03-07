@@ -43,7 +43,7 @@ rim::TcpClientPtr rim::TcpClient::create (std::string addr, uint16_t port) {
 
 //! Creator
 rim::TcpClient::TcpClient (std::string addr, uint16_t port) : rim::Slave(4,0xFFFFFFFF) {
-   int32_t to;
+   int32_t opt;
 
    this->bridgeLog_ = rogue::Logging::create("memory.TcpClient");
 
@@ -58,9 +58,14 @@ rim::TcpClient::TcpClient (std::string addr, uint16_t port) : rim::Slave(4,0xFFF
    this->zmqReq_  = zmq_socket(this->zmqCtx_,ZMQ_PUSH);
 
    // Receive timeout
-   to = 100;
-   if ( zmq_setsockopt (this->zmqResp_, ZMQ_RCVTIMEO, &to, sizeof(int32_t)) != 0 ) 
-         throw(rogue::GeneralError("TcpServer::TcpServer","Failed to set socket timeout"));
+   opt = 100;
+   if ( zmq_setsockopt (this->zmqResp_, ZMQ_RCVTIMEO, &opt, sizeof(int32_t)) != 0 ) 
+         throw(rogue::GeneralError("TcpClient::TcpClient","Failed to set socket timeout"));
+
+   // Don't buffer when no connection
+   opt = 1;
+   if ( zmq_setsockopt (this->zmqReq_, ZMQ_IMMEDIATE, &opt, sizeof(int32_t)) != 0 ) 
+         throw(rogue::GeneralError("TcpClient::TcpClient","Failed to set socket immediate"));
 
    this->respAddr_.append(std::to_string(static_cast<long long>(port+1)));
    this->reqAddr_.append(std::to_string(static_cast<long long>(port)));
@@ -141,8 +146,11 @@ void rim::TcpClient::doTransaction(rim::TransactionPtr tran) {
    bridgeLog_->debug("Forwarding transaction id=%" PRIu32 ", addr=0x%" PRIx64 ", size=%" PRIu32 ", type=%" PRIu32 ", cnt=%" PRIu32 ,id,addr,size,type,msgCnt);
 
    // Send message
-   for (x=0; x < msgCnt; x++) 
-      zmq_sendmsg(this->zmqReq_,&(msg[x]),(x==(msgCnt-1)?0:ZMQ_SNDMORE));
+   for (x=0; x < msgCnt; x++) {
+      if ( zmq_sendmsg(this->zmqReq_,&(msg[x]),((x==(msgCnt-1)?0:ZMQ_SNDMORE))|ZMQ_DONTWAIT) < 0 ) {
+         bridgeLog_->warning("Failed to send transaction %" PRIu32", msg %" PRIu32, id, x);
+      }
+   }
 
    // Add transaction
    if ( type == rim::Post ) tran->done(0);
