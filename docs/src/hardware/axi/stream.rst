@@ -34,8 +34,8 @@ Python AxiStreamDma Example
    import rogue.hardware.axi
    import rogue.protocols.srp
 
-   # First attach to destination 0 for register traffic
-   regChan = rogue.hardware.axi.AxiStreamDma('/dev/datadev_0', 0)
+   # First attach to destination 0 for register traffic, ssi enabled
+   regChan = rogue.hardware.axi.AxiStreamDma('/dev/datadev_0', 0, True)
 
    # Create an SRP engine 
    srp = rogue.protocols.srp.SrpV3()
@@ -49,8 +49,8 @@ Python AxiStreamDma Example
    # Connect memory master to SRP
    pyrogue.busConnect(memMast,srp)
 
-   # Next attach to destination 1 for data traffic
-   dataChan = rogue.hardware.axi.AxiStreamDma('/dev/datadev_0', 1)
+   # Next attach to destination 1 for data traffic, ssi enabled
+   dataChan = rogue.hardware.axi.AxiStreamDma('/dev/datadev_0', 1, True)
 
    # Create a master 
    myMast = MyCustomMaster()
@@ -75,8 +75,8 @@ The equivelent code in C++ is show below:
    #include <rogue/hardware/axi/AxiStreamDma.h>
    #include <rogue/ptotocols/srp/SrpV3.h>
 
-   // First attach to destination 0 for register traffic
-   rogue::hardware::axi::AxiStreamDmaPtr regChan = rogue::hardware::axi::AxiStreamDma::create("/dev/datadev_0", 0);
+   // First attach to destination 0 for register traffic, ssi enabled
+   rogue::hardware::axi::AxiStreamDmaPtr regChan = rogue::hardware::axi::AxiStreamDma::create("/dev/datadev_0", 0, true);
 
    // Create an SRP engine 
    rogue::protocols::srp::SrpV3Ptr srp = rogue::protocols::srp::SrpV3::create();
@@ -90,8 +90,8 @@ The equivelent code in C++ is show below:
    // Connect memory master to SRP
    busConnect(memMast,srp);
 
-   // Next attach to destination 1 for data traffic
-   rogue::hardware::axi::AxiStreamDmaPtr dataChan = rogue::hardware::axi::AxiStreamDma::create("/dev/datadev_0", 1);
+   // Next attach to destination 1 for data traffic, ssi enabled
+   rogue::hardware::axi::AxiStreamDmaPtr dataChan = rogue::hardware::axi::AxiStreamDma::create("/dev/datadev_0", 1, true);
 
    // Create a master 
    MyCustomMasterPtr myMast = MyCustomMaster::create();
