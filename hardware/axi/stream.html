@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Using The AxiStreamDma Class &mdash; Rogue v3.3.1-81-g3a85d987 documentation</title>
+  <title>Using The AxiStreamDma Class &mdash; Rogue v3.3.1-82-g019c130a documentation</title>
   
 
   
@@ -199,8 +199,8 @@ created in <span class="xref std std-ref">interface_memory_master_ex</span>.</p>
 <span class="kn">import</span> <span class="nn">rogue.hardware.axi</span>
 <span class="kn">import</span> <span class="nn">rogue.protocols.srp</span>
 
-<span class="c1"># First attach to destination 0 for register traffic</span>
-<span class="n">regChan</span> <span class="o">=</span> <span class="n">rogue</span><span class="o">.</span><span class="n">hardware</span><span class="o">.</span><span class="n">axi</span><span class="o">.</span><span class="n">AxiStreamDma</span><span class="p">(</span><span class="s1">&#39;/dev/datadev_0&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+<span class="c1"># First attach to destination 0 for register traffic, ssi enabled</span>
+<span class="n">regChan</span> <span class="o">=</span> <span class="n">rogue</span><span class="o">.</span><span class="n">hardware</span><span class="o">.</span><span class="n">axi</span><span class="o">.</span><span class="n">AxiStreamDma</span><span class="p">(</span><span class="s1">&#39;/dev/datadev_0&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="bp">True</span><span class="p">)</span>
 
 <span class="c1"># Create an SRP engine</span>
 <span class="n">srp</span> <span class="o">=</span> <span class="n">rogue</span><span class="o">.</span><span class="n">protocols</span><span class="o">.</span><span class="n">srp</span><span class="o">.</span><span class="n">SrpV3</span><span class="p">()</span>
@@ -214,8 +214,8 @@ created in <span class="xref std std-ref">interface_memory_master_ex</span>.</p>
 <span class="c1"># Connect memory master to SRP</span>
 <span class="n">pyrogue</span><span class="o">.</span><span class="n">busConnect</span><span class="p">(</span><span class="n">memMast</span><span class="p">,</span><span class="n">srp</span><span class="p">)</span>
 
-<span class="c1"># Next attach to destination 1 for data traffic</span>
-<span class="n">dataChan</span> <span class="o">=</span> <span class="n">rogue</span><span class="o">.</span><span class="n">hardware</span><span class="o">.</span><span class="n">axi</span><span class="o">.</span><span class="n">AxiStreamDma</span><span class="p">(</span><span class="s1">&#39;/dev/datadev_0&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="c1"># Next attach to destination 1 for data traffic, ssi enabled</span>
+<span class="n">dataChan</span> <span class="o">=</span> <span class="n">rogue</span><span class="o">.</span><span class="n">hardware</span><span class="o">.</span><span class="n">axi</span><span class="o">.</span><span class="n">AxiStreamDma</span><span class="p">(</span><span class="s1">&#39;/dev/datadev_0&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="bp">True</span><span class="p">)</span>
 
 <span class="c1"># Create a master</span>
 <span class="n">myMast</span> <span class="o">=</span> <span class="n">MyCustomMaster</span><span class="p">()</span>
@@ -238,8 +238,8 @@ created in <span class="xref std std-ref">interface_memory_master_ex</span>.</p>
 <span class="cp">#include</span> <span class="cpf">&lt;rogue/hardware/axi/AxiStreamDma.h&gt;</span><span class="cp"></span>
 <span class="cp">#include</span> <span class="cpf">&lt;rogue/ptotocols/srp/SrpV3.h&gt;</span><span class="cp"></span>
 
-<span class="c1">// First attach to destination 0 for register traffic</span>
-<span class="n">rogue</span><span class="o">::</span><span class="n">hardware</span><span class="o">::</span><span class="n">axi</span><span class="o">::</span><span class="n">AxiStreamDmaPtr</span> <span class="n">regChan</span> <span class="o">=</span> <span class="n">rogue</span><span class="o">::</span><span class="n">hardware</span><span class="o">::</span><span class="n">axi</span><span class="o">::</span><span class="n">AxiStreamDma</span><span class="o">::</span><span class="n">create</span><span class="p">(</span><span class="s">&quot;/dev/datadev_0&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+<span class="c1">// First attach to destination 0 for register traffic, ssi enabled</span>
+<span class="n">rogue</span><span class="o">::</span><span class="n">hardware</span><span class="o">::</span><span class="n">axi</span><span class="o">::</span><span class="n">AxiStreamDmaPtr</span> <span class="n">regChan</span> <span class="o">=</span> <span class="n">rogue</span><span class="o">::</span><span class="n">hardware</span><span class="o">::</span><span class="n">axi</span><span class="o">::</span><span class="n">AxiStreamDma</span><span class="o">::</span><span class="n">create</span><span class="p">(</span><span class="s">&quot;/dev/datadev_0&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="nb">true</span><span class="p">);</span>
 
 <span class="c1">// Create an SRP engine</span>
 <span class="n">rogue</span><span class="o">::</span><span class="n">protocols</span><span class="o">::</span><span class="n">srp</span><span class="o">::</span><span class="n">SrpV3Ptr</span> <span class="n">srp</span> <span class="o">=</span> <span class="n">rogue</span><span class="o">::</span><span class="n">protocols</span><span class="o">::</span><span class="n">srp</span><span class="o">::</span><span class="n">SrpV3</span><span class="o">::</span><span class="n">create</span><span class="p">();</span>
@@ -253,8 +253,8 @@ created in <span class="xref std std-ref">interface_memory_master_ex</span>.</p>
 <span class="c1">// Connect memory master to SRP</span>
 <span class="n">busConnect</span><span class="p">(</span><span class="n">memMast</span><span class="p">,</span><span class="n">srp</span><span class="p">);</span>
 
-<span class="c1">// Next attach to destination 1 for data traffic</span>
-<span class="n">rogue</span><span class="o">::</span><span class="n">hardware</span><span class="o">::</span><span class="n">axi</span><span class="o">::</span><span class="n">AxiStreamDmaPtr</span> <span class="n">dataChan</span> <span class="o">=</span> <span class="n">rogue</span><span class="o">::</span><span class="n">hardware</span><span class="o">::</span><span class="n">axi</span><span class="o">::</span><span class="n">AxiStreamDma</span><span class="o">::</span><span class="n">create</span><span class="p">(</span><span class="s">&quot;/dev/datadev_0&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+<span class="c1">// Next attach to destination 1 for data traffic, ssi enabled</span>
+<span class="n">rogue</span><span class="o">::</span><span class="n">hardware</span><span class="o">::</span><span class="n">axi</span><span class="o">::</span><span class="n">AxiStreamDmaPtr</span> <span class="n">dataChan</span> <span class="o">=</span> <span class="n">rogue</span><span class="o">::</span><span class="n">hardware</span><span class="o">::</span><span class="n">axi</span><span class="o">::</span><span class="n">AxiStreamDma</span><span class="o">::</span><span class="n">create</span><span class="p">(</span><span class="s">&quot;/dev/datadev_0&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="nb">true</span><span class="p">);</span>
 
 <span class="c1">// Create a master</span>
 <span class="n">MyCustomMasterPtr</span> <span class="n">myMast</span> <span class="o">=</span> <span class="n">MyCustomMaster</span><span class="o">::</span><span class="n">create</span><span class="p">();</span>
