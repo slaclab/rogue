@@ -44,7 +44,7 @@ namespace rogue {
                 * The pased port is the base number of these two ports. A passed value of 8000 
                 * will result in both 8000 and 8001 being used by this bridge.
                 *
-                * Not exposed to Python
+                * Exposed to Python as rogue.interfaces.stream.TcpClient
                 * @param addr Interface address for server, remote server address for client.
                 * @param port Base port number of use for connection.
                 * @return TcpClient object as a TcpClientPtr
@@ -52,24 +52,13 @@ namespace rogue {
                static std::shared_ptr<rogue::interfaces::stream::TcpClient> 
                   create (std::string addr, uint16_t port);
 
-               //! Setup class for use in python
-               /** Not exposed to Python
-                */
+               // Setup class for use in python
                static void setup_python();
 
-               //! Create a TcpClient object
-               /**The creator takes an address and port. The passed server address can either 
-                * be an IP address or hostname. The stream bridge requires two TCP ports. 
-                * The pased port is the base number of these two ports. A passed value of 8000 
-                * will result in both 8000 and 8001 being used by this bridge.
-                *
-                * Exposed to Python as rogue.interfaces.stream.TcpClient
-                * @param addr Interface address for server, remote server address for client.
-                * @param port Base port number of use for connection.
-                */
+               // Create a TcpClient object
                TcpClient(std::string addr, uint16_t port);
 
-               //! Destroy the TcpClient
+               // Destroy the TcpClient
                ~TcpClient();
          };
 

@@ -67,7 +67,8 @@ namespace rogue {
             public:
 
                //! Create a Fifo object and return as a FifoPtr
-               /** @param maxDepth Set to a non-zero value to configured fixed size mode.
+               /** Exposed as rogue.interfaces.stream.Fifo() to Python
+                * @param maxDepth Set to a non-zero value to configured fixed size mode.
                 * @param trimSize Set to a non-zero vaue to limit the amount of data copied.
                 * @param noCopy Set to true to disable Frame copy
                 * @return Fifo object as a FifoPtr
@@ -75,27 +76,16 @@ namespace rogue {
                static std::shared_ptr<rogue::interfaces::stream::Fifo> 
                   create(uint32_t maxDepth, uint32_t trimSize, bool noCopy);
 
-               //! Setup class for use in python
-               /** Not exposed to Python
-                */
+               // Setup class for use in python
                static void setup_python();
 
-               //! Create a Fifo object.
-               /** Exposed as rogue.interfaces.stream.Fifo() to Python
-                * @param maxDepth Set to a non-zero value to configured fixed size mode.
-                * @param trimSize Set to a non-zero vaue to limit the amount of data copied.
-                * @param noCopy Set to true to disable Frame copy
-                */
+               // Create a Fifo object.
                Fifo(uint32_t maxDepth, uint32_t trimSize, bool noCopy);
 
-               //! Destroy the Fifo
+               // Destroy the Fifo
                ~Fifo();
 
-               //! Accept a frame from master
-               /** This method is called by the Master object to which this Slave is attached when
-                * passing a Frame.
-                * @param frame Frame pointer (FramePtr)
-                */
+               // Receive frame from Master
                void acceptFrame ( std::shared_ptr<rogue::interfaces::stream::Frame> frame );
 
          };

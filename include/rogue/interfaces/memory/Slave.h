@@ -72,27 +72,20 @@ namespace rogue {
             public:
 
                //! Class factory which returns a pointer to a Slave (SlavePtr)
-               /**Not exposed to Python
+               /** Exposed as rogue.interfaces.memory.Slave() to Python
                 *
                 * @param min Minimum transaction this Slave can accept.
                 * @param max Maximum transaction this Slave can accept.
                 */
                static std::shared_ptr<rogue::interfaces::memory::Slave> create (uint32_t min, uint32_t max);
 
-               //! Setup class for use in python
-               /* Not exposed to Python
-                */
+               // Setup class for use in python
                static void setup_python();
 
-               //! Create Slave object
-               /**Not exposed to Python
-                *
-                * @param min Minimum transaction this Slave can accept.
-                * @param max Maximum transaction this Slave can accept.
-                */
+               // Create Slave object
                Slave(uint32_t min, uint32_t max);
 
-               //! Destroy the Slave
+               // Destroy the Slave
                virtual ~Slave();
 
                //! Add a transaction to the internal tracking map

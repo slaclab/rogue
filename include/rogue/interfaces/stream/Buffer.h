@@ -79,41 +79,27 @@ namespace rogue {
                //! Alias for using uint8_t * as Buffer::iterator
                typedef uint8_t * iterator;
 
-               //! Class factory which returns a BufferPtr
-               /** Create a new Buffer with associated data.
-                * @param data Pointer to raw data block associated with Buffer
-                * @param meta Meta data to track allocation
-                * @param size Size of raw data block usuable by Buffer
-                * @param alloc Total memory allocated, may be greater than size
+               // Class factory which returns a BufferPtr
+               /* Create a new Buffer with associated data.
+                *
+                * Not exposted to python, Called by Pool class
+                * data Pointer to raw data block associated with Buffer
+                * meta Meta data to track allocation
+                * size Size of raw data block usuable by Buffer
+                * alloc Total memory allocated, may be greater than size
                 */
                static std::shared_ptr<rogue::interfaces::stream::Buffer> create (
                      std::shared_ptr<rogue::interfaces::stream::Pool> source, 
                         void * data, uint32_t meta, uint32_t size, uint32_t alloc);
 
-               //! Create a buffer.
-               /** Create a new Buffer with associated data.
-                *
-                * Do not call directly. Use the create() class method instead.
-                * @param data Pointer to raw data block associated with Buffer
-                * @param meta Meta data to track allocation
-                * @param size Size of raw data block usuable by Buffer
-                * @param alloc Total memory allocated, may be greater than size
-                */
+               // Create a buffer.
                Buffer(std::shared_ptr<rogue::interfaces::stream::Pool> source, 
                       void * data, uint32_t meta, uint32_t size, uint32_t alloc);
 
-               //! Destroy a buffer
-               /** The data associated with the Buffer is returned to the Pool which 
-                * allocated it.
-                */
+               // Destroy a buffer
                ~Buffer();
 
-               //! Set owner frame
-               /** Set the Frame object that this Buffer is contained in.
-                * This allows the Buffer to inform the containing Frame when its size or
-                * other parameters have changed.
-                * @param Frame Pointer to frame (FramePtr)
-                */
+               // Set owner frame, called by Frame class only
                void setFrame(std::shared_ptr<rogue::interfaces::stream::Frame> frame);
 
                //! Get meta data

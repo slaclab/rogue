@@ -4,7 +4,9 @@
 Building Rogue From Source
 ==========================
 
-The following instructions demonstrate how to build rogue outside of the anaconda environment.
+The following instructions demonstrate how to build rogue outside of the anaconda environment. These
+instructions are only relevant for the Linux operating system. See :ref:`installing_anaconda` or 
+:ref:`installing_docker` for Windows and MacOS.
 
 Installing Packages Required For Rogue
 ======================================

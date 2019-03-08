@@ -203,7 +203,7 @@ MULTILINE_CPP_IS_BRIEF = NO
 # documentation from any documented member that it re-implements.
 # The default value is: YES.
 
-INHERIT_DOCS           = YES
+INHERIT_DOCS           = NO
 
 # If the SEPARATE_MEMBER_PAGES tag is set to YES then doxygen will produce a new
 # page for each member. If set to NO, the documentation of a member will be part
@@ -2171,7 +2171,7 @@ DOT_NUM_THREADS        = 0
 # The default value is: Helvetica.
 # This tag requires that the tag HAVE_DOT is set to YES.
 
-DOT_FONTNAME           = FreeSans
+DOT_FONTNAME           = Helvetica
 
 # The DOT_FONTSIZE tag can be used to set the size (in points) of the font of
 # dot graphs.

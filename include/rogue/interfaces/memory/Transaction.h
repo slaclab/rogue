@@ -42,7 +42,8 @@ namespace rogue {
          /** The Transaction is passed between the Master and Slave to initiate a transaction. 
           * The Transaction class contains information about the transaction as well as the 
           * transaction data pointer. Each created transaction object has a unique 32-bit 
-          * transaction ID which is used to track the transaction.
+          * transaction ID which is used to track the transaction. Transactions are never
+          * created directly, instead they are created in the Master() class.
           */ 
          class Transaction : public std::enable_shared_from_this<rogue::interfaces::memory::Transaction> {
             friend class TransactionLock;
@@ -116,20 +117,13 @@ namespace rogue {
 
             public:
 
-               //! Setup class for use in python
-               /* Not exposed to Python
-                */
+               // Setup class for use in python
                static void setup_python();
 
-               //! Create a Transaction
-               /** Do not call directly. Only called from the Master class.
-                *
-                * Not available in Python
-                * @param timeout Timeout value as a struct timeval
-                */
+               // Create a Transaction. Do not call directly. Only called from the Master class.
                Transaction(struct timeval timeout);
 
-               //! Destroy the Transaction.
+               // Destroy the Transaction.
                ~Transaction();
 
                //! Lock Transaction and return a TransactionLockPtr object

@@ -72,12 +72,10 @@ namespace rogue {
 
             public:
 
-               //! Class creator
-               /** Not exposed to Python
-                */
+               // Class creator
                Pool();
 
-               //! Destroy the object
+               // Destroy the object
                virtual ~Pool();
 
                //! Get allocated memory
@@ -98,31 +96,28 @@ namespace rogue {
                 */
                uint32_t getAllocCount();
 
-               //! Process a frame request
-               /** Method to service a frame request, called by the Master class through
+               // Process a frame request
+               /* Method to service a frame request, called by the Master class through
                 * the reqFrame() method. 
                 *
-                * Not exposed to Python.
-                * @param size Minimum size for requsted Frame, larger Frame may be allocated
-                * @param zeroCopyEn Flag which indicates if a zero copy mode Frame is allowed.
-                * @return Newly allocated Frame pointer (FramePtr)
+                * size Minimum size for requsted Frame, larger Frame may be allocated
+                * zeroCopyEn Flag which indicates if a zero copy mode Frame is allowed.
+                * Newly allocated Frame pointer (FramePtr)
                 */
                virtual std::shared_ptr<rogue::interfaces::stream::Frame> acceptReq ( uint32_t size, bool zeroCopyEn );
 
                //! Method called to return Buffer data
-               /** This method is called by the Buffer desctructor in order to free 
-                * the associated Buffer memory.
+               /* This method is called by the Buffer desctructor in order to free 
+                * the associated Buffer memory. May be overriden by a subclass to
+                * change the way the buffer data is returned.
                 * 
-                * Not exposed to Python
                 * @param data Data pointer to release
                 * @param meta Meta data specific to the allocator
                 * @param size Size of data buffer
                 */
                virtual void retBuffer(uint8_t * data, uint32_t meta, uint32_t size);
 
-               //! Setup class for use in python
-               /** Not exposed to Python
-                */
+               // Setup class for use in python
                static void setup_python();
 
                //! Set fixed size mode

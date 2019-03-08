@@ -4,7 +4,9 @@
 Installing Rogue With Anaconda
 ==============================
 
-The following instructions describe how to install a pre-built Rogue package inside an anaconda environment.
+The following instructions describe how to install a pre-built Rogue package inside an anaconda environment. These instructions are relevant for Linux, Ubuntu on Windows and MacOS.
+
+See the section :ref:`installing_windows` for additional steps required for Windows.
 
 Getting Anaconda
 ================

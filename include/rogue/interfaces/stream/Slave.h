@@ -60,21 +60,17 @@ namespace rogue {
                //! Class factory which returns a pointer to a Slave (SlavePtr)
                /** Create a new Slave
                 *
-                * Not exposed to Python
+                * Exposed as rogue.interfaces.stream.Slave() to Python
                 */
                static std::shared_ptr<rogue::interfaces::stream::Slave> create ();
 
-               //! Setup class for use in python
-               /** Not exposed to Python
-                */
+               // Setup class for use in python
                static void setup_python();
 
-               //! Class creator
-               /** Exposed as rogue.interfaces.stream.Slave() to Python
-                */
+               // Class creator
                Slave();
 
-               //! Destroy the object
+               // Destroy the object
                virtual ~Slave();
 
                //! Set debug message size

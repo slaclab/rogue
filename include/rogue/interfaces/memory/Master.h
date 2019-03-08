@@ -72,21 +72,17 @@ namespace rogue {
             public:
 
                //! Class factory which returns a pointer to a Master (MasterPtr)
-               /**Not exposed to Python
+               /** Exposed as rogue.interfaces.memory.Master() to Python
                 */
                static std::shared_ptr<rogue::interfaces::memory::Master> create ();
 
-               //! Setup class for use in python
-               /* Not exposed to Python
-                */
+               // Setup class for use in python
                static void setup_python();
 
-               //! Create a Master instance
-               /**Not exposed to Python
-                */
+               // Create a Master instance
                Master();
 
-               //! Destroy the Master
+               // Destroy the Master
                virtual ~Master();
 
                //! Set slave or Hub device
@@ -180,7 +176,7 @@ namespace rogue {
                 * can be pending for this Master.
                 *
                 * Not exposted to Python (see reqTransactionPy)
-                * @param address 64-bit transaction offset address
+                * @param address Relative 64-bit transaction offset address
                 * @param size Transaction size in bytes
                 * @param data Pointer to data array used for transaction.
                 * @param type Transaction type
@@ -197,7 +193,7 @@ namespace rogue {
                 * can be pending for this Master.
                 *
                 * Exposted to Python as _reqTransaction()
-                * @param address 64-bit transaction offset address
+                * @param address Relative 64-bit transaction offset address
                 * @param p Byte array used for transaction data
                 * @param size Transaction size in bytes
                 * @param offset Offset within byte array for transaction
