@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Installing &amp; Compiling Rogue &mdash; Rogue v3.3.1-84-ge1bdfee9 documentation</title>
+  <title>Setting Up Ubuntu On Windows &mdash; Rogue v3.3.1-84-ge1bdfee9 documentation</title>
   
 
   
@@ -34,9 +34,7 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
-    <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Installing Rogue With Anaconda" href="anaconda.html" />
-    <link rel="prev" title="Testing The Custom Module" href="../custom_module/testing.html" /> 
+    <link rel="search" title="Search" href="../search.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -85,20 +83,12 @@
             
             
               <p class="caption"><span class="caption-text">Contents:</span></p>
-<ul class="current">
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../interfaces/index.html">Interfaces</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../hardware/index.html">Hardware</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../logging/index.html">Logging In Rogue</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../custom_module/index.html">Creating Custom Modules</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Installing &amp; Compiling Rogue</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="anaconda.html">Installing Rogue With Anaconda</a></li>
-<li class="toctree-l2"><a class="reference internal" href="anaconda_build.html">Building Rogue Inside Anaconda</a></li>
-<li class="toctree-l2"><a class="reference internal" href="docker.html">Installing Rogue Docker</a></li>
-<li class="toctree-l2"><a class="reference internal" href="build.html">Building Rogue From Source</a></li>
-<li class="toctree-l2"><a class="reference internal" href="application.html">Compiling A Rogue Application</a></li>
-<li class="toctree-l2"><a class="reference internal" href="firewall.html">Rogue and Anaconda behind a firewall</a></li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="index.html">Installing &amp; Compiling Rogue</a></li>
 </ul>
 
             
@@ -144,13 +134,13 @@
     
       <li><a href="../index.html">Docs</a> &raquo;</li>
         
-      <li>Installing &amp; Compiling Rogue</li>
+      <li>Setting Up Ubuntu On Windows</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../_sources/installing/index.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../_sources/installing/windows.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -163,20 +153,28 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="installing-compiling-rogue">
-<span id="installing"></span><h1>Installing &amp; Compiling Rogue<a class="headerlink" href="#installing-compiling-rogue" title="Permalink to this headline">¶</a></h1>
-<p>The recommended method for installing rogue is <a class="reference internal" href="anaconda.html#installing-anaconda"><span class="std std-ref">Installing Rogue With Anaconda</span></a>.</p>
-<p>This section describes how to obtain and install Rogue.</p>
-<div class="toctree-wrapper compound">
-<p class="caption"><span class="caption-text">Install Options:</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="anaconda.html">Installing Rogue With Anaconda</a></li>
-<li class="toctree-l1"><a class="reference internal" href="anaconda_build.html">Building Rogue Inside Anaconda</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docker.html">Installing Rogue Docker</a></li>
-<li class="toctree-l1"><a class="reference internal" href="build.html">Building Rogue From Source</a></li>
-<li class="toctree-l1"><a class="reference internal" href="application.html">Compiling A Rogue Application</a></li>
-<li class="toctree-l1"><a class="reference internal" href="firewall.html">Rogue and Anaconda behind a firewall</a></li>
-</ul>
+  <div class="section" id="setting-up-ubuntu-on-windows">
+<span id="installing-windows"></span><h1>Setting Up Ubuntu On Windows<a class="headerlink" href="#setting-up-ubuntu-on-windows" title="Permalink to this headline">¶</a></h1>
+<p>The following instructions setup an <em>Ubuntu On Windows</em> environment required for running Rogue in Anaconda in Windows. These
+instructions are valid for Windows 10 and above.</p>
+<div class="section" id="install-xming">
+<h2>Install XMING<a class="headerlink" href="#install-xming" title="Permalink to this headline">¶</a></h2>
+<p>XMing is required for using the Rogue graphical interface in the Windows environment.</p>
+<p><a class="reference external" href="https://sourceforge.net/projects/xming/">https://sourceforge.net/projects/xming/</a></p>
+</div>
+<div class="section" id="install-ubuntu-on-windows">
+<h2>Install Ubuntu On Windows<a class="headerlink" href="#install-ubuntu-on-windows" title="Permalink to this headline">¶</a></h2>
+<p>Open up the <em>Microsoft Store</em> icon from the main menu. In the search box
+enter the text <em>Ubuntu</em>. Select the <em>Ubuntu 18.04</em> icon (or higher version
+when available) and install the package.</p>
+<p>Once installation is complete you can find Ubuntu on the main menu as <em>Ubuntu 18.04</em>. A bash text
+window will open with an ubuntu bash prompt.</p>
+<p>After first installation you will want to run the following command to setup
+the display environment.</p>
+<div class="code highlight-default notranslate"><div class="highlight"><pre><span></span>$ echo &quot;export DISPLAY=:0&quot; &gt;&gt; ~/.bashrc
+</pre></div>
+</div>
+<p>You are now able install and run anaconda as described in <a class="reference internal" href="anaconda.html#installing-anaconda"><span class="std std-ref">Installing Rogue With Anaconda</span></a>.</p>
 </div>
 </div>
 
@@ -185,15 +183,6 @@
            
           </div>
           <footer>
-  
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="anaconda.html" class="btn btn-neutral float-right" title="Installing Rogue With Anaconda" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="../custom_module/testing.html" class="btn btn-neutral float-left" title="Testing The Custom Module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
-    </div>
   
 
   <hr/>

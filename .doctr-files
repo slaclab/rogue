@@ -27,6 +27,7 @@
 ./_sources/installing/docker.rst.txt
 ./_sources/installing/firewall.rst.txt
 ./_sources/installing/index.rst.txt
+./_sources/installing/windows.rst.txt
 ./_sources/interfaces/index.rst.txt
 ./_sources/interfaces/memory/classes/constants.rst.txt
 ./_sources/interfaces/memory/classes/hub.rst.txt
@@ -158,6 +159,7 @@
 ./installing/docker.html
 ./installing/firewall.html
 ./installing/index.html
+./installing/windows.html
 ./interfaces/index.html
 ./interfaces/memory/classes/constants.html
 ./interfaces/memory/classes/hub.html
