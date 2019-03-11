@@ -56,21 +56,17 @@ namespace rogue {
                //! Class factory which returns a pointer to a Master object (MasterPtr)
                /** Create a new Master
                 *
-                * Not exposed to Python
+                * Exposed as rogue.interfaces.stream.Master() to Python
                 */
                static boost::shared_ptr<rogue::interfaces::stream::Master> create ();
 
-               //! Setup class for use in python
-               /** Not exposed to Python
-                */
+               // Setup class for use in python
                static void setup_python();
 
-               //! Class creator
-               /** Exposed as rogue.interfaces.stream.Master() to Python
-                */
+               // Class creator
                Master();
 
-               //! Destroy the object
+               // Destroy the object
                virtual ~Master();
 
                //! Set primary slave

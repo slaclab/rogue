@@ -24,7 +24,7 @@ able to interface with either a Python or C++ client.
    # Local memory SrpV3 bridge
    srpv3 = rogue.protocols.srp.SrpV3()
 
-   # Start a TCP Bridge Server, Listen on ports 8001 & 8002 on all interfaces
+   # Start a TCP Bridge Server, Listen on ports 8000 & 8001 on all interfaces
    # Pass an address of 192.168.1.1 to listen on only that specific interface
    tcp = rogue.interfaces.memory.TcpServer("*",8000)
 
@@ -46,7 +46,7 @@ to interface with either a Python or C++ server.
    mst = MyMaster()
 
    # Start a TCP Bridge Client, Connect remote server at 192.168.1.1 ports 8000 & 8001.
-   tcp = rogue.interfaces.memory.TcpServer("192.168.1.1",8000)
+   tcp = rogue.interfaces.memory.TcpClient("192.168.1.1",8000)
 
    # Connect the bus
    pyrogue.busConnect(mst, tcp)
@@ -66,7 +66,7 @@ able to interface with either a Python or C++ client.
    // Local memory SrpV3 bridge
    rogue::protocols::srp::SrpV3Ptr srpv3 = rogue.protocols.srp.SrpV3::create();
 
-   // Start a TCP Bridge Server, Listen on ports 8001 & 8002 on all interfaces
+   // Start a TCP Bridge Server, Listen on ports 8000 & 8001 on all interfaces
    // Pass an address of 192.168.1.1 to listen on only that specific interface
    rogue::interfaces::memory::TcpServerPtr tcp = rogue.interfaces.memory.TcpServer::create("*",8000);
 

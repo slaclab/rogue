@@ -97,9 +97,9 @@ and we use std::copy to move data from data buffer into the Frame.
 
          // Create a static class creator to return our custom class
          // wrapped with a shared pointer
-         static boost::shared_ptr<MyCustomMaster> create() {
-            static boost::shared_ptr<MyCustomMaster> ret =
-               boost::make_shared<MyCustomMaster>();
+         static std::shared_ptr<MyCustomMaster> create() {
+            static std::shared_ptr<MyCustomMaster> ret =
+               std::make_shared<MyCustomMaster>();
             return(ret);
          }
 
@@ -141,7 +141,7 @@ and we use std::copy to move data from data buffer into the Frame.
    };
 
    // Shared pointer alias
-   typedef boost::shared_ptr<MyCustomMaster> MyCustomMasterPtr;
+   typedef std::shared_ptr<MyCustomMaster> MyCustomMasterPtr;
 
 
 The std::copy call works very well for moving data between two standard C++ iterators. It will

@@ -93,9 +93,7 @@ namespace rogue {
                //! Alias for using FrameIterator as Frame::iterator
                typedef rogue::interfaces::stream::FrameIterator iterator;
 
-               //! Setup class for use in python
-               /* Not exposed to Python
-                */
+               // Setup class for use in python
                static void setup_python();
 
                //! Class factory which returns a FramePtr to an empty Frame
@@ -103,14 +101,10 @@ namespace rogue {
                 */
                static boost::shared_ptr<rogue::interfaces::stream::Frame> create();
 
-               //! Create an empty Frame.
-               /** Do not call directly. Use the create() class method instead.
-                *
-                * Not available in Python
-                */
+               // Create an empty Frame., not called directly.
                Frame();
 
-               //! Destroy the Frame.
+               // Destroy the Frame.
                ~Frame();
 
                //! Lock frame and return a FrameLockPtr object

@@ -29,18 +29,28 @@ namespace rogue {
    namespace hardware {
       namespace pgp {
 
-         //! Wrapper for PgpInfo class. 
+         //! EVR Control Class
+         /** This class contains the current EVR configuration for one of the 8 lanes
+          * on a PGP card. This class is used to obtain the current configuration of
+          * the EVR functions of the PGP lane and to then modify the configuration. There
+          * is one member, evrEnable, which is global to the entire card. Updating this
+          * bit will impact the operation of the other 7 channels. This class is a C++
+          * wrapper around the PgpEvrControl structure used by the lower level driver. All
+          * structure members are exposed to Python using their original names and can
+          * be read and updated directly. 
+          */
          class EvrControl : public PgpEvrControl {
             public:
 
-               //! Create the info class with pointer
+               // Class factory which returns a EvrControlPtr to a newly created EvrControl object
                static boost::shared_ptr<rogue::hardware::pgp::EvrControl> create();
 
-               //! Setup class in python
+
+               // Setup class for use in python
                static void setup_python();
          };
 
-         //! Convienence
+         //! Alias for using shared pointer as EvrControlPtr
          typedef boost::shared_ptr<rogue::hardware::pgp::EvrControl> EvrControlPtr;
       }
    }

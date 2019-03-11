@@ -33,7 +33,8 @@ namespace rogue {
           * The FrameLock is a container for holding a lock on Frame data while accessing that
           * data. This lock allows multiple stream Slave objects to read and update Frame data
           * while ensuring only one thread is updating at a time. The lock is relased when
-          * the FrameLock object is destroyed.
+          * the FrameLock object is destroyed. The FrameLock oject is never created directly,
+          * instead it is returned by the Frame::lock() method.
           */
          class FrameLock {
 
@@ -42,29 +43,21 @@ namespace rogue {
 
             public:
 
-               //! Class factory which returns a pointer to a FrameLock (FrameLockPtr)
-               /** Create a new Frame lock on the passed Frame.
-                *
-                * Not exposed to Python
-                * @param frame Frame pointer (FramePtr) to create a lock on
+               // Class factory which returns a pointer to a FrameLock (FrameLockPtr)
+               /* Only called by Frame object.
+                * Create a new Frame lock on the passed Frame.
+                * frame Frame pointer (FramePtr) to create a lock on
                 */
                static boost::shared_ptr<rogue::interfaces::stream::FrameLock> create (
                   boost::shared_ptr<rogue::interfaces::stream::Frame> frame);
 
-               //! Frame lock constructor
-               /** Do not call directly. Use the create() class method instead.
-                *
-                * Not available in Python
-                * @param frame Frame pointer (FramePtr) to create a lock on
-                */
+               // Frame lock constructor
                FrameLock(boost::shared_ptr<rogue::interfaces::stream::Frame> frame);
 
-               //! Setup class for use in python
-               /* Not exposed to Python
-                */
+               // Setup class for use in python
                static void setup_python();
 
-               //! Destroy and release the frame lock
+               // Destroy and release the frame lock
                ~FrameLock();
 
                //! Lock associated frame if not locked
