@@ -44,8 +44,14 @@ ris::TcpCorePtr ris::TcpCore::create (std::string addr, uint16_t port, bool serv
 //! Creator
 ris::TcpCore::TcpCore (std::string addr, uint16_t port, bool server) {
    int32_t opt;
+   std::string logstr;
 
-   this->bridgeLog_ = rogue::Logging::create("stream.TcpCore");
+   logstr == "stream.TcpCore.";
+   logstr.append(addr);
+   logstr.append(".");
+   logstr.append(std::to_string(port));
+       
+   this->bridgeLog_ = rogue::Logging::create(logstr);
 
    // Format address
    this->pullAddr_ = "tcp://";
