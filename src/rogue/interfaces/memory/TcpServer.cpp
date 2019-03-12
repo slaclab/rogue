@@ -44,7 +44,7 @@ rim::TcpServer::TcpServer (std::string addr, uint16_t port) {
    int32_t opt;
    std::string logstr;
 
-   logstr == "memory.TcpServer.";
+   logstr = "memory.TcpServer.";
    logstr.append(addr);
    logstr.append(".");
    logstr.append(std::to_string(port));
