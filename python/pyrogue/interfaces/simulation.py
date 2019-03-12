@@ -29,28 +29,76 @@ class SideBandSim():
         self._log = pyrogue.logInit(cls=self)
 
         self._ctx = zmq.Context()
-        self._sbSock = self._ctx.socket(zmq.REQ)
-        self._sbSock.connect("tcp://%s:%i" % (host,port))
+        self._sbPush = self._ctx.socket(zmq.PUSH)
+        self._sbPush.connect("tcp://%s:%i" % (host,port))
+        self._sbPull = self._ctx.socket(zmq.PULL)        
+        self._sbPull.connect("tcp://*:%i" % (host,port))
 
         self._log.info("Connected to port {} on host {}".format(port,host))
+        
+        self._recvCb = self._defaultRecvCb
+        self._ackCond = threading.Condition()
+        self._recvThread = threading.Thread(target=self._recvWorker)
+        self._recvThread.start()
 
-    def sendOpCode(self,opCode):
-        ba = bytearray(2)
-        ba[0] = 0xAA
-        ba[1] = opCode
-        self._ocSock.send(ba)
+    def _defaultRecvCb(self, opCode, remData):
+        if opCode is not None:
+            print(f'Received opCode: {opCode:02x}')
+        if remDataNew is not None:
+            print(f'Received remData: {remData:02x}')
+
+    def setRecvCb(cbFunc):
+        self._recvCb = cbFunc
+
+    def send(self,opCode=None, remData=None):
+        ba = bytearray(4)
+        if opCode is not None:
+            ba[0] = 0x01
+            ba[1] = opCode
+        if remData is not None:
+            ba[2] = 0x01
+            ba[3] = remData
+            
+        self._sbPush.send(ba)
 
         # Wait for ack
-        self._ocSock.recv_multipart()
+        with self._ackCond:
+            self._ackCond.wait()
 
-    def setData(self,data):
-        ba = bytearray(2)
-        ba[0] = 0xBB
-        ba[1] = data
-        self._sbSock.send(ba)
+    def _recvWorker(self):
+        while True:
+            # Wait for new data
+            ba = self._sbPush.recv()
 
-        # Wait for ack
-        self._sbSock.recv_multipart()
+            # Check for an ack
+            if len(ba) == 1 and ba[0] == 0xFF:
+                with self._ackCond:
+                    self._ackCond.notify()
+                continue
+
+            # Got normal data
+            opCode = None
+            remData = None
+            if ba[0] == 0x01:
+                opCode = ba[1]
+            if ba[2] == 0x01:
+                remData = ba[3]
+            self._recvCb(opCode, remData)
+
+class Pgp2bSim():
+    def __init__(self, vcCount, host, port):
+        # virtual channels
+        self.vc = [rogue.interfaces.stream.TcpClient(host, p) for p in range(port, port+(vcCount*2), 2)]
+
+        # sideband
+        self.sb = SideBandSim(host, port+8)
+
+def connectPgp2bSim(pgpA, pgpB):
+    for a,b in zip(pgpA.vc, pgpB.vc):
+        pyrogue.streamConnectBiDir(a, b)
+
+    a.sb.setRecvCb(b.send)
+    b.sb.setRecvCb(a.send)
 
 class MemEmulate(rogue.interfaces.memory.Slave):
 
