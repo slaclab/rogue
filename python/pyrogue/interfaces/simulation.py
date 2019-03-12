@@ -24,15 +24,15 @@ import zmq
 
 class SideBandSim():
 
-    def __init__(self,*,host,port):
+    def __init__(self,host,port):
 
         self._log = pyrogue.logInit(cls=self)
 
         self._ctx = zmq.Context()
         self._sbPush = self._ctx.socket(zmq.PUSH)
-        self._sbPush.connect("tcp://%s:%i" % (host,port))
+        self._sbPush.connect(f"tcp://{host}:{port}")
         self._sbPull = self._ctx.socket(zmq.PULL)        
-        self._sbPull.connect("tcp://*:%i" % (host,port))
+        self._sbPull.connect(f"tcp://{host}:{port}")
 
         self._log.info("Connected to port {} on host {}".format(port,host))
         
@@ -47,7 +47,7 @@ class SideBandSim():
         if remDataNew is not None:
             print(f'Received remData: {remData:02x}')
 
-    def setRecvCb(cbFunc):
+    def setRecvCb(self, cbFunc):
         self._recvCb = cbFunc
 
     def send(self,opCode=None, remData=None):
@@ -68,7 +68,7 @@ class SideBandSim():
     def _recvWorker(self):
         while True:
             # Wait for new data
-            ba = self._sbPush.recv()
+            ba = self._sbPull.recv()
 
             # Check for an ack
             if len(ba) == 1 and ba[0] == 0xFF:
@@ -97,8 +97,8 @@ def connectPgp2bSim(pgpA, pgpB):
     for a,b in zip(pgpA.vc, pgpB.vc):
         pyrogue.streamConnectBiDir(a, b)
 
-    a.sb.setRecvCb(b.send)
-    b.sb.setRecvCb(a.send)
+    pgpA.sb.setRecvCb(pgpB.sb.send)
+    pgpB.sb.setRecvCb(pgpA.sb.send)
 
 class MemEmulate(rogue.interfaces.memory.Slave):
 
