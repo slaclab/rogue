@@ -30,9 +30,9 @@ class SideBandSim():
 
         self._ctx = zmq.Context()
         self._sbPush = self._ctx.socket(zmq.PUSH)
-        self._sbPush.connect(f"tcp://{host}:{port}")
+        self._sbPush.connect(f"tcp://{host}:{port+1}")
         self._sbPull = self._ctx.socket(zmq.PULL)        
-        self._sbPull.connect(f"tcp://{host}:{port+1}")
+        self._sbPull.connect(f"tcp://{host}:{port}")
 
         self._log.info("Connected to port {} on host {}".format(port,host))
         
