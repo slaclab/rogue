@@ -20,12 +20,16 @@
 **/
 #include <rogue/protocols/rssi/Header.h>
 #include <rogue/GeneralError.h>
-#include <boost/make_shared.hpp>
+#include <memory>
 #include <rogue/GilRelease.h>
 #include <stdint.h>
 #include <iomanip>
 #include <rogue/interfaces/stream/Buffer.h>
 #include <arpa/inet.h>
+#include <iostream>
+#include <sstream>
+#include <string.h>
+#include <sys/time.h>
 
 namespace rpr = rogue::protocols::rssi;
 namespace ris = rogue::interfaces::stream;
@@ -65,7 +69,7 @@ uint16_t rpr::Header::compSum (uint8_t *data, uint8_t size) {
 
 //! Create
 rpr::HeaderPtr rpr::Header::create(ris::FramePtr frame) {
-   rpr::HeaderPtr r = boost::make_shared<rpr::Header>(frame);
+   rpr::HeaderPtr r = std::make_shared<rpr::Header>(frame);
    return(r);
 }
 

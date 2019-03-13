@@ -20,6 +20,6 @@ target_sources(rogue-core PRIVATE "${CMAKE_CURRENT_LIST_DIR}/PciStatus.cpp")
 target_sources(rogue-core PRIVATE "${CMAKE_CURRENT_LIST_DIR}/PgpCard.cpp")
 target_sources(rogue-core PRIVATE "${CMAKE_CURRENT_LIST_DIR}/Status.cpp")
 
-if (DO_PYTHON)
+if (NOT NO_PYTHON)
    target_sources(rogue-core PRIVATE "${CMAKE_CURRENT_LIST_DIR}/module.cpp")
 endif()

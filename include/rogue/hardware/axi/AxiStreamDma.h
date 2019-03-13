@@ -20,7 +20,7 @@
 #define __ROGUE_HARDWARE_AXI_AXI_STREAM_DMA_H__
 #include <rogue/interfaces/stream/Master.h>
 #include <rogue/interfaces/stream/Slave.h>
-#include <boost/thread.hpp>
+#include <thread>
 #include <stdint.h>
 #include <rogue/Logging.h>
 
@@ -65,10 +65,11 @@ namespace rogue {
                //! Pointer to zero copy buffers
                void  ** rawBuff_;
 
-               boost::thread* thread_;
+               std::thread* thread_;
+               bool threadEn_;
 
                //! Log 
-               boost::shared_ptr<rogue::Logging> log_;
+               std::shared_ptr<rogue::Logging> log_;
 
                //! Thread background
                void runThread();
@@ -96,7 +97,7 @@ namespace rogue {
                 * @param ssiEnable Enable SSI user fields
                 * @return AxiStreamDma pointer (AxiStreamDmaPtr)
                 */
-               static boost::shared_ptr<rogue::hardware::axi::AxiStreamDma> 
+               static std::shared_ptr<rogue::hardware::axi::AxiStreamDma> 
                   create (std::string path, uint32_t dest, bool ssiEnable);
 
                // Setup class in python
@@ -155,10 +156,10 @@ namespace rogue {
                void dmaAck();
 
                // Generate a Frame. Called from master
-               boost::shared_ptr<rogue::interfaces::stream::Frame> acceptReq ( uint32_t size, bool zeroCopyEn);
+               std::shared_ptr<rogue::interfaces::stream::Frame> acceptReq ( uint32_t size, bool zeroCopyEn);
 
                // Accept a frame from master
-               void acceptFrame ( boost::shared_ptr<rogue::interfaces::stream::Frame> frame );
+               void acceptFrame ( std::shared_ptr<rogue::interfaces::stream::Frame> frame );
 
                // Process Buffer Return
                void retBuffer(uint8_t * data, uint32_t meta, uint32_t rawSize);
@@ -166,7 +167,7 @@ namespace rogue {
          };
 
          //! Alias for using shared pointer as AxiStreamDmaPtr
-         typedef boost::shared_ptr<rogue::hardware::axi::AxiStreamDma> AxiStreamDmaPtr;
+         typedef std::shared_ptr<rogue::hardware::axi::AxiStreamDma> AxiStreamDmaPtr;
 
       }
    }

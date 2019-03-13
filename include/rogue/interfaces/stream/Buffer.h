@@ -42,10 +42,10 @@ namespace rogue {
          class Buffer {
 
                // Pointer to entity which allocated this buffer
-               boost::shared_ptr<rogue::interfaces::stream::Pool> source_;
+               std::shared_ptr<rogue::interfaces::stream::Pool> source_;
 
                // Pointer to frame containing this buffer
-               boost::weak_ptr<rogue::interfaces::stream::Frame> frame_;
+               std::weak_ptr<rogue::interfaces::stream::Frame> frame_;
 
                // Pointer to raw data buffer. Raw pointer is used here!
                uint8_t *  data_;
@@ -88,19 +88,19 @@ namespace rogue {
                 * size Size of raw data block usuable by Buffer
                 * alloc Total memory allocated, may be greater than size
                 */
-               static boost::shared_ptr<rogue::interfaces::stream::Buffer> create (
-                     boost::shared_ptr<rogue::interfaces::stream::Pool> source, 
+               static std::shared_ptr<rogue::interfaces::stream::Buffer> create (
+                     std::shared_ptr<rogue::interfaces::stream::Pool> source, 
                         void * data, uint32_t meta, uint32_t size, uint32_t alloc);
 
                // Create a buffer.
-               Buffer(boost::shared_ptr<rogue::interfaces::stream::Pool> source, 
+               Buffer(std::shared_ptr<rogue::interfaces::stream::Pool> source, 
                       void * data, uint32_t meta, uint32_t size, uint32_t alloc);
 
                // Destroy a buffer
                ~Buffer();
 
                // Set owner frame, called by Frame class only
-               void setFrame(boost::shared_ptr<rogue::interfaces::stream::Frame> frame);
+               void setFrame(std::shared_ptr<rogue::interfaces::stream::Frame> frame);
 
                //! Get meta data
                /** The meta data field is used by the Pool class or sub-class to 
@@ -206,7 +206,7 @@ namespace rogue {
          };
 
          //! Alias for using shared pointer as BufferPtr
-         typedef boost::shared_ptr<rogue::interfaces::stream::Buffer> BufferPtr;
+         typedef std::shared_ptr<rogue::interfaces::stream::Buffer> BufferPtr;
       }
    }
 }

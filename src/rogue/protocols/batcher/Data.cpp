@@ -16,8 +16,8 @@
  *-----------------------------------------------------------------------------
 **/
 #include <stdint.h>
-#include <boost/thread.hpp>
-#include <boost/make_shared.hpp>
+#include <thread>
+#include <memory>
 #include <rogue/interfaces/stream/Frame.h>
 #include <rogue/interfaces/stream/FrameIterator.h>
 #include <rogue/protocols/batcher/Data.h>
@@ -27,7 +27,7 @@ namespace ris = rogue::interfaces::stream;
 
 //! Class creation
 rpb::DataPtr rpb::Data::create(ris::FrameIterator it, uint32_t size, uint8_t dest, uint8_t fUser, uint8_t lUser) {
-   rpb::DataPtr p = boost::make_shared<rpb::Data>(it, size, dest, fUser, lUser);
+   rpb::DataPtr p = std::make_shared<rpb::Data>(it, size, dest, fUser, lUser);
    return(p);
 }
 

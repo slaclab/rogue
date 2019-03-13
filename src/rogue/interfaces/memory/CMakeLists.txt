@@ -18,10 +18,13 @@ target_sources(rogue-core PRIVATE "${CMAKE_CURRENT_LIST_DIR}/Master.cpp")
 target_sources(rogue-core PRIVATE "${CMAKE_CURRENT_LIST_DIR}/Slave.cpp")
 target_sources(rogue-core PRIVATE "${CMAKE_CURRENT_LIST_DIR}/Transaction.cpp")
 target_sources(rogue-core PRIVATE "${CMAKE_CURRENT_LIST_DIR}/TransactionLock.cpp")
-target_sources(rogue-core PRIVATE "${CMAKE_CURRENT_LIST_DIR}/TcpClient.cpp")
-target_sources(rogue-core PRIVATE "${CMAKE_CURRENT_LIST_DIR}/TcpServer.cpp")
 
-if (DO_PYTHON)
+if (NOT NO_ZMQ)
+   target_sources(rogue-core PRIVATE "${CMAKE_CURRENT_LIST_DIR}/TcpClient.cpp")
+   target_sources(rogue-core PRIVATE "${CMAKE_CURRENT_LIST_DIR}/TcpServer.cpp")
+endif()
+
+if (NOT NO_PYTHON)
    target_sources(rogue-core PRIVATE "${CMAKE_CURRENT_LIST_DIR}/module.cpp")
 endif()
 

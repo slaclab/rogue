@@ -78,7 +78,7 @@ class DummyTree(pr.Root):
         # Start the tree with pyrogue server, internal nameserver, default interface
         # Set pyroHost to the address of a network interface to specify which nework to run on
         # set pyroNs to the address of a standalone nameserver (startPyrorNs.py)
-        self.start(timeout=2.0, pyroGroup='testGroup', pyroAddr=None, pyroNsAddr=None)
+        self.start(timeout=2.0, pollEn=False, pyroGroup='testGroup', pyroAddr=None, pyroNsAddr=None)
 
 
 def test_memory():

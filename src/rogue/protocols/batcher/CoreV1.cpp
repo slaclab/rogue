@@ -43,8 +43,8 @@
  *-----------------------------------------------------------------------------
 **/
 #include <stdint.h>
-#include <boost/thread.hpp>
-#include <boost/make_shared.hpp>
+#include <thread>
+#include <memory>
 #include <rogue/interfaces/stream/Frame.h>
 #include <rogue/interfaces/stream/FrameIterator.h>
 #include <rogue/protocols/batcher/CoreV1.h>
@@ -57,7 +57,7 @@ namespace ris = rogue::interfaces::stream;
 
 //! Class creation
 rpb::CoreV1Ptr rpb::CoreV1::create() {
-   rpb::CoreV1Ptr p = boost::make_shared<rpb::CoreV1>();
+   rpb::CoreV1Ptr p = std::make_shared<rpb::CoreV1>();
    return(p);
 }
 

@@ -29,7 +29,7 @@
 #include <rogue/interfaces/stream/FrameLock.h>
 #include <rogue/interfaces/stream/Buffer.h>
 #include <rogue/GeneralError.h>
-#include <boost/make_shared.hpp>
+#include <memory>
 #include <rogue/GilRelease.h>
 #include <stdlib.h>
 
@@ -43,7 +43,7 @@ namespace bp  = boost::python;
 
 //! Class creation
 rhp::PgpCardPtr rhp::PgpCard::create (std::string path, uint32_t lane, uint32_t vc) {
-   rhp::PgpCardPtr r = boost::make_shared<rhp::PgpCard>(path,lane,vc);
+   rhp::PgpCardPtr r = std::make_shared<rhp::PgpCard>(path,lane,vc);
    return(r);
 }
 
@@ -79,13 +79,14 @@ rhp::PgpCard::PgpCard ( std::string path, uint32_t lane, uint32_t vc ) {
    rawBuff_ = dmaMapDma(fd_,&bCount_,&bSize_);
 
    // Start read thread
-   thread_ = new boost::thread(boost::bind(&rhp::PgpCard::runThread, this));
+   threadEn_ = true;
+   thread_ = new std::thread(&rhp::PgpCard::runThread, this);
 }
 
 //! Destructor
 rhp::PgpCard::~PgpCard() {
    rogue::GilRelease noGil;
-   thread_->interrupt();
+   threadEn_ = false;
    thread_->join();
 
    if ( rawBuff_ != NULL ) dmaUnMapDma(fd_, rawBuff_);
@@ -334,65 +335,61 @@ void rhp::PgpCard::runThread() {
 
    log_->logThreadId();
 
-   try {
+   while(threadEn_) {
 
-      while(1) {
+      // Setup fds for select call
+      FD_ZERO(&fds);
+      FD_SET(fd_,&fds);
 
-         // Setup fds for select call
-         FD_ZERO(&fds);
-         FD_SET(fd_,&fds);
+      // Setup select timeout
+      tout.tv_sec  = 0;
+      tout.tv_usec = 100;
 
-         // Setup select timeout
-         tout.tv_sec  = 0;
-         tout.tv_usec = 100;
+      // Select returns with available buffer
+      if ( select(fd_+1,&fds,NULL,NULL,&tout) > 0 ) {
 
-         // Select returns with available buffer
-         if ( select(fd_+1,&fds,NULL,NULL,&tout) > 0 ) {
+         // Zero copy buffers were not allocated or zero copy is disabled
+         if ( zeroCopyEn_ == false || rawBuff_ == NULL ) {
 
-            // Zero copy buffers were not allocated or zero copy is disabled
-            if ( zeroCopyEn_ == false || rawBuff_ == NULL ) {
+            // Allocate a buffer
+            buff = allocBuffer(bSize_,NULL);
 
-               // Allocate a buffer
-               buff = allocBuffer(bSize_,NULL);
+            // Attempt read, lane and vc not needed since only one lane/vc is open
+            res = dmaRead(fd_, buff->begin(), buff->getAvailable(), &flags, &error, NULL);
+            cont = pgpGetCont(flags);
+         }
 
-               // Attempt read, lane and vc not needed since only one lane/vc is open
-               res = dmaRead(fd_, buff->begin(), buff->getAvailable(), &flags, &error, NULL);
+         // Zero copy read
+         else {
+
+            // Attempt read, lane and vc not needed since only one lane/vc is open
+            if ((res = dmaReadIndex(fd_, &meta, &flags, &error, NULL)) > 0) {
                cont = pgpGetCont(flags);
-            }
 
-            // Zero copy read
-            else {
-
-               // Attempt read, lane and vc not needed since only one lane/vc is open
-               if ((res = dmaReadIndex(fd_, &meta, &flags, &error, NULL)) > 0) {
-                  cont = pgpGetCont(flags);
-
-                  // Allocate a buffer, Mark zero copy meta with bit 31 set, lower bits are index
-                  buff = createBuffer(rawBuff_[meta],0x80000000 | meta,bSize_,bSize_);
-               }
-            }
-
-            // Return of -1 is bad
-            if ( res < 0 )
-               throw(rogue::GeneralError("PgpCard::runThread","DMA Interface Failure!"));
-
-            // Read was successfull
-            if ( res > 0 ) {
-               buff->setPayload(res);
-               frame->setError(error | frame->getError());
-               frame->appendBuffer(buff);
-               buff.reset();
-
-               // If continue flag is not set, push frame and get a new empty frame
-               if ( cont == 0 ) {
-                  sendFrame(frame);
-                  frame = ris::Frame::create();
-               }
+               // Allocate a buffer, Mark zero copy meta with bit 31 set, lower bits are index
+               buff = createBuffer(rawBuff_[meta],0x80000000 | meta,bSize_,bSize_);
             }
          }
-         boost::this_thread::interruption_point();
+
+         // Return of -1 is bad
+         if ( res < 0 )
+            throw(rogue::GeneralError("PgpCard::runThread","DMA Interface Failure!"));
+
+         // Read was successfull
+         if ( res > 0 ) {
+            buff->setPayload(res);
+            frame->setError(error | frame->getError());
+            frame->appendBuffer(buff);
+            buff.reset();
+
+            // If continue flag is not set, push frame and get a new empty frame
+            if ( cont == 0 ) {
+               sendFrame(frame);
+               frame = ris::Frame::create();
+            }
+         }
       }
-   } catch (boost::thread_interrupted&) { }
+   }
 }
 
 void rhp::PgpCard::setup_python () {

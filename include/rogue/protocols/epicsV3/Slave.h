@@ -22,7 +22,7 @@
 #define __ROGUE_PROTOCOLS_EPICSV3_SLAVE_H__
 
 #include <boost/python.hpp>
-#include <boost/thread.hpp>
+#include <thread>
 #include <casdef.h>
 #include <gdd.h>
 #include <gddApps.h>
@@ -53,11 +53,11 @@ namespace rogue {
                void valueSet();
 
                //! Accept a frame from master
-               void acceptFrame ( boost::shared_ptr<rogue::interfaces::stream::Frame> frame );
+               void acceptFrame ( std::shared_ptr<rogue::interfaces::stream::Frame> frame );
          };
 
          // Convienence
-         typedef boost::shared_ptr<rogue::protocols::epicsV3::Slave> SlavePtr;
+         typedef std::shared_ptr<rogue::protocols::epicsV3::Slave> SlavePtr;
 
       }
    }

@@ -22,7 +22,7 @@
 #include <rogue/interfaces/memory/Constants.h>
 #include <rogue/interfaces/memory/Transaction.h>
 #include <rogue/GeneralError.h>
-#include <boost/make_shared.hpp>
+#include <memory>
 #include <rogue/GilRelease.h>
 #include <rogue/ScopedGil.h>
 #include <stdlib.h>
@@ -36,7 +36,7 @@ namespace bp  = boost::python;
 
 //! Create a master container
 rim::MasterPtr rim::Master::create () {
-   rim::MasterPtr m = boost::make_shared<rim::Master>();
+   rim::MasterPtr m = std::make_shared<rim::Master>();
    return(m);
 }
 
@@ -80,7 +80,7 @@ rim::Master::~Master() { }
 //! Set slave
 void rim::Master::setSlave ( rim::SlavePtr slave ) {
    rogue::GilRelease noGil;
-   boost::lock_guard<boost::mutex> lock(mastMtx_);
+   std::lock_guard<std::mutex> lock(mastMtx_);
    slave_ = slave;
 }
 
@@ -117,14 +117,14 @@ uint32_t rim::Master::getError() {
 //! Rst error
 void rim::Master::setError(uint32_t error) {
    rogue::GilRelease noGil;
-   boost::lock_guard<boost::mutex> lock(mastMtx_);
+   std::lock_guard<std::mutex> lock(mastMtx_);
    error_ = error;
 }
 
 //! Set timeout
 void rim::Master::setTimeout(uint64_t timeout) {
    rogue::GilRelease noGil;
-   boost::lock_guard<boost::mutex> lock(mastMtx_);
+   std::lock_guard<std::mutex> lock(mastMtx_);
 
    if (timeout != 0 ) {
       div_t divResult = div(timeout,1000000);
@@ -179,7 +179,7 @@ uint32_t rim::Master::intTransaction(rim::TransactionPtr tran) {
 
    {
       rogue::GilRelease noGil;
-      boost::lock_guard<boost::mutex> lock(mastMtx_);
+      std::lock_guard<std::mutex> lock(mastMtx_);
       slave = slave_;
       tranMap_[tran->id_] = tran;
    }
@@ -201,7 +201,7 @@ void rim::Master::waitTransaction(uint32_t id) {
    while (1) {
 
       {  // Lock the vector
-         boost::unique_lock<boost::mutex> lock(mastMtx_);
+         std::unique_lock<std::mutex> lock(mastMtx_);
          if ( id != 0 ) it = tranMap_.find(id);
          else it = tranMap_.begin();
 

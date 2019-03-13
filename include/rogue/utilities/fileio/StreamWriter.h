@@ -35,10 +35,12 @@
 **/
 #ifndef __ROGUE_UTILITIES_FILEIO_STREAM_WRITER_H__
 #define __ROGUE_UTILITIES_FILEIO_STREAM_WRITER_H__
-#include <boost/enable_shared_from_this.hpp>
+#include <memory>
 #include <rogue/interfaces/stream/Frame.h>
 #include <stdint.h>
-#include <boost/thread.hpp>
+#include <thread>
+#include <mutex>
+#include <condition_variable>
 #include <map>
 
 namespace rogue {
@@ -48,7 +50,7 @@ namespace rogue {
          class StreamWriterChannel;
 
          //! Stream writer central class
-         class StreamWriter : public boost::enable_shared_from_this<rogue::utilities::fileio::StreamWriter> {
+         class StreamWriter : public std::enable_shared_from_this<rogue::utilities::fileio::StreamWriter> {
             friend class StreamWriterChannel;
             
             protected:
@@ -83,7 +85,7 @@ namespace rogue {
                bool dropErrors_;
 
                //! File access lock
-               boost::mutex mtx_;
+               std::mutex mtx_;
 
                //! Total number of frames in file
                uint32_t frameCount_;
@@ -98,18 +100,18 @@ namespace rogue {
                void flush();
 
                //! condition
-               boost::condition_variable cond_;
+               std::condition_variable cond_;
 
-               std::map<uint32_t,boost::shared_ptr<rogue::utilities::fileio::StreamWriterChannel>> channelMap_;
+               std::map<uint32_t,std::shared_ptr<rogue::utilities::fileio::StreamWriterChannel>> channelMap_;
 
 
                //! Write data to file. Called from StreamWriterChannel
-               virtual void writeFile ( uint8_t channel, boost::shared_ptr<rogue::interfaces::stream::Frame> frame);
+               virtual void writeFile ( uint8_t channel, std::shared_ptr<rogue::interfaces::stream::Frame> frame);
 
             public:
 
                //! Class creation
-               static boost::shared_ptr<rogue::utilities::fileio::StreamWriter> create ();
+               static std::shared_ptr<rogue::utilities::fileio::StreamWriter> create ();
 
                //! Setup class in python
                static void setup_python();
@@ -136,7 +138,7 @@ namespace rogue {
                void setDropErrors(bool drop);
 
                //! Get a port
-               boost::shared_ptr<rogue::utilities::fileio::StreamWriterChannel> getChannel(uint8_t channel);
+               std::shared_ptr<rogue::utilities::fileio::StreamWriterChannel> getChannel(uint8_t channel);
 
                //! Get current file size
                uint32_t getSize();
@@ -150,7 +152,7 @@ namespace rogue {
          };
 
          // Convienence
-         typedef boost::shared_ptr<rogue::utilities::fileio::StreamWriter> StreamWriterPtr;
+         typedef std::shared_ptr<rogue::utilities::fileio::StreamWriter> StreamWriterPtr;
       }
    }
 }

@@ -22,8 +22,8 @@
 #include <rogue/interfaces/memory/TransactionLock.h>
 #include <rogue/interfaces/memory/Constants.h>
 #include <rogue/GeneralError.h>
+#include <memory>
 #include <inttypes.h>
-#include <boost/make_shared.hpp>
 #include <rogue/GilRelease.h>
 #include <rogue/Logging.h>
 #include <zmq.h>
@@ -37,7 +37,7 @@ namespace bp  = boost::python;
 
 //! Class creation
 rim::TcpClientPtr rim::TcpClient::create (std::string addr, uint16_t port) {
-   rim::TcpClientPtr r = boost::make_shared<rim::TcpClient>(addr,port);
+   rim::TcpClientPtr r = std::make_shared<rim::TcpClient>(addr,port);
    return(r);
 }
 
@@ -81,12 +81,13 @@ rim::TcpClient::TcpClient (std::string addr, uint16_t port) : rim::Slave(4,0xFFF
       throw(rogue::GeneralError::network("TcpClient::TcpClient",addr,port));
 
    // Start rx thread
-   this->thread_ = new boost::thread(boost::bind(&rim::TcpClient::runThread, this));
+   threadEn_ = true;
+   this->thread_ = new std::thread(&rim::TcpClient::runThread, this);
 }
 
 //! Destructor
 rim::TcpClient::~TcpClient() {
-   thread_->interrupt();
+   threadEn_ = false;
    thread_->join();
 
    zmq_close(this->zmqResp_);
@@ -108,7 +109,7 @@ void rim::TcpClient::doTransaction(rim::TransactionPtr tran) {
    rim::Transaction::iterator tIter;
 
    rogue::GilRelease noGil;
-   boost::lock_guard<boost::mutex> block(bridgeMtx_);
+   std::lock_guard<std::mutex> block(bridgeMtx_);
    rim::TransactionLockPtr lock = tran->lock();
 
    // ID message
@@ -175,9 +176,7 @@ void rim::TcpClient::runThread() {
 
    bridgeLog_->logThreadId();
 
-   try {
-
-      while(1) {
+   while(threadEn_) {
 
          for (x=0; x < 6; x++) zmq_msg_init(&(msg[x]));
          msgCnt = 0;
@@ -196,8 +195,7 @@ void rim::TcpClient::runThread() {
                moreSize = 8;
                zmq_getsockopt(this->zmqResp_, ZMQ_RCVMORE, &more, &moreSize);
             } else more = 1;
-            boost::this_thread::interruption_point();
-         } while ( more );
+      } while ( threadEn_ && more );
 
          // Proper message received
          if ( msgCnt == 6 ) {
@@ -260,9 +258,7 @@ void rim::TcpClient::runThread() {
                                id,addr,size,type,msgCnt);
          }
          for (x=0; x < msgCnt; x++) zmq_msg_close(&(msg[x]));
-         boost::this_thread::interruption_point();
       }
-   } catch (boost::thread_interrupted&) { }
 }
 
 void rim::TcpClient::setup_python () {

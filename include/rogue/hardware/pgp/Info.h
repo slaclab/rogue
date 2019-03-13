@@ -23,7 +23,7 @@
 #define __ROGUE_HARDWARE_PGP_INFO_H__
 #include <rogue/hardware/drivers/PgpDriver.h>
 #include <stdint.h>
-#include <boost/shared_ptr.hpp>
+#include <memory>
 
 namespace rogue {
    namespace hardware {
@@ -39,7 +39,7 @@ namespace rogue {
             public:
 
                // Create the info class with pointer
-               static boost::shared_ptr<rogue::hardware::pgp::Info> create();
+               static std::shared_ptr<rogue::hardware::pgp::Info> create();
 
                // Setup class in python
                static void setup_python();
@@ -51,7 +51,7 @@ namespace rogue {
          };
 
          //! Alias for using shared pointer as InfoPtr
-         typedef boost::shared_ptr<rogue::hardware::pgp::Info> InfoPtr;
+         typedef std::shared_ptr<rogue::hardware::pgp::Info> InfoPtr;
       }
    }
 }

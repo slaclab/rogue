@@ -27,7 +27,7 @@
 
 #include <rogue/interfaces/memory/Master.h>
 #include <rogue/interfaces/memory/Slave.h>
-#include <boost/thread.hpp>
+#include <thread>
 
 #ifndef NO_PYTHON
 #include <boost/python.hpp>
@@ -71,7 +71,7 @@ namespace rogue {
                 * @param min The min transaction size, 0 if not a virtual memory space root
                 * @param min The max transaction size, 0 if not a virtual memory space root
                 */
-               static boost::shared_ptr<rogue::interfaces::memory::Hub> create (uint64_t offset, uint32_t min, uint32_t max);
+               static std::shared_ptr<rogue::interfaces::memory::Hub> create (uint64_t offset, uint32_t min, uint32_t max);
 
                // Setup class for use in python
                static void setup_python();
@@ -145,11 +145,11 @@ namespace rogue {
                 * Exposted to Python as _doTransaction()
                 * @param transaction Transaction pointer as TransactionPtr
                 */
-               virtual void doTransaction(boost::shared_ptr<rogue::interfaces::memory::Transaction> transaction);
+               virtual void doTransaction(std::shared_ptr<rogue::interfaces::memory::Transaction> transaction);
          };
 
          //! Alias for using shared pointer as HubPtr
-         typedef boost::shared_ptr<rogue::interfaces::memory::Hub> HubPtr;
+         typedef std::shared_ptr<rogue::interfaces::memory::Hub> HubPtr;
        
 #ifndef NO_PYTHON
 
@@ -164,14 +164,14 @@ namespace rogue {
                HubWrap(uint64_t offset, uint32_t min, uint32_t max);
 
                // Post a transaction. Master will call this method with the access attributes.
-               void doTransaction(boost::shared_ptr<rogue::interfaces::memory::Transaction> transaction);
+               void doTransaction(std::shared_ptr<rogue::interfaces::memory::Transaction> transaction);
 
                // Post a transaction. Master will call this method with the access attributes.
-               void defDoTransaction(boost::shared_ptr<rogue::interfaces::memory::Transaction> transaction);
+               void defDoTransaction(std::shared_ptr<rogue::interfaces::memory::Transaction> transaction);
          };
          
          // Convienence
-         typedef boost::shared_ptr<rogue::interfaces::memory::HubWrap> HubWrapPtr;
+         typedef std::shared_ptr<rogue::interfaces::memory::HubWrap> HubWrapPtr;
 #endif
 
       }

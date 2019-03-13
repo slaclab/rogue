@@ -23,7 +23,7 @@
 #include <rogue/protocols/packetizer/Application.h>
 #include <rogue/protocols/packetizer/ControllerV1.h>
 #include <rogue/GeneralError.h>
-#include <boost/make_shared.hpp>
+#include <memory>
 #include <rogue/GilRelease.h>
 
 namespace rpp = rogue::protocols::packetizer;
@@ -36,7 +36,7 @@ namespace bp  = boost::python;
 
 //! Class creation
 rpp::CorePtr rpp::Core::create (bool enSsi) {
-   rpp::CorePtr r = boost::make_shared<rpp::Core>(enSsi);
+   rpp::CorePtr r = std::make_shared<rpp::Core>(enSsi);
    return(r);
 }
 

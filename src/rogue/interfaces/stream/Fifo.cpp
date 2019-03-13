@@ -19,8 +19,8 @@
  *-----------------------------------------------------------------------------
 **/
 #include <stdint.h>
-#include <boost/thread.hpp>
-#include <boost/make_shared.hpp>
+#include <thread>
+#include <memory>
 #include <rogue/interfaces/stream/Master.h>
 #include <rogue/interfaces/stream/Slave.h>
 #include <rogue/interfaces/stream/Frame.h>
@@ -40,7 +40,7 @@ namespace bp  = boost::python;
 
 //! Class creation
 ris::FifoPtr ris::Fifo::create(uint32_t maxDepth, uint32_t trimSize, bool noCopy) {
-   ris::FifoPtr p = boost::make_shared<ris::Fifo>(maxDepth,trimSize,noCopy);
+   ris::FifoPtr p = std::make_shared<ris::Fifo>(maxDepth,trimSize,noCopy);
    return(p);
 }
 
@@ -62,12 +62,13 @@ ris::Fifo::Fifo(uint32_t maxDepth, uint32_t trimSize, bool noCopy ) : ris::Maste
    log_ = rogue::Logging::create("stream.Fifo");
 
    // Start read thread
-   thread_ = new boost::thread(boost::bind(&ris::Fifo::runThread, this));
+   threadEn_ = true;
+   thread_ = new std::thread(&ris::Fifo::runThread, this);
 }
 
 //! Deconstructor
 ris::Fifo::~Fifo() {
-   thread_->interrupt();
+   threadEn_ = false;
    queue_.stop();
    thread_->join();
 }
@@ -116,11 +117,8 @@ void ris::Fifo::runThread() {
    ris::FramePtr frame;
    log_->logThreadId();
 
-   try {
-      while(1) {
-         if ( (frame=queue_.pop()) != NULL ) sendFrame(frame);
-         boost::this_thread::interruption_point();
-      }
-   } catch (boost::thread_interrupted&) { }
+   while(threadEn_) {
+      if ( (frame = queue_.pop()) != NULL ) sendFrame(queue_.pop());
+   }
 }
 

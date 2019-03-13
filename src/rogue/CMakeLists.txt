@@ -26,7 +26,7 @@ target_sources(rogue-core PRIVATE "${CMAKE_CURRENT_LIST_DIR}/SMemControl.cpp")
 target_sources(rogue-core PRIVATE "${CMAKE_CURRENT_LIST_DIR}/ScopedGil.cpp")
 target_sources(rogue-core PRIVATE "${CMAKE_CURRENT_LIST_DIR}/Version.cpp")
 
-if (DO_PYTHON)
+if (NOT NO_PYTHON)
    target_sources(rogue-core PRIVATE "${CMAKE_CURRENT_LIST_DIR}/module.cpp")
    target_sources(rogue-core PRIVATE "${CMAKE_CURRENT_LIST_DIR}/ApiWrapper.cpp")
 endif()
