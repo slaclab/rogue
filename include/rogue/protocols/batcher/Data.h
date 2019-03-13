@@ -64,8 +64,11 @@ namespace rogue {
                //! Deconstructor
                ~Data();
 
-               //! Return Data Iterator
-               rogue::interfaces::stream::FrameIterator & iterator();
+               //! Return Begin Data Iterator
+               rogue::interfaces::stream::FrameIterator begin();
+
+               //! Return End Data Iterator
+               rogue::interfaces::stream::FrameIterator end();
 
                //! Return Data Size
                uint32_t size();

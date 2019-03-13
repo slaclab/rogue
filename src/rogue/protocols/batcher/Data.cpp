@@ -46,9 +46,14 @@ rpb::Data::Data(ris::FrameIterator it, uint32_t size, uint8_t dest, uint8_t fUse
 //! Deconstructor
 rpb::Data::~Data() {}
 
-//! Return Data Iterator
-ris::FrameIterator & rpb::Data::iterator() {
+//! Return Begin Data Iterator
+ris::FrameIterator rpb::Data::begin() {
    return it_;
+}
+
+//! Return End Data Iterator
+ris::FrameIterator rpb::Data::end() {
+   return it_ + size_;
 }
 
 //! Return Data Size

@@ -75,7 +75,7 @@ void rpb::SplitterV1::acceptFrame ( ris::FramePtr frame ) {
 
       // Create a new frame
       nFrame = reqFrame(data->size(),true);
-      std::copy(data->iterator(), data->iterator()+data->size(), nFrame->beginWrite());
+      std::copy(data->begin(), data->end(), nFrame->beginWrite());
       nFrame->setPayload(data->size());
 
       // Set flags
