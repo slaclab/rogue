@@ -68,20 +68,29 @@ namespace rogue {
                //! Deconstructor
                ~CoreV1();
 
+               //! Init size for internal containers
+               void initSize(uint32_t size);
+
                //! Record count
                uint32_t count();
 
                //! Get header size
                uint32_t headerSize();
 
-               //! Get header iterator
-               rogue::interfaces::stream::FrameIterator header();
+               //! Get begining of header iterator
+               rogue::interfaces::stream::FrameIterator beginHeader();
+
+               //! Get end of header iterator
+               rogue::interfaces::stream::FrameIterator endHeader();
 
                //! Get tail size
                uint32_t tailSize();
 
-               //! Get tail iterator
-               rogue::interfaces::stream::FrameIterator & tail(uint32_t index);
+               //! Get beginning of tail iterator
+               rogue::interfaces::stream::FrameIterator beginTail(uint32_t index);
+
+               //! Get end of tail iterator
+               rogue::interfaces::stream::FrameIterator endTail(uint32_t index);
 
                //! Get data
                std::shared_ptr<rogue::protocols::batcher::Data> & record(uint32_t index);

@@ -73,11 +73,11 @@ void rpb::InverterV1::acceptFrame ( ris::FramePtr frame ) {
    if ( (core.headerSize() != core.tailSize()) || (core.count() == 0) ) return;
 
    // Copy first tail to head
-   std::copy(core.tail(0), core.tail(0)+core.headerSize(), core.header());
+   std::copy(core.beginTail(0), core.endTail(0), core.beginHeader());
 
    // Copy remaining tails
    for (x=1; x < core.count(); x++) 
-      std::copy(core.tail(x), core.tail(x)+core.headerSize(), core.tail(x-1));
+      std::copy(core.beginTail(x), core.endTail(x), core.beginTail(x-1));
 
    // Remove last tail from frame
    frame->adjustPayload(-1 * core.headerSize());
