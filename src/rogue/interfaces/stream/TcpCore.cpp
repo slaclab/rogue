@@ -46,7 +46,7 @@ ris::TcpCore::TcpCore (std::string addr, uint16_t port, bool server) {
    int32_t opt;
    std::string logstr;
 
-   logstr == "stream.TcpCore.";
+   logstr = "stream.TcpCore.";
    logstr.append(addr);
    logstr.append(".");
    logstr.append(std::to_string(port));
