@@ -26,7 +26,7 @@ class SideBandSim():
 
     def __init__(self,host,port):
 
-        self._log = pyrogue.logInit(cls=self)
+        self._log = pyrogue.logInit(cls=self, name=f'{host}.{port}')
 
         self._ctx = zmq.Context()
         self._sbPush = self._ctx.socket(zmq.PUSH)
@@ -59,11 +59,13 @@ class SideBandSim():
             ba[2] = 0x01
             ba[3] = remData
             
-        self._sbPush.send(ba)
+        sent = self._sbPush.send(ba)
+        self._log.debug(f'Sent opCode: {opCode} remData: {remData}')
+        
 
         # Wait for ack
-        with self._ackCond:
-            self._ackCond.wait()
+#         with self._ackCond:
+#             self._ackCond.wait()
 
     def _recvWorker(self):
         while True:
@@ -71,10 +73,13 @@ class SideBandSim():
             ba = self._sbPull.recv()
 
             # Check for an ack
-            if len(ba) == 1 and ba[0] == 0xFF:
-                with self._ackCond:
-                    self._ackCond.notify()
-                continue
+#             if len(ba) == 1 and ba[0] == 0xFF:
+#                 with self._ackCond:
+#                     self._ackCond.notify()
+#                 continue
+
+            if len(ba) != 4:
+                self._log.error(f'Got bad size frame: {ba} size: {len(ba)}')
 
             # Got normal data
             opCode = None
@@ -83,6 +88,8 @@ class SideBandSim():
                 opCode = ba[1]
             if ba[2] == 0x01:
                 remData = ba[3]
+
+            self._log.debug(f'Received opCode: {opCode}, remData {remData}')
             self._recvCb(opCode, remData)
 
 class Pgp2bSim():
