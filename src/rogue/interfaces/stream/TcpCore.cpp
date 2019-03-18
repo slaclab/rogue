@@ -195,7 +195,6 @@ void ris::TcpCore::runThread() {
 
             // Get the message
             if ( zmq_recvmsg(this->zmqPull_,&(msg[x]),0) > 0 ) {
-              bridgeLog_->debug("TcpCore zmq_recvmsg, x: %i, msgCnt: %i", x, msgCnt);              
                if ( x != 3 ) x++;
                msgCnt++;
 
