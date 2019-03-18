@@ -148,7 +148,9 @@ void rim::TcpClient::doTransaction(rim::TransactionPtr tran) {
    // Read transaction
    else msgCnt = 4;
 
-   bridgeLog_->debug("Forwarding transaction id=%" PRIu32 ", addr=0x%" PRIx64 ", size=%" PRIu32 ", type=%" PRIu32 ", cnt=%" PRIu32 ,id,addr,size,type,msgCnt);
+   bridgeLog_->debug("Requested transaction id=%" PRIu32 ", addr=0x%" PRIx64
+                     ", size=%" PRIu32 ", type=%" PRIu32 ", cnt=%" PRIu32
+                     ", port: %s" ,id,addr,size,type,msgCnt,this->reqAddr_.c_str());
 
    // Send message
    for (x=0; x < msgCnt; x++) {
@@ -262,8 +264,9 @@ void rim::TcpClient::runThread() {
                std::copy(data,data+size,tIter);
             }
             tran->done(result);
-            bridgeLog_->debug("Response for transaction id=%" PRIu32 ", addr=0x%" PRIx64 ", size=%" PRIu32 ", type=%" PRIu32 ", cnt=%" PRIu32,
-                               id,addr,size,type,msgCnt);
+            bridgeLog_->debug("Response for transaction id=%" PRIu32 ", addr=0x%" PRIx64
+                              ", size=%" PRIu32 ", type=%" PRIu32 ", cnt=%" PRIu32
+                              ", port: %s", id,addr,size,type,msgCnt, this->respAddr_.c_str());
          }
          for (x=0; x < msgCnt; x++) zmq_msg_close(&(msg[x]));
          boost::this_thread::interruption_point();
