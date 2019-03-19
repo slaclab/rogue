@@ -37,7 +37,8 @@ class SideBandSim():
         self._log.info("Connected to port {} on host {}".format(port,host))
         
         self._recvCb = self._defaultRecvCb
-        self._ackCond = threading.Condition()
+        self._lock = threading.Lock()
+        self._run = True
         self._recvThread = threading.Thread(target=self._recvWorker)
         self._recvThread.start()
 
@@ -61,36 +62,44 @@ class SideBandSim():
             
         sent = self._sbPush.send(ba)
         self._log.debug(f'Sent opCode: {opCode} remData: {remData}')
-        
 
-        # Wait for ack
-#         with self._ackCond:
-#             self._ackCond.wait()
+    def stop(self):
+        with self._lock:
+            print('Stopping SB recv thread')
+            self._run = False
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        self.stop()
 
     def _recvWorker(self):
         while True:
+            # Exit thread when stop() called
+            with self._lock:
+                if self._run is False:
+                    print('Exiting recv thread')
+                    return
+            
             # Wait for new data
-            ba = self._sbPull.recv()
+            socks, x, y = zmq.select([self._sbPull], [], [], 1.0)
+            if self._sbPull in socks:
+                ba = self._sbPull.recv()
 
-            # Check for an ack
-#             if len(ba) == 1 and ba[0] == 0xFF:
-#                 with self._ackCond:
-#                     self._ackCond.notify()
-#                 continue
+                if len(ba) != 4:
+                    self._log.error(f'Got bad size frame: {ba} size: {len(ba)}')
 
-            if len(ba) != 4:
-                self._log.error(f'Got bad size frame: {ba} size: {len(ba)}')
+                # Got normal data
+                opCode = None
+                remData = None
+                if ba[0] == 0x01:
+                    opCode = ba[1]
+                if ba[2] == 0x01:
+                    remData = ba[3]
 
-            # Got normal data
-            opCode = None
-            remData = None
-            if ba[0] == 0x01:
-                opCode = ba[1]
-            if ba[2] == 0x01:
-                remData = ba[3]
-
-            self._log.debug(f'Received opCode: {opCode}, remData {remData}')
-            self._recvCb(opCode, remData)
+                self._log.debug(f'Received opCode: {opCode}, remData {remData}')
+                self._recvCb(opCode, remData)
 
 class Pgp2bSim():
     def __init__(self, vcCount, host, port):
@@ -99,6 +108,16 @@ class Pgp2bSim():
 
         # sideband
         self.sb = SideBandSim(host, port+8)
+
+    def stop(self):
+        self.sb.stop()
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        self.stop()
+
 
 def connectPgp2bSim(pgpA, pgpB):
     for a,b in zip(pgpA.vc, pgpB.vc):
