@@ -328,7 +328,7 @@ class RemoteBlock(BaseBlock, rim.Master):
                 break;
 
         # Set exclusive flag
-        self._overlapEn = any (excMask[i] != 0 for i in range(size))
+        self._overlapEn = all (excMask[i] == 0 for i in range(size))
 
     def __repr__(self):
         return repr(self._variables)
