@@ -169,7 +169,8 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
                 # Allow overlaps between Devices and Blocks if the block exclusive access bits are not set. 
                 # This would mean that all variables have overlapEn set.
-                if not (isinstance(tmpList[i-1],pr.Device) and isinstance(tmpList[i],pr.Block) and tmpList[i].overlapEn):
+                if not (isinstance(tmpList[i-1],pr.Device) and isinstance(tmpList[i],pr.Block) and \
+                        (tmpList[i] in tmpList[i-1]._blocks) and tmpList[i]._overlapEn):
 
                     print("\n\n\n------------------------ Memory Overlap Warning !!! --------------------------------")
                     print("{} at address={:#x} overlaps {} at address={:#x} with size={}".format(

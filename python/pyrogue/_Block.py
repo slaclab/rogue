@@ -334,10 +334,6 @@ class RemoteBlock(BaseBlock, rim.Master):
         return repr(self._variables)
 
     @property
-    def overlapEn(self):
-        return self._overlapEn
-
-    @property
     def stale(self):
         return any([b != 0 for b in self._sDataMask])
 
