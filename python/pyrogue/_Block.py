@@ -327,8 +327,15 @@ class RemoteBlock(BaseBlock, rim.Master):
                 print("This warning will be replaced with an exception in the next release!!!!!!!!")
                 break;
 
+        # Set exclusive flag
+        self._overlapEn = (not self._anyBits(excMask))
+
     def __repr__(self):
         return repr(self._variables)
+
+    @property
+    def overlapEn(self):
+        return self._overlapEn
 
     @property
     def stale(self):
