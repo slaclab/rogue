@@ -20,8 +20,8 @@
 #include <rogue/interfaces/memory/TcpServer.h>
 #include <rogue/interfaces/memory/Constants.h>
 #include <rogue/GeneralError.h>
+#include <memory>
 #include <inttypes.h>
-#include <boost/make_shared.hpp>
 #include <rogue/GilRelease.h>
 #include <rogue/Logging.h>
 #include <zmq.h>
@@ -35,7 +35,7 @@ namespace bp  = boost::python;
 
 //! Class creation
 rim::TcpServerPtr rim::TcpServer::create (std::string addr, uint16_t port) {
-   rim::TcpServerPtr r = boost::make_shared<rim::TcpServer>(addr,port);
+   rim::TcpServerPtr r = std::make_shared<rim::TcpServer>(addr,port);
    return(r);
 }
 
@@ -80,12 +80,13 @@ rim::TcpServer::TcpServer (std::string addr, uint16_t port) {
       throw(rogue::GeneralError::network("TcpServer::TcpServer",addr,port));
 
    // Start rx thread
-   this->thread_ = new boost::thread(boost::bind(&rim::TcpServer::runThread, this));
+   threadEn_ = true;
+   this->thread_ = new std::thread(&rim::TcpServer::runThread, this);
 }
 
 //! Destructor
 rim::TcpServer::~TcpServer() {
-   thread_->interrupt();
+   threadEn_ = false;
    thread_->join();
 
    zmq_close(this->zmqResp_);
@@ -109,9 +110,7 @@ void rim::TcpServer::runThread() {
 
    bridgeLog_->logThreadId();
 
-   try {
-
-      while(1) {
+   while(threadEn_) {
 
          for (x=0; x < 6; x++) zmq_msg_init(&(msg[x]));
          msgCnt = 0;
@@ -130,8 +129,7 @@ void rim::TcpServer::runThread() {
                moreSize = 8;
                zmq_getsockopt(this->zmqReq_, ZMQ_RCVMORE, &more, &moreSize);
             } else more = 1;
-            boost::this_thread::interruption_point();
-         } while ( more );
+      } while ( threadEn_ && more );
 
          // Proper message received
          if ( msgCnt == 4 || msgCnt == 5) {
@@ -182,10 +180,7 @@ void rim::TcpServer::runThread() {
                zmq_sendmsg(this->zmqResp_,&(msg[x]),(x==5)?0:ZMQ_SNDMORE);
          }
          else for (x=0; x < msgCnt; x++) zmq_msg_close(&(msg[x]));
-
-         boost::this_thread::interruption_point();
       }
-   } catch (boost::thread_interrupted&) { }
 }
 
 void rim::TcpServer::setup_python () {

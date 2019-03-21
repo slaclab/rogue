@@ -20,8 +20,8 @@
  *-----------------------------------------------------------------------------
 **/
 #include <stdint.h>
-#include <boost/thread.hpp>
-#include <boost/make_shared.hpp>
+#include <thread>
+#include <memory>
 #include <rogue/interfaces/stream/Master.h>
 #include <rogue/interfaces/stream/Frame.h>
 #include <rogue/interfaces/stream/FrameIterator.h>
@@ -37,7 +37,7 @@ namespace bp  = boost::python;
 
 //! Class creation
 rps::CmdPtr rps::Cmd::create () {
-   rps::CmdPtr p = boost::make_shared<rps::Cmd>();
+   rps::CmdPtr p = std::make_shared<rps::Cmd>();
    return(p);
 }
 

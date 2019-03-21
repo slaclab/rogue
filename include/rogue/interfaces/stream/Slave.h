@@ -22,7 +22,7 @@
 #define __ROGUE_INTERFACES_STREAM_SLAVE_H__
 #include <stdint.h>
 
-#include <boost/thread.hpp>
+#include <thread>
 #include <rogue/interfaces/stream/Pool.h>
 #include <rogue/Logging.h>
 
@@ -45,11 +45,11 @@ namespace rogue {
          class Slave : public rogue::interfaces::stream::Pool {
 
                // Mutex
-               boost::mutex mtx_;
+               std::mutex mtx_;
 
                // Debug control
                uint32_t         debug_;
-               boost::shared_ptr<rogue::Logging> log_;
+               std::shared_ptr<rogue::Logging> log_;
 
                // Counters
                uint64_t frameCount_;
@@ -62,7 +62,7 @@ namespace rogue {
                 *
                 * Exposed as rogue.interfaces.stream.Slave() to Python
                 */
-               static boost::shared_ptr<rogue::interfaces::stream::Slave> create ();
+               static std::shared_ptr<rogue::interfaces::stream::Slave> create ();
 
                // Setup class for use in python
                static void setup_python();
@@ -92,7 +92,7 @@ namespace rogue {
                 * Re-implemented as _acceptFrame() in a Python subclass
                 * @param frame Frame pointer (FramePtr)
                 */
-               virtual void acceptFrame ( boost::shared_ptr<rogue::interfaces::stream::Frame> frame );
+               virtual void acceptFrame ( std::shared_ptr<rogue::interfaces::stream::Frame> frame );
 
                //! Get frame counter
                /** Returns the total frames received. Only valid if acceptFrame is not re-implemented
@@ -115,7 +115,7 @@ namespace rogue {
          };
 
          //! Alias for using shared pointer as SlavePtr
-         typedef boost::shared_ptr<rogue::interfaces::stream::Slave> SlavePtr;
+         typedef std::shared_ptr<rogue::interfaces::stream::Slave> SlavePtr;
 
 #ifndef NO_PYTHON
 
@@ -128,13 +128,13 @@ namespace rogue {
             public:
 
                // Accept frame
-               void acceptFrame ( boost::shared_ptr<rogue::interfaces::stream::Frame> frame );
+               void acceptFrame ( std::shared_ptr<rogue::interfaces::stream::Frame> frame );
 
                // Default accept frame call
-               void defAcceptFrame ( boost::shared_ptr<rogue::interfaces::stream::Frame> frame );
+               void defAcceptFrame ( std::shared_ptr<rogue::interfaces::stream::Frame> frame );
          };
 
-         typedef boost::shared_ptr<rogue::interfaces::stream::SlaveWrap> SlaveWrapPtr;
+         typedef std::shared_ptr<rogue::interfaces::stream::SlaveWrap> SlaveWrapPtr;
 #endif
 
       }

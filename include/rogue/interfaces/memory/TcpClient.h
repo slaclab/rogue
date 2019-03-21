@@ -21,7 +21,7 @@
 #define __ROGUE_INTERFACES_MEMORY_TCP_CLIENT_H__
 #include <rogue/interfaces/memory/Slave.h>
 #include <rogue/Logging.h>
-#include <boost/thread.hpp>
+#include <thread>
 #include <stdint.h>
 
 namespace rogue {
@@ -33,7 +33,7 @@ namespace rogue {
           * The client side of the TCP bridge accepts a memory Transaction from an attached
           * master and forwards that Transaction to a remote TcpServer. The server side of the 
           * TCP bridge implments a memory Master device which executes the memory Transaction 
-          * to an attached Slave. 
+          * to an attached Slave.
           *
           * The TcpClient memory interface will drop transactions when the remote server is not 
           * present or when the pipeline backs up.
@@ -59,13 +59,14 @@ namespace rogue {
                void runThread();
 
                // Log
-               boost::shared_ptr<rogue::Logging> bridgeLog_;
+               std::shared_ptr<rogue::Logging> bridgeLog_;
 
                // Thread
-               boost::thread * thread_;
+               std::thread * thread_;
+               bool threadEn_;
 
                // Lock
-               boost::mutex bridgeMtx_;
+               std::mutex bridgeMtx_;
 
             public:
 
@@ -81,7 +82,7 @@ namespace rogue {
                 * @param port Base port number to use for connection.
                 * @return TcpServer object as a TcpServerPtr
                 */
-               static boost::shared_ptr<rogue::interfaces::memory::TcpClient> 
+               static std::shared_ptr<rogue::interfaces::memory::TcpClient> 
                       create (std::string addr, uint16_t port);
 
                // Setup class in python
@@ -94,11 +95,11 @@ namespace rogue {
                ~TcpClient();
 
                // Process transaction from Master
-               void doTransaction(boost::shared_ptr<rogue::interfaces::memory::Transaction> tran);
+               void doTransaction(std::shared_ptr<rogue::interfaces::memory::Transaction> tran);
          };
 
          //! Alias for using shared pointer as TcpClientPtr
-         typedef boost::shared_ptr<rogue::interfaces::memory::TcpClient> TcpClientPtr;
+         typedef std::shared_ptr<rogue::interfaces::memory::TcpClient> TcpClientPtr;
 
       }
    }

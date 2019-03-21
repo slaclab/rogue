@@ -40,7 +40,7 @@ namespace rogue {
          class Filter : public rogue::interfaces::stream::Master,
                         public rogue::interfaces::stream::Slave {
 
-               boost::shared_ptr<rogue::Logging> log_;
+               std::shared_ptr<rogue::Logging> log_;
 
                // Configurations
                bool     dropErrors_;
@@ -53,7 +53,7 @@ namespace rogue {
                 * @param channel Set channel number to allow through the filter.
                 * @return Filter object as a FilterPtr
                 */
-               static boost::shared_ptr<rogue::interfaces::stream::Filter> create(bool dropErrors, uint8_t channel);
+               static std::shared_ptr<rogue::interfaces::stream::Filter> create(bool dropErrors, uint8_t channel);
 
                // Setup class for use in python
                static void setup_python();
@@ -65,12 +65,12 @@ namespace rogue {
                ~Filter();
 
                // Receive frame from Master
-               void acceptFrame ( boost::shared_ptr<rogue::interfaces::stream::Frame> frame );
+               void acceptFrame ( std::shared_ptr<rogue::interfaces::stream::Frame> frame );
 
          };
 
          //! Alias for using shared pointer as FilterPtr
-         typedef boost::shared_ptr<rogue::interfaces::stream::Filter> FilterPtr;
+         typedef std::shared_ptr<rogue::interfaces::stream::Filter> FilterPtr;
       }
    }
 }

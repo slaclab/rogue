@@ -18,8 +18,12 @@
  * ----------------------------------------------------------------------------
 **/
 #include <rogue/Logging.h>
-#include <boost/make_shared.hpp>
+#include <memory>
 #include <stdarg.h>
+#include <string.h>
+#include <sys/time.h>
+#include <sys/syscall.h>
+#include <unistd.h>
 
 #if defined(__linux__)
 #include <sys/syscall.h>
@@ -43,14 +47,14 @@ const uint32_t rogue::Logging::Debug;
 uint32_t rogue::Logging::gblLevel_ = rogue::Logging::Error;
 
 // Logging level lock
-boost::mutex rogue::Logging::levelMtx_;
+std::mutex rogue::Logging::levelMtx_;
 
 // Filter list
 std::vector <rogue::LogFilter *> rogue::Logging::filters_;
 
 // Crate logger
 rogue::LoggingPtr rogue::Logging::create(std::string name) {
-   rogue::LoggingPtr log = boost::make_shared<rogue::Logging>(name);
+   rogue::LoggingPtr log = std::make_shared<rogue::Logging>(name);
    return log;
 }
 

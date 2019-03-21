@@ -42,7 +42,7 @@ namespace rogue {
 
             protected:
 
-               boost::shared_ptr<rogue::Logging> udpLog_;
+               std::shared_ptr<rogue::Logging> udpLog_;
 
                //! Jumbo frames enables
                bool jumbo_;
@@ -56,10 +56,11 @@ namespace rogue {
                //! Timeout value
                struct timeval timeout_;
 
-               boost::thread* thread_;
+               std::thread* thread_;
+               bool threadEn_;
 
                //! mutex
-               boost::mutex udpMtx_;
+               std::mutex udpMtx_;
 
             public:
 
@@ -83,7 +84,7 @@ namespace rogue {
          };
 
          // Convienence
-         typedef boost::shared_ptr<rogue::protocols::udp::Core> CorePtr;
+         typedef std::shared_ptr<rogue::protocols::udp::Core> CorePtr;
       }
    }
 };

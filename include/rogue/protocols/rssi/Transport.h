@@ -36,12 +36,12 @@ namespace rogue {
                            public rogue::interfaces::stream::Slave {
 
                //! Core module
-               boost::shared_ptr<rogue::protocols::rssi::Controller> cntl_;
+               std::shared_ptr<rogue::protocols::rssi::Controller> cntl_;
 
             public:
 
                //! Class creation
-               static boost::shared_ptr<rogue::protocols::rssi::Transport> create ();
+               static std::shared_ptr<rogue::protocols::rssi::Transport> create ();
 
                //! Setup class in python
                static void setup_python();
@@ -53,14 +53,14 @@ namespace rogue {
                ~Transport();
 
                //! Setup links
-               void setController ( boost::shared_ptr<rogue::protocols::rssi::Controller> cntl );
+               void setController ( std::shared_ptr<rogue::protocols::rssi::Controller> cntl );
 
                //! Accept a frame from master
-               void acceptFrame ( boost::shared_ptr<rogue::interfaces::stream::Frame> frame );
+               void acceptFrame ( std::shared_ptr<rogue::interfaces::stream::Frame> frame );
          };
 
          // Convienence
-         typedef boost::shared_ptr<rogue::protocols::rssi::Transport> TransportPtr;
+         typedef std::shared_ptr<rogue::protocols::rssi::Transport> TransportPtr;
 
       }
    }

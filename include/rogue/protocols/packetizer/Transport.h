@@ -35,10 +35,11 @@ namespace rogue {
                            public rogue::interfaces::stream::Slave {
 
                //! Core module
-               boost::shared_ptr<rogue::protocols::packetizer::Controller> cntl_;
+               std::shared_ptr<rogue::protocols::packetizer::Controller> cntl_;
 
                // Transmission thread
-               boost::thread* thread_;
+               std::thread* thread_;
+               bool threadEn_;
 
                //! Thread background
                void runThread();
@@ -46,7 +47,7 @@ namespace rogue {
             public:
 
                //! Class creation
-               static boost::shared_ptr<rogue::protocols::packetizer::Transport> create ();
+               static std::shared_ptr<rogue::protocols::packetizer::Transport> create ();
 
                //! Setup class in python
                static void setup_python();
@@ -58,14 +59,14 @@ namespace rogue {
                ~Transport();
 
                //! Set Controller
-               void setController(boost::shared_ptr<rogue::protocols::packetizer::Controller> cntl );
+               void setController(std::shared_ptr<rogue::protocols::packetizer::Controller> cntl );
 
                //! Accept a frame from master
-               void acceptFrame ( boost::shared_ptr<rogue::interfaces::stream::Frame> frame );
+               void acceptFrame ( std::shared_ptr<rogue::interfaces::stream::Frame> frame );
          };
 
          // Convenience
-         typedef boost::shared_ptr<rogue::protocols::packetizer::Transport> TransportPtr;
+         typedef std::shared_ptr<rogue::protocols::packetizer::Transport> TransportPtr;
 
       }
    }

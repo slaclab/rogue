@@ -39,13 +39,13 @@ namespace rogue {
          
       public:
 
-         static boost::shared_ptr<rogue::ApiWrapper> local(std::string module, std::string rootClass);
-         static boost::shared_ptr<rogue::ApiWrapper> remote(std::string group, std::string root);
+         static std::shared_ptr<rogue::ApiWrapper> local(std::string module, std::string rootClass);
+         static std::shared_ptr<rogue::ApiWrapper> remote(std::string group, std::string root);
 
          ApiWrapper (bool local, std::string arg1, std::string arg2);
          ~ApiWrapper();
 
-         std::vector<boost::shared_ptr<rogue::ApiEntry>> getEntries();
+         std::vector<std::shared_ptr<rogue::ApiEntry>> getEntries();
 
          void execUInt32 (std::string path, uint32_t arg = 0);
          void execUInt64 (std::string path, uint64_t arg = 0);
@@ -76,8 +76,8 @@ namespace rogue {
          void clrLog();
    };
 
-   typedef boost::shared_ptr<rogue::ApiWrapper> ApiWrapperPtr;
-   typedef boost::shared_ptr<rogue::ApiEntry>   ApiEntryPtr;
+   typedef std::shared_ptr<rogue::ApiWrapper> ApiWrapperPtr;
+   typedef std::shared_ptr<rogue::ApiEntry>   ApiEntryPtr;
    typedef std::vector<rogue::ApiEntryPtr>      ApiEntryList;
 }
 

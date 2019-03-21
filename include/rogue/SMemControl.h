@@ -16,7 +16,7 @@
 **/
 #ifndef __ROGUE_SMEM_CONTROL_H__
 #define __ROGUE_SMEM_CONTROL_H__
-#include <boost/thread.hpp>
+#include <thread>
 #include <rogue/RogueSMemFunctions.h>
 
 #ifndef NO_PYTHON
@@ -29,7 +29,8 @@ namespace rogue {
    class SMemControl {
 
          RogueControlMem * smem_;
-         boost::thread   * thread_;
+         std::thread   * thread_;
+         bool threadEn_;
 
          void runThread();
 
@@ -40,7 +41,7 @@ namespace rogue {
          static const uint8_t Exec  = ROGUE_CMD_EXEC;
          static const uint8_t Value = ROGUE_CMD_VALUE;
 
-         static boost::shared_ptr<rogue::SMemControl> create(std::string group);
+         static std::shared_ptr<rogue::SMemControl> create(std::string group);
 
          //! Setup class in python
          static void setup_python();
@@ -50,7 +51,7 @@ namespace rogue {
 
          virtual std::string doRequest ( uint8_t type, std::string path, std::string arg );
    };
-   typedef boost::shared_ptr<rogue::SMemControl> SMemControlPtr;
+   typedef std::shared_ptr<rogue::SMemControl> SMemControlPtr;
 
 #ifndef NO_PYTHON
 
@@ -68,7 +69,7 @@ namespace rogue {
          std::string defDoRequest ( uint8_t type, std::string path, std::string arg );
    };
 
-   typedef boost::shared_ptr<rogue::SMemControlWrap> SMemControlWrapPtr;
+   typedef std::shared_ptr<rogue::SMemControlWrap> SMemControlWrapPtr;
 
 #endif
 }

@@ -20,7 +20,7 @@
 #ifndef __ROGUE_INTERFACES_MEMORY_TRANSACTION_LOCK_H__
 #define __ROGUE_INTERFACES_MEMORY_TRANSACTION_LOCK_H__
 #include <stdint.h>
-#include <boost/thread.hpp>
+#include <thread>
 
 namespace rogue {
    namespace interfaces {
@@ -36,17 +36,17 @@ namespace rogue {
           */
          class TransactionLock {
 
-               boost::shared_ptr<rogue::interfaces::memory::Transaction> tran_;
+               std::shared_ptr<rogue::interfaces::memory::Transaction> tran_;
                bool locked_;
 
             public:
 
                // Class factory which returns a pointer to a TransactionLock (TransactionLockPtr)
-               static boost::shared_ptr<rogue::interfaces::memory::TransactionLock> create (
-                  boost::shared_ptr<rogue::interfaces::memory::Transaction> transaction);
+               static std::shared_ptr<rogue::interfaces::memory::TransactionLock> create (
+                  std::shared_ptr<rogue::interfaces::memory::Transaction> transaction);
 
                // Transaction lock constructor
-               TransactionLock(boost::shared_ptr<rogue::interfaces::memory::Transaction> transaction);
+               TransactionLock(std::shared_ptr<rogue::interfaces::memory::Transaction> transaction);
 
                // Setup class for use in python
                static void setup_python();
@@ -82,7 +82,7 @@ namespace rogue {
          };
 
          //! Alias for using shared pointer as TransactionLockPtr
-         typedef boost::shared_ptr<rogue::interfaces::memory::TransactionLock> TransactionLockPtr;
+         typedef std::shared_ptr<rogue::interfaces::memory::TransactionLock> TransactionLockPtr;
 
       }
    }

@@ -18,7 +18,8 @@
 #define __ROGUE_HARDWARE_AXI_MEM_MAP_H__
 #include <rogue/interfaces/memory/Slave.h>
 #include <rogue/interfaces/memory/Transaction.h>
-#include <boost/thread.hpp>
+#include <thread>
+#include <mutex>
 #include <stdint.h>
 #include <rogue/Logging.h>
 
@@ -40,7 +41,7 @@ namespace rogue {
                int32_t  fd_;
 
                // Logging
-               boost::shared_ptr<rogue::Logging> log_;
+               std::shared_ptr<rogue::Logging> log_;
 
             public:
 
@@ -49,7 +50,7 @@ namespace rogue {
                 * @param path Path to device. i.e /dev/datadev_0
                 * @return AxiMemMap pointer (AxiMemMapPtr)
                 */
-               static boost::shared_ptr<rogue::hardware::axi::AxiMemMap> create (std::string path);
+               static std::shared_ptr<rogue::hardware::axi::AxiMemMap> create (std::string path);
 
                // Setup class for use in python
                static void setup_python();
@@ -61,11 +62,11 @@ namespace rogue {
                ~AxiMemMap();
 
                // Accept as transaction from the memory Master as defined in the Slave class.
-               void doTransaction(boost::shared_ptr<rogue::interfaces::memory::Transaction> tran);
+               void doTransaction(std::shared_ptr<rogue::interfaces::memory::Transaction> tran);
          };
 
          //! Alias for using shared pointer as TcpClientPtr
-         typedef boost::shared_ptr<rogue::hardware::axi::AxiMemMap> AxiMemMapPtr;
+         typedef std::shared_ptr<rogue::hardware::axi::AxiMemMap> AxiMemMapPtr;
 
       }
    }

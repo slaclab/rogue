@@ -40,7 +40,7 @@ namespace rogue {
                bool write_;
 
                // Associated frame
-               boost::shared_ptr<rogue::interfaces::stream::Frame> frame_;
+               std::shared_ptr<rogue::interfaces::stream::Frame> frame_;
 
                // Frame position
                uint32_t framePos_;
@@ -49,7 +49,7 @@ namespace rogue {
                uint32_t frameSize_;
 
                // current buffer
-               std::vector<boost::shared_ptr<rogue::interfaces::stream::Buffer> >::iterator buff_;
+               std::vector<std::shared_ptr<rogue::interfaces::stream::Buffer> >::iterator buff_;
 
                // Buffer position
                uint32_t buffPos_;
@@ -61,7 +61,7 @@ namespace rogue {
                uint8_t * data_;
 
                // Creator
-               FrameIterator(boost::shared_ptr<rogue::interfaces::stream::Frame> frame, bool write, bool end);
+               FrameIterator(std::shared_ptr<rogue::interfaces::stream::Frame> frame, bool write, bool end);
 
                // adjust position
                void adjust(int32_t diff);

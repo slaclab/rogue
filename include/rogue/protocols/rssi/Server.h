@@ -16,7 +16,7 @@
 **/
 #ifndef __ROGUE_PROTOCOLS_RSSI_SERVER_H__
 #define __ROGUE_PROTOCOLS_RSSI_SERVER_H__
-#include <boost/thread.hpp>
+#include <thread>
 #include <stdint.h>
 
 namespace rogue {
@@ -31,18 +31,18 @@ namespace rogue {
          class Server {
 
                //! Transport module
-               boost::shared_ptr<rogue::protocols::rssi::Transport> tran_;
+               std::shared_ptr<rogue::protocols::rssi::Transport> tran_;
 
                //! Application module
-               boost::shared_ptr<rogue::protocols::rssi::Application> app_;
+               std::shared_ptr<rogue::protocols::rssi::Application> app_;
 
                //! Server module
-               boost::shared_ptr<rogue::protocols::rssi::Controller> cntl_;
+               std::shared_ptr<rogue::protocols::rssi::Controller> cntl_;
 
             public:
 
                //! Class creation
-               static boost::shared_ptr<rogue::protocols::rssi::Server> create (uint32_t segSize);
+               static std::shared_ptr<rogue::protocols::rssi::Server> create (uint32_t segSize);
 
                //! Setup class in python
                static void setup_python();
@@ -54,10 +54,10 @@ namespace rogue {
                ~Server();
 
                //! Get transport interface
-               boost::shared_ptr<rogue::protocols::rssi::Transport> transport();
+               std::shared_ptr<rogue::protocols::rssi::Transport> transport();
 
                //! Application module
-               boost::shared_ptr<rogue::protocols::rssi::Application> application();
+               std::shared_ptr<rogue::protocols::rssi::Application> application();
 
                //! Get state
                bool getOpen();
@@ -126,7 +126,7 @@ namespace rogue {
          };
 
          // Convienence
-         typedef boost::shared_ptr<rogue::protocols::rssi::Server> ServerPtr;
+         typedef std::shared_ptr<rogue::protocols::rssi::Server> ServerPtr;
 
       }
    }

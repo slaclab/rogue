@@ -21,8 +21,8 @@
 #include <rogue/protocols/epicsV3/Value.h>
 #include <rogue/protocols/epicsV3/Pv.h>
 #include <rogue/GeneralError.h>
-#include <boost/make_shared.hpp>
-#include <boost/make_shared.hpp>
+#include <memory>
+#include <memory>
 #include <aitTypes.h>
 
 #ifdef __MACH__
@@ -226,7 +226,7 @@ caStatus rpe::Value::read(gdd &prototype) {
 caStatus rpe::Value::readValue(gdd &value) {
    gddStatus gdds;
 
-   boost::lock_guard<boost::mutex> lock(mtx_);
+   std::lock_guard<std::mutex> lock(mtx_);
 
    // Make sure access types match
    if ( (array_ && value.isAtomic()) || ((!array_) && value.isScalar()) ) {
@@ -246,7 +246,7 @@ caStatus rpe::Value::write(const gdd &value) {
    struct timespec t;
    uint32_t newSize;
 
-   boost::lock_guard<boost::mutex> lock(mtx_);
+   std::lock_guard<std::mutex> lock(mtx_);
 
    // Array
    if ( array_ && value.isAtomic()) {
@@ -307,13 +307,13 @@ aitIndex rpe::Value::maxBound(unsigned dimension) {
 }
 
 gddAppFuncTableStatus rpe::Value::readStatus(gdd &value) {
-   boost::lock_guard<boost::mutex> lock(mtx_);
+   std::lock_guard<std::mutex> lock(mtx_);
    value.putConvert(pValue_->getStat());
    return S_casApp_success;
 }
 
 gddAppFuncTableStatus rpe::Value::readSeverity(gdd &value) {
-   boost::lock_guard<boost::mutex> lock(mtx_);
+   std::lock_guard<std::mutex> lock(mtx_);
    value.putConvert(pValue_->getSevr());
    return S_casApp_success;
 }
