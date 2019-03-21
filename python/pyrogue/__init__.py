@@ -8,6 +8,7 @@
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
 import sys
+import os
 
 MIN_PYTHON = (3,6)
 if sys.version_info < MIN_PYTHON:
@@ -22,6 +23,31 @@ from pyrogue._Device    import *
 from pyrogue._Memory    import *
 from pyrogue._Root      import *
 from pyrogue._PollQueue import *
+
+def addLibraryPath(path):
+    """
+    Append the past string or list of strings to the python library path.
+    Passed strings can either be releative: ../path/to/library
+    or absolute: /path/to/library
+    """
+    base = os.path.dirname(sys.argv[0])
+
+    # If script was not started with ./
+    if base == '': base = '.'
+
+    # Allow either a single string or list to be passed
+    if not isinstance(path,list):
+        path = [path]
+
+    for p in path:
+
+        # Full path
+        if p[0] == '/':
+            sys.path.append(p)
+
+        # Relative path
+        else:
+            sys.path.append(base + '/' + p)
 
 def streamConnect(source, dest):
     """
