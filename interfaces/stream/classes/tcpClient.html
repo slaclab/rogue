@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>TcpClient &mdash; Rogue v3.3.1-84-ge1bdfee9 documentation</title>
+  <title>TcpClient &mdash; Rogue v3.3.1-123-gf47aac89 documentation</title>
   
 
   
@@ -196,7 +196,7 @@
 <p>TcpClient objects in C++ are referenced by the following shared pointer typedef:</p>
 <dl class="type">
 <dt id="_CPPv4N5rogue10interfaces6stream12TcpClientPtrE">
-<span id="_CPPv3N5rogue10interfaces6stream12TcpClientPtrE"></span><span id="_CPPv2N5rogue10interfaces6stream12TcpClientPtrE"></span><span id="rogue::interfaces::stream::TcpClientPtr"></span><span class="target" id="namespacerogue_1_1interfaces_1_1stream_1ac5ab1618eeb940d3e12dcfa97f42a754"></span><em class="property">typedef </em>boost::shared_ptr&lt;rogue::interfaces::stream::<a class="reference internal" href="#_CPPv4N5rogue10interfaces6stream9TcpClientE" title="rogue::interfaces::stream::TcpClient">TcpClient</a>&gt; <code class="descclassname">rogue::interfaces::stream<code class="descclassname">::</code></code><code class="descname">TcpClientPtr</code><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream12TcpClientPtrE" title="Permalink to this definition">¶</a><br /></dt>
+<span id="_CPPv3N5rogue10interfaces6stream12TcpClientPtrE"></span><span id="_CPPv2N5rogue10interfaces6stream12TcpClientPtrE"></span><span id="rogue::interfaces::stream::TcpClientPtr"></span><span class="target" id="namespacerogue_1_1interfaces_1_1stream_1abfe05adf801e128fd4798344ed1dbd7a"></span><em class="property">typedef </em>std::shared_ptr&lt;rogue::interfaces::stream::<a class="reference internal" href="#_CPPv4N5rogue10interfaces6stream9TcpClientE" title="rogue::interfaces::stream::TcpClient">TcpClient</a>&gt; <code class="descclassname">rogue::interfaces::stream<code class="descclassname">::</code></code><code class="descname">TcpClientPtr</code><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream12TcpClientPtrE" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Alias for using shared pointer as TcpClientPtr. </p>
 </dd></dl>
 
@@ -210,7 +210,7 @@
 <p class="breathe-sectiondef-title rubric">Public Static Functions</p>
 <dl class="function">
 <dt id="_CPPv4N5rogue10interfaces6stream9TcpClient6createENSt6stringE8uint16_t">
-<span id="_CPPv3N5rogue10interfaces6stream9TcpClient6createENSt6stringE8uint16_t"></span><span id="_CPPv2N5rogue10interfaces6stream9TcpClient6createENSt6stringE8uint16_t"></span><span id="rogue::interfaces::stream::TcpClient::create__ss.uint16_t"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1TcpClient_1a85ed4efbded7ba7dda5179e8db2be254"></span><em class="property">static</em> boost::shared_ptr&lt;rogue::interfaces::stream::<a class="reference internal" href="#_CPPv4N5rogue10interfaces6stream9TcpClientE" title="rogue::interfaces::stream::TcpClient">TcpClient</a>&gt; <code class="descname">create</code><span class="sig-paren">(</span>std::string <em>addr</em>, uint16_t <em>port</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream9TcpClient6createENSt6stringE8uint16_t" title="Permalink to this definition">¶</a><br /></dt>
+<span id="_CPPv3N5rogue10interfaces6stream9TcpClient6createENSt6stringE8uint16_t"></span><span id="_CPPv2N5rogue10interfaces6stream9TcpClient6createENSt6stringE8uint16_t"></span><span id="rogue::interfaces::stream::TcpClient::create__ss.uint16_t"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1TcpClient_1ab683255902fb27c586c51d427ff4e56c"></span><em class="property">static</em> std::shared_ptr&lt;rogue::interfaces::stream::<a class="reference internal" href="#_CPPv4N5rogue10interfaces6stream9TcpClientE" title="rogue::interfaces::stream::TcpClient">TcpClient</a>&gt; <code class="descname">create</code><span class="sig-paren">(</span>std::string <em>addr</em>, uint16_t <em>port</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream9TcpClient6createENSt6stringE8uint16_t" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Create a <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1TcpClient"><span class="std std-ref">TcpClient</span></a> object and return as a TcpClientPtr. </p>
 <p>The creator takes an address and port. The passed server address can either be an IP address or hostname. The stream bridge requires two TCP ports. The pased port is the base number of these two ports. A passed value of 8000 will result in both 8000 and 8001 being used by this bridge.</p>
 <p>Exposed to Python as <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1TcpClient"><span class="std std-ref">rogue.interfaces.stream.TcpClient</span></a> <dl class="docutils">

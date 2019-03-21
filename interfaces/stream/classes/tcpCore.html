@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>TcpCore &mdash; Rogue v3.3.1-84-ge1bdfee9 documentation</title>
+  <title>TcpCore &mdash; Rogue v3.3.1-123-gf47aac89 documentation</title>
   
 
   
@@ -196,7 +196,7 @@
 <p>TcpCore objects in C++ are referenced by the following shared pointer typedef:</p>
 <dl class="type">
 <dt id="_CPPv4N5rogue10interfaces6stream10TcpCorePtrE">
-<span id="_CPPv3N5rogue10interfaces6stream10TcpCorePtrE"></span><span id="_CPPv2N5rogue10interfaces6stream10TcpCorePtrE"></span><span id="rogue::interfaces::stream::TcpCorePtr"></span><span class="target" id="namespacerogue_1_1interfaces_1_1stream_1aca30839fd434859d46e18b6f6b1aa951"></span><em class="property">typedef </em>boost::shared_ptr&lt;rogue::interfaces::stream::<a class="reference internal" href="#_CPPv4N5rogue10interfaces6stream7TcpCoreE" title="rogue::interfaces::stream::TcpCore">TcpCore</a>&gt; <code class="descclassname">rogue::interfaces::stream<code class="descclassname">::</code></code><code class="descname">TcpCorePtr</code><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream10TcpCorePtrE" title="Permalink to this definition">¶</a><br /></dt>
+<span id="_CPPv3N5rogue10interfaces6stream10TcpCorePtrE"></span><span id="_CPPv2N5rogue10interfaces6stream10TcpCorePtrE"></span><span id="rogue::interfaces::stream::TcpCorePtr"></span><span class="target" id="namespacerogue_1_1interfaces_1_1stream_1a4c480bc72405a3a5150cb02f4dcdcdd3"></span><em class="property">typedef </em>std::shared_ptr&lt;rogue::interfaces::stream::<a class="reference internal" href="#_CPPv4N5rogue10interfaces6stream7TcpCoreE" title="rogue::interfaces::stream::TcpCore">TcpCore</a>&gt; <code class="descclassname">rogue::interfaces::stream<code class="descclassname">::</code></code><code class="descname">TcpCorePtr</code><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream10TcpCorePtrE" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Alias for using shared pointer as TcpCorePtr. </p>
 </dd></dl>
 
@@ -212,7 +212,7 @@
 <p class="breathe-sectiondef-title rubric">Public Static Functions</p>
 <dl class="function">
 <dt id="_CPPv4N5rogue10interfaces6stream7TcpCore6createENSt6stringE8uint16_tb">
-<span id="_CPPv3N5rogue10interfaces6stream7TcpCore6createENSt6stringE8uint16_tb"></span><span id="_CPPv2N5rogue10interfaces6stream7TcpCore6createENSt6stringE8uint16_tb"></span><span id="rogue::interfaces::stream::TcpCore::create__ss.uint16_t.b"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1TcpCore_1ab7915d978d7c58cf889205607d8864b3"></span><em class="property">static</em> boost::shared_ptr&lt;rogue::interfaces::stream::<a class="reference internal" href="#_CPPv4N5rogue10interfaces6stream7TcpCoreE" title="rogue::interfaces::stream::TcpCore">TcpCore</a>&gt; <code class="descname">create</code><span class="sig-paren">(</span>std::string <em>addr</em>, uint16_t <em>port</em>, bool <em>server</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream7TcpCore6createENSt6stringE8uint16_tb" title="Permalink to this definition">¶</a><br /></dt>
+<span id="_CPPv3N5rogue10interfaces6stream7TcpCore6createENSt6stringE8uint16_tb"></span><span id="_CPPv2N5rogue10interfaces6stream7TcpCore6createENSt6stringE8uint16_tb"></span><span id="rogue::interfaces::stream::TcpCore::create__ss.uint16_t.b"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1TcpCore_1a4c31657d16580725f4ec0000909e9d14"></span><em class="property">static</em> std::shared_ptr&lt;rogue::interfaces::stream::<a class="reference internal" href="#_CPPv4N5rogue10interfaces6stream7TcpCoreE" title="rogue::interfaces::stream::TcpCore">TcpCore</a>&gt; <code class="descname">create</code><span class="sig-paren">(</span>std::string <em>addr</em>, uint16_t <em>port</em>, bool <em>server</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream7TcpCore6createENSt6stringE8uint16_tb" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Create a <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1TcpCore"><span class="std std-ref">TcpCore</span></a> object and return as a TcpCorePtr. </p>
 <p>The creator takes an address, port and server mode flag. The passed address can either be an IP address or hostname. When running in server mode the address string defines which network interface the socket server will listen on. A string of “*” results in all network interfaces being listened on. The stream bridge requires two TCP ports. The pased port is the base number of these two ports. A passed value of 8000 will result in both 8000 and 8001 being used by this bridge.</p>
 <p>Not exposed to Python <dl class="docutils">

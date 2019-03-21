@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Sending Frames &mdash; Rogue v3.3.1-84-ge1bdfee9 documentation</title>
+  <title>Sending Frames &mdash; Rogue v3.3.1-123-gf47aac89 documentation</title>
   
 
   
@@ -228,7 +228,7 @@ to receive Frames from python masters and python subclasses to receive Frames fr
         <span class="c1"># size of the frame is set to the highest index written.</span>
         <span class="c1"># Locations not explicity written, but below the highest written</span>
         <span class="c1"># index, will be considered valid, but may contain random data</span>
-        <span class="n">ba</span> <span class="o">=</span> <span class="nb">bytearray</span><span class="p">([</span><span class="n">i</span><span class="o">*</span><span class="mi">2</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span> <span class="mi">10</span><span class="p">])</span>
+        <span class="n">ba</span> <span class="o">=</span> <span class="nb">bytearray</span><span class="p">([</span><span class="n">i</span><span class="o">*</span><span class="mi">2</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span> <span class="p">(</span><span class="mi">10</span><span class="p">)])</span>
         <span class="n">frame</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">ba</span><span class="p">,</span><span class="mi">50</span><span class="p">)</span>
 
         <span class="c1"># At this point locations 0 - 9 and 50 - 59 contain known values</span>

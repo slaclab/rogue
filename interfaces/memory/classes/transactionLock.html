@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>TransactionLock &mdash; Rogue v3.3.1-84-ge1bdfee9 documentation</title>
+  <title>TransactionLock &mdash; Rogue v3.3.1-123-gf47aac89 documentation</title>
   
 
   
@@ -188,7 +188,7 @@
 <p>TransactionLock objects in C++ are referenced by the following shared pointer typedef:</p>
 <dl class="type">
 <dt id="_CPPv4N5rogue10interfaces6memory18TransactionLockPtrE">
-<span id="_CPPv3N5rogue10interfaces6memory18TransactionLockPtrE"></span><span id="_CPPv2N5rogue10interfaces6memory18TransactionLockPtrE"></span><span id="rogue::interfaces::memory::TransactionLockPtr"></span><span class="target" id="namespacerogue_1_1interfaces_1_1memory_1a0db972f73c0c18e007b9eca1b6f88b54"></span><em class="property">typedef </em>boost::shared_ptr&lt;rogue::interfaces::memory::<a class="reference internal" href="#_CPPv4N5rogue10interfaces6memory15TransactionLockE" title="rogue::interfaces::memory::TransactionLock">TransactionLock</a>&gt; <code class="descclassname">rogue::interfaces::memory<code class="descclassname">::</code></code><code class="descname">TransactionLockPtr</code><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory18TransactionLockPtrE" title="Permalink to this definition">¶</a><br /></dt>
+<span id="_CPPv3N5rogue10interfaces6memory18TransactionLockPtrE"></span><span id="_CPPv2N5rogue10interfaces6memory18TransactionLockPtrE"></span><span id="rogue::interfaces::memory::TransactionLockPtr"></span><span class="target" id="namespacerogue_1_1interfaces_1_1memory_1a00cf0577ef3f940f1090e53d30e53d8c"></span><em class="property">typedef </em>std::shared_ptr&lt;rogue::interfaces::memory::<a class="reference internal" href="#_CPPv4N5rogue10interfaces6memory15TransactionLockE" title="rogue::interfaces::memory::TransactionLock">TransactionLock</a>&gt; <code class="descclassname">rogue::interfaces::memory<code class="descclassname">::</code></code><code class="descname">TransactionLockPtr</code><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory18TransactionLockPtrE" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Alias for using shared pointer as TransactionLockPtr. </p>
 </dd></dl>
 
@@ -197,7 +197,7 @@
 <dt id="_CPPv4N5rogue10interfaces6memory15TransactionLockE">
 <span id="_CPPv3N5rogue10interfaces6memory15TransactionLockE"></span><span id="_CPPv2N5rogue10interfaces6memory15TransactionLockE"></span><span id="rogue::interfaces::memory::TransactionLock"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1TransactionLock"></span><em class="property">class </em><code class="descname">TransactionLock</code><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory15TransactionLockE" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p><a class="reference internal" href="transaction.html#classrogue_1_1interfaces_1_1memory_1_1Transaction"><span class="std std-ref">Transaction</span></a> Lock. </p>
-<p>The <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1TransactionLock"><span class="std std-ref">TransactionLock</span></a> is a container for holding a lock on <a class="reference internal" href="transaction.html#classrogue_1_1interfaces_1_1memory_1_1Transaction"><span class="std std-ref">Transaction</span></a> data while accessing that data. This lock ensures that <a class="reference internal" href="transaction.html#classrogue_1_1interfaces_1_1memory_1_1Transaction"><span class="std std-ref">Transaction</span></a> is not destroyed when the <a class="reference internal" href="slave.html#classrogue_1_1interfaces_1_1memory_1_1Slave"><span class="std std-ref">Slave</span></a> is updating its data and result. This object is created by calling <a class="reference internal" href="transaction.html#classrogue_1_1interfaces_1_1memory_1_1Transaction_1a0c9321843695cc10e9adf26e42bc07f8"><span class="std std-ref">Transaction::lock()</span></a>. </p>
+<p>The <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1TransactionLock"><span class="std std-ref">TransactionLock</span></a> is a container for holding a lock on <a class="reference internal" href="transaction.html#classrogue_1_1interfaces_1_1memory_1_1Transaction"><span class="std std-ref">Transaction</span></a> data while accessing that data. This lock ensures that <a class="reference internal" href="transaction.html#classrogue_1_1interfaces_1_1memory_1_1Transaction"><span class="std std-ref">Transaction</span></a> is not destroyed when the <a class="reference internal" href="slave.html#classrogue_1_1interfaces_1_1memory_1_1Slave"><span class="std std-ref">Slave</span></a> is updating its data and result. This object is created by calling <a class="reference internal" href="transaction.html#classrogue_1_1interfaces_1_1memory_1_1Transaction_1aeaeb3980a9e5959eb23d2181eeeddc49"><span class="std std-ref">Transaction::lock()</span></a>. </p>
 <div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric">Public Functions</p>
 <dl class="function">

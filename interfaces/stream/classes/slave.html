@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Slave &mdash; Rogue v3.3.1-84-ge1bdfee9 documentation</title>
+  <title>Slave &mdash; Rogue v3.3.1-123-gf47aac89 documentation</title>
   
 
   
@@ -195,7 +195,7 @@
 <p>Slave objects in C++ are referenced by the following shared pointer typedef:</p>
 <dl class="type">
 <dt id="_CPPv4N5rogue10interfaces6stream8SlavePtrE">
-<span id="_CPPv3N5rogue10interfaces6stream8SlavePtrE"></span><span id="_CPPv2N5rogue10interfaces6stream8SlavePtrE"></span><span id="rogue::interfaces::stream::SlavePtr"></span><span class="target" id="namespacerogue_1_1interfaces_1_1stream_1a838ea6e4a2ef7ef44cef51a461cd4a02"></span><em class="property">typedef </em>boost::shared_ptr&lt;rogue::interfaces::stream::<a class="reference internal" href="#_CPPv4N5rogue10interfaces6stream5SlaveE" title="rogue::interfaces::stream::Slave">Slave</a>&gt; <code class="descclassname">rogue::interfaces::stream<code class="descclassname">::</code></code><code class="descname">SlavePtr</code><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream8SlavePtrE" title="Permalink to this definition">¶</a><br /></dt>
+<span id="_CPPv3N5rogue10interfaces6stream8SlavePtrE"></span><span id="_CPPv2N5rogue10interfaces6stream8SlavePtrE"></span><span id="rogue::interfaces::stream::SlavePtr"></span><span class="target" id="namespacerogue_1_1interfaces_1_1stream_1a62f9a9320c2fd274e6b34855c70d0a9d"></span><em class="property">typedef </em>std::shared_ptr&lt;rogue::interfaces::stream::<a class="reference internal" href="#_CPPv4N5rogue10interfaces6stream5SlaveE" title="rogue::interfaces::stream::Slave">Slave</a>&gt; <code class="descclassname">rogue::interfaces::stream<code class="descclassname">::</code></code><code class="descname">SlavePtr</code><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream8SlavePtrE" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Alias for using shared pointer as SlavePtr. </p>
 </dd></dl>
 
@@ -225,8 +225,8 @@
 </dd></dl>
 
 <dl class="function">
-<dt id="_CPPv4N5rogue10interfaces6stream5Slave11acceptFrameEN5boost10shared_ptrIN5rogue10interfaces6stream5FrameEEE">
-<span id="_CPPv3N5rogue10interfaces6stream5Slave11acceptFrameEN5boost10shared_ptrIN5rogue10interfaces6stream5FrameEEE"></span><span id="_CPPv2N5rogue10interfaces6stream5Slave11acceptFrameEN5boost10shared_ptrIN5rogue10interfaces6stream5FrameEEE"></span><span id="rogue::interfaces::stream::Slave::acceptFrame__boost::shared_ptr:rogue::interfaces::stream::Frame:"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Slave_1addfb988634c15bff36b90ee30e0ab1b8"></span><em class="property">virtual</em> void <code class="descname">acceptFrame</code><span class="sig-paren">(</span>boost::shared_ptr&lt;rogue::interfaces::stream::<a class="reference internal" href="frame.html#_CPPv4N5rogue10interfaces6stream5FrameE" title="rogue::interfaces::stream::Frame">Frame</a>&gt; <em>frame</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream5Slave11acceptFrameEN5boost10shared_ptrIN5rogue10interfaces6stream5FrameEEE" title="Permalink to this definition">¶</a><br /></dt>
+<dt id="_CPPv4N5rogue10interfaces6stream5Slave11acceptFrameENSt10shared_ptrIN5rogue10interfaces6stream5FrameEEE">
+<span id="_CPPv3N5rogue10interfaces6stream5Slave11acceptFrameENSt10shared_ptrIN5rogue10interfaces6stream5FrameEEE"></span><span id="_CPPv2N5rogue10interfaces6stream5Slave11acceptFrameENSt10shared_ptrIN5rogue10interfaces6stream5FrameEEE"></span><span id="rogue::interfaces::stream::Slave::acceptFrame__std::shared_ptr:rogue::interfaces::stream::Frame:"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Slave_1a5b43e4e21f870ab00542bcdf20c9eed6"></span><em class="property">virtual</em> void <code class="descname">acceptFrame</code><span class="sig-paren">(</span>std::shared_ptr&lt;rogue::interfaces::stream::<a class="reference internal" href="frame.html#_CPPv4N5rogue10interfaces6stream5FrameE" title="rogue::interfaces::stream::Frame">Frame</a>&gt; <em>frame</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream5Slave11acceptFrameENSt10shared_ptrIN5rogue10interfaces6stream5FrameEEE" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Accept a frame from master. </p>
 <p>This method is called by the <a class="reference internal" href="master.html#classrogue_1_1interfaces_1_1stream_1_1Master"><span class="std std-ref">Master</span></a> object to which this <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Slave"><span class="std std-ref">Slave</span></a> is attached when passing a <a class="reference internal" href="frame.html#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a>. By default this method will print debug information if enabled and is typically re-implemented by a <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Slave"><span class="std std-ref">Slave</span></a> sub-class.</p>
 <p>Re-implemented as _acceptFrame() in a Python subclass <dl class="docutils">
@@ -268,7 +268,7 @@
 <p class="breathe-sectiondef-title rubric">Public Static Functions</p>
 <dl class="function">
 <dt id="_CPPv4N5rogue10interfaces6stream5Slave6createEv">
-<span id="_CPPv3N5rogue10interfaces6stream5Slave6createEv"></span><span id="_CPPv2N5rogue10interfaces6stream5Slave6createEv"></span><span id="rogue::interfaces::stream::Slave::create"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Slave_1a8d9c22bde6847a83750dc5ae8d813b0b"></span><em class="property">static</em> boost::shared_ptr&lt;rogue::interfaces::stream::<a class="reference internal" href="#_CPPv4N5rogue10interfaces6stream5SlaveE" title="rogue::interfaces::stream::Slave">Slave</a>&gt; <code class="descname">create</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream5Slave6createEv" title="Permalink to this definition">¶</a><br /></dt>
+<span id="_CPPv3N5rogue10interfaces6stream5Slave6createEv"></span><span id="_CPPv2N5rogue10interfaces6stream5Slave6createEv"></span><span id="rogue::interfaces::stream::Slave::create"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Slave_1a6cf859e90fb443f756bd49f86759cc08"></span><em class="property">static</em> std::shared_ptr&lt;rogue::interfaces::stream::<a class="reference internal" href="#_CPPv4N5rogue10interfaces6stream5SlaveE" title="rogue::interfaces::stream::Slave">Slave</a>&gt; <code class="descname">create</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream5Slave6createEv" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Class factory which returns a pointer to a <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Slave"><span class="std std-ref">Slave</span></a> (SlavePtr) </p>
 <p>Create a new <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Slave"><span class="std std-ref">Slave</span></a></p>
 <p>Exposed as <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Slave"><span class="std std-ref">rogue.interfaces.stream.Slave()</span></a> to Python </p>

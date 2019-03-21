@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>AxiStreamDma &mdash; Rogue v3.3.1-84-ge1bdfee9 documentation</title>
+  <title>AxiStreamDma &mdash; Rogue v3.3.1-123-gf47aac89 documentation</title>
   
 
   
@@ -181,7 +181,7 @@
 <p>AxiStreamDma objects in C++ are referenced by the following shared pointer typedef:</p>
 <dl class="type">
 <dt id="_CPPv4N5rogue8hardware3axi15AxiStreamDmaPtrE">
-<span id="_CPPv3N5rogue8hardware3axi15AxiStreamDmaPtrE"></span><span id="_CPPv2N5rogue8hardware3axi15AxiStreamDmaPtrE"></span><span id="rogue::hardware::axi::AxiStreamDmaPtr"></span><span class="target" id="namespacerogue_1_1hardware_1_1axi_1a35c45f0d0631e795aa58445e7923b135"></span><em class="property">typedef </em>boost::shared_ptr&lt;rogue::hardware::axi::<a class="reference internal" href="#_CPPv4N5rogue8hardware3axi12AxiStreamDmaE" title="rogue::hardware::axi::AxiStreamDma">AxiStreamDma</a>&gt; <code class="descclassname">rogue::hardware::axi<code class="descclassname">::</code></code><code class="descname">AxiStreamDmaPtr</code><a class="headerlink" href="#_CPPv4N5rogue8hardware3axi15AxiStreamDmaPtrE" title="Permalink to this definition">¶</a><br /></dt>
+<span id="_CPPv3N5rogue8hardware3axi15AxiStreamDmaPtrE"></span><span id="_CPPv2N5rogue8hardware3axi15AxiStreamDmaPtrE"></span><span id="rogue::hardware::axi::AxiStreamDmaPtr"></span><span class="target" id="namespacerogue_1_1hardware_1_1axi_1a160427ca07aad6dbd387ce985b7678a6"></span><em class="property">typedef </em>std::shared_ptr&lt;rogue::hardware::axi::<a class="reference internal" href="#_CPPv4N5rogue8hardware3axi12AxiStreamDmaE" title="rogue::hardware::axi::AxiStreamDma">AxiStreamDma</a>&gt; <code class="descclassname">rogue::hardware::axi<code class="descclassname">::</code></code><code class="descname">AxiStreamDmaPtr</code><a class="headerlink" href="#_CPPv4N5rogue8hardware3axi15AxiStreamDmaPtrE" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Alias for using shared pointer as AxiStreamDmaPtr. </p>
 </dd></dl>
 
@@ -251,7 +251,7 @@
 <p class="breathe-sectiondef-title rubric">Public Static Functions</p>
 <dl class="function">
 <dt id="_CPPv4N5rogue8hardware3axi12AxiStreamDma6createENSt6stringE8uint32_tb">
-<span id="_CPPv3N5rogue8hardware3axi12AxiStreamDma6createENSt6stringE8uint32_tb"></span><span id="_CPPv2N5rogue8hardware3axi12AxiStreamDma6createENSt6stringE8uint32_tb"></span><span id="rogue::hardware::axi::AxiStreamDma::create__ss.uint32_t.b"></span><span class="target" id="classrogue_1_1hardware_1_1axi_1_1AxiStreamDma_1af0022415e07ad44f3f8121db3b18d0b0"></span><em class="property">static</em> boost::shared_ptr&lt;rogue::hardware::axi::<a class="reference internal" href="#_CPPv4N5rogue8hardware3axi12AxiStreamDmaE" title="rogue::hardware::axi::AxiStreamDma">AxiStreamDma</a>&gt; <code class="descname">create</code><span class="sig-paren">(</span>std::string <em>path</em>, uint32_t <em>dest</em>, bool <em>ssiEnable</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue8hardware3axi12AxiStreamDma6createENSt6stringE8uint32_tb" title="Permalink to this definition">¶</a><br /></dt>
+<span id="_CPPv3N5rogue8hardware3axi12AxiStreamDma6createENSt6stringE8uint32_tb"></span><span id="_CPPv2N5rogue8hardware3axi12AxiStreamDma6createENSt6stringE8uint32_tb"></span><span id="rogue::hardware::axi::AxiStreamDma::create__ss.uint32_t.b"></span><span class="target" id="classrogue_1_1hardware_1_1axi_1_1AxiStreamDma_1a41ae389f17fe179e2de4d08bafdae689"></span><em class="property">static</em> std::shared_ptr&lt;rogue::hardware::axi::<a class="reference internal" href="#_CPPv4N5rogue8hardware3axi12AxiStreamDmaE" title="rogue::hardware::axi::AxiStreamDma">AxiStreamDma</a>&gt; <code class="descname">create</code><span class="sig-paren">(</span>std::string <em>path</em>, uint32_t <em>dest</em>, bool <em>ssiEnable</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue8hardware3axi12AxiStreamDma6createENSt6stringE8uint32_tb" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Class factory which returns a AxiStreamDmaPtr to a newly created <a class="reference internal" href="axiMemMap.html#classrogue_1_1hardware_1_1axi_1_1AxiMemMap"><span class="std std-ref">AxiMemMap</span></a> object. </p>
 <p>Exposed to Python as <a class="reference internal" href="#classrogue_1_1hardware_1_1axi_1_1AxiStreamDma"><span class="std std-ref">rogue.hardware.axi.AxiStreamDma()</span></a></p>
 <p>The destination field is a sideband signal provided in the AxiStream protocol which allows a single interface to handle multiple frames with different purposes. The use of this field is driver specific, but the lower 8-bits are typically passed in the tDest field of the hardware frame and bits 8 and up are used to index the dma channel in the lower level hardware.</p>
