@@ -25,7 +25,7 @@
 #include <rogue/interfaces/memory/Transaction.h>
 #include <rogue/GilRelease.h>
 #include <rogue/ScopedGil.h>
-#include <boost/make_shared.hpp>
+#include <memory>
 
 namespace rim = rogue::interfaces::memory;
 
@@ -36,7 +36,7 @@ namespace bp  = boost::python;
 
 //! Create a block, class creator
 rim::HubPtr rim::Hub::create (uint64_t offset, uint32_t min, uint32_t max) {
-   rim::HubPtr b = boost::make_shared<rim::Hub>(offset,min,max);
+   rim::HubPtr b = std::make_shared<rim::Hub>(offset,min,max);
    return(b);
 }
 

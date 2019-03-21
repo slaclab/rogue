@@ -24,12 +24,12 @@
 #include <rogue/protocols/packetizer/Transport.h>
 #include <rogue/protocols/packetizer/Application.h>
 #include <rogue/GeneralError.h>
-#include <boost/make_shared.hpp>
-#include <boost/pointer_cast.hpp>
-#include <boost/crc.hpp>
+#include <memory>
 #include <rogue/GilRelease.h>
 #include <math.h>
 #include <stdlib.h>
+#include <unistd.h>
+#include <sys/time.h>
 
 namespace rpp = rogue::protocols::packetizer;
 namespace ris = rogue::interfaces::stream;
@@ -43,7 +43,7 @@ static const CRC::Table<uint32_t, 32> crcTable_(CRC::CRC_32());
 
 //! Class creation
 rpp::ControllerV2Ptr rpp::ControllerV2::create ( bool enIbCrc, bool enObCrc, bool enSsi, rpp::TransportPtr tran, rpp::ApplicationPtr * app ) {
-   rpp::ControllerV2Ptr r = boost::make_shared<rpp::ControllerV2>(enIbCrc,enObCrc,enSsi,tran,app);
+   rpp::ControllerV2Ptr r = std::make_shared<rpp::ControllerV2>(enIbCrc,enObCrc,enSsi,tran,app);
    return(r);
 }
 
@@ -82,7 +82,7 @@ void rpp::ControllerV2::transportRx( ris::FramePtr frame ) {
 
    rogue::GilRelease noGil;
    ris::FrameLockPtr flock = frame->lock();
-   boost::lock_guard<boost::mutex> lock(tranMtx_);
+   std::lock_guard<std::mutex> lock(tranMtx_);
 
    buff = *(frame->beginBuffer());
    data = buff->begin();
@@ -221,7 +221,7 @@ void rpp::ControllerV2::applicationRx ( ris::FramePtr frame, uint8_t tDest ) {
 
    rogue::GilRelease noGil;
    ris::FrameLockPtr flock = frame->lock();
-   boost::lock_guard<boost::mutex> lock(appMtx_);
+   std::lock_guard<std::mutex> lock(appMtx_);
 
    // Wait while queue is busy
    while ( tranQueue_.busy() ) {

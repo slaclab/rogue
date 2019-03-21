@@ -23,7 +23,7 @@
 #include <rogue/protocols/rssi/Application.h>
 #include <rogue/protocols/rssi/Controller.h>
 #include <rogue/GeneralError.h>
-#include <boost/make_shared.hpp>
+#include <memory>
 #include <rogue/GilRelease.h>
 
 namespace rpr = rogue::protocols::rssi;
@@ -36,7 +36,7 @@ namespace bp  = boost::python;
 
 //! Class creation
 rpr::ClientPtr rpr::Client::create (uint32_t segSize) {
-   rpr::ClientPtr r = boost::make_shared<rpr::Client>(segSize);
+   rpr::ClientPtr r = std::make_shared<rpr::Client>(segSize);
    return(r);
 }
 

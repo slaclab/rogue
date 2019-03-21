@@ -15,17 +15,17 @@
  * ----------------------------------------------------------------------------
 **/
 #include <rogue/ApiWrapper.h>
-#include <boost/make_shared.hpp>
+#include <memory>
 
 namespace bp = boost::python;
 
 rogue::ApiWrapperPtr rogue::ApiWrapper::local(std::string module, std::string rootClass) {
-   rogue::ApiWrapperPtr ret = boost::make_shared<rogue::ApiWrapper>(true, module, rootClass);
+   rogue::ApiWrapperPtr ret = std::make_shared<rogue::ApiWrapper>(true, module, rootClass);
    return(ret);
 }
 
 rogue::ApiWrapperPtr rogue::ApiWrapper::remote(std::string group, std::string root) {
-   rogue::ApiWrapperPtr ret = boost::make_shared<rogue::ApiWrapper>(false,group,root);
+   rogue::ApiWrapperPtr ret = std::make_shared<rogue::ApiWrapper>(false,group,root);
    return(ret);
 }
 
@@ -57,7 +57,7 @@ rogue::ApiEntryList rogue::ApiWrapper::getEntries() {
    bp::list pl = (bp::list)_root.attr("variableList");
 
    for (i=0; i < len(pl); i++) {
-      rogue::ApiEntryPtr ptr = boost::make_shared<rogue::ApiEntry>();
+      rogue::ApiEntryPtr ptr = std::make_shared<rogue::ApiEntry>();
       ptr->path    = std::string(bp::extract<char *>(pl[i].attr("path")));
       ptr->typeStr = std::string(bp::extract<char *>(pl[i].attr("typeStr")));
       ptr->hidden  = bp::extract<bool>(pl[i].attr("hidden"));

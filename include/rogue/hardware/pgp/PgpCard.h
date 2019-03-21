@@ -24,9 +24,9 @@
 #include <rogue/interfaces/stream/Master.h>
 #include <rogue/interfaces/stream/Slave.h>
 #include <rogue/hardware/drivers/PgpDriver.h>
-#include <boost/thread.hpp>
+#include <thread>
 #include <stdint.h>
-#include <boost/shared_ptr.hpp>
+#include <memory>
 
 
 namespace rogue {
@@ -71,10 +71,11 @@ namespace rogue {
                //! Pointer to zero copy buffers
                void  ** rawBuff_;
 
-               boost::thread* thread_;
+               std::thread* thread_;
+               bool threadEn_;
 
                //! Log 
-               boost::shared_ptr<rogue::Logging> log_;
+               std::shared_ptr<rogue::Logging> log_;
 
                //! Thread background
                void runThread();
@@ -95,7 +96,7 @@ namespace rogue {
                 * @param vc   Lane virtual channel to attach to
                 * @return PgpCard pointer (PgpCardPtr)
                 */
-               static boost::shared_ptr<rogue::hardware::pgp::PgpCard> 
+               static std::shared_ptr<rogue::hardware::pgp::PgpCard> 
                   create (std::string path, uint32_t lane, uint32_t vc);
 
                // Setup class in python
@@ -134,32 +135,32 @@ namespace rogue {
                //! Get PGP card info.
                /** @return Info object pointer (InfoPtr) containing the PGPCard information
                 */
-               boost::shared_ptr<rogue::hardware::pgp::Info> getInfo();
+               std::shared_ptr<rogue::hardware::pgp::Info> getInfo();
 
                //! Get pci status.
                /** @return PciStatus object pointer (PciStatusPtr) containing the PCI status
                 */
-               boost::shared_ptr<rogue::hardware::pgp::PciStatus> getPciStatus();
+               std::shared_ptr<rogue::hardware::pgp::PciStatus> getPciStatus();
 
                //! Get status of open lane.
                /** @return Status object pointer (StatusPtr) for current lane
                 */
-               boost::shared_ptr<rogue::hardware::pgp::Status> getStatus();
+               std::shared_ptr<rogue::hardware::pgp::Status> getStatus();
 
                //! Get evr control for open lane.
                /** @return EvrControl object pointer (EvrControlPtr) for current lane
                 */
-               boost::shared_ptr<rogue::hardware::pgp::EvrControl> getEvrControl();
+               std::shared_ptr<rogue::hardware::pgp::EvrControl> getEvrControl();
 
                //! Set evr control for open lane.
                /** @param r EvrControl object pointer (EvrControlPtr) with new configuration
                 */
-               void setEvrControl(boost::shared_ptr<rogue::hardware::pgp::EvrControl> r);
+               void setEvrControl(std::shared_ptr<rogue::hardware::pgp::EvrControl> r);
 
                //! Get evr status for open lane.
                /** @return EvrStatus object pointer (EvrStatusPtr) for current lane
                 */
-               boost::shared_ptr<rogue::hardware::pgp::EvrStatus> getEvrStatus();
+               std::shared_ptr<rogue::hardware::pgp::EvrStatus> getEvrStatus();
 
                //! Set loopback for open lane
                /** @param enable Enable flag for lane loopback
@@ -177,17 +178,17 @@ namespace rogue {
                void sendOpCode(uint8_t code);
 
                // Generate a Frame. Called from master
-               boost::shared_ptr<rogue::interfaces::stream::Frame> acceptReq ( uint32_t size, bool zeroCopyEn);
+               std::shared_ptr<rogue::interfaces::stream::Frame> acceptReq ( uint32_t size, bool zeroCopyEn);
 
                // Accept a frame from master
-               void acceptFrame ( boost::shared_ptr<rogue::interfaces::stream::Frame> frame );
+               void acceptFrame ( std::shared_ptr<rogue::interfaces::stream::Frame> frame );
 
                // Return a buffer
                void retBuffer(uint8_t * data, uint32_t meta, uint32_t rawSize);
          };
 
          //! Alias for using shared pointer as PgpCardPtr
-         typedef boost::shared_ptr<rogue::hardware::pgp::PgpCard> PgpCardPtr;
+         typedef std::shared_ptr<rogue::hardware::pgp::PgpCard> PgpCardPtr;
 
       }
    }

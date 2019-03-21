@@ -21,8 +21,8 @@
 #include <rogue/interfaces/memory/TransactionLock.h>
 #include <rogue/GeneralError.h>
 #include <rogue/GilRelease.h>
-#include <boost/make_shared.hpp>
-#include <boost/thread.hpp>
+#include <memory>
+#include <thread>
 #include <stdio.h>
 #include <unistd.h>
 #include <sys/types.h>
@@ -40,7 +40,7 @@ namespace bp  = boost::python;
 
 //! Class creation
 rha::AxiMemMapPtr rha::AxiMemMap::create (std::string path) {
-   rha::AxiMemMapPtr r = boost::make_shared<rha::AxiMemMap>(path);
+   rha::AxiMemMapPtr r = std::make_shared<rha::AxiMemMap>(path);
    return(r);
 }
 

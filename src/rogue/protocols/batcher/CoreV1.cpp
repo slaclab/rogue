@@ -43,8 +43,8 @@
  *-----------------------------------------------------------------------------
 **/
 #include <stdint.h>
-#include <boost/thread.hpp>
-#include <boost/make_shared.hpp>
+#include <thread>
+#include <memory>
 #include <rogue/interfaces/stream/Frame.h>
 #include <rogue/interfaces/stream/FrameIterator.h>
 #include <rogue/protocols/batcher/CoreV1.h>
@@ -57,7 +57,7 @@ namespace ris = rogue::interfaces::stream;
 
 //! Class creation
 rpb::CoreV1Ptr rpb::CoreV1::create() {
-   rpb::CoreV1Ptr p = boost::make_shared<rpb::CoreV1>();
+   rpb::CoreV1Ptr p = std::make_shared<rpb::CoreV1>();
    return(p);
 }
 
@@ -76,6 +76,12 @@ rpb::CoreV1::CoreV1() {
 //! Deconstructor
 rpb::CoreV1::~CoreV1() {}
 
+//! Init size for internal containers
+void rpb::CoreV1::initSize(uint32_t size) {
+   list_.reserve(size);
+   tails_.reserve(size);
+}
+
 //! Record count
 uint32_t rpb::CoreV1::count() {
    return list_.size();
@@ -86,9 +92,14 @@ uint32_t rpb::CoreV1::headerSize() {
    return headerSize_;
 }
 
-//! Get header iterator
-ris::FrameIterator rpb::CoreV1::header() {
+//! Get beginning of header iterator
+ris::FrameIterator rpb::CoreV1::beginHeader() {
    return frame_->beginRead();
+}
+
+//! Get end of header iterator
+ris::FrameIterator rpb::CoreV1::endHeader() {
+   return frame_->beginRead() + headerSize_;
 }
 
 //! Get tail size
@@ -96,13 +107,22 @@ uint32_t rpb::CoreV1::tailSize() {
    return tailSize_;
 }
 
-//! Get tail iterator
-ris::FrameIterator & rpb::CoreV1::tail(uint32_t index) {
+//! Get beginning of tail iterator
+ris::FrameIterator rpb::CoreV1::beginTail(uint32_t index) {
    if ( index >= tails_.size() ) 
       throw rogue::GeneralError::boundary("batcher::CoreV1::tail", index, tails_.size());
 
    // Invert order on return
    return tails_[(tails_.size()-1) - index];
+}
+
+//! Get end of tail iterator
+ris::FrameIterator rpb::CoreV1::endTail(uint32_t index) {
+   if ( index >= tails_.size() ) 
+      throw rogue::GeneralError::boundary("batcher::CoreV1::tail", index, tails_.size());
+
+   // Invert order on return
+   return tails_[(tails_.size()-1) - index] + tailSize_;
 }
 
 //! Get data

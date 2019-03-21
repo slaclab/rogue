@@ -17,7 +17,7 @@
 #include <rogue/RogueSMemFunctions.h>
 #include <rogue/SMemControl.h>
 #include <rogue/GeneralError.h>
-#include <boost/make_shared.hpp>
+#include <memory>
 #include <rogue/GilRelease.h>
 #include <rogue/ScopedGil.h>
 #include <string>
@@ -33,7 +33,7 @@ const uint8_t rogue::SMemControl::Exec;
 const uint8_t rogue::SMemControl::Value;
 
 rogue::SMemControlPtr rogue::SMemControl::create(std::string group) {
-   rogue::SMemControlPtr ret = boost::make_shared<rogue::SMemControl>(group);
+   rogue::SMemControlPtr ret = std::make_shared<rogue::SMemControl>(group);
    return(ret);
 }
 
@@ -59,12 +59,13 @@ rogue::SMemControl::SMemControl (std::string group) {
 
    rogueSMemControlInit(smem_);
 
-   thread_ = new boost::thread(boost::bind(&rogue::SMemControl::runThread, this));
+   threadEn_ = true;
+   thread_ = new std::thread(&rogue::SMemControl::runThread, this);
 }
 
 rogue::SMemControl::~SMemControl() {
    rogue::GilRelease noGil;
-   thread_->interrupt();
+   threadEn_ = false;
    thread_->join();
 }
 
@@ -108,18 +109,13 @@ void rogue::SMemControl::runThread() {
    char * path;
    char * arg;
 
-   try {
+   while(threadEn_) {
 
-      while(1) {
-
-         if ( rogueSMemControlReqCheck(smem_,&type,&path,&arg) ) {
-            ret = this->doRequest(type,std::string(path),std::string(arg));
-            rogueSMemControlAck(smem_,ret.c_str());
-         }
-         else usleep(10);
-
-         boost::this_thread::interruption_point();
+      if ( rogueSMemControlReqCheck(smem_,&type,&path,&arg) ) {
+         ret = this->doRequest(type,std::string(path),std::string(arg));
+         rogueSMemControlAck(smem_,ret.c_str());
       }
-   } catch (boost::thread_interrupted&) { }
+      else usleep(10);
+   }
 }
 

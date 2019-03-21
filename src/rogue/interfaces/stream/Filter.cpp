@@ -19,7 +19,7 @@
  *-----------------------------------------------------------------------------
 **/
 #include <stdint.h>
-#include <boost/make_shared.hpp>
+#include <memory>
 #include <rogue/interfaces/stream/Master.h>
 #include <rogue/interfaces/stream/Slave.h>
 #include <rogue/interfaces/stream/Frame.h>
@@ -35,7 +35,7 @@ namespace bp  = boost::python;
 
 //! Class creation
 ris::FilterPtr ris::Filter::create(bool dropErrors, uint8_t channel) {
-   ris::FilterPtr p = boost::make_shared<ris::Filter>(dropErrors,channel);
+   ris::FilterPtr p = std::make_shared<ris::Filter>(dropErrors,channel);
    return(p);
 }
 

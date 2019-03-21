@@ -36,7 +36,7 @@ namespace rogue {
          class Work {
             private:
 
-               boost::shared_ptr<rogue::protocols::epicsV3::Value> value_;
+               std::shared_ptr<rogue::protocols::epicsV3::Value> value_;
                casAsyncReadIO  * read_;
                casAsyncWriteIO * write_;
                gdd * gValue_;
@@ -44,20 +44,20 @@ namespace rogue {
             public:
 
                //! Create a work container for write
-               static boost::shared_ptr<rogue::protocols::epicsV3::Work> createWrite (
-                      boost::shared_ptr<rogue::protocols::epicsV3::Value> value,
+               static std::shared_ptr<rogue::protocols::epicsV3::Work> createWrite (
+                      std::shared_ptr<rogue::protocols::epicsV3::Value> value,
                       const gdd & wValue, casAsyncWriteIO *write);
 
                //! Create a work container for read
-               static boost::shared_ptr<rogue::protocols::epicsV3::Work> createRead (
-                      boost::shared_ptr<rogue::protocols::epicsV3::Value> value,
+               static std::shared_ptr<rogue::protocols::epicsV3::Work> createRead (
+                      std::shared_ptr<rogue::protocols::epicsV3::Value> value,
                       gdd & rValue, casAsyncReadIO *read);
 
                //! Class creation
-               Work ( boost::shared_ptr<rogue::protocols::epicsV3::Value> value, 
+               Work ( std::shared_ptr<rogue::protocols::epicsV3::Value> value, 
                      const gdd & wValue, casAsyncWriteIO * write );
 
-               Work ( boost::shared_ptr<rogue::protocols::epicsV3::Value> value, 
+               Work ( std::shared_ptr<rogue::protocols::epicsV3::Value> value, 
                      gdd & rValue, casAsyncReadIO * read);
 
                ~Work();
@@ -66,7 +66,7 @@ namespace rogue {
          };
 
          // Convienence
-         typedef boost::shared_ptr<rogue::protocols::epicsV3::Work> WorkPtr;
+         typedef std::shared_ptr<rogue::protocols::epicsV3::Work> WorkPtr;
       }
    }
 }

@@ -27,12 +27,14 @@
 #include <rogue/protocols/rssi/Transport.h>
 #include <rogue/protocols/rssi/Application.h>
 #include <rogue/GeneralError.h>
-#include <boost/make_shared.hpp>
-#include <boost/pointer_cast.hpp>
+#include <memory>
 #include <rogue/GilRelease.h>
 #include <rogue/Logging.h>
 #include <math.h>
 #include <stdlib.h>
+#include <unistd.h>
+#include <sys/time.h>
+#include <string.h>
 
 namespace rpr = rogue::protocols::rssi;
 namespace ris = rogue::interfaces::stream;
@@ -41,7 +43,7 @@ namespace ris = rogue::interfaces::stream;
 rpr::ControllerPtr rpr::Controller::create ( uint32_t segSize, 
                                              rpr::TransportPtr tran, 
                                              rpr::ApplicationPtr app, bool server ) {
-   rpr::ControllerPtr r = boost::make_shared<rpr::Controller>(segSize,tran,app,server);
+   rpr::ControllerPtr r = std::make_shared<rpr::Controller>(segSize,tran,app,server);
    return(r);
 }
 
@@ -126,7 +128,7 @@ void rpr::Controller::stopQueue() {
 //! Close
 void rpr::Controller::stop() {
    if ( thread_ != NULL ) {
-      thread_->interrupt();
+      threadEn_ = false;
       thread_->join();
       thread_ = NULL;
       state_ = StClosed;
@@ -137,7 +139,8 @@ void rpr::Controller::stop() {
 void rpr::Controller::start() {
    if ( thread_ == NULL ) {
       state_ = StClosed;
-      thread_ = new boost::thread(boost::bind(&rpr::Controller::runThread, this));
+      threadEn_ = true;
+      thread_ = new std::thread(&rpr::Controller::runThread, this);
    }
 }
 
@@ -196,7 +199,7 @@ void rpr::Controller::transportRx( ris::FramePtr frame ) {
 
    // Ack set
    if ( head->ack && (head->acknowledge != lastAckRx_) ) {
-      boost::unique_lock<boost::mutex> lock(txMtx_);
+      std::unique_lock<std::mutex> lock(txMtx_);
 
       do {
          txList_[++lastAckRx_].reset();
@@ -505,7 +508,7 @@ uint8_t  rpr::Controller::curMaxCumAck() {
 
 // Method to transit a frame with proper updates
 void rpr::Controller::transportTx(rpr::HeaderPtr head, bool seqUpdate, bool txReset) {
-   boost::unique_lock<boost::mutex> lock(txMtx_);
+   std::unique_lock<std::mutex> lock(txMtx_);
 
    head->sequence = locSequence_;
 
@@ -552,7 +555,7 @@ void rpr::Controller::transportTx(rpr::HeaderPtr head, bool seqUpdate, bool txRe
 
 // Method to retransmit a frame
 int8_t rpr::Controller::retransmit(uint8_t id) {
-   boost::unique_lock<boost::mutex> lock(txMtx_);
+   std::unique_lock<std::mutex> lock(txMtx_);
 
    rpr::HeaderPtr head = txList_[id];
    if ( head == NULL ) return 0;
@@ -623,46 +626,43 @@ void rpr::Controller::runThread() {
 
    wait = zeroTme_;
 
-   try {
-      while(1) {
+   while(threadEn_) {
 
-         // Lock context
-         if ( wait.tv_sec != 0 || wait.tv_usec != 0 ) {
-            // Wait on condition or timeout
-            boost::unique_lock<boost::mutex> lock(stMtx_);
+      // Lock context
+      if ( wait.tv_sec != 0 || wait.tv_usec != 0 ) {
+         // Wait on condition or timeout
+         std::unique_lock<std::mutex> lock(stMtx_);
 
-            // Adjustable wait
-            stCond_.timed_wait(lock, boost::posix_time::microseconds(wait.tv_usec) + boost::posix_time::seconds(wait.tv_sec));
-         }
-
-         switch(state_) {
-
-            case StClosed  :
-            case StWaitSyn :
-               wait = stateClosedWait();
-               break;
-
-            case StSendSynAck :
-               wait = stateSendSynAck();
-               break;
-
-            case StSendSeqAck :
-               wait = stateSendSeqAck();
-               break;
-
-            case StOpen :
-               wait = stateOpen();
-               break;
-
-            case StError :
-               wait = stateError();
-               break;
-            default :
-               break;
-         }    
-         boost::this_thread::interruption_point();
+         // Adjustable wait
+         stCond_.wait_for(lock, std::chrono::microseconds(wait.tv_usec) + std::chrono::seconds(wait.tv_sec));
       }
-   } catch (boost::thread_interrupted&) { }
+
+      switch(state_) {
+
+         case StClosed  :
+         case StWaitSyn :
+            wait = stateClosedWait();
+            break;
+
+         case StSendSynAck :
+            wait = stateSendSynAck();
+            break;
+
+         case StSendSeqAck :
+            wait = stateSendSeqAck();
+            break;
+
+         case StOpen :
+            wait = stateOpen();
+            break;
+
+         case StError :
+            wait = stateError();
+            break;
+         default :
+            break;
+      }    
+   }
 
    // Send reset on exit
    stateError();
@@ -822,7 +822,7 @@ struct timeval & rpr::Controller::stateOpen () {
 
    // Sample transmit time and compute pending ack count under lock
    {
-      boost::unique_lock<boost::mutex> lock(txMtx_);
+      std::unique_lock<std::mutex> lock(txMtx_);
       locTime = txTime_;
       ackPend = ackSeqRx_ - lastAckTx_;
    }

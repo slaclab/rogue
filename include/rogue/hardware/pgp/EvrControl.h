@@ -23,7 +23,7 @@
 #define __ROGUE_HARDWARE_PGP_EVR_CONTROL_H__
 #include <rogue/hardware/drivers/PgpDriver.h>
 #include <stdint.h>
-#include <boost/shared_ptr.hpp>
+#include <memory>
 
 namespace rogue {
    namespace hardware {
@@ -43,7 +43,7 @@ namespace rogue {
             public:
 
                // Class factory which returns a EvrControlPtr to a newly created EvrControl object
-               static boost::shared_ptr<rogue::hardware::pgp::EvrControl> create();
+               static std::shared_ptr<rogue::hardware::pgp::EvrControl> create();
 
 
                // Setup class for use in python
@@ -51,7 +51,7 @@ namespace rogue {
          };
 
          //! Alias for using shared pointer as EvrControlPtr
-         typedef boost::shared_ptr<rogue::hardware::pgp::EvrControl> EvrControlPtr;
+         typedef std::shared_ptr<rogue::hardware::pgp::EvrControl> EvrControlPtr;
       }
    }
 }
