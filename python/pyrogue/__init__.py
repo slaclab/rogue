@@ -27,7 +27,7 @@ from pyrogue._PollQueue import *
 def addLibraryPath(path):
     """
     Append the past string or list of strings to the python library path.
-    Passed strings can either be releative: ../path/to/library
+    Passed strings can either be relative: ../path/to/library
     or absolute: /path/to/library
     """
     base = os.path.dirname(sys.argv[0])
