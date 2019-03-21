@@ -50,7 +50,7 @@ ris::TcpCore::TcpCore (std::string addr, uint16_t port, bool server) {
    logstr.append(addr);
    logstr.append(".");
    if (server) logstr.append("Server.");
-   else logstr.append("Client");
+   else logstr.append("Client.");
    logstr.append(std::to_string(port));
        
    this->bridgeLog_ = rogue::Logging::create(logstr);
