@@ -371,6 +371,12 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
             # After with is done
             self._updateQueue.put(False)
 
+    def waitOnUpdate(self):
+        """
+        Wait until all update queue items have been processed.
+        """
+        self._updateQueue.join()
+
     def _rootAttached(self):
         self._parent = self
         self._root   = self
