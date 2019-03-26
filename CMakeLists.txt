@@ -38,8 +38,8 @@ add_definitions(-D__STDC_FORMAT_MACROS)
 # Boost + Python
 #####################################
 if ( NOT NO_PYTHON ) 
-   find_package(PythonInterp QUIET REQUIRED 3.6)
-   find_package(PythonLibs QUIET REQUIRED 3.6)
+   find_package(PythonInterp 3.6 QUIET REQUIRED)
+   find_package(PythonLibs 3.6 QUIET REQUIRED)
 
    set(Boost_USE_MULTITHREADED ON)
 
@@ -244,13 +244,13 @@ TARGET_LINK_LIBRARIES(rogue-core LINK_PUBLIC ${Boost_LIBRARIES})
 TARGET_LINK_LIBRARIES(rogue-core LINK_PUBLIC ${ZeroMQ_LIBRARY})
 TARGET_LINK_LIBRARIES(rogue-core LINK_PUBLIC ${EPICSV3_LIBRARIES})
 TARGET_LINK_LIBRARIES(rogue-core LINK_PUBLIC ${BZIP2_LIBRARIES})
-TARGET_LINK_LIBRARIES(rogue-core LINK_PUBLIC rt)
 
 # Do not link directly against python in macos
 if (APPLE)
    set_target_properties(rogue-core PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
 else()
    TARGET_LINK_LIBRARIES(rogue-core LINK_PUBLIC ${PYTHON_LIBRARIES})
+   TARGET_LINK_LIBRARIES(rogue-core LINK_PUBLIC rt)
 endif()
 
 # Set output library names

@@ -44,8 +44,16 @@ ris::TcpCorePtr ris::TcpCore::create (std::string addr, uint16_t port, bool serv
 //! Creator
 ris::TcpCore::TcpCore (std::string addr, uint16_t port, bool server) {
    int32_t opt;
+   std::string logstr;
 
-   this->bridgeLog_ = rogue::Logging::create("stream.TcpCore");
+   logstr = "stream.TcpCore.";
+   logstr.append(addr);
+   logstr.append(".");
+   if (server) logstr.append("Server.");
+   else logstr.append("Client");
+   logstr.append(std::to_string(port));
+       
+   this->bridgeLog_ = rogue::Logging::create(logstr);
 
    // Format address
    this->pullAddr_ = "tcp://";
@@ -155,9 +163,9 @@ void ris::TcpCore::acceptFrame ( ris::FramePtr frame ) {
    // Send data
    for (x=0; x < 4; x++) {
       if ( zmq_sendmsg(this->zmqPush_,&(msg[x]),(x==3)?0:ZMQ_SNDMORE) < 0 )
-         bridgeLog_->warning("Failed to send message with size %i",frame->getPayload());
+        bridgeLog_->warning("Failed to push message with size %i on %s",frame->getPayload(), this->pushAddr_.c_str());
    }
-   bridgeLog_->debug("Accept frame with size %i",frame->getPayload());
+   bridgeLog_->debug("Pushed TCP frame with size %i on %s",frame->getPayload(), this->pushAddr_.c_str());
 }
 
 //! Run thread
@@ -228,7 +236,7 @@ void ris::TcpCore::runThread() {
          frame->setChannel(chan);
          frame->setError(err);
 
-         bridgeLog_->debug("Sending frame with size %i",frame->getPayload());
+         bridgeLog_->debug("Pulled frame with size %i",frame->getPayload());
          sendFrame(frame);
       }
 

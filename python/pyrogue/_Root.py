@@ -163,18 +163,24 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                             tmpList[i].name,  tmpList[i].address,
                             tmpList[i-1].name,tmpList[i-1].address, tmpList[i-1].size))
 
+            # Detect overlaps
             if (tmpList[i].size != 0) and (tmpList[i].memBaseId == tmpList[i-1].memBaseId) and \
                (tmpList[i].address < (tmpList[i-1].address + tmpList[i-1].size)):
 
-                print("\n\n\n------------------------ Memory Overlap Warning !!! --------------------------------")
-                print("{} at address={:#x} overlaps {} at address={:#x} with size={}".format(
-                      tmpList[i].name,tmpList[i].address,
-                      tmpList[i-1].name,tmpList[i-1].address,tmpList[i-1].size))
-                print("This warning will be replaced with an exception in the next release!!!!!!!!")
+                # Allow overlaps between Devices and Blocks if the block exclusive access bits are not set. 
+                # This would mean that all variables have overlapEn set.
+                if not (isinstance(tmpList[i-1],pr.Device) and isinstance(tmpList[i],pr.Block) and \
+                        (tmpList[i] in tmpList[i-1]._blocks) and tmpList[i]._overlapEn):
 
-                #raise pr.NodeError("{} at address={:#x} overlaps {} at address={:#x} with size={}".format(
-                #                   tmpList[i].name,tmpList[i].address,
-                #                   tmpList[i-1].name,tmpList[i-1].address,tmpList[i-1].size))
+                    print("\n\n\n------------------------ Memory Overlap Warning !!! --------------------------------")
+                    print("{} at address={:#x} overlaps {} at address={:#x} with size={}".format(
+                          tmpList[i].name,tmpList[i].address,
+                          tmpList[i-1].name,tmpList[i-1].address,tmpList[i-1].size))
+                    print("This warning will be replaced with an exception in the next release!!!!!!!!")
+
+                    #raise pr.NodeError("{} at address={:#x} overlaps {} at address={:#x} with size={}".format(
+                    #                   tmpList[i].name,tmpList[i].address,
+                    #                   tmpList[i-1].name,tmpList[i-1].address,tmpList[i-1].size))
 
         # Set timeout if not default
         if timeout != 1.0:
@@ -364,6 +370,12 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
             # After with is done
             self._updateQueue.put(False)
+
+    def waitOnUpdate(self):
+        """
+        Wait until all update queue items have been processed.
+        """
+        self._updateQueue.join()
 
     def _rootAttached(self):
         self._parent = self

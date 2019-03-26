@@ -42,9 +42,15 @@ rim::TcpServerPtr rim::TcpServer::create (std::string addr, uint16_t port) {
 //! Creator
 rim::TcpServer::TcpServer (std::string addr, uint16_t port) {
    int32_t opt;
+   std::string logstr;
 
-   this->bridgeLog_ = rogue::Logging::create("memory.TcpServer");
-
+   logstr = "memory.TcpServer.";
+   logstr.append(addr);
+   logstr.append(".");
+   logstr.append(std::to_string(port));
+       
+   this->bridgeLog_ = rogue::Logging::create(logstr);
+   
    // Format address
    this->respAddr_ = "tcp://";
    this->respAddr_.append(addr);
