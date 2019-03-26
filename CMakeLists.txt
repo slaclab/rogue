@@ -38,8 +38,8 @@ add_definitions(-D__STDC_FORMAT_MACROS)
 # Boost + Python
 #####################################
 if ( NOT NO_PYTHON ) 
-   find_package(PythonInterp QUIET REQUIRED 3.6)
-   find_package(PythonLibs QUIET REQUIRED 3.6)
+   find_package(PythonInterp 3.6 QUIET REQUIRED)
+   find_package(PythonLibs 3.6 QUIET REQUIRED)
 
    set(Boost_USE_MULTITHREADED ON)
 
