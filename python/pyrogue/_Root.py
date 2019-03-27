@@ -625,13 +625,6 @@ class PyroClient(object):
         except:
             raise pr.NodeError("PyroClient Failed to find {}.{}.".format(self._group,name))
 
-def makeRoot(deviceClass, memBase, offset=0x00000000, **startargs):
-    class GenericRoot(Root):
-        super().__init__(name=f'{deviceClass.__name__}Root')
-        self.add(deviceClass(memBase=memBase, offset=offset))
-        self.start(**startargs)
-    return GenericRoot
-
 def yamlToDict(stream, Loader=yaml.Loader, object_pairs_hook=odict):
     """Load yaml to ordered dictionary"""
     class OrderedLoader(Loader):
