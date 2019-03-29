@@ -226,14 +226,17 @@ class Device(pr.Node,rim.Hub):
             elif isinstance(variables[0], str):
                 self.variables[v]._hidden = hidden
 
-    def softReset(self):
-        pass
+    def initialize(self):
+        for key,value in self.devices.items():
+            value.initialize()
 
     def hardReset(self):
-        pass
+        for key,value in self.devices.items():
+            value.hardReset()
 
     def countReset(self):
-        pass
+        for key,value in self.devices.items():
+            value.countReset()
 
     def enableChanged(self,value):
         pass # Do nothing

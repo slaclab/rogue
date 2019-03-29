@@ -98,7 +98,10 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
             description='String containing newline seperated system logic entries'))
 
         self.add(pr.LocalVariable(name='ForceWrite', value=False, mode='RW', hidden=True,
-            description='Configuration Flag To Control Write All Block'))
+            description='Configuration Flag To Always Write Non Stale Blocks For WriteAll, ReadConfig and setYaml'))
+
+        self.add(pr.LocalVariable(name='InitAfterConfig', value=False, mode='RW', hidden=True,
+            description='Configuration Flag To Execute Initialize after ReadConfig or setYaml'))
 
         self.add(pr.LocalVariable(name='Time', value=0.0, mode='RO', hidden=True,
                  localGet=lambda: time.time(), pollInterval=1.0, description='Current Time In Seconds Since EPOCH UTC'))
@@ -123,13 +126,13 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         self.add(pr.LocalCommand(name='ReadConfig', value='', function=self._readConfig,
                                  description='Read configuration from passed filename in YAML format'))
 
-        self.add(pr.LocalCommand(name='SoftReset', function=self._softReset,
+        self.add(pr.LocalCommand(name='Initialize', function=self.initialize,
                                  description='Generate a soft reset to each device in the tree'))
 
-        self.add(pr.LocalCommand(name='HardReset', function=self._hardReset,
+        self.add(pr.LocalCommand(name='HardReset', function=self.hardReset,
                                  description='Generate a hard reset to each device in the tree'))
 
-        self.add(pr.LocalCommand(name='CountReset', function=self._countReset,
+        self.add(pr.LocalCommand(name='CountReset', function=self.countReset,
                                  description='Generate a count reset to each device in the tree'))
 
         self.add(pr.LocalCommand(name='ClearLog', function=self._clearLog,
@@ -322,6 +325,9 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
             if not writeEach: self._write()
 
+        if self.InitAfterConfig.value():
+            self.initialize()
+
     @Pyro4.expose
     def get(self,path):
         obj = self.getNode(path)
@@ -469,18 +475,10 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         except Exception as e:
             self._log.exception(e)
 
-    def _softReset(self):
-        """Generate a soft reset on all devices"""
-        self.callRecursive('softReset', nodeTypes=[pr.Device])
-
-    def _hardReset(self):
+    def hardReset(self):
         """Generate a hard reset on all devices"""
-        self.callRecursive('hardReset', nodeTypes=[pr.Device])        
+        super().hardReset()
         self._clearLog()
-
-    def _countReset(self):
-        """Generate a count reset on all devices"""
-        self.callRecursive('countReset', nodeTypes=[pr.Device])        
 
     def _clearLog(self):
         """Clear the system log"""

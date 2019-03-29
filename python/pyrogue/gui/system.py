@@ -356,8 +356,8 @@ class SystemWidget(QWidget):
         pb.clicked.connect(self.hardReset)
         hb.addWidget(pb)
 
-        pb = QPushButton('Soft Reset')
-        pb.clicked.connect(self.softReset)
+        pb = QPushButton('Initialize')
+        pb.clicked.connect(self.initialize)
         hb.addWidget(pb)
 
         pb = QPushButton('Count Reset')
@@ -430,8 +430,8 @@ class SystemWidget(QWidget):
         self.root.HardReset()
 
     @pyqtSlot()
-    def softReset(self):
-        self.root.SoftReset()
+    def initialzie(self):
+        self.root.Initialize()
 
     @pyqtSlot()
     def countReset(self):
