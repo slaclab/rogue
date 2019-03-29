@@ -34,7 +34,7 @@
 
 // Sizes
 #define ROGUE_PATH_STR_SIZE 1024
-#define ROGUE_ARG_STR_SIZE  1024
+#define ROGUE_ARG_STR_SIZE  10*1024*1024
 #define ROGUE_NAME_SIZE     256
 
 typedef struct {
