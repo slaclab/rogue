@@ -231,6 +231,8 @@ class Device(pr.Node,rim.Hub):
             value.initialize()
 
     def hardReset(self):
+        for block in self._blocks:
+            block._forceStale()
         for key,value in self.devices.items():
             value.hardReset()
 

@@ -331,7 +331,7 @@ class RemoteBlock(BaseBlock, rim.Master):
         self._overlapEn = all (excMask[i] == 0 for i in range(size))
 
         # Force block to be stale at startup
-        self.setStale()
+        self._forceStale()
 
     def __repr__(self):
         return repr(self._variables)
@@ -339,9 +339,6 @@ class RemoteBlock(BaseBlock, rim.Master):
     @property
     def stale(self):
         return any([b != 0 for b in self._sDataMask])
-
-    def setStale(self):
-        for b in self._sDataMask: b = 0xFF
 
     @property
     def offset(self):
@@ -471,6 +468,8 @@ class RemoteBlock(BaseBlock, rim.Master):
             #print(f'Checking {self.name}.startTransaction(check={check})')
             self._checkTransaction()
 
+    def _forceStale(self):
+        for b in self._sDataMask: b = 0xFF
 
     def _checkTransaction(self):
         
