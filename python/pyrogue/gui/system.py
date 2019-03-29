@@ -448,7 +448,7 @@ class SystemWidget(QWidget):
             loadFile = loadFile[0]
 
         if loadFile != '':
-            self.root.ReadConfig(loadFile)
+            self.root.LoadConfig(loadFile)
 
     @pyqtSlot()
     def saveSettings(self):
@@ -462,7 +462,7 @@ class SystemWidget(QWidget):
             saveFile = saveFile[0]
 
         if saveFile != '':
-            self.root.WriteConfig(saveFile)
+            self.root.SaveConfig(saveFile)
 
     @pyqtSlot()
     def saveState(self):
@@ -476,5 +476,5 @@ class SystemWidget(QWidget):
             stateFile = stateFile[0]
 
         if stateFile != '':
-            self.root.WriteState(stateFile)
+            self.root.SaveState(stateFile)
 
