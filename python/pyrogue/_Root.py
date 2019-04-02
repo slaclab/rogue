@@ -135,7 +135,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         self.add(pr.LocalCommand(name='ClearLog', function=self._clearLog,
                                  description='Clear the message log cntained in the SystemLog variable'))
 
-        self.add(pr.LocalCommand(name='SetYamlConfig', function=lambda s: self._setYaml(s,False,['RW','WO']),
+        self.add(pr.LocalCommand(name='SetYamlConfig', value='', function=lambda s: self._setYaml(s,False,['RW','WO']),
                                  description='Set configuration from passed YAML string'))
 
         self.add(pr.LocalCommand(name='GetYamlConfig', value=True, function=lambda r: self._getYaml(r,['RW','WO']),
