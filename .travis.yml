@@ -84,7 +84,7 @@ jobs:
         - make -j4 install
 
         # Build Docs
-        - if [[ branch == "documenation" ]]; then
+        - if [ "$TRAVIS_BRANCH" = "documentation" ]; then
             cd $TRAVIS_BUILD_DIR
             source setup_rogue.sh
             cd docs
@@ -106,7 +106,7 @@ jobs:
         - codecov
         - coverage report -m
         # Publish docs.
-        - if [[ branch == "documenation" ]]; then
+        - if [ "$TRAVIS_BRANCH" = "documentation" ]; then
            doctr deploy . --built-docs docs/build/html --deploy-branch-name gh-pages --branch-whitelist documentation
          fi
 
