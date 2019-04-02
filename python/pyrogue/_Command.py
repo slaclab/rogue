@@ -89,12 +89,15 @@ class BaseCommand(pr.BaseVariable):
         try:
 
             # Convert arg
-            arg = self.parseDisp(arg)
+            if arg is None:
+                arg = self._default
+            else:
+                arg = self.parseDisp(arg)
 
             # Possible args
             pargs = {'dev' : self.parent, 'cmd' : self, 'arg' : arg}
 
-            pr.varFuncHelper(self._function,pargs, self._log,self.path)
+            return pr.varFuncHelper(self._function,pargs, self._log,self.path)
 
         except Exception as e:
             self._log.exception(e)
