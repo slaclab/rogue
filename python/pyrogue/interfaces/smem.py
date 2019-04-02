@@ -21,14 +21,15 @@ class SMemControl(rogue.SMemControl):
         self._root = root
 
     def _doRequest(self,type,path,arg):
-        ret = None
+        ret = ""
 
         if type == rogue.SMemControl.Get:
             ret = self._root.getDisp(path)
         elif type == rogue.SMemControl.Set:
             self._root.setDisp(path,arg)
         elif type == rogue.SMemControl.Exec:
-            self._root.exec(path,arg)
+            ret = self._root.exec(path,arg)
+            if ret is None: ret = ""
         elif type == rogue.SMemControl.Value:
             ret = self._root.valueDisp(path)
 
