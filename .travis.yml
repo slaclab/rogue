@@ -85,10 +85,10 @@ jobs:
 
         # Build Docs
         - if [ "$TRAVIS_BRANCH" = "documentation" ]; then
-            cd $TRAVIS_BUILD_DIR
-            source setup_rogue.sh
-            cd docs
-            make html
+            cd $TRAVIS_BUILD_DIR;
+            source setup_rogue.sh;
+            cd docs;
+            make html;
           fi
 
       before_script:
@@ -107,7 +107,7 @@ jobs:
         - coverage report -m
         # Publish docs.
         - if [ "$TRAVIS_BRANCH" = "documentation" ]; then
-           doctr deploy . --built-docs docs/build/html --deploy-branch-name gh-pages --branch-whitelist documentation
+           doctr deploy . --built-docs docs/build/html --deploy-branch-name gh-pages --branch-whitelist documentation;
          fi
 
     # Deploy development version stage (deploy_dev)
