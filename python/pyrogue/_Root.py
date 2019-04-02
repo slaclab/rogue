@@ -142,7 +142,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                                  description='Get current configuration as YAML string. Pass read first arg.'))
 
         self.add(pr.LocalCommand(name='GetYamlState', value=True, function=lambda r: self._getYaml(r,['RW','RO','WO']),
-                                 description='Get current configuration as YAML string. Pass read first arg.'))
+                                 description='Get current state as YAML string. Pass read first arg.'))
 
     def start(self, timeout=1.0, initRead=False, initWrite=False, pollEn=True, pyroGroup=None, pyroAddr=None, pyroNsAddr=None):
         """Setup the tree. Start the polling thread."""
