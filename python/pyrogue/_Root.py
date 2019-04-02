@@ -135,6 +135,15 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         self.add(pr.LocalCommand(name='ClearLog', function=self._clearLog,
                                  description='Clear the message log cntained in the SystemLog variable'))
 
+        self.add(pr.LocalCommand(name='SetYamlConfig', function=lambda s: self._setYaml(s,False,['RW','WO']),
+                                 description='Set configuration from passed YAML string'))
+
+        self.add(pr.LocalCommand(name='GetYamlConfig', value=True, function=lambda r: self._getYaml(r,['RW','WO']),
+                                 description='Get current configuration as YAML string. Pass read first arg.'))
+
+        self.add(pr.LocalCommand(name='GetYamlState', value=True, function=lambda r: self._getYaml(r,['RW','RO','WO']),
+                                 description='Get current configuration as YAML string. Pass read first arg.'))
+
     def start(self, timeout=1.0, initRead=False, initWrite=False, pollEn=True, pyroGroup=None, pyroAddr=None, pyroNsAddr=None):
         """Setup the tree. Start the polling thread."""
 
@@ -260,16 +269,6 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
     def getNode(self, path):
         return self._getPath(path)
 
-    @ft.lru_cache(maxsize=None)
-    def _getPath(self,path):
-        """Find a node in the tree that has a particular path string"""
-        obj = self
-        if '.' in path:
-            for a in path.split('.')[1:]:
-                obj = obj.node(a)
-
-        return obj
-
     @Pyro4.expose
     def addVarListener(self,func):
         """
@@ -282,45 +281,6 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
             if isinstance(func,Pyro4.core.Proxy):                                    
                 func._pyroOneway.add("varListener")                                  
 
-    def getYaml(self,readFirst,modes=['RW']):
-        """
-        Get current values as a yaml dictionary.
-        modes is a list of variable modes to include.
-        If readFirst=True a full read from hardware is performed.
-        """
-        ret = ""
-
-        if readFirst: self._read()
-        try:
-            ret = dictToYaml({self.name:self._getDict(modes)},default_flow_style=False)
-        except Exception as e:
-            self._log.exception(e)
-
-        return ret
-
-    def setYaml(self,yml,writeEach,modes=['RW','WO']):
-        """
-        Set variable values or execute commands from a dictionary.
-        modes is a list of variable modes to act on.
-        writeEach is set to true if accessing a single variable at a time.
-        Writes will be performed as each variable is updated. If set to 
-        false a bulk write will be performed after all of the variable updates
-        are completed. Bulk writes provide better performance when updating a large
-        quanitty of variables.
-        """
-        d = yamlToDict(yml)
-        with self.updateGroup():
-
-            for key, value in d.items():
-                if key == self.name:
-                    self._setDict(value,writeEach,modes)
-                else:
-                    try:
-                        self._getPath(key).setDisp(value)
-                    except:
-                        self._log.error("Entry {} not found".format(key))
-
-            if not writeEach: self._write()
 
     @Pyro4.expose
     def get(self,path):
@@ -377,6 +337,16 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         """
         self._updateQueue.join()
 
+    @ft.lru_cache(maxsize=None)
+    def _getPath(self,path):
+        """Find a node in the tree that has a particular path string"""
+        obj = self
+        if '.' in path:
+            for a in path.split('.')[1:]:
+                obj = obj.node(a)
+
+        return obj
+
     def _rootAttached(self):
         self._parent = self
         self._root   = self
@@ -407,7 +377,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         Vlist can contain an optional list of variale paths to include in the
         stream. If this list is not NULL only these variables will be included.
         """
-        self._sendYamlFrame(self.getYaml(False,modes))
+        self._sendYamlFrame(self._getYaml(False,modes))
 
     def _write(self):
         """Write all blocks"""
@@ -444,7 +414,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
         try:
             with open(arg,'w') as f:
-                f.write(self.getYaml(True,modes=['RW','RO','WO']))
+                f.write(self._getYaml(True,modes=['RW','RO','WO']))
         except Exception as e:
             self._log.exception(e)
 
@@ -457,7 +427,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
         try:
             with open(arg,'w') as f:
-                f.write(self.getYaml(True,modes=['RW','WO']))
+                f.write(self._getYaml(True,modes=['RW','WO']))
         except Exception as e:
             self._log.exception(e)
 
@@ -465,9 +435,49 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         """Read YAML configuration from a file. Called from command"""
         try:
             with open(arg,'r') as f:
-                self.setYaml(f.read(),False,['RW','WO'])
+                self._setYaml(f.read(),False,['RW','WO'])
         except Exception as e:
             self._log.exception(e)
+
+    def _getYaml(self,readFirst,modes=['RW']):
+        """
+        Get current values as a yaml dictionary.
+        modes is a list of variable modes to include.
+        If readFirst=True a full read from hardware is performed.
+        """
+        ret = ""
+
+        if readFirst: self._read()
+        try:
+            ret = dictToYaml({self.name:self._getDict(modes)},default_flow_style=False)
+        except Exception as e:
+            self._log.exception(e)
+
+        return ret
+
+    def _setYaml(self,yml,writeEach,modes=['RW','WO']):
+        """
+        Set variable values or execute commands from a dictionary.
+        modes is a list of variable modes to act on.
+        writeEach is set to true if accessing a single variable at a time.
+        Writes will be performed as each variable is updated. If set to 
+        false a bulk write will be performed after all of the variable updates
+        are completed. Bulk writes provide better performance when updating a large
+        quanitty of variables.
+        """
+        d = yamlToDict(yml)
+        with self.updateGroup():
+
+            for key, value in d.items():
+                if key == self.name:
+                    self._setDict(value,writeEach,modes)
+                else:
+                    try:
+                        self._getPath(key).setDisp(value)
+                    except:
+                        self._log.error("Entry {} not found".format(key))
+
+            if not writeEach: self._write()
 
     def _softReset(self):
         """Generate a soft reset on all devices"""
