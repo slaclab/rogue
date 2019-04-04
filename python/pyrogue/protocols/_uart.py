@@ -28,11 +28,14 @@ class UartMemory(rogue.interfaces.memory.Slave):
         self._log = pyrogue.logInit(cls=self, name=f'{device}')
         self.serialPort = serial.Serial(device, timeout=timeout, **kwargs)
 
+    def close(self):
+        self.serialPort.close()
+
     def __enter__(self):
         return self
 
     def __exit__(self, exc_type, exc_value, traceback):
-        self.serialPort.close()
+        self.close()
 
 
     def _doTransaction(self, transaction):
