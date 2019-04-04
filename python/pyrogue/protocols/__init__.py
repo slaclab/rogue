@@ -8,3 +8,4 @@
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
 from pyrogue.protocols._Network import *
+from pyrogue.protocols._uart import *
