@@ -26,3 +26,4 @@ dependencies:
   - sphinx
   - sphinx_rtd_theme
   - breathe
+  - pyserial
