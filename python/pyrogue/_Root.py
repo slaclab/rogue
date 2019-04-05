@@ -284,10 +284,6 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
             if isinstance(func,Pyro4.core.Proxy):                                    
                 func._pyroOneway.add("varListener")                                  
 
-
-        if self.InitAfterConfig.value():
-            self.initialize()
-
     @Pyro4.expose
     def get(self,path):
         obj = self.getNode(path)
