@@ -13,7 +13,7 @@ The set of hardware which use this include but are not limited to:
 - Zynq7000 FPGA with TID-AIRs RCe core firmware
 
 The following example assumes a single card is being accessed by a single master,
-with the master being the device created in the :ref:`interface_memory_master_ex`.
+with the master being the device created in the :ref:`interfaces_memory_master_ex`.
 
 See :ref:`hardware_axi_axi_mem_map` for more information about the AxiMemMap class methods.
 

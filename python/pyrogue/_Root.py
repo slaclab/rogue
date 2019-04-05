@@ -98,7 +98,10 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
             description='String containing newline seperated system logic entries'))
 
         self.add(pr.LocalVariable(name='ForceWrite', value=False, mode='RW', hidden=True,
-            description='Configuration Flag To Control Write All Block'))
+            description='Configuration Flag To Always Write Non Stale Blocks For WriteAll, LoadConfig and setYaml'))
+
+        self.add(pr.LocalVariable(name='InitAfterConfig', value=False, mode='RW', hidden=True,
+            description='Configuration Flag To Execute Initialize after LoadConfig or setYaml'))
 
         self.add(pr.LocalVariable(name='Time', value=0.0, mode='RO', hidden=True,
                  localGet=lambda: time.time(), pollInterval=1.0, description='Current Time In Seconds Since EPOCH UTC'))
@@ -114,22 +117,22 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         self.add(pr.LocalCommand(name="ReadAll", function=self._read,
                                  description='Read all values from the hardware'))
 
-        self.add(pr.LocalCommand(name='WriteState', value='', function=self._writeState,
-                                 description='Write state to passed filename in YAML format'))
+        self.add(pr.LocalCommand(name='SaveState', value='', function=self._saveState,
+                                 description='Save state to passed filename in YAML format'))
 
-        self.add(pr.LocalCommand(name='WriteConfig', value='', function=self._writeConfig,
-                                 description='Write configuration to passed filename in YAML format'))
+        self.add(pr.LocalCommand(name='SaveConfig', value='', function=self._saveConfig,
+                                 description='Save configuration to passed filename in YAML format'))
 
-        self.add(pr.LocalCommand(name='ReadConfig', value='', function=self._readConfig,
+        self.add(pr.LocalCommand(name='LoadConfig', value='', function=self._loadConfig,
                                  description='Read configuration from passed filename in YAML format'))
 
-        self.add(pr.LocalCommand(name='SoftReset', function=self._softReset,
+        self.add(pr.LocalCommand(name='Initialize', function=self.initialize,
                                  description='Generate a soft reset to each device in the tree'))
 
-        self.add(pr.LocalCommand(name='HardReset', function=self._hardReset,
+        self.add(pr.LocalCommand(name='HardReset', function=self.hardReset,
                                  description='Generate a hard reset to each device in the tree'))
 
-        self.add(pr.LocalCommand(name='CountReset', function=self._countReset,
+        self.add(pr.LocalCommand(name='CountReset', function=self.countReset,
                                  description='Generate a count reset to each device in the tree'))
 
         self.add(pr.LocalCommand(name='ClearLog', function=self._clearLog,
@@ -322,6 +325,9 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
             if not writeEach: self._write()
 
+        if self.InitAfterConfig.value():
+            self.initialize()
+
     @Pyro4.expose
     def get(self,path):
         obj = self.getNode(path)
@@ -435,8 +441,8 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                 self._log.exception(e)
         self._log.info("Done root read")
 
-    def _writeState(self,arg):
-        """Write YAML configuration/status to a file. Called from command"""
+    def _saveState(self,arg):
+        """Save YAML configuration/status to a file. Called from command"""
 
         # Auto generate name if no arg
         if arg is None or arg == '':
@@ -448,8 +454,8 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         except Exception as e:
             self._log.exception(e)
 
-    def _writeConfig(self,arg):
-        """Write YAML configuration to a file. Called from command"""
+    def _saveConfig(self,arg):
+        """Save YAML configuration to a file. Called from command"""
 
         # Auto generate name if no arg
         if arg is None or arg == '':
@@ -461,26 +467,18 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         except Exception as e:
             self._log.exception(e)
 
-    def _readConfig(self,arg):
-        """Read YAML configuration from a file. Called from command"""
+    def _loadConfig(self,arg):
+        """Load YAML configuration from a file. Called from command"""
         try:
             with open(arg,'r') as f:
                 self.setYaml(f.read(),False,['RW','WO'])
         except Exception as e:
             self._log.exception(e)
 
-    def _softReset(self):
-        """Generate a soft reset on all devices"""
-        self.callRecursive('softReset', nodeTypes=[pr.Device])
-
-    def _hardReset(self):
+    def hardReset(self):
         """Generate a hard reset on all devices"""
-        self.callRecursive('hardReset', nodeTypes=[pr.Device])        
+        super().hardReset()
         self._clearLog()
-
-    def _countReset(self):
-        """Generate a count reset on all devices"""
-        self.callRecursive('countReset', nodeTypes=[pr.Device])        
 
     def _clearLog(self):
         """Clear the system log"""
