@@ -63,6 +63,7 @@ class PrbsRx(pyrogue.Device):
 
     def countReset(self):
         self._prbs.resetCount()
+        super().countReset()
 
     def _getStreamSlave(self):
         return self._prbs
@@ -123,6 +124,7 @@ class PrbsTx(pyrogue.Device):
 
     def countReset(self):
         self._prbs.resetCount()
+        super().countReset()
 
     def _genFrame(self):
         self._prbs.genFrame(self.txSize.value())
