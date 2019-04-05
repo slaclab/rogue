@@ -430,7 +430,7 @@ class SystemWidget(QWidget):
         self.root.HardReset()
 
     @pyqtSlot()
-    def initialzie(self):
+    def initialize(self):
         self.root.Initialize()
 
     @pyqtSlot()
