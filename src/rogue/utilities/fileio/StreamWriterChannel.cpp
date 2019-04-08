@@ -51,6 +51,7 @@ void ruf::StreamWriterChannel::setup_python() {
    bp::class_<ruf::StreamWriterChannel, ruf::StreamWriterChannelPtr, bp::bases<ris::Slave>, boost::noncopyable >("StreamWriterChannel",bp::no_init)
        .def("getFrameCount", &ruf::StreamWriterChannel::getFrameCount)
        .def("waitFrameCount", &ruf::StreamWriterChannel::waitFrameCount)
+       .def("setFrameCount", &ruf::StreamWriterChannel::setFrameCount)
        ;
    bp::implicitly_convertible<ruf::StreamWriterChannelPtr, ris::SlavePtr>();
 #endif
