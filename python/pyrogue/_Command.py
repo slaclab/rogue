@@ -74,12 +74,14 @@ class BaseCommand(pr.BaseVariable):
             with self._lock:
                 if self._thread is not None and self._thread.isAlive():
                     self._log.warning('Command execution is already in progress!')
-                    return
+                    return None
                 else:
                     self._thread = threading.Thread(target=self._doFunc, args=(arg,))
                     self._thread.start()
+
+            return None
         else:
-            self._doFunc(arg)
+            return self._doFunc(arg)
 
     def _doFunc(self,arg):
         """Execute command: TODO: Update comments"""
@@ -103,7 +105,7 @@ class BaseCommand(pr.BaseVariable):
             self._log.exception(e)
 
     def __call__(self,arg=None):
-        self.call(arg)
+        return self.call(arg)
 
     @staticmethod
     def nothing():

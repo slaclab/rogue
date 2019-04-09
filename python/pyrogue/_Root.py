@@ -398,7 +398,10 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                 self.checkBlocks(recurse=True)
             except Exception as e:
                 self._log.exception(e)
+                return False
+
         self._log.info("Done root write")
+        return True
 
     def _read(self):
         """Read all blocks"""
@@ -410,7 +413,10 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                 self.checkBlocks(recurse=True)
             except Exception as e:
                 self._log.exception(e)
+                return False
+
         self._log.info("Done root read")
+        return True
 
     def _saveState(self,arg):
         """Save YAML configuration/status to a file. Called from command"""
@@ -424,6 +430,9 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                 f.write(self._getYaml(True,modes=['RW','RO','WO']))
         except Exception as e:
             self._log.exception(e)
+            return False
+
+        return True
 
     def _saveConfig(self,arg):
         """Save YAML configuration to a file. Called from command"""
@@ -437,6 +446,9 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                 f.write(self._getYaml(True,modes=['RW','WO']))
         except Exception as e:
             self._log.exception(e)
+            return False
+
+        return True
 
     def _loadConfig(self,arg):
         """Load YAML configuration from a file. Called from command"""
@@ -445,6 +457,9 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                 self._setYaml(f.read(),False,['RW','WO'])
         except Exception as e:
             self._log.exception(e)
+            return False
+
+        return True
 
     def _getYaml(self,readFirst,modes=['RW']):
         """
@@ -452,15 +467,13 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         modes is a list of variable modes to include.
         If readFirst=True a full read from hardware is performed.
         """
-        ret = ""
 
         if readFirst: self._read()
         try:
-            ret = dictToYaml({self.name:self._getDict(modes)},default_flow_style=False)
+            return  dictToYaml({self.name:self._getDict(modes)},default_flow_style=False)
         except Exception as e:
             self._log.exception(e)
-
-        return ret
+            return ""
 
     def _setYaml(self,yml,writeEach,modes=['RW','WO']):
         """
@@ -682,7 +695,7 @@ def keyValueUpdate(old, key, value):
     d = old
     parts = key.split('.')
     for part in parts[:-1]:
-        d = d[part]
+        d = d.get(part, {})
     d[parts[-1]] = value
 
 def dictUpdate(old, new):
