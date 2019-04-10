@@ -65,20 +65,20 @@ class MemoryError(Exception):
 
 class BaseBlock(object):
 
-    def __init__(self, *, name, mode, device):
+    def __init__(self, *, path, mode, device):
 
-        self._name      = name
+        self._path      = path
         self._mode      = mode
         self._device    = device
         self._lock      = threading.RLock()
         self._doUpdate  = False
 
         # Setup logging
-        self._log = pr.logInit(cls=self,name=name)
+        self._log = pr.logInit(cls=self,name=path)
 
 
     def __repr__(self):
-        return repr(self.name)
+        return repr(self.path)
 
     def backgroundTransaction(self,type):
         """
@@ -93,12 +93,8 @@ class BaseBlock(object):
         self.startTransaction(type, check=True)
 
     @property
-    def name(self):
-        return self._name
-
-    @property
     def path(self):
-        return self._name
+        return self._path
 
     @property
     def mode(self):
@@ -149,7 +145,7 @@ class BaseBlock(object):
 
 class LocalBlock(BaseBlock):
     def __init__(self, *, variable, localSet, localGet, value):
-        BaseBlock.__init__(self, name=variable.path, mode=variable.mode, device=variable.parent)
+        BaseBlock.__init__(self, path=variable.path, mode=variable.mode, device=variable.parent)
 
         self._localSet = localSet
         self._localGet = localGet
@@ -264,7 +260,7 @@ class RemoteBlock(BaseBlock, rim.Master):
         rim.Master.__init__(self)
         self._setSlave(variables[0].parent)
         
-        BaseBlock.__init__(self, name=variables[0].path, mode=variables[0].mode, device=variables[0].parent)
+        BaseBlock.__init__(self, path=variables[0].path, mode=variables[0].mode, device=variables[0].parent)
         self._verifyEn  = False
         self._bulkEn    = False
         self._doVerify  = False
@@ -281,12 +277,12 @@ class RemoteBlock(BaseBlock, rim.Master):
         self._variables = variables
 
         if self._minSize == 0 or self._maxSize == 0:
-            raise MemoryError(name=self.name, address=self.address, msg="Invalid min/max size")
+            raise MemoryError(name=self.path, address=self.address, msg="Invalid min/max size")
 
         # Range check
         if self._size > self._maxSize:
-            msg = f'Block {self._name} size {self._size} exceeds maxSize {self._maxSize}'
-            raise MemoryError(name=self._name, address=self.address, msg=msg)
+            msg = f'Block {self.path} size {self._size} exceeds maxSize {self._maxSize}'
+            raise MemoryError(name=self.path, address=self.address, msg=msg)
 
         # Temp bit masks
         excMask = bytearray(size)  # Variable bit mask for exclusive variables
@@ -301,7 +297,7 @@ class RemoteBlock(BaseBlock, rim.Master):
             if not isinstance(var, pr.BaseCommand):
                 self._bulkEn = True
 
-            self._log.debug(f"Adding variable {var.name} to block {self.name} at offset {self.offset:#02x}")
+            self._log.debug(f"Adding variable {var.name} to block {self.path} at offset {self.offset:#02x}")
 
             # If variable modes mismatch, set block to read/write
             if var.mode != self._mode:
@@ -327,7 +323,7 @@ class RemoteBlock(BaseBlock, rim.Master):
         for b1, b2 in zip(oleMask, excMask):
             if b1 & b2 != 0:
                 print("\n\n\n------------------------ Variable Overlap Warning !!! --------------------------------")
-                print(f"Detected bit overlap in block {self.name} at address {self.address}")
+                print(f"Detected bit overlap in block {self.path} at address {self.address}")
                 print("This warning will be replaced with an exception in the next release!!!!!!!!")
                 break;
 
@@ -387,7 +383,7 @@ class RemoteBlock(BaseBlock, rim.Master):
         """
         if not var._base.check(value,sum(var.bitSize)):
             msg = "Invalid value '{}' for base type {} with bit size {}".format(value,var._base.pytype,sum(var.bitSize))
-            raise MemoryError(name=var.name, address=self.address, msg=msg)
+            raise MemoryError(name=var.path, address=self.address, msg=msg)
 
         with self._lock:
             ba = var._base.toBytes(value, sum(var.bitSize))
@@ -469,7 +465,7 @@ class RemoteBlock(BaseBlock, rim.Master):
             self._reqTransaction(self.offset,tData,0,0,type)
 
         if check:
-            #print(f'Checking {self.name}.startTransaction(check={check})')
+            #print(f'Checking {self.path}.startTransaction(check={check})')
             self._checkTransaction()
 
     def _forceStale(self):
@@ -481,14 +477,14 @@ class RemoteBlock(BaseBlock, rim.Master):
         with self._lock:
             self._waitTransaction(0)
 
-            #print(f'Checking {self.name}._checkTransaction()')            
+            #print(f'Checking {self.path}._checkTransaction()')            
 
             # Error
             err = self.error
             self.error = 0
 
             if err > 0:
-                raise MemoryError(name=self.name, address=self.address, error=err, size=self._size)
+                raise MemoryError(name=self.path, address=self.address, error=err, size=self._size)
 
             if self._doVerify:
                 self._verifyWr = False
@@ -499,7 +495,7 @@ class RemoteBlock(BaseBlock, rim.Master):
                         msg += ('. Verify=' + ''.join(f'{x:#02x}' for x in self._vData))
                         msg += ('. Mask='   + ''.join(f'{x:#02x}' for x in self._vDataMask))
 
-                        raise MemoryError(name=self.name, address=self.address, error=rim.VerifyError, msg=msg, size=self._size)
+                        raise MemoryError(name=self.path, address=self.address, error=rim.VerifyError, msg=msg, size=self._size)
 
                # Updated
             doUpdate = self._doUpdate
@@ -520,7 +516,7 @@ class RemoteBlock(BaseBlock, rim.Master):
 
 
     def updated(self):
-        self._log.debug(f'Block {self._name} _update called')
+        self._log.debug(f'Block {self._path} _update called')
         for v in self._variables:
             v._queueUpdate()
 
