@@ -8,12 +8,12 @@
 # Description:
 # Module containing protocol modules
 #-----------------------------------------------------------------------------
-# This file is part of the rogue software platform. It is subject to 
-# the license terms in the LICENSE.txt file found in the top-level directory 
-# of this distribution and at: 
-#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
-# No part of the rogue software platform, including this file, may be 
-# copied, modified, propagated, or distributed except according to the terms 
+# This file is part of the rogue software platform. It is subject to
+# the license terms in the LICENSE.txt file found in the top-level directory
+# of this distribution and at:
+#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+# No part of the rogue software platform, including this file, may be
+# copied, modified, propagated, or distributed except according to the terms
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
 
@@ -48,7 +48,7 @@ class UartMemory(rogue.interfaces.memory.Slave):
                 data = int.from_bytes(data, 'little', signed=False)
                 sendString = f'w {transaction.address():08x} {data:08x} \n'
                 self._log.debug(f'Sending write transaction: {repr(sendString)}')
-                
+
             elif transaction.type() == rogue.interfaces.memory.Read:
                 sendString = f'r {transaction.address():08x} \n'
                 self._log.debug(f'Sending read transaction: {repr(sendString)}')
@@ -58,7 +58,7 @@ class UartMemory(rogue.interfaces.memory.Slave):
                 transaction.done(rogue.interfaces.memory.Unsupported)
                 self._log.error(f'Unsupported transaction type: {transaction.type()}')
                 return
-                
+
             # Send the command and wait for response
             self.serialPort.write(sendString)
             response = self.serialPort.readline()
@@ -81,13 +81,13 @@ class UartMemory(rogue.interfaces.memory.Slave):
                 else:
                     transaction.done(0)
                     self._log.debug('Transaction: {repr(sendString)} completed successfully')
-                    
+
             else: # if (transaction.type() == rogue.interfaces.memory.Read
                 if (len(parts) != 3 or
                     parts[0].lower() != 'r' or
                     int(parts[1], 16) != transaction.address()):
                     transaction.done(rogue.interfaces.memory.ProtocolError)
-                    self._log.error('Malformed response: {repr(response)} to transaction: {repr(sendString)}')                    
+                    self._log.error('Malformed response: {repr(response)} to transaction: {repr(sendString)}')
                 else:
                     rdData = int(parts[2], 16)
                     transaction.setData(rdData.to_bytes(4, 'little', signed=False))
