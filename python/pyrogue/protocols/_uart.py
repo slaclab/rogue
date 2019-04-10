@@ -50,10 +50,10 @@ class UartMemory(rogue.interfaces.memory.Slave):
 
                 # Need to issue a UART command for each 32 bit word
                 for i, (addr, data) in enumerate(zip(range(address, address+len(dataBa), 4), dataWords)):
-                    sendString = f'w {addr:08x} {data:08x} \n'
+                    sendString = f'w {addr:08x} {data:08x} \n'.encode('ASCII')
                     self._log.debug(f'Sending write transaction part {i}: {repr(sendString)}')
                     self.serialPort.write(sendString)
-                    response = self.serialPort.readline()
+                    response = self.serialPort.readline().decode('ASCII')
                     
                     # If response is empty, a timeout occured
                     if len(response == 0):
@@ -79,10 +79,10 @@ class UartMemory(rogue.interfaces.memory.Slave):
                 size = transaction.size()
 
                 for i, addr in enumerate(range(address, address+size, 4)):
-                    sendString = f'r {addr:08x} \n'
+                    sendString = f'r {addr:08x} \n'.encode('ASCII')
                     self._log.debug(f'Sending read transaction part {i}: {repr(sendString)}')
                     self.serialPort.write(sendString)
-                    response = self.serialPort.readline()
+                    response = self.serialPort.readline().decode('ASCII')
 
                     # If response is empty, a timeout occured
                     if len(response == 0):
