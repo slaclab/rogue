@@ -97,6 +97,10 @@ class BaseBlock(object):
         return self._name
 
     @property
+    def path(self):
+        return self._name
+
+    @property
     def mode(self):
         return self._mode
 

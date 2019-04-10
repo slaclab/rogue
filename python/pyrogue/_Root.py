@@ -172,8 +172,8 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         for i in range(1,len(tmpList)):
 
             self._log.debug("Comparing {} with address={:#x} to {} with address={:#x} and size={}".format(
-                            tmpList[i].name,  tmpList[i].address,
-                            tmpList[i-1].name,tmpList[i-1].address, tmpList[i-1].size))
+                            tmpList[i].path,  tmpList[i].address,
+                            tmpList[i-1].path,tmpList[i-1].address, tmpList[i-1].size))
 
             # Detect overlaps
             if (tmpList[i].size != 0) and (tmpList[i].memBaseId == tmpList[i-1].memBaseId) and \
@@ -186,8 +186,8 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
                     print("\n\n\n------------------------ Memory Overlap Warning !!! --------------------------------")
                     print("{} at address={:#x} overlaps {} at address={:#x} with size={}".format(
-                          tmpList[i].name,tmpList[i].address,
-                          tmpList[i-1].name,tmpList[i-1].address,tmpList[i-1].size))
+                          tmpList[i].path,tmpList[i].address,
+                          tmpList[i-1].path,tmpList[i-1].address,tmpList[i-1].size))
                     print("This warning will be replaced with an exception in the next release!!!!!!!!")
 
                     #raise pr.NodeError("{} at address={:#x} overlaps {} at address={:#x} with size={}".format(
