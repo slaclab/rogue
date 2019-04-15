@@ -139,6 +139,9 @@ class BaseBlock(object):
 
         # Update variables outside of lock
         if doUpdate: self.updated()
+
+    def _forceStale(self):
+        pass
         
     def updated(self):
         pass
