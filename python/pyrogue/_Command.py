@@ -116,6 +116,20 @@ class BaseCommand(pr.BaseVariable):
         cmd.get(read=True)
 
     @staticmethod
+    def setArg(cmd, arg):
+        cmd.set(arg)
+
+    @staticmethod
+    def setAndVerifyArg(cmd, arg):
+        cmd.set(arg)
+        ret = cmd.get()
+        if ret != arg:
+            raise CommandError(
+                f'Verification failed for {cmd.path}. \n'+
+                f'Set to {arg} but read back {ret}')
+        
+
+    @staticmethod
     def createToggle(sets):
         def toggle(cmd):
             for s in sets:

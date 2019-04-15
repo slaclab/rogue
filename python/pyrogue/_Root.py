@@ -645,7 +645,6 @@ class PyroClient(object):
         except:
             raise pr.NodeError("PyroClient Failed to find {}.{}.".format(self._group,name))
 
-
 def yamlToDict(stream, Loader=yaml.Loader, object_pairs_hook=odict):
     """Load yaml to ordered dictionary"""
     class OrderedLoader(Loader):
