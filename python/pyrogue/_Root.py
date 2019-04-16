@@ -696,8 +696,11 @@ def keyValueUpdate(old, key, value):
     d = old
     parts = key.split('.')
     for part in parts[:-1]:
-        d = d.get(part, {})
+        if part not in d:
+            d[part] = {}
+        d = d.get(part)
     d[parts[-1]] = value
+
 
 def dictUpdate(old, new):
     for k,v in new.items():
