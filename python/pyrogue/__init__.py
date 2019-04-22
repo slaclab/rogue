@@ -43,11 +43,17 @@ def addLibraryPath(path):
 
         # Full path
         if p[0] == '/':
-            sys.path.append(p)
+            np = p
 
         # Relative path
         else:
-            sys.path.append(base + '/' + p)
+            np = base + '/' + p
+        
+        # Verify directory exists and is readable
+        if not os.access(np,os.R_OK):
+            raise Exception("Library path {} does not exist or is not readable".format(np))
+        sys.path.append(np)
+
 
 def streamConnect(source, dest):
     """
