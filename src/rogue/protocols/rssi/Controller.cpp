@@ -28,7 +28,7 @@
 #include <rogue/protocols/rssi/Application.h>
 #include <rogue/GeneralError.h>
 #include <memory>
-#include <cmath.h>
+#include <cmath>
 #include <rogue/GilRelease.h>
 #include <rogue/Logging.h>
 #include <math.h>
