@@ -325,10 +325,7 @@ class RemoteBlock(BaseBlock, rim.Master):
         # Check for overlaps by anding exclusive and overmap bit vectors
         for b1, b2 in zip(oleMask, excMask):
             if b1 & b2 != 0:
-                print("\n\n\n------------------------ Variable Overlap Warning !!! --------------------------------")
-                print(f"Detected bit overlap in block {self.path} at address {self.address}")
-                print("This warning will be replaced with an exception in the next release!!!!!!!!")
-                break;
+                raise MemoryError(name=self.path, address=self.address, msg="Variable bit overlap detected.")
 
         # Set exclusive flag
         self._overlapEn = all (excMask[i] == 0 for i in range(size))
