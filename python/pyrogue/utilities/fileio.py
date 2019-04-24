@@ -42,6 +42,7 @@ class StreamWriter(pyrogue.DataWriter):
 
                 # Dump config/status to file
                 if self._configEn: self.root._streamYaml()
+                self.frameCount.set(0)
 
     def _setBufferSize(self,dev,var,value):
         self._writer.setBufferSize(value)

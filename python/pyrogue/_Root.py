@@ -645,7 +645,6 @@ class PyroClient(object):
         except:
             raise pr.NodeError("PyroClient Failed to find {}.{}.".format(self._group,name))
 
-
 def yamlToDict(stream, Loader=yaml.Loader, object_pairs_hook=odict):
     """Load yaml to ordered dictionary"""
     class OrderedLoader(Loader):
@@ -696,8 +695,11 @@ def keyValueUpdate(old, key, value):
     d = old
     parts = key.split('.')
     for part in parts[:-1]:
-        d = d.get(part, {})
+        if part not in d:
+            d[part] = {}
+        d = d.get(part)
     d[parts[-1]] = value
+
 
 def dictUpdate(old, new):
     for k,v in new.items():

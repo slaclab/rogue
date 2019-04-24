@@ -25,7 +25,7 @@ import math
 import time
 
 class EnableVariable(pr.BaseVariable):
-    def __init__(self, *, enabled, deps):
+    def __init__(self, *, enabled, deps=None):
         pr.BaseVariable.__init__(
             self,
             description='Determines if device is enabled for hardware access',            
@@ -213,6 +213,7 @@ class Device(pr.Node,rim.Hub):
             
             lv = pr.LinkVariable(name=name, value='', dependencies=varList, linkedGet=linkedGet, linkedSet=linkedSet, **kwargs)
             self.add(lv)
+
 
 
     def hideVariables(self, hidden, variables=None):
@@ -526,6 +527,28 @@ class Device(pr.Node,rim.Hub):
             return func
         return _decorator
 
+class ArrayDevice(Device):
+    def __init__(self, *, arrayClass, number, stride=0, arrayArgs=None, **kwargs):
+        if 'name' not in kwargs:
+            kwargs['name'] = f'{arrayClass.__name__}Array'
+        super().__init__(**kwargs)
+
+        if arrayArgs is None:
+            arrayArgs = [{} for x in range(number)]
+        elif isinstance(arrayArgs, dict):
+            arrayArgs = [arrayArgs for x in range(number)]
+            
+        for i in range(number):
+            args = arrayArgs[i]
+            if 'name' in args:
+                name = args.pop('name')
+            else:
+                name = arrayClass.__name__
+            self.add(arrayClass(
+                name=f'{name}[{i:d}]',
+                offset=i*stride,
+                **args))
+                
 class DataWriter(Device):
     """Special base class to control data files. TODO: Update comments"""
 
