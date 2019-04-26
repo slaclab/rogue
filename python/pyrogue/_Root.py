@@ -111,40 +111,40 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                  pollInterval=1.0, description='Local Time'))
 
         # Commands
-        self.add(pr.LocalCommand(name='WriteAll', function=self._write, 
+        self.add(pr.LocalCommand(name='WriteAll', function=self._write, hidden=True,
                                  description='Write all values to the hardware'))
 
-        self.add(pr.LocalCommand(name="ReadAll", function=self._read,
+        self.add(pr.LocalCommand(name="ReadAll", function=self._read, hidden=True,
                                  description='Read all values from the hardware'))
 
-        self.add(pr.LocalCommand(name='SaveState', value='', function=self._saveState,
+        self.add(pr.LocalCommand(name='SaveState', value='', function=self._saveState, hidden=True,
                                  description='Save state to passed filename in YAML format'))
 
-        self.add(pr.LocalCommand(name='SaveConfig', value='', function=self._saveConfig,
+        self.add(pr.LocalCommand(name='SaveConfig', value='', function=self._saveConfig, hidden=True,
                                  description='Save configuration to passed filename in YAML format'))
 
-        self.add(pr.LocalCommand(name='LoadConfig', value='', function=self._loadConfig,
+        self.add(pr.LocalCommand(name='LoadConfig', value='', function=self._loadConfig, hidden=True,
                                  description='Read configuration from passed filename in YAML format'))
 
-        self.add(pr.LocalCommand(name='Initialize', function=self.initialize,
+        self.add(pr.LocalCommand(name='Initialize', function=self.initialize, hidden=True,
                                  description='Generate a soft reset to each device in the tree'))
 
-        self.add(pr.LocalCommand(name='HardReset', function=self.hardReset,
+        self.add(pr.LocalCommand(name='HardReset', function=self.hardReset, hidden=True,
                                  description='Generate a hard reset to each device in the tree'))
 
-        self.add(pr.LocalCommand(name='CountReset', function=self.countReset,
+        self.add(pr.LocalCommand(name='CountReset', function=self.countReset, hidden=True,
                                  description='Generate a count reset to each device in the tree'))
 
-        self.add(pr.LocalCommand(name='ClearLog', function=self._clearLog,
+        self.add(pr.LocalCommand(name='ClearLog', function=self._clearLog, hidden=True,
                                  description='Clear the message log cntained in the SystemLog variable'))
 
-        self.add(pr.LocalCommand(name='SetYamlConfig', value='', function=lambda arg: self._setYaml(arg,False,['RW','WO']),
+        self.add(pr.LocalCommand(name='SetYamlConfig', value='', function=lambda arg: self._setYaml(arg,False,['RW','WO']), hidden=True,
                                  description='Set configuration from passed YAML string'))
 
-        self.add(pr.LocalCommand(name='GetYamlConfig', value=True, function=lambda arg: self._getYaml(arg,['RW','WO']),
+        self.add(pr.LocalCommand(name='GetYamlConfig', value=True, function=lambda arg: self._getYaml(arg,['RW','WO']), hidden=True,
                                  description='Get current configuration as YAML string. Pass read first arg.'))
 
-        self.add(pr.LocalCommand(name='GetYamlState', value=True, function=lambda arg: self._getYaml(arg,['RW','RO','WO']),
+        self.add(pr.LocalCommand(name='GetYamlState', value=True, function=lambda arg: self._getYaml(arg,['RW','RO','WO']), hidden=True,
                                  description='Get current state as YAML string. Pass read first arg.'))
 
     def start(self, timeout=1.0, initRead=False, initWrite=False, pollEn=True, pyroGroup=None, pyroAddr=None, pyroNsAddr=None):
@@ -695,8 +695,11 @@ def keyValueUpdate(old, key, value):
     d = old
     parts = key.split('.')
     for part in parts[:-1]:
-        d = d.get(part, {})
+        if part not in d:
+            d[part] = {}
+        d = d.get(part)
     d[parts[-1]] = value
+
 
 def dictUpdate(old, new):
     for k,v in new.items():
