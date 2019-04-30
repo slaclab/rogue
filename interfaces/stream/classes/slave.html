@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Slave &mdash; Rogue v3.3.1-123-gf47aac89 documentation</title>
+  <title>Slave &mdash; Rogue v3.5.0-3-ga1c824de documentation</title>
   
 
   
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                v3.3.1
+                v3.5.0
               </div>
             
           
@@ -213,11 +213,10 @@
 <span id="_CPPv3N5rogue10interfaces6stream5Slave8setDebugE8uint32_tNSt6stringE"></span><span id="_CPPv2N5rogue10interfaces6stream5Slave8setDebugE8uint32_tNSt6stringE"></span><span id="rogue::interfaces::stream::Slave::setDebug__uint32_t.ss"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Slave_1a0db1eae3e974be56cfe5cd35653d752d"></span>void <code class="descname">setDebug</code><span class="sig-paren">(</span>uint32_t <em>debug</em>, std::string <em>name</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream5Slave8setDebugE8uint32_tNSt6stringE" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Set debug message size. </p>
 <p>This method enables debug messages when using the base <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Slave"><span class="std std-ref">Slave</span></a> class attached as a primary or secondar <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Slave"><span class="std std-ref">Slave</span></a> on a <a class="reference internal" href="master.html#classrogue_1_1interfaces_1_1stream_1_1Master"><span class="std std-ref">Master</span></a>. Typically used when attaching a base <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Slave"><span class="std std-ref">Slave</span></a> object for debug purposes.</p>
-<p>Exposed as <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Slave_1a0db1eae3e974be56cfe5cd35653d752d"><span class="std std-ref">setDebug()</span></a> to Python <dl class="docutils">
-<dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last simple">
-<li><code class="docutils literal notranslate"><span class="pre">debug</span></code>: Maximum numer of bytes to print in debug message. </li>
-<li><code class="docutils literal notranslate"><span class="pre">name</span></code>: Name to included in the debug messages. </li>
+<p>Exposed as <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Slave_1a0db1eae3e974be56cfe5cd35653d752d"><span class="std std-ref">setDebug()</span></a> to Python <dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">debug</span></code>: Maximum numer of bytes to print in debug message. </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">name</span></code>: Name to included in the debug messages. </p></li>
 </ul>
 </dd>
 </dl>
@@ -229,10 +228,9 @@
 <span id="_CPPv3N5rogue10interfaces6stream5Slave11acceptFrameENSt10shared_ptrIN5rogue10interfaces6stream5FrameEEE"></span><span id="_CPPv2N5rogue10interfaces6stream5Slave11acceptFrameENSt10shared_ptrIN5rogue10interfaces6stream5FrameEEE"></span><span id="rogue::interfaces::stream::Slave::acceptFrame__std::shared_ptr:rogue::interfaces::stream::Frame:"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Slave_1a5b43e4e21f870ab00542bcdf20c9eed6"></span><em class="property">virtual</em> void <code class="descname">acceptFrame</code><span class="sig-paren">(</span>std::shared_ptr&lt;rogue::interfaces::stream::<a class="reference internal" href="frame.html#_CPPv4N5rogue10interfaces6stream5FrameE" title="rogue::interfaces::stream::Frame">Frame</a>&gt; <em>frame</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream5Slave11acceptFrameENSt10shared_ptrIN5rogue10interfaces6stream5FrameEEE" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Accept a frame from master. </p>
 <p>This method is called by the <a class="reference internal" href="master.html#classrogue_1_1interfaces_1_1stream_1_1Master"><span class="std std-ref">Master</span></a> object to which this <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Slave"><span class="std std-ref">Slave</span></a> is attached when passing a <a class="reference internal" href="frame.html#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a>. By default this method will print debug information if enabled and is typically re-implemented by a <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Slave"><span class="std std-ref">Slave</span></a> sub-class.</p>
-<p>Re-implemented as _acceptFrame() in a Python subclass <dl class="docutils">
-<dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last simple">
-<li><code class="docutils literal notranslate"><span class="pre">frame</span></code>: <a class="reference internal" href="frame.html#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a> pointer (FramePtr) </li>
+<p>Re-implemented as _acceptFrame() in a Python subclass <dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">frame</span></code>: <a class="reference internal" href="frame.html#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a> pointer (FramePtr) </p></li>
 </ul>
 </dd>
 </dl>
@@ -244,9 +242,9 @@
 <span id="_CPPv3N5rogue10interfaces6stream5Slave13getFrameCountEv"></span><span id="_CPPv2N5rogue10interfaces6stream5Slave13getFrameCountEv"></span><span id="rogue::interfaces::stream::Slave::getFrameCount"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Slave_1a504c34d1b91a6358b3eaf7ee6be4417f"></span>uint64_t <code class="descname">getFrameCount</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream5Slave13getFrameCountEv" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Get frame counter. </p>
 <p>Returns the total frames received. Only valid if acceptFrame is not re-implemented as a sub-class. Typically used when attaching a base <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Slave"><span class="std std-ref">Slave</span></a> object for debug purposes.</p>
-<p>Exposed as <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Slave_1a504c34d1b91a6358b3eaf7ee6be4417f"><span class="std std-ref">getFrameCount()</span></a> to Python <dl class="docutils">
-<dt><strong>Return</strong></dt>
-<dd>Total number of <a class="reference internal" href="frame.html#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a> objects received. </dd>
+<p>Exposed as <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Slave_1a504c34d1b91a6358b3eaf7ee6be4417f"><span class="std std-ref">getFrameCount()</span></a> to Python <dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>Total number of <a class="reference internal" href="frame.html#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a> objects received. </p>
+</dd>
 </dl>
 </p>
 </dd></dl>
@@ -256,9 +254,9 @@
 <span id="_CPPv3N5rogue10interfaces6stream5Slave12getByteCountEv"></span><span id="_CPPv2N5rogue10interfaces6stream5Slave12getByteCountEv"></span><span id="rogue::interfaces::stream::Slave::getByteCount"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Slave_1a83a0b347fcb2524362e0c65f8f9d916c"></span>uint64_t <code class="descname">getByteCount</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream5Slave12getByteCountEv" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Get byte counter. </p>
 <p>Returns the total bytes received. Only valid if acceptFrame is not re-implemented as a sub-class. Typically used when attaching a base <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Slave"><span class="std std-ref">Slave</span></a> object for debug purposes.</p>
-<p>Exposed as <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Slave_1a83a0b347fcb2524362e0c65f8f9d916c"><span class="std std-ref">getByteCount()</span></a> to Python <dl class="docutils">
-<dt><strong>Return</strong></dt>
-<dd>Total number of bytes received. </dd>
+<p>Exposed as <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Slave_1a83a0b347fcb2524362e0c65f8f9d916c"><span class="std std-ref">getByteCount()</span></a> to Python <dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>Total number of bytes received. </p>
+</dd>
 </dl>
 </p>
 </dd></dl>

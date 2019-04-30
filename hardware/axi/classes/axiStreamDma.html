@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>AxiStreamDma &mdash; Rogue v3.3.1-123-gf47aac89 documentation</title>
+  <title>AxiStreamDma &mdash; Rogue v3.5.0-3-ga1c824de documentation</title>
   
 
   
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                v3.3.1
+                v3.5.0
               </div>
             
           
@@ -198,10 +198,9 @@
 <span id="_CPPv3N5rogue8hardware3axi12AxiStreamDma10setTimeoutE8uint32_t"></span><span id="_CPPv2N5rogue8hardware3axi12AxiStreamDma10setTimeoutE8uint32_t"></span><span id="rogue::hardware::axi::AxiStreamDma::setTimeout__uint32_t"></span><span class="target" id="classrogue_1_1hardware_1_1axi_1_1AxiStreamDma_1a93a4844ca269864d2ef7fd618d9f8d7c"></span>void <code class="descname">setTimeout</code><span class="sig-paren">(</span>uint32_t <em>timeout</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue8hardware3axi12AxiStreamDma10setTimeoutE8uint32_t" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Set timeout for frame transmits in microseconds. </p>
 <p>This setting defines how long to wait for the lower level driver to be ready to send data. The current implementation will geenrate a warning message after each timeout but will continue to wait for the driver.</p>
-<p>Exposed to python as SetTimeout() <dl class="docutils">
-<dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last simple">
-<li><code class="docutils literal notranslate"><span class="pre">timeout</span></code>: Timeout value in microseconds </li>
+<p>Exposed to python as SetTimeout() <dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">timeout</span></code>: Timeout value in microseconds </p></li>
 </ul>
 </dd>
 </dl>
@@ -213,10 +212,9 @@
 <span id="_CPPv3N5rogue8hardware3axi12AxiStreamDma14setDriverDebugE8uint32_t"></span><span id="_CPPv2N5rogue8hardware3axi12AxiStreamDma14setDriverDebugE8uint32_t"></span><span id="rogue::hardware::axi::AxiStreamDma::setDriverDebug__uint32_t"></span><span class="target" id="classrogue_1_1hardware_1_1axi_1_1AxiStreamDma_1a305376eb8b149cc2bfc81b44a04a6301"></span>void <code class="descname">setDriverDebug</code><span class="sig-paren">(</span>uint32_t <em>level</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue8hardware3axi12AxiStreamDma14setDriverDebugE8uint32_t" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Set driver debug level. </p>
 <p>This function forwards the passed level value as a debug level to the lower level driver. Current drivers have a single level of 1, but any positive value will enable debug. Debug messages can be reviewed using the linux command ‘dmesg’</p>
-<p>Exposed to python as <a class="reference internal" href="#classrogue_1_1hardware_1_1axi_1_1AxiStreamDma_1a305376eb8b149cc2bfc81b44a04a6301"><span class="std std-ref">setDriverDebug()</span></a> <dl class="docutils">
-<dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last simple">
-<li><code class="docutils literal notranslate"><span class="pre">level</span></code>: Debug level, &gt;= 1 enabled debug </li>
+<p>Exposed to python as <a class="reference internal" href="#classrogue_1_1hardware_1_1axi_1_1AxiStreamDma_1a305376eb8b149cc2bfc81b44a04a6301"><span class="std std-ref">setDriverDebug()</span></a> <dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">level</span></code>: Debug level, &gt;= 1 enabled debug </p></li>
 </ul>
 </dd>
 </dl>
@@ -228,10 +226,9 @@
 <span id="_CPPv3N5rogue8hardware3axi12AxiStreamDma13setZeroCopyEnEb"></span><span id="_CPPv2N5rogue8hardware3axi12AxiStreamDma13setZeroCopyEnEb"></span><span id="rogue::hardware::axi::AxiStreamDma::setZeroCopyEn__b"></span><span class="target" id="classrogue_1_1hardware_1_1axi_1_1AxiStreamDma_1ad750e68de43d9a3ee7b5c21aa1d9fc83"></span>void <code class="descname">setZeroCopyEn</code><span class="sig-paren">(</span>bool <em>state</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue8hardware3axi12AxiStreamDma13setZeroCopyEnEb" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Enable / disable zero copy. </p>
 <p>By default the <a class="reference internal" href="#classrogue_1_1hardware_1_1axi_1_1AxiStreamDma"><span class="std std-ref">AxiStreamDma</span></a> class attempts to take advantage of the zero copy mode of the lower level driver if supported. In zero copy mode the Frame Buffer objects are mapped directly to the DMA buffers allocated by the kernel. This allows for direct user space access to the memory which the lower level DMA engines uses. When zero copy mode is disabled a memory buffer will be allocated using the Pool class and the DMA data will be coped to or from this buffer.</p>
-<p>Exposed to python as <a class="reference internal" href="#classrogue_1_1hardware_1_1axi_1_1AxiStreamDma_1ad750e68de43d9a3ee7b5c21aa1d9fc83"><span class="std std-ref">setZeroCopyEn()</span></a> <dl class="docutils">
-<dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last simple">
-<li><code class="docutils literal notranslate"><span class="pre">state</span></code>: Boolean indicating zero copy mode </li>
+<p>Exposed to python as <a class="reference internal" href="#classrogue_1_1hardware_1_1axi_1_1AxiStreamDma_1ad750e68de43d9a3ee7b5c21aa1d9fc83"><span class="std std-ref">setZeroCopyEn()</span></a> <dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">state</span></code>: Boolean indicating zero copy mode </p></li>
 </ul>
 </dd>
 </dl>
@@ -255,14 +252,13 @@
 <dd><p>Class factory which returns a AxiStreamDmaPtr to a newly created <a class="reference internal" href="axiMemMap.html#classrogue_1_1hardware_1_1axi_1_1AxiMemMap"><span class="std std-ref">AxiMemMap</span></a> object. </p>
 <p>Exposed to Python as <a class="reference internal" href="#classrogue_1_1hardware_1_1axi_1_1AxiStreamDma"><span class="std std-ref">rogue.hardware.axi.AxiStreamDma()</span></a></p>
 <p>The destination field is a sideband signal provided in the AxiStream protocol which allows a single interface to handle multiple frames with different purposes. The use of this field is driver specific, but the lower 8-bits are typically passed in the tDest field of the hardware frame and bits 8 and up are used to index the dma channel in the lower level hardware.</p>
-<p>The SSI Enable flag determines if the hardware frame follows the SLAC Streaming itnerface standard. This standard defines a SOF flag in the first user field at bit 1 and and EOFE flag in the last user field bit 0. <dl class="docutils">
-<dt><strong>Return</strong></dt>
-<dd><a class="reference internal" href="#classrogue_1_1hardware_1_1axi_1_1AxiStreamDma"><span class="std std-ref">AxiStreamDma</span></a> pointer (AxiStreamDmaPtr) </dd>
-<dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last simple">
-<li><code class="docutils literal notranslate"><span class="pre">path</span></code>: Path to device. i.e /dev/datadev_0 </li>
-<li><code class="docutils literal notranslate"><span class="pre">dest</span></code>: Destination index for dma transactions </li>
-<li><code class="docutils literal notranslate"><span class="pre">ssiEnable</span></code>: Enable SSI user fields </li>
+<p>The SSI Enable flag determines if the hardware frame follows the SLAC Streaming itnerface standard. This standard defines a SOF flag in the first user field at bit 1 and and EOFE flag in the last user field bit 0. <dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="#classrogue_1_1hardware_1_1axi_1_1AxiStreamDma"><span class="std std-ref">AxiStreamDma</span></a> pointer (AxiStreamDmaPtr) </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">path</span></code>: Path to device. i.e /dev/datadev_0 </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">dest</span></code>: Destination index for dma transactions </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ssiEnable</span></code>: Enable SSI user fields </p></li>
 </ul>
 </dd>
 </dl>

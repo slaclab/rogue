@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Using The AxiStreamDma Class &mdash; Rogue v3.3.1-123-gf47aac89 documentation</title>
+  <title>Using The AxiStreamDma Class &mdash; Rogue v3.5.0-3-ga1c824de documentation</title>
   
 
   
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                v3.3.1
+                v3.5.0
               </div>
             
           
@@ -180,9 +180,9 @@ a channel on the PCI Express board or Zynq FPGA fabric using the generic
 AXI Stream drivers. The set of hardware which use this include but are not
 limited to:</p>
 <ul class="simple">
-<li>PgpCard3 with the AXI Stream DMA engine</li>
-<li>KCU1500 board</li>
-<li>Zynq7000 FPGA with TID-AIRs RCe core firmware</li>
+<li><p>PgpCard3 with the AXI Stream DMA engine</p></li>
+<li><p>KCU1500 board</p></li>
+<li><p>Zynq7000 FPGA with TID-AIRs RCe core firmware</p></li>
 </ul>
 <p>A single instances of the AxiStreamDma class will be used for each data channel
 on the underlying firmware. The data channel is identified by a destination ID.</p>
@@ -191,7 +191,7 @@ hardware. One which will be associated with a register protocol (SRPV3 in this c
 and the other will be a bi-directional data channel. This channel will be connected to
 the custom sender and receiver described in <a class="reference internal" href="../../interfaces/stream/sending.html#interfaces-stream-sending"><span class="std std-ref">Sending Frames</span></a> and
 <a class="reference internal" href="../../interfaces/stream/receiving.html#interfaces-stream-receiving"><span class="std std-ref">Receiving Frames</span></a>. The example also uses the memory master
-created in <span class="xref std std-ref">interface_memory_master_ex</span>.</p>
+created in <a class="reference internal" href="../../interfaces/memory/master.html#interfaces-memory-master-ex"><span class="std std-ref">Memory Master Example</span></a>.</p>
 <p>See <a class="reference internal" href="classes/axiStreamDma.html#hardware-axi-axi-stream-dma"><span class="std std-ref">AxiStreamDma</span></a> for more information about the AxiStreamDma class methods.</p>
 <div class="section" id="python-axistreamdma-example">
 <h2>Python AxiStreamDma Example<a class="headerlink" href="#python-axistreamdma-example" title="Permalink to this headline">¶</a></h2>

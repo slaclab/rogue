@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Master &mdash; Rogue v3.3.1-123-gf47aac89 documentation</title>
+  <title>Master &mdash; Rogue v3.5.0-3-ga1c824de documentation</title>
   
 
   
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                v3.3.1
+                v3.5.0
               </div>
             
           
@@ -213,10 +213,9 @@
 <span id="_CPPv3N5rogue10interfaces6stream6Master8setSlaveENSt10shared_ptrIN5rogue10interfaces6stream5SlaveEEE"></span><span id="_CPPv2N5rogue10interfaces6stream6Master8setSlaveENSt10shared_ptrIN5rogue10interfaces6stream5SlaveEEE"></span><span id="rogue::interfaces::stream::Master::setSlave__std::shared_ptr:rogue::interfaces::stream::Slave:"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Master_1a8d082b5d5936a8f31379c65607f1c46c"></span>void <code class="descname">setSlave</code><span class="sig-paren">(</span>std::shared_ptr&lt;rogue::interfaces::stream::<a class="reference internal" href="slave.html#_CPPv4N5rogue10interfaces6stream5SlaveE" title="rogue::interfaces::stream::Slave">Slave</a>&gt; <em>slave</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream6Master8setSlaveENSt10shared_ptrIN5rogue10interfaces6stream5SlaveEEE" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Set primary slave. </p>
 <p>The primary slave is the <a class="reference internal" href="slave.html#classrogue_1_1interfaces_1_1stream_1_1Slave"><span class="std std-ref">Slave</span></a> object from which the <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Master"><span class="std std-ref">Master</span></a> will request new <a class="reference internal" href="frame.html#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a> allocations. The primary <a class="reference internal" href="slave.html#classrogue_1_1interfaces_1_1stream_1_1Slave"><span class="std std-ref">Slave</span></a> is also the last <a class="reference internal" href="slave.html#classrogue_1_1interfaces_1_1stream_1_1Slave"><span class="std std-ref">Slave</span></a> object which will receive the <a class="reference internal" href="frame.html#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a>. Only one <a class="reference internal" href="slave.html#classrogue_1_1interfaces_1_1stream_1_1Slave"><span class="std std-ref">Slave</span></a> can be set as Primary.</p>
-<p>Exposed as _setSlave() to Python. Called in Python by the pyrogue.streamConnect() and pyrogue.streamConnectBiDir() methods. <dl class="docutils">
-<dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last simple">
-<li><code class="docutils literal notranslate"><span class="pre">slave</span></code>: Stream <a class="reference internal" href="slave.html#classrogue_1_1interfaces_1_1stream_1_1Slave"><span class="std std-ref">Slave</span></a> pointer (SlavePtr) </li>
+<p>Exposed as _setSlave() to Python. Called in Python by the pyrogue.streamConnect() and pyrogue.streamConnectBiDir() methods. <dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">slave</span></code>: Stream <a class="reference internal" href="slave.html#classrogue_1_1interfaces_1_1stream_1_1Slave"><span class="std std-ref">Slave</span></a> pointer (SlavePtr) </p></li>
 </ul>
 </dd>
 </dl>
@@ -228,10 +227,9 @@
 <span id="_CPPv3N5rogue10interfaces6stream6Master8addSlaveENSt10shared_ptrIN5rogue10interfaces6stream5SlaveEEE"></span><span id="_CPPv2N5rogue10interfaces6stream6Master8addSlaveENSt10shared_ptrIN5rogue10interfaces6stream5SlaveEEE"></span><span id="rogue::interfaces::stream::Master::addSlave__std::shared_ptr:rogue::interfaces::stream::Slave:"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Master_1a4454d19c72c99a76b8b446fb6afa72e2"></span>void <code class="descname">addSlave</code><span class="sig-paren">(</span>std::shared_ptr&lt;rogue::interfaces::stream::<a class="reference internal" href="slave.html#_CPPv4N5rogue10interfaces6stream5SlaveE" title="rogue::interfaces::stream::Slave">Slave</a>&gt; <em>slave</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream6Master8addSlaveENSt10shared_ptrIN5rogue10interfaces6stream5SlaveEEE" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Add secondary slave. </p>
 <p>Multiple secondary slaves are allowed.</p>
-<p>Exposed as _addSlave() to Python. Called in Python by the pyrogue.streamTop() method. <dl class="docutils">
-<dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last simple">
-<li><code class="docutils literal notranslate"><span class="pre">slave</span></code>: Stream <a class="reference internal" href="slave.html#classrogue_1_1interfaces_1_1stream_1_1Slave"><span class="std std-ref">Slave</span></a> pointer (SlavePtr) </li>
+<p>Exposed as _addSlave() to Python. Called in Python by the pyrogue.streamTop() method. <dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">slave</span></code>: Stream <a class="reference internal" href="slave.html#classrogue_1_1interfaces_1_1stream_1_1Slave"><span class="std std-ref">Slave</span></a> pointer (SlavePtr) </p></li>
 </ul>
 </dd>
 </dl>
@@ -243,13 +241,12 @@
 <span id="_CPPv3N5rogue10interfaces6stream6Master8reqFrameE8uint32_tb"></span><span id="_CPPv2N5rogue10interfaces6stream6Master8reqFrameE8uint32_tb"></span><span id="rogue::interfaces::stream::Master::reqFrame__uint32_t.b"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Master_1a7565399ec765e1093a349de8745a5034"></span>std::shared_ptr&lt;rogue::interfaces::stream::<a class="reference internal" href="frame.html#_CPPv4N5rogue10interfaces6stream5FrameE" title="rogue::interfaces::stream::Frame">Frame</a>&gt; <code class="descname">reqFrame</code><span class="sig-paren">(</span>uint32_t <em>size</em>, bool <em>zeroCopyEn</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream6Master8reqFrameE8uint32_tb" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Request new <a class="reference internal" href="frame.html#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a> to be allocated by primary <a class="reference internal" href="slave.html#classrogue_1_1interfaces_1_1stream_1_1Slave"><span class="std std-ref">Slave</span></a>. </p>
 <p>This method is called to create a new <a class="reference internal" href="frame.html#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a> oject. An empty <a class="reference internal" href="frame.html#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a> with the requested payload capacity is create. The <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Master"><span class="std std-ref">Master</span></a> will forward this request to the primary <a class="reference internal" href="slave.html#classrogue_1_1interfaces_1_1stream_1_1Slave"><span class="std std-ref">Slave</span></a> oject. The request for a new <a class="reference internal" href="frame.html#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a> inclues a flag which indicates if a zeroCopy frame is allowed. In most cases this flag can be set to True. Non zero copy frames are requsted if the <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Master"><span class="std std-ref">Master</span></a> may need to transmit the same frame multiple times.</p>
-<p>Exposed as _reqFrame() to Python. <dl class="docutils">
-<dt><strong>Return</strong></dt>
-<dd>Newly allocated <a class="reference internal" href="frame.html#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a> pointer (FramePtr) </dd>
-<dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last simple">
-<li><code class="docutils literal notranslate"><span class="pre">size</span></code>: Minimum size for requsted <a class="reference internal" href="frame.html#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a>, larger <a class="reference internal" href="frame.html#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a> may be allocated </li>
-<li><code class="docutils literal notranslate"><span class="pre">zeroCopyEn</span></code>: Flag which indicates if a zero copy mode <a class="reference internal" href="frame.html#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a> is allowed. </li>
+<p>Exposed as _reqFrame() to Python. <dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>Newly allocated <a class="reference internal" href="frame.html#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a> pointer (FramePtr) </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">size</span></code>: Minimum size for requsted <a class="reference internal" href="frame.html#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a>, larger <a class="reference internal" href="frame.html#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a> may be allocated </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">zeroCopyEn</span></code>: Flag which indicates if a zero copy mode <a class="reference internal" href="frame.html#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a> is allowed. </p></li>
 </ul>
 </dd>
 </dl>
@@ -261,10 +258,9 @@
 <span id="_CPPv3N5rogue10interfaces6stream6Master9sendFrameENSt10shared_ptrIN5rogue10interfaces6stream5FrameEEE"></span><span id="_CPPv2N5rogue10interfaces6stream6Master9sendFrameENSt10shared_ptrIN5rogue10interfaces6stream5FrameEEE"></span><span id="rogue::interfaces::stream::Master::sendFrame__std::shared_ptr:rogue::interfaces::stream::Frame:"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Master_1ac4270a45820c4c03dd7f2b472df4efd8"></span>void <code class="descname">sendFrame</code><span class="sig-paren">(</span>std::shared_ptr&lt;rogue::interfaces::stream::<a class="reference internal" href="frame.html#_CPPv4N5rogue10interfaces6stream5FrameE" title="rogue::interfaces::stream::Frame">Frame</a>&gt; <em>frame</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream6Master9sendFrameENSt10shared_ptrIN5rogue10interfaces6stream5FrameEEE" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Push frame to all slaves. </p>
 <p>This method sends the passed <a class="reference internal" href="frame.html#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a> to all of the attached <a class="reference internal" href="slave.html#classrogue_1_1interfaces_1_1stream_1_1Slave"><span class="std std-ref">Slave</span></a> objects by calling their acceptFrame() method. First the secondary Slaves are called in order of attachment, followed last by the primary <a class="reference internal" href="slave.html#classrogue_1_1interfaces_1_1stream_1_1Slave"><span class="std std-ref">Slave</span></a>. If the <a class="reference internal" href="frame.html#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a> is a zero copy frame it will most likely be empty when the <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Master_1ac4270a45820c4c03dd7f2b472df4efd8"><span class="std std-ref">sendFrame()</span></a> method returns.</p>
-<p>Exposed as _sendFrame to Python <dl class="docutils">
-<dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last simple">
-<li><code class="docutils literal notranslate"><span class="pre">frame</span></code>: <a class="reference internal" href="frame.html#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a> pointer (FramePtr) to send </li>
+<p>Exposed as _sendFrame to Python <dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">frame</span></code>: <a class="reference internal" href="frame.html#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a> pointer (FramePtr) to send </p></li>
 </ul>
 </dd>
 </dl>

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>PgpCard &mdash; Rogue v3.3.1-123-gf47aac89 documentation</title>
+  <title>PgpCard &mdash; Rogue v3.5.0-3-ga1c824de documentation</title>
   
 
   
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                v3.3.1
+                v3.5.0
               </div>
             
           
@@ -198,10 +198,9 @@
 <span id="_CPPv3N5rogue8hardware3pgp7PgpCard10setTimeoutE8uint32_t"></span><span id="_CPPv2N5rogue8hardware3pgp7PgpCard10setTimeoutE8uint32_t"></span><span id="rogue::hardware::pgp::PgpCard::setTimeout__uint32_t"></span><span class="target" id="classrogue_1_1hardware_1_1pgp_1_1PgpCard_1a0c35c236912e15f61c59c305c6dd48b2"></span>void <code class="descname">setTimeout</code><span class="sig-paren">(</span>uint32_t <em>timeout</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue8hardware3pgp7PgpCard10setTimeoutE8uint32_t" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Set timeout for frame transmits in microseconds. </p>
 <p>This setting defines how long to wait for the lower level driver to be ready to send data.</p>
-<p>Exposed to python as SetTimeout() <dl class="docutils">
-<dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last simple">
-<li><code class="docutils literal notranslate"><span class="pre">timeout</span></code>: Timeout value in microseconds </li>
+<p>Exposed to python as SetTimeout() <dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">timeout</span></code>: Timeout value in microseconds </p></li>
 </ul>
 </dd>
 </dl>
@@ -213,10 +212,9 @@
 <span id="_CPPv3N5rogue8hardware3pgp7PgpCard13setZeroCopyEnEb"></span><span id="_CPPv2N5rogue8hardware3pgp7PgpCard13setZeroCopyEnEb"></span><span id="rogue::hardware::pgp::PgpCard::setZeroCopyEn__b"></span><span class="target" id="classrogue_1_1hardware_1_1pgp_1_1PgpCard_1a6bf7ddc1fc7339d2b1467a58c524020a"></span>void <code class="descname">setZeroCopyEn</code><span class="sig-paren">(</span>bool <em>state</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue8hardware3pgp7PgpCard13setZeroCopyEnEb" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Enable / disable zero copy. </p>
 <p>By default the <a class="reference internal" href="#classrogue_1_1hardware_1_1pgp_1_1PgpCard"><span class="std std-ref">PgpCard</span></a> class attempts to take advantage of the zero copy mode of the lower level driver if supported. In zero copy mode the Frame Buffer objects are mapped directly to the DMA buffers allocated by the kernel. This allows for direct user space access to the memory which the lower level DMA engines uses. When zero copy mode is disabled a memory buffer will be allocated using the Pool class and the DMA data will be coped to or from this buffer.</p>
-<p>Exposed to python as <a class="reference internal" href="#classrogue_1_1hardware_1_1pgp_1_1PgpCard_1a6bf7ddc1fc7339d2b1467a58c524020a"><span class="std std-ref">setZeroCopyEn()</span></a> <dl class="docutils">
-<dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last simple">
-<li><code class="docutils literal notranslate"><span class="pre">state</span></code>: Boolean indicating zero copy mode </li>
+<p>Exposed to python as <a class="reference internal" href="#classrogue_1_1hardware_1_1pgp_1_1PgpCard_1a6bf7ddc1fc7339d2b1467a58c524020a"><span class="std std-ref">setZeroCopyEn()</span></a> <dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">state</span></code>: Boolean indicating zero copy mode </p></li>
 </ul>
 </dd>
 </dl>
@@ -227,9 +225,9 @@
 <dt id="_CPPv4N5rogue8hardware3pgp7PgpCard7getInfoEv">
 <span id="_CPPv3N5rogue8hardware3pgp7PgpCard7getInfoEv"></span><span id="_CPPv2N5rogue8hardware3pgp7PgpCard7getInfoEv"></span><span id="rogue::hardware::pgp::PgpCard::getInfo"></span><span class="target" id="classrogue_1_1hardware_1_1pgp_1_1PgpCard_1aa150552a727973e97a387b964cbb0934"></span>std::shared_ptr&lt;rogue::hardware::pgp::<a class="reference internal" href="info.html#_CPPv4N5rogue8hardware3pgp4InfoE" title="rogue::hardware::pgp::Info">Info</a>&gt; <code class="descname">getInfo</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue8hardware3pgp7PgpCard7getInfoEv" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Get PGP card info. </p>
-<p><dl class="docutils">
-<dt><strong>Return</strong></dt>
-<dd><a class="reference internal" href="info.html#classrogue_1_1hardware_1_1pgp_1_1Info"><span class="std std-ref">Info</span></a> object pointer (InfoPtr) containing the PGPCard information </dd>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="info.html#classrogue_1_1hardware_1_1pgp_1_1Info"><span class="std std-ref">Info</span></a> object pointer (InfoPtr) containing the PGPCard information </p>
+</dd>
 </dl>
 </p>
 </dd></dl>
@@ -238,9 +236,9 @@
 <dt id="_CPPv4N5rogue8hardware3pgp7PgpCard12getPciStatusEv">
 <span id="_CPPv3N5rogue8hardware3pgp7PgpCard12getPciStatusEv"></span><span id="_CPPv2N5rogue8hardware3pgp7PgpCard12getPciStatusEv"></span><span id="rogue::hardware::pgp::PgpCard::getPciStatus"></span><span class="target" id="classrogue_1_1hardware_1_1pgp_1_1PgpCard_1ac2e179c7b038405d48ab1e412d280fdf"></span>std::shared_ptr&lt;rogue::hardware::pgp::<a class="reference internal" href="pciStatus.html#_CPPv4N5rogue8hardware3pgp9PciStatusE" title="rogue::hardware::pgp::PciStatus">PciStatus</a>&gt; <code class="descname">getPciStatus</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue8hardware3pgp7PgpCard12getPciStatusEv" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Get pci status. </p>
-<p><dl class="docutils">
-<dt><strong>Return</strong></dt>
-<dd><a class="reference internal" href="pciStatus.html#classrogue_1_1hardware_1_1pgp_1_1PciStatus"><span class="std std-ref">PciStatus</span></a> object pointer (PciStatusPtr) containing the PCI status </dd>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="pciStatus.html#classrogue_1_1hardware_1_1pgp_1_1PciStatus"><span class="std std-ref">PciStatus</span></a> object pointer (PciStatusPtr) containing the PCI status </p>
+</dd>
 </dl>
 </p>
 </dd></dl>
@@ -249,9 +247,9 @@
 <dt id="_CPPv4N5rogue8hardware3pgp7PgpCard9getStatusEv">
 <span id="_CPPv3N5rogue8hardware3pgp7PgpCard9getStatusEv"></span><span id="_CPPv2N5rogue8hardware3pgp7PgpCard9getStatusEv"></span><span id="rogue::hardware::pgp::PgpCard::getStatus"></span><span class="target" id="classrogue_1_1hardware_1_1pgp_1_1PgpCard_1acaf6d7d0a27498810e6a73fbee6f9247"></span>std::shared_ptr&lt;rogue::hardware::pgp::<a class="reference internal" href="status.html#_CPPv4N5rogue8hardware3pgp6StatusE" title="rogue::hardware::pgp::Status">Status</a>&gt; <code class="descname">getStatus</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue8hardware3pgp7PgpCard9getStatusEv" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Get status of open lane. </p>
-<p><dl class="docutils">
-<dt><strong>Return</strong></dt>
-<dd><a class="reference internal" href="status.html#classrogue_1_1hardware_1_1pgp_1_1Status"><span class="std std-ref">Status</span></a> object pointer (StatusPtr) for current lane </dd>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="status.html#classrogue_1_1hardware_1_1pgp_1_1Status"><span class="std std-ref">Status</span></a> object pointer (StatusPtr) for current lane </p>
+</dd>
 </dl>
 </p>
 </dd></dl>
@@ -260,9 +258,9 @@
 <dt id="_CPPv4N5rogue8hardware3pgp7PgpCard13getEvrControlEv">
 <span id="_CPPv3N5rogue8hardware3pgp7PgpCard13getEvrControlEv"></span><span id="_CPPv2N5rogue8hardware3pgp7PgpCard13getEvrControlEv"></span><span id="rogue::hardware::pgp::PgpCard::getEvrControl"></span><span class="target" id="classrogue_1_1hardware_1_1pgp_1_1PgpCard_1a28982bcbaa320e3dc01ef95efa76b4b8"></span>std::shared_ptr&lt;rogue::hardware::pgp::<a class="reference internal" href="evrControl.html#_CPPv4N5rogue8hardware3pgp10EvrControlE" title="rogue::hardware::pgp::EvrControl">EvrControl</a>&gt; <code class="descname">getEvrControl</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue8hardware3pgp7PgpCard13getEvrControlEv" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Get evr control for open lane. </p>
-<p><dl class="docutils">
-<dt><strong>Return</strong></dt>
-<dd><a class="reference internal" href="evrControl.html#classrogue_1_1hardware_1_1pgp_1_1EvrControl"><span class="std std-ref">EvrControl</span></a> object pointer (EvrControlPtr) for current lane </dd>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="evrControl.html#classrogue_1_1hardware_1_1pgp_1_1EvrControl"><span class="std std-ref">EvrControl</span></a> object pointer (EvrControlPtr) for current lane </p>
+</dd>
 </dl>
 </p>
 </dd></dl>
@@ -271,10 +269,9 @@
 <dt id="_CPPv4N5rogue8hardware3pgp7PgpCard13setEvrControlENSt10shared_ptrIN5rogue8hardware3pgp10EvrControlEEE">
 <span id="_CPPv3N5rogue8hardware3pgp7PgpCard13setEvrControlENSt10shared_ptrIN5rogue8hardware3pgp10EvrControlEEE"></span><span id="_CPPv2N5rogue8hardware3pgp7PgpCard13setEvrControlENSt10shared_ptrIN5rogue8hardware3pgp10EvrControlEEE"></span><span id="rogue::hardware::pgp::PgpCard::setEvrControl__std::shared_ptr:rogue::hardware::pgp::EvrControl:"></span><span class="target" id="classrogue_1_1hardware_1_1pgp_1_1PgpCard_1aef14aca78ff94d4dc8fac2dff04277cf"></span>void <code class="descname">setEvrControl</code><span class="sig-paren">(</span>std::shared_ptr&lt;rogue::hardware::pgp::<a class="reference internal" href="evrControl.html#_CPPv4N5rogue8hardware3pgp10EvrControlE" title="rogue::hardware::pgp::EvrControl">EvrControl</a>&gt; <em>r</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue8hardware3pgp7PgpCard13setEvrControlENSt10shared_ptrIN5rogue8hardware3pgp10EvrControlEEE" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Set evr control for open lane. </p>
-<p><dl class="docutils">
-<dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last simple">
-<li><code class="docutils literal notranslate"><span class="pre">r</span></code>: <a class="reference internal" href="evrControl.html#classrogue_1_1hardware_1_1pgp_1_1EvrControl"><span class="std std-ref">EvrControl</span></a> object pointer (EvrControlPtr) with new configuration </li>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">r</span></code>: <a class="reference internal" href="evrControl.html#classrogue_1_1hardware_1_1pgp_1_1EvrControl"><span class="std std-ref">EvrControl</span></a> object pointer (EvrControlPtr) with new configuration </p></li>
 </ul>
 </dd>
 </dl>
@@ -285,9 +282,9 @@
 <dt id="_CPPv4N5rogue8hardware3pgp7PgpCard12getEvrStatusEv">
 <span id="_CPPv3N5rogue8hardware3pgp7PgpCard12getEvrStatusEv"></span><span id="_CPPv2N5rogue8hardware3pgp7PgpCard12getEvrStatusEv"></span><span id="rogue::hardware::pgp::PgpCard::getEvrStatus"></span><span class="target" id="classrogue_1_1hardware_1_1pgp_1_1PgpCard_1a5185739e8fa374b870f95726b25ac9d5"></span>std::shared_ptr&lt;rogue::hardware::pgp::<a class="reference internal" href="evrStatus.html#_CPPv4N5rogue8hardware3pgp9EvrStatusE" title="rogue::hardware::pgp::EvrStatus">EvrStatus</a>&gt; <code class="descname">getEvrStatus</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue8hardware3pgp7PgpCard12getEvrStatusEv" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Get evr status for open lane. </p>
-<p><dl class="docutils">
-<dt><strong>Return</strong></dt>
-<dd><a class="reference internal" href="evrStatus.html#classrogue_1_1hardware_1_1pgp_1_1EvrStatus"><span class="std std-ref">EvrStatus</span></a> object pointer (EvrStatusPtr) for current lane </dd>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="evrStatus.html#classrogue_1_1hardware_1_1pgp_1_1EvrStatus"><span class="std std-ref">EvrStatus</span></a> object pointer (EvrStatusPtr) for current lane </p>
+</dd>
 </dl>
 </p>
 </dd></dl>
@@ -296,10 +293,9 @@
 <dt id="_CPPv4N5rogue8hardware3pgp7PgpCard7setLoopEb">
 <span id="_CPPv3N5rogue8hardware3pgp7PgpCard7setLoopEb"></span><span id="_CPPv2N5rogue8hardware3pgp7PgpCard7setLoopEb"></span><span id="rogue::hardware::pgp::PgpCard::setLoop__b"></span><span class="target" id="classrogue_1_1hardware_1_1pgp_1_1PgpCard_1aa6f7d33c13d6dfe49735dac9d05f64fa"></span>void <code class="descname">setLoop</code><span class="sig-paren">(</span>bool <em>enable</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue8hardware3pgp7PgpCard7setLoopEb" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Set loopback for open lane. </p>
-<p><dl class="docutils">
-<dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last simple">
-<li><code class="docutils literal notranslate"><span class="pre">enable</span></code>: Enable flag for lane loopback </li>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">enable</span></code>: Enable flag for lane loopback </p></li>
 </ul>
 </dd>
 </dl>
@@ -310,10 +306,9 @@
 <dt id="_CPPv4N5rogue8hardware3pgp7PgpCard7setDataE7uint8_t">
 <span id="_CPPv3N5rogue8hardware3pgp7PgpCard7setDataE7uint8_t"></span><span id="_CPPv2N5rogue8hardware3pgp7PgpCard7setDataE7uint8_t"></span><span id="rogue::hardware::pgp::PgpCard::setData__uint8_t"></span><span class="target" id="classrogue_1_1hardware_1_1pgp_1_1PgpCard_1af43d3370ef95c9120ba74af56135fbe5"></span>void <code class="descname">setData</code><span class="sig-paren">(</span>uint8_t <em>data</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue8hardware3pgp7PgpCard7setDataE7uint8_t" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Set lane data for open lane. </p>
-<p><dl class="docutils">
-<dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last simple">
-<li><code class="docutils literal notranslate"><span class="pre">data</span></code>: Sideband data value lane </li>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">data</span></code>: Sideband data value lane </p></li>
 </ul>
 </dd>
 </dl>
@@ -324,10 +319,9 @@
 <dt id="_CPPv4N5rogue8hardware3pgp7PgpCard10sendOpCodeE7uint8_t">
 <span id="_CPPv3N5rogue8hardware3pgp7PgpCard10sendOpCodeE7uint8_t"></span><span id="_CPPv2N5rogue8hardware3pgp7PgpCard10sendOpCodeE7uint8_t"></span><span id="rogue::hardware::pgp::PgpCard::sendOpCode__uint8_t"></span><span class="target" id="classrogue_1_1hardware_1_1pgp_1_1PgpCard_1ab34cad3cfff64cfb2aaca8cbe5b1c8cb"></span>void <code class="descname">sendOpCode</code><span class="sig-paren">(</span>uint8_t <em>code</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue8hardware3pgp7PgpCard10sendOpCodeE7uint8_t" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Send an opcode. </p>
-<p><dl class="docutils">
-<dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last simple">
-<li><code class="docutils literal notranslate"><span class="pre">code</span></code>: Opcode to send on lane </li>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">code</span></code>: Opcode to send on lane </p></li>
 </ul>
 </dd>
 </dl>
@@ -343,14 +337,13 @@
 <dd><p>Class factory which returns a PgpCardPtr to a newly created <a class="reference internal" href="#classrogue_1_1hardware_1_1pgp_1_1PgpCard"><span class="std std-ref">PgpCard</span></a> object. </p>
 <p>Exposed to Python as <a class="reference internal" href="#classrogue_1_1hardware_1_1pgp_1_1PgpCard"><span class="std std-ref">rogue.hardware.pgp.PgpCard()</span></a></p>
 <p>The lane and VC fields define the specific PGP lane and virtual channel on that lane that this stream interface will be attached to.</p>
-<p><dl class="docutils">
-<dt><strong>Return</strong></dt>
-<dd><a class="reference internal" href="#classrogue_1_1hardware_1_1pgp_1_1PgpCard"><span class="std std-ref">PgpCard</span></a> pointer (PgpCardPtr) </dd>
-<dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last simple">
-<li><code class="docutils literal notranslate"><span class="pre">path</span></code>: Path to device. i.e /dev/pgpcard_0 </li>
-<li><code class="docutils literal notranslate"><span class="pre">lane</span></code>: PGP lane to attach to </li>
-<li><code class="docutils literal notranslate"><span class="pre">vc</span></code>: Lane virtual channel to attach to </li>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="#classrogue_1_1hardware_1_1pgp_1_1PgpCard"><span class="std std-ref">PgpCard</span></a> pointer (PgpCardPtr) </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">path</span></code>: Path to device. i.e /dev/pgpcard_0 </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">lane</span></code>: PGP lane to attach to </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">vc</span></code>: Lane virtual channel to attach to </p></li>
 </ul>
 </dd>
 </dl>

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Memory Slave Example &mdash; Rogue v3.3.1-123-gf47aac89 documentation</title>
+  <title>Memory Slave Example &mdash; Rogue v3.5.0-3-ga1c824de documentation</title>
   
 
   
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                v3.3.1
+                v3.5.0
               </div>
             
           
@@ -181,13 +181,13 @@ memory transactions initated by c++ masters.</p>
 <p>In the below example assume there is a a protocol that has the following functions to
 initiate a read and write transaction:</p>
 <ul class="simple">
-<li>protocolRead(id, address, size)</li>
-<li>protocolWrite(id, address, size, data)</li>
+<li><p>protocolRead(id, address, size)</p></li>
+<li><p>protocolWrite(id, address, size, data)</p></li>
 </ul>
 <p>And executes the following callbacks when the transaction completes:</p>
 <ul class="simple">
-<li>protocolReadDone(id, data, result)</li>
-<li>protocolWriteDone(id, result)</li>
+<li><p>protocolReadDone(id, data, result)</p></li>
+<li><p>protocolWriteDone(id, result)</p></li>
 </ul>
 <p>See the SrpV3 protocol implementation in Rogue for a more detailed example.</p>
 <p>See <a class="reference internal" href="classes/slave.html#interfaces-memory-slave"><span class="std std-ref">Slave</span></a> for more detail on the Slave class.</p>

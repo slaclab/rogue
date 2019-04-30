@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>TcpCore &mdash; Rogue v3.3.1-123-gf47aac89 documentation</title>
+  <title>TcpCore &mdash; Rogue v3.5.0-3-ga1c824de documentation</title>
   
 
   
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                v3.3.1
+                v3.5.0
               </div>
             
           
@@ -215,14 +215,13 @@
 <span id="_CPPv3N5rogue10interfaces6stream7TcpCore6createENSt6stringE8uint16_tb"></span><span id="_CPPv2N5rogue10interfaces6stream7TcpCore6createENSt6stringE8uint16_tb"></span><span id="rogue::interfaces::stream::TcpCore::create__ss.uint16_t.b"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1TcpCore_1a4c31657d16580725f4ec0000909e9d14"></span><em class="property">static</em> std::shared_ptr&lt;rogue::interfaces::stream::<a class="reference internal" href="#_CPPv4N5rogue10interfaces6stream7TcpCoreE" title="rogue::interfaces::stream::TcpCore">TcpCore</a>&gt; <code class="descname">create</code><span class="sig-paren">(</span>std::string <em>addr</em>, uint16_t <em>port</em>, bool <em>server</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream7TcpCore6createENSt6stringE8uint16_tb" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Create a <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1TcpCore"><span class="std std-ref">TcpCore</span></a> object and return as a TcpCorePtr. </p>
 <p>The creator takes an address, port and server mode flag. The passed address can either be an IP address or hostname. When running in server mode the address string defines which network interface the socket server will listen on. A string of “*” results in all network interfaces being listened on. The stream bridge requires two TCP ports. The pased port is the base number of these two ports. A passed value of 8000 will result in both 8000 and 8001 being used by this bridge.</p>
-<p>Not exposed to Python <dl class="docutils">
-<dt><strong>Return</strong></dt>
-<dd><a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1TcpCore"><span class="std std-ref">TcpCore</span></a> object as a TcpCorePtr </dd>
-<dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last simple">
-<li><code class="docutils literal notranslate"><span class="pre">addr</span></code>: Interface address for server, remote server address for client. </li>
-<li><code class="docutils literal notranslate"><span class="pre">port</span></code>: Base port number of use for connection. </li>
-<li><code class="docutils literal notranslate"><span class="pre">server</span></code>: Server flag. Set to True to run in server mode. </li>
+<p>Not exposed to Python <dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1TcpCore"><span class="std std-ref">TcpCore</span></a> object as a TcpCorePtr </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">addr</span></code>: Interface address for server, remote server address for client. </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">port</span></code>: Base port number of use for connection. </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">server</span></code>: Server flag. Set to True to run in server mode. </p></li>
 </ul>
 </dd>
 </dl>

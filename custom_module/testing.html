@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Testing The Custom Module &mdash; Rogue v3.3.1-123-gf47aac89 documentation</title>
+  <title>Testing The Custom Module &mdash; Rogue v3.5.0-3-ga1c824de documentation</title>
   
 
   
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                v3.3.1
+                v3.5.0
               </div>
             
           
@@ -171,14 +171,14 @@
 <span id="custom-testing"></span><h1>Testing The Custom Module<a class="headerlink" href="#testing-the-custom-module" title="Permalink to this headline">¶</a></h1>
 <p>The following script tests the MyModule and MyWrapper implementations created
 by the <a class="reference internal" href="sourcefile.html#custom-sourcefile"><span class="std std-ref">Custom Module Source</span></a>, <a class="reference internal" href="makefile.html#custom-makefile"><span class="std std-ref">Building The Custom Module</span></a> and <a class="reference internal" href="wrapper.html#custom-wrapper"><span class="std std-ref">Wrapping Custom Module With PyRogue Device</span></a> steps.</p>
-<div class="code python highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Source for myTest.py</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Source for myTest.py</span>
 
 <span class="kn">import</span> <span class="nn">pyrogue</span>
 <span class="kn">import</span> <span class="nn">MyWrapper</span>
 
 <span class="k">class</span> <span class="nc">TestRoot</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">Root</span><span class="p">):</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;MyRoot&quot;</span><span class="p">)</span>
 
         <span class="c1"># Add master and slave devices</span>
@@ -201,12 +201,12 @@ by the <a class="reference internal" href="sourcefile.html#custom-sourcefile"><s
     <span class="n">r</span><span class="o">.</span><span class="n">testMaster</span><span class="o">.</span><span class="n">MyFrameGen</span><span class="p">()</span>
 
     <span class="c1"># Display status</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Sent </span><span class="si">{}</span><span class="s2"> bytes in </span><span class="si">{}</span><span class="s2"> frames&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">testMaster</span><span class="o">.</span><span class="n">ByteCount</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span><span class="n">r</span><span class="o">.</span><span class="n">testMaster</span><span class="o">.</span><span class="n">FrameCount</span><span class="o">.</span><span class="n">get</span><span class="p">()))</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Got  </span><span class="si">{}</span><span class="s2"> bytes in </span><span class="si">{}</span><span class="s2"> frames&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">testSlave</span><span class="o">.</span><span class="n">ByteCount</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span><span class="n">r</span><span class="o">.</span><span class="n">testSlave</span><span class="o">.</span><span class="n">FrameCount</span><span class="o">.</span><span class="n">get</span><span class="p">()))</span>
+    <span class="k">print</span><span class="p">(</span><span class="s2">&quot;Sent {} bytes in {} frames&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">testMaster</span><span class="o">.</span><span class="n">ByteCount</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span><span class="n">r</span><span class="o">.</span><span class="n">testMaster</span><span class="o">.</span><span class="n">FrameCount</span><span class="o">.</span><span class="n">get</span><span class="p">()))</span>
+    <span class="k">print</span><span class="p">(</span><span class="s2">&quot;Got  {} bytes in {} frames&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">testSlave</span><span class="o">.</span><span class="n">ByteCount</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span><span class="n">r</span><span class="o">.</span><span class="n">testSlave</span><span class="o">.</span><span class="n">FrameCount</span><span class="o">.</span><span class="n">get</span><span class="p">()))</span>
 </pre></div>
 </div>
 <p>The output of this python script should be the following (with a different rogue version):</p>
-<div class="code highlight-default notranslate"><div class="highlight"><pre><span></span>$ python myTest.py
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ python myTest.py
 Rogue/pyrogue version v3.2.1. https://github.com/slaclab/rogue
 Loaded my module
 Sent 400 bytes in 2 frames
@@ -217,7 +217,7 @@ Got  400 bytes in 2 frames
 <h2>Testing With EPICS<a class="headerlink" href="#testing-with-epics" title="Permalink to this headline">¶</a></h2>
 <p>The following scripts is similiar to the above but exposes the variables
 to epics to allow external control.</p>
-<div class="code python highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Source for myEpicsTest.py</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Source for myEpicsTest.py</span>
 
 <span class="kn">import</span> <span class="nn">pyrogue</span>
 <span class="kn">import</span> <span class="nn">MyWrapper</span>
@@ -226,7 +226,7 @@ to epics to allow external control.</p>
 
 <span class="k">class</span> <span class="nc">TestRoot</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">Root</span><span class="p">):</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;MyRoot&quot;</span><span class="p">)</span>
 
         <span class="c1"># Add master and slave devices</span>
@@ -250,18 +250,18 @@ to epics to allow external control.</p>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
 
 <span class="k">with</span> <span class="n">TestRoot</span><span class="p">()</span> <span class="k">as</span> <span class="n">r</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Running&quot;</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span><span class="s2">&quot;Running&quot;</span><span class="p">)</span>
     <span class="k">try</span><span class="p">:</span>
-        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
             <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
     <span class="k">except</span> <span class="ne">KeyboardInterrupt</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Exiting&quot;</span><span class="p">)</span>
+        <span class="k">print</span><span class="p">(</span><span class="s2">&quot;Exiting&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Start the above script and generate frames using epics caput commands. You can also
 monitor the counters as well. See below for an example:</p>
 <p>In the first terminal:</p>
-<div class="code highlight-default notranslate"><div class="highlight"><pre><span></span>$ python myEpicsTest.py
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ python myEpicsTest.py
 Rogue/pyrogue version v3.3.1-4-gd384a633. https://github.com/slaclab/rogue
 Loaded my module
 myTest:MyRoot:enable -&gt; MyRoot.enable
@@ -292,7 +292,7 @@ Running
 Rogue are exposed as Variables and a caput will initiate the Command
 executation. Since our MyFrameGen Command does not take an arg we
 pass a value of 0 to keep epics happy.</p>
-<div class="code highlight-default notranslate"><div class="highlight"><pre><span></span>$ caget myTest:MyRoot:testMaster:FrameCount
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ caget myTest:MyRoot:testMaster:FrameCount
 myTest:MyRoot:testMaster:FrameCount 0
 
 $ caget myTest:MyRoot:testSlave:FrameCount
@@ -330,7 +330,7 @@ myTest:MyRoot:testSlave:ByteCount 420
 you to experiment with how bot the GUI and EPICS can manipulate variables in parrallel.
 In this test we start the GUI in the main script with the core Rogue. It is also possible
 to start one or more remote GUIs. That process is described in TBD.</p>
-<div class="code python highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Source for myEpicsGuiTest.py</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Source for myEpicsGuiTest.py</span>
 
 <span class="kn">import</span> <span class="nn">pyrogue</span>
 <span class="kn">import</span> <span class="nn">MyWrapper</span>
@@ -341,7 +341,7 @@ to start one or more remote GUIs. That process is described in TBD.</p>
 
 <span class="k">class</span> <span class="nc">TestRoot</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">Root</span><span class="p">):</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;MyRoot&quot;</span><span class="p">)</span>
 
         <span class="c1"># Add master and slave devices</span>
@@ -365,7 +365,7 @@ to start one or more remote GUIs. That process is described in TBD.</p>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
 
 <span class="k">with</span> <span class="n">TestRoot</span><span class="p">()</span> <span class="k">as</span> <span class="n">r</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Running&quot;</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span><span class="s2">&quot;Running&quot;</span><span class="p">)</span>
 
     <span class="c1"># Create GUI</span>
     <span class="n">appTop</span> <span class="o">=</span> <span class="n">pyrogue</span><span class="o">.</span><span class="n">gui</span><span class="o">.</span><span class="n">application</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span>
@@ -377,7 +377,7 @@ to start one or more remote GUIs. That process is described in TBD.</p>
 </pre></div>
 </div>
 <p>You can then start the server:</p>
-<div class="code highlight-default notranslate"><div class="highlight"><pre><span></span>$ python myEpicsGuiTest.py
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ python myEpicsGuiTest.py
 </pre></div>
 </div>
 </div>

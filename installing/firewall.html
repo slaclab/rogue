@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Rogue and Anaconda behind a firewall &mdash; Rogue v3.3.1-123-gf47aac89 documentation</title>
+  <title>Rogue and Anaconda behind a firewall &mdash; Rogue v3.5.0-3-ga1c824de documentation</title>
   
 
   
@@ -35,6 +35,7 @@
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Setting Up Ubuntu On Windows" href="windows.html" />
     <link rel="prev" title="Compiling A Rogue Application" href="application.html" /> 
 </head>
 
@@ -59,7 +60,7 @@
             
             
               <div class="version">
-                v3.3.1
+                v3.5.0
               </div>
             
           
@@ -96,6 +97,7 @@
 <li class="toctree-l2"><a class="reference internal" href="build.html">Building Rogue From Source</a></li>
 <li class="toctree-l2"><a class="reference internal" href="application.html">Compiling A Rogue Application</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Rogue and Anaconda behind a firewall</a></li>
+<li class="toctree-l2"><a class="reference internal" href="windows.html">Setting Up Ubuntu On Windows</a></li>
 </ul>
 </li>
 </ul>
@@ -167,17 +169,17 @@
   <div class="section" id="rogue-and-anaconda-behind-a-firewall">
 <span id="installing-firewall"></span><h1>Rogue and Anaconda behind a firewall<a class="headerlink" href="#rogue-and-anaconda-behind-a-firewall" title="Permalink to this headline">¶</a></h1>
 <p>To install rogue and anaconda behind a firewall you will need an ssl capable https proxy. I have used mitmproxy with success:</p>
-<div class="code highlight-default notranslate"><div class="highlight"><pre><span></span>$ mitmproxy --list-host=gateway.machine.com --list-port=8080
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ mitmproxy --list-host=gateway.machine.com --list-port=8080
 </pre></div>
 </div>
 <p>You will execute a number of steps to enable proxy for wget, git and anaconda</p>
-<div class="code highlight-default notranslate"><div class="highlight"><pre><span></span>$ setenv https_proxy gateway.machine.com:8080
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ setenv https_proxy gateway.machine.com:8080
 $ git config --global https.proxy https://gateway.machine.com:8080
 $ git config --global http.sslVerify false
 </pre></div>
 </div>
 <p>Create a file $HOME/.condarc and add the following lines:</p>
-<div class="code highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">proxy_servers</span><span class="p">:</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">proxy_servers</span><span class="p">:</span>
    <span class="n">http</span><span class="p">:</span><span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">gateway</span><span class="o">.</span><span class="n">machine</span><span class="o">.</span><span class="n">com</span><span class="p">:</span><span class="mi">8080</span>
    <span class="n">https</span><span class="p">:</span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">gateway</span><span class="o">.</span><span class="n">machine</span><span class="o">.</span><span class="n">com</span><span class="p">:</span><span class="mi">8080</span>
 
@@ -193,6 +195,8 @@ $ git config --global http.sslVerify false
           <footer>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="windows.html" class="btn btn-neutral float-right" title="Setting Up Ubuntu On Windows" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="application.html" class="btn btn-neutral float-left" title="Compiling A Rogue Application" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>

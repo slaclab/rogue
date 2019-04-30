@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Buffer &mdash; Rogue v3.3.1-123-gf47aac89 documentation</title>
+  <title>Buffer &mdash; Rogue v3.5.0-3-ga1c824de documentation</title>
   
 
   
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                v3.3.1
+                v3.5.0
               </div>
             
           
@@ -193,19 +193,13 @@
   <div class="section" id="buffer">
 <span id="interfaces-stream-buffer"></span><h1>Buffer<a class="headerlink" href="#buffer" title="Permalink to this headline">¶</a></h1>
 <p>The list of Buffer objects in a Frame is iterated using a the following typedef:</p>
-<dl class="type">
-<dt id="_CPPv4N5rogue10interfaces6stream5Frame14BufferIteratorE">
-<span id="_CPPv3N5rogue10interfaces6stream5Frame14BufferIteratorE"></span><span id="_CPPv2N5rogue10interfaces6stream5Frame14BufferIteratorE"></span><span id="rogue::interfaces::stream::Frame::BufferIterator"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1a89f911ccda4b575a58cb85906692c9b9"></span><em class="property">typedef </em>std::vector&lt;std::shared_ptr&lt;rogue::interfaces::stream::<a class="reference internal" href="#_CPPv4N5rogue10interfaces6stream6BufferE" title="rogue::interfaces::stream::Buffer">Buffer</a>&gt;&gt;::iterator <code class="descclassname">rogue::interfaces::stream::<a class="reference internal" href="frame.html#_CPPv4N5rogue10interfaces6stream5FrameE" title="rogue::interfaces::stream::Frame">Frame</a><code class="descclassname">::</code></code><code class="descname">BufferIterator</code><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream5Frame14BufferIteratorE" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>Alias for using std::vector&lt;std::shared_ptr&lt;rogue::interfaces::stream::Buffer&gt; &gt;::iterator as Buffer::iterator. </p>
-</dd></dl>
-
+<blockquote>
+<div><p>rogue::interfaces::stream::Frame::BufferIterator</p>
+</div></blockquote>
 <p>The uint8_t data within a Buffer is iterated using a the following typedef:</p>
-<dl class="type">
-<dt id="_CPPv4N5rogue10interfaces6stream6Buffer8iteratorE">
-<span id="_CPPv3N5rogue10interfaces6stream6Buffer8iteratorE"></span><span id="_CPPv2N5rogue10interfaces6stream6Buffer8iteratorE"></span><span id="rogue::interfaces::stream::Buffer::iterator"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Buffer_1a2b3f008693138808f09617dc9c6a1c3c"></span><em class="property">typedef </em>uint8_t *<code class="descclassname">rogue::interfaces::stream::<a class="reference internal" href="#_CPPv4N5rogue10interfaces6stream6BufferE" title="rogue::interfaces::stream::Buffer">Buffer</a><code class="descclassname">::</code></code><code class="descname">iterator</code><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream6Buffer8iteratorE" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>Alias for using uint8_t * as Buffer::iterator. </p>
-</dd></dl>
-
+<blockquote>
+<div><p>rogue::interfaces::stream::Buffer::iterator</p>
+</div></blockquote>
 <p>Buffer objects in C++ are referenced by the following shared pointer typedef:</p>
 <dl class="type">
 <dt id="_CPPv4N5rogue10interfaces6stream9BufferPtrE">
@@ -223,8 +217,8 @@
 <p class="breathe-sectiondef-title rubric">Public Types</p>
 <dl class="type">
 <dt id="_CPPv4N5rogue10interfaces6stream6Buffer8iteratorE">
-<span id="_CPPv3N5rogue10interfaces6stream6Buffer8iteratorE"></span><span id="_CPPv2N5rogue10interfaces6stream6Buffer8iteratorE"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Buffer_1a2b3f008693138808f09617dc9c6a1c3c"></span><em class="property">typedef </em>uint8_t *<code class="descname">iterator</code><br /></dt>
-<dd><p>Alias for using uint8_t * as Buffer::iterator. </p>
+<span id="_CPPv3N5rogue10interfaces6stream6Buffer8iteratorE"></span><span id="_CPPv2N5rogue10interfaces6stream6Buffer8iteratorE"></span><span id="rogue::interfaces::stream::Buffer::iterator"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Buffer_1a2b3f008693138808f09617dc9c6a1c3c"></span><em class="property">typedef </em>uint8_t *<code class="descname">iterator</code><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream6Buffer8iteratorE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Alias for using uint8_t * as <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Buffer_1a2b3f008693138808f09617dc9c6a1c3c"><span class="std std-ref">Buffer::iterator</span></a>. </p>
 </dd></dl>
 
 </div>
@@ -234,9 +228,9 @@
 <dt id="_CPPv4N5rogue10interfaces6stream6Buffer7getMetaEv">
 <span id="_CPPv3N5rogue10interfaces6stream6Buffer7getMetaEv"></span><span id="_CPPv2N5rogue10interfaces6stream6Buffer7getMetaEv"></span><span id="rogue::interfaces::stream::Buffer::getMeta"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Buffer_1a5c58ff0316038b86e7d84140c0a16ec8"></span>uint32_t <code class="descname">getMeta</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream6Buffer7getMetaEv" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Get meta data. </p>
-<p>The meta data field is used by the <a class="reference internal" href="pool.html#classrogue_1_1interfaces_1_1stream_1_1Pool"><span class="std std-ref">Pool</span></a> class or sub-class to track the allocated data. <dl class="docutils">
-<dt><strong>Return</strong></dt>
-<dd>Meta data value </dd>
+<p>The meta data field is used by the <a class="reference internal" href="pool.html#classrogue_1_1interfaces_1_1stream_1_1Pool"><span class="std std-ref">Pool</span></a> class or sub-class to track the allocated data. <dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>Meta data value </p>
+</dd>
 </dl>
 </p>
 </dd></dl>
@@ -245,10 +239,9 @@
 <dt id="_CPPv4N5rogue10interfaces6stream6Buffer7setMetaE8uint32_t">
 <span id="_CPPv3N5rogue10interfaces6stream6Buffer7setMetaE8uint32_t"></span><span id="_CPPv2N5rogue10interfaces6stream6Buffer7setMetaE8uint32_t"></span><span id="rogue::interfaces::stream::Buffer::setMeta__uint32_t"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Buffer_1ae00087e5ad6c7f0ea382bd930a9c3d7d"></span>void <code class="descname">setMeta</code><span class="sig-paren">(</span>uint32_t <em>meta</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream6Buffer7setMetaE8uint32_t" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Set meta data. </p>
-<p>The meta data field is used by the <a class="reference internal" href="pool.html#classrogue_1_1interfaces_1_1stream_1_1Pool"><span class="std std-ref">Pool</span></a> class or sub-class to track the allocated data. <dl class="docutils">
-<dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last simple">
-<li><code class="docutils literal notranslate"><span class="pre">meta</span></code>: Meta data value </li>
+<p>The meta data field is used by the <a class="reference internal" href="pool.html#classrogue_1_1interfaces_1_1stream_1_1Pool"><span class="std std-ref">Pool</span></a> class or sub-class to track the allocated data. <dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">meta</span></code>: Meta data value </p></li>
 </ul>
 </dd>
 </dl>
@@ -259,10 +252,9 @@
 <dt id="_CPPv4N5rogue10interfaces6stream6Buffer12adjustHeaderE7int32_t">
 <span id="_CPPv3N5rogue10interfaces6stream6Buffer12adjustHeaderE7int32_t"></span><span id="_CPPv2N5rogue10interfaces6stream6Buffer12adjustHeaderE7int32_t"></span><span id="rogue::interfaces::stream::Buffer::adjustHeader__int32_t"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Buffer_1a0d894947e2006509b5e7b1216395be35"></span>void <code class="descname">adjustHeader</code><span class="sig-paren">(</span>int32_t <em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream6Buffer12adjustHeaderE7int32_t" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Adjust header by passed value. </p>
-<p><dl class="docutils">
-<dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last simple">
-<li><code class="docutils literal notranslate"><span class="pre">value</span></code>: Head adjustment amount </li>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">value</span></code>: Head adjustment amount </p></li>
 </ul>
 </dd>
 </dl>
@@ -279,10 +271,9 @@
 <dt id="_CPPv4N5rogue10interfaces6stream6Buffer10adjustTailE7int32_t">
 <span id="_CPPv3N5rogue10interfaces6stream6Buffer10adjustTailE7int32_t"></span><span id="_CPPv2N5rogue10interfaces6stream6Buffer10adjustTailE7int32_t"></span><span id="rogue::interfaces::stream::Buffer::adjustTail__int32_t"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Buffer_1ad3b1a80aa1d347a11b9cecf1b5246365"></span>void <code class="descname">adjustTail</code><span class="sig-paren">(</span>int32_t <em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream6Buffer10adjustTailE7int32_t" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Adjust tail reservation by passed value. </p>
-<p><dl class="docutils">
-<dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last simple">
-<li><code class="docutils literal notranslate"><span class="pre">value</span></code>: Tail adjustment amount </li>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">value</span></code>: Tail adjustment amount </p></li>
 </ul>
 </dd>
 </dl>
@@ -299,9 +290,9 @@
 <dt id="_CPPv4N5rogue10interfaces6stream6Buffer5beginEv">
 <span id="_CPPv3N5rogue10interfaces6stream6Buffer5beginEv"></span><span id="_CPPv2N5rogue10interfaces6stream6Buffer5beginEv"></span><span id="rogue::interfaces::stream::Buffer::begin"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Buffer_1a4947ecae5309f8856af71f858f9c6027"></span>uint8_t *<code class="descname">begin</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream6Buffer5beginEv" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Get beginning buffer iterator. </p>
-<p>Get an interator which indicates the start of the buffer space, not including the header reservation. <dl class="docutils">
-<dt><strong>Return</strong></dt>
-<dd>Begin buffer iterator </dd>
+<p>Get an interator which indicates the start of the buffer space, not including the header reservation. <dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>Begin buffer iterator </p>
+</dd>
 </dl>
 </p>
 </dd></dl>
@@ -310,9 +301,9 @@
 <dt id="_CPPv4N5rogue10interfaces6stream6Buffer3endEv">
 <span id="_CPPv3N5rogue10interfaces6stream6Buffer3endEv"></span><span id="_CPPv2N5rogue10interfaces6stream6Buffer3endEv"></span><span id="rogue::interfaces::stream::Buffer::end"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Buffer_1ac9673e236ed535ed34f8b62a49bed18f"></span>uint8_t *<code class="descname">end</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream6Buffer3endEv" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Get end buffer iterator. </p>
-<p>Get an interator which indicates the end of the the buffer minus the tail reservation. <dl class="docutils">
-<dt><strong>Return</strong></dt>
-<dd>End buffer iterator </dd>
+<p>Get an interator which indicates the end of the the buffer minus the tail reservation. <dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>End buffer iterator </p>
+</dd>
 </dl>
 </p>
 </dd></dl>
@@ -321,9 +312,9 @@
 <dt id="_CPPv4N5rogue10interfaces6stream6Buffer10endPayloadEv">
 <span id="_CPPv3N5rogue10interfaces6stream6Buffer10endPayloadEv"></span><span id="_CPPv2N5rogue10interfaces6stream6Buffer10endPayloadEv"></span><span id="rogue::interfaces::stream::Buffer::endPayload"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Buffer_1a7b8bdb8a036cd07a37abdc264062674e"></span>uint8_t *<code class="descname">endPayload</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream6Buffer10endPayloadEv" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Get end payload iterator. </p>
-<p>Get an interator which indicates the end of the the payload space. <dl class="docutils">
-<dt><strong>Return</strong></dt>
-<dd>End payload iterator </dd>
+<p>Get an interator which indicates the end of the the payload space. <dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>End payload iterator </p>
+</dd>
 </dl>
 </p>
 </dd></dl>
@@ -332,9 +323,9 @@
 <dt id="_CPPv4N5rogue10interfaces6stream6Buffer7getSizeEv">
 <span id="_CPPv3N5rogue10interfaces6stream6Buffer7getSizeEv"></span><span id="_CPPv2N5rogue10interfaces6stream6Buffer7getSizeEv"></span><span id="rogue::interfaces::stream::Buffer::getSize"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Buffer_1ad1ec48abd5130b0a27ca29b0531f3056"></span>uint32_t <code class="descname">getSize</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream6Buffer7getSizeEv" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Get <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Buffer"><span class="std std-ref">Buffer</span></a> size. </p>
-<p>Get size of buffer that can hold payload data. This function returns the full buffer size minus the head and tail reservation. <dl class="docutils">
-<dt><strong>Return</strong></dt>
-<dd><a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Buffer"><span class="std std-ref">Buffer</span></a> size in bytes </dd>
+<p>Get size of buffer that can hold payload data. This function returns the full buffer size minus the head and tail reservation. <dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Buffer"><span class="std std-ref">Buffer</span></a> size in bytes </p>
+</dd>
 </dl>
 </p>
 </dd></dl>
@@ -343,9 +334,9 @@
 <dt id="_CPPv4N5rogue10interfaces6stream6Buffer12getAvailableEv">
 <span id="_CPPv3N5rogue10interfaces6stream6Buffer12getAvailableEv"></span><span id="_CPPv2N5rogue10interfaces6stream6Buffer12getAvailableEv"></span><span id="rogue::interfaces::stream::Buffer::getAvailable"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Buffer_1afe0695dfc15bfb9aa9ec56422d9ec8d4"></span>uint32_t <code class="descname">getAvailable</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream6Buffer12getAvailableEv" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Get the available space for payload. </p>
-<p>Get the remaining data available for payload. <dl class="docutils">
-<dt><strong>Return</strong></dt>
-<dd>The amount of available space for payload in bytes. </dd>
+<p>Get the remaining data available for payload. <dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>The amount of available space for payload in bytes. </p>
+</dd>
 </dl>
 </p>
 </dd></dl>
@@ -354,9 +345,9 @@
 <dt id="_CPPv4N5rogue10interfaces6stream6Buffer10getPayloadEv">
 <span id="_CPPv3N5rogue10interfaces6stream6Buffer10getPayloadEv"></span><span id="_CPPv2N5rogue10interfaces6stream6Buffer10getPayloadEv"></span><span id="rogue::interfaces::stream::Buffer::getPayload"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Buffer_1a6611f5eb03f917084fb8126dd8e8cdab"></span>uint32_t <code class="descname">getPayload</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream6Buffer10getPayloadEv" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Get the payload size. </p>
-<p>This method will return the amount of payload data in the buffer. <dl class="docutils">
-<dt><strong>Return</strong></dt>
-<dd>Payload size in bytes </dd>
+<p>This method will return the amount of payload data in the buffer. <dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>Payload size in bytes </p>
+</dd>
 </dl>
 </p>
 </dd></dl>
@@ -365,10 +356,9 @@
 <dt id="_CPPv4N5rogue10interfaces6stream6Buffer10setPayloadE8uint32_t">
 <span id="_CPPv3N5rogue10interfaces6stream6Buffer10setPayloadE8uint32_t"></span><span id="_CPPv2N5rogue10interfaces6stream6Buffer10setPayloadE8uint32_t"></span><span id="rogue::interfaces::stream::Buffer::setPayload__uint32_t"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Buffer_1a80cff5ea63a8b59613ecdabb6d530284"></span>void <code class="descname">setPayload</code><span class="sig-paren">(</span>uint32_t <em>size</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream6Buffer10setPayloadE8uint32_t" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Set the payload size. </p>
-<p>Set the payload size to the passed value. <dl class="docutils">
-<dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last simple">
-<li><code class="docutils literal notranslate"><span class="pre">size</span></code>: New payload size in bytes </li>
+<p>Set the payload size to the passed value. <dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">size</span></code>: New payload size in bytes </p></li>
 </ul>
 </dd>
 </dl>
@@ -379,10 +369,9 @@
 <dt id="_CPPv4N5rogue10interfaces6stream6Buffer10minPayloadE8uint32_t">
 <span id="_CPPv3N5rogue10interfaces6stream6Buffer10minPayloadE8uint32_t"></span><span id="_CPPv2N5rogue10interfaces6stream6Buffer10minPayloadE8uint32_t"></span><span id="rogue::interfaces::stream::Buffer::minPayload__uint32_t"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Buffer_1a6af037726f7e21711076f5d88f7fd1eb"></span>void <code class="descname">minPayload</code><span class="sig-paren">(</span>uint32_t <em>size</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream6Buffer10minPayloadE8uint32_t" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Set minimum payload size. </p>
-<p>This method sets the payload size to be at least the passed value. If the current payload size exceeds the passed value, the size is unchanged. <dl class="docutils">
-<dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last simple">
-<li><code class="docutils literal notranslate"><span class="pre">size</span></code>: Min payload size in bytes </li>
+<p>This method sets the payload size to be at least the passed value. If the current payload size exceeds the passed value, the size is unchanged. <dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">size</span></code>: Min payload size in bytes </p></li>
 </ul>
 </dd>
 </dl>
@@ -393,10 +382,9 @@
 <dt id="_CPPv4N5rogue10interfaces6stream6Buffer13adjustPayloadE7int32_t">
 <span id="_CPPv3N5rogue10interfaces6stream6Buffer13adjustPayloadE7int32_t"></span><span id="_CPPv2N5rogue10interfaces6stream6Buffer13adjustPayloadE7int32_t"></span><span id="rogue::interfaces::stream::Buffer::adjustPayload__int32_t"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Buffer_1a1044d049468871e51ff4410a8f4a731c"></span>void <code class="descname">adjustPayload</code><span class="sig-paren">(</span>int32_t <em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream6Buffer13adjustPayloadE7int32_t" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Adjust the payload size. </p>
-<p>This method adjusts the payload size by the passed positive or negative value. <dl class="docutils">
-<dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last simple">
-<li><code class="docutils literal notranslate"><span class="pre">value</span></code>: Value to adjust payload by in bytes </li>
+<p>This method adjusts the payload size by the passed positive or negative value. <dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">value</span></code>: Value to adjust payload by in bytes </p></li>
 </ul>
 </dd>
 </dl>

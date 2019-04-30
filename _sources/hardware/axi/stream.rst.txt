@@ -21,7 +21,7 @@ hardware. One which will be associated with a register protocol (SRPV3 in this c
 and the other will be a bi-directional data channel. This channel will be connected to
 the custom sender and receiver described in :ref:`interfaces_stream_sending` and
 :ref:`interfaces_stream_receiving`. The example also uses the memory master 
-created in :ref:`interface_memory_master_ex`.
+created in :ref:`interfaces_memory_master_ex`.
 
 See :ref:`hardware_axi_axi_stream_dma` for more information about the AxiStreamDma class methods.
 
