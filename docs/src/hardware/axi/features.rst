@@ -30,7 +30,8 @@ In C++:
 
 The debug messages can then be viewed using the dmesg command in linux:
 
-.. code-block::
+.. code::
+
    $ dmesg
 
 ZeroCopy Enable

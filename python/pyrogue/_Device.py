@@ -25,7 +25,7 @@ import math
 import time
 
 class EnableVariable(pr.BaseVariable):
-    def __init__(self, *, enabled, deps):
+    def __init__(self, *, enabled, deps=None):
         pr.BaseVariable.__init__(
             self,
             description='Determines if device is enabled for hardware access',            
@@ -215,6 +215,7 @@ class Device(pr.Node,rim.Hub):
             self.add(lv)
 
 
+
     def hideVariables(self, hidden, variables=None):
         """Hide a list of Variables (or Variable names)"""
         if variables is None:
@@ -226,14 +227,19 @@ class Device(pr.Node,rim.Hub):
             elif isinstance(variables[0], str):
                 self.variables[v]._hidden = hidden
 
-    def softReset(self):
-        pass
+    def initialize(self):
+        for key,value in self.devices.items():
+            value.initialize()
 
     def hardReset(self):
-        pass
+        for block in self._blocks:
+            block._forceStale()
+        for key,value in self.devices.items():
+            value.hardReset()
 
     def countReset(self):
-        pass
+        for key,value in self.devices.items():
+            value.countReset()
 
     def enableChanged(self,value):
         pass # Do nothing
@@ -521,6 +527,28 @@ class Device(pr.Node,rim.Hub):
             return func
         return _decorator
 
+class ArrayDevice(Device):
+    def __init__(self, *, arrayClass, number, stride=0, arrayArgs=None, **kwargs):
+        if 'name' not in kwargs:
+            kwargs['name'] = f'{arrayClass.__name__}Array'
+        super().__init__(**kwargs)
+
+        if arrayArgs is None:
+            arrayArgs = [{} for x in range(number)]
+        elif isinstance(arrayArgs, dict):
+            arrayArgs = [arrayArgs for x in range(number)]
+            
+        for i in range(number):
+            args = arrayArgs[i]
+            if 'name' in args:
+                name = args.pop('name')
+            else:
+                name = arrayClass.__name__
+            self.add(arrayClass(
+                name=f'{name}[{i:d}]',
+                offset=i*stride,
+                **args))
+                
 class DataWriter(Device):
     """Special base class to control data files. TODO: Update comments"""
 

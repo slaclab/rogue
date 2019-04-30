@@ -18,4 +18,5 @@ This section describes how to obtain and install Rogue.
    build
    application
    firewall
+   windows
 

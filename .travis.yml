@@ -84,10 +84,12 @@ jobs:
         - make -j4 install
 
         # Build Docs
-        - cd $TRAVIS_BUILD_DIR
-        - source setup_rogue.sh
-        - cd docs
-        - make html
+        - if [ "$TRAVIS_BRANCH" = "documentation" ]; then
+            cd $TRAVIS_BUILD_DIR;
+            source setup_rogue.sh;
+            cd docs;
+            make html;
+          fi
 
       before_script:
         # Prepare rogue enviroment
@@ -104,7 +106,9 @@ jobs:
         - codecov
         - coverage report -m
         # Publish docs.
-        - doctr deploy . --built-docs docs/build/html --deploy-branch-name gh-pages --branch-whitelist documentation
+        - if [ "$TRAVIS_BRANCH" = "documentation" ]; then
+           doctr deploy . --built-docs docs/build/html --deploy-branch-name gh-pages --branch-whitelist documentation;
+         fi
 
     # Deploy development version stage (deploy_dev)
     - &deploy-docker-stage      # Docker
@@ -172,7 +176,8 @@ jobs:
 
       script:
         # Build conda package
-        - conda build -q conda-recipe --output-folder bld-dir -c defaults -c conda-forge -c paulscherrerinstitute
+        - conda build --debug conda-recipe --output-folder bld-dir -c defaults -c conda-forge -c paulscherrerinstitute
+        #- conda build -q conda-recipe --output-folder bld-dir -c defaults -c conda-forge -c paulscherrerinstitute
 
       after_success:
         # Upload conda package

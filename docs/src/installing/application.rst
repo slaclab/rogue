@@ -22,7 +22,7 @@ compile the applications:
    $ cmake ..
    $ make
 
-The outputs will be placed in a **bin* sub-directory.
+The outputs will be placed in a **bin** sub-directory.
 
 .. code:: cmake
 

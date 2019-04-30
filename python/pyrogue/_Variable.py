@@ -49,7 +49,8 @@ class BaseVariable(pr.Node):
                  hidden=False,
                  minimum=None,
                  maximum=None,
-                 pollInterval=0
+                 pollInterval=0,
+                 offset=0
                 ):
 
         # Public Attributes
@@ -309,7 +310,6 @@ class BaseVariable(pr.Node):
         return self._nativeType
 
     def _setDefault(self):
-        # Called by parent Device after _buildBlocks()
         if self._default is not None:
             self.setDisp(self._default, write=False)
 
@@ -318,10 +318,12 @@ class BaseVariable(pr.Node):
             self.root._pollQueue.updatePollInterval(self)
 
     def _finishInit(self):
+        # Set the default value but dont write
         self._setDefault()
         self._updatePollInterval()
 
     def _setDict(self,d,writeEach,modes):
+        #print(f'{self.path}._setDict(d={d})')        
         if self._mode in modes:
             self.setDisp(d,writeEach)
 
@@ -446,6 +448,10 @@ class RemoteVariable(BaseVariable):
     @property
     def base(self):
         return self._base
+
+    def _setDefault(self):
+        if self._default is not None:
+            self._block._setDefault(self, self.parseDisp(self._default))
 
     @Pyro4.expose
     def parseDisp(self, sValue):
@@ -588,6 +594,13 @@ class LinkVariable(BaseVariable):
             for arg in args:
                 if arg not in kwargs:
                     kwargs[arg] = getattr(variable, arg)
+
+        if not self._linkedSet:
+            kwargs['mode'] = 'RO'
+        if not self._linkedGet:
+            kwargs['mode'] = 'WO'
+
+        # Need to have at least 1 of linkedSet or linkedGet, otherwise error
 
         # Call super constructor
         BaseVariable.__init__(self, name=name, **kwargs)
