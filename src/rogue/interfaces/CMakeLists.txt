@@ -13,6 +13,7 @@
 # contained in the LICENSE.txt file.
 # ----------------------------------------------------------------------------
 
+target_sources(rogue-core PRIVATE "${CMAKE_CURRENT_LIST_DIR}/ZmqServer.cpp")
 add_subdirectory("memory")
 add_subdirectory("stream")
 
