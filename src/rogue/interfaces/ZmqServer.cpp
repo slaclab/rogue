@@ -92,77 +92,50 @@ void rogue::interfaces::ZmqServer::publish(std::string value) {
    zmq_send(this->zmqPub_,value.c_str(),value.size(),0);
 }
 
-std::string rogue::interfaces::ZmqServer::doRequest ( std::string type, std::string path, std::string arg ) {
-   return(std::string(""));
+std::string rogue::interfaces::ZmqServer::doRequest ( std::string data ) {
+   return(std::string("null\n"));
 }
 
 #ifndef NO_PYTHON
 
 rogue::interfaces::ZmqServerWrap::ZmqServerWrap (std::string addr, uint16_t port) : rogue::interfaces::ZmqServer(addr,port) {}
 
-std::string rogue::interfaces::ZmqServerWrap::doRequest ( std::string type, std::string path, std::string arg ) {
+std::string rogue::interfaces::ZmqServerWrap::doRequest ( std::string data ) {
    {
       rogue::ScopedGil gil;
 
       if (bp::override f = this->get_override("_doRequest")) {
          try {
-            return(f(type,path,arg));
+            return(f(data));
          } catch (...) {
             PyErr_Print();
          }
       }
    }
-   return(rogue::interfaces::ZmqServer::doRequest(type,path,arg));
+   return(rogue::interfaces::ZmqServer::doRequest(data));
 }
 
-std::string rogue::interfaces::ZmqServerWrap::defDoRequest ( std::string type, std::string path, std::string arg ) {
-   return(rogue::interfaces::ZmqServer::doRequest(type,path,arg));
+std::string rogue::interfaces::ZmqServerWrap::defDoRequest ( std::string data ) {
+   return(rogue::interfaces::ZmqServer::doRequest(data));
 }
 
 #endif
 
 void rogue::interfaces::ZmqServer::runThread() {
-   uint64_t  more;
-   size_t    moreSize;
-   std::string type;
-   std::string path;
-   std::string arg;
+   std::string data;
    std::string ret;
-   uint32_t  msgCnt;
-   uint32_t  x;
-   zmq_msg_t msg[3];
+   zmq_msg_t msg;
 
    while(threadEn_) {
-      for (x=0; x < 3; x++) zmq_msg_init(&(msg[x]));
-      msgCnt = 0;
-      x = 0;
+      zmq_msg_init(&msg);
 
-      // Get message
-      do {
-
-         // Get the message
-         if ( zmq_recvmsg(this->zmqRep_,&(msg[x]),0) > 0 ) {
-            if ( x != 2 ) x++;
-            msgCnt++;
-
-            // Is there more data?
-            more = 0;
-            moreSize = 8;
-            zmq_getsockopt(this->zmqRep_, ZMQ_RCVMORE, &more, &moreSize);
-         } else more = 1;
-      } while ( threadEn_ && more );
-
-      // Proper message received
-      if ( msgCnt == 3 ) {
-         type = std::string((const char *)zmq_msg_data(&(msg[0])));
-         path = std::string((const char *)zmq_msg_data(&(msg[1])));
-         arg  = std::string((const char *)zmq_msg_data(&(msg[2])));
-
-         ret = this->doRequest(type,path,arg);
+      // Get the message
+      if ( zmq_recvmsg(this->zmqRep_,&msg,0) > 0 ) {
+         data = (const char *)zmq_msg_data(&msg);
+         ret = this->doRequest(data);
          zmq_send(this->zmqRep_,ret.c_str(),ret.size(),0);
+         zmq_msg_close(&msg);
       }
-
-      for (x=0; x < msgCnt; x++) zmq_msg_close(&(msg[x]));
    }
 }
 

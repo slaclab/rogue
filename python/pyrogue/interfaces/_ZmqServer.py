@@ -14,24 +14,35 @@
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
 import rogue.interfaces
+import pyrogue
 
 class ZmqServer(rogue.interfaces.ZmqServer):
     def __init__(self,*,root,addr,port):
         rogue.interfaces.ZmqServer.__init__(self,addr,port)
         self._root = root
 
-    def _doRequest(self,type,path,arg):
-        ret = ""
+    def _doRequest(self,data):
+        try:
+            d = pyrogue.yamlToData(data)
 
-        if type == "get":
-            ret = self._root.getDisp(path)
-        elif type == "set":
-            self._root.setDisp(path,arg)
-        elif type == "exec":
-            ret = self._root.exec(path,arg)
-            if ret is None: ret = ""
-        elif type == "value":
-            ret = self._root.valueDisp(path)
+            path   = d['path']
+            attr   = d['attr']
+            args   = d['args']
+            kwargs = d['kwargs']
 
-        return ret
+            node = self._root.getNode(path)
+
+            if node is None:
+                return 'null\n'
+
+            nAttr = getattr(node, attr)
+
+            if nAttr is None:
+                return 'null\n'
+
+            r = pyrogue.dataToYaml(nAttr(*args,**kwargs)) + '\n'
+            return r
+
+        except:
+            return 'null\n'
 

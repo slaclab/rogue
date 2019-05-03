@@ -357,6 +357,8 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         obj = self
         if '.' in path:
             for a in path.split('.')[1:]:
+                if not hasattr(obj,'node'):
+                    return None
                 obj = obj.node(a)
 
         return obj
@@ -470,14 +472,14 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
     def _getYaml(self,readFirst,modes=['RW']):
         """
-        Get current values as a yaml dictionary.
+        Get current values as yaml data.
         modes is a list of variable modes to include.
         If readFirst=True a full read from hardware is performed.
         """
 
         if readFirst: self._read()
         try:
-            return  dictToYaml({self.name:self._getDict(modes)},default_flow_style=False)
+            return  dataToYaml({self.name:self._getDict(modes)},default_flow_style=False)
         except Exception as e:
             self._log.exception(e)
             return ""
@@ -492,7 +494,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         are completed. Bulk writes provide better performance when updating a large
         quanitty of variables.
         """
-        d = yamlToDict(yml)
+        d = yamlToData(yml)
         with self.updateGroup():
 
             for key, value in d.items():
@@ -576,9 +578,10 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                 self._log.debug(F"Done update group. Length={len(uvars)}. Entry={list(uvars.keys())[0]}")
 
                 # Generate yaml stream
-                y = dictToYaml(d,default_flow_style=False)
+                y = dataToYaml(d,default_flow_style=False)
                 self._sendYamlFrame(y)
 
+                # Send over zmq link
                 if self._zmqServer is not None:
                     self._zmqServer._publish(y)
 
@@ -657,8 +660,8 @@ class PyroClient(object):
         except:
             raise pr.NodeError("PyroClient Failed to find {}.{}.".format(self._group,name))
 
-def yamlToDict(stream, Loader=yaml.Loader, object_pairs_hook=odict):
-    """Load yaml to ordered dictionary"""
+def yamlToData(stream, Loader=yaml.Loader, object_pairs_hook=odict):
+    """Load yaml to data structure"""
     class OrderedLoader(Loader):
         pass
 
@@ -670,8 +673,8 @@ def yamlToDict(stream, Loader=yaml.Loader, object_pairs_hook=odict):
 
     return yaml.load(stream, OrderedLoader)
 
-def dictToYaml(data, stream=None, Dumper=yaml.Dumper, **kwds):
-    """Convert ordered dictionary to yaml"""
+def dataToYaml(data, stream=None, Dumper=yaml.Dumper, **kwds):
+    """Convert data structure to yaml"""
 
     class OrderedDumper(Dumper):
         pass
@@ -723,7 +726,7 @@ def dictUpdate(old, new):
             old[k] = v
 
 def yamlUpdate(old, new):
-    dictUpdate(old, yamlToDict(new))
+    dictUpdate(old, yamlToData(new))
 
 def recreate_OrderedDict(name, values):
     return odict(values['items'])

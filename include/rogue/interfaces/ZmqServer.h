@@ -54,7 +54,7 @@ namespace rogue {
 
             void publish(std::string value);
 
-            virtual std::string doRequest (std::string type, std::string path, std::string arg );
+            virtual std::string doRequest (std::string data);
       };
       typedef std::shared_ptr<rogue::interfaces::ZmqServer> ZmqServerPtr;
 
@@ -69,9 +69,9 @@ namespace rogue {
 
             ZmqServerWrap (std::string addr, uint16_t port);
 
-            std::string doRequest ( std::string type, std::string path, std::string arg );
+            std::string doRequest ( std::string data );
 
-            std::string defDoRequest ( std::string type, std::string path, std::string arg );
+            std::string defDoRequest ( std::string data );
       };
 
       typedef std::shared_ptr<rogue::interfaces::ZmqServerWrap> ZmqServerWrapPtr;
