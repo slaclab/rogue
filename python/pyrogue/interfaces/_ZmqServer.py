@@ -39,9 +39,10 @@ class ZmqServer(rogue.interfaces.ZmqServer):
 
             if nAttr is None:
                 return 'null\n'
-
-            r = pyrogue.dataToYaml(nAttr(*args,**kwargs)) + '\n'
-            return r
+            elif callable(nAttr):
+                return pyrogue.dataToYaml(nAttr(*args,**kwargs)) + '\n'
+            else:
+                return pyrogue.dataToYaml(nAttr) + '\n'
 
         except:
             return 'null\n'
