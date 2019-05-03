@@ -14,12 +14,13 @@
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
-#include <rogue/ZmqServer.h>
+#include <rogue/interfaces/ZmqServer.h>
 #include <rogue/GeneralError.h>
 #include <memory>
 #include <rogue/GilRelease.h>
 #include <rogue/ScopedGil.h>
 #include <string>
+#include <zmq.h>
 
 #ifndef NO_PYTHON
 #include <boost/python.hpp>
@@ -35,9 +36,9 @@ rogue::interfaces::ZmqServerPtr rogue::interfaces::ZmqServer::create(std::string
 void rogue::interfaces::ZmqServer::setup_python() {
 #ifndef NO_PYTHON
 
-   bp::class_<rogue::interfaces::ZmqServerWrap, rogue::interfaces::ZmqServerWrapPtr, boost::noncopyable>("ZmqServer",bp::init<std::string>())
-      .def("_doRequest", &rogue::interfaces::interfaces::ZmqServer::doRequest, &rogue::interfaces::interfaces::ZmqServerWrap::defDoRequest)
-      .def("_publish",   &rogue::interfaces::interfaces::ZmqServer::publish)
+   bp::class_<rogue::interfaces::ZmqServerWrap, rogue::interfaces::ZmqServerWrapPtr, boost::noncopyable>("ZmqServer",bp::init<std::string, uint16_t>())
+      .def("_doRequest", &rogue::interfaces::ZmqServer::doRequest, &rogue::interfaces::ZmqServerWrap::defDoRequest)
+      .def("_publish",   &rogue::interfaces::ZmqServer::publish)
    ;
 #endif
 }
@@ -77,7 +78,7 @@ rogue::interfaces::ZmqServer::ZmqServer (std::string addr, uint16_t port) {
 }
 
 rogue::interfaces::ZmqServer::~ZmqServer() {
-   rogue::interfaces::GilRelease noGil;
+   rogue::GilRelease noGil;
    threadEn_ = false;
    thread_->join();
 
@@ -88,10 +89,10 @@ rogue::interfaces::ZmqServer::~ZmqServer() {
 
 void rogue::interfaces::ZmqServer::publish(std::string value) {
    rogue::GilRelease noGil;
-   this->zmqPub_.send(value);
+   zmq_send(this->zmqPub_,value.c_str(),value.size(),0);
 }
 
-std::string rogue::interfaces::ZmqServer::doRequest ( uint8_t type, std::string path, std::string arg ) {
+std::string rogue::interfaces::ZmqServer::doRequest ( std::string type, std::string path, std::string arg ) {
    return(std::string(""));
 }
 
@@ -101,7 +102,7 @@ rogue::interfaces::ZmqServerWrap::ZmqServerWrap (std::string addr, uint16_t port
 
 std::string rogue::interfaces::ZmqServerWrap::doRequest ( std::string type, std::string path, std::string arg ) {
    {
-      rogue::interfaces::ScopedGil gil;
+      rogue::ScopedGil gil;
 
       if (bp::override f = this->get_override("_doRequest")) {
          try {
@@ -153,13 +154,12 @@ void rogue::interfaces::ZmqServer::runThread() {
 
       // Proper message received
       if ( msgCnt == 3 ) {
-         type = zmq_msg_data(&(msg[0]);
-         path = zmq_msg_data(&(msg[1]);
-         arg  = zmq_msg_data(&(msg[2]);
+         type = std::string((const char *)zmq_msg_data(&(msg[0])));
+         path = std::string((const char *)zmq_msg_data(&(msg[1])));
+         arg  = std::string((const char *)zmq_msg_data(&(msg[2])));
 
          ret = this->doRequest(type,path,arg);
-
-         zmq_send(ret);
+         zmq_send(this->zmqRep_,ret.c_str(),ret.size(),0);
       }
 
       for (x=0; x < msgCnt; x++) zmq_msg_close(&(msg[x]));

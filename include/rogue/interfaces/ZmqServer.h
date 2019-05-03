@@ -44,7 +44,7 @@ namespace rogue {
 
          public:
 
-            static std::shared_ptr<rogue::interfaces::ZmqServer> create(std::string::addr, uin16_t port);
+            static std::shared_ptr<rogue::interfaces::ZmqServer> create(std::string addr, uint16_t port);
 
             //! Setup class in python
             static void setup_python();

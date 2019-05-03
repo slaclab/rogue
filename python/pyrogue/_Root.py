@@ -83,9 +83,8 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         self._pyroThread = None
         self._pyroDaemon = None
 
-        # Zeromq status pub
-        self._zmqCtx     = None
-        self._zmqStatPub = None
+        # Zeromq server
+        self._zmqServer  = None
 
         # List of variable listeners
         self._varListeners  = []
@@ -205,9 +204,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
         # Start ZMQ server if enabled
         if zmqPort is not None:
-            self._zmqCtx = zmq.Context()
-            self._zmqStatPub = self._zmqCtx.socket(zmq.PUB)
-            self._zmqStatPub.bind("tcp://*:{}".format(zmqPort))
+            self._zmqServer = pr.interfaces.ZmqServer(root=self,addr="*",port=zmqPort)
 
         # Start pyro server if enabled
         if pyroGroup is not None:
@@ -582,8 +579,8 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                 y = dictToYaml(d,default_flow_style=False)
                 self._sendYamlFrame(y)
 
-                if self._zmqStatPub is not None:
-                    self._zmqStatPub.send(y.encode('UTF-8'))
+                if self._zmqServer is not None:
+                    self._zmqServer._publish(y)
 
                 # Init var list
                 uvars = {}
