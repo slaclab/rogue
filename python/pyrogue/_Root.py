@@ -555,7 +555,6 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                 for p,v in uvars.items():
                     val = v._doUpdate()
                     d[p] = val
-                    print("Recording {} = {}".format(p,val))
 
                     # Call listener functions,
                     with self._varListenLock:
