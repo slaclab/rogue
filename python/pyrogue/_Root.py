@@ -24,6 +24,7 @@ import Pyro4.naming
 import functools as ft
 import time
 import queue
+import zmq
 from contextlib import contextmanager
 
 class RootLogHandler(logging.Handler):
@@ -81,6 +82,10 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         # Remote object export
         self._pyroThread = None
         self._pyroDaemon = None
+
+        # Zeromq status pub
+        self._zmqCtx     = None
+        self._zmqStatPub = None
 
         # List of variable listeners
         self._varListeners  = []
@@ -147,7 +152,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         self.add(pr.LocalCommand(name='GetYamlState', value=True, function=lambda arg: self._getYaml(arg,['RW','RO','WO']), hidden=True,
                                  description='Get current state as YAML string. Pass read first arg.'))
 
-    def start(self, timeout=1.0, initRead=False, initWrite=False, pollEn=True, pyroGroup=None, pyroAddr=None, pyroNsAddr=None):
+    def start(self, timeout=1.0, initRead=False, initWrite=False, pollEn=True, pyroGroup=None, pyroAddr=None, pyroNsAddr=None, zmqPort=None):
         """Setup the tree. Start the polling thread."""
 
         # Create poll queue object
@@ -197,6 +202,12 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         if timeout != 1.0:
             for key,value in self._nodes.items():
                 value._setTimeout(timeout)
+
+        # Start ZMQ server if enabled
+        if zmqPort is not None:
+            self._zmqCtx = zmq.Context()
+            self._zmqStatPub = self._zmqCtx.socket(zmq.PUB)
+            self._zmqStatPub.bind("tcp://*:{}".format(zmqPort))
 
         # Start pyro server if enabled
         if pyroGroup is not None:
@@ -546,6 +557,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                 for p,v in uvars.items():
                     val = v._doUpdate()
                     d[p] = val
+                    print("Recording {} = {}".format(p,val))
 
                     # Call listener functions,
                     with self._varListenLock:
@@ -567,7 +579,11 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                 self._log.debug(F"Done update group. Length={len(uvars)}. Entry={list(uvars.keys())[0]}")
 
                 # Generate yaml stream
-                self._sendYamlFrame(dictToYaml(d,default_flow_style=False))
+                y = dictToYaml(d,default_flow_style=False)
+                self._sendYamlFrame(y)
+
+                if self._zmqStatPub is not None:
+                    self._zmqStatPub.send(y.encode('UTF-8'))
 
                 # Init var list
                 uvars = {}
