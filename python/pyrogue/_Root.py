@@ -24,7 +24,6 @@ import Pyro4.naming
 import functools as ft
 import time
 import queue
-import zmq
 from contextlib import contextmanager
 
 class RootLogHandler(logging.Handler):
