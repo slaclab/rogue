@@ -1,6 +1,6 @@
 /**
  *-----------------------------------------------------------------------------
- * Title      : Rogue Shared Memory Interface
+ * Title      : Rogue ZMQ Control Interface
  * ----------------------------------------------------------------------------
  * File       : ZmqServer.cpp
  * Created    : 2019-05-02
