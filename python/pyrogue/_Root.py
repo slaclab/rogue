@@ -135,13 +135,13 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         self.add(pr.LocalCommand(name='ClearLog', function=self._clearLog,
                                  description='Clear the message log cntained in the SystemLog variable'))
 
-        self.add(pr.LocalCommand(name='SetYamlConfig', function=lambda s: self._setYaml(s,False,['RW','WO']),
+        self.add(pr.LocalCommand(name='SetYamlConfig', value='', function=lambda arg: self._setYaml(arg,False,['RW','WO']),
                                  description='Set configuration from passed YAML string'))
 
-        self.add(pr.LocalCommand(name='GetYamlConfig', value=True, function=lambda r: self._getYaml(r,['RW','WO']),
+        self.add(pr.LocalCommand(name='GetYamlConfig', value=True, function=lambda arg: self._getYaml(arg,['RW','WO']),
                                  description='Get current configuration as YAML string. Pass read first arg.'))
 
-        self.add(pr.LocalCommand(name='GetYamlState', value=True, function=lambda r: self._getYaml(r,['RW','RO','WO']),
+        self.add(pr.LocalCommand(name='GetYamlState', value=True, function=lambda arg: self._getYaml(arg,['RW','RO','WO']),
                                  description='Get current state as YAML string. Pass read first arg.'))
 
     def start(self, timeout=1.0, initRead=False, initWrite=False, pollEn=True, pyroGroup=None, pyroAddr=None, pyroNsAddr=None):
