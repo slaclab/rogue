@@ -19,7 +19,6 @@ import logging
 import re
 import inspect
 import pyrogue as pr
-import Pyro4
 import functools as ft
 import parse
 import collections
@@ -59,7 +58,6 @@ def logInit(cls=None,name=None,path=None):
 
     return logging.getLogger(ln)
 
-
 class NodeError(Exception):
     """ Exception for node manipulation errors."""
     pass
@@ -91,40 +89,34 @@ class Node(object):
         self._expand      = expand
 
         # Tracking
-        self._parent = None
-        self._root   = None
-        self._nodes  = odict()
-        self._bases  = None
+        self._parent  = None
+        self._root    = None
+        self._nodes   = odict()
+        self._bases   = None
 
         # Setup logging
         self._log = logInit(cls=self,name=name,path=None)
 
-    @Pyro4.expose
     @property
     def name(self):
         return self._name
 
-    @Pyro4.expose
     @property
     def description(self):
         return self._description
 
-    @Pyro4.expose
     @property
     def hidden(self):
         return self._hidden
 
-    @Pyro4.expose
     @hidden.setter
     def hidden(self, value):
         self._hidden = value
 
-    @Pyro4.expose
     @property
     def path(self):
         return self._path
 
-    @Pyro4.expose
     @property
     def expand(self):
         return self._expand
@@ -146,6 +138,12 @@ class Node(object):
 
     def __dir__(self):
         return(super().__dir__() + [k for k,v in self._nodes.items()])
+
+    def __reduce__(self):
+        attr = {}
+        attr['nodes'] = [k for k,v in self._nodes.items()]
+        attr['dir'] = [k for k in super().__dir__() if k[0] != '_']
+        return (pr.virtualNode, (attr,))
 
     def __contains__(self, item):
         return item in self._nodes.values()
@@ -190,12 +188,10 @@ class Node(object):
         for i in range(number):
             self.add(nodeClass(name='{:s}[{:d}]'.format(name, i), offset=offset+(i*stride), **kwargs))
 
-    @Pyro4.expose
     @property
     def nodeList(self):
         return([k for k,v in self._nodes.items()])
 
-    @Pyro4.expose
     def getNodes(self,typ,exc=None,hidden=True):
         """
         Get a ordered dictionary of nodes.
@@ -206,7 +202,6 @@ class Node(object):
         return odict([(k,n) for k,n in self._nodes.items() \
             if (n._isinstance(typ) and ((exc is None) or (not n._isinstance(exc))) and (hidden or n.hidden == False))])
 
-    @Pyro4.expose
     @property
     def nodes(self):
         """
@@ -214,7 +209,6 @@ class Node(object):
         """
         return self._nodes
 
-    @Pyro4.expose
     @property
     def variables(self):
         """
@@ -222,7 +216,6 @@ class Node(object):
         """
         return self.getNodes(typ=pr.BaseVariable,exc=pr.BaseCommand,hidden=True)
 
-    @Pyro4.expose
     @property
     def visableVariables(self):
         """
@@ -230,7 +223,6 @@ class Node(object):
         """
         return self.getNodes(typ=pr.BaseVariable,exc=pr.BaseCommand,hidden=False)
 
-    @Pyro4.expose
     @property
     def variableList(self):
         """
@@ -244,7 +236,6 @@ class Node(object):
                 lst.extend(value.variableList)
         return lst
 
-    @Pyro4.expose
     @property
     def deviceList(self):
         """
@@ -257,7 +248,6 @@ class Node(object):
                 lst.extend(value.deviceList)
         return lst
 
-    @Pyro4.expose
     @property
     def commands(self):
         """
@@ -265,7 +255,6 @@ class Node(object):
         """
         return self.getNodes(pr.BaseCommand,hidden=True)
 
-    @Pyro4.expose
     @property
     def visableCommands(self):
         """
@@ -273,7 +262,6 @@ class Node(object):
         """
         return self.getNodes(pr.BaseCommand,hidden=False)
 
-    @Pyro4.expose
     @property
     def devices(self):
         """
@@ -281,7 +269,6 @@ class Node(object):
         """
         return self.getNodes(pr.Device,hidden=True)
 
-    @Pyro4.expose
     @property
     def visableDevices(self):
         """
@@ -289,7 +276,6 @@ class Node(object):
         """
         return self.getNodes(pr.Device,hidden=False)
 
-    @Pyro4.expose
     @property
     def parent(self):
         """
@@ -297,7 +283,6 @@ class Node(object):
         """
         return self._parent
 
-    @Pyro4.expose
     @property
     def root(self):
         """
@@ -305,21 +290,17 @@ class Node(object):
         """
         return self._root
 
-    @Pyro4.expose
     def node(self, path):
         return attrHelper(self._nodes,path)
 
-    @Pyro4.expose
     @property
     def isDevice(self):
         return isinstance(self,pr.Device)
 
-    @Pyro4.expose
     @property
     def isVariable(self):
         return (isinstance(self,pr.BaseVariable) and (not isinstance(self,pr.BaseCommand)))
 
-    @Pyro4.expose
     @property
     def isCommand(self):
         return isinstance(self,pr.BaseCommand)
@@ -423,6 +404,12 @@ class Node(object):
     def _setTimeout(self,timeout):
         pass
 
+
+def virtualNode(self, lst):
+    print(lst)
+    return None
+
+
 class PyroNode(object):
     def __init__(self, *, root, node, daemon):
         self._root   = root
@@ -513,6 +500,13 @@ class PyroNode(object):
 
     def __call__(self,arg=None):
         self._node.call(arg)
+
+
+
+
+
+
+
 
 
 def attrHelper(nodes,name):
