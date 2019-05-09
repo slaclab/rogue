@@ -134,14 +134,14 @@ inline int32_t rogueSMemControlAckCheck ( RogueControlMem *ptr, char *result, ui
 
 // Combined Req/Ack Routine With Timeout
 inline int32_t rogueSMemControlReqAckCheck ( RogueControlMem *ptr, uint8_t cmdType, 
-                                             const char *path, const char *arg, 
+                                             const char *path, const char *arg, uint32_t timeout,
                                              char *result, uint32_t resSize ) {
 
    struct timeval curr;
    struct timeval end;
    struct timeval to;
 
-   to.tv_sec  = 1;
+   to.tv_sec  = timeout;
    to.tv_usec = 0;
 
    rogueSMemControlReq (ptr, cmdType, path, arg );
@@ -157,23 +157,23 @@ inline int32_t rogueSMemControlReqAckCheck ( RogueControlMem *ptr, uint8_t cmdTy
 }
 
 // Get variable 
-inline int32_t rogueSMemControlGet ( RogueControlMem *ptr, const char *path, char *result, uint32_t resSize ) {
-   return rogueSMemControlReqAckCheck ( ptr, ROGUE_CMD_GET, path, NULL, result, resSize);
+inline int32_t rogueSMemControlGet ( RogueControlMem *ptr, const char *path, uint32_t timeout, char *result, uint32_t resSize ) {
+   return rogueSMemControlReqAckCheck ( ptr, ROGUE_CMD_GET, path, NULL, timeout, result, resSize);
 }
 
 // Set variable
-inline int32_t rogueSMemControlSet ( RogueControlMem *ptr, const char *path, const char *arg) {
-   return rogueSMemControlReqAckCheck ( ptr, ROGUE_CMD_GET, path, arg, NULL, 0);
+inline int32_t rogueSMemControlSet ( RogueControlMem *ptr, const char *path, const char *arg, uint32_t timeout) {
+   return rogueSMemControlReqAckCheck ( ptr, ROGUE_CMD_GET, path, arg, timeout, NULL, 0);
 }
 
 // Issue command
-inline int32_t rogueSMemControlExec ( RogueControlMem *ptr, const char *path, const char *arg, char *result = NULL, uint32_t resSize=0 ) {
-   return rogueSMemControlReqAckCheck ( ptr, ROGUE_CMD_EXEC, path, arg, result, resSize);
+inline int32_t rogueSMemControlExec ( RogueControlMem *ptr, const char *path, const char *arg, uint32_t timeout, char *result = NULL, uint32_t resSize=0) {
+   return rogueSMemControlReqAckCheck ( ptr, ROGUE_CMD_EXEC, path, arg, timeout, result, resSize);
 }
 
 // Get variable value
-inline int32_t rogueSMemControlValue ( RogueControlMem *ptr, const char *path, char *result, uint32_t resSize ) {
-   return rogueSMemControlReqAckCheck ( ptr, ROGUE_CMD_VALUE, path, NULL, result, resSize);
+inline int32_t rogueSMemControlValue ( RogueControlMem *ptr, const char *path, uint32_t timeout, char *result, uint32_t resSize ) {
+   return rogueSMemControlReqAckCheck ( ptr, ROGUE_CMD_VALUE, path, NULL, timeout, result, resSize);
 }
 
 #endif
