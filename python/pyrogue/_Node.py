@@ -58,6 +58,18 @@ def logInit(cls=None,name=None,path=None):
 
     return logging.getLogger(ln)
 
+def expose(item):
+
+    # Property
+    if inspect.isdatadescriptor(item):
+        func = item.fget or item.fset
+        func._rogueExposed = True
+        return item
+
+    # Method
+    item._rogueExposed = True
+    return item
+
 class NodeError(Exception):
     """ Exception for node manipulation errors."""
     pass
@@ -141,9 +153,29 @@ class Node(object):
 
     def __reduce__(self):
         attr = {}
-        attr['nodes'] = [k for k,v in self._nodes.items()]
-        attr['dir'] = [k for k in super().__dir__() if k[0] != '_']
-        return (pr.virtualNode, (attr,))
+
+        # Sub-nodes
+        attr['name']        = self._name
+        attr['description'] = self._description
+        attr['hidden']      = self._hidden
+        attr['path']        = self._path
+        attr['expand']      = self._expand
+        attr['nodes']       = [k for k,v in self._nodes.items()]
+        attr['props']       = {}
+        attr['funcs']       = {}
+
+        # Get properties
+        for k,v in inspect.getmembers(self.__class__, lambda a: isinstance(a,property)):
+            if hasattr(v.fget,'_rogueExposed') or hasattr(v.fset,'_rogueExposed'):
+                attr['props'][k] = {'fget': v.fget != None, 
+                                    'fset': v.fset != None }
+        # Get methods
+        for k,v in inspect.getmembers(self.__class__, callable):
+            if hasattr(v,'_rogueExposed'):
+                attr['funcs'][k] = {'args'   : inspect.getfullargspec(v).args,
+                                    'kwargs' : inspect.getfullargspec(v).kwonlyargs}
+
+        return (pr.VirtualNode, (attr,))
 
     def __contains__(self, item):
         return item in self._nodes.values()
@@ -187,11 +219,14 @@ class Node(object):
         offset = kwargs.pop('offset')
         for i in range(number):
             self.add(nodeClass(name='{:s}[{:d}]'.format(name, i), offset=offset+(i*stride), **kwargs))
-
+    
+    @expose
     @property
     def nodeList(self):
         return([k for k,v in self._nodes.items()])
 
+    @expose
+    @expose
     def getNodes(self,typ,exc=None,hidden=True):
         """
         Get a ordered dictionary of nodes.
@@ -202,6 +237,7 @@ class Node(object):
         return odict([(k,n) for k,n in self._nodes.items() \
             if (n._isinstance(typ) and ((exc is None) or (not n._isinstance(exc))) and (hidden or n.hidden == False))])
 
+    @expose
     @property
     def nodes(self):
         """
@@ -209,6 +245,7 @@ class Node(object):
         """
         return self._nodes
 
+    @expose
     @property
     def variables(self):
         """
@@ -216,6 +253,7 @@ class Node(object):
         """
         return self.getNodes(typ=pr.BaseVariable,exc=pr.BaseCommand,hidden=True)
 
+    @expose
     @property
     def visableVariables(self):
         """
@@ -223,6 +261,7 @@ class Node(object):
         """
         return self.getNodes(typ=pr.BaseVariable,exc=pr.BaseCommand,hidden=False)
 
+    @expose
     @property
     def variableList(self):
         """
@@ -236,6 +275,7 @@ class Node(object):
                 lst.extend(value.variableList)
         return lst
 
+    @expose
     @property
     def deviceList(self):
         """
@@ -248,6 +288,7 @@ class Node(object):
                 lst.extend(value.deviceList)
         return lst
 
+    @expose
     @property
     def commands(self):
         """
@@ -255,6 +296,7 @@ class Node(object):
         """
         return self.getNodes(pr.BaseCommand,hidden=True)
 
+    @expose
     @property
     def visableCommands(self):
         """
@@ -262,6 +304,7 @@ class Node(object):
         """
         return self.getNodes(pr.BaseCommand,hidden=False)
 
+    @expose
     @property
     def devices(self):
         """
@@ -269,6 +312,7 @@ class Node(object):
         """
         return self.getNodes(pr.Device,hidden=True)
 
+    @expose
     @property
     def visableDevices(self):
         """
@@ -276,6 +320,7 @@ class Node(object):
         """
         return self.getNodes(pr.Device,hidden=False)
 
+    @expose
     @property
     def parent(self):
         """
@@ -283,6 +328,7 @@ class Node(object):
         """
         return self._parent
 
+    @expose
     @property
     def root(self):
         """
@@ -290,17 +336,21 @@ class Node(object):
         """
         return self._root
 
+    @expose
     def node(self, path):
         return attrHelper(self._nodes,path)
 
+    @expose
     @property
     def isDevice(self):
         return isinstance(self,pr.Device)
 
+    @expose
     @property
     def isVariable(self):
         return (isinstance(self,pr.BaseVariable) and (not isinstance(self,pr.BaseCommand)))
 
+    @expose
     @property
     def isCommand(self):
         return isinstance(self,pr.BaseCommand)
@@ -405,9 +455,64 @@ class Node(object):
         pass
 
 
-def virtualNode(self, lst):
-    print(lst)
-    return None
+class VirtualNode(object):
+    def __init__(self, attrs):
+        self._name        = attrs['name']
+        self._description = attrs['description']
+        self._hidden      = attrs['hidden']
+        self._path        = attrs['path']
+        self._expand      = attrs['expand']
+
+        self._nodes = attrs['nodes']
+        self._props = attrs['props']
+        self._funcs = attrs['funcs']
+
+    @property
+    def name(self):
+        return self._name
+
+    @property
+    def description(self):
+        return self._description
+
+    @property
+    def hidden(self):
+        return self._hidden
+
+    @property
+    def path(self):
+        return self._path
+
+    @property
+    def expand(self):
+        return self._expand
+
+    def __repr__(self):
+        return self.path
+
+#    def __getattr__(self, name):
+#        """Allow child Nodes with the 'name[key]' naming convention to be accessed as if they belong to a 
+#        dictionary of Nodes with that 'name'.
+#        This override builds an OrderedDict of all child nodes named as 'name[key]' and returns it.
+#        Raises AttributeError if no such named Nodes are found. """
+#
+#        #ret = attrHelper(self._nodes,name)
+#        if ret is None:
+#            raise AttributeError('{} has no attribute {}'.format(self, name))
+#        else:
+#            return ret
+
+    def __dir__(self):
+        ret =  super().__dir__() 
+        ret += self._nodes
+        ret += [k for k,v in self._props.items()]
+        ret += ['{}('.format(k) for k,v in self._funcs.items()]
+
+        return ret
+
+    def __contains__(self, item):
+        return item in self._nodes.values()
+
 
 
 class PyroNode(object):
