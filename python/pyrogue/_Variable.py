@@ -17,7 +17,6 @@ import pyrogue as pr
 import textwrap
 import rogue.interfaces.memory
 import parse
-import Pyro4
 import math
 import inspect
 import threading
@@ -104,42 +103,42 @@ class BaseVariable(pr.Node):
         # Call super constructor
         pr.Node.__init__(self, name=name, description=description, hidden=hidden)
 
-    @Pyro4.expose
+    @pr.expose
     @property
     def enum(self):
         return self._enum
 
-    @Pyro4.expose
+    @pr.expose
     @property
     def revEnum(self):
         return self._revEnum
 
-    @Pyro4.expose
+    @pr.expose
     @property
     def typeStr(self):
         return self._typeStr
 
-    @Pyro4.expose
+    @pr.expose
     @property
     def disp(self):
         return self._disp
 
-    @Pyro4.expose
+    @pr.expose
     @property
     def mode(self):
         return self._mode
 
-    @Pyro4.expose
+    @pr.expose
     @property
     def units(self):
         return self._units
 
-    @Pyro4.expose
+    @pr.expose
     @property
     def minimum(self):
         return self._minimum
 
-    @Pyro4.expose
+    @pr.expose
     @property
     def maximum(self):
         return self._maximum
@@ -173,7 +172,7 @@ class BaseVariable(pr.Node):
         else:
             self.__functions.append(listener)
 
-    @Pyro4.expose
+    @pr.expose
     def set(self, value, write=True):
         """
         Set the value and write to hardware if applicable
@@ -193,7 +192,7 @@ class BaseVariable(pr.Node):
             self._log.exception(e)
             self._log.error("Error setting value '{}' to variable '{}' with type {}".format(value,self.path,self.typeStr))
 
-    @Pyro4.expose
+    @pr.expose
     def post(self,value):
         """
         Set the value and write to hardware if applicable using a posted write.
@@ -211,7 +210,7 @@ class BaseVariable(pr.Node):
             self._log.exception(e)
             self._log.error("Error posting value '{}' to variable '{}' with type {}".format(value,self.path,self.typeStr))
 
-    @Pyro4.expose
+    @pr.expose
     def get(self,read=True):
         """ 
         Return the value after performing a read from hardware if applicable.
@@ -235,11 +234,11 @@ class BaseVariable(pr.Node):
 
         return ret
 
-    @Pyro4.expose
+    @pr.expose
     def value(self):
         return self.get(read=False)
 
-    @Pyro4.expose
+    @pr.expose
     def genDisp(self, value):
         try:
             #print('{}.genDisp(read={}) disp={} value={}'.format(self.path, read, self.disp, value))
@@ -262,15 +261,15 @@ class BaseVariable(pr.Node):
 
         return ret
 
-    @Pyro4.expose
+    @pr.expose
     def getDisp(self, read=True):
         return(self.genDisp(self.get(read)))
 
-    @Pyro4.expose
+    @pr.expose
     def valueDisp(self, read=True):
         return self.getDisp(read=False)
 
-    @Pyro4.expose
+    @pr.expose
     def parseDisp(self, sValue):
         try:
             if sValue is None or isinstance(sValue, self.nativeType()):
@@ -295,7 +294,7 @@ class BaseVariable(pr.Node):
         except:
             raise VariableError("Invalid value {} for variable {} with type {}".format(sValue,self.name,self.nativeType()))
 
-    @Pyro4.expose
+    @pr.expose
     def setDisp(self, sValue, write=True):
         try:
             self.set(self.parseDisp(sValue), write)
@@ -303,7 +302,7 @@ class BaseVariable(pr.Node):
             self._log.exception(e)
             self._log.error("Error setting value '{}' to variable '{}' with type {}".format(sValue,self.path,self.typeStr))
 
-    @Pyro4.expose
+    @pr.expose
     def nativeType(self):
         if self._nativeType is None:
             self._nativeType = type(self.value())
@@ -352,7 +351,6 @@ class BaseVariable(pr.Node):
         return val
 
 
-@Pyro4.expose
 class RemoteVariable(BaseVariable):
 
     def __init__(self, *,
@@ -419,32 +417,32 @@ class RemoteVariable(BaseVariable):
     def varBytes(self):
         return self._bytes
 
-    @Pyro4.expose
+    @pr.expose
     @property
     def offset(self):
         return self._offset
 
-    @Pyro4.expose
+    @pr.expose
     @property
     def address(self):
         return self._block.address
 
-    @Pyro4.expose
+    @pr.expose
     @property
     def bitSize(self):
         return self._bitSize
 
-    @Pyro4.expose
+    @pr.expose
     @property
     def bitOffset(self):
         return self._bitOffset
 
-    @Pyro4.expose
+    @pr.expose
     @property
     def verify(self):
         return self._verify
 
-    @Pyro4.expose
+    @pr.expose
     @property
     def base(self):
         return self._base
@@ -453,7 +451,7 @@ class RemoteVariable(BaseVariable):
         if self._default is not None:
             self._block._setDefault(self, self.parseDisp(self._default))
 
-    @Pyro4.expose
+    @pr.expose
     def parseDisp(self, sValue):
         if sValue is None or isinstance(sValue, self.nativeType()):
             return sValue
@@ -566,7 +564,6 @@ class LocalVariable(BaseVariable):
         self._block._ior(other)
         return self
 
-@Pyro4.expose
 class LinkVariable(BaseVariable):
 
     def __init__(self, *,
@@ -621,7 +618,7 @@ class LinkVariable(BaseVariable):
         # Allow dependencies to be accessed as indicies of self
         return self.dependencies[key]
 
-    @Pyro4.expose
+    @pr.expose
     def set(self, value, write=True):
         if self._linkedSet is not None:
 
@@ -630,7 +627,7 @@ class LinkVariable(BaseVariable):
 
             varFuncHelper(self._linkedSet,pargs,self._log,self.path)
 
-    @Pyro4.expose
+    @pr.expose
     def get(self, read=True):
         if self._linkedGet is not None:
 

@@ -58,21 +58,23 @@ def logInit(cls=None,name=None,path=None):
 
     return logging.getLogger(ln)
 
+
 def expose(item):
 
     # Property
     if inspect.isdatadescriptor(item):
-        func = item.fget or item.fset
-        func._rogueExposed = True
+        func = item.fget._rogueExposed = True
         return item
 
     # Method
     item._rogueExposed = True
     return item
 
+
 class NodeError(Exception):
     """ Exception for node manipulation errors."""
     pass
+
 
 class Node(object):
     """
@@ -104,7 +106,6 @@ class Node(object):
         self._parent  = None
         self._root    = None
         self._nodes   = odict()
-        self._bases   = None
 
         # Setup logging
         self._log = logInit(cls=self,name=name,path=None)
@@ -156,26 +157,29 @@ class Node(object):
 
         # Sub-nodes
         attr['name']        = self._name
+        attr['class']       = self.__class__.__name__
+        attr['bases']       = pr.genBaseList(self.__class__)
         attr['description'] = self._description
         attr['hidden']      = self._hidden
         attr['path']        = self._path
         attr['expand']      = self._expand
         attr['nodes']       = [k for k,v in self._nodes.items()]
-        attr['props']       = {}
+        attr['props']       = []
         attr['funcs']       = {}
 
         # Get properties
+        print("getting properties for {}".format(self.__class__))
         for k,v in inspect.getmembers(self.__class__, lambda a: isinstance(a,property)):
-            if hasattr(v.fget,'_rogueExposed') or hasattr(v.fset,'_rogueExposed'):
-                attr['props'][k] = {'fget': v.fget != None, 
-                                    'fset': v.fset != None }
+            if hasattr(v.fget,'_rogueExposed'):
+                attr['props'].append(k)
+
         # Get methods
         for k,v in inspect.getmembers(self.__class__, callable):
             if hasattr(v,'_rogueExposed'):
-                attr['funcs'][k] = {'args'   : inspect.getfullargspec(v).args,
+                attr['funcs'][k] = {'args'   : [a for a in inspect.getfullargspec(v).args if a != 'self'],
                                     'kwargs' : inspect.getfullargspec(v).kwonlyargs}
 
-        return (pr.VirtualNode, (attr,))
+        return (pr.VirtualFactory, (attr,))
 
     def __contains__(self, item):
         return item in self._nodes.values()
@@ -220,13 +224,10 @@ class Node(object):
         for i in range(number):
             self.add(nodeClass(name='{:s}[{:d}]'.format(name, i), offset=offset+(i*stride), **kwargs))
     
-    @expose
     @property
     def nodeList(self):
         return([k for k,v in self._nodes.items()])
 
-    @expose
-    @expose
     def getNodes(self,typ,exc=None,hidden=True):
         """
         Get a ordered dictionary of nodes.
@@ -237,7 +238,6 @@ class Node(object):
         return odict([(k,n) for k,n in self._nodes.items() \
             if (n._isinstance(typ) and ((exc is None) or (not n._isinstance(exc))) and (hidden or n.hidden == False))])
 
-    @expose
     @property
     def nodes(self):
         """
@@ -245,7 +245,6 @@ class Node(object):
         """
         return self._nodes
 
-    @expose
     @property
     def variables(self):
         """
@@ -253,7 +252,6 @@ class Node(object):
         """
         return self.getNodes(typ=pr.BaseVariable,exc=pr.BaseCommand,hidden=True)
 
-    @expose
     @property
     def visableVariables(self):
         """
@@ -261,7 +259,6 @@ class Node(object):
         """
         return self.getNodes(typ=pr.BaseVariable,exc=pr.BaseCommand,hidden=False)
 
-    @expose
     @property
     def variableList(self):
         """
@@ -269,13 +266,12 @@ class Node(object):
         """
         lst = []
         for key,value in self._nodes.items():
-            if isinstance(value,pr.BaseVariable):
+            if value._isinstance(pr.BaseVariable):
                 lst.append(value)
             else:
                 lst.extend(value.variableList)
         return lst
 
-    @expose
     @property
     def deviceList(self):
         """
@@ -283,12 +279,11 @@ class Node(object):
         """
         lst = []
         for key,value in self._nodes.items():
-            if isinstance(value,pr.Device):
+            if value._isinstance(pr.Device):
                 lst.append(value)
                 lst.extend(value.deviceList)
         return lst
 
-    @expose
     @property
     def commands(self):
         """
@@ -296,7 +291,6 @@ class Node(object):
         """
         return self.getNodes(pr.BaseCommand,hidden=True)
 
-    @expose
     @property
     def visableCommands(self):
         """
@@ -304,7 +298,6 @@ class Node(object):
         """
         return self.getNodes(pr.BaseCommand,hidden=False)
 
-    @expose
     @property
     def devices(self):
         """
@@ -312,7 +305,6 @@ class Node(object):
         """
         return self.getNodes(pr.Device,hidden=True)
 
-    @expose
     @property
     def visableDevices(self):
         """
@@ -320,7 +312,6 @@ class Node(object):
         """
         return self.getNodes(pr.Device,hidden=False)
 
-    @expose
     @property
     def parent(self):
         """
@@ -328,7 +319,6 @@ class Node(object):
         """
         return self._parent
 
-    @expose
     @property
     def root(self):
         """
@@ -336,24 +326,20 @@ class Node(object):
         """
         return self._root
 
-    @expose
     def node(self, path):
         return attrHelper(self._nodes,path)
 
-    @expose
     @property
     def isDevice(self):
-        return isinstance(self,pr.Device)
+        return self._isinstance(pr.Device)
 
-    @expose
     @property
     def isVariable(self):
-        return (isinstance(self,pr.BaseVariable) and (not isinstance(self,pr.BaseCommand)))
+        return (self._isinstance(pr.BaseVariable) and (not self._isinstance(pr.BaseCommand)))
 
-    @expose
     @property
     def isCommand(self):
-        return isinstance(self,pr.BaseCommand)
+        return self._isinstance(pr.BaseCommand)
 
     def find(self, *, recurse=True, typ=None, **kwargs):
         """ 
@@ -406,11 +392,7 @@ class Node(object):
         return closure
 
     def _isinstance(self,typ):
-        if isinstance(typ,str):
-            if self._bases is None:
-                self._bases = pr.genBaseList(self.__class__)
-            return typ in self._bases
-        else: return isinstance(self,typ)
+        return isinstance(self,typ)
 
     def _rootAttached(self,parent,root):
         """Called once the root node is attached."""
@@ -453,165 +435,6 @@ class Node(object):
 
     def _setTimeout(self,timeout):
         pass
-
-
-class VirtualNode(object):
-    def __init__(self, attrs):
-        self._name        = attrs['name']
-        self._description = attrs['description']
-        self._hidden      = attrs['hidden']
-        self._path        = attrs['path']
-        self._expand      = attrs['expand']
-
-        self._nodes = attrs['nodes']
-        self._props = attrs['props']
-        self._funcs = attrs['funcs']
-
-    @property
-    def name(self):
-        return self._name
-
-    @property
-    def description(self):
-        return self._description
-
-    @property
-    def hidden(self):
-        return self._hidden
-
-    @property
-    def path(self):
-        return self._path
-
-    @property
-    def expand(self):
-        return self._expand
-
-    def __repr__(self):
-        return self.path
-
-#    def __getattr__(self, name):
-#        """Allow child Nodes with the 'name[key]' naming convention to be accessed as if they belong to a 
-#        dictionary of Nodes with that 'name'.
-#        This override builds an OrderedDict of all child nodes named as 'name[key]' and returns it.
-#        Raises AttributeError if no such named Nodes are found. """
-#
-#        #ret = attrHelper(self._nodes,name)
-#        if ret is None:
-#            raise AttributeError('{} has no attribute {}'.format(self, name))
-#        else:
-#            return ret
-
-    def __dir__(self):
-        ret =  super().__dir__() 
-        ret += self._nodes
-        ret += [k for k,v in self._props.items()]
-        ret += ['{}('.format(k) for k,v in self._funcs.items()]
-
-        return ret
-
-    def __contains__(self, item):
-        return item in self._nodes.values()
-
-
-
-class PyroNode(object):
-    def __init__(self, *, root, node, daemon):
-        self._root   = root
-        self._node   = node
-        self._daemon = daemon
-
-    def __repr__(self):
-        return self._node.path
-
-    def __getattr__(self, name):
-        ret = self.node(name)
-        if ret is None:
-            return self._node.__getattr__(name)
-        else:
-            return ret
-
-    def __dir__(self):
-        return(super().__dir__() + self._node.nodeList)
-
-    def _convert(self,d):
-        ret = odict()
-        for k,n in d.items():
-
-            if isinstance(n,dict):
-                ret[k] = PyroNode(root=self._root,node=Pyro4.util.SerializerBase.dict_to_class(n),daemon=self._daemon)
-            else:
-                ret[k] = PyroNode(root=self._root,node=n,daemon=self._daemon)
-
-        return ret
-
-    def attr(self,attr,**kwargs):
-        return self.__getattr__(attr)(**kwargs)
-
-    def addInstance(self,node):
-        self._daemon.register(node)
-
-    def node(self, path):
-        ret = self._node.node(path)
-        if ret is None: 
-            return None
-        elif isinstance(ret,odict) or isinstance(ret,dict):
-            return self._convert(ret)
-        else:
-            return PyroNode(root=self._root,node=ret,daemon=self._daemon)
-
-    def getNodes(self,typ,exc=None,hidden=True):
-        excPass = str(exc) if exc is not None else None
-        return self._convert(self._node.getNodes(str(typ),excPass,hidden))
-
-    @property
-    def nodes(self):
-        return self._convert(self._node.nodes)
-
-    @property
-    def variables(self):
-        return self._convert(self._node.variables)
-
-    @property
-    def visableVariables(self):
-        return self._convert(self._node.visableVariables)
-
-    @property
-    def commands(self):
-        return self._convert(self._node.commands)
-
-    @property
-    def visableCommands(self):
-        return self._convert(self._node.visableCommands)
-
-    @property
-    def devices(self):
-        return self._convert(self._node.devices)
-
-    @property
-    def visableDevices(self):
-        return self._convert(self._node.visableDevices)
-
-    @property
-    def parent(self):
-        return PyroNode(root=self._root,node=self._node.parent,daemon=self._daemon)
-
-    @property
-    def root(self):
-        return self._root
-
-    def addListener(self, listener):
-        self.root._addRelayListener(self.path, listener)
-
-    def __call__(self,arg=None):
-        self._node.call(arg)
-
-
-
-
-
-
-
 
 
 def attrHelper(nodes,name):

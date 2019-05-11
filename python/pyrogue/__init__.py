@@ -23,6 +23,7 @@ from pyrogue._Device    import *
 from pyrogue._Memory    import *
 from pyrogue._Root      import *
 from pyrogue._PollQueue import *
+from pyrogue._Virtual   import *
 
 def addLibraryPath(path):
     """
@@ -151,14 +152,6 @@ def busConnect(source,dest):
 
     master._setSlave(slave)
 
-def genBaseList(cls):
-    ret = str(cls)
-
-    for l in cls.__bases__:
-        if l is not object:
-            ret += genBaseList(l)
-
-    return ret
 
 # Add __version__ attribute with the module version number
 __version__ = rogue.Version.pythonVersion()

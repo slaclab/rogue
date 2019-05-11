@@ -19,7 +19,6 @@ import time
 from collections import OrderedDict as odict
 import pyrogue as pr
 import inspect
-import Pyro4
 import threading
 
 class CommandError(Exception):
@@ -63,12 +62,12 @@ class BaseCommand(pr.BaseVariable):
         except:
             self._arg = False
 
-    @Pyro4.expose
+    @pr.expose
     @property
     def arg(self):
         return self._arg
 
-    @Pyro4.expose
+    @pr.expose
     def call(self,arg=None):
         if self._background:
             with self._lock:
