@@ -239,7 +239,6 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
     def running(self):
         return self._running
 
-    @pr.expose
     def getNode(self, path):
         return self._getPath(path)
 
@@ -541,74 +540,6 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
             # Set done
             self._updateQueue.task_done()
 
-
-#class PyroRoot(pr.PyroNode):
-#    def __init__(self, *, node,daemon):
-#        pr.PyroNode.__init__(self,root=self,node=node,daemon=daemon)
-#
-#        self._varListeners   = []
-#        self._relayListeners = {}
-#
-#    def addInstance(self,node):
-#        self._daemon.register(node)
-#
-#    def getNode(self, path):
-#        return pr.PyroNode(root=self,node=self._node.getNode(path),daemon=self._daemon)
-#
-#    def addVarListener(self,listener):
-#        self._varListeners.append(listener)
-#
-#    def _addRelayListener(self, path, listener):
-#        if not path in self._relayListeners:
-#            self._relayListeners[path] = []
-#
-#        self._relayListeners[path].append(listener)
-#
-#    @pr.expose
-#    def varListener(self, path, value, disp):
-#        for f in self._varListeners:
-#            f.varListener(path=path, value=value, disp=disp)
-#
-#        if path in self._relayListeners:
-#            for f in self._relayListeners[path]:
-#                f.varListener(path=path, value=value, disp=disp)
-#
-#class PyroClient(object):
-#    def __init__(self, group, localAddr=None, nsAddr=None):
-#        self._group = group
-#
-#        Pyro4.config.THREADPOOL_SIZE = 100
-#        Pyro4.config.SERVERTYPE = "multiplex"
-#        Pyro4.config.POLLTIMEOUT = 3
-#
-#        Pyro4.util.SerializerBase.register_dict_to_class("collections.OrderedDict", recreate_OrderedDict)
-#
-#        if nsAddr is None:
-#            nsAddr = localAddr
-#
-#        try:
-#            self._ns = Pyro4.locateNS(host=nsAddr)
-#        except:
-#            raise pr.NodeError("PyroClient Failed to find nameserver")
-#
-#        self._pyroDaemon = Pyro4.Daemon(host=localAddr)
-#
-#        self._pyroThread = threading.Thread(target=self._pyroDaemon.requestLoop)
-#        self._pyroThread.start()
-#
-#    def stop(self):
-#        self._pyroDaemon.shutdown()
-#
-#    def getRoot(self,name):
-#        try:
-#            uri = self._ns.lookup("{}.{}".format(self._group,name))
-#            ret = PyroRoot(node=Pyro4.Proxy(uri),daemon=self._pyroDaemon)
-#            self._pyroDaemon.register(ret)
-#
-#            ret._node.addVarListener(ret)
-#            return ret
-#        except:
-#            raise pr.NodeError("PyroClient Failed to find {}.{}.".format(self._group,name))
 
 def yamlToData(stream, Loader=yaml.Loader, object_pairs_hook=odict):
     """Load yaml to data structure"""

@@ -19,6 +19,8 @@ import logging
 import inspect
 import pyrogue as pr
 import zmq
+import rogue.interfaces
+import functools as ft
 
 
 def genBaseList(cls):
@@ -37,8 +39,7 @@ class VirtualProperty(object):
         self._node = node
 
     def __get__(self, obj=None, objtype=None):
-        print("VirtualProperty get node={}, obj={}, objtype={}, attr={}".format(self._node,obj,objtype,self._attr))
-        return 1
+        return self._node._client._remoteAttr(self._node._path, self._attr)
 
     def __set__(self, obj, value):
         pass
@@ -52,8 +53,7 @@ class VirtualMethod(object):
         self._kwargs = info['kwargs']
 
     def __call__(self, *args, **kwargs):
-        print("VirtualMethod: attr={}, node={}, args={}, kwargs={}".format(self._attr,self._node,args,kwargs))
-        return 1
+        return self._node._client._remoteAttr(self._node._path, self._attr, *args, **kwargs)
 
 
 def VirtualFactory(data):
@@ -88,9 +88,10 @@ class VirtualNode(pr.Node):
         self._bases = attrs['bases']
 
         # Tracking
-        self._parent = None
-        self._root   = None
-        self._client = None
+        self._parent    = None
+        self._root      = None
+        self._client    = None
+        self._functions = []
 
         # Setup logging
         self._log = pr.logInit(cls=self,name=self.name,path=self._path)
@@ -106,6 +107,9 @@ class VirtualNode(pr.Node):
     def __dir__(self):
         return(super().__dir__() + [k for k,v in self._nodes.items()])
 
+    def __call__(self, *args, **kwargs):
+        return self._client._remoteAttr(self._path, '__call__', *args, **kwargs)
+
     def add(self,node):
         raise NodeError('add not supported in VirtualNode')
 
@@ -116,10 +120,25 @@ class VirtualNode(pr.Node):
         raise NodeError('callRecursive not supported in VirtualNode')
 
     def addListener(self, listener):
-        pass
+        self._functions.append(listener)
 
     def addVarListener(self,func):
-        pass
+        self._client._addVarListener(func)
+
+    def getNode(self, path):
+        return self._getPath(path)
+
+    @ft.lru_cache(maxsize=None)
+    def _getPath(self,path):
+        """Find a node in the tree that has a particular path string"""
+        obj = self
+        if '.' in path:
+            for a in path.split('.')[1:]:
+                if not hasattr(obj,'node'):
+                    return None
+                obj = obj.node(a)
+
+        return obj
 
     def _isinstance(self,typ):
         cs = str(typ)
@@ -134,21 +153,19 @@ class VirtualNode(pr.Node):
     def _setDict(self,d,writeEach,modes=['RW']):
         raise NodeError('_setDict not supported in VirtualNode')
 
+    def _doUpdate(self, val):
+        print("Calling _doUpdate for {} val={}".format(self.path,val))
+        for func in self._functions:
+            if hasattr(func,'varListener'):
+                func.varListener(self.path,val.value,val.valueDisp)
+            else:
+                func(self.path,val.value,val.valueDisp)
 
-class VirtualClient(object):
+
+class VirtualClient(rogue.interfaces.ZmqClient):
 
     def __init__(self, addr, port):
-
-        # ZMQ Context
-        self._zmqCtx = zmq.Context()
-
-        # ZMQ Listener
-        self._zmqListen = self._zmqCtx.socket(zmq.SUB)
-        self._zmqListen.connect("tcp://{}:{}".format(addr,port))
-
-        # ZMQ Listener
-        self._zmqControl = self._zmqCtx.socket(zmq.REQ)
-        self._zmqControl.connect("tcp://{}:{}".format(addr,port+1))
+        rogue.interfaces.ZmqClient.__init__(self,addr,port)
 
         # Get root entity
         self._root = self._remoteAttr(None, None)
@@ -156,12 +173,19 @@ class VirtualClient(object):
         # Walk the tree
         self._setupClass(self._root,self._root)
 
+        # Node lists
+        self._nodes = {}
+
+        # Variable listeners
+        self._varListeners = []
+
     def _setupClass(self, root, cls):
         for k,v in cls._nodes.items():
             cls._nodes[k] = self._remoteAttr(cls.path, 'node', k)
             if cls._nodes[k] is not None:
                 cls._nodes[k]._root  = root
                 cls._nodes[k]._parent = cls
+                cls._nodes[k]._client = self
                 self._setupClass(root,cls._nodes[k])
             else:
                 print("Error processing node {} subnode {}".format(cls.path,k))
@@ -170,93 +194,28 @@ class VirtualClient(object):
         snd = { 'path':path, 'attr':attr, 'args':args, 'kwargs':kwargs }
         y = pr.dataToYaml(snd) + '\n'
         try:
-            self._zmqControl.send(y.encode('UTF-8'))
-            ret = pr.yamlToData(self._zmqControl.recv().decode('UTF-8'))
+            resp = self._send(y)
+            ret = pr.yamlToData(resp)
         except Exception as msg:
             print("got remote exception: {}".format(msg))
             ret = None
 
         return ret  
 
+    def _addVarListener(self,func):
+        self._varListeners.append(func)
+
+    def _doUpdate(self,data):
+        d = pr.yamlToData(data)
+
+        for k,val in d.items():
+            self._root.getNode(k)._doUpdate(val)
+
+            # Call listener functions,
+            for func in self._varListeners:
+                func(k,val.value.val,valueDisp)
+
     @property
     def root(self):
         return self._root
-
-
-
-
-
-
-
-
-
-
-
-#class PyroRoot(pr.PyroNode):
-#    def __init__(self, *, node,daemon):
-#        pr.PyroNode.__init__(self,root=self,node=node,daemon=daemon)
-#
-#        self._varListeners   = []
-#        self._relayListeners = {}
-#
-#    def addInstance(self,node):
-#        self._daemon.register(node)
-#
-#    def getNode(self, path):
-#        return pr.PyroNode(root=self,node=self._node.getNode(path),daemon=self._daemon)
-#
-#    def addVarListener(self,listener):
-#        self._varListeners.append(listener)
-#
-#    def _addRelayListener(self, path, listener):
-#        if not path in self._relayListeners:
-#            self._relayListeners[path] = []
-#
-#        self._relayListeners[path].append(listener)
-#
-#    @pr.expose
-#    def varListener(self, path, value, disp):
-#        for f in self._varListeners:
-#            f.varListener(path=path, value=value, disp=disp)
-#
-#        if path in self._relayListeners:
-#            for f in self._relayListeners[path]:
-#                f.varListener(path=path, value=value, disp=disp)
-#
-#class PyroClient(object):
-#    def __init__(self, group, localAddr=None, nsAddr=None):
-#        self._group = group
-#
-#        Pyro4.config.THREADPOOL_SIZE = 100
-#        Pyro4.config.SERVERTYPE = "multiplex"
-#        Pyro4.config.POLLTIMEOUT = 3
-#
-#        Pyro4.util.SerializerBase.register_dict_to_class("collections.OrderedDict", recreate_OrderedDict)
-#
-#        if nsAddr is None:
-#            nsAddr = localAddr
-#
-#        try:
-#            self._ns = Pyro4.locateNS(host=nsAddr)
-#        except:
-#            raise pr.NodeError("PyroClient Failed to find nameserver")
-#
-#        self._pyroDaemon = Pyro4.Daemon(host=localAddr)
-#
-#        self._pyroThread = threading.Thread(target=self._pyroDaemon.requestLoop)
-#        self._pyroThread.start()
-#
-#    def stop(self):
-#        self._pyroDaemon.shutdown()
-#
-#    def getRoot(self,name):
-#        try:
-#            uri = self._ns.lookup("{}.{}".format(self._group,name))
-#            ret = PyroRoot(node=Pyro4.Proxy(uri),daemon=self._pyroDaemon)
-#            self._pyroDaemon.register(ret)
-#
-#            ret._node.addVarListener(ret)
-#            return ret
-#        except:
-#            raise pr.NodeError("PyroClient Failed to find {}.{}.".format(self._group,name))
 

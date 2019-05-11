@@ -57,10 +57,6 @@ rogue::interfaces::ZmqServer::ZmqServer (std::string addr, uint16_t port) {
    temp.append(":");
    temp.append(std::to_string(static_cast<long long>(port)));
 
-   opt = 100;
-   if ( zmq_setsockopt (this->zmqRep_, ZMQ_RCVTIMEO, &opt, sizeof(int32_t)) != 0 ) 
-         throw(rogue::GeneralError("ZmqServer::ZmqServer","Failed to set socket timeout"));
-
    if ( zmq_bind(this->zmqPub_,temp.c_str()) < 0 ) 
       throw(rogue::GeneralError::network("ZmqServer::ZmqServer",addr,port));
 
@@ -69,6 +65,10 @@ rogue::interfaces::ZmqServer::ZmqServer (std::string addr, uint16_t port) {
    temp.append(addr);
    temp.append(":");
    temp.append(std::to_string(static_cast<long long>(port+1)));
+
+   opt = 100;
+   if ( zmq_setsockopt (this->zmqRep_, ZMQ_RCVTIMEO, &opt, sizeof(int32_t)) != 0 ) 
+         throw(rogue::GeneralError("ZmqServer::ZmqServer","Failed to set socket timeout"));
 
    if ( zmq_bind(this->zmqRep_,temp.c_str()) < 0 ) 
       throw(rogue::GeneralError::network("ZmqServer::ZmqServer",addr,port+1));
