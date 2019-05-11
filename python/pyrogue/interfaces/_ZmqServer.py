@@ -30,12 +30,15 @@ class ZmqServer(rogue.interfaces.ZmqServer):
             args   = d['args']
             kwargs = d['kwargs']
 
-            node = self._root.getNode(path)
+            if path is None:
+                node = self._root
+            else:
+                node = self._root.getNode(path)
 
-            if node is None:
-                return 'null\n'
-
-            nAttr = getattr(node, attr)
+            if attr is None:
+                return pyrogue.dataToYaml(node) + '\n'
+            else:
+                nAttr = getattr(node, attr)
 
             if nAttr is None:
                 return 'null\n'
@@ -44,6 +47,7 @@ class ZmqServer(rogue.interfaces.ZmqServer):
             else:
                 return pyrogue.dataToYaml(nAttr) + '\n'
 
-        except:
+        except Exception as msg:
+            print("ZMQ Got Exception: {}".format(msg))
             return 'null\n'
 

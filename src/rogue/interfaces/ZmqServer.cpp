@@ -131,7 +131,7 @@ void rogue::interfaces::ZmqServer::runThread() {
 
       // Get the message
       if ( zmq_recvmsg(this->zmqRep_,&msg,0) > 0 ) {
-         data = (const char *)zmq_msg_data(&msg);
+         data = std::string((const char *)zmq_msg_data(&msg),zmq_msg_size(&msg));
          ret = this->doRequest(data);
          zmq_send(this->zmqRep_,ret.c_str(),ret.size(),0);
          zmq_msg_close(&msg);

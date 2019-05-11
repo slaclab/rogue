@@ -168,7 +168,6 @@ class Node(object):
         attr['funcs']       = {}
 
         # Get properties
-        print("getting properties for {}".format(self.__class__))
         for k,v in inspect.getmembers(self.__class__, lambda a: isinstance(a,property)):
             if hasattr(v.fget,'_rogueExposed'):
                 attr['props'].append(k)
@@ -327,7 +326,10 @@ class Node(object):
         return self._root
 
     def node(self, path):
-        return attrHelper(self._nodes,path)
+        if path is None:
+            return self
+        else:
+            return attrHelper(self._nodes,path)
 
     @property
     def isDevice(self):

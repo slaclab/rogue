@@ -311,6 +311,9 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         super().hardReset()
         self._clearLog()
 
+    def __reduce__(self):
+        return pr.Node.__reduce__(self)
+
     @ft.lru_cache(maxsize=None)
     def _getPath(self,path):
         """Find a node in the tree that has a particular path string"""

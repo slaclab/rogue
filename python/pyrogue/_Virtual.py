@@ -18,6 +18,7 @@ from collections import OrderedDict as odict
 import logging
 import inspect
 import pyrogue as pr
+import zmq
 
 
 def genBaseList(cls):
@@ -87,8 +88,9 @@ class VirtualNode(pr.Node):
         self._bases = attrs['bases']
 
         # Tracking
-        self._parent  = None
-        self._root    = None
+        self._parent = None
+        self._root   = None
+        self._client = None
 
         # Setup logging
         self._log = pr.logInit(cls=self,name=self.name,path=self._path)
@@ -131,6 +133,64 @@ class VirtualNode(pr.Node):
 
     def _setDict(self,d,writeEach,modes=['RW']):
         raise NodeError('_setDict not supported in VirtualNode')
+
+
+class VirtualClient(object):
+
+    def __init__(self, addr, port):
+
+        # ZMQ Context
+        self._zmqCtx = zmq.Context()
+
+        # ZMQ Listener
+        self._zmqListen = self._zmqCtx.socket(zmq.SUB)
+        self._zmqListen.connect("tcp://{}:{}".format(addr,port))
+
+        # ZMQ Listener
+        self._zmqControl = self._zmqCtx.socket(zmq.REQ)
+        self._zmqControl.connect("tcp://{}:{}".format(addr,port+1))
+
+        # Get root entity
+        self._root = self._remoteAttr(None, None)
+
+        # Walk the tree
+        self._setupClass(self._root,self._root)
+
+    def _setupClass(self, root, cls):
+        for k,v in cls._nodes.items():
+            cls._nodes[k] = self._remoteAttr(cls.path, 'node', k)
+            if cls._nodes[k] is not None:
+                cls._nodes[k]._root  = root
+                cls._nodes[k]._parent = cls
+                self._setupClass(root,cls._nodes[k])
+            else:
+                print("Error processing node {} subnode {}".format(cls.path,k))
+
+    def _remoteAttr(self, path, attr, *args, **kwargs):
+        snd = { 'path':path, 'attr':attr, 'args':args, 'kwargs':kwargs }
+        y = pr.dataToYaml(snd) + '\n'
+        try:
+            self._zmqControl.send(y.encode('UTF-8'))
+            ret = pr.yamlToData(self._zmqControl.recv().decode('UTF-8'))
+        except Exception as msg:
+            print("got remote exception: {}".format(msg))
+            ret = None
+
+        return ret  
+
+    @property
+    def root(self):
+        return self._root
+
+
+
+
+
+
+
+
+
+
 
 #class PyroRoot(pr.PyroNode):
 #    def __init__(self, *, node,daemon):
