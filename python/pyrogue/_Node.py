@@ -326,10 +326,7 @@ class Node(object):
         return self._root
 
     def node(self, path):
-        if path is None:
-            return self
-        else:
-            return attrHelper(self._nodes,path)
+        return attrHelper(self._nodes,path)
 
     @property
     def isDevice(self):

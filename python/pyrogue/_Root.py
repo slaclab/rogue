@@ -575,8 +575,7 @@ def dataToYaml(data, varConvert=True, stream=None, Dumper=yaml.Dumper, **kwds):
         return dumper.represent_scalar(enc, data.valueDisp)
 
     def _dict_representer(dumper, data):
-        r = dumper.represent_mapping(yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG, data.items())
-        return r
+        return dumper.represent_mapping(yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG, data.items())
 
     if varConvert:
         OrderedDumper.add_representer(pr.VariableValue, _var_representer)
@@ -585,7 +584,7 @@ def dataToYaml(data, varConvert=True, stream=None, Dumper=yaml.Dumper, **kwds):
     try:
         ret = yaml.dump(data, stream, OrderedDumper, **kwds)
     except Exception as e:
-        print("Error: {} dict {}".format(e,data))
+        #print("Error: {} dict {}".format(e,data))
         return None
     return ret
 
