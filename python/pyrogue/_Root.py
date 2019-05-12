@@ -76,10 +76,6 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         # Polling worker
         self._pollQueue = None
 
-        # Remote object export
-        self._pyroThread = None
-        self._pyroDaemon = None
-
         # Zeromq server
         self._zmqServer  = None
 
@@ -148,7 +144,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         self.add(pr.LocalCommand(name='GetYamlState', value=True, function=lambda arg: self._getYaml(arg,['RW','RO','WO']), hidden=True,
                                  description='Get current state as YAML string. Pass read first arg.'))
 
-    def start(self, timeout=1.0, initRead=False, initWrite=False, pollEn=True, pyroGroup=None, pyroAddr=None, pyroNsAddr=None, zmqPort=None):
+    def start(self, timeout=1.0, initRead=False, initWrite=False, pollEn=True, zmqPort=None):
         """Setup the tree. Start the polling thread."""
 
         # Create poll queue object
@@ -229,8 +225,8 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         if self._pollQueue:
             self._pollQueue.stop()
 
-        if self._pyroDaemon:
-            self._pyroDaemon.shutdown()
+        if self._zmqServer is not None:
+            self._zmqServer = None
 
         self._running=False
 
