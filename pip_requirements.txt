@@ -1,5 +1,4 @@
 PyYAML
-Pyro4
 parse
 click
 coverage
