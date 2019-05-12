@@ -528,11 +528,11 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
                 # Generate yaml stream
                 y = dataToYaml(d,default_flow_style=False)
-                self._sendYamlFrame(y)
+                self._sendYamlFrame(dataToYaml(d,default_flow_style=False))
 
                 # Send over zmq link
                 if self._zmqServer is not None:
-                    self._zmqServer._publish(y)
+                    self._zmqServer._publish(dataToYaml(d,varConvert=False,default_flow_style=False))
 
                 # Init var list
                 uvars = {}
@@ -554,7 +554,7 @@ def yamlToData(stream, Loader=yaml.Loader, object_pairs_hook=odict):
 
     return yaml.load(stream, OrderedLoader)
 
-def dataToYaml(data, stream=None, Dumper=yaml.Dumper, **kwds):
+def dataToYaml(data, varConvert=True, stream=None, Dumper=yaml.Dumper, **kwds):
     """Convert data structure to yaml"""
 
     class OrderedDumper(Dumper):
@@ -578,7 +578,8 @@ def dataToYaml(data, stream=None, Dumper=yaml.Dumper, **kwds):
         r = dumper.represent_mapping(yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG, data.items())
         return r
 
-    OrderedDumper.add_representer(pr.VariableValue, _var_representer)
+    if varConvert:
+        OrderedDumper.add_representer(pr.VariableValue, _var_representer)
     OrderedDumper.add_representer(odict, _dict_representer)
 
     try:

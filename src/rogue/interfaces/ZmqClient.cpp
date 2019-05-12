@@ -147,7 +147,6 @@ void rogue::interfaces::ZmqClient::runThread() {
       // Get the message
       if ( zmq_recvmsg(this->zmqSub_,&msg,0) > 0 ) {
          data = std::string((const char *)zmq_msg_data(&msg),zmq_msg_size(&msg));
-         printf("received message %s\n",data.c_str());
          zmq_msg_close(&msg);
          this->doUpdate(data);
       }

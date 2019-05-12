@@ -27,7 +27,6 @@ except ImportError:
     from PyQt4.QtGui     import *
 
 import pyrogue
-import Pyro4
 import datetime
 
 class DataLink(QObject):
@@ -154,7 +153,6 @@ class DataLink(QObject):
         self.writer.autoName()
         pass
 
-    @Pyro4.expose
     def varListener(self,path,value,disp):
         if self.block: return
 
@@ -299,7 +297,6 @@ class ControlLink(QObject):
 
         fl.addRow('Run Count:',self.runCount)
 
-    @Pyro4.expose
     def varListener(self,path,value,disp):
         if self.block: return
 
@@ -418,7 +415,6 @@ class SystemWidget(QWidget):
     def resetLog(self):
         self.root.ClearLog()
 
-    @Pyro4.expose
     def varListener(self,path,value,disp):
         name = path.split('.')[-1]
 

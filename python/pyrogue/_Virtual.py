@@ -154,7 +154,6 @@ class VirtualNode(pr.Node):
         raise NodeError('_setDict not supported in VirtualNode')
 
     def _doUpdate(self, val):
-        print("Calling _doUpdate for {} val={}".format(self.path,val))
         for func in self._functions:
             if hasattr(func,'varListener'):
                 func.varListener(self.path,val.value,val.valueDisp)
@@ -180,12 +179,13 @@ class VirtualClient(rogue.interfaces.ZmqClient):
         self._varListeners = []
 
     def _setupClass(self, root, cls):
+        cls._root   = root
+        cls._parent = cls
+        cls._client = self
+
         for k,v in cls._nodes.items():
             cls._nodes[k] = self._remoteAttr(cls.path, 'node', k)
             if cls._nodes[k] is not None:
-                cls._nodes[k]._root  = root
-                cls._nodes[k]._parent = cls
-                cls._nodes[k]._client = self
                 self._setupClass(root,cls._nodes[k])
             else:
                 print("Error processing node {} subnode {}".format(cls.path,k))
@@ -200,7 +200,7 @@ class VirtualClient(rogue.interfaces.ZmqClient):
             print("got remote exception: {}".format(msg))
             ret = None
 
-        return ret  
+        return ret
 
     def _addVarListener(self,func):
         self._varListeners.append(func)
