@@ -64,7 +64,8 @@ namespace rogue {
 
             virtual void doUpdate (std::string data);
 
-            std::string sendWrapper(std::string path, std::string attr, std::string arg);
+
+            std::string sendWrapper(std::string path, std::string attr, std::string arg, bool rawStr);
 
             std::string getDisp(std::string path);
 

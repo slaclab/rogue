@@ -170,7 +170,7 @@ void rogue::interfaces::ZmqClient::runThread() {
    }
 }
 
-std::string rogue::interfaces::ZmqClient::sendWrapper(std::string path, std::string attr, std::string arg) {
+std::string rogue::interfaces::ZmqClient::sendWrapper(std::string path, std::string attr, std::string arg, bool rawStr) {
    std::string yaml;
    std::string ret;
 
@@ -178,24 +178,26 @@ std::string rogue::interfaces::ZmqClient::sendWrapper(std::string path, std::str
    yaml += "attr: " + attr + "\n";
    yaml += "path: " + path + "\n";
    yaml += "kwargs: {}\n";
-   yaml += "rawStr: True\n";
+
+   if ( rawStr ) yaml += "rawStr: true\n";
+   else yaml += "rawStr: false\n";
 
    return(send(yaml));
 }
 
 std::string rogue::interfaces::ZmqClient::getDisp(std::string path) {
-   return sendWrapper(path, "getDisp", "");
+   return sendWrapper(path, "getDisp", "", true);
 }
 
 void rogue::interfaces::ZmqClient::setDisp(std::string path, std::string value) {
-   sendWrapper(path, "setDisp", value);
+   sendWrapper(path, "setDisp", value, true);
 }
 
 std::string rogue::interfaces::ZmqClient::exec(std::string path, std::string arg) {
-   return sendWrapper(path, "exec", arg);
+   return sendWrapper(path, "exec", arg, true);
 }
 
 std::string rogue::interfaces::ZmqClient::valueDisp(std::string path) {
-   return sendWrapper(path, "valueDisp", "");
+   return sendWrapper(path, "valueDisp", "", true);
 }
 
