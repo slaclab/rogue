@@ -100,7 +100,6 @@ class VariableLink(QObject):
         if self._variable.disp == 'enum' and self._variable.enum is not None and self._variable.mode != 'RO':
             self._widget = QComboBox()
             self._widget.activated.connect(self.guiChanged)
-            self._widget.setToolTip(self._variable.description)
 
             self.updateGui.connect(self._widget.setCurrentIndex)
 
@@ -112,7 +111,6 @@ class VariableLink(QObject):
             self._widget.setMinimum(self._variable.minimum)
             self._widget.setMaximum(self._variable.maximum)
             self._widget.valueChanged.connect(self.guiChanged)
-            self._widget.setToolTip(self._variable.description)
 
             self.updateGui.connect(self._widget.setValue)
 
@@ -120,9 +118,12 @@ class VariableLink(QObject):
             self._widget = QLineEdit()
             self._widget.returnPressed.connect(self.returnPressed)
             self._widget.textEdited.connect(self.valueChanged)
-            self._widget.setToolTip(self._variable.description)
 
             self.updateGui[str].connect(self._widget.setText)
+
+        self._widget.setToolTip(self._variable.description)
+        self._widget.setContextMenuPolicy(Qt.CustomContextMenu)
+        self._widget.customContextMenuRequested.connect(self.openMenu)
 
         if self._variable.mode == 'RO':
             self._widget.setReadOnly(True)
@@ -131,6 +132,13 @@ class VariableLink(QObject):
         self.varListener(None,self._variable.value(),self._variable.valueDisp())
 
         variable.addListener(self)
+
+    def openMenu(self, event):
+        menu = QMenu()
+        read_action = menu.addAction('Read Now')
+        action = menu.exec_(self._widget.mapToGlobal(event))
+        if action == read_action:
+            self._variable.get()
 
     @Pyro4.expose
     def varListener(self, path, value, disp):
