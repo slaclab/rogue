@@ -73,28 +73,16 @@ class EnableVariable(pr.BaseVariable):
     @Pyro4.expose
     def set(self, value, write=True):
         if value != 'parent' and value != 'deps':
-            old = self.value()
-
             with self._lock:
                 self._value = value
             
-            if old != value and old != 'parent' and old != 'deps':
-                self.parent.enableChanged(value)
-
         with self.parent.root.updateGroup():
             self._queueUpdate()
 
     def _doUpdate(self):
         if len(self._deps) != 0:
-            oldEn = (self.value() == True)
-
             with self._lock:
                 self._depDis = not all(x.value() for x in self._deps)
-
-            newEn = (self.value() == True)
-
-            if oldEn != newEn:
-                self.parent.enableChanged(newEn)
 
         super()._doUpdate()
 
@@ -240,11 +228,6 @@ class Device(pr.Node,rim.Hub):
     def countReset(self):
         for key,value in self.devices.items():
             value.countReset()
-
-    def enableChanged(self,value):
-        pass # Do nothing
-        #if value is True:
-        #    self.writeAndVerifyBlocks(force=True, recurse=True, variable=None)
 
     def writeBlocks(self, force=False, recurse=True, variable=None, checkEach=False):
         """
