@@ -550,8 +550,11 @@ def yamlToData(stream, Loader=yaml.Loader, object_pairs_hook=odict):
 
     return yaml.load(stream, OrderedLoader)
 
-def dataToYaml(data, varConvert=True, stream=None, Dumper=yaml.Dumper, **kwds):
+def dataToYaml(data, varConvert=True, rawStr=False, stream=None, Dumper=yaml.Dumper, **kwds):
     """Convert data structure to yaml"""
+
+    if rawStr and isinstance(data,str):
+        return data
 
     class OrderedDumper(Dumper):
         pass

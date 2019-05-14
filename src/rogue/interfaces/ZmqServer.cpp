@@ -73,6 +73,8 @@ rogue::interfaces::ZmqServer::ZmqServer (std::string addr, uint16_t port) {
    if ( zmq_bind(this->zmqRep_,temp.c_str()) < 0 ) 
       throw(rogue::GeneralError::network("ZmqServer::ZmqServer",addr,port+1));
 
+   log_->info("Started to Rogue server at ports %i:%i:",port,port+1);
+
    threadEn_ = true;
    thread_ = new std::thread(&rogue::interfaces::ZmqServer::runThread, this);
 }
@@ -125,6 +127,8 @@ void rogue::interfaces::ZmqServer::runThread() {
    std::string data;
    std::string ret;
    zmq_msg_t msg;
+
+   log_->logThreadId();
 
    while(threadEn_) {
       zmq_msg_init(&msg);

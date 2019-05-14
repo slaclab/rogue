@@ -45,11 +45,12 @@ void rogue::interfaces::ZmqClient::setup_python() {
 
 rogue::interfaces::ZmqClient::ZmqClient (std::string addr, uint16_t port) {
    std::string temp;
-   int32_t opt;
 
    this->zmqCtx_  = zmq_ctx_new();
    this->zmqSub_  = zmq_socket(this->zmqCtx_,ZMQ_SUB);
    this->zmqReq_  = zmq_socket(this->zmqCtx_,ZMQ_REQ);
+
+   log_ = rogue::Logging::create("ZmqClient");
 
    // Setup sub port
    temp = "tcp://";
@@ -57,8 +58,8 @@ rogue::interfaces::ZmqClient::ZmqClient (std::string addr, uint16_t port) {
    temp.append(":");
    temp.append(std::to_string(static_cast<long long>(port)));
 
-   //opt = 100;
-   if ( zmq_setsockopt (this->zmqSub_, ZMQ_RCVTIMEO, &opt, sizeof(int32_t)) != 0 ) 
+   timeout_ = 100;
+   if ( zmq_setsockopt (this->zmqSub_, ZMQ_RCVTIMEO, &timeout_, sizeof(int32_t)) != 0 ) 
          throw(rogue::GeneralError("ZmqClient::ZmqClient","Failed to set socket timeout"));
 
    if ( zmq_setsockopt (this->zmqSub_, ZMQ_SUBSCRIBE, "", 0) != 0 )
@@ -73,12 +74,14 @@ rogue::interfaces::ZmqClient::ZmqClient (std::string addr, uint16_t port) {
    temp.append(":");
    temp.append(std::to_string(static_cast<long long>(port+1)));
 
-   //opt = 100;
-   //if ( zmq_setsockopt (this->zmqReq_, ZMQ_RCVTIMEO, &opt, sizeof(int32_t)) != 0 ) 
-         //throw(rogue::GeneralError("ZmqClient::ZmqClient","Failed to set socket timeout"));
+   timeout_ = 1000; // 1 second
+   if ( zmq_setsockopt (this->zmqReq_, ZMQ_RCVTIMEO, &timeout_, sizeof(int32_t)) != 0 ) 
+         throw(rogue::GeneralError("ZmqClient::ZmqClient","Failed to set socket timeout"));
 
    if ( zmq_connect(this->zmqReq_,temp.c_str()) < 0 ) 
       throw(rogue::GeneralError::network("ZmqClient::ZmqClient",addr,port+1));
+
+   log_->info("Connected to Rogue server at ports %i:%i:",port,port+1);
 
    threadEn_ = true;
    thread_ = new std::thread(&rogue::interfaces::ZmqClient::runThread, this);
@@ -94,6 +97,12 @@ rogue::interfaces::ZmqClient::~ZmqClient() {
    zmq_term(this->zmqCtx_);
 }
 
+void rogue::interfaces::ZmqClient::setTimeout(uint32_t msecs) {
+   timeout_ = msecs;
+   if ( zmq_setsockopt (this->zmqReq_, ZMQ_RCVTIMEO, &timeout_, sizeof(int32_t)) != 0 ) 
+         throw(rogue::GeneralError("ZmqClient::setTimeout","Failed to set socket timeout"));
+}
+
 std::string rogue::interfaces::ZmqClient::send(std::string value) {
    zmq_msg_t msg;
    std::string data;
@@ -102,9 +111,15 @@ std::string rogue::interfaces::ZmqClient::send(std::string value) {
    zmq_send(this->zmqReq_,value.c_str(),value.size(),0);
 
    zmq_msg_init(&msg);
-   zmq_recvmsg(this->zmqReq_,&msg,0);
-   data = std::string((const char *)zmq_msg_data(&msg),zmq_msg_size(&msg));
-   zmq_msg_close(&msg);
+
+   if ( zmq_recvmsg(this->zmqReq_,&msg,0) > 0 ) {
+      data = std::string((const char *)zmq_msg_data(&msg),zmq_msg_size(&msg));
+      zmq_msg_close(&msg);
+   }
+   else {
+      log_->warning("Rogue response timeout after %i milliseconds",timeout_);
+      data = "null\n";
+   }
 
    return data;
 }
@@ -141,6 +156,8 @@ void rogue::interfaces::ZmqClient::runThread() {
    std::string ret;
    zmq_msg_t msg;
 
+   log_->logThreadId();
+
    while(threadEn_) {
       zmq_msg_init(&msg);
 
@@ -153,4 +170,32 @@ void rogue::interfaces::ZmqClient::runThread() {
    }
 }
 
+std::string rogue::interfaces::ZmqClient::sendWrapper(std::string path, std::string attr, std::string arg) {
+   std::string yaml;
+   std::string ret;
+
+   yaml  = "args: !!python/tuple [" + arg + "]\n";
+   yaml += "attr: " + attr + "\n";
+   yaml += "path: " + path + "\n";
+   yaml += "kwargs: {}\n";
+   yaml += "rawStr: True\n";
+
+   return(send(yaml));
+}
+
+std::string rogue::interfaces::ZmqClient::getDisp(std::string path) {
+   return sendWrapper(path, "getDisp", "");
+}
+
+void rogue::interfaces::ZmqClient::setDisp(std::string path, std::string value) {
+   sendWrapper(path, "setDisp", value);
+}
+
+std::string rogue::interfaces::ZmqClient::exec(std::string path, std::string arg) {
+   return sendWrapper(path, "exec", arg);
+}
+
+std::string rogue::interfaces::ZmqClient::valueDisp(std::string path) {
+   return sendWrapper(path, "valueDisp", "");
+}
 

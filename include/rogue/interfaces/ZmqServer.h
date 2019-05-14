@@ -17,6 +17,7 @@
 #ifndef __ROGUE_ZMQ_SERVER_H__
 #define __ROGUE_ZMQ_SERVER_H__
 #include <thread>
+#include <rogue/Logging.h>
 
 #ifndef NO_PYTHON
 #include <boost/python.hpp>
@@ -39,6 +40,9 @@ namespace rogue {
 
             std::thread   * thread_;
             bool threadEn_;
+
+            //! Log 
+            std::shared_ptr<rogue::Logging> log_;
 
             void runThread();
 

@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 #-----------------------------------------------------------------------------
-# Title      : PyRogue shared memory
+# Title      : PyRogue ZMQ Server
 #-----------------------------------------------------------------------------
-# File       : pyrogue/interfaces/smem.py
+# File       : pyrogue/interfaces/_ZmqServer.py
 # Created    : 2017-06-07
 #-----------------------------------------------------------------------------
 # This file is part of the rogue software platform. It is subject to 
@@ -25,10 +25,11 @@ class ZmqServer(rogue.interfaces.ZmqServer):
         try:
             d = pyrogue.yamlToData(data)
 
-            path   = d['path']
-            attr   = d['attr']
-            args   = d['args']
-            kwargs = d['kwargs']
+            path    = d['path']   if 'path'   in d else None
+            attr    = d['attr']   if 'attr'   in d else None
+            args    = d['args']   if 'args'   in d else ()
+            kwargs  = d['kwargs'] if 'kwargs' in d else {}
+            rawStr  = d['rawStr'] if 'rawStr' in d else False
 
             if path is None:
                 node = self._root
@@ -36,16 +37,16 @@ class ZmqServer(rogue.interfaces.ZmqServer):
                 node = self._root.getNode(path)
 
             if attr is None:
-                return pyrogue.dataToYaml(node) + '\n'
+                return pyrogue.dataToYaml(node)
             else:
                 nAttr = getattr(node, attr)
 
             if nAttr is None:
-                return 'null\n'
+                return pyrogue.dataToYaml(None)
             elif callable(nAttr):
-                return pyrogue.dataToYaml(nAttr(*args,**kwargs)) + '\n'
+                return pyrogue.dataToYaml(nAttr(*args,**kwargs),rawStr=rawStr)
             else:
-                return pyrogue.dataToYaml(nAttr) + '\n'
+                return pyrogue.dataToYaml(nAttr,rawStr=rawStr)
 
         except Exception as msg:
             print("ZMQ Got Exception: {}".format(msg))
