@@ -135,12 +135,26 @@ class VariableLink(QObject):
 
     def openMenu(self, event):
         menu = QMenu()
-        read_action  = menu.addAction('Read Now')
-        write_action = menu.addAction('Write Now')
+        read_variable  = None
+        write_variable = None
+
+        read_device = menu.addAction('Read Device')
+        write_device = menu.addAction('Write Device')
+
+        if self._variable.mode != 'WO':
+            read_variable = menu.addAction('Read Variable')
+        if self._variable.mode != 'RO':
+            write_variable = menu.addAction('Write Variable')
+
         action = menu.exec_(self._widget.mapToGlobal(event))
-        if action == read_action:
+
+        if action == read_device:
+            self._variable.parent.ReadDevice()
+        elif action == write_device:
+            self._variable.parent.WriteDevice()
+        elif action == read_variable:
             self._variable.get()
-        elif action == write_action:
+        elif action == write_variable:
             if isinstance(self._widget, QComboBox):
                 self._variable.setDisp(self._widget.currentText())
             elif isinstance(self._widget, QSpinBox):
