@@ -135,10 +135,18 @@ class VariableLink(QObject):
 
     def openMenu(self, event):
         menu = QMenu()
-        read_action = menu.addAction('Read Now')
+        read_action  = menu.addAction('Read Now')
+        write_action = menu.addAction('Write Now')
         action = menu.exec_(self._widget.mapToGlobal(event))
         if action == read_action:
             self._variable.get()
+        elif action == write_action:
+            if isinstance(self._widget, QComboBox):
+                self._variable.setDisp(self._widget.currentText())
+            elif isinstance(self._widget, QSpinBox):
+                self._variable.set(self._widget.value())
+            else:
+                self._variable.setDisp(self._widget.text())
 
     @Pyro4.expose
     def varListener(self, path, value, disp):
