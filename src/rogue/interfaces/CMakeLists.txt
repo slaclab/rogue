@@ -16,10 +16,8 @@
 add_subdirectory("memory")
 add_subdirectory("stream")
 
-if (NOT NO_ZMQ)
-   target_sources(rogue-core PRIVATE "${CMAKE_CURRENT_LIST_DIR}/ZmqServer.cpp")
-   target_sources(rogue-core PRIVATE "${CMAKE_CURRENT_LIST_DIR}/ZmqClient.cpp")
-endif()
+target_sources(rogue-core PRIVATE "${CMAKE_CURRENT_LIST_DIR}/ZmqServer.cpp")
+target_sources(rogue-core PRIVATE "${CMAKE_CURRENT_LIST_DIR}/ZmqClient.cpp")
 
 if (NOT NO_PYTHON)
    target_sources(rogue-core PRIVATE "${CMAKE_CURRENT_LIST_DIR}/module.cpp")
