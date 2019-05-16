@@ -179,10 +179,9 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
             if (tmpList[i].size != 0) and (tmpList[i].memBaseId == tmpList[i-1].memBaseId) and \
                (tmpList[i].address < (tmpList[i-1].address + tmpList[i-1].size)):
 
-                # Allow overlaps between Devices and Blocks if the block exclusive access bits are not set. 
-                # This would mean that all variables have overlapEn set.
+                # Allow overlaps between Devices and Blocks if the Device is an ancestor of the Block and the block allows overlap.
                 if not (isinstance(tmpList[i-1],pr.Device) and isinstance(tmpList[i],pr.BaseBlock) and \
-                        (tmpList[i] in tmpList[i-1]._blocks) and tmpList[i]._overlapEn):
+                        (tmpList[i].path.find(tmpList[i-1].path) == 0 and tmpList[i]._overlapEn)):
 
                     print("\n\n\n------------------------ Memory Overlap Warning !!! --------------------------------")
                     print("{} at address={:#x} overlaps {} at address={:#x} with size={}".format(
