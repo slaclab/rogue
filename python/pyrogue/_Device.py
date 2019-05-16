@@ -159,12 +159,12 @@ class Device(pr.Node,rim.Hub):
         # Variable interface to enable flag
         self.add(EnableVariable(enabled=enabled, deps=enableDeps))
 
-        self.add(pr.LocalCommand(name='ReadDevice', value='', hidden=True,
-                                 function=lambda : self.readAndCheckBlocks(recurse=False),
+        self.add(pr.LocalCommand(name='ReadDevice', value=False, hidden=True,
+                                 function=lambda arg: self.readAndCheckBlocks(recurse=arg),
                                  description='Force read of device without recursion'))
 
         self.add(pr.LocalCommand(name='WriteDevice', value='', hidden=True,
-                                 function=lambda : self.writeAndVerifyBlocks(force=True,recurse=False),
+                                 function=lambda arg: self.writeAndVerifyBlocks(force=True,recurse=arg),
                                  description='Force write of device without recursion'))
 
     @Pyro4.expose

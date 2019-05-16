@@ -138,6 +138,8 @@ class VariableLink(QObject):
         read_variable  = None
         write_variable = None
 
+        read_recurse = menu.addAction('Read Recursive')
+        write_recurse = menu.addAction('Write Recursive')
         read_device = menu.addAction('Read Device')
         write_device = menu.addAction('Write Device')
 
@@ -148,10 +150,14 @@ class VariableLink(QObject):
 
         action = menu.exec_(self._widget.mapToGlobal(event))
 
-        if action == read_device:
-            self._variable.parent.ReadDevice()
+        if action == read_recurse:
+            self._variable.parent.ReadDevice(True)
+        elif action == write_recurse:
+            self._variable.parent.WriteDevice(True)
+        elif action == read_device:
+            self._variable.parent.ReadDevice(False)
         elif action == write_device:
-            self._variable.parent.WriteDevice()
+            self._variable.parent.WriteDevice(False)
         elif action == read_variable:
             self._variable.get()
         elif action == write_variable:
