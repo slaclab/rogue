@@ -253,6 +253,8 @@ class Device(pr.Node,rim.Hub):
         self._log.debug(f'Calling {self.path}._writeBlocks')
 
         checkEach = checkEach or self.forceCheckEach
+        if checkEach is True:
+            self.root.checkBlocks()
 
         # Process local blocks.
         if variable is not None:
@@ -276,11 +278,13 @@ class Device(pr.Node,rim.Hub):
         #print(f'Calling {self.path}.verifyBlocks(recurse={recurse}, variable={variable}, checkEach={checkEach}')
 
         checkEach = checkEach or self.forceCheckEach        
+        if checkEach is True:
+            self.root.checkBlocks()
 
         # Process local blocks.
         if variable is not None:
             for b in self._getBlocks(variable):
-                b.startTransaction(rim.Verify, checkEach)
+                b.startTransaction(rim.Verify, check=checkEach)
 
         else:
             for block in self._blocks:
@@ -299,16 +303,18 @@ class Device(pr.Node,rim.Hub):
         #print(f'Calling {self.path}.readBlocks(recurse={recurse}, variable={variable}, checkEach={checkEach})')
 
         checkEach = checkEach or self.forceCheckEach        
+        if checkEach is True:
+            self.root.checkBlocks()
 
         # Process local blocks. 
         if variable is not None:
             for b in self._getBlocks(variable):
-                b.startTransaction(rim.Read, checkEach)
+                b.startTransaction(rim.Read, check=checkEach)
 
         else:
             for block in self._blocks:
                 if block.bulkEn:
-                    block.startTransaction(rim.Read, checkEach)
+                    block.startTransaction(rim.Read, check=checkEach)
 
             if recurse:
                 for key,value in self.devices.items():
