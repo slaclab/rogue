@@ -19,6 +19,7 @@
 #include <memory>
 #include <rogue/GilRelease.h>
 #include <rogue/ScopedGil.h>
+#include <rogue/GeneralError.h>
 #include <string>
 #include <zmq.h>
 
@@ -112,15 +113,11 @@ std::string rogue::interfaces::ZmqClient::send(std::string value) {
 
    zmq_msg_init(&msg);
 
-   if ( zmq_recvmsg(this->zmqReq_,&msg,0) > 0 ) {
-      data = std::string((const char *)zmq_msg_data(&msg),zmq_msg_size(&msg));
-      zmq_msg_close(&msg);
-   }
-   else {
-      log_->warning("Rogue response timeout after %i milliseconds",timeout_);
-      data = YamlNone;
-   }
+   if ( zmq_recvmsg(this->zmqReq_,&msg,0) <= 0 )
+      throw rogue::GeneralError::timeout("ZmqClient::send", timeout_*1000);
 
+   data = std::string((const char *)zmq_msg_data(&msg),zmq_msg_size(&msg));
+   zmq_msg_close(&msg);
    return data;
 }
 
