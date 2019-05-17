@@ -17,13 +17,9 @@
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
 
-# Comment added by rherbst for demonstration purposes.
 import datetime
 import parse
 import pyrogue as pr
-
-# Another comment added by rherbst for demonstration
-# Yet Another comment added by rherbst for demonstration
 
 class AxiVersion(pr.Device):
 

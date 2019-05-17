@@ -22,6 +22,7 @@
 #include <rogue/interfaces/memory/TransactionLock.h>
 #include <rogue/interfaces/memory/Constants.h>
 #include <rogue/GeneralError.h>
+#include <string.h>
 #include <memory>
 #include <inttypes.h>
 #include <rogue/GilRelease.h>
