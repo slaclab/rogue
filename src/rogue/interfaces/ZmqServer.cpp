@@ -95,7 +95,7 @@ void rogue::interfaces::ZmqServer::publish(std::string value) {
 }
 
 std::string rogue::interfaces::ZmqServer::doRequest ( std::string data ) {
-   return(std::string("null\n"));
+   return("");
 }
 
 #ifndef NO_PYTHON

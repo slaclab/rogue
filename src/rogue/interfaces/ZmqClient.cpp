@@ -118,7 +118,7 @@ std::string rogue::interfaces::ZmqClient::send(std::string value) {
    }
    else {
       log_->warning("Rogue response timeout after %i milliseconds",timeout_);
-      data = "null\n";
+      data = YamlNone;
    }
 
    return data;
