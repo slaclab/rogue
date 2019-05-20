@@ -89,6 +89,9 @@ namespace rogue {
                // Destroy the TcpServer
                ~TcpServer();
 
+               // Close the connections
+               void close();
+
          };
 
          //! Alias for using shared pointer as TcpServerPtr
