@@ -172,7 +172,7 @@ endif()
 find_package(Git QUIET)
 if (GIT_FOUND)
    execute_process (
-      COMMAND ${GIT_EXECUTABLE} describe --tags --dirty
+      COMMAND ${GIT_EXECUTABLE} --git-dir=${CMAKE_SOURCE_DIR}/.git  describe --tags --dirty
       OUTPUT_VARIABLE ROGUE_VERSION
       OUTPUT_STRIP_TRAILING_WHITESPACE)
 
@@ -233,8 +233,14 @@ else()
    SET(CMAKE_SHARED_LIBRARY_SUFFIX ".so")
 endif()
 
+if(STATIC_LIB) 
+set(LINK_MODE STATIC)
+else()
+set(LINK_MODE SHARED)
+endif()
+
 # Create rogue core library
-add_library(rogue-core SHARED "")
+add_library(rogue-core ${LINK_MODE} "")
 
 # Find rogue core sources
 add_subdirectory(src/rogue)
@@ -317,7 +323,7 @@ configure_file(${PROJECT_SOURCE_DIR}/templates/setup.py.in
 #####################################
 
 # Always install core libraries and config files
-install(TARGETS rogue-core LIBRARY DESTINATION ${ROGUE_DIR}/lib)
+install(TARGETS rogue-core LIBRARY DESTINATION ${ROGUE_DIR}/lib ARCHIVE DESTINATION ${ROGUE_DIR}/lib)
 install(FILES   ${PROJECT_BINARY_DIR}/RogueConfig.cmake DESTINATION ${ROGUE_DIR}/lib)
 
 # Copy setup files for local or custom
@@ -400,6 +406,11 @@ if (NO_BZIP)
 else()
 message("-- Found Bzip2: ${BZIP2_INCLUDE_DIR}")
 endif()
+
+if (STATIC_LIB)
+   message("-- Link static rogue library!")
+endif()
+
 
 message("----------------------------------------------------------------------")
 message("")
