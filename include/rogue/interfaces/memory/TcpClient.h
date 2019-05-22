@@ -94,6 +94,9 @@ namespace rogue {
                // Destroy the TcpClient
                ~TcpClient();
 
+               // Close the connections
+               void close();
+
                // Process transaction from Master
                void doTransaction(std::shared_ptr<rogue::interfaces::memory::Transaction> tran);
          };

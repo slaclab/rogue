@@ -104,6 +104,9 @@ namespace rogue {
                // Destroy the TcpCore
                ~TcpCore();
 
+               // Close the connections
+               virtual void close();
+
                // Receive frame from Master
                void acceptFrame ( std::shared_ptr<rogue::interfaces::stream::Frame> frame );
          };
