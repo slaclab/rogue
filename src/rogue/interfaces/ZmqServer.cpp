@@ -47,6 +47,8 @@ rogue::interfaces::ZmqServer::ZmqServer (std::string addr, uint16_t port) {
    std::string temp;
    int32_t opt;
 
+   log_ = rogue::Logging::create("ZmqServer");
+
    this->zmqCtx_  = zmq_ctx_new();
    this->zmqPub_  = zmq_socket(this->zmqCtx_,ZMQ_PUB);
    this->zmqRep_  = zmq_socket(this->zmqCtx_,ZMQ_REP);

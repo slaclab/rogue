@@ -311,13 +311,15 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
     @ft.lru_cache(maxsize=None)
     def _getPath(self,path):
-        """Find a node in the tree that has a particular path string"""
         obj = self
 
         if '.' in path:
             lst = path.split('.')
 
             if lst[0] != self.name:
+                return None
+
+            for a in lst[1:]:
                 if not hasattr(obj,'node'):
                     return None
                 obj = obj.node(a)
