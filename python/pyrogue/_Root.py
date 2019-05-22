@@ -313,11 +313,17 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
     def _getPath(self,path):
         """Find a node in the tree that has a particular path string"""
         obj = self
+
         if '.' in path:
-            for a in path.split('.')[1:]:
+            lst = path.split('.')
+
+            if lst[0] != self.name:
                 if not hasattr(obj,'node'):
                     return None
                 obj = obj.node(a)
+
+        elif path != self.name:
+            return None
 
         return obj
 
@@ -518,7 +524,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                     # Call listener functions,
                     with self._varListenLock:
                         for func in self._varListeners:
-                            func(p,val.value.val,valueDisp)
+                                    func(p,val.value.val,valueDisp)
 
                 self._log.debug(F"Done update group. Length={len(uvars)}. Entry={list(uvars.keys())[0]}")
 

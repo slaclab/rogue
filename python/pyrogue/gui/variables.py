@@ -99,7 +99,6 @@ class VariableLink(QObject):
         if self._variable.disp == 'enum' and self._variable.enum is not None and self._variable.mode != 'RO':
             self._widget = QComboBox()
             self._widget.activated.connect(self.guiChanged)
-            self._widget.setToolTip(self._variable.description)
 
             self.updateGui.connect(self._widget.setCurrentIndex)
 
@@ -111,7 +110,6 @@ class VariableLink(QObject):
             self._widget.setMinimum(self._variable.minimum)
             self._widget.setMaximum(self._variable.maximum)
             self._widget.valueChanged.connect(self.guiChanged)
-            self._widget.setToolTip(self._variable.description)
 
             self.updateGui.connect(self._widget.setValue)
 
@@ -119,9 +117,12 @@ class VariableLink(QObject):
             self._widget = QLineEdit()
             self._widget.returnPressed.connect(self.returnPressed)
             self._widget.textEdited.connect(self.valueChanged)
-            self._widget.setToolTip(self._variable.description)
 
             self.updateGui[str].connect(self._widget.setText)
+
+        self._widget.setToolTip(self._variable.description)
+        self._widget.setContextMenuPolicy(Qt.CustomContextMenu)
+        self._widget.customContextMenuRequested.connect(self.openMenu)
 
         if self._variable.mode == 'RO':
             self._widget.setReadOnly(True)
@@ -130,6 +131,41 @@ class VariableLink(QObject):
         self.varListener(None,self._variable.value(),self._variable.valueDisp())
 
         variable.addListener(self)
+
+    def openMenu(self, event):
+        menu = QMenu()
+        read_variable  = None
+        write_variable = None
+
+        read_recurse = menu.addAction('Read Recursive')
+        write_recurse = menu.addAction('Write Recursive')
+        read_device = menu.addAction('Read Device')
+        write_device = menu.addAction('Write Device')
+
+        if self._variable.mode != 'WO':
+            read_variable = menu.addAction('Read Variable')
+        if self._variable.mode != 'RO':
+            write_variable = menu.addAction('Write Variable')
+
+        action = menu.exec_(self._widget.mapToGlobal(event))
+
+        if action == read_recurse:
+            self._variable.parent.ReadDevice(True)
+        elif action == write_recurse:
+            self._variable.parent.WriteDevice(True)
+        elif action == read_device:
+            self._variable.parent.ReadDevice(False)
+        elif action == write_device:
+            self._variable.parent.WriteDevice(False)
+        elif action == read_variable:
+            self._variable.get()
+        elif action == write_variable:
+            if isinstance(self._widget, QComboBox):
+                self._variable.setDisp(self._widget.currentText())
+            elif isinstance(self._widget, QSpinBox):
+                self._variable.set(self._widget.value())
+            else:
+                self._variable.setDisp(self._widget.text())
 
     def varListener(self, path, value, disp):
         with self._lock:

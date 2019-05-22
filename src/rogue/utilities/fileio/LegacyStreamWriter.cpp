@@ -109,8 +109,8 @@ void ruf::LegacyStreamWriter::writeFile ( uint8_t channel, std::shared_ptr<rogue
 
      size = frame->getPayload(); // Double check the +4
 
-     // Check file size
-     checkSize(size);
+     // Check file size, including header
+     checkSize(size+4);
 
      // Data count is number of 32-bit words
      if ( channel == RawData ) {

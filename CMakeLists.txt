@@ -76,48 +76,48 @@ endif()
 #####################################
 # BZIP2
 #####################################
-find_package(BZip2 QUIET REQUIRED)
+   find_package(BZip2 QUIET REQUIRED)
 
 #####################################
 # ZeroMQ
 #####################################
-# First try with Cmake packages
-find_package(ZeroMQ QUIET)
+   # First try with Cmake packages
+   find_package(ZeroMQ QUIET)
 
-# ZeroMQ does not always support cmake, use brute force
-if (NOT ZeroMQ_FOUND)
-   
-   # Convert LD_LIBRARY PATH for search
-   if(ENV{LD_LIBRARY_PATH})
-      string(REPLACE ":" ";" HINT_PATHS $ENV{LD_LIBRARY_PATH})
-   else()
-      set(HINT_PATHS, "")
+   # ZeroMQ does not always support cmake, use brute force
+   if (NOT ZeroMQ_FOUND)
+      
+      # Convert LD_LIBRARY PATH for search
+      if(ENV{LD_LIBRARY_PATH})
+         string(REPLACE ":" ";" HINT_PATHS $ENV{LD_LIBRARY_PATH})
+      else()
+         set(HINT_PATHS, "")
+      endif()
+
+      # See if zmq library is in LD_LIBRARY_PATH
+      find_library(ZeroMQ_LIBRARY 
+                   NAMES zmq 
+                   PATHS ${HINT_PATHS})
+
+      # Found it
+      if (ZeroMQ_LIBRARY) 
+
+         # Get the base diretory
+         get_filename_component(ZMQ_LIBDIR ${ZeroMQ_LIBRARY} DIRECTORY)
+
+         # See if we can find the header in a relative path
+         find_path(ZeroMQ_INCLUDE_DIR
+                 NAMES zmq.h
+                 PATHS ${ZMQ_LIBDIR}/../include
+                 )
+      endif()
+
+      # Failed to find it
+      if (NOT ZeroMQ_INCLUDE_DIR)
+         message("")
+         message(FATAL_ERROR "Failed to find zeroMQ!")
+      endif()
    endif()
-
-   # See if zmq library is in LD_LIBRARY_PATH
-   find_library(ZeroMQ_LIBRARY 
-                NAMES zmq 
-                PATHS ${HINT_PATHS})
-
-   # Found it
-   if (ZeroMQ_LIBRARY) 
-
-      # Get the base diretory
-      get_filename_component(ZMQ_LIBDIR ${ZeroMQ_LIBRARY} DIRECTORY)
-
-      # See if we can find the header in a relative path
-      find_path(ZeroMQ_INCLUDE_DIR
-              NAMES zmq.h
-              PATHS ${ZMQ_LIBDIR}/../include
-              )
-   endif()
-
-   # Failed to find it
-   if (NOT ZeroMQ_INCLUDE_DIR)
-      message("")
-      message(FATAL_ERROR "Failed to find zeroMQ!")
-   endif()
-endif()
 
 #####################################
 # EPICS V3
@@ -167,7 +167,7 @@ endif()
 find_package(Git QUIET)
 if (GIT_FOUND)
    execute_process (
-      COMMAND ${GIT_EXECUTABLE} describe --tags --dirty
+      COMMAND ${GIT_EXECUTABLE} --git-dir=${CMAKE_SOURCE_DIR}/.git  describe --tags --dirty
       OUTPUT_VARIABLE ROGUE_VERSION
       OUTPUT_STRIP_TRAILING_WHITESPACE)
 
@@ -228,8 +228,14 @@ else()
    SET(CMAKE_SHARED_LIBRARY_SUFFIX ".so")
 endif()
 
+if(STATIC_LIB) 
+set(LINK_MODE STATIC)
+else()
+set(LINK_MODE SHARED)
+endif()
+
 # Create rogue core library
-add_library(rogue-core SHARED "")
+add_library(rogue-core ${LINK_MODE} "")
 
 # Find rogue core sources
 add_subdirectory(src/rogue)
@@ -312,7 +318,7 @@ configure_file(${PROJECT_SOURCE_DIR}/templates/setup.py.in
 #####################################
 
 # Always install core libraries and config files
-install(TARGETS rogue-core LIBRARY DESTINATION ${ROGUE_DIR}/lib)
+install(TARGETS rogue-core LIBRARY DESTINATION ${ROGUE_DIR}/lib ARCHIVE DESTINATION ${ROGUE_DIR}/lib)
 install(FILES   ${PROJECT_BINARY_DIR}/RogueConfig.cmake DESTINATION ${ROGUE_DIR}/lib)
 
 # Copy setup files for local or custom
@@ -384,6 +390,11 @@ message("")
 message("-- Found ZeroMq: ${ZeroMQ_INCLUDE_DIR}")
 message("")
 message("-- Found Bzip2: ${BZIP2_INCLUDE_DIR}")
+if (STATIC_LIB)
+   message("-- Link static rogue library!")
+endif()
+
+
 message("----------------------------------------------------------------------")
 message("")
 

@@ -232,10 +232,12 @@ void ruf::StreamWriter::writeFile ( uint8_t channel, std::shared_ptr<rogue::inte
    std::unique_lock<std::mutex> lock(mtx_);
 
    if ( fd_ >= 0 ) {
+
+      // Written size has extra 4 bytes
       size = frame->getPayload() + 4;
 
-      // Check file size
-      checkSize(size);
+      // Check file size, including size header
+      checkSize(size+4);
 
       // First write size
       intWrite(&size,4);
