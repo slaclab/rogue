@@ -191,7 +191,7 @@ void rogue::interfaces::ZmqClient::setDisp(std::string path, std::string value) 
 }
 
 std::string rogue::interfaces::ZmqClient::exec(std::string path, std::string arg) {
-   return sendWrapper(path, "exec", arg, true);
+   return sendWrapper(path, "call", arg, true);
 }
 
 std::string rogue::interfaces::ZmqClient::valueDisp(std::string path) {
