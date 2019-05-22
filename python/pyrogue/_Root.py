@@ -347,9 +347,18 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
     def _getPath(self,path):
         """Find a node in the tree that has a particular path string"""
         obj = self
+
         if '.' in path:
-            for a in path.split('.')[1:]:
+            lst = path.split('.')
+
+            if lst[0] != self.name:
+                return None
+
+            for a in lst[1:]:
                 obj = obj.node(a)
+
+        elif path != self.name:
+            return None
 
         return obj
 
