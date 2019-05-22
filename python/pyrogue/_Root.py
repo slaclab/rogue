@@ -584,6 +584,7 @@ def dataToYaml(data, varConvert=True, rawStr=False, stream=None, Dumper=yaml.Dum
 
     if varConvert:
         OrderedDumper.add_representer(pr.VariableValue, _var_representer)
+
     OrderedDumper.add_representer(odict, _dict_representer)
 
     try:
