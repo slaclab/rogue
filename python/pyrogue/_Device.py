@@ -159,6 +159,14 @@ class Device(pr.Node,rim.Hub):
         # Variable interface to enable flag
         self.add(EnableVariable(enabled=enabled, deps=enableDeps))
 
+        self.add(pr.LocalCommand(name='ReadDevice', value=False, hidden=True,
+                                 function=lambda arg: self.readAndCheckBlocks(recurse=arg),
+                                 description='Force read of device without recursion'))
+
+        self.add(pr.LocalCommand(name='WriteDevice', value='', hidden=True,
+                                 function=lambda arg: self.writeAndVerifyBlocks(force=True,recurse=arg),
+                                 description='Force write of device without recursion'))
+
     @Pyro4.expose
     @property
     def address(self):
@@ -337,6 +345,11 @@ class Device(pr.Node,rim.Hub):
         """Perform a write, verify and check. Usefull for committing any stale variables"""
         self.writeBlocks(force=force, recurse=recurse, variable=variable, checkEach=checkEach)
         self.verifyBlocks(recurse=recurse, variable=variable, checkEach=checkEach)
+        self.checkBlocks(recurse=recurse, variable=variable)
+
+    def readAndCheckBlocks(self, recurse=True, variable=None, checkEach=False):
+        """Perform a read and check."""
+        self.readBlocks(recurse=recurse, variable=variable, checkEach=checkEach)
         self.checkBlocks(recurse=recurse, variable=variable)
 
     def _rawTxnChunker(self, offset, data, base=pr.UInt, stride=4, wordBitSize=32, txnType=rim.Write, numWords=1):
