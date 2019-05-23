@@ -87,6 +87,10 @@ rim::TcpServer::TcpServer (std::string addr, uint16_t port) {
 
 //! Destructor
 rim::TcpServer::~TcpServer() {
+  this->close();
+}
+
+void rim::TcpServer::close() {
    threadEn_ = false;
    thread_->join();
 
@@ -187,7 +191,8 @@ void rim::TcpServer::runThread() {
 void rim::TcpServer::setup_python () {
 #ifndef NO_PYTHON
 
-   bp::class_<rim::TcpServer, rim::TcpServerPtr, bp::bases<rim::Master>, boost::noncopyable >("TcpServer",bp::init<std::string,uint16_t>());
+  bp::class_<rim::TcpServer, rim::TcpServerPtr, bp::bases<rim::Master>, boost::noncopyable >("TcpServer",bp::init<std::string,uint16_t>())
+      .def("close", &rim::TcpServer::close);
 
    bp::implicitly_convertible<rim::TcpServerPtr, rim::MasterPtr>();
 #endif
