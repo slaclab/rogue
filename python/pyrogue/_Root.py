@@ -572,6 +572,8 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                                     self._varListeners.remove(func)
                                 else:
                                     self._log.error("Pyro callback failed for {}: {}".format(self.name,msg))
+                            except Exception as msg:
+                                self._log.error("Update thread error: " + str(msg))
 
                 self._log.debug(F"Done update group. Length={len(uvars)}. Entry={list(uvars.keys())[0]}")
 
