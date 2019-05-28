@@ -76,12 +76,12 @@ void rpe::Server::start() {
    threadEn_ = true;
    thread_ = new std::thread(&rpe::Server::runThread, this);
 
-   if ( workCnt_ > 0 ) {]
+   if ( workCnt_ > 0 ) {
       workersEn_ = true;
       for (x=0; x < workCnt_; x++) 
          workers_[x] = new std::thread(boost::bind(&rpe::Server::runWorker, this));
       }
-
+   }
    running_ = true;
 }
 
