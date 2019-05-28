@@ -61,24 +61,33 @@ caStatus rpe::Pv::beginTransaction() {
 void rpe::Pv::endTransaction() { }
 
 caStatus rpe::Pv::read(const casCtx &ctx, gdd &value) {
-   casAsyncReadIO * rio = new casAsyncReadIO(ctx);
-   rpe::WorkPtr work = rpe::Work::createRead(value_, value, rio);
-   server_->addWork(work);
-   return S_casApp_asyncCompletion;
+   if (server_->doAsync()) {
+      casAsyncReadIO * rio = new casAsyncReadIO(ctx);
+      rpe::WorkPtr work = rpe::Work::createRead(value_, value, rio);
+      server_->addWork(work);
+      return S_casApp_asyncCompletion;
+   }
+   else return value_->read(value);
 }
 
 caStatus rpe::Pv::write(const casCtx &ctx, const gdd &value) {
-   casAsyncWriteIO * wio = new casAsyncWriteIO(ctx);
-   rpe::WorkPtr work = rpe::Work::createWrite(value_, value, wio);
-   server_->addWork(work);
-   return S_casApp_asyncCompletion;
+   if (server_->doAsync()) {
+      casAsyncWriteIO * wio = new casAsyncWriteIO(ctx);
+      rpe::WorkPtr work = rpe::Work::createWrite(value_, value, wio);
+      server_->addWork(work);
+      return S_casApp_asyncCompletion;
+   }
+   else return value_->write(value);
 }
 
 caStatus rpe::Pv::writeNotify(const casCtx &ctx, const gdd &value) {
-   casAsyncWriteIO * wio = new casAsyncWriteIO(ctx);
-   rpe::WorkPtr work = rpe::Work::createWrite(value_, value, wio);
-   server_->addWork(work);
-   return S_casApp_asyncCompletion;
+   if (server_->doAsync()) {
+      casAsyncWriteIO * wio = new casAsyncWriteIO(ctx);
+      rpe::WorkPtr work = rpe::Work::createWrite(value_, value, wio);
+      server_->addWork(work);
+      return S_casApp_asyncCompletion;
+   }
+   else return value_->write(value);
 }
 
 casChannel * rpe::Pv::createChannel(const casCtx &ctx,
