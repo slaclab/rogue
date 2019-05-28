@@ -80,7 +80,6 @@ void rpe::Server::start() {
       workersEn_ = true;
       for (x=0; x < workCnt_; x++) 
          workers_[x] = new std::thread(boost::bind(&rpe::Server::runWorker, this));
-      }
    }
    running_ = true;
 }
