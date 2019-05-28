@@ -19,8 +19,6 @@ import threading
 from collections import OrderedDict as odict
 import logging
 import pyrogue as pr
-import Pyro4
-import Pyro4.naming
 import functools as ft
 import time
 import queue
@@ -78,9 +76,8 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         # Polling worker
         self._pollQueue = None
 
-        # Remote object export
-        self._pyroThread = None
-        self._pyroDaemon = None
+        # Zeromq server
+        self._zmqServer  = None
 
         # List of variable listeners
         self._varListeners  = []
@@ -147,7 +144,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         self.add(pr.LocalCommand(name='GetYamlState', value=True, function=lambda arg: self._getYaml(arg,['RW','RO','WO']), hidden=True,
                                  description='Get current state as YAML string. Pass read first arg.'))
 
-    def start(self, timeout=1.0, initRead=False, initWrite=False, pollEn=True, pyroGroup=None, pyroAddr=None, pyroNsAddr=None):
+    def start(self, timeout=1.0, initRead=False, initWrite=False, pollEn=True, zmqPort=None):
         """Setup the tree. Start the polling thread."""
 
         # Create poll queue object
@@ -198,38 +195,9 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
             for key,value in self._nodes.items():
                 value._setTimeout(timeout)
 
-        # Start pyro server if enabled
-        if pyroGroup is not None:
-            Pyro4.config.THREADPOOL_SIZE = 1000
-            Pyro4.config.SERVERTYPE = "multiplex"
-            Pyro4.config.POLLTIMEOUT = 3
-
-            Pyro4.util.SerializerBase.register_dict_to_class("collections.OrderedDict", recreate_OrderedDict)
-
-            self._pyroDaemon = Pyro4.Daemon(host=pyroAddr)
-
-            uri = self._pyroDaemon.register(self)
-
-            # Do we create our own nameserver?
-            try:
-                if pyroNsAddr is None:
-                    nsUri, nsDaemon, nsBcast = Pyro4.naming.startNS(host=pyroAddr)
-                    self._pyroDaemon.combine(nsDaemon)
-                    if nsBcast is not None:
-                        self._pyroDaemon.combine(nsBcast)
-                    ns = nsDaemon.nameserver
-                    self._log.info("Started pyro4 nameserver: {}".format(nsUri))
-                else:
-                    ns = Pyro4.locateNS(pyroNsAddr)
-                    self._log.info("Using pyro4 nameserver at addr: {}".format(pyroNsAddr))
-
-                ns.register('{}.{}'.format(pyroGroup,self.name),uri)
-                self._exportNodes(self._pyroDaemon)
-                self._pyroThread = threading.Thread(target=self._pyroDaemon.requestLoop)
-                self._pyroThread.start()
-
-            except Exception as e:
-                self._log.error("Failed to start or locate pyro4 nameserver with error: {}".format(e))
+        # Start ZMQ server if enabled
+        if zmqPort is not None:
+            self._zmqServer = pr.interfaces.ZmqServer(root=self,addr="*",port=zmqPort)
 
         # Read current state
         if initRead:
@@ -257,21 +225,19 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         if self._pollQueue:
             self._pollQueue.stop()
 
-        if self._pyroDaemon:
-            self._pyroDaemon.shutdown()
+        if self._zmqServer is not None:
+            self._zmqServer = None
 
         self._running=False
 
-    @Pyro4.expose
+    @pr.expose
     @property
     def running(self):
         return self._running
 
-    @Pyro4.expose
     def getNode(self, path):
         return self._getPath(path)
 
-    @Pyro4.expose
     def addVarListener(self,func):
         """
         Add a variable update listener function.
@@ -280,40 +246,37 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         with self._varListenLock:
             self._varListeners.append(func)
 
-            if isinstance(func,Pyro4.core.Proxy):                                    
-                func._pyroOneway.add("varListener")                                  
-
-    @Pyro4.expose
+    @pr.expose
     def get(self,path):
         obj = self.getNode(path)
         return obj.get()
 
-    @Pyro4.expose
+    @pr.expose
     def getDisp(self,path):
         obj = self.getNode(path)
         return obj.getDisp()
 
-    @Pyro4.expose
+    @pr.expose
     def value(self,path):
         obj = self.getNode(path)
         return obj.value()
 
-    @Pyro4.expose
+    @pr.expose
     def valueDisp(self,path):
         obj = self.getNode(path)
         return obj.valueDisp()
 
-    @Pyro4.expose
+    @pr.expose
     def set(self,path,value):
         obj = self.getNode(path)
         return obj.set(value)
 
-    @Pyro4.expose
+    @pr.expose
     def setDisp(self,path,value):
         obj = self.getNode(path)
         return obj.setDisp(value)
 
-    @Pyro4.expose
+    @pr.expose
     def exec(self,path,arg):
         obj = self.getNode(path)
         return obj.call(arg)
@@ -343,9 +306,11 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         super().hardReset()
         self._clearLog()
 
+    def __reduce__(self):
+        return pr.Node.__reduce__(self)
+
     @ft.lru_cache(maxsize=None)
     def _getPath(self,path):
-        """Find a node in the tree that has a particular path string"""
         obj = self
 
         if '.' in path:
@@ -355,6 +320,8 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                 return None
 
             for a in lst[1:]:
+                if not hasattr(obj,'node'):
+                    return None
                 obj = obj.node(a)
 
         elif path != self.name:
@@ -471,14 +438,14 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
     def _getYaml(self,readFirst,modes=['RW']):
         """
-        Get current values as a yaml dictionary.
+        Get current values as yaml data.
         modes is a list of variable modes to include.
         If readFirst=True a full read from hardware is performed.
         """
 
         if readFirst: self._read()
         try:
-            return  dictToYaml({self.name:self._getDict(modes)},default_flow_style=False)
+            return  dataToYaml({self.name:self._getDict(modes)},default_flow_style=False)
         except Exception as e:
             self._log.exception(e)
             return ""
@@ -493,7 +460,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         are completed. Bulk writes provide better performance when updating a large
         quanitty of variables.
         """
-        d = yamlToDict(yml)
+        d = yamlToData(yml)
         with self.updateGroup():
 
             for key, value in d.items():
@@ -559,24 +526,17 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                     # Call listener functions,
                     with self._varListenLock:
                         for func in self._varListeners:
-                            try:
-
-                                if isinstance(func,Pyro4.core.Proxy) or hasattr(func,'varListener'):
-                                    func.varListener(p,val.value,val.valueDisp)
-                                else:
                                     func(p,val.value.val,valueDisp)
-
-                            except Pyro4.errors.CommunicationError as msg:
-                                if 'Connection refused' in str(msg):
-                                    self._log.info("Pyro Disconnect. Removing callback")
-                                    self._varListeners.remove(func)
-                                else:
-                                    self._log.error("Pyro callback failed for {}: {}".format(self.name,msg))
 
                 self._log.debug(F"Done update group. Length={len(uvars)}. Entry={list(uvars.keys())[0]}")
 
                 # Generate yaml stream
-                self._sendYamlFrame(dictToYaml(d,default_flow_style=False))
+                y = dataToYaml(d,default_flow_style=False)
+                self._sendYamlFrame(dataToYaml(d,default_flow_style=False))
+
+                # Send over zmq link
+                if self._zmqServer is not None:
+                    self._zmqServer._publish(dataToYaml(d,varConvert=False,default_flow_style=False))
 
                 # Init var list
                 uvars = {}
@@ -585,76 +545,8 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
             self._updateQueue.task_done()
 
 
-class PyroRoot(pr.PyroNode):
-    def __init__(self, *, node,daemon):
-        pr.PyroNode.__init__(self,root=self,node=node,daemon=daemon)
-
-        self._varListeners   = []
-        self._relayListeners = {}
-
-    def addInstance(self,node):
-        self._daemon.register(node)
-
-    def getNode(self, path):
-        return pr.PyroNode(root=self,node=self._node.getNode(path),daemon=self._daemon)
-
-    def addVarListener(self,listener):
-        self._varListeners.append(listener)
-
-    def _addRelayListener(self, path, listener):
-        if not path in self._relayListeners:
-            self._relayListeners[path] = []
-
-        self._relayListeners[path].append(listener)
-
-    @Pyro4.expose
-    def varListener(self, path, value, disp):
-        for f in self._varListeners:
-            f.varListener(path=path, value=value, disp=disp)
-
-        if path in self._relayListeners:
-            for f in self._relayListeners[path]:
-                f.varListener(path=path, value=value, disp=disp)
-
-class PyroClient(object):
-    def __init__(self, group, localAddr=None, nsAddr=None):
-        self._group = group
-
-        Pyro4.config.THREADPOOL_SIZE = 100
-        Pyro4.config.SERVERTYPE = "multiplex"
-        Pyro4.config.POLLTIMEOUT = 3
-
-        Pyro4.util.SerializerBase.register_dict_to_class("collections.OrderedDict", recreate_OrderedDict)
-
-        if nsAddr is None:
-            nsAddr = localAddr
-
-        try:
-            self._ns = Pyro4.locateNS(host=nsAddr)
-        except:
-            raise pr.NodeError("PyroClient Failed to find nameserver")
-
-        self._pyroDaemon = Pyro4.Daemon(host=localAddr)
-
-        self._pyroThread = threading.Thread(target=self._pyroDaemon.requestLoop)
-        self._pyroThread.start()
-
-    def stop(self):
-        self._pyroDaemon.shutdown()
-
-    def getRoot(self,name):
-        try:
-            uri = self._ns.lookup("{}.{}".format(self._group,name))
-            ret = PyroRoot(node=Pyro4.Proxy(uri),daemon=self._pyroDaemon)
-            self._pyroDaemon.register(ret)
-
-            ret._node.addVarListener(ret)
-            return ret
-        except:
-            raise pr.NodeError("PyroClient Failed to find {}.{}.".format(self._group,name))
-
-def yamlToDict(stream, Loader=yaml.Loader, object_pairs_hook=odict):
-    """Load yaml to ordered dictionary"""
+def yamlToData(stream, Loader=yaml.Loader, object_pairs_hook=odict):
+    """Load yaml to data structure"""
     class OrderedLoader(Loader):
         pass
 
@@ -666,8 +558,11 @@ def yamlToDict(stream, Loader=yaml.Loader, object_pairs_hook=odict):
 
     return yaml.load(stream, OrderedLoader)
 
-def dictToYaml(data, stream=None, Dumper=yaml.Dumper, **kwds):
-    """Convert ordered dictionary to yaml"""
+def dataToYaml(data, varConvert=True, rawStr=False, stream=None, Dumper=yaml.Dumper, **kwds):
+    """Convert data structure to yaml"""
+
+    if rawStr and isinstance(data,str):
+        return data
 
     class OrderedDumper(Dumper):
         pass
@@ -689,7 +584,9 @@ def dictToYaml(data, stream=None, Dumper=yaml.Dumper, **kwds):
     def _dict_representer(dumper, data):
         return dumper.represent_mapping(yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG, data.items())
 
-    OrderedDumper.add_representer(pr.VariableValue, _var_representer)
+    if varConvert:
+        OrderedDumper.add_representer(pr.VariableValue, _var_representer)
+
     OrderedDumper.add_representer(odict, _dict_representer)
 
     try:
@@ -719,7 +616,7 @@ def dictUpdate(old, new):
             old[k] = v
 
 def yamlUpdate(old, new):
-    dictUpdate(old, yamlToDict(new))
+    dictUpdate(old, yamlToData(new))
 
 def recreate_OrderedDict(name, values):
     return odict(values['items'])

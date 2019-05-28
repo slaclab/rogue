@@ -41,7 +41,7 @@ def application(argv):
 class GuiTop(QWidget):
 
     newRoot = pyqtSignal(pyrogue.Root)
-    newPyro = pyqtSignal(pyrogue.PyroRoot)
+    newVirt = pyqtSignal(pyrogue.VirtualNode)
 
     def __init__(self,*, group,parent=None):
         super(GuiTop,self).__init__(parent)
@@ -63,9 +63,9 @@ class GuiTop(QWidget):
         self.newRoot.connect(self.var.addTree)
         self.newRoot.connect(self.cmd.addTree)
 
-        self.newPyro.connect(self._addTree)
-        self.newPyro.connect(self.var.addTree)
-        self.newPyro.connect(self.cmd.addTree)
+        self.newVirt.connect(self._addTree)
+        self.newVirt.connect(self.var.addTree)
+        self.newVirt.connect(self.cmd.addTree)
 
         self._appTop = None
 
@@ -73,13 +73,13 @@ class GuiTop(QWidget):
         if not root.running:
             raise Exception("GUI can not be attached to a tree which is not started")
 
-        if isinstance(root,pyrogue.PyroRoot):
-            self.newPyro.emit(root)
+        if isinstance(root,pyrogue.VirtualNode):
+            self.newVirt.emit(root)
         else:
             self.newRoot.emit(root)
 
     @pyqtSlot(pyrogue.Root)
-    @pyqtSlot(pyrogue.PyroRoot)
+    @pyqtSlot(pyrogue.VirtualNode)
     def _addTree(self,root):
         self.sys = pyrogue.gui.system.SystemWidget(root=root,parent=self.tab)
         self.tab.addTab(self.sys,root.name)

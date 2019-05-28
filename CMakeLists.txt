@@ -76,15 +76,11 @@ endif()
 #####################################
 # BZIP2
 #####################################
-if ( NOT NO_BZIP ) 
    find_package(BZip2 QUIET REQUIRED)
-endif()
 
 #####################################
 # ZeroMQ
 #####################################
-if ( NOT NO_ZMQ )
-
    # First try with Cmake packages
    find_package(ZeroMQ QUIET)
 
@@ -122,7 +118,6 @@ if ( NOT NO_ZMQ )
          message(FATAL_ERROR "Failed to find zeroMQ!")
       endif()
    endif()
-endif()
 
 #####################################
 # EPICS V3
@@ -392,21 +387,9 @@ else()
 endif()
 
 message("")
-
-if (NO_ZMQ)
-   message("-- ZeroMQ not included!")
-else()
 message("-- Found ZeroMq: ${ZeroMQ_INCLUDE_DIR}")
-endif()
-
 message("")
-
-if (NO_BZIP)
-   message("-- Bzip2 not included!")
-else()
 message("-- Found Bzip2: ${BZIP2_INCLUDE_DIR}")
-endif()
-
 if (STATIC_LIB)
    message("-- Link static rogue library!")
 endif()

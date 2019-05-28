@@ -42,7 +42,6 @@ requirements:
      - pyzmq
      - parse
      - click
-     - pyro4
      - numpy
      - pyqt
      - pyepics
