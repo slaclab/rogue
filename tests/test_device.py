@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 #-----------------------------------------------------------------------------
-# Title      : PyRogue AXI-Lite Version Module
+# Title      : PyRogue AXI-Lite Version Module Test
 #-----------------------------------------------------------------------------
-# File       : AxiVersion.py
+# File       : test_device.py
 # Created    : 2017-04-12
 #-----------------------------------------------------------------------------
 # Description:

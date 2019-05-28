@@ -165,18 +165,16 @@ class VirtualClient(rogue.interfaces.ZmqClient):
 
     def __init__(self, addr, port):
         rogue.interfaces.ZmqClient.__init__(self,addr,port)
+        self._root = None
+        self._varListeners = []
+        self._nodes = {}
 
-        # Get root entity
-        self._root = self._remoteAttr(None, None)
+        # Try to connect to root entity
+        while self._root is None:
+            self._root = self._remoteAttr(None, None)
 
         # Walk the tree
         self._setupClass(self._root,self._root)
-
-        # Node lists
-        self._nodes = {}
-
-        # Variable listeners
-        self._varListeners = []
 
     def _setupClass(self, root, cls):
         cls._root   = root
