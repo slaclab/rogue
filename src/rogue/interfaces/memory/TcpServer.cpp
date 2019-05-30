@@ -64,7 +64,7 @@ rim::TcpServer::TcpServer (std::string addr, uint16_t port) {
    this->zmqReq_  = zmq_socket(this->zmqCtx_,ZMQ_PULL);
 
    // Receive timeout
-   opt = 100;
+   opt = 1000; // 1 second
    if ( zmq_setsockopt (this->zmqReq_, ZMQ_RCVTIMEO, &opt, sizeof(int32_t)) != 0 ) 
          throw(rogue::GeneralError("TcpServer::TcpServer","Failed to set socket timeout"));
 
