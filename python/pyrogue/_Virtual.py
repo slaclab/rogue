@@ -163,7 +163,7 @@ class VirtualNode(pr.Node):
 
 class VirtualClient(rogue.interfaces.ZmqClient):
 
-    def __init__(self, addr, port):
+    def __init__(self, addr="localhost", port=9099):
         rogue.interfaces.ZmqClient.__init__(self,addr,port)
         self._root = None
         self._varListeners = []

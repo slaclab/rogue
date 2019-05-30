@@ -144,7 +144,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         self.add(pr.LocalCommand(name='GetYamlState', value=True, function=lambda arg: self._getYaml(arg,['RW','RO','WO']), hidden=True,
                                  description='Get current state as YAML string. Pass read first arg.'))
 
-    def start(self, timeout=1.0, initRead=False, initWrite=False, pollEn=True, zmqPort=None):
+    def start(self, timeout=1.0, initRead=False, initWrite=False, pollEn=True, zmqPort=9099):
         """Setup the tree. Start the polling thread."""
 
         # Create poll queue object
