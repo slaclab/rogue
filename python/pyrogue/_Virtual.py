@@ -169,6 +169,9 @@ class VirtualClient(rogue.interfaces.ZmqClient):
         self._varListeners = []
         self._nodes = {}
 
+        # Setup logging
+        self._log = pr.logInit(cls=self,name="VirtualClient",path=None)
+
         # Try to connect to root entity
         while self._root is None:
             self._root = self._remoteAttr(None, None)
@@ -207,7 +210,11 @@ class VirtualClient(rogue.interfaces.ZmqClient):
         d = pr.yamlToData(data)
 
         for k,val in d.items():
-            self._root.getNode(k)._doUpdate(val)
+            n = self._root.getNode(k)
+            if n is None:
+                self._log.error("Failed to find node {}".format(k))
+            else:
+                n._doUpdate(val)
 
             # Call listener functions,
             for func in self._varListeners:

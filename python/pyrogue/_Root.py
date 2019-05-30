@@ -13,6 +13,8 @@
 # copied, modified, propagated, or distributed except according to the terms 
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
+import sys
+import os
 import rogue.interfaces.memory
 import yaml
 import threading
@@ -143,6 +145,12 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
         self.add(pr.LocalCommand(name='GetYamlState', value=True, function=lambda arg: self._getYaml(arg,['RW','RO','WO']), hidden=True,
                                  description='Get current state as YAML string. Pass read first arg.'))
+
+        self.add(pr.LocalCommand(name='Restart', function=self._restart, hidden=False,
+                                 description='Restart and reload the server application'))
+
+        self.add(pr.LocalCommand(name='Exit', function=self._exit, hidden=False,
+                                 description='Exit the server application'))
 
     def start(self, timeout=1.0, initRead=False, initWrite=False, pollEn=True, zmqPort=9099):
         """Setup the tree. Start the polling thread."""
@@ -328,6 +336,19 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
             return None
 
         return obj
+
+    def _exit(self):
+        print("Stopping Rogue root")
+        self.stop()
+        print("Exiting application")
+        exit()
+
+    def _restart(self):
+        print("Stopping Rogue root")
+        self.stop()
+        print("Restarting application")
+        py = sys.executable
+        os.execl(py, py, *sys.argv)
 
     def _rootAttached(self):
         self._parent = self

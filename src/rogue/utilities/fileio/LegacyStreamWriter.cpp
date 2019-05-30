@@ -135,7 +135,6 @@ void ruf::LegacyStreamWriter::writeFile ( uint8_t channel, std::shared_ptr<rogue
      
      // Update counters
      frameCount_ ++;
-     lock.unlock();
      cond_.notify_all();
    }
 }

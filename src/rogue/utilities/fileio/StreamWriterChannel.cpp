@@ -81,7 +81,6 @@ void ruf::StreamWriterChannel::acceptFrame ( ris::FramePtr frame ) {
 
    writer_->writeFile (ichan, frame);
    frameCount_++;
-   lock.unlock();
    cond_.notify_all();
 }
 

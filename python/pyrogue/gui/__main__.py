@@ -26,6 +26,7 @@ client = pyrogue.VirtualClient(args.host,args.port)
 # Create GUI
 appTop = pyrogue.gui.application(sys.argv)
 guiTop = pyrogue.gui.GuiTop()
+guiTop.setWindowTitle("Rogue Client {}:{}".format(args.host,args.port))
 guiTop.addTree(client.root)
 
 # Run gui

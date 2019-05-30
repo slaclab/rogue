@@ -68,7 +68,7 @@ rogue::interfaces::ZmqServer::ZmqServer (std::string addr, uint16_t port) {
    temp.append(":");
    temp.append(std::to_string(static_cast<long long>(port+1)));
 
-   opt = 100;
+   opt = 1000; // 1 second
    if ( zmq_setsockopt (this->zmqRep_, ZMQ_RCVTIMEO, &opt, sizeof(int32_t)) != 0 ) 
          throw(rogue::GeneralError("ZmqServer::ZmqServer","Failed to set socket timeout"));
 

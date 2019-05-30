@@ -46,6 +46,7 @@ void rogue::interfaces::ZmqClient::setup_python() {
 
 rogue::interfaces::ZmqClient::ZmqClient (std::string addr, uint16_t port) {
    std::string temp;
+   uint32_t val;
 
    this->zmqCtx_  = zmq_ctx_new();
    this->zmqSub_  = zmq_socket(this->zmqCtx_,ZMQ_SUB);
@@ -59,7 +60,7 @@ rogue::interfaces::ZmqClient::ZmqClient (std::string addr, uint16_t port) {
    temp.append(":");
    temp.append(std::to_string(static_cast<long long>(port)));
 
-   timeout_ = 100;
+   timeout_ = 1000; // 1 second
    if ( zmq_setsockopt (this->zmqSub_, ZMQ_RCVTIMEO, &timeout_, sizeof(int32_t)) != 0 ) 
          throw(rogue::GeneralError("ZmqClient::ZmqClient","Failed to set socket timeout"));
 
@@ -77,7 +78,14 @@ rogue::interfaces::ZmqClient::ZmqClient (std::string addr, uint16_t port) {
 
    timeout_ = 1000; // 1 second
    if ( zmq_setsockopt (this->zmqReq_, ZMQ_RCVTIMEO, &timeout_, sizeof(int32_t)) != 0 ) 
-         throw(rogue::GeneralError("ZmqClient::ZmqClient","Failed to set socket timeout"));
+      throw(rogue::GeneralError("ZmqClient::ZmqClient","Failed to set socket timeout"));
+
+   val = 1;
+   if ( zmq_setsockopt (this->zmqReq_, ZMQ_REQ_CORRELATE, &val, sizeof(int32_t)) != 0 ) 
+      throw(rogue::GeneralError("ZmqClient::ZmqClient","Failed to set socket correlate"));
+
+   if ( zmq_setsockopt (this->zmqReq_, ZMQ_REQ_RELAXED, &val, sizeof(int32_t)) != 0 ) 
+      throw(rogue::GeneralError("ZmqClient::ZmqClient","Failed to set socket relaxed"));
 
    if ( zmq_connect(this->zmqReq_,temp.c_str()) < 0 ) 
       throw(rogue::GeneralError::network("ZmqClient::ZmqClient",addr,port+1));

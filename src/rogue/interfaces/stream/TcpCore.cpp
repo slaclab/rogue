@@ -67,7 +67,7 @@ ris::TcpCore::TcpCore (std::string addr, uint16_t port, bool server) {
    this->zmqPush_ = zmq_socket(this->zmqCtx_,ZMQ_PUSH);
 
    // Receive timeout
-   opt = 100;
+   opt = 1000; // 1 second
    if ( zmq_setsockopt (this->zmqPull_, ZMQ_RCVTIMEO, &opt, sizeof(int32_t)) != 0 ) 
          throw(rogue::GeneralError("TcpCore::TcpCore","Failed to set socket timeout"));
 
