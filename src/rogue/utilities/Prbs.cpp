@@ -319,7 +319,7 @@ void ru::Prbs::genFrame (uint32_t size) {
       throw rogue::GeneralError("Prbs::genFrame","Invalid frame size");
 
    // Setup size
-   memset(frSize,0,16);
+   memset(frSize,0,MaxBytes);
    frSize[0] = (size / byteWidth_) - 1;
 
    // Setup sequence
