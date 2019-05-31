@@ -29,6 +29,7 @@
 #include <gddAppFuncTable.h>
 #include <map>
 #include <rogue/Queue.h>
+#include <rogue/Logging.h>
 
 namespace rogue {
    namespace protocols {
@@ -47,7 +48,7 @@ namespace rogue {
                bool threadEn_;
 
                std::thread ** workers_;
-               uint32_t       workCnt_;
+               uint32_t         workCnt_;
                bool workersEn_;
 
                std::mutex mtx_;
@@ -59,6 +60,8 @@ namespace rogue {
                void runThread();
 
                void runWorker();
+
+               std::shared_ptr<rogue::Logging> log_;
 
             public:
 
@@ -77,6 +80,8 @@ namespace rogue {
                void addValue(std::shared_ptr<rogue::protocols::epicsV3::Value> value);
 
                void addWork(std::shared_ptr<rogue::protocols::epicsV3::Work> work);
+
+               bool doAsync();
 
                pvExistReturn pvExistTest (const casCtx &ctx, const char *pvName);
 

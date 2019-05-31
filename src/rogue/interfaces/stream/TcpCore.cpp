@@ -67,7 +67,7 @@ ris::TcpCore::TcpCore (std::string addr, uint16_t port, bool server) {
    this->zmqPush_ = zmq_socket(this->zmqCtx_,ZMQ_PUSH);
 
    // Receive timeout
-   opt = 100;
+   opt = 1000; // 1 second
    if ( zmq_setsockopt (this->zmqPull_, ZMQ_RCVTIMEO, &opt, sizeof(int32_t)) != 0 ) 
          throw(rogue::GeneralError("TcpCore::TcpCore","Failed to set socket timeout"));
 
@@ -115,6 +115,10 @@ ris::TcpCore::TcpCore (std::string addr, uint16_t port, bool server) {
 
 //! Destructor
 ris::TcpCore::~TcpCore() {
+  this->close();
+}
+
+void ris::TcpCore::close() {
    threadEn_ = false;
    thread_->join();
 
@@ -248,7 +252,8 @@ void ris::TcpCore::runThread() {
 void ris::TcpCore::setup_python () {
 #ifndef NO_PYTHON
 
-   bp::class_<ris::TcpCore, ris::TcpCorePtr, bp::bases<ris::Master,ris::Slave>, boost::noncopyable >("TcpCore",bp::no_init);
+   bp::class_<ris::TcpCore, ris::TcpCorePtr, bp::bases<ris::Master,ris::Slave>, boost::noncopyable >("TcpCore",bp::no_init)
+       .def("close", &ris::TcpCore::close);
 
    bp::implicitly_convertible<ris::TcpCorePtr, ris::MasterPtr>();
    bp::implicitly_convertible<ris::TcpCorePtr, ris::SlavePtr>();

@@ -215,7 +215,6 @@ void ruf::LegacyStreamReader::runThread() {
    if ( fd_ >= 0 ) ::close(fd_);
    fd_ = -1;
    active_ = false;
-   lock.unlock();
    cond_.notify_all();
 }
 

@@ -20,6 +20,7 @@
 #include <rogue/interfaces/memory/TcpServer.h>
 #include <rogue/interfaces/memory/Constants.h>
 #include <rogue/GeneralError.h>
+#include <string.h>
 #include <memory>
 #include <string.h>
 #include <inttypes.h>
@@ -63,7 +64,7 @@ rim::TcpServer::TcpServer (std::string addr, uint16_t port) {
    this->zmqReq_  = zmq_socket(this->zmqCtx_,ZMQ_PULL);
 
    // Receive timeout
-   opt = 100;
+   opt = 1000; // 1 second
    if ( zmq_setsockopt (this->zmqReq_, ZMQ_RCVTIMEO, &opt, sizeof(int32_t)) != 0 ) 
          throw(rogue::GeneralError("TcpServer::TcpServer","Failed to set socket timeout"));
 
@@ -87,6 +88,10 @@ rim::TcpServer::TcpServer (std::string addr, uint16_t port) {
 
 //! Destructor
 rim::TcpServer::~TcpServer() {
+  this->close();
+}
+
+void rim::TcpServer::close() {
    threadEn_ = false;
    thread_->join();
 
@@ -187,7 +192,8 @@ void rim::TcpServer::runThread() {
 void rim::TcpServer::setup_python () {
 #ifndef NO_PYTHON
 
-   bp::class_<rim::TcpServer, rim::TcpServerPtr, bp::bases<rim::Master>, boost::noncopyable >("TcpServer",bp::init<std::string,uint16_t>());
+  bp::class_<rim::TcpServer, rim::TcpServerPtr, bp::bases<rim::Master>, boost::noncopyable >("TcpServer",bp::init<std::string,uint16_t>())
+      .def("close", &rim::TcpServer::close);
 
    bp::implicitly_convertible<rim::TcpServerPtr, rim::MasterPtr>();
 #endif

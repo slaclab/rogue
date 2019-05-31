@@ -26,7 +26,7 @@ class EpicsCaServer(object):
     """
     Class to contain an epics ca server
     """
-    def __init__(self,*,base,root,pvMap=None, syncRead=True, threadCount=1):
+    def __init__(self,*,base,root,pvMap=None, syncRead=True, threadCount=0):
         self._root      = root
         self._base      = base 
         self._log       = pyrogue.logInit(cls=self)

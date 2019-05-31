@@ -48,7 +48,6 @@ namespace rogue {
           void stop() { 
              std::unique_lock<std::mutex> lock(mtx_);
              run_ = false;
-             lock.unlock();
              pushCond_.notify_all();
              popCond_.notify_all();
           }
@@ -65,7 +64,6 @@ namespace rogue {
 
              if ( run_ ) queue_.push(data);
              busy_ = ( thold_ > 0 && queue_.size() > thold_ );
-             lock.unlock();
              popCond_.notify_all();
           }
 
@@ -86,7 +84,6 @@ namespace rogue {
              std::unique_lock<std::mutex> lock(mtx_);
              while(!queue_.empty()) queue_.pop();
              busy_ = false;
-             lock.unlock();
              pushCond_.notify_all();
           }
 
@@ -99,7 +96,6 @@ namespace rogue {
                 queue_.pop();
              }
              busy_ = ( thold_ > 0 && queue_.size() > thold_ );
-             lock.unlock();
              pushCond_.notify_all();
              return(ret);
           }

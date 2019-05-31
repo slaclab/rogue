@@ -20,7 +20,6 @@ import functools as ft
 import pyrogue as pr
 import inspect
 import threading
-import Pyro4
 import math
 import time
 
@@ -50,7 +49,7 @@ class EnableVariable(pr.BaseVariable):
     def nativeType(self):
         return bool
 
-    @Pyro4.expose
+    @pr.expose
     def get(self, read=False):
         ret = self._value
 
@@ -70,7 +69,7 @@ class EnableVariable(pr.BaseVariable):
 
         return ret
         
-    @Pyro4.expose
+    @pr.expose
     def set(self, value, write=True):
         if value != 'parent' and value != 'deps':
             old = self.value()
@@ -167,22 +166,22 @@ class Device(pr.Node,rim.Hub):
                                  function=lambda arg: self.writeAndVerifyBlocks(force=True,recurse=arg),
                                  description='Force write of device without recursion'))
 
-    @Pyro4.expose
+    @pr.expose
     @property
     def address(self):
         return self._getAddress()
 
-    @Pyro4.expose
+    @pr.expose
     @property
     def offset(self):
         return self._getOffset()
 
-    @Pyro4.expose
+    @pr.expose
     @property
     def size(self):
         return self._size
 
-    @Pyro4.expose
+    @pr.expose
     @property
     def memBaseId(self):
         return self._reqSlaveId()
@@ -288,7 +287,7 @@ class Device(pr.Node,rim.Hub):
         # Process local blocks.
         if variable is not None:
             for b in self._getBlocks(variable):
-                b.startTransaction(rim.Verify, checkEach)
+                b.startTransaction(rim.Verify, check=checkEach)
 
         else:
             for block in self._blocks:
@@ -311,12 +310,12 @@ class Device(pr.Node,rim.Hub):
         # Process local blocks. 
         if variable is not None:
             for b in self._getBlocks(variable):
-                b.startTransaction(rim.Read, checkEach)
+                b.startTransaction(rim.Read, check=checkEach)
 
         else:
             for block in self._blocks:
                 if block.bulkEn:
-                    block.startTransaction(rim.Read, checkEach)
+                    block.startTransaction(rim.Read, check=checkEach)
 
             if recurse:
                 for key,value in self.devices.items():

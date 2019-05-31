@@ -22,6 +22,7 @@
 #include <rogue/interfaces/memory/TransactionLock.h>
 #include <rogue/interfaces/memory/Constants.h>
 #include <rogue/GeneralError.h>
+#include <string.h>
 #include <memory>
 #include <string.h>
 #include <inttypes.h>
@@ -65,7 +66,7 @@ rim::TcpClient::TcpClient (std::string addr, uint16_t port) : rim::Slave(4,0xFFF
    this->zmqReq_  = zmq_socket(this->zmqCtx_,ZMQ_PUSH);
 
    // Receive timeout
-   opt = 100;
+   opt = 1000; // 1 second
    if ( zmq_setsockopt (this->zmqResp_, ZMQ_RCVTIMEO, &opt, sizeof(int32_t)) != 0 ) 
          throw(rogue::GeneralError("TcpClient::TcpClient","Failed to set socket timeout"));
 
@@ -94,13 +95,17 @@ rim::TcpClient::TcpClient (std::string addr, uint16_t port) : rim::Slave(4,0xFFF
 
 //! Destructor
 rim::TcpClient::~TcpClient() {
+  this->close();
+}
+
+void rim::TcpClient::close() {
    threadEn_ = false;
    thread_->join();
 
    zmq_close(this->zmqResp_);
    zmq_close(this->zmqReq_);
    zmq_term(this->zmqCtx_);
-}
+}  
 
 //! Post a transaction
 void rim::TcpClient::doTransaction(rim::TransactionPtr tran) {
@@ -274,7 +279,8 @@ void rim::TcpClient::runThread() {
 void rim::TcpClient::setup_python () {
 #ifndef NO_PYTHON
 
-   bp::class_<rim::TcpClient, rim::TcpClientPtr, bp::bases<rim::Slave>, boost::noncopyable >("TcpClient",bp::init<std::string,uint16_t>());
+   bp::class_<rim::TcpClient, rim::TcpClientPtr, bp::bases<rim::Slave>, boost::noncopyable >("TcpClient",bp::init<std::string,uint16_t>())
+       .def("close", &rim::TcpClient::close);
 
    bp::implicitly_convertible<rim::TcpClientPtr, rim::SlavePtr>();
 #endif

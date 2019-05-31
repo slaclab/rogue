@@ -254,7 +254,6 @@ void ruf::StreamWriter::writeFile ( uint8_t channel, std::shared_ptr<rogue::inte
 
       // Update counters
       frameCount_ ++;
-      lock.unlock();
       cond_.notify_all();
    }
 }

@@ -27,7 +27,6 @@ except ImportError:
     from PyQt4.QtGui     import *
 
 import pyrogue
-import Pyro4
 import threading
 
 class VariableDev(QObject):
@@ -168,7 +167,6 @@ class VariableLink(QObject):
             else:
                 self._variable.setDisp(self._widget.text())
 
-    @Pyro4.expose
     def varListener(self, path, value, disp):
         with self._lock:
             if self._widget is None or self._inEdit is True:
@@ -254,7 +252,7 @@ class VariableWidget(QWidget):
         self.devTop = None
 
     @pyqtSlot(pyrogue.Root)
-    @pyqtSlot(pyrogue.PyroRoot)
+    @pyqtSlot(pyrogue.VirtualNode)
     def addTree(self,root):
         self.roots.append(root)
         self.devTop = VariableDev(tree=self.tree,parent=self.top,dev=root,noExpand=False)

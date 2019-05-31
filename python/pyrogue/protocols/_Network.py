@@ -241,5 +241,9 @@ class UdpRssiPack(pr.Device):
 
     def _stop(self):
         self._rssi.stop()
-        self.rssiOpen.get()
+
+        # This Device may not necessarily be added to a tree
+        # So check if it has a perent first
+        if self.parent is not None:
+            self.rssiOpen.get()
 
