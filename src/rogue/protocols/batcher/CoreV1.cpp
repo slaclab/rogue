@@ -195,6 +195,7 @@ bool rpb::CoreV1::processFrame ( ris::FramePtr frame ) {
    // Integer pow() when powers of 2 (more efficient than floating point)
    headerSize_ = 1 << ( ((temp >> 4) & 0xF) + 1);
 
+
    // Set tail size, min 64-bits
    tailSize_ = (headerSize_ < 8)?8:headerSize_;
 
@@ -212,11 +213,15 @@ bool rpb::CoreV1::processFrame ( ris::FramePtr frame ) {
    beg += (headerSize_-2); // Aready read 2 bytes from frame
    rem -= headerSize_;
 
+   log_->debug("Got frame with header size %i, tail size %i, frame size %i", headerSize_, tailSize_, rem-tailSize_);      
+
    // Set marker to end of frame
    mark = frame->endRead();
 
    // Process each frame, stop when we have reached just after the header
+   int count = 0;
    while (mark != beg) {
+     log_->debug("Processing Frame %i. rem= %i", count++, rem);
 
       // sanity check
       if ( rem < tailSize_ ) {
@@ -240,8 +245,15 @@ bool rpb::CoreV1::processFrame ( ris::FramePtr frame ) {
       ris::fromFrame(tail, 1, &lUser);
 
       // Round up rewind amount to width
-      if ( (fSize % headerSize_) == 0) fJump = fSize;
-      else fJump = ((fSize / headerSize_) + 1) * headerSize_;
+      if ( (fSize % headerSize_) == 0) {
+        log_->debug("IF");
+        fJump = fSize;
+      }
+      else {
+        log_->debug("ELSE");        
+        fJump = ((fSize / headerSize_) + 1) * headerSize_;
+      }
+      log_->debug("fJump= %i", fJump);
 
       // Not enough data for rewind value
       if ( fJump > rem ) {
