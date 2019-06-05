@@ -84,7 +84,8 @@ class VirtualNode(pr.Node):
         self._path  = attrs['path']
         self._class = attrs['class']
 
-        self._nodes = {k:None for k in attrs['nodes']}
+        #self._nodes = odict({k:None for k in attrs['nodes']})
+        self._nodes = attrs['nodes']
         self._bases = attrs['bases']
 
         # Tracking
@@ -95,17 +96,6 @@ class VirtualNode(pr.Node):
 
         # Setup logging
         self._log = pr.logInit(cls=self,name=self.name,path=self._path)
-
-    def __getattr__(self, name):
-
-        ret = pr.attrHelper(self._nodes,name)
-        if ret is None:
-            raise AttributeError('{} has no attribute {}'.format(self, name))
-        else:
-            return ret
-
-    def __dir__(self):
-        return(super().__dir__() + [k for k,v in self._nodes.items()])
 
     def __call__(self, *args, **kwargs):
         return self._client._remoteAttr(self._path, '__call__', *args, **kwargs)
@@ -124,21 +114,6 @@ class VirtualNode(pr.Node):
 
     def addVarListener(self,func):
         self._client._addVarListener(func)
-
-    def getNode(self, path):
-        return self._getPath(path)
-
-    @ft.lru_cache(maxsize=None)
-    def _getPath(self,path):
-        """Find a node in the tree that has a particular path string"""
-        obj = self
-        if '.' in path:
-            for a in path.split('.')[1:]:
-                if not hasattr(obj,'node'):
-                    return None
-                obj = obj.node(a)
-
-        return obj
 
     def _isinstance(self,typ):
         cs = str(typ)
@@ -160,6 +135,15 @@ class VirtualNode(pr.Node):
             else:
                 func(self.path,val.value,val.valueDisp)
 
+    def _virtAttached(self,parent,root,client):
+        """Called once the root node is attached."""
+        self._parent = parent
+        self._root   = root
+        self._client = client
+
+        for key,value in self._nodes.items():
+            value._virtAttached(self,root,client)
+
 
 class VirtualClient(rogue.interfaces.ZmqClient):
 
@@ -167,7 +151,7 @@ class VirtualClient(rogue.interfaces.ZmqClient):
         rogue.interfaces.ZmqClient.__init__(self,addr,port)
         self._root = None
         self._varListeners = []
-        self._nodes = {}
+        self._ready = False
 
         # Setup logging
         self._log = pr.logInit(cls=self,name="VirtualClient",path=None)
@@ -176,20 +160,8 @@ class VirtualClient(rogue.interfaces.ZmqClient):
         while self._root is None:
             self._root = self._remoteAttr(None, None)
 
-        # Walk the tree
-        self._setupClass(self._root,self._root)
-
-    def _setupClass(self, root, cls):
-        cls._root   = root
-        cls._parent = cls
-        cls._client = self
-
-        for k,v in cls._nodes.items():
-            cls._nodes[k] = self._remoteAttr(cls.path, 'node', k)
-            if cls._nodes[k] is not None:
-                self._setupClass(root,cls._nodes[k])
-            else:
-                print("Error processing node {} subnode {}".format(cls.path,k))
+        self._root._virtAttached(self._root,self._root,self)
+        self._ready = True
 
     def _remoteAttr(self, path, attr, *args, **kwargs):
         snd = { 'path':path, 'attr':attr, 'args':args, 'kwargs':kwargs }
@@ -207,6 +179,9 @@ class VirtualClient(rogue.interfaces.ZmqClient):
         self._varListeners.append(func)
 
     def _doUpdate(self,data):
+        if not self._ready:
+            return
+
         d = pr.yamlToData(data)
 
         for k,val in d.items():

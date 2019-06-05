@@ -163,7 +163,7 @@ class Node(object):
         attr['hidden']      = self._hidden
         attr['path']        = self._path
         attr['expand']      = self._expand
-        attr['nodes']       = [k for k,v in self._nodes.items()]
+        attr['nodes']       = self._nodes
         attr['props']       = []
         attr['funcs']       = {}
 
