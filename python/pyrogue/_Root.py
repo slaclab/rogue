@@ -243,9 +243,6 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
     def running(self):
         return self._running
 
-    def getNode(self, path):
-        return self._getPath(path)
-
     def addVarListener(self,func):
         """
         Add a variable update listener function.
@@ -318,7 +315,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         return pr.Node.__reduce__(self)
 
     @ft.lru_cache(maxsize=None)
-    def _getPath(self,path):
+    def getNode(self,path):
         obj = self
 
         if '.' in path:
@@ -489,7 +486,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                     self._setDict(value,writeEach,modes)
                 else:
                     try:
-                        self._getPath(key).setDisp(value)
+                        self.getNode(key).setDisp(value)
                     except:
                         self._log.error("Entry {} not found".format(key))
 
