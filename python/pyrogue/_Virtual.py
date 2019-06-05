@@ -83,8 +83,6 @@ class VirtualNode(pr.Node):
 
         self._path  = attrs['path']
         self._class = attrs['class']
-
-        #self._nodes = odict({k:None for k in attrs['nodes']})
         self._nodes = attrs['nodes']
         self._bases = attrs['bases']
 
