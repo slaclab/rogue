@@ -113,6 +113,26 @@ class VirtualNode(pr.Node):
     def addVarListener(self,func):
         self._client._addVarListener(func)
 
+    @ft.lru_cache(maxsize=None)
+    def getNode(self,path):
+        obj = self
+
+        if '.' in path:
+            lst = path.split('.')
+
+            if lst[0] != self.name:
+                return None
+
+            for a in lst[1:]:
+                if not hasattr(obj,'node'):
+                    return None
+                obj = obj.node(a)
+
+        elif path != self.name:
+            return None
+
+        return obj
+
     def _isinstance(self,typ):
         cs = str(typ)
         return cs in self._bases
@@ -141,26 +161,6 @@ class VirtualNode(pr.Node):
 
         for key,value in self._nodes.items():
             value._virtAttached(self,root,client)
-
-    @ft.lru_cache(maxsize=None)
-    def getNode(self,path):
-        obj = self
-
-        if '.' in path:
-            lst = path.split('.')
-
-            if lst[0] != self.name:
-                return None
-
-            for a in lst[1:]:
-                if not hasattr(obj,'node'):
-                    return None
-                obj = obj.node(a)
-
-        elif path != self.name:
-            return None
-
-        return obj
 
 
 class VirtualClient(rogue.interfaces.ZmqClient):
