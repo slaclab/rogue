@@ -43,7 +43,6 @@ rim::TcpServerPtr rim::TcpServer::create (std::string addr, uint16_t port) {
 
 //! Creator
 rim::TcpServer::TcpServer (std::string addr, uint16_t port) {
-   int32_t opt;
    std::string logstr;
 
    logstr = "memory.TcpServer.";
@@ -62,11 +61,6 @@ rim::TcpServer::TcpServer (std::string addr, uint16_t port) {
    this->zmqCtx_  = zmq_ctx_new();
    this->zmqResp_ = zmq_socket(this->zmqCtx_,ZMQ_PUSH);
    this->zmqReq_  = zmq_socket(this->zmqCtx_,ZMQ_PULL);
-
-   // Receive timeout
-   opt = 1000; // 1 second
-   if ( zmq_setsockopt (this->zmqReq_, ZMQ_RCVTIMEO, &opt, sizeof(int32_t)) != 0 ) 
-         throw(rogue::GeneralError("TcpServer::TcpServer","Failed to set socket timeout"));
 
    this->respAddr_.append(std::to_string(static_cast<long long>(port+1)));
    this->reqAddr_.append(std::to_string(static_cast<long long>(port)));
@@ -93,11 +87,10 @@ rim::TcpServer::~TcpServer() {
 
 void rim::TcpServer::close() {
    threadEn_ = false;
-   thread_->join();
-
    zmq_close(this->zmqResp_);
    zmq_close(this->zmqReq_);
    zmq_term(this->zmqCtx_);
+   thread_->join();
 }
 
 //! Run thread
