@@ -23,7 +23,7 @@ class ZmqServer(rogue.interfaces.ZmqServer):
 
     def _doRequest(self,data):
         try:
-            d = pyrogue.yamlToData(data)
+            d = pyrogue.yamlToData(data,config=False)
 
             path    = d['path']   if 'path'   in d else None
             attr    = d['attr']   if 'attr'   in d else None
@@ -37,16 +37,16 @@ class ZmqServer(rogue.interfaces.ZmqServer):
                 node = self._root.getNode(path)
 
             if attr is None:
-                return pyrogue.dataToYaml(node)
+                return pyrogue.dataToYaml(node,config=False)
             else:
                 nAttr = getattr(node, attr)
 
             if nAttr is None:
-                return pyrogue.dataToYaml(None)
+                return pyrogue.dataToYaml(None,config=False)
             elif callable(nAttr):
-                return pyrogue.dataToYaml(nAttr(*args,**kwargs),rawStr=rawStr)
+                return pyrogue.dataToYaml(nAttr(*args,**kwargs),config=False,rawStr=rawStr)
             else:
-                return pyrogue.dataToYaml(nAttr,rawStr=rawStr)
+                return pyrogue.dataToYaml(nAttr,config=False,rawStr=rawStr)
 
         except Exception as msg:
             print("ZMQ Got Exception: {}".format(msg))
