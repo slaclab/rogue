@@ -155,7 +155,6 @@ class Node(object):
     def __reduce__(self):
         attr = {}
 
-        # Sub-nodes
         attr['name']        = self._name
         attr['class']       = self.__class__.__name__
         attr['bases']       = pr.genBaseList(self.__class__)
