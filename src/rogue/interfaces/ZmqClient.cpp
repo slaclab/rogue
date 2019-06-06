@@ -38,8 +38,9 @@ void rogue::interfaces::ZmqClient::setup_python() {
 #ifndef NO_PYTHON
 
    bp::class_<rogue::interfaces::ZmqClientWrap, rogue::interfaces::ZmqClientWrapPtr, boost::noncopyable>("ZmqClient",bp::init<std::string, uint16_t>())
-      .def("_doUpdate", &rogue::interfaces::ZmqClient::doUpdate, &rogue::interfaces::ZmqClientWrap::defDoUpdate)
-      .def("_send",     &rogue::interfaces::ZmqClient::send)
+      .def("_doUpdate",  &rogue::interfaces::ZmqClient::doUpdate, &rogue::interfaces::ZmqClientWrap::defDoUpdate)
+      .def("_send",      &rogue::interfaces::ZmqClient::send)
+      .def("setTimeout", &rogue::interfaces::ZmqClient::setTimeout)
    ;
 #endif
 }
