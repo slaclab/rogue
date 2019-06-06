@@ -167,6 +167,7 @@ class VirtualClient(rogue.interfaces.ZmqClient):
 
     def __init__(self, addr="localhost", port=9099):
         rogue.interfaces.ZmqClient.__init__(self,addr,port)
+        self.setTimeout(20000)
         self._root = None
         self._varListeners = []
         self._ready = False
@@ -183,10 +184,10 @@ class VirtualClient(rogue.interfaces.ZmqClient):
 
     def _remoteAttr(self, path, attr, *args, **kwargs):
         snd = { 'path':path, 'attr':attr, 'args':args, 'kwargs':kwargs }
-        y = pr.dataToYaml(snd) + '\n'
+        y = pr.dataToYaml(snd,config=False)
         try:
             resp = self._send(y)
-            ret = pr.yamlToData(resp)
+            ret = pr.yamlToData(resp,config=False)
         except Exception as msg:
             print("got remote exception: {}".format(msg))
             ret = None
