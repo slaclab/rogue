@@ -38,8 +38,13 @@ void rogue::interfaces::ZmqClient::setup_python() {
 #ifndef NO_PYTHON
 
    bp::class_<rogue::interfaces::ZmqClientWrap, rogue::interfaces::ZmqClientWrapPtr, boost::noncopyable>("ZmqClient",bp::init<std::string, uint16_t>())
-      .def("_doUpdate", &rogue::interfaces::ZmqClient::doUpdate, &rogue::interfaces::ZmqClientWrap::defDoUpdate)
-      .def("_send",     &rogue::interfaces::ZmqClient::send)
+      .def("_doUpdate",    &rogue::interfaces::ZmqClient::doUpdate, &rogue::interfaces::ZmqClientWrap::defDoUpdate)
+      .def("_send",        &rogue::interfaces::ZmqClient::send)
+      .def("setTimeout",   &rogue::interfaces::ZmqClient::setTimeout)
+      .def("getDisp",      &rogue::interfaces::ZmqClient::getDisp)
+      .def("setDisp",      &rogue::interfaces::ZmqClient::setDisp)
+      .def("exec",         &rogue::interfaces::ZmqClient::exec)
+      .def("valueDisp",    &rogue::interfaces::ZmqClient::valueDisp)
    ;
 #endif
 }
@@ -174,18 +179,19 @@ void rogue::interfaces::ZmqClient::runThread() {
 }
 
 std::string rogue::interfaces::ZmqClient::sendWrapper(std::string path, std::string attr, std::string arg, bool rawStr) {
-   std::string yaml;
+   std::string snd;
    std::string ret;
 
-   yaml  = "args: !!python/tuple [" + arg + "]\n";
-   yaml += "attr: " + attr + "\n";
-   yaml += "path: " + path + "\n";
-   yaml += "kwargs: {}\n";
+   snd  = "{\"attr\": \"" + attr + "\",";
+   snd += "\"path\": \"" + path + "\",";
 
-   if ( rawStr ) yaml += "rawStr: true\n";
-   else yaml += "rawStr: false\n";
+   if (arg != "") 
+      snd += "\"args\": {\"py/tuple\": [\"" + arg + "\"]},";
 
-   return(send(yaml));
+   if ( rawStr ) snd += "\"rawStr\": true}";
+   else snd += "\"rawStr\": false}";
+
+   return(send(snd));
 }
 
 std::string rogue::interfaces::ZmqClient::getDisp(std::string path) {

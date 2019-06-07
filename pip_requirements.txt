@@ -1,4 +1,5 @@
 PyYAML
+jsonpickle
 parse
 click
 coverage
