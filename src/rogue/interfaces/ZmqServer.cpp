@@ -45,7 +45,6 @@ void rogue::interfaces::ZmqServer::setup_python() {
 
 rogue::interfaces::ZmqServer::ZmqServer (std::string addr, uint16_t port) {
    std::string temp;
-   int32_t opt;
 
    log_ = rogue::Logging::create("ZmqServer");
 
@@ -68,10 +67,6 @@ rogue::interfaces::ZmqServer::ZmqServer (std::string addr, uint16_t port) {
    temp.append(":");
    temp.append(std::to_string(static_cast<long long>(port+1)));
 
-   opt = 1000; // 1 second
-   if ( zmq_setsockopt (this->zmqRep_, ZMQ_RCVTIMEO, &opt, sizeof(int32_t)) != 0 ) 
-         throw(rogue::GeneralError("ZmqServer::ZmqServer","Failed to set socket timeout"));
-
    if ( zmq_bind(this->zmqRep_,temp.c_str()) < 0 ) 
       throw(rogue::GeneralError::network("ZmqServer::ZmqServer",addr,port+1));
 
@@ -84,11 +79,10 @@ rogue::interfaces::ZmqServer::ZmqServer (std::string addr, uint16_t port) {
 rogue::interfaces::ZmqServer::~ZmqServer() {
    rogue::GilRelease noGil;
    threadEn_ = false;
-   thread_->join();
-
    zmq_close(this->zmqPub_);
    zmq_close(this->zmqRep_);
    zmq_term(this->zmqCtx_);
+   thread_->join();
 }
 
 void rogue::interfaces::ZmqServer::publish(std::string value) {
