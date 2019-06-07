@@ -21,6 +21,7 @@ import threading
 from collections import OrderedDict as odict
 import logging
 import pyrogue as pr
+import pyrogue.interfaces
 import functools as ft
 import time
 import queue
