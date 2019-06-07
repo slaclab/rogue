@@ -52,6 +52,10 @@ namespace rogue {
             friend class StreamWriterChannel;
             
             protected:
+
+               // Log
+               boost::shared_ptr<rogue::Logging> log_;
+
                //! File descriptor
                int32_t fd_;
 
