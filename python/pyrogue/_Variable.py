@@ -88,6 +88,8 @@ class BaseVariable(pr.Node):
                 self._typeStr = f'List[{value[0].__class__.__name__}]'
             else:
                 self._typeStr = value.__class__.__name__
+        else:
+            self._typeStr = typeStr
 
         # Create inverted enum
         self._revEnum = None
@@ -500,7 +502,7 @@ class LocalVariable(BaseVariable):
         BaseVariable.__init__(self, name=name, description=description, 
                               mode=mode, value=value, disp=disp, 
                               enum=enum, units=units, hidden=hidden,
-                              minimum=minimum, maximum=maximum,
+                              minimum=minimum, maximum=maximum, typeStr=typeStr,
                               pollInterval=pollInterval)
 
         self._block = pr.LocalBlock(variable=self,localSet=localSet,localGet=localGet,value=self._default)
