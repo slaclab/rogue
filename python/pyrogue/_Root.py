@@ -25,6 +25,7 @@ import pyrogue.interfaces
 import functools as ft
 import time
 import queue
+import jsonpickle
 from contextlib import contextmanager
 
 class RootLogHandler(logging.Handler):
@@ -80,7 +81,8 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         self._pollQueue = None
 
         # Zeromq server
-        self._zmqServer  = None
+        self._zmqServer = None
+        self._structure = ""
 
         # List of variable listeners
         self._varListeners  = []
@@ -206,6 +208,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
         # Start ZMQ server if enabled
         if zmqPort is not None:
+            self._structure = jsonpickle.encode(self)
             self._zmqServer = pr.interfaces.ZmqServer(root=self,addr="*",port=zmqPort)
 
         # Read current state
@@ -243,9 +246,6 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
     @property
     def running(self):
         return self._running
-
-    def getNode(self, path):
-        return self._getPath(path)
 
     def addVarListener(self,func):
         """
@@ -319,7 +319,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         return pr.Node.__reduce__(self)
 
     @ft.lru_cache(maxsize=None)
-    def _getPath(self,path):
+    def getNode(self,path):
         obj = self
 
         if '.' in path:
@@ -467,7 +467,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
         if readFirst: self._read()
         try:
-            return  dataToYaml({self.name:self._getDict(modes)},default_flow_style=False)
+            return dataToYaml({self.name:self._getDict(modes)})
         except Exception as e:
             self._log.exception(e)
             return ""
@@ -490,7 +490,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                     self._setDict(value,writeEach,modes)
                 else:
                     try:
-                        self._getPath(key).setDisp(value)
+                        self.getNode(key).setDisp(value)
                     except:
                         self._log.error("Entry {} not found".format(key))
 
@@ -553,12 +553,11 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                 self._log.debug(F"Done update group. Length={len(uvars)}. Entry={list(uvars.keys())[0]}")
 
                 # Generate yaml stream
-                y = dataToYaml(d,default_flow_style=False)
-                self._sendYamlFrame(dataToYaml(d,default_flow_style=False))
+                self._sendYamlFrame(dataToYaml(d))
 
                 # Send over zmq link
                 if self._zmqServer is not None:
-                    self._zmqServer._publish(dataToYaml(d,varConvert=False,default_flow_style=False))
+                    self._zmqServer._publish(jsonpickle.encode(d))
 
                 # Init var list
                 uvars = {}
@@ -566,27 +565,24 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
             # Set done
             self._updateQueue.task_done()
 
-
-def yamlToData(stream, Loader=yaml.Loader, object_pairs_hook=odict):
+def yamlToData(stream):
     """Load yaml to data structure"""
-    class OrderedLoader(Loader):
+
+    class PyrogueLoader(yaml.Loader):
         pass
 
     def construct_mapping(loader, node):
         loader.flatten_mapping(node)
-        return object_pairs_hook(loader.construct_pairs(node))
+        return odict(loader.construct_pairs(node))
 
-    OrderedLoader.add_constructor(yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG,construct_mapping)
+    PyrogueLoader.add_constructor(yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG,construct_mapping)
 
-    return yaml.load(stream, OrderedLoader)
+    return yaml.load(stream, Loader=PyrogueLoader)
 
-def dataToYaml(data, varConvert=True, rawStr=False, stream=None, Dumper=yaml.Dumper, **kwds):
+def dataToYaml(data):
     """Convert data structure to yaml"""
 
-    if rawStr and isinstance(data,str):
-        return data
-
-    class OrderedDumper(Dumper):
+    class PyrogueDumper(yaml.Dumper):
         pass
 
     def _var_representer(dumper, data):
@@ -606,13 +602,11 @@ def dataToYaml(data, varConvert=True, rawStr=False, stream=None, Dumper=yaml.Dum
     def _dict_representer(dumper, data):
         return dumper.represent_mapping(yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG, data.items())
 
-    if varConvert:
-        OrderedDumper.add_representer(pr.VariableValue, _var_representer)
-
-    OrderedDumper.add_representer(odict, _dict_representer)
+    PyrogueDumper.add_representer(pr.VariableValue, _var_representer)
+    PyrogueDumper.add_representer(odict, _dict_representer)
 
     try:
-        ret = yaml.dump(data, stream, OrderedDumper, **kwds)
+        ret = yaml.dump(data, Dumper=PyrogueDumper, default_flow_style=False)
     except Exception as e:
         #print("Error: {} dict {}".format(e,data))
         return None

@@ -12,6 +12,7 @@ dependencies:
   - ipython
   - cmake
   - pyyaml
+  - jsonpickle
   - pyzmq
   - parse
   - click

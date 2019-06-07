@@ -12,6 +12,7 @@ dependencies:
   - make
   - cmake
   - pyyaml
+  - jsonpickle
   - pyzmq
   - parse
   - click

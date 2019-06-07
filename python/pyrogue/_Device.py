@@ -95,7 +95,7 @@ class EnableVariable(pr.BaseVariable):
             if oldEn != newEn:
                 self.parent.enableChanged(newEn)
 
-        super()._doUpdate()
+        return super()._doUpdate()
 
     def _rootAttached(self,parent,root):
         pr.Node._rootAttached(self,parent,root)

@@ -15,15 +15,24 @@
 #-----------------------------------------------------------------------------
 import rogue.interfaces
 import pyrogue
+import jsonpickle
 
 class ZmqServer(rogue.interfaces.ZmqServer):
+
     def __init__(self,*,root,addr,port):
         rogue.interfaces.ZmqServer.__init__(self,addr,port)
         self._root = root
 
+    def encode(self,data,rawStr):
+
+        if rawStr and isinstance(data,str):
+            return data
+        else:
+            return jsonpickle.encode(data)
+
     def _doRequest(self,data):
         try:
-            d = pyrogue.yamlToData(data)
+            d = jsonpickle.decode(data)
 
             path    = d['path']   if 'path'   in d else None
             attr    = d['attr']   if 'attr'   in d else None
@@ -31,22 +40,27 @@ class ZmqServer(rogue.interfaces.ZmqServer):
             kwargs  = d['kwargs'] if 'kwargs' in d else {}
             rawStr  = d['rawStr'] if 'rawStr' in d else False
 
-            if path is None:
-                node = self._root
-            else:
-                node = self._root.getNode(path)
+            # Special case to get name
+            if path == "__rootname__":
+                return self.encode(self._root.name,rawStr=rawStr)
 
-            if attr is None:
-                return pyrogue.dataToYaml(node)
-            else:
-                nAttr = getattr(node, attr)
+            # Special case to get structure
+            if path == "__structure__":
+                return self._root._structure
+
+            node = self._root.getNode(path)
+
+            if node is None:
+                return self.encode(None,rawStr=False)
+
+            nAttr = getattr(node, attr)
 
             if nAttr is None:
-                return pyrogue.dataToYaml(None)
+                return self.encode(None,rawStr=False)
             elif callable(nAttr):
-                return pyrogue.dataToYaml(nAttr(*args,**kwargs),rawStr=rawStr)
+                return self.encode(nAttr(*args,**kwargs),rawStr=rawStr)
             else:
-                return pyrogue.dataToYaml(nAttr,rawStr=rawStr)
+                return self.encode(nAttr,rawStr=rawStr)
 
         except Exception as msg:
             print("ZMQ Got Exception: {}".format(msg))
