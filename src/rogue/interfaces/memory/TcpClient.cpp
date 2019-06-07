@@ -65,11 +65,6 @@ rim::TcpClient::TcpClient (std::string addr, uint16_t port) : rim::Slave(4,0xFFF
    this->zmqResp_ = zmq_socket(this->zmqCtx_,ZMQ_PULL);
    this->zmqReq_  = zmq_socket(this->zmqCtx_,ZMQ_PUSH);
 
-   // Receive timeout
-   opt = 1000; // 1 second
-   if ( zmq_setsockopt (this->zmqResp_, ZMQ_RCVTIMEO, &opt, sizeof(int32_t)) != 0 ) 
-         throw(rogue::GeneralError("TcpClient::TcpClient","Failed to set socket timeout"));
-
    // Don't buffer when no connection
    opt = 1;
    if ( zmq_setsockopt (this->zmqReq_, ZMQ_IMMEDIATE, &opt, sizeof(int32_t)) != 0 ) 
@@ -100,11 +95,10 @@ rim::TcpClient::~TcpClient() {
 
 void rim::TcpClient::close() {
    threadEn_ = false;
-   thread_->join();
-
    zmq_close(this->zmqResp_);
    zmq_close(this->zmqReq_);
    zmq_term(this->zmqCtx_);
+   thread_->join();
 }  
 
 //! Post a transaction

@@ -66,11 +66,6 @@ ris::TcpCore::TcpCore (std::string addr, uint16_t port, bool server) {
    this->zmqPull_ = zmq_socket(this->zmqCtx_,ZMQ_PULL);
    this->zmqPush_ = zmq_socket(this->zmqCtx_,ZMQ_PUSH);
 
-   // Receive timeout
-   opt = 1000; // 1 second
-   if ( zmq_setsockopt (this->zmqPull_, ZMQ_RCVTIMEO, &opt, sizeof(int32_t)) != 0 ) 
-         throw(rogue::GeneralError("TcpCore::TcpCore","Failed to set socket timeout"));
-
    // Don't buffer when no connection
    opt = 1;
    if ( zmq_setsockopt (this->zmqPush_, ZMQ_IMMEDIATE, &opt, sizeof(int32_t)) != 0 ) 
@@ -120,11 +115,10 @@ ris::TcpCore::~TcpCore() {
 
 void ris::TcpCore::close() {
    threadEn_ = false;
-   thread_->join();
-
    zmq_close(this->zmqPull_);
    zmq_close(this->zmqPush_);
    zmq_term(this->zmqCtx_);
+   thread_->join();
 }
 
 //! Accept a frame from master
