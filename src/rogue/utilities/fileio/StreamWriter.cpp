@@ -155,7 +155,7 @@ void ruf::StreamWriter::setBufferSize(uint32_t size) {
 }
 
 //! Set max file size, 0 for unlimited
-void ruf::StreamWriter::setMaxSize(uint32_t size) {
+void ruf::StreamWriter::setMaxSize(uint64_t size) {
    rogue::GilRelease noGil;
    boost::lock_guard<boost::mutex> lock(mtx_);
    sizeLimit_ = size;
@@ -177,7 +177,7 @@ ruf::StreamWriterChannelPtr ruf::StreamWriter::getChannel(uint8_t channel) {
 }
 
 //! Get current file size
-uint32_t ruf::StreamWriter::getSize() {
+uint64_t ruf::StreamWriter::getSize() {
    rogue::GilRelease noGil;
    boost::lock_guard<boost::mutex> lock(mtx_);
    return(totSize_ + currBuffer_);
