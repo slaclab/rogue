@@ -41,6 +41,7 @@
 #include <thread>
 #include <mutex>
 #include <condition_variable>
+#include <rogue/Logging.h>
 #include <map>
 
 namespace rogue {
@@ -54,6 +55,10 @@ namespace rogue {
             friend class StreamWriterChannel;
             
             protected:
+
+               // Log
+               std::shared_ptr<rogue::Logging> log_;
+
                //! File descriptor
                int32_t fd_;
 
