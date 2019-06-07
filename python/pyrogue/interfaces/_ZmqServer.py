@@ -40,8 +40,12 @@ class ZmqServer(rogue.interfaces.ZmqServer):
             kwargs  = d['kwargs'] if 'kwargs' in d else {}
             rawStr  = d['rawStr'] if 'rawStr' in d else False
 
+            # Special case to get name
+            if path == "__rootname__":
+                return self.encode(self._root.name,rawStr=rawStr)
+
             # Special case to get structure
-            if path is None and attr is None:
+            if path == "__structure__":
                 return self._root._structure
 
             node = self._root.getNode(path)
