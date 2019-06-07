@@ -188,6 +188,7 @@ class VirtualClient(rogue.interfaces.ZmqClient):
         self._log = pr.logInit(cls=self,name="VirtualClient",path=None)
 
         # Get root name as a connection test
+        self.setTimeout(1000)
         rn = None
         while rn is None:
             rn = self._remoteAttr('__rootname__',None)
@@ -196,16 +197,13 @@ class VirtualClient(rogue.interfaces.ZmqClient):
 
         # Try to connect to root entity, long timeout
         print("Getting structure for {}".format(rn))
-        self.setTimeout(20000)
+        self.setTimeout(120000)
         r = self._remoteAttr('__structure__', None)
         print("Ready to use {}".format(rn))
 
         # Update tree
         r._virtAttached(r,r,self)
         self._root = r
-
-        # Update to shorter timeout
-        self.setTimeout(1000)
 
     def _remoteAttr(self, path, attr, *args, **kwargs):
         snd = { 'path':path, 'attr':attr, 'args':args, 'kwargs':kwargs }

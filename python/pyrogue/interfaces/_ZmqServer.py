@@ -49,6 +49,10 @@ class ZmqServer(rogue.interfaces.ZmqServer):
                 return self._root._structure
 
             node = self._root.getNode(path)
+
+            if node is None:
+                return self.encode(None,rawStr=False)
+
             nAttr = getattr(node, attr)
 
             if nAttr is None:
