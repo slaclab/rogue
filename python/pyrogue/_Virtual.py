@@ -21,6 +21,7 @@ import pyrogue as pr
 import zmq
 import rogue.interfaces
 import functools as ft
+import jsonpickle
 
 
 def genBaseList(cls):
@@ -68,6 +69,19 @@ def VirtualFactory(data):
         for k in data['props']:
             setattr(self.__class__,k,VirtualProperty(self,k))
 
+        # Add __call__ if command
+        if str(pr.BaseCommand) in data['bases']:
+            setattr(self.__class__,'__call__',self._call)
+        
+        # Add getNode and addVarListener if root
+        if str(pr.Root) in data['bases']:
+            setattr(self.__class__,'getNode',self._getNode)
+            setattr(self.__class__,'addVarListener',self._addVarListener)
+
+        # Add addListener if Variable
+        if str(pr.BaseVariable) in data['bases']:
+            setattr(self.__class__,'addListener',self._addListener)
+
         VirtualNode.__init__(self,data)
 
     newclass = type('Virtual' + data['class'], (VirtualNode,), {"__init__": __init__})
@@ -83,8 +97,7 @@ class VirtualNode(pr.Node):
 
         self._path  = attrs['path']
         self._class = attrs['class']
-
-        self._nodes = {k:None for k in attrs['nodes']}
+        self._nodes = attrs['nodes']
         self._bases = attrs['bases']
 
         # Tracking
@@ -96,47 +109,41 @@ class VirtualNode(pr.Node):
         # Setup logging
         self._log = pr.logInit(cls=self,name=self.name,path=self._path)
 
-    def __getattr__(self, name):
-
-        ret = pr.attrHelper(self._nodes,name)
-        if ret is None:
-            raise AttributeError('{} has no attribute {}'.format(self, name))
-        else:
-            return ret
-
-    def __dir__(self):
-        return(super().__dir__() + [k for k,v in self._nodes.items()])
-
-    def __call__(self, *args, **kwargs):
-        return self._client._remoteAttr(self._path, '__call__', *args, **kwargs)
-
     def add(self,node):
-        raise NodeError('add not supported in VirtualNode')
+        raise pr.NodeError('add not supported in VirtualNode')
 
     def find(self, *, recurse=True, typ=None, **kwargs):
-        raise NodeError('find not supported in VirtualNode')
+        raise pr.NodeError('find not supported in VirtualNode')
 
     def callRecursive(self, func, nodeTypes=None, **kwargs):
-        raise NodeError('callRecursive not supported in VirtualNode')
+        raise pr.NodeError('callRecursive not supported in VirtualNode')
 
-    def addListener(self, listener):
+    def _call(self, *args, **kwargs):
+        return self._client._remoteAttr(self._path, '__call__', *args, **kwargs)
+
+    def _addListener(self, listener):
         self._functions.append(listener)
 
-    def addVarListener(self,func):
+    def _addVarListener(self,func):
         self._client._addVarListener(func)
 
-    def getNode(self, path):
-        return self._getPath(path)
-
     @ft.lru_cache(maxsize=None)
-    def _getPath(self,path):
-        """Find a node in the tree that has a particular path string"""
+    def _getNode(self,path):
         obj = self
+
         if '.' in path:
-            for a in path.split('.')[1:]:
+            lst = path.split('.')
+
+            if lst[0] != self.name:
+                return None
+
+            for a in lst[1:]:
                 if not hasattr(obj,'node'):
                     return None
                 obj = obj.node(a)
+
+        elif path != self.name:
+            return None
 
         return obj
 
@@ -145,13 +152,13 @@ class VirtualNode(pr.Node):
         return cs in self._bases
 
     def _rootAttached(self,parent,root):
-        raise NodeError('_rootAttached not supported in VirtualNode')
+        raise pr.NodeError('_rootAttached not supported in VirtualNode')
 
     def _getDict(self,modes):
-        raise NodeError('_getDict not supported in VirtualNode')
+        raise pr.NodeError('_getDict not supported in VirtualNode')
 
     def _setDict(self,d,writeEach,modes=['RW']):
-        raise NodeError('_setDict not supported in VirtualNode')
+        raise pr.NodeError('_setDict not supported in VirtualNode')
 
     def _doUpdate(self, val):
         for func in self._functions:
@@ -160,43 +167,44 @@ class VirtualNode(pr.Node):
             else:
                 func(self.path,val.value,val.valueDisp)
 
+    def _virtAttached(self,parent,root,client):
+        """Called once the root node is attached."""
+        self._parent = parent
+        self._root   = root
+        self._client = client
+
+        for key,value in self._nodes.items():
+            value._virtAttached(self,root,client)
+
 
 class VirtualClient(rogue.interfaces.ZmqClient):
 
     def __init__(self, addr="localhost", port=9099):
         rogue.interfaces.ZmqClient.__init__(self,addr,port)
-        self._root = None
         self._varListeners = []
-        self._nodes = {}
+        self._root = None
 
         # Setup logging
         self._log = pr.logInit(cls=self,name="VirtualClient",path=None)
 
-        # Try to connect to root entity
-        while self._root is None:
-            self._root = self._remoteAttr(None, None)
+        # Try to connect to root entity, long timeout
+        self.setTimeout(20000)
+        r = None
+        while r is None:
+            r = self._remoteAttr(None, None)
 
-        # Walk the tree
-        self._setupClass(self._root,self._root)
+        r._virtAttached(r,r,self)
+        self._root = r
 
-    def _setupClass(self, root, cls):
-        cls._root   = root
-        cls._parent = cls
-        cls._client = self
-
-        for k,v in cls._nodes.items():
-            cls._nodes[k] = self._remoteAttr(cls.path, 'node', k)
-            if cls._nodes[k] is not None:
-                self._setupClass(root,cls._nodes[k])
-            else:
-                print("Error processing node {} subnode {}".format(cls.path,k))
+        # Update to shorter timeout
+        self.setTimeout(1000)
 
     def _remoteAttr(self, path, attr, *args, **kwargs):
         snd = { 'path':path, 'attr':attr, 'args':args, 'kwargs':kwargs }
-        y = pr.dataToYaml(snd) + '\n'
+        y = jsonpickle.encode(snd)
         try:
             resp = self._send(y)
-            ret = pr.yamlToData(resp)
+            ret = jsonpickle.decode(resp)
         except Exception as msg:
             print("got remote exception: {}".format(msg))
             ret = None
@@ -207,7 +215,10 @@ class VirtualClient(rogue.interfaces.ZmqClient):
         self._varListeners.append(func)
 
     def _doUpdate(self,data):
-        d = pr.yamlToData(data)
+        if self._root is None:
+            return
+
+        d = jsonpickle.decode(data)
 
         for k,val in d.items():
             n = self._root.getNode(k)

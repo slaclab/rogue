@@ -39,6 +39,7 @@ requirements:
      - epics-base=3.14.12.8
      - zeromq
      - pyyaml
+     - jsonpickle
      - pyzmq
      - parse
      - click
