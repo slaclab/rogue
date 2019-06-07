@@ -69,6 +69,19 @@ def VirtualFactory(data):
         for k in data['props']:
             setattr(self.__class__,k,VirtualProperty(self,k))
 
+        # Add __call__ if command
+        if str(pr.BaseCommand) in data['bases']:
+            setattr(self.__class__,'__call__',self._call)
+        
+        # Add getNode and addVarListener if root
+        if str(pr.Root) in data['bases']:
+            setattr(self.__class__,'getNode',self._getNode)
+            setattr(self.__class__,'addVarListener',self._addVarListener)
+
+        # Add addListener if Variable
+        if str(pr.BaseVariable) in data['bases']:
+            setattr(self.__class__,'addListener',self._addListener)
+
         VirtualNode.__init__(self,data)
 
     newclass = type('Virtual' + data['class'], (VirtualNode,), {"__init__": __init__})
@@ -96,26 +109,26 @@ class VirtualNode(pr.Node):
         # Setup logging
         self._log = pr.logInit(cls=self,name=self.name,path=self._path)
 
-    def __call__(self, *args, **kwargs):
-        return self._client._remoteAttr(self._path, '__call__', *args, **kwargs)
-
     def add(self,node):
-        raise NodeError('add not supported in VirtualNode')
+        raise pr.NodeError('add not supported in VirtualNode')
 
     def find(self, *, recurse=True, typ=None, **kwargs):
-        raise NodeError('find not supported in VirtualNode')
+        raise pr.NodeError('find not supported in VirtualNode')
 
     def callRecursive(self, func, nodeTypes=None, **kwargs):
-        raise NodeError('callRecursive not supported in VirtualNode')
+        raise pr.NodeError('callRecursive not supported in VirtualNode')
 
-    def addListener(self, listener):
+    def _call(self, *args, **kwargs):
+        return self._client._remoteAttr(self._path, '__call__', *args, **kwargs)
+
+    def _addListener(self, listener):
         self._functions.append(listener)
 
-    def addVarListener(self,func):
+    def _addVarListener(self,func):
         self._client._addVarListener(func)
 
     @ft.lru_cache(maxsize=None)
-    def getNode(self,path):
+    def _getNode(self,path):
         obj = self
 
         if '.' in path:
@@ -139,13 +152,13 @@ class VirtualNode(pr.Node):
         return cs in self._bases
 
     def _rootAttached(self,parent,root):
-        raise NodeError('_rootAttached not supported in VirtualNode')
+        raise pr.NodeError('_rootAttached not supported in VirtualNode')
 
     def _getDict(self,modes):
-        raise NodeError('_getDict not supported in VirtualNode')
+        raise pr.NodeError('_getDict not supported in VirtualNode')
 
     def _setDict(self,d,writeEach,modes=['RW']):
-        raise NodeError('_setDict not supported in VirtualNode')
+        raise pr.NodeError('_setDict not supported in VirtualNode')
 
     def _doUpdate(self, val):
         for func in self._functions:
