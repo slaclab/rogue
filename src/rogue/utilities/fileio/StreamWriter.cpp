@@ -89,7 +89,7 @@ ruf::StreamWriter::StreamWriter() {
    currBuffer_ = 0;
    dropErrors_ = false;
 
-   this->log_ = rogue::Logging::create("fileio.StreamWriter");
+   log_ = rogue::Logging::create("fileio.StreamWriter");
 }
 
 //! Deconstructor
@@ -249,7 +249,7 @@ void ruf::StreamWriter::intWrite(void *data, uint32_t size) {
       if (write(fd_,data,size) != (int32_t)size) {
          ::close(fd_);
          fd_ = -1;
-         this->log_->error("Write failed, closing file!");
+         log_->error("Write failed, closing file!");
          return;
       }
       currSize_ += size;
@@ -298,7 +298,7 @@ void ruf::StreamWriter::flush() {
       if ( write(fd_,buffer_,currBuffer_) != (int32_t)currBuffer_ ) {
          ::close(fd_);
          fd_ = -1;
-         this->log_->error("Write failed, closing file!");
+         log_->error("Write failed, closing file!");
          currBuffer_ = 0;
          return;
       }

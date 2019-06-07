@@ -39,6 +39,7 @@
 #include <rogue/interfaces/stream/Frame.h>
 #include <stdint.h>
 #include <boost/thread.hpp>
+#include <rogue/Logging.h>
 #include <map>
 
 namespace rogue {
