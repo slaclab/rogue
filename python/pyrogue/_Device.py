@@ -535,6 +535,7 @@ class DataWriter(Device):
             name='bufferSize',
             mode='RW',
             value=0,
+            typeStr='UInt32',
             localSet=self._setBufferSize,
             description='File buffering size. Enables caching of data before call to file system.'))
 
@@ -542,6 +543,7 @@ class DataWriter(Device):
             name='maxFileSize',
             mode='RW',
             value=0,
+            typeStr='UInt64',
             localSet=self._setMaxFileSize,
             description='Maximum size for an individual file. Setting to a non zero splits the run data into multiple files.'))
 
@@ -549,6 +551,7 @@ class DataWriter(Device):
             name='fileSize',
             mode='RO',
             value=0,
+            typeStr='UInt64',
             pollInterval=1,
             localGet=self._getFileSize,
             description='Size of data files(s) for current open session in bytes.'))
@@ -557,6 +560,7 @@ class DataWriter(Device):
             name='frameCount',
             mode='RO',
             value=0,
+            typeStr='UInt32',
             pollInterval=1,
             localGet=self._getFrameCount,
             description='Frame in data file(s) for current open session in bytes.'))
@@ -640,6 +644,7 @@ class RunControl(Device):
         self.add(pr.LocalVariable(
             name='runCount',
             value=0,
+            typeStr='UInt32',
             mode='RO',
             pollInterval=1,
             description='Run Counter updated by run thread.'))
