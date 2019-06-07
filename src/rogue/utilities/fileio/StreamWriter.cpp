@@ -176,7 +176,7 @@ ruf::StreamWriterChannelPtr ruf::StreamWriter::getChannel(uint8_t channel) {
   return (channelMap_[channel]);
 }
 
-//! Get current file size
+//! Get total file size
 uint64_t ruf::StreamWriter::getSize() {
    rogue::GilRelease noGil;
    boost::lock_guard<boost::mutex> lock(mtx_);
