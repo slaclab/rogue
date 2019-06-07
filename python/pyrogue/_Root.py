@@ -164,9 +164,6 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         # Call special root level rootAttached
         self._rootAttached()
 
-        # Encode structure
-        self._structure = jsonpickle.encode(self)
-
         # Get full list of Devices and Blocks
         tmpList = []
         for d in self.deviceList:
@@ -210,6 +207,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
         # Start ZMQ server if enabled
         if zmqPort is not None:
+            self._structure = jsonpickle.encode(self)
             self._zmqServer = pr.interfaces.ZmqServer(root=self,addr="*",port=zmqPort)
 
         # Read current state
