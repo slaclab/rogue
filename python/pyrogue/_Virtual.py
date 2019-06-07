@@ -169,19 +169,19 @@ class VirtualClient(rogue.interfaces.ZmqClient):
     def __init__(self, addr="localhost", port=9099):
         rogue.interfaces.ZmqClient.__init__(self,addr,port)
         self.setTimeout(20000)
-        self._root = None
         self._varListeners = []
-        self._ready = False
+        self._root = None
 
         # Setup logging
         self._log = pr.logInit(cls=self,name="VirtualClient",path=None)
 
         # Try to connect to root entity
-        while self._root is None:
-            self._root = self._remoteAttr(None, None)
+        r = None
+        while r is None:
+            r = self._remoteAttr(None, None)
 
-        self._root._virtAttached(self._root,self._root,self)
-        self._ready = True
+        r._virtAttached(r,r,self)
+        self._root = r
 
     def _remoteAttr(self, path, attr, *args, **kwargs):
         snd = { 'path':path, 'attr':attr, 'args':args, 'kwargs':kwargs }
@@ -199,7 +199,7 @@ class VirtualClient(rogue.interfaces.ZmqClient):
         self._varListeners.append(func)
 
     def _doUpdate(self,data):
-        if not self._ready:
+        if self._root is None:
             return
 
         d = jsonpickle.decode(data)
