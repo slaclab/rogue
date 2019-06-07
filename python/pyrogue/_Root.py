@@ -24,6 +24,7 @@ import pyrogue as pr
 import functools as ft
 import time
 import queue
+import jsonpickle
 from contextlib import contextmanager
 
 class RootLogHandler(logging.Handler):
@@ -79,7 +80,8 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         self._pollQueue = None
 
         # Zeromq server
-        self._zmqServer  = None
+        self._zmqServer = None
+        self._structure = ""
 
         # List of variable listeners
         self._varListeners  = []
@@ -161,6 +163,9 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
         # Call special root level rootAttached
         self._rootAttached()
+
+        # Encode structure
+        self._structure = jsonpickle.encode(self)
 
         # Get full list of Devices and Blocks
         tmpList = []
@@ -553,7 +558,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
                 # Send over zmq link
                 if self._zmqServer is not None:
-                    self._zmqServer._publish(pr.dataToYaml(d,config=False))
+                    self._zmqServer._publish(jsonpickle.encode(d))
 
                 # Init var list
                 uvars = {}
@@ -561,62 +566,48 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
             # Set done
             self._updateQueue.task_done()
 
-def yamlToData(stream, config=True):
+def yamlToData(stream):
     """Load yaml to data structure"""
 
-    if config:
-        class PyrogueLoader(yaml.Loader):
-            pass
+    class PyrogueLoader(yaml.Loader):
+        pass
 
-        def construct_mapping(loader, node):
-            loader.flatten_mapping(node)
-            return odict(loader.construct_pairs(node))
+    def construct_mapping(loader, node):
+        loader.flatten_mapping(node)
+        return odict(loader.construct_pairs(node))
 
-        PyrogueLoader.add_constructor(yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG,construct_mapping)
-
-    else:
-        PyrogueLoader = yaml.CLoader
+    PyrogueLoader.add_constructor(yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG,construct_mapping)
 
     return yaml.load(stream, Loader=PyrogueLoader)
 
-def dataToYaml(data, config=True, rawStr=False):
+def dataToYaml(data):
     """Convert data structure to yaml"""
 
-    if rawStr and isinstance(data,str):
-        return data
-    
-    if config:
-        df = False
+    class PyrogueDumper(yaml.Dumper):
+        pass
 
-        class PyrogueDumper(yaml.Dumper):
-            pass
+    def _var_representer(dumper, data):
+        if type(data.value) == bool:
+            enc = 'tag:yaml.org,2002:bool'
+        elif data.enum is not None:
+            enc = 'tag:yaml.org,2002:str'
+        elif type(data.value) == int:
+            enc = 'tag:yaml.org,2002:int'
+        elif type(data.value) == float:
+            enc = 'tag:yaml.org,2002:float'
+        else:
+            enc = 'tag:yaml.org,2002:str'
 
-        def _var_representer(dumper, data):
-            if type(data.value) == bool:
-                enc = 'tag:yaml.org,2002:bool'
-            elif data.enum is not None:
-                enc = 'tag:yaml.org,2002:str'
-            elif type(data.value) == int:
-                enc = 'tag:yaml.org,2002:int'
-            elif type(data.value) == float:
-                enc = 'tag:yaml.org,2002:float'
-            else:
-                enc = 'tag:yaml.org,2002:str'
+        return dumper.represent_scalar(enc, data.valueDisp)
 
-            return dumper.represent_scalar(enc, data.valueDisp)
+    def _dict_representer(dumper, data):
+        return dumper.represent_mapping(yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG, data.items())
 
-        def _dict_representer(dumper, data):
-            return dumper.represent_mapping(yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG, data.items())
-
-        PyrogueDumper.add_representer(pr.VariableValue, _var_representer)
-        PyrogueDumper.add_representer(odict, _dict_representer)
-
-    else:
-        df = True
-        PyrogueDumper = yaml.CDumper
+    PyrogueDumper.add_representer(pr.VariableValue, _var_representer)
+    PyrogueDumper.add_representer(odict, _dict_representer)
 
     try:
-        ret = yaml.dump(data, Dumper=PyrogueDumper, default_flow_style=df)
+        ret = yaml.dump(data, Dumper=PyrogueDumper, default_flow_style=False)
     except Exception as e:
         #print("Error: {} dict {}".format(e,data))
         return None

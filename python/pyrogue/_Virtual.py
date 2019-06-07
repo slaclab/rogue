@@ -21,6 +21,7 @@ import pyrogue as pr
 import zmq
 import rogue.interfaces
 import functools as ft
+import jsonpickle
 
 
 def genBaseList(cls):
@@ -184,10 +185,10 @@ class VirtualClient(rogue.interfaces.ZmqClient):
 
     def _remoteAttr(self, path, attr, *args, **kwargs):
         snd = { 'path':path, 'attr':attr, 'args':args, 'kwargs':kwargs }
-        y = pr.dataToYaml(snd,config=False)
+        y = jsonpickle.encode(snd)
         try:
             resp = self._send(y)
-            ret = pr.yamlToData(resp,config=False)
+            ret = jsonpickle.decode(resp)
         except Exception as msg:
             print("got remote exception: {}".format(msg))
             ret = None
@@ -201,7 +202,7 @@ class VirtualClient(rogue.interfaces.ZmqClient):
         if not self._ready:
             return
 
-        d = pr.yamlToData(data)
+        d = jsonpickle.decode(data)
 
         for k,val in d.items():
             n = self._root.getNode(k)

@@ -15,15 +15,24 @@
 #-----------------------------------------------------------------------------
 import rogue.interfaces
 import pyrogue
+import jsonpickle
 
 class ZmqServer(rogue.interfaces.ZmqServer):
+
     def __init__(self,*,root,addr,port):
         rogue.interfaces.ZmqServer.__init__(self,addr,port)
         self._root = root
 
+    def encode(self,data,rawStr):
+
+        if rawStr and isinstance(data,str):
+            return data
+        else:
+            return jsonpickle.encode(data)
+
     def _doRequest(self,data):
         try:
-            d = pyrogue.yamlToData(data,config=False)
+            d = jsonpickle.decode(data)
 
             path    = d['path']   if 'path'   in d else None
             attr    = d['attr']   if 'attr'   in d else None
@@ -31,22 +40,19 @@ class ZmqServer(rogue.interfaces.ZmqServer):
             kwargs  = d['kwargs'] if 'kwargs' in d else {}
             rawStr  = d['rawStr'] if 'rawStr' in d else False
 
-            if path is None:
-                node = self._root
-            else:
-                node = self._root.getNode(path)
+            # Special case to get structure
+            if path is None and attr is None:
+                return self._root._structure
 
-            if attr is None:
-                return pyrogue.dataToYaml(node,config=False)
-            else:
-                nAttr = getattr(node, attr)
+            node = self._root.getNode(path)
+            nAttr = getattr(node, attr)
 
             if nAttr is None:
-                return pyrogue.dataToYaml(None,config=False)
+                return self.encode(None,rawStr=False)
             elif callable(nAttr):
-                return pyrogue.dataToYaml(nAttr(*args,**kwargs),config=False,rawStr=rawStr)
+                return self.encode(nAttr(*args,**kwargs),rawStr=rawStr)
             else:
-                return pyrogue.dataToYaml(nAttr,config=False,rawStr=rawStr)
+                return self.encode(nAttr,rawStr=rawStr)
 
         except Exception as msg:
             print("ZMQ Got Exception: {}".format(msg))
