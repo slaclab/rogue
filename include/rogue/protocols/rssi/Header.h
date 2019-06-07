@@ -21,7 +21,7 @@
 #ifndef __ROGUE_PROTOCOLS_RSSI_HEADER_H__
 #define __ROGUE_PROTOCOLS_RSSI_HEADER_H__
 #include <stdint.h>
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <rogue/interfaces/stream/Frame.h>
 
 namespace rogue {
@@ -55,7 +55,7 @@ namespace rogue {
             private:
    
                //! Frame pointer
-               boost::shared_ptr<rogue::interfaces::stream::Frame> frame_;
+               std::shared_ptr<rogue::interfaces::stream::Frame> frame_;
 
                //! Time last transmitted
                struct timeval time_;
@@ -66,17 +66,17 @@ namespace rogue {
             public:
 
                //! Create
-               static boost::shared_ptr<rogue::protocols::rssi::Header>
-                  create(boost::shared_ptr<rogue::interfaces::stream::Frame> frame);
+               static std::shared_ptr<rogue::protocols::rssi::Header>
+                  create(std::shared_ptr<rogue::interfaces::stream::Frame> frame);
 
                //! Creator
-               Header(boost::shared_ptr<rogue::interfaces::stream::Frame> frame);
+               Header(std::shared_ptr<rogue::interfaces::stream::Frame> frame);
 
                //! Destructor
                ~Header();
 
                //! Get Frame
-               boost::shared_ptr<rogue::interfaces::stream::Frame> getFrame();
+               std::shared_ptr<rogue::interfaces::stream::Frame> getFrame();
 
                //! Verify header checksum. Also inits records.
                bool verify();
@@ -153,7 +153,7 @@ namespace rogue {
          };
 
          // Convienence
-         typedef boost::shared_ptr<rogue::protocols::rssi::Header> HeaderPtr;
+         typedef std::shared_ptr<rogue::protocols::rssi::Header> HeaderPtr;
 
       }
    }

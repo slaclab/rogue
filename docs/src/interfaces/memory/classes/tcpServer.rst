@@ -4,8 +4,6 @@
 TcpServer
 =========
 
-The Master class generates log entries with the path: "pyrogue.memory.TcpServer"
-
 TcpServer objects in C++ are referenced by the following shared pointer typedef:
 
 .. doxygentypedef:: rogue::interfaces::memory::TcpServerPtr

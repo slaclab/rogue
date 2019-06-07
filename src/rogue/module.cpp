@@ -28,7 +28,6 @@
 #include <rogue/protocols/module.h>
 #include <rogue/GeneralError.h>
 #include <rogue/Logging.h>
-#include <rogue/SMemControl.h>
 #include <rogue/Version.h>
 
 namespace bp  = boost::python;
@@ -43,7 +42,6 @@ void rogue::setup_module() {
    rogue::GeneralError::setup_python();
    rogue::Logging::setup_python();
    rogue::Version::setup_python();
-   rogue::SMemControl::setup_python();
 
 }
 

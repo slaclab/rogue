@@ -22,7 +22,8 @@
 #define __ROGUE_INTERFACES_MEMORY_MASTER_H__
 #include <stdint.h>
 #include <vector>
-#include <boost/thread.hpp>
+#include <map>
+#include <thread>
 #include <rogue/Logging.h>
 
 #ifndef NO_PYTHON
@@ -48,44 +49,40 @@ namespace rogue {
             private:
 
                //! Alias for map
-               typedef std::map<uint32_t, boost::shared_ptr<rogue::interfaces::memory::Transaction> > TransactionMap;
+               typedef std::map<uint32_t, std::shared_ptr<rogue::interfaces::memory::Transaction> > TransactionMap;
 
                //! Transaction map
                TransactionMap tranMap_;
 
                //! Slave. Used for request forwards.
-               boost::shared_ptr<rogue::interfaces::memory::Slave> slave_;
+               std::shared_ptr<rogue::interfaces::memory::Slave> slave_;
 
                //! Timeout value
                struct timeval sumTime_;
 
                //! Mutex
-               boost::mutex mastMtx_;
+               std::mutex mastMtx_;
 
                //! Error status
                uint32_t error_;
 
                //! Log
-               boost::shared_ptr<rogue::Logging> log_;
+               std::shared_ptr<rogue::Logging> log_;
 
             public:
 
                //! Class factory which returns a pointer to a Master (MasterPtr)
-               /**Not exposed to Python
+               /** Exposed as rogue.interfaces.memory.Master() to Python
                 */
-               static boost::shared_ptr<rogue::interfaces::memory::Master> create ();
+               static std::shared_ptr<rogue::interfaces::memory::Master> create ();
 
-               //! Setup class for use in python
-               /* Not exposed to Python
-                */
+               // Setup class for use in python
                static void setup_python();
 
-               //! Create a Master instance
-               /**Not exposed to Python
-                */
+               // Create a Master instance
                Master();
 
-               //! Destroy the Master
+               // Destroy the Master
                virtual ~Master();
 
                //! Set slave or Hub device
@@ -96,13 +93,13 @@ namespace rogue {
                 * Exposted to python as _setSlave()
                 * @param slave Slave device pointer SlavePtr
                 */
-               void setSlave ( boost::shared_ptr<rogue::interfaces::memory::Slave> slave );
+               void setSlave ( std::shared_ptr<rogue::interfaces::memory::Slave> slave );
 
                //! Get next level Slave or Hub device
                /** Exposted to python as _getSlave()
                 * @return Slave device pointer SlavePtr
                 */
-               boost::shared_ptr<rogue::interfaces::memory::Slave> getSlave();
+               std::shared_ptr<rogue::interfaces::memory::Slave> getSlave();
 
                //! Query the slave ID
                /* Each Slave in the system has a unique 32-bit ID. This 
@@ -179,7 +176,7 @@ namespace rogue {
                 * can be pending for this Master.
                 *
                 * Not exposted to Python (see reqTransactionPy)
-                * @param address 64-bit transaction offset address
+                * @param address Relative 64-bit transaction offset address
                 * @param size Transaction size in bytes
                 * @param data Pointer to data array used for transaction.
                 * @param type Transaction type
@@ -196,7 +193,7 @@ namespace rogue {
                 * can be pending for this Master.
                 *
                 * Exposted to Python as _reqTransaction()
-                * @param address 64-bit transaction offset address
+                * @param address Relative 64-bit transaction offset address
                 * @param p Byte array used for transaction data
                 * @param size Transaction size in bytes
                 * @param offset Offset within byte array for transaction
@@ -242,7 +239,7 @@ namespace rogue {
             protected:
 
                //! Internal transaction
-               uint32_t intTransaction(boost::shared_ptr<rogue::interfaces::memory::Transaction> tran);
+               uint32_t intTransaction(std::shared_ptr<rogue::interfaces::memory::Transaction> tran);
 
             public:
 
@@ -258,7 +255,7 @@ namespace rogue {
          };
 
          //! Alias for using shared pointer as MasterPtr
-         typedef boost::shared_ptr<rogue::interfaces::memory::Master> MasterPtr;
+         typedef std::shared_ptr<rogue::interfaces::memory::Master> MasterPtr;
       }
    }
 }

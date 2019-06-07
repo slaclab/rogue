@@ -19,27 +19,62 @@ import logging
 import re
 import inspect
 import pyrogue as pr
-import Pyro4
 import functools as ft
 import parse
 import collections
 
-def logInit(cls=None,name=None):
+def logInit(cls=None,name=None,path=None):
+
+    # Support base class in order of precedence
+    baseClasses = odict({pr.BaseCommand : 'Command', pr.BaseVariable : 'Variable',
+                         pr.BaseBlock : 'Block', pr.Root : 'Root', pr.Device : 'Device'})
+
     """Init a logging pbject. Set global options."""
     logging.basicConfig(
         #level=logging.NOTSET,
         format="%(levelname)s:%(name)s:%(message)s",
         stream=sys.stdout)
 
-    msg = 'pyrogue'
-    if cls: msg += "." + cls.__class__.__name__
-    if name: msg += "." + name
-    return logging.getLogger(msg)
+    # All logging starts with rogue prefix
+    ln = 'pyrogue'
+
+    # Next add the highest ranking base class
+    if cls is not None:
+        for k,v in baseClasses.items():
+            if isinstance(cls,k):
+                ln += f'.{v}'
+                break
+
+        # Next subclass name
+        ln += f'.{cls.__class__.__name__}'
+
+    # Add full path if passed
+    if path is not None:
+        ln += f'.{path}'
+
+    # Otherwise just add name if passed
+    elif name is not None:
+        ln += f'.{name}'
+
+    return logging.getLogger(ln)
+
+
+def expose(item):
+
+    # Property
+    if inspect.isdatadescriptor(item):
+        func = item.fget._rogueExposed = True
+        return item
+
+    # Method
+    item._rogueExposed = True
+    return item
 
 
 class NodeError(Exception):
     """ Exception for node manipulation errors."""
     pass
+
 
 class Node(object):
     """
@@ -68,40 +103,33 @@ class Node(object):
         self._expand      = expand
 
         # Tracking
-        self._parent = None
-        self._root   = None
-        self._nodes  = odict()
-        self._bases  = None
+        self._parent  = None
+        self._root    = None
+        self._nodes   = odict()
 
         # Setup logging
-        self._log = logInit(self,name)
+        self._log = logInit(cls=self,name=name,path=None)
 
-    @Pyro4.expose
     @property
     def name(self):
         return self._name
 
-    @Pyro4.expose
     @property
     def description(self):
         return self._description
 
-    @Pyro4.expose
     @property
     def hidden(self):
         return self._hidden
 
-    @Pyro4.expose
     @hidden.setter
     def hidden(self, value):
         self._hidden = value
 
-    @Pyro4.expose
     @property
     def path(self):
         return self._path
 
-    @Pyro4.expose
     @property
     def expand(self):
         return self._expand
@@ -123,6 +151,33 @@ class Node(object):
 
     def __dir__(self):
         return(super().__dir__() + [k for k,v in self._nodes.items()])
+
+    def __reduce__(self):
+        attr = {}
+
+        attr['name']        = self._name
+        attr['class']       = self.__class__.__name__
+        attr['bases']       = pr.genBaseList(self.__class__)
+        attr['description'] = self._description
+        attr['hidden']      = self._hidden
+        attr['path']        = self._path
+        attr['expand']      = self._expand
+        attr['nodes']       = self._nodes
+        attr['props']       = []
+        attr['funcs']       = {}
+
+        # Get properties
+        for k,v in inspect.getmembers(self.__class__, lambda a: isinstance(a,property)):
+            if hasattr(v.fget,'_rogueExposed'):
+                attr['props'].append(k)
+
+        # Get methods
+        for k,v in inspect.getmembers(self.__class__, callable):
+            if hasattr(v,'_rogueExposed'):
+                attr['funcs'][k] = {'args'   : [a for a in inspect.getfullargspec(v).args if a != 'self'],
+                                    'kwargs' : inspect.getfullargspec(v).kwonlyargs}
+
+        return (pr.VirtualFactory, (attr,))
 
     def __contains__(self, item):
         return item in self._nodes.values()
@@ -166,13 +221,11 @@ class Node(object):
         offset = kwargs.pop('offset')
         for i in range(number):
             self.add(nodeClass(name='{:s}[{:d}]'.format(name, i), offset=offset+(i*stride), **kwargs))
-
-    @Pyro4.expose
+    
     @property
     def nodeList(self):
         return([k for k,v in self._nodes.items()])
 
-    @Pyro4.expose
     def getNodes(self,typ,exc=None,hidden=True):
         """
         Get a ordered dictionary of nodes.
@@ -183,7 +236,6 @@ class Node(object):
         return odict([(k,n) for k,n in self._nodes.items() \
             if (n._isinstance(typ) and ((exc is None) or (not n._isinstance(exc))) and (hidden or n.hidden == False))])
 
-    @Pyro4.expose
     @property
     def nodes(self):
         """
@@ -191,7 +243,6 @@ class Node(object):
         """
         return self._nodes
 
-    @Pyro4.expose
     @property
     def variables(self):
         """
@@ -199,7 +250,6 @@ class Node(object):
         """
         return self.getNodes(typ=pr.BaseVariable,exc=pr.BaseCommand,hidden=True)
 
-    @Pyro4.expose
     @property
     def visableVariables(self):
         """
@@ -207,7 +257,6 @@ class Node(object):
         """
         return self.getNodes(typ=pr.BaseVariable,exc=pr.BaseCommand,hidden=False)
 
-    @Pyro4.expose
     @property
     def variableList(self):
         """
@@ -215,13 +264,12 @@ class Node(object):
         """
         lst = []
         for key,value in self._nodes.items():
-            if isinstance(value,pr.BaseVariable):
+            if value._isinstance(pr.BaseVariable):
                 lst.append(value)
             else:
                 lst.extend(value.variableList)
         return lst
 
-    @Pyro4.expose
     @property
     def deviceList(self):
         """
@@ -229,12 +277,11 @@ class Node(object):
         """
         lst = []
         for key,value in self._nodes.items():
-            if isinstance(value,pr.Device):
+            if value._isinstance(pr.Device):
                 lst.append(value)
                 lst.extend(value.deviceList)
         return lst
 
-    @Pyro4.expose
     @property
     def commands(self):
         """
@@ -242,7 +289,6 @@ class Node(object):
         """
         return self.getNodes(pr.BaseCommand,hidden=True)
 
-    @Pyro4.expose
     @property
     def visableCommands(self):
         """
@@ -250,7 +296,6 @@ class Node(object):
         """
         return self.getNodes(pr.BaseCommand,hidden=False)
 
-    @Pyro4.expose
     @property
     def devices(self):
         """
@@ -258,7 +303,6 @@ class Node(object):
         """
         return self.getNodes(pr.Device,hidden=True)
 
-    @Pyro4.expose
     @property
     def visableDevices(self):
         """
@@ -266,7 +310,6 @@ class Node(object):
         """
         return self.getNodes(pr.Device,hidden=False)
 
-    @Pyro4.expose
     @property
     def parent(self):
         """
@@ -274,7 +317,6 @@ class Node(object):
         """
         return self._parent
 
-    @Pyro4.expose
     @property
     def root(self):
         """
@@ -282,24 +324,20 @@ class Node(object):
         """
         return self._root
 
-    @Pyro4.expose
     def node(self, path):
         return attrHelper(self._nodes,path)
 
-    @Pyro4.expose
     @property
     def isDevice(self):
-        return isinstance(self,pr.Device)
+        return self._isinstance(pr.Device)
 
-    @Pyro4.expose
     @property
     def isVariable(self):
-        return (isinstance(self,pr.BaseVariable) and (not isinstance(self,pr.BaseCommand)))
+        return (self._isinstance(pr.BaseVariable) and (not self._isinstance(pr.BaseCommand)))
 
-    @Pyro4.expose
     @property
     def isCommand(self):
-        return isinstance(self,pr.BaseCommand)
+        return self._isinstance(pr.BaseCommand)
 
     def find(self, *, recurse=True, typ=None, **kwargs):
         """ 
@@ -352,17 +390,14 @@ class Node(object):
         return closure
 
     def _isinstance(self,typ):
-        if isinstance(typ,str):
-            if self._bases is None:
-                self._bases = pr.genBaseList(self.__class__)
-            return typ in self._bases
-        else: return isinstance(self,typ)
+        return isinstance(self,typ)
 
     def _rootAttached(self,parent,root):
         """Called once the root node is attached."""
         self._parent = parent
         self._root   = root
         self._path   = parent.path + '.' + self.name
+        self._log    = logInit(cls=self,name=self._name,path=self._path)
 
     def _exportNodes(self,daemon):
         for k,n in self._nodes.items():
@@ -398,97 +433,6 @@ class Node(object):
 
     def _setTimeout(self,timeout):
         pass
-
-class PyroNode(object):
-    def __init__(self, *, root, node, daemon):
-        self._root   = root
-        self._node   = node
-        self._daemon = daemon
-
-    def __repr__(self):
-        return self._node.path
-
-    def __getattr__(self, name):
-        ret = self.node(name)
-        if ret is None:
-            return self._node.__getattr__(name)
-        else:
-            return ret
-
-    def __dir__(self):
-        return(super().__dir__() + self._node.nodeList)
-
-    def _convert(self,d):
-        ret = odict()
-        for k,n in d.items():
-
-            if isinstance(n,dict):
-                ret[k] = PyroNode(root=self._root,node=Pyro4.util.SerializerBase.dict_to_class(n),daemon=self._daemon)
-            else:
-                ret[k] = PyroNode(root=self._root,node=n,daemon=self._daemon)
-
-        return ret
-
-    def attr(self,attr,**kwargs):
-        return self.__getattr__(attr)(**kwargs)
-
-    def addInstance(self,node):
-        self._daemon.register(node)
-
-    def node(self, path):
-        ret = self._node.node(path)
-        if ret is None: 
-            return None
-        elif isinstance(ret,odict) or isinstance(ret,dict):
-            return self._convert(ret)
-        else:
-            return PyroNode(root=self._root,node=ret,daemon=self._daemon)
-
-    def getNodes(self,typ,exc=None,hidden=True):
-        excPass = str(exc) if exc is not None else None
-        return self._convert(self._node.getNodes(str(typ),excPass,hidden))
-
-    @property
-    def nodes(self):
-        return self._convert(self._node.nodes)
-
-    @property
-    def variables(self):
-        return self._convert(self._node.variables)
-
-    @property
-    def visableVariables(self):
-        return self._convert(self._node.visableVariables)
-
-    @property
-    def commands(self):
-        return self._convert(self._node.commands)
-
-    @property
-    def visableCommands(self):
-        return self._convert(self._node.visableCommands)
-
-    @property
-    def devices(self):
-        return self._convert(self._node.devices)
-
-    @property
-    def visableDevices(self):
-        return self._convert(self._node.visableDevices)
-
-    @property
-    def parent(self):
-        return PyroNode(root=self._root,node=self._node.parent,daemon=self._daemon)
-
-    @property
-    def root(self):
-        return self._root
-
-    def addListener(self, listener):
-        self.root._addRelayListener(self.path, listener)
-
-    def __call__(self,arg=None):
-        self._node.call(arg)
 
 
 def attrHelper(nodes,name):
@@ -562,7 +506,10 @@ def nodeMatch(nodes,name):
         for i,n in ah.items():
             ret[i] = n
 
-        r =  eval('ret[{}]'.format(fields[1]))
+        try:
+            r = eval('ret[{}]'.format(fields[1]))
+        except:
+            r = None
 
         if r is None or any(v == None for v in r):
             return None

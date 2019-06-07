@@ -25,8 +25,7 @@
 #include <rogue/protocols/packetizer/Transport.h>
 #include <rogue/protocols/packetizer/Application.h>
 #include <rogue/GeneralError.h>
-#include <boost/make_shared.hpp>
-#include <boost/pointer_cast.hpp>
+#include <memory>
 #include <rogue/GilRelease.h>
 #include <math.h>
 
@@ -56,13 +55,18 @@ rpp::Controller::Controller ( rpp::TransportPtr tran, rpp::ApplicationPtr * app,
 
    for ( x=0; x < 256; x++ ) {
          transSof_[x]  = true;
-         crcInit_[x]   = 0xFFFFFFFF;
+         crc_[x]       = 0;
          tranCount_[x] = 0;
    }
 }
 
 //! Destructor
 rpp::Controller::~Controller() { }
+
+//! Stop TX
+void rpp::Controller::stopQueue() { 
+   tranQueue_.stop();
+}
 
 //! Transport frame allocation request
 // Needs to be updated to support cascaded packetizers

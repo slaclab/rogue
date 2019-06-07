@@ -40,7 +40,7 @@ namespace rogue {
          class Filter : public rogue::interfaces::stream::Master,
                         public rogue::interfaces::stream::Slave {
 
-               boost::shared_ptr<rogue::Logging> log_;
+               std::shared_ptr<rogue::Logging> log_;
 
                // Configurations
                bool     dropErrors_;
@@ -53,34 +53,24 @@ namespace rogue {
                 * @param channel Set channel number to allow through the filter.
                 * @return Filter object as a FilterPtr
                 */
-               static boost::shared_ptr<rogue::interfaces::stream::Filter> create(bool dropErrors, uint8_t channel);
+               static std::shared_ptr<rogue::interfaces::stream::Filter> create(bool dropErrors, uint8_t channel);
 
-               //! Setup class for use in python
-               /** Not exposed to Python
-                */
+               // Setup class for use in python
                static void setup_python();
 
-               //! Create a Filter object
-               /** Exposed as rogue.interfaces.stream.Filter() to Python
-                * @param dropErrors Set to True to drop errored Frames
-                * @param channel Set channel number to allow through the filter.
-                */
+               // Create a Filter object
                Filter(bool dropErrors, uint8_t channel);
 
-               //! Destroy the Filter
+               // Destroy the Filter
                ~Filter();
 
-               //! Accept a frame from master
-               /** This method is called by the Master object to which this Slave is attached when
-                * passing a Frame.
-                * @param frame Frame pointer (FramePtr)
-                */
-               void acceptFrame ( boost::shared_ptr<rogue::interfaces::stream::Frame> frame );
+               // Receive frame from Master
+               void acceptFrame ( std::shared_ptr<rogue::interfaces::stream::Frame> frame );
 
          };
 
          //! Alias for using shared pointer as FilterPtr
-         typedef boost::shared_ptr<rogue::interfaces::stream::Filter> FilterPtr;
+         typedef std::shared_ptr<rogue::interfaces::stream::Filter> FilterPtr;
       }
    }
 }

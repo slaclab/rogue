@@ -42,6 +42,7 @@ class StreamWriter(pyrogue.DataWriter):
 
                 # Dump config/status to file
                 if self._configEn: self.root._streamYaml()
+                self.frameCount.set(0)
 
     def _setBufferSize(self,dev,var,value):
         self._writer.setBufferSize(value)
@@ -55,8 +56,11 @@ class StreamWriter(pyrogue.DataWriter):
     def _getFrameCount(self,dev,var):
         return self._writer.getFrameCount()
 
-    def _waitFrameCount(self, count):
-        self._writer.waitFrameCount(count)
+    def _waitFrameCount(self, count, timeout=0):
+        return self._writer.waitFrameCount(count,timeout*1000000)
+
+    def _waitFrameChannelCount(self, chan, count, timeout=0):
+        return self._writer.getChannel(chan).waitFrameCount(count,timeout*1000000)
 
     def getChannel(self,chan):
         return self._writer.getChannel(chan)

@@ -22,11 +22,12 @@
 #define __ROGUE_PROTOCOLS_EPICSV3_PV_H__
 
 #include <boost/python.hpp>
-#include <boost/thread.hpp>
+#include <thread>
 #include <casdef.h>
 #include <gdd.h>
 #include <gddApps.h>
 #include <gddAppFuncTable.h>
+#include <mutex>
 
 namespace rogue {
    namespace protocols {
@@ -38,16 +39,16 @@ namespace rogue {
          class Pv : public casPV {
             private:
 
-               boost::shared_ptr<rogue::protocols::epicsV3::Value> value_;
+               std::shared_ptr<rogue::protocols::epicsV3::Value> value_;
                rogue::protocols::epicsV3::Server *server_;
                aitBool interest_;
-               boost::mutex mtx_;
+               std::mutex mtx_;
                casEventMask valueMask_;
 
             public:
 
                //! Class creation
-               Pv (rogue::protocols::epicsV3::Server *server, boost::shared_ptr<rogue::protocols::epicsV3::Value> value);
+               Pv (rogue::protocols::epicsV3::Server *server, std::shared_ptr<rogue::protocols::epicsV3::Value> value);
 
                ~Pv ();
 

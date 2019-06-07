@@ -23,7 +23,7 @@
 #include <rogue/interfaces/stream/FrameIterator.h>
 #include <rogue/interfaces/stream/Buffer.h>
 #include <rogue/GeneralError.h>
-#include <boost/make_shared.hpp>
+#include <memory>
 
 namespace ris  = rogue::interfaces::stream;
 
@@ -34,7 +34,7 @@ namespace bp  = boost::python;
 
 //! Create an empty frame
 ris::FramePtr ris::Frame::create() {
-   ris::FramePtr frame = boost::make_shared<ris::Frame>();
+   ris::FramePtr frame = std::make_shared<ris::Frame>();
    return(frame);
 }
 

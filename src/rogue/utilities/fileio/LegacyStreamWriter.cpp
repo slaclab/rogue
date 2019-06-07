@@ -39,11 +39,11 @@
 #include <rogue/interfaces/stream/Buffer.h>
 #include <rogue/GeneralError.h>
 #include <stdint.h>
-#include <boost/thread.hpp>
-#include <boost/make_shared.hpp>
-#include <boost/lexical_cast.hpp>
+#include <thread>
+#include <memory>
 #include <fcntl.h>
 #include <rogue/GilRelease.h>
+#include <unistd.h>
 
 namespace ris = rogue::interfaces::stream;
 namespace ruf = rogue::utilities::fileio;
@@ -56,7 +56,7 @@ namespace bp = boost::python;
 
 //! Class creation
 ruf::LegacyStreamWriterPtr ruf::LegacyStreamWriter::create () {
-   ruf::LegacyStreamWriterPtr s = boost::make_shared<ruf::LegacyStreamWriter>();
+   ruf::LegacyStreamWriterPtr s = std::make_shared<ruf::LegacyStreamWriter>();
    return(s);
 }
 
@@ -91,7 +91,7 @@ ruf::StreamWriterChannelPtr ruf::LegacyStreamWriter::getYamlChannel() {
 }
 
 //! Write data to file. Called from StreamWriterChannel
-void ruf::LegacyStreamWriter::writeFile ( uint8_t channel, boost::shared_ptr<rogue::interfaces::stream::Frame> frame) {
+void ruf::LegacyStreamWriter::writeFile ( uint8_t channel, std::shared_ptr<rogue::interfaces::stream::Frame> frame) {
   ris::Frame::BufferIterator it;
    uint32_t value;
    uint32_t size;
@@ -103,14 +103,14 @@ void ruf::LegacyStreamWriter::writeFile ( uint8_t channel, boost::shared_ptr<rog
    }
 
    rogue::GilRelease noGil;
-   boost::unique_lock<boost::mutex> lock(mtx_);
+   std::unique_lock<std::mutex> lock(mtx_);
 
    if ( fd_ >= 0 ) {
 
      size = frame->getPayload(); // Double check the +4
 
-     // Check file size
-     checkSize(size);
+     // Check file size, including header
+     checkSize(size+4);
 
      // Data count is number of 32-bit words
      if ( channel == RawData ) {
@@ -135,7 +135,6 @@ void ruf::LegacyStreamWriter::writeFile ( uint8_t channel, boost::shared_ptr<rog
      
      // Update counters
      frameCount_ ++;
-     lock.unlock();
      cond_.notify_all();
    }
 }

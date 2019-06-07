@@ -20,7 +20,7 @@
  * ----------------------------------------------------------------------------
 **/
 #include <rogue/hardware/pgp/EvrControl.h>
-#include <boost/make_shared.hpp>
+#include <memory>
 
 namespace rhp = rogue::hardware::pgp;
 
@@ -31,7 +31,7 @@ namespace bp  = boost::python;
 
 //! Create the info class with pointer
 rhp::EvrControlPtr rhp::EvrControl::create() {
-   rhp::EvrControlPtr r = boost::make_shared<rhp::EvrControl>();
+   rhp::EvrControlPtr r = std::make_shared<rhp::EvrControl>();
    return(r);
 }
 

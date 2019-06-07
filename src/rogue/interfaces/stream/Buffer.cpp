@@ -25,7 +25,7 @@
 #include <rogue/interfaces/stream/Pool.h>
 #include <rogue/interfaces/stream/Frame.h>
 #include <rogue/GeneralError.h>
-#include <boost/make_shared.hpp>
+#include <memory>
 
 namespace ris = rogue::interfaces::stream;
 
@@ -34,7 +34,7 @@ namespace ris = rogue::interfaces::stream;
  * Pass owner, raw data buffer, and meta data
  */
 ris::BufferPtr ris::Buffer::create ( ris::PoolPtr source, void * data, uint32_t meta, uint32_t size, uint32_t alloc) {
-   ris::BufferPtr buff = boost::make_shared<ris::Buffer>(source,data,meta,size,alloc);
+   ris::BufferPtr buff = std::make_shared<ris::Buffer>(source,data,meta,size,alloc);
    return(buff);
 }
 

@@ -27,7 +27,6 @@ except ImportError:
     from PyQt4.QtGui     import *
 
 import pyrogue
-import Pyro4
 import datetime
 
 class DataLink(QObject):
@@ -154,7 +153,6 @@ class DataLink(QObject):
         self.writer.autoName()
         pass
 
-    @Pyro4.expose
     def varListener(self,path,value,disp):
         if self.block: return
 
@@ -299,7 +297,6 @@ class ControlLink(QObject):
 
         fl.addRow('Run Count:',self.runCount)
 
-    @Pyro4.expose
     def varListener(self,path,value,disp):
         if self.block: return
 
@@ -356,8 +353,8 @@ class SystemWidget(QWidget):
         pb.clicked.connect(self.hardReset)
         hb.addWidget(pb)
 
-        pb = QPushButton('Soft Reset')
-        pb.clicked.connect(self.softReset)
+        pb = QPushButton('Initialize')
+        pb.clicked.connect(self.initialize)
         hb.addWidget(pb)
 
         pb = QPushButton('Count Reset')
@@ -418,7 +415,6 @@ class SystemWidget(QWidget):
     def resetLog(self):
         self.root.ClearLog()
 
-    @Pyro4.expose
     def varListener(self,path,value,disp):
         name = path.split('.')[-1]
 
@@ -430,8 +426,8 @@ class SystemWidget(QWidget):
         self.root.HardReset()
 
     @pyqtSlot()
-    def softReset(self):
-        self.root.SoftReset()
+    def initialize(self):
+        self.root.Initialize()
 
     @pyqtSlot()
     def countReset(self):
@@ -448,7 +444,7 @@ class SystemWidget(QWidget):
             loadFile = loadFile[0]
 
         if loadFile != '':
-            self.root.ReadConfig(loadFile)
+            self.root.LoadConfig(loadFile)
 
     @pyqtSlot()
     def saveSettings(self):
@@ -462,7 +458,7 @@ class SystemWidget(QWidget):
             saveFile = saveFile[0]
 
         if saveFile != '':
-            self.root.WriteConfig(saveFile)
+            self.root.SaveConfig(saveFile)
 
     @pyqtSlot()
     def saveState(self):
@@ -476,5 +472,5 @@ class SystemWidget(QWidget):
             stateFile = stateFile[0]
 
         if stateFile != '':
-            self.root.WriteState(stateFile)
+            self.root.SaveState(stateFile)
 

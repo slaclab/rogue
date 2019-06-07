@@ -23,7 +23,7 @@
 #include <rogue/protocols/rssi/Controller.h>
 #include <rogue/protocols/rssi/Application.h>
 #include <rogue/GeneralError.h>
-#include <boost/make_shared.hpp>
+#include <memory>
 #include <rogue/GilRelease.h>
 #include <rogue/Logging.h>
 
@@ -37,7 +37,7 @@ namespace bp  = boost::python;
 
 //! Class creation
 rpr::ApplicationPtr rpr::Application::create () {
-   rpr::ApplicationPtr r = boost::make_shared<rpr::Application>();
+   rpr::ApplicationPtr r = std::make_shared<rpr::Application>();
    return(r);
 }
 
@@ -56,7 +56,8 @@ rpr::Application::Application () { }
 
 //! Destructor
 rpr::Application::~Application() { 
-   thread_->interrupt();
+   threadEn_ = false;
+   cntl_->stopQueue();
    thread_->join();
 }
 
@@ -65,7 +66,8 @@ void rpr::Application::setController( rpr::ControllerPtr cntl ) {
    cntl_ = cntl;
 
    // Start read thread
-   thread_ = new boost::thread(boost::bind(&rpr::Application::runThread, this));
+   threadEn_ = true;
+   thread_ = new std::thread(&rpr::Application::runThread, this);
 }
 
 //! Generate a Frame. Called from master
@@ -80,14 +82,12 @@ void rpr::Application::acceptFrame ( ris::FramePtr frame ) {
 
 //! Thread background
 void rpr::Application::runThread() {
+   ris::FramePtr frame;
    Logging log("rssi.Application");
    log.logThreadId();
 
-   try {
-      while(1) {
-         sendFrame(cntl_->applicationTx());
-         boost::this_thread::interruption_point();
-      }
-   } catch (boost::thread_interrupted&) { }
+   while(threadEn_) {
+      if ( (frame=cntl_->applicationTx()) != NULL ) sendFrame(frame);
+   }
 }
 

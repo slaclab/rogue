@@ -101,7 +101,7 @@ class UdpRssiPack(pr.Device):
         self.add(pr.LocalVariable(
             name        = 'locBusy',
             mode        = 'RO', 
-            value       = False,
+            value       = True,
             localGet    = lambda: self._rssi.getLocBusy(),
             hidden      = True,
             pollInterval= pollInterval, 
@@ -119,7 +119,7 @@ class UdpRssiPack(pr.Device):
         self.add(pr.LocalVariable(
             name        = 'remBusy',
             mode        = 'RO', 
-            value       = False,
+            value       = True,
             localGet    = lambda: self._rssi.getRemBusy(),
             hidden      = True,
             pollInterval= pollInterval, 
@@ -284,4 +284,8 @@ class UdpRssiPack(pr.Device):
 
     def _stop(self):
         self._rssi.stop()
-        self.rssiOpen.get()
+
+        # This Device may not necessarily be added to a tree
+        # So check if it has a perent first
+        if self.parent is not None:
+            self.rssiOpen.get()

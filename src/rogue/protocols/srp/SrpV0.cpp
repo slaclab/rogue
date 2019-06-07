@@ -20,8 +20,8 @@
  *-----------------------------------------------------------------------------
 **/
 #include <stdint.h>
-#include <boost/thread.hpp>
-#include <boost/make_shared.hpp>
+#include <thread>
+#include <memory>
 #include <rogue/interfaces/stream/Master.h>
 #include <rogue/interfaces/stream/Slave.h>
 #include <rogue/interfaces/stream/Frame.h>
@@ -34,6 +34,7 @@
 #include <rogue/protocols/srp/SrpV0.h>
 #include <rogue/Logging.h>
 #include <rogue/GilRelease.h>
+#include <string.h>
 
 namespace rps = rogue::protocols::srp;
 namespace rim = rogue::interfaces::memory;
@@ -46,7 +47,7 @@ namespace bp  = boost::python;
 
 //! Class creation
 rps::SrpV0Ptr rps::SrpV0::create () {
-   rps::SrpV0Ptr p = boost::make_shared<rps::SrpV0>();
+   rps::SrpV0Ptr p = std::make_shared<rps::SrpV0>();
    return(p);
 }
 

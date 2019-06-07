@@ -20,7 +20,7 @@
 **/
 #ifndef __ROGUE_PROTOCOLS_PACKETIZER_CORE_H__
 #define __ROGUE_PROTOCOLS_PACKETIZER_CORE_H__
-#include <boost/thread.hpp>
+#include <thread>
 #include <stdint.h>
 
 namespace rogue {
@@ -35,18 +35,18 @@ namespace rogue {
          class Core {
 
                //! Transport module
-               boost::shared_ptr<rogue::protocols::packetizer::Transport> tran_;
+               std::shared_ptr<rogue::protocols::packetizer::Transport> tran_;
 
                //! Application modules
-               boost::shared_ptr<rogue::protocols::packetizer::Application> app_[256];
+               std::shared_ptr<rogue::protocols::packetizer::Application> app_[256];
 
                //! Core module
-               boost::shared_ptr<rogue::protocols::packetizer::Controller> cntl_;
+               std::shared_ptr<rogue::protocols::packetizer::Controller> cntl_;
 
             public:
 
                //! Class creation
-               static boost::shared_ptr<rogue::protocols::packetizer::Core> create (bool enSsi);
+               static std::shared_ptr<rogue::protocols::packetizer::Core> create (bool enSsi);
 
                //! Setup class in python
                static void setup_python();
@@ -58,10 +58,10 @@ namespace rogue {
                ~Core();
 
                //! Get transport interface
-               boost::shared_ptr<rogue::protocols::packetizer::Transport> transport();
+               std::shared_ptr<rogue::protocols::packetizer::Transport> transport();
 
                //! Application module
-               boost::shared_ptr<rogue::protocols::packetizer::Application> application(uint8_t dest);
+               std::shared_ptr<rogue::protocols::packetizer::Application> application(uint8_t dest);
 
                //! Get drop count
                uint32_t getDropCount();
@@ -71,7 +71,7 @@ namespace rogue {
          };
 
          // Convenience
-         typedef boost::shared_ptr<rogue::protocols::packetizer::Core> CorePtr;
+         typedef std::shared_ptr<rogue::protocols::packetizer::Core> CorePtr;
 
       }
    }

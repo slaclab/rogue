@@ -19,7 +19,7 @@
 #ifndef __ROGUE_UTILITIES_STREAM_ZIP_H__
 #define __ROGUE_UTILITIES_STREAM_ZIP_H__
 #include <stdint.h>
-#include <boost/thread.hpp>
+#include <thread>
 #include <rogue/interfaces/stream/Slave.h>
 #include <rogue/interfaces/stream/Master.h>
 
@@ -32,7 +32,7 @@ namespace rogue {
          public:
 
             //! Class creation
-            static boost::shared_ptr<rogue::utilities::StreamZip> create ();
+            static std::shared_ptr<rogue::utilities::StreamZip> create ();
 
             //! Setup class in python
             static void setup_python();
@@ -44,14 +44,14 @@ namespace rogue {
             ~StreamZip();
 
             //! Accept a frame from master
-            void acceptFrame ( boost::shared_ptr<rogue::interfaces::stream::Frame> frame );
+            void acceptFrame ( std::shared_ptr<rogue::interfaces::stream::Frame> frame );
 
             //! Accept a new frame request
-            boost::shared_ptr<rogue::interfaces::stream::Frame> acceptReq ( uint32_t size, bool zeroCopyEn );
+            std::shared_ptr<rogue::interfaces::stream::Frame> acceptReq ( uint32_t size, bool zeroCopyEn );
       };
 
       // Convienence
-      typedef boost::shared_ptr<rogue::utilities::StreamZip> StreamZipPtr;
+      typedef std::shared_ptr<rogue::utilities::StreamZip> StreamZipPtr;
    }
 }
 #endif

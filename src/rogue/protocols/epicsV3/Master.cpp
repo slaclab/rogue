@@ -22,8 +22,8 @@
 #include <rogue/interfaces/stream/Frame.h>
 #include <rogue/interfaces/stream/FrameIterator.h>
 #include <rogue/GeneralError.h>
-#include <boost/make_shared.hpp>
-#include <boost/make_shared.hpp>
+#include <memory>
+#include <memory>
 
 namespace ris = rogue::interfaces::stream;
 namespace rpe = rogue::protocols::epicsV3;

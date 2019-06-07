@@ -22,7 +22,10 @@
 #include <rogue/interfaces/memory/TransactionLock.h>
 #include <rogue/interfaces/memory/Constants.h>
 #include <rogue/GeneralError.h>
-#include <boost/make_shared.hpp>
+#include <string.h>
+#include <memory>
+#include <string.h>
+#include <inttypes.h>
 #include <rogue/GilRelease.h>
 #include <rogue/Logging.h>
 #include <zmq.h>
@@ -36,15 +39,21 @@ namespace bp  = boost::python;
 
 //! Class creation
 rim::TcpClientPtr rim::TcpClient::create (std::string addr, uint16_t port) {
-   rim::TcpClientPtr r = boost::make_shared<rim::TcpClient>(addr,port);
+   rim::TcpClientPtr r = std::make_shared<rim::TcpClient>(addr,port);
    return(r);
 }
 
 //! Creator
 rim::TcpClient::TcpClient (std::string addr, uint16_t port) : rim::Slave(4,0xFFFFFFFF) {
-   uint32_t to;
+   int32_t opt;
+   std::string logstr;
 
-   this->bridgeLog_ = rogue::Logging::create("memory.TcpClient");
+   logstr = "memory.TcpServer.";
+   logstr.append(addr);
+   logstr.append(".");
+   logstr.append(std::to_string(port));
+       
+   this->bridgeLog_ = rogue::Logging::create(logstr);
 
    // Format address
    this->respAddr_ = "tcp://";
@@ -56,9 +65,10 @@ rim::TcpClient::TcpClient (std::string addr, uint16_t port) : rim::Slave(4,0xFFF
    this->zmqResp_ = zmq_socket(this->zmqCtx_,ZMQ_PULL);
    this->zmqReq_  = zmq_socket(this->zmqCtx_,ZMQ_PUSH);
 
-   // Receive timeout
-   to = 10;
-   zmq_setsockopt (this->zmqResp_, ZMQ_RCVTIMEO, &to, sizeof(to));
+   // Don't buffer when no connection
+   opt = 1;
+   if ( zmq_setsockopt (this->zmqReq_, ZMQ_IMMEDIATE, &opt, sizeof(int32_t)) != 0 ) 
+         throw(rogue::GeneralError("TcpClient::TcpClient","Failed to set socket immediate"));
 
    this->respAddr_.append(std::to_string(static_cast<long long>(port+1)));
    this->reqAddr_.append(std::to_string(static_cast<long long>(port)));
@@ -74,18 +84,22 @@ rim::TcpClient::TcpClient (std::string addr, uint16_t port) : rim::Slave(4,0xFFF
       throw(rogue::GeneralError::network("TcpClient::TcpClient",addr,port));
 
    // Start rx thread
-   this->thread_ = new boost::thread(boost::bind(&rim::TcpClient::runThread, this));
+   threadEn_ = true;
+   this->thread_ = new std::thread(&rim::TcpClient::runThread, this);
 }
 
 //! Destructor
 rim::TcpClient::~TcpClient() {
-   thread_->interrupt();
-   thread_->join();
+  this->close();
+}
 
+void rim::TcpClient::close() {
+   threadEn_ = false;
    zmq_close(this->zmqResp_);
    zmq_close(this->zmqReq_);
    zmq_term(this->zmqCtx_);
-}
+   thread_->join();
+}  
 
 //! Post a transaction
 void rim::TcpClient::doTransaction(rim::TransactionPtr tran) {
@@ -101,7 +115,7 @@ void rim::TcpClient::doTransaction(rim::TransactionPtr tran) {
    rim::Transaction::iterator tIter;
 
    rogue::GilRelease noGil;
-   boost::lock_guard<boost::mutex> block(bridgeMtx_);
+   std::lock_guard<std::mutex> block(bridgeMtx_);
    rim::TransactionLockPtr lock = tran->lock();
 
    // ID message
@@ -135,11 +149,16 @@ void rim::TcpClient::doTransaction(rim::TransactionPtr tran) {
    // Read transaction
    else msgCnt = 4;
 
-   bridgeLog_->debug("Forwarding transaction id=%i, addr=0x%x, size=%i, type=%i, cnt=%i",id,addr,size,type,msgCnt);
+   bridgeLog_->debug("Requested transaction id=%" PRIu32 ", addr=0x%" PRIx64
+                     ", size=%" PRIu32 ", type=%" PRIu32 ", cnt=%" PRIu32
+                     ", port: %s" ,id,addr,size,type,msgCnt,this->reqAddr_.c_str());
 
    // Send message
-   for (x=0; x < msgCnt; x++) 
-      zmq_sendmsg(this->zmqReq_,&(msg[x]),(x==(msgCnt-1)?0:ZMQ_SNDMORE));
+   for (x=0; x < msgCnt; x++) {
+      if ( zmq_sendmsg(this->zmqReq_,&(msg[x]),((x==(msgCnt-1)?0:ZMQ_SNDMORE))|ZMQ_DONTWAIT) < 0 ) {
+         bridgeLog_->warning("Failed to send transaction %" PRIu32", msg %" PRIu32, id, x);
+      }
+   }
 
    // Add transaction
    if ( type == rim::Post ) tran->done(0);
@@ -165,9 +184,7 @@ void rim::TcpClient::runThread() {
 
    bridgeLog_->logThreadId();
 
-   try {
-
-      while(1) {
+   while(threadEn_) {
 
          for (x=0; x < 6; x++) zmq_msg_init(&(msg[x]));
          msgCnt = 0;
@@ -186,8 +203,7 @@ void rim::TcpClient::runThread() {
                moreSize = 8;
                zmq_getsockopt(this->zmqResp_, ZMQ_RCVMORE, &more, &moreSize);
             } else more = 1;
-            boost::this_thread::interruption_point();
-         } while ( more );
+      } while ( threadEn_ && more );
 
          // Proper message received
          if ( msgCnt == 6 ) {
@@ -210,7 +226,7 @@ void rim::TcpClient::runThread() {
 
             // Find Transaction
             if ( (tran = getTransaction(id)) == NULL ) {
-               bridgeLog_->warning("Failed to find transaction id=%i",id);
+               bridgeLog_->warning("Failed to find transaction id=%" PRIu32,id);
                for (x=0; x < msgCnt; x++) zmq_msg_close(&(msg[x]));
                continue; // while (1)
             }
@@ -220,7 +236,7 @@ void rim::TcpClient::runThread() {
 
             // Transaction expired
             if ( tran->expired() ) {
-               bridgeLog_->warning("Transaction expired. Id=%i",id);
+               bridgeLog_->warning("Transaction expired. Id=%" PRIu32,id);
                for (x=0; x < msgCnt; x++) zmq_msg_close(&(msg[x]));
                continue; // while (1)
             }
@@ -228,7 +244,7 @@ void rim::TcpClient::runThread() {
 
             // Double check transaction
             if ( (addr != tran->address()) || (size != tran->size()) || (type != tran->type()) ) {
-               bridgeLog_->warning("Transaction data mistmatch. Id=%i",id);
+               bridgeLog_->warning("Transaction data mistmatch. Id=%" PRIu32,id);
                tran->done(rim::ProtocolError);
                for (x=0; x < msgCnt; x++) zmq_msg_close(&(msg[x]));
                continue; // while (1)
@@ -237,7 +253,7 @@ void rim::TcpClient::runThread() {
             // Copy data if read
             if ( type != rim::Write ) {
                if (zmq_msg_size(&(msg[4])) != size) {
-                  bridgeLog_->warning("Transaction size mistmatch. Id=%i",id);
+                  bridgeLog_->warning("Transaction size mistmatch. Id=%" PRIu32,id);
                   tran->done(rim::ProtocolError);
                   for (x=0; x < msgCnt; x++) zmq_msg_close(&(msg[x]));
                   continue; // while (1)
@@ -246,18 +262,19 @@ void rim::TcpClient::runThread() {
                std::copy(data,data+size,tIter);
             }
             tran->done(result);
-            bridgeLog_->debug("Response for transaction id=%i, addr=0x%x, size=%i, type=%i, cnt=%i",id,addr,size,type,msgCnt);
+            bridgeLog_->debug("Response for transaction id=%" PRIu32 ", addr=0x%" PRIx64
+                              ", size=%" PRIu32 ", type=%" PRIu32 ", cnt=%" PRIu32
+                              ", port: %s", id,addr,size,type,msgCnt, this->respAddr_.c_str());
          }
          for (x=0; x < msgCnt; x++) zmq_msg_close(&(msg[x]));
-         boost::this_thread::interruption_point();
       }
-   } catch (boost::thread_interrupted&) { }
 }
 
 void rim::TcpClient::setup_python () {
 #ifndef NO_PYTHON
 
-   bp::class_<rim::TcpClient, rim::TcpClientPtr, bp::bases<rim::Slave>, boost::noncopyable >("TcpClient",bp::init<std::string,uint16_t>());
+   bp::class_<rim::TcpClient, rim::TcpClientPtr, bp::bases<rim::Slave>, boost::noncopyable >("TcpClient",bp::init<std::string,uint16_t>())
+       .def("close", &rim::TcpClient::close);
 
    bp::implicitly_convertible<rim::TcpClientPtr, rim::SlavePtr>();
 #endif

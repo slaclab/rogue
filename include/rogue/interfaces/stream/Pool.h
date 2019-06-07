@@ -21,8 +21,8 @@
 #define __ROGUE_INTERFACES_STREAM_POOL_H__
 #include <stdint.h>
 
-#include <boost/thread.hpp>
-#include <boost/enable_shared_from_this.hpp>
+#include <thread>
+#include <memory>
 #include <rogue/Queue.h>
 
 namespace rogue {
@@ -47,10 +47,10 @@ namespace rogue {
           * A subclass can be created with intercepts the Frame requests and allocates 
           * Frame and Buffer objects from an alternative source such as a hardware DMA driver.
           */
-         class Pool : public boost::enable_shared_from_this<rogue::interfaces::stream::Pool> {
+         class Pool : public std::enable_shared_from_this<rogue::interfaces::stream::Pool> {
 
                // Mutex
-               boost::mutex mtx_;
+               std::mutex mtx_;
 
                // Track buffer allocations
                uint32_t allocMeta_;
@@ -72,12 +72,10 @@ namespace rogue {
 
             public:
 
-               //! Class creator
-               /** Not exposed to Python
-                */
+               // Class creator
                Pool();
 
-               //! Destroy the object
+               // Destroy the object
                virtual ~Pool();
 
                //! Get allocated memory
@@ -98,31 +96,28 @@ namespace rogue {
                 */
                uint32_t getAllocCount();
 
-               //! Process a frame request
-               /** Method to service a frame request, called by the Master class through
+               // Process a frame request
+               /* Method to service a frame request, called by the Master class through
                 * the reqFrame() method. 
                 *
-                * Not exposed to Python.
-                * @param size Minimum size for requsted Frame, larger Frame may be allocated
-                * @param zeroCopyEn Flag which indicates if a zero copy mode Frame is allowed.
-                * @return Newly allocated Frame pointer (FramePtr)
+                * size Minimum size for requsted Frame, larger Frame may be allocated
+                * zeroCopyEn Flag which indicates if a zero copy mode Frame is allowed.
+                * Newly allocated Frame pointer (FramePtr)
                 */
-               virtual boost::shared_ptr<rogue::interfaces::stream::Frame> acceptReq ( uint32_t size, bool zeroCopyEn );
+               virtual std::shared_ptr<rogue::interfaces::stream::Frame> acceptReq ( uint32_t size, bool zeroCopyEn );
 
                //! Method called to return Buffer data
-               /** This method is called by the Buffer desctructor in order to free 
-                * the associated Buffer memory.
+               /* This method is called by the Buffer desctructor in order to free 
+                * the associated Buffer memory. May be overriden by a subclass to
+                * change the way the buffer data is returned.
                 * 
-                * Not exposed to Python
                 * @param data Data pointer to release
                 * @param meta Meta data specific to the allocator
                 * @param size Size of data buffer
                 */
                virtual void retBuffer(uint8_t * data, uint32_t meta, uint32_t size);
 
-               //! Setup class for use in python
-               /** Not exposed to Python
-                */
+               // Setup class for use in python
                static void setup_python();
 
                //! Set fixed size mode
@@ -173,7 +168,7 @@ namespace rogue {
                 * @param total Pointer to current total size
                 * @return Allocated Buffer pointer as BufferPtr
                 */
-               boost::shared_ptr<rogue::interfaces::stream::Buffer> allocBuffer ( uint32_t size, uint32_t *total );
+               std::shared_ptr<rogue::interfaces::stream::Buffer> allocBuffer ( uint32_t size, uint32_t *total );
 
                //! Create a Buffer with passed data block
                /** This method is used to create a Buffer with a pre-allocated block of
@@ -188,7 +183,7 @@ namespace rogue {
                 * @param alloc Allocated size of memory block (may be greater than requested size)
                 * @return Allocated Buffer pointer as BufferPtr
                 */
-               boost::shared_ptr<rogue::interfaces::stream::Buffer> createBuffer( void * data, 
+               std::shared_ptr<rogue::interfaces::stream::Buffer> createBuffer( void * data, 
                                                                                   uint32_t meta, 
                                                                                   uint32_t size,
                                                                                   uint32_t alloc);
@@ -204,7 +199,7 @@ namespace rogue {
          };
 
          //! Alias for using shared pointer as PoolPtr
-         typedef boost::shared_ptr<rogue::interfaces::stream::Pool> PoolPtr;
+         typedef std::shared_ptr<rogue::interfaces::stream::Pool> PoolPtr;
       }
    }
 }

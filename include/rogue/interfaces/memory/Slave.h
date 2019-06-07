@@ -21,6 +21,7 @@
 #define __ROGUE_INTERFACES_MEMORY_SLAVE_H__
 #include <stdint.h>
 #include <vector>
+#include <map>
 #include <rogue/interfaces/memory/Master.h>
 
 #ifndef NO_PYTHON
@@ -48,19 +49,19 @@ namespace rogue {
                static uint32_t classIdx_;
 
                // Class instance lock
-               static boost::mutex classMtx_;
+               static std::mutex classMtx_;
 
                // Unique slave ID
                uint32_t id_;
 
                // Alias for map
-               typedef std::map<uint32_t, boost::shared_ptr<rogue::interfaces::memory::Transaction> > TransactionMap;
+               typedef std::map<uint32_t, std::shared_ptr<rogue::interfaces::memory::Transaction> > TransactionMap;
 
                // Transaction map
                TransactionMap tranMap_;
 
                // Slave lock
-               boost::mutex slaveMtx_;
+               std::mutex slaveMtx_;
 
                // Min access
                uint32_t min_;
@@ -71,27 +72,20 @@ namespace rogue {
             public:
 
                //! Class factory which returns a pointer to a Slave (SlavePtr)
-               /**Not exposed to Python
+               /** Exposed as rogue.interfaces.memory.Slave() to Python
                 *
                 * @param min Minimum transaction this Slave can accept.
                 * @param max Maximum transaction this Slave can accept.
                 */
-               static boost::shared_ptr<rogue::interfaces::memory::Slave> create (uint32_t min, uint32_t max);
+               static std::shared_ptr<rogue::interfaces::memory::Slave> create (uint32_t min, uint32_t max);
 
-               //! Setup class for use in python
-               /* Not exposed to Python
-                */
+               // Setup class for use in python
                static void setup_python();
 
-               //! Create Slave object
-               /**Not exposed to Python
-                *
-                * @param min Minimum transaction this Slave can accept.
-                * @param max Maximum transaction this Slave can accept.
-                */
+               // Create Slave object
                Slave(uint32_t min, uint32_t max);
 
-               //! Destroy the Slave
+               // Destroy the Slave
                virtual ~Slave();
 
                //! Add a transaction to the internal tracking map
@@ -102,7 +96,7 @@ namespace rogue {
                 * Exposed to python as _addTransaction()
                 * @param transaction Pointer to transaction as TransactionPtr
                 */
-               void addTransaction(boost::shared_ptr<rogue::interfaces::memory::Transaction> transaction);
+               void addTransaction(std::shared_ptr<rogue::interfaces::memory::Transaction> transaction);
 
                //! Get a transaction from the internal tracking map
                /** This method is called by the sub-class to retrieve an existing transaction
@@ -115,7 +109,7 @@ namespace rogue {
                 * @param index ID of transaction to lookup
                 * @return Pointer to transaction as TransactionPtr or NULL if not found
                 */
-               boost::shared_ptr<rogue::interfaces::memory::Transaction> getTransaction(uint32_t index);
+               std::shared_ptr<rogue::interfaces::memory::Transaction> getTransaction(uint32_t index);
 
                //! Get min size from slave
                /** Not exposted to Python
@@ -181,11 +175,11 @@ namespace rogue {
                 * Exposted to Python as _doTransaction()
                 * @param transaction Transaction pointer as TransactionPtr
                 */
-               virtual void doTransaction(boost::shared_ptr<rogue::interfaces::memory::Transaction> transaction);
+               virtual void doTransaction(std::shared_ptr<rogue::interfaces::memory::Transaction> transaction);
          };
 
          //! Alias for using shared pointer as SlavePtr
-         typedef boost::shared_ptr<rogue::interfaces::memory::Slave> SlavePtr;
+         typedef std::shared_ptr<rogue::interfaces::memory::Slave> SlavePtr;
 
 #ifndef NO_PYTHON
 
@@ -218,14 +212,14 @@ namespace rogue {
                uint64_t defDoAddress();
 
                // Post a transaction. Master will call this method.
-               void doTransaction(boost::shared_ptr<rogue::interfaces::memory::Transaction> transaction);
+               void doTransaction(std::shared_ptr<rogue::interfaces::memory::Transaction> transaction);
 
                // Post a transaction. Master will call this method.
-               void defDoTransaction(boost::shared_ptr<rogue::interfaces::memory::Transaction> transaction);
+               void defDoTransaction(std::shared_ptr<rogue::interfaces::memory::Transaction> transaction);
 
          };
 
-         typedef boost::shared_ptr<rogue::interfaces::memory::SlaveWrap> SlaveWrapPtr;
+         typedef std::shared_ptr<rogue::interfaces::memory::SlaveWrap> SlaveWrapPtr;
 #endif
 
       }

@@ -23,7 +23,7 @@
 #include <rogue/protocols/packetizer/Controller.h>
 #include <rogue/protocols/packetizer/Application.h>
 #include <rogue/GeneralError.h>
-#include <boost/make_shared.hpp>
+#include <memory>
 #include <rogue/GilRelease.h>
 #include <rogue/Logging.h>
 
@@ -37,7 +37,7 @@ namespace bp  = boost::python;
 
 //! Class creation
 rpp::ApplicationPtr rpp::Application::create (uint8_t id) {
-   rpp::ApplicationPtr r = boost::make_shared<rpp::Application>(id);
+   rpp::ApplicationPtr r = std::make_shared<rpp::Application>(id);
    return(r);
 }
 
@@ -59,7 +59,8 @@ rpp::Application::Application (uint8_t id) {
 
 //! Destructor
 rpp::Application::~Application() { 
-   thread_->interrupt();
+   threadEn_ = false;
+   queue_.stop();
    thread_->join();
 }
 
@@ -68,7 +69,8 @@ void rpp::Application::setController( rpp::ControllerPtr cntl ) {
    cntl_ = cntl;
 
    // Start read thread
-   thread_ = new boost::thread(boost::bind(&rpp::Application::runThread, this));
+   threadEn_ = true;
+   thread_ = new std::thread(&rpp::Application::runThread, this);
 }
 
 //! Generate a Frame. Called from master
@@ -88,14 +90,12 @@ void rpp::Application::pushFrame( ris::FramePtr frame ) {
 
 //! Thread background
 void rpp::Application::runThread() {
+   ris::FramePtr frame;
    Logging log("packetizer.Application");
    log.logThreadId();
 
-   try {
-      while(1) {
-         sendFrame(queue_.pop());
-         boost::this_thread::interruption_point();
-      }
-   } catch (boost::thread_interrupted&) { }
+   while(threadEn_) {
+      if ( (frame = queue_.pop()) != NULL ) sendFrame(frame);
+   }
 }
 

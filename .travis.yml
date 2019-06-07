@@ -81,14 +81,15 @@ jobs:
         - cd $TRAVIS_BUILD_DIR
         - mkdir build; cd build
         - cmake .. -DROGUE_INSTALL=local -DPYTHON_LIBRARY=$PY_PATH/lib/python3.6 -DPYTHON_INCLUDE_DIR=$PY_PATH/include
-        - make
-        - make install
+        - make -j4 install
 
         # Build Docs
-        - cd $TRAVIS_BUILD_DIR
-        - source setup_rogue.sh
-        - cd docs
-        - make html
+        - if [ "$TRAVIS_BRANCH" = "documentation" ]; then
+            cd $TRAVIS_BUILD_DIR;
+            source setup_rogue.sh;
+            cd docs;
+            make html;
+          fi
 
       before_script:
         # Prepare rogue enviroment
@@ -105,34 +106,36 @@ jobs:
         - codecov
         - coverage report -m
         # Publish docs.
-        - doctr deploy . --built-docs docs/build/html --deploy-branch-name gh-pages --branch-whitelist doc_updates
+        - if [ "$TRAVIS_BRANCH" = "documentation" ]; then
+           doctr deploy . --built-docs docs/build/html --deploy-branch-name gh-pages --branch-whitelist documentation;
+         fi
 
     # Deploy development version stage (deploy_dev)
     - &deploy-docker-stage      # Docker
-      stage: deploy_dev
-      name: "Deploy Docker"
-      env: DOCKER_REPO=rogue-dev
-      before_install:
-        # Prepare enviroment
-        - export DOCKER_TAG=`git describe --tags`
-        - export DOCKER_IMAGE_NAME=$DOCKER_ORG_NAME/$DOCKER_REPO
-        # Bring all the tags
-        - git pull --unshallow
-        - git pull
+     stage: deploy_dev
+     name: "Deploy Docker"
+     env: DOCKER_REPO=rogue-dev
+     before_install:
+       # Prepare enviroment
+       - export DOCKER_TAG=`git describe --tags`
+       - export DOCKER_IMAGE_NAME=$DOCKER_ORG_NAME/$DOCKER_REPO
+       # Bring all the tags
+       - git pull --unshallow
+       - git pull
 
-      before_script:
-        # Login to docker
-        - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin;
+     before_script:
+       # Login to docker
+       - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin;
 
-      script:
-        # Build docker image
-        - travis_wait docker build -q --build-arg branch=$TRAVIS_BRANCH -t $DOCKER_IMAGE_NAME .;
+     script:
+       # Build docker image
+       - travis_wait docker build -q --build-arg branch=$TRAVIS_BRANCH -t $DOCKER_IMAGE_NAME .;
 
-      after_success:
-        # Upload docker image (as tagged and latest version)
-        - docker push $DOCKER_IMAGE_NAME;
-        - docker tag $DOCKER_IMAGE_NAME $DOCKER_IMAGE_NAME:$DOCKER_TAG;
-        - docker push $DOCKER_IMAGE_NAME:$DOCKER_TAG;
+     after_success:
+       # Upload docker image (as tagged and latest version)
+       - docker push $DOCKER_IMAGE_NAME;
+       - docker tag $DOCKER_IMAGE_NAME $DOCKER_IMAGE_NAME:$DOCKER_TAG;
+       - docker push $DOCKER_IMAGE_NAME:$DOCKER_TAG;
 
     - &deploy-conda-stage       # Conda for linux
       stage: deploy_dev
@@ -173,7 +176,8 @@ jobs:
 
       script:
         # Build conda package
-        - conda build -q conda-recipe --output-folder bld-dir -c defaults -c conda-forge -c paulscherrerinstitute
+        - conda build --debug conda-recipe --output-folder bld-dir -c defaults -c conda-forge -c paulscherrerinstitute
+        #- conda build -q conda-recipe --output-folder bld-dir -c defaults -c conda-forge -c paulscherrerinstitute
 
       after_success:
         # Upload conda package
@@ -184,9 +188,9 @@ jobs:
       language: ruby  # osx does not support language=python
 
     # Deploy tagged version stage (deploy_tag)
-    - <<: *deploy-docker-stage  # Docker
-      stage: deploy_tag
-      env: DOCKER_REPO=rogue
+    #- <<: *deploy-docker-stage  # Docker
+    #  stage: deploy_tag
+    #  env: DOCKER_REPO=rogue
 
     - <<: *deploy-conda-stage   # Conda for Linux
       stage: deploy_tag

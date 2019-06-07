@@ -29,6 +29,8 @@ environment variable.
 
 .. code:: cmake
 
+   # Source for CMakeLists.txt
+
    # Add support for building in conda environment
    if (DEFINED ENV{CONDA_PREFIX})
       set(CMAKE_PREFIX_PATH "$ENV{CONDA_PREFIX}")

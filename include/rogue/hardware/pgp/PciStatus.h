@@ -23,25 +23,30 @@
 #define __ROGUE_HARDWARE_PGP_PCI_STATUS_H__
 #include <rogue/hardware/drivers/PgpDriver.h>
 #include <stdint.h>
-#include <boost/shared_ptr.hpp>
+#include <memory>
 
 namespace rogue {
    namespace hardware {
       namespace pgp {
 
-         //! Wrapper for PgpInfo class. 
+         //! PCI Status Class
+         /** This class contains the current PCI status for the PGP card.
+          * This class is a C++ wrapper around the PciStatus structure used by the 
+          * lower level driver. All structure members are exposed to Python using 
+          * their original names and can be read directly. 
+          */
          class PciStatus : public ::PciStatus {
             public:
 
-               //! Create the info class with pointer
-               static boost::shared_ptr<rogue::hardware::pgp::PciStatus> create();
+               // Create the info class with pointer
+               static std::shared_ptr<rogue::hardware::pgp::PciStatus> create();
 
-               //! Setup class in python
+               // Setup class in python
                static void setup_python();
          };
 
-         //! Convienence
-         typedef boost::shared_ptr<rogue::hardware::pgp::PciStatus> PciStatusPtr;
+         //! Alias for using shared pointer as PciStatusPtr
+         typedef std::shared_ptr<rogue::hardware::pgp::PciStatus> PciStatusPtr;
       }
    }
 }
