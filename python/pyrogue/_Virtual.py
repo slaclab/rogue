@@ -168,20 +168,23 @@ class VirtualClient(rogue.interfaces.ZmqClient):
 
     def __init__(self, addr="localhost", port=9099):
         rogue.interfaces.ZmqClient.__init__(self,addr,port)
-        self.setTimeout(20000)
         self._varListeners = []
         self._root = None
 
         # Setup logging
         self._log = pr.logInit(cls=self,name="VirtualClient",path=None)
 
-        # Try to connect to root entity
+        # Try to connect to root entity, long timeout
+        self.setTimeout(20000)
         r = None
         while r is None:
             r = self._remoteAttr(None, None)
 
         r._virtAttached(r,r,self)
         self._root = r
+
+        # Update to shorter timeout
+        self.setTimeout(1000)
 
     def _remoteAttr(self, path, attr, *args, **kwargs):
         snd = { 'path':path, 'attr':attr, 'args':args, 'kwargs':kwargs }
