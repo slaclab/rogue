@@ -67,10 +67,10 @@ namespace rogue {
                uint32_t fdIdx_;
 
                //! Size limit for auto close and re-open when limit is exceeded, zero to disable
-               uint32_t sizeLimit_;
+               uint64_t sizeLimit_;
 
                //! Current file size in bytes
-               uint32_t currSize_;
+               uint64_t currSize_;
 
                //! Total file size in bytes
                uint32_t totSize_;
@@ -135,7 +135,7 @@ namespace rogue {
                void setBufferSize(uint32_t size);
 
                //! Set max file size, 0 for unlimited
-               void setMaxSize(uint32_t size);
+               void setMaxSize(uint64_t size);
 
                //! Set drop errors flag
                void setDropErrors(bool drop);
@@ -143,8 +143,8 @@ namespace rogue {
                //! Get a port
                boost::shared_ptr<rogue::utilities::fileio::StreamWriterChannel> getChannel(uint8_t channel);
 
-               //! Get current file size
-               uint32_t getSize();
+               //! Get total file size
+               uint64_t getSize();
 
                //! Get current frame count
                uint32_t getFrameCount();
