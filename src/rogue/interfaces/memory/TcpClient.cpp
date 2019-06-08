@@ -48,7 +48,7 @@ rim::TcpClient::TcpClient (std::string addr, uint16_t port) : rim::Slave(4,0xFFF
    int32_t opt;
    std::string logstr;
 
-   logstr = "memory.TcpServer.";
+   logstr = "memory.TcpClient.";
    logstr.append(addr);
    logstr.append(".");
    logstr.append(std::to_string(port));
