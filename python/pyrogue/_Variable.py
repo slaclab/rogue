@@ -49,6 +49,7 @@ class BaseVariable(pr.Node):
                  hidden=False,
                  minimum=None,
                  maximum=None,
+                 typeStr='Unknown',
                  pollInterval=0
                 ):
 
@@ -82,13 +83,13 @@ class BaseVariable(pr.Node):
             self._disp = 'enum'
 
         # Determine typeStr from value type
-        if value is not None:
+        if typeStr == 'Unknown' and value is not None:
             if isinstance(value, list):
                 self._typeStr = f'List[{value[0].__class__.__name__}]'
             else:
                 self._typeStr = value.__class__.__name__
         else:
-            self._typeStr = 'Unknown'
+            self._typeStr = typeStr
 
         # Create inverted enum
         self._revEnum = None
@@ -492,6 +493,7 @@ class LocalVariable(BaseVariable):
                  maximum=None,
                  localSet=None,
                  localGet=None,
+                 typeStr='Unknown',
                  pollInterval=0):
 
         if value is None and localGet is None:
@@ -500,7 +502,7 @@ class LocalVariable(BaseVariable):
         BaseVariable.__init__(self, name=name, description=description, 
                               mode=mode, value=value, disp=disp, 
                               enum=enum, units=units, hidden=hidden,
-                              minimum=minimum, maximum=maximum,
+                              minimum=minimum, maximum=maximum, typeStr=typeStr,
                               pollInterval=pollInterval)
 
         self._block = pr.LocalBlock(variable=self,localSet=localSet,localGet=localGet,value=self._default)
@@ -582,7 +584,6 @@ class LinkVariable(BaseVariable):
             self._linkedGet = linkedGet if linkedGet else variable.value
             self._linkedSet = linkedSet if linkedSet else variable.set
 
-            
             # Search the kwargs for overridden properties, otherwise the properties from the linked variable will be used
             args = ['disp', 'enum', 'units', 'minimum', 'maximum']
             for arg in args:
@@ -590,10 +591,7 @@ class LinkVariable(BaseVariable):
                     kwargs[arg] = getattr(variable, arg)
 
         # Call super constructor
-        BaseVariable.__init__(self, name=name, **kwargs)
-
-        # Must be done after super cunstructor to override it
-        self._typeStr = typeStr        
+        BaseVariable.__init__(self, name=name, typeStr=typeStr, **kwargs)
 
         # Dependency tracking
         if variable is not None:
