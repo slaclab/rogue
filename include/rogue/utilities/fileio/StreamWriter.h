@@ -39,6 +39,7 @@
 #include <rogue/interfaces/stream/Frame.h>
 #include <stdint.h>
 #include <boost/thread.hpp>
+#include <rogue/Logging.h>
 #include <map>
 
 namespace rogue {
@@ -52,6 +53,10 @@ namespace rogue {
             friend class StreamWriterChannel;
             
             protected:
+
+               // Log
+               boost::shared_ptr<rogue::Logging> log_;
+
                //! File descriptor
                int32_t fd_;
 
