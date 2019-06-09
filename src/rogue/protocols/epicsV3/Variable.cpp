@@ -8,12 +8,12 @@
  * Description:
  * Variable subclass of Value, for interfacing with rogue variables
  * ----------------------------------------------------------------------------
- * This file is part of the rogue software platform. It is subject to 
- * the license terms in the LICENSE.txt file found in the top-level directory 
- * of this distribution and at: 
- *    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
- * No part of the rogue software platform, including this file, may be 
- * copied, modified, propagated, or distributed except according to the terms 
+ * This file is part of the rogue software platform. It is subject to
+ * the license terms in the LICENSE.txt file found in the top-level directory
+ * of this distribution and at:
+ *    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+ * No part of the rogue software platform, including this file, may be
+ * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
@@ -170,7 +170,7 @@ void rpe::Variable::fromPython(bp::object value) {
       // Create vector of appropriate type
       if ( epicsType_ == aitEnumUint8 ) {
          aitUint8 * pF = new aitUint8[size_];
-       
+
          if ( isString_ ) {
             ps.copy((char *)pF, size_);
          } else {
@@ -277,7 +277,7 @@ void rpe::Variable::fromPython(bp::object value) {
    mach_port_deallocate(mach_task_self(), cclock);
    t.tv_sec = mts.tv_sec;
    t.tv_nsec = mts.tv_nsec;
-#else      
+#else
    clock_gettime(CLOCK_REALTIME,&t);
 #endif
    pValue_->setTimeStamp(&t);
@@ -294,7 +294,7 @@ void rpe::Variable::valueSet() {
    try {
       if ( isString_ ) {
 
-         // Process values that are exposed as string in EPICS 
+         // Process values that are exposed as string in EPICS
          aitUint8 * pF = new aitUint8[size_];
          pValue_->getRef(pF);
          var_.attr(setAttr_.c_str())(std::string((char*)pF));
