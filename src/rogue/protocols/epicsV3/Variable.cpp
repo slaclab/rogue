@@ -394,7 +394,7 @@ T rpe::Variable::extractValue(boost::python::object value)
       // If a conversion is available, return the converted value.
       try
       {
-         // An implicit numeric_cast can throw an bad_numeric_cast exception here.
+         // An implicit numeric_cast can throw a bad_numeric_cast exception here.
          return get_val();
       }
       catch (boost::numeric::bad_numeric_cast& e)
@@ -406,7 +406,7 @@ T rpe::Variable::extractValue(boost::python::object value)
    }
    else
    {
-      // If  a convertion is not available, log the error and return zero.
+      // If  a conversion is not available, log the error and return zero.
       log_->warning("Variable::extractValue error for %s: boost::python::extract failed", epicsName_.c_str());
       return 0;
    }
