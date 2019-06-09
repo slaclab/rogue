@@ -174,7 +174,7 @@ void rpe::Variable::fromPython(bp::object value) {
          if ( isString_ ) {
             ps.copy((char *)pF, size_);
          } else {
-            for ( i = 0; i < size_; i++ ) pF[i] = bp::extract<uint8_t>(pl[i]);
+            for ( i = 0; i < size_; i++ ) pF[i] = extractValue<uint8_t>(pl[i]);
          }
 
          pValue_->putRef(pF, new rpe::Destructor<aitUint8 *>);
@@ -182,43 +182,43 @@ void rpe::Variable::fromPython(bp::object value) {
 
       else if ( epicsType_ == aitEnumUint16 ) {
          aitUint16 * pF = new aitUint16[size_];
-         for ( i = 0; i < size_; i++ ) pF[i] = bp::extract<uint16_t>(pl[i]);
+         for ( i = 0; i < size_; i++ ) pF[i] = extractValue<uint16_t>(pl[i]);
          pValue_->putRef(pF, new rpe::Destructor<aitUint16 *>);
       }
 
       else if ( epicsType_ == aitEnumUint32 ) {
          aitUint32 * pF = new aitUint32[size_];
-         for ( i = 0; i < size_; i++ ) pF[i] = bp::extract<uint32_t>(pl[i]);
+         for ( i = 0; i < size_; i++ ) pF[i] = extractValue<uint32_t>(pl[i]);
          pValue_->putRef(pF, new rpe::Destructor<aitUint32 *>);
       }
 
       else if ( epicsType_ == aitEnumInt8 ) {
          aitInt8 * pF = new aitInt8[size_];
-         for ( i = 0; i < size_; i++ ) pF[i] = bp::extract<int8_t>(pl[i]);
+         for ( i = 0; i < size_; i++ ) pF[i] = extractValue<int8_t>(pl[i]);
          pValue_->putRef(pF, new rpe::Destructor<aitInt8 *>);
       }
 
       else if ( epicsType_ == aitEnumInt16 ) {
          aitInt16 * pF = new aitInt16[size_];
-         for ( i = 0; i < size_; i++ ) pF[i] = bp::extract<int16_t>(pl[i]);
+         for ( i = 0; i < size_; i++ ) pF[i] = extractValue<int16_t>(pl[i]);
          pValue_->putRef(pF, new rpe::Destructor<aitInt16 *>);
       }
 
       else if ( epicsType_ == aitEnumInt32 ) {
          aitInt32 * pF = new aitInt32[size_];
-         for ( i = 0; i < size_; i++ ) pF[i] = bp::extract<int32_t>(pl[i]);
+         for ( i = 0; i < size_; i++ ) pF[i] = extractValue<int32_t>(pl[i]);
          pValue_->putRef(pF, new rpe::Destructor<aitInt32 *>);
       }
 
       else if ( epicsType_ == aitEnumFloat32 ) {
          aitFloat32 * pF = new aitFloat32[size_];
-         for ( i = 0; i < size_; i++ ) pF[i] = bp::extract<double>(pl[i]);
+         for ( i = 0; i < size_; i++ ) pF[i] = extractValue<double>(pl[i]);
          pValue_->putRef(pF, new rpe::Destructor<aitFloat32 *>);
       }
 
       else if ( epicsType_ == aitEnumFloat64 ) {
          aitFloat64 * pF = new aitFloat64[size_];
-         for ( i = 0; i < size_; i++ ) pF[i] = bp::extract<double>(pl[i]);
+         for ( i = 0; i < size_; i++ ) pF[i] = extractValue<double>(pl[i]);
          pValue_->putRef(pF, new rpe::Destructor<aitFloat64 *>);
       }
       else throw rogue::GeneralError("Variable::fromPython","Invalid Variable Type");
@@ -226,22 +226,19 @@ void rpe::Variable::fromPython(bp::object value) {
    } else {
 
       if ( epicsType_ == aitEnumUint8 || epicsType_ == aitEnumUint16 || epicsType_ == aitEnumUint32 ) {
-         uint32_t nVal;
-         nVal = bp::extract<uint32_t>(value);
+         uint32_t nVal = extractValue<uint32_t>(value);
          log_->info("Python set Uint for %s: Value=%lu", epicsName_.c_str(),nVal);
          pValue_->putConvert(nVal);
       }
 
       else if ( epicsType_ == aitEnumInt8 || epicsType_ == aitEnumInt16 || epicsType_ == aitEnumInt32 ) {
-         int32_t nVal;
-         nVal = bp::extract<int32_t>(value);
+         int32_t nVal = extractValue<int32_t>(value);
          log_->info("Python set Int for %s: Value=%li", epicsName_.c_str(),nVal);
          pValue_->putConvert(nVal);
       }
 
       else if ( epicsType_ == aitEnumFloat32 || epicsType_ == aitEnumFloat64 ) {
-         double nVal;
-         nVal = bp::extract<double>(value);
+         double nVal = extractValue<double>(value);
          log_->info("Python set double for %s: Value=%f", epicsName_.c_str(),nVal);
          pValue_->putConvert(nVal);
       }
@@ -386,3 +383,32 @@ void rpe::Variable::valueSet() {
    }
 }
 
+template<typename T>
+T rpe::Variable::extractValue(boost::python::object value)
+{
+   bp::extract<T> get_val(value);
+
+   // Check for convertibility
+   if (get_val.check())
+   {
+      // If a conversion is available, return the converted value.
+      try
+      {
+         // An implicit numeric_cast can throw an bad_numeric_cast exception here.
+         return get_val();
+      }
+      catch (boost::numeric::bad_numeric_cast& e)
+      {
+         // If an exception is thrown, log the error and return zero.
+         log_->warning("Variable::extractValue error for %s: %s", epicsName_.c_str(),e.what());
+         return 0;
+      }
+   }
+   else
+   {
+      // If  a convertion is not available, log the error and return zero.
+      log_->warning("Variable::extractValue error for %s: boost::python::extract failed", epicsName_.c_str());
+      return 0;
+   }
+
+}

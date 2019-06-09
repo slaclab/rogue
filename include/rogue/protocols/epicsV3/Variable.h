@@ -41,6 +41,10 @@ namespace rogue {
                // Lock held when called
                void fromPython(boost::python::object value);
 
+               // Use to extract values from python while checking for errors
+               template<typename T>
+               T extractValue(boost::python::object value);
+
             protected:
 
                std::string setAttr_;
