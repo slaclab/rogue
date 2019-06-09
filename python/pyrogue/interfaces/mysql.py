@@ -88,7 +88,7 @@ class MysqlGw(object):
         self._cmdSer  = {}
         self._runEn   = False
         self._thread  = None
-        self._log     = pyrogue.logInit(self)
+        self._log     = pyrogue.logInit(cls=self)
 
         if not root.running:
             raise Exception("MysqlGw can not be setup on a tree which is not started")

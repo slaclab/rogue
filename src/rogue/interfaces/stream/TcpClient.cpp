@@ -23,7 +23,7 @@
 #include <rogue/interfaces/stream/FrameLock.h>
 #include <rogue/interfaces/stream/Buffer.h>
 #include <rogue/GeneralError.h>
-#include <boost/make_shared.hpp>
+#include <memory>
 #include <rogue/GilRelease.h>
 #include <rogue/Logging.h>
 #include <zmq.h>
@@ -37,7 +37,7 @@ namespace bp  = boost::python;
 
 //! Class creation
 ris::TcpClientPtr ris::TcpClient::create (std::string addr, uint16_t port) {
-   ris::TcpClientPtr r = boost::make_shared<ris::TcpClient>(addr,port);
+   ris::TcpClientPtr r = std::make_shared<ris::TcpClient>(addr,port);
    return(r);
 }
 

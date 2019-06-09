@@ -20,7 +20,7 @@
 #ifndef __ROGUE_INTERFACES_MEMORY_TRANSACTION_LOCK_H__
 #define __ROGUE_INTERFACES_MEMORY_TRANSACTION_LOCK_H__
 #include <stdint.h>
-#include <boost/thread.hpp>
+#include <thread>
 
 namespace rogue {
    namespace interfaces {
@@ -32,38 +32,26 @@ namespace rogue {
          /**
           * The TransactionLock is a container for holding a lock on Transaction data while accessing 
           * that data. This lock ensures that Transaction is not destroyed when the Slave is updating
-          * its data and result.
+          * its data and result. This object is created by calling Transaction::lock().
           */
          class TransactionLock {
 
-               boost::shared_ptr<rogue::interfaces::memory::Transaction> tran_;
+               std::shared_ptr<rogue::interfaces::memory::Transaction> tran_;
                bool locked_;
 
             public:
 
-               //! Class factory which returns a pointer to a TransactionLock (TransactionLockPtr)
-               /** Create a new Transaction lock on the passed Transaction.
-                *
-                * Not exposed to Python
-                * @param transaction Transaction pointer (TransactionPtr) to create a lock on
-                */
-               static boost::shared_ptr<rogue::interfaces::memory::TransactionLock> create (
-                  boost::shared_ptr<rogue::interfaces::memory::Transaction> transaction);
+               // Class factory which returns a pointer to a TransactionLock (TransactionLockPtr)
+               static std::shared_ptr<rogue::interfaces::memory::TransactionLock> create (
+                  std::shared_ptr<rogue::interfaces::memory::Transaction> transaction);
 
-               //! Transaction lock constructor
-               /** Do not call directly. Use the create() class method instead.
-                *
-                * Not available in Python
-                * @param transaction Transaction pointer (TransactionPtr) to create a lock on
-                */
-               TransactionLock(boost::shared_ptr<rogue::interfaces::memory::Transaction> transaction);
+               // Transaction lock constructor
+               TransactionLock(std::shared_ptr<rogue::interfaces::memory::Transaction> transaction);
 
-               //! Setup class for use in python
-               /* Not exposed to Python
-                */
+               // Setup class for use in python
                static void setup_python();
 
-               //! Destroy and release the transaction lock
+               // Destroy and release the transaction lock
                ~TransactionLock();
 
                //! Lock associated Transaction if not locked
@@ -94,7 +82,7 @@ namespace rogue {
          };
 
          //! Alias for using shared pointer as TransactionLockPtr
-         typedef boost::shared_ptr<rogue::interfaces::memory::TransactionLock> TransactionLockPtr;
+         typedef std::shared_ptr<rogue::interfaces::memory::TransactionLock> TransactionLockPtr;
 
       }
    }

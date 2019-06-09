@@ -21,7 +21,10 @@
 #define __ROGUE_LOGGING_H__
 #include <exception>
 #include <stdint.h>
-#include <boost/thread.hpp>
+#include <thread>
+#include <mutex>
+#include <vector>
+#include <string>
 
 namespace rogue {
 
@@ -45,7 +48,7 @@ namespace rogue {
          static uint32_t gblLevel_; 
 
          //! Logging level lock
-         static boost::mutex levelMtx_;
+         static std::mutex levelMtx_;
 
          //! List of filters
          static std::vector <rogue::LogFilter *> filters_;
@@ -67,7 +70,7 @@ namespace rogue {
          static const uint32_t Info     = 20;
          static const uint32_t Debug    = 10;
 
-         static boost::shared_ptr<rogue::Logging> create(std::string name);
+         static std::shared_ptr<rogue::Logging> create(std::string name);
 
          Logging (std::string name);
          ~Logging();
@@ -90,7 +93,7 @@ namespace rogue {
          static void setup_python();
    };
 
-   typedef boost::shared_ptr<rogue::Logging> LoggingPtr;
+   typedef std::shared_ptr<rogue::Logging> LoggingPtr;
 }
 
 #endif

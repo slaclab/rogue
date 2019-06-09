@@ -28,7 +28,7 @@ on the client. The Python server is able to interface with either a Python or C+
    # Local receiver
    dst = MyCustomSlave()
 
-   # Start a TCP Bridge Server, Listen on ports 8001 & 8002 on all interfaces
+   # Start a TCP Bridge Server, Listen on ports 8000 & 8001 on all interfaces
    # Pass an address of 192.168.1.1 to listen on only that specific interface
    tcp = rogue.interfaces.stream.TcpServer("*",8000)
 
@@ -57,7 +57,7 @@ on the server.  The Python client is able to interface with either a Python or C
    dst = MyCustomSlave()
 
    # Start a TCP Bridge Client, Connect remote server at 192.168.1.1 ports 8000 & 8001.
-   tcp = rogue.interfaces.stream.TcpServer("192.168.1.1",8000)
+   tcp = rogue.interfaces.stream.TcpClient("192.168.1.1",8000)
 
    # Connect the transmitter
    pyrogue.streamConnect(src,tcp)

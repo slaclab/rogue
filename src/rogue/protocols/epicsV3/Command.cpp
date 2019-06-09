@@ -22,7 +22,7 @@
 #include <rogue/protocols/epicsV3/Pv.h>
 #include <rogue/protocols/epicsV3/Server.h>
 #include <rogue/GeneralError.h>
-#include <boost/make_shared.hpp>
+#include <memory>
 
 namespace rpe = rogue::protocols::epicsV3;
 

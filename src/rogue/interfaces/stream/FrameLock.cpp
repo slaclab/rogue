@@ -20,7 +20,7 @@
 #include <rogue/interfaces/stream/FrameLock.h>
 #include <rogue/interfaces/stream/Frame.h>
 #include <rogue/GilRelease.h>
-#include <boost/make_shared.hpp>
+#include <memory>
 
 namespace ris = rogue::interfaces::stream;
 
@@ -32,7 +32,7 @@ namespace bp  = boost::python;
 
 //! Create a frame container
 ris::FrameLockPtr ris::FrameLock::create (ris::FramePtr frame) {
-   ris::FrameLockPtr frameLock = boost::make_shared<ris::FrameLock>(frame);
+   ris::FrameLockPtr frameLock = std::make_shared<ris::FrameLock>(frame);
    return(frameLock);
 }
 

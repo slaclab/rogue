@@ -28,10 +28,10 @@
 #ifndef __ROGUE_UTILITIES_FILEIO_LEGACY_STREAM_WRITER_H__
 #define __ROGUE_UTILITIES_FILEIO_LEGACY_STREAM_WRITER_H__
 #include <rogue/utilities/fileio/StreamWriter.h>
-#include <boost/enable_shared_from_this.hpp>
+#include <memory>
 #include <rogue/interfaces/stream/Frame.h>
 #include <stdint.h>
-#include <boost/thread.hpp>
+#include <thread>
 #include <map>
 
 namespace rogue {
@@ -46,7 +46,7 @@ namespace rogue {
             protected:
 
                //! Write data to file. Called from StreamWriterChannel
-               virtual void writeFile ( uint8_t channel, boost::shared_ptr<rogue::interfaces::stream::Frame> frame);
+               virtual void writeFile ( uint8_t channel, std::shared_ptr<rogue::interfaces::stream::Frame> frame);
 
             public:
                
@@ -63,7 +63,7 @@ namespace rogue {
                };
 
                //! Class creation
-               static boost::shared_ptr<rogue::utilities::fileio::LegacyStreamWriter> create ();
+               static std::shared_ptr<rogue::utilities::fileio::LegacyStreamWriter> create ();
 
                //! Setup class in python
                static void setup_python();
@@ -75,14 +75,14 @@ namespace rogue {
                ~LegacyStreamWriter();
 
                //! Get a port
-               boost::shared_ptr<rogue::utilities::fileio::StreamWriterChannel> getDataChannel();
-               boost::shared_ptr<rogue::utilities::fileio::StreamWriterChannel> getYamlChannel();               
+               std::shared_ptr<rogue::utilities::fileio::StreamWriterChannel> getDataChannel();
+               std::shared_ptr<rogue::utilities::fileio::StreamWriterChannel> getYamlChannel();               
 
             
          };
 
          // Convienence
-         typedef boost::shared_ptr<rogue::utilities::fileio::LegacyStreamWriter> LegacyStreamWriterPtr;
+         typedef std::shared_ptr<rogue::utilities::fileio::LegacyStreamWriter> LegacyStreamWriterPtr;
       }
    }
 }

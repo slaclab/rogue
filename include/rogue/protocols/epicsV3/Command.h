@@ -22,7 +22,7 @@
 #define __ROGUE_PROTOCOLS_EPICSV3_COMMAND_H__
 
 #include <boost/python.hpp>
-#include <boost/thread.hpp>
+#include <thread>
 #include <casdef.h>
 #include <gdd.h>
 #include <gddApps.h>
@@ -46,7 +46,7 @@ namespace rogue {
          };
 
          // Convienence
-         typedef boost::shared_ptr<rogue::protocols::epicsV3::Command> CommandPtr;
+         typedef std::shared_ptr<rogue::protocols::epicsV3::Command> CommandPtr;
 
       }
    }

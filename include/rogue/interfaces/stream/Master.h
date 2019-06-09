@@ -22,10 +22,10 @@
 #define __ROGUE_INTERFACES_STREAM_MASTER_H__
 #include <stdint.h>
 #include <stdio.h>
-//#include <pthread.h>
 #include <string>
 #include <vector>
-#include <boost/thread.hpp>
+#include <thread>
+#include <mutex>
 
 namespace rogue {
    namespace interfaces {
@@ -43,34 +43,30 @@ namespace rogue {
          class Master {
 
                // Primary slave. Used for request forwards.
-               boost::shared_ptr<rogue::interfaces::stream::Slave> primary_;
+               std::shared_ptr<rogue::interfaces::stream::Slave> primary_;
 
                // Vector of slaves
-               std::vector<boost::shared_ptr<rogue::interfaces::stream::Slave> > slaves_;
+               std::vector<std::shared_ptr<rogue::interfaces::stream::Slave> > slaves_;
 
                // Slave mutex
-               boost::mutex slaveMtx_;
+               std::mutex slaveMtx_;
 
             public:
 
                //! Class factory which returns a pointer to a Master object (MasterPtr)
                /** Create a new Master
                 *
-                * Not exposed to Python
+                * Exposed as rogue.interfaces.stream.Master() to Python
                 */
-               static boost::shared_ptr<rogue::interfaces::stream::Master> create ();
+               static std::shared_ptr<rogue::interfaces::stream::Master> create ();
 
-               //! Setup class for use in python
-               /** Not exposed to Python
-                */
+               // Setup class for use in python
                static void setup_python();
 
-               //! Class creator
-               /** Exposed as rogue.interfaces.stream.Master() to Python
-                */
+               // Class creator
                Master();
 
-               //! Destroy the object
+               // Destroy the object
                virtual ~Master();
 
                //! Set primary slave
@@ -82,7 +78,7 @@ namespace rogue {
                 * pyrogue.streamConnect() and pyrogue.streamConnectBiDir() methods.
                 * @param slave Stream Slave pointer (SlavePtr)
                 */
-               void setSlave ( boost::shared_ptr<rogue::interfaces::stream::Slave> slave );
+               void setSlave ( std::shared_ptr<rogue::interfaces::stream::Slave> slave );
 
                //! Add secondary slave
                /** Multiple secondary slaves are allowed.
@@ -91,7 +87,7 @@ namespace rogue {
                 * pyrogue.streamTop() method.
                 * @param slave Stream Slave pointer (SlavePtr)
                 */
-               void addSlave ( boost::shared_ptr<rogue::interfaces::stream::Slave> slave );
+               void addSlave ( std::shared_ptr<rogue::interfaces::stream::Slave> slave );
 
                //! Request new Frame to be allocated by primary Slave
                /** This method is called to create a new Frame oject. An empty Frame with 
@@ -106,7 +102,7 @@ namespace rogue {
                 * @param zeroCopyEn Flag which indicates if a zero copy mode Frame is allowed.
                 * @return Newly allocated Frame pointer (FramePtr)
                 */
-               boost::shared_ptr<rogue::interfaces::stream::Frame> reqFrame ( uint32_t size, bool zeroCopyEn);
+               std::shared_ptr<rogue::interfaces::stream::Frame> reqFrame ( uint32_t size, bool zeroCopyEn);
 
                //! Push frame to all slaves
                /** This method sends the passed Frame to all of the attached Slave objects by
@@ -117,11 +113,11 @@ namespace rogue {
                 * Exposed as _sendFrame to Python
                 * @param frame Frame pointer (FramePtr) to send
                 */
-               void sendFrame ( boost::shared_ptr<rogue::interfaces::stream::Frame> frame );
+               void sendFrame ( std::shared_ptr<rogue::interfaces::stream::Frame> frame );
          };
 
          //! Alias for using shared pointer as MasterPtr
-         typedef boost::shared_ptr<rogue::interfaces::stream::Master> MasterPtr;
+         typedef std::shared_ptr<rogue::interfaces::stream::Master> MasterPtr;
       }
    }
 }

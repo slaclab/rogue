@@ -12,10 +12,10 @@ dependencies:
   - make
   - cmake
   - pyyaml
+  - jsonpickle
   - pyzmq
   - parse
   - click
-  - pyro4
   - numpy
   - pyqt
   - pyepics

@@ -24,9 +24,10 @@
 #include <rogue/interfaces/memory/Master.h>
 #include <rogue/interfaces/memory/Constants.h>
 #include <rogue/GeneralError.h>
-#include <boost/make_shared.hpp>
+#include <memory>
 #include <rogue/GilRelease.h>
 #include <rogue/ScopedGil.h>
+#include <sys/time.h>
 
 namespace rim = rogue::interfaces::memory;
 
@@ -39,11 +40,11 @@ namespace bp  = boost::python;
 uint32_t rim::Transaction::classIdx_ = 0;
 
 //! Class instance lock
-boost::mutex rim::Transaction::classMtx_;
+std::mutex rim::Transaction::classMtx_;
 
 //! Create a master container
 rim::TransactionPtr rim::Transaction::create (struct timeval timeout) {
-   rim::TransactionPtr m = boost::make_shared<rim::Transaction>(timeout);
+   rim::TransactionPtr m = std::make_shared<rim::Transaction>(timeout);
    return(m);
 }
 
@@ -122,7 +123,7 @@ void rim::Transaction::done(uint32_t error) {
 uint32_t rim::Transaction::wait() {
    struct timeval currTime;
 
-   boost::unique_lock<boost::mutex> lock(lock_);
+   std::unique_lock<std::mutex> lock(lock_);
 
    while (! done_) {
 
@@ -134,7 +135,7 @@ uint32_t rim::Transaction::wait() {
          done_  = true;
          error_ = rim::TimeoutError;
       }
-      else cond_.timed_wait(lock,boost::posix_time::microseconds(1000));
+      else cond_.wait_for(lock,std::chrono::microseconds(1000));
    }
 
    // Reset
@@ -154,7 +155,7 @@ uint32_t rim::Transaction::wait() {
 void rim::Transaction::refreshTimer(rim::TransactionPtr ref) {
    struct timeval currTime;
    gettimeofday(&currTime,NULL);
-   boost::lock_guard<boost::mutex> lock(lock_);
+   std::lock_guard<std::mutex> lock(lock_);
 
    // Refresh if start time is later then the reference
    if ( ref == NULL || timercmp(&startTime_,&(ref->startTime_),>=) )

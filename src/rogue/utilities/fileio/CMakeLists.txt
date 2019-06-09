@@ -19,6 +19,6 @@ target_sources(rogue-core PRIVATE "${CMAKE_CURRENT_LIST_DIR}/StreamWriterChannel
 target_sources(rogue-core PRIVATE "${CMAKE_CURRENT_LIST_DIR}/LegacyStreamWriter.cpp")
 target_sources(rogue-core PRIVATE "${CMAKE_CURRENT_LIST_DIR}/LegacyStreamReader.cpp")
 
-if (DO_PYTHON)
+if (NOT NO_PYTHON)
    target_sources(rogue-core PRIVATE "${CMAKE_CURRENT_LIST_DIR}/module.cpp")
 endif()

@@ -1,5 +1,5 @@
 PyYAML
-Pyro4
+jsonpickle
 parse
 click
 coverage

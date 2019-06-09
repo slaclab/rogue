@@ -19,28 +19,37 @@
 **/
 #ifndef __ROGUE_QUEUE_H__
 #define __ROGUE_QUEUE_H__
-#include <boost/thread/mutex.hpp>
-#include <boost/thread/condition_variable.hpp>
+#include <condition_variable>
 #include <stdint.h>
 #include <queue>
+#include <mutex>
 
 namespace rogue {
    template<typename T> 
    class Queue {
       private:
           std::queue<T> queue_;
-          mutable boost::mutex mtx_;
-          boost::condition_variable pushCond_;
-          boost::condition_variable popCond_;
+          mutable std::mutex mtx_;
+          std::condition_variable pushCond_;
+          std::condition_variable popCond_;
           uint32_t max_;
           uint32_t thold_;
           bool     busy_;
+          bool     run_;
       public:
 
           Queue() { 
              max_   = 0; 
              thold_ = 0;
              busy_  = false;
+             run_   = true;
+          }
+
+          void stop() { 
+             std::unique_lock<std::mutex> lock(mtx_);
+             run_ = false;
+             pushCond_.notify_all();
+             popCond_.notify_all();
           }
 
           void setMax(uint32_t max) { max_ = max; }
@@ -48,14 +57,13 @@ namespace rogue {
           void setThold(uint32_t thold) { thold_ = thold; }
 
           void push(T const &data) {
-             boost::mutex::scoped_lock lock(mtx_);
+             std::unique_lock<std::mutex> lock(mtx_);
    
-             while(max_ > 0 && queue_.size() >= max_) 
+             while(run_ && max_ > 0 && queue_.size() >= max_) 
                 pushCond_.wait(lock);
 
-             queue_.push(data);
+             if ( run_ ) queue_.push(data);
              busy_ = ( thold_ > 0 && queue_.size() > thold_ );
-             lock.unlock();
              popCond_.notify_all();
           }
 
@@ -64,7 +72,7 @@ namespace rogue {
           }
 
           uint32_t size() {
-             boost::mutex::scoped_lock lock(mtx_);
+             std::unique_lock<std::mutex> lock(mtx_);
              return queue_.size();
           }
 
@@ -73,21 +81,21 @@ namespace rogue {
           }
 
           void reset() {
-             boost::mutex::scoped_lock lock(mtx_);
+             std::unique_lock<std::mutex> lock(mtx_);
              while(!queue_.empty()) queue_.pop();
              busy_ = false;
-             lock.unlock();
              pushCond_.notify_all();
           }
 
           T pop() {
              T ret;
-             boost::mutex::scoped_lock lock(mtx_);
-             while(queue_.empty()) popCond_.wait(lock);
-             ret=queue_.front();
-             queue_.pop();
+             std::unique_lock<std::mutex> lock(mtx_);
+             while(run_ && queue_.empty()) popCond_.wait(lock);
+             if ( run_ ) {
+                ret=queue_.front();
+                queue_.pop();
+             }
              busy_ = ( thold_ > 0 && queue_.size() > thold_ );
-             lock.unlock();
              pushCond_.notify_all();
              return(ret);
           }

@@ -39,10 +39,10 @@ requirements:
      - epics-base=3.14.12.8
      - zeromq
      - pyyaml
+     - jsonpickle
      - pyzmq
      - parse
      - click
-     - pyro4
      - numpy
      - pyqt
      - pyepics

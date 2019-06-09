@@ -23,7 +23,7 @@
 #include <rogue/protocols/rssi/Controller.h>
 #include <rogue/protocols/rssi/Transport.h>
 #include <rogue/GeneralError.h>
-#include <boost/make_shared.hpp>
+#include <memory>
 #include <rogue/GilRelease.h>
 #include <rogue/Logging.h>
 
@@ -37,7 +37,7 @@ namespace bp  = boost::python;
 
 //! Class creation
 rpr::TransportPtr rpr::Transport::create () {
-   rpr::TransportPtr r = boost::make_shared<rpr::Transport>();
+   rpr::TransportPtr r = std::make_shared<rpr::Transport>();
    return(r);
 }
 

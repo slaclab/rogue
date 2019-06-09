@@ -24,8 +24,8 @@
 #include <rogue/interfaces/stream/FrameIterator.h>
 #include <rogue/GeneralError.h>
 #include <rogue/GilRelease.h>
-#include <boost/make_shared.hpp>
-#include <boost/make_shared.hpp>
+#include <memory>
+#include <memory>
 
 #ifdef __MACH__
 #include <mach/clock.h>
@@ -136,7 +136,7 @@ void rpe::Slave::acceptFrame ( ris::FramePtr frame ) {
    // Limit size
    if ( size_ > max_ ) size_ = max_;
 
-   boost::lock_guard<boost::mutex> lock(rpe::Value::mtx_);
+   std::lock_guard<std::mutex> lock(rpe::Value::mtx_);
 
    // Release old data
    pValue_->unreference();

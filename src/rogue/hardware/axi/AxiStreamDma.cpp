@@ -23,7 +23,7 @@
 #include <rogue/interfaces/stream/FrameLock.h>
 #include <rogue/interfaces/stream/Buffer.h>
 #include <rogue/GeneralError.h>
-#include <boost/make_shared.hpp>
+#include <memory>
 #include <rogue/GilRelease.h>
 #include <stdlib.h>
 
@@ -37,7 +37,7 @@ namespace bp  = boost::python;
 
 //! Class creation
 rha::AxiStreamDmaPtr rha::AxiStreamDma::create (std::string path, uint32_t dest, bool ssiEnable) {
-   rha::AxiStreamDmaPtr r = boost::make_shared<rha::AxiStreamDma>(path,dest,ssiEnable);
+   rha::AxiStreamDmaPtr r = std::make_shared<rha::AxiStreamDma>(path,dest,ssiEnable);
    return(r);
 }
 
@@ -76,7 +76,8 @@ rha::AxiStreamDma::AxiStreamDma ( std::string path, uint32_t dest, bool ssiEnabl
    }
 
    // Start read thread
-   thread_ = new boost::thread(boost::bind(&rha::AxiStreamDma::runThread, this));
+   threadEn_ = true;
+   thread_ = new std::thread(&rha::AxiStreamDma::runThread, this);
 }
 
 //! Close the device
@@ -84,7 +85,7 @@ rha::AxiStreamDma::~AxiStreamDma() {
    rogue::GilRelease noGil;
 
    // Stop read thread
-   thread_->interrupt();
+   threadEn_ = false;
    thread_->join();
 
    if ( rawBuff_ != NULL ) dmaUnMapDma(fd_, rawBuff_);
@@ -318,84 +319,81 @@ void rha::AxiStreamDma::runThread() {
 
    log_->logThreadId();
 
-   try {
-      while(1) {
+   while(threadEn_) {
 
-         // Setup fds for select call
-         FD_ZERO(&fds);
-         FD_SET(fd_,&fds);
+      // Setup fds for select call
+      FD_ZERO(&fds);
+      FD_SET(fd_,&fds);
 
-         // Setup select timeout
-         tout.tv_sec  = 0;
-         tout.tv_usec = 100;
+      // Setup select timeout
+      tout.tv_sec  = 0;
+      tout.tv_usec = 100;
 
-         // Select returns with available buffer
-         if ( select(fd_+1,&fds,NULL,NULL,&tout) > 0 ) {
+      // Select returns with available buffer
+      if ( select(fd_+1,&fds,NULL,NULL,&tout) > 0 ) {
 
-            // Zero copy buffers were not allocated
-            if ( zeroCopyEn_ == false || rawBuff_ == NULL ) {
+         // Zero copy buffers were not allocated
+         if ( zeroCopyEn_ == false || rawBuff_ == NULL ) {
 
-               // Allocate a buffer
-               buff[0] = allocBuffer(bSize_,NULL);
+            // Allocate a buffer
+            buff[0] = allocBuffer(bSize_,NULL);
 
-               // Attempt read, dest is not needed since only one lane/vc is open
-               rxSize[0] = dmaRead(fd_, buff[0]->begin(), buff[0]->getAvailable(), rxFlags, rxError, NULL);
-               if ( rxSize[0] <= 0 ) rxCount = rxSize[0];
-               else rxCount = 1;
+            // Attempt read, dest is not needed since only one lane/vc is open
+            rxSize[0] = dmaRead(fd_, buff[0]->begin(), buff[0]->getAvailable(), rxFlags, rxError, NULL);
+            if ( rxSize[0] <= 0 ) rxCount = rxSize[0];
+            else rxCount = 1;
+         }
+
+         // Zero copy read
+         else {
+
+            // Attempt read, dest is not needed since only one lane/vc is open
+            rxCount = dmaReadBulkIndex(fd_, RxBufferCount, rxSize, meta, rxFlags, rxError, NULL);
+
+            // Allocate a buffer, Mark zero copy meta with bit 31 set, lower bits are index
+            for (x=0; x < rxCount; x++) 
+               buff[x] = createBuffer(rawBuff_[meta[x]],0x80000000 | meta[x],bSize_,bSize_);
+         }
+
+         // Return of -1 is bad
+         if ( rxCount < 0 ) 
+            throw(rogue::GeneralError("AxiStreamDma::runThread","DMA Interface Failure!"));
+
+         // Read was successfull
+         for (x=0; x < rxCount; x++) {
+
+            fuser = axisGetFuser(rxFlags[x]);
+            luser = axisGetLuser(rxFlags[x]);
+            cont  = axisGetCont(rxFlags[x]);
+
+            buff[x]->setPayload(rxSize[x]);
+
+            error = frame->getError();
+
+            // Receive error
+            error |= (rxError[x] & 0xFF);
+
+            // First buffer of frame
+            if ( frame->isEmpty() ) frame->setFirstUser(fuser&0xFF);
+
+            // Last buffer of frame
+            if ( cont == 0 ) {
+               frame->setLastUser(luser&0xFF);
+               if ( enSsi_ && ((luser & 0x1) != 0 )) error |= 0x80;
             }
 
-            // Zero copy read
-            else {
+            frame->setError(error);
+            frame->appendBuffer(buff[x]);
+            buff[x].reset();
 
-               // Attempt read, dest is not needed since only one lane/vc is open
-               rxCount = dmaReadBulkIndex(fd_, RxBufferCount, rxSize, meta, rxFlags, rxError, NULL);
-
-               // Allocate a buffer, Mark zero copy meta with bit 31 set, lower bits are index
-               for (x=0; x < rxCount; x++) 
-                  buff[x] = createBuffer(rawBuff_[meta[x]],0x80000000 | meta[x],bSize_,bSize_);
-            }
-
-            // Return of -1 is bad
-            if ( rxCount < 0 ) 
-               throw(rogue::GeneralError("AxiStreamDma::runThread","DMA Interface Failure!"));
-
-            // Read was successfull
-            for (x=0; x < rxCount; x++) {
-
-               fuser = axisGetFuser(rxFlags[x]);
-               luser = axisGetLuser(rxFlags[x]);
-               cont  = axisGetCont(rxFlags[x]);
-
-               buff[x]->setPayload(rxSize[x]);
-
-               error = frame->getError();
-
-               // Receive error
-               error |= (rxError[x] & 0xFF);
-
-               // First buffer of frame
-               if ( frame->isEmpty() ) frame->setFirstUser(fuser&0xFF);
-
-               // Last buffer of frame
-               if ( cont == 0 ) {
-                  frame->setLastUser(luser&0xFF);
-                  if ( enSsi_ && ((luser & 0x1) != 0 )) error |= 0x80;
-               }
-
-               frame->setError(error);
-               frame->appendBuffer(buff[x]);
-               buff[x].reset();
-
-               // If continue flag is not set, push frame and get a new empty frame
-               if ( cont == 0 ) {
-                  sendFrame(frame);
-                  frame = ris::Frame::create();
-               }
+            // If continue flag is not set, push frame and get a new empty frame
+            if ( cont == 0 ) {
+               sendFrame(frame);
+               frame = ris::Frame::create();
             }
          }
-         boost::this_thread::interruption_point();
       }
-   } catch (boost::thread_interrupted&) { }
+   }
 }
 
 void rha::AxiStreamDma::setup_python () {

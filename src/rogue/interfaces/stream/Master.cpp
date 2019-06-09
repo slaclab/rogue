@@ -22,7 +22,7 @@
 #include <rogue/interfaces/stream/Master.h>
 #include <rogue/interfaces/stream/Frame.h>
 #include <rogue/GilRelease.h>
-#include <boost/make_shared.hpp>
+#include <memory>
 
 namespace ris  = rogue::interfaces::stream;
 
@@ -33,7 +33,7 @@ namespace bp  = boost::python;
 
 //! Class creation
 ris::MasterPtr ris::Master::create () {
-   ris::MasterPtr msg = boost::make_shared<ris::Master>();
+   ris::MasterPtr msg = std::make_shared<ris::Master>();
    return(msg);
 }
 
@@ -46,7 +46,7 @@ ris::Master::Master() {
 ris::Master::~Master() { }
 
 //! Set primary slave, used for buffer request forwarding
-void ris::Master::setSlave ( boost::shared_ptr<interfaces::stream::Slave> slave ) {
+void ris::Master::setSlave ( std::shared_ptr<interfaces::stream::Slave> slave ) {
    rogue::GilRelease noGil;
    primary_ = slave;
 }
@@ -54,14 +54,14 @@ void ris::Master::setSlave ( boost::shared_ptr<interfaces::stream::Slave> slave 
 //! Add secondary slave
 void ris::Master::addSlave ( ris::SlavePtr slave ) {
    rogue::GilRelease noGil;
-   boost::lock_guard<boost::mutex> lock(slaveMtx_);
+   std::lock_guard<std::mutex> lock(slaveMtx_);
    slaves_.push_back(slave);
 }
 
 //! Request frame from primary slave
 ris::FramePtr ris::Master::reqFrame ( uint32_t size, bool zeroCopyEn ) {
    rogue::GilRelease noGil;
-   boost::lock_guard<boost::mutex> lock(slaveMtx_);
+   std::lock_guard<std::mutex> lock(slaveMtx_);
 
    return(primary_->acceptReq(size,zeroCopyEn));
 }
@@ -74,7 +74,7 @@ void ris::Master::sendFrame ( FramePtr frame) {
 
    {
       rogue::GilRelease noGil;
-      boost::lock_guard<boost::mutex> lock(slaveMtx_);
+      std::lock_guard<std::mutex> lock(slaveMtx_);
       slaves = slaves_;
       primary = primary_;
    }

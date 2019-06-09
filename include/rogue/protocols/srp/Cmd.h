@@ -22,7 +22,7 @@
 #ifndef __ROGUE_PROTOCOLS_SRP_CMD_H__
 #define __ROGUE_PROTOCOLS_SRP_CMD_H__
 #include <stdint.h>
-#include <boost/thread.hpp>
+#include <thread>
 #include <rogue/interfaces/stream/Master.h>
 
 namespace rogue {
@@ -39,7 +39,7 @@ namespace rogue {
             public:
 
                //! Class creation
-               static boost::shared_ptr<rogue::protocols::srp::Cmd> create ();
+               static std::shared_ptr<rogue::protocols::srp::Cmd> create ();
 
                //! Setup class in python
                static void setup_python();
@@ -56,7 +56,7 @@ namespace rogue {
          };
 
          // Convienence
-         typedef boost::shared_ptr<rogue::protocols::srp::Cmd> CmdPtr;
+         typedef std::shared_ptr<rogue::protocols::srp::Cmd> CmdPtr;
       }
    }
 }

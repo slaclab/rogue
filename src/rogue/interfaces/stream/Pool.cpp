@@ -25,7 +25,7 @@
 #include <rogue/interfaces/stream/Buffer.h>
 #include <rogue/interfaces/stream/Frame.h>
 #include <rogue/GeneralError.h>
-#include <boost/make_shared.hpp>
+#include <memory>
 #include <rogue/GilRelease.h>
 
 namespace ris = rogue::interfaces::stream;
@@ -80,7 +80,7 @@ ris::FramePtr ris::Pool::acceptReq (uint32_t size, bool zeroCopyEn) {
  */
 void ris::Pool::retBuffer(uint8_t * data, uint32_t meta, uint32_t rawSize) {
    rogue::GilRelease noGil;
-   boost::lock_guard<boost::mutex> lock(mtx_);
+   std::lock_guard<std::mutex> lock(mtx_);
 
    if ( data != NULL ) {
       if ( rawSize == fixedSize_ && poolSize_ > dataQ_.size() ) dataQ_.push(data);
@@ -106,7 +106,7 @@ void ris::Pool::setup_python() {
 //! Set fixed size mode
 void ris::Pool::setFixedSize(uint32_t size) {
    rogue::GilRelease noGil;
-   boost::lock_guard<boost::mutex> lock(mtx_);
+   std::lock_guard<std::mutex> lock(mtx_);
 
    fixedSize_ = size;
 }
@@ -119,7 +119,7 @@ uint32_t ris::Pool::getFixedSize() {
 //! Set buffer pool size
 void ris::Pool::setPoolSize(uint32_t size) {
    rogue::GilRelease noGil;
-   boost::lock_guard<boost::mutex> lock(mtx_);
+   std::lock_guard<std::mutex> lock(mtx_);
 
    poolSize_ = size;
 }
@@ -141,7 +141,7 @@ ris::BufferPtr ris::Pool::allocBuffer ( uint32_t size, uint32_t *total ) {
    bSize  = size;
 
    rogue::GilRelease noGil;
-   boost::lock_guard<boost::mutex> lock(mtx_);
+   std::lock_guard<std::mutex> lock(mtx_);
    if ( fixedSize_ > 0 ) {
       bAlloc = fixedSize_;
       if ( bSize > bAlloc ) bSize = bAlloc;
@@ -170,7 +170,7 @@ ris::BufferPtr ris::Pool::createBuffer( void * data, uint32_t meta, uint32_t siz
    ris::BufferPtr buff;
 
    rogue::GilRelease noGil;
-   boost::lock_guard<boost::mutex> lock(mtx_);
+   std::lock_guard<std::mutex> lock(mtx_);
 
    buff = ris::Buffer::create(shared_from_this(),data,meta,size,alloc);
 
@@ -182,7 +182,7 @@ ris::BufferPtr ris::Pool::createBuffer( void * data, uint32_t meta, uint32_t siz
 //! Track buffer deletion
 void ris::Pool::decCounter( uint32_t alloc) {
    rogue::GilRelease noGil;
-   boost::lock_guard<boost::mutex> lock(mtx_);
+   std::lock_guard<std::mutex> lock(mtx_);
    allocBytes_ -= alloc;
    allocCount_--;
 }

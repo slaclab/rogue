@@ -22,7 +22,7 @@
 #define __ROGUE_PROTOCOLS_EPICSV3_SERVER_H__
 
 #include <boost/python.hpp>
-#include <boost/thread.hpp>
+#include <thread>
 #include <casdef.h>
 #include <gdd.h>
 #include <gddApps.h>
@@ -42,18 +42,18 @@ namespace rogue {
 
             private:
 
-               std::map<std::string, boost::shared_ptr<rogue::protocols::epicsV3::Value>> values_;
+               std::map<std::string, std::shared_ptr<rogue::protocols::epicsV3::Value>> values_;
 
-               boost::thread * thread_;
+               std::thread * thread_;
                bool threadEn_;
 
-               boost::thread ** workers_;
+               std::thread ** workers_;
                uint32_t         workCnt_;
                bool workersEn_;
 
-               boost::mutex mtx_;
+               std::mutex mtx_;
 
-               rogue::Queue<boost::shared_ptr<rogue::protocols::epicsV3::Work> > workQueue_;
+               rogue::Queue<std::shared_ptr<rogue::protocols::epicsV3::Work> > workQueue_;
 
                bool running_;
 
@@ -61,7 +61,7 @@ namespace rogue {
 
                void runWorker();
 
-               boost::shared_ptr<rogue::Logging> log_;
+               std::shared_ptr<rogue::Logging> log_;
 
             public:
 
@@ -77,9 +77,9 @@ namespace rogue {
 
                void stop();
 
-               void addValue(boost::shared_ptr<rogue::protocols::epicsV3::Value> value);
+               void addValue(std::shared_ptr<rogue::protocols::epicsV3::Value> value);
 
-               void addWork(boost::shared_ptr<rogue::protocols::epicsV3::Work> work);
+               void addWork(std::shared_ptr<rogue::protocols::epicsV3::Work> work);
 
                bool doAsync();
 
@@ -91,7 +91,7 @@ namespace rogue {
          };
 
          // Convienence
-         typedef boost::shared_ptr<rogue::protocols::epicsV3::Server> ServerPtr;
+         typedef std::shared_ptr<rogue::protocols::epicsV3::Server> ServerPtr;
 
       }
    }

@@ -17,6 +17,8 @@ This module is compiled with the :ref:`custom_makefile` described in this sectio
 
 .. code:: cmake
 
+   // Source for MyModule.cpp
+
    #include <rogue/interfaces/stream/Slave.h>
    #include <rogue/interfaces/stream/Master.h>
    #include <rogue/interfaces/stream/Frame.h>

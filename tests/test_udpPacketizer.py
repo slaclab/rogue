@@ -44,8 +44,8 @@ def data_path(ver,jumbo):
         sPack = rogue.protocols.packetizer.Core(True)
         cPack = rogue.protocols.packetizer.Core(True)
     else:
-        sPack = rogue.protocols.packetizer.CoreV2(False,True,True)
-        cPack = rogue.protocols.packetizer.CoreV2(False,True,True)
+        sPack = rogue.protocols.packetizer.CoreV2(True,True,True)
+        cPack = rogue.protocols.packetizer.CoreV2(True,True,True)
 
     # PRBS
     prbsTx = rogue.utilities.Prbs()

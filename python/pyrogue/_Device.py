@@ -20,12 +20,11 @@ import functools as ft
 import pyrogue as pr
 import inspect
 import threading
-import Pyro4
 import math
 import time
 
 class EnableVariable(pr.BaseVariable):
-    def __init__(self, *, enabled, deps):
+    def __init__(self, *, enabled, deps=None):
         pr.BaseVariable.__init__(
             self,
             description='Determines if device is enabled for hardware access',            
@@ -35,27 +34,29 @@ class EnableVariable(pr.BaseVariable):
             disp={False: 'False', True: 'True', 'parent': 'ParentFalse', 'deps': 'ExtDepFalse'})
 
         if deps is None:
-            self._deps = []
+            self._deps   = []
+            self._depDis = False
         else:
-            self._deps = deps
+            self._deps   = deps
+            self._depDis = True
 
         for d in self._deps:
             d.addListener(self)
 
-        self._value = enabled
-        self._lock = threading.Lock()
+        self._value  = enabled
+        self._lock   = threading.Lock()
 
     def nativeType(self):
         return bool
 
-    @Pyro4.expose
+    @pr.expose
     def get(self, read=False):
         ret = self._value
 
         with self._lock:
             if self._value is False:
                 ret = False
-            elif len(self._deps) > 0 and not all(x.value() for x in self._deps):
+            elif self._depDis:
                 ret = 'deps'
             elif self._parent == self._root:
                 #print("Root enable = {}".format(self._value))
@@ -68,7 +69,7 @@ class EnableVariable(pr.BaseVariable):
 
         return ret
         
-    @Pyro4.expose
+    @pr.expose
     def set(self, value, write=True):
         if value != 'parent' and value != 'deps':
             old = self.value()
@@ -81,6 +82,20 @@ class EnableVariable(pr.BaseVariable):
 
         with self.parent.root.updateGroup():
             self._queueUpdate()
+
+    def _doUpdate(self):
+        if len(self._deps) != 0:
+            oldEn = (self.value() == True)
+
+            with self._lock:
+                self._depDis = not all(x.value() for x in self._deps)
+
+            newEn = (self.value() == True)
+
+            if oldEn != newEn:
+                self.parent.enableChanged(newEn)
+
+        return super()._doUpdate()
 
     def _rootAttached(self,parent,root):
         pr.Node._rootAttached(self,parent,root)
@@ -107,7 +122,9 @@ class Device(pr.Node,rim.Hub):
                  expand=True,
                  enabled=True,
                  defaults=None,
-                 enableDeps=None):
+                 enableDeps=None,
+                 hubMin=0,
+                 hubMax=0):
 
         
         """Initialize device class"""
@@ -115,7 +132,7 @@ class Device(pr.Node,rim.Hub):
             name = self.__class__.__name__
 
         # Hub.__init__ must be called first for _setSlave to work below
-        rim.Hub.__init__(self,offset)
+        rim.Hub.__init__(self,offset,hubMin,hubMax)
 
         # Blocks
         self._blocks    = []
@@ -141,22 +158,30 @@ class Device(pr.Node,rim.Hub):
         # Variable interface to enable flag
         self.add(EnableVariable(enabled=enabled, deps=enableDeps))
 
-    @Pyro4.expose
+        self.add(pr.LocalCommand(name='ReadDevice', value=False, hidden=True,
+                                 function=lambda arg: self.readAndCheckBlocks(recurse=arg),
+                                 description='Force read of device without recursion'))
+
+        self.add(pr.LocalCommand(name='WriteDevice', value='', hidden=True,
+                                 function=lambda arg: self.writeAndVerifyBlocks(force=True,recurse=arg),
+                                 description='Force write of device without recursion'))
+
+    @pr.expose
     @property
     def address(self):
         return self._getAddress()
 
-    @Pyro4.expose
+    @pr.expose
     @property
     def offset(self):
         return self._getOffset()
 
-    @Pyro4.expose
+    @pr.expose
     @property
     def size(self):
         return self._size
 
-    @Pyro4.expose
+    @pr.expose
     @property
     def memBaseId(self):
         return self._reqSlaveId()
@@ -197,6 +222,7 @@ class Device(pr.Node,rim.Hub):
             self.add(lv)
 
 
+
     def hideVariables(self, hidden, variables=None):
         """Hide a list of Variables (or Variable names)"""
         if variables is None:
@@ -208,14 +234,19 @@ class Device(pr.Node,rim.Hub):
             elif isinstance(variables[0], str):
                 self.variables[v]._hidden = hidden
 
-    def softReset(self):
-        pass
+    def initialize(self):
+        for key,value in self.devices.items():
+            value.initialize()
 
     def hardReset(self):
-        pass
+        for block in self._blocks:
+            block._forceStale()
+        for key,value in self.devices.items():
+            value.hardReset()
 
     def countReset(self):
-        pass
+        for key,value in self.devices.items():
+            value.countReset()
 
     def enableChanged(self,value):
         pass # Do nothing
@@ -256,7 +287,7 @@ class Device(pr.Node,rim.Hub):
         # Process local blocks.
         if variable is not None:
             for b in self._getBlocks(variable):
-                b.startTransaction(rim.Verify, checkEach)
+                b.startTransaction(rim.Verify, check=checkEach)
 
         else:
             for block in self._blocks:
@@ -279,12 +310,12 @@ class Device(pr.Node,rim.Hub):
         # Process local blocks. 
         if variable is not None:
             for b in self._getBlocks(variable):
-                b.startTransaction(rim.Read, checkEach)
+                b.startTransaction(rim.Read, check=checkEach)
 
         else:
             for block in self._blocks:
                 if block.bulkEn:
-                    block.startTransaction(rim.Read, checkEach)
+                    block.startTransaction(rim.Read, check=checkEach)
 
             if recurse:
                 for key,value in self.devices.items():
@@ -315,6 +346,11 @@ class Device(pr.Node,rim.Hub):
         self.verifyBlocks(recurse=recurse, variable=variable, checkEach=checkEach)
         self.checkBlocks(recurse=recurse, variable=variable)
 
+    def readAndCheckBlocks(self, recurse=True, variable=None, checkEach=False):
+        """Perform a read and check."""
+        self.readBlocks(recurse=recurse, variable=variable, checkEach=checkEach)
+        self.checkBlocks(recurse=recurse, variable=variable)
+
     def _rawTxnChunker(self, offset, data, base=pr.UInt, stride=4, wordBitSize=32, txnType=rim.Write, numWords=1):
         if offset + (numWords * stride) > self._size:
             raise pr.MemoryError(name=self.name, address=offset|self.address,
@@ -339,9 +375,9 @@ class Device(pr.Node,rim.Hub):
                 ldata = bytearray(numWords*stride)
             
         with self._memLock:
-            for i in range(offset, offset+len(ldata), self._maxTxnSize):
+            for i in range(offset, offset+len(ldata), self._reqMaxAccess()):
                 sliceOffset = i | self.offset
-                txnSize = min(self._maxTxnSize, len(ldata)-(i-offset))
+                txnSize = min(self._reqMaxAccess(), len(ldata)-(i-offset))
                 #print(f'sliceOffset: {sliceOffset:#x}, ldata: {ldata}, txnSize: {txnSize}, buffOffset: {i-offset}')
                 self._reqTransaction(sliceOffset, ldata, txnSize, i-offset, txnType)
 
@@ -405,11 +441,11 @@ class Device(pr.Node,rim.Hub):
     def _buildBlocks(self):
         remVars = []
 
-        blkSize = self._minTxnSize
+        blkSize = self._blkMinAccess()
 
         if self._blockSize is not None:
-            if self._blockSize > self._maxTxnSize:
-                blkSize = self._maxTxnSize
+            if self._blockSize > self._blkMaxAccess():
+                blkSize = self._blkMaxAccess()
             else:
                 blkSize = self._blockSize
 
@@ -448,15 +484,8 @@ class Device(pr.Node,rim.Hub):
             self._blocks.append(pr.RemoteBlock(offset=b['offset'], size=b['size'], variables=b['vars']))
             self._log.debug("Adding new block at offset {:#02x}, size {}".format(b['offset'], b['size']))
 
-            # Adjust device size
-            if (b['offset'] + b['size']) > self._size:
-                self._size = (b['offset'] + b['size'])
-
     def _rootAttached(self, parent, root):
         pr.Node._rootAttached(self, parent, root)
-
-        self._maxTxnSize = self._doMaxAccess()
-        self._minTxnSize = self._doMinAccess()
 
         for key,value in self._nodes.items():
             value._rootAttached(self,root)
@@ -510,6 +539,28 @@ class Device(pr.Node,rim.Hub):
             return func
         return _decorator
 
+class ArrayDevice(Device):
+    def __init__(self, *, arrayClass, number, stride=0, arrayArgs=None, **kwargs):
+        if 'name' not in kwargs:
+            kwargs['name'] = f'{arrayClass.__name__}Array'
+        super().__init__(**kwargs)
+
+        if arrayArgs is None:
+            arrayArgs = [{} for x in range(number)]
+        elif isinstance(arrayArgs, dict):
+            arrayArgs = [arrayArgs for x in range(number)]
+            
+        for i in range(number):
+            args = arrayArgs[i]
+            if 'name' in args:
+                name = args.pop('name')
+            else:
+                name = arrayClass.__name__
+            self.add(arrayClass(
+                name=f'{name}[{i:d}]',
+                offset=i*stride,
+                **args))
+                
 class DataWriter(Device):
     """Special base class to control data files. TODO: Update comments"""
 

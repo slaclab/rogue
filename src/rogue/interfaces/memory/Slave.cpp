@@ -22,7 +22,7 @@
 #include <rogue/interfaces/memory/Constants.h>
 #include <rogue/interfaces/memory/Transaction.h>
 #include <rogue/GeneralError.h>
-#include <boost/make_shared.hpp>
+#include <memory>
 #include <rogue/GilRelease.h>
 #include <rogue/ScopedGil.h>
 
@@ -37,11 +37,11 @@ namespace rim = rogue::interfaces::memory;
 uint32_t rim::Slave::classIdx_ = 0;
 
 //! Class instance lock
-boost::mutex rim::Slave::classMtx_;
+std::mutex rim::Slave::classMtx_;
 
 //! Create a slave container
 rim::SlavePtr rim::Slave::create (uint32_t min, uint32_t max) {
-   rim::SlavePtr s = boost::make_shared<rim::Slave>(min,max);
+   rim::SlavePtr s = std::make_shared<rim::Slave>(min,max);
    return(s);
 }
 
@@ -63,7 +63,7 @@ rim::Slave::~Slave() { }
 //! Register a master.
 void rim::Slave::addTransaction(rim::TransactionPtr tran) {
    rogue::GilRelease noGil;
-   boost::lock_guard<boost::mutex> lock(slaveMtx_);
+   std::lock_guard<std::mutex> lock(slaveMtx_);
    tranMap_[tran->id()] = tran;
 }
 
@@ -73,7 +73,7 @@ rim::TransactionPtr rim::Slave::getTransaction(uint32_t index) {
    TransactionMap::iterator it;
 
    rogue::GilRelease noGil;
-   boost::lock_guard<boost::mutex> lock(slaveMtx_);
+   std::lock_guard<std::mutex> lock(slaveMtx_);
 
    if ( (it = tranMap_.find(index)) != tranMap_.end() ) {
       ret = it->second;

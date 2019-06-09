@@ -43,11 +43,11 @@ void rpe::Server::setup_python() {
 
 //! Class creation
 rpe::Server::Server (uint32_t count) : caServer(), running_(false) { 
-   workCnt_   = count;
+   workCnt_ = count;
    workersEn_ = false;
    threadEn_  = false;
 
-   if ( count > 0 ) workers_ = (boost::thread **)malloc(workCnt_ * sizeof(boost::thread *));
+   if ( count > 0 ) workers_ = (std::thread **)malloc(workCnt_ * sizeof(std::thread *));
    else workers_ = NULL;
 
    log_ = rogue::Logging::create("epicsV3.Server");
@@ -74,14 +74,13 @@ void rpe::Server::start() {
    log_->info("Starting epics server with %i workers",workCnt_);
 
    threadEn_ = true;
-   thread_ = new boost::thread(boost::bind(&rpe::Server::runThread, this));
+   thread_ = new std::thread(&rpe::Server::runThread, this);
 
    if ( workCnt_ > 0 ) {
       workersEn_ = true;
       for (x=0; x < workCnt_; x++) 
-         workers_[x] = new boost::thread(boost::bind(&rpe::Server::runWorker, this));
+         workers_[x] = new std::thread(boost::bind(&rpe::Server::runWorker, this));
    }
-
    running_ = true;
 }
 
@@ -94,7 +93,7 @@ void rpe::Server::stop() {
       rogue::GilRelease noGil;
 
       for (x=0; x < workCnt_; x++) 
-         workQueue_.push(boost::shared_ptr<rogue::protocols::epicsV3::Work>());
+         workQueue_.push(std::shared_ptr<rogue::protocols::epicsV3::Work>());
 
       workersEn_ = false;
       for (x=0; x < workCnt_; x++) workers_[x]->join();
@@ -109,7 +108,7 @@ void rpe::Server::addValue(rpe::ValuePtr value) {
    std::map<std::string, rpe::ValuePtr>::iterator it;
    rpe::Pv * pv;
 
-   boost::lock_guard<boost::mutex> lock(mtx_);
+   std::lock_guard<std::mutex> lock(mtx_);
 
    if ( (it = values_.find(value->epicsName())) == values_.end()) {
       pv = new Pv(this, value);
@@ -130,7 +129,7 @@ void rpe::Server::addWork(rpe::WorkPtr work) {
 }
 
 pvExistReturn rpe::Server::pvExistTest(const casCtx &ctx, const char *pvName) {
-   boost::lock_guard<boost::mutex> lock(mtx_);
+   std::lock_guard<std::mutex> lock(mtx_);
 
    std::map<std::string, rpe::ValuePtr>::iterator it;
 
@@ -143,7 +142,7 @@ pvExistReturn rpe::Server::pvExistTest(const casCtx &ctx, const char *pvName) {
 }
 
 pvCreateReturn rpe::Server::createPV(const casCtx &ctx, const char *pvName) {
-   boost::lock_guard<boost::mutex> lock(mtx_);
+   std::lock_guard<std::mutex> lock(mtx_);
 
    std::map<std::string, rpe::ValuePtr>::iterator it;
 
@@ -154,7 +153,7 @@ pvCreateReturn rpe::Server::createPV(const casCtx &ctx, const char *pvName) {
 }
 
 pvAttachReturn rpe::Server::pvAttach(const casCtx &ctx, const char *pvName) {
-   boost::lock_guard<boost::mutex> lock(mtx_);
+   std::lock_guard<std::mutex> lock(mtx_);
 
    std::map<std::string, rpe::ValuePtr>::iterator it;
    rpe::Pv * pv;

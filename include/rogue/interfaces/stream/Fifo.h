@@ -21,7 +21,7 @@
 #ifndef __ROGUE_INTERFACES_STREAM_FIFO_H__
 #define __ROGUE_INTERFACES_STREAM_FIFO_H__
 #include <stdint.h>
-#include <boost/thread.hpp>
+#include <thread>
 #include <rogue/interfaces/stream/Master.h>
 #include <rogue/interfaces/stream/Slave.h>
 #include <rogue/Logging.h>
@@ -47,7 +47,7 @@ namespace rogue {
          class Fifo : public rogue::interfaces::stream::Master,
                       public rogue::interfaces::stream::Slave {
 
-               boost::shared_ptr<rogue::Logging> log_;
+               std::shared_ptr<rogue::Logging> log_;
 
                // Configurations
                uint32_t trimSize_;
@@ -55,10 +55,11 @@ namespace rogue {
                bool     noCopy_;
 
                // Queue
-               rogue::Queue<boost::shared_ptr<rogue::interfaces::stream::Frame>> queue_;
+               rogue::Queue<std::shared_ptr<rogue::interfaces::stream::Frame>> queue_;
 
                // Transmission thread
-               boost::thread* thread_;
+               std::thread* thread_;
+               bool threadEn_;
 
                // Thread background
                void runThread();
@@ -66,41 +67,31 @@ namespace rogue {
             public:
 
                //! Create a Fifo object and return as a FifoPtr
-               /** @param maxDepth Set to a non-zero value to configured fixed size mode.
-                * @param trimSize Set to a non-zero vaue to limit the amount of data copied.
-                * @param noCopy Set to true to disable Frame copy
-                * @return Fifo object as a FifoPtr
-                */
-               static boost::shared_ptr<rogue::interfaces::stream::Fifo> 
-                  create(uint32_t maxDepth, uint32_t trimSize, bool noCopy);
-
-               //! Setup class for use in python
-               /** Not exposed to Python
-                */
-               static void setup_python();
-
-               //! Create a Fifo object.
                /** Exposed as rogue.interfaces.stream.Fifo() to Python
                 * @param maxDepth Set to a non-zero value to configured fixed size mode.
                 * @param trimSize Set to a non-zero vaue to limit the amount of data copied.
                 * @param noCopy Set to true to disable Frame copy
+                * @return Fifo object as a FifoPtr
                 */
+               static std::shared_ptr<rogue::interfaces::stream::Fifo> 
+                  create(uint32_t maxDepth, uint32_t trimSize, bool noCopy);
+
+               // Setup class for use in python
+               static void setup_python();
+
+               // Create a Fifo object.
                Fifo(uint32_t maxDepth, uint32_t trimSize, bool noCopy);
 
-               //! Destroy the Fifo
+               // Destroy the Fifo
                ~Fifo();
 
-               //! Accept a frame from master
-               /** This method is called by the Master object to which this Slave is attached when
-                * passing a Frame.
-                * @param frame Frame pointer (FramePtr)
-                */
-               void acceptFrame ( boost::shared_ptr<rogue::interfaces::stream::Frame> frame );
+               // Receive frame from Master
+               void acceptFrame ( std::shared_ptr<rogue::interfaces::stream::Frame> frame );
 
          };
 
          //! Alias for using shared pointer as FifoPtr
-         typedef boost::shared_ptr<rogue::interfaces::stream::Fifo> FifoPtr;
+         typedef std::shared_ptr<rogue::interfaces::stream::Fifo> FifoPtr;
       }
    }
 }

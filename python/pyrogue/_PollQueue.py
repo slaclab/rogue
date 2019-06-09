@@ -48,7 +48,7 @@ class PollQueue(object):
         self._pollThread = threading.Thread(target=self._poll)
 
         # Setup logging
-        self._log = pr.logInit(self)
+        self._log = pr.logInit(cls=self)
 
     def _start(self):
         self._pollThread.start()
@@ -132,7 +132,7 @@ class PollQueue(object):
                     now = datetime.datetime.now()
                     blockEntries = []
                     for entry in self._expiredEntries(now):
-                        self._log.debug(f'Polling Block {entry.block.name}')
+                        self._log.debug(f'Polling Block {entry.block.path}')
                         blockEntries.append(entry)
                         try:
                             entry.block.startTransaction(rogue.interfaces.memory.Read, check=False)

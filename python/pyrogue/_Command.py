@@ -19,7 +19,6 @@ import time
 from collections import OrderedDict as odict
 import pyrogue as pr
 import inspect
-import Pyro4
 import threading
 
 class CommandError(Exception):
@@ -63,23 +62,25 @@ class BaseCommand(pr.BaseVariable):
         except:
             self._arg = False
 
-    @Pyro4.expose
+    @pr.expose
     @property
     def arg(self):
         return self._arg
 
-    @Pyro4.expose
+    @pr.expose
     def call(self,arg=None):
         if self._background:
             with self._lock:
                 if self._thread is not None and self._thread.isAlive():
                     self._log.warning('Command execution is already in progress!')
-                    return
+                    return None
                 else:
                     self._thread = threading.Thread(target=self._doFunc, args=(arg,))
                     self._thread.start()
+
+            return None
         else:
-            self._doFunc(arg)
+            return self._doFunc(arg)
 
     def _doFunc(self,arg):
         """Execute command: TODO: Update comments"""
@@ -89,18 +90,21 @@ class BaseCommand(pr.BaseVariable):
         try:
 
             # Convert arg
-            arg = self.parseDisp(arg)
+            if arg is None:
+                arg = self._default
+            else:
+                arg = self.parseDisp(arg)
 
             # Possible args
             pargs = {'dev' : self.parent, 'cmd' : self, 'arg' : arg}
 
-            pr.varFuncHelper(self._function,pargs, self._log,self.path)
+            return pr.varFuncHelper(self._function,pargs, self._log,self.path)
 
         except Exception as e:
             self._log.exception(e)
 
     def __call__(self,arg=None):
-        self.call(arg)
+        return self.call(arg)
 
     @staticmethod
     def nothing():
@@ -109,6 +113,20 @@ class BaseCommand(pr.BaseVariable):
     @staticmethod
     def read(cmd):
         cmd.get(read=True)
+
+    @staticmethod
+    def setArg(cmd, arg):
+        cmd.set(arg)
+
+    @staticmethod
+    def setAndVerifyArg(cmd, arg):
+        cmd.set(arg)
+        ret = cmd.get()
+        if ret != arg:
+            raise CommandError(
+                f'Verification failed for {cmd.path}. \n'+
+                f'Set to {arg} but read back {ret}')
+        
 
     @staticmethod
     def createToggle(sets):

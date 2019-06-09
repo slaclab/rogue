@@ -29,13 +29,13 @@ namespace bp  = boost::python;
 
 //! Create a work container for write
 rpe::WorkPtr rpe::Work::createWrite ( rpe::ValuePtr value, const gdd & wValue, casAsyncWriteIO *write) {
-   rpe::WorkPtr m = boost::make_shared<rpe::Work>(value,wValue,write);
+   rpe::WorkPtr m = std::make_shared<rpe::Work>(value,wValue,write);
    return(m);
 }
 
 //! Create a work container for read
 rpe::WorkPtr rpe::Work::createRead ( rpe::ValuePtr value, gdd & rValue, casAsyncReadIO *read) {
-   rpe::WorkPtr m = boost::make_shared<rpe::Work>(value,rValue,read);
+   rpe::WorkPtr m = std::make_shared<rpe::Work>(value,rValue,read);
    return(m);
 }
 
