@@ -38,7 +38,13 @@ class StreamWriter(pyrogue.DataWriter):
                 if self._configEn: self.root._streamYaml()
                 self._writer.close()
             else:
-                self._writer.open(self.dataFile.value())
+
+                try:
+                    self._writer.open(self.dataFile.value())
+                except pyrogue.GeneralException as e:
+                    self._
+
+                    raise e
 
                 # Dump config/status to file
                 if self._configEn: self.root._streamYaml()
