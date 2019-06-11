@@ -97,7 +97,7 @@ class PrbsTx(pyrogue.Device):
 
         self._prbs.sendCount(sendCount)
 
-        self.add(pyrogue.LocalVariable(name='txSize', description='PRBS Frame Size', 
+        self.add(pyrogue.LocalVariable(name='txSize', description='PRBS Frame Size', units='Bytes',
                                        localSet=self._txSize, mode='RW', value=0))
 
         self.add(pyrogue.LocalVariable(name='txEnable', description='PRBS Run Enable', mode='RW',
