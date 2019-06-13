@@ -555,9 +555,9 @@ class ArrayDevice(Device):
             if 'name' in args:
                 name = args.pop('name')
             else:
-                name = arrayClass.__name__
+                name = f'{arrayClass.__name__}[{i}]'
             self.add(arrayClass(
-                name=f'{name}[{i:d}]',
+                name=name,
                 offset=i*stride,
                 **args))
                 
