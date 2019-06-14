@@ -96,7 +96,7 @@ rogue::GeneralError rogue::GeneralError::allocation(std::string src, uint32_t si
 rogue::GeneralError rogue::GeneralError::network(std::string src, std::string host, uint16_t port) {
    char temp[BuffSize];
 
-   snprintf(temp,BuffSize,"UDP connect error. Host = %s, Port = %i",host.c_str(),port);
+   snprintf(temp,BuffSize,"Network connect error. Host = %s, Port = %i",host.c_str(),port);
    return(rogue::GeneralError(src,temp));
 }
 
