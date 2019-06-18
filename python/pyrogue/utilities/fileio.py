@@ -132,40 +132,45 @@ class FileHeader(object):
 
 class FileReader(object):
 
-    def __init__(self, filename, configChan=None, dtype={}):
+    def __init__(self, filename, configChan=None):
         self._filename   = filename
-
-        # Dtype is a dictionary
-        self._dtype = dtype
-
-        # ConfigChan can be a single channel or list
-        if isinstance(configChan,list):
-            self._configChan = configChane
-        elif configChan is not None:
-            self._configChane = [configChan]
-        else:
-            self._configChane = []
-
-        # Update data types for config
-        for chan in configChan:
-            dtype[chan] = str
+        self._configChan = configChan
 
         # Config tracking dictionary
         self._config = {}
 
-    def _checkConfig(self):
-
-        fh = FileHeader
-
-
-    def config(self):
-        return self._config
+        # Open file and get size
+        self._fdata = open(filename,'rb')
+        self._fdata.seek(0,2)
+        self._size = self._fdata.tell()
+        self._fdata.seek(0,0)
 
     @property
     def next(self):
+        pos = self._fdata.tell()
 
-        
+        while pos != self._fdata._size:
 
+            if (self._size - pos) < 8:
+                raise pyrogue.GeneralException("Header Underrun in {}".format(self._filename))
 
+            head = FileHeader(self._fdata)
+            pos = self._fdata.tell()
 
+            if pos + (head.size-4)  > self._size:
+                raise pyrogue.GeneralException("Data Underrun in {}".format(self._filename))
+
+            data = numpy.fromfile(self._fdata,dtype=numpy.uint8,h.size-4)
+            pos = self._fdata.tell()
+       
+            if h.channel == self._configChan:
+                cfg = pyrogue.yamlToData(data.decode('utf-8'))
+                self._config.update(cfg)
+            else:
+                return head, data
+
+        return None, None
+
+    def config(self):
+        return self._config
 
