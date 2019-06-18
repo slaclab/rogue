@@ -381,7 +381,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         Vlist can contain an optional list of variale paths to include in the
         stream. If this list is not NULL only these variables will be included.
         """
-        self._sendYamlFrame(self._getYaml(False,modes))
+        self._sendYamlFrame(self._getYaml(readFirst=False,modes=modes,varEncode=False))
 
     def _write(self):
         """Write all blocks"""
@@ -458,7 +458,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
         return True
 
-    def _getYaml(self,readFirst,modes=['RW']):
+    def _getYaml(self,readFirst,modes=['RW'],varEncode=True):
         """
         Get current values as yaml data.
         modes is a list of variable modes to include.
@@ -467,7 +467,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
         if readFirst: self._read()
         try:
-            return dataToYaml({self.name:self._getDict(modes)})
+            return dataToYaml({self.name:self._getDict(modes)},varEncode)
         except Exception as e:
             self._log.exception(e)
             return ""
@@ -553,7 +553,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                 self._log.debug(F"Done update group. Length={len(uvars)}. Entry={list(uvars.keys())[0]}")
 
                 # Generate yaml stream
-                self._sendYamlFrame(dataToYaml(d))
+                self._sendYamlFrame(dataToYaml(d),varEncode=False)
 
                 # Send over zmq link
                 if self._zmqServer is not None:
@@ -579,7 +579,7 @@ def yamlToData(stream):
 
     return yaml.load(stream, Loader=PyrogueLoader)
 
-def dataToYaml(data):
+def dataToYaml(data,varEncode=True):
     """Convert data structure to yaml"""
 
     class PyrogueDumper(yaml.Dumper):
@@ -602,7 +602,8 @@ def dataToYaml(data):
     def _dict_representer(dumper, data):
         return dumper.represent_mapping(yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG, data.items())
 
-    PyrogueDumper.add_representer(pr.VariableValue, _var_representer)
+    if varEncode:
+        PyrogueDumper.add_representer(pr.VariableValue, _var_representer)
     PyrogueDumper.add_representer(odict, _dict_representer)
 
     try:
