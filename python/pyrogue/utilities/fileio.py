@@ -21,6 +21,7 @@
 import rogue.utilities
 import rogue.utilities.fileio
 import pyrogue
+import numpy
 
 class StreamWriter(pyrogue.DataWriter):
     """Stream Writer Wrapper"""
@@ -103,4 +104,68 @@ class StreamReader(pyrogue.Device):
 
     def _getStreamMaster(self):
         return self._reader
+
+
+class FileHeader(object):
+    def __init__(self, fdata):
+        self._size    = numpy.fromfile(fdata,dtype=numpy.uint32,1)
+        self._flags   = numpy.fromfile(fdata,dtype=numpy.uint16,1)
+        self._error   = numpy.fromfile(fdata,dtype=numpy.uint8,1)
+        self._channel = numpy.fromfile(fdata,dtype=numpy.uint8,1)
+
+    @property
+    def size(self):
+        return self._size
+
+    @property
+    def flags(self):
+        return self._flags
+
+    @property
+    def error(self):
+        return self._error
+
+    @property
+    def channel(self):
+        return self._channel
+
+
+class FileReader(object):
+
+    def __init__(self, filename, configChan=None, dtype={}):
+        self._filename   = filename
+
+        # Dtype is a dictionary
+        self._dtype = dtype
+
+        # ConfigChan can be a single channel or list
+        if isinstance(configChan,list):
+            self._configChan = configChane
+        elif configChan is not None:
+            self._configChane = [configChan]
+        else:
+            self._configChane = []
+
+        # Update data types for config
+        for chan in configChan:
+            dtype[chan] = str
+
+        # Config tracking dictionary
+        self._config = {}
+
+    def _checkConfig(self):
+
+        fh = FileHeader
+
+
+    def config(self):
+        return self._config
+
+    @property
+    def next(self):
+
+        
+
+
+
 
