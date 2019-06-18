@@ -21,7 +21,7 @@
 import rogue.utilities
 import rogue.utilities.fileio
 import pyrogue
-import numpy
+import rogue
 
 class StreamWriter(pyrogue.DataWriter):
     """Stream Writer Wrapper"""
@@ -106,12 +106,13 @@ class StreamReader(pyrogue.Device):
         return self._reader
 
 
-class FileHeader(object):
-    def __init__(self, fdata):
-        self._size    = numpy.fromfile(fdata,dtype=numpy.uint32,1)
-        self._flags   = numpy.fromfile(fdata,dtype=numpy.uint16,1)
-        self._error   = numpy.fromfile(fdata,dtype=numpy.uint8,1)
-        self._channel = numpy.fromfile(fdata,dtype=numpy.uint8,1)
+class FileData(object):
+    def __init__(self, rdata):
+        self._size    = int.from_bytes(rdata.read(4),'little',signed=False)
+        self._flags   = int.from_bytes(rdata.read(2),'little',signed=False)
+        self._error   = int.from_bytes(rdata.read(1),'little',signed=False)
+        self._channel = int.from_bytes(rdata.read(1),'little',signed=False)
+        self._data    = rdata.read(self._size-4)
 
     @property
     def size(self):
@@ -129,6 +130,9 @@ class FileHeader(object):
     def channel(self):
         return self._channel
 
+    @property
+    def data(self):
+        return self._data
 
 class FileReader(object):
 
@@ -140,36 +144,28 @@ class FileReader(object):
         self._config = {}
 
         # Open file and get size
-        self._fdata = open(filename,'rb')
+        self._fdata = open(self._filename,'rb')
         self._fdata.seek(0,2)
         self._size = self._fdata.tell()
         self._fdata.seek(0,0)
 
     @property
     def next(self):
-        pos = self._fdata.tell()
+        while self._fdata.tell() != self._size:
+            try:
+                fd = FileData(self._fdata)
+            except:
+                raise rogue.GeneralError("filio.FileReader","Underrun while reading from {}".format(self._filename))
 
-        while pos != self._fdata._size:
-
-            if (self._size - pos) < 8:
-                raise pyrogue.GeneralException("Header Underrun in {}".format(self._filename))
-
-            head = FileHeader(self._fdata)
-            pos = self._fdata.tell()
-
-            if pos + (head.size-4)  > self._size:
-                raise pyrogue.GeneralException("Data Underrun in {}".format(self._filename))
-
-            data = numpy.fromfile(self._fdata,dtype=numpy.uint8,h.size-4)
-            pos = self._fdata.tell()
-       
-            if h.channel == self._configChan:
-                cfg = pyrogue.yamlToData(data.decode('utf-8'))
-                self._config.update(cfg)
+            if fd.channel == self._configChan:
+                try:
+                    self._config.update(pyrogue.yamlToData(fd.data.decode('utf-8')))
+                except:
+                    raise rogue.GeneralError("filio.FileReader","Failed to read config from {}".format(self._filename))
             else:
-                return head, data
+                return fd
 
-        return None, None
+        return None
 
     def config(self):
         return self._config
