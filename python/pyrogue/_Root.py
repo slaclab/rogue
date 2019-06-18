@@ -553,7 +553,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                 self._log.debug(F"Done update group. Length={len(uvars)}. Entry={list(uvars.keys())[0]}")
 
                 # Generate yaml stream
-                self._sendYamlFrame(dataToYaml(d),varEncode=False)
+                self._sendYamlFrame(dataToYaml(d,varEncode=False))
 
                 # Send over zmq link
                 if self._zmqServer is not None:
