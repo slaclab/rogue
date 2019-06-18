@@ -159,7 +159,7 @@ class FileReader(object):
 
             if fd.channel == self._configChan:
                 try:
-                    self._config.update(pyrogue.yamlToData(fd.data.decode('utf-8')))
+                    pyrogue.dictUpdate(self._config,pyrogue.yamlToData(fd.data.decode('utf-8')))
                 except:
                     raise rogue.GeneralError("filio.FileReader","Failed to read config from {}".format(self._filename))
             else:
