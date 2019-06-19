@@ -364,9 +364,9 @@ class Device(pr.Node,rim.Hub):
             if isinstance(data, bytearray):
                 ldata = data
             elif isinstance(data, collections.Iterable):
-                ldata = b''.join(base.mask(base.toBytes(word, wordBitSize), wordBitSize) for word in data)
+                ldata = b''.join(base.toBytes(word, wordBitSize) for word in data)
             else:
-                ldata = base.mask(base.toBytes(data, wordBitSize), wordBitSize)
+                ldata = base.toBytes(data, wordBitSize)
 
         else:
             if data is not None:
