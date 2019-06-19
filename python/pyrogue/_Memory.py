@@ -118,8 +118,6 @@ class MemoryDevice(pr.Device):
                 checkValues[offset] = [self._base.fromBytes(ba[i:i+self._stride], self._wordBitSize)
                                        for i in range(0, len(ba), self._stride)]
 
-
-            print(f'checkValues: {checkValues}')
             # Do verify if necessary
             if len(self._verValues) > 0:
                 # Compare wrData with verData
