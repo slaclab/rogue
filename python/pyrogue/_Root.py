@@ -542,15 +542,19 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                 d = odict()
 
                 for p,v in uvars.items():
-                    val = v._doUpdate()
-                    d[p] = val
+                    try:
+                        val = v._doUpdate()
+                        d[p] = val
 
-                    # Call listener functions,
-                    with self._varListenLock:
-                        for func in self._varListeners:
-                                    func(p,val.value.val,valueDisp)
-
+                        # Call listener functions,
+                        with self._varListenLock:
+                            for func in self._varListeners:
+                                func(p,val.value.val,valueDisp)
+                    except Exception as e:
+                        self._log.exception(e)
+                        
                 self._log.debug(F"Done update group. Length={len(uvars)}. Entry={list(uvars.keys())[0]}")
+
 
                 # Generate yaml stream
                 self._sendYamlFrame(dataToYaml(d))
