@@ -351,7 +351,7 @@ class Node(object):
 
         found = []
         for node in self._nodes.values():
-            if isinstance(node, typ):
+            if node._isinstance(typ):
                 for prop, value in kwargs.items():
                     if not hasattr(node, prop):
                         break
