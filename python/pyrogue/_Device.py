@@ -221,7 +221,15 @@ class Device(pr.Node,rim.Hub):
             lv = pr.LinkVariable(name=name, value='', dependencies=varList, linkedGet=linkedGet, linkedSet=linkedSet, **kwargs)
             self.add(lv)
 
+    def setPollInterval(self, interval, variables=None):
+        """Set the poll interval for a group of variables.
+        The variables param is an Iterable of strings
+        If variables=None, set interval for all variables that currently have nonzero pollInterval"""
+        if variables is None:
+            variables = (x for x in self.variables.values() if x.pollInterval != 0)
 
+        for x in variables:
+            v = self.node(x).pollInterval = interval
 
     def hideVariables(self, hidden, variables=None):
         """Hide a list of Variables (or Variable names)"""
