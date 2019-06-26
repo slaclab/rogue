@@ -221,7 +221,15 @@ class Device(pr.Node,rim.Hub):
             lv = pr.LinkVariable(name=name, value='', dependencies=varList, linkedGet=linkedGet, linkedSet=linkedSet, **kwargs)
             self.add(lv)
 
+    def setPollInterval(self, interval, variables=None):
+        """Set the poll interval for a group of variables.
+        The variables param is an Iterable of strings
+        If variables=None, set interval for all variables that currently have nonzero pollInterval"""
+        if variables is None:
+            variables = (x for x in self.variables.values() if x.pollInterval != 0)
 
+        for x in variables:
+            v = self.node(x).pollInterval = interval
 
     def hideVariables(self, hidden, variables=None):
         """Hide a list of Variables (or Variable names)"""
@@ -364,9 +372,9 @@ class Device(pr.Node,rim.Hub):
             if isinstance(data, bytearray):
                 ldata = data
             elif isinstance(data, collections.Iterable):
-                ldata = b''.join(base.mask(base.toBytes(word, wordBitSize), wordBitSize) for word in data)
+                ldata = b''.join(base.toBytes(word, wordBitSize) for word in data)
             else:
-                ldata = base.mask(base.toBytes(data, wordBitSize), wordBitSize)
+                ldata = base.toBytes(data, wordBitSize)
 
         else:
             if data is not None:
@@ -555,9 +563,9 @@ class ArrayDevice(Device):
             if 'name' in args:
                 name = args.pop('name')
             else:
-                name = arrayClass.__name__
+                name = f'{arrayClass.__name__}[{i}]'
             self.add(arrayClass(
-                name=f'{name}[{i:d}]',
+                name=name,
                 offset=i*stride,
                 **args))
                 
