@@ -560,7 +560,10 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
 
                 # Generate yaml stream
-                self._sendYamlFrame(dataToYaml(d,varEncode=False))
+                try:
+                    self._sendYamlFrame(dataToYaml(d,varEncode=False))
+                except Exception as e:
+                    self._log.exception(e)
 
                 # Send over zmq link
                 if self._zmqServer is not None:
@@ -604,7 +607,10 @@ def dataToYaml(data,varEncode=True):
         else:
             enc = 'tag:yaml.org,2002:str'
 
-        return dumper.represent_scalar(enc, data.valueDisp)
+        if data.valueDisp is None:
+            return dumper.represent_scalar('tag:yaml.org,2002:null',u'null')
+        else:
+            return dumper.represent_scalar(enc, data.valueDisp)
 
     def _dict_representer(dumper, data):
         return dumper.represent_mapping(yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG, data.items())
@@ -613,12 +619,7 @@ def dataToYaml(data,varEncode=True):
         PyrogueDumper.add_representer(pr.VariableValue, _var_representer)
     PyrogueDumper.add_representer(odict, _dict_representer)
 
-    try:
-        ret = yaml.dump(data, Dumper=PyrogueDumper, default_flow_style=False)
-    except Exception as e:
-        #print("Error: {} dict {}".format(e,data))
-        return None
-    return ret
+    return yaml.dump(data, Dumper=PyrogueDumper, default_flow_style=False)
 
 def keyValueUpdate(old, key, value):
     d = old
