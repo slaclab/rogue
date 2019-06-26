@@ -158,6 +158,9 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
     def start(self, timeout=1.0, initRead=False, initWrite=False, pollEn=True, zmqPort=9099):
         """Setup the tree. Start the polling thread."""
 
+        if self._running:
+            raise pr.NodeError("Root is already started! Can't restart!")
+
         # Create poll queue object
         if pollEn:
             self._pollQueue = pr.PollQueue(root=self)
@@ -542,15 +545,19 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                 d = odict()
 
                 for p,v in uvars.items():
-                    val = v._doUpdate()
-                    d[p] = val
+                    try:
+                        val = v._doUpdate()
+                        d[p] = val
 
-                    # Call listener functions,
-                    with self._varListenLock:
-                        for func in self._varListeners:
-                                    func(p,val.value.val,valueDisp)
-
+                        # Call listener functions,
+                        with self._varListenLock:
+                            for func in self._varListeners:
+                                func(p,val.value.val,valueDisp)
+                    except Exception as e:
+                        self._log.exception(e)
+                        
                 self._log.debug(F"Done update group. Length={len(uvars)}. Entry={list(uvars.keys())[0]}")
+
 
                 # Generate yaml stream
                 try:
