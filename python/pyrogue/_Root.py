@@ -607,13 +607,10 @@ def dataToYaml(data,varEncode=True):
         else:
             enc = 'tag:yaml.org,2002:str'
 
-        try:
-            ret = dumper.represent_scalar(enc, data.valueDisp)
-        except Exception as e:
-            print("Failed to process: {}".format(data))
-            raise e
-
-        return ret
+        if data.valueDisp is None:
+            return dumper.represent_scalar('tag:yaml.org,2002:null',u'null')
+        else:
+            return dumper.represent_scalar(enc, data.valueDisp)
 
     def _dict_representer(dumper, data):
         return dumper.represent_mapping(yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG, data.items())
