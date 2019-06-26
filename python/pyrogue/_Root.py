@@ -158,6 +158,9 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
     def start(self, timeout=1.0, initRead=False, initWrite=False, pollEn=True, zmqPort=9099):
         """Setup the tree. Start the polling thread."""
 
+        if self._running:
+            raise pr.NodeError("Root is already started! Can't restart!")
+
         # Create poll queue object
         if pollEn:
             self._pollQueue = pr.PollQueue(root=self)
