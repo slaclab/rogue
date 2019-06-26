@@ -112,9 +112,6 @@ class VirtualNode(pr.Node):
     def add(self,node):
         raise pr.NodeError('add not supported in VirtualNode')
 
-    def find(self, *, recurse=True, typ=None, **kwargs):
-        raise pr.NodeError('find not supported in VirtualNode')
-
     def callRecursive(self, func, nodeTypes=None, **kwargs):
         raise pr.NodeError('callRecursive not supported in VirtualNode')
 

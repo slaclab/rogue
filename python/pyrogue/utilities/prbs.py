@@ -40,23 +40,23 @@ class PrbsRx(pyrogue.Device):
             
 
         self.add(pyrogue.LocalVariable(name='rxErrors', description='RX Error Count',
-                                       mode='RO', pollInterval=1, value=0,
+                                       mode='RO', pollInterval=1, value=0, typeStr='UInt32',
                                        localGet=self._prbs.getRxErrors))
 
         self.add(pyrogue.LocalVariable(name='rxCount', description='RX Count',
-                                       mode='RO', pollInterval=1, value=0,
+                                       mode='RO', pollInterval=1, value=0, typeStr='UInt32',
                                        localGet=self._prbs.getRxCount))
 
         self.add(pyrogue.LocalVariable(name='rxBytes', description='RX Bytes',
-                                       mode='RO', pollInterval=1, value=0,
+                                       mode='RO', pollInterval=1, value=0, typeStr='UInt32',
                                        localGet=self._prbs.getRxBytes))
 
         self.add(pyrogue.LocalVariable(name='rxRate', description='RX Rate', disp="{:.3e}",
-                                       mode='RO', pollInterval=1, value=0, units='Frames/s',
+                                       mode='RO', pollInterval=1, value=0.0, units='Frames/s',
                                        localGet=self._prbs.getRxRate))
 
         self.add(pyrogue.LocalVariable(name='rxBw', description='RX BW', disp="{:.3e}",
-                                       mode='RO', pollInterval=1, value=0, units='Bytes/s',
+                                       mode='RO', pollInterval=1, value=0.0, units='Bytes/s',
                                        localGet=self._prbs.getRxBw))
 
         self.add(pyrogue.LocalVariable(name='checkPayload', description='Payload Check Enable',
@@ -98,6 +98,7 @@ class PrbsTx(pyrogue.Device):
         self._prbs.sendCount(sendCount)
 
         self.add(pyrogue.LocalVariable(name='txSize', description='PRBS Frame Size', units='Bytes',
+                                       localSet=self._txSize, mode='RW', value=0, typeStr='UInt32'))
                                        localSet=self._txSize, mode='RW', value=0))
 
         self.add(pyrogue.LocalVariable(name='txEnable', description='PRBS Run Enable', mode='RW',
@@ -107,23 +108,23 @@ class PrbsTx(pyrogue.Device):
                                       function=self._genFrame))
 
         self.add(pyrogue.LocalVariable(name='txErrors', description='TX Error Count', mode='RO', pollInterval = 1,
-                                       value=0, localGet=self._prbs.getTxErrors))
+                                       value=0, typeStr='UInt32', localGet=self._prbs.getTxErrors))
 
         self.add(pyrogue.LocalVariable(name='txCount', description='TX Count', mode='RO', pollInterval = 1,
-                                       value=0, localGet=self._prbs.getTxCount))
+                                       value=0, typeStr='UInt32', localGet=self._prbs.getTxCount))
 
         self.add(pyrogue.LocalVariable(name='txBytes', description='TX Bytes', mode='RO', pollInterval = 1,
-                                       value=0, localGet=self._prbs.getTxBytes))
+                                       value=0, typeStr='UInt32', localGet=self._prbs.getTxBytes))
 
         self.add(pyrogue.LocalVariable(name='genPayload', description='Payload Generate Enable',
                                        mode='RW', value=True, localSet=self._plEnable))
 
         self.add(pyrogue.LocalVariable(name='txRate', description='TX Rate',  disp="{:.3e}",
-                                       mode='RO', pollInterval=1, value=0, units='Frames/s',
+                                       mode='RO', pollInterval=1, value=0.0, units='Frames/s',
                                        localGet=self._prbs.getTxRate))
 
         self.add(pyrogue.LocalVariable(name='txBw', description='TX BW',  disp="{:.3e}",
-                                       mode='RO', pollInterval=1, value=0, units='Bytes/s',
+                                       mode='RO', pollInterval=1, value=0.0, units='Bytes/s',
                                        localGet=self._prbs.getTxBw))
 
     def _plEnable(self,value,changed):

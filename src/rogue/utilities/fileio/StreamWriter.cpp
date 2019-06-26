@@ -90,6 +90,8 @@ ruf::StreamWriter::StreamWriter() {
    frameCount_ = 0;
    currBuffer_ = 0;
    dropErrors_ = false;
+
+   log_ = rogue::Logging::create("fileio.StreamWriter");
 }
 
 //! Deconstructor
@@ -157,7 +159,7 @@ void ruf::StreamWriter::setBufferSize(uint32_t size) {
 }
 
 //! Set max file size, 0 for unlimited
-void ruf::StreamWriter::setMaxSize(uint32_t size) {
+void ruf::StreamWriter::setMaxSize(uint64_t size) {
    rogue::GilRelease noGil;
    std::lock_guard<std::mutex> lock(mtx_);
    sizeLimit_ = size;
@@ -178,8 +180,8 @@ ruf::StreamWriterChannelPtr ruf::StreamWriter::getChannel(uint8_t channel) {
   return (channelMap_[channel]);
 }
 
-//! Get current file size
-uint32_t ruf::StreamWriter::getSize() {
+//! Get total file size
+uint64_t ruf::StreamWriter::getSize() {
    rogue::GilRelease noGil;
    std::lock_guard<std::mutex> lock(mtx_);
    return(totSize_ + currBuffer_);
@@ -269,8 +271,12 @@ void ruf::StreamWriter::intWrite(void *data, uint32_t size) {
    // Attempted write is larger than buffer, raw write
    // This is called if bufer is disabled
    if ( size > buffSize_ ) {
-      if (write(fd_,data,size) != (int32_t)size) 
-         throw(rogue::GeneralError("StreamWriter::intWrite","Write failed"));
+      if (write(fd_,data,size) != (int32_t)size) {
+         ::close(fd_);
+         fd_ = -1;
+         log_->error("Write failed, closing file!");
+         return;
+      }
       currSize_ += size;
       totSize_  += size;
    }
@@ -314,8 +320,13 @@ void ruf::StreamWriter::checkSize(uint32_t size) {
 //! Flush file
 void ruf::StreamWriter::flush() {
    if ( currBuffer_ > 0 ) {
-      if ( write(fd_,buffer_,currBuffer_) != (int32_t)currBuffer_ )
-         throw(rogue::GeneralError("StreamWriter::flush","Write failed"));
+      if ( write(fd_,buffer_,currBuffer_) != (int32_t)currBuffer_ ) {
+         ::close(fd_);
+         fd_ = -1;
+         log_->error("Write failed, closing file!");
+         currBuffer_ = 0;
+         return;
+      }
       currSize_ += currBuffer_;
       totSize_  += currBuffer_;
       currBuffer_ = 0;
