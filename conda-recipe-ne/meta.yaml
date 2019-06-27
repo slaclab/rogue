@@ -24,16 +24,10 @@ requirements:
 
    run:
      - python
-     - gcc_linux-64   [linux]
-     - gxx_linux-64   [linux]
-     - clang_osx-64   [osx]
-     - clangxx_osx-64 [osx]
      - git
      - git-lfs
      - ipython
      - boost
-     - cmake
-     - make
      - bzip2
      - zeromq
      - pyyaml
