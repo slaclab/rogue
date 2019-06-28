@@ -233,7 +233,15 @@ namespace rogue {
           * @param src Pointer to data source
           */
          inline void toFrame ( rogue::interfaces::stream::FrameIterator & iter, uint32_t size, void * src) {
-            iter = std::copy((uint8_t*)src, ((uint8_t*)src)+size, iter);
+            uint8_t * ptr = (uint8_t *)src;
+            uint32_t  csize;
+
+            while ( size > 0 ) {
+               csize = (size > iter.remBuffer())?iter.remBuffer():size;
+               iter = std::copy(ptr, ptr+csize, iter);
+               ptr  += csize;
+               size -= csize;
+            }
          }
 
          //! Inline helper function to copy values from a frame iterator
@@ -244,8 +252,14 @@ namespace rogue {
           * @param dst Pointer to data destination
           */
          inline void fromFrame ( rogue::interfaces::stream::FrameIterator & iter, uint32_t size, void * dst) {
-            std::copy(iter,iter+size,(uint8_t*)dst);
-            iter += size;
+            uint32_t csize;
+
+            while ( size > 0 ) {
+               csize = (size > iter.remBuffer())?iter.remBuffer():size;
+               dst = std::copy(iter,iter+csize,(uint8_t*)dst);
+               iter += csize;
+               size -= csize;
+            }
          }
       }
    }
