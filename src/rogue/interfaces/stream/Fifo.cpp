@@ -81,7 +81,7 @@ void ris::Fifo::acceptFrame ( ris::FramePtr frame ) {
    ris::Frame::iterator dst;
 
    // FIFO is full, drop frame
-   if ( queue_.busy()  ) return;
+   if ( queue_.busy() ) return;
 
    rogue::GilRelease noGil;
    ris::FrameLockPtr lock = frame->lock();
@@ -116,7 +116,7 @@ void ris::Fifo::runThread() {
    log_->logThreadId();
 
    while(threadEn_) {
-      if ( (frame = queue_.pop()) != NULL ) sendFrame(queue_.pop());
+      if ( (frame = queue_.pop()) != NULL ) sendFrame(frame);
    }
 }
 
