@@ -190,7 +190,7 @@ void rim::Transaction::setData ( boost::python::object p, uint32_t offset ) {
       throw(rogue::GeneralError::boundary("Frame::write",offset+count,size_));
    }
 
-   std::memcpy(begin()+offset, (uint8_t *)puBuf.buf, count);
+   std::memcpy(begin()+offset, (uint8_t *)pyBuf.buf, count);
    PyBuffer_Release(&pyBuf);
 }
 
@@ -208,7 +208,7 @@ void rim::Transaction::getData ( boost::python::object p, uint32_t offset ) {
       throw(rogue::GeneralError::boundary("Frame::readPy",offset+count,size_));
    }
 
-   std::memcpy((uint8_t *)puBuf.buf, begin()+offset, count);
+   std::memcpy((uint8_t *)pyBuf.buf, begin()+offset, count);
    PyBuffer_Release(&pyBuf);
 }
 

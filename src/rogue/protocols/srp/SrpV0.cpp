@@ -230,7 +230,7 @@ void rps::SrpV0::acceptFrame ( ris::FramePtr frame ) {
    // Copy data if read
    if ( ! doWrite ) {
       fIter = frame->beginRead() + RxHeadLen;
-      ri::fromFrame(tIter, tran->size, tIter);
+      ris::fromFrame(fIter, tran->size(), tIter);
    }
 
    // Done
