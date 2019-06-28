@@ -179,7 +179,6 @@ rim::Transaction::iterator rim::Transaction::end() {
 //! Set transaction data from python
 void rim::Transaction::setData ( boost::python::object p, uint32_t offset ) {
    Py_buffer  pyBuf;
-   uint8_t *  data;
 
    if ( PyObject_GetBuffer(p.ptr(),&pyBuf,PyBUF_CONTIG) < 0 )
       throw(rogue::GeneralError("Transaction::writePy","Python Buffer Error In Frame"));
@@ -191,15 +190,13 @@ void rim::Transaction::setData ( boost::python::object p, uint32_t offset ) {
       throw(rogue::GeneralError::boundary("Frame::write",offset+count,size_));
    }
 
-   data = (uint8_t *)pyBuf.buf;
-   std::copy(data,data+count,begin()+offset);
+   std::memcpy(begin()+offset, (uint8_t *)puBuf.buf, count);
    PyBuffer_Release(&pyBuf);
 }
 
 //! Get transaction data from python
 void rim::Transaction::getData ( boost::python::object p, uint32_t offset ) {
    Py_buffer  pyBuf;
-   uint8_t *  data;
 
    if ( PyObject_GetBuffer(p.ptr(),&pyBuf,PyBUF_SIMPLE) < 0 ) 
       throw(rogue::GeneralError("Transaction::readPy","Python Buffer Error In Frame"));
@@ -211,8 +208,7 @@ void rim::Transaction::getData ( boost::python::object p, uint32_t offset ) {
       throw(rogue::GeneralError::boundary("Frame::readPy",offset+count,size_));
    }
 
-   data = (uint8_t *)pyBuf.buf;
-   std::copy(begin()+offset,begin()+offset+count,data);
+   std::memcpy((uint8_t *)puBuf.buf, begin()+offset, count);
    PyBuffer_Release(&pyBuf);
 }
 

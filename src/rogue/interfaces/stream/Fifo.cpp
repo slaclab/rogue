@@ -76,9 +76,8 @@ ris::Fifo::~Fifo() {
 //! Accept a frame from master
 void ris::Fifo::acceptFrame ( ris::FramePtr frame ) {
    uint32_t       size;
-   ris::BufferPtr buff;
    ris::FramePtr  nFrame;
-   ris::Frame::BufferIterator src;
+   ris::Frame::iterator src;
    ris::Frame::iterator dst;
 
    // FIFO is full, drop frame
@@ -99,12 +98,11 @@ void ris::Fifo::acceptFrame ( ris::FramePtr frame ) {
       nFrame = reqFrame(size,true);
 
       // Get destination pointer
+      src = frame->beginRead();
       dst = nFrame->beginWrite();
 
-      // Copy the frame, attempt to be effecient by iterating through source buffers
-      for (src=frame->beginBuffer(); src != frame->endBuffer(); ++src) 
-         dst = std::copy((*src)->begin(), (*src)->endPayload(), dst);
-
+      // Copy the frame
+      ris::copyFrame(src, size, dst);
       nFrame->setPayload(size);
    }
 
