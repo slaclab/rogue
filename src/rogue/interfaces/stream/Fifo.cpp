@@ -118,7 +118,7 @@ void ris::Fifo::runThread() {
    log_->logThreadId();
 
    while(threadEn_) {
-      if ( (frame = queue_.pop()) != NULL ) sendFrame(queue_.pop());
+      if ( (frame = queue_.pop()) != NULL ) sendFrame(frame);
    }
 }
 
