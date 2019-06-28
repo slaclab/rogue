@@ -22,6 +22,7 @@
 #include <rogue/GeneralError.h>
 #include <rogue/GilRelease.h>
 #include <memory>
+#include <cstring>
 #include <thread>
 #include <stdio.h>
 #include <unistd.h>

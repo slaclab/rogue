@@ -21,6 +21,7 @@
 #include <rogue/interfaces/memory/Constants.h>
 #include <rogue/GeneralError.h>
 #include <string.h>
+#include <cstring>
 #include <memory>
 #include <string.h>
 #include <inttypes.h>

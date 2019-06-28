@@ -46,6 +46,7 @@
 #include <unistd.h>
 #include <sys/time.h>
 #include <string.h>
+#include <cstring>
 
 namespace ris = rogue::interfaces::stream;
 namespace ruf = rogue::utilities::fileio;
