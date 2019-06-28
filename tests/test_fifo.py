@@ -41,7 +41,7 @@ def fifo_path():
     print("Generating Frames")
     for _ in range(FrameCount):
         prbsTx.genFrame(FrameSize)
-    time.sleep(5)
+    time.sleep(20)
 
     if prbsRx.getRxErrors() != 0:
         raise AssertionError('PRBS Frame errors detected! Errors = {}'.format(prbsRx.getRxErrors()))
