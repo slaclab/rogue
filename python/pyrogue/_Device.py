@@ -226,7 +226,7 @@ class Device(pr.Node,rim.Hub):
         The variables param is an Iterable of strings
         If variables=None, set interval for all variables that currently have nonzero pollInterval"""
         if variables is None:
-            variables = (x for x in self.variables.values() if x.pollInterval != 0)
+            variables = [k for k,v in self.variables.items() if v.pollInterval != 0]
 
         for x in variables:
             v = self.node(x).pollInterval = interval
