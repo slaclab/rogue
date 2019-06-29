@@ -147,18 +147,19 @@ void ris::TcpCore::acceptFrame ( ris::FramePtr frame ) {
    }
 
    flags = frame->getFlags();
-   memcpy(zmq_msg_data(&(msg[0])), &flags, 2);
+   std::memcpy(zmq_msg_data(&(msg[0])), &flags, 2);
 
    chan = frame->getChannel();
-   memcpy(zmq_msg_data(&(msg[1])), &chan,  1);
+   std::memcpy(zmq_msg_data(&(msg[1])), &chan,  1);
 
    err = frame->getError();
-   memcpy(zmq_msg_data(&(msg[2])), &err,   1);
+   std::memcpy(zmq_msg_data(&(msg[2])), &err,   1);
 
    // Copy data
+   ris::FrameIterator iter = frame->beginRead();
    data = (uint8_t *)zmq_msg_data(&(msg[3]));
-   std::copy(frame->beginRead(), frame->endRead(), data);
-    
+   ris::fromFrame(iter, frame->getPayload(), data);
+
    // Send data
    for (x=0; x < 4; x++) {
       if ( zmq_sendmsg(this->zmqPush_,&(msg[x]),(x==3)?0:ZMQ_SNDMORE) < 0 )
@@ -215,9 +216,9 @@ void ris::TcpCore::runThread() {
          }
 
          // Get fields
-         memcpy(&flags, zmq_msg_data(&(msg[0])), 2);
-         memcpy(&chan,  zmq_msg_data(&(msg[1])), 1);
-         memcpy(&err,   zmq_msg_data(&(msg[2])), 1);
+         std::memcpy(&flags, zmq_msg_data(&(msg[0])), 2);
+         std::memcpy(&chan,  zmq_msg_data(&(msg[1])), 1);
+         std::memcpy(&err,   zmq_msg_data(&(msg[2])), 1);
 
          // Get message info
          data = (uint8_t *)zmq_msg_data(&(msg[3]));
@@ -227,7 +228,8 @@ void ris::TcpCore::runThread() {
          frame = ris::Pool::acceptReq(size,false);
 
          // Copy data
-         std::copy(data,data+size,frame->beginWrite());
+         ris::FrameIterator iter = frame->beginWrite();
+         ris::toFrame(iter, size, data);
 
          // Set frame size and send
          frame->setPayload(size);

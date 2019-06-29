@@ -21,6 +21,7 @@
 #include <rogue/interfaces/memory/Constants.h>
 #include <rogue/GeneralError.h>
 #include <string.h>
+#include <cstring>
 #include <memory>
 #include <string.h>
 #include <inttypes.h>
@@ -142,10 +143,10 @@ void rim::TcpServer::runThread() {
             }
 
             // Get return fields
-            memcpy(&id,   zmq_msg_data(&(msg[0])), 4);
-            memcpy(&addr, zmq_msg_data(&(msg[1])), 8);
-            memcpy(&size, zmq_msg_data(&(msg[2])), 4);
-            memcpy(&type, zmq_msg_data(&(msg[3])), 4);
+            std::memcpy(&id,   zmq_msg_data(&(msg[0])), 4);
+            std::memcpy(&addr, zmq_msg_data(&(msg[1])), 8);
+            std::memcpy(&size, zmq_msg_data(&(msg[2])), 4);
+            std::memcpy(&type, zmq_msg_data(&(msg[3])), 4);
 
             // Write data is expected
             if ( (type == rim::Write) || (type == rim::Post) ) {
@@ -172,7 +173,7 @@ void rim::TcpServer::runThread() {
 
             // Result message
             zmq_msg_init_size(&(msg[5]),4);
-            memcpy(zmq_msg_data(&(msg[5])),&result, 4);
+            std::memcpy(zmq_msg_data(&(msg[5])),&result, 4);
 
             // Send message
             for (x=0; x < 6; x++) 
