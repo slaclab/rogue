@@ -145,11 +145,11 @@ class PollQueue(object):
                         # Push the updated entry back into the queue
                         heapq.heappush(self._pq, entry)
 
-                    try:
-                        for entry in blockEntries:
+                    for entry in blockEntries:
+                        try:
                             entry.block._checkTransaction()
-                    except Exception as e:
-                        self._log.exception(e)
+                        except Exception as e:
+                            self._log.exception(e)
 
     def _expiredEntries(self, time=None):
         """An iterator of all entries that expire by a given time. 
