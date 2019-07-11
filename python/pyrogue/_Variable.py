@@ -126,6 +126,15 @@ class BaseVariable(pr.Node):
 
     @pr.expose
     @property
+    def precision(self):
+        res = re.search(r':([0-9])\.([0-9]*)f',self._disp) 
+        try:
+            return res[2]
+        except:
+            return 3
+
+    @pr.expose
+    @property
     def mode(self):
         return self._mode
 
