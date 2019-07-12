@@ -23,6 +23,7 @@
 #include <rogue/interfaces/memory/Constants.h>
 #include <rogue/GeneralError.h>
 #include <string.h>
+#include <cstring>
 #include <memory>
 #include <string.h>
 #include <inttypes.h>
@@ -103,7 +104,6 @@ void rim::TcpClient::close() {
 
 //! Post a transaction
 void rim::TcpClient::doTransaction(rim::TransactionPtr tran) {
-   uint8_t * data;
    uint32_t  x;
    uint32_t  msgCnt;
    zmq_msg_t msg[5];
@@ -112,8 +112,6 @@ void rim::TcpClient::doTransaction(rim::TransactionPtr tran) {
    uint32_t  size;
    uint32_t  type;
 
-   rim::Transaction::iterator tIter;
-
    rogue::GilRelease noGil;
    std::lock_guard<std::mutex> block(bridgeMtx_);
    rim::TransactionLockPtr lock = tran->lock();
@@ -121,29 +119,28 @@ void rim::TcpClient::doTransaction(rim::TransactionPtr tran) {
    // ID message
    id = tran->id();
    zmq_msg_init_size(&(msg[0]),4);
-   memcpy(zmq_msg_data(&(msg[0])), &id, 4);
+   std::memcpy(zmq_msg_data(&(msg[0])), &id, 4);
 
    // Addr message
    addr = tran->address();
    zmq_msg_init_size(&(msg[1]),8);
-   memcpy(zmq_msg_data(&(msg[1])), &addr, 8);
+   std::memcpy(zmq_msg_data(&(msg[1])), &addr, 8);
 
    // Size message
    size = tran->size();
    zmq_msg_init_size(&(msg[2]),4);
-   memcpy(zmq_msg_data(&(msg[2])), &size, 4);
+   std::memcpy(zmq_msg_data(&(msg[2])), &size, 4);
 
    // Type message
    type = tran->type();
    zmq_msg_init_size(&(msg[3]),4);
-   memcpy(zmq_msg_data(&(msg[3])), &type, 4);
+   std::memcpy(zmq_msg_data(&(msg[3])), &type, 4);
 
    // Write transaction
    if ( type == rim::Write || type == rim::Post ) {
       msgCnt = 5;
       zmq_msg_init_size(&(msg[4]),size);
-      data = (uint8_t *) zmq_msg_data(&(msg[4]));
-      std::copy(tran->begin(), tran->end(), data);
+      std::memcpy(zmq_msg_data(&(msg[4])), tran->begin(), size);
    }
 
    // Read transaction
@@ -167,9 +164,7 @@ void rim::TcpClient::doTransaction(rim::TransactionPtr tran) {
 
 //! Run thread
 void rim::TcpClient::runThread() {
-   rim::Transaction::iterator tIter;
    rim::TransactionPtr tran;
-   uint8_t * data;
    bool      err;
    uint64_t  more;
    size_t    moreSize;
@@ -218,11 +213,11 @@ void rim::TcpClient::runThread() {
             }
 
             // Get return fields
-            memcpy(&id,     zmq_msg_data(&(msg[0])), 4);
-            memcpy(&addr,   zmq_msg_data(&(msg[1])), 8);
-            memcpy(&size,   zmq_msg_data(&(msg[2])), 4);
-            memcpy(&type,   zmq_msg_data(&(msg[3])), 4);
-            memcpy(&result, zmq_msg_data(&(msg[5])), 4);
+            std::memcpy(&id,     zmq_msg_data(&(msg[0])), 4);
+            std::memcpy(&addr,   zmq_msg_data(&(msg[1])), 8);
+            std::memcpy(&size,   zmq_msg_data(&(msg[2])), 4);
+            std::memcpy(&type,   zmq_msg_data(&(msg[3])), 4);
+            std::memcpy(&result, zmq_msg_data(&(msg[5])), 4);
 
             // Find Transaction
             if ( (tran = getTransaction(id)) == NULL ) {
@@ -240,7 +235,6 @@ void rim::TcpClient::runThread() {
                for (x=0; x < msgCnt; x++) zmq_msg_close(&(msg[x]));
                continue; // while (1)
             }
-            tIter = tran->begin();
 
             // Double check transaction
             if ( (addr != tran->address()) || (size != tran->size()) || (type != tran->type()) ) {
@@ -258,8 +252,7 @@ void rim::TcpClient::runThread() {
                   for (x=0; x < msgCnt; x++) zmq_msg_close(&(msg[x]));
                   continue; // while (1)
                }
-               data = (uint8_t *)zmq_msg_data(&(msg[4]));
-               std::copy(data,data+size,tIter);
+               std::memcpy(tran->begin(),zmq_msg_data(&(msg[4])), size);
             }
             tran->done(result);
             bridgeLog_->debug("Response for transaction id=%" PRIu32 ", addr=0x%" PRIx64

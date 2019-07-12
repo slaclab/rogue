@@ -221,7 +221,15 @@ class Device(pr.Node,rim.Hub):
             lv = pr.LinkVariable(name=name, value='', dependencies=varList, linkedGet=linkedGet, linkedSet=linkedSet, **kwargs)
             self.add(lv)
 
+    def setPollInterval(self, interval, variables=None):
+        """Set the poll interval for a group of variables.
+        The variables param is an Iterable of strings
+        If variables=None, set interval for all variables that currently have nonzero pollInterval"""
+        if variables is None:
+            variables = [k for k,v in self.variables.items() if v.pollInterval != 0]
 
+        for x in variables:
+            v = self.node(x).pollInterval = interval
 
     def hideVariables(self, hidden, variables=None):
         """Hide a list of Variables (or Variable names)"""
@@ -364,9 +372,9 @@ class Device(pr.Node,rim.Hub):
             if isinstance(data, bytearray):
                 ldata = data
             elif isinstance(data, collections.Iterable):
-                ldata = b''.join(base.mask(base.toBytes(word, wordBitSize), wordBitSize) for word in data)
+                ldata = b''.join(base.toBytes(word, wordBitSize) for word in data)
             else:
-                ldata = base.mask(base.toBytes(data, wordBitSize), wordBitSize)
+                ldata = base.toBytes(data, wordBitSize)
 
         else:
             if data is not None:
@@ -555,9 +563,9 @@ class ArrayDevice(Device):
             if 'name' in args:
                 name = args.pop('name')
             else:
-                name = arrayClass.__name__
+                name = f'{arrayClass.__name__}[{i}]'
             self.add(arrayClass(
-                name=f'{name}[{i:d}]',
+                name=name,
                 offset=i*stride,
                 **args))
                 
@@ -586,6 +594,7 @@ class DataWriter(Device):
             name='bufferSize',
             mode='RW',
             value=0,
+            typeStr='UInt32',
             localSet=self._setBufferSize,
             description='File buffering size. Enables caching of data before call to file system.'))
 
@@ -593,6 +602,7 @@ class DataWriter(Device):
             name='maxFileSize',
             mode='RW',
             value=0,
+            typeStr='UInt64',
             localSet=self._setMaxFileSize,
             description='Maximum size for an individual file. Setting to a non zero splits the run data into multiple files.'))
 
@@ -600,6 +610,7 @@ class DataWriter(Device):
             name='fileSize',
             mode='RO',
             value=0,
+            typeStr='UInt64',
             pollInterval=1,
             localGet=self._getFileSize,
             description='Size of data files(s) for current open session in bytes.'))
@@ -608,6 +619,7 @@ class DataWriter(Device):
             name='frameCount',
             mode='RO',
             value=0,
+            typeStr='UInt32',
             pollInterval=1,
             localGet=self._getFrameCount,
             description='Frame in data file(s) for current open session in bytes.'))
@@ -691,6 +703,7 @@ class RunControl(Device):
         self.add(pr.LocalVariable(
             name='runCount',
             value=0,
+            typeStr='UInt32',
             mode='RO',
             pollInterval=1,
             description='Run Counter updated by run thread.'))

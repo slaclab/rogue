@@ -265,7 +265,7 @@ void rim::Master::copyBits(boost::python::object dst, uint32_t dstLsb, boost::py
 
       // Aligned
       if ( (srcBit == 0) && (dstBit == 0) && (bytes > 0) ) {
-         memcpy(&(dstData[dstByte]),&(srcData[srcByte]),bytes);
+         std::memcpy(&(dstData[dstByte]),&(srcData[srcByte]),bytes);
          dstByte += bytes;
          srcByte += bytes;
          rem -= (bytes * 8);

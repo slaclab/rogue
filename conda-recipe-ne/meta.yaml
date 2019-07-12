@@ -1,5 +1,5 @@
 package: 
-  name: rogue
+  name: rogue-ne
   version: {{ GIT_DESCRIBE_TAG }}
 
 source:
@@ -20,7 +20,6 @@ requirements:
      - make
      - bzip2
      - zeromq
-     - epics-base=3.14.12.8
      - git
 
    run:
@@ -29,10 +28,7 @@ requirements:
      - git-lfs
      - ipython
      - boost
-     - cmake
-     - make
      - bzip2
-     - epics-base=3.14.12.8
      - zeromq
      - pyyaml
      - jsonpickle
@@ -41,7 +37,6 @@ requirements:
      - click
      - numpy
      - pyqt
-     - pyepics
 
 about:
    home: https://github.com/slaclab/rogue
