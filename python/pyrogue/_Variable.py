@@ -48,6 +48,10 @@ class BaseVariable(pr.Node):
                  hidden=False,
                  minimum=None,
                  maximum=None,
+                 lowWarning=None,
+                 lowAlarm=None,
+                 highWarning=None,
+                 highAlarm=None,
                  pollInterval=0,
                  typeStr='Unknown',
                  offset=0
@@ -56,8 +60,12 @@ class BaseVariable(pr.Node):
         # Public Attributes
         self._mode          = mode
         self._units         = units
-        self._minimum       = minimum # For base='range'
-        self._maximum       = maximum # For base='range'
+        self._minimum       = minimum
+        self._maximum       = maximum
+        self._lowWarning    = lowWarning
+        self._lowAlarm      = lowAlarm
+        self._highWarning   = highWarning
+        self._highAlarm     = highAlarm
         self._default       = value
         self._block         = None
         self._pollInterval  = pollInterval
@@ -152,6 +160,26 @@ class BaseVariable(pr.Node):
     @property
     def maximum(self):
         return self._maximum
+
+    @pr.expose
+    @property
+    def lowWarning(self):
+        return self._lowWarning
+
+    @pr.expose
+    @property
+    def lowAlarm(self):
+        return self._lowAlarm
+
+    @pr.expose
+    @property
+    def highWarning(self):
+        return self._highWarning
+
+    @pr.expose
+    @property
+    def highAlarm(self):
+        return self._highAlarm
 
     def addDependency(self, dep):
         if dep not in self.__dependencies:
