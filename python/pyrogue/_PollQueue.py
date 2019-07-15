@@ -152,7 +152,6 @@ class PollQueue(object):
                         except Exception as e:
                             self._log.exception(e)
 
-                    print(f'Polled {len(blockEntries)} blocks')
 
     def _expiredEntries(self, time=None):
         """An iterator of all entries that expire by a given time. 
