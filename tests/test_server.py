@@ -19,6 +19,9 @@ import rogue.interfaces.stream
 import test_device
 import time
 import rogue
+import pyrogue.protocols.epics
+
+#rogue.Logging.setFilter('pyrogue.epicsV3.Value',rogue.Logging.Debug)
 
 class DummyTree(pyrogue.Root):
 
@@ -36,6 +39,9 @@ class DummyTree(pyrogue.Root):
         # Set pyroHost to the address of a network interface to specify which nework to run on
         # set pyroNs to the address of a standalone nameserver (startPyrorNs.py)
         self.start(timeout=2.0, pollEn=True, zmqPort=9099)
+
+        self.epics=pyrogue.protocols.epics.EpicsCaServer(base="test", root=self)
+        self.epics.start()
 
 if __name__ == "__main__":
 
