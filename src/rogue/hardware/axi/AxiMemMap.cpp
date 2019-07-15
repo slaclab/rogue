@@ -22,6 +22,7 @@
 #include <rogue/GeneralError.h>
 #include <rogue/GilRelease.h>
 #include <memory>
+#include <cstring>
 #include <thread>
 #include <stdio.h>
 #include <unistd.h>
@@ -80,12 +81,14 @@ void rha::AxiMemMap::doTransaction(rim::TransactionPtr tran) {
 
    while ( (ret == 0) && (count != tran->size()) ) {
       if (tran->type() == rim::Write || tran->type() == rim::Post) {
-         std::copy(it,it+dataSize,ptr);
+
+         // Assume transaction has a contigous memory block
+         std::memcpy(ptr,it,dataSize);
          ret = dmaWriteRegister(fd_,tran->address()+count,data);
       }
       else {
          ret = dmaReadRegister(fd_,tran->address()+count,&data);
-         std::copy(ptr,ptr+dataSize,it);
+         std::memcpy(it,ptr,dataSize);
       }
       count += dataSize;
       it += dataSize;

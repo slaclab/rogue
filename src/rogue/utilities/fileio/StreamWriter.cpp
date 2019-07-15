@@ -46,6 +46,7 @@
 #include <unistd.h>
 #include <sys/time.h>
 #include <string.h>
+#include <cstring>
 
 namespace ris = rogue::interfaces::stream;
 namespace ruf = rogue::utilities::fileio;
@@ -283,7 +284,7 @@ void ruf::StreamWriter::intWrite(void *data, uint32_t size) {
 
    // Append to buffer if non zero
    else if ( buffSize_ > 0 && size > 0 ) {
-      memcpy(buffer_ + currBuffer_, data, size);
+      std::memcpy(buffer_ + currBuffer_, data, size);
       currBuffer_ += size;
    }
 }

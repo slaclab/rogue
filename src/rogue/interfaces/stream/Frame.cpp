@@ -327,7 +327,6 @@ ris::Frame::iterator ris::Frame::endWrite() {
 //! Read up to count bytes from frame, starting from offset. Python version.
 void ris::Frame::readPy ( boost::python::object p, uint32_t offset ) {
    Py_buffer pyBuf;
-   uint8_t * data;
 
    if ( PyObject_GetBuffer(p.ptr(),&pyBuf,PyBUF_SIMPLE) < 0 ) 
       throw(rogue::GeneralError("Frame::readPy","Python Buffer Error In Frame"));
@@ -341,17 +340,13 @@ void ris::Frame::readPy ( boost::python::object p, uint32_t offset ) {
    }
 
    ris::Frame::iterator beg = this->beginRead() + offset;
-   ris::Frame::iterator end = this->beginRead() + (offset + count);
-
-   data = (uint8_t *)pyBuf.buf;
-   std::copy(beg,end,data);
+   ris::fromFrame(beg, count, (uint8_t *)pyBuf.buf);
    PyBuffer_Release(&pyBuf);
 }
 
 //! Write python buffer to frame, starting at offset. Python Version
 void ris::Frame::writePy ( boost::python::object p, uint32_t offset ) {
    Py_buffer pyBuf;
-   uint8_t * data;
 
    if ( PyObject_GetBuffer(p.ptr(),&pyBuf,PyBUF_CONTIG) < 0 )
       throw(rogue::GeneralError("Frame::writePy","Python Buffer Error In Frame"));
@@ -365,10 +360,7 @@ void ris::Frame::writePy ( boost::python::object p, uint32_t offset ) {
    }
 
    ris::Frame::iterator beg = this->beginWrite() + offset;
-
-   data = (uint8_t *)pyBuf.buf;
-   std::copy(data,data+count,beg);
-
+   ris::toFrame(beg, count, (uint8_t *)pyBuf.buf); 
    minPayload(offset+count);
    PyBuffer_Release(&pyBuf);
 }
