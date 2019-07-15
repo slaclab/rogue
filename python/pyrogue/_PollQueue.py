@@ -44,6 +44,7 @@ class PollQueue(object):
         self._lock = threading.RLock()
         self._update = threading.Condition()
         self._run = True
+        self._pause = True
         self._root = root
         self._pollThread = threading.Thread(target=self._poll)
 
@@ -140,7 +141,7 @@ class PollQueue(object):
                             self._log.exception(e)
 
                         # Update the entry with new read time
-                        entry.readTime += entry.interval
+                        entry.readTime = now + entry.interval
                         entry.count = next(self._counter)
                         # Push the updated entry back into the queue
                         heapq.heappush(self._pq, entry)
@@ -150,6 +151,8 @@ class PollQueue(object):
                             entry.block._checkTransaction()
                         except Exception as e:
                             self._log.exception(e)
+
+                    print(f'Polled {len(blockEntries)} blocks')
 
     def _expiredEntries(self, time=None):
         """An iterator of all entries that expire by a given time. 
@@ -181,16 +184,17 @@ class PollQueue(object):
             self._run = False
             self._update.notify()
 
-    def pause(self):
-        with self._lock:
-            self._pause = True
+    def pause(self, value):
+        if value is True:        
+            with self._lock:
+                self._pause = True
+        else:
+            with self._lock, self._update:
+                self._pause = False
+                self._update.notify()
 
-    def unpause(self):
-        with self._lock, self._update:
-            self._pause = False
-            self._update.notify()
 
     def paused(self):
         with self._lock:
-            return _pause
+            return self._pause
             
