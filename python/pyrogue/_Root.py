@@ -308,6 +308,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
             # After with is done
             self._updateQueue.put(False)
 
+    @pr.expose
     def waitOnUpdate(self):
         """
         Wait until all update queue items have been processed.
