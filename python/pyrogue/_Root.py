@@ -155,7 +155,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         self.add(pr.LocalCommand(name='Exit', function=self._exit, hidden=False,
                                  description='Exit the server application'))
 
-    def start(self, timeout=1.0, initRead=False, initWrite=False, pollEn=True, zmqPort=9099):
+    def start(self, timeout=1.0, initRead=False, initWrite=False, pollEn=True, zmqPort=None):
         """Setup the tree. Start the polling thread."""
 
         if self._running:
