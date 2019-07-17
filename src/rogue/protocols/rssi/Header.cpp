@@ -20,16 +20,19 @@
 **/
 #include <rogue/protocols/rssi/Header.h>
 #include <rogue/GeneralError.h>
-#include <boost/make_shared.hpp>
+#include <memory>
 #include <rogue/GilRelease.h>
 #include <stdint.h>
 #include <iomanip>
 #include <rogue/interfaces/stream/Buffer.h>
 #include <arpa/inet.h>
+#include <iostream>
+#include <sstream>
+#include <string.h>
+#include <sys/time.h>
 
 namespace rpr = rogue::protocols::rssi;
 namespace ris = rogue::interfaces::stream;
-namespace bp  = boost::python;
 
 //! Set 16-bit uint value
 void rpr::Header::setUInt16 ( uint8_t *data, uint8_t byte, uint16_t value) {
@@ -66,18 +69,12 @@ uint16_t rpr::Header::compSum (uint8_t *data, uint8_t size) {
 
 //! Create
 rpr::HeaderPtr rpr::Header::create(ris::FramePtr frame) {
-   rpr::HeaderPtr r = boost::make_shared<rpr::Header>(frame);
+   rpr::HeaderPtr r = std::make_shared<rpr::Header>(frame);
    return(r);
-}
-
-void rpr::Header::setup_python() {
-   // Nothing to do
 }
 
 //! Creator
 rpr::Header::Header(ris::FramePtr frame) {
-   if ( frame->isEmpty() ) 
-      throw(rogue::GeneralError("Header::Header","Frame must not be empty!"));
    frame_ = frame;
    count_ = 0;
 
@@ -112,6 +109,8 @@ ris::FramePtr rpr::Header::getFrame() {
 //! Verify header contents
 bool rpr::Header::verify() {
    uint8_t size;
+
+   if ( frame_->isEmpty() ) return(false);
 
    ris::BufferPtr buff = *(frame_->beginBuffer());
    uint8_t * data = buff->begin();
@@ -152,6 +151,9 @@ bool rpr::Header::verify() {
 //! Update checksum, set tx time and increment tx count
 void rpr::Header::update() {
    uint8_t size;
+
+   if ( frame_->isEmpty() )
+      throw(rogue::GeneralError("Header::update","Frame is empty!"));
 
    ris::BufferPtr buff = *(frame_->beginBuffer());
    uint8_t * data = buff->begin();
@@ -199,8 +201,8 @@ void rpr::Header::update() {
 }
 
 //! Get time
-struct timeval * rpr::Header::getTime() {
-   return(&time_);
+struct timeval & rpr::Header::getTime() {
+   return(time_);
 }
 
 //! Get Count

@@ -8,6 +8,7 @@
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
 import sys
+import os
 
 MIN_PYTHON = (3,6)
 if sys.version_info < MIN_PYTHON:
@@ -22,6 +23,38 @@ from pyrogue._Device    import *
 from pyrogue._Memory    import *
 from pyrogue._Root      import *
 from pyrogue._PollQueue import *
+from pyrogue._Virtual   import *
+
+def addLibraryPath(path):
+    """
+    Append the past string or list of strings to the python library path.
+    Passed strings can either be relative: ../path/to/library
+    or absolute: /path/to/library
+    """
+    base = os.path.dirname(sys.argv[0])
+
+    # If script was not started with ./
+    if base == '': base = '.'
+
+    # Allow either a single string or list to be passed
+    if not isinstance(path,list):
+        path = [path]
+
+    for p in path:
+
+        # Full path
+        if p[0] == '/':
+            np = p
+
+        # Relative path
+        else:
+            np = base + '/' + p
+        
+        # Verify directory exists and is readable
+        if not os.access(np,os.R_OK):
+            raise Exception("Library path {} does not exist or is not readable".format(np))
+        sys.path.append(np)
+
 
 def streamConnect(source, dest):
     """
@@ -106,27 +139,19 @@ def busConnect(source,dest):
     """
 
     # Is object a native master or wrapped?
-    if isinstance(source,rogue.interfaces.stream.Master):
+    if isinstance(source,rogue.interfaces.memory.Master):
         master = source
     else:
         master = source._getMemoryMaster()
 
     # Is object a native slave or wrapped?
-    if isinstance(dest,rogue.interfaces.stream.Slave):
+    if isinstance(dest,rogue.interfaces.memory.Slave):
         slave = dest
     else:
         slave = dest._getMemorySlave()
 
     master._setSlave(slave)
 
-def genBaseList(cls):
-    ret = str(cls)
-
-    for l in cls.__bases__:
-        if l is not object:
-            ret += genBaseList(l)
-
-    return ret
 
 # Add __version__ attribute with the module version number
 __version__ = rogue.Version.pythonVersion()

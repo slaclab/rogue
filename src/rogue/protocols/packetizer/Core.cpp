@@ -23,41 +23,52 @@
 #include <rogue/protocols/packetizer/Application.h>
 #include <rogue/protocols/packetizer/ControllerV1.h>
 #include <rogue/GeneralError.h>
-#include <boost/make_shared.hpp>
+#include <memory>
 #include <rogue/GilRelease.h>
 
 namespace rpp = rogue::protocols::packetizer;
 namespace ris = rogue::interfaces::stream;
+
+#ifndef NO_PYTHON
+#include <boost/python.hpp>
 namespace bp  = boost::python;
+#endif
 
 //! Class creation
-rpp::CorePtr rpp::Core::create () {
-   rpp::CorePtr r = boost::make_shared<rpp::Core>();
+rpp::CorePtr rpp::Core::create (bool enSsi) {
+   rpp::CorePtr r = std::make_shared<rpp::Core>(enSsi);
    return(r);
 }
 
 void rpp::Core::setup_python() {
+#ifndef NO_PYTHON
 
-   bp::class_<rpp::Core, rpp::CorePtr, boost::noncopyable >("Core",bp::init<>())
+   bp::class_<rpp::Core, rpp::CorePtr, boost::noncopyable >("Core",bp::init<bool>())
       .def("transport",      &rpp::Core::transport)
       .def("application",    &rpp::Core::application)
       .def("getDropCount",   &rpp::Core::getDropCount)
 
    ;
-
+#endif
 }
 
 //! Creator
-rpp::Core::Core () {
+rpp::Core::Core (bool enSsi) {
    tran_  = rpp::Transport::create();
-   cntl_  = rpp::ControllerV1::create(tran_,app_);
+   cntl_  = rpp::ControllerV1::create(enSsi,tran_,app_);
 
    tran_->setController(cntl_);
 }
 
 //! Destructor
-rpp::Core::~Core() { }
+rpp::Core::~Core() { 
+   uint32_t x;
 
+   tran_.reset();
+   cntl_.reset();
+
+   for(x=0; x < 256; x++) app_[x].reset();
+}
 
 //! Get transport interface
 rpp::TransportPtr rpp::Core::transport() {

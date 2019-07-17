@@ -22,7 +22,7 @@
 #define __ROGUE_PROTOCOLS_EPICSV3_VALUE_H__
 
 #include <boost/python.hpp>
-#include <boost/thread.hpp>
+#include <thread>
 #include <casdef.h>
 #include <gdd.h>
 #include <gddApps.h>
@@ -34,7 +34,6 @@ namespace rogue {
       namespace epicsV3 {
 
          class Pv;
-         class Server;
 
          class Value {
             protected:
@@ -52,7 +51,7 @@ namespace rogue {
                std::vector<std::string> enums_;
                rogue::protocols::epicsV3::Pv * pv_;
 
-               rogue::LoggingPtr log_;
+               std::shared_ptr<rogue::Logging> log_;
 
                std::string units_;
                uint16_t    precision_;
@@ -67,7 +66,7 @@ namespace rogue {
 
                gddAppFuncTable<rogue::protocols::epicsV3::Value> funcTable_;
 
-               boost::mutex mtx_;
+               std::mutex mtx_;
 
                void initGdd(std::string typeStr, bool isEnum, uint32_t count );
 
@@ -91,10 +90,8 @@ namespace rogue {
 
                void setPv(rogue::protocols::epicsV3::Pv * pv);
 
-               void clrPv();
-
                rogue::protocols::epicsV3::Pv * getPv();
-               
+
                //---------------------------------------
                // EPICS Interface
                //---------------------------------------
@@ -139,7 +136,7 @@ namespace rogue {
          };
 
          // Convienence
-         typedef boost::shared_ptr<rogue::protocols::epicsV3::Value> ValuePtr;
+         typedef std::shared_ptr<rogue::protocols::epicsV3::Value> ValuePtr;
 
          // Destructor
          template<typename T> 

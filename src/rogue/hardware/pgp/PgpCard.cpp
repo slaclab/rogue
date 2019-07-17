@@ -29,16 +29,21 @@
 #include <rogue/interfaces/stream/FrameLock.h>
 #include <rogue/interfaces/stream/Buffer.h>
 #include <rogue/GeneralError.h>
-#include <boost/make_shared.hpp>
+#include <memory>
 #include <rogue/GilRelease.h>
+#include <stdlib.h>
 
 namespace rhp = rogue::hardware::pgp;
 namespace ris = rogue::interfaces::stream;
+
+#ifndef NO_PYTHON
+#include <boost/python.hpp>
 namespace bp  = boost::python;
+#endif
 
 //! Class creation
 rhp::PgpCardPtr rhp::PgpCard::create (std::string path, uint32_t lane, uint32_t vc) {
-   rhp::PgpCardPtr r = boost::make_shared<rhp::PgpCard>(path,lane,vc);
+   rhp::PgpCardPtr r = std::make_shared<rhp::PgpCard>(path,lane,vc);
    return(r);
 }
 
@@ -48,10 +53,13 @@ rhp::PgpCard::PgpCard ( std::string path, uint32_t lane, uint32_t vc ) {
 
    lane_       = lane;
    vc_         = vc;
-   timeout_    = 10000000;
    zeroCopyEn_ = true;
 
+   rogue::defaultTimeout(timeout_);
+
    rogue::GilRelease noGil;
+
+   log_ = rogue::Logging::create("hardware.PgpCard");
 
    if ( (fd_ = ::open(path.c_str(), O_RDWR)) < 0 ) 
       throw(rogue::GeneralError::open("PgpCard::PgpCard",path.c_str()));
@@ -71,13 +79,14 @@ rhp::PgpCard::PgpCard ( std::string path, uint32_t lane, uint32_t vc ) {
    rawBuff_ = dmaMapDma(fd_,&bCount_,&bSize_);
 
    // Start read thread
-   thread_ = new boost::thread(boost::bind(&rhp::PgpCard::runThread, this));
+   threadEn_ = true;
+   thread_ = new std::thread(&rhp::PgpCard::runThread, this);
 }
 
 //! Destructor
 rhp::PgpCard::~PgpCard() {
    rogue::GilRelease noGil;
-   thread_->interrupt();
+   threadEn_ = false;
    thread_->join();
 
    if ( rawBuff_ != NULL ) dmaUnMapDma(fd_, rawBuff_);
@@ -86,7 +95,11 @@ rhp::PgpCard::~PgpCard() {
 
 //! Set timeout for frame transmits in microseconds
 void rhp::PgpCard::setTimeout(uint32_t timeout) {
-   timeout_ = timeout;
+   if (timeout != 0) {
+      div_t divResult = div(timeout,1000000);
+      timeout_.tv_sec  = divResult.quot;
+      timeout_.tv_usec = divResult.rem;
+   }
 }
 
 //! Enable / disable zero copy
@@ -188,12 +201,11 @@ ris::FramePtr rhp::PgpCard::acceptReq ( uint32_t size, bool zeroCopyEn) {
             FD_SET(fd_,&fds);
 
             // Setup select timeout
-            tout.tv_sec=(timeout_>0)?(timeout_ / 1000000):0;
-            tout.tv_usec=(timeout_>0)?(timeout_ % 1000000):10000;
+            tout = timeout_;
 
             if ( select(fd_+1,NULL,&fds,NULL,&tout) <= 0 ) {
-               if ( timeout_ > 0 ) throw(rogue::GeneralError::timeout("PgpCard::acceptReq",timeout_));
-               res = 0;
+               log_->timeout("PgpCard::acceptReq", timeout_);
+               res = -1;
             }
             else {
                // Attempt to get index.
@@ -265,11 +277,10 @@ void rhp::PgpCard::acceptFrame ( ris::FramePtr frame ) {
             FD_SET(fd_,&fds);
 
             // Setup select timeout
-            tout.tv_sec=(timeout_>0)?(timeout_ / 1000000):0;
-            tout.tv_usec=(timeout_>0)?(timeout_ % 1000000):10000;
+            tout = timeout_;
 
             if ( select(fd_+1,NULL,&fds,NULL,&tout) <= 0 ) {
-               if ( timeout_ > 0) throw(rogue::GeneralError("PgpCard::acceptFrame","PGP Write Call Failed. Buffer Not Available!!!!"));
+               log_->timeout("PgpCard::acceptFrame", timeout_);
                res = 0;
             }
             else {
@@ -297,7 +308,8 @@ void rhp::PgpCard::retBuffer(uint8_t * data, uint32_t meta, uint32_t size) {
       // Device is open and buffer is not stale
       // Bit 30 indicates buffer has already been returned to hardware
       if ( (fd_ >= 0) && ((meta & 0x40000000) == 0) ) {
-         dmaRetIndex(fd_,meta & 0x3FFFFFFF); // Return to hardware
+         if ( dmaRetIndex(fd_,meta & 0x3FFFFFFF) < 0 ) 
+            throw(rogue::GeneralError("PgpCard::retBuffer","AXIS Return Buffer Call Failed!!!!"));
       }
       decCounter(size);
    }
@@ -321,64 +333,67 @@ void rhp::PgpCard::runThread() {
    // Preallocate empty frame
    frame = ris::Frame::create();
 
-   try {
+   log_->logThreadId();
 
-      while(1) {
+   while(threadEn_) {
 
-         // Setup fds for select call
-         FD_ZERO(&fds);
-         FD_SET(fd_,&fds);
+      // Setup fds for select call
+      FD_ZERO(&fds);
+      FD_SET(fd_,&fds);
 
-         // Setup select timeout
-         tout.tv_sec  = 0;
-         tout.tv_usec = 100;
+      // Setup select timeout
+      tout.tv_sec  = 0;
+      tout.tv_usec = 100;
 
-         // Select returns with available buffer
-         if ( select(fd_+1,&fds,NULL,NULL,&tout) > 0 ) {
+      // Select returns with available buffer
+      if ( select(fd_+1,&fds,NULL,NULL,&tout) > 0 ) {
 
-            // Zero copy buffers were not allocated or zero copy is disabled
-            if ( zeroCopyEn_ == false || rawBuff_ == NULL ) {
+         // Zero copy buffers were not allocated or zero copy is disabled
+         if ( zeroCopyEn_ == false || rawBuff_ == NULL ) {
 
-               // Allocate a buffer
-               buff = allocBuffer(bSize_,NULL);
+            // Allocate a buffer
+            buff = allocBuffer(bSize_,NULL);
 
-               // Attempt read, lane and vc not needed since only one lane/vc is open
-               res = dmaRead(fd_, buff->begin(), buff->getAvailable(), &flags, &error, NULL);
+            // Attempt read, lane and vc not needed since only one lane/vc is open
+            res = dmaRead(fd_, buff->begin(), buff->getAvailable(), &flags, &error, NULL);
+            cont = pgpGetCont(flags);
+         }
+
+         // Zero copy read
+         else {
+
+            // Attempt read, lane and vc not needed since only one lane/vc is open
+            if ((res = dmaReadIndex(fd_, &meta, &flags, &error, NULL)) > 0) {
                cont = pgpGetCont(flags);
-            }
 
-            // Zero copy read
-            else {
-
-               // Attempt read, lane and vc not needed since only one lane/vc is open
-               if ((res = dmaReadIndex(fd_, &meta, &flags, &error, NULL)) > 0) {
-                  cont = pgpGetCont(flags);
-
-                  // Allocate a buffer, Mark zero copy meta with bit 31 set, lower bits are index
-                  buff = createBuffer(rawBuff_[meta],0x80000000 | meta,bSize_,bSize_);
-               }
-            }
-
-            // Read was successfull
-            if ( res > 0 ) {
-               buff->setPayload(res);
-               frame->setError(error | frame->getError());
-               frame->appendBuffer(buff);
-               buff.reset();
-
-               // If continue flag is not set, push frame and get a new empty frame
-               if ( cont == 0 ) {
-                  sendFrame(frame);
-                  frame = ris::Frame::create();
-               }
+               // Allocate a buffer, Mark zero copy meta with bit 31 set, lower bits are index
+               buff = createBuffer(rawBuff_[meta],0x80000000 | meta,bSize_,bSize_);
             }
          }
-         boost::this_thread::interruption_point();
+
+         // Return of -1 is bad
+         if ( res < 0 )
+            throw(rogue::GeneralError("PgpCard::runThread","DMA Interface Failure!"));
+
+         // Read was successfull
+         if ( res > 0 ) {
+            buff->setPayload(res);
+            frame->setError(error | frame->getError());
+            frame->appendBuffer(buff);
+            buff.reset();
+
+            // If continue flag is not set, push frame and get a new empty frame
+            if ( cont == 0 ) {
+               sendFrame(frame);
+               frame = ris::Frame::create();
+            }
+         }
       }
-   } catch (boost::thread_interrupted&) { }
+   }
 }
 
 void rhp::PgpCard::setup_python () {
+#ifndef NO_PYTHON
 
    bp::class_<rhp::PgpCard, rhp::PgpCardPtr, bp::bases<ris::Master,ris::Slave>, boost::noncopyable >("PgpCard",bp::init<std::string,uint32_t,uint32_t>())
       .def("getInfo",        &rhp::PgpCard::getInfo)
@@ -396,6 +411,6 @@ void rhp::PgpCard::setup_python () {
 
    bp::implicitly_convertible<rhp::PgpCardPtr, ris::MasterPtr>();
    bp::implicitly_convertible<rhp::PgpCardPtr, ris::SlavePtr>();
-
+#endif
 }
 

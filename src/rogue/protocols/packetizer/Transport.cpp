@@ -23,27 +23,32 @@
 #include <rogue/protocols/packetizer/Controller.h>
 #include <rogue/protocols/packetizer/Transport.h>
 #include <rogue/GeneralError.h>
-#include <boost/make_shared.hpp>
+#include <memory>
 #include <rogue/GilRelease.h>
 #include <rogue/Logging.h>
-#include <sys/syscall.h>
 
 namespace rpp = rogue::protocols::packetizer;
 namespace ris = rogue::interfaces::stream;
+
+#ifndef NO_PYTHON
+#include <boost/python.hpp>
 namespace bp  = boost::python;
+#endif
 
 //! Class creation
 rpp::TransportPtr rpp::Transport::create () {
-   rpp::TransportPtr r = boost::make_shared<rpp::Transport>();
+   rpp::TransportPtr r = std::make_shared<rpp::Transport>();
    return(r);
 }
 
 void rpp::Transport::setup_python() {
+#ifndef NO_PYTHON
 
    bp::class_<rpp::Transport, rpp::TransportPtr, bp::bases<ris::Master,ris::Slave>, boost::noncopyable >("Transport",bp::init<>());
 
    bp::implicitly_convertible<rpp::TransportPtr, ris::MasterPtr>();
    bp::implicitly_convertible<rpp::TransportPtr, ris::SlavePtr>();
+#endif
 }
 
 //! Creator
@@ -51,7 +56,8 @@ rpp::Transport::Transport () { }
 
 //! Destructor
 rpp::Transport::~Transport() { 
-   thread_->interrupt();
+   threadEn_ = false;
+   cntl_->stopQueue();
    thread_->join();
 }
 
@@ -60,7 +66,8 @@ void rpp::Transport::setController( rpp::ControllerPtr cntl ) {
    cntl_ = cntl;
 
    // Start read thread
-   thread_ = new boost::thread(boost::bind(&rpp::Transport::runThread, this));
+   threadEn_ = true;
+   thread_ = new std::thread(&rpp::Transport::runThread, this);
 }
 
 //! Accept a frame from master
@@ -70,13 +77,12 @@ void rpp::Transport::acceptFrame ( ris::FramePtr frame ) {
 
 //! Thread background
 void rpp::Transport::runThread() {
+   ris::FramePtr frame;
    Logging log("packetizer.Transport");
-   log.info("PID=%i, TID=%li",getpid(),syscall(SYS_gettid));
+   log.logThreadId();
 
-   try {
-      while(1) {
-         sendFrame(cntl_->transportTx());
-      }
-   } catch (boost::thread_interrupted&) { }
+   while(threadEn_) {
+      if ( (frame=cntl_->transportTx()) != NULL ) sendFrame(frame);
+   }
 }
 

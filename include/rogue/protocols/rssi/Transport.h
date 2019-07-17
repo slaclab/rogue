@@ -22,7 +22,6 @@
 #define __ROGUE_PROTOCOLS_RSSI_TRANSPORT_H__
 #include <rogue/interfaces/stream/Master.h>
 #include <rogue/interfaces/stream/Slave.h>
-#include <boost/python.hpp>
 #include <stdint.h>
 #include <rogue/Queue.h>
 
@@ -37,20 +36,12 @@ namespace rogue {
                            public rogue::interfaces::stream::Slave {
 
                //! Core module
-               boost::shared_ptr<rogue::protocols::rssi::Controller> cntl_;
-
-               rogue::Queue<boost::shared_ptr<rogue::interfaces::stream::Frame>> rxQueue_;
-
-               // Thread
-               boost::thread* thread_;
-
-               //! Thread background
-               void runThread();
+               std::shared_ptr<rogue::protocols::rssi::Controller> cntl_;
 
             public:
 
                //! Class creation
-               static boost::shared_ptr<rogue::protocols::rssi::Transport> create ();
+               static std::shared_ptr<rogue::protocols::rssi::Transport> create ();
 
                //! Setup class in python
                static void setup_python();
@@ -62,14 +53,14 @@ namespace rogue {
                ~Transport();
 
                //! Setup links
-               void setController ( boost::shared_ptr<rogue::protocols::rssi::Controller> cntl );
+               void setController ( std::shared_ptr<rogue::protocols::rssi::Controller> cntl );
 
                //! Accept a frame from master
-               void acceptFrame ( boost::shared_ptr<rogue::interfaces::stream::Frame> frame );
+               void acceptFrame ( std::shared_ptr<rogue::interfaces::stream::Frame> frame );
          };
 
          // Convienence
-         typedef boost::shared_ptr<rogue::protocols::rssi::Transport> TransportPtr;
+         typedef std::shared_ptr<rogue::protocols::rssi::Transport> TransportPtr;
 
       }
    }

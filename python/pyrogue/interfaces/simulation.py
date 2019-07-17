@@ -22,112 +22,109 @@ import rogue.interfaces.stream
 import time
 import zmq
 
-class StreamSim(rogue.interfaces.stream.Master, 
-                rogue.interfaces.stream.Slave, 
-                threading.Thread):
+class SideBandSim():
 
-    def __init__(self,*,host,dest,uid,ssi=False):
-        rogue.interfaces.stream.Master.__init__(self)
-        rogue.interfaces.stream.Slave.__init__(self)
-        threading.Thread.__init__(self)
+    def __init__(self,host,port):
 
-        self._log = pyrogue.logInit(self)
-
-        ibPort = 5000 + dest + uid*100
-        obPort = 6000 + dest + uid*100
-        ocPort = 7000 + dest + uid*100
-        sbPort = 8000 + dest + uid*100
+        self._log = pyrogue.logInit(cls=self, name=f'{host}.{port}')
 
         self._ctx = zmq.Context()
-        self._ibSock = self._ctx.socket(zmq.REP)
-        self._obSock = self._ctx.socket(zmq.REQ)
-        self._ocSock = self._ctx.socket(zmq.REQ)
-        self._sbSock = self._ctx.socket(zmq.REQ)
-        self._ibSock.connect("tcp://%s:%i" % (host,ibPort))
-        self._obSock.connect("tcp://%s:%i" % (host,obPort))
-        self._ocSock.connect("tcp://%s:%i" % (host,ocPort))
-        self._sbSock.connect("tcp://%s:%i" % (host,sbPort))
+        self._sbPush = self._ctx.socket(zmq.PUSH)
+        self._sbPush.connect(f"tcp://{host}:{port+1}")
+        self._sbPull = self._ctx.socket(zmq.PULL)        
+        self._sbPull.connect(f"tcp://{host}:{port}")
 
-        self._log.info("Destination %i : id = %i, ib = %i, ob = %i, Code = %i, Side Data = %i" %
-              (dest,uid,ibPort,obPort,ocPort,sbPort))
+        self._log.info("Connected to port {} on host {}".format(port,host))
+        
+        self._recvCb = self._defaultRecvCb
+        self._lock = threading.Lock()
+        self._run = True
+        self._recvThread = threading.Thread(target=self._recvWorker)
+        self._recvThread.start()
 
-        self._ssi     = ssi
-        self._enable  = True
-        self.rxCount  = 0
-        self.txCount  = 0
+    def _defaultRecvCb(self, opCode, remData):
+        if opCode is not None:
+            print(f'Received opCode: {opCode:02x}')
+        if remDataNew is not None:
+            print(f'Received remData: {remData:02x}')
 
-        self.start()
+    def setRecvCb(self, cbFunc):
+        self._recvCb = cbFunc
+
+    def send(self,opCode=None, remData=None):
+        ba = bytearray(4)
+        if opCode is not None:
+            ba[0] = 0x01
+            ba[1] = opCode
+        if remData is not None:
+            ba[2] = 0x01
+            ba[3] = remData
+            
+        sent = self._sbPush.send(ba)
+        self._log.debug(f'Sent opCode: {opCode} remData: {remData}')
 
     def stop(self):
-        self._enable = False
+        with self._lock:
+            self._log.debug('Stopping recv thread')
+            self._run = False
 
-    def sendOpCode(self,opCode):
-        ba = bytearray(1)
-        ba[0] = opCode
-        self._ocSock.send(ba)
+    def __enter__(self):
+        return self
 
-        # Wait for ack
-        self._ocSock.recv_multipart()
+    def __exit__(self, exc_type, exc_value, traceback):
+        self.stop()
 
-    def setData(self,data):
-        ba = bytearray(1)
-        ba[0] = data
-        self._sbSock.send(ba)
+    def _recvWorker(self):
+        while True:
+            # Exit thread when stop() called
+            with self._lock:
+                if self._run is False:
+                    self._log.debug('Exiting recv thread')
+                    return
+            
+            # Wait for new data
+            socks, x, y = zmq.select([self._sbPull], [], [], 1.0)
+            if self._sbPull in socks:
+                ba = self._sbPull.recv()
 
-        # Wait for ack
-        self._sbSock.recv_multipart()
+                if len(ba) != 4:
+                    self._log.error(f'Got bad size frame: {ba} size: {len(ba)}')
 
-    def _acceptFrame(self,frame):
-        """ Forward frame to simulation """
+                # Got normal data
+                opCode = None
+                remData = None
+                if ba[0] == 0x01:
+                    opCode = ba[1]
+                if ba[2] == 0x01:
+                    remData = ba[3]
 
-        flock = frame.lock();
-        flags = frame.getFlags()
-        fuser = flags & 0xFF
-        luser = (flags >> 8) & 0xFF
+                self._log.debug(f'Received opCode: {opCode}, remData {remData}')
+                self._recvCb(opCode, remData)
 
-        if ( self._ssi ):
-            fuser = fuser | 0x2 # SOF
-            if ( frame.getError() ): luser = luser | 0x1 # EOFE
+class Pgp2bSim():
+    def __init__(self, vcCount, host, port):
+        # virtual channels
+        self.vc = [rogue.interfaces.stream.TcpClient(host, p) for p in range(port, port+(vcCount*2), 2)]
 
-        ba = bytearray(1)
-        bb = bytearray(1)
-        bc = bytearray(frame.getPayload())
+        # sideband
+        self.sb = SideBandSim(host, port+8)
 
-        ba[0] = fuser
-        bb[0] = luser
-        frame.read(bc,0)
+    def stop(self):
+        self.sb.stop()
 
-        self._obSock.send(ba,zmq.SNDMORE)
-        self._obSock.send(bb,zmq.SNDMORE)
-        self._obSock.send(bc)
-        self.txCount += 1
+    def __enter__(self):
+        return self
 
-        # Wait for ack
-        self._obSock.recv_multipart()
+    def __exit__(self, exc_type, exc_value, traceback):
+        self.stop()
 
-    def run(self):
-        """Receive frame from simulation"""
 
-        while(self._enable):
-            r = self._ibSock.recv_multipart()
+def connectPgp2bSim(pgpA, pgpB):
+    for a,b in zip(pgpA.vc, pgpB.vc):
+        pyrogue.streamConnectBiDir(a, b)
 
-            fuser = bytearray(r[0])[0]
-            luser = bytearray(r[1])[0]
-            data  = bytearray(r[2])
-
-            frame = self._reqFrame(len(data),True)
-
-            if ( self._ssi and (luser & 0x1)): frame.setError(1)
-
-            frame.write(data,0)
-            self._sendFrame(frame)
-            self.rxCount += 1
-
-            # Send ack
-            ba = bytearray(1)
-            ba[0] = 0xFF
-            self._ibSock.send(ba)
-
+    pgpA.sb.setRecvCb(pgpB.sb.send)
+    pgpB.sb.setRecvCb(pgpA.sb.send)
 
 class MemEmulate(rogue.interfaces.memory.Slave):
 
@@ -136,6 +133,7 @@ class MemEmulate(rogue.interfaces.memory.Slave):
         self._minWidth = minWidth
         self._maxSize  = maxSize
         self._data = {}
+        self._cb   = {}
 
     def _checkRange(self, address, size):
         return 0

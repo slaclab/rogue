@@ -26,16 +26,20 @@
 #include <rogue/utilities/StreamZip.h>
 #include <rogue/GeneralError.h>
 #include <rogue/GilRelease.h>
-#include <boost/make_shared.hpp>
+#include <memory>
 #include <bzlib.h>
 
 namespace ris = rogue::interfaces::stream;
 namespace ru  = rogue::utilities;
-namespace bp  = boost::python;
+
+#ifndef NO_PYTHON
+#include <boost/python.hpp>
+namespace bp = boost::python;
+#endif
 
 //! Class creation
 ru::StreamZipPtr ru::StreamZip::create () {
-   ru::StreamZipPtr p = boost::make_shared<ru::StreamZip>();
+   ru::StreamZipPtr p = std::make_shared<ru::StreamZip>();
    return(p);
 }
 
@@ -84,7 +88,7 @@ void ru::StreamZip::acceptFrame ( ris::FramePtr frame ) {
          throw(rogue::GeneralError::ret("StreamZip::acceptFrame","Compression runtime error",ret));
 
       // Update read buffer if neccessary
-      if ( strm.avail_in == 0 ) {
+      if ( strm.avail_in == 0 && (!done)) {
          if ( ++rBuff != frame->endBuffer()) {
             strm.next_in  = (char *)(*rBuff)->begin();
             strm.avail_in = (*rBuff)->getPayload();
@@ -120,12 +124,13 @@ ris::FramePtr ru::StreamZip::acceptReq ( uint32_t size, bool zeroCopyEn ) {
 }
 
 void ru::StreamZip::setup_python() {
+#ifndef NO_PYTHON
 
    bp::class_<ru::StreamZip, ru::StreamZipPtr, bp::bases<ris::Master,ris::Slave>, boost::noncopyable >("StreamZip",bp::init<>());
 
    bp::implicitly_convertible<ru::StreamZipPtr, ris::SlavePtr>();
    bp::implicitly_convertible<ru::StreamZipPtr, ris::MasterPtr>();
-
+#endif
 }
 
 

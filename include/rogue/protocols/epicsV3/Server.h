@@ -8,12 +8,12 @@
  * Description:
  * EPICS Server For Rogue System
  * ----------------------------------------------------------------------------
- * This file is part of the rogue software platform. It is subject to 
- * the license terms in the LICENSE.txt file found in the top-level directory 
- * of this distribution and at: 
- *    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
- * No part of the rogue software platform, including this file, may be 
- * copied, modified, propagated, or distributed except according to the terms 
+ * This file is part of the rogue software platform. It is subject to
+ * the license terms in the LICENSE.txt file found in the top-level directory
+ * of this distribution and at:
+ *    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+ * No part of the rogue software platform, including this file, may be
+ * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
@@ -22,30 +22,46 @@
 #define __ROGUE_PROTOCOLS_EPICSV3_SERVER_H__
 
 #include <boost/python.hpp>
-#include <boost/thread.hpp>
+#include <thread>
 #include <casdef.h>
 #include <gdd.h>
 #include <gddApps.h>
 #include <gddAppFuncTable.h>
 #include <map>
+#include <rogue/Queue.h>
+#include <rogue/Logging.h>
 
 namespace rogue {
    namespace protocols {
       namespace epicsV3 {
 
          class Value;
+         class Work;
 
          class Server : public caServer {
 
             private:
 
-               std::map<std::string, boost::shared_ptr<rogue::protocols::epicsV3::Value>> values_;
+               std::map<std::string, std::shared_ptr<rogue::protocols::epicsV3::Value>> values_;
 
-               boost::thread * thread_;
+               std::thread * thread_;
+               bool threadEn_;
 
-               boost::mutex mtx_;
+               std::thread ** workers_;
+               uint32_t         workCnt_;
+               bool workersEn_;
+
+               std::mutex mtx_;
+
+               rogue::Queue<std::shared_ptr<rogue::protocols::epicsV3::Work> > workQueue_;
+
+               bool running_;
 
                void runThread();
+
+               void runWorker();
+
+               std::shared_ptr<rogue::Logging> log_;
 
             public:
 
@@ -53,7 +69,7 @@ namespace rogue {
                static void setup_python();
 
                //! Class creation
-               Server ();
+               Server (uint32_t threadCnt);
 
                ~Server();
 
@@ -61,7 +77,11 @@ namespace rogue {
 
                void stop();
 
-               void addValue(boost::shared_ptr<rogue::protocols::epicsV3::Value> value);
+               void addValue(std::shared_ptr<rogue::protocols::epicsV3::Value> value);
+
+               void addWork(std::shared_ptr<rogue::protocols::epicsV3::Work> work);
+
+               bool doAsync();
 
                pvExistReturn pvExistTest (const casCtx &ctx, const char *pvName);
 
@@ -71,11 +91,10 @@ namespace rogue {
          };
 
          // Convienence
-         typedef boost::shared_ptr<rogue::protocols::epicsV3::Server> ServerPtr;
+         typedef std::shared_ptr<rogue::protocols::epicsV3::Server> ServerPtr;
 
       }
    }
 }
 
 #endif
-

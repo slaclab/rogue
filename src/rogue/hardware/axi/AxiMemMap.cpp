@@ -15,28 +15,33 @@
  * ----------------------------------------------------------------------------
 **/
 #include <rogue/hardware/axi/AxiMemMap.h>
+#include <rogue/hardware/drivers/AxisDriver.h>
 #include <rogue/interfaces/memory/Constants.h>
 #include <rogue/interfaces/memory/Transaction.h>
 #include <rogue/interfaces/memory/TransactionLock.h>
 #include <rogue/GeneralError.h>
 #include <rogue/GilRelease.h>
-#include <boost/make_shared.hpp>
-#include <boost/thread.hpp>
+#include <memory>
+#include <cstring>
+#include <thread>
 #include <stdio.h>
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <sys/mman.h>
 #include <fcntl.h>
-#include <DataDriver.h>
 
 namespace rha = rogue::hardware::axi;
 namespace rim = rogue::interfaces::memory;
+
+#ifndef NO_PYTHON
+#include <boost/python.hpp>
 namespace bp  = boost::python;
+#endif
 
 //! Class creation
 rha::AxiMemMapPtr rha::AxiMemMap::create (std::string path) {
-   rha::AxiMemMapPtr r = boost::make_shared<rha::AxiMemMap>(path);
+   rha::AxiMemMapPtr r = std::make_shared<rha::AxiMemMap>(path);
    return(r);
 }
 
@@ -76,12 +81,14 @@ void rha::AxiMemMap::doTransaction(rim::TransactionPtr tran) {
 
    while ( (ret == 0) && (count != tran->size()) ) {
       if (tran->type() == rim::Write || tran->type() == rim::Post) {
-         std::copy(it,it+dataSize,ptr);
+
+         // Assume transaction has a contigous memory block
+         std::memcpy(ptr,it,dataSize);
          ret = dmaWriteRegister(fd_,tran->address()+count,data);
       }
       else {
          ret = dmaReadRegister(fd_,tran->address()+count,&data);
-         std::copy(ptr,ptr+dataSize,it);
+         std::memcpy(it,ptr,dataSize);
       }
       count += dataSize;
       it += dataSize;
@@ -92,9 +99,11 @@ void rha::AxiMemMap::doTransaction(rim::TransactionPtr tran) {
 }
 
 void rha::AxiMemMap::setup_python () {
+#ifndef NO_PYTHON
 
    bp::class_<rha::AxiMemMap, rha::AxiMemMapPtr, bp::bases<rim::Slave>, boost::noncopyable >("AxiMemMap",bp::init<std::string>());
 
    bp::implicitly_convertible<rha::AxiMemMapPtr, rim::SlavePtr>();
+#endif
 }
 

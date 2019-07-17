@@ -20,8 +20,7 @@
 #ifndef __ROGUE_INTERFACES_MEMORY_FRAME_LOCK_H__
 #define __ROGUE_INTERFACES_MEMORY_FRAME_LOCK_H__
 #include <stdint.h>
-#include <boost/python.hpp>
-#include <boost/thread.hpp>
+#include <thread>
 
 namespace rogue {
    namespace interfaces {
@@ -29,37 +28,68 @@ namespace rogue {
 
          class Frame;
 
-         //! Frame
+         //! Frame Lock
+         /**
+          * The FrameLock is a container for holding a lock on Frame data while accessing that
+          * data. This lock allows multiple stream Slave objects to read and update Frame data
+          * while ensuring only one thread is updating at a time. The lock is relased when
+          * the FrameLock object is destroyed. The FrameLock oject is never created directly,
+          * instead it is returned by the Frame::lock() method.
+          */
          class FrameLock {
 
-               boost::shared_ptr<rogue::interfaces::stream::Frame> frame_;
+               std::shared_ptr<rogue::interfaces::stream::Frame> frame_;
                bool locked_;
 
             public:
 
-               //! Create a frame container
-               static boost::shared_ptr<rogue::interfaces::stream::FrameLock> create (
-                  boost::shared_ptr<rogue::interfaces::stream::Frame> frame);
+               // Class factory which returns a pointer to a FrameLock (FrameLockPtr)
+               /* Only called by Frame object.
+                * Create a new Frame lock on the passed Frame.
+                * frame Frame pointer (FramePtr) to create a lock on
+                */
+               static std::shared_ptr<rogue::interfaces::stream::FrameLock> create (
+                  std::shared_ptr<rogue::interfaces::stream::Frame> frame);
 
-               //! Constructor
-               FrameLock(boost::shared_ptr<rogue::interfaces::stream::Frame> frame);
+               // Frame lock constructor
+               FrameLock(std::shared_ptr<rogue::interfaces::stream::Frame> frame);
 
-               //! Setup class in python
+               // Setup class for use in python
                static void setup_python();
 
-               //! Destructor
+               // Destroy and release the frame lock
                ~FrameLock();
 
-               //! lock
+               //! Lock associated frame if not locked
+               /** Exposed as lock() to Python
+                */
                void lock();
 
-               //! lock
+               //! UnLock associated frame if locked
+               /** Exposed as unlock() to Python
+                */
                void unlock();
+
+               //! Enter method for python, does nothing
+               /** This exists only to support the 
+                * with call in python.
+                *
+                * Exposed as __enter__() to Python
+                */
+               void enter();
+
+               //! Exit method for python, does nothing
+               /** This exists only to support the 
+                * with call in python.
+                *
+                * Exposed as __exit__() to Python
+                */
+               void exit(void *, void *, void *);
 
          };
 
-         // Convienence
-         typedef boost::shared_ptr<rogue::interfaces::stream::FrameLock> FrameLockPtr;
+         //! Alias for using shared pointer as FrameLockPtr
+         typedef std::shared_ptr<rogue::interfaces::stream::FrameLock> FrameLockPtr;
 
       }
    }

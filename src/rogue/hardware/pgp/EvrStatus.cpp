@@ -20,18 +20,23 @@
  * ----------------------------------------------------------------------------
 **/
 #include <rogue/hardware/pgp/EvrStatus.h>
-#include <boost/make_shared.hpp>
+#include <memory>
 
 namespace rhp = rogue::hardware::pgp;
+
+#ifndef NO_PYTHON
+#include <boost/python.hpp>
 namespace bp  = boost::python;
+#endif
 
 //! Create the info class with pointer
 rhp::EvrStatusPtr rhp::EvrStatus::create() {
-   rhp::EvrStatusPtr r = boost::make_shared<rhp::EvrStatus>();
+   rhp::EvrStatusPtr r = std::make_shared<rhp::EvrStatus>();
    return(r);
 }
 
 void rhp::EvrStatus::setup_python () {
+#ifndef NO_PYTHON
 
    bp::class_<rhp::EvrStatus, rhp::EvrStatusPtr >("EvrStatus",bp::no_init)
       .def_readonly("lane",          &rhp::EvrStatus::lane)
@@ -42,6 +47,6 @@ void rhp::EvrStatus::setup_python () {
       .def_readonly("runCounter",    &rhp::EvrStatus::runCounter)
       .def_readonly("acceptCounter", &rhp::EvrStatus::acceptCounter)
    ;
-
+#endif
 }
 

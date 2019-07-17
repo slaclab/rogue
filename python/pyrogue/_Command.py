@@ -19,7 +19,7 @@ import time
 from collections import OrderedDict as odict
 import pyrogue as pr
 import inspect
-import Pyro4
+import threading
 
 class CommandError(Exception):
     """ Exception for command errors."""
@@ -35,7 +35,8 @@ class BaseCommand(pr.BaseVariable):
                  hidden=False,                 
                  minimum=None,
                  maximum=None,
-                 function=None):
+                 function=None,
+                 background=False):
 
         pr.BaseVariable.__init__(
             self,
@@ -49,6 +50,9 @@ class BaseCommand(pr.BaseVariable):
             maximum=maximum)
         
         self._function = function if function is not None else BaseCommand.nothing
+        self._thread = None
+        self._lock = threading.Lock()
+        self._background = background
 
         # args flag
         try:
@@ -58,13 +62,27 @@ class BaseCommand(pr.BaseVariable):
         except:
             self._arg = False
 
-    @Pyro4.expose
+    @pr.expose
     @property
     def arg(self):
         return self._arg
 
-    @Pyro4.expose
+    @pr.expose
     def call(self,arg=None):
+        if self._background:
+            with self._lock:
+                if self._thread is not None and self._thread.isAlive():
+                    self._log.warning('Command execution is already in progress!')
+                    return None
+                else:
+                    self._thread = threading.Thread(target=self._doFunc, args=(arg,))
+                    self._thread.start()
+
+            return None
+        else:
+            return self._doFunc(arg)
+
+    def _doFunc(self,arg):
         """Execute command: TODO: Update comments"""
         if (self.parent.enable.value() is not True):
             return
@@ -72,22 +90,43 @@ class BaseCommand(pr.BaseVariable):
         try:
 
             # Convert arg
-            arg = self.parseDisp(arg)
+            if arg is None:
+                arg = self._default
+            else:
+                arg = self.parseDisp(arg)
 
             # Possible args
             pargs = {'dev' : self.parent, 'cmd' : self, 'arg' : arg}
 
-            pr.varFuncHelper(self._function,pargs, self._log,self.path)
+            return pr.varFuncHelper(self._function,pargs, self._log,self.path)
 
         except Exception as e:
             self._log.exception(e)
 
     def __call__(self,arg=None):
-        self.call(arg)
+        return self.call(arg)
 
     @staticmethod
     def nothing():
         pass
+
+    @staticmethod
+    def read(cmd):
+        cmd.get(read=True)
+
+    @staticmethod
+    def setArg(cmd, arg):
+        cmd.set(arg)
+
+    @staticmethod
+    def setAndVerifyArg(cmd, arg):
+        cmd.set(arg)
+        ret = cmd.get()
+        if ret != arg:
+            raise CommandError(
+                f'Verification failed for {cmd.path}. \n'+
+                f'Set to {arg} but read back {ret}')
+        
 
     @staticmethod
     def createToggle(sets):
@@ -146,6 +185,8 @@ class BaseCommand(pr.BaseVariable):
     def _getDict(self,modes):
         return None
 
+    def get(self,read=True):
+        return self._default
 
 # LocalCommand is the same as BaseCommand
 LocalCommand = BaseCommand
@@ -165,7 +206,8 @@ class RemoteCommand(BaseCommand, pr.RemoteVariable):
                  base=pr.UInt,
                  offset=None,
                  bitSize=32,
-                 bitOffset=0):
+                 bitOffset=0,
+                 overlapEn=False):
 
         # RemoteVariable constructor will handle assignment of most params
         BaseCommand.__init__(
@@ -187,6 +229,7 @@ class RemoteCommand(BaseCommand, pr.RemoteVariable):
             offset=offset,
             bitSize=bitSize,
             bitOffset=bitOffset,
+            overlapEn=overlapEn,
             verify=False)
 
 
@@ -214,53 +257,7 @@ class RemoteCommand(BaseCommand, pr.RemoteVariable):
             return None
 
         return ret
-            
-# Legacy Support
-def Command(offset=None, **kwargs):
-    if offset is None:
 
-        # Get list of possible class args
-        cargs = inspect.getfullargspec(LocalCommand.__init__).args + \
-                inspect.getfullargspec(LocalCommand.__init__).kwonlyargs
-
-        # Pass supported args
-        args = {k:kwargs[k] for k in kwargs if k in cargs}
-
-        ret = LocalCommand(**args)
-        ret._depWarn = True
-        return(ret)
-    else:
-
-        # Get list of possible class args
-        cargs = inspect.getfullargspec(RemoteCommand.__init__).args + \
-                inspect.getfullargspec(RemoteCommand.__init__).kwonlyargs
-
-        # Pass supported args
-        args = {k:kwargs[k] for k in kwargs if k in cargs}
-
-        ret = RemoteCommand(offset=offset,**args)
-        ret._depWarn = True
-        return(ret)
-
-Command.nothing = BaseCommand.nothing
-Command.toggle = BaseCommand.toggle
-Command.touch = BaseCommand.touch
-Command.touchZero = BaseCommand.touchZero
-Command.touchOne = BaseCommand.touchOne
-Command.postedTouch = BaseCommand.postedTouch
-
-
-###################################
-# (Hopefully) useful Command stuff
-##################################
-BLANK_COMMAND = Command(name='Blank', description='A singleton command that does nothing')
-
-def command(order=0, **cmdArgs):
-    def wrapper(func):
-        func.PyrogueCommandOrder = order
-        func.PyrogueCommandArgs = cmdArgs
-        return func
-    return wrapper
-################################
-
+# Alias
+Command = BaseCommand
 

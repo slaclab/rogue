@@ -20,7 +20,8 @@
  *          [31:0] = Length of data block in bytes
  *       headerB
  *          31:24  = Channel ID
- *          23:9   = Frame flags
+ *          23:16  = Frame error
+ *          15:0   = Frame flags
  *
  *-----------------------------------------------------------------------------
  * This file is part of the rogue software platform. It is subject to 
@@ -34,10 +35,13 @@
 **/
 #ifndef __ROGUE_UTILITIES_FILEIO_STREAM_WRITER_H__
 #define __ROGUE_UTILITIES_FILEIO_STREAM_WRITER_H__
-#include <boost/enable_shared_from_this.hpp>
+#include <memory>
 #include <rogue/interfaces/stream/Frame.h>
 #include <stdint.h>
-#include <boost/thread.hpp>
+#include <thread>
+#include <mutex>
+#include <condition_variable>
+#include <rogue/Logging.h>
 #include <map>
 
 namespace rogue {
@@ -47,8 +51,13 @@ namespace rogue {
          class StreamWriterChannel;
 
          //! Stream writer central class
-         class StreamWriter : public boost::enable_shared_from_this<rogue::utilities::fileio::StreamWriter> {
+         class StreamWriter : public std::enable_shared_from_this<rogue::utilities::fileio::StreamWriter> {
             friend class StreamWriterChannel;
+            
+            protected:
+
+               // Log
+               std::shared_ptr<rogue::Logging> log_;
 
                //! File descriptor
                int32_t fd_;
@@ -60,10 +69,10 @@ namespace rogue {
                uint32_t fdIdx_;
 
                //! Size limit for auto close and re-open when limit is exceeded, zero to disable
-               uint32_t sizeLimit_;
+               uint64_t sizeLimit_;
 
                //! Current file size in bytes
-               uint32_t currSize_;
+               uint64_t currSize_;
 
                //! Total file size in bytes
                uint32_t totSize_;
@@ -77,8 +86,11 @@ namespace rogue {
                //! Write buffer count
                uint32_t currBuffer_;
 
+               //! Drop errors flag
+               bool dropErrors_;
+
                //! File access lock
-               boost::mutex mtx_;
+               std::mutex mtx_;
 
                //! Total number of frames in file
                uint32_t frameCount_;
@@ -93,19 +105,18 @@ namespace rogue {
                void flush();
 
                //! condition
-               boost::condition_variable cond_;
+               std::condition_variable cond_;
 
-               std::map<uint32_t,boost::shared_ptr<rogue::utilities::fileio::StreamWriterChannel>> channelMap_;
+               std::map<uint32_t,std::shared_ptr<rogue::utilities::fileio::StreamWriterChannel>> channelMap_;
 
-            protected:
 
                //! Write data to file. Called from StreamWriterChannel
-               void writeFile ( uint8_t channel, boost::shared_ptr<rogue::interfaces::stream::Frame> frame);
+               virtual void writeFile ( uint8_t channel, std::shared_ptr<rogue::interfaces::stream::Frame> frame);
 
             public:
 
                //! Class creation
-               static boost::shared_ptr<rogue::utilities::fileio::StreamWriter> create ();
+               static std::shared_ptr<rogue::utilities::fileio::StreamWriter> create ();
 
                //! Setup class in python
                static void setup_python();
@@ -114,7 +125,7 @@ namespace rogue {
                StreamWriter();
 
                //! Deconstructor
-               ~StreamWriter();
+               virtual ~StreamWriter();
 
                //! Open a data file
                void open(std::string file);
@@ -126,24 +137,27 @@ namespace rogue {
                void setBufferSize(uint32_t size);
 
                //! Set max file size, 0 for unlimited
-               void setMaxSize(uint32_t size);
+               void setMaxSize(uint64_t size);
+
+               //! Set drop errors flag
+               void setDropErrors(bool drop);
 
                //! Get a port
-               boost::shared_ptr<rogue::utilities::fileio::StreamWriterChannel> getChannel(uint8_t channel);
+               std::shared_ptr<rogue::utilities::fileio::StreamWriterChannel> getChannel(uint8_t channel);
 
-               //! Get current file size
-               uint32_t getSize();
+               //! Get total file size
+               uint64_t getSize();
 
                //! Get current frame count
                uint32_t getFrameCount();
 
                //! Block until a frame count is reached
-               void waitFrameCount(uint32_t count);
+               bool waitFrameCount(uint32_t count, uint64_t timeout);
 
          };
 
          // Convienence
-         typedef boost::shared_ptr<rogue::utilities::fileio::StreamWriter> StreamWriterPtr;
+         typedef std::shared_ptr<rogue::utilities::fileio::StreamWriter> StreamWriterPtr;
       }
    }
 }

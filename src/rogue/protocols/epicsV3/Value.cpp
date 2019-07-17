@@ -18,16 +18,21 @@
  * ----------------------------------------------------------------------------
 **/
 
-#include <boost/python.hpp>
 #include <rogue/protocols/epicsV3/Value.h>
 #include <rogue/protocols/epicsV3/Pv.h>
-#include <rogue/protocols/epicsV3/Server.h>
 #include <rogue/GeneralError.h>
-#include <boost/make_shared.hpp>
-#include <boost/make_shared.hpp>
+#include <memory>
+#include <memory>
 #include <aitTypes.h>
 
+#ifdef __MACH__
+#include <mach/clock.h>
+#include <mach/mach.h>
+#endif
+
 namespace rpe = rogue::protocols::epicsV3;
+
+#include <boost/python.hpp>
 namespace bp  = boost::python;
 
 //! Setup class in python
@@ -131,7 +136,7 @@ void rpe::Value::initGdd(std::string typeStr, bool isEnum, uint32_t count) {
    else if ( typeStr == "float" or typeStr == "Float32" ) {
       log_->info("Detected 32-bit float %s: typeStr=%s", epicsName_.c_str(),typeStr.c_str());
       epicsType_ = aitEnumFloat32;
-      precision_ = 32;
+      precision_ = 4;
       fSize_ = 4;
    }
 
@@ -139,7 +144,7 @@ void rpe::Value::initGdd(std::string typeStr, bool isEnum, uint32_t count) {
    else if ( typeStr == "Float64" ) {
       log_->info("Detected 64-bit float %s: typeStr=%s", epicsName_.c_str(),typeStr.c_str());
       epicsType_ = aitEnumFloat64;
-      precision_ = 64;
+      precision_ = 4;
       fSize_ = 8;
    }
 
@@ -178,13 +183,8 @@ void rpe::Value::initGdd(std::string typeStr, bool isEnum, uint32_t count) {
    }
 }
 
-// Value lock held when this is called
 void rpe::Value::updated() {
-   if ( pv_ != NULL && pv_->interest() == aitTrue ) {
-      caServer *pServer = pv_->getCAS();
-      casEventMask select(pServer->valueEventMask() | pServer->alarmEventMask());
-      pv_->postEvent(select, *pValue_);
-   }
+   pv_->updated(*pValue_);
 }
 
 uint32_t rpe::Value::revEnum(std::string val) {
@@ -207,17 +207,10 @@ void rpe::Value::valueSet() { }
 void rpe::Value::valueGet() { }
 
 void rpe::Value::setPv(rpe::Pv * pv) {
-   boost::lock_guard<boost::mutex> lock(mtx_);
    pv_ = pv;
 }
 
-void rpe::Value::clrPv() {
-   boost::lock_guard<boost::mutex> lock(mtx_);
-   pv_ = NULL;
-}
-
 rpe::Pv * rpe::Value::getPv() {
-   boost::lock_guard<boost::mutex> lock(mtx_);
    return pv_;
 }
 
@@ -225,13 +218,15 @@ rpe::Pv * rpe::Value::getPv() {
 // EPICS Interface
 //---------------------------------------
 caStatus rpe::Value::read(gdd &prototype) {
-   return funcTable_.read(*this, prototype);
+   caStatus ret;
+   ret = funcTable_.read(*this, prototype);
+   return ret;
 }
 
 caStatus rpe::Value::readValue(gdd &value) {
    gddStatus gdds;
 
-   boost::lock_guard<boost::mutex> lock(mtx_);
+   std::lock_guard<std::mutex> lock(mtx_);
 
    // Make sure access types match
    if ( (array_ && value.isAtomic()) || ((!array_) && value.isScalar()) ) {
@@ -251,7 +246,7 @@ caStatus rpe::Value::write(const gdd &value) {
    struct timespec t;
    uint32_t newSize;
 
-   boost::lock_guard<boost::mutex> lock(mtx_);
+   std::lock_guard<std::mutex> lock(mtx_);
 
    // Array
    if ( array_ && value.isAtomic()) {
@@ -272,19 +267,29 @@ caStatus rpe::Value::write(const gdd &value) {
    }
 
    // Scalar
-   else if ( (!array_) && value.isScalar() )
+   else if ( (!array_) && value.isScalar() ) {
       pValue_->put(&value);
+   }
 
    // Unsupported type
    else return S_cas_noConvert;   
 
    // Set the timespec structure to the current time stamp the gdd.
+#ifdef __MACH__ // OSX does not have clock_gettime
+   clock_serv_t cclock;
+   mach_timespec_t mts;
+   host_get_clock_service(mach_host_self(), CALENDAR_CLOCK, &cclock);
+   clock_get_time(cclock, &mts);
+   mach_port_deallocate(mach_task_self(), cclock);
+   t.tv_sec = mts.tv_sec;
+   t.tv_nsec = mts.tv_nsec;
+#else      
    clock_gettime(CLOCK_REALTIME,&t);
+#endif
    pValue_->setTimeStamp(&t);
 
    // Cal value set and update within lock 
    this->valueSet();
-   this->updated();
    return S_casApp_success;
 }
 
@@ -302,13 +307,13 @@ aitIndex rpe::Value::maxBound(unsigned dimension) {
 }
 
 gddAppFuncTableStatus rpe::Value::readStatus(gdd &value) {
-   boost::lock_guard<boost::mutex> lock(mtx_);
+   std::lock_guard<std::mutex> lock(mtx_);
    value.putConvert(pValue_->getStat());
    return S_casApp_success;
 }
 
 gddAppFuncTableStatus rpe::Value::readSeverity(gdd &value) {
-   boost::lock_guard<boost::mutex> lock(mtx_);
+   std::lock_guard<std::mutex> lock(mtx_);
    value.putConvert(pValue_->getSevr());
    return S_casApp_success;
 }

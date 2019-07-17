@@ -22,41 +22,52 @@
 #include <rogue/protocols/packetizer/Application.h>
 #include <rogue/protocols/packetizer/ControllerV2.h>
 #include <rogue/GeneralError.h>
-#include <boost/make_shared.hpp>
+#include <memory>
 #include <rogue/GilRelease.h>
 
 namespace rpp = rogue::protocols::packetizer;
 namespace ris = rogue::interfaces::stream;
+
+#ifndef NO_PYTHON
+#include <boost/python.hpp>
 namespace bp  = boost::python;
+#endif
 
 //! Class creation
-rpp::CoreV2Ptr rpp::CoreV2::create (bool enIbCrc, bool enObCrc) {
-   rpp::CoreV2Ptr r = boost::make_shared<rpp::CoreV2>(enIbCrc,enObCrc);
+rpp::CoreV2Ptr rpp::CoreV2::create (bool enIbCrc, bool enObCrc, bool enSsi) {
+   rpp::CoreV2Ptr r = std::make_shared<rpp::CoreV2>(enIbCrc,enObCrc,enSsi);
    return(r);
 }
 
 void rpp::CoreV2::setup_python() {
+#ifndef NO_PYTHON
 
-   bp::class_<rpp::CoreV2, rpp::CoreV2Ptr, boost::noncopyable >("CoreV2",bp::init<bool,bool>())
+   bp::class_<rpp::CoreV2, rpp::CoreV2Ptr, boost::noncopyable >("CoreV2",bp::init<bool,bool,bool>())
       .def("transport",      &rpp::CoreV2::transport)
       .def("application",    &rpp::CoreV2::application)
       .def("getDropCount",   &rpp::CoreV2::getDropCount)
 
    ;
-
+#endif
 }
 
 //! Creator
-rpp::CoreV2::CoreV2 (bool enIbCrc, bool enObCrc) {
+rpp::CoreV2::CoreV2 (bool enIbCrc, bool enObCrc, bool enSsi) {
    tran_  = rpp::Transport::create();
-   cntl_  = rpp::ControllerV2::create(enIbCrc,enObCrc,tran_,app_);
+   cntl_  = rpp::ControllerV2::create(enIbCrc,enObCrc,enSsi,tran_,app_);
 
    tran_->setController(cntl_);
 }
 
 //! Destructor
-rpp::CoreV2::~CoreV2() { }
+rpp::CoreV2::~CoreV2() {
+   uint32_t x;
 
+   tran_.reset();
+   cntl_.reset();
+
+   for(x=0; x < 256; x++) app_[x].reset();
+}
 
 //! Get transport interface
 rpp::TransportPtr rpp::CoreV2::transport() {

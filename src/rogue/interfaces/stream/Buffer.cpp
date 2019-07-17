@@ -25,7 +25,7 @@
 #include <rogue/interfaces/stream/Pool.h>
 #include <rogue/interfaces/stream/Frame.h>
 #include <rogue/GeneralError.h>
-#include <boost/make_shared.hpp>
+#include <memory>
 
 namespace ris = rogue::interfaces::stream;
 
@@ -34,12 +34,8 @@ namespace ris = rogue::interfaces::stream;
  * Pass owner, raw data buffer, and meta data
  */
 ris::BufferPtr ris::Buffer::create ( ris::PoolPtr source, void * data, uint32_t meta, uint32_t size, uint32_t alloc) {
-   ris::BufferPtr buff = boost::make_shared<ris::Buffer>(source,data,meta,size,alloc);
+   ris::BufferPtr buff = std::make_shared<ris::Buffer>(source,data,meta,size,alloc);
    return(buff);
-}
-
-void ris::Buffer::setup_python() {
-   // Nothing to do
 }
 
 //! Create a buffer.
@@ -100,7 +96,7 @@ void ris::Buffer::adjustHeader(int32_t value) {
    if ( payload_ < headRoom_ ) payload_ = headRoom_;
 
    ris::FramePtr tmpPtr;
-   if ( tmpPtr = frame_.lock() ) tmpPtr->setSizeDirty(); 
+   if ( (tmpPtr = frame_.lock()) ) tmpPtr->setSizeDirty(); 
 }
 
 //! Clear the header reservation
@@ -108,7 +104,7 @@ void ris::Buffer::zeroHeader() {
    headRoom_ = 0;
 
    ris::FramePtr tmpPtr;
-   if ( tmpPtr = frame_.lock() ) tmpPtr->setSizeDirty(); 
+   if ( (tmpPtr = frame_.lock()) ) tmpPtr->setSizeDirty(); 
 }
 
 //! Adjust tail by passed value
@@ -127,7 +123,7 @@ void ris::Buffer::adjustTail(int32_t value) {
    tailRoom_ += value;
 
    ris::FramePtr tmpPtr;
-   if ( tmpPtr = frame_.lock() ) tmpPtr->setSizeDirty(); 
+   if ( (tmpPtr = frame_.lock()) ) tmpPtr->setSizeDirty(); 
 }
 
 //! Clear the tail reservation
@@ -135,7 +131,7 @@ void ris::Buffer::zeroTail() {
    tailRoom_ = 0;
 
    ris::FramePtr tmpPtr;
-   if ( tmpPtr = frame_.lock() ) tmpPtr->setSizeDirty(); 
+   if ( (tmpPtr = frame_.lock()) ) tmpPtr->setSizeDirty(); 
 }
 
 /* 
@@ -151,7 +147,7 @@ uint8_t * ris::Buffer::begin() {
  * This is the end of raw data buffer
  */
 uint8_t * ris::Buffer::end() {
-   return(data_ + rawSize_);
+   return(data_ + (rawSize_-tailRoom_));
 }
 
 /*
@@ -208,7 +204,7 @@ void ris::Buffer::setPayload(uint32_t size) {
    payload_ = size + headRoom_;
 
    ris::FramePtr tmpPtr;
-   if ( tmpPtr = frame_.lock() ) tmpPtr->setSizeDirty(); 
+   if ( (tmpPtr = frame_.lock()) ) tmpPtr->setSizeDirty(); 
 }
 
 /* 
@@ -231,7 +227,7 @@ void ris::Buffer::setPayloadFull() {
    payload_ = rawSize_ - tailRoom_;
 
    ris::FramePtr tmpPtr;
-   if ( tmpPtr = frame_.lock() ) tmpPtr->setSizeDirty(); 
+   if ( (tmpPtr = frame_.lock()) ) tmpPtr->setSizeDirty(); 
 }
 
 //! Set the buffer as empty (minus header reservation)
@@ -239,6 +235,6 @@ void ris::Buffer::setPayloadEmpty() {
    payload_ = headRoom_;
 
    ris::FramePtr tmpPtr;
-   if ( tmpPtr = frame_.lock() ) tmpPtr->setSizeDirty(); 
+   if ( (tmpPtr = frame_.lock()) ) tmpPtr->setSizeDirty(); 
 }
 

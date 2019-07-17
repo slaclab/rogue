@@ -23,8 +23,7 @@
 #include <rogue/interfaces/stream/Master.h>
 #include <rogue/interfaces/stream/Slave.h>
 #include <rogue/Logging.h>
-#include <boost/python.hpp>
-#include <boost/thread.hpp>
+#include <thread>
 #include <stdint.h>
 #include <netdb.h>
 #include <sys/socket.h>
@@ -52,7 +51,7 @@ namespace rogue {
             public:
 
                //! Class creation
-               static boost::shared_ptr<rogue::protocols::udp::Server> 
+               static std::shared_ptr<rogue::protocols::udp::Server> 
                   create (uint16_t port, bool jumbo);
 
                //! Setup class in python
@@ -68,11 +67,11 @@ namespace rogue {
                uint32_t getPort();
 
                //! Accept a frame from master
-               void acceptFrame ( boost::shared_ptr<rogue::interfaces::stream::Frame> frame );
+               void acceptFrame ( std::shared_ptr<rogue::interfaces::stream::Frame> frame );
          };
 
          // Convienence
-         typedef boost::shared_ptr<rogue::protocols::udp::Server> ServerPtr;
+         typedef std::shared_ptr<rogue::protocols::udp::Server> ServerPtr;
 
       }
    }

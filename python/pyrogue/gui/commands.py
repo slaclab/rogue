@@ -18,13 +18,19 @@
 # copied, modified, propagated, or distributed except according to the terms 
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
-from PyQt4.QtCore   import *
-from PyQt4.QtGui    import *
+try:
+    from PyQt5.QtWidgets import *
+    from PyQt5.QtCore    import *
+    from PyQt5.QtGui     import *
+except ImportError:
+    from PyQt4.QtCore    import *
+    from PyQt4.QtGui     import *
 
 import pyrogue
 
-class CommandDev(object):
+class CommandDev(QObject):
     def __init__(self,*,tree,parent,dev,noExpand):
+        QObject.__init__(self)
         self._parent   = parent
         self._tree     = tree
         self._dev      = dev
@@ -42,6 +48,8 @@ class CommandDev(object):
             self._widget.setExpanded(False)
             self._tree.itemExpanded.connect(self.expandCb)
 
+
+    @pyqtSlot()
     def expandCb(self):
         if self._dummy is None or not self._widget.isExpanded():
             return
@@ -104,6 +112,7 @@ class CommandLink(QObject):
 
             self._tree.setItemWidget(self._item,3,self._widget)
 
+    @pyqtSlot()
     def execPressed(self):
         if self._widget is not None:
             value = str(self._widget.text())
@@ -143,6 +152,8 @@ class CommandWidget(QWidget):
 
         self.devTop = None
 
+    @pyqtSlot(pyrogue.Root)
+    @pyqtSlot(pyrogue.VirtualNode)
     def addTree(self,root):
         self.roots.append(root)
         self._devTop = CommandDev(tree=self.tree,parent=self.top,dev=root,noExpand=False)

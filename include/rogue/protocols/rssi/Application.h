@@ -22,7 +22,6 @@
 #define __ROGUE_PROTOCOLS_RSSI_APPLICATION_H__
 #include <rogue/interfaces/stream/Master.h>
 #include <rogue/interfaces/stream/Slave.h>
-#include <boost/python.hpp>
 #include <stdint.h>
 
 namespace rogue {
@@ -36,10 +35,11 @@ namespace rogue {
                              public rogue::interfaces::stream::Slave {
 
                //! Core module
-               boost::shared_ptr<rogue::protocols::rssi::Controller> cntl_;
+               std::shared_ptr<rogue::protocols::rssi::Controller> cntl_;
 
                // Transmission thread
-               boost::thread* thread_;
+               std::thread* thread_;
+               bool threadEn_;
 
                //! Thread background
                void runThread();
@@ -47,7 +47,7 @@ namespace rogue {
             public:
 
                //! Class creation
-               static boost::shared_ptr<rogue::protocols::rssi::Application> create ();
+               static std::shared_ptr<rogue::protocols::rssi::Application> create ();
 
                //! Setup class in python
                static void setup_python();
@@ -59,21 +59,21 @@ namespace rogue {
                ~Application();
 
                //! Setup links
-               void setController ( boost::shared_ptr<rogue::protocols::rssi::Controller> cntl );
+               void setController ( std::shared_ptr<rogue::protocols::rssi::Controller> cntl );
 
                //! Generate a Frame. Called from master
                /*
                 * Pass total size required.
                 * Pass flag indicating if zero copy buffers are acceptable
                 */
-               boost::shared_ptr<rogue::interfaces::stream::Frame> acceptReq ( uint32_t size, bool zeroCopyEn);
+               std::shared_ptr<rogue::interfaces::stream::Frame> acceptReq ( uint32_t size, bool zeroCopyEn);
 
                //! Accept a frame from master
-               void acceptFrame ( boost::shared_ptr<rogue::interfaces::stream::Frame> frame );
+               void acceptFrame ( std::shared_ptr<rogue::interfaces::stream::Frame> frame );
          };
 
          // Convienence
-         typedef boost::shared_ptr<rogue::protocols::rssi::Application> ApplicationPtr;
+         typedef std::shared_ptr<rogue::protocols::rssi::Application> ApplicationPtr;
 
       }
    }

@@ -22,36 +22,35 @@
 #define __ROGUE_PROTOCOLS_EPICSV3_PV_H__
 
 #include <boost/python.hpp>
-#include <boost/thread.hpp>
+#include <thread>
 #include <casdef.h>
 #include <gdd.h>
 #include <gddApps.h>
 #include <gddAppFuncTable.h>
+#include <mutex>
 
 namespace rogue {
    namespace protocols {
       namespace epicsV3 {
 
          class Value;
+         class Server;
 
          class Pv : public casPV {
             private:
 
-               boost::shared_ptr<rogue::protocols::epicsV3::Value> value_;
+               std::shared_ptr<rogue::protocols::epicsV3::Value> value_;
+               rogue::protocols::epicsV3::Server *server_;
                aitBool interest_;
-               boost::mutex mtx_;
+               std::mutex mtx_;
+               casEventMask valueMask_;
 
             public:
 
-               //! Setup class in python
-               static void setup_python();
-
                //! Class creation
-               Pv (caServer &cas, boost::shared_ptr<rogue::protocols::epicsV3::Value> value);
+               Pv (rogue::protocols::epicsV3::Server *server, std::shared_ptr<rogue::protocols::epicsV3::Value> value);
 
                ~Pv ();
-
-               bool interest();
 
                // Virtual methods in casPV
 
@@ -65,7 +64,7 @@ namespace rogue {
 
                void endTransaction();
 
-               caStatus read(const casCtx &ctx, gdd &prototype);
+               caStatus read(const casCtx &ctx, gdd &value);
 
                caStatus write(const casCtx &ctx, const gdd &value);
 
@@ -85,7 +84,7 @@ namespace rogue {
 
                const char * getName() const;
 
-               void postEvent ( const casEventMask & select, const gdd & event );
+               void updated(const gdd & event);
 
          };
       }

@@ -23,27 +23,32 @@
 #include <rogue/protocols/rssi/Controller.h>
 #include <rogue/protocols/rssi/Application.h>
 #include <rogue/GeneralError.h>
-#include <boost/make_shared.hpp>
+#include <memory>
 #include <rogue/GilRelease.h>
 #include <rogue/Logging.h>
-#include <sys/syscall.h>
 
 namespace rpr = rogue::protocols::rssi;
 namespace ris = rogue::interfaces::stream;
+
+#ifndef NO_PYTHON
+#include <boost/python.hpp>
 namespace bp  = boost::python;
+#endif
 
 //! Class creation
 rpr::ApplicationPtr rpr::Application::create () {
-   rpr::ApplicationPtr r = boost::make_shared<rpr::Application>();
+   rpr::ApplicationPtr r = std::make_shared<rpr::Application>();
    return(r);
 }
 
 void rpr::Application::setup_python() {
+#ifndef NO_PYTHON
 
    bp::class_<rpr::Application, rpr::ApplicationPtr, bp::bases<ris::Master,ris::Slave>, boost::noncopyable >("Application",bp::init<>());
 
    bp::implicitly_convertible<rpr::ApplicationPtr, ris::MasterPtr>();
    bp::implicitly_convertible<rpr::ApplicationPtr, ris::SlavePtr>();
+#endif
 }
 
 //! Creator
@@ -51,7 +56,8 @@ rpr::Application::Application () { }
 
 //! Destructor
 rpr::Application::~Application() { 
-   thread_->interrupt();
+   threadEn_ = false;
+   cntl_->stopQueue();
    thread_->join();
 }
 
@@ -60,7 +66,8 @@ void rpr::Application::setController( rpr::ControllerPtr cntl ) {
    cntl_ = cntl;
 
    // Start read thread
-   thread_ = new boost::thread(boost::bind(&rpr::Application::runThread, this));
+   threadEn_ = true;
+   thread_ = new std::thread(&rpr::Application::runThread, this);
 }
 
 //! Generate a Frame. Called from master
@@ -75,13 +82,12 @@ void rpr::Application::acceptFrame ( ris::FramePtr frame ) {
 
 //! Thread background
 void rpr::Application::runThread() {
+   ris::FramePtr frame;
    Logging log("rssi.Application");
-   log.info("PID=%i, TID=%li",getpid(),syscall(SYS_gettid));
+   log.logThreadId();
 
-   try {
-      while(1) {
-         sendFrame(cntl_->applicationTx());
-      }
-   } catch (boost::thread_interrupted&) { }
+   while(threadEn_) {
+      if ( (frame=cntl_->applicationTx()) != NULL ) sendFrame(frame);
+   }
 }
 

@@ -1,6 +1,6 @@
 /**
  *-----------------------------------------------------------------------------
- * Title         : SLAC Register Protocol (SRP) Fifo
+ * Title         : AXI Stream FIFO
  * ----------------------------------------------------------------------------
  * File          : Fifo.h
  * Author        : Ryan Herbst <rherbst@slac.stanford.edu>
@@ -21,7 +21,7 @@
 #ifndef __ROGUE_INTERFACES_STREAM_FIFO_H__
 #define __ROGUE_INTERFACES_STREAM_FIFO_H__
 #include <stdint.h>
-#include <boost/thread.hpp>
+#include <thread>
 #include <rogue/interfaces/stream/Master.h>
 #include <rogue/interfaces/stream/Slave.h>
 #include <rogue/Logging.h>
@@ -30,47 +30,68 @@ namespace rogue {
    namespace interfaces {
       namespace stream {
 
-         //!  AXI Stream FIFO
+         //! Stream Frame FIFO
+         /** The stream Fifo object buffers Frame data as it is received from a
+          * Master. It is then passed to the attached Slave objects in an indepdenent
+          * thread. 
+          *
+          * The Fifo can either store the original data or create a copy of the
+          * data in a new Frame. 
+          *
+          * The copied data can be configured to be a fixed size to limit the amount of
+          * data copied.
+          *
+          * The Fifo supports a maximum depth to be configured. After this depth is reached
+          * new incoming Frame objects are dropped.
+          */
          class Fifo : public rogue::interfaces::stream::Master,
                       public rogue::interfaces::stream::Slave {
 
-               rogue::LoggingPtr log_;
+               std::shared_ptr<rogue::Logging> log_;
 
                // Configurations
                uint32_t trimSize_;
                uint32_t maxDepth_;
+               bool     noCopy_;
 
                // Queue
-               rogue::Queue<boost::shared_ptr<rogue::interfaces::stream::Frame>> queue_;
+               rogue::Queue<std::shared_ptr<rogue::interfaces::stream::Frame>> queue_;
 
                // Transmission thread
-               boost::thread* thread_;
+               std::thread* thread_;
+               bool threadEn_;
 
-               //! Thread background
+               // Thread background
                void runThread();
 
             public:
 
-               //! Class creation
-               static boost::shared_ptr<rogue::interfaces::stream::Fifo> 
-                  create(uint32_t maxDepth, uint32_t trimSize);
+               //! Create a Fifo object and return as a FifoPtr
+               /** Exposed as rogue.interfaces.stream.Fifo() to Python
+                * @param maxDepth Set to a non-zero value to configured fixed size mode.
+                * @param trimSize Set to a non-zero vaue to limit the amount of data copied.
+                * @param noCopy Set to true to disable Frame copy
+                * @return Fifo object as a FifoPtr
+                */
+               static std::shared_ptr<rogue::interfaces::stream::Fifo> 
+                  create(uint32_t maxDepth, uint32_t trimSize, bool noCopy);
 
-               //! Setup class in python
+               // Setup class for use in python
                static void setup_python();
 
-               //! Creator
-               Fifo(uint32_t maxDepth, uint32_t trimSize);
+               // Create a Fifo object.
+               Fifo(uint32_t maxDepth, uint32_t trimSize, bool noCopy);
 
-               //! Deconstructor
+               // Destroy the Fifo
                ~Fifo();
 
-               //! Accept a frame from master
-               void acceptFrame ( boost::shared_ptr<rogue::interfaces::stream::Frame> frame );
+               // Receive frame from Master
+               void acceptFrame ( std::shared_ptr<rogue::interfaces::stream::Frame> frame );
 
          };
 
-         // Convienence
-         typedef boost::shared_ptr<rogue::interfaces::stream::Fifo> FifoPtr;
+         //! Alias for using shared pointer as FifoPtr
+         typedef std::shared_ptr<rogue::interfaces::stream::Fifo> FifoPtr;
       }
    }
 }

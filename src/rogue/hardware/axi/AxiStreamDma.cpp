@@ -18,20 +18,26 @@
  * ----------------------------------------------------------------------------
 **/
 #include <rogue/hardware/axi/AxiStreamDma.h>
+#include <rogue/hardware/drivers/AxisDriver.h>
 #include <rogue/interfaces/stream/Frame.h>
 #include <rogue/interfaces/stream/FrameLock.h>
 #include <rogue/interfaces/stream/Buffer.h>
 #include <rogue/GeneralError.h>
-#include <boost/make_shared.hpp>
+#include <memory>
 #include <rogue/GilRelease.h>
+#include <stdlib.h>
 
 namespace rha = rogue::hardware::axi;
 namespace ris = rogue::interfaces::stream;
+
+#ifndef NO_PYTHON
+#include <boost/python.hpp>
 namespace bp  = boost::python;
+#endif
 
 //! Class creation
 rha::AxiStreamDmaPtr rha::AxiStreamDma::create (std::string path, uint32_t dest, bool ssiEnable) {
-   rha::AxiStreamDmaPtr r = boost::make_shared<rha::AxiStreamDma>(path,dest,ssiEnable);
+   rha::AxiStreamDmaPtr r = std::make_shared<rha::AxiStreamDma>(path,dest,ssiEnable);
    return(r);
 }
 
@@ -39,9 +45,11 @@ rha::AxiStreamDmaPtr rha::AxiStreamDma::create (std::string path, uint32_t dest,
 rha::AxiStreamDma::AxiStreamDma ( std::string path, uint32_t dest, bool ssiEnable) {
    uint8_t mask[DMA_MASK_SIZE];
 
-   timeout_ = 1000000;
-   dest_    = dest;
-   enSsi_   = ssiEnable;
+   dest_       = dest;
+   enSsi_      = ssiEnable;
+   zeroCopyEn_ = true;
+
+   rogue::defaultTimeout(timeout_);
 
    log_ = rogue::Logging::create("axi.AxiStreamDma");
 
@@ -63,9 +71,13 @@ rha::AxiStreamDma::AxiStreamDma ( std::string path, uint32_t dest, bool ssiEnabl
 
    // Result may be that rawBuff_ = NULL
    rawBuff_ = dmaMapDma(fd_,&bCount_,&bSize_);
+   if ( rawBuff_ == NULL ) {
+      throw(rogue::GeneralError("AxiStreamDma::AxiStreamDma","Failed to map dma buffers. Increase vm map limit: sysctl -w vm.max_map_count=262144"));
+   }
 
    // Start read thread
-   thread_ = new boost::thread(boost::bind(&rha::AxiStreamDma::runThread, this));
+   threadEn_ = true;
+   thread_ = new std::thread(&rha::AxiStreamDma::runThread, this);
 }
 
 //! Close the device
@@ -73,7 +85,7 @@ rha::AxiStreamDma::~AxiStreamDma() {
    rogue::GilRelease noGil;
 
    // Stop read thread
-   thread_->interrupt();
+   threadEn_ = false;
    thread_->join();
 
    if ( rawBuff_ != NULL ) dmaUnMapDma(fd_, rawBuff_);
@@ -82,12 +94,21 @@ rha::AxiStreamDma::~AxiStreamDma() {
 
 //! Set timeout for frame transmits in microseconds
 void rha::AxiStreamDma::setTimeout(uint32_t timeout) {
-   timeout_ = timeout;
+   if ( timeout > 0 ) {
+      div_t divResult = div(timeout,1000000);
+      timeout_.tv_sec  = divResult.quot;
+      timeout_.tv_usec = divResult.rem;
+   }
 }
 
 //! Set driver debug level
 void rha::AxiStreamDma::setDriverDebug(uint32_t level) {
    dmaSetDebug(fd_,level);
+}
+
+//! Enable / disable zero copy
+void rha::AxiStreamDma::setZeroCopyEn(bool state) {
+   zeroCopyEn_ = state;
 }
 
 //! Strobe ack line
@@ -110,7 +131,7 @@ ris::FramePtr rha::AxiStreamDma::acceptReq ( uint32_t size, bool zeroCopyEn) {
    else buffSize = size;
 
    // Zero copy is disabled. Allocate from memory.
-   if ( zeroCopyEn == false || rawBuff_ == NULL ) {
+   if ( zeroCopyEn_ == false || zeroCopyEn == false || rawBuff_ == NULL ) {
       frame = ris::Pool::acceptReq(size,false);
    }
 
@@ -134,12 +155,11 @@ ris::FramePtr rha::AxiStreamDma::acceptReq ( uint32_t size, bool zeroCopyEn) {
             FD_SET(fd_,&fds);
 
             // Setup select timeout
-            tout.tv_sec=(timeout_>0)?(timeout_ / 1000000):0;
-            tout.tv_usec=(timeout_>0)?(timeout_ % 1000000):10000;
+            tout = timeout_;
 
             if ( select(fd_+1,NULL,&fds,NULL,&tout) <= 0 ) {
-               if ( timeout_ > 0 ) throw(rogue::GeneralError::timeout("AxiStreamDma::acceptReq",timeout_));
-               res = 0;
+               log_->timeout("AxiStreamDma::acceptReq", timeout_);
+               res = -1;
             }
             else {
                // Attempt to get index.
@@ -164,7 +184,6 @@ void rha::AxiStreamDma::acceptFrame ( ris::FramePtr frame ) {
    fd_set           fds;
    struct timeval   tout;
    uint32_t         meta;
-   uint32_t         flags;
    uint32_t         fuser;
    uint32_t         luser;
    uint32_t         cont;
@@ -174,9 +193,6 @@ void rha::AxiStreamDma::acceptFrame ( ris::FramePtr frame ) {
    ris::FrameLockPtr lock = frame->lock();
    emptyFrame = false;
 
-   // Get Flags
-   flags = frame->getFlags();
-
    // Go through each (*it)er in the frame
    ris::Frame::BufferIterator it;
    for (it = frame->beginBuffer(); it != frame->endBuffer(); ++it) {
@@ -184,7 +200,7 @@ void rha::AxiStreamDma::acceptFrame ( ris::FramePtr frame ) {
 
       // First buffer
       if ( it == frame->beginBuffer() ) {
-         fuser = flags & 0xFF;
+         fuser = frame->getFirstUser();
          if ( enSsi_ ) fuser |= 0x2;
       }
       else fuser = 0;
@@ -192,7 +208,7 @@ void rha::AxiStreamDma::acceptFrame ( ris::FramePtr frame ) {
       // Last Buffer
       if ( it == (frame->endBuffer()-1) ) {
          cont = 0;
-         luser = (flags >> 8) & 0xFF;
+         luser = frame->getLastUser();
       }
 
       // Continue flag is set if this is not the last (*it)er
@@ -234,11 +250,10 @@ void rha::AxiStreamDma::acceptFrame ( ris::FramePtr frame ) {
             FD_SET(fd_,&fds);
 
             // Setup select timeout
-            tout.tv_sec=(timeout_ > 0)?(timeout_ / 1000000):0;
-            tout.tv_usec=(timeout_ > 0)?(timeout_ % 1000000):10000;
-
+            tout = timeout_;
+            
             if ( select(fd_+1,NULL,&fds,NULL,&tout) <= 0 ) {
-               if ( timeout_ > 0) throw(rogue::GeneralError("AxiStreamDma::acceptFrame","AXIS Write Call Failed. Buffer Not Available!!!!"));
+               log_->timeout("AxiStreamDma::acceptFrame", timeout_);
                res = 0;
             }
             else {
@@ -267,7 +282,8 @@ void rha::AxiStreamDma::retBuffer(uint8_t * data, uint32_t meta, uint32_t size) 
       // Device is open and buffer is not stale
       // Bit 30 indicates buffer has already been returned to hardware
       if ( (fd_ >= 0) && ((meta & 0x40000000) == 0) ) {
-         dmaRetIndex(fd_,meta & 0x3FFFFFFF); // Return to hardware
+         if ( dmaRetIndex(fd_,meta & 0x3FFFFFFF) < 0 ) 
+            throw(rogue::GeneralError("AxiStreamDma::retBuffer","AXIS Return Buffer Call Failed!!!!"));
       }
 
       decCounter(size);
@@ -279,18 +295,19 @@ void rha::AxiStreamDma::retBuffer(uint8_t * data, uint32_t meta, uint32_t size) 
 
 //! Run thread
 void rha::AxiStreamDma::runThread() {
-   ris::BufferPtr buff;
+   ris::BufferPtr buff[RxBufferCount];
+   uint32_t       meta[RxBufferCount];
+   uint32_t       rxFlags[RxBufferCount];
+   uint32_t       rxError[RxBufferCount];
+   int32_t        rxSize[RxBufferCount];
+   int32_t        rxCount;
+   int32_t        x;
    ris::FramePtr  frame;
    fd_set         fds;
-   int32_t        res;
-   uint32_t       error;
-   uint32_t       meta;
+   uint8_t        error;
    uint32_t       fuser;
    uint32_t       luser;
-   uint32_t       flags;
    uint32_t       cont;
-   uint32_t       rxFlags;
-   uint32_t       rxError;
    struct timeval tout;
 
    fuser = 0;
@@ -300,95 +317,97 @@ void rha::AxiStreamDma::runThread() {
    // Preallocate empty frame
    frame = ris::Frame::create();
 
-   try {
-      while(1) {
+   log_->logThreadId();
 
-         // Setup fds for select call
-         FD_ZERO(&fds);
-         FD_SET(fd_,&fds);
+   while(threadEn_) {
 
-         // Setup select timeout
-         tout.tv_sec  = 0;
-         tout.tv_usec = 100;
+      // Setup fds for select call
+      FD_ZERO(&fds);
+      FD_SET(fd_,&fds);
 
-         // Select returns with available buffer
-         if ( select(fd_+1,&fds,NULL,NULL,&tout) > 0 ) {
+      // Setup select timeout
+      tout.tv_sec  = 0;
+      tout.tv_usec = 1000;
 
-            // Zero copy buffers were not allocated
-            if ( rawBuff_ == NULL ) {
+      // Select returns with available buffer
+      if ( select(fd_+1,&fds,NULL,NULL,&tout) > 0 ) {
 
-               // Allocate a buffer
-               buff = allocBuffer(bSize_,NULL);
+         // Zero copy buffers were not allocated
+         if ( zeroCopyEn_ == false || rawBuff_ == NULL ) {
 
-               // Attempt read, dest is not needed since only one lane/vc is open
-               res = dmaRead(fd_, buff->begin(), buff->getAvailable(), &rxFlags, &rxError, NULL);
-               fuser = axisGetFuser(rxFlags);
-               luser = axisGetLuser(rxFlags);
-               cont  = axisGetCont(rxFlags);
+            // Allocate a buffer
+            buff[0] = allocBuffer(bSize_,NULL);
+
+            // Attempt read, dest is not needed since only one lane/vc is open
+            rxSize[0] = dmaRead(fd_, buff[0]->begin(), buff[0]->getAvailable(), rxFlags, rxError, NULL);
+            if ( rxSize[0] <= 0 ) rxCount = rxSize[0];
+            else rxCount = 1;
+         }
+
+         // Zero copy read
+         else {
+
+            // Attempt read, dest is not needed since only one lane/vc is open
+            rxCount = dmaReadBulkIndex(fd_, RxBufferCount, rxSize, meta, rxFlags, rxError, NULL);
+
+            // Allocate a buffer, Mark zero copy meta with bit 31 set, lower bits are index
+            for (x=0; x < rxCount; x++) 
+               buff[x] = createBuffer(rawBuff_[meta[x]],0x80000000 | meta[x],bSize_,bSize_);
+         }
+
+         // Return of -1 is bad
+         if ( rxCount < 0 ) 
+            throw(rogue::GeneralError("AxiStreamDma::runThread","DMA Interface Failure!"));
+
+         // Read was successfull
+         for (x=0; x < rxCount; x++) {
+
+            fuser = axisGetFuser(rxFlags[x]);
+            luser = axisGetLuser(rxFlags[x]);
+            cont  = axisGetCont(rxFlags[x]);
+
+            buff[x]->setPayload(rxSize[x]);
+
+            error = frame->getError();
+
+            // Receive error
+            error |= (rxError[x] & 0xFF);
+
+            // First buffer of frame
+            if ( frame->isEmpty() ) frame->setFirstUser(fuser&0xFF);
+
+            // Last buffer of frame
+            if ( cont == 0 ) {
+               frame->setLastUser(luser&0xFF);
+               if ( enSsi_ && ((luser & 0x1) != 0 )) error |= 0x80;
             }
 
-            // Zero copy read
-            else {
+            frame->setError(error);
+            frame->appendBuffer(buff[x]);
+            buff[x].reset();
 
-               // Attempt read, dest is not needed since only one lane/vc is open
-               if ((res = dmaReadIndex(fd_, &meta, &rxFlags, &rxError, NULL)) > 0) {
-                  fuser = axisGetFuser(rxFlags);
-                  luser = axisGetLuser(rxFlags);
-                  cont  = axisGetCont(rxFlags);
-
-                  // Allocate a buffer, Mark zero copy meta with bit 31 set, lower bits are index
-                  buff = createBuffer(rawBuff_[meta],0x80000000 | meta,bSize_,bSize_);
-               }
-            }
-
-            // Return of -1 is bad
-            if ( res < 0 ) 
-               throw(rogue::GeneralError("AxiStreamDma::runThread","DMA Interface Failure!"));
-
-            // Read was successfull
-            if ( res > 0 ) {
-               buff->setPayload(res);
-               flags = frame->getFlags();
-               error = frame->getError();
-
-               // Receive error
-               error |= rxError;
-
-               // First buffer of frame
-               if ( frame->isEmpty() ) flags |= (fuser & 0xFF);
-
-               // Last buffer of frame
-               if ( cont == 0 ) {
-                  flags |= ((luser << 8) & 0xFF00);
-                  if ( enSsi_ && ((luser & 0x1) != 0 )) error |= 0x800000000;
-               }
-
-               frame->setError(error);
-               frame->setFlags(flags);
-               frame->appendBuffer(buff);
-               buff.reset();
-
-               // If continue flag is not set, push frame and get a new empty frame
-               if ( cont == 0 ) {
-                  sendFrame(frame);
-                  frame = ris::Frame::create();
-               }
+            // If continue flag is not set, push frame and get a new empty frame
+            if ( cont == 0 ) {
+               sendFrame(frame);
+               frame = ris::Frame::create();
             }
          }
-         boost::this_thread::interruption_point();
       }
-   } catch (boost::thread_interrupted&) { }
+   }
 }
 
 void rha::AxiStreamDma::setup_python () {
+#ifndef NO_PYTHON
 
    bp::class_<rha::AxiStreamDma, rha::AxiStreamDmaPtr, bp::bases<ris::Master,ris::Slave>, boost::noncopyable >("AxiStreamDma",bp::init<std::string,uint32_t,bool>())
       .def("setDriverDebug", &rha::AxiStreamDma::setDriverDebug)
       .def("dmaAck",         &rha::AxiStreamDma::dmaAck)
       .def("setTimeout",     &rha::AxiStreamDma::setTimeout)
+      .def("setZeroCopyEn",  &rha::AxiStreamDma::setZeroCopyEn)
    ;
 
    bp::implicitly_convertible<rha::AxiStreamDmaPtr, ris::MasterPtr>();
    bp::implicitly_convertible<rha::AxiStreamDmaPtr, ris::SlavePtr>();
+#endif
 }
 

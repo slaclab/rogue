@@ -20,8 +20,8 @@
  *-----------------------------------------------------------------------------
 **/
 #include <stdint.h>
-#include <boost/thread.hpp>
-#include <boost/make_shared.hpp>
+#include <thread>
+#include <memory>
 #include <rogue/interfaces/stream/Master.h>
 #include <rogue/interfaces/stream/Slave.h>
 #include <rogue/interfaces/stream/Frame.h>
@@ -34,23 +34,29 @@
 #include <rogue/protocols/srp/SrpV0.h>
 #include <rogue/Logging.h>
 #include <rogue/GilRelease.h>
+#include <string.h>
 
-namespace bp = boost::python;
 namespace rps = rogue::protocols::srp;
 namespace rim = rogue::interfaces::memory;
 namespace ris = rogue::interfaces::stream;
 
+#ifndef NO_PYTHON
+#include <boost/python.hpp>
+namespace bp  = boost::python;
+#endif
+
 //! Class creation
 rps::SrpV0Ptr rps::SrpV0::create () {
-   rps::SrpV0Ptr p = boost::make_shared<rps::SrpV0>();
+   rps::SrpV0Ptr p = std::make_shared<rps::SrpV0>();
    return(p);
 }
 
 //! Setup class in python
 void rps::SrpV0::setup_python() {
+#ifndef NO_PYTHON
 
    bp::class_<rps::SrpV0, rps::SrpV0Ptr, bp::bases<ris::Master,ris::Slave,rim::Slave>, boost::noncopyable >("SrpV0",bp::init<>());
-
+#endif
 }
 
 //! Creator with version constant
@@ -128,10 +134,7 @@ void rps::SrpV0::doTransaction(rim::TransactionPtr tran) {
    ris::toFrame(fIter,headerLen,header); 
 
    // Write data
-   if ( doWrite ) {
-      std::copy(tIter,tIter+tran->size(),fIter);
-      fIter += tran->size();
-   }
+   if ( doWrite ) ris::toFrame(fIter, tran->size(), tIter);
 
    // Last field is zero
    tail[0] = 0;
@@ -162,12 +165,12 @@ void rps::SrpV0::acceptFrame ( ris::FramePtr frame ) {
    bool     doWrite;
    uint32_t fSize;
 
-   rogue::GilRelease noGil();
+   rogue::GilRelease noGil;
    ris::FrameLockPtr fLock = frame->lock();
 
    // Check frame size
    if ( (fSize = frame->getPayload()) < 16 ) {
-      log_->info("Got undersize frame size = %i",fSize);
+      log_->warning("Got undersize frame size = %i",fSize);
       return; // Invalid frame, drop it
    }
 
@@ -184,17 +187,16 @@ void rps::SrpV0::acceptFrame ( ris::FramePtr frame ) {
 
    // Find Transaction
    if ( (tran = getTransaction(id)) == NULL ) {
-     log_->debug("Invalid ID frame for id=%i",id);
+     log_->warning("Invalid ID frame for id=%i",id);
      return; // Bad id or post, drop frame
    }
-   delTransaction(id);
 
    // Setup transaction iterator
    rim::TransactionLockPtr lock = tran->lock();
 
    // Transaction expired
    if ( tran->expired() ) {
-      log_->debug("Transaction expired. Id=%i",id);
+      log_->warning("Transaction expired. Id=%i",id);
       return;
    }
    tIter = tran->begin();
@@ -218,8 +220,8 @@ void rps::SrpV0::acceptFrame ( ris::FramePtr frame ) {
    fIter = frame->endRead()-TailLen;
    ris::fromFrame(fIter,TailLen,tail);
    if ( tail[0] != 0 ) {
-      if ( tail[0] & 0x20000 ) tran->done(rim::AxiTimeout);
-      else if ( tail[0] & 0x10000 ) tran->done(rim::AxiFail);
+      if ( tail[0] & 0x20000 ) tran->done(rim::BusTimeout);
+      else if ( tail[0] & 0x10000 ) tran->done(rim::BusFail);
       else tran->done(tail[0]);
       log_->warning("Error detected for ID id=%i, tail=0x%0.8x",id,tail[0]);
       return;
@@ -228,7 +230,7 @@ void rps::SrpV0::acceptFrame ( ris::FramePtr frame ) {
    // Copy data if read
    if ( ! doWrite ) {
       fIter = frame->beginRead() + RxHeadLen;
-      std::copy(fIter,fIter+tran->size(),tIter);
+      ris::fromFrame(fIter, tran->size(), tIter);
    }
 
    // Done

@@ -17,7 +17,6 @@ import pyrogue as pr
 import textwrap
 import rogue.interfaces.memory
 import parse
-import Pyro4
 import math
 import inspect
 import threading
@@ -26,6 +25,15 @@ from collections import Iterable
 class VariableError(Exception):
     """ Exception for variable access errors."""
     pass
+
+
+class VariableValue(object):
+    def __init__(self, var):
+        self.value     = var.value()
+        self.valueDisp = var.genDisp(self.value)
+        self.disp      = var.disp
+        self.enum      = var.enum
+
 
 class BaseVariable(pr.Node):
 
@@ -40,7 +48,9 @@ class BaseVariable(pr.Node):
                  hidden=False,
                  minimum=None,
                  maximum=None,
-                 pollInterval=0
+                 pollInterval=0,
+                 typeStr='Unknown',
+                 offset=0
                 ):
 
         # Public Attributes
@@ -49,8 +59,11 @@ class BaseVariable(pr.Node):
         self._minimum       = minimum # For base='range'
         self._maximum       = maximum # For base='range'
         self._default       = value
+        self._block         = None
         self._pollInterval  = pollInterval
+        self._nativeType    = None
         self.__listeners    = []
+        self.__functions    = []
         self.__dependencies = []
 
         # Build enum if specified
@@ -70,22 +83,18 @@ class BaseVariable(pr.Node):
             self._disp = 'enum'
 
         # Determine typeStr from value type
-        if value is not None:
+        if typeStr == 'Unknown' and value is not None:
             if isinstance(value, list):
                 self._typeStr = f'List[{value[0].__class__.__name__}]'
             else:
                 self._typeStr = value.__class__.__name__
         else:
-            self._typeStr = 'Unknown'
+            self._typeStr = typeStr
 
         # Create inverted enum
         self._revEnum = None
         if self._enum is not None:
             self._revEnum = {v:k for k,v in self._enum.items()}
-
-        # Legacy SL and CMD become RW
-        if self._mode == 'SL': self._mode = 'RW'
-        if self._mode == 'CMD' : self._mode = 'RW'
 
         # Check modes
         if (self._mode != 'RW') and (self._mode != 'RO') and \
@@ -95,42 +104,42 @@ class BaseVariable(pr.Node):
         # Call super constructor
         pr.Node.__init__(self, name=name, description=description, hidden=hidden)
 
-    @Pyro4.expose
+    @pr.expose
     @property
     def enum(self):
         return self._enum
 
-    @Pyro4.expose
+    @pr.expose
     @property
     def revEnum(self):
         return self._revEnum
 
-    @Pyro4.expose
+    @pr.expose
     @property
     def typeStr(self):
         return self._typeStr
 
-    @Pyro4.expose
+    @pr.expose
     @property
     def disp(self):
         return self._disp
 
-    @Pyro4.expose
+    @pr.expose
     @property
     def mode(self):
         return self._mode
 
-    @Pyro4.expose
+    @pr.expose
     @property
     def units(self):
         return self._units
 
-    @Pyro4.expose
+    @pr.expose
     @property
     def minimum(self):
         return self._minimum
 
-    @Pyro4.expose
+    @pr.expose
     @property
     def maximum(self):
         return self._maximum
@@ -156,131 +165,193 @@ class BaseVariable(pr.Node):
     def addListener(self, listener):
         """
         Add a listener Variable or function to call when variable changes. 
-        If listener is a Variable then Variable.updated() will be used as the function
         This is usefull when chaining variables together. (adc conversions, etc)
         The variable, value and display string will be passed as an arg: func(path,value,disp)
         """
         if isinstance(listener, BaseVariable):
-            self.__listeners.append(listener.updated)
-        else:
             self.__listeners.append(listener)
+        else:
+            self.__functions.append(listener)
 
-    @Pyro4.expose
+    @pr.expose
     def set(self, value, write=True):
-        pass
+        """
+        Set the value and write to hardware if applicable
+        Writes to hardware are blocking. An error will result in a logged exception.
+        """
+        self._log.debug("{}.set({})".format(self, value))
+        try:
+            if self._block is not None:
+                self._block.set(self, value)
 
-    @Pyro4.expose
+                if write:
+                    self._parent.writeBlocks(force=True, recurse=False, variable=self)
+                    self._parent.verifyBlocks(recurse=False, variable=self)
+                    self._parent.checkBlocks(recurse=False, variable=self)
+
+        except Exception as e:
+            self._log.exception(e)
+            self._log.error("Error setting value '{}' to variable '{}' with type {}".format(value,self.path,self.typeStr))
+
+    @pr.expose
     def post(self,value):
-        pass
+        """
+        Set the value and write to hardware if applicable using a posted write.
+        This method does not call through parent.writeBlocks(), but rather
+        calls on self._block directly.
+        """
+        self._log.debug("{}.post({})".format(self, value))
 
-    @Pyro4.expose
+        try:
+            if self._block is not None:
+                self._block.set(self, value)
+                self._block.startTransaction(rogue.interfaces.memory.Post, check=True)
+
+        except Exception as e:
+            self._log.exception(e)
+            self._log.error("Error posting value '{}' to variable '{}' with type {}".format(value,self.path,self.typeStr))
+
+    @pr.expose
     def get(self,read=True):
-        return self._default
+        """ 
+        Return the value after performing a read from hardware if applicable.
+        Hardware read is blocking. An error will result in a logged exception.
+        Listeners will be informed of the update.
+        """
+        try:
+            if self._block is not None:
+                if read:
+                    self._parent.readBlocks(recurse=False, variable=self)
+                    self._parent.checkBlocks(recurse=False, variable=self)
 
-    @Pyro4.expose
+                ret = self._block.get(self)
+            else:
+                ret = None
+
+        except Exception as e:
+            self._log.exception(e)
+            self._log.error("Error reading value from variable '{}'".format(self.path))
+            ret = None
+
+        return ret
+
+    @pr.expose
     def value(self):
         return self.get(read=False)
 
-    @Pyro4.expose
-    def updated(self, path=None, value=None, disp=None):
-        """Variable has been updated. Inform listeners."""
-
-        value = self.value()
-        disp  = self.valueDisp()
-
-        for func in self.__listeners:
-            if hasattr(func,'varListener'):
-                func.varListener(self.path,value,disp)
-            else:
-                func(self.path,value,disp)
-
-        # Root variable update log
-        if self._root is not None:
-            self._root._varUpdated(self.path,value,disp)
-
-    @Pyro4.expose
+    @pr.expose
     def genDisp(self, value):
-        #print('{}.genDisp(read={}) disp={} value={}'.format(self.path, read, self.disp, value))
-        if self.disp == 'enum':
-            #print('enum: {}'.format(self.enum))
-            #print('get: {}'.format(self.get(read)))
-            return self.enum[value]
-        else:
-            if value == '' or value is None:
-                return value
+        try:
+            #print('{}.genDisp(read={}) disp={} value={}'.format(self.path, read, self.disp, value))
+            if self.disp == 'enum':
+                if value in self.enum:
+                    ret = self.enum[value]
+                else:
+                    self._log.error("Invalid enum value {} in variable '{}'".format(value,self.path))
+                    ret = 'INVALID: {:#x}'.format(value)
             else:
-                return self.disp.format(value)
+                if value == '' or value is None:
+                    ret = value
+                else:
+                    ret = self.disp.format(value)
 
-    @Pyro4.expose
+        except Exception as e:
+            self._log.exception(e)
+            self._log.error(f"Error generating disp for value {value} in variable {self.path}")
+            ret = None
+
+        return ret
+
+    @pr.expose
     def getDisp(self, read=True):
         return(self.genDisp(self.get(read)))
 
-    @Pyro4.expose
+    @pr.expose
     def valueDisp(self, read=True):
         return self.getDisp(read=False)
 
-    @Pyro4.expose
+    @pr.expose
     def parseDisp(self, sValue):
-        if sValue is None or isinstance(sValue, self.nativeType()):
-            return sValue
-        else:        
-            if sValue is '':
-                return ''
-            elif self.disp == 'enum':
-                return self.revEnum[sValue]
-            else:
-                t = self.nativeType()
-                if t == int:
-                    return int(sValue, 0)
-                elif t == float:
-                    return float(sValue)
-                elif t == bool:
-                    return str.lower(sValue) == "true"
-                elif t == list or t == dict:
-                    return eval(sValue)
+        try:
+            if sValue is None or isinstance(sValue, self.nativeType()):
+                return sValue
+            else:        
+                if sValue is '':
+                    return ''
+                elif self.disp == 'enum':
+                    return self.revEnum[sValue]
                 else:
-                    return sValue
+                    t = self.nativeType()
+                    if t == int:
+                        return int(sValue, 0)
+                    elif t == float:
+                        return float(sValue)
+                    elif t == bool:
+                        return str.lower(sValue) == "true"
+                    elif t == list or t == dict:
+                        return eval(sValue)
+                    else:
+                        return sValue
+        except:
+            raise VariableError("Invalid value {} for variable {} with type {}".format(sValue,self.name,self.nativeType()))
 
-    @Pyro4.expose
+    @pr.expose
     def setDisp(self, sValue, write=True):
-        self.set(self.parseDisp(sValue), write)
+        try:
+            self.set(self.parseDisp(sValue), write)
+        except Exception as e:
+            self._log.exception(e)
+            self._log.error("Error setting value '{}' to variable '{}' with type {}".format(sValue,self.path,self.typeStr))
 
-    @Pyro4.expose
+    @pr.expose
     def nativeType(self):
-        return type(self.value())
+        if self._nativeType is None:
+            self._nativeType = type(self.value())
+        return self._nativeType
 
     def _setDefault(self):
-        # Called by parent Device after _buildBlocks()
         if self._default is not None:
             self.setDisp(self._default, write=False)
 
     def _updatePollInterval(self):
-        if self._pollInterval > 0 and self.root._pollQueue is not None:
+        if self._pollInterval > 0 and self.root is not None and self.root._pollQueue is not None:
             self.root._pollQueue.updatePollInterval(self)
 
     def _finishInit(self):
+        # Set the default value but dont write
         self._setDefault()
         self._updatePollInterval()
 
-
-    #def __set__(self, value):
-        #self.set(value, write=True)
-
-    #def __get__(self):
-        #self.get(read=True)
-
     def _setDict(self,d,writeEach,modes):
+        #print(f'{self.path}._setDict(d={d})')        
         if self._mode in modes:
             self.setDisp(d,writeEach)
 
     def _getDict(self,modes):
         if self._mode in modes:
-            return self.valueDisp()
+            return VariableValue(self)
         else:
             return None
 
+    def _queueUpdate(self):
+        self._root._queueUpdates(self)
 
-@Pyro4.expose
+        for var in self.__listeners:
+            var._queueUpdate()
+
+    def _doUpdate(self):
+
+        val = VariableValue(self)
+
+        for func in self.__functions:
+            if hasattr(func,'varListener'):
+                func.varListener(self.path,val.value,val.valueDisp)
+            else:
+                func(self.path,val.value,val.valueDisp)
+
+        return val
+
+
 class RemoteVariable(BaseVariable):
 
     def __init__(self, *,
@@ -299,6 +370,7 @@ class RemoteVariable(BaseVariable):
                  bitSize=32,
                  bitOffset=0,
                  pollInterval=0, 
+                 overlapEn=False,
                  verify=True, ):
 
         if disp is None:
@@ -324,6 +396,10 @@ class RemoteVariable(BaseVariable):
         if len(offset) != len(bitOffset) != len(bitSize):
             raise VariableError('Lengths of offset: {}, bitOffset: {}, bitSize {} must match'.format(offset, bitOffset, bitSize))        
 
+        # Check for invalid values
+        if 0 in bitSize:
+            raise VariableError('BitSize of 0 is invalid')
+
         # Normalize bitOffsets relative to the smallest offset
         baseAddr = min(offset)
         bitOffset = [x+((y-baseAddr)*8) for x,y in zip(bitOffset, offset)]
@@ -340,114 +416,48 @@ class RemoteVariable(BaseVariable):
         self._verify    = verify
         self._typeStr   = self._base.name
         self._bytes     = int(math.ceil(float(self._bitOffset[-1] + self._bitSize[-1]) / 8.0))
+        self._overlapEn = overlapEn
 
 
     @property
     def varBytes(self):
         return self._bytes
 
-    @Pyro4.expose
+    @pr.expose
     @property
     def offset(self):
         return self._offset
 
-    @Pyro4.expose
+    @pr.expose
+    @property
+    def address(self):
+        return self._block.address
+
+    @pr.expose
     @property
     def bitSize(self):
         return self._bitSize
 
-    @Pyro4.expose
+    @pr.expose
     @property
     def bitOffset(self):
         return self._bitOffset
 
-    @Pyro4.expose
+    @pr.expose
     @property
     def verify(self):
         return self._verify
 
-    @Pyro4.expose
+    @pr.expose
     @property
     def base(self):
         return self._base
 
-    @Pyro4.expose
-    def set(self, value, write=True):
-        """
-        Set the value and write to hardware if applicable
-        Writes to hardware are blocking. An error will result in a logged exception.
-        """
+    def _setDefault(self):
+        if self._default is not None:
+            self._block._setDefault(self, self.parseDisp(self._default))
 
-        self._log.debug("{}.set({})".format(self, value))
-        try:
-
-            if self._block is None:
-                raise VariableError("set called before tree is started")
-
-            self._block.set(self, value)
-
-            if write and self._block.mode != 'RO':
-                self._parent.writeBlocks(force=False, recurse=False, variable=self)
-
-                if self._block.mode == 'RW':
-                    self._parent.verifyBlocks(recurse=False, variable=self)
-
-                self._parent.checkBlocks(recurse=False, variable=self)
-
-        except Exception as e:
-            self._log.exception(e)
-            self._log.error("Error setting value '{}' to variable '{}' with type {}".format(value,self.path,self.typeStr))
-
-    @Pyro4.expose
-    def post(self,value):
-        """
-        Set the value and write to hardware if applicable using a posted write.
-        This method does not call through parent.writeBlocks(), but rather
-        calls on self._block directly.
-        """
-        self._log.debug("{}.post({})".format(self, value))
-
-        try:
-
-            if self._block is None:
-                raise VariableError("post called before tree is started")
-
-            self._block.set(self, value)
-
-
-            if self._block.mode != 'RO':
-                self._block.startTransaction(rogue.interfaces.memory.Post, check=False)
-                self._block._checkTransaction()
-
-        except Exception as e:
-            self._log.exception(e)
-            self._log.error("Error posting value '{}' to variable '{}' with type {}".format(value,self.path,self.typeStr))
-
-    @Pyro4.expose
-    def get(self,read=True):
-        """ 
-        Return the value after performing a read from hardware if applicable.
-        Hardware read is blocking. An error will result in a logged exception.
-        Listeners will be informed of the update.
-        """
-        try:
-            if self._block is None:
-                raise VariableError("get called before tree is started")
-
-            if read and self._block.mode != 'WO':
-                self._parent.readBlocks(recurse=False, variable=self)
-                self._parent.checkBlocks(recurse=False, variable=self)
-
-            ret = self._block.get(self)
-
-        except Exception as e:
-            self._log.exception(e)
-            self._log.error("Error reading value from variable '{}'".format(self.path))
-            return None
-
-        return ret
-
-    @Pyro4.expose
+    @pr.expose
     def parseDisp(self, sValue):
         if sValue is None or isinstance(sValue, self.nativeType()):
             return sValue
@@ -492,53 +502,75 @@ class LocalVariable(BaseVariable):
                  maximum=None,
                  localSet=None,
                  localGet=None,
+                 typeStr='Unknown',
                  pollInterval=0):
 
-        if value is None:
-            raise VariableError(f'LocalVariable {self.path} must specify value= argument in constructor')
+        if value is None and localGet is None:
+            raise VariableError(f'LocalVariable {self.path} without localGet() must specify value= argument in constructor')
 
         BaseVariable.__init__(self, name=name, description=description, 
                               mode=mode, value=value, disp=disp, 
                               enum=enum, units=units, hidden=hidden,
-                              minimum=minimum, maximum=maximum,
+                              minimum=minimum, maximum=maximum, typeStr=typeStr,
                               pollInterval=pollInterval)
 
         self._block = pr.LocalBlock(variable=self,localSet=localSet,localGet=localGet,value=self._default)
 
-        
-    @Pyro4.expose
-    def set(self, value, write=True):
-        try:
-            self._block.set(value)
-
-        except Exception as e:
-            self._log.exception(e)
-
-        if write: self.updated()
-
-    def __set__(self, value):
-        self.set(value, write=False)
-
-    @Pyro4.expose
-    def post(self,value):
-        self.set(self, value)
-
-    @Pyro4.expose
-    def get(self,read=True):
-        try:
-            ret = self._block.get()
-
-        except Exception as e:
-            self._log.exception(e)
-            return None
-
-        if read: self.updated()
-        return ret
-
     def __get__(self):
         return self.get(read=False)
 
-@Pyro4.expose
+    def __iadd__(self, other):
+        self._block._iadd(other)
+        return self
+
+    def __isub__(self, other):
+        self._block._isub(other)
+        return self
+
+    def __imul__(self, other):
+        self._block._imul(other)
+        return self
+
+    def __imatmul__(self, other):
+        self._block._imatmul(other)
+        return self
+
+    def __itruediv__(self, other):
+        self._block._itruediv(other)
+        return self
+
+    def __ifloordiv__(self, other):
+        self._block._ifloordiv(other)
+        return self
+
+    def __imod__(self, other):
+        self._block._imod(other)
+        return self
+
+    def __ipow__(self, other):
+        self._block._ipow(other)
+        return self
+
+    def __ilshift__(self, other):
+        self._block._ilshift(other)
+        return self
+
+    def __irshift__(self, other):
+        self._block._irshift(other)
+        return self
+
+    def __iand__(self, other):
+        self._block._iand(other)
+        return self
+
+    def __ixor__(self, other):
+        self._block._ixor(other)
+        return self
+
+    def __ior__(self, other):
+        self._block._ior(other)
+        return self
+
 class LinkVariable(BaseVariable):
 
     def __init__(self, *,
@@ -560,18 +592,21 @@ class LinkVariable(BaseVariable):
             self._linkedGet = linkedGet if linkedGet else variable.value
             self._linkedSet = linkedSet if linkedSet else variable.set
 
-            
             # Search the kwargs for overridden properties, otherwise the properties from the linked variable will be used
             args = ['disp', 'enum', 'units', 'minimum', 'maximum']
             for arg in args:
                 if arg not in kwargs:
                     kwargs[arg] = getattr(variable, arg)
 
-        # Call super constructor
-        BaseVariable.__init__(self, name=name, **kwargs)
+        if not self._linkedSet:
+            kwargs['mode'] = 'RO'
+        if not self._linkedGet:
+            kwargs['mode'] = 'WO'
 
-        # Must be done after super cunstructor to override it
-        self._typeStr = typeStr        
+        # Need to have at least 1 of linkedSet or linkedGet, otherwise error
+
+        # Call super constructor
+        BaseVariable.__init__(self, name=name, typeStr=typeStr, **kwargs)
 
         # Dependency tracking
         if variable is not None:
@@ -586,7 +621,7 @@ class LinkVariable(BaseVariable):
         # Allow dependencies to be accessed as indicies of self
         return self.dependencies[key]
 
-    @Pyro4.expose
+    @pr.expose
     def set(self, value, write=True):
         if self._linkedSet is not None:
 
@@ -595,7 +630,7 @@ class LinkVariable(BaseVariable):
 
             varFuncHelper(self._linkedSet,pargs,self._log,self.path)
 
-    @Pyro4.expose
+    @pr.expose
     def get(self, read=True):
         if self._linkedGet is not None:
 
@@ -605,63 +640,6 @@ class LinkVariable(BaseVariable):
             return varFuncHelper(self._linkedGet,pargs,self._log,self.path)
         else:
             return None
-
-
-# Legacy Support
-def Variable(local=False, setFunction=None, getFunction=None, **kwargs):
-        
-    # Local Variables override get and set functions
-    if local or setFunction is not None or getFunction is not None:
-
-        # Get list of possible class args
-        cargs = inspect.getfullargspec(LocalVariable.__init__).args + \
-                inspect.getfullargspec(LocalVariable.__init__).kwonlyargs
-
-        # Pass supported args
-        args = {k:kwargs[k] for k in kwargs if k in cargs}
-
-        ret = LocalVariable(localSet=setFunction, localGet=getFunction, **args)
-        ret._depWarn = True
-        return(ret)
-
-    # Otherwise assume remote
-    else:
-        if 'base' not in kwargs:
-            kwargs['base'] = pr.UInt
-            
-        base = kwargs['base']
-
-        if isinstance(base, str):
-            if base == 'hex' or base == 'uint' or base == 'bin' or base == 'enum' or base == 'range':
-                kwargs['base'] = pr.UInt
-            elif base == 'int':
-                kwargs['base'] = pr.Int
-            elif base == 'bool':
-                kwargs['base'] = pr.Bool
-            elif base == 'string':
-                kwargs['base'] = pr.String
-            elif base == 'float':
-                kwargs['base'] = pr.Float
-
-
-        if 'disp' not in kwargs and isinstance(base, str):
-            if base == 'uint':
-                kwargs['disp'] = '{:d}'
-            elif base == 'bin':
-                kwargs['disp'] = '{:#b}'
-#             else:
-#                 kwargs['disp'] = kwargs['base'].defaultdisp     # or None?       
-
-        # Get list of possible class args
-        cargs = inspect.getfullargspec(RemoteVariable.__init__).args + \
-                inspect.getfullargspec(RemoteVariable.__init__).kwonlyargs
-
-        # Pass supported args
-        args = {k:kwargs[k] for k in kwargs if k in cargs}
-
-        ret = RemoteVariable(**args)
-        ret._depWarn = True
-        return(ret)
 
 
 # Function helper

@@ -13,5 +13,12 @@
 # contained in the LICENSE.txt file.
 # ----------------------------------------------------------------------------
 
-file(GLOB rogue_SRC "*.cpp")
-target_sources(rogue-core PRIVATE ${rogue_SRC})
+target_sources(rogue-core PRIVATE "${CMAKE_CURRENT_LIST_DIR}/StreamReader.cpp")
+target_sources(rogue-core PRIVATE "${CMAKE_CURRENT_LIST_DIR}/StreamWriter.cpp")
+target_sources(rogue-core PRIVATE "${CMAKE_CURRENT_LIST_DIR}/StreamWriterChannel.cpp")
+target_sources(rogue-core PRIVATE "${CMAKE_CURRENT_LIST_DIR}/LegacyStreamWriter.cpp")
+target_sources(rogue-core PRIVATE "${CMAKE_CURRENT_LIST_DIR}/LegacyStreamReader.cpp")
+
+if (NOT NO_PYTHON)
+   target_sources(rogue-core PRIVATE "${CMAKE_CURRENT_LIST_DIR}/module.cpp")
+endif()

@@ -8,27 +8,33 @@
  * Description:
  * Variable subclass of Value, for interfacing with rogue variables
  * ----------------------------------------------------------------------------
- * This file is part of the rogue software platform. It is subject to 
- * the license terms in the LICENSE.txt file found in the top-level directory 
- * of this distribution and at: 
- *    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
- * No part of the rogue software platform, including this file, may be 
- * copied, modified, propagated, or distributed except according to the terms 
+ * This file is part of the rogue software platform. It is subject to
+ * the license terms in the LICENSE.txt file found in the top-level directory
+ * of this distribution and at:
+ *    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+ * No part of the rogue software platform, including this file, may be
+ * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
 
-#include <boost/python.hpp>
 #include <rogue/protocols/epicsV3/Variable.h>
 #include <rogue/protocols/epicsV3/Pv.h>
 #include <rogue/protocols/epicsV3/Server.h>
 #include <rogue/GeneralError.h>
 #include <rogue/ScopedGil.h>
 #include <rogue/GilRelease.h>
-#include <boost/make_shared.hpp>
-#include <boost/make_shared.hpp>
+#include <memory>
+#include <memory>
+
+#ifdef __MACH__
+#include <mach/clock.h>
+#include <mach/mach.h>
+#endif
 
 namespace rpe = rogue::protocols::epicsV3;
+
+#include <boost/python.hpp>
 namespace bp  = boost::python;
 
 //! Setup class in python
@@ -52,7 +58,6 @@ rpe::Variable::Variable (std::string epicsName, bp::object p, bool syncRead) : V
    char        tmpType[50];
    uint32_t    count;
 
-   inSet_    = false;
    var_      = bp::object(p);
    syncRead_ = syncRead;
    setAttr_  = "setDisp";
@@ -99,31 +104,23 @@ rpe::Variable::Variable (std::string epicsName, bp::object p, bool syncRead) : V
    }
 
    // Init value
-   if ( isString_ ) fromPython(var_.attr("valueDisp")());
+   if (  isString_ || epicsType_ == aitEnumEnum16 ) fromPython(var_.attr("valueDisp")());
    else fromPython(var_.attr("value")());
-
-   rogue::GilRelease noGil;
-   this->updated();
 }
 
 rpe::Variable::~Variable() { }
 
 void rpe::Variable::varUpdated(std::string path, bp::object value, bp::object disp) {
+   rogue::GilRelease noGil;
 
    log_->debug("Variable update for %s: Disp=%s", epicsName_.c_str(),(char *)bp::extract<char *>(disp));
+   {
+      std::lock_guard<std::mutex> lock(mtx_);
+      noGil.acquire();
 
-   if ( inSet_ ) {
-      log_->debug("Ignoring variable update for %s", epicsName_.c_str());
-      return;
+      if (  isString_ || epicsType_ == aitEnumEnum16 ) fromPython(disp);
+      else fromPython(value);
    }
-
-   rogue::GilRelease noGil;
-   boost::lock_guard<boost::mutex> lock(mtx_);
-   noGil.acquire();
-
-   if (  isString_ ) fromPython(disp);
-   else fromPython(value);
-
    noGil.release();
    this->updated();
 }
@@ -135,13 +132,12 @@ void rpe::Variable::valueGet() {
          rogue::ScopedGil gil;
          log_->info("Synchronous read for %s",epicsName_.c_str());
          try {
-            if ( isString_ ) fromPython(var_.attr("valueDisp")());
-            else fromPython(var_.attr("value")());
+            if (  isString_ || epicsType_ == aitEnumEnum16 ) fromPython(var_.attr("getDisp")());
+            else fromPython(var_.attr("get")());
          } catch (...) {
             log_->error("Error getting values from epics: %s\n",epicsName_.c_str());
          }
       }
-      updated();
    }
 }
 
@@ -174,11 +170,11 @@ void rpe::Variable::fromPython(bp::object value) {
       // Create vector of appropriate type
       if ( epicsType_ == aitEnumUint8 ) {
          aitUint8 * pF = new aitUint8[size_];
-       
+
          if ( isString_ ) {
             ps.copy((char *)pF, size_);
          } else {
-            for ( i = 0; i < size_; i++ ) pF[i] = bp::extract<uint8_t>(pl[i]);
+            for ( i = 0; i < size_; i++ ) pF[i] = extractValue<uint8_t>(pl[i]);
          }
 
          pValue_->putRef(pF, new rpe::Destructor<aitUint8 *>);
@@ -186,43 +182,43 @@ void rpe::Variable::fromPython(bp::object value) {
 
       else if ( epicsType_ == aitEnumUint16 ) {
          aitUint16 * pF = new aitUint16[size_];
-         for ( i = 0; i < size_; i++ ) pF[i] = bp::extract<uint16_t>(pl[i]);
+         for ( i = 0; i < size_; i++ ) pF[i] = extractValue<uint16_t>(pl[i]);
          pValue_->putRef(pF, new rpe::Destructor<aitUint16 *>);
       }
 
       else if ( epicsType_ == aitEnumUint32 ) {
          aitUint32 * pF = new aitUint32[size_];
-         for ( i = 0; i < size_; i++ ) pF[i] = bp::extract<uint32_t>(pl[i]);
+         for ( i = 0; i < size_; i++ ) pF[i] = extractValue<uint32_t>(pl[i]);
          pValue_->putRef(pF, new rpe::Destructor<aitUint32 *>);
       }
 
       else if ( epicsType_ == aitEnumInt8 ) {
          aitInt8 * pF = new aitInt8[size_];
-         for ( i = 0; i < size_; i++ ) pF[i] = bp::extract<int8_t>(pl[i]);
+         for ( i = 0; i < size_; i++ ) pF[i] = extractValue<int8_t>(pl[i]);
          pValue_->putRef(pF, new rpe::Destructor<aitInt8 *>);
       }
 
       else if ( epicsType_ == aitEnumInt16 ) {
          aitInt16 * pF = new aitInt16[size_];
-         for ( i = 0; i < size_; i++ ) pF[i] = bp::extract<int16_t>(pl[i]);
+         for ( i = 0; i < size_; i++ ) pF[i] = extractValue<int16_t>(pl[i]);
          pValue_->putRef(pF, new rpe::Destructor<aitInt16 *>);
       }
 
       else if ( epicsType_ == aitEnumInt32 ) {
          aitInt32 * pF = new aitInt32[size_];
-         for ( i = 0; i < size_; i++ ) pF[i] = bp::extract<int32_t>(pl[i]);
+         for ( i = 0; i < size_; i++ ) pF[i] = extractValue<int32_t>(pl[i]);
          pValue_->putRef(pF, new rpe::Destructor<aitInt32 *>);
       }
 
       else if ( epicsType_ == aitEnumFloat32 ) {
          aitFloat32 * pF = new aitFloat32[size_];
-         for ( i = 0; i < size_; i++ ) pF[i] = bp::extract<double>(pl[i]);
+         for ( i = 0; i < size_; i++ ) pF[i] = extractValue<double>(pl[i]);
          pValue_->putRef(pF, new rpe::Destructor<aitFloat32 *>);
       }
 
       else if ( epicsType_ == aitEnumFloat64 ) {
          aitFloat64 * pF = new aitFloat64[size_];
-         for ( i = 0; i < size_; i++ ) pF[i] = bp::extract<double>(pl[i]);
+         for ( i = 0; i < size_; i++ ) pF[i] = extractValue<double>(pl[i]);
          pValue_->putRef(pF, new rpe::Destructor<aitFloat64 *>);
       }
       else throw rogue::GeneralError("Variable::fromPython","Invalid Variable Type");
@@ -230,22 +226,19 @@ void rpe::Variable::fromPython(bp::object value) {
    } else {
 
       if ( epicsType_ == aitEnumUint8 || epicsType_ == aitEnumUint16 || epicsType_ == aitEnumUint32 ) {
-         uint32_t nVal;
-         nVal = bp::extract<uint32_t>(value);
+         uint32_t nVal = extractValue<uint32_t>(value);
          log_->info("Python set Uint for %s: Value=%lu", epicsName_.c_str(),nVal);
          pValue_->putConvert(nVal);
       }
 
       else if ( epicsType_ == aitEnumInt8 || epicsType_ == aitEnumInt16 || epicsType_ == aitEnumInt32 ) {
-         int32_t nVal;
-         nVal = bp::extract<int32_t>(value);
+         int32_t nVal = extractValue<int32_t>(value);
          log_->info("Python set Int for %s: Value=%li", epicsName_.c_str(),nVal);
          pValue_->putConvert(nVal);
       }
 
       else if ( epicsType_ == aitEnumFloat32 || epicsType_ == aitEnumFloat64 ) {
-         double nVal;
-         nVal = bp::extract<double>(value);
+         double nVal = extractValue<double>(value);
          log_->info("Python set double for %s: Value=%f", epicsName_.c_str(),nVal);
          pValue_->putConvert(nVal);
       }
@@ -254,11 +247,11 @@ void rpe::Variable::fromPython(bp::object value) {
          std::string val;
          uint8_t idx;
 
-         bp::extract<char *> enumChar(value);
-         bp::extract<bool>   enumBool(value);
+         bp::extract<std::string> enumStr(value);
+         bp::extract<bool>        enumBool(value);
 
          // Enum is a string
-         if ( enumChar.check() ) idx = revEnum(std::string(enumChar));
+         if ( enumStr.check() ) idx = revEnum(enumStr);
 
          // Enum is a bool
          else if ( enumBool.check() ) idx = (enumBool)?1:0;
@@ -273,7 +266,17 @@ void rpe::Variable::fromPython(bp::object value) {
       else throw rogue::GeneralError("Variable::fromPython","Invalid Variable Type");
    }
 
+#ifdef __MACH__ // OSX does not have clock_gettime
+   clock_serv_t cclock;
+   mach_timespec_t mts;
+   host_get_clock_service(mach_host_self(), CALENDAR_CLOCK, &cclock);
+   clock_get_time(cclock, &mts);
+   mach_port_deallocate(mach_task_self(), cclock);
+   t.tv_sec = mts.tv_sec;
+   t.tv_nsec = mts.tv_nsec;
+#else
    clock_gettime(CLOCK_REALTIME,&t);
+#endif
    pValue_->setTimeStamp(&t);
 }
 
@@ -283,13 +286,12 @@ void rpe::Variable::valueSet() {
    bp::list pl;
    uint32_t i;
 
-   inSet_ = true;
    log_->info("Variable set for %s",epicsName_.c_str());
 
    try {
       if ( isString_ ) {
 
-         // Process values that are exposed as string in EPICS 
+         // Process values that are exposed as string in EPICS
          aitUint8 * pF = new aitUint8[size_];
          pValue_->getRef(pF);
          var_.attr(setAttr_.c_str())(std::string((char*)pF));
@@ -372,13 +374,40 @@ void rpe::Variable::valueSet() {
             uint8_t idx;
 
             pValue_->getConvert(idx);
-
             if ( idx < enums_.size() ) var_.attr(setAttr_.c_str())(enums_[idx]);
          }
       }
    } catch (...) {
       log_->error("Error setting value from epics: %s\n",epicsName_.c_str());
    }
-   inSet_ = false;
 }
 
+template<typename T>
+T rpe::Variable::extractValue(boost::python::object value)
+{
+   bp::extract<T> get_val(value);
+
+   // Check for convertibility
+   if (get_val.check())
+   {
+      // If a conversion is available, return the converted value.
+      try
+      {
+         // An implicit numeric_cast can throw a bad_numeric_cast exception here.
+         return get_val();
+      }
+      catch (boost::numeric::bad_numeric_cast& e)
+      {
+         // If an exception is thrown, log the error and return zero.
+         log_->warning("Variable::extractValue error for %s: %s", epicsName_.c_str(),e.what());
+         return 0;
+      }
+   }
+   else
+   {
+      // If  a conversion is not available, log the error and return zero.
+      log_->warning("Variable::extractValue error for %s: boost::python::extract failed", epicsName_.c_str());
+      return 0;
+   }
+
+}

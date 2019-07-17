@@ -21,28 +21,33 @@
 **/
 #ifndef __ROGUE_HARDWARE_PGP_STATUS_H__
 #define __ROGUE_HARDWARE_PGP_STATUS_H__
-#include <PgpDriver.h>
-#include <boost/python.hpp>
+#include <rogue/hardware/drivers/PgpDriver.h>
 #include <stdint.h>
+#include <memory>
 
 namespace rogue {
    namespace hardware {
       namespace pgp {
 
-         //! Wrapper for PgpInfo class. 
+         //! PGP Status Class
+         /** This class contains the current PGP status for one of the 8 lanes
+          * on a PGP card. This class is a C++ wrapper around the PgpStatus 
+          * structure used by the lower level driver. All structure members are 
+          * exposed to Python using their original names and can be read directly. 
+          */
          class Status : public PgpStatus {
             public:
 
-               //! Create the info class with pointer
-               static boost::shared_ptr<rogue::hardware::pgp::Status> create();
+               // Create the info class with pointer
+               static std::shared_ptr<rogue::hardware::pgp::Status> create();
 
-               //! Setup class in python
+               // Setup class in python
                static void setup_python();
 
          };
 
-         //! Convienence
-         typedef boost::shared_ptr<rogue::hardware::pgp::Status> StatusPtr;
+         //! Alias for using shared pointer as StatusPtr
+         typedef std::shared_ptr<rogue::hardware::pgp::Status> StatusPtr;
       }
    }
 }

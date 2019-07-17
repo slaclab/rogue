@@ -5,13 +5,9 @@
  * File       : Slave.h
  * Author     : Ryan Herbst, rherbst@slac.stanford.edu
  * Created    : 2016-09-16
- * Last update: 2016-09-16
  * ----------------------------------------------------------------------------
  * Description:
  * Stream interface slave
- * TODO:
- *    Create central memory pool allocator for proper allocate and free of
- *    buffers and frames.
  * ----------------------------------------------------------------------------
  * This file is part of the rogue software platform. It is subject to 
  * the license terms in the LICENSE.txt file found in the top-level directory 
@@ -26,10 +22,13 @@
 #define __ROGUE_INTERFACES_STREAM_SLAVE_H__
 #include <stdint.h>
 
-#include <boost/python.hpp>
-#include <boost/thread.hpp>
+#include <thread>
 #include <rogue/interfaces/stream/Pool.h>
 #include <rogue/Logging.h>
+
+#ifndef NO_PYTHON
+#include <boost/python.hpp>
+#endif
 
 namespace rogue {
    namespace interfaces {
@@ -39,68 +38,105 @@ namespace rogue {
          class Buffer;
 
          //! Stream slave class
-         /*
-          * The stream slave accepts stream data from a master. It also
-          * can accept frame allocation requests.
+         /** The stream slave accepts stream data from a master. It also
+          * can accept frame allocation requests through its Pool base class.
+          * A Slave object can be attached to multiple Master objects.
           */
          class Slave : public rogue::interfaces::stream::Pool {
 
-               //! Mutex
-               boost::mutex mtx_;
+               // Mutex
+               std::mutex mtx_;
 
-               //! Debug control
+               // Debug control
                uint32_t         debug_;
-               rogue::LoggingPtr log_;
+               std::shared_ptr<rogue::Logging> log_;
 
-               //! Counters
+               // Counters
                uint64_t frameCount_;
                uint64_t frameBytes_;
 
             public:
 
-               //! Class creation
-               static boost::shared_ptr<rogue::interfaces::stream::Slave> create ();
+               //! Class factory which returns a pointer to a Slave (SlavePtr)
+               /** Create a new Slave
+                *
+                * Exposed as rogue.interfaces.stream.Slave() to Python
+                */
+               static std::shared_ptr<rogue::interfaces::stream::Slave> create ();
 
-               //! Setup class in python
+               // Setup class for use in python
                static void setup_python();
 
-               //! Creator
+               // Class creator
                Slave();
 
-               //! Destructor
+               // Destroy the object
                virtual ~Slave();
 
                //! Set debug message size
+               /** This method enables debug messages when using the base Slave class
+                * attached as a primary or secondar Slave on a Master. Typically used
+                * when attaching a base Slave object for debug purposes.
+                *
+                * Exposed as setDebug() to Python
+                * @param debug Maximum numer of bytes to print in debug message.
+                * @param name Name to included in the debug messages.
+                */
                void setDebug(uint32_t debug, std::string name);
 
                //! Accept a frame from master
-               virtual void acceptFrame ( boost::shared_ptr<rogue::interfaces::stream::Frame> frame );
+               /** This method is called by the Master object to which this Slave is attached when
+                * passing a Frame. By default this method will print debug information if enabled
+                * and is typically re-implemented by a Slave sub-class.
+                *
+                * Re-implemented as _acceptFrame() in a Python subclass
+                * @param frame Frame pointer (FramePtr)
+                */
+               virtual void acceptFrame ( std::shared_ptr<rogue::interfaces::stream::Frame> frame );
 
                //! Get frame counter
+               /** Returns the total frames received. Only valid if acceptFrame is not re-implemented
+                * as a sub-class. Typically used when attaching a base Slave object for debug purposes.
+                *
+                * Exposed as getFrameCount() to Python
+                * @return Total number of Frame objects received.
+                */
                uint64_t getFrameCount();
 
                //! Get byte counter
+               /** Returns the total bytes received. Only valid if acceptFrame is not re-implemented
+                * as a sub-class. Typically used when attaching a base Slave object for debug purposes.
+                *
+                * Exposed as getByteCount() to Python
+                * @return Total number of bytes received.
+                */
                uint64_t getByteCount();
 
          };
 
-         //! Stream slave class, wrapper to enable pyton overload of virtual methods
+         //! Alias for using shared pointer as SlavePtr
+         typedef std::shared_ptr<rogue::interfaces::stream::Slave> SlavePtr;
+
+#ifndef NO_PYTHON
+
+         // Stream slave class, wrapper to enable pyton overload of virtual methods
          class SlaveWrap : 
             public rogue::interfaces::stream::Slave, 
             public boost::python::wrapper<rogue::interfaces::stream::Slave> {
 
+
             public:
 
-               //! Accept frame
-               void acceptFrame ( boost::shared_ptr<rogue::interfaces::stream::Frame> frame );
+               // Accept frame
+               void acceptFrame ( std::shared_ptr<rogue::interfaces::stream::Frame> frame );
 
-               //! Default accept frame call
-               void defAcceptFrame ( boost::shared_ptr<rogue::interfaces::stream::Frame> frame );
+               // Default accept frame call
+               void defAcceptFrame ( std::shared_ptr<rogue::interfaces::stream::Frame> frame );
          };
 
-         // Convienence
-         typedef boost::shared_ptr<rogue::interfaces::stream::Slave> SlavePtr;
-         typedef boost::shared_ptr<rogue::interfaces::stream::SlaveWrap> SlaveWrapPtr;
+         typedef std::shared_ptr<rogue::interfaces::stream::SlaveWrap> SlaveWrapPtr;
+#endif
+
       }
    }
 }

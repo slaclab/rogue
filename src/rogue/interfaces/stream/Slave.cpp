@@ -28,17 +28,22 @@
 #include <rogue/interfaces/stream/FrameLock.h>
 #include <rogue/interfaces/stream/FrameIterator.h>
 #include <rogue/GeneralError.h>
-#include <boost/make_shared.hpp>
+#include <memory>
 #include <rogue/GilRelease.h>
 #include <rogue/ScopedGil.h>
 #include <rogue/Logging.h>
+#include <string.h>
 
 namespace ris = rogue::interfaces::stream;
+
+#ifndef NO_PYTHON
+#include <boost/python.hpp>
 namespace bp  = boost::python;
+#endif
 
 //! Class creation
 ris::SlavePtr ris::Slave::create () {
-   ris::SlavePtr slv = boost::make_shared<ris::Slave>();
+   ris::SlavePtr slv = std::make_shared<ris::Slave>();
    return(slv);
 }
 
@@ -93,6 +98,8 @@ void ris::Slave::acceptFrame ( ris::FramePtr frame ) {
    }
 }
 
+#ifndef NO_PYTHON
+
 //! Accept frame
 void ris::SlaveWrap::acceptFrame ( ris::FramePtr frame ) {
    {
@@ -115,6 +122,7 @@ void ris::SlaveWrap::defAcceptFrame ( ris::FramePtr frame ) {
    ris::Slave::acceptFrame(frame);
 }
 
+#endif
 
 //! Get frame counter
 uint64_t ris::Slave::getFrameCount() {
@@ -127,15 +135,22 @@ uint64_t ris::Slave::getByteCount() {
 }
 
 void ris::Slave::setup_python() {
+#ifndef NO_PYTHON
 
    bp::class_<ris::SlaveWrap, ris::SlaveWrapPtr, boost::noncopyable>("Slave",bp::init<>())
       .def("setDebug",       &ris::Slave::setDebug)
       .def("_acceptFrame",   &ris::Slave::acceptFrame, &ris::SlaveWrap::defAcceptFrame)
       .def("getFrameCount",  &ris::Slave::getFrameCount)
       .def("getByteCount",   &ris::Slave::getByteCount)
+      .def("getAllocCount",  &ris::Pool::getAllocCount)
+      .def("getAllocBytes",  &ris::Pool::getAllocBytes)
+      .def("setFixedSize",   &ris::Pool::setFixedSize)
+      .def("getFixedSize",   &ris::Pool::getFixedSize)
+      .def("setPoolSize",    &ris::Pool::setPoolSize)
+      .def("getPoolSize",    &ris::Pool::getPoolSize)
    ;
 
    bp::implicitly_convertible<ris::SlavePtr, ris::PoolPtr>();
-
+#endif
 }
 

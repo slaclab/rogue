@@ -1,0 +1,227 @@
+# ----------------------------------------------------------------------------
+# Title      : Rogue Cmake Export Template
+# ----------------------------------------------------------------------------
+# File       : RogueConfig.cmake.in
+# ----------------------------------------------------------------------------
+# Description:
+# Rogue export file to be overridden by Cmake.
+# ----------------------------------------------------------------------------
+# This file is part of the rogue software platform. It is subject to 
+# the license terms in the LICENSE.txt file found in the top-level directory 
+# of this distribution and at: 
+#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
+# No part of the rogue software platform, including this file, may be 
+# copied, modified, propagated, or distributed except according to the terms 
+# contained in the LICENSE.txt file.
+# ----------------------------------------------------------------------------
+
+# Rogue cmake configuration file. Used when compiling against the rogue library.
+
+#####################################
+# Enables from Rogue CMAKE
+#####################################
+set(NO_PYTHON   @NO_PYTHON@)
+set(NO_EPICS    @NO_EPICS@)
+
+#####################################
+# Boost + Python
+#####################################
+if ( NOT NO_PYTHON ) 
+   find_package(PythonInterp QUIET REQUIRED 3.6)
+   find_package(PythonLibs QUIET REQUIRED 3.6)
+
+   set(Boost_USE_MULTITHREADED ON)
+
+   # Boost may need help on SLAC machines
+   set(BOOST_ROOT:PATHNAME $ENV{BOOST_PATH})
+
+   # First try standard suffix for boost
+   find_package(Boost 1.58 QUIET COMPONENTS system thread python3)
+
+   # Next try Debian/Ubuntu suffix for boost
+   if (NOT Boost_FOUND)
+      find_package(Boost 1.58 QUIET COMPONENTS system thread python-py36)
+   endif()
+
+   # Next try Mac with homebrew boost/python36
+   if (NOT Boost_FOUND)
+      find_package(Boost 1.58 QUIET COMPONENTS system thread python36)
+   endif()
+
+   # Next try anaconda with python 3.7
+   if (NOT Boost_FOUND)
+      find_package(Boost 1.58 QUIET COMPONENTS system thread python37)
+   endif()
+
+   # Nothing worked
+   if (NOT Boost_FOUND)
+      message("")
+      message(FATAL_ERROR "Failed to find boost libraries!")
+   endif()
+else()
+   add_definitions( -DNO_PYTHON )
+endif()
+
+#####################################
+# BZIP2
+#####################################
+find_package(BZip2 QUIET REQUIRED)
+
+#####################################
+# ZeroMQ
+#####################################
+# First try with Cmake packages
+find_package(ZeroMQ QUIET)
+
+# ZeroMQ does not always support cmake, use brute force
+if (NOT ZeroMQ_FOUND)
+   
+   # Convert LD_LIBRARY PATH for search
+   if(ENV{LD_LIBRARY_PATH})
+      string(REPLACE ":" ";" HINT_PATHS $ENV{LD_LIBRARY_PATH})
+   else()
+      set(HINT_PATHS, "")
+   endif()
+
+   # See if zmq library is in LD_LIBRARY_PATH
+   find_library(ZeroMQ_LIBRARY 
+                NAMES zmq 
+                PATHS ${HINT_PATHS})
+
+   # Found it
+   if (ZeroMQ_LIBRARY) 
+
+      # Get the base diretory
+      get_filename_component(ZMQ_LIBDIR ${ZeroMQ_LIBRARY} DIRECTORY)
+
+      # See if we can find the header in a relative path
+      find_path(ZeroMQ_INCLUDE_DIR
+              NAMES zmq.h
+              PATHS ${ZMQ_LIBDIR}/../include
+              )
+   endif()
+
+   # Failed to find it
+   if (NOT ZeroMQ_INCLUDE_DIR)
+      message("")
+      message(FATAL_ERROR "Failed to find zeroMQ!")
+   endif()
+endif()
+
+#####################################
+# Optional EPICS V3
+#####################################
+if((NOT NO_PYTHON) AND (NOT NO_EPICS) AND DEFINED ENV{EPICS_BASE})
+   set(DO_EPICS_V3 1)
+   set(EPICSV3_BASE_DIR  $ENV{EPICS_BASE})
+   if(DEFINED ENV{EPICS_HOST_ARCH})
+       set(EPICSV3_ARCH      $ENV{EPICS_HOST_ARCH})
+   else()
+       execute_process(COMMAND ${EPICSV3_BASE_DIR}/startup/EpicsHostArch 
+                       OUTPUT_VARIABLE EPICSV3_ARCH OUTPUT_STRIP_TRAILING_WHITESPACE)
+       string(REGEX REPLACE "\n$" "" EPICSV3_ARCH "${EPICSV3_ARCH}")
+   endif()
+   set(EPICSV3_LIB_DIR   ${EPICSV3_BASE_DIR}/lib/${EPICSV3_ARCH} )
+
+   if(APPLE)
+
+      set(EPICSV3_INCLUDES  ${EPICSV3_BASE_DIR}/include
+                            ${EPICSV3_BASE_DIR}/include/compiler/gcc 
+                            ${EPICSV3_BASE_DIR}/include/os/Darwin)
+
+      set(EPICSV3_LIBRARIES ${EPICSV3_LIB_DIR}/libcas.dylib 
+                            ${EPICSV3_LIB_DIR}/libca.dylib 
+                            ${EPICSV3_LIB_DIR}/libCom.dylib 
+                            ${EPICSV3_LIB_DIR}/libgdd.dylib)
+   else()
+
+      set(EPICSV3_INCLUDES  ${EPICSV3_BASE_DIR}/include
+                            ${EPICSV3_BASE_DIR}/include/compiler/gcc 
+                            ${EPICSV3_BASE_DIR}/include/os/Linux)
+
+      set(EPICSV3_LIBRARIES ${EPICSV3_LIB_DIR}/libcas.so 
+                            ${EPICSV3_LIB_DIR}/libca.so 
+                            ${EPICSV3_LIB_DIR}/libCom.so 
+                            ${EPICSV3_LIB_DIR}/libgdd.so )
+   endif()
+else()
+   set(DO_EPICS_V3 0)
+endif()
+
+#####################################
+# Set Rogue Variables
+#####################################
+# These variables are now defined
+# ${Boost_INCLUDE_DIRS}
+# ${Boost_LIBRARIES}
+# ${PYTHON_INCLUDE_DIRS}
+# ${PYTHON_LIBRARIES}
+# ${ZeroMQ_INCLUDE_DIR}
+# ${ZeroMQ_LIBRARY}
+# ${BZIP2_INCLUDE_DIR}
+# ${BZIP2_LIBRARIES}
+# ${EPICSV3_INCLUDES})
+# ${EPICSV3_LIBRARIES})
+
+# Rogue Include paths
+set(ROGUE_INCLUDE_ONLY @CONF_INCLUDE_DIRS@)
+
+# Rogue librarires
+set(ROGUE_LIBRARIES_ONLY @CONF_LIBRARIES@)
+
+# Rogue Include paths
+set(ROGUE_INCLUDE_DIRS @CONF_INCLUDE_DIRS@
+                       ${Boost_INCLUDE_DIRS}
+                       ${PYTHON_INCLUDE_DIRS}
+                       ${ZeroMQ_INCLUDE_DIR}
+                       ${BZIP2_INCLUDE_DIR}
+                       ${EPICSV3_INCLUDES})
+
+# Rogue librarires
+set(ROGUE_LIBRARIES @CONF_LIBRARIES@
+                    ${Boost_LIBRARIES}
+                    ${PYTHON_LIBRARIES}
+                    ${ZeroMQ_LIBRARY}
+                    ${BZIP2_LIBRARIES}
+                    ${EPICSV3_LIBRARIES})
+
+# Set Version
+set(ROGUE_VERSION @ROGUE_VERSION@)
+
+# Set Install Directory
+set(ROGUE_DIR @ROGUE_DIR@)
+
+#####################################
+# Print status
+#####################################
+
+message("")
+message("----------------------------------------------------------------------")
+message("-- Rogue Version: ${ROGUE_VERSION}")
+message("")
+message("-- Rogue Directory: ${ROGUE_DIR}")
+message("")
+
+if (NO_PYTHON)
+   message("-- Compiling without boost & python!")
+else()
+   message("-- Found boost: ${Boost_INCLUDE_DIRS}")
+   message("")
+   message("-- Found python: ${PYTHON_LIBRARIES}")
+endif()
+
+message("")
+
+if (DO_EPICS_V3)
+   message("-- Found EPICS V3: ${EPICSV3_BASE_DIR}")
+else()
+   message("-- EPICS V3 not included!")
+endif()
+
+message("")
+message("-- Found ZeroMq: ${ZeroMQ_INCLUDE_DIR}")
+message("")
+message("-- Found Bzip2: ${BZIP2_INCLUDE_DIR}")
+message("----------------------------------------------------------------------")
+message("")
+

@@ -20,13 +20,18 @@
 #include <rogue/interfaces/memory/TransactionLock.h>
 #include <rogue/interfaces/memory/Transaction.h>
 #include <rogue/GilRelease.h>
+#include <memory>
 
 namespace rim = rogue::interfaces::memory;
+
+#ifndef NO_PYTHON
+#include <boost/python.hpp>
 namespace bp  = boost::python;
+#endif
 
 //! Create a container
 rim::TransactionLockPtr rim::TransactionLock::create (rim::TransactionPtr tran) {
-   rim::TransactionLockPtr tranLock = boost::make_shared<rim::TransactionLock>(tran);
+   rim::TransactionLockPtr tranLock = std::make_shared<rim::TransactionLock>(tran);
    return(tranLock);
 }
 
@@ -40,11 +45,15 @@ rim::TransactionLock::TransactionLock(rim::TransactionPtr tran) {
 
 //! Setup class in python
 void rim::TransactionLock::setup_python() {
+#ifndef NO_PYTHON
 
    bp::class_<rim::TransactionLock, rim::TransactionLockPtr, boost::noncopyable>("TransactionLock",bp::no_init)
       .def("lock",      &rim::TransactionLock::lock)
       .def("unlock",    &rim::TransactionLock::unlock)
+      .def("__enter__", &rim::TransactionLock::enter)
+      .def("__exit__",  &rim::TransactionLock::exit)
    ;
+#endif
 }
 
 //! Destructor
@@ -69,4 +78,9 @@ void rim::TransactionLock::unlock() {
    }
 }
 
+//! Enter method for python, do nothing
+void rim::TransactionLock::enter() { }
+
+//! Exit method for python, do nothing
+void rim::TransactionLock::exit(void *, void *, void *) { }
 

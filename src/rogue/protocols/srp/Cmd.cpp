@@ -20,30 +20,35 @@
  *-----------------------------------------------------------------------------
 **/
 #include <stdint.h>
-#include <boost/thread.hpp>
-#include <boost/make_shared.hpp>
+#include <thread>
+#include <memory>
 #include <rogue/interfaces/stream/Master.h>
 #include <rogue/interfaces/stream/Frame.h>
 #include <rogue/interfaces/stream/FrameIterator.h>
 #include <rogue/protocols/srp/Cmd.h>
 
-namespace bp = boost::python;
 namespace rps = rogue::protocols::srp;
 namespace ris = rogue::interfaces::stream;
 
+#ifndef NO_PYTHON
+#include <boost/python.hpp>
+namespace bp  = boost::python;
+#endif
+
 //! Class creation
 rps::CmdPtr rps::Cmd::create () {
-   rps::CmdPtr p = boost::make_shared<rps::Cmd>();
+   rps::CmdPtr p = std::make_shared<rps::Cmd>();
    return(p);
 }
 
 //! Setup class in python
 void rps::Cmd::setup_python() {
+#ifndef NO_PYTHON
 
    bp::class_<rps::Cmd, rps::CmdPtr, bp::bases<ris::Master>, boost::noncopyable >("Cmd",bp::init<>())
        .def("sendCmd", &rps::Cmd::sendCmd)
    ;
-
+#endif
 }
 
 //! Creator with version constant
@@ -70,6 +75,7 @@ void rps::Cmd::sendCmd(uint8_t opCode, uint32_t context) {
 
    // Copy frame
    ris::toFrame(it,sizeof(txData),txData);
+   frame->setPayload(sizeof(txData));
    sendFrame(frame);
 }
 

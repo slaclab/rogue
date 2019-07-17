@@ -21,6 +21,7 @@
 import rogue.utilities
 import rogue.utilities.fileio
 import pyrogue
+import rogue
 
 class StreamWriter(pyrogue.DataWriter):
     """Stream Writer Wrapper"""
@@ -42,6 +43,7 @@ class StreamWriter(pyrogue.DataWriter):
 
                 # Dump config/status to file
                 if self._configEn: self.root._streamYaml()
+                self.frameCount.set(0)
 
     def _setBufferSize(self,dev,var,value):
         self._writer.setBufferSize(value)
@@ -55,12 +57,29 @@ class StreamWriter(pyrogue.DataWriter):
     def _getFrameCount(self,dev,var):
         return self._writer.getFrameCount()
 
-    def _waitFrameCount(self, count):
-        self._writer.waitFrameCount(count)
+    def _waitFrameCount(self, count, timeout=0):
+        return self._writer.waitFrameCount(count,timeout*1000000)
+
+    def _waitFrameChannelCount(self, chan, count, timeout=0):
+        return self._writer.getChannel(chan).waitFrameCount(count,timeout*1000000)
 
     def getChannel(self,chan):
         return self._writer.getChannel(chan)
 
+    def setDropErrors(self,drop):
+        self._writer.setDropErrors(drop)
+
+class LegacyStreamWriter(StreamWriter):
+    def __init__(self, *, configEn=False, **kwargs):
+        pyrogue.DataWriter.__init__(self, **kwargs)
+        self._writer   = rogue.utilities.fileio.LegacyStreamWriter()
+        self._configEn = configEn
+
+    def getDataChannel(self):
+        return self._writer.getDataChannel()
+
+    def getYamlChannel(self):
+        return self._writer.getYamlChannel()
 
 class StreamReader(pyrogue.Device):
     """Stream Reader Wrapper"""
@@ -70,10 +89,10 @@ class StreamReader(pyrogue.Device):
         self._reader = rogue.utilities.fileio.StreamReader()
 
         self.add(pyrogue.LocalVariable(name='dataFile', description='Data File',
-                                       base='string', mode='RW', value=''))
+                                       mode='RW', value=''))
 
         self.add(pyrogue.LocalVariable(name='open', description='Data file open state',
-                                  bitSize=1, bitOffset=0, base='bool', mode='RW',
+                                  bitSize=1, bitOffset=0, mode='RW', value=False,
                                   localSet=self._setOpen))
 
     def _setOpen(self,value,changed):
@@ -85,4 +104,69 @@ class StreamReader(pyrogue.Device):
 
     def _getStreamMaster(self):
         return self._reader
+
+
+class FileData(object):
+    def __init__(self, rdata):
+        self._size    = int.from_bytes(rdata.read(4),'little',signed=False)
+        self._flags   = int.from_bytes(rdata.read(2),'little',signed=False)
+        self._error   = int.from_bytes(rdata.read(1),'little',signed=False)
+        self._channel = int.from_bytes(rdata.read(1),'little',signed=False)
+        self._data    = rdata.read(self._size-4)
+
+    @property
+    def size(self):
+        return self._size
+
+    @property
+    def flags(self):
+        return self._flags
+
+    @property
+    def error(self):
+        return self._error
+
+    @property
+    def channel(self):
+        return self._channel
+
+    @property
+    def data(self):
+        return self._data
+
+class FileReader(object):
+
+    def __init__(self, filename, configChan=None):
+        self._filename   = filename
+        self._configChan = configChan
+
+        # Config tracking dictionary
+        self._config = {}
+
+        # Open file and get size
+        self._fdata = open(self._filename,'rb')
+        self._fdata.seek(0,2)
+        self._size = self._fdata.tell()
+        self._fdata.seek(0,0)
+
+    @property
+    def next(self):
+        while self._fdata.tell() != self._size:
+            try:
+                fd = FileData(self._fdata)
+            except:
+                raise rogue.GeneralError("filio.FileReader","Underrun while reading from {}".format(self._filename))
+
+            if fd.channel == self._configChan:
+                try:
+                    pyrogue.dictUpdate(self._config,pyrogue.yamlToData(fd.data.decode('utf-8')))
+                except:
+                    raise rogue.GeneralError("filio.FileReader","Failed to read config from {}".format(self._filename))
+            else:
+                return fd
+
+        return None
+
+    def config(self):
+        return self._config
 

@@ -1,6 +1,6 @@
 /**
  *-----------------------------------------------------------------------------
- * Title         : SLAC Register Protocol (SRP) Fifo
+ * Title         : AXI Stream FIFO
  * ----------------------------------------------------------------------------
  * File          : Fifo.cpp
  * Author        : Ryan Herbst <rherbst@slac.stanford.edu>
@@ -19,8 +19,8 @@
  *-----------------------------------------------------------------------------
 **/
 #include <stdint.h>
-#include <boost/thread.hpp>
-#include <boost/make_shared.hpp>
+#include <thread>
+#include <memory>
 #include <rogue/interfaces/stream/Master.h>
 #include <rogue/interfaces/stream/Slave.h>
 #include <rogue/interfaces/stream/Frame.h>
@@ -30,60 +30,81 @@
 #include <rogue/interfaces/stream/Fifo.h>
 #include <rogue/Logging.h>
 #include <rogue/GilRelease.h>
-#include <sys/syscall.h>
 
-namespace bp = boost::python;
 namespace ris = rogue::interfaces::stream;
 
+#ifndef NO_PYTHON
+#include <boost/python.hpp>
+namespace bp  = boost::python;
+#endif
+
 //! Class creation
-ris::FifoPtr ris::Fifo::create(uint32_t maxDepth, uint32_t trimSize) {
-   ris::FifoPtr p = boost::make_shared<ris::Fifo>(maxDepth,trimSize);
+ris::FifoPtr ris::Fifo::create(uint32_t maxDepth, uint32_t trimSize, bool noCopy) {
+   ris::FifoPtr p = std::make_shared<ris::Fifo>(maxDepth,trimSize,noCopy);
    return(p);
 }
 
 //! Setup class in python
 void ris::Fifo::setup_python() {
-   bp::class_<ris::Fifo, ris::FifoPtr, bp::bases<ris::Master,ris::Slave>, boost::noncopyable >("Fifo",bp::init<uint32_t,uint32_t>());
+#ifndef NO_PYTHON
+   bp::class_<ris::Fifo, ris::FifoPtr, bp::bases<ris::Master,ris::Slave>, boost::noncopyable >("Fifo",bp::init<uint32_t,uint32_t,bool>());
+#endif
 }
 
 //! Creator with version constant
-ris::Fifo::Fifo(uint32_t maxDepth, uint32_t trimSize ) : ris::Master(), ris::Slave() { 
+ris::Fifo::Fifo(uint32_t maxDepth, uint32_t trimSize, bool noCopy ) : ris::Master(), ris::Slave() { 
    maxDepth_ = maxDepth;
    trimSize_ = trimSize;
+   noCopy_   = noCopy;
 
    queue_.setThold(maxDepth);
 
-   log_ = rogue::Logging::create("Fifo");
+   log_ = rogue::Logging::create("stream.Fifo");
 
    // Start read thread
-   thread_ = new boost::thread(boost::bind(&ris::Fifo::runThread, this));
+   threadEn_ = true;
+   thread_ = new std::thread(&ris::Fifo::runThread, this);
 }
 
 //! Deconstructor
-ris::Fifo::~Fifo() {}
+ris::Fifo::~Fifo() {
+   threadEn_ = false;
+   queue_.stop();
+   thread_->join();
+}
 
 //! Accept a frame from master
 void ris::Fifo::acceptFrame ( ris::FramePtr frame ) {
    uint32_t       size;
-   ris::BufferPtr buff;
    ris::FramePtr  nFrame;
+   ris::Frame::iterator src;
+   ris::Frame::iterator dst;
 
    // FIFO is full, drop frame
-   if ( queue_.busy()  ) return;
+   if ( queue_.busy() ) return;
 
    rogue::GilRelease noGil;
    ris::FrameLockPtr lock = frame->lock();
 
-   // Get size, adjust if trim is enabled
-   size = frame->getPayload();
-   if ( trimSize_ != 0 && trimSize_ < size ) size = trimSize_;
+   // Do we copy the frame?
+   if ( noCopy_ ) nFrame = frame;
+   else{
 
-   // Request a new frame to hold the data
-   nFrame = reqFrame(size,true);
+      // Get size, adjust if trim is enabled
+      size = frame->getPayload();
+      if ( trimSize_ != 0 && trimSize_ < size ) size = trimSize_;
 
-   // Copy the frame
-   std::copy(frame->beginRead(), frame->beginRead()+size, nFrame->beginWrite());
-   nFrame->setPayload(size);
+      // Request a new frame to hold the data
+      nFrame = reqFrame(size,true);
+
+      // Get destination pointer
+      src = frame->beginRead();
+      dst = nFrame->beginWrite();
+
+      // Copy the frame
+      ris::copyFrame(src, size, dst);
+      nFrame->setPayload(size);
+   }
 
    // Append to buffer
    queue_.push(nFrame);
@@ -91,12 +112,11 @@ void ris::Fifo::acceptFrame ( ris::FramePtr frame ) {
 
 //! Thread background
 void ris::Fifo::runThread() {
-   log_->info("PID=%i, TID=%li",getpid(),syscall(SYS_gettid));
+   ris::FramePtr frame;
+   log_->logThreadId();
 
-   try {
-      while(1) {
-         sendFrame(queue_.pop());
-      }
-   } catch (boost::thread_interrupted&) { }
+   while(threadEn_) {
+      if ( (frame = queue_.pop()) != NULL ) sendFrame(frame);
+   }
 }
 

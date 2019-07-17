@@ -22,8 +22,7 @@
 #define __ROGUE_PROTOCOLS_PACKETIZER_CONTROLLER_H__
 #include <rogue/interfaces/stream/Master.h>
 #include <rogue/interfaces/stream/Slave.h>
-#include <boost/enable_shared_from_this.hpp>
-#include <boost/python.hpp>
+#include <memory>
 #include <stdint.h>
 #include <rogue/Queue.h>
 #include <rogue/Logging.h>
@@ -42,54 +41,56 @@ namespace rogue {
             protected:
 
                // parameters
+               bool     enSsi_;
                uint32_t appIndex_;
                uint32_t tranIndex_;
                bool     transSof_[256];
                uint32_t tranCount_[256];
-               uint32_t crcInit_[256];
+               uint32_t crc_[256];
                uint8_t  tranDest_;
                uint32_t dropCount_;
-               uint32_t timeout_;
                uint32_t headSize_;
                uint32_t tailSize_;
                uint32_t alignSize_;
 
-               rogue::LoggingPtr log_;
+               struct timeval timeout_;
 
-               boost::shared_ptr<rogue::interfaces::stream::Frame> tranFrame_[256];
+               std::shared_ptr<rogue::Logging> log_;
 
-               boost::mutex appMtx_;
-               boost::mutex tranMtx_;
+               std::shared_ptr<rogue::interfaces::stream::Frame> tranFrame_[256];
 
-               boost::shared_ptr<rogue::protocols::packetizer::Transport> tran_;
-               boost::shared_ptr<rogue::protocols::packetizer::Application> * app_;
+               std::mutex appMtx_;
+               std::mutex tranMtx_;
 
-               rogue::Queue<boost::shared_ptr<rogue::interfaces::stream::Frame>> tranQueue_;
+               std::shared_ptr<rogue::protocols::packetizer::Transport> tran_;
+               std::shared_ptr<rogue::protocols::packetizer::Application> * app_;
+
+               rogue::Queue<std::shared_ptr<rogue::interfaces::stream::Frame>> tranQueue_;
 
             public:
 
-               //! Setup class in python
-               static void setup_python();
-
                //! Creator
-               Controller( boost::shared_ptr<rogue::protocols::packetizer::Transport> tran,
-                           boost::shared_ptr<rogue::protocols::packetizer::Application> * app,
-                           uint32_t headSize, uint32_t tailSize, uint32_t alignSize );
+               Controller( std::shared_ptr<rogue::protocols::packetizer::Transport> tran,
+                           std::shared_ptr<rogue::protocols::packetizer::Application> * app,
+                           uint32_t headSize, uint32_t tailSize, uint32_t alignSize, bool enSsi );
 
                //! Destructor
                ~Controller();
 
                //! Transport frame allocation request
-               boost::shared_ptr<rogue::interfaces::stream::Frame> reqFrame ( uint32_t size);
+               std::shared_ptr<rogue::interfaces::stream::Frame> reqFrame ( uint32_t size);
 
                //! Frame received at transport interface
-               virtual void transportRx( boost::shared_ptr<rogue::interfaces::stream::Frame> frame );
+               virtual void transportRx( std::shared_ptr<rogue::interfaces::stream::Frame> frame );
+
+               //! Stop transmit queue
+               void stopQueue();
 
                //! Interface for transport transmitter thread
-               boost::shared_ptr<rogue::interfaces::stream::Frame> transportTx ();
+               std::shared_ptr<rogue::interfaces::stream::Frame> transportTx ();
 
                //! Frame received at application interface
-               virtual void applicationRx( boost::shared_ptr<rogue::interfaces::stream::Frame> frame, uint8_t id);
+               virtual void applicationRx( std::shared_ptr<rogue::interfaces::stream::Frame> frame, uint8_t id);
 
                //! Get drop count
                uint32_t getDropCount();
@@ -98,8 +99,8 @@ namespace rogue {
                void setTimeout(uint32_t timeout);
          };
 
-         // Convienence
-         typedef boost::shared_ptr<rogue::protocols::packetizer::Controller> ControllerPtr;
+         // Convenience
+         typedef std::shared_ptr<rogue::protocols::packetizer::Controller> ControllerPtr;
 
       }
    }

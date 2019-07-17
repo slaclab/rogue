@@ -1,0 +1,25 @@
+channels:
+  - defaults
+  - conda-forge
+  - paulscherrerinstitute
+dependencies:
+  - python
+  - clang_osx-64
+  - clangxx_osx-64
+  - git
+  - git-lfs
+  - ipython
+  - make
+  - cmake
+  - pyyaml
+  - jsonpickle
+  - pyzmq
+  - parse
+  - click
+  - numpy
+  - pyqt
+  - pyepics
+  - boost
+  - bzip2
+  - zeromq
+  - epics-base=3.14.12.8

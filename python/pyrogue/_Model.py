@@ -14,7 +14,7 @@
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
 import pyrogue as pr
-import Pyro4
+import struct
 
 def wordCount(bits, wordSize):
     ret = bits // wordSize
@@ -25,6 +25,13 @@ def wordCount(bits, wordSize):
 def byteCount(bits):
     return wordCount(bits, 8)
 
+def reverseBits(value, bitSize):
+    result = 0
+    for i in range(bitSize):
+        result <<= 1
+        result |= value & 1
+        value >>= 1
+    return result
 
 class ModelMeta(type):
     def __init__(cls, *args, **kwargs):
@@ -53,7 +60,6 @@ class Model(object, metaclass=ModelMeta):
         return type(value) == self.pytype
 
 
-@Pyro4.expose   
 class UInt(Model):
     
     defaultdisp = '{:#x}'
@@ -77,8 +83,18 @@ class UInt(Model):
     def fromString(self, string):
         return int(string, 0)
 
- 
-@Pyro4.expose
+
+class UIntReversed(UInt):
+    """Converts Unsigned Integer to and from bytearray with reserved bit ordering"""
+
+    def toBytes(self, value):
+        valueReverse = reverseBits(value, self.bitSize)
+        return super().toBytes(valueReverse, self.bitSize)
+
+    def fromBytes(cls, ba):
+        valueReverse = super().fromBytes(ba, self.bitSize)
+        return reverseBits(valueReverse, self.bitSize)
+
 class Int(UInt):
 
     # Override these and inherit everything else from UInt
@@ -119,7 +135,6 @@ class UIntBE(UInt):
 class IntBE(Int):
     endianness = 'big'
 
-@Pyro4.expose
 class Bool(Model):
     
     defaultdisp = {False: 'False', True: 'True'}
@@ -134,11 +149,10 @@ class Bool(Model):
     def fromBytes(self, ba):
         return bool(int.from_bytes(ba, 'little', signed=False))
 
-    def fromString(string):
+    def fromString(self, string):
         return str.lower(string) == "true"
-
+    
         
-@Pyro4.expose
 class String(Model):
 
     encoding = 'utf-8'
@@ -161,11 +175,10 @@ class String(Model):
         s = ba.rstrip(bytearray(1))
         return s.decode(self.encoding)
 
-    def fromString(string):
+    def fromString(self, string):
         return string
 
 
-@Pyro4.expose
 class Float(Model):
     """Converter for 32-bit float"""
 
@@ -183,7 +196,7 @@ class Float(Model):
     def fromBytes(self, ba):
         return struct.unpack(self.fstring, ba)
 
-    def fromString(string):
+    def fromString(self, string):
         return float(string)
 
 

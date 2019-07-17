@@ -8,12 +8,12 @@
  * Description:
  * Variable subclass of Value, for interfacing with rogue variables
  * ----------------------------------------------------------------------------
- * This file is part of the rogue software platform. It is subject to 
- * the license terms in the LICENSE.txt file found in the top-level directory 
- * of this distribution and at: 
- *    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
- * No part of the rogue software platform, including this file, may be 
- * copied, modified, propagated, or distributed except according to the terms 
+ * This file is part of the rogue software platform. It is subject to
+ * the license terms in the LICENSE.txt file found in the top-level directory
+ * of this distribution and at:
+ *    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+ * No part of the rogue software platform, including this file, may be
+ * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
@@ -22,7 +22,7 @@
 #define __ROGUE_PROTOCOLS_EPICSV3_VARIABLE_H__
 
 #include <boost/python.hpp>
-#include <boost/thread.hpp>
+#include <thread>
 #include <casdef.h>
 #include <gdd.h>
 #include <gddApps.h>
@@ -36,11 +36,14 @@ namespace rogue {
          class Variable: public Value {
                boost::python::object var_;
 
-               bool inSet_;
                bool syncRead_;
 
                // Lock held when called
                void fromPython(boost::python::object value);
+
+               // Use to extract values from python while checking for errors
+               template<typename T>
+               T extractValue(boost::python::object value);
 
             protected:
 
@@ -53,7 +56,7 @@ namespace rogue {
 
                //! Class creation
                Variable ( std::string epicsName, boost::python::object p, bool syncRead );
-               
+
                ~Variable ();
 
                void varUpdated(std::string path, boost::python::object value, boost::python::object disp);
@@ -66,7 +69,7 @@ namespace rogue {
          };
 
          // Convienence
-         typedef boost::shared_ptr<rogue::protocols::epicsV3::Variable> VariablePtr;
+         typedef std::shared_ptr<rogue::protocols::epicsV3::Variable> VariablePtr;
 
       }
    }

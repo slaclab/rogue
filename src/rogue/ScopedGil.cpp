@@ -17,16 +17,17 @@
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
-#include <boost/python.hpp>
 #include <rogue/ScopedGil.h>
 
 rogue::ScopedGil::ScopedGil() {
+#ifndef NO_PYTHON
    state_ = PyGILState_Ensure();
+#endif
 }
 
 rogue::ScopedGil::~ScopedGil() {
+#ifndef NO_PYTHON
    PyGILState_Release(state_);
+#endif
 }
-
-void rogue::ScopedGil::setup_python() {}
 

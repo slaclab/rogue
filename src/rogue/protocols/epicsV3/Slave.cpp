@@ -18,18 +18,24 @@
  * ----------------------------------------------------------------------------
 **/
 
-#include <boost/python.hpp>
 #include <rogue/protocols/epicsV3/Slave.h>
 #include <rogue/interfaces/stream/Frame.h>
 #include <rogue/interfaces/stream/FrameLock.h>
 #include <rogue/interfaces/stream/FrameIterator.h>
 #include <rogue/GeneralError.h>
 #include <rogue/GilRelease.h>
-#include <boost/make_shared.hpp>
-#include <boost/make_shared.hpp>
+#include <memory>
+#include <memory>
+
+#ifdef __MACH__
+#include <mach/clock.h>
+#include <mach/mach.h>
+#endif
 
 namespace ris = rogue::interfaces::stream;
 namespace rpe = rogue::protocols::epicsV3;
+
+#include <boost/python.hpp>
 namespace bp  = boost::python;
 
 //! Setup class in python
@@ -112,7 +118,7 @@ void rpe::Slave::acceptFrame ( ris::FramePtr frame ) {
    uint32_t size_;
    uint32_t i;
 
-   rogue::GilRelease noGil();
+   rogue::GilRelease noGil;
    ris::FrameLockPtr fLock = frame->lock();
 
    fSize = frame->getPayload();
@@ -130,14 +136,24 @@ void rpe::Slave::acceptFrame ( ris::FramePtr frame ) {
    // Limit size
    if ( size_ > max_ ) size_ = max_;
 
-   boost::lock_guard<boost::mutex> lock(rpe::Value::mtx_);
+   std::lock_guard<std::mutex> lock(rpe::Value::mtx_);
 
    // Release old data
    pValue_->unreference();
    pValue_ = new gddAtomic (gddAppType_value, epicsType_, 1u, size_);
 
    // Set timestamp
+#ifdef __MACH__ // OSX does not have clock_gettime
+   clock_serv_t cclock;
+   mach_timespec_t mts;
+   host_get_clock_service(mach_host_self(), CALENDAR_CLOCK, &cclock);
+   clock_get_time(cclock, &mts);
+   mach_port_deallocate(mach_task_self(), cclock);
+   t.tv_sec = mts.tv_sec;
+   t.tv_nsec = mts.tv_nsec;
+#else      
    clock_gettime(CLOCK_REALTIME,&t);
+#endif
    pValue_->setTimeStamp(&t);
 
    // Create vector of appropriate type

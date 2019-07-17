@@ -22,8 +22,7 @@
 #include <rogue/protocols/packetizer/Controller.h>
 #include <rogue/interfaces/stream/Master.h>
 #include <rogue/interfaces/stream/Slave.h>
-#include <boost/enable_shared_from_this.hpp>
-#include <boost/python.hpp>
+#include <memory>
 #include <stdint.h>
 #include <rogue/Queue.h>
 #include <rogue/Logging.h>
@@ -36,9 +35,8 @@ namespace rogue {
          class Transport;
          class Header;
 
-
          //! Packetizer Controller Class
-         class ControllerV2 : public Controller, public boost::enable_shared_from_this<rogue::protocols::packetizer::ControllerV2> {
+         class ControllerV2 : public Controller, public std::enable_shared_from_this<rogue::protocols::packetizer::ControllerV2> {
 
                bool     enIbCrc_;
                bool     enObCrc_;
@@ -46,28 +44,28 @@ namespace rogue {
             public:
 
                //! Class creation
-               static boost::shared_ptr<rogue::protocols::packetizer::ControllerV2> 
-                  create ( bool enIbCrc, bool enObCrc,
-                           boost::shared_ptr<rogue::protocols::packetizer::Transport> tran,
-                           boost::shared_ptr<rogue::protocols::packetizer::Application> * app );
+               static std::shared_ptr<rogue::protocols::packetizer::ControllerV2> 
+                  create ( bool enIbCrc, bool enObCrc, bool enSsi,
+                           std::shared_ptr<rogue::protocols::packetizer::Transport> tran,
+                           std::shared_ptr<rogue::protocols::packetizer::Application> * app );
 
                //! Creator
-               ControllerV2( bool enIbCrc, bool enObCrc,
-                           boost::shared_ptr<rogue::protocols::packetizer::Transport> tran,
-                           boost::shared_ptr<rogue::protocols::packetizer::Application> * app );
+               ControllerV2( bool enIbCrc, bool enObCrc, bool enSsi,
+                           std::shared_ptr<rogue::protocols::packetizer::Transport> tran,
+                           std::shared_ptr<rogue::protocols::packetizer::Application> * app );
 
                //! Destructor
                ~ControllerV2();
 
                //! Frame received at transport interface
-               void transportRx( boost::shared_ptr<rogue::interfaces::stream::Frame> frame );
+               void transportRx( std::shared_ptr<rogue::interfaces::stream::Frame> frame );
 
                //! Frame received at application interface
-               void applicationRx( boost::shared_ptr<rogue::interfaces::stream::Frame> frame, uint8_t id);
+               void applicationRx( std::shared_ptr<rogue::interfaces::stream::Frame> frame, uint8_t id);
          };
 
-         // Convienence
-         typedef boost::shared_ptr<rogue::protocols::packetizer::ControllerV2> ControllerV2Ptr;
+         // Convenience
+         typedef std::shared_ptr<rogue::protocols::packetizer::ControllerV2> ControllerV2Ptr;
 
       }
    }

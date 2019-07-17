@@ -18,15 +18,21 @@
 # copied, modified, propagated, or distributed except according to the terms 
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
-from PyQt4.QtCore   import *
-from PyQt4.QtGui    import *
+try:
+    from PyQt5.QtWidgets import *
+    from PyQt5.QtCore    import *
+    from PyQt5.QtGui     import *
+except ImportError:
+    from PyQt4.QtCore    import *
+    from PyQt4.QtGui     import *
 
 import pyrogue
-import Pyro4
 import threading
 
-class VariableDev(object):
+class VariableDev(QObject):
+
     def __init__(self,*,tree,parent,dev,noExpand):
+        QObject.__init__(self)
         self._parent   = parent
         self._tree     = tree
         self._dev      = dev
@@ -44,6 +50,7 @@ class VariableDev(object):
             self._widget.setExpanded(False)
             self._tree.itemExpanded.connect(self.expandCb)
 
+    @pyqtSlot()
     def expandCb(self):
         if self._dummy is None or not self._widget.isExpanded():
             return
@@ -69,6 +76,8 @@ class VariableDev(object):
 class VariableLink(QObject):
     """Bridge between the pyrogue tree and the display element"""
 
+    updateGui = pyqtSignal([int],[str])
+
     def __init__(self,*,tree,parent,variable):
         QObject.__init__(self)
         self._variable = variable
@@ -90,8 +99,8 @@ class VariableLink(QObject):
         if self._variable.disp == 'enum' and self._variable.enum is not None and self._variable.mode != 'RO':
             self._widget = QComboBox()
             self._widget.activated.connect(self.guiChanged)
-            self.connect(self,SIGNAL('updateGui'),self._widget.setCurrentIndex)
-            self._widget.setToolTip(self._variable.description)
+
+            self.updateGui.connect(self._widget.setCurrentIndex)
 
             for i in self._variable.enum:
                 self._widget.addItem(self._variable.enum[i])
@@ -101,15 +110,19 @@ class VariableLink(QObject):
             self._widget.setMinimum(self._variable.minimum)
             self._widget.setMaximum(self._variable.maximum)
             self._widget.valueChanged.connect(self.guiChanged)
-            self.connect(self,SIGNAL('updateGui'),self._widget.setValue)
-            self._widget.setToolTip(self._variable.description)
+
+            self.updateGui.connect(self._widget.setValue)
 
         else:
             self._widget = QLineEdit()
             self._widget.returnPressed.connect(self.returnPressed)
             self._widget.textEdited.connect(self.valueChanged)
-            self.connect(self,SIGNAL('updateGui'),self._widget.setText)
-            self._widget.setToolTip(self._variable.description)
+
+            self.updateGui[str].connect(self._widget.setText)
+
+        self._widget.setToolTip(self._variable.description)
+        self._widget.setContextMenuPolicy(Qt.CustomContextMenu)
+        self._widget.customContextMenuRequested.connect(self.openMenu)
 
         if self._variable.mode == 'RO':
             self._widget.setReadOnly(True)
@@ -119,9 +132,42 @@ class VariableLink(QObject):
 
         variable.addListener(self)
 
-    @Pyro4.expose
+    def openMenu(self, event):
+        menu = QMenu()
+        read_variable  = None
+        write_variable = None
+
+        read_recurse = menu.addAction('Read Recursive')
+        write_recurse = menu.addAction('Write Recursive')
+        read_device = menu.addAction('Read Device')
+        write_device = menu.addAction('Write Device')
+
+        if self._variable.mode != 'WO':
+            read_variable = menu.addAction('Read Variable')
+        if self._variable.mode != 'RO':
+            write_variable = menu.addAction('Write Variable')
+
+        action = menu.exec_(self._widget.mapToGlobal(event))
+
+        if action == read_recurse:
+            self._variable.parent.ReadDevice(True)
+        elif action == write_recurse:
+            self._variable.parent.WriteDevice(True)
+        elif action == read_device:
+            self._variable.parent.ReadDevice(False)
+        elif action == write_device:
+            self._variable.parent.WriteDevice(False)
+        elif action == read_variable:
+            self._variable.get()
+        elif action == write_variable:
+            if isinstance(self._widget, QComboBox):
+                self._variable.setDisp(self._widget.currentText())
+            elif isinstance(self._widget, QSpinBox):
+                self._variable.set(self._widget.value())
+            else:
+                self._variable.setDisp(self._widget.text())
+
     def varListener(self, path, value, disp):
-        #print('{} varListener ( {} {} )'.format(self.variable, type(value), value))
         with self._lock:
             if self._widget is None or self._inEdit is True:
                 return
@@ -129,17 +175,22 @@ class VariableLink(QObject):
             self._swSet = True
 
             if isinstance(self._widget, QComboBox):
-                if self._widget.currentIndex() != self._widget.findText(disp):
-                    self.emit(SIGNAL("updateGui"), self._widget.findText(disp))
+                i = self._widget.findText(disp)
+
+                if i < 0: i = 0
+
+                if self._widget.currentIndex() != i:
+                    self.updateGui.emit(i)
             elif isinstance(self._widget, QSpinBox):
                 if self._widget.value != value:
-                    self.emit(SIGNAL("updateGui"), value)
+                    self.updateGui.emit(value)
             else:
                 if self._widget.text() != disp:
-                    self.emit(SIGNAL("updateGui"), disp)
+                    self.updateGui[str].emit(disp)
 
             self._swSet = False
 
+    @pyqtSlot()
     def valueChanged(self):
         self._inEdit = True
         p = QPalette()
@@ -147,14 +198,17 @@ class VariableLink(QObject):
         p.setColor(QPalette.Text,Qt.black)
         self._widget.setPalette(p)
 
+    @pyqtSlot()
     def returnPressed(self):
         p = QPalette()
         self._widget.setPalette(p)
 
         self.guiChanged(self._widget.text())
         self._inEdit = False
-        self.emit(SIGNAL("updateGui"), self._variable.valueDisp())
+        self.updateGui.emit(self._variable.valueDisp())
 
+    @pyqtSlot(int)
+    @pyqtSlot(str)
     def guiChanged(self, value):
         if self._swSet:
             return
@@ -197,10 +251,13 @@ class VariableWidget(QWidget):
 
         self.devTop = None
 
+    @pyqtSlot(pyrogue.Root)
+    @pyqtSlot(pyrogue.VirtualNode)
     def addTree(self,root):
         self.roots.append(root)
         self.devTop = VariableDev(tree=self.tree,parent=self.top,dev=root,noExpand=False)
 
+    @pyqtSlot()
     def readPressed(self):
         for root in self.roots:
             root.ReadAll()

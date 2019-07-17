@@ -26,12 +26,12 @@ class EpicsCaServer(object):
     """
     Class to contain an epics ca server
     """
-    def __init__(self,*,base,root,pvMap=None, syncRead=True):
+    def __init__(self,*,base,root,pvMap=None, syncRead=True, threadCount=0):
         self._root      = root
         self._base      = base 
-        self._log       = pyrogue.logInit(self)
+        self._log       = pyrogue.logInit(cls=self)
         self._syncRead  = syncRead
-        self._srv       = rogue.protocols.epicsV3.Server()
+        self._srv       = rogue.protocols.epicsV3.Server(threadCount)
 
         if not root.running:
             raise Exception("Epics can not be setup on a tree which is not started")
@@ -63,11 +63,19 @@ class EpicsCaServer(object):
     def start(self):
         self._srv.start()
 
+    def list(self):
+        return self._pvMap
+
+    def dump(self):
+        for k,v in self._pvMap.items():
+            print("{} -> {}".format(v,k))
+
     def _addPv(self,node,doAll):
         eName = self._base + ':'
 
         if doAll:
             eName += node.path.replace('.',':')
+            self._pvMap[node.path] = eName
         elif node.path in self._pvMap:
             eName = self._pvMap[node.path]
         else:

@@ -24,26 +24,32 @@
 #include <rogue/interfaces/memory/Master.h>
 #include <rogue/interfaces/memory/Constants.h>
 #include <rogue/GeneralError.h>
-#include <boost/make_shared.hpp>
+#include <memory>
 #include <rogue/GilRelease.h>
 #include <rogue/ScopedGil.h>
+#include <sys/time.h>
 
 namespace rim = rogue::interfaces::memory;
+
+#ifndef NO_PYTHON
+#include <boost/python.hpp>
 namespace bp  = boost::python;
+#endif
 
 // Init class counter
 uint32_t rim::Transaction::classIdx_ = 0;
 
 //! Class instance lock
-boost::mutex rim::Transaction::classMtx_;
+std::mutex rim::Transaction::classMtx_;
 
 //! Create a master container
-rim::TransactionPtr rim::Transaction::create () {
-   rim::TransactionPtr m = boost::make_shared<rim::Transaction>();
+rim::TransactionPtr rim::Transaction::create (struct timeval timeout) {
+   rim::TransactionPtr m = std::make_shared<rim::Transaction>(timeout);
    return(m);
 }
 
 void rim::Transaction::setup_python() {
+#ifndef NO_PYTHON
    bp::class_<rim::Transaction, rim::TransactionPtr, boost::noncopyable>("Transaction",bp::no_init)
       .def("lock",    &rim::Transaction::lock)
       .def("id",      &rim::Transaction::id)
@@ -55,14 +61,15 @@ void rim::Transaction::setup_python() {
       .def("setData", &rim::Transaction::setData)
       .def("getData", &rim::Transaction::getData)
    ;
+#endif
 }
 
 //! Create object
-rim::Transaction::Transaction() {
+rim::Transaction::Transaction(struct timeval timeout) : timeout_(timeout) {
+   gettimeofday(&startTime_,NULL);
+
    endTime_.tv_sec    = 0;
    endTime_.tv_usec   = 0;
-   startTime_.tv_sec  = 0;
-   startTime_.tv_usec = 0;
 
    pyValid_ = false;
 
@@ -90,7 +97,7 @@ rim::TransactionLockPtr rim::Transaction::lock() {
 
 //! Get expired state
 bool rim::Transaction::expired() { 
-   return (iter_ == NULL); 
+   return (iter_ == NULL || done_); 
 }
 
 //! Get id
@@ -116,7 +123,7 @@ void rim::Transaction::done(uint32_t error) {
 uint32_t rim::Transaction::wait() {
    struct timeval currTime;
 
-   boost::unique_lock<boost::mutex> lock(lock_);
+   std::unique_lock<std::mutex> lock(lock_);
 
    while (! done_) {
 
@@ -128,18 +135,31 @@ uint32_t rim::Transaction::wait() {
          done_  = true;
          error_ = rim::TimeoutError;
       }
-      else cond_.timed_wait(lock,boost::posix_time::microseconds(1000));
+      else cond_.wait_for(lock,std::chrono::microseconds(1000));
    }
 
    // Reset
    if ( pyValid_ ) {
       rogue::ScopedGil gil;
+#ifndef NO_PYTHON
       PyBuffer_Release(&(pyBuf_));
+#endif
    }
    iter_    = NULL;
    pyValid_ = false;
 
    return (error_);
+}
+
+//! Refresh the timer
+void rim::Transaction::refreshTimer(rim::TransactionPtr ref) {
+   struct timeval currTime;
+   gettimeofday(&currTime,NULL);
+   std::lock_guard<std::mutex> lock(lock_);
+
+   // Refresh if start time is later then the reference
+   if ( ref == NULL || timercmp(&startTime_,&(ref->startTime_),>=) )
+      timeradd(&currTime,&timeout_,&endTime_);
 }
 
 //! start iterator, caller must lock around access
@@ -154,10 +174,11 @@ rim::Transaction::iterator rim::Transaction::end() {
    return iter_ + size_;
 }
 
+#ifndef NO_PYTHON
+
 //! Set transaction data from python
 void rim::Transaction::setData ( boost::python::object p, uint32_t offset ) {
    Py_buffer  pyBuf;
-   uint8_t *  data;
 
    if ( PyObject_GetBuffer(p.ptr(),&pyBuf,PyBUF_CONTIG) < 0 )
       throw(rogue::GeneralError("Transaction::writePy","Python Buffer Error In Frame"));
@@ -169,15 +190,13 @@ void rim::Transaction::setData ( boost::python::object p, uint32_t offset ) {
       throw(rogue::GeneralError::boundary("Frame::write",offset+count,size_));
    }
 
-   data = (uint8_t *)pyBuf.buf;
-   std::copy(data,data+count,begin()+offset);
+   std::memcpy(begin()+offset, (uint8_t *)pyBuf.buf, count);
    PyBuffer_Release(&pyBuf);
 }
 
 //! Get transaction data from python
 void rim::Transaction::getData ( boost::python::object p, uint32_t offset ) {
    Py_buffer  pyBuf;
-   uint8_t *  data;
 
    if ( PyObject_GetBuffer(p.ptr(),&pyBuf,PyBUF_SIMPLE) < 0 ) 
       throw(rogue::GeneralError("Transaction::readPy","Python Buffer Error In Frame"));
@@ -189,8 +208,9 @@ void rim::Transaction::getData ( boost::python::object p, uint32_t offset ) {
       throw(rogue::GeneralError::boundary("Frame::readPy",offset+count,size_));
    }
 
-   data = (uint8_t *)pyBuf.buf;
-   std::copy(begin()+offset,begin()+offset+count,data);
+   std::memcpy((uint8_t *)pyBuf.buf, begin()+offset, count);
    PyBuffer_Release(&pyBuf);
 }
+
+#endif
 

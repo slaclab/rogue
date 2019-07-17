@@ -19,8 +19,8 @@
 **/
 #ifndef __ROGUE_VERSION_H__
 #define __ROGUE_VERSION_H__
-#include <boost/python.hpp>
 #include <stdint.h>
+#include <string>
 
 namespace rogue {
 
@@ -55,6 +55,10 @@ namespace rogue {
          static uint32_t getMinor ();
          static uint32_t getMaint ();
          static uint32_t getDevel ();
+
+         // For debugging
+         static void sleep(uint32_t seconds);
+         static void usleep(uint32_t useconds);
 
          static std::string pythonVersion();
    };

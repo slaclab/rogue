@@ -18,8 +18,8 @@
 #define __ROGUE_HARDWARE_AXI_MEM_MAP_H__
 #include <rogue/interfaces/memory/Slave.h>
 #include <rogue/interfaces/memory/Transaction.h>
-#include <boost/python.hpp>
-#include <boost/thread.hpp>
+#include <thread>
+#include <mutex>
 #include <stdint.h>
 #include <rogue/Logging.h>
 
@@ -27,35 +27,46 @@ namespace rogue {
    namespace hardware {
       namespace axi {
 
-         //! PGP Card class
+         //! AXI Memory Map Class
+         /** This class provides a bridge between the Rogue memory interface and one
+          * of the AES Stream Drivers device drivers. This bridge allows for read and
+          * write transactions to PCI Express boards (using the data_dev driver)
+          * or Zynq AXI4 register space (using the rce_memmap driver). The driver
+          * controls which space is availablet to the user. Multiple AxiMemMap classes
+          * are allowed to be attached to the driver at the same time.
+          */
          class AxiMemMap : public rogue::interfaces::memory::Slave {
 
                //! AxiMemMap file descriptor
                int32_t  fd_;
 
                // Logging
-               rogue::LoggingPtr log_;
+               std::shared_ptr<rogue::Logging> log_;
 
             public:
 
-               //! Class creation
-               static boost::shared_ptr<rogue::hardware::axi::AxiMemMap> create (std::string path);
+               //! Class factory which returns a AxiMemMapPtr to a newly created AxiMemMap object
+               /** Exposed to Python as rogue.hardware.axi.AxiMemMap()
+                * @param path Path to device. i.e /dev/datadev_0
+                * @return AxiMemMap pointer (AxiMemMapPtr)
+                */
+               static std::shared_ptr<rogue::hardware::axi::AxiMemMap> create (std::string path);
 
-               //! Setup class in python
+               // Setup class for use in python
                static void setup_python();
 
-               //! Creator
+               // Class Creator
                AxiMemMap(std::string path);
 
-               //! Destructor
+               // Destructor
                ~AxiMemMap();
 
-               //! Post a transaction
-               void doTransaction(boost::shared_ptr<rogue::interfaces::memory::Transaction> tran);
+               // Accept as transaction from the memory Master as defined in the Slave class.
+               void doTransaction(std::shared_ptr<rogue::interfaces::memory::Transaction> tran);
          };
 
-         // Convienence
-         typedef boost::shared_ptr<rogue::hardware::axi::AxiMemMap> AxiMemMapPtr;
+         //! Alias for using shared pointer as TcpClientPtr
+         typedef std::shared_ptr<rogue::hardware::axi::AxiMemMap> AxiMemMapPtr;
 
       }
    }

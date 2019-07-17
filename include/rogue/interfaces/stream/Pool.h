@@ -7,9 +7,6 @@
  * ----------------------------------------------------------------------------
  * Description:
  * Stream memory pool
- * TODO:
- *    Create central memory pool allocator for proper allocate and free of
- *    buffers and frames.
  * ----------------------------------------------------------------------------
  * This file is part of the rogue software platform. It is subject to 
  * the license terms in the LICENSE.txt file found in the top-level directory 
@@ -24,9 +21,8 @@
 #define __ROGUE_INTERFACES_STREAM_POOL_H__
 #include <stdint.h>
 
-#include <boost/python.hpp>
-#include <boost/thread.hpp>
-#include <boost/enable_shared_from_this.hpp>
+#include <thread>
+#include <memory>
 #include <rogue/Queue.h>
 
 namespace rogue {
@@ -37,80 +33,173 @@ namespace rogue {
          class Buffer;
 
          //! Stream pool class
-         class Pool : public boost::enable_shared_from_this<rogue::interfaces::stream::Pool> {
+         /** The stream Pool class is responsible for allocating and garbage collecting Frame
+          * objects and the Buffer objects they contain. The default mode is to allocate a
+          * Frame with a single Buffer of the requsted sized. Alternatively the Pool class
+          * can operate in fixed buffer size mode. In this mode Buffer objects of a fixed
+          * sized are allocated, with a Frame containing enough Buffer to satisfy the original
+          * request. Normally Buffer data is freed when returned back to the Poo class. 
+          * Alternatively a pool can be enabled if operating in fixed size mode. When a pool
+          * is enabled returned buffer data is stored in the pool for later allocation to
+          * a new requester. The pool size defines the maximum number of entries to allow in
+          * the pool. 
+          *
+          * A subclass can be created with intercepts the Frame requests and allocates 
+          * Frame and Buffer objects from an alternative source such as a hardware DMA driver.
+          */
+         class Pool : public std::enable_shared_from_this<rogue::interfaces::stream::Pool> {
 
-               //! Mutex
-               boost::mutex mtx_;
+               // Mutex
+               std::mutex mtx_;
 
-               //! Track buffer allocations
+               // Track buffer allocations
                uint32_t allocMeta_;
 
-               //! Total memory allocated
+               // Total memory allocated
                uint32_t allocBytes_;
 
-               //! Total buffers allocated
+               // Total buffers allocated
                uint32_t allocCount_;
 
-               //! Buffer queue
+               // Buffer queue
                std::queue<uint8_t *> dataQ_;
 
-               //! Fixed size buffer mode
+               // Fixed size buffer mode
                uint32_t fixedSize_;
 
-               //! Buffer queue count
-               uint32_t maxCount_;
+               // Buffer queue count
+               uint32_t poolSize_;
 
             public:
 
-               //! Creator
+               // Class creator
                Pool();
 
-               //! Destructor
+               // Destroy the object
                virtual ~Pool();
 
                //! Get allocated memory
+               /** Return the total bytes currently allocated. This value is incremented
+                * as buffers are allocated and decremented as buffers are freed.
+                *
+                * Exposed as getAllocBytes() to Python
+                * @return Total currently allocated bytes
+                */
                uint32_t getAllocBytes();
 
-               //! Get allocated count
+               //! Get allocated buffer count
+               /** Return the total number of buffers currently allocated. This value is incremented
+                * as buffers are allocated and decremented as buffers are freed.
+                *
+                * Exposed as getAllocCount() to Python
+                * @return Total currently allocated buffers
+                */
                uint32_t getAllocCount();
 
-               //! Generate a Frame. Called from master
-               /*
-                * Pass total size required.
-                * Pass flag indicating if zero copy buffers are acceptable
+               // Process a frame request
+               /* Method to service a frame request, called by the Master class through
+                * the reqFrame() method. 
+                *
+                * size Minimum size for requsted Frame, larger Frame may be allocated
+                * zeroCopyEn Flag which indicates if a zero copy mode Frame is allowed.
+                * Newly allocated Frame pointer (FramePtr)
                 */
-               virtual boost::shared_ptr<rogue::interfaces::stream::Frame> acceptReq ( uint32_t size, bool zeroCopyEn );
+               virtual std::shared_ptr<rogue::interfaces::stream::Frame> acceptReq ( uint32_t size, bool zeroCopyEn );
 
-               //! Return a buffer
-               /*
-                * Called when this instance is marked as owner of a Buffer entity that is deleted.
+               //! Method called to return Buffer data
+               /* This method is called by the Buffer desctructor in order to free 
+                * the associated Buffer memory. May be overriden by a subclass to
+                * change the way the buffer data is returned.
+                * 
+                * @param data Data pointer to release
+                * @param meta Meta data specific to the allocator
+                * @param size Size of data buffer
                 */
                virtual void retBuffer(uint8_t * data, uint32_t meta, uint32_t size);
 
-               //! Setup class in python
+               // Setup class for use in python
                static void setup_python();
+
+               //! Set fixed size mode
+               /** This method puts the allocator into fixed size mode.
+                *
+                * Exposed as setFixedSize() to Python
+                * @param size Fixed size value.
+                */
+               void setFixedSize(uint32_t size);
+               
+               //! Get fixed size mode
+               /** Return state of fixed size mode.
+                * 
+                * Exposed as getFixedSize() to Python
+                * @return Fixed size value or 0 if not in fixed size mode
+                */
+               uint32_t getFixedSize();
+
+               //! Set buffer pool size
+               /** Set the buffer pool size. 
+                *
+                * Exposed as setPoolSize() to Python
+                * @param size Number of entries to keep in the pool
+                */
+               void setPoolSize(uint32_t size);
+
+               //! Get pool size
+               /** Return configured pool size
+                * 
+                * Exposed as getPoolSize() to Python
+                * @return Pool size
+                */
+               uint32_t getPoolSize();
 
             protected:
 
-               //! Set fixed size mode
-               void enBufferPool(uint32_t size, uint32_t count);
-
                //! Allocate and Create a Buffer
-               boost::shared_ptr<rogue::interfaces::stream::Buffer> allocBuffer ( uint32_t size, uint32_t *total );
+               /** This method is the default Buffer allocator. The requested 
+                * buffer is created from either a malloc call or fulling a free entry from
+                * the memory pool if it is enabled. If fixed size is configured the
+                * size parameter is ignored and a Buffer is returned with the fixed size 
+                * amount of memory. The passed total value is incremented by the 
+                * allocated Buffer size. This method is protected to allow it to be called
+                * by a sub-class of Pool.
+                *
+                * Not exposed to Python
+                * @param size Buffer size requsted
+                * @param total Pointer to current total size
+                * @return Allocated Buffer pointer as BufferPtr
+                */
+               std::shared_ptr<rogue::interfaces::stream::Buffer> allocBuffer ( uint32_t size, uint32_t *total );
 
-               //! Create a Buffer with passed data
-               boost::shared_ptr<rogue::interfaces::stream::Buffer> createBuffer( void * data, 
+               //! Create a Buffer with passed data block
+               /** This method is used to create a Buffer with a pre-allocated block of
+                * memory. This can be used when the block of memory is allocated by a
+                * hadware DMA driver. This method is protected to allow it to be called
+                * by a sub-class of Pool.
+                *
+                * Not exposted to Python
+                * @param data Data pointer to pre-allocated memory block
+                * @param meta Meta data associated with pre-allocated memory block
+                * @param size Usable size of memory block (may be smaller than allocated size)
+                * @param alloc Allocated size of memory block (may be greater than requested size)
+                * @return Allocated Buffer pointer as BufferPtr
+                */
+               std::shared_ptr<rogue::interfaces::stream::Buffer> createBuffer( void * data, 
                                                                                   uint32_t meta, 
                                                                                   uint32_t size,
                                                                                   uint32_t alloc);
 
                //! Decrement Allocation counter
+               /** Called in a sub-class to decerement the allocated byte count
+                * 
+                * Not exposted to Python
+                * @param alloc Amount of memory be de-allocated.
+                */
                void decCounter( uint32_t alloc);
 
          };
 
-         // Convienence
-         typedef boost::shared_ptr<rogue::interfaces::stream::Pool> PoolPtr;
+         //! Alias for using shared pointer as PoolPtr
+         typedef std::shared_ptr<rogue::interfaces::stream::Pool> PoolPtr;
       }
    }
 }

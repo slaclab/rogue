@@ -20,18 +20,23 @@
  * ----------------------------------------------------------------------------
 **/
 #include <rogue/hardware/pgp/EvrControl.h>
-#include <boost/make_shared.hpp>
+#include <memory>
 
 namespace rhp = rogue::hardware::pgp;
+
+#ifndef NO_PYTHON
+#include <boost/python.hpp>
 namespace bp  = boost::python;
+#endif
 
 //! Create the info class with pointer
 rhp::EvrControlPtr rhp::EvrControl::create() {
-   rhp::EvrControlPtr r = boost::make_shared<rhp::EvrControl>();
+   rhp::EvrControlPtr r = std::make_shared<rhp::EvrControl>();
    return(r);
 }
 
 void rhp::EvrControl::setup_python () {
+#ifndef NO_PYTHON
 
    bp::class_<rhp::EvrControl, rhp::EvrControlPtr >("EvrControl",bp::no_init)
       .def_readonly ("lane",        &rhp::EvrControl::lane)
@@ -46,6 +51,6 @@ void rhp::EvrControl::setup_python () {
       .def_readwrite("acceptCode",  &rhp::EvrControl::acceptCode)
       .def_readwrite("acceptDelay", &rhp::EvrControl::acceptDelay)
    ;
-
+#endif
 }
 

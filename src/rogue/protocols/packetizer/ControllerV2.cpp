@@ -24,24 +24,31 @@
 #include <rogue/protocols/packetizer/Transport.h>
 #include <rogue/protocols/packetizer/Application.h>
 #include <rogue/GeneralError.h>
-#include <boost/make_shared.hpp>
-#include <boost/pointer_cast.hpp>
-#include <boost/crc.hpp>
+#include <memory>
 #include <rogue/GilRelease.h>
 #include <math.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <sys/time.h>
 
 namespace rpp = rogue::protocols::packetizer;
 namespace ris = rogue::interfaces::stream;
-namespace bp  = boost::python;
+
+// Local CRC library
+#define CRCPP_USE_CPP11
+#include <rogue/protocols/packetizer/CRC.h>
+
+// CRC Lookup table for later use
+static const CRC::Table<uint32_t, 32> crcTable_(CRC::CRC_32());
 
 //! Class creation
-rpp::ControllerV2Ptr rpp::ControllerV2::create ( bool enIbCrc, bool enObCrc, rpp::TransportPtr tran, rpp::ApplicationPtr * app ) {
-   rpp::ControllerV2Ptr r = boost::make_shared<rpp::ControllerV2>(enIbCrc,enObCrc,tran,app);
+rpp::ControllerV2Ptr rpp::ControllerV2::create ( bool enIbCrc, bool enObCrc, bool enSsi, rpp::TransportPtr tran, rpp::ApplicationPtr * app ) {
+   rpp::ControllerV2Ptr r = std::make_shared<rpp::ControllerV2>(enIbCrc,enObCrc,enSsi,tran,app);
    return(r);
 }
 
 //! Creator
-rpp::ControllerV2::ControllerV2 ( bool enIbCrc, bool enObCrc, rpp::TransportPtr tran, rpp::ApplicationPtr * app ) : rpp::Controller::Controller(tran, app, 8, 8, 8) {
+rpp::ControllerV2::ControllerV2 ( bool enIbCrc, bool enObCrc, bool enSsi, rpp::TransportPtr tran, rpp::ApplicationPtr * app ) : rpp::Controller::Controller(tran, app, 8, 8, 8, enSsi) {
 
    enIbCrc_ = enIbCrc;
    enObCrc_ = enObCrc;
@@ -75,18 +82,19 @@ void rpp::ControllerV2::transportRx( ris::FramePtr frame ) {
 
    rogue::GilRelease noGil;
    ris::FrameLockPtr flock = frame->lock();
-   boost::lock_guard<boost::mutex> lock(tranMtx_);
+   std::lock_guard<std::mutex> lock(tranMtx_);
 
    buff = *(frame->beginBuffer());
    data = buff->begin();
    size = buff->getPayload();
 
    // Drop invalid data
-   if ( frame->getError() ||     // Check for frame ERROR
-      (size < 24)         ||     // Check for min. size (64-bit header + 64-bit min. payload + 64-bit tail) 
-      ((size&0x7) > 0)    ||     // Check for non 64-bit alignment
-      ((data[0]&0xF) != 0x2) ) { // Check for invalid version only (ignore the CRC mode flag)
-      log_->warning("Dropping frame due to contents: error=0x%x, payload=%i, Version=0x%x",frame->getError(),size,data[0]);
+   if ( frame->getError() ||           // Check for frame ERROR
+      ( frame->bufferCount() != 1 ) || // Incoming frame can only have one buffer
+      (size < 24)         ||           // Check for min. size (64-bit header + 64-bit min. payload + 64-bit tail) 
+      ((size&0x7) > 0)    ||           // Check for non 64-bit alignment
+      ((data[0]&0xF) != 0x2) ) {       // Check for invalid version only (ignore the CRC mode flag)
+      log_->warning("Dropping frame due to contents: error=0x%x, payload=%i, buffers=%i, Version=0x%x",frame->getError(),size,frame->bufferCount(),data[0]&0xF);
       dropCount_++;
       return;
    }
@@ -107,17 +115,18 @@ void rpp::ControllerV2::transportRx( ris::FramePtr frame ) {
    last     = uint32_t(data[size-6]);
 
    if(enIbCrc_){
+
       // Tail word 1
       tmpCrc  = uint32_t(data[size-1]) << 0;
       tmpCrc |= uint32_t(data[size-2]) << 8;
       tmpCrc |= uint32_t(data[size-3]) << 16;
       tmpCrc |= uint32_t(data[size-4]) << 24;
+
       // Compute CRC
-      boost::crc_basic<32> result( 0x04C11DB7, crcInit_[tmpDest], 0xFFFFFFFF, true, true );
-      result.process_bytes(data,size-4);
-      crc = result.checksum();
-      crcInit_[tmpDest] = result.get_interim_remainder();
-      crcErr = (tmpCrc != crc);
+      if ( tmpSof ) crc_[tmpDest] = CRC::Calculate(data, size-4, crcTable_);
+      else crc_[tmpDest] = CRC::Calculate(data, size-4, crcTable_, crc_[tmpDest]);
+
+      crcErr = (tmpCrc != crc_[tmpDest]);
    } 
    else crcErr = false;
    
@@ -142,7 +151,6 @@ void rpp::ControllerV2::transportRx( ris::FramePtr frame ) {
       dropCount_++;
       transSof_[tmpDest]  = true;
       tranCount_[tmpDest] = 0;
-      crcInit_[tmpDest]   = 0xFFFFFFFF;
       tranFrame_[tmpDest].reset();
       return;
    }
@@ -155,7 +163,6 @@ void rpp::ControllerV2::transportRx( ris::FramePtr frame ) {
          dropCount_++;
          transSof_[tmpDest]  = true;
          tranCount_[tmpDest] = 0;
-         crcInit_[tmpDest]   = 0xFFFFFFFF;
          tranFrame_[tmpDest].reset();         
          return;
       }
@@ -163,11 +170,7 @@ void rpp::ControllerV2::transportRx( ris::FramePtr frame ) {
       tranFrame_[tmpDest] = ris::Frame::create();
       tranCount_[tmpDest] = 0;
 
-      flags  = tmpFuser;
-      if ( tmpEof ) flags |= uint32_t(tmpLuser) << 8;
-      flags += tmpId   << 16;
-      flags += tmpDest << 24;
-      tranFrame_[tmpDest]->setFlags(flags);
+      tranFrame_[tmpDest]->setFirstUser(tmpFuser);
    }
 
    tranFrame_[tmpDest]->appendBuffer(buff);
@@ -175,17 +178,16 @@ void rpp::ControllerV2::transportRx( ris::FramePtr frame ) {
 
    // Last of transfer
    if ( tmpEof ) {
-      flags = tranFrame_[tmpDest]->getFlags() & 0xFFFF00FF;
-      flags |= uint32_t(tmpLuser) << 8;
-      tranFrame_[tmpDest]->setFlags(flags);
-
+      tranFrame_[tmpDest]->setLastUser(tmpLuser);
       transSof_[tmpDest]  = true;
       tranCount_[tmpDest] = 0;
       if ( app_[tmpDest] ) {
          app_[tmpDest]->pushFrame(tranFrame_[tmpDest]);
       }
-      crcInit_[tmpDest]   = 0xFFFFFFFF;
       tranFrame_[tmpDest].reset();
+
+      // Detect SSI error
+      if ( enSsi_ & (tmpLuser & 0x1) ) tranFrame_[tmpDest]->setError(0x80);
    }
    else {
       tranCount_[tmpDest] = (tranCount_[tmpDest] + 1) & 0xFFFF;
@@ -201,22 +203,14 @@ void rpp::ControllerV2::applicationRx ( ris::FramePtr frame, uint8_t tDest ) {
    uint32_t size;
    uint8_t  fUser;
    uint8_t  lUser;
-   uint8_t  tId;
    uint32_t crc;
-   uint32_t crcInit = 0xFFFFFFFF;
    uint32_t last;
    struct timeval startTime;
    struct timeval currTime;
-   struct timeval sumTime;
    struct timeval endTime;
 
-   if ( timeout_ > 0 ) {
-      gettimeofday(&startTime,NULL);
-      sumTime.tv_sec = (timeout_ / 1000000);
-      sumTime.tv_usec = (timeout_ % 1000000);
-      timeradd(&startTime,&sumTime,&endTime);
-   }
-   else gettimeofday(&endTime,NULL);
+   gettimeofday(&startTime,NULL);
+   timeradd(&startTime,&timeout_,&endTime);
 
    if ( frame->isEmpty() ) {
       log_->warning("Bad incoming applicationRx frame, size=0");
@@ -227,27 +221,30 @@ void rpp::ControllerV2::applicationRx ( ris::FramePtr frame, uint8_t tDest ) {
 
    rogue::GilRelease noGil;
    ris::FrameLockPtr flock = frame->lock();
-   boost::lock_guard<boost::mutex> lock(appMtx_);
+   std::lock_guard<std::mutex> lock(appMtx_);
 
    // Wait while queue is busy
    while ( tranQueue_.busy() ) {
       usleep(10);
-      if ( timeout_ > 0 ) {
-         gettimeofday(&currTime,NULL);
-         if ( timercmp(&currTime,&endTime,>))
-            throw(rogue::GeneralError::timeout("packetizer::ControllerV2::applicationRx",timeout_));
+      gettimeofday(&currTime,NULL);
+      if ( timercmp(&currTime,&endTime,>)) {
+         log_->timeout("ControllerV2::applicationRx",timeout_);
+         gettimeofday(&startTime,NULL);
+         timeradd(&startTime,&timeout_,&endTime);
       }
    }
 
-   fUser = frame->getFlags() & 0xFF;
-   lUser = (frame->getFlags() >> 8) & 0xFF;
-   tId   = (frame->getFlags() >> 16) & 0xFF;
+   fUser = frame->getFirstUser();
+   lUser = frame->getLastUser();
+
+   // Inject SOF
+   if ( enSsi_ ) fUser |= 0x2;
 
    segment = 0;
    for (it=frame->beginBuffer(); it != frame->endBuffer(); ++it) {
       ris::FramePtr tFrame = ris::Frame::create();
 
-      // Compute last, and alignt payload to 64-bits
+      // Compute last, and aligned payload to 64-bits
       last = (*it)->getPayload() % 8;
       if ( last == 0 ) last = 8;
       (*it)->adjustPayload(8-last);
@@ -268,7 +265,7 @@ void rpp::ControllerV2::applicationRx ( ris::FramePtr frame, uint8_t tDest ) {
       if(enObCrc_) data[0] |= 0x20; // Enable CRC
       data[1] = fUser;
       data[2] = tDest;
-      data[3] = tId;
+      data[3] = 0; // TID Unused
 
       // Header word 1
       data[4] = segment & 0xFF;
@@ -283,16 +280,17 @@ void rpp::ControllerV2::applicationRx ( ris::FramePtr frame, uint8_t tDest ) {
       data[size-5] = 0;
       
       if(enObCrc_){
+
          // Compute CRC
-         boost::crc_basic<32> result( 0x04C11DB7, crcInit, 0xFFFFFFFF, true, true );
-         result.process_bytes(data,size-4);
-         crc = result.checksum();
-         crcInit = result.get_interim_remainder();
+         if ( segment == 0 ) crc = CRC::Calculate(data, size-4, crcTable_);
+         else crc = CRC::Calculate(data, size-4, crcTable_, crc);
+
          // Tail  word 1
          data[size-1] = (crc >>  0) & 0xFF;
          data[size-2] = (crc >>  8) & 0xFF;
          data[size-3] = (crc >> 16) & 0xFF;
          data[size-4] = (crc >> 24) & 0xFF;
+
       } else {
          data[size-1] = 0;
          data[size-2] = 0;
@@ -300,8 +298,8 @@ void rpp::ControllerV2::applicationRx ( ris::FramePtr frame, uint8_t tDest ) {
          data[size-4] = 0;
       }
       
-      log_->debug("applicationRx: Gen frame: Size=%i, Fuser=0x%x, Dest=0x%x, Id=0x%x, Count=%i, Sof=%i, Luser=0x%x, Eof=%i, Last=%i",
-            (*it)->getPayload(), fUser, tDest, tId, segment, data[7], lUser, data[size-7], last);
+      log_->debug("applicationRx: Gen frame: Size=%i, Fuser=0x%x, Dest=0x%x, Count=%i, Sof=%i, Luser=0x%x, Eof=%i, Last=%i",
+            (*it)->getPayload(), fUser, tDest, segment, data[7], lUser, data[size-7], last);
       log_->debug("applicationRx: Raw header: 0x%x, 0x%x, 0x%x, 0x%x, 0x%x, 0x%x, 0x%x, 0x%x",
             data[0],data[1],data[2],data[3],data[4],data[5],data[6],data[7]);
       log_->debug("applicationRx: Raw footer: 0x%x, 0x%x, 0x%x, 0x%x, 0x%x, 0x%x, 0x%x, 0x%x",

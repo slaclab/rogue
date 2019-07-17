@@ -28,19 +28,25 @@
 #include <rogue/interfaces/stream/FrameIterator.h>
 #include <rogue/interfaces/stream/Buffer.h>
 #include <rogue/utilities/Prbs.h>
-#include <boost/make_shared.hpp>
+#include <memory>
 #include <rogue/GilRelease.h>
 #include <rogue/GeneralError.h>
 #include <rogue/Logging.h>
 #include <rogue/GeneralError.h>
+#include <sys/time.h>
+#include <string.h>
 
 namespace ris = rogue::interfaces::stream;
 namespace ru  = rogue::utilities;
-namespace bp  = boost::python;
+
+#ifndef NO_PYTHON
+#include <boost/python.hpp>
+namespace bp = boost::python;
+#endif
 
 //! Class creation
 ru::PrbsPtr ru::Prbs::create () {
-   ru::PrbsPtr p = boost::make_shared<ru::Prbs>();
+   ru::PrbsPtr p = std::make_shared<ru::Prbs>();
    return(p);
 }
 
@@ -57,6 +63,7 @@ ru::Prbs::Prbs() {
    txCount_    = 0;
    txBytes_    = 0;
    checkPl_    = true;
+   genPl_      = true;
    rxLog_      = rogue::Logging::create("prbs.rx");
    txLog_      = rogue::Logging::create("prbs.tx");
 
@@ -64,6 +71,7 @@ ru::Prbs::Prbs() {
    width_     = 32;
    byteWidth_ = 4;
    minSize_   = 12;
+   sendCount_ = false;
 
    // Init 4 taps
    tapCnt_  = 4;
@@ -72,6 +80,19 @@ ru::Prbs::Prbs() {
    taps_[1] = 2;
    taps_[2] = 6;
    taps_[3] = 31;
+
+   gettimeofday(&lastRxTime_,NULL);
+   gettimeofday(&lastTxTime_,NULL);
+
+   lastRxCount_ = 0;
+   lastRxBytes_ = 0;
+   rxRate_ = 0.0;
+   rxBw_ = 0.0;
+
+   lastTxCount_ = 0;
+   lastTxBytes_ = 0;
+   txRate_ = 0.0;
+   txBw_ = 0.0;
 }
 
 //! Deconstructor
@@ -79,13 +100,36 @@ ru::Prbs::~Prbs() {
    free(taps_);
 }
 
+//! Compute period
+double ru::Prbs::updateTime ( struct timeval *last ) {
+   struct timeval cmp;
+   struct timeval now;
+   struct timeval per;
+   double ret;
+
+   cmp.tv_sec  = 1;
+   cmp.tv_usec = 0;
+
+   gettimeofday(&now,NULL);
+
+   timersub(&now,last,&per);
+
+   if ( timercmp(&per,&cmp,>) ) {
+      ret = (float)per.tv_sec + (float(per.tv_usec) / 1e6);
+      gettimeofday(last,NULL);
+   }
+   else ret = 0.0;
+
+   return ret;
+}
+
 //! Set width
 void ru::Prbs::setWidth(uint32_t width) {
-   if ( width != 32 && width != 64 && width != 128 )
+   if ( (width > (MaxBytes*8)) || (width % 32) != 0) 
       throw(rogue::GeneralError("Prbs::setWidth","Invalid width."));
 
    rogue::GilRelease noGil;
-   boost::lock_guard<boost::mutex> lockT(pMtx_);
+   std::lock_guard<std::mutex> lockT(pMtx_);
 
    width_     = width;
    byteWidth_ = width / 8;
@@ -96,7 +140,7 @@ void ru::Prbs::setWidth(uint32_t width) {
 void ru::Prbs::setTaps(uint32_t tapCnt, uint8_t * taps) {
    uint32_t i;
 
-   boost::lock_guard<boost::mutex> lockT(pMtx_);
+   std::lock_guard<std::mutex> lockT(pMtx_);
 
    free(taps_);
    tapCnt_ = tapCnt;
@@ -104,6 +148,8 @@ void ru::Prbs::setTaps(uint32_t tapCnt, uint8_t * taps) {
 
    for (i=0; i < tapCnt_; i++) taps_[i] = taps[i];
 }
+
+#ifndef NO_PYTHON
 
 //! Set taps, python
 void ru::Prbs::setTapsPy(boost::python::object p) {
@@ -116,23 +162,44 @@ void ru::Prbs::setTapsPy(boost::python::object p) {
    PyBuffer_Release(&pyBuf);
 }
 
-void ru::Prbs::flfsr(ru::PrbsData & data) {
-   bool bit = false;
+#endif
 
-   for (uint32_t x=0; x < tapCnt_; x++) bit ^= data[taps_[x]];
+//! Send counter value
+void ru::Prbs::sendCount(bool state) {
+   rogue::GilRelease noGil;
+   std::lock_guard<std::mutex> lockT(pMtx_);
 
-   data <<= 1;
-   data[0] = bit;
+   sendCount_ = state;
+}
+
+void ru::Prbs::flfsr(uint8_t * data) {
+   uint32_t iByte;
+   uint32_t iBit;
+   uint32_t x;
+   bool msbOut;
+   bool lsbIn = false;
+
+   for (x=0; x < tapCnt_; x++) {
+      iByte = taps_[x] / 8;
+      iBit  = taps_[x] % 8;
+      lsbIn ^= ((data[iByte] >> iBit) & 0x1);
+   }
+
+   for (x=0; x < byteWidth_; x++) {
+      msbOut = data[x] & 0x80;
+      data[x] <<= 1;
+      data[x] |= lsbIn;
+      lsbIn = msbOut;
+   }
 }
 
 //! Thread background
 void ru::Prbs::runThread() {
-   try {
-      while(1) {
-         genFrame(txSize_);
-         boost::this_thread::interruption_point();
-      }
-   } catch (boost::thread_interrupted&) {}
+   txLog_->logThreadId();
+
+   while(threadEn_) {
+      genFrame(txSize_);
+   }
 }
 
 //! Auto run data generation
@@ -144,14 +211,16 @@ void ru::Prbs::enable(uint32_t size) {
 
    if ( txThread_ == NULL ) {
       txSize_ = size;
-      txThread_ = new boost::thread(boost::bind(&Prbs::runThread, this));
+      threadEn_ = true;
+      txThread_ = new std::thread(&Prbs::runThread, this);
    }
 }
 
 //! Disable auto generation
 void ru::Prbs::disable() {
    if ( txThread_ != NULL ) {
-      txThread_->interrupt();
+      rogue::GilRelease noGil;
+      threadEn_ = false;
       txThread_->join();
       delete txThread_;
       txThread_ = NULL;
@@ -183,6 +252,26 @@ uint32_t ru::Prbs::getTxCount() {
    return(txCount_);
 }
 
+//! Get rx rate
+double ru::Prbs::getRxRate() {
+   return rxRate_;
+}
+
+//! Get rx bw
+double ru::Prbs::getRxBw() {
+   return rxBw_;
+}
+
+//! Get tx rate
+double ru::Prbs::getTxRate() {
+   return txRate_;
+}
+
+//! Get tx bw
+double ru::Prbs::getTxBw() {
+   return txBw_;
+}
+
 //! Get TX bytes
 uint32_t ru::Prbs::getTxBytes() {
    return(txBytes_);
@@ -191,6 +280,11 @@ uint32_t ru::Prbs::getTxBytes() {
 //! Set check payload flag, default = true
 void ru::Prbs::checkPayload(bool state) {
    checkPl_ = state;
+}
+
+//! Set generate payload flag, default = true
+void ru::Prbs::genPayload(bool state) {
+   genPl_ = state;
 }
 
 //! Reset counters
@@ -210,21 +304,30 @@ void ru::Prbs::resetCount() {
 void ru::Prbs::genFrame (uint32_t size) {
    ris::Frame::iterator frIter;
    ris::Frame::iterator frEnd;
-   uint32_t      frSeq[4];
-   uint32_t      frSize[4];
+   uint32_t      frSeq[MaxBytes/4];
+   uint32_t      frSize[MaxBytes/4];
+   uint32_t      wCount[MaxBytes/4];
+   uint8_t       data[MaxBytes];
+   double        per;
    ris::FramePtr fr;
+
+   rogue::GilRelease noGil;
+   std::lock_guard<std::mutex> lock(pMtx_);
 
    // Verify size first
    if ((( size % byteWidth_ ) != 0) || size < minSize_ ) 
       throw rogue::GeneralError("Prbs::genFrame","Invalid frame size");
 
    // Setup size
-   memset(frSize,0,16);
+   memset(frSize,0,MaxBytes);
    frSize[0] = (size / byteWidth_) - 1;
 
    // Setup sequence
-   memset(frSeq,0,16);
-   frSeq[0] = txSeq_;
+   memset(frSeq,0,MaxBytes);
+   frSeq[0]  = txSeq_;
+
+   // Setup counter
+   memset(wCount,0,MaxBytes);
 
    // Get frame
    fr = reqFrame(size,true);
@@ -234,45 +337,64 @@ void ru::Prbs::genFrame (uint32_t size) {
 
    // First word is sequence
    ris::toFrame(frIter,byteWidth_,frSeq);
+   ++wCount[0];
 
    // Second word is size
    ris::toFrame(frIter,byteWidth_,frSize);
+   ++wCount[0];
 
-   // Init data
-   ru::PrbsData data(byteWidth_ * 8, frSeq[0]);
+   if ( genPl_ ) {
 
-   // Generate payload
-   while ( frIter != frEnd ) {
-      flfsr(data);
-      to_block_range(data,frIter);
-      frIter += byteWidth_;
+      // Init data
+      std::memcpy(data,frSeq,byteWidth_);
+
+      // Generate payload
+      while ( frIter != frEnd ) {
+         
+         if ( sendCount_ ) ris::toFrame(frIter,byteWidth_,wCount);
+         else {
+            flfsr(data);
+            ris::toFrame(frIter, byteWidth_, data);
+         }
+         ++wCount[0];
+      }
    }
-   fr->setPayload(size);
 
+   fr->setPayload(size);
    sendFrame(fr);
 
    // Update counters
-   boost::lock_guard<boost::mutex> lock(pMtx_);
    txSeq_++;
    txCount_++;
    txBytes_ += size;
+
+   if ( (per = updateTime(&lastTxTime_)) > 0.0 ) {
+      txRate_ = (float)(txCount_ - lastTxCount_) / per;
+      txBw_   = (float)(txBytes_ - lastTxBytes_) / per;
+      lastTxCount_ = txCount_;
+      lastTxBytes_ = txBytes_;
+   }
 }
 
 //! Accept a frame from master
 void ru::Prbs::acceptFrame ( ris::FramePtr frame ) {
    ris::Frame::iterator frIter;
    ris::Frame::iterator frEnd;
-   uint32_t      frSeq[4];
-   uint32_t      frSize[4];
+   uint32_t      frSeq[MaxBytes/4];
+   uint32_t      frSize[MaxBytes/4];
    uint32_t      expSeq;
    uint32_t      expSize;
    uint32_t      size;
    uint32_t      pos;
-   uint8_t       compData[16];
+   uint32_t      x;
+   uint8_t       expData[MaxBytes];
+   double        per;
+   char          debugA[1000];
+   char          debugB[200];
 
    rogue::GilRelease noGil;
    ris::FrameLockPtr fLock = frame->lock();
-   boost::lock_guard<boost::mutex> lock(pMtx_);
+   std::lock_guard<std::mutex> lock(pMtx_);
 
    size = frame->getPayload();
    frIter = frame->beginRead();
@@ -294,18 +416,12 @@ void ru::Prbs::acceptFrame ( ris::FramePtr frame ) {
    ris::fromFrame(frIter,byteWidth_,frSize);
    expSize = (frSize[0] + 1) * byteWidth_;
 
-   // Check size
-   if ( expSize != size ) {
-      rxLog_->warning("Bad size. exp=%i, got=%i, count=%i",expSize,size,rxCount_);
-      rxErrCount_++;
-      return;
-   }
-
-   // Check sequence, 
+   // Check size and sequence
    // Accept any sequence if our local count is zero
    // incoming frames with seq = 0 never cause errors and treated as a restart
-   if ( frSeq[0] != 0 && expSeq != 0 && frSeq[0] != expSeq ) {
-      rxLog_->warning("Bad Sequence. cur=%i, got=%i, count=%i",expSeq,frSeq[0],rxCount_);
+   if ( ( expSize != size ) || ( frSeq[0] != 0 && expSeq != 0 && frSeq[0] != expSeq ) ) {
+      rxLog_->warning("Bad header. expSize=%u gotSize=%u expSeq=%u gotSeq=%u nxtSeq=%u count=%i",
+            expSize,size,expSeq,frSeq[0],rxSeq_,rxCount_);
       rxErrCount_++;
       return;
    }
@@ -314,16 +430,20 @@ void ru::Prbs::acceptFrame ( ris::FramePtr frame ) {
    if ( checkPl_ ) {
 
       // Init data
-      ru::PrbsData expData(byteWidth_ * 8, frSeq[0]);
+      std::memcpy(expData,frSeq,byteWidth_);
       pos = 0;
 
       // Read payload
       while ( frIter != frEnd ) {
          flfsr(expData);
-         to_block_range(expData,compData);
 
-         if ( ! std::equal(frIter,frIter+byteWidth_,compData ) ) {
-            rxLog_->warning("Bad value at index %i. count=%i, size=%i",pos,rxCount_,(size/byteWidth_)-1);
+         if ( ! std::equal(frIter,frIter+byteWidth_,expData ) ) {
+            sprintf(debugA,"Bad value at index %i. count=%i, size=%i",pos,rxCount_,(size/byteWidth_)-1);
+            for (x=0; x < byteWidth_; x++) {
+               sprintf(debugB,"\n   %i:%i Got=0x%x Exp=0x%x",pos,x,*(frIter+x),*(expData+x));
+               strcat(debugA,debugB);
+            }
+            rxLog_->warning(debugA);
             rxErrCount_++;
             return;
          }
@@ -334,9 +454,17 @@ void ru::Prbs::acceptFrame ( ris::FramePtr frame ) {
 
    rxCount_++;
    rxBytes_ += size;
+
+   if ( (per = updateTime(&lastRxTime_)) > 0.0 ) {
+      rxRate_ = (float)(rxCount_ - lastRxCount_) / per;
+      rxBw_   = (float)(rxBytes_ - lastRxBytes_) / per;
+      lastRxCount_ = rxCount_;
+      lastRxBytes_ = rxBytes_;
+   }
 }
 
 void ru::Prbs::setup_python() {
+#ifndef NO_PYTHON
 
    bp::class_<ru::Prbs, ru::PrbsPtr, bp::bases<ris::Master,ris::Slave>, boost::noncopyable >("Prbs",bp::init<>())
       .def("genFrame",       &ru::Prbs::genFrame)
@@ -346,16 +474,23 @@ void ru::Prbs::setup_python() {
       .def("setTaps",        &ru::Prbs::setTaps)
       .def("getRxErrors",    &ru::Prbs::getRxErrors)
       .def("getRxCount",     &ru::Prbs::getRxCount)
+      .def("getRxRate",      &ru::Prbs::getRxRate)
+      .def("getRxBw",        &ru::Prbs::getRxBw)
       .def("getRxBytes",     &ru::Prbs::getRxBytes)
       .def("getTxErrors",    &ru::Prbs::getTxErrors)
       .def("getTxCount",     &ru::Prbs::getTxCount)
       .def("getTxBytes",     &ru::Prbs::getTxBytes)
+      .def("getTxRate",      &ru::Prbs::getTxRate)
+      .def("getTxBw",        &ru::Prbs::getTxBw)
       .def("checkPayload",   &ru::Prbs::checkPayload)
+      .def("genPayload",     &ru::Prbs::genPayload)
       .def("resetCount",     &ru::Prbs::resetCount)
+      .def("sendCount",      &ru::Prbs::sendCount)
    ;
 
    bp::implicitly_convertible<ru::PrbsPtr, ris::SlavePtr>();
    bp::implicitly_convertible<ru::PrbsPtr, ris::MasterPtr>();
+#endif
 }
 
 

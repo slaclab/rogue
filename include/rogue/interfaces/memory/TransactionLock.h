@@ -20,8 +20,7 @@
 #ifndef __ROGUE_INTERFACES_MEMORY_TRANSACTION_LOCK_H__
 #define __ROGUE_INTERFACES_MEMORY_TRANSACTION_LOCK_H__
 #include <stdint.h>
-#include <boost/python.hpp>
-#include <boost/thread.hpp>
+#include <thread>
 
 namespace rogue {
    namespace interfaces {
@@ -29,37 +28,61 @@ namespace rogue {
 
          class Transaction;
 
-         //! Transaction
+         //! Transaction Lock
+         /**
+          * The TransactionLock is a container for holding a lock on Transaction data while accessing 
+          * that data. This lock ensures that Transaction is not destroyed when the Slave is updating
+          * its data and result. This object is created by calling Transaction::lock().
+          */
          class TransactionLock {
 
-               boost::shared_ptr<rogue::interfaces::memory::Transaction> tran_;
+               std::shared_ptr<rogue::interfaces::memory::Transaction> tran_;
                bool locked_;
 
             public:
 
-               //! Create a transaction container
-               static boost::shared_ptr<rogue::interfaces::memory::TransactionLock> create (
-                  boost::shared_ptr<rogue::interfaces::memory::Transaction> transaction);
+               // Class factory which returns a pointer to a TransactionLock (TransactionLockPtr)
+               static std::shared_ptr<rogue::interfaces::memory::TransactionLock> create (
+                  std::shared_ptr<rogue::interfaces::memory::Transaction> transaction);
 
-               //! Constructor
-               TransactionLock(boost::shared_ptr<rogue::interfaces::memory::Transaction> transaction);
+               // Transaction lock constructor
+               TransactionLock(std::shared_ptr<rogue::interfaces::memory::Transaction> transaction);
 
-               //! Setup class in python
+               // Setup class for use in python
                static void setup_python();
 
-               //! Destructor
+               // Destroy and release the transaction lock
                ~TransactionLock();
 
-               //! lock
+               //! Lock associated Transaction if not locked
+               /** Exposed as lock() to Python
+                */
                void lock();
 
-               //! lock
+               //! UnLock associated transaction if locked
+               /** Exposed as unlock() to Python
+                */
                void unlock();
 
+               //! Enter method for python, does nothing
+               /** This exists only to support the 
+                * with call in python.
+                *
+                * Exposed as __enter__() to Python
+                */
+               void enter();
+
+               //! Exit method for python, does nothing
+               /** This exists only to support the 
+                * with call in python.
+                *
+                * Exposed as __exit__() to Python
+                */
+               void exit(void *, void *, void *);
          };
 
-         // Convienence
-         typedef boost::shared_ptr<rogue::interfaces::memory::TransactionLock> TransactionLockPtr;
+         //! Alias for using shared pointer as TransactionLockPtr
+         typedef std::shared_ptr<rogue::interfaces::memory::TransactionLock> TransactionLockPtr;
 
       }
    }

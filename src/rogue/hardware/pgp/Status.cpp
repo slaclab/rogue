@@ -20,18 +20,23 @@
  * ----------------------------------------------------------------------------
 **/
 #include <rogue/hardware/pgp/Status.h>
-#include <boost/make_shared.hpp>
+#include <memory>
 
 namespace rhp = rogue::hardware::pgp;
+
+#ifndef NO_PYTHON
+#include <boost/python.hpp>
 namespace bp  = boost::python;
+#endif
 
 //! Create the info class with pointer
 rhp::StatusPtr rhp::Status::create() {
-   rhp::StatusPtr r = boost::make_shared<rhp::Status>();
+   rhp::StatusPtr r = std::make_shared<rhp::Status>();
    return(r);
 }
 
 void rhp::Status::setup_python () {
+#ifndef NO_PYTHON
 
    bp::class_<rhp::Status, rhp::StatusPtr>("Status",bp::no_init)
       .def_readonly("lane",          &rhp::Status::lane)
@@ -48,5 +53,5 @@ void rhp::Status::setup_python () {
       .def_readonly("remData",       &rhp::Status::remData)
       .def_readonly("remBuffStatus", &rhp::Status::remBuffStatus)
    ;
-
+#endif
 }

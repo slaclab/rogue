@@ -22,7 +22,6 @@
 #define __ROGUE_PROTOCOLS_PACKETIZER_APPLICATION_H__
 #include <rogue/interfaces/stream/Master.h>
 #include <rogue/interfaces/stream/Slave.h>
-#include <boost/python.hpp>
 #include <stdint.h>
 #include <rogue/Queue.h>
 
@@ -37,24 +36,25 @@ namespace rogue {
                              public rogue::interfaces::stream::Slave {
 
                //! Core module
-               boost::shared_ptr<rogue::protocols::packetizer::Controller> cntl_;
+               std::shared_ptr<rogue::protocols::packetizer::Controller> cntl_;
 
                // ID
                uint8_t id_;
 
                // Transmission thread
-               boost::thread* thread_;
+               std::thread* thread_;
+               bool threadEn_;
 
                //! Thread background
                void runThread();
 
                // Application queue
-               rogue::Queue<boost::shared_ptr<rogue::interfaces::stream::Frame>> queue_;
+               rogue::Queue<std::shared_ptr<rogue::interfaces::stream::Frame>> queue_;
 
             public:
 
                //! Class creation
-               static boost::shared_ptr<rogue::protocols::packetizer::Application> create (uint8_t id);
+               static std::shared_ptr<rogue::protocols::packetizer::Application> create (uint8_t id);
 
                //! Setup class in python
                static void setup_python();
@@ -66,24 +66,24 @@ namespace rogue {
                ~Application();
 
                //! Set Controller
-               void setController(boost::shared_ptr<rogue::protocols::packetizer::Controller> cntl );
+               void setController(std::shared_ptr<rogue::protocols::packetizer::Controller> cntl );
 
                //! Push frame for transmit
-               void pushFrame(boost::shared_ptr<rogue::interfaces::stream::Frame> frame);
+               void pushFrame(std::shared_ptr<rogue::interfaces::stream::Frame> frame);
 
                //! Generate a Frame. Called from master
                /*
                 * Pass total size required.
                 * Pass flag indicating if zero copy buffers are acceptable
                 */
-               boost::shared_ptr<rogue::interfaces::stream::Frame> acceptReq ( uint32_t size, bool zeroCopyEn);
+               std::shared_ptr<rogue::interfaces::stream::Frame> acceptReq ( uint32_t size, bool zeroCopyEn);
 
                //! Accept a frame from master
-               void acceptFrame ( boost::shared_ptr<rogue::interfaces::stream::Frame> frame );
+               void acceptFrame ( std::shared_ptr<rogue::interfaces::stream::Frame> frame );
          };
 
-         // Convienence
-         typedef boost::shared_ptr<rogue::protocols::packetizer::Application> ApplicationPtr;
+         // Convenience
+         typedef std::shared_ptr<rogue::protocols::packetizer::Application> ApplicationPtr;
 
       }
    }

@@ -1,0 +1,28 @@
+channels:
+  - defaults
+  - conda-forge
+  - paulscherrerinstitute
+dependencies:
+  - python
+  - gcc_linux-64
+  - gxx_linux-64
+  - make
+  - git
+  - git-lfs
+  - ipython
+  - cmake
+  - pyyaml
+  - jsonpickle
+  - pyzmq
+  - parse
+  - click
+  - numpy
+  - pyqt
+  - pyepics
+  - boost
+  - bzip2
+  - zeromq
+  - epics-base=3.14.12.8
+  - sphinx
+  - sphinx_rtd_theme
+  - breathe

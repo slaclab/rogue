@@ -18,39 +18,39 @@
  * ----------------------------------------------------------------------------
 **/
 
-#include <boost/python.hpp>
 #include <rogue/protocols/epicsV3/Pv.h>
 #include <rogue/protocols/epicsV3/Value.h>
+#include <rogue/protocols/epicsV3/Server.h>
+#include <rogue/protocols/epicsV3/Work.h>
 #include <time.h>
 
 namespace rpe = rogue::protocols::epicsV3;
+
+#include <boost/python.hpp>
 namespace bp  = boost::python;
 
-//! Setup class in python
-void rpe::Pv::setup_python() { }
-
 //! Class creation
-rpe::Pv::Pv (caServer &cas, rpe::ValuePtr value) : casPV(cas) {
+rpe::Pv::Pv (rpe::Server *server, rpe::ValuePtr value) : casPV(*server) {
    value_    = value;
    interest_ = aitFalse;
+   server_   = server;
+
+//   valueMask_ = casEventMask(this->getCAS()->valueEventMask());
 }
 
 rpe::Pv::~Pv () { }
 
-bool rpe::Pv::interest() {
-   return interest_;
-}
-
 void rpe::Pv::show(unsigned level) const { }
 
 caStatus rpe::Pv::interestRegister() {
-   boost::lock_guard<boost::mutex> lock(mtx_);
+   std::lock_guard<std::mutex> lock(mtx_);
    interest_ = aitTrue;
+   valueMask_ = casEventMask(this->getCAS()->valueEventMask());
    return S_casApp_success;
 }
 
 void rpe::Pv::interestDelete() { 
-   boost::lock_guard<boost::mutex> lock(mtx_);
+   std::lock_guard<std::mutex> lock(mtx_);
    interest_ = aitFalse;
 }
 
@@ -60,16 +60,34 @@ caStatus rpe::Pv::beginTransaction() {
 
 void rpe::Pv::endTransaction() { }
 
-caStatus rpe::Pv::read(const casCtx &ctx, gdd &prototype) {
-   return value_->read(prototype);
+caStatus rpe::Pv::read(const casCtx &ctx, gdd &value) {
+   if (server_->doAsync()) {
+      casAsyncReadIO * rio = new casAsyncReadIO(ctx);
+      rpe::WorkPtr work = rpe::Work::createRead(value_, value, rio);
+      server_->addWork(work);
+      return S_casApp_asyncCompletion;
+   }
+   else return value_->read(value);
 }
 
 caStatus rpe::Pv::write(const casCtx &ctx, const gdd &value) {
-   return value_->write(value);
+   if (server_->doAsync()) {
+      casAsyncWriteIO * wio = new casAsyncWriteIO(ctx);
+      rpe::WorkPtr work = rpe::Work::createWrite(value_, value, wio);
+      server_->addWork(work);
+      return S_casApp_asyncCompletion;
+   }
+   else return value_->write(value);
 }
 
 caStatus rpe::Pv::writeNotify(const casCtx &ctx, const gdd &value) {
-   return value_->write(value);
+   if (server_->doAsync()) {
+      casAsyncWriteIO * wio = new casAsyncWriteIO(ctx);
+      rpe::WorkPtr work = rpe::Work::createWrite(value_, value, wio);
+      server_->addWork(work);
+      return S_casApp_asyncCompletion;
+   }
+   else return value_->write(value);
 }
 
 casChannel * rpe::Pv::createChannel(const casCtx &ctx,
@@ -80,8 +98,7 @@ casChannel * rpe::Pv::createChannel(const casCtx &ctx,
 }
 
 void rpe::Pv::destroy() {
-   value_->clrPv();
-   delete this;
+   // Do nothing since we pre-allocate
 }
 
 aitEnum rpe::Pv::bestExternalType() const {
@@ -100,7 +117,7 @@ const char * rpe::Pv::getName() const {
    return value_->epicsName().c_str();
 }
 
-void rpe::Pv::postEvent ( const casEventMask & select, const gdd & event ) {
-   casPV::postEvent(select,event);
+void rpe::Pv::updated ( const gdd & event ) {
+   if ( interest_ == aitTrue ) casPV::postEvent(valueMask_,event);
 }
 

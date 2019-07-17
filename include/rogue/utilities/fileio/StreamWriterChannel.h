@@ -24,7 +24,7 @@
 #ifndef __ROGUE_UTILITIES_FILEIO_STREAM_WRITER_CHANNEL_H__
 #define __ROGUE_UTILITIES_FILEIO_STREAM_WRITER_CHANNEL_H__
 #include <stdint.h>
-#include <boost/thread.hpp>
+#include <thread>
 #include <rogue/interfaces/stream/Slave.h>
 
 namespace rogue {
@@ -37,37 +37,37 @@ namespace rogue {
          class StreamWriterChannel : public rogue::interfaces::stream::Slave {
 
                //! Associated Stream Writer class
-               boost::shared_ptr<rogue::utilities::fileio::StreamWriter> writer_;
+               std::shared_ptr<rogue::utilities::fileio::StreamWriter> writer_;
 
                //! Channel information
-               uint16_t channel_;
+               uint8_t channel_;
 
                //! Number of frames received by channel
                uint32_t frameCount_;
 
                //! Lock for frameCount_
-               boost::mutex mtx_;
+               std::mutex mtx_;
 
                //! Condition variable for frameCount_ updates
-               boost::condition_variable cond_;
+               std::condition_variable cond_;
 
             public:
 
                //! Class creation
-               static boost::shared_ptr<rogue::utilities::fileio::StreamWriterChannel> 
-                  create (boost::shared_ptr<rogue::utilities::fileio::StreamWriter> writer, uint8_t channel);
+               static std::shared_ptr<rogue::utilities::fileio::StreamWriterChannel> 
+                  create (std::shared_ptr<rogue::utilities::fileio::StreamWriter> writer, uint8_t channel);
 
                //! Setup class in python
                static void setup_python();
 
                //! Creator
-               StreamWriterChannel(boost::shared_ptr<rogue::utilities::fileio::StreamWriter> writer, uint8_t channel);
+               StreamWriterChannel(std::shared_ptr<rogue::utilities::fileio::StreamWriter> writer, uint8_t channel);
 
                //! Deconstructor
                ~StreamWriterChannel();
 
                //! Accept a frame from master
-               void acceptFrame ( boost::shared_ptr<rogue::interfaces::stream::Frame> frame );
+               void acceptFrame ( std::shared_ptr<rogue::interfaces::stream::Frame> frame );
 
                //! Get number of frames that have been accepted
                uint32_t getFrameCount();
@@ -76,11 +76,11 @@ namespace rogue {
                void setFrameCount(uint32_t count);
 
                //! Block until a number of frames have been received
-               void waitFrameCount(uint32_t count);
+               bool waitFrameCount(uint32_t count, uint64_t timeout);
          };
 
          // Convienence
-         typedef boost::shared_ptr<rogue::utilities::fileio::StreamWriterChannel> StreamWriterChannelPtr;
+         typedef std::shared_ptr<rogue::utilities::fileio::StreamWriterChannel> StreamWriterChannelPtr;
       }
    }
 }

@@ -21,14 +21,18 @@
 **/
 
 #include <rogue/hardware/pgp/Info.h>
-#include <boost/make_shared.hpp>
+#include <memory>
 
 namespace rhp = rogue::hardware::pgp;
+
+#ifndef NO_PYTHON
+#include <boost/python.hpp>
 namespace bp  = boost::python;
+#endif
 
 //! Create the info class with pointer
 rhp::InfoPtr rhp::Info::create() {
-   rhp::InfoPtr r = boost::make_shared<rhp::Info>();
+   rhp::InfoPtr r = std::make_shared<rhp::Info>();
    return(r);
 }
 
@@ -38,6 +42,7 @@ std::string rhp::Info::buildString() {
 }
 
 void rhp::Info::setup_python() {
+#ifndef NO_PYTHON
 
    bp::class_<rhp::Info, rhp::InfoPtr>("Info",bp::no_init)
       .def_readonly("serial",     &rhp::Info::serial)
@@ -50,5 +55,6 @@ void rhp::Info::setup_python() {
       .def_readonly("evrSupport", &rhp::Info::evrSupport)
       .def("buildString",         &rhp::Info::buildString)
    ; 
+#endif
 }
 

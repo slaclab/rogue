@@ -19,8 +19,7 @@
 **/
 #ifndef __ROGUE_PROTOCOLS_PACKETIZER_CORE_V2_H__
 #define __ROGUE_PROTOCOLS_PACKETIZER_CORE_V2_H__
-#include <boost/python.hpp>
-#include <boost/thread.hpp>
+#include <thread>
 #include <stdint.h>
 
 namespace rogue {
@@ -35,33 +34,33 @@ namespace rogue {
          class CoreV2 {
 
                //! Transport module
-               boost::shared_ptr<rogue::protocols::packetizer::Transport> tran_;
+               std::shared_ptr<rogue::protocols::packetizer::Transport> tran_;
 
                //! Application modules
-               boost::shared_ptr<rogue::protocols::packetizer::Application> app_[256];
+               std::shared_ptr<rogue::protocols::packetizer::Application> app_[256];
 
                //! Core module
-               boost::shared_ptr<rogue::protocols::packetizer::ControllerV2> cntl_;
+               std::shared_ptr<rogue::protocols::packetizer::ControllerV2> cntl_;
 
             public:
 
                //! Class creation
-               static boost::shared_ptr<rogue::protocols::packetizer::CoreV2> create (bool enIbCrc, bool enObCrc);
+               static std::shared_ptr<rogue::protocols::packetizer::CoreV2> create (bool enIbCrc, bool enObCrc, bool enSsi);
 
                //! Setup class in python
                static void setup_python();
 
                //! Creator
-               CoreV2(bool enIbCrc, bool enObCrc);
+               CoreV2(bool enIbCrc, bool enObCrc, bool enSsi);
 
                //! Destructor
                ~CoreV2();
 
                //! Get transport interface
-               boost::shared_ptr<rogue::protocols::packetizer::Transport> transport();
+               std::shared_ptr<rogue::protocols::packetizer::Transport> transport();
 
                //! Application module
-               boost::shared_ptr<rogue::protocols::packetizer::Application> application(uint8_t dest);
+               std::shared_ptr<rogue::protocols::packetizer::Application> application(uint8_t dest);
 
                //! Get drop count
                uint32_t getDropCount();
@@ -70,8 +69,8 @@ namespace rogue {
                void setTimeout(uint32_t timeout);
          };
 
-         // Convienence
-         typedef boost::shared_ptr<rogue::protocols::packetizer::CoreV2> CoreV2Ptr;
+         // Convenience
+         typedef std::shared_ptr<rogue::protocols::packetizer::CoreV2> CoreV2Ptr;
 
       }
    }
