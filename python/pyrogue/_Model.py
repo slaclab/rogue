@@ -188,7 +188,8 @@ class Float(Model):
     fstring = 'f'
     bitSize = 32
 
-    def __init__(self):
+    def __init__(self, bitSize):
+        assert bitSize == self.__class__.bitSize, f"The bitSize param of Model {self.__class__.__name__} must be {self.__class__.bitSize}"
         self.name = f'{self.__class__.__name__}{self.bitSize}'
 
     def toBytes(self, value):
