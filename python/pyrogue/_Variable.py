@@ -466,7 +466,7 @@ class RemoteVariable(BaseVariable):
             if self.disp == 'enum':
                 return self.revEnum[sValue]
             else:
-                return self._base.fromString(sValue, sum(self._bitSize))
+                return self._base.fromString(sValue)
             
     def _setDefault(self):
         if self._default is not None:

@@ -411,7 +411,7 @@ class RemoteBlock(BaseBlock, rim.Master):
                     self._copyBits(ba, dstBit, self._bData, var.bitOffset[x], var.bitSize[x])
                 dstBit += var.bitSize[x]
 
-            return var._base.fromBytes(ba,sum(var.bitSize))
+            return var._base.fromBytes(ba)
 
     def startTransaction(self, type, check=False):
         """

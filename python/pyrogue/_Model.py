@@ -40,8 +40,9 @@ class ModelMeta(type):
 
     def __call__(cls, *args, **kwargs):
         key = cls.__name__ + str(args) + str(kwargs)
-        print(f'Key: {key}')        
+
         if key not in cls.subclasses:
+            print(f'Key: {key}')
             inst = super().__call__(*args, **kwargs)
             cls.subclasses[key] = inst
         return cls.subclasses[key]
@@ -89,10 +90,10 @@ class UIntReversed(UInt):
 
     def toBytes(self, value):
         valueReverse = reverseBits(value, self.bitSize)
-        return super().toBytes(valueReverse, self.bitSize)
+        return super().toBytes(valueReverse)
 
     def fromBytes(cls, ba):
-        valueReverse = super().fromBytes(ba, self.bitSize)
+        valueReverse = super().fromBytes(ba)
         return reverseBits(valueReverse, self.bitSize)
 
 class Int(UInt):
@@ -140,8 +141,8 @@ class Bool(Model):
     defaultdisp = {False: 'False', True: 'True'}
     pytype = bool
 
-    def __init__(self):
-        pass
+    def __init__(self, bitSize):
+        super().__init__(bitSize)
 
     def toBytes(self, value):
         return value.to_bytes(1, 'little', signed=False)
@@ -160,8 +161,8 @@ class String(Model):
     pytype = str
 
     def __init__(self, bitSize):
-        super.__init__(bitSize)
-        self.name = f'{self.__class_.__name__}[{self.bitSize/8}]'      
+        super().__init__(bitSize)
+        self.name = f'{self.__class__.__name__}[{self.bitSize/8}]'      
 
     def check(self, value):
         return (type(val) == self.pytype and self.bitSize >= (len(value) * 8))
@@ -188,7 +189,7 @@ class Float(Model):
     bitSize = 32
 
     def __init__(self):
-        self.name = f'{self.__class_.__name__}{self.bitSize}'
+        self.name = f'{self.__class__.__name__}{self.bitSize}'
 
     def toBytes(self, value):
         return bytearray(struct.pack(self.fstring, value))
