@@ -44,6 +44,7 @@ class PollQueue(object):
         self._lock = threading.RLock()
         self._update = threading.Condition()
         self._run = True
+        self._pause = True
         self._root = root
         self._pollThread = threading.Thread(target=self._poll)
 
@@ -104,7 +105,7 @@ class PollQueue(object):
         while True:
             now = datetime.datetime.now()
 
-            if self.empty() is True:
+            if self.empty() or self.paused():
                 # Sleep until woken
                 with self._update:
                     self._update.wait()
@@ -140,16 +141,17 @@ class PollQueue(object):
                             self._log.exception(e)
 
                         # Update the entry with new read time
-                        entry.readTime += entry.interval
+                        entry.readTime = now + entry.interval
                         entry.count = next(self._counter)
                         # Push the updated entry back into the queue
                         heapq.heappush(self._pq, entry)
 
-                    try:
-                        for entry in blockEntries:
+                    for entry in blockEntries:
+                        try:
                             entry.block._checkTransaction()
-                    except Exception as e:
-                        self._log.exception(e)
+                        except Exception as e:
+                            self._log.exception(e)
+
 
     def _expiredEntries(self, time=None):
         """An iterator of all entries that expire by a given time. 
@@ -181,3 +183,17 @@ class PollQueue(object):
             self._run = False
             self._update.notify()
 
+    def pause(self, value):
+        if value is True:        
+            with self._lock:
+                self._pause = True
+        else:
+            with self._lock, self._update:
+                self._pause = False
+                self._update.notify()
+
+
+    def paused(self):
+        with self._lock:
+            return self._pause
+            
