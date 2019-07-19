@@ -88,7 +88,7 @@ endif()
    if (NOT ZeroMQ_FOUND)
       
       # Convert LD_LIBRARY PATH for search
-      if(ENV{LD_LIBRARY_PATH})
+      if(DEFINED ENV{LD_LIBRARY_PATH})
          string(REPLACE ":" ";" HINT_PATHS $ENV{LD_LIBRARY_PATH})
       else()
          set(HINT_PATHS, "")
@@ -110,10 +110,12 @@ endif()
                  NAMES zmq.h
                  PATHS ${ZMQ_LIBDIR}/../include
                  )
-      endif()
-
-      # Failed to find it
-      if (NOT ZeroMQ_INCLUDE_DIR)
+         if (NOT ZeroMQ_INCLUDE_DIR)
+            message("")
+            message(FATAL_ERROR "Failed to find ZeroMQ_INCLUDE_DIR!")
+         endif()
+      else()
+         # Failed to find it
          message("")
          message(FATAL_ERROR "Failed to find zeroMQ!")
       endif()
