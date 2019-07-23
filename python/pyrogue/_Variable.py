@@ -33,7 +33,7 @@ class VariableValue(object):
         self.valueDisp = var.genDisp(self.value)
         self.disp      = var.disp
         self.enum      = var.enum
-
+        self.alarm     = var._alarmState(self.value)
 
 class BaseVariable(pr.Node):
 
@@ -180,6 +180,11 @@ class BaseVariable(pr.Node):
     @property
     def highAlarm(self):
         return self._highAlarm
+
+    @pr.expose
+    @property
+    def alarm(self):
+        return self._alarmState(self.value())
 
     def addDependency(self, dep):
         if dep not in self.__dependencies:
@@ -345,6 +350,19 @@ class BaseVariable(pr.Node):
         if self._nativeType is None:
             self._nativeType = type(self.value())
         return self._nativeType
+
+    def _alarmState(self,value):
+
+        if (self._lowAlarm  is not None and value < self._lowAlarm) or
+           (self._highAlarm is not None and value > self._highAlarm):
+            return 'Alarm'
+
+        elif (self._lowWarning  is not None and value < self._lowWarning) or
+             (self._highWarning is not None and value > self._highWarning):
+            return 'Warning'
+
+        else:
+            return 'None'
 
     def _setDefault(self):
         if self._default is not None:
