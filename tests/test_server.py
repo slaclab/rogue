@@ -20,6 +20,9 @@ import rogue.interfaces.stream
 import test_device
 import time
 import rogue
+import pyrogue.protocols.epics
+
+#rogue.Logging.setFilter('pyrogue.epicsV3.Value',rogue.Logging.Debug)
 
 class DummyTree(pyrogue.Root):
 

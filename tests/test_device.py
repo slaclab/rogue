@@ -203,6 +203,22 @@ class AxiVersion(pr.Device):
             hidden       = True,
         ))
 
+        self.add(pr.RemoteVariable(   
+            name         = 'TestEnum',
+            description  = 'ENUM Test Field',
+            offset       = 0x900,
+            bitSize      = 3,
+            bitOffset    = 0x00,
+            enum         = {0: 'Test0',
+                            1: 'Test1',
+                            2: 'Test2',
+                            3: 'Test3',
+                            4: 'Test4'},
+            base         = pr.UInt,
+            mode         = 'RW',
+            hidden       = False,
+        ))
+
         
         def parseBuildStamp(var, value, disp):
             p = parse.parse("{ImageName}: {BuildEnv}, {BuildServer}, Built {BuildDate} by {Builder}", value.strip())

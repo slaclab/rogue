@@ -78,7 +78,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         self._running = False
 
         # Polling worker
-        self._pollQueue = None
+        self._pollQueue = self._pollQueue = pr.PollQueue(root=self)
 
         # Zeromq server
         self._zmqServer = None
@@ -111,6 +111,10 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         self.add(pr.LocalVariable(name='LocalTime', value='', mode='RO', hidden=False,
                  localGet=lambda: time.strftime("%Y-%m-%d %H:%M:%S %Z", time.localtime(time.time())),
                  pollInterval=1.0, description='Local Time'))
+
+        self.add(pr.LocalVariable(name='PollEn', value=False, mode='RW',
+                                  localSet=lambda value: self._pollQueue.pause(not value),
+                                  localGet=lambda: not self._pollQueue.paused()))
 
         # Commands
         self.add(pr.LocalCommand(name='WriteAll', function=self._write, hidden=True,
@@ -155,15 +159,12 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         self.add(pr.LocalCommand(name='Exit', function=self._exit, hidden=False,
                                  description='Exit the server application'))
 
-    def start(self, timeout=1.0, initRead=False, initWrite=False, pollEn=True, zmqPort=9099):
+    def start(self, timeout=1.0, initRead=False, initWrite=False, pollEn=True, zmqPort=None):
         """Setup the tree. Start the polling thread."""
 
         if self._running:
             raise pr.NodeError("Root is already started! Can't restart!")
 
-        # Create poll queue object
-        if pollEn:
-            self._pollQueue = pr.PollQueue(root=self)
 
         # Call special root level rootAttached
         self._rootAttached()
@@ -228,8 +229,8 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         self._updateThread.start()
 
         # Start poller if enabled
-        if pollEn:
-            self._pollQueue._start()
+        self._pollQueue._start()
+        self.PollEn.set(pollEn)
 
         self._running = True
 
@@ -253,7 +254,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
     def addVarListener(self,func):
         """
         Add a variable update listener function.
-        The variable, value and display string will be passed as an arg: func(path,value,disp)
+        The variable and value structure will be passed as args: func(path,varValue)
         """
         with self._varListenLock:
             self._varListeners.append(func)
@@ -552,7 +553,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                         # Call listener functions,
                         with self._varListenLock:
                             for func in self._varListeners:
-                                func(p,val.value.val,valueDisp)
+                                func(p,val)
                     except Exception as e:
                         self._log.exception(e)
                         

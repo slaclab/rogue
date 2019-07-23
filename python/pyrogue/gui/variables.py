@@ -128,9 +128,9 @@ class VariableLink(QObject):
             self._widget.setReadOnly(True)
 
         self._tree.setItemWidget(self._item,3,self._widget)
-        self.varListener(None,self._variable.value(),self._variable.valueDisp())
+        self.varListener(None,pyrogue.VariableValue(self._variable))
 
-        variable.addListener(self)
+        variable.addListener(self.varListener)
 
     def openMenu(self, event):
         menu = QMenu()
@@ -167,7 +167,7 @@ class VariableLink(QObject):
             else:
                 self._variable.setDisp(self._widget.text())
 
-    def varListener(self, path, value, disp):
+    def varListener(self, path, value):
         with self._lock:
             if self._widget is None or self._inEdit is True:
                 return
@@ -175,18 +175,18 @@ class VariableLink(QObject):
             self._swSet = True
 
             if isinstance(self._widget, QComboBox):
-                i = self._widget.findText(disp)
+                i = self._widget.findText(value.valueDisp)
 
                 if i < 0: i = 0
 
                 if self._widget.currentIndex() != i:
                     self.updateGui.emit(i)
             elif isinstance(self._widget, QSpinBox):
-                if self._widget.value != value:
+                if self._widget.value != value.value:
                     self.updateGui.emit(value)
             else:
-                if self._widget.text() != disp:
-                    self.updateGui[str].emit(disp)
+                if self._widget.text() != value.valueDisp:
+                    self.updateGui[str].emit(value.valueDisp)
 
             self._swSet = False
 

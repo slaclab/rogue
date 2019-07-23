@@ -119,7 +119,7 @@ class Device(pr.Node,rim.Hub):
                  size=0,
                  hidden=False,
                  blockSize=None,
-                 expand=True,
+                 expand=False,
                  enabled=True,
                  defaults=None,
                  enableDeps=None,
