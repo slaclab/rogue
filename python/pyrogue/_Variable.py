@@ -351,19 +351,6 @@ class BaseVariable(pr.Node):
             self._nativeType = type(self.value())
         return self._nativeType
 
-    def _alarmState(self,value):
-
-        if (self._lowAlarm  is not None and value < self._lowAlarm) or
-           (self._highAlarm is not None and value > self._highAlarm):
-            return 'Alarm'
-
-        elif (self._lowWarning  is not None and value < self._lowWarning) or
-             (self._highWarning is not None and value > self._highWarning):
-            return 'Warning'
-
-        else:
-            return 'None'
-
     def _setDefault(self):
         if self._default is not None:
             self.setDisp(self._default, write=False)
@@ -402,6 +389,21 @@ class BaseVariable(pr.Node):
             func(self.path,val)
 
         return val
+
+    def _alarmState(self,value):
+
+        if isinstance(value,list) or isinstance(value,dict): return 'None'
+
+        if (self._lowAlarm  is not None and value < self._lowAlarm) or \
+           (self._highAlarm is not None and value > self._highAlarm):
+            return 'Alarm'
+
+        elif (self._lowWarning  is not None and value < self._lowWarning) or \
+             (self._highWarning is not None and value > self._highWarning):
+            return 'Warning'
+
+        else:
+            return 'None'
 
 
 class RemoteVariable(BaseVariable):

@@ -48,7 +48,6 @@ rpe::Value::Value (std::string epicsName) {
    pv_        = NULL;
    pValue_    = NULL;
 
-   precision_ = 0;
    typeStr_   = "";
    size_      = 1;
    max_       = 1;
@@ -57,16 +56,16 @@ rpe::Value::Value (std::string epicsName) {
    isString_  = false;
    epicsType_ = aitEnumInvalid;
 
-   units_         = "";
-   precision_     = 0;
-   hopr_          = 0;
-   lopr_          = 0;
-   highAlarm_     = 0;
-   highWarning_   = 0;
-   lowWarning_    = 0;
-   lowAlarm_      = 0;
-   highCtrlLimit_ = 0;
-   lowCtrlLimit_  = 0;
+   //units_         = "";
+   //precision_     = 0;
+   //hopr_          = 0;
+   //lopr_          = 0;
+   //highAlarm_     = 0;
+   //highWarning_   = 0;
+   //lowWarning_    = 0;
+   //lowAlarm_      = 0;
+   //highCtrlLimit_ = 0;
+   //lowCtrlLimit_  = 0;
 
    log_ = rogue::Logging::create("epicsV3.Value");
 
@@ -136,7 +135,6 @@ void rpe::Value::initGdd(std::string typeStr, bool isEnum, uint32_t count) {
    else if ( typeStr == "float" or typeStr == "Float32" ) {
       log_->info("Detected 32-bit float %s: typeStr=%s", epicsName_.c_str(),typeStr.c_str());
       epicsType_ = aitEnumFloat32;
-      precision_ = 4;
       fSize_ = 4;
    }
 
@@ -144,7 +142,6 @@ void rpe::Value::initGdd(std::string typeStr, bool isEnum, uint32_t count) {
    else if ( typeStr == "Float64" ) {
       log_->info("Detected 64-bit float %s: typeStr=%s", epicsName_.c_str(),typeStr.c_str());
       epicsType_ = aitEnumFloat64;
-      precision_ = 4;
       fSize_ = 8;
    }
 
@@ -319,52 +316,52 @@ gddAppFuncTableStatus rpe::Value::readSeverity(gdd &value) {
 }
 
 gddAppFuncTableStatus rpe::Value::readPrecision(gdd &value) {
-   value.putConvert(precision_);
+   value.put(&precision_);
    return S_casApp_success;
 }
 
 gddAppFuncTableStatus rpe::Value::readHopr(gdd &value) {
-   value.putConvert(hopr_);
+   value.put(&hopr_);
    return S_casApp_success;
 }
 
 gddAppFuncTableStatus rpe::Value::readLopr(gdd &value) {
-   value.putConvert(lopr_);
+   value.put(&lopr_);
    return S_casApp_success;
 }
 
 gddAppFuncTableStatus rpe::Value::readHighAlarm(gdd &value) {
-   value.putConvert(highAlarm_);
+   value.put(&highAlarm_);
    return S_casApp_success;
 }
 
 gddAppFuncTableStatus rpe::Value::readHighWarn(gdd &value) {
-   value.putConvert(highWarning_);
+   value.put(&highWarning_);
    return S_casApp_success;
 }
 
 gddAppFuncTableStatus rpe::Value::readLowWarn(gdd &value) {
-   value.putConvert(lowWarning_);
+   value.put(&lowWarning_);
    return S_casApp_success;
 }
 
 gddAppFuncTableStatus rpe::Value::readLowAlarm(gdd &value) {
-   value.putConvert(lowAlarm_);
+   value.put(&lowAlarm_);
    return S_casApp_success;
 }
 
 gddAppFuncTableStatus rpe::Value::readHighCtrl(gdd &value) {
-   value.putConvert(highCtrlLimit_);
+   value.put(&highCtrlLimit_);
    return S_casApp_success;
 }
 
 gddAppFuncTableStatus rpe::Value::readLowCtrl(gdd &value) {
-   value.putConvert(lowCtrlLimit_);
+   value.put(&lowCtrlLimit_);
    return S_casApp_success;
 }
 
 gddAppFuncTableStatus rpe::Value::readUnits(gdd &value) {
-   value.put(units_.c_str());
+   value.put(&units_);
    return S_casApp_success;
 }
 

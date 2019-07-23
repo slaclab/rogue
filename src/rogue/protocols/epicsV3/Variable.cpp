@@ -82,14 +82,77 @@ rpe::Variable::Variable (std::string epicsName, bp::object p, bool syncRead) : V
    // Extract units
    bp::extract<char *> ret(var_.attr("units"));
    if ( ret.check() && ret != NULL) {
-      units_ = std::string(ret);
+      units_.putConvert(std::string(ret).c_str());
    }
-   else units_ = "";
+   else units_.putConvert("");
 
-   //hopr_          = 0;
-   //lopr_          = 0;
-   //highCtrlLimit_ = 0;
-   //lowCtrlLimit_  = 0;
+   if ( epicsType_ == aitEnumUint8 || epicsType_ == aitEnumUint16 || epicsType_ == aitEnumUint32 ) {
+      bp::extract<uint32_t> hopr(var_.attr("maximum");
+      bp::extract<uint32_t> lopr(var_.attr("minimum");
+      bp::extract<uint32_t> ha(var_.attr("highAlarm");
+      bp::extract<uint32_t> la(var_.attr("lowAlarm");
+      bp::extract<uint32_t> hw(var_.attr("highWarning");
+      bp::extract<uint32_t> lw(var_.attr("lowWarning");
+
+      if (hopr.check()) {
+         hopr_.putConvert(hopr);
+         highCtrlLimit_.putConvert(hopr);
+      }
+      if (lopr.check()) {
+         lopr_.putConvert(lopr);
+         lowCtrlLimit_.putConvert(lopr);
+      }
+      if (ha.check())   highAlarm_.putConvert(ha);
+      if (la.check())   lowAlarm_.putConvert(la);
+      if (hw.check())   highWarning_.putConvert(hw);
+      if (lw.check())   lowWarning_.putConvert(lw);
+   }
+
+   else if ( epicsType_ == aitEnumInt8 || epicsType_ == aitEnumInt16 || epicsType_ == aitEnumInt32 ) {
+      bp::extract<int32_t> hopr(var_.attr("maximum");
+      bp::extract<int32_t> lopr(var_.attr("minimum");
+      bp::extract<int32_t> ha(var_.attr("highAlarm");
+      bp::extract<int32_t> la(var_.attr("lowAlarm");
+      bp::extract<int32_t> hw(var_.attr("highWarning");
+      bp::extract<int32_t> lw(var_.attr("lowWarning");
+
+      if (hopr.check()) {
+         hopr_.putConvert(hopr);
+         highCtrlLimit_.putConvert(hopr);
+      }
+      if (lopr.check()) {
+         lopr_.putConvert(lopr);
+         lowCtrlLimit_.putConvert(lopr);
+      }
+      if (ha.check())   highAlarm_.putConvert(ha);
+      if (la.check())   lowAlarm_.putConvert(la);
+      if (hw.check())   highWarning_.putConvert(hw);
+      if (lw.check())   lowWarning_.putConvert(lw);
+   }
+
+   else if ( epicsType_ == aitEnumFloat32 || epicsType_ == aitEnumFloat64 ) {
+      bp::extract<double> hopr(var_.attr("maximum");
+      bp::extract<double> lopr(var_.attr("minimum");
+      bp::extract<double> ha(var_.attr("highAlarm");
+      bp::extract<double> la(var_.attr("lowAlarm");
+      bp::extract<double> hw(var_.attr("highWarning");
+      bp::extract<double> lw(var_.attr("lowWarning");
+
+      if (hopr.check()) {
+         hopr_.putConvert(hopr);
+         highCtrlLimit_.putConvert(hopr);
+      }
+      if (lopr.check()) {
+         lopr_.putConvert(lopr);
+         lowCtrlLimit_.putConvert(lopr);
+      }
+      if (ha.check())   highAlarm_.putConvert(ha);
+      if (la.check())   lowAlarm_.putConvert(la);
+      if (hw.check())   highWarning_.putConvert(hw);
+      if (lw.check())   lowWarning_.putConvert(lw);
+
+      precision_.putConvert(var_.attr("precision"));
+   }
 
    // Extract enums
    if ( isEnum ) {
@@ -264,6 +327,12 @@ void rpe::Variable::fromPython(bp::object value) {
       }
 
       else throw rogue::GeneralError("Variable::fromPython","Invalid Variable Type");
+
+      // Alarm state
+      value.putConvert(pValue_->getSevr());
+      value.putConvert(pValue_->getStat());
+
+
    }
 
 #ifdef __MACH__ // OSX does not have clock_gettime
