@@ -76,7 +76,7 @@ class UInt(Model):
         return (type(value) == self.pytype and self.bitSize >= value.bit_length())
 
     def toBytes(self, value):
-        return value.to_bytes(byteCount(bitSize), self.endianness, signed=self.signed)
+        return value.to_bytes(byteCount(self.bitSize), self.endianness, signed=self.signed)
 
     def fromBytes(self, ba):
         return int.from_bytes(ba, self.endianness, signed=self.signed)
