@@ -562,7 +562,10 @@ def nodeMatch(nodes,name):
         for i,n in ah.items():
             ret[i] = n
 
-        r =  eval('ret[{}]'.format(fields[1]))
+        try:
+            r = eval('ret[{}]'.format(fields[1]))
+        except:
+            r = None
 
         if r is None or any(v == None for v in r):
             return None
