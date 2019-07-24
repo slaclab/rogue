@@ -138,24 +138,48 @@ if((NOT NO_PYTHON) AND (NOT NO_EPICS) AND DEFINED ENV{EPICS_BASE})
 
    if(APPLE)
 
-      set(EPICSV3_INCLUDES  ${EPICSV3_BASE_DIR}/include
-                            ${EPICSV3_BASE_DIR}/include/compiler/gcc 
-                            ${EPICSV3_BASE_DIR}/include/os/Darwin)
+      if(EPICS_PCAS_ROOT)
+         set(EPICSV3_INCLUDES  ${EPICS_PCAS_ROOT}/include
+                               ${EPICSV3_BASE_DIR}/include
+                               ${EPICSV3_BASE_DIR}/include/compiler/gcc 
+                               ${EPICSV3_BASE_DIR}/include/os/Darwin)
 
-      set(EPICSV3_LIBRARIES ${EPICSV3_LIB_DIR}/libcas.dylib 
-                            ${EPICSV3_LIB_DIR}/libca.dylib 
-                            ${EPICSV3_LIB_DIR}/libCom.dylib 
-                            ${EPICSV3_LIB_DIR}/libgdd.dylib)
+         set(EPICSV3_LIBRARIES ${EPICS_PCAS_ROOT}/lib/${EPICSV3_ARCH}/libcas.dylib 
+                               ${EPICS_PCAS_ROOT}/lib/${EPICSV3_ARCH}/libgdd.dylib
+                               ${EPICSV3_LIB_DIR}/libca.dylib 
+                               ${EPICSV3_LIB_DIR}/libCom.dylib )
+      else()
+         set(EPICSV3_INCLUDES  ${EPICSV3_BASE_DIR}/include
+                               ${EPICSV3_BASE_DIR}/include/compiler/gcc 
+                               ${EPICSV3_BASE_DIR}/include/os/Darwin)
+
+         set(EPICSV3_LIBRARIES ${EPICSV3_LIB_DIR}/libcas.dylib 
+                               ${EPICSV3_LIB_DIR}/libca.dylib
+                               ${EPICSV3_LIB_DIR}/libCom.dylib
+                               ${EPICSV3_LIB_DIR}/libgdd.dylib )
+      endif()
    else()
 
-      set(EPICSV3_INCLUDES  ${EPICSV3_BASE_DIR}/include
-                            ${EPICSV3_BASE_DIR}/include/compiler/gcc 
-                            ${EPICSV3_BASE_DIR}/include/os/Linux)
+      if(EPICS_PCAS_ROOT)
+         set(EPICSV3_INCLUDES  ${EPICS_PCAS_ROOT}/include
+                               ${EPICSV3_BASE_DIR}/include
+                               ${EPICSV3_BASE_DIR}/include/compiler/gcc 
+                               ${EPICSV3_BASE_DIR}/include/os/Linux)
 
-      set(EPICSV3_LIBRARIES ${EPICSV3_LIB_DIR}/libcas.so 
-                            ${EPICSV3_LIB_DIR}/libca.so 
-                            ${EPICSV3_LIB_DIR}/libCom.so 
-                            ${EPICSV3_LIB_DIR}/libgdd.so )
+         set(EPICSV3_LIBRARIES ${EPICS_PCAS_ROOT}/lib/${EPICSV3_ARCH}/libcas.so 
+                               ${EPICS_PCAS_ROOT}/lib/${EPICSV3_ARCH}/libgdd.so
+                               ${EPICSV3_LIB_DIR}/libca.so 
+                               ${EPICSV3_LIB_DIR}/libCom.so )
+      else()
+         set(EPICSV3_INCLUDES  ${EPICSV3_BASE_DIR}/include
+                               ${EPICSV3_BASE_DIR}/include/compiler/gcc 
+                               ${EPICSV3_BASE_DIR}/include/os/Linux)
+
+         set(EPICSV3_LIBRARIES ${EPICSV3_LIB_DIR}/libcas.so 
+                               ${EPICSV3_LIB_DIR}/libca.so
+                               ${EPICSV3_LIB_DIR}/libCom.so
+                               ${EPICSV3_LIB_DIR}/libgdd.so )
+      endif()
    endif()
 else()
    set(DO_EPICS_V3 0)
@@ -383,7 +407,10 @@ endif()
 message("")
 
 if (DO_EPICS_V3)
-   message("-- Found EPICS V3: ${EPICSV3_BASE_DIR}")
+   message("-- Found EPICS: ${EPICSV3_BASE_DIR}")
+   if (EPICS_PCAS_ROOT)
+      message("-- EPICS_PCAS_ROOT: ${EPICS_PCAS_ROOT}")
+   endif()
 else()
    message("-- EPICS V3 not included!")
 endif()
