@@ -28,12 +28,13 @@ class VariableError(Exception):
 
 
 class VariableValue(object):
-    def __init__(self, var):
-        self.value     = var.value()
+    def __init__(self, var, read=False):
+        self.value     = var.get(read=read)
         self.valueDisp = var.genDisp(self.value)
         self.disp      = var.disp
         self.enum      = var.enum
-        self.alarm     = var._alarmState(self.value)
+
+        self.status, self.severity = var._alarmStatus(self.value)
 
 class BaseVariable(pr.Node):
 
@@ -183,8 +184,15 @@ class BaseVariable(pr.Node):
 
     @pr.expose
     @property
-    def alarm(self):
-        return self._alarmState(self.value())
+    def alarmStatus(self):
+        stat,sevr = self._alarmState(self.value())
+        return stat
+
+    @pr.expose
+    @property
+    def alarmSeverity(self):
+        stat,sevr = self._alarmState(self.value())
+        return sevr
 
     def addDependency(self, dep):
         if dep not in self.__dependencies:
@@ -276,6 +284,15 @@ class BaseVariable(pr.Node):
             ret = None
 
         return ret
+
+    @pr.expose
+    def getVariableValue(self,read=True):
+        """ 
+        Return the value after performing a read from hardware if applicable.
+        Hardware read is blocking. An error will result in a logged exception.
+        Listeners will be informed of the update.
+        """
+        return VariableValue(self,read=read)
 
     @pr.expose
     def value(self):
@@ -391,19 +408,24 @@ class BaseVariable(pr.Node):
         return val
 
     def _alarmState(self,value):
+        """ Return status, severity """
 
-        if isinstance(value,list) or isinstance(value,dict): return 'None'
+        if isinstance(value,list) or isinstance(value,dict): return 'None','None'
 
-        if (self._lowAlarm  is not None and value < self._lowAlarm) or \
-           (self._highAlarm is not None and value > self._highAlarm):
-            return 'Alarm'
+        if (self._lowAlarm  is not None and value < self._lowAlarm):
+            return 'AlarmLoLo', 'AlarmMajor'
 
-        elif (self._lowWarning  is not None and value < self._lowWarning) or \
-             (self._highWarning is not None and value > self._highWarning):
-            return 'Warning'
+        elif (self._highAlarm  is not None and value > self._highAlarm):
+            return 'AlarmHiHi', 'AlarmMajor'
+
+        elif (self._lowWarning  is not None and value < self._lowWarning):
+            return 'AlarmLow', 'AlarmMinor'
+
+        elif (self._highWarning is not None and value > self._highWarning):
+            return 'AlarmHigh', 'AlarmMinor'
 
         else:
-            return 'None'
+            return 'None','None'
 
 
 class RemoteVariable(BaseVariable):

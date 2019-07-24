@@ -56,16 +56,16 @@ rpe::Value::Value (std::string epicsName) {
    isString_  = false;
    epicsType_ = aitEnumInvalid;
 
-   //units_         = "";
-   //precision_     = 0;
-   //hopr_          = 0;
-   //lopr_          = 0;
-   //highAlarm_     = 0;
-   //highWarning_   = 0;
-   //lowWarning_    = 0;
-   //lowAlarm_      = 0;
-   //highCtrlLimit_ = 0;
-   //lowCtrlLimit_  = 0;
+   units_         = new gddScalar(gddAppType_value, aitEnumString);
+   precision_     = NULL;
+   hopr_          = NULL;
+   lopr_          = NULL;
+   highAlarm_     = NULL;
+   highWarning_   = NULL;
+   lowWarning_    = NULL;
+   lowAlarm_      = NULL;
+   highCtrlLimit_ = NULL;
+   lowCtrlLimit_  = NULL;
 
    log_ = rogue::Logging::create("epicsV3.Value");
 
@@ -316,52 +316,52 @@ gddAppFuncTableStatus rpe::Value::readSeverity(gdd &value) {
 }
 
 gddAppFuncTableStatus rpe::Value::readPrecision(gdd &value) {
-   value.put(&precision_);
+   if (precision_ != NULL ) value.put(precision_);
    return S_casApp_success;
 }
 
 gddAppFuncTableStatus rpe::Value::readHopr(gdd &value) {
-   value.put(&hopr_);
+   if ( hopr_ != NULL ) value.put(hopr_);
    return S_casApp_success;
 }
 
 gddAppFuncTableStatus rpe::Value::readLopr(gdd &value) {
-   value.put(&lopr_);
+   if ( lopr_ != NULL ) value.put(lopr_);
    return S_casApp_success;
 }
 
 gddAppFuncTableStatus rpe::Value::readHighAlarm(gdd &value) {
-   value.put(&highAlarm_);
+   if ( highAlarm_ != NULL ) value.put(highAlarm_);
    return S_casApp_success;
 }
 
 gddAppFuncTableStatus rpe::Value::readHighWarn(gdd &value) {
-   value.put(&highWarning_);
+   if ( highWarning_ != NULL ) value.put(highWarning_);
    return S_casApp_success;
 }
 
 gddAppFuncTableStatus rpe::Value::readLowWarn(gdd &value) {
-   value.put(&lowWarning_);
+   if ( lowWarning_ != NULL ) value.put(lowWarning_);
    return S_casApp_success;
 }
 
 gddAppFuncTableStatus rpe::Value::readLowAlarm(gdd &value) {
-   value.put(&lowAlarm_);
+   if ( lowAlarm_ != NULL ) value.put(lowAlarm_);
    return S_casApp_success;
 }
 
 gddAppFuncTableStatus rpe::Value::readHighCtrl(gdd &value) {
-   value.put(&highCtrlLimit_);
+   if ( highCtrlLimit_ != NULL ) value.put(highCtrlLimit_);
    return S_casApp_success;
 }
 
 gddAppFuncTableStatus rpe::Value::readLowCtrl(gdd &value) {
-   value.put(&lowCtrlLimit_);
+   if ( lowCtrlLimit_ != NULL ) value.put(lowCtrlLimit_);
    return S_casApp_success;
 }
 
 gddAppFuncTableStatus rpe::Value::readUnits(gdd &value) {
-   value.put(&units_);
+   value.put(units_);
    return S_casApp_success;
 }
 
