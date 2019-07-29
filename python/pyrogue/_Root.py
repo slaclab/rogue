@@ -93,7 +93,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         self._updateThread = None
 
         # Init 
-        pr.Device.__init__(self, name=name, description=description)
+        pr.Device.__init__(self, name=name, description=description, expand=expand)
 
         # Variables
         self.add(pr.LocalVariable(name='SystemLog', value='', mode='RO', hidden=True,
