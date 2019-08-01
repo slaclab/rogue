@@ -46,7 +46,7 @@ class GuiTop(QWidget):
     def __init__(self,*, parent=None, group=None):
         super(GuiTop,self).__init__(parent)
 
-        if group:
+        if group is not None:
             print("The GuiTop group attribute is now deprecated. Please remove it.")
 
         vb = QVBoxLayout()
