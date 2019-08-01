@@ -111,6 +111,9 @@ rpe::Variable::Variable (std::string epicsName, bp::object p, bool syncRead) : V
 rpe::Variable::~Variable() { }
 
 void rpe::Variable::varUpdated(std::string path, bp::object value) {
+
+   return;
+
    rogue::GilRelease noGil;
    bp::object convValue;
 
