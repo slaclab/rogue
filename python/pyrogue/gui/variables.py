@@ -31,7 +31,7 @@ import threading
 
 class VariableDev(QObject):
 
-    def __init__(self,*,tree,parent,dev,noExpand):
+    def __init__(self,*,tree,parent,dev,noExpand,top):
         QObject.__init__(self)
         self._parent   = parent
         self._tree     = tree
@@ -40,6 +40,9 @@ class VariableDev(QObject):
 
         self._widget = QTreeWidgetItem(parent)
         self._widget.setText(0,self._dev.name)
+
+        if top:
+            self._parent.addTopLevelItem(self._widget)
 
         if (not noExpand) and self._dev.expand:
             self._dummy = None
@@ -68,7 +71,7 @@ class VariableDev(QObject):
 
         # Then create devices
         for key,val in self._dev.visableDevices.items():
-            self._children.append(VariableDev(tree=self._tree,parent=self._widget,dev=val,noExpand=noExpand))
+            self._children.append(VariableDev(tree=self._tree,parent=self._widget,dev=val,noExpand=noExpand,top=False))
 
         for i in range(0,4):
             self._tree.resizeColumnToContents(i)
@@ -225,10 +228,11 @@ class VariableLink(QObject):
 
 
 class VariableWidget(QWidget):
-    def __init__(self, *, group, parent=None):
+    def __init__(self, *, parent=None):
         super(VariableWidget, self).__init__(parent)
 
         self.roots = []
+        self._children = []
 
         vb = QVBoxLayout()
         self.setLayout(vb)
@@ -237,11 +241,6 @@ class VariableWidget(QWidget):
 
         self.tree.setColumnCount(2)
         self.tree.setHeaderLabels(['Variable','Mode','Base','Value','Units'])
-
-        self.top = QTreeWidgetItem(self.tree)
-        self.top.setText(0,group)
-        self.tree.addTopLevelItem(self.top)
-        self.top.setExpanded(True)
 
         hb = QHBoxLayout()
         vb.addLayout(hb)
@@ -256,7 +255,7 @@ class VariableWidget(QWidget):
     @pyqtSlot(pyrogue.VirtualNode)
     def addTree(self,root):
         self.roots.append(root)
-        self.devTop = VariableDev(tree=self.tree,parent=self.top,dev=root,noExpand=False)
+        self._children.append(VariableDev(tree=self.tree,parent=self.tree,dev=root,noExpand=False,top=True))
 
     @pyqtSlot()
     def readPressed(self):
