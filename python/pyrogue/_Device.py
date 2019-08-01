@@ -80,7 +80,10 @@ class EnableVariable(pr.BaseVariable):
             if old != value and old != 'parent' and old != 'deps':
                 self.parent.enableChanged(value)
 
-        self._doUpdate()
+            self._doUpdate()
+
+            for var in self.__listeners:
+                var._doUpdate()
 
     def _doUpdate(self):
         if len(self._deps) != 0:
