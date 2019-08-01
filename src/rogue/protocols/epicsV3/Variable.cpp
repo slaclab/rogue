@@ -110,16 +110,19 @@ rpe::Variable::Variable (std::string epicsName, bp::object p, bool syncRead) : V
 
 rpe::Variable::~Variable() { }
 
-void rpe::Variable::varUpdated(std::string path, bp::object value, bp::object disp) {
+void rpe::Variable::varUpdated(std::string path, bp::object value) {
    rogue::GilRelease noGil;
+   bp::object convValue;
 
-   log_->debug("Variable update for %s: Disp=%s", epicsName_.c_str(),(char *)bp::extract<char *>(disp));
+   log_->debug("Variable update for %s", epicsName_.c_str());
    {
       std::lock_guard<std::mutex> lock(mtx_);
       noGil.acquire();
+  
+      if (  isString_ || epicsType_ == aitEnumEnum16 ) convValue = value.attr("valueDisp");
+      else convValue = value.attr("value");
 
-      if (  isString_ || epicsType_ == aitEnumEnum16 ) fromPython(disp);
-      else fromPython(value);
+      fromPython(convValue);
    }
    noGil.release();
    this->updated();

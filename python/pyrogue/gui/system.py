@@ -55,7 +55,7 @@ class DataLink(QObject):
         fl.setLabelAlignment(Qt.AlignRight)
         vb.addLayout(fl)
 
-        self.writer.dataFile.addListener(self)
+        self.writer.dataFile.addListener(self.varListener)
         self.dataFile = QLineEdit()
         self.dataFile.setText(self.writer.dataFile.valueDisp())
         self.dataFile.textEdited.connect(self.dataFileEdited)
@@ -74,7 +74,7 @@ class DataLink(QObject):
         fl.setLabelAlignment(Qt.AlignRight)
         hb.addLayout(fl)
 
-        self.writer.open.addListener(self)
+        self.writer.open.addListener(self.varListener)
         self.openState = QComboBox()
         self.openState.addItem('False')
         self.openState.addItem('True')
@@ -85,7 +85,7 @@ class DataLink(QObject):
 
         fl.addRow('File Open:',self.openState)
 
-        self.writer.bufferSize.addListener(self)
+        self.writer.bufferSize.addListener(self.varListener)
         self.bufferSize = QLineEdit()
         self.bufferSize.setText(self.writer.bufferSize.valueDisp())
         self.bufferSize.textEdited.connect(self.bufferSizeEdited)
@@ -95,7 +95,7 @@ class DataLink(QObject):
 
         fl.addRow('Buffer Size:',self.bufferSize)
 
-        self.writer.fileSize.addListener(self)
+        self.writer.fileSize.addListener(self.varListener)
         self.totSize = QLineEdit()
         self.totSize.setText(self.writer.fileSize.valueDisp())
         self.totSize.setReadOnly(True)
@@ -117,7 +117,7 @@ class DataLink(QObject):
         pb2.clicked.connect(self._genName)
         fl.addRow(pb1,pb2)
 
-        self.writer.maxFileSize.addListener(self)
+        self.writer.maxFileSize.addListener(self.varListener)
         self.maxSize = QLineEdit()
         self.maxSize.setText(self.writer.maxFileSize.valueDisp())
         self.maxSize.textEdited.connect(self.maxSizeEdited)
@@ -127,7 +127,7 @@ class DataLink(QObject):
 
         fl.addRow('Max Size:',self.maxSize)
 
-        self.writer.frameCount.addListener(self)
+        self.writer.frameCount.addListener(self.varListener)
         self.frameCount = QLineEdit()
         self.frameCount.setText(self.writer.frameCount.valueDisp())
         self.frameCount.setReadOnly(True)
@@ -153,28 +153,28 @@ class DataLink(QObject):
         self.writer.autoName()
         pass
 
-    def varListener(self,path,value,disp):
+    def varListener(self,path,value):
         if self.block: return
 
         name = path.split('.')[-1]
 
         if name == 'dataFile':
-            self.updateDataFile.emit(disp)
+            self.updateDataFile.emit(value.valueDisp)
 
         elif name == 'open':
-            self.updateOpenState.emit(self.openState.findText(disp))
+            self.updateOpenState.emit(self.openState.findText(value.valueDisp))
 
         elif name == 'bufferSize':
-            self.updateBufferSize.emit(disp)
+            self.updateBufferSize.emit(value.valueDisp)
 
         elif name == 'maxFileSize':
-            self.updateMaxSize.emit(disp)
+            self.updateMaxSize.emit(value.valueDisp)
 
         elif name == 'fileSize':
-            self.updateFileSize.emit(disp)
+            self.updateFileSize.emit(value.valueDisp)
 
         elif name == 'frameCount':
-            self.updateFrameCount.emit(disp)
+            self.updateFrameCount.emit(value.valueDisp)
 
     @pyqtSlot()
     def dataFileEdited(self):
@@ -254,7 +254,7 @@ class ControlLink(QObject):
         fl.setLabelAlignment(Qt.AlignRight)
         vb.addLayout(fl)
 
-        self.control.runRate.addListener(self)
+        self.control.runRate.addListener(self.varListener)
         self.runRate = QComboBox()
         self.runRate.activated.connect(self.runRateChanged)
         self.updateRate.connect(self.runRate.setCurrentIndex)
@@ -273,7 +273,7 @@ class ControlLink(QObject):
         fl.setLabelAlignment(Qt.AlignRight)
         hb.addLayout(fl)
 
-        self.control.runState.addListener(self)
+        self.control.runState.addListener(self.varListener)
         self.runState = QComboBox()
         self.runState.activated.connect(self.runStateChanged)
         self.updateState.connect(self.runState.setCurrentIndex)
@@ -289,7 +289,7 @@ class ControlLink(QObject):
         fl.setLabelAlignment(Qt.AlignRight)
         hb.addLayout(fl)
 
-        self.control.runCount.addListener(self)
+        self.control.runCount.addListener(self.varListener)
         self.runCount = QLineEdit()
         self.runCount.setText(self.control.runCount.valueDisp())
         self.runCount.setReadOnly(True)
@@ -297,19 +297,19 @@ class ControlLink(QObject):
 
         fl.addRow('Run Count:',self.runCount)
 
-    def varListener(self,path,value,disp):
+    def varListener(self,path,value):
         if self.block: return
 
         name = path.split('.')[-1]
 
         if name == 'runState':
-            self.updateState.emit(self.runState.findText(disp))
+            self.updateState.emit(self.runState.findText(value.valueDisp))
 
         elif name == 'runRate':
-            self.updateRate.emit(self.runRate.findText(disp))
+            self.updateRate.emit(self.runRate.findText(value.valueDisp))
 
         elif name == 'runCount':
-            self.updateCount.emit(disp)
+            self.updateCount.emit(value.valueDisp)
 
     @pyqtSlot(int)
     def runStateChanged(self,value):
@@ -401,7 +401,7 @@ class SystemWidget(QWidget):
         self.systemLog.setReadOnly(True)
         vb.addWidget(self.systemLog)
 
-        root.SystemLog.addListener(self)
+        root.SystemLog.addListener(self.varListener)
         self.updateLog.connect(self.systemLog.setText)
         self.systemLog.setText(root.SystemLog.valueDisp())
         
@@ -415,11 +415,11 @@ class SystemWidget(QWidget):
     def resetLog(self):
         self.root.ClearLog()
 
-    def varListener(self,path,value,disp):
+    def varListener(self,path,value):
         name = path.split('.')[-1]
 
         if name == 'SystemLog':
-            self.updateLog.emit(disp)
+            self.updateLog.emit(value.valueDisp)
 
     @pyqtSlot()
     def hardReset(self):

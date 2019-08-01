@@ -254,7 +254,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
     def addVarListener(self,func):
         """
         Add a variable update listener function.
-        The variable, value and display string will be passed as an arg: func(path,value,disp)
+        The variable and value structure will be passed as args: func(path,varValue)
         """
         with self._varListenLock:
             self._varListeners.append(func)
@@ -554,7 +554,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                         # Call listener functions,
                         with self._varListenLock:
                             for func in self._varListeners:
-                                func(p,val.value.val,valueDisp)
+                                func(p,val)
                     except Exception as e:
                         self._log.exception(e)
                         
