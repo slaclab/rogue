@@ -43,8 +43,11 @@ class GuiTop(QWidget):
     newRoot = pyqtSignal(pyrogue.Root)
     newVirt = pyqtSignal(pyrogue.VirtualNode)
 
-    def __init__(self,*, parent=None):
+    def __init__(self,*, parent=None, group=None):
         super(GuiTop,self).__init__(parent)
+
+        if group:
+            print("The GuiTop group attribute is now deprecated. Please remove it.")
 
         vb = QVBoxLayout()
         self.setLayout(vb)
