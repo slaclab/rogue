@@ -80,8 +80,7 @@ class EnableVariable(pr.BaseVariable):
             if old != value and old != 'parent' and old != 'deps':
                 self.parent.enableChanged(value)
 
-        with self.parent.root.updateGroup():
-            self._queueUpdate()
+        self._doUpdate()
 
     def _doUpdate(self):
         if len(self._deps) != 0:
