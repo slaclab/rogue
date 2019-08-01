@@ -252,7 +252,20 @@ class AxiVersion(pr.Device):
             value = ''))
 
         self.BuildStamp.addListener(parseBuildStamp)        
-       
+      
+        for i in range(128):
+            remap = divmod(i,32)
+
+            self.add(pr.RemoteVariable(
+                name         = 'TestArray[{:d}]'.format(i),
+                description  = 'Array Test Field',
+                offset       = 0x1000 + remap[0]<<2,
+                bitSize      = 1,
+                bitOffset    = remap[1],
+                base         = pr.UInt,
+                mode         = 'RW',
+                hidden       = False,
+            ))
 
     def hardReset(self):
         print('AxiVersion hard reset called')
