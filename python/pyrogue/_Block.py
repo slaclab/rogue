@@ -377,7 +377,7 @@ class RemoteBlock(BaseBlock, rim.Master):
             srcBit = 0
             for x in range(len(var.bitOffset)):
                 self._copyBits(self._sData, var.bitOffset[x], ba, srcBit, var.bitSize[x])
-                self._setBits( self._sDataMask, var.bitOffset[x], var.bitSize[x])
+                self._setBits(self._sDataMask, var.bitOffset[x], var.bitSize[x])
                 srcBit += var.bitSize[x]
 
     def get(self, var):
