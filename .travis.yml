@@ -99,7 +99,7 @@ jobs:
       script:
         # Run tests with coverage
         - cd $TRAVIS_BUILD_DIR
-        - python3 -m pytest -s --cov
+        - python3 -m pytest --cov
 
       after_success:
         # Upload coverage report
