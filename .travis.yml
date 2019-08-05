@@ -99,7 +99,7 @@ jobs:
       script:
         # Run tests with coverage
         - cd $TRAVIS_BUILD_DIR
-        - python3 -m pytest --cov
+        - python3 -m pytest -s --cov
 
       after_success:
         # Upload coverage report
@@ -176,12 +176,13 @@ jobs:
 
       script:
         # Build conda package
-        - conda build --debug conda-recipe --output-folder bld-dir -c defaults -c conda-forge -c paulscherrerinstitute
-        #- conda build -q conda-recipe --output-folder bld-dir -c defaults -c conda-forge -c paulscherrerinstitute
+        - conda build --debug conda-recipe    --output-folder bld-dir    -c defaults -c conda-forge -c paulscherrerinstitute
+        - conda build --debug conda-recipe-ne --output-folder bld-dir-ne -c defaults -c conda-forge
 
       after_success:
         # Upload conda package
         - anaconda -t $CONDA_TOKEN upload bld-dir/`echo $TRAVIS_OS_NAME`-64/*.tar.bz2
+        - anaconda -t $CONDA_TOKEN upload bld-dir-ne/`echo $TRAVIS_OS_NAME`-64/*.tar.bz2
 
     - <<: *deploy-conda-stage   # Conda for MacOS
       os: osx

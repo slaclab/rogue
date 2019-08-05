@@ -327,7 +327,7 @@ void rha::AxiStreamDma::runThread() {
 
       // Setup select timeout
       tout.tv_sec  = 0;
-      tout.tv_usec = 100;
+      tout.tv_usec = 1000;
 
       // Select returns with available buffer
       if ( select(fd_+1,&fds,NULL,NULL,&tout) > 0 ) {

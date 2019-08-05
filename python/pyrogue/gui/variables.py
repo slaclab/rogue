@@ -31,7 +31,7 @@ import threading
 
 class VariableDev(QObject):
 
-    def __init__(self,*,tree,parent,dev,noExpand):
+    def __init__(self,*,tree,parent,dev,noExpand,top):
         QObject.__init__(self)
         self._parent   = parent
         self._tree     = tree
@@ -40,6 +40,9 @@ class VariableDev(QObject):
 
         self._widget = QTreeWidgetItem(parent)
         self._widget.setText(0,self._dev.name)
+
+        if top:
+            self._parent.addTopLevelItem(self._widget)
 
         if (not noExpand) and self._dev.expand:
             self._dummy = None
@@ -68,7 +71,7 @@ class VariableDev(QObject):
 
         # Then create devices
         for key,val in self._dev.visableDevices.items():
-            self._children.append(VariableDev(tree=self._tree,parent=self._widget,dev=val,noExpand=noExpand))
+            self._children.append(VariableDev(tree=self._tree,parent=self._widget,dev=val,noExpand=noExpand,top=False))
 
         for i in range(0,4):
             self._tree.resizeColumnToContents(i)
@@ -105,7 +108,8 @@ class VariableLink(QObject):
             for i in self._variable.enum:
                 self._widget.addItem(self._variable.enum[i])
 
-        elif self._variable.minimum is not None and self._variable.maximum is not None:
+        elif self._variable.minimum is not None and self._variable.maximum is not None and \
+             self._variable.disp == '{}' and self._variable.mode != 'RO':
             self._widget = QSpinBox();
             self._widget.setMinimum(self._variable.minimum)
             self._widget.setMaximum(self._variable.maximum)
@@ -128,9 +132,9 @@ class VariableLink(QObject):
             self._widget.setReadOnly(True)
 
         self._tree.setItemWidget(self._item,3,self._widget)
-        self.varListener(None,self._variable.value(),self._variable.valueDisp())
+        self.varListener(None,pyrogue.VariableValue(self._variable))
 
-        variable.addListener(self)
+        variable.addListener(self.varListener)
 
     def openMenu(self, event):
         menu = QMenu()
@@ -167,7 +171,7 @@ class VariableLink(QObject):
             else:
                 self._variable.setDisp(self._widget.text())
 
-    def varListener(self, path, value, disp):
+    def varListener(self, path, value):
         with self._lock:
             if self._widget is None or self._inEdit is True:
                 return
@@ -175,18 +179,18 @@ class VariableLink(QObject):
             self._swSet = True
 
             if isinstance(self._widget, QComboBox):
-                i = self._widget.findText(disp)
+                i = self._widget.findText(value.valueDisp)
 
                 if i < 0: i = 0
 
                 if self._widget.currentIndex() != i:
                     self.updateGui.emit(i)
             elif isinstance(self._widget, QSpinBox):
-                if self._widget.value != value:
+                if self._widget.value != value.value:
                     self.updateGui.emit(value)
             else:
-                if self._widget.text() != disp:
-                    self.updateGui[str].emit(disp)
+                if self._widget.text() != value.valueDisp:
+                    self.updateGui[str].emit(value.valueDisp)
 
             self._swSet = False
 
@@ -224,10 +228,11 @@ class VariableLink(QObject):
 
 
 class VariableWidget(QWidget):
-    def __init__(self, *, group, parent=None):
+    def __init__(self, *, parent=None):
         super(VariableWidget, self).__init__(parent)
 
         self.roots = []
+        self._children = []
 
         vb = QVBoxLayout()
         self.setLayout(vb)
@@ -236,11 +241,6 @@ class VariableWidget(QWidget):
 
         self.tree.setColumnCount(2)
         self.tree.setHeaderLabels(['Variable','Mode','Base','Value','Units'])
-
-        self.top = QTreeWidgetItem(self.tree)
-        self.top.setText(0,group)
-        self.tree.addTopLevelItem(self.top)
-        self.top.setExpanded(True)
 
         hb = QHBoxLayout()
         vb.addLayout(hb)
@@ -255,7 +255,7 @@ class VariableWidget(QWidget):
     @pyqtSlot(pyrogue.VirtualNode)
     def addTree(self,root):
         self.roots.append(root)
-        self.devTop = VariableDev(tree=self.tree,parent=self.top,dev=root,noExpand=False)
+        self._children.append(VariableDev(tree=self.tree,parent=self.tree,dev=root,noExpand=False,top=True))
 
     @pyqtSlot()
     def readPressed(self):

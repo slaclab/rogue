@@ -134,10 +134,7 @@ void rps::SrpV0::doTransaction(rim::TransactionPtr tran) {
    ris::toFrame(fIter,headerLen,header); 
 
    // Write data
-   if ( doWrite ) {
-      std::copy(tIter,tIter+tran->size(),fIter);
-      fIter += tran->size();
-   }
+   if ( doWrite ) ris::toFrame(fIter, tran->size(), tIter);
 
    // Last field is zero
    tail[0] = 0;
@@ -233,7 +230,7 @@ void rps::SrpV0::acceptFrame ( ris::FramePtr frame ) {
    // Copy data if read
    if ( ! doWrite ) {
       fIter = frame->beginRead() + RxHeadLen;
-      std::copy(fIter,fIter+tran->size(),tIter);
+      ris::fromFrame(fIter, tran->size(), tIter);
    }
 
    // Done

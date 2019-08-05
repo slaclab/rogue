@@ -23,42 +23,37 @@ import time
 FrameCount = 10000
 FrameSize  = 10000
 
-def data_path():
-
-    # Bridge server
-    serv = rogue.interfaces.stream.TcpServer("127.0.0.1",9000)
-
-    # Bridge client
-    client = rogue.interfaces.stream.TcpClient("127.0.0.1",9000)
+def fifo_path():
 
     # PRBS
     prbsTx = rogue.utilities.Prbs()
     prbsRx = rogue.utilities.Prbs()
 
+    # FIFO
+    fifo = rogue.interfaces.stream.Fifo(0,0,False);
+
     # Client stream
-    pyrogue.streamConnect(prbsTx,serv)
+    pyrogue.streamConnect(prbsTx,fifo)
 
     # Server stream
-    pyrogue.streamConnect(client,prbsRx)
-
-    time.sleep(5)
+    pyrogue.streamConnect(fifo,prbsRx)
 
     print("Generating Frames")
     for _ in range(FrameCount):
         prbsTx.genFrame(FrameSize)
-    time.sleep(20)
-
-    if prbsRx.getRxCount() != FrameCount:
-        raise AssertionError('Frame count error. Got = {} expected = {}'.format(prbsRx.getRxCount(),FrameCount))
+    time.sleep(30)
 
     if prbsRx.getRxErrors() != 0:
         raise AssertionError('PRBS Frame errors detected! Errors = {}'.format(prbsRx.getRxErrors()))
 
+    if prbsRx.getRxCount() != FrameCount:
+        raise AssertionError('Frame count error. Got = {} expected = {}'.format(prbsRx.getRxCount(),FrameCount))
+
     print("Done testing")
 
-def test_data_path():
-    data_path()
+def test_fifo_path():
+    fifo_path()
 
 if __name__ == "__main__":
-    test_data_path()
+    test_fifo_path()
 

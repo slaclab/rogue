@@ -75,6 +75,7 @@ class UdpRssiPack(pr.Device):
             name        = 'rssiDownCount',
             mode        = 'RO', 
             value       = 0,
+            typeStr     = 'UInt32',
             localGet    = lambda: self._rssi.getDownCount(),
             pollInterval= pollInterval, 
         )) 
@@ -83,6 +84,7 @@ class UdpRssiPack(pr.Device):
             name        = 'rssiDropCount',
             mode        = 'RO', 
             value       = 0,
+            typeStr     = 'UInt32',
             localGet    = lambda: self._rssi.getDropCount(),
             pollInterval= pollInterval, 
         ))  
@@ -91,6 +93,7 @@ class UdpRssiPack(pr.Device):
             name        = 'rssiRetranCount',
             mode        = 'RO', 
             value       = 0,
+            typeStr     = 'UInt32',
             localGet    = lambda: self._rssi.getRetranCount(),
             pollInterval= pollInterval, 
         ))  
@@ -108,6 +111,7 @@ class UdpRssiPack(pr.Device):
             name        = 'locBusyCnt',
             mode        = 'RO', 
             value       = 0,
+            typeStr     = 'UInt32',
             localGet    = lambda: self._rssi.getLocBusyCnt(),
             pollInterval= pollInterval, 
         ))         
@@ -125,6 +129,7 @@ class UdpRssiPack(pr.Device):
             name        = 'remBusyCnt',
             mode        = 'RO', 
             value       = 0,
+            typeStr     = 'UInt32',
             localGet    = lambda: self._rssi.getRemBusyCnt(),
             pollInterval= pollInterval, 
         ))                 
@@ -133,6 +138,7 @@ class UdpRssiPack(pr.Device):
             name        = 'locTryPeriod',
             mode        = 'RW', 
             value       = 0,
+            typeStr     = 'UInt32',
             localGet    = lambda: self._rssi.getLocTryPeriod(),
             localSet    = lambda value: self._rssi.setLocTryPeriod(value)
         ))                 
@@ -141,6 +147,7 @@ class UdpRssiPack(pr.Device):
             name        = 'locMaxBuffers',
             mode        = 'RW', 
             value       = 0,
+            typeStr     = 'UInt8',
             localGet    = lambda: self._rssi.getLocMaxBuffers(),
             localSet    = lambda value: self._rssi.setLocMaxBuffers(value)
         ))                 
@@ -149,6 +156,7 @@ class UdpRssiPack(pr.Device):
             name        = 'locMaxSegment',
             mode        = 'RW', 
             value       = 0,
+            typeStr     = 'UInt16',
             localGet    = lambda: self._rssi.getLocMaxSegment(),
             localSet    = lambda value: self._rssi.setLocMaxSegment(value)
         ))                 
@@ -157,6 +165,7 @@ class UdpRssiPack(pr.Device):
             name        = 'locCumAckTout',
             mode        = 'RW', 
             value       = 0,
+            typeStr     = 'UInt16',
             localGet    = lambda: self._rssi.getLocCumAckTout(),
             localSet    = lambda value: self._rssi.setLocCumAckTout(value)
         ))                 
@@ -165,6 +174,7 @@ class UdpRssiPack(pr.Device):
             name        = 'locRetranTout',
             mode        = 'RW', 
             value       = 0,
+            typeStr     = 'UInt16',
             localGet    = lambda: self._rssi.getLocRetranTout(),
             localSet    = lambda value: self._rssi.setLocRetranTout(value)
         ))                 
@@ -173,6 +183,7 @@ class UdpRssiPack(pr.Device):
             name        = 'locNullTout',
             mode        = 'RW', 
             value       = 0,
+            typeStr     = 'UInt16',
             localGet    = lambda: self._rssi.getLocNullTout(),
             localSet    = lambda value: self._rssi.setLocNullTout(value)
         ))                 
@@ -181,6 +192,7 @@ class UdpRssiPack(pr.Device):
             name        = 'locMaxRetran',
             mode        = 'RW', 
             value       = 0,
+            typeStr     = 'UInt8',
             localGet    = lambda: self._rssi.getLocMaxRetran(),
             localSet    = lambda value: self._rssi.setLocMaxRetran(value)
         ))                 
@@ -189,6 +201,7 @@ class UdpRssiPack(pr.Device):
             name        = 'locMaxCumAck',
             mode        = 'RW', 
             value       = 0,
+            typeStr     = 'UInt8',
             localGet    = lambda: self._rssi.getLocMaxCumAck(),
             localSet    = lambda value: self._rssi.setLocMaxCumAck(value)
         ))                 
@@ -197,6 +210,7 @@ class UdpRssiPack(pr.Device):
             name        = 'curMaxBuffers',
             mode        = 'RO', 
             value       = 0,
+            typeStr     = 'UInt8',
             localGet    = lambda: self._rssi.curMaxBuffers(),
             pollInterval= pollInterval 
         ))                 
@@ -205,6 +219,7 @@ class UdpRssiPack(pr.Device):
             name        = 'curMaxSegment',
             mode        = 'RO', 
             value       = 0,
+            typeStr     = 'UInt16',
             localGet    = lambda: self._rssi.curMaxSegment(),
             pollInterval= pollInterval 
         ))                 
@@ -213,6 +228,7 @@ class UdpRssiPack(pr.Device):
             name        = 'curCumAckTout',
             mode        = 'RO', 
             value       = 0,
+            typeStr     = 'UInt16',
             localGet    = lambda: self._rssi.curCumAckTout(),
             pollInterval= pollInterval 
         ))                 
@@ -221,6 +237,7 @@ class UdpRssiPack(pr.Device):
             name        = 'curRetranTout',
             mode        = 'RO', 
             value       = 0,
+            typeStr     = 'UInt16',
             localGet    = lambda: self._rssi.curRetranTout(),
             pollInterval= pollInterval 
         ))                 
@@ -229,6 +246,7 @@ class UdpRssiPack(pr.Device):
             name        = 'curNullTout',
             mode        = 'RO', 
             value       = 0,
+            typeStr     = 'UInt16',
             localGet    = lambda: self._rssi.curNullTout(),
             pollInterval= pollInterval 
         ))                 
@@ -237,6 +255,7 @@ class UdpRssiPack(pr.Device):
             name        = 'curMaxRetran',
             mode        = 'RO', 
             value       = 0,
+            typeStr     = 'UInt8',
             localGet    = lambda: self._rssi.curMaxRetran(),
             pollInterval= pollInterval 
         ))                 
@@ -245,6 +264,7 @@ class UdpRssiPack(pr.Device):
             name        = 'curMaxCumAck',
             mode        = 'RO', 
             value       = 0,
+            typeStr     = 'UInt8',
             localGet    = lambda: self._rssi.curMaxCumAck(),
             pollInterval= pollInterval 
         ))                 
@@ -269,4 +289,3 @@ class UdpRssiPack(pr.Device):
         # So check if it has a perent first
         if self.parent is not None:
             self.rssiOpen.get()
-

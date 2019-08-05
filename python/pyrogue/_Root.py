@@ -61,7 +61,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         """Root exit."""
         self.stop()
 
-    def __init__(self, *, name=None, description=''):
+    def __init__(self, *, name=None, description='', expand=True):
         """Init the node with passed attributes"""
 
         rogue.interfaces.stream.Master.__init__(self)
@@ -78,7 +78,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         self._running = False
 
         # Polling worker
-        self._pollQueue = None
+        self._pollQueue = self._pollQueue = pr.PollQueue(root=self)
 
         # Zeromq server
         self._zmqServer = None
@@ -93,7 +93,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         self._updateThread = None
 
         # Init 
-        pr.Device.__init__(self, name=name, description=description)
+        pr.Device.__init__(self, name=name, description=description, expand=expand)
 
         # Variables
         self.add(pr.LocalVariable(name='SystemLog', value='', mode='RO', hidden=True,
@@ -111,6 +111,10 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         self.add(pr.LocalVariable(name='LocalTime', value='', mode='RO', hidden=False,
                  localGet=lambda: time.strftime("%Y-%m-%d %H:%M:%S %Z", time.localtime(time.time())),
                  pollInterval=1.0, description='Local Time'))
+
+        self.add(pr.LocalVariable(name='PollEn', value=False, mode='RW',
+                                  localSet=lambda value: self._pollQueue.pause(not value),
+                                  localGet=lambda: not self._pollQueue.paused()))
 
         # Commands
         self.add(pr.LocalCommand(name='WriteAll', function=self._write, hidden=True,
@@ -155,12 +159,12 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         self.add(pr.LocalCommand(name='Exit', function=self._exit, hidden=False,
                                  description='Exit the server application'))
 
-    def start(self, timeout=1.0, initRead=False, initWrite=False, pollEn=True, zmqPort=9099):
+    def start(self, timeout=1.0, initRead=False, initWrite=False, pollEn=True, zmqPort=None):
         """Setup the tree. Start the polling thread."""
 
-        # Create poll queue object
-        if pollEn:
-            self._pollQueue = pr.PollQueue(root=self)
+        if self._running:
+            raise pr.NodeError("Root is already started! Can't restart!")
+
 
         # Call special root level rootAttached
         self._rootAttached()
@@ -225,8 +229,8 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         self._updateThread.start()
 
         # Start poller if enabled
-        if pollEn:
-            self._pollQueue._start()
+        self._pollQueue._start()
+        self.PollEn.set(pollEn)
 
         self._running = True
 
@@ -250,7 +254,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
     def addVarListener(self,func):
         """
         Add a variable update listener function.
-        The variable, value and display string will be passed as an arg: func(path,value,disp)
+        The variable and value structure will be passed as args: func(path,varValue)
         """
         with self._varListenLock:
             self._varListeners.append(func)
@@ -304,6 +308,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
             # After with is done
             self._updateQueue.put(False)
 
+    @pr.expose
     def waitOnUpdate(self):
         """
         Wait until all update queue items have been processed.
@@ -381,7 +386,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         Vlist can contain an optional list of variale paths to include in the
         stream. If this list is not NULL only these variables will be included.
         """
-        self._sendYamlFrame(self._getYaml(False,modes))
+        self._sendYamlFrame(self._getYaml(readFirst=False,modes=modes,varEncode=False))
 
     def _write(self):
         """Write all blocks"""
@@ -458,7 +463,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
         return True
 
-    def _getYaml(self,readFirst,modes=['RW']):
+    def _getYaml(self,readFirst,modes=['RW'],varEncode=True):
         """
         Get current values as yaml data.
         modes is a list of variable modes to include.
@@ -467,7 +472,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
         if readFirst: self._read()
         try:
-            return dataToYaml({self.name:self._getDict(modes)})
+            return dataToYaml({self.name:self._getDict(modes)},varEncode)
         except Exception as e:
             self._log.exception(e)
             return ""
@@ -542,18 +547,25 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                 d = odict()
 
                 for p,v in uvars.items():
-                    val = v._doUpdate()
-                    d[p] = val
+                    try:
+                        val = v._doUpdate()
+                        d[p] = val
 
-                    # Call listener functions,
-                    with self._varListenLock:
-                        for func in self._varListeners:
-                                    func(p,val.value.val,valueDisp)
-
+                        # Call listener functions,
+                        with self._varListenLock:
+                            for func in self._varListeners:
+                                func(p,val)
+                    except Exception as e:
+                        self._log.exception(e)
+                        
                 self._log.debug(F"Done update group. Length={len(uvars)}. Entry={list(uvars.keys())[0]}")
 
+
                 # Generate yaml stream
-                self._sendYamlFrame(dataToYaml(d))
+                try:
+                    self._sendYamlFrame(dataToYaml(d,varEncode=False))
+                except Exception as e:
+                    self._log.exception(e)
 
                 # Send over zmq link
                 if self._zmqServer is not None:
@@ -579,7 +591,7 @@ def yamlToData(stream):
 
     return yaml.load(stream, Loader=PyrogueLoader)
 
-def dataToYaml(data):
+def dataToYaml(data,varEncode=True):
     """Convert data structure to yaml"""
 
     class PyrogueDumper(yaml.Dumper):
@@ -597,20 +609,19 @@ def dataToYaml(data):
         else:
             enc = 'tag:yaml.org,2002:str'
 
-        return dumper.represent_scalar(enc, data.valueDisp)
+        if data.valueDisp is None:
+            return dumper.represent_scalar('tag:yaml.org,2002:null',u'null')
+        else:
+            return dumper.represent_scalar(enc, data.valueDisp)
 
     def _dict_representer(dumper, data):
         return dumper.represent_mapping(yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG, data.items())
 
-    PyrogueDumper.add_representer(pr.VariableValue, _var_representer)
+    if varEncode:
+        PyrogueDumper.add_representer(pr.VariableValue, _var_representer)
     PyrogueDumper.add_representer(odict, _dict_representer)
 
-    try:
-        ret = yaml.dump(data, Dumper=PyrogueDumper, default_flow_style=False)
-    except Exception as e:
-        #print("Error: {} dict {}".format(e,data))
-        return None
-    return ret
+    return yaml.dump(data, Dumper=PyrogueDumper, default_flow_style=False)
 
 def keyValueUpdate(old, key, value):
     d = old

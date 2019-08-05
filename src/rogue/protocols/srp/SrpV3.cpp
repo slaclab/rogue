@@ -153,7 +153,7 @@ void rps::SrpV3::doTransaction(rim::TransactionPtr tran) {
    ris::toFrame(fIter,HeadLen,header);
 
    // Write data
-   if ( doWrite ) std::copy(tIter,tIter+tran->size(),fIter);
+   if ( doWrite ) ris::toFrame(fIter, tran->size(), tIter);
 
    if ( tran->type() == rim::Post ) tran->done(0);
    else addTransaction(tran);
@@ -245,7 +245,7 @@ void rps::SrpV3::acceptFrame ( ris::FramePtr frame ) {
    }
 
    // Copy data if read
-   if ( ! doWrite ) std::copy(fIter,fIter+tran->size(),tIter);
+   if ( ! doWrite ) ris::fromFrame(fIter, tran->size(), tIter);
 
    tran->done(0);
 }
