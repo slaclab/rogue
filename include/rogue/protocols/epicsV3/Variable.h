@@ -59,7 +59,7 @@ namespace rogue {
 
                ~Variable ();
 
-               void varUpdated(std::string path, boost::python::object value, boost::python::object disp);
+               void varUpdated(std::string path, boost::python::object value);
 
                // Lock held when called
                void valueGet();

@@ -166,7 +166,7 @@ class BaseVariable(pr.Node):
         """
         Add a listener Variable or function to call when variable changes. 
         This is usefull when chaining variables together. (adc conversions, etc)
-        The variable, value and display string will be passed as an arg: func(path,value,disp)
+        The variable and value class are passed as an arg: func(path,varValue)
         """
         if isinstance(listener, BaseVariable):
             self.__listeners.append(listener)
@@ -344,10 +344,7 @@ class BaseVariable(pr.Node):
         val = VariableValue(self)
 
         for func in self.__functions:
-            if hasattr(func,'varListener'):
-                func.varListener(self.path,val.value,val.valueDisp)
-            else:
-                func(self.path,val.value,val.valueDisp)
+            func(self.path,val)
 
         return val
 

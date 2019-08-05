@@ -159,10 +159,7 @@ class VirtualNode(pr.Node):
 
     def _doUpdate(self, val):
         for func in self._functions:
-            if hasattr(func,'varListener'):
-                func.varListener(self.path,val.value,val.valueDisp)
-            else:
-                func(self.path,val.value,val.valueDisp)
+            func(self.path,val)
 
     def _virtAttached(self,parent,root,client):
         """Called once the root node is attached."""
@@ -232,7 +229,7 @@ class VirtualClient(rogue.interfaces.ZmqClient):
 
             # Call listener functions,
             for func in self._varListeners:
-                func(k,val.value.val,valueDisp)
+                func(k,val)
 
     @property
     def root(self):

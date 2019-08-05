@@ -313,8 +313,10 @@ class RemoteBlock(BaseBlock, rim.Master):
                 if var._overlapEn:
                     self._setBits(oleMask,var.bitOffset[x],var.bitSize[x])
 
-                # Otherwise add to exclusive mask
+                # Otherwise add to exclusive mask and check for existing mapping
                 else:
+                    if self._anyBits(excMask,var.bitOffset[x],var.bitSize[x]):
+                        raise MemoryError(name=self.path, address=self.address, msg="Variable bit overlap detected.")
                     self._setBits(excMask,var.bitOffset[x],var.bitSize[x])
 
                 # update verify mask
@@ -391,7 +393,7 @@ class RemoteBlock(BaseBlock, rim.Master):
             srcBit = 0
             for x in range(len(var.bitOffset)):
                 self._copyBits(self._sData, var.bitOffset[x], ba, srcBit, var.bitSize[x])
-                self._setBits( self._sDataMask, var.bitOffset[x], var.bitSize[x])
+                self._setBits(self._sDataMask, var.bitOffset[x], var.bitSize[x])
                 srcBit += var.bitSize[x]
 
     def get(self, var):
