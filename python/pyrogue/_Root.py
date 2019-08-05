@@ -61,7 +61,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         """Root exit."""
         self.stop()
 
-    def __init__(self, *, name=None, description=''):
+    def __init__(self, *, name=None, description='', expand=True):
         """Init the node with passed attributes"""
 
         rogue.interfaces.stream.Master.__init__(self)
@@ -93,7 +93,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         self._updateThread = None
 
         # Init 
-        pr.Device.__init__(self, name=name, description=description)
+        pr.Device.__init__(self, name=name, description=description, expand=expand)
 
         # Variables
         self.add(pr.LocalVariable(name='SystemLog', value='', mode='RO', hidden=True,
@@ -308,6 +308,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
             # After with is done
             self._updateQueue.put(False)
 
+    @pr.expose
     def waitOnUpdate(self):
         """
         Wait until all update queue items have been processed.

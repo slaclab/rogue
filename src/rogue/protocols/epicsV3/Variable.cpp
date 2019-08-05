@@ -224,13 +224,14 @@ rpe::Variable::~Variable() { }
 
 void rpe::Variable::varUpdated(std::string path, bp::object value) {
    rogue::GilRelease noGil;
+   bp::object convValue;
 
-   log_->debug("Variable update for %s: Disp=%s", epicsName_.c_str(),(char *)bp::extract<char *>(value.attr("disp")));
+   log_->debug("Variable update for %s", epicsName_.c_str());
    {
       std::lock_guard<std::mutex> lock(mtx_);
       noGil.acquire();
 
-      if (  isString_ || epicsType_ == aitEnumEnum16 ) fromPython(value.attr("disp"));
+      if (  isString_ || epicsType_ == aitEnumEnum16 ) fromPython(value.attr("valueDisp"));
       else {
          fromPython(value.attr("value"));
          updateAlarm(value.attr("status"),value.attr("severity"));

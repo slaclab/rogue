@@ -202,7 +202,7 @@ class MysqlGw(object):
             try:
                 cursor = self._db.cursor(MySQLdb.cursors.DictCursor)
                 sql = "update variable set value='{}', server_ts=now(),".format(mysqlString(val.valueDisp))
-                sql += "server_ser = (server_ser + 1) where name='{}'".format(val.path)
+                sql += "server_ser = (server_ser + 1) where name='{}'".format(path)
                 cursor.execute(sql)
                 self._db.commit()
             except:

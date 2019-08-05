@@ -88,7 +88,7 @@ endif()
    if (NOT ZeroMQ_FOUND)
       
       # Convert LD_LIBRARY PATH for search
-      if(ENV{LD_LIBRARY_PATH})
+      if(DEFINED ENV{LD_LIBRARY_PATH})
          string(REPLACE ":" ";" HINT_PATHS $ENV{LD_LIBRARY_PATH})
       else()
          set(HINT_PATHS, "")
@@ -110,10 +110,12 @@ endif()
                  NAMES zmq.h
                  PATHS ${ZMQ_LIBDIR}/../include
                  )
-      endif()
-
-      # Failed to find it
-      if (NOT ZeroMQ_INCLUDE_DIR)
+         if (NOT ZeroMQ_INCLUDE_DIR)
+            message("")
+            message(FATAL_ERROR "Failed to find ZeroMQ_INCLUDE_DIR!")
+         endif()
+      else()
+         # Failed to find it
          message("")
          message(FATAL_ERROR "Failed to find zeroMQ!")
       endif()
@@ -136,24 +138,48 @@ if((NOT NO_PYTHON) AND (NOT NO_EPICS) AND DEFINED ENV{EPICS_BASE})
 
    if(APPLE)
 
-      set(EPICSV3_INCLUDES  ${EPICSV3_BASE_DIR}/include
-                            ${EPICSV3_BASE_DIR}/include/compiler/gcc 
-                            ${EPICSV3_BASE_DIR}/include/os/Darwin)
+      if(EPICS_PCAS_ROOT)
+         set(EPICSV3_INCLUDES  ${EPICS_PCAS_ROOT}/include
+                               ${EPICSV3_BASE_DIR}/include
+                               ${EPICSV3_BASE_DIR}/include/compiler/gcc 
+                               ${EPICSV3_BASE_DIR}/include/os/Darwin)
 
-      set(EPICSV3_LIBRARIES ${EPICSV3_LIB_DIR}/libcas.dylib 
-                            ${EPICSV3_LIB_DIR}/libca.dylib 
-                            ${EPICSV3_LIB_DIR}/libCom.dylib 
-                            ${EPICSV3_LIB_DIR}/libgdd.dylib)
+         set(EPICSV3_LIBRARIES ${EPICS_PCAS_ROOT}/lib/${EPICSV3_ARCH}/libcas.dylib 
+                               ${EPICS_PCAS_ROOT}/lib/${EPICSV3_ARCH}/libgdd.dylib
+                               ${EPICSV3_LIB_DIR}/libca.dylib 
+                               ${EPICSV3_LIB_DIR}/libCom.dylib )
+      else()
+         set(EPICSV3_INCLUDES  ${EPICSV3_BASE_DIR}/include
+                               ${EPICSV3_BASE_DIR}/include/compiler/gcc 
+                               ${EPICSV3_BASE_DIR}/include/os/Darwin)
+
+         set(EPICSV3_LIBRARIES ${EPICSV3_LIB_DIR}/libcas.dylib 
+                               ${EPICSV3_LIB_DIR}/libca.dylib
+                               ${EPICSV3_LIB_DIR}/libCom.dylib
+                               ${EPICSV3_LIB_DIR}/libgdd.dylib )
+      endif()
    else()
 
-      set(EPICSV3_INCLUDES  ${EPICSV3_BASE_DIR}/include
-                            ${EPICSV3_BASE_DIR}/include/compiler/gcc 
-                            ${EPICSV3_BASE_DIR}/include/os/Linux)
+      if(EPICS_PCAS_ROOT)
+         set(EPICSV3_INCLUDES  ${EPICS_PCAS_ROOT}/include
+                               ${EPICSV3_BASE_DIR}/include
+                               ${EPICSV3_BASE_DIR}/include/compiler/gcc 
+                               ${EPICSV3_BASE_DIR}/include/os/Linux)
 
-      set(EPICSV3_LIBRARIES ${EPICSV3_LIB_DIR}/libcas.so 
-                            ${EPICSV3_LIB_DIR}/libca.so 
-                            ${EPICSV3_LIB_DIR}/libCom.so 
-                            ${EPICSV3_LIB_DIR}/libgdd.so )
+         set(EPICSV3_LIBRARIES ${EPICS_PCAS_ROOT}/lib/${EPICSV3_ARCH}/libcas.so 
+                               ${EPICS_PCAS_ROOT}/lib/${EPICSV3_ARCH}/libgdd.so
+                               ${EPICSV3_LIB_DIR}/libca.so 
+                               ${EPICSV3_LIB_DIR}/libCom.so )
+      else()
+         set(EPICSV3_INCLUDES  ${EPICSV3_BASE_DIR}/include
+                               ${EPICSV3_BASE_DIR}/include/compiler/gcc 
+                               ${EPICSV3_BASE_DIR}/include/os/Linux)
+
+         set(EPICSV3_LIBRARIES ${EPICSV3_LIB_DIR}/libcas.so 
+                               ${EPICSV3_LIB_DIR}/libca.so
+                               ${EPICSV3_LIB_DIR}/libCom.so
+                               ${EPICSV3_LIB_DIR}/libgdd.so )
+      endif()
    endif()
 else()
    set(DO_EPICS_V3 0)
@@ -167,7 +193,7 @@ endif()
 find_package(Git QUIET)
 if (GIT_FOUND)
    execute_process (
-      COMMAND ${GIT_EXECUTABLE} --git-dir=${CMAKE_SOURCE_DIR}/.git  describe --tags --dirty
+      COMMAND ${GIT_EXECUTABLE} --git-dir=${CMAKE_SOURCE_DIR}/.git --work-tree=${CMAKE_SOURCE_DIR} describe --tags --dirty
       OUTPUT_VARIABLE ROGUE_VERSION
       OUTPUT_STRIP_TRAILING_WHITESPACE)
 
@@ -381,7 +407,10 @@ endif()
 message("")
 
 if (DO_EPICS_V3)
-   message("-- Found EPICS V3: ${EPICSV3_BASE_DIR}")
+   message("-- Found EPICS: ${EPICSV3_BASE_DIR}")
+   if (EPICS_PCAS_ROOT)
+      message("-- EPICS_PCAS_ROOT: ${EPICS_PCAS_ROOT}")
+   endif()
 else()
    message("-- EPICS V3 not included!")
 endif()
