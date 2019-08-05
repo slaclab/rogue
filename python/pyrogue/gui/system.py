@@ -31,19 +31,20 @@ import datetime
 
 class DataLink(QObject):
 
-    updateDataFile   = pyqtSignal(str)
-    updateOpenState  = pyqtSignal(str)
-    updateBufferSize = pyqtSignal(str)
-    updateMaxSize    = pyqtSignal(str)
-    updateFileSize   = pyqtSignal(str)
-    updateFrameCount = pyqtSignal(str)
+    updateDataFile    = pyqtSignal(str)
+    updateOpenState   = pyqtSignal(str)
+    updateBufferSize  = pyqtSignal(str)
+    updateMaxSize     = pyqtSignal(str)
+    updateTotalSize   = pyqtSignal(str)
+    updateCurrentSize = pyqtSignal(str)
+    updateFrameCount  = pyqtSignal(str)
 
     def __init__(self,*,layout,writer):
         QObject.__init__(self)
         self.writer = writer
         self.block = False
 
-        gb = QGroupBox('Data File Control (%s)' % (writer.name))
+        gb = QGroupBox('Data File Control (%s) ' % (writer.name))
         layout.addWidget(gb)
 
         vb = QVBoxLayout()
@@ -55,26 +56,18 @@ class DataLink(QObject):
         fl.setLabelAlignment(Qt.AlignRight)
         vb.addLayout(fl)
 
-        self.writer.dataFile.addListener(self.varListener)
         self.dataFile = QLineEdit()
         self.dataFile.setText(self.writer.dataFile.valueDisp())
         self.dataFile.textEdited.connect(self.dataFileEdited)
         self.dataFile.returnPressed.connect(self.dataFileChanged)
 
         self.updateDataFile.connect(self.dataFile.setText)
+        self.writer.dataFile.addListener(self.varListener)
 
         fl.addRow('Data File:',self.dataFile)
 
         hb = QHBoxLayout()
         vb.addLayout(hb)
-
-        pb = QPushButton('Open')
-        pb.clicked.connect(self.open)
-        hb.addWidget(pb)
-
-        pb = QPushButton('Close')
-        pb.clicked.connect(self.close)
-        hb.addWidget(pb)
 
         pb = QPushButton('Browse')
         pb.clicked.connect(self.browse)
@@ -84,64 +77,78 @@ class DataLink(QObject):
         pb.clicked.connect(self.genName)
         hb.addWidget(pb)
 
+        pb = QPushButton('Open')
+        pb.clicked.connect(self.open)
+        hb.addWidget(pb)
+
+        pb = QPushButton('Close')
+        pb.clicked.connect(self.close)
+        hb.addWidget(pb)
+
+        hb = QHBoxLayout()
+        vb.addLayout(hb)
+
+        vbl = QVBoxLayout()
+        hb.addLayout(vbl)
+
         fl = QFormLayout()
         fl.setRowWrapPolicy(QFormLayout.DontWrapRows)
         fl.setFormAlignment(Qt.AlignHCenter | Qt.AlignTop)
         fl.setLabelAlignment(Qt.AlignRight)
-        vb.addLayout(fl)
-
-        self.writer.isOpen.addListener(self)
-        self.openState = QLineEdit()
-        self.openState.setText(self.writer.isOpen.valueDisp())
-        self.openState.setReadOnly(True)
-
-        self.updateOpenState.connect(self.openState.setText)
-
-        fl.addRow('File Open:',self.openState)
+        vbl.addLayout(fl)
 
         self.writer.bufferSize.addListener(self.varListener)
         self.bufferSize = QLineEdit()
         self.bufferSize.setText(self.writer.bufferSize.valueDisp())
         self.bufferSize.textEdited.connect(self.bufferSizeEdited)
         self.bufferSize.returnPressed.connect(self.bufferSizeChanged)
-
         self.updateBufferSize.connect(self.bufferSize.setText)
-
         fl.addRow('Buffer Size:',self.bufferSize)
 
-        self.writer.fileSize.addListener(self.varListener)
-        self.totSize = QLineEdit()
-        self.totSize.setText(self.writer.fileSize.valueDisp())
-        self.totSize.setReadOnly(True)
+        self.writer.isOpen.addListener(self.varListener)
+        self.openState = QLineEdit()
+        self.openState.setText(self.writer.isOpen.valueDisp())
+        self.openState.setReadOnly(True)
+        self.updateOpenState.connect(self.openState.setText)
+        fl.addRow('File Open:',self.openState)
 
-        self.updateFileSize.connect(self.totSize.setText)
+        self.writer.currentSize.addListener(self.varListener)
+        self.curSize = QLineEdit()
+        self.curSize.setText(self.writer.currentSize.valueDisp())
+        self.curSize.setReadOnly(True)
+        self.updateCurrentSize.connect(self.curSize.setText)
+        fl.addRow('Current File Size:',self.curSize)
 
-        fl.addRow('Total File Size:',self.totSize)
+        vbr = QVBoxLayout()
+        hb.addLayout(vbr)
 
         fl = QFormLayout()
         fl.setRowWrapPolicy(QFormLayout.DontWrapRows)
         fl.setFormAlignment(Qt.AlignHCenter | Qt.AlignTop)
         fl.setLabelAlignment(Qt.AlignRight)
-        hb.addLayout(fl)
+        vbr.addLayout(fl)
 
         self.writer.maxFileSize.addListener(self.varListener)
         self.maxSize = QLineEdit()
         self.maxSize.setText(self.writer.maxFileSize.valueDisp())
         self.maxSize.textEdited.connect(self.maxSizeEdited)
         self.maxSize.returnPressed.connect(self.maxSizeChanged)
-
         self.updateMaxSize.connect(self.maxSize.setText)
-
         fl.addRow('Max Size:',self.maxSize)
 
         self.writer.frameCount.addListener(self.varListener)
         self.frameCount = QLineEdit()
         self.frameCount.setText(self.writer.frameCount.valueDisp())
         self.frameCount.setReadOnly(True)
-
         self.updateFrameCount.connect(self.frameCount.setText)
-
         fl.addRow('Frame Count:',self.frameCount)
+
+        self.writer.totalSize.addListener(self.varListener)
+        self.totSize = QLineEdit()
+        self.totSize.setText(self.writer.totalSize.valueDisp())
+        self.totSize.setReadOnly(True)
+        self.updateTotalSize.connect(self.totSize.setText)
+        fl.addRow('Total File Size:',self.totSize)
 
     @pyqtSlot()
     def browse(self):
@@ -178,8 +185,11 @@ class DataLink(QObject):
         elif name == 'maxFileSize':
             self.updateMaxSize.emit(value.valueDisp)
 
-        elif name == 'fileSize':
-            self.updateFileSize.emit(value.valueDisp)
+        elif name == 'totalSize':
+            self.updateTotalSize.emit(value.valueDisp)
+
+        elif name == 'currentSize':
+            self.updateCurrentSize.emit(value.valueDisp)
 
         elif name == 'frameCount':
             self.updateFrameCount.emit(value.valueDisp)

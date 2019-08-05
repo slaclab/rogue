@@ -149,7 +149,10 @@ namespace rogue {
                std::shared_ptr<rogue::utilities::fileio::StreamWriterChannel> getChannel(uint8_t channel);
 
                //! Get total file size
-               uint64_t getSize();
+               uint64_t getTotalSize();
+
+               //! Get current file size
+               uint64_t getCurrentSize();
 
                //! Get current frame count
                uint32_t getFrameCount();

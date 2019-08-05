@@ -73,7 +73,8 @@ void ruf::StreamWriter::setup_python() {
       .def("setMaxSize",     &ruf::StreamWriter::setMaxSize)
       .def("setDropErrors",  &ruf::StreamWriter::setDropErrors)
       .def("getChannel",     &ruf::StreamWriter::getChannel)
-      .def("getSize",        &ruf::StreamWriter::getSize)
+      .def("getTotalSize",   &ruf::StreamWriter::getTotalSize)
+      .def("getCurrentSize", &ruf::StreamWriter::getCurrentSize)
       .def("getFrameCount",  &ruf::StreamWriter::getFrameCount)
       .def("waitFrameCount", &ruf::StreamWriter::waitFrameCount)
    ;
@@ -196,10 +197,17 @@ ruf::StreamWriterChannelPtr ruf::StreamWriter::getChannel(uint8_t channel) {
 }
 
 //! Get total file size
-uint64_t ruf::StreamWriter::getSize() {
+uint64_t ruf::StreamWriter::getTotalSize() {
    rogue::GilRelease noGil;
    std::lock_guard<std::mutex> lock(mtx_);
    return(totSize_ + currBuffer_);
+}
+
+//! Get current file size
+uint64_t ruf::StreamWriter::getCurrentSize() {
+   rogue::GilRelease noGil;
+   std::lock_guard<std::mutex> lock(mtx_);
+   return(currSize_ + currBuffer_);
 }
 
 //! Get current frame count

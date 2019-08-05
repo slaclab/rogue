@@ -58,8 +58,11 @@ class StreamWriter(pyrogue.DataWriter):
     def _setMaxFileSize(self,dev,var,value):
         self._writer.setMaxSize(value)
 
-    def _getFileSize(self,dev,var):
-        return self._writer.getSize()
+    def _getCurrentSize(self,dev,var):
+        return self._writer.getCurrentSize()
+
+    def _getTotalSize(self,dev,var):
+        return self._writer.getTotalSize()
 
     def _getFrameCount(self,dev,var):
         return self._writer.getFrameCount()
