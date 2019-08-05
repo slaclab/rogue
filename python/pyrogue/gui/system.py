@@ -56,13 +56,12 @@ class DataLink(QObject):
         fl.setLabelAlignment(Qt.AlignRight)
         vb.addLayout(fl)
 
+        self.writer.dataFile.addListener(self.varListener)
         self.dataFile = QLineEdit()
         self.dataFile.setText(self.writer.dataFile.valueDisp())
         self.dataFile.textEdited.connect(self.dataFileEdited)
         self.dataFile.returnPressed.connect(self.dataFileChanged)
-
         self.updateDataFile.connect(self.dataFile.setText)
-        self.writer.dataFile.addListener(self.varListener)
 
         fl.addRow('Data File:',self.dataFile)
 
