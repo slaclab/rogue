@@ -77,11 +77,11 @@ class DataLink(QObject):
         hb.addWidget(pb)
 
         pb = QPushButton('Browse')
-        pb.clicked.connect(self._browse)
+        pb.clicked.connect(self.browse)
         hb.addWidget(pb)
 
         pb = QPushButton('Auto Name')
-        pb.clicked.connect(self._genName)
+        pb.clicked.connect(self.genName)
         hb.addWidget(pb)
 
         fl = QFormLayout()
@@ -143,7 +143,8 @@ class DataLink(QObject):
 
         fl.addRow('Frame Count:',self.frameCount)
 
-    def _browse(self):
+    @pyqtSlot()
+    def browse(self):
         dlg = QFileDialog()
         sug = datetime.datetime.now().strftime("data_%Y%m%d_%H%M%S.dat") 
 
@@ -156,7 +157,7 @@ class DataLink(QObject):
         if dataFile != '':
             self.writer.dataFile.setDisp(dataFile)
     
-    def _genName(self):
+    def genName(self):
         self.writer.autoName()
         pass
 
@@ -169,7 +170,7 @@ class DataLink(QObject):
             self.updateDataFile.emit(value.valueDisp)
 
         elif name == 'isOpen':
-            self.updateOpenState.emit(disp)
+            self.updateOpenState.emit(value.valueDisp)
 
         elif name == 'bufferSize':
             self.updateBufferSize.emit(value.valueDisp)
