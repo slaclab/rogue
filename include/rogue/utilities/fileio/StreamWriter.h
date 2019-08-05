@@ -128,6 +128,9 @@ namespace rogue {
                //! Close a data file
                void close();
 
+               //! Get open status
+               bool isOpen();
+
                //! Set buffering size, 0 to disable
                void setBufferSize(uint32_t size);
 

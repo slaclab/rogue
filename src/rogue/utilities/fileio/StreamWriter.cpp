@@ -67,6 +67,7 @@ void ruf::StreamWriter::setup_python() {
    bp::class_<ruf::StreamWriter, ruf::StreamWriterPtr, boost::noncopyable >("StreamWriter",bp::init<>())
       .def("open",           &ruf::StreamWriter::open)
       .def("close",          &ruf::StreamWriter::close)
+      .def("isOpen",         &ruf::StreamWriter::isOpen)
       .def("setBufferSize",  &ruf::StreamWriter::setBufferSize)
       .def("setMaxSize",     &ruf::StreamWriter::setMaxSize)
       .def("setDropErrors",  &ruf::StreamWriter::setDropErrors)
@@ -101,6 +102,14 @@ ruf::StreamWriter::~StreamWriter() {
 void ruf::StreamWriter::open(std::string file) {
    std::string name;
 
+   rogue::GilRelease noGil;
+   std::lock_guard<std::mutex> lock(mtx_);
+   flush();
+
+   // Close if open
+   if ( fd_ >= 0 ) ::close(fd_);
+   fd_ = -1;
+
    baseName_ = file;
    name   = file;
    fdIdx_ = 1;
@@ -128,6 +137,11 @@ void ruf::StreamWriter::close() {
    flush();
    if ( fd_ >= 0 ) ::close(fd_);
    fd_ = -1;
+}
+
+//! Get open status
+bool ruf::StreamWriter::isOpen() {
+   return ( fd_ >= 0 );
 }
 
 //! Set buffering size, 0 to disable

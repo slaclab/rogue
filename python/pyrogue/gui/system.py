@@ -32,7 +32,7 @@ import datetime
 class DataLink(QObject):
 
     updateDataFile   = pyqtSignal(str)
-    updateOpenState  = pyqtSignal(int)
+    updateOpenState  = pyqtSignal(str)
     updateBufferSize = pyqtSignal(str)
     updateMaxSize    = pyqtSignal(str)
     updateFileSize   = pyqtSignal(str)
@@ -43,7 +43,7 @@ class DataLink(QObject):
         self.writer = writer
         self.block = False
 
-        gb = QGroupBox('Data File Control (%s)' % (writer.name))
+        gb = QGroupBox('Data File Control (%s) ' % (writer.name))
         layout.addWidget(gb)
 
         vb = QVBoxLayout()
@@ -68,20 +68,34 @@ class DataLink(QObject):
         hb = QHBoxLayout()
         vb.addLayout(hb)
 
+        pb = QPushButton('Open')
+        pb.clicked.connect(self.open)
+        hb.addWidget(pb)
+
+        pb = QPushButton('Close')
+        pb.clicked.connect(self.close)
+        hb.addWidget(pb)
+
+        pb = QPushButton('Browse')
+        pb.clicked.connect(self._browse)
+        hb.addWidget(pb)
+
+        pb = QPushButton('Auto Name')
+        pb.clicked.connect(self._genName)
+        hb.addWidget(pb)
+
         fl = QFormLayout()
         fl.setRowWrapPolicy(QFormLayout.DontWrapRows)
         fl.setFormAlignment(Qt.AlignHCenter | Qt.AlignTop)
         fl.setLabelAlignment(Qt.AlignRight)
-        hb.addLayout(fl)
+        vb.addLayout(fl)
 
-        self.writer.open.addListener(self)
-        self.openState = QComboBox()
-        self.openState.addItem('False')
-        self.openState.addItem('True')
-        self.openState.setCurrentIndex(0)
-        self.openState.activated.connect(self.openStateChanged)
+        self.writer.isOpen.addListener(self)
+        self.openState = QLineEdit()
+        self.openState.setText(self.writer.isOpen.valueDisp())
+        self.openState.setReadOnly(True)
 
-        self.updateOpenState.connect(self.openState.setCurrentIndex)
+        self.updateOpenState.connect(self.openState.setText)
 
         fl.addRow('File Open:',self.openState)
 
@@ -109,13 +123,6 @@ class DataLink(QObject):
         fl.setFormAlignment(Qt.AlignHCenter | Qt.AlignTop)
         fl.setLabelAlignment(Qt.AlignRight)
         hb.addLayout(fl)
-
-        pb1 = QPushButton('Browse')
-        pb1.clicked.connect(self._browse)
-
-        pb2 = QPushButton('Auto Name')
-        pb2.clicked.connect(self._genName)
-        fl.addRow(pb1,pb2)
 
         self.writer.maxFileSize.addListener(self)
         self.maxSize = QLineEdit()
@@ -161,8 +168,8 @@ class DataLink(QObject):
         if name == 'dataFile':
             self.updateDataFile.emit(disp)
 
-        elif name == 'open':
-            self.updateOpenState.emit(self.openState.findText(disp))
+        elif name == 'isOpen':
+            self.updateOpenState.emit(disp)
 
         elif name == 'bufferSize':
             self.updateBufferSize.emit(disp)
@@ -192,11 +199,13 @@ class DataLink(QObject):
         self.writer.dataFile.setDisp(self.dataFile.text())
         self.block = False
 
-    @pyqtSlot(int)
-    def openStateChanged(self,value):
-        self.block = True
-        self.writer.open.setDisp(self.openState.itemText(value))
-        self.block = False
+    @pyqtSlot()
+    def open(self):
+        self.writer.open()
+
+    @pyqtSlot()
+    def close(self):
+        self.writer.close()
 
     @pyqtSlot()
     def bufferSizeEdited(self):

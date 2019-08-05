@@ -15,6 +15,7 @@
 #-----------------------------------------------------------------------------
 import pyrogue
 import pyrogue.interfaces.simulation
+import pyrogue.utilities.fileio
 import rogue.interfaces.stream
 import test_device
 import time
@@ -31,6 +32,9 @@ class DummyTree(pyrogue.Root):
         
         # Add Device
         self.add(test_device.AxiVersion(memBase=sim,offset=0x0))
+
+        # Add Data Writer
+        self.add(pyrogue.utilities.fileio.StreamWriter())
 
         # Start the tree with pyrogue server, internal nameserver, default interface
         # Set pyroHost to the address of a network interface to specify which nework to run on
