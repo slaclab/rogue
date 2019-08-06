@@ -91,7 +91,7 @@ class Node(object):
     attribute. This allows tree browsing using: node1.node2.node3
     """
 
-    def __init__(self, *, name, description="", expand=True, hidden=None, visibility=10):
+    def __init__(self, *, name, description="", expand=True, hidden=None, visibility=25):
         """Init the node with passed attributes"""
 
         # Public attributes
@@ -121,17 +121,25 @@ class Node(object):
     def description(self):
         return self._description
 
+    @property
+    def hidden(self):
+        self._log.warning("The hidden attribute is deprecated. Please use the visibility level instead.")
+        return (self.visibility > 0)
+
     @hidden.setter
     def hidden(self, value):
         if hidden is True:
             self._visibility = 0
         else:
-            self._visibility = 10
-        self._log.warning("The hidden method is deprecated. Please use the visibility level instead.")
+            self._visibility = 25
+        self._log.warning("The hidden attribute is deprecated. Please use the visibility level instead.")
 
     @property
     def visibility(self):
-        return self._visibility
+        if self.parent != self:
+            return min([self.parent.visibility, self._visibility])
+        else:
+            return self._visibility
 
     @visibility.setter
     def visibility(self, value):
@@ -240,7 +248,7 @@ class Node(object):
         """
         return([k for k,v in self._nodes.items()])
 
-    def getNodes(self,typ,exc=None,minVisbility=0):
+    def getNodes(self,typ,exc=None,minVisibility=0):
         """
         Get a filtered ordered dictionary of nodes.
         pass a class type to receive a certain type of node

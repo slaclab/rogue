@@ -31,6 +31,7 @@ class EnableVariable(pr.BaseVariable):
             name='enable',
             mode='RW',
             value=enabled, 
+            visibility=50,
             disp={False: 'False', True: 'True', 'parent': 'ParentFalse', 'deps': 'ExtDepFalse'})
 
         if deps is None:
@@ -118,7 +119,7 @@ class Device(pr.Node,rim.Hub):
                  offset=0,
                  size=0,
                  hidden=False,
-                 visibility=10,
+                 visibility=75,
                  blockSize=None,
                  expand=False,
                  enabled=True,
@@ -202,9 +203,9 @@ class Device(pr.Node,rim.Hub):
         if pack:
             visibility=0
         else:
-            visibility = kwargs.pop('visibility', 10)
+            visibility = kwargs.pop('visibility', 25)
 
-            if 'hidden' in kwargs and hidden is True:
+            if kwargs.pop('hidden', False):
                 visibility = 0
                 self._log.warning("Hidden attribute is deprecated. Please use visibility")
 
@@ -254,7 +255,7 @@ class Device(pr.Node,rim.Hub):
     def hideVariables(self, hidden, variables=None):
         """Hide a list of Variables (or Variable names)"""
         self._log.warning("hideVariables is now deprecated. Please use setVariableVisibility")
-        self.setVariableVisibility((1 if hidden else 0), vis,variables)
+        self.setVariableVisibility((0 if hidden else 25),variables)
 
     def initialize(self):
         for key,value in self.devices.items():

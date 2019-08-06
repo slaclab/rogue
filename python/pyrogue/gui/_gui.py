@@ -40,16 +40,16 @@ def application(argv):
 
 class GuiTop(QWidget):
 
-    newRoot = pyqtSignal(pyrogue.Root)
-    newVirt = pyqtSignal(pyrogue.VirtualNode)
+    newRoot = pyqtSignal(pyrogue.Root,int)
+    newVirt = pyqtSignal(pyrogue.VirtualNode,int)
 
-    def __init__(self,*, parent=None, minVisibility=10, group=None):
+    def __init__(self,*, parent=None, minVisibility=25, group=None):
         super(GuiTop,self).__init__(parent)
 
         if group is not None:
             print("The GuiTop group attribute is now deprecated. Please remove it.")
 
-        self.minVisibility=minVisibility
+        self._minVisibility=minVisibility
 
         vb = QVBoxLayout()
         self.setLayout(vb)
@@ -79,13 +79,13 @@ class GuiTop(QWidget):
             raise Exception("GUI can not be attached to a tree which is not started")
 
         if isinstance(root,pyrogue.VirtualNode):
-            self.newVirt.emit(root)
+            self.newVirt.emit(root,self._minVisibility)
         else:
-            self.newRoot.emit(root)
+            self.newRoot.emit(root,self._minVisibility)
 
-    @pyqtSlot(pyrogue.Root)
-    @pyqtSlot(pyrogue.VirtualNode)
-    def _addTree(self,root):
+    @pyqtSlot(pyrogue.Root,int)
+    @pyqtSlot(pyrogue.VirtualNode,int)
+    def _addTree(self,root,minVisibility):
         self.sys = pyrogue.gui.system.SystemWidget(root=root,parent=self.tab)
         self.tab.addTab(self.sys,root.name)
         self.adjustSize()

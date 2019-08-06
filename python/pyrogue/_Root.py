@@ -93,7 +93,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         self._updateThread = None
 
         # Init 
-        pr.Device.__init__(self, name=name, description=description, expand=expand)
+        pr.Device.__init__(self, name=name, description=description, expand=expand, visibility=100)
 
         # Variables
         self.add(pr.LocalVariable(name='SystemLog', value='', mode='RO', visibility=0,
@@ -105,7 +105,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         self.add(pr.LocalVariable(name='InitAfterConfig', value=False, mode='RW', visibility=0,
             description='Configuration Flag To Execute Initialize after LoadConfig or setYaml'))
 
-        self.add(pr.LocalVariable(name='Time', value=0.0, mode='RO', visibility=0,visibility=50,
+        self.add(pr.LocalVariable(name='Time', value=0.0, mode='RO', visibility=0,
                  localGet=lambda: time.time(), pollInterval=1.0, description='Current Time In Seconds Since EPOCH UTC'))
 
         self.add(pr.LocalVariable(name='LocalTime', value='', mode='RO',visibility=50,
