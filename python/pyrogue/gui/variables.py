@@ -176,7 +176,7 @@ class VariableLink(QObject):
 
     def infoDialog(self):
 
-        attrs = ['name', 'path', 'description', 'hidden', 'expand', 'enum', 
+        attrs = ['name', 'path', 'description', 'hidden', 'enum', 
                  'typeStr', 'disp', 'precision', 'mode', 'units', 'minimum', 
                  'maximum', 'lowWarning', 'lowAlarm', 'highWarning', 
                  'highAlarm', 'alarmStatus', 'alarmSeverity', 'pollInterval']
