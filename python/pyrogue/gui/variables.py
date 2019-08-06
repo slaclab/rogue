@@ -119,7 +119,7 @@ class VariableLink(QObject):
             self._widget.setMaximum(self._variable.maximum)
             self._widget.valueChanged.connect(self.sbChanged)
 
-            #self.updateGui.connect(self._widget.setValue)
+            self.updateGui.connect(self._widget.setValue)
 
         else:
             self._widget = QLineEdit()
