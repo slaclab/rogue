@@ -257,7 +257,7 @@ class Node(object):
         """
         return odict([(k,n) for k,n in self._nodes.items() if (n._isinstance(typ) and \
                 ((exc is None) or (not n._isinstance(exc))) and \
-                ((minVisibility > 0) and (n.visibility >= minVisibility)))])
+                ((minVisibility == 0) or (n.visibility >= minVisibility)))])
 
     @property
     def nodes(self):
