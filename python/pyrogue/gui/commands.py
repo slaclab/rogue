@@ -115,7 +115,6 @@ class CommandLink(QObject):
 
             self._tree.setItemWidget(self._item,3,self._widget)
 
-
     @pyqtSlot()
     def execPressed(self):
         if self._widget is not None:
