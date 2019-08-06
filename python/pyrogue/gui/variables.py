@@ -101,7 +101,7 @@ class VariableLink(QObject):
 
         if self._variable.disp == 'enum' and self._variable.enum is not None and self._variable.mode != 'RO':
             self._widget = QComboBox()
-            self._widget.activated.connect(self.guiChanged)
+            self._widget.activated.connect(self.cbChanged)
 
             self.updateGui.connect(self._widget.setCurrentIndex)
 
@@ -113,7 +113,7 @@ class VariableLink(QObject):
             self._widget = QSpinBox();
             self._widget.setMinimum(self._variable.minimum)
             self._widget.setMaximum(self._variable.maximum)
-            self._widget.valueChanged.connect(self.guiChanged)
+            self._widget.valueChanged.connect(self.sbChanged)
 
             self.updateGui.connect(self._widget.setValue)
 
@@ -187,7 +187,7 @@ class VariableLink(QObject):
                     self.updateGui.emit(i)
             elif isinstance(self._widget, QSpinBox):
                 if self._widget.value != value.value:
-                    self.updateGui.emit(value)
+                    self.updateGui.emit(value.value)
             else:
                 if self._widget.text() != value.valueDisp:
                     self.updateGui[str].emit(value.valueDisp)
@@ -207,24 +207,27 @@ class VariableLink(QObject):
         p = QPalette()
         self._widget.setPalette(p)
 
-        self.guiChanged(self._widget.text())
+        self._variable.setDisp(self._widget.text())
         self._inEdit = False
         self.updateGui.emit(self._variable.valueDisp())
 
     @pyqtSlot(int)
-    @pyqtSlot(str)
-    def guiChanged(self, value):
+    def sbChanged(self, value):
         if self._swSet:
             return
 
-        if self._variable.disp == 'enum':
-            # For enums, value will be index of selected item
-            # Need to call itemText to convert to string
-            self._variable.setDisp(self._widget.itemText(value))
+        self._inEdit = True
+        self._variable.setDisp(value)
+        self._inEdit = False
 
-        else:
-            # For non enums, value will be string entered in box
-            self._variable.setDisp(value)
+    @pyqtSlot(int)
+    def cbChanged(self, value):
+        if self._swSet:
+            return
+        
+        self._inEdit = True
+        self._variable.setDisp(self._widget.itemText(value))
+        self._inEdit = False
 
 
 class VariableWidget(QWidget):
