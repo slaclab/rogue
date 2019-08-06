@@ -124,7 +124,7 @@ class Node(object):
     @property
     def hidden(self):
         self._log.warning("The hidden attribute is deprecated. Please use the visibility level instead.")
-        return (self.visibility > 0)
+        return (self.visibility == 0)
 
     @hidden.setter
     def hidden(self, value):
@@ -136,10 +136,10 @@ class Node(object):
 
     @property
     def visibility(self):
-        if self.parent != self:
-            return min([self.parent.visibility, self._visibility])
-        else:
+        if self._parent is None or self._parent == self:
             return self._visibility
+        else:
+            return min([self._parent.visibility, self._visibility])
 
     @visibility.setter
     def visibility(self, value):
@@ -255,8 +255,9 @@ class Node(object):
         class type may be a string when called over Pyro4
         exc is a class type to exclude, Only nodes with a visibility >= passed value are returned
         """
-        return odict([(k,n) for k,n in self._nodes.items() \
-            if (n._isinstance(typ) and ((exc is None) or (not n._isinstance(exc))) and (n.visibility >= minVisibility))])
+        return odict([(k,n) for k,n in self._nodes.items() if (n._isinstance(typ) and \
+                ((exc is None) or (not n._isinstance(exc))) and \
+                ((minVisibility > 0) and (n.visibility >= minVisibility)))])
 
     @property
     def nodes(self):
