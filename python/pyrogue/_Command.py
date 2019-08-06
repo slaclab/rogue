@@ -33,6 +33,7 @@ class BaseCommand(pr.BaseVariable):
                  value=0,
                  enum=None,
                  hidden=False,                 
+                 visibility=1,
                  minimum=None,
                  maximum=None,
                  function=None,
@@ -46,6 +47,7 @@ class BaseCommand(pr.BaseVariable):
             value=value,
             enum=enum,
             hidden=hidden,
+            visibility=visibility,
             minimum=minimum,
             maximum=maximum)
         
@@ -200,6 +202,7 @@ class RemoteCommand(BaseCommand, pr.RemoteVariable):
                  value=None,
                  enum=None,
                  hidden=False,
+                 visibility=1,
                  minimum=None,
                  maximum=None,
                  function=None,
@@ -223,6 +226,7 @@ class RemoteCommand(BaseCommand, pr.RemoteVariable):
             value=value,
             enum=enum,
             hidden=hidden,
+            visibility=visibility,
             minimum=minimum,
             maximum=maximum,
             base=base,

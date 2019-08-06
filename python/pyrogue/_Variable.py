@@ -46,6 +46,7 @@ class BaseVariable(pr.Node):
                  enum=None,
                  units=None,
                  hidden=False,
+                 visibility=1,
                  minimum=None,
                  maximum=None,
                  pollInterval=0,
@@ -102,7 +103,7 @@ class BaseVariable(pr.Node):
             raise VariableError(f'Invalid variable mode {self._mode}. Supported: RW, RO, WO')
 
         # Call super constructor
-        pr.Node.__init__(self, name=name, description=description, hidden=hidden)
+        pr.Node.__init__(self, name=name, description=description, hidden=hidden, visibility=visibility)
 
     @pr.expose
     @property
@@ -361,6 +362,7 @@ class RemoteVariable(BaseVariable):
                  enum=None,
                  units=None,
                  hidden=False,
+                 visibility=1,
                  minimum=None,
                  maximum=None,
                  base=pr.UInt,                                 
@@ -376,7 +378,7 @@ class RemoteVariable(BaseVariable):
 
         BaseVariable.__init__(self, name=name, description=description, 
                               mode=mode, value=value, disp=disp, 
-                              enum=enum, units=units, hidden=hidden,
+                              enum=enum, units=units, hidden=hidden, visibility=visibility, 
                               minimum=minimum, maximum=maximum,
                               pollInterval=pollInterval)
 
@@ -491,6 +493,7 @@ class LocalVariable(BaseVariable):
                  enum=None,
                  units=None,
                  hidden=False,
+                 visibility=1,
                  minimum=None,
                  maximum=None,
                  localSet=None,
@@ -503,7 +506,7 @@ class LocalVariable(BaseVariable):
 
         BaseVariable.__init__(self, name=name, description=description, 
                               mode=mode, value=value, disp=disp, 
-                              enum=enum, units=units, hidden=hidden,
+                              enum=enum, units=units, hidden=hidden, visibility=visibility,
                               minimum=minimum, maximum=maximum, typeStr=typeStr,
                               pollInterval=pollInterval)
 

@@ -65,12 +65,12 @@ class VariableDev(QObject):
     def setup(self,noExpand):
 
         # First create variables
-        for key,val in self._dev.visableVariables.items():
+        for key,val in self._dev.visibleVariables(self._parent.minVisibility).items():
             self._children.append(VariableLink(tree=self._tree,parent=self._widget,variable=val))
             QCoreApplication.processEvents()
 
         # Then create devices
-        for key,val in self._dev.visableDevices.items():
+        for key,val in self._dev.visibleDevices(self._parent.minVisibility).items():
             self._children.append(VariableDev(tree=self._tree,parent=self._widget,dev=val,noExpand=noExpand,top=False))
 
         for i in range(0,4):
@@ -292,9 +292,13 @@ class VariableWidget(QWidget):
 
     @pyqtSlot(pyrogue.Root)
     @pyqtSlot(pyrogue.VirtualNode)
-    def addTree(self,root):
+    def addTree(self,root,visibility):
         self.roots.append(root)
-        self._children.append(VariableDev(tree=self.tree,parent=self.tree,dev=root,noExpand=False,top=True))
+        self._children.append(VariableDev(tree=self.tree,
+                                          parent=self.tree,
+                                          dev=root,
+                                          noExpand=False,
+                                          top=True)
 
     @pyqtSlot()
     def readPressed(self):
