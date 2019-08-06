@@ -45,7 +45,7 @@ class EpicsCaServer(object):
 
         # Create PVs
         for v in self._root.variableList:
-            self._addPv(v,doAll)
+            self._addPv(v,doAll,minVisibility)
 
     def createSlave(self, name, maxSize, type):
         slave = rogue.protocols.epicsV3.Slave(self._base + ':' + name,maxSize,type)
@@ -70,12 +70,13 @@ class EpicsCaServer(object):
         for k,v in self._pvMap.items():
             print("{} -> {}".format(v,k))
 
-    def _addPv(self,node,doAll):
+    def _addPv(self,node,doAll,minVisibility):
         eName = self._base + ':'
 
         if doAll:
-            eName += node.path.replace('.',':')
-            self._pvMap[node.path] = eName
+            if node.visibility >= minVisibility:
+                eName += node.path.replace('.',':')
+                self._pvMap[node.path] = eName
         elif node.path in self._pvMap:
             eName = self._pvMap[node.path]
         else:
