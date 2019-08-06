@@ -445,7 +445,11 @@ class RemoteVariable(BaseVariable):
                  hidden=False,
                  minimum=None,
                  maximum=None,
-                 base=pr.UInt,                                 
+                 lowWarning=None,
+                 lowAlarm=None,
+                 highWarning=None,
+                 highAlarm=None,
+                 base=pr.UInt,
                  offset=None,
                  bitSize=32,
                  bitOffset=0,
@@ -460,6 +464,8 @@ class RemoteVariable(BaseVariable):
                               mode=mode, value=value, disp=disp, 
                               enum=enum, units=units, hidden=hidden,
                               minimum=minimum, maximum=maximum,
+                              lowWarning=lowWarning, lowAlarm=lowAlarm,
+                              highWarning=highWarning, highAlarm=highAlarm,
                               pollInterval=pollInterval)
 
         self._base     = base        
@@ -575,6 +581,10 @@ class LocalVariable(BaseVariable):
                  hidden=False,
                  minimum=None,
                  maximum=None,
+                 lowWarning=None,
+                 lowAlarm=None,
+                 highWarning=None,
+                 highAlarm=None,
                  localSet=None,
                  localGet=None,
                  typeStr='Unknown',
@@ -587,6 +597,8 @@ class LocalVariable(BaseVariable):
                               mode=mode, value=value, disp=disp, 
                               enum=enum, units=units, hidden=hidden,
                               minimum=minimum, maximum=maximum, typeStr=typeStr,
+                              lowWarning=lowWarning, lowAlarm=lowAlarm,
+                              highWarning=highWarning, highAlarm=highAlarm,
                               pollInterval=pollInterval)
 
         self._block = pr.LocalBlock(variable=self,localSet=localSet,localGet=localGet,value=self._default)
