@@ -20,6 +20,7 @@ import parse
 import math
 import inspect
 import threading
+import re
 from collections import Iterable
 
 class VariableError(Exception):
@@ -34,7 +35,7 @@ class VariableValue(object):
         self.disp      = var.disp
         self.enum      = var.enum
 
-        self.status, self.severity = var._alarmStatus(self.value)
+        self.status, self.severity = var._alarmState(self.value)
 
 class BaseVariable(pr.Node):
 
@@ -138,8 +139,10 @@ class BaseVariable(pr.Node):
     def precision(self):
         res = re.search(r':([0-9])\.([0-9]*)f',self._disp) 
         try:
+            print("Returning {}".format(res[2]))
             return res[2]
         except:
+            print("Returning 3")
             return 3
 
     @pr.expose

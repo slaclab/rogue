@@ -199,7 +199,11 @@ rpe::Variable::Variable (std::string epicsName, bp::object p, bool syncRead) : V
          lowWarning_->putConvert(lw);
       }
 
-      precision_->putConvert(bp::extract<uint32_t>(var_.attr("precision")));
+      bp::extract<uint32_t> pr(var_.attr("precision"));
+      if (pr.check()) {
+         precision_ = new gddScalar(gddAppType_value, aitEnumInt32);
+         precision_->putConvert(pr);
+      }
    }
 
    // Extract enums
