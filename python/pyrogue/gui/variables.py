@@ -190,11 +190,18 @@ class VariableLink(QObject):
         msgBox.setWindowTitle("Variable Information For {}".format(self._variable.name))
         msgBox.setMinimumWidth(400)
 
+        vb = QVBoxLayout()
+        msgBox.setLayout(vb)
+
         fl = QFormLayout()
         fl.setRowWrapPolicy(QFormLayout.DontWrapRows)
         fl.setFormAlignment(Qt.AlignHCenter | Qt.AlignTop)
         fl.setLabelAlignment(Qt.AlignRight)
-        msgBox.setLayout(fl)
+        vb.addLayout(fl)
+
+        pb = QPushButton('Close')
+        pb.pressed.connect(msgBox.close)
+        vb.addWidget(pb)
 
         for a in attrs:
             le = QLineEdit()
