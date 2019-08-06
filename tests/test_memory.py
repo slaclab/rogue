@@ -46,7 +46,7 @@ class AxiVersion(pr.Device):
         self.add(pr.RemoteVariable(   
             name         = 'UpTimeCnt',
             description  = 'Number of seconds since last reset',
-            hidden       = True,
+            visibility   = 0,
             offset       = 0x08,
             bitSize      = 32,
             bitOffset    = 0x00,
