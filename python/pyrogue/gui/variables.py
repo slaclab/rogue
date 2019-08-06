@@ -132,7 +132,8 @@ class VariableLink(QObject):
             self._widget.setReadOnly(True)
 
         self._tree.setItemWidget(self._item,3,self._widget)
-        self.varListener(None,self._variable.getVariableValue(read=False))
+        # self.varListener(None,self._variable.getVariableValue(read=False))
+        self.varListener(None,pyrogue.VariableValue(self._variable))
 
         variable.addListener(self.varListener)
 
@@ -176,10 +177,14 @@ class VariableLink(QObject):
 
     def infoDialog(self):
 
+        #attrs = ['name', 'path', 'description', 'hidden', 'enum', 
+        #         'typeStr', 'disp', 'precision', 'mode', 'units', 'minimum', 
+        #         'maximum', 'lowWarning', 'lowAlarm', 'highWarning', 
+        #         'highAlarm', 'alarmStatus', 'alarmSeverity', 'pollInterval']
+
         attrs = ['name', 'path', 'description', 'hidden', 'enum', 
-                 'typeStr', 'disp', 'precision', 'mode', 'units', 'minimum', 
-                 'maximum', 'lowWarning', 'lowAlarm', 'highWarning', 
-                 'highAlarm', 'alarmStatus', 'alarmSeverity', 'pollInterval']
+                 'typeStr', 'disp', 'mode', 'units', 'minimum', 
+                 'maximum', 'pollInterval']
 
         msgBox = QDialog()
         msgBox.setWindowTitle("Variable Information For {}".format(self._variable.name))

@@ -95,7 +95,6 @@ class CommandLink(QObject):
         self._tree.setItemWidget(self._item,2,self._pb)
         self._pb.clicked.connect(self.execPressed)
         self._pb.setToolTip(self._command.description)
-        self._pb.customContextMenuRequested.connect(self.openMenu)
 
         if self._command.arg:
             if self._command.disp == 'enum' and self._command.enum is not None:
@@ -131,37 +130,6 @@ class CommandLink(QObject):
                 pass
         else:
             self._command.call()
-
-    def openMenu(self, event):
-        menu = QMenu()
-
-        var_info = menu.addAction('Variable Information')
-        action = menu.exec_(self._widget.mapToGlobal(event))
-
-        if action == var_info:
-            self.infoDialog()
-
-    def infoDialog(self):
-
-        attrs = ['name', 'path', 'description', 'hidden', 'enum', 
-                 'typeStr', 'arg', 'disp' ]
-
-        msgBox = QDialog()
-        msgBox.setWindowTitle("Command Information For {}".format(self._variable.name))
-        msgBox.setMinimumWidth(400)
-
-        fl = QFormLayout()
-        fl.setRowWrapPolicy(QFormLayout.DontWrapRows)
-        fl.setFormAlignment(Qt.AlignHCenter | Qt.AlignTop)
-        fl.setLabelAlignment(Qt.AlignRight)
-        msgBox.setLayout(fl)
-
-        for a in attrs:
-            le = QLineEdit()
-            le.setReadOnly(True)
-            le.setText(str(getattr(self._variable,a)))
-            fl.addRow(a,le)
-        msgBox.exec()
 
 class CommandWidget(QWidget):
     def __init__(self, *, parent=None):
