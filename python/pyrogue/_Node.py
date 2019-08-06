@@ -91,7 +91,7 @@ class Node(object):
     attribute. This allows tree browsing using: node1.node2.node3
     """
 
-    def __init__(self, *, name, description="", expand=True, hidden=None, visibility=1):
+    def __init__(self, *, name, description="", expand=True, hidden=None, visibility=10):
         """Init the node with passed attributes"""
 
         # Public attributes
@@ -126,7 +126,7 @@ class Node(object):
         if hidden is True:
             self._visibility = 0
         else:
-            self._visibility = 1
+            self._visibility = 10
         self._log.warning("The hidden method is deprecated. Please use the visibility level instead.")
 
     @property

@@ -118,7 +118,7 @@ class Device(pr.Node,rim.Hub):
                  offset=0,
                  size=0,
                  hidden=False,
-                 visibility=1,
+                 visibility=10,
                  blockSize=None,
                  expand=False,
                  enabled=True,
@@ -202,7 +202,7 @@ class Device(pr.Node,rim.Hub):
         if pack:
             visibility=0
         else:
-            visibility = kwargs.pop('visibility', 1)
+            visibility = kwargs.pop('visibility', 10)
 
             if 'hidden' in kwargs and hidden is True:
                 visibility = 0

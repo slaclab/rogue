@@ -105,14 +105,14 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         self.add(pr.LocalVariable(name='InitAfterConfig', value=False, mode='RW', visibility=0,
             description='Configuration Flag To Execute Initialize after LoadConfig or setYaml'))
 
-        self.add(pr.LocalVariable(name='Time', value=0.0, mode='RO', visibility=0,
+        self.add(pr.LocalVariable(name='Time', value=0.0, mode='RO', visibility=0,visibility=50,
                  localGet=lambda: time.time(), pollInterval=1.0, description='Current Time In Seconds Since EPOCH UTC'))
 
-        self.add(pr.LocalVariable(name='LocalTime', value='', mode='RO',
+        self.add(pr.LocalVariable(name='LocalTime', value='', mode='RO',visibility=50,
                  localGet=lambda: time.strftime("%Y-%m-%d %H:%M:%S %Z", time.localtime(time.time())),
                  pollInterval=1.0, description='Local Time'))
 
-        self.add(pr.LocalVariable(name='PollEn', value=False, mode='RW',
+        self.add(pr.LocalVariable(name='PollEn', value=False, mode='RW',visibility=50,
                                   localSet=lambda value: self._pollQueue.pause(not value),
                                   localGet=lambda: not self._pollQueue.paused()))
 
@@ -153,10 +153,10 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         self.add(pr.LocalCommand(name='GetYamlState', value=True, function=lambda arg: self._getYaml(arg,['RW','RO','WO']), visibility=0,
                                  description='Get current state as YAML string. Pass read first arg.'))
 
-        self.add(pr.LocalCommand(name='Restart', function=self._restart,
+        self.add(pr.LocalCommand(name='Restart', function=self._restart,visibility=50,
                                  description='Restart and reload the server application'))
 
-        self.add(pr.LocalCommand(name='Exit', function=self._exit,
+        self.add(pr.LocalCommand(name='Exit', function=self._exit,visibility=50,
                                  description='Exit the server application'))
 
     def start(self, timeout=1.0, initRead=False, initWrite=False, pollEn=True, zmqPort=None):

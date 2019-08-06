@@ -158,5 +158,5 @@ class CommandWidget(QWidget):
                                          parent=self.tree,
                                          dev=root,
                                          noExpand=False,
-                                         top=True)
+                                         top=True))
 

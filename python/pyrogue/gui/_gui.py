@@ -43,7 +43,7 @@ class GuiTop(QWidget):
     newRoot = pyqtSignal(pyrogue.Root)
     newVirt = pyqtSignal(pyrogue.VirtualNode)
 
-    def __init__(self,*, parent=None, minVisibility=1, group=None):
+    def __init__(self,*, parent=None, minVisibility=10, group=None):
         super(GuiTop,self).__init__(parent)
 
         if group is not None:

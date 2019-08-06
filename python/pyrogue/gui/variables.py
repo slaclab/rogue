@@ -298,7 +298,7 @@ class VariableWidget(QWidget):
                                           parent=self.tree,
                                           dev=root,
                                           noExpand=False,
-                                          top=True)
+                                          top=True))
 
     @pyqtSlot()
     def readPressed(self):
