@@ -277,7 +277,6 @@ void rpe::Variable::updateAlarm(bp::object status, bp::object severity) {
 
 // Lock held when called
 void rpe::Variable::valueGet() {
-   bp::object val;
 
    if ( syncRead_ ) {
       { // GIL Scope
@@ -285,10 +284,10 @@ void rpe::Variable::valueGet() {
          log_->info("Synchronous read for %s",epicsName_.c_str());
 
          try {
-            val = var_.attr("getVariableValue")();
-            if (  isString_ || epicsType_ == aitEnumEnum16 ) fromPython(val.attr("valueDisp")());
+            bp::object val = var_.attr("getVariableValue")();
+            if (  isString_ || epicsType_ == aitEnumEnum16 ) fromPython(val.attr("valueDisp"));
             else {
-               fromPython(val.attr("value")());
+               fromPython(val.attr("value"));
                updateAlarm(val.attr("status"), val.attr("severity"));
             }
          } catch (...) {

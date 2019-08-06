@@ -94,7 +94,11 @@ class VariableLink(QObject):
         self._item = QTreeWidgetItem(parent)
         self._item.setText(0,variable.name)
         self._item.setText(1,variable.mode)
-        self._item.setText(2,variable.typeStr) # Fix this. Should show base and size
+
+        self._alarm = QLineEdit()
+        self._alarm.setReadOnly(True)
+        self._alarm.setText('None')
+        self._tree.setItemWidget(self._item,2,self._alarm)
 
         if variable.units:
             self._item.setText(4,str(variable.units))
@@ -108,14 +112,14 @@ class VariableLink(QObject):
             for i in self._variable.enum:
                 self._widget.addItem(self._variable.enum[i])
 
-        elif self._variable.minimum is not None and self._variable.maximum is not None and \
-             self._variable.disp == '{}' and self._variable.mode != 'RO':
-            self._widget = QSpinBox();
-            self._widget.setMinimum(self._variable.minimum)
-            self._widget.setMaximum(self._variable.maximum)
-            self._widget.valueChanged.connect(self.guiChanged)
+        #elif self._variable.minimum is not None and self._variable.maximum is not None and \
+        #     self._variable.disp == '{}' and self._variable.mode != 'RO':
+        #    self._widget = QSpinBox();
+        #    self._widget.setMinimum(self._variable.minimum)
+        #    self._widget.setMaximum(self._variable.maximum)
+        #    self._widget.valueChanged.connect(self.guiChanged)
 
-            self.updateGui.connect(self._widget.setValue)
+        #    self.updateGui.connect(self._widget.setValue)
 
         else:
             self._widget = QLineEdit()
@@ -226,6 +230,25 @@ class VariableLink(QObject):
                 if self._widget.text() != value.valueDisp:
                     self.updateGui[str].emit(value.valueDisp)
 
+            if value.severity == 'AlarmMajor':
+                self._alarm.setText('Major')
+                p = QPalette()
+                p.setColor(QPalette.Base,Qt.red)
+                p.setColor(QPalette.Text,Qt.black)
+                self._alarm.setPalette(p)
+
+            elif value.severity == 'AlarmMinor':
+                self._alarm.setText('Minor')
+                p = QPalette()
+                p.setColor(QPalette.Base,Qt.yellow)
+                p.setColor(QPalette.Text,Qt.black)
+                self._alarm.setPalette(p)
+
+            else:
+                self._alarm.setText('None')
+                p = QPalette()
+                self._alarm.setPalette(p)
+
             self._swSet = False
 
     @pyqtSlot()
@@ -274,7 +297,7 @@ class VariableWidget(QWidget):
         vb.addWidget(self.tree)
 
         self.tree.setColumnCount(2)
-        self.tree.setHeaderLabels(['Variable','Mode','Base','Value','Units'])
+        self.tree.setHeaderLabels(['Variable','Mode','Alarm','Value','Units'])
 
         hb = QHBoxLayout()
         vb.addLayout(hb)

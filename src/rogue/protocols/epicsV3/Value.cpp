@@ -230,7 +230,6 @@ caStatus rpe::Value::readValue(gdd &value) {
 
       // Call value get within lock
       valueGet();
-
       gdds = gddApplicationTypeTable::app_table.smartCopy(&value, pValue_);
 
       if (gdds) return S_cas_noConvert;   
