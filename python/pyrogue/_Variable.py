@@ -149,6 +149,7 @@ class BaseVariable(pr.Node):
             self.__dependencies.append(dep)
             dep.addListener(self)
 
+    @pr.expose
     @property
     def pollInterval(self):
         return self._pollInterval

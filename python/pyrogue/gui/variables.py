@@ -132,6 +132,7 @@ class VariableLink(QObject):
             self._widget.setReadOnly(True)
 
         self._tree.setItemWidget(self._item,3,self._widget)
+        # self.varListener(None,self._variable.getVariableValue(read=False))
         self.varListener(None,pyrogue.VariableValue(self._variable))
 
         variable.addListener(self.varListener)
@@ -141,6 +142,7 @@ class VariableLink(QObject):
         read_variable  = None
         write_variable = None
 
+        var_info = menu.addAction('Variable Information')
         read_recurse = menu.addAction('Read Recursive')
         write_recurse = menu.addAction('Write Recursive')
         read_device = menu.addAction('Read Device')
@@ -153,7 +155,9 @@ class VariableLink(QObject):
 
         action = menu.exec_(self._widget.mapToGlobal(event))
 
-        if action == read_recurse:
+        if action == var_info:
+            self.infoDialog()
+        elif action == read_recurse:
             self._variable.parent.ReadDevice(True)
         elif action == write_recurse:
             self._variable.parent.WriteDevice(True)
@@ -170,6 +174,41 @@ class VariableLink(QObject):
                 self._variable.set(self._widget.value())
             else:
                 self._variable.setDisp(self._widget.text())
+
+    def infoDialog(self):
+
+        #attrs = ['name', 'path', 'description', 'hidden', 'enum', 
+        #         'typeStr', 'disp', 'precision', 'mode', 'units', 'minimum', 
+        #         'maximum', 'lowWarning', 'lowAlarm', 'highWarning', 
+        #         'highAlarm', 'alarmStatus', 'alarmSeverity', 'pollInterval']
+
+        attrs = ['name', 'path', 'description', 'hidden', 'enum', 
+                 'typeStr', 'disp', 'mode', 'units', 'minimum', 
+                 'maximum', 'pollInterval']
+
+        msgBox = QDialog()
+        msgBox.setWindowTitle("Variable Information For {}".format(self._variable.name))
+        msgBox.setMinimumWidth(400)
+
+        vb = QVBoxLayout()
+        msgBox.setLayout(vb)
+
+        fl = QFormLayout()
+        fl.setRowWrapPolicy(QFormLayout.DontWrapRows)
+        fl.setFormAlignment(Qt.AlignHCenter | Qt.AlignTop)
+        fl.setLabelAlignment(Qt.AlignRight)
+        vb.addLayout(fl)
+
+        pb = QPushButton('Close')
+        pb.pressed.connect(msgBox.close)
+        vb.addWidget(pb)
+
+        for a in attrs:
+            le = QLineEdit()
+            le.setReadOnly(True)
+            le.setText(str(getattr(self._variable,a)))
+            fl.addRow(a,le)
+        msgBox.exec()
 
     def varListener(self, path, var):
         with self._lock:
@@ -226,7 +265,7 @@ class VariableLink(QObject):
             return
         
         self._inEdit = True
-        self._variable.setDisp(self._widget.itemText(value))
+            self._variable.setDisp(self._widget.itemText(value))
         self._inEdit = False
 
 
