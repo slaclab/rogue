@@ -86,6 +86,9 @@ namespace rogue {
                //! Close and stop thread
                void close();
 
+               //! Get open status
+               bool isOpen();
+
                //! Close when done
                void closeWait();
 
