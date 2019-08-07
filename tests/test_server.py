@@ -44,6 +44,9 @@ class DummyTree(pyrogue.Root):
         # Add Data Writer
         self.add(pyrogue.utilities.fileio.StreamWriter())
 
+        # Add process controller
+        self.add(pyrogue.Process())
+
         # Start the tree with pyrogue server, internal nameserver, default interface
         # Set pyroHost to the address of a network interface to specify which nework to run on
         # set pyroNs to the address of a standalone nameserver (startPyrorNs.py)
