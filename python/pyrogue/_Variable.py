@@ -41,6 +41,7 @@ class BaseVariable(pr.Node):
                  name,
                  description='',
                  mode='RW',
+                 saveEn=True,
                  value=None,
                  disp='{}',
                  enum=None,
@@ -48,7 +49,6 @@ class BaseVariable(pr.Node):
                  hidden=False,
                  minimum=None,
                  maximum=None,
-                 saveEn=True,
                  pollInterval=0,
                  typeStr='Unknown',
                  offset=0
@@ -363,6 +363,7 @@ class RemoteVariable(BaseVariable):
                  name,
                  description='',
                  mode='RW',
+                 saveEn=True,
                  value=None,
                  disp=None,
                  enum=None,
@@ -382,7 +383,7 @@ class RemoteVariable(BaseVariable):
             disp = base.defaultdisp
 
         BaseVariable.__init__(self, name=name, description=description, 
-                              mode=mode, value=value, disp=disp, 
+                              mode=mode, saveEn=SaveEn, value=value, disp=disp, 
                               enum=enum, units=units, hidden=hidden,
                               minimum=minimum, maximum=maximum,
                               pollInterval=pollInterval)
@@ -493,6 +494,7 @@ class LocalVariable(BaseVariable):
                  name,
                  description='',
                  mode='RW',
+                 saveEn=True,
                  value=None,
                  disp='{}',
                  enum=None,
@@ -509,7 +511,7 @@ class LocalVariable(BaseVariable):
             raise VariableError(f'LocalVariable {self.path} without localGet() must specify value= argument in constructor')
 
         BaseVariable.__init__(self, name=name, description=description, 
-                              mode=mode, value=value, disp=disp, 
+                              mode=mode, saveEn=saveEn, value=value, disp=disp, 
                               enum=enum, units=units, hidden=hidden,
                               minimum=minimum, maximum=maximum, typeStr=typeStr,
                               pollInterval=pollInterval)
