@@ -209,7 +209,7 @@ class VariableLink(QObject):
             fl.addRow(a,le)
         msgBox.exec()
 
-    def varListener(self, path, value):
+    def varListener(self, path, var):
         with self._lock:
             if self._widget is None or self._inEdit is True:
                 return
@@ -217,18 +217,18 @@ class VariableLink(QObject):
             self._swSet = True
 
             if isinstance(self._widget, QComboBox):
-                i = self._widget.findText(value.valueDisp)
+                i = self._widget.findText(var.valueDisp)
 
                 if i < 0: i = 0
 
                 if self._widget.currentIndex() != i:
                     self.updateGui.emit(i)
             elif isinstance(self._widget, QSpinBox):
-                if self._widget.value != value.value:
-                    self.updateGui.emit(value.value)
+                if self._widget.value != var.value:
+                    self.updateGui.emit(var.value)
             else:
-                if self._widget.text() != value.valueDisp:
-                    self.updateGui[str].emit(value.valueDisp)
+                if self._widget.text() != var.valueDisp:
+                    self.updateGui[str].emit(var.valueDisp)
 
             if value.severity == 'AlarmMajor':
                 self._alarm.setText('Major')
@@ -281,7 +281,7 @@ class VariableLink(QObject):
     def cbChanged(self, value):
         if self._swSet:
             return
-        
+
         self._inEdit = True
         self._variable.setDisp(self._widget.itemText(value))
         self._inEdit = False
