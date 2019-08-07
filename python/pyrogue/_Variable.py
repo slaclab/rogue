@@ -383,7 +383,7 @@ class RemoteVariable(BaseVariable):
             disp = base.defaultdisp
 
         BaseVariable.__init__(self, name=name, description=description, 
-                              mode=mode, saveEn=SaveEn, value=value, disp=disp, 
+                              mode=mode, saveEn=saveEn, value=value, disp=disp, 
                               enum=enum, units=units, hidden=hidden,
                               minimum=minimum, maximum=maximum,
                               pollInterval=pollInterval)
