@@ -48,6 +48,7 @@ class BaseVariable(pr.Node):
                  hidden=False,
                  minimum=None,
                  maximum=None,
+                 saveEn=True,
                  pollInterval=0,
                  typeStr='Unknown',
                  offset=0
@@ -55,6 +56,7 @@ class BaseVariable(pr.Node):
 
         # Public Attributes
         self._mode          = mode
+        self._saveEn        = saveEn
         self._units         = units
         self._minimum       = minimum # For base='range'
         self._maximum       = maximum # For base='range'
@@ -128,6 +130,11 @@ class BaseVariable(pr.Node):
     @property
     def mode(self):
         return self._mode
+
+    @pr.expose
+    @property
+    def saveEn(self):
+        return self._saveEn
 
     @pr.expose
     @property
@@ -328,8 +335,8 @@ class BaseVariable(pr.Node):
         if self._mode in modes:
             self.setDisp(d,writeEach)
 
-    def _getDict(self,modes):
-        if self._mode in modes:
+    def _getDict(self,modes, saveEnFilt):
+        if self._mode in modes and (self._saveEn or (not saveEnFilt)):
             return VariableValue(self)
         else:
             return None

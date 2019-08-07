@@ -72,7 +72,7 @@ class MemoryDevice(pr.Device):
             for offset, values in d.items():
                 self._setValues[offset] = [self._base.fromString(s, self._wordBitSize) for s in values.split(',')]
 
-    def _getDict(self,modes):
+    def _getDict(self,modes, saveEnFilt):
         return None
 
     def writeBlocks(self, force=False, recurse=True, variable=None, checkEach=False):

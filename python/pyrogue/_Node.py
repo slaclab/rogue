@@ -404,7 +404,7 @@ class Node(object):
             daemon.register(n)
             n._exportNodes(daemon)
 
-    def _getDict(self,modes):
+    def _getDict(self,modes, saveEnFilt):
         """
         Get variable values in a dictionary starting from this level.
         Attributes that are Nodes are recursed.
@@ -412,7 +412,7 @@ class Node(object):
         """
         data = odict()
         for key,value in self._nodes.items():
-            nv = value._getDict(modes)
+            nv = value._getDict(modes,saveEnFilt)
             if nv is not None:
                 data[key] = nv
 
