@@ -254,7 +254,7 @@ class Device(pr.Node,rim.Hub):
 
     def hideVariables(self, hidden, variables=None):
         """Hide a list of Variables (or Variable names)"""
-        self._log.warning("hideVariables is now deprecated. Please use setVariableVisibility")
+        #self._log.warning("hideVariables is now deprecated. Please use setVariableVisibility")
         self.setVariableVisibility((0 if hidden else 25),variables)
 
     def initialize(self):
