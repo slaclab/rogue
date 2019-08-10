@@ -19,7 +19,8 @@
 #-----------------------------------------------------------------------------
 import pyrogue
 import time
-import p4p.server
+import p4p.server.thread
+import p4p.nt
 import threading
 
 class EpicsPvHandler(p4p.server.thread.Handler):
@@ -41,32 +42,39 @@ class EpicsPvHandler(p4p.server.thread.Handler):
 class EpicsPvHolder(object):
     def __init__(self,name,var):
         self._var  = var
-        self._name = var
+        self._name = name
+        valType = 's'
 
         # Convert valType
-        if 'UInt' in v.typeStr:
-            if   v.bitSize <= 8:  valType = 'B'
-            elif v.bitSize <= 16: valType = 'H'
-            elif v.bitSize <= 32: valType = 'I'
-            elif v.bitSize <= 64: valType = 'L'
+        if 'UInt' in var.typeStr:
+            if isinstance(var,pyrogue.RemoteVariable):
+                if   sum(var.bitSize) <= 8:  valType = 'B'
+                elif sum(var.bitSize) <= 16: valType = 'H'
+                elif sum(var.bitSize) <= 32: valType = 'I'
+                else: valType = 'L'
+            else:
+                valType = 'L'
 
-        elif 'Int' in v.typeStr:
-            if   v.bitSize <= 8:  valType = 'b'
-            elif v.bitSize <= 16: valType = 'h'
-            elif v.bitSize <= 32: valType = 'i'
-            elif v.bitSize <= 64: valType = 'l'
+        elif 'Int' in var.typeStr:
+            if isinstance(var,pyrogue.RemoteVariable):
+                if   sum(var.bitSize) <= 8:  valType = 'b'
+                elif sum(var.bitSize) <= 16: valType = 'h'
+                elif sum(var.bitSize) <= 32: valType = 'i'
+                else: valType = 'l'
+            else:
+                valType = 'l'
 
-        elif 'Float' in v.typeStr:
-            if v.bitSize   <= 32: valType = 'f'
-            elif v.bitSize <= 64: valType = 'd'
+        elif 'Float' in var.typeStr:
+            if isinstance(var,pyrogue.RemoteVariable):
+                if sum(var.bitSize)   <= 32: valType = 'f'
+                else: valType = 'd'
+            else: valType = 'd'
 
-        elif v.typeStr == 'int':
+        elif var.typeStr == 'int':
             valType = 'i'
-        elif v.typeStr == 'float':
+        elif var.typeStr == 'float':
             valType = 'd'
-        elif v.typeStr == 'str':
-            valType = 's'
-        else:
+        elif var.typeStr == 'str':
             valType = 's'
 
 #?	bool
@@ -110,8 +118,8 @@ class EpicsPvHolder(object):
 
         self._pv = p4p.server.thread.SharedPV(queue=None, 
                                               handler=EpicsPvHandler(self),
-                                              initial=NTScalar(valType).wrap(v.value()),
-                                              nt=NTScalar(valType), 
+                                              initial=p4p.nt.NTScalar(valType).wrap(var.value()),
+                                              nt=p4p.nt.NTScalar(valType), 
                                               options={})
 
         var.addListener(self._varUpdated)
@@ -160,19 +168,22 @@ class EpicsPvServer(object):
             eName = None
 
             if doAll:
-                eName = self._base + ':' + node.path.replace('.',':')
-                self._pvMap[node.path] = eName
+                eName = self._base + ':' + v.path.replace('.',':')
+                self._pvMap[v.path] = eName
             elif v.path in self._pvMap:
                 eName = self._pvMap[v.path]
 
             if eName is not None:
+                print("Adding {}".format(eName))
                 self._list.append(EpicsPvHolder(eName,v))
 
     def stop(self):
         self._server.stop()
 
     def start(self):
-        self._server = p4p.server.Server(providers=[{p.name:pv.pv for p in self._list}])
+        print("Server starting")
+        self._server = p4p.server.Server(providers=[{p.name:p.pv for p in self._list}])
+        print("Server started")
 
     def list(self):
         return self._pvMap

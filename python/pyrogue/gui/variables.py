@@ -230,14 +230,14 @@ class VariableLink(QObject):
                 if self._widget.text() != var.valueDisp:
                     self.updateGui[str].emit(var.valueDisp)
 
-            if value.severity == 'AlarmMajor':
+            if var.severity == 'AlarmMajor':
                 self._alarm.setText('Major')
                 p = QPalette()
                 p.setColor(QPalette.Base,Qt.red)
                 p.setColor(QPalette.Text,Qt.black)
                 self._alarm.setPalette(p)
 
-            elif value.severity == 'AlarmMinor':
+            elif var.severity == 'AlarmMinor':
                 self._alarm.setText('Minor')
                 p = QPalette()
                 p.setColor(QPalette.Base,Qt.yellow)
