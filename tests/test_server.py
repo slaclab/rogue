@@ -53,6 +53,9 @@ class DummyTree(pyrogue.Root):
         self.epics=pyrogue.protocols.epics.EpicsCaServer(base="test", root=self)
         self.epics.start()
 
+        self.epics4=pyrogue.protocols.epicsV4.EpicsPvServer(base="test", root=self)
+        self.epics4.start()
+
 if __name__ == "__main__":
 
     with DummyTree() as dummyTree:

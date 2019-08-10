@@ -2,10 +2,9 @@
 #-----------------------------------------------------------------------------
 # Title      : PyRogue epics support
 #-----------------------------------------------------------------------------
-# File       : pyrogue/protocols/epics.py
+# File       : pyrogue/protocols/epicsV4.py
 # Author     : Ryan Herbst, rherbst@slac.stanford.edu
-# Created    : 2016-09-29
-# Last update: 2016-09-29
+# Created    : 2019-08-08
 #-----------------------------------------------------------------------------
 # Description:
 # Module containing epics support classes and routines
@@ -20,26 +19,117 @@
 #-----------------------------------------------------------------------------
 import pyrogue
 import time
-#from p4p.server import Server, StaticProvider
 import p4p.server
+import threading
 
+class EpicsPvHandler(p4p.server.thread.Handler):
+    def __init__(self, holder):
+        self._holder = holder
 
-class EpicsPvHandler:
-    def __init__(self, var):
-        self._var = var
+    def put(self, pv, op):
+        print(f"PV Put called pv={pv} op={op}")
 
-    def put(self, op):
+    def rpc(self, pv, op):
+        print(f"PV RPC called pv={pv} op={op}")
+
+    def onFirstConnect(self, pv): # may be omitted
+        print(f"PV First connect called pv={pv}")
+
+    def onLastDisconnect(self, pv): # may be omitted
+        print(f"PV Last Disconnect called pv={pv}")
+
+class EpicsPvHolder(object):
+    def __init__(self,name,var):
+        self._var  = var
+        self._name = var
+
+        # Convert valType
+        if 'UInt' in v.typeStr:
+            if   v.bitSize <= 8:  valType = 'B'
+            elif v.bitSize <= 16: valType = 'H'
+            elif v.bitSize <= 32: valType = 'I'
+            elif v.bitSize <= 64: valType = 'L'
+
+        elif 'Int' in v.typeStr:
+            if   v.bitSize <= 8:  valType = 'b'
+            elif v.bitSize <= 16: valType = 'h'
+            elif v.bitSize <= 32: valType = 'i'
+            elif v.bitSize <= 64: valType = 'l'
+
+        elif 'Float' in v.typeStr:
+            if v.bitSize   <= 32: valType = 'f'
+            elif v.bitSize <= 64: valType = 'd'
+
+        elif v.typeStr == 'int':
+            valType = 'i'
+        elif v.typeStr == 'float':
+            valType = 'd'
+        elif v.typeStr == 'str':
+            valType = 's'
+        else:
+            valType = 's'
+
+#?	bool
+#s	unicode
+
+#v	variant
+#U	union
+#S	struct
+
+#                if isinstance(node, pyrogue.BaseCommand):
+#                    self._srv.addValue(rogue.protocols.epicsV3.Command(eName,node))
+#                    self._log.info("Adding command {} mapped to {}".format(node.path,eName))
+#                else:
+#
+#                    # Add standard variable
+#                    evar = rogue.protocols.epicsV3.Variable(eName,node,self._syncRead)
+#                    node.addListener(evar.varUpdated)
+#                    self._srv.addValue(evar)
+#                    self._log.info("Adding variable {} mapped to {}".format(node.path,eName))
+
+#   // Enum type
+#   if ( isEnum ) {
+#      epicsType_ = aitEnumEnum16;
+#      log_->info("Detected enum for %s typeStr=%s", epicsName_.c_str(),typeStr.c_str());
+#   }
+
+#   // Vector
+#   if ( count != 0 ) {
+#      log_->info("Create vector GDD for %s epicsType_=%i, size=%i",epicsName_.c_str(),epicsType_,count);
+#      pValue_ = new gddAtomic (gddAppType_value, epicsType_, 1u, count);
+#      size_   = count;
+#      max_    = count;
+#      array_  = true;
+#   }
+#
+#   // Scalar
+#   else {
+#      log_->info("Create scalar GDD for %s epicsType_=%i",epicsName_.c_str(),epicsType_);
+#      pValue_ = new gddScalar(gddAppType_value, epicsType_);
+#   }
+
+        self._pv = p4p.server.thread.SharedPV(queue=None, 
+                                              handler=EpicsPvHandler(self),
+                                              initial=NTScalar(valType).wrap(v.value()),
+                                              nt=NTScalar(valType), 
+                                              options={})
+
+        var.addListener(self._varUpdated)
+
+    def _varUpdated(self,path,value):
         pass
 
-    def rpc(self, op):
-        pass
+    @property
+    def var(self):
+        return self._var
 
-    def onFirstConnect(self): # may be omitted
-        pass
+    @property
+    def name(self):
+        return self._name
 
-    def onLastDisconnect(self): # may be omitted
-        pass
-
+    @property
+    def pv(self):
+        return self._pv
 
 class EpicsPvServer(object):
     """
@@ -52,14 +142,7 @@ class EpicsPvServer(object):
         self._syncRead  = syncRead
 
         self._provider = p4p.server.StaticProvider(__name__)
-
         self._list = []
-
-        #pvstats = PVStats(provider, lock, args.P, xpm)
-        #pvctrls = PVCtrls(provider, lock, args.P, args.ip, xpm, pvstats._groups)
-        #pvxtpg  = None
-        #if 'xtpg' in xpm.AxiVersion.ImageName.get():
-            #pvxtpg = PVXTpg(provider, lock, args.P, xpm, xpm.mmcmParms)
 
         if not root.running:
             raise Exception("Epics can not be setup on a tree which is not started")
@@ -83,162 +166,22 @@ class EpicsPvServer(object):
                 eName = self._pvMap[v.path]
 
             if eName is not None:
-                
-                # Convert valType
-                if 'UInt' in v.typeStr:
-                    if   v.bitSize <= 8:  valType = 'B'
-                    elif v.bitSize <= 16: valType = 'H'
-                    elif v.bitSize <= 32: valType = 'I'
-                    elif v.bitSize <= 64: valType = 'L'
+                self._list.append(EpicsPvHolder(eName,v))
 
-                elif 'Int' in v.typeStr:
-                    if   v.bitSize <= 8:  valType = 'b'
-                    elif v.bitSize <= 16: valType = 'h'
-                    elif v.bitSize <= 32: valType = 'i'
-                    elif v.bitSize <= 64: valType = 'l'
+    def stop(self):
+        self._server.stop()
 
-                elif 'Float' in v.typeStr:
-                    if v.bitSize   <= 32: valType = 'f'
-                    elif v.bitSize <= 64: valType = 'd'
+    def start(self):
+        self._server = p4p.server.Server(providers=[{p.name:pv.pv for p in self._list}])
 
-                elif v.typeStr == 'int':
-                    valType = 'i'
-                elif v.typeStr == 'float':
-                    valType = 'd'
-                elif v.typeStr == 'str':
-                    valType = 's'
-                else:
-                    valType = 's'
+    def list(self):
+        return self._pvMap
 
-                h = EpicsPvHandler(v)
-                p4p.server.thread.SharedPV(queue=None, 
-                                           handler= h,
-                                           initial=NTScalar(valType).wrap(v.value()),
-                                           nt=NTScalar(valType), 
-                                           options={})
-
-#?	bool
-#s	unicode
-
-#v	variant
-#U	union
-#S	struct
-
-
+    def dump(self):
+        for k,v in self._pvMap.items():
+            print("{} -> {}".format(v,k))
 
                 
-
-
-#
-#
-#
-#                if isinstance(node, pyrogue.BaseCommand):
-#                    self._srv.addValue(rogue.protocols.epicsV3.Command(eName,node))
-#                    self._log.info("Adding command {} mapped to {}".format(node.path,eName))
-#                else:
-#
-#                    # Add standard variable
-#                    evar = rogue.protocols.epicsV3.Variable(eName,node,self._syncRead)
-#                    node.addListener(evar.varUpdated)
-#                    self._srv.addValue(evar)
-#                    self._log.info("Adding variable {} mapped to {}".format(node.path,eName))
-
-
-#   // Enum type
-#   if ( isEnum ) {
-#      epicsType_ = aitEnumEnum16;
-#      log_->info("Detected enum for %s typeStr=%s", epicsName_.c_str(),typeStr.c_str());
-#   }
-#
-#   // Unsigned Int types, > 32-bits treated as string
-#   else if ( sscanf(typeStr.c_str(),"UInt%i",&bitSize) == 1 ) {
-#      if ( bitSize <=  8 ) { fSize_ = 1; epicsType_ = aitEnumUint8; } 
-#      else if ( bitSize <= 16 ) { fSize_ = 2; epicsType_ = aitEnumUint16; } 
-#      else if ( bitSize <= 32) { fSize_ = 4; epicsType_ = aitEnumUint32; } 
-#      else { epicsType_ = aitEnumString; } 
-#
-#      log_->info("Detected Rogue Uint with size %i for %s typeStr=%s",
-#            bitSize, epicsName_.c_str(),typeStr.c_str());
-#  }
-#
-#   // Signed Int types, > 32-bits treated as string
-#   else if ( sscanf(typeStr.c_str(),"Int%i",&bitSize) == 1 ) {
-#      if ( bitSize <=  8 ) { fSize_ = 1; epicsType_ = aitEnumInt8; } 
-#      else if ( bitSize <= 16 ) { fSize_ = 2; epicsType_ = aitEnumInt16; } 
-#      else if ( bitSize <= 32 ) { fSize_ = 4; epicsType_ = aitEnumInt32; } 
-#      else { epicsType_ = aitEnumString; }
-#
-#      log_->info("Detected Rogue Int with size %i for %s typeStr=%s",
-#            bitSize, epicsName_.c_str(),typeStr.c_str());
-#   }
-#
-#   // Python int
-#   else if ( typeStr == "int" ) {
-#      fSize_ = 4; 
-#      epicsType_ = aitEnumInt32;
-#      log_->info("Detected python int with size %i for %s typeStr=%s",
-#            bitSize, epicsName_.c_str(),typeStr.c_str());
-#   }
-# 
-#   // 32-bit Float
-#   else if ( typeStr == "float" or typeStr == "Float32" ) {
-#      log_->info("Detected 32-bit float %s: typeStr=%s", epicsName_.c_str(),typeStr.c_str());
-#      epicsType_ = aitEnumFloat32;
-#      fSize_ = 4;
-#   }
-#
-#   // 64-bit float
-#   else if ( typeStr == "Float64" ) {
-#      log_->info("Detected 64-bit float %s: typeStr=%s", epicsName_.c_str(),typeStr.c_str());
-#      epicsType_ = aitEnumFloat64;
-#      fSize_ = 8;
-#   }
-#
-#   // Unknown type maps to string
-#   if ( epicsType_ == aitEnumInvalid ) {
-#      log_->info("Detected unknow type for %s typeStr=%s. I wil be map to string.", epicsName_.c_str(),typeStr.c_str());
-#      epicsType_ = aitEnumString;
-#   }
-#
-#   // String are limited to 40 chars, so let's use an array of char instead for strings
-#   if (epicsType_ == aitEnumString)
-#   {
-#      if ( count != 0 ) {
-#         log_->error("Vector of string not supported in EPICS. Ignoring %\n", epicsName_.c_str());
-#      } else {
-#         log_->info("Treating String as waveform of chars for %s typeStr=%s\n", epicsName_.c_str(),typeStr.c_str());
-#         epicsType_ = aitEnumUint8;
-#         count      = 300;
-#         isString_  = true;
-#      }
-#   }
-#
-#   // Vector
-#   if ( count != 0 ) {
-#      log_->info("Create vector GDD for %s epicsType_=%i, size=%i",epicsName_.c_str(),epicsType_,count);
-#      pValue_ = new gddAtomic (gddAppType_value, epicsType_, 1u, count);
-#      size_   = count;
-#      max_    = count;
-#      array_  = true;
-#   }
-#
-#   // Scalar
-#   else {
-#      log_->info("Create scalar GDD for %s epicsType_=%i",epicsName_.c_str(),epicsType_);
-#      pValue_ = new gddScalar(gddAppType_value, epicsType_);
-#   }
-
-	
-#handler – A object which will receive callbacks when eg. a Put operation is requested. May be omitted if the decorator syntax is used.
-#initial (Value) – An initial Value for this PV. If omitted, open() s must be called before client access is possible.
-#nt – An object with methods wrap() and unwrap(). eg p4p.nt.NTScalar.
-#wrap (callable) – As an alternative to providing ‘nt=’, A callable to transform Values passed to open() and post().
-#unwrap (callable) – As an alternative to providing ‘nt=’, A callable to transform Values returned Operations in Put/RPC handlers.
-#queue (WorkQueue) – The threaded WorkQueue on which handlers will be run.
-#options (dict) – A dictionary of configuration options.
-#
-#
-#
 #        # Start server
 #        self._thread = threading.Thread(target=self._run)
 #        self._thread.start()
@@ -253,35 +196,4 @@ class EpicsPvServer(object):
 #        self._srv.addValue(mast)
 #        return mast
 #
-#    def stop(self):
-#        self._srv.stop()
-#
-#    def start(self):
-#        self._srv.start()
-#
-#    def list(self):
-#        return self._pvMap
-#
-#    def dump(self):
-#        for k,v in self._pvMap.items():
-#            print("{} -> {}".format(v,k))
-#
-#    def _run(self):
-#
-#        # process PVA transactions
-#        updatePeriod = 1.0
-#        with p4p.server.Server(providers=[self._provider]):
-#            if pvxtpg is not None:
-#                pvxtpg .init()
-#            pvstats.init()
-#            while True:
-#                prev = time.perf_counter()
-#                if pvxtpg is not None:
-#                    pvxtpg .update()
-#                pvstats.update()
-#                curr  = time.perf_counter()
-#                delta = prev+updatePeriod-curr
-##                print('Delta {:.2f}  Update {:.2f}  curr {:.2f}  prev {:.2f}'.format(delta,curr-prev,curr,prev))
-#                if delta>0:
-#                    time.sleep(delta)
 #
