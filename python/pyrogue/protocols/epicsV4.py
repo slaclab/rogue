@@ -28,7 +28,11 @@ class EpicsPvHandler(p4p.server.thread.Handler):
         self._holder = holder
 
     def put(self, pv, op):
-        print(f"PV Put called pv={pv} op={op}")
+        if self._holder.var.mode == 'RW' or self._holder.var.mode == 'WO':
+            val = op.value().raw.value
+            typ = type(val)
+            print(f"PV Put called pv={pv} type={typ}, value={val}")
+            self._holder.var.set(val)
 
     def rpc(self, pv, op):
         print(f"PV RPC called pv={pv} op={op}")
