@@ -31,8 +31,14 @@ class EpicsPvHandler(p4p.server.thread.Handler):
         if self._holder.var.mode == 'RW' or self._holder.var.mode == 'WO':
             val = op.value().raw.value
             typ = type(val)
-            print(f"PV Put called pv={pv} type={typ}, value={val}")
-            self._holder.var.set(val)
+            #print(f"PV Put called pv={pv} type={typ}, value={val}")
+
+            if self._holder.var.isinstance(pr.BaseCommand):
+                self._holder.var.call(val)
+            elif self._holder.valType == 's':
+                self._holder.var.setDisp(val)
+            else:
+                self._holder.var.set(val)
 
     def rpc(self, pv, op):
         print(f"PV RPC called pv={pv} op={op}")
@@ -47,89 +53,84 @@ class EpicsPvHolder(object):
     def __init__(self,name,var):
         self._var  = var
         self._name = name
-        valType = 's'
+        #self._enum = None
+
+        varVal = var.getVariableValue(read=False)
 
         # Convert valType
-        if 'UInt' in var.typeStr:
-            if isinstance(var,pyrogue.RemoteVariable):
-                if   sum(var.bitSize) <= 8:  valType = 'B'
-                elif sum(var.bitSize) <= 16: valType = 'H'
-                elif sum(var.bitSize) <= 32: valType = 'I'
-                else: valType = 'L'
+        if self._var.disp == 'enum':
+
+            # Detect bool
+            if len(self._var.enum) == 2 and False in self._var.enum and True in self._var.enum:
+                self._valType = '?'
+
+            # Treat ENUMs as string for now
             else:
-                valType = 'L'
+                self._valType = 's'
 
-        elif 'Int' in var.typeStr:
-            if isinstance(var,pyrogue.RemoteVariable):
-                if   sum(var.bitSize) <= 8:  valType = 'b'
-                elif sum(var.bitSize) <= 16: valType = 'h'
-                elif sum(var.bitSize) <= 32: valType = 'i'
-                else: valType = 'l'
+            self._pv = p4p.server.thread.SharedPV(queue=None, 
+                                                  handler=EpicsPvHandler(self),
+                                                  initial=p4p.nt.NTScalar(self._valType).wrap(varVal.valueDisp),
+                                                  nt=p4p.nt.NTScalar(self._valType),
+                                                  options={})
+
+        else:
+
+            # Unsigned
+            if 'UInt' in self._var.typeStr:
+                if isinstance(self._var,pyrogue.RemoteVariable):
+                    if   sum(self._var.bitSize) <= 8:  self._valType = 'B'
+                    elif sum(self._var.bitSize) <= 16: self._valType = 'H'
+                    elif sum(self._var.bitSize) <= 32: self._valType = 'I'
+                    else: self._valType = 'L'
+                else:
+                    self._valType = 'L'
+
+            # Signed
+            elif self._var.typeStr == 'int' or 'Int' in self._var.typeStr:
+                if isinstance(self._var,pyrogue.RemoteVariable):
+                    if   sum(self._var.bitSize) <= 8:  self._valType = 'b'
+                    elif sum(self._var.bitSize) <= 16: self._valType = 'h'
+                    elif sum(self._var.bitSize) <= 32: self._valType = 'i'
+                    else: self._valType = 'l'
+                else:
+                    self._valType = 'l'
+
+            # Float
+            elif self._var.typeStr == 'float' or 'Float' in self._var.typeStr:
+                if isinstance(self._var,pyrogue.RemoteVariable):
+                    if sum(self._var.bitSize)   <= 32: self._valType = 'f'
+                    else: self._valType = 'd'
+                else: self._valType = 'd'
+
             else:
-                valType = 'l'
+                self._valType = 's'
 
-        elif 'Float' in var.typeStr:
-            if isinstance(var,pyrogue.RemoteVariable):
-                if sum(var.bitSize)   <= 32: valType = 'f'
-                else: valType = 'd'
-            else: valType = 'd'
-
-        elif var.typeStr == 'int':
-            valType = 'i'
-        elif var.typeStr == 'float':
-            valType = 'd'
-        elif var.typeStr == 'str':
-            valType = 's'
-
-#?	bool
-#s	unicode
-
-#v	variant
-#U	union
-#S	struct
-
-#                if isinstance(node, pyrogue.BaseCommand):
-#                    self._srv.addValue(rogue.protocols.epicsV3.Command(eName,node))
-#                    self._log.info("Adding command {} mapped to {}".format(node.path,eName))
-#                else:
-#
-#                    # Add standard variable
-#                    evar = rogue.protocols.epicsV3.Variable(eName,node,self._syncRead)
-#                    node.addListener(evar.varUpdated)
-#                    self._srv.addValue(evar)
-#                    self._log.info("Adding variable {} mapped to {}".format(node.path,eName))
-
-#   // Enum type
-#   if ( isEnum ) {
-#      epicsType_ = aitEnumEnum16;
-#      log_->info("Detected enum for %s typeStr=%s", epicsName_.c_str(),typeStr.c_str());
-#   }
-
-#   // Vector
-#   if ( count != 0 ) {
-#      log_->info("Create vector GDD for %s epicsType_=%i, size=%i",epicsName_.c_str(),epicsType_,count);
-#      pValue_ = new gddAtomic (gddAppType_value, epicsType_, 1u, count);
-#      size_   = count;
-#      max_    = count;
-#      array_  = true;
-#   }
-#
-#   // Scalar
-#   else {
-#      log_->info("Create scalar GDD for %s epicsType_=%i",epicsName_.c_str(),epicsType_);
-#      pValue_ = new gddScalar(gddAppType_value, epicsType_);
-#   }
-
-        self._pv = p4p.server.thread.SharedPV(queue=None, 
-                                              handler=EpicsPvHandler(self),
-                                              initial=p4p.nt.NTScalar(valType).wrap(var.value()),
-                                              nt=p4p.nt.NTScalar(valType), 
-                                              options={})
+            if 'List' in self._var.typeStr:
+                print("Skipping array variable!!!!!!!!!")
+                #count = len(self._var.value())
+                #self._pv = p4p.server.thread.SharedPV(queue=None, 
+                                                      #handler=EpicsPvHandler(self),
+                                                      #initial=p4p.nt.NTScalar(self._valType).wrap(varVal.valueDisp),
+                                                      #nt=p4p.nt.NTScalar(self._valType),
+                                                      #options={})
+            else:
+                self._pv = p4p.server.thread.SharedPV(queue=None, 
+                                                      handler=EpicsPvHandler(self),
+                                                      initial=p4p.nt.NTScalar(self._valType).wrap(varVal.valueDisp),
+                                                      nt=p4p.nt.NTScalar(self._valType),
+                                                      options={})
 
         var.addListener(self._varUpdated)
+        self._varUpdated(self._var.path,varVal)
 
     def _varUpdated(self,path,value):
-        pass
+       #v = p4p.Value(
+
+        if self._valType == 's':
+            self._pv.post(value.valueDisp)
+        else:
+            self._pv.post(value.value)
 
     @property
     def var(self):
@@ -142,6 +143,11 @@ class EpicsPvHolder(object):
     @property
     def pv(self):
         return self._pv
+
+    @property
+    def valType(self):
+        return self._valType
+
 
 class EpicsPvServer(object):
     """
@@ -178,7 +184,6 @@ class EpicsPvServer(object):
                 eName = self._pvMap[v.path]
 
             if eName is not None:
-                print("Adding {}".format(eName))
                 self._list.append(EpicsPvHolder(eName,v))
 
     def stop(self):
@@ -197,10 +202,6 @@ class EpicsPvServer(object):
             print("{} -> {}".format(v,k))
 
                 
-#        # Start server
-#        self._thread = threading.Thread(target=self._run)
-#        self._thread.start()
-#
 #    def createSlave(self, name, maxSize, type):
 #        slave = rogue.protocols.epicsV3.Slave(self._base + ':' + name,maxSize,type)
 #        self._srv.addValue(slave)
