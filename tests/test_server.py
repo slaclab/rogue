@@ -15,13 +15,19 @@
 #-----------------------------------------------------------------------------
 import pyrogue
 import pyrogue.interfaces.simulation
+import pyrogue.utilities.fileio
 import rogue.interfaces.stream
 import test_device
 import time
 import rogue
 import pyrogue.protocols.epics
+import logging
 
 #rogue.Logging.setFilter('pyrogue.epicsV3.Value',rogue.Logging.Debug)
+#rogue.Logging.setLevel(rogue.Logging.Debug)
+
+#logger = logging.getLogger('pyrogue')
+#logger.setLevel(logging.DEBUG)
 
 class DummyTree(pyrogue.Root):
 
@@ -34,6 +40,9 @@ class DummyTree(pyrogue.Root):
         
         # Add Device
         self.add(test_device.AxiVersion(memBase=sim,offset=0x0))
+
+        # Add Data Writer
+        self.add(pyrogue.utilities.fileio.StreamWriter())
 
         # Start the tree with pyrogue server, internal nameserver, default interface
         # Set pyroHost to the address of a network interface to specify which nework to run on

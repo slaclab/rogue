@@ -43,8 +43,11 @@ class GuiTop(QWidget):
     newRoot = pyqtSignal(pyrogue.Root)
     newVirt = pyqtSignal(pyrogue.VirtualNode)
 
-    def __init__(self,*, group="Servers", parent=None):
+    def __init__(self,*, parent=None, group=None):
         super(GuiTop,self).__init__(parent)
+
+        if group is not None:
+            print("The GuiTop group attribute is now deprecated. Please remove it.")
 
         vb = QVBoxLayout()
         self.setLayout(vb)
@@ -52,10 +55,10 @@ class GuiTop(QWidget):
         self.tab = QTabWidget()
         vb.addWidget(self.tab)
 
-        self.var = pyrogue.gui.variables.VariableWidget(group=group,parent=self.tab)
+        self.var = pyrogue.gui.variables.VariableWidget(parent=self.tab)
         self.tab.addTab(self.var,'Variables')
 
-        self.cmd = pyrogue.gui.commands.CommandWidget(group=group,parent=self.tab)
+        self.cmd = pyrogue.gui.commands.CommandWidget(parent=self.tab)
         self.tab.addTab(self.cmd,'Commands')
         self.show()
 
