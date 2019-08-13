@@ -40,6 +40,8 @@ def EpicsConvStatus(varValue):
     elif varValue.severity == "AlarmMajor": return 2 # epicsSevMajor
     else: return 0;
 
+
+
 class EpicsPvHandler(p4p.server.thread.Handler):
     def __init__(self, holder):
         self._holder = holder
@@ -69,15 +71,14 @@ class EpicsPvHandler(p4p.server.thread.Handler):
         print(f"PV Last Disconnect called pv={pv}")
 
 class EpicsPvHolder(object):
-    def __init__(self,name,var):
-        self._var  = var
-        self._name = name
+    def __init__(self,provider,name,var):
+        self._var        = var
+        self._name       = name
+        self._pv         = None
         #self._enum = None
 
-        varVal = var.getVariableValue(read=False)
-
         # Convert valType
-        if self._var.disp == 'enum':
+        if False and self._var.disp == 'enum':
 
             # Detect bool
             if len(self._var.enum) == 2 and False in self._var.enum and True in self._var.enum:
@@ -86,13 +87,6 @@ class EpicsPvHolder(object):
             # Treat ENUMs as string for now
             else:
                 self._valType = 's'
-
-
-            self._pv = p4p.server.thread.SharedPV(queue=None, 
-                                                  handler=EpicsPvHandler(self),
-                                                  initial=p4p.nt.NTScalar(self._valType).wrap(varVal.valueDisp),
-                                                  nt=p4p.nt.NTScalar(self._valType),
-                                                  options={})
 
         else:
 
@@ -126,38 +120,44 @@ class EpicsPvHolder(object):
             else:
                 self._valType = 's'
 
-            if 'List' in self._var.typeStr:
-                print("Skipping array variable!!!!!!!!!")
-                #count = len(self._var.value())
-                #self._pv = p4p.server.thread.SharedPV(queue=None, 
-                                                      #handler=EpicsPvHandler(self),
-                                                      #initial=p4p.nt.NTScalar(self._valType).wrap(varVal.valueDisp),
-                                                      #nt=p4p.nt.NTScalar(self._valType),
-                                                      #options={})
+        # Get initial value
+        varVal = var.getVariableValue(read=False)
+
+        if self._valType == 's':
+            nt = p4p.nt.NTScalar(self._valType, display=True, control=False, valueAlarm=False)
+            iv = nt.wrap(varVal.valueDisp)
+        else:
+            nt = p4p.nt.NTScalar(self._valType, display=True, control=True,  valueAlarm=True)
+            iv = nt.wrap(varVal.value)
+
+        if 'List' in self._var.typeStr:
+            print("Skipping array variable!!!!!!!!!")
+
+        else:
+
+            self._pv = p4p.server.thread.SharedPV(queue=None, 
+                                                  handler=EpicsPvHandler(self),
+                                                  initial=iv,
+                                                  nt=nt,
+                                                  options={})
+
+            self._varUpdated(self._var.path,varVal)
+            provider.add(self._name,self._pv)
+
+            curr = self._pv.current()
+
+            if self._valType == 's':
+                curr.value = varVal.valueDisp
             else:
+                curr.status              = EpicsConvStatus(varVal)
+                curr.serverity           = EpicsConvSeverity(varVal)
+                curr.display.description = self._var.description
 
-        # https://mdavidsaver.github.io/p4p/_modules/p4p/nt/scalar.html
-        # :param bool display: Include optional fields for display meta-data
-        # :param bool control: Include optional fields for control meta-data
-        # :param bool valueAlarm: Include optional fields for alarm level meta-data
+                if self._var.units   is not None: curr.display.units     = self._var.units
+                if self._var.maximum is not None: curr.display.limitHigh = self._var.maximum
+                if self._var.minimum is not None: curr.display.limitLow  = self._var.minimum
 
-
-                #ntt=p4p.nt.NTScalar(self._valType,display=True,valueAlarm=True)
-
-                #if self._valType == 's':
-                    #ntt.wrap(varVal.valueDisp),
-                #else:
-                    #ntt.wrap(varVal.value),
-
-                self._pv = p4p.server.thread.SharedPV(queue=None, 
-                                                      handler=EpicsPvHandler(self),
-                                                      #initial=ntt,
-                                                      #nt=ntt,
-                                                      nt=p4p.nt.NTScalar(self._valType),
-                                                      options={})
-
-        var.addListener(self._varUpdated)
-        self._varUpdated(self._var.path,varVal)
+            self._pv.post(curr)
 
     def _varUpdated(self,path,value):
         curr = self._pv.current()
@@ -165,10 +165,9 @@ class EpicsPvHolder(object):
         if self._valType == 's':
             curr.value = value.valueDisp
         else:
-            curr.value = value.value
-
-        curr.status    = EpicsConvStatus(value)
-        curr.serverity = EpicsConvSeverity(value)
+            curr.value     = value.value
+            curr.status    = EpicsConvStatus(value)
+            curr.serverity = EpicsConvSeverity(value)
 
         self._pv.post(curr)
 
@@ -224,14 +223,15 @@ class EpicsPvServer(object):
                 eName = self._pvMap[v.path]
 
             if eName is not None:
-                self._list.append(EpicsPvHolder(eName,v))
+                pvh = EpicsPvHolder(self._provider,eName,v)
+                self._list.append(pvh)
 
     def stop(self):
         self._server.stop()
 
     def start(self):
         print("Server starting")
-        self._server = p4p.server.Server(providers=[{p.name:p.pv for p in self._list}])
+        self._server = p4p.server.Server(providers=[self._provider])
         print("Server started")
 
     def list(self):
