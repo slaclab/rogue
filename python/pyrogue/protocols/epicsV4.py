@@ -13,6 +13,7 @@
 #   Add support for array variables
 #   Add stream to epics array interface ?????
 #   Add epics array to stream interface ?????
+#   Use rpc for commands
 # Issues:
 #   Timestamps are not updating on varUpdate
 #   Bools don't seem to work
@@ -181,6 +182,8 @@ class EpicsPvHolder(object):
             curr.raw.value          = value.value
             curr.raw.alarm.status   = EpicsConvStatus(value)
             curr.raw.alarm.severity = EpicsConvSeverity(value)
+
+        curr.raw['timeStamp.secondsPastEpoch'], curr.raw['timeStamp.nanoseconds'] = divmod(float(time.time_ns()), 1.0e9)
 
         self._pv.post(curr)
 
