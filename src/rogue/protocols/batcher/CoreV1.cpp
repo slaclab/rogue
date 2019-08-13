@@ -193,7 +193,13 @@ bool rpb::CoreV1::processFrame ( ris::FramePtr frame ) {
    // headerSize = (uint32_t)pow(2,float( ( (temp >> 4) & 0xF) + 1) );
    /////////////////////////////////////////////////////////////////////////
    // Integer pow() when powers of 2 (more efficient than floating point)
-   headerSize_ = 1 << ( ((temp >> 4) & 0xF) + 1);
+   switch ((temp >> 4) & 0xF) {
+     case 0: headerSize_ = 2; break;
+     case 1: headerSize_ = 4; break;
+     case 2: headerSize_ = 8; break;
+     case 3: headerSize_ = 16; break;
+     default: headerSize_ = 4;
+   }
 
    // Set tail size, min 64-bits
    tailSize_ = (headerSize_ < 8)?8:headerSize_;
