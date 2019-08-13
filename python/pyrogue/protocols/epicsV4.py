@@ -13,7 +13,6 @@
 #   Add support for array variables
 #   Add stream to epics array interface ?????
 #   Add epics array to stream interface ?????
-#   Use rpc for commands
 # Issues:
 #   Bools don't seem to work
 #   Not clear on to force a read on get
@@ -46,24 +45,40 @@ def EpicsConvSeverity(varValue):
 
 class EpicsPvHandler(p4p.server.thread.Handler):
     def __init__(self, holder):
-        self._holder = holder
+        self._valType = holder.valType
+        self._var     = holder.var
 
     def put(self, pv, op):
-        if self._holder.var.mode == 'RW' or self._holder.var.mode == 'WO':
+        if self._var.isVariable and (self._var.mode == 'RW' or self._var.mode == 'WO'):
             val = op.value().raw.value
 
-            if self._holder.var.isCommand:
-                self._holder.var.call(val)
-            elif self._holder.valType == 's':
-                self._holder.var.setDisp(val)
+            if self._var.isCommand:
+                self._var.call(val)
+            elif self._valType == 's':
+                self._var.setDisp(val)
             else:
-                self._holder.var.set(val)
+                self._var.set(val)
 
             # Need enum processing
+            op.done()
+
+        else: op.done(error='Put Not Supported On This Variable')
 
     def rpc(self, pv, op):
-        #print(f"PV RPC called pv={pv} op={op}")
-        pass
+        if self._var.isCommand:
+            val = op.value().query
+
+            if 'arg' in val:
+                ret = self._var.call(val.arg)
+            else:
+                ret = self._var.call()
+
+            if ret is None: ret = 'None'
+
+            v = p4p.Value(p4p.Type([('value',self._valType)]), {'value':ret})
+            op.done(value=(v))
+
+        else: op.done(error='Rpc Not Supported On Variables')
 
     def onFirstConnect(self, pv): # may be omitted
         #print(f"PV First connect called pv={pv}")
@@ -93,8 +108,13 @@ class EpicsPvHolder(object):
 
         else:
 
+            if self._var.isCommand:
+                typeStr = self._var.retTypeStr
+            else:
+                typeStr = self._var.typeStr
+
             # Unsigned
-            if 'UInt' in self._var.typeStr:
+            if typeStr is not None and 'UInt' in typeStr:
                 if isinstance(self._var,pyrogue.RemoteVariable):
                     if   sum(self._var.bitSize) <= 8:  self._valType = 'B'
                     elif sum(self._var.bitSize) <= 16: self._valType = 'H'
@@ -104,7 +124,7 @@ class EpicsPvHolder(object):
                     self._valType = 'L'
 
             # Signed
-            elif self._var.typeStr == 'int' or 'Int' in self._var.typeStr:
+            elif typeStr is not None and (typeStr == 'int' or 'Int' in typeStr):
                 if isinstance(self._var,pyrogue.RemoteVariable):
                     if   sum(self._var.bitSize) <= 8:  self._valType = 'b'
                     elif sum(self._var.bitSize) <= 16: self._valType = 'h'
@@ -114,7 +134,7 @@ class EpicsPvHolder(object):
                     self._valType = 'l'
 
             # Float
-            elif self._var.typeStr == 'float' or 'Float' in self._var.typeStr:
+            elif typeStr is not None and (typeStr == 'float' or 'Float' in typeStr):
                 if isinstance(self._var,pyrogue.RemoteVariable):
                     if sum(self._var.bitSize)   <= 32: self._valType = 'f'
                     else: self._valType = 'd'
@@ -133,7 +153,7 @@ class EpicsPvHolder(object):
             nt = p4p.nt.NTScalar(self._valType, display=True, control=True,  valueAlarm=True)
             iv = nt.wrap(varVal.value)
 
-        if 'List' in self._var.typeStr:
+        if typeStr is not None and 'List' in typeStr:
             print("Skipping array variable!!!!!!!!!")
         else:
 
@@ -243,7 +263,7 @@ class EpicsPvServer(object):
                 self._list.append(pvh)
 
     def stop(self):
-        if self._server is not None():
+        if self._server is not None:
             self._server.stop()
 
     def start(self):
