@@ -60,7 +60,7 @@ class BaseCommand(pr.BaseVariable):
         elif isinstance(retValue, list):
             self._typeStr = f'List[{retValue[0].__class__.__name__}]'
         else:
-            self._typeStr = value.__class__.__name__
+            self._typeStr = retValue.__class__.__name__
 
         # args flag
         try:
