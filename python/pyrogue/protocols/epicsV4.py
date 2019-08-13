@@ -10,7 +10,6 @@
 # Module containing epics support classes and routines
 # TODO:
 #   Proper enum support
-#   Add support for array variables
 #   Add stream to epics array interface ?????
 #   Add epics array to stream interface ?????
 # Issues:
@@ -124,7 +123,7 @@ class EpicsPvHolder(object):
                     self._valType = 'L'
 
             # Signed
-            elif typeStr is not None and (typeStr == 'int' or 'Int' in typeStr):
+            elif typeStr is not None and ('int' in typeStr or 'Int' in typeStr):
                 if isinstance(self._var,pyrogue.RemoteVariable):
                     if   sum(self._var.bitSize) <= 8:  self._valType = 'b'
                     elif sum(self._var.bitSize) <= 16: self._valType = 'h'
@@ -134,7 +133,7 @@ class EpicsPvHolder(object):
                     self._valType = 'l'
 
             # Float
-            elif typeStr is not None and (typeStr == 'float' or 'Float' in typeStr):
+            elif typeStr is not None and ('float' in typeStr or 'Float' in typeStr):
                 if isinstance(self._var,pyrogue.RemoteVariable):
                     if sum(self._var.bitSize)   <= 32: self._valType = 'f'
                     else: self._valType = 'd'
@@ -143,8 +142,13 @@ class EpicsPvHolder(object):
             else:
                 self._valType = 's'
 
+        # Detect array
+        if typeStr is not None and 'List' in typeStr:
+            self._valType = 'a' + self._valType
+
         # Get initial value
         varVal = var.getVariableValue(read=False)
+        print("Adding {} with type {} init={}".format(self._name,self._valType,varVal.valueDisp))
 
         if self._valType == 's':
             nt = p4p.nt.NTScalar(self._valType, display=False, control=False, valueAlarm=False)
@@ -153,41 +157,37 @@ class EpicsPvHolder(object):
             nt = p4p.nt.NTScalar(self._valType, display=True, control=True,  valueAlarm=True)
             iv = nt.wrap(varVal.value)
 
-        if typeStr is not None and 'List' in typeStr:
-            print("Skipping array variable!!!!!!!!!")
+        # Setup variable
+        self._pv = p4p.server.thread.SharedPV(queue=None, 
+                                              handler=EpicsPvHandler(self),
+                                              initial=iv,
+                                              nt=nt,
+                                              options={})
+
+        provider.add(self._name,self._pv)
+
+        curr = self._pv.current()
+
+        if self._valType == 's':
+            curr.raw.value = varVal.valueDisp
+        elif self._valType == '?':
+            curr.raw.value = varVal.value
         else:
+            curr.raw.value = varVal.value
+            curr.raw.alarm.status = EpicsConvStatus(varVal)
+            curr.raw.alarm.severity = EpicsConvSeverity(varVal)
+            curr.raw.display.description = self._var.description
 
-            self._pv = p4p.server.thread.SharedPV(queue=None, 
-                                                  handler=EpicsPvHandler(self),
-                                                  initial=iv,
-                                                  nt=nt,
-                                                  options={})
+            if self._var.units       is not None: curr.raw.display.units     = self._var.units
+            if self._var.maximum     is not None: curr.raw.display.limitHigh = self._var.maximum
+            if self._var.minimum     is not None: curr.raw.display.limitLow  = self._var.minimum
 
-            provider.add(self._name,self._pv)
+            if self._var.lowWarning  is not None: curr.raw.valueAlarm.lowWarningLimit   = self._var.lowWarning
+            if self._var.lowAlarm    is not None: curr.raw.valueAlarm.lowAlarmLimit     = self._var.lowAlarm
+            if self._var.highWarning is not None: curr.raw.valueAlarm.highWarningLimit  = self._var.highWarning
+            if self._var.highAlarm   is not None: curr.raw.valueAlarm.highAlarmLimit    = self._var.highAlarm
 
-            curr = self._pv.current()
-
-            if self._valType == 's':
-                curr.raw.value = varVal.valueDisp
-            elif self._valType == '?':
-                curr.raw.value = varVal.value
-            else:
-                curr.raw.value = varVal.value
-                curr.raw.alarm.status = EpicsConvStatus(varVal)
-                curr.raw.alarm.severity = EpicsConvSeverity(varVal)
-                curr.raw.display.description = self._var.description
-
-                if self._var.units       is not None: curr.raw.display.units     = self._var.units
-                if self._var.maximum     is not None: curr.raw.display.limitHigh = self._var.maximum
-                if self._var.minimum     is not None: curr.raw.display.limitLow  = self._var.minimum
-
-                if self._var.lowWarning  is not None: curr.raw.valueAlarm.lowWarningLimit   = self._var.lowWarning
-                if self._var.lowAlarm    is not None: curr.raw.valueAlarm.lowAlarmLimit     = self._var.lowAlarm
-                if self._var.highWarning is not None: curr.raw.valueAlarm.highWarningLimit  = self._var.highWarning
-                if self._var.highAlarm   is not None: curr.raw.valueAlarm.highAlarmLimit    = self._var.highAlarm
-
-                # Precision ?
-                # Mode ?
+            # Precision ?
 
             self._pv.post(curr)
             self._var.addListener(self._varUpdated)

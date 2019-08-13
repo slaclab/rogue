@@ -286,6 +286,11 @@ class AxiVersion(pr.Device):
             hidden       = False,
         ))
 
+        self.add(pr.LocalVariable(
+            name = 'TestArray',
+            mode = 'RW',
+            value = [1,2,3,4]))
+
         @self.command(hidden=False,value='',retValue='')
         def TestCommand(arg):
             return('Got {}'.format(arg))
