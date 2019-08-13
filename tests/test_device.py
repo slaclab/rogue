@@ -286,6 +286,10 @@ class AxiVersion(pr.Device):
             hidden       = False,
         ))
 
+        @self.command(hidden=False,value='',retValue='')
+        def TestCommand(arg):
+            return('Got {}'.format(arg))
+
     def hardReset(self):
         print('AxiVersion hard reset called')
 

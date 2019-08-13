@@ -127,7 +127,7 @@ class EpicsPvHolder(object):
         varVal = var.getVariableValue(read=False)
 
         if self._valType == 's':
-            nt = p4p.nt.NTScalar(self._valType, display=True, control=False, valueAlarm=False)
+            nt = p4p.nt.NTScalar(self._valType, display=False, control=False, valueAlarm=False)
             iv = nt.wrap(varVal.valueDisp)
         else:
             nt = p4p.nt.NTScalar(self._valType, display=True, control=True,  valueAlarm=True)
