@@ -8,6 +8,11 @@
 #-----------------------------------------------------------------------------
 # Description:
 # Module containing epics support classes and routines
+# TODO:
+#   Proper enum support
+#   Add support for array variables
+#   Add stream to epics array interface ?????
+#   Add epics array to stream interface ?????
 #-----------------------------------------------------------------------------
 # This file is part of the rogue software platform. It is subject to 
 # the license terms in the LICENSE.txt file found in the top-level directory 
@@ -22,6 +27,18 @@ import time
 import p4p.server.thread
 import p4p.nt
 import threading
+
+def EpicsConvSeverity(varValue):
+    if   varValue.status == "AlarmLoLo": return 5 # epicsAlarmLoLo
+    elif varValue.status == "AlarmLow":  return 6 # epicsAlarmLow
+    elif varValue.status == "AlarmHiHi": return 3 # epicsAlarmHiHi
+    elif varValue.status == "AlarmHigh": return 4 # epicsAlarmHigh
+    else: return 0
+
+def EpicsConvStatus(varValue):
+    if   varValue.severity == "AlarmMinor": return 1 # epicsSevMinor
+    elif varValue.severity == "AlarmMajor": return 2 # epicsSevMajor
+    else: return 0;
 
 class EpicsPvHandler(p4p.server.thread.Handler):
     def __init__(self, holder):
@@ -39,6 +56,8 @@ class EpicsPvHandler(p4p.server.thread.Handler):
                 self._holder.var.setDisp(val)
             else:
                 self._holder.var.set(val)
+
+            # Need enum processing
 
     def rpc(self, pv, op):
         print(f"PV RPC called pv={pv} op={op}")
@@ -67,6 +86,7 @@ class EpicsPvHolder(object):
             # Treat ENUMs as string for now
             else:
                 self._valType = 's'
+
 
             self._pv = p4p.server.thread.SharedPV(queue=None, 
                                                   handler=EpicsPvHandler(self),
@@ -115,9 +135,24 @@ class EpicsPvHolder(object):
                                                       #nt=p4p.nt.NTScalar(self._valType),
                                                       #options={})
             else:
+
+        # https://mdavidsaver.github.io/p4p/_modules/p4p/nt/scalar.html
+        # :param bool display: Include optional fields for display meta-data
+        # :param bool control: Include optional fields for control meta-data
+        # :param bool valueAlarm: Include optional fields for alarm level meta-data
+
+
+                #ntt=p4p.nt.NTScalar(self._valType,display=True,valueAlarm=True)
+
+                #if self._valType == 's':
+                    #ntt.wrap(varVal.valueDisp),
+                #else:
+                    #ntt.wrap(varVal.value),
+
                 self._pv = p4p.server.thread.SharedPV(queue=None, 
                                                       handler=EpicsPvHandler(self),
-                                                      initial=p4p.nt.NTScalar(self._valType).wrap(varVal.valueDisp),
+                                                      #initial=ntt,
+                                                      #nt=ntt,
                                                       nt=p4p.nt.NTScalar(self._valType),
                                                       options={})
 
@@ -125,12 +160,17 @@ class EpicsPvHolder(object):
         self._varUpdated(self._var.path,varVal)
 
     def _varUpdated(self,path,value):
-       #v = p4p.Value(
+        curr = self._pv.current()
 
         if self._valType == 's':
-            self._pv.post(value.valueDisp)
+            curr.value = value.valueDisp
         else:
-            self._pv.post(value.value)
+            curr.value = value.value
+
+        curr.status    = EpicsConvStatus(value)
+        curr.serverity = EpicsConvSeverity(value)
+
+        self._pv.post(curr)
 
     @property
     def var(self):
