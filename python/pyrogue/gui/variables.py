@@ -265,7 +265,7 @@ class VariableLink(QObject):
             return
         
         self._inEdit = True
-            self._variable.setDisp(self._widget.itemText(value))
+        self._variable.setDisp(self._widget.itemText(value))
         self._inEdit = False
 
 
