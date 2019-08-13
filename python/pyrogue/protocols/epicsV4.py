@@ -28,19 +28,17 @@ import p4p.server.thread
 import p4p.nt
 import threading
 
-def EpicsConvSeverity(varValue):
+def EpicsConvStatus(varValue):
     if   varValue.status == "AlarmLoLo": return 5 # epicsAlarmLoLo
     elif varValue.status == "AlarmLow":  return 6 # epicsAlarmLow
     elif varValue.status == "AlarmHiHi": return 3 # epicsAlarmHiHi
     elif varValue.status == "AlarmHigh": return 4 # epicsAlarmHigh
     else: return 0
 
-def EpicsConvStatus(varValue):
+def EpicsConvSeverity(varValue):
     if   varValue.severity == "AlarmMinor": return 1 # epicsSevMinor
     elif varValue.severity == "AlarmMajor": return 2 # epicsSevMajor
     else: return 0;
-
-
 
 class EpicsPvHandler(p4p.server.thread.Handler):
     def __init__(self, holder):
@@ -49,10 +47,8 @@ class EpicsPvHandler(p4p.server.thread.Handler):
     def put(self, pv, op):
         if self._holder.var.mode == 'RW' or self._holder.var.mode == 'WO':
             val = op.value().raw.value
-            typ = type(val)
-            #print(f"PV Put called pv={pv} type={typ}, value={val}")
 
-            if self._holder.var.isinstance(pr.BaseCommand):
+            if self._holder.var.isCommand:
                 self._holder.var.call(val)
             elif self._holder.valType == 's':
                 self._holder.var.setDisp(val)
@@ -62,13 +58,16 @@ class EpicsPvHandler(p4p.server.thread.Handler):
             # Need enum processing
 
     def rpc(self, pv, op):
-        print(f"PV RPC called pv={pv} op={op}")
+        #print(f"PV RPC called pv={pv} op={op}")
+        pass
 
     def onFirstConnect(self, pv): # may be omitted
-        print(f"PV First connect called pv={pv}")
+        #print(f"PV First connect called pv={pv}")
+        pass
 
     def onLastDisconnect(self, pv): # may be omitted
-        print(f"PV Last Disconnect called pv={pv}")
+        #print(f"PV Last Disconnect called pv={pv}")
+        pass
 
 class EpicsPvHolder(object):
     def __init__(self,provider,name,var):
@@ -132,7 +131,6 @@ class EpicsPvHolder(object):
 
         if 'List' in self._var.typeStr:
             print("Skipping array variable!!!!!!!!!")
-
         else:
 
             self._pv = p4p.server.thread.SharedPV(queue=None, 
@@ -141,33 +139,44 @@ class EpicsPvHolder(object):
                                                   nt=nt,
                                                   options={})
 
-            self._varUpdated(self._var.path,varVal)
             provider.add(self._name,self._pv)
 
             curr = self._pv.current()
 
             if self._valType == 's':
-                curr.value = varVal.valueDisp
+                curr.raw.value = varVal.valueDisp
+            elif self._valType == '?':
+                curr.raw.value = varVal.value
             else:
-                curr.status              = EpicsConvStatus(varVal)
-                curr.serverity           = EpicsConvSeverity(varVal)
-                curr.display.description = self._var.description
+                curr.raw.value = varVal.value
+                curr.raw.alarm.status = EpicsConvStatus(varVal)
+                curr.raw.alarm.severity = EpicsConvSeverity(varVal)
+                curr.raw.display.description = self._var.description
 
-                if self._var.units   is not None: curr.display.units     = self._var.units
-                if self._var.maximum is not None: curr.display.limitHigh = self._var.maximum
-                if self._var.minimum is not None: curr.display.limitLow  = self._var.minimum
+                if self._var.units       is not None: curr.raw.display.units     = self._var.units
+                if self._var.maximum     is not None: curr.raw.display.limitHigh = self._var.maximum
+                if self._var.minimum     is not None: curr.raw.display.limitLow  = self._var.minimum
+
+                if self._var.lowWarning  is not None: curr.raw.valueAlarm.lowWarningLimit   = self._var.lowWarning
+                if self._var.lowAlarm    is not None: curr.raw.valueAlarm.lowAlarmLimit     = self._var.lowAlarm
+                if self._var.highWarning is not None: curr.raw.valueAlarm.highWarningLimit  = self._var.highWarning
+                if self._var.highAlarm   is not None: curr.raw.valueAlarm.highAlarmLimit    = self._var.highAlarm
+
+                # Precision ?
+                # Mode ?
 
             self._pv.post(curr)
+            self._var.addListener(self._varUpdated)
 
     def _varUpdated(self,path,value):
         curr = self._pv.current()
 
         if self._valType == 's':
-            curr.value = value.valueDisp
+            curr.raw.value = value.valueDisp
         else:
-            curr.value     = value.value
-            curr.status    = EpicsConvStatus(value)
-            curr.serverity = EpicsConvSeverity(value)
+            curr.raw.value          = value.value
+            curr.raw.alarm.status   = EpicsConvStatus(value)
+            curr.raw.alarm.severity = EpicsConvSeverity(value)
 
         self._pv.post(curr)
 
@@ -230,9 +239,7 @@ class EpicsPvServer(object):
         self._server.stop()
 
     def start(self):
-        print("Server starting")
         self._server = p4p.server.Server(providers=[self._provider])
-        print("Server started")
 
     def list(self):
         return self._pvMap
