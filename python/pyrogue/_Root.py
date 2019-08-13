@@ -147,10 +147,12 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         self.add(pr.LocalCommand(name='SetYamlConfig', value='', function=lambda arg: self._setYaml(arg,False,['RW','WO']), hidden=True,
                                  description='Set configuration from passed YAML string'))
 
-        self.add(pr.LocalCommand(name='GetYamlConfig', value=True, function=lambda arg: self._getYaml(arg,['RW','WO']), hidden=True,
+        self.add(pr.LocalCommand(name='GetYamlConfig', value=True, retValue='',
+                                 function=lambda arg: self._getYaml(arg,['RW','WO']), hidden=True,
                                  description='Get current configuration as YAML string. Pass read first arg.'))
 
-        self.add(pr.LocalCommand(name='GetYamlState', value=True, function=lambda arg: self._getYaml(arg,['RW','RO','WO']), hidden=True,
+        self.add(pr.LocalCommand(name='GetYamlState', value=True, retValue='',
+                                 function=lambda arg: self._getYaml(arg,['RW','RO','WO']), hidden=True,
                                  description='Get current state as YAML string. Pass read first arg.'))
 
         self.add(pr.LocalCommand(name='Restart', function=self._restart, hidden=False,
