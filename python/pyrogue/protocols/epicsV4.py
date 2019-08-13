@@ -15,7 +15,6 @@
 #   Add epics array to stream interface ?????
 #   Use rpc for commands
 # Issues:
-#   Timestamps are not updating on varUpdate
 #   Bools don't seem to work
 #   Not clear on to force a read on get
 #-----------------------------------------------------------------------------
@@ -213,6 +212,7 @@ class EpicsPvServer(object):
         self._base      = base 
         self._log       = pyrogue.logInit(cls=self)
         self._syncRead  = syncRead
+        self._server    = None
 
         self._provider = p4p.server.StaticProvider(__name__)
         self._list = []
@@ -243,9 +243,11 @@ class EpicsPvServer(object):
                 self._list.append(pvh)
 
     def stop(self):
-        self._server.stop()
+        if self._server is not None():
+            self._server.stop()
 
     def start(self):
+        self.stop()
         self._server = p4p.server.Server(providers=[self._provider])
 
     def list(self):
