@@ -13,6 +13,10 @@
 #   Add support for array variables
 #   Add stream to epics array interface ?????
 #   Add epics array to stream interface ?????
+# Issues:
+#   Timestamps are not updating on varUpdate
+#   Bools don't seem to work
+#   Not clear on to force a read on get
 #-----------------------------------------------------------------------------
 # This file is part of the rogue software platform. It is subject to 
 # the license terms in the LICENSE.txt file found in the top-level directory 
