@@ -58,9 +58,9 @@ class BaseCommand(pr.BaseVariable):
         if retValue is None:
             self._retTypeStr = None
         elif isinstance(retValue, list):
-            self._typeStr = f'List[{retValue[0].__class__.__name__}]'
+            self._retTypeStr = f'List[{retValue[0].__class__.__name__}]'
         else:
-            self._typeStr = retValue.__class__.__name__
+            self._retTypeStr = retValue.__class__.__name__
 
         # args flag
         try:
