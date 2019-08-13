@@ -227,6 +227,7 @@ class RemoteCommand(BaseCommand, pr.RemoteVariable):
         BaseCommand.__init__(
             self,
             name=name,
+            retValue=retValue,
             function=function)
 
         pr.RemoteVariable.__init__(
@@ -235,7 +236,6 @@ class RemoteCommand(BaseCommand, pr.RemoteVariable):
             description=description,
             mode='WO',
             value=value,
-            retValue=retValue,
             enum=enum,
             hidden=hidden,
             minimum=minimum,
