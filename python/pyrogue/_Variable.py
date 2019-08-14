@@ -500,6 +500,7 @@ class RemoteVariable(BaseVariable):
         self._overlapEn = overlapEn
 
 
+    @pr.expose
     @property
     def varBytes(self):
         return self._bytes

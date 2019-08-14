@@ -144,7 +144,7 @@ class VirtualNode(pr.Node):
 
         return obj
 
-    def _isinstance(self,typ):
+    def isinstance(self,typ):
         cs = str(typ)
         return cs in self._bases
 
