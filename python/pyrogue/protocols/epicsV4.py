@@ -9,11 +9,8 @@
 # Description:
 # Module containing epics support classes and routines
 # TODO:
-#   Proper enum support
 #   Add stream to epics array interface ?????
 #   Add epics array to stream interface ?????
-# Issues:
-#   Bools don't seem to work
 #   Not clear on to force a read on get
 #-----------------------------------------------------------------------------
 # This file is part of the rogue software platform. It is subject to 
@@ -43,20 +40,18 @@ def EpicsConvSeverity(varValue):
     else: return 0;
 
 class EpicsPvHandler(p4p.server.thread.Handler):
-    def __init__(self, holder):
-        self._valType = holder.valType
-        self._var     = holder.var
+    def __init__(self, valType, var):
+        self._valType = valType
+        self._var     = var
 
     def put(self, pv, op):
         if self._var.isVariable and (self._var.mode == 'RW' or self._var.mode == 'WO'):
-            val = op.value().raw.value
-
-            if self._var.isCommand:
-                self._var.call(val)
+            if self._valType == 'enum':
+                self._var.setDisp(str(op.value()))
             elif self._valType == 's':
-                self._var.setDisp(val)
+                self._var.setDisp(op.value().raw.value)
             else:
-                self._var.set(val)
+                self._var.set(op.value().raw.value)
 
             # Need enum processing
             op.done()
@@ -88,29 +83,21 @@ class EpicsPvHandler(p4p.server.thread.Handler):
         pass
 
 class EpicsPvHolder(object):
-    def __init__(self,provider,name,var):
-        self._var        = var
-        self._name       = name
-        self._pv         = None
-        #self._enum = None
+    def __init__(self,provider,name,var,log):
+        self._var  = var
+        self._name = name
+        self._log  = log
+        self._pv   = None
+
+        if self._var.isCommand:
+            typeStr = self._var.retTypeStr
+        else:
+            typeStr = self._var.typeStr
 
         # Convert valType
-        if False and self._var.disp == 'enum':
-
-            # Detect bool
-            if len(self._var.enum) == 2 and False in self._var.enum and True in self._var.enum:
-                self._valType = '?'
-
-            # Treat ENUMs as string for now
-            else:
-                self._valType = 's'
-
+        if self._var.disp == 'enum':
+            self._valType = 'enum'
         else:
-
-            if self._var.isCommand:
-                typeStr = self._var.retTypeStr
-            else:
-                typeStr = self._var.typeStr
 
             # Unsigned
             if typeStr is not None and 'UInt' in typeStr:
@@ -148,9 +135,13 @@ class EpicsPvHolder(object):
 
         # Get initial value
         varVal = var.getVariableValue(read=False)
-        print("Adding {} with type {} init={}".format(self._name,self._valType,varVal.valueDisp))
+        self._log.info("Adding {} with type {} init={}".format(self._name,self._valType,varVal.valueDisp))
 
-        if self._valType == 's':
+        if self._valType == 'enum':
+            nt = p4p.nt.NTEnum(display=False, control=False, valueAlarm=False)
+            enum = list(self._var.enum.values())
+            iv = {'choices':enum, 'index':enum.index(varVal.valueDisp)}
+        elif self._valType == 's':
             nt = p4p.nt.NTScalar(self._valType, display=False, control=False, valueAlarm=False)
             iv = nt.wrap(varVal.valueDisp)
         else:
@@ -159,20 +150,17 @@ class EpicsPvHolder(object):
 
         # Setup variable
         self._pv = p4p.server.thread.SharedPV(queue=None, 
-                                              handler=EpicsPvHandler(self),
+                                              handler=EpicsPvHandler(self._valType,self._var),
                                               initial=iv,
                                               nt=nt,
                                               options={})
 
         provider.add(self._name,self._pv)
+        self._var.addListener(self._varUpdated)
 
-        curr = self._pv.current()
-
-        if self._valType == 's':
-            curr.raw.value = varVal.valueDisp
-        elif self._valType == '?':
-            curr.raw.value = varVal.value
-        else:
+        # Update fields in numeric types
+        if self._valType != 'enum' and self._valType != 's':
+            curr = self._pv.current()
             curr.raw.value = varVal.value
             curr.raw.alarm.status = EpicsConvStatus(varVal)
             curr.raw.alarm.severity = EpicsConvSeverity(varVal)
@@ -188,39 +176,18 @@ class EpicsPvHolder(object):
             if self._var.highAlarm   is not None: curr.raw.valueAlarm.highAlarmLimit    = self._var.highAlarm
 
             # Precision ?
-
             self._pv.post(curr)
-            self._var.addListener(self._varUpdated)
 
     def _varUpdated(self,path,value):
-        curr = self._pv.current()
-
-        if self._valType == 's':
-            curr.raw.value = value.valueDisp
+        if self._valType == 'enum' or self._valType == 's':
+            self._pv.post(value.valueDisp)
         else:
+            curr = self._pv.current()
             curr.raw.value          = value.value
             curr.raw.alarm.status   = EpicsConvStatus(value)
             curr.raw.alarm.severity = EpicsConvSeverity(value)
-
-        curr.raw['timeStamp.secondsPastEpoch'], curr.raw['timeStamp.nanoseconds'] = divmod(float(time.time_ns()), 1.0e9)
-
-        self._pv.post(curr)
-
-    @property
-    def var(self):
-        return self._var
-
-    @property
-    def name(self):
-        return self._name
-
-    @property
-    def pv(self):
-        return self._pv
-
-    @property
-    def valType(self):
-        return self._valType
+            curr.raw['timeStamp.secondsPastEpoch'], curr.raw['timeStamp.nanoseconds'] = divmod(float(time.time_ns()), 1.0e9)
+            self._pv.post(curr)
 
 
 class EpicsPvServer(object):
@@ -259,7 +226,7 @@ class EpicsPvServer(object):
                 eName = self._pvMap[v.path]
 
             if eName is not None:
-                pvh = EpicsPvHolder(self._provider,eName,v)
+                pvh = EpicsPvHolder(self._provider,eName,v,self._log)
                 self._list.append(pvh)
 
     def stop(self):
