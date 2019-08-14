@@ -9,8 +9,6 @@
 # Description:
 # Module containing epics support classes and routines
 # TODO:
-#   Add stream to epics array interface ?????
-#   Add epics array to stream interface ?????
 #   Not clear on to force a read on get
 #-----------------------------------------------------------------------------
 # This file is part of the rogue software platform. It is subject to 
@@ -244,15 +242,3 @@ class EpicsPvServer(object):
         for k,v in self._pvMap.items():
             print("{} -> {}".format(v,k))
 
-                
-#    def createSlave(self, name, maxSize, type):
-#        slave = rogue.protocols.epicsV3.Slave(self._base + ':' + name,maxSize,type)
-#        self._srv.addValue(slave)
-#        return slave
-#
-#    def createMaster(self, name, maxSize, type):
-#        mast = rogue.protocols.epicsV3.Master(self._base + ':' + name,maxSize,type)
-#        self._srv.addValue(mast)
-#        return mast
-#
-#
