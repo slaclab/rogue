@@ -185,6 +185,9 @@ class VariableLink(QObject):
                  'maximum', 'lowWarning', 'lowAlarm', 'highWarning', 
                  'highAlarm', 'alarmStatus', 'alarmSeverity', 'pollInterval']
 
+        if self._variable.isinstance(pyrogue.RemoteVariable):
+            attrs += ['offset', 'bitSize', 'bitOffset', 'verify', 'varBytes']
+
         msgBox = QDialog()
         msgBox.setWindowTitle("Variable Information For {}".format(self._variable.name))
         msgBox.setMinimumWidth(400)
@@ -209,7 +212,7 @@ class VariableLink(QObject):
             fl.addRow(a,le)
         msgBox.exec()
 
-    def varListener(self, path, var):
+    def varListener(self, path, varVal):
         with self._lock:
             if self._widget is None or self._inEdit is True:
                 return
@@ -217,27 +220,27 @@ class VariableLink(QObject):
             self._swSet = True
 
             if isinstance(self._widget, QComboBox):
-                i = self._widget.findText(var.valueDisp)
+                i = self._widget.findText(varVal.valueDisp)
 
                 if i < 0: i = 0
 
                 if self._widget.currentIndex() != i:
                     self.updateGui.emit(i)
             elif isinstance(self._widget, QSpinBox):
-                if self._widget.value != var.value:
-                    self.updateGui.emit(var.value)
+                if self._widget.value != varVal.value:
+                    self.updateGui.emit(varVal.value)
             else:
-                if self._widget.text() != var.valueDisp:
-                    self.updateGui[str].emit(var.valueDisp)
+                if self._widget.text() != varVal.valueDisp:
+                    self.updateGui[str].emit(varVal.valueDisp)
 
-            if value.severity == 'AlarmMajor':
+            if varVal.severity == 'AlarmMajor':
                 self._alarm.setText('Major')
                 p = QPalette()
                 p.setColor(QPalette.Base,Qt.red)
                 p.setColor(QPalette.Text,Qt.black)
                 self._alarm.setPalette(p)
 
-            elif value.severity == 'AlarmMinor':
+            elif varVal.severity == 'AlarmMinor':
                 self._alarm.setText('Minor')
                 p = QPalette()
                 p.setColor(QPalette.Base,Qt.yellow)
