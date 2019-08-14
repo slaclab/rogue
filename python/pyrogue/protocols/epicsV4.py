@@ -194,7 +194,7 @@ class EpicsPvServer(object):
     """
     Class to contain an epics PV server
     """
-    def __init__(self,*,base,root,pvMap=None, syncRead=True, threadCount=0):
+    def __init__(self,*,base,root,pvMap=None, syncRead=True):
         self._root      = root
         self._base      = base 
         self._log       = pyrogue.logInit(cls=self)
