@@ -234,7 +234,7 @@ class Node(object):
         exc is a class type to exclude, if hidden = False, only visable nodes are returned
         """
         return odict([(k,n) for k,n in self._nodes.items() \
-            if (n._isinstance(typ) and ((exc is None) or (not n._isinstance(exc))) and (hidden or n.hidden == False))])
+            if (n.isinstance(typ) and ((exc is None) or (not n.isinstance(exc))) and (hidden or n.hidden == False))])
 
     @property
     def nodes(self):
@@ -264,7 +264,7 @@ class Node(object):
         """
         lst = []
         for key,value in self._nodes.items():
-            if value._isinstance(pr.BaseVariable):
+            if value.isinstance(pr.BaseVariable):
                 lst.append(value)
             else:
                 lst.extend(value.variableList)
@@ -277,7 +277,7 @@ class Node(object):
         """
         lst = []
         for key,value in self._nodes.items():
-            if value._isinstance(pr.Device):
+            if value.isinstance(pr.Device):
                 lst.append(value)
                 lst.extend(value.deviceList)
         return lst
@@ -329,15 +329,15 @@ class Node(object):
 
     @property
     def isDevice(self):
-        return self._isinstance(pr.Device)
+        return self.isinstance(pr.Device)
 
     @property
     def isVariable(self):
-        return (self._isinstance(pr.BaseVariable) and (not self._isinstance(pr.BaseCommand)))
+        return (self.isinstance(pr.BaseVariable) and (not self.isinstance(pr.BaseCommand)))
 
     @property
     def isCommand(self):
-        return self._isinstance(pr.BaseCommand)
+        return self.isinstance(pr.BaseCommand)
 
     def find(self, *, recurse=True, typ=None, **kwargs):
         """ 
@@ -351,7 +351,7 @@ class Node(object):
 
         found = []
         for node in self._nodes.values():
-            if node._isinstance(typ):
+            if node.isinstance(typ):
                 for prop, value in kwargs.items():
                     if not hasattr(node, prop):
                         break
@@ -389,7 +389,7 @@ class Node(object):
             self.callRecursive(func, nodeTypes, **kwargs)
         return closure
 
-    def _isinstance(self,typ):
+    def isinstance(self,typ):
         return isinstance(self,typ)
 
     def _rootAttached(self,parent,root):
