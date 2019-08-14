@@ -15,6 +15,7 @@
 #-----------------------------------------------------------------------------
 import pyrogue
 import pyrogue.interfaces.simulation
+import pyrogue.protocols.epics
 import pyrogue.utilities.fileio
 import rogue.interfaces.stream
 import test_device
@@ -24,10 +25,10 @@ import pyrogue.protocols.epics
 import logging
 
 #rogue.Logging.setFilter('pyrogue.epicsV3.Value',rogue.Logging.Debug)
-#rogue.Logging.setLevel(rogue.Logging.Debug)
+rogue.Logging.setLevel(rogue.Logging.Debug)
 
-#logger = logging.getLogger('pyrogue')
-#logger.setLevel(logging.DEBUG)
+logger = logging.getLogger('pyrogue')
+logger.setLevel(logging.DEBUG)
 
 class DummyTree(pyrogue.Root):
 

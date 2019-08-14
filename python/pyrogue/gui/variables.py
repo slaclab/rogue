@@ -94,7 +94,11 @@ class VariableLink(QObject):
         self._item = QTreeWidgetItem(parent)
         self._item.setText(0,variable.name)
         self._item.setText(1,variable.mode)
-        self._item.setText(2,variable.typeStr) # Fix this. Should show base and size
+
+        self._alarm = QLineEdit()
+        self._alarm.setReadOnly(True)
+        self._alarm.setText('None')
+        self._tree.setItemWidget(self._item,2,self._alarm)
 
         if variable.units:
             self._item.setText(4,str(variable.units))
@@ -132,8 +136,7 @@ class VariableLink(QObject):
             self._widget.setReadOnly(True)
 
         self._tree.setItemWidget(self._item,3,self._widget)
-        # self.varListener(None,self._variable.getVariableValue(read=False))
-        self.varListener(None,pyrogue.VariableValue(self._variable))
+        self.varListener(None,self._variable.getVariableValue(read=False))
 
         variable.addListener(self.varListener)
 
@@ -177,14 +180,10 @@ class VariableLink(QObject):
 
     def infoDialog(self):
 
-        #attrs = ['name', 'path', 'description', 'hidden', 'enum', 
-        #         'typeStr', 'disp', 'precision', 'mode', 'units', 'minimum', 
-        #         'maximum', 'lowWarning', 'lowAlarm', 'highWarning', 
-        #         'highAlarm', 'alarmStatus', 'alarmSeverity', 'pollInterval']
-
         attrs = ['name', 'path', 'description', 'hidden', 'enum', 
-                 'typeStr', 'disp', 'mode', 'units', 'minimum', 
-                 'maximum', 'pollInterval']
+                 'typeStr', 'disp', 'precision', 'mode', 'units', 'minimum', 
+                 'maximum', 'lowWarning', 'lowAlarm', 'highWarning', 
+                 'highAlarm', 'alarmStatus', 'alarmSeverity', 'pollInterval']
 
         msgBox = QDialog()
         msgBox.setWindowTitle("Variable Information For {}".format(self._variable.name))
@@ -231,6 +230,25 @@ class VariableLink(QObject):
                 if self._widget.text() != var.valueDisp:
                     self.updateGui[str].emit(var.valueDisp)
 
+            if value.severity == 'AlarmMajor':
+                self._alarm.setText('Major')
+                p = QPalette()
+                p.setColor(QPalette.Base,Qt.red)
+                p.setColor(QPalette.Text,Qt.black)
+                self._alarm.setPalette(p)
+
+            elif value.severity == 'AlarmMinor':
+                self._alarm.setText('Minor')
+                p = QPalette()
+                p.setColor(QPalette.Base,Qt.yellow)
+                p.setColor(QPalette.Text,Qt.black)
+                self._alarm.setPalette(p)
+
+            else:
+                self._alarm.setText('None')
+                p = QPalette()
+                self._alarm.setPalette(p)
+
             self._swSet = False
 
     @pyqtSlot()
@@ -254,7 +272,7 @@ class VariableLink(QObject):
     def sbChanged(self, value):
         if self._swSet:
             return
-
+        
         self._inEdit = True
         self._variable.setDisp(value)
         self._inEdit = False
@@ -263,7 +281,7 @@ class VariableLink(QObject):
     def cbChanged(self, value):
         if self._swSet:
             return
-        
+
         self._inEdit = True
         self._variable.setDisp(self._widget.itemText(value))
         self._inEdit = False
@@ -282,7 +300,7 @@ class VariableWidget(QWidget):
         vb.addWidget(self.tree)
 
         self.tree.setColumnCount(2)
-        self.tree.setHeaderLabels(['Variable','Mode','Base','Value','Units'])
+        self.tree.setHeaderLabels(['Variable','Mode','Alarm','Value','Units'])
 
         hb = QHBoxLayout()
         vb.addLayout(hb)
