@@ -167,6 +167,14 @@ class BaseVariable(pr.Node):
 
     @pr.expose
     @property
+    def hasAlarm(self):
+        return (self._lowWarning is not None or
+                self._lowAlarm is not None or
+                self._highWarning is not None or
+                self._highAlarm is not None)
+
+    @pr.expose
+    @property
     def lowWarning(self):
         return self._lowWarning
 
@@ -416,7 +424,10 @@ class BaseVariable(pr.Node):
 
         if isinstance(value,list) or isinstance(value,dict): return 'None','None'
 
-        if (self._lowAlarm  is not None and value < self._lowAlarm):
+        if (self.hasAlarm is False):
+            return "None", "None"
+        
+        elif (self._lowAlarm  is not None and value < self._lowAlarm):
             return 'AlarmLoLo', 'AlarmMajor'
 
         elif (self._highAlarm  is not None and value > self._highAlarm):
@@ -429,7 +440,7 @@ class BaseVariable(pr.Node):
             return 'AlarmHigh', 'AlarmMinor'
 
         else:
-            return 'None','None'
+            return 'Good','Good'
 
 
 class RemoteVariable(BaseVariable):
