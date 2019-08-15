@@ -35,7 +35,7 @@ class RunControl(pr.Device):
         if states is None:
             states={0:'Stopped', 1:'Running'}
 
-        Device.__init__(self, hidden=hidden, **kwargs)
+        pr.Device.__init__(self, hidden=hidden, **kwargs)
 
         value = [k for k,v in states.items()][0]
 
