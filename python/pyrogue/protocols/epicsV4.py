@@ -21,9 +21,15 @@
 #-----------------------------------------------------------------------------
 import pyrogue
 import time
-import p4p.server.thread
-import p4p.nt
 import threading
+import warnings
+
+try:
+    import p4p.server.thread
+    import p4p.nt
+except:
+    warnings.warn("P4P Is not installed")
+
 
 def EpicsConvStatus(varValue):
     if   varValue.status == "AlarmLoLo": return 5 # epicsAlarmLoLo
