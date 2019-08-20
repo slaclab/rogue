@@ -35,7 +35,7 @@ The next step is to create ana anaconda environment which includes the Rogue pac
 
 .. code::
 
-   $ conda create -n rogue_env -c defaults -c aires-tag -c lcls-ii -c conda-forge rogue
+   $ conda create -n rogue_env -c defaults -c tidair-tag -c lcls-ii -c conda-forge rogue
 
 The order of the args is important. tidair-tag is the channel from which the Rogue package is downloaded.
 
@@ -43,19 +43,19 @@ If you already have an anaconda environment that you would like to install Rogue
 
 .. code::
 
-   $ conda install -c defaults -c aires-tag -c lcls-ii -c conda-forge rogue
+   $ conda install -c defaults -c tidair-tag -c lcls-ii -c conda-forge rogue
 
 The above commands will install the latest version of Rogue from the master branch. If you want to insteall the pre-release version of Rogue, run the following:
 
 .. code::
 
-   $ conda create -n rogue_env -c defaults -c aires-dev -c lcls-ii -c conda-forge rogue
+   $ conda create -n rogue_env -c defaults -c tidair-dev -c lcls-ii -c conda-forge rogue
 
 Alternatively you can install a specific released version of Rogue:
 
 .. code::
 
-   $ conda create -n rogue_env -c defaults -c aires-tag -c lcls-ii -c conda-forge rogue=v3.0.2
+   $ conda create -n rogue_env -c defaults -c tidair-tag -c lcls-ii -c conda-forge rogue=v3.0.2
 
 Using Rogue In Anaconda
 =======================

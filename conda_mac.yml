@@ -1,6 +1,6 @@
 channels:
   - defaults
-  - aires-tag
+  - tidair-tag
   - lcls-ii
   - conda-forge
 dependencies:
