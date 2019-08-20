@@ -23,6 +23,7 @@ dependencies:
   - bzip2
   - zeromq
   - epics-base
+  - pcas
   - sphinx
   - sphinx_rtd_theme
   - breathe
