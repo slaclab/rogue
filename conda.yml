@@ -1,7 +1,8 @@
 channels:
   - defaults
+  - aires-tag
+  - lcls-ii
   - conda-forge
-  - paulscherrerinstitute
 dependencies:
   - python
   - gcc_linux-64
@@ -22,7 +23,9 @@ dependencies:
   - boost
   - bzip2
   - zeromq
-  - epics-base=3.14.12.8
+  - epics-base
+  - pcas
   - sphinx
   - sphinx_rtd_theme
   - breathe
+  - p4p
