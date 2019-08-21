@@ -136,6 +136,10 @@ if((NOT NO_PYTHON) AND (NOT NO_EPICS) AND DEFINED ENV{EPICS_BASE})
    endif()
    set(EPICSV3_LIB_DIR   ${EPICSV3_BASE_DIR}/lib/${EPICSV3_ARCH} )
 
+   if(DEFINED ENV{EPICS_PCAS_ROOT})
+      set(EPICS_PCAS_ROOT $ENV{EPICS_PCAS_ROOT})
+   endif()
+
    if(APPLE)
 
       if(EPICS_PCAS_ROOT)
@@ -407,9 +411,10 @@ endif()
 message("")
 
 if (DO_EPICS_V3)
-   message("-- Found EPICS: ${EPICSV3_BASE_DIR}")
    if (EPICS_PCAS_ROOT)
-      message("-- EPICS_PCAS_ROOT: ${EPICS_PCAS_ROOT}")
+      message("-- Found EPICS: ${EPICSV3_BASE_DIR}")
+   else()
+      message("-- Found EPICS: ${EPICS_PCAS_ROOT}")
    endif()
 else()
    message("-- EPICS V3 not included!")
