@@ -26,7 +26,7 @@ import time
 class RunControl(pr.Device):
     """Special base class to control runs. """
 
-    def __init__(self, *, hidden=True, rates=None, states=None, cmd=None, **kwargs):
+    def __init__(self, *, visibility=0, rates=None, states=None, cmd=None, **kwargs):
         """Initialize device class"""
 
         if rates is None:
@@ -35,7 +35,7 @@ class RunControl(pr.Device):
         if states is None:
             states={0:'Stopped', 1:'Running'}
 
-        pr.Device.__init__(self, hidden=hidden, **kwargs)
+        pr.Device.__init__(self, visibility=visibility, **kwargs)
 
         value = [k for k,v in states.items()][0]
 
