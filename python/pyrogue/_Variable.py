@@ -140,10 +140,8 @@ class BaseVariable(pr.Node):
     def precision(self):
         res = re.search(r':([0-9])\.([0-9]*)f',self._disp) 
         try:
-            print("Returning {}".format(res[2]))
             return res[2]
         except:
-            print("Returning 3")
             return 3
 
     @pr.expose
