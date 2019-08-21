@@ -102,11 +102,14 @@ class VariableLink(QObject):
         self._item = QTreeWidgetItem(parent)
         self._item.setText(0,variable.name)
         self._item.setText(1,variable.mode)
+        self._item.setText(2,variable.typeStr)
 
+        
         self._alarm = QLineEdit()
         self._alarm.setReadOnly(True)
-        self._alarm.setText('None')
-        self._tree.setItemWidget(self._item,2,self._alarm)
+        #self._alarm.setText('None')
+        if variable.hasAlarm:
+            self._tree.setItemWidget(self._item,5,self._alarm)
 
         if variable.units:
             self._item.setText(4,str(variable.units))
@@ -255,8 +258,15 @@ class VariableLink(QObject):
                 p.setColor(QPalette.Text,Qt.black)
                 self._alarm.setPalette(p)
 
+            elif varVal.severity == 'Good':
+                self._alarm.setText('Good')
+                p = QPalette()
+                p.setColor(QPalette.Base,Qt.green)
+                p.setColor(QPalette.Text,Qt.black)
+                self._alarm.setPalette(p)
+
             else:
-                self._alarm.setText('None')
+                self._alarm.setText('')
                 p = QPalette()
                 self._alarm.setPalette(p)
 
@@ -311,7 +321,7 @@ class VariableWidget(QWidget):
         vb.addWidget(self.tree)
 
         self.tree.setColumnCount(2)
-        self.tree.setHeaderLabels(['Variable','Mode','Alarm','Value','Units'])
+        self.tree.setHeaderLabels(['Variable','Mode','Type','Value','Units', 'Alarm', ''])
 
         hb = QHBoxLayout()
         vb.addLayout(hb)
