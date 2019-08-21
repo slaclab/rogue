@@ -52,6 +52,7 @@ void ruf::StreamReader::setup_python() {
    bp::class_<ruf::StreamReader, ruf::StreamReaderPtr,bp::bases<ris::Master>, boost::noncopyable >("StreamReader",bp::init<>())
       .def("open",           &ruf::StreamReader::open)
       .def("close",          &ruf::StreamReader::close)
+      .def("isOpen",         &ruf::StreamReader::isOpen)
       .def("closeWait",      &ruf::StreamReader::closeWait)
       .def("isActive",       &ruf::StreamReader::isActive)
    ;
@@ -118,6 +119,11 @@ void ruf::StreamReader::close() {
    rogue::GilRelease noGil;
    std::unique_lock<std::mutex> lock(mtx_);
    intClose();
+}
+
+//! Get open status
+bool ruf::StreamReader::isOpen() {
+   return ( fd_ >= 0 );
 }
 
 //! Close a data file

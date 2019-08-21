@@ -102,14 +102,18 @@ class VariableLink(QObject):
         self._item = QTreeWidgetItem(parent)
         self._item.setText(0,variable.name)
         self._item.setText(1,variable.mode)
-        self._item.setText(2,variable.typeStr) # Fix this. Should show base and size
+
+        self._alarm = QLineEdit()
+        self._alarm.setReadOnly(True)
+        self._alarm.setText('None')
+        self._tree.setItemWidget(self._item,2,self._alarm)
 
         if variable.units:
             self._item.setText(4,str(variable.units))
 
         if self._variable.disp == 'enum' and self._variable.enum is not None and self._variable.mode != 'RO':
             self._widget = QComboBox()
-            self._widget.activated.connect(self.guiChanged)
+            self._widget.activated.connect(self.cbChanged)
 
             self.updateGui.connect(self._widget.setCurrentIndex)
 
@@ -121,7 +125,7 @@ class VariableLink(QObject):
             self._widget = QSpinBox();
             self._widget.setMinimum(self._variable.minimum)
             self._widget.setMaximum(self._variable.maximum)
-            self._widget.valueChanged.connect(self.guiChanged)
+            self._widget.valueChanged.connect(self.sbChanged)
 
             self.updateGui.connect(self._widget.setValue)
 
@@ -140,8 +144,7 @@ class VariableLink(QObject):
             self._widget.setReadOnly(True)
 
         self._tree.setItemWidget(self._item,3,self._widget)
-        # self.varListener(None,self._variable.getVariableValue(read=False))
-        self.varListener(None,pyrogue.VariableValue(self._variable))
+        self.varListener(None,self._variable.getVariableValue(read=False))
 
         variable.addListener(self.varListener)
 
@@ -185,14 +188,13 @@ class VariableLink(QObject):
 
     def infoDialog(self):
 
-        #attrs = ['name', 'path', 'description', 'hidden', 'enum', 
-        #         'typeStr', 'disp', 'precision', 'mode', 'units', 'minimum', 
-        #         'maximum', 'lowWarning', 'lowAlarm', 'highWarning', 
-        #         'highAlarm', 'alarmStatus', 'alarmSeverity', 'pollInterval']
-
         attrs = ['name', 'path', 'description', 'visibility', 'enum', 
-                 'typeStr', 'disp', 'mode', 'units', 'minimum', 
-                 'maximum', 'pollInterval']
+                 'typeStr', 'disp', 'precision', 'mode', 'units', 'minimum', 
+                 'maximum', 'lowWarning', 'lowAlarm', 'highWarning', 
+                 'highAlarm', 'alarmStatus', 'alarmSeverity', 'pollInterval']
+
+        if self._variable.isinstance(pyrogue.RemoteVariable):
+            attrs += ['offset', 'bitSize', 'bitOffset', 'verify', 'varBytes']
 
         msgBox = QDialog()
         msgBox.setWindowTitle("Variable Information For {}".format(self._variable.name))
@@ -218,7 +220,7 @@ class VariableLink(QObject):
             fl.addRow(a,le)
         msgBox.exec()
 
-    def varListener(self, path, value):
+    def varListener(self, path, varVal):
         with self._lock:
             if self._widget is None or self._inEdit is True:
                 return
@@ -226,18 +228,37 @@ class VariableLink(QObject):
             self._swSet = True
 
             if isinstance(self._widget, QComboBox):
-                i = self._widget.findText(value.valueDisp)
+                i = self._widget.findText(varVal.valueDisp)
 
                 if i < 0: i = 0
 
                 if self._widget.currentIndex() != i:
                     self.updateGui.emit(i)
             elif isinstance(self._widget, QSpinBox):
-                if self._widget.value != value.value:
-                    self.updateGui.emit(value)
+                if self._widget.value != varVal.value:
+                    self.updateGui.emit(varVal.value)
             else:
-                if self._widget.text() != value.valueDisp:
-                    self.updateGui[str].emit(value.valueDisp)
+                if self._widget.text() != varVal.valueDisp:
+                    self.updateGui[str].emit(varVal.valueDisp)
+
+            if varVal.severity == 'AlarmMajor':
+                self._alarm.setText('Major')
+                p = QPalette()
+                p.setColor(QPalette.Base,Qt.red)
+                p.setColor(QPalette.Text,Qt.black)
+                self._alarm.setPalette(p)
+
+            elif varVal.severity == 'AlarmMinor':
+                self._alarm.setText('Minor')
+                p = QPalette()
+                p.setColor(QPalette.Base,Qt.yellow)
+                p.setColor(QPalette.Text,Qt.black)
+                self._alarm.setPalette(p)
+
+            else:
+                self._alarm.setText('None')
+                p = QPalette()
+                self._alarm.setPalette(p)
 
             self._swSet = False
 
@@ -254,24 +275,27 @@ class VariableLink(QObject):
         p = QPalette()
         self._widget.setPalette(p)
 
-        self.guiChanged(self._widget.text())
+        self._variable.setDisp(self._widget.text())
         self._inEdit = False
         self.updateGui.emit(self._variable.valueDisp())
 
     @pyqtSlot(int)
-    @pyqtSlot(str)
-    def guiChanged(self, value):
+    def sbChanged(self, value):
+        if self._swSet:
+            return
+        
+        self._inEdit = True
+        self._variable.setDisp(value)
+        self._inEdit = False
+
+    @pyqtSlot(int)
+    def cbChanged(self, value):
         if self._swSet:
             return
 
-        if self._variable.disp == 'enum':
-            # For enums, value will be index of selected item
-            # Need to call itemText to convert to string
+        self._inEdit = True
             self._variable.setDisp(self._widget.itemText(value))
-
-        else:
-            # For non enums, value will be string entered in box
-            self._variable.setDisp(value)
+        self._inEdit = False
 
 
 class VariableWidget(QWidget):
@@ -287,7 +311,7 @@ class VariableWidget(QWidget):
         vb.addWidget(self.tree)
 
         self.tree.setColumnCount(2)
-        self.tree.setHeaderLabels(['Variable','Mode','Base','Value','Units'])
+        self.tree.setHeaderLabels(['Variable','Mode','Alarm','Value','Units'])
 
         hb = QHBoxLayout()
         vb.addLayout(hb)

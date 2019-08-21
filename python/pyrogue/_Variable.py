@@ -20,6 +20,7 @@ import parse
 import math
 import inspect
 import threading
+import re
 from collections import Iterable
 
 class VariableError(Exception):
@@ -28,12 +29,13 @@ class VariableError(Exception):
 
 
 class VariableValue(object):
-    def __init__(self, var):
-        self.value     = var.value()
+    def __init__(self, var, read=False):
+        self.value     = var.get(read=read)
         self.valueDisp = var.genDisp(self.value)
         self.disp      = var.disp
         self.enum      = var.enum
 
+        self.status, self.severity = var._alarmState(self.value)
 
 class BaseVariable(pr.Node):
 
@@ -49,6 +51,10 @@ class BaseVariable(pr.Node):
                  visibility=25,
                  minimum=None,
                  maximum=None,
+                 lowWarning=None,
+                 lowAlarm=None,
+                 highWarning=None,
+                 highAlarm=None,
                  pollInterval=0,
                  typeStr='Unknown',
                  offset=0
@@ -57,8 +63,12 @@ class BaseVariable(pr.Node):
         # Public Attributes
         self._mode          = mode
         self._units         = units
-        self._minimum       = minimum # For base='range'
-        self._maximum       = maximum # For base='range'
+        self._minimum       = minimum
+        self._maximum       = maximum
+        self._lowWarning    = lowWarning
+        self._lowAlarm      = lowAlarm
+        self._highWarning   = highWarning
+        self._highAlarm     = highAlarm
         self._default       = value
         self._block         = None
         self._pollInterval  = pollInterval
@@ -127,6 +137,17 @@ class BaseVariable(pr.Node):
 
     @pr.expose
     @property
+    def precision(self):
+        res = re.search(r':([0-9])\.([0-9]*)f',self._disp) 
+        try:
+            print("Returning {}".format(res[2]))
+            return res[2]
+        except:
+            print("Returning 3")
+            return 3
+
+    @pr.expose
+    @property
     def mode(self):
         return self._mode
 
@@ -144,6 +165,38 @@ class BaseVariable(pr.Node):
     @property
     def maximum(self):
         return self._maximum
+
+    @pr.expose
+    @property
+    def lowWarning(self):
+        return self._lowWarning
+
+    @pr.expose
+    @property
+    def lowAlarm(self):
+        return self._lowAlarm
+
+    @pr.expose
+    @property
+    def highWarning(self):
+        return self._highWarning
+
+    @pr.expose
+    @property
+    def highAlarm(self):
+        return self._highAlarm
+
+    @pr.expose
+    @property
+    def alarmStatus(self):
+        stat,sevr = self._alarmState(self.value())
+        return stat
+
+    @pr.expose
+    @property
+    def alarmSeverity(self):
+        stat,sevr = self._alarmState(self.value())
+        return sevr
 
     def addDependency(self, dep):
         if dep not in self.__dependencies:
@@ -236,6 +289,15 @@ class BaseVariable(pr.Node):
             ret = None
 
         return ret
+
+    @pr.expose
+    def getVariableValue(self,read=True):
+        """ 
+        Return the value after performing a read from hardware if applicable.
+        Hardware read is blocking. An error will result in a logged exception.
+        Listeners will be informed of the update.
+        """
+        return VariableValue(self,read=read)
 
     @pr.expose
     def value(self):
@@ -350,6 +412,26 @@ class BaseVariable(pr.Node):
 
         return val
 
+    def _alarmState(self,value):
+        """ Return status, severity """
+
+        if isinstance(value,list) or isinstance(value,dict): return 'None','None'
+
+        if (self._lowAlarm  is not None and value < self._lowAlarm):
+            return 'AlarmLoLo', 'AlarmMajor'
+
+        elif (self._highAlarm  is not None and value > self._highAlarm):
+            return 'AlarmHiHi', 'AlarmMajor'
+
+        elif (self._lowWarning  is not None and value < self._lowWarning):
+            return 'AlarmLow', 'AlarmMinor'
+
+        elif (self._highWarning is not None and value > self._highWarning):
+            return 'AlarmHigh', 'AlarmMinor'
+
+        else:
+            return 'None','None'
+
 
 class RemoteVariable(BaseVariable):
 
@@ -365,7 +447,11 @@ class RemoteVariable(BaseVariable):
                  visibility=25,
                  minimum=None,
                  maximum=None,
-                 base=pr.UInt,                                 
+                 lowWarning=None,
+                 lowAlarm=None,
+                 highWarning=None,
+                 highAlarm=None,
+                 base=pr.UInt,
                  offset=None,
                  bitSize=32,
                  bitOffset=0,
@@ -380,6 +466,8 @@ class RemoteVariable(BaseVariable):
                               mode=mode, value=value, disp=disp, 
                               enum=enum, units=units, hidden=hidden, visibility=visibility, 
                               minimum=minimum, maximum=maximum,
+                              lowWarning=lowWarning, lowAlarm=lowAlarm,
+                              highWarning=highWarning, highAlarm=highAlarm,
                               pollInterval=pollInterval)
 
         self._base     = base        
@@ -414,6 +502,7 @@ class RemoteVariable(BaseVariable):
         self._overlapEn = overlapEn
 
 
+    @pr.expose
     @property
     def varBytes(self):
         return self._bytes
@@ -496,6 +585,10 @@ class LocalVariable(BaseVariable):
                  visibility=25,
                  minimum=None,
                  maximum=None,
+                 lowWarning=None,
+                 lowAlarm=None,
+                 highWarning=None,
+                 highAlarm=None,
                  localSet=None,
                  localGet=None,
                  typeStr='Unknown',
@@ -508,6 +601,8 @@ class LocalVariable(BaseVariable):
                               mode=mode, value=value, disp=disp, 
                               enum=enum, units=units, hidden=hidden, visibility=visibility,
                               minimum=minimum, maximum=maximum, typeStr=typeStr,
+                              lowWarning=lowWarning, lowAlarm=lowAlarm,
+                              highWarning=highWarning, highAlarm=highAlarm,
                               pollInterval=pollInterval)
 
         self._block = pr.LocalBlock(variable=self,localSet=localSet,localGet=localGet,value=self._default)
