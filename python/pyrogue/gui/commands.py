@@ -29,7 +29,7 @@ except ImportError:
 import pyrogue
 
 class CommandDev(QObject):
-    def __init__(self,*,tree,parent,dev,noExpand,top):
+    def __init__(self,*,tree,parent,dev,noExpand,top,minVisibility):
         QObject.__init__(self)
         self._parent   = parent
         self._tree     = tree
@@ -38,6 +38,7 @@ class CommandDev(QObject):
 
         self._widget = QTreeWidgetItem(parent)
         self._widget.setText(0,self._dev.name)
+        self._minVisibility = minVisibility
 
         if top:
             self._parent.addTopLevelItem(self._widget)
@@ -64,13 +65,20 @@ class CommandDev(QObject):
     def setup(self,noExpand):
 
         # First create commands
-        for key,val in self._dev.visableCommands.items():
-            self._children.append(CommandLink(tree=self._tree,parent=self._widget,command=val))
+        for key,val in self._dev.visibleCommands(self._minVisibility).items():
+            self._children.append(CommandLink(tree=self._tree,
+                                              parent=self._widget,
+                                              command=val))
             QCoreApplication.processEvents()
 
         # Then create devices
-        for key,val in self._dev.visableDevices.items():
-            self._children.append(CommandDev(tree=self._tree,parent=self._widget,dev=val,noExpand=noExpand,top=False))
+        for key,val in self._dev.visibleDevices(self._minVisibility).items():
+            self._children.append(CommandDev(tree=self._tree,
+                                             parent=self._widget,
+                                             dev=val,
+                                             noExpand=noExpand,
+                                             top=False,
+                                             minVisibility=self._minVisibility))
 
         for i in range(0,4):
             self._tree.resizeColumnToContents(i)
@@ -150,9 +158,14 @@ class CommandWidget(QWidget):
 
         self.devTop = None
 
-    @pyqtSlot(pyrogue.Root)
-    @pyqtSlot(pyrogue.VirtualNode)
-    def addTree(self,root):
+    @pyqtSlot(pyrogue.Root,int)
+    @pyqtSlot(pyrogue.VirtualNode,int)
+    def addTree(self,root,minVisibility):
         self.roots.append(root)
-        self._children.append(CommandDev(tree=self.tree,parent=self.tree,dev=root,noExpand=False,top=True))
+        self._children.append(CommandDev(tree=self.tree,
+                                         parent=self.tree,
+                                         dev=root,
+                                         noExpand=False,
+                                         top=True,
+                                         minVisibility=minVisibility))
 

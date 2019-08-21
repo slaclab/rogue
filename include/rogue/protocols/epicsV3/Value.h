@@ -53,16 +53,16 @@ namespace rogue {
 
                std::shared_ptr<rogue::Logging> log_;
 
-               std::string units_;
-               uint16_t    precision_;
-               double      hopr_;
-               double      lopr_;
-               double      highAlarm_;
-               double      highWarning_;
-               double      lowWarning_;
-               double      lowAlarm_;
-               double      highCtrlLimit_;
-               double      lowCtrlLimit_;
+               gdd * units_;
+               gdd * precision_;
+               gdd * hopr_;
+               gdd * lopr_;
+               gdd * highAlarm_;
+               gdd * highWarning_;
+               gdd * lowWarning_;
+               gdd * lowAlarm_;
+               gdd * highCtrlLimit_;
+               gdd * lowCtrlLimit_;
 
                gddAppFuncTable<rogue::protocols::epicsV3::Value> funcTable_;
 

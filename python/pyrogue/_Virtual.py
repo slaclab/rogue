@@ -93,7 +93,7 @@ class VirtualNode(pr.Node):
         super().__init__(name=attrs['name'], 
                          description=attrs['description'], 
                          expand=attrs['expand'], 
-                         hidden=attrs['hidden'])
+                         visibility=attrs['visibility'])
 
         self._path  = attrs['path']
         self._class = attrs['class']
@@ -144,7 +144,7 @@ class VirtualNode(pr.Node):
 
         return obj
 
-    def _isinstance(self,typ):
+    def isinstance(self,typ):
         cs = str(typ)
         return cs in self._bases
 

@@ -82,7 +82,7 @@ class Node(object):
     Each node has the following public fields:
         name: Global name of object
         description: Description of the object.
-        hidden: Flag to indicate if object should be hidden from external interfaces.
+        visibility: Visability level of Node. The higher the number the more visible.
         classtype: text string matching name of node sub-class
         path: Full path to the node (ie. node1.node2.node3)
 
@@ -91,16 +91,15 @@ class Node(object):
     attribute. This allows tree browsing using: node1.node2.node3
     """
 
-
-    def __init__(self, *, name, description="", expand=True, hidden=False):
+    def __init__(self, *, name, description="", expand=True, hidden=None, visibility=25):
         """Init the node with passed attributes"""
 
         # Public attributes
         self._name        = name
         self._description = description
-        self._hidden      = hidden
         self._path        = name
         self._expand      = expand
+        self._visibility  = visibility
 
         # Tracking
         self._parent  = None
@@ -109,6 +108,10 @@ class Node(object):
 
         # Setup logging
         self._log = logInit(cls=self,name=name,path=None)
+
+        if hidden is True:
+            self._visibility = 0
+            #self._log.warning("The hidden flag is deprecated. Please use the visibility level instead.")
 
     @property
     def name(self):
@@ -120,11 +123,27 @@ class Node(object):
 
     @property
     def hidden(self):
-        return self._hidden
+        #self._log.warning("The hidden attribute is deprecated. Please use the visibility level instead.")
+        return (self.visibility == 0)
 
     @hidden.setter
     def hidden(self, value):
-        self._hidden = value
+        if hidden is True:
+            self._visibility = 0
+        else:
+            self._visibility = 25
+        #self._log.warning("The hidden attribute is deprecated. Please use the visibility level instead.")
+
+    @property
+    def visibility(self):
+        if self._parent is None or self._parent == self:
+            return self._visibility
+        else:
+            return min([self._parent.visibility, self._visibility])
+
+    @visibility.setter
+    def visibility(self, value):
+        self._visibility = value
 
     @property
     def path(self):
@@ -159,7 +178,7 @@ class Node(object):
         attr['class']       = self.__class__.__name__
         attr['bases']       = pr.genBaseList(self.__class__)
         attr['description'] = self._description
-        attr['hidden']      = self._hidden
+        attr['visibility']  = self._visibility
         attr['path']        = self._path
         attr['expand']      = self._expand
         attr['nodes']       = self._nodes
@@ -224,17 +243,21 @@ class Node(object):
     
     @property
     def nodeList(self):
+        """
+        Get sub-nodes in a list
+        """
         return([k for k,v in self._nodes.items()])
 
-    def getNodes(self,typ,exc=None,hidden=True):
+    def getNodes(self,typ,exc=None,minVisibility=0):
         """
-        Get a ordered dictionary of nodes.
+        Get a filtered ordered dictionary of nodes.
         pass a class type to receive a certain type of node
         class type may be a string when called over Pyro4
-        exc is a class type to exclude, if hidden = False, only visable nodes are returned
+        exc is a class type to exclude, Only nodes with a visibility >= passed value are returned
         """
-        return odict([(k,n) for k,n in self._nodes.items() \
-            if (n._isinstance(typ) and ((exc is None) or (not n._isinstance(exc))) and (hidden or n.hidden == False))])
+        return odict([(k,n) for k,n in self._nodes.items() if (n.isinstance(typ) and \
+                ((exc is None) or (not n.isinstance(exc))) and \
+                ((minVisibility == 0) or (n.visibility >= minVisibility)))])
 
     @property
     def nodes(self):
@@ -248,14 +271,13 @@ class Node(object):
         """
         Return an OrderedDict of the variables but not commands (which are a subclass of Variable
         """
-        return self.getNodes(typ=pr.BaseVariable,exc=pr.BaseCommand,hidden=True)
+        return self.getNodes(typ=pr.BaseVariable,exc=pr.BaseCommand,minVisibility=0)
 
-    @property
-    def visableVariables(self):
+    def visibleVariables(self,minVisibility):
         """
         Return an OrderedDict of the variables but not commands (which are a subclass of Variable
         """
-        return self.getNodes(typ=pr.BaseVariable,exc=pr.BaseCommand,hidden=False)
+        return self.getNodes(typ=pr.BaseVariable,exc=pr.BaseCommand,minVisibility=minVisibility)
 
     @property
     def variableList(self):
@@ -264,11 +286,37 @@ class Node(object):
         """
         lst = []
         for key,value in self._nodes.items():
-            if value._isinstance(pr.BaseVariable):
+            if value.isinstance(pr.BaseVariable):
                 lst.append(value)
             else:
                 lst.extend(value.variableList)
         return lst
+
+    @property
+    def commands(self):
+        """
+        Return an OrderedDict of the Commands that are children of this Node
+        """
+        return self.getNodes(pr.BaseCommand,minVisibility=0)
+
+    def visibleCommands(self,minVisibility):
+        """
+        Return an OrderedDict of the variables but not commands (which are a subclass of Variable
+        """
+        return self.getNodes(pr.BaseCommand,minVisibility=minVisibility)
+
+    @property
+    def devices(self):
+        """
+        Return an OrderedDict of the Devices that are children of this Node
+        """
+        return self.getNodes(pr.Device,minVisibility=0)
+
+    def visibleDevices(self,minVisibility):
+        """
+        Return an OrderedDict of the Devices that are children of this Node
+        """
+        return self.getNodes(pr.Device,minVisibility=minVisibility)
 
     @property
     def deviceList(self):
@@ -277,38 +325,10 @@ class Node(object):
         """
         lst = []
         for key,value in self._nodes.items():
-            if value._isinstance(pr.Device):
+            if value.isinstance(pr.Device):
                 lst.append(value)
                 lst.extend(value.deviceList)
         return lst
-
-    @property
-    def commands(self):
-        """
-        Return an OrderedDict of the Commands that are children of this Node
-        """
-        return self.getNodes(pr.BaseCommand,hidden=True)
-
-    @property
-    def visableCommands(self):
-        """
-        Return an OrderedDict of the Commands that are children of this Node
-        """
-        return self.getNodes(pr.BaseCommand,hidden=False)
-
-    @property
-    def devices(self):
-        """
-        Return an OrderedDict of the Devices that are children of this Node
-        """
-        return self.getNodes(pr.Device,hidden=True)
-
-    @property
-    def visableDevices(self):
-        """
-        Return an OrderedDict of the Devices that are children of this Node
-        """
-        return self.getNodes(pr.Device,hidden=False)
 
     @property
     def parent(self):
@@ -329,15 +349,15 @@ class Node(object):
 
     @property
     def isDevice(self):
-        return self._isinstance(pr.Device)
+        return self.isinstance(pr.Device)
 
     @property
     def isVariable(self):
-        return (self._isinstance(pr.BaseVariable) and (not self._isinstance(pr.BaseCommand)))
+        return (self.isinstance(pr.BaseVariable) and (not self.isinstance(pr.BaseCommand)))
 
     @property
     def isCommand(self):
-        return self._isinstance(pr.BaseCommand)
+        return self.isinstance(pr.BaseCommand)
 
     def find(self, *, recurse=True, typ=None, **kwargs):
         """ 
@@ -351,7 +371,7 @@ class Node(object):
 
         found = []
         for node in self._nodes.values():
-            if node._isinstance(typ):
+            if node.isinstance(typ):
                 for prop, value in kwargs.items():
                     if not hasattr(node, prop):
                         break
@@ -389,7 +409,7 @@ class Node(object):
             self.callRecursive(func, nodeTypes, **kwargs)
         return closure
 
-    def _isinstance(self,typ):
+    def isinstance(self,typ):
         return isinstance(self,typ)
 
     def _rootAttached(self,parent,root):

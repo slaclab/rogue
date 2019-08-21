@@ -65,7 +65,7 @@ class AxiVersion(pr.Device):
         self.add(pr.RemoteVariable(   
             name         = 'UpTimeCnt',
             description  = 'Number of seconds since last reset',
-            hidden       = True,
+            visibility   = 0,
             offset       = 0x08,
             bitSize      = 32,
             bitOffset    = 0x00,
@@ -114,7 +114,7 @@ class AxiVersion(pr.Device):
             mode         = 'RW',
         ))
 
-        @self.command(hidden=True)
+        @self.command(visibility=0)
         def FpgaReloadAtAddress(arg):
             self.FpgaReloadAddress.set(arg)
             self.FpgaReload()
@@ -149,7 +149,7 @@ class AxiVersion(pr.Device):
             mode         = 'RO',
             number       = numUserConstants,
             stride       = 4,
-            hidden       = True,
+            visibility   = 0,
         )
 
 
@@ -171,7 +171,7 @@ class AxiVersion(pr.Device):
             bitOffset    = 0x00,
             base         = pr.UInt,
             mode         = 'RO',
-            hidden       = True,
+            visibility   = 0,
         ))
 
         self.add(pr.LinkVariable(
@@ -200,7 +200,7 @@ class AxiVersion(pr.Device):
             bitOffset    = 0x00,
             base         = pr.String,
             mode         = 'RO',
-            hidden       = True,
+            visibility   = 0,
         ))
 
         self.add(pr.RemoteVariable(   
@@ -216,7 +216,7 @@ class AxiVersion(pr.Device):
                             4: 'Test4'},
             base         = pr.UInt,
             mode         = 'RW',
-            hidden       = False,
+            visibility   = 0,
         ))
 
         
@@ -253,7 +253,7 @@ class AxiVersion(pr.Device):
 
         self.BuildStamp.addListener(parseBuildStamp)        
       
-        for i in range(128):
+        for i in range(16):
             remap = divmod(i,32)
 
             self.add(pr.RemoteVariable(
@@ -264,8 +264,26 @@ class AxiVersion(pr.Device):
                 bitOffset    = remap[1],
                 base         = pr.UInt,
                 mode         = 'RW',
-                hidden       = False,
             ))
+
+        self.add(pr.RemoteVariable(
+            name         = 'AlarmTest'.format(i),
+            description  = 'Alarm Test Field',
+            offset       = 0x8000,
+            bitSize      = 32,
+            bitOffset    = 0,
+            base         = pr.UInt,
+            mode         = 'RW',
+            minimum      = 100,
+            maximum      = 1000,
+            lowAlarm     = 200,
+            lowWarning   = 300,
+            highWarning  = 800,
+            highAlarm    = 900,
+            value        = 100,
+            disp         = '{}',
+            hidden       = False,
+        ))
 
     def hardReset(self):
         print('AxiVersion hard reset called')
