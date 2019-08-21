@@ -31,7 +31,7 @@ import threading
 
 class VariableDev(QObject):
 
-    def __init__(self,*,tree,parent,dev,noExpand,top):
+    def __init__(self,*,tree,parent,dev,noExpand,top,minVisibility):
         QObject.__init__(self)
         self._parent   = parent
         self._tree     = tree
@@ -40,6 +40,7 @@ class VariableDev(QObject):
 
         self._widget = QTreeWidgetItem(parent)
         self._widget.setText(0,self._dev.name)
+        self._minVisibility = minVisibility
 
         if top:
             self._parent.addTopLevelItem(self._widget)
@@ -65,13 +66,20 @@ class VariableDev(QObject):
     def setup(self,noExpand):
 
         # First create variables
-        for key,val in self._dev.visableVariables.items():
-            self._children.append(VariableLink(tree=self._tree,parent=self._widget,variable=val))
+        for key,val in self._dev.visibleVariables(self._minVisibility).items():
+            self._children.append(VariableLink(tree=self._tree,
+                                               parent=self._widget,
+                                               variable=val))
             QCoreApplication.processEvents()
 
         # Then create devices
-        for key,val in self._dev.visableDevices.items():
-            self._children.append(VariableDev(tree=self._tree,parent=self._widget,dev=val,noExpand=noExpand,top=False))
+        for key,val in self._dev.visibleDevices(self._minVisibility).items():
+            self._children.append(VariableDev(tree=self._tree,
+                                              parent=self._widget,
+                                              dev=val,
+                                              noExpand=noExpand,
+                                              top=False,
+                                              minVisibility=self._minVisibility))
 
         for i in range(0,4):
             self._tree.resizeColumnToContents(i)
@@ -94,11 +102,14 @@ class VariableLink(QObject):
         self._item = QTreeWidgetItem(parent)
         self._item.setText(0,variable.name)
         self._item.setText(1,variable.mode)
+        self._item.setText(2,variable.typeStr)
 
+        
         self._alarm = QLineEdit()
         self._alarm.setReadOnly(True)
-        self._alarm.setText('None')
-        self._tree.setItemWidget(self._item,2,self._alarm)
+        #self._alarm.setText('None')
+        if variable.hasAlarm:
+            self._tree.setItemWidget(self._item,5,self._alarm)
 
         if variable.units:
             self._item.setText(4,str(variable.units))
@@ -180,7 +191,7 @@ class VariableLink(QObject):
 
     def infoDialog(self):
 
-        attrs = ['name', 'path', 'description', 'hidden', 'enum', 
+        attrs = ['name', 'path', 'description', 'visibility', 'enum', 
                  'typeStr', 'disp', 'precision', 'mode', 'units', 'minimum', 
                  'maximum', 'lowWarning', 'lowAlarm', 'highWarning', 
                  'highAlarm', 'alarmStatus', 'alarmSeverity', 'pollInterval']
@@ -247,8 +258,15 @@ class VariableLink(QObject):
                 p.setColor(QPalette.Text,Qt.black)
                 self._alarm.setPalette(p)
 
+            elif varVal.severity == 'Good':
+                self._alarm.setText('Good')
+                p = QPalette()
+                p.setColor(QPalette.Base,Qt.green)
+                p.setColor(QPalette.Text,Qt.black)
+                self._alarm.setPalette(p)
+
             else:
-                self._alarm.setText('None')
+                self._alarm.setText('')
                 p = QPalette()
                 self._alarm.setPalette(p)
 
@@ -286,7 +304,7 @@ class VariableLink(QObject):
             return
 
         self._inEdit = True
-        self._variable.setDisp(self._widget.itemText(value))
+            self._variable.setDisp(self._widget.itemText(value))
         self._inEdit = False
 
 
@@ -303,7 +321,7 @@ class VariableWidget(QWidget):
         vb.addWidget(self.tree)
 
         self.tree.setColumnCount(2)
-        self.tree.setHeaderLabels(['Variable','Mode','Alarm','Value','Units'])
+        self.tree.setHeaderLabels(['Variable','Mode','Type','Value','Units', 'Alarm', ''])
 
         hb = QHBoxLayout()
         vb.addLayout(hb)
@@ -314,11 +332,16 @@ class VariableWidget(QWidget):
 
         self.devTop = None
 
-    @pyqtSlot(pyrogue.Root)
-    @pyqtSlot(pyrogue.VirtualNode)
-    def addTree(self,root):
+    @pyqtSlot(pyrogue.Root,int)
+    @pyqtSlot(pyrogue.VirtualNode,int)
+    def addTree(self,root, minVisibility):
         self.roots.append(root)
-        self._children.append(VariableDev(tree=self.tree,parent=self.tree,dev=root,noExpand=False,top=True))
+        self._children.append(VariableDev(tree=self.tree,
+                                          parent=self.tree,
+                                          dev=root,
+                                          noExpand=False,
+                                          top=True,
+                                          minVisibility=minVisibility))
 
     @pyqtSlot()
     def readPressed(self):

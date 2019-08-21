@@ -398,13 +398,13 @@ class SystemWidget(QWidget):
         ###################
         # Data Controllers
         ###################
-        for key,val in root.getNodes(typ=pyrogue.DataWriter,hidden=True).items():
+        for key,val in root.getNodes(typ=pyrogue.DataWriter,minVisibility=0).items():
             self.holders.append(DataLink(layout=tl,writer=val))
 
         ###################
         # Run Controllers
         ###################
-        for key,val in root.getNodes(typ=pyrogue.RunControl,hidden=True).items():
+        for key,val in root.getNodes(typ=pyrogue.RunControl,minVisibility=0).items():
             self.holders.append(ControlLink(layout=tl,control=val))
 
         ###################

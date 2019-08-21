@@ -48,6 +48,7 @@ class BaseVariable(pr.Node):
                  enum=None,
                  units=None,
                  hidden=False,
+                 visibility=25,
                  minimum=None,
                  maximum=None,
                  lowWarning=None,
@@ -112,7 +113,7 @@ class BaseVariable(pr.Node):
             raise VariableError(f'Invalid variable mode {self._mode}. Supported: RW, RO, WO')
 
         # Call super constructor
-        pr.Node.__init__(self, name=name, description=description, hidden=hidden)
+        pr.Node.__init__(self, name=name, description=description, hidden=hidden, visibility=visibility)
 
     @pr.expose
     @property
@@ -164,6 +165,14 @@ class BaseVariable(pr.Node):
     @property
     def maximum(self):
         return self._maximum
+
+    @pr.expose
+    @property
+    def hasAlarm(self):
+        return (self._lowWarning is not None or
+                self._lowAlarm is not None or
+                self._highWarning is not None or
+                self._highAlarm is not None)
 
     @pr.expose
     @property
@@ -416,7 +425,10 @@ class BaseVariable(pr.Node):
 
         if isinstance(value,list) or isinstance(value,dict): return 'None','None'
 
-        if (self._lowAlarm  is not None and value < self._lowAlarm):
+        if (self.hasAlarm is False):
+            return "None", "None"
+        
+        elif (self._lowAlarm  is not None and value < self._lowAlarm):
             return 'AlarmLoLo', 'AlarmMajor'
 
         elif (self._highAlarm  is not None and value > self._highAlarm):
@@ -429,7 +441,7 @@ class BaseVariable(pr.Node):
             return 'AlarmHigh', 'AlarmMinor'
 
         else:
-            return 'None','None'
+            return 'Good','Good'
 
 
 class RemoteVariable(BaseVariable):
@@ -443,6 +455,7 @@ class RemoteVariable(BaseVariable):
                  enum=None,
                  units=None,
                  hidden=False,
+                 visibility=25,
                  minimum=None,
                  maximum=None,
                  lowWarning=None,
@@ -462,7 +475,7 @@ class RemoteVariable(BaseVariable):
 
         BaseVariable.__init__(self, name=name, description=description, 
                               mode=mode, value=value, disp=disp, 
-                              enum=enum, units=units, hidden=hidden,
+                              enum=enum, units=units, hidden=hidden, visibility=visibility, 
                               minimum=minimum, maximum=maximum,
                               lowWarning=lowWarning, lowAlarm=lowAlarm,
                               highWarning=highWarning, highAlarm=highAlarm,
@@ -580,6 +593,7 @@ class LocalVariable(BaseVariable):
                  enum=None,
                  units=None,
                  hidden=False,
+                 visibility=25,
                  minimum=None,
                  maximum=None,
                  lowWarning=None,
@@ -596,7 +610,7 @@ class LocalVariable(BaseVariable):
 
         BaseVariable.__init__(self, name=name, description=description, 
                               mode=mode, value=value, disp=disp, 
-                              enum=enum, units=units, hidden=hidden,
+                              enum=enum, units=units, hidden=hidden, visibility=visibility,
                               minimum=minimum, maximum=maximum, typeStr=typeStr,
                               lowWarning=lowWarning, lowAlarm=lowAlarm,
                               highWarning=highWarning, highAlarm=highAlarm,
