@@ -31,7 +31,7 @@ import threading
 
 class VariableDev(QObject):
 
-    def __init__(self,*,tree,parent,dev,noExpand,top):
+    def __init__(self,*,tree,parent,dev,noExpand,top,minVisibility):
         QObject.__init__(self)
         self._parent   = parent
         self._tree     = tree
@@ -40,6 +40,7 @@ class VariableDev(QObject):
 
         self._widget = QTreeWidgetItem(parent)
         self._widget.setText(0,self._dev.name)
+        self._minVisibility = minVisibility
 
         if top:
             self._parent.addTopLevelItem(self._widget)
@@ -65,13 +66,20 @@ class VariableDev(QObject):
     def setup(self,noExpand):
 
         # First create variables
-        for key,val in self._dev.visableVariables.items():
-            self._children.append(VariableLink(tree=self._tree,parent=self._widget,variable=val))
+        for key,val in self._dev.visibleVariables(self._minVisibility).items():
+            self._children.append(VariableLink(tree=self._tree,
+                                               parent=self._widget,
+                                               variable=val))
             QCoreApplication.processEvents()
 
         # Then create devices
-        for key,val in self._dev.visableDevices.items():
-            self._children.append(VariableDev(tree=self._tree,parent=self._widget,dev=val,noExpand=noExpand,top=False))
+        for key,val in self._dev.visibleDevices(self._minVisibility).items():
+            self._children.append(VariableDev(tree=self._tree,
+                                              parent=self._widget,
+                                              dev=val,
+                                              noExpand=noExpand,
+                                              top=False,
+                                              minVisibility=self._minVisibility))
 
         for i in range(0,4):
             self._tree.resizeColumnToContents(i)
@@ -180,7 +188,7 @@ class VariableLink(QObject):
 
     def infoDialog(self):
 
-        attrs = ['name', 'path', 'description', 'hidden', 'enum', 
+        attrs = ['name', 'path', 'description', 'visibility', 'enum', 
                  'typeStr', 'disp', 'precision', 'mode', 'units', 'minimum', 
                  'maximum', 'lowWarning', 'lowAlarm', 'highWarning', 
                  'highAlarm', 'alarmStatus', 'alarmSeverity', 'pollInterval']
@@ -286,7 +294,7 @@ class VariableLink(QObject):
             return
 
         self._inEdit = True
-        self._variable.setDisp(self._widget.itemText(value))
+            self._variable.setDisp(self._widget.itemText(value))
         self._inEdit = False
 
 
@@ -314,11 +322,16 @@ class VariableWidget(QWidget):
 
         self.devTop = None
 
-    @pyqtSlot(pyrogue.Root)
-    @pyqtSlot(pyrogue.VirtualNode)
-    def addTree(self,root):
+    @pyqtSlot(pyrogue.Root,int)
+    @pyqtSlot(pyrogue.VirtualNode,int)
+    def addTree(self,root, minVisibility):
         self.roots.append(root)
-        self._children.append(VariableDev(tree=self.tree,parent=self.tree,dev=root,noExpand=False,top=True))
+        self._children.append(VariableDev(tree=self.tree,
+                                          parent=self.tree,
+                                          dev=root,
+                                          noExpand=False,
+                                          top=True,
+                                          minVisibility=minVisibility))
 
     @pyqtSlot()
     def readPressed(self):

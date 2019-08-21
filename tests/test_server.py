@@ -30,6 +30,7 @@ rogue.Logging.setLevel(rogue.Logging.Debug)
 logger = logging.getLogger('pyrogue')
 logger.setLevel(logging.DEBUG)
 
+
 class DummyTree(pyrogue.Root):
 
     def __init__(self):

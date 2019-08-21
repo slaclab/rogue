@@ -31,6 +31,7 @@ class EnableVariable(pr.BaseVariable):
             name='enable',
             mode='RW',
             value=enabled, 
+            visibility=50,
             disp={False: 'False', True: 'True', 'parent': 'ParentFalse', 'deps': 'ExtDepFalse'})
 
         if deps is None:
@@ -118,6 +119,7 @@ class Device(pr.Node,rim.Hub):
                  offset=0,
                  size=0,
                  hidden=False,
+                 visibility=75,
                  blockSize=None,
                  expand=False,
                  enabled=True,
@@ -148,7 +150,7 @@ class Device(pr.Node,rim.Hub):
         if memBase: self._setSlave(memBase)
 
         # Node.__init__ can't be called until after self._memBase is created
-        pr.Node.__init__(self, name=name, hidden=hidden, description=description, expand=expand)
+        pr.Node.__init__(self, name=name, hidden=hidden, visibility=visibility, description=description, expand=expand)
 
         self._log.info("Making device {:s}".format(name))
 
@@ -158,11 +160,11 @@ class Device(pr.Node,rim.Hub):
         # Variable interface to enable flag
         self.add(EnableVariable(enabled=enabled, deps=enableDeps))
 
-        self.add(pr.LocalCommand(name='ReadDevice', value=False, hidden=True,
+        self.add(pr.LocalCommand(name='ReadDevice', value=False, visibility=0,
                                  function=lambda arg: self.readAndCheckBlocks(recurse=arg),
                                  description='Force read of device without recursion'))
 
-        self.add(pr.LocalCommand(name='WriteDevice', value='', hidden=True,
+        self.add(pr.LocalCommand(name='WriteDevice', value='', visibility=0,
                                  function=lambda arg: self.writeAndVerifyBlocks(force=True,recurse=arg),
                                  description='Force write of device without recursion'))
 
@@ -198,8 +200,16 @@ class Device(pr.Node,rim.Hub):
                 node._setSlave(self)
 
     def addRemoteVariables(self, number, stride, pack=False, **kwargs):
-        hidden = pack or kwargs.pop('hidden', False)
-        self.addNodes(pr.RemoteVariable, number, stride, hidden=hidden, **kwargs)
+        if pack:
+            visibility=0
+        else:
+            visibility = kwargs.pop('visibility', 25)
+
+            if kwargs.pop('hidden', False):
+                visibility = 0
+                self._log.warning("Hidden attribute is deprecated. Please use visibility")
+
+        self.addNodes(pr.RemoteVariable, number, stride, visibility=visibility, **kwargs)
 
         # If pack specified, create a linked variable to combine everything
         if pack:
@@ -231,16 +241,21 @@ class Device(pr.Node,rim.Hub):
         for x in variables:
             v = self.node(x).pollInterval = interval
 
-    def hideVariables(self, hidden, variables=None):
-        """Hide a list of Variables (or Variable names)"""
+    def setVariableVisibility(self, visibility, variables=None):
+        """ Set visibility for a list of Variables (or Variable names)"""
         if variables is None:
             variables=self.variables.values()
             
         for v in variables:
             if isinstance(v, pr.BaseVariable):
-                v._hidden = hidden;
+                v._visibility = visibility
             elif isinstance(variables[0], str):
-                self.variables[v]._hidden = hidden
+                self.variables[v]._visibility = visibility
+
+    def hideVariables(self, hidden, variables=None):
+        """Hide a list of Variables (or Variable names)"""
+        #self._log.warning("hideVariables is now deprecated. Please use setVariableVisibility")
+        self.setVariableVisibility((0 if hidden else 25),variables)
 
     def initialize(self):
         for key,value in self.devices.items():
