@@ -103,7 +103,7 @@ class UdpRssiPack(pr.Device):
             mode        = 'RO', 
             value       = True,
             localGet    = lambda: self._rssi.getLocBusy(),
-            hidden      = True,
+            visibility  = 0,
             pollInterval= pollInterval, 
         )) 
         
@@ -121,7 +121,7 @@ class UdpRssiPack(pr.Device):
             mode        = 'RO', 
             value       = True,
             localGet    = lambda: self._rssi.getRemBusy(),
-            hidden      = True,
+            visibility  = 0,
             pollInterval= pollInterval, 
         )) 
         

@@ -31,8 +31,10 @@ class BaseCommand(pr.BaseVariable):
                  name=None,
                  description="",
                  value=0,
+                 retValue=None,
                  enum=None,
                  hidden=False,                 
+                 visibility=25,
                  minimum=None,
                  maximum=None,
                  function=None,
@@ -46,6 +48,7 @@ class BaseCommand(pr.BaseVariable):
             value=value,
             enum=enum,
             hidden=hidden,
+            visibility=visibility,
             minimum=minimum,
             maximum=maximum)
         
@@ -53,6 +56,13 @@ class BaseCommand(pr.BaseVariable):
         self._thread = None
         self._lock = threading.Lock()
         self._background = background
+
+        if retValue is None:
+            self._retTypeStr = None
+        elif isinstance(retValue, list):
+            self._retTypeStr = f'List[{retValue[0].__class__.__name__}]'
+        else:
+            self._retTypeStr = retValue.__class__.__name__
 
         # args flag
         try:
@@ -66,6 +76,11 @@ class BaseCommand(pr.BaseVariable):
     @property
     def arg(self):
         return self._arg
+
+    @pr.expose
+    @property
+    def retTypeStr(self):
+        return self._retTypeStr
 
     @pr.expose
     def call(self,arg=None):
@@ -198,8 +213,10 @@ class RemoteCommand(BaseCommand, pr.RemoteVariable):
                  name,
                  description='',
                  value=None,
+                 retValue=None,
                  enum=None,
                  hidden=False,
+                 visibility=25,
                  minimum=None,
                  maximum=None,
                  function=None,
@@ -213,6 +230,7 @@ class RemoteCommand(BaseCommand, pr.RemoteVariable):
         BaseCommand.__init__(
             self,
             name=name,
+            retValue=retValue,
             function=function)
 
         pr.RemoteVariable.__init__(
@@ -223,6 +241,7 @@ class RemoteCommand(BaseCommand, pr.RemoteVariable):
             value=value,
             enum=enum,
             hidden=hidden,
+            visibility=visibility,
             minimum=minimum,
             maximum=maximum,
             base=base,

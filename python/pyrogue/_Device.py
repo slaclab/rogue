@@ -31,6 +31,7 @@ class EnableVariable(pr.BaseVariable):
             name='enable',
             mode='RW',
             value=enabled, 
+            visibility=50,
             disp={False: 'False', True: 'True', 'parent': 'ParentFalse', 'deps': 'ExtDepFalse'})
 
         if deps is None:
@@ -120,6 +121,7 @@ class Device(pr.Node,rim.Hub):
                  offset=0,
                  size=0,
                  hidden=False,
+                 visibility=75,
                  blockSize=None,
                  expand=False,
                  enabled=True,
@@ -150,7 +152,7 @@ class Device(pr.Node,rim.Hub):
         if memBase: self._setSlave(memBase)
 
         # Node.__init__ can't be called until after self._memBase is created
-        pr.Node.__init__(self, name=name, hidden=hidden, description=description, expand=expand)
+        pr.Node.__init__(self, name=name, hidden=hidden, visibility=visibility, description=description, expand=expand)
 
         self._log.info("Making device {:s}".format(name))
 
@@ -160,11 +162,11 @@ class Device(pr.Node,rim.Hub):
         # Variable interface to enable flag
         self.add(EnableVariable(enabled=enabled, deps=enableDeps))
 
-        self.add(pr.LocalCommand(name='ReadDevice', value=False, hidden=True,
+        self.add(pr.LocalCommand(name='ReadDevice', value=False, visibility=0,
                                  function=lambda arg: self.readAndCheckBlocks(recurse=arg),
                                  description='Force read of device without recursion'))
 
-        self.add(pr.LocalCommand(name='WriteDevice', value='', hidden=True,
+        self.add(pr.LocalCommand(name='WriteDevice', value='', visibility=0,
                                  function=lambda arg: self.writeAndVerifyBlocks(force=True,recurse=arg),
                                  description='Force write of device without recursion'))
 
@@ -200,8 +202,16 @@ class Device(pr.Node,rim.Hub):
                 node._setSlave(self)
 
     def addRemoteVariables(self, number, stride, pack=False, **kwargs):
-        hidden = pack or kwargs.pop('hidden', False)
-        self.addNodes(pr.RemoteVariable, number, stride, hidden=hidden, **kwargs)
+        if pack:
+            visibility=0
+        else:
+            visibility = kwargs.pop('visibility', 25)
+
+            if kwargs.pop('hidden', False):
+                visibility = 0
+                self._log.warning("Hidden attribute is deprecated. Please use visibility")
+
+        self.addNodes(pr.RemoteVariable, number, stride, visibility=visibility, **kwargs)
 
         # If pack specified, create a linked variable to combine everything
         if pack:
@@ -233,16 +243,21 @@ class Device(pr.Node,rim.Hub):
         for x in variables:
             v = self.node(x).pollInterval = interval
 
-    def hideVariables(self, hidden, variables=None):
-        """Hide a list of Variables (or Variable names)"""
+    def setVariableVisibility(self, visibility, variables=None):
+        """ Set visibility for a list of Variables (or Variable names)"""
         if variables is None:
             variables=self.variables.values()
             
         for v in variables:
             if isinstance(v, pr.BaseVariable):
-                v._hidden = hidden;
+                v._visibility = visibility
             elif isinstance(variables[0], str):
-                self.variables[v]._hidden = hidden
+                self.variables[v]._visibility = visibility
+
+    def hideVariables(self, hidden, variables=None):
+        """Hide a list of Variables (or Variable names)"""
+        #self._log.warning("hideVariables is now deprecated. Please use setVariableVisibility")
+        self.setVariableVisibility((0 if hidden else 25),variables)
 
     def initialize(self):
         for key,value in self.devices.items():
@@ -571,176 +586,3 @@ class ArrayDevice(Device):
                 offset=i*stride,
                 **args))
                 
-class DataWriter(Device):
-    """Special base class to control data files. TODO: Update comments"""
-
-    def __init__(self, *, hidden=True, **kwargs):
-        """Initialize device class"""
-
-        Device.__init__(self, hidden=hidden, **kwargs)
-
-        self.add(pr.LocalVariable(
-            name='dataFile',
-            mode='RW',
-            value='',
-            description='Data file for storing frames for connected streams.'))
-
-        self.add(pr.LocalVariable(
-            name='open',
-            mode='RW',
-            value=False,
-            localSet=self._setOpen,
-            description='Data file open state'))
-
-        self.add(pr.LocalVariable(
-            name='bufferSize',
-            mode='RW',
-            value=0,
-            typeStr='UInt32',
-            localSet=self._setBufferSize,
-            description='File buffering size. Enables caching of data before call to file system.'))
-
-        self.add(pr.LocalVariable(
-            name='maxFileSize',
-            mode='RW',
-            value=0,
-            typeStr='UInt64',
-            localSet=self._setMaxFileSize,
-            description='Maximum size for an individual file. Setting to a non zero splits the run data into multiple files.'))
-
-        self.add(pr.LocalVariable(
-            name='fileSize',
-            mode='RO',
-            value=0,
-            typeStr='UInt64',
-            pollInterval=1,
-            localGet=self._getFileSize,
-            description='Size of data files(s) for current open session in bytes.'))
-
-        self.add(pr.LocalVariable(
-            name='frameCount',
-            mode='RO',
-            value=0,
-            typeStr='UInt32',
-            pollInterval=1,
-            localGet=self._getFrameCount,
-            description='Frame in data file(s) for current open session in bytes.'))
-
-        self.add(pr.LocalCommand(
-            name='autoName',
-            function=self._genFileName,
-            description='Auto create data file name using data and time.'))
-
-    def _setOpen(self,value,changed):
-        """Set open state. Override in sub-class"""
-        pass
-
-    def _setBufferSize(self,value):
-        """Set buffer size. Override in sub-class"""
-        pass
-
-    def _setMaxFileSize(self,value):
-        """Set max file size. Override in sub-class"""
-        pass
-
-    def _getFileSize(self):
-        """get current file size. Override in sub-class"""
-        return(0)
-
-    def _getFrameCount(self):
-        """get current file frame count. Override in sub-class"""
-        return(0)
-
-    def _genFileName(self):
-        """
-        Auto create data file name based upon date and time.
-        Preserve file's location in path.
-        """
-        idx = self.dataFile.value().rfind('/')
-
-        if idx < 0:
-            base = ''
-        else:
-            base = self.dataFile.value()[:idx+1]
-
-        self.dataFile.set(base + datetime.datetime.now().strftime("data_%Y%m%d_%H%M%S.dat")) 
-
-class RunControl(Device):
-    """Special base class to control runs. TODO: Update comments."""
-
-    def __init__(self, *, hidden=True, rates=None, states=None, cmd=None, **kwargs):
-        """Initialize device class"""
-
-        if rates is None:
-            rates={1:'1 Hz', 10:'10 Hz'}
-
-        if states is None:
-            states={0:'Stopped', 1:'Running'}
-
-        Device.__init__(self, hidden=hidden, **kwargs)
-
-        value = [k for k,v in states.items()][0]
-
-        self._thread = None
-        self._cmd = cmd
-
-        self.add(pr.LocalVariable(
-            name='runState',
-            value=value,
-            mode='RW',
-            disp=states,
-            localSet=self._setRunState,
-            description='Run state of the system.'))
-
-        value = [k for k,v in rates.items()][0]
-
-        self.add(pr.LocalVariable(
-            name='runRate',
-            value=value,
-            mode='RW',
-            disp=rates,
-            localSet=self._setRunRate,
-            description='Run rate of the system.'))
-
-        self.add(pr.LocalVariable(
-            name='runCount',
-            value=0,
-            typeStr='UInt32',
-            mode='RO',
-            pollInterval=1,
-            description='Run Counter updated by run thread.'))
-
-    def _setRunState(self,value,changed):
-        """
-        Set run state. Reimplement in sub-class.
-        Enum of run states can also be overriden.
-        Underlying run control must update runCount variable.
-        """
-        if changed:
-            if self.runState.valueDisp() == 'Running':
-                #print("Starting run")
-                self._thread = threading.Thread(target=self._run)
-                self._thread.start()
-            elif self._thread is not None:
-                #print("Stopping run")
-                self._thread.join()
-                self._thread = None
-
-    def _setRunRate(self,value):
-        """
-        Set run rate. Reimplement in sub-class if neccessary.
-        """
-        pass
-
-    def _run(self):
-        #print("Thread start")
-        self.runCount.set(0)
-
-        while (self.runState.valueDisp() == 'Running'):
-            time.sleep(1.0 / float(self.runRate.value()))
-            if self._cmd is not None:
-                self._cmd()
-
-            self.runCount.set(self.runCount.value() + 1,write=False)
-        #print("Thread stop")
-

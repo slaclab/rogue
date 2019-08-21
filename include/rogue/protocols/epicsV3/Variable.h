@@ -61,11 +61,15 @@ namespace rogue {
 
                void varUpdated(std::string path, boost::python::object value);
 
+               // Update alarm status, lock held when called
+               void updateAlarm(boost::python::object status, boost::python::object severity);
+
                // Lock held when called
                void valueGet();
 
                // Lock held when called
                void valueSet();
+
          };
 
          // Convienence
