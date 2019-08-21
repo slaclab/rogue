@@ -12,7 +12,7 @@ class MemoryDevice(pr.Device):
                  offset=0,
                  size=0,
                  hidden=False,
-                 visibility=1,
+                 visibility=50,
                  expand=True,
                  enabled=True,
                  base=pr.UInt,
