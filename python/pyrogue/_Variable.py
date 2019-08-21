@@ -73,7 +73,7 @@ class BaseVariable(pr.Node):
         self._block         = None
         self._pollInterval  = pollInterval
         self._nativeType    = None
-        self.__listeners    = []
+        self._listeners     = []
         self.__functions    = []
         self.__dependencies = []
 
@@ -232,7 +232,7 @@ class BaseVariable(pr.Node):
         The variable and value class are passed as an arg: func(path,varValue)
         """
         if isinstance(listener, BaseVariable):
-            self.__listeners.append(listener)
+            self._listeners.append(listener)
         else:
             self.__functions.append(listener)
 
@@ -408,7 +408,7 @@ class BaseVariable(pr.Node):
     def _queueUpdate(self):
         self._root._queueUpdates(self)
 
-        for var in self.__listeners:
+        for var in self._listeners:
             var._queueUpdate()
 
     def _doUpdate(self):

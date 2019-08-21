@@ -83,7 +83,7 @@ class EnableVariable(pr.BaseVariable):
 
             self._doUpdate()
 
-            for var in self.__listeners:
+            for var in self._listeners:
                 var._doUpdate()
 
     def _doUpdate(self):
