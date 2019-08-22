@@ -82,7 +82,7 @@ class Node(object):
     Each node has the following public fields:
         name: Global name of object
         description: Description of the object.
-        group: Group of the Node. Examples: 'Hidden', 'Debug', 'Expert'
+        group: Group of the Node. Examples: 'Hidden', 'NoState', 'NoConfig', 'NoStream'
         classtype: text string matching name of node sub-class
         path: Full path to the node (ie. node1.node2.node3)
 
@@ -110,7 +110,7 @@ class Node(object):
 
         if groups is None:
             self._groups = []
-        elif isinstance(list,groups):
+        elif isinstance(groups,list):
             self._groups = groups
         else:
             self._groups = [groups]
@@ -135,7 +135,7 @@ class Node(object):
         """ 
         Return true if this node is part of the passed group or one of the groups in a list
         """
-        if isinstance(list,group):
+        if isinstance(group,list):
             return len(set(group) & set(self._groups)) > 0
         else:
             return group in self._groups
