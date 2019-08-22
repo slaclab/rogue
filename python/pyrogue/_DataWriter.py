@@ -27,10 +27,10 @@ import time
 class DataWriter(pr.Device):
     """Special base class to control data files. TODO: Update comments"""
 
-    def __init__(self, *, visibility=0, **kwargs):
+    def __init__(self, *, hidden=True, **kwargs):
         """Initialize device class"""
 
-        pr.Device.__init__(self, visibility=visibility, **kwargs)
+        pr.Device.__init__(self, hidden=hidden, **kwargs)
 
         self.add(pr.LocalVariable(
             name='dataFile',

@@ -48,7 +48,7 @@ class BaseVariable(pr.Node):
                  enum=None,
                  units=None,
                  hidden=False,
-                 visibility=25,
+                 groups=None,
                  minimum=None,
                  maximum=None,
                  lowWarning=None,
@@ -113,7 +113,7 @@ class BaseVariable(pr.Node):
             raise VariableError(f'Invalid variable mode {self._mode}. Supported: RW, RO, WO')
 
         # Call super constructor
-        pr.Node.__init__(self, name=name, description=description, hidden=hidden, visibility=visibility)
+        pr.Node.__init__(self, name=name, description=description, hidden=hidden, groups=groups)
 
     @pr.expose
     @property
@@ -453,7 +453,7 @@ class RemoteVariable(BaseVariable):
                  enum=None,
                  units=None,
                  hidden=False,
-                 visibility=25,
+                 groups=None,
                  minimum=None,
                  maximum=None,
                  lowWarning=None,
@@ -473,7 +473,7 @@ class RemoteVariable(BaseVariable):
 
         BaseVariable.__init__(self, name=name, description=description, 
                               mode=mode, value=value, disp=disp, 
-                              enum=enum, units=units, hidden=hidden, visibility=visibility, 
+                              enum=enum, units=units, hidden=hidden, groups=groups, 
                               minimum=minimum, maximum=maximum,
                               lowWarning=lowWarning, lowAlarm=lowAlarm,
                               highWarning=highWarning, highAlarm=highAlarm,
@@ -591,7 +591,7 @@ class LocalVariable(BaseVariable):
                  enum=None,
                  units=None,
                  hidden=False,
-                 visibility=25,
+                 groups=groups,
                  minimum=None,
                  maximum=None,
                  lowWarning=None,
@@ -608,7 +608,7 @@ class LocalVariable(BaseVariable):
 
         BaseVariable.__init__(self, name=name, description=description, 
                               mode=mode, value=value, disp=disp, 
-                              enum=enum, units=units, hidden=hidden, visibility=visibility,
+                              enum=enum, units=units, hidden=hidden, groups=groups,
                               minimum=minimum, maximum=maximum, typeStr=typeStr,
                               lowWarning=lowWarning, lowAlarm=lowAlarm,
                               highWarning=highWarning, highAlarm=highAlarm,

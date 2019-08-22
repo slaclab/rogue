@@ -93,72 +93,72 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         self._updateThread = None
 
         # Init 
-        pr.Device.__init__(self, name=name, description=description, expand=expand, visibility=100)
+        pr.Device.__init__(self, name=name, description=description, expand=expand)
 
         # Variables
-        self.add(pr.LocalVariable(name='SystemLog', value='', mode='RO', visibility=0,
+        self.add(pr.LocalVariable(name='SystemLog', value='', mode='RO', hidden=True,
             description='String containing newline seperated system logic entries'))
 
-        self.add(pr.LocalVariable(name='ForceWrite', value=False, mode='RW', visibility=0,
+        self.add(pr.LocalVariable(name='ForceWrite', value=False, mode='RW', hidden=True,
             description='Configuration Flag To Always Write Non Stale Blocks For WriteAll, LoadConfig and setYaml'))
 
-        self.add(pr.LocalVariable(name='InitAfterConfig', value=False, mode='RW', visibility=0,
+        self.add(pr.LocalVariable(name='InitAfterConfig', value=False, mode='RW', hidden=True,
             description='Configuration Flag To Execute Initialize after LoadConfig or setYaml'))
 
-        self.add(pr.LocalVariable(name='Time', value=0.0, mode='RO', visibility=0,
+        self.add(pr.LocalVariable(name='Time', value=0.0, mode='RO', hidden=True,
                  localGet=lambda: time.time(), pollInterval=1.0, description='Current Time In Seconds Since EPOCH UTC'))
 
-        self.add(pr.LocalVariable(name='LocalTime', value='', mode='RO',visibility=50,
+        self.add(pr.LocalVariable(name='LocalTime', value='', mode='RO',
                  localGet=lambda: time.strftime("%Y-%m-%d %H:%M:%S %Z", time.localtime(time.time())),
                  pollInterval=1.0, description='Local Time'))
 
-        self.add(pr.LocalVariable(name='PollEn', value=False, mode='RW',visibility=50,
+        self.add(pr.LocalVariable(name='PollEn', value=False, mode='RW',
                                   localSet=lambda value: self._pollQueue.pause(not value),
                                   localGet=lambda: not self._pollQueue.paused()))
 
         # Commands
-        self.add(pr.LocalCommand(name='WriteAll', function=self._write, visibility=0,
+        self.add(pr.LocalCommand(name='WriteAll', function=self._write, hidden=True,
                                  description='Write all values to the hardware'))
 
-        self.add(pr.LocalCommand(name="ReadAll", function=self._read, visibility=0,
+        self.add(pr.LocalCommand(name="ReadAll", function=self._read, hidden=True,
                                  description='Read all values from the hardware'))
 
-        self.add(pr.LocalCommand(name='SaveState', value='', function=self._saveState, visibility=0,
+        self.add(pr.LocalCommand(name='SaveState', value='', function=self._saveState, hidden=True,
                                  description='Save state to passed filename in YAML format'))
 
-        self.add(pr.LocalCommand(name='SaveConfig', value='', function=self._saveConfig, visibility=0,
+        self.add(pr.LocalCommand(name='SaveConfig', value='', function=self._saveConfig, hidden=True,
                                  description='Save configuration to passed filename in YAML format'))
 
-        self.add(pr.LocalCommand(name='LoadConfig', value='', function=self._loadConfig, visibility=0,
+        self.add(pr.LocalCommand(name='LoadConfig', value='', function=self._loadConfig, hidden=True,
                                  description='Read configuration from passed filename in YAML format'))
 
-        self.add(pr.LocalCommand(name='Initialize', function=self.initialize, visibility=0,
+        self.add(pr.LocalCommand(name='Initialize', function=self.initialize, hidden=True,
                                  description='Generate a soft reset to each device in the tree'))
 
-        self.add(pr.LocalCommand(name='HardReset', function=self.hardReset, visibility=0,
+        self.add(pr.LocalCommand(name='HardReset', function=self.hardReset, hidden=True,
                                  description='Generate a hard reset to each device in the tree'))
 
-        self.add(pr.LocalCommand(name='CountReset', function=self.countReset, visibility=0,
+        self.add(pr.LocalCommand(name='CountReset', function=self.countReset, hidden=True,
                                  description='Generate a count reset to each device in the tree'))
 
-        self.add(pr.LocalCommand(name='ClearLog', function=self._clearLog, visibility=0,
+        self.add(pr.LocalCommand(name='ClearLog', function=self._clearLog, hidden=True,
                                  description='Clear the message log cntained in the SystemLog variable'))
 
-        self.add(pr.LocalCommand(name='SetYamlConfig', value='', function=lambda arg: self._setYaml(arg,False,['RW','WO']), visibility=0,
+        self.add(pr.LocalCommand(name='SetYamlConfig', value='', function=lambda arg: self._setYaml(arg,False,['RW','WO']), hidden=True,
                                  description='Set configuration from passed YAML string'))
 
         self.add(pr.LocalCommand(name='GetYamlConfig', value=True, retValue='',
-                                 function=lambda arg: self._getYaml(arg,['RW','WO']), visibility=0,
+                                 function=lambda arg: self._getYaml(arg,['RW','WO']), hidden=True,
                                  description='Get current configuration as YAML string. Pass read first arg.'))
 
         self.add(pr.LocalCommand(name='GetYamlState', value=True, retValue='',
-                                 function=lambda arg: self._getYaml(arg,['RW','RO','WO']), visibility=0,
+                                 function=lambda arg: self._getYaml(arg,['RW','RO','WO']), hidden=True,
                                  description='Get current state as YAML string. Pass read first arg.'))
 
-        self.add(pr.LocalCommand(name='Restart', function=self._restart,visibility=50,
+        self.add(pr.LocalCommand(name='Restart', function=self._restart,
                                  description='Restart and reload the server application'))
 
-        self.add(pr.LocalCommand(name='Exit', function=self._exit,visibility=50,
+        self.add(pr.LocalCommand(name='Exit', function=self._exit,
                                  description='Exit the server application'))
 
     def start(self, timeout=1.0, initRead=False, initWrite=False, pollEn=True, zmqPort=None):
@@ -295,13 +295,6 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
     def exec(self,path,arg):
         obj = self.getNode(path)
         return obj.call(arg)
-
-    def setVisibility(self, visibility, nodes):
-        """ Set visibility for a list of Node names"""
-        for path in nodes:
-            n = self.getNode(path)
-            if n is not None:
-                n.visibility(visibility)
 
     @contextmanager
     def updateGroup(self):
