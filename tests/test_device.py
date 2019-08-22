@@ -220,8 +220,8 @@ class AxiVersion(pr.Device):
         ))
 
         
-        def parseBuildStamp(var, value, disp):
-            p = parse.parse("{ImageName}: {BuildEnv}, {BuildServer}, Built {BuildDate} by {Builder}", value.strip())
+        def parseBuildStamp(var, val):
+            p = parse.parse("{ImageName}: {BuildEnv}, {BuildServer}, Built {BuildDate} by {Builder}", val.value.strip())
             if p is not None:
                 for k,v in p.named.items():
                     self.node(k).set(v)
@@ -284,6 +284,15 @@ class AxiVersion(pr.Device):
             disp         = '{}',
             hidden       = False,
         ))
+
+        self.add(pr.LocalVariable(
+            name = 'TestArray',
+            mode = 'RW',
+            value = [1,2,3,4]))
+
+        @self.command(hidden=False,value='',retValue='')
+        def TestCommand(arg):
+            return('Got {}'.format(arg))
 
     def hardReset(self):
         print('AxiVersion hard reset called')
