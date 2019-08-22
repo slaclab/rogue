@@ -1,15 +1,16 @@
 channels:
   - defaults
+  - tidair-tag
+  - lcls-ii
   - conda-forge
-  - paulscherrerinstitute
 dependencies:
   - python
   - clang_osx-64
   - clangxx_osx-64
+  - make
   - git
   - git-lfs
   - ipython
-  - make
   - cmake
   - pyyaml
   - jsonpickle
@@ -22,4 +23,6 @@ dependencies:
   - boost
   - bzip2
   - zeromq
-  - epics-base=3.14.12.8
+  - epics-base
+  - pcas
+  - p4p
