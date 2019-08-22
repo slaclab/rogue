@@ -141,12 +141,15 @@ class Node(object):
             return group in self._groups
 
     def addToGroup(self,group):
-        """ Add this node to the passed group """
+        """ Add this node to the passed group, recursive to children """
         if not group in self._groups:
             self._groups.append(group)
 
+        for k,v in self._nodes.items():
+            v.addToGroup(group)
+
     def removeFromGroup(self,group):
-        """ Remove this node from the passed group """
+        """ Remove this node from the passed group, not recursive """
         if group in self._groups:
             self._groups.remove(group)
 
