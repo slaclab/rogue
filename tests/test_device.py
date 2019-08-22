@@ -65,7 +65,7 @@ class AxiVersion(pr.Device):
         self.add(pr.RemoteVariable(   
             name         = 'UpTimeCnt',
             description  = 'Number of seconds since last reset',
-            visibility   = 0,
+            hidden       = True,
             offset       = 0x08,
             bitSize      = 32,
             bitOffset    = 0x00,
@@ -114,7 +114,7 @@ class AxiVersion(pr.Device):
             mode         = 'RW',
         ))
 
-        @self.command(visibility=0)
+        @self.command(hidden=True)
         def FpgaReloadAtAddress(arg):
             self.FpgaReloadAddress.set(arg)
             self.FpgaReload()
@@ -149,7 +149,7 @@ class AxiVersion(pr.Device):
             mode         = 'RO',
             number       = numUserConstants,
             stride       = 4,
-            visibility   = 0,
+            hidden       = True,
         )
 
 
@@ -171,7 +171,7 @@ class AxiVersion(pr.Device):
             bitOffset    = 0x00,
             base         = pr.UInt,
             mode         = 'RO',
-            visibility   = 0,
+            hidden       = True,
         ))
 
         self.add(pr.LinkVariable(
@@ -200,7 +200,7 @@ class AxiVersion(pr.Device):
             bitOffset    = 0x00,
             base         = pr.String,
             mode         = 'RO',
-            visibility   = 0,
+            hidden       = True,
         ))
 
         self.add(pr.RemoteVariable(   
@@ -216,7 +216,7 @@ class AxiVersion(pr.Device):
                             4: 'Test4'},
             base         = pr.UInt,
             mode         = 'RW',
-            visibility   = 0,
+            hidden       = True,
         ))
 
         
