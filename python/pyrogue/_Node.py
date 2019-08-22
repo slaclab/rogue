@@ -141,6 +141,11 @@ class Node(object):
         else:
             return group in self._groups
 
+    def filterByGroup(self, incGroups, excGroups):
+        """" Filter by the passed list of inclusion and exclusion groups """
+        return ((incGroups is None) or (len(incGroups) == 0) or (self.inGroup(incGroups))) and \
+               ((excGroups is None) or (len(excGroups) == 0) or (not self.inGroup(excGroups)))
+
     def addToGroup(self,group):
         """ Add this node to the passed group, recursive to children """
         if not group in self._groups:
@@ -270,7 +275,7 @@ class Node(object):
         """
         return([k for k,v in self._nodes.items()])
 
-    def getNodes(self,typ,excTyp=None,incGroup=None,excGroup=None):
+    def getNodes(self,typ,excTyp=None,incGroups=None,excGroups=None):
         """
         Get a filtered ordered dictionary of nodes.
         pass a class type to receive a certain type of node
@@ -281,8 +286,7 @@ class Node(object):
         """
         return odict([(k,n) for k,n in self._nodes.items() if (n.isinstance(typ) and \
                 ((excTyp is None) or (not n.isinstance(excTyp))) and \
-                ((incGroup is None) or (n.inGroup(incGroup))) and \
-                ((excGroup is None) or (not n.inGroup(extGroup))))])
+                n.filterByGroup(incGroups,excGroups))])
 
     @property
     def nodes(self):
@@ -298,12 +302,12 @@ class Node(object):
         """
         return self.getNodes(typ=pr.BaseVariable,excTyp=pr.BaseCommand)
 
-    def variablesByGroup(self,incGroup=None,excGroup=None):
+    def variablesByGroup(self,incGroups=None,excGroups=None):
         """
         Return an OrderedDict of the variables but not commands (which are a subclass of Variable
         Pass list of include and / or exclude groups
         """
-        return self.getNodes(typ=pr.BaseVariable,excTyp=pr.BaseCommand,incGroup=incGroup,excGroup=excGroup)
+        return self.getNodes(typ=pr.BaseVariable,excTyp=pr.BaseCommand,incGroups=incGroups,excGroups=excGroups)
 
     @property
     def variableList(self):
@@ -325,12 +329,12 @@ class Node(object):
         """
         return self.getNodes(typ=pr.BaseCommand)
 
-    def commandsByGroup(self,incGroup=None,excGroup=None):
+    def commandsByGroup(self,incGroups=None,excGroups=None):
         """
         Return an OrderedDict of the variables but not commands (which are a subclass of Variable
         Pass list of include and / or exclude groups
         """
-        return self.getNodes(typ=pr.BaseCommand,incGroup=incGroup,excGroup=excGroup)
+        return self.getNodes(typ=pr.BaseCommand,incGroups=incGroups,excGroups=excGroups)
 
     @property
     def devices(self):
@@ -339,12 +343,12 @@ class Node(object):
         """
         return self.getNodes(pr.Device)
 
-    def devicesByGroup(self,incGroup=None,excGroup=None):
+    def devicesByGroup(self,incGroups=None,excGroups=None):
         """
         Return an OrderedDict of the Devices that are children of this Node
         Pass list of include and / or exclude groups
         """
-        return self.getNodes(pr.Device,incGroup=None,excGroup=None)
+        return self.getNodes(pr.Device,incGroups=incGroups,excGroups=excGroups)
 
     @property
     def deviceList(self):
@@ -464,9 +468,7 @@ class Node(object):
         """
         data = odict()
         for key,value in self._nodes.items():
-            if ((incGroups is None) or (value.inGroup(incGroups))) and \
-               ((excGroups is None) or (not value.inGroup(excGroups))):
-
+            if value.filterByGroup(incGroups,excGroups):
                 nv = value._getDict(modes=modes,incGroups=incGroups,excGroups=excGroups)
                 if nv is not None:
                     data[key] = nv
@@ -484,9 +486,7 @@ class Node(object):
                 self._log.error("Entry {} not found".format(key))
             else:
                 for n in nlist:
-                    if ((incGroups is None) or (n.inGroup(incGroups))) and \
-                       ((excGroups is None) or (not n.inGroup(excGroups))):
-
+                    if n.filterByGroup(incGroups,excGroups):
                         n._setDict(value,writeEach,modes,incGroups,excGroups)
 
     def _setTimeout(self,timeout):

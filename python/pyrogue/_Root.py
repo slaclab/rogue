@@ -129,7 +129,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                                  description='Save state to passed filename in YAML format'))
 
         self.add(pr.LocalCommand(name='SaveConfig', value='', 
-                                 function=lambda arg: self._saveYaml(name=arg,readFirst=True,modes=['RW','RO'],incGroups=None,excGroups='NoConfig',autoPrefix='config'),
+                                 function=lambda arg: self._saveYaml(name=arg,readFirst=True,modes=['RW','WO'],incGroups=None,excGroups='NoConfig',autoPrefix='config'),
                                  hidden=True,
                                  description='Save configuration to passed filename in YAML format'))
 
@@ -445,7 +445,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
         try:
             with open(name,'w') as f:
-                f.write(self._getYaml(readFirst=readFirst,modes=modes,incGroups=incGroups,excGroups=excGroups))
+                f.write(self._getYaml(readFirst=readFirst,modes=modes,incGroups=incGroups,excGroups=excGroups,varEncode=True))
         except Exception as e:
             self._log.exception(e)
             return False
@@ -463,7 +463,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
         return True
 
-    def _getYaml(self,readFirst,modes,incGroups,excGroups,varEncode):
+    def _getYaml(self,readFirst,modes,incGroups,excGroups,varEncode=True):
         """
         Get current values as yaml data.
         modes is a list of variable modes to include.
@@ -497,10 +497,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                     try:
                         node = self.getNode(key)
 
-                        if (node.mode in modes) and \
-                           ((incGroups is None) or (node.inGroup(incGroups))) and \
-                           ((excGroups is None) or (not node.inGroup(excGroups))):
-
+                        if (node.mode in modes) and node.filterByGroup(incGroups,excGroups): 
                             self.getNode(key).setDisp(value)
                     except:
                         self._log.error("Entry {} not found".format(key))

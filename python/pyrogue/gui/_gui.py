@@ -40,8 +40,8 @@ def application(argv):
 
 class GuiTop(QWidget):
 
-    newRoot = pyqtSignal(pyrogue.Root,int)
-    newVirt = pyqtSignal(pyrogue.VirtualNode,int)
+    newRoot = pyqtSignal(pyrogue.Root,list,list)
+    newVirt = pyqtSignal(pyrogue.VirtualNode,list,list)
 
     def __init__(self,*, parent=None, incGroups=None, excGroups=None, group=None):
         super(GuiTop,self).__init__(parent)
@@ -49,12 +49,16 @@ class GuiTop(QWidget):
         if group is not None:
             print("The GuiTop group attribute is now deprecated. Please remove it.")
 
-        if isinstance(list,incGroups):
+        if incGroups is None:
+            self._incGroups=[]
+        elif isinstance(incGroups,list):
             self._incGroups=incGroups
         else:
             self._incGroups=[incGroups]
 
-        if isinstance(list,excGroups):
+        if excGroups is None:
+            self._excGroups=[]
+        elif isinstance(excGroups,list):
             self._excGroups=excGroups
         else:
             self._excGroups=[excGroups]

@@ -74,8 +74,7 @@ class EpicsCaServer(object):
         eName = self._base + ':'
 
         if doAll:
-            if ((incGroups is None) or (node.inGroup(incGroups))) and \
-               ((excGroups is None) or (not node.inGroup(incGroups))):
+            if node.filterByGroup(incGroups,excGroups):
                 eName += node.path.replace('.',':')
                 self._pvMap[node.path] = eName
         elif node.path in self._pvMap:
