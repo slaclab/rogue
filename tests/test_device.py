@@ -283,6 +283,7 @@ class AxiVersion(pr.Device):
             value        = 100,
             disp         = '{}',
             hidden       = False,
+            groups       = 'NoConfig',
         ))
 
     def hardReset(self):
