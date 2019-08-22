@@ -124,17 +124,17 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                                  description='Read all values from the hardware'))
 
         self.add(pr.LocalCommand(name='SaveState', value='', 
-                                 function=lambda arg: self._saveState(name=arg,readFirst=True,modes=['RW','RO','WO'],incGroups=None,excGroups='NoState'),
+                                 function=lambda arg: self._saveYaml(name=arg,readFirst=True,modes=['RW','RO','WO'],incGroups=None,excGroups='NoState',autoPrefix='state'),
                                  hidden=True,
                                  description='Save state to passed filename in YAML format'))
 
         self.add(pr.LocalCommand(name='SaveConfig', value='', 
-                                 function=lambda arg: self._saveState(name=arg,readFirst=True,modes=['RW','RO'],incGroups=None,excGroups='NoConfig'),
+                                 function=lambda arg: self._saveYaml(name=arg,readFirst=True,modes=['RW','RO'],incGroups=None,excGroups='NoConfig',autoPrefix='config'),
                                  hidden=True,
                                  description='Save configuration to passed filename in YAML format'))
 
         self.add(pr.LocalCommand(name='LoadConfig', value='', 
-                                 function=lambda arg: self._loadConfig(name=arg,writeEach=False,modes=['RW','WO'],incGroups=None,excGroups='NoConfig'),
+                                 function=lambda arg: self._loadYaml(name=arg,writeEach=False,modes=['RW','WO'],incGroups=None,excGroups='NoConfig'),
                                  hidden=True,
                                  description='Read configuration from passed filename in YAML format'))
 
@@ -436,15 +436,15 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         self._log.info("Done root read")
         return True
 
-    def _saveState(self,name,readFirst=True,modes=['RW','RO','WO'],incGroups=None,excGroups='NoState'):
+    def _saveYaml(self,name,readFirst,modes,incGroups,excGroups,autoPrefix):
         """Save YAML configuration/status to a file. Called from command"""
 
         # Auto generate name if no arg
         if name is None or name == '':
-            name = datetime.datetime.now().strftime("state_%Y%m%d_%H%M%S.yml")
+            name = datetime.datetime.now().strftime(autoPrefix + "_%Y%m%d_%H%M%S.yml")
 
         try:
-            with open(arg,'w') as f:
+            with open(name,'w') as f:
                 f.write(self._getYaml(readFirst=readFirst,modes=modes,incGroups=incGroups,excGroups=excGroups))
         except Exception as e:
             self._log.exception(e)
@@ -452,23 +452,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
         return True
 
-    def _saveConfig(self,name,readFirst=True,modes=['RW','RO'],incGroups=None,excGroups='NoConfig'):
-        """Save YAML configuration to a file. Called from command"""
-
-        # Auto generate name if no arg
-        if arg is None or arg == '':
-            arg = datetime.datetime.now().strftime("config_%Y%m%d_%H%M%S.yml") 
-
-        try:
-            with open(arg,'w') as f:
-                f.write(self._getYaml(readFirst=readFirst,modes=modes,incGroups=incGroups,excGroups=excGroups))
-        except Exception as e:
-            self._log.exception(e)
-            return False
-
-        return True
-
-    def _loadConfig(self,name,writeEach=False,modes=['RW','WO'],incGroups=None,excGroups='NoConfig'):
+    def _loadYaml(self,name,writeEach,modes,incGroups,excGroups):
         """Load YAML configuration from a file. Called from command"""
         try:
             with open(name,'r') as f:

@@ -82,7 +82,8 @@ class Node(object):
     Each node has the following public fields:
         name: Global name of object
         description: Description of the object.
-        group: Group of the Node. Examples: 'Hidden', 'NoState', 'NoConfig', 'NoStream'
+        groups: Group or groups this node belongs to. 
+           Examples: 'Hidden', 'NoState', 'NoConfig', 'NoStream'
         classtype: text string matching name of node sub-class
         path: Full path to the node (ie. node1.node2.node3)
 
@@ -162,9 +163,9 @@ class Node(object):
     def hidden(self, value):
         """ Add or remove node from the Hidden group """
         if hidden is True:
-            self.addGroup('Hidden')
+            self.addToGroup('Hidden')
         else:
-            self.delGroup('Hidden')
+            self.delFromGroup('Hidden')
 
     @property
     def path(self):
