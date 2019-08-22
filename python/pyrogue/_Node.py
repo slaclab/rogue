@@ -116,7 +116,7 @@ class Node(object):
             self._groups = [groups]
 
         if hidden is True:
-            self.addGroup('Hidden')
+            self.addToGroup('Hidden')
 
     @property
     def name(self):
