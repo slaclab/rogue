@@ -591,7 +591,7 @@ class LocalVariable(BaseVariable):
                  enum=None,
                  units=None,
                  hidden=False,
-                 groups=groups,
+                 groups=None,
                  minimum=None,
                  maximum=None,
                  lowWarning=None,
