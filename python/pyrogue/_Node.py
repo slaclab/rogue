@@ -472,7 +472,7 @@ class Node(object):
         else:
             return data
 
-    def _setDict(self,d,writeEach,modes=['RW']):
+    def _setDict(self,d,writeEach,modes,incGroups,excGroups):
         for key, value in d.items():
             nlist = nodeMatch(self._nodes,key)
 
@@ -480,7 +480,10 @@ class Node(object):
                 self._log.error("Entry {} not found".format(key))
             else:
                 for n in nlist:
-                    n._setDict(value,writeEach,modes)
+                    if ((incGroups is None) or (n.inGroup(incGroups))) and \
+                       ((excGroups is None) or (not n.inGroup(excGroups))):
+
+                        n._setDict(value,writeEach,modes,incGroups,excGroups)
 
     def _setTimeout(self,timeout):
         pass

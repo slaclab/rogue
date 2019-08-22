@@ -194,7 +194,7 @@ class BaseCommand(pr.BaseVariable):
     def postedTouchZero(cmd):
         cmd.post(0)
         
-    def _setDict(self,d,writeEach,modes):
+    def _setDict(self,d,writeEach,modes,incGroups,excGroups):
         pass
 
     def _getDict(self,modes,incGroups,excGroups):

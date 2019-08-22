@@ -392,7 +392,7 @@ class BaseVariable(pr.Node):
         self._setDefault()
         self._updatePollInterval()
 
-    def _setDict(self,d,writeEach,modes):
+    def _setDict(self,d,writeEach,modes,incGroups,excGroups):
         #print(f'{self.path}._setDict(d={d})')        
         if self._mode in modes:
             self.setDisp(d,writeEach)
