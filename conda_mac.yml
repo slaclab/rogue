@@ -24,5 +24,4 @@ dependencies:
   - bzip2
   - zeromq
   - epics-base
-  - pcas
   - p4p
