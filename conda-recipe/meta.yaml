@@ -21,7 +21,7 @@ requirements:
      - bzip2
      - zeromq
      - epics-base
-     - pcas
+     - pcas       [linux]
      - git
 
    run:
@@ -33,9 +33,9 @@ requirements:
      - cmake
      - make
      - bzip2
-     - epics-base
-     - pcas
-     - p4p
+     - epics-base 
+     - pcas       [linux]
+     - p4p        
      - zeromq
      - pyyaml
      - jsonpickle
