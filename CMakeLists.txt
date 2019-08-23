@@ -166,8 +166,8 @@ if((NOT NO_PYTHON) AND (NOT NO_EPICS) AND DEFINED ENV{EPICS_BASE})
 
       set(EPICSV3_LIBRARIES ${EPICSV3_PCAS_DIR}/lib/${EPICSV3_ARCH}/libcas.so 
                             ${EPICSV3_PCAS_DIR}/lib/${EPICSV3_ARCH}/libgdd.so
-                            ${EPICSV3_BASE_DIR}/lib/${EPICSV#_ARCH}/libca.so 
-                            ${EPICSV3_BASE_DIR}/lib/${EPICSV#_ARCH}/libCom.so )
+                            ${EPICSV3_BASE_DIR}/lib/${EPICSV3_ARCH}/libca.so 
+                            ${EPICSV3_BASE_DIR}/lib/${EPICSV3_ARCH}/libCom.so )
    endif()
 else()
    set(DO_EPICS_V3 0)
