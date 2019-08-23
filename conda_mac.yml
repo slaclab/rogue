@@ -1,7 +1,6 @@
 channels:
   - defaults
-  - tidair-tag
-  - lcls-ii
+  - tidair-packages
   - conda-forge
 dependencies:
   - python
