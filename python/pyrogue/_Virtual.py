@@ -120,7 +120,8 @@ class VirtualNode(pr.Node):
         return self._client._remoteAttr(self._path, '__call__', *args, **kwargs)
 
     def _addListener(self, listener):
-        self._functions.append(listener)
+        if listener not in self._functions:
+            self._functions.append(listener)
 
     def _delListener(self, listener):
         if listener in self._functions:
@@ -219,7 +220,8 @@ class VirtualClient(rogue.interfaces.ZmqClient):
         return ret
 
     def _addVarListener(self,func):
-        self._varListeners.append(func)
+        if func not in self._varListeners:
+            self._varListeners.append(func)
 
     def _doUpdate(self,data):
         if self._root is None:
