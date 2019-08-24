@@ -28,6 +28,51 @@ class VariableError(Exception):
     pass
 
 
+def VariableWait(varConditions):
+    """
+    Wait for a number of variable conditions to be true.
+    Pass a dictionary of variable / test function combinations.
+    The test function is passed an instance of the VariableValue class
+    i.e. VariableWait({root.device.var1: lambda varVal: varVal.value >= 10,
+                       root.device.var2: lambda varVal: varVal.value >= 20})
+    """
+    _conditions = {}
+    _met = False
+    _cv  = threading.Condition()
+
+    # Method Handle variable updates callback
+    def _varUpdate(path,varValue):
+        _cv.acquire()
+
+        # Call condition function
+        if path in _conditions:
+            if _conditions[path]['cond'](varValue):
+                _conditions[path]['met'] = True
+
+        # Check if all conditions were met
+        _met = True
+        for k,v in _conditions.items():
+            if not v['met']: _met = False
+
+        _cv.notify()
+        _cv.release()
+
+    # Init condition list and add as listeners
+    _cv.acquire()
+    for k,v in varConditions.items():
+        self._conditions[k.path] = {'var':k, 'cond':v, 'met':False}
+        k.addListener(_varUpdate)
+
+    while not _met:
+        _cv.wait()
+
+    # Cleanup
+    for k,v in _conditions.items():
+        v['var'].delListener(_varUpdate)
+
+    _cv.release()
+
+
 class VariableValue(object):
     def __init__(self, var, read=False):
         self.value     = var.get(read=read)
@@ -230,9 +275,18 @@ class BaseVariable(pr.Node):
         The variable and value class are passed as an arg: func(path,varValue)
         """
         if isinstance(listener, BaseVariable):
-            self.__listeners.append(listener)
+            if listener not in self.__listeners:
+                self.__listeners.append(listener)
         else:
-            self.__functions.append(listener)
+            if listener not in self.__functions:
+                self.__functions.append(listener)
+
+    def delListener(self, listener):
+        """
+        Remove a listener Variable or function
+        """
+        if listener in self.__functions:
+            self.__functions.remove(listener)
 
     @pr.expose
     def set(self, value, write=True):

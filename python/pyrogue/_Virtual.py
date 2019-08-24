@@ -81,6 +81,7 @@ def VirtualFactory(data):
         # Add addListener if Variable
         if str(pr.BaseVariable) in data['bases']:
             setattr(self.__class__,'addListener',self._addListener)
+            setattr(self.__class__,'delListener',self._delListener)
 
         VirtualNode.__init__(self,data)
 
@@ -120,6 +121,10 @@ class VirtualNode(pr.Node):
 
     def _addListener(self, listener):
         self._functions.append(listener)
+
+    def _delListener(self, listener):
+        if listener in self._functions:
+            self._functions.remove(listener)
 
     def _addVarListener(self,func):
         self._client._addVarListener(func)
@@ -198,6 +203,8 @@ class VirtualClient(rogue.interfaces.ZmqClient):
         # Update tree
         r._virtAttached(r,r,self)
         self._root = r
+
+        setattr(self,self._root.name,self._root)
 
     def _remoteAttr(self, path, attr, *args, **kwargs):
         snd = { 'path':path, 'attr':attr, 'args':args, 'kwargs':kwargs }
