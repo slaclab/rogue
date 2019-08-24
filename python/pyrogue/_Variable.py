@@ -88,7 +88,7 @@ class VariableWait(object):
             # Check current state of all met flags
             ret = all([v['met'] for k,v in self._clist.items()])
 
-            # Run until timeout of all conditions have been met
+            # Run until timeout or all conditions have been met
             while (not ret) and ((timeout == 0) or ((time.time()-start) < timeout)):
                 self._cv.wait(0.5)
                 ret = all([v['met'] for k,v in self._clist.items()])
