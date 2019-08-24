@@ -127,7 +127,7 @@ class Node(object):
 
     @hidden.setter
     def hidden(self, value):
-        if self.hidden is True:
+        if value is True:
             self._visibility = 0
         else:
             self._visibility = 25
