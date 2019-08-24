@@ -123,16 +123,14 @@ class Node(object):
 
     @property
     def hidden(self):
-        #self._log.warning("The hidden attribute is deprecated. Please use the visibility level instead.")
         return (self.visibility == 0)
 
     @hidden.setter
     def hidden(self, value):
-        if hidden is True:
+        if self.hidden is True:
             self._visibility = 0
         else:
             self._visibility = 25
-        #self._log.warning("The hidden attribute is deprecated. Please use the visibility level instead.")
 
     @property
     def visibility(self):
@@ -141,7 +139,7 @@ class Node(object):
         else:
             return min([self._parent.visibility, self._visibility])
 
-    @visibility.setter
+@visibility.setter
     def visibility(self, value):
         self._visibility = value
 
