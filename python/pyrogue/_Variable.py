@@ -28,49 +28,58 @@ class VariableError(Exception):
     pass
 
 
-def VariableWait(varConditions):
+class VariableWait(object):
     """
     Wait for a number of variable conditions to be true.
     Pass a dictionary of variable / test function combinations.
     The test function is passed an instance of the VariableValue class
-    i.e. VariableWait({root.device.var1: lambda varVal: varVal.value >= 10,
-                       root.device.var2: lambda varVal: varVal.value >= 20})
+    i.e. w = VariableWait({root.device.var1: lambda varVal: varVal.value >= 10,
+                           root.device.var2: lambda varVal: varVal.value >= 20})
+    w.wait()
+
+    This object can only be used once.
     """
-    _conditions = {}
-    _met = False
-    _cv  = threading.Condition()
+    def __init__(self,varConditions=None):
+        self._clist = {}
+        self._cv    = threading.Condition()
+
+        if varConditions is not None:
+            for k,v in varConditions.items():
+                self.add(k,v)
 
     # Method Handle variable updates callback
-    def _varUpdate(path,varValue):
-        _cv.acquire()
+    def _varUpdate(self,path,varValue):
+        with self._cv:
 
-        # Call condition function
-        if path in _conditions:
-            if _conditions[path]['cond'](varValue):
-                _conditions[path]['met'] = True
+            # Call condition function
+            if path in self._clist:
+                if self._clist[path]['cond'](varValue):
+                    self._clist[path]['met'] = True
 
-        # Check if all conditions were met
-        _met = True
-        for k,v in _conditions.items():
-            if not v['met']: _met = False
+            self._cv.notify()
 
-        _cv.notify()
-        _cv.release()
+    # Add a condition
+    def add(self,var,condition):
+        with self._cv:
 
-    # Init condition list and add as listeners
-    _cv.acquire()
-    for k,v in varConditions.items():
-        self._conditions[k.path] = {'var':k, 'cond':v, 'met':False}
-        k.addListener(_varUpdate)
+            # Init condition
+            var.addListener(self._varUpdate)
+            self._clist[var.path] = {'var':var, 'cond':condition, 'met':condition(var.getVariableValue(read=False))}
 
-    while not _met:
-        _cv.wait()
+    # Wait for conditions
+    def wait(self):
+        with self._cv:
 
-    # Cleanup
-    for k,v in _conditions.items():
-        v['var'].delListener(_varUpdate)
+            if len(self._clist) == 0: return
 
-    _cv.release()
+            while not all([v['met'] for k,v in self._clist.items()]):
+                self._cv.wait()
+
+            # Cleanup
+            for k,v in self._clist.items():
+                v['var'].delListener(self._varUpdate)
+
+            self._clist = {}
 
 
 class VariableValue(object):
