@@ -21,6 +21,7 @@ import math
 import inspect
 import threading
 import re
+import time
 from collections import Iterable
 
 class VariableError(Exception):
@@ -45,11 +46,11 @@ class VariableWait(object):
             for k,v in varConditions.items():
                 self.add(k,v)
 
-    # Method Handle variable updates callback
+    # Method to handle variable updates callback
     def _varUpdate(self,path,varValue):
         with self._cv:
 
-            # Call condition function
+            # Call condition function, set met flag if condition has been met
             if path in self._clist:
                 if self._clist[path]['cond'](varValue):
                     self._clist[path]['met'] = True
@@ -58,26 +59,47 @@ class VariableWait(object):
 
     # Add a condition
     def add(self,var,condition):
+        """ 
+        Add a variable and its associated condition.
+        i.e. w.add(root.device.var1, lambda varVal: varVal.value >= 10)
+        """
+
         with self._cv:
 
-            # Init condition
+            # Add to listener for variable
             var.addListener(self._varUpdate)
             self._clist[var.path] = {'var':var, 'cond':condition, 'met':condition(var.getVariableValue(read=False))}
 
-    # Wait for conditions
-    def wait(self):
+    def wait(self,timeout=0):
+        """ 
+        Wait for the defined conditions to be true. Returns True when all conditions have been
+        meet. False if the wait times out. This routines cleans up the conditions list before exiting
+        and new conditions need to be defined before the wait call is used again. Otherwise it will return
+        True immediatly.
+        """
+        ret   = False
+        start = time.time()
+
         with self._cv:
 
-            if len(self._clist) == 0: return
+            # If list is empty indicate all conditions have been met
+            if len(self._clist) == 0: return True
 
-            while not all([v['met'] for k,v in self._clist.items()]):
-                self._cv.wait()
+            # Check current state of all met flags
+            ret = all([v['met'] for k,v in self._clist.items()])
+
+            # Run until timeout of all conditions have been met
+            while (not ret) and ((timeout == 0) or ((time.time()-start) < timeout)):
+                self._cv.wait(0.5)
+                ret = all([v['met'] for k,v in self._clist.items()])
 
             # Cleanup
             for k,v in self._clist.items():
                 v['var'].delListener(self._varUpdate)
 
             self._clist = {}
+
+        return ret
 
 
 class VariableValue(object):
