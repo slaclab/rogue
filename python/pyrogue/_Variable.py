@@ -36,8 +36,6 @@ class VariableWait(object):
     i.e. w = VariableWait({root.device.var1: lambda varVal: varVal.value >= 10,
                            root.device.var2: lambda varVal: varVal.value >= 20})
     w.wait()
-
-    This object can only be used once.
     """
     def __init__(self,varConditions=None):
         self._clist = {}
