@@ -68,6 +68,8 @@ class VariableWait(object):
 
             # Add to listener for variable
             var.addListener(self._varUpdate)
+
+            # Get current state
             self._clist[var.path] = {'var':var, 'cond':condition, 'met':condition(var.getVariableValue(read=False))}
 
     def wait(self,timeout=0):
