@@ -75,8 +75,8 @@ class VariableWait(object):
     def wait(self,timeout=0):
         """ 
         Wait for the defined conditions to be true. Returns True when all conditions have been
-        meet. False if the wait times out. This routines cleans up the conditions list before exiting
-        and new conditions need to be defined before the wait call is used again. Otherwise it will return
+        meet. False if the wait times out. This routine cleans up the conditions list before exiting
+        and new conditions need to be defined before the wait call is used again, otherwise it will return
         True immediatly.
         """
         ret   = False
