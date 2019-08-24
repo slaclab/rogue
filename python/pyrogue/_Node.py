@@ -139,7 +139,7 @@ class Node(object):
         else:
             return min([self._parent.visibility, self._visibility])
 
-@visibility.setter
+    @visibility.setter
     def visibility(self, value):
         self._visibility = value
 
