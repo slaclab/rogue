@@ -18,9 +18,6 @@ dependencies:
   - click
   - numpy
   - pyqt
-  - pyepics
   - boost
   - bzip2
   - zeromq
-  - epics-base
-  - p4p
