@@ -36,8 +36,8 @@ def VariableWait(varList, testFunction, timeout=0):
     The test function is passed a dictionary containing the current
     variableValue state index by variable path
     i.e. w = VariableWait([root.device.var1,root.device.var2], 
-                          lambda varList: varList['root.device.var1'].value >= 10 and \
-                                          varList['root.device.var1'].value >= 20)
+                          lambda varValues: varValues['root.device.var1'].value >= 10 and \
+                                            varValues['root.device.var1'].value >= 20)
     """
 
     # Container class
