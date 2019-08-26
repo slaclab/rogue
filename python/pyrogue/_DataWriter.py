@@ -33,7 +33,7 @@ class DataWriter(pr.Device):
         pr.Device.__init__(self, visibility=visibility, **kwargs)
 
         self.add(pr.LocalVariable(
-            name='AataFile',
+            name='DataFile',
             mode='RW',
             value='',
             description='Data file for storing frames for connected streams.'))
@@ -42,8 +42,6 @@ class DataWriter(pr.Device):
             name='Open',
             function=self._open,
             description='Open data file.'))
-
-        setattr(
 
         self.add(pr.LocalCommand(
             name='Close',
