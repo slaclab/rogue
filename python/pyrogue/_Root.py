@@ -26,6 +26,7 @@ import functools as ft
 import time
 import queue
 import jsonpickle
+import zipfile
 from contextlib import contextmanager
 
 class RootLogHandler(logging.Handler):
@@ -463,9 +464,21 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
     def _loadConfig(self,arg):
         """Load YAML configuration from a file. Called from command"""
-        try:
-            with open(arg,'r') as f:
-                self._setYaml(f.read(),False,['RW','WO'])
+        try: 
+
+            # File in a Zip archive
+            if '.zip/' in arg:
+                base = np[:np.find['.zip/']+4]
+                sub  = np[np.find['.zip/']+5:]
+
+                with zipfile.ZipFile(base) as zf:
+                    with zf.open(sub,'r') as f:
+                        self._setYaml(f.read(),False,['RW','WO'])
+              
+            # Standard file
+            else:
+                with open(arg,'r') as f:
+                    self._setYaml(f.read(),False,['RW','WO'])
         except Exception as e:
             self._log.exception(e)
             return False
