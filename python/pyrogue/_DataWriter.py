@@ -33,29 +33,29 @@ class DataWriter(pr.Device):
         pr.Device.__init__(self, visibility=visibility, **kwargs)
 
         self.add(pr.LocalVariable(
-            name='dataFile',
+            name='DataFile',
             mode='RW',
             value='',
             description='Data file for storing frames for connected streams.'))
 
         self.add(pr.LocalCommand(
-            name='open',
+            name='Open',
             function=self._open,
             description='Open data file.'))
 
         self.add(pr.LocalCommand(
-            name='close',
+            name='Close',
             function=self._close,
             description='Close data file.'))
 
         self.add(pr.LocalVariable(
-            name='isOpen',
+            name='IsOpen',
             value=False,
             localGet=self._isOpen,
             description='Data file is open.'))
 
         self.add(pr.LocalVariable(
-            name='bufferSize',
+            name='BufferSize',
             mode='RW',
             value=0,
             typeStr='UInt32',
@@ -63,7 +63,7 @@ class DataWriter(pr.Device):
             description='File buffering size. Enables caching of data before call to file system.'))
 
         self.add(pr.LocalVariable(
-            name='maxFileSize',
+            name='MaxFileSize',
             mode='RW',
             value=0,
             typeStr='UInt64',
@@ -71,7 +71,7 @@ class DataWriter(pr.Device):
             description='Maximum size for an individual file. Setting to a non zero splits the run data into multiple files.'))
 
         self.add(pr.LocalVariable(
-            name='currentSize',
+            name='CurrentSize',
             mode='RO',
             value=0,
             typeStr='UInt64',
@@ -80,7 +80,7 @@ class DataWriter(pr.Device):
             description='Size of current data files(s) for current open session in bytes.'))
 
         self.add(pr.LocalVariable(
-            name='totalSize',
+            name='TotalSize',
             mode='RO',
             value=0,
             typeStr='UInt64',
@@ -89,7 +89,7 @@ class DataWriter(pr.Device):
             description='Size of all data sub-files(s) for current open session in bytes.'))
 
         self.add(pr.LocalVariable(
-            name='frameCount',
+            name='FrameCount',
             mode='RO',
             value=0,
             typeStr='UInt32',
@@ -98,7 +98,7 @@ class DataWriter(pr.Device):
             description='Frame in data file(s) for current open session in bytes.'))
 
         self.add(pr.LocalCommand(
-            name='autoName',
+            name='AutoName',
             function=self._genFileName,
             description='Auto create data file name using data and time.'))
 
