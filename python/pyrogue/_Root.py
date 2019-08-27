@@ -294,7 +294,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
     @pr.expose
     def exec(self,path,arg):
         obj = self.getNode(path)
-        return obj.call(arg)
+        return obj(arg)
 
     def setVisibility(self, visibility, nodes):
         """ Set visibility for a list of Node names"""

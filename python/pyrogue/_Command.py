@@ -82,8 +82,7 @@ class BaseCommand(pr.BaseVariable):
     def retTypeStr(self):
         return self._retTypeStr
 
-    @pr.expose
-    def call(self,arg=None):
+    def __call__(self,arg=None):
         if self._background:
             with self._lock:
                 if self._thread is not None and self._thread.isAlive():
@@ -118,8 +117,9 @@ class BaseCommand(pr.BaseVariable):
         except Exception as e:
             self._log.exception(e)
 
-    def __call__(self,arg=None):
-        return self.call(arg)
+    @pr.expose
+    def call(self,arg=None):
+        return self.__call__(arg)
 
     @staticmethod
     def nothing():

@@ -71,8 +71,7 @@ class Process(pr.Device):
         with self._lock:
             self._runEn  = False
 
-    @pr.expose
-    def call(self,arg=None):
+    def __call__(self,arg=None):
         with self._lock:
             if self.Running.value() is False:
                 if arg is not None and self._argVar is not None:
@@ -85,9 +84,6 @@ class Process(pr.Device):
                 self._log.warning("Process already running!")
 
         return None
-
-    def __call__(self,arg=None):
-        return self.call(arg)
 
     def _run(self):
         self.Running.set(True)
