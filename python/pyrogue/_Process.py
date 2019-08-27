@@ -49,6 +49,7 @@ class Process(pr.Device):
             name='Running',
             mode='RO',
             value=False,
+            pollInterval=1.0,
             description='Operation is running.'))
 
         self.add(pr.LocalVariable(
@@ -56,12 +57,14 @@ class Process(pr.Device):
             mode='RO',
             units='Pct',
             value=0.0,
+            pollInterval=1.0,
             description='Percent complete: 0.0 - 1.0.'))
 
         self.add(pr.LocalVariable(
             name='Message',
             mode='RO',
             value='',
+            pollInterval=1.0,
             description='Process status message. Prefix with Error: if an error occured.'))
 
     def _start(self):
