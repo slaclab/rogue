@@ -56,7 +56,13 @@ class Process(pr.Device):
             mode='RO',
             units='Pct',
             value=0.0,
-            description='Percent complete.'))
+            description='Percent complete: 0.0 - 1.0.'))
+
+        self.add(pr.LocalVariable(
+            name='Message',
+            mode='RO',
+            value='',
+            description='Process status message. Prefix with Error: if an error occured.'))
 
     def _start(self):
         with self._lock:
@@ -96,10 +102,12 @@ class Process(pr.Device):
         self.Running.set(False)
 
     def _process(self):
+        self.Message.setDisp("Started")
         for i in range(101):
             if self._runEn is False:
                 break
             time.sleep(1)
             self.Progress.set(i)
-
+            self.Message.setDisp(f"Running for {i} seconds.")
+        self.Message.setDisp("Done")
 
