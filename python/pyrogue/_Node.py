@@ -196,7 +196,7 @@ class Node(object):
                 attr['funcs'][k] = {'args'   : [a for a in inspect.getfullargspec(v).args if a != 'self'],
                                     'kwargs' : inspect.getfullargspec(v).kwonlyargs}
 
-        return (pr.VirtualFactory, (attr,))
+        return (pr.interfaces.VirtualFactory, (attr,))
 
     def __contains__(self, item):
         return item in self._nodes.values()
@@ -538,4 +538,12 @@ def nodeMatch(nodes,name):
         else:
             return [r]
 
+def genBaseList(cls):
+    ret = [str(cls)]
+
+    for l in cls.__bases__:
+        if l is not object:
+            ret += genBaseList(l)
+
+    return ret
 

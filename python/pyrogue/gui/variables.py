@@ -27,6 +27,7 @@ except ImportError:
     from PyQt4.QtGui     import *
 
 import pyrogue
+import pyrogue.interfaces
 import threading
 
 class VariableDev(QObject):
@@ -333,7 +334,7 @@ class VariableWidget(QWidget):
         self.devTop = None
 
     @pyqtSlot(pyrogue.Root,int)
-    @pyqtSlot(pyrogue.VirtualNode,int)
+    @pyqtSlot(pyrogue.interfaces.VirtualNode,int)
     def addTree(self,root, minVisibility):
         self.roots.append(root)
         self._children.append(VariableDev(tree=self.tree,

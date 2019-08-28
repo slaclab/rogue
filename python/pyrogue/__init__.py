@@ -23,7 +23,6 @@ from pyrogue._Device    import *
 from pyrogue._Memory    import *
 from pyrogue._Root      import *
 from pyrogue._PollQueue import *
-from pyrogue._Virtual   import *
 from pyrogue._Process   import *
 from pyrogue._DataWriter import *
 from pyrogue._RunControl import *

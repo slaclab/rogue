@@ -159,7 +159,7 @@ class CommandWidget(QWidget):
         self.devTop = None
 
     @pyqtSlot(pyrogue.Root,int)
-    @pyqtSlot(pyrogue.VirtualNode,int)
+    @pyqtSlot(pyrogue.interfaces.VirtualNode,int)
     def addTree(self,root,minVisibility):
         self.roots.append(root)
         self._children.append(CommandDev(tree=self.tree,
