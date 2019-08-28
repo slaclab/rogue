@@ -672,7 +672,7 @@ def generateAddressMap(root,fname):
         f.write("Description\n")
 
         for v in vlist:
-            if isinstance(v, pr.RemoteVariable):
+            if v.isinstance(pr.RemoteVariable):
                 f.write("{}\t".format(v.path))
                 f.write("{}\t".format(type(v)))
                 f.write("{:#x}\t".format(v.address))
