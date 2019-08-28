@@ -2,7 +2,7 @@
 #-----------------------------------------------------------------------------
 # Title      : PyRogue base module - ZMQ Client
 #-----------------------------------------------------------------------------
-# File       : pyrogue/interfaces/_ZmqClient.py
+# File       : pyrogue/interfaces/_SimpleClient.py
 # Created    : 2017-05-16
 #-----------------------------------------------------------------------------
 # This file is part of the rogue software platform. It is subject to 
@@ -23,13 +23,13 @@ import rogue.interfaces
 import functools as ft
 import jsonpickle
 
-class ZmqClient(rogue.interfaces.ZmqClient):
+class SimpleClient(rogue.interfaces.ZmqClient):
 
     def __init__(self, addr="localhost", port=9099):
         rogue.interfaces.ZmqClient.__init__(self,addr,port)
 
         # Setup logging
-        self._log = pr.logInit(cls=self,name="ZmqClient",path=None)
+        self._log = pr.logInit(cls=self,name="SimpleClient",path=None)
 
         # Get root name as a connection test
         self.setTimeout(1000)

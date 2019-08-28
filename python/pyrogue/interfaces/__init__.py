@@ -9,5 +9,5 @@
 #-----------------------------------------------------------------------------
 
 from pyrogue.interfaces._ZmqServer import *
-from pyrogue.interfaces._ZmqClient import *
+from pyrogue.interfaces._SimpleClient import *
 
