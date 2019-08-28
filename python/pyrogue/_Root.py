@@ -367,7 +367,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                 f.write("Description\n")
 
                 for v in self.variableList:
-                    if isinstance(v, pr.RemoteVariable):
+                    if v.isinstance(pr.RemoteVariable):
                         f.write("{}\t".format(v.path))
                         f.write("{}\t".format(type(v)))
                         f.write("{:#x}\t".format(v.address))
