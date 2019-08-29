@@ -162,7 +162,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         self.add(pr.LocalCommand(name='Exit', function=self._exit,visibility=50,
                                  description='Exit the server application'))
 
-    def start(self, timeout=1.0, initRead=False, initWrite=False, pollEn=True, zmqPort=None):
+    def start(self, timeout=1.0, initRead=False, initWrite=False, pollEn=True, zmqPort=None, serverPort=None):
         """Setup the tree. Start the polling thread."""
 
         if self._running:
@@ -215,8 +215,13 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
         # Start ZMQ server if enabled
         if zmqPort is not None:
+            self._log.warning("zmqPort arg is deprecated. Please use serverPort arg instead")
+            serverPort = zmqPort
+
+        # Start server
+        if serverPort is not None:
             self._structure = jsonpickle.encode(self)
-            self._zmqServer = pr.interfaces.ZmqServer(root=self,addr="*",port=zmqPort)
+            self._zmqServer = pr.interfaces.ZmqServer(root=self,addr="*",port=serverPort)
 
         # Read current state
         if initRead:
