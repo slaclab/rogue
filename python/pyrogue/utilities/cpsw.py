@@ -36,18 +36,19 @@ def exportRemoteVariable(variable,indent):
     bitOffset = int(variable.bitOffset[0] % 8)
 
     dat  = " " * indent +  "#########################################################\n"
-    dat += " " * indent + f"{variable.name}\n"
+    dat += " " * indent + f"{variable.name}:\n"
     dat += " " * indent +  "at:\n"
     dat += " " * indent + f"  offset: {offset:#x}\n"
     dat += " " * indent +  "class: IntField\n"
+    dat += " " * indent +  "name: {variable.name}\n"
 
     if "String" in variable.typeStr:
         dat += " " * indent +  "encoding: ASCII\n"
-        dat += " " * indent +  "sizebits: 8\n"
+        dat += " " * indent +  "sizeBits: 8\n"
         dat += " " * indent +  "nelms: {}\n".format(int(variable.bitSize[0]/8))
     elif "Int" in variable.typeStr or 'Bool' in variable.typeStr:
-        dat += " " * indent + f"sizebits: {variable.bitSize[0]}\n"
-        dat += " " * indent + f"lsbit: {bitOffset}\n"
+        dat += " " * indent + f"sizeBits: {variable.bitSize[0]}\n"
+        dat += " " * indent + f"lsBit: {bitOffset}\n"
 
         if variable.disp != '{}':
             dat += " " * indent + "encoding: 16\n"
