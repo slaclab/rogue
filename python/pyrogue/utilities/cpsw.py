@@ -39,38 +39,39 @@ def exportRemoteVariable(variable,indent):
         if (offset + math.ceil(variable.bitSize[i]/8)) > size:
             size = offset + math.ceil(variable.bitSize[i]/8)
 
-        if len(variable.bitOffset) > 1:
-            name = f"{variable.name}[{i}]\n"
+    if len(variable.bitOffset) > 1:
+            name = f"{variable.name}[{i}]:\n"
         else:
-            name = f"{variable.name}\n"
+            name = f"{variable.name}:\n"
 
-        dat  = " " * indent +  "#########################################################\n"
-        dat += " " * indent +  name
-        dat += " " * indent +  "at:\n"
-        dat += " " * indent + f"  offset: {offset:#x}\n"
-        dat += " " * indent +  "class: IntField\n"
+    dat  = " " * indent +  "#########################################################\n"
+    dat += " " * indent +  name
+    dat += " " * indent +  "at:\n"
+    dat += " " * indent + f"  offset: {offset:#x}\n"
+    dat += " " * indent +  "class: IntField\n"
+    dat += " " * indent +  "name: {variable.name}\n"
 
-        if "String" in variable.typeStr:
-            dat += " " * indent +  "encoding: ASCII\n"
-            dat += " " * indent +  "sizebits: 8\n"
-            dat += " " * indent +  "nelms: {}\n".format(int(variable.bitSize[0]/8))
-        elif "Int" in variable.typeStr or 'Bool' in variable.typeStr:
-            dat += " " * indent + f"sizebits: {variable.bitSize[0]}\n"
-            dat += " " * indent + f"lsbit: {bitOffset}\n"
+    if "String" in variable.typeStr:
+        dat += " " * indent +  "encoding: ASCII\n"
+        dat += " " * indent +  "sizeBits: 8\n"
+        dat += " " * indent +  "nelms: {}\n".format(int(variable.bitSize[0]/8))
+    elif "Int" in variable.typeStr or 'Bool' in variable.typeStr:
+        dat += " " * indent + f"sizeBits: {variable.bitSize[0]}\n"
+        dat += " " * indent + f"lsBit: {bitOffset}\n"
 
-            if variable.disp != '{}':
-                dat += " " * indent + "encoding: 16\n"
+        if variable.disp != '{}':
+            dat += " " * indent + "encoding: 16\n"
 
-        dat += " " * indent + f"mode: {variable.mode}\n"
-        dat += " " * indent + f"description: {variable.description}\n"
+    dat += " " * indent + f"mode: {variable.mode}\n"
+    dat += " " * indent + f"description: {variable.description}\n"
 
-        if variable.enum is not None:
-            dat +=  " " * indent +  "enums:\n"
+    if variable.enum is not None:
+        dat +=  " " * indent +  "enums:\n"
 
-            for k,v in variable.enum.items():
-                dat += " " * indent + f"  - name: {v}\n"
-                dat += " " * indent +  "    class: Enum\n"
-                dat += " " * indent +  "    value: {}\n".format(int(k))
+        for k,v in variable.enum.items():
+            dat += " " * indent + f"  - name: {v}\n"
+            dat += " " * indent +  "    class: Enum\n"
+            dat += " " * indent +  "    value: {}\n".format(int(k))
 
     return dat,size
 
@@ -108,7 +109,7 @@ def exportSubDevice(device, indent, deviceList, dataDir):
     index,size = exportDevice(device, deviceList, dataDir)
 
     if index > 0:
-        dn = f"{device.__class__.__name__}_{index}"
+    dn = f"{device.__class__.__name__}_{index}"
     else:
         dn = f"{device.__class__.__name__}"
 
@@ -122,7 +123,7 @@ def exportSubDevice(device, indent, deviceList, dataDir):
     return dat,dn,size
 
 def exportDevice(device, deviceList, dataDir):
-    imp  = []
+    imp = []
     size = 0
     dat  = ""
 
@@ -163,7 +164,7 @@ def exportDevice(device, deviceList, dataDir):
 
     for i in range(len(deviceList[device.__class__.__name__]) + 1):
         if i > 0:
-            tname = device.__class__.__name__ + f"_{i}"
+        tname = device.__class__.__name__ + f"_{i}"
         else:
             tname = device.__class__.__name__
 
