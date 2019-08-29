@@ -40,16 +40,16 @@ def exportRemoteVariable(variable,indent):
             size = offset + math.ceil(variable.bitSize[i]/8)
 
     if len(variable.bitOffset) > 1:
-            name = f"{variable.name}[{i}]:\n"
-        else:
-            name = f"{variable.name}:\n"
+        name = f"{variable.name}[{i}]"
+    else:
+        name = f"{variable.name}"
 
     dat  = " " * indent +  "#########################################################\n"
-    dat += " " * indent +  name
+    dat += " " * indent +  name + ":\n"
     dat += " " * indent +  "at:\n"
     dat += " " * indent + f"  offset: {offset:#x}\n"
     dat += " " * indent +  "class: IntField\n"
-    dat += " " * indent +  "name: {variable.name}\n"
+    dat += " " * indent +  "name: " + name + "\n"
 
     if "String" in variable.typeStr:
         dat += " " * indent +  "encoding: ASCII\n"
@@ -109,7 +109,7 @@ def exportSubDevice(device, indent, deviceList, dataDir):
     index,size = exportDevice(device, deviceList, dataDir)
 
     if index > 0:
-    dn = f"{device.__class__.__name__}_{index}"
+        dn = f"{device.__class__.__name__}_{index}"
     else:
         dn = f"{device.__class__.__name__}"
 
@@ -164,7 +164,7 @@ def exportDevice(device, deviceList, dataDir):
 
     for i in range(len(deviceList[device.__class__.__name__]) + 1):
         if i > 0:
-        tname = device.__class__.__name__ + f"_{i}"
+            tname = device.__class__.__name__ + f"_{i}"
         else:
             tname = device.__class__.__name__
 
