@@ -57,6 +57,9 @@ class BaseCommand(pr.BaseVariable):
         self._lock = threading.Lock()
         self._background = background
 
+        if self._background:
+            self._log.warning("Background commands are deprecated. Please use a Process device")
+
         if retValue is None:
             self._retTypeStr = None
         elif isinstance(retValue, list):
