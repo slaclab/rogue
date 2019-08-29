@@ -33,21 +33,21 @@ class StreamWriter(pyrogue.DataWriter):
 
     def _open(self):
         try:
-            self._writer.open(self.dataFile.value())
+            self._writer.open(self.DataFile.value())
         except Exception as e:
             self._log.exception(e)
 
         # Dump config/status to file
         if self._configEn: self.root._streamYaml()
-        self.frameCount.set(0)
-        self.isOpen.get()
+        self.FrameCount.set(0)
+        self.IsOpen.get()
 
     def _close(self):
 
         # Dump config/status to file
         if self._configEn: self.root._streamYaml()
         self._writer.close()
-        self.isOpen.get()
+        self.IsOpen.get()
 
     def _isOpen(self):
         return self._writer.isOpen()
@@ -99,18 +99,18 @@ class StreamReader(pyrogue.Device):
         self._reader = rogue.utilities.fileio.StreamReader()
 
         self.add(pyrogue.LocalVariable(
-            name='dataFile', 
+            name='DataFile', 
             description='Data File',
             mode='RW', 
             value=''))
 
         self.add(pr.LocalCommand(
-            name='open',
+            name='Open',
             function=self._open,
             description='Open data file.'))
 
         self.add(pr.LocalCommand(
-            name='close',
+            name='Close',
             function=self._close,
             description='Close data file.'))
 
@@ -120,7 +120,7 @@ class StreamReader(pyrogue.Device):
             description='Data file is open.'))
 
     def _open(self):
-        dev._reader.open(self.dataFile.value())
+        dev._reader.open(self.DataFile.value())
 
     def _close(self):
         dev._reader.close()
