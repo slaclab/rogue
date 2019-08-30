@@ -94,7 +94,7 @@ class VirtualNode(pr.Node):
         super().__init__(name=attrs['name'], 
                          description=attrs['description'], 
                          expand=attrs['expand'], 
-                         visibility=attrs['visibility'])
+                         groups=attrs['groups'])
 
         self._path  = attrs['path']
         self._class = attrs['class']

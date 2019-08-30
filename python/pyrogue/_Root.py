@@ -94,72 +94,82 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         self._updateThread = None
 
         # Init 
-        pr.Device.__init__(self, name=name, description=description, expand=expand, visibility=100)
+        pr.Device.__init__(self, name=name, description=description, expand=expand)
 
         # Variables
-        self.add(pr.LocalVariable(name='SystemLog', value='', mode='RO', visibility=0,
+        self.add(pr.LocalVariable(name='SystemLog', value='', mode='RO', hidden=True,
             description='String containing newline seperated system logic entries'))
 
-        self.add(pr.LocalVariable(name='ForceWrite', value=False, mode='RW', visibility=0,
+        self.add(pr.LocalVariable(name='ForceWrite', value=False, mode='RW', hidden=True,
             description='Configuration Flag To Always Write Non Stale Blocks For WriteAll, LoadConfig and setYaml'))
 
-        self.add(pr.LocalVariable(name='InitAfterConfig', value=False, mode='RW', visibility=0,
+        self.add(pr.LocalVariable(name='InitAfterConfig', value=False, mode='RW', hidden=True,
             description='Configuration Flag To Execute Initialize after LoadConfig or setYaml'))
 
-        self.add(pr.LocalVariable(name='Time', value=0.0, mode='RO', visibility=0,
+        self.add(pr.LocalVariable(name='Time', value=0.0, mode='RO', hidden=True,
                  localGet=lambda: time.time(), pollInterval=1.0, description='Current Time In Seconds Since EPOCH UTC'))
 
-        self.add(pr.LocalVariable(name='LocalTime', value='', mode='RO',visibility=50,
+        self.add(pr.LocalVariable(name='LocalTime', value='', mode='RO',
                  localGet=lambda: time.strftime("%Y-%m-%d %H:%M:%S %Z", time.localtime(time.time())),
                  pollInterval=1.0, description='Local Time'))
 
-        self.add(pr.LocalVariable(name='PollEn', value=False, mode='RW',visibility=50,
+        self.add(pr.LocalVariable(name='PollEn', value=False, mode='RW',
                                   localSet=lambda value: self._pollQueue.pause(not value),
                                   localGet=lambda: not self._pollQueue.paused()))
 
         # Commands
-        self.add(pr.LocalCommand(name='WriteAll', function=self._write, visibility=0,
+        self.add(pr.LocalCommand(name='WriteAll', function=self._write, hidden=True,
                                  description='Write all values to the hardware'))
 
-        self.add(pr.LocalCommand(name="ReadAll", function=self._read, visibility=0,
+        self.add(pr.LocalCommand(name="ReadAll", function=self._read, hidden=True,
                                  description='Read all values from the hardware'))
 
-        self.add(pr.LocalCommand(name='SaveState', value='', function=self._saveState, visibility=0,
+        self.add(pr.LocalCommand(name='SaveState', value='', 
+                                 function=lambda arg: self._saveYaml(name=arg,readFirst=True,modes=['RW','RO','WO'],incGroups=None,excGroups='NoState',autoPrefix='state'),
+                                 hidden=True,
                                  description='Save state to passed filename in YAML format'))
 
-        self.add(pr.LocalCommand(name='SaveConfig', value='', function=self._saveConfig, visibility=0,
+        self.add(pr.LocalCommand(name='SaveConfig', value='', 
+                                 function=lambda arg: self._saveYaml(name=arg,readFirst=True,modes=['RW','WO'],incGroups=None,excGroups='NoConfig',autoPrefix='config'),
+                                 hidden=True,
                                  description='Save configuration to passed filename in YAML format'))
 
-        self.add(pr.LocalCommand(name='LoadConfig', value='', function=self._loadConfig, visibility=0,
+        self.add(pr.LocalCommand(name='LoadConfig', value='', 
+                                 function=lambda arg: self._loadYaml(name=arg,writeEach=False,modes=['RW','WO'],incGroups=None,excGroups='NoConfig'),
+                                 hidden=True,
                                  description='Read configuration from passed filename in YAML format'))
 
-        self.add(pr.LocalCommand(name='Initialize', function=self.initialize, visibility=0,
+        self.add(pr.LocalCommand(name='Initialize', function=self.initialize, hidden=True,
                                  description='Generate a soft reset to each device in the tree'))
 
-        self.add(pr.LocalCommand(name='HardReset', function=self.hardReset, visibility=0,
+        self.add(pr.LocalCommand(name='HardReset', function=self.hardReset, hidden=True,
                                  description='Generate a hard reset to each device in the tree'))
 
-        self.add(pr.LocalCommand(name='CountReset', function=self.countReset, visibility=0,
+        self.add(pr.LocalCommand(name='CountReset', function=self.countReset, hidden=True,
                                  description='Generate a count reset to each device in the tree'))
 
-        self.add(pr.LocalCommand(name='ClearLog', function=self._clearLog, visibility=0,
+        self.add(pr.LocalCommand(name='ClearLog', function=self._clearLog, hidden=True,
                                  description='Clear the message log cntained in the SystemLog variable'))
 
-        self.add(pr.LocalCommand(name='SetYamlConfig', value='', function=lambda arg: self._setYaml(arg,False,['RW','WO']), visibility=0,
+        self.add(pr.LocalCommand(name='SetYamlConfig', value='', 
+                                 function=lambda arg: self._setYaml(yml=arg,writeEach=False,modes=['RW','WO'],incGroups=None,excGroups='NoConfig'), 
+                                 hidden=True,
                                  description='Set configuration from passed YAML string'))
 
         self.add(pr.LocalCommand(name='GetYamlConfig', value=True, retValue='',
-                                 function=lambda arg: self._getYaml(arg,['RW','WO']), visibility=0,
+                                 function=lambda arg: self._getYaml(readFirst=arg,modes=['RW','WO'],incGroups=None,excGroups='NoConfig'), 
+                                 hidden=True,
                                  description='Get current configuration as YAML string. Pass read first arg.'))
 
         self.add(pr.LocalCommand(name='GetYamlState', value=True, retValue='',
-                                 function=lambda arg: self._getYaml(arg,['RW','RO','WO']), visibility=0,
+                                 function=lambda arg: self._getYaml(readFirst=arg,modes=['RW','RO','WO'],incGroups=None,excGroups='NoState'), 
+                                 hidden=True,
                                  description='Get current state as YAML string. Pass read first arg.'))
 
-        self.add(pr.LocalCommand(name='Restart', function=self._restart,visibility=50,
+        self.add(pr.LocalCommand(name='Restart', function=self._restart,
                                  description='Restart and reload the server application'))
 
-        self.add(pr.LocalCommand(name='Exit', function=self._exit,visibility=50,
+        self.add(pr.LocalCommand(name='Exit', function=self._exit,
                                  description='Exit the server application'))
 
     def start(self, timeout=1.0, initRead=False, initWrite=False, pollEn=True, zmqPort=None, serverPort=None):
@@ -302,13 +312,6 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         obj = self.getNode(path)
         return obj(arg)
 
-    def setVisibility(self, visibility, nodes):
-        """ Set visibility for a list of Node names"""
-        for path in nodes:
-            n = self.getNode(path)
-            if n is not None:
-                n.visibility(visibility)
-
     @contextmanager
     def updateGroup(self):
 
@@ -423,14 +426,18 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         frame.write(b,0)
         self._sendFrame(frame)
 
-    def _streamYaml(self,modes=['RW','RO']):
+    def _streamYaml(self,modes=['RW','RO','WO'],incGroups=None,excGroups=['NoStream','NoState']):
         """
         Generate a frame containing all variables values in yaml format.
         A hardware read is not generated before the frame is generated.
         Vlist can contain an optional list of variale paths to include in the
         stream. If this list is not NULL only these variables will be included.
         """
-        self._sendYamlFrame(self._getYaml(readFirst=False,modes=modes,varEncode=False))
+        self._sendYamlFrame(self._getYaml(readFirst=False,
+                                          modes=modes,
+                                          incGroups=incGroups,
+                                          excGroups=excGroups,
+                                          varEncode=False))
 
     def _write(self):
         """Write all blocks"""
@@ -464,62 +471,34 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         self._log.info("Done root read")
         return True
 
-    def _saveState(self,arg):
+    def _saveYaml(self,name,readFirst,modes,incGroups,excGroups,autoPrefix):
         """Save YAML configuration/status to a file. Called from command"""
 
         # Auto generate name if no arg
-        if arg is None or arg == '':
-            arg = datetime.datetime.now().strftime("state_%Y%m%d_%H%M%S.yml")
+        if name is None or name == '':
+            name = datetime.datetime.now().strftime(autoPrefix + "_%Y%m%d_%H%M%S.yml")
 
         try:
-            with open(arg,'w') as f:
-                f.write(self._getYaml(True,modes=['RW','RO','WO']))
+            with open(name,'w') as f:
+                f.write(self._getYaml(readFirst=readFirst,modes=modes,incGroups=incGroups,excGroups=excGroups,varEncode=True))
         except Exception as e:
             self._log.exception(e)
             return False
 
         return True
 
-    def _saveConfig(self,arg):
-        """Save YAML configuration to a file. Called from command"""
-
-        # Auto generate name if no arg
-        if arg is None or arg == '':
-            arg = datetime.datetime.now().strftime("config_%Y%m%d_%H%M%S.yml") 
-
-        try:
-            with open(arg,'w') as f:
-                f.write(self._getYaml(True,modes=['RW','WO']))
-        except Exception as e:
-            self._log.exception(e)
-            return False
-
-        return True
-
-    def _loadConfig(self,arg):
+    def _loadYaml(self,name,writeEach,modes,incGroups,excGroups):
         """Load YAML configuration from a file. Called from command"""
         try:
-
-            # File in a Zip archive
-            if '.zip/' in arg:
-                base = np[:np.find['.zip/']+4]
-                sub  = np[np.find['.zip/']+5:]
-
-                with zipfile.ZipFile(base) as zf:
-                    with zf.open(sub,'r') as f:
-                        self._setYaml(f.read(),False,['RW','WO'])
-              
-            # Standard file
-            else:
-                with open(arg,'r') as f:
-                    self._setYaml(f.read(),False,['RW','WO'])
+            with open(name,'r') as f:
+                self._setYaml(yml=f.read(),writeEach=writeEach,modes=modes,incGroups=incGroups,excGroups=excGroups)
         except Exception as e:
             self._log.exception(e)
             return False
 
         return True
 
-    def _getYaml(self,readFirst,modes=['RW'],varEncode=True):
+    def _getYaml(self,readFirst,modes,incGroups,excGroups,varEncode=True):
         """
         Get current values as yaml data.
         modes is a list of variable modes to include.
@@ -528,12 +507,12 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
         if readFirst: self._read()
         try:
-            return dataToYaml({self.name:self._getDict(modes)},varEncode)
+            return dataToYaml({self.name:self._getDict(modes=modes,incGroups=incGroups,excGroups=excGroups)},varEncode)
         except Exception as e:
             self._log.exception(e)
             return ""
 
-    def _setYaml(self,yml,writeEach,modes=['RW','WO']):
+    def _setYaml(self,yml,writeEach,modes,incGroups,excGroups):
         """
         Set variable values or execute commands from a dictionary.
         modes is a list of variable modes to act on.
@@ -548,10 +527,13 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
             for key, value in d.items():
                 if key == self.name:
-                    self._setDict(value,writeEach,modes)
+                    self._setDict(value,writeEach,modes,incGroups=incGroups,excGroups=excGroups)
                 else:
                     try:
-                        self.getNode(key).setDisp(value)
+                        node = self.getNode(key)
+
+                        if (node.mode in modes) and node.filterByGroup(incGroups,excGroups): 
+                            self.getNode(key).setDisp(value)
                     except:
                         self._log.error("Entry {} not found".format(key))
 

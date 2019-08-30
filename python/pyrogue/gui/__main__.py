@@ -16,7 +16,6 @@ import sys
 parser = argparse.ArgumentParser('Pyrogue GUI Client')
 parser.add_argument('--host', type=str, help='Server host name or address',default='localhost')
 parser.add_argument('--port', type=int, help='Server port number',default=9099)
-parser.add_argument('--minVisibility', type=int, help='Visibility level',default=25)
 args = parser.parse_args()
 
 print("Connecting to host {} port {}".format(args.host,args.port))
@@ -26,7 +25,7 @@ client = pyrogue.VirtualClient(args.host,args.port)
 
 # Create GUI
 appTop = pyrogue.gui.application(sys.argv)
-guiTop = pyrogue.gui.GuiTop(minVisibility=args.minVisibility)
+guiTop = pyrogue.gui.GuiTop(excGroups='Hidden')
 guiTop.setWindowTitle("Rogue Client {}:{}".format(args.host,args.port))
 guiTop.addTree(client.root)
 
