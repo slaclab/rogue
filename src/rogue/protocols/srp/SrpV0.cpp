@@ -227,7 +227,7 @@ void rps::SrpV0::acceptFrame ( ris::FramePtr frame ) {
    if ( tail[0] != 0 ) {
       if ( tail[0] & 0x20000 ) tran->error("Axi bus timeout detected in hardware");
       else if ( tail[0] & 0x10000 ) tran->error("Axi bus retruned fail status in hardware");
-      else tran->error("Non zero status message retruned on axi bus in hardware: 0x%x",tail[0]);
+      else tran->error("Non zero status message returned on axi bus in hardware: 0x%x",tail[0]);
       log_->warning("Error detected for ID id=%i, tail=0x%0.8x",id,tail[0]);
       return;
    }
