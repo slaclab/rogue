@@ -1,9 +1,23 @@
 #!/usr/bin/env python
 #-----------------------------------------------------------------------------
-# Title      : PyRogue base module - ZMQ Client
+# Title      : PyRogue Simple ZMQ Client for Rogue
 #-----------------------------------------------------------------------------
 # File       : pyrogue/interfaces/_SimpleClient.py
 # Created    : 2017-05-16
+#
+# To use in matlab first you need both the zmq and jsonpickle package in your
+# python insallation:
+#
+# > pip install zmq
+# > pip install matlab
+#
+# You then need to set the appropriate flags in matlab to load the zmq module:
+#
+# >> py.sys.setdlopenflags(int32(bitor(2, 8)));
+#
+# c = py.SimpleClient.SimpleClient("localhost",9099);
+# c.get("dummyTree.Time")
+#
 #-----------------------------------------------------------------------------
 # This file is part of the rogue software platform. It is subject to 
 # the license terms in the LICENSE.txt file found in the top-level directory 
