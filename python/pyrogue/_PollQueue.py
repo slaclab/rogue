@@ -150,7 +150,7 @@ class PollQueue(object):
                         try:
                             entry.block._checkTransaction()
                         except Exception as e:
-                            self._log.prException(e)
+                            pr.logException(self._log,e)
 
 
     def _expiredEntries(self, time=None):
