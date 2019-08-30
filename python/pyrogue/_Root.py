@@ -498,7 +498,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
     def _loadConfig(self,arg):
         """Load YAML configuration from a file. Called from command"""
-        try: 
+        try:
 
             # File in a Zip archive
             if '.zip/' in arg:
@@ -511,8 +511,8 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
               
             # Standard file
             else:
-                with open(arg,'r') as f:
-                    self._setYaml(f.read(),False,['RW','WO'])
+            with open(arg,'r') as f:
+                self._setYaml(f.read(),False,['RW','WO'])
         except Exception as e:
             self._log.exception(e)
             return False
@@ -703,4 +703,15 @@ def yamlUpdate(old, new):
 
 def recreate_OrderedDict(name, values):
     return odict(values['items'])
+
+            if v.isinstance(pr.RemoteVariable):
+                f.write("{}\t".format(v.path))
+                f.write("{}\t".format(type(v)))
+                f.write("{:#x}\t".format(v.address))
+                f.write("{:#x}\t".format(v.offset))
+                f.write("{}\t".format(v.mode))
+                f.write("{}\t".format(v.bitOffset))
+                f.write("{}\t".format(v.bitSize))
+                f.write("{}\t".format(v.enum))
+                f.write("{}\n".format(v.description))
 
