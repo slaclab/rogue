@@ -470,8 +470,8 @@ class Node(object):
         for key,value in self._nodes.items():
             if value.filterByGroup(incGroups,excGroups):
                 nv = value._getDict(modes=modes,incGroups=incGroups,excGroups=excGroups)
-                if nv is not None:
-                    data[key] = nv
+            if nv is not None:
+                data[key] = nv
 
         if len(data) == 0:
             return None

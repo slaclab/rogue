@@ -60,7 +60,7 @@ to use your favorite python tool.
 .. code::
 
    $ pip3 install PyYAML
-   $ pip3 install Pyro4 
+   $ pip3 install jsonpickle
    $ pip3 install parse
    $ pip3 install click
    $ pip3 install pyzmq
