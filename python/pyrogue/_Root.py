@@ -533,7 +533,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                         node = self.getNode(key)
 
                         if (node.mode in modes) and node.filterByGroup(incGroups,excGroups): 
-                            self.getNode(key).setDisp(value)
+                        self.getNode(key).setDisp(value)
                     except:
                         self._log.error("Entry {} not found".format(key))
 
