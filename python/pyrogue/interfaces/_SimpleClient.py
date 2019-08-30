@@ -1,9 +1,23 @@
 #!/usr/bin/env python
 #-----------------------------------------------------------------------------
-# Title      : PyRogue base module - ZMQ Client
+# Title      : PyRogue Simple ZMQ Client for Rogue
 #-----------------------------------------------------------------------------
 # File       : pyrogue/interfaces/_SimpleClient.py
 # Created    : 2017-05-16
+#
+# To use in matlab first you need both the zmq and jsonpickle package in your
+# python insallation:
+#
+# > pip install zmq
+# > pip install matlab
+#
+# You then need to set the appropriate flags in matlab to load the zmq module:
+#
+# >> py.sys.setdlopenflags(int32(bitor(2, 8)));
+#
+# c = py.SimpleClient.SimpleClient("localhost",9099);
+# c.get("dummyTree.Time")
+#
 #-----------------------------------------------------------------------------
 # This file is part of the rogue software platform. It is subject to 
 # the license terms in the LICENSE.txt file found in the top-level directory 
@@ -13,43 +27,30 @@
 # copied, modified, propagated, or distributed except according to the terms 
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
-import sys
-from collections import OrderedDict as odict
-import logging
-import inspect
-import pyrogue as pr
 import zmq
-import rogue.interfaces
-import functools as ft
 import jsonpickle
 
-class SimpleClient(rogue.interfaces.ZmqClient):
+class SimpleClient(object):
 
     def __init__(self, addr="localhost", port=9099):
-        rogue.interfaces.ZmqClient.__init__(self,addr,port)
+        rport = port + 1
+        self._ctx = zmq.Context()
+        self._req = self._ctx.socket(zmq.REQ)
+        self._req.connect(f'tcp://{addr}:{rport}')
 
-        # Setup logging
-        self._log = pr.logInit(cls=self,name="SimpleClient",path=None)
-
-        # Get root name as a connection test
-        self.setTimeout(1000)
-        rn = None
-        while rn is None:
-            rn = self._remoteAttr('__rootname__',None)
-
-        print("Connected to {} at {}:{}".format(rn,addr,port))
-
-    def _remoteAttr(self, path, attr, *args, **kwargs):
-        snd = { 'path':path, 'attr':attr, 'args':args, 'kwargs':kwargs }
-        y = jsonpickle.encode(snd)
+    def _remoteAttr(self,path,attr,*args,**kwargs):
+        msg = {'path':path, 
+               'attr':attr,
+               'args':args,
+               'kwargs':kwargs}
         try:
-            resp = self._send(y)
-            ret = jsonpickle.decode(resp)
+            self._req.send_string(jsonpickle.encode(msg))
+            resp = jsonpickle.decode(self._req.recv_string())
         except Exception as msg:
             print("got remote exception: {}".format(msg))
-            ret = None
+            resp = None
 
-        return ret
+        return resp
 
     def get(self,path):
         return self._remoteAttr(path, 'get')
