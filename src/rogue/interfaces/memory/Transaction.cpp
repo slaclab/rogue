@@ -187,7 +187,9 @@ void rim::Transaction::setData ( boost::python::object p, uint32_t offset ) {
 
    if ( (offset + count) > size_ ) {
       PyBuffer_Release(&pyBuf);
-      throw(rogue::GeneralError::boundary("Frame::write",offset+count,size_));
+      throw(rogue::GeneralError::create("Transaction::setData",
+               "Attempt to set %i bytes at offset %i to python buffer with size %i",
+               count,offset,size_));
    }
 
    std::memcpy(begin()+offset, (uint8_t *)pyBuf.buf, count);
@@ -205,7 +207,9 @@ void rim::Transaction::getData ( boost::python::object p, uint32_t offset ) {
 
    if ( (offset + count) > size_ ) {
       PyBuffer_Release(&pyBuf);
-      throw(rogue::GeneralError::boundary("Frame::readPy",offset+count,size_));
+      throw(rogue::GeneralError::create("Transaction::getData",
+               "Attempt to get %i bytes from offset %i to python buffer with size %i",
+               count,offset,size_));
    }
 
    std::memcpy((uint8_t *)pyBuf.buf, begin()+offset, count);

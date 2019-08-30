@@ -57,7 +57,7 @@ rha::AxiStreamDma::AxiStreamDma ( std::string path, uint32_t dest, bool ssiEnabl
    rogue::GilRelease noGil;
 
    if ( (fd_ = ::open(path.c_str(), O_RDWR)) < 0 )
-      throw(rogue::GeneralError::open("AxiStreamDma::AxiStreamDma",path.c_str()));
+      throw(rogue::GeneralError::create("AxiStreamDma::AxiStreamDma", "Failed to open device file: %s",path.c_str()));
 
    if ( dmaCheckVersion(fd_) < 0 )
       throw(rogue::GeneralError("AxiStreamDma::AxiStreamDma","Bad kernel driver version detected. Please re-compile kernel driver"));
@@ -67,7 +67,9 @@ rha::AxiStreamDma::AxiStreamDma ( std::string path, uint32_t dest, bool ssiEnabl
 
    if  ( dmaSetMaskBytes(fd_,mask) < 0 ) {
       ::close(fd_);
-      throw(rogue::GeneralError::dest("AxiStreamDma::AxiStreamDma",path.c_str(),dest_));
+      throw(rogue::GeneralError::create("AxiStreamDma::AxiStreamDma", 
+            "Failed to open device file %s with dest 0x%x",path.c_str(),dest));
+
    }
 
    // Result may be that rawBuff_ = NULL

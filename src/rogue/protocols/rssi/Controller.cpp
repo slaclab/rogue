@@ -165,9 +165,9 @@ ris::FramePtr rpr::Controller::reqFrame ( uint32_t size ) {
 
    // Make sure there is enough room the buffer for our header
    if ( buffer->getAvailable() < rpr::Header::HeaderSize )
-      throw(rogue::GeneralError::boundary("rss::Controller::reqFrame",
-                                          rpr::Header::HeaderSize,
-                                          buffer->getAvailable()));
+      throw(rogue::GeneralError::create("rssi::Controller::reqFrame",
+               "Buffer size %i is less than min header size %i",
+               rpr::Header::HeaderSize,buffer->getAvailable()));
 
    // Update buffer to include our header space.
    buffer->adjustHeader(rpr::Header::HeaderSize);

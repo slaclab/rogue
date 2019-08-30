@@ -152,7 +152,7 @@ ris::BufferPtr ris::Pool::allocBuffer ( uint32_t size, uint32_t *total ) {
       dataQ_.pop();
    }
    else if ( (data = (uint8_t *)malloc(bAlloc)) == NULL ) 
-      throw(rogue::GeneralError::allocation("Pool::allocBuffer",bAlloc));
+      throw(rogue::GeneralError::create("Pool::allocBuffer","Failed to allocate buffer with size = %i",bAlloc));
 
    // Only use lower 24 bits of meta. 
    // Upper 8 bits may have special meaning to sub-class

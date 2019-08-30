@@ -44,59 +44,10 @@ rogue::GeneralError rogue::GeneralError::create(std::string src, const char * fm
    return(rogue::GeneralError(src,temp));
 }
 
-rogue::GeneralError rogue::GeneralError::timeout(std::string src, struct timeval & tout) {
-   char temp[BuffSize];
-
-   snprintf(temp,BuffSize,"timeout after %li.%li Seconds",tout.tv_sec, tout.tv_usec);
-   return(rogue::GeneralError(src,temp));
-}
-
-rogue::GeneralError rogue::GeneralError::timeout(std::string src, uint32_t tout) {
-   char temp[BuffSize];
-
-   snprintf(temp,BuffSize,"timeout after %i Microseconds",tout);
-   return(rogue::GeneralError(src,temp));
-}
-
-rogue::GeneralError rogue::GeneralError::open(std::string src, std::string file) {
-   char temp[BuffSize];
-
-   snprintf(temp,BuffSize,"failed to open file %s",file.c_str());
-   return(rogue::GeneralError(src,temp));
-}
-
-rogue::GeneralError rogue::GeneralError::dest(std::string src, std::string file, uint32_t dest) {
-   char temp[BuffSize];
-
-   snprintf(temp,BuffSize,"failed to open file %s with dest 0x%x",file.c_str(),dest);
-   return(rogue::GeneralError(src,temp));
-}
-
-rogue::GeneralError rogue::GeneralError::boundary(std::string src, uint32_t position, uint32_t limit) {
-   char temp[BuffSize];
-
-   snprintf(temp,BuffSize,"boundary error. Position = %i, Limit = %i",position,limit);
-   return(rogue::GeneralError(src,temp));
-}
-
-rogue::GeneralError rogue::GeneralError::allocation(std::string src, uint32_t size) {
-   char temp[BuffSize];
-
-   snprintf(temp,BuffSize,"failed to allocate size = %i",size);
-   return(rogue::GeneralError(src,temp));
-}
-
 rogue::GeneralError rogue::GeneralError::network(std::string src, std::string host, uint16_t port) {
    char temp[BuffSize];
 
    snprintf(temp,BuffSize,"Network connect error. Host = %s, Port = %i",host.c_str(),port);
-   return(rogue::GeneralError(src,temp));
-}
-
-rogue::GeneralError rogue::GeneralError::ret(std::string src, std::string text, int32_t ret) {
-   char temp[BuffSize];
-
-   snprintf(temp,BuffSize,"%s. Ret=%i",text.c_str(),ret);
    return(rogue::GeneralError(src,temp));
 }
 

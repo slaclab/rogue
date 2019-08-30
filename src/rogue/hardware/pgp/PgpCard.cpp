@@ -63,7 +63,7 @@ rhp::PgpCard::PgpCard ( std::string path, uint32_t lane, uint32_t vc ) {
    log_ = rogue::Logging::create("hardware.PgpCard");
 
    if ( (fd_ = ::open(path.c_str(), O_RDWR)) < 0 ) 
-      throw(rogue::GeneralError::open("PgpCard::PgpCard",path.c_str()));
+      throw(rogue::GeneralError::create("PgpCard::PgpCard", "Failed to open device file: %s",path.c_str()));
 
    if ( dmaCheckVersion(fd_) < 0 )
       throw(rogue::GeneralError("PgpCard::PgpCard","Bad kernel driver version detected. Please re-compile kernel driver"));

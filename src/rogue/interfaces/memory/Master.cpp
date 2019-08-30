@@ -160,7 +160,9 @@ uint32_t rim::Master::reqTransactionPy(uint64_t address, boost::python::object p
 
    if ( (tran->size_ + offset) > tran->pyBuf_.len ) {
       PyBuffer_Release(&(tran->pyBuf_));
-      throw(rogue::GeneralError::boundary("Master::reqTransactionPy",(tran->size_+offset),tran->pyBuf_.len));
+      throw(rogue::GeneralError::create("Master::reqTransactionPy",
+               "Attempt to access %i bytes in python buffer with size %i at offset %i",
+               tran->size_,tran->pyBuf_.len,offset));
    }
 
    tran->pyValid_ = true;
@@ -239,7 +241,9 @@ void rim::Master::copyBits(boost::python::object dst, uint32_t dstLsb, boost::py
 
    if ( (dstLsb + size) > (dstBuf.len*8) ) {
       PyBuffer_Release(&dstBuf);
-      throw(rogue::GeneralError::boundary("Master::copyBits",(dstLsb + size),(dstBuf.len*8)));
+      throw(rogue::GeneralError::create("Master::copyBits",
+               "Attempt to copy %i bits starting from bit %i from dest array with bitSize %i",
+               size, dstLsb, dstBuf.len*8));
    }
 
    if ( PyObject_GetBuffer(src.ptr(),&srcBuf,PyBUF_SIMPLE) < 0 ) {
@@ -250,7 +254,9 @@ void rim::Master::copyBits(boost::python::object dst, uint32_t dstLsb, boost::py
    if ( (srcLsb + size) > (srcBuf.len*8) ) {
       PyBuffer_Release(&srcBuf);
       PyBuffer_Release(&dstBuf);
-      throw(rogue::GeneralError::boundary("Master::copyBits",(srcLsb + size),(srcBuf.len*8)));
+      throw(rogue::GeneralError::create("Master::copyBits",
+               "Attempt to copy %i bits starting from bit %i from source array with bitSize %i",
+               size, srcLsb, srcBuf.len*8));
    }
 
    srcByte = srcLsb / 8;
@@ -302,7 +308,9 @@ void rim::Master::setBits(boost::python::object dst, uint32_t lsb, uint32_t size
 
    if ( (lsb + size) > (dstBuf.len*8) ) {
       PyBuffer_Release(&dstBuf);
-      throw(rogue::GeneralError::boundary("Master::setBits",(lsb + size),(dstBuf.len*8)));
+      throw(rogue::GeneralError::create("Master::setBits",
+               "Attempt to set %i bits starting from bit %i in array with bitSize %i",
+               size, lsb, dstBuf.len*8));
    }
 
    dstByte = lsb / 8;
@@ -347,7 +355,9 @@ bool rim::Master::anyBits(boost::python::object dst, uint32_t lsb, uint32_t size
 
    if ( (lsb + size) > (dstBuf.len*8) ) {
       PyBuffer_Release(&dstBuf);
-      throw(rogue::GeneralError::boundary("Master::anyBits",(lsb + size),(dstBuf.len*8)));
+      throw(rogue::GeneralError::create("Master::anyBits",
+               "Attempt to access %i bits starting from bit %i from array with bitSize %i",
+               size, lsb, dstBuf.len*8));
    }
 
    dstByte = lsb / 8;

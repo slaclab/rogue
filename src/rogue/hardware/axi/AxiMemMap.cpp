@@ -49,7 +49,8 @@ rha::AxiMemMapPtr rha::AxiMemMap::create (std::string path) {
 rha::AxiMemMap::AxiMemMap(std::string path) : rim::Slave(4,0xFFFFFFFF) {
    fd_ = ::open(path.c_str(), O_RDWR);
    log_ = rogue::Logging::create("axi.AxiMemMap");
-   if ( fd_ < 0 ) throw(rogue::GeneralError::open("AxiMemMap::AxiMemMap",path));
+   if ( fd_ < 0 ) 
+      throw(rogue::GeneralError::create("AxiMemMap::AxiMemMap", "Failed to open device file: %s",path.c_str()));
 }
 
 //! Destructor

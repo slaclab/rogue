@@ -110,7 +110,8 @@ uint32_t rpb::CoreV1::tailSize() {
 //! Get beginning of tail iterator
 ris::FrameIterator rpb::CoreV1::beginTail(uint32_t index) {
    if ( index >= tails_.size() ) 
-      throw rogue::GeneralError::boundary("batcher::CoreV1::tail", index, tails_.size());
+      throw(rogue::GeneralError::create("bather::CoreV1::beginTail",
+               "Attempt to get tail index %i in message with %i tails",index,tails_.size()));
 
    // Invert order on return
    return tails_[(tails_.size()-1) - index];
@@ -119,7 +120,8 @@ ris::FrameIterator rpb::CoreV1::beginTail(uint32_t index) {
 //! Get end of tail iterator
 ris::FrameIterator rpb::CoreV1::endTail(uint32_t index) {
    if ( index >= tails_.size() ) 
-      throw rogue::GeneralError::boundary("batcher::CoreV1::tail", index, tails_.size());
+      throw rogue::GeneralError::create("batcher::CoreV1::tail", 
+            "Attempt to access tail %i in frame with %i tails", index, tails_.size());
 
    // Invert order on return
    return tails_[(tails_.size()-1) - index] + tailSize_;
@@ -128,7 +130,8 @@ ris::FrameIterator rpb::CoreV1::endTail(uint32_t index) {
 //! Get data
 rpb::DataPtr & rpb::CoreV1::record(uint32_t index) {
    if ( index >= list_.size() ) 
-      throw rogue::GeneralError::boundary("batcher::CoreV1::record", index, list_.size());
+      throw rogue::GeneralError::create("batcher::CoreV1::record", 
+            "Attempt to access record %i in frame with %i records", index, tails_.size());
 
    // Invert order on return
    return list_[(list_.size()-1) - index];

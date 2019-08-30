@@ -125,7 +125,7 @@ std::string rogue::interfaces::ZmqClient::send(std::string value) {
    zmq_msg_init(&msg);
 
    if ( zmq_recvmsg(this->zmqReq_,&msg,0) <= 0 )
-      throw rogue::GeneralError::timeout("ZmqClient::send", timeout_*1000);
+      throw rogue::GeneralError::create("ZmqClient::send","Timeout sending message after %i uS",timeout_*1000);
 
    data = std::string((const char *)zmq_msg_data(&msg),zmq_msg_size(&msg));
    zmq_msg_close(&msg);
