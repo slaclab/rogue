@@ -160,8 +160,8 @@ class CommandWidget(QWidget):
 
         self.devTop = None
 
-    @pyqtSlot(pyrogue.Root,int)
-    @pyqtSlot(pyrogue.interfaces.VirtualNode,int)
+    @pyqtSlot(pyrogue.Root,list,list)
+    @pyqtSlot(pyrogue.interfaces.VirtualNode,list,list)
     def addTree(self,root,incGroups,excGroups):
         self.roots.append(root)
         self._children.append(CommandDev(tree=self.tree,
