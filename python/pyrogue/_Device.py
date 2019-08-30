@@ -207,7 +207,6 @@ class Device(pr.Node,rim.Hub):
 
             if kwargs.pop('hidden', False):
                 visibility = 0
-                self._log.warning("Hidden attribute is deprecated. Please use visibility")
 
         self.addNodes(pr.RemoteVariable, number, stride, visibility=visibility, **kwargs)
 

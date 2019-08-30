@@ -26,6 +26,7 @@ import functools as ft
 import time
 import queue
 import jsonpickle
+import zipfile
 from contextlib import contextmanager
 
 class RootLogHandler(logging.Handler):
@@ -161,7 +162,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         self.add(pr.LocalCommand(name='Exit', function=self._exit,visibility=50,
                                  description='Exit the server application'))
 
-    def start(self, timeout=1.0, initRead=False, initWrite=False, pollEn=True, zmqPort=None):
+    def start(self, timeout=1.0, initRead=False, initWrite=False, pollEn=True, zmqPort=None, serverPort=None):
         """Setup the tree. Start the polling thread."""
 
         if self._running:
@@ -214,8 +215,13 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
         # Start ZMQ server if enabled
         if zmqPort is not None:
+            self._log.warning("zmqPort arg is deprecated. Please use serverPort arg instead")
+            serverPort = zmqPort
+
+        # Start server
+        if serverPort is not None:
             self._structure = jsonpickle.encode(self)
-            self._zmqServer = pr.interfaces.ZmqServer(root=self,addr="*",port=zmqPort)
+            self._zmqServer = pr.interfaces.ZmqServer(root=self,addr="*",port=serverPort)
 
         # Read current state
         if initRead:
@@ -352,6 +358,35 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
         return obj
 
+    @pr.expose
+    def saveAddressMap(root,fname):
+        try:
+            with open(fname,'w') as f:
+                f.write("Path\t")
+                f.write("Type\t")
+                f.write("Full Address\t")
+                f.write("Device Offset\t")
+                f.write("Mode\t")
+                f.write("Bit Offset\t")
+                f.write("Bit Size\t")
+                f.write("Enum\t")
+                f.write("Description\n")
+
+                for v in self.variableList:
+                    if v.isinstance(pr.RemoteVariable):
+                        f.write("{}\t".format(v.path))
+                        f.write("{}\t".format(type(v)))
+                        f.write("{:#x}\t".format(v.address))
+                        f.write("{:#x}\t".format(v.offset))
+                        f.write("{}\t".format(v.mode))
+                        f.write("{}\t".format(v.bitOffset))
+                        f.write("{}\t".format(v.bitSize))
+                        f.write("{}\t".format(v.enum))
+                        f.write("{}\n".format(v.description))
+
+        except Exception as e:
+            self._log.exception(e)
+
     def _exit(self):
         print("Stopping Rogue root")
         self.stop()
@@ -464,6 +499,18 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
     def _loadConfig(self,arg):
         """Load YAML configuration from a file. Called from command"""
         try:
+
+            # File in a Zip archive
+            if '.zip/' in arg:
+                base = np[:np.find['.zip/']+4]
+                sub  = np[np.find['.zip/']+5:]
+
+                with zipfile.ZipFile(base) as zf:
+                    with zf.open(sub,'r') as f:
+                        self._setYaml(f.read(),False,['RW','WO'])
+              
+            # Standard file
+            else:
             with open(arg,'r') as f:
                 self._setYaml(f.read(),False,['RW','WO'])
         except Exception as e:
@@ -657,21 +704,6 @@ def yamlUpdate(old, new):
 def recreate_OrderedDict(name, values):
     return odict(values['items'])
 
-def generateAddressMap(root,fname):
-    vlist = root.variableList
-
-    with open(fname,'w') as f:
-        f.write("Path\t")
-        f.write("Type\t")
-        f.write("Full Address\t")
-        f.write("Device Offset\t")
-        f.write("Mode\t")
-        f.write("Bit Offset\t")
-        f.write("Bit Size\t")
-        f.write("Enum\t")
-        f.write("Description\n")
-
-        for v in vlist:
             if v.isinstance(pr.RemoteVariable):
                 f.write("{}\t".format(v.path))
                 f.write("{}\t".format(type(v)))

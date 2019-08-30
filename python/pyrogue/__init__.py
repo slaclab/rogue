@@ -53,11 +53,15 @@ def addLibraryPath(path):
         else:
             np = base + '/' + p
         
-        # Verify directory exists and is readable
-        if not os.access(np,os.R_OK):
-            raise Exception("Library path {} does not exist or is not readable".format(np))
-        sys.path.append(np)
+        # Verify directory or archive exists and is readable
+        if '.zip/' in np:
+            tst = np[:np.find['.zip/']+4]
+        else:
+            tst = np
 
+        if not os.access(tst,os.R_OK):
+            raise Exception("Library path {} does not exist or is not readable".format(tst))
+        sys.path.append(np)
 
 def streamConnect(source, dest):
     """
