@@ -167,7 +167,7 @@ class Node(object):
     @hidden.setter
     def hidden(self, value):
         """ Add or remove node from the Hidden group """
-        if hidden is True:
+        if value is True:
             self.addToGroup('Hidden')
         else:
             self.delFromGroup('Hidden')
