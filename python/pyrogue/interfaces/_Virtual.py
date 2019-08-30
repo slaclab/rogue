@@ -24,15 +24,6 @@ import functools as ft
 import jsonpickle
 
 
-def genBaseList(cls):
-    ret = [str(cls)]
-
-    for l in cls.__bases__:
-        if l is not object:
-            ret += genBaseList(l)
-
-    return ret
-
 
 class VirtualProperty(object):
     def __init__(self, node, attr):
@@ -94,7 +85,7 @@ class VirtualNode(pr.Node):
         super().__init__(name=attrs['name'], 
                          description=attrs['description'], 
                          expand=attrs['expand'], 
-                         visibility=attrs['visibility'])
+                         groups=attrs['groups'])
 
         self._path  = attrs['path']
         self._class = attrs['class']

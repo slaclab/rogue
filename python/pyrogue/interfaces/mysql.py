@@ -50,7 +50,7 @@ def setupDb (dbHost, dbName, dbUser, dbPass):
     sql += "disp varchar(80),"
     sql += "enum varchar(80),"
     sql += "typeStr varchar(20),"
-    sql += "visibility int"
+    sql += "groups varchar(100)"
     cursor.execute(sql)
 
     sql  = "create table command ("
@@ -68,7 +68,7 @@ def setupDb (dbHost, dbName, dbUser, dbPass):
     sql += "disp varchar(80),"
     sql += "enum varchar(80),"
     sql += "typeStr varchar(20),"
-    sql += "visibility int"
+    sql += "groups varchar(100)"
     cursor.execute(sql)
 
 class MysqlGw(object):
@@ -167,7 +167,7 @@ class MysqlGw(object):
         sql += "variable.disp,"
         sql += "variable.enum,"
         sql += "variable.typeStr,"
-        sql += "variable.visibility)"
+        sql += "variable.groups)"
         sql += "values ("
 
         sql += "'{}',".format(mysqlString(variable.path))
@@ -187,7 +187,7 @@ class MysqlGw(object):
         sql += "'{}',".format(mysqlString(variable.disp))
         sql += "'{}',".format(mysqlString(variable.enum))
         sql += "'{}',".format(mysqlString(variable.typeStr))
-        sql += "'{}')".format(variable.visibility)
+        sql += "'{}')".format(mysqlString(variable.groups))
 
         cursor.execute(sql)
         self._varSer[variable.path] = 0
@@ -227,7 +227,7 @@ class MysqlGw(object):
         sql += "command.disp,"
         sql += "command.enum,"
         sql += "command.typeStr,"
-        sql += "command.visibility)"
+        sql += "command.groups)"
         sql += "values ("
 
         sql += "'{}',".format(mysqlString(command.path))
@@ -244,7 +244,7 @@ class MysqlGw(object):
         sql += "'{}',".format(mysqlString(command.disp))
         sql += "'{}',".format(mysqlString(command.enum))
         sql += "'{}',".format(mysqlString(command.typeStr))
-        sql += "'{}')".format(command.visibility)
+        sql += "'{}')".format(mysqlString(command.groups))
 
         cursor.execute(sql)
         self._cmdSer[command.path] = 0

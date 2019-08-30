@@ -27,8 +27,8 @@ import logging
 #rogue.Logging.setFilter('pyrogue.epicsV3.Value',rogue.Logging.Debug)
 #rogue.Logging.setLevel(rogue.Logging.Debug)
 
-logger = logging.getLogger('pyrogue.EpicsPvServer')
-logger.setLevel(logging.DEBUG)
+#logger = logging.getLogger('pyrogue')
+#logger.setLevel(logging.DEBUG)
 
 
 class DummyTree(pyrogue.Root):

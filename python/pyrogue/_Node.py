@@ -82,7 +82,8 @@ class Node(object):
     Each node has the following public fields:
         name: Global name of object
         description: Description of the object.
-        visibility: Visability level of Node. The higher the number the more visible.
+        groups: Group or groups this node belongs to. 
+           Examples: 'Hidden', 'NoState', 'NoConfig', 'NoStream'
         classtype: text string matching name of node sub-class
         path: Full path to the node (ie. node1.node2.node3)
 
@@ -91,7 +92,7 @@ class Node(object):
     attribute. This allows tree browsing using: node1.node2.node3
     """
 
-    def __init__(self, *, name, description="", expand=True, hidden=None, visibility=25):
+    def __init__(self, *, name, description="", expand=True, hidden=False, groups=None):
         """Init the node with passed attributes"""
 
         # Public attributes
@@ -99,7 +100,6 @@ class Node(object):
         self._description = description
         self._path        = name
         self._expand      = expand
-        self._visibility  = visibility
 
         # Tracking
         self._parent  = None
@@ -109,9 +109,15 @@ class Node(object):
         # Setup logging
         self._log = logInit(cls=self,name=name,path=None)
 
+        if groups is None:
+            self._groups = []
+        elif isinstance(groups,list):
+            self._groups = groups
+        else:
+            self._groups = [groups]
+
         if hidden is True:
-            self._visibility = 0
-            #self._log.warning("The hidden flag is deprecated. Please use the visibility level instead.")
+            self.addToGroup('Hidden')
 
     @property
     def name(self):
@@ -122,26 +128,49 @@ class Node(object):
         return self._description
 
     @property
+    def groups(self):
+        """ Return list of groups this node is a part of """
+        return self._groups
+
+    def inGroup(self, group):
+        """ 
+        Return true if this node is part of the passed group or one of the groups in a list
+        """
+        if isinstance(group,list):
+            return len(set(group) & set(self._groups)) > 0
+        else:
+            return group in self._groups
+
+    def filterByGroup(self, incGroups, excGroups):
+        """" Filter by the passed list of inclusion and exclusion groups """
+        return ((incGroups is None) or (len(incGroups) == 0) or (self.inGroup(incGroups))) and \
+               ((excGroups is None) or (len(excGroups) == 0) or (not self.inGroup(excGroups)))
+
+    def addToGroup(self,group):
+        """ Add this node to the passed group, recursive to children """
+        if not group in self._groups:
+            self._groups.append(group)
+
+        for k,v in self._nodes.items():
+            v.addToGroup(group)
+
+    def removeFromGroup(self,group):
+        """ Remove this node from the passed group, not recursive """
+        if group in self._groups:
+            self._groups.remove(group)
+
+    @property
     def hidden(self):
-        return (self.visibility == 0)
+        """ Return true if this node is a member of the Hidden group """
+        return self.inGroup('Hidden')
 
     @hidden.setter
     def hidden(self, value):
+        """ Add or remove node from the Hidden group """
         if value is True:
-            self._visibility = 0
+            self.addToGroup('Hidden')
         else:
-            self._visibility = 25
-
-    @property
-    def visibility(self):
-        if self._parent is None or self._parent == self:
-            return self._visibility
-        else:
-            return min([self._parent.visibility, self._visibility])
-
-    @visibility.setter
-    def visibility(self, value):
-        self._visibility = value
+            self.removeFromGroup('Hidden')
 
     @property
     def path(self):
@@ -176,7 +205,7 @@ class Node(object):
         attr['class']       = self.__class__.__name__
         attr['bases']       = pr.genBaseList(self.__class__)
         attr['description'] = self._description
-        attr['visibility']  = self._visibility
+        attr['groups']      = self._groups
         attr['path']        = self._path
         attr['expand']      = self._expand
         attr['nodes']       = self._nodes
@@ -194,7 +223,7 @@ class Node(object):
                 attr['funcs'][k] = {'args'   : [a for a in inspect.getfullargspec(v).args if a != 'self'],
                                     'kwargs' : inspect.getfullargspec(v).kwonlyargs}
 
-        return (pr.VirtualFactory, (attr,))
+        return (pr.interfaces.VirtualFactory, (attr,))
 
     def __contains__(self, item):
         return item in self._nodes.values()
@@ -246,16 +275,18 @@ class Node(object):
         """
         return([k for k,v in self._nodes.items()])
 
-    def getNodes(self,typ,exc=None,minVisibility=0):
+    def getNodes(self,typ,excTyp=None,incGroups=None,excGroups=None):
         """
         Get a filtered ordered dictionary of nodes.
         pass a class type to receive a certain type of node
         class type may be a string when called over Pyro4
-        exc is a class type to exclude, Only nodes with a visibility >= passed value are returned
+        exc is a class type to exclude, 
+        incGroups is an optional group or list of groups that this node must be part of
+        excGroups is an optional group or list of groups that this node must not be part of
         """
         return odict([(k,n) for k,n in self._nodes.items() if (n.isinstance(typ) and \
-                ((exc is None) or (not n.isinstance(exc))) and \
-                ((minVisibility == 0) or (n.visibility >= minVisibility)))])
+                ((excTyp is None) or (not n.isinstance(excTyp))) and \
+                n.filterByGroup(incGroups,excGroups))])
 
     @property
     def nodes(self):
@@ -269,13 +300,14 @@ class Node(object):
         """
         Return an OrderedDict of the variables but not commands (which are a subclass of Variable
         """
-        return self.getNodes(typ=pr.BaseVariable,exc=pr.BaseCommand,minVisibility=0)
+        return self.getNodes(typ=pr.BaseVariable,excTyp=pr.BaseCommand)
 
-    def visibleVariables(self,minVisibility):
+    def variablesByGroup(self,incGroups=None,excGroups=None):
         """
         Return an OrderedDict of the variables but not commands (which are a subclass of Variable
+        Pass list of include and / or exclude groups
         """
-        return self.getNodes(typ=pr.BaseVariable,exc=pr.BaseCommand,minVisibility=minVisibility)
+        return self.getNodes(typ=pr.BaseVariable,excTyp=pr.BaseCommand,incGroups=incGroups,excGroups=excGroups)
 
     @property
     def variableList(self):
@@ -295,26 +327,28 @@ class Node(object):
         """
         Return an OrderedDict of the Commands that are children of this Node
         """
-        return self.getNodes(pr.BaseCommand,minVisibility=0)
+        return self.getNodes(typ=pr.BaseCommand)
 
-    def visibleCommands(self,minVisibility):
+    def commandsByGroup(self,incGroups=None,excGroups=None):
         """
         Return an OrderedDict of the variables but not commands (which are a subclass of Variable
+        Pass list of include and / or exclude groups
         """
-        return self.getNodes(pr.BaseCommand,minVisibility=minVisibility)
+        return self.getNodes(typ=pr.BaseCommand,incGroups=incGroups,excGroups=excGroups)
 
     @property
     def devices(self):
         """
         Return an OrderedDict of the Devices that are children of this Node
         """
-        return self.getNodes(pr.Device,minVisibility=0)
+        return self.getNodes(pr.Device)
 
-    def visibleDevices(self,minVisibility):
+    def devicesByGroup(self,incGroups=None,excGroups=None):
         """
         Return an OrderedDict of the Devices that are children of this Node
+        Pass list of include and / or exclude groups
         """
-        return self.getNodes(pr.Device,minVisibility=minVisibility)
+        return self.getNodes(pr.Device,incGroups=incGroups,excGroups=excGroups)
 
     @property
     def deviceList(self):
@@ -417,12 +451,16 @@ class Node(object):
         self._path   = parent.path + '.' + self.name
         self._log    = logInit(cls=self,name=self._name,path=self._path)
 
+        # Inherit groups from parent
+        for grp in parent.groups:
+            self.addToGroup(grp)
+
     def _exportNodes(self,daemon):
         for k,n in self._nodes.items():
             daemon.register(n)
             n._exportNodes(daemon)
 
-    def _getDict(self,modes):
+    def _getDict(self,modes,incGroups,excGroups):
         """
         Get variable values in a dictionary starting from this level.
         Attributes that are Nodes are recursed.
@@ -430,7 +468,8 @@ class Node(object):
         """
         data = odict()
         for key,value in self._nodes.items():
-            nv = value._getDict(modes)
+            if value.filterByGroup(incGroups,excGroups):
+                nv = value._getDict(modes=modes,incGroups=incGroups,excGroups=excGroups)
             if nv is not None:
                 data[key] = nv
 
@@ -439,7 +478,7 @@ class Node(object):
         else:
             return data
 
-    def _setDict(self,d,writeEach,modes=['RW']):
+    def _setDict(self,d,writeEach,modes,incGroups,excGroups):
         for key, value in d.items():
             nlist = nodeMatch(self._nodes,key)
 
@@ -447,7 +486,8 @@ class Node(object):
                 self._log.error("Entry {} not found".format(key))
             else:
                 for n in nlist:
-                    n._setDict(value,writeEach,modes)
+                    if n.filterByGroup(incGroups,excGroups):
+                        n._setDict(value,writeEach,modes,incGroups,excGroups)
 
     def _setTimeout(self,timeout):
         pass
@@ -536,4 +576,12 @@ def nodeMatch(nodes,name):
         else:
             return [r]
 
+def genBaseList(cls):
+    ret = [str(cls)]
+
+    for l in cls.__bases__:
+        if l is not object:
+            ret += genBaseList(l)
+
+    return ret
 

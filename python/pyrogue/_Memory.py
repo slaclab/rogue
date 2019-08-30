@@ -12,7 +12,7 @@ class MemoryDevice(pr.Device):
                  offset=0,
                  size=0,
                  hidden=False,
-                 visibility=50,
+                 groups=None,
                  expand=True,
                  enabled=True,
                  base=pr.UInt,
@@ -27,7 +27,7 @@ class MemoryDevice(pr.Device):
             offset=offset,
             size=size,
             hidden=hidden,
-            visibility=visibility,
+            groups=groups,
             expand=expand,
             enabled=enabled,
         )
@@ -68,13 +68,13 @@ class MemoryDevice(pr.Device):
                     for i in range(0, len(data), self._stride)]
 
 
-    def _setDict(self, d, writeEach, modes):
+    def _setDict(self, d, writeEach, modes,incGroups,excGroups):
         # Parse comma separated values at each offset (key) in d
         with self._memLock:
             for offset, values in d.items():
                 self._setValues[offset] = [self._base.fromString(s, self._wordBitSize) for s in values.split(',')]
 
-    def _getDict(self,modes):
+    def _getDict(self,modes,incGroups,excGroups):
         return None
 
     def writeBlocks(self, force=False, recurse=True, variable=None, checkEach=False):

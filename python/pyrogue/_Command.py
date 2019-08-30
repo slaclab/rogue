@@ -34,7 +34,7 @@ class BaseCommand(pr.BaseVariable):
                  retValue=None,
                  enum=None,
                  hidden=False,                 
-                 visibility=25,
+                 groups=None,
                  minimum=None,
                  maximum=None,
                  function=None,
@@ -48,7 +48,7 @@ class BaseCommand(pr.BaseVariable):
             value=value,
             enum=enum,
             hidden=hidden,
-            visibility=visibility,
+            groups=groups,
             minimum=minimum,
             maximum=maximum)
         
@@ -197,10 +197,10 @@ class BaseCommand(pr.BaseVariable):
     def postedTouchZero(cmd):
         cmd.post(0)
         
-    def _setDict(self,d,writeEach,modes):
+    def _setDict(self,d,writeEach,modes,incGroups,excGroups):
         pass
 
-    def _getDict(self,modes):
+    def _getDict(self,modes,incGroups,excGroups):
         return None
 
     def get(self,read=True):
@@ -219,7 +219,7 @@ class RemoteCommand(BaseCommand, pr.RemoteVariable):
                  retValue=None,
                  enum=None,
                  hidden=False,
-                 visibility=25,
+                 groups=None,
                  minimum=None,
                  maximum=None,
                  function=None,
@@ -244,7 +244,7 @@ class RemoteCommand(BaseCommand, pr.RemoteVariable):
             value=value,
             enum=enum,
             hidden=hidden,
-            visibility=visibility,
+            groups=groups,
             minimum=minimum,
             maximum=maximum,
             base=base,

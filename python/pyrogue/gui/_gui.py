@@ -27,6 +27,7 @@ except ImportError:
     from PyQt4.QtGui     import *
 
 import pyrogue
+import pyrogue.interfaces
 import pyrogue.gui
 import pyrogue.gui.variables
 import pyrogue.gui.commands
@@ -41,15 +42,27 @@ def application(argv):
 class GuiTop(QWidget):
 
     newRoot = pyqtSignal(pyrogue.Root,int)
-    newVirt = pyqtSignal(pyrogue.VirtualNode,int)
+    newVirt = pyqtSignal(pyrogue.interfaces.VirtualNode,int)
 
-    def __init__(self,*, parent=None, minVisibility=25, group=None):
+    def __init__(self,*, parent=None, incGroups=None, excGroups=None, group=None):
         super(GuiTop,self).__init__(parent)
 
         if group is not None:
             print("The GuiTop group attribute is now deprecated. Please remove it.")
 
-        self._minVisibility=minVisibility
+        if incGroups is None:
+            self._incGroups=[]
+        elif isinstance(incGroups,list):
+            self._incGroups=incGroups
+        else:
+            self._incGroups=[incGroups]
+
+        if excGroups is None:
+            self._excGroups=[]
+        elif isinstance(excGroups,list):
+            self._excGroups=excGroups
+        else:
+            self._excGroups=[excGroups]
 
         vb = QVBoxLayout()
         self.setLayout(vb)
@@ -78,13 +91,13 @@ class GuiTop(QWidget):
         if not root.running:
             raise Exception("GUI can not be attached to a tree which is not started")
 
-        if isinstance(root,pyrogue.VirtualNode):
-            self.newVirt.emit(root,self._minVisibility)
+        if isinstance(root,pyrogue.interfaces.VirtualNode):
+            self.newVirt.emit(root,self._incGroups,self._excGroups)
         else:
-            self.newRoot.emit(root,self._minVisibility)
+            self.newRoot.emit(root,self._incGroups,self._excGroups)
 
     @pyqtSlot(pyrogue.Root,int)
-    @pyqtSlot(pyrogue.VirtualNode,int)
+    @pyqtSlot(pyrogue.interfaces.VirtualNode,int)
     def _addTree(self,root,minVisibility):
         self.sys = pyrogue.gui.system.SystemWidget(root=root,parent=self.tab)
         self.tab.addTab(self.sys,root.name)

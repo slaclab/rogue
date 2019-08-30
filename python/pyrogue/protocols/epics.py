@@ -26,7 +26,7 @@ class EpicsCaServer(object):
     """
     Class to contain an epics ca server
     """
-    def __init__(self,*,base,root,minVisibility=0,pvMap=None, syncRead=True, threadCount=0):
+    def __init__(self,*,base,root,incGroups=None,excGroups=None,pvMap=None, syncRead=True, threadCount=0):
         self._root      = root
         self._base      = base 
         self._log       = pyrogue.logInit(cls=self)
@@ -45,7 +45,7 @@ class EpicsCaServer(object):
 
         # Create PVs
         for v in self._root.variableList:
-            self._addPv(v,doAll,minVisibility)
+            self._addPv(v,doAll,incGroups,excGroups)
 
     def createSlave(self, name, maxSize, type):
         slave = rogue.protocols.epicsV3.Slave(self._base + ':' + name,maxSize,type)
@@ -70,11 +70,11 @@ class EpicsCaServer(object):
         for k,v in self._pvMap.items():
             print("{} -> {}".format(v,k))
 
-    def _addPv(self,node,doAll,minVisibility):
+    def _addPv(self,node,doAll,incGroups,excGroups):
         eName = self._base + ':'
 
         if doAll:
-            if node.visibility >= minVisibility:
+            if node.filterByGroup(incGroups,excGroups):
                 eName += node.path.replace('.',':')
                 self._pvMap[node.path] = eName
         elif node.path in self._pvMap:
