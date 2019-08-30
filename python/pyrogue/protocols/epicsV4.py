@@ -67,9 +67,9 @@ class EpicsPvHandler(p4p.server.thread.Handler):
             val = op.value().query
 
             if 'arg' in val:
-                ret = self._var.call(val.arg)
+                ret = self._var(val.arg)
             else:
-                ret = self._var.call()
+                ret = self._var()
 
             if ret is None: ret = 'None'
 
@@ -198,7 +198,7 @@ class EpicsPvServer(object):
     """
     Class to contain an epics PV server
     """
-    def __init__(self,*,base,root,pvMap=None):
+    def __init__(self,*,base,root,incGroups,excGroups,pvMap=None):
         self._root      = root
         self._base      = base 
         self._log       = pyrogue.logInit(cls=self)
@@ -224,8 +224,9 @@ class EpicsPvServer(object):
             eName = None
 
             if doAll:
-                eName = self._base + ':' + v.path.replace('.',':')
-                self._pvMap[v.path] = eName
+                if v.filterByGroup(incGroups,excGroups):
+                    eName = self._base + ':' + v.path.replace('.',':')
+                    self._pvMap[v.path] = eName
             elif v.path in self._pvMap:
                 eName = self._pvMap[v.path]
 

@@ -21,11 +21,71 @@ import math
 import inspect
 import threading
 import re
+import time
 from collections import Iterable
 
 class VariableError(Exception):
     """ Exception for variable access errors."""
     pass
+
+
+def VariableWait(varList, testFunction, timeout=0):
+    """
+    Wait for a number of variable conditions to be true.
+    Pass a variable or list of variables, and a test function.
+    The test function is passed a dictionary containing the current
+    variableValue state index by variable path
+    i.e. w = VariableWait([root.device.var1,root.device.var2], 
+                          lambda varValues: varValues['root.device.var1'].value >= 10 and \
+                                            varValues['root.device.var1'].value >= 20)
+    """
+
+    # Container class
+    class varStates(object):
+
+        def __init__(self):
+            self.vlist = {}
+            self.cv    = threading.Condition()
+
+        # Method to handle variable updates callback
+        def varUpdate(self,path,varValue):
+            with self.cv:
+                if path in self.vlist:
+                    self.vlist[path] = varValue
+                    self.cv.notify()
+
+    # Convert single variable to a list
+    if not isinstance(varList,list):
+        varList = [varList]
+
+    # Setup tracking
+    states = varStates()
+
+    # Add variable to list and register handler
+    with states.cv:
+        for v in varList:
+            v.addListener(states.varUpdate)
+            states.vlist[v.path] = v.getVariableValue(read=False)
+
+    # Go into wait loop
+    ret    = False
+    start  = time.time()
+
+    with states.cv:
+
+        # Check current state
+        ret = testFunction(states.vlist)
+
+        # Run until timeout or all conditions have been met
+        while (not ret) and ((timeout == 0) or ((time.time()-start) < timeout)):
+            states.cv.wait(0.5)
+            ret = testFunction(states.vlist)
+
+        # Cleanup
+        for v in varList:
+            v.delListener(states.varUpdate)
+
+    return ret
 
 
 class VariableValue(object):
@@ -48,7 +108,7 @@ class BaseVariable(pr.Node):
                  enum=None,
                  units=None,
                  hidden=False,
-                 visibility=25,
+                 groups=None,
                  minimum=None,
                  maximum=None,
                  lowWarning=None,
@@ -113,7 +173,7 @@ class BaseVariable(pr.Node):
             raise VariableError(f'Invalid variable mode {self._mode}. Supported: RW, RO, WO')
 
         # Call super constructor
-        pr.Node.__init__(self, name=name, description=description, hidden=hidden, visibility=visibility)
+        pr.Node.__init__(self, name=name, description=description, hidden=hidden, groups=groups)
 
     @pr.expose
     @property
@@ -230,9 +290,18 @@ class BaseVariable(pr.Node):
         The variable and value class are passed as an arg: func(path,varValue)
         """
         if isinstance(listener, BaseVariable):
-            self.__listeners.append(listener)
+            if listener not in self.__listeners:
+                self.__listeners.append(listener)
         else:
-            self.__functions.append(listener)
+            if listener not in self.__functions:
+                self.__functions.append(listener)
+
+    def delListener(self, listener):
+        """
+        Remove a listener Variable or function
+        """
+        if listener in self.__functions:
+            self.__functions.remove(listener)
 
     @pr.expose
     def set(self, value, write=True):
@@ -392,12 +461,12 @@ class BaseVariable(pr.Node):
         self._setDefault()
         self._updatePollInterval()
 
-    def _setDict(self,d,writeEach,modes):
+    def _setDict(self,d,writeEach,modes,incGroups,excGroups):
         #print(f'{self.path}._setDict(d={d})')        
         if self._mode in modes:
             self.setDisp(d,writeEach)
 
-    def _getDict(self,modes):
+    def _getDict(self,modes,incGroups,excGroups):
         if self._mode in modes:
             return VariableValue(self)
         else:
@@ -453,7 +522,7 @@ class RemoteVariable(BaseVariable):
                  enum=None,
                  units=None,
                  hidden=False,
-                 visibility=25,
+                 groups=None,
                  minimum=None,
                  maximum=None,
                  lowWarning=None,
@@ -473,7 +542,7 @@ class RemoteVariable(BaseVariable):
 
         BaseVariable.__init__(self, name=name, description=description, 
                               mode=mode, value=value, disp=disp, 
-                              enum=enum, units=units, hidden=hidden, visibility=visibility, 
+                              enum=enum, units=units, hidden=hidden, groups=groups, 
                               minimum=minimum, maximum=maximum,
                               lowWarning=lowWarning, lowAlarm=lowAlarm,
                               highWarning=highWarning, highAlarm=highAlarm,
@@ -591,7 +660,7 @@ class LocalVariable(BaseVariable):
                  enum=None,
                  units=None,
                  hidden=False,
-                 visibility=25,
+                 groups=None,
                  minimum=None,
                  maximum=None,
                  lowWarning=None,
@@ -608,7 +677,7 @@ class LocalVariable(BaseVariable):
 
         BaseVariable.__init__(self, name=name, description=description, 
                               mode=mode, value=value, disp=disp, 
-                              enum=enum, units=units, hidden=hidden, visibility=visibility,
+                              enum=enum, units=units, hidden=hidden, groups=groups,
                               minimum=minimum, maximum=maximum, typeStr=typeStr,
                               lowWarning=lowWarning, lowAlarm=lowAlarm,
                               highWarning=highWarning, highAlarm=highAlarm,

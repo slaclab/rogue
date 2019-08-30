@@ -56,9 +56,9 @@ class DataLink(QObject):
         fl.setLabelAlignment(Qt.AlignRight)
         vb.addLayout(fl)
 
-        self.writer.dataFile.addListener(self.varListener)
+        self.writer.DataFile.addListener(self.varListener)
         self.dataFile = QLineEdit()
-        self.dataFile.setText(self.writer.dataFile.valueDisp())
+        self.dataFile.setText(self.writer.DataFile.valueDisp())
         self.dataFile.textEdited.connect(self.dataFileEdited)
         self.dataFile.returnPressed.connect(self.dataFileChanged)
         self.updateDataFile.connect(self.dataFile.setText)
@@ -96,24 +96,24 @@ class DataLink(QObject):
         fl.setLabelAlignment(Qt.AlignRight)
         vbl.addLayout(fl)
 
-        self.writer.bufferSize.addListener(self.varListener)
+        self.writer.BufferSize.addListener(self.varListener)
         self.bufferSize = QLineEdit()
-        self.bufferSize.setText(self.writer.bufferSize.valueDisp())
+        self.bufferSize.setText(self.writer.BufferSize.valueDisp())
         self.bufferSize.textEdited.connect(self.bufferSizeEdited)
         self.bufferSize.returnPressed.connect(self.bufferSizeChanged)
         self.updateBufferSize.connect(self.bufferSize.setText)
         fl.addRow('Buffer Size:',self.bufferSize)
 
-        self.writer.isOpen.addListener(self.varListener)
+        self.writer.IsOpen.addListener(self.varListener)
         self.openState = QLineEdit()
-        self.openState.setText(self.writer.isOpen.valueDisp())
+        self.openState.setText(self.writer.IsOpen.valueDisp())
         self.openState.setReadOnly(True)
         self.updateOpenState.connect(self.openState.setText)
         fl.addRow('File Open:',self.openState)
 
-        self.writer.currentSize.addListener(self.varListener)
+        self.writer.CurrentSize.addListener(self.varListener)
         self.curSize = QLineEdit()
-        self.curSize.setText(self.writer.currentSize.valueDisp())
+        self.curSize.setText(self.writer.CurrentSize.valueDisp())
         self.curSize.setReadOnly(True)
         self.updateCurrentSize.connect(self.curSize.setText)
         fl.addRow('Current File Size:',self.curSize)
@@ -127,24 +127,24 @@ class DataLink(QObject):
         fl.setLabelAlignment(Qt.AlignRight)
         vbr.addLayout(fl)
 
-        self.writer.maxFileSize.addListener(self.varListener)
+        self.writer.MaxFileSize.addListener(self.varListener)
         self.maxSize = QLineEdit()
-        self.maxSize.setText(self.writer.maxFileSize.valueDisp())
+        self.maxSize.setText(self.writer.MaxFileSize.valueDisp())
         self.maxSize.textEdited.connect(self.maxSizeEdited)
         self.maxSize.returnPressed.connect(self.maxSizeChanged)
         self.updateMaxSize.connect(self.maxSize.setText)
         fl.addRow('Max Size:',self.maxSize)
 
-        self.writer.frameCount.addListener(self.varListener)
+        self.writer.FrameCount.addListener(self.varListener)
         self.frameCount = QLineEdit()
-        self.frameCount.setText(self.writer.frameCount.valueDisp())
+        self.frameCount.setText(self.writer.FrameCount.valueDisp())
         self.frameCount.setReadOnly(True)
         self.updateFrameCount.connect(self.frameCount.setText)
         fl.addRow('Frame Count:',self.frameCount)
 
-        self.writer.totalSize.addListener(self.varListener)
+        self.writer.TotalSize.addListener(self.varListener)
         self.totSize = QLineEdit()
-        self.totSize.setText(self.writer.totalSize.valueDisp())
+        self.totSize.setText(self.writer.TotalSize.valueDisp())
         self.totSize.setReadOnly(True)
         self.updateTotalSize.connect(self.totSize.setText)
         fl.addRow('Total File Size:',self.totSize)
@@ -161,10 +161,10 @@ class DataLink(QObject):
             dataFile = dataFile[0]
 
         if dataFile != '':
-            self.writer.dataFile.setDisp(dataFile)
+            self.writer.DataFile.setDisp(dataFile)
     
     def genName(self):
-        self.writer.autoName()
+        self.writer.AutoName()
         pass
 
     def varListener(self,path,value):
@@ -206,16 +206,16 @@ class DataLink(QObject):
         self.dataFile.setPalette(p)
 
         self.block = True
-        self.writer.dataFile.setDisp(self.dataFile.text())
+        self.writer.DataFile.setDisp(self.dataFile.text())
         self.block = False
 
     @pyqtSlot()
     def open(self):
-        self.writer.open()
+        self.writer.Open()
 
     @pyqtSlot()
     def close(self):
-        self.writer.close()
+        self.writer.Close()
 
     @pyqtSlot()
     def bufferSizeEdited(self):
@@ -230,7 +230,7 @@ class DataLink(QObject):
         self.bufferSize.setPalette(p)
 
         self.block = True
-        self.writer.bufferSize.setDisp(self.bufferSize.text())
+        self.writer.BufferSize.setDisp(self.bufferSize.text())
         self.block = False
 
     @pyqtSlot()
@@ -246,7 +246,7 @@ class DataLink(QObject):
         self.maxSize.setPalette(p)
 
         self.block = True
-        self.writer.maxFileSize.setDisp(self.maxSize.text())
+        self.writer.MaxFileSize.setDisp(self.maxSize.text())
         self.block = False
 
 
@@ -398,13 +398,13 @@ class SystemWidget(QWidget):
         ###################
         # Data Controllers
         ###################
-        for key,val in root.getNodes(typ=pyrogue.DataWriter,minVisibility=0).items():
+        for key,val in root.getNodes(typ=pyrogue.DataWriter).items():
             self.holders.append(DataLink(layout=tl,writer=val))
 
         ###################
         # Run Controllers
         ###################
-        for key,val in root.getNodes(typ=pyrogue.RunControl,minVisibility=0).items():
+        for key,val in root.getNodes(typ=pyrogue.RunControl).items():
             self.holders.append(ControlLink(layout=tl,control=val))
 
         ###################

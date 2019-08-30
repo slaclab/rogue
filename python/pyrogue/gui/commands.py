@@ -29,7 +29,7 @@ except ImportError:
 import pyrogue
 
 class CommandDev(QObject):
-    def __init__(self,*,tree,parent,dev,noExpand,top,minVisibility):
+    def __init__(self,*,tree,parent,dev,noExpand,top,incGroups,excGroups):
         QObject.__init__(self)
         self._parent   = parent
         self._tree     = tree
@@ -38,7 +38,8 @@ class CommandDev(QObject):
 
         self._widget = QTreeWidgetItem(parent)
         self._widget.setText(0,self._dev.name)
-        self._minVisibility = minVisibility
+        self._incGroups=incGroups
+        self._excGroups=excGroups
 
         if top:
             self._parent.addTopLevelItem(self._widget)
@@ -65,20 +66,21 @@ class CommandDev(QObject):
     def setup(self,noExpand):
 
         # First create commands
-        for key,val in self._dev.visibleCommands(self._minVisibility).items():
+        for key,val in self._dev.commandsByGroup(incGroups=self._incGroups,excGroups=self._excGroups).items():
             self._children.append(CommandLink(tree=self._tree,
                                               parent=self._widget,
                                               command=val))
             QCoreApplication.processEvents()
 
         # Then create devices
-        for key,val in self._dev.visibleDevices(self._minVisibility).items():
+        for key,val in self._dev.devicesByGroup(incGroups=self._incGroups,excGroups=self._excGroups).items():
             self._children.append(CommandDev(tree=self._tree,
                                              parent=self._widget,
                                              dev=val,
                                              noExpand=noExpand,
                                              top=False,
-                                             minVisibility=self._minVisibility))
+                                             incGroups=self._incGroups,
+                                             excGroups=self._excGroups))
 
         for i in range(0,4):
             self._tree.resizeColumnToContents(i)
@@ -132,11 +134,11 @@ class CommandLink(QObject):
 
         if self._command.arg:
             try:
-                self._command.call(self._command.parseDisp(value))
+                self._command(self._command.parseDisp(value))
             except Exception:
                 pass
         else:
-            self._command.call()
+            self._command()
 
 class CommandWidget(QWidget):
     def __init__(self, *, parent=None):
@@ -167,5 +169,6 @@ class CommandWidget(QWidget):
                                          dev=root,
                                          noExpand=False,
                                          top=True,
-                                         minVisibility=minVisibility))
+                                         incGroups=incGroups,
+                                         excGroups=excGroups))
 

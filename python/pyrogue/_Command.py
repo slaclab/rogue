@@ -34,7 +34,7 @@ class BaseCommand(pr.BaseVariable):
                  retValue=None,
                  enum=None,
                  hidden=False,                 
-                 visibility=25,
+                 groups=None,
                  minimum=None,
                  maximum=None,
                  function=None,
@@ -48,7 +48,7 @@ class BaseCommand(pr.BaseVariable):
             value=value,
             enum=enum,
             hidden=hidden,
-            visibility=visibility,
+            groups=groups,
             minimum=minimum,
             maximum=maximum)
         
@@ -56,6 +56,9 @@ class BaseCommand(pr.BaseVariable):
         self._thread = None
         self._lock = threading.Lock()
         self._background = background
+
+        if self._background:
+            self._log.warning("Background commands are deprecated. Please use a Process device")
 
         if retValue is None:
             self._retTypeStr = None
@@ -82,8 +85,7 @@ class BaseCommand(pr.BaseVariable):
     def retTypeStr(self):
         return self._retTypeStr
 
-    @pr.expose
-    def call(self,arg=None):
+    def __call__(self,arg=None):
         if self._background:
             with self._lock:
                 if self._thread is not None and self._thread.isAlive():
@@ -118,8 +120,9 @@ class BaseCommand(pr.BaseVariable):
         except Exception as e:
             self._log.exception(e)
 
-    def __call__(self,arg=None):
-        return self.call(arg)
+    @pr.expose
+    def call(self,arg=None):
+        return self.__call__(arg)
 
     @staticmethod
     def nothing():
@@ -194,10 +197,10 @@ class BaseCommand(pr.BaseVariable):
     def postedTouchZero(cmd):
         cmd.post(0)
         
-    def _setDict(self,d,writeEach,modes):
+    def _setDict(self,d,writeEach,modes,incGroups,excGroups):
         pass
 
-    def _getDict(self,modes):
+    def _getDict(self,modes,incGroups,excGroups):
         return None
 
     def get(self,read=True):
@@ -216,7 +219,7 @@ class RemoteCommand(BaseCommand, pr.RemoteVariable):
                  retValue=None,
                  enum=None,
                  hidden=False,
-                 visibility=25,
+                 groups=None,
                  minimum=None,
                  maximum=None,
                  function=None,
@@ -241,7 +244,7 @@ class RemoteCommand(BaseCommand, pr.RemoteVariable):
             value=value,
             enum=enum,
             hidden=hidden,
-            visibility=visibility,
+            groups=groups,
             minimum=minimum,
             maximum=maximum,
             base=base,
