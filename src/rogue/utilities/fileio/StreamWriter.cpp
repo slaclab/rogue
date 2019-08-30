@@ -121,7 +121,7 @@ void ruf::StreamWriter::open(std::string file) {
    if ( sizeLimit_ > 0 ) name.append(".1");
 
    if ( (fd_ = ::open(name.c_str(),O_RDWR|O_CREAT|O_APPEND,S_IRUSR|S_IWUSR|S_IRGRP|S_IWGRP|S_IROTH|S_IWOTH)) < 0 )
-      throw(rogue::GeneralError::open("StreamWriter::open",name));
+      throw(rogue::GeneralError::create("StreamWriter::open","Failed to open data file: %s",name.c_str()));
 
    totSize_    = 0;
    currSize_   = 0;
@@ -168,7 +168,7 @@ void ruf::StreamWriter::setBufferSize(uint32_t size) {
 
          // Create new buffer
          if ( (buffer_ = (uint8_t *)malloc(size)) == NULL )
-            throw(rogue::GeneralError::allocation("StreamWriter::setBufferSize",size));
+            throw(rogue::GeneralError::create("StreamWriter::setBufferSize","Failed to allocate buffer with size = %i",size));
          buffSize_ = size;
       }
    }
@@ -334,7 +334,7 @@ void ruf::StreamWriter::checkSize(uint32_t size) {
 
       // Open new file
       if ( (fd_ = ::open(name.c_str(),O_RDWR|O_CREAT|O_APPEND,S_IRUSR|S_IWUSR|S_IRGRP|S_IWGRP|S_IROTH|S_IWOTH)) < 0 )
-         throw(rogue::GeneralError::open("StreamWriter::checkSize",name));
+         throw(rogue::GeneralError::create("StreamWriter::checkSize","Failed to open file %s",name.c_str()));
 
       currSize_ = 0;
    }

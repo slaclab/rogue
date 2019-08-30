@@ -107,13 +107,18 @@ void rps::SrpV0::doTransaction(rim::TransactionPtr tran) {
 
    // Size error
    if ((tran->address() % min()) != 0 ) {
-      tran->done(rim::AddressError);
+      tran->error("Transaction address 0x%x is not aligned to min size %i",tran->address(),min());
       return;
    }
 
    // Size error
-   if ((tran->size() % min()) != 0 || tran->size() < min() || tran->size() > max()) {
-      tran->done(rim::SizeError);
+   if ((tran->size() % min()) != 0 || tran->size() < min()) {
+      tran->error("Transaction size 0x%x is not aligned to min size %i",tran->size(),min());
+      return;
+   }
+
+   if (tran->size() > max()) {
+      tran->error("Transaction size 0x%x exceeds max size %i",tran->size(),min());
       return;
    }
 
@@ -140,7 +145,7 @@ void rps::SrpV0::doTransaction(rim::TransactionPtr tran) {
    tail[0] = 0;
    ris::toFrame(fIter,TailLen,tail); 
 
-   if ( tran->type() == rim::Post ) tran->done(0);
+   if ( tran->type() == rim::Post ) tran->done();
    else addTransaction(tran);
 
    log_->debug("Send frame for id=%i, addr 0x%0.8x. Size=%i, type=%i, doWrite=%i",
@@ -220,9 +225,9 @@ void rps::SrpV0::acceptFrame ( ris::FramePtr frame ) {
    fIter = frame->endRead()-TailLen;
    ris::fromFrame(fIter,TailLen,tail);
    if ( tail[0] != 0 ) {
-      if ( tail[0] & 0x20000 ) tran->done(rim::BusTimeout);
-      else if ( tail[0] & 0x10000 ) tran->done(rim::BusFail);
-      else tran->done(tail[0]);
+      if ( tail[0] & 0x20000 ) tran->error("Axi bus timeout detected in hardware");
+      else if ( tail[0] & 0x10000 ) tran->error("Axi bus retruned fail status in hardware");
+      else tran->error("Non zero status message returned on axi bus in hardware: 0x%x",tail[0]);
       log_->warning("Error detected for ID id=%i, tail=0x%0.8x",id,tail[0]);
       return;
    }
@@ -234,6 +239,6 @@ void rps::SrpV0::acceptFrame ( ris::FramePtr frame ) {
    }
 
    // Done
-   tran->done(0);
+   tran->done();
 }
 
