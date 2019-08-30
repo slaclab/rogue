@@ -27,6 +27,7 @@ except ImportError:
     from PyQt4.QtGui     import *
 
 import pyrogue
+import pyrogue.interfaces
 import pyrogue.gui
 import pyrogue.gui.variables
 import pyrogue.gui.commands
@@ -40,8 +41,8 @@ def application(argv):
 
 class GuiTop(QWidget):
 
-    newRoot = pyqtSignal(pyrogue.Root,list,list)
-    newVirt = pyqtSignal(pyrogue.VirtualNode,list,list)
+    newRoot = pyqtSignal(pyrogue.Root,int)
+    newVirt = pyqtSignal(pyrogue.interfaces.VirtualNode,int)
 
     def __init__(self,*, parent=None, incGroups=None, excGroups=None, group=None):
         super(GuiTop,self).__init__(parent)
@@ -90,14 +91,14 @@ class GuiTop(QWidget):
         if not root.running:
             raise Exception("GUI can not be attached to a tree which is not started")
 
-        if isinstance(root,pyrogue.VirtualNode):
+        if isinstance(root,pyrogue.interfaces.VirtualNode):
             self.newVirt.emit(root,self._incGroups,self._excGroups)
         else:
             self.newRoot.emit(root,self._incGroups,self._excGroups)
 
-    @pyqtSlot(pyrogue.Root,list,list)
-    @pyqtSlot(pyrogue.VirtualNode,list,list)
-    def _addTree(self,root,incGroups,excGroups):
+    @pyqtSlot(pyrogue.Root,int)
+    @pyqtSlot(pyrogue.interfaces.VirtualNode,int)
+    def _addTree(self,root,minVisibility):
         self.sys = pyrogue.gui.system.SystemWidget(root=root,parent=self.tab)
         self.tab.addTab(self.sys,root.name)
         self.adjustSize()
