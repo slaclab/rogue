@@ -362,7 +362,7 @@ void rpr::Controller::applicationRx ( ris::FramePtr frame ) {
       usleep(10);
       if ( timePassed(startTime,timeout_) ) {
          gettimeofday(&startTime,NULL);
-         log_->timeout("Controller::applicationRx",timeout_);
+         log_->critical("Controller::applicationRx: Timeout waiting for outbound queue after %i.%i seconds! May be caused by outbound backpressure.", timeout_.tv_sec, timeout_.tv_usec);
       }
    }
 

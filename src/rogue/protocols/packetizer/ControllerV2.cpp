@@ -228,7 +228,7 @@ void rpp::ControllerV2::applicationRx ( ris::FramePtr frame, uint8_t tDest ) {
       usleep(10);
       gettimeofday(&currTime,NULL);
       if ( timercmp(&currTime,&endTime,>)) {
-         log_->timeout("ControllerV2::applicationRx",timeout_);
+         log_->critical("ControllerV2::applicationRx: Timeout waiting for outbound queue after %i.%i seconds! May be caused by outbound backpressure.", timeout_.tv_sec, timeout_.tv_usec);
          gettimeofday(&startTime,NULL);
          timeradd(&startTime,&timeout_,&endTime);
       }
