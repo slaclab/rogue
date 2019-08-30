@@ -150,10 +150,10 @@ class MemEmulate(rogue.interfaces.memory.Slave):
         type    = transaction.type()
 
         if (address % self._minWidth) != 0:
-            trasnaction.error("Transaction address {address:#x} is not aligned to min width {self._minWidth:#x}")
+            transaction.error("Transaction address {address:#x} is not aligned to min width {self._minWidth:#x}")
             return
         elif size > self._maxSize:
-            trasnaction.error("Transaction size {size} exceeds max {self._maxSize}")
+            transaction.error("Transaction size {size} exceeds max {self._maxSize}")
             return
 
         for i in range (0, size):
