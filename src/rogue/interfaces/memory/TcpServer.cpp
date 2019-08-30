@@ -166,7 +166,7 @@ void rim::TcpServer::runThread() {
             bridgeLog_->debug("Starting transaction id=%" PRIu32 ", addr=0x%" PRIx64 ", size=%" PRIu32 ", type=%" PRIu32,id,addr,size,type);
 
             // Execute transaction and wait for result
-            this->setError(0);
+            this->clearError();
             reqTransaction(addr,size,data,type);
             waitTransaction(0);
             result = getError();

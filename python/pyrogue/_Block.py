@@ -343,10 +343,6 @@ class RemoteBlock(BaseBlock, rim.Master):
     def error(self):
         return self._getError()
 
-    @error.setter
-    def error(self,value):
-        self._setError(value)
-
     @property
     def bulkEn(self):
         return self._bulkEn
@@ -406,7 +402,7 @@ class RemoteBlock(BaseBlock, rim.Master):
                 return
 
             self._waitTransaction(0)
-            self.error = ""
+            self._clearError()
 
             # Move staged write data to block. Clear stale.
             if type == rim.Write or type == rim.Post:
@@ -456,7 +452,7 @@ class RemoteBlock(BaseBlock, rim.Master):
 
             # Error
             err = self.error
-            self.error = ""
+            self._clearError()
 
             if err != "":
                 raise MemoryError(name=self.path, address=self.address, msg=err, size=self._size)
@@ -466,7 +462,8 @@ class RemoteBlock(BaseBlock, rim.Master):
 
                 for x in range(self._size):
                     if (self._vData[x] & self._vDataMask[x]) != (self._bData[x] & self._vDataMask[x]):
-                        msg  = ('Local='    + ''.join(f'{x:#02x}' for x in self._bData))
+                        msg  = "Verify Error: "
+                        msg += ('Local='    + ''.join(f'{x:#02x}' for x in self._bData))
                         msg += ('. Verify=' + ''.join(f'{x:#02x}' for x in self._vData))
                         msg += ('. Mask='   + ''.join(f'{x:#02x}' for x in self._vDataMask))
 

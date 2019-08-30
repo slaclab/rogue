@@ -151,14 +151,12 @@ namespace rogue {
                 */
                std::string getError();
 
-               //! Set the error value
-               /** This method sets the error value for this master. Set to
-                * "" to clear the error state.
+               //! Clear the error value
+               /** This method clears the error value for this master.
                 *
-                * Exposted to python as _setError()
-                * @param error New error value
+                * Exposted to python as _clearError()
                 */
-               void setError(std::string error);
+               void clearError();
 
                //! Set timeout value for transactions
                /** Sets the timeout value for future transactions. THis is the amount of time

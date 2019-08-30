@@ -155,7 +155,7 @@ std::string rim::Transaction::wait() {
            timercmp(&currTime,&(endTime_),>) ) {
 
          done_  = true;
-         error_ = "Timeout waiting for register transaction response";
+         error_ = "Timeout waiting for register transaction message response";
       }
       else cond_.wait_for(lock,std::chrono::microseconds(1000));
    }

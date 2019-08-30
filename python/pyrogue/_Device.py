@@ -412,7 +412,7 @@ class Device(pr.Node,rim.Hub):
             else: txn = rim.Write
 
             for _ in range(tryCount):
-                self._setError(0)
+                self._clearError()
                 self._rawTxnChunker(offset, data, base, stride, wordBitSize, txn)
                 self._waitTransaction(0)
 
@@ -426,7 +426,7 @@ class Device(pr.Node,rim.Hub):
     def _rawRead(self, offset, numWords=1, base=pr.UInt, stride=4, wordBitSize=32, data=None, tryCount=1):
         with self._memLock:
             for _ in range(tryCount):
-                self._setError(0)
+                self._clearError()
                 ldata = self._rawTxnChunker(offset, data, base, stride, wordBitSize, txnType=rim.Read, numWords=numWords)
                 self._waitTransaction(0)
 

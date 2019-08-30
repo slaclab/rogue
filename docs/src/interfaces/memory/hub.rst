@@ -67,8 +67,8 @@ transctions in Python.
                    self._waitTransaction(id)
 
                    # Check transaction result, forward error to incoming transaction
-                   if self._getError() != 0:
-                       transaction.done(self._getError())
+                   if self._getError() != "":
+                       transaction.error(self._getError())
                        return False
 
                    # Handle write or post
@@ -86,12 +86,12 @@ transctions in Python.
                       self._waitTransaction(id)
 
                       # Check transaction result, forward error to incoming transaction
-                      if self._getError() != 0:
-                          transaction.done(self._getError())
+                      if self._getError() != "":
+                          transaction.error(self._getError())
                           return False
 
                       # Success
-                      transaction.done(0)
+                      transaction.done()
 
                    # Handle read or verify read
                    else:
@@ -106,13 +106,13 @@ transctions in Python.
                       self._waitTransaction(id)
 
                       # Check transaction result, forward error to incoming transaction
-                      if self._getError() != 0:
-                          transaction->done(self._getError())
+                      if self._getError() != "":
+                          transaction.error(self._getError())
                           return False
 
                       # Copy data into original transaction and complete
                       transaction.setData(data,0)
-                      transaction.done(0)
+                      transaction.done()
 
 
 Python Device Hub Example
@@ -237,8 +237,8 @@ transctions in C++.
             this->waitTransaction(id);
 
             // Check transaction result, forward error to incoming transaction
-            if ( this->getError() != 0 ) {
-               transaction->done(this->getError());
+            if ( this->getError() != "" ) {
+               transaction->error(this->getError());
                return false
             }
 
@@ -255,11 +255,11 @@ transctions in C++.
                this->waitTransaction(id);
 
                // Check transaction result, forward error to incoming transaction
-               if ( this->getError() != 0 ) {
-                  transaction->done(this->getError());
+               if ( this->getError() != "" ) {
+                  transaction->error(this->getError());
                   return false
                }
-               else transaction->done(0);
+               else transaction->done();
             }
 
             // Handle read or verify read
@@ -274,11 +274,11 @@ transctions in C++.
                this->waitTransaction(id);
 
                // Check transaction result, forward error to incoming transaction
-               if ( this->getError() != 0 ) {
-                  transaction->done(this->getError());
+               if ( this->getError() != "" ) {
+                  transaction->error(this->getError());
                   return false
                }
-               else transaction->done(0);
+               else transaction->done();
             }
 
    };

@@ -51,7 +51,7 @@ void rim::Master::setup_python() {
       .def("_reqMaxAccess",       &rim::Master::reqMaxAccess)
       .def("_reqAddress",         &rim::Master::reqAddress)
       .def("_getError",           &rim::Master::getError)
-      .def("_setError",           &rim::Master::setError)
+      .def("_clearError",         &rim::Master::clearError)
       .def("_setTimeout",         &rim::Master::setTimeout)
       .def("_reqTransaction",     &rim::Master::reqTransactionPy)
       .def("_waitTransaction",    &rim::Master::waitTransaction)
@@ -116,10 +116,10 @@ std::string rim::Master::getError() {
 }
 
 //! Rst error
-void rim::Master::setError(std::string error) {
+void rim::Master::clearError() {
    rogue::GilRelease noGil;
    std::lock_guard<std::mutex> lock(mastMtx_);
-   error_ = error;
+   error_ = "";
 }
 
 //! Set timeout
