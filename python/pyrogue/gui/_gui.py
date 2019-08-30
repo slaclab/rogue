@@ -41,8 +41,8 @@ def application(argv):
 
 class GuiTop(QWidget):
 
-    newRoot = pyqtSignal(pyrogue.Root,int)
-    newVirt = pyqtSignal(pyrogue.interfaces.VirtualNode,int)
+    newRoot = pyqtSignal(pyrogue.Root,list,list)
+    newVirt = pyqtSignal(pyrogue.interfaces.VirtualNode,list,list)
 
     def __init__(self,*, parent=None, incGroups=None, excGroups=None, group=None):
         super(GuiTop,self).__init__(parent)
@@ -98,7 +98,7 @@ class GuiTop(QWidget):
 
     @pyqtSlot(pyrogue.Root,int)
     @pyqtSlot(pyrogue.interfaces.VirtualNode,int)
-    def _addTree(self,root,minVisibility):
+    def _addTree(self,root,incGroups,excGroups):
         self.sys = pyrogue.gui.system.SystemWidget(root=root,parent=self.tab)
         self.tab.addTab(self.sys,root.name)
         self.adjustSize()
