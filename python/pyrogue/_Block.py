@@ -27,10 +27,10 @@ class MemoryError(Exception):
 
     def __init__(self, *, name, address, msg=None, size=0):
 
-        self._value = f"Memory Error for {name} at address {address:#08x} "
+        self._value = f"Memory Error for {name} at address {address:#08x}"
 
         if msg is not None:
-            self._value += msg
+            self._value += " " + msg
 
     def __str__(self):
         return repr(self._value)
