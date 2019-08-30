@@ -511,8 +511,8 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
               
             # Standard file
             else:
-            with open(arg,'r') as f:
-                self._setYaml(f.read(),False,['RW','WO'])
+                with open(arg,'r') as f:
+                    self._setYaml(f.read(),False,['RW','WO'])
         except Exception as e:
             self._log.exception(e)
             return False
