@@ -67,9 +67,9 @@ class EpicsPvHandler(p4p.server.thread.Handler):
             val = op.value().query
 
             if 'arg' in val:
-                ret = self._var.call(val.arg)
+                ret = self._var(val.arg)
             else:
-                ret = self._var.call()
+                ret = self._var()
 
             if ret is None: ret = 'None'
 

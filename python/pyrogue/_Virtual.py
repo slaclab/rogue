@@ -69,8 +69,8 @@ def VirtualFactory(data):
         for k in data['props']:
             setattr(self.__class__,k,VirtualProperty(self,k))
 
-        # Add __call__ if command
-        if str(pr.BaseCommand) in data['bases']:
+        # Add __call__ if command or Process
+        if str(pr.BaseCommand) in data['bases'] or str(pr.Process) in data['bases']:
             setattr(self.__class__,'__call__',self._call)
         
         # Add getNode and addVarListener if root
