@@ -96,8 +96,8 @@ class GuiTop(QWidget):
         else:
             self.newRoot.emit(root,self._incGroups,self._excGroups)
 
-    @pyqtSlot(pyrogue.Root,int)
-    @pyqtSlot(pyrogue.interfaces.VirtualNode,int)
+    @pyqtSlot(pyrogue.Root,list,list)
+    @pyqtSlot(pyrogue.interfaces.VirtualNode,list,list)
     def _addTree(self,root,incGroups,excGroups):
         self.sys = pyrogue.gui.system.SystemWidget(root=root,parent=self.tab)
         self.tab.addTab(self.sys,root.name)
