@@ -25,6 +25,7 @@
 #include <rogue/protocols/packetizer/Transport.h>
 #include <rogue/protocols/packetizer/Application.h>
 #include <rogue/GeneralError.h>
+#include <rogue/Helpers.h>
 #include <memory>
 #include <rogue/GilRelease.h>
 #include <math.h>

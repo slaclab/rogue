@@ -27,16 +27,11 @@
 #include <boost/python.hpp>
 #endif
 
-#define DEFAULT_TIMEOUT 1000000
-
 namespace rogue {
 
 #ifndef NO_PYTHON
    extern PyObject * generalErrorObj;
 #endif
-
-   // Set default timeout value
-   void defaultTimeout(struct timeval &tout);
 
    //! General exception 
    /*

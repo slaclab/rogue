@@ -22,6 +22,7 @@
 #include <rogue/interfaces/memory/Constants.h>
 #include <rogue/interfaces/memory/Transaction.h>
 #include <rogue/GeneralError.h>
+#include <rogue/Helpers.h>
 #include <memory>
 #include <rogue/GilRelease.h>
 #include <rogue/ScopedGil.h>

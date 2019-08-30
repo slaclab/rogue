@@ -29,13 +29,6 @@ PyObject * rogue::generalErrorObj = 0;
 
 #endif
 
-// Set default timeout value
-void rogue::defaultTimeout(struct timeval &tout) {
-   div_t divResult = div(DEFAULT_TIMEOUT,1000000);
-   tout.tv_sec  = divResult.quot;
-   tout.tv_usec = divResult.rem;
-}
-
 rogue::GeneralError::GeneralError(std::string src,std::string text) {
    snprintf(text_,BuffSize,"%s: General Error: %s",src.c_str(),text.c_str());
 }

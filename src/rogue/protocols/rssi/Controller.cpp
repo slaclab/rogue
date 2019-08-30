@@ -27,6 +27,7 @@
 #include <rogue/protocols/rssi/Transport.h>
 #include <rogue/protocols/rssi/Application.h>
 #include <rogue/GeneralError.h>
+#include <rogue/Helpers.h>
 #include <memory>
 #include <cmath>
 #include <rogue/GilRelease.h>
