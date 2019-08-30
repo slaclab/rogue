@@ -100,7 +100,7 @@ class Process(pr.Device):
         try:
             self._process()
         except Exception as e:
-            self._log.exception(e)
+            pr.logException(self._log,e)
 
         self.Running.set(False)
 

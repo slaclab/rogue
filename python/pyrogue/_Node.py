@@ -23,6 +23,12 @@ import functools as ft
 import parse
 import collections
 
+def logException(log,e):
+    if isinstance(e,pr.MemoryError):
+        log.error(e)
+    else:
+        log.exception(e)
+
 def logInit(cls=None,name=None,path=None):
 
     # Support base class in order of precedence

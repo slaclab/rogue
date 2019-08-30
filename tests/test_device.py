@@ -20,6 +20,7 @@
 import datetime
 import parse
 import pyrogue as pr
+import rogue
 
 class AxiVersion(pr.Device):
 
@@ -294,6 +295,14 @@ class AxiVersion(pr.Device):
         @self.command(hidden=False,value='',retValue='')
         def TestCommand(arg):
             return('Got {}'.format(arg))
+
+        @self.command(hidden=False,value='',retValue='')
+        def TestMemoryException(arg):
+            raise pr.MemoryError(name='blah',address=0)
+
+        @self.command(hidden=False,value='',retValue='')
+        def TestGeneralException(arg):
+            raise rogue.GeneralError('blah','test general')
 
     def hardReset(self):
         print('AxiVersion hard reset called')
