@@ -170,7 +170,7 @@ class Node(object):
         if value is True:
             self.addToGroup('Hidden')
         else:
-            self.delFromGroup('Hidden')
+            self.removeFromGroup('Hidden')
 
     @property
     def path(self):
