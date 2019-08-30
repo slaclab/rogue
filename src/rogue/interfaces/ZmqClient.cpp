@@ -69,7 +69,8 @@ rogue::interfaces::ZmqClient::ZmqClient (std::string addr, uint16_t port) {
          throw(rogue::GeneralError("ZmqClient::ZmqClient","Failed to set socket subscribe"));
 
    if ( zmq_connect(this->zmqSub_,temp.c_str()) < 0 ) 
-      throw(rogue::GeneralError::network("ZmqClient::ZmqClient",addr,port));
+      throw(rogue::GeneralError::create("ZmqClient::ZmqClient",
+               "Failed to connect to port %i at address %s",port,addr.c_str()));
 
    // Setup request port
    temp = "tcp://";
@@ -89,7 +90,8 @@ rogue::interfaces::ZmqClient::ZmqClient (std::string addr, uint16_t port) {
       throw(rogue::GeneralError("ZmqClient::ZmqClient","Failed to set socket relaxed"));
 
    if ( zmq_connect(this->zmqReq_,temp.c_str()) < 0 ) 
-      throw(rogue::GeneralError::network("ZmqClient::ZmqClient",addr,port+1));
+      throw(rogue::GeneralError::create("ZmqClient::ZmqClient",
+               "Failed to connect to port %i at address %s",port+1,addr.c_str()));
 
    log_->info("Connected to Rogue server at ports %i:%i:",port,port+1);
 

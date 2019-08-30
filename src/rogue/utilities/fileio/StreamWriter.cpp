@@ -334,7 +334,7 @@ void ruf::StreamWriter::checkSize(uint32_t size) {
 
       // Open new file
       if ( (fd_ = ::open(name.c_str(),O_RDWR|O_CREAT|O_APPEND,S_IRUSR|S_IWUSR|S_IRGRP|S_IWGRP|S_IROTH|S_IWOTH)) < 0 )
-         throw(rogue::GeneralError::open("StreamWriter::checkSize",name));
+         throw(rogue::GeneralError::create("StreamWriter::checkSize","Failed to open file %s",name.c_str()));
 
       currSize_ = 0;
    }

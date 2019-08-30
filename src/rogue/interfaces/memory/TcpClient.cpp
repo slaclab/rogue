@@ -69,7 +69,7 @@ rim::TcpClient::TcpClient (std::string addr, uint16_t port) : rim::Slave(4,0xFFF
    // Don't buffer when no connection
    opt = 1;
    if ( zmq_setsockopt (this->zmqReq_, ZMQ_IMMEDIATE, &opt, sizeof(int32_t)) != 0 ) 
-         throw(rogue::GeneralError("TcpClient::TcpClient","Failed to set socket immediate"));
+         throw(rogue::GeneralError("memory::TcpClient::TcpClient","Failed to set socket immediate"));
 
    this->respAddr_.append(std::to_string(static_cast<long long>(port+1)));
    this->reqAddr_.append(std::to_string(static_cast<long long>(port)));
@@ -77,12 +77,14 @@ rim::TcpClient::TcpClient (std::string addr, uint16_t port) : rim::Slave(4,0xFFF
    this->bridgeLog_->debug("Creating response client port: %s",this->respAddr_.c_str());
 
    if ( zmq_connect(this->zmqResp_,this->respAddr_.c_str()) < 0 ) 
-      throw(rogue::GeneralError::network("TcpClient::TcpClient",addr,port+1));
+      throw(rogue::GeneralError::create("memory::TcpCore::TcpCore",
+               "Failed to connect to remote port %i at address %s",port+1,addr.c_str()));
 
    this->bridgeLog_->debug("Creating request client port: %s",this->reqAddr_.c_str());
 
    if ( zmq_connect(this->zmqReq_,this->reqAddr_.c_str()) < 0 ) 
-      throw(rogue::GeneralError::network("TcpClient::TcpClient",addr,port));
+      throw(rogue::GeneralError::create("memory::TcpCore::TcpCore",
+               "Failed to connect to remote port %i at address %s",port,addr.c_str()));
 
    // Start rx thread
    threadEn_ = true;

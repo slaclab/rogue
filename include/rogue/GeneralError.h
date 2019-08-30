@@ -48,10 +48,6 @@ namespace rogue {
          GeneralError (std::string src,std::string text);
 
          static GeneralError create(std::string src, const char * fmt, ...);
-         static GeneralError open(std::string src, std::string file);
-         static GeneralError dest(std::string src, std::string file, uint32_t dest);
-         static GeneralError allocation(std::string src, uint32_t size);
-         static GeneralError network(std::string src, std::string host, uint16_t port);
 
          char const * what() const throw();
          static void setup_python();

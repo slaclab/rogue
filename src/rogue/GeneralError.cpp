@@ -44,13 +44,6 @@ rogue::GeneralError rogue::GeneralError::create(std::string src, const char * fm
    return(rogue::GeneralError(src,temp));
 }
 
-rogue::GeneralError rogue::GeneralError::network(std::string src, std::string host, uint16_t port) {
-   char temp[BuffSize];
-
-   snprintf(temp,BuffSize,"Network connect error. Host = %s, Port = %i",host.c_str(),port);
-   return(rogue::GeneralError(src,temp));
-}
-
 char const * rogue::GeneralError::what() const throw() {
    return(text_);
 }

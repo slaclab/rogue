@@ -69,12 +69,14 @@ rim::TcpServer::TcpServer (std::string addr, uint16_t port) {
    this->bridgeLog_->debug("Creating response client port: %s",this->respAddr_.c_str());
 
    if ( zmq_bind(this->zmqResp_,this->respAddr_.c_str()) < 0 ) 
-      throw(rogue::GeneralError::network("TcpServer::TcpServer",addr,port+1));
+      throw(rogue::GeneralError::create("memory::TcpServer::TcpServer",
+               "Failed to bind server to port %i at address %s, another process may be using this port",port+1,addr.c_str()));
 
    this->bridgeLog_->debug("Creating request client port: %s",this->reqAddr_.c_str());
 
    if ( zmq_bind(this->zmqReq_,this->reqAddr_.c_str()) < 0 ) 
-      throw(rogue::GeneralError::network("TcpServer::TcpServer",addr,port));
+      throw(rogue::GeneralError::create("memory::TcpServer::TcpServer",
+               "Failed to bind server to port %i at address %s, another process may be using this port",port,addr.c_str()));
 
    // Start rx thread
    threadEn_ = true;
