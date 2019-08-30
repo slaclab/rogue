@@ -67,7 +67,7 @@ void rim::Master::setup_python() {
 
 //! Create object
 rim::Master::Master() {
-   error_   = 0;
+   error_   = "";
    slave_   = rim::Slave::create(4,4); // Empty placeholder
 
    rogue::defaultTimeout(sumTime_);
@@ -111,12 +111,12 @@ uint64_t rim::Master::reqAddress() {
 }
 
 //! Get error
-uint32_t rim::Master::getError() {
+std::string rim::Master::getError() {
    return error_;
 }
 
 //! Rst error
-void rim::Master::setError(uint32_t error) {
+void rim::Master::setError(std::string error) {
    rogue::GilRelease noGil;
    std::lock_guard<std::mutex> lock(mastMtx_);
    error_ = error;
@@ -198,7 +198,7 @@ uint32_t rim::Master::intTransaction(rim::TransactionPtr tran) {
 void rim::Master::waitTransaction(uint32_t id) {
    TransactionMap::iterator it;
    rim::TransactionPtr tran;
-   uint32_t error;
+   std::string error;
 
    rogue::GilRelease noGil;
    while (1) {
@@ -216,7 +216,7 @@ void rim::Master::waitTransaction(uint32_t id) {
       }
 
       // Outside of lock
-      if ( (error = tran->wait()) != 0 ) error_ = error;
+      if ( (error = tran->wait()) != "" ) error_ = error;
    }
 }
 

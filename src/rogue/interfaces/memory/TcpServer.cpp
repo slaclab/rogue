@@ -98,17 +98,17 @@ void rim::TcpServer::close() {
 
 //! Run thread
 void rim::TcpServer::runThread() {
-   uint8_t * data;
-   uint64_t  more;
-   size_t    moreSize;
-   uint32_t  x;
-   uint32_t  msgCnt;
-   zmq_msg_t msg[6];
-   uint32_t  id;
-   uint64_t  addr;
-   uint32_t  size;
-   uint32_t  type;
-   uint32_t  result;
+   uint8_t *   data;
+   uint64_t    more;
+   size_t      moreSize;
+   uint32_t    x;
+   uint32_t    msgCnt;
+   zmq_msg_t   msg[6];
+   uint32_t    id;
+   uint64_t    addr;
+   uint32_t    size;
+   uint32_t    type;
+   std::string result;
 
    bridgeLog_->logThreadId();
 
@@ -171,11 +171,11 @@ void rim::TcpServer::runThread() {
             waitTransaction(0);
             result = getError();
 
-            bridgeLog_->debug("Done transaction id=%" PRIu32 ", addr=0x%" PRIx64 ", size=%" PRIu32 ", type=%" PRIu32 ", result=%" PRIu32,id,addr,size,type,result);
+            bridgeLog_->debug("Done transaction id=%" PRIu32 ", addr=0x%" PRIx64 ", size=%" PRIu32 ", type=%" PRIu32 ", result=%s",id,addr,size,type,result.c_str());
 
             // Result message
             zmq_msg_init_size(&(msg[5]),4);
-            std::memcpy(zmq_msg_data(&(msg[5])),&result, 4);
+            std::memcpy(zmq_msg_data(&(msg[5])),result.c_str(), result.length());
 
             // Send message
             for (x=0; x < 6; x++) 

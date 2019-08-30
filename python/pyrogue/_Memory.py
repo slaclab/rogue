@@ -111,7 +111,7 @@ class MemoryDevice(pr.Device):
 
             # Error check?
             error = self._getError()
-            self._setError(0)
+            self._setError("")
 
             # Convert the read verfiy data back to the native type
             # Can't do this until waitTransaction is done
@@ -128,7 +128,7 @@ class MemoryDevice(pr.Device):
                     msg += f'Expected: \n {self._wrValues} \n'
                     msg += f'Got: \n {checkValues}'
                     print(msg)
-                    raise MemoryError(name=self.name, address=self.address, error=rim.VerifyError, msg=msg, size=self._size)
+                    raise MemoryError(name=self.name, address=self.address, msg=msg, size=self._size)
 
 
             # destroy the txn maps when done with verify

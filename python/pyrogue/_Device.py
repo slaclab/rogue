@@ -416,12 +416,12 @@ class Device(pr.Node,rim.Hub):
                 self._rawTxnChunker(offset, data, base, stride, wordBitSize, txn)
                 self._waitTransaction(0)
 
-                if self._getError() == 0: return
+                if self._getError() == "": return
                 elif posted: break
                 self._log.warning("Retrying raw write transaction")
 
             # If we get here an error has occured
-            raise pr.MemoryError (name=self.name, address=offset|self.address, error=self._getError())
+            raise pr.MemoryError (name=self.name, address=offset|self.address, msg=self._getError())
         
     def _rawRead(self, offset, numWords=1, base=pr.UInt, stride=4, wordBitSize=32, data=None, tryCount=1):
         with self._memLock:
@@ -430,7 +430,7 @@ class Device(pr.Node,rim.Hub):
                 ldata = self._rawTxnChunker(offset, data, base, stride, wordBitSize, txnType=rim.Read, numWords=numWords)
                 self._waitTransaction(0)
 
-                if self._getError() == 0:
+                if self._getError() == "":
                     if numWords == 1:
                         return base.fromBytes(base.mask(ldata, wordBitSize),wordBitSize)
                     else:
@@ -438,7 +438,7 @@ class Device(pr.Node,rim.Hub):
                 self._log.warning("Retrying raw read transaction")
                 
             # If we get here an error has occured
-            raise pr.MemoryError (name=self.name, address=offset|self.address, error=self._getError())
+            raise pr.MemoryError (name=self.name, address=offset|self.address, msg=self._getError())
 
 
     def _getBlocks(self, variables):

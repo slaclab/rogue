@@ -25,39 +25,12 @@ import inspect
 class MemoryError(Exception):
     """ Exception for memory access errors."""
 
-    def __init__(self, *, name, address, error=0, msg=None, size=0):
+    def __init__(self, *, name, address, msg=None, size=0):
 
         self._value = f"Memory Error for {name} at address {address:#08x} "
 
-        if (error & 0xFF000000) == rim.TimeoutError:
-            self._value += "Timeout."
-
-        elif (error & 0xFF000000) == rim.VerifyError:
-            self._value += "Verify error."
-
-        elif (error & 0xFF000000) == rim.AddressError:
-            self._value += "Address error."
-
-        elif (error & 0xFF000000) == rim.SizeError:
-            self._value += f"Size error. Size={size}."
-
-        elif (error & 0xFF000000) == rim.BusTimeout:
-            self._value += "Bus timeout."
-
-        elif (error & 0xFF000000) == rim.BusFail:
-            self._value += "Bus Error: {:#02x}".format(error & 0xFF)
-
-        elif (error & 0xFF000000) == rim.Unsupported:
-            self._value += "Unsupported Transaction."
-
-        elif (error & 0xFF000000) == rim.ProtocolError:
-            self._value += "Protocol Error."
-
-        elif error != 0:
-            self._value += f"Unknown error {error:#02x}."
-
         if msg is not None:
-            self._value += (' ' + msg)
+            self._value += msg
 
     def __str__(self):
         return repr(self._value)
@@ -433,7 +406,7 @@ class RemoteBlock(BaseBlock, rim.Master):
                 return
 
             self._waitTransaction(0)
-            self.error = 0
+            self.error = ""
 
             # Move staged write data to block. Clear stale.
             if type == rim.Write or type == rim.Post:
@@ -483,10 +456,10 @@ class RemoteBlock(BaseBlock, rim.Master):
 
             # Error
             err = self.error
-            self.error = 0
+            self.error = ""
 
-            if err > 0:
-                raise MemoryError(name=self.path, address=self.address, error=err, size=self._size)
+            if err != "":
+                raise MemoryError(name=self.path, address=self.address, msg=err, size=self._size)
 
             if self._doVerify:
                 self._verifyWr = False
@@ -497,7 +470,7 @@ class RemoteBlock(BaseBlock, rim.Master):
                         msg += ('. Verify=' + ''.join(f'{x:#02x}' for x in self._vData))
                         msg += ('. Mask='   + ''.join(f'{x:#02x}' for x in self._vDataMask))
 
-                        raise MemoryError(name=self.path, address=self.address, error=rim.VerifyError, msg=msg, size=self._size)
+                        raise MemoryError(name=self.path, address=self.address, msg=msg, size=self._size)
 
                # Updated
             doUpdate = self._doUpdate

@@ -98,7 +98,7 @@ namespace rogue {
                uint32_t type_;
 
                // Transaction error
-               uint32_t error_;
+               std::string error_;
 
                // Transaction id
                uint32_t id_;
@@ -113,7 +113,7 @@ namespace rogue {
                static std::shared_ptr<rogue::interfaces::memory::Transaction> create (struct timeval timeout);
 
                // Wait for the transaction to complete, called by Master
-               uint32_t wait();
+               std::string wait();
 
             public:
 
@@ -177,14 +177,29 @@ namespace rogue {
                 */
                void refreshTimer(std::shared_ptr<rogue::interfaces::memory::Transaction> reference);
 
-               //! Complete transaction with passed error
+               //! Complete transaction without error
                /** Lock must be held before calling this method. The
                 * error types are defined in Constants.
                 *
                 * Exposted as done() to Python
-                * @param error Transaction error value or 0 for no error.
+                * @param error Transaction error message or "" for no error.
                 */
-               void done(uint32_t error);
+               void done();
+
+               //! Complete transaction with passed error, python interface
+               /** Lock must be held before calling this method.
+                *
+                * Exposted as error() to Python
+                * @param error Transaction error message
+                */
+               void errorPy(std::string error);
+
+               //! Complete transaction with passed error
+               /** Lock must be held before calling this method.
+                *
+                * @param error Transaction error message
+                */
+               void error(const char * fmt, ...);
 
                //! Get start iterator for Transaction data
                /** Not exposed to Python

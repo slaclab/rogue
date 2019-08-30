@@ -160,7 +160,7 @@ void rim::TcpClient::doTransaction(rim::TransactionPtr tran) {
    }
 
    // Add transaction
-   if ( type == rim::Post ) tran->done(0);
+   if ( type == rim::Post ) tran->done();
    else addTransaction(tran);
 }
 
@@ -177,7 +177,7 @@ void rim::TcpClient::runThread() {
    uint64_t  addr;
    uint32_t  size;
    uint32_t  type;
-   uint32_t  result;
+   char      result[1000];
 
    bridgeLog_->logThreadId();
 
@@ -208,7 +208,7 @@ void rim::TcpClient::runThread() {
             // Check sizes
             if ( (zmq_msg_size(&(msg[0])) != 4) || (zmq_msg_size(&(msg[1])) != 8) ||
                  (zmq_msg_size(&(msg[2])) != 4) || (zmq_msg_size(&(msg[3])) != 4) ||
-                 (zmq_msg_size(&(msg[5])) != 4) ) {
+                 (zmq_msg_size(&(msg[5])) > 999) ) {
                bridgeLog_->warning("Bad message sizes");
                for (x=0; x < msgCnt; x++) zmq_msg_close(&(msg[x]));
                continue; // while (1)
@@ -219,7 +219,9 @@ void rim::TcpClient::runThread() {
             std::memcpy(&addr,   zmq_msg_data(&(msg[1])), 8);
             std::memcpy(&size,   zmq_msg_data(&(msg[2])), 4);
             std::memcpy(&type,   zmq_msg_data(&(msg[3])), 4);
-            std::memcpy(&result, zmq_msg_data(&(msg[5])), 4);
+
+            memset(result,0,1000);
+            std::strncpy(result, (char*)zmq_msg_data(&(msg[5])), zmq_msg_size(&(msg[5])));
 
             // Find Transaction
             if ( (tran = getTransaction(id)) == NULL ) {
@@ -241,7 +243,7 @@ void rim::TcpClient::runThread() {
             // Double check transaction
             if ( (addr != tran->address()) || (size != tran->size()) || (type != tran->type()) ) {
                bridgeLog_->warning("Transaction data mistmatch. Id=%" PRIu32,id);
-               tran->done(rim::ProtocolError);
+               tran->error("Transaction data mismatch in TcpClient");
                for (x=0; x < msgCnt; x++) zmq_msg_close(&(msg[x]));
                continue; // while (1)
             }
@@ -250,13 +252,14 @@ void rim::TcpClient::runThread() {
             if ( type != rim::Write ) {
                if (zmq_msg_size(&(msg[4])) != size) {
                   bridgeLog_->warning("Transaction size mistmatch. Id=%" PRIu32,id);
-                  tran->done(rim::ProtocolError);
+                  tran->error("Received transaction response did not match header size");
                   for (x=0; x < msgCnt; x++) zmq_msg_close(&(msg[x]));
                   continue; // while (1)
                }
                std::memcpy(tran->begin(),zmq_msg_data(&(msg[4])), size);
             }
-            tran->done(result);
+            if ( strlen(result) > 0 ) tran->error(result);
+            else tran->done();
             bridgeLog_->debug("Response for transaction id=%" PRIu32 ", addr=0x%" PRIx64
                               ", size=%" PRIu32 ", type=%" PRIu32 ", cnt=%" PRIu32
                               ", port: %s", id,addr,size,type,msgCnt, this->respAddr_.c_str());
