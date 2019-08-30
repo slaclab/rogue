@@ -182,7 +182,6 @@ namespace rogue {
                 * error types are defined in Constants.
                 *
                 * Exposted as done() to Python
-                * @param error Transaction error message or "" for no error.
                 */
                void done();
 
