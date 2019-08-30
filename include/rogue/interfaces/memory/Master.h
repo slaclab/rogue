@@ -143,8 +143,7 @@ namespace rogue {
 
                //! Get error of last Transaction
                /** This method returns the error value of the last set of transactions initiated
-                * by this master. If more than one transaction was initiated, the result is the
-                * concatenation the transaction error values.
+                * by this master. 
                 *
                 * Exposted to python as _getError()
                 * @return Error value
