@@ -118,7 +118,7 @@ class BaseCommand(pr.BaseVariable):
             return pr.varFuncHelper(self._function,pargs, self._log,self.path)
 
         except Exception as e:
-            self._log.exception(e)
+            pr.logException(self._log,e)
 
     @pr.expose
     def call(self,arg=None):
@@ -264,7 +264,7 @@ class RemoteCommand(BaseCommand, pr.RemoteVariable):
                 self._block.startTransaction(rogue.interfaces.memory.Write, check=True)
 
         except Exception as e:
-            self._log.exception(e)
+            pr.logException(self._log,e)
 
  
     def get(self, read=True):
@@ -275,7 +275,7 @@ class RemoteCommand(BaseCommand, pr.RemoteVariable):
             ret = self._block.get(self)
 
         except Exception as e:
-            self._log.exception(e)
+            pr.logException(self._log,e)
             return None
 
         return ret

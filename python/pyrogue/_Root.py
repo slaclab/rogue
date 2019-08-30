@@ -388,7 +388,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                         f.write("{}\n".format(v.description))
 
         except Exception as e:
-            self._log.exception(e)
+            pr.logException(self._log,e)
 
     def _exit(self):
         print("Stopping Rogue root")
@@ -450,7 +450,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                 self._log.info("Check root read")
                 self.checkBlocks(recurse=True)
             except Exception as e:
-                self._log.exception(e)
+                pr.logException(self._log,e)
                 return False
 
         self._log.info("Done root write")
@@ -465,7 +465,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                 self._log.info("Check root read")
                 self.checkBlocks(recurse=True)
             except Exception as e:
-                self._log.exception(e)
+                pr.logException(self._log,e)
                 return False
 
         self._log.info("Done root read")
@@ -482,7 +482,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
             with open(name,'w') as f:
                 f.write(self._getYaml(readFirst=readFirst,modes=modes,incGroups=incGroups,excGroups=excGroups,varEncode=True))
         except Exception as e:
-            self._log.exception(e)
+            pr.logException(self._log,e)
             return False
 
         return True
@@ -493,7 +493,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
             with open(name,'r') as f:
                 self._setYaml(yml=f.read(),writeEach=writeEach,modes=modes,incGroups=incGroups,excGroups=excGroups)
         except Exception as e:
-            self._log.exception(e)
+            pr.logException(self._log,e)
             return False
 
         return True
@@ -509,7 +509,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         try:
             return dataToYaml({self.name:self._getDict(modes=modes,incGroups=incGroups,excGroups=excGroups)},varEncode)
         except Exception as e:
-            self._log.exception(e)
+            pr.logException(self._log,e)
             return ""
 
     def _setYaml(self,yml,writeEach,modes,incGroups,excGroups):
@@ -594,7 +594,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                             for func in self._varListeners:
                                 func(p,val)
                     except Exception as e:
-                        self._log.exception(e)
+                        pr.logException(self._log,e)
                         
                 self._log.debug(F"Done update group. Length={len(uvars)}. Entry={list(uvars.keys())[0]}")
 
@@ -603,7 +603,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                 try:
                     self._sendYamlFrame(dataToYaml(d,varEncode=False))
                 except Exception as e:
-                    self._log.exception(e)
+                    pr.logException(self._log,e)
 
                 # Send over zmq link
                 if self._zmqServer is not None:

@@ -320,7 +320,7 @@ class BaseVariable(pr.Node):
                     self._parent.checkBlocks(recurse=False, variable=self)
 
         except Exception as e:
-            self._log.exception(e)
+            pr.logException(self._log,e)
             self._log.error("Error setting value '{}' to variable '{}' with type {}".format(value,self.path,self.typeStr))
 
     @pr.expose
@@ -338,7 +338,7 @@ class BaseVariable(pr.Node):
                 self._block.startTransaction(rogue.interfaces.memory.Post, check=True)
 
         except Exception as e:
-            self._log.exception(e)
+            pr.logException(self._log,e)
             self._log.error("Error posting value '{}' to variable '{}' with type {}".format(value,self.path,self.typeStr))
 
     @pr.expose
@@ -359,7 +359,7 @@ class BaseVariable(pr.Node):
                 ret = None
 
         except Exception as e:
-            self._log.exception(e)
+            pr.logException(self._log,e)
             self._log.error("Error reading value from variable '{}'".format(self.path))
             ret = None
 
@@ -395,7 +395,7 @@ class BaseVariable(pr.Node):
                     ret = self.disp.format(value)
 
         except Exception as e:
-            self._log.exception(e)
+            pr.logException(self._log,e)
             self._log.error(f"Error generating disp for value {value} in variable {self.path}")
             ret = None
 
@@ -439,7 +439,7 @@ class BaseVariable(pr.Node):
         try:
             self.set(self.parseDisp(sValue), write)
         except Exception as e:
-            self._log.exception(e)
+            pr.logException(self._log,e)
             self._log.error("Error setting value '{}' to variable '{}' with type {}".format(sValue,self.path,self.typeStr))
 
     @pr.expose

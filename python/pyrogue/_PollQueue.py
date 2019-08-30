@@ -138,7 +138,7 @@ class PollQueue(object):
                         try:
                             entry.block.startTransaction(rogue.interfaces.memory.Read, check=False)
                         except Exception as e:
-                            self._log.exception(e)
+                            pr.logException(self._log,e)
 
                         # Update the entry with new read time
                         entry.readTime = now + entry.interval
@@ -150,7 +150,7 @@ class PollQueue(object):
                         try:
                             entry.block._checkTransaction()
                         except Exception as e:
-                            self._log.exception(e)
+                            pr.logException(self._log,e)
 
 
     def _expiredEntries(self, time=None):

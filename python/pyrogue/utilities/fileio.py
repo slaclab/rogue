@@ -35,7 +35,7 @@ class StreamWriter(pyrogue.DataWriter):
         try:
             self._writer.open(self.DataFile.value())
         except Exception as e:
-            self._log.exception(e)
+            pr.logException(self._log,e)
 
         # Dump config/status to file
         if self._configEn: self.root._streamYaml()
