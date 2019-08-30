@@ -704,14 +704,3 @@ def yamlUpdate(old, new):
 def recreate_OrderedDict(name, values):
     return odict(values['items'])
 
-            if v.isinstance(pr.RemoteVariable):
-                f.write("{}\t".format(v.path))
-                f.write("{}\t".format(type(v)))
-                f.write("{:#x}\t".format(v.address))
-                f.write("{:#x}\t".format(v.offset))
-                f.write("{}\t".format(v.mode))
-                f.write("{}\t".format(v.bitOffset))
-                f.write("{}\t".format(v.bitSize))
-                f.write("{}\t".format(v.enum))
-                f.write("{}\n".format(v.description))
-
