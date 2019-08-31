@@ -63,7 +63,7 @@ class MemoryDevice(pr.Device):
             #print(f'get() self._wordBitSize={self._wordBitSize}')
             data = self._rawTxnChunker(offset=offset, data=None, base=self._base, stride=self._stride, wordBitSize=self._wordBitSize, txnType=rim.Read, numWords=numWords)
             self._waitTransaction(0)
-            self._setError(0)
+            self._clearError()
             return [self._base.fromBytes(data[i:i+self._stride], self._wordBitSize)
                     for i in range(0, len(data), self._stride)]
 
@@ -111,7 +111,7 @@ class MemoryDevice(pr.Device):
 
             # Error check?
             error = self._getError()
-            self._setError(0)
+            self._clearError()
 
             # Convert the read verfiy data back to the native type
             # Can't do this until waitTransaction is done
@@ -128,7 +128,7 @@ class MemoryDevice(pr.Device):
                     msg += f'Expected: \n {self._wrValues} \n'
                     msg += f'Got: \n {checkValues}'
                     print(msg)
-                    raise MemoryError(name=self.name, address=self.address, error=rim.VerifyError, msg=msg, size=self._size)
+                    raise MemoryError(name=self.name, address=self.address, msg=msg, size=self._size)
 
 
             # destroy the txn maps when done with verify

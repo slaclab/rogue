@@ -27,6 +27,7 @@
 #include <rogue/protocols/rssi/Transport.h>
 #include <rogue/protocols/rssi/Application.h>
 #include <rogue/GeneralError.h>
+#include <rogue/Helpers.h>
 #include <memory>
 #include <cmath>
 #include <rogue/GilRelease.h>
@@ -164,9 +165,9 @@ ris::FramePtr rpr::Controller::reqFrame ( uint32_t size ) {
 
    // Make sure there is enough room the buffer for our header
    if ( buffer->getAvailable() < rpr::Header::HeaderSize )
-      throw(rogue::GeneralError::boundary("rss::Controller::reqFrame",
-                                          rpr::Header::HeaderSize,
-                                          buffer->getAvailable()));
+      throw(rogue::GeneralError::create("rssi::Controller::reqFrame",
+               "Buffer size %i is less than min header size %i",
+               rpr::Header::HeaderSize,buffer->getAvailable()));
 
    // Update buffer to include our header space.
    buffer->adjustHeader(rpr::Header::HeaderSize);
@@ -361,7 +362,7 @@ void rpr::Controller::applicationRx ( ris::FramePtr frame ) {
       usleep(10);
       if ( timePassed(startTime,timeout_) ) {
          gettimeofday(&startTime,NULL);
-         log_->timeout("Controller::applicationRx",timeout_);
+         log_->critical("Controller::applicationRx: Timeout waiting for outbound queue after %i.%i seconds! May be caused by outbound backpressure.", timeout_.tv_sec, timeout_.tv_usec);
       }
    }
 
