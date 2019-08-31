@@ -41,11 +41,11 @@ class PollQueue(object):
         self._pq = [] # The heap queue
         self._entries = {} # {Block: Entry} mapping to look up if a block is already in the queue
         self._counter = itertools.count()
-        self._lock = threading.RLock()
-        self._update = threading.Condition()
+        self._clock = threading.Condition(threading.RLock())
         self._run = True
         self._pause = True
         self._root = root
+        self._bcount = 0
         self._pollThread = threading.Thread(target=self._poll)
 
         # Setup logging
@@ -56,7 +56,7 @@ class PollQueue(object):
         self._log.info("PollQueue Started")
 
     def _addEntry(self, block, interval):
-        with self._lock:
+        with self._clock:
             timedelta = datetime.timedelta(seconds=interval)
             # new entries are always polled first immediately 
             # (rounded up to the next second)
@@ -66,11 +66,20 @@ class PollQueue(object):
             self._entries[block] = entry
             heapq.heappush(self._pq, entry)
             # Wake up the thread
-            with self._update:
-                self._update.notify()
+            self._clock.notify()
+
+    def _blockIncrement(self):
+        with self._clock:
+            self._bcount += 1
+            self._clock.notify()
+
+    def _blockDecrement(self):
+        with self._clock:
+            self._bcount -= 1
+            self._clock.notify()
 
     def updatePollInterval(self, var):
-        with self._lock:
+        with self._clock:
             self._log.debug(f'updatePollInterval {var} - {var.pollInterval}')
             # Special case: Variable has no block and just depends on other variables
             # Then do update on each dependency instead
@@ -107,24 +116,28 @@ class PollQueue(object):
 
             if self.empty() or self.paused():
                 # Sleep until woken
-                with self._update:
-                    self._update.wait()
+                with self._clock:
+                    self._clock.wait()
             else:
                 # Sleep until the top entry is ready to be polled
                 # Or a new entry is added by updatePollInterval
                 readTime = self.peek().readTime
                 waitTime = (readTime - now).total_seconds()
-                with self._update:
+                with self._clock:
                     self._log.debug(f'Poll thread sleeping for {waitTime}')
-                    self._update.wait(waitTime)
+                    self._clock.wait(waitTime)
 
             self._log.debug(f'Global reference count: {sys.getrefcount(None)}')
 
-            with self._lock:
+            with self._clock:
                 # Stop the thread if someone set run to False
                 if self._run is False:
                     self._log.info("PollQueue thread exiting")
                     return
+
+                # Wait for block count to be zero
+                while self._bcount > 0:
+                    self._clock.wait()
 
                 # Start update capture
                 with self._root.updateGroup():
@@ -158,7 +171,7 @@ class PollQueue(object):
         Use datetime.now() if no time provided. Each entry is popped from the queue before being 
         yielded by the iterator
         """
-        with self._lock:
+        with self._clock:
             if time == None:
                 time = datetime.datetime.now()
             while self.empty() is False and self.peek().readTime <= time:
@@ -168,32 +181,32 @@ class PollQueue(object):
 
 
     def peek(self):
-        with self._lock:
+        with self._clock:
             if self.empty() is False:
                 return self._pq[0]
             else:
                 return None
 
     def empty(self):
-        with self._lock:
+        with self._clock:
             return len(self._pq)==0
 
     def stop(self):
-        with self._lock, self._update:
+        with self._clock:
             self._run = False
-            self._update.notify()
+            self._clock.notify()
 
     def pause(self, value):
         if value is True:        
-            with self._lock:
+            with self._clock:
                 self._pause = True
         else:
-            with self._lock, self._update:
+            with self._clock:
                 self._pause = False
-                self._update.notify()
+                self._clock.notify()
 
 
     def paused(self):
-        with self._lock:
+        with self._clock:
             return self._pause
             
