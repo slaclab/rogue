@@ -279,6 +279,14 @@ class BaseVariable(pr.Node):
         self._pollInterval = interval
         self._updatePollInterval()
 
+    @pr.expose
+    @property
+    def lock(self):
+        if self._block is not None:
+            return self._block._lock
+        else:
+            return None
+
     @property
     def dependencies(self):
         return self.__dependencies
