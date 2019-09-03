@@ -75,12 +75,12 @@ def VariableWait(varList, testFunction, timeout=0):
     with states.cv:
 
         # Check current state
-        ret = testFunction(list[states.vlist.values()])
+        ret = testFunction(list(states.vlist.values()))
 
         # Run until timeout or all conditions have been met
         while (not ret) and ((timeout == 0) or ((time.time()-start) < timeout)):
             states.cv.wait(0.5)
-            ret = testFunction(list[states.vlist.values()])
+            ret = testFunction(list(states.vlist.values()))
 
         # Cleanup
         for v in varList:
