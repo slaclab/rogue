@@ -84,10 +84,11 @@ class FileReader(object):
     def data(self):
         return self._data
 
+    @property
     def configDict(self):
         return self._config
 
-    def configPath(self, path):
+    def configValue(self, path):
         obj = self._config
 
         if '.' in path:
