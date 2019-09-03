@@ -107,15 +107,14 @@ class FileReader(object):
 
     def _processConfig(self):
         try:
-            d = self._fdata.read(sef._size).decode('utf-8')
-            pyrogue.yamlUpdate(self._config,d)
+            pyrogue.yamlUpdate(self._config, self._fdata.read(sef._size).decode('utf-8'))
         except:
             raise rogue.GeneralError("filio.FileReader","Failed to read config from {}".format(self._filename))
 
 
     def _processData(self, d):
         try:
-            self._data = numpy.fromfile(self._fdata,dtype=numpy.int8,count=self._size)
+            self._data = numpy.fromfile(self._fdata, dtype=numpy.int8, count=self._size)
         except:
             raise rogue.GeneralError("filio.FileReader","Failed to read data from {}".format(self._filename))
 
