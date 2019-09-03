@@ -61,7 +61,8 @@ class FileReader(object):
             if (self._configChan is not None) and (self._configChan == self._channel):
                 self._processConfig()
             else:
-                return self._processData()
+                self._processData()
+                return True
 
 
     @property
