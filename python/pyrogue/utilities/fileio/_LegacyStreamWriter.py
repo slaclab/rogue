@@ -19,6 +19,7 @@
 import rogue.utilities
 import rogue.utilities.fileio
 import pyrogue
+import pyrogue.utilities.fileio
 import rogue
 
 class LegacyStreamWriter(pyrogue.utilities.fileio.StreamWriter):
