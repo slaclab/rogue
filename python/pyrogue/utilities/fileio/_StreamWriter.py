@@ -77,16 +77,3 @@ class StreamWriter(pyrogue.DataWriter):
     def setDropErrors(self,drop):
         self._writer.setDropErrors(drop)
 
-
-#class LegacyStreamWriter(StreamWriter):
-#    def __init__(self, *, configEn=False, **kwargs):
-#        pyrogue.DataWriter.__init__(self, **kwargs)
-#        self._writer   = rogue.utilities.fileio.LegacyStreamWriter()
-#        self._configEn = configEn
-#
-#    def getDataChannel(self):
-#        return self._writer.getDataChannel()
-#
-#    def getYamlChannel(self):
-#        return self._writer.getYamlChannel()
-
