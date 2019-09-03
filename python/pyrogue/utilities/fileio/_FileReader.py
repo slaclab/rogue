@@ -112,7 +112,7 @@ class FileReader(object):
             raise rogue.GeneralError("filio.FileReader","Failed to read config from {}".format(self._filename))
 
 
-    def _processData(self, d):
+    def _processData(self):
         try:
             self._data = numpy.fromfile(self._fdata, dtype=numpy.int8, count=self._size)
         except:
