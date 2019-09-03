@@ -21,7 +21,7 @@ import rogue.utilities.fileio
 import pyrogue
 import rogue
 
-class LegacyStreamWriter(StreamWriter):
+class LegacyStreamWriter(pyrogue.utilities.fileio.StreamWriter):
     def __init__(self, *, configEn=False, **kwargs):
         pyrogue.DataWriter.__init__(self, **kwargs)
         self._writer   = rogue.utilities.fileio.LegacyStreamWriter()
