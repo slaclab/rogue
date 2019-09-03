@@ -20,7 +20,7 @@ import rogue.interfaces.stream
 import test_device
 import time
 import rogue
-#import pyrogue.protocols.epics
+import pyrogue.protocols.epics
 #import pyrogue.protocols.epicsV4
 import logging
 
@@ -54,8 +54,8 @@ class DummyTree(pyrogue.Root):
         # set pyroNs to the address of a standalone nameserver (startPyrorNs.py)
         self.start(timeout=2.0, pollEn=True, zmqPort=9099)
 
-        #self.epics=pyrogue.protocols.epics.EpicsCaServer(base="test", root=self)
-        #self.epics.start()
+        self.epics=pyrogue.protocols.epics.EpicsCaServer(base="test", root=self)
+        self.epics.start()
 
         #self.epics4=pyrogue.protocols.epicsV4.EpicsPvServer(base="test", root=self)
         #self.epics4.start()

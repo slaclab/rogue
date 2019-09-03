@@ -27,23 +27,51 @@ import time
 import queue
 import jsonpickle
 import zipfile
+import traceback
 from contextlib import contextmanager
 
+SystemLogInit = '[]'
+
 class RootLogHandler(logging.Handler):
-    """ Class to listen to log entries and add them to syslog variable"""
+    """ Class to listen to log entries and add them to syslog variables"""
     def __init__(self,*, root):
         logging.Handler.__init__(self)
         self._root = root
 
     def emit(self,record):
         with self._root.updateGroup():
-           try:
-               val = (self.format(record).splitlines()[0] + '\n')
-               self._root.SystemLog += val
-           except Exception as e:
-               print("-----------Error Logging Exception -------------")
-               print(e)
-               print("------------------------------------------------")
+            try:
+                se = { 'created'     : record.created,
+                       'name'        : record.name,
+                       'message'     : str(record.msg),
+                       'exception'   : None,
+                       'traceBack'   : None,
+                       'levelName'   : record.levelname,
+                       'levelNumber' : record.levelno }
+
+                if record.exc_info is not None:
+                    se['exception'] = record.exc_info[0].__name__
+                    se['traceBack'] = []
+
+                    for tb in traceback.format_tb(record.exc_info[2]):
+                        se['traceBack'].append(tb.rstrip())
+
+                # System log is a running json encoded list
+                # Need to remove list terminator ']' and add new entry + list terminator
+                with self._root.SystemLog.lock:
+                    msg =  self._root.SystemLog.value()[:-1]
+
+                    # Only add a comma if list is not empty
+                    if len(msg) > 1:
+                        msg += ',\n'
+
+                    msg += jsonpickle.encode(se) + ']'
+                    self._root.SystemLog.set(msg)
+
+            except Exception as e:
+                print("-----------Error Logging Exception -------------")
+                print(e)
+                print("------------------------------------------------")
 
 class Root(rogue.interfaces.stream.Master,pr.Device):
     """
@@ -97,7 +125,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         pr.Device.__init__(self, name=name, description=description, expand=expand)
 
         # Variables
-        self.add(pr.LocalVariable(name='SystemLog', value='', mode='RO', hidden=True,
+        self.add(pr.LocalVariable(name='SystemLog', value=SystemLogInit, mode='RO', hidden=True,
             description='String containing newline seperated system logic entries'))
 
         self.add(pr.LocalVariable(name='ForceWrite', value=False, mode='RW', hidden=True,
@@ -544,7 +572,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
     def _clearLog(self):
         """Clear the system log"""
-        self.SystemLog.set('')
+        self.SystemLog.set(SystemLogInit)
 
     def _queueUpdates(self,var):
         self._updateQueue.put(var)

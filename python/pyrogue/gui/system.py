@@ -28,6 +28,7 @@ except ImportError:
 
 import pyrogue
 import datetime
+import jsonpickle
 
 class DataLink(QObject):
 
@@ -416,19 +417,50 @@ class SystemWidget(QWidget):
         vb = QVBoxLayout()
         gb.setLayout(vb)
 
-        self.systemLog = QTextEdit()
-        self.systemLog.setReadOnly(True)
+        self.systemLog = QTreeWidget()
         vb.addWidget(self.systemLog)
 
+        self.systemLog.setColumnCount(2)
+        self.systemLog.setHeaderLabels(['Field','Value'])
+
+        self.logCount = 0
+
         root.SystemLog.addListener(self.varListener)
-        self.updateLog.connect(self.systemLog.setText)
-        self.systemLog.setText(root.SystemLog.valueDisp())
-        
+        self.updateSyslog(root.SystemLog.getVariableValue(read=False))
+
         pb = QPushButton('Clear Log')
         pb.clicked.connect(self.resetLog)
         vb.addWidget(pb)
 
         QCoreApplication.processEvents()
+
+    def updateSyslog(self,varVal):
+        lst = jsonpickle.decode(varVal.value)
+
+        if len(lst) > self.logCount:
+            for i in range(self.logCount,len(lst)):
+                widget = QTreeWidgetItem(self.systemLog)
+                widget.setText(0,'message')
+                widget.setText(1,lst[i]['message'])
+                widget.setExpanded(False)
+
+                for k in ['created', 'name', 'levelName', 'levelNumber']:
+                    temp = QTreeWidgetItem(widget)
+                    temp.setText(0,k)
+                    temp.setText(1,str(lst[i][k]))
+
+                if lst[i]['exception'] is not None:
+                    exc = QTreeWidgetItem(widget)
+                    exc.setText(0,'exception')
+                    exc.setText(1,str(lst[i]['exception']))
+                    exc.setExpanded(False)
+
+                    for v in lst[i]['traceBack']:
+                        tb = QTreeWidgetItem(exc)
+                        tb.setText(0,'')
+                        tb.setText(1,v)
+
+        self.logCount = len(lst)
 
     @pyqtSlot()
     def resetLog(self):
@@ -438,7 +470,7 @@ class SystemWidget(QWidget):
         name = path.split('.')[-1]
 
         if name == 'SystemLog':
-            self.updateLog.emit(value.valueDisp)
+            self.updateSyslog(value)
 
     @pyqtSlot()
     def hardReset(self):
