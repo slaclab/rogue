@@ -10,5 +10,4 @@
 from pyrogue.utilities.fileio._StreamWriter       import *
 from pyrogue.utilities.fileio._StreamReader       import *
 from pyrogue.utilities.fileio._FileReader         import *
-from pyrogue.utilities.fileio._LegacyStreamWriter import *
 
