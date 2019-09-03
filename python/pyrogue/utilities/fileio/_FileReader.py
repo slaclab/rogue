@@ -34,7 +34,7 @@ class FileReader(object):
         # Open file and get size
         self._fdata = open(self._filename,'rb')
         self._fdata.seek(0,2)
-        self._size = self._fdata.tell()
+        self._tsize = self._fdata.tell()
         self._fdata.seek(0,0)
 
         # Init records
@@ -50,7 +50,7 @@ class FileReader(object):
         while True:
 
             # Check record size
-            if (self._fdata.tell() == self._size) or ((self._size - self._fdata.tell()) < 4):
+            if (self._fdata.tell() == self._tsize) or ((self._tsize - self._fdata.tell()) < 4):
                 return False
 
             self._size    = int.from_bytes(self._fdata.read(4),'little',signed=False)
