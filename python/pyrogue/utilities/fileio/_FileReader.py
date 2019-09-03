@@ -108,7 +108,7 @@ class FileReader(object):
     def _processConfig(self):
         try:
             d = self._fdata.read(sef._size).decode('utf-8')
-            pyrogue.dictUpdate(self._config,pyrogue.yamlToData(d))
+            pyrogue.yamlUpdate(self._config,d)
         except:
             raise rogue.GeneralError("filio.FileReader","Failed to read config from {}".format(self._filename))
 
