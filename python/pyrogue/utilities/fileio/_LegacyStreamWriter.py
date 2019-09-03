@@ -16,11 +16,9 @@
 # copied, modified, propagated, or distributed except according to the terms 
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
-import rogue.utilities
-import rogue.utilities.fileio
 import pyrogue
 import pyrogue.utilities.fileio
-import rogue
+import rogue.utilities.fileio
 
 class LegacyStreamWriter(pyrogue.utilities.fileio.StreamWriter):
     def __init__(self, *, configEn=False, **kwargs):
