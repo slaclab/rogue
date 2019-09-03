@@ -139,7 +139,11 @@ class LocalBlock(BaseBlock):
 
     def set(self, var, value):
         with self._lock:
-            changed = self._value != value
+
+            if isinstance(value, list) or isinstance(value,dict):
+                changed = True
+            else:
+                changed = self._value != value
             self._value = value
 
             # If a setFunction exists, call it (Used by local variables)
