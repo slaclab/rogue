@@ -33,7 +33,7 @@ from contextlib import contextmanager
 SystemLogInit = '[]'
 
 class RootLogHandler(logging.Handler):
-    """ Class to listen to log entries and add them to syslog variables"""
+    """ Class to listen to log entries and add them to syslog variable"""
     def __init__(self,*, root):
         logging.Handler.__init__(self)
         self._root = root
