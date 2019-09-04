@@ -14,49 +14,6 @@ import pyrogue.interfaces
 import pyrogue.gui
 import sys
 import time
-import jsonpickle
-
-# Class for system log monitoring
-class SystemLogMonitor(object):
-
-    def __init__(self,details):
-        self._details  = details
-        self._logCount = 0
-
-    def processLogString(self, logstr):
-        lst = jsonpickle.decode(logstr)
-
-        if len(lst) > self._logCount:
-            for i in range(self._logCount,len(lst)):
-                vv = lst[i]['message'].replace('\n', "\n                         ")
-                print("{}: {}".format(time.strftime("%Y-%m-%d %H:%M:%S %Z", time.localtime(lst[i]['created'])),vv))
-
-                if self._details:
-                    print("                   Name: {}".format(lst[i]['name']))
-                    print("                  Level: {} ({})".format(lst[i]['levelName'],lst[i]['levelNumber']))
-
-                    if lst[i]['exception'] is not None:
-                        print("              Exception: {}".format(lst[i]['exception']))
-
-                        for v in lst[i]['traceBack']:
-                            vv = v.replace('\n', "\n                         ")
-                            print("                         {}".format(vv))
-                    print("")
-
-        self._logCount = len(lst)
-
-    def varUpdated(self, key, varVal):
-        if 'SystemLog' in key:
-            self.processLogString(varVal.value)
-
-class VariableMonitor(object):
-    def __init__(self,path):
-        self._path = path
-
-    def varUpdated(self, key, varVal):
-        if self._path == key:
-            print("{}: {} = {}".format(time.strftime("%Y-%m-%d %H:%M:%S %Z", time.localtime(time.time())), key, varVal.valueDisp))
-
 
 parser = argparse.ArgumentParser('Pyrogue Client')
 
@@ -108,7 +65,7 @@ if args.cmd == 'gui':
 
 # System log
 elif args.cmd == 'syslog':
-    sl = SystemLogMonitor(args.details)
+    sl = pyrogue.interfaces.SystemLogMonitor(args.details)
     client = pyrogue.interfaces.SimpleClient(args.host,args.port,cb=sl.varUpdated)
 
     print("Listening for system log message:")
@@ -129,12 +86,12 @@ elif args.cmd == 'monitor':
         print("Error: A path must be provided")
         exit()
 
-    vm = VariableMonitor(args.path)
+    vm = pyrogue.interfaces.VariableMonitor(args.path)
     client = pyrogue.interfaces.SimpleClient(args.host,args.port,cb=vm.varUpdated)
 
     ret = client.valueDisp(args.path)
     print("")
-    print("{}: {} = {}".format(time.strftime("%Y-%m-%d %H:%M:%S %Z", time.localtime(time.time())), args.path, ret))
+    vm.display(client.valueDisp(args.path))
 
     try:
         while True:
