@@ -348,6 +348,20 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
             # After with is done
             self._updateQueue.put(False)
 
+    @contextmanager
+    def pollBlock(self):
+
+        # At wtih call
+        self._pollQueue._blockIncrement()
+
+        # Return to block within with call
+        try:
+            yield
+        finally:
+
+            # After with is done
+            self._pollQueue._blockDecrement()
+
     @pr.expose
     def waitOnUpdate(self):
         """
@@ -464,7 +478,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
     def _write(self):
         """Write all blocks"""
         self._log.info("Start root write")
-        with self.updateGroup():
+        with self.pollBlock(), self.updateGroup():
             try:
                 self.writeBlocks(force=self.ForceWrite.value(), recurse=True)
                 self._log.info("Verify root read")
@@ -545,7 +559,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         quanitty of variables.
         """
         d = yamlToData(yml)
-        with self.updateGroup():
+        with self.pollBlock(), self.updateGroup():
 
             for key, value in d.items():
                 if key == self.name:
