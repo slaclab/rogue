@@ -42,7 +42,7 @@ class RootLogHandler(logging.Handler):
                self._root.SystemLog += val
 
 
-                # Log to database
+                # Log to database, placeholder waiting for other PR
                 #if self._sqlLog is not None:
                     #sel._sqlLog.logSyslog(sl)
 
