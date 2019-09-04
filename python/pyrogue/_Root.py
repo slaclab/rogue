@@ -27,6 +27,7 @@ import time
 import queue
 import jsonpickle
 import zipfile
+import traceback
 from contextlib import contextmanager
 
 class RootLogHandler(logging.Handler):
@@ -40,9 +41,17 @@ class RootLogHandler(logging.Handler):
            try:
                val = (self.format(record).splitlines()[0] + '\n')
                self._root.SystemLog += val
+
+               # Log to database, placeholder waiting for other PR
+               #if self._root._sqlLog is not None:
+               #    self._root._sqlLog.logSyslog(sl)
+
            except Exception as e:
                print("-----------Error Logging Exception -------------")
                print(e)
+               print(traceback.print_exc(file=sys.stdout))
+               print("-----------Original Error-----------------------")
+               print(self.format(record))
                print("------------------------------------------------")
 
 class Root(rogue.interfaces.stream.Master,pr.Device):
@@ -93,11 +102,14 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         self._updateQueue = queue.Queue()
         self._updateThread = None
 
+        # SQL URL
+        self._sqlLog = None
+
         # Init 
         pr.Device.__init__(self, name=name, description=description, expand=expand)
 
         # Variables
-        self.add(pr.LocalVariable(name='SystemLog', value='', mode='RO', hidden=True,
+        self.add(pr.LocalVariable(name='SystemLog', value='', mode='RO', hidden=True, groups=['NoStream','NoLog','NoState'],
             description='String containing newline seperated system logic entries'))
 
         self.add(pr.LocalVariable(name='ForceWrite', value=False, mode='RW', hidden=True,
@@ -109,11 +121,11 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         self.add(pr.LocalVariable(name='Time', value=0.0, mode='RO', hidden=True,
                  localGet=lambda: time.time(), pollInterval=1.0, description='Current Time In Seconds Since EPOCH UTC'))
 
-        self.add(pr.LocalVariable(name='LocalTime', value='', mode='RO',
+        self.add(pr.LocalVariable(name='LocalTime', value='', mode='RO', groups=['NoStream','NoLog','NoState'],
                  localGet=lambda: time.strftime("%Y-%m-%d %H:%M:%S %Z", time.localtime(time.time())),
                  pollInterval=1.0, description='Local Time'))
 
-        self.add(pr.LocalVariable(name='PollEn', value=False, mode='RW',
+        self.add(pr.LocalVariable(name='PollEn', value=False, mode='RW',groups=['NoStream','NoLog','NoState'],
                                   localSet=lambda value: self._pollQueue.pause(not value),
                                   localGet=lambda: not self._pollQueue.paused()))
 
@@ -172,12 +184,18 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         self.add(pr.LocalCommand(name='Exit', function=self._exit,
                                  description='Exit the server application'))
 
-    def start(self, timeout=1.0, initRead=False, initWrite=False, pollEn=True, zmqPort=None, serverPort=None):
+    def start(self, 
+              timeout=1.0, 
+              initRead=False, 
+              initWrite=False, 
+              pollEn=True, 
+              zmqPort=None, 
+              serverPort=None, 
+              sqlUrl=None):
         """Setup the tree. Start the polling thread."""
 
         if self._running:
             raise pr.NodeError("Root is already started! Can't restart!")
-
 
         # Call special root level rootAttached
         self._rootAttached()
@@ -233,6 +251,14 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
             self._structure = jsonpickle.encode(self)
             self._zmqServer = pr.interfaces.ZmqServer(root=self,addr="*",port=serverPort)
 
+        # Start sql interface
+        if sqlUrl is not None:
+            self._sqlLog = pr.interfaces.SqlLogger(sqlUrl)
+
+        # Start update thread
+        self._updateThread = threading.Thread(target=self._updateWorker)
+        self._updateThread.start()
+
         # Read current state
         if initRead:
             self._read()
@@ -241,10 +267,6 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         # Read did not override defaults because set values are cached
         if initWrite:
             self._write()
-
-        # Start update thread
-        self._updateThread = threading.Thread(target=self._updateWorker)
-        self._updateThread.start()
 
         # Start poller if enabled
         self._pollQueue._start()
@@ -582,17 +604,29 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
             if count == 0 and len(uvars) > 0:
 
                 self._log.debug(F"Process update group. Length={len(uvars)}. Entry={list(uvars.keys())[0]}")
-                d = odict()
+                strm = odict()
+                zmq  = odict()
 
                 for p,v in uvars.items():
                     try:
                         val = v._doUpdate()
-                        d[p] = val
+
+                        # Add to stream
+                        if not v.inGroup('NoStream'):
+                            strm[p] = val
+
+                        # Add to zmq publish
+                        zmq[p] = val
 
                         # Call listener functions,
                         with self._varListenLock:
                             for func in self._varListeners:
                                 func(p,val)
+
+                        # Log to database
+                        if self._sqlLog is not None and not v.inGroup('NoLog'):
+                            self._sqlLog.logVariable(p, val)
+
                     except Exception as e:
                         pr.logException(self._log,e)
                         
@@ -601,13 +635,13 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
                 # Generate yaml stream
                 try:
-                    self._sendYamlFrame(dataToYaml(d,varEncode=False))
+                    self._sendYamlFrame(dataToYaml(strm,varEncode=False))
                 except Exception as e:
                     pr.logException(self._log,e)
 
                 # Send over zmq link
                 if self._zmqServer is not None:
-                    self._zmqServer._publish(jsonpickle.encode(d))
+                    self._zmqServer._publish(jsonpickle.encode(zmq))
 
                 # Init var list
                 uvars = {}

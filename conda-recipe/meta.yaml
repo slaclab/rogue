@@ -45,6 +45,7 @@ requirements:
      - numpy
      - pyqt
      - pyepics    [linux]
+     - sqlalchemy
 
 about:
    home: https://github.com/slaclab/rogue

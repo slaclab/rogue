@@ -21,3 +21,4 @@ dependencies:
   - boost
   - bzip2
   - zeromq
+  - sqlalchemy

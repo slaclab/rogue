@@ -89,7 +89,7 @@ class Node(object):
         name: Global name of object
         description: Description of the object.
         groups: Group or groups this node belongs to. 
-           Examples: 'Hidden', 'NoState', 'NoConfig', 'NoStream'
+           Examples: 'Hidden', 'NoState', 'NoConfig', 'NoStream', 'NoLog'
         classtype: text string matching name of node sub-class
         path: Full path to the node (ie. node1.node2.node3)
 
