@@ -34,15 +34,33 @@ class DataReceiver(pr.Device,ris.slave):
                                   pollInterval=1,
                                   description='Byte Rx Counter'))
 
+        self.add(pr.LocalVariable(name='Channel',
+                                  value=0, 
+                                  pollInterval=1,
+                                  description='Channel ID from last received frame'))
+
+        self.add(pr.LocalVariable(name='Flags',
+                                  value=0, 
+                                  disp='{:#x}',
+                                  pollInterval=1,
+                                  description='Flags from last received frame'))
+
+        self.add(pr.LocalVariable(name='Error',
+                                  value=0,
+                                  disp='{:#x}',
+                                  pollInterval=1,
+                                  description='Error field from last received frame'))
+
         self.add(pr.LocalVariable(name='Data',       
+                                  hidden=True,
                                   value=numpy.empty(shape=0, dtype=numpy.Int8, order='C'),
                                   description='Data Frame Container'))
 
 
     def _acceptFrame(self, frame):
 
-        # The following block of lines needs to be made more effecient
-        fl =  frame.getPayload()
+        # The following block of lines needs to be made more effecient, JJ is working on this
+        fl = frame.getPayload()
         ba = bytearray(fl)
         frame.read(ba)
 
@@ -55,14 +73,18 @@ class DataReceiver(pr.Device,ris.slave):
         with self.ByteCount.lock:
             self.ByteCount.set(self.ByteCount.value() + fl, write=False)
 
-        # Sub-process numpy restructuring
+        self.Error.set(frame.getError())
+        self.Flags.set(frame.getFlags())
+        self.Channel.set(frame.getChannel())
+
+        # User overridable method for numpy restructuring
         self.process(nb)
 
 
     def process(self,npArray):
         """ 
         The user can use this method to restructure the numpy array.
-        This may include seperating data, header and other payload types.
+        This may include seperating data, header and other payload sub-fields
         """
         self.Data.set(npArray)
 
