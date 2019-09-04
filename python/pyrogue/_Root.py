@@ -40,6 +40,12 @@ class RootLogHandler(logging.Handler):
            try:
                val = (self.format(record).splitlines()[0] + '\n')
                self._root.SystemLog += val
+
+
+                # Log to database
+                #if self._sqlLog is not None:
+                    #sel._sqlLog.logSyslog(sl)
+
            except Exception as e:
                print("-----------Error Logging Exception -------------")
                print(e)
@@ -92,6 +98,9 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         # Variable update worker
         self._updateQueue = queue.Queue()
         self._updateThread = None
+
+        # SQL URL
+        self._sqlLog = None
 
         # Init 
         pr.Device.__init__(self, name=name, description=description, expand=expand)
@@ -172,12 +181,18 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         self.add(pr.LocalCommand(name='Exit', function=self._exit,
                                  description='Exit the server application'))
 
-    def start(self, timeout=1.0, initRead=False, initWrite=False, pollEn=True, zmqPort=None, serverPort=None):
+    def start(self, 
+              timeout=1.0, 
+              initRead=False, 
+              initWrite=False, 
+              pollEn=True, 
+              zmqPort=None, 
+              serverPort=None, 
+              sqlUrl=None):
         """Setup the tree. Start the polling thread."""
 
         if self._running:
             raise pr.NodeError("Root is already started! Can't restart!")
-
 
         # Call special root level rootAttached
         self._rootAttached()
@@ -232,6 +247,10 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         if serverPort is not None:
             self._structure = jsonpickle.encode(self)
             self._zmqServer = pr.interfaces.ZmqServer(root=self,addr="*",port=serverPort)
+
+        # Start sql interface
+        if sqlUrl is not None:
+            self._sqlLog = pr.interfaces.SqlLogger(sqlUrl)
 
         # Read current state
         if initRead:
@@ -593,6 +612,11 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                         with self._varListenLock:
                             for func in self._varListeners:
                                 func(p,val)
+
+                        # Log to database
+                        if self._sqlLog is not None:
+                            self._sqlLog.logVariable(p, val)
+
                     except Exception as e:
                         pr.logException(self._log,e)
                         
