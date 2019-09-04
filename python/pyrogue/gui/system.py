@@ -29,6 +29,7 @@ except ImportError:
 import pyrogue
 import datetime
 import jsonpickle
+import time
 
 class DataLink(QObject):
 
@@ -440,26 +441,35 @@ class SystemWidget(QWidget):
         if len(lst) > self.logCount:
             for i in range(self.logCount,len(lst)):
                 widget = QTreeWidgetItem(self.systemLog)
-                widget.setText(0,'message')
+                widget.setText(0, time.strftime("%Y-%m-%d %H:%M:%S %Z", time.localtime(lst[i]['created'])))
+
                 widget.setText(1,lst[i]['message'])
                 widget.setExpanded(False)
+                widget.setTextAlignment(0,Qt.AlignTop)
 
-                for k in ['created', 'name', 'levelName', 'levelNumber']:
-                    temp = QTreeWidgetItem(widget)
-                    temp.setText(0,k)
-                    temp.setText(1,str(lst[i][k]))
+                temp = QTreeWidgetItem(widget)
+                temp.setText(0,'Name')
+                temp.setText(1,str(lst[i]['name']))
+                temp.setTextAlignment(0,Qt.AlignRight)
+
+                temp = QTreeWidgetItem(widget)
+                temp.setText(0,'Level')
+                temp.setText(1,'{} ({})'.format(lst[i]['levelName'],lst[i]['levelNumber']))
+                temp.setTextAlignment(0,Qt.AlignRight)
 
                 if lst[i]['exception'] is not None:
                     exc = QTreeWidgetItem(widget)
                     exc.setText(0,'exception')
                     exc.setText(1,str(lst[i]['exception']))
                     exc.setExpanded(False)
+                    exc.setTextAlignment(0,Qt.AlignRight)
 
                     for v in lst[i]['traceBack']:
-                        tb = QTreeWidgetItem(exc)
-                        tb.setText(0,'')
-                        tb.setText(1,v)
+                        temp = QTreeWidgetItem(exc)
+                        temp.setText(0,'')
+                        temp.setText(1,v)
 
+        self.systemLog.resizeColumnToContents(0)
         self.logCount = len(lst)
 
     @pyqtSlot()

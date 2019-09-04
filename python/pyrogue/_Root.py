@@ -376,7 +376,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         if '.' in path:
             lst = path.split('.')
 
-            if lst[0] != self.name:
+            if lst[0] != self.name and lst[0] != 'root':
                 return None
 
             for a in lst[1:]:
