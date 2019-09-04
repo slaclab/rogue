@@ -238,6 +238,10 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
             for key,value in self._nodes.items():
                 value._setTimeout(timeout)
 
+        # Start update thread
+        self._updateThread = threading.Thread(target=self._updateWorker)
+        self._updateThread.start()
+
         # Start ZMQ server if enabled
         if zmqPort is not None:
             self._log.warning("zmqPort arg is deprecated. Please use serverPort arg instead")
@@ -260,10 +264,6 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         # Read did not override defaults because set values are cached
         if initWrite:
             self._write()
-
-        # Start update thread
-        self._updateThread = threading.Thread(target=self._updateWorker)
-        self._updateThread.start()
 
         # Start poller if enabled
         self._pollQueue._start()
