@@ -27,6 +27,7 @@ import time
 import queue
 import jsonpickle
 import zipfile
+import traceback
 from contextlib import contextmanager
 
 class RootLogHandler(logging.Handler):
@@ -41,14 +42,16 @@ class RootLogHandler(logging.Handler):
                val = (self.format(record).splitlines()[0] + '\n')
                self._root.SystemLog += val
 
-
-                # Log to database, placeholder waiting for other PR
-                #if self._sqlLog is not None:
-                    #sel._sqlLog.logSyslog(sl)
+               # Log to database, placeholder waiting for other PR
+               #if self._root._sqlLog is not None:
+               #    self._root._sqlLog.logSyslog(sl)
 
            except Exception as e:
                print("-----------Error Logging Exception -------------")
                print(e)
+               print(traceback.print_exc(file=sys.stdout))
+               print("-----------Original Error-----------------------")
+               print(self.format(record))
                print("------------------------------------------------")
 
 class Root(rogue.interfaces.stream.Master,pr.Device):
@@ -238,10 +241,6 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
             for key,value in self._nodes.items():
                 value._setTimeout(timeout)
 
-        # Start update thread
-        self._updateThread = threading.Thread(target=self._updateWorker)
-        self._updateThread.start()
-
         # Start ZMQ server if enabled
         if zmqPort is not None:
             self._log.warning("zmqPort arg is deprecated. Please use serverPort arg instead")
@@ -255,6 +254,10 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         # Start sql interface
         if sqlUrl is not None:
             self._sqlLog = pr.interfaces.SqlLogger(sqlUrl)
+
+        # Start update thread
+        self._updateThread = threading.Thread(target=self._updateWorker)
+        self._updateThread.start()
 
         # Read current state
         if initRead:
@@ -613,7 +616,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                             strm[p] = val
 
                         # Add to zmq publish
-                        zmq[d] = val
+                        zmq[p] = val
 
                         # Call listener functions,
                         with self._varListenLock:
