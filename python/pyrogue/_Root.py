@@ -106,7 +106,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         pr.Device.__init__(self, name=name, description=description, expand=expand)
 
         # Variables
-        self.add(pr.LocalVariable(name='SystemLog', value='', mode='RO', hidden=True,
+        self.add(pr.LocalVariable(name='SystemLog', value='', mode='RO', hidden=True, groups=['NoStream','NoLog','NoState'],
             description='String containing newline seperated system logic entries'))
 
         self.add(pr.LocalVariable(name='ForceWrite', value=False, mode='RW', hidden=True,
@@ -118,11 +118,11 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         self.add(pr.LocalVariable(name='Time', value=0.0, mode='RO', hidden=True,
                  localGet=lambda: time.time(), pollInterval=1.0, description='Current Time In Seconds Since EPOCH UTC'))
 
-        self.add(pr.LocalVariable(name='LocalTime', value='', mode='RO',
+        self.add(pr.LocalVariable(name='LocalTime', value='', mode='RO', groups=['NoStream','NoLog','NoState'],
                  localGet=lambda: time.strftime("%Y-%m-%d %H:%M:%S %Z", time.localtime(time.time())),
                  pollInterval=1.0, description='Local Time'))
 
-        self.add(pr.LocalVariable(name='PollEn', value=False, mode='RW',
+        self.add(pr.LocalVariable(name='PollEn', value=False, mode='RW',groups=['NoStream','NoLog','NoState'],
                                   localSet=lambda value: self._pollQueue.pause(not value),
                                   localGet=lambda: not self._pollQueue.paused()))
 
@@ -601,12 +601,19 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
             if count == 0 and len(uvars) > 0:
 
                 self._log.debug(F"Process update group. Length={len(uvars)}. Entry={list(uvars.keys())[0]}")
-                d = odict()
+                strm = odict()
+                zmq  = odict()
 
                 for p,v in uvars.items():
                     try:
                         val = v._doUpdate()
-                        d[p] = val
+
+                        # Add to stream
+                        if not v.inGroup('NoStream'):
+                            strm[p] = val
+
+                        # Add to zmq publish
+                        zmq[d] = val
 
                         # Call listener functions,
                         with self._varListenLock:
@@ -614,7 +621,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                                 func(p,val)
 
                         # Log to database
-                        if self._sqlLog is not None:
+                        if self._sqlLog is not None and not v.inGroup('NoLog'):
                             self._sqlLog.logVariable(p, val)
 
                     except Exception as e:
@@ -625,13 +632,13 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
                 # Generate yaml stream
                 try:
-                    self._sendYamlFrame(dataToYaml(d,varEncode=False))
+                    self._sendYamlFrame(dataToYaml(strm,varEncode=False))
                 except Exception as e:
                     pr.logException(self._log,e)
 
                 # Send over zmq link
                 if self._zmqServer is not None:
-                    self._zmqServer._publish(jsonpickle.encode(d))
+                    self._zmqServer._publish(jsonpickle.encode(zmq))
 
                 # Init var list
                 uvars = {}
