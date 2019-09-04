@@ -18,7 +18,7 @@ import rogue.interfaces.stream as ris
 import pyrogue as pr
 import numpy
 
-class DataReceiver(pr.Device,ris.slave):
+class DataReceiver(pr.Device,ris.Slave):
     """Data Receiver Devicer."""
 
     def __init__(self, **kwargs):
@@ -51,6 +51,10 @@ class DataReceiver(pr.Device,ris.slave):
                                   pollInterval=1,
                                   description='Error field from last received frame'))
 
+        self.add(pr.LocalVariable(name='Updated',
+                                  value=False,
+                                  description='Data has been updated flag'))
+
         self.add(pr.LocalVariable(name='Data',       
                                   hidden=True,
                                   value=numpy.empty(shape=0, dtype=numpy.Int8, order='C'),
@@ -79,6 +83,9 @@ class DataReceiver(pr.Device,ris.slave):
 
         # User overridable method for numpy restructuring
         self.process(nb)
+
+        # Set updated flag
+        self.Updated.set(True)
 
 
     def process(self,npArray):
