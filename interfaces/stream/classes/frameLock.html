@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Frame Lock &mdash; Rogue v3.5.0-3-ga1c824de documentation</title>
+  <title>Frame Lock &mdash; Rogue v3.7.0-267-g2eba6989 documentation</title>
   
 
   
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                v3.5.0
+                v3.7.0
               </div>
             
           
@@ -195,35 +195,35 @@
 <p>FrameLock objects in C++ are referenced by the following shared pointer typedef:</p>
 <dl class="type">
 <dt id="_CPPv4N5rogue10interfaces6stream12FrameLockPtrE">
-<span id="_CPPv3N5rogue10interfaces6stream12FrameLockPtrE"></span><span id="_CPPv2N5rogue10interfaces6stream12FrameLockPtrE"></span><span id="rogue::interfaces::stream::FrameLockPtr"></span><span class="target" id="namespacerogue_1_1interfaces_1_1stream_1ad282a6c7aa64c4607580c16125f88308"></span><em class="property">typedef </em>std::shared_ptr&lt;rogue::interfaces::stream::<a class="reference internal" href="#_CPPv4N5rogue10interfaces6stream9FrameLockE" title="rogue::interfaces::stream::FrameLock">FrameLock</a>&gt; <code class="descclassname">rogue::interfaces::stream<code class="descclassname">::</code></code><code class="descname">FrameLockPtr</code><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream12FrameLockPtrE" title="Permalink to this definition">¶</a><br /></dt>
+<span id="_CPPv3N5rogue10interfaces6stream12FrameLockPtrE"></span><span id="_CPPv2N5rogue10interfaces6stream12FrameLockPtrE"></span><span id="rogue::interfaces::stream::FrameLockPtr"></span><span class="target" id="namespacerogue_1_1interfaces_1_1stream_1ad282a6c7aa64c4607580c16125f88308"></span><em class="property">typedef </em>std::shared_ptr&lt;rogue::interfaces::stream::<a class="reference internal" href="#_CPPv4N5rogue10interfaces6stream9FrameLockE" title="rogue::interfaces::stream::FrameLock">FrameLock</a>&gt; <code class="sig-prename descclassname">rogue::interfaces::stream<code class="sig-prename descclassname">::</code></code><code class="sig-name descname">FrameLockPtr</code><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream12FrameLockPtrE" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Alias for using shared pointer as FrameLockPtr. </p>
 </dd></dl>
 
 <p>The class description is shown below:</p>
 <dl class="class">
 <dt id="_CPPv4N5rogue10interfaces6stream9FrameLockE">
-<span id="_CPPv3N5rogue10interfaces6stream9FrameLockE"></span><span id="_CPPv2N5rogue10interfaces6stream9FrameLockE"></span><span id="rogue::interfaces::stream::FrameLock"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1FrameLock"></span><em class="property">class </em><code class="descname">FrameLock</code><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream9FrameLockE" title="Permalink to this definition">¶</a><br /></dt>
+<span id="_CPPv3N5rogue10interfaces6stream9FrameLockE"></span><span id="_CPPv2N5rogue10interfaces6stream9FrameLockE"></span><span id="rogue::interfaces::stream::FrameLock"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1FrameLock"></span><em class="property">class </em><code class="sig-name descname">FrameLock</code><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream9FrameLockE" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p><a class="reference internal" href="frame.html#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a> Lock. </p>
 <p>The <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1FrameLock"><span class="std std-ref">FrameLock</span></a> is a container for holding a lock on <a class="reference internal" href="frame.html#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a> data while accessing that data. This lock allows multiple stream <a class="reference internal" href="slave.html#classrogue_1_1interfaces_1_1stream_1_1Slave"><span class="std std-ref">Slave</span></a> objects to read and update <a class="reference internal" href="frame.html#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a> data while ensuring only one thread is updating at a time. The lock is relased when the <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1FrameLock"><span class="std std-ref">FrameLock</span></a> object is destroyed. The <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1FrameLock"><span class="std std-ref">FrameLock</span></a> oject is never created directly, instead it is returned by the <a class="reference internal" href="frame.html#classrogue_1_1interfaces_1_1stream_1_1Frame_1a77f4303b1f63cd0e555db044ec430b3c"><span class="std std-ref">Frame::lock()</span></a> method. </p>
 <div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric">Public Functions</p>
 <dl class="function">
 <dt id="_CPPv4N5rogue10interfaces6stream9FrameLock4lockEv">
-<span id="_CPPv3N5rogue10interfaces6stream9FrameLock4lockEv"></span><span id="_CPPv2N5rogue10interfaces6stream9FrameLock4lockEv"></span><span id="rogue::interfaces::stream::FrameLock::lock"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1FrameLock_1aec723c30883fbc0e4cb64895c741c531"></span>void <code class="descname">lock</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream9FrameLock4lockEv" title="Permalink to this definition">¶</a><br /></dt>
+<span id="_CPPv3N5rogue10interfaces6stream9FrameLock4lockEv"></span><span id="_CPPv2N5rogue10interfaces6stream9FrameLock4lockEv"></span><span id="rogue::interfaces::stream::FrameLock::lock"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1FrameLock_1aec723c30883fbc0e4cb64895c741c531"></span>void <code class="sig-name descname">lock</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream9FrameLock4lockEv" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Lock associated frame if not locked. </p>
 <p>Exposed as <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1FrameLock_1aec723c30883fbc0e4cb64895c741c531"><span class="std std-ref">lock()</span></a> to Python </p>
 </dd></dl>
 
 <dl class="function">
 <dt id="_CPPv4N5rogue10interfaces6stream9FrameLock6unlockEv">
-<span id="_CPPv3N5rogue10interfaces6stream9FrameLock6unlockEv"></span><span id="_CPPv2N5rogue10interfaces6stream9FrameLock6unlockEv"></span><span id="rogue::interfaces::stream::FrameLock::unlock"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1FrameLock_1a8208a7df89daa87a82c8f527e7ce6a4f"></span>void <code class="descname">unlock</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream9FrameLock6unlockEv" title="Permalink to this definition">¶</a><br /></dt>
+<span id="_CPPv3N5rogue10interfaces6stream9FrameLock6unlockEv"></span><span id="_CPPv2N5rogue10interfaces6stream9FrameLock6unlockEv"></span><span id="rogue::interfaces::stream::FrameLock::unlock"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1FrameLock_1a8208a7df89daa87a82c8f527e7ce6a4f"></span>void <code class="sig-name descname">unlock</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream9FrameLock6unlockEv" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>UnLock associated frame if locked. </p>
 <p>Exposed as <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1FrameLock_1a8208a7df89daa87a82c8f527e7ce6a4f"><span class="std std-ref">unlock()</span></a> to Python </p>
 </dd></dl>
 
 <dl class="function">
 <dt id="_CPPv4N5rogue10interfaces6stream9FrameLock5enterEv">
-<span id="_CPPv3N5rogue10interfaces6stream9FrameLock5enterEv"></span><span id="_CPPv2N5rogue10interfaces6stream9FrameLock5enterEv"></span><span id="rogue::interfaces::stream::FrameLock::enter"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1FrameLock_1a7539162561bd3af6592482816d9511b2"></span>void <code class="descname">enter</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream9FrameLock5enterEv" title="Permalink to this definition">¶</a><br /></dt>
+<span id="_CPPv3N5rogue10interfaces6stream9FrameLock5enterEv"></span><span id="_CPPv2N5rogue10interfaces6stream9FrameLock5enterEv"></span><span id="rogue::interfaces::stream::FrameLock::enter"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1FrameLock_1a7539162561bd3af6592482816d9511b2"></span>void <code class="sig-name descname">enter</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream9FrameLock5enterEv" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Enter method for python, does nothing. </p>
 <p>This exists only to support the with call in python.</p>
 <p>Exposed as <strong>enter</strong>() to Python </p>
@@ -231,7 +231,7 @@
 
 <dl class="function">
 <dt id="_CPPv4N5rogue10interfaces6stream9FrameLock4exitEPvPvPv">
-<span id="_CPPv3N5rogue10interfaces6stream9FrameLock4exitEPvPvPv"></span><span id="_CPPv2N5rogue10interfaces6stream9FrameLock4exitEPvPvPv"></span><span id="rogue::interfaces::stream::FrameLock::exit__voidP.voidP.voidP"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1FrameLock_1a69bce60271c20a9e0961bb55d9a589df"></span>void <code class="descname">exit</code><span class="sig-paren">(</span>void *, void *, void *<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream9FrameLock4exitEPvPvPv" title="Permalink to this definition">¶</a><br /></dt>
+<span id="_CPPv3N5rogue10interfaces6stream9FrameLock4exitEPvPvPv"></span><span id="_CPPv2N5rogue10interfaces6stream9FrameLock4exitEPvPvPv"></span><span id="rogue::interfaces::stream::FrameLock::exit__voidP.voidP.voidP"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1FrameLock_1a69bce60271c20a9e0961bb55d9a589df"></span>void <code class="sig-name descname">exit</code><span class="sig-paren">(</span>void *, void *, void *<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream9FrameLock4exitEPvPvPv" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Exit method for python, does nothing. </p>
 <p>This exists only to support the with call in python.</p>
 <p>Exposed as <strong>exit</strong>() to Python </p>

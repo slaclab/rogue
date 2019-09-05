@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Memory Hub Example &mdash; Rogue v3.5.0-3-ga1c824de documentation</title>
+  <title>Memory Hub Example &mdash; Rogue v3.7.0-267-g2eba6989 documentation</title>
   
 
   
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                v3.5.0
+                v3.7.0
               </div>
             
           
@@ -235,8 +235,8 @@ transctions in Python.</p>
                <span class="bp">self</span><span class="o">.</span><span class="n">_waitTransaction</span><span class="p">(</span><span class="nb">id</span><span class="p">)</span>
 
                <span class="c1"># Check transaction result, forward error to incoming transaction</span>
-               <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getError</span><span class="p">()</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
-                   <span class="n">transaction</span><span class="o">.</span><span class="n">done</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_getError</span><span class="p">())</span>
+               <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getError</span><span class="p">()</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+                   <span class="n">transaction</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_getError</span><span class="p">())</span>
                    <span class="k">return</span> <span class="bp">False</span>
 
                <span class="c1"># Handle write or post</span>
@@ -254,12 +254,12 @@ transctions in Python.</p>
                   <span class="bp">self</span><span class="o">.</span><span class="n">_waitTransaction</span><span class="p">(</span><span class="nb">id</span><span class="p">)</span>
 
                   <span class="c1"># Check transaction result, forward error to incoming transaction</span>
-                  <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getError</span><span class="p">()</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
-                      <span class="n">transaction</span><span class="o">.</span><span class="n">done</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_getError</span><span class="p">())</span>
+                  <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getError</span><span class="p">()</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+                      <span class="n">transaction</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_getError</span><span class="p">())</span>
                       <span class="k">return</span> <span class="bp">False</span>
 
                   <span class="c1"># Success</span>
-                  <span class="n">transaction</span><span class="o">.</span><span class="n">done</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+                  <span class="n">transaction</span><span class="o">.</span><span class="n">done</span><span class="p">()</span>
 
                <span class="c1"># Handle read or verify read</span>
                <span class="k">else</span><span class="p">:</span>
@@ -274,13 +274,13 @@ transctions in Python.</p>
                   <span class="bp">self</span><span class="o">.</span><span class="n">_waitTransaction</span><span class="p">(</span><span class="nb">id</span><span class="p">)</span>
 
                   <span class="c1"># Check transaction result, forward error to incoming transaction</span>
-                  <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getError</span><span class="p">()</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
-                      <span class="n">transaction</span><span class="o">-&gt;</span><span class="n">done</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_getError</span><span class="p">())</span>
+                  <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getError</span><span class="p">()</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+                      <span class="n">transaction</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_getError</span><span class="p">())</span>
                       <span class="k">return</span> <span class="bp">False</span>
 
                   <span class="c1"># Copy data into original transaction and complete</span>
                   <span class="n">transaction</span><span class="o">.</span><span class="n">setData</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
-                  <span class="n">transaction</span><span class="o">.</span><span class="n">done</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+                  <span class="n">transaction</span><span class="o">.</span><span class="n">done</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -397,8 +397,8 @@ transctions in C++.</p>
          <span class="n">this</span><span class="o">-&gt;</span><span class="n">waitTransaction</span><span class="p">(</span><span class="n">id</span><span class="p">);</span>
 
          <span class="c1">// Check transaction result, forward error to incoming transaction</span>
-         <span class="k">if</span> <span class="p">(</span> <span class="n">this</span><span class="o">-&gt;</span><span class="n">getError</span><span class="p">()</span> <span class="o">!=</span> <span class="mi">0</span> <span class="p">)</span> <span class="p">{</span>
-            <span class="n">transaction</span><span class="o">-&gt;</span><span class="n">done</span><span class="p">(</span><span class="n">this</span><span class="o">-&gt;</span><span class="n">getError</span><span class="p">());</span>
+         <span class="k">if</span> <span class="p">(</span> <span class="n">this</span><span class="o">-&gt;</span><span class="n">getError</span><span class="p">()</span> <span class="o">!=</span> <span class="s">&quot;&quot;</span> <span class="p">)</span> <span class="p">{</span>
+            <span class="n">transaction</span><span class="o">-&gt;</span><span class="n">error</span><span class="p">(</span><span class="n">this</span><span class="o">-&gt;</span><span class="n">getError</span><span class="p">());</span>
             <span class="k">return</span> <span class="nb">false</span>
          <span class="p">}</span>
 
@@ -415,11 +415,11 @@ transctions in C++.</p>
             <span class="n">this</span><span class="o">-&gt;</span><span class="n">waitTransaction</span><span class="p">(</span><span class="n">id</span><span class="p">);</span>
 
             <span class="c1">// Check transaction result, forward error to incoming transaction</span>
-            <span class="k">if</span> <span class="p">(</span> <span class="n">this</span><span class="o">-&gt;</span><span class="n">getError</span><span class="p">()</span> <span class="o">!=</span> <span class="mi">0</span> <span class="p">)</span> <span class="p">{</span>
-               <span class="n">transaction</span><span class="o">-&gt;</span><span class="n">done</span><span class="p">(</span><span class="n">this</span><span class="o">-&gt;</span><span class="n">getError</span><span class="p">());</span>
+            <span class="k">if</span> <span class="p">(</span> <span class="n">this</span><span class="o">-&gt;</span><span class="n">getError</span><span class="p">()</span> <span class="o">!=</span> <span class="s">&quot;&quot;</span> <span class="p">)</span> <span class="p">{</span>
+               <span class="n">transaction</span><span class="o">-&gt;</span><span class="n">error</span><span class="p">(</span><span class="n">this</span><span class="o">-&gt;</span><span class="n">getError</span><span class="p">());</span>
                <span class="k">return</span> <span class="nb">false</span>
             <span class="p">}</span>
-            <span class="k">else</span> <span class="n">transaction</span><span class="o">-&gt;</span><span class="n">done</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+            <span class="k">else</span> <span class="n">transaction</span><span class="o">-&gt;</span><span class="n">done</span><span class="p">();</span>
          <span class="p">}</span>
 
          <span class="c1">// Handle read or verify read</span>
@@ -434,11 +434,11 @@ transctions in C++.</p>
             <span class="n">this</span><span class="o">-&gt;</span><span class="n">waitTransaction</span><span class="p">(</span><span class="n">id</span><span class="p">);</span>
 
             <span class="c1">// Check transaction result, forward error to incoming transaction</span>
-            <span class="k">if</span> <span class="p">(</span> <span class="n">this</span><span class="o">-&gt;</span><span class="n">getError</span><span class="p">()</span> <span class="o">!=</span> <span class="mi">0</span> <span class="p">)</span> <span class="p">{</span>
-               <span class="n">transaction</span><span class="o">-&gt;</span><span class="n">done</span><span class="p">(</span><span class="n">this</span><span class="o">-&gt;</span><span class="n">getError</span><span class="p">());</span>
+            <span class="k">if</span> <span class="p">(</span> <span class="n">this</span><span class="o">-&gt;</span><span class="n">getError</span><span class="p">()</span> <span class="o">!=</span> <span class="s">&quot;&quot;</span> <span class="p">)</span> <span class="p">{</span>
+               <span class="n">transaction</span><span class="o">-&gt;</span><span class="n">error</span><span class="p">(</span><span class="n">this</span><span class="o">-&gt;</span><span class="n">getError</span><span class="p">());</span>
                <span class="k">return</span> <span class="nb">false</span>
             <span class="p">}</span>
-            <span class="k">else</span> <span class="n">transaction</span><span class="o">-&gt;</span><span class="n">done</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+            <span class="k">else</span> <span class="n">transaction</span><span class="o">-&gt;</span><span class="n">done</span><span class="p">();</span>
          <span class="p">}</span>
 
 <span class="p">};</span>

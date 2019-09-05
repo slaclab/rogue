@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Installing &amp; Compiling Rogue &mdash; Rogue v3.7.0-267-g2eba6989 documentation</title>
+  <title>Wrapping Rogue In C++ &mdash; Rogue v3.7.0-267-g2eba6989 documentation</title>
   
 
   
@@ -34,9 +34,7 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
-    <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Installing Rogue With Anaconda" href="anaconda.html" />
-    <link rel="prev" title="Testing The Custom Module" href="../custom_module/testing.html" /> 
+    <link rel="search" title="Search" href="../search.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -85,21 +83,12 @@
             
             
               <p class="caption"><span class="caption-text">Contents:</span></p>
-<ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="../interfaces/index.html">Interfaces</a></li>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="index.html">Interfaces</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../hardware/index.html">Hardware</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../logging/index.html">Logging In Rogue</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../custom_module/index.html">Creating Custom Modules</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Installing &amp; Compiling Rogue</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="anaconda.html">Installing Rogue With Anaconda</a></li>
-<li class="toctree-l2"><a class="reference internal" href="anaconda_build.html">Building Rogue Inside Anaconda</a></li>
-<li class="toctree-l2"><a class="reference internal" href="docker.html">Installing Rogue Docker</a></li>
-<li class="toctree-l2"><a class="reference internal" href="build.html">Building Rogue From Source</a></li>
-<li class="toctree-l2"><a class="reference internal" href="application.html">Compiling A Rogue Application</a></li>
-<li class="toctree-l2"><a class="reference internal" href="firewall.html">Rogue and Anaconda behind a firewall</a></li>
-<li class="toctree-l2"><a class="reference internal" href="windows.html">Setting Up Ubuntu On Windows</a></li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="../installing/index.html">Installing &amp; Compiling Rogue</a></li>
 </ul>
 
             
@@ -145,13 +134,13 @@
     
       <li><a href="../index.html">Docs</a> &raquo;</li>
         
-      <li>Installing &amp; Compiling Rogue</li>
+      <li>Wrapping Rogue In C++</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../_sources/installing/index.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../_sources/interfaces/cpp_api.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -164,21 +153,27 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="installing-compiling-rogue">
-<span id="installing"></span><h1>Installing &amp; Compiling Rogue<a class="headerlink" href="#installing-compiling-rogue" title="Permalink to this headline">¶</a></h1>
-<p>The recommended method for installing rogue is <a class="reference internal" href="anaconda.html#installing-anaconda"><span class="std std-ref">Installing Rogue With Anaconda</span></a>.</p>
-<p>This section describes how to obtain and install Rogue.</p>
-<div class="toctree-wrapper compound">
-<p class="caption"><span class="caption-text">Install Options:</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="anaconda.html">Installing Rogue With Anaconda</a></li>
-<li class="toctree-l1"><a class="reference internal" href="anaconda_build.html">Building Rogue Inside Anaconda</a></li>
-<li class="toctree-l1"><a class="reference internal" href="docker.html">Installing Rogue Docker</a></li>
-<li class="toctree-l1"><a class="reference internal" href="build.html">Building Rogue From Source</a></li>
-<li class="toctree-l1"><a class="reference internal" href="application.html">Compiling A Rogue Application</a></li>
-<li class="toctree-l1"><a class="reference internal" href="firewall.html">Rogue and Anaconda behind a firewall</a></li>
-<li class="toctree-l1"><a class="reference internal" href="windows.html">Setting Up Ubuntu On Windows</a></li>
-</ul>
+  <div class="section" id="wrapping-rogue-in-c">
+<span id="interfaces-cpp-api"></span><h1>Wrapping Rogue In C++<a class="headerlink" href="#wrapping-rogue-in-c" title="Permalink to this headline">¶</a></h1>
+<p>Rogue can be used within a C++ framework in the following way:</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;boost/python.hpp&gt;</span><span class="cp"></span>
+
+<span class="c1">// Include the module containing our root class</span>
+<span class="n">bp</span><span class="o">::</span><span class="n">object</span> <span class="n">mod</span> <span class="o">=</span> <span class="n">bp</span><span class="o">::</span><span class="n">import</span><span class="p">(</span><span class="s">&quot;MyModule&quot;</span><span class="p">);</span>
+
+<span class="c1">// Create an instance of the root object</span>
+<span class="nl">bp</span><span class="p">:</span><span class="n">obect</span> <span class="n">root</span> <span class="o">=</span> <span class="n">mod</span><span class="p">.</span><span class="n">attr</span><span class="p">(</span><span class="s">&quot;MyRoot&quot;</span><span class="p">)();</span>
+
+<span class="c1">// Execute a command</span>
+<span class="n">root</span><span class="p">.</span><span class="n">attr</span><span class="p">(</span><span class="s">&quot;exec&quot;</span><span class="p">)(</span><span class="s">&quot;myRoot.HardReset&quot;</span><span class="p">);</span>
+<span class="n">root</span><span class="p">.</span><span class="n">attr</span><span class="p">(</span><span class="s">&quot;exec&quot;</span><span class="p">)(</span><span class="s">&quot;myRoot.LoadConfig&quot;</span><span class="p">,</span><span class="s">&quot;config.yml&quot;</span><span class="p">);</span>
+
+<span class="c1">// Set a variable</span>
+<span class="n">root</span><span class="p">.</span><span class="n">attr</span><span class="p">(</span><span class="s">&quot;setDisp&quot;</span><span class="p">)(</span><span class="s">&quot;myRoot.AxiVersion.ScratchPad&quot;</span><span class="p">,</span><span class="s">&quot;0xA&quot;</span><span class="p">);</span>
+
+<span class="c1">// Get a variable</span>
+<span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">ret</span> <span class="o">=</span> <span class="n">bp</span><span class="o">::</span><span class="n">extract</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span><span class="p">(</span><span class="n">root</span><span class="p">.</span><span class="n">attr</span><span class="p">(</span><span class="s">&quot;getDisp&quot;</span><span class="p">)(</span><span class="s">&quot;myRoot.AxiVersion.ScratchPad&quot;</span><span class="p">));</span>
+</pre></div>
 </div>
 </div>
 
@@ -187,15 +182,6 @@
            
           </div>
           <footer>
-  
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="anaconda.html" class="btn btn-neutral float-right" title="Installing Rogue With Anaconda" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="../custom_module/testing.html" class="btn btn-neutral float-left" title="Testing The Custom Module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
-    </div>
   
 
   <hr/>

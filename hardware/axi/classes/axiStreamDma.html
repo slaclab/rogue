@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>AxiStreamDma &mdash; Rogue v3.5.0-3-ga1c824de documentation</title>
+  <title>AxiStreamDma &mdash; Rogue v3.7.0-267-g2eba6989 documentation</title>
   
 
   
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                v3.5.0
+                v3.7.0
               </div>
             
           
@@ -181,21 +181,21 @@
 <p>AxiStreamDma objects in C++ are referenced by the following shared pointer typedef:</p>
 <dl class="type">
 <dt id="_CPPv4N5rogue8hardware3axi15AxiStreamDmaPtrE">
-<span id="_CPPv3N5rogue8hardware3axi15AxiStreamDmaPtrE"></span><span id="_CPPv2N5rogue8hardware3axi15AxiStreamDmaPtrE"></span><span id="rogue::hardware::axi::AxiStreamDmaPtr"></span><span class="target" id="namespacerogue_1_1hardware_1_1axi_1a160427ca07aad6dbd387ce985b7678a6"></span><em class="property">typedef </em>std::shared_ptr&lt;rogue::hardware::axi::<a class="reference internal" href="#_CPPv4N5rogue8hardware3axi12AxiStreamDmaE" title="rogue::hardware::axi::AxiStreamDma">AxiStreamDma</a>&gt; <code class="descclassname">rogue::hardware::axi<code class="descclassname">::</code></code><code class="descname">AxiStreamDmaPtr</code><a class="headerlink" href="#_CPPv4N5rogue8hardware3axi15AxiStreamDmaPtrE" title="Permalink to this definition">¶</a><br /></dt>
+<span id="_CPPv3N5rogue8hardware3axi15AxiStreamDmaPtrE"></span><span id="_CPPv2N5rogue8hardware3axi15AxiStreamDmaPtrE"></span><span id="rogue::hardware::axi::AxiStreamDmaPtr"></span><span class="target" id="namespacerogue_1_1hardware_1_1axi_1a160427ca07aad6dbd387ce985b7678a6"></span><em class="property">typedef </em>std::shared_ptr&lt;rogue::hardware::axi::<a class="reference internal" href="#_CPPv4N5rogue8hardware3axi12AxiStreamDmaE" title="rogue::hardware::axi::AxiStreamDma">AxiStreamDma</a>&gt; <code class="sig-prename descclassname">rogue::hardware::axi<code class="sig-prename descclassname">::</code></code><code class="sig-name descname">AxiStreamDmaPtr</code><a class="headerlink" href="#_CPPv4N5rogue8hardware3axi15AxiStreamDmaPtrE" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Alias for using shared pointer as AxiStreamDmaPtr. </p>
 </dd></dl>
 
 <p>The class description is shown below:</p>
 <dl class="class">
 <dt id="_CPPv4N5rogue8hardware3axi12AxiStreamDmaE">
-<span id="_CPPv3N5rogue8hardware3axi12AxiStreamDmaE"></span><span id="_CPPv2N5rogue8hardware3axi12AxiStreamDmaE"></span><span id="rogue::hardware::axi::AxiStreamDma"></span><span class="target" id="classrogue_1_1hardware_1_1axi_1_1AxiStreamDma"></span><em class="property">class </em><code class="descname">AxiStreamDma</code> : <em class="property">public</em> rogue::interfaces::stream::<a class="reference internal" href="../../../interfaces/stream/classes/master.html#_CPPv4N5rogue10interfaces6stream6MasterE" title="rogue::interfaces::stream::Master">Master</a>, <em class="property">public</em> rogue::interfaces::stream::<a class="reference internal" href="../../../interfaces/stream/classes/slave.html#_CPPv4N5rogue10interfaces6stream5SlaveE" title="rogue::interfaces::stream::Slave">Slave</a><a class="headerlink" href="#_CPPv4N5rogue8hardware3axi12AxiStreamDmaE" title="Permalink to this definition">¶</a><br /></dt>
+<span id="_CPPv3N5rogue8hardware3axi12AxiStreamDmaE"></span><span id="_CPPv2N5rogue8hardware3axi12AxiStreamDmaE"></span><span id="rogue::hardware::axi::AxiStreamDma"></span><span class="target" id="classrogue_1_1hardware_1_1axi_1_1AxiStreamDma"></span><em class="property">class </em><code class="sig-name descname">AxiStreamDma</code> : <em class="property">public</em> rogue::interfaces::stream::<a class="reference internal" href="../../../interfaces/stream/classes/master.html#_CPPv4N5rogue10interfaces6stream6MasterE" title="rogue::interfaces::stream::Master">Master</a>, <em class="property">public</em> rogue::interfaces::stream::<a class="reference internal" href="../../../interfaces/stream/classes/slave.html#_CPPv4N5rogue10interfaces6stream5SlaveE" title="rogue::interfaces::stream::Slave">Slave</a><a class="headerlink" href="#_CPPv4N5rogue8hardware3axi12AxiStreamDmaE" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>AXI Stream DMA Class. </p>
 <p>This class provides a bridge between the Rogue stream interface and one of the AES Stream Drivers device drivers. This bridge allows Rogue Frames to be sent and received to PCIE Express boards (using the data_dev driver) or Zynq ZXI4 FPGA fabrics (using the rce_stream drvier). This interface will allocate Frame and Buffer objects using memory mapped DMA buffers or from a local memory pool when zero copy mode is disabled or a Frame with is requested with the zero copy flag set to false. </p>
 <div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric">Public Functions</p>
 <dl class="function">
 <dt id="_CPPv4N5rogue8hardware3axi12AxiStreamDma10setTimeoutE8uint32_t">
-<span id="_CPPv3N5rogue8hardware3axi12AxiStreamDma10setTimeoutE8uint32_t"></span><span id="_CPPv2N5rogue8hardware3axi12AxiStreamDma10setTimeoutE8uint32_t"></span><span id="rogue::hardware::axi::AxiStreamDma::setTimeout__uint32_t"></span><span class="target" id="classrogue_1_1hardware_1_1axi_1_1AxiStreamDma_1a93a4844ca269864d2ef7fd618d9f8d7c"></span>void <code class="descname">setTimeout</code><span class="sig-paren">(</span>uint32_t <em>timeout</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue8hardware3axi12AxiStreamDma10setTimeoutE8uint32_t" title="Permalink to this definition">¶</a><br /></dt>
+<span id="_CPPv3N5rogue8hardware3axi12AxiStreamDma10setTimeoutE8uint32_t"></span><span id="_CPPv2N5rogue8hardware3axi12AxiStreamDma10setTimeoutE8uint32_t"></span><span id="rogue::hardware::axi::AxiStreamDma::setTimeout__uint32_t"></span><span class="target" id="classrogue_1_1hardware_1_1axi_1_1AxiStreamDma_1a93a4844ca269864d2ef7fd618d9f8d7c"></span>void <code class="sig-name descname">setTimeout</code><span class="sig-paren">(</span>uint32_t <em>timeout</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue8hardware3axi12AxiStreamDma10setTimeoutE8uint32_t" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Set timeout for frame transmits in microseconds. </p>
 <p>This setting defines how long to wait for the lower level driver to be ready to send data. The current implementation will geenrate a warning message after each timeout but will continue to wait for the driver.</p>
 <p>Exposed to python as SetTimeout() <dl class="simple">
@@ -209,7 +209,7 @@
 
 <dl class="function">
 <dt id="_CPPv4N5rogue8hardware3axi12AxiStreamDma14setDriverDebugE8uint32_t">
-<span id="_CPPv3N5rogue8hardware3axi12AxiStreamDma14setDriverDebugE8uint32_t"></span><span id="_CPPv2N5rogue8hardware3axi12AxiStreamDma14setDriverDebugE8uint32_t"></span><span id="rogue::hardware::axi::AxiStreamDma::setDriverDebug__uint32_t"></span><span class="target" id="classrogue_1_1hardware_1_1axi_1_1AxiStreamDma_1a305376eb8b149cc2bfc81b44a04a6301"></span>void <code class="descname">setDriverDebug</code><span class="sig-paren">(</span>uint32_t <em>level</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue8hardware3axi12AxiStreamDma14setDriverDebugE8uint32_t" title="Permalink to this definition">¶</a><br /></dt>
+<span id="_CPPv3N5rogue8hardware3axi12AxiStreamDma14setDriverDebugE8uint32_t"></span><span id="_CPPv2N5rogue8hardware3axi12AxiStreamDma14setDriverDebugE8uint32_t"></span><span id="rogue::hardware::axi::AxiStreamDma::setDriverDebug__uint32_t"></span><span class="target" id="classrogue_1_1hardware_1_1axi_1_1AxiStreamDma_1a305376eb8b149cc2bfc81b44a04a6301"></span>void <code class="sig-name descname">setDriverDebug</code><span class="sig-paren">(</span>uint32_t <em>level</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue8hardware3axi12AxiStreamDma14setDriverDebugE8uint32_t" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Set driver debug level. </p>
 <p>This function forwards the passed level value as a debug level to the lower level driver. Current drivers have a single level of 1, but any positive value will enable debug. Debug messages can be reviewed using the linux command ‘dmesg’</p>
 <p>Exposed to python as <a class="reference internal" href="#classrogue_1_1hardware_1_1axi_1_1AxiStreamDma_1a305376eb8b149cc2bfc81b44a04a6301"><span class="std std-ref">setDriverDebug()</span></a> <dl class="simple">
@@ -223,7 +223,7 @@
 
 <dl class="function">
 <dt id="_CPPv4N5rogue8hardware3axi12AxiStreamDma13setZeroCopyEnEb">
-<span id="_CPPv3N5rogue8hardware3axi12AxiStreamDma13setZeroCopyEnEb"></span><span id="_CPPv2N5rogue8hardware3axi12AxiStreamDma13setZeroCopyEnEb"></span><span id="rogue::hardware::axi::AxiStreamDma::setZeroCopyEn__b"></span><span class="target" id="classrogue_1_1hardware_1_1axi_1_1AxiStreamDma_1ad750e68de43d9a3ee7b5c21aa1d9fc83"></span>void <code class="descname">setZeroCopyEn</code><span class="sig-paren">(</span>bool <em>state</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue8hardware3axi12AxiStreamDma13setZeroCopyEnEb" title="Permalink to this definition">¶</a><br /></dt>
+<span id="_CPPv3N5rogue8hardware3axi12AxiStreamDma13setZeroCopyEnEb"></span><span id="_CPPv2N5rogue8hardware3axi12AxiStreamDma13setZeroCopyEnEb"></span><span id="rogue::hardware::axi::AxiStreamDma::setZeroCopyEn__b"></span><span class="target" id="classrogue_1_1hardware_1_1axi_1_1AxiStreamDma_1ad750e68de43d9a3ee7b5c21aa1d9fc83"></span>void <code class="sig-name descname">setZeroCopyEn</code><span class="sig-paren">(</span>bool <em>state</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue8hardware3axi12AxiStreamDma13setZeroCopyEnEb" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Enable / disable zero copy. </p>
 <p>By default the <a class="reference internal" href="#classrogue_1_1hardware_1_1axi_1_1AxiStreamDma"><span class="std std-ref">AxiStreamDma</span></a> class attempts to take advantage of the zero copy mode of the lower level driver if supported. In zero copy mode the Frame Buffer objects are mapped directly to the DMA buffers allocated by the kernel. This allows for direct user space access to the memory which the lower level DMA engines uses. When zero copy mode is disabled a memory buffer will be allocated using the Pool class and the DMA data will be coped to or from this buffer.</p>
 <p>Exposed to python as <a class="reference internal" href="#classrogue_1_1hardware_1_1axi_1_1AxiStreamDma_1ad750e68de43d9a3ee7b5c21aa1d9fc83"><span class="std std-ref">setZeroCopyEn()</span></a> <dl class="simple">
@@ -237,7 +237,7 @@
 
 <dl class="function">
 <dt id="_CPPv4N5rogue8hardware3axi12AxiStreamDma6dmaAckEv">
-<span id="_CPPv3N5rogue8hardware3axi12AxiStreamDma6dmaAckEv"></span><span id="_CPPv2N5rogue8hardware3axi12AxiStreamDma6dmaAckEv"></span><span id="rogue::hardware::axi::AxiStreamDma::dmaAck"></span><span class="target" id="classrogue_1_1hardware_1_1axi_1_1AxiStreamDma_1a136a233d1e378f89e585a67fbc033f5c"></span>void <code class="descname">dmaAck</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue8hardware3axi12AxiStreamDma6dmaAckEv" title="Permalink to this definition">¶</a><br /></dt>
+<span id="_CPPv3N5rogue8hardware3axi12AxiStreamDma6dmaAckEv"></span><span id="_CPPv2N5rogue8hardware3axi12AxiStreamDma6dmaAckEv"></span><span id="rogue::hardware::axi::AxiStreamDma::dmaAck"></span><span class="target" id="classrogue_1_1hardware_1_1axi_1_1AxiStreamDma_1a136a233d1e378f89e585a67fbc033f5c"></span>void <code class="sig-name descname">dmaAck</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue8hardware3axi12AxiStreamDma6dmaAckEv" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Strobe ack line (hardware specific) </p>
 <p>This method forwards an ack command to the lower level driver. This is used in some cases to generate a hardware strobe on the dma interface.</p>
 <p>Exposed to python as <a class="reference internal" href="#classrogue_1_1hardware_1_1axi_1_1AxiStreamDma_1a136a233d1e378f89e585a67fbc033f5c"><span class="std std-ref">dmaAck()</span></a> </p>
@@ -248,7 +248,7 @@
 <p class="breathe-sectiondef-title rubric">Public Static Functions</p>
 <dl class="function">
 <dt id="_CPPv4N5rogue8hardware3axi12AxiStreamDma6createENSt6stringE8uint32_tb">
-<span id="_CPPv3N5rogue8hardware3axi12AxiStreamDma6createENSt6stringE8uint32_tb"></span><span id="_CPPv2N5rogue8hardware3axi12AxiStreamDma6createENSt6stringE8uint32_tb"></span><span id="rogue::hardware::axi::AxiStreamDma::create__ss.uint32_t.b"></span><span class="target" id="classrogue_1_1hardware_1_1axi_1_1AxiStreamDma_1a41ae389f17fe179e2de4d08bafdae689"></span><em class="property">static</em> std::shared_ptr&lt;rogue::hardware::axi::<a class="reference internal" href="#_CPPv4N5rogue8hardware3axi12AxiStreamDmaE" title="rogue::hardware::axi::AxiStreamDma">AxiStreamDma</a>&gt; <code class="descname">create</code><span class="sig-paren">(</span>std::string <em>path</em>, uint32_t <em>dest</em>, bool <em>ssiEnable</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue8hardware3axi12AxiStreamDma6createENSt6stringE8uint32_tb" title="Permalink to this definition">¶</a><br /></dt>
+<span id="_CPPv3N5rogue8hardware3axi12AxiStreamDma6createENSt6stringE8uint32_tb"></span><span id="_CPPv2N5rogue8hardware3axi12AxiStreamDma6createENSt6stringE8uint32_tb"></span><span id="rogue::hardware::axi::AxiStreamDma::create__ss.uint32_t.b"></span><span class="target" id="classrogue_1_1hardware_1_1axi_1_1AxiStreamDma_1a41ae389f17fe179e2de4d08bafdae689"></span><em class="property">static</em> std::shared_ptr&lt;rogue::hardware::axi::<a class="reference internal" href="#_CPPv4N5rogue8hardware3axi12AxiStreamDmaE" title="rogue::hardware::axi::AxiStreamDma">AxiStreamDma</a>&gt; <code class="sig-name descname">create</code><span class="sig-paren">(</span>std::string <em>path</em>, uint32_t <em>dest</em>, bool <em>ssiEnable</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue8hardware3axi12AxiStreamDma6createENSt6stringE8uint32_tb" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Class factory which returns a AxiStreamDmaPtr to a newly created <a class="reference internal" href="axiMemMap.html#classrogue_1_1hardware_1_1axi_1_1AxiMemMap"><span class="std std-ref">AxiMemMap</span></a> object. </p>
 <p>Exposed to Python as <a class="reference internal" href="#classrogue_1_1hardware_1_1axi_1_1AxiStreamDma"><span class="std std-ref">rogue.hardware.axi.AxiStreamDma()</span></a></p>
 <p>The destination field is a sideband signal provided in the AxiStream protocol which allows a single interface to handle multiple frames with different purposes. The use of this field is driver specific, but the lower 8-bits are typically passed in the tDest field of the hardware frame and bits 8 and up are used to index the dma channel in the lower level hardware.</p>

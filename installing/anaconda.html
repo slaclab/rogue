@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Installing Rogue With Anaconda &mdash; Rogue v3.5.0-3-ga1c824de documentation</title>
+  <title>Installing Rogue With Anaconda &mdash; Rogue v3.7.0-267-g2eba6989 documentation</title>
   
 
   
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                v3.5.0
+                v3.7.0
               </div>
             
           
@@ -195,20 +195,20 @@ $ bash Anaconda3-5.3.0-Linux-x86_64.sh
 <div class="section" id="creating-a-rogue-environment">
 <h2>Creating A Rogue Environment<a class="headerlink" href="#creating-a-rogue-environment" title="Permalink to this headline">¶</a></h2>
 <p>The next step is to create ana anaconda environment which includes the Rogue package.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ conda create -n rogue_env -c defaults -c conda-forge -c paulscherrerinstitute -c tidair-tag rogue
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ conda create -n rogue_tag -c defaults -c tidair-packages -c conda-forge -c tidair-tag rogue
 </pre></div>
 </div>
 <p>The order of the args is important. tidair-tag is the channel from which the Rogue package is downloaded.</p>
 <p>If you already have an anaconda environment that you would like to install Rogue into:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ conda install -c defaults -c conda-forge -c paulscherrerinstitute -c tidair-tag rogue
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ conda install -c defaults -c tidair-packages -c conda-forge -c tidair-tag rogue
 </pre></div>
 </div>
 <p>The above commands will install the latest version of Rogue from the master branch. If you want to insteall the pre-release version of Rogue, run the following:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ conda create -n rogue_env -c defaults -c conda-forge -c paulscherrerinstitute -c tidair-dev rogue
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ conda create -n rogue_dev -c defaults -c tidair-packages -c conda-forge -c tidair-dev rogue
 </pre></div>
 </div>
 <p>Alternatively you can install a specific released version of Rogue:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ conda create -n rogue_env -c defaults -c conda-forge -c paulscherrerinstitute -c tidair-tag rogue=v3.0.2
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ conda create -n rogue_3.0.2 -c defaults -c tidair-packages -c conda-forge -c tidair-tag rogue=v3.0.2
 </pre></div>
 </div>
 </div>
@@ -216,9 +216,10 @@ $ bash Anaconda3-5.3.0-Linux-x86_64.sh
 <h2>Using Rogue In Anaconda<a class="headerlink" href="#using-rogue-in-anaconda" title="Permalink to this headline">¶</a></h2>
 <p>No additional setup scripts need to be run Rogue in an anaconda environment. To activate and de-activate the Rogue environment you can use the following commands:</p>
 <p>To activate:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ conda activate rogue_env
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ conda activate rogue_tag
 </pre></div>
 </div>
+<p>Replace rogue_tag with the name you used when creating your environment (rogue_dev or rogue_3.0.2).</p>
 <p>To deactivate:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ conda deactivate
 </pre></div>
@@ -239,7 +240,7 @@ $ bash Anaconda3-5.3.0-Linux-x86_64.sh
 <div class="section" id="deleting-anaconda-environment">
 <h2>Deleting Anaconda Environment<a class="headerlink" href="#deleting-anaconda-environment" title="Permalink to this headline">¶</a></h2>
 <p>Run the following commands to delete the anaconda environment.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ conda env remove -n rogue_env
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ conda env remove -n rogue_tag
 </pre></div>
 </div>
 </div>

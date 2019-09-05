@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Status &mdash; Rogue v3.5.0-3-ga1c824de documentation</title>
+  <title>Status &mdash; Rogue v3.7.0-267-g2eba6989 documentation</title>
   
 
   
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                v3.5.0
+                v3.7.0
               </div>
             
           
@@ -181,14 +181,14 @@
 <p>Status objects in C++ are referenced by the following shared pointer typedef:</p>
 <dl class="type">
 <dt id="_CPPv4N5rogue8hardware3pgp9StatusPtrE">
-<span id="_CPPv3N5rogue8hardware3pgp9StatusPtrE"></span><span id="_CPPv2N5rogue8hardware3pgp9StatusPtrE"></span><span id="rogue::hardware::pgp::StatusPtr"></span><span class="target" id="namespacerogue_1_1hardware_1_1pgp_1ae318c7a5de44e8dbed624be79a79f810"></span><em class="property">typedef </em>std::shared_ptr&lt;rogue::hardware::pgp::<a class="reference internal" href="#_CPPv4N5rogue8hardware3pgp6StatusE" title="rogue::hardware::pgp::Status">Status</a>&gt; <code class="descclassname">rogue::hardware::pgp<code class="descclassname">::</code></code><code class="descname">StatusPtr</code><a class="headerlink" href="#_CPPv4N5rogue8hardware3pgp9StatusPtrE" title="Permalink to this definition">¶</a><br /></dt>
+<span id="_CPPv3N5rogue8hardware3pgp9StatusPtrE"></span><span id="_CPPv2N5rogue8hardware3pgp9StatusPtrE"></span><span id="rogue::hardware::pgp::StatusPtr"></span><span class="target" id="namespacerogue_1_1hardware_1_1pgp_1ae318c7a5de44e8dbed624be79a79f810"></span><em class="property">typedef </em>std::shared_ptr&lt;rogue::hardware::pgp::<a class="reference internal" href="#_CPPv4N5rogue8hardware3pgp6StatusE" title="rogue::hardware::pgp::Status">Status</a>&gt; <code class="sig-prename descclassname">rogue::hardware::pgp<code class="sig-prename descclassname">::</code></code><code class="sig-name descname">StatusPtr</code><a class="headerlink" href="#_CPPv4N5rogue8hardware3pgp9StatusPtrE" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Alias for using shared pointer as StatusPtr. </p>
 </dd></dl>
 
 <p>The class description is shown below:</p>
 <dl class="class">
 <dt id="_CPPv4N5rogue8hardware3pgp6StatusE">
-<span id="_CPPv3N5rogue8hardware3pgp6StatusE"></span><span id="_CPPv2N5rogue8hardware3pgp6StatusE"></span><span id="rogue::hardware::pgp::Status"></span><span class="target" id="classrogue_1_1hardware_1_1pgp_1_1Status"></span><em class="property">class </em><code class="descname">Status</code> : <em class="property">public</em> <a class="reference internal" href="#_CPPv49PgpStatus" title="PgpStatus">PgpStatus</a><a class="headerlink" href="#_CPPv4N5rogue8hardware3pgp6StatusE" title="Permalink to this definition">¶</a><br /></dt>
+<span id="_CPPv3N5rogue8hardware3pgp6StatusE"></span><span id="_CPPv2N5rogue8hardware3pgp6StatusE"></span><span id="rogue::hardware::pgp::Status"></span><span class="target" id="classrogue_1_1hardware_1_1pgp_1_1Status"></span><em class="property">class </em><code class="sig-name descname">Status</code> : <em class="property">public</em> <a class="reference internal" href="#_CPPv49PgpStatus" title="PgpStatus">PgpStatus</a><a class="headerlink" href="#_CPPv4N5rogue8hardware3pgp6StatusE" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>PGP <a class="reference internal" href="#classrogue_1_1hardware_1_1pgp_1_1Status"><span class="std std-ref">Status</span></a> Class. </p>
 <p>This class contains the current PGP status for one of the 8 lanes on a PGP card. This class is a C++ wrapper around the <a class="reference internal" href="#structPgpStatus"><span class="std std-ref">PgpStatus</span></a> structure used by the lower level driver. All structure members are exposed to Python using their original names and can be read directly. </p>
 </dd></dl>
@@ -197,86 +197,86 @@
 members are exposed in the above class.</p>
 <dl class="class">
 <dt id="_CPPv49PgpStatus">
-<span id="_CPPv39PgpStatus"></span><span id="_CPPv29PgpStatus"></span><span id="PgpStatus"></span><span class="target" id="structPgpStatus"></span><em class="property">struct </em><code class="descname">PgpStatus</code><a class="headerlink" href="#_CPPv49PgpStatus" title="Permalink to this definition">¶</a><br /></dt>
+<span id="_CPPv39PgpStatus"></span><span id="_CPPv29PgpStatus"></span><span id="PgpStatus"></span><span class="target" id="structPgpStatus"></span><em class="property">struct </em><code class="sig-name descname">PgpStatus</code><a class="headerlink" href="#_CPPv49PgpStatus" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>PGP Lane Status. </p>
 <p>Subclassed by <a class="reference internal" href="#classrogue_1_1hardware_1_1pgp_1_1Status"><span class="std std-ref">rogue::hardware::pgp::Status</span></a></p>
 <div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric">Public Members</p>
 <dl class="member">
 <dt id="_CPPv4N9PgpStatus4laneE">
-<span id="_CPPv3N9PgpStatus4laneE"></span><span id="_CPPv2N9PgpStatus4laneE"></span><span id="PgpStatus::lane__uint32_t"></span><span class="target" id="structPgpStatus_1a639debf6885a11b2881e540eb9b98804"></span>uint32_t <code class="descname">lane</code><a class="headerlink" href="#_CPPv4N9PgpStatus4laneE" title="Permalink to this definition">¶</a><br /></dt>
+<span id="_CPPv3N9PgpStatus4laneE"></span><span id="_CPPv2N9PgpStatus4laneE"></span><span id="PgpStatus::lane__uint32_t"></span><span class="target" id="structPgpStatus_1a639debf6885a11b2881e540eb9b98804"></span>uint32_t <code class="sig-name descname">lane</code><a class="headerlink" href="#_CPPv4N9PgpStatus4laneE" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Lane number assocaited with this record. </p>
 </dd></dl>
 
 <dl class="member">
 <dt id="_CPPv4N9PgpStatus8loopBackE">
-<span id="_CPPv3N9PgpStatus8loopBackE"></span><span id="_CPPv2N9PgpStatus8loopBackE"></span><span id="PgpStatus::loopBack__uint32_t"></span><span class="target" id="structPgpStatus_1a4dabfdd4a86cdc196aa0e9ebd665ad7f"></span>uint32_t <code class="descname">loopBack</code><a class="headerlink" href="#_CPPv4N9PgpStatus8loopBackE" title="Permalink to this definition">¶</a><br /></dt>
+<span id="_CPPv3N9PgpStatus8loopBackE"></span><span id="_CPPv2N9PgpStatus8loopBackE"></span><span id="PgpStatus::loopBack__uint32_t"></span><span class="target" id="structPgpStatus_1a4dabfdd4a86cdc196aa0e9ebd665ad7f"></span>uint32_t <code class="sig-name descname">loopBack</code><a class="headerlink" href="#_CPPv4N9PgpStatus8loopBackE" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Lane loopback status. </p>
 </dd></dl>
 
 <dl class="member">
 <dt id="_CPPv4N9PgpStatus12locLinkReadyE">
-<span id="_CPPv3N9PgpStatus12locLinkReadyE"></span><span id="_CPPv2N9PgpStatus12locLinkReadyE"></span><span id="PgpStatus::locLinkReady__uint32_t"></span><span class="target" id="structPgpStatus_1a69c11cd82dbf65ab973fecd3b1f76979"></span>uint32_t <code class="descname">locLinkReady</code><a class="headerlink" href="#_CPPv4N9PgpStatus12locLinkReadyE" title="Permalink to this definition">¶</a><br /></dt>
+<span id="_CPPv3N9PgpStatus12locLinkReadyE"></span><span id="_CPPv2N9PgpStatus12locLinkReadyE"></span><span id="PgpStatus::locLinkReady__uint32_t"></span><span class="target" id="structPgpStatus_1a69c11cd82dbf65ab973fecd3b1f76979"></span>uint32_t <code class="sig-name descname">locLinkReady</code><a class="headerlink" href="#_CPPv4N9PgpStatus12locLinkReadyE" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Lane local link ready status. </p>
 </dd></dl>
 
 <dl class="member">
 <dt id="_CPPv4N9PgpStatus12remLinkReadyE">
-<span id="_CPPv3N9PgpStatus12remLinkReadyE"></span><span id="_CPPv2N9PgpStatus12remLinkReadyE"></span><span id="PgpStatus::remLinkReady__uint32_t"></span><span class="target" id="structPgpStatus_1ac6f803bcff9e8b5c38837c835da4126c"></span>uint32_t <code class="descname">remLinkReady</code><a class="headerlink" href="#_CPPv4N9PgpStatus12remLinkReadyE" title="Permalink to this definition">¶</a><br /></dt>
+<span id="_CPPv3N9PgpStatus12remLinkReadyE"></span><span id="_CPPv2N9PgpStatus12remLinkReadyE"></span><span id="PgpStatus::remLinkReady__uint32_t"></span><span class="target" id="structPgpStatus_1ac6f803bcff9e8b5c38837c835da4126c"></span>uint32_t <code class="sig-name descname">remLinkReady</code><a class="headerlink" href="#_CPPv4N9PgpStatus12remLinkReadyE" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Lane remote link ready status. </p>
 </dd></dl>
 
 <dl class="member">
 <dt id="_CPPv4N9PgpStatus7rxReadyE">
-<span id="_CPPv3N9PgpStatus7rxReadyE"></span><span id="_CPPv2N9PgpStatus7rxReadyE"></span><span id="PgpStatus::rxReady__uint32_t"></span><span class="target" id="structPgpStatus_1a538ddd4907114fabc9e4981dfe65b1f5"></span>uint32_t <code class="descname">rxReady</code><a class="headerlink" href="#_CPPv4N9PgpStatus7rxReadyE" title="Permalink to this definition">¶</a><br /></dt>
+<span id="_CPPv3N9PgpStatus7rxReadyE"></span><span id="_CPPv2N9PgpStatus7rxReadyE"></span><span id="PgpStatus::rxReady__uint32_t"></span><span class="target" id="structPgpStatus_1a538ddd4907114fabc9e4981dfe65b1f5"></span>uint32_t <code class="sig-name descname">rxReady</code><a class="headerlink" href="#_CPPv4N9PgpStatus7rxReadyE" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Lane receive PLL ready status. </p>
 </dd></dl>
 
 <dl class="member">
 <dt id="_CPPv4N9PgpStatus7txReadyE">
-<span id="_CPPv3N9PgpStatus7txReadyE"></span><span id="_CPPv2N9PgpStatus7txReadyE"></span><span id="PgpStatus::txReady__uint32_t"></span><span class="target" id="structPgpStatus_1a4b37d770d34dbaef7c785654a6fbdc9b"></span>uint32_t <code class="descname">txReady</code><a class="headerlink" href="#_CPPv4N9PgpStatus7txReadyE" title="Permalink to this definition">¶</a><br /></dt>
+<span id="_CPPv3N9PgpStatus7txReadyE"></span><span id="_CPPv2N9PgpStatus7txReadyE"></span><span id="PgpStatus::txReady__uint32_t"></span><span class="target" id="structPgpStatus_1a4b37d770d34dbaef7c785654a6fbdc9b"></span>uint32_t <code class="sig-name descname">txReady</code><a class="headerlink" href="#_CPPv4N9PgpStatus7txReadyE" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Lane transmit PLL ready status. </p>
 </dd></dl>
 
 <dl class="member">
 <dt id="_CPPv4N9PgpStatus7rxCountE">
-<span id="_CPPv3N9PgpStatus7rxCountE"></span><span id="_CPPv2N9PgpStatus7rxCountE"></span><span id="PgpStatus::rxCount__uint32_t"></span><span class="target" id="structPgpStatus_1a1d18d8708b0a49c6fa9f9223e7767bf5"></span>uint32_t <code class="descname">rxCount</code><a class="headerlink" href="#_CPPv4N9PgpStatus7rxCountE" title="Permalink to this definition">¶</a><br /></dt>
+<span id="_CPPv3N9PgpStatus7rxCountE"></span><span id="_CPPv2N9PgpStatus7rxCountE"></span><span id="PgpStatus::rxCount__uint32_t"></span><span class="target" id="structPgpStatus_1a1d18d8708b0a49c6fa9f9223e7767bf5"></span>uint32_t <code class="sig-name descname">rxCount</code><a class="headerlink" href="#_CPPv4N9PgpStatus7rxCountE" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Lane receive frame counter. </p>
 </dd></dl>
 
 <dl class="member">
 <dt id="_CPPv4N9PgpStatus10cellErrCntE">
-<span id="_CPPv3N9PgpStatus10cellErrCntE"></span><span id="_CPPv2N9PgpStatus10cellErrCntE"></span><span id="PgpStatus::cellErrCnt__uint32_t"></span><span class="target" id="structPgpStatus_1a64a56905c81df659185830d41e78a772"></span>uint32_t <code class="descname">cellErrCnt</code><a class="headerlink" href="#_CPPv4N9PgpStatus10cellErrCntE" title="Permalink to this definition">¶</a><br /></dt>
+<span id="_CPPv3N9PgpStatus10cellErrCntE"></span><span id="_CPPv2N9PgpStatus10cellErrCntE"></span><span id="PgpStatus::cellErrCnt__uint32_t"></span><span class="target" id="structPgpStatus_1a64a56905c81df659185830d41e78a772"></span>uint32_t <code class="sig-name descname">cellErrCnt</code><a class="headerlink" href="#_CPPv4N9PgpStatus10cellErrCntE" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Lane cell error counter. </p>
 </dd></dl>
 
 <dl class="member">
 <dt id="_CPPv4N9PgpStatus11linkDownCntE">
-<span id="_CPPv3N9PgpStatus11linkDownCntE"></span><span id="_CPPv2N9PgpStatus11linkDownCntE"></span><span id="PgpStatus::linkDownCnt__uint32_t"></span><span class="target" id="structPgpStatus_1ada4246e26f3045fddfc594b8bbf52b63"></span>uint32_t <code class="descname">linkDownCnt</code><a class="headerlink" href="#_CPPv4N9PgpStatus11linkDownCntE" title="Permalink to this definition">¶</a><br /></dt>
+<span id="_CPPv3N9PgpStatus11linkDownCntE"></span><span id="_CPPv2N9PgpStatus11linkDownCntE"></span><span id="PgpStatus::linkDownCnt__uint32_t"></span><span class="target" id="structPgpStatus_1ada4246e26f3045fddfc594b8bbf52b63"></span>uint32_t <code class="sig-name descname">linkDownCnt</code><a class="headerlink" href="#_CPPv4N9PgpStatus11linkDownCntE" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Lane link lost transition counter. </p>
 </dd></dl>
 
 <dl class="member">
 <dt id="_CPPv4N9PgpStatus10linkErrCntE">
-<span id="_CPPv3N9PgpStatus10linkErrCntE"></span><span id="_CPPv2N9PgpStatus10linkErrCntE"></span><span id="PgpStatus::linkErrCnt__uint32_t"></span><span class="target" id="structPgpStatus_1ae12bd0051f36520c504ba2178bc8320b"></span>uint32_t <code class="descname">linkErrCnt</code><a class="headerlink" href="#_CPPv4N9PgpStatus10linkErrCntE" title="Permalink to this definition">¶</a><br /></dt>
+<span id="_CPPv3N9PgpStatus10linkErrCntE"></span><span id="_CPPv2N9PgpStatus10linkErrCntE"></span><span id="PgpStatus::linkErrCnt__uint32_t"></span><span class="target" id="structPgpStatus_1ae12bd0051f36520c504ba2178bc8320b"></span>uint32_t <code class="sig-name descname">linkErrCnt</code><a class="headerlink" href="#_CPPv4N9PgpStatus10linkErrCntE" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Lane link error counter. </p>
 </dd></dl>
 
 <dl class="member">
 <dt id="_CPPv4N9PgpStatus7fifoErrE">
-<span id="_CPPv3N9PgpStatus7fifoErrE"></span><span id="_CPPv2N9PgpStatus7fifoErrE"></span><span id="PgpStatus::fifoErr__uint32_t"></span><span class="target" id="structPgpStatus_1a1eb77ca22240cc8366582e977a260a66"></span>uint32_t <code class="descname">fifoErr</code><a class="headerlink" href="#_CPPv4N9PgpStatus7fifoErrE" title="Permalink to this definition">¶</a><br /></dt>
+<span id="_CPPv3N9PgpStatus7fifoErrE"></span><span id="_CPPv2N9PgpStatus7fifoErrE"></span><span id="PgpStatus::fifoErr__uint32_t"></span><span class="target" id="structPgpStatus_1a1eb77ca22240cc8366582e977a260a66"></span>uint32_t <code class="sig-name descname">fifoErr</code><a class="headerlink" href="#_CPPv4N9PgpStatus7fifoErrE" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Lane FIFO error counter. </p>
 </dd></dl>
 
 <dl class="member">
 <dt id="_CPPv4N9PgpStatus7remDataE">
-<span id="_CPPv3N9PgpStatus7remDataE"></span><span id="_CPPv2N9PgpStatus7remDataE"></span><span id="PgpStatus::remData__uint32_t"></span><span class="target" id="structPgpStatus_1a9a827b9ac5ba9e2bb2063b22d9b2cc54"></span>uint32_t <code class="descname">remData</code><a class="headerlink" href="#_CPPv4N9PgpStatus7remDataE" title="Permalink to this definition">¶</a><br /></dt>
+<span id="_CPPv3N9PgpStatus7remDataE"></span><span id="_CPPv2N9PgpStatus7remDataE"></span><span id="PgpStatus::remData__uint32_t"></span><span class="target" id="structPgpStatus_1a9a827b9ac5ba9e2bb2063b22d9b2cc54"></span>uint32_t <code class="sig-name descname">remData</code><a class="headerlink" href="#_CPPv4N9PgpStatus7remDataE" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Lane current received remote sideband data. </p>
 </dd></dl>
 
 <dl class="member">
 <dt id="_CPPv4N9PgpStatus13remBuffStatusE">
-<span id="_CPPv3N9PgpStatus13remBuffStatusE"></span><span id="_CPPv2N9PgpStatus13remBuffStatusE"></span><span id="PgpStatus::remBuffStatus__uint32_t"></span><span class="target" id="structPgpStatus_1a87c47b323c51acc49f310df6fd5ed5a4"></span>uint32_t <code class="descname">remBuffStatus</code><a class="headerlink" href="#_CPPv4N9PgpStatus13remBuffStatusE" title="Permalink to this definition">¶</a><br /></dt>
+<span id="_CPPv3N9PgpStatus13remBuffStatusE"></span><span id="_CPPv2N9PgpStatus13remBuffStatusE"></span><span id="PgpStatus::remBuffStatus__uint32_t"></span><span class="target" id="structPgpStatus_1a87c47b323c51acc49f310df6fd5ed5a4"></span>uint32_t <code class="sig-name descname">remBuffStatus</code><a class="headerlink" href="#_CPPv4N9PgpStatus13remBuffStatusE" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Lane remote buffer status. </p>
 </dd></dl>
 

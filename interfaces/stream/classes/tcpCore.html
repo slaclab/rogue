@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>TcpCore &mdash; Rogue v3.5.0-3-ga1c824de documentation</title>
+  <title>TcpCore &mdash; Rogue v3.7.0-267-g2eba6989 documentation</title>
   
 
   
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                v3.5.0
+                v3.7.0
               </div>
             
           
@@ -196,14 +196,14 @@
 <p>TcpCore objects in C++ are referenced by the following shared pointer typedef:</p>
 <dl class="type">
 <dt id="_CPPv4N5rogue10interfaces6stream10TcpCorePtrE">
-<span id="_CPPv3N5rogue10interfaces6stream10TcpCorePtrE"></span><span id="_CPPv2N5rogue10interfaces6stream10TcpCorePtrE"></span><span id="rogue::interfaces::stream::TcpCorePtr"></span><span class="target" id="namespacerogue_1_1interfaces_1_1stream_1a4c480bc72405a3a5150cb02f4dcdcdd3"></span><em class="property">typedef </em>std::shared_ptr&lt;rogue::interfaces::stream::<a class="reference internal" href="#_CPPv4N5rogue10interfaces6stream7TcpCoreE" title="rogue::interfaces::stream::TcpCore">TcpCore</a>&gt; <code class="descclassname">rogue::interfaces::stream<code class="descclassname">::</code></code><code class="descname">TcpCorePtr</code><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream10TcpCorePtrE" title="Permalink to this definition">¶</a><br /></dt>
+<span id="_CPPv3N5rogue10interfaces6stream10TcpCorePtrE"></span><span id="_CPPv2N5rogue10interfaces6stream10TcpCorePtrE"></span><span id="rogue::interfaces::stream::TcpCorePtr"></span><span class="target" id="namespacerogue_1_1interfaces_1_1stream_1a4c480bc72405a3a5150cb02f4dcdcdd3"></span><em class="property">typedef </em>std::shared_ptr&lt;rogue::interfaces::stream::<a class="reference internal" href="#_CPPv4N5rogue10interfaces6stream7TcpCoreE" title="rogue::interfaces::stream::TcpCore">TcpCore</a>&gt; <code class="sig-prename descclassname">rogue::interfaces::stream<code class="sig-prename descclassname">::</code></code><code class="sig-name descname">TcpCorePtr</code><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream10TcpCorePtrE" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Alias for using shared pointer as TcpCorePtr. </p>
 </dd></dl>
 
 <p>The class description is shown below:</p>
 <dl class="class">
 <dt id="_CPPv4N5rogue10interfaces6stream7TcpCoreE">
-<span id="_CPPv3N5rogue10interfaces6stream7TcpCoreE"></span><span id="_CPPv2N5rogue10interfaces6stream7TcpCoreE"></span><span id="rogue::interfaces::stream::TcpCore"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1TcpCore"></span><em class="property">class </em><code class="descname">TcpCore</code> : <em class="property">public</em> rogue::interfaces::stream::<a class="reference internal" href="master.html#_CPPv4N5rogue10interfaces6stream6MasterE" title="rogue::interfaces::stream::Master">Master</a>, <em class="property">public</em> rogue::interfaces::stream::<a class="reference internal" href="slave.html#_CPPv4N5rogue10interfaces6stream5SlaveE" title="rogue::interfaces::stream::Slave">Slave</a><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream7TcpCoreE" title="Permalink to this definition">¶</a><br /></dt>
+<span id="_CPPv3N5rogue10interfaces6stream7TcpCoreE"></span><span id="_CPPv2N5rogue10interfaces6stream7TcpCoreE"></span><span id="rogue::interfaces::stream::TcpCore"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1TcpCore"></span><em class="property">class </em><code class="sig-name descname">TcpCore</code> : <em class="property">public</em> rogue::interfaces::stream::<a class="reference internal" href="master.html#_CPPv4N5rogue10interfaces6stream6MasterE" title="rogue::interfaces::stream::Master">Master</a>, <em class="property">public</em> rogue::interfaces::stream::<a class="reference internal" href="slave.html#_CPPv4N5rogue10interfaces6stream5SlaveE" title="rogue::interfaces::stream::Slave">Slave</a><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream7TcpCoreE" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Stream TCP Bridge Core. </p>
 <p>This class implements the core functionality of the <a class="reference internal" href="tcpClient.html#classrogue_1_1interfaces_1_1stream_1_1TcpClient"><span class="std std-ref">TcpClient</span></a> and <a class="reference internal" href="tcpServer.html#classrogue_1_1interfaces_1_1stream_1_1TcpServer"><span class="std std-ref">TcpServer</span></a> classes which implment a Rogue stream bridge over a TCP network. This core can operation in either client or server mode. The <a class="reference internal" href="tcpClient.html#classrogue_1_1interfaces_1_1stream_1_1TcpClient"><span class="std std-ref">TcpClient</span></a> and <a class="reference internal" href="tcpServer.html#classrogue_1_1interfaces_1_1stream_1_1TcpServer"><span class="std std-ref">TcpServer</span></a> classes are thin wrapper which define which mode flag to pass to this base class.</p>
 <p>The <a class="reference internal" href="tcpServer.html#classrogue_1_1interfaces_1_1stream_1_1TcpServer"><span class="std std-ref">TcpServer</span></a> and <a class="reference internal" href="tcpClient.html#classrogue_1_1interfaces_1_1stream_1_1TcpClient"><span class="std std-ref">TcpClient</span></a> interfaces are blocking and will stall frame transmissions when the remote side is either not present or is back pressuring. When the remote server is not present a local buffer is not utilized, where it is utilized when a connection has been established. </p>
@@ -212,7 +212,7 @@
 <p class="breathe-sectiondef-title rubric">Public Static Functions</p>
 <dl class="function">
 <dt id="_CPPv4N5rogue10interfaces6stream7TcpCore6createENSt6stringE8uint16_tb">
-<span id="_CPPv3N5rogue10interfaces6stream7TcpCore6createENSt6stringE8uint16_tb"></span><span id="_CPPv2N5rogue10interfaces6stream7TcpCore6createENSt6stringE8uint16_tb"></span><span id="rogue::interfaces::stream::TcpCore::create__ss.uint16_t.b"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1TcpCore_1a4c31657d16580725f4ec0000909e9d14"></span><em class="property">static</em> std::shared_ptr&lt;rogue::interfaces::stream::<a class="reference internal" href="#_CPPv4N5rogue10interfaces6stream7TcpCoreE" title="rogue::interfaces::stream::TcpCore">TcpCore</a>&gt; <code class="descname">create</code><span class="sig-paren">(</span>std::string <em>addr</em>, uint16_t <em>port</em>, bool <em>server</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream7TcpCore6createENSt6stringE8uint16_tb" title="Permalink to this definition">¶</a><br /></dt>
+<span id="_CPPv3N5rogue10interfaces6stream7TcpCore6createENSt6stringE8uint16_tb"></span><span id="_CPPv2N5rogue10interfaces6stream7TcpCore6createENSt6stringE8uint16_tb"></span><span id="rogue::interfaces::stream::TcpCore::create__ss.uint16_t.b"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1TcpCore_1a4c31657d16580725f4ec0000909e9d14"></span><em class="property">static</em> std::shared_ptr&lt;rogue::interfaces::stream::<a class="reference internal" href="#_CPPv4N5rogue10interfaces6stream7TcpCoreE" title="rogue::interfaces::stream::TcpCore">TcpCore</a>&gt; <code class="sig-name descname">create</code><span class="sig-paren">(</span>std::string <em>addr</em>, uint16_t <em>port</em>, bool <em>server</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream7TcpCore6createENSt6stringE8uint16_tb" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Create a <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1TcpCore"><span class="std std-ref">TcpCore</span></a> object and return as a TcpCorePtr. </p>
 <p>The creator takes an address, port and server mode flag. The passed address can either be an IP address or hostname. When running in server mode the address string defines which network interface the socket server will listen on. A string of “*” results in all network interfaces being listened on. The stream bridge requires two TCP ports. The pased port is the base number of these two ports. A passed value of 8000 will result in both 8000 and 8001 being used by this bridge.</p>
 <p>Not exposed to Python <dl class="simple">

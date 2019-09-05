@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Hub &mdash; Rogue v3.5.0-3-ga1c824de documentation</title>
+  <title>Hub &mdash; Rogue v3.7.0-267-g2eba6989 documentation</title>
   
 
   
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                v3.5.0
+                v3.7.0
               </div>
             
           
@@ -188,14 +188,14 @@
 <p>Hub objects in C++ are referenced by the following shared pointer typedef:</p>
 <dl class="type">
 <dt id="_CPPv4N5rogue10interfaces6memory6HubPtrE">
-<span id="_CPPv3N5rogue10interfaces6memory6HubPtrE"></span><span id="_CPPv2N5rogue10interfaces6memory6HubPtrE"></span><span id="rogue::interfaces::memory::HubPtr"></span><span class="target" id="namespacerogue_1_1interfaces_1_1memory_1a411d37b0d28e6a762e9a69e214c73d3f"></span><em class="property">typedef </em>std::shared_ptr&lt;rogue::interfaces::memory::<a class="reference internal" href="#_CPPv4N5rogue10interfaces6memory3HubE" title="rogue::interfaces::memory::Hub">Hub</a>&gt; <code class="descclassname">rogue::interfaces::memory<code class="descclassname">::</code></code><code class="descname">HubPtr</code><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory6HubPtrE" title="Permalink to this definition">¶</a><br /></dt>
+<span id="_CPPv3N5rogue10interfaces6memory6HubPtrE"></span><span id="_CPPv2N5rogue10interfaces6memory6HubPtrE"></span><span id="rogue::interfaces::memory::HubPtr"></span><span class="target" id="namespacerogue_1_1interfaces_1_1memory_1a411d37b0d28e6a762e9a69e214c73d3f"></span><em class="property">typedef </em>std::shared_ptr&lt;rogue::interfaces::memory::<a class="reference internal" href="#_CPPv4N5rogue10interfaces6memory3HubE" title="rogue::interfaces::memory::Hub">Hub</a>&gt; <code class="sig-prename descclassname">rogue::interfaces::memory<code class="sig-prename descclassname">::</code></code><code class="sig-name descname">HubPtr</code><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory6HubPtrE" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Alias for using shared pointer as HubPtr. </p>
 </dd></dl>
 
 <p>The class description is shown below:</p>
 <dl class="class">
 <dt id="_CPPv4N5rogue10interfaces6memory3HubE">
-<span id="_CPPv3N5rogue10interfaces6memory3HubE"></span><span id="_CPPv2N5rogue10interfaces6memory3HubE"></span><span id="rogue::interfaces::memory::Hub"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Hub"></span><em class="property">class </em><code class="descname">Hub</code> : <em class="property">public</em> rogue::interfaces::memory::<a class="reference internal" href="master.html#_CPPv4N5rogue10interfaces6memory6MasterE" title="rogue::interfaces::memory::Master">Master</a>, <em class="property">public</em> rogue::interfaces::memory::<a class="reference internal" href="slave.html#_CPPv4N5rogue10interfaces6memory5SlaveE" title="rogue::interfaces::memory::Slave">Slave</a><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory3HubE" title="Permalink to this definition">¶</a><br /></dt>
+<span id="_CPPv3N5rogue10interfaces6memory3HubE"></span><span id="_CPPv2N5rogue10interfaces6memory3HubE"></span><span id="rogue::interfaces::memory::Hub"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Hub"></span><em class="property">class </em><code class="sig-name descname">Hub</code> : <em class="property">public</em> rogue::interfaces::memory::<a class="reference internal" href="master.html#_CPPv4N5rogue10interfaces6memory6MasterE" title="rogue::interfaces::memory::Master">Master</a>, <em class="property">public</em> rogue::interfaces::memory::<a class="reference internal" href="slave.html#_CPPv4N5rogue10interfaces6memory5SlaveE" title="rogue::interfaces::memory::Slave">Slave</a><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory3HubE" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Memory interface <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Hub"><span class="std std-ref">Hub</span></a> device. </p>
 <p>The memory bus <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Hub"><span class="std std-ref">Hub</span></a> serves as both a <a class="reference internal" href="slave.html#classrogue_1_1interfaces_1_1memory_1_1Slave"><span class="std std-ref">Slave</span></a> and a <a class="reference internal" href="master.html#classrogue_1_1interfaces_1_1memory_1_1Master"><span class="std std-ref">Master</span></a> for memory transactions. It will accept a <a class="reference internal" href="transaction.html#classrogue_1_1interfaces_1_1memory_1_1Transaction"><span class="std std-ref">Transaction</span></a> from an attached <a class="reference internal" href="master.html#classrogue_1_1interfaces_1_1memory_1_1Master"><span class="std std-ref">Master</span></a> and pass it down to the next level <a class="reference internal" href="slave.html#classrogue_1_1interfaces_1_1memory_1_1Slave"><span class="std std-ref">Slave</span></a> or <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Hub"><span class="std std-ref">Hub</span></a> device. It will apply its local offset address to the transaction as it is passed down to the next level.</p>
 <p>A <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Hub"><span class="std std-ref">Hub</span></a> can be sub-classed in either Python or C++ is order to further manipulate the transaction data on the way down or convert the initial <a class="reference internal" href="transaction.html#classrogue_1_1interfaces_1_1memory_1_1Transaction"><span class="std std-ref">Transaction</span></a> into multiple transactions to the next level. This can be usefull to hide complex windows memory spaces or transactions that require multipled steps be performed in hardware.</p>
@@ -206,7 +206,7 @@
 <p class="breathe-sectiondef-title rubric">Public Functions</p>
 <dl class="function">
 <dt id="_CPPv4N5rogue10interfaces6memory3Hub9getOffsetEv">
-<span id="_CPPv3N5rogue10interfaces6memory3Hub9getOffsetEv"></span><span id="_CPPv2N5rogue10interfaces6memory3Hub9getOffsetEv"></span><span id="rogue::interfaces::memory::Hub::getOffset"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Hub_1a276ca14dadf9aee86764d0a9a78a75fa"></span>uint64_t <code class="descname">getOffset</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory3Hub9getOffsetEv" title="Permalink to this definition">¶</a><br /></dt>
+<span id="_CPPv3N5rogue10interfaces6memory3Hub9getOffsetEv"></span><span id="_CPPv2N5rogue10interfaces6memory3Hub9getOffsetEv"></span><span id="rogue::interfaces::memory::Hub::getOffset"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Hub_1a276ca14dadf9aee86764d0a9a78a75fa"></span>uint64_t <code class="sig-name descname">getOffset</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory3Hub9getOffsetEv" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Get offset of this <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Hub"><span class="std std-ref">Hub</span></a>. </p>
 <p>Return the offset address of this <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Hub"><span class="std std-ref">Hub</span></a></p>
 <p>Exposted as _getOffset() to Python <dl class="simple">
@@ -218,7 +218,7 @@
 
 <dl class="function">
 <dt id="_CPPv4N5rogue10interfaces6memory3Hub10getAddressEv">
-<span id="_CPPv3N5rogue10interfaces6memory3Hub10getAddressEv"></span><span id="_CPPv2N5rogue10interfaces6memory3Hub10getAddressEv"></span><span id="rogue::interfaces::memory::Hub::getAddress"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Hub_1a61e0a391dee817370a8733a29559032e"></span>uint64_t <code class="descname">getAddress</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory3Hub10getAddressEv" title="Permalink to this definition">¶</a><br /></dt>
+<span id="_CPPv3N5rogue10interfaces6memory3Hub10getAddressEv"></span><span id="_CPPv2N5rogue10interfaces6memory3Hub10getAddressEv"></span><span id="rogue::interfaces::memory::Hub::getAddress"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Hub_1a61e0a391dee817370a8733a29559032e"></span>uint64_t <code class="sig-name descname">getAddress</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory3Hub10getAddressEv" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Get full address of this <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Hub"><span class="std std-ref">Hub</span></a>. </p>
 <p>Return the full address of this <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Hub"><span class="std std-ref">Hub</span></a>, including local offset.</p>
 <p>Exposted as _getAddress() to Python <dl class="simple">
@@ -230,7 +230,7 @@
 
 <dl class="function">
 <dt id="_CPPv4N5rogue10interfaces6memory3Hub9doSlaveIdEv">
-<span id="_CPPv3N5rogue10interfaces6memory3Hub9doSlaveIdEv"></span><span id="_CPPv2N5rogue10interfaces6memory3Hub9doSlaveIdEv"></span><span id="rogue::interfaces::memory::Hub::doSlaveId"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Hub_1a2192bbbcdca36e580095d8f7de584a83"></span>uint32_t <code class="descname">doSlaveId</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory3Hub9doSlaveIdEv" title="Permalink to this definition">¶</a><br /></dt>
+<span id="_CPPv3N5rogue10interfaces6memory3Hub9doSlaveIdEv"></span><span id="_CPPv2N5rogue10interfaces6memory3Hub9doSlaveIdEv"></span><span id="rogue::interfaces::memory::Hub::doSlaveId"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Hub_1a2192bbbcdca36e580095d8f7de584a83"></span>uint32_t <code class="sig-name descname">doSlaveId</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory3Hub9doSlaveIdEv" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Interface to service the getSlaveId request from an attached master. </p>
 <p>By default the <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Hub"><span class="std std-ref">Hub</span></a> will forward this request to the next level. A hub may want to override this when mastering a virtual address space such as a paged address map. Otherwise incorrect overlap errors may be generated by the PyRogue Root.</p>
 <p>Not exposted to Python <dl class="simple">
@@ -242,7 +242,7 @@
 
 <dl class="function">
 <dt id="_CPPv4N5rogue10interfaces6memory3Hub11doMinAccessEv">
-<span id="_CPPv3N5rogue10interfaces6memory3Hub11doMinAccessEv"></span><span id="_CPPv2N5rogue10interfaces6memory3Hub11doMinAccessEv"></span><span id="rogue::interfaces::memory::Hub::doMinAccess"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Hub_1adafcf767f51ec3d82511c1fe9772e433"></span>uint32_t <code class="descname">doMinAccess</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory3Hub11doMinAccessEv" title="Permalink to this definition">¶</a><br /></dt>
+<span id="_CPPv3N5rogue10interfaces6memory3Hub11doMinAccessEv"></span><span id="_CPPv2N5rogue10interfaces6memory3Hub11doMinAccessEv"></span><span id="rogue::interfaces::memory::Hub::doMinAccess"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Hub_1adafcf767f51ec3d82511c1fe9772e433"></span>uint32_t <code class="sig-name descname">doMinAccess</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory3Hub11doMinAccessEv" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Interface to service the getMinAccess request from an attached master. </p>
 <p>This <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Hub"><span class="std std-ref">Hub</span></a> will foward this request to the next level device. * Not exposted to Python <dl class="simple">
 <dt><strong>Return</strong></dt><dd><p>Min transaction access size </p>
@@ -253,7 +253,7 @@
 
 <dl class="function">
 <dt id="_CPPv4N5rogue10interfaces6memory3Hub11doMaxAccessEv">
-<span id="_CPPv3N5rogue10interfaces6memory3Hub11doMaxAccessEv"></span><span id="_CPPv2N5rogue10interfaces6memory3Hub11doMaxAccessEv"></span><span id="rogue::interfaces::memory::Hub::doMaxAccess"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Hub_1aeed19f9acc23e3a2a67ef59b9b714ca8"></span>uint32_t <code class="descname">doMaxAccess</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory3Hub11doMaxAccessEv" title="Permalink to this definition">¶</a><br /></dt>
+<span id="_CPPv3N5rogue10interfaces6memory3Hub11doMaxAccessEv"></span><span id="_CPPv2N5rogue10interfaces6memory3Hub11doMaxAccessEv"></span><span id="rogue::interfaces::memory::Hub::doMaxAccess"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Hub_1aeed19f9acc23e3a2a67ef59b9b714ca8"></span>uint32_t <code class="sig-name descname">doMaxAccess</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory3Hub11doMaxAccessEv" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Interface to service the getMaxAccess request from an attached master. </p>
 <p>This <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Hub"><span class="std std-ref">Hub</span></a> will foward this request to the next level device. A <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Hub"><span class="std std-ref">Hub</span></a> sub-class is allowed to override this method.</p>
 <p>Not exposted to Python <dl class="simple">
@@ -265,7 +265,7 @@
 
 <dl class="function">
 <dt id="_CPPv4N5rogue10interfaces6memory3Hub9doAddressEv">
-<span id="_CPPv3N5rogue10interfaces6memory3Hub9doAddressEv"></span><span id="_CPPv2N5rogue10interfaces6memory3Hub9doAddressEv"></span><span id="rogue::interfaces::memory::Hub::doAddress"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Hub_1acb54adf64d4dff8709151abf041d5288"></span>uint64_t <code class="descname">doAddress</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory3Hub9doAddressEv" title="Permalink to this definition">¶</a><br /></dt>
+<span id="_CPPv3N5rogue10interfaces6memory3Hub9doAddressEv"></span><span id="_CPPv2N5rogue10interfaces6memory3Hub9doAddressEv"></span><span id="rogue::interfaces::memory::Hub::doAddress"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Hub_1acb54adf64d4dff8709151abf041d5288"></span>uint64_t <code class="sig-name descname">doAddress</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory3Hub9doAddressEv" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Interface to service the getAddress request from an attached master. </p>
 <p>This <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Hub"><span class="std std-ref">Hub</span></a> will foward this request to the next level device and apply the local address offset. A <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Hub"><span class="std std-ref">Hub</span></a> sub-class is allowed to override this method.</p>
 <p>Not exposted to Python <dl class="simple">
@@ -277,7 +277,7 @@
 
 <dl class="function">
 <dt id="_CPPv4N5rogue10interfaces6memory3Hub13doTransactionENSt10shared_ptrIN5rogue10interfaces6memory11TransactionEEE">
-<span id="_CPPv3N5rogue10interfaces6memory3Hub13doTransactionENSt10shared_ptrIN5rogue10interfaces6memory11TransactionEEE"></span><span id="_CPPv2N5rogue10interfaces6memory3Hub13doTransactionENSt10shared_ptrIN5rogue10interfaces6memory11TransactionEEE"></span><span id="rogue::interfaces::memory::Hub::doTransaction__std::shared_ptr:rogue::interfaces::memory::Transaction:"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Hub_1aa3fc493ad646e9ca60e2dd31e069b296"></span><em class="property">virtual</em> void <code class="descname">doTransaction</code><span class="sig-paren">(</span>std::shared_ptr&lt;rogue::interfaces::memory::<a class="reference internal" href="transaction.html#_CPPv4N5rogue10interfaces6memory11TransactionE" title="rogue::interfaces::memory::Transaction">Transaction</a>&gt; <em>transaction</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory3Hub13doTransactionENSt10shared_ptrIN5rogue10interfaces6memory11TransactionEEE" title="Permalink to this definition">¶</a><br /></dt>
+<span id="_CPPv3N5rogue10interfaces6memory3Hub13doTransactionENSt10shared_ptrIN5rogue10interfaces6memory11TransactionEEE"></span><span id="_CPPv2N5rogue10interfaces6memory3Hub13doTransactionENSt10shared_ptrIN5rogue10interfaces6memory11TransactionEEE"></span><span id="rogue::interfaces::memory::Hub::doTransaction__std::shared_ptr:rogue::interfaces::memory::Transaction:"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Hub_1aa3fc493ad646e9ca60e2dd31e069b296"></span><em class="property">virtual</em> void <code class="sig-name descname">doTransaction</code><span class="sig-paren">(</span>std::shared_ptr&lt;rogue::interfaces::memory::<a class="reference internal" href="transaction.html#_CPPv4N5rogue10interfaces6memory11TransactionE" title="rogue::interfaces::memory::Transaction">Transaction</a>&gt; <em>transaction</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory3Hub13doTransactionENSt10shared_ptrIN5rogue10interfaces6memory11TransactionEEE" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Interface to service the transaction request from an attached master. </p>
 <p>This <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Hub"><span class="std std-ref">Hub</span></a> will foward this request to the next level device and apply the local address offset.</p>
 <p>It is possible for this method to be overriden in either a Python or C++ subclass. Examples of sub-classing a <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Hub"><span class="std std-ref">Hub</span></a> are included elsewhere in this document.</p>
@@ -295,7 +295,7 @@
 <p class="breathe-sectiondef-title rubric">Public Static Functions</p>
 <dl class="function">
 <dt id="_CPPv4N5rogue10interfaces6memory3Hub6createE8uint64_t8uint32_t8uint32_t">
-<span id="_CPPv3N5rogue10interfaces6memory3Hub6createE8uint64_t8uint32_t8uint32_t"></span><span id="_CPPv2N5rogue10interfaces6memory3Hub6createE8uint64_t8uint32_t8uint32_t"></span><span id="rogue::interfaces::memory::Hub::create__uint64_t.uint32_t.uint32_t"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Hub_1a3230fb6e06df353588dc61d4db0aa703"></span><em class="property">static</em> std::shared_ptr&lt;rogue::interfaces::memory::<a class="reference internal" href="#_CPPv4N5rogue10interfaces6memory3HubE" title="rogue::interfaces::memory::Hub">Hub</a>&gt; <code class="descname">create</code><span class="sig-paren">(</span>uint64_t <em>offset</em>, uint32_t <em>min</em>, uint32_t <em>max</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory3Hub6createE8uint64_t8uint32_t8uint32_t" title="Permalink to this definition">¶</a><br /></dt>
+<span id="_CPPv3N5rogue10interfaces6memory3Hub6createE8uint64_t8uint32_t8uint32_t"></span><span id="_CPPv2N5rogue10interfaces6memory3Hub6createE8uint64_t8uint32_t8uint32_t"></span><span id="rogue::interfaces::memory::Hub::create__uint64_t.uint32_t.uint32_t"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Hub_1a3230fb6e06df353588dc61d4db0aa703"></span><em class="property">static</em> std::shared_ptr&lt;rogue::interfaces::memory::<a class="reference internal" href="#_CPPv4N5rogue10interfaces6memory3HubE" title="rogue::interfaces::memory::Hub">Hub</a>&gt; <code class="sig-name descname">create</code><span class="sig-paren">(</span>uint64_t <em>offset</em>, uint32_t <em>min</em>, uint32_t <em>max</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory3Hub6createE8uint64_t8uint32_t8uint32_t" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Class factory which returns a pointer to a <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Hub"><span class="std std-ref">Hub</span></a> (HubPtr) </p>
 <p>Exposed to Python as <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Hub"><span class="std std-ref">rogue.interfaces.memory.Hub()</span></a></p>
 <p><dl class="simple">

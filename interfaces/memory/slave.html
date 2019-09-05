@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Memory Slave Example &mdash; Rogue v3.5.0-3-ga1c824de documentation</title>
+  <title>Memory Slave Example &mdash; Rogue v3.7.0-267-g2eba6989 documentation</title>
   
 
   
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                v3.5.0
+                v3.7.0
               </div>
             
           
@@ -256,11 +256,11 @@ initiate a read and write transaction:</p>
 
             <span class="c1"># If an error occured, complete result with bus fail</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">result</span><span class="p">:</span>
-                <span class="n">tran</span><span class="o">.</span><span class="n">done</span><span class="p">(</span><span class="n">rogue</span><span class="o">.</span><span class="n">interfaces</span><span class="o">.</span><span class="n">memory</span><span class="o">.</span><span class="n">BusFail</span><span class="p">)</span>
+                <span class="n">tran</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Got a bad result: {result}&quot;</span><span class="p">)</span>
 
             <span class="c1"># Otherwise complete transaction with success</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">tran</span><span class="o">.</span><span class="n">done</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+                <span class="n">tran</span><span class="o">.</span><span class="n">done</span><span class="p">()</span>
 
     <span class="c1"># Protocol callback for read complete</span>
     <span class="k">def</span> <span class="nf">protocolReadDone</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="nb">id</span><span class="p">,</span><span class="n">data</span><span class="p">,</span><span class="n">result</span><span class="p">):</span>
@@ -281,13 +281,13 @@ initiate a read and write transaction:</p>
 
             <span class="c1"># If an error occured, complete result with bus fail</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">result</span><span class="p">:</span>
-                <span class="n">tran</span><span class="o">.</span><span class="n">done</span><span class="p">(</span><span class="n">rogue</span><span class="o">.</span><span class="n">interfaces</span><span class="o">.</span><span class="n">memory</span><span class="o">.</span><span class="n">BusFail</span><span class="p">)</span>
+                <span class="n">tran</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Got a bad result: {result}&quot;</span><span class="p">)</span>
 
             <span class="c1"># Otherwise set the read data back to the transaction</span>
             <span class="c1"># and complete without error</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">tran</span><span class="o">.</span><span class="n">setData</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
-                <span class="n">tran</span><span class="o">.</span><span class="n">done</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+                <span class="n">tran</span><span class="o">.</span><span class="n">done</span><span class="p">()</span>
 </pre></div>
 </div>
 <p>The equivelent code in C++ is show below:</p>
@@ -358,10 +358,10 @@ initiate a read and write transaction:</p>
          <span class="k">if</span> <span class="p">(</span> <span class="n">tran</span><span class="o">-&gt;</span><span class="n">expired</span><span class="p">()</span> <span class="p">)</span> <span class="k">return</span><span class="p">;</span>
 
          <span class="c1">// If an error occured, complete result with bus fail</span>
-         <span class="k">if</span> <span class="p">(</span> <span class="o">!</span> <span class="n">result</span> <span class="p">)</span> <span class="n">tran</span><span class="o">-&gt;</span><span class="n">done</span><span class="p">(</span><span class="n">rogue</span><span class="o">::</span><span class="n">interfaces</span><span class="o">::</span><span class="n">memory</span><span class="o">::</span><span class="n">BusFail</span><span class="p">);</span>
+         <span class="k">if</span> <span class="p">(</span> <span class="o">!</span> <span class="n">result</span> <span class="p">)</span> <span class="n">tran</span><span class="o">-&gt;</span><span class="n">error</span><span class="p">(</span><span class="s">&quot;Got a bad protocol result %i&quot;</span><span class="p">,</span><span class="n">result</span><span class="p">);</span>
 
          <span class="c1">// Otherwise complete transaction with success</span>
-         <span class="k">else</span> <span class="n">tran</span><span class="o">-&gt;</span><span class="n">done</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+         <span class="k">else</span> <span class="n">tran</span><span class="o">-&gt;</span><span class="n">done</span><span class="p">();</span>
       <span class="p">}</span>
 
       <span class="c1">// Protocol callback for read complete</span>
@@ -378,13 +378,13 @@ initiate a read and write transaction:</p>
          <span class="k">if</span> <span class="p">(</span> <span class="n">tran</span><span class="o">-&gt;</span><span class="n">expired</span><span class="p">()</span> <span class="p">)</span> <span class="k">return</span><span class="p">;</span>
 
          <span class="c1">// If an error occured, complete result with bus fail</span>
-         <span class="k">if</span> <span class="p">(</span> <span class="o">!</span> <span class="n">result</span> <span class="p">)</span> <span class="n">tran</span><span class="o">-&gt;</span><span class="n">done</span><span class="p">(</span><span class="n">rogue</span><span class="o">::</span><span class="n">interfaces</span><span class="o">::</span><span class="n">memory</span><span class="o">::</span><span class="n">BusFail</span><span class="p">);</span>
+         <span class="k">if</span> <span class="p">(</span> <span class="o">!</span> <span class="n">result</span> <span class="p">)</span> <span class="n">tran</span><span class="o">-&gt;</span><span class="n">error</span><span class="p">(</span><span class="s">&quot;Got a bad protocol result %i&quot;</span><span class="p">,</span><span class="n">result</span><span class="p">);</span>
 
          <span class="c1">// Otherwise set the read data back to the transaction</span>
          <span class="c1">// and complete without error</span>
          <span class="k">else</span> <span class="p">{</span>
             <span class="n">std</span><span class="o">::</span><span class="n">copy</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">data</span><span class="o">+</span><span class="n">tran</span><span class="o">-&gt;</span><span class="n">size</span><span class="p">(),</span><span class="n">tran</span><span class="o">-&gt;</span><span class="n">begin</span><span class="p">());</span>
-            <span class="n">tran</span><span class="o">-&gt;</span><span class="n">done</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+            <span class="n">tran</span><span class="o">-&gt;</span><span class="n">done</span><span class="p">();</span>
          <span class="p">}</span>
       <span class="p">}</span>
 <span class="p">};</span>

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Building Rogue Inside Anaconda &mdash; Rogue v3.5.0-3-ga1c824de documentation</title>
+  <title>Building Rogue Inside Anaconda &mdash; Rogue v3.7.0-267-g2eba6989 documentation</title>
   
 
   
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                v3.5.0
+                v3.7.0
               </div>
             
           
@@ -205,16 +205,16 @@ $ cd rogue
 </pre></div>
 </div>
 <p>For Linux:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ conda env create -n rogue_env -f conda.yml
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ conda env create -n rogue_build -f conda.yml
 </pre></div>
 </div>
 <p>For MacOS:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ conda env create -n rogue_env -f conda_mac.yml
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ conda env create -n rogue_build -f conda_mac.yml
 </pre></div>
 </div>
-<p>You now have an anaconda environment named rogue_env which contains all of the packages required to build and run rogue.</p>
+<p>You now have an anaconda environment named rogue_build which contains all of the packages required to build and run rogue.</p>
 <p>To activate this environment:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ conda activate rogue_env
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ conda activate rogue_build
 </pre></div>
 </div>
 </div>
@@ -235,7 +235,7 @@ within the anaconda rogue environment.</p>
 <h2>Using Rogue In Anaconda<a class="headerlink" href="#using-rogue-in-anaconda" title="Permalink to this headline">¶</a></h2>
 <p>No additional setup scripts need to be run rogue in an anaconda environment. To activate and de-activate the rogue environment you can use the following commands:</p>
 <p>To activate:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ conda activate rogue_env
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ conda activate rogue_build
 </pre></div>
 </div>
 <p>To deactivate:</p>
@@ -260,7 +260,7 @@ $ make install
 <div class="section" id="deleting-anaconda-environment">
 <h2>Deleting Anaconda Environment<a class="headerlink" href="#deleting-anaconda-environment" title="Permalink to this headline">¶</a></h2>
 <p>Run the following commands to delete the anaconda environment.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ conda env remove -n rogue_env
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ conda env remove -n rogue_build
 </pre></div>
 </div>
 </div>

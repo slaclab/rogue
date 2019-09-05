@@ -28,6 +28,7 @@
 ./_sources/installing/firewall.rst.txt
 ./_sources/installing/index.rst.txt
 ./_sources/installing/windows.rst.txt
+./_sources/interfaces/cpp_api.rst.txt
 ./_sources/interfaces/index.rst.txt
 ./_sources/interfaces/memory/classes/constants.rst.txt
 ./_sources/interfaces/memory/classes/hub.rst.txt
@@ -109,7 +110,7 @@
 ./_static/fonts/fontawesome-webfont.ttf
 ./_static/fonts/fontawesome-webfont.woff
 ./_static/fonts/fontawesome-webfont.woff2
-./_static/jquery-3.2.1.js
+./_static/jquery-3.4.1.js
 ./_static/jquery.js
 ./_static/js/modernizr.min.js
 ./_static/js/theme.js
@@ -151,6 +152,7 @@
 ./installing/firewall.html
 ./installing/index.html
 ./installing/windows.html
+./interfaces/cpp_api.html
 ./interfaces/index.html
 ./interfaces/memory/classes/constants.html
 ./interfaces/memory/classes/hub.html
