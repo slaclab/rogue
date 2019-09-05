@@ -1,5 +1,5 @@
 PyYAML
-Pyro4
+jsonpickle
 parse
 click
 coverage
@@ -13,3 +13,5 @@ sphinx_rtd_theme
 sphinxcontrib-napoleon
 breathe
 pyzmq
+p4p
+sqlalchemy

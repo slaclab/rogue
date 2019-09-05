@@ -25,39 +25,12 @@ import inspect
 class MemoryError(Exception):
     """ Exception for memory access errors."""
 
-    def __init__(self, *, name, address, error=0, msg=None, size=0):
+    def __init__(self, *, name, address, msg=None, size=0):
 
-        self._value = f"Memory Error for {name} at address {address:#08x} "
-
-        if (error & 0xFF000000) == rim.TimeoutError:
-            self._value += "Timeout."
-
-        elif (error & 0xFF000000) == rim.VerifyError:
-            self._value += "Verify error."
-
-        elif (error & 0xFF000000) == rim.AddressError:
-            self._value += "Address error."
-
-        elif (error & 0xFF000000) == rim.SizeError:
-            self._value += f"Size error. Size={size}."
-
-        elif (error & 0xFF000000) == rim.BusTimeout:
-            self._value += "Bus timeout."
-
-        elif (error & 0xFF000000) == rim.BusFail:
-            self._value += "Bus Error: {:#02x}".format(error & 0xFF)
-
-        elif (error & 0xFF000000) == rim.Unsupported:
-            self._value += "Unsupported Transaction."
-
-        elif (error & 0xFF000000) == rim.ProtocolError:
-            self._value += "Protocol Error."
-
-        elif error != 0:
-            self._value += f"Unknown error {error:#02x}."
+        self._value = f"Memory Error for {name} at address {address:#08x}"
 
         if msg is not None:
-            self._value += (' ' + msg)
+            self._value += " " + msg
 
     def __str__(self):
         return repr(self._value)
@@ -166,7 +139,11 @@ class LocalBlock(BaseBlock):
 
     def set(self, var, value):
         with self._lock:
-            changed = self._value != value
+
+            if isinstance(value, list) or isinstance(value,dict):
+                changed = True
+            else:
+                changed = self._value != value
             self._value = value
 
             # If a setFunction exists, call it (Used by local variables)
@@ -313,8 +290,10 @@ class RemoteBlock(BaseBlock, rim.Master):
                 if var._overlapEn:
                     self._setBits(oleMask,var.bitOffset[x],var.bitSize[x])
 
-                # Otherwise add to exclusive mask
+                # Otherwise add to exclusive mask and check for existing mapping
                 else:
+                    if self._anyBits(excMask,var.bitOffset[x],var.bitSize[x]):
+                        raise MemoryError(name=self.path, address=self.address, msg="Variable bit overlap detected.")
                     self._setBits(excMask,var.bitOffset[x],var.bitSize[x])
 
                 # update verify mask
@@ -368,10 +347,6 @@ class RemoteBlock(BaseBlock, rim.Master):
     def error(self):
         return self._getError()
 
-    @error.setter
-    def error(self,value):
-        self._setError(value)
-
     @property
     def bulkEn(self):
         return self._bulkEn
@@ -391,7 +366,7 @@ class RemoteBlock(BaseBlock, rim.Master):
             srcBit = 0
             for x in range(len(var.bitOffset)):
                 self._copyBits(self._sData, var.bitOffset[x], ba, srcBit, var.bitSize[x])
-                self._setBits( self._sDataMask, var.bitOffset[x], var.bitSize[x])
+                self._setBits(self._sDataMask, var.bitOffset[x], var.bitSize[x])
                 srcBit += var.bitSize[x]
 
     def get(self, var):
@@ -431,7 +406,7 @@ class RemoteBlock(BaseBlock, rim.Master):
                 return
 
             self._waitTransaction(0)
-            self.error = 0
+            self._clearError()
 
             # Move staged write data to block. Clear stale.
             if type == rim.Write or type == rim.Post:
@@ -481,21 +456,22 @@ class RemoteBlock(BaseBlock, rim.Master):
 
             # Error
             err = self.error
-            self.error = 0
+            self._clearError()
 
-            if err > 0:
-                raise MemoryError(name=self.path, address=self.address, error=err, size=self._size)
+            if err != "":
+                raise MemoryError(name=self.path, address=self.address, msg=err, size=self._size)
 
             if self._doVerify:
                 self._verifyWr = False
 
                 for x in range(self._size):
                     if (self._vData[x] & self._vDataMask[x]) != (self._bData[x] & self._vDataMask[x]):
-                        msg  = ('Local='    + ''.join(f'{x:#02x}' for x in self._bData))
+                        msg  = "Verify Error: "
+                        msg += ('Local='    + ''.join(f'{x:#02x}' for x in self._bData))
                         msg += ('. Verify=' + ''.join(f'{x:#02x}' for x in self._vData))
                         msg += ('. Mask='   + ''.join(f'{x:#02x}' for x in self._vDataMask))
 
-                        raise MemoryError(name=self.path, address=self.address, error=rim.VerifyError, msg=msg, size=self._size)
+                        raise MemoryError(name=self.path, address=self.address, msg=msg, size=self._size)
 
                # Updated
             doUpdate = self._doUpdate

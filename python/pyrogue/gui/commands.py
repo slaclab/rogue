@@ -29,7 +29,7 @@ except ImportError:
 import pyrogue
 
 class CommandDev(QObject):
-    def __init__(self,*,tree,parent,dev,noExpand):
+    def __init__(self,*,tree,parent,dev,noExpand,top,incGroups,excGroups):
         QObject.__init__(self)
         self._parent   = parent
         self._tree     = tree
@@ -38,6 +38,11 @@ class CommandDev(QObject):
 
         self._widget = QTreeWidgetItem(parent)
         self._widget.setText(0,self._dev.name)
+        self._incGroups=incGroups
+        self._excGroups=excGroups
+
+        if top:
+            self._parent.addTopLevelItem(self._widget)
 
         if (not noExpand) and self._dev.expand:
             self._dummy = None
@@ -61,13 +66,21 @@ class CommandDev(QObject):
     def setup(self,noExpand):
 
         # First create commands
-        for key,val in self._dev.visableCommands.items():
-            self._children.append(CommandLink(tree=self._tree,parent=self._widget,command=val))
+        for key,val in self._dev.commandsByGroup(incGroups=self._incGroups,excGroups=self._excGroups).items():
+            self._children.append(CommandLink(tree=self._tree,
+                                              parent=self._widget,
+                                              command=val))
             QCoreApplication.processEvents()
 
         # Then create devices
-        for key,val in self._dev.visableDevices.items():
-            self._children.append(CommandDev(tree=self._tree,parent=self._widget,dev=val,noExpand=noExpand))
+        for key,val in self._dev.devicesByGroup(incGroups=self._incGroups,excGroups=self._excGroups).items():
+            self._children.append(CommandDev(tree=self._tree,
+                                             parent=self._widget,
+                                             dev=val,
+                                             noExpand=noExpand,
+                                             top=False,
+                                             incGroups=self._incGroups,
+                                             excGroups=self._excGroups))
 
         for i in range(0,4):
             self._tree.resizeColumnToContents(i)
@@ -121,18 +134,18 @@ class CommandLink(QObject):
 
         if self._command.arg:
             try:
-                self._command.call(self._command.parseDisp(value))
+                self._command(self._command.parseDisp(value))
             except Exception:
                 pass
         else:
-            self._command.call()
+            self._command()
 
 class CommandWidget(QWidget):
-    def __init__(self, *, group, parent=None):
+    def __init__(self, *, parent=None):
         super(CommandWidget, self).__init__(parent)
 
         self.roots = []
-        self.commands = []
+        self._children = []
 
         vb = QVBoxLayout()
         self.setLayout(vb)
@@ -142,19 +155,20 @@ class CommandWidget(QWidget):
         self.tree.setColumnCount(2)
         self.tree.setHeaderLabels(['Command','Base','Execute','Arg'])
 
-        self.top = QTreeWidgetItem(self.tree)
-        self.top.setText(0,group)
-        self.tree.addTopLevelItem(self.top)
-        self.top.setExpanded(True)
-
         hb = QHBoxLayout()
         vb.addLayout(hb)
 
         self.devTop = None
 
-    @pyqtSlot(pyrogue.Root)
-    @pyqtSlot(pyrogue.PyroRoot)
-    def addTree(self,root):
+    @pyqtSlot(pyrogue.Root,list,list)
+    @pyqtSlot(pyrogue.interfaces.VirtualNode,list,list)
+    def addTree(self,root,incGroups,excGroups):
         self.roots.append(root)
-        self._devTop = CommandDev(tree=self.tree,parent=self.top,dev=root,noExpand=False)
+        self._children.append(CommandDev(tree=self.tree,
+                                         parent=self.tree,
+                                         dev=root,
+                                         noExpand=False,
+                                         top=True,
+                                         incGroups=incGroups,
+                                         excGroups=excGroups))
 

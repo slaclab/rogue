@@ -46,7 +46,7 @@ def data_path():
     print("Generating Frames")
     for _ in range(FrameCount):
         prbsTx.genFrame(FrameSize)
-    time.sleep(5)
+    time.sleep(20)
 
     if prbsRx.getRxCount() != FrameCount:
         raise AssertionError('Frame count error. Got = {} expected = {}'.format(prbsRx.getRxCount(),FrameCount))

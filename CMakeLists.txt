@@ -76,15 +76,11 @@ endif()
 #####################################
 # BZIP2
 #####################################
-if ( NOT NO_BZIP ) 
    find_package(BZip2 QUIET REQUIRED)
-endif()
 
 #####################################
 # ZeroMQ
 #####################################
-if ( NOT NO_ZMQ )
-
    # First try with Cmake packages
    find_package(ZeroMQ QUIET)
 
@@ -92,7 +88,7 @@ if ( NOT NO_ZMQ )
    if (NOT ZeroMQ_FOUND)
       
       # Convert LD_LIBRARY PATH for search
-      if(ENV{LD_LIBRARY_PATH})
+      if(DEFINED ENV{LD_LIBRARY_PATH})
          string(REPLACE ":" ";" HINT_PATHS $ENV{LD_LIBRARY_PATH})
       else()
          set(HINT_PATHS, "")
@@ -114,51 +110,64 @@ if ( NOT NO_ZMQ )
                  NAMES zmq.h
                  PATHS ${ZMQ_LIBDIR}/../include
                  )
-      endif()
-
-      # Failed to find it
-      if (NOT ZeroMQ_INCLUDE_DIR)
+         if (NOT ZeroMQ_INCLUDE_DIR)
+            message("")
+            message(FATAL_ERROR "Failed to find ZeroMQ_INCLUDE_DIR!")
+         endif()
+      else()
+         # Failed to find it
          message("")
          message(FATAL_ERROR "Failed to find zeroMQ!")
       endif()
    endif()
-endif()
 
 #####################################
 # EPICS V3
 #####################################
 if((NOT NO_PYTHON) AND (NOT NO_EPICS) AND DEFINED ENV{EPICS_BASE})
    set(DO_EPICS_V3 1)
-   set(EPICSV3_BASE_DIR  $ENV{EPICS_BASE})
+   set(EPICSV3_BASE_DIR $ENV{EPICS_BASE})
    if(DEFINED ENV{EPICS_HOST_ARCH})
-       set(EPICSV3_ARCH      $ENV{EPICS_HOST_ARCH})
+       set(EPICSV3_ARCH $ENV{EPICS_HOST_ARCH})
    else()
        execute_process(COMMAND ${EPICSV3_BASE_DIR}/startup/EpicsHostArch 
                        OUTPUT_VARIABLE EPICSV3_ARCH OUTPUT_STRIP_TRAILING_WHITESPACE)
        string(REGEX REPLACE "\n$" "" EPICSV3_ARCH "${EPICSV3_ARCH}")
    endif()
-   set(EPICSV3_LIB_DIR   ${EPICSV3_BASE_DIR}/lib/${EPICSV3_ARCH} )
 
-   if(APPLE)
+   # PCAS is part of epics before version 4
+   if(DEFINED ENV{EPICS_PCAS_ROOT})
+      set(EPICSV3_PCAS_DIR $ENV{EPICS_PCAS_ROOT})
+   else()
+      set(EPICSV3_PCAS_DIR $ENV{EPICS_BASE})
+   endif()
 
-      set(EPICSV3_INCLUDES  ${EPICSV3_BASE_DIR}/include
+   # See if we can find the pcas header, may not exist if epics 7 without pcas is installed
+   find_path(E3_TEST_INCLUDE_DIR NAMES casdef.h PATHS ${EPICSV3_PCAS_DIR}/include)
+   if (NOT E3_TEST_INCLUDE_DIR)
+      set(DO_EPICS_V3 0)
+   elseif(APPLE)
+
+      set(EPICSV3_INCLUDES  ${EPICSV3_PCAS_DIR}/include
+                            ${EPICSV3_BASE_DIR}/include
                             ${EPICSV3_BASE_DIR}/include/compiler/gcc 
                             ${EPICSV3_BASE_DIR}/include/os/Darwin)
 
-      set(EPICSV3_LIBRARIES ${EPICSV3_LIB_DIR}/libcas.dylib 
-                            ${EPICSV3_LIB_DIR}/libca.dylib 
-                            ${EPICSV3_LIB_DIR}/libCom.dylib 
-                            ${EPICSV3_LIB_DIR}/libgdd.dylib)
+      set(EPICSV3_LIBRARIES ${EPICSV3_PCAS_DIR}/lib/${EPICSV3_ARCH}/libcas.dylib 
+                            ${EPICSV3_PCAS_DIR}/lib/${EPICSV3_ARCH}/libgdd.dylib
+                            ${EPICSV3_BASE_DIR}/lib/${EPICSV3_ARCH}/libca.dylib 
+                            ${EPICSV3_BASE_DIR}/lib/${EPICSV3_ARCH}/libCom.dylib )
    else()
 
-      set(EPICSV3_INCLUDES  ${EPICSV3_BASE_DIR}/include
+      set(EPICSV3_INCLUDES  ${EPICSV3_PCAS_DIR}/include
+                            ${EPICSV3_BASE_DIR}/include
                             ${EPICSV3_BASE_DIR}/include/compiler/gcc 
                             ${EPICSV3_BASE_DIR}/include/os/Linux)
 
-      set(EPICSV3_LIBRARIES ${EPICSV3_LIB_DIR}/libcas.so 
-                            ${EPICSV3_LIB_DIR}/libca.so 
-                            ${EPICSV3_LIB_DIR}/libCom.so 
-                            ${EPICSV3_LIB_DIR}/libgdd.so )
+      set(EPICSV3_LIBRARIES ${EPICSV3_PCAS_DIR}/lib/${EPICSV3_ARCH}/libcas.so 
+                            ${EPICSV3_PCAS_DIR}/lib/${EPICSV3_ARCH}/libgdd.so
+                            ${EPICSV3_BASE_DIR}/lib/${EPICSV3_ARCH}/libca.so 
+                            ${EPICSV3_BASE_DIR}/lib/${EPICSV3_ARCH}/libCom.so )
    endif()
 else()
    set(DO_EPICS_V3 0)
@@ -172,7 +181,7 @@ endif()
 find_package(Git QUIET)
 if (GIT_FOUND)
    execute_process (
-      COMMAND ${GIT_EXECUTABLE} describe --tags --dirty
+      COMMAND ${GIT_EXECUTABLE} --git-dir=${CMAKE_SOURCE_DIR}/.git --work-tree=${CMAKE_SOURCE_DIR} describe --tags --dirty
       OUTPUT_VARIABLE ROGUE_VERSION
       OUTPUT_STRIP_TRAILING_WHITESPACE)
 
@@ -233,8 +242,14 @@ else()
    SET(CMAKE_SHARED_LIBRARY_SUFFIX ".so")
 endif()
 
+if(STATIC_LIB) 
+set(LINK_MODE STATIC)
+else()
+set(LINK_MODE SHARED)
+endif()
+
 # Create rogue core library
-add_library(rogue-core SHARED "")
+add_library(rogue-core ${LINK_MODE} "")
 
 # Find rogue core sources
 add_subdirectory(src/rogue)
@@ -317,7 +332,7 @@ configure_file(${PROJECT_SOURCE_DIR}/templates/setup.py.in
 #####################################
 
 # Always install core libraries and config files
-install(TARGETS rogue-core LIBRARY DESTINATION ${ROGUE_DIR}/lib)
+install(TARGETS rogue-core LIBRARY DESTINATION ${ROGUE_DIR}/lib ARCHIVE DESTINATION ${ROGUE_DIR}/lib)
 install(FILES   ${PROJECT_BINARY_DIR}/RogueConfig.cmake DESTINATION ${ROGUE_DIR}/lib)
 
 # Copy setup files for local or custom
@@ -380,26 +395,19 @@ endif()
 message("")
 
 if (DO_EPICS_V3)
-   message("-- Found EPICS V3: ${EPICSV3_BASE_DIR}")
+   message("-- Found EPICS: ${EPICSV3_PCAS_DIR}")
 else()
    message("-- EPICS V3 not included!")
 endif()
 
 message("")
-
-if (NO_ZMQ)
-   message("-- ZeroMQ not included!")
-else()
 message("-- Found ZeroMq: ${ZeroMQ_INCLUDE_DIR}")
-endif()
-
 message("")
-
-if (NO_BZIP)
-   message("-- Bzip2 not included!")
-else()
 message("-- Found Bzip2: ${BZIP2_INCLUDE_DIR}")
+if (STATIC_LIB)
+   message("-- Link static rogue library!")
 endif()
+
 
 message("----------------------------------------------------------------------")
 message("")

@@ -21,6 +21,7 @@
 #define __ROGUE_INTERFACES_STREAM_FRAME_ITERATOR_H__
 #include <stdint.h>
 #include <vector>
+#include <cstring>
 
 namespace rogue {
    namespace interfaces {
@@ -233,7 +234,16 @@ namespace rogue {
           * @param src Pointer to data source
           */
          inline void toFrame ( rogue::interfaces::stream::FrameIterator & iter, uint32_t size, void * src) {
-            iter = std::copy((uint8_t*)src, ((uint8_t*)src)+size, iter);
+            uint8_t * ptr = reinterpret_cast<uint8_t *>(src);
+            uint32_t  csize;
+
+            do {
+               csize = (size > iter.remBuffer())?iter.remBuffer():size;
+               std::memcpy(iter.ptr(), ptr, csize);
+               ptr  += csize;
+               iter += csize;
+               size -= csize;
+            } while ( size > 0 && csize > 0 );
          }
 
          //! Inline helper function to copy values from a frame iterator
@@ -244,8 +254,38 @@ namespace rogue {
           * @param dst Pointer to data destination
           */
          inline void fromFrame ( rogue::interfaces::stream::FrameIterator & iter, uint32_t size, void * dst) {
-            std::copy(iter,iter+size,(uint8_t*)dst);
-            iter += size;
+            uint8_t * ptr = reinterpret_cast<uint8_t *>(dst);
+            uint32_t  csize;
+
+            do {
+               csize = (size > iter.remBuffer())?iter.remBuffer():size;
+               std::memcpy(ptr, iter.ptr(), csize);
+               ptr  += csize;
+               iter += csize;
+               size -= csize;
+            } while ( size > 0 && csize > 0 );
+         }
+
+         //! Inline helper function to copy frame data between frames
+         /** This helper function copies data from the source Frame at the iterator 
+          * location into the dest frame at the iterator location. Both iterators are 
+          * updated by tye copy size.
+          * @param srcIter FrameIterator at position to copy the data from
+          * @param size The number of bytes to copy
+          * @param dstIter FrameIterator at position to copy the data to
+          */
+         inline void copyFrame ( rogue::interfaces::stream::FrameIterator & srcIter, uint32_t size, 
+                                 rogue::interfaces::stream::FrameIterator & dstIter ) {
+            uint32_t  csize;
+
+            do {
+               csize = (size  > srcIter.remBuffer())?srcIter.remBuffer():size;
+               csize = (csize > dstIter.remBuffer())?dstIter.remBuffer():csize;
+               std::memcpy(dstIter.ptr(), srcIter.ptr(), csize);
+               srcIter += csize;
+               dstIter += csize;
+               size    -= csize;
+            } while ( size > 0 && csize > 0 );
          }
       }
    }

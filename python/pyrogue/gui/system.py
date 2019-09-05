@@ -27,24 +27,24 @@ except ImportError:
     from PyQt4.QtGui     import *
 
 import pyrogue
-import Pyro4
 import datetime
 
 class DataLink(QObject):
 
-    updateDataFile   = pyqtSignal(str)
-    updateOpenState  = pyqtSignal(int)
-    updateBufferSize = pyqtSignal(str)
-    updateMaxSize    = pyqtSignal(str)
-    updateFileSize   = pyqtSignal(str)
-    updateFrameCount = pyqtSignal(str)
+    updateDataFile    = pyqtSignal(str)
+    updateOpenState   = pyqtSignal(str)
+    updateBufferSize  = pyqtSignal(str)
+    updateMaxSize     = pyqtSignal(str)
+    updateTotalSize   = pyqtSignal(str)
+    updateCurrentSize = pyqtSignal(str)
+    updateFrameCount  = pyqtSignal(str)
 
     def __init__(self,*,layout,writer):
         QObject.__init__(self)
         self.writer = writer
         self.block = False
 
-        gb = QGroupBox('Data File Control (%s)' % (writer.name))
+        gb = QGroupBox('Data File Control (%s) ' % (writer.name))
         layout.addWidget(gb)
 
         vb = QVBoxLayout()
@@ -56,12 +56,11 @@ class DataLink(QObject):
         fl.setLabelAlignment(Qt.AlignRight)
         vb.addLayout(fl)
 
-        self.writer.dataFile.addListener(self)
+        self.writer.DataFile.addListener(self.varListener)
         self.dataFile = QLineEdit()
-        self.dataFile.setText(self.writer.dataFile.valueDisp())
+        self.dataFile.setText(self.writer.DataFile.valueDisp())
         self.dataFile.textEdited.connect(self.dataFileEdited)
         self.dataFile.returnPressed.connect(self.dataFileChanged)
-
         self.updateDataFile.connect(self.dataFile.setText)
 
         fl.addRow('Data File:',self.dataFile)
@@ -69,75 +68,89 @@ class DataLink(QObject):
         hb = QHBoxLayout()
         vb.addLayout(hb)
 
+        pb = QPushButton('Browse')
+        pb.clicked.connect(self.browse)
+        hb.addWidget(pb)
+
+        pb = QPushButton('Auto Name')
+        pb.clicked.connect(self.genName)
+        hb.addWidget(pb)
+
+        pb = QPushButton('Open')
+        pb.clicked.connect(self.open)
+        hb.addWidget(pb)
+
+        pb = QPushButton('Close')
+        pb.clicked.connect(self.close)
+        hb.addWidget(pb)
+
+        hb = QHBoxLayout()
+        vb.addLayout(hb)
+
+        vbl = QVBoxLayout()
+        hb.addLayout(vbl)
+
         fl = QFormLayout()
         fl.setRowWrapPolicy(QFormLayout.DontWrapRows)
         fl.setFormAlignment(Qt.AlignHCenter | Qt.AlignTop)
         fl.setLabelAlignment(Qt.AlignRight)
-        hb.addLayout(fl)
+        vbl.addLayout(fl)
 
-        self.writer.open.addListener(self)
-        self.openState = QComboBox()
-        self.openState.addItem('False')
-        self.openState.addItem('True')
-        self.openState.setCurrentIndex(0)
-        self.openState.activated.connect(self.openStateChanged)
-
-        self.updateOpenState.connect(self.openState.setCurrentIndex)
-
-        fl.addRow('File Open:',self.openState)
-
-        self.writer.bufferSize.addListener(self)
+        self.writer.BufferSize.addListener(self.varListener)
         self.bufferSize = QLineEdit()
-        self.bufferSize.setText(self.writer.bufferSize.valueDisp())
+        self.bufferSize.setText(self.writer.BufferSize.valueDisp())
         self.bufferSize.textEdited.connect(self.bufferSizeEdited)
         self.bufferSize.returnPressed.connect(self.bufferSizeChanged)
-
         self.updateBufferSize.connect(self.bufferSize.setText)
-
         fl.addRow('Buffer Size:',self.bufferSize)
 
-        self.writer.fileSize.addListener(self)
-        self.totSize = QLineEdit()
-        self.totSize.setText(self.writer.fileSize.valueDisp())
-        self.totSize.setReadOnly(True)
+        self.writer.IsOpen.addListener(self.varListener)
+        self.openState = QLineEdit()
+        self.openState.setText(self.writer.IsOpen.valueDisp())
+        self.openState.setReadOnly(True)
+        self.updateOpenState.connect(self.openState.setText)
+        fl.addRow('File Open:',self.openState)
 
-        self.updateFileSize.connect(self.totSize.setText)
+        self.writer.CurrentSize.addListener(self.varListener)
+        self.curSize = QLineEdit()
+        self.curSize.setText(self.writer.CurrentSize.valueDisp())
+        self.curSize.setReadOnly(True)
+        self.updateCurrentSize.connect(self.curSize.setText)
+        fl.addRow('Current File Size:',self.curSize)
 
-        fl.addRow('Total File Size:',self.totSize)
+        vbr = QVBoxLayout()
+        hb.addLayout(vbr)
 
         fl = QFormLayout()
         fl.setRowWrapPolicy(QFormLayout.DontWrapRows)
         fl.setFormAlignment(Qt.AlignHCenter | Qt.AlignTop)
         fl.setLabelAlignment(Qt.AlignRight)
-        hb.addLayout(fl)
+        vbr.addLayout(fl)
 
-        pb1 = QPushButton('Browse')
-        pb1.clicked.connect(self._browse)
-
-        pb2 = QPushButton('Auto Name')
-        pb2.clicked.connect(self._genName)
-        fl.addRow(pb1,pb2)
-
-        self.writer.maxFileSize.addListener(self)
+        self.writer.MaxFileSize.addListener(self.varListener)
         self.maxSize = QLineEdit()
-        self.maxSize.setText(self.writer.maxFileSize.valueDisp())
+        self.maxSize.setText(self.writer.MaxFileSize.valueDisp())
         self.maxSize.textEdited.connect(self.maxSizeEdited)
         self.maxSize.returnPressed.connect(self.maxSizeChanged)
-
         self.updateMaxSize.connect(self.maxSize.setText)
-
         fl.addRow('Max Size:',self.maxSize)
 
-        self.writer.frameCount.addListener(self)
+        self.writer.FrameCount.addListener(self.varListener)
         self.frameCount = QLineEdit()
-        self.frameCount.setText(self.writer.frameCount.valueDisp())
+        self.frameCount.setText(self.writer.FrameCount.valueDisp())
         self.frameCount.setReadOnly(True)
-
         self.updateFrameCount.connect(self.frameCount.setText)
-
         fl.addRow('Frame Count:',self.frameCount)
 
-    def _browse(self):
+        self.writer.TotalSize.addListener(self.varListener)
+        self.totSize = QLineEdit()
+        self.totSize.setText(self.writer.TotalSize.valueDisp())
+        self.totSize.setReadOnly(True)
+        self.updateTotalSize.connect(self.totSize.setText)
+        fl.addRow('Total File Size:',self.totSize)
+
+    @pyqtSlot()
+    def browse(self):
         dlg = QFileDialog()
         sug = datetime.datetime.now().strftime("data_%Y%m%d_%H%M%S.dat") 
 
@@ -148,35 +161,37 @@ class DataLink(QObject):
             dataFile = dataFile[0]
 
         if dataFile != '':
-            self.writer.dataFile.setDisp(dataFile)
+            self.writer.DataFile.setDisp(dataFile)
     
-    def _genName(self):
-        self.writer.autoName()
+    def genName(self):
+        self.writer.AutoName()
         pass
 
-    @Pyro4.expose
-    def varListener(self,path,value,disp):
+    def varListener(self,path,value):
         if self.block: return
 
         name = path.split('.')[-1]
 
         if name == 'dataFile':
-            self.updateDataFile.emit(disp)
+            self.updateDataFile.emit(value.valueDisp)
 
-        elif name == 'open':
-            self.updateOpenState.emit(self.openState.findText(disp))
+        elif name == 'isOpen':
+            self.updateOpenState.emit(value.valueDisp)
 
         elif name == 'bufferSize':
-            self.updateBufferSize.emit(disp)
+            self.updateBufferSize.emit(value.valueDisp)
 
         elif name == 'maxFileSize':
-            self.updateMaxSize.emit(disp)
+            self.updateMaxSize.emit(value.valueDisp)
 
-        elif name == 'fileSize':
-            self.updateFileSize.emit(disp)
+        elif name == 'totalSize':
+            self.updateTotalSize.emit(value.valueDisp)
+
+        elif name == 'currentSize':
+            self.updateCurrentSize.emit(value.valueDisp)
 
         elif name == 'frameCount':
-            self.updateFrameCount.emit(disp)
+            self.updateFrameCount.emit(value.valueDisp)
 
     @pyqtSlot()
     def dataFileEdited(self):
@@ -191,14 +206,16 @@ class DataLink(QObject):
         self.dataFile.setPalette(p)
 
         self.block = True
-        self.writer.dataFile.setDisp(self.dataFile.text())
+        self.writer.DataFile.setDisp(self.dataFile.text())
         self.block = False
 
-    @pyqtSlot(int)
-    def openStateChanged(self,value):
-        self.block = True
-        self.writer.open.setDisp(self.openState.itemText(value))
-        self.block = False
+    @pyqtSlot()
+    def open(self):
+        self.writer.Open()
+
+    @pyqtSlot()
+    def close(self):
+        self.writer.Close()
 
     @pyqtSlot()
     def bufferSizeEdited(self):
@@ -213,7 +230,7 @@ class DataLink(QObject):
         self.bufferSize.setPalette(p)
 
         self.block = True
-        self.writer.bufferSize.setDisp(self.bufferSize.text())
+        self.writer.BufferSize.setDisp(self.bufferSize.text())
         self.block = False
 
     @pyqtSlot()
@@ -229,7 +246,7 @@ class DataLink(QObject):
         self.maxSize.setPalette(p)
 
         self.block = True
-        self.writer.maxFileSize.setDisp(self.maxSize.text())
+        self.writer.MaxFileSize.setDisp(self.maxSize.text())
         self.block = False
 
 
@@ -256,7 +273,7 @@ class ControlLink(QObject):
         fl.setLabelAlignment(Qt.AlignRight)
         vb.addLayout(fl)
 
-        self.control.runRate.addListener(self)
+        self.control.runRate.addListener(self.varListener)
         self.runRate = QComboBox()
         self.runRate.activated.connect(self.runRateChanged)
         self.updateRate.connect(self.runRate.setCurrentIndex)
@@ -275,7 +292,7 @@ class ControlLink(QObject):
         fl.setLabelAlignment(Qt.AlignRight)
         hb.addLayout(fl)
 
-        self.control.runState.addListener(self)
+        self.control.runState.addListener(self.varListener)
         self.runState = QComboBox()
         self.runState.activated.connect(self.runStateChanged)
         self.updateState.connect(self.runState.setCurrentIndex)
@@ -291,7 +308,7 @@ class ControlLink(QObject):
         fl.setLabelAlignment(Qt.AlignRight)
         hb.addLayout(fl)
 
-        self.control.runCount.addListener(self)
+        self.control.runCount.addListener(self.varListener)
         self.runCount = QLineEdit()
         self.runCount.setText(self.control.runCount.valueDisp())
         self.runCount.setReadOnly(True)
@@ -299,20 +316,19 @@ class ControlLink(QObject):
 
         fl.addRow('Run Count:',self.runCount)
 
-    @Pyro4.expose
-    def varListener(self,path,value,disp):
+    def varListener(self,path,value):
         if self.block: return
 
         name = path.split('.')[-1]
 
         if name == 'runState':
-            self.updateState.emit(self.runState.findText(disp))
+            self.updateState.emit(self.runState.findText(value.valueDisp))
 
         elif name == 'runRate':
-            self.updateRate.emit(self.runRate.findText(disp))
+            self.updateRate.emit(self.runRate.findText(value.valueDisp))
 
         elif name == 'runCount':
-            self.updateCount.emit(disp)
+            self.updateCount.emit(value.valueDisp)
 
     @pyqtSlot(int)
     def runStateChanged(self,value):
@@ -382,13 +398,13 @@ class SystemWidget(QWidget):
         ###################
         # Data Controllers
         ###################
-        for key,val in root.getNodes(typ=pyrogue.DataWriter,hidden=True).items():
+        for key,val in root.getNodes(typ=pyrogue.DataWriter).items():
             self.holders.append(DataLink(layout=tl,writer=val))
 
         ###################
         # Run Controllers
         ###################
-        for key,val in root.getNodes(typ=pyrogue.RunControl,hidden=True).items():
+        for key,val in root.getNodes(typ=pyrogue.RunControl).items():
             self.holders.append(ControlLink(layout=tl,control=val))
 
         ###################
@@ -404,7 +420,7 @@ class SystemWidget(QWidget):
         self.systemLog.setReadOnly(True)
         vb.addWidget(self.systemLog)
 
-        root.SystemLog.addListener(self)
+        root.SystemLog.addListener(self.varListener)
         self.updateLog.connect(self.systemLog.setText)
         self.systemLog.setText(root.SystemLog.valueDisp())
         
@@ -418,12 +434,11 @@ class SystemWidget(QWidget):
     def resetLog(self):
         self.root.ClearLog()
 
-    @Pyro4.expose
-    def varListener(self,path,value,disp):
+    def varListener(self,path,value):
         name = path.split('.')[-1]
 
         if name == 'SystemLog':
-            self.updateLog.emit(disp)
+            self.updateLog.emit(value.valueDisp)
 
     @pyqtSlot()
     def hardReset(self):

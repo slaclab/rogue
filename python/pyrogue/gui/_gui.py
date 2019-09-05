@@ -27,6 +27,7 @@ except ImportError:
     from PyQt4.QtGui     import *
 
 import pyrogue
+import pyrogue.interfaces
 import pyrogue.gui
 import pyrogue.gui.variables
 import pyrogue.gui.commands
@@ -40,11 +41,28 @@ def application(argv):
 
 class GuiTop(QWidget):
 
-    newRoot = pyqtSignal(pyrogue.Root)
-    newPyro = pyqtSignal(pyrogue.PyroRoot)
+    newRoot = pyqtSignal(pyrogue.Root,list,list)
+    newVirt = pyqtSignal(pyrogue.interfaces.VirtualNode,list,list)
 
-    def __init__(self,*, group,parent=None):
+    def __init__(self,*, parent=None, incGroups=None, excGroups=None, group=None):
         super(GuiTop,self).__init__(parent)
+
+        if group is not None:
+            print("The GuiTop group attribute is now deprecated. Please remove it.")
+
+        if incGroups is None:
+            self._incGroups=[]
+        elif isinstance(incGroups,list):
+            self._incGroups=incGroups
+        else:
+            self._incGroups=[incGroups]
+
+        if excGroups is None:
+            self._excGroups=[]
+        elif isinstance(excGroups,list):
+            self._excGroups=excGroups
+        else:
+            self._excGroups=[excGroups]
 
         vb = QVBoxLayout()
         self.setLayout(vb)
@@ -52,10 +70,10 @@ class GuiTop(QWidget):
         self.tab = QTabWidget()
         vb.addWidget(self.tab)
 
-        self.var = pyrogue.gui.variables.VariableWidget(group=group,parent=self.tab)
+        self.var = pyrogue.gui.variables.VariableWidget(parent=self.tab)
         self.tab.addTab(self.var,'Variables')
 
-        self.cmd = pyrogue.gui.commands.CommandWidget(group=group,parent=self.tab)
+        self.cmd = pyrogue.gui.commands.CommandWidget(parent=self.tab)
         self.tab.addTab(self.cmd,'Commands')
         self.show()
 
@@ -63,9 +81,9 @@ class GuiTop(QWidget):
         self.newRoot.connect(self.var.addTree)
         self.newRoot.connect(self.cmd.addTree)
 
-        self.newPyro.connect(self._addTree)
-        self.newPyro.connect(self.var.addTree)
-        self.newPyro.connect(self.cmd.addTree)
+        self.newVirt.connect(self._addTree)
+        self.newVirt.connect(self.var.addTree)
+        self.newVirt.connect(self.cmd.addTree)
 
         self._appTop = None
 
@@ -73,14 +91,14 @@ class GuiTop(QWidget):
         if not root.running:
             raise Exception("GUI can not be attached to a tree which is not started")
 
-        if isinstance(root,pyrogue.PyroRoot):
-            self.newPyro.emit(root)
+        if isinstance(root,pyrogue.interfaces.VirtualNode):
+            self.newVirt.emit(root,self._incGroups,self._excGroups)
         else:
-            self.newRoot.emit(root)
+            self.newRoot.emit(root,self._incGroups,self._excGroups)
 
-    @pyqtSlot(pyrogue.Root)
-    @pyqtSlot(pyrogue.PyroRoot)
-    def _addTree(self,root):
+    @pyqtSlot(pyrogue.Root,list,list)
+    @pyqtSlot(pyrogue.interfaces.VirtualNode,list,list)
+    def _addTree(self,root,incGroups,excGroups):
         self.sys = pyrogue.gui.system.SystemWidget(root=root,parent=self.tab)
         self.tab.addTab(self.sys,root.name)
         self.adjustSize()

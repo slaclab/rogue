@@ -52,6 +52,7 @@ void ruf::StreamReader::setup_python() {
    bp::class_<ruf::StreamReader, ruf::StreamReaderPtr,bp::bases<ris::Master>, boost::noncopyable >("StreamReader",bp::init<>())
       .def("open",           &ruf::StreamReader::open)
       .def("close",          &ruf::StreamReader::close)
+      .def("isOpen",         &ruf::StreamReader::isOpen)
       .def("closeWait",      &ruf::StreamReader::closeWait)
       .def("isActive",       &ruf::StreamReader::isActive)
    ;
@@ -87,7 +88,7 @@ void ruf::StreamReader::open(std::string file) {
    }
 
    if ( (fd_ = ::open(file.c_str(),O_RDONLY)) < 0 ) 
-      throw(rogue::GeneralError::open("StreamReader::open",file));
+      throw(rogue::GeneralError::create("StreamReader::open","Failed to open data file: %s",file.c_str()));
 
    active_ = true;
    threadEn_ = true;
@@ -118,6 +119,11 @@ void ruf::StreamReader::close() {
    rogue::GilRelease noGil;
    std::unique_lock<std::mutex> lock(mtx_);
    intClose();
+}
+
+//! Get open status
+bool ruf::StreamReader::isOpen() {
+   return ( fd_ >= 0 );
 }
 
 //! Close a data file
@@ -222,7 +228,6 @@ void ruf::StreamReader::runThread() {
    if ( fd_ >= 0 ) ::close(fd_);
    fd_ = -1;
    active_ = false;
-   lock.unlock();
    cond_.notify_all();
 }
 

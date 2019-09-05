@@ -23,6 +23,9 @@ from pyrogue._Device    import *
 from pyrogue._Memory    import *
 from pyrogue._Root      import *
 from pyrogue._PollQueue import *
+from pyrogue._Process   import *
+from pyrogue._DataWriter import *
+from pyrogue._RunControl import *
 
 def addLibraryPath(path):
     """
@@ -49,11 +52,15 @@ def addLibraryPath(path):
         else:
             np = base + '/' + p
         
-        # Verify directory exists and is readable
-        if not os.access(np,os.R_OK):
-            raise Exception("Library path {} does not exist or is not readable".format(np))
-        sys.path.append(np)
+        # Verify directory or archive exists and is readable
+        if '.zip/' in np:
+            tst = np[:np.find['.zip/']+4]
+        else:
+            tst = np
 
+        if not os.access(tst,os.R_OK):
+            raise Exception("Library path {} does not exist or is not readable".format(tst))
+        sys.path.append(np)
 
 def streamConnect(source, dest):
     """
@@ -151,14 +158,6 @@ def busConnect(source,dest):
 
     master._setSlave(slave)
 
-def genBaseList(cls):
-    ret = str(cls)
-
-    for l in cls.__bases__:
-        if l is not object:
-            ret += genBaseList(l)
-
-    return ret
 
 # Add __version__ attribute with the module version number
 __version__ = rogue.Version.pythonVersion()

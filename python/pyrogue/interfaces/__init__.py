@@ -7,3 +7,9 @@
 # copied, modified, propagated, or distributed except according to the terms 
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
+
+from pyrogue.interfaces._ZmqServer import *
+from pyrogue.interfaces._Virtual   import *
+from pyrogue.interfaces._SimpleClient import *
+from pyrogue.interfaces._SqlLogging   import *
+

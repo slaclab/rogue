@@ -84,7 +84,7 @@ class LocalRoot(pyrogue.Root):
         pyrogue.Root.__init__(self, name='LocalRoot', description='Local root')
         my_device=myDevice()
         self.add(my_device)
-        self.start()
+        self.start(zmqPort=None)
 
 def test_local_root():
     """

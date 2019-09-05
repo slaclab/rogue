@@ -81,7 +81,6 @@ void ruf::StreamWriterChannel::acceptFrame ( ris::FramePtr frame ) {
 
    writer_->writeFile (ichan, frame);
    frameCount_++;
-   lock.unlock();
    cond_.notify_all();
 }
 
@@ -119,10 +118,10 @@ bool ruf::StreamWriterChannel::waitFrameCount(uint32_t count, uint64_t timeout) 
 
       if ( timeout != 0 ) {
          gettimeofday(&curTime,NULL);
-         if ( timercmp(&curTime,&endTime,>) ) return false;
+         if ( timercmp(&curTime,&endTime,>) ) break;
       }
    }
 
-   return true;
+   return (frameCount_ >= count);
 }
 

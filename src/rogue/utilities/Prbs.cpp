@@ -319,7 +319,7 @@ void ru::Prbs::genFrame (uint32_t size) {
       throw rogue::GeneralError("Prbs::genFrame","Invalid frame size");
 
    // Setup size
-   memset(frSize,0,16);
+   memset(frSize,0,MaxBytes);
    frSize[0] = (size / byteWidth_) - 1;
 
    // Setup sequence
@@ -346,7 +346,7 @@ void ru::Prbs::genFrame (uint32_t size) {
    if ( genPl_ ) {
 
       // Init data
-      memcpy(data,frSeq,byteWidth_);
+      std::memcpy(data,frSeq,byteWidth_);
 
       // Generate payload
       while ( frIter != frEnd ) {
@@ -354,7 +354,7 @@ void ru::Prbs::genFrame (uint32_t size) {
          if ( sendCount_ ) ris::toFrame(frIter,byteWidth_,wCount);
          else {
             flfsr(data);
-            frIter = std::copy(data,data+byteWidth_,frIter);
+            ris::toFrame(frIter, byteWidth_, data);
          }
          ++wCount[0];
       }
@@ -430,7 +430,7 @@ void ru::Prbs::acceptFrame ( ris::FramePtr frame ) {
    if ( checkPl_ ) {
 
       // Init data
-      memcpy(expData,frSeq,byteWidth_);
+      std::memcpy(expData,frSeq,byteWidth_);
       pos = 0;
 
       // Read payload

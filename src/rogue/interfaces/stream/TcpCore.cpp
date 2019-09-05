@@ -23,6 +23,7 @@
 #include <rogue/interfaces/stream/FrameLock.h>
 #include <rogue/interfaces/stream/Buffer.h>
 #include <rogue/GeneralError.h>
+#include <string.h>
 #include <memory>
 #include <rogue/GilRelease.h>
 #include <rogue/Logging.h>
@@ -65,11 +66,6 @@ ris::TcpCore::TcpCore (std::string addr, uint16_t port, bool server) {
    this->zmqPull_ = zmq_socket(this->zmqCtx_,ZMQ_PULL);
    this->zmqPush_ = zmq_socket(this->zmqCtx_,ZMQ_PUSH);
 
-   // Receive timeout
-   opt = 100;
-   if ( zmq_setsockopt (this->zmqPull_, ZMQ_RCVTIMEO, &opt, sizeof(int32_t)) != 0 ) 
-         throw(rogue::GeneralError("TcpCore::TcpCore","Failed to set socket timeout"));
-
    // Don't buffer when no connection
    opt = 1;
    if ( zmq_setsockopt (this->zmqPush_, ZMQ_IMMEDIATE, &opt, sizeof(int32_t)) != 0 ) 
@@ -83,12 +79,14 @@ ris::TcpCore::TcpCore (std::string addr, uint16_t port, bool server) {
       this->bridgeLog_->debug("Creating pull server port: %s",this->pullAddr_.c_str());
 
       if ( zmq_bind(this->zmqPull_,this->pullAddr_.c_str()) < 0 ) 
-         throw(rogue::GeneralError::network("TcpCore::TcpCore",addr,port));
+         throw(rogue::GeneralError::create("stream::TcpCore::TcpCore",
+                  "Failed to bind server to port %i at address %s, another process may be using this port",port,addr.c_str()));
 
       this->bridgeLog_->debug("Creating push server port: %s",this->pushAddr_.c_str());
 
       if ( zmq_bind(this->zmqPush_,this->pushAddr_.c_str()) < 0 ) 
-         throw(rogue::GeneralError::network("TcpCore::TcpCore",addr,port+1));
+         throw(rogue::GeneralError::create("stream::TcpCore::TcpCore",
+                  "Failed to bind server to port %i at address %s, another process may be using this port",port+1,addr.c_str()));
    }
 
    // Client mode
@@ -99,12 +97,14 @@ ris::TcpCore::TcpCore (std::string addr, uint16_t port, bool server) {
       this->bridgeLog_->debug("Creating pull client port: %s",this->pullAddr_.c_str());
 
       if ( zmq_connect(this->zmqPull_,this->pullAddr_.c_str()) < 0 ) 
-         throw(rogue::GeneralError::network("TcpCore::TcpCore",addr,port+1));
+         throw(rogue::GeneralError::create("stream::TcpCore::TcpCore",
+                  "Failed to connect to remote port %i at address %s",port+1,addr.c_str()));
 
       this->bridgeLog_->debug("Creating push client port: %s",this->pushAddr_.c_str());
 
       if ( zmq_connect(this->zmqPush_,this->pushAddr_.c_str()) < 0 ) 
-         throw(rogue::GeneralError::network("TcpCore::TcpCore",addr,port));
+         throw(rogue::GeneralError::create("stream::TcpCore::TcpCore",
+                  "Failed to connect to remote port %i at address %s",port,addr.c_str()));
    }
 
    // Start rx thread
@@ -114,12 +114,15 @@ ris::TcpCore::TcpCore (std::string addr, uint16_t port, bool server) {
 
 //! Destructor
 ris::TcpCore::~TcpCore() {
-   threadEn_ = false;
-   thread_->join();
+  this->close();
+}
 
+void ris::TcpCore::close() {
+   threadEn_ = false;
    zmq_close(this->zmqPull_);
    zmq_close(this->zmqPush_);
    zmq_term(this->zmqCtx_);
+   thread_->join();
 }
 
 //! Accept a frame from master
@@ -148,18 +151,19 @@ void ris::TcpCore::acceptFrame ( ris::FramePtr frame ) {
    }
 
    flags = frame->getFlags();
-   memcpy(zmq_msg_data(&(msg[0])), &flags, 2);
+   std::memcpy(zmq_msg_data(&(msg[0])), &flags, 2);
 
    chan = frame->getChannel();
-   memcpy(zmq_msg_data(&(msg[1])), &chan,  1);
+   std::memcpy(zmq_msg_data(&(msg[1])), &chan,  1);
 
    err = frame->getError();
-   memcpy(zmq_msg_data(&(msg[2])), &err,   1);
+   std::memcpy(zmq_msg_data(&(msg[2])), &err,   1);
 
    // Copy data
+   ris::FrameIterator iter = frame->beginRead();
    data = (uint8_t *)zmq_msg_data(&(msg[3]));
-   std::copy(frame->beginRead(), frame->endRead(), data);
-    
+   ris::fromFrame(iter, frame->getPayload(), data);
+
    // Send data
    for (x=0; x < 4; x++) {
       if ( zmq_sendmsg(this->zmqPush_,&(msg[x]),(x==3)?0:ZMQ_SNDMORE) < 0 )
@@ -216,9 +220,9 @@ void ris::TcpCore::runThread() {
          }
 
          // Get fields
-         memcpy(&flags, zmq_msg_data(&(msg[0])), 2);
-         memcpy(&chan,  zmq_msg_data(&(msg[1])), 1);
-         memcpy(&err,   zmq_msg_data(&(msg[2])), 1);
+         std::memcpy(&flags, zmq_msg_data(&(msg[0])), 2);
+         std::memcpy(&chan,  zmq_msg_data(&(msg[1])), 1);
+         std::memcpy(&err,   zmq_msg_data(&(msg[2])), 1);
 
          // Get message info
          data = (uint8_t *)zmq_msg_data(&(msg[3]));
@@ -228,7 +232,8 @@ void ris::TcpCore::runThread() {
          frame = ris::Pool::acceptReq(size,false);
 
          // Copy data
-         std::copy(data,data+size,frame->beginWrite());
+         ris::FrameIterator iter = frame->beginWrite();
+         ris::toFrame(iter, size, data);
 
          // Set frame size and send
          frame->setPayload(size);
@@ -247,7 +252,8 @@ void ris::TcpCore::runThread() {
 void ris::TcpCore::setup_python () {
 #ifndef NO_PYTHON
 
-   bp::class_<ris::TcpCore, ris::TcpCorePtr, bp::bases<ris::Master,ris::Slave>, boost::noncopyable >("TcpCore",bp::no_init);
+   bp::class_<ris::TcpCore, ris::TcpCorePtr, bp::bases<ris::Master,ris::Slave>, boost::noncopyable >("TcpCore",bp::no_init)
+       .def("close", &ris::TcpCore::close);
 
    bp::implicitly_convertible<ris::TcpCorePtr, ris::MasterPtr>();
    bp::implicitly_convertible<ris::TcpCorePtr, ris::SlavePtr>();

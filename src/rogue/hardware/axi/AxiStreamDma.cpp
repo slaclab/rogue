@@ -23,6 +23,7 @@
 #include <rogue/interfaces/stream/FrameLock.h>
 #include <rogue/interfaces/stream/Buffer.h>
 #include <rogue/GeneralError.h>
+#include <rogue/Helpers.h>
 #include <memory>
 #include <rogue/GilRelease.h>
 #include <stdlib.h>
@@ -56,7 +57,7 @@ rha::AxiStreamDma::AxiStreamDma ( std::string path, uint32_t dest, bool ssiEnabl
    rogue::GilRelease noGil;
 
    if ( (fd_ = ::open(path.c_str(), O_RDWR)) < 0 )
-      throw(rogue::GeneralError::open("AxiStreamDma::AxiStreamDma",path.c_str()));
+      throw(rogue::GeneralError::create("AxiStreamDma::AxiStreamDma", "Failed to open device file: %s",path.c_str()));
 
    if ( dmaCheckVersion(fd_) < 0 )
       throw(rogue::GeneralError("AxiStreamDma::AxiStreamDma","Bad kernel driver version detected. Please re-compile kernel driver"));
@@ -66,7 +67,9 @@ rha::AxiStreamDma::AxiStreamDma ( std::string path, uint32_t dest, bool ssiEnabl
 
    if  ( dmaSetMaskBytes(fd_,mask) < 0 ) {
       ::close(fd_);
-      throw(rogue::GeneralError::dest("AxiStreamDma::AxiStreamDma",path.c_str(),dest_));
+      throw(rogue::GeneralError::create("AxiStreamDma::AxiStreamDma", 
+            "Failed to open device file %s with dest 0x%x",path.c_str(),dest));
+
    }
 
    // Result may be that rawBuff_ = NULL
@@ -158,7 +161,7 @@ ris::FramePtr rha::AxiStreamDma::acceptReq ( uint32_t size, bool zeroCopyEn) {
             tout = timeout_;
 
             if ( select(fd_+1,NULL,&fds,NULL,&tout) <= 0 ) {
-               log_->timeout("AxiStreamDma::acceptReq", timeout_);
+               log_->critical("AxiStreamDma::acceptReq: Timeout waiting for outbound buffer after %i.%i seconds! May be caused by outbound backpressure.", timeout_.tv_sec, timeout_.tv_usec);
                res = -1;
             }
             else {
@@ -253,7 +256,7 @@ void rha::AxiStreamDma::acceptFrame ( ris::FramePtr frame ) {
             tout = timeout_;
             
             if ( select(fd_+1,NULL,&fds,NULL,&tout) <= 0 ) {
-               log_->timeout("AxiStreamDma::acceptFrame", timeout_);
+               log_->critical("AxiStreamDma::acceptFrame: Timeout waiting for outbound write after %i.%i seconds! May be caused by outbound backpressure.", timeout_.tv_sec, timeout_.tv_usec);
                res = 0;
             }
             else {
@@ -327,7 +330,7 @@ void rha::AxiStreamDma::runThread() {
 
       // Setup select timeout
       tout.tv_sec  = 0;
-      tout.tv_usec = 100;
+      tout.tv_usec = 1000;
 
       // Select returns with available buffer
       if ( select(fd_+1,&fds,NULL,NULL,&tout) > 0 ) {

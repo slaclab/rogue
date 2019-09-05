@@ -57,6 +57,7 @@ void rim::Transaction::setup_python() {
       .def("size",    &rim::Transaction::size)
       .def("type",    &rim::Transaction::type)
       .def("done",    &rim::Transaction::done)
+      .def("error",   &rim::Transaction::errorPy)
       .def("expired", &rim::Transaction::expired)
       .def("setData", &rim::Transaction::setData)
       .def("getData", &rim::Transaction::getData)
@@ -77,7 +78,7 @@ rim::Transaction::Transaction(struct timeval timeout) : timeout_(timeout) {
    address_ = 0;
    size_    = 0;
    type_    = 0;
-   error_   = 0;
+   error_   = "";
    done_    = false;
 
    classMtx_.lock();
@@ -112,15 +113,36 @@ uint32_t rim::Transaction::size() { return size_; }
 //! Get type
 uint32_t rim::Transaction::type() { return type_; }
 
+//! Complete transaction without error, lock must be held
+void rim::Transaction::done() {
+   error_ = "";
+   done_  = true;
+   cond_.notify_all();
+}
+
 //! Complete transaction with passed error, lock must be held
-void rim::Transaction::done(uint32_t error) {
+void rim::Transaction::errorPy(std::string error) {
    error_ = error;
    done_  = true;
    cond_.notify_all();
 }
 
+//! Complete transaction with passed error, lock must be held
+void rim::Transaction::error(const char * fmt, ...) {
+   va_list args;
+   char buffer[10000];
+
+   va_start(args,fmt);
+   vsnprintf(buffer,10000,fmt,args);
+   va_end(args);
+
+   error_ = buffer;
+   done_  = true;
+   cond_.notify_all();
+}
+
 //! Wait for the transaction to complete
-uint32_t rim::Transaction::wait() {
+std::string rim::Transaction::wait() {
    struct timeval currTime;
 
    std::unique_lock<std::mutex> lock(lock_);
@@ -133,7 +155,7 @@ uint32_t rim::Transaction::wait() {
            timercmp(&currTime,&(endTime_),>) ) {
 
          done_  = true;
-         error_ = rim::TimeoutError;
+         error_ = "Timeout waiting for register transaction message response";
       }
       else cond_.wait_for(lock,std::chrono::microseconds(1000));
    }
@@ -179,7 +201,6 @@ rim::Transaction::iterator rim::Transaction::end() {
 //! Set transaction data from python
 void rim::Transaction::setData ( boost::python::object p, uint32_t offset ) {
    Py_buffer  pyBuf;
-   uint8_t *  data;
 
    if ( PyObject_GetBuffer(p.ptr(),&pyBuf,PyBUF_CONTIG) < 0 )
       throw(rogue::GeneralError("Transaction::writePy","Python Buffer Error In Frame"));
@@ -188,18 +209,18 @@ void rim::Transaction::setData ( boost::python::object p, uint32_t offset ) {
 
    if ( (offset + count) > size_ ) {
       PyBuffer_Release(&pyBuf);
-      throw(rogue::GeneralError::boundary("Frame::write",offset+count,size_));
+      throw(rogue::GeneralError::create("Transaction::setData",
+               "Attempt to set %i bytes at offset %i to python buffer with size %i",
+               count,offset,size_));
    }
 
-   data = (uint8_t *)pyBuf.buf;
-   std::copy(data,data+count,begin()+offset);
+   std::memcpy(begin()+offset, (uint8_t *)pyBuf.buf, count);
    PyBuffer_Release(&pyBuf);
 }
 
 //! Get transaction data from python
 void rim::Transaction::getData ( boost::python::object p, uint32_t offset ) {
    Py_buffer  pyBuf;
-   uint8_t *  data;
 
    if ( PyObject_GetBuffer(p.ptr(),&pyBuf,PyBUF_SIMPLE) < 0 ) 
       throw(rogue::GeneralError("Transaction::readPy","Python Buffer Error In Frame"));
@@ -208,11 +229,12 @@ void rim::Transaction::getData ( boost::python::object p, uint32_t offset ) {
 
    if ( (offset + count) > size_ ) {
       PyBuffer_Release(&pyBuf);
-      throw(rogue::GeneralError::boundary("Frame::readPy",offset+count,size_));
+      throw(rogue::GeneralError::create("Transaction::getData",
+               "Attempt to get %i bytes from offset %i to python buffer with size %i",
+               count,offset,size_));
    }
 
-   data = (uint8_t *)pyBuf.buf;
-   std::copy(begin()+offset,begin()+offset+count,data);
+   std::memcpy((uint8_t *)pyBuf.buf, begin()+offset, count);
    PyBuffer_Release(&pyBuf);
 }
 

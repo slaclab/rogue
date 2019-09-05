@@ -16,11 +16,8 @@
 add_subdirectory("fileio")
 
 target_sources(rogue-core PRIVATE "${CMAKE_CURRENT_LIST_DIR}/Prbs.cpp")
-
-if (NOT NO_BZIP)
-   target_sources(rogue-core PRIVATE "${CMAKE_CURRENT_LIST_DIR}/StreamUnZip.cpp")
-   target_sources(rogue-core PRIVATE "${CMAKE_CURRENT_LIST_DIR}/StreamZip.cpp")
-endif()
+target_sources(rogue-core PRIVATE "${CMAKE_CURRENT_LIST_DIR}/StreamUnZip.cpp")
+target_sources(rogue-core PRIVATE "${CMAKE_CURRENT_LIST_DIR}/StreamZip.cpp")
 
 if (NOT NO_PYTHON)
    target_sources(rogue-core PRIVATE "${CMAKE_CURRENT_LIST_DIR}/module.cpp")

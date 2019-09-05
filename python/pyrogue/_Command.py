@@ -19,7 +19,6 @@ import time
 from collections import OrderedDict as odict
 import pyrogue as pr
 import inspect
-import Pyro4
 import threading
 
 class CommandError(Exception):
@@ -32,8 +31,10 @@ class BaseCommand(pr.BaseVariable):
                  name=None,
                  description="",
                  value=0,
+                 retValue=None,
                  enum=None,
                  hidden=False,                 
+                 groups=None,
                  minimum=None,
                  maximum=None,
                  function=None,
@@ -47,6 +48,7 @@ class BaseCommand(pr.BaseVariable):
             value=value,
             enum=enum,
             hidden=hidden,
+            groups=groups,
             minimum=minimum,
             maximum=maximum)
         
@@ -54,6 +56,16 @@ class BaseCommand(pr.BaseVariable):
         self._thread = None
         self._lock = threading.Lock()
         self._background = background
+
+        if self._background:
+            self._log.warning("Background commands are deprecated. Please use a Process device")
+
+        if retValue is None:
+            self._retTypeStr = None
+        elif isinstance(retValue, list):
+            self._retTypeStr = f'List[{retValue[0].__class__.__name__}]'
+        else:
+            self._retTypeStr = retValue.__class__.__name__
 
         # args flag
         try:
@@ -63,13 +75,17 @@ class BaseCommand(pr.BaseVariable):
         except:
             self._arg = False
 
-    @Pyro4.expose
+    @pr.expose
     @property
     def arg(self):
         return self._arg
 
-    @Pyro4.expose
-    def call(self,arg=None):
+    @pr.expose
+    @property
+    def retTypeStr(self):
+        return self._retTypeStr
+
+    def __call__(self,arg=None):
         if self._background:
             with self._lock:
                 if self._thread is not None and self._thread.isAlive():
@@ -102,10 +118,11 @@ class BaseCommand(pr.BaseVariable):
             return pr.varFuncHelper(self._function,pargs, self._log,self.path)
 
         except Exception as e:
-            self._log.exception(e)
+            pr.logException(self._log,e)
 
-    def __call__(self,arg=None):
-        return self.call(arg)
+    @pr.expose
+    def call(self,arg=None):
+        return self.__call__(arg)
 
     @staticmethod
     def nothing():
@@ -180,10 +197,10 @@ class BaseCommand(pr.BaseVariable):
     def postedTouchZero(cmd):
         cmd.post(0)
         
-    def _setDict(self,d,writeEach,modes):
+    def _setDict(self,d,writeEach,modes,incGroups,excGroups):
         pass
 
-    def _getDict(self,modes):
+    def _getDict(self,modes,incGroups,excGroups):
         return None
 
     def get(self,read=True):
@@ -199,8 +216,10 @@ class RemoteCommand(BaseCommand, pr.RemoteVariable):
                  name,
                  description='',
                  value=None,
+                 retValue=None,
                  enum=None,
                  hidden=False,
+                 groups=None,
                  minimum=None,
                  maximum=None,
                  function=None,
@@ -214,6 +233,7 @@ class RemoteCommand(BaseCommand, pr.RemoteVariable):
         BaseCommand.__init__(
             self,
             name=name,
+            retValue=retValue,
             function=function)
 
         pr.RemoteVariable.__init__(
@@ -224,6 +244,7 @@ class RemoteCommand(BaseCommand, pr.RemoteVariable):
             value=value,
             enum=enum,
             hidden=hidden,
+            groups=groups,
             minimum=minimum,
             maximum=maximum,
             base=base,
@@ -243,7 +264,7 @@ class RemoteCommand(BaseCommand, pr.RemoteVariable):
                 self._block.startTransaction(rogue.interfaces.memory.Write, check=True)
 
         except Exception as e:
-            self._log.exception(e)
+            pr.logException(self._log,e)
 
  
     def get(self, read=True):
@@ -254,7 +275,7 @@ class RemoteCommand(BaseCommand, pr.RemoteVariable):
             ret = self._block.get(self)
 
         except Exception as e:
-            self._log.exception(e)
+            pr.logException(self._log,e)
             return None
 
         return ret

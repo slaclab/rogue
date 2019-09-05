@@ -86,7 +86,7 @@ void ruf::LegacyStreamReader::open(std::string file) {
    }
 
    if ( (fd_ = ::open(file.c_str(),O_RDONLY)) < 0 ) 
-      throw(rogue::GeneralError::open("LegacyStreamReader::open",file));
+      throw(rogue::GeneralError::create("LegacyStreamReader::open","Failed to open file %s",file.c_str()));
 
    active_ = true;
    threadEn_ = true;
@@ -215,7 +215,6 @@ void ruf::LegacyStreamReader::runThread() {
    if ( fd_ >= 0 ) ::close(fd_);
    fd_ = -1;
    active_ = false;
-   lock.unlock();
    cond_.notify_all();
 }
 
