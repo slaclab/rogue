@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Form</class>
+ <widget class="QWidget" name="Form">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>456</width>
+    <height>205</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QHBoxLayout" name="horizontalLayout">
+   <item>
+    <layout class="QVBoxLayout" name="verticalLayout">
+     <item>
+      <widget class="PyDMLineEdit" name="PyDMLineEdit_1">
+       <property name="toolTip">
+        <string/>
+       </property>
+       <property name="showUnits" stdset="0">
+        <bool>true</bool>
+       </property>
+       <property name="channel" stdset="0">
+        <string>rogue://0/dummyTree.AxiVersion.FpgaVersion/.1</string>
+       </property>
+       <property name="displayFormat" stdset="0">
+        <enum>PyDMLineEdit::Hex</enum>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="PyDMLineEdit" name="PyDMLineEdit_2">
+       <property name="toolTip">
+        <string/>
+       </property>
+       <property name="readOnly">
+        <bool>false</bool>
+       </property>
+       <property name="showUnits" stdset="0">
+        <bool>true</bool>
+       </property>
+       <property name="channel" stdset="0">
+        <string>rogue://0/dummyTree.AxiVersion.ScratchPad/.1</string>
+       </property>
+       <property name="displayFormat" stdset="0">
+        <enum>PyDMLineEdit::Hex</enum>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="PyDMLineEdit" name="PyDMLineEdit_3">
+       <property name="toolTip">
+        <string/>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="showUnits" stdset="0">
+        <bool>true</bool>
+       </property>
+       <property name="channel" stdset="0">
+        <string>rogue://0/dummyTree.AxiVersion.FpgaReloadHalt/.1</string>
+       </property>
+       <property name="displayFormat" stdset="0">
+        <enum>PyDMLineEdit::Hex</enum>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="PyDMCheckbox" name="PyDMCheckbox">
+       <property name="toolTip">
+        <string/>
+       </property>
+       <property name="channel" stdset="0">
+        <string>rogue://0/dummyTree.AxiVersion.FpgaReloadHalt/.1</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>PyDMCheckbox</class>
+   <extends>QCheckBox</extends>
+   <header>pydm.widgets.checkbox</header>
+  </customwidget>
+  <customwidget>
+   <class>PyDMLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>pydm.widgets.line_edit</header>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>
