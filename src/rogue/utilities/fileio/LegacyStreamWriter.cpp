@@ -114,14 +114,15 @@ void ruf::LegacyStreamWriter::writeFile ( uint8_t channel, std::shared_ptr<rogue
 
      // Data count is number of 32-bit words
      if ( channel == RawData ) {
-       size = size/4; 
+        if ( (size % 4) != 0 ) 
+           throw(rogue::GeneralError::create("LegacyStreamWriter::writeFile", "FrameSize %i is not 32-bit aligned.",size));
+        size = size/4; 
      }
      
      if (size & 0xF0000000) {
        // Frame size too large for this stream type
        throw(rogue::GeneralError("LegacyStreamWriter::writeFile", "FrameSize is too large. Cannot exceede 2^28"));
      }
-
 
      // First write size and channel/type
      size &= 0x0FFFFFFF;

@@ -203,7 +203,7 @@ void ruf::LegacyStreamReader::runThread() {
             }
             else {
                (*it)->setPayload(bSize);
-               if ( (*it)->getAvailable() == 0 ) ++it; // Next buffer
+               ++it; // Next buffer
             }
             size -= bSize;
          }
