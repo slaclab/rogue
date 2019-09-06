@@ -180,7 +180,7 @@ void ruf::LegacyStreamReader::runThread() {
          }
 
          // Skip next step if frame is empty
-         if ( size <= 4 ) continue;
+         if ( size == 0 ) continue;
          //size -= 4;
 
          // Request frame
