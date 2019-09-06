@@ -472,8 +472,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         self._sendYamlFrame(self._getYaml(readFirst=False,
                                           modes=modes,
                                           incGroups=incGroups,
-                                          excGroups=excGroups,
-                                          varEncode=False))
+                                          excGroups=excGroups))
 
     def _write(self):
         """Write all blocks"""
@@ -516,7 +515,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
         try:
             with open(name,'w') as f:
-                f.write(self._getYaml(readFirst=readFirst,modes=modes,incGroups=incGroups,excGroups=excGroups,varEncode=True))
+                f.write(self._getYaml(readFirst=readFirst,modes=modes,incGroups=incGroups,excGroups=excGroups))
         except Exception as e:
             pr.logException(self._log,e)
             return False
@@ -534,7 +533,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
         return True
 
-    def _getYaml(self,readFirst,modes,incGroups,excGroups,varEncode=True):
+    def _getYaml(self,readFirst,modes,incGroups,excGroups):
         """
         Get current values as yaml data.
         modes is a list of variable modes to include.
@@ -543,7 +542,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
         if readFirst: self._read()
         try:
-            return dataToYaml({self.name:self._getDict(modes=modes,incGroups=incGroups,excGroups=excGroups)},varEncode)
+            return dataToYaml({self.name:self._getDict(modes=modes,incGroups=incGroups,excGroups=excGroups)})
         except Exception as e:
             pr.logException(self._log,e)
             return ""
@@ -649,7 +648,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
                 # Generate yaml stream
                 try:
-                    self._sendYamlFrame(dataToYaml(strm,varEncode=False))
+                    self._sendYamlFrame(dataToYaml(strm))
                 except Exception as e:
                     pr.logException(self._log,e)
 
@@ -677,7 +676,7 @@ def yamlToData(stream):
 
     return yaml.load(stream, Loader=PyrogueLoader)
 
-def dataToYaml(data,varEncode=True):
+def dataToYaml(data):
     """Convert data structure to yaml"""
 
     class PyrogueDumper(yaml.Dumper):
@@ -703,8 +702,7 @@ def dataToYaml(data,varEncode=True):
     def _dict_representer(dumper, data):
         return dumper.represent_mapping(yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG, data.items())
 
-    if varEncode:
-        PyrogueDumper.add_representer(pr.VariableValue, _var_representer)
+    PyrogueDumper.add_representer(pr.VariableValue, _var_representer)
     PyrogueDumper.add_representer(odict, _dict_representer)
 
     return yaml.dump(data, Dumper=PyrogueDumper, default_flow_style=False)
