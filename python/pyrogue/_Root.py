@@ -648,7 +648,9 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
                 # Generate yaml stream
                 try:
-                    self._sendYamlFrame(dataToYaml(strm))
+                    if len(strm) > 0:
+                        self._sendYamlFrame(dataToYaml(strm))
+
                 except Exception as e:
                     pr.logException(self._log,e)
 
