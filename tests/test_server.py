@@ -63,11 +63,5 @@ class DummyTree(pyrogue.Root):
 if __name__ == "__main__":
 
     with DummyTree() as dummyTree:
-
-        print("Running in python main")
-        try:
-            while True:
-                time.sleep(1)
-        except KeyboardInterrupt:
-            exit()
+        pyrogue.waitCntrlC()
 
