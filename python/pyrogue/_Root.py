@@ -15,6 +15,7 @@
 #-----------------------------------------------------------------------------
 import sys
 import os
+import glob
 import rogue.interfaces.memory
 import yaml
 import threading
@@ -384,7 +385,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         if '.' in path:
             lst = path.split('.')
 
-            if lst[0] != self.name:
+            if lst[0] != self.name and lst[0] != 'root':
                 return None
 
             for a in lst[1:]:
@@ -392,7 +393,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                     return None
                 obj = obj.node(a)
 
-        elif path != self.name:
+        elif path != self.name and path != 'root':
             return None
 
         return obj
@@ -524,13 +525,34 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
     def _loadYaml(self,name,writeEach,modes,incGroups,excGroups):
         """Load YAML configuration from a file. Called from command"""
+
+        # Passed path is a directory
+        if os.path.isdir(name):
+            lst = glob.glob('{}/*.yml'.format(args.path))
+            lst.extend(glob.glob('{}/*.yaml'.format(args.path)))
+
+        # Add file to list
+        else:
+            lst = [name]
+
         try:
-            with open(name,'r') as f:
-                self._setYaml(yml=f.read(),writeEach=writeEach,modes=modes,incGroups=incGroups,excGroups=excGroups)
+            with self.pollBlock(), self.updateGroup():
+                for fn in lst:
+                    with open(fn,'r') as f:
+                        d = yamlToData(f.read())
+
+                        with self.pollBlock(), self.updateGroup():
+                            self._setDictRoot(d=d,writeEach=writeEach,modes=modes,incGroups=incGroups,excGroups=excGroups)
+
+                if not writeEach: self._write()
+
+            if self.InitAfterConfig.value():
+                self.initialize()
+
         except Exception as e:
             pr.logException(self._log,e)
             return False
-
+            
         return True
 
     def _getYaml(self,readFirst,modes,incGroups,excGroups):
@@ -547,9 +569,10 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
             pr.logException(self._log,e)
             return ""
 
+
     def _setYaml(self,yml,writeEach,modes,incGroups,excGroups):
         """
-        Set variable values or execute commands from a dictionary.
+        Set variable values from a yaml file
         modes is a list of variable modes to act on.
         writeEach is set to true if accessing a single variable at a time.
         Writes will be performed as each variable is updated. If set to 
@@ -558,24 +581,28 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         quanitty of variables.
         """
         d = yamlToData(yml)
+
         with self.pollBlock(), self.updateGroup():
-
-            for key, value in d.items():
-                if key == self.name:
-                    self._setDict(value,writeEach,modes,incGroups=incGroups,excGroups=excGroups)
-                else:
-                    try:
-                        node = self.getNode(key)
-
-                        if (node.mode in modes) and node.filterByGroup(incGroups,excGroups): 
-                            self.getNode(key).setDisp(value)
-                    except:
-                        self._log.error("Entry {} not found".format(key))
+            self._setDictRoot(d=d,writeEach=writeEach,modes=modes,incGroups=incGroups,excGroups=excGroups)
 
             if not writeEach: self._write()
 
         if self.InitAfterConfig.value():
             self.initialize()
+
+
+    def _setDictRoot(self,d,writeEach,modes,incGroups,excGroups):
+        for key, value in d.items():
+
+            # Attempt to get node
+            node = self.getNode(key)
+
+            # Call setDict on node
+            if node is not None
+                node._setDict(d=node,writeEach=writeEach,modes=modes,incGroups=incGroups,excGroups=excGroups)
+            else:
+                self._log.error("Entry {} not found".format(key))
+
 
     def _clearLog(self):
         """Clear the system log"""
