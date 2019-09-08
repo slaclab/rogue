@@ -62,6 +62,16 @@ def addLibraryPath(path):
             raise Exception("Library path {} does not exist or is not readable".format(tst))
         sys.path.append(np)
 
+def waitCntrlC():
+    """Helper Function To Wait For Cntrl-c"""
+
+    print("Running. Hit cntrl-c to exit.")
+    try:
+        while True:
+            time.sleep(1)
+    except KeyboardInterrupt:
+        return
+
 def streamConnect(source, dest):
     """
     Attach the passed dest object to the source a stream.
