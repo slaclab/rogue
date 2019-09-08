@@ -540,9 +540,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                 for fn in lst:
                     with open(fn,'r') as f:
                         d = yamlToData(f.read())
-
-                        with self.pollBlock(), self.updateGroup():
-                            self._setDictRoot(d=d,writeEach=writeEach,modes=modes,incGroups=incGroups,excGroups=excGroups)
+                        self._setDictRoot(d=d,writeEach=writeEach,modes=modes,incGroups=incGroups,excGroups=excGroups)
 
                 if not writeEach: self._write()
 
@@ -552,7 +550,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         except Exception as e:
             pr.logException(self._log,e)
             return False
-            
+
         return True
 
     def _getYaml(self,readFirst,modes,incGroups,excGroups):
