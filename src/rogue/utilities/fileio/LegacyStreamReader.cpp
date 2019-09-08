@@ -180,7 +180,7 @@ void ruf::LegacyStreamReader::runThread() {
          }
 
          // Skip next step if frame is empty
-         if ( size <= 4 ) continue;
+         if ( size == 0 ) continue;
          //size -= 4;
 
          // Request frame
@@ -203,7 +203,7 @@ void ruf::LegacyStreamReader::runThread() {
             }
             else {
                (*it)->setPayload(bSize);
-               if ( (*it)->getAvailable() == 0 ) ++it; // Next buffer
+               ++it; // Next buffer
             }
             size -= bSize;
          }
