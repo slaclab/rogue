@@ -5,7 +5,7 @@ Building Rogue From Source
 ==========================
 
 The following instructions demonstrate how to build rogue outside of the anaconda environment. These
-instructions are only relevant for the Linux operating system. See :ref:`installing_anaconda` or 
+instructions are only relevant for the Linux and MacOS operating systems. See :ref:`installing_anaconda` or 
 :ref:`installing_docker` for Windows and MacOS.
 
 Installing Packages Required For Rogue
@@ -21,7 +21,8 @@ The following packages are required to build the rogue library:
 Package Manager Install
 -----------------------
 
-To add these packages on Ubuntu 17.04 (or later):
+Ubuntu 17.04 (or later)
+########################
 
 .. code::
 
@@ -34,7 +35,8 @@ To add these packages on Ubuntu 17.04 (or later):
    $ apt-get install libzmq3-dev
    $ apt-get install python3-pyqt5 (or python3-pyqt4)
 
-To add these packages on archlinux:
+archlinux:
+##########
 
 .. code::
 
@@ -46,6 +48,22 @@ To add these packages on archlinux:
    $ pacman -S git
    $ pacman -S zeromq
    $ pacman -S python-pyqt5 (or python-pyqt4)
+   
+MacOs:
+#######
+
+Information on the homebrew package manager can be found at: `<https://brew.sh/>`_ 
+
+.. code::
+
+   $ brew install cmake
+   $ brew install python3
+   $ brew install boost
+   $ brew install bzip2
+   $ brew install python-pip
+   $ brew install git
+   $ brew install zeromq
+   $ brew install pyqt5
 
 Epics V3 support is and optional module that will be included in the rogue build
 if the EPICS_BASE directory is set in the user's environment.
