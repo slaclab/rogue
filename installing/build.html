@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Building Rogue From Source &mdash; Rogue v3.7.0-267-g2eba6989 documentation</title>
+  <title>Building Rogue From Source &mdash; Rogue v3.7.0-268-g21dec723 documentation</title>
   
 
   
@@ -183,7 +183,7 @@
   <div class="section" id="building-rogue-from-source">
 <span id="installing-full-build"></span><h1>Building Rogue From Source<a class="headerlink" href="#building-rogue-from-source" title="Permalink to this headline">¶</a></h1>
 <p>The following instructions demonstrate how to build rogue outside of the anaconda environment. These
-instructions are only relevant for the Linux operating system. See <a class="reference internal" href="anaconda.html#installing-anaconda"><span class="std std-ref">Installing Rogue With Anaconda</span></a> or
+instructions are only relevant for the Linux and MacOS operating systems. See <a class="reference internal" href="anaconda.html#installing-anaconda"><span class="std std-ref">Installing Rogue With Anaconda</span></a> or
 <a class="reference internal" href="docker.html#installing-docker"><span class="std std-ref">Installing Rogue Docker</span></a> for Windows and MacOS.</p>
 <div class="section" id="installing-packages-required-for-rogue">
 <h2>Installing Packages Required For Rogue<a class="headerlink" href="#installing-packages-required-for-rogue" title="Permalink to this headline">¶</a></h2>
@@ -196,7 +196,8 @@ instructions are only relevant for the Linux operating system. See <a class="ref
 </ul>
 <div class="section" id="package-manager-install">
 <h3>Package Manager Install<a class="headerlink" href="#package-manager-install" title="Permalink to this headline">¶</a></h3>
-<p>To add these packages on Ubuntu 17.04 (or later):</p>
+<div class="section" id="ubuntu-17-04-or-later">
+<h4>Ubuntu 17.04 (or later)<a class="headerlink" href="#ubuntu-17-04-or-later" title="Permalink to this headline">¶</a></h4>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ apt-get install cmake (or cmake3)
 $ apt-get install python3
 $ apt-get install libboost-all-dev
@@ -207,7 +208,9 @@ $ apt-get install libzmq3-dev
 $ apt-get install python3-pyqt5 (or python3-pyqt4)
 </pre></div>
 </div>
-<p>To add these packages on archlinux:</p>
+</div>
+<div class="section" id="archlinux">
+<h4>archlinux:<a class="headerlink" href="#archlinux" title="Permalink to this headline">¶</a></h4>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ pacman -S cmake
 $ pacman -S python3
 $ pacman -S boost
@@ -218,8 +221,23 @@ $ pacman -S zeromq
 $ pacman -S python-pyqt5 (or python-pyqt4)
 </pre></div>
 </div>
+</div>
+<div class="section" id="macos">
+<h4>MacOs:<a class="headerlink" href="#macos" title="Permalink to this headline">¶</a></h4>
+<p>Information on the homebrew package manager can be found at: <a class="reference external" href="https://brew.sh/">https://brew.sh/</a></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ brew install cmake
+$ brew install python3
+$ brew install boost
+$ brew install bzip2
+$ brew install python-pip
+$ brew install git
+$ brew install zeromq
+$ brew install pyqt5
+</pre></div>
+</div>
 <p>Epics V3 support is and optional module that will be included in the rogue build
 if the EPICS_BASE directory is set in the user’s environment.</p>
+</div>
 </div>
 <div class="section" id="python-packages-required">
 <h3>Python Packages Required<a class="headerlink" href="#python-packages-required" title="Permalink to this headline">¶</a></h3>
