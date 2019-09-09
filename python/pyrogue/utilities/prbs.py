@@ -24,7 +24,7 @@ import pyrogue
 class PrbsRx(pyrogue.Device):
     """PRBS RX Wrapper"""
 
-    def __init__(self, *, width=None, taps=None, stream=None, **kwargs ):
+    def __init__(self, *, width=None, checkPayload=True, taps=None, stream=None, **kwargs ):
 
         pyrogue.Device.__init__(self, description='PRBS Software Receiver', **kwargs)
         self._prbs = rogue.utilities.Prbs()
@@ -60,7 +60,7 @@ class PrbsRx(pyrogue.Device):
                                        localGet=self._prbs.getRxBw))
 
         self.add(pyrogue.LocalVariable(name='checkPayload', description='Payload Check Enable',
-                                       mode='RW', value=True, localSet=self._plEnable))
+                                       mode='RW', value=checkPayload, localSet=self._plEnable))
 
     def _plEnable(self,value,changed):
         self._prbs.checkPayload(value)
