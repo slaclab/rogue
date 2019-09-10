@@ -571,6 +571,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         try:
             with self.pollBlock(), self.updateGroup():
                 for fn in lst:
+                    self._log.debug("loadYaml: loading {}".format(fn))
                     with open(fn,'r') as f:
                         d = yamlToData(f.read())
                         self._setDictRoot(d=d,writeEach=writeEach,modes=modes,incGroups=incGroups,excGroups=excGroups)
