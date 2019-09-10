@@ -528,8 +528,8 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
         # Passed path is a directory
         if os.path.isdir(name):
-            lst = glob.glob('{}/*.yml'.format(args.path))
-            lst.extend(glob.glob('{}/*.yaml'.format(args.path)))
+            lst = glob.glob('{}/*.yml'.format(name))
+            lst.extend(glob.glob('{}/*.yaml'.format(name)))
 
         # Add file to list
         else:
@@ -596,8 +596,8 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
             node = self.getNode(key)
 
             # Call setDict on node
-            if node is not None
-                node._setDict(d=node,writeEach=writeEach,modes=modes,incGroups=incGroups,excGroups=excGroups)
+            if node is not None:
+                node._setDict(d=value,writeEach=writeEach,modes=modes,incGroups=incGroups,excGroups=excGroups)
             else:
                 self._log.error("Entry {} not found".format(key))
 
