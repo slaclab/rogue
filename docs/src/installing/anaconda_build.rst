@@ -47,22 +47,22 @@ For Linux:
 
 .. code::
 
-   $ conda env create -n rogue_env -f conda.yml
+   $ conda env create -n rogue_build -f conda.yml
 
 For MacOS:
 
 .. code::
 
-   $ conda env create -n rogue_env -f conda_mac.yml
+   $ conda env create -n rogue_build -f conda_mac.yml
 
 
-You now have an anaconda environment named rogue_env which contains all of the packages required to build and run rogue.
+You now have an anaconda environment named rogue_build which contains all of the packages required to build and run rogue.
 
 To activate this environment:
 
 .. code::
 
-   $ conda activate rogue_env
+   $ conda activate rogue_build
 
 Building Rogue In Anaconda
 ==========================
@@ -89,7 +89,7 @@ To activate:
 
 .. code::
 
-   $ conda activate rogue_env
+   $ conda activate rogue_build
 
 To deactivate:
 
@@ -120,7 +120,7 @@ Run the following commands to delete the anaconda environment.
 
 .. code::
 
-   $ conda env remove -n rogue_env
+   $ conda env remove -n rogue_build
 
 Special Steps For MacOS
 =======================

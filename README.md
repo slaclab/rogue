@@ -24,3 +24,17 @@ Instructions for getting and installing Rogue can be found here:
 
 https://slaclab.github.io/rogue/installing/index.html
 
+# Anaconda Quickstart
+
+The following is how you install the latest released version of Rogue with anaconda. See above linked instructions for more details.
+
+```
+
+   $ conda install -c defaults -c tidair-packages -c conda-forge -c tidair-tag rogue
+
+The following is how you install the development version (pre-release) or Rogue with anaconda.
+
+```
+
+   $ conda create -n rogue_pre -c defaults -c tidair-packages -c conda-forge -c tidair-dev rogue
+

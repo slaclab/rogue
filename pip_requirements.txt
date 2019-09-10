@@ -13,3 +13,5 @@ sphinx_rtd_theme
 sphinxcontrib-napoleon
 breathe
 pyzmq
+p4p
+sqlalchemy

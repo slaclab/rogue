@@ -12,6 +12,7 @@ class MemoryDevice(pr.Device):
                  offset=0,
                  size=0,
                  hidden=False,
+                 groups=None,
                  expand=True,
                  enabled=True,
                  base=pr.UInt,
@@ -26,6 +27,7 @@ class MemoryDevice(pr.Device):
             offset=offset,
             size=size,
             hidden=hidden,
+            groups=groups,
             expand=expand,
             enabled=enabled,
         )
@@ -61,18 +63,18 @@ class MemoryDevice(pr.Device):
             #print(f'get() self._wordBitSize={self._wordBitSize}')
             data = self._rawTxnChunker(offset=offset, data=None, base=self._base, stride=self._stride, wordBitSize=self._wordBitSize, txnType=rim.Read, numWords=numWords)
             self._waitTransaction(0)
-            self._setError(0)
+            self._clearError()
             return [self._base.fromBytes(data[i:i+self._stride], self._wordBitSize)
                     for i in range(0, len(data), self._stride)]
 
 
-    def _setDict(self, d, writeEach, modes):
+    def _setDict(self, d, writeEach, modes,incGroups,excGroups):
         # Parse comma separated values at each offset (key) in d
         with self._memLock:
             for offset, values in d.items():
                 self._setValues[offset] = [self._base.fromString(s, self._wordBitSize) for s in values.split(',')]
 
-    def _getDict(self,modes):
+    def _getDict(self,modes,incGroups,excGroups):
         return None
 
     def writeBlocks(self, force=False, recurse=True, variable=None, checkEach=False):
@@ -109,7 +111,7 @@ class MemoryDevice(pr.Device):
 
             # Error check?
             error = self._getError()
-            self._setError(0)
+            self._clearError()
 
             # Convert the read verfiy data back to the native type
             # Can't do this until waitTransaction is done
@@ -126,7 +128,7 @@ class MemoryDevice(pr.Device):
                     msg += f'Expected: \n {self._wrValues} \n'
                     msg += f'Got: \n {checkValues}'
                     print(msg)
-                    raise MemoryError(name=self.name, address=self.address, error=rim.VerifyError, msg=msg, size=self._size)
+                    raise MemoryError(name=self.name, address=self.address, msg=msg, size=self._size)
 
 
             # destroy the txn maps when done with verify

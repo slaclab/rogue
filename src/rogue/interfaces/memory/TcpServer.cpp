@@ -69,12 +69,14 @@ rim::TcpServer::TcpServer (std::string addr, uint16_t port) {
    this->bridgeLog_->debug("Creating response client port: %s",this->respAddr_.c_str());
 
    if ( zmq_bind(this->zmqResp_,this->respAddr_.c_str()) < 0 ) 
-      throw(rogue::GeneralError::network("TcpServer::TcpServer",addr,port+1));
+      throw(rogue::GeneralError::create("memory::TcpServer::TcpServer",
+               "Failed to bind server to port %i at address %s, another process may be using this port",port+1,addr.c_str()));
 
    this->bridgeLog_->debug("Creating request client port: %s",this->reqAddr_.c_str());
 
    if ( zmq_bind(this->zmqReq_,this->reqAddr_.c_str()) < 0 ) 
-      throw(rogue::GeneralError::network("TcpServer::TcpServer",addr,port));
+      throw(rogue::GeneralError::create("memory::TcpServer::TcpServer",
+               "Failed to bind server to port %i at address %s, another process may be using this port",port,addr.c_str()));
 
    // Start rx thread
    threadEn_ = true;
@@ -96,17 +98,17 @@ void rim::TcpServer::close() {
 
 //! Run thread
 void rim::TcpServer::runThread() {
-   uint8_t * data;
-   uint64_t  more;
-   size_t    moreSize;
-   uint32_t  x;
-   uint32_t  msgCnt;
-   zmq_msg_t msg[6];
-   uint32_t  id;
-   uint64_t  addr;
-   uint32_t  size;
-   uint32_t  type;
-   uint32_t  result;
+   uint8_t *   data;
+   uint64_t    more;
+   size_t      moreSize;
+   uint32_t    x;
+   uint32_t    msgCnt;
+   zmq_msg_t   msg[6];
+   uint32_t    id;
+   uint64_t    addr;
+   uint32_t    size;
+   uint32_t    type;
+   std::string result;
 
    bridgeLog_->logThreadId();
 
@@ -164,16 +166,16 @@ void rim::TcpServer::runThread() {
             bridgeLog_->debug("Starting transaction id=%" PRIu32 ", addr=0x%" PRIx64 ", size=%" PRIu32 ", type=%" PRIu32,id,addr,size,type);
 
             // Execute transaction and wait for result
-            this->setError(0);
+            this->clearError();
             reqTransaction(addr,size,data,type);
             waitTransaction(0);
             result = getError();
 
-            bridgeLog_->debug("Done transaction id=%" PRIu32 ", addr=0x%" PRIx64 ", size=%" PRIu32 ", type=%" PRIu32 ", result=%" PRIu32,id,addr,size,type,result);
+            bridgeLog_->debug("Done transaction id=%" PRIu32 ", addr=0x%" PRIx64 ", size=%" PRIu32 ", type=%" PRIu32 ", result=%s",id,addr,size,type,result.c_str());
 
             // Result message
             zmq_msg_init_size(&(msg[5]),4);
-            std::memcpy(zmq_msg_data(&(msg[5])),&result, 4);
+            std::memcpy(zmq_msg_data(&(msg[5])),result.c_str(), result.length());
 
             // Send message
             for (x=0; x < 6; x++) 

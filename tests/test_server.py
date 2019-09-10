@@ -21,6 +21,7 @@ import test_device
 import time
 import rogue
 import pyrogue.protocols.epics
+#import pyrogue.protocols.epicsV4
 import logging
 
 #rogue.Logging.setFilter('pyrogue.epicsV3.Value',rogue.Logging.Debug)
@@ -28,6 +29,7 @@ import logging
 
 #logger = logging.getLogger('pyrogue')
 #logger.setLevel(logging.DEBUG)
+
 
 class DummyTree(pyrogue.Root):
 
@@ -44,22 +46,22 @@ class DummyTree(pyrogue.Root):
         # Add Data Writer
         self.add(pyrogue.utilities.fileio.StreamWriter())
 
+        # Add process controller
+        self.add(pyrogue.Process())
+
         # Start the tree with pyrogue server, internal nameserver, default interface
         # Set pyroHost to the address of a network interface to specify which nework to run on
         # set pyroNs to the address of a standalone nameserver (startPyrorNs.py)
-        self.start(timeout=2.0, pollEn=True, zmqPort=9099)
+        self.start(timeout=2.0, pollEn=True, serverPort=9099, sqlUrl='sqlite:///test.db')
 
         self.epics=pyrogue.protocols.epics.EpicsCaServer(base="test", root=self)
         self.epics.start()
 
+        #self.epics4=pyrogue.protocols.epicsV4.EpicsPvServer(base="test", root=self)
+        #self.epics4.start()
+
 if __name__ == "__main__":
 
     with DummyTree() as dummyTree:
-
-        print("Running in python main")
-        try:
-            while True:
-                time.sleep(1)
-        except KeyboardInterrupt:
-            exit()
+        pyrogue.waitCntrlC()
 
