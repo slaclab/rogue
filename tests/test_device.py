@@ -20,6 +20,8 @@
 import datetime
 import parse
 import pyrogue as pr
+import rogue
+import rogue.hardware.axi
 
 class AxiVersion(pr.Device):
 
@@ -65,7 +67,7 @@ class AxiVersion(pr.Device):
         self.add(pr.RemoteVariable(   
             name         = 'UpTimeCnt',
             description  = 'Number of seconds since last reset',
-            visibility   = 0,
+            hidden       = True,
             offset       = 0x08,
             bitSize      = 32,
             bitOffset    = 0x00,
@@ -114,7 +116,7 @@ class AxiVersion(pr.Device):
             mode         = 'RW',
         ))
 
-        @self.command(visibility=0)
+        @self.command(hidden=True)
         def FpgaReloadAtAddress(arg):
             self.FpgaReloadAddress.set(arg)
             self.FpgaReload()
@@ -149,7 +151,7 @@ class AxiVersion(pr.Device):
             mode         = 'RO',
             number       = numUserConstants,
             stride       = 4,
-            visibility   = 0,
+            hidden       = True,
         )
 
 
@@ -171,7 +173,7 @@ class AxiVersion(pr.Device):
             bitOffset    = 0x00,
             base         = pr.UInt,
             mode         = 'RO',
-            visibility   = 0,
+            hidden       = True,
         ))
 
         self.add(pr.LinkVariable(
@@ -200,7 +202,7 @@ class AxiVersion(pr.Device):
             bitOffset    = 0x00,
             base         = pr.String,
             mode         = 'RO',
-            visibility   = 0,
+            hidden       = True,
         ))
 
         self.add(pr.RemoteVariable(   
@@ -216,12 +218,12 @@ class AxiVersion(pr.Device):
                             4: 'Test4'},
             base         = pr.UInt,
             mode         = 'RW',
-            visibility   = 0,
+            hidden       = True,
         ))
 
         
-        def parseBuildStamp(var, value, disp):
-            p = parse.parse("{ImageName}: {BuildEnv}, {BuildServer}, Built {BuildDate} by {Builder}", value.strip())
+        def parseBuildStamp(var, val):
+            p = parse.parse("{ImageName}: {BuildEnv}, {BuildServer}, Built {BuildDate} by {Builder}", val.value.strip())
             if p is not None:
                 for k,v in p.named.items():
                     self.node(k).set(v)
@@ -283,7 +285,37 @@ class AxiVersion(pr.Device):
             value        = 100,
             disp         = '{}',
             hidden       = False,
+            groups       = 'NoConfig',
         ))
+
+        self.add(pr.LocalVariable(
+            name = 'TestArray',
+            mode = 'RW',
+            value = [1,2,3,4]))
+
+        @self.command(hidden=False,value='',retValue='')
+        def TestCommand(arg):
+            return('Got {}'.format(arg))
+
+        @self.command(hidden=False,value='',retValue='')
+        def TestMemoryException(arg):
+            raise pr.MemoryError(name='blah',address=0)
+
+        @self.command(hidden=False,value='',retValue='')
+        def TestErrorLog(arg):
+            self._log.error("Test error message")
+
+        @self.command(hidden=False,value='',retValue='')
+        def TestOtherLog(arg):
+            self._log.log(93,"Test log level 39 message")
+
+        @self.command(hidden=False,value='',retValue='')
+        def TestGeneralException(arg):
+            a = rogue.hardware.axi.AxiStreamDma('/dev/not_a_device',0,True)
+
+        @self.command(hidden=False,value='',retValue='')
+        def TestOtherError(arg):
+            a = rogue.hardware.axi.AxiStreamDma('/dev/not_a_device',0)
 
     def hardReset(self):
         print('AxiVersion hard reset called')

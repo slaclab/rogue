@@ -31,7 +31,7 @@ class EnableVariable(pr.BaseVariable):
             name='enable',
             mode='RW',
             value=enabled, 
-            visibility=50,
+            groups='Enable',
             disp={False: 'False', True: 'True', 'parent': 'ParentFalse', 'deps': 'ExtDepFalse'})
 
         if deps is None:
@@ -121,7 +121,7 @@ class Device(pr.Node,rim.Hub):
                  offset=0,
                  size=0,
                  hidden=False,
-                 visibility=75,
+                 groups=None,
                  blockSize=None,
                  expand=False,
                  enabled=True,
@@ -152,7 +152,7 @@ class Device(pr.Node,rim.Hub):
         if memBase: self._setSlave(memBase)
 
         # Node.__init__ can't be called until after self._memBase is created
-        pr.Node.__init__(self, name=name, hidden=hidden, visibility=visibility, description=description, expand=expand)
+        pr.Node.__init__(self, name=name, hidden=hidden, groups=groups, description=description, expand=expand)
 
         self._log.info("Making device {:s}".format(name))
 
@@ -162,11 +162,11 @@ class Device(pr.Node,rim.Hub):
         # Variable interface to enable flag
         self.add(EnableVariable(enabled=enabled, deps=enableDeps))
 
-        self.add(pr.LocalCommand(name='ReadDevice', value=False, visibility=0,
+        self.add(pr.LocalCommand(name='ReadDevice', value=False, hidden=True,
                                  function=lambda arg: self.readAndCheckBlocks(recurse=arg),
                                  description='Force read of device without recursion'))
 
-        self.add(pr.LocalCommand(name='WriteDevice', value='', visibility=0,
+        self.add(pr.LocalCommand(name='WriteDevice', value='', hidden=True,
                                  function=lambda arg: self.writeAndVerifyBlocks(force=True,recurse=arg),
                                  description='Force write of device without recursion'))
 
@@ -203,15 +203,11 @@ class Device(pr.Node,rim.Hub):
 
     def addRemoteVariables(self, number, stride, pack=False, **kwargs):
         if pack:
-            visibility=0
+            hidden=True
         else:
-            visibility = kwargs.pop('visibility', 25)
+            hidden=kwargs.pop('hidden', False)
 
-            if kwargs.pop('hidden', False):
-                visibility = 0
-                self._log.warning("Hidden attribute is deprecated. Please use visibility")
-
-        self.addNodes(pr.RemoteVariable, number, stride, visibility=visibility, **kwargs)
+        self.addNodes(pr.RemoteVariable, number, stride, hidden=hidden, **kwargs)
 
         # If pack specified, create a linked variable to combine everything
         if pack:
@@ -243,21 +239,16 @@ class Device(pr.Node,rim.Hub):
         for x in variables:
             v = self.node(x).pollInterval = interval
 
-    def setVariableVisibility(self, visibility, variables=None):
-        """ Set visibility for a list of Variables (or Variable names)"""
+    def hideVariables(self, hidden, variables=None):
+        """Hide a list of Variables (or Variable names)"""
         if variables is None:
             variables=self.variables.values()
             
         for v in variables:
             if isinstance(v, pr.BaseVariable):
-                v._visibility = visibility
+                v.hidden = hidden
             elif isinstance(variables[0], str):
-                self.variables[v]._visibility = visibility
-
-    def hideVariables(self, hidden, variables=None):
-        """Hide a list of Variables (or Variable names)"""
-        #self._log.warning("hideVariables is now deprecated. Please use setVariableVisibility")
-        self.setVariableVisibility((0 if hidden else 25),variables)
+                self.variables[v].hidden = hidden
 
     def initialize(self):
         for key,value in self.devices.items():
@@ -415,25 +406,25 @@ class Device(pr.Node,rim.Hub):
             else: txn = rim.Write
 
             for _ in range(tryCount):
-                self._setError(0)
+                self._clearError()
                 self._rawTxnChunker(offset, data, base, stride, wordBitSize, txn)
                 self._waitTransaction(0)
 
-                if self._getError() == 0: return
+                if self._getError() == "": return
                 elif posted: break
                 self._log.warning("Retrying raw write transaction")
 
             # If we get here an error has occured
-            raise pr.MemoryError (name=self.name, address=offset|self.address, error=self._getError())
+            raise pr.MemoryError (name=self.name, address=offset|self.address, msg=self._getError())
         
     def _rawRead(self, offset, numWords=1, base=pr.UInt, stride=4, wordBitSize=32, data=None, tryCount=1):
         with self._memLock:
             for _ in range(tryCount):
-                self._setError(0)
+                self._clearError()
                 ldata = self._rawTxnChunker(offset, data, base, stride, wordBitSize, txnType=rim.Read, numWords=numWords)
                 self._waitTransaction(0)
 
-                if self._getError() == 0:
+                if self._getError() == "":
                     if numWords == 1:
                         return base.fromBytes(base.mask(ldata, wordBitSize),wordBitSize)
                     else:
@@ -441,7 +432,7 @@ class Device(pr.Node,rim.Hub):
                 self._log.warning("Retrying raw read transaction")
                 
             # If we get here an error has occured
-            raise pr.MemoryError (name=self.name, address=offset|self.address, error=self._getError())
+            raise pr.MemoryError (name=self.name, address=offset|self.address, msg=self._getError())
 
 
     def _getBlocks(self, variables):

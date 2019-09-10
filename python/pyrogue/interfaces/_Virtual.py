@@ -24,15 +24,6 @@ import functools as ft
 import jsonpickle
 
 
-def genBaseList(cls):
-    ret = [str(cls)]
-
-    for l in cls.__bases__:
-        if l is not object:
-            ret += genBaseList(l)
-
-    return ret
-
 
 class VirtualProperty(object):
     def __init__(self, node, attr):
@@ -69,8 +60,8 @@ def VirtualFactory(data):
         for k in data['props']:
             setattr(self.__class__,k,VirtualProperty(self,k))
 
-        # Add __call__ if command
-        if str(pr.BaseCommand) in data['bases']:
+        # Add __call__ if command or Process
+        if str(pr.BaseCommand) in data['bases'] or str(pr.Process) in data['bases']:
             setattr(self.__class__,'__call__',self._call)
         
         # Add getNode and addVarListener if root
@@ -81,6 +72,7 @@ def VirtualFactory(data):
         # Add addListener if Variable
         if str(pr.BaseVariable) in data['bases']:
             setattr(self.__class__,'addListener',self._addListener)
+            setattr(self.__class__,'delListener',self._delListener)
 
         VirtualNode.__init__(self,data)
 
@@ -93,7 +85,7 @@ class VirtualNode(pr.Node):
         super().__init__(name=attrs['name'], 
                          description=attrs['description'], 
                          expand=attrs['expand'], 
-                         visibility=attrs['visibility'])
+                         groups=attrs['groups'])
 
         self._path  = attrs['path']
         self._class = attrs['class']
@@ -119,7 +111,12 @@ class VirtualNode(pr.Node):
         return self._client._remoteAttr(self._path, '__call__', *args, **kwargs)
 
     def _addListener(self, listener):
-        self._functions.append(listener)
+        if listener not in self._functions:
+            self._functions.append(listener)
+
+    def _delListener(self, listener):
+        if listener in self._functions:
+            self._functions.remove(listener)
 
     def _addVarListener(self,func):
         self._client._addVarListener(func)
@@ -199,6 +196,8 @@ class VirtualClient(rogue.interfaces.ZmqClient):
         r._virtAttached(r,r,self)
         self._root = r
 
+        setattr(self,self._root.name,self._root)
+
     def _remoteAttr(self, path, attr, *args, **kwargs):
         snd = { 'path':path, 'attr':attr, 'args':args, 'kwargs':kwargs }
         y = jsonpickle.encode(snd)
@@ -212,7 +211,8 @@ class VirtualClient(rogue.interfaces.ZmqClient):
         return ret
 
     def _addVarListener(self,func):
-        self._varListeners.append(func)
+        if func not in self._varListeners:
+            self._varListeners.append(func)
 
     def _doUpdate(self,data):
         if self._root is None:

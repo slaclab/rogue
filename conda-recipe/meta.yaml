@@ -20,7 +20,8 @@ requirements:
      - make
      - bzip2
      - zeromq
-     - epics-base=3.14.12.8
+     - epics-base [linux]
+     - pcas       [linux]
      - git
 
    run:
@@ -32,7 +33,9 @@ requirements:
      - cmake
      - make
      - bzip2
-     - epics-base=3.14.12.8
+     - epics-base [linux]
+     - pcas       [linux]
+     - p4p        [linux]
      - zeromq
      - pyyaml
      - jsonpickle
@@ -41,7 +44,8 @@ requirements:
      - click
      - numpy
      - pyqt
-     - pyepics
+     - pyepics    [linux]
+     - sqlalchemy
 
 about:
    home: https://github.com/slaclab/rogue

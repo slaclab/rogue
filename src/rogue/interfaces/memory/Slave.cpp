@@ -134,7 +134,7 @@ uint64_t rim::Slave::doAddress() {
 
 //! Post a transaction
 void rim::Slave::doTransaction(rim::TransactionPtr transaction) {
-   transaction->done(rim::Unsupported);
+   transaction->error("Unsupported transaction using unconnected memory bus");
 }
 
 void rim::Slave::setup_python() {

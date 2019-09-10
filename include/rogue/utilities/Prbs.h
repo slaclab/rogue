@@ -37,7 +37,7 @@ namespace rogue {
       class Prbs : public rogue::interfaces::stream::Slave, public rogue::interfaces::stream::Master {
 
             //! Max size
-            const static uint32_t MaxBytes = 32;
+            const static uint32_t MaxBytes = 64;
 
             //! PRBS taps
             uint8_t  * taps_;
