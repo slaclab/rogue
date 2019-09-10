@@ -30,6 +30,8 @@ import zipfile
 import traceback
 from contextlib import contextmanager
 
+SystemLogInit = '[]'
+
 class RootLogHandler(logging.Handler):
     """ Class to listen to log entries and add them to syslog variable"""
     def __init__(self,*, root):
@@ -39,12 +41,36 @@ class RootLogHandler(logging.Handler):
     def emit(self,record):
         with self._root.updateGroup():
            try:
-               val = (self.format(record).splitlines()[0] + '\n')
-               self._root.SystemLog += val
+                se = { 'created'     : record.created,
+                       'name'        : record.name,
+                       'message'     : str(record.msg),
+                       'exception'   : None,
+                       'traceBack'   : None,
+                       'levelName'   : record.levelname,
+                       'levelNumber' : record.levelno }
 
-               # Log to database, placeholder waiting for other PR
-               #if self._root._sqlLog is not None:
-               #    self._root._sqlLog.logSyslog(sl)
+                if record.exc_info is not None:
+                    se['exception'] = record.exc_info[0].__name__
+                    se['traceBack'] = []
+
+                    for tb in traceback.format_tb(record.exc_info[2]):
+                        se['traceBack'].append(tb.rstrip())
+
+                # System log is a running json encoded list
+                # Need to remove list terminator ']' and add new entry + list terminator
+                with self._root.SystemLog.lock:
+                    msg =  self._root.SystemLog.value()[:-1]
+
+                    # Only add a comma if list is not empty
+                    if len(msg) > 1:
+                        msg += ',\n'
+
+                    msg += jsonpickle.encode(se) + ']'
+                    self._root.SystemLog.set(msg)
+
+                # Log to database, placeholder waiting for other PR
+                if self._root._sqlLog is not None:
+                    self._root._sqlLog.logSyslog(se)
 
            except Exception as e:
                print("-----------Error Logging Exception -------------")
@@ -109,7 +135,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         pr.Device.__init__(self, name=name, description=description, expand=expand)
 
         # Variables
-        self.add(pr.LocalVariable(name='SystemLog', value='', mode='RO', hidden=True, groups=['NoStream','NoLog','NoState'],
+        self.add(pr.LocalVariable(name='SystemLog', value=SystemLogInit, mode='RO', hidden=True, groups=['NoStream','NoLog','NoState'],
             description='String containing newline seperated system logic entries'))
 
         self.add(pr.LocalVariable(name='ForceWrite', value=False, mode='RW', hidden=True,
@@ -408,7 +434,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         if '.' in path:
             lst = path.split('.')
 
-            if lst[0] != self.name:
+            if lst[0] != self.name and lst[0] != 'root':
                 return None
 
             for a in lst[1:]:
@@ -603,7 +629,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
     def _clearLog(self):
         """Clear the system log"""
-        self.SystemLog.set('')
+        self.SystemLog.set(SystemLogInit)
 
     def _queueUpdates(self,var):
         self._updateQueue.put(var)
@@ -728,7 +754,7 @@ def dataToYaml(data):
     def _dict_representer(dumper, data):
         return dumper.represent_mapping(yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG, data.items())
 
-    PyrogueDumper.add_representer(pr.VariableValue, _var_representer)
+        PyrogueDumper.add_representer(pr.VariableValue, _var_representer)
     PyrogueDumper.add_representer(odict, _dict_representer)
 
     return yaml.dump(data, Dumper=PyrogueDumper, default_flow_style=False)
