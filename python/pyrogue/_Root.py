@@ -552,21 +552,31 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
         # Pass arg is a python list
         if isinstance(name,list):
-            lst = name
+            rawlst = name
 
         # Passed arg is a comma seperated list of files
         elif ',' in name:
-            lst = name.split(',')
+            rawlst = name.split(',')
 
-        # Passed path is a directory
-        elif os.path.isdir(name):
-            dlst = glob.glob('{}/*.yml'.format(name))
-            dlst.extend(glob.glob('{}/*.yaml'.format(name)))
-            lst = sorted(dlst)
-
-        # Add file to list
+        # Not a list
         else:
-            lst = [name]
+            rawlst = [name]
+
+        # Init final list
+        lst = []
+
+        # Iterate through raw list and look for directories
+        for rl in rawlst:
+
+            # Entry is a directory
+            if os.path.isdir(rl):
+                dlst = glob.glob('{}/*.yml'.format(rl))
+                dlst.extend(glob.glob('{}/*.yaml'.format(rl)))
+                lst.extend(sorted(dlst))
+
+            # Otherise assume it is a file
+            else:
+                lst.append(rl)
 
         try:
             with self.pollBlock(), self.updateGroup():
