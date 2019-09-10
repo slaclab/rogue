@@ -29,14 +29,40 @@
 #-----------------------------------------------------------------------------
 import zmq
 import jsonpickle
+import threading
 
 class SimpleClient(object):
 
-    def __init__(self, addr="localhost", port=9099):
+    def __init__(self, addr="localhost", port=9099, cb=None):
+        sport = port
         rport = port + 1
         self._ctx = zmq.Context()
+
         self._req = self._ctx.socket(zmq.REQ)
         self._req.connect(f'tcp://{addr}:{rport}')
+
+        if cb:
+            self._cb  = cb
+            self._sub = self._ctx.socket(zmq.SUB)
+            self._sub.connect(f'tcp://{addr}:{sport}')
+            self._runEn = True
+            self._subThread = threading.Thread(target=self._listen)
+            self._subThread.start()
+
+    def stop(self):
+        self._runEn = False
+
+    def _listen(self):
+        self._sub.setsockopt(zmq.SUBSCRIBE,"".encode('utf-8'))
+
+        while self._runEn:
+            msg = self._sub.recv_string()
+
+            d = jsonpickle.decode(msg)
+
+            for k,val in d.items():
+                self._cb(k,val)
+
 
     def _remoteAttr(self,path,attr,*args,**kwargs):
         msg = {'path':path, 
