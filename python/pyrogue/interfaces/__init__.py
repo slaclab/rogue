@@ -11,6 +11,7 @@
 from pyrogue.interfaces._ZmqServer import *
 from pyrogue.interfaces._Virtual   import *
 from pyrogue.interfaces._SimpleClient import *
+from pyrogue.interfaces._SqlLogging   import *
 
 import time
 import jsonpickle
