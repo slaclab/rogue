@@ -28,3 +28,4 @@ dependencies:
   - sphinx_rtd_theme
   - breathe
   - p4p
+  - sqlalchemy

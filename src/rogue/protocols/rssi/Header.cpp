@@ -161,7 +161,9 @@ void rpr::Header::update() {
    size = (syn)?SynSize:HeaderSize;
 
    if ( buff->getSize() < size )
-      throw(rogue::GeneralError::boundary("Header::update",size,buff->getSize()));
+      throw(rogue::GeneralError::create("rssi::Header::update",
+               "Buffer size %i is less size indicated in header %i",
+               buff->getSize(), size));
 
    buff->minPayload(size);
 

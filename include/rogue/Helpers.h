@@ -34,5 +34,20 @@
 // Connect memory bus
 #define busConnect(src,dst) src->setSlave(dst);
 
+// Global default timeout value
+#define DEFAULT_TIMEOUT 1000000
+
+namespace rogue {
+
+   // Return default timeout value
+   inline void defaultTimeout(struct timeval &tout) {
+      div_t divResult = div(DEFAULT_TIMEOUT,1000000);
+      tout.tv_sec  = divResult.quot;
+      tout.tv_usec = divResult.rem;
+   }
+}
+
+
+
 #endif
 

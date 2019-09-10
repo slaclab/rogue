@@ -27,6 +27,7 @@ import time
 import queue
 import jsonpickle
 import zipfile
+import traceback
 from contextlib import contextmanager
 
 class RootLogHandler(logging.Handler):
@@ -40,9 +41,17 @@ class RootLogHandler(logging.Handler):
            try:
                val = (self.format(record).splitlines()[0] + '\n')
                self._root.SystemLog += val
+
+               # Log to database, placeholder waiting for other PR
+               #if self._root._sqlLog is not None:
+               #    self._root._sqlLog.logSyslog(sl)
+
            except Exception as e:
                print("-----------Error Logging Exception -------------")
                print(e)
+               print(traceback.print_exc(file=sys.stdout))
+               print("-----------Original Error-----------------------")
+               print(self.format(record))
                print("------------------------------------------------")
 
 class Root(rogue.interfaces.stream.Master,pr.Device):
@@ -93,11 +102,14 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         self._updateQueue = queue.Queue()
         self._updateThread = None
 
+        # SQL URL
+        self._sqlLog = None
+
         # Init 
         pr.Device.__init__(self, name=name, description=description, expand=expand)
 
         # Variables
-        self.add(pr.LocalVariable(name='SystemLog', value='', mode='RO', hidden=True,
+        self.add(pr.LocalVariable(name='SystemLog', value='', mode='RO', hidden=True, groups=['NoStream','NoLog','NoState'],
             description='String containing newline seperated system logic entries'))
 
         self.add(pr.LocalVariable(name='ForceWrite', value=False, mode='RW', hidden=True,
@@ -109,11 +121,11 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         self.add(pr.LocalVariable(name='Time', value=0.0, mode='RO', hidden=True,
                  localGet=lambda: time.time(), pollInterval=1.0, description='Current Time In Seconds Since EPOCH UTC'))
 
-        self.add(pr.LocalVariable(name='LocalTime', value='', mode='RO',
+        self.add(pr.LocalVariable(name='LocalTime', value='', mode='RO', groups=['NoStream','NoLog','NoState'],
                  localGet=lambda: time.strftime("%Y-%m-%d %H:%M:%S %Z", time.localtime(time.time())),
                  pollInterval=1.0, description='Local Time'))
 
-        self.add(pr.LocalVariable(name='PollEn', value=False, mode='RW',
+        self.add(pr.LocalVariable(name='PollEn', value=False, mode='RW',groups=['NoStream','NoLog','NoState'],
                                   localSet=lambda value: self._pollQueue.pause(not value),
                                   localGet=lambda: not self._pollQueue.paused()))
 
@@ -196,12 +208,18 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         self.add(pr.LocalCommand(name='Exit', function=self._exit,
                                  description='Exit the server application'))
 
-    def start(self, timeout=1.0, initRead=False, initWrite=False, pollEn=True, zmqPort=None, serverPort=None):
+    def start(self, 
+              timeout=1.0, 
+              initRead=False, 
+              initWrite=False, 
+              pollEn=True, 
+              zmqPort=None, 
+              serverPort=None, 
+              sqlUrl=None):
         """Setup the tree. Start the polling thread."""
 
         if self._running:
             raise pr.NodeError("Root is already started! Can't restart!")
-
 
         # Call special root level rootAttached
         self._rootAttached()
@@ -257,6 +275,14 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
             self._structure = jsonpickle.encode(self)
             self._zmqServer = pr.interfaces.ZmqServer(root=self,addr="*",port=serverPort)
 
+        # Start sql interface
+        if sqlUrl is not None:
+            self._sqlLog = pr.interfaces.SqlLogger(sqlUrl)
+
+        # Start update thread
+        self._updateThread = threading.Thread(target=self._updateWorker)
+        self._updateThread.start()
+
         # Read current state
         if initRead:
             self._read()
@@ -265,10 +291,6 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         # Read did not override defaults because set values are cached
         if initWrite:
             self._write()
-
-        # Start update thread
-        self._updateThread = threading.Thread(target=self._updateWorker)
-        self._updateThread.start()
 
         # Start poller if enabled
         self._pollQueue._start()
@@ -349,6 +371,20 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
             # After with is done
             self._updateQueue.put(False)
+
+    @contextmanager
+    def pollBlock(self):
+
+        # At wtih call
+        self._pollQueue._blockIncrement()
+
+        # Return to block within with call
+        try:
+            yield
+        finally:
+
+            # After with is done
+            self._pollQueue._blockDecrement()
 
     @pr.expose
     def waitOnUpdate(self):
@@ -458,15 +494,14 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         stream. If this list is not NULL only these variables will be included.
         """
         self._sendYamlFrame(self.getYaml(readFirst=False,
-                                         modes=modes,
-                                         incGroups=incGroups,
-                                         excGroups=excGroups,
-                                         varEncode=False))
+                                          modes=modes,
+                                          incGroups=incGroups,
+                                          excGroups=excGroups))
 
     def _write(self):
         """Write all blocks"""
         self._log.info("Start root write")
-        with self.updateGroup():
+        with self.pollBlock(), self.updateGroup():
             try:
                 self.writeBlocks(force=self.ForceWrite.value(), recurse=True)
                 self._log.info("Verify root read")
@@ -504,7 +539,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
         try:
             with open(name,'w') as f:
-                f.write(self.getYaml(readFirst=readFirst,modes=modes,incGroups=incGroups,excGroups=excGroups,varEncode=True))
+                f.write(self.getYaml(readFirst=readFirst,modes=modes,incGroups=incGroups,excGroups=excGroups))
         except Exception as e:
             pr.logException(self._log,e)
             return False
@@ -522,7 +557,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
         return True
 
-    def getYaml(self,readFirst,modes,incGroups,excGroups,varEncode=True):
+    def getYaml(self,readFirst,modes,incGroups,excGroups):
         """
         Get current values as yaml data.
         modes is a list of variable modes to include.
@@ -531,7 +566,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
         if readFirst: self._read()
         try:
-            return dataToYaml({self.name:self._getDict(modes=modes,incGroups=incGroups,excGroups=excGroups)},varEncode)
+            return dataToYaml({self.name:self._getDict(modes=modes,incGroups=incGroups,excGroups=excGroups)})
         except Exception as e:
             pr.logException(self._log,e)
             return ""
@@ -547,7 +582,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         quanitty of variables.
         """
         d = yamlToData(yml)
-        with self.updateGroup():
+        with self.pollBlock(), self.updateGroup():
 
             for key, value in d.items():
                 if key == self.name:
@@ -606,17 +641,29 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
             if count == 0 and len(uvars) > 0:
 
                 self._log.debug(F"Process update group. Length={len(uvars)}. Entry={list(uvars.keys())[0]}")
-                d = odict()
+                strm = odict()
+                zmq  = odict()
 
                 for p,v in uvars.items():
                     try:
                         val = v._doUpdate()
-                        d[p] = val
+
+                        # Add to stream
+                        if not v.inGroup('NoStream'):
+                            strm[p] = val
+
+                        # Add to zmq publish
+                        zmq[p] = val
 
                         # Call listener functions,
                         with self._varListenLock:
                             for func in self._varListeners:
                                 func(p,val)
+
+                        # Log to database
+                        if self._sqlLog is not None and not v.inGroup('NoLog'):
+                            self._sqlLog.logVariable(p, val)
+
                     except Exception as e:
                         pr.logException(self._log,e)
                         
@@ -625,13 +672,15 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
                 # Generate yaml stream
                 try:
-                    self._sendYamlFrame(dataToYaml(d,varEncode=False))
+                    if len(strm) > 0:
+                        self._sendYamlFrame(dataToYaml(strm))
+
                 except Exception as e:
                     pr.logException(self._log,e)
 
                 # Send over zmq link
                 if self._zmqServer is not None:
-                    self._zmqServer._publish(jsonpickle.encode(d))
+                    self._zmqServer._publish(jsonpickle.encode(zmq))
 
                 # Init var list
                 uvars = {}
@@ -653,7 +702,7 @@ def yamlToData(stream):
 
     return yaml.load(stream, Loader=PyrogueLoader)
 
-def dataToYaml(data,varEncode=True):
+def dataToYaml(data):
     """Convert data structure to yaml"""
 
     class PyrogueDumper(yaml.Dumper):
@@ -679,8 +728,7 @@ def dataToYaml(data,varEncode=True):
     def _dict_representer(dumper, data):
         return dumper.represent_mapping(yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG, data.items())
 
-    if varEncode:
-        PyrogueDumper.add_representer(pr.VariableValue, _var_representer)
+    PyrogueDumper.add_representer(pr.VariableValue, _var_representer)
     PyrogueDumper.add_representer(odict, _dict_representer)
 
     return yaml.dump(data, Dumper=PyrogueDumper, default_flow_style=False)

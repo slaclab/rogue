@@ -22,6 +22,7 @@ import inspect
 import threading
 import re
 import time
+from collections import OrderedDict as odict
 from collections import Iterable
 
 class VariableError(Exception):
@@ -44,8 +45,8 @@ def VariableWait(varList, testFunction, timeout=0):
     class varStates(object):
 
         def __init__(self):
-            self.vlist = {}
-            self.cv    = threading.Condition()
+            self.vlist  = odict()
+            self.cv     = threading.Condition()
 
         # Method to handle variable updates callback
         def varUpdate(self,path,varValue):
@@ -74,12 +75,12 @@ def VariableWait(varList, testFunction, timeout=0):
     with states.cv:
 
         # Check current state
-        ret = testFunction(states.vlist)
+        ret = testFunction(list(states.vlist.values()))
 
         # Run until timeout or all conditions have been met
         while (not ret) and ((timeout == 0) or ((time.time()-start) < timeout)):
             states.cv.wait(0.5)
-            ret = testFunction(states.vlist)
+            ret = testFunction(list(states.vlist.values()))
 
         # Cleanup
         for v in varList:
@@ -278,6 +279,14 @@ class BaseVariable(pr.Node):
     def pollInterval(self, interval):
         self._pollInterval = interval
         self._updatePollInterval()
+
+    @pr.expose
+    @property
+    def lock(self):
+        if self._block is not None:
+            return self._block._lock
+        else:
+            return None
 
     @property
     def dependencies(self):

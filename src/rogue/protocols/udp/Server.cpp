@@ -56,7 +56,7 @@ rpu::Server::Server (uint16_t port, bool jumbo) : rpu::Core(jumbo) {
 
    // Create socket
    if ( (fd_ = socket(AF_INET,SOCK_DGRAM,0)) < 0 )
-      throw(rogue::GeneralError::network("Server::Server","0.0.0.0",port_));
+      throw(rogue::GeneralError::create("Server::Server","Failed to create socket for port %i",port_));
 
    // Setup Remote Address
    memset(&locAddr_,0,sizeof(struct sockaddr_in));
@@ -67,13 +67,13 @@ rpu::Server::Server (uint16_t port, bool jumbo) : rpu::Core(jumbo) {
    memset(&remAddr_,0,sizeof(struct sockaddr_in));
 
    if (bind(fd_, (struct sockaddr *) &locAddr_, sizeof(locAddr_))<0) 
-      throw(rogue::GeneralError::network("Server::Server","0.0.0.0",port_));
+      throw(rogue::GeneralError::create("Server::Server","Failed to bind to local port %i. Another process may be using it",port_));
 
    // Kernel assigns port
    if ( port_ == 0 ) {
       len = sizeof(locAddr_);
       if (getsockname(fd_, (struct sockaddr *) &locAddr_, &len) < 0 ) 
-         throw(rogue::GeneralError::network("Server::Server","0.0.0.0",port_));
+         throw(rogue::GeneralError::create("Server::Server","Failed to dynamically assign local port"));
       port_ = ntohs(locAddr_.sin_port);
    }
 
@@ -143,7 +143,7 @@ void rpu::Server::acceptFrame ( ris::FramePtr frame ) {
          tout = timeout_;
          
          if ( select(fd_+1,NULL,&fds,NULL,&tout) <= 0 ) {
-            udpLog_->timeout("Server::acceptFrame",timeout_);
+            udpLog_->critical("Server::acceptFrame: Timeout waiting for outbound transmit after %i.%i seconds! May be caused by outbound backpressure.", timeout_.tv_sec, timeout_.tv_usec);
             res = 0;
          }
          else if ( (res = sendmsg(fd_,&msg,0)) < 0 )

@@ -64,7 +64,7 @@ namespace rogue {
                std::mutex mastMtx_;
 
                //! Error status
-               uint32_t error_;
+               std::string error_;
 
                //! Log
                std::shared_ptr<rogue::Logging> log_;
@@ -143,22 +143,19 @@ namespace rogue {
 
                //! Get error of last Transaction
                /** This method returns the error value of the last set of transactions initiated
-                * by this master. If more than one transaction was initiated, the result is the
-                * logical of the transaction error values.
+                * by this master. 
                 *
                 * Exposted to python as _getError()
                 * @return Error value
                 */
-               uint32_t getError();
+               std::string getError();
 
-               //! Set the error value
-               /** This method sets the error value for this master. Set to
-                * zero to clear the error state.
+               //! Clear the error value
+               /** This method clears the error value for this master.
                 *
-                * Exposted to python as _setError()
-                * @param error New error value
+                * Exposted to python as _clearError()
                 */
-               void setError(uint32_t error);
+               void clearError();
 
                //! Set timeout value for transactions
                /** Sets the timeout value for future transactions. THis is the amount of time
