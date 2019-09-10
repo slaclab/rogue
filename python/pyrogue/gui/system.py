@@ -498,7 +498,7 @@ class SystemWidget(QWidget):
     def loadSettings(self):
         dlg = QFileDialog()
 
-        loadFile = dlg.getOpenFileName(caption='Read config file', filter='Config Files(*.yml);;All Files(*.*)')
+        loadFile = dlg.getOpenFileNames(caption='Read config file', filter='Config Files(*.yml);;All Files(*.*)')
 
         # Detect QT5 return
         if isinstance(loadFile,tuple):

@@ -15,6 +15,7 @@
 #-----------------------------------------------------------------------------
 import sys
 import os
+import glob
 import rogue.interfaces.memory
 import yaml
 import threading
@@ -442,7 +443,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                     return None
                 obj = obj.node(a)
 
-        elif path != self.name:
+        elif path != self.name and path != 'root':
             return None
 
         return obj
@@ -574,9 +575,48 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
     def loadYaml(self,name,writeEach,modes,incGroups,excGroups):
         """Load YAML configuration from a file. Called from command"""
+
+        # Pass arg is a python list
+        if isinstance(name,list):
+            rawlst = name
+
+        # Passed arg is a comma seperated list of files
+        elif ',' in name:
+            rawlst = name.split(',')
+
+        # Not a list
+        else:
+            rawlst = [name]
+
+        # Init final list
+        lst = []
+
+        # Iterate through raw list and look for directories
+        for rl in rawlst:
+
+            # Entry is a directory
+            if os.path.isdir(rl):
+                dlst = glob.glob('{}/*.yml'.format(rl))
+                dlst.extend(glob.glob('{}/*.yaml'.format(rl)))
+                lst.extend(sorted(dlst))
+
+            # Otherise assume it is a file
+            else:
+                lst.append(rl)
+
         try:
-            with open(name,'r') as f:
-                self.setYaml(yml=f.read(),writeEach=writeEach,modes=modes,incGroups=incGroups,excGroups=excGroups)
+            with self.pollBlock(), self.updateGroup():
+                for fn in lst:
+                    self._log.debug("loadYaml: loading {}".format(fn))
+                    with open(fn,'r') as f:
+                        d = yamlToData(f.read())
+                        self._setDictRoot(d=d,writeEach=writeEach,modes=modes,incGroups=incGroups,excGroups=excGroups)
+
+                if not writeEach: self._write()
+
+            if self.InitAfterConfig.value():
+                self.initialize()
+
         except Exception as e:
             pr.logException(self._log,e)
             return False
@@ -597,9 +637,10 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
             pr.logException(self._log,e)
             return ""
 
+
     def setYaml(self,yml,writeEach,modes,incGroups,excGroups):
         """
-        Set variable values or execute commands from a dictionary.
+        Set variable values from a yaml file
         modes is a list of variable modes to act on.
         writeEach is set to true if accessing a single variable at a time.
         Writes will be performed as each variable is updated. If set to 
@@ -608,24 +649,28 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         quanitty of variables.
         """
         d = yamlToData(yml)
+
         with self.pollBlock(), self.updateGroup():
-
-            for key, value in d.items():
-                if key == self.name:
-                    self._setDict(value,writeEach,modes,incGroups=incGroups,excGroups=excGroups)
-                else:
-                    try:
-                        node = self.getNode(key)
-
-                        if (node.mode in modes) and node.filterByGroup(incGroups,excGroups): 
-                            self.getNode(key).setDisp(value)
-                    except:
-                        self._log.error("Entry {} not found".format(key))
+            self._setDictRoot(d=d,writeEach=writeEach,modes=modes,incGroups=incGroups,excGroups=excGroups)
 
             if not writeEach: self._write()
 
         if self.InitAfterConfig.value():
             self.initialize()
+
+
+    def _setDictRoot(self,d,writeEach,modes,incGroups,excGroups):
+        for key, value in d.items():
+
+            # Attempt to get node
+            node = self.getNode(key)
+
+            # Call setDict on node
+            if node is not None:
+                node._setDict(d=value,writeEach=writeEach,modes=modes,incGroups=incGroups,excGroups=excGroups)
+            else:
+                self._log.error("Entry {} not found".format(key))
+
 
     def _clearLog(self):
         """Clear the system log"""

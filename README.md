@@ -32,9 +32,13 @@ The following is how you install the latest released version of Rogue with anaco
 
    $ conda install -c defaults -c tidair-packages -c conda-forge -c tidair-tag rogue
 
+```
+
 The following is how you install the development version (pre-release) or Rogue with anaconda.
 
 ```
 
    $ conda create -n rogue_pre -c defaults -c tidair-packages -c conda-forge -c tidair-dev rogue
+
+```
 
