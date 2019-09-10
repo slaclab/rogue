@@ -58,7 +58,7 @@ class GuiTop(QWidget):
             self._incGroups=[incGroups]
 
         if excGroups is None:
-            self._excGroups=[]
+            self._excGroups=['Hidden']
         elif isinstance(excGroups,list):
             self._excGroups=excGroups
         else:
