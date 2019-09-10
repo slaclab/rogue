@@ -303,7 +303,7 @@ class BaseVariable(pr.Node):
                 self._listeners.append(listener)
         else:
             if listener not in self.__functions:
-            self.__functions.append(listener)
+                self.__functions.append(listener)
 
     def delListener(self, listener):
         """
