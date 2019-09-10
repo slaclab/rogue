@@ -550,8 +550,16 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
     def loadYaml(self,name,writeEach,modes,incGroups,excGroups):
         """Load YAML configuration from a file. Called from command"""
 
+        # Pass arg is a python list
+        if isinstance(name,list):
+            lst = name
+
+        # Passed arg is a comma seperated list of files
+        elif ',' in name:
+            lst = name.split(',')
+
         # Passed path is a directory
-        if os.path.isdir(name):
+        elif os.path.isdir(name):
             dlst = glob.glob('{}/*.yml'.format(name))
             dlst.extend(glob.glob('{}/*.yaml'.format(name)))
             lst = sorted(dlst)
