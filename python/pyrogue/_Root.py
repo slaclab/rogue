@@ -528,8 +528,9 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
         # Passed path is a directory
         if os.path.isdir(name):
-            lst = glob.glob('{}/*.yml'.format(name))
-            lst.extend(glob.glob('{}/*.yaml'.format(name)))
+            dlst = glob.glob('{}/*.yml'.format(name))
+            dlst.extend(glob.glob('{}/*.yaml'.format(name)))
+            lst = sorted(dlst)
 
         # Add file to list
         else:
