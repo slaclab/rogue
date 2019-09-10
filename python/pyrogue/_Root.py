@@ -68,9 +68,9 @@ class RootLogHandler(logging.Handler):
                     msg += jsonpickle.encode(se) + ']'
                     self._root.SystemLog.set(msg)
 
-               # Log to database, placeholder waiting for other PR
-               if self._root._sqlLog is not None:
-                   self._root._sqlLog.logSyslog(se)
+                # Log to database, placeholder waiting for other PR
+                if self._root._sqlLog is not None:
+                    self._root._sqlLog.logSyslog(se)
 
            except Exception as e:
                print("-----------Error Logging Exception -------------")
