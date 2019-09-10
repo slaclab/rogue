@@ -36,14 +36,14 @@ class StreamWriter(pyrogue.DataWriter):
             pr.logException(self._log,e)
 
         # Dump config/status to file
-        if self._configEn: self.root._streamYaml()
+        if self._configEn: self.root.streamYaml()
         self.FrameCount.set(0)
         self.IsOpen.get()
 
     def _close(self):
 
         # Dump config/status to file
-        if self._configEn: self.root._streamYaml()
+        if self._configEn: self.root.streamYaml()
         self._writer.close()
         self.IsOpen.get()
 
