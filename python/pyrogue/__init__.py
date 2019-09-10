@@ -24,8 +24,9 @@ from pyrogue._Memory    import *
 from pyrogue._Root      import *
 from pyrogue._PollQueue import *
 from pyrogue._Process   import *
-from pyrogue._DataWriter import *
-from pyrogue._RunControl import *
+from pyrogue._DataWriter   import *
+from pyrogue._RunControl   import *
+from pyrogue._DataReceiver import *
 
 def addLibraryPath(path):
     """
@@ -61,6 +62,16 @@ def addLibraryPath(path):
         if not os.access(tst,os.R_OK):
             raise Exception("Library path {} does not exist or is not readable".format(tst))
         sys.path.append(np)
+
+def waitCntrlC():
+    """Helper Function To Wait For Cntrl-c"""
+
+    print("Running. Hit cntrl-c to exit.")
+    try:
+        while True:
+            time.sleep(1)
+    except KeyboardInterrupt:
+        return
 
 def streamConnect(source, dest):
     """

@@ -138,17 +138,31 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                                  description='Read all values from the hardware'))
 
         self.add(pr.LocalCommand(name='SaveState', value='', 
-                                 function=lambda arg: self._saveYaml(name=arg,readFirst=True,modes=['RW','RO','WO'],incGroups=None,excGroups='NoState',autoPrefix='state'),
+                                 function=lambda arg: self.saveYaml(name=arg,
+                                                                    readFirst=True,
+                                                                    modes=['RW','RO','WO'],
+                                                                    incGroups=None,
+                                                                    excGroups='NoState',
+                                                                    autoPrefix='state'),
                                  hidden=True,
                                  description='Save state to passed filename in YAML format'))
 
         self.add(pr.LocalCommand(name='SaveConfig', value='', 
-                                 function=lambda arg: self._saveYaml(name=arg,readFirst=True,modes=['RW','WO'],incGroups=None,excGroups='NoConfig',autoPrefix='config'),
+                                 function=lambda arg: self.saveYaml(name=arg,
+                                                                    readFirst=True,
+                                                                    modes=['RW','WO'],
+                                                                    incGroups=None,
+                                                                    excGroups='NoConfig',
+                                                                    autoPrefix='config'),
                                  hidden=True,
                                  description='Save configuration to passed filename in YAML format'))
 
         self.add(pr.LocalCommand(name='LoadConfig', value='', 
-                                 function=lambda arg: self._loadYaml(name=arg,writeEach=False,modes=['RW','WO'],incGroups=None,excGroups='NoConfig'),
+                                 function=lambda arg: self.loadYaml(name=arg,
+                                                                    writeEach=False,
+                                                                    modes=['RW','WO'],
+                                                                    incGroups=None,
+                                                                    excGroups='NoConfig'),
                                  hidden=True,
                                  description='Read configuration from passed filename in YAML format'))
 
@@ -165,17 +179,27 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                                  description='Clear the message log cntained in the SystemLog variable'))
 
         self.add(pr.LocalCommand(name='SetYamlConfig', value='', 
-                                 function=lambda arg: self._setYaml(yml=arg,writeEach=False,modes=['RW','WO'],incGroups=None,excGroups='NoConfig'), 
+                                 function=lambda arg: self.setYaml(yml=arg,
+                                                                   writeEach=False,
+                                                                   modes=['RW','WO'],
+                                                                   incGroups=None,
+                                                                   excGroups='NoConfig'), 
                                  hidden=True,
                                  description='Set configuration from passed YAML string'))
 
         self.add(pr.LocalCommand(name='GetYamlConfig', value=True, retValue='',
-                                 function=lambda arg: self._getYaml(readFirst=arg,modes=['RW','WO'],incGroups=None,excGroups='NoConfig'), 
+                                 function=lambda arg: self.getYaml(readFirst=arg,
+                                                                   modes=['RW','WO'],
+                                                                   incGroups=None,
+                                                                   excGroups='NoConfig'), 
                                  hidden=True,
                                  description='Get current configuration as YAML string. Pass read first arg.'))
 
         self.add(pr.LocalCommand(name='GetYamlState', value=True, retValue='',
-                                 function=lambda arg: self._getYaml(readFirst=arg,modes=['RW','RO','WO'],incGroups=None,excGroups='NoState'), 
+                                 function=lambda arg: self.getYaml(readFirst=arg,
+                                                                   modes=['RW','RO','WO'],
+                                                                   incGroups=None,
+                                                                   excGroups='NoState'), 
                                  hidden=True,
                                  description='Get current state as YAML string. Pass read first arg.'))
 
@@ -463,14 +487,14 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         frame.write(b,0)
         self._sendFrame(frame)
 
-    def _streamYaml(self,modes=['RW','RO','WO'],incGroups=None,excGroups=['NoStream','NoState']):
+    def streamYaml(self,modes=['RW','RO','WO'],incGroups=None,excGroups=['NoStream','NoState']):
         """
         Generate a frame containing all variables values in yaml format.
         A hardware read is not generated before the frame is generated.
         Vlist can contain an optional list of variale paths to include in the
         stream. If this list is not NULL only these variables will be included.
         """
-        self._sendYamlFrame(self._getYaml(readFirst=False,
+        self._sendYamlFrame(self.getYaml(readFirst=False,
                                           modes=modes,
                                           incGroups=incGroups,
                                           excGroups=excGroups))
@@ -507,7 +531,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         self._log.info("Done root read")
         return True
 
-    def _saveYaml(self,name,readFirst,modes,incGroups,excGroups,autoPrefix):
+    def saveYaml(self,name,readFirst,modes,incGroups,excGroups,autoPrefix):
         """Save YAML configuration/status to a file. Called from command"""
 
         # Auto generate name if no arg
@@ -516,14 +540,14 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
         try:
             with open(name,'w') as f:
-                f.write(self._getYaml(readFirst=readFirst,modes=modes,incGroups=incGroups,excGroups=excGroups))
+                f.write(self.getYaml(readFirst=readFirst,modes=modes,incGroups=incGroups,excGroups=excGroups))
         except Exception as e:
             pr.logException(self._log,e)
             return False
 
         return True
 
-    def _loadYaml(self,name,writeEach,modes,incGroups,excGroups):
+    def loadYaml(self,name,writeEach,modes,incGroups,excGroups):
         """Load YAML configuration from a file. Called from command"""
 
         # Passed path is a directory
@@ -554,7 +578,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
         return True
 
-    def _getYaml(self,readFirst,modes,incGroups,excGroups):
+    def getYaml(self,readFirst,modes,incGroups,excGroups):
         """
         Get current values as yaml data.
         modes is a list of variable modes to include.
@@ -569,7 +593,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
             return ""
 
 
-    def _setYaml(self,yml,writeEach,modes,incGroups,excGroups):
+    def setYaml(self,yml,writeEach,modes,incGroups,excGroups):
         """
         Set variable values from a yaml file
         modes is a list of variable modes to act on.
