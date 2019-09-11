@@ -46,7 +46,6 @@ requirements:
      - pyqt
      - pyepics    [linux]
      - sqlalchemy
-     - pydm
 
 about:
    home: https://github.com/slaclab/rogue
