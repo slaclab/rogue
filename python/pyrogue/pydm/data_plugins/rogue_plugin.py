@@ -79,7 +79,7 @@ class PydmRogueClient(object):
 
 
 class PydmRogueConnection(PyDMConnection):
-    ADDRESS_FORMAT = "rogue://<host>:<port>/<path>/<polling|0.1>"
+    ADDRESS_FORMAT = "rogue://index/<path>"
 
     # These values will be passed in the command line
     serverIndices = {
