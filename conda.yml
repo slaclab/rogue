@@ -2,7 +2,6 @@ channels:
   - defaults
   - tidair-packages
   - conda-forge
-  - pydm-tag
 dependencies:
   - python
   - gcc_linux-64
@@ -30,4 +29,3 @@ dependencies:
   - breathe
   - p4p
   - sqlalchemy
-  - pydm
