@@ -2,6 +2,7 @@ channels:
   - defaults
   - tidair-packages
   - conda-forge
+  - pydm-tag
 dependencies:
   - python
   - clang_osx-64
