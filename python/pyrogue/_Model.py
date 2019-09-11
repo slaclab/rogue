@@ -33,6 +33,9 @@ def reverseBits(value, bitSize):
         value >>= 1
     return result
 
+def twosComplement(value, bitSize):
+    return (-value) & (2**bitSize - 1)
+
 # class ModelMeta(type):
 #     def __init__(cls, *args, **kwargs):
 #         super().__init__(*args, **kwargs)
