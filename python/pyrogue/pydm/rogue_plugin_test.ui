@@ -25,10 +25,7 @@
         <bool>true</bool>
        </property>
        <property name="channel" stdset="0">
-        <string>rogue://0/dummyTree.AxiVersion.FpgaVersion/.1</string>
-       </property>
-       <property name="displayFormat" stdset="0">
-        <enum>PyDMLineEdit::Hex</enum>
+        <string>rogue://0/dummyTree.Time/.1</string>
        </property>
       </widget>
      </item>
@@ -46,9 +43,6 @@
        <property name="channel" stdset="0">
         <string>rogue://0/dummyTree.AxiVersion.ScratchPad/.1</string>
        </property>
-       <property name="displayFormat" stdset="0">
-        <enum>PyDMLineEdit::Hex</enum>
-       </property>
       </widget>
      </item>
      <item>
@@ -64,9 +58,6 @@
        </property>
        <property name="channel" stdset="0">
         <string>rogue://0/dummyTree.AxiVersion.FpgaReloadHalt/.1</string>
-       </property>
-       <property name="displayFormat" stdset="0">
-        <enum>PyDMLineEdit::Hex</enum>
        </property>
       </widget>
      </item>

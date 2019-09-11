@@ -22,3 +22,4 @@ dependencies:
   - bzip2
   - zeromq
   - sqlalchemy
+  - pydm
