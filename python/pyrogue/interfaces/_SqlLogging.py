@@ -37,18 +37,20 @@ class SqlLogger(object):
             sqlalchemy.Column('id',        sqlalchemy.Integer, primary_key=True),
             sqlalchemy.Column('timestamp', sqlalchemy.DateTime(timezone=True), server_default=sqlalchemy.func.now()),
             sqlalchemy.Column('path',      sqlalchemy.String),
+            sqlalchemy.Column('enum',      sqlalchemy.String),
             sqlalchemy.Column('disp',      sqlalchemy.String),
             sqlalchemy.Column('value',     sqlalchemy.String),
             sqlalchemy.Column('severity',  sqlalchemy.String),
             sqlalchemy.Column('status',    sqlalchemy.String))
 
         self._logTable = sqlalchemy.Table('syslog', self._metadata,
-            sqlalchemy.Column('id',         sqlalchemy.Integer, primary_key=True),
-            sqlalchemy.Column('timestamp',  sqlalchemy.DateTime(timezone=True), server_default=sqlalchemy.func.now()),
-            sqlalchemy.Column('name',       sqlalchemy.String),
-            sqlalchemy.Column('message',    sqlalchemy.String),
-            sqlalchemy.Column('exception',  sqlalchemy.String),
-            sqlalchemy.Column('level',      sqlalchemy.String))
+            sqlalchemy.Column('id',          sqlalchemy.Integer, primary_key=True),
+            sqlalchemy.Column('timestamp',   sqlalchemy.DateTime(timezone=True), server_default=sqlalchemy.func.now()),
+            sqlalchemy.Column('name',        sqlalchemy.String),
+            sqlalchemy.Column('message',     sqlalchemy.String),
+            sqlalchemy.Column('exception',   sqlalchemy.String),
+            sqlalchemy.Column('levelName',   sqlalchemy.String),
+            sqlalchemy.Column('levelNumber', sqlalchemy.Integer))
 
         self._varTable.create(conn, checkfirst=True)
         self._logTable.create(conn, checkfirst=True)
@@ -60,14 +62,15 @@ class SqlLogger(object):
 
         try:
             ins = self._varTable.insert().values(path=path, 
+                                                 enum=varValue.enum, 
                                                  disp=varValue.disp, 
-                                                 value=varValue.valueDisp, 
+                                                 value=varValue.valueDisp,
                                                  severity=varValue.severity, 
                                                  status=varValue.status)
             self._conn.execute(ins)
         except:
-            self._log.error("Lost database connection to {}".format(self._url))
             self._conn = None
+            self._log.error("Lost database connection to {}".format(self._url))
 
     def logSyslog(self, syslogData):
         if self._conn is None:
@@ -77,12 +80,16 @@ class SqlLogger(object):
             ins = self._logTable.insert().values(name=syslogData['name'], 
                                                  message=syslogData['message'],
                                                  exception=syslogData['exception'],
-                                                 level=syslogData['level'])
+                                                 levelName=syslogData['levelName'],
+                                                 levelNumber=syslogData['levelNumber'])
 
             self._conn.execute(ins)
 
-        except:
-            self._log.error("Lost database connection to {}".format(self._url))
+        except Exception as e:
+            print("-----------Error Storing Syslog To DB --------------------")
+            print("Lost database connection to {}".format(self._url))
+            print("Error: {}".format(e))
+            print("----------------------------------------------------------")
             self._conn = None
 
 

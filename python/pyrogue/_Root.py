@@ -62,14 +62,14 @@ class RootLogHandler(logging.Handler):
                 with self._root.SystemLog.lock:
                     msg =  self._root.SystemLog.value()[:-1]
 
-                    # Only add a comma if list is not empty
+                    # Only add a comma and return if list is not empty
                     if len(msg) > 1:
                         msg += ',\n'
 
                     msg += jsonpickle.encode(se) + ']'
                     self._root.SystemLog.set(msg)
 
-                # Log to database, placeholder waiting for other PR
+                # Log to database
                 if self._root._sqlLog is not None:
                     self._root._sqlLog.logSyslog(se)
 
@@ -757,7 +757,12 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                             self._sqlLog.logVariable(p, val)
 
                     except Exception as e:
-                        pr.logException(self._log,e)
+                        if v == self.SystemLog:
+                            print("------- Error Executing Syslog Listeners -------")
+                            print("Error: {}".format(e))
+                            print("------------------------------------------------")
+                        else:
+                            pr.logException(self._log,e)
                         
                 self._log.debug(F"Done update group. Length={len(uvars)}. Entry={list(uvars.keys())[0]}")
 
