@@ -21,7 +21,7 @@ import test_device
 import time
 import rogue
 import pyrogue.protocols.epics
-import pyrogue.gui
+#import pyrogue.gui
 #import pyrogue.protocols.epicsV4
 import logging
 
