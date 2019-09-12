@@ -129,6 +129,12 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         self._updateQueue = queue.Queue()
         self._updateThread = None
 
+        # Stream and database group rules for updates worker
+        self._streamIncGroups = None
+        self._streamExcGroups = None
+        self._sqlIncGroups    = None
+        self._sqlExcGroups    = None
+
         # SQL URL
         self._sqlLog = None
 
@@ -136,7 +142,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         pr.Device.__init__(self, name=name, description=description, expand=expand)
 
         # Variables
-        self.add(pr.LocalVariable(name='SystemLog', value=SystemLogInit, mode='RO', hidden=True, groups=['NoStream','NoLog','NoState'],
+        self.add(pr.LocalVariable(name='SystemLog', value=SystemLogInit, mode='RO', hidden=True, groups=['NoStream','NoSql','NoState'],
             description='String containing newline seperated system logic entries'))
 
         self.add(pr.LocalVariable(name='ForceWrite', value=False, mode='RW', hidden=True,
@@ -148,11 +154,11 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         self.add(pr.LocalVariable(name='Time', value=0.0, mode='RO', hidden=True,
                  localGet=lambda: time.time(), pollInterval=1.0, description='Current Time In Seconds Since EPOCH UTC'))
 
-        self.add(pr.LocalVariable(name='LocalTime', value='', mode='RO', groups=['NoStream','NoLog','NoState'],
+        self.add(pr.LocalVariable(name='LocalTime', value='', mode='RO', groups=['NoStream','NoSql','NoState'],
                  localGet=lambda: time.strftime("%Y-%m-%d %H:%M:%S %Z", time.localtime(time.time())),
                  pollInterval=1.0, description='Local Time'))
 
-        self.add(pr.LocalVariable(name='PollEn', value=False, mode='RW',groups=['NoStream','NoLog','NoState'],
+        self.add(pr.LocalVariable(name='PollEn', value=False, mode='RW',groups=['NoStream','NoSql','NoState'],
                                   localSet=lambda value: self._pollQueue.pause(not value),
                                   localGet=lambda: not self._pollQueue.paused()))
 
@@ -236,17 +242,27 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                                  description='Exit the server application'))
 
     def start(self, 
-              timeout=1.0, 
-              initRead=False, 
-              initWrite=False, 
-              pollEn=True, 
-              zmqPort=None, 
-              serverPort=None, 
-              sqlUrl=None):
+              timeout=1.0,
+              initRead=False,
+              initWrite=False,
+              pollEn=True,
+              zmqPort=None,
+              serverPort=None,
+              sqlUrl=None,
+              streamIncGroups=None,
+              streamExcGroups=['NoStream'],
+              sqlIncGroups=None,
+              sqlExcGroups=['NoSql']):
         """Setup the tree. Start the polling thread."""
 
         if self._running:
             raise pr.NodeError("Root is already started! Can't restart!")
+
+        # Stream and databse rules
+        self._streamIncGroups = streamIncGroups
+        self._streamExcGroups = streamExcGroups
+        self._sqlIncGroups    = sqlIncgroups
+        self._sqlExcGroups    = sqlExcgroups
 
         # Call special root level rootAttached
         self._rootAttached()
@@ -513,13 +529,18 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         frame.write(b,0)
         self._sendFrame(frame)
 
-    def streamYaml(self,modes=['RW','RO','WO'],incGroups=None,excGroups=['NoStream','NoState']):
+    def streamYaml(self,modes=['RW','RO','WO'],incGroups=None,excGroups=None):
         """
         Generate a frame containing all variables values in yaml format.
         A hardware read is not generated before the frame is generated.
         Vlist can contain an optional list of variale paths to include in the
         stream. If this list is not NULL only these variables will be included.
         """
+
+        # Inherit include and exclude groups from global if not passed
+        if incGroups is None: incGroups = self._streamIncGroups
+        if excGroups is None: excGroups = self._streamExcGroups
+
         self._sendYamlFrame(self.getYaml(readFirst=False,
                                           modes=modes,
                                           incGroups=incGroups,
@@ -720,7 +741,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                         val = v._doUpdate()
 
                         # Add to stream
-                        if not v.inGroup('NoStream'):
+                        if v.filterByGroup(self._streamIncGroups, self._streamExcGroups):
                             strm[p] = val
 
                         # Add to zmq publish
@@ -732,7 +753,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                                 func(p,val)
 
                         # Log to database
-                        if self._sqlLog is not None and not v.inGroup('NoLog'):
+                        if self._sqlLog is not None and v.filterByGroup(self._sqlIncGroups, self._sqlExcGroups):
                             self._sqlLog.logVariable(p, val)
 
                     except Exception as e:
