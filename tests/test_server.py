@@ -64,6 +64,6 @@ class DummyTree(pyrogue.Root):
 if __name__ == "__main__":
 
     with DummyTree() as dummyTree:
-        #pyrogue.waitCntrlC()
-        pyrogue.gui.runGui(dummyTree)
+        pyrogue.waitCntrlC()
+        #pyrogue.gui.runGui(dummyTree)
 
