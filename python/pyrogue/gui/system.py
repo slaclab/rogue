@@ -438,7 +438,10 @@ class SystemWidget(QWidget):
     def updateSyslog(self,varVal):
         lst = jsonpickle.decode(varVal.value)
 
-        if len(lst) > self.logCount:
+        if len(lst) == 0:
+            self.systemLog.clear()
+
+        elif len(lst) > self.logCount:
             for i in range(self.logCount,len(lst)):
                 widget = QTreeWidgetItem(self.systemLog)
                 widget.setText(0, time.strftime("%Y-%m-%d %H:%M:%S %Z", time.localtime(lst[i]['created'])))
