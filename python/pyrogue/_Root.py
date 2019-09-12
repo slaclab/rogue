@@ -815,7 +815,7 @@ def dataToYaml(data):
     def _dict_representer(dumper, data):
         return dumper.represent_mapping(yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG, data.items())
 
-        PyrogueDumper.add_representer(pr.VariableValue, _var_representer)
+    PyrogueDumper.add_representer(pr.VariableValue, _var_representer)
     PyrogueDumper.add_representer(odict, _dict_representer)
 
     return yaml.dump(data, Dumper=PyrogueDumper, default_flow_style=False)
