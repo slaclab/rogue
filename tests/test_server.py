@@ -21,6 +21,7 @@ import test_device
 import time
 import rogue
 #import pyrogue.protocols.epics
+#import pyrogue.gui
 #import pyrogue.protocols.epicsV4
 import logging
 
@@ -64,4 +65,5 @@ if __name__ == "__main__":
 
     with DummyTree() as dummyTree:
         pyrogue.waitCntrlC()
+        #pyrogue.gui.runGui(dummyTree)
 
