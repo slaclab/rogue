@@ -29,6 +29,7 @@ import queue
 import jsonpickle
 import zipfile
 import traceback
+import gzip
 from contextlib import contextmanager
 
 SystemLogInit = '[]'
@@ -169,7 +170,8 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                                                                     modes=['RW','RO','WO'],
                                                                     incGroups=None,
                                                                     excGroups='NoState',
-                                                                    autoPrefix='state'),
+                                                                    autoPrefix='state',
+                                                                    autoCompress=True),
                                  hidden=True,
                                  description='Save state to passed filename in YAML format'))
 
@@ -179,7 +181,8 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                                                                     modes=['RW','WO'],
                                                                     incGroups=None,
                                                                     excGroups='NoConfig',
-                                                                    autoPrefix='config'),
+                                                                    autoPrefix='config',
+                                                                    autoCompress=False),
                                  hidden=True,
                                  description='Save configuration to passed filename in YAML format'))
 
@@ -557,16 +560,24 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         self._log.info("Done root read")
         return True
 
-    def saveYaml(self,name,readFirst,modes,incGroups,excGroups,autoPrefix):
+    def saveYaml(self,name,readFirst,modes,incGroups,excGroups,autoPrefix,autoCompress):
         """Save YAML configuration/status to a file. Called from command"""
 
         # Auto generate name if no arg
         if name is None or name == '':
             name = datetime.datetime.now().strftime(autoPrefix + "_%Y%m%d_%H%M%S.yml")
 
+            if autoCompress:
+                name += '.gz'
         try:
-            with open(name,'w') as f:
-                f.write(self.getYaml(readFirst=readFirst,modes=modes,incGroups=incGroups,excGroups=excGroups))
+            yml = self.getYaml(readFirst=readFirst,modes=modes,incGroups=incGroups,excGroups=excGroups)
+
+            if name.split('.')[-1] == 'gz':
+                with gzip.open(name,'w') as f: f.write(yml.encode('utf-8'))
+
+            else:
+                with open(name,'w') as f: f.write(yml)
+
         except Exception as e:
             pr.logException(self._log,e)
             return False
