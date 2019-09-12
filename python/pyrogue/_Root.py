@@ -573,11 +573,9 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
             yml = self.getYaml(readFirst=readFirst,modes=modes,incGroups=incGroups,excGroups=excGroups)
 
             if name.split('.')[-1] == 'gz':
-                print("Got here compress {}".format(name))
                 with gzip.open(name,'w') as f: f.write(yml.encode('utf-8'))
 
             else:
-                print("Got here no compress {}".format(name))
                 with open(name,'w') as f: f.write(yml)
 
         except Exception as e:
