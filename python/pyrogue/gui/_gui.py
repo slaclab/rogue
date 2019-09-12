@@ -35,6 +35,12 @@ import pyrogue.gui.system
 import threading
 import sys
 
+def runGui(root,incGroups=None,excGroups=None):
+    appTop = QApplication(sys.argv)
+    guiTop = pyrogue.gui.GuiTop(incGroups=incGroups,excGroups=excGroups)
+    guiTop.setWindowTitle("Rogue Local Client")
+    guiTop.addTree(root)
+    appTop.exec_()
 
 def application(argv):
     return QApplication(argv)

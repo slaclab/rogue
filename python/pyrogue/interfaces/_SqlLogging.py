@@ -66,8 +66,8 @@ class SqlLogger(object):
                                                  status=varValue.status)
             self._conn.execute(ins)
         except:
-            self._log.error("Lost database connection to {}".format(self._url))
             self._conn = None
+            self._log.error("Lost database connection to {}".format(self._url))
 
     def logSyslog(self, syslogData):
         if self._conn is None:
@@ -82,7 +82,9 @@ class SqlLogger(object):
             self._conn.execute(ins)
 
         except:
-            self._log.error("Lost database connection to {}".format(self._url))
+            print("-----------Error Storing Syslog To DB ----------")
+            print("Lost database connection to {}".format(self._url))
+            print("------------------------------------------------")
             self._conn = None
 
 
