@@ -61,15 +61,16 @@ class SqlLogger(object):
             return
 
         try:
-            ins = self._varTable.insert().values(path=path, 
-                                                 enum=varValue.enum, 
+            ins = self._varTable.insert().values(path=path,
+                                                 enum=str(varValue.enum),
                                                  disp=varValue.disp, 
                                                  value=varValue.valueDisp,
                                                  severity=varValue.severity, 
                                                  status=varValue.status)
             self._conn.execute(ins)
-        except:
+        except Exception as e:
             self._conn = None
+            pr.logException(self._log,e)
             self._log.error("Lost database connection to {}".format(self._url))
 
     def logSyslog(self, syslogData):
