@@ -524,9 +524,9 @@ class SystemWidget(QWidget):
     @pyqtSlot()
     def saveState(self):
         dlg = QFileDialog()
-        sug = datetime.datetime.now().strftime("state_%Y%m%d_%H%M%S.yml") 
+        sug = datetime.datetime.now().strftime("state_%Y%m%d_%H%M%S.yml.gz")
 
-        stateFile = dlg.getSaveFileName(caption='Save State file', directory=sug, filter='State Files(*.yml);;All Files(*.*)')
+        stateFile = dlg.getSaveFileName(caption='Save State file', directory=sug, filter='State Files(*.yml *.yml.gz);;All Files(*.*)')
 
         # Detect QT5 return
         if isinstance(stateFile,tuple):
