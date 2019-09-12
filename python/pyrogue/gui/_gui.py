@@ -33,12 +33,13 @@ import pyrogue.gui.variables
 import pyrogue.gui.commands
 import pyrogue.gui.system
 import threading
+import socket
 import sys
 
 def runGui(root,incGroups=None,excGroups=None):
     appTop = QApplication(sys.argv)
     guiTop = pyrogue.gui.GuiTop(incGroups=incGroups,excGroups=excGroups)
-    guiTop.setWindowTitle("Rogue Local Client")
+    guiTop.setWindowTitle("Rogue Server: {}".format(socket.gethostname()))
     guiTop.addTree(root)
     appTop.exec_()
 
