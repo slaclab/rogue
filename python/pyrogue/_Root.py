@@ -261,8 +261,8 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         # Stream and databse rules
         self._streamIncGroups = streamIncGroups
         self._streamExcGroups = streamExcGroups
-        self._sqlIncGroups    = sqlIncgroups
-        self._sqlExcGroups    = sqlExcgroups
+        self._sqlIncGroups    = sqlIncGroups
+        self._sqlExcGroups    = sqlExcGroups
 
         # Call special root level rootAttached
         self._rootAttached()
