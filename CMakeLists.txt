@@ -64,6 +64,11 @@ if ( NOT NO_PYTHON )
       find_package(Boost 1.58 QUIET COMPONENTS system thread python37)
    endif()
 
+   # Next try anaconda with python
+   if (NOT Boost_FOUND)
+      find_package(Boost 1.58 QUIET COMPONENTS system thread python)
+   endif()
+
    # Nothing worked
    if (NOT Boost_FOUND)
       message("")
@@ -344,6 +349,14 @@ endif()
 if (NOT (${ROGUE_INSTALL} STREQUAL "local"))
    install(DIRECTORY ${PROJECT_SOURCE_DIR}/include/rogue
            DESTINATION ${ROGUE_DIR}/include FILES_MATCHING PATTERN "*.h")
+endif()
+
+# Conda activate and deactivate functions
+if ((${ROGUE_INSTALL} STREQUAL "conda"))
+   install(CODE "execute_process(COMMAND scp ${PROJECT_SOURCE_DIR}/templates/activate-rogue.sh
+                                             ${ROGUE_DIR}/etc/conda/activate.d/rogue.sh)")
+   install(CODE "execute_process(COMMAND scp ${PROJECT_SOURCE_DIR}/templates/deactivate-rogue.sh
+                                             ${ROGUE_DIR}/etc/conda/deactivate.d/rogue.sh)")
 endif()
 
 # Python file install
