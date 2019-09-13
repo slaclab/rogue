@@ -22,6 +22,7 @@ import zmq
 import rogue.interfaces
 import functools as ft
 import jsonpickle
+import re
 
 
 
@@ -97,6 +98,31 @@ class VirtualNode(pr.Node):
         self._root      = None
         self._client    = None
         self._functions = []
+
+        # Rebuild array nodes list locally
+        for k,v in self._nodes.items():
+
+            # Detect array variables
+            fields = re.split('\[|\]',k)
+
+            # Add array variables
+            if len(fields) == 3 and fields[2] == '':
+                aname = fields[0]
+                key   = fields[1]
+
+                # Key must be numeric
+                if key.isdigit():
+                    key = int(key)
+
+                    # Create list if it does not exist
+                    if not aname in self._anodes:
+                        self._anodes[aname] = []
+
+                    # Fill in empy array locations
+                    if len(self._anodes[aname]) <= key:
+                        self._anodes[aname].extend([None for i in range(key-len(self._anodes[aname]) + 1)])
+
+                    self._anodes[aname][key] = v
 
         # Setup logging
         self._log = pr.logInit(cls=self,name=self.name,path=self._path)

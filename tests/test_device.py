@@ -255,7 +255,8 @@ class AxiVersion(pr.Device):
 
         self.BuildStamp.addListener(parseBuildStamp)        
       
-        for i in range(16):
+        #for i in range(16):
+        for i in range(1024):
             remap = divmod(i,32)
 
             self.add(pr.RemoteVariable(
@@ -289,7 +290,7 @@ class AxiVersion(pr.Device):
         ))
 
         self.add(pr.LocalVariable(
-            name = 'TestArray',
+            name = 'TestRealArray',
             mode = 'RW',
             value = [1,2,3,4]))
 
