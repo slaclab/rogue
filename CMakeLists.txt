@@ -64,11 +64,6 @@ if ( NOT NO_PYTHON )
       find_package(Boost 1.58 QUIET COMPONENTS system thread python37)
    endif()
 
-   # Next try anaconda with python
-   if (NOT Boost_FOUND)
-      find_package(Boost 1.58 QUIET COMPONENTS system thread python)
-   endif()
-
    # Nothing worked
    if (NOT Boost_FOUND)
       message("")

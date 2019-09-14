@@ -16,6 +16,7 @@ requirements:
      - clang_osx-64   [osx]
      - clangxx_osx-64 [osx]
      - boost
+     - boost-cpp
      - cmake
      - make
      - bzip2
@@ -30,6 +31,7 @@ requirements:
      - git-lfs
      - ipython
      - boost
+     - boost-cpp
      - cmake
      - make
      - bzip2
