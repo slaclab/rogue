@@ -186,7 +186,7 @@ jobs:
 
       script:
         # Build conda package
-        - conda build --debug conda-recipe --output-folder bld-dir -c defaults -c tidair-packages -c conda-forge
+        - conda build --debug conda-recipe --output-folder bld-dir -c tidair-packages -c conda-forge -c pydm-tag
 
       after_success:
         # Upload conda package
