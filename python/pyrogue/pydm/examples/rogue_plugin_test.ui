@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>456</width>
-    <height>205</height>
+    <height>539</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -62,6 +62,13 @@
       </widget>
      </item>
      <item>
+      <widget class="RogueWidget" name="RogueWidget">
+       <property name="toolTip">
+        <string/>
+       </property>
+      </widget>
+     </item>
+     <item>
       <widget class="PyDMCheckbox" name="PyDMCheckbox">
        <property name="toolTip">
         <string/>
@@ -76,6 +83,11 @@
   </layout>
  </widget>
  <customwidgets>
+  <customwidget>
+   <class>RogueWidget</class>
+   <extends>QWidget</extends>
+   <header>pyrogue.pydm.customwidgets.displays.rogue_widgets</header>
+  </customwidget>
   <customwidget>
    <class>PyDMCheckbox</class>
    <extends>QCheckBox</extends>
