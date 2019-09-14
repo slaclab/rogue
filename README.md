@@ -30,7 +30,7 @@ The following is how you install the latest released version of Rogue with anaco
 
 ```
 
-   $ conda install -c defaults -c tidair-packages -c conda-forge -c tidair-tag rogue
+   $ conda install -c tidair-packages -c conda-forge -c pydm-tag -c tidair-tag rogue
 
 ```
 
@@ -38,7 +38,7 @@ The following is how you install the development version (pre-release) or Rogue 
 
 ```
 
-   $ conda create -n rogue_pre -c defaults -c tidair-packages -c conda-forge -c tidair-dev rogue
+   $ conda create -n rogue_pre -c tidair-packages -c conda-forge -c pydm-tag -c tidair-dev rogue
 
 ```
 

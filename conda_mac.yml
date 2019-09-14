@@ -1,7 +1,7 @@
 channels:
-  - defaults
   - tidair-packages
   - conda-forge
+  - pydm-tag
 dependencies:
   - python
   - clang_osx-64
@@ -19,6 +19,8 @@ dependencies:
   - numpy
   - pyqt
   - boost
+  - boost-cpp
   - bzip2
   - zeromq
   - sqlalchemy
+  - pydm

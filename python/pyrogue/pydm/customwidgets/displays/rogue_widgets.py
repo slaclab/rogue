@@ -17,6 +17,7 @@ class RogueWidget(Display):
     def __init__(self, parent=None, args=None, macros=None):
         super(RogueWidget, self).__init__(parent=parent, args=args, macros=None)
         print("Args = {}".format(args))
+        print("Macros = {}".format(macros))
 
     def ui_filename(self):
         # Point to our UI file

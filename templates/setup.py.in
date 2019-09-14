@@ -22,5 +22,5 @@ setup (
     version='${ROGUE_VERSION}',
     packages=['pyrogue', 'pyrogue.gui', 'pyrogue.utilities', 'pyrogue.utilities.fileio', 'pyrogue.interfaces', 'pyrogue.protocols', 'pyrogue.pydm', 'pyrogue.pydm.customwidgets', 'pyrogue.pydm.customwidgets.displays', 'pyrogue.pydm.data_plugins' ],
     package_dir={'':'${PROJECT_SOURCE_DIR}/python'},
-    package_data={'':['../rogue.so']},
+    package_data={'':['../pyrogue/pydm/customwidgets/displays/test_widget.ui']},
 )
