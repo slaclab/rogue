@@ -15,7 +15,6 @@ requirements:
      - gxx_linux-64   [linux]
      - clang_osx-64   [osx]
      - clangxx_osx-64 [osx]
-     - boost
      - boost-cpp
      - cmake
      - make
@@ -30,7 +29,6 @@ requirements:
      - git
      - git-lfs
      - ipython
-     - boost
      - boost-cpp
      - cmake
      - make
