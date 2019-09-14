@@ -1,7 +1,7 @@
 channels:
   - tidair-packages
-  - conda-forge
   - pydm-tag
+  - conda-forge
 dependencies:
   - python
   - clang_osx-64
