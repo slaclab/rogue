@@ -33,6 +33,12 @@ def reverseBits(value, bitSize):
         value >>= 1
     return result
 
+def twosComplement(value, bitSize):
+    """compute the 2's complement of int value"""
+    if (value & (1 << (bitSize - 1))) != 0: # if sign bit is set e.g., 8bit: 128-255
+        value = value - (1 << bitSize)      # compute negative value
+    return value                            # return positive value as is    
+
 # class ModelMeta(type):
 #     def __init__(cls, *args, **kwargs):
 #         super().__init__(*args, **kwargs)

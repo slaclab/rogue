@@ -28,6 +28,8 @@ except ImportError:
 
 import pyrogue
 import datetime
+import jsonpickle
+import time
 
 class DataLink(QObject):
 
@@ -416,19 +418,62 @@ class SystemWidget(QWidget):
         vb = QVBoxLayout()
         gb.setLayout(vb)
 
-        self.systemLog = QTextEdit()
-        self.systemLog.setReadOnly(True)
+        self.systemLog = QTreeWidget()
         vb.addWidget(self.systemLog)
 
+        self.systemLog.setColumnCount(2)
+        self.systemLog.setHeaderLabels(['Field','Value'])
+
+        self.logCount = 0
+
         root.SystemLog.addListener(self.varListener)
-        self.updateLog.connect(self.systemLog.setText)
-        self.systemLog.setText(root.SystemLog.valueDisp())
-        
+        self.updateSyslog(root.SystemLog.getVariableValue(read=False))
+
         pb = QPushButton('Clear Log')
         pb.clicked.connect(self.resetLog)
         vb.addWidget(pb)
 
         QCoreApplication.processEvents()
+
+    def updateSyslog(self,varVal):
+        lst = jsonpickle.decode(varVal.value)
+
+        if len(lst) == 0:
+            self.systemLog.clear()
+
+        elif len(lst) > self.logCount:
+            for i in range(self.logCount,len(lst)):
+                widget = QTreeWidgetItem(self.systemLog)
+                widget.setText(0, time.strftime("%Y-%m-%d %H:%M:%S %Z", time.localtime(lst[i]['created'])))
+
+                widget.setText(1,lst[i]['message'])
+                widget.setExpanded(False)
+                widget.setTextAlignment(0,Qt.AlignTop)
+
+                temp = QTreeWidgetItem(widget)
+                temp.setText(0,'Name')
+                temp.setText(1,str(lst[i]['name']))
+                temp.setTextAlignment(0,Qt.AlignRight)
+
+                temp = QTreeWidgetItem(widget)
+                temp.setText(0,'Level')
+                temp.setText(1,'{} ({})'.format(lst[i]['levelName'],lst[i]['levelNumber']))
+                temp.setTextAlignment(0,Qt.AlignRight)
+
+                if lst[i]['exception'] is not None:
+                    exc = QTreeWidgetItem(widget)
+                    exc.setText(0,'exception')
+                    exc.setText(1,str(lst[i]['exception']))
+                    exc.setExpanded(False)
+                    exc.setTextAlignment(0,Qt.AlignRight)
+
+                    for v in lst[i]['traceBack']:
+                        temp = QTreeWidgetItem(exc)
+                        temp.setText(0,'')
+                        temp.setText(1,v)
+
+        self.systemLog.resizeColumnToContents(0)
+        self.logCount = len(lst)
 
     @pyqtSlot()
     def resetLog(self):
@@ -438,7 +483,7 @@ class SystemWidget(QWidget):
         name = path.split('.')[-1]
 
         if name == 'SystemLog':
-            self.updateLog.emit(value.valueDisp)
+            self.updateSyslog(value)
 
     @pyqtSlot()
     def hardReset(self):
@@ -456,7 +501,7 @@ class SystemWidget(QWidget):
     def loadSettings(self):
         dlg = QFileDialog()
 
-        loadFile = dlg.getOpenFileName(caption='Read config file', filter='Config Files(*.yml);;All Files(*.*)')
+        loadFile = dlg.getOpenFileNames(caption='Read config file', filter='Config Files(*.yml);;All Files(*.*)')
 
         # Detect QT5 return
         if isinstance(loadFile,tuple):
@@ -482,9 +527,9 @@ class SystemWidget(QWidget):
     @pyqtSlot()
     def saveState(self):
         dlg = QFileDialog()
-        sug = datetime.datetime.now().strftime("state_%Y%m%d_%H%M%S.yml") 
+        sug = datetime.datetime.now().strftime("state_%Y%m%d_%H%M%S.yml.gz")
 
-        stateFile = dlg.getSaveFileName(caption='Save State file', directory=sug, filter='State Files(*.yml);;All Files(*.*)')
+        stateFile = dlg.getSaveFileName(caption='Save State file', directory=sug, filter='State Files(*.yml *.yml.gz);;All Files(*.*)')
 
         # Detect QT5 return
         if isinstance(stateFile,tuple):

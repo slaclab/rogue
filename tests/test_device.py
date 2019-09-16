@@ -21,6 +21,7 @@ import datetime
 import parse
 import pyrogue as pr
 import rogue
+import rogue.hardware.axi
 
 class AxiVersion(pr.Device):
 
@@ -301,8 +302,20 @@ class AxiVersion(pr.Device):
             raise pr.MemoryError(name='blah',address=0)
 
         @self.command(hidden=False,value='',retValue='')
+        def TestErrorLog(arg):
+            self._log.error("Test error message")
+
+        @self.command(hidden=False,value='',retValue='')
+        def TestOtherLog(arg):
+            self._log.log(93,"Test log level 39 message")
+
+        @self.command(hidden=False,value='',retValue='')
         def TestGeneralException(arg):
-            raise rogue.GeneralError('blah','test general')
+            a = rogue.hardware.axi.AxiStreamDma('/dev/not_a_device',0,True)
+
+        @self.command(hidden=False,value='',retValue='')
+        def TestOtherError(arg):
+            a = rogue.hardware.axi.AxiStreamDma('/dev/not_a_device',0)
 
     def hardReset(self):
         print('AxiVersion hard reset called')

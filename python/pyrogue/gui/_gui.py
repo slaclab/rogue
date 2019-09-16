@@ -33,8 +33,15 @@ import pyrogue.gui.variables
 import pyrogue.gui.commands
 import pyrogue.gui.system
 import threading
+import socket
 import sys
 
+def runGui(root,incGroups=None,excGroups=None):
+    appTop = QApplication(sys.argv)
+    guiTop = pyrogue.gui.GuiTop(incGroups=incGroups,excGroups=excGroups)
+    guiTop.setWindowTitle("Rogue Server: {}".format(socket.gethostname()))
+    guiTop.addTree(root)
+    appTop.exec_()
 
 def application(argv):
     return QApplication(argv)
@@ -58,7 +65,7 @@ class GuiTop(QWidget):
             self._incGroups=[incGroups]
 
         if excGroups is None:
-            self._excGroups=[]
+            self._excGroups=['Hidden']
         elif isinstance(excGroups,list):
             self._excGroups=excGroups
         else:
