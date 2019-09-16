@@ -11,5 +11,7 @@
 from pydm.widgets.qtplugin_base import qtplugin_factory
 
 from pyrogue.pydm.customwidgets.displays.rogue_widgets import RogueWidget
+from pyrogue.pydm.customwidgets.displays.rogue_frame   import RogueFrame
 
 ROGUEWidget = qtplugin_factory(RogueWidget, group="Rogue Widgets")
+ROGUEFrame  = qtplugin_factory(RogueFrame,  group="Rogue Widgets")
