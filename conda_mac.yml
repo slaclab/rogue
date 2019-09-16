@@ -18,8 +18,7 @@ dependencies:
   - click
   - numpy
   - pyqt
-  - boost
-  - boost-cpp
+  - boost=1.69
   - bzip2
   - zeromq
   - sqlalchemy
