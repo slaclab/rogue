@@ -196,6 +196,9 @@ class BaseCommand(pr.BaseVariable):
     @staticmethod
     def postedTouchZero(cmd):
         cmd.post(0)
+
+    def replaceFunction(self, function):
+        self._function = function
         
     def _setDict(self,d,writeEach,modes,incGroups,excGroups):
         pass

@@ -15,6 +15,7 @@
 #-----------------------------------------------------------------------------
 import sys
 import os
+import glob
 import rogue.interfaces.memory
 import yaml
 import threading
@@ -28,6 +29,7 @@ import queue
 import jsonpickle
 import zipfile
 import traceback
+import gzip
 from contextlib import contextmanager
 
 SystemLogInit = '[]'
@@ -61,14 +63,14 @@ class RootLogHandler(logging.Handler):
                 with self._root.SystemLog.lock:
                     msg =  self._root.SystemLog.value()[:-1]
 
-                    # Only add a comma if list is not empty
+                    # Only add a comma and return if list is not empty
                     if len(msg) > 1:
                         msg += ',\n'
 
                     msg += jsonpickle.encode(se) + ']'
                     self._root.SystemLog.set(msg)
 
-                # Log to database, placeholder waiting for other PR
+                # Log to database
                 if self._root._sqlLog is not None:
                     self._root._sqlLog.logSyslog(se)
 
@@ -128,6 +130,12 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         self._updateQueue = queue.Queue()
         self._updateThread = None
 
+        # Stream and database group rules for updates worker
+        self._streamIncGroups = None
+        self._streamExcGroups = None
+        self._sqlIncGroups    = None
+        self._sqlExcGroups    = None
+
         # SQL URL
         self._sqlLog = None
 
@@ -135,7 +143,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         pr.Device.__init__(self, name=name, description=description, expand=expand)
 
         # Variables
-        self.add(pr.LocalVariable(name='SystemLog', value=SystemLogInit, mode='RO', hidden=True, groups=['NoStream','NoLog','NoState'],
+        self.add(pr.LocalVariable(name='SystemLog', value=SystemLogInit, mode='RO', hidden=True, groups=['NoStream','NoSql','NoState'],
             description='String containing newline seperated system logic entries'))
 
         self.add(pr.LocalVariable(name='ForceWrite', value=False, mode='RW', hidden=True,
@@ -147,11 +155,11 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         self.add(pr.LocalVariable(name='Time', value=0.0, mode='RO', hidden=True,
                  localGet=lambda: time.time(), pollInterval=1.0, description='Current Time In Seconds Since EPOCH UTC'))
 
-        self.add(pr.LocalVariable(name='LocalTime', value='', mode='RO', groups=['NoStream','NoLog','NoState'],
+        self.add(pr.LocalVariable(name='LocalTime', value='', mode='RO', groups=['NoStream','NoSql','NoState'],
                  localGet=lambda: time.strftime("%Y-%m-%d %H:%M:%S %Z", time.localtime(time.time())),
                  pollInterval=1.0, description='Local Time'))
 
-        self.add(pr.LocalVariable(name='PollEn', value=False, mode='RW',groups=['NoStream','NoLog','NoState'],
+        self.add(pr.LocalVariable(name='PollEn', value=False, mode='RW',groups=['NoStream','NoSql','NoState'],
                                   localSet=lambda value: self._pollQueue.pause(not value),
                                   localGet=lambda: not self._pollQueue.paused()))
 
@@ -168,7 +176,8 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                                                                     modes=['RW','RO','WO'],
                                                                     incGroups=None,
                                                                     excGroups='NoState',
-                                                                    autoPrefix='state'),
+                                                                    autoPrefix='state',
+                                                                    autoCompress=True),
                                  hidden=True,
                                  description='Save state to passed filename in YAML format'))
 
@@ -178,7 +187,8 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                                                                     modes=['RW','WO'],
                                                                     incGroups=None,
                                                                     excGroups='NoConfig',
-                                                                    autoPrefix='config'),
+                                                                    autoPrefix='config',
+                                                                    autoCompress=False),
                                  hidden=True,
                                  description='Save configuration to passed filename in YAML format'))
 
@@ -235,17 +245,27 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                                  description='Exit the server application'))
 
     def start(self, 
-              timeout=1.0, 
-              initRead=False, 
-              initWrite=False, 
-              pollEn=True, 
-              zmqPort=None, 
-              serverPort=None, 
-              sqlUrl=None):
+              timeout=1.0,
+              initRead=False,
+              initWrite=False,
+              pollEn=True,
+              zmqPort=None,
+              serverPort=None,
+              sqlUrl=None,
+              streamIncGroups=None,
+              streamExcGroups=['NoStream'],
+              sqlIncGroups=None,
+              sqlExcGroups=['NoSql']):
         """Setup the tree. Start the polling thread."""
 
         if self._running:
             raise pr.NodeError("Root is already started! Can't restart!")
+
+        # Stream and databse rules
+        self._streamIncGroups = streamIncGroups
+        self._streamExcGroups = streamExcGroups
+        self._sqlIncGroups    = sqlIncGroups
+        self._sqlExcGroups    = sqlExcGroups
 
         # Call special root level rootAttached
         self._rootAttached()
@@ -442,7 +462,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                     return None
                 obj = obj.node(a)
 
-        elif path != self.name:
+        elif path != self.name and path != 'root':
             return None
 
         return obj
@@ -512,13 +532,18 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         frame.write(b,0)
         self._sendFrame(frame)
 
-    def streamYaml(self,modes=['RW','RO','WO'],incGroups=None,excGroups=['NoStream','NoState']):
+    def streamYaml(self,modes=['RW','RO','WO'],incGroups=None,excGroups=None):
         """
         Generate a frame containing all variables values in yaml format.
         A hardware read is not generated before the frame is generated.
         Vlist can contain an optional list of variale paths to include in the
         stream. If this list is not NULL only these variables will be included.
         """
+
+        # Inherit include and exclude groups from global if not passed
+        if incGroups is None: incGroups = self._streamIncGroups
+        if excGroups is None: excGroups = self._streamExcGroups
+
         self._sendYamlFrame(self.getYaml(readFirst=False,
                                           modes=modes,
                                           incGroups=incGroups,
@@ -556,16 +581,24 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         self._log.info("Done root read")
         return True
 
-    def saveYaml(self,name,readFirst,modes,incGroups,excGroups,autoPrefix):
+    def saveYaml(self,name,readFirst,modes,incGroups,excGroups,autoPrefix,autoCompress):
         """Save YAML configuration/status to a file. Called from command"""
 
         # Auto generate name if no arg
         if name is None or name == '':
             name = datetime.datetime.now().strftime(autoPrefix + "_%Y%m%d_%H%M%S.yml")
 
+            if autoCompress:
+                name += '.gz'
         try:
-            with open(name,'w') as f:
-                f.write(self.getYaml(readFirst=readFirst,modes=modes,incGroups=incGroups,excGroups=excGroups))
+            yml = self.getYaml(readFirst=readFirst,modes=modes,incGroups=incGroups,excGroups=excGroups)
+
+            if name.split('.')[-1] == 'gz':
+                with gzip.open(name,'w') as f: f.write(yml.encode('utf-8'))
+
+            else:
+                with open(name,'w') as f: f.write(yml)
+
         except Exception as e:
             pr.logException(self._log,e)
             return False
@@ -574,9 +607,48 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
     def loadYaml(self,name,writeEach,modes,incGroups,excGroups):
         """Load YAML configuration from a file. Called from command"""
+
+        # Pass arg is a python list
+        if isinstance(name,list):
+            rawlst = name
+
+        # Passed arg is a comma seperated list of files
+        elif ',' in name:
+            rawlst = name.split(',')
+
+        # Not a list
+        else:
+            rawlst = [name]
+
+        # Init final list
+        lst = []
+
+        # Iterate through raw list and look for directories
+        for rl in rawlst:
+
+            # Entry is a directory
+            if os.path.isdir(rl):
+                dlst = glob.glob('{}/*.yml'.format(rl))
+                dlst.extend(glob.glob('{}/*.yaml'.format(rl)))
+                lst.extend(sorted(dlst))
+
+            # Otherise assume it is a file
+            else:
+                lst.append(rl)
+
         try:
-            with open(name,'r') as f:
-                self.setYaml(yml=f.read(),writeEach=writeEach,modes=modes,incGroups=incGroups,excGroups=excGroups)
+            with self.pollBlock(), self.updateGroup():
+                for fn in lst:
+                    self._log.debug("loadYaml: loading {}".format(fn))
+                    with open(fn,'r') as f:
+                        d = yamlToData(f.read())
+                        self._setDictRoot(d=d,writeEach=writeEach,modes=modes,incGroups=incGroups,excGroups=excGroups)
+
+                if not writeEach: self._write()
+
+            if self.InitAfterConfig.value():
+                self.initialize()
+
         except Exception as e:
             pr.logException(self._log,e)
             return False
@@ -597,9 +669,10 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
             pr.logException(self._log,e)
             return ""
 
+
     def setYaml(self,yml,writeEach,modes,incGroups,excGroups):
         """
-        Set variable values or execute commands from a dictionary.
+        Set variable values from a yaml file
         modes is a list of variable modes to act on.
         writeEach is set to true if accessing a single variable at a time.
         Writes will be performed as each variable is updated. If set to 
@@ -608,24 +681,28 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         quanitty of variables.
         """
         d = yamlToData(yml)
+
         with self.pollBlock(), self.updateGroup():
-
-            for key, value in d.items():
-                if key == self.name:
-                    self._setDict(value,writeEach,modes,incGroups=incGroups,excGroups=excGroups)
-                else:
-                    try:
-                        node = self.getNode(key)
-
-                        if (node.mode in modes) and node.filterByGroup(incGroups,excGroups): 
-                            self.getNode(key).setDisp(value)
-                    except:
-                        self._log.error("Entry {} not found".format(key))
+            self._setDictRoot(d=d,writeEach=writeEach,modes=modes,incGroups=incGroups,excGroups=excGroups)
 
             if not writeEach: self._write()
 
         if self.InitAfterConfig.value():
             self.initialize()
+
+
+    def _setDictRoot(self,d,writeEach,modes,incGroups,excGroups):
+        for key, value in d.items():
+
+            # Attempt to get node
+            node = self.getNode(key)
+
+            # Call setDict on node
+            if node is not None:
+                node._setDict(d=value,writeEach=writeEach,modes=modes,incGroups=incGroups,excGroups=excGroups)
+            else:
+                self._log.error("Entry {} not found".format(key))
+
 
     def _clearLog(self):
         """Clear the system log"""
@@ -675,7 +752,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                         val = v._doUpdate()
 
                         # Add to stream
-                        if not v.inGroup('NoStream'):
+                        if v.filterByGroup(self._streamIncGroups, self._streamExcGroups):
                             strm[p] = val
 
                         # Add to zmq publish
@@ -687,11 +764,16 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                                 func(p,val)
 
                         # Log to database
-                        if self._sqlLog is not None and not v.inGroup('NoLog'):
+                        if self._sqlLog is not None and v.filterByGroup(self._sqlIncGroups, self._sqlExcGroups):
                             self._sqlLog.logVariable(p, val)
 
                     except Exception as e:
-                        pr.logException(self._log,e)
+                        if v == self.SystemLog:
+                            print("------- Error Executing Syslog Listeners -------")
+                            print("Error: {}".format(e))
+                            print("------------------------------------------------")
+                        else:
+                            pr.logException(self._log,e)
                         
                 self._log.debug(F"Done update group. Length={len(uvars)}. Entry={list(uvars.keys())[0]}")
 
@@ -754,7 +836,7 @@ def dataToYaml(data):
     def _dict_representer(dumper, data):
         return dumper.represent_mapping(yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG, data.items())
 
-        PyrogueDumper.add_representer(pr.VariableValue, _var_representer)
+    PyrogueDumper.add_representer(pr.VariableValue, _var_representer)
     PyrogueDumper.add_representer(odict, _dict_representer)
 
     return yaml.dump(data, Dumper=PyrogueDumper, default_flow_style=False)

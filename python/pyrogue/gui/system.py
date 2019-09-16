@@ -438,7 +438,10 @@ class SystemWidget(QWidget):
     def updateSyslog(self,varVal):
         lst = jsonpickle.decode(varVal.value)
 
-        if len(lst) > self.logCount:
+        if len(lst) == 0:
+            self.systemLog.clear()
+
+        elif len(lst) > self.logCount:
             for i in range(self.logCount,len(lst)):
                 widget = QTreeWidgetItem(self.systemLog)
                 widget.setText(0, time.strftime("%Y-%m-%d %H:%M:%S %Z", time.localtime(lst[i]['created'])))
@@ -498,7 +501,7 @@ class SystemWidget(QWidget):
     def loadSettings(self):
         dlg = QFileDialog()
 
-        loadFile = dlg.getOpenFileName(caption='Read config file', filter='Config Files(*.yml);;All Files(*.*)')
+        loadFile = dlg.getOpenFileNames(caption='Read config file', filter='Config Files(*.yml);;All Files(*.*)')
 
         # Detect QT5 return
         if isinstance(loadFile,tuple):
@@ -524,9 +527,9 @@ class SystemWidget(QWidget):
     @pyqtSlot()
     def saveState(self):
         dlg = QFileDialog()
-        sug = datetime.datetime.now().strftime("state_%Y%m%d_%H%M%S.yml") 
+        sug = datetime.datetime.now().strftime("state_%Y%m%d_%H%M%S.yml.gz")
 
-        stateFile = dlg.getSaveFileName(caption='Save State file', directory=sug, filter='State Files(*.yml);;All Files(*.*)')
+        stateFile = dlg.getSaveFileName(caption='Save State file', directory=sug, filter='State Files(*.yml *.yml.gz);;All Files(*.*)')
 
         # Detect QT5 return
         if isinstance(stateFile,tuple):
