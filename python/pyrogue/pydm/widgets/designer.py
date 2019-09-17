@@ -23,3 +23,4 @@ SystemLog    = qtplugin_factory(SystemLog,     group="Rogue Widgets")
 RunControl   = qtplugin_factory(RunControl,    group="Rogue Widgets")
 DataWriter   = qtplugin_factory(DataWriter,    group="Rogue Widgets")
 SystemWindow = qtplugin_factory(SystemWindow,  group="Rogue Widgets")
+
