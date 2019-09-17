@@ -17,7 +17,7 @@ from pyrogue.pydm.data_plugins.rogue_plugin import ParseAddress
 import pyrogue.interfaces
 from qtpy.QtCore import Qt, Property, QObject, Q_ENUMS, Slot, QPoint
 from qtpy.QtWidgets import QFrame, QVBoxLayout, QHBoxLayout, QLabel, QSizePolicy, QMenu, QDialog, QPushButton
-from qtpy.QtWidgets import QWidget, QGridLayout, QTreeWidgetItem, QTreeWidget, QLineEdit, QFormLayout
+from qtpy.QtWidgets import QWidget, QGridLayout, QTreeWidgetItem, QTreeWidget, QLineEdit, QFormLayout, QGroupBox
 
 class VariableDev(QTreeWidgetItem):
 
@@ -227,31 +227,41 @@ class VariableHolder(QTreeWidgetItem):
 
 
 class VariableTree(PyDMFrame):
-    def __init__(self, parent=None, init_channel=None):
+    def __init__(self, parent=None, init_channel=None, incGroups=None, excGroups=['Hidden']):
         PyDMFrame.__init__(self, parent, init_channel)
 
         self._client = None
         self._node   = None
 
-        self._lchannel  = init_channel
-        self._incGroups = None
-        self._excGroups = ['Hidden']
+        self._incGroups = incGroups
+        self._excGroups = excGroups
         self._tree      = None
         self._addr      = None
         self._port      = None
+        self._en        = False
         self._children  = []
 
+        if init_channel is not None:
+            self._en = True
+            self._build()
+
     def _build(self):
-        if (not utilities.is_pydm_app()) or self._lchannel is None:
+        if (not self._en) or (not utilities.is_pydm_app()) or self.channel is None:
             return
 
-        self._addr, self._port, path, disp = ParseAddress(self._lchannel)
+        self._addr, self._port, path, disp = ParseAddress(self.channel)
 
         self._client = pyrogue.interfaces.VirtualClient(self._addr, self._port)
         self._node   = self._client.root.getNode(path)
 
         vb = QVBoxLayout()
         self.setLayout(vb)
+
+        gb = QGroupBox('Variable Tree')
+        vb.addWidget(gb)
+
+        vb = QVBoxLayout()
+        gb.setLayout(vb)
         self._tree = QTreeWidget()
         vb.addWidget(self._tree)
 
@@ -313,15 +323,14 @@ class VariableTree(PyDMFrame):
         else:
             self._excGroups = value.split(',')
 
-    @Property(str)
-    def path(self):
-        return self._lchannel
+    @Property(bool)
+    def rogueEnabled(self):
+        return self._en
 
-    @path.setter
-    def path(self, newPath):
-        self._lchannel = newPath
+    @rogueEnabled.setter
+    def rogueEnabled(self, value):
+        self._en = value
         self._build()
-
 
 #    def __init__(self, parent=None, args=None, macros=None):
 #        super(RogueWidget, self).__init__(parent=parent, args=args, macros=None)

@@ -36,6 +36,9 @@ def ParseAddress(address):
 
     rogueAddresses = {0: "localhost:9099"}
 
+    if address[0:8] == 'rogue://':
+        address = address[8:]
+
     data = address.split("/")
 
     if ":" in data[0]:
@@ -69,7 +72,7 @@ class RogueConnection(PyDMConnection):
             self._client = pyrogue.interfaces.VirtualClient(self._host, self._port)
             self._node   = self._client.root.getNode(self._path)
 
-        if self._node is not None:
+        if self._node is not None and not self._node.isinstance(pyrogue.Device):
             self.add_listener(channel)
             self.connection_state_signal.emit(True)
 

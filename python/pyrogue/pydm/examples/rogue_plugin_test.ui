@@ -25,10 +25,11 @@
         <string/>
        </property>
        <property name="currentIndex">
-        <number>0</number>
+        <number>2</number>
        </property>
        <property name="alarmChannels">
         <stringlist>
+         <string></string>
          <string></string>
          <string></string>
         </stringlist>
@@ -55,11 +56,14 @@
            <property name="toolTip">
             <string/>
            </property>
+           <property name="channel" stdset="0">
+            <string>rogue://0/root</string>
+           </property>
            <property name="excGroups" stdset="0">
             <string>Hidden</string>
            </property>
-           <property name="path" stdset="0">
-            <string>0/root</string>
+           <property name="rogueEnabled" stdset="0">
+            <bool>true</bool>
            </property>
           </widget>
          </item>
@@ -81,8 +85,35 @@
          <property name="toolTip">
           <string/>
          </property>
-         <property name="path" stdset="0">
-          <string>0/root</string>
+         <property name="channel" stdset="0">
+          <string>rogue://0/root</string>
+         </property>
+         <property name="rogueEnabled" stdset="0">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </widget>
+       <widget class="QWidget" name="System">
+        <attribute name="title">
+         <string>Page</string>
+        </attribute>
+        <widget class="SyslogWindow" name="SyslogWindow">
+         <property name="geometry">
+          <rect>
+           <x>0</x>
+           <y>240</y>
+           <width>581</width>
+           <height>251</height>
+          </rect>
+         </property>
+         <property name="toolTip">
+          <string/>
+         </property>
+         <property name="channel" stdset="0">
+          <string>rogue://0/root.SystemLog</string>
+         </property>
+         <property name="rogueEnabled" stdset="0">
+          <bool>true</bool>
          </property>
         </widget>
        </widget>
@@ -102,6 +133,11 @@
    <class>CommandTree</class>
    <extends>PyDMFrame</extends>
    <header>pyrogue.pydm.customwidgets.displays.command_tree</header>
+  </customwidget>
+  <customwidget>
+   <class>SyslogWindow</class>
+   <extends>PyDMFrame</extends>
+   <header>pyrogue.pydm.customwidgets.displays.syslog</header>
   </customwidget>
   <customwidget>
    <class>PyDMTabWidget</class>

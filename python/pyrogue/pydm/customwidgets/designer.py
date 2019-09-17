@@ -12,6 +12,9 @@ from pydm.widgets.qtplugin_base import qtplugin_factory
 
 from pyrogue.pydm.customwidgets.displays.variable_tree import VariableTree
 from pyrogue.pydm.customwidgets.displays.command_tree  import CommandTree
+from pyrogue.pydm.customwidgets.displays.syslog        import SyslogWindow
 
 VariableTree = qtplugin_factory(VariableTree,  group="Rogue Widgets")
 CommandTree  = qtplugin_factory(CommandTree,   group="Rogue Widgets")
+SyslogWindow = qtplugin_factory(SyslogWindow,  group="Rogue Widgets")
+
