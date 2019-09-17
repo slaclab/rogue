@@ -12,31 +12,60 @@
 from pydm.widgets.frame import PyDMFrame
 #from pydm import widgets
 from qtpy.QtCore import Qt, Property, QObject, Q_ENUMS
-from pyrogue.pydm.data_plugins.rogue_plugin import PydmRogueClient
+from pyrogue.pydm.data_plugins.rogue_plugin import ParseAddress
+import pyrogue.interfaces
 
 class RogueFrame(PyDMFrame):
     def __init__(self, parent=None, init_channel=None):
         PyDMFrame.__init__(self, parent, init_channel)
 
-        self._channel = init_channel
-        self._rawPath = None
         self._client  = None
         self._node    = None
 
-    @Property(str)
-    def roguePath(self):
-        return self._rawPath
+        self._rawPath   = None
+        self._incGroups = None
+        self._excGroups = None
 
-    @roguePath.setter
-    def roguePath(self, newPath):
-        self._rawPath = newPath
+    def _build(self):
 
-        host, port, path = PydmRogueClient.parseAddr(self._rawPath)
+        if self._rawPath is None or self._incGroups is None or self._excGroups is None:
+            return
 
-        self._client = PydmRogueClient(host,port)
+        host, port, path = ParseAddress(self._rawPath)
+
+        self._client = pyrogue.interfaces.VirtualClient(host,port)
         self._node   = self._client.root.getNode(path)
 
         print("Connected to node {}".format(self._node))
+
+
+    @Property(str)
+    def path(self):
+        return self._rawPath
+
+    @path.setter
+    def path(self, newPath):
+        self._rawPath = newPath
+        self._build()
+
+    @Property(str)
+    def incGroups(self):
+        return self._incGroups
+
+    @incGroups.setter
+    def incGroups(self, value):
+        self._incGroups = value
+        self._build()
+
+    @Property(str)
+    def excGroups(self):
+        return self._excGroups
+
+    @excGroups.setter
+    def excGroups(self, value):
+        self._excGroups = value
+        self._build()
+
 
 #    def __init__(self, parent=None, args=None, macros=None):
 #        super(RogueWidget, self).__init__(parent=parent, args=args, macros=None)

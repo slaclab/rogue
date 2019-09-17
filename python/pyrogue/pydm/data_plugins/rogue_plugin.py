@@ -33,116 +33,61 @@ import threading
 logger = logging.getLogger(__name__)
 
 
-class PydmRogueClient(object):
-    sock_cache = {}
-    cacheLock = threading.Lock()
 
-    ServerIndices = {
-        0 : "localhost:9099",
-        1 : "localhost:9097"
-    }
+def ParseAddress(address):
+    # "rogue://index/<path>"
+    # or
+    # "rogue://host:port/<path>"
 
-    def __init__(self, host, port):
-        with PydmRogueClient.cacheLock:
-            if self.make_hash(host, port) in PydmRogueClient.sock_cache:
-                return
+    rogueAddresses = {0: "localhost:9099"}
 
-        self._host    = host
-        self._port    = port
-        self._client  = None
+    data = address.split("/")
 
-        logger.info("Creating new Rogue connection to: {}:{}".format(self._host, self._port))
+    if ":" in data[0]:
+        data_server = data[0].split(":")
+    else:
+        data_server = rogueAddresses[int(data[0])].split(":")
 
-        try:
-            self._client = VirtualClient(self._host, self._port)
-            logger.info("Connected to Rogue server at: {}:{}".format(self._host, self._port))
-        except Exception as ex:
-            logger.error('Error connecting to Rogue. {}'.format(str(ex)))
+    host = data_server[0]
+    port = int(data_server[1])
+    path = data[1]
+
+    return (host,port,path)
 
 
-    @property
-    def root(self):
-        return self._client.root
-
-    def __new__(cls, host, port):
-        print("new called!: cache = {}".format(cls.sock_cache))
-        obj_hash = PydmRogueClient.make_hash(host, port)
-
-        with cls.cacheLock:
-            if obj_hash in cls.sock_cache:
-                return PydmRogueClient.sock_cache[obj_hash]
-            else:
-                server = super(PydmRogueClient, cls).__new__(cls)
-                cls.sock_cache[cls.make_hash(host, port)] = server
-                return server
-
-    def __hash__(self):
-        return self.make_hash(self.host, self.port)
-
-    def __eq__(self, other):
-        return (self.host, self.port) == (other.ip, other.port)
-
-    def __ne__(self, other):
-        return not (self == other)
-
-    @staticmethod
-    def make_hash(host, port):
-        return hash((host, port))
-
-    @staticmethod
-    def parseAddr(address):
-        print("Parsing address: {}".format(address))
-
-        data = address.split("/")
-
-        if ":" in data[0]:
-            data_server = data[0].split(":")
-        else:
-            data_server = PydmRogueClient.ServerIndices[int(data[0])].split(":")
-
-        host = data_server[0]
-        port = int(data_server[1])
-        path = data[1]
-
-        print("Result {}:{} {}".format(host,port,path))
-
-        return (host,port,path)
-
-
-class PydmRogueConnection(PyDMConnection):
-    ADDRESS_FORMAT = "rogue://index/<path>"
-
-    # These values will be passed in the command line
+class RogueConnection(PyDMConnection):
 
     def __init__(self, channel, address, protocol=None, parent=None):
-        super(PydmRogueConnection, self).__init__(channel, address, protocol, parent)
+        super(RogueConnection, self).__init__(channel, address, protocol, parent)
         self.app = QApplication.instance()
 
-        self._host, self._port, self._path = PydmRogueClient.parseAddr(address)
+        self._host, self._port, self._path = ParseAddress(address)
 
-        self.add_listener(channel)
-
-        self._client = PydmRogueClient(self._host, self._port)
-        self._node = self._client.root.getNode(self._path)
-        self._cmd  = False
+        self._client = pyrogue.interfaces.VirtualClient(self._host, self._port)
+        self._node   = self._client.root.getNode(self._path)
+        self._cmd    = False
 
         if self._node is not None:
+            print("Found node for {}".format(channel))
+            self.add_listener(channel)
             self.connection_state_signal.emit(True)
 
             # Command
             if self._node.isinstance(pyrogue.BaseCommand):
+                print("Detected command for {}".format(channel))
                 self.write_access_signal.emit(True)
                 self._cmd = True
             else:
+                print("Detected variable for {}".format(channel))
                 self._node.addListener(self._updateVariable)
                 self._updateVariable(self._node.path,self._node.getVariableValue(read=False))
                 self.write_access_signal.emit(self._node.mode=='RW')
-            
 
             if self._node.units is not None:
                 #self.units = " | " + rNode.name + " | " + rNode.mode + " | " + rNode.base.name(rNode.bitSize[0])
                 #self._units = " | " + self._node.name + " | " + self._node.mode + " | "
                 self.unit_signal.emit(self._nodes.units)
+
 
     def _updateVariable(self,path,varValue):
         new_data = varValue.value
@@ -159,15 +104,17 @@ class PydmRogueConnection(PyDMConnection):
 
         try:
             if self._cmd:
+                print("Here1")
                 self._node.__call__(new_value)
             else:
+                print("Here2")
                 self._node.set(new_value)
         except:
             logger.error("Unable to put %s to %s.  Exception: %s", new_val, self.address, str(e))
 
 
     def add_listener(self, channel):
-        super(PydmRogueConnection, self).add_listener(channel)
+        super(RogueConnection, self).add_listener(channel)
 
         # If the channel is used for writing to PVs, hook it up to the 'put' methods.
         if channel.value_signal is not None:
@@ -207,12 +154,12 @@ class PydmRogueConnection(PyDMConnection):
             except KeyError:
                 pass
 
-        super(PydmRogueConnection, self).remove_listener(channel)
+        super(RogueConnection, self).remove_listener(channel)
 
     def close(self):
         pass
 
 class RoguePlugin(PyDMPlugin):
     protocol = "rogue"
-    connection_class = PydmRogueConnection
+    connection_class = RogueConnection
 
