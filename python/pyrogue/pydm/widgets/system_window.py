@@ -18,10 +18,10 @@ import pyrogue.interfaces
 from qtpy.QtCore import Qt, Property, QObject, Q_ENUMS, Slot, QPoint
 from qtpy.QtWidgets import QFrame, QVBoxLayout, QHBoxLayout, QLabel, QSizePolicy, QMenu, QDialog, QPushButton
 from qtpy.QtWidgets import QWidget, QGridLayout, QTreeWidgetItem, QTreeWidget, QLineEdit, QFormLayout, QGroupBox
-from pyrogue.pydm.customwidgets.displays.root_control import RootControl
-from pyrogue.pydm.customwidgets.displays.data_writer  import DataWriter
-from pyrogue.pydm.customwidgets.displays.run_control  import RunControl
-from pyrogue.pydm.customwidgets.displays.system_log   import SystemLog
+from .root_control import RootControl
+from .data_writer  import DataWriter
+from .run_control  import RunControl
+from .system_log   import SystemLog
 
 class SystemWindow(PyDMFrame):
     def __init__(self, parent=None, init_channel=None):
