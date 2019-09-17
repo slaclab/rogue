@@ -218,11 +218,6 @@ class CommandTree(PyDMFrame):
         vb = QVBoxLayout()
         self.setLayout(vb)
 
-        gb = QGroupBox('Command Tree')
-        vb.addWidget(gb)
-
-        vb = QVBoxLayout()
-        gb.setLayout(vb)
         self._tree = QTreeWidget()
         vb.addWidget(self._tree)
 

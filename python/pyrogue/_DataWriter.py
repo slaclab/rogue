@@ -139,12 +139,12 @@ class DataWriter(pr.Device):
         Auto create data file name based upon date and time.
         Preserve file's location in path.
         """
-        idx = self.dataFile.value().rfind('/')
+        idx = self.DataFile.value().rfind('/')
 
         if idx < 0:
             base = ''
         else:
-            base = self.dataFile.value()[:idx+1]
+            base = self.DataFile.value()[:idx+1]
 
         self.DataFile.set(base + datetime.datetime.now().strftime("data_%Y%m%d_%H%M%S.dat")) 
 

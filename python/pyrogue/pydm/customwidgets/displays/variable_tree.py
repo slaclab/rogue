@@ -257,11 +257,6 @@ class VariableTree(PyDMFrame):
         vb = QVBoxLayout()
         self.setLayout(vb)
 
-        gb = QGroupBox('Variable Tree')
-        vb.addWidget(gb)
-
-        vb = QVBoxLayout()
-        gb.setLayout(vb)
         self._tree = QTreeWidget()
         vb.addWidget(self._tree)
 

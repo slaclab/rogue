@@ -13,7 +13,6 @@ from pydm.widgets.frame import PyDMFrame
 from pydm.widgets import PyDMLineEdit, PyDMSpinbox, PyDMPushButton, PyDMEnumComboBox
 #from pydm import widgets
 from pydm import utilities
-from pyrogue.pydm.data_plugins.rogue_plugin import ParseAddress
 import pyrogue.interfaces
 from qtpy.QtCore import Qt, Property, QObject, Q_ENUMS, Slot, QPoint
 from qtpy.QtWidgets import QFrame, QVBoxLayout, QHBoxLayout, QLabel, QSizePolicy, QMenu, QDialog, QPushButton
@@ -21,7 +20,7 @@ from qtpy.QtWidgets import QWidget, QGridLayout, QTreeWidgetItem, QTreeWidget, Q
 import jsonpickle
 import time
 
-class SyslogWindow(PyDMFrame):
+class SystemLog(PyDMFrame):
     def __init__(self, parent=None, init_channel=None):
         PyDMFrame.__init__(self, parent, init_channel)
 
@@ -37,8 +36,7 @@ class SyslogWindow(PyDMFrame):
         if (not self._en) or (not utilities.is_pydm_app()) or self.channel is None:
             return
 
-        self._addr, self._port, path, disp = ParseAddress(self.channel)
-        cpath = 'rogue://{}:{}/{}.ClearLog'.format(self._addr,self._port,path.split('.')[0])
+        cpath = self.channel.replace('SystemLog','ClearLog')
 
         vb = QVBoxLayout()
         self.setLayout(vb)

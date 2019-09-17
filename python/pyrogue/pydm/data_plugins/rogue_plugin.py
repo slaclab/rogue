@@ -59,7 +59,7 @@ class RogueConnection(PyDMConnection):
     def __init__(self, channel, address, protocol=None, parent=None):
         super(RogueConnection, self).__init__(channel, address, protocol, parent)
 
-        print("Adding connection channel={}, address={}".format(channel,address))
+        #print("Adding connection channel={}, address={}".format(channel,address))
 
         self.app = QApplication.instance()
 
