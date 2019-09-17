@@ -9,12 +9,12 @@
  * Description:
  * RSSI Application Port
  * ----------------------------------------------------------------------------
- * This file is part of the rogue software platform. It is subject to 
- * the license terms in the LICENSE.txt file found in the top-level directory 
- * of this distribution and at: 
- *    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
- * No part of the rogue software platform, including this file, may be 
- * copied, modified, propagated, or distributed except according to the terms 
+ * This file is part of the rogue software platform. It is subject to
+ * the license terms in the LICENSE.txt file found in the top-level directory
+ * of this distribution and at:
+ *    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+ * No part of the rogue software platform, including this file, may be
+ * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
@@ -55,7 +55,7 @@ void rpr::Application::setup_python() {
 rpr::Application::Application () { }
 
 //! Destructor
-rpr::Application::~Application() { 
+rpr::Application::~Application() {
    thread_->interrupt();
    thread_->join();
 }
@@ -66,6 +66,9 @@ void rpr::Application::setController( rpr::ControllerPtr cntl ) {
 
    // Start read thread
    thread_ = new boost::thread(boost::bind(&rpr::Application::runThread, this));
+
+   // Set a thread name
+   pthread_setname_np( thread_->native_handle(), "RssiApp" );
 }
 
 //! Generate a Frame. Called from master

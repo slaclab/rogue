@@ -9,12 +9,12 @@
  * Description:
  * UDP Client
  * ----------------------------------------------------------------------------
- * This file is part of the rogue software platform. It is subject to 
- * the license terms in the LICENSE.txt file found in the top-level directory 
- * of this distribution and at: 
- *    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
- * No part of the rogue software platform, including this file, may be 
- * copied, modified, propagated, or distributed except according to the terms 
+ * This file is part of the rogue software platform. It is subject to
+ * the license terms in the LICENSE.txt file found in the top-level directory
+ * of this distribution and at:
+ *    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+ * No part of the rogue software platform, including this file, may be
+ * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
@@ -84,6 +84,9 @@ rpu::Client::Client ( std::string host, uint16_t port, bool jumbo) : rpu::Core(j
 
    // Start rx thread
    thread_ = new boost::thread(boost::bind(&rpu::Client::runThread, this));
+
+   // Set a thread name
+   pthread_setname_np( thread_->native_handle(), "UdpClient" );
 }
 
 //! Destructor
@@ -125,7 +128,7 @@ void rpu::Client::acceptFrame ( ris::FramePtr frame ) {
       msg_iov[0].iov_base = (*it)->begin();
       msg_iov[0].iov_len  = (*it)->getPayload();
 
-      // Keep trying since select call can fire 
+      // Keep trying since select call can fire
       // but write fails because we did not win the (*it)er lock
       do {
 
@@ -135,7 +138,7 @@ void rpu::Client::acceptFrame ( ris::FramePtr frame ) {
 
          // Setup select timeout
          tout = timeout_;
-         
+
          if ( select(fd_+1,NULL,&fds,NULL,&tout) <= 0 ) {
             udpLog_->timeout("Client::acceptFrame",timeout_);
             res = 0;

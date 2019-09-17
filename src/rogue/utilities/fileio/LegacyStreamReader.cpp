@@ -7,12 +7,12 @@
  * Description :
  *    Class to read data files generated using LegacyFileWriter
  *-----------------------------------------------------------------------------
- * This file is part of the rogue software platform. It is subject to 
- * the license terms in the LICENSE.txt file found in the top-level directory 
- * of this distribution and at: 
-    * https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
- * No part of the rogue software platform, including this file, may be 
- * copied, modified, propagated, or distributed except according to the terms 
+ * This file is part of the rogue software platform. It is subject to
+ * the license terms in the LICENSE.txt file found in the top-level directory
+ * of this distribution and at:
+    * https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+ * No part of the rogue software platform, including this file, may be
+ * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  *-----------------------------------------------------------------------------
 **/
@@ -58,14 +58,14 @@ void ruf::LegacyStreamReader::setup_python() {
 }
 
 //! Creator
-ruf::LegacyStreamReader::LegacyStreamReader() { 
+ruf::LegacyStreamReader::LegacyStreamReader() {
    baseName_   = "";
    readThread_ = NULL;
    active_     = false;
 }
 
 //! Deconstructor
-ruf::LegacyStreamReader::~LegacyStreamReader() { 
+ruf::LegacyStreamReader::~LegacyStreamReader() {
    close();
 }
 
@@ -85,11 +85,14 @@ void ruf::LegacyStreamReader::open(std::string file) {
       baseName_ = file;
    }
 
-   if ( (fd_ = ::open(file.c_str(),O_RDONLY)) < 0 ) 
+   if ( (fd_ = ::open(file.c_str(),O_RDONLY)) < 0 )
       throw(rogue::GeneralError::open("LegacyStreamReader::open",file));
 
    active_ = true;
    readThread_ = new boost::thread(boost::bind(&LegacyStreamReader::runThread, this));
+
+   // Set a thread name
+   pthread_setname_np( readThread_->native_handle(), "LStreamReader" );
 }
 
 //! Open file
@@ -173,7 +176,7 @@ void ruf::LegacyStreamReader::runThread() {
 
             //cout << "Frame with size" << size << "and channel" << chan;
             log.info("Got frame with header %x, size %i and channel %i", header, size, chan);
-            printf("Got frame with size %i and channel %i\n", size, chan);            
+            printf("Got frame with size %i and channel %i\n", size, chan);
             if ( size == 0 ) {
                log.warning("Bad size read %i",size);
                err = true;
