@@ -10,8 +10,8 @@
 
 from pydm.widgets.qtplugin_base import qtplugin_factory
 
-from pyrogue.pydm.customwidgets.displays.rogue_widgets import RogueWidget
-from pyrogue.pydm.customwidgets.displays.rogue_frame   import RogueFrame
+from pyrogue.pydm.customwidgets.displays.variable_tree import VariableTree
+from pyrogue.pydm.customwidgets.displays.command_tree  import CommandTree
 
-ROGUEWidget = qtplugin_factory(RogueWidget, group="Rogue Widgets")
-ROGUEFrame  = qtplugin_factory(RogueFrame,  group="Rogue Widgets")
+VariableTree = qtplugin_factory(VariableTree,  group="Rogue Widgets")
+CommandTree  = qtplugin_factory(CommandTree,   group="Rogue Widgets")

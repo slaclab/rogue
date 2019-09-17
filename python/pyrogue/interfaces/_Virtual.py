@@ -128,7 +128,7 @@ class VirtualNode(pr.Node):
         if '.' in path:
             lst = path.split('.')
 
-            if lst[0] != self.name:
+            if lst[0] != self.name and lst[0] != 'root':
                 return None
 
             for a in lst[1:]:
@@ -136,7 +136,7 @@ class VirtualNode(pr.Node):
                     return None
                 obj = obj.node(a)
 
-        elif path != self.name:
+        elif path != self.name and path != 'root':
             return None
 
         return obj

@@ -33,6 +33,8 @@ import threading
 logger = logging.getLogger(__name__)
 
 
+AlarmToInt = {'None':0, 'AlarmMajor':1, 'AlarmMinor':2}
+
 
 def ParseAddress(address):
     # "rogue://index/<path>/<disp>"
@@ -82,13 +84,24 @@ class RogueConnection(PyDMConnection):
                 self._cmd = True
             else:
                 self._node.addListener(self._updateVariable)
-                self._updateVariable(self._node.path,self._node.getVariableValue(read=False))
                 self.write_access_signal.emit(self._node.mode=='RW')
 
             if self._node.units is not None:
                 #self.units = " | " + rNode.name + " | " + rNode.mode + " | " + rNode.base.name(rNode.bitSize[0])
                 #self._units = " | " + self._node.name + " | " + self._node.mode + " | "
-                self.unit_signal.emit(self._nodes.units)
+                self.unit_signal.emit(self._node.units)
+
+            if self._node.minimum is not None and self._node.maximum is not None:
+                self.upper_ctrl_limit_signal.emit(self._node.maximum)
+                self.lower_ctrl_limit_signal.emit(self._node.minimum)
+
+            if self._node.disp == 'enum' and self._node.enum is not None and self._node.mode != 'RO':
+                self.enum_strings_signal.emit(tuple(self._node.enum.values()))
+
+            self.prec_signal.emit(self._node.precision)
+
+            if not self._cmd:
+                self._updateVariable(self._node.path,self._node.getVariableValue(read=False))
 
 
     def _updateVariable(self,path,varValue):
@@ -98,6 +111,8 @@ class RogueConnection(PyDMConnection):
             self.new_value_signal[str].emit(varValue.valueDisp)
         else:
             self.new_value_signal[type(varValue.value)].emit(varValue.value)
+
+        self.new_severity_signal.emit(AlarmToInt[varValue.severity])
 
 
     @pyqtSlot(int)

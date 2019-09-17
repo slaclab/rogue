@@ -17,80 +17,90 @@
    <item>
     <layout class="QVBoxLayout" name="verticalLayout">
      <item>
-      <widget class="PyDMLineEdit" name="PyDMLineEdit_1">
+      <widget class="PyDMTabWidget" name="PyDMTabWidget">
        <property name="toolTip">
         <string/>
        </property>
-       <property name="showUnits" stdset="0">
-        <bool>true</bool>
-       </property>
-       <property name="channel" stdset="0">
-        <string>rogue://0/dummyTree.LocalTime</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="PyDMLineEdit" name="PyDMLineEdit_2">
-       <property name="toolTip">
+       <property name="whatsThis">
         <string/>
        </property>
-       <property name="readOnly">
-        <bool>false</bool>
+       <property name="currentIndex">
+        <number>1</number>
        </property>
-       <property name="showUnits" stdset="0">
-        <bool>true</bool>
+       <property name="alarmChannels">
+        <stringlist>
+         <string></string>
+         <string></string>
+        </stringlist>
        </property>
-       <property name="channel" stdset="0">
-        <string>rogue://0/dummyTree.AxiVersion.ScratchPad/True</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="PyDMLineEdit" name="PyDMLineEdit_3">
-       <property name="toolTip">
-        <string/>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-       <property name="showUnits" stdset="0">
-        <bool>true</bool>
-       </property>
-       <property name="channel" stdset="0">
-        <string>rogue://0/dummyTree.AxiVersion.FpgaVersion</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="RogueFrame" name="RogueFrame">
-       <property name="toolTip">
-        <string/>
-       </property>
-       <property name="channel" stdset="0">
-        <string/>
-       </property>
-       <property name="incGroups" stdset="0">
-        <string/>
-       </property>
-       <property name="excGroups" stdset="0">
-        <string>Hidden</string>
-       </property>
-       <property name="path" stdset="0">
-        <string>0/root</string>
-       </property>
-       <property name="roguePath" stdset="0">
-        <string/>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="PyDMCheckbox" name="PyDMCheckbox">
-       <property name="toolTip">
-        <string/>
-       </property>
-       <property name="channel" stdset="0">
-        <string>rogue://0/dummyTree.AxiVersion.FpgaReloadHalt/.1</string>
-       </property>
+       <widget class="QWidget" name="tab">
+        <attribute name="title">
+         <string>Variables</string>
+        </attribute>
+        <layout class="QGridLayout" name="gridLayout">
+         <item row="0" column="0">
+          <widget class="VariableTree" name="VariableTree">
+           <property name="minimumSize">
+            <size>
+             <width>414</width>
+             <height>471</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>16777215</width>
+             <height>471</height>
+            </size>
+           </property>
+           <property name="toolTip">
+            <string/>
+           </property>
+           <property name="excGroups" stdset="0">
+            <string>Hidden</string>
+           </property>
+           <property name="path" stdset="0">
+            <string>0/root</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QWidget" name="tab_5">
+        <attribute name="title">
+         <string>Commands</string>
+        </attribute>
+        <widget class="CommandTree" name="CommandTree">
+         <property name="geometry">
+          <rect>
+           <x>151</x>
+           <y>81</y>
+           <width>158</width>
+           <height>78</height>
+          </rect>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>158</width>
+           <height>78</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>158</width>
+           <height>78</height>
+          </size>
+         </property>
+         <property name="toolTip">
+          <string/>
+         </property>
+         <property name="excGroups" stdset="0">
+          <string>Hidden</string>
+         </property>
+         <property name="path" stdset="0">
+          <string>0/root</string>
+         </property>
+        </widget>
+       </widget>
       </widget>
      </item>
     </layout>
@@ -99,25 +109,25 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>RogueFrame</class>
+   <class>VariableTree</class>
    <extends>PyDMFrame</extends>
-   <header>pyrogue.pydm.customwidgets.displays.rogue_frame</header>
+   <header>pyrogue.pydm.customwidgets.displays.variable_tree</header>
   </customwidget>
   <customwidget>
-   <class>PyDMCheckbox</class>
-   <extends>QCheckBox</extends>
-   <header>pydm.widgets.checkbox</header>
+   <class>CommandTree</class>
+   <extends>PyDMFrame</extends>
+   <header>pyrogue.pydm.customwidgets.displays.command_tree</header>
+  </customwidget>
+  <customwidget>
+   <class>PyDMTabWidget</class>
+   <extends>QTabWidget</extends>
+   <header>pydm.widgets.tab_bar</header>
   </customwidget>
   <customwidget>
    <class>PyDMFrame</class>
    <extends>QFrame</extends>
    <header>pydm.widgets.frame</header>
    <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>PyDMLineEdit</class>
-   <extends>QLineEdit</extends>
-   <header>pydm.widgets.line_edit</header>
   </customwidget>
  </customwidgets>
  <resources/>
