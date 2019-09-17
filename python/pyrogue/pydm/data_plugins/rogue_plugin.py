@@ -12,16 +12,9 @@ import socket
 import numpy as np
 import threading
 
-# from pydm.data_plugins.plugin import PyDMPlugin, PyDMConnection
-# from pydm.PyQt.QtCore import pyqtSignal, pyqtSlot, Qt, QThread, QTimer, QMutex
-# from pydm.PyQt.QtGui import QApplication
-# from pydm.utilities import is_pydm_app
-
 from pydm.data_plugins.plugin import PyDMPlugin, PyDMConnection
 from PyQt5.QtCore import pyqtSignal, pyqtSlot, Qt, QThread, QTimer, QMutex
-# from PyQt5.QtGui import QApplication
 from PyQt5.QtWidgets import QApplication
-# from pydm.utilities import is_pydm_app
 from pydm import utilities
 from pydm.data_plugins import is_read_only as read_only
 
@@ -33,7 +26,7 @@ import threading
 logger = logging.getLogger(__name__)
 
 
-AlarmToInt = {'None':0, 'AlarmMajor':1, 'AlarmMinor':2}
+AlarmToInt = {'None':0, 'Good':0, 'AlarmMajor':1, 'AlarmMinor':2}
 
 
 def ParseAddress(address):
@@ -67,12 +60,12 @@ class RogueConnection(PyDMConnection):
 
         self._host, self._port, self._path, self._disp = ParseAddress(address)
 
+        self._cmd  = False
+        self._node = None
+
         if utilities.is_pydm_app():
             self._client = pyrogue.interfaces.VirtualClient(self._host, self._port)
             self._node   = self._client.root.getNode(self._path)
-            self._cmd    = False
-        else:
-            self._node = None
 
         if self._node is not None:
             self.add_listener(channel)
@@ -87,8 +80,6 @@ class RogueConnection(PyDMConnection):
                 self.write_access_signal.emit(self._node.mode=='RW')
 
             if self._node.units is not None:
-                #self.units = " | " + rNode.name + " | " + rNode.mode + " | " + rNode.base.name(rNode.bitSize[0])
-                #self._units = " | " + self._node.name + " | " + self._node.mode + " | "
                 self.unit_signal.emit(self._node.units)
 
             if self._node.minimum is not None and self._node.maximum is not None:
@@ -105,9 +96,7 @@ class RogueConnection(PyDMConnection):
 
 
     def _updateVariable(self,path,varValue):
-        if type(varValue.value) == bool:
-            self.new_value_signal[int].emit(int(varValue.value))
-        elif self._disp:
+        if self._disp:
             self.new_value_signal[str].emit(varValue.valueDisp)
         else:
             self.new_value_signal[type(varValue.value)].emit(varValue.value)
@@ -126,7 +115,6 @@ class RogueConnection(PyDMConnection):
         try:
             if self._cmd:
                 self._node.__call__(new_value)
-            else:
                 self._node.setDisp(new_value)
         except:
             logger.error("Unable to put %s to %s.  Exception: %s", new_val, self.address, str(e))
