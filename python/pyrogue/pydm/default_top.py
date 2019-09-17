@@ -19,13 +19,13 @@ from qtpy.QtWidgets import (QVBoxLayout, QHBoxLayout, QGroupBox,
 from pydm.widgets import PyDMEmbeddedDisplay
 from pydm.utilities import connection
 
-from pyrogue.pydm.customwidgets.displays.root_control  import RootControl
-from pyrogue.pydm.customwidgets.displays.data_writer   import DataWriter
-from pyrogue.pydm.customwidgets.displays.run_control   import RunControl
-from pyrogue.pydm.customwidgets.displays.system_log    import SystemLog
-from pyrogue.pydm.customwidgets.displays.variable_tree import VariableTree
-from pyrogue.pydm.customwidgets.displays.command_tree  import CommandTree
-from pyrogue.pydm.customwidgets.displays.system_window import SystemWindow
+from pyrogue.pydm.widgets.root_control  import RootControl
+from pyrogue.pydm.widgets.data_writer   import DataWriter
+from pyrogue.pydm.widgets.run_control   import RunControl
+from pyrogue.pydm.widgets.system_log    import SystemLog
+from pyrogue.pydm.widgets.variable_tree import VariableTree
+from pyrogue.pydm.widgets.command_tree  import CommandTree
+from pyrogue.pydm.widgets.system_window import SystemWindow
 
 channel = 'rogue://0/root'
 

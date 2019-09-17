@@ -10,5 +10,5 @@
 
 print("Loading Rogue Widgets Designer Plugins")
 from os import path
-from pyrogue.pydm.customwidgets.displays import *
+from pyrogue.pydm.widgets.designer import *
 

@@ -154,24 +154,24 @@ class RogueConnection(PyDMConnection):
             except KeyError:
                 pass
 
-    def remove_listener(self, channel):
-        if channel.value_signal is not None:
-            try:
-                channel.value_signal[str].disconnect(self.put_value)
-            except KeyError:
-                pass
-            try:
-                channel.value_signal[int].disconnect(self.put_value)
-            except KeyError:
-                pass
-            try:
-                channel.value_signal[float].disconnect(self.put_value)
-            except KeyError:
-                pass
-            try:
-                channel.value_signal[np.ndarray].disconnect(self.put_value)
-            except KeyError:
-                pass
+    def remove_listener(self, channel, destroying):
+        #if channel.value_signal is not None:
+        #    try:
+        #        channel.value_signal[str].disconnect(self.put_value)
+        #    except KeyError:
+        #        pass
+        #    try:
+        #        channel.value_signal[int].disconnect(self.put_value)
+        #    except KeyError:
+        #        pass
+        #    try:
+        #        channel.value_signal[float].disconnect(self.put_value)
+        #    except KeyError:
+        #        pass
+        #    try:
+        #        channel.value_signal[np.ndarray].disconnect(self.put_value)
+        #    except KeyError:
+        #        pass
 
         super(RogueConnection, self).remove_listener(channel)
 
