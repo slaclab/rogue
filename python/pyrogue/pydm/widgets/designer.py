@@ -10,14 +10,12 @@
 
 from pydm.widgets.qtplugin_base import qtplugin_factory
 
-from pyrogue.pydm.widgets.variable_tree import VariableTree
-from pyrogue.pydm.widgets.command_tree  import CommandTree
-from pyrogue.pydm.widgets.system_log    import SystemLog
-from pyrogue.pydm.widgets.run_control   import RunControl
-from pyrogue.pydm.widgets.data_writer   import DataWriter
-from pyrogue.pydm.widgets.system_window import SystemWindow
-
-print("Here1")
+from pyrogue.pydm.widgets import VariableTree
+from pyrogue.pydm.widgets import CommandTree
+from pyrogue.pydm.widgets import SystemLog
+from pyrogue.pydm.widgets import RunControl
+from pyrogue.pydm.widgets import DataWriter
+from pyrogue.pydm.widgets import SystemWindow
 
 VariableTree = qtplugin_factory(VariableTree,  group="Rogue Widgets")
 CommandTree  = qtplugin_factory(CommandTree,   group="Rogue Widgets")
