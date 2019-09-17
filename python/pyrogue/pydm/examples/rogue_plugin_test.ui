@@ -72,29 +72,14 @@
         <widget class="CommandTree" name="CommandTree">
          <property name="geometry">
           <rect>
-           <x>151</x>
-           <y>81</y>
-           <width>158</width>
-           <height>78</height>
+           <x>0</x>
+           <y>0</y>
+           <width>581</width>
+           <height>491</height>
           </rect>
-         </property>
-         <property name="minimumSize">
-          <size>
-           <width>158</width>
-           <height>78</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>158</width>
-           <height>78</height>
-          </size>
          </property>
          <property name="toolTip">
           <string/>
-         </property>
-         <property name="excGroups" stdset="0">
-          <string>Hidden</string>
          </property>
          <property name="path" stdset="0">
           <string>0/root</string>

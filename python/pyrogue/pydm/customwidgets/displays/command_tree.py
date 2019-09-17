@@ -15,86 +15,176 @@ from pydm.widgets import PyDMLineEdit, PyDMSpinbox, PyDMPushButton, PyDMEnumComb
 from pydm import utilities
 from pyrogue.pydm.data_plugins.rogue_plugin import ParseAddress
 import pyrogue.interfaces
-from qtpy.QtCore import Qt, Property, QObject, Q_ENUMS, Slot
-from qtpy.QtWidgets import QFrame, QVBoxLayout, QHBoxLayout, QLabel, QSizePolicy, QWidget, QGridLayout, QTreeWidgetItem, QTreeWidget
+from qtpy.QtCore import Qt, Property, QObject, Q_ENUMS, Slot, QPoint
+from qtpy.QtWidgets import QFrame, QVBoxLayout, QHBoxLayout, QLabel, QSizePolicy, QMenu, QDialog, QPushButton
+from qtpy.QtWidgets import QWidget, QGridLayout, QTreeWidgetItem, QTreeWidget, QLineEdit, QFormLayout
 
-class CommandDev(QObject):
+class CommandDev(QTreeWidgetItem):
 
     def __init__(self,*, top, parent, dev, noExpand):
-        QObject.__init__(self)
+        QTreeWidgetItem.__init__(self,parent)
         self._top      = top
         self._parent   = parent
         self._dev      = dev
         self._children = []
 
-        self._widget = QTreeWidgetItem(parent)
-        self._widget.setText(0,self._dev.name)
+        self.setText(0,self._dev.name)
+        self.setToolTip(0,self._dev.description)
 
         if self._top._node == dev:
-            self._parent.addTopLevelItem(self._widget)
+            self._parent.addTopLevelItem(self)
 
         if (not noExpand) and self._dev.expand:
             self._dummy = None
-            self._widget.setExpanded(True)
-            self.setup(False)
+            self.setExpanded(True)
+            self._setup(False)
         else:
-            self._dummy = QTreeWidgetItem(self._widget) # One dummy item to add expand control
-            self._widget.setExpanded(False)
-            self._top._tree.itemExpanded.connect(self.expandCb)
+            self._dummy = QTreeWidgetItem(self) # One dummy item to add expand control
+            self.setExpanded(False)
 
-    @Slot()
-    def expandCb(self):
-        if self._dummy is None or not self._widget.isExpanded():
-            return
+    def _setup(self,noExpand):
 
-        self._widget.removeChild(self._dummy)
-        self._dummy = None
-        self.setup(True)
-
-    def setup(self,noExpand):
-
-        # First create variables
+        # First create commands
         for key,val in self._dev.commandsByGroup(incGroups=self._top._incGroups,
                                                  excGroups=self._top._excGroups).items():
-            path = 'rogue://{}:{}/{}'.format(self._top._addr,self._top._port,val.path)
 
-            item = QTreeWidgetItem(self._widget)
-            item.setText(0,val.name)
-            item.setText(1,val.typeStr)
-
-            if val.arg:
-
-                if val.disp == 'enum' and val.enum is not None and val.mode != 'RO':
-                    w = PyDMEnumComboBox(parent=None, init_channel=path + '/True')
-
-                    for k,v in val.enum.items():
-                        w.addItem(v)
-
-                elif val.minimum is not None and val.maximum is not None and \
-                     val.disp == '{}' and val.mode != 'RO':
-
-                    w = PyDMSpinbox(parent=None, init_channel=path)
-                    w.setMinimum(val.minimum)
-                    w.setMaximum(val.maximum)
-
-                else:
-                    w = PyDMLineEdit(parent=None, init_channel=path + '/True')
-            else:
-                w = PyDMPushButton(label=val.name,pressValue=1,init_channel=path)
-
-            self._top._tree.setItemWidget(item,2,w)
+            self._children.append(CommandHolder(top=self._top, parent=self, command=val))
 
         # Then create devices
         for key,val in self._dev.devicesByGroup(incGroups=self._top._incGroups,
                                                 excGroups=self._top._excGroups).items():
 
-            self._children.append(CommandDev(top=self._top,
-                                             parent=self._widget,
-                                             dev=val,
-                                             noExpand=noExpand))
+            self._children.append(CommandDev(top=self._top, parent=self, dev=val, noExpand=noExpand))
 
         for i in range(0,3):
             self._top._tree.resizeColumnToContents(i)
+
+    def _expand(self):
+        if self._dummy is None:
+            return
+
+        self.removeChild(self._dummy)
+        self._dummy = None
+        self._setup(True)
+
+    def _menu(self,pos):
+        menu = QMenu()
+
+        dev_info = menu.addAction('Device Information')
+
+        action = menu.exec_(self._top._tree.mapToGlobal(pos))
+
+        if action == dev_info:
+            self._infoDialog()
+
+    def _infoDialog(self):
+
+        attrs = ['name', 'path', 'description', 'hidden', 'groups']
+
+        msgBox = QDialog()
+        msgBox.setWindowTitle("Device Information For {}".format(self._dev.name))
+        msgBox.setMinimumWidth(400)
+
+        vb = QVBoxLayout()
+        msgBox.setLayout(vb)
+
+        fl = QFormLayout()
+        fl.setRowWrapPolicy(QFormLayout.DontWrapRows)
+        fl.setFormAlignment(Qt.AlignHCenter | Qt.AlignTop)
+        fl.setLabelAlignment(Qt.AlignRight)
+        vb.addLayout(fl)
+
+        pb = QPushButton('Close')
+        pb.pressed.connect(msgBox.close)
+        vb.addWidget(pb)
+
+        for a in attrs:
+            le = QLineEdit()
+            le.setReadOnly(True)
+            le.setText(str(getattr(self._dev,a)))
+            fl.addRow(a,le)
+
+        msgBox.exec()
+
+
+class CommandHolder(QTreeWidgetItem):
+
+    def __init__(self,*,top,parent,command):
+        QTreeWidgetItem.__init__(self,parent)
+        self._top    = top
+        self._parent = parent
+        self._cmd    = command
+
+        self._path = 'rogue://{}:{}/{}'.format(self._top._addr,self._top._port,self._cmd.path)
+
+        self.setText(0,self._cmd.name)
+        self.setText(1,self._cmd.typeStr)
+
+        self.setToolTip(0,self._cmd.description)
+
+        if self._cmd.arg:
+            self._path += '/True'
+
+            if self._cmd.disp == 'enum' and self._cmd.enum is not None and self._cmd.mode != 'RO':
+                w = PyDMEnumComboBox(parent=None, init_channel=self._path)
+                w.alarmSensitiveContent = False
+                w.alarmSensitiveBorder  = False
+            else:
+                w = PyDMLineEdit(parent=None, init_channel=self._path)
+                w.showUnits             = False
+                w.precisionFromPV       = True
+                w.alarmSensitiveContent = False
+                w.alarmSensitiveBorder  = False
+        else:
+            w = PyDMPushButton(label='Exec',pressValue=1,init_channel=self._path)
+
+        self._top._tree.setItemWidget(self,2,w)
+
+    def _menu(self,pos):
+        menu = QMenu()
+
+        cmd_info = menu.addAction('Command Information')
+        action = menu.exec_(self._top._tree.mapToGlobal(pos))
+
+        if action == cmd_info:
+            self._infoDialog()
+
+    def _infoDialog(self):
+
+        attrs = ['name', 'path', 'description', 'hidden', 'groups', 'enum', 'typeStr', 'disp']
+
+        if self._cmd.isinstance(pyrogue.RemoteCommand):
+            attrs += ['offset', 'bitSize', 'bitOffset', 'varBytes']
+
+        msgBox = QDialog()
+        msgBox.setWindowTitle("Command Information For {}".format(self._cmd.name))
+        msgBox.setMinimumWidth(400)
+
+        vb = QVBoxLayout()
+        msgBox.setLayout(vb)
+
+        fl = QFormLayout()
+        fl.setRowWrapPolicy(QFormLayout.DontWrapRows)
+        fl.setFormAlignment(Qt.AlignHCenter | Qt.AlignTop)
+        fl.setLabelAlignment(Qt.AlignRight)
+        vb.addLayout(fl)
+
+        pb = QPushButton('Close')
+        pb.pressed.connect(msgBox.close)
+        vb.addWidget(pb)
+
+        for a in attrs:
+            le = QLineEdit()
+            le.setReadOnly(True)
+            le.setText(str(getattr(self._cmd,a)))
+            fl.addRow(a,le)
+
+        le = QLineEdit()
+        le.setReadOnly(True)
+        le.setText(self._path)
+        fl.addRow('PyDM Path',le)
+
+        msgBox.exec()
 
 
 class CommandTree(PyDMFrame):
@@ -104,40 +194,48 @@ class CommandTree(PyDMFrame):
         self._client = None
         self._node   = None
 
-        self._rawPath   = None
+        self._lchannel  = init_channel
         self._incGroups = None
-        self._excGroups = None
+        self._excGroups = ['Hidden']
         self._tree      = None
         self._addr      = None
         self._port      = None
         self._children  = []
 
     def _build(self):
-        if (not utilities.is_pydm_app()) or self._rawPath is None:
+        if (not utilities.is_pydm_app()) or self._lchannel is None:
             return
 
-        self._addr, self._port, path, disp = ParseAddress(self._rawPath)
+        self._addr, self._port, path, disp = ParseAddress(self._lchannel)
 
         self._client = pyrogue.interfaces.VirtualClient(self._addr, self._port)
-
-
-        print("Path={}".format(path))
         self._node = self._client.root.getNode(path)
-        print("Node={}".format(self._node))
 
         vb = QVBoxLayout()
         self.setLayout(vb)
         self._tree = QTreeWidget()
         vb.addWidget(self._tree)
 
-        self._tree.setColumnCount(2)
-        self._tree.setHeaderLabels(['Command','Base','Execute','Arg'])
+        self._tree.setColumnCount(3)
+        self._tree.setHeaderLabels(['Command','Base','Execute'])
+
+        self._tree.setContextMenuPolicy(Qt.CustomContextMenu)
+        self._tree.customContextMenuRequested.connect(self._openMenu)
+
+        self._tree.itemExpanded.connect(self._expandCb)
 
         self._children.append(CommandDev(top=self,
                                          parent=self._tree,
                                          dev=self._node,
                                          noExpand=False))
 
+    @Slot(QTreeWidgetItem)
+    def _expandCb(self,item):
+        item._expand()
+
+    def _openMenu(self, pos):
+        item = self._tree.itemAt(pos)
+        item._menu(pos)
 
     @Property(str)
     def incGroups(self):
@@ -169,24 +267,10 @@ class CommandTree(PyDMFrame):
 
     @Property(str)
     def path(self):
-        return self._rawPath
+        return self._lchannel
 
     @path.setter
     def path(self, newPath):
-        self._rawPath = newPath
+        self._lchannel = newPath
         self._build()
-
-
-#    def __init__(self, parent=None, args=None, macros=None):
-#        super(RogueWidget, self).__init__(parent=parent, args=args, macros=None)
-#        print("Args = {}".format(args))
-#        print("Macros = {}".format(macros))
-#
-#    def ui_filename(self):
-#        # Point to our UI file
-#        return 'test_widget.ui'
-#
-#    def ui_filepath(self):
-#        # Return the full path to the UI file
-#        return path.join(path.dirname(path.realpath(__file__)), self.ui_filename())
 

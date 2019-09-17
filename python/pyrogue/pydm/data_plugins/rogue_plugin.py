@@ -56,6 +56,8 @@ class RogueConnection(PyDMConnection):
     def __init__(self, channel, address, protocol=None, parent=None):
         super(RogueConnection, self).__init__(channel, address, protocol, parent)
 
+        #print("Adding connection channel={}, address={}".format(channel,address))
+
         self.app = QApplication.instance()
 
         self._host, self._port, self._path, self._disp = ParseAddress(address)
@@ -73,11 +75,10 @@ class RogueConnection(PyDMConnection):
 
             # Command
             if self._node.isinstance(pyrogue.BaseCommand):
-                self.write_access_signal.emit(True)
                 self._cmd = True
-            else:
-                self._node.addListener(self._updateVariable)
-                self.write_access_signal.emit(self._node.mode=='RW')
+
+            self._node.addListener(self._updateVariable)
+            self.write_access_signal.emit(self._node.mode=='RW')
 
             if self._node.units is not None:
                 self.unit_signal.emit(self._node.units)
@@ -91,8 +92,7 @@ class RogueConnection(PyDMConnection):
 
             self.prec_signal.emit(self._node.precision)
 
-            if not self._cmd:
-                self._updateVariable(self._node.path,self._node.getVariableValue(read=False))
+            self._updateVariable(self._node.path,self._node.getVariableValue(read=False))
 
 
     def _updateVariable(self,path,varValue):
@@ -115,6 +115,7 @@ class RogueConnection(PyDMConnection):
         try:
             if self._cmd:
                 self._node.__call__(new_value)
+            else:
                 self._node.setDisp(new_value)
         except:
             logger.error("Unable to put %s to %s.  Exception: %s", new_val, self.address, str(e))
