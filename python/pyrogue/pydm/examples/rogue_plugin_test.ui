@@ -62,9 +62,15 @@
       </widget>
      </item>
      <item>
-      <widget class="RogueWidget" name="RogueWidget">
+      <widget class="RogueFrame" name="RogueFrame">
        <property name="toolTip">
         <string/>
+       </property>
+       <property name="channel" stdset="0">
+        <string/>
+       </property>
+       <property name="roguePath" stdset="0">
+        <string>0/dummyTree</string>
        </property>
       </widget>
      </item>
@@ -84,14 +90,20 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>RogueWidget</class>
-   <extends>QWidget</extends>
-   <header>pyrogue.pydm.customwidgets.displays.rogue_widgets</header>
+   <class>RogueFrame</class>
+   <extends>PyDMFrame</extends>
+   <header>pyrogue.pydm.customwidgets.displays.rogue_frame</header>
   </customwidget>
   <customwidget>
    <class>PyDMCheckbox</class>
    <extends>QCheckBox</extends>
    <header>pydm.widgets.checkbox</header>
+  </customwidget>
+  <customwidget>
+   <class>PyDMFrame</class>
+   <extends>QFrame</extends>
+   <header>pydm.widgets.frame</header>
+   <container>1</container>
   </customwidget>
   <customwidget>
    <class>PyDMLineEdit</class>

@@ -9,18 +9,34 @@
 #-----------------------------------------------------------------------------
 
 #from os import path
-from pydm import PyDMFrame
+from pydm.widgets.frame import PyDMFrame
 #from pydm import widgets
-#from qtpy.QtCore import Qt, Property, QObject, Q_ENUMS
+from qtpy.QtCore import Qt, Property, QObject, Q_ENUMS
+from pyrogue.pydm.data_plugins.rogue_plugin import PydmRogueClient
 
 class RogueFrame(PyDMFrame):
     def __init__(self, parent=None, init_channel=None):
-        PyDMFrame.__init__(parent, init_channel)
+        PyDMFrame.__init__(self, parent, init_channel)
 
         self._channel = init_channel
+        self._rawPath = None
+        self._client  = None
+        self._node    = None
 
-        print("Channel = {}".format(init_channel))
+    @Property(str)
+    def roguePath(self):
+        return self._rawPath
 
+    @roguePath.setter
+    def roguePath(self, newPath):
+        self._rawPath = newPath
+
+        host, port, path = PydmRogueClient.parseAddr(self._rawPath)
+
+        self._client = PydmRogueClient(host,port)
+        self._node   = self._client.root.getNode(path)
+
+        print("Connected to node {}".format(self._node))
 
 #    def __init__(self, parent=None, args=None, macros=None):
 #        super(RogueWidget, self).__init__(parent=parent, args=args, macros=None)
