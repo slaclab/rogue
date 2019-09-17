@@ -146,5 +146,5 @@ class DataWriter(pr.Device):
         else:
             base = self.dataFile.value()[:idx+1]
 
-        self.dataFile.set(base + datetime.datetime.now().strftime("data_%Y%m%d_%H%M%S.dat")) 
+        self.DataFile.set(base + datetime.datetime.now().strftime("data_%Y%m%d_%H%M%S.dat")) 
 

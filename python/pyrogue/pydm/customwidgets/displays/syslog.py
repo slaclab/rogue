@@ -57,10 +57,6 @@ class SyslogWindow(PyDMFrame):
 
         self._logCount = 0
 
-        #root.SystemLog.addListener(self.varListener)
-        #self.updateSyslog(root.SystemLog.getVariableValue(read=False))
-
-        print("Path={}".format(cpath))
         self._pb = PyDMPushButton(label='Clear Log',pressValue=1,init_channel=cpath)
         vb.addWidget(self._pb)
 

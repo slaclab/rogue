@@ -26,7 +26,7 @@ import threading
 logger = logging.getLogger(__name__)
 
 
-AlarmToInt = {'None':0, 'Good':0, 'AlarmMajor':1, 'AlarmMinor':2}
+AlarmToInt = {'None':0, 'Good':0, 'AlarmMinor':1, 'AlarmMajor':2}
 
 
 def ParseAddress(address):
@@ -59,13 +59,14 @@ class RogueConnection(PyDMConnection):
     def __init__(self, channel, address, protocol=None, parent=None):
         super(RogueConnection, self).__init__(channel, address, protocol, parent)
 
-        #print("Adding connection channel={}, address={}".format(channel,address))
+        print("Adding connection channel={}, address={}".format(channel,address))
 
         self.app = QApplication.instance()
 
         self._host, self._port, self._path, self._disp = ParseAddress(address)
 
         self._cmd  = False
+        self._int  = False
         self._node = None
 
         if utilities.is_pydm_app():
@@ -95,6 +96,9 @@ class RogueConnection(PyDMConnection):
             if self._node.disp == 'enum' and self._node.enum is not None and self._node.mode != 'RO':
                 self.enum_strings_signal.emit(tuple(self._node.enum.values()))
 
+            if 'Int' in self._node.typeStr or self._node.typeStr == 'int':
+                self._int = True
+
             self.prec_signal.emit(self._node.precision)
 
             self._updateVariable(self._node.path,self._node.getVariableValue(read=False))
@@ -120,6 +124,8 @@ class RogueConnection(PyDMConnection):
         try:
             if self._cmd:
                 self._node.__call__(new_value)
+            elif self._int:
+                self._node.setDisp(int(new_value))
             else:
                 self._node.setDisp(new_value)
         except:

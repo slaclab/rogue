@@ -97,24 +97,56 @@
         <attribute name="title">
          <string>Page</string>
         </attribute>
-        <widget class="SyslogWindow" name="SyslogWindow">
+        <widget class="QWidget" name="verticalLayoutWidget">
          <property name="geometry">
           <rect>
            <x>0</x>
-           <y>240</y>
-           <width>581</width>
-           <height>251</height>
+           <y>0</y>
+           <width>591</width>
+           <height>491</height>
           </rect>
          </property>
-         <property name="toolTip">
-          <string/>
-         </property>
-         <property name="channel" stdset="0">
-          <string>rogue://0/root.SystemLog</string>
-         </property>
-         <property name="rogueEnabled" stdset="0">
-          <bool>true</bool>
-         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_2">
+          <item>
+           <widget class="SyslogWindow" name="SyslogWindow">
+            <property name="toolTip">
+             <string/>
+            </property>
+            <property name="channel" stdset="0">
+             <string>rogue://0/root.SystemLog</string>
+            </property>
+            <property name="rogueEnabled" stdset="0">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="DataWriter" name="DataWriter">
+            <property name="toolTip">
+             <string/>
+            </property>
+            <property name="channel" stdset="0">
+             <string>rogue://0/root.StreamWriter</string>
+            </property>
+            <property name="rogueEnabled" stdset="0">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="RunControl" name="RunControl">
+            <property name="toolTip">
+             <string/>
+            </property>
+            <property name="channel" stdset="0">
+             <string>rogue://0/root.RunControl</string>
+            </property>
+            <property name="rogueEnabled" stdset="0">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+         </layout>
         </widget>
        </widget>
       </widget>
@@ -138,6 +170,16 @@
    <class>SyslogWindow</class>
    <extends>PyDMFrame</extends>
    <header>pyrogue.pydm.customwidgets.displays.syslog</header>
+  </customwidget>
+  <customwidget>
+   <class>RunControl</class>
+   <extends>PyDMFrame</extends>
+   <header>pyrogue.pydm.customwidgets.displays.run_control</header>
+  </customwidget>
+  <customwidget>
+   <class>DataWriter</class>
+   <extends>PyDMFrame</extends>
+   <header>pyrogue.pydm.customwidgets.displays.data_writer</header>
   </customwidget>
   <customwidget>
    <class>PyDMTabWidget</class>

@@ -47,6 +47,9 @@ class DummyTree(pyrogue.Root):
         # Add Data Writer
         self.add(pyrogue.utilities.fileio.StreamWriter())
 
+        # Add Run Control
+        self.add(pyrogue.RunControl())
+
         # Add process controller
         self.add(pyrogue.Process())
 
