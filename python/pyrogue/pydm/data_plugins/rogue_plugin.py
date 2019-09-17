@@ -75,10 +75,12 @@ class RogueConnection(PyDMConnection):
 
             # Command
             if self._node.isinstance(pyrogue.BaseCommand):
+                self.write_access_signal.emit(True)
                 self._cmd = True
+            else:
+                self.write_access_signal.emit(self._node.mode=='RW')
 
             self._node.addListener(self._updateVariable)
-            self.write_access_signal.emit(self._node.mode=='RW')
 
             if self._node.units is not None:
                 self.unit_signal.emit(self._node.units)
