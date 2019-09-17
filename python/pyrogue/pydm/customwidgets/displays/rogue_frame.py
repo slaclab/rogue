@@ -11,6 +11,7 @@
 #from os import path
 from pydm.widgets.frame import PyDMFrame
 #from pydm import widgets
+from pydm import utilities
 from qtpy.QtCore import Qt, Property, QObject, Q_ENUMS
 from pyrogue.pydm.data_plugins.rogue_plugin import ParseAddress
 import pyrogue.interfaces
@@ -27,17 +28,46 @@ class RogueFrame(PyDMFrame):
         self._excGroups = None
 
     def _build(self):
-
-        if self._rawPath is None or self._incGroups is None or self._excGroups is None:
+        if (not utilities.is_pydm_app()) or self._rawPath is None:
             return
 
-        host, port, path = ParseAddress(self._rawPath)
+        host, port, path, disp = ParseAddress(self._rawPath)
 
         self._client = pyrogue.interfaces.VirtualClient(host,port)
         self._node   = self._client.root.getNode(path)
 
-        print("Connected to node {}".format(self._node))
+        print("Building frame for node {}".format(self._node))
 
+
+    @Property(str)
+    def incGroups(self):
+        if self._incGroups is None or len(self._incGroups) == 0:
+            return ''
+        else:
+            return ','.join(self._incGroups)
+
+    @incGroups.setter
+    def incGroups(self, value):
+        if value == '':
+            self._incGroups = None
+        else:
+            self._incGroups = value.split(',')
+        print("Setting incGroups to {}".format(self._incGroups))
+
+    @Property(str)
+    def excGroups(self):
+        if self._excGroups is None or len(self._excGroups) == 0:
+            return ''
+        else:
+            return ','.join(self._excGroups)
+
+    @excGroups.setter
+    def excGroups(self, value):
+        if value == '':
+            self._excGroups = None
+        else:
+            self._excGroups = value.split(',')
+        print("Setting excGroups to {}".format(self._excGroups))
 
     @Property(str)
     def path(self):
@@ -46,24 +76,7 @@ class RogueFrame(PyDMFrame):
     @path.setter
     def path(self, newPath):
         self._rawPath = newPath
-        self._build()
-
-    @Property(str)
-    def incGroups(self):
-        return self._incGroups
-
-    @incGroups.setter
-    def incGroups(self, value):
-        self._incGroups = value
-        self._build()
-
-    @Property(str)
-    def excGroups(self):
-        return self._excGroups
-
-    @excGroups.setter
-    def excGroups(self, value):
-        self._excGroups = value
+        print("Setting path to {}".format(self._rawPath))
         self._build()
 
 

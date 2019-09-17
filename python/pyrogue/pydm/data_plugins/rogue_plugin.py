@@ -35,9 +35,9 @@ logger = logging.getLogger(__name__)
 
 
 def ParseAddress(address):
-    # "rogue://index/<path>"
+    # "rogue://index/<path>/<disp>"
     # or
-    # "rogue://host:port/<path>"
+    # "rogue://host:port/<path>/<disp>"
 
     rogueAddresses = {0: "localhost:9099"}
 
@@ -51,34 +51,36 @@ def ParseAddress(address):
     host = data_server[0]
     port = int(data_server[1])
     path = data[1]
+    disp = (len(data) > 2) and (data[2] == 'True')
 
-    return (host,port,path)
+    return (host,port,path,disp)
 
 
 class RogueConnection(PyDMConnection):
 
     def __init__(self, channel, address, protocol=None, parent=None):
         super(RogueConnection, self).__init__(channel, address, protocol, parent)
+
         self.app = QApplication.instance()
 
-        self._host, self._port, self._path = ParseAddress(address)
+        self._host, self._port, self._path, self._disp = ParseAddress(address)
 
-        self._client = pyrogue.interfaces.VirtualClient(self._host, self._port)
-        self._node   = self._client.root.getNode(self._path)
-        self._cmd    = False
+        if utilities.is_pydm_app():
+            self._client = pyrogue.interfaces.VirtualClient(self._host, self._port)
+            self._node   = self._client.root.getNode(self._path)
+            self._cmd    = False
+        else:
+            self._node = None
 
         if self._node is not None:
-            print("Found node for {}".format(channel))
             self.add_listener(channel)
             self.connection_state_signal.emit(True)
 
             # Command
             if self._node.isinstance(pyrogue.BaseCommand):
-                print("Detected command for {}".format(channel))
                 self.write_access_signal.emit(True)
                 self._cmd = True
             else:
-                print("Detected variable for {}".format(channel))
                 self._node.addListener(self._updateVariable)
                 self._updateVariable(self._node.path,self._node.getVariableValue(read=False))
                 self.write_access_signal.emit(self._node.mode=='RW')
@@ -90,8 +92,12 @@ class RogueConnection(PyDMConnection):
 
 
     def _updateVariable(self,path,varValue):
-        new_data = varValue.value
-        self.new_value_signal[type(new_data)].emit(new_data)
+        if type(varValue.value) == bool:
+            self.new_value_signal[int].emit(int(varValue.value))
+        elif self._disp:
+            self.new_value_signal[str].emit(varValue.valueDisp)
+        else:
+            self.new_value_signal[type(varValue.value)].emit(varValue.value)
 
 
     @pyqtSlot(int)
@@ -104,11 +110,9 @@ class RogueConnection(PyDMConnection):
 
         try:
             if self._cmd:
-                print("Here1")
                 self._node.__call__(new_value)
             else:
-                print("Here2")
-                self._node.set(new_value)
+                self._node.setDisp(new_value)
         except:
             logger.error("Unable to put %s to %s.  Exception: %s", new_val, self.address, str(e))
 
