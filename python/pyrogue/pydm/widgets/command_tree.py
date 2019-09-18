@@ -13,7 +13,7 @@ from pydm.widgets.frame import PyDMFrame
 from pydm.widgets import PyDMLineEdit, PyDMSpinbox, PyDMPushButton, PyDMEnumComboBox
 #from pydm import widgets
 from pydm import utilities
-from pyrogue.pydm.data_plugins.rogue_plugin import ParseAddress
+from pyrogue.pydm.data_plugins.rogue_plugin import ServerTable
 import pyrogue.interfaces
 from qtpy.QtCore import Qt, Property, QObject, Q_ENUMS, Slot, QPoint
 from qtpy.QtWidgets import QFrame, QVBoxLayout, QHBoxLayout, QLabel, QSizePolicy, QMenu, QDialog, QPushButton
@@ -210,7 +210,7 @@ class CommandTree(PyDMFrame):
         if (not self._en) or (not utilities.is_pydm_app()) or self.channel is None:
             return
 
-        self._addr, self._port, path, disp = ParseAddress(self.channel)
+        self._addr, self._port, path, disp = ServerTable.parse(self.channel)
 
         self._client = pyrogue.interfaces.VirtualClient(self._addr, self._port)
         self._node = self._client.root.getNode(path)
