@@ -47,8 +47,13 @@ class DummyTree(pyrogue.Root):
         # Add Data Writer
         self.add(pyrogue.utilities.fileio.StreamWriter())
 
+        # Add Run Control
+        self.add(pyrogue.RunControl())
+
         # Add process controller
         self.add(pyrogue.Process())
+
+        self.AxiVersion.AlarmTest.addToGroup('NoServe')
 
         # Start the tree with pyrogue server, internal nameserver, default interface
         # Set pyroHost to the address of a network interface to specify which nework to run on

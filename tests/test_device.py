@@ -61,6 +61,7 @@ class AxiVersion(pr.Device):
             bitOffset    = 0x00,
             base         = pr.UInt,
             mode         = 'RW',
+            units        = 'Test',
             disp         = '{:#08x}'            
         ))
 

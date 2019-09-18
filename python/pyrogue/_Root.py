@@ -356,6 +356,9 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
         self._running=False
 
+    def updatePickle(self):
+        self._structure = jsonpickle.encode(self)
+
     @pr.expose
     @property
     def running(self):
@@ -756,7 +759,8 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                             strm[p] = val
 
                         # Add to zmq publish
-                        zmq[p] = val
+                        if v.filterByGroup(incGroups=None, excGroups='NoServe'):
+                            zmq[p] = val
 
                         # Call listener functions,
                         with self._varListenLock:

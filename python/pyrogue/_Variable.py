@@ -199,11 +199,14 @@ class BaseVariable(pr.Node):
     @pr.expose
     @property
     def precision(self):
-        res = re.search(r':([0-9])\.([0-9]*)f',self._disp) 
-        try:
-            return res[2]
-        except:
-            return 3
+        if 'Float' in self.typeStr or self.typeStr == 'float':
+            res = re.search(r':([0-9])\.([0-9]*)f',self._disp) 
+            try:
+                return res[2]
+            except:
+                return 3
+        else:
+            return 0
 
     @pr.expose
     @property
@@ -450,6 +453,20 @@ class BaseVariable(pr.Node):
         except Exception as e:
             pr.logException(self._log,e)
             self._log.error("Error setting value '{}' to variable '{}' with type {}".format(sValue,self.path,self.typeStr))
+
+    @pr.expose
+    def write(self):
+        """
+        Force a write of the variable.
+        """
+        try:
+            if self._block is not None:
+                self._parent.writeBlocks(force=True, recurse=False, variable=self)
+                self._parent.verifyBlocks(recurse=False, variable=self)
+                self._parent.checkBlocks(recurse=False, variable=self)
+
+        except Exception as e:
+            pr.logException(self._log,e)
 
     @pr.expose
     def nativeType(self):
