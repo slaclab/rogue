@@ -57,6 +57,9 @@ class Process(pr.Device):
             mode='RO',
             units='Pct',
             value=0.0,
+            disp = '{:1.2f}',
+            minimum=0.0,
+            maximum=1.0,
             pollInterval=1.0,
             description='Percent complete: 0.0 - 1.0.'))
 
@@ -110,7 +113,7 @@ class Process(pr.Device):
             if self._runEn is False:
                 break
             time.sleep(1)
-            self.Progress.set(i)
+            self.Progress.set(i/100)
             self.Message.setDisp(f"Running for {i} seconds.")
         self.Message.setDisp("Done")
 
