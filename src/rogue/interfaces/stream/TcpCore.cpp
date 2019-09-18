@@ -8,12 +8,12 @@
  * Description:
  * Stream Network Core
  * ----------------------------------------------------------------------------
- * This file is part of the rogue software platform. It is subject to 
- * the license terms in the LICENSE.txt file found in the top-level directory 
- * of this distribution and at: 
- *    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
- * No part of the rogue software platform, including this file, may be 
- * copied, modified, propagated, or distributed except according to the terms 
+ * This file is part of the rogue software platform. It is subject to
+ * the license terms in the LICENSE.txt file found in the top-level directory
+ * of this distribution and at:
+ *    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+ * No part of the rogue software platform, including this file, may be
+ * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
@@ -78,13 +78,13 @@ ris::TcpCore::TcpCore (std::string addr, uint16_t port, bool server) {
 
       this->bridgeLog_->debug("Creating pull server port: %s",this->pullAddr_.c_str());
 
-      if ( zmq_bind(this->zmqPull_,this->pullAddr_.c_str()) < 0 ) 
+      if ( zmq_bind(this->zmqPull_,this->pullAddr_.c_str()) < 0 )
          throw(rogue::GeneralError::create("stream::TcpCore::TcpCore",
                   "Failed to bind server to port %i at address %s, another process may be using this port",port,addr.c_str()));
 
       this->bridgeLog_->debug("Creating push server port: %s",this->pushAddr_.c_str());
 
-      if ( zmq_bind(this->zmqPush_,this->pushAddr_.c_str()) < 0 ) 
+      if ( zmq_bind(this->zmqPush_,this->pushAddr_.c_str()) < 0 )
          throw(rogue::GeneralError::create("stream::TcpCore::TcpCore",
                   "Failed to bind server to port %i at address %s, another process may be using this port",port+1,addr.c_str()));
    }
@@ -96,13 +96,13 @@ ris::TcpCore::TcpCore (std::string addr, uint16_t port, bool server) {
 
       this->bridgeLog_->debug("Creating pull client port: %s",this->pullAddr_.c_str());
 
-      if ( zmq_connect(this->zmqPull_,this->pullAddr_.c_str()) < 0 ) 
+      if ( zmq_connect(this->zmqPull_,this->pullAddr_.c_str()) < 0 )
          throw(rogue::GeneralError::create("stream::TcpCore::TcpCore",
                   "Failed to connect to remote port %i at address %s",port+1,addr.c_str()));
 
       this->bridgeLog_->debug("Creating push client port: %s",this->pushAddr_.c_str());
 
-      if ( zmq_connect(this->zmqPush_,this->pushAddr_.c_str()) < 0 ) 
+      if ( zmq_connect(this->zmqPush_,this->pushAddr_.c_str()) < 0 )
          throw(rogue::GeneralError::create("stream::TcpCore::TcpCore",
                   "Failed to connect to remote port %i at address %s",port,addr.c_str()));
    }
@@ -110,6 +110,9 @@ ris::TcpCore::TcpCore (std::string addr, uint16_t port, bool server) {
    // Start rx thread
    threadEn_ = true;
    this->thread_ = new std::thread(&ris::TcpCore::runThread, this);
+
+   // Set a thread name
+   pthread_setname_np( thread_->native_handle(), "TcpCore" );
 }
 
 //! Destructor

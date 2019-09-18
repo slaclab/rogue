@@ -8,12 +8,12 @@
  * Description:
  * Memory Client Network Bridge
  * ----------------------------------------------------------------------------
- * This file is part of the rogue software platform. It is subject to 
- * the license terms in the LICENSE.txt file found in the top-level directory 
- * of this distribution and at: 
- *    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
- * No part of the rogue software platform, including this file, may be 
- * copied, modified, propagated, or distributed except according to the terms 
+ * This file is part of the rogue software platform. It is subject to
+ * the license terms in the LICENSE.txt file found in the top-level directory
+ * of this distribution and at:
+ *    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+ * No part of the rogue software platform, including this file, may be
+ * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
@@ -76,19 +76,22 @@ rim::TcpClient::TcpClient (std::string addr, uint16_t port) : rim::Slave(4,0xFFF
 
    this->bridgeLog_->debug("Creating response client port: %s",this->respAddr_.c_str());
 
-   if ( zmq_connect(this->zmqResp_,this->respAddr_.c_str()) < 0 ) 
+   if ( zmq_connect(this->zmqResp_,this->respAddr_.c_str()) < 0 )
       throw(rogue::GeneralError::create("memory::TcpCore::TcpCore",
                "Failed to connect to remote port %i at address %s",port+1,addr.c_str()));
 
    this->bridgeLog_->debug("Creating request client port: %s",this->reqAddr_.c_str());
 
-   if ( zmq_connect(this->zmqReq_,this->reqAddr_.c_str()) < 0 ) 
+   if ( zmq_connect(this->zmqReq_,this->reqAddr_.c_str()) < 0 )
       throw(rogue::GeneralError::create("memory::TcpCore::TcpCore",
                "Failed to connect to remote port %i at address %s",port,addr.c_str()));
 
    // Start rx thread
    threadEn_ = true;
    this->thread_ = new std::thread(&rim::TcpClient::runThread, this);
+
+   // Set a thread name
+   pthread_setname_np( thread_->native_handle(), "TcpClient" );
 }
 
 //! Destructor

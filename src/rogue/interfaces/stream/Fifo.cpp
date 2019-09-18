@@ -9,12 +9,12 @@
  * Description :
  *    AXI Stream FIFO
  *-----------------------------------------------------------------------------
- * This file is part of the rogue software platform. It is subject to 
- * the license terms in the LICENSE.txt file found in the top-level directory 
- * of this distribution and at: 
-    * https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
- * No part of the rogue software platform, including this file, may be 
- * copied, modified, propagated, or distributed except according to the terms 
+ * This file is part of the rogue software platform. It is subject to
+ * the license terms in the LICENSE.txt file found in the top-level directory
+ * of this distribution and at:
+    * https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+ * No part of the rogue software platform, including this file, may be
+ * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  *-----------------------------------------------------------------------------
 **/
@@ -52,7 +52,7 @@ void ris::Fifo::setup_python() {
 }
 
 //! Creator with version constant
-ris::Fifo::Fifo(uint32_t maxDepth, uint32_t trimSize, bool noCopy ) : ris::Master(), ris::Slave() { 
+ris::Fifo::Fifo(uint32_t maxDepth, uint32_t trimSize, bool noCopy ) : ris::Master(), ris::Slave() {
    maxDepth_ = maxDepth;
    trimSize_ = trimSize;
    noCopy_   = noCopy;
@@ -64,6 +64,9 @@ ris::Fifo::Fifo(uint32_t maxDepth, uint32_t trimSize, bool noCopy ) : ris::Maste
    // Start read thread
    threadEn_ = true;
    thread_ = new std::thread(&ris::Fifo::runThread, this);
+
+   // Set a thread name
+   pthread_setname_np( thread_->native_handle(), "Fifo" );
 }
 
 //! Deconstructor
