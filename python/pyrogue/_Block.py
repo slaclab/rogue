@@ -93,7 +93,7 @@ class BaseBlock(object):
     def bulkEn(self):
         return True
 
-    def startTransaction(self,type, check=False):
+    def startTransaction(self, type, check=False, lowByte=None, highByte=None):
         """
         Start a transaction.
         """
@@ -388,7 +388,7 @@ class RemoteBlock(BaseBlock, rim.Master):
 
             return var._base.fromBytes(ba,sum(var.bitSize))
 
-    def startTransaction(self, type, check=False):
+    def startTransaction(self, type, check=False, lowByte=None, highByte=None):
         """
         Start a transaction.
         """
@@ -408,11 +408,21 @@ class RemoteBlock(BaseBlock, rim.Master):
             self._waitTransaction(0)
             self._clearError()
 
+            # Set default low and high bytes
+            if lowByte is None or highByte is None:
+                lowByte  = 0
+                highByte = self._size - 1
+
             # Move staged write data to block. Clear stale.
             if type == rim.Write or type == rim.Post:
                 for x in range(self._size):
                     self._bData[x] = self._bData[x] & (self._sDataMask[x] ^ 0xFF)
                     self._bData[x] = self._bData[x] | (self._sDataMask[x] & self._sData[x])
+
+                    # Override min and max bytes based upon stale
+                    if self._sDataMask[x] != 0:
+                        if x < lowByte:  lowByte  = x
+                        if x > highByte: highByte = x
 
                 self._sData = bytearray(self._size)
                 self._sDataMask = bytearray(self._size)
@@ -436,8 +446,12 @@ class RemoteBlock(BaseBlock, rim.Master):
             # Set data pointer
             tData = self._vData if self._doVerify else self._bData
 
+            # Derive offset and size based upon min transaction size
+            offset = math.floor(lowByte / self._minSize) * self._minSize
+            size   = math.ceil((highByte-lowByte+1) / self._minSize) * self._minSize
+
             # Start transaction
-            self._reqTransaction(self.offset,tData,0,0,type)
+            self._reqTransaction(self.offset,tData,size,offset,type)
 
         if check:
             #print(f'Checking {self.path}.startTransaction(check={check})')
