@@ -452,7 +452,7 @@ class Device(pr.Node,rim.Hub):
                     f'Variable {v.path} passed to {self.path}._getBlocks() is not a member of {self.path}')
             elif v._block is not None:
 
-                if isinstance(v._block,pr.RemoteBlock):
+                if isinstance(v,pr.RemoteVariable):
                     lowByte  = math.floor(v.bitOffset[0] / 8)
                     highByte = math.floor((v.bitOffset[-1] + v.bitSize[-1] - 1) / 8)
                 else:
@@ -461,7 +461,7 @@ class Device(pr.Node,rim.Hub):
 
                 if v._block not in blocks:
                     blocks[v._block] = [lowByte, highByte]
-                elif lsb is not None:
+                elif lowByte is not None and highByte is not None:
                     if lowByte  < blocks[v._block][0]: blocks[v._block][0] = lowByte
                     if highByte > blocks[v._block][1]: blocks[v._block][1] = highByte
 
