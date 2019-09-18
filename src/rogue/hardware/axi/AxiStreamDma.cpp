@@ -316,10 +316,11 @@ void rha::AxiStreamDma::runThread() {
    luser = 0;
    cont  = 0;
 
+   log_->logThreadId();
+   usleep(1000);
+
    // Preallocate empty frame
    frame = ris::Frame::create();
-
-   log_->logThreadId();
 
    try {
       while(1) {

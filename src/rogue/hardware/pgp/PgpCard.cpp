@@ -332,10 +332,11 @@ void rhp::PgpCard::runThread() {
    uint32_t       meta;
    struct timeval tout;
 
+   log_->logThreadId();
+   usleep(1000);
+
    // Preallocate empty frame
    frame = ris::Frame::create();
-
-   log_->logThreadId();
 
    try {
 
