@@ -265,6 +265,14 @@ class Node(object):
             raise NodeError('Error adding node with name %s to %s. Name collision.' % 
                              (node.name,self.name))
 
+        # Detect and add array nodes
+        self._addArrayNode(node)
+
+        # Add to primary list
+        self._nodes[node.name] = node 
+
+    def _addArrayNode(self, node):
+
         # Detect array variables
         fields = re.split('\[|\]',node.name)
 
@@ -291,9 +299,6 @@ class Node(object):
                     self._anodes[aname].extend([None for i in range(key-len(self._anodes[aname]) + 1)])
 
                 self._anodes[aname][key] = node
-
-        self._nodes[node.name] = node 
-
 
     def addNode(self, nodeClass, **kwargs):
         self.add(nodeClass(**kwargs))
