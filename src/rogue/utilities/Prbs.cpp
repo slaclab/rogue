@@ -215,7 +215,9 @@ void ru::Prbs::enable(uint32_t size) {
       txThread_ = new std::thread(&Prbs::runThread, this);
 
       // Set a thread name
+#ifndef __MACH__
       pthread_setname_np( txThread_->native_handle(), "PrbsTx" );
+#endif
    }
 }
 

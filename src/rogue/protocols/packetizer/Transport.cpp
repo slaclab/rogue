@@ -70,7 +70,9 @@ void rpp::Transport::setController( rpp::ControllerPtr cntl ) {
    thread_ = new std::thread(&rpp::Transport::runThread, this);
 
    // Set a thread name
+#ifndef __MACH__
    pthread_setname_np( thread_->native_handle(), "PackTrans" );
+#endif
 }
 
 //! Accept a frame from master

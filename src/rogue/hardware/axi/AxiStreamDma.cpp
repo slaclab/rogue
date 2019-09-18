@@ -83,7 +83,9 @@ rha::AxiStreamDma::AxiStreamDma ( std::string path, uint32_t dest, bool ssiEnabl
    thread_ = new std::thread(&rha::AxiStreamDma::runThread, this);
 
    // Set a thread name
+#ifndef __MACH__
    pthread_setname_np( thread_->native_handle(), "AxiStreamDma" );
+#endif
 }
 
 //! Close the device

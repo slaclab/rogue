@@ -93,7 +93,9 @@ void ruf::LegacyStreamReader::open(std::string file) {
    readThread_ = new std::thread(&LegacyStreamReader::runThread, this);
 
    // Set a thread name
+#ifndef __MACH__
    pthread_setname_np( readThread_->native_handle(), "LStreamReader" );
+#endif
 }
 
 //! Open file

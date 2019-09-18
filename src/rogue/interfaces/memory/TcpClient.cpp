@@ -91,7 +91,9 @@ rim::TcpClient::TcpClient (std::string addr, uint16_t port) : rim::Slave(4,0xFFF
    this->thread_ = new std::thread(&rim::TcpClient::runThread, this);
 
    // Set a thread name
+#ifndef __MACH__
    pthread_setname_np( thread_->native_handle(), "TcpClient" );
+#endif
 }
 
 //! Destructor

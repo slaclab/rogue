@@ -84,7 +84,9 @@ rhp::PgpCard::PgpCard ( std::string path, uint32_t lane, uint32_t vc ) {
    thread_ = new std::thread(&rhp::PgpCard::runThread, this);
 
    // Set a thread name
+#ifndef __MACH__
    pthread_setname_np( thread_->native_handle(), "PgpCard" );
+#endif
 }
 
 //! Destructor
