@@ -70,7 +70,9 @@ void rpr::Application::setController( rpr::ControllerPtr cntl ) {
    thread_ = new std::thread(&rpr::Application::runThread, this);
 
    // Set a thread name
+#ifndef __MACH__
    pthread_setname_np( thread_->native_handle(), "RssiApp" );
+#endif
 }
 
 //! Generate a Frame. Called from master

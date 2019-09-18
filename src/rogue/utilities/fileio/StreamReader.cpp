@@ -95,7 +95,9 @@ void ruf::StreamReader::open(std::string file) {
    readThread_ = new std::thread(&StreamReader::runThread, this);
 
    // Set a thread name
+#ifndef __MACH__
    pthread_setname_np( readThread_->native_handle(), "StreamReader" );
+#endif
 }
 
 //! Open file

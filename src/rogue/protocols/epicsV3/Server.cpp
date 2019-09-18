@@ -77,7 +77,9 @@ void rpe::Server::start() {
    thread_ = new std::thread(&rpe::Server::runThread, this);
 
    // Set a thread name
+#ifndef __MACH__
    pthread_setname_np( thread_->native_handle(), "EpicsV3Server" );
+#endif
 
    if ( workCnt_ > 0 ) {
       workersEn_ = true;

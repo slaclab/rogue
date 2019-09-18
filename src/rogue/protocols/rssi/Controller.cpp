@@ -145,7 +145,9 @@ void rpr::Controller::start() {
       thread_ = new std::thread(&rpr::Controller::runThread, this);
 
       // Set a thread name
+#ifndef __MACH__
       pthread_setname_np( thread_->native_handle(), "RssiControler" );
+#endif
    }
 }
 

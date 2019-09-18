@@ -66,7 +66,9 @@ ris::Fifo::Fifo(uint32_t maxDepth, uint32_t trimSize, bool noCopy ) : ris::Maste
    thread_ = new std::thread(&ris::Fifo::runThread, this);
 
    // Set a thread name
+#ifndef __MACH__
    pthread_setname_np( thread_->native_handle(), "Fifo" );
+#endif
 }
 
 //! Deconstructor

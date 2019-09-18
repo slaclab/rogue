@@ -112,7 +112,9 @@ ris::TcpCore::TcpCore (std::string addr, uint16_t port, bool server) {
    this->thread_ = new std::thread(&ris::TcpCore::runThread, this);
 
    // Set a thread name
+#ifndef __MACH__
    pthread_setname_np( thread_->native_handle(), "TcpCore" );
+#endif
 }
 
 //! Destructor
