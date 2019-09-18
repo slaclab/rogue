@@ -18,7 +18,7 @@ def startPyDM(addrList):
 
     base = os.path.dirname(os.path.abspath(__file__))
 
-    top = base + '/examples/default_top.py'
+    top = base + '/pydmTop.py'
 
     app = pydm.PyDMApplication(ui_file=top, 
                                command_line_args=sys.argv, 
