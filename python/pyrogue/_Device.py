@@ -301,8 +301,7 @@ class Device(pr.Node,rim.Hub):
         # Process local blocks.
         if variable is not None:
             for b,v in self._getBlocks(variable).items():
-                if (force or b.stale):
-                    b.startTransaction(rim.Verify, check=checkEach, lowByte=v[0], highByte=v[1])
+                b.startTransaction(rim.Verify, check=checkEach, lowByte=v[0], highByte=v[1])
 
         else:
             for block in self._blocks:
@@ -325,8 +324,7 @@ class Device(pr.Node,rim.Hub):
         # Process local blocks. 
         if variable is not None:
             for b,v in self._getBlocks(variable).items():
-                if (force or b.stale):
-                    b.startTransaction(rim.Read, check=checkEach, lowByte=v[0], highByte=v[1])
+                b.startTransaction(rim.Read, check=checkEach, lowByte=v[0], highByte=v[1])
 
         else:
             for block in self._blocks:
