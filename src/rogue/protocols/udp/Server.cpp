@@ -8,12 +8,12 @@
  * Description:
  * UDP Server
  * ----------------------------------------------------------------------------
- * This file is part of the rogue software platform. It is subject to 
- * the license terms in the LICENSE.txt file found in the top-level directory 
- * of this distribution and at: 
- *    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
- * No part of the rogue software platform, including this file, may be 
- * copied, modified, propagated, or distributed except according to the terms 
+ * This file is part of the rogue software platform. It is subject to
+ * the license terms in the LICENSE.txt file found in the top-level directory
+ * of this distribution and at:
+ *    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+ * No part of the rogue software platform, including this file, may be
+ * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
@@ -65,13 +65,13 @@ rpu::Server::Server (uint16_t port, bool jumbo) : rpu::Core(jumbo) {
 
    memset(&remAddr_,0,sizeof(struct sockaddr_in));
 
-   if (bind(fd_, (struct sockaddr *) &locAddr_, sizeof(locAddr_))<0) 
+   if (bind(fd_, (struct sockaddr *) &locAddr_, sizeof(locAddr_))<0)
       throw(rogue::GeneralError::network("Server::Server","0.0.0.0",port_));
 
    // Kernel assigns port
    if ( port_ == 0 ) {
       len = sizeof(locAddr_);
-      if (getsockname(fd_, (struct sockaddr *) &locAddr_, &len) < 0 ) 
+      if (getsockname(fd_, (struct sockaddr *) &locAddr_, &len) < 0 )
          throw(rogue::GeneralError::network("Server::Server","0.0.0.0",port_));
       port_ = ntohs(locAddr_.sin_port);
    }
@@ -129,7 +129,7 @@ void rpu::Server::acceptFrame ( ris::FramePtr frame ) {
       msg_iov[0].iov_base = (*it)->begin();
       msg_iov[0].iov_len  = (*it)->getPayload();
 
-      // Keep trying since select call can fire 
+      // Keep trying since select call can fire
       // but write fails because we did not win the buffer lock
       do {
 
@@ -139,7 +139,7 @@ void rpu::Server::acceptFrame ( ris::FramePtr frame ) {
 
          // Setup select timeout
          tout = timeout_;
-         
+
          if ( select(fd_+1,NULL,&fds,NULL,&tout) <= 0 ) {
             udpLog_->timeout("Server::acceptFrame",timeout_);
             res = 0;
@@ -165,6 +165,7 @@ void rpu::Server::runThread() {
    uint32_t           avail;
 
    udpLog_->logThreadId();
+   usleep(1000);
 
    // Preallocate frame
    frame = ris::Pool::acceptReq(maxPayload(),false);

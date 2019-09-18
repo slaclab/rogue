@@ -8,12 +8,12 @@
  * Description:
  * Memory Client Network Bridge
  * ----------------------------------------------------------------------------
- * This file is part of the rogue software platform. It is subject to 
- * the license terms in the LICENSE.txt file found in the top-level directory 
- * of this distribution and at: 
- *    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
- * No part of the rogue software platform, including this file, may be 
- * copied, modified, propagated, or distributed except according to the terms 
+ * This file is part of the rogue software platform. It is subject to
+ * the license terms in the LICENSE.txt file found in the top-level directory
+ * of this distribution and at:
+ *    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+ * No part of the rogue software platform, including this file, may be
+ * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
@@ -65,16 +65,19 @@ rim::TcpClient::TcpClient (std::string addr, uint16_t port) : rim::Slave(4,0xFFF
 
    this->bridgeLog_->debug("Creating response client port: %s",this->respAddr_.c_str());
 
-   if ( zmq_connect(this->zmqResp_,this->respAddr_.c_str()) < 0 ) 
+   if ( zmq_connect(this->zmqResp_,this->respAddr_.c_str()) < 0 )
       throw(rogue::GeneralError::network("TcpClient::TcpClient",addr,port+1));
 
    this->bridgeLog_->debug("Creating request client port: %s",this->reqAddr_.c_str());
 
-   if ( zmq_connect(this->zmqReq_,this->reqAddr_.c_str()) < 0 ) 
+   if ( zmq_connect(this->zmqReq_,this->reqAddr_.c_str()) < 0 )
       throw(rogue::GeneralError::network("TcpClient::TcpClient",addr,port));
 
    // Start rx thread
    this->thread_ = new boost::thread(boost::bind(&rim::TcpClient::runThread, this));
+
+   // Set a thread name
+   pthread_setname_np( thread_->native_handle(), "TcpClient" );
 }
 
 //! Destructor
@@ -138,7 +141,7 @@ void rim::TcpClient::doTransaction(rim::TransactionPtr tran) {
    bridgeLog_->debug("Forwarding transaction id=%i, addr=0x%x, size=%i, type=%i, cnt=%i",id,addr,size,type,msgCnt);
 
    // Send message
-   for (x=0; x < msgCnt; x++) 
+   for (x=0; x < msgCnt; x++)
       zmq_sendmsg(this->zmqReq_,&(msg[x]),(x==(msgCnt-1)?0:ZMQ_SNDMORE));
 
    // Add transaction

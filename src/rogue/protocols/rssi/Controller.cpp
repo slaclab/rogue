@@ -10,12 +10,12 @@
  * Description:
  * RSSI Controller
  * ----------------------------------------------------------------------------
- * This file is part of the rogue software platform. It is subject to 
- * the license terms in the LICENSE.txt file found in the top-level directory 
- * of this distribution and at: 
- *    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
- * No part of the rogue software platform, including this file, may be 
- * copied, modified, propagated, or distributed except according to the terms 
+ * This file is part of the rogue software platform. It is subject to
+ * the license terms in the LICENSE.txt file found in the top-level directory
+ * of this distribution and at:
+ *    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+ * No part of the rogue software platform, including this file, may be
+ * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
@@ -38,8 +38,8 @@ namespace rpr = rogue::protocols::rssi;
 namespace ris = rogue::interfaces::stream;
 
 //! Class creation
-rpr::ControllerPtr rpr::Controller::create ( uint32_t segSize, 
-                                             rpr::TransportPtr tran, 
+rpr::ControllerPtr rpr::Controller::create ( uint32_t segSize,
+                                             rpr::TransportPtr tran,
                                              rpr::ApplicationPtr app, bool server ) {
    rpr::ControllerPtr r = boost::make_shared<rpr::Controller>(segSize,tran,app,server);
    return(r);
@@ -93,7 +93,7 @@ rpr::Controller::Controller ( uint32_t segSize, rpr::TransportPtr tran, rpr::App
 
    locConnId_     = 0x12345678;
    remConnId_     = 0;
-  
+
    convTime(tryPeriodD1_,  locTryPeriod_);
    convTime(tryPeriodD4_,  locTryPeriod_ / 4);
    convTime(retranToutD1_, curRetranTout_);
@@ -102,11 +102,11 @@ rpr::Controller::Controller ( uint32_t segSize, rpr::TransportPtr tran, rpr::App
    convTime(cumAckToutD2_, curCumAckTout_ / 2);
 
    memset(&zeroTme_, 0, sizeof(struct timeval));
-   
+
    rogue::defaultTimeout(timeout_);
 
    locBusyCnt_ = 0;
-   remBusyCnt_ = 0;   
+   remBusyCnt_ = 0;
 
    log_ = rogue::Logging::create("rssi.controller");
 
@@ -114,7 +114,7 @@ rpr::Controller::Controller ( uint32_t segSize, rpr::TransportPtr tran, rpr::App
 }
 
 //! Destructor
-rpr::Controller::~Controller() { 
+rpr::Controller::~Controller() {
    stop();
 }
 
@@ -133,6 +133,9 @@ void rpr::Controller::start() {
    if ( thread_ == NULL ) {
       state_ = StClosed;
       thread_ = new boost::thread(boost::bind(&rpr::Controller::runThread, this));
+
+      // Set a thread name
+      pthread_setname_np( thread_->native_handle(), "RssiControler" );
    }
 }
 
@@ -201,7 +204,7 @@ void rpr::Controller::transportRx( ris::FramePtr frame ) {
 
    // Check for busy state transition
    if (!remBusy_ && head->busy) remBusyCnt_++;
-   
+
    // Update busy bit
    remBusy_ = head->busy;
 
@@ -212,7 +215,7 @@ void rpr::Controller::transportRx( ris::FramePtr frame ) {
       }
    }
 
-   // Syn frame goes to state machine if state = open 
+   // Syn frame goes to state machine if state = open
    // or we are waiting for ack replay
    else if ( head->syn ) {
       if ( state_ == StOpen || state_ == StWaitSyn ) {
@@ -237,7 +240,7 @@ void rpr::Controller::transportRx( ris::FramePtr frame ) {
 
             // First remove received sequence number from queue to avoid dupilicates
             if ( ( it = oooQueue_.find(head->sequence)) != oooQueue_.end() ) {
-               log_->warning("Removed duplicate frame. server=%i, head->sequence=%i, next sequence=%i", 
+               log_->warning("Removed duplicate frame. server=%i, head->sequence=%i, next sequence=%i",
                      server_, head->sequence, nextSeqRx_);
                dropCount_++;
                oooQueue_.erase(it);
@@ -262,7 +265,7 @@ void rpr::Controller::transportRx( ris::FramePtr frame ) {
 
       // Check if received frame is already in out of order queue
       else if ( ( it = oooQueue_.find(head->sequence)) != oooQueue_.end() ) {
-         log_->warning("Dropped duplicate frame. server=%i, head->sequence=%i, next sequence=%i", 
+         log_->warning("Dropped duplicate frame. server=%i, head->sequence=%i, next sequence=%i",
                server_, head->sequence, nextSeqRx_);
          dropCount_++;
       }
@@ -339,7 +342,7 @@ void rpr::Controller::applicationRx ( ris::FramePtr frame ) {
    // Adjust header in first buffer
    (*(frame->beginBuffer()))->adjustHeader(-rpr::Header::HeaderSize);
 
-   // Map to RSSI 
+   // Map to RSSI
    rpr::HeaderPtr head = rpr::Header::create(frame);
    head->ack = true;
    flock->unlock();
@@ -384,7 +387,7 @@ uint32_t rpr::Controller::getRetranCount() {
 //! Get locBusy
 bool rpr::Controller::getLocBusy() {
    bool queueBusy = appQueue_.busy();
-   if(!locBusy_ && queueBusy) locBusyCnt_++;   
+   if(!locBusy_ && queueBusy) locBusyCnt_++;
    locBusy_ = queueBusy;
    return(locBusy_);
 }
@@ -569,7 +572,7 @@ int8_t rpr::Controller::retransmit(uint8_t id) {
       lastAckTx_ = ackSeqRx_;
       head->busy = false;
    }
- 
+
    // Track last tx time
    gettimeofday(&txTime_,NULL);
 
@@ -597,7 +600,7 @@ void rpr::Controller::convTime ( struct timeval &tme, uint32_t rssiTime ) {
 
    div_t divResult = div(usec,1000000);
    tme.tv_sec  = divResult.quot;
-   tme.tv_usec = divResult.rem; 
+   tme.tv_usec = divResult.rem;
 }
 
 //! Helper function to determine if time has elapsed
@@ -654,7 +657,7 @@ void rpr::Controller::runThread() {
                break;
             default :
                break;
-         }    
+         }
          boost::this_thread::interruption_point();
       }
    } catch (boost::thread_interrupted&) { }
@@ -827,7 +830,7 @@ struct timeval & rpr::Controller::stateOpen () {
    else doNull = false;
 
    // Outbound frame required
-   if ( ( doNull || ((! getLocBusy()) && ackPend >= curMaxCumAck_) || 
+   if ( ( doNull || ((! getLocBusy()) && ackPend >= curMaxCumAck_) ||
         ((ackPend > 0 || getLocBusy()) && timePassed(locTime,cumAckToutD1_)) ) ) {
 
       head = rpr::Header::create(tran_->reqFrame(rpr::Header::HeaderSize,false));
@@ -878,6 +881,6 @@ struct timeval & rpr::Controller::stateError () {
 void rpr::Controller::setTimeout(uint32_t timeout) {
    div_t divResult = div(timeout,1000000);
    timeout_.tv_sec  = divResult.quot;
-   timeout_.tv_usec = divResult.rem; 
+   timeout_.tv_usec = divResult.rem;
 }
 

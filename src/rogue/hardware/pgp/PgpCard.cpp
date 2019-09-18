@@ -10,12 +10,12 @@
  * Description:
  * PGP Card Class
  * ----------------------------------------------------------------------------
- * This file is part of the rogue software platform. It is subject to 
- * the license terms in the LICENSE.txt file found in the top-level directory 
- * of this distribution and at: 
- *    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
- * No part of the rogue software platform, including this file, may be 
- * copied, modified, propagated, or distributed except according to the terms 
+ * This file is part of the rogue software platform. It is subject to
+ * the license terms in the LICENSE.txt file found in the top-level directory
+ * of this distribution and at:
+ *    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+ * No part of the rogue software platform, including this file, may be
+ * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
@@ -61,7 +61,7 @@ rhp::PgpCard::PgpCard ( std::string path, uint32_t lane, uint32_t vc ) {
 
    log_ = rogue::Logging::create("hardware.PgpCard");
 
-   if ( (fd_ = ::open(path.c_str(), O_RDWR)) < 0 ) 
+   if ( (fd_ = ::open(path.c_str(), O_RDWR)) < 0 )
       throw(rogue::GeneralError::open("PgpCard::PgpCard",path.c_str()));
 
    if ( dmaCheckVersion(fd_) < 0 )
@@ -80,6 +80,9 @@ rhp::PgpCard::PgpCard ( std::string path, uint32_t lane, uint32_t vc ) {
 
    // Start read thread
    thread_ = new boost::thread(boost::bind(&rhp::PgpCard::runThread, this));
+
+   // Set a thread name
+   pthread_setname_np( thread_->native_handle(), "PgpCard" );
 }
 
 //! Destructor
@@ -191,7 +194,7 @@ ris::FramePtr rhp::PgpCard::acceptReq ( uint32_t size, bool zeroCopyEn) {
       // Request may be serviced with multiple buffers
       while ( alloc < size ) {
 
-         // Keep trying since select call can fire 
+         // Keep trying since select call can fire
          // but getIndex fails because we did not win the buffer lock
          do {
 
@@ -267,7 +270,7 @@ void rhp::PgpCard::acceptFrame ( ris::FramePtr frame ) {
       // Write to pgp with (*it)er copy in driver
       else {
 
-         // Keep trying since select call can fire 
+         // Keep trying since select call can fire
          // but write fails because we did not win the (*it)er lock
          do {
 
@@ -286,7 +289,7 @@ void rhp::PgpCard::acceptFrame ( ris::FramePtr frame ) {
                // Write with (*it)er copy
                if ( (res = dmaWrite(fd_, (*it)->begin(), (*it)->getPayload(), pgpSetFlags(cont), pgpSetDest(lane_, vc_)) < 0 ) )
                   throw(rogue::GeneralError("PgpCard::acceptFrame","PGP Write Call Failed"));
-            } 
+            }
          }
 
          // Continue while write result was zero
@@ -307,7 +310,7 @@ void rhp::PgpCard::retBuffer(uint8_t * data, uint32_t meta, uint32_t size) {
       // Device is open and buffer is not stale
       // Bit 30 indicates buffer has already been returned to hardware
       if ( (fd_ >= 0) && ((meta & 0x40000000) == 0) ) {
-         if ( dmaRetIndex(fd_,meta & 0x3FFFFFFF) < 0 ) 
+         if ( dmaRetIndex(fd_,meta & 0x3FFFFFFF) < 0 )
             throw(rogue::GeneralError("PgpCard::retBuffer","AXIS Return Buffer Call Failed!!!!"));
       }
       decCounter(size);
@@ -329,10 +332,11 @@ void rhp::PgpCard::runThread() {
    uint32_t       meta;
    struct timeval tout;
 
+   log_->logThreadId();
+   usleep(1000);
+
    // Preallocate empty frame
    frame = ris::Frame::create();
-
-   log_->logThreadId();
 
    try {
 

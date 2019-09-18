@@ -9,12 +9,12 @@
  * Description:
  * Packetizer Transport Port
  * ----------------------------------------------------------------------------
- * This file is part of the rogue software platform. It is subject to 
- * the license terms in the LICENSE.txt file found in the top-level directory 
- * of this distribution and at: 
- *    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
- * No part of the rogue software platform, including this file, may be 
- * copied, modified, propagated, or distributed except according to the terms 
+ * This file is part of the rogue software platform. It is subject to
+ * the license terms in the LICENSE.txt file found in the top-level directory
+ * of this distribution and at:
+ *    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+ * No part of the rogue software platform, including this file, may be
+ * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
@@ -55,7 +55,7 @@ void rpp::Transport::setup_python() {
 rpp::Transport::Transport () { }
 
 //! Destructor
-rpp::Transport::~Transport() { 
+rpp::Transport::~Transport() {
    thread_->interrupt();
    thread_->join();
 }
@@ -66,6 +66,9 @@ void rpp::Transport::setController( rpp::ControllerPtr cntl ) {
 
    // Start read thread
    thread_ = new boost::thread(boost::bind(&rpp::Transport::runThread, this));
+
+   // Set a thread name
+   pthread_setname_np( thread_->native_handle(), "PackTrans" );
 }
 
 //! Accept a frame from master

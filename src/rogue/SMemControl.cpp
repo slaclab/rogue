@@ -5,12 +5,12 @@
  * File       : SMemControl.cpp
  * Created    : 2017-06-06
  * ----------------------------------------------------------------------------
- * This file is part of the rogue software platform. It is subject to 
- * the license terms in the LICENSE.txt file found in the top-level directory 
- * of this distribution and at: 
- *    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
- * No part of the rogue software platform, including this file, may be 
- * copied, modified, propagated, or distributed except according to the terms 
+ * This file is part of the rogue software platform. It is subject to
+ * the license terms in the LICENSE.txt file found in the top-level directory
+ * of this distribution and at:
+ *    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+ * No part of the rogue software platform, including this file, may be
+ * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
@@ -54,12 +54,15 @@ void rogue::SMemControl::setup_python() {
 rogue::SMemControl::SMemControl (std::string group) {
    rogue::GilRelease noGil;
 
-   if ( rogueSMemControlOpenAndMap(&smem_,group.c_str()) < 0 ) 
+   if ( rogueSMemControlOpenAndMap(&smem_,group.c_str()) < 0 )
       throw(rogue::GeneralError::open("SMemControl::SMemControl","/dev/shm"));
 
    rogueSMemControlInit(smem_);
 
    thread_ = new boost::thread(boost::bind(&rogue::SMemControl::runThread, this));
+
+   // Set a thread name
+   pthread_setname_np( thread_->native_handle(), "SMemContr" );
 }
 
 rogue::SMemControl::~SMemControl() {
@@ -82,7 +85,7 @@ std::string rogue::SMemControlWrap::doRequest ( uint8_t type, std::string path, 
 
       if (bp::override f = this->get_override("_doRequest")) {
          try {
-            if ( type == ROGUE_CMD_GET || type == ROGUE_CMD_VALUE ) 
+            if ( type == ROGUE_CMD_GET || type == ROGUE_CMD_VALUE )
                return(f(type,path,arg));
             else {
                f(type,path,arg);
