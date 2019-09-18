@@ -11,6 +11,7 @@ import logging
 import socket
 import numpy as np
 import threading
+import os
 
 from pydm.data_plugins.plugin import PyDMPlugin, PyDMConnection
 from PyQt5.QtCore import pyqtSignal, pyqtSlot, Qt, QThread, QTimer, QMutex
@@ -27,35 +28,33 @@ logger = logging.getLogger(__name__)
 
 AlarmToInt = {'None':0, 'Good':0, 'AlarmMinor':1, 'AlarmMajor':2}
 
-class ServerTable(object):
-    AddressList = {}
+def parseAddress(address):
+    # "rogue://index/<path>/<disp>"
+    # or
+    # "rogue://host:port/<path>/<disp>"
+    envList = os.getenv('ROGUE_SERVERS')
 
-    @classmethod
-    def setAddress(cls, idx, addr):
-        cls.AddressList[idx] = addr
+    if envList is None:
+        alist = ['localhost:9099']
+    else:
+        alist = envList.split(',')
 
-    @classmethod
-    def parse(cls, address):
-        # "rogue://index/<path>/<disp>"
-        # or
-        # "rogue://host:port/<path>/<disp>"
+    if address[0:8] == 'rogue://':
+        address = address[8:]
 
-        if address[0:8] == 'rogue://':
-            address = address[8:]
+    data = address.split("/")
 
-        data = address.split("/")
+    if ":" in data[0]:
+        data_server = data[0].split(":")
+    else:
+        data_server = alist[int(data[0])].split(":")
 
-        if ":" in data[0]:
-            data_server = data[0].split(":")
-        else:
-            data_server = cls.AddressList[int(data[0])].split(":")
+    host = data_server[0]
+    port = int(data_server[1])
+    path = data[1]
+    disp = (len(data) > 2) and (data[2] == 'True')
 
-        host = data_server[0]
-        port = int(data_server[1])
-        path = data[1]
-        disp = (len(data) > 2) and (data[2] == 'True')
-
-        return (host,port,path,disp)
+    return (host,port,path,disp)
 
 
 class RogueConnection(PyDMConnection):
@@ -67,7 +66,7 @@ class RogueConnection(PyDMConnection):
 
         self.app = QApplication.instance()
 
-        self._host, self._port, self._path, self._disp = ServerTable.parse(address)
+        self._host, self._port, self._path, self._disp = parseAddress(address)
 
         self._cmd  = False
         self._int  = False

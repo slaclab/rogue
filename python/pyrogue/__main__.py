@@ -66,7 +66,8 @@ if args.cmd == 'gui':
 
 # PYDM Client
 elif args.cmd == 'pydm':
-    pyrogue.pydm.startPyDM()
+    addrList = '{}:{}'.format(args.host,args.port)
+    pyrogue.pydm.startPyDM(addrList)
 
 # System log
 elif args.cmd == 'syslog':

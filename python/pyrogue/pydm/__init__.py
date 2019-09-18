@@ -10,8 +10,11 @@
 import os
 import sys
 import pydm
+import pyrogue.pydm.data_plugins.rogue_plugin
 
-def startPyDM():
+def startPyDM(addrList):
+
+    os.environ['ROGUE_SERVERS'] = addrList
 
     base = os.path.dirname(os.path.abspath(__file__))
 
