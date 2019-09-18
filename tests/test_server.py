@@ -51,7 +51,10 @@ class DummyTree(pyrogue.Root):
         self.add(pyrogue.RunControl())
 
         # Add process controller
-        self.add(pyrogue.Process())
+        p = pyrogue.Process()
+        p.add(pyrogue.LocalVariable(name='Test1',value=''))
+        p.add(pyrogue.LocalVariable(name='Test2',value=''))
+        self.add(p)
 
         self.AxiVersion.AlarmTest.addToGroup('NoServe')
 
