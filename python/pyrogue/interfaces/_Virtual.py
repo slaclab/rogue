@@ -128,7 +128,7 @@ class VirtualNode(pr.Node):
         if '.' in path:
             lst = path.split('.')
 
-            if lst[0] != self.name:
+            if lst[0] != self.name and lst[0] != 'root':
                 return None
 
             for a in lst[1:]:
@@ -136,7 +136,7 @@ class VirtualNode(pr.Node):
                     return None
                 obj = obj.node(a)
 
-        elif path != self.name:
+        elif path != self.name and path != 'root':
             return None
 
         return obj
@@ -169,8 +169,22 @@ class VirtualNode(pr.Node):
 
 
 class VirtualClient(rogue.interfaces.ZmqClient):
+    ClientCache = {}
+
+    def __new__(cls, addr="localhost", port=9099):
+        newHash = hash((addr, port))
+
+        if newHash in cls.ClientCache:
+            return VirtualClient.ClientCache[newHash]
+        else:
+            return super(VirtualClient, cls).__new__(cls, addr, port)
 
     def __init__(self, addr="localhost", port=9099):
+        if hash((addr,port)) in VirtualClient.ClientCache:
+            return 
+
+        VirtualClient.ClientCache[hash((addr, port))] = self
+
         rogue.interfaces.ZmqClient.__init__(self,addr,port)
         self._varListeners = []
         self._root = None
@@ -197,6 +211,7 @@ class VirtualClient(rogue.interfaces.ZmqClient):
         self._root = r
 
         setattr(self,self._root.name,self._root)
+
 
     def _remoteAttr(self, path, attr, *args, **kwargs):
         snd = { 'path':path, 'attr':attr, 'args':args, 'kwargs':kwargs }
@@ -234,4 +249,13 @@ class VirtualClient(rogue.interfaces.ZmqClient):
     @property
     def root(self):
         return self._root
+
+    def __hash__(self):
+        return hash((self._host, self._port))
+
+    def __eq__(self, other):
+        return (self.host, self.port) == (other._host, other._port)
+
+    def __ne__(self, other):
+        return not (self == other)
 

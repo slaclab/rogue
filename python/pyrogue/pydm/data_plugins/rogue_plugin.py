@@ -11,130 +11,109 @@ import logging
 import socket
 import numpy as np
 import threading
-
-# from pydm.data_plugins.plugin import PyDMPlugin, PyDMConnection
-# from pydm.PyQt.QtCore import pyqtSignal, pyqtSlot, Qt, QThread, QTimer, QMutex
-# from pydm.PyQt.QtGui import QApplication
-# from pydm.utilities import is_pydm_app
+import os
 
 from pydm.data_plugins.plugin import PyDMPlugin, PyDMConnection
 from PyQt5.QtCore import pyqtSignal, pyqtSlot, Qt, QThread, QTimer, QMutex
-# from PyQt5.QtGui import QApplication
 from PyQt5.QtWidgets import QApplication
-# from pydm.utilities import is_pydm_app
 from pydm import utilities
 from pydm.data_plugins import is_read_only as read_only
 
 from pyrogue.interfaces import VirtualClient
+import pyrogue
+import threading
 
 
 logger = logging.getLogger(__name__)
 
+AlarmToInt = {'None':0, 'Good':0, 'AlarmMinor':1, 'AlarmMajor':2}
 
-class PydmRogueClient(object):
-    sock_cache = {}
+def parseAddress(address):
+    # "rogue://index/<path>/<disp>"
+    # or
+    # "rogue://host:port/<path>/<disp>"
+    envList = os.getenv('ROGUE_SERVERS')
 
-    def __init__(self, host, port):
-        if self.make_hash(host, port) in PydmRogueClient.sock_cache:
-            return
+    if envList is None:
+        alist = ['localhost:9099']
+    else:
+        alist = envList.split(',')
 
-        self._host = host
-        self._port = port
-        self._client = None
-        logger.info("Will open Rogue server at: {}:{}".format(self._host, self._port))
+    if address[0:8] == 'rogue://':
+        address = address[8:]
 
-        try:
-            self._client = VirtualClient(self._host, self._port)
-            logger.info("Connected to Rogue server at: {}:{}".format(self._host, self._port))
-        except Exception as ex:
-            logger.error('Error connecting to Rogue. {}'.format(str(ex)))
+    data = address.split("/")
 
-        PydmRogueClient.sock_cache[self.make_hash(self._host, self._port)] = self
+    if ":" in data[0]:
+        data_server = data[0].split(":")
+    else:
+        data_server = alist[int(data[0])].split(":")
 
-    @property
-    def root(self):
-        return self._client.root
+    host = data_server[0]
+    port = int(data_server[1])
+    path = data[1]
+    disp = (len(data) > 2) and (data[2] == 'True')
 
-    def __new__(cls, host, port):
-        obj_hash = PydmRogueClient.make_hash(host, port)
-
-        if obj_hash in cls.sock_cache:
-            return PydmRogueClient.sock_cache[obj_hash]
-        else:
-            server = super(PydmRogueClient, cls).__new__(cls)
-            return server
-
-    def __hash__(self):
-        return self.make_hash(self.host, self.port)
-
-    def __eq__(self, other):
-        return (self.host, self.port) == (other.ip, other.port)
-
-    def __ne__(self, other):
-        return not (self == other)
-
-    @staticmethod
-    def make_hash(host, port):
-        return hash((host, port))
+    return (host,port,path,disp)
 
 
-class PydmRogueConnection(PyDMConnection):
-    ADDRESS_FORMAT = "rogue://index/<path>"
-
-    # These values will be passed in the command line
-    serverIndices = {
-        0 : "localhost:9099",
-        1 : "localhost:9097"
-    }
+class RogueConnection(PyDMConnection):
 
     def __init__(self, channel, address, protocol=None, parent=None):
-        super(PydmRogueConnection, self).__init__(channel, address, protocol, parent)
+        super(RogueConnection, self).__init__(channel, address, protocol, parent)
+
+        #print("Adding connection channel={}, address={}".format(channel,address))
+
         self.app = QApplication.instance()
 
-        # Default Values
-        self._host = 'localhost'
-        self._port = 9099
-        self._path = 'dummyTree.AxiVersion.ScratchPad'
+        self._host, self._port, self._path, self._disp = parseAddress(address)
 
-        self._parse_address(address)
+        self._cmd  = False
+        self._int  = False
+        self._node = None
 
-        self.add_listener(channel)
+        if utilities.is_pydm_app():
+            self._client = pyrogue.interfaces.VirtualClient(self._host, self._port)
+            self._node   = self._client.root.getNode(self._path)
 
-        self._client = PydmRogueClient(self._host, self._port)
-        self._node = self._client.root.getNode(self._path)
+        if self._node is not None and not self._node.isinstance(pyrogue.Device):
+            self.add_listener(channel)
+            self.connection_state_signal.emit(True)
 
-        if self._node is not None:
+            # Command
+            if self._node.isinstance(pyrogue.BaseCommand):
+                self.write_access_signal.emit(True)
+                self._cmd = True
+            else:
+                self.write_access_signal.emit(self._node.mode=='RW')
 
             self._node.addListener(self._updateVariable)
-            self.connection_state_signal.emit(True)
-            self._updateVariable(self._node.path,self._node.getVariableValue(read=False))
 
             if self._node.units is not None:
-                #self.units = " | " + rNode.name + " | " + rNode.mode + " | " + rNode.base.name(rNode.bitSize[0])
-                #self._units = " | " + self._node.name + " | " + self._node.mode + " | "
-                self.unit_signal.emit(self._nodes.units)
+                self.unit_signal.emit(self._node.units)
 
-            self.write_access_signal.emit(self._node.mode=='RW')
+            if self._node.minimum is not None and self._node.maximum is not None:
+                self.upper_ctrl_limit_signal.emit(self._node.maximum)
+                self.lower_ctrl_limit_signal.emit(self._node.minimum)
 
+            if self._node.disp == 'enum' and self._node.enum is not None and self._node.mode != 'RO':
+                self.enum_strings_signal.emit(tuple(self._node.enum.values()))
 
-    def _parse_address(self, address):
+            if 'Int' in self._node.typeStr or self._node.typeStr == 'int':
+                self._int = True
 
-        data = address.split("/")
+            self.prec_signal.emit(self._node.precision)
 
-        if ":" in data[0]:
-            data_server = data[0].split(":")
-        else:
-            data_server = self.serverIndices[int(data[0])].split(":")
-
-        self._host = data_server[0]
-        self._port = int(data_server[1])
-        self._path = data[1]
+            self._updateVariable(self._node.path,self._node.getVariableValue(read=False))
 
 
     def _updateVariable(self,path,varValue):
-        new_data = varValue.value
+        if self._disp:
+            self.new_value_signal[str].emit(varValue.valueDisp)
+        else:
+            self.new_value_signal[type(varValue.value)].emit(varValue.value)
 
-        self.new_value_signal[type(new_data)].emit(new_data)
+        self.new_severity_signal.emit(AlarmToInt[varValue.severity])
 
 
     @pyqtSlot(int)
@@ -146,13 +125,18 @@ class PydmRogueConnection(PyDMConnection):
             return
 
         try:
-            self._node.set(new_value)
+            if self._cmd:
+                self._node.__call__(new_value)
+            elif self._int:
+                self._node.setDisp(int(new_value))
+            else:
+                self._node.setDisp(new_value)
         except:
             logger.error("Unable to put %s to %s.  Exception: %s", new_val, self.address, str(e))
 
 
     def add_listener(self, channel):
-        super(PydmRogueConnection, self).add_listener(channel)
+        super(RogueConnection, self).add_listener(channel)
 
         # If the channel is used for writing to PVs, hook it up to the 'put' methods.
         if channel.value_signal is not None:
@@ -173,31 +157,32 @@ class PydmRogueConnection(PyDMConnection):
             except KeyError:
                 pass
 
-    def remove_listener(self, channel):
-        if channel.value_signal is not None:
-            try:
-                channel.value_signal[str].disconnect(self.put_value)
-            except KeyError:
-                pass
-            try:
-                channel.value_signal[int].disconnect(self.put_value)
-            except KeyError:
-                pass
-            try:
-                channel.value_signal[float].disconnect(self.put_value)
-            except KeyError:
-                pass
-            try:
-                channel.value_signal[np.ndarray].disconnect(self.put_value)
-            except KeyError:
-                pass
+    def remove_listener(self, channel, destroying):
+        #if channel.value_signal is not None:
+        #    #try:
+        #    #    channel.value_signal[str].disconnect(self.put_value)
+        #    #except KeyError:
+        #    #    pass
+        #    try:
+        #        channel.value_signal[int].disconnect(self.put_value)
+        #    except KeyError:
+        #        pass
+        #    try:
+        #        channel.value_signal[float].disconnect(self.put_value)
+        #    except KeyError:
+        #        pass
+        #    try:
+        #        channel.value_signal[np.ndarray].disconnect(self.put_value)
+        #    except KeyError:
+        #        pass
 
-        super(PydmRogueConnection, self).remove_listener(channel)
+        #super(RogueConnection, self).remove_listener(channel)
+        pass
 
     def close(self):
         pass
 
 class RoguePlugin(PyDMPlugin):
     protocol = "rogue"
-    connection_class = PydmRogueConnection
+    connection_class = RogueConnection
 
