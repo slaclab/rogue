@@ -18,7 +18,7 @@ import sys
 import pydm
 import pyrogue.pydm.data_plugins.rogue_plugin
 
-def startPyDM(addrList):
+def runPyDM(addrList='localhost:9090'):
 
     os.environ['ROGUE_SERVERS'] = addrList
 

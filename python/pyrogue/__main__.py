@@ -34,7 +34,7 @@ parser.add_argument('--details',
 
 parser.add_argument('cmd',    
                     type=str, 
-                    choices=['pydm', 'gui','syslog','monitor','get','value','set','exec'], 
+                    choices=['gui','syslog','monitor','get','value','set','exec'], 
                     help='Client command to issue')
 
 parser.add_argument('path',
@@ -53,21 +53,8 @@ print("Connecting to host {} port {}".format(args.host,args.port))
 
 # GUI Client
 if args.cmd == 'gui':
-    client = pyrogue.interfaces.VirtualClient(args.host,args.port)
-
-    # Create GUI
-    appTop = pyrogue.gui.application(sys.argv)
-    guiTop = pyrogue.gui.GuiTop(excGroups='Hidden')
-    guiTop.setWindowTitle("Rogue Client {}:{}".format(args.host,args.port))
-    guiTop.addTree(client.root)
-
-    # Run gui
-    appTop.exec_()
-
-# PYDM Client
-elif args.cmd == 'pydm':
     addrList = '{}:{}'.format(args.host,args.port)
-    pyrogue.pydm.startPyDM(addrList)
+    pyrogue.pydm.runPyDM(addrList)
 
 # System log
 elif args.cmd == 'syslog':
