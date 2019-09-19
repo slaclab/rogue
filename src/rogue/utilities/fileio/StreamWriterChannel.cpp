@@ -51,6 +51,7 @@ void ruf::StreamWriterChannel::setup_python() {
    bp::class_<ruf::StreamWriterChannel, ruf::StreamWriterChannelPtr, bp::bases<ris::Slave>, boost::noncopyable >("StreamWriterChannel",bp::no_init)
        .def("getFrameCount", &ruf::StreamWriterChannel::getFrameCount)
        .def("waitFrameCount", &ruf::StreamWriterChannel::waitFrameCount)
+       .def("setFrameCount", &ruf::StreamWriterChannel::setFrameCount)
        ;
    bp::implicitly_convertible<ruf::StreamWriterChannelPtr, ris::SlavePtr>();
 #endif
@@ -80,7 +81,6 @@ void ruf::StreamWriterChannel::acceptFrame ( ris::FramePtr frame ) {
 
    writer_->writeFile (ichan, frame);
    frameCount_++;
-   lock.unlock();
    cond_.notify_all();
 }
 
@@ -118,10 +118,10 @@ bool ruf::StreamWriterChannel::waitFrameCount(uint32_t count, uint64_t timeout) 
 
       if ( timeout != 0 ) {
          gettimeofday(&curTime,NULL);
-         if ( timercmp(&curTime,&endTime,>) ) return false;
+         if ( timercmp(&curTime,&endTime,>) ) break;
       }
    }
 
-   return true;
+   return (frameCount_ >= count);
 }
 

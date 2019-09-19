@@ -68,7 +68,7 @@ void ru::StreamUnZip::acceptFrame ( ris::FramePtr frame ) {
    strm.opaque  = NULL;
 
    if ( (ret = BZ2_bzDecompressInit(&strm,0,0)) != BZ_OK ) 
-      throw(rogue::GeneralError::ret("StreamUnZip::acceptFrame","Error initializing decompressor",ret));
+      throw(rogue::GeneralError::create("StreamUnZip::acceptFrame","Error initializing decompressor. ret=%i",ret));
 
    // Setup decompression pointers
    rBuff = frame->beginBuffer();
@@ -85,7 +85,7 @@ void ru::StreamUnZip::acceptFrame ( ris::FramePtr frame ) {
       ret = BZ2_bzDecompress(&strm);
 
       if ( (ret != BZ_STREAM_END) && (ret != BZ_OK) ) 
-         throw(rogue::GeneralError::ret("StreamUnZip::acceptFrame","Decompression runtime error",ret));
+         throw(rogue::GeneralError::create("StreamUnZip::acceptFrame","Decompression runtime error %i",ret));
 
       if ( ret == BZ_STREAM_END ) break;
 

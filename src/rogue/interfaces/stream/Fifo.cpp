@@ -9,12 +9,12 @@
  * Description :
  *    AXI Stream FIFO
  *-----------------------------------------------------------------------------
- * This file is part of the rogue software platform. It is subject to 
- * the license terms in the LICENSE.txt file found in the top-level directory 
- * of this distribution and at: 
-    * https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
- * No part of the rogue software platform, including this file, may be 
- * copied, modified, propagated, or distributed except according to the terms 
+ * This file is part of the rogue software platform. It is subject to
+ * the license terms in the LICENSE.txt file found in the top-level directory
+ * of this distribution and at:
+    * https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+ * No part of the rogue software platform, including this file, may be
+ * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  *-----------------------------------------------------------------------------
 **/
@@ -52,7 +52,7 @@ void ris::Fifo::setup_python() {
 }
 
 //! Creator with version constant
-ris::Fifo::Fifo(uint32_t maxDepth, uint32_t trimSize, bool noCopy ) : ris::Master(), ris::Slave() { 
+ris::Fifo::Fifo(uint32_t maxDepth, uint32_t trimSize, bool noCopy ) : ris::Master(), ris::Slave() {
    maxDepth_ = maxDepth;
    trimSize_ = trimSize;
    noCopy_   = noCopy;
@@ -64,6 +64,11 @@ ris::Fifo::Fifo(uint32_t maxDepth, uint32_t trimSize, bool noCopy ) : ris::Maste
    // Start read thread
    threadEn_ = true;
    thread_ = new std::thread(&ris::Fifo::runThread, this);
+
+   // Set a thread name
+#ifndef __MACH__
+   pthread_setname_np( thread_->native_handle(), "Fifo" );
+#endif
 }
 
 //! Deconstructor
@@ -76,13 +81,12 @@ ris::Fifo::~Fifo() {
 //! Accept a frame from master
 void ris::Fifo::acceptFrame ( ris::FramePtr frame ) {
    uint32_t       size;
-   ris::BufferPtr buff;
    ris::FramePtr  nFrame;
-   ris::Frame::BufferIterator src;
+   ris::Frame::iterator src;
    ris::Frame::iterator dst;
 
    // FIFO is full, drop frame
-   if ( queue_.busy()  ) return;
+   if ( queue_.busy() ) return;
 
    rogue::GilRelease noGil;
    ris::FrameLockPtr lock = frame->lock();
@@ -99,12 +103,11 @@ void ris::Fifo::acceptFrame ( ris::FramePtr frame ) {
       nFrame = reqFrame(size,true);
 
       // Get destination pointer
+      src = frame->beginRead();
       dst = nFrame->beginWrite();
 
-      // Copy the frame, attempt to be effecient by iterating through source buffers
-      for (src=frame->beginBuffer(); src != frame->endBuffer(); ++src) 
-         dst = std::copy((*src)->begin(), (*src)->endPayload(), dst);
-
+      // Copy the frame
+      ris::copyFrame(src, size, dst);
       nFrame->setPayload(size);
    }
 
@@ -118,7 +121,7 @@ void ris::Fifo::runThread() {
    log_->logThreadId();
 
    while(threadEn_) {
-      if ( (frame = queue_.pop()) != NULL ) sendFrame(queue_.pop());
+      if ( (frame = queue_.pop()) != NULL ) sendFrame(frame);
    }
 }
 

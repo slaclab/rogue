@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 #-----------------------------------------------------------------------------
-# Title      : PyRogue shared memory
+# Title      : PyRogue PyDM Designer Plugin Load
 #-----------------------------------------------------------------------------
-# File       : pyrogue/interfaces/smem.py
-# Created    : 2017-06-07
+# File       : pyrogue/pydm/rogue_plugin.py
+# Created    : 2019-09-18
 #-----------------------------------------------------------------------------
 # This file is part of the rogue software platform. It is subject to 
 # the license terms in the LICENSE.txt file found in the top-level directory 
@@ -13,24 +13,8 @@
 # copied, modified, propagated, or distributed except according to the terms 
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
-import rogue
 
-class SMemControl(rogue.SMemControl):
-    def __init__(self,*,group,root):
-        rogue.SMemControl.__init__(self,group)
-        self._root = root
-
-    def _doRequest(self,type,path,arg):
-        ret = None
-
-        if type == rogue.SMemControl.Get:
-            ret = self._root.getDisp(path)
-        elif type == rogue.SMemControl.Set:
-            self._root.setDisp(path,arg)
-        elif type == rogue.SMemControl.Exec:
-            self._root.exec(path,arg)
-        elif type == rogue.SMemControl.Value:
-            ret = self._root.valueDisp(path)
-
-        return ret
+print("Loading Rogue Widgets Designer Plugins")
+from os import path
+from pyrogue.pydm.widgets.designer import *
 

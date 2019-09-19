@@ -24,6 +24,8 @@
 #include <rogue/interfaces/module.h>
 #include <rogue/interfaces/memory/module.h>
 #include <rogue/interfaces/stream/module.h>
+#include <rogue/interfaces/ZmqServer.h>
+#include <rogue/interfaces/ZmqClient.h>
 
 namespace bp  = boost::python;
 
@@ -38,6 +40,8 @@ void rogue::interfaces::setup_module() {
    // set the current scope to the new sub-module
    bp::scope io_scope = module;
 
+   rogue::interfaces::ZmqServer::setup_python();
+   rogue::interfaces::ZmqClient::setup_python();
    rogue::interfaces::stream::setup_module();
    rogue::interfaces::memory::setup_module();
 

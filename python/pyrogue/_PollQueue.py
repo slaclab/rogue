@@ -41,10 +41,11 @@ class PollQueue(object):
         self._pq = [] # The heap queue
         self._entries = {} # {Block: Entry} mapping to look up if a block is already in the queue
         self._counter = itertools.count()
-        self._lock = threading.RLock()
-        self._update = threading.Condition()
+        self._condLock = threading.Condition(threading.RLock())
         self._run = True
+        self._pause = True
         self._root = root
+        self.blockCount = 0
         self._pollThread = threading.Thread(target=self._poll)
 
         # Setup logging
@@ -55,7 +56,7 @@ class PollQueue(object):
         self._log.info("PollQueue Started")
 
     def _addEntry(self, block, interval):
-        with self._lock:
+        with self._condLock:
             timedelta = datetime.timedelta(seconds=interval)
             # new entries are always polled first immediately 
             # (rounded up to the next second)
@@ -65,11 +66,20 @@ class PollQueue(object):
             self._entries[block] = entry
             heapq.heappush(self._pq, entry)
             # Wake up the thread
-            with self._update:
-                self._update.notify()
+            self._condLock.notify()
+
+    def _blockIncrement(self):
+        with self._condLock:
+            self.blockCount += 1
+            self._condLock.notify()
+
+    def _blockDecrement(self):
+        with self._condLock:
+            self.blockCount -= 1
+            self._condLock.notify()
 
     def updatePollInterval(self, var):
-        with self._lock:
+        with self._condLock:
             self._log.debug(f'updatePollInterval {var} - {var.pollInterval}')
             # Special case: Variable has no block and just depends on other variables
             # Then do update on each dependency instead
@@ -104,26 +114,30 @@ class PollQueue(object):
         while True:
             now = datetime.datetime.now()
 
-            if self.empty() is True:
+            if self.empty() or self.paused():
                 # Sleep until woken
-                with self._update:
-                    self._update.wait()
+                with self._condLock:
+                    self._condLock.wait()
             else:
                 # Sleep until the top entry is ready to be polled
                 # Or a new entry is added by updatePollInterval
                 readTime = self.peek().readTime
                 waitTime = (readTime - now).total_seconds()
-                with self._update:
+                with self._condLock:
                     self._log.debug(f'Poll thread sleeping for {waitTime}')
-                    self._update.wait(waitTime)
+                    self._condLock.wait(waitTime)
 
             self._log.debug(f'Global reference count: {sys.getrefcount(None)}')
 
-            with self._lock:
+            with self._condLock:
                 # Stop the thread if someone set run to False
                 if self._run is False:
                     self._log.info("PollQueue thread exiting")
                     return
+
+                # Wait for block count to be zero
+                while self.blockCount > 0:
+                    self._condLock.wait()
 
                 # Start update capture
                 with self._root.updateGroup():
@@ -132,31 +146,32 @@ class PollQueue(object):
                     now = datetime.datetime.now()
                     blockEntries = []
                     for entry in self._expiredEntries(now):
-                        self._log.debug(f'Polling Block {entry.block.name}')
+                        self._log.debug(f'Polling Block {entry.block.path}')
                         blockEntries.append(entry)
                         try:
                             entry.block.startTransaction(rogue.interfaces.memory.Read, check=False)
                         except Exception as e:
-                            self._log.exception(e)
+                            pr.logException(self._log,e)
 
                         # Update the entry with new read time
-                        entry.readTime += entry.interval
+                        entry.readTime = now + entry.interval
                         entry.count = next(self._counter)
                         # Push the updated entry back into the queue
                         heapq.heappush(self._pq, entry)
 
-                    try:
-                        for entry in blockEntries:
+                    for entry in blockEntries:
+                        try:
                             entry.block._checkTransaction()
-                    except Exception as e:
-                        self._log.exception(e)
+                        except Exception as e:
+                            pr.logException(self._log,e)
+
 
     def _expiredEntries(self, time=None):
         """An iterator of all entries that expire by a given time. 
         Use datetime.now() if no time provided. Each entry is popped from the queue before being 
         yielded by the iterator
         """
-        with self._lock:
+        with self._condLock:
             if time == None:
                 time = datetime.datetime.now()
             while self.empty() is False and self.peek().readTime <= time:
@@ -166,18 +181,32 @@ class PollQueue(object):
 
 
     def peek(self):
-        with self._lock:
+        with self._condLock:
             if self.empty() is False:
                 return self._pq[0]
             else:
                 return None
 
     def empty(self):
-        with self._lock:
+        with self._condLock:
             return len(self._pq)==0
 
     def stop(self):
-        with self._lock, self._update:
+        with self._condLock:
             self._run = False
-            self._update.notify()
+            self._condLock.notify()
 
+    def pause(self, value):
+        if value is True:        
+            with self._condLock:
+                self._pause = True
+        else:
+            with self._condLock:
+                self._pause = False
+                self._condLock.notify()
+
+
+    def paused(self):
+        with self._condLock:
+            return self._pause
+            

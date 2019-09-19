@@ -30,9 +30,9 @@ class SideBandSim():
 
         self._ctx = zmq.Context()
         self._sbPush = self._ctx.socket(zmq.PUSH)
-        self._sbPush.connect(f"tcp://{host}:{port}")
+        self._sbPush.connect(f"tcp://{host}:{port+1}")
         self._sbPull = self._ctx.socket(zmq.PULL)        
-        self._sbPull.connect(f"tcp://{host}:{port+1}")
+        self._sbPull.connect(f"tcp://{host}:{port}")
 
         self._log.info("Connected to port {} on host {}".format(port,host))
         
@@ -150,10 +150,10 @@ class MemEmulate(rogue.interfaces.memory.Slave):
         type    = transaction.type()
 
         if (address % self._minWidth) != 0:
-            transaction.done(rogue.interfaces.memory.AddressError)
+            transaction.error("Transaction address {address:#x} is not aligned to min width {self._minWidth:#x}")
             return
         elif size > self._maxSize:
-            transaction.done(rogue.interfaces.memory.SizeError)
+            transaction.error("Transaction size {size} exceeds max {self._maxSize}")
             return
 
         for i in range (0, size):
@@ -168,12 +168,12 @@ class MemEmulate(rogue.interfaces.memory.Slave):
             for i in range(0, size):
                 self._data[address+i] = ba[i]
 
-            transaction.done(0)
+            transaction.done()
 
         else:
             for i in range(0, size):
                 ba[i] = self._data[address+i]
 
             transaction.setData(ba,0)
-            transaction.done(0)
+            transaction.done()
 

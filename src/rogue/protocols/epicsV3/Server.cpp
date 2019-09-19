@@ -42,9 +42,15 @@ void rpe::Server::setup_python() {
 }
 
 //! Class creation
-rpe::Server::Server (uint32_t count) : caServer(), running_(false) { 
+rpe::Server::Server (uint32_t count) : caServer(), running_(false) {
    workCnt_ = count;
-   workers_ = (std::thread **)malloc(workCnt_ * sizeof(std::thread *));
+   workersEn_ = false;
+   threadEn_  = false;
+
+   if ( count > 0 ) workers_ = (std::thread **)malloc(workCnt_ * sizeof(std::thread *));
+   else workers_ = NULL;
+
+   log_ = rogue::Logging::create("epicsV3.Server");
 }
 
 rpe::Server::~Server() {
@@ -57,29 +63,41 @@ rpe::Server::~Server() {
       it->second.reset();
    }
    values_.clear();
-   free(workers_);
+
+   if ( workers_ != NULL ) free(workers_);
 }
 
 void rpe::Server::start() {
    uint32_t x;
    //this->setDebugLevel(10);
+
+   log_->info("Starting epics server with %i workers",workCnt_);
+
    threadEn_ = true;
    thread_ = new std::thread(&rpe::Server::runThread, this);
 
-   workersEn_ = true;
-   for (x=0; x < workCnt_; x++) 
-      workers_[x] = new std::thread(&rpe::Server::runWorker, this);
+   // Set a thread name
+#ifndef __MACH__
+   pthread_setname_np( thread_->native_handle(), "EpicsV3Server" );
+#endif
 
+   if ( workCnt_ > 0 ) {
+      workersEn_ = true;
+      for (x=0; x < workCnt_; x++)
+         workers_[x] = new std::thread(boost::bind(&rpe::Server::runWorker, this));
+   }
    running_ = true;
 }
 
 void rpe::Server::stop() {
    uint32_t x;
 
+   log_->info("Stopping epics server");
+
    if (running_) {
       rogue::GilRelease noGil;
 
-      for (x=0; x < workCnt_; x++) 
+      for (x=0; x < workCnt_; x++)
          workQueue_.push(std::shared_ptr<rogue::protocols::epicsV3::Work>());
 
       workersEn_ = false;
@@ -105,6 +123,10 @@ void rpe::Server::addValue(rpe::ValuePtr value) {
    else {
       throw rogue::GeneralError("Server::addValue","EPICs name already exists: " + value->epicsName());
    }
+}
+
+bool rpe::Server::doAsync() {
+   return workersEn_;
 }
 
 void rpe::Server::addWork(rpe::WorkPtr work) {
@@ -149,19 +171,35 @@ pvAttachReturn rpe::Server::pvAttach(const casCtx &ctx, const char *pvName) {
 
 //! Run thread
 void rpe::Server::runThread() {
+
+   log_->info("Starting epics server thread");
+   log_->logThreadId();
+
    while(threadEn_) {
-      fileDescriptorManager.process(0.01);
+      try{
+         fileDescriptorManager.process(0.01);
+      } catch (...) {
+         log_->error("Caught exception in server thread");
+      }
    }
+   log_->info("Stopping epics server thread");
 }
 
 //! Work thread
 void rpe::Server::runWorker() {
    rpe::WorkPtr work;
 
+   log_->info("Starting epics worker thread");
+   log_->logThreadId();
+
    while(workersEn_) {
       work = workQueue_.pop();
       if (work == NULL) break;
-      work->execute();
+      try{
+         work->execute();
+      } catch (...) {
+         log_->error("Caught exception in worker thread");
+      }
    }
 }
 

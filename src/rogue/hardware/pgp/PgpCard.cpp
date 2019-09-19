@@ -10,12 +10,12 @@
  * Description:
  * PGP Card Class
  * ----------------------------------------------------------------------------
- * This file is part of the rogue software platform. It is subject to 
- * the license terms in the LICENSE.txt file found in the top-level directory 
- * of this distribution and at: 
- *    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
- * No part of the rogue software platform, including this file, may be 
- * copied, modified, propagated, or distributed except according to the terms 
+ * This file is part of the rogue software platform. It is subject to
+ * the license terms in the LICENSE.txt file found in the top-level directory
+ * of this distribution and at:
+ *    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+ * No part of the rogue software platform, including this file, may be
+ * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
@@ -29,6 +29,7 @@
 #include <rogue/interfaces/stream/FrameLock.h>
 #include <rogue/interfaces/stream/Buffer.h>
 #include <rogue/GeneralError.h>
+#include <rogue/Helpers.h>
 #include <memory>
 #include <rogue/GilRelease.h>
 #include <stdlib.h>
@@ -61,8 +62,8 @@ rhp::PgpCard::PgpCard ( std::string path, uint32_t lane, uint32_t vc ) {
 
    log_ = rogue::Logging::create("hardware.PgpCard");
 
-   if ( (fd_ = ::open(path.c_str(), O_RDWR)) < 0 ) 
-      throw(rogue::GeneralError::open("PgpCard::PgpCard",path.c_str()));
+   if ( (fd_ = ::open(path.c_str(), O_RDWR)) < 0 )
+      throw(rogue::GeneralError::create("PgpCard::PgpCard", "Failed to open device file: %s",path.c_str()));
 
    if ( dmaCheckVersion(fd_) < 0 )
       throw(rogue::GeneralError("PgpCard::PgpCard","Bad kernel driver version detected. Please re-compile kernel driver"));
@@ -72,7 +73,7 @@ rhp::PgpCard::PgpCard ( std::string path, uint32_t lane, uint32_t vc ) {
 
    if  ( dmaSetMaskBytes(fd_,mask) < 0 ) {
       ::close(fd_);
-      throw(rogue::GeneralError::dest("PgpCard::PgpCard",path.c_str(),(lane_*4)+vc_));
+      throw(rogue::GeneralError::create("PgpCard::PgpCard","Failed to acquire destination %i on device %s",(lane*4)+vc,path.c_str()));
    }
 
    // Result may be that rawBuff_ = NULL
@@ -81,6 +82,11 @@ rhp::PgpCard::PgpCard ( std::string path, uint32_t lane, uint32_t vc ) {
    // Start read thread
    threadEn_ = true;
    thread_ = new std::thread(&rhp::PgpCard::runThread, this);
+
+   // Set a thread name
+#ifndef __MACH__
+   pthread_setname_np( thread_->native_handle(), "PgpCard" );
+#endif
 }
 
 //! Destructor
@@ -192,7 +198,7 @@ ris::FramePtr rhp::PgpCard::acceptReq ( uint32_t size, bool zeroCopyEn) {
       // Request may be serviced with multiple buffers
       while ( alloc < size ) {
 
-         // Keep trying since select call can fire 
+         // Keep trying since select call can fire
          // but getIndex fails because we did not win the buffer lock
          do {
 
@@ -204,7 +210,7 @@ ris::FramePtr rhp::PgpCard::acceptReq ( uint32_t size, bool zeroCopyEn) {
             tout = timeout_;
 
             if ( select(fd_+1,NULL,&fds,NULL,&tout) <= 0 ) {
-               log_->timeout("PgpCard::acceptReq", timeout_);
+               log_->critical("PgpCard::acceptReq: Timeout waiting for outbound buffer after %i.%i seconds! May be caused by outbound backpressure.", timeout_.tv_sec, timeout_.tv_usec);
                res = -1;
             }
             else {
@@ -268,7 +274,7 @@ void rhp::PgpCard::acceptFrame ( ris::FramePtr frame ) {
       // Write to pgp with (*it)er copy in driver
       else {
 
-         // Keep trying since select call can fire 
+         // Keep trying since select call can fire
          // but write fails because we did not win the (*it)er lock
          do {
 
@@ -280,14 +286,14 @@ void rhp::PgpCard::acceptFrame ( ris::FramePtr frame ) {
             tout = timeout_;
 
             if ( select(fd_+1,NULL,&fds,NULL,&tout) <= 0 ) {
-               log_->timeout("PgpCard::acceptFrame", timeout_);
+               log_->critical("PgpCard::acceptFrame: Timeout waiting for outbound write after %i.%i seconds! May be caused by outbound backpressure.", timeout_.tv_sec, timeout_.tv_usec);
                res = 0;
             }
             else {
                // Write with (*it)er copy
                if ( (res = dmaWrite(fd_, (*it)->begin(), (*it)->getPayload(), pgpSetFlags(cont), pgpSetDest(lane_, vc_)) < 0 ) )
                   throw(rogue::GeneralError("PgpCard::acceptFrame","PGP Write Call Failed"));
-            } 
+            }
          }
 
          // Continue while write result was zero
@@ -308,7 +314,7 @@ void rhp::PgpCard::retBuffer(uint8_t * data, uint32_t meta, uint32_t size) {
       // Device is open and buffer is not stale
       // Bit 30 indicates buffer has already been returned to hardware
       if ( (fd_ >= 0) && ((meta & 0x40000000) == 0) ) {
-         if ( dmaRetIndex(fd_,meta & 0x3FFFFFFF) < 0 ) 
+         if ( dmaRetIndex(fd_,meta & 0x3FFFFFFF) < 0 )
             throw(rogue::GeneralError("PgpCard::retBuffer","AXIS Return Buffer Call Failed!!!!"));
       }
       decCounter(size);
@@ -330,10 +336,11 @@ void rhp::PgpCard::runThread() {
    uint32_t       meta;
    struct timeval tout;
 
+   log_->logThreadId();
+   usleep(1000);
+
    // Preallocate empty frame
    frame = ris::Frame::create();
-
-   log_->logThreadId();
 
    while(threadEn_) {
 

@@ -17,10 +17,12 @@ import pyrogue as pr
 import textwrap
 import rogue.interfaces.memory
 import parse
-import Pyro4
 import math
 import inspect
 import threading
+import re
+import time
+from collections import OrderedDict as odict
 from collections import Iterable
 
 class VariableError(Exception):
@@ -28,13 +30,73 @@ class VariableError(Exception):
     pass
 
 
+def VariableWait(varList, testFunction, timeout=0):
+    """
+    Wait for a number of variable conditions to be true.
+    Pass a variable or list of variables, and a test function.
+    The test function is passed a dictionary containing the current
+    variableValue state index by variable path
+    i.e. w = VariableWait([root.device.var1,root.device.var2], 
+                          lambda varValues: varValues['root.device.var1'].value >= 10 and \
+                                            varValues['root.device.var1'].value >= 20)
+    """
+
+    # Container class
+    class varStates(object):
+
+        def __init__(self):
+            self.vlist  = odict()
+            self.cv     = threading.Condition()
+
+        # Method to handle variable updates callback
+        def varUpdate(self,path,varValue):
+            with self.cv:
+                if path in self.vlist:
+                    self.vlist[path] = varValue
+                    self.cv.notify()
+
+    # Convert single variable to a list
+    if not isinstance(varList,list):
+        varList = [varList]
+
+    # Setup tracking
+    states = varStates()
+
+    # Add variable to list and register handler
+    with states.cv:
+        for v in varList:
+            v.addListener(states.varUpdate)
+            states.vlist[v.path] = v.getVariableValue(read=False)
+
+    # Go into wait loop
+    ret    = False
+    start  = time.time()
+
+    with states.cv:
+
+        # Check current state
+        ret = testFunction(list(states.vlist.values()))
+
+        # Run until timeout or all conditions have been met
+        while (not ret) and ((timeout == 0) or ((time.time()-start) < timeout)):
+            states.cv.wait(0.5)
+            ret = testFunction(list(states.vlist.values()))
+
+        # Cleanup
+        for v in varList:
+            v.delListener(states.varUpdate)
+
+    return ret
+
+
 class VariableValue(object):
-    def __init__(self, var):
-        self.value     = var.value()
+    def __init__(self, var, read=False):
+        self.value     = var.get(read=read)
         self.valueDisp = var.genDisp(self.value)
         self.disp      = var.disp
         self.enum      = var.enum
 
+        self.status, self.severity = var._alarmState(self.value)
 
 class BaseVariable(pr.Node):
 
@@ -47,16 +109,27 @@ class BaseVariable(pr.Node):
                  enum=None,
                  units=None,
                  hidden=False,
+                 groups=None,
                  minimum=None,
                  maximum=None,
-                 pollInterval=0
+                 lowWarning=None,
+                 lowAlarm=None,
+                 highWarning=None,
+                 highAlarm=None,
+                 pollInterval=0,
+                 typeStr='Unknown',
+                 offset=0
                 ):
 
         # Public Attributes
         self._mode          = mode
         self._units         = units
-        self._minimum       = minimum # For base='range'
-        self._maximum       = maximum # For base='range'
+        self._minimum       = minimum
+        self._maximum       = maximum
+        self._lowWarning    = lowWarning
+        self._lowAlarm      = lowAlarm
+        self._highWarning   = highWarning
+        self._highAlarm     = highAlarm
         self._default       = value
         self._block         = None
         self._pollInterval  = pollInterval
@@ -82,13 +155,13 @@ class BaseVariable(pr.Node):
             self._disp = 'enum'
 
         # Determine typeStr from value type
-        if value is not None:
+        if typeStr == 'Unknown' and value is not None:
             if isinstance(value, list):
                 self._typeStr = f'List[{value[0].__class__.__name__}]'
             else:
                 self._typeStr = value.__class__.__name__
         else:
-            self._typeStr = 'Unknown'
+            self._typeStr = typeStr
 
         # Create inverted enum
         self._revEnum = None
@@ -101,53 +174,106 @@ class BaseVariable(pr.Node):
             raise VariableError(f'Invalid variable mode {self._mode}. Supported: RW, RO, WO')
 
         # Call super constructor
-        pr.Node.__init__(self, name=name, description=description, hidden=hidden)
+        pr.Node.__init__(self, name=name, description=description, hidden=hidden, groups=groups)
 
-    @Pyro4.expose
+    @pr.expose
     @property
     def enum(self):
         return self._enum
 
-    @Pyro4.expose
+    @pr.expose
     @property
     def revEnum(self):
         return self._revEnum
 
-    @Pyro4.expose
+    @pr.expose
     @property
     def typeStr(self):
         return self._typeStr
 
-    @Pyro4.expose
+    @pr.expose
     @property
     def disp(self):
         return self._disp
 
-    @Pyro4.expose
+    @pr.expose
+    @property
+    def precision(self):
+        if 'Float' in self.typeStr or self.typeStr == 'float':
+            res = re.search(r':([0-9])\.([0-9]*)f',self._disp) 
+            try:
+                return int(res[2])
+            except:
+                return 3
+        else:
+            return 0
+
+    @pr.expose
     @property
     def mode(self):
         return self._mode
 
-    @Pyro4.expose
+    @pr.expose
     @property
     def units(self):
         return self._units
 
-    @Pyro4.expose
+    @pr.expose
     @property
     def minimum(self):
         return self._minimum
 
-    @Pyro4.expose
+    @pr.expose
     @property
     def maximum(self):
         return self._maximum
+
+    @pr.expose
+    @property
+    def hasAlarm(self):
+        return (self._lowWarning is not None or
+                self._lowAlarm is not None or
+                self._highWarning is not None or
+                self._highAlarm is not None)
+
+    @pr.expose
+    @property
+    def lowWarning(self):
+        return self._lowWarning
+
+    @pr.expose
+    @property
+    def lowAlarm(self):
+        return self._lowAlarm
+
+    @pr.expose
+    @property
+    def highWarning(self):
+        return self._highWarning
+
+    @pr.expose
+    @property
+    def highAlarm(self):
+        return self._highAlarm
+
+    @pr.expose
+    @property
+    def alarmStatus(self):
+        stat,sevr = self._alarmState(self.value())
+        return stat
+
+    @pr.expose
+    @property
+    def alarmSeverity(self):
+        stat,sevr = self._alarmState(self.value())
+        return sevr
 
     def addDependency(self, dep):
         if dep not in self.__dependencies:
             self.__dependencies.append(dep)
             dep.addListener(self)
 
+    @pr.expose
     @property
     def pollInterval(self):
         return self._pollInterval
@@ -157,6 +283,14 @@ class BaseVariable(pr.Node):
         self._pollInterval = interval
         self._updatePollInterval()
 
+    @pr.expose
+    @property
+    def lock(self):
+        if self._block is not None:
+            return self._block._lock
+        else:
+            return None
+
     @property
     def dependencies(self):
         return self.__dependencies
@@ -165,14 +299,23 @@ class BaseVariable(pr.Node):
         """
         Add a listener Variable or function to call when variable changes. 
         This is usefull when chaining variables together. (adc conversions, etc)
-        The variable, value and display string will be passed as an arg: func(path,value,disp)
+        The variable and value class are passed as an arg: func(path,varValue)
         """
         if isinstance(listener, BaseVariable):
-            self.__listeners.append(listener)
+            if listener not in self.__listeners:
+                self.__listeners.append(listener)
         else:
-            self.__functions.append(listener)
+            if listener not in self.__functions:
+                self.__functions.append(listener)
 
-    @Pyro4.expose
+    def delListener(self, listener):
+        """
+        Remove a listener Variable or function
+        """
+        if listener in self.__functions:
+            self.__functions.remove(listener)
+
+    @pr.expose
     def set(self, value, write=True):
         """
         Set the value and write to hardware if applicable
@@ -189,10 +332,10 @@ class BaseVariable(pr.Node):
                     self._parent.checkBlocks(recurse=False, variable=self)
 
         except Exception as e:
-            self._log.exception(e)
+            pr.logException(self._log,e)
             self._log.error("Error setting value '{}' to variable '{}' with type {}".format(value,self.path,self.typeStr))
 
-    @Pyro4.expose
+    @pr.expose
     def post(self,value):
         """
         Set the value and write to hardware if applicable using a posted write.
@@ -207,10 +350,10 @@ class BaseVariable(pr.Node):
                 self._block.startTransaction(rogue.interfaces.memory.Post, check=True)
 
         except Exception as e:
-            self._log.exception(e)
+            pr.logException(self._log,e)
             self._log.error("Error posting value '{}' to variable '{}' with type {}".format(value,self.path,self.typeStr))
 
-    @Pyro4.expose
+    @pr.expose
     def get(self,read=True):
         """ 
         Return the value after performing a read from hardware if applicable.
@@ -228,17 +371,26 @@ class BaseVariable(pr.Node):
                 ret = None
 
         except Exception as e:
-            self._log.exception(e)
+            pr.logException(self._log,e)
             self._log.error("Error reading value from variable '{}'".format(self.path))
             ret = None
 
         return ret
 
-    @Pyro4.expose
+    @pr.expose
+    def getVariableValue(self,read=True):
+        """ 
+        Return the value after performing a read from hardware if applicable.
+        Hardware read is blocking. An error will result in a logged exception.
+        Listeners will be informed of the update.
+        """
+        return VariableValue(self,read=read)
+
+    @pr.expose
     def value(self):
         return self.get(read=False)
 
-    @Pyro4.expose
+    @pr.expose
     def genDisp(self, value):
         try:
             #print('{}.genDisp(read={}) disp={} value={}'.format(self.path, read, self.disp, value))
@@ -255,21 +407,21 @@ class BaseVariable(pr.Node):
                     ret = self.disp.format(value)
 
         except Exception as e:
-            self._log.exception(e)
+            pr.logException(self._log,e)
             self._log.error(f"Error generating disp for value {value} in variable {self.path}")
             ret = None
 
         return ret
 
-    @Pyro4.expose
+    @pr.expose
     def getDisp(self, read=True):
         return(self.genDisp(self.get(read)))
 
-    @Pyro4.expose
+    @pr.expose
     def valueDisp(self, read=True):
         return self.getDisp(read=False)
 
-    @Pyro4.expose
+    @pr.expose
     def parseDisp(self, sValue):
         try:
             if sValue is None or isinstance(sValue, self.nativeType()):
@@ -294,38 +446,53 @@ class BaseVariable(pr.Node):
         except:
             raise VariableError("Invalid value {} for variable {} with type {}".format(sValue,self.name,self.nativeType()))
 
-    @Pyro4.expose
+    @pr.expose
     def setDisp(self, sValue, write=True):
         try:
             self.set(self.parseDisp(sValue), write)
         except Exception as e:
-            self._log.exception(e)
+            pr.logException(self._log,e)
             self._log.error("Error setting value '{}' to variable '{}' with type {}".format(sValue,self.path,self.typeStr))
 
-    @Pyro4.expose
+    @pr.expose
+    def write(self):
+        """
+        Force a write of the variable.
+        """
+        try:
+            if self._block is not None:
+                self._parent.writeBlocks(force=True, recurse=False, variable=self)
+                self._parent.verifyBlocks(recurse=False, variable=self)
+                self._parent.checkBlocks(recurse=False, variable=self)
+
+        except Exception as e:
+            pr.logException(self._log,e)
+
+    @pr.expose
     def nativeType(self):
         if self._nativeType is None:
             self._nativeType = type(self.value())
         return self._nativeType
 
     def _setDefault(self):
-        # Called by parent Device after _buildBlocks()
         if self._default is not None:
             self.setDisp(self._default, write=False)
 
     def _updatePollInterval(self):
-        if self._pollInterval > 0 and self.root._pollQueue is not None:
+        if self._pollInterval > 0 and self.root is not None and self.root._pollQueue is not None:
             self.root._pollQueue.updatePollInterval(self)
 
     def _finishInit(self):
+        # Set the default value but dont write
         self._setDefault()
         self._updatePollInterval()
 
-    def _setDict(self,d,writeEach,modes):
+    def _setDict(self,d,writeEach,modes,incGroups,excGroups):
+        #print(f'{self.path}._setDict(d={d})')        
         if self._mode in modes:
             self.setDisp(d,writeEach)
 
-    def _getDict(self,modes):
+    def _getDict(self,modes,incGroups,excGroups):
         if self._mode in modes:
             return VariableValue(self)
         else:
@@ -342,15 +509,34 @@ class BaseVariable(pr.Node):
         val = VariableValue(self)
 
         for func in self.__functions:
-            if hasattr(func,'varListener'):
-                func.varListener(self.path,val.value,val.valueDisp)
-            else:
-                func(self.path,val.value,val.valueDisp)
+            func(self.path,val)
 
         return val
 
+    def _alarmState(self,value):
+        """ Return status, severity """
 
-@Pyro4.expose
+        if isinstance(value,list) or isinstance(value,dict): return 'None','None'
+
+        if (self.hasAlarm is False):
+            return "None", "None"
+        
+        elif (self._lowAlarm  is not None and value < self._lowAlarm):
+            return 'AlarmLoLo', 'AlarmMajor'
+
+        elif (self._highAlarm  is not None and value > self._highAlarm):
+            return 'AlarmHiHi', 'AlarmMajor'
+
+        elif (self._lowWarning  is not None and value < self._lowWarning):
+            return 'AlarmLow', 'AlarmMinor'
+
+        elif (self._highWarning is not None and value > self._highWarning):
+            return 'AlarmHigh', 'AlarmMinor'
+
+        else:
+            return 'Good','Good'
+
+
 class RemoteVariable(BaseVariable):
 
     def __init__(self, *,
@@ -362,9 +548,14 @@ class RemoteVariable(BaseVariable):
                  enum=None,
                  units=None,
                  hidden=False,
+                 groups=None,
                  minimum=None,
                  maximum=None,
-                 base=pr.UInt,                                 
+                 lowWarning=None,
+                 lowAlarm=None,
+                 highWarning=None,
+                 highAlarm=None,
+                 base=pr.UInt,
                  offset=None,
                  bitSize=32,
                  bitOffset=0,
@@ -377,8 +568,10 @@ class RemoteVariable(BaseVariable):
 
         BaseVariable.__init__(self, name=name, description=description, 
                               mode=mode, value=value, disp=disp, 
-                              enum=enum, units=units, hidden=hidden,
+                              enum=enum, units=units, hidden=hidden, groups=groups, 
                               minimum=minimum, maximum=maximum,
+                              lowWarning=lowWarning, lowAlarm=lowAlarm,
+                              highWarning=highWarning, highAlarm=highAlarm,
                               pollInterval=pollInterval)
 
         self._base     = base        
@@ -413,41 +606,46 @@ class RemoteVariable(BaseVariable):
         self._overlapEn = overlapEn
 
 
+    @pr.expose
     @property
     def varBytes(self):
         return self._bytes
 
-    @Pyro4.expose
+    @pr.expose
     @property
     def offset(self):
         return self._offset
 
-    @Pyro4.expose
+    @pr.expose
     @property
     def address(self):
         return self._block.address
 
-    @Pyro4.expose
+    @pr.expose
     @property
     def bitSize(self):
         return self._bitSize
 
-    @Pyro4.expose
+    @pr.expose
     @property
     def bitOffset(self):
         return self._bitOffset
 
-    @Pyro4.expose
+    @pr.expose
     @property
     def verify(self):
         return self._verify
 
-    @Pyro4.expose
+    @pr.expose
     @property
     def base(self):
         return self._base
 
-    @Pyro4.expose
+    def _setDefault(self):
+        if self._default is not None:
+            self._block._setDefault(self, self.parseDisp(self._default))
+
+    @pr.expose
     def parseDisp(self, sValue):
         if sValue is None or isinstance(sValue, self.nativeType()):
             return sValue
@@ -488,10 +686,16 @@ class LocalVariable(BaseVariable):
                  enum=None,
                  units=None,
                  hidden=False,
+                 groups=None,
                  minimum=None,
                  maximum=None,
+                 lowWarning=None,
+                 lowAlarm=None,
+                 highWarning=None,
+                 highAlarm=None,
                  localSet=None,
                  localGet=None,
+                 typeStr='Unknown',
                  pollInterval=0):
 
         if value is None and localGet is None:
@@ -499,8 +703,10 @@ class LocalVariable(BaseVariable):
 
         BaseVariable.__init__(self, name=name, description=description, 
                               mode=mode, value=value, disp=disp, 
-                              enum=enum, units=units, hidden=hidden,
-                              minimum=minimum, maximum=maximum,
+                              enum=enum, units=units, hidden=hidden, groups=groups,
+                              minimum=minimum, maximum=maximum, typeStr=typeStr,
+                              lowWarning=lowWarning, lowAlarm=lowAlarm,
+                              highWarning=highWarning, highAlarm=highAlarm,
                               pollInterval=pollInterval)
 
         self._block = pr.LocalBlock(variable=self,localSet=localSet,localGet=localGet,value=self._default)
@@ -560,7 +766,6 @@ class LocalVariable(BaseVariable):
         self._block._ior(other)
         return self
 
-@Pyro4.expose
 class LinkVariable(BaseVariable):
 
     def __init__(self, *,
@@ -582,18 +787,21 @@ class LinkVariable(BaseVariable):
             self._linkedGet = linkedGet if linkedGet else variable.value
             self._linkedSet = linkedSet if linkedSet else variable.set
 
-            
             # Search the kwargs for overridden properties, otherwise the properties from the linked variable will be used
             args = ['disp', 'enum', 'units', 'minimum', 'maximum']
             for arg in args:
                 if arg not in kwargs:
                     kwargs[arg] = getattr(variable, arg)
 
-        # Call super constructor
-        BaseVariable.__init__(self, name=name, **kwargs)
+        if not self._linkedSet:
+            kwargs['mode'] = 'RO'
+        if not self._linkedGet:
+            kwargs['mode'] = 'WO'
 
-        # Must be done after super cunstructor to override it
-        self._typeStr = typeStr        
+        # Need to have at least 1 of linkedSet or linkedGet, otherwise error
+
+        # Call super constructor
+        BaseVariable.__init__(self, name=name, typeStr=typeStr, **kwargs)
 
         # Dependency tracking
         if variable is not None:
@@ -608,7 +816,7 @@ class LinkVariable(BaseVariable):
         # Allow dependencies to be accessed as indicies of self
         return self.dependencies[key]
 
-    @Pyro4.expose
+    @pr.expose
     def set(self, value, write=True):
         if self._linkedSet is not None:
 
@@ -617,7 +825,7 @@ class LinkVariable(BaseVariable):
 
             varFuncHelper(self._linkedSet,pargs,self._log,self.path)
 
-    @Pyro4.expose
+    @pr.expose
     def get(self, read=True):
         if self._linkedGet is not None:
 

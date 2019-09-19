@@ -9,12 +9,12 @@
  * Description:
  * Packetizer Application Port
  * ----------------------------------------------------------------------------
- * This file is part of the rogue software platform. It is subject to 
- * the license terms in the LICENSE.txt file found in the top-level directory 
- * of this distribution and at: 
- *    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
- * No part of the rogue software platform, including this file, may be 
- * copied, modified, propagated, or distributed except according to the terms 
+ * This file is part of the rogue software platform. It is subject to
+ * the license terms in the LICENSE.txt file found in the top-level directory
+ * of this distribution and at:
+ *    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+ * No part of the rogue software platform, including this file, may be
+ * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
@@ -52,13 +52,13 @@ void rpp::Application::setup_python() {
 }
 
 //! Creator
-rpp::Application::Application (uint8_t id) { 
+rpp::Application::Application (uint8_t id) {
    id_ = id;
    queue_.setMax(8);
 }
 
 //! Destructor
-rpp::Application::~Application() { 
+rpp::Application::~Application() {
    threadEn_ = false;
    queue_.stop();
    thread_->join();
@@ -71,6 +71,11 @@ void rpp::Application::setController( rpp::ControllerPtr cntl ) {
    // Start read thread
    threadEn_ = true;
    thread_ = new std::thread(&rpp::Application::runThread, this);
+
+   // Set a thread name
+#ifndef __MACH__
+   pthread_setname_np( thread_->native_handle(), "PackApp" );
+#endif
 }
 
 //! Generate a Frame. Called from master
