@@ -405,6 +405,13 @@ void ru::Prbs::acceptFrame ( ris::FramePtr frame ) {
    frIter = frame->beginRead();
    frEnd  = frame->endRead();
 
+   // Check for frame errors
+   if ( frame->getError() ) {
+      rxLog_->warning("Frame error field is set: 0x%x",frame->getError());
+      rxErrCount_++;
+      return;
+   }
+
    // Verify size
    if ((( size % byteWidth_ ) != 0) || size < minSize_ ) {
       rxLog_->warning("Size violation size=%i, count=%i",size,rxCount_);
