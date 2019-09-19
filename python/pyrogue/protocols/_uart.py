@@ -20,6 +20,8 @@
 import rogue.interfaces.memory
 import pyrogue
 import serial
+import queue
+import threading
 
 class UartMemory(rogue.interfaces.memory.Slave):
     def __init__(self, device, baud, timeout=1, **kwargs):
@@ -34,6 +36,7 @@ class UartMemory(rogue.interfaces.memory.Slave):
 
     def close(self):
         self._workerQueue.put(None)
+        self._workerQueue.join()
         self.serialPort.close()
 
     def __enter__(self):
