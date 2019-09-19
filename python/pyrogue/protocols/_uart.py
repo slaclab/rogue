@@ -28,7 +28,12 @@ class UartMemory(rogue.interfaces.memory.Slave):
         self._log = pyrogue.logInit(cls=self, name=f'{device}')
         self.serialPort = serial.Serial(device, baud, timeout=timeout, **kwargs)
 
+        self._workerQueue = queue.Queue()
+        self._workerThread = threading.Thread(target=self._worker)
+        self._workerThread.start()
+
     def close(self):
+        self._workerQueue.put(None)
         self.serialPort.close()
 
     def __enter__(self):
@@ -47,70 +52,79 @@ class UartMemory(rogue.interfaces.memory.Slave):
         return ''.join(l)
 
     def _doTransaction(self, transaction):
-        with transaction.lock():
-            address = transaction.address()
+        self._workerQueue.put(transaction)
 
-            # Write path
-            if transaction.type() == rogue.interfaces.memory.Write:
-                dataBa = bytearray(transaction.size())
-                transaction.getData(dataBa, 0)
-                dataWords = [int.from_bytes(dataBa[i:i+4], 'little', signed=False) for i in range(0, len(dataBa), 4)]
+    def _worker(self):
+        while True:
+            transaction = self._workerQueue.get()
 
-                # Need to issue a UART command for each 32 bit word
-                for i, (addr, data) in enumerate(zip(range(address, address+len(dataBa), 4), dataWords)):
-                    sendString = f'w {addr:08x} {data:08x} \n'.encode('ASCII')
-                    # self._log.debug(f'Sending write transaction part {i}: {repr(sendString)}')
-                    self.serialPort.write(sendString)
-                    response = self.readline() #self.serialPort.readline().decode('ASCII')
-                    
-                    # If response is empty, a timeout occured
-                    if len(response) == 0:
-                        transaction.error(f'Empty transaction response (likely timeout) for transaction part {i}: {repr(sendString)}')
-                        return
+            if transaction is None:
+                break;
 
-                    # parse the response string
-                    parts = response.split()
-                    # Check for correct response
-                    if (len(parts) != 4 or
-                        parts[0].lower() != 'w' or
-                        int(parts[1], 16) != addr):
-                        transaction.error(f'Malformed response for part {i}: {repr(response)} to transaction: {repr(sendString)}')
-                        return
-                    # else:
-                        # self._log.debug(f'Transaction part {i}: {repr(sendString)} completed successfully')
+            with transaction.lock():
+                address = transaction.address()
+
+                # Write path
+                if transaction.type() == rogue.interfaces.memory.Write:
+                    dataBa = bytearray(transaction.size())
+                    transaction.getData(dataBa, 0)
+                    dataWords = [int.from_bytes(dataBa[i:i+4], 'little', signed=False) for i in range(0, len(dataBa), 4)]
+
+                    # Need to issue a UART command for each 32 bit word
+                    for i, (addr, data) in enumerate(zip(range(address, address+len(dataBa), 4), dataWords)):
+                        sendString = f'w {addr:08x} {data:08x} \n'.encode('ASCII')
+                        # self._log.debug(f'Sending write transaction part {i}: {repr(sendString)}')
+                        self.serialPort.write(sendString)
+                        response = self.readline() #self.serialPort.readline().decode('ASCII')
                         
-                transaction.done()                        
+                        # If response is empty, a timeout occured
+                        if len(response) == 0:
+                            transaction.error(f'Empty transaction response (likely timeout) for transaction part {i}: {repr(sendString)}')
+                            return
 
-            elif (transaction.type() == rogue.interfaces.memory.Read or
-                 transaction.type() == rogue.interfaces.memory.Verify):
-                size = transaction.size()
+                        # parse the response string
+                        parts = response.split()
+                        # Check for correct response
+                        if (len(parts) != 4 or
+                            parts[0].lower() != 'w' or
+                            int(parts[1], 16) != addr):
+                            transaction.error(f'Malformed response for part {i}: {repr(response)} to transaction: {repr(sendString)}')
+                            return
+                        # else:
+                            # self._log.debug(f'Transaction part {i}: {repr(sendString)} completed successfully')
+                            
+                    transaction.done()                        
 
-                for i, addr in enumerate(range(address, address+size, 4)):
-                    sendString = f'r {addr:08x} \n'.encode('ASCII')
-                    # self._log.debug(f'Sending read transaction part {i}: {repr(sendString)}')
-                    self.serialPort.write(sendString)
-                    response = self.readline() #self.serialPort.readline().decode('ASCII')
+                elif (transaction.type() == rogue.interfaces.memory.Read or
+                     transaction.type() == rogue.interfaces.memory.Verify):
+                    size = transaction.size()
 
-                    # If response is empty, a timeout occured
-                    if len(response) == 0:
-                        transaction.error(f'Empty transaction response (likely timeout) for transaction part {i}: {repr(sendString)}')
-                        return
-                    
-                    # parse the response string
-                    parts = response.split()
+                    for i, addr in enumerate(range(address, address+size, 4)):
+                        sendString = f'r {addr:08x} \n'.encode('ASCII')
+                        # self._log.debug(f'Sending read transaction part {i}: {repr(sendString)}')
+                        self.serialPort.write(sendString)
+                        response = self.readline() #self.serialPort.readline().decode('ASCII')
 
-                    if (len(parts) != 4 or
-                        parts[0].lower() != 'r' or
-                        int(parts[1], 16) != addr):
-                        transaction.error(f'Malformed response part {i}: {repr(response)} to transaction: {repr(sendString)}')
-                    else:
-                        dataInt = int(parts[2], 16)
-                        rdData = bytearray(dataInt.to_bytes(4, 'little', signed=False))
-                        transaction.setData(rdData, i*4)
-                        # self._log.debug(f'Transaction part {i}: {repr(sendString)} with response data: {dataInt:#08x} completed successfully')
-                    
-                transaction.done()
-            else:
-                # Posted writes not supported (for now)
-                transaction.error(f'Unsupported transaction type: {transaction.type()}')
+                        # If response is empty, a timeout occured
+                        if len(response) == 0:
+                            transaction.error(f'Empty transaction response (likely timeout) for transaction part {i}: {repr(sendString)}')
+                            return
+                        
+                        # parse the response string
+                        parts = response.split()
+
+                        if (len(parts) != 4 or
+                            parts[0].lower() != 'r' or
+                            int(parts[1], 16) != addr):
+                            transaction.error(f'Malformed response part {i}: {repr(response)} to transaction: {repr(sendString)}')
+                        else:
+                            dataInt = int(parts[2], 16)
+                            rdData = bytearray(dataInt.to_bytes(4, 'little', signed=False))
+                            transaction.setData(rdData, i*4)
+                            # self._log.debug(f'Transaction part {i}: {repr(sendString)} with response data: {dataInt:#08x} completed successfully')
+                        
+                    transaction.done()
+                else:
+                    # Posted writes not supported (for now)
+                    transaction.error(f'Unsupported transaction type: {transaction.type()}')
 
