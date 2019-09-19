@@ -1,3 +1,9 @@
+#!/usr/bin/env python
+#-----------------------------------------------------------------------------
+# Title      : PyRogue PyDM System Window Widget
+#-----------------------------------------------------------------------------
+# File       : pyrogue/pydm/widgets/system_window.py
+# Created    : 2019-09-18
 #-----------------------------------------------------------------------------
 # This file is part of the rogue software platform. It is subject to 
 # the license terms in the LICENSE.txt file found in the top-level directory 
@@ -8,16 +14,13 @@
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
 
-#from os import path
 from pydm.widgets.frame import PyDMFrame
-from pydm.widgets import PyDMLineEdit, PyDMSpinbox, PyDMPushButton, PyDMEnumComboBox
-#from pydm import widgets
 from pydm import utilities
+import pyrogue
 from pyrogue.pydm.data_plugins.rogue_plugin import parseAddress
-import pyrogue.interfaces
-from qtpy.QtCore import Qt, Property, QObject, Q_ENUMS, Slot, QPoint
-from qtpy.QtWidgets import QFrame, QVBoxLayout, QHBoxLayout, QLabel, QSizePolicy, QMenu, QDialog, QPushButton
-from qtpy.QtWidgets import QWidget, QGridLayout, QTreeWidgetItem, QTreeWidget, QLineEdit, QFormLayout, QGroupBox
+from pyrogue.interfaces import VirtualClient
+from qtpy.QtCore import Qt, Property
+from qtpy.QtWidgets import QVBoxLayout
 from pyrogue.pydm.widgets import RootControl
 from pyrogue.pydm.widgets import DataWriter
 from pyrogue.pydm.widgets import RunControl
@@ -38,7 +41,7 @@ class SystemWindow(PyDMFrame):
 
         addr, port, path, disp = parseAddress(self.channel)
 
-        client = pyrogue.interfaces.VirtualClient(addr, port)
+        client = VirtualClient(addr, port)
         base = 'rogue://{}:{}/'.format(addr,port)
 
         vb = QVBoxLayout()

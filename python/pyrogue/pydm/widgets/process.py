@@ -1,3 +1,9 @@
+#!/usr/bin/env python
+#-----------------------------------------------------------------------------
+# Title      : PyRogue PyDM Process Widget
+#-----------------------------------------------------------------------------
+# File       : pyrogue/pydm/widgets/process.py
+# Created    : 2019-09-18
 #-----------------------------------------------------------------------------
 # This file is part of the rogue software platform. It is subject to 
 # the license terms in the LICENSE.txt file found in the top-level directory 
@@ -8,18 +14,13 @@
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
 
-#from os import path
 from pydm.widgets.frame import PyDMFrame
-from pydm.widgets import PyDMLineEdit, PyDMSpinbox, PyDMPushButton, PyDMEnumComboBox, PyDMScaleIndicator
-#from pydm import widgets
+from pydm.widgets import PyDMLineEdit, PyDMPushButton, PyDMScaleIndicator
 from pydm import utilities
-import pyrogue.interfaces
+from pyrogue.interfaces import VirtualClient
 from pyrogue.pydm.data_plugins.rogue_plugin import parseAddress
-from qtpy.QtCore import Qt, Property, QObject, Q_ENUMS, Slot, QPoint
-from qtpy.QtWidgets import QFrame, QVBoxLayout, QHBoxLayout, QLabel, QSizePolicy, QMenu, QDialog, QPushButton
-from qtpy.QtWidgets import QWidget, QGridLayout, QTreeWidgetItem, QTreeWidget, QLineEdit, QFormLayout, QGroupBox
-import jsonpickle
-import time
+from qtpy.QtCore import Qt, Property
+from qtpy.QtWidgets import QVBoxLayout, QHBoxLayout, QFormLayout, QGroupBox
 
 class Process(PyDMFrame):
     def __init__(self, parent=None, init_channel=None):
@@ -98,7 +99,7 @@ class Process(PyDMFrame):
         noAdd = ['enable','Start','Stop','Running','Progress','Message']
 
         addr, port, path, disp = parseAddress(self.channel)
-        client = pyrogue.interfaces.VirtualClient(addr, port)
+        client = VirtualClient(addr, port)
         prc = client.root.getNode(path)
 
         for k,v in prc.nodes.items():

@@ -1,3 +1,9 @@
+#!/usr/bin/env python
+#-----------------------------------------------------------------------------
+# Title      : PyRogue PyDM Root Control Widget
+#-----------------------------------------------------------------------------
+# File       : pyrogue/pydm/widgets/root_control.py
+# Created    : 2019-09-18
 #-----------------------------------------------------------------------------
 # This file is part of the rogue software platform. It is subject to 
 # the license terms in the LICENSE.txt file found in the top-level directory 
@@ -8,17 +14,12 @@
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
 
-#from os import path
 from pydm.widgets.frame import PyDMFrame
-from pydm.widgets import PyDMLineEdit, PyDMSpinbox, PyDMPushButton, PyDMEnumComboBox
-#from pydm import widgets
+from pydm.widgets import PyDMLineEdit, PyDMPushButton
 from pydm import utilities
-import pyrogue.interfaces
-from qtpy.QtCore import Qt, Property, QObject, Q_ENUMS, Slot, QPoint
-from qtpy.QtWidgets import QFrame, QVBoxLayout, QHBoxLayout, QLabel, QSizePolicy, QMenu, QDialog, QPushButton
-from qtpy.QtWidgets import QWidget, QGridLayout, QTreeWidgetItem, QTreeWidget, QLineEdit, QFormLayout, QGroupBox
-import jsonpickle
-import time
+from qtpy.QtCore import Qt, Property, Slot
+from qtpy.QtWidgets import QVBoxLayout, QHBoxLayout, QPushButton, QFileDialog, QGroupBox
+import datetime
 
 class RootControl(PyDMFrame):
     def __init__(self, parent=None, init_channel=None):
@@ -58,8 +59,8 @@ class RootControl(PyDMFrame):
         vb.addLayout(hb)
 
         # Hidden boxes which are updated by file browse for now
-        self._loadSettingsCmd = PyDMLineEdit(parent=None, init_channel=self.channel + '.LoadSettings')
-        self._saveSettingsCmd = PyDMLineEdit(parent=None, init_channel=self.channel + '.SaveSettings')
+        self._loadSettingsCmd = PyDMLineEdit(parent=None, init_channel=self.channel + '.LoadConfig')
+        self._saveSettingsCmd = PyDMLineEdit(parent=None, init_channel=self.channel + '.SaveConfig')
         self._saveStateCmd    = PyDMLineEdit(parent=None, init_channel=self.channel + '.SaveState')
 
         pb = QPushButton('Load Settings')
@@ -85,7 +86,7 @@ class RootControl(PyDMFrame):
             loadFile = loadFile[0]
 
         if loadFile != '':
-            self._loadSettingsCmd.setText(loadFile)
+            self._loadSettingsCmd.setText(','.join(loadFile))
             self._loadSettingsCmd.send_value()
 
     @Slot()
@@ -115,7 +116,7 @@ class RootControl(PyDMFrame):
             stateFile = stateFile[0]
 
         if stateFile != '':
-            self._saveStateCmd.setText(saveFile)
+            self._saveStateCmd.setText(stateFile)
             self._saveStateCmd.send_value()
 
     @Property(bool)

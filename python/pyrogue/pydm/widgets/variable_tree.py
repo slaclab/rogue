@@ -1,3 +1,9 @@
+#!/usr/bin/env python
+#-----------------------------------------------------------------------------
+# Title      : PyRogue PyDM Variable Tree Widget
+#-----------------------------------------------------------------------------
+# File       : pyrogue/pydm/widgets/variable_tree.py
+# Created    : 2019-09-18
 #-----------------------------------------------------------------------------
 # This file is part of the rogue software platform. It is subject to 
 # the license terms in the LICENSE.txt file found in the top-level directory 
@@ -8,16 +14,14 @@
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
 
-#from os import path
 from pydm.widgets.frame import PyDMFrame
 from pydm.widgets import PyDMLineEdit, PyDMSpinbox, PyDMPushButton, PyDMEnumComboBox
-#from pydm import widgets
 from pydm import utilities
 from pyrogue.pydm.data_plugins.rogue_plugin import parseAddress
-import pyrogue.interfaces
-from qtpy.QtCore import Qt, Property, QObject, Q_ENUMS, Slot, QPoint
-from qtpy.QtWidgets import QFrame, QVBoxLayout, QHBoxLayout, QLabel, QSizePolicy, QMenu, QDialog, QPushButton
-from qtpy.QtWidgets import QWidget, QGridLayout, QTreeWidgetItem, QTreeWidget, QLineEdit, QFormLayout, QGroupBox
+from pyrogue.interfaces import VirtualClient
+from qtpy.QtCore import Qt, Property, Slot
+from qtpy.QtWidgets import QVBoxLayout, QHBoxLayout, QMenu, QDialog, QPushButton
+from qtpy.QtWidgets import QTreeWidgetItem, QTreeWidget, QLineEdit, QFormLayout
 
 class VariableDev(QTreeWidgetItem):
 
@@ -27,14 +31,17 @@ class VariableDev(QTreeWidgetItem):
         self._parent   = parent
         self._dev      = dev
         self._children = []
+        self._dummy    = None
 
         self.setText(0,self._dev.name)
         self.setToolTip(0,self._dev.description)
 
         if self._top._node == dev:
             self._parent.addTopLevelItem(self)
+            self.setExpanded(True)
+            self._setup(False)
 
-        if (not noExpand) and self._dev.expand:
+        elif (not noExpand) and self._dev.expand:
             self._dummy = None
             self.setExpanded(True)
             self._setup(False)
@@ -136,7 +143,6 @@ class VariableHolder(QTreeWidgetItem):
         self.setToolTip(0,self._var.description)
 
         if self._var.disp == 'enum' and self._var.enum is not None and self._var.mode != 'RO':
-            self._path += '/True'
             w = PyDMEnumComboBox(parent=None, init_channel=self._path)
             w.alarmSensitiveContent = False
             w.alarmSensitiveBorder  = True
@@ -251,7 +257,7 @@ class VariableTree(PyDMFrame):
 
         self._addr, self._port, path, disp = parseAddress(self.channel)
 
-        self._client = pyrogue.interfaces.VirtualClient(self._addr, self._port)
+        self._client = VirtualClient(self._addr, self._port)
         self._node   = self._client.root.getNode(path)
 
         vb = QVBoxLayout()
@@ -272,13 +278,14 @@ class VariableTree(PyDMFrame):
         vb.addLayout(hb)
 
         if self._node == self._client.root:
-            chan = 'rogue://{}:{}/root.ReadAll'.format(self._addr,self._port)
+            hb.addWidget(PyDMPushButton(label='Read All',
+                                        pressValue=True,
+                                        init_channel='rogue://{}:{}/root.ReadAll'.format(self._addr,self._port)))
         else:
-            chan = 'rogue://{}:{}/{}.ReadDevice'.format(self._addr,self._port,self._node.path)
+            hb.addWidget(PyDMPushButton(label='Read Recursive',
+                                        pressValue=True,
+                                        init_channel='rogue://{}:{}/{}.ReadDevice'.format(self._addr,self._port,self._node.path)))
 
-        pb = PyDMPushButton(label='Read',pressValue=1,init_channel=chan)
-
-        hb.addWidget(pb)
 
         self._children.append(VariableDev(top=self, parent=self._tree, dev=self._node, noExpand=False))
 

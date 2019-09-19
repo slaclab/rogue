@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>611</width>
-    <height>541</height>
+    <width>1809</width>
+    <height>853</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -15,73 +15,24 @@
   </property>
   <layout class="QHBoxLayout" name="horizontalLayout">
    <item>
-    <layout class="QVBoxLayout" name="verticalLayout">
+    <layout class="QHBoxLayout" name="horizontalLayout_2">
      <item>
-      <widget class="PyDMTabWidget" name="PyDMTabWidget">
+      <widget class="VariableTree" name="VariableTree">
        <property name="toolTip">
         <string/>
        </property>
-       <property name="whatsThis">
-        <string/>
+       <property name="channel" stdset="0">
+        <string>rogue://0/root</string>
        </property>
-       <property name="currentIndex">
-        <number>2</number>
+       <property name="rogueEnabled" stdset="0">
+        <bool>true</bool>
        </property>
-       <property name="alarmChannels">
-        <stringlist>
-         <string></string>
-         <string></string>
-         <string></string>
-        </stringlist>
-       </property>
-       <widget class="QWidget" name="tab">
-        <attribute name="title">
-         <string>Variables</string>
-        </attribute>
-        <layout class="QGridLayout" name="gridLayout">
-         <item row="0" column="0">
-          <widget class="VariableTree" name="VariableTree">
-           <property name="minimumSize">
-            <size>
-             <width>414</width>
-             <height>471</height>
-            </size>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>16777215</width>
-             <height>471</height>
-            </size>
-           </property>
-           <property name="toolTip">
-            <string/>
-           </property>
-           <property name="channel" stdset="0">
-            <string>rogue://0/root</string>
-           </property>
-           <property name="excGroups" stdset="0">
-            <string>Hidden</string>
-           </property>
-           <property name="rogueEnabled" stdset="0">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </widget>
-       <widget class="QWidget" name="tab_5">
-        <attribute name="title">
-         <string>Commands</string>
-        </attribute>
-        <widget class="CommandTree" name="CommandTree">
-         <property name="geometry">
-          <rect>
-           <x>0</x>
-           <y>0</y>
-           <width>581</width>
-           <height>491</height>
-          </rect>
-         </property>
+      </widget>
+     </item>
+     <item>
+      <layout class="QVBoxLayout" name="verticalLayout">
+       <item>
+        <widget class="RootControl" name="RootControl">
          <property name="toolTip">
           <string/>
          </property>
@@ -92,63 +43,33 @@
           <bool>true</bool>
          </property>
         </widget>
-       </widget>
-       <widget class="QWidget" name="System">
-        <attribute name="title">
-         <string>Page</string>
-        </attribute>
-        <widget class="QWidget" name="verticalLayoutWidget">
-         <property name="geometry">
-          <rect>
-           <x>0</x>
-           <y>0</y>
-           <width>591</width>
-           <height>491</height>
-          </rect>
+       </item>
+       <item>
+        <widget class="Process" name="Process">
+         <property name="toolTip">
+          <string/>
          </property>
-         <layout class="QVBoxLayout" name="verticalLayout_2">
-          <item>
-           <widget class="SyslogWindow" name="SyslogWindow">
-            <property name="toolTip">
-             <string/>
-            </property>
-            <property name="channel" stdset="0">
-             <string>rogue://0/root.SystemLog</string>
-            </property>
-            <property name="rogueEnabled" stdset="0">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="DataWriter" name="DataWriter">
-            <property name="toolTip">
-             <string/>
-            </property>
-            <property name="channel" stdset="0">
-             <string>rogue://0/root.StreamWriter</string>
-            </property>
-            <property name="rogueEnabled" stdset="0">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="RunControl" name="RunControl">
-            <property name="toolTip">
-             <string/>
-            </property>
-            <property name="channel" stdset="0">
-             <string>rogue://0/root.RunControl</string>
-            </property>
-            <property name="rogueEnabled" stdset="0">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-         </layout>
+         <property name="channel" stdset="0">
+          <string>rogue://0/root.Process</string>
+         </property>
+         <property name="rogueEnabled" stdset="0">
+          <bool>true</bool>
+         </property>
         </widget>
-       </widget>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <widget class="VariableTree" name="VariableTree_2">
+       <property name="toolTip">
+        <string/>
+       </property>
+       <property name="channel" stdset="0">
+        <string>rogue://0/root.AxiVersion</string>
+       </property>
+       <property name="rogueEnabled" stdset="0">
+        <bool>true</bool>
+       </property>
       </widget>
      </item>
     </layout>
@@ -159,32 +80,17 @@
   <customwidget>
    <class>VariableTree</class>
    <extends>PyDMFrame</extends>
-   <header>pyrogue.pydm.customwidgets.displays.variable_tree</header>
+   <header>pyrogue.pydm.widgets.variable_tree</header>
   </customwidget>
   <customwidget>
-   <class>CommandTree</class>
+   <class>RootControl</class>
    <extends>PyDMFrame</extends>
-   <header>pyrogue.pydm.customwidgets.displays.command_tree</header>
+   <header>pyrogue.pydm.widgets.root_control</header>
   </customwidget>
   <customwidget>
-   <class>SyslogWindow</class>
+   <class>Process</class>
    <extends>PyDMFrame</extends>
-   <header>pyrogue.pydm.customwidgets.displays.syslog</header>
-  </customwidget>
-  <customwidget>
-   <class>RunControl</class>
-   <extends>PyDMFrame</extends>
-   <header>pyrogue.pydm.customwidgets.displays.run_control</header>
-  </customwidget>
-  <customwidget>
-   <class>DataWriter</class>
-   <extends>PyDMFrame</extends>
-   <header>pyrogue.pydm.customwidgets.displays.data_writer</header>
-  </customwidget>
-  <customwidget>
-   <class>PyDMTabWidget</class>
-   <extends>QTabWidget</extends>
-   <header>pydm.widgets.tab_bar</header>
+   <header>pyrogue.pydm.widgets.process</header>
   </customwidget>
   <customwidget>
    <class>PyDMFrame</class>
