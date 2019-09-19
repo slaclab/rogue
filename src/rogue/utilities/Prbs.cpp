@@ -394,8 +394,8 @@ void ru::Prbs::acceptFrame ( ris::FramePtr frame ) {
    uint32_t      x;
    uint8_t       expData[MaxBytes];
    double        per;
-   char          debugA[1000];
-   char          debugB[200];
+   char          debugA[10000];
+   char          debugB[1000];
 
    rogue::GilRelease noGil;
    ris::FrameLockPtr fLock = frame->lock();
@@ -404,6 +404,13 @@ void ru::Prbs::acceptFrame ( ris::FramePtr frame ) {
    size = frame->getPayload();
    frIter = frame->beginRead();
    frEnd  = frame->endRead();
+
+   // Check for frame errors
+   if ( frame->getError() ) {
+      rxLog_->warning("Frame error field is set: 0x%x",frame->getError());
+      rxErrCount_++;
+      return;
+   }
 
    // Verify size
    if ((( size % byteWidth_ ) != 0) || size < minSize_ ) {
