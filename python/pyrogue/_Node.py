@@ -300,6 +300,9 @@ class Node(object):
 
                 self._anodes[aname][key] = node
 
+            else:
+                self._log.warning('Adding array node with non numeric key: {} may cause lookup errors.'.format(node.name))
+
     def addNode(self, nodeClass, **kwargs):
         self.add(nodeClass(**kwargs))
 

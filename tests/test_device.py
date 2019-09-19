@@ -295,6 +295,11 @@ class AxiVersion(pr.Device):
             mode = 'RW',
             value = [1,2,3,4]))
 
+        self.add(pr.LocalVariable(
+            name = 'TestBadArray[x]',
+            mode = 'RW',
+            value = ''))
+
         @self.command(hidden=False,value='',retValue='')
         def TestCommand(arg):
             return('Got {}'.format(arg))
