@@ -45,7 +45,7 @@ class UartMemory(rogue.interfaces.memory.Slave):
             # Write path
             if transaction.type() == rogue.interfaces.memory.Write:
                 dataBa = bytearray(transaction.size())
-                transaction.getData(data, 0)
+                transaction.getData(dataBa, 0)
                 dataWords = [int.from_bytes(data[i:i+4], 'little', signed=False) for i in range(0, len(data), 4)]
 
                 # Need to issue a UART command for each 32 bit word
@@ -53,6 +53,13 @@ class UartMemory(rogue.interfaces.memory.Slave):
                     sendString = f'w {addr:08x} {data:08x} \n'.encode('ASCII')
                     self._log.debug(f'Sending write transaction part {i}: {repr(sendString)}')
                     self.serialPort.write(sendString)
+                    response = ''
+                    while True:
+                        ch = self.serialPort.read().decode('ASCII')
+                        response = response + ch
+                        if ch == '\n' or ch == '\r':
+                            break
+                        
                     response = self.serialPort.readline().decode('ASCII')
                     
                     # If response is empty, a timeout occured
@@ -75,7 +82,7 @@ class UartMemory(rogue.interfaces.memory.Slave):
                         
                 transaction.done(0)                        
 
-            elif transaction.type() == rogue.interfaces.memory.Read:
+            elif transaction.type() == rogue.interfaces.memory.Read :
                 size = transaction.size()
 
                 for i, addr in enumerate(range(address, address+size, 4)):
@@ -93,12 +100,12 @@ class UartMemory(rogue.interfaces.memory.Slave):
                     else: # if (transaction.type() == rogue.interfaces.memory.Read
                         if (len(parts) != 3 or
                             parts[0].lower() != 'r' or
-                            int(parts[1], 16) != transaction.address()):
+                            int(parts[1], 16) != addr):
                             transaction.done(rogue.interfaces.memory.ProtocolError)
                             self._log.error('Malformed response part {i}: {repr(response)} to transaction: {repr(sendString)}')
                         else:
-                            rdData = int(parts[2], 16)
-                            transaction.setData(rdData.to_bytes(4, 'little', signed=False), i*4)
+                            rdData = int(parts[2], 16).to_bytes(4, 'little', signed=False)
+                            transaction.setData(rdData, i*4)
                             self._log.debug('Transaction part {i}: {repr(sendString)} with response data: {rdData:#08x} completed successfully')
                     
                 transaction.done(0)
@@ -106,10 +113,4 @@ class UartMemory(rogue.interfaces.memory.Slave):
                 # Posted writes not supported (for now)
                 transaction.done(rogue.interfaces.memory.Unsupported)
                 self._log.error(f'Unsupported transaction type: {transaction.type()}')
-                return
-
-
-
-  
-
 
