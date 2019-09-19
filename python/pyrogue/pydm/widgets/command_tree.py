@@ -1,3 +1,9 @@
+#!/usr/bin/env python
+#-----------------------------------------------------------------------------
+# Title      : PyRogue PyDM Command Tree Widget
+#-----------------------------------------------------------------------------
+# File       : pyrogue/pydm/widgets/command_tree.py
+# Created    : 2019-09-18
 #-----------------------------------------------------------------------------
 # This file is part of the rogue software platform. It is subject to 
 # the license terms in the LICENSE.txt file found in the top-level directory 
@@ -8,16 +14,14 @@
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
 
-#from os import path
 from pydm.widgets.frame import PyDMFrame
 from pydm.widgets import PyDMLineEdit, PyDMSpinbox, PyDMPushButton, PyDMEnumComboBox
-#from pydm import widgets
 from pydm import utilities
 from pyrogue.pydm.data_plugins.rogue_plugin import parseAddress
-import pyrogue.interfaces
-from qtpy.QtCore import Qt, Property, QObject, Q_ENUMS, Slot, QPoint
-from qtpy.QtWidgets import QFrame, QVBoxLayout, QHBoxLayout, QLabel, QSizePolicy, QMenu, QDialog, QPushButton
-from qtpy.QtWidgets import QWidget, QGridLayout, QTreeWidgetItem, QTreeWidget, QLineEdit, QFormLayout, QGroupBox
+from pyrogue.interfaces import VirtualClient
+from qtpy.QtCore import Qt, Property, Slot, QPoint
+from qtpy.QtWidgets import QVBoxLayout, QHBoxLayout, QLabel, QSizePolicy, QMenu, QDialog, QPushButton
+from qtpy.QtWidgets import QTreeWidgetItem, QTreeWidget, QLineEdit, QFormLayout, QGroupBox
 
 class CommandDev(QTreeWidgetItem):
 
@@ -27,15 +31,17 @@ class CommandDev(QTreeWidgetItem):
         self._parent   = parent
         self._dev      = dev
         self._children = []
+        self._dummy    = None
 
         self.setText(0,self._dev.name)
         self.setToolTip(0,self._dev.description)
 
         if self._top._node == dev:
             self._parent.addTopLevelItem(self)
+            self.setExpanded(True)
+            self._setup(False)
 
-        if (not noExpand) and self._dev.expand:
-            self._dummy = None
+        elif (not noExpand) and self._dev.expand:
             self.setExpanded(True)
             self._setup(False)
         else:
@@ -123,13 +129,13 @@ class CommandHolder(QTreeWidgetItem):
         self.setToolTip(0,self._cmd.description)
 
         if self._cmd.arg:
-            self._path += '/True'
 
             if self._cmd.disp == 'enum' and self._cmd.enum is not None and self._cmd.mode != 'RO':
                 w = PyDMEnumComboBox(parent=None, init_channel=self._path)
                 w.alarmSensitiveContent = False
                 w.alarmSensitiveBorder  = False
             else:
+                self._path += '/True'
                 w = PyDMLineEdit(parent=None, init_channel=self._path)
                 w.showUnits             = False
                 w.precisionFromPV       = True
@@ -212,7 +218,7 @@ class CommandTree(PyDMFrame):
 
         self._addr, self._port, path, disp = parseAddress(self.channel)
 
-        self._client = pyrogue.interfaces.VirtualClient(self._addr, self._port)
+        self._client = VirtualClient(self._addr, self._port)
         self._node = self._client.root.getNode(path)
 
         vb = QVBoxLayout()
