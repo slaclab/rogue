@@ -84,6 +84,9 @@ rpu::Client::Client ( std::string host, uint16_t port, bool jumbo) : rpu::Core(j
 
    // Start rx thread
    thread_ = new boost::thread(boost::bind(&rpu::Client::runThread, this));
+
+   // Set a thread name
+   pthread_setname_np( thread_->native_handle(), "UdpClient" );
 }
 
 //! Destructor
