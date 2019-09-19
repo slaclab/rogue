@@ -394,8 +394,8 @@ void ru::Prbs::acceptFrame ( ris::FramePtr frame ) {
    uint32_t      x;
    uint8_t       expData[MaxBytes];
    double        per;
-   char          debugA[1000];
-   char          debugB[200];
+   char          debugA[10000];
+   char          debugB[1000];
 
    rogue::GilRelease noGil;
    ris::FrameLockPtr fLock = frame->lock();
