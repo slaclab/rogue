@@ -1,3 +1,9 @@
+#!/usr/bin/env python
+#-----------------------------------------------------------------------------
+# Title      : PyRogue PyDM Top Level GUI
+#-----------------------------------------------------------------------------
+# File       : pyrogue/pydm/pydmTop.py
+# Created    : 2019-09-18
 #-----------------------------------------------------------------------------
 # This file is part of the rogue software platform. It is subject to 
 # the license terms in the LICENSE.txt file found in the top-level directory 
@@ -8,22 +14,15 @@
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
 
-import os
-import json
 from qtpy import QtCore
 from pydm import Display
-from qtpy.QtWidgets import (QVBoxLayout, QHBoxLayout, QGroupBox,
-    QLabel, QLineEdit, QPushButton, QScrollArea, QFrame,
-    QApplication, QWidget, QTabWidget)
-
-from pydm.widgets import PyDMEmbeddedDisplay
-from pydm.utilities import connection
+from qtpy.QtWidgets import (QVBoxLayout, QTabWidget)
 
 from pyrogue.pydm.widgets import VariableTree
 from pyrogue.pydm.widgets import CommandTree
 from pyrogue.pydm.widgets import SystemWindow
 
-channel = 'rogue://0/root'
+Channel = 'rogue://0/root'
 
 class DefaultTop(Display):
     def __init__(self, parent=None, args=[], macros=None):
@@ -35,13 +34,13 @@ class DefaultTop(Display):
         self.tab = QTabWidget()
         vb.addWidget(self.tab)
 
-        var = VariableTree(parent=None, init_channel=channel)
+        var = VariableTree(parent=None, init_channel=Channel)
         self.tab.addTab(var,'Variables')
 
-        cmd = CommandTree(parent=None, init_channel=channel)
+        cmd = CommandTree(parent=None, init_channel=Channel)
         self.tab.addTab(cmd,'Commands')
 
-        sys = SystemWindow(parent=None, init_channel=channel)
+        sys = SystemWindow(parent=None, init_channel=Channel)
         self.tab.addTab(sys,'System')
 
     def minimumSizeHint(self):

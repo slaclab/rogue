@@ -1,3 +1,9 @@
+#!/usr/bin/env python
+#-----------------------------------------------------------------------------
+# Title      : PyRogue PyDM System Log Widget
+#-----------------------------------------------------------------------------
+# File       : pyrogue/pydm/widgets/system_log.py
+# Created    : 2019-09-18
 #-----------------------------------------------------------------------------
 # This file is part of the rogue software platform. It is subject to 
 # the license terms in the LICENSE.txt file found in the top-level directory 
@@ -8,15 +14,11 @@
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
 
-#from os import path
 from pydm.widgets.frame import PyDMFrame
-from pydm.widgets import PyDMLineEdit, PyDMSpinbox, PyDMPushButton, PyDMEnumComboBox
-#from pydm import widgets
+from pydm.widgets import PyDMSpinbox, PyDMPushButton, PyDMEnumComboBox
 from pydm import utilities
-import pyrogue.interfaces
-from qtpy.QtCore import Qt, Property, QObject, Q_ENUMS, Slot, QPoint
-from qtpy.QtWidgets import QFrame, QVBoxLayout, QHBoxLayout, QLabel, QSizePolicy, QMenu, QDialog, QPushButton
-from qtpy.QtWidgets import QWidget, QGridLayout, QTreeWidgetItem, QTreeWidget, QLineEdit, QFormLayout, QGroupBox
+from qtpy.QtCore import Qt, Property
+from qtpy.QtWidgets import QVBoxLayout, QTreeWidgetItem, QTreeWidget, QGroupBox
 import jsonpickle
 import time
 

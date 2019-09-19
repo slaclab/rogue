@@ -1,3 +1,9 @@
+#!/usr/bin/env python
+#-----------------------------------------------------------------------------
+# Title      : PyRogue PyDM Variable Tree Widget
+#-----------------------------------------------------------------------------
+# File       : pyrogue/pydm/widgets/variable_tree.py
+# Created    : 2019-09-18
 #-----------------------------------------------------------------------------
 # This file is part of the rogue software platform. It is subject to 
 # the license terms in the LICENSE.txt file found in the top-level directory 
@@ -8,16 +14,14 @@
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
 
-#from os import path
 from pydm.widgets.frame import PyDMFrame
 from pydm.widgets import PyDMLineEdit, PyDMSpinbox, PyDMPushButton, PyDMEnumComboBox
-#from pydm import widgets
 from pydm import utilities
 from pyrogue.pydm.data_plugins.rogue_plugin import parseAddress
-import pyrogue.interfaces
-from qtpy.QtCore import Qt, Property, QObject, Q_ENUMS, Slot, QPoint
-from qtpy.QtWidgets import QFrame, QVBoxLayout, QHBoxLayout, QLabel, QSizePolicy, QMenu, QDialog, QPushButton
-from qtpy.QtWidgets import QWidget, QGridLayout, QTreeWidgetItem, QTreeWidget, QLineEdit, QFormLayout, QGroupBox
+from pyrogue.interfaces import VirtualClient
+from qtpy.QtCore import Qt, Property, Slot
+from qtpy.QtWidgets import QVBoxLayout, QHBoxLayout, QMenu, QDialog, QPushButton
+from qtpy.QtWidgets import QTreeWidgetItem, QTreeWidget, QLineEdit, QFormLayout
 
 class VariableDev(QTreeWidgetItem):
 
@@ -251,7 +255,7 @@ class VariableTree(PyDMFrame):
 
         self._addr, self._port, path, disp = parseAddress(self.channel)
 
-        self._client = pyrogue.interfaces.VirtualClient(self._addr, self._port)
+        self._client = VirtualClient(self._addr, self._port)
         self._node   = self._client.root.getNode(path)
 
         vb = QVBoxLayout()
