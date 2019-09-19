@@ -65,8 +65,7 @@ class UartMemory(rogue.interfaces.memory.Slave):
                     
                     # If response is empty, a timeout occured
                     if len(response) == 0:
-                        transaction.done(rogue.interfaces.memory.TimeoutError)
-                        self._log.error('Empty transaction response (likely timeout) for transaction part {i}: {repr(sendString)}')
+                        transaction.error(f'Empty transaction response (likely timeout) for transaction part {i}: {repr(sendString)}')
                         return
 
                     # parse the response string
@@ -75,13 +74,12 @@ class UartMemory(rogue.interfaces.memory.Slave):
                     if (len(parts) != 4 or
                         parts[0].lower() != 'w' or
                         int(parts[1], 16) != addr):
-                        transaction.done(rogue.interfaces.memory.ProtocolError)
-                        self._log.error(f'Malformed response for part {i}: {repr(response)} to transaction: {repr(sendString)}')
+                        transaction.error(f'Malformed response for part {i}: {repr(response)} to transaction: {repr(sendString)}')
                         return
                     # else:
                         # self._log.debug(f'Transaction part {i}: {repr(sendString)} completed successfully')
                         
-                transaction.done(0)                        
+                transaction.done()                        
 
             elif (transaction.type() == rogue.interfaces.memory.Read or
                  transaction.type() == rogue.interfaces.memory.Verify):
@@ -95,8 +93,7 @@ class UartMemory(rogue.interfaces.memory.Slave):
 
                     # If response is empty, a timeout occured
                     if len(response) == 0:
-                        transaction.done(rogue.interfaces.memory.TimeoutError)
-                        self._log.error(f'Empty transaction response (likely timeout) for transaction part {i}: {repr(sendString)}')
+                        transaction.error(f'Empty transaction response (likely timeout) for transaction part {i}: {repr(sendString)}')
                         return
                     
                     # parse the response string
@@ -105,23 +102,15 @@ class UartMemory(rogue.interfaces.memory.Slave):
                     if (len(parts) != 4 or
                         parts[0].lower() != 'r' or
                         int(parts[1], 16) != addr):
-                        transaction.done(rogue.interfaces.memory.ProtocolError)
-                        self._log.error(f'Malformed response part {i}: {repr(response)} to transaction: {repr(sendString)}')
+                        transaction.error(f'Malformed response part {i}: {repr(response)} to transaction: {repr(sendString)}')
                     else:
                         dataInt = int(parts[2], 16)
                         rdData = bytearray(dataInt.to_bytes(4, 'little', signed=False))
                         transaction.setData(rdData, i*4)
                         # self._log.debug(f'Transaction part {i}: {repr(sendString)} with response data: {dataInt:#08x} completed successfully')
                     
-                transaction.done(0)
+                transaction.done()
             else:
                 # Posted writes not supported (for now)
-                transaction.done(rogue.interfaces.memory.Unsupported)
-                self._log.error(f'Unsupported transaction type: {transaction.type()}')
-
-
-
-
-  
-
+                transaction.error(f'Unsupported transaction type: {transaction.type()}')
 
