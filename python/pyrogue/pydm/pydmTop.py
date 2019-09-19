@@ -14,6 +14,7 @@
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
 
+import os
 from qtpy import QtCore
 from pydm import Display
 from qtpy.QtWidgets import (QVBoxLayout, QTabWidget)
@@ -27,6 +28,8 @@ Channel = 'rogue://0/root'
 class DefaultTop(Display):
     def __init__(self, parent=None, args=[], macros=None):
         super(DefaultTop, self).__init__(parent=parent, args=args, macros=None)
+
+        self.setWindowTitle("Rogue Server: {}".format(os.getenv('ROGUE_SERVERS')))
 
         vb = QVBoxLayout()
         self.setLayout(vb)
