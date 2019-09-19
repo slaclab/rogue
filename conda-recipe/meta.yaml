@@ -47,6 +47,7 @@ requirements:
      - pyepics    [linux]
      - sqlalchemy
      - pydm
+     - pyserial
 
 about:
    home: https://github.com/slaclab/rogue
