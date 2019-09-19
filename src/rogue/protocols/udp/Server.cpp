@@ -114,6 +114,12 @@ void rpu::Server::acceptFrame ( ris::FramePtr frame ) {
    ris::FrameLockPtr frLock = frame->lock();
    std::lock_guard<std::mutex> lock(udpMtx_);
 
+   // Drop errored frames
+   if ( frame->getError() ) {
+      udpLog_->warning("Server::acceptFrame: Dumping errored frame");
+      return;
+   }
+
    // Setup message header
    msg.msg_name       = &remAddr_;
    msg.msg_namelen    = sizeof(struct sockaddr_in);

@@ -194,7 +194,7 @@ void rpr::Controller::transportRx( ris::FramePtr frame ) {
    rogue::GilRelease noGil;
    ris::FrameLockPtr flock = frame->lock();
 
-   if ( frame->isEmpty() || ! head->verify() ) {
+   if ( frame->getError() || frame->isEmpty() || ! head->verify() ) {
       log_->warning("Dumping bad frame state=%i server=%i",state_,server_);
       dropCount_++;
       return;
@@ -348,6 +348,11 @@ void rpr::Controller::applicationRx ( ris::FramePtr frame ) {
 
    if ( frame->isEmpty() ) {
       log_->warning("Dumping empty application frame");
+      return;
+   }
+
+   if ( frame->getError() ) {
+      log_->warning("Dumping errored frame");
       return;
    }
 
