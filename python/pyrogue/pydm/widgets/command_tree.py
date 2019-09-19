@@ -31,15 +31,17 @@ class CommandDev(QTreeWidgetItem):
         self._parent   = parent
         self._dev      = dev
         self._children = []
+        self._dummy    = None
 
         self.setText(0,self._dev.name)
         self.setToolTip(0,self._dev.description)
 
         if self._top._node == dev:
             self._parent.addTopLevelItem(self)
+            self.setExpanded(True)
+            self._setup(False)
 
-        if (not noExpand) and self._dev.expand:
-            self._dummy = None
+        elif (not noExpand) and self._dev.expand:
             self.setExpanded(True)
             self._setup(False)
         else:
@@ -127,13 +129,13 @@ class CommandHolder(QTreeWidgetItem):
         self.setToolTip(0,self._cmd.description)
 
         if self._cmd.arg:
-            self._path += '/True'
 
             if self._cmd.disp == 'enum' and self._cmd.enum is not None and self._cmd.mode != 'RO':
                 w = PyDMEnumComboBox(parent=None, init_channel=self._path)
                 w.alarmSensitiveContent = False
                 w.alarmSensitiveBorder  = False
             else:
+                self._path += '/True'
                 w = PyDMLineEdit(parent=None, init_channel=self._path)
                 w.showUnits             = False
                 w.precisionFromPV       = True

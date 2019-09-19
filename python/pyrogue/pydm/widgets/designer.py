@@ -18,6 +18,7 @@ from pydm.widgets.qtplugin_base import qtplugin_factory
 
 from pyrogue.pydm.widgets import VariableTree
 from pyrogue.pydm.widgets import CommandTree
+from pyrogue.pydm.widgets import RootControl
 from pyrogue.pydm.widgets import SystemLog
 from pyrogue.pydm.widgets import RunControl
 from pyrogue.pydm.widgets import DataWriter
@@ -26,6 +27,7 @@ from pyrogue.pydm.widgets import Process
 
 VariableTree = qtplugin_factory(VariableTree,  group="Rogue Widgets")
 CommandTree  = qtplugin_factory(CommandTree,   group="Rogue Widgets")
+RootControl  = qtplugin_factory(RootControl,   group="Rogue Widgets")
 SystemLog    = qtplugin_factory(SystemLog,     group="Rogue Widgets")
 RunControl   = qtplugin_factory(RunControl,    group="Rogue Widgets")
 DataWriter   = qtplugin_factory(DataWriter,    group="Rogue Widgets")

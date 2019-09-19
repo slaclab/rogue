@@ -31,14 +31,17 @@ class VariableDev(QTreeWidgetItem):
         self._parent   = parent
         self._dev      = dev
         self._children = []
+        self._dummy    = None
 
         self.setText(0,self._dev.name)
         self.setToolTip(0,self._dev.description)
 
         if self._top._node == dev:
             self._parent.addTopLevelItem(self)
+            self.setExpanded(True)
+            self._setup(False)
 
-        if (not noExpand) and self._dev.expand:
+        elif (not noExpand) and self._dev.expand:
             self._dummy = None
             self.setExpanded(True)
             self._setup(False)
@@ -140,7 +143,6 @@ class VariableHolder(QTreeWidgetItem):
         self.setToolTip(0,self._var.description)
 
         if self._var.disp == 'enum' and self._var.enum is not None and self._var.mode != 'RO':
-            self._path += '/True'
             w = PyDMEnumComboBox(parent=None, init_channel=self._path)
             w.alarmSensitiveContent = False
             w.alarmSensitiveBorder  = True
@@ -276,13 +278,14 @@ class VariableTree(PyDMFrame):
         vb.addLayout(hb)
 
         if self._node == self._client.root:
-            chan = 'rogue://{}:{}/root.ReadAll'.format(self._addr,self._port)
+            hb.addWidget(PyDMPushButton(label='Read All',
+                                        pressValue=True,
+                                        init_channel='rogue://{}:{}/root.ReadAll'.format(self._addr,self._port)))
         else:
-            chan = 'rogue://{}:{}/{}.ReadDevice'.format(self._addr,self._port,self._node.path)
+            hb.addWidget(PyDMPushButton(label='Read Recursive',
+                                        pressValue=True,
+                                        init_channel='rogue://{}:{}/{}.ReadDevice'.format(self._addr,self._port,self._node.path)))
 
-        pb = PyDMPushButton(label='Read',pressValue=1,init_channel=chan)
-
-        hb.addWidget(pb)
 
         self._children.append(VariableDev(top=self, parent=self._tree, dev=self._node, noExpand=False))
 

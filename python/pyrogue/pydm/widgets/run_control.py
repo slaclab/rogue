@@ -50,7 +50,7 @@ class RunControl(PyDMFrame):
         fl.setLabelAlignment(Qt.AlignRight)
         vb.addLayout(fl)
 
-        w = PyDMEnumComboBox(parent=None, init_channel=self.channel + '.runRate/True')
+        w = PyDMEnumComboBox(parent=None, init_channel=self.channel + '.runRate')
         w.alarmSensitiveContent = False
         w.alarmSensitiveBorder  = False
         fl.addRow('Run Rate:',w)
@@ -64,7 +64,7 @@ class RunControl(PyDMFrame):
         fl.setLabelAlignment(Qt.AlignRight)
         hb.addLayout(fl)
 
-        w = PyDMEnumComboBox(parent=None, init_channel=self.channel + '.runState/True')
+        w = PyDMEnumComboBox(parent=None, init_channel=self.channel + '.runState')
         w.alarmSensitiveContent = False
         w.alarmSensitiveBorder  = False
         fl.addRow('Run State:',w)
