@@ -382,19 +382,17 @@ boost::python::object ris::Frame::getNumpy (uint32_t offset, uint32_t count)
    // Retrieve the size, in bytes of the data
    npy_intp   size = getPayload ();
 
-
    // Check this does not request data past the EOF
    if ( (offset + count) > size ) {
-      throw(rogue::GeneralError::boundary("Frame::getNumpy",offset+count,size));
+      throw(rogue::GeneralError::create("Frame::getNumpy",
+               "Attempt to read %i bytes from frame at offset %i with size %i",count,offset,size));
    }
-
 
    // Create a numpy array to receive it and locate the destination data buffer
    npy_intp dims[1] = { count };
    PyObject    *arr = PyArray_SimpleNew (1, dims, NPY_UINT8);
    uint8_t     *dst = reinterpret_cast<uint8_t *>
                       (PyArray_DATA ((reinterpret_cast<PyArrayObject *>(arr))));
-
 
    // Read the data
    ris::Frame::iterator beg = this->beginRead() + offset;
@@ -413,22 +411,20 @@ void ris::Frame::putNumpy ( boost::python::object p, uint32_t offset ) {
 
    Py_buffer pyBuf;
 
-
    // Check that the numpy array data buffer is contigious
    // The read routine can only deal with contigious buffers.
    if ( PyObject_GetBuffer(p.ptr(),&pyBuf,PyBUF_CONTIG) < 0 )
       throw(rogue::GeneralError("Frame::putNumpy","Python Buffer Error In Frame"));
 
-
    // Get the number of bytes in both the source and destination buffers
    uint32_t  size = getSize();
    uint32_t count = pyBuf.len;
 
-
    // Check this does not request data past the EOF
    if ( (offset + count) > size ) {
       PyBuffer_Release(&pyBuf);
-      throw(rogue::GeneralError::boundary("Frame::writePy",offset+count,size));
+      throw(rogue::GeneralError::create("Frame::putNumpy",
+               "Attempt to write %i bytes to frame at offset %i with size %i",count,offset,size));
    }
 
    uint8_t *src = reinterpret_cast<uint8_t *>(pyBuf.buf);
