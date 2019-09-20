@@ -196,7 +196,7 @@ void rpu::Server::runThread() {
          // Message was too big
          if (res > avail ) udpLog_->warning("Receive data was too large. Dropping.");
          else {
-         buff->setPayload(res);
+            buff->setPayload(res);
             sendFrame(frame);
          }
 
@@ -205,7 +205,7 @@ void rpu::Server::runThread() {
 
          // Lock before updating address
          if ( memcmp(&remAddr_, &tmpAddr, sizeof(remAddr_)) != 0 ) {
-         std::lock_guard<std::mutex> lock(udpMtx_);
+            std::lock_guard<std::mutex> lock(udpMtx_);
             remAddr_ = tmpAddr;
          }
       }
