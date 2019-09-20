@@ -20,13 +20,23 @@ parser = argparse.ArgumentParser('Pyrogue Client')
 
 parser.add_argument('--host', 
                     type=str, 
-                    help='Server host name or address',
+                    help='Server host name or address for gui or client',
                     default='localhost')
 
 parser.add_argument('--port', 
                     type=int, 
-                    help='Server port number',
+                    help='Server port number for gui or client',
                     default=9099)
+
+parser.add_argument('--servers',
+                    type=str, 
+                    help='Server & port list for gui (cmd=gui): host1:port1,host2:port2',
+                    default=None)
+
+parser.add_argument('--ui',
+                    type=str, 
+                    help='UI File for gui (cmd=gui)',
+                    default=None)
 
 parser.add_argument('--details',
                     help='Show log details with stacktrace (cmd=syslog)',
@@ -53,7 +63,10 @@ print("Connecting to host {} port {}".format(args.host,args.port))
 
 # GUI Client
 if args.cmd == 'gui':
-    addrList = '{}:{}'.format(args.host,args.port)
+    if args.servers is not None:
+        addrList = args.servers
+    else:
+        addrList = '{}:{}'.format(args.host,args.port)
     pyrogue.pydm.runPyDM(addrList)
 
 # System log

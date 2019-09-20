@@ -244,12 +244,11 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         self.add(pr.LocalCommand(name='Exit', function=self._exit,
                                  description='Exit the server application'))
 
-    def start(self, 
+    def start(self, *,
               timeout=1.0,
               initRead=False,
               initWrite=False,
               pollEn=True,
-              zmqPort=None,
               serverPort=None,
               sqlUrl=None,
               streamIncGroups=None,
@@ -299,25 +298,14 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                    (not (isinstance(tmpList[i],pr.Device) and isinstance(tmpList[i-1],pr.BaseBlock) and \
                         (tmpList[i-1].path.find(tmpList[i].path) == 0 and tmpList[i-1]._overlapEn))):
 
-                    print("\n\n\n------------------------ Memory Overlap Warning !!! --------------------------------")
-                    print("{} at address={:#x} overlaps {} at address={:#x} with size={}".format(
-                          tmpList[i].path,tmpList[i].address,
-                          tmpList[i-1].path,tmpList[i-1].address,tmpList[i-1].size))
-                    print("This warning will be replaced with an exception in the next release!!!!!!!!")
-
-                    #raise pr.NodeError("{} at address={:#x} overlaps {} at address={:#x} with size={}".format(
-                    #                   tmpList[i].name,tmpList[i].address,
-                    #                   tmpList[i-1].name,tmpList[i-1].address,tmpList[i-1].size))
+                    raise pr.NodeError("{} at address={:#x} overlaps {} at address={:#x} with size={}".format(
+                                       tmpList[i].name,tmpList[i].address,
+                                       tmpList[i-1].name,tmpList[i-1].address,tmpList[i-1].size))
 
         # Set timeout if not default
         if timeout != 1.0:
             for key,value in self._nodes.items():
                 value._setTimeout(timeout)
-
-        # Start ZMQ server if enabled
-        if zmqPort is not None:
-            self._log.warning("zmqPort arg is deprecated. Please use serverPort arg instead")
-            serverPort = zmqPort
 
         # Start server
         if serverPort is not None:

@@ -24,13 +24,10 @@ import time
 
 class UdpRssiPack(pr.Device):
 
-    def __init__(self,*,host,port,size=None, jumbo=False, wait=True, packVer=1, pollInterval=1, enSsi=True, **kwargs):
+    def __init__(self,*,host,port, jumbo=False, wait=True, packVer=1, pollInterval=1, enSsi=True, **kwargs):
         super(self.__class__, self).__init__(**kwargs)
         self._host = host
         self._port = port
-
-        if size is not None:
-            self._log.critical("Size arg is deprecated. Use jumbo arg instead")
 
         self._udp  = rogue.protocols.udp.Client(host,port,jumbo)
 

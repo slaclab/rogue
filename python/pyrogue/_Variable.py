@@ -843,46 +843,17 @@ class LinkVariable(BaseVariable):
 # Function helper
 def varFuncHelper(func,pargs,log,path):
 
-    if not callable(func):
-        log.warning("Using deprecated eval string. Please change to function: {}".format(path))
+    try:
+        # Function args
+        fargs = inspect.getfullargspec(func).args + \
+                inspect.getfullargspec(func).kwonlyargs 
 
-        dev   = None
-        var   = None
-        cmd   = None
-        arg   = None
-        value = 0
+        # Build overlapping arg list
+        args = {k:pargs[k] for k in fargs if k is not 'self' and k in pargs}
 
-        if 'dev' in pargs:
-            dev = pargs['dev']
+    # handle c++ functions, no args supported for now
+    except:
+        args = {}
 
-        if 'var' in pargs:
-            var = pargs['var']
-
-        if 'cmd' in pargs:
-            cmd = pargs['cmd']
-
-        if 'arg' in pargs:
-            arg = pargs['arg']
-
-        ns = locals()
-        exec(textwrap.dedent(func),ns)
-        value = ns['value']
-        return value
-
-    else:
-
-        # Python functions
-        try:
-            # Function args
-            fargs = inspect.getfullargspec(func).args + \
-                    inspect.getfullargspec(func).kwonlyargs 
-
-            # Build overlapping arg list
-            args = {k:pargs[k] for k in fargs if k is not 'self' and k in pargs}
-
-        # handle c++ functions, no args supported for now
-        except:
-            args = {}
-
-        return func(**args)
+    return func(**args)
 
