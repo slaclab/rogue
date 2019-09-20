@@ -38,8 +38,7 @@ add_definitions(-D__STDC_FORMAT_MACROS)
 # Boost + Python
 #####################################
 if ( NOT NO_PYTHON ) 
-   find_package(PythonInterp 3.6 QUIET REQUIRED)
-   find_package(PythonLibs 3.6 QUIET REQUIRED)
+   find_package(Python3 COMPONENTS Interpreter Development NumPy QUIET REQUIRED)
 
    set(Boost_USE_MULTITHREADED ON)
 
@@ -76,50 +75,50 @@ endif()
 #####################################
 # BZIP2
 #####################################
-   find_package(BZip2 QUIET REQUIRED)
+find_package(BZip2 QUIET REQUIRED)
 
 #####################################
 # ZeroMQ
 #####################################
-   # First try with Cmake packages
-   find_package(ZeroMQ QUIET)
+# First try with Cmake packages
+find_package(ZeroMQ QUIET)
 
-   # ZeroMQ does not always support cmake, use brute force
-   if (NOT ZeroMQ_FOUND)
-      
-      # Convert LD_LIBRARY PATH for search
-      if(DEFINED ENV{LD_LIBRARY_PATH})
-         string(REPLACE ":" ";" HINT_PATHS $ENV{LD_LIBRARY_PATH})
-      else()
-         set(HINT_PATHS, "")
-      endif()
-
-      # See if zmq library is in LD_LIBRARY_PATH
-      find_library(ZeroMQ_LIBRARY 
-                   NAMES zmq 
-                   PATHS ${HINT_PATHS})
-
-      # Found it
-      if (ZeroMQ_LIBRARY) 
-
-         # Get the base diretory
-         get_filename_component(ZMQ_LIBDIR ${ZeroMQ_LIBRARY} DIRECTORY)
-
-         # See if we can find the header in a relative path
-         find_path(ZeroMQ_INCLUDE_DIR
-                 NAMES zmq.h
-                 PATHS ${ZMQ_LIBDIR}/../include
-                 )
-         if (NOT ZeroMQ_INCLUDE_DIR)
-            message("")
-            message(FATAL_ERROR "Failed to find ZeroMQ_INCLUDE_DIR!")
-         endif()
-      else()
-         # Failed to find it
-         message("")
-         message(FATAL_ERROR "Failed to find zeroMQ!")
-      endif()
+# ZeroMQ does not always support cmake, use brute force
+if (NOT ZeroMQ_FOUND)
+   
+   # Convert LD_LIBRARY PATH for search
+   if(DEFINED ENV{LD_LIBRARY_PATH})
+      string(REPLACE ":" ";" HINT_PATHS $ENV{LD_LIBRARY_PATH})
+   else()
+      set(HINT_PATHS, "")
    endif()
+
+   # See if zmq library is in LD_LIBRARY_PATH
+   find_library(ZeroMQ_LIBRARY 
+                NAMES zmq 
+                PATHS ${HINT_PATHS})
+
+   # Found it
+   if (ZeroMQ_LIBRARY) 
+
+      # Get the base diretory
+      get_filename_component(ZMQ_LIBDIR ${ZeroMQ_LIBRARY} DIRECTORY)
+
+      # See if we can find the header in a relative path
+      find_path(ZeroMQ_INCLUDE_DIR
+              NAMES zmq.h
+              PATHS ${ZMQ_LIBDIR}/../include
+              )
+      if (NOT ZeroMQ_INCLUDE_DIR)
+         message("")
+         message(FATAL_ERROR "Failed to find ZeroMQ_INCLUDE_DIR!")
+      endif()
+   else()
+      # Failed to find it
+      message("")
+      message(FATAL_ERROR "Failed to find zeroMQ!")
+   endif()
+endif()
 
 #####################################
 # EPICS V3
@@ -231,7 +230,8 @@ configure_file (
 include_directories(${PROJECT_SOURCE_DIR}/include)
 include_directories(${PROJECT_BINARY_DIR})
 include_directories(system ${Boost_INCLUDE_DIRS})
-include_directories(system ${PYTHON_INCLUDE_DIRS})
+include_directories(system ${Python3_INCLUDE_DIRS})
+include_directories(system ${Python3_NumPy_INCLUDE_DIRS})
 include_directories(system ${ZeroMQ_INCLUDE_DIR})
 include_directories(system ${BZIP2_INCLUDE_DIR})
 include_directories(system ${EPICSV3_INCLUDES})
@@ -264,7 +264,7 @@ TARGET_LINK_LIBRARIES(rogue-core LINK_PUBLIC ${BZIP2_LIBRARIES})
 if (APPLE)
    set_target_properties(rogue-core PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
 else()
-   TARGET_LINK_LIBRARIES(rogue-core LINK_PUBLIC ${PYTHON_LIBRARIES})
+   TARGET_LINK_LIBRARIES(rogue-core LINK_PUBLIC ${Python3_LIBRARIES})
    TARGET_LINK_LIBRARIES(rogue-core LINK_PUBLIC rt)
 endif()
 
@@ -397,7 +397,7 @@ if (NO_PYTHON)
 else()
 message("-- Found boost: ${Boost_INCLUDE_DIRS}")
 message("")
-   message("-- Found python: ${PYTHON_LIBRARIES}")
+   message("-- Found python: ${Python3_LIBRARIES}")
 endif()
 
 message("")
