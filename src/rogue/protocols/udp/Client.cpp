@@ -180,37 +180,37 @@ void rpu::Client::runThread() {
 
    while(threadEn_) {
 
-         // Attempt receive
-         buff = *(frame->beginBuffer());
-         avail = buff->getAvailable();
-         res = recvfrom(fd_, buff->begin(), avail, MSG_TRUNC, NULL, 0);
+      // Attempt receive
+      buff = *(frame->beginBuffer());
+      avail = buff->getAvailable();
+      res = recvfrom(fd_, buff->begin(), avail, MSG_TRUNC, NULL, 0);
 
-         if ( res > 0 ) {
+      if ( res > 0 ) {
 
-            // Message was too big
-            if (res > avail ) udpLog_->warning("Receive data was too large. Dropping.");
-            else {
-            buff->setPayload(res);
-               sendFrame(frame);
-            }
-
-            // Get new frame
-            frame = ris::Pool::acceptReq(maxPayload(),false);
-         }
+         // Message was too big
+         if (res > avail ) udpLog_->warning("Receive data was too large. Dropping.");
          else {
-
-            // Setup fds for select call
-            FD_ZERO(&fds);
-            FD_SET(fd_,&fds);
-
-            // Setup select timeout
-            tout.tv_sec  = 0;
-            tout.tv_usec = 100;
-
-            // Select returns with available buffer
-            select(fd_+1,&fds,NULL,NULL,&tout);
+         buff->setPayload(res);
+            sendFrame(frame);
          }
+
+         // Get new frame
+         frame = ris::Pool::acceptReq(maxPayload(),false);
       }
+      else {
+
+         // Setup fds for select call
+         FD_ZERO(&fds);
+         FD_SET(fd_,&fds);
+
+         // Setup select timeout
+         tout.tv_sec  = 0;
+         tout.tv_usec = 100;
+
+         // Select returns with available buffer
+         select(fd_+1,&fds,NULL,NULL,&tout);
+      }
+   }
 }
 
 void rpu::Client::setup_python () {

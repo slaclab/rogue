@@ -185,44 +185,44 @@ void rpu::Server::runThread() {
 
    while(threadEn_) {
 
-         // Attempt receive
-         buff = *(frame->beginBuffer());
-         avail = buff->getAvailable();
-         tmpLen = sizeof(struct sockaddr_in);
-         res = recvfrom(fd_, buff->begin(), avail, MSG_TRUNC, (struct sockaddr *)&tmpAddr, &tmpLen);
+      // Attempt receive
+      buff = *(frame->beginBuffer());
+      avail = buff->getAvailable();
+      tmpLen = sizeof(struct sockaddr_in);
+      res = recvfrom(fd_, buff->begin(), avail, MSG_TRUNC, (struct sockaddr *)&tmpAddr, &tmpLen);
 
-         if ( res > 0 ) {
+      if ( res > 0 ) {
 
-            // Message was too big
-            if (res > avail ) udpLog_->warning("Receive data was too large. Dropping.");
-            else {
-            buff->setPayload(res);
-               sendFrame(frame);
-            }
-
-            // Get new frame
-            frame = ris::Pool::acceptReq(maxPayload(),false);
-
-            // Lock before updating address
-            if ( memcmp(&remAddr_, &tmpAddr, sizeof(remAddr_)) != 0 ) {
-            std::lock_guard<std::mutex> lock(udpMtx_);
-               remAddr_ = tmpAddr;
-            }
-         }
+         // Message was too big
+         if (res > avail ) udpLog_->warning("Receive data was too large. Dropping.");
          else {
+         buff->setPayload(res);
+            sendFrame(frame);
+         }
 
-            // Setup fds for select call
-            FD_ZERO(&fds);
-            FD_SET(fd_,&fds);
+         // Get new frame
+         frame = ris::Pool::acceptReq(maxPayload(),false);
 
-            // Setup select timeout
-            tout.tv_sec  = 0;
-            tout.tv_usec = 100;
-
-            // Select returns with available buffer
-            select(fd_+1,&fds,NULL,NULL,&tout);
+         // Lock before updating address
+         if ( memcmp(&remAddr_, &tmpAddr, sizeof(remAddr_)) != 0 ) {
+         std::lock_guard<std::mutex> lock(udpMtx_);
+            remAddr_ = tmpAddr;
          }
       }
+      else {
+
+         // Setup fds for select call
+         FD_ZERO(&fds);
+         FD_SET(fd_,&fds);
+
+         // Setup select timeout
+         tout.tv_sec  = 0;
+         tout.tv_usec = 100;
+
+         // Select returns with available buffer
+         select(fd_+1,&fds,NULL,NULL,&tout);
+      }
+   }
 }
 
 void rpu::Server::setup_python () {
