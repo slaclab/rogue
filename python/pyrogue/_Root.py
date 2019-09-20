@@ -41,6 +41,9 @@ class RootLogHandler(logging.Handler):
         self._root = root
 
     def emit(self,record):
+
+        if not self._root.running: return
+
         with self._root.updateGroup():
            try:
                 se = { 'created'     : record.created,
