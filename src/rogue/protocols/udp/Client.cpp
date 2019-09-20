@@ -120,6 +120,12 @@ void rpu::Client::acceptFrame ( ris::FramePtr frame ) {
    ris::FrameLockPtr frLock = frame->lock();
    std::lock_guard<std::mutex> lock(udpMtx_);
 
+   // Drop errored frames
+   if ( frame->getError() ) {
+      udpLog_->warning("Client::acceptFrame: Dumping errored frame");
+      return;
+   }
+
    // Go through each buffer in the frame
    for (it=frame->beginBuffer(); it != frame->endBuffer(); ++it) {
       if ( (*it)->getPayload() == 0 ) break;

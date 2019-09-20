@@ -113,6 +113,9 @@ void ru::StreamZip::acceptFrame ( ris::FramePtr frame ) {
 
    // Update output frame
    newFrame->setPayload(strm.total_out_lo32);
+   newFrame->setError(frame->getError());
+   newFrame->setChannel(frame->getChannel());
+   newFrame->setFlags(frame->getFlags());
    BZ2_bzCompressEnd(&strm);
 
    this->sendFrame(newFrame);

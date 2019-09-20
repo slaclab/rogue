@@ -112,6 +112,10 @@ void ru::StreamUnZip::acceptFrame ( ris::FramePtr frame ) {
    } while ( 1 );
 
    newFrame->setPayload(strm.total_out_lo32);
+   newFrame->setError(frame->getError());
+   newFrame->setChannel(frame->getChannel());
+   newFrame->setFlags(frame->getFlags());
+
    BZ2_bzDecompressEnd(&strm);
 
    this->sendFrame(newFrame);

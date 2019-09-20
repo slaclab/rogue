@@ -242,6 +242,12 @@ void rhp::PgpCard::acceptFrame ( ris::FramePtr frame ) {
    ris::FrameLockPtr lock = frame->lock();
    emptyFrame = false;
 
+   // Drop errored frames
+   if ( frame->getError() ) {
+      log_->warning("Dumping errored frame");
+      return;
+   }
+
    // Go through each (*it)er in the frame
    ris::Frame::BufferIterator it;
    for (it = frame->beginBuffer(); it != frame->endBuffer(); ++it) {

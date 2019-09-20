@@ -109,6 +109,9 @@ void ris::Fifo::acceptFrame ( ris::FramePtr frame ) {
       // Copy the frame
       ris::copyFrame(src, size, dst);
       nFrame->setPayload(size);
+      nFrame->setError(frame->getError());
+      nFrame->setChannel(frame->getChannel());
+      nFrame->setFlags(frame->getFlags());
    }
 
    // Append to buffer
