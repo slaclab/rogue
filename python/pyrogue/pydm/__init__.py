@@ -18,17 +18,17 @@ import sys
 import pydm
 import pyrogue.pydm.data_plugins.rogue_plugin
 
-def runPyDM(addrList='localhost:9090'):
+def runPyDM(addrList='localhost:9090', ui=None):
 
     os.environ['ROGUE_SERVERS'] = addrList
 
-    base = os.path.dirname(os.path.abspath(__file__))
+    if ui is None or ui == '':
+        ui = os.path.dirname(os.path.abspath(__file__)) + '/pydmTop.py'
 
-    top = base + '/pydmTop.py'
-
-    app = pydm.PyDMApplication(ui_file=top, 
+    app = pydm.PyDMApplication(ui_file=ui,
                                command_line_args=sys.argv, 
                                hide_nav_bar=True, 
                                hide_menu_bar=True, 
                                hide_status_bar=True)
     app.exec()
+
