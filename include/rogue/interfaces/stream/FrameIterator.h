@@ -233,7 +233,7 @@ namespace rogue {
           * @param size The number of bytes to copy
           * @param src Pointer to data source
           */
-         inline void toFrame ( rogue::interfaces::stream::FrameIterator & iter, uint32_t size, void * src) {
+         static inline void toFrame ( rogue::interfaces::stream::FrameIterator & iter, uint32_t size, void * src) {
             uint8_t * ptr = reinterpret_cast<uint8_t *>(src);
             uint32_t  csize;
 
@@ -253,7 +253,7 @@ namespace rogue {
           * @param size The number of bytes to copy
           * @param dst Pointer to data destination
           */
-         inline void fromFrame ( rogue::interfaces::stream::FrameIterator & iter, uint32_t size, void * dst) {
+         static inline void fromFrame ( rogue::interfaces::stream::FrameIterator & iter, uint32_t size, void * dst) {
             uint8_t * ptr = reinterpret_cast<uint8_t *>(dst);
             uint32_t  csize;
 
@@ -274,8 +274,8 @@ namespace rogue {
           * @param size The number of bytes to copy
           * @param dstIter FrameIterator at position to copy the data to
           */
-         inline void copyFrame ( rogue::interfaces::stream::FrameIterator & srcIter, uint32_t size, 
-                                 rogue::interfaces::stream::FrameIterator & dstIter ) {
+         static inline void copyFrame ( rogue::interfaces::stream::FrameIterator & srcIter, uint32_t size, 
+                                        rogue::interfaces::stream::FrameIterator & dstIter ) {
             uint32_t  csize;
 
             do {

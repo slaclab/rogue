@@ -353,6 +353,29 @@ namespace rogue {
                 * @param offset First location to write byte array into Frame
                 */
                void writePy ( boost::python::object p, uint32_t offset );
+
+
+               //! Python Frame data read returning a numpy array
+               /*  Read a specified number of bytes of data at a specified offset
+                *  into a numpy object which is returned
+                *
+                *  @return The read data as a 1-D numpy byte array
+                *
+                *  @param[in] offset The byte offset into the frame to write to
+                *  @param[in]   size The number of bytes to write
+                *
+                */
+               boost::python::object getNumpy (uint32_t offset,
+                                               uint32_t   size);
+
+               //! Python Frame data write using a numpy array as the source
+               /*   
+                *
+                *  @param[in]     np The numpy array data to be written
+                *  @param[in] offset The byte offset into the frame to write to
+                */
+               void  putNumpy (boost::python::object np,
+                               uint32_t          offset);
 #endif
          };
 
