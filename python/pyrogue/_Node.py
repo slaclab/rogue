@@ -271,37 +271,32 @@ class Node(object):
         # Add to primary list
         self._nodes[node.name] = node 
 
+
     def _addArrayNode(self, node):
 
-        # Detect array variables
-        fields = re.split('\[|\]',node.name)
+        # Generic test array method
+        aname,keys =  extractNodeArray(node.name)
+        if aname is None: return
 
-        # Add array variables
-        if len(fields) == 3 and fields[2] == '':
-            aname = fields[0]
-            key   = fields[1]
+        if not all([key.isdigit() for key in keys]):
+            self._log.warning('Array node with non numeric key: {} may cause lookup errors.'.format(node.name))
+            return
 
-            # Key must be numeric
-            if key.isdigit():
-                key = int(key)
+        # Detect collisions
+        if aname in self.__dir__():
+            raise NodeError('Error adding node with name %s to %s. Name collision.' % 
+                             (node.name,self.name))
 
-                # Detect collisions
-                if aname in self.__dir__():
-                    raise NodeError('Error adding node with name %s to %s. Name collision.' % 
-                                     (node.name,self.name))
+        # Create list if it does not exist
+        if not aname in self._anodes:
+            self._anodes[aname] = []
 
-                # Create list if it does not exist
-                if not aname in self._anodes:
-                    self._anodes[aname] = []
+        # Fill in empy array locations
+        if len(self._anodes[aname]) <= key:
+            self._anodes[aname].extend([None for i in range(key-len(self._anodes[aname]) + 1)])
 
-                # Fill in empy array locations
-                if len(self._anodes[aname]) <= key:
-                    self._anodes[aname].extend([None for i in range(key-len(self._anodes[aname]) + 1)])
+        self._anodes[aname][key] = node
 
-                self._anodes[aname][key] = node
-
-            else:
-                self._log.warning('Adding array node with non numeric key: {} may cause lookup errors.'.format(node.name))
 
     def addNode(self, nodeClass, **kwargs):
         self.add(nodeClass(**kwargs))
@@ -561,20 +556,14 @@ class Node(object):
         # Otherwise we may need to slice an array
         else:
 
-            # Otherwise the passed name may be complex
-            fields = re.split('\[|\]',name)
-
-            # Not a complex array
-            if len(fields) != 3:
-                return None
-
-            # Basename and index
-            aname = fields[0]
-            akey  = fields[1]
+            # Generic test array method
+            aname,keys =  extractNodeArray(node.name)
 
             # Name not in list
-            if aname not in self._anodes:
+            if aname is None or aname not in self._anodes:
                 return None
+
+            akey = keys[0]
 
             # Wildcard
             if akey == '*' or akey == ':':
@@ -589,6 +578,21 @@ class Node(object):
                 return eval(f'self._anodes[aname][{akey}]')
             except:
                 return None
+
+def extractNodeArray(self, name):
+    """
+    Attempt to extract base name and keys for a passed node name
+    Return base name and list of keys. 
+    """
+    # Detect array variables
+    fields = re.split('\]\[|\[|\]',name)
+
+    # Check if array, ending in ']'
+    if fields[-1] != '' or len(fields) < 3:
+        return None, None
+
+    # Extract base name and list of keys
+    return fields[0],fields[1:-1]
 
 
 def genBaseList(cls):
