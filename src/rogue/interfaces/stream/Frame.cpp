@@ -25,11 +25,6 @@
 #include <rogue/GeneralError.h>
 #include <memory>
 
-
-// !!! -- Debugging, jj
-#include <iostream>
-#include <iomanip>
-
 namespace ris  = rogue::interfaces::stream;
 
 #ifndef NO_PYTHON
@@ -374,13 +369,6 @@ void ris::Frame::writePy ( boost::python::object p, uint32_t offset ) {
    minPayload(offset+count);
    PyBuffer_Release(&pyBuf);
 }
-
-
-
-// ---------------
-// --- NUMPY STUFF
-// ---------------
-
 
 //! Read the specified number of bytes at the specified offset of frame data into a numpy array
 boost::python::object ris::Frame::getNumpy (uint32_t offset, uint32_t count)
