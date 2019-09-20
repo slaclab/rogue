@@ -70,45 +70,30 @@ class RogueConnection(PyDMConnection):
 
         self._host, self._port, self._path, self._disp = parseAddress(address)
 
-        self._cmd  = False
-        self._int  = False
-        self._node = None
-        self._enum = None
+        self._cmd    = False
+        self._int    = False
+        self._node   = None
+        self._enum   = None
+        self._notDev = False
 
         if utilities.is_pydm_app():
             self._client = pyrogue.interfaces.VirtualClient(self._host, self._port)
             self._node   = self._client.root.getNode(self._path)
-            self.add_listener(channel)
 
         if self._node is not None and not self._node.isinstance(pyrogue.Device):
-
-            # Command
-            if self._node.isinstance(pyrogue.BaseCommand):
-                self.write_access_signal.emit(True)
-                self._cmd = True
-            else:
-                self.write_access_signal.emit(self._node.mode=='RW')
-
             self._node.addListener(self._updateVariable)
+            self._notDev = True
 
-            if self._node.units is not None:
-                self.unit_signal.emit(self._node.units)
-
-            if self._node.minimum is not None and self._node.maximum is not None:
-                self.upper_ctrl_limit_signal.emit(self._node.maximum)
-                self.lower_ctrl_limit_signal.emit(self._node.minimum)
+            if self._node.isinstance(pyrogue.BaseCommand):
+                self._cmd = True
 
             if self._node.disp == 'enum' and self._node.enum is not None and self._node.mode != 'RO':
                 self._enum = list(self._node.enum.values())
-                self.enum_strings_signal.emit(tuple(self._enum))
 
-            elif 'Int' in self._node.typeStr or self._node.typeStr == 'int':
+            elif (not self._disp) and ('Int' in self._node.typeStr or self._node.typeStr == 'int'):
                 self._int = True
 
-            self.prec_signal.emit(self._node.precision)
-
-            self._updateVariable(self._node.path,self._node.getVariableValue(read=False))
-
+        self.add_listener(channel)
 
     def _updateVariable(self,path,varValue):
         if self._disp:
@@ -142,7 +127,7 @@ class RogueConnection(PyDMConnection):
             else:
                 self._node.setDisp(val)
         except:
-            logger.error("Unable to put %s to %s.  Exception: %s", new_val, self.address, str(e))
+            logger.error("Unable to put %s to %s.  Exception: %s", new_value, self.address, str(e))
 
 
     def add_listener(self, channel):
@@ -167,6 +152,24 @@ class RogueConnection(PyDMConnection):
                 channel.value_signal[np.ndarray].connect(self.put_value, Qt.QueuedConnection)
             except KeyError:
                 pass
+
+        if self._notDev:
+
+            self.write_access_signal.emit(self._cmd or self._node.mode=='RW')
+
+            if self._node.units is not None:
+                self.unit_signal.emit(self._node.units)
+
+            if self._node.minimum is not None and self._node.maximum is not None:
+                self.upper_ctrl_limit_signal.emit(self._node.maximum)
+                self.lower_ctrl_limit_signal.emit(self._node.minimum)
+
+            if self._enum is not None:
+                self.enum_strings_signal.emit(tuple(self._enum))
+
+            self.prec_signal.emit(self._node.precision)
+            self._updateVariable(self._node.path,self._node.getVariableValue(read=False))
+
 
     def remove_listener(self, channel, destroying):
         #if channel.value_signal is not None:
