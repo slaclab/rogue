@@ -214,7 +214,7 @@ class Node(object):
         attr['groups']      = self._groups
         attr['path']        = self._path
         attr['expand']      = self._expand
-        attr['nodes']       = odict({k:v for k,v in self._nodes.items() if v.filterByGroup(incGroups=None,excGroups='NoServe')})
+        attr['nodes']       = odict({k:v for k,v in self._nodes.items() if not v.inGroup('NoServe')})
         attr['props']       = []
         attr['funcs']       = {}
 

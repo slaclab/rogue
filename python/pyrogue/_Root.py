@@ -762,7 +762,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                             strm[p] = val
 
                         # Add to zmq publish
-                        if v.filterByGroup(incGroups=None, excGroups='NoServe'):
+                        if not v.inGroup('NoServe'):
                             zmq[p] = val
 
                         # Call listener functions,

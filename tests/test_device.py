@@ -287,7 +287,7 @@ class AxiVersion(pr.Device):
             value        = 100,
             disp         = '{}',
             hidden       = False,
-            groups       = 'NoConfig',
+            groups       = ['NoConfig','NoAlarm'],
         ))
 
         self.add(pr.LocalVariable(

@@ -60,7 +60,7 @@ class DummyTree(pyrogue.Root):
         p.add(pyrogue.LocalVariable(name='Test2',value=''))
         self.add(p)
 
-        self.AxiVersion.AlarmTest.addToGroup('NoServe')
+        #self.AxiVersion.AlarmTest.addToGroup('NoServe')
 
         self.add(pyrogue.LocalVariable(
             name = 'TestPlot',

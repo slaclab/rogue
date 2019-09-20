@@ -130,6 +130,9 @@
        <property name="channel" stdset="0">
         <string>rogue://0/root.AxiVersion</string>
        </property>
+       <property name="excGroups" stdset="0">
+        <string>Hidden,NoConfig</string>
+       </property>
       </widget>
      </item>
     </layout>
