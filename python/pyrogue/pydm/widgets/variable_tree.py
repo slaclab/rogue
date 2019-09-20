@@ -14,6 +14,7 @@
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
 
+import pyrogue
 from pydm.widgets.frame import PyDMFrame
 from pydm.widgets import PyDMLineEdit, PyDMSpinbox, PyDMPushButton, PyDMEnumComboBox
 from pyrogue.pydm.data_plugins.rogue_plugin import parseAddress
@@ -246,7 +247,7 @@ class VariableTree(PyDMFrame):
         self._children  = []
 
     def connection_changed(self, connected):
-        super(CommandTree, self).connection_changed(connected)
+        super(VariableTree, self).connection_changed(connected)
 
         if not connected: return
 

@@ -14,6 +14,7 @@
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
 
+import pyrogue
 from pydm.widgets.frame import PyDMFrame
 from pydm.widgets import PyDMLineEdit, PyDMPushButton
 from qtpy.QtCore import Qt, Property, Slot
@@ -25,7 +26,7 @@ class RootControl(PyDMFrame):
         PyDMFrame.__init__(self, parent, init_channel)
 
     def connection_changed(self, connected):
-        super(CommandTree, self).connection_changed(connected)
+        super(RootControl, self).connection_changed(connected)
 
         if not connected: return
 

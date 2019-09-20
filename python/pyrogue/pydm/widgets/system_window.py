@@ -30,7 +30,7 @@ class SystemWindow(PyDMFrame):
         PyDMFrame.__init__(self, parent, init_channel)
 
     def connection_changed(self, connected):
-        super(CommandTree, self).connection_changed(connected)
+        super(SystemWindow, self).connection_changed(connected)
 
         if not connected: return
 

@@ -14,6 +14,7 @@
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
 
+import pyrogue
 from pydm.widgets.frame import PyDMFrame
 from pydm.widgets import PyDMSpinbox, PyDMPushButton
 from qtpy.QtCore import Qt, Property
@@ -29,7 +30,7 @@ class SystemLog(PyDMFrame):
         self._logCount  = 0
 
     def connection_changed(self, connected):
-        super(CommandTree, self).connection_changed(connected)
+        super(SystemLog, self).connection_changed(connected)
 
         if not connected: return
 

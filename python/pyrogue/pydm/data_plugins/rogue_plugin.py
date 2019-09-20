@@ -78,10 +78,11 @@ class RogueConnection(PyDMConnection):
         if utilities.is_pydm_app():
             self._client = pyrogue.interfaces.VirtualClient(self._host, self._port)
             self._node   = self._client.root.getNode(self._path)
+            self.add_listener(channel)
+            print("New rogue channel: {}".format(channel))
+            self.connection_state_signal.emit(True)
 
         if self._node is not None and not self._node.isinstance(pyrogue.Device):
-            self.add_listener(channel)
-            self.connection_state_signal.emit(True)
 
             # Command
             if self._node.isinstance(pyrogue.BaseCommand):
