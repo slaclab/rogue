@@ -25,6 +25,7 @@ import rogue
 #import pyrogue.protocols.epicsV4
 import logging
 import math
+import numpy as np
 
 #rogue.Logging.setFilter('pyrogue.epicsV3.Value',rogue.Logging.Debug)
 #rogue.Logging.setLevel(rogue.Logging.Debug)
@@ -37,6 +38,7 @@ class DummyTree(pyrogue.Root):
 
     def __init__(self):
         self._scnt = 0
+        self._sdata = np.array(0)
 
         pyrogue.Root.__init__(self,name='dummyTree',description="Dummy tree for example")
 
@@ -65,8 +67,26 @@ class DummyTree(pyrogue.Root):
             mode = 'RO',
             pollInterval=1.0,
             localGet = self._mySin,
+            minimum=-1.0,
+            maximum=1.0,
             disp='{:1.2f}',
             value = 0.0))
+
+        self.add(pyrogue.LocalVariable(
+            name = 'TestXAxis',
+            mode = 'RO',
+            pollInterval=1.0,
+            localGet = self._myXAxis,
+            disp='{:1.2f}',
+            value = 1.0))
+
+        self.add(pyrogue.LocalVariable(
+            name = 'TestArray',
+            mode = 'RO',
+            pollInterval=1.0,
+            localGet = self._myArray,
+            disp='{:1.2f}',
+            value = np.array(0)))
 
         # Start the tree with pyrogue server, internal nameserver, default interface
         # Set pyroHost to the address of a network interface to specify which nework to run on
@@ -81,9 +101,15 @@ class DummyTree(pyrogue.Root):
 
     def _mySin(self):
         val = math.sin(2*math.pi*self._scnt / 100)
+        self._sdata = np.append(self._sdata,val)
         self._scnt += 1
         return val
-        
+
+    def _myXAxis(self):
+        return float(self._scnt)
+
+    def _myArray(self):
+        return self._sdata
 
 if __name__ == "__main__":
 

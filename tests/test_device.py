@@ -22,6 +22,7 @@ import parse
 import pyrogue as pr
 import rogue
 import rogue.hardware.axi
+import numpy as np
 
 class AxiVersion(pr.Device):
 
@@ -290,9 +291,14 @@ class AxiVersion(pr.Device):
         ))
 
         self.add(pr.LocalVariable(
-            name = 'TestArray',
+            name = 'TestRealArray',
             mode = 'RW',
-            value = [1,2,3,4]))
+            value = np.array([1,2,3,4])))
+
+        self.add(pr.LocalVariable(
+            name = 'TestBool',
+            mode = 'RW',
+            value = False))
 
         @self.command(hidden=False,value='',retValue='')
         def TestCommand(arg):
