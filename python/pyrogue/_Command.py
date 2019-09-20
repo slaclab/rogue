@@ -58,7 +58,7 @@ class BaseCommand(pr.BaseVariable):
         self._background = background
 
         if self._background:
-            self._log.warning("Background commands are deprecated. Please use a Process device")
+            self._log.error("Background commands are deprecated. Please use a Process device instead.")
 
         if retValue is None:
             self._retTypeStr = None
