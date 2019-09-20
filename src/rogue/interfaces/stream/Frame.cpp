@@ -391,7 +391,7 @@ boost::python::object ris::Frame::getNumpy (uint32_t offset, uint32_t count)
 
    // Check this does not request data past the EOF
    if ( (offset + count) > size ) {
-      throw(rogue::GeneralError::boundary("Frame::readPyWithSize",offset+count,size));
+      throw(rogue::GeneralError::boundary("Frame::getNumpy",offset+count,size));
    }
 
 
@@ -427,7 +427,7 @@ void ris::Frame::putNumpy ( boost::python::object p, uint32_t offset ) {
 
 
    // Get the number of bytes in both the source and destination buffers
-   uint32_t size = getSize();
+   uint32_t  size = getSize();
    uint32_t count = pyBuf.len;
 
 
