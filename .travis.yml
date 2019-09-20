@@ -90,7 +90,8 @@ jobs:
         # Rogue
         - cd $TRAVIS_BUILD_DIR
         - mkdir build; cd build
-        - cmake .. -DROGUE_INSTALL=local -DPYTHON_LIBRARY=$PY_PATH/lib/python3.6 -DPYTHON_INCLUDE_DIR=$PY_PATH/include
+        #- cmake .. -DROGUE_INSTALL=local -DPYTHON_LIBRARY=$PY_PATH/lib/python3.6 -DPYTHON_INCLUDE_DIR=$PY_PATH/include
+        - cmake .. -DROGUE_INSTALL=local
         - make -j4 install
 
         # Build Docs
