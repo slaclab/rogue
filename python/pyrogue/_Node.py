@@ -111,6 +111,7 @@ class Node(object):
         self._parent  = None
         self._root    = None
         self._nodes   = odict()
+        self._anodes  = odict()
 
         # Setup logging
         self._log = logInit(cls=self,name=name,path=None)
@@ -195,7 +196,8 @@ class Node(object):
         This override builds an OrderedDict of all child nodes named as 'name[key]' and returns it.
         Raises AttributeError if no such named Nodes are found. """
 
-        ret = attrHelper(self._nodes,name)
+        ret = self._nodeMatch(name)
+
         if ret is None:
             raise AttributeError('{} has no attribute {}'.format(self, name))
         else:
@@ -259,11 +261,47 @@ class Node(object):
                              (node.name,self.name))
 
         # Names of all sub-nodes must be unique
-        if node.name in self.__dir__():
+        if node.name in self.__dir__() or node.name in self._anodes:
             raise NodeError('Error adding node with name %s to %s. Name collision.' % 
                              (node.name,self.name))
 
+        # Detect and add array nodes
+        self._addArrayNode(node)
+
+        # Add to primary list
         self._nodes[node.name] = node 
+
+    def _addArrayNode(self, node):
+
+        # Detect array variables
+        fields = re.split('\[|\]',node.name)
+
+        # Add array variables
+        if len(fields) == 3 and fields[2] == '':
+            aname = fields[0]
+            key   = fields[1]
+
+            # Key must be numeric
+            if key.isdigit():
+                key = int(key)
+
+                # Detect collisions
+                if aname in self.__dir__():
+                    raise NodeError('Error adding node with name %s to %s. Name collision.' % 
+                                     (node.name,self.name))
+
+                # Create list if it does not exist
+                if not aname in self._anodes:
+                    self._anodes[aname] = []
+
+                # Fill in empy array locations
+                if len(self._anodes[aname]) <= key:
+                    self._anodes[aname].extend([None for i in range(key-len(self._anodes[aname]) + 1)])
+
+                self._anodes[aname][key] = node
+
+            else:
+                self._log.warning('Adding array node with non numeric key: {} may cause lookup errors.'.format(node.name))
 
     def addNode(self, nodeClass, **kwargs):
         self.add(nodeClass(**kwargs))
@@ -383,7 +421,7 @@ class Node(object):
         return self._root
 
     def node(self, path):
-        return attrHelper(self._nodes,path)
+        return self._nodeMatch(path)
 
     @property
     def isDevice(self):
@@ -486,101 +524,72 @@ class Node(object):
 
     def _setDict(self,d,writeEach,modes,incGroups,excGroups):
         for key, value in d.items():
-            nlist = nodeMatch(self._nodes,key)
+            ret = self._nodeMatch(key)
 
-            if nlist is None or len(nlist) == 0:
+            if ret is None:
                 self._log.error("Entry {} not found".format(key))
             else:
-                for n in nlist:
-                    if n.filterByGroup(incGroups,excGroups):
-                        n._setDict(value,writeEach,modes,incGroups,excGroups)
+                if not isistance(ret,list):
+                    ret = [ret]
+
+                for n in ret:
+                    if n is not None:
+                        if n.filterByGroup(incGroups,excGroups):
+                            n._setDict(value,writeEach,modes,incGroups,excGroups)
 
     def _setTimeout(self,timeout):
         pass
 
+    def _nodeMatch(self,name):
+        """
+        Return a node or list of nodes which match the given name. The name can either
+        be a single value or a list accessor:
+            value
+            value[9]
+            value[0:1]
+            value[*]
+            value[:]
+        """
+        # Node matches name in node list
+        if name in self._nodes:
+            return self._nodes[name]
 
-def attrHelper(nodes,name):
-    """
-    Return a single item or a list of items matching the passed
+        # Node matches name in node array list
+        elif name in self._anodes:
+            return self._anodes[name]
 
-    name. If the name is an exact match to a single item in the list
-    then return it. Otherwise attempt to find items which match the 
-    passed name, but are array entries: name[n]. Return these items
-    as a list
-    """
-    if name in nodes:
-        return nodes[name]
-    else:
-        ret = odict()
-        rg = re.compile('{:s}\\[(.*?)\\]'.format(name))
-        for k,v in nodes.items():
-            m = rg.match(k)
-            if m:
-                key = m.group(1)
-                if key.isdigit():
-                    key = int(key)
-                ret[key] = v
-
-        if len(ret) == 0:
-            return None
+        # Otherwise we may need to slice an array
         else:
-            return ret
 
+            # Otherwise the passed name may be complex
+            fields = re.split('\[|\]',name)
 
-def nodeMatch(nodes,name):
-    """
-    Return a list of nodes which match the given name. The name can either
-    be a single value or a list accessor:
-        value
-        value[9]
-        value[0:1]
-        value[*]
-    """
+            # Not a complex array
+            if len(fields) != 3:
+                return None
 
-    # First check to see if unit matches a node name
-    # needed when [ and ] are in a variable or device name
-    if name in nodes:
-        return [nodes[name]]
+            # Basename and index
+            aname = fields[0]
+            akey  = fields[1]
 
-    fields = re.split('\[|\]',name)
+            # Name not in list
+            if aname not in self._anodes:
+                return None
 
-    # Wildcard
-    if len(fields) > 1 and (fields[1] == '*' or fields[1] == ':'):
-        return nodeMatch(nodes,fields[0])
-    else:
-        ah = attrHelper(nodes,fields[0])
+            # Wildcard
+            if akey == '*' or akey == ':':
+                return self._anodes[aname]
 
-        # None or exact match is an error
-        if ah is None or not isinstance(ah,odict):
-            return None
+            # Simple lookup
+            if akey.isdigit():
+                return self._anodes[aname][int(akey)]
 
-        # Non integer keys is an error
-        if any(not isinstance(k,int) for k in ah.keys()):
-            return None
+            # Other
+            try:
+                return eval(f'self._anodes[aname][{akey}]')
+            except:
+                return None
 
-        # no slicing, return list
-        if len(fields) == 1:
-            return [v for k,v in ah.items()]
-
-        # Indexed ordered dictionary returned
-        # Convert to list with gaps = None and apply slicing
-        idxLast = max(ah)
-
-        ret = [None] * (idxLast+1)
-        for i,n in ah.items():
-            ret[i] = n
-
-        try:
-            r = eval('ret[{}]'.format(fields[1]))
-        except:
-            r = None
-
-        if r is None or any(v == None for v in r):
-            return None
-        elif isinstance(r,collections.Iterable):
-            return r
-        else:
-            return [r]
 
 def genBaseList(cls):
     ret = [str(cls)]

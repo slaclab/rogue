@@ -257,7 +257,8 @@ class AxiVersion(pr.Device):
 
         self.BuildStamp.addListener(parseBuildStamp)        
       
-        for i in range(16):
+        #for i in range(16):
+        for i in range(1024):
             remap = divmod(i,32)
 
             self.add(pr.RemoteVariable(
@@ -299,6 +300,11 @@ class AxiVersion(pr.Device):
             name = 'TestBool',
             mode = 'RW',
             value = False))
+
+        self.add(pr.LocalVariable(
+            name = 'TestBadArray[x]',
+            mode = 'RW',
+            value = ''))
 
         @self.command(hidden=False,value='',retValue='')
         def TestCommand(arg):

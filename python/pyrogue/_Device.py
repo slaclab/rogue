@@ -508,9 +508,14 @@ class Device(pr.Node,rim.Hub):
 
         # Override defaults as dictated by the _defaults dict
         for varName, defValue in self._defaults.items():
-            match = pr.nodeMatch(self.variables, varName)
-            for var in match:
-                var._default = defValue
+            match = self._nodeMatch(varName)
+
+            if match is not None:
+                if not isinstance(match,list):
+                    match = [match]
+
+                for var in match:
+                    var._default = defValue
 
         # Some variable initialization can run until the blocks are built
         for v in self.variables.values():
