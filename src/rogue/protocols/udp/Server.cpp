@@ -86,7 +86,9 @@ rpu::Server::Server (uint16_t port, bool jumbo) : rpu::Core(jumbo) {
    thread_ = new std::thread(&rpu::Server::runThread, this);
 
    // Set a thread name
+#ifndef __MACH__
    pthread_setname_np( thread_->native_handle(), "UdpServer" );
+#endif
 }
 
 //! Destructor
