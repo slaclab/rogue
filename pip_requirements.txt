@@ -16,3 +16,4 @@ pyzmq
 p4p
 sqlalchemy
 pyserial
+numpy
