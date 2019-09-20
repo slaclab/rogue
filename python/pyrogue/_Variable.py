@@ -22,6 +22,7 @@ import inspect
 import threading
 import re
 import time
+import numpy
 from collections import OrderedDict as odict
 from collections import Iterable
 
@@ -199,7 +200,7 @@ class BaseVariable(pr.Node):
     @pr.expose
     @property
     def precision(self):
-        if 'Float' in self.typeStr or self.typeStr == 'float':
+        if 'ndarray' in self.typeStr or 'Float' in self.typeStr or self.typeStr == 'float':
             res = re.search(r':([0-9])\.([0-9]*)f',self._disp) 
             try:
                 return int(res[2])
@@ -401,7 +402,9 @@ class BaseVariable(pr.Node):
                     self._log.error("Invalid enum value {} in variable '{}'".format(value,self.path))
                     ret = 'INVALID: {:#x}'.format(value)
             else:
-                if value == '' or value is None:
+                if self.typeStr == 'ndarray':
+                    ret = str(value)
+                elif (value == '' or value is None):
                     ret = value
                 else:
                     ret = self.disp.format(value)

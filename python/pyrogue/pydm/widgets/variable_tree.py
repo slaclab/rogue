@@ -14,9 +14,9 @@
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
 
+import pyrogue
 from pydm.widgets.frame import PyDMFrame
 from pydm.widgets import PyDMLineEdit, PyDMSpinbox, PyDMPushButton, PyDMEnumComboBox
-from pydm import utilities
 from pyrogue.pydm.data_plugins.rogue_plugin import parseAddress
 from pyrogue.interfaces import VirtualClient
 from qtpy.QtCore import Qt, Property, Slot
@@ -244,16 +244,13 @@ class VariableTree(PyDMFrame):
         self._tree      = None
         self._addr      = None
         self._port      = None
-        self._en        = False
         self._children  = []
 
-        if init_channel is not None:
-            self._en = True
-            self._build()
+    def connection_changed(self, connected):
+        build = self._connected != connected and connected == True
+        super(VariableTree, self).connection_changed(connected)
 
-    def _build(self):
-        if (not self._en) or (not utilities.is_pydm_app()) or self.channel is None:
-            return
+        if not build: return
 
         self._addr, self._port, path, disp = parseAddress(self.channel)
 
@@ -324,26 +321,4 @@ class VariableTree(PyDMFrame):
             self._excGroups = None
         else:
             self._excGroups = value.split(',')
-
-    @Property(bool)
-    def rogueEnabled(self):
-        return self._en
-
-    @rogueEnabled.setter
-    def rogueEnabled(self, value):
-        self._en = value
-        self._build()
-
-#    def __init__(self, parent=None, args=None, macros=None):
-#        super(RogueWidget, self).__init__(parent=parent, args=args, macros=None)
-#        print("Args = {}".format(args))
-#        print("Macros = {}".format(macros))
-#
-#    def ui_filename(self):
-#        # Point to our UI file
-#        return 'test_widget.ui'
-#
-#    def ui_filepath(self):
-#        # Return the full path to the UI file
-#        return path.join(path.dirname(path.realpath(__file__)), self.ui_filename())
 

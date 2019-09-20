@@ -15,7 +15,6 @@
 #-----------------------------------------------------------------------------
 
 from pydm.widgets.frame import PyDMFrame
-from pydm import utilities
 import pyrogue
 from pyrogue.pydm.data_plugins.rogue_plugin import parseAddress
 from pyrogue.interfaces import VirtualClient
@@ -29,15 +28,12 @@ from pyrogue.pydm.widgets import SystemLog
 class SystemWindow(PyDMFrame):
     def __init__(self, parent=None, init_channel=None):
         PyDMFrame.__init__(self, parent, init_channel)
-        self._en = False
 
-        if init_channel is not None:
-            self._en = True
-            self._build()
+    def connection_changed(self, connected):
+        build = self._connected != connected and connected == True
+        super(SystemWindow, self).connection_changed(connected)
 
-    def _build(self):
-        if (not self._en) or (not utilities.is_pydm_app()) or self.channel is None:
-            return
+        if not build: return
 
         addr, port, path, disp = parseAddress(self.channel)
 
@@ -58,13 +54,4 @@ class SystemWindow(PyDMFrame):
 
         sl = SystemLog(parent=None, init_channel=base+'root.SystemLog')
         vb.addWidget(sl)
-
-    @Property(bool)
-    def rogueEnabled(self):
-        return self._en
-
-    @rogueEnabled.setter
-    def rogueEnabled(self, value):
-        self._en = value
-        self._build()
 
