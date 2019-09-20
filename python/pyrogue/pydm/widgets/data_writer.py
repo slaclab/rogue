@@ -16,7 +16,6 @@
 
 from pydm.widgets.frame import PyDMFrame
 from pydm.widgets import PyDMLineEdit, PyDMPushButton
-from pydm import utilities
 from qtpy.QtCore import Qt, Property, Slot
 from qtpy.QtWidgets import QVBoxLayout, QHBoxLayout, QPushButton
 from qtpy.QtWidgets import QFormLayout, QGroupBox, QFileDialog
@@ -25,15 +24,11 @@ import datetime
 class DataWriter(PyDMFrame):
     def __init__(self, parent=None, init_channel=None):
         PyDMFrame.__init__(self, parent, init_channel)
-        self._en = False
 
-        if init_channel is not None:
-            self._en = True
-            self._build()
+    def connection_changed(self, connected):
+        super(CommandTree, self).connection_changed(connected)
 
-    def _build(self):
-        if (not self._en) or (not utilities.is_pydm_app()) or self.channel is None:
-            return
+        if not connected: return
 
         name = self.channel.split('.')[-1]
 
@@ -139,12 +134,4 @@ class DataWriter(PyDMFrame):
             self._dataFile.setText(dataFile)
             self._dataFile.send_value()
 
-    @Property(bool)
-    def rogueEnabled(self):
-        return self._en
-
-    @rogueEnabled.setter
-    def rogueEnabled(self, value):
-        self._en = value
-        self._build()
 

@@ -24,9 +24,6 @@
        <property name="channel" stdset="0">
         <string>rogue://0/root</string>
        </property>
-       <property name="rogueEnabled" stdset="0">
-        <bool>true</bool>
-       </property>
       </widget>
      </item>
      <item>
@@ -39,9 +36,6 @@
          <property name="channel" stdset="0">
           <string>rogue://0/root</string>
          </property>
-         <property name="rogueEnabled" stdset="0">
-          <bool>true</bool>
-         </property>
         </widget>
        </item>
        <item>
@@ -51,9 +45,6 @@
          </property>
          <property name="channel" stdset="0">
           <string>rogue://0/root.Process</string>
-         </property>
-         <property name="rogueEnabled" stdset="0">
-          <bool>true</bool>
          </property>
         </widget>
        </item>
@@ -66,9 +57,6 @@
        </property>
        <property name="channel" stdset="0">
         <string>rogue://0/root.AxiVersion</string>
-       </property>
-       <property name="rogueEnabled" stdset="0">
-        <bool>true</bool>
        </property>
       </widget>
      </item>

@@ -16,7 +16,6 @@
 
 from pydm.widgets.frame import PyDMFrame
 from pydm.widgets import PyDMSpinbox, PyDMPushButton
-from pydm import utilities
 from qtpy.QtCore import Qt, Property
 from qtpy.QtWidgets import QVBoxLayout, QTreeWidgetItem, QTreeWidget, QGroupBox
 import jsonpickle
@@ -28,15 +27,11 @@ class SystemLog(PyDMFrame):
 
         self._systemLog = None
         self._logCount  = 0
-        self._en        = False
 
-        if init_channel is not None:
-            self._en = True
-            self._build()
+    def connection_changed(self, connected):
+        super(CommandTree, self).connection_changed(connected)
 
-    def _build(self):
-        if (not self._en) or (not utilities.is_pydm_app()) or self.channel is None:
-            return
+        if not connected: return
 
         cpath = self.channel.replace('SystemLog','ClearLog')
 
@@ -99,13 +94,4 @@ class SystemLog(PyDMFrame):
 
         self._systemLog.resizeColumnToContents(0)
         self._logCount = len(lst)
-
-    @Property(bool)
-    def rogueEnabled(self):
-        return self._en
-
-    @rogueEnabled.setter
-    def rogueEnabled(self, value):
-        self._en = value
-        self._build()
 

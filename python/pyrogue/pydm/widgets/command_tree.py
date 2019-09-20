@@ -16,7 +16,6 @@
 
 from pydm.widgets.frame import PyDMFrame
 from pydm.widgets import PyDMLineEdit, PyDMSpinbox, PyDMPushButton, PyDMEnumComboBox
-from pydm import utilities
 from pyrogue.pydm.data_plugins.rogue_plugin import parseAddress
 from pyrogue.interfaces import VirtualClient
 from qtpy.QtCore import Qt, Property, Slot, QPoint
@@ -205,16 +204,12 @@ class CommandTree(PyDMFrame):
         self._tree      = None
         self._addr      = None
         self._port      = None
-        self._en        = False
         self._children  = []
 
-        if init_channel is not None:
-            self._en = True
-            self._build()
+    def connection_changed(self, connected):
+        super(CommandTree, self).connection_changed(connected)
 
-    def _build(self):
-        if (not self._en) or (not utilities.is_pydm_app()) or self.channel is None:
-            return
+        if not connected: return
 
         self._addr, self._port, path, disp = parseAddress(self.channel)
 
@@ -275,13 +270,4 @@ class CommandTree(PyDMFrame):
             self._excGroups = None
         else:
             self._excGroups = value.split(',')
-
-    @Property(bool)
-    def rogueEnabled(self):
-        return self._en
-
-    @rogueEnabled.setter
-    def rogueEnabled(self, value):
-        self._en = value
-        self._build()
 
