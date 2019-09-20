@@ -27,6 +27,7 @@ dependencies:
   - sphinx
   - sphinx_rtd_theme
   - breathe
+  - pyserial
   - p4p
   - sqlalchemy
   - pydm
