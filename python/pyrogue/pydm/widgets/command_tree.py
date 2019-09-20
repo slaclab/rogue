@@ -208,9 +208,10 @@ class CommandTree(PyDMFrame):
         self._children  = []
 
     def connection_changed(self, connected):
+        build = self._connected != connected and connected == True
         super(CommandTree, self).connection_changed(connected)
 
-        if not connected: return
+        if not build: return
 
         self._addr, self._port, path, disp = parseAddress(self.channel)
 

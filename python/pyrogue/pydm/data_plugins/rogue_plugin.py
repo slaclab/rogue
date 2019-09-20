@@ -79,8 +79,6 @@ class RogueConnection(PyDMConnection):
             self._client = pyrogue.interfaces.VirtualClient(self._host, self._port)
             self._node   = self._client.root.getNode(self._path)
             self.add_listener(channel)
-            print("New rogue channel: {}".format(channel))
-            self.connection_state_signal.emit(True)
 
         if self._node is not None and not self._node.isinstance(pyrogue.Device):
 
@@ -149,6 +147,7 @@ class RogueConnection(PyDMConnection):
 
     def add_listener(self, channel):
         super(RogueConnection, self).add_listener(channel)
+        self.connection_state_signal.emit(True)
 
         # If the channel is used for writing to PVs, hook it up to the 'put' methods.
         if channel.value_signal is not None:

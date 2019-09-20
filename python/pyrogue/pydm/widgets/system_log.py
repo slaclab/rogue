@@ -30,9 +30,10 @@ class SystemLog(PyDMFrame):
         self._logCount  = 0
 
     def connection_changed(self, connected):
+        build = self._connected != connected and connected == True
         super(SystemLog, self).connection_changed(connected)
 
-        if not connected: return
+        if not build: return
 
         cpath = self.channel.replace('SystemLog','ClearLog')
 

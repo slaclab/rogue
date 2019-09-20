@@ -27,9 +27,10 @@ class DataWriter(PyDMFrame):
         PyDMFrame.__init__(self, parent, init_channel)
 
     def connection_changed(self, connected):
+        build = self._connected != connected and connected == True
         super(DataWriter, self).connection_changed(connected)
 
-        if not connected: return
+        if not build: return
 
         name = self.channel.split('.')[-1]
 
