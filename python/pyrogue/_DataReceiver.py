@@ -17,39 +17,38 @@ import rogue.interfaces.memory as rim
 import rogue.interfaces.stream as ris
 import pyrogue as pr
 import numpy
+import time
 
 class DataReceiver(pr.Device,ris.Slave):
     """Data Receiver Devicer."""
 
-    def __init__(self, **kwargs):
+    def __init__(self, *, maxRate=30, **kwargs):
         py.Device.__init__(self, **kwargs)
+        self._lastTime = time.time()
+
+        self.add(pr.LocalVariable(name='RxEnable', 
+                                  value=True, 
+                                  description='Frame Rx Enable'))
+
+        self.add(pr.LocalVariable(name='MaxRxRate',
+                                  value=maxRate,
+                                  units='Hz',
+                                  description='Max allowed Rx Frame Rate'))
 
         self.add(pr.LocalVariable(name='FrameCount', 
                                   value=0, 
                                   pollInterval=1,
                                   description='Frame Rx Counter'))
 
+        self.add(pr.LocalVariable(name='ErrorCount',
+                                  value=0, 
+                                  pollInterval=1,
+                                  description='Frame Error Counter'))
+
         self.add(pr.LocalVariable(name='ByteCount',  
                                   value=0, 
                                   pollInterval=1,
                                   description='Byte Rx Counter'))
-
-        self.add(pr.LocalVariable(name='Channel',
-                                  value=0, 
-                                  pollInterval=1,
-                                  description='Channel ID from last received frame'))
-
-        self.add(pr.LocalVariable(name='Flags',
-                                  value=0, 
-                                  disp='{:#x}',
-                                  pollInterval=1,
-                                  description='Flags from last received frame'))
-
-        self.add(pr.LocalVariable(name='Error',
-                                  value=0,
-                                  disp='{:#x}',
-                                  pollInterval=1,
-                                  description='Error field from last received frame'))
 
         self.add(pr.LocalVariable(name='Updated',
                                   value=False,
@@ -60,39 +59,56 @@ class DataReceiver(pr.Device,ris.Slave):
                                   value=numpy.empty(shape=0, dtype=numpy.Int8, order='C'),
                                   description='Data Frame Container'))
 
+    def countReset(self):
+        self.FrameCount.set(0)
+        self.ErrorCount.set(0)
+        self.ByteCount.set(0)
+        super().countReset()
 
     def _acceptFrame(self, frame):
 
-        # The following block of lines needs to be made more effecient, JJ is working on this
-        fl = frame.getPayload()
-        ba = bytearray(fl)
-        frame.read(ba)
+        # Lock frame
+        with frame.lock():
 
-        # including this line, can we do this directly from a frame?
-        nb = numpy.frombuffer(ba, dtype=int8, count=-1, offset=0)
+            # Drop errored frames
+            if frame.getError() != 0: 
+                with self.ErrorCount.lock:
+                    self.ErrorCount.set(self.ErrorCount.value() + 1, write=False)
 
-        with self.FrameCount.lock:
-            self.FrameCount.set(self.FrameCount.value() + 1, write=False)
+                return
 
-        with self.ByteCount.lock:
-            self.ByteCount.set(self.ByteCount.value() + fl, write=False)
+            # The following block of lines needs to be made more effecient, JJ is working on this
+            fl = frame.getPayload()
+            ba = bytearray(fl)
+            frame.read(ba)
 
-        self.Error.set(frame.getError())
-        self.Flags.set(frame.getFlags())
-        self.Channel.set(frame.getChannel())
+            # including this line, can we do this directly from a frame?
+            nb = numpy.frombuffer(ba, dtype=int8, count=-1, offset=0)
+
+            with self.FrameCount.lock:
+                self.FrameCount.set(self.FrameCount.value() + 1, write=False)
+
+            with self.ByteCount.lock:
+                self.ByteCount.set(self.ByteCount.value() + fl, write=False)
 
         # User overridable method for numpy restructuring
         self.process(nb)
-
-        # Set updated flag
-        self.Updated.set(True)
 
 
     def process(self,npArray):
         """ 
         The user can use this method to restructure the numpy array.
         This may include seperating data, header and other payload sub-fields
+        The user should track the max refresh rate using the self._lastTime variable.
         """
-        self.Data.set(npArray)
+        doWrite = False
 
+        # Check for min period
+        if (time.time() - self._lastTime) > (1.0 / float(MaxRxRate.value())):
+            doWrite = True
+            self._lastTime = time.time()
+
+        # Update data
+        self.Data.set(npArray,write=doWrite)
+        self.Updated.set(True,write=doWrite)
 
