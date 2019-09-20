@@ -84,6 +84,11 @@ rpu::Server::Server (uint16_t port, bool jumbo) : rpu::Core(jumbo) {
    // Start rx thread
    threadEn_ = true;
    thread_ = new std::thread(&rpu::Server::runThread, this);
+
+   // Set a thread name
+#ifndef __MACH__
+   pthread_setname_np( thread_->native_handle(), "UdpServer" );
+#endif
 }
 
 //! Destructor
@@ -191,7 +196,7 @@ void rpu::Server::runThread() {
          // Message was too big
          if (res > avail ) udpLog_->warning("Receive data was too large. Dropping.");
          else {
-         buff->setPayload(res);
+            buff->setPayload(res);
             sendFrame(frame);
          }
 

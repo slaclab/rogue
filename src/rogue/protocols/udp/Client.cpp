@@ -87,6 +87,11 @@ rpu::Client::Client ( std::string host, uint16_t port, bool jumbo) : rpu::Core(j
    // Start rx thread
    threadEn_ = true;
    thread_ = new std::thread(&rpu::Client::runThread, this);
+
+   // Set a thread name
+#ifndef __MACH__
+   pthread_setname_np( thread_->native_handle(), "UdpClient" );
+#endif
 }
 
 //! Destructor
