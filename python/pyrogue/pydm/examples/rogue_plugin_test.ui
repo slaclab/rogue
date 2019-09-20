@@ -31,27 +31,6 @@
        <item>
         <layout class="QVBoxLayout" name="verticalLayout_2">
          <item>
-          <widget class="PyDMLabel" name="PyDMLabel">
-           <property name="toolTip">
-            <string/>
-           </property>
-           <property name="channel" stdset="0">
-            <string>rogue://0/dummyTree.AxiVersion.TestBool</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="PyDMWaveformTable" name="PyDMWaveformTable">
-           <property name="toolTip">
-            <string/>
-           </property>
-           <property name="channel" stdset="0">
-            <string>rogue://0/dummyTree.TestArray</string>
-           </property>
-           <column/>
-          </widget>
-         </item>
-         <item>
           <widget class="PyDMCheckbox" name="PyDMCheckbox">
            <property name="toolTip">
             <string/>
@@ -174,11 +153,6 @@
    <header>pyrogue.pydm.widgets.process</header>
   </customwidget>
   <customwidget>
-   <class>PyDMLabel</class>
-   <extends>QLabel</extends>
-   <header>pydm.widgets.label</header>
-  </customwidget>
-  <customwidget>
    <class>PyDMTimePlot</class>
    <extends>QGraphicsView</extends>
    <header>pydm.widgets.timeplot</header>
@@ -208,11 +182,6 @@
    <extends>QFrame</extends>
    <header>pydm.widgets.frame</header>
    <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>PyDMWaveformTable</class>
-   <extends>QTableWidget</extends>
-   <header>pydm.widgets.waveformtable</header>
   </customwidget>
  </customwidgets>
  <resources/>
