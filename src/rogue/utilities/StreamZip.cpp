@@ -69,7 +69,7 @@ void ru::StreamZip::acceptFrame ( ris::FramePtr frame ) {
    strm.opaque  = NULL;
 
    if ( (ret = BZ2_bzCompressInit(&strm,1,0,30)) != BZ_OK ) 
-      throw(rogue::GeneralError::ret("StreamZip::acceptFrame","Error initializing compressor",ret));
+      throw(rogue::GeneralError::create("StreamZip::acceptFrame","Error initializing compressor. ret=%i",ret));
 
    // Setup decompression pointers
    rBuff = frame->beginBuffer();
@@ -85,7 +85,7 @@ void ru::StreamZip::acceptFrame ( ris::FramePtr frame ) {
    do {
 
       if ( (ret = BZ2_bzCompress(&strm,(done)?BZ_FINISH:BZ_RUN)) == BZ_SEQUENCE_ERROR )
-         throw(rogue::GeneralError::ret("StreamZip::acceptFrame","Compression runtime error",ret));
+         throw(rogue::GeneralError::create("StreamZip::acceptFrame","Compression runtime error %i",ret));
 
       // Update read buffer if neccessary
       if ( strm.avail_in == 0 && (!done)) {
@@ -113,6 +113,9 @@ void ru::StreamZip::acceptFrame ( ris::FramePtr frame ) {
 
    // Update output frame
    newFrame->setPayload(strm.total_out_lo32);
+   newFrame->setError(frame->getError());
+   newFrame->setChannel(frame->getChannel());
+   newFrame->setFlags(frame->getFlags());
    BZ2_bzCompressEnd(&strm);
 
    this->sendFrame(newFrame);

@@ -27,11 +27,12 @@ except ImportError:
     from PyQt4.QtGui     import *
 
 import pyrogue
+import pyrogue.interfaces
 import threading
 
 class VariableDev(QObject):
 
-    def __init__(self,*,tree,parent,dev,noExpand,top):
+    def __init__(self,*,tree,parent,dev,noExpand,top,incGroups,excGroups):
         QObject.__init__(self)
         self._parent   = parent
         self._tree     = tree
@@ -40,6 +41,8 @@ class VariableDev(QObject):
 
         self._widget = QTreeWidgetItem(parent)
         self._widget.setText(0,self._dev.name)
+        self._incGroups=incGroups
+        self._excGroups=excGroups
 
         if top:
             self._parent.addTopLevelItem(self._widget)
@@ -65,13 +68,21 @@ class VariableDev(QObject):
     def setup(self,noExpand):
 
         # First create variables
-        for key,val in self._dev.visableVariables.items():
-            self._children.append(VariableLink(tree=self._tree,parent=self._widget,variable=val))
+        for key,val in self._dev.variablesByGroup(incGroups=self._incGroups,excGroups=self._excGroups).items():
+            self._children.append(VariableLink(tree=self._tree,
+                                               parent=self._widget,
+                                               variable=val))
             QCoreApplication.processEvents()
 
         # Then create devices
-        for key,val in self._dev.visableDevices.items():
-            self._children.append(VariableDev(tree=self._tree,parent=self._widget,dev=val,noExpand=noExpand,top=False))
+        for key,val in self._dev.devicesByGroup(incGroups=self._incGroups,excGroups=self._excGroups).items():
+            self._children.append(VariableDev(tree=self._tree,
+                                              parent=self._widget,
+                                              dev=val,
+                                              noExpand=noExpand,
+                                              top=False,
+                                              incGroups=self._incGroups,
+                                              excGroups=self._excGroups))
 
         for i in range(0,4):
             self._tree.resizeColumnToContents(i)
@@ -94,14 +105,21 @@ class VariableLink(QObject):
         self._item = QTreeWidgetItem(parent)
         self._item.setText(0,variable.name)
         self._item.setText(1,variable.mode)
-        self._item.setText(2,variable.typeStr) # Fix this. Should show base and size
+        self._item.setText(2,variable.typeStr)
+
+        
+        self._alarm = QLineEdit()
+        self._alarm.setReadOnly(True)
+        #self._alarm.setText('None')
+        if variable.hasAlarm:
+            self._tree.setItemWidget(self._item,5,self._alarm)
 
         if variable.units:
             self._item.setText(4,str(variable.units))
 
         if self._variable.disp == 'enum' and self._variable.enum is not None and self._variable.mode != 'RO':
             self._widget = QComboBox()
-            self._widget.activated.connect(self.guiChanged)
+            self._widget.activated.connect(self.cbChanged)
 
             self.updateGui.connect(self._widget.setCurrentIndex)
 
@@ -113,7 +131,7 @@ class VariableLink(QObject):
             self._widget = QSpinBox();
             self._widget.setMinimum(self._variable.minimum)
             self._widget.setMaximum(self._variable.maximum)
-            self._widget.valueChanged.connect(self.guiChanged)
+            self._widget.valueChanged.connect(self.sbChanged)
 
             self.updateGui.connect(self._widget.setValue)
 
@@ -132,7 +150,7 @@ class VariableLink(QObject):
             self._widget.setReadOnly(True)
 
         self._tree.setItemWidget(self._item,3,self._widget)
-        self.varListener(None,pyrogue.VariableValue(self._variable))
+        self.varListener(None,self._variable.getVariableValue(read=False))
 
         variable.addListener(self.varListener)
 
@@ -141,6 +159,7 @@ class VariableLink(QObject):
         read_variable  = None
         write_variable = None
 
+        var_info = menu.addAction('Variable Information')
         read_recurse = menu.addAction('Read Recursive')
         write_recurse = menu.addAction('Write Recursive')
         read_device = menu.addAction('Read Device')
@@ -153,7 +172,9 @@ class VariableLink(QObject):
 
         action = menu.exec_(self._widget.mapToGlobal(event))
 
-        if action == read_recurse:
+        if action == var_info:
+            self.infoDialog()
+        elif action == read_recurse:
             self._variable.parent.ReadDevice(True)
         elif action == write_recurse:
             self._variable.parent.WriteDevice(True)
@@ -171,7 +192,41 @@ class VariableLink(QObject):
             else:
                 self._variable.setDisp(self._widget.text())
 
-    def varListener(self, path, value):
+    def infoDialog(self):
+
+        attrs = ['name', 'path', 'description', 'hidden', 'groups', 'enum', 
+                 'typeStr', 'disp', 'precision', 'mode', 'units', 'minimum', 
+                 'maximum', 'lowWarning', 'lowAlarm', 'highWarning', 
+                 'highAlarm', 'alarmStatus', 'alarmSeverity', 'pollInterval']
+
+        if self._variable.isinstance(pyrogue.RemoteVariable):
+            attrs += ['offset', 'bitSize', 'bitOffset', 'verify', 'varBytes']
+
+        msgBox = QDialog()
+        msgBox.setWindowTitle("Variable Information For {}".format(self._variable.name))
+        msgBox.setMinimumWidth(400)
+
+        vb = QVBoxLayout()
+        msgBox.setLayout(vb)
+
+        fl = QFormLayout()
+        fl.setRowWrapPolicy(QFormLayout.DontWrapRows)
+        fl.setFormAlignment(Qt.AlignHCenter | Qt.AlignTop)
+        fl.setLabelAlignment(Qt.AlignRight)
+        vb.addLayout(fl)
+
+        pb = QPushButton('Close')
+        pb.pressed.connect(msgBox.close)
+        vb.addWidget(pb)
+
+        for a in attrs:
+            le = QLineEdit()
+            le.setReadOnly(True)
+            le.setText(str(getattr(self._variable,a)))
+            fl.addRow(a,le)
+        msgBox.exec()
+
+    def varListener(self, path, varVal):
         with self._lock:
             if self._widget is None or self._inEdit is True:
                 return
@@ -179,18 +234,44 @@ class VariableLink(QObject):
             self._swSet = True
 
             if isinstance(self._widget, QComboBox):
-                i = self._widget.findText(value.valueDisp)
+                i = self._widget.findText(varVal.valueDisp)
 
                 if i < 0: i = 0
 
                 if self._widget.currentIndex() != i:
                     self.updateGui.emit(i)
             elif isinstance(self._widget, QSpinBox):
-                if self._widget.value != value.value:
-                    self.updateGui.emit(value)
+                if self._widget.value != varVal.value:
+                    self.updateGui.emit(varVal.value)
             else:
-                if self._widget.text() != value.valueDisp:
-                    self.updateGui[str].emit(value.valueDisp)
+                if self._widget.text() != varVal.valueDisp:
+                    self.updateGui[str].emit(varVal.valueDisp)
+
+            if varVal.severity == 'AlarmMajor':
+                self._alarm.setText('Major')
+                p = QPalette()
+                p.setColor(QPalette.Base,Qt.red)
+                p.setColor(QPalette.Text,Qt.black)
+                self._alarm.setPalette(p)
+
+            elif varVal.severity == 'AlarmMinor':
+                self._alarm.setText('Minor')
+                p = QPalette()
+                p.setColor(QPalette.Base,Qt.yellow)
+                p.setColor(QPalette.Text,Qt.black)
+                self._alarm.setPalette(p)
+
+            elif varVal.severity == 'Good':
+                self._alarm.setText('Good')
+                p = QPalette()
+                p.setColor(QPalette.Base,Qt.green)
+                p.setColor(QPalette.Text,Qt.black)
+                self._alarm.setPalette(p)
+
+            else:
+                self._alarm.setText('')
+                p = QPalette()
+                self._alarm.setPalette(p)
 
             self._swSet = False
 
@@ -207,24 +288,27 @@ class VariableLink(QObject):
         p = QPalette()
         self._widget.setPalette(p)
 
-        self.guiChanged(self._widget.text())
+        self._variable.setDisp(self._widget.text())
         self._inEdit = False
         self.updateGui.emit(self._variable.valueDisp())
 
     @pyqtSlot(int)
-    @pyqtSlot(str)
-    def guiChanged(self, value):
+    def sbChanged(self, value):
+        if self._swSet:
+            return
+        
+        self._inEdit = True
+        self._variable.setDisp(value)
+        self._inEdit = False
+
+    @pyqtSlot(int)
+    def cbChanged(self, value):
         if self._swSet:
             return
 
-        if self._variable.disp == 'enum':
-            # For enums, value will be index of selected item
-            # Need to call itemText to convert to string
-            self._variable.setDisp(self._widget.itemText(value))
-
-        else:
-            # For non enums, value will be string entered in box
-            self._variable.setDisp(value)
+        self._inEdit = True
+        self._variable.setDisp(self._widget.itemText(value))
+        self._inEdit = False
 
 
 class VariableWidget(QWidget):
@@ -240,7 +324,7 @@ class VariableWidget(QWidget):
         vb.addWidget(self.tree)
 
         self.tree.setColumnCount(2)
-        self.tree.setHeaderLabels(['Variable','Mode','Base','Value','Units'])
+        self.tree.setHeaderLabels(['Variable','Mode','Type','Value','Units', 'Alarm', ''])
 
         hb = QHBoxLayout()
         vb.addLayout(hb)
@@ -251,11 +335,17 @@ class VariableWidget(QWidget):
 
         self.devTop = None
 
-    @pyqtSlot(pyrogue.Root)
-    @pyqtSlot(pyrogue.VirtualNode)
-    def addTree(self,root):
+    @pyqtSlot(pyrogue.Root,list,list)
+    @pyqtSlot(pyrogue.interfaces.VirtualNode,list,list)
+    def addTree(self,root,incGroups,excGroups):
         self.roots.append(root)
-        self._children.append(VariableDev(tree=self.tree,parent=self.tree,dev=root,noExpand=False,top=True))
+        self._children.append(VariableDev(tree=self.tree,
+                                          parent=self.tree,
+                                          dev=root,
+                                          noExpand=False,
+                                          top=True,
+                                          incGroups=incGroups,
+                                          excGroups=excGroups))
 
     @pyqtSlot()
     def readPressed(self):

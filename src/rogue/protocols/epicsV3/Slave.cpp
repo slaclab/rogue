@@ -121,6 +121,11 @@ void rpe::Slave::acceptFrame ( ris::FramePtr frame ) {
    rogue::GilRelease noGil;
    ris::FrameLockPtr fLock = frame->lock();
 
+   if ( frame->getError() ) {
+      rpe::Value::log_->error("Got errored frame = 0x%i",frame->getError());
+      return; // Invalid frame, drop it
+   }
+
    fSize = frame->getPayload();
    iter = frame->beginRead();
 

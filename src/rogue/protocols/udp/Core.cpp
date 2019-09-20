@@ -20,6 +20,7 @@
 #include <rogue/protocols/udp/Core.h>
 #include <rogue/Logging.h>
 #include <rogue/GeneralError.h>
+#include <rogue/Helpers.h>
 #include <unistd.h>
 
 namespace rpu = rogue::protocols::udp;

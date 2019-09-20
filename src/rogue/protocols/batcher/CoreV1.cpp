@@ -7,7 +7,7 @@
  * Created       : 10/26/2018
  *-----------------------------------------------------------------------------
  * Description :
- *    AXI Batcher V1
+ *    AXI Batcher V1 (https://confluence.slac.stanford.edu/x/th1SDg)
  *
  * The batcher protocol starts with a super header followed by a number of
  * frames each with a tail to define the boundaries of each frame.
@@ -110,7 +110,8 @@ uint32_t rpb::CoreV1::tailSize() {
 //! Get beginning of tail iterator
 ris::FrameIterator rpb::CoreV1::beginTail(uint32_t index) {
    if ( index >= tails_.size() ) 
-      throw rogue::GeneralError::boundary("batcher::CoreV1::tail", index, tails_.size());
+      throw(rogue::GeneralError::create("bather::CoreV1::beginTail",
+               "Attempt to get tail index %i in message with %i tails",index,tails_.size()));
 
    // Invert order on return
    return tails_[(tails_.size()-1) - index];
@@ -119,7 +120,8 @@ ris::FrameIterator rpb::CoreV1::beginTail(uint32_t index) {
 //! Get end of tail iterator
 ris::FrameIterator rpb::CoreV1::endTail(uint32_t index) {
    if ( index >= tails_.size() ) 
-      throw rogue::GeneralError::boundary("batcher::CoreV1::tail", index, tails_.size());
+      throw rogue::GeneralError::create("batcher::CoreV1::tail", 
+            "Attempt to access tail %i in frame with %i tails", index, tails_.size());
 
    // Invert order on return
    return tails_[(tails_.size()-1) - index] + tailSize_;
@@ -128,7 +130,8 @@ ris::FrameIterator rpb::CoreV1::endTail(uint32_t index) {
 //! Get data
 rpb::DataPtr & rpb::CoreV1::record(uint32_t index) {
    if ( index >= list_.size() ) 
-      throw rogue::GeneralError::boundary("batcher::CoreV1::record", index, list_.size());
+      throw rogue::GeneralError::create("batcher::CoreV1::record", 
+            "Attempt to access record %i in frame with %i records", index, tails_.size());
 
    // Invert order on return
    return list_[(list_.size()-1) - index];
@@ -193,7 +196,15 @@ bool rpb::CoreV1::processFrame ( ris::FramePtr frame ) {
    // headerSize = (uint32_t)pow(2,float( ( (temp >> 4) & 0xF) + 1) );
    /////////////////////////////////////////////////////////////////////////
    // Integer pow() when powers of 2 (more efficient than floating point)
-   headerSize_ = 1 << ( ((temp >> 4) & 0xF) + 1);
+   switch ((temp >> 4) & 0xF) {
+     case 0: headerSize_ = 2; break; // If WIDTH=0x0 (TYPE = 16-bit AXI stream),  then appended header is 2 bytes.
+     case 1: headerSize_ = 4; break; // If WIDTH=0x1 (TYPE = 32-bit AXI stream),  then appended header is 4 bytes.
+     case 2: headerSize_ = 8; break; // If WIDTH=0x2 (TYPE = 64-bit AXI stream),  then appended header is 8 bytes. 
+     case 3: headerSize_ = 16; break;// If WIDTH=0x3 (TYPE = 128-bit AXI stream), then appended header is 16 bytes. 
+     case 4: headerSize_ = 32; break;// If WIDTH=0x4 (TYPE = 256-bit AXI stream), then appended header is 32 bytes.
+     case 5: headerSize_ = 64; break;// If WIDTH=0x5 (TYPE = 512-bit AXI stream), then appended header is 64 bytes.       
+     default: log_->warning("Invalid AXIS Type Detected. Got %i",((temp >> 4) & 0xF)); return false;
+   }
 
    // Set tail size, min 64-bits
    tailSize_ = (headerSize_ < 8)?8:headerSize_;

@@ -126,60 +126,48 @@ endif()
 #####################################
 if((NOT NO_PYTHON) AND (NOT NO_EPICS) AND DEFINED ENV{EPICS_BASE})
    set(DO_EPICS_V3 1)
-   set(EPICSV3_BASE_DIR  $ENV{EPICS_BASE})
+   set(EPICSV3_BASE_DIR $ENV{EPICS_BASE})
    if(DEFINED ENV{EPICS_HOST_ARCH})
-       set(EPICSV3_ARCH      $ENV{EPICS_HOST_ARCH})
+       set(EPICSV3_ARCH $ENV{EPICS_HOST_ARCH})
    else()
        execute_process(COMMAND ${EPICSV3_BASE_DIR}/startup/EpicsHostArch 
                        OUTPUT_VARIABLE EPICSV3_ARCH OUTPUT_STRIP_TRAILING_WHITESPACE)
        string(REGEX REPLACE "\n$" "" EPICSV3_ARCH "${EPICSV3_ARCH}")
    endif()
-   set(EPICSV3_LIB_DIR   ${EPICSV3_BASE_DIR}/lib/${EPICSV3_ARCH} )
 
-   if(APPLE)
+   # PCAS is part of epics before version 4
+   if(DEFINED ENV{EPICS_PCAS_ROOT})
+      set(EPICSV3_PCAS_DIR $ENV{EPICS_PCAS_ROOT})
+   else()
+      set(EPICSV3_PCAS_DIR $ENV{EPICS_BASE})
+   endif()
 
-      if(EPICS_PCAS_ROOT)
-         set(EPICSV3_INCLUDES  ${EPICS_PCAS_ROOT}/include
-                               ${EPICSV3_BASE_DIR}/include
-                               ${EPICSV3_BASE_DIR}/include/compiler/gcc 
-                               ${EPICSV3_BASE_DIR}/include/os/Darwin)
+   # See if we can find the pcas header, may not exist if epics 7 without pcas is installed
+   find_path(E3_TEST_INCLUDE_DIR NAMES casdef.h PATHS ${EPICSV3_PCAS_DIR}/include)
+   if (NOT E3_TEST_INCLUDE_DIR)
+      set(DO_EPICS_V3 0)
+   elseif(APPLE)
 
-         set(EPICSV3_LIBRARIES ${EPICS_PCAS_ROOT}/lib/${EPICSV3_ARCH}/libcas.dylib 
-                               ${EPICS_PCAS_ROOT}/lib/${EPICSV3_ARCH}/libgdd.dylib
-                               ${EPICSV3_LIB_DIR}/libca.dylib 
-                               ${EPICSV3_LIB_DIR}/libCom.dylib )
-      else()
-         set(EPICSV3_INCLUDES  ${EPICSV3_BASE_DIR}/include
-                               ${EPICSV3_BASE_DIR}/include/compiler/gcc 
-                               ${EPICSV3_BASE_DIR}/include/os/Darwin)
+      set(EPICSV3_INCLUDES  ${EPICSV3_PCAS_DIR}/include
+                            ${EPICSV3_BASE_DIR}/include
+                            ${EPICSV3_BASE_DIR}/include/compiler/gcc 
+                            ${EPICSV3_BASE_DIR}/include/os/Darwin)
 
-         set(EPICSV3_LIBRARIES ${EPICSV3_LIB_DIR}/libcas.dylib 
-                               ${EPICSV3_LIB_DIR}/libca.dylib
-                               ${EPICSV3_LIB_DIR}/libCom.dylib
-                               ${EPICSV3_LIB_DIR}/libgdd.dylib )
-      endif()
+      set(EPICSV3_LIBRARIES ${EPICSV3_PCAS_DIR}/lib/${EPICSV3_ARCH}/libcas.dylib 
+                            ${EPICSV3_PCAS_DIR}/lib/${EPICSV3_ARCH}/libgdd.dylib
+                            ${EPICSV3_BASE_DIR}/lib/${EPICSV3_ARCH}/libca.dylib 
+                            ${EPICSV3_BASE_DIR}/lib/${EPICSV3_ARCH}/libCom.dylib )
    else()
 
-      if(EPICS_PCAS_ROOT)
-         set(EPICSV3_INCLUDES  ${EPICS_PCAS_ROOT}/include
-                               ${EPICSV3_BASE_DIR}/include
-                               ${EPICSV3_BASE_DIR}/include/compiler/gcc 
-                               ${EPICSV3_BASE_DIR}/include/os/Linux)
+      set(EPICSV3_INCLUDES  ${EPICSV3_PCAS_DIR}/include
+                            ${EPICSV3_BASE_DIR}/include
+                            ${EPICSV3_BASE_DIR}/include/compiler/gcc 
+                            ${EPICSV3_BASE_DIR}/include/os/Linux)
 
-         set(EPICSV3_LIBRARIES ${EPICS_PCAS_ROOT}/lib/${EPICSV3_ARCH}/libcas.so 
-                               ${EPICS_PCAS_ROOT}/lib/${EPICSV3_ARCH}/libgdd.so
-                               ${EPICSV3_LIB_DIR}/libca.so 
-                               ${EPICSV3_LIB_DIR}/libCom.so )
-      else()
-         set(EPICSV3_INCLUDES  ${EPICSV3_BASE_DIR}/include
-                               ${EPICSV3_BASE_DIR}/include/compiler/gcc 
-                               ${EPICSV3_BASE_DIR}/include/os/Linux)
-
-         set(EPICSV3_LIBRARIES ${EPICSV3_LIB_DIR}/libcas.so 
-                               ${EPICSV3_LIB_DIR}/libca.so
-                               ${EPICSV3_LIB_DIR}/libCom.so
-                               ${EPICSV3_LIB_DIR}/libgdd.so )
-      endif()
+      set(EPICSV3_LIBRARIES ${EPICSV3_PCAS_DIR}/lib/${EPICSV3_ARCH}/libcas.so 
+                            ${EPICSV3_PCAS_DIR}/lib/${EPICSV3_ARCH}/libgdd.so
+                            ${EPICSV3_BASE_DIR}/lib/${EPICSV3_ARCH}/libca.so 
+                            ${EPICSV3_BASE_DIR}/lib/${EPICSV3_ARCH}/libCom.so )
    endif()
 else()
    set(DO_EPICS_V3 0)
@@ -358,6 +346,14 @@ if (NOT (${ROGUE_INSTALL} STREQUAL "local"))
            DESTINATION ${ROGUE_DIR}/include FILES_MATCHING PATTERN "*.h")
 endif()
 
+# Conda activate and deactivate functions
+if ((${ROGUE_INSTALL} STREQUAL "conda"))
+   install(CODE "execute_process(COMMAND scp ${PROJECT_SOURCE_DIR}/templates/activate-rogue.sh
+                                             ${ROGUE_DIR}/etc/conda/activate.d/rogue.sh)")
+   install(CODE "execute_process(COMMAND scp ${PROJECT_SOURCE_DIR}/templates/deactivate-rogue.sh
+                                             ${ROGUE_DIR}/etc/conda/deactivate.d/rogue.sh)")
+endif()
+
 # Python file install
 if (NOT NO_PYTHON)
 
@@ -407,10 +403,7 @@ endif()
 message("")
 
 if (DO_EPICS_V3)
-   message("-- Found EPICS: ${EPICSV3_BASE_DIR}")
-   if (EPICS_PCAS_ROOT)
-      message("-- EPICS_PCAS_ROOT: ${EPICS_PCAS_ROOT}")
-   endif()
+   message("-- Found EPICS: ${EPICSV3_PCAS_DIR}")
 else()
    message("-- EPICS V3 not included!")
 endif()

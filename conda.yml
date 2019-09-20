@@ -1,7 +1,7 @@
 channels:
-  - defaults
+  - tidair-packages
+  - pydm-tag
   - conda-forge
-  - paulscherrerinstitute
 dependencies:
   - python
   - gcc_linux-64
@@ -19,10 +19,15 @@ dependencies:
   - numpy
   - pyqt
   - pyepics
-  - boost
+  - boost=1.69
   - bzip2
   - zeromq
-  - epics-base=3.14.12.8
+  - epics-base
+  - pcas
   - sphinx
   - sphinx_rtd_theme
   - breathe
+  - pyserial
+  - p4p
+  - sqlalchemy
+  - pydm

@@ -34,7 +34,8 @@ env:
     - PY_PATH=$HOME/virtualenv/python3.6.7
     - PACKAGE_DIR=$HOME/packages
     - BOOST_DIR=$PACKAGE_DIR/boost_1_64_0
-    - EPICS_DIR=$PACKAGE_DIR/epics/base-3.15.5
+    - EPICS_DIR=$PACKAGE_DIR/epics/base-7.0.3
+    - EPICS_PCAS_DIR=$PACKAGE_DIR/pcas/pcas-4.13.2
     - MINICONDA_DIR=$PACKAGE_DIR/miniconda
     - DOCKER_ORG_NAME=tidair
     - secure: "mAihaScn+WBYUb+SPZUO3g6qbsFXOaiLHWtcO3uY3KBYO1FLWQ9y9PHGDNfh+ZUp874Gws+q923PrJikRR+43zy4hmC/hSt6zgCd2GqgysqB/Mhpdenz1tUwknA1JLVfGYc4K/AUncNoA5/V6ZdEQZxnetduGyuJkL0ysswQcu4Vlaels2gWC8uKS1kkYerCbwVhRu5j3cPTj2/kk244/NdlejK2u+XMOyybJ+Q4eKqWPxCIoo36ofJvD1g3ZI/fLats1t6F+cK2pXGkDUh38KHE36+cg90jNVo35BN4NlNZHbPJN77ibSQaL2bV4RHmooTlwkXr9F8dlNyy83xQ2LgNZHfo/XeQFIWjQg3MfJ3YzBHBL8hYRhmiHePjKxLa7JTqcTvtxIdAcihnfOzpvfV0thC16RUvURX/a7k9BD7/75lD9zyDc/LXhNB0ZmkZpf1N4JPOJCZNj/UC1KHjAb9NrfYRFHYf8o/YrEWqNjXi81RrBRCmcUNHucJ07MeTXQ9hOZfL7KSpVUAzhVKU3xB/BCDY4bTcZcLsMZQY+cVh4DS9xWQYCNBGscp0ipgeJ7Wh/VRi2zvsZ3F9N7W0ntOPkqSouPIy9O2W0ASWzYpt3kG073xNhDDUsNSGLh4vqkOxKHqQ1WgfpVw9WT0kWq0hNX3mln71V4uVAWdJb0o="
@@ -51,11 +52,13 @@ jobs:
         - export BOOST_ROOT=$BOOST_DIR
         - export EPICS_BASE=$EPICS_DIR
         - export EPICS_CA_ADDR_LIST=127.0.0.1
+        - export EPICS_PCAS_ROOT=$EPICS_PCAS_DIR
         # Install zeromq
         - sudo apt-get install -qq libzmq3-dev
         # Prepare folders
         - mkdir -p $BOOST_DIR
         - mkdir -p $EPICS_DIR
+        - mkdir -p $EPICS_PCAS_DIR
         # Bring all the tags
         - git pull --unshallow
         - git pull
@@ -73,8 +76,15 @@ jobs:
 
         # EPICS base
         - cd $EPICS_DIR
-        - wget -O base-3.15.5.tar.gz https://github.com/epics-base/epics-base/archive/R3.15.5.tar.gz
-        - tar xzf base-3.15.5.tar.gz --strip 1
+        - wget -O base-7.0.3.tar.gz  https://github.com/epics-base/epics-base/archive/R7.0.3.tar.gz
+        - tar xzf base-7.0.3.tar.gz --strip 1
+        - make clean && make && make install
+
+        # EPICS pcas
+        - cd $EPICS_PCAS_DIR
+        - wget -O pcas-4.13.2.tar.gz https://github.com/epics-modules/pcas/archive/v4.13.2.tar.gz
+        - tar xzf pcas-4.13.2.tar.gz --strip 1
+        - echo "EPICS_BASE=$EPICS_BASE" >> configure/RELEASE.local
         - make clean && make && make install
 
         # Rogue
@@ -176,13 +186,11 @@ jobs:
 
       script:
         # Build conda package
-        - conda build --debug conda-recipe    --output-folder bld-dir    -c defaults -c conda-forge -c paulscherrerinstitute
-        - conda build --debug conda-recipe-ne --output-folder bld-dir-ne -c defaults -c conda-forge
+        - conda build --debug conda-recipe --output-folder bld-dir -c tidair-packages -c pydm-tag -c conda-forge
 
       after_success:
         # Upload conda package
         - anaconda -t $CONDA_TOKEN upload bld-dir/`echo $TRAVIS_OS_NAME`-64/*.tar.bz2
-        - anaconda -t $CONDA_TOKEN upload bld-dir-ne/`echo $TRAVIS_OS_NAME`-64/*.tar.bz2
 
     - <<: *deploy-conda-stage   # Conda for MacOS
       os: osx

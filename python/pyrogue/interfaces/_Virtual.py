@@ -24,15 +24,6 @@ import functools as ft
 import jsonpickle
 
 
-def genBaseList(cls):
-    ret = [str(cls)]
-
-    for l in cls.__bases__:
-        if l is not object:
-            ret += genBaseList(l)
-
-    return ret
-
 
 class VirtualProperty(object):
     def __init__(self, node, attr):
@@ -69,8 +60,8 @@ def VirtualFactory(data):
         for k in data['props']:
             setattr(self.__class__,k,VirtualProperty(self,k))
 
-        # Add __call__ if command
-        if str(pr.BaseCommand) in data['bases']:
+        # Add __call__ if command or Process
+        if str(pr.BaseCommand) in data['bases'] or str(pr.Process) in data['bases']:
             setattr(self.__class__,'__call__',self._call)
         
         # Add getNode and addVarListener if root
@@ -81,6 +72,7 @@ def VirtualFactory(data):
         # Add addListener if Variable
         if str(pr.BaseVariable) in data['bases']:
             setattr(self.__class__,'addListener',self._addListener)
+            setattr(self.__class__,'delListener',self._delListener)
 
         VirtualNode.__init__(self,data)
 
@@ -93,7 +85,7 @@ class VirtualNode(pr.Node):
         super().__init__(name=attrs['name'], 
                          description=attrs['description'], 
                          expand=attrs['expand'], 
-                         hidden=attrs['hidden'])
+                         groups=attrs['groups'])
 
         self._path  = attrs['path']
         self._class = attrs['class']
@@ -119,7 +111,12 @@ class VirtualNode(pr.Node):
         return self._client._remoteAttr(self._path, '__call__', *args, **kwargs)
 
     def _addListener(self, listener):
-        self._functions.append(listener)
+        if listener not in self._functions:
+            self._functions.append(listener)
+
+    def _delListener(self, listener):
+        if listener in self._functions:
+            self._functions.remove(listener)
 
     def _addVarListener(self,func):
         self._client._addVarListener(func)
@@ -131,7 +128,7 @@ class VirtualNode(pr.Node):
         if '.' in path:
             lst = path.split('.')
 
-            if lst[0] != self.name:
+            if lst[0] != self.name and lst[0] != 'root':
                 return None
 
             for a in lst[1:]:
@@ -139,12 +136,12 @@ class VirtualNode(pr.Node):
                     return None
                 obj = obj.node(a)
 
-        elif path != self.name:
+        elif path != self.name and path != 'root':
             return None
 
         return obj
 
-    def _isinstance(self,typ):
+    def isinstance(self,typ):
         cs = str(typ)
         return cs in self._bases
 
@@ -172,8 +169,22 @@ class VirtualNode(pr.Node):
 
 
 class VirtualClient(rogue.interfaces.ZmqClient):
+    ClientCache = {}
+
+    def __new__(cls, addr="localhost", port=9099):
+        newHash = hash((addr, port))
+
+        if newHash in cls.ClientCache:
+            return VirtualClient.ClientCache[newHash]
+        else:
+            return super(VirtualClient, cls).__new__(cls, addr, port)
 
     def __init__(self, addr="localhost", port=9099):
+        if hash((addr,port)) in VirtualClient.ClientCache:
+            return 
+
+        VirtualClient.ClientCache[hash((addr, port))] = self
+
         rogue.interfaces.ZmqClient.__init__(self,addr,port)
         self._varListeners = []
         self._root = None
@@ -199,6 +210,9 @@ class VirtualClient(rogue.interfaces.ZmqClient):
         r._virtAttached(r,r,self)
         self._root = r
 
+        setattr(self,self._root.name,self._root)
+
+
     def _remoteAttr(self, path, attr, *args, **kwargs):
         snd = { 'path':path, 'attr':attr, 'args':args, 'kwargs':kwargs }
         y = jsonpickle.encode(snd)
@@ -212,7 +226,8 @@ class VirtualClient(rogue.interfaces.ZmqClient):
         return ret
 
     def _addVarListener(self,func):
-        self._varListeners.append(func)
+        if func not in self._varListeners:
+            self._varListeners.append(func)
 
     def _doUpdate(self,data):
         if self._root is None:
@@ -234,4 +249,13 @@ class VirtualClient(rogue.interfaces.ZmqClient):
     @property
     def root(self):
         return self._root
+
+    def __hash__(self):
+        return hash((self._host, self._port))
+
+    def __eq__(self, other):
+        return (self.host, self.port) == (other._host, other._port)
+
+    def __ne__(self, other):
+        return not (self == other)
 
