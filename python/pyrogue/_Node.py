@@ -441,7 +441,10 @@ class Node(object):
         return self._root
 
     def node(self, path):
-        return self._nodeMatch(path)
+        if name in self._nodes:
+            return self._nodes[name]
+        else:
+            return None
 
     @property
     def isDevice(self):
@@ -546,7 +549,7 @@ class Node(object):
         for key, value in d.items():
             ret = self._nodeMatch(key)
 
-            if ret is None:
+            if len(ret) == 0:
                 self._log.error("Entry {} not found".format(key))
             else:
                 if not isistance(ret,list):
@@ -588,14 +591,7 @@ class Node(object):
             if aname is None or aname not in self._anodes:
                 return None
 
-            lst = _iterateList(self._anodes[aname],keys)
-
-            if len(lst) == 0:
-                return None
-            elif len(lst) == 1:
-                return lst[0]
-            else: 
-                return lst
+            return _iterateList(self._anodes[aname],keys)
 
 
 def _iterateList(lst, keys):
