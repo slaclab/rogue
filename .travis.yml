@@ -10,6 +10,7 @@ addons:
     packages:
       - doxygen
       - doxygen-doc
+      - python-dev
 
 services:
   - docker
