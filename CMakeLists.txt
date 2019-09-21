@@ -59,7 +59,7 @@ if ( NOT NO_PYTHON )
    set(BOOST_ROOT:PATHNAME $ENV{BOOST_PATH})
 
    # First try standard suffix for boost
-   find_package(Boost 1.58 QUIET COMPONENTS system thread python3 numpy)
+   find_package(Boost 1.58 QUIET COMPONENTS system thread python3)
 
    # Next try Debian/Ubuntu suffix for boost
    if (NOT Boost_FOUND)
@@ -68,12 +68,12 @@ if ( NOT NO_PYTHON )
 
    # Next try Mac with homebrew boost/python36
    if (NOT Boost_FOUND)
-      find_package(Boost 1.58 QUIET COMPONENTS system thread python36 numpy36)
+      find_package(Boost 1.58 QUIET COMPONENTS system thread python36)
    endif()
 
    # Next try anaconda with python 3.7
    if (NOT Boost_FOUND)
-      find_package(Boost 1.58 QUIET COMPONENTS system thread python37 numpy37)
+      find_package(Boost 1.58 QUIET COMPONENTS system thread python37)
    endif()
 
    # Nothing worked
