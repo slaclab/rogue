@@ -38,7 +38,8 @@ add_definitions(-D__STDC_FORMAT_MACROS)
 # Boost + Python
 #####################################
 if ( NOT NO_PYTHON ) 
-   find_package(Python3 COMPONENTS Interpreter Development QUIET REQUIRED)
+   find_package(PythonInterp 3.6 QUIET REQUIRED)
+   find_package(PythonLibs 3.6 QUIET REQUIRED)
 
    # Find Numpy
    execute_process(
