@@ -256,20 +256,51 @@ class AxiVersion(pr.Device):
             value = ''))
 
         self.BuildStamp.addListener(parseBuildStamp)        
-      
-        #for i in range(16):
-        for i in range(1024):
-            remap = divmod(i,32)
+     
+        a = 0
+        for i in range(8):
+            for j in range(8):
 
-            self.add(pr.RemoteVariable(
-                name         = 'TestArray[{:d}]'.format(i),
-                description  = 'Array Test Field',
-                offset       = 0x1000 + remap[0]<<2,
-                bitSize      = 1,
-                bitOffset    = remap[1],
-                base         = pr.UInt,
-                mode         = 'RW',
-            ))
+                self.add(pr.RemoteVariable(
+                    name         = 'TestArray[{:d}][{:d}]'.format(i,j),
+                    description  = 'Array Test Field',
+                    offset       = 0x1000 + a,
+                    bitSize      = 32,
+                    bitOffset    = 0,
+                    base         = pr.UInt,
+                    mode         = 'RW',
+                ))
+                a += 4
+
+        self.add(pr.RemoteVariable(
+            name         = 'TestArray[10]',
+            description  = 'Array Test Field',
+            offset       = 0x2800 + a,
+            bitSize      = 32,
+            bitOffset    = 0,
+            base         = pr.UInt,
+            mode         = 'RW',
+        ))
+
+        self.add(pr.RemoteVariable(
+            name         = 'TestSpareArray[5][5]',
+            description  = 'Array Test Field',
+            offset       = 0x2000,
+            bitSize      = 32,
+            bitOffset    = 0,
+            base         = pr.UInt,
+            mode         = 'RW',
+        ))
+
+        self.add(pr.RemoteVariable(
+            name         = 'TestSpareArray[8][8]',
+            description  = 'Array Test Field',
+            offset       = 0x2004,
+            bitSize      = 32,
+            bitOffset    = 0,
+            base         = pr.UInt,
+            mode         = 'RW',
+        ))
 
         self.add(pr.RemoteVariable(
             name         = 'AlarmTest'.format(i),

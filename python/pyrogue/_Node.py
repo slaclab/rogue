@@ -275,7 +275,7 @@ class Node(object):
     def _addArrayNode(self, node):
 
         # Generic test array method
-        aname,keys =  extractNodeArray(node.name)
+        aname,keys =  _extractNodeArray(node.name)
         if aname is None: return
 
         if not all([key.isdigit() for key in keys]):
@@ -284,18 +284,30 @@ class Node(object):
 
         # Detect collisions
         if aname in self.__dir__():
-            raise NodeError('Error adding node with name %s to %s. Name collision.' % 
-                             (node.name,self.name))
+            raise NodeError('Error adding node with name %s to %s. Name collision.' % (node.name,self.name))
 
         # Create list if it does not exist
         if not aname in self._anodes:
             self._anodes[aname] = []
 
-        # Fill in empy array locations
-        if len(self._anodes[aname]) <= key:
-            self._anodes[aname].extend([None for i in range(key-len(self._anodes[aname]) + 1)])
+        # Start at primary list
+        lst = self._anodes[aname]
 
-        self._anodes[aname][key] = node
+        # Iterate through keys
+        for i in range(len(keys)):
+            k = int(keys[i])
+
+            # Fill in empy array locations
+            if len(lst) <= k:
+                lst.extend([None for _ in range(k-len(lst) + 1)])
+
+            # Last key, set node
+            if i == (len(keys)-1): lst[k] = node
+
+            # Add next level array and update pointer
+            else:
+                if lst[k] is None: lst[k] = []
+                lst = lst[k]
 
 
     def addNode(self, nodeClass, **kwargs):
@@ -557,29 +569,52 @@ class Node(object):
         else:
 
             # Generic test array method
-            aname,keys =  extractNodeArray(node.name)
+            aname,keys = _extractNodeArray(name)
 
             # Name not in list
             if aname is None or aname not in self._anodes:
                 return None
 
-            akey = keys[0]
+            lst = _iterateList(self._anodes[aname],keys)
 
-            # Wildcard
-            if akey == '*' or akey == ':':
-                return self._anodes[aname]
-
-            # Simple lookup
-            if akey.isdigit():
-                return self._anodes[aname][int(akey)]
-
-            # Other
-            try:
-                return eval(f'self._anodes[aname][{akey}]')
-            except:
+            if len(lst) == 0:
                 return None
+            elif len(lst) == 1:
+                return lst[0]
+            else: 
+                return lst
 
-def extractNodeArray(self, name):
+
+def _iterateList(lst, keys):
+    retList = []
+
+    if len(keys) == 0 or keys[0] == '*' or keys[0] == ':':
+        subList = lst
+    elif keys[0].isdigit():
+        subList = [lst[int(keys[0])]]
+    else:
+        try:
+            subList = eval(f'lst[{keys[0]}]')
+        except:
+            subList = []
+
+
+    for e in subList:
+
+        if isinstance(e,Node):
+            retList.append(e)
+        elif isinstance(e,list):
+            retList.extend(_iterateList(e,keys[1:]))
+
+    #print("--------------")
+    #print("lst={}".format(lst))
+    #print("subList={}".format(subList))
+    #print("retList={}".format(retList))
+    #print("--------------")
+
+    return retList
+
+def _extractNodeArray(name):
     """
     Attempt to extract base name and keys for a passed node name
     Return base name and list of keys. 
