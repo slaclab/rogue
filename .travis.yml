@@ -1,4 +1,4 @@
-dist: bionic
+dist: xenial
 sudo: required
 
 branches:
@@ -54,7 +54,7 @@ jobs:
         - export EPICS_CA_ADDR_LIST=127.0.0.1
         - export EPICS_PCAS_ROOT=$EPICS_PCAS_DIR
         # Install zeromq
-        - sudo apt-get install -qq libzmq3-dev python-dev
+        - sudo apt-get install -qq libzmq3-dev
         # Prepare folders
         - mkdir -p $BOOST_DIR
         - mkdir -p $EPICS_DIR
@@ -90,8 +90,7 @@ jobs:
         # Rogue
         - cd $TRAVIS_BUILD_DIR
         - mkdir build; cd build
-        #- cmake .. -DROGUE_INSTALL=local -DPYTHON_LIBRARY=$PY_PATH/lib/python3.6 -DPYTHON_INCLUDE_DIR=$PY_PATH/include
-        - cmake .. -DROGUE_INSTALL=local
+        - cmake .. -DROGUE_INSTALL=local -DPYTHON_LIBRARY=$PY_PATH/lib/python3.6 -DPYTHON_INCLUDE_DIR=$PY_PATH/include
         - make -j4 install
 
         # Build Docs
