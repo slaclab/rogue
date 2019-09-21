@@ -282,6 +282,16 @@ class AxiVersion(pr.Device):
             mode         = 'RW',
         ))
 
+        #self.add(pr.RemoteVariable(
+        #    name         = 'TestArray[5]',
+        #    description  = 'Array Test Field',
+        #    offset       = 0x2900 + a,
+        #    bitSize      = 32,
+        #    bitOffset    = 0,
+        #    base         = pr.UInt,
+        #    mode         = 'RW',
+        #))
+
         self.add(pr.RemoteVariable(
             name         = 'TestSpareArray[5][5]',
             description  = 'Array Test Field',

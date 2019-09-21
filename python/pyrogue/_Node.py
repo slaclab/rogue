@@ -196,12 +196,17 @@ class Node(object):
         This override builds an OrderedDict of all child nodes named as 'name[key]' and returns it.
         Raises AttributeError if no such named Nodes are found. """
 
-        ret = self._nodeMatch(name)
+        # Node matches name in node list
+        if name in self._nodes:
+            return self._nodes[name]
 
-        if ret is None:
-            raise AttributeError('{} has no attribute {}'.format(self, name))
+        # Node matches name in node array list
+        elif name in self._anodes:
+            return self._anodes[name]
+
         else:
-            return ret
+            raise AttributeError('{} has no attribute {}'.format(self, name))
+
 
     def __dir__(self):
         return(super().__dir__() + [k for k,v in self._nodes.items()])
@@ -275,8 +280,12 @@ class Node(object):
     def _addArrayNode(self, node):
 
         # Generic test array method
-        aname,keys =  _extractNodeArray(node.name)
-        if aname is None: return
+        fields = re.split('\]\[|\[|\]',node.name)
+        if len(fields) < 3: return
+
+        # Extract name and keys
+        aname = fields[0]
+        keys  = fields[1:-1]
 
         if not all([key.isdigit() for key in keys]):
             self._log.warning('Array node with non numeric key: {} may cause lookup errors.'.format(node.name))
@@ -301,8 +310,12 @@ class Node(object):
             if len(lst) <= k:
                 lst.extend([None for _ in range(k-len(lst) + 1)])
 
-            # Last key, set node
-            if i == (len(keys)-1): lst[k] = node
+            # Last key, set node, check if location already has an array
+            if i == (len(keys)-1): 
+                if lst[k] is not None:
+                    raise NodeError('Error adding node with name %s to %s. Name collision.' % (node.name,self.name))
+
+                lst[k] = node
 
             # Add next level array and update pointer
             else:
@@ -561,15 +574,15 @@ class Node(object):
         if name in self._nodes:
             return self._nodes[name]
 
-        # Node matches name in node array list
-        elif name in self._anodes:
-            return self._anodes[name]
-
         # Otherwise we may need to slice an array
         else:
 
             # Generic test array method
-            aname,keys = _extractNodeArray(name)
+            fields = re.split('\]\[|\[|\]',name)
+
+            # Extract name and keys
+            aname = fields[0]
+            keys  = fields[1:-1]
 
             # Name not in list
             if aname is None or aname not in self._anodes:
@@ -598,36 +611,13 @@ def _iterateList(lst, keys):
         except:
             subList = []
 
-
     for e in subList:
-
         if isinstance(e,Node):
             retList.append(e)
         elif isinstance(e,list):
             retList.extend(_iterateList(e,keys[1:]))
 
-    #print("--------------")
-    #print("lst={}".format(lst))
-    #print("subList={}".format(subList))
-    #print("retList={}".format(retList))
-    #print("--------------")
-
     return retList
-
-def _extractNodeArray(name):
-    """
-    Attempt to extract base name and keys for a passed node name
-    Return base name and list of keys. 
-    """
-    # Detect array variables
-    fields = re.split('\]\[|\[|\]',name)
-
-    # Check if array, ending in ']'
-    if fields[-1] != '' or len(fields) < 3:
-        return None, None
-
-    # Extract base name and list of keys
-    return fields[0],fields[1:-1]
 
 
 def genBaseList(cls):
