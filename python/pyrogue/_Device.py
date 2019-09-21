@@ -277,9 +277,9 @@ class Device(pr.Node,rim.Hub):
 
         # Process local blocks.
         if variable is not None:
-            for b in self._getBlocks(variable):
-                if (force or b.stale):                
-                    b.startTransaction(rim.Write, check=checkEach)
+            for b,v in self._getBlocks(variable).items():
+                if (force or b.stale):
+                    b.startTransaction(rim.Write, check=checkEach, lowByte=v[0], highByte=v[1])
 
         else:
             for block in self._blocks:
@@ -300,8 +300,8 @@ class Device(pr.Node,rim.Hub):
 
         # Process local blocks.
         if variable is not None:
-            for b in self._getBlocks(variable):
-                b.startTransaction(rim.Verify, check=checkEach)
+            for b,v in self._getBlocks(variable).items():
+                b.startTransaction(rim.Verify, check=checkEach, lowByte=v[0], highByte=v[1])
 
         else:
             for block in self._blocks:
@@ -323,8 +323,8 @@ class Device(pr.Node,rim.Hub):
 
         # Process local blocks. 
         if variable is not None:
-            for b in self._getBlocks(variable):
-                b.startTransaction(rim.Read, check=checkEach)
+            for b,v in self._getBlocks(variable).items():
+                b.startTransaction(rim.Read, check=checkEach, lowByte=v[0], highByte=v[1])
 
         else:
             for block in self._blocks:
@@ -343,7 +343,7 @@ class Device(pr.Node,rim.Hub):
 
             # Process local blocks
             if variable is not None:
-                for b in self._getBlocks(variable):
+                for b,v in self._getBlocks(variable).items():
                     b._checkTransaction()
 
             else:
@@ -436,20 +436,35 @@ class Device(pr.Node,rim.Hub):
     def _getBlocks(self, variables):
         """
         Get a list of unique blocks from a list of Variables. 
+        The returned dictionary has the block as the key with each block assocaited
+        with a list. The first list item is the low byte associated with the variable list,
+        the second is the high byte associated with the variable list.
         Variables must belong to this device!
         """
         if isinstance(variables, pr.BaseVariable):
             variables = [variables]
 
-        blocks = []
+        blocks = {}
+
         for v in variables:
             if v.parent is not self:
                 raise DeviceError(
                     f'Variable {v.path} passed to {self.path}._getBlocks() is not a member of {self.path}')
-            else:
-                if v._block not in blocks and v._block is not None:
-                    blocks.append(v._block)
-                
+            elif v._block is not None:
+
+                if isinstance(v,pr.RemoteVariable):
+                    lowByte  = math.floor(v.bitOffset[0] / 8)
+                    highByte = math.floor((v.bitOffset[-1] + v.bitSize[-1] - 1) / 8)
+                else:
+                    lowByte  = None
+                    highByte = None
+
+                if v._block not in blocks:
+                    blocks[v._block] = [lowByte, highByte]
+                elif lowByte is not None and highByte is not None:
+                    if lowByte  < blocks[v._block][0]: blocks[v._block][0] = lowByte
+                    if highByte > blocks[v._block][1]: blocks[v._block][1] = highByte
+
         return blocks
 
     def _buildBlocks(self):
