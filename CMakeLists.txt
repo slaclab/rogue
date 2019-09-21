@@ -38,7 +38,20 @@ add_definitions(-D__STDC_FORMAT_MACROS)
 # Boost + Python
 #####################################
 if ( NOT NO_PYTHON ) 
-   find_package(Python3 COMPONENTS Interpreter Development NumPy QUIET REQUIRED)
+   find_package(Python3 COMPONENTS Interpreter Development QUIET REQUIRED)
+
+   # Find Numpy
+   execute_process(
+      COMMAND python3 -c "import numpy; print(numpy.get_include(), end='')"
+      RESULT_VARIABLE Python3_NumPy_RESULT
+      OUTPUT_VARIABLE Python3_NumPy_INCLUDE_DIRS
+      ERROR_QUIET
+      OUTPUT_STRIP_TRAILING_WHITESPACE)
+
+   if (Python3_NumPy_RESULT)
+      message("")
+      message(FATAL_ERROR "Failed to find numpy includes!")
+   endif()
 
    set(Boost_USE_MULTITHREADED ON)
 
@@ -46,7 +59,7 @@ if ( NOT NO_PYTHON )
    set(BOOST_ROOT:PATHNAME $ENV{BOOST_PATH})
 
    # First try standard suffix for boost
-   find_package(Boost 1.58 QUIET COMPONENTS system thread python3)
+   find_package(Boost 1.58 QUIET COMPONENTS system thread python3 numpy)
 
    # Next try Debian/Ubuntu suffix for boost
    if (NOT Boost_FOUND)
@@ -55,12 +68,12 @@ if ( NOT NO_PYTHON )
 
    # Next try Mac with homebrew boost/python36
    if (NOT Boost_FOUND)
-      find_package(Boost 1.58 QUIET COMPONENTS system thread python36)
+      find_package(Boost 1.58 QUIET COMPONENTS system thread python36 numpy36)
    endif()
 
    # Next try anaconda with python 3.7
    if (NOT Boost_FOUND)
-      find_package(Boost 1.58 QUIET COMPONENTS system thread python37)
+      find_package(Boost 1.58 QUIET COMPONENTS system thread python37 numpy37)
    endif()
 
    # Nothing worked
@@ -395,9 +408,11 @@ message("")
 if (NO_PYTHON)
    message("-- Compiling without boost & python!")
 else()
-message("-- Found boost: ${Boost_INCLUDE_DIRS}")
-message("")
+   message("-- Found boost: ${Boost_INCLUDE_DIRS}")
+   message("")
    message("-- Found python: ${Python3_LIBRARIES}")
+   message("")
+   message("-- Found numpy: ${Python3_NumPy_INCLUDE_DIRS}")
 endif()
 
 message("")
