@@ -23,6 +23,7 @@ requirements:
      - epics-base [linux]
      - pcas       [linux]
      - git
+     - numpy
 
    run:
      - python

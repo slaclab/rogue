@@ -77,13 +77,9 @@ class DataReceiver(pr.Device,ris.Slave):
 
                 return
 
-            # The following block of lines needs to be made more effecient, JJ is working on this
+            # Get numpy array from frame
             fl = frame.getPayload()
-            ba = bytearray(fl)
-            frame.read(ba)
-
-            # including this line, can we do this directly from a frame?
-            nb = numpy.frombuffer(ba, dtype=int8, count=-1, offset=0)
+            nb = frame.getNumpy(0,fl)  # uint8
 
             with self.FrameCount.lock:
                 self.FrameCount.set(self.FrameCount.value() + 1, write=False)
