@@ -440,7 +440,7 @@ class Node(object):
         """
         return self._root
 
-    def node(self, path):
+    def node(self, name):
         if name in self._nodes:
             return self._nodes[name]
         else:
@@ -572,6 +572,9 @@ class Node(object):
             value[0:1]
             value[*]
             value[:]
+        Variables will only match if their depth matches the passed lookup and wildard:
+            value[*] will match a variable named value[1] but not a variable named value[2][3]
+            value[*][*] will match a variable named value[2][3].
         """
         # Node matches name in node list
         if name in self._nodes:
@@ -588,7 +591,7 @@ class Node(object):
             keys  = fields[1:-1]
 
             # Name not in list
-            if aname is None or aname not in self._anodes:
+            if aname is None or aname not in self._anodes or len(keys) == 0:
                 return None
 
             return _iterateList(self._anodes[aname],keys)
@@ -597,7 +600,7 @@ class Node(object):
 def _iterateList(lst, keys):
     retList = []
 
-    if len(keys) == 0 or keys[0] == '*' or keys[0] == ':':
+    if keys[0] == '*' or keys[0] == ':':
         subList = lst
     elif keys[0].isdigit():
         subList = [lst[int(keys[0])]]
@@ -608,9 +611,13 @@ def _iterateList(lst, keys):
             subList = []
 
     for e in subList:
-        if isinstance(e,Node):
+
+        # Add nodes at this level only if key list has been exausted
+        if len(keys) == 1 and isinstance(e,Node):
             retList.append(e)
-        elif isinstance(e,list):
+
+        # Don't go deeper in tree than the keys provided to avoid over-matching nodes
+        elif len(keys) > 1 and isinstance(e,list):
             retList.extend(_iterateList(e,keys[1:]))
 
     return retList
