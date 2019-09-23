@@ -423,11 +423,10 @@ void ris::Frame::putNumpy ( boost::python::object p, uint32_t offset ) {
    // The write routine can only deal with contigious buffers.
    PyArrayObject *arr = reinterpret_cast<decltype(arr)>(obj);   
    int          flags = PyArray_FLAGS (arr);
-   int            ctg = flags & (NPY_ARRAY_C_CONTIGUOUS | NPY_ARRAY_F_CONTIGUOUS);
-   int            wrt = flags & (NPY_ARRAY_WRITEABLE);
-   if ( !(ctg & wrt) ) {
+   bool           ctg = flags & (NPY_ARRAY_C_CONTIGUOUS | NPY_ARRAY_F_CONTIGUOUS);
+   if ( !ctg ) {
       throw(rogue::GeneralError("Frame::putNumpy",
-                                "Object is not either writeable or contiguious"));
+                                "Numpy Array is not contiguious"));
    }
 
    // Get the number of bytes in both the source and destination buffers
