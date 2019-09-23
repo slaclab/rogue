@@ -28,6 +28,7 @@ setup (
               'pyrogue.protocols', 
               'pyrogue.pydm', 
               'pyrogue.pydm.widgets', 
+              'pyrogue.pydm.tools', 
               'pyrogue.pydm.data_plugins' ],
     package_dir={'':'${PROJECT_SOURCE_DIR}/python'},
     package_data={'':['../rogue.so']},

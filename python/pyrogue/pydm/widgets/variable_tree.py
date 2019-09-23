@@ -266,8 +266,8 @@ class VariableTree(PyDMFrame):
         self._tree.setColumnCount(5)
         self._tree.setHeaderLabels(['Variable','Mode','Type','Value','Units'])
 
-        self._tree.setContextMenuPolicy(Qt.CustomContextMenu)
-        self._tree.customContextMenuRequested.connect(self._openMenu)
+        #self._tree.setContextMenuPolicy(Qt.CustomContextMenu)
+        #self._tree.customContextMenuRequested.connect(self._openMenu)
 
         self._tree.itemExpanded.connect(self._expandCb)
 
