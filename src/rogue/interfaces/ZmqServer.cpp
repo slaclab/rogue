@@ -59,7 +59,8 @@ rogue::interfaces::ZmqServer::ZmqServer (std::string addr, uint16_t port) {
    temp.append(std::to_string(static_cast<long long>(port)));
 
    if ( zmq_bind(this->zmqPub_,temp.c_str()) < 0 ) 
-      throw(rogue::GeneralError::network("ZmqServer::ZmqServer",addr,port));
+      throw(rogue::GeneralError::create("ZmqServer::ZmqServer",
+               "Failed to bind server to port %i on interface %i. Another process may be using this port.",port,addr.c_str()));
 
    // Setup response port
    temp = "tcp://";
@@ -68,7 +69,8 @@ rogue::interfaces::ZmqServer::ZmqServer (std::string addr, uint16_t port) {
    temp.append(std::to_string(static_cast<long long>(port+1)));
 
    if ( zmq_bind(this->zmqRep_,temp.c_str()) < 0 ) 
-      throw(rogue::GeneralError::network("ZmqServer::ZmqServer",addr,port+1));
+      throw(rogue::GeneralError::create("ZmqServer::ZmqServer",
+               "Failed to bind server to port %i on interface %i. Another process may be using this port.",port+1,addr.c_str()));
 
    log_->info("Started to Rogue server at ports %i:%i:",port,port+1);
 

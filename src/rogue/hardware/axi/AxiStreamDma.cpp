@@ -8,12 +8,12 @@
  * Description:
  * Class for interfacing to AxiStreamDma Driver.
  * ----------------------------------------------------------------------------
- * This file is part of the rogue software platform. It is subject to 
- * the license terms in the LICENSE.txt file found in the top-level directory 
- * of this distribution and at: 
- *    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
- * No part of the rogue software platform, including this file, may be 
- * copied, modified, propagated, or distributed except according to the terms 
+ * This file is part of the rogue software platform. It is subject to
+ * the license terms in the LICENSE.txt file found in the top-level directory
+ * of this distribution and at:
+ *    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+ * No part of the rogue software platform, including this file, may be
+ * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
@@ -23,6 +23,7 @@
 #include <rogue/interfaces/stream/FrameLock.h>
 #include <rogue/interfaces/stream/Buffer.h>
 #include <rogue/GeneralError.h>
+#include <rogue/Helpers.h>
 #include <memory>
 #include <rogue/GilRelease.h>
 #include <stdlib.h>
@@ -56,7 +57,7 @@ rha::AxiStreamDma::AxiStreamDma ( std::string path, uint32_t dest, bool ssiEnabl
    rogue::GilRelease noGil;
 
    if ( (fd_ = ::open(path.c_str(), O_RDWR)) < 0 )
-      throw(rogue::GeneralError::open("AxiStreamDma::AxiStreamDma",path.c_str()));
+      throw(rogue::GeneralError::create("AxiStreamDma::AxiStreamDma", "Failed to open device file: %s",path.c_str()));
 
    if ( dmaCheckVersion(fd_) < 0 )
       throw(rogue::GeneralError("AxiStreamDma::AxiStreamDma","Bad kernel driver version detected. Please re-compile kernel driver"));
@@ -66,7 +67,9 @@ rha::AxiStreamDma::AxiStreamDma ( std::string path, uint32_t dest, bool ssiEnabl
 
    if  ( dmaSetMaskBytes(fd_,mask) < 0 ) {
       ::close(fd_);
-      throw(rogue::GeneralError::dest("AxiStreamDma::AxiStreamDma",path.c_str(),dest_));
+      throw(rogue::GeneralError::create("AxiStreamDma::AxiStreamDma", 
+            "Failed to open device file %s with dest 0x%x",path.c_str(),dest));
+
    }
 
    // Result may be that rawBuff_ = NULL
@@ -78,6 +81,11 @@ rha::AxiStreamDma::AxiStreamDma ( std::string path, uint32_t dest, bool ssiEnabl
    // Start read thread
    threadEn_ = true;
    thread_ = new std::thread(&rha::AxiStreamDma::runThread, this);
+
+   // Set a thread name
+#ifndef __MACH__
+   pthread_setname_np( thread_->native_handle(), "AxiStreamDma" );
+#endif
 }
 
 //! Close the device
@@ -146,7 +154,7 @@ ris::FramePtr rha::AxiStreamDma::acceptReq ( uint32_t size, bool zeroCopyEn) {
       // Request may be serviced with multiple buffers
       while ( alloc < size ) {
 
-         // Keep trying since select call can fire 
+         // Keep trying since select call can fire
          // but getIndex fails because we did not win the buffer lock
          do {
 
@@ -158,7 +166,7 @@ ris::FramePtr rha::AxiStreamDma::acceptReq ( uint32_t size, bool zeroCopyEn) {
             tout = timeout_;
 
             if ( select(fd_+1,NULL,&fds,NULL,&tout) <= 0 ) {
-               log_->timeout("AxiStreamDma::acceptReq", timeout_);
+               log_->critical("AxiStreamDma::acceptReq: Timeout waiting for outbound buffer after %i.%i seconds! May be caused by outbound backpressure.", timeout_.tv_sec, timeout_.tv_usec);
                res = -1;
             }
             else {
@@ -192,6 +200,12 @@ void rha::AxiStreamDma::acceptFrame ( ris::FramePtr frame ) {
    rogue::GilRelease noGil;
    ris::FrameLockPtr lock = frame->lock();
    emptyFrame = false;
+
+   // Drop errored frames
+   if ( frame->getError() ) {
+      log_->warning("Dumping errored frame");
+      return;
+   }
 
    // Go through each (*it)er in the frame
    ris::Frame::BufferIterator it;
@@ -241,7 +255,7 @@ void rha::AxiStreamDma::acceptFrame ( ris::FramePtr frame ) {
       // Write to pgp with (*it)er copy in driver
       else {
 
-         // Keep trying since select call can fire 
+         // Keep trying since select call can fire
          // but write fails because we did not win the (*it)er lock
          do {
 
@@ -251,9 +265,9 @@ void rha::AxiStreamDma::acceptFrame ( ris::FramePtr frame ) {
 
             // Setup select timeout
             tout = timeout_;
-            
+
             if ( select(fd_+1,NULL,&fds,NULL,&tout) <= 0 ) {
-               log_->timeout("AxiStreamDma::acceptFrame", timeout_);
+               log_->critical("AxiStreamDma::acceptFrame: Timeout waiting for outbound write after %i.%i seconds! May be caused by outbound backpressure.", timeout_.tv_sec, timeout_.tv_usec);
                res = 0;
             }
             else {
@@ -282,7 +296,7 @@ void rha::AxiStreamDma::retBuffer(uint8_t * data, uint32_t meta, uint32_t size) 
       // Device is open and buffer is not stale
       // Bit 30 indicates buffer has already been returned to hardware
       if ( (fd_ >= 0) && ((meta & 0x40000000) == 0) ) {
-         if ( dmaRetIndex(fd_,meta & 0x3FFFFFFF) < 0 ) 
+         if ( dmaRetIndex(fd_,meta & 0x3FFFFFFF) < 0 )
             throw(rogue::GeneralError("AxiStreamDma::retBuffer","AXIS Return Buffer Call Failed!!!!"));
       }
 
@@ -314,10 +328,11 @@ void rha::AxiStreamDma::runThread() {
    luser = 0;
    cont  = 0;
 
+   log_->logThreadId();
+   usleep(1000);
+
    // Preallocate empty frame
    frame = ris::Frame::create();
-
-   log_->logThreadId();
 
    while(threadEn_) {
 

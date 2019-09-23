@@ -2,7 +2,7 @@
 #### Building conda package
 
 ````
-$ conda build -q conda-recipe --python --output-folder bld-dir -c defaults -c conda-forge -c paulscherrerinstitute
+$ conda build --debug conda-recipe --output-folder bld-dir -c tidair-packages -c conda-forge -c pydm-tag
 $ conda activate
 $ anaconda upload bld-dir/linux-64/rogue-.....
 ````

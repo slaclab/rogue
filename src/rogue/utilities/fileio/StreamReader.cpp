@@ -10,12 +10,12 @@
  * Description :
  *    Class to read data files.
  *-----------------------------------------------------------------------------
- * This file is part of the rogue software platform. It is subject to 
- * the license terms in the LICENSE.txt file found in the top-level directory 
- * of this distribution and at: 
-    * https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
- * No part of the rogue software platform, including this file, may be 
- * copied, modified, propagated, or distributed except according to the terms 
+ * This file is part of the rogue software platform. It is subject to
+ * the license terms in the LICENSE.txt file found in the top-level directory
+ * of this distribution and at:
+    * https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+ * No part of the rogue software platform, including this file, may be
+ * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  *-----------------------------------------------------------------------------
 **/
@@ -52,6 +52,7 @@ void ruf::StreamReader::setup_python() {
    bp::class_<ruf::StreamReader, ruf::StreamReaderPtr,bp::bases<ris::Master>, boost::noncopyable >("StreamReader",bp::init<>())
       .def("open",           &ruf::StreamReader::open)
       .def("close",          &ruf::StreamReader::close)
+      .def("isOpen",         &ruf::StreamReader::isOpen)
       .def("closeWait",      &ruf::StreamReader::closeWait)
       .def("isActive",       &ruf::StreamReader::isActive)
    ;
@@ -59,14 +60,14 @@ void ruf::StreamReader::setup_python() {
 }
 
 //! Creator
-ruf::StreamReader::StreamReader() { 
+ruf::StreamReader::StreamReader() {
    baseName_   = "";
    readThread_ = NULL;
    active_     = false;
 }
 
 //! Deconstructor
-ruf::StreamReader::~StreamReader() { 
+ruf::StreamReader::~StreamReader() {
    close();
 }
 
@@ -86,12 +87,17 @@ void ruf::StreamReader::open(std::string file) {
       baseName_ = file;
    }
 
-   if ( (fd_ = ::open(file.c_str(),O_RDONLY)) < 0 ) 
-      throw(rogue::GeneralError::open("StreamReader::open",file));
+   if ( (fd_ = ::open(file.c_str(),O_RDONLY)) < 0 )
+      throw(rogue::GeneralError::create("StreamReader::open","Failed to open data file: %s",file.c_str()));
 
    active_ = true;
    threadEn_ = true;
    readThread_ = new std::thread(&StreamReader::runThread, this);
+
+   // Set a thread name
+#ifndef __MACH__
+   pthread_setname_np( readThread_->native_handle(), "StreamReader" );
+#endif
 }
 
 //! Open file
@@ -118,6 +124,11 @@ void ruf::StreamReader::close() {
    rogue::GilRelease noGil;
    std::unique_lock<std::mutex> lock(mtx_);
    intClose();
+}
+
+//! Get open status
+bool ruf::StreamReader::isOpen() {
+   return ( fd_ >= 0 );
 }
 
 //! Close a data file

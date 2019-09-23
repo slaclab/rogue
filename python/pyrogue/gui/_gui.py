@@ -27,27 +27,53 @@ except ImportError:
     from PyQt4.QtGui     import *
 
 import pyrogue
+import pyrogue.interfaces
 import pyrogue.gui
 import pyrogue.gui.variables
 import pyrogue.gui.commands
 import pyrogue.gui.system
 import threading
+import socket
 import sys
 
+def runGui(root,incGroups=None,excGroups=None):
+    appTop = QApplication(sys.argv)
+    guiTop = pyrogue.gui.GuiTop(incGroups=incGroups,excGroups=excGroups)
+    guiTop.setWindowTitle("Rogue Server: {}".format(socket.gethostname()))
+    guiTop.addTree(root)
+    appTop.exec_()
 
 def application(argv):
     return QApplication(argv)
 
 class GuiTop(QWidget):
 
-    newRoot = pyqtSignal(pyrogue.Root)
-    newVirt = pyqtSignal(pyrogue.VirtualNode)
+    newRoot = pyqtSignal(pyrogue.Root,list,list)
+    newVirt = pyqtSignal(pyrogue.interfaces.VirtualNode,list,list)
 
-    def __init__(self,*, parent=None, group=None):
+    def __init__(self,*, parent=None, incGroups=None, excGroups=None, group=None):
         super(GuiTop,self).__init__(parent)
 
-        if group is not None:
-            print("The GuiTop group attribute is now deprecated. Please remove it.")
+        print("---------------------------------------------------------------")
+        print("The legacy GUI is now depcreated. Please use pyDM.")
+        print("   To start in python script see: pyrogue.pydm.runPyDM().")
+        print("   To start from command line: python -m pyrogue --help")
+        print("   serverPort must be set in root.start() to use pydm")
+        print("---------------------------------------------------------------")
+
+        if incGroups is None:
+            self._incGroups=[]
+        elif isinstance(incGroups,list):
+            self._incGroups=incGroups
+        else:
+            self._incGroups=[incGroups]
+
+        if excGroups is None:
+            self._excGroups=['Hidden']
+        elif isinstance(excGroups,list):
+            self._excGroups=excGroups
+        else:
+            self._excGroups=[excGroups]
 
         vb = QVBoxLayout()
         self.setLayout(vb)
@@ -76,14 +102,14 @@ class GuiTop(QWidget):
         if not root.running:
             raise Exception("GUI can not be attached to a tree which is not started")
 
-        if isinstance(root,pyrogue.VirtualNode):
-            self.newVirt.emit(root)
+        if isinstance(root,pyrogue.interfaces.VirtualNode):
+            self.newVirt.emit(root,self._incGroups,self._excGroups)
         else:
-            self.newRoot.emit(root)
+            self.newRoot.emit(root,self._incGroups,self._excGroups)
 
-    @pyqtSlot(pyrogue.Root)
-    @pyqtSlot(pyrogue.VirtualNode)
-    def _addTree(self,root):
+    @pyqtSlot(pyrogue.Root,list,list)
+    @pyqtSlot(pyrogue.interfaces.VirtualNode,list,list)
+    def _addTree(self,root,incGroups,excGroups):
         self.sys = pyrogue.gui.system.SystemWidget(root=root,parent=self.tab)
         self.tab.addTab(self.sys,root.name)
         self.adjustSize()

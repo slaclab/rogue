@@ -79,7 +79,7 @@ void ris::Slave::acceptFrame ( ris::FramePtr frame ) {
    if ( debug_ > 0 ) {
       char buffer[1000];
 
-      log_->critical("Got Size=%i, Data:",frame->getPayload());
+      log_->critical("Got Size=%i, Error=%i, Data:",frame->getPayload(),frame->getError());
       sprintf(buffer,"     ");
 
       count = 0;

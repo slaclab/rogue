@@ -20,6 +20,10 @@ import parse
 import math
 import inspect
 import threading
+import re
+import time
+import numpy
+from collections import OrderedDict as odict
 from collections import Iterable
 
 class VariableError(Exception):
@@ -27,13 +31,73 @@ class VariableError(Exception):
     pass
 
 
+def VariableWait(varList, testFunction, timeout=0):
+    """
+    Wait for a number of variable conditions to be true.
+    Pass a variable or list of variables, and a test function.
+    The test function is passed a dictionary containing the current
+    variableValue state index by variable path
+    i.e. w = VariableWait([root.device.var1,root.device.var2], 
+                          lambda varValues: varValues['root.device.var1'].value >= 10 and \
+                                            varValues['root.device.var1'].value >= 20)
+    """
+
+    # Container class
+    class varStates(object):
+
+        def __init__(self):
+            self.vlist  = odict()
+            self.cv     = threading.Condition()
+
+        # Method to handle variable updates callback
+        def varUpdate(self,path,varValue):
+            with self.cv:
+                if path in self.vlist:
+                    self.vlist[path] = varValue
+                    self.cv.notify()
+
+    # Convert single variable to a list
+    if not isinstance(varList,list):
+        varList = [varList]
+
+    # Setup tracking
+    states = varStates()
+
+    # Add variable to list and register handler
+    with states.cv:
+        for v in varList:
+            v.addListener(states.varUpdate)
+            states.vlist[v.path] = v.getVariableValue(read=False)
+
+    # Go into wait loop
+    ret    = False
+    start  = time.time()
+
+    with states.cv:
+
+        # Check current state
+        ret = testFunction(list(states.vlist.values()))
+
+        # Run until timeout or all conditions have been met
+        while (not ret) and ((timeout == 0) or ((time.time()-start) < timeout)):
+            states.cv.wait(0.5)
+            ret = testFunction(list(states.vlist.values()))
+
+        # Cleanup
+        for v in varList:
+            v.delListener(states.varUpdate)
+
+    return ret
+
+
 class VariableValue(object):
-    def __init__(self, var):
-        self.value     = var.value()
+    def __init__(self, var, read=False):
+        self.value     = var.get(read=read)
         self.valueDisp = var.genDisp(self.value)
         self.disp      = var.disp
         self.enum      = var.enum
 
+        self.status, self.severity = var._alarmState(self.value)
 
 class BaseVariable(pr.Node):
 
@@ -46,8 +110,13 @@ class BaseVariable(pr.Node):
                  enum=None,
                  units=None,
                  hidden=False,
+                 groups=None,
                  minimum=None,
                  maximum=None,
+                 lowWarning=None,
+                 lowAlarm=None,
+                 highWarning=None,
+                 highAlarm=None,
                  pollInterval=0,
                  typeStr='Unknown',
                  offset=0
@@ -56,8 +125,12 @@ class BaseVariable(pr.Node):
         # Public Attributes
         self._mode          = mode
         self._units         = units
-        self._minimum       = minimum # For base='range'
-        self._maximum       = maximum # For base='range'
+        self._minimum       = minimum
+        self._maximum       = maximum
+        self._lowWarning    = lowWarning
+        self._lowAlarm      = lowAlarm
+        self._highWarning   = highWarning
+        self._highAlarm     = highAlarm
         self._default       = value
         self._block         = None
         self._pollInterval  = pollInterval
@@ -102,7 +175,7 @@ class BaseVariable(pr.Node):
             raise VariableError(f'Invalid variable mode {self._mode}. Supported: RW, RO, WO')
 
         # Call super constructor
-        pr.Node.__init__(self, name=name, description=description, hidden=hidden)
+        pr.Node.__init__(self, name=name, description=description, hidden=hidden, groups=groups)
 
     @pr.expose
     @property
@@ -126,6 +199,18 @@ class BaseVariable(pr.Node):
 
     @pr.expose
     @property
+    def precision(self):
+        if 'ndarray' in self.typeStr or 'Float' in self.typeStr or self.typeStr == 'float':
+            res = re.search(r':([0-9])\.([0-9]*)f',self._disp) 
+            try:
+                return int(res[2])
+            except:
+                return 3
+        else:
+            return 0
+
+    @pr.expose
+    @property
     def mode(self):
         return self._mode
 
@@ -144,11 +229,52 @@ class BaseVariable(pr.Node):
     def maximum(self):
         return self._maximum
 
+    @pr.expose
+    @property
+    def hasAlarm(self):
+        return (self._lowWarning is not None or
+                self._lowAlarm is not None or
+                self._highWarning is not None or
+                self._highAlarm is not None)
+
+    @pr.expose
+    @property
+    def lowWarning(self):
+        return self._lowWarning
+
+    @pr.expose
+    @property
+    def lowAlarm(self):
+        return self._lowAlarm
+
+    @pr.expose
+    @property
+    def highWarning(self):
+        return self._highWarning
+
+    @pr.expose
+    @property
+    def highAlarm(self):
+        return self._highAlarm
+
+    @pr.expose
+    @property
+    def alarmStatus(self):
+        stat,sevr = self._alarmState(self.value())
+        return stat
+
+    @pr.expose
+    @property
+    def alarmSeverity(self):
+        stat,sevr = self._alarmState(self.value())
+        return sevr
+
     def addDependency(self, dep):
         if dep not in self.__dependencies:
             self.__dependencies.append(dep)
             dep.addListener(self)
 
+    @pr.expose
     @property
     def pollInterval(self):
         return self._pollInterval
@@ -157,6 +283,14 @@ class BaseVariable(pr.Node):
     def pollInterval(self, interval):
         self._pollInterval = interval
         self._updatePollInterval()
+
+    @pr.expose
+    @property
+    def lock(self):
+        if self._block is not None:
+            return self._block._lock
+        else:
+            return None
 
     @property
     def dependencies(self):
@@ -169,9 +303,18 @@ class BaseVariable(pr.Node):
         The variable and value class are passed as an arg: func(path,varValue)
         """
         if isinstance(listener, BaseVariable):
-            self.__listeners.append(listener)
+            if listener not in self.__listeners:
+                self.__listeners.append(listener)
         else:
-            self.__functions.append(listener)
+            if listener not in self.__functions:
+                self.__functions.append(listener)
+
+    def delListener(self, listener):
+        """
+        Remove a listener Variable or function
+        """
+        if listener in self.__functions:
+            self.__functions.remove(listener)
 
     @pr.expose
     def set(self, value, write=True):
@@ -190,7 +333,7 @@ class BaseVariable(pr.Node):
                     self._parent.checkBlocks(recurse=False, variable=self)
 
         except Exception as e:
-            self._log.exception(e)
+            pr.logException(self._log,e)
             self._log.error("Error setting value '{}' to variable '{}' with type {}".format(value,self.path,self.typeStr))
 
     @pr.expose
@@ -208,7 +351,7 @@ class BaseVariable(pr.Node):
                 self._block.startTransaction(rogue.interfaces.memory.Post, check=True)
 
         except Exception as e:
-            self._log.exception(e)
+            pr.logException(self._log,e)
             self._log.error("Error posting value '{}' to variable '{}' with type {}".format(value,self.path,self.typeStr))
 
     @pr.expose
@@ -229,11 +372,20 @@ class BaseVariable(pr.Node):
                 ret = None
 
         except Exception as e:
-            self._log.exception(e)
+            pr.logException(self._log,e)
             self._log.error("Error reading value from variable '{}'".format(self.path))
             ret = None
 
         return ret
+
+    @pr.expose
+    def getVariableValue(self,read=True):
+        """ 
+        Return the value after performing a read from hardware if applicable.
+        Hardware read is blocking. An error will result in a logged exception.
+        Listeners will be informed of the update.
+        """
+        return VariableValue(self,read=read)
 
     @pr.expose
     def value(self):
@@ -250,13 +402,15 @@ class BaseVariable(pr.Node):
                     self._log.error("Invalid enum value {} in variable '{}'".format(value,self.path))
                     ret = 'INVALID: {:#x}'.format(value)
             else:
-                if value == '' or value is None:
+                if self.typeStr == 'ndarray':
+                    ret = str(value)
+                elif (value == '' or value is None):
                     ret = value
                 else:
                     ret = self.disp.format(value)
 
         except Exception as e:
-            self._log.exception(e)
+            pr.logException(self._log,e)
             self._log.error(f"Error generating disp for value {value} in variable {self.path}")
             ret = None
 
@@ -300,8 +454,22 @@ class BaseVariable(pr.Node):
         try:
             self.set(self.parseDisp(sValue), write)
         except Exception as e:
-            self._log.exception(e)
+            pr.logException(self._log,e)
             self._log.error("Error setting value '{}' to variable '{}' with type {}".format(sValue,self.path,self.typeStr))
+
+    @pr.expose
+    def write(self):
+        """
+        Force a write of the variable.
+        """
+        try:
+            if self._block is not None:
+                self._parent.writeBlocks(force=True, recurse=False, variable=self)
+                self._parent.verifyBlocks(recurse=False, variable=self)
+                self._parent.checkBlocks(recurse=False, variable=self)
+
+        except Exception as e:
+            pr.logException(self._log,e)
 
     @pr.expose
     def nativeType(self):
@@ -322,12 +490,12 @@ class BaseVariable(pr.Node):
         self._setDefault()
         self._updatePollInterval()
 
-    def _setDict(self,d,writeEach,modes):
+    def _setDict(self,d,writeEach,modes,incGroups,excGroups):
         #print(f'{self.path}._setDict(d={d})')        
         if self._mode in modes:
             self.setDisp(d,writeEach)
 
-    def _getDict(self,modes):
+    def _getDict(self,modes,incGroups,excGroups):
         if self._mode in modes:
             return VariableValue(self)
         else:
@@ -348,6 +516,29 @@ class BaseVariable(pr.Node):
 
         return val
 
+    def _alarmState(self,value):
+        """ Return status, severity """
+
+        if isinstance(value,list) or isinstance(value,dict): return 'None','None'
+
+        if (self.hasAlarm is False):
+            return "None", "None"
+        
+        elif (self._lowAlarm  is not None and value < self._lowAlarm):
+            return 'AlarmLoLo', 'AlarmMajor'
+
+        elif (self._highAlarm  is not None and value > self._highAlarm):
+            return 'AlarmHiHi', 'AlarmMajor'
+
+        elif (self._lowWarning  is not None and value < self._lowWarning):
+            return 'AlarmLow', 'AlarmMinor'
+
+        elif (self._highWarning is not None and value > self._highWarning):
+            return 'AlarmHigh', 'AlarmMinor'
+
+        else:
+            return 'Good','Good'
+
 
 class RemoteVariable(BaseVariable):
 
@@ -360,9 +551,14 @@ class RemoteVariable(BaseVariable):
                  enum=None,
                  units=None,
                  hidden=False,
+                 groups=None,
                  minimum=None,
                  maximum=None,
-                 base=pr.UInt,                                 
+                 lowWarning=None,
+                 lowAlarm=None,
+                 highWarning=None,
+                 highAlarm=None,
+                 base=pr.UInt,
                  offset=None,
                  bitSize=32,
                  bitOffset=0,
@@ -375,8 +571,10 @@ class RemoteVariable(BaseVariable):
 
         BaseVariable.__init__(self, name=name, description=description, 
                               mode=mode, value=value, disp=disp, 
-                              enum=enum, units=units, hidden=hidden,
+                              enum=enum, units=units, hidden=hidden, groups=groups, 
                               minimum=minimum, maximum=maximum,
+                              lowWarning=lowWarning, lowAlarm=lowAlarm,
+                              highWarning=highWarning, highAlarm=highAlarm,
                               pollInterval=pollInterval)
 
         self._base     = base        
@@ -411,6 +609,7 @@ class RemoteVariable(BaseVariable):
         self._overlapEn = overlapEn
 
 
+    @pr.expose
     @property
     def varBytes(self):
         return self._bytes
@@ -490,8 +689,13 @@ class LocalVariable(BaseVariable):
                  enum=None,
                  units=None,
                  hidden=False,
+                 groups=None,
                  minimum=None,
                  maximum=None,
+                 lowWarning=None,
+                 lowAlarm=None,
+                 highWarning=None,
+                 highAlarm=None,
                  localSet=None,
                  localGet=None,
                  typeStr='Unknown',
@@ -502,8 +706,10 @@ class LocalVariable(BaseVariable):
 
         BaseVariable.__init__(self, name=name, description=description, 
                               mode=mode, value=value, disp=disp, 
-                              enum=enum, units=units, hidden=hidden,
+                              enum=enum, units=units, hidden=hidden, groups=groups,
                               minimum=minimum, maximum=maximum, typeStr=typeStr,
+                              lowWarning=lowWarning, lowAlarm=lowAlarm,
+                              highWarning=highWarning, highAlarm=highAlarm,
                               pollInterval=pollInterval)
 
         self._block = pr.LocalBlock(variable=self,localSet=localSet,localGet=localGet,value=self._default)
@@ -637,46 +843,17 @@ class LinkVariable(BaseVariable):
 # Function helper
 def varFuncHelper(func,pargs,log,path):
 
-    if not callable(func):
-        log.warning("Using deprecated eval string. Please change to function: {}".format(path))
+    try:
+        # Function args
+        fargs = inspect.getfullargspec(func).args + \
+                inspect.getfullargspec(func).kwonlyargs 
 
-        dev   = None
-        var   = None
-        cmd   = None
-        arg   = None
-        value = 0
+        # Build overlapping arg list
+        args = {k:pargs[k] for k in fargs if k is not 'self' and k in pargs}
 
-        if 'dev' in pargs:
-            dev = pargs['dev']
+    # handle c++ functions, no args supported for now
+    except:
+        args = {}
 
-        if 'var' in pargs:
-            var = pargs['var']
-
-        if 'cmd' in pargs:
-            cmd = pargs['cmd']
-
-        if 'arg' in pargs:
-            arg = pargs['arg']
-
-        ns = locals()
-        exec(textwrap.dedent(func),ns)
-        value = ns['value']
-        return value
-
-    else:
-
-        # Python functions
-        try:
-            # Function args
-            fargs = inspect.getfullargspec(func).args + \
-                    inspect.getfullargspec(func).kwonlyargs 
-
-            # Build overlapping arg list
-            args = {k:pargs[k] for k in fargs if k is not 'self' and k in pargs}
-
-        # handle c++ functions, no args supported for now
-        except:
-            args = {}
-
-        return func(**args)
+    return func(**args)
 

@@ -7,12 +7,12 @@
  * Description :
  *    Class to read data files generated using LegacyFileWriter
  *-----------------------------------------------------------------------------
- * This file is part of the rogue software platform. It is subject to 
- * the license terms in the LICENSE.txt file found in the top-level directory 
- * of this distribution and at: 
-    * https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
- * No part of the rogue software platform, including this file, may be 
- * copied, modified, propagated, or distributed except according to the terms 
+ * This file is part of the rogue software platform. It is subject to
+ * the license terms in the LICENSE.txt file found in the top-level directory
+ * of this distribution and at:
+    * https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+ * No part of the rogue software platform, including this file, may be
+ * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  *-----------------------------------------------------------------------------
 **/
@@ -58,14 +58,14 @@ void ruf::LegacyStreamReader::setup_python() {
 }
 
 //! Creator
-ruf::LegacyStreamReader::LegacyStreamReader() { 
+ruf::LegacyStreamReader::LegacyStreamReader() {
    baseName_   = "";
    readThread_ = NULL;
    active_     = false;
 }
 
 //! Deconstructor
-ruf::LegacyStreamReader::~LegacyStreamReader() { 
+ruf::LegacyStreamReader::~LegacyStreamReader() {
    close();
 }
 
@@ -85,12 +85,17 @@ void ruf::LegacyStreamReader::open(std::string file) {
       baseName_ = file;
    }
 
-   if ( (fd_ = ::open(file.c_str(),O_RDONLY)) < 0 ) 
-      throw(rogue::GeneralError::open("LegacyStreamReader::open",file));
+   if ( (fd_ = ::open(file.c_str(),O_RDONLY)) < 0 )
+      throw(rogue::GeneralError::create("LegacyStreamReader::open","Failed to open file %s",file.c_str()));
 
    active_ = true;
    threadEn_ = true;
    readThread_ = new std::thread(&LegacyStreamReader::runThread, this);
+
+   // Set a thread name
+#ifndef __MACH__
+   pthread_setname_np( readThread_->native_handle(), "LStreamReader" );
+#endif
 }
 
 //! Open file
@@ -180,7 +185,7 @@ void ruf::LegacyStreamReader::runThread() {
          }
 
          // Skip next step if frame is empty
-         if ( size <= 4 ) continue;
+         if ( size == 0 ) continue;
          //size -= 4;
 
          // Request frame
@@ -203,7 +208,7 @@ void ruf::LegacyStreamReader::runThread() {
             }
             else {
                (*it)->setPayload(bSize);
-               if ( (*it)->getAvailable() == 0 ) ++it; // Next buffer
+               ++it; // Next buffer
             }
             size -= bSize;
          }

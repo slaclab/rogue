@@ -10,6 +10,7 @@
 
 import argparse
 import pyrogue
+import pyrogue.interfaces
 import pyrogue.gui
 import sys
 
@@ -21,11 +22,11 @@ args = parser.parse_args()
 print("Connecting to host {} port {}".format(args.host,args.port))
 
 # Connect to the server
-client = pyrogue.VirtualClient(args.host,args.port)
+client = pyrogue.interfaces.VirtualClient(args.host,args.port)
 
 # Create GUI
 appTop = pyrogue.gui.application(sys.argv)
-guiTop = pyrogue.gui.GuiTop()
+guiTop = pyrogue.gui.GuiTop(excGroups='Hidden')
 guiTop.setWindowTitle("Rogue Client {}:{}".format(args.host,args.port))
 guiTop.addTree(client.root)
 

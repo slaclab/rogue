@@ -25,11 +25,6 @@
 #include <rogue/GeneralError.h>
 #include <memory>
 
-
-// !!! -- Debugging, jj
-#include <iostream>
-#include <iomanip>
-
 namespace ris  = rogue::interfaces::stream;
 
 #ifndef NO_PYTHON
@@ -199,7 +194,9 @@ void ris::Frame::setPayload(uint32_t pSize) {
    }
 
    if ( lSize != 0 ) 
-      throw(rogue::GeneralError::boundary("Frame::setPayload",pSize,size_));
+      throw(rogue::GeneralError::create("Frame::setPayload",
+               "Attempt to set payload to size %i in frame with size %i",
+               pSize,size_));
 
    // Refresh
    payload_ = pSize;
@@ -220,7 +217,9 @@ void ris::Frame::adjustPayload(int32_t value) {
    uint32_t size = getPayload();
 
    if ( value < 0 && (uint32_t)abs(value) > size)
-      throw(rogue::GeneralError::boundary("Frame::adjustPayload", abs(value), size));
+      throw(rogue::GeneralError::create("Frame::adjustPayload",
+               "Attempt to reduce payload by %i in frame with size %i",
+               value,size));
 
    setPayload(size + value);
 }
@@ -344,7 +343,8 @@ void ris::Frame::readPy ( boost::python::object p, uint32_t offset ) {
 
    if ( (offset + count) > size ) {
       PyBuffer_Release(&pyBuf);
-      throw(rogue::GeneralError::boundary("Frame::readPy",offset+count,size));
+      throw(rogue::GeneralError::create("Frame::readPy",
+               "Attempt to read %i bytes from frame at offset %i with size %i",count,offset,size));
    }
 
    ris::Frame::iterator beg = this->beginRead() + offset;
@@ -366,7 +366,8 @@ void ris::Frame::writePy ( boost::python::object p, uint32_t offset ) {
 
    if ( (offset + count) > size ) {
       PyBuffer_Release(&pyBuf);
-      throw(rogue::GeneralError::boundary("Frame::writePy",offset+count,size));
+      throw(rogue::GeneralError::create("Frame::writePy",
+               "Attempt to write %i bytes to frame at offset %i with size %i",count,offset,size));
    }
 
    ris::Frame::iterator beg = this->beginWrite() + offset;
@@ -375,33 +376,23 @@ void ris::Frame::writePy ( boost::python::object p, uint32_t offset ) {
    PyBuffer_Release(&pyBuf);
 }
 
-
-
-// ---------------
-// --- NUMPY STUFF
-// ---------------
-
-
 //! Read the specified number of bytes at the specified offset of frame data into a numpy array
 boost::python::object ris::Frame::getNumpy (uint32_t offset, uint32_t count)
 {
    // Retrieve the size, in bytes of the data
    npy_intp   size = getPayload ();
 
-
    // Check this does not request data past the EOF
-   uint32_t end = offset + count;
-   if ( end > size ) {
-      throw(rogue::GeneralError::boundary("Frame::getNumpy", end, size));
+   if ( (offset + count) > size ) {
+      throw(rogue::GeneralError::create("Frame::getNumpy",
+               "Attempt to read %i bytes from frame at offset %i with size %i",count,offset,size));
    }
-
 
    // Create a numpy array to receive it and locate the destination data buffer
    npy_intp   dims[1] = { count };
    PyObject      *obj = PyArray_SimpleNew (1, dims, NPY_UINT8);
    PyArrayObject *arr = reinterpret_cast<PyArrayObject *>(obj);
    uint8_t       *dst = reinterpret_cast<uint8_t *>(PyArray_DATA (arr));
-
 
    // Read the data
    ris::Frame::iterator beg = this->beginRead() + offset;
@@ -441,16 +432,15 @@ void ris::Frame::putNumpy ( boost::python::object p, uint32_t offset ) {
                                 "Object is not either writeable or contiguious"));
    }
 
-
    // Get the number of bytes in both the source and destination buffers
    uint32_t  size = getSize();
    uint32_t count = PyArray_NBYTES (arr);
 
-
    // Check this does not request data past the EOF
-   uint32_t end = offset + count;
-   if ( end > size ) {
-      throw(rogue::GeneralError::boundary("Frame::writePy",end, size));
+   if ( (offset + count) > size ) {
+      PyBuffer_Release(&pyBuf);
+      throw(rogue::GeneralError::create("Frame::putNumpy",
+               "Attempt to write %i bytes to frame at offset %i with size %i",count,offset,size));
    }
 
    uint8_t     *src = reinterpret_cast<uint8_t *>(PyArray_DATA (arr));

@@ -10,12 +10,12 @@
  * Description :
  *    Class used to generate and receive PRBS test data.
  *-----------------------------------------------------------------------------
- * This file is part of the rogue software platform. It is subject to 
- * the license terms in the LICENSE.txt file found in the top-level directory 
- * of this distribution and at: 
-    * https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
- * No part of the rogue software platform, including this file, may be 
- * copied, modified, propagated, or distributed except according to the terms 
+ * This file is part of the rogue software platform. It is subject to
+ * the license terms in the LICENSE.txt file found in the top-level directory
+ * of this distribution and at:
+    * https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+ * No part of the rogue software platform, including this file, may be
+ * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  *-----------------------------------------------------------------------------
 **/
@@ -125,7 +125,7 @@ double ru::Prbs::updateTime ( struct timeval *last ) {
 
 //! Set width
 void ru::Prbs::setWidth(uint32_t width) {
-   if ( (width > (MaxBytes*8)) || (width % 32) != 0) 
+   if ( (width > (MaxBytes*8)) || (width % 32) != 0)
       throw(rogue::GeneralError("Prbs::setWidth","Invalid width."));
 
    rogue::GilRelease noGil;
@@ -155,7 +155,7 @@ void ru::Prbs::setTaps(uint32_t tapCnt, uint8_t * taps) {
 void ru::Prbs::setTapsPy(boost::python::object p) {
    Py_buffer pyBuf;
 
-   if ( PyObject_GetBuffer(p.ptr(),&pyBuf,PyBUF_SIMPLE) < 0 ) 
+   if ( PyObject_GetBuffer(p.ptr(),&pyBuf,PyBUF_SIMPLE) < 0 )
       throw(rogue::GeneralError("Prbs::setTapsPy","Python Buffer Error"));
 
    setTaps(pyBuf.len,(uint8_t *)pyBuf.buf);
@@ -206,13 +206,18 @@ void ru::Prbs::runThread() {
 void ru::Prbs::enable(uint32_t size) {
 
    // Verify size first
-   if ((( size % byteWidth_ ) != 0) || size < minSize_ ) 
+   if ((( size % byteWidth_ ) != 0) || size < minSize_ )
       throw rogue::GeneralError("Prbs::enable","Invalid frame size");
 
    if ( txThread_ == NULL ) {
       txSize_ = size;
       threadEn_ = true;
       txThread_ = new std::thread(&Prbs::runThread, this);
+
+      // Set a thread name
+#ifndef __MACH__
+      pthread_setname_np( txThread_->native_handle(), "PrbsTx" );
+#endif
    }
 }
 
@@ -315,7 +320,7 @@ void ru::Prbs::genFrame (uint32_t size) {
    std::lock_guard<std::mutex> lock(pMtx_);
 
    // Verify size first
-   if ((( size % byteWidth_ ) != 0) || size < minSize_ ) 
+   if ((( size % byteWidth_ ) != 0) || size < minSize_ )
       throw rogue::GeneralError("Prbs::genFrame","Invalid frame size");
 
    // Setup size
@@ -350,7 +355,7 @@ void ru::Prbs::genFrame (uint32_t size) {
 
       // Generate payload
       while ( frIter != frEnd ) {
-         
+
          if ( sendCount_ ) ris::toFrame(frIter,byteWidth_,wCount);
          else {
             flfsr(data);
@@ -389,8 +394,8 @@ void ru::Prbs::acceptFrame ( ris::FramePtr frame ) {
    uint32_t      x;
    uint8_t       expData[MaxBytes];
    double        per;
-   char          debugA[1000];
-   char          debugB[200];
+   char          debugA[10000];
+   char          debugB[1000];
 
    rogue::GilRelease noGil;
    ris::FrameLockPtr fLock = frame->lock();
@@ -399,6 +404,13 @@ void ru::Prbs::acceptFrame ( ris::FramePtr frame ) {
    size = frame->getPayload();
    frIter = frame->beginRead();
    frEnd  = frame->endRead();
+
+   // Check for frame errors
+   if ( frame->getError() ) {
+      rxLog_->warning("Frame error field is set: 0x%x",frame->getError());
+      rxErrCount_++;
+      return;
+   }
 
    // Verify size
    if ((( size % byteWidth_ ) != 0) || size < minSize_ ) {
