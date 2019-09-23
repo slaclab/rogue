@@ -38,7 +38,21 @@ add_definitions(-D__STDC_FORMAT_MACROS)
 # Boost + Python
 #####################################
 if ( NOT NO_PYTHON ) 
-   find_package(Python3 COMPONENTS Interpreter Development NumPy QUIET REQUIRED)
+   find_package(PythonInterp 3.6 QUIET REQUIRED)
+   find_package(PythonLibs 3.6 QUIET REQUIRED)
+
+   # Find Numpy
+   execute_process(
+      COMMAND python3 -c "import numpy; print(numpy.get_include(), end='')"
+      RESULT_VARIABLE Python3_NumPy_RESULT
+      OUTPUT_VARIABLE Python3_NumPy_INCLUDE_DIRS
+      ERROR_QUIET
+      OUTPUT_STRIP_TRAILING_WHITESPACE)
+
+   if (Python3_NumPy_RESULT)
+      message("")
+      message(FATAL_ERROR "Failed to find numpy includes!")
+   endif()
 
    set(Boost_USE_MULTITHREADED ON)
 
@@ -230,7 +244,7 @@ configure_file (
 include_directories(${PROJECT_SOURCE_DIR}/include)
 include_directories(${PROJECT_BINARY_DIR})
 include_directories(system ${Boost_INCLUDE_DIRS})
-include_directories(system ${Python3_INCLUDE_DIRS})
+include_directories(system ${PYTHON_INCLUDE_DIRS})
 include_directories(system ${Python3_NumPy_INCLUDE_DIRS})
 include_directories(system ${ZeroMQ_INCLUDE_DIR})
 include_directories(system ${BZIP2_INCLUDE_DIR})
@@ -264,7 +278,7 @@ TARGET_LINK_LIBRARIES(rogue-core LINK_PUBLIC ${BZIP2_LIBRARIES})
 if (APPLE)
    set_target_properties(rogue-core PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
 else()
-   TARGET_LINK_LIBRARIES(rogue-core LINK_PUBLIC ${Python3_LIBRARIES})
+   TARGET_LINK_LIBRARIES(rogue-core LINK_PUBLIC ${PYTHON_LIBRARIES})
    TARGET_LINK_LIBRARIES(rogue-core LINK_PUBLIC rt)
 endif()
 
@@ -395,9 +409,11 @@ message("")
 if (NO_PYTHON)
    message("-- Compiling without boost & python!")
 else()
-message("-- Found boost: ${Boost_INCLUDE_DIRS}")
-message("")
-   message("-- Found python: ${Python3_LIBRARIES}")
+   message("-- Found boost: ${Boost_INCLUDE_DIRS}")
+   message("")
+   message("-- Found python: ${PYTHON_LIBRARIES}")
+   message("")
+   message("-- Found numpy: ${Python3_NumPy_INCLUDE_DIRS}")
 endif()
 
 message("")

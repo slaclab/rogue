@@ -22,6 +22,7 @@ import zmq
 import rogue.interfaces
 import functools as ft
 import jsonpickle
+import re
 
 
 
@@ -97,6 +98,10 @@ class VirtualNode(pr.Node):
         self._root      = None
         self._client    = None
         self._functions = []
+
+        # Rebuild array nodes list locally
+        for k,v in self._nodes.items():
+            self._addArrayNode(v)
 
         # Setup logging
         self._log = pr.logInit(cls=self,name=self.name,path=self._path)
