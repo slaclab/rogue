@@ -552,9 +552,6 @@ class Node(object):
             if len(ret) == 0:
                 self._log.error("Entry {} not found".format(key))
             else:
-                if not isistance(ret,list):
-                    ret = [ret]
-
                 for n in ret:
                     if n is not None:
                         if n.filterByGroup(incGroups,excGroups):
@@ -578,7 +575,7 @@ class Node(object):
         """
         # Node matches name in node list
         if name in self._nodes:
-            return self._nodes[name]
+            return [self._nodes[name]]
 
         # Otherwise we may need to slice an array
         else:
