@@ -256,31 +256,14 @@ class AxiVersion(pr.Device):
             value = ''))
 
         self.BuildStamp.addListener(parseBuildStamp)        
-     
-        a = 0
-        for i in range(8):
-            for j in range(8):
 
-                self.add(pr.RemoteVariable(
-                    name         = 'TestArray[{:d}][{:d}]'.format(i,j),
-                    description  = 'Array Test Field',
-                    offset       = 0x1000 + a,
-                    bitSize      = 32,
-                    bitOffset    = 0,
-                    base         = pr.UInt,
-                    mode         = 'RW',
-                ))
-                a += 4
+        for i in range(4):
+            for j in range(4):
+                for k in range(4):
+                    self.add(pr.LocalVariable(name = f'TestArray[{i}][{j}][{k}]',value=0)) 
 
-        self.add(pr.RemoteVariable(
-            name         = 'TestArray[10]',
-            description  = 'Array Test Field',
-            offset       = 0x2800 + a,
-            bitSize      = 32,
-            bitOffset    = 0,
-            base         = pr.UInt,
-            mode         = 'RW',
-        ))
+        self.add(pr.LocalVariable(name = 'TestArray[4][5]',value=0))
+        self.add(pr.LocalVariable(name = 'TestArray[6]',value=0))
 
         #self.add(pr.RemoteVariable(
         #    name         = 'TestArray[5]',
