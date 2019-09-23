@@ -284,11 +284,15 @@ class VariableTree(PyDMFrame):
                                         init_channel='rogue://{}:{}/{}.ReadDevice'.format(self._addr,self._port,self._node.path)))
 
 
+        self.setUpdatesEnabled(False)
         self._children.append(VariableDev(top=self, parent=self._tree, dev=self._node, noExpand=False))
+        self.setUpdatesEnabled(True)
 
     @Slot(QTreeWidgetItem)
     def _expandCb(self,item):
+        self.setUpdatesEnabled(False)
         item._expand()
+        self.setUpdatesEnabled(True)
 
     def _openMenu(self, pos):
         item = self._tree.itemAt(pos)

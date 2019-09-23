@@ -232,14 +232,18 @@ class CommandTree(PyDMFrame):
 
         self._tree.itemExpanded.connect(self._expandCb)
 
+        self.setUpdatesEnabled(False)
         self._children.append(CommandDev(top=self,
                                          parent=self._tree,
                                          dev=self._node,
                                          noExpand=False))
+        self.setUpdatesEnabled(True)
 
     @Slot(QTreeWidgetItem)
     def _expandCb(self,item):
+        self.setUpdatesEnabled(False)
         item._expand()
+        self.setUpdatesEnabled(True)
 
     def _openMenu(self, pos):
         item = self._tree.itemAt(pos)
