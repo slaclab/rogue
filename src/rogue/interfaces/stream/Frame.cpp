@@ -398,7 +398,6 @@ boost::python::object ris::Frame::getNumpy (uint32_t offset, uint32_t count)
    ris::Frame::iterator beg = this->beginRead() + offset;
    ris::fromFrame (beg, count, dst);
 
-
    // Transform to and return a boost python object
    boost::python::handle<>  handle (obj);
    boost::python::object p (handle);
@@ -424,10 +423,9 @@ void ris::Frame::putNumpy ( boost::python::object p, uint32_t offset ) {
    // The write routine can only deal with contigious buffers.
    PyArrayObject *arr = reinterpret_cast<decltype(arr)>(obj);   
    int          flags = PyArray_FLAGS (arr);
-   bool           ctg = flags & (NPY_ARRAY_C_CONTIGUOUS | NPY_ARRAY_F_CONTIGUOUS);
-   bool           wrt = flags & (NPY_ARRAY_WRITEABLE);
-   if ( !(ctg & wrt) )
-   {
+   int            ctg = flags & (NPY_ARRAY_C_CONTIGUOUS | NPY_ARRAY_F_CONTIGUOUS);
+   int            wrt = flags & (NPY_ARRAY_WRITEABLE);
+   if ( !(ctg & wrt) ) {
       throw(rogue::GeneralError("Frame::putNumpy",
                                 "Object is not either writeable or contiguious"));
    }
@@ -435,15 +433,15 @@ void ris::Frame::putNumpy ( boost::python::object p, uint32_t offset ) {
    // Get the number of bytes in both the source and destination buffers
    uint32_t  size = getSize();
    uint32_t count = PyArray_NBYTES (arr);
+   uint32_t   end = offset + count;
 
    // Check this does not request data past the EOF
-   if ( (offset + count) > size ) {
-      PyBuffer_Release(&pyBuf);
+   if ( end > size ) {
       throw(rogue::GeneralError::create("Frame::putNumpy",
                "Attempt to write %i bytes to frame at offset %i with size %i",count,offset,size));
    }
 
-   uint8_t     *src = reinterpret_cast<uint8_t *>(PyArray_DATA (arr));
+   uint8_t *src = reinterpret_cast<uint8_t *>(PyArray_DATA (arr));
 
    // Write the numpy data to the array
    ris::Frame::iterator beg = this->beginWrite() + offset;
