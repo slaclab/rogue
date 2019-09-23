@@ -480,7 +480,22 @@ void ris::Frame::setup_python() {
       .def("getChannel",   &ris::Frame::getChannel)
       .def("getNumpy",     &ris::Frame::getNumpy)
       .def("putNumpy",     &ris::Frame::putNumpy)
+      .def("_debug",       &ris::Frame::debug)
    ;
 #endif
 }
+
+void ris::Frame::debug() {
+   ris::Frame::BufferIterator it;
+   uint32_t idx = 0;
+
+   printf("Frame Info. BufferCount: %i, Size: %i, Available: %i, Payload: %i, Channel: %i, Error: 0x%x, Flags: 0x%x\n", 
+         bufferCount(), getSize(), getAvailable(), getPayload(), getChannel, getError());
+
+   for (it = buffers_.begin(); it != buffers_.end(); ++it) {
+      (*it)->debug(idx);
+      idx++;
+   }
+}
+
 

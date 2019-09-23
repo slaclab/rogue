@@ -51,7 +51,6 @@ ris::Buffer::Buffer(ris::PoolPtr source, void *data, uint32_t meta, uint32_t siz
    headRoom_  = 0;
    tailRoom_  = 0;
    payload_   = 0;
-   error_     = 0;
 }
 
 //! Destroy a buffer
@@ -244,5 +243,11 @@ void ris::Buffer::setPayloadEmpty() {
 
    ris::FramePtr tmpPtr;
    if ( (tmpPtr = frame_.lock()) ) tmpPtr->setSizeDirty(); 
+}
+
+//! Debug buffer
+void ris::Buffer::debug(uint32_t idx) {
+   printf("    Buffer: %i, AllocSize: %i, RawSize: %i, HeadRoom: %i, TailRoom: %i, Payload: %i\n",
+         idx, allocSize_, rawSize_, headRoom_, tailRoom_, payload_);
 }
 
