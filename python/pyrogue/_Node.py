@@ -547,7 +547,7 @@ class Node(object):
 
     def _setDict(self,d,writeEach,modes,incGroups,excGroups):
         for key, value in d.items():
-            ret = self._nodeMatch(key)
+            ret = self.nodeMatch(key)
 
             if len(ret) == 0:
                 self._log.error("Entry {} not found".format(key))
@@ -563,7 +563,7 @@ class Node(object):
     def _setTimeout(self,timeout):
         pass
 
-    def _nodeMatch(self,name):
+    def nodeMatch(self,name):
         """
         Return a node or list of nodes which match the given name. The name can either
         be a single value or a list accessor:
