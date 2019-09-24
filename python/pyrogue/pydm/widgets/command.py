@@ -19,7 +19,7 @@ from pydm.widgets.frame import PyDMFrame
 from pydm.widgets import PyDMSpinbox, PyDMPushButton
 from pyrogue.pydm.data_plugins.rogue_plugin import nodeFromAddress
 from qtpy.QtCore import Qt, Property, Slot, Signal
-from qtpy.QtWidgets import QHBoxLayout, QLineEdit, QPushButton
+from qtpy.QtWidgets import QHBoxLayout, QLineEdit, QPushButton, QComboBox, QSizePolicy
 import jsonpickle
 import time
 
@@ -40,30 +40,23 @@ class Command(PyDMFrame):
         self._value  = ''
         self._widget = None
 
+        vb = QHBoxLayout()
+        self.setLayout(vb)
+
         hb = QHBoxLayout()
-        self.setLayout(hb)
+        vb.addLayout(hb)
 
         if self._node.arg:
 
             if self._node.disp == 'enum' and self._node.enum is not None:
                 self._widget = QComboBox()
-                for i in self._command.enum:
+                for i in self._node.enum:
                     self._widget.addItem(self._node.enum[i])
 
                 self._value = self._node.valueDisp()
                 self._widget.setCurrentIndex(self._widget.findText(self._value))
 
-                self._widget.currentIndexhanged.connect(self._valueChanged)
-
-            elif self._node.minimum is not None and self._node.maximum is not None:
-                self._widget = QSpinBox();
-                self._widget.setMinimum(self._node.minimum)
-                self._widget.setMaximum(self._node.maximum)
-
-                self._value = self._node.value()
-                self._widget.setValue(self._value)
-
-                self._widget.valueChanged.connect(self._valueChanged)
+                self._widget.currentTextChanged.connect(self._valueChanged)
 
             else:
                 self._widget = QLineEdit()
@@ -75,10 +68,11 @@ class Command(PyDMFrame):
 
             hb.addWidget(self._widget)
 
-        self._btn = QPushButton('Exec')
+        self._btn = QPushButton(parent=self,text='Exec')
         self._btn.clicked.connect(self._execPressed)
         self._btn.setToolTip(self._node.description)
         hb.addWidget(self._btn)
+        self.resize(100,100)
 
     @Slot(str)
     def _valueChanged(self,value):

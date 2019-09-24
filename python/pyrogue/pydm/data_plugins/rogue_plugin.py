@@ -137,7 +137,7 @@ class RogueConnection(PyDMConnection):
                 self._node.__call__(val)
             else:
                 self._node.setDisp(val)
-        except:
+        except Exception as e:
             logger.error("Unable to put %s to %s.  Exception: %s", new_value, self.address, str(e))
 
 

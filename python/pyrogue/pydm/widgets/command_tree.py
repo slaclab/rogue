@@ -15,6 +15,7 @@
 #-----------------------------------------------------------------------------
 
 import pyrogue
+import pyrogue.pydm.widgets
 from pydm.widgets.frame import PyDMFrame
 from pydm.widgets import PyDMLineEdit, PyDMLabel, PyDMSpinbox, PyDMPushButton, PyDMEnumComboBox
 from pyrogue.pydm.data_plugins.rogue_plugin import nodeFromAddress
@@ -103,26 +104,26 @@ class CommandHolder(QTreeWidgetItem):
 
         self.setText(1,self._cmd.typeStr)
 
-        #w = pyrogue.pydm.widgets.Command(init_channel=self._path)
+        self._cmd = pyrogue.pydm.widgets.Command(init_channel=self._path)
+        self._top._tree.setItemWidget(self,2,self._cmd)
+
+        #if self._cmd.arg:
+
+            #if self._cmd.disp == 'enum' and self._cmd.enum is not None and self._cmd.mode != 'RO':
+                #w = PyDMEnumComboBox(parent=None, init_channel=self._path)
+                #w.alarmSensitiveContent = False
+                #w.alarmSensitiveBorder  = False
+            #else:
+                #self._path += '/disp'
+                #w = PyDMLineEdit(parent=None, init_channel=self._path)
+                #w.showUnits             = False
+                #w.precisionFromPV       = True
+                #w.alarmSensitiveContent = False
+                #w.alarmSensitiveBorder  = False
+        #else:
+            #w = PyDMPushButton(label='Exec',pressValue=1,init_channel=self._path)
+
         #self._top._tree.setItemWidget(self,2,w)
-
-        if self._cmd.arg:
-
-            if self._cmd.disp == 'enum' and self._cmd.enum is not None and self._cmd.mode != 'RO':
-                w = PyDMEnumComboBox(parent=None, init_channel=self._path)
-                w.alarmSensitiveContent = False
-                w.alarmSensitiveBorder  = False
-            else:
-                self._path += '/disp'
-                w = PyDMLineEdit(parent=None, init_channel=self._path)
-                w.showUnits             = False
-                w.precisionFromPV       = True
-                w.alarmSensitiveContent = False
-                w.alarmSensitiveBorder  = False
-        else:
-            w = PyDMPushButton(label='Exec',pressValue=1,init_channel=self._path)
-
-        self._top._tree.setItemWidget(self,2,w)
 
 
 class CommandTree(PyDMFrame):
@@ -153,31 +154,31 @@ class CommandTree(PyDMFrame):
         vb.addWidget(self._tree)
 
         self._tree.setColumnCount(3)
-        self._tree.setHeaderLabels(['Command','Base','Execute'])
+        self._tree.setHeaderLabels(['Command','Base','Execute / Arg'])
 
         self._tree.setContextMenuPolicy(Qt.CustomContextMenu)
         self._tree.customContextMenuRequested.connect(self._openMenu)
 
         self._tree.itemExpanded.connect(self._expandCb)
 
-        self.setUpdatesEnabled(False)
+        #self.setUpdatesEnabled(False)
         CommandDev(path=self._path,
                    top=self,
                    parent=self._tree,
                    dev=self._node,
                    noExpand=False)
-        self.setUpdatesEnabled(True)
+        #self.setUpdatesEnabled(True)
 
     @Slot(QTreeWidgetItem)
     def _expandCb(self,item):
-        self.setUpdatesEnabled(False)
+        #self.setUpdatesEnabled(False)
         item._expand()
 
         self._tree.setColumnWidth(0,250)
         self._tree.setColumnWidth(1,50)
         self._tree.setColumnWidth(2,200)
 
-        self.setUpdatesEnabled(True)
+        #self.setUpdatesEnabled(True)
 
     def _openMenu(self, pos):
         item = self._tree.itemAt(pos)

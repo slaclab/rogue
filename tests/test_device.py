@@ -330,6 +330,14 @@ class AxiVersion(pr.Device):
         def TestOtherError(arg):
             a = rogue.hardware.axi.AxiStreamDma('/dev/not_a_device',0)
 
+        @self.command(hidden=False,value='blah blah',retValue='')
+        def TestCmdString(arg):
+            print("Send command string: {}".format(arg))
+
+        @self.command(hidden=False, value=1, retValue='', enum={1:'One',2:'Two',3:'Three'})
+        def TestCmdEnum(arg):
+            print("Send command Enum: {}".format(arg))
+
     def hardReset(self):
         print('AxiVersion hard reset called')
 

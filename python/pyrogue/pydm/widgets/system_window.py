@@ -16,7 +16,7 @@
 
 from pydm.widgets.frame import PyDMFrame
 import pyrogue
-from pyrogue.pydm.data_plugins.rogue_plugin import nodeFromAddress, parseAddress
+from pyrogue.pydm.data_plugins.rogue_plugin import nodeFromAddress
 from pyrogue.interfaces import VirtualClient
 from qtpy.QtCore import Qt, Property
 from qtpy.QtWidgets import QVBoxLayout
