@@ -58,7 +58,7 @@ class Process(PyDMFrame):
         fl.setLabelAlignment(Qt.AlignRight)
         hb.addLayout(fl)
 
-        w = PyDMLineEdit(parent=None, init_channel=self.channel + '.Running/True')
+        w = PyDMLineEdit(parent=None, init_channel=self.channel + '.Running/Disp')
         w.showUnits             = False
         w.precisionFromPV       = False
         w.alarmSensitiveContent = False
@@ -84,7 +84,7 @@ class Process(PyDMFrame):
 
         fl.addRow('Progress:',w)
 
-        w = PyDMLineEdit(parent=None, init_channel=self.channel + '.Message/True')
+        w = PyDMLineEdit(parent=None, init_channel=self.channel + '.Message/Disp')
         w.showUnits             = False
         w.precisionFromPV       = False
         w.alarmSensitiveContent = False
@@ -101,7 +101,7 @@ class Process(PyDMFrame):
 
         for k,v in prc.nodes.items():
             if v.name not in noAdd and not v.hidden:
-                w = PyDMLineEdit(parent=None, init_channel=self.channel + '.{}/True'.format(v.name))
+                w = PyDMLineEdit(parent=None, init_channel=self.channel + '.{}/Disp'.format(v.name))
                 w.showUnits             = False
                 w.precisionFromPV       = True 
                 w.alarmSensitiveContent = False

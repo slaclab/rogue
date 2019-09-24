@@ -16,7 +16,7 @@
 
 import pyrogue
 from pydm.widgets.frame import PyDMFrame
-from pydm.widgets import PyDMLineEdit, PyDMSpinbox, PyDMPushButton, PyDMEnumComboBox
+from pydm.widgets import PyDMLineEdit, PyDMLabel, PyDMSpinbox, PyDMPushButton, PyDMEnumComboBox
 from pyrogue.pydm.data_plugins.rogue_plugin import parseAddress
 from pyrogue.interfaces import VirtualClient
 from qtpy.QtCore import Qt, Property, Slot, QPoint
@@ -33,7 +33,15 @@ class CommandDev(QTreeWidgetItem):
         self._children = []
         self._dummy    = None
 
-        self.setText(0,self._dev.name)
+        self._path = 'rogue://{}:{}/{}/Name'.format(self._top._addr,self._top._port,self._dev.path)
+
+        w = PyDMLabel(parent=None, init_channel=self._path)
+        w.showUnits             = False
+        w.precisionFromPV       = False
+        w.alarmSensitiveContent = False
+        w.alarmSensitiveBorder  = False
+
+        self._top._tree.setItemWidget(self,0,w)
         self.setToolTip(0,self._dev.description)
 
         if self._top._node == dev:
@@ -73,46 +81,6 @@ class CommandDev(QTreeWidgetItem):
         self._dummy = None
         self._setup(True)
 
-    def _menu(self,pos):
-        menu = QMenu()
-
-        dev_info = menu.addAction('Device Information')
-
-        action = menu.exec_(self._top._tree.mapToGlobal(pos))
-
-        if action == dev_info:
-            self._infoDialog()
-
-    def _infoDialog(self):
-
-        attrs = ['name', 'path', 'description', 'hidden', 'groups']
-
-        msgBox = QDialog()
-        msgBox.setWindowTitle("Device Information For {}".format(self._dev.name))
-        msgBox.setMinimumWidth(400)
-
-        vb = QVBoxLayout()
-        msgBox.setLayout(vb)
-
-        fl = QFormLayout()
-        fl.setRowWrapPolicy(QFormLayout.DontWrapRows)
-        fl.setFormAlignment(Qt.AlignHCenter | Qt.AlignTop)
-        fl.setLabelAlignment(Qt.AlignRight)
-        vb.addLayout(fl)
-
-        pb = QPushButton('Close')
-        pb.pressed.connect(msgBox.close)
-        vb.addWidget(pb)
-
-        for a in attrs:
-            le = QLineEdit()
-            le.setReadOnly(True)
-            le.setText(str(getattr(self._dev,a)))
-            fl.addRow(a,le)
-
-        msgBox.exec()
-
-
 class CommandHolder(QTreeWidgetItem):
 
     def __init__(self,*,top,parent,command):
@@ -123,10 +91,16 @@ class CommandHolder(QTreeWidgetItem):
 
         self._path = 'rogue://{}:{}/{}'.format(self._top._addr,self._top._port,self._cmd.path)
 
-        self.setText(0,self._cmd.name)
-        self.setText(1,self._cmd.typeStr)
+        w = PyDMLabel(parent=None, init_channel=self._path + '/Name')
+        w.showUnits             = False
+        w.precisionFromPV       = False
+        w.alarmSensitiveContent = False
+        w.alarmSensitiveBorder  = True
 
+        self._top._tree.setItemWidget(self,0,w)
         self.setToolTip(0,self._cmd.description)
+
+        self.setText(1,self._cmd.typeStr)
 
         if self._cmd.arg:
 
@@ -135,7 +109,7 @@ class CommandHolder(QTreeWidgetItem):
                 w.alarmSensitiveContent = False
                 w.alarmSensitiveBorder  = False
             else:
-                self._path += '/True'
+                self._path += '/Disp'
                 w = PyDMLineEdit(parent=None, init_channel=self._path)
                 w.showUnits             = False
                 w.precisionFromPV       = True
@@ -145,52 +119,6 @@ class CommandHolder(QTreeWidgetItem):
             w = PyDMPushButton(label='Exec',pressValue=1,init_channel=self._path)
 
         self._top._tree.setItemWidget(self,2,w)
-
-    def _menu(self,pos):
-        menu = QMenu()
-
-        cmd_info = menu.addAction('Command Information')
-        action = menu.exec_(self._top._tree.mapToGlobal(pos))
-
-        if action == cmd_info:
-            self._infoDialog()
-
-    def _infoDialog(self):
-
-        attrs = ['name', 'path', 'description', 'hidden', 'groups', 'enum', 'typeStr', 'disp']
-
-        if self._cmd.isinstance(pyrogue.RemoteCommand):
-            attrs += ['offset', 'bitSize', 'bitOffset', 'varBytes']
-
-        msgBox = QDialog()
-        msgBox.setWindowTitle("Command Information For {}".format(self._cmd.name))
-        msgBox.setMinimumWidth(400)
-
-        vb = QVBoxLayout()
-        msgBox.setLayout(vb)
-
-        fl = QFormLayout()
-        fl.setRowWrapPolicy(QFormLayout.DontWrapRows)
-        fl.setFormAlignment(Qt.AlignHCenter | Qt.AlignTop)
-        fl.setLabelAlignment(Qt.AlignRight)
-        vb.addLayout(fl)
-
-        pb = QPushButton('Close')
-        pb.pressed.connect(msgBox.close)
-        vb.addWidget(pb)
-
-        for a in attrs:
-            le = QLineEdit()
-            le.setReadOnly(True)
-            le.setText(str(getattr(self._cmd,a)))
-            fl.addRow(a,le)
-
-        le = QLineEdit()
-        le.setReadOnly(True)
-        le.setText(self._path)
-        fl.addRow('PyDM Path',le)
-
-        msgBox.exec()
 
 
 class CommandTree(PyDMFrame):

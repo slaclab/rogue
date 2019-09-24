@@ -87,7 +87,7 @@ class DataWriter(PyDMFrame):
         w.alarmSensitiveBorder  = True
         fl.addRow('Buffer Size:',w)
 
-        w = PyDMLineEdit(parent=None, init_channel=self.channel + '.IsOpen/True')
+        w = PyDMLineEdit(parent=None, init_channel=self.channel + '.IsOpen/Disp')
         w.alarmSensitiveContent = False
         w.alarmSensitiveBorder  = True
         fl.addRow('File Open:',w)
