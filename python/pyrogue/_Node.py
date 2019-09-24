@@ -196,12 +196,17 @@ class Node(object):
         This override builds an OrderedDict of all child nodes named as 'name[key]' and returns it.
         Raises AttributeError if no such named Nodes are found. """
 
-        ret = self._nodeMatch(name)
+        # Node matches name in node list
+        if name in self._nodes:
+            return self._nodes[name]
 
-        if ret is None:
-            raise AttributeError('{} has no attribute {}'.format(self, name))
+        # Node matches name in node array list
+        elif name in self._anodes:
+            return self._anodes[name]
+
         else:
-            return ret
+            raise AttributeError('{} has no attribute {}'.format(self, name))
+
 
     def __dir__(self):
         return(super().__dir__() + [k for k,v in self._nodes.items()])
@@ -271,37 +276,52 @@ class Node(object):
         # Add to primary list
         self._nodes[node.name] = node 
 
+
     def _addArrayNode(self, node):
 
-        # Detect array variables
-        fields = re.split('\[|\]',node.name)
+        # Generic test array method
+        fields = re.split('\]\[|\[|\]',node.name)
+        if len(fields) < 3: return
 
-        # Add array variables
-        if len(fields) == 3 and fields[2] == '':
-            aname = fields[0]
-            key   = fields[1]
+        # Extract name and keys
+        aname = fields[0]
+        keys  = fields[1:-1]
 
-            # Key must be numeric
-            if key.isdigit():
-                key = int(key)
+        if not all([key.isdigit() for key in keys]):
+            self._log.warning('Array node with non numeric key: {} may cause lookup errors.'.format(node.name))
+            return
 
-                # Detect collisions
-                if aname in self.__dir__():
-                    raise NodeError('Error adding node with name %s to %s. Name collision.' % 
-                                     (node.name,self.name))
+        # Detect collisions
+        if aname in self.__dir__():
+            raise NodeError('Error adding node with name %s to %s. Name collision.' % (node.name,self.name))
 
-                # Create list if it does not exist
-                if not aname in self._anodes:
-                    self._anodes[aname] = []
+        # Create list if it does not exist
+        if not aname in self._anodes:
+            self._anodes[aname] = []
 
-                # Fill in empy array locations
-                if len(self._anodes[aname]) <= key:
-                    self._anodes[aname].extend([None for i in range(key-len(self._anodes[aname]) + 1)])
+        # Start at primary list
+        lst = self._anodes[aname]
 
-                self._anodes[aname][key] = node
+        # Iterate through keys
+        for i in range(len(keys)):
+            k = int(keys[i])
 
+            # Fill in empy array locations
+            if len(lst) <= k:
+                lst.extend([None for _ in range(k-len(lst) + 1)])
+
+            # Last key, set node, check if location already has an array
+            if i == (len(keys)-1): 
+                if lst[k] is not None:
+                    raise NodeError('Error adding node with name %s to %s. Name collision.' % (node.name,self.name))
+
+                lst[k] = node
+
+            # Add next level array and update pointer
             else:
-                self._log.warning('Adding array node with non numeric key: {} may cause lookup errors.'.format(node.name))
+                if lst[k] is None: lst[k] = []
+                lst = lst[k]
+
 
     def addNode(self, nodeClass, **kwargs):
         self.add(nodeClass(**kwargs))
@@ -420,8 +440,11 @@ class Node(object):
         """
         return self._root
 
-    def node(self, path):
-        return self._nodeMatch(path)
+    def node(self, name):
+        if name in self._nodes:
+            return self._nodes[name]
+        else:
+            return None
 
     @property
     def isDevice(self):
@@ -524,14 +547,11 @@ class Node(object):
 
     def _setDict(self,d,writeEach,modes,incGroups,excGroups):
         for key, value in d.items():
-            ret = self._nodeMatch(key)
+            ret = self.nodeMatch(key)
 
-            if ret is None:
+            if len(ret) == 0:
                 self._log.error("Entry {} not found".format(key))
             else:
-                if not isistance(ret,list):
-                    ret = [ret]
-
                 for n in ret:
                     if n is not None:
                         if n.filterByGroup(incGroups,excGroups):
@@ -540,7 +560,7 @@ class Node(object):
     def _setTimeout(self,timeout):
         pass
 
-    def _nodeMatch(self,name):
+    def nodeMatch(self,name):
         """
         Return a node or list of nodes which match the given name. The name can either
         be a single value or a list accessor:
@@ -549,46 +569,55 @@ class Node(object):
             value[0:1]
             value[*]
             value[:]
+        Variables will only match if their depth matches the passed lookup and wildard:
+            value[*] will match a variable named value[1] but not a variable named value[2][3]
+            value[*][*] will match a variable named value[2][3].
         """
         # Node matches name in node list
         if name in self._nodes:
-            return self._nodes[name]
-
-        # Node matches name in node array list
-        elif name in self._anodes:
-            return self._anodes[name]
+            return [self._nodes[name]]
 
         # Otherwise we may need to slice an array
         else:
 
-            # Otherwise the passed name may be complex
-            fields = re.split('\[|\]',name)
+            # Generic test array method
+            fields = re.split('\]\[|\[|\]',name)
 
-            # Not a complex array
-            if len(fields) != 3:
-                return None
-
-            # Basename and index
+            # Extract name and keys
             aname = fields[0]
-            akey  = fields[1]
+            keys  = fields[1:-1]
 
             # Name not in list
-            if aname not in self._anodes:
+            if aname is None or aname not in self._anodes or len(keys) == 0:
                 return None
 
-            # Wildcard
-            if akey == '*' or akey == ':':
-                return self._anodes[aname]
+            return _iterateList(self._anodes[aname],keys)
 
-            # Simple lookup
-            if akey.isdigit():
-                return self._anodes[aname][int(akey)]
 
-            # Other
-            try:
-                return eval(f'self._anodes[aname][{akey}]')
-            except:
-                return None
+def _iterateList(lst, keys):
+    retList = []
+
+    if keys[0] == '*' or keys[0] == ':':
+        subList = lst
+    elif keys[0].isdigit():
+        subList = [lst[int(keys[0])]]
+    else:
+        try:
+            subList = eval(f'lst[{keys[0]}]')
+        except:
+            subList = []
+
+    for e in subList:
+
+        # Add nodes at this level only if key list has been exausted
+        if len(keys) == 1 and isinstance(e,Node):
+            retList.append(e)
+
+        # Don't go deeper in tree than the keys provided to avoid over-matching nodes
+        elif len(keys) > 1 and isinstance(e,list):
+            retList.extend(_iterateList(e,keys[1:]))
+
+    return retList
 
 
 def genBaseList(cls):
