@@ -200,9 +200,9 @@ class Node(object):
         if name in self._nodes:
             return self._nodes[name]
 
-        # Node matches name in node array list
-        elif name in self._anodes:
-            return self._anodes[name]
+        # Node matches name in node dictionary list
+        elif name in self._dnodes:
+            return self._dnodes[name]
 
         else:
             raise AttributeError('{} has no attribute {}'.format(self, name))
@@ -295,22 +295,23 @@ class Node(object):
         if aname in self.__dir__():
             raise NodeError('Error adding node with name %s to %s. Name collision.' % (node.name,self.name))
 
-        # Create list if it does not exist
+        # Create list and dictionary containers if they do not exist
         if not aname in self._anodes:
-            self._anodes[aname] = []
+            self._anodes[aname] = {'l':[], 'd':{}}
 
         # Start at primary list
-        lst = self._anodes[aname]
+        lst = self._anodes[aname]['l']
+        dic = self._anodes[aname]['d']
 
         # Iterate through keys
         for i in range(len(keys)):
             k = int(keys[i])
 
-            # Fill in empy array locations
+            # Fill in empy list locations
             if len(lst) <= k:
                 lst.extend([None for _ in range(k-len(lst) + 1)])
 
-            # Last key, set node, check if location already has an array
+            # Last key, set node, check for overlaps
             if i == (len(keys)-1): 
                 if lst[k] is not None:
                     raise NodeError('Error adding node with name %s to %s. Name collision.' % (node.name,self.name))
