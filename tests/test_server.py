@@ -91,7 +91,8 @@ class DummyTree(pyrogue.Root):
         # Start the tree with pyrogue server, internal nameserver, default interface
         # Set pyroHost to the address of a network interface to specify which nework to run on
         # set pyroNs to the address of a standalone nameserver (startPyrorNs.py)
-        self.start(timeout=2.0, pollEn=True, serverPort=9099, sqlUrl='sqlite:///test.db')
+        #self.start(timeout=2.0, pollEn=True, serverPort=9099, sqlUrl='sqlite:///test.db')
+        self.start(timeout=2.0, pollEn=True, serverPort=9099)
 
         #self.epics=pyrogue.protocols.epics.EpicsCaServer(base="test", root=self)
         #self.epics.start()

@@ -40,11 +40,8 @@ class Command(PyDMFrame):
         self._value  = ''
         self._widget = None
 
-        vb = QHBoxLayout()
-        self.setLayout(vb)
-
         hb = QHBoxLayout()
-        vb.addLayout(hb)
+        self.setLayout(hb)
 
         if self._node.arg:
 
@@ -55,32 +52,31 @@ class Command(PyDMFrame):
 
                 self._value = self._node.valueDisp()
                 self._widget.setCurrentIndex(self._widget.findText(self._value))
+                self._widget.setToolTip(self._node.description)
 
-                self._widget.currentTextChanged.connect(self._valueChanged)
+                self._widget.currentTextChanged.connect(self._argChanged)
 
             else:
                 self._widget = QLineEdit()
 
                 self._value = self._node.valueDisp()
                 self._widget.setText(self._value)
+                self._widget.setToolTip(self._node.description)
 
-                self._widget.textChanged.connect(self._valueChanged)
+                self._widget.textChanged.connect(self._argChanged)
 
             hb.addWidget(self._widget)
 
-        self._btn = QPushButton(parent=self,text='Exec')
-        self._btn.clicked.connect(self._execPressed)
+        self._btn = PyDMPushButton(label='Exec',
+                                   pressValue=self._value,
+                                   init_channel=self._path + '/disp')
         self._btn.setToolTip(self._node.description)
+
         hb.addWidget(self._btn)
-        self.resize(100,100)
 
     @Slot(str)
-    def _valueChanged(self,value):
-        self._value = value
-
-    @Slot()
-    def _execPressed(self):
-        self.send_value_signal[str].emit(self._value)
+    def _argChanged(self,value):
+        self._btn.pressValue = value
 
     def value_changed(self, new_val):
         pass

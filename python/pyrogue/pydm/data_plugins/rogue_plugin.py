@@ -16,6 +16,7 @@
 import logging
 import numpy as np
 import os
+import time
 
 from pydm.data_plugins.plugin import PyDMPlugin, PyDMConnection
 from PyQt5.QtCore import pyqtSlot, Qt
@@ -71,8 +72,6 @@ class RogueConnection(PyDMConnection):
     def __init__(self, channel, address, protocol=None, parent=None):
         super(RogueConnection, self).__init__(channel, address, protocol, parent)
 
-        #print("Adding connection channel={}, address={}".format(channel,address))
-
         self.app = QApplication.instance()
 
         self._host, self._port, self._path, self._mode = parseAddress(address)
@@ -126,13 +125,16 @@ class RogueConnection(PyDMConnection):
             return
         try:
 
-            if new_value is not None and self._enum is not None and not isinstance(new_value,str):
+            if new_value is None:
+                val = None
+            elif self._enum is not None and not isinstance(new_value,str):
                 val = self._enum[new_value]
             elif self._int:
                 val = int(new_value)
             else:
                 val = new_value
 
+            st = time.time()
             if self._cmd:
                 self._node.__call__(val)
             else:
@@ -166,11 +168,6 @@ class RogueConnection(PyDMConnection):
 
         if self._notDev:
 
-            if self._mode == 'name' or self._mode == 'path':
-                self.write_access_signal.emit(False)
-            else:
-                self.write_access_signal.emit(self._cmd or self._node.mode=='RW')
-
             if self._node.units is not None:
                 self.unit_signal.emit(self._node.units)
 
@@ -182,7 +179,17 @@ class RogueConnection(PyDMConnection):
                 self.enum_strings_signal.emit(tuple(self._enum))
 
             self.prec_signal.emit(self._node.precision)
-            self._updateVariable(self._node.path,self._node.getVariableValue(read=False))
+
+            if self._mode == 'name':
+                self.write_access_signal.emit(False)
+                self.new_value_signal[str].emit(self._node.name)
+            elif self._mode == 'path' or self._mode == 'path':
+                self.write_access_signal.emit(False)
+                self.new_value_signal[str].emit(self._node.path)
+            else:
+                self.write_access_signal.emit(self._cmd or self._node.mode=='RW')
+                st = time.time()
+                self._updateVariable(self._node.path,self._node.getVariableValue(read=False))
 
         else:
             self.new_value_signal[str].emit(self._node.name)

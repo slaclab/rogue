@@ -21,7 +21,7 @@ from pydm.widgets import PyDMLineEdit, PyDMLabel, PyDMSpinbox, PyDMPushButton, P
 from pyrogue.pydm.data_plugins.rogue_plugin import nodeFromAddress
 from pyrogue.interfaces import VirtualClient
 from qtpy.QtCore import Qt, Property, Slot, QPoint
-from qtpy.QtWidgets import QVBoxLayout, QHBoxLayout, QLabel, QSizePolicy, QMenu, QDialog, QPushButton
+from qtpy.QtWidgets import QVBoxLayout, QHBoxLayout, QLabel, QSizePolicy, QMenu, QDialog, QPushButton, QComboBox
 from qtpy.QtWidgets import QTreeWidgetItem, QTreeWidget, QLineEdit, QFormLayout, QGroupBox
 
 class CommandDev(QTreeWidgetItem):
@@ -92,6 +92,10 @@ class CommandHolder(QTreeWidgetItem):
         self._parent = parent
         self._cmd    = command
         self._path   = path
+        self._widget = None
+        self._value  = self._cmd.valueDisp()
+
+        if self._value is None: self._value = ''
 
         w = PyDMLabel(parent=None, init_channel=self._path + '/name')
         w.showUnits             = False
@@ -104,26 +108,40 @@ class CommandHolder(QTreeWidgetItem):
 
         self.setText(1,self._cmd.typeStr)
 
-        self._cmd = pyrogue.pydm.widgets.Command(init_channel=self._path)
-        self._top._tree.setItemWidget(self,2,self._cmd)
+        self._btn = PyDMPushButton(label='Exec',
+                                   pressValue=self._value,
+                                   init_channel=self._path + '/disp')
+        self._btn.setToolTip(self._cmd.description)
 
-        #if self._cmd.arg:
+        self._top._tree.setItemWidget(self,2,self._btn)
 
-            #if self._cmd.disp == 'enum' and self._cmd.enum is not None and self._cmd.mode != 'RO':
-                #w = PyDMEnumComboBox(parent=None, init_channel=self._path)
-                #w.alarmSensitiveContent = False
-                #w.alarmSensitiveBorder  = False
-            #else:
-                #self._path += '/disp'
-                #w = PyDMLineEdit(parent=None, init_channel=self._path)
-                #w.showUnits             = False
-                #w.precisionFromPV       = True
-                #w.alarmSensitiveContent = False
-                #w.alarmSensitiveBorder  = False
-        #else:
-            #w = PyDMPushButton(label='Exec',pressValue=1,init_channel=self._path)
+        if self._cmd.arg:
 
-        #self._top._tree.setItemWidget(self,2,w)
+            if self._cmd.disp == 'enum' and self._cmd.enum is not None:
+                self._widget = QComboBox()
+                for i in self._cmd.enum:
+                    self._widget.addItem(self._cmd.enum[i])
+
+                self._value = self._cmd.valueDisp()
+                self._widget.setCurrentIndex(self._widget.findText(self._value))
+                self._widget.setToolTip(self._cmd.description)
+
+                self._widget.currentTextChanged.connect(self._argChanged)
+
+            else:
+                self._widget = QLineEdit()
+
+                self._value = self._cmd.valueDisp()
+                self._widget.setText(self._value)
+                self._widget.setToolTip(self._cmd.description)
+
+                self._widget.textChanged.connect(self._argChanged)
+
+            self._top._tree.setItemWidget(self,3,self._widget)
+
+    #@Slot(str)
+    def _argChanged(self,value):
+        self._btn.pressValue = value
 
 
 class CommandTree(PyDMFrame):
@@ -154,31 +172,32 @@ class CommandTree(PyDMFrame):
         vb.addWidget(self._tree)
 
         self._tree.setColumnCount(3)
-        self._tree.setHeaderLabels(['Command','Base','Execute / Arg'])
+        self._tree.setHeaderLabels(['Command','Base','Execute','Arg'])
 
         self._tree.setContextMenuPolicy(Qt.CustomContextMenu)
         self._tree.customContextMenuRequested.connect(self._openMenu)
 
         self._tree.itemExpanded.connect(self._expandCb)
 
-        #self.setUpdatesEnabled(False)
+        self.setUpdatesEnabled(False)
         CommandDev(path=self._path,
                    top=self,
                    parent=self._tree,
                    dev=self._node,
                    noExpand=False)
-        #self.setUpdatesEnabled(True)
+        self.setUpdatesEnabled(True)
 
     @Slot(QTreeWidgetItem)
     def _expandCb(self,item):
-        #self.setUpdatesEnabled(False)
+        self.setUpdatesEnabled(False)
         item._expand()
 
         self._tree.setColumnWidth(0,250)
         self._tree.setColumnWidth(1,50)
-        self._tree.setColumnWidth(2,200)
+        self._tree.setColumnWidth(2,50)
+        self._tree.setColumnWidth(3,200)
 
-        #self.setUpdatesEnabled(True)
+        self.setUpdatesEnabled(True)
 
     def _openMenu(self, pos):
         item = self._tree.itemAt(pos)
