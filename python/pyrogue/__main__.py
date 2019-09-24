@@ -67,7 +67,7 @@ if args.cmd == 'gui':
         addrList = args.servers
     else:
         addrList = '{}:{}'.format(args.host,args.port)
-    pyrogue.pydm.runPyDM(addrList)
+    pyrogue.pydm.runPyDM(addrList,args.ui)
 
 # System log
 elif args.cmd == 'syslog':
