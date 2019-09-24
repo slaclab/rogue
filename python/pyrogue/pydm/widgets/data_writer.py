@@ -17,6 +17,7 @@
 import pyrogue
 from pydm.widgets.frame import PyDMFrame
 from pydm.widgets import PyDMLineEdit, PyDMPushButton
+from pyrogue.pydm.data_plugins.rogue_plugin import nodeFromAddress
 from qtpy.QtCore import Qt, Property, Slot
 from qtpy.QtWidgets import QVBoxLayout, QHBoxLayout, QPushButton
 from qtpy.QtWidgets import QFormLayout, QGroupBox, QFileDialog
@@ -32,12 +33,13 @@ class DataWriter(PyDMFrame):
 
         if not build: return
 
-        name = self.channel.split('.')[-1]
+        self._node = nodeFromAddress(self.channel)
+        self._path = self.channel
 
         vb = QVBoxLayout()
         self.setLayout(vb)
 
-        gb = QGroupBox('Data File Control ({}) '.format(name))
+        gb = QGroupBox('Data File Control ({}) '.format(self._node.name))
         vb.addWidget(gb)
 
         vb = QVBoxLayout()
@@ -49,7 +51,7 @@ class DataWriter(PyDMFrame):
         fl.setLabelAlignment(Qt.AlignRight)
         vb.addLayout(fl)
 
-        self._dataFile = PyDMLineEdit(parent=None, init_channel=self.channel + '.DataFile')
+        self._dataFile = PyDMLineEdit(parent=None, init_channel=self._path + '.DataFile')
         self._dataFile.alarmSensitiveContent = False
         self._dataFile.alarmSensitiveBorder  = True
         fl.addRow('Data File:',self._dataFile)
@@ -61,13 +63,13 @@ class DataWriter(PyDMFrame):
         pb.clicked.connect(self._browse)
         hb.addWidget(pb)
 
-        w = PyDMPushButton(label='Auto Name',pressValue=1,init_channel=self.channel + '.AutoName')
+        w = PyDMPushButton(label='Auto Name',pressValue=1,init_channel=self._path + '.AutoName')
         hb.addWidget(w)
 
-        w = PyDMPushButton(label='Open',pressValue=1,init_channel=self.channel + '.Open')
+        w = PyDMPushButton(label='Open',pressValue=1,init_channel=self._path + '.Open')
         hb.addWidget(w)
 
-        w = PyDMPushButton(label='Close',pressValue=1,init_channel=self.channel + '.Close')
+        w = PyDMPushButton(label='Close',pressValue=1,init_channel=self._path + '.Close')
         hb.addWidget(w)
 
         hb = QHBoxLayout()
@@ -82,17 +84,17 @@ class DataWriter(PyDMFrame):
         fl.setLabelAlignment(Qt.AlignRight)
         vbl.addLayout(fl)
 
-        w = PyDMLineEdit(parent=None, init_channel=self.channel + '.BufferSize')
+        w = PyDMLineEdit(parent=None, init_channel=self._path + '.BufferSize')
         w.alarmSensitiveContent = False
         w.alarmSensitiveBorder  = True
         fl.addRow('Buffer Size:',w)
 
-        w = PyDMLineEdit(parent=None, init_channel=self.channel + '.IsOpen/disp')
+        w = PyDMLineEdit(parent=None, init_channel=self._path + '.IsOpen/disp')
         w.alarmSensitiveContent = False
         w.alarmSensitiveBorder  = True
         fl.addRow('File Open:',w)
 
-        w = PyDMLineEdit(parent=None, init_channel=self.channel + '.CurrentSize')
+        w = PyDMLineEdit(parent=None, init_channel=self._path + '.CurrentSize')
         w.alarmSensitiveContent = False
         w.alarmSensitiveBorder  = True
         fl.addRow('Current File Size:',w)
@@ -106,17 +108,17 @@ class DataWriter(PyDMFrame):
         fl.setLabelAlignment(Qt.AlignRight)
         vbr.addLayout(fl)
 
-        w = PyDMLineEdit(parent=None, init_channel=self.channel + '.MaxFileSize')
+        w = PyDMLineEdit(parent=None, init_channel=self._path + '.MaxFileSize')
         w.alarmSensitiveContent = False
         w.alarmSensitiveBorder  = True
         fl.addRow('Max Size:',w)
 
-        w = PyDMLineEdit(parent=None, init_channel=self.channel + '.FrameCount')
+        w = PyDMLineEdit(parent=None, init_channel=self._path + '.FrameCount')
         w.alarmSensitiveContent = False
         w.alarmSensitiveBorder  = True
         fl.addRow('Frame Count:',w)
 
-        w = PyDMLineEdit(parent=None, init_channel=self.channel + '.TotalSize')
+        w = PyDMLineEdit(parent=None, init_channel=self._path + '.TotalSize')
         w.alarmSensitiveContent = False
         w.alarmSensitiveBorder  = True
         fl.addRow('Total File Size:',w)
@@ -135,5 +137,4 @@ class DataWriter(PyDMFrame):
         if dataFile != '':
             self._dataFile.setText(dataFile)
             self._dataFile.send_value()
-
 

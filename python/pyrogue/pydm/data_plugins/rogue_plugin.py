@@ -60,6 +60,12 @@ def parseAddress(address):
     return (host,port,path,mode)
 
 
+def nodeFromAddress(address):
+    host, port, path, mode = parseAddress(address)
+    client = VirtualClient(host, port)
+    return client.root.getNode(path)
+
+
 class RogueConnection(PyDMConnection):
 
     def __init__(self, channel, address, protocol=None, parent=None):
@@ -120,7 +126,7 @@ class RogueConnection(PyDMConnection):
             return
         try:
 
-            if self._enum is not None:
+            if new_value is not None and self._enum is not None and not isinstance(new_value,str):
                 val = self._enum[new_value]
             elif self._int:
                 val = int(new_value)

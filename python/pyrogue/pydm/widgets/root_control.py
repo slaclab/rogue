@@ -17,6 +17,7 @@
 import pyrogue
 from pydm.widgets.frame import PyDMFrame
 from pydm.widgets import PyDMLineEdit, PyDMPushButton
+from pyrogue.pydm.data_plugins.rogue_plugin import nodeFromAddress
 from qtpy.QtCore import Qt, Property, Slot
 from qtpy.QtWidgets import QVBoxLayout, QHBoxLayout, QPushButton, QFileDialog, QGroupBox
 import datetime
@@ -31,6 +32,9 @@ class RootControl(PyDMFrame):
 
         if not build: return
 
+        self._node = nodeFromAddress(self.channel)
+        self._path = self.channel
+
         vb = QVBoxLayout()
         self.setLayout(vb)
 
@@ -43,22 +47,22 @@ class RootControl(PyDMFrame):
         hb = QHBoxLayout()
         vb.addLayout(hb)
 
-        w = PyDMPushButton(label='Hard Reset',pressValue=1,init_channel=self.channel + '.HardReset')
+        w = PyDMPushButton(label='Hard Reset',pressValue=1,init_channel=self._path + '.HardReset')
         hb.addWidget(w)
 
-        w = PyDMPushButton(label='Initialize',pressValue=1,init_channel=self.channel + '.Initialize')
+        w = PyDMPushButton(label='Initialize',pressValue=1,init_channel=self._path + '.Initialize')
         hb.addWidget(w)
 
-        w = PyDMPushButton(label='Count Reset',pressValue=1,init_channel=self.channel + '.CountReset')
+        w = PyDMPushButton(label='Count Reset',pressValue=1,init_channel=self._path + '.CountReset')
         hb.addWidget(w)
 
         hb = QHBoxLayout()
         vb.addLayout(hb)
 
         # Hidden boxes which are updated by file browse for now
-        self._loadSettingsCmd = PyDMLineEdit(parent=None, init_channel=self.channel + '.LoadConfig')
-        self._saveSettingsCmd = PyDMLineEdit(parent=None, init_channel=self.channel + '.SaveConfig')
-        self._saveStateCmd    = PyDMLineEdit(parent=None, init_channel=self.channel + '.SaveState')
+        self._loadSettingsCmd = PyDMLineEdit(parent=None, init_channel=self._path + '.LoadConfig')
+        self._saveSettingsCmd = PyDMLineEdit(parent=None, init_channel=self._path + '.SaveConfig')
+        self._saveStateCmd    = PyDMLineEdit(parent=None, init_channel=self._path + '.SaveState')
 
         pb = QPushButton('Load Settings')
         pb.clicked.connect(self._loadSettings)

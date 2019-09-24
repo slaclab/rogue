@@ -15,9 +15,10 @@
 #-----------------------------------------------------------------------------
 
 import pyrogue
+import pyrogue.pydm.widgets
 from pydm.widgets.frame import PyDMFrame
 from pydm.widgets import PyDMLineEdit, PyDMLabel, PyDMSpinbox, PyDMPushButton, PyDMEnumComboBox
-from pyrogue.pydm.data_plugins.rogue_plugin import parseAddress
+from pyrogue.pydm.data_plugins.rogue_plugin import nodeFromAddress
 from pyrogue.interfaces import VirtualClient
 from qtpy.QtCore import Qt, Property, Slot
 from qtpy.QtWidgets import QVBoxLayout, QHBoxLayout, QMenu, QDialog, QPushButton
@@ -25,17 +26,15 @@ from qtpy.QtWidgets import QTreeWidgetItem, QTreeWidget, QLineEdit, QFormLayout
 
 class VariableDev(QTreeWidgetItem):
 
-    def __init__(self,*, top, parent, dev, noExpand):
+    def __init__(self,*, path, top, parent, dev, noExpand):
         QTreeWidgetItem.__init__(self,parent)
         self._top      = top
         self._parent   = parent
         self._dev      = dev
-        self._children = []
         self._dummy    = None
+        self._path     = path
 
-        self._path = 'rogue://{}:{}/{}/name'.format(self._top._addr,self._top._port,self._dev.path)
-
-        w = PyDMLabel(parent=None, init_channel=self._path)
+        w = PyDMLabel(parent=None, init_channel=self._path + '/name')
         w.showUnits             = False
         w.precisionFromPV       = False
         w.alarmSensitiveContent = False
@@ -63,13 +62,19 @@ class VariableDev(QTreeWidgetItem):
         for key,val in self._dev.variablesByGroup(incGroups=self._top._incGroups,
                                                   excGroups=self._top._excGroups).items():
 
-            self._children.append(VariableHolder(top=self._top, parent=self, variable=val))
+            VariableHolder(path=self._path + '.' + val.name, 
+                           top=self._top, 
+                           parent=self, 
+                           variable=val)
 
         # Then create devices
         for key,val in self._dev.devicesByGroup(incGroups=self._top._incGroups,
                                                 excGroups=self._top._excGroups).items():
 
-            self._children.append(VariableDev(top=self._top, parent=self, dev=val, noExpand=noExpand))
+            VariableDev(path=self._path + '.' + val.name, 
+                        top=self._top, parent=self, 
+                        dev=val, 
+                        noExpand=noExpand)
 
     def _expand(self):
         if self._dummy is None:
@@ -81,13 +86,12 @@ class VariableDev(QTreeWidgetItem):
 
 class VariableHolder(QTreeWidgetItem):
 
-    def __init__(self,*,top,parent,variable):
+    def __init__(self,*,path,top,parent,variable):
         QTreeWidgetItem.__init__(self,parent)
         self._top    = top
         self._parent = parent
         self._var    = variable
-
-        self._path = 'rogue://{}:{}/{}'.format(self._top._addr,self._top._port,self._var.path)
+        self._path   = path
 
         w = PyDMLabel(parent=None, init_channel=self._path + '/name')
         w.showUnits             = False
@@ -118,8 +122,7 @@ class VariableHolder(QTreeWidgetItem):
             w.showStepExponent      = False
 
         else:
-            self._path += '/disp'
-            w = PyDMLineEdit(parent=None, init_channel=self._path)
+            w = PyDMLineEdit(parent=None, init_channel=self._path + '/disp')
             w.showUnits             = False
             w.precisionFromPV       = True
             w.alarmSensitiveContent = False
@@ -136,15 +139,12 @@ class VariableTree(PyDMFrame):
     def __init__(self, parent=None, init_channel=None, incGroups=None, excGroups=['Hidden']):
         PyDMFrame.__init__(self, parent, init_channel)
 
-        self._client = None
-        self._node   = None
+        self._node = None
+        self._path = None
 
         self._incGroups = incGroups
         self._excGroups = excGroups
         self._tree      = None
-        self._addr      = None
-        self._port      = None
-        self._children  = []
 
     def connection_changed(self, connected):
         build = self._connected != connected and connected == True
@@ -152,10 +152,8 @@ class VariableTree(PyDMFrame):
 
         if not build: return
 
-        self._addr, self._port, path, mode = parseAddress(self.channel)
-
-        self._client = VirtualClient(self._addr, self._port)
-        self._node   = self._client.root.getNode(path)
+        self._node = nodeFromAddress(self.channel)
+        self._path = self.channel
 
         vb = QVBoxLayout()
         self.setLayout(vb)
@@ -171,18 +169,18 @@ class VariableTree(PyDMFrame):
         hb = QHBoxLayout()
         vb.addLayout(hb)
 
-        if self._node == self._client.root:
+        if self._node.isinstance(pyrogue.Root):
             hb.addWidget(PyDMPushButton(label='Read All',
                                         pressValue=True,
-                                        init_channel='rogue://{}:{}/root.ReadAll'.format(self._addr,self._port)))
+                                        init_channel=self._path + '.ReadAll'))
         else:
             hb.addWidget(PyDMPushButton(label='Read Recursive',
                                         pressValue=True,
-                                        init_channel='rogue://{}:{}/{}.ReadDevice'.format(self._addr,self._port,self._node.path)))
+                                        init_channel=self._path + '.ReadDevice'))
 
 
         self.setUpdatesEnabled(False)
-        self._children.append(VariableDev(top=self, parent=self._tree, dev=self._node, noExpand=False))
+        VariableDev(path = self._path, top=self, parent=self._tree, dev=self._node, noExpand=False)
         self.setUpdatesEnabled(True)
 
     @Slot(QTreeWidgetItem)

@@ -17,8 +17,8 @@
 import pyrogue
 from pydm.widgets.frame import PyDMFrame
 from pydm.widgets import PyDMLineEdit, PyDMPushButton, PyDMScaleIndicator
+from pyrogue.pydm.data_plugins.rogue_plugin import nodeFromAddress
 from pyrogue.interfaces import VirtualClient
-from pyrogue.pydm.data_plugins.rogue_plugin import parseAddress
 from qtpy.QtCore import Qt, Property
 from qtpy.QtWidgets import QVBoxLayout, QHBoxLayout, QFormLayout, QGroupBox
 
@@ -32,12 +32,13 @@ class Process(PyDMFrame):
 
         if not build: return
 
-        name = self.channel.split('.')[-1]
+        self._node = nodeFromAddress(self.channel)
+        self._path = self.channel
 
         vb = QVBoxLayout()
         self.setLayout(vb)
 
-        gb = QGroupBox('Process ({})'.format(name))
+        gb = QGroupBox('Process ({})'.format(self._node.name))
         vb.addWidget(gb)
 
         vb = QVBoxLayout()
@@ -46,10 +47,10 @@ class Process(PyDMFrame):
         hb = QHBoxLayout()
         vb.addLayout(hb)
 
-        w = PyDMPushButton(label='Start',pressValue=1,init_channel=self.channel + '.Start')
+        w = PyDMPushButton(label='Start',pressValue=1,init_channel=self._path + '.Start')
         hb.addWidget(w)
 
-        w = PyDMPushButton(label='Stop',pressValue=1,init_channel=self.channel + '.Stop')
+        w = PyDMPushButton(label='Stop',pressValue=1,init_channel=self._path + '.Stop')
         hb.addWidget(w)
 
         fl = QFormLayout()
@@ -58,7 +59,7 @@ class Process(PyDMFrame):
         fl.setLabelAlignment(Qt.AlignRight)
         hb.addLayout(fl)
 
-        w = PyDMLineEdit(parent=None, init_channel=self.channel + '.Running/disp')
+        w = PyDMLineEdit(parent=None, init_channel=self._path + '.Running/disp')
         w.showUnits             = False
         w.precisionFromPV       = False
         w.alarmSensitiveContent = False
@@ -72,7 +73,7 @@ class Process(PyDMFrame):
         fl.setLabelAlignment(Qt.AlignRight)
         vb.addLayout(fl)
 
-        w = PyDMScaleIndicator(parent=None, init_channel=self.channel + '.Progress')
+        w = PyDMScaleIndicator(parent=None, init_channel=self._path + '.Progress')
         w.showUnits             = False
         w.precisionFromPV       = True
         w.alarmSensitiveContent = False
@@ -84,7 +85,7 @@ class Process(PyDMFrame):
 
         fl.addRow('Progress:',w)
 
-        w = PyDMLineEdit(parent=None, init_channel=self.channel + '.Message/disp')
+        w = PyDMLineEdit(parent=None, init_channel=self._path + '.Message/disp')
         w.showUnits             = False
         w.precisionFromPV       = False
         w.alarmSensitiveContent = False
@@ -95,13 +96,11 @@ class Process(PyDMFrame):
         # Auto add aditional fields
         noAdd = ['enable','Start','Stop','Running','Progress','Message']
 
-        addr, port, path, mode = parseAddress(self.channel)
-        client = VirtualClient(addr, port)
-        prc = client.root.getNode(path)
+        prc = nodeFromAddress(self.channel)
 
         for k,v in prc.nodes.items():
             if v.name not in noAdd and not v.hidden:
-                w = PyDMLineEdit(parent=None, init_channel=self.channel + '.{}/disp'.format(v.name))
+                w = PyDMLineEdit(parent=None, init_channel=self._path + '.{}/disp'.format(v.name))
                 w.showUnits             = False
                 w.precisionFromPV       = True 
                 w.alarmSensitiveContent = False

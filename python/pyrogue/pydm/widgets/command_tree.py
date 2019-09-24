@@ -17,7 +17,7 @@
 import pyrogue
 from pydm.widgets.frame import PyDMFrame
 from pydm.widgets import PyDMLineEdit, PyDMLabel, PyDMSpinbox, PyDMPushButton, PyDMEnumComboBox
-from pyrogue.pydm.data_plugins.rogue_plugin import parseAddress
+from pyrogue.pydm.data_plugins.rogue_plugin import nodeFromAddress
 from pyrogue.interfaces import VirtualClient
 from qtpy.QtCore import Qt, Property, Slot, QPoint
 from qtpy.QtWidgets import QVBoxLayout, QHBoxLayout, QLabel, QSizePolicy, QMenu, QDialog, QPushButton
@@ -25,17 +25,15 @@ from qtpy.QtWidgets import QTreeWidgetItem, QTreeWidget, QLineEdit, QFormLayout,
 
 class CommandDev(QTreeWidgetItem):
 
-    def __init__(self,*, top, parent, dev, noExpand):
+    def __init__(self,*, path, top, parent, dev, noExpand):
         QTreeWidgetItem.__init__(self,parent)
         self._top      = top
         self._parent   = parent
         self._dev      = dev
-        self._children = []
         self._dummy    = None
+        self._path     = path
 
-        self._path = 'rogue://{}:{}/{}/name'.format(self._top._addr,self._top._port,self._dev.path)
-
-        w = PyDMLabel(parent=None, init_channel=self._path)
+        w = PyDMLabel(parent=None, init_channel=self._path + '/name')
         w.showUnits             = False
         w.precisionFromPV       = False
         w.alarmSensitiveContent = False
@@ -62,13 +60,20 @@ class CommandDev(QTreeWidgetItem):
         for key,val in self._dev.commandsByGroup(incGroups=self._top._incGroups,
                                                  excGroups=self._top._excGroups).items():
 
-            self._children.append(CommandHolder(top=self._top, parent=self, command=val))
+            CommandHolder(path=self._path + '.' + val.name,
+                          top=self._top, 
+                          parent=self, 
+                          command=val)
 
         # Then create devices
         for key,val in self._dev.devicesByGroup(incGroups=self._top._incGroups,
                                                 excGroups=self._top._excGroups).items():
 
-            self._children.append(CommandDev(top=self._top, parent=self, dev=val, noExpand=noExpand))
+            CommandDev(path=self._path + '.' + val.name,
+                       top=self._top, 
+                       parent=self, 
+                       dev=val, 
+                       noExpand=noExpand)
 
     def _expand(self):
         if self._dummy is None:
@@ -80,13 +85,12 @@ class CommandDev(QTreeWidgetItem):
 
 class CommandHolder(QTreeWidgetItem):
 
-    def __init__(self,*,top,parent,command):
+    def __init__(self,*,path,top,parent,command):
         QTreeWidgetItem.__init__(self,parent)
         self._top    = top
         self._parent = parent
         self._cmd    = command
-
-        self._path = 'rogue://{}:{}/{}'.format(self._top._addr,self._top._port,self._cmd.path)
+        self._path   = path
 
         w = PyDMLabel(parent=None, init_channel=self._path + '/name')
         w.showUnits             = False
@@ -98,6 +102,9 @@ class CommandHolder(QTreeWidgetItem):
         self.setToolTip(0,self._cmd.description)
 
         self.setText(1,self._cmd.typeStr)
+
+        #w = pyrogue.pydm.widgets.Command(init_channel=self._path)
+        #self._top._tree.setItemWidget(self,2,w)
 
         if self._cmd.arg:
 
@@ -122,14 +129,12 @@ class CommandTree(PyDMFrame):
     def __init__(self, parent=None, init_channel=None, incGroups=None, excGroups=['Hidden']):
         PyDMFrame.__init__(self, parent, init_channel)
 
-        self._client = None
-        self._node   = None
+        self._node = None
+        self._path = None
 
         self._incGroups = incGroups
         self._excGroups = excGroups
         self._tree      = None
-        self._addr      = None
-        self._port      = None
         self._children  = []
 
     def connection_changed(self, connected):
@@ -138,10 +143,8 @@ class CommandTree(PyDMFrame):
 
         if not build: return
 
-        self._addr, self._port, path, mode = parseAddress(self.channel)
-
-        self._client = VirtualClient(self._addr, self._port)
-        self._node = self._client.root.getNode(path)
+        self._node = nodeFromAddress(self.channel)
+        self._path = self.channel
 
         vb = QVBoxLayout()
         self.setLayout(vb)
@@ -158,10 +161,11 @@ class CommandTree(PyDMFrame):
         self._tree.itemExpanded.connect(self._expandCb)
 
         self.setUpdatesEnabled(False)
-        self._children.append(CommandDev(top=self,
-                                         parent=self._tree,
-                                         dev=self._node,
-                                         noExpand=False))
+        CommandDev(path=self._path,
+                   top=self,
+                   parent=self._tree,
+                   dev=self._node,
+                   noExpand=False)
         self.setUpdatesEnabled(True)
 
     @Slot(QTreeWidgetItem)
