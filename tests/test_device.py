@@ -257,6 +257,8 @@ class AxiVersion(pr.Device):
 
         self.BuildStamp.addListener(parseBuildStamp)        
 
+        #self.add(pr.LocalVariable(name = 'TestArray[2]',value=0))
+
         for i in range(4):
             for j in range(4):
                 for k in range(4):
@@ -265,15 +267,7 @@ class AxiVersion(pr.Device):
         self.add(pr.LocalVariable(name = 'TestArray[4][5]',value=0))
         self.add(pr.LocalVariable(name = 'TestArray[6]',value=0))
 
-        #self.add(pr.RemoteVariable(
-        #    name         = 'TestArray[5]',
-        #    description  = 'Array Test Field',
-        #    offset       = 0x2900 + a,
-        #    bitSize      = 32,
-        #    bitOffset    = 0,
-        #    base         = pr.UInt,
-        #    mode         = 'RW',
-        #))
+        #self.add(pr.LocalVariable(name = 'TestArray[2]',value=0))
 
         self.add(pr.RemoteVariable(
             name         = 'TestSpareArray[5][5]',
