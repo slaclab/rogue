@@ -71,9 +71,6 @@ class VariableDev(QTreeWidgetItem):
 
             self._children.append(VariableDev(top=self._top, parent=self, dev=val, noExpand=noExpand))
 
-        for i in range(0,5):
-            self._top._tree.resizeColumnToContents(i)
-
     def _expand(self):
         if self._dummy is None:
             return
@@ -190,9 +187,16 @@ class VariableTree(PyDMFrame):
 
     @Slot(QTreeWidgetItem)
     def _expandCb(self,item):
-        #self.setUpdatesEnabled(False)
+        self.setUpdatesEnabled(False)
         item._expand()
-        #self.setUpdatesEnabled(True)
+
+        self._tree.setColumnWidth(0,250)
+        self._tree.setColumnWidth(1,50)
+        self._tree.setColumnWidth(2,75)
+        self._tree.setColumnWidth(3,200)
+        self._tree.setColumnWidth(4,50)
+
+        self.setUpdatesEnabled(True)
 
     @Property(str)
     def incGroups(self):

@@ -70,9 +70,6 @@ class CommandDev(QTreeWidgetItem):
 
             self._children.append(CommandDev(top=self._top, parent=self, dev=val, noExpand=noExpand))
 
-        for i in range(0,3):
-            self._top._tree.resizeColumnToContents(i)
-
     def _expand(self):
         if self._dummy is None:
             return
@@ -171,6 +168,11 @@ class CommandTree(PyDMFrame):
     def _expandCb(self,item):
         self.setUpdatesEnabled(False)
         item._expand()
+
+        self._tree.setColumnWidth(0,250)
+        self._tree.setColumnWidth(1,50)
+        self._tree.setColumnWidth(2,200)
+
         self.setUpdatesEnabled(True)
 
     def _openMenu(self, pos):
