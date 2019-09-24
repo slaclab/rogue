@@ -377,6 +377,10 @@ namespace rogue {
                void  putNumpy (boost::python::object np,
                                uint32_t          offset);
 #endif
+
+               //! Debug Buffer
+               void debug();
+
          };
 
          //! Alias for using shared pointer as FramePtr

@@ -203,6 +203,9 @@ namespace rogue {
                /**This method sets the buffer payload size as empty.
                 */
                void setPayloadEmpty();
+
+               //! Debug Buffer
+               void debug(uint32_t idx);
          };
 
          //! Alias for using shared pointer as BufferPtr

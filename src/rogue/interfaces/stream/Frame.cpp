@@ -389,51 +389,65 @@ boost::python::object ris::Frame::getNumpy (uint32_t offset, uint32_t count)
    }
 
    // Create a numpy array to receive it and locate the destination data buffer
-   npy_intp dims[1] = { count };
-   PyObject    *arr = PyArray_SimpleNew (1, dims, NPY_UINT8);
-   uint8_t     *dst = reinterpret_cast<uint8_t *>
-                      (PyArray_DATA ((reinterpret_cast<PyArrayObject *>(arr))));
+   npy_intp   dims[1] = { count };
+   PyObject      *obj = PyArray_SimpleNew (1, dims, NPY_UINT8);
+   PyArrayObject *arr = reinterpret_cast<PyArrayObject *>(obj);
+   uint8_t       *dst = reinterpret_cast<uint8_t *>(PyArray_DATA (arr));
 
    // Read the data
    ris::Frame::iterator beg = this->beginRead() + offset;
-   ris::fromFrame(beg, count, dst);
-
+   ris::fromFrame (beg, count, dst);
 
    // Transform to and return a boost python object
-   boost::python::handle<>  handle (arr);
+   boost::python::handle<>  handle (obj);
    boost::python::object p (handle);
    return p;
 }
 
 
-// ! Write the all the data associated with the input numpy array
+//! Write the all the data associated with the input numpy array
 void ris::Frame::putNumpy ( boost::python::object p, uint32_t offset ) {
 
-   Py_buffer pyBuf;
+   // Retrieve pointer to PyObject
+   PyObject *obj = p.ptr ();
 
-   // Check that the numpy array data buffer is contigious
-   // The read routine can only deal with contigious buffers.
-   if ( PyObject_GetBuffer(p.ptr(),&pyBuf,PyBUF_CONTIG) < 0 )
-      throw(rogue::GeneralError("Frame::putNumpy","Python Buffer Error In Frame"));
+
+   // Check that this is a PyArrayObject
+   if (! PyArray_Check (obj) ) {
+      throw(rogue::GeneralError("Frame::putNumpy","Object is not a numpy arra"));
+   }
+
+
+   // Cast to an array object and check that the numpy array 
+   // data buffer is writeable and contigious
+   // The write routine can only deal with contigious buffers.
+   PyArrayObject *arr = reinterpret_cast<decltype(arr)>(obj);   
+   int          flags = PyArray_FLAGS (arr);
+   bool           ctg = flags & (NPY_ARRAY_C_CONTIGUOUS | NPY_ARRAY_F_CONTIGUOUS);
+   if ( !ctg ) {
+      throw(rogue::GeneralError("Frame::putNumpy",
+                                "Numpy Array is not contiguious"));
+   }
 
    // Get the number of bytes in both the source and destination buffers
    uint32_t  size = getSize();
-   uint32_t count = pyBuf.len;
+   uint32_t count = PyArray_NBYTES (arr);
+   uint32_t   end = offset + count;
 
    // Check this does not request data past the EOF
-   if ( (offset + count) > size ) {
-      PyBuffer_Release(&pyBuf);
+   if ( end > size ) {
       throw(rogue::GeneralError::create("Frame::putNumpy",
                "Attempt to write %i bytes to frame at offset %i with size %i",count,offset,size));
    }
 
-   uint8_t *src = reinterpret_cast<uint8_t *>(pyBuf.buf);
+   uint8_t *src = reinterpret_cast<uint8_t *>(PyArray_DATA (arr));
 
    // Write the numpy data to the array
    ris::Frame::iterator beg = this->beginWrite() + offset;
-   ris::toFrame(beg, count, src); 
-   minPayload(offset+count);
-   PyBuffer_Release(&pyBuf);
+   ris::toFrame (beg, count, src); 
+   minPayload   (end);
+
+   return;
 }
 
 
@@ -463,7 +477,22 @@ void ris::Frame::setup_python() {
       .def("getChannel",   &ris::Frame::getChannel)
       .def("getNumpy",     &ris::Frame::getNumpy)
       .def("putNumpy",     &ris::Frame::putNumpy)
+      .def("_debug",       &ris::Frame::debug)
    ;
 #endif
 }
+
+void ris::Frame::debug() {
+   ris::Frame::BufferIterator it;
+   uint32_t idx = 0;
+
+   printf("Frame Info. BufferCount: %i, Size: %i, Available: %i, Payload: %i, Channel: %i, Error: 0x%x, Flags: 0x%x\n", 
+         bufferCount(), getSize(), getAvailable(), getPayload(), getChannel(), getError());
+
+   for (it = buffers_.begin(); it != buffers_.end(); ++it) {
+      (*it)->debug(idx);
+      idx++;
+   }
+}
+
 
