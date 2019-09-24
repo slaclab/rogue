@@ -35,7 +35,7 @@ class SystemWindow(PyDMFrame):
 
         if not build: return
 
-        addr, port, path, disp = parseAddress(self.channel)
+        addr, port, path, mode = parseAddress(self.channel)
 
         client = VirtualClient(addr, port)
         base = 'rogue://{}:{}/'.format(addr,port)

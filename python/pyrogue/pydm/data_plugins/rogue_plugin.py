@@ -55,7 +55,7 @@ def parseAddress(address):
     host = data_server[0]
     port = int(data_server[1])
     path = data[1]
-    mode = 'Value' if (len(data) < 3) else data[2]
+    mode = 'value' if (len(data) < 3) else data[2]
 
     return (host,port,path,mode)
 
@@ -91,17 +91,17 @@ class RogueConnection(PyDMConnection):
             if self._node.disp == 'enum' and self._node.enum is not None and self._node.mode != 'RO':
                 self._enum = list(self._node.enum.values())
 
-            elif self._mode == 'Value' and ('Int' in self._node.typeStr or self._node.typeStr == 'int'):
+            elif self._mode == 'value' and ('Int' in self._node.typeStr or self._node.typeStr == 'int'):
                 self._int = True
 
         self.add_listener(channel)
 
     def _updateVariable(self,path,varValue):
-        if self._mode == 'Name':
+        if self._mode == 'name':
             self.new_value_signal[str].emit(self._node.name)
-        elif self._mode == 'Path':
+        elif self._mode == 'path':
             self.new_value_signal[str].emit(self._node.path)
-        elif self._mode == 'Disp':
+        elif self._mode == 'disp':
             self.new_value_signal[str].emit(varValue.valueDisp)
         elif self._enum is not None:
             self.new_value_signal[int].emit(self._enum.index(varValue.valueDisp))
@@ -160,7 +160,7 @@ class RogueConnection(PyDMConnection):
 
         if self._notDev:
 
-            if self._mode == 'Name' or self._mode == 'Path':
+            if self._mode == 'name' or self._mode == 'path':
                 self.write_access_signal.emit(False)
             else:
                 self.write_access_signal.emit(self._cmd or self._node.mode=='RW')

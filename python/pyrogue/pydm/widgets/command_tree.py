@@ -33,7 +33,7 @@ class CommandDev(QTreeWidgetItem):
         self._children = []
         self._dummy    = None
 
-        self._path = 'rogue://{}:{}/{}/Name'.format(self._top._addr,self._top._port,self._dev.path)
+        self._path = 'rogue://{}:{}/{}/name'.format(self._top._addr,self._top._port,self._dev.path)
 
         w = PyDMLabel(parent=None, init_channel=self._path)
         w.showUnits             = False
@@ -88,7 +88,7 @@ class CommandHolder(QTreeWidgetItem):
 
         self._path = 'rogue://{}:{}/{}'.format(self._top._addr,self._top._port,self._cmd.path)
 
-        w = PyDMLabel(parent=None, init_channel=self._path + '/Name')
+        w = PyDMLabel(parent=None, init_channel=self._path + '/name')
         w.showUnits             = False
         w.precisionFromPV       = False
         w.alarmSensitiveContent = False
@@ -106,7 +106,7 @@ class CommandHolder(QTreeWidgetItem):
                 w.alarmSensitiveContent = False
                 w.alarmSensitiveBorder  = False
             else:
-                self._path += '/Disp'
+                self._path += '/disp'
                 w = PyDMLineEdit(parent=None, init_channel=self._path)
                 w.showUnits             = False
                 w.precisionFromPV       = True
@@ -138,7 +138,7 @@ class CommandTree(PyDMFrame):
 
         if not build: return
 
-        self._addr, self._port, path, disp = parseAddress(self.channel)
+        self._addr, self._port, path, mode = parseAddress(self.channel)
 
         self._client = VirtualClient(self._addr, self._port)
         self._node = self._client.root.getNode(path)

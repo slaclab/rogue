@@ -58,7 +58,7 @@ class Process(PyDMFrame):
         fl.setLabelAlignment(Qt.AlignRight)
         hb.addLayout(fl)
 
-        w = PyDMLineEdit(parent=None, init_channel=self.channel + '.Running/Disp')
+        w = PyDMLineEdit(parent=None, init_channel=self.channel + '.Running/disp')
         w.showUnits             = False
         w.precisionFromPV       = False
         w.alarmSensitiveContent = False
@@ -84,7 +84,7 @@ class Process(PyDMFrame):
 
         fl.addRow('Progress:',w)
 
-        w = PyDMLineEdit(parent=None, init_channel=self.channel + '.Message/Disp')
+        w = PyDMLineEdit(parent=None, init_channel=self.channel + '.Message/disp')
         w.showUnits             = False
         w.precisionFromPV       = False
         w.alarmSensitiveContent = False
@@ -95,13 +95,13 @@ class Process(PyDMFrame):
         # Auto add aditional fields
         noAdd = ['enable','Start','Stop','Running','Progress','Message']
 
-        addr, port, path, disp = parseAddress(self.channel)
+        addr, port, path, mode = parseAddress(self.channel)
         client = VirtualClient(addr, port)
         prc = client.root.getNode(path)
 
         for k,v in prc.nodes.items():
             if v.name not in noAdd and not v.hidden:
-                w = PyDMLineEdit(parent=None, init_channel=self.channel + '.{}/Disp'.format(v.name))
+                w = PyDMLineEdit(parent=None, init_channel=self.channel + '.{}/disp'.format(v.name))
                 w.showUnits             = False
                 w.precisionFromPV       = True 
                 w.alarmSensitiveContent = False
