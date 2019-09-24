@@ -494,15 +494,11 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
             pr.logException(self._log,e)
 
     def _exit(self):
-        print("Stopping Rogue root")
         self.stop()
-        print("Exiting application")
         exit()
 
     def _restart(self):
-        print("Stopping Rogue root")
         self.stop()
-        print("Restarting application")
         py = sys.executable
         os.execl(py, py, *sys.argv)
 
@@ -566,7 +562,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
     def _read(self):
         """Read all blocks"""
         self._log.info("Start root read")
-        with self.updateGroup():
+        with self.pollBlock(), self.updateGroup():
             try:
                 self.readBlocks(recurse=True)
                 self._log.info("Check root read")

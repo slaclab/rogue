@@ -17,6 +17,7 @@
 import pyrogue
 from pydm.widgets.frame import PyDMFrame
 from pydm.widgets import PyDMSpinbox, PyDMPushButton
+from pyrogue.pydm.data_plugins.rogue_plugin import nodeFromAddress
 from qtpy.QtCore import Qt, Property
 from qtpy.QtWidgets import QVBoxLayout, QTreeWidgetItem, QTreeWidget, QGroupBox
 import jsonpickle
@@ -35,7 +36,8 @@ class SystemLog(PyDMFrame):
 
         if not build: return
 
-        cpath = self.channel.replace('SystemLog','ClearLog')
+        self._node = nodeFromAddress(self.channel)
+        self._path = self.channel.replace('SystemLog','ClearLog')
 
         vb = QVBoxLayout()
         self.setLayout(vb)
@@ -54,7 +56,7 @@ class SystemLog(PyDMFrame):
 
         self._logCount = 0
 
-        self._pb = PyDMPushButton(label='Clear Log',pressValue=1,init_channel=cpath)
+        self._pb = PyDMPushButton(label='Clear Log',pressValue=1,init_channel=self._path)
         vb.addWidget(self._pb)
 
     def value_changed(self, new_val):

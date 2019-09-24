@@ -24,6 +24,7 @@ from pyrogue.pydm.widgets import RunControl
 from pyrogue.pydm.widgets import DataWriter
 from pyrogue.pydm.widgets import SystemWindow
 from pyrogue.pydm.widgets import Process
+from pyrogue.pydm.widgets import Command
 
 VariableTree = qtplugin_factory(VariableTree,  group="Rogue Widgets")
 CommandTree  = qtplugin_factory(CommandTree,   group="Rogue Widgets")
@@ -33,4 +34,5 @@ RunControl   = qtplugin_factory(RunControl,    group="Rogue Widgets")
 DataWriter   = qtplugin_factory(DataWriter,    group="Rogue Widgets")
 SystemWindow = qtplugin_factory(SystemWindow,  group="Rogue Widgets")
 Procsss      = qtplugin_factory(Process,       group="Rogue Widgets")
+Command      = qtplugin_factory(Command,       group="Rogue Widgets")
 

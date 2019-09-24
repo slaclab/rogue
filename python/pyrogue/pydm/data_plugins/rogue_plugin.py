@@ -16,6 +16,7 @@
 import logging
 import numpy as np
 import os
+import time
 
 from pydm.data_plugins.plugin import PyDMPlugin, PyDMConnection
 from PyQt5.QtCore import pyqtSlot, Qt
@@ -31,9 +32,10 @@ logger = logging.getLogger(__name__)
 AlarmToInt = {'None':0, 'Good':0, 'AlarmMinor':1, 'AlarmMajor':2}
 
 def parseAddress(address):
-    # "rogue://index/<path>/<disp>"
+    # "rogue://index/<path>/<mode>"
     # or
-    # "rogue://host:port/<path>/<disp>"
+    # "rogue://host:port/<path>/<mode>"
+    # Mode: 'Value', 'Disp', 'Name' or 'Path'
     envList = os.getenv('ROGUE_SERVERS')
 
     if envList is None:
@@ -54,9 +56,15 @@ def parseAddress(address):
     host = data_server[0]
     port = int(data_server[1])
     path = data[1]
-    disp = (len(data) > 2) and (data[2] == 'True')
+    mode = 'value' if (len(data) < 3) else data[2]
 
-    return (host,port,path,disp)
+    return (host,port,path,mode)
+
+
+def nodeFromAddress(address):
+    host, port, path, mode = parseAddress(address)
+    client = VirtualClient(host, port)
+    return client.root.getNode(path)
 
 
 class RogueConnection(PyDMConnection):
@@ -64,11 +72,9 @@ class RogueConnection(PyDMConnection):
     def __init__(self, channel, address, protocol=None, parent=None):
         super(RogueConnection, self).__init__(channel, address, protocol, parent)
 
-        #print("Adding connection channel={}, address={}".format(channel,address))
-
         self.app = QApplication.instance()
 
-        self._host, self._port, self._path, self._disp = parseAddress(address)
+        self._host, self._port, self._path, self._mode = parseAddress(address)
 
         self._cmd    = False
         self._int    = False
@@ -90,13 +96,17 @@ class RogueConnection(PyDMConnection):
             if self._node.disp == 'enum' and self._node.enum is not None and self._node.mode != 'RO':
                 self._enum = list(self._node.enum.values())
 
-            elif (not self._disp) and ('Int' in self._node.typeStr or self._node.typeStr == 'int'):
+            elif self._mode == 'value' and ('Int' in self._node.typeStr or self._node.typeStr == 'int'):
                 self._int = True
 
         self.add_listener(channel)
 
     def _updateVariable(self,path,varValue):
-        if self._disp:
+        if self._mode == 'name':
+            self.new_value_signal[str].emit(self._node.name)
+        elif self._mode == 'path':
+            self.new_value_signal[str].emit(self._node.path)
+        elif self._mode == 'disp':
             self.new_value_signal[str].emit(varValue.valueDisp)
         elif self._enum is not None:
             self.new_value_signal[int].emit(self._enum.index(varValue.valueDisp))
@@ -111,22 +121,25 @@ class RogueConnection(PyDMConnection):
     @pyqtSlot(str)
     @pyqtSlot(np.ndarray)
     def put_value(self, new_value):
-        if self._node is None:
+        if self._node is None or not self._notDev:
             return
         try:
 
-            if self._enum is not None:
+            if new_value is None:
+                val = None
+            elif self._enum is not None and not isinstance(new_value,str):
                 val = self._enum[new_value]
             elif self._int:
                 val = int(new_value)
             else:
                 val = new_value
 
+            st = time.time()
             if self._cmd:
                 self._node.__call__(val)
             else:
                 self._node.setDisp(val)
-        except:
+        except Exception as e:
             logger.error("Unable to put %s to %s.  Exception: %s", new_value, self.address, str(e))
 
 
@@ -155,8 +168,6 @@ class RogueConnection(PyDMConnection):
 
         if self._notDev:
 
-            self.write_access_signal.emit(self._cmd or self._node.mode=='RW')
-
             if self._node.units is not None:
                 self.unit_signal.emit(self._node.units)
 
@@ -168,8 +179,20 @@ class RogueConnection(PyDMConnection):
                 self.enum_strings_signal.emit(tuple(self._enum))
 
             self.prec_signal.emit(self._node.precision)
-            self._updateVariable(self._node.path,self._node.getVariableValue(read=False))
 
+            if self._mode == 'name':
+                self.write_access_signal.emit(False)
+                self.new_value_signal[str].emit(self._node.name)
+            elif self._mode == 'path' or self._mode == 'path':
+                self.write_access_signal.emit(False)
+                self.new_value_signal[str].emit(self._node.path)
+            else:
+                self.write_access_signal.emit(self._cmd or self._node.mode=='RW')
+                st = time.time()
+                self._updateVariable(self._node.path,self._node.getVariableValue(read=False))
+
+        else:
+            self.new_value_signal[str].emit(self._node.name)
 
     def remove_listener(self, channel, destroying):
         #if channel.value_signal is not None:

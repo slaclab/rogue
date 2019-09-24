@@ -17,6 +17,7 @@
 import pyrogue
 from pydm.widgets.frame import PyDMFrame
 from pydm.widgets import PyDMLineEdit, PyDMEnumComboBox
+from pyrogue.pydm.data_plugins.rogue_plugin import nodeFromAddress
 from qtpy.QtCore import Qt, Property
 from qtpy.QtWidgets import QVBoxLayout, QHBoxLayout, QFormLayout, QGroupBox
 
@@ -30,12 +31,13 @@ class RunControl(PyDMFrame):
 
         if not build: return
 
-        name = self.channel.split('.')[-1]
+        self._node = nodeFromAddress(self.channel)
+        self._path = self.channel
 
         vb = QVBoxLayout()
         self.setLayout(vb)
 
-        gb = QGroupBox('Run Control ({})'.format(name))
+        gb = QGroupBox('Run Control ({})'.format(self._node.name))
         vb.addWidget(gb)
 
         vb = QVBoxLayout()
@@ -47,7 +49,7 @@ class RunControl(PyDMFrame):
         fl.setLabelAlignment(Qt.AlignRight)
         vb.addLayout(fl)
 
-        w = PyDMEnumComboBox(parent=None, init_channel=self.channel + '.runRate')
+        w = PyDMEnumComboBox(parent=None, init_channel=self._path + '.runRate')
         w.alarmSensitiveContent = False
         w.alarmSensitiveBorder  = False
         fl.addRow('Run Rate:',w)
@@ -61,7 +63,7 @@ class RunControl(PyDMFrame):
         fl.setLabelAlignment(Qt.AlignRight)
         hb.addLayout(fl)
 
-        w = PyDMEnumComboBox(parent=None, init_channel=self.channel + '.runState')
+        w = PyDMEnumComboBox(parent=None, init_channel=self._path + '.runState')
         w.alarmSensitiveContent = False
         w.alarmSensitiveBorder  = False
         fl.addRow('Run State:',w)
@@ -72,7 +74,7 @@ class RunControl(PyDMFrame):
         fl.setLabelAlignment(Qt.AlignRight)
         hb.addLayout(fl)
 
-        w = PyDMLineEdit(parent=None, init_channel=self.channel + '.runCount')
+        w = PyDMLineEdit(parent=None, init_channel=self._path + '.runCount')
         w.showUnits             = False
         w.precisionFromPV       = True
         w.alarmSensitiveContent = False

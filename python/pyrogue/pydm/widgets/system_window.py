@@ -16,7 +16,7 @@
 
 from pydm.widgets.frame import PyDMFrame
 import pyrogue
-from pyrogue.pydm.data_plugins.rogue_plugin import parseAddress
+from pyrogue.pydm.data_plugins.rogue_plugin import nodeFromAddress
 from pyrogue.interfaces import VirtualClient
 from qtpy.QtCore import Qt, Property
 from qtpy.QtWidgets import QVBoxLayout
@@ -35,23 +35,21 @@ class SystemWindow(PyDMFrame):
 
         if not build: return
 
-        addr, port, path, disp = parseAddress(self.channel)
-
-        client = VirtualClient(addr, port)
-        base = 'rogue://{}:{}/'.format(addr,port)
+        self._node = nodeFromAddress(self.channel)
+        self._path = self.channel
 
         vb = QVBoxLayout()
         self.setLayout(vb)
 
-        rc = RootControl(parent=None, init_channel=base+'root')
+        rc = RootControl(parent=None, init_channel=self._path)
         vb.addWidget(rc)
 
-        for key,val in client.root.getNodes(typ=pyrogue.DataWriter).items():
-            vb.addWidget(DataWriter(parent=None, init_channel=base+val.path))
+        for key,val in self._node.getNodes(typ=pyrogue.DataWriter).items():
+            vb.addWidget(DataWriter(parent=None, init_channel=self._path + '.' + val.name))
 
-        for key,val in client.root.getNodes(typ=pyrogue.RunControl).items():
-            vb.addWidget(RunControl(parent=None, init_channel=base+val.path))
+        for key,val in self._node.getNodes(typ=pyrogue.RunControl).items():
+            vb.addWidget(RunControl(parent=None, init_channel=self._path + '.' + val.name))
 
-        sl = SystemLog(parent=None, init_channel=base+'root.SystemLog')
+        sl = SystemLog(parent=None, init_channel=self._path + '.SystemLog')
         vb.addWidget(sl)
 

@@ -49,7 +49,7 @@ class DefaultTop(Display):
     def minimumSizeHint(self):
         # This is the default recommended size
         # for this screen
-        return QtCore.QSize(400, 800)
+        return QtCore.QSize(700, 900)
 
     def ui_filepath(self):
         # No UI file is being used
