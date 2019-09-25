@@ -22,7 +22,8 @@ from pyrogue.pydm.data_plugins.rogue_plugin import nodeFromAddress
 from pyrogue.interfaces import VirtualClient
 from qtpy.QtCore import Qt, Property, Slot
 from qtpy.QtWidgets import QVBoxLayout, QHBoxLayout, QMenu, QDialog, QPushButton
-from qtpy.QtWidgets import QTreeWidgetItem, QTreeWidget, QLineEdit, QFormLayout
+from qtpy.QtWidgets import QTreeWidgetItem, QTreeWidget, QLineEdit, QFormLayout, QLabel
+import re
 
 class VariableDev(QTreeWidgetItem):
 
@@ -33,6 +34,7 @@ class VariableDev(QTreeWidgetItem):
         self._dev      = dev
         self._dummy    = None
         self._path     = path
+        self._avars    = {}
 
         w = PyDMLabel(parent=None, init_channel=self._path + '/name')
         w.showUnits             = False
@@ -62,10 +64,21 @@ class VariableDev(QTreeWidgetItem):
         for key,val in self._dev.variablesByGroup(incGroups=self._top._incGroups,
                                                   excGroups=self._top._excGroups).items():
 
-            VariableHolder(path=self._path + '.' + val.name, 
-                           top=self._top, 
-                           parent=self, 
-                           variable=val)
+            # Test for array
+            fields = re.split('\]\[|\[|\]',val.name)
+            if len(fields) < 3: 
+                VariableHolder(path=self._path + '.' + val.name, 
+                               top=self._top, 
+                               parent=self, 
+                               variable=val)
+            else:
+                if not fields[0] in self._avars:
+                    self._avars[fields[0]] = VariableArray(path=self._path,
+                                                           top=self._top, 
+                                                           parent=self, 
+                                                           name=fields[0])
+                self._avars[fields[0]].addNode(val)
+
 
         # Then create devices
         for key,val in self._dev.devicesByGroup(incGroups=self._top._incGroups,
@@ -83,6 +96,46 @@ class VariableDev(QTreeWidgetItem):
         self.removeChild(self._dummy)
         self._dummy = None
         self._setup(True)
+
+
+class VariableArray(QTreeWidgetItem):
+
+    def __init__(self,*, path, top, parent, name):
+        QTreeWidgetItem.__init__(self,parent)
+        self._top      = top
+        self._parent   = parent
+        self._name     = name
+        self._dummy    = None
+        self._path     = path
+        self._list     = []
+
+        self._lab = QLabel(parent=None, text=self._name + ' (0)')
+
+        self._top._tree.setItemWidget(self,0,self._lab)
+        self._dummy = QTreeWidgetItem(self) # One dummy item to add expand control
+        self.setExpanded(False)
+
+    def _setup(self):
+
+        # Create variables
+        for val in self._list:
+            VariableHolder(path=self._path + '.' + val.name, 
+                           top=self._top,
+                           parent=self,
+                           variable=val)
+
+    def _expand(self):
+        if self._dummy is None:
+            return
+
+        self.removeChild(self._dummy)
+        self._dummy = None
+        self._setup()
+
+    def addNode(self,node):
+        self._list.append(node)
+        self._lab.setText(self._name + ' ({})'.format(len(self._list)))
+
 
 class VariableHolder(QTreeWidgetItem):
 
@@ -193,7 +246,6 @@ class VariableTree(PyDMFrame):
         self._tree.setColumnWidth(2,75)
         self._tree.setColumnWidth(3,200)
         self._tree.setColumnWidth(4,50)
-
         self.setUpdatesEnabled(True)
 
     @Property(str)
