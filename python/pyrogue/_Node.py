@@ -200,7 +200,7 @@ class Node(object):
         if name in self._nodes:
             return self._nodes[name]
 
-        # Node matches name in node array list
+        # Node matches name in node dictionary list
         elif name in self._anodes:
             return self._anodes[name]
 
@@ -295,32 +295,34 @@ class Node(object):
         if aname in self.__dir__():
             raise NodeError('Error adding node with name %s to %s. Name collision.' % (node.name,self.name))
 
-        # Create list if it does not exist
+        # Create dictionary containers
         if not aname in self._anodes:
-            self._anodes[aname] = []
+            self._anodes[aname] = {}
 
         # Start at primary list
-        lst = self._anodes[aname]
+        sub = self._anodes[aname]
 
         # Iterate through keys
         for i in range(len(keys)):
             k = int(keys[i])
 
-            # Fill in empy array locations
-            if len(lst) <= k:
-                lst.extend([None for _ in range(k-len(lst) + 1)])
-
-            # Last key, set node, check if location already has an array
+            # Last key, set node, check for overlaps
             if i == (len(keys)-1): 
-                if lst[k] is not None:
+                if k in sub:
                     raise NodeError('Error adding node with name %s to %s. Name collision.' % (node.name,self.name))
 
-                lst[k] = node
+                sub[k] = node
+                return
 
-            # Add next level array and update pointer
-            else:
-                if lst[k] is None: lst[k] = []
-                lst = lst[k]
+            # Next level is empty
+            if not k in sub:
+                sub[k] = {}
+
+            # check for overlaps
+            elif isinstance(sub[k],Node):
+                raise NodeError('Error adding node with name %s to %s. Name collision.' % (node.name,self.name))
+            
+            sub = sub[k]
 
 
     def addNode(self, nodeClass, **kwargs):
@@ -589,21 +591,31 @@ class Node(object):
 
             # Name not in list
             if aname is None or aname not in self._anodes or len(keys) == 0:
-                return None
+                return []
 
-            return _iterateList(self._anodes[aname],keys)
+            return _iterateDict(self._anodes[aname],keys)
 
 
-def _iterateList(lst, keys):
+def _iterateDict(d, keys):
     retList = []
 
+    # Wildcard, full list
     if keys[0] == '*' or keys[0] == ':':
-        subList = lst
+        subList = list(d.values())
+
+    # Single item
     elif keys[0].isdigit():
-        subList = [lst[int(keys[0])]]
+        subList = [d[int(keys[0])]]
+
+    # Slice
     else:
+
+        # Form sliceable list
+        tmpList = [None] * max(d.keys())
+        for k,v in d.items(): tmpList[k] = v
+
         try:
-            subList = eval(f'lst[{keys[0]}]')
+            subList = eval(f'tmpList[{keys[0]}]')
         except:
             subList = []
 
@@ -614,8 +626,8 @@ def _iterateList(lst, keys):
             retList.append(e)
 
         # Don't go deeper in tree than the keys provided to avoid over-matching nodes
-        elif len(keys) > 1 and isinstance(e,list):
-            retList.extend(_iterateList(e,keys[1:]))
+        elif len(keys) > 1 and isinstance(e,dict):
+            retList.extend(_iterateDict(e,keys[1:]))
 
     return retList
 
