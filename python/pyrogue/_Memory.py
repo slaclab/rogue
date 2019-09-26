@@ -35,7 +35,7 @@ class MemoryDevice(pr.Device):
         self._lockCnt = 0
 
         if isinstance(base, pr.Model):
-        self._base = base
+            self._base = base
         else:
             self._base = base(wordBitSize)
 
