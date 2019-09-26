@@ -22,6 +22,7 @@
 #include <rogue/interfaces/memory/Constants.h>
 #include <rogue/interfaces/memory/Transaction.h>
 #include <rogue/GeneralError.h>
+#include <rogue/Helpers.h>
 #include <memory>
 #include <rogue/GilRelease.h>
 #include <rogue/ScopedGil.h>
@@ -50,7 +51,7 @@ void rim::Master::setup_python() {
       .def("_reqMaxAccess",       &rim::Master::reqMaxAccess)
       .def("_reqAddress",         &rim::Master::reqAddress)
       .def("_getError",           &rim::Master::getError)
-      .def("_setError",           &rim::Master::setError)
+      .def("_clearError",         &rim::Master::clearError)
       .def("_setTimeout",         &rim::Master::setTimeout)
       .def("_reqTransaction",     &rim::Master::reqTransactionPy)
       .def("_waitTransaction",    &rim::Master::waitTransaction)
@@ -66,7 +67,7 @@ void rim::Master::setup_python() {
 
 //! Create object
 rim::Master::Master() {
-   error_   = 0;
+   error_   = "";
    slave_   = rim::Slave::create(4,4); // Empty placeholder
 
    rogue::defaultTimeout(sumTime_);
@@ -110,15 +111,15 @@ uint64_t rim::Master::reqAddress() {
 }
 
 //! Get error
-uint32_t rim::Master::getError() {
+std::string rim::Master::getError() {
    return error_;
 }
 
 //! Rst error
-void rim::Master::setError(uint32_t error) {
+void rim::Master::clearError() {
    rogue::GilRelease noGil;
    std::lock_guard<std::mutex> lock(mastMtx_);
-   error_ = error;
+   error_ = "";
 }
 
 //! Set timeout
@@ -159,7 +160,9 @@ uint32_t rim::Master::reqTransactionPy(uint64_t address, boost::python::object p
 
    if ( (tran->size_ + offset) > tran->pyBuf_.len ) {
       PyBuffer_Release(&(tran->pyBuf_));
-      throw(rogue::GeneralError::boundary("Master::reqTransactionPy",(tran->size_+offset),tran->pyBuf_.len));
+      throw(rogue::GeneralError::create("Master::reqTransactionPy",
+               "Attempt to access %i bytes in python buffer with size %i at offset %i",
+               tran->size_,tran->pyBuf_.len,offset));
    }
 
    tran->pyValid_ = true;
@@ -195,7 +198,7 @@ uint32_t rim::Master::intTransaction(rim::TransactionPtr tran) {
 void rim::Master::waitTransaction(uint32_t id) {
    TransactionMap::iterator it;
    rim::TransactionPtr tran;
-   uint32_t error;
+   std::string error;
 
    rogue::GilRelease noGil;
    while (1) {
@@ -213,7 +216,7 @@ void rim::Master::waitTransaction(uint32_t id) {
       }
 
       // Outside of lock
-      if ( (error = tran->wait()) != 0 ) error_ = error;
+      if ( (error = tran->wait()) != "" ) error_ = error;
    }
 }
 
@@ -238,7 +241,9 @@ void rim::Master::copyBits(boost::python::object dst, uint32_t dstLsb, boost::py
 
    if ( (dstLsb + size) > (dstBuf.len*8) ) {
       PyBuffer_Release(&dstBuf);
-      throw(rogue::GeneralError::boundary("Master::copyBits",(dstLsb + size),(dstBuf.len*8)));
+      throw(rogue::GeneralError::create("Master::copyBits",
+               "Attempt to copy %i bits starting from bit %i from dest array with bitSize %i",
+               size, dstLsb, dstBuf.len*8));
    }
 
    if ( PyObject_GetBuffer(src.ptr(),&srcBuf,PyBUF_SIMPLE) < 0 ) {
@@ -249,7 +254,9 @@ void rim::Master::copyBits(boost::python::object dst, uint32_t dstLsb, boost::py
    if ( (srcLsb + size) > (srcBuf.len*8) ) {
       PyBuffer_Release(&srcBuf);
       PyBuffer_Release(&dstBuf);
-      throw(rogue::GeneralError::boundary("Master::copyBits",(srcLsb + size),(srcBuf.len*8)));
+      throw(rogue::GeneralError::create("Master::copyBits",
+               "Attempt to copy %i bits starting from bit %i from source array with bitSize %i",
+               size, srcLsb, srcBuf.len*8));
    }
 
    srcByte = srcLsb / 8;
@@ -273,6 +280,7 @@ void rim::Master::copyBits(boost::python::object dst, uint32_t dstLsb, boost::py
 
       // Not aligned
       else {
+         dstData[dstByte] &= ((0x1 << dstBit) ^ 0xFF);
          dstData[dstByte] |= ((srcData[srcByte] >> srcBit) & 0x1) << dstBit;
          srcByte += (++srcBit / 8);
          dstByte += (++dstBit / 8);
@@ -300,7 +308,9 @@ void rim::Master::setBits(boost::python::object dst, uint32_t lsb, uint32_t size
 
    if ( (lsb + size) > (dstBuf.len*8) ) {
       PyBuffer_Release(&dstBuf);
-      throw(rogue::GeneralError::boundary("Master::setBits",(lsb + size),(dstBuf.len*8)));
+      throw(rogue::GeneralError::create("Master::setBits",
+               "Attempt to set %i bits starting from bit %i in array with bitSize %i",
+               size, lsb, dstBuf.len*8));
    }
 
    dstByte = lsb / 8;
@@ -345,7 +355,9 @@ bool rim::Master::anyBits(boost::python::object dst, uint32_t lsb, uint32_t size
 
    if ( (lsb + size) > (dstBuf.len*8) ) {
       PyBuffer_Release(&dstBuf);
-      throw(rogue::GeneralError::boundary("Master::anyBits",(lsb + size),(dstBuf.len*8)));
+      throw(rogue::GeneralError::create("Master::anyBits",
+               "Attempt to access %i bits starting from bit %i from array with bitSize %i",
+               size, lsb, dstBuf.len*8));
    }
 
    dstByte = lsb / 8;

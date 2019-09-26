@@ -31,6 +31,7 @@ class EnableVariable(pr.BaseVariable):
             name='enable',
             mode='RW',
             value=enabled, 
+            groups='Enable',
             disp={False: 'False', True: 'True', 'parent': 'ParentFalse', 'deps': 'ExtDepFalse'})
 
         if deps is None:
@@ -80,8 +81,10 @@ class EnableVariable(pr.BaseVariable):
             if old != value and old != 'parent' and old != 'deps':
                 self.parent.enableChanged(value)
 
-        with self.parent.root.updateGroup():
-            self._queueUpdate()
+            self._doUpdate()
+
+            for var in self._listeners:
+                var._doUpdate()
 
     def _doUpdate(self):
         if len(self._deps) != 0:
@@ -118,6 +121,7 @@ class Device(pr.Node,rim.Hub):
                  offset=0,
                  size=0,
                  hidden=False,
+                 groups=None,
                  blockSize=None,
                  expand=False,
                  enabled=True,
@@ -148,7 +152,7 @@ class Device(pr.Node,rim.Hub):
         if memBase: self._setSlave(memBase)
 
         # Node.__init__ can't be called until after self._memBase is created
-        pr.Node.__init__(self, name=name, hidden=hidden, description=description, expand=expand)
+        pr.Node.__init__(self, name=name, hidden=hidden, groups=groups, description=description, expand=expand)
 
         self._log.info("Making device {:s}".format(name))
 
@@ -198,7 +202,11 @@ class Device(pr.Node,rim.Hub):
                 node._setSlave(self)
 
     def addRemoteVariables(self, number, stride, pack=False, **kwargs):
-        hidden = pack or kwargs.pop('hidden', False)
+        if pack:
+            hidden=True
+        else:
+            hidden=kwargs.pop('hidden', False)
+
         self.addNodes(pr.RemoteVariable, number, stride, hidden=hidden, **kwargs)
 
         # If pack specified, create a linked variable to combine everything
@@ -238,9 +246,9 @@ class Device(pr.Node,rim.Hub):
             
         for v in variables:
             if isinstance(v, pr.BaseVariable):
-                v._hidden = hidden;
+                v.hidden = hidden
             elif isinstance(variables[0], str):
-                self.variables[v]._hidden = hidden
+                self.variables[v].hidden = hidden
 
     def initialize(self):
         for key,value in self.devices.items():
@@ -271,9 +279,9 @@ class Device(pr.Node,rim.Hub):
 
         # Process local blocks.
         if variable is not None:
-            for b in self._getBlocks(variable):
-                if (force or b.stale):                
-                    b.startTransaction(rim.Write, check=checkEach)
+            for b,v in self._getBlocks(variable).items():
+                if (force or b.stale):
+                    b.startTransaction(rim.Write, check=checkEach, lowByte=v[0], highByte=v[1])
 
         else:
             for block in self._blocks:
@@ -294,8 +302,8 @@ class Device(pr.Node,rim.Hub):
 
         # Process local blocks.
         if variable is not None:
-            for b in self._getBlocks(variable):
-                b.startTransaction(rim.Verify, check=checkEach)
+            for b,v in self._getBlocks(variable).items():
+                b.startTransaction(rim.Verify, check=checkEach, lowByte=v[0], highByte=v[1])
 
         else:
             for block in self._blocks:
@@ -317,8 +325,8 @@ class Device(pr.Node,rim.Hub):
 
         # Process local blocks. 
         if variable is not None:
-            for b in self._getBlocks(variable):
-                b.startTransaction(rim.Read, check=checkEach)
+            for b,v in self._getBlocks(variable).items():
+                b.startTransaction(rim.Read, check=checkEach, lowByte=v[0], highByte=v[1])
 
         else:
             for block in self._blocks:
@@ -337,7 +345,7 @@ class Device(pr.Node,rim.Hub):
 
             # Process local blocks
             if variable is not None:
-                for b in self._getBlocks(variable):
+                for b,v in self._getBlocks(variable).items():
                     b._checkTransaction()
 
             else:
@@ -406,16 +414,16 @@ class Device(pr.Node,rim.Hub):
             else: txn = rim.Write
 
             for _ in range(tryCount):
-                self._setError(0)
+                self._clearError()
                 self._rawTxnChunker(offset, data, base, stride, wordBitSize, txn)
                 self._waitTransaction(0)
 
-                if self._getError() == 0: return
+                if self._getError() == "": return
                 elif posted: break
                 self._log.warning("Retrying raw write transaction")
 
             # If we get here an error has occured
-            raise pr.MemoryError (name=self.name, address=offset|self.address, error=self._getError())
+            raise pr.MemoryError (name=self.name, address=offset|self.address, msg=self._getError())
         
     def _rawRead(self, offset, numWords=1, base=pr.UInt, stride=4, wordBitSize=32, data=None, tryCount=1):
         
@@ -424,11 +432,11 @@ class Device(pr.Node,rim.Hub):
         
         with self._memLock:
             for _ in range(tryCount):
-                self._setError(0)
+                self._clearError()
                 ldata = self._rawTxnChunker(offset, data, base, stride, wordBitSize, txnType=rim.Read, numWords=numWords)
                 self._waitTransaction(0)
 
-                if self._getError() == 0:
+                if self._getError() == "":
                     if numWords == 1:
                         return base.fromBytes(ldata)
                     else:
@@ -436,26 +444,41 @@ class Device(pr.Node,rim.Hub):
                 self._log.warning("Retrying raw read transaction")
                 
             # If we get here an error has occured
-            raise pr.MemoryError (name=self.name, address=offset|self.address, error=self._getError())
+            raise pr.MemoryError (name=self.name, address=offset|self.address, msg=self._getError())
 
 
     def _getBlocks(self, variables):
         """
         Get a list of unique blocks from a list of Variables. 
+        The returned dictionary has the block as the key with each block assocaited
+        with a list. The first list item is the low byte associated with the variable list,
+        the second is the high byte associated with the variable list.
         Variables must belong to this device!
         """
         if isinstance(variables, pr.BaseVariable):
             variables = [variables]
 
-        blocks = []
+        blocks = {}
+
         for v in variables:
             if v.parent is not self:
                 raise DeviceError(
                     f'Variable {v.path} passed to {self.path}._getBlocks() is not a member of {self.path}')
-            else:
-                if v._block not in blocks and v._block is not None:
-                    blocks.append(v._block)
-                
+            elif v._block is not None:
+
+                if isinstance(v,pr.RemoteVariable):
+                    lowByte  = math.floor(v.bitOffset[0] / 8)
+                    highByte = math.floor((v.bitOffset[-1] + v.bitSize[-1] - 1) / 8)
+                else:
+                    lowByte  = None
+                    highByte = None
+
+                if v._block not in blocks:
+                    blocks[v._block] = [lowByte, highByte]
+                elif lowByte is not None and highByte is not None:
+                    if lowByte  < blocks[v._block][0]: blocks[v._block][0] = lowByte
+                    if highByte > blocks[v._block][1]: blocks[v._block][1] = highByte
+
         return blocks
 
     def _buildBlocks(self):
@@ -514,9 +537,14 @@ class Device(pr.Node,rim.Hub):
 
         # Override defaults as dictated by the _defaults dict
         for varName, defValue in self._defaults.items():
-            match = pr.nodeMatch(self.variables, varName)
-            for var in match:
-                var._default = defValue
+            match = self._nodeMatch(varName)
+
+            if match is not None:
+                if not isinstance(match,list):
+                    match = [match]
+
+                for var in match:
+                    var._default = defValue
 
         # Some variable initialization can run until the blocks are built
         for v in self.variables.values():
@@ -581,176 +609,3 @@ class ArrayDevice(Device):
                 offset=i*stride,
                 **args))
                 
-class DataWriter(Device):
-    """Special base class to control data files. TODO: Update comments"""
-
-    def __init__(self, *, hidden=True, **kwargs):
-        """Initialize device class"""
-
-        Device.__init__(self, hidden=hidden, **kwargs)
-
-        self.add(pr.LocalVariable(
-            name='dataFile',
-            mode='RW',
-            value='',
-            description='Data file for storing frames for connected streams.'))
-
-        self.add(pr.LocalVariable(
-            name='open',
-            mode='RW',
-            value=False,
-            localSet=self._setOpen,
-            description='Data file open state'))
-
-        self.add(pr.LocalVariable(
-            name='bufferSize',
-            mode='RW',
-            value=0,
-            typeStr='UInt32',
-            localSet=self._setBufferSize,
-            description='File buffering size. Enables caching of data before call to file system.'))
-
-        self.add(pr.LocalVariable(
-            name='maxFileSize',
-            mode='RW',
-            value=0,
-            typeStr='UInt64',
-            localSet=self._setMaxFileSize,
-            description='Maximum size for an individual file. Setting to a non zero splits the run data into multiple files.'))
-
-        self.add(pr.LocalVariable(
-            name='fileSize',
-            mode='RO',
-            value=0,
-            typeStr='UInt64',
-            pollInterval=1,
-            localGet=self._getFileSize,
-            description='Size of data files(s) for current open session in bytes.'))
-
-        self.add(pr.LocalVariable(
-            name='frameCount',
-            mode='RO',
-            value=0,
-            typeStr='UInt32',
-            pollInterval=1,
-            localGet=self._getFrameCount,
-            description='Frame in data file(s) for current open session in bytes.'))
-
-        self.add(pr.LocalCommand(
-            name='autoName',
-            function=self._genFileName,
-            description='Auto create data file name using data and time.'))
-
-    def _setOpen(self,value,changed):
-        """Set open state. Override in sub-class"""
-        pass
-
-    def _setBufferSize(self,value):
-        """Set buffer size. Override in sub-class"""
-        pass
-
-    def _setMaxFileSize(self,value):
-        """Set max file size. Override in sub-class"""
-        pass
-
-    def _getFileSize(self):
-        """get current file size. Override in sub-class"""
-        return(0)
-
-    def _getFrameCount(self):
-        """get current file frame count. Override in sub-class"""
-        return(0)
-
-    def _genFileName(self):
-        """
-        Auto create data file name based upon date and time.
-        Preserve file's location in path.
-        """
-        idx = self.dataFile.value().rfind('/')
-
-        if idx < 0:
-            base = ''
-        else:
-            base = self.dataFile.value()[:idx+1]
-
-        self.dataFile.set(base + datetime.datetime.now().strftime("data_%Y%m%d_%H%M%S.dat")) 
-
-class RunControl(Device):
-    """Special base class to control runs. TODO: Update comments."""
-
-    def __init__(self, *, hidden=True, rates=None, states=None, cmd=None, **kwargs):
-        """Initialize device class"""
-
-        if rates is None:
-            rates={1:'1 Hz', 10:'10 Hz'}
-
-        if states is None:
-            states={0:'Stopped', 1:'Running'}
-
-        Device.__init__(self, hidden=hidden, **kwargs)
-
-        value = [k for k,v in states.items()][0]
-
-        self._thread = None
-        self._cmd = cmd
-
-        self.add(pr.LocalVariable(
-            name='runState',
-            value=value,
-            mode='RW',
-            disp=states,
-            localSet=self._setRunState,
-            description='Run state of the system.'))
-
-        value = [k for k,v in rates.items()][0]
-
-        self.add(pr.LocalVariable(
-            name='runRate',
-            value=value,
-            mode='RW',
-            disp=rates,
-            localSet=self._setRunRate,
-            description='Run rate of the system.'))
-
-        self.add(pr.LocalVariable(
-            name='runCount',
-            value=0,
-            typeStr='UInt32',
-            mode='RO',
-            pollInterval=1,
-            description='Run Counter updated by run thread.'))
-
-    def _setRunState(self,value,changed):
-        """
-        Set run state. Reimplement in sub-class.
-        Enum of run states can also be overriden.
-        Underlying run control must update runCount variable.
-        """
-        if changed:
-            if self.runState.valueDisp() == 'Running':
-                #print("Starting run")
-                self._thread = threading.Thread(target=self._run)
-                self._thread.start()
-            elif self._thread is not None:
-                #print("Stopping run")
-                self._thread.join()
-                self._thread = None
-
-    def _setRunRate(self,value):
-        """
-        Set run rate. Reimplement in sub-class if neccessary.
-        """
-        pass
-
-    def _run(self):
-        #print("Thread start")
-        self.runCount.set(0)
-
-        while (self.runState.valueDisp() == 'Running'):
-            time.sleep(1.0 / float(self.runRate.value()))
-            if self._cmd is not None:
-                self._cmd()
-
-            self.runCount.set(self.runCount.value() + 1,write=False)
-        #print("Thread stop")
-

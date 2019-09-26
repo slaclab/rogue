@@ -33,10 +33,17 @@ def reverseBits(value, bitSize):
         value >>= 1
     return result
 
+def twosComplement(value, bitSize):
+    """compute the 2's complement of int value"""
+    if (value & (1 << (bitSize - 1))) != 0: # if sign bit is set e.g., 8bit: 128-255
+        value = value - (1 << bitSize)      # compute negative value
+    return value                            # return positive value as is   
+
 class ModelMeta(type):
     def __init__(cls, *args, **kwargs):
         super().__init__(*args, **kwargs)
         cls.subclasses = {}
+ 
 
     def __call__(cls, *args, **kwargs):
         key = cls.__name__ + str(args) + str(kwargs)
@@ -49,7 +56,7 @@ class ModelMeta(type):
 
 
 class Model(object, metaclass=ModelMeta):
-    
+
     pytype = None
     defaultdisp = '{}'    
 
@@ -62,7 +69,7 @@ class Model(object, metaclass=ModelMeta):
 
 
 class UInt(Model):
-    
+
     defaultdisp = '{:#x}'
     pytype = int
     signed = False
@@ -71,7 +78,7 @@ class UInt(Model):
     def __init__(self, bitSize):
         super().__init__(bitSize)
         self.name = f'{self.__class__.__name__}{self.bitSize}'        
-    
+
     def check(self, value):
         return (type(value) == self.pytype and self.bitSize >= value.bit_length())
 
@@ -110,7 +117,7 @@ class Int(UInt):
             ba = value.to_bytes(byteCount(self.bitSize), self.endianness, signed=True)
 
         return ba
-    
+
     def fromBytes(self,ba):
         if (self.bitSize < (byteCount(self.bitSize)*8)):
             value = int.from_bytes(ba, self.endianness, signed=False)
@@ -122,7 +129,7 @@ class Int(UInt):
             value = int.from_bytes(ba, self.endianness, signed=True)
 
         return value
-    
+
     def fromString(self, string):
         i = int(string, 0)
         # perform twos complement if necessary
@@ -152,8 +159,8 @@ class Bool(Model):
 
     def fromString(self, string):
         return str.lower(string) == "true"
+
     
-        
 class String(Model):
 
     encoding = 'utf-8'
@@ -204,7 +211,7 @@ class Float(Model):
 
 
 class Double(Float):
-    fstring = 'd'
+            fstring = 'd'
     bitSize = 64
 
 class FloatBE(Float):
@@ -212,7 +219,7 @@ class FloatBE(Float):
 
 class DoubleBE(Double):
     fstring = '!d'
-                
+
 class Fixed(Model):
 
     pytype = float

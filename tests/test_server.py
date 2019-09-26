@@ -15,17 +15,30 @@
 #-----------------------------------------------------------------------------
 import pyrogue
 import pyrogue.interfaces.simulation
+import pyrogue.utilities.fileio
 import rogue.interfaces.stream
 import test_device
 import time
 import rogue
-import pyrogue.protocols.epics
+#import pyrogue.protocols.epics
+#import pyrogue.gui
+#import pyrogue.protocols.epicsV4
+import logging
+import math
+import numpy as np
 
 #rogue.Logging.setFilter('pyrogue.epicsV3.Value',rogue.Logging.Debug)
+#rogue.Logging.setLevel(rogue.Logging.Debug)
+
+#logger = logging.getLogger('pyrogue')
+#logger.setLevel(logging.DEBUG)
+
 
 class DummyTree(pyrogue.Root):
 
     def __init__(self):
+        self._scnt = 0
+        self._sdata = np.array(0)
 
         pyrogue.Root.__init__(self,name='dummyTree',description="Dummy tree for example")
 
@@ -35,22 +48,73 @@ class DummyTree(pyrogue.Root):
         # Add Device
         self.add(test_device.AxiVersion(memBase=sim,offset=0x0))
 
+        # Add Data Writer
+        self.add(pyrogue.utilities.fileio.StreamWriter())
+
+        # Add Run Control
+        self.add(pyrogue.RunControl())
+
+        # Add process controller
+        p = pyrogue.Process()
+        p.add(pyrogue.LocalVariable(name='Test1',value=''))
+        p.add(pyrogue.LocalVariable(name='Test2',value=''))
+        self.add(p)
+
+        #self.AxiVersion.AlarmTest.addToGroup('NoServe')
+
+        self.add(pyrogue.LocalVariable(
+            name = 'TestPlot',
+            mode = 'RO',
+            pollInterval=1.0,
+            localGet = self._mySin,
+            minimum=-1.0,
+            maximum=1.0,
+            disp='{:1.2f}',
+            value = 0.0))
+
+        self.add(pyrogue.LocalVariable(
+            name = 'TestXAxis',
+            mode = 'RO',
+            pollInterval=1.0,
+            localGet = self._myXAxis,
+            disp='{:1.2f}',
+            value = 1.0))
+
+        self.add(pyrogue.LocalVariable(
+            name = 'TestArray',
+            mode = 'RO',
+            pollInterval=1.0,
+            localGet = self._myArray,
+            disp='{:1.2f}',
+            value = np.array(0)))
+
         # Start the tree with pyrogue server, internal nameserver, default interface
         # Set pyroHost to the address of a network interface to specify which nework to run on
         # set pyroNs to the address of a standalone nameserver (startPyrorNs.py)
-        self.start(timeout=2.0, pollEn=True, zmqPort=9099)
+        #self.start(timeout=2.0, pollEn=True, serverPort=9099, sqlUrl='sqlite:///test.db')
+        self.start(timeout=2.0, pollEn=True, serverPort=9099)
 
-        self.epics=pyrogue.protocols.epics.EpicsCaServer(base="test", root=self)
-        self.epics.start()
+        #self.epics=pyrogue.protocols.epics.EpicsCaServer(base="test", root=self)
+        #self.epics.start()
+
+        #self.epics4=pyrogue.protocols.epicsV4.EpicsPvServer(base="test", root=self)
+        #self.epics4.start()
+
+    def _mySin(self):
+        val = math.sin(2*math.pi*self._scnt / 100)
+        self._sdata = np.append(self._sdata,val)
+        self._scnt += 1
+        return val
+
+    def _myXAxis(self):
+        return float(self._scnt)
+
+    def _myArray(self):
+        return self._sdata
 
 if __name__ == "__main__":
 
     with DummyTree() as dummyTree:
-
-        print("Running in python main")
-        try:
-            while True:
-                time.sleep(1)
-        except KeyboardInterrupt:
-            exit()
+        pyrogue.waitCntrlC()
+        #pyrogue.gui.runGui(dummyTree)
 

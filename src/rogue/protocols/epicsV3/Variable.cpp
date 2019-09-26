@@ -82,14 +82,129 @@ rpe::Variable::Variable (std::string epicsName, bp::object p, bool syncRead) : V
    // Extract units
    bp::extract<char *> ret(var_.attr("units"));
    if ( ret.check() && ret != NULL) {
-      units_ = std::string(ret);
+      units_->putConvert(std::string(ret).c_str());
    }
-   else units_ = "";
+   else units_->putConvert("");
 
-   //hopr_          = 0;
-   //lopr_          = 0;
-   //highCtrlLimit_ = 0;
-   //lowCtrlLimit_  = 0;
+   if ( epicsType_ == aitEnumUint8 || epicsType_ == aitEnumUint16 || epicsType_ == aitEnumUint32 ) {
+      bp::extract<uint32_t> hopr(var_.attr("maximum"));
+      bp::extract<uint32_t> lopr(var_.attr("minimum"));
+      bp::extract<uint32_t> ha(var_.attr("highAlarm"));
+      bp::extract<uint32_t> la(var_.attr("lowAlarm"));
+      bp::extract<uint32_t> hw(var_.attr("highWarning"));
+      bp::extract<uint32_t> lw(var_.attr("lowWarning"));
+
+      if (hopr.check()) {
+         hopr_ = new gddScalar(gddAppType_value, aitEnumUint32);
+         highCtrlLimit_ = new gddScalar(gddAppType_value, aitEnumUint32);
+         hopr_->putConvert(hopr);
+         highCtrlLimit_->putConvert(hopr);
+      }
+      if (lopr.check()) {
+         lopr_ = new gddScalar(gddAppType_value, aitEnumUint32);
+         lowCtrlLimit_ = new gddScalar(gddAppType_value, aitEnumUint32);
+         lopr_->putConvert(lopr);
+         lowCtrlLimit_->putConvert(lopr);
+      }
+      if (ha.check()) {
+         highAlarm_ = new gddScalar(gddAppType_value, aitEnumUint32);
+         highAlarm_->putConvert(ha);
+      }
+      if (la.check()) {
+         lowAlarm_ = new gddScalar(gddAppType_value, aitEnumUint32);
+         lowAlarm_->putConvert(la);
+      }
+      if (hw.check()) {
+         highWarning_ = new gddScalar(gddAppType_value, aitEnumUint32);
+         highWarning_->putConvert(hw);
+      }
+      if (lw.check()) {
+         lowWarning_ = new gddScalar(gddAppType_value, aitEnumUint32);
+         lowWarning_->putConvert(lw);
+      }
+   }
+
+   else if ( epicsType_ == aitEnumInt8 || epicsType_ == aitEnumInt16 || epicsType_ == aitEnumInt32 ) {
+      bp::extract<int32_t> hopr(var_.attr("maximum"));
+      bp::extract<int32_t> lopr(var_.attr("minimum"));
+      bp::extract<int32_t> ha(var_.attr("highAlarm"));
+      bp::extract<int32_t> la(var_.attr("lowAlarm"));
+      bp::extract<int32_t> hw(var_.attr("highWarning"));
+      bp::extract<int32_t> lw(var_.attr("lowWarning"));
+
+      if (hopr.check()) {
+         hopr_ = new gddScalar(gddAppType_value, aitEnumInt32);
+         highCtrlLimit_ = new gddScalar(gddAppType_value, aitEnumInt32);
+         hopr_->putConvert(hopr);
+         highCtrlLimit_->putConvert(hopr);
+      }
+      if (lopr.check()) {
+         lopr_ = new gddScalar(gddAppType_value, aitEnumInt32);
+         lowCtrlLimit_ = new gddScalar(gddAppType_value, aitEnumInt32);
+         lopr_->putConvert(lopr);
+         lowCtrlLimit_->putConvert(lopr);
+      }
+      if (ha.check()) {
+         highAlarm_ = new gddScalar(gddAppType_value, aitEnumInt32);
+         highAlarm_->putConvert(ha);
+      }
+      if (la.check()) {
+         lowAlarm_ = new gddScalar(gddAppType_value, aitEnumInt32);
+         lowAlarm_->putConvert(la);
+      }
+      if (hw.check())  {
+         highWarning_ = new gddScalar(gddAppType_value, aitEnumInt32);
+         highWarning_->putConvert(hw);
+      }
+      if (lw.check())  {
+         lowWarning_ = new gddScalar(gddAppType_value, aitEnumInt32);
+         lowWarning_->putConvert(lw);
+      }
+   }
+
+   else if ( epicsType_ == aitEnumFloat32 || epicsType_ == aitEnumFloat64 ) {
+      bp::extract<double> hopr(var_.attr("maximum"));
+      bp::extract<double> lopr(var_.attr("minimum"));
+      bp::extract<double> ha(var_.attr("highAlarm"));
+      bp::extract<double> la(var_.attr("lowAlarm"));
+      bp::extract<double> hw(var_.attr("highWarning"));
+      bp::extract<double> lw(var_.attr("lowWarning"));
+
+      if (hopr.check()) {
+         hopr_ = new gddScalar(gddAppType_value, aitEnumFloat32);
+         highCtrlLimit_ = new gddScalar(gddAppType_value, aitEnumFloat32);
+         hopr_->putConvert(hopr);
+         highCtrlLimit_->putConvert(hopr);
+      }
+      if (lopr.check()) {
+         lopr_ = new gddScalar(gddAppType_value, aitEnumFloat32);
+         lowCtrlLimit_ = new gddScalar(gddAppType_value, aitEnumFloat32);
+         lopr_->putConvert(lopr);
+         lowCtrlLimit_->putConvert(lopr);
+      }
+      if (ha.check()) {
+         highAlarm_ = new gddScalar(gddAppType_value, aitEnumInt32);
+         highAlarm_->putConvert(ha);
+      }
+      if (la.check()) {
+         lowAlarm_ = new gddScalar(gddAppType_value, aitEnumInt32);
+         lowAlarm_->putConvert(la);
+      }
+      if (hw.check()) {
+         highWarning_ = new gddScalar(gddAppType_value, aitEnumInt32);
+         highWarning_->putConvert(hw);
+      }
+      if (lw.check()) {
+         lowWarning_ = new gddScalar(gddAppType_value, aitEnumInt32);
+         lowWarning_->putConvert(lw);
+      }
+
+      bp::extract<uint32_t> pr(var_.attr("precision"));
+      if (pr.check()) {
+         precision_ = new gddScalar(gddAppType_value, aitEnumInt32);
+         precision_->putConvert(pr);
+      }
+   }
 
    // Extract enums
    if ( isEnum ) {
@@ -106,34 +221,75 @@ rpe::Variable::Variable (std::string epicsName, bp::object p, bool syncRead) : V
    // Init value
    if (  isString_ || epicsType_ == aitEnumEnum16 ) fromPython(var_.attr("valueDisp")());
    else fromPython(var_.attr("value")());
+   updateAlarm(var_.attr("alarmStatus"),var_.attr("alarmSeverity"));
 }
 
 rpe::Variable::~Variable() { }
 
-void rpe::Variable::varUpdated(std::string path, bp::object value, bp::object disp) {
+void rpe::Variable::varUpdated(std::string path, bp::object value) {
    rogue::GilRelease noGil;
+   bp::object convValue;
 
-   log_->debug("Variable update for %s: Disp=%s", epicsName_.c_str(),(char *)bp::extract<char *>(disp));
+   log_->debug("Variable update for %s", epicsName_.c_str());
    {
       std::lock_guard<std::mutex> lock(mtx_);
       noGil.acquire();
 
-      if (  isString_ || epicsType_ == aitEnumEnum16 ) fromPython(disp);
-      else fromPython(value);
+      if (  isString_ || epicsType_ == aitEnumEnum16 ) fromPython(value.attr("valueDisp"));
+      else {
+         fromPython(value.attr("value"));
+         updateAlarm(value.attr("status"),value.attr("severity"));
+      }
    }
    noGil.release();
    this->updated();
 }
 
+// Update alarm status, lock held when called
+void rpe::Variable::updateAlarm(bp::object status, bp::object severity) {
+   uint16_t statVal, sevrVal;
+   std::string statStr, sevrStr;
+
+   bp::extract<std::string> statExt(status);
+   bp::extract<std::string> sevrExt(severity);
+
+   if ( (!statExt.check()) || (!sevrExt.check()) ) {
+      statVal = 0;
+      sevrVal = 0;
+   }
+   else {
+      statStr = statExt;
+      sevrStr = sevrExt;
+
+      if      ( statStr == "AlarmLoLo" ) statVal = epicsAlarmLoLo;
+      else if ( statStr == "AlarmLow"  ) statVal = epicsAlarmLow;
+      else if ( statStr == "AlarmHiHi" ) statVal = epicsAlarmHiHi;
+      else if ( statStr == "AlarmHigh" ) statVal = epicsAlarmHigh;
+      else statVal = 0;
+
+      if      ( sevrStr == "AlarmMinor" ) sevrVal = epicsSevMinor;
+      else if ( sevrStr == "AlarmMajor" ) sevrVal = epicsSevMajor;
+      else sevrVal = 0;
+   }
+   
+   pValue_->setStatSevr(statVal,sevrVal);
+}
+
 // Lock held when called
 void rpe::Variable::valueGet() {
+
    if ( syncRead_ ) {
       { // GIL Scope
          rogue::ScopedGil gil;
          log_->info("Synchronous read for %s",epicsName_.c_str());
+
          try {
-            if (  isString_ || epicsType_ == aitEnumEnum16 ) fromPython(var_.attr("getDisp")());
-            else fromPython(var_.attr("get")());
+            bp::object val = var_.attr("getVariableValue")();
+            if (  isString_ || epicsType_ == aitEnumEnum16 ) fromPython(val.attr("valueDisp"));
+            else {
+               fromPython(val.attr("value"));
+               updateAlarm(val.attr("status"), val.attr("severity"));
+            }
          } catch (...) {
             log_->error("Error getting values from epics: %s\n",epicsName_.c_str());
          }
@@ -264,6 +420,7 @@ void rpe::Variable::fromPython(bp::object value) {
       }
 
       else throw rogue::GeneralError("Variable::fromPython","Invalid Variable Type");
+
    }
 
 #ifdef __MACH__ // OSX does not have clock_gettime

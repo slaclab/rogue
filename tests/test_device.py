@@ -20,6 +20,9 @@
 import datetime
 import parse
 import pyrogue as pr
+import rogue
+import rogue.hardware.axi
+import numpy as np
 
 class AxiVersion(pr.Device):
 
@@ -59,6 +62,7 @@ class AxiVersion(pr.Device):
             bitOffset    = 0x00,
             base         = pr.UInt,
             mode         = 'RW',
+            units        = 'Test',
             disp         = '{:#08x}'            
         ))
 
@@ -216,12 +220,12 @@ class AxiVersion(pr.Device):
                             4: 'Test4'},
             base         = pr.UInt,
             mode         = 'RW',
-            hidden       = False,
+            hidden       = True,
         ))
 
         
-        def parseBuildStamp(var, value, disp):
-            p = parse.parse("{ImageName}: {BuildEnv}, {BuildServer}, Built {BuildDate} by {Builder}", value.strip())
+        def parseBuildStamp(var, val):
+            p = parse.parse("{ImageName}: {BuildEnv}, {BuildServer}, Built {BuildDate} by {Builder}", val.value.strip())
             if p is not None:
                 for k,v in p.named.items():
                     self.node(k).set(v)
@@ -252,7 +256,105 @@ class AxiVersion(pr.Device):
             value = ''))
 
         self.BuildStamp.addListener(parseBuildStamp)        
-       
+
+        #self.add(pr.LocalVariable(name = 'TestArray[2]',value=0))
+
+        for i in range(4):
+            for j in range(4):
+                for k in range(4):
+                    self.add(pr.LocalVariable(name = f'TestArray[{i}][{j}][{k}]',value=0)) 
+
+        self.add(pr.LocalVariable(name = 'TestArray[4][5]',value=0))
+        self.add(pr.LocalVariable(name = 'TestArray[6]',value=0))
+
+        #self.add(pr.LocalVariable(name = 'TestArray[2]',value=0))
+
+        self.add(pr.RemoteVariable(
+            name         = 'TestSpareArray[5][5]',
+            description  = 'Array Test Field',
+            offset       = 0x2000,
+            bitSize      = 32,
+            bitOffset    = 0,
+            base         = pr.UInt,
+            mode         = 'RW',
+        ))
+
+        self.add(pr.RemoteVariable(
+            name         = 'TestSpareArray[8][8]',
+            description  = 'Array Test Field',
+            offset       = 0x2004,
+            bitSize      = 32,
+            bitOffset    = 0,
+            base         = pr.UInt,
+            mode         = 'RW',
+        ))
+
+        self.add(pr.RemoteVariable(
+            name         = 'AlarmTest'.format(i),
+            description  = 'Alarm Test Field',
+            offset       = 0x8000,
+            bitSize      = 32,
+            bitOffset    = 0,
+            base         = pr.UInt,
+            mode         = 'RW',
+            minimum      = 100,
+            maximum      = 1000,
+            lowAlarm     = 200,
+            lowWarning   = 300,
+            highWarning  = 800,
+            highAlarm    = 900,
+            value        = 100,
+            disp         = '{}',
+            hidden       = False,
+            groups       = ['NoConfig','NoAlarm'],
+        ))
+
+        self.add(pr.LocalVariable(
+            name = 'TestRealArray',
+            mode = 'RW',
+            value = np.array([1,2,3,4])))
+
+        self.add(pr.LocalVariable(
+            name = 'TestBool',
+            mode = 'RW',
+            value = False))
+
+        self.add(pr.LocalVariable(
+            name = 'TestBadArray[x]',
+            mode = 'RW',
+            value = ''))
+
+        @self.command(hidden=False,value='',retValue='')
+        def TestCommand(arg):
+            return('Got {}'.format(arg))
+
+        @self.command(hidden=False,value='',retValue='')
+        def TestMemoryException(arg):
+            raise pr.MemoryError(name='blah',address=0)
+
+        @self.command(hidden=False,value='',retValue='')
+        def TestErrorLog(arg):
+            self._log.error("Test error message")
+
+        @self.command(hidden=False,value='',retValue='')
+        def TestOtherLog(arg):
+            self._log.log(93,"Test log level 39 message")
+
+        @self.command(hidden=False,value='',retValue='')
+        def TestGeneralException(arg):
+            a = rogue.hardware.axi.AxiStreamDma('/dev/not_a_device',0,True)
+
+        @self.command(hidden=False,value='',retValue='')
+        def TestOtherError(arg):
+            a = rogue.hardware.axi.AxiStreamDma('/dev/not_a_device',0)
+
+        @self.command(hidden=False,value='blah blah',retValue='')
+        def TestCmdString(arg):
+            print("Send command string: {}".format(arg))
+
+        @self.command(hidden=False, value=1, retValue='', enum={1:'One',2:'Two',3:'Three'})
+        def TestCmdEnum(arg):
+            print("Send command Enum: {}".format(arg))
 
     def hardReset(self):
         print('AxiVersion hard reset called')

@@ -20,7 +20,16 @@ from distutils.core import setup
 setup (
     name='rogue',
     version='${ROGUE_VERSION}',
-    packages=['pyrogue', 'pyrogue.gui', 'pyrogue.utilities', 'pyrogue.interfaces', 'pyrogue.protocols'],
+    packages=['pyrogue', 
+              'pyrogue.gui', 
+              'pyrogue.utilities', 
+              'pyrogue.utilities.fileio', 
+              'pyrogue.interfaces', 
+              'pyrogue.protocols', 
+              'pyrogue.pydm', 
+              'pyrogue.pydm.widgets', 
+              'pyrogue.pydm.tools', 
+              'pyrogue.pydm.data_plugins' ],
     package_dir={'':'${PROJECT_SOURCE_DIR}/python'},
     package_data={'':['../rogue.so']},
 )

@@ -68,11 +68,13 @@ void ruf::StreamWriter::setup_python() {
    bp::class_<ruf::StreamWriter, ruf::StreamWriterPtr, boost::noncopyable >("StreamWriter",bp::init<>())
       .def("open",           &ruf::StreamWriter::open)
       .def("close",          &ruf::StreamWriter::close)
+      .def("isOpen",         &ruf::StreamWriter::isOpen)
       .def("setBufferSize",  &ruf::StreamWriter::setBufferSize)
       .def("setMaxSize",     &ruf::StreamWriter::setMaxSize)
       .def("setDropErrors",  &ruf::StreamWriter::setDropErrors)
       .def("getChannel",     &ruf::StreamWriter::getChannel)
-      .def("getSize",        &ruf::StreamWriter::getSize)
+      .def("getTotalSize",   &ruf::StreamWriter::getTotalSize)
+      .def("getCurrentSize", &ruf::StreamWriter::getCurrentSize)
       .def("getFrameCount",  &ruf::StreamWriter::getFrameCount)
       .def("waitFrameCount", &ruf::StreamWriter::waitFrameCount)
    ;
@@ -104,6 +106,14 @@ ruf::StreamWriter::~StreamWriter() {
 void ruf::StreamWriter::open(std::string file) {
    std::string name;
 
+   rogue::GilRelease noGil;
+   std::lock_guard<std::mutex> lock(mtx_);
+   flush();
+
+   // Close if open
+   if ( fd_ >= 0 ) ::close(fd_);
+   fd_ = -1;
+
    baseName_ = file;
    name   = file;
    fdIdx_ = 1;
@@ -111,7 +121,7 @@ void ruf::StreamWriter::open(std::string file) {
    if ( sizeLimit_ > 0 ) name.append(".1");
 
    if ( (fd_ = ::open(name.c_str(),O_RDWR|O_CREAT|O_APPEND,S_IRUSR|S_IWUSR|S_IRGRP|S_IWGRP|S_IROTH|S_IWOTH)) < 0 )
-      throw(rogue::GeneralError::open("StreamWriter::open",name));
+      throw(rogue::GeneralError::create("StreamWriter::open","Failed to open data file: %s",name.c_str()));
 
    totSize_    = 0;
    currSize_   = 0;
@@ -131,6 +141,11 @@ void ruf::StreamWriter::close() {
    flush();
    if ( fd_ >= 0 ) ::close(fd_);
    fd_ = -1;
+}
+
+//! Get open status
+bool ruf::StreamWriter::isOpen() {
+   return ( fd_ >= 0 );
 }
 
 //! Set buffering size, 0 to disable
@@ -153,7 +168,7 @@ void ruf::StreamWriter::setBufferSize(uint32_t size) {
 
          // Create new buffer
          if ( (buffer_ = (uint8_t *)malloc(size)) == NULL )
-            throw(rogue::GeneralError::allocation("StreamWriter::setBufferSize",size));
+            throw(rogue::GeneralError::create("StreamWriter::setBufferSize","Failed to allocate buffer with size = %i",size));
          buffSize_ = size;
       }
    }
@@ -182,10 +197,17 @@ ruf::StreamWriterChannelPtr ruf::StreamWriter::getChannel(uint8_t channel) {
 }
 
 //! Get total file size
-uint64_t ruf::StreamWriter::getSize() {
+uint64_t ruf::StreamWriter::getTotalSize() {
    rogue::GilRelease noGil;
    std::lock_guard<std::mutex> lock(mtx_);
    return(totSize_ + currBuffer_);
+}
+
+//! Get current file size
+uint64_t ruf::StreamWriter::getCurrentSize() {
+   rogue::GilRelease noGil;
+   std::lock_guard<std::mutex> lock(mtx_);
+   return(currSize_ + currBuffer_);
 }
 
 //! Get current frame count
@@ -216,11 +238,11 @@ bool ruf::StreamWriter::waitFrameCount(uint32_t count, uint64_t timeout) {
 
       if ( timeout != 0 ) {
          gettimeofday(&curTime,NULL);
-         if ( timercmp(&curTime,&endTime,>) ) return false;
+         if ( timercmp(&curTime,&endTime,>) ) break;
       }
    }
 
-   return true;
+   return (frameCount_ >= count);
 }
 
 //! Write data to file. Called from StreamWriterChannel
@@ -312,7 +334,7 @@ void ruf::StreamWriter::checkSize(uint32_t size) {
 
       // Open new file
       if ( (fd_ = ::open(name.c_str(),O_RDWR|O_CREAT|O_APPEND,S_IRUSR|S_IWUSR|S_IRGRP|S_IWGRP|S_IROTH|S_IWOTH)) < 0 )
-         throw(rogue::GeneralError::open("StreamWriter::checkSize",name));
+         throw(rogue::GeneralError::create("StreamWriter::checkSize","Failed to open file %s",name.c_str()));
 
       currSize_ = 0;
    }

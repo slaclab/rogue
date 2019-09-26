@@ -8,12 +8,12 @@
  * Description:
  * Memory Client Network Bridge
  * ----------------------------------------------------------------------------
- * This file is part of the rogue software platform. It is subject to 
- * the license terms in the LICENSE.txt file found in the top-level directory 
- * of this distribution and at: 
- *    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
- * No part of the rogue software platform, including this file, may be 
- * copied, modified, propagated, or distributed except according to the terms 
+ * This file is part of the rogue software platform. It is subject to
+ * the license terms in the LICENSE.txt file found in the top-level directory
+ * of this distribution and at:
+ *    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+ * No part of the rogue software platform, including this file, may be
+ * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
@@ -69,24 +69,31 @@ rim::TcpClient::TcpClient (std::string addr, uint16_t port) : rim::Slave(4,0xFFF
    // Don't buffer when no connection
    opt = 1;
    if ( zmq_setsockopt (this->zmqReq_, ZMQ_IMMEDIATE, &opt, sizeof(int32_t)) != 0 ) 
-         throw(rogue::GeneralError("TcpClient::TcpClient","Failed to set socket immediate"));
+         throw(rogue::GeneralError("memory::TcpClient::TcpClient","Failed to set socket immediate"));
 
    this->respAddr_.append(std::to_string(static_cast<long long>(port+1)));
    this->reqAddr_.append(std::to_string(static_cast<long long>(port)));
 
    this->bridgeLog_->debug("Creating response client port: %s",this->respAddr_.c_str());
 
-   if ( zmq_connect(this->zmqResp_,this->respAddr_.c_str()) < 0 ) 
-      throw(rogue::GeneralError::network("TcpClient::TcpClient",addr,port+1));
+   if ( zmq_connect(this->zmqResp_,this->respAddr_.c_str()) < 0 )
+      throw(rogue::GeneralError::create("memory::TcpCore::TcpCore",
+               "Failed to connect to remote port %i at address %s",port+1,addr.c_str()));
 
    this->bridgeLog_->debug("Creating request client port: %s",this->reqAddr_.c_str());
 
-   if ( zmq_connect(this->zmqReq_,this->reqAddr_.c_str()) < 0 ) 
-      throw(rogue::GeneralError::network("TcpClient::TcpClient",addr,port));
+   if ( zmq_connect(this->zmqReq_,this->reqAddr_.c_str()) < 0 )
+      throw(rogue::GeneralError::create("memory::TcpCore::TcpCore",
+               "Failed to connect to remote port %i at address %s",port,addr.c_str()));
 
    // Start rx thread
    threadEn_ = true;
    this->thread_ = new std::thread(&rim::TcpClient::runThread, this);
+
+   // Set a thread name
+#ifndef __MACH__
+   pthread_setname_np( thread_->native_handle(), "TcpClient" );
+#endif
 }
 
 //! Destructor
@@ -158,7 +165,7 @@ void rim::TcpClient::doTransaction(rim::TransactionPtr tran) {
    }
 
    // Add transaction
-   if ( type == rim::Post ) tran->done(0);
+   if ( type == rim::Post ) tran->done();
    else addTransaction(tran);
 }
 
@@ -175,7 +182,7 @@ void rim::TcpClient::runThread() {
    uint64_t  addr;
    uint32_t  size;
    uint32_t  type;
-   uint32_t  result;
+   char      result[1000];
 
    bridgeLog_->logThreadId();
 
@@ -206,7 +213,7 @@ void rim::TcpClient::runThread() {
             // Check sizes
             if ( (zmq_msg_size(&(msg[0])) != 4) || (zmq_msg_size(&(msg[1])) != 8) ||
                  (zmq_msg_size(&(msg[2])) != 4) || (zmq_msg_size(&(msg[3])) != 4) ||
-                 (zmq_msg_size(&(msg[5])) != 4) ) {
+                 (zmq_msg_size(&(msg[5])) > 999) ) {
                bridgeLog_->warning("Bad message sizes");
                for (x=0; x < msgCnt; x++) zmq_msg_close(&(msg[x]));
                continue; // while (1)
@@ -217,7 +224,9 @@ void rim::TcpClient::runThread() {
             std::memcpy(&addr,   zmq_msg_data(&(msg[1])), 8);
             std::memcpy(&size,   zmq_msg_data(&(msg[2])), 4);
             std::memcpy(&type,   zmq_msg_data(&(msg[3])), 4);
-            std::memcpy(&result, zmq_msg_data(&(msg[5])), 4);
+
+            memset(result,0,1000);
+            std::strncpy(result, (char*)zmq_msg_data(&(msg[5])), zmq_msg_size(&(msg[5])));
 
             // Find Transaction
             if ( (tran = getTransaction(id)) == NULL ) {
@@ -239,7 +248,7 @@ void rim::TcpClient::runThread() {
             // Double check transaction
             if ( (addr != tran->address()) || (size != tran->size()) || (type != tran->type()) ) {
                bridgeLog_->warning("Transaction data mistmatch. Id=%" PRIu32,id);
-               tran->done(rim::ProtocolError);
+               tran->error("Transaction data mismatch in TcpClient");
                for (x=0; x < msgCnt; x++) zmq_msg_close(&(msg[x]));
                continue; // while (1)
             }
@@ -248,13 +257,14 @@ void rim::TcpClient::runThread() {
             if ( type != rim::Write ) {
                if (zmq_msg_size(&(msg[4])) != size) {
                   bridgeLog_->warning("Transaction size mistmatch. Id=%" PRIu32,id);
-                  tran->done(rim::ProtocolError);
+                  tran->error("Received transaction response did not match header size");
                   for (x=0; x < msgCnt; x++) zmq_msg_close(&(msg[x]));
                   continue; // while (1)
                }
                std::memcpy(tran->begin(),zmq_msg_data(&(msg[4])), size);
             }
-            tran->done(result);
+            if ( strlen(result) > 0 ) tran->error(result);
+            else tran->done();
             bridgeLog_->debug("Response for transaction id=%" PRIu32 ", addr=0x%" PRIx64
                               ", size=%" PRIu32 ", type=%" PRIu32 ", cnt=%" PRIu32
                               ", port: %s", id,addr,size,type,msgCnt, this->respAddr_.c_str());

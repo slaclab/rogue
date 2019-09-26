@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Form</class>
+ <widget class="QWidget" name="Form">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1809</width>
+    <height>853</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QHBoxLayout" name="horizontalLayout">
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <item>
+      <widget class="VariableTree" name="VariableTree">
+       <property name="toolTip">
+        <string/>
+       </property>
+       <property name="channel" stdset="0">
+        <string>rogue://0/root</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <layout class="QVBoxLayout" name="verticalLayout">
+       <item>
+        <layout class="QVBoxLayout" name="verticalLayout_2">
+         <item>
+          <widget class="PyDMCheckbox" name="PyDMCheckbox">
+           <property name="toolTip">
+            <string/>
+           </property>
+           <property name="channel" stdset="0">
+            <string>rogue://0/dummyTree.AxiVersion.TestBool</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="PyDMEnumButton" name="PyDMEnumButton">
+           <property name="toolTip">
+            <string/>
+           </property>
+           <property name="channel" stdset="0">
+            <string>rogue://0/dummyTree.AxiVersion.TestBool</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <widget class="PyDMScatterPlot" name="PyDMScatterPlot">
+         <property name="toolTip">
+          <string/>
+         </property>
+         <property name="curves">
+          <stringlist>
+           <string>{&quot;y_channel&quot;: &quot;rogue://0/dummyTree.TestPlot&quot;, &quot;x_channel&quot;: &quot;rogue://0/dummyTree.TestXAxis&quot;, &quot;name&quot;: &quot;Test2&quot;, &quot;color&quot;: &quot;white&quot;, &quot;lineStyle&quot;: 1, &quot;lineWidth&quot;: 5, &quot;symbol&quot;: null, &quot;symbolSize&quot;: 10, &quot;redraw_mode&quot;: 2, &quot;buffer_size&quot;: 1200}</string>
+          </stringlist>
+         </property>
+         <property name="autoRangeX">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="PyDMWaveformPlot" name="PyDMWaveformPlot">
+         <property name="toolTip">
+          <string/>
+         </property>
+         <property name="curves">
+          <stringlist>
+           <string>{&quot;y_channel&quot;: &quot;rogue://0/dummyTree.TestArray&quot;, &quot;x_channel&quot;: null, &quot;name&quot;: &quot;Test&quot;, &quot;color&quot;: &quot;white&quot;, &quot;lineStyle&quot;: 1, &quot;lineWidth&quot;: 1, &quot;symbol&quot;: null, &quot;symbolSize&quot;: 10, &quot;redraw_mode&quot;: 2}</string>
+          </stringlist>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="PyDMTimePlot" name="PyDMTimePlot">
+         <property name="toolTip">
+          <string/>
+         </property>
+         <property name="curves">
+          <stringlist>
+           <string>{&quot;channel&quot;: &quot;rogue://0/dummyTree.TestPlot&quot;, &quot;name&quot;: &quot;TestPlot&quot;, &quot;color&quot;: &quot;white&quot;, &quot;lineStyle&quot;: 1, &quot;lineWidth&quot;: 5, &quot;symbol&quot;: null, &quot;symbolSize&quot;: 10}</string>
+          </stringlist>
+         </property>
+         <property name="updatesAsynchronously">
+          <bool>false</bool>
+         </property>
+         <property name="timeSpan">
+          <double>200.000000000000000</double>
+         </property>
+         <property name="autoRangeY">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="RootControl" name="RootControl">
+         <property name="toolTip">
+          <string/>
+         </property>
+         <property name="channel" stdset="0">
+          <string>rogue://0/root</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="Process" name="Process">
+         <property name="toolTip">
+          <string/>
+         </property>
+         <property name="channel" stdset="0">
+          <string>rogue://0/root.Process</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <widget class="VariableTree" name="VariableTree_2">
+       <property name="toolTip">
+        <string/>
+       </property>
+       <property name="channel" stdset="0">
+        <string>rogue://0/root.AxiVersion</string>
+       </property>
+       <property name="excGroups" stdset="0">
+        <string>Hidden,NoConfig</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>VariableTree</class>
+   <extends>PyDMFrame</extends>
+   <header>pyrogue.pydm.widgets.variable_tree</header>
+  </customwidget>
+  <customwidget>
+   <class>RootControl</class>
+   <extends>PyDMFrame</extends>
+   <header>pyrogue.pydm.widgets.root_control</header>
+  </customwidget>
+  <customwidget>
+   <class>Process</class>
+   <extends>PyDMFrame</extends>
+   <header>pyrogue.pydm.widgets.process</header>
+  </customwidget>
+  <customwidget>
+   <class>PyDMTimePlot</class>
+   <extends>QGraphicsView</extends>
+   <header>pydm.widgets.timeplot</header>
+  </customwidget>
+  <customwidget>
+   <class>PyDMWaveformPlot</class>
+   <extends>QGraphicsView</extends>
+   <header>pydm.widgets.waveformplot</header>
+  </customwidget>
+  <customwidget>
+   <class>PyDMScatterPlot</class>
+   <extends>QGraphicsView</extends>
+   <header>pydm.widgets.scatterplot</header>
+  </customwidget>
+  <customwidget>
+   <class>PyDMCheckbox</class>
+   <extends>QCheckBox</extends>
+   <header>pydm.widgets.checkbox</header>
+  </customwidget>
+  <customwidget>
+   <class>PyDMEnumButton</class>
+   <extends>QWidget</extends>
+   <header>pydm.widgets.enum_button</header>
+  </customwidget>
+  <customwidget>
+   <class>PyDMFrame</class>
+   <extends>QFrame</extends>
+   <header>pydm.widgets.frame</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>

@@ -51,7 +51,6 @@ ris::Buffer::Buffer(ris::PoolPtr source, void *data, uint32_t meta, uint32_t siz
    headRoom_  = 0;
    tailRoom_  = 0;
    payload_   = 0;
-   error_     = 0;
 }
 
 //! Destroy a buffer
@@ -82,12 +81,14 @@ void ris::Buffer::adjustHeader(int32_t value) {
 
    // Decreasing header size
    if ( value < 0 && (uint32_t)abs(value) > headRoom_ ) 
-         throw(rogue::GeneralError::boundary("Buffer::adjustHeader",abs(value),headRoom_));
+         throw(rogue::GeneralError::create("Buffer::adjustHeader",
+                  "Attempt to reduce header with size %i by %i",headRoom_,value));
 
    // Increasing header size
    if ( value > 0 && (uint32_t)value > (rawSize_ - (headRoom_ + tailRoom_)) ) 
-         throw(rogue::GeneralError::boundary("Buffer::adjustHeader",
-               (uint32_t)value, (rawSize_ - (headRoom_ + tailRoom_))));
+         throw(rogue::GeneralError::create("Buffer::adjustHeader",
+                  "Attempt to increase header by %i in buffer with size %i",
+                  value, (rawSize_ - (headRoom_ + tailRoom_))));
 
    // Make adjustment
    headRoom_ += value;
@@ -112,12 +113,14 @@ void ris::Buffer::adjustTail(int32_t value) {
 
    // Decreasing tail size
    if ( value < 0 && (uint32_t)abs(value) > tailRoom_ ) 
-         throw(rogue::GeneralError::boundary("Buffer::adjustTail",abs(value),tailRoom_));
+         throw(rogue::GeneralError::create("Buffer::adjustTail",
+                  "Attempt to reduce tail with size %i by %i",tailRoom_,value));
 
    // Increasing tail size
    if ( value > 0 && (uint32_t)value > (rawSize_ - (headRoom_ + tailRoom_)) ) 
-         throw(rogue::GeneralError::boundary("Buffer::adjustTail",
-               (uint32_t)value, (rawSize_ - (headRoom_ + tailRoom_))));
+         throw(rogue::GeneralError::create("Buffer::adjustTail",
+                  "Attempt to increase header by %i in buffer with size %i",
+                  value, (rawSize_ - (headRoom_ + tailRoom_))));
 
    // Make adjustment
    tailRoom_ += value;
@@ -198,8 +201,9 @@ uint32_t ris::Buffer::getPayload() {
 //! Set payload size (not including header)
 void ris::Buffer::setPayload(uint32_t size) {
    if ( size > (rawSize_ - (headRoom_ + tailRoom_) ) ) 
-      throw(rogue::GeneralError::boundary("Buffer::setPayload",
-            size, (rawSize_ - (headRoom_ + tailRoom_))));
+      throw(rogue::GeneralError::create("Buffer::setPayload",
+               "Attempt to set payload to size %i in buffer with size %i",
+               size, (rawSize_ - (headRoom_ + tailRoom_))));
 
    payload_ = size + headRoom_;
 
@@ -218,7 +222,10 @@ void ris::Buffer::minPayload(uint32_t size) {
 //! Adjust payload size
 void ris::Buffer::adjustPayload(int32_t value) {
    if ( value < 0 && (uint32_t)abs(value) > getPayload())
-      throw(rogue::GeneralError::boundary("Buffer::adjustPayload", abs(value), (getPayload())));
+      throw(rogue::GeneralError::create("Buffer::adjustPayload",
+               "Attempt to decrease payload by %i in buffer with size %i",
+               value, getPayload()));
+
    setPayload(getPayload() + value);
 }
 
@@ -236,5 +243,11 @@ void ris::Buffer::setPayloadEmpty() {
 
    ris::FramePtr tmpPtr;
    if ( (tmpPtr = frame_.lock()) ) tmpPtr->setSizeDirty(); 
+}
+
+//! Debug buffer
+void ris::Buffer::debug(uint32_t idx) {
+   printf("    Buffer: %i, AllocSize: %i, RawSize: %i, HeadRoom: %i, TailRoom: %i, Payload: %i\n",
+         idx, allocSize_, rawSize_, headRoom_, tailRoom_, payload_);
 }
 
