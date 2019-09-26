@@ -49,7 +49,7 @@ class ModelMeta(type):
         key = cls.__name__ + str(args) + str(kwargs)
 
         if key not in cls.subclasses:
-            print(f'Key: {key}')
+            #print(f'Key: {key}')
             inst = super().__call__(*args, **kwargs)
             cls.subclasses[key] = inst
         return cls.subclasses[key]
