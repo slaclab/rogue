@@ -211,7 +211,7 @@ class Float(Model):
 
 
 class Double(Float):
-            fstring = 'd'
+    fstring = 'd'
     bitSize = 64
 
 class FloatBE(Float):
