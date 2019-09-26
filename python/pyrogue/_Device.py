@@ -368,11 +368,15 @@ class Device(pr.Node,rim.Hub):
         self.checkBlocks(recurse=recurse, variable=variable)
 
     def _rawTxnChunker(self, offset, data, base=pr.UInt, stride=4, wordBitSize=32, txnType=rim.Write, numWords=1):
+        
+        if not isinstance(base, pr.Model):
+            base = base(wordBitSize)
+            
         if offset + (numWords * stride) > self._size:
             raise pr.MemoryError(name=self.name, address=offset|self.address,
                                  msg='Raw transaction outside of device size')
 
-        if wordBitSize > stride*8:
+        if base.bitSize > stride*8:
             raise pr.MemoryError(name=self.name, address=offset|self.address,
                                  msg='Called raw memory access with wordBitSize > stride')
 
@@ -380,9 +384,9 @@ class Device(pr.Node,rim.Hub):
             if isinstance(data, bytearray):
                 ldata = data
             elif isinstance(data, collections.Iterable):
-                ldata = b''.join(base.toBytes(word, wordBitSize) for word in data)
+                ldata = b''.join(base.toBytes(word) for word in data)
             else:
-                ldata = base.toBytes(data, wordBitSize)
+                ldata = base.toBytes(data)
 
         else:
             if data is not None:
@@ -400,6 +404,10 @@ class Device(pr.Node,rim.Hub):
             return ldata
 
     def _rawWrite(self, offset, data, base=pr.UInt, stride=4, wordBitSize=32, tryCount=1, posted=False):
+        
+        if not isinstance(base, pr.Model):
+            base = base(wordBitSize)
+        
         with self._memLock:
 
             if posted: txn = rim.Post
@@ -418,6 +426,10 @@ class Device(pr.Node,rim.Hub):
             raise pr.MemoryError (name=self.name, address=offset|self.address, msg=self._getError())
         
     def _rawRead(self, offset, numWords=1, base=pr.UInt, stride=4, wordBitSize=32, data=None, tryCount=1):
+        
+        if not isinstance(base, pr.Model):
+            base = base(wordBitSize)
+        
         with self._memLock:
             for _ in range(tryCount):
                 self._clearError()
@@ -426,9 +438,9 @@ class Device(pr.Node,rim.Hub):
 
                 if self._getError() == "":
                     if numWords == 1:
-                        return base.fromBytes(base.mask(ldata, wordBitSize),wordBitSize)
+                        return base.fromBytes(ldata)
                     else:
-                        return [base.fromBytes(base.mask(ldata[i:i+stride], wordBitSize),wordBitSize) for i in range(0, len(ldata), stride)]
+                        return [base.fromBytes(ldata[i:i+stride]) for i in range(0, len(ldata), stride)]
                 self._log.warning("Retrying raw read transaction")
                 
             # If we get here an error has occured

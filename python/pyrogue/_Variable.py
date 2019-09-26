@@ -577,7 +577,7 @@ class RemoteVariable(BaseVariable):
                               highWarning=highWarning, highAlarm=highAlarm,
                               pollInterval=pollInterval)
 
-        self._base     = base        
+            
         self._block    = None
 
         # Convert the address parameters into lists
@@ -600,11 +600,16 @@ class RemoteVariable(BaseVariable):
         bitOffset = [x+((y-baseAddr)*8) for x,y in zip(bitOffset, offset)]
         offset = baseAddr
 
+        if isinstance(base, pr.Model):
+            self._base = base
+        else:
+            self._base = base(sum(bitSize))
+
         self._offset    = offset
         self._bitSize   = bitSize
         self._bitOffset = bitOffset
         self._verify    = verify
-        self._typeStr   = base.name(sum(bitSize))
+        self._typeStr   = self._base.name
         self._bytes     = int(math.ceil(float(self._bitOffset[-1] + self._bitSize[-1]) / 8.0))
         self._overlapEn = overlapEn
 
@@ -657,7 +662,7 @@ class RemoteVariable(BaseVariable):
             if self.disp == 'enum':
                 return self.revEnum[sValue]
             else:
-                return self._base.fromString(sValue, sum(self._bitSize))
+                return self._base.fromString(sValue)
             
     def _setDefault(self):
         if self._default is not None:

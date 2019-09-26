@@ -356,12 +356,12 @@ class RemoteBlock(BaseBlock, rim.Master):
         Update block with bitSize bits from passed byte array.
         Offset sets the starting point in the block array.
         """
-        if not var._base.check(value,sum(var.bitSize)):
+        if not var._base.check(value):
             msg = "Invalid value '{}' for base type {} with bit size {}".format(value,var._base.pytype,sum(var.bitSize))
             raise MemoryError(name=var.path, address=self.address, msg=msg)
 
         with self._lock:
-            ba = var._base.toBytes(value, sum(var.bitSize))
+            ba = var._base.toBytes(value)
 
             srcBit = 0
             for x in range(len(var.bitOffset)):
@@ -386,7 +386,7 @@ class RemoteBlock(BaseBlock, rim.Master):
                     self._copyBits(ba, dstBit, self._bData, var.bitOffset[x], var.bitSize[x])
                 dstBit += var.bitSize[x]
 
-            return var._base.fromBytes(ba,sum(var.bitSize))
+            return var._base.fromBytes(ba)
 
     def startTransaction(self, type, check=False, lowByte=None, highByte=None):
         """
