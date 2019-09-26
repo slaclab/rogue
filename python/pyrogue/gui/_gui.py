@@ -55,7 +55,7 @@ class GuiTop(QWidget):
         super(GuiTop,self).__init__(parent)
 
         print("---------------------------------------------------------------")
-        print("The legacy GUI is now depcreated. Please use pyDM.")
+        print("The legacy GUI is now deprecated. Please use pyDM.")
         print("   To start in python script see: pyrogue.pydm.runPyDM().")
         print("   To start from command line: python -m pyrogue --help")
         print("   serverPort must be set in root.start() to use pydm")
