@@ -103,7 +103,7 @@ class PrbsTx(pyrogue.Device):
         self.add(pyrogue.LocalVariable(name='txEnable', description='PRBS Run Enable', mode='RW',
                                        value=False, localSet=self._txEnable))
 
-        self.add(pyrogue.LocalCommand(name='genFrame',description='Generate a single frame',
+        self.add(pyrogue.LocalCommand(name='genFrame',description='Generate n frames',value=1,
                                       function=self._genFrame))
 
         self.add(pyrogue.LocalVariable(name='txErrors', description='TX Error Count', mode='RO', pollInterval = 1,
@@ -133,8 +133,9 @@ class PrbsTx(pyrogue.Device):
         self._prbs.resetCount()
         super().countReset()
 
-    def _genFrame(self):
-        self._prbs.genFrame(self.txSize.value())
+    def _genFrame(self,arg=1):
+        for i in range(arg):
+            self._prbs.genFrame(self.txSize.value())
 
     def _txSize(self,value,changed):
         if changed and int(self.txEnable.value()) == 1:
