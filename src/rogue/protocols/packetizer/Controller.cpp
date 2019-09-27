@@ -66,6 +66,7 @@ rpp::Controller::~Controller() { }
 
 //! Stop TX
 void rpp::Controller::stopQueue() { 
+   rogue::GilRelease noGil;
    tranQueue_.stop();
 }
 

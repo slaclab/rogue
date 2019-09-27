@@ -74,6 +74,7 @@ ris::Fifo::Fifo(uint32_t maxDepth, uint32_t trimSize, bool noCopy ) : ris::Maste
 //! Deconstructor
 ris::Fifo::~Fifo() {
    threadEn_ = false;
+   rogue::GilRelease noGil;
    queue_.stop();
    thread_->join();
 }

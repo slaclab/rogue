@@ -130,6 +130,7 @@ void rpr::Controller::stopQueue() {
 //! Close
 void rpr::Controller::stop() {
    if ( thread_ != NULL ) {
+      rogue::GilRelease noGil;
       threadEn_ = false;
       thread_->join();
       thread_ = NULL;
