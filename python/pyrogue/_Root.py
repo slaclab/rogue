@@ -123,8 +123,9 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         self._pollQueue = self._pollQueue = pr.PollQueue(root=self)
 
         # Zeromq server
-        self._zmqServer = None
-        self._structure = ""
+        self._zmqServer  = None
+        self._structure  = ""
+        self._serverPort = None
 
         # List of variable listeners
         self._varListeners  = []
@@ -253,7 +254,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
               initRead=False,
               initWrite=False,
               pollEn=True,
-              serverPort=None,  # 9099 is the default
+              serverPort=None,  # 9099 is the default, 0 for auto
               sqlUrl=None,
               streamIncGroups=None,
               streamExcGroups=['NoStream'],
@@ -313,8 +314,9 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
         # Start server
         if serverPort is not None:
-            self._structure = jsonpickle.encode(self)
-            self._zmqServer = pr.interfaces.ZmqServer(root=self,addr="*",port=serverPort)
+            self._serverPort = serverPort
+            self._structure  = jsonpickle.encode(self)
+            self._zmqServer  = pr.interfaces.ZmqServer(root=self,addr="*",port=self._serverPort)
 
         # Start sql interface
         if sqlUrl is not None:
@@ -351,6 +353,10 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
             self._zmqServer = None
 
         self._running=False
+
+    @property
+    def serverPort(self):
+        return self._serverPort
 
     def updatePickle(self):
         self._structure = jsonpickle.encode(self)
