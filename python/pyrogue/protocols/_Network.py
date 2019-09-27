@@ -58,12 +58,15 @@ class UdpRssiPack(pr.Device):
                 time.sleep(.0001)
                 curr = int(time.time())
                 if last != curr:
-                    self._log.warning("host=%s, port=%d -> Establishing link ..." % (host,port))
                     last = curr
 
-                    if jumbo and cnt == 10:
-                        self._log.warning("host=%s, port=%d -> Attemping to use jumbo frames! Be sure to check interface MTU settings!" % (host,port))
-                        cnt = 0
+                    if jumbo: cnt += 1
+
+                    if cnt < 10:
+                        self._log.warning("host=%s, port=%d -> Establishing link ..." % (host,port))
+
+                    else:
+                        self._log.warning("host=%s, port=%d -> Failing to connect using jumbo frames! Be sure to check interface MTU settings with ifconig -a" % (host,port))
 
 
         self._udp.setRxBufferCount(self._rssi.curMaxBuffers());
