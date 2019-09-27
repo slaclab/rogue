@@ -60,6 +60,7 @@ rpp::Application::Application (uint8_t id) {
 //! Destructor
 rpp::Application::~Application() {
    threadEn_ = false;
+   rogue::GilRelease noGil;
    queue_.stop();
    thread_->join();
 }
