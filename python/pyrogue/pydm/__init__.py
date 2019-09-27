@@ -18,9 +18,12 @@ import sys
 import pydm
 import pyrogue.pydm.data_plugins.rogue_plugin
 
-def runPyDM(addrList='localhost:9090', ui=None):
+def runPyDM(serverList='localhost:9090', root=None, ui=None):
 
-    os.environ['ROGUE_SERVERS'] = addrList
+    if root is not None:
+        os.environ['ROGUE_SERVERS'] = 'localhost:{}'.format(root.serverPort)
+    else:
+        os.environ['ROGUE_SERVERS'] = serverList
 
     if ui is None or ui == '':
         ui = os.path.dirname(os.path.abspath(__file__)) + '/pydmTop.py'
