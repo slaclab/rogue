@@ -425,14 +425,14 @@ void ris::Frame::putNumpy ( boost::python::object p, uint32_t offset ) {
    int          flags = PyArray_FLAGS (arr);
    bool           ctg = flags & (NPY_ARRAY_C_CONTIGUOUS | NPY_ARRAY_F_CONTIGUOUS);
    if ( !ctg ) {
-      throw(rogue::GeneralError("Frame::putNumpy",
-                                "Numpy Array is not contiguious"));
+      arr = PyArray_GETCONTIGUOUS (arr);
    }
 
    // Get the number of bytes in both the source and destination buffers
    uint32_t  size = getSize();
    uint32_t count = PyArray_NBYTES (arr);
    uint32_t   end = offset + count;
+
 
    // Check this does not request data past the EOF
    if ( end > size ) {
@@ -446,6 +446,12 @@ void ris::Frame::putNumpy ( boost::python::object p, uint32_t offset ) {
    ris::Frame::iterator beg = this->beginWrite() + offset;
    ris::toFrame (beg, count, src); 
    minPayload   (end);
+
+
+   // If were forced to make a temporary copy, release it
+   if (!ctg) {
+      Py_XDECREF (arr);
+   }
 
    return;
 }
