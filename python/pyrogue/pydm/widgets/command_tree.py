@@ -108,6 +108,9 @@ class CommandHolder(QTreeWidgetItem):
 
         self.setText(1,self._cmd.typeStr)
 
+        # This needs to be changed when pydm is updated. In the future the primary
+        # channel interface will be the input widget, with the button generating a
+        # update of the channel.
         self._btn = PyDMPushButton(label='Exec',
                                    pressValue=self._value,
                                    init_channel=self._path + '/disp')
@@ -157,7 +160,7 @@ class CommandTree(PyDMFrame):
         self._children  = []
 
     def connection_changed(self, connected):
-        build = self._connected != connected and connected == True
+        build = (self._node is None) and (self._connected != connected and connected == True)
         super(CommandTree, self).connection_changed(connected)
 
         if not build: return

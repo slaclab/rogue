@@ -81,6 +81,7 @@ class RogueConnection(PyDMConnection):
         self._node   = None
         self._enum   = None
         self._notDev = False
+        self._address = address
 
         if utilities.is_pydm_app():
             self._client = pyrogue.interfaces.VirtualClient(self._host, self._port)
@@ -100,6 +101,14 @@ class RogueConnection(PyDMConnection):
                 self._int = True
 
         self.add_listener(channel)
+        self._client.addLinkMonitor(self.linkState)
+
+    def linkState(self, state):
+        if state:
+            self.connection_state_signal.emit(True)
+        else:
+            self.connection_state_signal.emit(False)
+
 
     def _updateVariable(self,path,varValue):
         if self._mode == 'name':
@@ -195,6 +204,7 @@ class RogueConnection(PyDMConnection):
             self.new_value_signal[str].emit(self._node.name)
 
     def remove_listener(self, channel, destroying):
+        self._client.remLinkMonitor(self.linkState)
         #if channel.value_signal is not None:
         #    #try:
         #    #    channel.value_signal[str].disconnect(self.put_value)

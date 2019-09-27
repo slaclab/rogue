@@ -23,6 +23,8 @@ import rogue.interfaces
 import functools as ft
 import jsonpickle
 import re
+import time
+import threading
 
 
 
@@ -192,30 +194,72 @@ class VirtualClient(rogue.interfaces.ZmqClient):
 
         rogue.interfaces.ZmqClient.__init__(self,addr,port)
         self._varListeners = []
-        self._root = None
+        self._monitors = []
+        self._root  = None
+        self._link  = False
+        self._ltime = time.time()
 
         # Setup logging
         self._log = pr.logInit(cls=self,name="VirtualClient",path=None)
 
         # Get root name as a connection test
         self.setTimeout(1000)
-        rn = None
-        while rn is None:
-            rn = self._remoteAttr('__rootname__',None)
+        self._rn = None
+        while self._rn is None:
+            self._rn = self._remoteAttr('__rootname__',None)
 
-        print("Connected to {} at {}:{}".format(rn,addr,port))
+        print("Connected to {} at {}:{}".format(self._rn,addr,port))
 
         # Try to connect to root entity, long timeout
-        print("Getting structure for {}".format(rn))
+        print("Getting structure for {}".format(self._rn))
         self.setTimeout(120000)
         r = self._remoteAttr('__structure__', None)
-        print("Ready to use {}".format(rn))
+        print("Ready to use {}".format(self._rn))
 
         # Update tree
         r._virtAttached(r,r,self)
         self._root = r
 
         setattr(self,self._root.name,self._root)
+
+        # Link tracking
+        self._link  = True
+        self._root.Time.addListener(self._monListener)
+        self._ltime = self._root.Time.value()
+
+    def addLinkMonitor(self, function):
+        if not function in self._monitors:
+            self._monitors.append(function)
+        self._monWorker()
+
+    def remLinkMonitor(self, function):
+        if function in self._monitors:
+            self._monitors.remove(function)
+        self._monWorker()
+
+    @property
+    def linked(self):
+        return self._link
+
+    def _monListener(self,path,val):
+        self._ltime = val.value
+
+    def _monWorker(self):
+        if len(self._monitors) == 0: return
+
+        threading.Timer(1.0,self._monWorker).start()
+
+        if self._link and (time.time() - self._ltime) > 1.5:
+            self._link = False
+            print(f"Link to {self._rn} lost!")
+            for mon in self._monitors:
+                mon(self._link)
+
+        elif (not self._link) and (time.time() - self._ltime) < 1.5:
+            self._link = True
+            print(f"Link to {self._rn} restored!")
+            for mon in self._monitors:
+                mon(self._link)
 
 
     def _remoteAttr(self, path, attr, *args, **kwargs):

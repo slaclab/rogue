@@ -269,6 +269,9 @@ class AxiVersion(pr.Device):
 
         #self.add(pr.LocalVariable(name = 'TestArray[2]',value=0))
 
+        for i in range(2):
+            self.add(pr.LocalVariable(name = f'TestArray2[{i}]',value=0)) 
+
         self.add(pr.RemoteVariable(
             name         = 'TestSpareArray[5][5]',
             description  = 'Array Test Field',
