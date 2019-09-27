@@ -22,7 +22,7 @@ import test_device
 import time
 import rogue
 import pyrogue.protocols
-import pyrogue.pydm
+#import pyrogue.pydm
 import logging
 import math
 import numpy as np
@@ -159,6 +159,6 @@ class DummyTree(pyrogue.Root):
 if __name__ == "__main__":
 
     with DummyTree() as dummyTree:
-        #pyrogue.waitCntrlC()
-        pyrogue.pydm.runPyDM(root=dummyTree)
+        pyrogue.waitCntrlC()
+        #pyrogue.pydm.runPyDM(root=dummyTree)
 
