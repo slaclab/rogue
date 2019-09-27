@@ -113,7 +113,6 @@ class DummyTree(pyrogue.Root):
         self.rudpServer = pyrogue.protocols.UdpRssiPack(
             name    = 'UdpServer',
             port    = 8192,
-            pollInterval=0,
             jumbo   = True,
             server  = True,
             expand  = False,
@@ -125,7 +124,6 @@ class DummyTree(pyrogue.Root):
             name    = 'UdpClient',
             host    = "127.0.0.1",
             port    = 8192,
-            pollInterval=0,
             jumbo   = True,
             expand  = False,
             )
