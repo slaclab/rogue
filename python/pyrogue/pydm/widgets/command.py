@@ -68,6 +68,9 @@ class Command(PyDMFrame):
 
             hb.addWidget(self._widget)
 
+        # This needs to be changed when pydm is updated. In the future the primary
+        # channel interface will be the input widget, with the button generating a
+        # update of the channel.
         self._btn = PyDMPushButton(label='Exec',
                                    pressValue=self._value,
                                    init_channel=self._path + '/disp')

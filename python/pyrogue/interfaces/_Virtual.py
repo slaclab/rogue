@@ -195,8 +195,8 @@ class VirtualClient(rogue.interfaces.ZmqClient):
         rogue.interfaces.ZmqClient.__init__(self,addr,port)
         self._varListeners = []
         self._monitors = []
-        self._root = None
-        self._link = False
+        self._root  = None
+        self._link  = False
         self._ltime = time.time()
 
         # Setup logging
@@ -226,11 +226,16 @@ class VirtualClient(rogue.interfaces.ZmqClient):
         self._link  = True
         self._root.Time.addListener(self._monListener)
         self._ltime = self._root.Time.value()
-        self._monWorker()
-
 
     def addLinkMonitor(self, function):
-        self._monitors.append(function)
+        if not function in self._monitors:
+            self._monitors.append(function)
+        self._monWorker()
+
+    def remLinkMonitor(self, function):
+        if function in self._monitors:
+            self._monitors.remove(function)
+        self._monWorker()
 
     @property
     def linked(self):
@@ -240,6 +245,8 @@ class VirtualClient(rogue.interfaces.ZmqClient):
         self._ltime = val.value
 
     def _monWorker(self):
+        if len(self._monitors) == 0: return
+
         threading.Timer(1.0,self._monWorker).start()
 
         if self._link and (time.time() - self._ltime) > 1.5:

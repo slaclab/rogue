@@ -19,7 +19,7 @@ from pydm.widgets.frame import PyDMFrame
 from pydm.widgets import PyDMLineEdit, PyDMPushButton
 from pyrogue.pydm.data_plugins.rogue_plugin import nodeFromAddress
 from qtpy.QtCore import Qt, Property, Slot
-from qtpy.QtWidgets import QVBoxLayout, QHBoxLayout, QPushButton, QFileDialog, QGroupBox
+from qtpy.QtWidgets import QVBoxLayout, QHBoxLayout, QPushButton, QFileDialog, QGroupBox, QLineEdit, QLabel
 import datetime
 
 class RootControl(PyDMFrame):
@@ -57,28 +57,73 @@ class RootControl(PyDMFrame):
         w = PyDMPushButton(label='Count Reset',pressValue=1,init_channel=self._path + '.CountReset')
         hb.addWidget(w)
 
+        # Load Config
+        # This needs to be changed to the new pydm command interface with the push
+        # button commiting the line edit value
         hb = QHBoxLayout()
         vb.addLayout(hb)
 
-        # Hidden boxes which are updated by file browse for now
-        self._loadSettingsCmd = PyDMLineEdit(parent=None, init_channel=self._path + '.LoadConfig')
-        self._saveSettingsCmd = PyDMLineEdit(parent=None, init_channel=self._path + '.SaveConfig')
-        self._saveStateCmd    = PyDMLineEdit(parent=None, init_channel=self._path + '.SaveState')
+        self._loadConfigCmd = PyDMPushButton(label='Load Config',
+                                             pressValue='',
+                                             init_channel=self._path + '.LoadConfig')
 
-        pb = QPushButton('Load Settings')
-        pb.clicked.connect(self._loadSettings)
+        hb.addWidget(self._loadConfigCmd)
+
+        self._loadConfigValue = QLineEdit()
+        self._loadConfigValue.textChanged.connect(self._loadConfigChanged)
+        hb.addWidget(self._loadConfigValue)
+
+        pb = QPushButton('Browse')
+        pb.clicked.connect(self._loadConfigBrowse)
         hb.addWidget(pb)
 
-        pb = QPushButton('Save Settings')
-        pb.clicked.connect(self._saveSettings)
+        # Save Config
+        # This needs to be changed to the new pydm command interface with the push
+        # button commiting the line edit value
+        hb = QHBoxLayout()
+        vb.addLayout(hb)
+
+        self._saveConfigCmd = PyDMPushButton(label='Save Config',
+                                             pressValue='',
+                                             init_channel=self._path + '.SaveConfig')
+
+        hb.addWidget(self._saveConfigCmd)
+
+        self._saveConfigValue = QLineEdit()
+        self._saveConfigValue.textChanged.connect(self._saveConfigChanged)
+        hb.addWidget(self._saveConfigValue)
+
+        pb = QPushButton('Browse')
+        pb.clicked.connect(self._saveConfigBrowse)
         hb.addWidget(pb)
 
-        pb = QPushButton('Save State')
-        pb.clicked.connect(self._saveState)
+        # Save State
+        # This needs to be changed to the new pydm command interface with the push
+        # button commiting the line edit value
+        hb = QHBoxLayout()
+        vb.addLayout(hb)
+
+        self._saveStateCmd = PyDMPushButton(label='Save State ',
+                                            pressValue='',
+                                            init_channel=self._path + '.SaveState')
+
+        hb.addWidget(self._saveStateCmd)
+
+        self._saveStateValue = QLineEdit()
+        self._saveStateValue.textChanged.connect(self._saveStateChanged)
+        hb.addWidget(self._saveStateValue)
+
+        pb = QPushButton('Browse')
+        pb.clicked.connect(self._saveStateBrowse)
         hb.addWidget(pb)
+
+
+    @Slot(str)
+    def _loadConfigChanged(self,value):
+        self._loadConfigCmd.pressValue = value
 
     @Slot()
-    def _loadSettings(self):
+    def _loadConfigBrowse(self):
         dlg = QFileDialog()
 
         loadFile = dlg.getOpenFileNames(caption='Read config file', filter='Config Files(*.yml);;All Files(*.*)')
@@ -88,11 +133,14 @@ class RootControl(PyDMFrame):
             loadFile = loadFile[0]
 
         if loadFile != '':
-            self._loadSettingsCmd.setText(','.join(loadFile))
-            self._loadSettingsCmd.send_value()
+            self._loadConfigValue.setText(','.join(loadFile))
+
+    @Slot(str)
+    def _saveConfigChanged(self,value):
+        self._saveConfigCmd.pressValue = value
 
     @Slot()
-    def _saveSettings(self):
+    def _saveConfigBrowse(self):
         dlg = QFileDialog()
         sug = datetime.datetime.now().strftime("config_%Y%m%d_%H%M%S.yml") 
 
@@ -103,11 +151,14 @@ class RootControl(PyDMFrame):
             saveFile = saveFile[0]
 
         if saveFile != '':
-            self._saveSettingsCmd.setText(saveFile)
-            self._saveSettingsCmd.send_value()
+            self._saveConfigValue.setText(saveFile)
+
+    @Slot(str)
+    def _saveStateChanged(self,value):
+        self._saveStateCmd.pressValue = value
 
     @Slot()
-    def _saveState(self):
+    def _saveStateBrowse(self):
         dlg = QFileDialog()
         sug = datetime.datetime.now().strftime("state_%Y%m%d_%H%M%S.yml.gz")
 
@@ -118,6 +169,5 @@ class RootControl(PyDMFrame):
             stateFile = stateFile[0]
 
         if stateFile != '':
-            self._saveStateCmd.setText(stateFile)
-            self._saveStateCmd.send_value()
+            self._saveStateValue.setText(stateFile)
 
