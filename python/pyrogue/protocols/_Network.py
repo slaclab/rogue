@@ -52,6 +52,7 @@ class UdpRssiPack(pr.Device):
         if wait and not server:
             curr = int(time.time())
             last = curr
+            cnt = 0
 
             while not self._rssi.getOpen():
                 time.sleep(.0001)
@@ -59,6 +60,11 @@ class UdpRssiPack(pr.Device):
                 if last != curr:
                     self._log.warning("host=%s, port=%d -> Establishing link ..." % (host,port))
                     last = curr
+
+                    if jumbo and cnt == 10:
+                        self._log.warning("host=%s, port=%d -> Attemping to use jumbo frames! Be sure to check interface MTU settings!" % (host,port))
+                        cnt = 0
+
 
         self._udp.setRxBufferCount(self._rssi.curMaxBuffers());
 
