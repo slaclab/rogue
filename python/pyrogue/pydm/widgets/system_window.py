@@ -28,9 +28,10 @@ from pyrogue.pydm.widgets import SystemLog
 class SystemWindow(PyDMFrame):
     def __init__(self, parent=None, init_channel=None):
         PyDMFrame.__init__(self, parent, init_channel)
+        self._node = None
 
     def connection_changed(self, connected):
-        build = self._connected != connected and connected == True
+        build = (self._node is None) and (self._connected != connected and connected == True)
         super(SystemWindow, self).connection_changed(connected)
 
         if not build: return

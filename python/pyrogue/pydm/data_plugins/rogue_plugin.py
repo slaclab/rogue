@@ -100,6 +100,14 @@ class RogueConnection(PyDMConnection):
                 self._int = True
 
         self.add_listener(channel)
+        self._client.addLinkMonitor(self.linkState)
+
+    def linkState(self, state):
+        if state:
+            self.connection_state_signal.emit(True)
+        else:
+            self.connection_state_signal.emit(False)
+
 
     def _updateVariable(self,path,varValue):
         if self._mode == 'name':

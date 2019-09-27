@@ -156,11 +156,11 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
             description='Configuration Flag To Execute Initialize after LoadConfig or setYaml'))
 
         self.add(pr.LocalVariable(name='Time', value=0.0, mode='RO', hidden=True,
-                 localGet=lambda: time.time(), pollInterval=1.0, description='Current Time In Seconds Since EPOCH UTC'))
+                 description='Current Time In Seconds Since EPOCH UTC'))
 
-        self.add(pr.LocalVariable(name='LocalTime', value='', mode='RO', groups=['NoStream','NoSql','NoState'],
-                 localGet=lambda: time.strftime("%Y-%m-%d %H:%M:%S %Z", time.localtime(time.time())),
-                 pollInterval=1.0, description='Local Time'))
+        self.add(pr.LinkVariable(name='LocalTime', value='', mode='RO', groups=['NoStream','NoSql','NoState'],
+                 linkedGet=lambda: time.strftime("%Y-%m-%d %H:%M:%S %Z", time.localtime(self.Time.value())),
+                 dependencies=[self.Time], description='Local Time'))
 
         self.add(pr.LocalVariable(name='PollEn', value=False, mode='RW',groups=['NoStream','NoSql','NoState'],
                                   localSet=lambda value: self._pollQueue.pause(not value),
@@ -337,6 +337,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         self.PollEn.set(pollEn)
 
         self._running = True
+        self._heartbeat()
 
     def stop(self):
         """Stop the polling thread. Must be called for clean exit."""
@@ -492,6 +493,11 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
         except Exception as e:
             pr.logException(self._log,e)
+
+    def _heartbeat(self):
+        if self._running:
+            threading.Timer(1.0,self._heartbeat).start()
+            self.Time.set(time.time())
 
     def _exit(self):
         self.stop()
