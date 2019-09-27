@@ -254,7 +254,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
               initRead=False,
               initWrite=False,
               pollEn=True,
-              serverPort=None,  # 9099 is the default, 0 for auto
+              serverPort=0,  # 9099 is the default, 0 for auto
               sqlUrl=None,
               streamIncGroups=None,
               streamExcGroups=['NoStream'],
