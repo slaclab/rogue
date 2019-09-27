@@ -53,7 +53,7 @@ args = parser.parse_args()
 # Common extraction for single server address
 try:
     host = args.server.split(',')[0].split(':')[0]
-    port = args.server.split(',')[0].split(':')[1]
+    port = int(args.server.split(',')[0].split(':')[1])
 except:
     print("Failed to extract server host & port")
 
