@@ -21,10 +21,8 @@ import rogue.interfaces.stream
 import test_device
 import time
 import rogue
-#import pyrogue.protocols.epics
-#import pyrogue.gui
-#import pyrogue.protocols.epicsV4
 import pyrogue.protocols
+import pyrogue.pydm
 import logging
 import math
 import numpy as np
@@ -110,36 +108,35 @@ class DummyTree(pyrogue.Root):
         #    mode = 'RW',
         #    value = ''))
 
-        self.rudpServer = pyrogue.protocols.UdpRssiPack(
-            name    = 'UdpServer',
-            port    = 8192,
-            jumbo   = True,
-            server  = True,
-            expand  = False,
-            )
-        self.add(self.rudpServer)
+        #self.rudpServer = pyrogue.protocols.UdpRssiPack(
+        #    name    = 'UdpServer',
+        #    port    = 8192,
+        #    jumbo   = True,
+        #    server  = True,
+        #    expand  = False,
+        #    )
+        #self.add(self.rudpServer)
 
         # Create the ETH interface @ IP Address = args.dev
-        self.rudpClient = pyrogue.protocols.UdpRssiPack(
-            name    = 'UdpClient',
-            host    = "127.0.0.1",
-            port    = 8192,
-            jumbo   = True,
-            expand  = False,
-            )
+        #self.rudpClient = pyrogue.protocols.UdpRssiPack(
+        #    name    = 'UdpClient',
+        #    host    = "127.0.0.1",
+        #    port    = 8192,
+        #    jumbo   = True,
+        #    expand  = False,
+        #    )
+        #self.add(self.rudpClient)
 
-        self.add(self.rudpClient)
+        #self.prbsTx = pyrogue.utilities.prbs.PrbsTx()
+        #self.add(self.prbsTx)
 
-        self.prbsTx = pyrogue.utilities.prbs.PrbsTx()
-        self.add(self.prbsTx)
-
-        pyrogue.streamConnect(self.prbsTx,self.rudpClient.application(0))
+        #pyrogue.streamConnect(self.prbsTx,self.rudpClient.application(0))
 
         # Start the tree with pyrogue server, internal nameserver, default interface
         # Set pyroHost to the address of a network interface to specify which nework to run on
         # set pyroNs to the address of a standalone nameserver (startPyrorNs.py)
         #self.start(timeout=2.0, pollEn=True, serverPort=9099, sqlUrl='sqlite:///test.db')
-        self.start(timeout=2.0, pollEn=True, serverPort=9099)
+        self.start(timeout=2.0, pollEn=True, serverPort=0)
 
         #self.epics=pyrogue.protocols.epics.EpicsCaServer(base="test", root=self)
         #self.epics.start()
@@ -162,6 +159,6 @@ class DummyTree(pyrogue.Root):
 if __name__ == "__main__":
 
     with DummyTree() as dummyTree:
-        pyrogue.waitCntrlC()
-        #pyrogue.gui.runGui(dummyTree)
+        #pyrogue.waitCntrlC()
+        pyrogue.pydm.runPyDM(root=dummyTree)
 

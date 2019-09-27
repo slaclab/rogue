@@ -18,20 +18,10 @@ import time
 
 parser = argparse.ArgumentParser('Pyrogue Client')
 
-parser.add_argument('--host', 
+parser.add_argument('--server',
                     type=str, 
-                    help='Server host name or address for gui or client',
-                    default='localhost')
-
-parser.add_argument('--port', 
-                    type=int, 
-                    help='Server port number for gui or client',
-                    default=9099)
-
-parser.add_argument('--servers',
-                    type=str, 
-                    help='Server & port list for gui (cmd=gui): host1:port1,host2:port2',
-                    default=None)
+                    help="Server address: 'host:port' or list of addresses: 'host1:port1,host2:port2'",
+                    default='localhost:9099')
 
 parser.add_argument('--ui',
                     type=str, 
@@ -59,20 +49,24 @@ parser.add_argument('value',
 
 args = parser.parse_args()
 
-print("Connecting to host {} port {}".format(args.host,args.port))
+
+# Common extraction for single server address
+try:
+    host = args.server.split(',')[0].split(':')[0]
+    port = args.server.split(',')[0].split(':')[1]
+except:
+    print("Failed to extract server host & port")
+
+print("Connecting to {}".format(args.server))
 
 # GUI Client
 if args.cmd == 'gui':
-    if args.servers is not None:
-        addrList = args.servers
-    else:
-        addrList = '{}:{}'.format(args.host,args.port)
-    pyrogue.pydm.runPyDM(addrList,args.ui)
+    pyrogue.pydm.runPyDM(serverList=args.server,ui=args.ui)
 
 # System log
 elif args.cmd == 'syslog':
     sl = pyrogue.interfaces.SystemLogMonitor(args.details)
-    client = pyrogue.interfaces.SimpleClient(args.host,args.port,cb=sl.varUpdated)
+    client = pyrogue.interfaces.SimpleClient(host,port,cb=sl.varUpdated)
 
     print("Listening for system log message:")
     print("")
@@ -93,7 +87,7 @@ elif args.cmd == 'monitor':
         exit()
 
     vm = pyrogue.interfaces.VariableMonitor(args.path)
-    client = pyrogue.interfaces.SimpleClient(args.host,args.port,cb=vm.varUpdated)
+    client = pyrogue.interfaces.SimpleClient(host,port,cb=vm.varUpdated)
 
     ret = client.valueDisp(args.path)
     print("")
@@ -109,7 +103,7 @@ elif args.cmd == 'monitor':
 # All Other Commands
 else:
 
-    client = pyrogue.interfaces.SimpleClient(args.host,args.port)
+    client = pyrogue.interfaces.SimpleClient(host,port)
 
     if args.path is None:
         print("Error: A path must be provided")

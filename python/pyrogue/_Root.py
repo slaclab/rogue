@@ -312,11 +312,11 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
             for key,value in self._nodes.items():
                 value._setTimeout(timeout)
 
-        # Start server
+        # Server Start
         if serverPort is not None:
-            self._serverPort = serverPort
+            self._zmqServer  = pr.interfaces.ZmqServer(root=self,addr="*",port=serverPort)
+            self._serverPort = self._zmqServer.port()
             self._structure  = jsonpickle.encode(self)
-            self._zmqServer  = pr.interfaces.ZmqServer(root=self,addr="*",port=self._serverPort)
 
         # Start sql interface
         if sqlUrl is not None:
