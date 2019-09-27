@@ -88,6 +88,26 @@ class DummyTree(pyrogue.Root):
             disp='{:1.2f}',
             value = np.array(0)))
 
+        self.add(pyrogue.LocalVariable(
+            name = 'Test/Slash',
+            mode = 'RW',
+            value = ''))
+
+        self.add(pyrogue.LocalVariable(
+            name = 'Test.Dot',
+            mode = 'RW',
+            value = ''))
+
+        self.add(pyrogue.LocalVariable(
+            name = 'Test\BackSlash',
+            mode = 'RW',
+            value = ''))
+
+        self.add(pyrogue.LocalVariable(
+            name = 'Test&And',
+            mode = 'RW',
+            value = ''))
+
         # Start the tree with pyrogue server, internal nameserver, default interface
         # Set pyroHost to the address of a network interface to specify which nework to run on
         # set pyroNs to the address of a standalone nameserver (startPyrorNs.py)

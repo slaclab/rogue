@@ -270,6 +270,10 @@ class Node(object):
             raise NodeError('Error adding node with name %s to %s. Name collision.' % 
                              (node.name,self.name))
 
+        # Add some checking for charaters which will make lookups problematic
+        if re.match('^[\w_\[\]]+$',node.name) is None:
+            self._log.warning('Node {} with one or more special characters will cause lookup errors.'.format(node.name))
+
         # Detect and add array nodes
         self._addArrayNode(node)
 
@@ -288,7 +292,7 @@ class Node(object):
         keys  = fields[1:-1]
 
         if not all([key.isdigit() for key in keys]):
-            self._log.warning('Array node with non numeric key: {} may cause lookup errors.'.format(node.name))
+            self._log.warning('Array node {} with non numeric key will cause lookup errors.'.format(node.name))
             return
 
         # Detect collisions
