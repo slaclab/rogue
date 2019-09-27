@@ -23,6 +23,7 @@ import rogue
 #import pyrogue.protocols.epics
 #import pyrogue.gui
 #import pyrogue.protocols.epicsV4
+import pyrogue.protocols
 import logging
 import math
 import numpy as np
@@ -88,25 +89,45 @@ class DummyTree(pyrogue.Root):
             disp='{:1.2f}',
             value = np.array(0)))
 
-        self.add(pyrogue.LocalVariable(
-            name = 'Test/Slash',
-            mode = 'RW',
-            value = ''))
+        #self.add(pyrogue.LocalVariable(
+        #    name = 'Test/Slash',
+        #    mode = 'RW',
+        #    value = ''))
 
-        self.add(pyrogue.LocalVariable(
-            name = 'Test.Dot',
-            mode = 'RW',
-            value = ''))
+        #self.add(pyrogue.LocalVariable(
+        #    name = 'Test.Dot',
+        #    mode = 'RW',
+        #    value = ''))
 
-        self.add(pyrogue.LocalVariable(
-            name = 'Test\BackSlash',
-            mode = 'RW',
-            value = ''))
+        #self.add(pyrogue.LocalVariable(
+        #    name = 'Test\BackSlash',
+        #    mode = 'RW',
+        #    value = ''))
 
-        self.add(pyrogue.LocalVariable(
-            name = 'Test&And',
-            mode = 'RW',
-            value = ''))
+        #self.add(pyrogue.LocalVariable(
+        #    name = 'Test&And',
+        #    mode = 'RW',
+        #    value = ''))
+
+        self.rudpServer = pyrogue.protocols.UdpRssiPack(
+            name    = 'UdpServer',
+            port    = 8192,
+            jumbo   = True,
+            server  = True,
+            expand  = False,
+            )
+        self.add(self.rudpServer)
+
+        # Create the ETH interface @ IP Address = args.dev
+        self.rudpClient = pyrogue.protocols.UdpRssiPack(
+            name    = 'UdpClient',
+            host    = "127.0.0.1",
+            port    = 8192,
+            jumbo   = True,
+            expand  = False,
+            )
+
+        self.add(self.rudpClient)
 
         # Start the tree with pyrogue server, internal nameserver, default interface
         # Set pyroHost to the address of a network interface to specify which nework to run on
