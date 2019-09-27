@@ -16,6 +16,7 @@
 import pyrogue
 import pyrogue.interfaces.simulation
 import pyrogue.utilities.fileio
+import pyrogue.utilities.prbs
 import rogue.interfaces.stream
 import test_device
 import time
@@ -112,6 +113,7 @@ class DummyTree(pyrogue.Root):
         self.rudpServer = pyrogue.protocols.UdpRssiPack(
             name    = 'UdpServer',
             port    = 8192,
+            pollInterval=0,
             jumbo   = True,
             server  = True,
             expand  = False,
@@ -123,11 +125,17 @@ class DummyTree(pyrogue.Root):
             name    = 'UdpClient',
             host    = "127.0.0.1",
             port    = 8192,
+            pollInterval=0,
             jumbo   = True,
             expand  = False,
             )
 
         self.add(self.rudpClient)
+
+        self.prbsTx = pyrogue.utilities.prbs.PrbsTx()
+        self.add(self.prbsTx)
+
+        pyrogue.streamConnect(self.prbsTx,self.rudpClient.application(0))
 
         # Start the tree with pyrogue server, internal nameserver, default interface
         # Set pyroHost to the address of a network interface to specify which nework to run on
