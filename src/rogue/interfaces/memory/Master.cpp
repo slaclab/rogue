@@ -68,7 +68,7 @@ void rim::Master::setup_python() {
 //! Create object
 rim::Master::Master() {
    error_   = "";
-   slave_   = rim::Slave::create(4,4); // Empty placeholder
+   slave_   = rim::Slave::create(4,0); // Empty placeholder
 
    rogue::defaultTimeout(sumTime_);
 

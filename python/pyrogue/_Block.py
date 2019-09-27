@@ -257,7 +257,7 @@ class RemoteBlock(BaseBlock, rim.Master):
         self._variables   = variables
 
         if self._minSize == 0 or self._maxSize == 0:
-            raise MemoryError(name=self.path, address=self.address, msg="Invalid min/max size")
+            raise MemoryError(name=self.path, address=self.address, msg="Invalid min/max memory interface size. Device or Variable may be unconnected!")
 
         # Range check
         if self._size > self._maxSize:
