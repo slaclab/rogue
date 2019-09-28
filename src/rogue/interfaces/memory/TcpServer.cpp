@@ -45,6 +45,7 @@ rim::TcpServerPtr rim::TcpServer::create (std::string addr, uint16_t port) {
 //! Creator
 rim::TcpServer::TcpServer (std::string addr, uint16_t port) {
    std::string logstr;
+   uint32_t opt;
 
    logstr = "memory.TcpServer.";
    logstr.append(addr);
@@ -67,6 +68,12 @@ rim::TcpServer::TcpServer (std::string addr, uint16_t port) {
    this->reqAddr_.append(std::to_string(static_cast<long long>(port)));
 
    this->bridgeLog_->debug("Creating response client port: %s",this->respAddr_.c_str());
+
+   opt = 0;
+   if ( zmq_setsockopt (this->zmqResp_, ZMQ_LINGER, &opt, sizeof(int32_t)) != 0 ) 
+         throw(rogue::GeneralError("memory::TcpServer::TcpServer","Failed to set socket linger"));
+   if ( zmq_setsockopt (this->zmqReq_, ZMQ_LINGER, &opt, sizeof(int32_t)) != 0 ) 
+         throw(rogue::GeneralError("memory::TcpServer::TcpServer","Failed to set socket linger"));
 
    if ( zmq_bind(this->zmqResp_,this->respAddr_.c_str()) < 0 )
       throw(rogue::GeneralError::create("memory::TcpServer::TcpServer",
@@ -97,7 +104,7 @@ void rim::TcpServer::close() {
    threadEn_ = false;
    zmq_close(this->zmqResp_);
    zmq_close(this->zmqReq_);
-   zmq_term(this->zmqCtx_);
+   zmq_ctx_destroy(this->zmqCtx_);
    thread_->join();
 }
 
