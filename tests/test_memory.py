@@ -80,11 +80,15 @@ class DummyTree(pr.Root):
         # set pyroNs to the address of a standalone nameserver (startPyrorNs.py)
         self.start(timeout=2.0, pollEn=False)
 
+    def stop(self):
+        self.ms.close()
+        self.mc.close()
+        pr.Root.stop(self)
 
 def test_memory():
 
     with DummyTree() as root:
-        time.sleep(5)
+        time.sleep(1)
 
         print("Writing 0x50 to scratchpad")
         root.AxiVersion.ScratchPad.set(0x50)
@@ -92,7 +96,7 @@ def test_memory():
         ret = root.AxiVersion.ScratchPad.get()
         print("Read {:#x} from scratchpad".format(ret))
 
-        time.sleep(5)
+        time.sleep(1)
 
         if ret != 0x50:
             raise AssertionError('Scratchpad Mismatch')

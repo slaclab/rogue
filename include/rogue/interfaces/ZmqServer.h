@@ -66,6 +66,8 @@ namespace rogue {
             virtual std::string doRequest (std::string data);
 
             uint16_t port();
+
+            void close();
       };
       typedef std::shared_ptr<rogue::interfaces::ZmqServer> ZmqServerPtr;
 

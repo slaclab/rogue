@@ -40,11 +40,13 @@ void rogue::interfaces::ZmqServer::setup_python() {
       .def("_doRequest", &rogue::interfaces::ZmqServer::doRequest, &rogue::interfaces::ZmqServerWrap::defDoRequest)
       .def("_publish",   &rogue::interfaces::ZmqServer::publish)
       .def("port",       &rogue::interfaces::ZmqServer::port)
+      .def("close",      &rogue::interfaces::ZmqServer::close)
    ;
 #endif
 }
 
 rogue::interfaces::ZmqServer::ZmqServer (std::string addr, uint16_t port) {
+   std::string dummy;
    bool res = false;
 
    log_ = rogue::Logging::create("ZmqServer");
@@ -61,31 +63,41 @@ rogue::interfaces::ZmqServer::ZmqServer (std::string addr, uint16_t port) {
    }
    else res = this->tryConnect();
 
-   if ( ! res ) 
+   if ( ! res ) {
       if (port == 0) 
          throw(rogue::GeneralError::create("ZmqServer::ZmqServer",
             "Failed to auto bind server on interface %s.",addr.c_str()));
       else
          throw(rogue::GeneralError::create("ZmqServer::ZmqServer",
             "Failed to bind server to port %i on interface %s. Another process may be using this port.",port+1,addr.c_str()));
+   }
 
    log_->info("Started Rogue server at ports %i:%i",this->basePort_,this->basePort_+1);
 
    threadEn_ = true;
    thread_ = new std::thread(&rogue::interfaces::ZmqServer::runThread, this);
+
+   // Send empty frame
+   dummy = "null\n";
+   zmq_send(this->zmqPub_,dummy.c_str(),dummy.size(),0);
 }
 
 rogue::interfaces::ZmqServer::~ZmqServer() {
+   close();
+}
+
+void rogue::interfaces::ZmqServer::close() {
    rogue::GilRelease noGil;
    threadEn_ = false;
    zmq_close(this->zmqPub_);
    zmq_close(this->zmqRep_);
-   zmq_term(this->zmqCtx_);
+   zmq_ctx_destroy(this->zmqCtx_);
    thread_->join();
 }
 
 bool rogue::interfaces::ZmqServer::tryConnect() {
    std::string temp;
+   uint32_t opt;
 
    log_->debug("Trying to serve on ports %i:%i",this->basePort_,this->basePort_+1);
 
@@ -116,6 +128,13 @@ bool rogue::interfaces::ZmqServer::tryConnect() {
       log_->debug("Failed to bind resp to port %i",this->basePort_+1);
       return false;
    }
+
+   opt = 0;
+   if ( zmq_setsockopt (this->zmqPub_, ZMQ_LINGER, &opt, sizeof(int32_t)) != 0 ) 
+         throw(rogue::GeneralError("ZmqServer::tryConnect","Failed to set socket linger"));
+   if ( zmq_setsockopt (this->zmqRep_, ZMQ_LINGER, &opt, sizeof(int32_t)) != 0 ) 
+         throw(rogue::GeneralError("ZmqServer::tryConnect","Failed to set socket linger"));
+
    return true;
 }
 
