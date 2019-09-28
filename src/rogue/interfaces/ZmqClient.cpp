@@ -68,9 +68,9 @@ rogue::interfaces::ZmqClient::ZmqClient (std::string addr, uint16_t port) {
    if ( zmq_setsockopt (this->zmqSub_, ZMQ_SUBSCRIBE, "", 0) != 0 )
          throw(rogue::GeneralError("ZmqClient::ZmqClient","Failed to set socket subscribe"));
 
-   val = 0;
-   if ( zmq_setsockopt (this->zmqSub_, ZMQ_LINGER, &val, sizeof(int32_t)) != 0 ) 
-         throw(rogue::GeneralError("ZmqClient::ZmqClient","Failed to set socket linger"));
+   //val = 0;
+   //if ( zmq_setsockopt (this->zmqSub_, ZMQ_LINGER, &val, sizeof(int32_t)) != 0 ) 
+   //      throw(rogue::GeneralError("ZmqClient::ZmqClient","Failed to set socket linger"));
 
    if ( zmq_connect(this->zmqSub_,temp.c_str()) < 0 ) 
       throw(rogue::GeneralError::create("ZmqClient::ZmqClient",
@@ -86,12 +86,12 @@ rogue::interfaces::ZmqClient::ZmqClient (std::string addr, uint16_t port) {
    if ( zmq_setsockopt (this->zmqReq_, ZMQ_RCVTIMEO, &timeout_, sizeof(int32_t)) != 0 ) 
       throw(rogue::GeneralError("ZmqClient::ZmqClient","Failed to set socket timeout"));
 
-   val = 1;
-   if ( zmq_setsockopt (this->zmqReq_, ZMQ_REQ_CORRELATE, &val, sizeof(int32_t)) != 0 ) 
-      throw(rogue::GeneralError("ZmqClient::ZmqClient","Failed to set socket correlate"));
+   //val = 1;
+   //if ( zmq_setsockopt (this->zmqReq_, ZMQ_REQ_CORRELATE, &val, sizeof(int32_t)) != 0 ) 
+   //   throw(rogue::GeneralError("ZmqClient::ZmqClient","Failed to set socket correlate"));
 
-   if ( zmq_setsockopt (this->zmqReq_, ZMQ_REQ_RELAXED, &val, sizeof(int32_t)) != 0 ) 
-      throw(rogue::GeneralError("ZmqClient::ZmqClient","Failed to set socket relaxed"));
+   //if ( zmq_setsockopt (this->zmqReq_, ZMQ_REQ_RELAXED, &val, sizeof(int32_t)) != 0 ) 
+   //   throw(rogue::GeneralError("ZmqClient::ZmqClient","Failed to set socket relaxed"));
 
    val = 0;
    if ( zmq_setsockopt (this->zmqReq_, ZMQ_LINGER, &val, sizeof(int32_t)) != 0 ) 
@@ -112,12 +112,15 @@ rogue::interfaces::ZmqClient::~ZmqClient() {
 }
 
 void rogue::interfaces::ZmqClient::close() {
-   rogue::GilRelease noGil;
-   threadEn_ = false;
-   zmq_close(this->zmqSub_);
-   zmq_close(this->zmqReq_);
-   zmq_ctx_destroy(this->zmqCtx_);
-   thread_->join();
+   if ( threadEn_ ) {
+      rogue::GilRelease noGil;
+      threadEn_ = false;
+      zmq_close(this->zmqSub_);
+      zmq_close(this->zmqReq_);
+      //zmq_ctx_destroy(this->zmqCtx_);
+      zmq_term(this->zmqCtx_);
+      thread_->join();
+   }
 }
 
 

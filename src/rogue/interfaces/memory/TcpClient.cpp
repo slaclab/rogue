@@ -76,11 +76,12 @@ rim::TcpClient::TcpClient (std::string addr, uint16_t port) : rim::Slave(4,0xFFF
 
    this->bridgeLog_->debug("Creating response client port: %s",this->respAddr_.c_str());
 
-   opt = 0;
-   if ( zmq_setsockopt (this->zmqResp_, ZMQ_LINGER, &opt, sizeof(int32_t)) != 0 ) 
-         throw(rogue::GeneralError("memory::TcpClient::TcpClient","Failed to set socket linger"));
-   if ( zmq_setsockopt (this->zmqReq_, ZMQ_LINGER, &opt, sizeof(int32_t)) != 0 ) 
-         throw(rogue::GeneralError("memory::TcpClient::TcpClient","Failed to set socket linger"));
+   //opt = 0;
+   //if ( zmq_setsockopt (this->zmqResp_, ZMQ_LINGER, &opt, sizeof(int32_t)) != 0 ) 
+   //      throw(rogue::GeneralError("memory::TcpClient::TcpClient","Failed to set socket linger"));
+
+   //if ( zmq_setsockopt (this->zmqReq_, ZMQ_LINGER, &opt, sizeof(int32_t)) != 0 ) 
+   //      throw(rogue::GeneralError("memory::TcpClient::TcpClient","Failed to set socket linger"));
 
    if ( zmq_connect(this->zmqResp_,this->respAddr_.c_str()) < 0 )
       throw(rogue::GeneralError::create("memory::TcpClient::TcpClient",
@@ -108,11 +109,15 @@ rim::TcpClient::~TcpClient() {
 }
 
 void rim::TcpClient::close() {
-   threadEn_ = false;
-   zmq_close(this->zmqResp_);
-   zmq_close(this->zmqReq_);
-   zmq_ctx_destroy(this->zmqCtx_);
-   thread_->join();
+   if ( threadEn_ ) {
+      rogue::GilRelease noGil;
+      threadEn_ = false;
+      zmq_close(this->zmqResp_);
+      zmq_close(this->zmqReq_);
+      //zmq_ctx_destroy(this->zmqCtx_);
+      zmq_term(this->zmqCtx_);
+      thread_->join();
+   }
 }  
 
 //! Post a transaction

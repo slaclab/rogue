@@ -324,17 +324,24 @@ class BaseVariable(pr.Node):
         """
         self._log.debug("{}.set({})".format(self, value))
         try:
+            print("here1")
             if self._block is not None:
+                print("here2")
                 self._block.set(self, value)
+                print("here3")
 
                 if write:
+                    print("here4")
                     self._parent.writeBlocks(force=True, recurse=False, variable=self)
+                    print("here5")
                     self._parent.verifyBlocks(recurse=False, variable=self)
+                    print("here6")
                     self._parent.checkBlocks(recurse=False, variable=self)
+                    print("here7")
 
         except Exception as e:
             pr.logException(self._log,e)
-            self._log.error("Error setting value '{}' to variable '{}' with type {}".format(value,self.path,self.typeStr))
+            self._log.error("Error setting value '{}' to variable '{}' with type {}. Exception={}".format(value,self.path,self.typeStr,e))
 
     @pr.expose
     def post(self,value):

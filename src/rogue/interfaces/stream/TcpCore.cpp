@@ -71,11 +71,12 @@ ris::TcpCore::TcpCore (std::string addr, uint16_t port, bool server) {
    if ( zmq_setsockopt (this->zmqPush_, ZMQ_IMMEDIATE, &opt, sizeof(int32_t)) != 0 ) 
          throw(rogue::GeneralError("stream::TcpCore::TcpCore","Failed to set socket immediate"));
 
-   opt = 0;
-   if ( zmq_setsockopt (this->zmqPush_, ZMQ_LINGER, &opt, sizeof(int32_t)) != 0 ) 
-         throw(rogue::GeneralError("stream::TcpCore::TcpCore","Failed to set socket linger"));
-   if ( zmq_setsockopt (this->zmqPull_, ZMQ_LINGER, &opt, sizeof(int32_t)) != 0 ) 
-         throw(rogue::GeneralError("stream::TcpCore::TcpCore","Failed to set socket linger"));
+   //opt = 0;
+   //if ( zmq_setsockopt (this->zmqPush_, ZMQ_LINGER, &opt, sizeof(int32_t)) != 0 ) 
+   //      throw(rogue::GeneralError("stream::TcpCore::TcpCore","Failed to set socket linger"));
+
+   //if ( zmq_setsockopt (this->zmqPull_, ZMQ_LINGER, &opt, sizeof(int32_t)) != 0 ) 
+   //      throw(rogue::GeneralError("stream::TcpCore::TcpCore","Failed to set socket linger"));
 
    // Server mode
    if (server) {
@@ -129,11 +130,15 @@ ris::TcpCore::~TcpCore() {
 }
 
 void ris::TcpCore::close() {
-   threadEn_ = false;
-   zmq_close(this->zmqPull_);
-   zmq_close(this->zmqPush_);
-   zmq_ctx_destroy(this->zmqCtx_);
-   thread_->join();
+   if ( threadEn_ ) {
+      rogue::GilRelease noGil;
+      threadEn_ = false;
+      zmq_close(this->zmqPull_);
+      zmq_close(this->zmqPush_);
+      //zmq_ctx_destroy(this->zmqCtx_);
+      zmq_term(this->zmqCtx_);
+      thread_->join();
+   }
 }
 
 //! Accept a frame from master
