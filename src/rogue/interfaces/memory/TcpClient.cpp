@@ -109,21 +109,13 @@ rim::TcpClient::~TcpClient() {
 }
 
 void rim::TcpClient::close() {
-   printf("Client here 1\n");
    if ( threadEn_ ) {
-      printf("Client here 2\n");
       rogue::GilRelease noGil;
-      printf("Client here 3\n");
       threadEn_ = false;
-      printf("Client here 4\n");
       zmq_close(this->zmqResp_);
-      printf("Client here 5\n");
       zmq_close(this->zmqReq_);
-      printf("Client here 6\n");
       zmq_ctx_destroy(this->zmqCtx_);
-      printf("Client here 7\n");
       thread_->join();
-      printf("Client here 8\n");
    }
 }  
 

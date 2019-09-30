@@ -102,21 +102,13 @@ rim::TcpServer::~TcpServer() {
 }
 
 void rim::TcpServer::close() {
-   printf("Server here 1\n");
    if ( threadEn_ ) {
-      printf("Server here 2\n");
       rogue::GilRelease noGil;
-      printf("Server here 3\n");
       threadEn_ = false;
-      printf("Server here 4\n");
       zmq_close(this->zmqResp_);
-      printf("Server here 5\n");
       zmq_close(this->zmqReq_);
-      printf("Server here 6\n");
       zmq_ctx_destroy(this->zmqCtx_);
-      printf("Server here 7\n");
       thread_->join();
-      printf("Server here 8\n");
    }
 }
 
