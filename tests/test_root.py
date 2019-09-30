@@ -10,7 +10,7 @@ def test_root():
         # - a non-default poll value
         # - set the initRead to true
         # - set the initWrite to true
-        root.start(timeout=2.0, initRead=True, initWrite=True)
+        root.start(timeout=2.0, initRead=True, initWrite=True, serverPort=None)
 
 if __name__ == "__main__":
     test_root()
