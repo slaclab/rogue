@@ -115,7 +115,6 @@ void rim::TcpServer::close() {
       printf("Server here 6\n");
       zmq_ctx_destroy(this->zmqCtx_);
       printf("Server here 7\n");
-      //zmq_term(this->zmqCtx_);
       thread_->join();
       printf("Server here 8\n");
    }

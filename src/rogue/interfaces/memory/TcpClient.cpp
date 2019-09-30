@@ -122,7 +122,6 @@ void rim::TcpClient::close() {
       printf("Client here 6\n");
       zmq_ctx_destroy(this->zmqCtx_);
       printf("Client here 7\n");
-      //zmq_term(this->zmqCtx_);
       thread_->join();
       printf("Client here 8\n");
    }

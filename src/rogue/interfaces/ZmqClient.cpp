@@ -118,7 +118,6 @@ void rogue::interfaces::ZmqClient::close() {
       zmq_close(this->zmqSub_);
       zmq_close(this->zmqReq_);
       zmq_ctx_destroy(this->zmqCtx_);
-      //zmq_term(this->zmqCtx_);
       thread_->join();
    }
 }

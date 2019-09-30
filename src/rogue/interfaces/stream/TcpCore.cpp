@@ -136,7 +136,6 @@ void ris::TcpCore::close() {
       zmq_close(this->zmqPull_);
       zmq_close(this->zmqPush_);
       zmq_ctx_destroy(this->zmqCtx_);
-      //zmq_term(this->zmqCtx_);
       thread_->join();
    }
 }
