@@ -76,12 +76,12 @@ rim::TcpClient::TcpClient (std::string addr, uint16_t port) : rim::Slave(4,0xFFF
 
    this->bridgeLog_->debug("Creating response client port: %s",this->respAddr_.c_str());
 
-   //opt = 0;
-   //if ( zmq_setsockopt (this->zmqResp_, ZMQ_LINGER, &opt, sizeof(int32_t)) != 0 ) 
-   //      throw(rogue::GeneralError("memory::TcpClient::TcpClient","Failed to set socket linger"));
+   opt = 0;
+   if ( zmq_setsockopt (this->zmqResp_, ZMQ_LINGER, &opt, sizeof(int32_t)) != 0 ) 
+         throw(rogue::GeneralError("memory::TcpClient::TcpClient","Failed to set socket linger"));
 
-   //if ( zmq_setsockopt (this->zmqReq_, ZMQ_LINGER, &opt, sizeof(int32_t)) != 0 ) 
-   //      throw(rogue::GeneralError("memory::TcpClient::TcpClient","Failed to set socket linger"));
+   if ( zmq_setsockopt (this->zmqReq_, ZMQ_LINGER, &opt, sizeof(int32_t)) != 0 ) 
+         throw(rogue::GeneralError("memory::TcpClient::TcpClient","Failed to set socket linger"));
 
    if ( zmq_connect(this->zmqResp_,this->respAddr_.c_str()) < 0 )
       throw(rogue::GeneralError::create("memory::TcpClient::TcpClient",
@@ -114,8 +114,8 @@ void rim::TcpClient::close() {
       threadEn_ = false;
       zmq_close(this->zmqResp_);
       zmq_close(this->zmqReq_);
-      //zmq_ctx_destroy(this->zmqCtx_);
-      zmq_term(this->zmqCtx_);
+      zmq_ctx_destroy(this->zmqCtx_);
+      //zmq_term(this->zmqCtx_);
       thread_->join();
    }
 }  
@@ -274,11 +274,11 @@ void rim::TcpClient::runThread() {
                }
                std::memcpy(tran->begin(),zmq_msg_data(&(msg[4])), size);
             }
-            if ( strlen(result) > 0 ) tran->error(result);
+            if ( strcmp(result,"OK") != 0 ) tran->error(result);
             else tran->done();
             bridgeLog_->debug("Response for transaction id=%" PRIu32 ", addr=0x%" PRIx64
                               ", size=%" PRIu32 ", type=%" PRIu32 ", cnt=%" PRIu32
-                              ", port: %s", id,addr,size,type,msgCnt, this->respAddr_.c_str());
+                              ", port: %s, Result: (%s)", id,addr,size,type,msgCnt, this->respAddr_.c_str(),result);
          }
          for (x=0; x < msgCnt; x++) zmq_msg_close(&(msg[x]));
       }

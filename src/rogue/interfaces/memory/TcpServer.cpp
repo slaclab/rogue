@@ -69,12 +69,12 @@ rim::TcpServer::TcpServer (std::string addr, uint16_t port) {
 
    this->bridgeLog_->debug("Creating response client port: %s",this->respAddr_.c_str());
 
-   //opt = 0;
-   //if ( zmq_setsockopt (this->zmqResp_, ZMQ_LINGER, &opt, sizeof(int32_t)) != 0 ) 
-   //      throw(rogue::GeneralError("memory::TcpServer::TcpServer","Failed to set socket linger"));
+   opt = 0;
+   if ( zmq_setsockopt (this->zmqResp_, ZMQ_LINGER, &opt, sizeof(int32_t)) != 0 ) 
+         throw(rogue::GeneralError("memory::TcpServer::TcpServer","Failed to set socket linger"));
 
-   //if ( zmq_setsockopt (this->zmqReq_, ZMQ_LINGER, &opt, sizeof(int32_t)) != 0 ) 
-   //      throw(rogue::GeneralError("memory::TcpServer::TcpServer","Failed to set socket linger"));
+   if ( zmq_setsockopt (this->zmqReq_, ZMQ_LINGER, &opt, sizeof(int32_t)) != 0 ) 
+         throw(rogue::GeneralError("memory::TcpServer::TcpServer","Failed to set socket linger"));
 
    if ( zmq_bind(this->zmqResp_,this->respAddr_.c_str()) < 0 )
       throw(rogue::GeneralError::create("memory::TcpServer::TcpServer",
@@ -107,8 +107,8 @@ void rim::TcpServer::close() {
       threadEn_ = false;
       zmq_close(this->zmqResp_);
       zmq_close(this->zmqReq_);
-      //zmq_ctx_destroy(this->zmqCtx_);
-      zmq_term(this->zmqCtx_);
+      zmq_ctx_destroy(this->zmqCtx_);
+      //zmq_term(this->zmqCtx_);
       thread_->join();
    }
 }
@@ -188,10 +188,11 @@ void rim::TcpServer::runThread() {
             waitTransaction(0);
             result = getError();
 
-            bridgeLog_->debug("Done transaction id=%" PRIu32 ", addr=0x%" PRIx64 ", size=%" PRIu32 ", type=%" PRIu32 ", result=%s",id,addr,size,type,result.c_str());
+            bridgeLog_->debug("Done transaction id=%" PRIu32 ", addr=0x%" PRIx64 ", size=%" PRIu32 ", type=%" PRIu32 ", result=(%s)",id,addr,size,type,result.c_str());
 
-            // Result message
-            zmq_msg_init_size(&(msg[5]),4);
+            // Result message, at least one char needs to be sent
+            if ( result.length() == 0 ) result = "OK";
+            zmq_msg_init_size(&(msg[5]),result.length());
             std::memcpy(zmq_msg_data(&(msg[5])),result.c_str(), result.length());
 
             // Send message

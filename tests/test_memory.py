@@ -66,11 +66,11 @@ class DummyTree(pr.Root):
         self.sim = pr.interfaces.simulation.MemEmulate()
 
         # Create a memory gateway
-        self.ms = rogue.interfaces.memory.TcpServer("127.0.0.1",9020);
+        self.ms = rogue.interfaces.memory.TcpServer("127.0.0.1",9080);
         pr.busConnect(self.ms,self.sim)
 
         # Create a memory gateway
-        self.mc = rogue.interfaces.memory.TcpClient("127.0.0.1",9020);
+        self.mc = rogue.interfaces.memory.TcpClient("127.0.0.1",9080);
 
         # Add Device
         self.add(AxiVersion(memBase=self.mc,offset=0x0))
