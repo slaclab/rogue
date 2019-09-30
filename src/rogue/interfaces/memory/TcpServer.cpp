@@ -102,14 +102,22 @@ rim::TcpServer::~TcpServer() {
 }
 
 void rim::TcpServer::close() {
+   printf("Server here 1\n");
    if ( threadEn_ ) {
+      printf("Server here 2\n");
       rogue::GilRelease noGil;
+      printf("Server here 3\n");
       threadEn_ = false;
+      printf("Server here 4\n");
       zmq_close(this->zmqResp_);
+      printf("Server here 5\n");
       zmq_close(this->zmqReq_);
+      printf("Server here 6\n");
       zmq_ctx_destroy(this->zmqCtx_);
+      printf("Server here 7\n");
       //zmq_term(this->zmqCtx_);
       thread_->join();
+      printf("Server here 8\n");
    }
 }
 
@@ -148,10 +156,10 @@ void rim::TcpServer::runThread() {
                moreSize = 8;
                zmq_getsockopt(this->zmqReq_, ZMQ_RCVMORE, &more, &moreSize);
             } else more = 1;
-      } while ( threadEn_ && more );
+         } while ( threadEn_ && more );
 
          // Proper message received
-         if ( msgCnt == 4 || msgCnt == 5) {
+         if ( threadEn_ && (msgCnt == 4 || msgCnt == 5)) {
 
             // Check sizes
             if ( (zmq_msg_size(&(msg[0])) != 4) || (zmq_msg_size(&(msg[1])) != 8) ||

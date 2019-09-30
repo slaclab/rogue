@@ -225,7 +225,7 @@ void ris::TcpCore::runThread() {
       } while ( threadEn_ && more );
 
       // Proper message received
-      if ( msgCnt == 4 ) {
+      if ( threadEn_ && (msgCnt == 4) ) {
 
          // Check sizes
          if ( (zmq_msg_size(&(msg[0])) != 2) || (zmq_msg_size(&(msg[1])) != 1) ||
