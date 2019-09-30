@@ -87,12 +87,14 @@ rogue::interfaces::ZmqServer::~ZmqServer() {
 }
 
 void rogue::interfaces::ZmqServer::close() {
-   rogue::GilRelease noGil;
-   threadEn_ = false;
-   zmq_close(this->zmqPub_);
-   zmq_close(this->zmqRep_);
-   zmq_ctx_destroy(this->zmqCtx_);
-   thread_->join();
+   if ( threadEn_ ) {
+      rogue::GilRelease noGil;
+      threadEn_ = false;
+      zmq_close(this->zmqPub_);
+      zmq_close(this->zmqRep_);
+      zmq_ctx_destroy(this->zmqCtx_);
+      thread_->join();
+   }
 }
 
 bool rogue::interfaces::ZmqServer::tryConnect() {
@@ -132,6 +134,7 @@ bool rogue::interfaces::ZmqServer::tryConnect() {
    opt = 0;
    if ( zmq_setsockopt (this->zmqPub_, ZMQ_LINGER, &opt, sizeof(int32_t)) != 0 ) 
          throw(rogue::GeneralError("ZmqServer::tryConnect","Failed to set socket linger"));
+
    if ( zmq_setsockopt (this->zmqRep_, ZMQ_LINGER, &opt, sizeof(int32_t)) != 0 ) 
          throw(rogue::GeneralError("ZmqServer::tryConnect","Failed to set socket linger"));
 

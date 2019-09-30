@@ -74,6 +74,7 @@ ris::TcpCore::TcpCore (std::string addr, uint16_t port, bool server) {
    opt = 0;
    if ( zmq_setsockopt (this->zmqPush_, ZMQ_LINGER, &opt, sizeof(int32_t)) != 0 ) 
          throw(rogue::GeneralError("stream::TcpCore::TcpCore","Failed to set socket linger"));
+
    if ( zmq_setsockopt (this->zmqPull_, ZMQ_LINGER, &opt, sizeof(int32_t)) != 0 ) 
          throw(rogue::GeneralError("stream::TcpCore::TcpCore","Failed to set socket linger"));
 
@@ -129,11 +130,14 @@ ris::TcpCore::~TcpCore() {
 }
 
 void ris::TcpCore::close() {
-   threadEn_ = false;
-   zmq_close(this->zmqPull_);
-   zmq_close(this->zmqPush_);
-   zmq_ctx_destroy(this->zmqCtx_);
-   thread_->join();
+   if ( threadEn_ ) {
+      rogue::GilRelease noGil;
+      threadEn_ = false;
+      zmq_close(this->zmqPull_);
+      zmq_close(this->zmqPush_);
+      zmq_ctx_destroy(this->zmqCtx_);
+      thread_->join();
+   }
 }
 
 //! Accept a frame from master
@@ -220,7 +224,7 @@ void ris::TcpCore::runThread() {
       } while ( threadEn_ && more );
 
       // Proper message received
-      if ( msgCnt == 4 ) {
+      if ( threadEn_ && (msgCnt == 4) ) {
 
          // Check sizes
          if ( (zmq_msg_size(&(msg[0])) != 2) || (zmq_msg_size(&(msg[1])) != 1) ||

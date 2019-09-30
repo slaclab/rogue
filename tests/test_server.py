@@ -22,10 +22,11 @@ import test_device
 import time
 import rogue
 import pyrogue.protocols
-#import pyrogue.pydm
 import logging
 import math
 import numpy as np
+
+#import pyrogue.pydm
 
 #rogue.Logging.setFilter('pyrogue.epicsV3.Value',rogue.Logging.Debug)
 #rogue.Logging.setLevel(rogue.Logging.Debug)

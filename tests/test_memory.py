@@ -66,11 +66,11 @@ class DummyTree(pr.Root):
         self.sim = pr.interfaces.simulation.MemEmulate()
 
         # Create a memory gateway
-        self.ms = rogue.interfaces.memory.TcpServer("127.0.0.1",9020);
+        self.ms = rogue.interfaces.memory.TcpServer("127.0.0.1",9080);
         pr.busConnect(self.ms,self.sim)
 
         # Create a memory gateway
-        self.mc = rogue.interfaces.memory.TcpClient("127.0.0.1",9020);
+        self.mc = rogue.interfaces.memory.TcpClient("127.0.0.1",9080);
 
         # Add Device
         self.add(AxiVersion(memBase=self.mc,offset=0x0))
@@ -78,7 +78,7 @@ class DummyTree(pr.Root):
         # Start the tree with pyrogue server, internal nameserver, default interface
         # Set pyroHost to the address of a network interface to specify which nework to run on
         # set pyroNs to the address of a standalone nameserver (startPyrorNs.py)
-        self.start(timeout=2.0, pollEn=False)
+        self.start(timeout=2.0, pollEn=False, serverPort=None)
 
     def stop(self):
         self.ms.close()
@@ -88,7 +88,7 @@ class DummyTree(pr.Root):
 def test_memory():
 
     with DummyTree() as root:
-        time.sleep(1)
+        time.sleep(5)
 
         print("Writing 0x50 to scratchpad")
         root.AxiVersion.ScratchPad.set(0x50)
@@ -96,7 +96,7 @@ def test_memory():
         ret = root.AxiVersion.ScratchPad.get()
         print("Read {:#x} from scratchpad".format(ret))
 
-        time.sleep(1)
+        time.sleep(5)
 
         if ret != 0x50:
             raise AssertionError('Scratchpad Mismatch')

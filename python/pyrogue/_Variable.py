@@ -334,7 +334,7 @@ class BaseVariable(pr.Node):
 
         except Exception as e:
             pr.logException(self._log,e)
-            self._log.error("Error setting value '{}' to variable '{}' with type {}".format(value,self.path,self.typeStr))
+            self._log.error("Error setting value '{}' to variable '{}' with type {}. Exception={}".format(value,self.path,self.typeStr,e))
 
     @pr.expose
     def post(self,value):

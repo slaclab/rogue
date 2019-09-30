@@ -339,20 +339,18 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         self._pollQueue._start()
         self.PollEn.set(pollEn)
 
-        self._running = True
         self._heartbeat()
 
     def stop(self):
         """Stop the polling thread. Must be called for clean exit."""
         self._updateQueue.put(None)
+        while self._running: time.sleep(0.1)
 
         if self._pollQueue:
             self._pollQueue.stop()
 
         if self._zmqServer is not None:
             self._zmqServer.close()
-
-        self._running=False
 
     @property
     def serverPort(self):
@@ -725,12 +723,15 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         count = 0
         uvars = {}
 
+        self._running = True
+
         while True:
             ent = self._updateQueue.get()
 
             # Done
             if ent is None:
                 self._log.info("Stopping update thread")
+                self._running = False
                 return
 
             # Increment
