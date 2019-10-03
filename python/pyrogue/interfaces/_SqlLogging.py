@@ -16,6 +16,8 @@
 
 import pyrogue as pr
 import sqlalchemy
+import threading
+import queue
 
 class SqlLogger(object):
 
@@ -61,11 +63,11 @@ class SqlLogger(object):
 
     def logVariable(self, path, varValue):
         if self._conn is not None:
-            self._queue.put(varValue)
+            self._queue.put((path,varValue))
 
     def logSyslog(self, syslogData):
         if self._conn is not None:
-            self._queue.put(syslogData)
+            self._queue.put((None,syslogData))
 
     def stop(self):
         self._queue.put(None)
@@ -81,19 +83,21 @@ class SqlLogger(object):
             if self._conn is not None:
                 try:
 
-                    if isinstance(ent,pyrogue.VariableValue):
-                        ins = self._varTable.insert().values(path=path,
-                                                             enum=str(ent.enum),
-                                                             disp=ent.disp, 
-                                                             value=ent.valueDisp,
-                                                             severity=ent.severity, 
-                                                             status=ent.status)
+                    # Variable
+                    if ent[0] is not None:
+                        ins = self._varTable.insert().values(path=ent[0],
+                                                             enum=str(ent[1].enum),
+                                                             disp=ent[1].disp, 
+                                                             value=ent[1].valueDisp,
+                                                             severity=ent[1].severity, 
+                                                             status=ent[1].status)
+                    # Syslog
                     else:
-                        ins = self._logTable.insert().values(name=ent['name'], 
-                                                             message=ent['message'],
-                                                             exception=ent['exception'],
-                                                             levelName=ent['levelName'],
-                                                             levelNumber=ent['levelNumber'])
+                        ins = self._logTable.insert().values(name=ent[1]['name'], 
+                                                             message=ent[1]['message'],
+                                                             exception=ent[1]['exception'],
+                                                             levelName=ent[1]['levelName'],
+                                                             levelNumber=ent[1]['levelNumber'])
 
                     self._conn.execute(ins)
                 except Exception as e:
