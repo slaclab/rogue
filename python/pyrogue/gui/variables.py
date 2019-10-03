@@ -61,9 +61,11 @@ class VariableDev(QObject):
         if self._dummy is None or not self._widget.isExpanded():
             return
 
+        self.setUpdatesEnabled(False)
         self._widget.removeChild(self._dummy)
         self._dummy = None
         self.setup(True)
+        self.setUpdatesEnabled(True)
 
     def setup(self,noExpand):
 
