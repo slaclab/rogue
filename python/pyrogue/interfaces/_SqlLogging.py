@@ -24,7 +24,11 @@ class SqlLogger(object):
     def __init__(self, url):
         self._log = pr.logInit(cls=self,name="SqlLogger",path=None)
         self._url = url
-        self._conn = None
+        self._conn   = None
+        self._thread = None
+        self._queue  = queue.Queue()
+        self._thread = threading.Thread(target=self._worker)
+        self._thread.start()
 
         try:
             conn = sqlalchemy.create_engine(self._url)
@@ -58,9 +62,6 @@ class SqlLogger(object):
         self._logTable.create(conn, checkfirst=True)
         self._conn = conn
 
-        self._queue = queue.Queue()
-        self._thread = threading.Thread(target=self._worker)
-
     def logVariable(self, path, varValue):
         if self._conn is not None:
             self._queue.put((path,varValue))
@@ -70,6 +71,8 @@ class SqlLogger(object):
             self._queue.put((None,syslogData))
 
     def stop(self):
+        if not self._queue.empty():
+            print("Waiting for sql logger to finish...")
         self._queue.put(None)
         self._thread.join()
 
