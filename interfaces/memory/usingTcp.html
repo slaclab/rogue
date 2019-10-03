@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Using The TCP Bridge &mdash; Rogue v3.7.0-370-ga4b026d3 documentation</title>
+  <title>Using The TCP Bridge &mdash; Rogue v4.1.0-20-g29f03214 documentation</title>
   
 
   
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                v3.7.0
+                v4.1.0
               </div>
             
           
@@ -237,7 +237,7 @@ able to interface with either a Python or C++ client.</p>
 <span class="n">rogue</span><span class="o">::</span><span class="n">interfaces</span><span class="o">::</span><span class="n">memory</span><span class="o">::</span><span class="n">TcpServerPtr</span> <span class="n">tcp</span> <span class="o">=</span> <span class="n">rogue</span><span class="p">.</span><span class="n">interfaces</span><span class="p">.</span><span class="n">memory</span><span class="p">.</span><span class="n">TcpServer</span><span class="o">::</span><span class="n">create</span><span class="p">(</span><span class="s">&quot;*&quot;</span><span class="p">,</span><span class="mi">8000</span><span class="p">);</span>
 
 <span class="c1">// Connect the bus</span>
-<span class="n">busConnect</span><span class="p">(</span><span class="n">tcp</span><span class="p">,</span> <span class="n">srpv3</span><span class="p">);</span>
+<span class="n">rogueBusConnect</span><span class="p">(</span><span class="n">tcp</span><span class="p">,</span> <span class="n">srpv3</span><span class="p">);</span>
 </pre></div>
 </div>
 </div>
@@ -255,7 +255,7 @@ to interface with either a Python or C++ server.</p>
 <span class="n">rogue</span><span class="o">::</span><span class="n">interfaces</span><span class="o">::</span><span class="n">memory</span><span class="o">::</span><span class="n">TcpClientPtr</span> <span class="n">tcp</span> <span class="o">=</span> <span class="n">rogue</span><span class="o">::</span><span class="n">interfaces</span><span class="o">::</span><span class="n">memory</span><span class="o">::</span><span class="n">TcpClient</span><span class="o">::</span><span class="n">create</span><span class="p">(</span><span class="s">&quot;192.168.1.1&quot;</span><span class="p">,</span><span class="mi">8000</span><span class="p">);</span>
 
 <span class="c1">// Connect the bus</span>
-<span class="n">busConnect</span><span class="p">(</span><span class="n">mst</span><span class="p">,</span> <span class="n">tcp</span><span class="p">);</span>
+<span class="n">rogueBusConnect</span><span class="p">(</span><span class="n">mst</span><span class="p">,</span> <span class="n">tcp</span><span class="p">);</span>
 </pre></div>
 </div>
 </div>

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Using The AxiStreamDma Class &mdash; Rogue v3.7.0-370-ga4b026d3 documentation</title>
+  <title>Using The AxiStreamDma Class &mdash; Rogue v4.1.0-20-g29f03214 documentation</title>
   
 
   
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                v3.7.0
+                v4.1.0
               </div>
             
           
@@ -245,13 +245,13 @@ created in <a class="reference internal" href="../../interfaces/memory/master.ht
 <span class="n">rogue</span><span class="o">::</span><span class="n">protocols</span><span class="o">::</span><span class="n">srp</span><span class="o">::</span><span class="n">SrpV3Ptr</span> <span class="n">srp</span> <span class="o">=</span> <span class="n">rogue</span><span class="o">::</span><span class="n">protocols</span><span class="o">::</span><span class="n">srp</span><span class="o">::</span><span class="n">SrpV3</span><span class="o">::</span><span class="n">create</span><span class="p">();</span>
 
 <span class="c1">// Connect the SRP engine to the register DMA</span>
-<span class="n">streamConnectBiDir</span><span class="p">(</span><span class="n">regChan</span><span class="p">,</span> <span class="n">srp</span><span class="p">);</span>
+<span class="n">rogueStreamConnectBiDir</span><span class="p">(</span><span class="n">regChan</span><span class="p">,</span> <span class="n">srp</span><span class="p">);</span>
 
 <span class="c1">// Create a memory master</span>
 <span class="n">MyMemMasterPtr</span> <span class="n">memMast</span> <span class="o">=</span> <span class="n">MyMemMaster</span><span class="p">.</span><span class="n">create</span><span class="p">();</span>
 
 <span class="c1">// Connect memory master to SRP</span>
-<span class="n">busConnect</span><span class="p">(</span><span class="n">memMast</span><span class="p">,</span><span class="n">srp</span><span class="p">);</span>
+<span class="n">rogueBusConnect</span><span class="p">(</span><span class="n">memMast</span><span class="p">,</span><span class="n">srp</span><span class="p">);</span>
 
 <span class="c1">// Next attach to destination 1 for data traffic, ssi enabled</span>
 <span class="n">rogue</span><span class="o">::</span><span class="n">hardware</span><span class="o">::</span><span class="n">axi</span><span class="o">::</span><span class="n">AxiStreamDmaPtr</span> <span class="n">dataChan</span> <span class="o">=</span> <span class="n">rogue</span><span class="o">::</span><span class="n">hardware</span><span class="o">::</span><span class="n">axi</span><span class="o">::</span><span class="n">AxiStreamDma</span><span class="o">::</span><span class="n">create</span><span class="p">(</span><span class="s">&quot;/dev/datadev_0&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="nb">true</span><span class="p">);</span>
@@ -260,13 +260,13 @@ created in <a class="reference internal" href="../../interfaces/memory/master.ht
 <span class="n">MyCustomMasterPtr</span> <span class="n">myMast</span> <span class="o">=</span> <span class="n">MyCustomMaster</span><span class="o">::</span><span class="n">create</span><span class="p">();</span>
 
 <span class="c1">// Connect the master as data source to the DMA</span>
-<span class="n">streamConnect</span><span class="p">(</span><span class="n">myMast</span><span class="p">,</span> <span class="n">dataChan</span><span class="p">);</span>
+<span class="n">rogueStreamConnect</span><span class="p">(</span><span class="n">myMast</span><span class="p">,</span> <span class="n">dataChan</span><span class="p">);</span>
 
 <span class="c1">// Create a slave</span>
 <span class="n">MyCustomSlavePtr</span> <span class="n">mySlave</span> <span class="o">=</span> <span class="n">MyCustomSlave</span><span class="o">::</span><span class="n">create</span><span class="p">();</span>
 
 <span class="c1">// Connect the dma as data soruce to the slave</span>
-<span class="n">streamConnect</span><span class="p">(</span><span class="n">dataChan</span><span class="p">,</span> <span class="n">mySlave</span><span class="p">);</span>
+<span class="n">rogueStreamConnect</span><span class="p">(</span><span class="n">dataChan</span><span class="p">,</span> <span class="n">mySlave</span><span class="p">);</span>
 </pre></div>
 </div>
 </div>

@@ -64,10 +64,10 @@ Below is the equivalent code in C++
    rogue::interfaces::stream::FifoPtr fifo = rogue::interfaces::stream::Fifo::create(100, 0, true)
 
    // Connect the fifo to the source
-   streamConnect(src, fifo);
+   rogueStreamConnect(src, fifo);
 
    // Connect the destination to the fifo
-   streamConnect(fifo, dst);
+   rogueStreamConnect(fifo, dst);
 
 Stream Tap Fifo Example
 =======================
@@ -122,11 +122,11 @@ Below is the equivalent code in C++
    rogue::interfaces::stream::FifoPtr fifo = rogue::interfaces::stream::Fifo::create(150, 20, false)
 
    # Connect the src and dst
-   streamConnect(src, dst);
+   rogueStreamConnect(src, dst);
 
    # Add the Fifo as a stream tap
-   streamTap(src, fifo);
+   rogueStreamTap(src, fifo);
 
    # Connect the monitor to the FIfo output
-   streamConnect(fifo, mon)
+   rogueStreamConnect(fifo, mon)
 

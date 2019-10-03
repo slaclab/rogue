@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Connecting Memory Elements &mdash; Rogue v3.7.0-370-ga4b026d3 documentation</title>
+  <title>Connecting Memory Elements &mdash; Rogue v4.1.0-20-g29f03214 documentation</title>
   
 
   
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                v3.7.0
+                v4.1.0
               </div>
             
           
@@ -197,12 +197,12 @@
 <span class="c1">// the a SrpV3 gateway.</span>
 
 <span class="c1">// Connect masterA and masterB to hubA</span>
-<span class="n">busConnect</span><span class="p">(</span><span class="n">masterA</span><span class="p">,</span> <span class="n">hubA</span><span class="p">)</span>
-<span class="n">busConnect</span><span class="p">(</span><span class="n">masterB</span><span class="p">,</span> <span class="n">hubA</span><span class="p">)</span>
+<span class="n">rogueBusConnect</span><span class="p">(</span><span class="n">masterA</span><span class="p">,</span> <span class="n">hubA</span><span class="p">)</span>
+<span class="n">rogueBusConnect</span><span class="p">(</span><span class="n">masterB</span><span class="p">,</span> <span class="n">hubA</span><span class="p">)</span>
 
 <span class="c1">// Connect hubA and masterC to the srpV3 Slave</span>
-<span class="n">busConnect</span><span class="p">(</span><span class="n">hubA</span><span class="p">,</span> <span class="n">srpv3</span><span class="p">)</span>
-<span class="n">busConnect</span><span class="p">(</span><span class="n">masterC</span><span class="p">,</span> <span class="n">srpv3</span><span class="p">)</span>
+<span class="n">rogueBusConnect</span><span class="p">(</span><span class="n">hubA</span><span class="p">,</span> <span class="n">srpv3</span><span class="p">)</span>
+<span class="n">rogueBusConnect</span><span class="p">(</span><span class="n">masterC</span><span class="p">,</span> <span class="n">srpv3</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>

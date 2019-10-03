@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Using A Filter &mdash; Rogue v3.7.0-370-ga4b026d3 documentation</title>
+  <title>Using A Filter &mdash; Rogue v4.1.0-20-g29f03214 documentation</title>
   
 
   
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                v3.7.0
+                v4.1.0
               </div>
             
           
@@ -227,10 +227,10 @@ have a non zero error field. This may be a usefull utlility for non-channelized 
 <span class="n">MyCustomSlavePtr</span> <span class="n">dst</span> <span class="o">=</span> <span class="n">MyCustomSlave</span><span class="o">::</span><span class="n">create</span><span class="p">();</span>
 
 <span class="c1">// Connect the source to the filter</span>
-<span class="n">streamConnect</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">filt</span><span class="p">);</span>
+<span class="n">rogueStreamConnect</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">filt</span><span class="p">);</span>
 
 <span class="c1">// Connect the filter to the destination</span>
-<span class="n">streamConnect</span><span class="p">(</span><span class="n">filt</span><span class="p">,</span> <span class="n">dst</span><span class="p">);</span>
+<span class="n">rogueStreamConnect</span><span class="p">(</span><span class="n">filt</span><span class="p">,</span> <span class="n">dst</span><span class="p">);</span>
 
 <span class="n">src</span><span class="o">-&gt;</span><span class="n">open</span><span class="p">(</span><span class="s">&quot;MyDataFile.bin&quot;</span><span class="p">);</span>
 </pre></div>

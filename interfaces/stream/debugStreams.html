@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Debugging Streams &mdash; Rogue v3.7.0-370-ga4b026d3 documentation</title>
+  <title>Debugging Streams &mdash; Rogue v4.1.0-20-g29f03214 documentation</title>
   
 
   
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                v3.7.0
+                v4.1.0
               </div>
             
           
@@ -221,10 +221,10 @@ between an existing Master and Slave instance.</p>
 <span class="n">dbg</span><span class="o">-&gt;</span><span class="n">setDebug</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span><span class="s">&quot;myDebug&quot;</span><span class="p">);</span>
 
 <span class="cp"># Connect the src and dst</span>
-<span class="n">streamConnect</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">dst</span><span class="p">);</span>
+<span class="n">rogueStreamConnect</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">dst</span><span class="p">);</span>
 
 <span class="cp"># Add the debug slave as a tap</span>
-<span class="n">streamTap</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">dbg</span><span class="p">);</span>
+<span class="n">rogueStreamTap</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">dbg</span><span class="p">);</span>
 </pre></div>
 </div>
 </div>

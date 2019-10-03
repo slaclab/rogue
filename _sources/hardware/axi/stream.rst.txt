@@ -82,13 +82,13 @@ The equivelent code in C++ is show below:
    rogue::protocols::srp::SrpV3Ptr srp = rogue::protocols::srp::SrpV3::create();
 
    // Connect the SRP engine to the register DMA
-   streamConnectBiDir(regChan, srp);
+   rogueStreamConnectBiDir(regChan, srp);
 
    // Create a memory master
    MyMemMasterPtr memMast = MyMemMaster.create();
 
    // Connect memory master to SRP
-   busConnect(memMast,srp);
+   rogueBusConnect(memMast,srp);
 
    // Next attach to destination 1 for data traffic, ssi enabled
    rogue::hardware::axi::AxiStreamDmaPtr dataChan = rogue::hardware::axi::AxiStreamDma::create("/dev/datadev_0", 1, true);
@@ -97,11 +97,11 @@ The equivelent code in C++ is show below:
    MyCustomMasterPtr myMast = MyCustomMaster::create();
 
    // Connect the master as data source to the DMA
-   streamConnect(myMast, dataChan);
+   rogueStreamConnect(myMast, dataChan);
 
    // Create a slave
    MyCustomSlavePtr mySlave = MyCustomSlave::create();
 
    // Connect the dma as data soruce to the slave
-   streamConnect(dataChan, mySlave);
+   rogueStreamConnect(dataChan, mySlave);
 
