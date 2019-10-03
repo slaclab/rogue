@@ -323,6 +323,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
             self._sqlLog = pr.interfaces.SqlLogger(sqlUrl)
 
         # Start update thread
+        self._running = True
         self._updateThread = threading.Thread(target=self._updateWorker)
         self._updateThread.start()
 
@@ -343,14 +344,18 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
     def stop(self):
         """Stop the polling thread. Must be called for clean exit."""
+        self._running = False
         self._updateQueue.put(None)
-        while self._running: time.sleep(0.1)
+        self._updateThread.join()
 
         if self._pollQueue:
             self._pollQueue.stop()
 
         if self._zmqServer is not None:
             self._zmqServer.close()
+
+        if self._sqlLog is not None:
+            self._sqlLog.stop()
 
     @property
     def serverPort(self):
@@ -765,15 +770,12 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         count = 0
         uvars = {}
 
-        self._running = True
-
         while True:
             ent = self._updateQueue.get()
 
             # Done
             if ent is None:
                 self._log.info("Stopping update thread")
-                self._running = False
                 return
 
             # Increment

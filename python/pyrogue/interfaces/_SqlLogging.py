@@ -16,13 +16,19 @@
 
 import pyrogue as pr
 import sqlalchemy
+import threading
+import queue
 
 class SqlLogger(object):
 
     def __init__(self, url):
         self._log = pr.logInit(cls=self,name="SqlLogger",path=None)
         self._url = url
-        self._conn = None
+        self._conn   = None
+        self._thread = None
+        self._queue  = queue.Queue()
+        self._thread = threading.Thread(target=self._worker)
+        self._thread.start()
 
         try:
             conn = sqlalchemy.create_engine(self._url)
@@ -57,41 +63,50 @@ class SqlLogger(object):
         self._conn = conn
 
     def logVariable(self, path, varValue):
-        if self._conn is None:
-            return
-
-        try:
-            ins = self._varTable.insert().values(path=path,
-                                                 enum=str(varValue.enum),
-                                                 disp=varValue.disp, 
-                                                 value=varValue.valueDisp,
-                                                 severity=varValue.severity, 
-                                                 status=varValue.status)
-            self._conn.execute(ins)
-        except Exception as e:
-            self._conn = None
-            pr.logException(self._log,e)
-            self._log.error("Lost database connection to {}".format(self._url))
+        if self._conn is not None:
+            self._queue.put((path,varValue))
 
     def logSyslog(self, syslogData):
-        if self._conn is None:
-            return
+        if self._conn is not None:
+            self._queue.put((None,syslogData))
 
-        try:
-            ins = self._logTable.insert().values(name=syslogData['name'], 
-                                                 message=syslogData['message'],
-                                                 exception=syslogData['exception'],
-                                                 levelName=syslogData['levelName'],
-                                                 levelNumber=syslogData['levelNumber'])
+    def stop(self):
+        if not self._queue.empty():
+            print("Waiting for sql logger to finish...")
+        self._queue.put(None)
+        self._thread.join()
 
-            self._conn.execute(ins)
+    def _worker(self):
+        while True:
+            ent = self._queue.get()
 
-        except Exception as e:
-            print("-----------Error Storing Syslog To DB --------------------")
-            print("Lost database connection to {}".format(self._url))
-            print("Error: {}".format(e))
-            print("----------------------------------------------------------")
-            self._conn = None
+            # Done
+            if ent is None: return
+
+            if self._conn is not None:
+                try:
+
+                    # Variable
+                    if ent[0] is not None:
+                        ins = self._varTable.insert().values(path=ent[0],
+                                                             enum=str(ent[1].enum),
+                                                             disp=ent[1].disp, 
+                                                             value=ent[1].valueDisp,
+                                                             severity=ent[1].severity, 
+                                                             status=ent[1].status)
+                    # Syslog
+                    else:
+                        ins = self._logTable.insert().values(name=ent[1]['name'], 
+                                                             message=ent[1]['message'],
+                                                             exception=ent[1]['exception'],
+                                                             levelName=ent[1]['levelName'],
+                                                             levelNumber=ent[1]['levelNumber'])
+
+                    self._conn.execute(ins)
+                except Exception as e:
+                    self._conn = None
+                    pr.logException(self._log,e)
+                    self._log.error("Lost database connection to {}".format(self._url))
 
 
 class SqlReader(object):
