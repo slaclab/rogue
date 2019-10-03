@@ -33,7 +33,12 @@ class MemoryDevice(pr.Device):
         )
 
         self._lockCnt = 0
-        self._base = base
+
+        if isinstance(base, pr.Model):
+            self._base = base
+        else:
+            self._base = base(wordBitSize)
+
         self._wordBitSize = wordBitSize
         self._stride = stride
         self._verify = verify
@@ -64,7 +69,7 @@ class MemoryDevice(pr.Device):
             data = self._rawTxnChunker(offset=offset, data=None, base=self._base, stride=self._stride, wordBitSize=self._wordBitSize, txnType=rim.Read, numWords=numWords)
             self._waitTransaction(0)
             self._clearError()
-            return [self._base.fromBytes(data[i:i+self._stride], self._wordBitSize)
+            return [self._base.fromBytes(data[i:i+self._stride])
                     for i in range(0, len(data), self._stride)]
 
 
@@ -72,7 +77,7 @@ class MemoryDevice(pr.Device):
         # Parse comma separated values at each offset (key) in d
         with self._memLock:
             for offset, values in d.items():
-                self._setValues[offset] = [self._base.fromString(s, self._wordBitSize) for s in values.split(',')]
+                self._setValues[offset] = [self._base.fromString(s) for s in values.split(',')]
 
     def _getDict(self,modes,incGroups,excGroups):
         return None
@@ -117,7 +122,7 @@ class MemoryDevice(pr.Device):
             # Can't do this until waitTransaction is done
             checkValues = odict()
             for offset, ba in self._verValues.items():
-                checkValues[offset] = [self._base.fromBytes(ba[i:i+self._stride], self._wordBitSize)
+                checkValues[offset] = [self._base.fromBytes(ba[i:i+self._stride])
                                        for i in range(0, len(ba), self._stride)]
 
             # Do verify if necessary

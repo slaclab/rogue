@@ -60,10 +60,10 @@ Below is the equivalent code in C++
    MyCustomSlavePtr dst = MyCustomSlave::create();
 
    // Connect the source to the filter
-   streamConnect(src, filt);
+   rogueStreamConnect(src, filt);
 
    // Connect the filter to the destination
-   streamConnect(filt, dst);
+   rogueStreamConnect(filt, dst);
 
    src->open("MyDataFile.bin");
 

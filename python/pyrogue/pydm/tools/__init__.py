@@ -1,3 +1,9 @@
+#!/usr/bin/env python
+#-----------------------------------------------------------------------------
+# Title      : PyRogue PyDM tools directory
+#-----------------------------------------------------------------------------
+# File       : pyrogue/pydm/tools/__init__.py
+# Created    : 2019-09-18
 #-----------------------------------------------------------------------------
 # This file is part of the rogue software platform. It is subject to 
 # the license terms in the LICENSE.txt file found in the top-level directory 
@@ -7,9 +13,3 @@
 # copied, modified, propagated, or distributed except according to the terms 
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
-
-from pydm.widgets.qtplugin_base import qtplugin_factory
-
-from pyrogue.pydm.customwidgets.displays.rogue_widgets import RogueWidget
-
-ROGUEWidget = qtplugin_factory(RogueWidget, group="Rogue Widgets")

@@ -68,6 +68,10 @@ rogue::interfaces::ZmqClient::ZmqClient (std::string addr, uint16_t port) {
    if ( zmq_setsockopt (this->zmqSub_, ZMQ_SUBSCRIBE, "", 0) != 0 )
          throw(rogue::GeneralError("ZmqClient::ZmqClient","Failed to set socket subscribe"));
 
+   val = 0;
+   if ( zmq_setsockopt (this->zmqSub_, ZMQ_LINGER, &val, sizeof(int32_t)) != 0 ) 
+         throw(rogue::GeneralError("ZmqClient::ZmqClient","Failed to set socket linger"));
+
    if ( zmq_connect(this->zmqSub_,temp.c_str()) < 0 ) 
       throw(rogue::GeneralError::create("ZmqClient::ZmqClient",
                "Failed to connect to port %i at address %s",port,addr.c_str()));
@@ -89,6 +93,10 @@ rogue::interfaces::ZmqClient::ZmqClient (std::string addr, uint16_t port) {
    if ( zmq_setsockopt (this->zmqReq_, ZMQ_REQ_RELAXED, &val, sizeof(int32_t)) != 0 ) 
       throw(rogue::GeneralError("ZmqClient::ZmqClient","Failed to set socket relaxed"));
 
+   val = 0;
+   if ( zmq_setsockopt (this->zmqReq_, ZMQ_LINGER, &val, sizeof(int32_t)) != 0 ) 
+         throw(rogue::GeneralError("ZmqClient::ZmqClient","Failed to set socket linger"));
+
    if ( zmq_connect(this->zmqReq_,temp.c_str()) < 0 ) 
       throw(rogue::GeneralError::create("ZmqClient::ZmqClient",
                "Failed to connect to port %i at address %s",port+1,addr.c_str()));
@@ -100,16 +108,20 @@ rogue::interfaces::ZmqClient::ZmqClient (std::string addr, uint16_t port) {
 }
 
 rogue::interfaces::ZmqClient::~ZmqClient() {
-   rogue::GilRelease noGil;
-   //threadEn_ = false;
-   //thread_->join();
-
-   threadEn_ = false;
-   zmq_close(this->zmqSub_);
-   zmq_close(this->zmqReq_);
-   zmq_term(this->zmqCtx_);
-   thread_->join();
+   this->close();
 }
+
+void rogue::interfaces::ZmqClient::close() {
+   if ( threadEn_ ) {
+      rogue::GilRelease noGil;
+      threadEn_ = false;
+      zmq_close(this->zmqSub_);
+      zmq_close(this->zmqReq_);
+      zmq_ctx_destroy(this->zmqCtx_);
+      thread_->join();
+   }
+}
+
 
 void rogue::interfaces::ZmqClient::setTimeout(uint32_t msecs) {
    timeout_ = msecs;

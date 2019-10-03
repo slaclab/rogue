@@ -34,10 +34,10 @@ The equivelent code in C++ is show below:
    // the a SrpV3 gateway.
 
    // Connect masterA and masterB to hubA
-   busConnect(masterA, hubA)
-   busConnect(masterB, hubA)
+   rogueBusConnect(masterA, hubA)
+   rogueBusConnect(masterB, hubA)
 
    // Connect hubA and masterC to the srpV3 Slave
-   busConnect(hubA, srpv3)
-   busConnect(masterC, srpv3)
+   rogueBusConnect(hubA, srpv3)
+   rogueBusConnect(masterC, srpv3)
 

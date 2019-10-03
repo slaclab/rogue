@@ -22,6 +22,7 @@ import inspect
 import threading
 import re
 import time
+import numpy
 from collections import OrderedDict as odict
 from collections import Iterable
 
@@ -134,7 +135,7 @@ class BaseVariable(pr.Node):
         self._block         = None
         self._pollInterval  = pollInterval
         self._nativeType    = None
-        self.__listeners    = []
+        self._listeners     = []
         self.__functions    = []
         self.__dependencies = []
 
@@ -199,11 +200,14 @@ class BaseVariable(pr.Node):
     @pr.expose
     @property
     def precision(self):
-        res = re.search(r':([0-9])\.([0-9]*)f',self._disp) 
-        try:
-            return res[2]
-        except:
-            return 3
+        if 'ndarray' in self.typeStr or 'Float' in self.typeStr or self.typeStr == 'float':
+            res = re.search(r':([0-9])\.([0-9]*)f',self._disp) 
+            try:
+                return int(res[2])
+            except:
+                return 3
+        else:
+            return 0
 
     @pr.expose
     @property
@@ -299,8 +303,8 @@ class BaseVariable(pr.Node):
         The variable and value class are passed as an arg: func(path,varValue)
         """
         if isinstance(listener, BaseVariable):
-            if listener not in self.__listeners:
-                self.__listeners.append(listener)
+            if listener not in self._listeners:
+                self._listeners.append(listener)
         else:
             if listener not in self.__functions:
                 self.__functions.append(listener)
@@ -330,7 +334,7 @@ class BaseVariable(pr.Node):
 
         except Exception as e:
             pr.logException(self._log,e)
-            self._log.error("Error setting value '{}' to variable '{}' with type {}".format(value,self.path,self.typeStr))
+            self._log.error("Error setting value '{}' to variable '{}' with type {}. Exception={}".format(value,self.path,self.typeStr,e))
 
     @pr.expose
     def post(self,value):
@@ -398,7 +402,9 @@ class BaseVariable(pr.Node):
                     self._log.error("Invalid enum value {} in variable '{}'".format(value,self.path))
                     ret = 'INVALID: {:#x}'.format(value)
             else:
-                if value == '' or value is None:
+                if self.typeStr == 'ndarray':
+                    ret = str(value)
+                elif (value == '' or value is None):
                     ret = value
                 else:
                     ret = self.disp.format(value)
@@ -452,6 +458,20 @@ class BaseVariable(pr.Node):
             self._log.error("Error setting value '{}' to variable '{}' with type {}".format(sValue,self.path,self.typeStr))
 
     @pr.expose
+    def write(self):
+        """
+        Force a write of the variable.
+        """
+        try:
+            if self._block is not None:
+                self._parent.writeBlocks(force=True, recurse=False, variable=self)
+                self._parent.verifyBlocks(recurse=False, variable=self)
+                self._parent.checkBlocks(recurse=False, variable=self)
+
+        except Exception as e:
+            pr.logException(self._log,e)
+
+    @pr.expose
     def nativeType(self):
         if self._nativeType is None:
             self._nativeType = type(self.value())
@@ -484,7 +504,7 @@ class BaseVariable(pr.Node):
     def _queueUpdate(self):
         self._root._queueUpdates(self)
 
-        for var in self.__listeners:
+        for var in self._listeners:
             var._queueUpdate()
 
     def _doUpdate(self):
@@ -557,7 +577,7 @@ class RemoteVariable(BaseVariable):
                               highWarning=highWarning, highAlarm=highAlarm,
                               pollInterval=pollInterval)
 
-        self._base     = base        
+            
         self._block    = None
 
         # Convert the address parameters into lists
@@ -580,11 +600,16 @@ class RemoteVariable(BaseVariable):
         bitOffset = [x+((y-baseAddr)*8) for x,y in zip(bitOffset, offset)]
         offset = baseAddr
 
+        if isinstance(base, pr.Model):
+            self._base = base
+        else:
+            self._base = base(sum(bitSize))
+
         self._offset    = offset
         self._bitSize   = bitSize
         self._bitOffset = bitOffset
         self._verify    = verify
-        self._typeStr   = base.name(sum(bitSize))
+        self._typeStr   = self._base.name
         self._bytes     = int(math.ceil(float(self._bitOffset[-1] + self._bitSize[-1]) / 8.0))
         self._overlapEn = overlapEn
 
@@ -637,7 +662,7 @@ class RemoteVariable(BaseVariable):
             if self.disp == 'enum':
                 return self.revEnum[sValue]
             else:
-                return self._base.fromString(sValue, sum(self._bitSize))
+                return self._base.fromString(sValue)
             
     def _setDefault(self):
         if self._default is not None:
@@ -823,46 +848,17 @@ class LinkVariable(BaseVariable):
 # Function helper
 def varFuncHelper(func,pargs,log,path):
 
-    if not callable(func):
-        log.warning("Using deprecated eval string. Please change to function: {}".format(path))
+    try:
+        # Function args
+        fargs = inspect.getfullargspec(func).args + \
+                inspect.getfullargspec(func).kwonlyargs 
 
-        dev   = None
-        var   = None
-        cmd   = None
-        arg   = None
-        value = 0
+        # Build overlapping arg list
+        args = {k:pargs[k] for k in fargs if k is not 'self' and k in pargs}
 
-        if 'dev' in pargs:
-            dev = pargs['dev']
+    # handle c++ functions, no args supported for now
+    except:
+        args = {}
 
-        if 'var' in pargs:
-            var = pargs['var']
-
-        if 'cmd' in pargs:
-            cmd = pargs['cmd']
-
-        if 'arg' in pargs:
-            arg = pargs['arg']
-
-        ns = locals()
-        exec(textwrap.dedent(func),ns)
-        value = ns['value']
-        return value
-
-    else:
-
-        # Python functions
-        try:
-            # Function args
-            fargs = inspect.getfullargspec(func).args + \
-                    inspect.getfullargspec(func).kwonlyargs 
-
-            # Build overlapping arg list
-            args = {k:pargs[k] for k in fargs if k is not 'self' and k in pargs}
-
-        # handle c++ functions, no args supported for now
-        except:
-            args = {}
-
-        return func(**args)
+    return func(**args)
 

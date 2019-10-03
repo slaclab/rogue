@@ -62,6 +62,8 @@ namespace rogue {
 
             std::string send(std::string value);
 
+            void close();
+
             virtual void doUpdate (std::string data);
 
 

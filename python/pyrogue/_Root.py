@@ -30,6 +30,7 @@ import jsonpickle
 import zipfile
 import traceback
 import gzip
+import datetime
 from contextlib import contextmanager
 
 SystemLogInit = '[]'
@@ -41,6 +42,9 @@ class RootLogHandler(logging.Handler):
         self._root = root
 
     def emit(self,record):
+
+        if not self._root.running: return
+
         with self._root.updateGroup():
            try:
                 se = { 'created'     : record.created,
@@ -119,8 +123,9 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         self._pollQueue = self._pollQueue = pr.PollQueue(root=self)
 
         # Zeromq server
-        self._zmqServer = None
-        self._structure = ""
+        self._zmqServer  = None
+        self._structure  = ""
+        self._serverPort = None
 
         # List of variable listeners
         self._varListeners  = []
@@ -153,11 +158,11 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
             description='Configuration Flag To Execute Initialize after LoadConfig or setYaml'))
 
         self.add(pr.LocalVariable(name='Time', value=0.0, mode='RO', hidden=True,
-                 localGet=lambda: time.time(), pollInterval=1.0, description='Current Time In Seconds Since EPOCH UTC'))
+                 description='Current Time In Seconds Since EPOCH UTC'))
 
-        self.add(pr.LocalVariable(name='LocalTime', value='', mode='RO', groups=['NoStream','NoSql','NoState'],
-                 localGet=lambda: time.strftime("%Y-%m-%d %H:%M:%S %Z", time.localtime(time.time())),
-                 pollInterval=1.0, description='Local Time'))
+        self.add(pr.LinkVariable(name='LocalTime', value='', mode='RO', groups=['NoStream','NoSql','NoState'],
+                 linkedGet=lambda: time.strftime("%Y-%m-%d %H:%M:%S %Z", time.localtime(self.Time.value())),
+                 dependencies=[self.Time], description='Local Time'))
 
         self.add(pr.LocalVariable(name='PollEn', value=False, mode='RW',groups=['NoStream','NoSql','NoState'],
                                   localSet=lambda value: self._pollQueue.pause(not value),
@@ -244,13 +249,12 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         self.add(pr.LocalCommand(name='Exit', function=self._exit,
                                  description='Exit the server application'))
 
-    def start(self, 
+    def start(self, *,
               timeout=1.0,
               initRead=False,
               initWrite=False,
               pollEn=True,
-              zmqPort=None,
-              serverPort=None,
+              serverPort=0,  # 9099 is the default, 0 for auto
               sqlUrl=None,
               streamIncGroups=None,
               streamExcGroups=['NoStream'],
@@ -293,39 +297,33 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                (tmpList[i].address < (tmpList[i-1].address + tmpList[i-1].size)):
 
                 # Allow overlaps between Devices and Blocks if the Device is an ancestor of the Block and the block allows overlap.
-                if not (isinstance(tmpList[i-1],pr.Device) and isinstance(tmpList[i],pr.BaseBlock) and \
-                        (tmpList[i].path.find(tmpList[i-1].path) == 0 and tmpList[i]._overlapEn)):
+                # Check for instances when device comes before block and when block comes before device 
+                if (not (isinstance(tmpList[i-1],pr.Device) and isinstance(tmpList[i],pr.BaseBlock) and \
+                         (tmpList[i].path.find(tmpList[i-1].path) == 0 and tmpList[i]._overlapEn))) and \
+                   (not (isinstance(tmpList[i],pr.Device) and isinstance(tmpList[i-1],pr.BaseBlock) and \
+                        (tmpList[i-1].path.find(tmpList[i].path) == 0 and tmpList[i-1]._overlapEn))):
 
-                    print("\n\n\n------------------------ Memory Overlap Warning !!! --------------------------------")
-                    print("{} at address={:#x} overlaps {} at address={:#x} with size={}".format(
-                          tmpList[i].path,tmpList[i].address,
-                          tmpList[i-1].path,tmpList[i-1].address,tmpList[i-1].size))
-                    print("This warning will be replaced with an exception in the next release!!!!!!!!")
-
-                    #raise pr.NodeError("{} at address={:#x} overlaps {} at address={:#x} with size={}".format(
-                    #                   tmpList[i].name,tmpList[i].address,
-                    #                   tmpList[i-1].name,tmpList[i-1].address,tmpList[i-1].size))
+                    raise pr.NodeError("{} at address={:#x} overlaps {} at address={:#x} with size={}".format(
+                                       tmpList[i].name,tmpList[i].address,
+                                       tmpList[i-1].name,tmpList[i-1].address,tmpList[i-1].size))
 
         # Set timeout if not default
         if timeout != 1.0:
             for key,value in self._nodes.items():
                 value._setTimeout(timeout)
 
-        # Start ZMQ server if enabled
-        if zmqPort is not None:
-            self._log.warning("zmqPort arg is deprecated. Please use serverPort arg instead")
-            serverPort = zmqPort
-
-        # Start server
+        # Server Start
         if serverPort is not None:
-            self._structure = jsonpickle.encode(self)
-            self._zmqServer = pr.interfaces.ZmqServer(root=self,addr="*",port=serverPort)
+            self._zmqServer  = pr.interfaces.ZmqServer(root=self,addr="*",port=serverPort)
+            self._serverPort = self._zmqServer.port()
+            self._structure  = jsonpickle.encode(self)
 
         # Start sql interface
         if sqlUrl is not None:
             self._sqlLog = pr.interfaces.SqlLogger(sqlUrl)
 
         # Start update thread
+        self._running = True
         self._updateThread = threading.Thread(target=self._updateWorker)
         self._updateThread.start()
 
@@ -342,19 +340,29 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         self._pollQueue._start()
         self.PollEn.set(pollEn)
 
-        self._running = True
+        self._heartbeat()
 
     def stop(self):
         """Stop the polling thread. Must be called for clean exit."""
+        self._running = False
         self._updateQueue.put(None)
+        self._updateThread.join()
 
         if self._pollQueue:
             self._pollQueue.stop()
 
         if self._zmqServer is not None:
-            self._zmqServer = None
+            self._zmqServer.close()
 
-        self._running=False
+        if self._sqlLog is not None:
+            self._sqlLog.stop()
+
+    @property
+    def serverPort(self):
+        return self._serverPort
+
+    def updatePickle(self):
+        self._structure = jsonpickle.encode(self)
 
     @pr.expose
     @property
@@ -496,16 +504,17 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         except Exception as e:
             pr.logException(self._log,e)
 
+    def _heartbeat(self):
+        if self._running:
+            threading.Timer(1.0,self._heartbeat).start()
+            self.Time.set(time.time())
+
     def _exit(self):
-        print("Stopping Rogue root")
         self.stop()
-        print("Exiting application")
         exit()
 
     def _restart(self):
-        print("Stopping Rogue root")
         self.stop()
-        print("Restarting application")
         py = sys.executable
         os.execl(py, py, *sys.argv)
 
@@ -569,7 +578,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
     def _read(self):
         """Read all blocks"""
         self._log.info("Start root read")
-        with self.updateGroup():
+        with self.pollBlock(), self.updateGroup():
             try:
                 self.readBlocks(recurse=True)
                 self._log.info("Check root read")
@@ -605,6 +614,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
         return True
 
+
     def loadYaml(self,name,writeEach,modes,incGroups,excGroups):
         """Load YAML configuration from a file. Called from command"""
 
@@ -626,23 +636,64 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         # Iterate through raw list and look for directories
         for rl in rawlst:
 
+            # Name ends with .yml or .yaml
+            if rl[-4:] == '.yml' or rl[-5:] == '.yaml': 
+                lst.append(rl)
+
+            # Entry is a zip file directory
+            elif '.zip' in rl:
+                base = rl.split('.zip')[0] + '.zip'
+                sub = rl.split('.zip')[1][1:]
+
+                # Open zipfile
+                with zipfile.ZipFile(base, 'r') as myzip:
+
+                    # Check if passed name is a directory, otherwise generate an error
+                    if not any(x.startswith("%s/" % sub.rstrip("/")) for x in myzip.namelist()):
+                        self._log.error("loadYaml: Invalid load file: {}, must be a directory or end in .yml or .yaml".format(rl))
+
+                    else:
+
+                        # Iterate through directory contents
+                        for zfn in myzip.namelist():
+
+                            # Filter by base directory
+                            if zfn.find(sub) == 0:
+                                spt = zfn.split('%s/' % sub.rstrip('/'))[1]
+
+                                # Entry ends in .yml or *.yml and is in current directory 
+                                if not '/' in spt and (spt[-4:] == '.yml' or spt[-5:] == '.yaml'): 
+                                    lst.append(base + '/' + zfn)
+
             # Entry is a directory
-            if os.path.isdir(rl):
+            elif os.path.isdir(rl):
                 dlst = glob.glob('{}/*.yml'.format(rl))
                 dlst.extend(glob.glob('{}/*.yaml'.format(rl)))
                 lst.extend(sorted(dlst))
 
-            # Otherise assume it is a file
-            else:
-                lst.append(rl)
+            # Not a zipfile, not a directory and does not end in .yml
+            else: 
+                self._log.error("loadYaml: Invalid load file: {}, must be a directory or end in .yml or .yaml".format(rl))
 
+        # Read each file
         try:
             with self.pollBlock(), self.updateGroup():
                 for fn in lst:
                     self._log.debug("loadYaml: loading {}".format(fn))
-                    with open(fn,'r') as f:
-                        d = yamlToData(f.read())
-                        self._setDictRoot(d=d,writeEach=writeEach,modes=modes,incGroups=incGroups,excGroups=excGroups)
+
+                    if '.zip' in fn:
+                        base = fn.split('.zip')[0] + '.zip'
+                        sub = fn.split('.zip')[1][1:] # Strip leading '/'
+
+                        with zipfile.ZipFile(base, 'r') as myzip:
+                            with myzip.open(sub) as myfile:
+                                d = yamlToData(myfile.read())
+
+                    else:
+                        with open(fn,'r') as f:
+                            d = yamlToData(f.read())
+
+                    self._setDictRoot(d=d,writeEach=writeEach,modes=modes,incGroups=incGroups,excGroups=excGroups)
 
                 if not writeEach: self._write()
 
@@ -756,7 +807,8 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                             strm[p] = val
 
                         # Add to zmq publish
-                        zmq[p] = val
+                        if not v.inGroup('NoServe'):
+                            zmq[p] = val
 
                         # Call listener functions,
                         with self._varListenLock:

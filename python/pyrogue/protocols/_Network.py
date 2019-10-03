@@ -24,17 +24,17 @@ import time
 
 class UdpRssiPack(pr.Device):
 
-    def __init__(self,*,host,port,size=None, jumbo=False, wait=True, packVer=1, pollInterval=1, enSsi=True, **kwargs):
+    def __init__(self,*, port, host='127.0.0.1', jumbo=False, wait=True, packVer=1, pollInterval=1, enSsi=True, server=False, **kwargs):
         super(self.__class__, self).__init__(**kwargs)
         self._host = host
         self._port = port
 
-        if size is not None:
-            self._log.critical("Size arg is deprecated. Use jumbo arg instead")
-
-        self._udp  = rogue.protocols.udp.Client(host,port,jumbo)
-
-        self._rssi = rogue.protocols.rssi.Client(self._udp.maxPayload())
+        if server:
+            self._udp  = rogue.protocols.udp.Server(port,jumbo)
+            self._rssi = rogue.protocols.rssi.Server(self._udp.maxPayload())
+        else:
+            self._udp  = rogue.protocols.udp.Client(host,port,jumbo)
+            self._rssi = rogue.protocols.rssi.Client(self._udp.maxPayload())
 
         if packVer == 2:
             self._pack = rogue.protocols.packetizer.CoreV2(False,True,enSsi) # ibCRC = False, obCRC = True
@@ -49,16 +49,25 @@ class UdpRssiPack(pr.Device):
 
         self._rssi.start()
 
-        if wait:
+        if wait and not server:
             curr = int(time.time())
             last = curr
+            cnt = 0
 
             while not self._rssi.getOpen():
                 time.sleep(.0001)
                 curr = int(time.time())
                 if last != curr:
-                    self._log.warning("host=%s, port=%d -> Establishing link ..." % (host,port))
                     last = curr
+
+                    if jumbo: cnt += 1
+
+                    if cnt < 10:
+                        self._log.warning("host=%s, port=%d -> Establishing link ..." % (host,port))
+
+                    else:
+                        self._log.warning("host=%s, port=%d -> Failing to connect using jumbo frames! Be sure to check interface MTU settings with ifconig -a" % (host,port))
+
 
         self._udp.setRxBufferCount(self._rssi.curMaxBuffers());
 
@@ -137,7 +146,7 @@ class UdpRssiPack(pr.Device):
         self.add(pr.LocalVariable(
             name        = 'locTryPeriod',
             mode        = 'RW', 
-            value       = 0,
+            value       = self._rssi.getLocTryPeriod(),
             typeStr     = 'UInt32',
             localGet    = lambda: self._rssi.getLocTryPeriod(),
             localSet    = lambda value: self._rssi.setLocTryPeriod(value)
@@ -146,7 +155,7 @@ class UdpRssiPack(pr.Device):
         self.add(pr.LocalVariable(
             name        = 'locMaxBuffers',
             mode        = 'RW', 
-            value       = 0,
+            value       = self._rssi.getLocMaxBuffers(),
             typeStr     = 'UInt8',
             localGet    = lambda: self._rssi.getLocMaxBuffers(),
             localSet    = lambda value: self._rssi.setLocMaxBuffers(value)
@@ -155,7 +164,7 @@ class UdpRssiPack(pr.Device):
         self.add(pr.LocalVariable(
             name        = 'locMaxSegment',
             mode        = 'RW', 
-            value       = 0,
+            value       = self._rssi.getLocMaxSegment(),
             typeStr     = 'UInt16',
             localGet    = lambda: self._rssi.getLocMaxSegment(),
             localSet    = lambda value: self._rssi.setLocMaxSegment(value)
@@ -164,7 +173,7 @@ class UdpRssiPack(pr.Device):
         self.add(pr.LocalVariable(
             name        = 'locCumAckTout',
             mode        = 'RW', 
-            value       = 0,
+            value       = self._rssi.getLocCumAckTout(),
             typeStr     = 'UInt16',
             localGet    = lambda: self._rssi.getLocCumAckTout(),
             localSet    = lambda value: self._rssi.setLocCumAckTout(value)
@@ -173,7 +182,7 @@ class UdpRssiPack(pr.Device):
         self.add(pr.LocalVariable(
             name        = 'locRetranTout',
             mode        = 'RW', 
-            value       = 0,
+            value       = self._rssi.getLocRetranTout(),
             typeStr     = 'UInt16',
             localGet    = lambda: self._rssi.getLocRetranTout(),
             localSet    = lambda value: self._rssi.setLocRetranTout(value)
@@ -182,7 +191,7 @@ class UdpRssiPack(pr.Device):
         self.add(pr.LocalVariable(
             name        = 'locNullTout',
             mode        = 'RW', 
-            value       = 0,
+            value       = self._rssi.getLocNullTout(),
             typeStr     = 'UInt16',
             localGet    = lambda: self._rssi.getLocNullTout(),
             localSet    = lambda value: self._rssi.setLocNullTout(value)
@@ -191,7 +200,7 @@ class UdpRssiPack(pr.Device):
         self.add(pr.LocalVariable(
             name        = 'locMaxRetran',
             mode        = 'RW', 
-            value       = 0,
+            value       = self._rssi.getLocMaxRetran(),
             typeStr     = 'UInt8',
             localGet    = lambda: self._rssi.getLocMaxRetran(),
             localSet    = lambda value: self._rssi.setLocMaxRetran(value)
@@ -200,7 +209,7 @@ class UdpRssiPack(pr.Device):
         self.add(pr.LocalVariable(
             name        = 'locMaxCumAck',
             mode        = 'RW', 
-            value       = 0,
+            value       = self._rssi.getLocMaxCumAck(),
             typeStr     = 'UInt8',
             localGet    = lambda: self._rssi.getLocMaxCumAck(),
             localSet    = lambda value: self._rssi.setLocMaxCumAck(value)

@@ -93,7 +93,7 @@ class BaseBlock(object):
     def bulkEn(self):
         return True
 
-    def startTransaction(self,type, check=False):
+    def startTransaction(self, type, check=False, lowByte=None, highByte=None):
         """
         Start a transaction.
         """
@@ -241,23 +241,23 @@ class RemoteBlock(BaseBlock, rim.Master):
         self._setSlave(variables[0].parent)
         
         BaseBlock.__init__(self, path=variables[0].path, mode=variables[0].mode, device=variables[0].parent)
-        self._verifyEn  = False
-        self._bulkEn    = False
-        self._doVerify  = False
-        self._verifyWr  = False
-        self._sData     = bytearray(size)  # Set data
-        self._sDataMask = bytearray(size)  # Set data mask
-        self._bData     = bytearray(size)  # Block data
-        self._vData     = bytearray(size)  # Verify data
-        self._vDataMask = bytearray(size)  # Verify data mask
-        self._size      = size
-        self._offset    = offset
-        self._minSize   = self._reqMinAccess()
-        self._maxSize   = self._reqMaxAccess()
-        self._variables = variables
+        self._verifyEn    = False
+        self._bulkEn      = False
+        self._verifyRange = None
+        self._verifyWr    = False
+        self._sData       = bytearray(size)  # Set data
+        self._sDataMask   = bytearray(size)  # Set data mask
+        self._bData       = bytearray(size)  # Block data
+        self._vData       = bytearray(size)  # Verify data
+        self._vDataMask   = bytearray(size)  # Verify data mask
+        self._size        = size
+        self._offset      = offset
+        self._minSize     = self._reqMinAccess()
+        self._maxSize     = self._reqMaxAccess()
+        self._variables   = variables
 
         if self._minSize == 0 or self._maxSize == 0:
-            raise MemoryError(name=self.path, address=self.address, msg="Invalid min/max size")
+            raise MemoryError(name=self.path, address=self.address, msg="Invalid min/max memory interface size. Device or Variable may be unconnected!")
 
         # Range check
         if self._size > self._maxSize:
@@ -356,12 +356,12 @@ class RemoteBlock(BaseBlock, rim.Master):
         Update block with bitSize bits from passed byte array.
         Offset sets the starting point in the block array.
         """
-        if not var._base.check(value,sum(var.bitSize)):
+        if not var._base.check(value):
             msg = "Invalid value '{}' for base type {} with bit size {}".format(value,var._base.pytype,sum(var.bitSize))
             raise MemoryError(name=var.path, address=self.address, msg=msg)
 
         with self._lock:
-            ba = var._base.toBytes(value, sum(var.bitSize))
+            ba = var._base.toBytes(value)
 
             srcBit = 0
             for x in range(len(var.bitOffset)):
@@ -386,9 +386,9 @@ class RemoteBlock(BaseBlock, rim.Master):
                     self._copyBits(ba, dstBit, self._bData, var.bitOffset[x], var.bitSize[x])
                 dstBit += var.bitSize[x]
 
-            return var._base.fromBytes(ba,sum(var.bitSize))
+            return var._base.fromBytes(ba)
 
-    def startTransaction(self, type, check=False):
+    def startTransaction(self, type, check=False, lowByte=None, highByte=None):
         """
         Start a transaction.
         """
@@ -408,11 +408,21 @@ class RemoteBlock(BaseBlock, rim.Master):
             self._waitTransaction(0)
             self._clearError()
 
+            # Set default low and high bytes
+            if lowByte is None or highByte is None:
+                lowByte  = 0
+                highByte = self._size - 1
+
             # Move staged write data to block. Clear stale.
             if type == rim.Write or type == rim.Post:
                 for x in range(self._size):
                     self._bData[x] = self._bData[x] & (self._sDataMask[x] ^ 0xFF)
                     self._bData[x] = self._bData[x] | (self._sDataMask[x] & self._sData[x])
+
+                    # Override min and max bytes based upon stale
+                    if self._sDataMask[x] != 0:
+                        if x < lowByte:  lowByte  = x
+                        if x > highByte: highByte = x
 
                 self._sData = bytearray(self._size)
                 self._sDataMask = bytearray(self._size)
@@ -428,16 +438,20 @@ class RemoteBlock(BaseBlock, rim.Master):
             # Only verify blocks that have been written since last verify
             if type == rim.Write:
                 self._verifyWr = self._verifyEn
-                  
+
+            # Derive offset and size based upon min transaction size
+            offset = math.floor(lowByte / self._minSize) * self._minSize
+            size   = math.ceil((highByte-lowByte+1) / self._minSize) * self._minSize
+
             # Setup transaction
-            self._doVerify = (type == rim.Verify)
+            self._verifyRange = [offset,offset+size] if  (type == rim.Verify) else None
             self._doUpdate = True
 
             # Set data pointer
-            tData = self._vData if self._doVerify else self._bData
+            tData = self._vData if self._verifyRange is not None else self._bData
 
             # Start transaction
-            self._reqTransaction(self.offset,tData,0,0,type)
+            self._reqTransaction(self.offset,tData,size,offset,type)
 
         if check:
             #print(f'Checking {self.path}.startTransaction(check={check})')
@@ -461,10 +475,10 @@ class RemoteBlock(BaseBlock, rim.Master):
             if err != "":
                 raise MemoryError(name=self.path, address=self.address, msg=err, size=self._size)
 
-            if self._doVerify:
+            if self._verifyRange is not None:
                 self._verifyWr = False
 
-                for x in range(self._size):
+                for x in range(self._verifyRange[0],self._verifyRange[1]):
                     if (self._vData[x] & self._vDataMask[x]) != (self._bData[x] & self._vDataMask[x]):
                         msg  = "Verify Error: "
                         msg += ('Local='    + ''.join(f'{x:#02x}' for x in self._bData))

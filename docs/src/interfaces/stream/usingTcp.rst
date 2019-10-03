@@ -88,10 +88,10 @@ on the client.  The C++ server is able to interface with either a Python or C++ 
    rogue::interfaces::stream::TcpServerPtr tcp = rogue::interfaces::stream::TcpServer::create("*",8000)
 
    // Connect the transmitter
-   streamConnect(src,tcp)
+   rogueStreamConnect(src,tcp)
 
    // Connect the receiver
-   streamConnect(tcp,dst)
+   rogueStreamConnect(tcp,dst)
 
 C++ Client
 ==========
@@ -115,8 +115,8 @@ on the server.  The C++ client is able to interface with either a Python or C++ 
    rogue::interfaces::stream::TcpClientPtr tcp = rogue::interfaces::stream::TcpClient::create("192.168.1.1",8000)
 
    // Connect the transmitter
-   streamConnect(src,tcp)
+   rogueStreamConnect(src,tcp)
 
    // Connect the receiver
-   streamConnect(tcp,dst)
+   rogueStreamConnect(tcp,dst)
 

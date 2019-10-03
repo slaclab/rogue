@@ -12,20 +12,21 @@ import argparse
 import pyrogue
 import pyrogue.interfaces
 import pyrogue.gui
+import pyrogue.pydm
 import sys
 import time
 
 parser = argparse.ArgumentParser('Pyrogue Client')
 
-parser.add_argument('--host', 
+parser.add_argument('--server',
                     type=str, 
-                    help='Server host name or address',
-                    default='localhost')
+                    help="Server address: 'host:port' or list of addresses: 'host1:port1,host2:port2'",
+                    default='localhost:9099')
 
-parser.add_argument('--port', 
-                    type=int, 
-                    help='Server port number',
-                    default=9099)
+parser.add_argument('--ui',
+                    type=str, 
+                    help='UI File for gui (cmd=gui)',
+                    default=None)
 
 parser.add_argument('--details',
                     help='Show log details with stacktrace (cmd=syslog)',
@@ -48,25 +49,24 @@ parser.add_argument('value',
 
 args = parser.parse_args()
 
-print("Connecting to host {} port {}".format(args.host,args.port))
 
-# Connect to the gui server
+# Common extraction for single server address
+try:
+    host = args.server.split(',')[0].split(':')[0]
+    port = int(args.server.split(',')[0].split(':')[1])
+except:
+    print("Failed to extract server host & port")
+
+print("Connecting to {}".format(args.server))
+
+# GUI Client
 if args.cmd == 'gui':
-    client = pyrogue.interfaces.VirtualClient(args.host,args.port)
-
-    # Create GUI
-    appTop = pyrogue.gui.application(sys.argv)
-    guiTop = pyrogue.gui.GuiTop(excGroups='Hidden')
-    guiTop.setWindowTitle("Rogue Client {}:{}".format(args.host,args.port))
-    guiTop.addTree(client.root)
-
-    # Run gui
-    appTop.exec_()
+    pyrogue.pydm.runPyDM(serverList=args.server,ui=args.ui)
 
 # System log
 elif args.cmd == 'syslog':
     sl = pyrogue.interfaces.SystemLogMonitor(args.details)
-    client = pyrogue.interfaces.SimpleClient(args.host,args.port,cb=sl.varUpdated)
+    client = pyrogue.interfaces.SimpleClient(host,port,cb=sl.varUpdated)
 
     print("Listening for system log message:")
     print("")
@@ -87,7 +87,7 @@ elif args.cmd == 'monitor':
         exit()
 
     vm = pyrogue.interfaces.VariableMonitor(args.path)
-    client = pyrogue.interfaces.SimpleClient(args.host,args.port,cb=vm.varUpdated)
+    client = pyrogue.interfaces.SimpleClient(host,port,cb=vm.varUpdated)
 
     ret = client.valueDisp(args.path)
     print("")
@@ -103,7 +103,7 @@ elif args.cmd == 'monitor':
 # All Other Commands
 else:
 
-    client = pyrogue.interfaces.SimpleClient(args.host,args.port)
+    client = pyrogue.interfaces.SimpleClient(host,port)
 
     if args.path is None:
         print("Error: A path must be provided")

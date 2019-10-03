@@ -41,10 +41,15 @@ namespace rogue {
             std::thread   * thread_;
             bool threadEn_;
 
+            std::string addr_;
+            uint16_t basePort_;
+
             //! Log 
             std::shared_ptr<rogue::Logging> log_;
 
             void runThread();
+
+            bool tryConnect();
 
          public:
 
@@ -59,6 +64,10 @@ namespace rogue {
             void publish(std::string value);
 
             virtual std::string doRequest (std::string data);
+
+            uint16_t port();
+
+            void close();
       };
       typedef std::shared_ptr<rogue::interfaces::ZmqServer> ZmqServerPtr;
 

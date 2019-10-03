@@ -66,11 +66,11 @@ class DummyTree(pr.Root):
         self.sim = pr.interfaces.simulation.MemEmulate()
 
         # Create a memory gateway
-        self.ms = rogue.interfaces.memory.TcpServer("127.0.0.1",9020);
+        self.ms = rogue.interfaces.memory.TcpServer("127.0.0.1",9080);
         pr.busConnect(self.ms,self.sim)
 
         # Create a memory gateway
-        self.mc = rogue.interfaces.memory.TcpClient("127.0.0.1",9020);
+        self.mc = rogue.interfaces.memory.TcpClient("127.0.0.1",9080);
 
         # Add Device
         self.add(AxiVersion(memBase=self.mc,offset=0x0))
@@ -78,8 +78,12 @@ class DummyTree(pr.Root):
         # Start the tree with pyrogue server, internal nameserver, default interface
         # Set pyroHost to the address of a network interface to specify which nework to run on
         # set pyroNs to the address of a standalone nameserver (startPyrorNs.py)
-        self.start(timeout=2.0, pollEn=False,zmqPort=None)
+        self.start(timeout=2.0, pollEn=False, serverPort=None)
 
+    def stop(self):
+        self.ms.close()
+        self.mc.close()
+        pr.Root.stop(self)
 
 def test_memory():
 

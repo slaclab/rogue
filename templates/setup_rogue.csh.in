@@ -24,3 +24,7 @@ setenv PYTHONPATH ${ROGUE_DIR}/python:${PYTHONPATH}
 # Setup library path
 setenv LD_LIBRARY_PATH ${ROGUE_DIR}/lib:${LD_LIBRARY_PATH}
 
+# PYDM environment
+setenv PYQTDESIGNERPATH ${ROGUE_DIR}/python/pyrogue/pydm:${PYQTDESIGNERPATH}
+setenv PYDM_DATA_PLUGINS_PATH ${ROGUE_DIR}/python/pyrogue/pydm/data_plugins
+setenv PYDM_TOOLS_PATH ${ROGUE_DIR}/python/pyrogue/pydm/tools

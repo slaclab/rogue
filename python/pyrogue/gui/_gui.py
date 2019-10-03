@@ -54,8 +54,27 @@ class GuiTop(QWidget):
     def __init__(self,*, parent=None, incGroups=None, excGroups=None, group=None):
         super(GuiTop,self).__init__(parent)
 
-        if group is not None:
-            print("The GuiTop group attribute is now deprecated. Please remove it.")
+        print("-------------------------------------------------------------------------")
+        print("The legacy GUI is now deprecated. Please use pyDM.")
+        print("")
+        print("   To use pydm serverPort must be set in root.start():")
+        print("")
+        print("      root.start(serverPort=9099)")
+        print("")
+        print("    when using a fixed port or for auto port assignment you can use:")
+        print("")
+        print("      root.start(serverPort=0)")
+        print("")
+        print("   To start pydm client from command line:")
+        print("")
+        print("      python -m pyrogue gui --server=localhost:9099")
+        print("")
+        print("   To start in top level python script:")
+        print("")
+        print("      pyrogue.pydm.runPyDM(root=root)")
+        print("")
+        print("   the server port will be extracted from the root object.")
+        print("-------------------------------------------------------------------------")
 
         if incGroups is None:
             self._incGroups=[]

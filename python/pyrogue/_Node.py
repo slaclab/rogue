@@ -89,7 +89,7 @@ class Node(object):
         name: Global name of object
         description: Description of the object.
         groups: Group or groups this node belongs to. 
-           Examples: 'Hidden', 'NoState', 'NoConfig', 'NoStream', 'NoSql'
+           Examples: 'Hidden', 'NoState', 'NoConfig', 'NoStream', 'NoSql', 'NoServe'
         classtype: text string matching name of node sub-class
         path: Full path to the node (ie. node1.node2.node3)
 
@@ -111,6 +111,7 @@ class Node(object):
         self._parent  = None
         self._root    = None
         self._nodes   = odict()
+        self._anodes  = odict()
 
         # Setup logging
         self._log = logInit(cls=self,name=name,path=None)
@@ -195,11 +196,17 @@ class Node(object):
         This override builds an OrderedDict of all child nodes named as 'name[key]' and returns it.
         Raises AttributeError if no such named Nodes are found. """
 
-        ret = attrHelper(self._nodes,name)
-        if ret is None:
-            raise AttributeError('{} has no attribute {}'.format(self, name))
+        # Node matches name in node list
+        if name in self._nodes:
+            return self._nodes[name]
+
+        # Node matches name in node dictionary list
+        elif name in self._anodes:
+            return self._anodes[name]
+
         else:
-            return ret
+            raise AttributeError('{} has no attribute {}'.format(self, name))
+
 
     def __dir__(self):
         return(super().__dir__() + [k for k,v in self._nodes.items()])
@@ -214,7 +221,7 @@ class Node(object):
         attr['groups']      = self._groups
         attr['path']        = self._path
         attr['expand']      = self._expand
-        attr['nodes']       = self._nodes
+        attr['nodes']       = odict({k:v for k,v in self._nodes.items() if not v.inGroup('NoServe')})
         attr['props']       = []
         attr['funcs']       = {}
 
@@ -259,11 +266,68 @@ class Node(object):
                              (node.name,self.name))
 
         # Names of all sub-nodes must be unique
-        if node.name in self.__dir__():
+        if node.name in self.__dir__() or node.name in self._anodes:
             raise NodeError('Error adding node with name %s to %s. Name collision.' % 
                              (node.name,self.name))
 
+        # Add some checking for charaters which will make lookups problematic
+        if re.match('^[\w_\[\]]+$',node.name) is None:
+            self._log.warning('Node {} with one or more special characters will cause lookup errors.'.format(node.name))
+
+        # Detect and add array nodes
+        self._addArrayNode(node)
+
+        # Add to primary list
         self._nodes[node.name] = node 
+
+
+    def _addArrayNode(self, node):
+
+        # Generic test array method
+        fields = re.split('\]\[|\[|\]',node.name)
+        if len(fields) < 3: return
+
+        # Extract name and keys
+        aname = fields[0]
+        keys  = fields[1:-1]
+
+        if not all([key.isdigit() for key in keys]):
+            self._log.warning('Array node {} with non numeric key will cause lookup errors.'.format(node.name))
+            return
+
+        # Detect collisions
+        if aname in self.__dir__():
+            raise NodeError('Error adding node with name %s to %s. Name collision.' % (node.name,self.name))
+
+        # Create dictionary containers
+        if not aname in self._anodes:
+            self._anodes[aname] = {}
+
+        # Start at primary list
+        sub = self._anodes[aname]
+
+        # Iterate through keys
+        for i in range(len(keys)):
+            k = int(keys[i])
+
+            # Last key, set node, check for overlaps
+            if i == (len(keys)-1): 
+                if k in sub:
+                    raise NodeError('Error adding node with name %s to %s. Name collision.' % (node.name,self.name))
+
+                sub[k] = node
+                return
+
+            # Next level is empty
+            if not k in sub:
+                sub[k] = {}
+
+            # check for overlaps
+            elif isinstance(sub[k],Node):
+                raise NodeError('Error adding node with name %s to %s. Name collision.' % (node.name,self.name))
+            
+            sub = sub[k]
+
 
     def addNode(self, nodeClass, **kwargs):
         self.add(nodeClass(**kwargs))
@@ -382,8 +446,11 @@ class Node(object):
         """
         return self._root
 
-    def node(self, path):
-        return attrHelper(self._nodes,path)
+    def node(self, name):
+        if name in self._nodes:
+            return self._nodes[name]
+        else:
+            return None
 
     @property
     def isDevice(self):
@@ -486,101 +553,88 @@ class Node(object):
 
     def _setDict(self,d,writeEach,modes,incGroups,excGroups):
         for key, value in d.items():
-            nlist = nodeMatch(self._nodes,key)
+            ret = self.nodeMatch(key)
 
-            if nlist is None or len(nlist) == 0:
+            if len(ret) == 0:
                 self._log.error("Entry {} not found".format(key))
             else:
-                for n in nlist:
-                    if n.filterByGroup(incGroups,excGroups):
-                        n._setDict(value,writeEach,modes,incGroups,excGroups)
+                for n in ret:
+                    if n is not None:
+                        if n.filterByGroup(incGroups,excGroups):
+                            n._setDict(value,writeEach,modes,incGroups,excGroups)
 
     def _setTimeout(self,timeout):
         pass
 
+    def nodeMatch(self,name):
+        """
+        Return a node or list of nodes which match the given name. The name can either
+        be a single value or a list accessor:
+            value
+            value[9]
+            value[0:1]
+            value[*]
+            value[:]
+        Variables will only match if their depth matches the passed lookup and wildard:
+            value[*] will match a variable named value[1] but not a variable named value[2][3]
+            value[*][*] will match a variable named value[2][3].
+        """
+        # Node matches name in node list
+        if name in self._nodes:
+            return [self._nodes[name]]
 
-def attrHelper(nodes,name):
-    """
-    Return a single item or a list of items matching the passed
-
-    name. If the name is an exact match to a single item in the list
-    then return it. Otherwise attempt to find items which match the 
-    passed name, but are array entries: name[n]. Return these items
-    as a list
-    """
-    if name in nodes:
-        return nodes[name]
-    else:
-        ret = odict()
-        rg = re.compile('{:s}\\[(.*?)\\]'.format(name))
-        for k,v in nodes.items():
-            m = rg.match(k)
-            if m:
-                key = m.group(1)
-                if key.isdigit():
-                    key = int(key)
-                ret[key] = v
-
-        if len(ret) == 0:
-            return None
+        # Otherwise we may need to slice an array
         else:
-            return ret
+
+            # Generic test array method
+            fields = re.split('\]\[|\[|\]',name)
+
+            # Extract name and keys
+            aname = fields[0]
+            keys  = fields[1:-1]
+
+            # Name not in list
+            if aname is None or aname not in self._anodes or len(keys) == 0:
+                return []
+
+            return _iterateDict(self._anodes[aname],keys)
 
 
-def nodeMatch(nodes,name):
-    """
-    Return a list of nodes which match the given name. The name can either
-    be a single value or a list accessor:
-        value
-        value[9]
-        value[0:1]
-        value[*]
-    """
+def _iterateDict(d, keys):
+    retList = []
 
-    # First check to see if unit matches a node name
-    # needed when [ and ] are in a variable or device name
-    if name in nodes:
-        return [nodes[name]]
+    # Wildcard, full list
+    if keys[0] == '*' or keys[0] == ':':
+        subList = list(d.values())
 
-    fields = re.split('\[|\]',name)
+    # Single item
+    elif keys[0].isdigit():
+        subList = [d[int(keys[0])]]
 
-    # Wildcard
-    if len(fields) > 1 and (fields[1] == '*' or fields[1] == ':'):
-        return nodeMatch(nodes,fields[0])
+    # Slice
     else:
-        ah = attrHelper(nodes,fields[0])
 
-        # None or exact match is an error
-        if ah is None or not isinstance(ah,odict):
-            return None
-
-        # Non integer keys is an error
-        if any(not isinstance(k,int) for k in ah.keys()):
-            return None
-
-        # no slicing, return list
-        if len(fields) == 1:
-            return [v for k,v in ah.items()]
-
-        # Indexed ordered dictionary returned
-        # Convert to list with gaps = None and apply slicing
-        idxLast = max(ah)
-
-        ret = [None] * (idxLast+1)
-        for i,n in ah.items():
-            ret[i] = n
+        # Form sliceable list
+        tmpList = [None] * max(d.keys())
+        for k,v in d.items(): tmpList[k] = v
 
         try:
-            r = eval('ret[{}]'.format(fields[1]))
+            subList = eval(f'tmpList[{keys[0]}]')
         except:
-            r = None
+            subList = []
 
-        if r is None or any(v == None for v in r):
-            return None
-        elif isinstance(r,collections.Iterable):
-            return r
-        else:
-            return [r]
+    for e in subList:
+
+        # Add nodes at this level only if key list has been exausted
+        if len(keys) == 1 and isinstance(e,Node):
+            retList.append(e)
+
+        # Don't go deeper in tree than the keys provided to avoid over-matching nodes
+        elif len(keys) > 1 and isinstance(e,dict):
+            retList.extend(_iterateDict(e,keys[1:]))
+
+    return retList
+
 
 def genBaseList(cls):
     ret = [str(cls)]

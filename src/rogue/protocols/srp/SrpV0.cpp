@@ -173,6 +173,12 @@ void rps::SrpV0::acceptFrame ( ris::FramePtr frame ) {
    rogue::GilRelease noGil;
    ris::FrameLockPtr fLock = frame->lock();
 
+   // Drop errored frames
+   if ( frame->getError() ) {
+      log_->warning("Got errored frame = 0x%i",frame->getError());
+      return; // Invalid frame, drop it
+   }
+
    // Check frame size
    if ( (fSize = frame->getPayload()) < 16 ) {
       log_->warning("Got undersize frame size = %i",fSize);
