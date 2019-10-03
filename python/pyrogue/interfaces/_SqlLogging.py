@@ -56,42 +56,50 @@ class SqlLogger(object):
         self._logTable.create(conn, checkfirst=True)
         self._conn = conn
 
-    def logVariable(self, path, varValue):
-        if self._conn is None:
-            return
+        self._queue = queue.Queue()
+        self._thread = threading.Thread(target=self._worker)
 
-        try:
-            ins = self._varTable.insert().values(path=path,
-                                                 enum=str(varValue.enum),
-                                                 disp=varValue.disp, 
-                                                 value=varValue.valueDisp,
-                                                 severity=varValue.severity, 
-                                                 status=varValue.status)
-            self._conn.execute(ins)
-        except Exception as e:
-            self._conn = None
-            pr.logException(self._log,e)
-            self._log.error("Lost database connection to {}".format(self._url))
+    def logVariable(self, path, varValue):
+        if self._conn is not None:
+            self._queue.put(varValue)
 
     def logSyslog(self, syslogData):
-        if self._conn is None:
-            return
+        if self._conn is not None:
+            self._queue.put(syslogData)
 
-        try:
-            ins = self._logTable.insert().values(name=syslogData['name'], 
-                                                 message=syslogData['message'],
-                                                 exception=syslogData['exception'],
-                                                 levelName=syslogData['levelName'],
-                                                 levelNumber=syslogData['levelNumber'])
+    def stop(self):
+        self._queue.put(None)
+        self._thread.join()
 
-            self._conn.execute(ins)
+    def _worker(self):
+        while True:
+            ent = self._queue.get()
 
-        except Exception as e:
-            print("-----------Error Storing Syslog To DB --------------------")
-            print("Lost database connection to {}".format(self._url))
-            print("Error: {}".format(e))
-            print("----------------------------------------------------------")
-            self._conn = None
+            # Done
+            if ent is None: return
+
+            if self._conn is not None:
+                try:
+
+                    if isinstance(ent,pyrogue.VariableValue):
+                        ins = self._varTable.insert().values(path=path,
+                                                             enum=str(ent.enum),
+                                                             disp=ent.disp, 
+                                                             value=ent.valueDisp,
+                                                             severity=ent.severity, 
+                                                             status=ent.status)
+                    else:
+                        ins = self._logTable.insert().values(name=ent['name'], 
+                                                             message=ent['message'],
+                                                             exception=ent['exception'],
+                                                             levelName=ent['levelName'],
+                                                             levelNumber=ent['levelNumber'])
+
+                    self._conn.execute(ins)
+                except Exception as e:
+                    self._conn = None
+                    pr.logException(self._log,e)
+                    self._log.error("Lost database connection to {}".format(self._url))
 
 
 class SqlReader(object):
