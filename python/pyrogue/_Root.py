@@ -609,6 +609,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
         return True
 
+
     def loadYaml(self,name,writeEach,modes,incGroups,excGroups):
         """Load YAML configuration from a file. Called from command"""
 
@@ -630,23 +631,64 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         # Iterate through raw list and look for directories
         for rl in rawlst:
 
+            # Name ends with .yml or .yaml
+            if rl[-4:] == '.yml' or rl[-5:] == '.yaml': 
+                lst.append(rl)
+
+            # Entry is a zip file directory
+            elif '.zip' in rl:
+                base = rl.split('.zip')[0] + '.zip'
+                sub = rl.split('.zip')[1][1:]
+
+                # Open zipfile
+                with zipfile.ZipFile(base, 'r') as myzip:
+
+                    # Check if passed name is a directory, otherwise generate an error
+                    if not any(x.startswith("%s/" % sub.rstrip("/")) for x in myzip.namelist()):
+                        self._log.error("loadYaml: Invalid load file: {}, must be a directory or end in .yml or .yaml".format(rl))
+
+                    else:
+
+                        # Iterate through directory contents
+                        for zfn in myzip.namelist():
+
+                            # Filter by base directory
+                            if zfn.find(sub) == 0:
+                                spt = zfn.split('%s/' % sub.rstrip('/'))[1]
+
+                                # Entry ends in .yml or *.yml and is in current directory 
+                                if not '/' in spt and (spt[-4:] == '.yml' or spt[-5:] == '.yaml'): 
+                                    lst.append(base + '/' + zfn)
+
             # Entry is a directory
-            if os.path.isdir(rl):
+            elif os.path.isdir(rl):
                 dlst = glob.glob('{}/*.yml'.format(rl))
                 dlst.extend(glob.glob('{}/*.yaml'.format(rl)))
                 lst.extend(sorted(dlst))
 
-            # Otherise assume it is a file
-            else:
-                lst.append(rl)
+            # Not a zipfile, not a directory and does not end in .yml
+            else: 
+                self._log.error("loadYaml: Invalid load file: {}, must be a directory or end in .yml or .yaml".format(rl))
 
+        # Read each file
         try:
             with self.pollBlock(), self.updateGroup():
                 for fn in lst:
                     self._log.debug("loadYaml: loading {}".format(fn))
-                    with open(fn,'r') as f:
-                        d = yamlToData(f.read())
-                        self._setDictRoot(d=d,writeEach=writeEach,modes=modes,incGroups=incGroups,excGroups=excGroups)
+
+                    if '.zip' in fn:
+                        base = fn.split('.zip')[0] + '.zip'
+                        sub = fn.split('.zip')[1][1:] # Strip leading '/'
+
+                        with zipfile.ZipFile(base, 'r') as myzip:
+                            with myzip.open(sub) as myfile:
+                                d = yamlToData(myfile.read())
+
+                    else:
+                        with open(fn,'r') as f:
+                            d = yamlToData(f.read())
+
+                    self._setDictRoot(d=d,writeEach=writeEach,modes=modes,incGroups=incGroups,excGroups=excGroups)
 
                 if not writeEach: self._write()
 
