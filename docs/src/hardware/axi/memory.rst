@@ -51,5 +51,5 @@ The equivelent code in C++ is show below:
    MyMemMasterPtr memMast = MyMemMaster.create();
 
    // Connect memory master to memory map
-   busConnect(memMast,memMap);
+   rogueBusConnect(memMast,memMap);
 

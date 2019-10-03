@@ -21,27 +21,27 @@
 #define __ROGUE_HELPERS_H__
 
 // Connect stream 
-#define streamConnect(src,dst) src->setSlave(dst);
+#define rogueStreamConnect(src,dst) src->setSlave(dst);
 
 // Add stream tap
-#define streamTap(src,dst) src->addSlave(dst);
+#define rogueStreamTap(src,dst) src->addSlave(dst);
 
 // Connect stream bi-directionally
-#define streamConnectBiDir(devA,devB) \
+#define rogueStreamConnectBiDir(devA,devB) \
    devA->setSlave(devB); \
    devB->setSlave(devA);
 
 // Connect memory bus
-#define busConnect(src,dst) src->setSlave(dst);
+#define rogueBusConnect(src,dst) src->setSlave(dst);
 
 // Global default timeout value
-#define DEFAULT_TIMEOUT 1000000
+#define ROGUE_DEFAULT_TIMEOUT 1000000
 
 namespace rogue {
 
    // Return default timeout value
    inline void defaultTimeout(struct timeval &tout) {
-      div_t divResult = div(DEFAULT_TIMEOUT,1000000);
+      div_t divResult = div(ROGUE_DEFAULT_TIMEOUT,1000000);
       tout.tv_sec  = divResult.quot;
       tout.tv_usec = divResult.rem;
    }

@@ -56,8 +56,8 @@ Below is the equivalent code in C++
    dbg->setDebug(100,"myDebug");
 
    # Connect the src and dst
-   streamConnect(src, dst);
+   rogueStreamConnect(src, dst);
 
    # Add the debug slave as a tap
-   streamTap(src, dbg);
+   rogueStreamTap(src, dbg);
 

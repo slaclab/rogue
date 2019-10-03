@@ -71,7 +71,7 @@ able to interface with either a Python or C++ client.
    rogue::interfaces::memory::TcpServerPtr tcp = rogue.interfaces.memory.TcpServer::create("*",8000);
 
    // Connect the bus
-   busConnect(tcp, srpv3);
+   rogueBusConnect(tcp, srpv3);
 
 C++ Client
 ==========
@@ -91,5 +91,5 @@ to interface with either a Python or C++ server.
    rogue::interfaces::memory::TcpClientPtr tcp = rogue::interfaces::memory::TcpClient::create("192.168.1.1",8000);
 
    // Connect the bus
-   busConnect(mst, tcp);
+   rogueBusConnect(mst, tcp);
 

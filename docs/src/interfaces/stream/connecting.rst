@@ -26,7 +26,7 @@ A similiar line of code is used to connect a master and slave in c++:
 
    #include <rogue/Helpers.h>
 
-   streamConnect(myMaster, mySlave)
+   rogueStreamConnect(myMaster, mySlave)
 
 The above command examples attaches the primary slave to the master.
 
@@ -46,7 +46,7 @@ And in C++:
 
    #include <rogue/Helpers.h>
 
-   streamTap(myMaster, mySlave)
+   rogueStreamTap(myMaster, mySlave)
 
 In some cases rogue entties can serve as both a stream Master and Slave. This is often the case when
 using a network protocol such as UDP or TCP. Two dual purpose enpoints can be connected together
@@ -65,5 +65,5 @@ primary slave for endPointB. A similiar command is available in C++:
 
    #include <rogue/Helpers.h>
 
-   streamConnectBiDir(endPointA, endPointB)
+   rogueStreamConnectBiDir(endPointA, endPointB)
 
