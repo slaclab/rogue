@@ -144,6 +144,9 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         # SQL URL
         self._sqlLog = None
 
+        # Private
+        self._doHeartbeat = True
+
         # Init 
         pr.Device.__init__(self, name=name, description=description, expand=expand)
 
@@ -259,7 +262,8 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
               streamIncGroups=None,
               streamExcGroups=['NoStream'],
               sqlIncGroups=None,
-              sqlExcGroups=['NoSql']):
+              sqlExcGroups=['NoSql']
+             ):
         """Setup the tree. Start the polling thread."""
 
         if self._running:
@@ -505,7 +509,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
             pr.logException(self._log,e)
 
     def _heartbeat(self):
-        if self._running:
+        if self._running and self._doHeartbeat:
             threading.Timer(1.0,self._heartbeat).start()
             self.Time.set(time.time())
 
