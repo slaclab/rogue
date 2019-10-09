@@ -423,6 +423,7 @@ class SystemWidget(QWidget):
 
         self.systemLog.setColumnCount(2)
         self.systemLog.setHeaderLabels(['Field','Value'])
+        self.systemLog.setColumnWidth(0,200)
 
         self.logCount = 0
 
@@ -472,7 +473,6 @@ class SystemWidget(QWidget):
                         temp.setText(0,'')
                         temp.setText(1,v)
 
-        self.systemLog.resizeColumnToContents(0)
         self.logCount = len(lst)
 
     @pyqtSlot()
