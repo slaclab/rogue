@@ -27,7 +27,7 @@ import math
 import numpy as np
 
 #import pyrogue.pydm
-import pyrogue.gui
+#import pyrogue.gui
 
 #rogue.Logging.setFilter('pyrogue.epicsV3.Value',rogue.Logging.Debug)
 #rogue.Logging.setLevel(rogue.Logging.Debug)
@@ -161,7 +161,7 @@ class DummyTree(pyrogue.Root):
 if __name__ == "__main__":
 
     with DummyTree() as dummyTree:
-        #pyrogue.waitCntrlC()
+        pyrogue.waitCntrlC()
         #pyrogue.pydm.runPyDM(root=dummyTree)
-        pyrogue.gui.runGui(root=dummyTree)
+        #pyrogue.gui.runGui(root=dummyTree)
 
