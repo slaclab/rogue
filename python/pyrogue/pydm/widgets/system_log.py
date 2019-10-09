@@ -98,6 +98,5 @@ class SystemLog(PyDMFrame):
                         temp.setText(0,'')
                         temp.setText(1,v)
 
-        self._systemLog.resizeColumnToContents(0)
         self._logCount = len(lst)
 
