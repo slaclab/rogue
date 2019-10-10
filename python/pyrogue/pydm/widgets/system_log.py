@@ -54,6 +54,7 @@ class SystemLog(PyDMFrame):
 
         self._systemLog.setColumnCount(2)
         self._systemLog.setHeaderLabels(['Field','Value'])
+        self._systemLog.setColumnWidth(0,200)
 
         self._logCount = 0
 
@@ -97,6 +98,5 @@ class SystemLog(PyDMFrame):
                         temp.setText(0,'')
                         temp.setText(1,v)
 
-        self._systemLog.resizeColumnToContents(0)
         self._logCount = len(lst)
 
