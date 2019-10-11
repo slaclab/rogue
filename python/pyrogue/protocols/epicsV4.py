@@ -204,27 +204,36 @@ class EpicsPvServer(object):
         self._log       = pyrogue.logInit(cls=self)
         self._syncRead  = syncRead
         self._server    = None
+        self._incGroups = incGroups
+        self._excGroups = excGroups
+        self._pvMap     = pvMap
 
         self._provider = p4p.server.StaticProvider(__name__)
+
+    def stop(self):
+        if self._server is not None:
+            self._server.stop()
+
+    def start(self):
+        self.stop()
         self._list = []
 
-        if not root.running:
+        if not self._root.running:
             raise Exception("Epics can not be setup on a tree which is not started")
 
         # Figure out mapping mode
-        if pvMap is None:
+        if self._pvMap is None:
             doAll = True
             self._pvMap = {}
         else:
             doAll = False
-            self._pvMap = pvMap
 
         # Create PVs
         for v in self._root.variableList:
             eName = None
 
             if doAll:
-                if v.filterByGroup(incGroups,excGroups):
+                if v.filterByGroup(self._incGroups,self._excGroups):
                     eName = self._base + ':' + v.path.replace('.',':')
                     self._pvMap[v.path] = eName
             elif v.path in self._pvMap:
@@ -234,12 +243,6 @@ class EpicsPvServer(object):
                 pvh = EpicsPvHolder(self._provider,eName,v,self._log)
                 self._list.append(pvh)
 
-    def stop(self):
-        if self._server is not None:
-            self._server.stop()
-
-    def start(self):
-        self.stop()
         self._server = p4p.server.Server(providers=[self._provider])
 
     def list(self):
