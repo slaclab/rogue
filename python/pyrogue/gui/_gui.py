@@ -41,6 +41,7 @@ def runGui(root,incGroups=None,excGroups=None):
     guiTop = pyrogue.gui.GuiTop(incGroups=incGroups,excGroups=excGroups)
     guiTop.setWindowTitle("Rogue Server: {}".format(socket.gethostname()))
     guiTop.addTree(root)
+    guiTop.resize(800,1000)
     appTop.exec_()
 
 def application(argv):

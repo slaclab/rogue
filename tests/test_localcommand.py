@@ -31,10 +31,9 @@ class myDevice(pyrogue.Device):
 
 class LocalRoot(pyrogue.Root):
     def __init__(self):
-        pyrogue.Root.__init__(self, name='LocalRoot', description='Local root')
+        pyrogue.Root.__init__(self, name='LocalRoot', description='Local root',serverPort=None)
         my_device=myDevice()
         self.add(my_device)
-        self.start(serverPort=None)
 
 def test_local_cmd():
     """

@@ -32,20 +32,9 @@ class EpicsCaServer(object):
         self._log       = pyrogue.logInit(cls=self)
         self._syncRead  = syncRead
         self._srv       = rogue.protocols.epicsV3.Server(threadCount)
-
-        if not root.running:
-            raise Exception("Epics can not be setup on a tree which is not started")
-
-        if pvMap is None:
-            doAll = True
-            self._pvMap = {}
-        else:
-            doAll = False
-            self._pvMap = pvMap
-
-        # Create PVs
-        for v in self._root.variableList:
-            self._addPv(v,doAll,incGroups,excGroups)
+        self._pvMap     = pvMap
+        self._incGroups = incGroups
+        self._excGroups = excGroups
 
     def createSlave(self, name, maxSize, type):
         slave = rogue.protocols.epicsV3.Slave(self._base + ':' + name,maxSize,type)
@@ -61,6 +50,20 @@ class EpicsCaServer(object):
         self._srv.stop()
 
     def start(self):
+
+        if not self._root.running:
+            raise Exception("Epics can not be setup on a tree which is not started")
+
+        if self._pvMap is None:
+            doAll = True
+            self._pvMap = {}
+        else:
+            doAll = False
+
+        # Create PVs
+        for v in self._root.variableList:
+            self._addPv(v,doAll,self._incGroups,self._excGroups)
+
         self._srv.start()
 
     def list(self):
