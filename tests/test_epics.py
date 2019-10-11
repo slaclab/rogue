@@ -23,10 +23,9 @@ class myDevice(pyrogue.Device):
 
 class LocalRoot(pyrogue.Root):
     def __init__(self):
-        pyrogue.Root.__init__(self, name='LocalRoot', description='Local root')
+        pyrogue.Root.__init__(self, name='LocalRoot', description='Local root', serverPort=None)
         my_device=myDevice()
         self.add(my_device)
-        self.start(serverPort=None)
 
 class LocalRootWithEpics(LocalRoot):
     def __init__(self, use_map=False):
@@ -41,6 +40,9 @@ class LocalRootWithEpics(LocalRoot):
             pv_map=None
 
         self.epics=pyrogue.protocols.epics.EpicsCaServer(base=epics_prefix, root=self, pvMap=pv_map)
+
+    def start(self):
+        pyrogue.Root.start(self)
         self.epics.start()
 
     def stop(self):

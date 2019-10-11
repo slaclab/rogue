@@ -97,16 +97,52 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
     def __enter__(self):
         """Root enter."""
+
+        if self._running:
+            print("")
+            print("=======================================================================")
+            print("Detected 'with Root() as root' call after start() being called in")
+            print("Root's __init__ method. It is no longer recommended to call")
+            print("start() in a Root class's init() method! Instead start() should")
+            print("be re-implemented to startup sub-modules such as epics!")
+            print("=======================================================================")
+        else:
+            self.start()
         return self
 
     def __exit__(self, exc_type, exc_value, traceback):
         """Root exit."""
         self.stop()
 
-    def __init__(self, *, name=None, description='', expand=True):
+    def __init__(self, *, 
+                 name=None, 
+                 description='', 
+                 expand=True,
+                 timeout=1.0,
+                 initRead=False,
+                 initWrite=False,
+                 pollEn=True,
+                 serverPort=0,  # 9099 is the default, 0 for auto
+                 sqlUrl=None,
+                 streamIncGroups=None,
+                 streamExcGroups=['NoStream'],
+                 sqlIncGroups=None,
+                 sqlExcGroups=['NoSql']):
         """Init the node with passed attributes"""
-
         rogue.interfaces.stream.Master.__init__(self)
+
+        # Store startup parameters
+        self._timeout         = timeout
+        self._initRead        = initRead
+        self._initWrite       = initWrite
+        self._pollEn          = pollEn
+        self._serverPort      = serverPort
+        self._sqlUrl          = sqlUrl
+        self._streamIncGroups = streamIncGroups
+        self._streamExcGroups = streamExcGroups
+        self._sqlIncGroups    = sqlIncGroups
+        self._sqlExcGroups    = sqlExcGroups
+        self._doHeartbeat     = True # Backdoor flag
 
         # Create log listener to add to systemlog variable
         formatter = logging.Formatter("%(msg)s")
@@ -135,17 +171,8 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         self._updateQueue = queue.Queue()
         self._updateThread = None
 
-        # Stream and database group rules for updates worker
-        self._streamIncGroups = None
-        self._streamExcGroups = None
-        self._sqlIncGroups    = None
-        self._sqlExcGroups    = None
-
         # SQL URL
         self._sqlLog = None
-
-        # Private
-        self._doHeartbeat = True
 
         # Init 
         pr.Device.__init__(self, name=name, description=description, expand=expand)
@@ -252,28 +279,32 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         self.add(pr.LocalCommand(name='Exit', function=self._exit,
                                  description='Exit the server application'))
 
-    def start(self, *,
-              timeout=1.0,
-              initRead=False,
-              initWrite=False,
-              pollEn=True,
-              serverPort=0,  # 9099 is the default, 0 for auto
-              sqlUrl=None,
-              streamIncGroups=None,
-              streamExcGroups=['NoStream'],
-              sqlIncGroups=None,
-              sqlExcGroups=['NoSql']
-             ):
+    def start(self, **kwargs):
         """Setup the tree. Start the polling thread."""
 
         if self._running:
             raise pr.NodeError("Root is already started! Can't restart!")
 
-        # Stream and databse rules
-        self._streamIncGroups = streamIncGroups
-        self._streamExcGroups = streamExcGroups
-        self._sqlIncGroups    = sqlIncGroups
-        self._sqlExcGroups    = sqlExcGroups
+        # Deprecation Warning
+        if len(kwargs) != 0:
+            print("")
+            print("==========================================================")
+            print(" Passing startup args in start() method is now depcreated.")
+            print(" Startup args should now be passed to the root creator.")
+            print("    Example: pyrogue.Root(timeout=1.0, pollEn=True")
+            print("==========================================================")
+
+        # Override startup parameters if passed in start()
+        if 'streamIncGroups' in kwargs: self._streamIncGroups = kwargs['streamIncGroups']
+        if 'streamExcGroups' in kwargs: self._streamExcGroups = kwargs['streamExcGroups']
+        if 'sqlIncGroups'    in kwargs: self._sqlIncGroups    = kwargs['sqlIncGroups']
+        if 'sqlExcGroups'    in kwargs: self._sqlExcGroups    = kwargs['sqlExcGroups']
+        if 'timeout'         in kwargs: self._timeout         = kwargs['timeout']
+        if 'initRead'        in kwargs: self._initRead        = kwargs['initRead']
+        if 'initWrite'       in kwargs: self._initWrite       = kwargs['initWrite']
+        if 'pollEn'          in kwargs: self._pollEn          = kwargs['pollEn']
+        if 'serverPort'      in kwargs: self._serverPort      = kwargs['serverPort']
+        if 'sqlUrl'          in kwargs: self._sqlUrl          = kwargs['sqlUrl']
 
         # Call special root level rootAttached
         self._rootAttached()
@@ -312,19 +343,19 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                                        tmpList[i-1].name,tmpList[i-1].address,tmpList[i-1].size))
 
         # Set timeout if not default
-        if timeout != 1.0:
+        if self._timeout != 1.0:
             for key,value in self._nodes.items():
-                value._setTimeout(timeout)
+                value._setTimeout(self._timeout)
 
         # Server Start
-        if serverPort is not None:
-            self._zmqServer  = pr.interfaces.ZmqServer(root=self,addr="*",port=serverPort)
+        if self._serverPort is not None:
+            self._zmqServer  = pr.interfaces.ZmqServer(root=self,addr="*",port=self._serverPort)
             self._serverPort = self._zmqServer.port()
             self._structure  = jsonpickle.encode(self)
 
         # Start sql interface
-        if sqlUrl is not None:
-            self._sqlLog = pr.interfaces.SqlLogger(sqlUrl)
+        if self._sqlUrl is not None:
+            self._sqlLog = pr.interfaces.SqlLogger(self._sqlUrl)
 
         # Start update thread
         self._running = True
@@ -332,17 +363,17 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         self._updateThread.start()
 
         # Read current state
-        if initRead:
+        if self._initRead:
             self._read()
 
         # Commit default values
         # Read did not override defaults because set values are cached
-        if initWrite:
+        if self._initWrite:
             self._write()
 
         # Start poller if enabled
         self._pollQueue._start()
-        self.PollEn.set(pollEn)
+        self.PollEn.set(self._pollEn)
 
         self._heartbeat()
 
