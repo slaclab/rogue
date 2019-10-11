@@ -294,17 +294,17 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
             print("    Example: pyrogue.Root(timeout=1.0, pollEn=True")
             print("==========================================================")
 
-        # Override startup parameters if passed in start()
-        if 'streamIncGroups' in kwargs: self._streamIncGroups = kwargs['streamIncGroups']
-        if 'streamExcGroups' in kwargs: self._streamExcGroups = kwargs['streamExcGroups']
-        if 'sqlIncGroups'    in kwargs: self._sqlIncGroups    = kwargs['sqlIncGroups']
-        if 'sqlExcGroups'    in kwargs: self._sqlExcGroups    = kwargs['sqlExcGroups']
-        if 'timeout'         in kwargs: self._timeout         = kwargs['timeout']
-        if 'initRead'        in kwargs: self._initRead        = kwargs['initRead']
-        if 'initWrite'       in kwargs: self._initWrite       = kwargs['initWrite']
-        if 'pollEn'          in kwargs: self._pollEn          = kwargs['pollEn']
-        if 'serverPort'      in kwargs: self._serverPort      = kwargs['serverPort']
-        if 'sqlUrl'          in kwargs: self._sqlUrl          = kwargs['sqlUrl']
+            # Override startup parameters if passed in start()
+            if 'streamIncGroups' in kwargs: self._streamIncGroups = kwargs['streamIncGroups']
+            if 'streamExcGroups' in kwargs: self._streamExcGroups = kwargs['streamExcGroups']
+            if 'sqlIncGroups'    in kwargs: self._sqlIncGroups    = kwargs['sqlIncGroups']
+            if 'sqlExcGroups'    in kwargs: self._sqlExcGroups    = kwargs['sqlExcGroups']
+            if 'timeout'         in kwargs: self._timeout         = kwargs['timeout']
+            if 'initRead'        in kwargs: self._initRead        = kwargs['initRead']
+            if 'initWrite'       in kwargs: self._initWrite       = kwargs['initWrite']
+            if 'pollEn'          in kwargs: self._pollEn          = kwargs['pollEn']
+            if 'serverPort'      in kwargs: self._serverPort      = kwargs['serverPort']
+            if 'sqlUrl'          in kwargs: self._sqlUrl          = kwargs['sqlUrl']
 
         # Call special root level rootAttached
         self._rootAttached()
