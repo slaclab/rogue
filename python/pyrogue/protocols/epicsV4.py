@@ -248,7 +248,15 @@ class EpicsPvServer(object):
     def list(self):
         return self._pvMap
 
-    def dump(self):
-        for k,v in self._pvMap.items():
-            print("{} -> {}".format(v,k))
+    def dump(self,fname=None):
+        if fname is not None:
+            try:
+                with open(fname,'w') as f:
+                    for k,v in self._pvMap.items():
+                        print("{} -> {}".format(v,k),file=f)
+            except:
+                raise Exception("Failed to dump epics map to {}".format(fname))
+        else:
+            for k,v in self._pvMap.items():
+                print("{} -> {}".format(v,k))
 
