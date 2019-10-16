@@ -339,8 +339,8 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                         (tmpList[i-1].path.find(tmpList[i].path) == 0 and tmpList[i-1]._overlapEn))):
 
                     raise pr.NodeError("{} at address={:#x} overlaps {} at address={:#x} with size={}".format(
-                                       tmpList[i].name,tmpList[i].address,
-                                       tmpList[i-1].name,tmpList[i-1].address,tmpList[i-1].size))
+                                       tmpList[i].path,tmpList[i].address,
+                                       tmpList[i-1].path,tmpList[i-1].address,tmpList[i-1].size))
 
         # Set timeout if not default
         if self._timeout != 1.0:
