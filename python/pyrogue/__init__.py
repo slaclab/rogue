@@ -55,7 +55,7 @@ def addLibraryPath(path):
 
         # Verify directory or archive exists and is readable
         if '.zip/' in np:
-            tst = np[:np.find['.zip/']+4]
+            tst = np[:np.find('.zip/')+4]
         else:
             tst = np
 

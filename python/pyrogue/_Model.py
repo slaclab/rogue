@@ -15,6 +15,7 @@
 #-----------------------------------------------------------------------------
 import pyrogue as pr
 import struct
+import math
 
 def wordCount(bits, wordSize):
     ret = bits // wordSize

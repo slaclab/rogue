@@ -27,6 +27,7 @@ import math
 import numpy as np
 
 #import pyrogue.pydm
+#import pyrogue.gui
 
 #rogue.Logging.setFilter('pyrogue.epicsV3.Value',rogue.Logging.Debug)
 #rogue.Logging.setLevel(rogue.Logging.Debug)
@@ -41,7 +42,13 @@ class DummyTree(pyrogue.Root):
         self._scnt = 0
         self._sdata = np.array(0)
 
-        pyrogue.Root.__init__(self,name='dummyTree',description="Dummy tree for example")
+        pyrogue.Root.__init__(self,
+                              name='dummyTree',
+                              description="Dummy tree for example",
+                              timeout=2.0,
+                              pollEn=True,
+                              serverPort=0,
+                              sqlUrl='sqlite:///test.db')
 
         # Use a memory space emulator
         sim = pyrogue.interfaces.simulation.MemEmulate()
@@ -133,17 +140,18 @@ class DummyTree(pyrogue.Root):
 
         #pyrogue.streamConnect(self.prbsTx,self.rudpClient.application(0))
 
-        # Start the tree with pyrogue server, internal nameserver, default interface
-        # Set pyroHost to the address of a network interface to specify which nework to run on
-        # set pyroNs to the address of a standalone nameserver (startPyrorNs.py)
-        #self.start(timeout=2.0, pollEn=True, serverPort=9099, sqlUrl='sqlite:///test.db')
-        self.start(timeout=2.0, pollEn=True, serverPort=0, sqlUrl='sqlite:///test.db')
-
         #self.epics=pyrogue.protocols.epics.EpicsCaServer(base="test", root=self)
-        #self.epics.start()
-
         #self.epics4=pyrogue.protocols.epicsV4.EpicsPvServer(base="test", root=self)
+
+    def start(self):
+        #self.epics.start()
         #self.epics4.start()
+        pass
+
+    def stop(self):
+        #self.epics.stop()
+        #self.epics4.stop()
+        pass
 
     def _mySin(self):
         val = math.sin(2*math.pi*self._scnt / 100)
@@ -162,4 +170,5 @@ if __name__ == "__main__":
     with DummyTree() as dummyTree:
         pyrogue.waitCntrlC()
         #pyrogue.pydm.runPyDM(root=dummyTree)
+        #pyrogue.gui.runGui(root=dummyTree)
 
