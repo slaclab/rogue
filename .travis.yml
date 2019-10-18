@@ -178,7 +178,7 @@ jobs:
         - export PATH="$HOME/miniconda/bin:$PATH"
         - hash -r
         - conda config --set always_yes yes
-        - conda install conda-build anaconda-client
+        - conda install conda-build anaconda-client conda-verify
         - conda update -q conda conda-build
 
       before_script:
