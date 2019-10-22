@@ -1,4 +1,4 @@
-dist: xenlial
+dist: xenial
 sudo: required
 
 branches:
