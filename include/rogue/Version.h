@@ -45,9 +45,17 @@ namespace rogue {
 
          static bool greaterThanEqual(std::string compare);
 
+         static bool greaterThan(std::string compare);
+
+         static bool lessThanEqual(std::string compare);
+
          static bool lessThan(std::string compare);
 
          static void minVersion(std::string compare);
+
+         static void maxVersion(std::string compare);
+
+         static void exactVersion(std::string compare);
 
          static void setup_python();
 
