@@ -198,9 +198,9 @@ jobs:
       language: ruby  # osx does not support language=python
 
     # Deploy tagged version stage (deploy_tag)
-    #- <<: *deploy-docker-stage  # Docker
-    #  stage: deploy_tag
-    #  env: DOCKER_REPO=rogue
+    - <<: *deploy-docker-stage  # Docker
+      stage: deploy_tag
+      env: DOCKER_REPO=rogue
 
     - <<: *deploy-conda-stage   # Conda for Linux
       stage: deploy_tag
