@@ -12,7 +12,7 @@ addons:
       - doxygen-doc
       - python-dev
       - boost
-      - boost-python
+      - libboost-all-dev
 
 services:
   - docker
