@@ -178,7 +178,7 @@ jobs:
         - export PATH="$HOME/miniconda/bin:$PATH"
         - hash -r
         - conda config --set always_yes yes
-        - conda install conda-build anaconda-client
+        - conda install conda-build anaconda-client conda-verify
         - conda update -q conda conda-build
 
       before_script:
@@ -187,7 +187,7 @@ jobs:
 
       script:
         # Build conda package
-        - conda build --debug conda-recipe --output-folder bld-dir -c tidair-packages -c pydm-tag -c conda-forge
+        - travis_wait 45 conda build --debug conda-recipe --output-folder bld-dir -c tidair-packages -c pydm-tag -c conda-forge
 
       after_success:
         # Upload conda package
@@ -198,9 +198,9 @@ jobs:
       language: ruby  # osx does not support language=python
 
     # Deploy tagged version stage (deploy_tag)
-    #- <<: *deploy-docker-stage  # Docker
-    #  stage: deploy_tag
-    #  env: DOCKER_REPO=rogue
+    - <<: *deploy-docker-stage  # Docker
+      stage: deploy_tag
+      env: DOCKER_REPO=rogue
 
     - <<: *deploy-conda-stage   # Conda for Linux
       stage: deploy_tag

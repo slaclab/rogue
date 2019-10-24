@@ -67,6 +67,26 @@ bool rogue::Version::greaterThanEqual(std::string compare) {
    return(true);
 }
 
+bool rogue::Version::greaterThan(std::string compare) {
+   uint32_t cmajor, cminor, cmaint;
+   init();
+   extract(compare,&cmajor,&cminor,&cmaint);
+   if ( cmajor != _major ) return(_major > cmajor);
+   if ( cminor != _minor ) return(_minor > cminor);
+   if ( cmaint != _maint ) return(_maint > cmaint);
+   return(false);
+}
+
+bool rogue::Version::lessThanEqual(std::string compare) {
+   uint32_t cmajor, cminor, cmaint;
+   init();
+   extract(compare,&cmajor,&cminor,&cmaint);
+   if ( cmajor != _major ) return(_major < cmajor);
+   if ( cminor != _minor ) return(_minor < cminor);
+   if ( cmaint != _maint ) return(_maint < cmaint);
+   return(true);
+}
+
 bool rogue::Version::lessThan(std::string compare) {
    uint32_t cmajor, cminor, cmaint;
    init();
@@ -80,6 +100,16 @@ bool rogue::Version::lessThan(std::string compare) {
 void rogue::Version::minVersion(std::string compare) {
    if ( lessThan(compare) ) 
       throw(rogue::GeneralError("Version:minVersion","Installed rogue is less than minimum version"));
+}
+
+void rogue::Version::maxVersion(std::string compare) {
+   if ( greaterThan(compare) ) 
+      throw(rogue::GeneralError("Version:maxVersion","Installed rogue is greater than maximum version"));
+}
+
+void rogue::Version::exactVersion(std::string compare) {
+   if ( lessThan(compare) || greaterThan(compare) ) 
+      throw(rogue::GeneralError("Version:exactVersion","Installed rogue is not exact version"));
 }
 
 uint32_t rogue::Version::getMajor() {
@@ -131,10 +161,18 @@ void rogue::Version::setup_python() {
       .staticmethod("current")
       .def("greaterThanEqual", &rogue::Version::greaterThanEqual)
       .staticmethod("greaterThanEqual")
+      .def("greaterThan", &rogue::Version::greaterThan)
+      .staticmethod("greaterThan")
+      .def("lessThanEqual", &rogue::Version::lessThanEqual)
+      .staticmethod("lessThanEqual")      
       .def("lessThan", &rogue::Version::lessThan)
       .staticmethod("lessThan")
       .def("minVersion", &rogue::Version::minVersion)
       .staticmethod("minVersion")
+      .def("maxVersion", &rogue::Version::maxVersion)
+      .staticmethod("maxVersion")    
+      .def("exactVersion", &rogue::Version::exactVersion)
+      .staticmethod("exactVersion")          
       .def("major", &rogue::Version::getMajor)
       .staticmethod("major")
       .def("minor", &rogue::Version::getMinor)
