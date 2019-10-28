@@ -161,7 +161,6 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         # Zeromq server
         self._zmqServer  = None
         self._structure  = ""
-        self._serverPort = None
 
         # List of variable listeners
         self._varListeners  = []
