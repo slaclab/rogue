@@ -144,14 +144,14 @@ class DummyTree(pyrogue.Root):
         #self.epics4=pyrogue.protocols.epicsV4.EpicsPvServer(base="test", root=self)
 
     def start(self):
+        pyrogue.Root.start(self)
         #self.epics.start()
         #self.epics4.start()
-        pass
 
     def stop(self):
         #self.epics.stop()
         #self.epics4.stop()
-        pass
+        pyrogue.Root.stop(self)
 
     def _mySin(self):
         val = math.sin(2*math.pi*self._scnt / 100)

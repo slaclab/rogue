@@ -178,6 +178,9 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         pr.Device.__init__(self, name=name, description=description, expand=expand)
 
         # Variables
+        self.add(pr.LocalVariable(name='Version', value=rogue.Version.current(), mode='RO', hidden=False,
+                 description='Rogue Version String'))
+
         self.add(pr.LocalVariable(name='SystemLog', value=SystemLogInit, mode='RO', hidden=True, groups=['NoStream','NoSql','NoState'],
             description='String containing newline seperated system logic entries'))
 
