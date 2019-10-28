@@ -21,6 +21,7 @@
 #include <rogue/interfaces/stream/Slave.h>
 #include <rogue/interfaces/stream/Master.h>
 #include <rogue/interfaces/stream/Frame.h>
+#include <rogue/interfaces/stream/FrameIterator.h>
 #include <rogue/GilRelease.h>
 #include <memory>
 
@@ -84,6 +85,32 @@ void ris::Master::sendFrame ( FramePtr frame) {
          (*it)->acceptFrame(frame);
 
       primary_->acceptFrame(frame);
+   }
+}
+
+// Ensure passed frame is a single buffer
+bool ris::Master::ensureSingleBuffer ( ris::FramePtr &frame, bool reqEn ) {
+
+   // Frame is a single buffer
+   if ( frame->bufferCount() == 1 ) return true;
+
+   else if ( ! reqEn ) return false;
+
+   else {
+      uint32_t size = frame->getPayload();
+      ris::FramePtr nFrame = reqFrame(size, true);
+
+      if  ( nFrame->bufferCount() != 1 ) return false;
+
+      else {
+         ris::FrameIterator srcIter = frame->beginRead();
+         ris::FrameIterator dstIter = nFrame->beginWrite();
+         
+         ris::copyFrame(srcIter, size, dstIter);
+         nFrame->setPayload(size);
+         frame = nFrame;
+         return true;
+      }
    }
 }
 
