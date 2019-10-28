@@ -81,10 +81,16 @@ class EnableVariable(pr.BaseVariable):
             if old != value and old != 'parent' and old != 'deps':
                 self.parent.enableChanged(value)
 
-            self._doUpdate()
+            with self.parent.root.updateGroup():
+                self._queueUpdate()
 
-            for var in self._listeners:
-                var._doUpdate()
+            # The following concept will trigger enable listeners 
+            # directly. This is cuasing lock contentions in practice
+            # (epics as an example)
+
+            #self._doUpdate()
+            #for var in self._listeners:
+            #    var._doUpdate()
 
     def _doUpdate(self):
         if len(self._deps) != 0:
