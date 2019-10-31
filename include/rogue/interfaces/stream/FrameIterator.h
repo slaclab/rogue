@@ -44,28 +44,25 @@ namespace rogue {
                std::shared_ptr<rogue::interfaces::stream::Frame> frame_;
 
                // Frame position
-               uint32_t framePos_;
+               int32_t framePos_;
 
                // Frame size
-               uint32_t frameSize_;
+               int32_t frameSize_;
 
                // current buffer
                std::vector<std::shared_ptr<rogue::interfaces::stream::Buffer> >::iterator buff_;
 
                // Buffer position
-               uint32_t buffPos_;
+               int32_t buffBeg_;
 
                // Buffer size
-               uint32_t buffSize_;
+               int32_t buffEnd_;
 
                // Current buffer iterator
                uint8_t * data_;
 
-               // Creator
-               FrameIterator(std::shared_ptr<rogue::interfaces::stream::Frame> frame, bool write, bool end);
-
                // adjust position
-               void adjust(int32_t diff);
+               inline void adjust(int32_t diff);
 
             public:
 
