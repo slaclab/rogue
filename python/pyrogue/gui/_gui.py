@@ -36,12 +36,14 @@ import threading
 import socket
 import sys
 
-def runGui(root,incGroups=None,excGroups=None):
+def runGui(root,incGroups=None,excGroups=None,title=None,sizeX=800,sizeY=1000):
     appTop = QApplication(sys.argv)
     guiTop = pyrogue.gui.GuiTop(incGroups=incGroups,excGroups=excGroups)
-    guiTop.setWindowTitle("Rogue Server: {}".format(socket.gethostname()))
+    if title is None:
+        title = "Rogue Server: {}".format(socket.gethostname())
+    guiTop.setWindowTitle(title)
     guiTop.addTree(root)
-    guiTop.resize(800,1000)
+    guiTop.resize(sizeX,sizeY)
     appTop.exec_()
 
 def application(argv):

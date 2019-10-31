@@ -29,7 +29,22 @@ class DefaultTop(Display):
     def __init__(self, parent=None, args=[], macros=None):
         super(DefaultTop, self).__init__(parent=parent, args=args, macros=None)
 
-        self.setWindowTitle("Rogue Server: {}".format(os.getenv('ROGUE_SERVERS')))
+        self.sizeX = None
+        self.sizeY = None
+        self.title = None
+
+        for a in args:
+            if 'sizeX=' in a: self.sizeX = int(a.split('=')[1])
+            if 'sizeY=' in a: self.sizeY = int(a.split('=')[1])
+            if 'title=' in a: self.title = a.split('=')[1]
+
+        if self.title is None:
+            self.title = "Rogue Server: {}".format(os.getenv('ROGUE_SERVERS'))
+
+        if self.sizeX is None: self.sizeX = 800
+        if self.sizeY is None: self.sizeY = 1000
+
+        self.setWindowTitle(self.title)
 
         vb = QVBoxLayout()
         self.setLayout(vb)
@@ -49,7 +64,7 @@ class DefaultTop(Display):
     def minimumSizeHint(self):
         # This is the default recommended size
         # for this screen
-        return QtCore.QSize(700, 900)
+        return QtCore.QSize(self.sizeX, self.sizeY)
 
     def ui_filepath(self):
         # No UI file is being used
