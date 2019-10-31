@@ -166,10 +166,10 @@ class DummyTree(pyrogue.Root):
 if __name__ == "__main__":
 
     with DummyTree() as dummyTree:
-        #pyrogue.waitCntrlC()
+        pyrogue.waitCntrlC()
 
-        import pyrogue.pydm
-        pyrogue.pydm.runPyDM(root=dummyTree,title='test123',sizeY=2000)
+        #import pyrogue.pydm
+        #pyrogue.pydm.runPyDM(root=dummyTree,title='test123',sizeY=2000)
 
         #import pyrogue.gui
         #pyrogue.gui.runGui(root=dummyTree)
