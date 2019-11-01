@@ -23,6 +23,28 @@
 
 namespace ris = rogue::interfaces::stream;
 
+ris::FrameIterator::FrameIterator(ris::FramePtr frame, bool write, bool end) {
+   write_     = write;
+   frame_     = frame;
+   frameSize_ = (write_) ? frame_->getSize() : frame_->getPayload();
+
+   // end iterator
+   if ( end ) {
+      buff_     = frame_->endBuffer();
+      framePos_ = frameSize_;
+      buffBeg_  = frameSize_;
+      buffEnd_  = frameSize_;
+      data_     = NULL;
+   }
+   else {
+      buff_     = frame_->beginBuffer();
+      framePos_ = 0;
+      buffBeg_  = 0;
+      buffEnd_  = (write_) ? (*buff_)->getSize() : (*buff_)->getPayload();
+      data_     = (*buff_)->begin();
+   }
+}
+
 //! adjust position
 void ris::FrameIterator::adjust(int32_t diff) {
    framePos_ += diff;
@@ -37,16 +59,8 @@ void ris::FrameIterator::adjust(int32_t diff) {
       data_     = NULL;
    }
 
-   // We have shifted to a new buffer
-   else if ( framePos_ >= buffEnd_ || framePos_ < buffBeg_ ) {
-
-      // Decrement current buffer until the desired frame position is greater than
-      // the bottom of the buffer
-      while ( framePos_ < buffBeg_ ) {
-         buff_--;
-         buffEnd_  = buffBeg_;
-         buffBeg_ -= (write_) ? (*buff_)->getSize() : (*buff_)->getPayload();
-      }
+   // Positive adjust, new buffer
+   else if ( diff > 0 && framePos_ >= buffEnd_ ) {
 
       // Increment current buffer until we find the location of the data position
       // Iterator always contains one extra buffer index
@@ -54,6 +68,21 @@ void ris::FrameIterator::adjust(int32_t diff) {
          buff_++;
          buffBeg_  = buffEnd_;
          buffEnd_ += (write_) ? (*buff_)->getSize() : (*buff_)->getPayload();
+      }
+
+      // Set pointer
+      data_ = (*buff_)->begin() + (framePos_ - buffBeg_);
+   }
+
+   // Negative adjust, new buffer
+   else if ( diff < 0 && framePos_ < buffBeg_ ) {
+
+      // Decrement current buffer until the desired frame position is greater than
+      // the bottom of the buffer
+      while ( framePos_ < buffBeg_ ) {
+         buff_--;
+         buffEnd_  = buffBeg_;
+         buffBeg_ -= (write_) ? (*buff_)->getSize() : (*buff_)->getPayload();
       }
 
       // Set pointer

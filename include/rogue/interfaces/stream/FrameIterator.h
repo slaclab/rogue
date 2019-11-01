@@ -64,6 +64,9 @@ namespace rogue {
                // adjust position
                inline void adjust(int32_t diff);
 
+               // Creator
+               FrameIterator(std::shared_ptr<rogue::interfaces::stream::Frame> frame, bool write, bool end);
+
             public:
 
                //! Create an empty iterator for later assignment.

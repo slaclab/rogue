@@ -311,58 +311,22 @@ void ris::Frame::setChannel(uint8_t channel) {
 
 //! Get write start iterator
 ris::Frame::iterator ris::Frame::beginRead() {
-   ris::FrameIterator ret;
-
-   ret.frame_     = shared_from_this();
-   ret.frameSize_ = this->getPayload();
-   ret.buff_      = this->beginBuffer();
-   ret.buffEnd_   = (*(ret.buff_))->getPayload();
-   ret.data_      = (*(ret.buff_))->begin();
-
-   return ret;
+   return ris::FrameIterator(shared_from_this(), false, false);
 }
 
 //! Get write end iterator
 ris::Frame::iterator ris::Frame::endRead() {
-   ris::FrameIterator ret;
-
-   ret.frame_     = shared_from_this();
-   ret.frameSize_ = this->getPayload();
-   ret.framePos_  = ret.frameSize_;
-   ret.buff_      = this->endBuffer();
-   ret.buffBeg_   = ret.frameSize_;
-   ret.buffEnd_   = ret.frameSize_;
-
-   return ret;
+   return ris::FrameIterator(shared_from_this(), false, true);
 }
 
 //! Get read start iterator
 ris::Frame::iterator ris::Frame::beginWrite() {
-   ris::FrameIterator ret;
-
-   ret.write_     = true;
-   ret.frame_     = shared_from_this();
-   ret.frameSize_ = this->getSize();
-   ret.buff_      = this->beginBuffer();
-   ret.buffEnd_   = (*(ret.buff_))->getSize();
-   ret.data_      = (*(ret.buff_))->begin();
-
-   return ret;
+   return ris::FrameIterator(shared_from_this(), true, false);
 }
 
 //! Get end of payload iterator
 ris::Frame::iterator ris::Frame::endWrite() {
-   ris::FrameIterator ret;
-
-   ret.write_     = true;
-   ret.frame_     = shared_from_this();
-   ret.frameSize_ = this->getSize();
-   ret.framePos_  = ret.frameSize_;
-   ret.buff_      = this->endBuffer();
-   ret.buffBeg_   = ret.frameSize_;
-   ret.buffEnd_   = ret.frameSize_;
-
-   return ret;
+   return ris::FrameIterator(shared_from_this(), true, true);
 }
 
 #ifndef NO_PYTHON
