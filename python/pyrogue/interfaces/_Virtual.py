@@ -211,14 +211,23 @@ class VirtualClient(rogue.interfaces.ZmqClient):
         print("Connected to {} at {}:{}".format(self._rn,addr,port))
 
         # Try to connect to root entity, long timeout
-        print("Getting structure for {}".format(self._rn))
         self.setTimeout(120000)
-        r = self._remoteAttr('__structure__', None)
-        print("Ready to use {}".format(self._rn))
+        print("Getting structure for {}".format(self._rn))
+
+        try:
+            resp = self._send(jsonpickle.encode({'path':'__structure__'}))
+
+            print("Got response, building local tree.....")
+            r = jsonpickle.decode(resp)
+
+        except Exception as msg:
+            print("Got exception: {}".format(msg))
+            exit()
 
         # Update tree
         r._virtAttached(r,r,self)
         self._root = r
+        print("Ready to use {}".format(self._rn))
 
         setattr(self,self._root.name,self._root)
 
