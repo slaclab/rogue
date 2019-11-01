@@ -169,7 +169,7 @@ if __name__ == "__main__":
         pyrogue.waitCntrlC()
 
         #import pyrogue.pydm
-        #pyrogue.pydm.runPyDM(root=dummyTree)
+        #pyrogue.pydm.runPyDM(root=dummyTree,title='test123',sizeY=2000)
 
         #import pyrogue.gui
         #pyrogue.gui.runGui(root=dummyTree)
