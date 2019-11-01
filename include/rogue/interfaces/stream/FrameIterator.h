@@ -61,11 +61,11 @@ namespace rogue {
                // Current buffer iterator
                uint8_t * data_;
 
-               // adjust position
-               inline void adjust(int32_t diff);
-
                // Creator
                FrameIterator(std::shared_ptr<rogue::interfaces::stream::Frame> frame, bool write, bool end);
+
+               // adjust position
+               inline void adjust(int32_t diff);
 
             public:
 
