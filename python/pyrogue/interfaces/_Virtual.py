@@ -26,8 +26,6 @@ import re
 import time
 import threading
 
-import cProfile
-
 class VirtualProperty(object):
     def __init__(self, node, attr):
         self._attr = attr
@@ -149,6 +147,8 @@ class VirtualNode(pr.Node):
         self._client._addVarListener(func)
 
     def _loadNodes(self):
+        self._loaded = True
+
         for k,v in self._nodes.items():
             if v is None:
 
