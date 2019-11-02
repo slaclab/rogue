@@ -160,7 +160,6 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
         # Zeromq server
         self._zmqServer  = None
-        self._structure  = ""
 
         # List of variable listeners
         self._varListeners  = []
@@ -356,7 +355,6 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         if self._serverPort is not None:
             self._zmqServer  = pr.interfaces.ZmqServer(root=self,addr="*",port=self._serverPort)
             self._serverPort = self._zmqServer.port()
-            self._structure  = jsonpickle.encode(self)
 
         # Start sql interface
         if self._sqlUrl is not None:
@@ -400,9 +398,6 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
     @property
     def serverPort(self):
         return self._serverPort
-
-    def updatePickle(self):
-        self._structure = jsonpickle.encode(self)
 
     @pr.expose
     @property

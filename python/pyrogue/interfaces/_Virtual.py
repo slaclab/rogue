@@ -26,7 +26,7 @@ import re
 import time
 import threading
 
-
+import cProfile
 
 class VirtualProperty(object):
     def __init__(self, node, attr):
@@ -100,19 +100,39 @@ class VirtualNode(pr.Node):
         self._root      = None
         self._client    = None
         self._functions = []
-
-        # Rebuild array nodes list locally
-        for k,v in self._nodes.items():
-            self._addArrayNode(v)
+        self._loaded    = False
 
         # Setup logging
         self._log = pr.logInit(cls=self,name=self.name,path=self._path)
+
+    def addToGroup(self,group):
+        raise pr.NodeError('addToGroup not supported in VirtualNode')
+
+    def removeFromGroup(self,group):
+        raise pr.NodeError('removeFromGroup not supported in VirtualNode')
 
     def add(self,node):
         raise pr.NodeError('add not supported in VirtualNode')
 
     def callRecursive(self, func, nodeTypes=None, **kwargs):
         raise pr.NodeError('callRecursive not supported in VirtualNode')
+
+    def __getattr__(self, name):
+        if not self._loaded: self._loadNodes()
+        return pr.Node.__getattr__(self,name)
+
+    @property
+    def nodes(self):
+        if not self._loaded: self._loadNodes()
+        return self._nodes
+
+    def node(self, name, load=True):
+        if (not self._loaded) and load: self._loadNodes()
+
+        if name in self._nodes:
+            return self._nodes[name]
+        else:
+            return None
 
     def _call(self, *args, **kwargs):
         return self._client._remoteAttr(self._path, '__call__', *args, **kwargs)
@@ -128,8 +148,23 @@ class VirtualNode(pr.Node):
     def _addVarListener(self,func):
         self._client._addVarListener(func)
 
+    def _loadNodes(self):
+        for k,v in self._nodes.items():
+            if v is None:
+
+                node = self._client._remoteAttr(self._path, 'node', k)
+
+                node._parent = self
+                node._root   = self._root
+                node._client = self._client
+
+                self._nodes[k] = node
+                self._addArrayNode(node)
+
+                #print(f"Loaded node {node.path}")
+
     @ft.lru_cache(maxsize=None)
-    def _getNode(self,path):
+    def _getNode(self,path,load=True):
         obj = self
 
         if '.' in path:
@@ -141,7 +176,7 @@ class VirtualNode(pr.Node):
             for a in lst[1:]:
                 if not hasattr(obj,'node'):
                     return None
-                obj = obj.node(a)
+                obj = obj.node(a,load)
 
         elif path != self.name and path != 'root':
             return None
@@ -164,15 +199,6 @@ class VirtualNode(pr.Node):
     def _doUpdate(self, val):
         for func in self._functions:
             func(self.path,val)
-
-    def _virtAttached(self,parent,root,client):
-        """Called once the root node is attached."""
-        self._parent = parent
-        self._root   = root
-        self._client = client
-
-        for key,value in self._nodes.items():
-            value._virtAttached(self,root,client)
 
 
 class VirtualClient(rogue.interfaces.ZmqClient):
@@ -204,36 +230,20 @@ class VirtualClient(rogue.interfaces.ZmqClient):
 
         # Get root name as a connection test
         self.setTimeout(1000)
-        self._rn = None
-        while self._rn is None:
-            self._rn = self._remoteAttr('__rootname__',None)
+        self._root = None
+        while self._root is None:
+            self._root = self._remoteAttr('__ROOT__',None)
 
-        print("Connected to {} at {}:{}".format(self._rn,addr,port))
+        print("Connected to {} at {}:{}".format(self._root.name,addr,port))
 
-        # Try to connect to root entity, long timeout
-        self.setTimeout(120000)
-        print("Getting structure for {}".format(self._rn))
-
-        try:
-            resp = self._send(jsonpickle.encode({'path':'__structure__'}))
-
-            print("Got response, building local tree.....")
-            r = jsonpickle.decode(resp)
-
-        except Exception as msg:
-            print("Got exception: {}".format(msg))
-            exit()
-
-        # Update tree
-        r._virtAttached(r,r,self)
-        self._root = r
-        print("Ready to use {}".format(self._rn))
+        self._root._parent = self._root
+        self._root._root   = self._root
+        self._root._client = self
 
         setattr(self,self._root.name,self._root)
 
         # Link tracking
         self._link  = True
-        self._root.Time.addListener(self._monListener)
         self._ltime = self._root.Time.value()
 
     def addLinkMonitor(self, function):
@@ -250,23 +260,20 @@ class VirtualClient(rogue.interfaces.ZmqClient):
     def linked(self):
         return self._link
 
-    def _monListener(self,path,val):
-        self._ltime = val.value
-
     def _monWorker(self):
         if len(self._monitors) == 0: return
 
         threading.Timer(1.0,self._monWorker).start()
 
-        if self._link and (time.time() - self._ltime) > 1.5:
+        if self._link and (time.time() - self._ltime) > 10.0:
             self._link = False
-            print(f"Link to {self._rn} lost!")
+            print(f"Link to {self._root.name} lost!")
             for mon in self._monitors:
                 mon(self._link)
 
-        elif (not self._link) and (time.time() - self._ltime) < 1.5:
+        elif (not self._link) and (time.time() - self._ltime) < 10.0:
             self._link = True
-            print(f"Link to {self._rn} restored!")
+            print(f"Link to {self._root.name} restored!")
             for mon in self._monitors:
                 mon(self._link)
 
@@ -288,16 +295,16 @@ class VirtualClient(rogue.interfaces.ZmqClient):
             self._varListeners.append(func)
 
     def _doUpdate(self,data):
+        self._ltime = time.time()
+
         if self._root is None:
             return
 
         d = jsonpickle.decode(data)
 
         for k,val in d.items():
-            n = self._root.getNode(k)
-            if n is None:
-                self._log.error("Failed to find node {}".format(k))
-            else:
+            n = self._root.getNode(k,False)
+            if n is not None:
                 n._doUpdate(val)
 
             # Call listener functions,
