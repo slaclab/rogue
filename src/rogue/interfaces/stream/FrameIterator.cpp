@@ -238,7 +238,7 @@ ris::FrameIterator ris::FrameIterator::operator +(const int32_t &add) const {
 ris::FrameIterator ris::FrameIterator::operator -(const int32_t &sub) const {
    ris::FrameIterator ret(*this);
    if ( sub > 0 ) ret.decrement(-1 * sub);
-   else ret.decrement(-1 * sub);
+   else ret.increment(-1 * sub);
    return ret;
 }
 
