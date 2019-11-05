@@ -21,6 +21,7 @@
 #define __ROGUE_INTERFACES_STREAM_FRAME_ACCESSOR_H__
 #include <stdint.h>
 #include <rogue/GeneralError.h>
+#include <rogue/interfaces/stream/FrameIterator.h>
 
 namespace rogue {
    namespace interfaces {
@@ -41,25 +42,28 @@ namespace rogue {
             public:
 
                //! Creator
-               FrameAccessor(rogue::interfaces::stream::FrameIterator iter, uint32_t size) {
+               FrameAccessor(rogue::interfaces::stream::FrameIterator &iter, uint32_t size) {
                   data_ = (T *)iter.ptr();
                   size_ = size;
 
-                  if ( size > iter.remBuffer() ) 
+                  if ( size*sizeof(T) > iter.remBuffer() ) 
                      throw rogue::GeneralError::create("FrameAccessor","Attempt to create a FrameAccessor over a multi-buffer range!");
                }
 
                //! De-reference by index
-               T & operator [](const uint32_t &offset) { return data_[offset]; }
+               T & operator [](const uint32_t offset) { return data_[offset]; }
 
                //! Access element at location
-               T & at(const uint32_t &offset) {
+               T & at(const uint32_t offset) {
 
                   if ( offset >= size_ )
                      throw rogue::GeneralError::create("FrameAccessor","Attempt to access element %i with size %i",offset,size_);
 
                   return data_[offset];
                }
+
+               //! Get size
+               uint32_t size() { return size_; }
 
                //! Begin iterator
                T * begin() { return data_; }
