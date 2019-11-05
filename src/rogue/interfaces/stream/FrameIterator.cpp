@@ -164,7 +164,7 @@ uint8_t * ris::FrameIterator::ptr() const {
 }
 
 //! De-reference by index
-uint8_t ris::FrameIterator::operator [](const uint32_t &offset) const {
+uint8_t ris::FrameIterator::operator [](const uint32_t offset) const {
    ris::FrameIterator ret(*this);
    ret.increment((int32_t)offset);
    return *ret;
@@ -227,7 +227,7 @@ bool ris::FrameIterator::operator >=(const ris::FrameIterator & other) const {
 }
 
 //! Increment by value
-ris::FrameIterator ris::FrameIterator::operator +(const int32_t &add) const {
+ris::FrameIterator ris::FrameIterator::operator +(const int32_t add) const {
    ris::FrameIterator ret(*this);
    if ( add > 0 ) ret.increment(add);
    else ret.decrement(add);
@@ -235,7 +235,7 @@ ris::FrameIterator ris::FrameIterator::operator +(const int32_t &add) const {
 }
 
 //! Descrment by value
-ris::FrameIterator ris::FrameIterator::operator -(const int32_t &sub) const {
+ris::FrameIterator ris::FrameIterator::operator -(const int32_t sub) const {
    ris::FrameIterator ret(*this);
    if ( sub > 0 ) ret.decrement(-1 * sub);
    else ret.increment(-1 * sub);
@@ -248,14 +248,14 @@ int32_t ris::FrameIterator::operator -(const ris::FrameIterator &other) const {
 }
 
 //! Increment by value
-ris::FrameIterator & ris::FrameIterator::operator +=(const int32_t &add) {
+ris::FrameIterator & ris::FrameIterator::operator +=(const int32_t add) {
    if ( add > 0 ) this->increment(add);
    else this->decrement(add);
    return *this;
 }
 
 //! Descrment by value
-ris::FrameIterator & ris::FrameIterator::operator -=(const int32_t &sub) {
+ris::FrameIterator & ris::FrameIterator::operator -=(const int32_t sub) {
    if ( sub > 0 ) this->decrement(-1 * sub);
    else this->increment(-1 * sub);
    return *this;
