@@ -221,7 +221,7 @@ class Node(object):
         attr['groups']      = self._groups
         attr['path']        = self._path
         attr['expand']      = self._expand
-        attr['nodes']       = odict({k:v for k,v in self._nodes.items() if not v.inGroup('NoServe')})
+        attr['nodes']       = odict({k:None for k,v in self._nodes.items() if not v.inGroup('NoServe')})
         attr['props']       = []
         attr['funcs']       = {}
 
@@ -239,7 +239,7 @@ class Node(object):
         return (pr.interfaces.VirtualFactory, (attr,))
 
     def __contains__(self, item):
-        return item in self._nodes.values()
+        return item in self.nodes.values()
 
     def add(self,node):
         """Add node as sub-node"""
@@ -279,7 +279,6 @@ class Node(object):
 
         # Add to primary list
         self._nodes[node.name] = node 
-
 
     def _addArrayNode(self, node):
 
@@ -354,7 +353,7 @@ class Node(object):
         incGroups is an optional group or list of groups that this node must be part of
         excGroups is an optional group or list of groups that this node must not be part of
         """
-        return odict([(k,n) for k,n in self._nodes.items() if (n.isinstance(typ) and \
+        return odict([(k,n) for k,n in self.nodes.items() if (n.isinstance(typ) and \
                 ((excTyp is None) or (not n.isinstance(excTyp))) and \
                 n.filterByGroup(incGroups,excGroups))])
 
@@ -385,7 +384,7 @@ class Node(object):
         Get a recursive list of variables and commands.
         """
         lst = []
-        for key,value in self._nodes.items():
+        for key,value in self.nodes.items():
             if value.isinstance(pr.BaseVariable):
                 lst.append(value)
             else:
@@ -426,7 +425,7 @@ class Node(object):
         Get a recursive list of devices
         """
         lst = []
-        for key,value in self._nodes.items():
+        for key,value in self.nodes.items():
             if value.isinstance(pr.Device):
                 lst.append(value)
                 lst.extend(value.deviceList)
@@ -475,7 +474,7 @@ class Node(object):
             typ = pr.Node
 
         found = []
-        for node in self._nodes.values():
+        for node in self.nodes.values():
             if node.isinstance(typ):
                 for prop, value in kwargs.items():
                     if not hasattr(node, prop):
@@ -504,7 +503,7 @@ class Node(object):
             nodeTypes = [pr.Node]
 
         # Recursively call the function
-        for key, node in self._nodes.items():
+        for key, node in self.nodes.items():
             if any(isinstance(node, typ) for typ in nodeTypes):
                 node.callRecursive(func, nodeTypes, **kwargs)
 
@@ -528,11 +527,6 @@ class Node(object):
         for grp in parent.groups:
             self.addToGroup(grp)
 
-    def _exportNodes(self,daemon):
-        for k,n in self._nodes.items():
-            daemon.register(n)
-            n._exportNodes(daemon)
-
     def _getDict(self,modes,incGroups,excGroups):
         """
         Get variable values in a dictionary starting from this level.
@@ -540,7 +534,7 @@ class Node(object):
         modes is a list of variable modes to include.
         """
         data = odict()
-        for key,value in self._nodes.items():
+        for key,value in self.nodes.items():
             if value.filterByGroup(incGroups,excGroups):
                 nv = value._getDict(modes=modes,incGroups=incGroups,excGroups=excGroups)
             if nv is not None:
@@ -580,8 +574,8 @@ class Node(object):
             value[*][*] will match a variable named value[2][3].
         """
         # Node matches name in node list
-        if name in self._nodes:
-            return [self._nodes[name]]
+        if name in self.nodes:
+            return [self.nodes[name]]
 
         # Otherwise we may need to slice an array
         else:
