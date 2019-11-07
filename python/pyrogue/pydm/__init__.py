@@ -41,5 +41,8 @@ def runPyDM(serverList='localhost:9090', root=None, ui=None, title=None,sizeX=80
                                hide_nav_bar=True, 
                                hide_menu_bar=True, 
                                hide_status_bar=True)
+
+    print(f"Running GUI. Close window, hit cntrl-c or send SIGTERM to {os.getpid()} to exit.")
+
     app.exec()
 
