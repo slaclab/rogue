@@ -28,6 +28,9 @@ namespace rogue {
    namespace interfaces {
       namespace stream {
 
+         class Frame;
+         class Buffer;
+
          //! Frame iterator
          /** The FrameIterator class imeplements a C++ standard random access iterator
           * with a base type of uint8_t.
@@ -38,10 +41,10 @@ namespace rogue {
 
             friend class Frame;
 
+            private:
+
                // Creator
                FrameIterator(std::shared_ptr<rogue::interfaces::stream::Frame> frame, bool write, bool end);
-
-            private:
 
                // write flag
                bool write_;
