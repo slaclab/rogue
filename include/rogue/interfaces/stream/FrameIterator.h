@@ -41,10 +41,10 @@ namespace rogue {
 
             friend class Frame;
 
+            private:
+
                // Creator
                FrameIterator(std::shared_ptr<rogue::interfaces::stream::Frame> frame, bool write, bool end);
-
-            private:
 
                // write flag
                bool write_;
