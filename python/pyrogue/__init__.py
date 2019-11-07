@@ -8,6 +8,8 @@
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
 import sys
+import os
+import signal
 
 MIN_PYTHON = (3,6)
 if sys.version_info < MIN_PYTHON:
@@ -22,6 +24,28 @@ from pyrogue._Device    import *
 from pyrogue._Memory    import *
 from pyrogue._Root      import *
 from pyrogue._PollQueue import *
+
+def waitCntrlC():
+    """Helper Function To Wait For Cntrl-c"""
+
+    class monitorSignal(object):
+        def __init__(self):
+            self.runEnable = True
+
+        def receiveSignal(self,*args):
+            print("Got SIGTERM, exiting")
+            self.runEnable = False
+
+    mon = monitorSignal()
+    signal.signal(signal.SIGTERM, mon.receiveSignal)
+
+    print(f"Running. Hit cntrl-c or send SIGTERM to {os.getpid()} to exit.")
+    try:
+        while mon.runEnable:
+            time.sleep(0.5)
+    except KeyboardInterrupt:
+        print("Got cntrl-c, exiting")
+        return
 
 def streamConnect(source, dest):
     """
