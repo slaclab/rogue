@@ -128,6 +128,8 @@ class VariableLink(QObject):
             for i in self._variable.enum:
                 self._widget.addItem(self._variable.enum[i])
 
+            self._widget.installEventFilter(self)
+
         elif self._variable.minimum is not None and self._variable.maximum is not None and \
              self._variable.disp == '{}' and self._variable.mode != 'RO':
             self._widget = QSpinBox();
@@ -136,6 +138,8 @@ class VariableLink(QObject):
             self._widget.valueChanged.connect(self.sbChanged)
 
             self.updateGui.connect(self._widget.setValue)
+
+            self._widget.installEventFilter(self)
 
         else:
             self._widget = QLineEdit()
@@ -311,6 +315,12 @@ class VariableLink(QObject):
         self._inEdit = True
         self._variable.setDisp(self._widget.itemText(value))
         self._inEdit = False
+
+    def eventFilter(self, obj, event):
+        if event.type() == QEvent.Wheel:
+            return True
+        else:
+            return False
 
 
 class VariableWidget(QWidget):
