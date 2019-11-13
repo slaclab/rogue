@@ -906,8 +906,12 @@ def yamlToData(stream='',fName=None):
     PyrogueLoader.add_constructor(yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG,construct_mapping)
     PyrogueLoader.add_constructor('!include',include_mapping)
 
+    # Use passed string
+    if fName is None:
+        return yaml.load(stream,Loader=PyrogueLoader)
+
     # Main or sub-file is in a zip
-    if '.zip' in fName:
+    elif '.zip' in fName:
         base = fName.split('.zip')[0] + '.zip'
         sub = fName.split('.zip')[1][1:] # Strip leading '/'
 
