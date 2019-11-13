@@ -20,7 +20,7 @@ from pydm.widgets.frame import PyDMFrame
 from pydm.widgets import PyDMLineEdit, PyDMLabel, PyDMSpinbox, PyDMPushButton, PyDMEnumComboBox
 from pyrogue.pydm.data_plugins.rogue_plugin import nodeFromAddress
 from pyrogue.interfaces import VirtualClient
-from qtpy.QtCore import Qt, Property, Slot
+from qtpy.QtCore import Qt, Property, Slot, QEvent
 from qtpy.QtWidgets import QVBoxLayout, QHBoxLayout, QMenu, QDialog, QPushButton
 from qtpy.QtWidgets import QTreeWidgetItem, QTreeWidget, QLineEdit, QFormLayout, QLabel
 import re
@@ -164,6 +164,7 @@ class VariableHolder(QTreeWidgetItem):
             w = PyDMEnumComboBox(parent=None, init_channel=self._path)
             w.alarmSensitiveContent = False
             w.alarmSensitiveBorder  = True
+            w.installEventFilter(self._top)
 
         elif self._var.minimum is not None and self._var.maximum is not None and self._var.disp == '{}' and self._var.mode != 'RO':
             w = PyDMSpinbox(parent=None, init_channel=self._path)
@@ -173,6 +174,7 @@ class VariableHolder(QTreeWidgetItem):
             w.alarmSensitiveContent = False
             w.alarmSensitiveBorder  = True
             w.showStepExponent      = False
+            w.installEventFilter(self._top)
 
         else:
             w = PyDMLineEdit(parent=None, init_channel=self._path + '/disp')
@@ -275,4 +277,10 @@ class VariableTree(PyDMFrame):
             self._excGroups = None
         else:
             self._excGroups = value.split(',')
+
+    def eventFilter(self, obj, event):
+        if event.type() == QEvent.Wheel:
+            return True
+        else:
+            return False
 
