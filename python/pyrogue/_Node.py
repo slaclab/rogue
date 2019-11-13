@@ -603,7 +603,10 @@ def _iterateDict(d, keys):
 
     # Single item
     elif keys[0].isdigit():
-        subList = [d[int(keys[0])]]
+        try:
+            subList = [d[int(keys[0])]]
+        except:
+            subList = []
 
     # Slice
     else:
