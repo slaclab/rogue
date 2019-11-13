@@ -896,8 +896,8 @@ def yamlToData(stream='',fName=None):
         else:
             filename = node
 
-        # Recursive call
-        return yamlToData(fName=filename)
+        # Recursive call, flatten relative jumps
+        return yamlToData(fName=os.path.abspath(filename))
 
     def construct_mapping(loader, node):
         loader.flatten_mapping(node)
