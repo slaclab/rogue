@@ -871,6 +871,10 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
             self._updateQueue.task_done()
 
 def yamlToData(stream='',fName=None):
+    """
+    Load yaml to data structure.
+    A yaml string or file path may be passed.
+    """
 
     log = pr.logInit(name='yamlToData')
 
