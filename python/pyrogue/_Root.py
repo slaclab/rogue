@@ -716,6 +716,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                 for fn in lst:
                     d = yamlToData(fName=fn)
                     self._setDictRoot(d=d,writeEach=writeEach,modes=modes,incGroups=incGroups,excGroups=excGroups)
+
                 if not writeEach: self._write()
 
             if self.InitAfterConfig.value():
