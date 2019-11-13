@@ -896,6 +896,7 @@ def yamlToData(stream='',fName=None):
         else:
             filename = node
 
+        # Recursive call
         return yamlToData(fName=filename)
 
     def construct_mapping(loader, node):
