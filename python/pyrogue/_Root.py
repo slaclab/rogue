@@ -714,22 +714,8 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         try:
             with self.pollBlock(), self.updateGroup():
                 for fn in lst:
-                    self._log.debug("loadYaml: loading {}".format(fn))
-
-                    if '.zip' in fn:
-                        base = fn.split('.zip')[0] + '.zip'
-                        sub = fn.split('.zip')[1][1:] # Strip leading '/'
-
-                        with zipfile.ZipFile(base, 'r') as myzip:
-                            with myzip.open(sub) as myfile:
-                                d = yamlToData(myfile.read())
-
-                    else:
-                        with open(fn,'r') as f:
-                            d = yamlToData(f.read())
-
+                    d = yamlToData(fName=fn)
                     self._setDictRoot(d=d,writeEach=writeEach,modes=modes,incGroups=incGroups,excGroups=excGroups)
-
                 if not writeEach: self._write()
 
             if self.InitAfterConfig.value():
@@ -883,19 +869,43 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
             # Set done
             self._updateQueue.task_done()
 
-def yamlToData(stream):
-    """Load yaml to data structure"""
+def yamlToData(stream='',fName=None):
+
+    log = pr.logInit(name='yamlToData')
 
     class PyrogueLoader(yaml.Loader):
         pass
+
+    def include_mapping(loader, node):
+        if fName is not None:
+            filename = os.path.join(os.path.dirname(fName), loader.construct_scalar(node))
+        else:
+            filename = node
+
+        return yamlToData(fName=filename)
 
     def construct_mapping(loader, node):
         loader.flatten_mapping(node)
         return odict(loader.construct_pairs(node))
 
     PyrogueLoader.add_constructor(yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG,construct_mapping)
+    PyrogueLoader.add_constructor('!include',include_mapping)
 
-    return yaml.load(stream, Loader=PyrogueLoader)
+    if '.zip' in fName:
+        base = fName.split('.zip')[0] + '.zip'
+        sub = fName.split('.zip')[1][1:] # Strip leading '/'
+
+        log.debug("loading {} from zipfile {}".format(sub,base))
+
+        with zipfile.ZipFile(base, 'r') as myzip:
+            with myzip.open(sub) as myfile:
+                return yaml.load(myfile.read(),Loader=PyrogueLoader)
+
+    else:
+        log.debug("loading {}".format(fName))
+        with open(fName,'r') as f:
+            return yaml.load(f.read(),Loader=PyrogueLoader)
+
 
 def dataToYaml(data):
     """Convert data structure to yaml"""
