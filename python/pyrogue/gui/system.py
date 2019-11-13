@@ -427,8 +427,10 @@ class SystemWidget(QWidget):
 
         self.logCount = 0
 
+        self.updateLog.connect(self.updateSyslog)
         root.SystemLog.addListener(self.varListener)
-        self.updateSyslog(root.SystemLog.getVariableValue(read=False))
+
+        self.updateLog.emit(root.SystemLog.valueDisp())
 
         pb = QPushButton('Clear Log')
         pb.clicked.connect(self.resetLog)
@@ -436,8 +438,9 @@ class SystemWidget(QWidget):
 
         QCoreApplication.processEvents()
 
-    def updateSyslog(self,varVal):
-        lst = jsonpickle.decode(varVal.value)
+    @pyqtSlot(str)
+    def updateSyslog(self,value):
+        lst = jsonpickle.decode(value)
 
         if len(lst) == 0:
             self.systemLog.clear()
@@ -483,7 +486,7 @@ class SystemWidget(QWidget):
         name = path.split('.')[-1]
 
         if name == 'SystemLog':
-            self.updateSyslog(value)
+            self.updateLog.emit(value.valueDisp)
 
     @pyqtSlot()
     def hardReset(self):
