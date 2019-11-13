@@ -877,8 +877,17 @@ def yamlToData(stream='',fName=None):
         pass
 
     def include_mapping(loader, node):
-        if fName is not None:
-            filename = os.path.join(os.path.dirname(fName), loader.construct_scalar(node))
+        rel = loader.construct_scalar(node)
+
+        # Filename starts with absolute path
+        if rel[0] == '/':
+            filename = rel
+
+        # Filename is relative and we know the base path
+        elif fName is not None:
+            filename = os.path.join(os.path.dirname(fName), rel)
+
+        # File is relative without a base path, assume cwd
         else:
             filename = node
 
@@ -891,6 +900,7 @@ def yamlToData(stream='',fName=None):
     PyrogueLoader.add_constructor(yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG,construct_mapping)
     PyrogueLoader.add_constructor('!include',include_mapping)
 
+    # Main or sub-file is in a zip
     if '.zip' in fName:
         base = fName.split('.zip')[0] + '.zip'
         sub = fName.split('.zip')[1][1:] # Strip leading '/'
@@ -901,6 +911,7 @@ def yamlToData(stream='',fName=None):
             with myzip.open(sub) as myfile:
                 return yaml.load(myfile.read(),Loader=PyrogueLoader)
 
+    # Non zip file
     else:
         log.debug("loading {}".format(fName))
         with open(fName,'r') as f:
