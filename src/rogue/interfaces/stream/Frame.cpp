@@ -311,22 +311,22 @@ void ris::Frame::setChannel(uint8_t channel) {
 
 //! Get write start iterator
 ris::Frame::iterator ris::Frame::beginRead() {
-   return ris::Frame::iterator(shared_from_this(),false,false);
+   return ris::FrameIterator(shared_from_this(), false, false);
 }
 
 //! Get write end iterator
 ris::Frame::iterator ris::Frame::endRead() {
-   return ris::Frame::iterator(shared_from_this(),false,true);
+   return ris::FrameIterator(shared_from_this(), false, true);
 }
 
 //! Get read start iterator
 ris::Frame::iterator ris::Frame::beginWrite() {
-   return ris::Frame::iterator(shared_from_this(),true,false);
+   return ris::FrameIterator(shared_from_this(), true, false);
 }
 
 //! Get end of payload iterator
 ris::Frame::iterator ris::Frame::endWrite() {
-   return ris::Frame::iterator(shared_from_this(),true,true);
+   return ris::FrameIterator(shared_from_this(), true, true);
 }
 
 #ifndef NO_PYTHON

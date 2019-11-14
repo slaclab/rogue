@@ -22,9 +22,11 @@ try:
     from PyQt5.QtWidgets import *
     from PyQt5.QtCore    import *
     from PyQt5.QtGui     import *
+    from PyQt5.QtNetwork import *
 except ImportError:
     from PyQt4.QtCore    import *
     from PyQt4.QtGui     import *
+    from PyQt4.QtNetwork import *
 
 import pyrogue
 import pyrogue.interfaces
@@ -35,14 +37,31 @@ import pyrogue.gui.system
 import threading
 import socket
 import sys
+import os
+import signal
 
-def runGui(root,incGroups=None,excGroups=None):
+def runGui(root,incGroups=None,excGroups=None,title=None,sizeX=800,sizeY=1000):
+
     appTop = QApplication(sys.argv)
+    RogueSignalWakeupHandler(appTop)
+
+    def signalRx(self,*args):
+        print("Got signal, exiting")
+        appTop.quit()
+
+    signal.signal(signal.SIGTERM, signalRx)
+    signal.signal(signal.SIGINT,  signalRx)
+
     guiTop = pyrogue.gui.GuiTop(incGroups=incGroups,excGroups=excGroups)
-    guiTop.setWindowTitle("Rogue Server: {}".format(socket.gethostname()))
+    if title is None:
+        title = "Rogue Server: {}".format(socket.gethostname())
+    guiTop.setWindowTitle(title)
     guiTop.addTree(root)
-    guiTop.resize(800,1000)
+    guiTop.resize(sizeX,sizeY)
+
+    print(f"Running GUI. Close window, hit cntrl-c or send SIGTERM to {os.getpid()} to exit.")
     appTop.exec_()
+
 
 def application(argv):
     return QApplication(argv)
@@ -129,4 +148,38 @@ class GuiTop(QWidget):
         self.sys = pyrogue.gui.system.SystemWidget(root=root,parent=self.tab)
         self.tab.addTab(self.sys,root.name)
         self.adjustSize()
+
+
+class RogueSignalWakeupHandler(QAbstractSocket):
+
+    def __init__(self, parent=None):
+        super().__init__(QAbstractSocket.UdpSocket, parent)
+        self.old_fd = None
+        # Create a socket pair
+        self.wsock, self.rsock = socket.socketpair(type=socket.SOCK_DGRAM)
+        # Let Qt listen on the one end
+        self.setSocketDescriptor(self.rsock.fileno())
+        # And let Python write on the other end
+        self.wsock.setblocking(False)
+        self.old_fd = signal.set_wakeup_fd(self.wsock.fileno())
+        # First Python code executed gets any exception from
+        # the signal handler, so add a dummy handler first
+        self.readyRead.connect(lambda : None)
+        # Second handler does the real handling
+        self.readyRead.connect(self._readSignal)
+
+    def __del__(self):
+        # Restore any old handler on deletion
+        if self.old_fd is not None and signal and signal.set_wakeup_fd:
+            signal.set_wakeup_fd(self.old_fd)
+
+    def _readSignal(self):
+        # Read the written byte.
+        # Note: readyRead is blocked from occuring again until readData()
+        # was called, so call it, even if you don't need the value.
+        data = self.readData(1)
+        # Emit a Qt signal for convenience
+        self.signalReceived.emit(data[0])
+
+    signalReceived = pyqtSignal(int)
 

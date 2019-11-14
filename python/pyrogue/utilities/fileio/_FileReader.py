@@ -16,74 +16,116 @@
 # copied, modified, propagated, or distributed except according to the terms 
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
-import rogue.utilities
-import rogue.utilities.fileio
 import pyrogue
 import rogue
+
+import os
+import struct
+import numpy
+from collections import namedtuple
+
+RogueHeaderSize  = 8
+RogueHeaderPack  = 'IHBB'
+
+# Default header as a named tuple
+RogueHeader = namedtuple( 'RogueHeader',
+                         [ 'size'                ,  # 4 Bytes, uint32, I
+                           'flags'               ,  # 2 bytes, uint16, H
+                           'error'               ,  # 1 bytes, uint8,  B
+                           'channel'                # 1 bytes, uint8,  B
+                         ] )
 
 
 class FileReader(object):
 
-    def __init__(self, filename, configChan=None):
-        self._filename   = filename
+    def __init__(self, files, configChan=None):
         self._configChan = configChan
+        self._currFile   = None
+        self._fileSize   = 0
+        self._header     = None
+        self._data       = None
+        self._config     = {}
+        self._currFName  = ""
+        self._currCount  = 0
+        self._totCount   = 0
 
-        # Config tracking dictionary
-        self._config = {}
+        self._log = pyrogue.logInit(self)
 
-        # Open file and get size
-        self._fdata = open(self._filename,'rb')
-        self._fdata.seek(0,2)
-        self._tsize = self._fdata.tell()
-        self._fdata.seek(0,0)
+        if isinstance(files,list):
+            self._fileList = files
+        else:
+            self._fileList = [files]
 
-        # Init records
-        self._size    = 0
-        self._flags   = 0
-        self._error   = 0
-        self._channel = 0
-        self._data    = numpy.empty(0,dtype=numpy.int8)
+        # Check to make sure all the files are readable
+        for fn in self._fileList:
+            if not os.access(fn,os.R_OK):
+                raise rogue.GeneralError("filio.FileReader","Failed to read file {}".format(fn))
 
-
-    @property
-    def next(self):
+    def _nextRecord(self):
         while True:
 
-            # Check record size
-            if (self._fdata.tell() == self._tsize) or ((self._tsize - self._fdata.tell()) < 4):
+            # Hit end of file
+            if self._currFile.tell() == self._fileSize:
                 return False
 
-            self._size    = int.from_bytes(self._fdata.read(4),'little',signed=False)
-            self._flags   = int.from_bytes(self._fdata.read(2),'little',signed=False)
-            self._error   = int.from_bytes(self._fdata.read(1),'little',signed=False)
-            self._channel = int.from_bytes(self._fdata.read(1),'little',signed=False)
+            # Not enough data left in the file
+            if (self._fileSize - self._currFile.tell()) < RogueHeaderSize:
+                self._log.warning(f"File under run reading {self._currFName}")
+                return False
 
-            if (self._configChan is not None) and (self._configChan == self._channel):
-                self._processConfig()
-            else:
-                self._processData()
+            self._header = RogueHeader._make(struct.Struct(RogueHeaderPack).unpack(self._currFile.read(RogueHeaderSize)))
+            payload = self._header.size - 4
+
+            # Set next frame position
+            recEnd = self._currFile.tell() + payload
+
+            # Sanity check
+            if recEnd > self._fileSize:
+                self._log.warning(f"File under run reading {self._currFName}")
+                return False
+
+            # Process meta data
+            if self._configChan is not None and self._header.channel == self._configChan:
+                try:
+                    pyrogue.yamlUpdate(self._config, self._currFile.read(payload).decode('utf-8'))
+                except:
+                    self._log.warning(f"Error processing meta data in {self._currFName}")
+
+            # This is a data channel
+            else: 
+                try:
+                    self._data = numpy.fromfile(self._currFile, dtype=numpy.int8, count=payload)
+                except:
+                    raise rogue.GeneralError(f"fileio.FileReader","Failed to read data from {self._currFname}")
+
+                self._currCount += 1
+                self._totCount += 1
                 return True
 
+    def records(self):
+        """
+        Generator which returns (header, data) tuples
+        """
+        self._config = {}
+        self._currCount = 0
+        self._totCount  = 0
 
-    @property
-    def size(self):
-        return self._size
+        for fn in self._fileList:
+            self._fileSize = os.path.getsize(fn)
+            self._currFName = fn
+            self._currCount = 0
 
-    @property
-    def flags(self):
-        return self._flags
+            self._log.debug(f"Processing data records from {self._currFName}")
+            with open(fn,'rb') as f:
+                self._currFile = f
 
-    @property
-    def error(self):
-        return self._error
+                while self._nextRecord():
+                    yield (self._header, self._data)
 
-    @property
-    def channel(self):
-        return self._channel
+            self._log.debug(f"Processed {self._currCount} data records from {self._currFName}")
 
-    @property
-    def data(self):
-        return self._data
+        self._log.debug(f"Processed a total of {self._totCount} data records")
+
 
     @property
     def configDict(self):
@@ -105,18 +147,8 @@ class FileReader(object):
 
         return obj
 
+    def __enter__(self):
+        return self
 
-    def _processConfig(self):
-        try:
-            pyrogue.yamlUpdate(self._config, self._fdata.read(sef._size).decode('utf-8'))
-        except:
-            raise rogue.GeneralError("filio.FileReader","Failed to read config from {}".format(self._filename))
-
-
-    def _processData(self):
-        try:
-            self._data = numpy.fromfile(self._fdata, dtype=numpy.int8, count=self._size)
-        except:
-            raise rogue.GeneralError("filio.FileReader","Failed to read data from {}".format(self._filename))
-
-
+    def __exit__(self, type, value, tb):
+        pass

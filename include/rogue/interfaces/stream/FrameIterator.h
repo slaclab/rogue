@@ -19,6 +19,7 @@
 **/
 #ifndef __ROGUE_INTERFACES_STREAM_FRAME_ITERATOR_H__
 #define __ROGUE_INTERFACES_STREAM_FRAME_ITERATOR_H__
+
 #include <stdint.h>
 #include <vector>
 #include <cstring>
@@ -26,6 +27,9 @@
 namespace rogue {
    namespace interfaces {
       namespace stream {
+
+         class Frame;
+         class Buffer;
 
          //! Frame iterator
          /** The FrameIterator class imeplements a C++ standard random access iterator
@@ -37,6 +41,11 @@ namespace rogue {
 
             friend class Frame;
 
+            private:
+
+               // Creator
+               FrameIterator(std::shared_ptr<rogue::interfaces::stream::Frame> frame, bool write, bool end);
+
                // write flag
                bool write_;
 
@@ -44,28 +53,29 @@ namespace rogue {
                std::shared_ptr<rogue::interfaces::stream::Frame> frame_;
 
                // Frame position
-               uint32_t framePos_;
+               int32_t framePos_;
 
                // Frame size
-               uint32_t frameSize_;
+               int32_t frameSize_;
 
                // current buffer
                std::vector<std::shared_ptr<rogue::interfaces::stream::Buffer> >::iterator buff_;
 
                // Buffer position
-               uint32_t buffPos_;
+               int32_t buffBeg_;
 
                // Buffer size
-               uint32_t buffSize_;
+               int32_t buffEnd_;
 
                // Current buffer iterator
                uint8_t * data_;
 
-               // Creator
-               FrameIterator(std::shared_ptr<rogue::interfaces::stream::Frame> frame, bool write, bool end);
 
-               // adjust position
-               void adjust(int32_t diff);
+               // increment position
+               inline void increment(int32_t diff);
+
+               // decrement position
+               inline void decrement(int32_t diff);
 
             public:
 
@@ -115,7 +125,7 @@ namespace rogue {
                 * @param offset Relative offset to access
                 * @return Data value at passed offset
                 */
-               uint8_t operator [](const uint32_t &offset) const;
+               uint8_t operator [](const uint32_t) const;
 
                //! Pre-increment the iterator position
                /** Increment the current iterator position by a single location
@@ -194,14 +204,14 @@ namespace rogue {
                 * @param add Positive or negative value to increment the current postion by.
                 * @return New iterator at the new position
                 */
-               rogue::interfaces::stream::FrameIterator operator +(const int32_t &add) const;
+               rogue::interfaces::stream::FrameIterator operator +(const int32_t add) const;
 
                //! Decrement by value
                /** Create a new iterator and decrement its position by the passed value.
                 * @param sub Positive or negative value to decrement the current postion by.
                 * @return New iterator at the new position
                 */
-               rogue::interfaces::stream::FrameIterator operator -(const int32_t &sub) const;
+               rogue::interfaces::stream::FrameIterator operator -(const int32_t sub) const;
 
                //! Subtract incrementers
                /** Return the difference between the current incrmentor position (left of -) and
@@ -215,14 +225,14 @@ namespace rogue {
                 * @param add Positive or negative value to increment the current postion by.
                 * @return Reference to current intertor at the new position
                 */
-               rogue::interfaces::stream::FrameIterator & operator +=(const int32_t &add);
+               rogue::interfaces::stream::FrameIterator & operator +=(const int32_t add);
 
                //! Decrement by value
                /** Decrement the current interator by the passed value
                 * @param sub Positive or negative value to decrement the current postion by.
                 * @return Reference to current intertor at the new position
                 */
-               rogue::interfaces::stream::FrameIterator & operator -=(const int32_t &sub);
+               rogue::interfaces::stream::FrameIterator & operator -=(const int32_t sub);
 
          };
 
