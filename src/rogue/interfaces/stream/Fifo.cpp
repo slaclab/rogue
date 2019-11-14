@@ -83,8 +83,8 @@ ris::Fifo::~Fifo() {
 void ris::Fifo::acceptFrame ( ris::FramePtr frame ) {
    uint32_t       size;
    ris::FramePtr  nFrame;
-   ris::Frame::iterator src;
-   ris::Frame::iterator dst;
+   ris::FrameIterator src;
+   ris::FrameIterator dst;
 
    // FIFO is full, drop frame
    if ( queue_.busy() ) return;
@@ -102,14 +102,14 @@ void ris::Fifo::acceptFrame ( ris::FramePtr frame ) {
 
       // Request a new frame to hold the data
       nFrame = reqFrame(size,true);
+      nFrame->setPayload(size);
 
       // Get destination pointer
-      src = frame->beginRead();
-      dst = nFrame->beginWrite();
+      src = frame->begin();
+      dst = nFrame->begin();
 
       // Copy the frame
       ris::copyFrame(src, size, dst);
-      nFrame->setPayload(size);
       nFrame->setError(frame->getError());
       nFrame->setChannel(frame->getChannel());
       nFrame->setFlags(frame->getFlags());

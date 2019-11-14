@@ -309,23 +309,33 @@ void ris::Frame::setChannel(uint8_t channel) {
    chan_ = channel;
 }
 
+//! Get start iterator
+ris::FrameIterator ris::Frame::begin() {
+   return ris::FrameIterator(shared_from_this(), false, false);
+}
+
+//! Get end iterator
+ris::FrameIterator ris::Frame::end() {
+   return ris::FrameIterator(shared_from_this(), false, true);
+}
+
 //! Get write start iterator
-ris::Frame::iterator ris::Frame::beginRead() {
+ris::FrameIterator ris::Frame::beginRead() {
    return ris::FrameIterator(shared_from_this(), false, false);
 }
 
 //! Get write end iterator
-ris::Frame::iterator ris::Frame::endRead() {
+ris::FrameIterator ris::Frame::endRead() {
    return ris::FrameIterator(shared_from_this(), false, true);
 }
 
 //! Get read start iterator
-ris::Frame::iterator ris::Frame::beginWrite() {
+ris::FrameIterator ris::Frame::beginWrite() {
    return ris::FrameIterator(shared_from_this(), true, false);
 }
 
 //! Get end of payload iterator
-ris::Frame::iterator ris::Frame::endWrite() {
+ris::FrameIterator ris::Frame::endWrite() {
    return ris::FrameIterator(shared_from_this(), true, true);
 }
 
@@ -347,7 +357,7 @@ void ris::Frame::readPy ( boost::python::object p, uint32_t offset ) {
                "Attempt to read %i bytes from frame at offset %i with size %i",count,offset,size));
    }
 
-   ris::Frame::iterator beg = this->beginRead() + offset;
+   ris::FrameIterator beg = this->begin() + offset;
    ris::fromFrame(beg, count, (uint8_t *)pyBuf.buf);
    PyBuffer_Release(&pyBuf);
 }
@@ -370,9 +380,9 @@ void ris::Frame::writePy ( boost::python::object p, uint32_t offset ) {
                "Attempt to write %i bytes to frame at offset %i with size %i",count,offset,size));
    }
 
-   ris::Frame::iterator beg = this->beginWrite() + offset;
-   ris::toFrame(beg, count, (uint8_t *)pyBuf.buf); 
    minPayload(offset+count);
+   ris::FrameIterator beg = this->begin() + offset;
+   ris::toFrame(beg, count, (uint8_t *)pyBuf.buf); 
    PyBuffer_Release(&pyBuf);
 }
 
@@ -395,7 +405,7 @@ boost::python::object ris::Frame::getNumpy (uint32_t offset, uint32_t count)
    uint8_t       *dst = reinterpret_cast<uint8_t *>(PyArray_DATA (arr));
 
    // Read the data
-   ris::Frame::iterator beg = this->beginRead() + offset;
+   ris::FrameIterator beg = this->begin() + offset;
    ris::fromFrame (beg, count, dst);
 
    // Transform to and return a boost python object
@@ -442,11 +452,11 @@ void ris::Frame::putNumpy ( boost::python::object p, uint32_t offset ) {
 
    uint8_t *src = reinterpret_cast<uint8_t *>(PyArray_DATA (arr));
 
-   // Write the numpy data to the array
-   ris::Frame::iterator beg = this->beginWrite() + offset;
-   ris::toFrame (beg, count, src); 
-   minPayload   (end);
+   minPayload (end);
 
+   // Write the numpy data to the array
+   ris::FrameIterator beg = this->begin() + offset;
+   ris::toFrame (beg, count, src); 
 
    // If were forced to make a temporary copy, release it
    if (!ctg) {

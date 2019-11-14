@@ -65,7 +65,7 @@ void ris::Slave::setDebug(uint32_t debug, std::string name) {
 
 //! Accept a frame from master
 void ris::Slave::acceptFrame ( ris::FramePtr frame ) {
-   ris::Frame::iterator it;
+   ris::FrameIterator it;
 
    uint32_t count;
    uint8_t  val;
@@ -83,7 +83,7 @@ void ris::Slave::acceptFrame ( ris::FramePtr frame ) {
       sprintf(buffer,"     ");
 
       count = 0;
-      for (it = frame->beginRead(); (count < debug_) && (it != frame->endRead()); ++it) {
+      for (it = frame->begin(); (count < debug_) && (it != frame->end()); ++it) {
          count++;
          val = *it;
 

@@ -117,7 +117,7 @@ bool rps::SrpV3::setupHeader(rim::TransactionPtr tran, uint32_t *header, uint32_
 
 //! Post a transaction
 void rps::SrpV3::doTransaction(rim::TransactionPtr tran) {
-   ris::Frame::iterator fIter;
+   ris::FrameIterator fIter;
    rim::Transaction::iterator tIter;
    ris::FramePtr  frame;
    uint32_t frameSize;
@@ -151,7 +151,7 @@ void rps::SrpV3::doTransaction(rim::TransactionPtr tran) {
    // Setup iterators
    rogue::GilRelease noGil;
    rim::TransactionLockPtr lock = tran->lock();
-   fIter = frame->beginWrite();
+   fIter = frame->begin();
    tIter = tran->begin();
 
    // Write header
@@ -172,7 +172,7 @@ void rps::SrpV3::doTransaction(rim::TransactionPtr tran) {
 
 //! Accept a frame from master
 void rps::SrpV3::acceptFrame ( ris::FramePtr frame ) {
-   ris::Frame::iterator fIter;
+   ris::FrameIterator fIter;
    rim::Transaction::iterator tIter;
    rim::TransactionPtr tran;
    uint32_t header[HeadLen/4];
@@ -198,11 +198,11 @@ void rps::SrpV3::acceptFrame ( ris::FramePtr frame ) {
    }
 
    // Get the tail
-   fIter = frame->endRead()-TailLen;
+   fIter = frame->end()-TailLen;
    ris::fromFrame(fIter,TailLen,tail);
 
    // Get the header
-   fIter = frame->beginRead();
+   fIter = frame->begin();
    ris::fromFrame(fIter,HeadLen,header);
 
    // Extract the id

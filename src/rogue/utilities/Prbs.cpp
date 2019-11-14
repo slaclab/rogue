@@ -307,8 +307,8 @@ void ru::Prbs::resetCount() {
 
 //! Generate a data frame
 void ru::Prbs::genFrame (uint32_t size) {
-   ris::Frame::iterator frIter;
-   ris::Frame::iterator frEnd;
+   ris::FrameIterator frIter;
+   ris::FrameIterator frEnd;
    uint32_t      frSeq[MaxBytes/4];
    uint32_t      frSize[MaxBytes/4];
    uint32_t      wCount[MaxBytes/4];
@@ -336,8 +336,9 @@ void ru::Prbs::genFrame (uint32_t size) {
 
    // Get frame
    fr = reqFrame(size,true);
+   fr->setPayload(size);
 
-   frIter = fr->beginWrite();
+   frIter = fr->begin();
    frEnd  = frIter + size;
 
    // First word is sequence
@@ -365,7 +366,6 @@ void ru::Prbs::genFrame (uint32_t size) {
       }
    }
 
-   fr->setPayload(size);
    sendFrame(fr);
 
    // Update counters
@@ -383,8 +383,8 @@ void ru::Prbs::genFrame (uint32_t size) {
 
 //! Accept a frame from master
 void ru::Prbs::acceptFrame ( ris::FramePtr frame ) {
-   ris::Frame::iterator frIter;
-   ris::Frame::iterator frEnd;
+   ris::FrameIterator frIter;
+   ris::FrameIterator frEnd;
    uint32_t      frSeq[MaxBytes/4];
    uint32_t      frSize[MaxBytes/4];
    uint32_t      expSeq;
@@ -402,8 +402,8 @@ void ru::Prbs::acceptFrame ( ris::FramePtr frame ) {
    std::lock_guard<std::mutex> lock(pMtx_);
 
    size = frame->getPayload();
-   frIter = frame->beginRead();
-   frEnd  = frame->endRead();
+   frIter = frame->begin();
+   frEnd  = frame->end();
 
    // Check for frame errors
    if ( frame->getError() ) {
