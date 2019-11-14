@@ -114,12 +114,14 @@ class CommandLink(QObject):
                 for i in self._command.enum:
                     self._widget.addItem(self._command.enum[i])
                 self._widget.setCurrentIndex(self._widget.findText(self._command.valueDisp()))
+                self._widget.installEventFilter(self)
 
             elif self._command.minimum is not None and self._command.maximum is not None:
                 self._widget = QSpinBox();
                 self._widget.setMinimum(self._command.minimum)
                 self._widget.setMaximum(self._command.maximum)
                 self._widget.setValue(self._command.value())
+                self._widget.installEventFilter(self)
 
             else:
                 self._widget = QLineEdit()
@@ -141,6 +143,12 @@ class CommandLink(QObject):
                 pass
         else:
             self._command()
+
+    def eventFilter(self, obj, event):
+        if event.type() == QEvent.Wheel:
+            return True
+        else:
+            return False
 
 class CommandWidget(QWidget):
     def __init__(self, *, parent=None):

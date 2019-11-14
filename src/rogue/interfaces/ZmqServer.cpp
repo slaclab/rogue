@@ -92,8 +92,8 @@ void rogue::interfaces::ZmqServer::close() {
       threadEn_ = false;
       zmq_close(this->zmqPub_);
       zmq_close(this->zmqRep_);
-      zmq_ctx_destroy(this->zmqCtx_);
-      thread_->join();
+      //zmq_ctx_destroy(this->zmqCtx_);
+      //thread_->join();
    }
 }
 

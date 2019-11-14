@@ -59,7 +59,7 @@ Implementing a Master subclass in python is easy, but may result in a lower leve
            # size of the frame is set to the highest index written. 
            # Locations not explicity written, but below the highest written
            # index, will be considered valid, but may contain random data
-           ba = bytearray([i*2 for i in range 10])
+           ba = bytearray([i*2 for i in range (10)])
            frame.write(ba,50)
 
            # At this point locations 0 - 9 and 50 - 59 contain known values

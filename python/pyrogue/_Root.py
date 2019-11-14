@@ -511,7 +511,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         return obj
 
     @pr.expose
-    def saveAddressMap(root,fname):
+    def saveAddressMap(self,fname):
         try:
             with open(fname,'w') as f:
                 f.write("Path\t")
@@ -714,20 +714,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         try:
             with self.pollBlock(), self.updateGroup():
                 for fn in lst:
-                    self._log.debug("loadYaml: loading {}".format(fn))
-
-                    if '.zip' in fn:
-                        base = fn.split('.zip')[0] + '.zip'
-                        sub = fn.split('.zip')[1][1:] # Strip leading '/'
-
-                        with zipfile.ZipFile(base, 'r') as myzip:
-                            with myzip.open(sub) as myfile:
-                                d = yamlToData(myfile.read())
-
-                    else:
-                        with open(fn,'r') as f:
-                            d = yamlToData(f.read())
-
+                    d = yamlToData(fName=fn)
                     self._setDictRoot(d=d,writeEach=writeEach,modes=modes,incGroups=incGroups,excGroups=excGroups)
 
                 if not writeEach: self._write()
@@ -883,19 +870,63 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
             # Set done
             self._updateQueue.task_done()
 
-def yamlToData(stream):
-    """Load yaml to data structure"""
+def yamlToData(stream='',fName=None):
+    """
+    Load yaml to data structure.
+    A yaml string or file path may be passed.
+    """
+
+    log = pr.logInit(name='yamlToData')
 
     class PyrogueLoader(yaml.Loader):
         pass
+
+    def include_mapping(loader, node):
+        rel = loader.construct_scalar(node)
+
+        # Filename starts with absolute path
+        if rel[0] == '/':
+            filename = rel
+
+        # Filename is relative and we know the base path
+        elif fName is not None:
+            filename = os.path.join(os.path.dirname(fName), rel)
+
+        # File is relative without a base path, assume cwd
+        else:
+            filename = node
+
+        # Recursive call, flatten relative jumps
+        return yamlToData(fName=os.path.abspath(filename))
 
     def construct_mapping(loader, node):
         loader.flatten_mapping(node)
         return odict(loader.construct_pairs(node))
 
     PyrogueLoader.add_constructor(yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG,construct_mapping)
+    PyrogueLoader.add_constructor('!include',include_mapping)
 
-    return yaml.load(stream, Loader=PyrogueLoader)
+    # Use passed string
+    if fName is None:
+        return yaml.load(stream,Loader=PyrogueLoader)
+
+    # Main or sub-file is in a zip
+    elif '.zip' in fName:
+        base = fName.split('.zip')[0] + '.zip'
+        sub = fName.split('.zip')[1][1:] # Strip leading '/'
+
+        log.debug("loading {} from zipfile {}".format(sub,base))
+
+        with zipfile.ZipFile(base, 'r') as myzip:
+            with myzip.open(sub) as myfile:
+                return yaml.load(myfile.read(),Loader=PyrogueLoader)
+
+    # Non zip file
+    else:
+        log.debug("loading {}".format(fName))
+        with open(fName,'r') as f:
+            return yaml.load(f.read(),Loader=PyrogueLoader)
+
 
 def dataToYaml(data):
     """Convert data structure to yaml"""
