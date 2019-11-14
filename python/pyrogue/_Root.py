@@ -511,7 +511,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         return obj
 
     @pr.expose
-    def saveAddressMap(root,fname):
+    def saveAddressMap(self,fname):
         try:
             with open(fname,'w') as f:
                 f.write("Path\t")
