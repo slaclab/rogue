@@ -17,7 +17,6 @@ import sys
 import os
 import glob
 import rogue.interfaces.memory
-import yaml
 import threading
 from collections import OrderedDict as odict
 import logging
@@ -722,11 +721,11 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
                         with zipfile.ZipFile(base, 'r') as myzip:
                             with myzip.open(sub) as myfile:
-                                d = yamlToData(myfile.read())
+                                d = pr.yamlToData(myfile.read())
 
                     else:
                         with open(fn,'r') as f:
-                            d = yamlToData(f.read())
+                            d = pr.yamlToData(f.read())
 
                     self._setDictRoot(d=d,writeEach=writeEach,modes=modes,incGroups=incGroups,excGroups=excGroups)
 
@@ -750,7 +749,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
         if readFirst: self._read()
         try:
-            return dataToYaml({self.name:self._getDict(modes=modes,incGroups=incGroups,excGroups=excGroups)})
+            return pr.dataToYaml({self.name:self._getDict(modes=modes,incGroups=incGroups,excGroups=excGroups)})
         except Exception as e:
             pr.logException(self._log,e)
             return ""
@@ -766,7 +765,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         are completed. Bulk writes provide better performance when updating a large
         quanitty of variables.
         """
-        d = yamlToData(yml)
+        d = pr.yamlToData(yml)
 
         with self.pollBlock(), self.updateGroup():
             self._setDictRoot(d=d,writeEach=writeEach,modes=modes,incGroups=incGroups,excGroups=excGroups)
@@ -868,7 +867,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                 # Generate yaml stream
                 try:
                     if len(strm) > 0:
-                        self._sendYamlFrame(dataToYaml(strm))
+                        self._sendYamlFrame(pr.dataToYaml(strm))
 
                 except Exception as e:
                     pr.logException(self._log,e)
@@ -882,74 +881,4 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
             # Set done
             self._updateQueue.task_done()
-
-def yamlToData(stream):
-    """Load yaml to data structure"""
-
-    class PyrogueLoader(yaml.Loader):
-        pass
-
-    def construct_mapping(loader, node):
-        loader.flatten_mapping(node)
-        return odict(loader.construct_pairs(node))
-
-    PyrogueLoader.add_constructor(yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG,construct_mapping)
-
-    return yaml.load(stream, Loader=PyrogueLoader)
-
-def dataToYaml(data):
-    """Convert data structure to yaml"""
-
-    class PyrogueDumper(yaml.Dumper):
-        pass
-
-    def _var_representer(dumper, data):
-        if type(data.value) == bool:
-            enc = 'tag:yaml.org,2002:bool'
-        elif data.enum is not None:
-            enc = 'tag:yaml.org,2002:str'
-        elif type(data.value) == int:
-            enc = 'tag:yaml.org,2002:int'
-        elif type(data.value) == float:
-            enc = 'tag:yaml.org,2002:float'
-        else:
-            enc = 'tag:yaml.org,2002:str'
-
-        if data.valueDisp is None:
-            return dumper.represent_scalar('tag:yaml.org,2002:null',u'null')
-        else:
-            return dumper.represent_scalar(enc, data.valueDisp)
-
-    def _dict_representer(dumper, data):
-        return dumper.represent_mapping(yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG, data.items())
-
-    PyrogueDumper.add_representer(pr.VariableValue, _var_representer)
-    PyrogueDumper.add_representer(odict, _dict_representer)
-
-    return yaml.dump(data, Dumper=PyrogueDumper, default_flow_style=False)
-
-def keyValueUpdate(old, key, value):
-    d = old
-    parts = key.split('.')
-    for part in parts[:-1]:
-        if part not in d:
-            d[part] = {}
-        d = d.get(part)
-    d[parts[-1]] = value
-
-
-def dictUpdate(old, new):
-    for k,v in new.items():
-        if '.' in k:
-            keyValueUpdate(old, k, v)
-        elif k in old:
-            old[k].update(v)
-        else:
-            old[k] = v
-
-def yamlUpdate(old, new):
-    dictUpdate(old, yamlToData(new))
-
-def recreate_OrderedDict(name, values):
-    return odict(values['items'])
 

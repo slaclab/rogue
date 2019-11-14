@@ -10,6 +10,7 @@
 import sys
 import os
 import signal
+import yaml
 
 MIN_PYTHON = (3,6)
 if sys.version_info < MIN_PYTHON:
@@ -181,6 +182,81 @@ def busConnect(source,dest):
         slave = dest._getMemorySlave()
 
     master._setSlave(slave)
+
+
+def yamlToData(stream):
+    """Load yaml to data structure"""
+
+    class PyrogueLoader(yaml.Loader):
+        pass
+
+    def construct_mapping(loader, node):
+        loader.flatten_mapping(node)
+        return odict(loader.construct_pairs(node))
+
+    PyrogueLoader.add_constructor(yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG,construct_mapping)
+
+    return yaml.load(stream, Loader=PyrogueLoader)
+
+
+def dataToYaml(data):
+    """Convert data structure to yaml"""
+
+    class PyrogueDumper(yaml.Dumper):
+        pass
+
+    def _var_representer(dumper, data):
+        if type(data.value) == bool:
+            enc = 'tag:yaml.org,2002:bool'
+        elif data.enum is not None:
+            enc = 'tag:yaml.org,2002:str'
+        elif type(data.value) == int:
+            enc = 'tag:yaml.org,2002:int'
+        elif type(data.value) == float:
+            enc = 'tag:yaml.org,2002:float'
+        else:
+            enc = 'tag:yaml.org,2002:str'
+
+        if data.valueDisp is None:
+            return dumper.represent_scalar('tag:yaml.org,2002:null',u'null')
+        else:
+            return dumper.represent_scalar(enc, data.valueDisp)
+
+    def _dict_representer(dumper, data):
+        return dumper.represent_mapping(yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG, data.items())
+
+    PyrogueDumper.add_representer(pr.VariableValue, _var_representer)
+    PyrogueDumper.add_representer(odict, _dict_representer)
+
+    return yaml.dump(data, Dumper=PyrogueDumper, default_flow_style=False)
+
+
+def keyValueUpdate(old, key, value):
+    d = old
+    parts = key.split('.')
+    for part in parts[:-1]:
+        if part not in d:
+            d[part] = {}
+        d = d.get(part)
+    d[parts[-1]] = value
+
+
+def dictUpdate(old, new):
+    for k,v in new.items():
+        if '.' in k:
+            keyValueUpdate(old, k, v)
+        elif k in old:
+            old[k].update(v)
+        else:
+            old[k] = v
+
+
+def yamlUpdate(old, new):
+    dictUpdate(old, pr.yamlToData(new))
+
+
+def recreate_OrderedDict(name, values):
+    return odict(values['items'])
 
 
 # Add __version__ attribute with the module version number
