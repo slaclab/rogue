@@ -46,7 +46,7 @@ def write_files():
     comp = rogue.utilities.StreamZip()
 
     pyrogue.streamConnect(prbs,fwrU.getChannel(0))
-    pyrogue.streamTap(prbs,comp)
+    pyrogue.streamConnect(prbs,comp)
     pyrogue.streamConnect(comp,fwrC.getChannel(0))
 
     fwrC.open("compressed.dat")
