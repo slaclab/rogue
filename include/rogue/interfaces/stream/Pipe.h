@@ -18,8 +18,8 @@
  * contained in the LICENSE.txt file.
  *-----------------------------------------------------------------------------
 **/
-#ifndef __ROGUE_INTERFACES_STREAM_MASTER_H__
-#define __ROGUE_INTERFACES_STREAM_MASTER_H__
+#ifndef __ROGUE_INTERFACES_STREAM_PIPE_H__
+#define __ROGUE_INTERFACES_STREAM_PIPE_H__
 #include <stdint.h>
 #include <rogue/interfaces/stream/Master.h>
 #include <rogue/interfaces/stream/Slave.h>

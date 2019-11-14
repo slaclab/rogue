@@ -40,7 +40,7 @@ void rps::SrpV0::setup_python() {
 #ifndef NO_PYTHON
 
    bp::class_<ris::Pipe, ris::PipePtr, bp::bases<ris::Master,ris::Slave>, boost::noncopyable >("Pipe",bp::init<>());
-      .def("__equals__", $ris::Pipe::connect)
+      .def("__equals__", &ris::Pipe::connect)
 
    bp::implicitly_convertible<ris::PipePtr, ris::MasterPtr>();
    bp::implicitly_convertible<ris::PipePtr, ris::SlavePtr>();
