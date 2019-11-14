@@ -57,7 +57,8 @@ ris::Pipe::~Pipe() {}
 
 //! Bi-Directional Connect
 void ris::Pipe::connect(ris::PipePtr other) {
+   ris::PipePtr loc = std::static_pointer_cast<ris::Pipe>(shared_from_this());
    this->addSlave(other);
-   other->addSlave(shared_from_this<ris::Pipe>());
+   other->addSlave(loc);
 }
 

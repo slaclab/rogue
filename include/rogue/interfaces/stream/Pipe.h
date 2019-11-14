@@ -34,8 +34,7 @@ namespace rogue {
           * has both a master and slave interface.
           */
          class Pipe : public rogue::interfaces::stream::Master,
-                      public rogue::interfaces::stream::Slave,
-                      public std::enable_shared_from_this<rogue::interfaces::stream::Pipe> {
+                      public rogue::interfaces::stream::Slave {
 
             public:
 

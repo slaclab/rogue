@@ -81,6 +81,7 @@ rim::Master::~Master() { }
 
 //! Set slave
 void rim::Master::setSlave ( rim::SlavePtr slave ) {
+   printf("Set slave called on memory master\n");
    rogue::GilRelease noGil;
    std::lock_guard<std::mutex> lock(mastMtx_);
    slave_ = slave;
