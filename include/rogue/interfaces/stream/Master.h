@@ -65,6 +65,13 @@ namespace rogue {
                // Destroy the object
                virtual ~Master();
 
+               //! Get Slave Count
+               /** Return the number of slaves.
+                *
+                * Exposed as _slaveCount() to Python. 
+                */
+               uint32_t slaveCount ();
+
                //! Add a slave object
                /** Multiple slaves are allowed.
                 * The first added slave is the Slave object from which the Master will request

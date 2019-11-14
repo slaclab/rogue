@@ -45,6 +45,11 @@ ris::Master::Master() { }
 //! Destructor
 ris::Master::~Master() { }
 
+// Get Slave Count
+uint32_t ris::Master::slaveCount () {
+   return slaves_.size();
+}
+
 //! Add slave
 void ris::Master::addSlave ( ris::SlavePtr slave ) {
    rogue::GilRelease noGil;
@@ -109,6 +114,7 @@ void ris::Master::setup_python() {
 
    bp::class_<ris::Master, ris::MasterPtr, boost::noncopyable>("Master",bp::init<>())
       .def("_addSlave",      &ris::Master::addSlave)
+      .def("_slaveCount",    &ris::Master::slaveCount)
       .def("_reqFrame",      &ris::Master::reqFrame)
       .def("_sendFrame",     &ris::Master::sendFrame)
    ;
