@@ -21,6 +21,7 @@
 #include <stdint.h>
 #include <rogue/interfaces/stream/Master.h>
 #include <rogue/interfaces/stream/Slave.h>
+#include <rogue/interfaces/stream/Pipe.h>
 
 namespace ris = rogue::interfaces::stream;
 
@@ -36,11 +37,11 @@ ris::PipePtr ris::Pipe::create () {
 }
 
 //! Setup class in python
-void rps::SrpV0::setup_python() {
+void ris::Pipe::setup_python() {
 #ifndef NO_PYTHON
 
-   bp::class_<ris::Pipe, ris::PipePtr, bp::bases<ris::Master,ris::Slave>, boost::noncopyable >("Pipe",bp::init<>());
-      .def("__equals__", &ris::Pipe::connect)
+   bp::class_<ris::Pipe, ris::PipePtr, bp::bases<ris::Master,ris::Slave>, boost::noncopyable >("Pipe",bp::init<>())
+      .def("__equals__", &ris::Pipe::connect);
 
    bp::implicitly_convertible<ris::PipePtr, ris::MasterPtr>();
    bp::implicitly_convertible<ris::PipePtr, ris::SlavePtr>();
@@ -55,8 +56,8 @@ ris::Pipe::Pipe() : ris::Master(), ris::Slave() { }
 ris::Pipe::~Pipe() {}
 
 //! Bi-Directional Connect
-void ris::connect(ris::PipePtr other) {
+void ris::Pipe::connect(ris::PipePtr other) {
    this->addSlave(other);
-   other->addSlave(this);
+   other->addSlave(shared_from_this<ris::Pipe>());
 }
 
