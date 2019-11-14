@@ -95,8 +95,8 @@ and a slave. This Fifo is configured to only copy the first 20 bytes of the Fram
    # Connect the src and dst
    pyrogue.streamConnect(src, dst)
 
-   # Add the FIFO as a stream tap
-   pyrogue.streamTap(src, fifo)
+   # Add the FIFO as a second slave
+   pyrogue.streamConnect(src, fifo)
 
    # Connect the monitor to the FIfo output
    pyrogue.streamConnect(fifo, mon)

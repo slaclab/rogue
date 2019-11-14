@@ -108,33 +108,15 @@ def streamConnect(source, dest):
     else:
         slave = dest._getStreamSlave()
 
-    master._setSlave(slave)
+    master._addSlave(slave)
 
 
 def streamTap(source, tap):
     """
-    Attach the passed dest object to the source for a streams
-    as a secondary destination.
-    Connect source and destination stream devices.
-    source is either a stream master sub class or implements
-    the _getStreamMaster call to return a contained master.
-    Similiarly dest is either a stream slave sub class or implements
-    the _getStreamSlave call to return a contained slave.
+    DEPRECATED!
     """
-
-    # Is object a native master or wrapped?
-    if isinstance(source,rogue.interfaces.stream.Master):
-        master = source
-    else:
-        master = source._getStreamMaster()
-
-    # Is object a native slave or wrapped?
-    if isinstance(tap,rogue.interfaces.stream.Slave):
-        slave = tap
-    else:
-        slave = tap._getStreamSlave()
-
-    master._addSlave(slave)
+    #print("******** Stream TAP is deprecated. Use streamConnect instead. ********")
+    streamConnect(source,tap)
 
 
 def streamConnectBiDir(deviceA, deviceB):

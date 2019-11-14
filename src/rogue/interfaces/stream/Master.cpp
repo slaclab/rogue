@@ -23,6 +23,7 @@
 #include <rogue/interfaces/stream/Frame.h>
 #include <rogue/interfaces/stream/FrameIterator.h>
 #include <rogue/GilRelease.h>
+#include <rogue/GeneralError.h>
 #include <memory>
 
 namespace ris  = rogue::interfaces::stream;
@@ -39,20 +40,12 @@ ris::MasterPtr ris::Master::create () {
 }
 
 //! Creator
-ris::Master::Master() { 
-   primary_ = ris::Slave::create();
-}
+ris::Master::Master() { }
 
 //! Destructor
 ris::Master::~Master() { }
 
-//! Set primary slave, used for buffer request forwarding
-void ris::Master::setSlave ( std::shared_ptr<interfaces::stream::Slave> slave ) {
-   rogue::GilRelease noGil;
-   primary_ = slave;
-}
-
-//! Add secondary slave
+//! Add slave
 void ris::Master::addSlave ( ris::SlavePtr slave ) {
    rogue::GilRelease noGil;
    std::lock_guard<std::mutex> lock(slaveMtx_);
@@ -64,28 +57,25 @@ ris::FramePtr ris::Master::reqFrame ( uint32_t size, bool zeroCopyEn ) {
    rogue::GilRelease noGil;
    std::lock_guard<std::mutex> lock(slaveMtx_);
 
-   return(primary_->acceptReq(size,zeroCopyEn));
+   if ( slaves_.size() == 0 )
+      throw(rogue::GeneralError("Master::reqFrame","Attempt to request frame without Slave"));
+
+   return(slaves_[0]->acceptReq(size,zeroCopyEn));
 }
 
 //! Push frame to slaves
 void ris::Master::sendFrame ( FramePtr frame) {
    std::vector<ris::SlavePtr> slaves;
-   std::vector<ris::SlavePtr>::iterator it;
-   ris::SlavePtr primary;
+   std::vector<ris::SlavePtr>::reverse_iterator rit;
 
    {
       rogue::GilRelease noGil;
       std::lock_guard<std::mutex> lock(slaveMtx_);
       slaves = slaves_;
-      primary = primary_;
    }
 
-   if ( primary_ != NULL ) {
-      for (it = slaves_.begin(); it != slaves_.end(); ++it) 
-         (*it)->acceptFrame(frame);
-
-      primary_->acceptFrame(frame);
-   }
+   for (rit = slaves.rbegin(); rit != slaves.rend(); ++rit) 
+      (*rit)->acceptFrame(frame);
 }
 
 // Ensure passed frame is a single buffer
@@ -118,7 +108,6 @@ void ris::Master::setup_python() {
 #ifndef NO_PYTHON
 
    bp::class_<ris::Master, ris::MasterPtr, boost::noncopyable>("Master",bp::init<>())
-      .def("_setSlave",      &ris::Master::setSlave)
       .def("_addSlave",      &ris::Master::addSlave)
       .def("_reqFrame",      &ris::Master::reqFrame)
       .def("_sendFrame",     &ris::Master::sendFrame)

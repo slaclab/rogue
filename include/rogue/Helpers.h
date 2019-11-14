@@ -21,15 +21,15 @@
 #define __ROGUE_HELPERS_H__
 
 // Connect stream 
-#define rogueStreamConnect(src,dst) src->setSlave(dst);
+#define rogueStreamConnect(src,dst) src->addSlave(dst);
 
-// Add stream tap
+// Add stream tap, DEPRECATED
 #define rogueStreamTap(src,dst) src->addSlave(dst);
 
 // Connect stream bi-directionally
 #define rogueStreamConnectBiDir(devA,devB) \
-   devA->setSlave(devB); \
-   devB->setSlave(devA);
+   devA->addSlave(devB); \
+   devB->addSlave(devA);
 
 // Connect memory bus
 #define rogueBusConnect(src,dst) src->setSlave(dst);
