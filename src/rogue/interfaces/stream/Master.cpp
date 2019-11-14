@@ -108,6 +108,7 @@ void ris::Master::setup_python() {
 #ifndef NO_PYTHON
 
    bp::class_<ris::Master, ris::MasterPtr, boost::noncopyable>("Master",bp::init<>())
+      .def("__rshift__",     $ris::Master::addSlave)
       .def("_addSlave",      &ris::Master::addSlave)
       .def("_reqFrame",      &ris::Master::reqFrame)
       .def("_sendFrame",     &ris::Master::sendFrame)

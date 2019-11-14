@@ -44,6 +44,7 @@ rim::MasterPtr rim::Master::create () {
 void rim::Master::setup_python() {
 #ifndef NO_PYTHON
    bp::class_<rim::Master, rim::MasterPtr, boost::noncopyable>("Master",bp::init<>())
+      .def("__rshift__",          $rim::Master::setSlave)
       .def("_setSlave",           &rim::Master::setSlave)
       .def("_getSlave",           &rim::Master::getSlave)
       .def("_reqSlaveId",         &rim::Master::reqSlaveId)
