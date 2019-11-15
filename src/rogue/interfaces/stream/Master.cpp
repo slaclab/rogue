@@ -172,7 +172,7 @@ void ris::Master::equalsPy ( boost::python::object p ) {
    }
 
    if ( rMst == NULL || rSlv == NULL || lSlv == NULL ) 
-      throw(rogue::GeneralError::create("Master::equalsPy","Attempt to connect to incompatable slave"));
+      throw(rogue::GeneralError::create("stream::Master::equalsPy","Attempt to use == with an incompatable stream slave"));
 
    // Make connections
    addSlave(rSlv);
@@ -200,7 +200,7 @@ bp::object ris::Master::rshiftPy ( bp::object p ) {
    }
 
    if ( slv != NULL ) addSlave(slv);
-   else throw(rogue::GeneralError::create("Master::rshiftPy","Attempt to connect master to incompatable slave"));
+   else throw(rogue::GeneralError::create("stream::Master::rshiftPy","Attempt to use >> with incompatable stream slave"));
 
    return p;
 }

@@ -411,7 +411,7 @@ void rim::Master::rshiftPy ( bp::object p ) {
 
    // Success
    if ( slv != NULL ) setSlave(slv);
-   else throw(rogue::GeneralError::create("Master::rshiftPy","Attempt to connect master to incompatable slave"));
+   else throw(rogue::GeneralError::create("memory::Master::rshiftPy","Attempt to use >> operator with incompatable memory slave"));
 }
 
 #endif

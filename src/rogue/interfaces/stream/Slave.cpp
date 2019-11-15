@@ -179,7 +179,7 @@ bp::object ris::Slave::lshiftPy ( bp::object p ) {
    }
 
    if ( mst != NULL ) mst->addSlave(rogue::EnableSharedFromThis<ris::Slave>::shared_from_this());
-   else throw(rogue::GeneralError::create("Slave::lshiftPy","Attempt to connect slave to incompatable master"));
+   else throw(rogue::GeneralError::create("stream::Slave::lshiftPy","Attempt to use << with incompatable stream master"));
 
    return p;
 }
