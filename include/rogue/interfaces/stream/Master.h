@@ -41,8 +41,8 @@ namespace rogue {
 
          //! Stream master class
          /** This class serves as the source for sending Frame data to a Slave. Each master
-          * interfaces to one or more stream slave objects. The frst stream Slave is used 
-          * to allocated new Frame objects and it the last Slave to receive frame data.
+          * interfaces to one or more stream slave objects. The first stream Slave is used 
+          * to allocated new Frame objects and it is the last Slave to receive frame data.
           */
          class Master : public rogue::EnableSharedFromThis<rogue::interfaces::stream::Master> {
 

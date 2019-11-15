@@ -45,7 +45,7 @@ And in C++:
 
    *myMaster >> mySlave;
 
-In some cases rogue entties can serve as both a stream Master and Slave. This is often the case when
+In some cases rogue entities can serve as both a stream Master and Slave. This is often the case when
 using a network protocol such as UDP or TCP. Two dual purpose enpoints can be connected together
 to create a bi-directional data stream using the following command in python:
 

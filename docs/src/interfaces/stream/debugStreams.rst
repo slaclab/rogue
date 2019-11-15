@@ -1,12 +1,12 @@
-.. _interfaces_stream_debug_streams:
+i.. _interfaces_stream_debug_streams:
 
 =================
 Debugging Streams
 =================
 
 The base stream :ref:`interfaces_stream_Slave` class can server as a debug Frame receiver. This can
-be usefull when you want to display some or all of the data streams used in your designs. In most
-cases the debug Slave module will be used as a secndary slave. In order to enable debugging the setDebug()
+be useful when you want to display some or all of the data streams used in your designs. In most
+cases the debug Slave module will be used as a secondary slave. In order to enable debugging the setDebug()
 method of the Stream class must be called. 
 
 The following is an example of using the base Slave class as a debug monitor on a stream between 
