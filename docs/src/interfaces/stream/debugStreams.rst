@@ -32,8 +32,8 @@ between an existing Master and Slave instance.
    # Connect the src and dst
    pyrogue.streamConnect(src, dst)
 
-   # Add the debug slave as a stream tap
-   pyrogue.streamTap(src, dbg)
+   # Add the debug slave as a second slave
+   pyrogue.streamConnect(src, dbg)
 
 Below is the equivalent code in C++
 

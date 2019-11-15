@@ -584,6 +584,9 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         stream. If this list is not NULL only these variables will be included.
         """
 
+        # Don't send if there are not any Slaves connected
+        if self._slaveCount == 0: return
+
         # Inherit include and exclude groups from global if not passed
         if incGroups is None: incGroups = self._streamIncGroups
         if excGroups is None: excGroups = self._streamExcGroups
@@ -825,7 +828,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                         val = v._doUpdate()
 
                         # Add to stream
-                        if v.filterByGroup(self._streamIncGroups, self._streamExcGroups):
+                        if self._slaveCount() != 0 and v.filterByGroup(self._streamIncGroups, self._streamExcGroups):
                             strm[p] = val
 
                         # Add to zmq publish

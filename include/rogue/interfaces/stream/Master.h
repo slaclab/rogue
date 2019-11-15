@@ -36,14 +36,10 @@ namespace rogue {
 
          //! Stream master class
          /** This class serves as the source for sending Frame data to a Slave. Each master
-          * interfaces to a primary stream Slave and multiple secondar stream Slave ojects.
-          * The primary stream Slave is used to allocated new Frame objects and it the
-          * last Slave to receive frame data.
+          * interfaces to one or more stream slave objects. The frst stream Slave is used 
+          * to allocated new Frame objects and it the last Slave to receive frame data.
           */
          class Master {
-
-               // Primary slave. Used for request forwards.
-               std::shared_ptr<rogue::interfaces::stream::Slave> primary_;
 
                // Vector of slaves
                std::vector<std::shared_ptr<rogue::interfaces::stream::Slave> > slaves_;
@@ -69,19 +65,18 @@ namespace rogue {
                // Destroy the object
                virtual ~Master();
 
-               //! Set primary slave
-               /** The primary slave is the Slave object from which the Master will request
-                * new Frame allocations. The primary Slave is also the last Slave object
-                * which will receive the Frame. Only one Slave can be set as Primary.
+               //! Get Slave Count
+               /** Return the number of slaves.
                 *
-                * Exposed as _setSlave() to Python. Called in Python by the
-                * pyrogue.streamConnect() and pyrogue.streamConnectBiDir() methods.
-                * @param slave Stream Slave pointer (SlavePtr)
+                * Exposed as _slaveCount() to Python. 
                 */
-               void setSlave ( std::shared_ptr<rogue::interfaces::stream::Slave> slave );
+               uint32_t slaveCount ();
 
-               //! Add secondary slave
-               /** Multiple secondary slaves are allowed.
+               //! Add a slave object
+               /** Multiple slaves are allowed.
+                * The first added slave is the Slave object from which the Master will request
+                * new Frame allocations. The first Slave is also the last Slave object
+                * which will receive the Frame.
                 *
                 * Exposed as _addSlave() to Python. Called in Python by the
                 * pyrogue.streamTop() method.

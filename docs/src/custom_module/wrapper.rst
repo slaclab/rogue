@@ -37,7 +37,7 @@ the output of the :ref:`custom_makefile` step.
                                          mode='RO', pollInterval=1, value=0,
                                          localGet=self._mySlave.getTotalBytes))
 
-      # Method called by streamConnect, streamTap and streamConnectBiDir to access slave
+      # Method called by streamConnect and streamConnectBiDir to access slave
       def _getStreamSlave(self):
           return self._mySlave
 
@@ -70,7 +70,7 @@ the output of the :ref:`custom_makefile` step.
           self.add(pyrogue.LocalCommand(name='MyFrameGen',description='Generate a single frame',
                                         function=self._myMast.myFrameGen))
 
-      # Method called by streamConnect, streamTap and streamConnectBiDir to access master
+      # Method called by streamConnect and streamConnectBiDir to access master
       def _getStreamMaster(self):
           return self._myMast
 
