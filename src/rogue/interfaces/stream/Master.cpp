@@ -85,7 +85,7 @@ void ris::Master::sendFrame ( FramePtr frame) {
          (*it)->acceptFrame(frame);
 
       primary_->acceptFrame(frame);
-}
+   }
 }
 
 // Ensure passed frame is a single buffer
