@@ -36,10 +36,10 @@ def data_path():
     prbsRx = rogue.utilities.Prbs()
 
     # Client stream
-    pyrogue.streamConnect(prbsTx,serv)
+    serv << prbsTx
 
     # Server stream
-    pyrogue.streamConnect(client,prbsRx)
+    prbsRx << client
 
     time.sleep(5)
 

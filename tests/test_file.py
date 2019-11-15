@@ -45,9 +45,8 @@ def write_files():
 
     comp = rogue.utilities.StreamZip()
 
-    pyrogue.streamConnect(prbs,fwrU.getChannel(0))
-    pyrogue.streamConnect(prbs,comp)
-    pyrogue.streamConnect(comp,fwrC.getChannel(0))
+    prbs >> fwrU.getChannel(0)
+    prbs >> comp >> fwrC.getChannel(0)
 
     fwrC.open("compressed.dat")
     fwrU.open("uncompressed.dat")
@@ -70,10 +69,8 @@ def read_files():
 
     comp = rogue.utilities.StreamUnZip()
 
-    pyrogue.streamConnect(frdU,prbsU)
-
-    pyrogue.streamConnect(frdC,comp)
-    pyrogue.streamConnect(comp,prbsC)
+    frdU >> prbsU
+    frdC >> comp >> prbsC
 
     frdU.open("uncompressed.dat.1")
     frdC.open("compressed.dat.1")

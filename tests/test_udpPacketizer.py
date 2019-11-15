@@ -101,19 +101,16 @@ def data_path(ver,jumbo):
     coo = RssiOutOfOrder(period=0)
 
     # Client stream
-    pyrogue.streamConnect(prbsTx,cPack.application(0))
-    #pyrogue.streamConnectBiDir(cRssi.application(),cPack.transport())
+    prbsTx >> cPack.application(0)
     cRssi.application() == cPack.transport()
 
     # Insert out of order in the outbound direction
-    pyrogue.streamConnect(cRssi.transport(),coo)
-    pyrogue.streamConnect(coo, client)
-    pyrogue.streamConnect(client,cRssi.transport())
+    cRssi.transport() >> coo >> client >> cRssi.transport()
 
     # Server stream
-    pyrogue.streamConnectBiDir(serv,sRssi.transport())
-    pyrogue.streamConnectBiDir(sRssi.application(),sPack.transport())
-    pyrogue.streamConnect(sPack.application(0),prbsRx)
+    serv == sRssi.transport()
+    sRssi.application() == sPack.transport()
+    sPack.application(0) >> prbsRs
 
     # Start RSSI with out of order disabled
     sRssi.start()
