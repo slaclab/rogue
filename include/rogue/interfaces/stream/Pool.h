@@ -24,6 +24,7 @@
 #include <thread>
 #include <memory>
 #include <rogue/Queue.h>
+#include <rogue/EnableSharedFromThis.h>
 
 namespace rogue {
    namespace interfaces {
@@ -47,7 +48,7 @@ namespace rogue {
           * A subclass can be created with intercepts the Frame requests and allocates 
           * Frame and Buffer objects from an alternative source such as a hardware DMA driver.
           */
-         class Pool : public std::enable_shared_from_this<rogue::interfaces::stream::Pool> {
+         class Pool : public rogue::EnableSharedFromThis<rogue::interfaces::stream::Pool> {
 
                // Mutex
                std::mutex mtx_;

@@ -26,6 +26,7 @@
 #include <vector>
 #include <thread>
 #include <mutex>
+#include <rogue/EnableSharedFromThis.h>
 
 namespace rogue {
    namespace interfaces {

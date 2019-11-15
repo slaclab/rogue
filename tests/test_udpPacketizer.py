@@ -102,7 +102,8 @@ def data_path(ver,jumbo):
 
     # Client stream
     pyrogue.streamConnect(prbsTx,cPack.application(0))
-    pyrogue.streamConnectBiDir(cRssi.application(),cPack.transport())
+    #pyrogue.streamConnectBiDir(cRssi.application(),cPack.transport())
+    cRssi.application() == cPack.transport()
 
     # Insert out of order in the outbound direction
     pyrogue.streamConnect(cRssi.transport(),coo)
