@@ -10,7 +10,7 @@ A memory master and slave are connected using the following commands in python:
 
    import pyrogue
 
-   # Assume we are crated a memory tree with two masters, masterA and masterB 
+   # Assume we are creating a memory tree with two masters, masterA and masterB 
    # connected to hubA & hubB. We then connect those two hubs to the a SrpV3 gateway.
 
    # Connect masterA to hubA & hubB to the srpV3 Slave
@@ -23,7 +23,7 @@ The equivelent code in C++ is show below:
 
 .. code-block:: c
 
-   // Assume we are crated a memory tree with two masters, masterA and masterB 
+   // Assume we are creating a memory tree with two masters, masterA and masterB 
    // connected to hubA & hubB. We then connect those two hubs to the a SrpV3 gateway.
 
    *( *masterA >> hubA) >> srpV3;
