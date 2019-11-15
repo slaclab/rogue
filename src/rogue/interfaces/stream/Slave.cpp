@@ -178,7 +178,7 @@ bp::object ris::Slave::lshiftPy ( bp::object p ) {
       if ( get_master.check() ) mst = get_master();
    }
 
-   if ( mst != NULL ) mst->addSlave(std::static_pointer_cast<ris::Slave>(shared_from_this()));
+   if ( mst != NULL ) mst->addSlave(rogue::EnableSharedFromThis<ris::Slave>::shared_from_this());
    else throw(rogue::GeneralError::create("Slave::lshiftPy","Attempt to connect slave to incompatable master"));
 
    return p;

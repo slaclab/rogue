@@ -23,6 +23,7 @@
 #include <vector>
 #include <map>
 #include <rogue/interfaces/memory/Master.h>
+#include <rogue/EnableSharedFromThis.h>
 
 #ifndef NO_PYTHON
 #include <boost/python.hpp>
@@ -43,7 +44,7 @@ namespace rogue {
           *
           * The Slave object provides mechanisms for tracking current transactions.
           */
-         class Slave : public std::enable_shared_from_this<rogue::interfaces::memory::Slave> {
+         class Slave : public rogue::EnableSharedFromThis<rogue::interfaces::memory::Slave> {
 
                // Class instance counter
                static uint32_t classIdx_;

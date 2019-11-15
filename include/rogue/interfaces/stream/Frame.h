@@ -26,6 +26,7 @@
 #include <stdint.h>
 #include <vector>
 #include <mutex>
+#include <rogue/EnableSharedFromThis.h>
 
 #ifndef NO_PYTHON
 #include <boost/python.hpp>
@@ -49,7 +50,7 @@ namespace rogue {
           * the stream data. A FrameIterator object is used to read and write data from and
           * to the Frame.
          */
-         class Frame : public std::enable_shared_from_this<rogue::interfaces::stream::Frame> {
+         class Frame : public rogue::EnableSharedFromThis<rogue::interfaces::stream::Frame> {
 
                friend class Buffer;
                friend class FrameLock;

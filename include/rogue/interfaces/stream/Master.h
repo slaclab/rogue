@@ -26,6 +26,7 @@
 #include <vector>
 #include <thread>
 #include <mutex>
+#include <rogue/EnableSharedFromThis.h>
 
 #ifndef NO_PYTHON
 #include <boost/python.hpp>
@@ -43,7 +44,8 @@ namespace rogue {
           * interfaces to one or more stream slave objects. The frst stream Slave is used 
           * to allocated new Frame objects and it the last Slave to receive frame data.
           */
-         class Master : public std::enable_shared_from_this<rogue::interfaces::stream::Master> {
+         class Master : public rogue::EnableSharedFromThis<rogue::interfaces::stream::Master> {
+         //class Master {
 
                // Vector of slaves
                std::vector<std::shared_ptr<rogue::interfaces::stream::Slave> > slaves_;

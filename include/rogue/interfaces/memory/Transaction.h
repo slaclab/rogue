@@ -25,6 +25,7 @@
 #include <thread>
 #include <mutex>
 #include <condition_variable>
+#include <rogue/EnableSharedFromThis.h>
 
 #ifndef NO_PYTHON
 #include <boost/python.hpp>
@@ -45,7 +46,7 @@ namespace rogue {
           * transaction ID which is used to track the transaction. Transactions are never
           * created directly, instead they are created in the Master() class.
           */ 
-         class Transaction : public std::enable_shared_from_this<rogue::interfaces::memory::Transaction> {
+         class Transaction : public rogue::EnableSharedFromThis<rogue::interfaces::memory::Transaction> {
             friend class TransactionLock;
             friend class Master;
             friend class Hub;
