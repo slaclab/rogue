@@ -295,9 +295,10 @@ namespace rogue {
                void setError(uint8_t error);
 
                //! Get read start FrameIterator
-               /** The read start iterator points to the start of the Frame
-                * and operates in read mode. This iterator should not be used 
-                * for updating the frame.
+               /** The read start iterator points to the start of payload
+                * data and is typically used to access or update data
+                * in a received frame, or a frame where the payload
+                * size has already been set.
                 * 
                 * Not exposed to Python
                 * @return FrameIterator pointing to beginning of payload
@@ -307,7 +308,7 @@ namespace rogue {
                //! Get read end FrameIterator
                 /** This iterator is used to detect when the end of the 
                 * Frame payload is reached when iterating through the Frame 
-                * during a read operation.
+                * using a beginRead() iterator.
                 * 
                 * Not exposed to Python
                 * @return FrameIterator read end position
@@ -316,9 +317,10 @@ namespace rogue {
 
                //! Get write start FrameIterator
                /** The write start iterator points to the start of the Frame
-                * and operates in write mode. This iterator should not be used 
-                * for reading from the frame. Using this iterator to update
-                * the frame does not adjust the Frame payload size.
+                * and is typically used to access data in a newly created
+                * frame where the payload size has not yet been set.
+                * Using this iterator to update the frame does not adjust 
+                * the Frame payload size.
                 * 
                 * Not exposed to Python
                 * @return FrameIterator pointing to beginning of payload
@@ -328,7 +330,7 @@ namespace rogue {
                //! Get write end FrameIterator
                 /** This iterator is used to detect when the end of the 
                 * available frame space is reached when iterator through
-                * the frame during a write operation.
+                * the frame using a beginWrite() iterator.
                 * 
                 * Not exposed to Python
                 * @return FrameIterator write end position

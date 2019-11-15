@@ -20,7 +20,7 @@ from pydm.widgets.frame import PyDMFrame
 from pydm.widgets import PyDMLineEdit, PyDMLabel, PyDMSpinbox, PyDMPushButton, PyDMEnumComboBox
 from pyrogue.pydm.data_plugins.rogue_plugin import nodeFromAddress
 from pyrogue.interfaces import VirtualClient
-from qtpy.QtCore import Qt, Property, Slot, QPoint
+from qtpy.QtCore import Qt, Property, Slot, QPoint, QEvent
 from qtpy.QtWidgets import QVBoxLayout, QHBoxLayout, QLabel, QSizePolicy, QMenu, QDialog, QPushButton, QComboBox
 from qtpy.QtWidgets import QTreeWidgetItem, QTreeWidget, QLineEdit, QFormLayout, QGroupBox
 
@@ -130,6 +130,7 @@ class CommandHolder(QTreeWidgetItem):
                 self._widget.setToolTip(self._cmd.description)
 
                 self._widget.currentTextChanged.connect(self._argChanged)
+                self._widget.installEventFilter(self._top)
 
             else:
                 self._widget = QLineEdit()
@@ -233,4 +234,10 @@ class CommandTree(PyDMFrame):
             self._excGroups = None
         else:
             self._excGroups = value.split(',')
+
+    def eventFilter(self, obj, event):
+        if event.type() == QEvent.Wheel:
+            return True
+        else:
+            return False
 
