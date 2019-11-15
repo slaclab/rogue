@@ -6,7 +6,7 @@ Debugging Streams
 
 The base stream :ref:`interfaces_stream_Slave` class can server as a debug Frame receiver. This can
 be usefull when you want to display some or all of the data streams used in your designs. In most
-cases the debug Slave module will be used as a stream tap. In order to enable debugging the setDebug()
+cases the debug Slave module will be used as a secndary slave. In order to enable debugging the setDebug()
 method of the Stream class must be called. 
 
 The following is an example of using the base Slave class as a debug monitor on a stream between 
@@ -30,17 +30,16 @@ between an existing Master and Slave instance.
    dbg.setDebug(100,"myDebug")
 
    # Connect the src and dst
-   pyrogue.streamConnect(src, dst)
+   src >> dst
 
    # Add the debug slave as a second slave
-   pyrogue.streamConnect(src, dbg)
+   src >> dbg
 
 Below is the equivalent code in C++
 
 .. code-block:: c
 
    #include <rogue/interfaces/stream/Fifo.h>
-   #include <rogue/Helpers.h>
    #include <MyCustomMaster.h>
 
    // Data source
@@ -56,8 +55,8 @@ Below is the equivalent code in C++
    dbg->setDebug(100,"myDebug");
 
    # Connect the src and dst
-   rogueStreamConnect(src, dst);
+   *src >> dst;
 
-   # Add the debug slave as a tap
-   rogueStreamTap(src, dbg);
+   # Add the debug slave as a second slave
+   *src >> dbg;
 

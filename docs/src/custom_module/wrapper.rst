@@ -41,6 +41,11 @@ the output of the :ref:`custom_makefile` step.
       def _getStreamSlave(self):
           return self._mySlave
 
+      # Support << operator
+      def __lshift__(self, other):
+          pyrogue.streamConnect(other,self)
+          return other
+
    class MyCustomMaster(pyrogue.Device):
 
       def __init__(self, *, name, **kwargs ):
@@ -73,4 +78,9 @@ the output of the :ref:`custom_makefile` step.
       # Method called by streamConnect and streamConnectBiDir to access master
       def _getStreamMaster(self):
           return self._myMast
+
+      # Support >> operator
+      def __rshift__(self, other):
+          pyrogue.streamConnect(self,other)
+          return other
 

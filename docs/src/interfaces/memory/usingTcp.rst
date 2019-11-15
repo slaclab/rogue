@@ -29,7 +29,7 @@ able to interface with either a Python or C++ client.
    tcp = rogue.interfaces.memory.TcpServer("*",8000)
 
    # Connect the bus
-   pyrogue.busConnect(tcp, srpv3)
+   tcp >> srpV3
 
 Python Client
 =============
@@ -49,7 +49,7 @@ to interface with either a Python or C++ server.
    tcp = rogue.interfaces.memory.TcpClient("192.168.1.1",8000)
 
    # Connect the bus
-   pyrogue.busConnect(mst, tcp)
+   mst >> tcp
 
 C++ Server
 ==========
@@ -61,7 +61,6 @@ able to interface with either a Python or C++ client.
 
    #include <rogue/interfaces/memory/TcpServer.h>
    #include <rogue/protocols/srp/SrpV3.h>
-   #include <rogue/Helpers.h>
 
    // Local memory SrpV3 bridge
    rogue::protocols::srp::SrpV3Ptr srpv3 = rogue.protocols.srp.SrpV3::create();
@@ -71,7 +70,7 @@ able to interface with either a Python or C++ client.
    rogue::interfaces::memory::TcpServerPtr tcp = rogue.interfaces.memory.TcpServer::create("*",8000);
 
    // Connect the bus
-   rogueBusConnect(tcp, srpv3);
+   *tcp >> srpV3;
 
 C++ Client
 ==========
@@ -82,7 +81,6 @@ to interface with either a Python or C++ server.
 .. code-block:: c
 
    #include <rogue/interfaces/memory/TcpClient.h>
-   #include <rogue/Helpers.h>
 
    // Memory bus master (from master example)
    MyMasterPtr mst = MyMaster::create();
@@ -91,5 +89,5 @@ to interface with either a Python or C++ server.
    rogue::interfaces::memory::TcpClientPtr tcp = rogue::interfaces::memory::TcpClient::create("192.168.1.1",8000);
 
    // Connect the bus
-   rogueBusConnect(mst, tcp);
+   *mst >> tcp;
 

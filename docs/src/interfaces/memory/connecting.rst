@@ -11,33 +11,22 @@ A memory master and slave are connected using the following commands in python:
    import pyrogue
 
    # Assume we are crated a memory tree with two masters, masterA and masterB 
-   # connected to hubA. We then have hubA and an additional masterC, connected
-   # the a SrpV3 gateway.
+   # connected to hubA & hubB. We then connect those two hubs to the a SrpV3 gateway.
 
-   # Connect masterA and masterB to hubA
-   pyrogue.busConnect(masterA, hubA)
-   pyrogue.busConnect(masterB, hubA)
+   # Connect masterA to hubA & hubB to the srpV3 Slave
+   masterA >> hubA >> srpV3
 
-   # Connect hubA and masterC to the srpV3 Slave
-   pyrogue.busConnect(hubA, srpv3)
-   pyrogue.busConnect(masterC, srpv3)
-
+   # Connections can also go in the reverse order
+   srpV3 << hubB << masterB
 
 The equivelent code in C++ is show below:
 
 .. code-block:: c
 
-   #include <rogue/Helpers.h>
-
    // Assume we are crated a memory tree with two masters, masterA and masterB 
-   // connected to hubA. We then have hubA and an additional masterC, connected
-   // the a SrpV3 gateway.
+   // connected to hubA & hubB. We then connect those two hubs to the a SrpV3 gateway.
 
-   // Connect masterA and masterB to hubA
-   rogueBusConnect(masterA, hubA)
-   rogueBusConnect(masterB, hubA)
+   *( *masterA >> hubA) >> srpV3;
 
-   // Connect hubA and masterC to the srpV3 Slave
-   rogueBusConnect(hubA, srpv3)
-   rogueBusConnect(masterC, srpv3)
-
+   // Or the reserve
+   *( *srpV3 << hubB) << masterB;
