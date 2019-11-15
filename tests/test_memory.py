@@ -57,6 +57,7 @@ class AxiVersion(pr.Device):
             pollInterval = 1
         ))
 
+
 class DummyTree(pr.Root):
 
     def __init__(self):
@@ -73,8 +74,7 @@ class DummyTree(pr.Root):
         # Create a memory gateway
         self.ms = rogue.interfaces.memory.TcpServer("127.0.0.1",9080);
         #self.ms >> self.sim
-        self.ms.__rshift__(self.sim)
-        #pr.busConnect(self.ms,self.sim)
+        self.sim << self.ms
 
         # Create a memory gateway
         self.mc = rogue.interfaces.memory.TcpClient("127.0.0.1",9080);

@@ -231,6 +231,9 @@ namespace rogue {
                 */
                static bool anyBits(boost::python::object src, uint32_t lsb, uint32_t size);
 
+               //! Support >> operator in python
+               void rshiftPy ( boost::python::object p );
+
 #endif
 
             protected:

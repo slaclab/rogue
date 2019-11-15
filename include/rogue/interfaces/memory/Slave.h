@@ -43,7 +43,7 @@ namespace rogue {
           *
           * The Slave object provides mechanisms for tracking current transactions.
           */
-         class Slave {
+         class Slave : public std::enable_shared_from_this<rogue::interfaces::memory::Slave> {
 
                // Class instance counter
                static uint32_t classIdx_;
@@ -176,6 +176,14 @@ namespace rogue {
                 * @param transaction Transaction pointer as TransactionPtr
                 */
                virtual void doTransaction(std::shared_ptr<rogue::interfaces::memory::Transaction> transaction);
+
+#ifndef NO_PYTHON
+
+               //! Support << operator in python
+               void lshiftPy ( boost::python::object p );
+
+#endif
+
          };
 
          //! Alias for using shared pointer as SlavePtr

@@ -44,7 +44,6 @@ rim::MasterPtr rim::Master::create () {
 void rim::Master::setup_python() {
 #ifndef NO_PYTHON
    bp::class_<rim::Master, rim::MasterPtr, boost::noncopyable>("Master",bp::init<>())
-      .def("__rshift__",          &rim::Master::setSlave)
       .def("_setSlave",           &rim::Master::setSlave)
       .def("_getSlave",           &rim::Master::getSlave)
       .def("_reqSlaveId",         &rim::Master::reqSlaveId)
@@ -62,6 +61,7 @@ void rim::Master::setup_python() {
       .staticmethod("_setBits")
       .def("_anyBits",            &rim::Master::anyBits)
       .staticmethod("_anyBits")
+      .def("__rshift__",          &rim::Master::rshiftPy)
    ;
 #endif
 }
@@ -81,7 +81,6 @@ rim::Master::~Master() { }
 
 //! Set slave
 void rim::Master::setSlave ( rim::SlavePtr slave ) {
-   printf("Set slave called on memory master\n");
    rogue::GilRelease noGil;
    std::lock_guard<std::mutex> lock(mastMtx_);
    slave_ = slave;
@@ -389,6 +388,30 @@ bool rim::Master::anyBits(boost::python::object dst, uint32_t lsb, uint32_t size
 
    PyBuffer_Release(&dstBuf);
    return ret;
+}
+
+void rim::Master::rshiftPy ( bp::object p ) {
+   rim::SlavePtr slv;
+
+   // First Attempt to access object as a memory slave
+   boost::python::extract<rim::SlavePtr> get_slave(p);
+
+   // Test extraction
+   if ( get_slave.check() ) slv = get_slave();
+
+   // Otherwise look for indirect call
+   else if ( PyObject_HasAttrString(p.ptr(), "_getMemorySlave" ) ) {
+
+      // Attempt to convert returned object to slave pointer
+      boost::python::extract<rim::SlavePtr> get_slave(p.attr("_getMemorySlave")());
+
+      // Test extraction
+      if ( get_slave.check() ) slv = get_slave();
+   }
+
+   // Success
+   if ( slv != NULL ) setSlave(slv);
+   else throw(rogue::GeneralError::create("Master::rshiftPy","Attempt to connect master to incompatable slave"));
 }
 
 #endif

@@ -113,12 +113,98 @@ void ris::Master::setup_python() {
 #ifndef NO_PYTHON
 
    bp::class_<ris::Master, ris::MasterPtr, boost::noncopyable>("Master",bp::init<>())
-      .def("__rshift__",     &ris::Master::addSlave)
       .def("_addSlave",      &ris::Master::addSlave)
       .def("_slaveCount",    &ris::Master::slaveCount)
       .def("_reqFrame",      &ris::Master::reqFrame)
       .def("_sendFrame",     &ris::Master::sendFrame)
+      .def("__equals__",     &ris::Master::equalsPy)
+      .def("__rshift__",     &ris::Master::rshiftPy)
    ;
+
 #endif
 }
+
+#ifndef NO_PYTHON
+
+void ris::Master::equalsPy ( boost::python::object p ) {
+   ris::MasterPtr rMst;
+   ris::SlavePtr  rSlv;
+   ris::SlavePtr  lSlv;
+
+   printf("Mapping master to slave\n");
+
+   // Attempt to cast local pointer to slave
+   lSlv = std::dynamic_pointer_cast<ris::Slave>(shared_from_this());
+
+   if ( lSlv ) printf("Success\n");
+   else printf("Failed\n");
+
+   // Attempt to access object as a stream master
+   boost::python::extract<ris::MasterPtr> get_master(p);
+
+   // Test extraction
+   if ( get_master.check() ) rMst = get_master();
+
+   // Otherwise look for indirect call
+   else if ( PyObject_HasAttrString(p.ptr(), "_getStreamMaster" ) ) {
+
+      // Attempt to convert returned object to master pointer
+      boost::python::extract<ris::MasterPtr> get_master(p.attr("_getStreamMaster")());
+
+      // Test extraction
+      if ( get_master.check() ) rMst = get_master();
+   }
+
+   // Attempt to access object as a stream slave
+   boost::python::extract<ris::SlavePtr> get_slave(p);
+
+   // Test extraction
+   if ( get_slave.check() ) rSlv = get_slave();
+
+   // Otherwise look for indirect call
+   else if ( PyObject_HasAttrString(p.ptr(), "_getStreamSlave" ) ) {
+
+      // Attempt to convert returned object to slave pointer
+      boost::python::extract<ris::SlavePtr> get_slave(p.attr("_getStreamSlave")());
+
+      // Test extraction
+      if ( get_slave.check() ) rSlv = get_slave();
+   }
+
+   if ( rMst == NULL || rSlv == NULL || lSlv == NULL ) 
+      throw(rogue::GeneralError::create("Master::equalsPy","Attempt to connect to incompatable slave"));
+
+   // Make connections
+   addSlave(rSlv);
+   rMst->addSlave(lSlv);
+}
+
+
+bp::object ris::Master::rshiftPy ( bp::object p ) {
+   ris::SlavePtr slv;
+
+   // First Attempt to access object as a stream slave
+   boost::python::extract<ris::SlavePtr> get_slave(p);
+
+   // Test extraction
+   if ( get_slave.check() ) slv = get_slave();
+
+   // Otherwise look for indirect call
+   else if ( PyObject_HasAttrString(p.ptr(), "_getStreamSlave" ) ) {
+
+      // Attempt to convert returned object to slave pointer
+      boost::python::extract<ris::SlavePtr> get_slave(p.attr("_getStreamSlave")());
+
+      // Test extraction
+      if ( get_slave.check() ) slv = get_slave();
+   }
+
+   if ( slv != NULL ) addSlave(slv);
+   else throw(rogue::GeneralError::create("Master::rshiftPy","Attempt to connect master to incompatable slave"));
+
+   return p;
+}
+
+#endif
+
 

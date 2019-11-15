@@ -112,6 +112,13 @@ namespace rogue {
                 */
                uint64_t getByteCount();
 
+#ifndef NO_PYTHON
+
+               //! Support << operator in python
+               boost::python::object lshiftPy ( boost::python::object p );
+
+#endif
+
          };
 
          //! Alias for using shared pointer as SlavePtr

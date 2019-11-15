@@ -27,6 +27,10 @@
 #include <thread>
 #include <mutex>
 
+#ifndef NO_PYTHON
+#include <boost/python.hpp>
+#endif
+
 namespace rogue {
    namespace interfaces {
       namespace stream {
@@ -39,7 +43,7 @@ namespace rogue {
           * interfaces to one or more stream slave objects. The frst stream Slave is used 
           * to allocated new Frame objects and it the last Slave to receive frame data.
           */
-         class Master {
+         class Master : public std::enable_shared_from_this<rogue::interfaces::stream::Master> {
 
                // Vector of slaves
                std::vector<std::shared_ptr<rogue::interfaces::stream::Slave> > slaves_;
@@ -123,6 +127,16 @@ namespace rogue {
                 * @param rewEn Flag to determine if a new frame should be requested
                 */
                bool ensureSingleBuffer ( std::shared_ptr<rogue::interfaces::stream::Frame> &frame, bool reqEn );
+
+#ifndef NO_PYTHON
+
+               //! Support == operator in python
+               void equalsPy ( boost::python::object p );
+
+               //! Support >> operator in python
+               boost::python::object rshiftPy ( boost::python::object p );
+
+#endif
 
          };
 

@@ -148,9 +148,41 @@ void ris::Slave::setup_python() {
       .def("getFixedSize",   &ris::Pool::getFixedSize)
       .def("setPoolSize",    &ris::Pool::setPoolSize)
       .def("getPoolSize",    &ris::Pool::getPoolSize)
+      .def("__lshift__",     &ris::Slave::lshiftPy)
    ;
 
    bp::implicitly_convertible<ris::SlavePtr, ris::PoolPtr>();
 #endif
 }
+
+
+#ifndef NO_PYTHON
+
+// Support << operator in python
+bp::object ris::Slave::lshiftPy ( bp::object p ) {
+   ris::MasterPtr mst;
+
+   // First Attempt to access object as a stream master
+   boost::python::extract<ris::MasterPtr> get_master(p);
+
+   // Test extraction
+   if ( get_master.check() ) mst = get_master();
+
+   // Otherwise look for indirect call
+   else if ( PyObject_HasAttrString(p.ptr(), "_getStreamMaster" ) ) {
+
+      // Attempt to convert returned object to master pointer
+      boost::python::extract<ris::MasterPtr> get_master(p.attr("_getStreamMaster")());
+
+      // Test extraction
+      if ( get_master.check() ) mst = get_master();
+   }
+
+   if ( mst != NULL ) mst->addSlave(std::static_pointer_cast<ris::Slave>(shared_from_this()));
+   else throw(rogue::GeneralError::create("Slave::lshiftPy","Attempt to connect slave to incompatable master"));
+
+   return p;
+}
+
+#endif
 
