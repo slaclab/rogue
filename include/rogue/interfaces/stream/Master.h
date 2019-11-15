@@ -45,7 +45,6 @@ namespace rogue {
           * to allocated new Frame objects and it the last Slave to receive frame data.
           */
          class Master : public rogue::EnableSharedFromThis<rogue::interfaces::stream::Master> {
-         //class Master {
 
                // Vector of slaves
                std::vector<std::shared_ptr<rogue::interfaces::stream::Slave> > slaves_;
