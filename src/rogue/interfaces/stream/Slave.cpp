@@ -186,3 +186,9 @@ bp::object ris::Slave::lshiftPy ( bp::object p ) {
 
 #endif
 
+//! Support << operator in C++
+ris::MasterPtr & ris::Slave::operator <<(ris::MasterPtr & other) {
+   other->addSlave(rogue::EnableSharedFromThis<ris::Slave>::shared_from_this());
+   return other;
+}
+

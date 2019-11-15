@@ -185,6 +185,10 @@ namespace rogue {
 
 #endif
 
+               //! Support << operator in C++
+               std::shared_ptr<rogue::interfaces::memory::Master> & 
+                  operator <<(std::shared_ptr<rogue::interfaces::memory::Master> & other);
+
          };
 
          //! Alias for using shared pointer as SlavePtr

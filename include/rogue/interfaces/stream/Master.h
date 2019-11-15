@@ -140,6 +140,13 @@ namespace rogue {
 
 #endif
 
+               //! Support == operator in C++
+               void operator ==(std::shared_ptr<rogue::interfaces::stream::Slave> & other);
+
+               //! Support >> operator in C++
+               std::shared_ptr<rogue::interfaces::stream::Slave> & 
+                  operator >>(std::shared_ptr<rogue::interfaces::stream::Slave> & other);
+
          };
 
          //! Alias for using shared pointer as MasterPtr

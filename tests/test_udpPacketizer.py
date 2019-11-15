@@ -110,7 +110,7 @@ def data_path(ver,jumbo):
     # Server stream
     serv == sRssi.transport()
     sRssi.application() == sPack.transport()
-    sPack.application(0) >> prbsRs
+    sPack.application(0) >> prbsRx
 
     # Start RSSI with out of order disabled
     sRssi.start()

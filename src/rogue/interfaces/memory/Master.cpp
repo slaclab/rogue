@@ -416,3 +416,9 @@ void rim::Master::rshiftPy ( bp::object p ) {
 
 #endif
 
+//! Support >> operator in C++
+rim::SlavePtr & rim::Master::operator >>(rim::SlavePtr & other) {
+   setSlave(other);
+   return other;
+}
+

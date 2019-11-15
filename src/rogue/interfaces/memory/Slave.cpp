@@ -267,3 +267,9 @@ void rim::Slave::lshiftPy ( boost::python::object p ) {
 
 #endif
 
+//! Support << operator in C++
+rim::MasterPtr & rim::Slave::operator <<(rim::MasterPtr & other) {
+   other->setSlave(shared_from_this());
+   return other;
+}
+

@@ -131,13 +131,8 @@ void ris::Master::equalsPy ( boost::python::object p ) {
    ris::SlavePtr  rSlv;
    ris::SlavePtr  lSlv;
 
-   printf("Mapping master to slave\n");
-
    // Attempt to cast local pointer to slave
    lSlv = std::dynamic_pointer_cast<ris::Slave>(shared_from_this());
-
-   if ( lSlv ) printf("Success\n");
-   else printf("Failed\n");
 
    // Attempt to access object as a stream master
    boost::python::extract<ris::MasterPtr> get_master(p);
@@ -207,4 +202,27 @@ bp::object ris::Master::rshiftPy ( bp::object p ) {
 
 #endif
 
+//! Support == operator in C++
+void ris::Master::operator ==(ris::SlavePtr & other) {
+   ris::SlavePtr  lSlv;
+   ris::MasterPtr rMst;
+
+   // Attempt to cast local pointer to slave
+   lSlv = std::dynamic_pointer_cast<ris::Slave>(shared_from_this());
+
+   // Attempt to cast other pointer to master
+   rMst = std::dynamic_pointer_cast<ris::Master>(other);
+
+   if ( rMst == NULL || lSlv == NULL ) 
+      throw(rogue::GeneralError::create("stream::Master::equalsPy","Attempt to use == with an incompatable stream slave"));
+
+   rMst->addSlave(lSlv);
+   addSlave(other);
+}
+
+//! Support >> operator in C++
+ris::SlavePtr & ris::Master::operator >>(ris::SlavePtr & other) {
+   addSlave(other);
+   return other;
+}
 

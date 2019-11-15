@@ -37,6 +37,7 @@ namespace rogue {
 
          class Frame;
          class Buffer;
+         class Master;
 
          //! Stream slave class
          /** The stream slave accepts stream data from a master. It also
@@ -120,6 +121,10 @@ namespace rogue {
                boost::python::object lshiftPy ( boost::python::object p );
 
 #endif
+
+               //! Support << operator in C++
+               std::shared_ptr<rogue::interfaces::stream::Master> & 
+                  operator <<(std::shared_ptr<rogue::interfaces::stream::Master> & other);
 
          };
 

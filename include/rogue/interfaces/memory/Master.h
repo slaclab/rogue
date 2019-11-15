@@ -236,6 +236,10 @@ namespace rogue {
 
 #endif
 
+               //! Support >> operator in C++
+               std::shared_ptr<rogue::interfaces::memory::Slave> & 
+                  operator >>(std::shared_ptr<rogue::interfaces::memory::Slave> & other);
+
             protected:
 
                //! Internal transaction
