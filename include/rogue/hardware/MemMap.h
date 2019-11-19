@@ -23,7 +23,7 @@
 #include <stdint.h>
 #include <rogue/Logging.h>
 
-#define MAP_DEVICE "/dev/map"
+#define MAP_DEVICE "/dev/mem"
 
 namespace rogue {
    namespace hardware {

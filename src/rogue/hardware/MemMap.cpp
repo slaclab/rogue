@@ -63,6 +63,7 @@ rh::MemMap::MemMap(uint64_t base, uint32_t size) : rim::Slave(4,0xFFFFFFFF) {
 
 //! Destructor
 rh::MemMap::~MemMap() {
+   munmap((void *)map_,size_);
    ::close(fd_);
 }
 
