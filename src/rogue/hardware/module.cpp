@@ -24,6 +24,7 @@
 #include <rogue/hardware/module.h>
 #include <rogue/hardware/pgp/module.h>
 #include <rogue/hardware/axi/module.h>
+#include <rogue/hardware/MemMap.h>
 
 namespace bp  = boost::python;
 
@@ -40,6 +41,7 @@ void rogue::hardware::setup_module() {
 
    rogue::hardware::pgp::setup_module();
    rogue::hardware::axi::setup_module();
+   rogue::hardware::MemMap::setup_python();
 
 }
 
