@@ -515,7 +515,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         try:
             with open(fname,'w') as f:
                 f.write("Path\t")
-                f.write("Type\t")
+                f.write("TypeStr\t")
                 f.write("Full Address\t")
                 f.write("Device Offset\t")
                 f.write("Mode\t")
@@ -527,13 +527,38 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                 for v in self.variableList:
                     if v.isinstance(pr.RemoteVariable):
                         f.write("{}\t".format(v.path))
-                        f.write("{}\t".format(type(v)))
+                        f.write("{}\t".format(v.typeStr))
                         f.write("{:#x}\t".format(v.address))
                         f.write("{:#x}\t".format(v.offset))
                         f.write("{}\t".format(v.mode))
                         f.write("{}\t".format(v.bitOffset))
                         f.write("{}\t".format(v.bitSize))
                         f.write("{}\t".format(v.enum))
+                        f.write("{}\n".format(v.description))
+
+        except Exception as e:
+            pr.logException(self._log,e)
+
+    @pr.expose
+    def saveVariableList(self,fname,polledOnly=False,incGroups=None):
+        try:
+            with open(fname,'w') as f:
+                f.write("Path\t")
+                f.write("TypeStr\t")
+                f.write("Mode\t")
+                f.write("Enum\t")
+                f.write("PollInterval\t")
+                f.write("Groups\t")
+                f.write("Description\n")
+
+                for v in self.variableList:
+                    if ((not polledOnly) or (v.pollInterval > 0)) and v.filterByGroup(incGroups=incGroups,excGroups=None):
+                        f.write("{}\t".format(v.path))
+                        f.write("{}\t".format(v.typeStr))
+                        f.write("{}\t".format(v.mode))
+                        f.write("{}\t".format(v.enum))
+                        f.write("{}\t".format(v.pollInterval))
+                        f.write("{}\t".format(v.groups))
                         f.write("{}\n".format(v.description))
 
         except Exception as e:
