@@ -98,11 +98,12 @@ bool ris::Master::ensureSingleBuffer ( ris::FramePtr &frame, bool reqEn ) {
       if  ( nFrame->bufferCount() != 1 ) return false;
 
       else {
-         ris::FrameIterator srcIter = frame->beginRead();
-         ris::FrameIterator dstIter = nFrame->beginWrite();
+         nFrame->setPayload(size);
+
+         ris::FrameIterator srcIter = frame->begin();
+         ris::FrameIterator dstIter = nFrame->begin();
          
          ris::copyFrame(srcIter, size, dstIter);
-         nFrame->setPayload(size);
          frame = nFrame;
          return true;
       }

@@ -94,12 +94,12 @@ uint32_t rpb::CoreV1::headerSize() {
 
 //! Get beginning of header iterator
 ris::FrameIterator rpb::CoreV1::beginHeader() {
-   return frame_->beginRead();
+   return frame_->begin();
 }
 
 //! Get end of header iterator
 ris::FrameIterator rpb::CoreV1::endHeader() {
-   return frame_->beginRead() + headerSize_;
+   return frame_->begin() + headerSize_;
 }
 
 //! Get tail size
@@ -172,7 +172,7 @@ bool rpb::CoreV1::processFrame ( ris::FramePtr frame ) {
    }
 
    // Get version & size
-   beg = frame->beginRead();
+   beg = frame->begin();
    ris::fromFrame(beg, 1, &temp);
    
    /////////////////////////////////////////////////////////////////////////
@@ -224,7 +224,7 @@ bool rpb::CoreV1::processFrame ( ris::FramePtr frame ) {
    rem -= headerSize_;
 
    // Set marker to end of frame
-   mark = frame->endRead();
+   mark = frame->end();
 
    // Process each frame, stop when we have reached just after the header
    while (mark != beg) {

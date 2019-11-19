@@ -59,7 +59,7 @@ rps::Cmd::~Cmd() {}
 
 //! Post a transaction
 void rps::Cmd::sendCmd(uint8_t opCode, uint32_t context) {
-   ris::Frame::iterator it;
+   ris::FrameIterator it;
    ris::FramePtr frame;
    uint32_t txData[4];
 
@@ -71,11 +71,11 @@ void rps::Cmd::sendCmd(uint8_t opCode, uint32_t context) {
 
    // Request frame
    frame = reqFrame(sizeof(txData), true);
-   it = frame->beginWrite();
+   frame->setPayload(sizeof(txData));
+   it = frame->begin();
 
    // Copy frame
    ris::toFrame(it,sizeof(txData),txData);
-   frame->setPayload(sizeof(txData));
    sendFrame(frame);
 }
 

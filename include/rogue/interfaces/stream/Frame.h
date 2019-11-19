@@ -92,9 +92,6 @@ namespace rogue {
                //! Alias for using std::vector<std::shared_ptr<rogue::interfaces::stream::Buffer> >::iterator as Buffer::iterator
                typedef std::vector<std::shared_ptr<rogue::interfaces::stream::Buffer> >::iterator BufferIterator;
 
-               //! Alias for using FrameIterator as Frame::iterator
-               typedef rogue::interfaces::stream::FrameIterator iterator;
-
                // Setup class for use in python
                static void setup_python();
 
@@ -115,14 +112,6 @@ namespace rogue {
                 */
                std::shared_ptr<rogue::interfaces::stream::FrameLock> lock();
 
-               //! Add a buffer to end of frame,
-               /** Not exposed to Python
-                * @param buff The buffer pointer (BufferPtr) to append to the end of the frame
-                * @return Buffer list iterator (Frame::BufferIterator) pointing to the added buffer
-                */
-               std::vector<std::shared_ptr<rogue::interfaces::stream::Buffer> >::iterator
-                  appendBuffer(std::shared_ptr<rogue::interfaces::stream::Buffer> buff);
-
                //! Append passed frame to the end of this frame.
                /** Buffers from the passed frame are appened to the end of this frame and
                 * will be removed from the source frame.
@@ -134,20 +123,32 @@ namespace rogue {
                std::vector<std::shared_ptr<rogue::interfaces::stream::Buffer> >::iterator
                   appendFrame(std::shared_ptr<rogue::interfaces::stream::Frame> frame);
 
+               //! Add a buffer to end of frame,
+               /** Not exposed to Python
+                * This is for advanced manipulation of the underlying buffers.
+                * @param buff The buffer pointer (BufferPtr) to append to the end of the frame
+                * @return Buffer list iterator (Frame::BufferIterator) pointing to the added buffer
+                */
+               std::vector<std::shared_ptr<rogue::interfaces::stream::Buffer> >::iterator
+                  appendBuffer(std::shared_ptr<rogue::interfaces::stream::Buffer> buff);
+
                //! Get Buffer list begin iterator
                /** Not exposed to Python
+                * This is for advanced manipulation of the underlying buffers.
                 * @return Buffer list iterator (Frame::BufferIterator) pointing to the start of the Buffer list
                 */
                std::vector<std::shared_ptr<rogue::interfaces::stream::Buffer> >::iterator beginBuffer();
 
                //! Get Buffer list end iterator
                /** Not exposed to Python
+                * This is for advanced manipulation of the underlying buffers.
                 * @return Buffer list iterator (Frame::BufferIterator) pointing to the end of the Buffer list
                 */
                std::vector<std::shared_ptr<rogue::interfaces::stream::Buffer> >::iterator endBuffer();
 
                //! Get Buffer list count
                /** Not exposed to Python
+                * This is for advanced manipulation of the underlying buffers.
                 * @return Number of buffers in the Buffer list
                 */
                uint32_t bufferCount();
@@ -294,47 +295,37 @@ namespace rogue {
                 */
                void setError(uint8_t error);
 
-               //! Get read start FrameIterator
-               /** The read start iterator points to the start of payload
-                * data and is typically used to access or update data
-                * in a received frame, or a frame where the payload
-                * size has already been set.
+               //! Get begin FrameIterator
+               /** Return an iterator for accessing data within the Frame.
+                * This iterator assumes the payload size of the frame has
+                * already been set. This means the frame has either been 
+                * received already containing data, or the setPayload() method 
+                * has been called.
                 * 
                 * Not exposed to Python
                 * @return FrameIterator pointing to beginning of payload
                 */
-               rogue::interfaces::stream::FrameIterator beginRead();
+               rogue::interfaces::stream::FrameIterator begin();
 
-               //! Get read end FrameIterator
+               //! Get end FrameIterator
                 /** This iterator is used to detect when the end of the 
-                * Frame payload is reached when iterating through the Frame 
-                * using a beginRead() iterator.
+                * Frame payload is reached when iterating through the Frame. 
                 * 
                 * Not exposed to Python
                 * @return FrameIterator read end position
                 */
+               rogue::interfaces::stream::FrameIterator end();
+
+               // Get read start FrameIterator, LEGACY TO BE DEPRECATED
+               rogue::interfaces::stream::FrameIterator beginRead();
+
+               // Get read end FrameIterator, LEGACY TO BE DEPRECATED
                rogue::interfaces::stream::FrameIterator endRead();
 
-               //! Get write start FrameIterator
-               /** The write start iterator points to the start of the Frame
-                * and is typically used to access data in a newly created
-                * frame where the payload size has not yet been set.
-                * Using this iterator to update the frame does not adjust 
-                * the Frame payload size.
-                * 
-                * Not exposed to Python
-                * @return FrameIterator pointing to beginning of payload
-                */
+               // Get write start FrameIterator, LEGACY TO BE DEPRECATED
                rogue::interfaces::stream::FrameIterator beginWrite();
 
-               //! Get write end FrameIterator
-                /** This iterator is used to detect when the end of the 
-                * available frame space is reached when iterator through
-                * the frame using a beginWrite() iterator.
-                * 
-                * Not exposed to Python
-                * @return FrameIterator write end position
-                */
+               // Get write end FrameIterator, LEGACY TO BE DEPRECATED
                rogue::interfaces::stream::FrameIterator endWrite();
 
 #ifndef NO_PYTHON
@@ -381,7 +372,7 @@ namespace rogue {
                                uint32_t          offset);
 #endif
 
-               //! Debug Buffer
+               //! Debug Frame
                void debug();
 
          };
