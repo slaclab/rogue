@@ -16,6 +16,8 @@
 add_subdirectory("pgp")
 add_subdirectory("axi")
 
+target_sources(rogue-core PRIVATE "${CMAKE_CURRENT_LIST_DIR}/MemMap.cpp")
+
 if (NOT NO_PYTHON)
    target_sources(rogue-core PRIVATE "${CMAKE_CURRENT_LIST_DIR}/module.cpp")
 endif()

@@ -71,9 +71,11 @@ void rha::AxiMemMap::doTransaction(rim::TransactionPtr tran) {
    dataSize = sizeof(uint32_t);
    ptr = (uint8_t *)(&data);
 
-   if ( (tran->size() % dataSize) != 0 ) 
+   if ( (tran->size() % dataSize) != 0 ) {
       tran->error("Invalid transaction size %i, must be an integer number of %i bytes",tran->size(),dataSize);
 
+      return;
+   }
    count = 0;
    ret = 0;
 
