@@ -70,7 +70,7 @@ rh::MemMap::~MemMap() {
 void rh::MemMap::doTransaction(rim::TransactionPtr tran) {
    uint32_t * tPtr;
    uint32_t * mPtr;
-   uint32_t   count;
+   uint32_t   count = 0;
 
    rogue::GilRelease noGil;
    rim::TransactionLockPtr lock = tran->lock();
