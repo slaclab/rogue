@@ -1,9 +1,9 @@
 /**
  *-----------------------------------------------------------------------------
- * Title      : AXI Memory Mapped Access
+ * Title      : Raw Memory Mapped Access
  * ----------------------------------------------------------------------------
  * File       : MemMap.cpp
- * Created    : 2017-03-21
+ * Created    : 2019-11-18
  * ----------------------------------------------------------------------------
  * This file is part of the rogue software platform. It is subject to 
  * the license terms in the LICENSE.txt file found in the top-level directory 
