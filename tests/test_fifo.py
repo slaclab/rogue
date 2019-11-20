@@ -33,10 +33,7 @@ def fifo_path():
     fifo = rogue.interfaces.stream.Fifo(0,0,False);
 
     # Client stream
-    pyrogue.streamConnect(prbsTx,fifo)
-
-    # Server stream
-    pyrogue.streamConnect(fifo,prbsRx)
+    prbsTx >> fifo >> prbsRx
 
     print("Generating Frames")
     for _ in range(FrameCount):

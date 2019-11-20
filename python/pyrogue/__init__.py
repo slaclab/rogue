@@ -121,15 +121,6 @@ def streamTap(source, tap):
 
 def streamConnectBiDir(deviceA, deviceB):
     """
-    Attach the passed dest object to the source a stream.
-    Connect source and destination stream devices.
-    source is either a stream master sub class or implements
-    the _getStreamMaster call to return a contained master.
-    Similiarly dest is either a stream slave sub class or implements
-    the _getStreamSlave call to return a contained slave.
-    """
-
-    """
     Connect deviceA and deviceB as end points to a
     bi-directional stream. This method calls the
     streamConnect method to perform the actual connection. 

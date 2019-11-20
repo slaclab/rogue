@@ -61,4 +61,6 @@ class StreamReader(pyrogue.Device):
     def _getStreamMaster(self):
         return self._reader
 
+    def __rshift__(self,other):
+        pyrogue.streamConnect(self,other)
 

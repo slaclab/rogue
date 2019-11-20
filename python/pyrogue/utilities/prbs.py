@@ -72,6 +72,10 @@ class PrbsRx(pyrogue.Device):
     def _getStreamSlave(self):
         return self._prbs
 
+    def __lshift__(self,other):
+        pyrogue.streamConnect(other,self)
+        return other
+
     def setWidth(self,width):
         self._prbs.setWidth(width)
 
@@ -152,6 +156,10 @@ class PrbsTx(pyrogue.Device):
     def _getStreamMaster(self):
         return self._prbs
 
+    def __rshift__(self,other):
+        pyrogue.streamConnect(self,other)
+        return other
+
     def setWidth(self,width):
         self._prbs.setWidth(width)
 
@@ -184,4 +192,15 @@ class PrbsPair(pyrogue.Device):
 
     def _getStreamSlave(self):
         return self.PrbsTx._getStreamSlave()
-    
+
+    def __rshift__(self,other):
+        pyrogue.streamConnect(self,other)
+        return other
+
+    def __lshift__(self,other):
+        pyrogue.streamConnect(other,self)
+        return other
+
+    def __eq__(self,other):
+        pyrogue.streamConnectBiDir(other,self)
+

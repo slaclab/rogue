@@ -61,6 +61,7 @@ void rim::Master::setup_python() {
       .staticmethod("_setBits")
       .def("_anyBits",            &rim::Master::anyBits)
       .staticmethod("_anyBits")
+      .def("__rshift__",          &rim::Master::rshiftPy)
    ;
 #endif
 }
@@ -389,5 +390,35 @@ bool rim::Master::anyBits(boost::python::object dst, uint32_t lsb, uint32_t size
    return ret;
 }
 
+void rim::Master::rshiftPy ( bp::object p ) {
+   rim::SlavePtr slv;
+
+   // First Attempt to access object as a memory slave
+   boost::python::extract<rim::SlavePtr> get_slave(p);
+
+   // Test extraction
+   if ( get_slave.check() ) slv = get_slave();
+
+   // Otherwise look for indirect call
+   else if ( PyObject_HasAttrString(p.ptr(), "_getMemorySlave" ) ) {
+
+      // Attempt to convert returned object to slave pointer
+      boost::python::extract<rim::SlavePtr> get_slave(p.attr("_getMemorySlave")());
+
+      // Test extraction
+      if ( get_slave.check() ) slv = get_slave();
+   }
+
+   // Success
+   if ( slv != NULL ) setSlave(slv);
+   else throw(rogue::GeneralError::create("memory::Master::rshiftPy","Attempt to use >> operator with incompatable memory slave"));
+}
+
 #endif
+
+//! Support >> operator in C++
+rim::SlavePtr & rim::Master::operator >>(rim::SlavePtr & other) {
+   setSlave(other);
+   return other;
+}
 

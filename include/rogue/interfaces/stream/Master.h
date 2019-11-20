@@ -26,6 +26,11 @@
 #include <vector>
 #include <thread>
 #include <mutex>
+#include <rogue/EnableSharedFromThis.h>
+
+#ifndef NO_PYTHON
+#include <boost/python.hpp>
+#endif
 
 namespace rogue {
    namespace interfaces {
@@ -36,10 +41,10 @@ namespace rogue {
 
          //! Stream master class
          /** This class serves as the source for sending Frame data to a Slave. Each master
-          * interfaces to one or more stream slave objects. The frst stream Slave is used 
-          * to allocated new Frame objects and it the last Slave to receive frame data.
+          * interfaces to one or more stream slave objects. The first stream Slave is used 
+          * to allocated new Frame objects and it is the last Slave to receive frame data.
           */
-         class Master {
+         class Master : public rogue::EnableSharedFromThis<rogue::interfaces::stream::Master> {
 
                // Vector of slaves
                std::vector<std::shared_ptr<rogue::interfaces::stream::Slave> > slaves_;
@@ -123,6 +128,23 @@ namespace rogue {
                 * @param rewEn Flag to determine if a new frame should be requested
                 */
                bool ensureSingleBuffer ( std::shared_ptr<rogue::interfaces::stream::Frame> &frame, bool reqEn );
+
+#ifndef NO_PYTHON
+
+               //! Support == operator in python
+               void equalsPy ( boost::python::object p );
+
+               //! Support >> operator in python
+               boost::python::object rshiftPy ( boost::python::object p );
+
+#endif
+
+               //! Support == operator in C++
+               void operator ==(std::shared_ptr<rogue::interfaces::stream::Slave> & other);
+
+               //! Support >> operator in C++
+               std::shared_ptr<rogue::interfaces::stream::Slave> & 
+                  operator >>(std::shared_ptr<rogue::interfaces::stream::Slave> & other);
 
          };
 

@@ -32,11 +32,8 @@ The following python example shows how to read channel 1 data from a data file.
    # Data destination
    dst = MyCustomSlave()
 
-   # Connect the source to the Filter
-   pyrogue.streamConnect(src, filt)
-   
-   # Connect the filter to the destination
-   pyrogue.streamConnect(filt, dst)
+   # Connect the source to the Filter and then to the destination
+   src >> filt >> dst
 
    src.open("MyDataFile.bin")
 
@@ -46,7 +43,6 @@ Below is the equivalent code in C++
 
    #include <rogue/interfaces/stream/Filter.h>
    #include <rogue/utilities/fileio/StreamReader.h>
-   #include <rogue/Helpers.h>
    #include <MyCustomMaster.h>
    #include <MyCustomSlave.h>
 
@@ -59,11 +55,8 @@ Below is the equivalent code in C++
    # Data destination
    MyCustomSlavePtr dst = MyCustomSlave::create();
 
-   // Connect the source to the filter
-   rogueStreamConnect(src, filt);
-
-   // Connect the filter to the destination
-   rogueStreamConnect(filt, dst);
+   // Connect the source to the filter and then on to the destination
+   *(*src >> filt) >> dst;
 
    src->open("MyDataFile.bin");
 

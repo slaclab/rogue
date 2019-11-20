@@ -146,6 +146,7 @@ void rim::Slave::setup_python() {
       .def("_doMaxAccess",    &rim::Slave::doMaxAccess,   &rim::SlaveWrap::defDoMaxAccess)
       .def("_doAddress",      &rim::Slave::doAddress,     &rim::SlaveWrap::defDoAddress)
       .def("_doTransaction",  &rim::Slave::doTransaction, &rim::SlaveWrap::defDoTransaction)
+      .def("__lshift__",      &rim::Slave::lshiftPy)
    ;
 #endif
 }
@@ -240,5 +241,35 @@ void rim::SlaveWrap::defDoTransaction(rim::TransactionPtr transaction) {
    rim::Slave::doTransaction(transaction);
 }
 
+void rim::Slave::lshiftPy ( boost::python::object p ) {
+   rim::MasterPtr mst;
+
+   // First Attempt to access object as a memory master
+   boost::python::extract<rim::MasterPtr> get_master(p);
+
+   // Test extraction
+   if ( get_master.check() ) mst = get_master();
+
+   // Otherwise look for indirect call
+   else if ( PyObject_HasAttrString(p.ptr(), "_getMemoryMaster" ) ) {
+
+      // Attempt to convert returned object to master pointer
+      boost::python::extract<rim::MasterPtr> get_master(p.attr("_getMemoryMaster")());
+
+      // Test extraction
+      if ( get_master.check() ) mst = get_master();
+   }
+
+   // Success
+   if ( mst != NULL ) mst->setSlave(shared_from_this());
+   else throw(rogue::GeneralError::create("memory::Slave::lshiftPy","Attempt to use << operator with incompatable memory master"));
+}
+
 #endif
+
+//! Support << operator in C++
+rim::MasterPtr & rim::Slave::operator <<(rim::MasterPtr & other) {
+   other->setSlave(shared_from_this());
+   return other;
+}
 

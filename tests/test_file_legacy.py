@@ -39,7 +39,7 @@ def write_files():
 
     prbs = rogue.utilities.Prbs()
 
-    pyrogue.streamConnect(prbs,fwrU.getChannel(0))
+    prbs >> fwrU.getChannel(0)
 
     fwrU.open("legacy.dat")
 
@@ -58,7 +58,7 @@ def read_files():
 
     comp = rogue.utilities.StreamUnZip()
 
-    pyrogue.streamConnect(frdU,prbsU)
+    frdU >> prbsU
 
     frdU.open("legacy.dat.1")
 

@@ -18,15 +18,13 @@ A stream master and slave are connected using the following command in python:
 
    import pyrogue
 
-   pyrogue.streamConnect(myMaster, mySlave)
+   myMaster >> mySlave
 
 A similiar line of code is used to connect a master and slave in c++:
 
 .. code-block:: c
 
-   #include <rogue/Helpers.h>
-
-   rogueStreamConnect(myMaster, mySlave)
+   *myMaster >> mySlave
 
 The above command examples attaches the primary slave to the master.
 
@@ -38,17 +36,16 @@ it is passed to the primary slave:
 
    import pyrogue
 
-   pyrogue.streamConnect(myMaster, mySlave)
+   # Connections can go in the opposite direction
+   mySlave << myMaster
 
 And in C++:
 
 .. code-block:: c
 
-   #include <rogue/Helpers.h>
+   *myMaster >> mySlave;
 
-   rogueStreamConnect(myMaster, mySlave)
-
-In some cases rogue entties can serve as both a stream Master and Slave. This is often the case when
+In some cases rogue entities can serve as both a stream Master and Slave. This is often the case when
 using a network protocol such as UDP or TCP. Two dual purpose enpoints can be connected together
 to create a bi-directional data stream using the following command in python:
 
@@ -56,14 +53,12 @@ to create a bi-directional data stream using the following command in python:
 
    import pyrogue
 
-   pyrogue.streamConnectBiDir(enPointA, endPointB)
+   enPointA == endPointB
 
 This command adds endPointB as a Slave for endPointA at the same time adding endPointA as a
 slave for endPointB. A similiar command is available in C++:
 
 .. code-block:: c
 
-   #include <rogue/Helpers.h>
-
-   rogueStreamConnectBiDir(endPointA, endPointB)
+   *endPointA == endPointB;
 
