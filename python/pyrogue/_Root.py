@@ -17,7 +17,6 @@ import sys
 import os
 import glob
 import rogue.interfaces.memory
-import yaml
 import threading
 from collections import OrderedDict as odict
 import logging
@@ -742,7 +741,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         try:
             with self.pollBlock(), self.updateGroup():
                 for fn in lst:
-                    d = yamlToData(fName=fn)
+                    d = pr.yamlToData(fName=fn)
                     self._setDictRoot(d=d,writeEach=writeEach,modes=modes,incGroups=incGroups,excGroups=excGroups)
 
                 if not writeEach: self._write()
@@ -765,7 +764,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
         if readFirst: self._read()
         try:
-            return dataToYaml({self.name:self._getDict(modes=modes,incGroups=incGroups,excGroups=excGroups)})
+            return pr.dataToYaml({self.name:self._getDict(modes=modes,incGroups=incGroups,excGroups=excGroups)})
         except Exception as e:
             pr.logException(self._log,e)
             return ""
@@ -781,7 +780,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         are completed. Bulk writes provide better performance when updating a large
         quanitty of variables.
         """
-        d = yamlToData(yml)
+        d = pr.yamlToData(yml)
 
         with self.pollBlock(), self.updateGroup():
             self._setDictRoot(d=d,writeEach=writeEach,modes=modes,incGroups=incGroups,excGroups=excGroups)
@@ -883,7 +882,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                 # Generate yaml stream
                 try:
                     if len(strm) > 0:
-                        self._sendYamlFrame(dataToYaml(strm))
+                        self._sendYamlFrame(pr.dataToYaml(strm))
 
                 except Exception as e:
                     pr.logException(self._log,e)
@@ -897,118 +896,4 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
             # Set done
             self._updateQueue.task_done()
-
-def yamlToData(stream='',fName=None):
-    """
-    Load yaml to data structure.
-    A yaml string or file path may be passed.
-    """
-
-    log = pr.logInit(name='yamlToData')
-
-    class PyrogueLoader(yaml.Loader):
-        pass
-
-    def include_mapping(loader, node):
-        rel = loader.construct_scalar(node)
-
-        # Filename starts with absolute path
-        if rel[0] == '/':
-            filename = rel
-
-        # Filename is relative and we know the base path
-        elif fName is not None:
-            filename = os.path.join(os.path.dirname(fName), rel)
-
-        # File is relative without a base path, assume cwd
-        else:
-            filename = node
-
-        # Recursive call, flatten relative jumps
-        return yamlToData(fName=os.path.abspath(filename))
-
-    def construct_mapping(loader, node):
-        loader.flatten_mapping(node)
-        return odict(loader.construct_pairs(node))
-
-    PyrogueLoader.add_constructor(yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG,construct_mapping)
-    PyrogueLoader.add_constructor('!include',include_mapping)
-
-    # Use passed string
-    if fName is None:
-        return yaml.load(stream,Loader=PyrogueLoader)
-
-    # Main or sub-file is in a zip
-    elif '.zip' in fName:
-        base = fName.split('.zip')[0] + '.zip'
-        sub = fName.split('.zip')[1][1:] # Strip leading '/'
-
-        log.debug("loading {} from zipfile {}".format(sub,base))
-
-        with zipfile.ZipFile(base, 'r') as myzip:
-            with myzip.open(sub) as myfile:
-                return yaml.load(myfile.read(),Loader=PyrogueLoader)
-
-    # Non zip file
-    else:
-        log.debug("loading {}".format(fName))
-        with open(fName,'r') as f:
-            return yaml.load(f.read(),Loader=PyrogueLoader)
-
-
-def dataToYaml(data):
-    """Convert data structure to yaml"""
-
-    class PyrogueDumper(yaml.Dumper):
-        pass
-
-    def _var_representer(dumper, data):
-        if type(data.value) == bool:
-            enc = 'tag:yaml.org,2002:bool'
-        elif data.enum is not None:
-            enc = 'tag:yaml.org,2002:str'
-        elif type(data.value) == int:
-            enc = 'tag:yaml.org,2002:int'
-        elif type(data.value) == float:
-            enc = 'tag:yaml.org,2002:float'
-        else:
-            enc = 'tag:yaml.org,2002:str'
-
-        if data.valueDisp is None:
-            return dumper.represent_scalar('tag:yaml.org,2002:null',u'null')
-        else:
-            return dumper.represent_scalar(enc, data.valueDisp)
-
-    def _dict_representer(dumper, data):
-        return dumper.represent_mapping(yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG, data.items())
-
-    PyrogueDumper.add_representer(pr.VariableValue, _var_representer)
-    PyrogueDumper.add_representer(odict, _dict_representer)
-
-    return yaml.dump(data, Dumper=PyrogueDumper, default_flow_style=False)
-
-def keyValueUpdate(old, key, value):
-    d = old
-    parts = key.split('.')
-    for part in parts[:-1]:
-        if part not in d:
-            d[part] = {}
-        d = d.get(part)
-    d[parts[-1]] = value
-
-
-def dictUpdate(old, new):
-    for k,v in new.items():
-        if '.' in k:
-            keyValueUpdate(old, k, v)
-        elif k in old:
-            old[k].update(v)
-        else:
-            old[k] = v
-
-def yamlUpdate(old, new):
-    dictUpdate(old, yamlToData(new))
-
-def recreate_OrderedDict(name, values):
-    return odict(values['items'])
 
