@@ -112,7 +112,7 @@ void rpe::Slave::valueGet() { }
 void rpe::Slave::valueSet() { }
 
 void rpe::Slave::acceptFrame ( ris::FramePtr frame ) {
-   ris::Frame::iterator iter;
+   ris::FrameIterator iter;
    struct timespec t;
    uint32_t fSize;
    uint32_t size_;
@@ -127,7 +127,7 @@ void rpe::Slave::acceptFrame ( ris::FramePtr frame ) {
    }
 
    fSize = frame->getPayload();
-   iter = frame->beginRead();
+   iter = frame->begin();
 
    // First check to see if frame is valid
    if ( (fSize % fSize_) != 0 ) {

@@ -23,6 +23,7 @@
 #include <rogue/interfaces/stream/Frame.h>
 #include <rogue/interfaces/stream/FrameIterator.h>
 #include <rogue/GilRelease.h>
+#include <rogue/GeneralError.h>
 #include <memory>
 
 namespace ris  = rogue::interfaces::stream;
@@ -39,20 +40,17 @@ ris::MasterPtr ris::Master::create () {
 }
 
 //! Creator
-ris::Master::Master() { 
-   primary_ = ris::Slave::create();
-}
+ris::Master::Master() { }
 
 //! Destructor
 ris::Master::~Master() { }
 
-//! Set primary slave, used for buffer request forwarding
-void ris::Master::setSlave ( std::shared_ptr<interfaces::stream::Slave> slave ) {
-   rogue::GilRelease noGil;
-   primary_ = slave;
+// Get Slave Count
+uint32_t ris::Master::slaveCount () {
+   return slaves_.size();
 }
 
-//! Add secondary slave
+//! Add slave
 void ris::Master::addSlave ( ris::SlavePtr slave ) {
    rogue::GilRelease noGil;
    std::lock_guard<std::mutex> lock(slaveMtx_);
@@ -64,28 +62,25 @@ ris::FramePtr ris::Master::reqFrame ( uint32_t size, bool zeroCopyEn ) {
    rogue::GilRelease noGil;
    std::lock_guard<std::mutex> lock(slaveMtx_);
 
-   return(primary_->acceptReq(size,zeroCopyEn));
+   if ( slaves_.size() == 0 )
+      throw(rogue::GeneralError("Master::reqFrame","Attempt to request frame without Slave"));
+
+   return(slaves_[0]->acceptReq(size,zeroCopyEn));
 }
 
 //! Push frame to slaves
 void ris::Master::sendFrame ( FramePtr frame) {
    std::vector<ris::SlavePtr> slaves;
-   std::vector<ris::SlavePtr>::iterator it;
-   ris::SlavePtr primary;
+   std::vector<ris::SlavePtr>::reverse_iterator rit;
 
    {
       rogue::GilRelease noGil;
       std::lock_guard<std::mutex> lock(slaveMtx_);
       slaves = slaves_;
-      primary = primary_;
    }
 
-   if ( primary_ != NULL ) {
-      for (it = slaves_.begin(); it != slaves_.end(); ++it) 
-         (*it)->acceptFrame(frame);
-
-      primary_->acceptFrame(frame);
-   }
+   for (rit = slaves.rbegin(); rit != slaves.rend(); ++rit) 
+      (*rit)->acceptFrame(frame);
 }
 
 // Ensure passed frame is a single buffer
@@ -103,11 +98,12 @@ bool ris::Master::ensureSingleBuffer ( ris::FramePtr &frame, bool reqEn ) {
       if  ( nFrame->bufferCount() != 1 ) return false;
 
       else {
-         ris::FrameIterator srcIter = frame->beginRead();
-         ris::FrameIterator dstIter = nFrame->beginWrite();
+         nFrame->setPayload(size);
+
+         ris::FrameIterator srcIter = frame->begin();
+         ris::FrameIterator dstIter = nFrame->begin();
          
          ris::copyFrame(srcIter, size, dstIter);
-         nFrame->setPayload(size);
          frame = nFrame;
          return true;
       }
@@ -118,11 +114,116 @@ void ris::Master::setup_python() {
 #ifndef NO_PYTHON
 
    bp::class_<ris::Master, ris::MasterPtr, boost::noncopyable>("Master",bp::init<>())
-      .def("_setSlave",      &ris::Master::setSlave)
       .def("_addSlave",      &ris::Master::addSlave)
+      .def("_slaveCount",    &ris::Master::slaveCount)
       .def("_reqFrame",      &ris::Master::reqFrame)
       .def("_sendFrame",     &ris::Master::sendFrame)
+      .def("__eq__",         &ris::Master::equalsPy)
+      .def("__rshift__",     &ris::Master::rshiftPy)
    ;
+
 #endif
+}
+
+#ifndef NO_PYTHON
+
+void ris::Master::equalsPy ( boost::python::object p ) {
+   ris::MasterPtr rMst;
+   ris::SlavePtr  rSlv;
+   ris::SlavePtr  lSlv;
+
+   // Attempt to cast local pointer to slave
+   lSlv = std::dynamic_pointer_cast<ris::Slave>(shared_from_this());
+
+   // Attempt to access object as a stream master
+   boost::python::extract<ris::MasterPtr> get_master(p);
+
+   // Test extraction
+   if ( get_master.check() ) rMst = get_master();
+
+   // Otherwise look for indirect call
+   else if ( PyObject_HasAttrString(p.ptr(), "_getStreamMaster" ) ) {
+
+      // Attempt to convert returned object to master pointer
+      boost::python::extract<ris::MasterPtr> get_master(p.attr("_getStreamMaster")());
+
+      // Test extraction
+      if ( get_master.check() ) rMst = get_master();
+   }
+
+   // Attempt to access object as a stream slave
+   boost::python::extract<ris::SlavePtr> get_slave(p);
+
+   // Test extraction
+   if ( get_slave.check() ) rSlv = get_slave();
+
+   // Otherwise look for indirect call
+   else if ( PyObject_HasAttrString(p.ptr(), "_getStreamSlave" ) ) {
+
+      // Attempt to convert returned object to slave pointer
+      boost::python::extract<ris::SlavePtr> get_slave(p.attr("_getStreamSlave")());
+
+      // Test extraction
+      if ( get_slave.check() ) rSlv = get_slave();
+   }
+
+   if ( rMst == NULL || rSlv == NULL || lSlv == NULL ) 
+      throw(rogue::GeneralError::create("stream::Master::equalsPy","Attempt to use == with an incompatable stream slave"));
+
+   // Make connections
+   addSlave(rSlv);
+   rMst->addSlave(lSlv);
+}
+
+
+bp::object ris::Master::rshiftPy ( bp::object p ) {
+   ris::SlavePtr slv;
+
+   // First Attempt to access object as a stream slave
+   boost::python::extract<ris::SlavePtr> get_slave(p);
+
+   // Test extraction
+   if ( get_slave.check() ) slv = get_slave();
+
+   // Otherwise look for indirect call
+   else if ( PyObject_HasAttrString(p.ptr(), "_getStreamSlave" ) ) {
+
+      // Attempt to convert returned object to slave pointer
+      boost::python::extract<ris::SlavePtr> get_slave(p.attr("_getStreamSlave")());
+
+      // Test extraction
+      if ( get_slave.check() ) slv = get_slave();
+   }
+
+   if ( slv != NULL ) addSlave(slv);
+   else throw(rogue::GeneralError::create("stream::Master::rshiftPy","Attempt to use >> with incompatable stream slave"));
+
+   return p;
+}
+
+#endif
+
+//! Support == operator in C++
+void ris::Master::operator ==(ris::SlavePtr & other) {
+   ris::SlavePtr  lSlv;
+   ris::MasterPtr rMst;
+
+   // Attempt to cast local pointer to slave
+   lSlv = std::dynamic_pointer_cast<ris::Slave>(shared_from_this());
+
+   // Attempt to cast other pointer to master
+   rMst = std::dynamic_pointer_cast<ris::Master>(other);
+
+   if ( rMst == NULL || lSlv == NULL ) 
+      throw(rogue::GeneralError::create("stream::Master::equalsPy","Attempt to use == with an incompatable stream slave"));
+
+   rMst->addSlave(lSlv);
+   addSlave(other);
+}
+
+//! Support >> operator in C++
+ris::SlavePtr & ris::Master::operator >>(ris::SlavePtr & other) {
+   addSlave(other);
+   return other;
 }
 

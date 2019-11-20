@@ -26,6 +26,7 @@
 #include <stdint.h>
 #include <rogue/Queue.h>
 #include <rogue/Logging.h>
+#include <rogue/EnableSharedFromThis.h>
 
 namespace rogue {
    namespace protocols {
@@ -36,7 +37,7 @@ namespace rogue {
          class Header;
 
          //! Packetizer Controller Class
-         class ControllerV2 : public Controller, public std::enable_shared_from_this<rogue::protocols::packetizer::ControllerV2> {
+         class ControllerV2 : public Controller, public rogue::EnableSharedFromThis<rogue::protocols::packetizer::ControllerV2> {
 
                bool     enIbCrc_;
                bool     enObCrc_;

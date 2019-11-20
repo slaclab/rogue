@@ -104,13 +104,15 @@ void rpe::Master::valueGet() { }
 
 void rpe::Master::valueSet() {
    ris::FramePtr frame;
-   ris::Frame::iterator iter;
+   ris::FrameIterator iter;
    uint32_t txSize;
    uint32_t i;
 
    txSize = size_ * fSize_;
    frame = reqFrame(txSize, true);
-   iter = frame->beginWrite();
+   frame->setPayload(txSize);
+
+   iter = frame->begin();
 
    // Create vector of appropriate type
    if ( epicsType_ == aitEnumUint8 ) {
@@ -162,7 +164,6 @@ void rpe::Master::valueSet() {
    }
 
    // Should this be pushed to a queue for a worker thread to call slaves?
-   frame->setPayload(txSize);
    sendFrame(frame);
 }
 

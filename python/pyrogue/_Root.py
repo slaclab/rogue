@@ -510,11 +510,11 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         return obj
 
     @pr.expose
-    def saveAddressMap(root,fname):
+    def saveAddressMap(self,fname):
         try:
             with open(fname,'w') as f:
                 f.write("Path\t")
-                f.write("Type\t")
+                f.write("TypeStr\t")
                 f.write("Full Address\t")
                 f.write("Device Offset\t")
                 f.write("Mode\t")
@@ -526,13 +526,38 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                 for v in self.variableList:
                     if v.isinstance(pr.RemoteVariable):
                         f.write("{}\t".format(v.path))
-                        f.write("{}\t".format(type(v)))
+                        f.write("{}\t".format(v.typeStr))
                         f.write("{:#x}\t".format(v.address))
                         f.write("{:#x}\t".format(v.offset))
                         f.write("{}\t".format(v.mode))
                         f.write("{}\t".format(v.bitOffset))
                         f.write("{}\t".format(v.bitSize))
                         f.write("{}\t".format(v.enum))
+                        f.write("{}\n".format(v.description))
+
+        except Exception as e:
+            pr.logException(self._log,e)
+
+    @pr.expose
+    def saveVariableList(self,fname,polledOnly=False,incGroups=None):
+        try:
+            with open(fname,'w') as f:
+                f.write("Path\t")
+                f.write("TypeStr\t")
+                f.write("Mode\t")
+                f.write("Enum\t")
+                f.write("PollInterval\t")
+                f.write("Groups\t")
+                f.write("Description\n")
+
+                for v in self.variableList:
+                    if ((not polledOnly) or (v.pollInterval > 0)) and v.filterByGroup(incGroups=incGroups,excGroups=None):
+                        f.write("{}\t".format(v.path))
+                        f.write("{}\t".format(v.typeStr))
+                        f.write("{}\t".format(v.mode))
+                        f.write("{}\t".format(v.enum))
+                        f.write("{}\t".format(v.pollInterval))
+                        f.write("{}\t".format(v.groups))
                         f.write("{}\n".format(v.description))
 
         except Exception as e:
@@ -582,6 +607,9 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         Vlist can contain an optional list of variale paths to include in the
         stream. If this list is not NULL only these variables will be included.
         """
+
+        # Don't send if there are not any Slaves connected
+        if self._slaveCount == 0: return
 
         # Inherit include and exclude groups from global if not passed
         if incGroups is None: incGroups = self._streamIncGroups
@@ -713,20 +741,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         try:
             with self.pollBlock(), self.updateGroup():
                 for fn in lst:
-                    self._log.debug("loadYaml: loading {}".format(fn))
-
-                    if '.zip' in fn:
-                        base = fn.split('.zip')[0] + '.zip'
-                        sub = fn.split('.zip')[1][1:] # Strip leading '/'
-
-                        with zipfile.ZipFile(base, 'r') as myzip:
-                            with myzip.open(sub) as myfile:
-                                d = pr.yamlToData(myfile.read())
-
-                    else:
-                        with open(fn,'r') as f:
-                            d = pr.yamlToData(f.read())
-
+                    d = pr.yamlToData(fName=fn)
                     self._setDictRoot(d=d,writeEach=writeEach,modes=modes,incGroups=incGroups,excGroups=excGroups)
 
                 if not writeEach: self._write()
@@ -837,7 +852,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                         val = v._doUpdate()
 
                         # Add to stream
-                        if v.filterByGroup(self._streamIncGroups, self._streamExcGroups):
+                        if self._slaveCount() != 0 and v.filterByGroup(self._streamIncGroups, self._streamExcGroups):
                             strm[p] = val
 
                         # Add to zmq publish

@@ -13,19 +13,19 @@ MIN_PYTHON = (3,6)
 if sys.version_info < MIN_PYTHON:
     raise Exception("Python %s.%s or later is required.\n" % MIN_PYTHON)
 
-from pyrogue._Node            import *
-from pyrogue._Block           import *
-from pyrogue._Model           import *
-from pyrogue._Variable        import *
-from pyrogue._Command         import *
-from pyrogue._Device          import *
-from pyrogue._Memory          import *
-from pyrogue._Root            import *
-from pyrogue._PollQueue       import *
-from pyrogue._Process         import *
-from pyrogue._DataWriter      import *
-from pyrogue._RunControl      import *
-from pyrogue._DataReceiver    import *
+from pyrogue._Node      import *
+from pyrogue._Block     import *
+from pyrogue._Model     import *
+from pyrogue._Variable  import *
+from pyrogue._Command   import *
+from pyrogue._Device    import *
+from pyrogue._Memory    import *
+from pyrogue._Root      import *
+from pyrogue._PollQueue import *
+from pyrogue._Process   import *
+from pyrogue._DataWriter   import *
+from pyrogue._RunControl   import *
+from pyrogue._DataReceiver import *
 from pyrogue._HelperFunctions import *
 
 # Add __version__ attribute with the module version number

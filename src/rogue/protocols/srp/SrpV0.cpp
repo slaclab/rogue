@@ -96,7 +96,7 @@ bool rps::SrpV0::setupHeader(rim::TransactionPtr tran, uint32_t *header, uint32_
 
 //! Post a transaction
 void rps::SrpV0::doTransaction(rim::TransactionPtr tran) {
-   ris::Frame::iterator fIter;
+   ris::FrameIterator fIter;
    rim::Transaction::iterator tIter;
    ris::FramePtr  frame;
    uint32_t frameSize;
@@ -132,7 +132,7 @@ void rps::SrpV0::doTransaction(rim::TransactionPtr tran) {
    // Setup iterators
    rogue::GilRelease noGil;
    rim::TransactionLockPtr lock = tran->lock();
-   fIter = frame->beginWrite();
+   fIter = frame->begin();
    tIter = tran->begin();
 
    // Write header
@@ -158,7 +158,7 @@ void rps::SrpV0::doTransaction(rim::TransactionPtr tran) {
 
 //! Accept a frame from master
 void rps::SrpV0::acceptFrame ( ris::FramePtr frame ) {
-   ris::Frame::iterator fIter;
+   ris::FrameIterator fIter;
    rim::Transaction::iterator tIter;
    rim::TransactionPtr tran;
    uint32_t header[MaxHeadLen/4];
@@ -186,7 +186,7 @@ void rps::SrpV0::acceptFrame ( ris::FramePtr frame ) {
    }
 
    // Setup frame iterator
-   fIter = frame->beginRead();
+   fIter = frame->begin();
 
    // Get the header
    ris::fromFrame(fIter,RxHeadLen,header);
@@ -228,7 +228,7 @@ void rps::SrpV0::acceptFrame ( ris::FramePtr frame ) {
    }
 
    // Read tail error value, complete if error is set
-   fIter = frame->endRead()-TailLen;
+   fIter = frame->end()-TailLen;
    ris::fromFrame(fIter,TailLen,tail);
    if ( tail[0] != 0 ) {
       if ( tail[0] & 0x20000 ) tran->error("Axi bus timeout detected in hardware");
@@ -240,7 +240,7 @@ void rps::SrpV0::acceptFrame ( ris::FramePtr frame ) {
 
    // Copy data if read
    if ( ! doWrite ) {
-      fIter = frame->beginRead() + RxHeadLen;
+      fIter = frame->begin() + RxHeadLen;
       ris::fromFrame(fIter, tran->size(), tIter);
    }
 

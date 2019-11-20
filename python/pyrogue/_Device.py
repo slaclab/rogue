@@ -59,7 +59,7 @@ class EnableVariable(pr.BaseVariable):
                 ret = False
             elif self._depDis:
                 ret = 'deps'
-            elif self._parent == self._root:
+            elif self._parent is self._root:
                 #print("Root enable = {}".format(self._value))
                 ret = self._value
             else:
@@ -109,7 +109,7 @@ class EnableVariable(pr.BaseVariable):
     def _rootAttached(self,parent,root):
         pr.Node._rootAttached(self,parent,root)
 
-        if parent != root:
+        if parent is not root:
             parent._parent.enable.addListener(self)
 
 class DeviceError(Exception):

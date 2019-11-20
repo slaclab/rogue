@@ -42,6 +42,7 @@
 #include <mutex>
 #include <condition_variable>
 #include <rogue/Logging.h>
+#include <rogue/EnableSharedFromThis.h>
 #include <map>
 
 namespace rogue {
@@ -51,7 +52,7 @@ namespace rogue {
          class StreamWriterChannel;
 
          //! Stream writer central class
-         class StreamWriter : public std::enable_shared_from_this<rogue::utilities::fileio::StreamWriter> {
+         class StreamWriter : public rogue::EnableSharedFromThis<rogue::utilities::fileio::StreamWriter> {
             friend class StreamWriterChannel;
             
             protected:

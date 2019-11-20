@@ -39,18 +39,14 @@ and a slave. The first arg maxDepth is set to 100, trimSize is set to 0, and noC
    # Create a Fifo with maxDepth=100, trimSize=0, noCopy=True
    fifo = rogue.interfaces.stream.Fifo(100, 0, True)
 
-   # Connect the fifo to the source
-   pyrogue.streamConnect(src, fifo)
-
-   # Connect the destination to the fifo
-   pyrogue.streamConnect(fifo, dst)
+   # Connect the fifo to the source and on to the FIFO
+   src >> fifo >> dst
 
 Below is the equivalent code in C++
 
 .. code-block:: c
 
    #include <rogue/interfaces/stream/Fifo.h>
-   #include <rogue/Helpers.h>
    #include <MyCustomMaster.h>
    #include <MyCustomSlave.h>
 
@@ -63,11 +59,8 @@ Below is the equivalent code in C++
    // Create a Fifo with maxDepth=100, trimSize=0, noCopy=true
    rogue::interfaces::stream::FifoPtr fifo = rogue::interfaces::stream::Fifo::create(100, 0, true)
 
-   // Connect the fifo to the source
-   rogueStreamConnect(src, fifo);
-
-   // Connect the destination to the fifo
-   rogueStreamConnect(fifo, dst);
+   // Connect the fifo to the source and on to the dst
+   *(*src >> fifo) >> dst;
 
 Stream Tap Fifo Example
 =======================
@@ -93,20 +86,16 @@ and a slave. This Fifo is configured to only copy the first 20 bytes of the Fram
    fifo = rogue.interfaces.stream.Fifo(150, 20, False)
 
    # Connect the src and dst
-   pyrogue.streamConnect(src, dst)
+   src >> dst
 
-   # Add the FIFO as a stream tap
-   pyrogue.streamTap(src, fifo)
-
-   # Connect the monitor to the FIfo output
-   pyrogue.streamConnect(fifo, mon)
+   # Add the FIFO as a second slave and on to the monitor, (using reverse operators as an example)
+   mon << fifo << src
 
 Below is the equivalent code in C++
 
 .. code-block:: c
 
    #include <rogue/interfaces/stream/Fifo.h>
-   #include <rogue/Helpers.h>
    #include <MyCustomMaster.h>
 
    // Data source
@@ -122,11 +111,8 @@ Below is the equivalent code in C++
    rogue::interfaces::stream::FifoPtr fifo = rogue::interfaces::stream::Fifo::create(150, 20, false)
 
    # Connect the src and dst
-   rogueStreamConnect(src, dst);
+   src >> dst;
 
-   # Add the Fifo as a stream tap
-   rogueStreamTap(src, fifo);
-
-   # Connect the monitor to the FIfo output
-   rogueStreamConnect(fifo, mon)
+   # Add the Fifo as a second stream and on to the monitor (reverse order show as an example)
+   *( *mon << fifo ) << src;
 

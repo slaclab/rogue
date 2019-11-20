@@ -25,6 +25,7 @@
 #include <thread>
 #include <rogue/interfaces/stream/Pool.h>
 #include <rogue/Logging.h>
+#include <rogue/EnableSharedFromThis.h>
 
 #ifndef NO_PYTHON
 #include <boost/python.hpp>
@@ -36,13 +37,15 @@ namespace rogue {
 
          class Frame;
          class Buffer;
+         class Master;
 
          //! Stream slave class
          /** The stream slave accepts stream data from a master. It also
           * can accept frame allocation requests through its Pool base class.
           * A Slave object can be attached to multiple Master objects.
           */
-         class Slave : public rogue::interfaces::stream::Pool {
+         class Slave : public rogue::interfaces::stream::Pool, 
+                       public rogue::EnableSharedFromThis<rogue::interfaces::stream::Slave> {
 
                // Mutex
                std::mutex mtx_;
@@ -111,6 +114,17 @@ namespace rogue {
                 * @return Total number of bytes received.
                 */
                uint64_t getByteCount();
+
+#ifndef NO_PYTHON
+
+               //! Support << operator in python
+               boost::python::object lshiftPy ( boost::python::object p );
+
+#endif
+
+               //! Support << operator in C++
+               std::shared_ptr<rogue::interfaces::stream::Master> & 
+                  operator <<(std::shared_ptr<rogue::interfaces::stream::Master> & other);
 
          };
 

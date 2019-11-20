@@ -27,6 +27,7 @@
 #include <stdint.h>
 #include <rogue/Queue.h>
 #include <rogue/Logging.h>
+#include <rogue/EnableSharedFromThis.h>
 
 namespace rogue {
    namespace protocols {
@@ -37,7 +38,7 @@ namespace rogue {
          class Header;
 
          //! RSSI Controller Class
-         class Controller : public std::enable_shared_from_this<rogue::protocols::rssi::Controller> {
+         class Controller : public rogue::EnableSharedFromThis<rogue::protocols::rssi::Controller> {
 
                //! Hard coded values
                static const uint8_t  Version       = 1;

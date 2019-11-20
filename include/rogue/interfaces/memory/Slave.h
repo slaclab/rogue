@@ -23,6 +23,7 @@
 #include <vector>
 #include <map>
 #include <rogue/interfaces/memory/Master.h>
+#include <rogue/EnableSharedFromThis.h>
 
 #ifndef NO_PYTHON
 #include <boost/python.hpp>
@@ -43,7 +44,7 @@ namespace rogue {
           *
           * The Slave object provides mechanisms for tracking current transactions.
           */
-         class Slave {
+         class Slave : public rogue::EnableSharedFromThis<rogue::interfaces::memory::Slave> {
 
                // Class instance counter
                static uint32_t classIdx_;
@@ -176,6 +177,18 @@ namespace rogue {
                 * @param transaction Transaction pointer as TransactionPtr
                 */
                virtual void doTransaction(std::shared_ptr<rogue::interfaces::memory::Transaction> transaction);
+
+#ifndef NO_PYTHON
+
+               //! Support << operator in python
+               void lshiftPy ( boost::python::object p );
+
+#endif
+
+               //! Support << operator in C++
+               std::shared_ptr<rogue::interfaces::memory::Master> & 
+                  operator <<(std::shared_ptr<rogue::interfaces::memory::Master> & other);
+
          };
 
          //! Alias for using shared pointer as SlavePtr
