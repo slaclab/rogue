@@ -95,33 +95,15 @@ def streamConnect(source, dest):
     else:
         slave = dest._getStreamSlave()
 
-    master._setSlave(slave)
+    master._addSlave(slave)
 
 
 def streamTap(source, tap):
     """
-    Attach the passed dest object to the source for a streams
-    as a secondary destination.
-    Connect source and destination stream devices.
-    source is either a stream master sub class or implements
-    the _getStreamMaster call to return a contained master.
-    Similiarly dest is either a stream slave sub class or implements
-    the _getStreamSlave call to return a contained slave.
+    DEPRECATED!
     """
-
-    # Is object a native master or wrapped?
-    if isinstance(source,rogue.interfaces.stream.Master):
-        master = source
-    else:
-        master = source._getStreamMaster()
-
-    # Is object a native slave or wrapped?
-    if isinstance(tap,rogue.interfaces.stream.Slave):
-        slave = tap
-    else:
-        slave = tap._getStreamSlave()
-
-    master._addSlave(slave)
+    #print("******** Stream TAP is deprecated. Use streamConnect instead. ********")
+    streamConnect(source,tap)
 
 
 def streamConnectBiDir(deviceA, deviceB):
@@ -170,19 +152,62 @@ def busConnect(source,dest):
     master._setSlave(slave)
 
 
-def yamlToData(stream):
-    """Load yaml to data structure"""
+def yamlToData(stream='',fName=None):
+    """
+    Load yaml to data structure.
+    A yaml string or file path may be passed.
+    """
+
+    log = pr.logInit(name='yamlToData')
 
     class PyrogueLoader(yaml.Loader):
         pass
+
+    def include_mapping(loader, node):
+        rel = loader.construct_scalar(node)
+
+        # Filename starts with absolute path
+        if rel[0] == '/':
+            filename = rel
+
+        # Filename is relative and we know the base path
+        elif fName is not None:
+            filename = os.path.join(os.path.dirname(fName), rel)
+
+        # File is relative without a base path, assume cwd
+        else:
+            filename = node
+
+        # Recursive call, flatten relative jumps
+        return yamlToData(fName=os.path.abspath(filename))
 
     def construct_mapping(loader, node):
         loader.flatten_mapping(node)
         return odict(loader.construct_pairs(node))
 
     PyrogueLoader.add_constructor(yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG,construct_mapping)
+    PyrogueLoader.add_constructor('!include',include_mapping)
 
-    return yaml.load(stream, Loader=PyrogueLoader)
+    # Use passed string
+    if fName is None:
+        return yaml.load(stream,Loader=PyrogueLoader)
+
+    # Main or sub-file is in a zip
+    elif '.zip' in fName:
+        base = fName.split('.zip')[0] + '.zip'
+        sub = fName.split('.zip')[1][1:] # Strip leading '/'
+
+        log.debug("loading {} from zipfile {}".format(sub,base))
+
+        with zipfile.ZipFile(base, 'r') as myzip:
+            with myzip.open(sub) as myfile:
+                return yaml.load(myfile.read(),Loader=PyrogueLoader)
+
+    # Non zip file
+    else:
+        log.debug("loading {}".format(fName))
+        with open(fName,'r') as f:
+            return yaml.load(f.read(),Loader=PyrogueLoader)
 
 
 def dataToYaml(data):
