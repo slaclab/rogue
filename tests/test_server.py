@@ -46,7 +46,8 @@ class DummyTree(pyrogue.Root):
                               timeout=2.0,
                               pollEn=True,
                               serverPort=0,
-                              sqlUrl='sqlite:///test.db')
+                              #sqlUrl='sqlite:///test.db')
+                            )
 
         # Use a memory space emulator
         sim = pyrogue.interfaces.simulation.MemEmulate()

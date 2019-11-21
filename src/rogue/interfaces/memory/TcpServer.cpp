@@ -76,6 +76,10 @@ rim::TcpServer::TcpServer (std::string addr, uint16_t port) {
    if ( zmq_setsockopt (this->zmqReq_, ZMQ_LINGER, &opt, sizeof(int32_t)) != 0 ) 
          throw(rogue::GeneralError("memory::TcpServer::TcpServer","Failed to set socket linger"));
 
+   opt = 100;
+   if ( zmq_setsockopt (this->zmqReq_, ZMQ_RCVTIMEO, &opt, sizeof(int32_t)) != 0 ) 
+         throw(rogue::GeneralError("memory::TcpServer::TcpServer","Failed to set socket receive timeout"));
+
    if ( zmq_bind(this->zmqResp_,this->respAddr_.c_str()) < 0 )
       throw(rogue::GeneralError::create("memory::TcpServer::TcpServer",
                "Failed to bind server to port %i at address %s, another process may be using this port",port+1,addr.c_str()));
@@ -105,10 +109,10 @@ void rim::TcpServer::close() {
    if ( threadEn_ ) {
       rogue::GilRelease noGil;
       threadEn_ = false;
+      thread_->join();
       zmq_close(this->zmqResp_);
       zmq_close(this->zmqReq_);
       zmq_ctx_destroy(this->zmqCtx_);
-      thread_->join();
    }
 }
 
