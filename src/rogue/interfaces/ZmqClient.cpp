@@ -115,10 +115,10 @@ void rogue::interfaces::ZmqClient::close() {
    if ( threadEn_ ) {
       rogue::GilRelease noGil;
       threadEn_ = false;
+      thread_->join();
       zmq_close(this->zmqSub_);
       zmq_close(this->zmqReq_);
       zmq_ctx_destroy(this->zmqCtx_);
-      thread_->join();
    }
 }
 

@@ -78,6 +78,10 @@ ris::TcpCore::TcpCore (std::string addr, uint16_t port, bool server) {
    if ( zmq_setsockopt (this->zmqPull_, ZMQ_LINGER, &opt, sizeof(int32_t)) != 0 ) 
          throw(rogue::GeneralError("stream::TcpCore::TcpCore","Failed to set socket linger"));
 
+   opt = 100;
+   if ( zmq_setsockopt (this->zmqPull_, ZMQ_RCVTIMEO, &opt, sizeof(int32_t)) != 0 ) 
+         throw(rogue::GeneralError("stream::TcpCore::TcpCore","Failed to set socket receive timeout"));
+
    // Server mode
    if (server) {
       this->pullAddr_.append(std::to_string(static_cast<long long>(port)));
@@ -133,10 +137,10 @@ void ris::TcpCore::close() {
    if ( threadEn_ ) {
       rogue::GilRelease noGil;
       threadEn_ = false;
+      thread_->join();
       zmq_close(this->zmqPull_);
       zmq_close(this->zmqPush_);
       zmq_ctx_destroy(this->zmqCtx_);
-      thread_->join();
    }
 }
 
