@@ -64,7 +64,7 @@ def VirtualFactory(data):
         # Add __call__ if command or Process
         if str(pr.BaseCommand) in data['bases'] or str(pr.Process) in data['bases']:
             setattr(self.__class__,'__call__',self._call)
-        
+
         # Add getNode and addVarListener if root
         if str(pr.Root) in data['bases']:
             setattr(self.__class__,'getNode',self._getNode)
@@ -163,7 +163,6 @@ class VirtualNode(pr.Node):
 
                 #print(f"Loaded node {node.path}")
 
-    @ft.lru_cache(maxsize=None)
     def _getNode(self,path,load=True):
         obj = self
 
