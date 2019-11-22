@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Connecting Memory Elements &mdash; Rogue v4.6.0-1-g382ece2c documentation</title>
+  <title>Connecting Memory Elements &mdash; Rogue v4.6.0-2-g7a70a3ac documentation</title>
   
 
   
@@ -184,6 +184,10 @@
 
 <span class="c1"># Connections can also go in the reverse order</span>
 <span class="n">srpV3</span> <span class="o">&lt;&lt;</span> <span class="n">hubB</span> <span class="o">&lt;&lt;</span> <span class="n">masterB</span>
+
+<span class="c1"># Alternatively a helper function can be used</span>
+<span class="n">pyrogue</span><span class="o">.</span><span class="n">streamConnect</span><span class="p">(</span><span class="n">masterA</span><span class="p">,</span> <span class="n">hubA</span><span class="p">)</span>
+<span class="n">pyrogue</span><span class="o">.</span><span class="n">streamConnect</span><span class="p">(</span><span class="n">hubA</span><span class="p">,</span> <span class="n">srpV3</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>The equivelent code in C++ is show below:</p>
@@ -192,8 +196,12 @@
 
 <span class="o">*</span><span class="p">(</span> <span class="o">*</span><span class="n">masterA</span> <span class="o">&gt;&gt;</span> <span class="n">hubA</span><span class="p">)</span> <span class="o">&gt;&gt;</span> <span class="n">srpV3</span><span class="p">;</span>
 
-<span class="c1">// Or the reserve</span>
+<span class="c1">// Or the reverse</span>
 <span class="o">*</span><span class="p">(</span> <span class="o">*</span><span class="n">srpV3</span> <span class="o">&lt;&lt;</span> <span class="n">hubB</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="n">masterB</span><span class="p">;</span>
+
+<span class="c1">// Alternatively a helper function can be used</span>
+<span class="n">rogueStreamConnect</span><span class="p">(</span><span class="n">masterA</span><span class="p">,</span> <span class="n">hubA</span><span class="p">)</span>
+<span class="n">rogueStreamConnect</span><span class="p">(</span><span class="n">hubA</span><span class="p">,</span> <span class="n">srpV3</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>

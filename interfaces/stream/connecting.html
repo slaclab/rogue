@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Connecting Streams &mdash; Rogue v4.6.0-1-g382ece2c documentation</title>
+  <title>Connecting Streams &mdash; Rogue v4.6.0-2-g7a70a3ac documentation</title>
   
 
   
@@ -186,10 +186,16 @@ empty the frame when processing the data, such as a DMA driver in zero copy mode
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pyrogue</span>
 
 <span class="n">myMaster</span> <span class="o">&gt;&gt;</span> <span class="n">mySlave</span>
+
+<span class="c1"># A helper function can also be used</span>
+<span class="n">pyrogue</span><span class="o">.</span><span class="n">streamConnect</span><span class="p">(</span><span class="n">myMaster</span><span class="p">,</span><span class="n">mySlave</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>A similiar line of code is used to connect a master and slave in c++:</p>
 <div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="o">*</span><span class="n">myMaster</span> <span class="o">&gt;&gt;</span> <span class="n">mySlave</span>
+
+<span class="c1">// A helper function can also be used</span>
+<span class="n">rogueStreamConnect</span><span class="p">(</span><span class="n">myMaster</span><span class="p">,</span><span class="n">mySlave</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>The above command examples attaches the primary slave to the master.</p>
@@ -211,12 +217,18 @@ using a network protocol such as UDP or TCP. Two dual purpose enpoints can be co
 to create a bi-directional data stream using the following command in python:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pyrogue</span>
 
-<span class="n">enPointA</span> <span class="o">==</span> <span class="n">endPointB</span>
+<span class="n">endPointA</span> <span class="o">==</span> <span class="n">endPointB</span>
+
+<span class="c1"># Or using a helper function</span>
+<span class="n">pyrogue</span><span class="o">.</span><span class="n">streamConnectBiDir</span><span class="p">(</span><span class="n">endPointA</span><span class="p">,</span> <span class="n">endPointB</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>This command adds endPointB as a Slave for endPointA at the same time adding endPointA as a
 slave for endPointB. A similiar command is available in C++:</p>
 <div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="o">*</span><span class="n">endPointA</span> <span class="o">==</span> <span class="n">endPointB</span><span class="p">;</span>
+
+<span class="c1">// Or using a helper function</span>
+<span class="n">rogueStreamConnectBiDir</span><span class="p">(</span><span class="n">endPointA</span><span class="p">,</span> <span class="n">endPointB</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
