@@ -105,7 +105,10 @@ class PollQueue(object):
                 else:
                     # No more variables belong to block entry, can remove it
                     self._entries[var._block].block = None
-            else:
+                    self._entries.remove(var._block)
+
+            # Corner case when 0 is set for a variable not already polled
+            elif var.pollInterval > 0:
                 # Pure entry add
                 self._addEntry(var._block, var.pollInterval)
 
