@@ -282,7 +282,7 @@ class BaseVariable(pr.Node):
     @pollInterval.setter
     def pollInterval(self, interval):
         self._pollInterval = interval
-        self._updatePollInterval()
+        self._updatePollInterval(init=False)
 
     @pr.expose
     @property
@@ -481,14 +481,14 @@ class BaseVariable(pr.Node):
         if self._default is not None:
             self.setDisp(self._default, write=False)
 
-    def _updatePollInterval(self):
-        if self._pollInterval > 0 and self.root is not None and self.root._pollQueue is not None:
+    def _updatePollInterval(self,init):
+        if ((not init) or self._pollInterval > 0) and self.root is not None and self.root._pollQueue is not None:
             self.root._pollQueue.updatePollInterval(self)
 
     def _finishInit(self):
         # Set the default value but dont write
         self._setDefault()
-        self._updatePollInterval()
+        self._updatePollInterval(init=True)
 
     def _setDict(self,d,writeEach,modes,incGroups,excGroups):
         #print(f'{self.path}._setDict(d={d})')        
