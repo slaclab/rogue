@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Testing The Custom Module &mdash; Rogue v4.3.0-11-gbad671dd documentation</title>
+  <title>Testing The Custom Module &mdash; Rogue v4.6.0-1-g382ece2c documentation</title>
   
 
   
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                v4.3.0
+                v4.6.0
               </div>
             
           
@@ -186,7 +186,7 @@ by the <a class="reference internal" href="sourcefile.html#custom-sourcefile"><s
         <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">MyWrapper</span><span class="o">.</span><span class="n">MyCustomSlave</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;testSlave&quot;</span><span class="p">))</span>
 
         <span class="c1"># Connect master to slave</span>
-        <span class="n">pyrogue</span><span class="o">.</span><span class="n">streamConnect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">testMaster</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">testSlave</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">testMaster</span> <span class="o">&gt;&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">testSlave</span>
 
         <span class="c1"># Start the tree</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
@@ -234,7 +234,7 @@ to epics to allow external control.</p>
         <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">MyWrapper</span><span class="o">.</span><span class="n">MyCustomSlave</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;testSlave&quot;</span><span class="p">))</span>
 
         <span class="c1"># Connect master to slave</span>
-        <span class="n">pyrogue</span><span class="o">.</span><span class="n">streamConnect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">testMaster</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">testSlave</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">testMaster</span> <span class="o">&gt;&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">testSlave</span>
 
         <span class="c1"># Start the tree</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
@@ -349,7 +349,7 @@ to start one or more remote GUIs. That process is described in TBD.</p>
         <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">MyWrapper</span><span class="o">.</span><span class="n">MyCustomSlave</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;testSlave&quot;</span><span class="p">))</span>
 
         <span class="c1"># Connect master to slave</span>
-        <span class="n">pyrogue</span><span class="o">.</span><span class="n">streamConnect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">testMaster</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">testSlave</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">testMaster</span> <span class="o">&gt;&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">testSlave</span>
 
         <span class="c1"># Start the tree</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>

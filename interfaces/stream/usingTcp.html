@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Using The TCP Bridge &mdash; Rogue v4.3.0-11-gbad671dd documentation</title>
+  <title>Using The TCP Bridge &mdash; Rogue v4.6.0-1-g382ece2c documentation</title>
   
 
   
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                v4.3.0
+                v4.6.0
               </div>
             
           
@@ -204,11 +204,8 @@ on the client. The Python server is able to interface with either a Python or C+
 <span class="c1"># Pass an address of 192.168.1.1 to listen on only that specific interface</span>
 <span class="n">tcp</span> <span class="o">=</span> <span class="n">rogue</span><span class="o">.</span><span class="n">interfaces</span><span class="o">.</span><span class="n">stream</span><span class="o">.</span><span class="n">TcpServer</span><span class="p">(</span><span class="s2">&quot;*&quot;</span><span class="p">,</span><span class="mi">8000</span><span class="p">)</span>
 
-<span class="c1"># Connect the transmitter</span>
-<span class="n">pyrogue</span><span class="o">.</span><span class="n">streamConnect</span><span class="p">(</span><span class="n">src</span><span class="p">,</span><span class="n">tcp</span><span class="p">)</span>
-
-<span class="c1"># Connect the receiver</span>
-<span class="n">pyrogue</span><span class="o">.</span><span class="n">streamConnect</span><span class="p">(</span><span class="n">tcp</span><span class="p">,</span><span class="n">dst</span><span class="p">)</span>
+<span class="c1"># Connect the transmitter and the receiver</span>
+<span class="n">src</span> <span class="o">&gt;&gt;</span> <span class="n">tcp</span> <span class="o">&gt;&gt;</span> <span class="n">dst</span>
 </pre></div>
 </div>
 </div>
@@ -229,11 +226,8 @@ on the server.  The Python client is able to interface with either a Python or C
 <span class="c1"># Start a TCP Bridge Client, Connect remote server at 192.168.1.1 ports 8000 &amp; 8001.</span>
 <span class="n">tcp</span> <span class="o">=</span> <span class="n">rogue</span><span class="o">.</span><span class="n">interfaces</span><span class="o">.</span><span class="n">stream</span><span class="o">.</span><span class="n">TcpClient</span><span class="p">(</span><span class="s2">&quot;192.168.1.1&quot;</span><span class="p">,</span><span class="mi">8000</span><span class="p">)</span>
 
-<span class="c1"># Connect the transmitter</span>
-<span class="n">pyrogue</span><span class="o">.</span><span class="n">streamConnect</span><span class="p">(</span><span class="n">src</span><span class="p">,</span><span class="n">tcp</span><span class="p">)</span>
-
-<span class="c1"># Connect the receiver</span>
-<span class="n">pyrogue</span><span class="o">.</span><span class="n">streamConnect</span><span class="p">(</span><span class="n">tcp</span><span class="p">,</span><span class="n">dst</span><span class="p">)</span>
+<span class="c1"># Connect the transmitter and the receiver</span>
+<span class="n">src</span> <span class="o">&gt;&gt;</span> <span class="n">tcp</span> <span class="o">&gt;&gt;</span> <span class="n">dst</span>
 </pre></div>
 </div>
 </div>
@@ -243,7 +237,6 @@ on the server.  The Python client is able to interface with either a Python or C
 will send data to a remote receiver on the client. The local receiver will receive data from a remote transmitter
 on the client.  The C++ server is able to interface with either a Python or C++ client.</p>
 <div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;rogue/interfaces/stream/TcpServer.h&gt;</span><span class="cp"></span>
-<span class="cp">#include</span> <span class="cpf">&lt;rogue/Helpers.h&gt;</span><span class="cp"></span>
 
 <span class="c1">// Local transmitter</span>
 <span class="n">MyCustomMasterPtr</span> <span class="n">src</span> <span class="o">=</span> <span class="n">MyCustomMaster</span><span class="o">::</span><span class="n">create</span><span class="p">()</span>
@@ -256,10 +249,7 @@ on the client.  The C++ server is able to interface with either a Python or C++ 
 <span class="n">rogue</span><span class="o">::</span><span class="n">interfaces</span><span class="o">::</span><span class="n">stream</span><span class="o">::</span><span class="n">TcpServerPtr</span> <span class="n">tcp</span> <span class="o">=</span> <span class="n">rogue</span><span class="o">::</span><span class="n">interfaces</span><span class="o">::</span><span class="n">stream</span><span class="o">::</span><span class="n">TcpServer</span><span class="o">::</span><span class="n">create</span><span class="p">(</span><span class="s">&quot;*&quot;</span><span class="p">,</span><span class="mi">8000</span><span class="p">)</span>
 
 <span class="c1">// Connect the transmitter</span>
-<span class="n">rogueStreamConnect</span><span class="p">(</span><span class="n">src</span><span class="p">,</span><span class="n">tcp</span><span class="p">)</span>
-
-<span class="c1">// Connect the receiver</span>
-<span class="n">rogueStreamConnect</span><span class="p">(</span><span class="n">tcp</span><span class="p">,</span><span class="n">dst</span><span class="p">)</span>
+<span class="o">*</span><span class="p">(</span> <span class="o">*</span><span class="n">src</span> <span class="o">&gt;&gt;</span> <span class="n">tcp</span> <span class="p">)</span> <span class="o">&gt;&gt;</span> <span class="n">dst</span><span class="p">;</span>
 </pre></div>
 </div>
 </div>
@@ -269,7 +259,6 @@ on the client.  The C++ server is able to interface with either a Python or C++ 
 will send data to a remote receiver on the server. The local receiver will receive data from a remote transmitter
 on the server.  The C++ client is able to interface with either a Python or C++ server.</p>
 <div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;rogue/interfaces/stream/TcpClient.h&gt;</span><span class="cp"></span>
-<span class="cp">#include</span> <span class="cpf">&lt;rogue/Helpers.h&gt;</span><span class="cp"></span>
 
 <span class="c1">// Local transmitter</span>
 <span class="n">MyCustomMasterPtr</span> <span class="n">src</span> <span class="o">=</span> <span class="n">MyCustomMaster</span><span class="o">::</span><span class="n">create</span><span class="p">()</span>
@@ -281,10 +270,7 @@ on the server.  The C++ client is able to interface with either a Python or C++ 
 <span class="n">rogue</span><span class="o">::</span><span class="n">interfaces</span><span class="o">::</span><span class="n">stream</span><span class="o">::</span><span class="n">TcpClientPtr</span> <span class="n">tcp</span> <span class="o">=</span> <span class="n">rogue</span><span class="o">::</span><span class="n">interfaces</span><span class="o">::</span><span class="n">stream</span><span class="o">::</span><span class="n">TcpClient</span><span class="o">::</span><span class="n">create</span><span class="p">(</span><span class="s">&quot;192.168.1.1&quot;</span><span class="p">,</span><span class="mi">8000</span><span class="p">)</span>
 
 <span class="c1">// Connect the transmitter</span>
-<span class="n">rogueStreamConnect</span><span class="p">(</span><span class="n">src</span><span class="p">,</span><span class="n">tcp</span><span class="p">)</span>
-
-<span class="c1">// Connect the receiver</span>
-<span class="n">rogueStreamConnect</span><span class="p">(</span><span class="n">tcp</span><span class="p">,</span><span class="n">dst</span><span class="p">)</span>
+<span class="o">*</span><span class="p">(</span> <span class="o">*</span><span class="n">src</span> <span class="o">&gt;&gt;</span> <span class="n">tcp</span> <span class="p">)</span> <span class="o">&gt;&gt;</span> <span class="n">dst</span><span class="p">;</span>
 </pre></div>
 </div>
 </div>

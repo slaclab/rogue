@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Using A Fifo &mdash; Rogue v4.3.0-11-gbad671dd documentation</title>
+  <title>Using A Fifo &mdash; Rogue v4.6.0-1-g382ece2c documentation</title>
   
 
   
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                v4.3.0
+                v4.6.0
               </div>
             
           
@@ -207,16 +207,12 @@ and a slave. The first arg maxDepth is set to 100, trimSize is set to 0, and noC
 <span class="c1"># Create a Fifo with maxDepth=100, trimSize=0, noCopy=True</span>
 <span class="n">fifo</span> <span class="o">=</span> <span class="n">rogue</span><span class="o">.</span><span class="n">interfaces</span><span class="o">.</span><span class="n">stream</span><span class="o">.</span><span class="n">Fifo</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="bp">True</span><span class="p">)</span>
 
-<span class="c1"># Connect the fifo to the source</span>
-<span class="n">pyrogue</span><span class="o">.</span><span class="n">streamConnect</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">fifo</span><span class="p">)</span>
-
-<span class="c1"># Connect the destination to the fifo</span>
-<span class="n">pyrogue</span><span class="o">.</span><span class="n">streamConnect</span><span class="p">(</span><span class="n">fifo</span><span class="p">,</span> <span class="n">dst</span><span class="p">)</span>
+<span class="c1"># Connect the fifo to the source and on to the FIFO</span>
+<span class="n">src</span> <span class="o">&gt;&gt;</span> <span class="n">fifo</span> <span class="o">&gt;&gt;</span> <span class="n">dst</span>
 </pre></div>
 </div>
 <p>Below is the equivalent code in C++</p>
 <div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;rogue/interfaces/stream/Fifo.h&gt;</span><span class="cp"></span>
-<span class="cp">#include</span> <span class="cpf">&lt;rogue/Helpers.h&gt;</span><span class="cp"></span>
 <span class="cp">#include</span> <span class="cpf">&lt;MyCustomMaster.h&gt;</span><span class="cp"></span>
 <span class="cp">#include</span> <span class="cpf">&lt;MyCustomSlave.h&gt;</span><span class="cp"></span>
 
@@ -229,11 +225,8 @@ and a slave. The first arg maxDepth is set to 100, trimSize is set to 0, and noC
 <span class="c1">// Create a Fifo with maxDepth=100, trimSize=0, noCopy=true</span>
 <span class="n">rogue</span><span class="o">::</span><span class="n">interfaces</span><span class="o">::</span><span class="n">stream</span><span class="o">::</span><span class="n">FifoPtr</span> <span class="n">fifo</span> <span class="o">=</span> <span class="n">rogue</span><span class="o">::</span><span class="n">interfaces</span><span class="o">::</span><span class="n">stream</span><span class="o">::</span><span class="n">Fifo</span><span class="o">::</span><span class="n">create</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="nb">true</span><span class="p">)</span>
 
-<span class="c1">// Connect the fifo to the source</span>
-<span class="n">rogueStreamConnect</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">fifo</span><span class="p">);</span>
-
-<span class="c1">// Connect the destination to the fifo</span>
-<span class="n">rogueStreamConnect</span><span class="p">(</span><span class="n">fifo</span><span class="p">,</span> <span class="n">dst</span><span class="p">);</span>
+<span class="c1">// Connect the fifo to the source and on to the dst</span>
+<span class="o">*</span><span class="p">(</span><span class="o">*</span><span class="n">src</span> <span class="o">&gt;&gt;</span> <span class="n">fifo</span><span class="p">)</span> <span class="o">&gt;&gt;</span> <span class="n">dst</span><span class="p">;</span>
 </pre></div>
 </div>
 </div>
@@ -257,18 +250,14 @@ and a slave. This Fifo is configured to only copy the first 20 bytes of the Fram
 <span class="n">fifo</span> <span class="o">=</span> <span class="n">rogue</span><span class="o">.</span><span class="n">interfaces</span><span class="o">.</span><span class="n">stream</span><span class="o">.</span><span class="n">Fifo</span><span class="p">(</span><span class="mi">150</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="bp">False</span><span class="p">)</span>
 
 <span class="c1"># Connect the src and dst</span>
-<span class="n">pyrogue</span><span class="o">.</span><span class="n">streamConnect</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">dst</span><span class="p">)</span>
+<span class="n">src</span> <span class="o">&gt;&gt;</span> <span class="n">dst</span>
 
-<span class="c1"># Add the FIFO as a stream tap</span>
-<span class="n">pyrogue</span><span class="o">.</span><span class="n">streamTap</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">fifo</span><span class="p">)</span>
-
-<span class="c1"># Connect the monitor to the FIfo output</span>
-<span class="n">pyrogue</span><span class="o">.</span><span class="n">streamConnect</span><span class="p">(</span><span class="n">fifo</span><span class="p">,</span> <span class="n">mon</span><span class="p">)</span>
+<span class="c1"># Add the FIFO as a second slave and on to the monitor, (using reverse operators as an example)</span>
+<span class="n">mon</span> <span class="o">&lt;&lt;</span> <span class="n">fifo</span> <span class="o">&lt;&lt;</span> <span class="n">src</span>
 </pre></div>
 </div>
 <p>Below is the equivalent code in C++</p>
 <div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;rogue/interfaces/stream/Fifo.h&gt;</span><span class="cp"></span>
-<span class="cp">#include</span> <span class="cpf">&lt;rogue/Helpers.h&gt;</span><span class="cp"></span>
 <span class="cp">#include</span> <span class="cpf">&lt;MyCustomMaster.h&gt;</span><span class="cp"></span>
 
 <span class="c1">// Data source</span>
@@ -284,13 +273,10 @@ and a slave. This Fifo is configured to only copy the first 20 bytes of the Fram
 <span class="n">rogue</span><span class="o">::</span><span class="n">interfaces</span><span class="o">::</span><span class="n">stream</span><span class="o">::</span><span class="n">FifoPtr</span> <span class="n">fifo</span> <span class="o">=</span> <span class="n">rogue</span><span class="o">::</span><span class="n">interfaces</span><span class="o">::</span><span class="n">stream</span><span class="o">::</span><span class="n">Fifo</span><span class="o">::</span><span class="n">create</span><span class="p">(</span><span class="mi">150</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="nb">false</span><span class="p">)</span>
 
 <span class="cp"># Connect the src and dst</span>
-<span class="n">rogueStreamConnect</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">dst</span><span class="p">);</span>
+<span class="n">src</span> <span class="o">&gt;&gt;</span> <span class="n">dst</span><span class="p">;</span>
 
-<span class="cp"># Add the Fifo as a stream tap</span>
-<span class="n">rogueStreamTap</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">fifo</span><span class="p">);</span>
-
-<span class="cp"># Connect the monitor to the FIfo output</span>
-<span class="n">rogueStreamConnect</span><span class="p">(</span><span class="n">fifo</span><span class="p">,</span> <span class="n">mon</span><span class="p">)</span>
+<span class="cp"># Add the Fifo as a second stream and on to the monitor (reverse order show as an example)</span>
+<span class="o">*</span><span class="p">(</span> <span class="o">*</span><span class="n">mon</span> <span class="o">&lt;&lt;</span> <span class="n">fifo</span> <span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="n">src</span><span class="p">;</span>
 </pre></div>
 </div>
 </div>

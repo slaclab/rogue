@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Using The AxiMemMap Class &mdash; Rogue v4.3.0-11-gbad671dd documentation</title>
+  <title>Using The AxiMemMap Class &mdash; Rogue v4.6.0-1-g382ece2c documentation</title>
   
 
   
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                v4.3.0
+                v4.6.0
               </div>
             
           
@@ -198,15 +198,14 @@ with the master being the device created in the <a class="reference internal" hr
 <span class="n">memMast</span> <span class="o">=</span> <span class="n">MyMemMaster</span><span class="p">()</span>
 
 <span class="c1"># Connect memory master to memory map</span>
-<span class="n">pyrogue</span><span class="o">.</span><span class="n">busConnect</span><span class="p">(</span><span class="n">memMast</span><span class="p">,</span><span class="n">memMap</span><span class="p">)</span>
+<span class="n">memMast</span> <span class="o">&gt;&gt;</span> <span class="n">memMap</span>
 </pre></div>
 </div>
 </div>
 <div class="section" id="c-aximemmap-example">
 <h2>C++ AxiMemMap Example<a class="headerlink" href="#c-aximemmap-example" title="Permalink to this headline">¶</a></h2>
 <p>The equivelent code in C++ is show below:</p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;rogue/Helpers.h&gt;</span><span class="cp"></span>
-<span class="cp">#include</span> <span class="cpf">&lt;rogue/hardware/axi/AxiMemMap.h&gt;</span><span class="cp"></span>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;rogue/hardware/axi/AxiMemMap.h&gt;</span><span class="cp"></span>
 
 <span class="c1">// Create memory mapped AXI interface</span>
 <span class="n">rogue</span><span class="o">::</span><span class="n">hardware</span><span class="o">::</span><span class="n">axi</span><span class="o">::</span><span class="n">AxiMemMapPtr</span> <span class="n">memMap</span> <span class="o">=</span> <span class="n">rogue</span><span class="o">::</span><span class="n">hardware</span><span class="o">::</span><span class="n">axi</span><span class="o">::</span><span class="n">AxiMemMap</span><span class="o">::</span><span class="n">create</span><span class="p">(</span><span class="s">&quot;/dev/datadev_0&quot;</span><span class="p">);</span>
@@ -215,7 +214,7 @@ with the master being the device created in the <a class="reference internal" hr
 <span class="n">MyMemMasterPtr</span> <span class="n">memMast</span> <span class="o">=</span> <span class="n">MyMemMaster</span><span class="p">.</span><span class="n">create</span><span class="p">();</span>
 
 <span class="c1">// Connect memory master to memory map</span>
-<span class="n">rogueBusConnect</span><span class="p">(</span><span class="n">memMast</span><span class="p">,</span><span class="n">memMap</span><span class="p">);</span>
+<span class="o">*</span><span class="n">memMast</span> <span class="o">&gt;&gt;</span> <span class="n">memMap</span><span class="p">;</span>
 </pre></div>
 </div>
 </div>

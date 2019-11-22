@@ -118,8 +118,11 @@ and we use std::copy to move data from data buffer into the Frame.
             // Here we request a frame capable of holding 100 bytes
             frame = reqFrame(100,true);
 
-            // Here we get an iterator to the frame data in write mode
-            it = frame->beginWrite();
+            // Unlike the python API we must now specify the new payload size
+            frame->setPayload(20);
+
+            // Here we get an iterator to the frame data
+            it = frame->begin();
 
             // Set an incrementing value to the first 10 locations
             for (x=0; x < 10; x++) {
@@ -131,9 +134,6 @@ and we use std::copy to move data from data buffer into the Frame.
             // Here we copy 10 bytes starting a the current position of 10
             // Update the iterator
             it = std::copy(data, data+10, it);
-
-            // Unlink the python API we must now specify the new payload size
-            frame->setPayload(20);
 
             //Send frame
             sendFrame(frame);
@@ -162,11 +162,14 @@ a passed data buffer into the Rogue frame, ensuring that the most effeciant copy
    // Request a new buffer with 100 bytes
    frame = reqFrame(100,true);
 
+   // Update the new payload size 
+   frame->setPayload(100);
+
    // Get an iterator to the start of the Frame
-   it = frame->beginWrite();
+   it = frame->begin();
 
    // Keep going until we get to the end of the Frame, assume the passed data pointer has 100 bytes
-   while ( it != frame->endWrite() ) {
+   while ( it != frame->end() ) {
 
       // The rem buffer method returns the number of bytes left in the current contigous buffer
       size = it->remBuffer();
@@ -176,8 +179,6 @@ a passed data buffer into the Rogue frame, ensuring that the most effeciant copy
       data += size;
    }
 
-   // Remember to update the new payload size 
-   frame->setPayload(100);
 
 Alternatively if the user wishes to access individual values in the data frame at various offsets, 
 they can make use of the toFrame helper function defined in :ref:`interfaces_stream_helpers`. 
@@ -187,8 +188,11 @@ they can make use of the toFrame helper function defined in :ref:`interfaces_str
    uint64_t data64;
    uint32_t data32;
    uint8_t  data8;
-  
-   it = frame->beginWrite(); 
+
+   // Update frame payload size
+   frame->setPayload(13);
+
+   it = frame->begin(); 
 
    // Write 64-bits and advance iterator 8 bytes 
    toFrame(it, 8, &data64); 
@@ -198,9 +202,6 @@ they can make use of the toFrame helper function defined in :ref:`interfaces_str
 
    // Write 8-bits and advance iterator 1 byte
    toFrame(it, 1, &data8);
-
-   // Update frame payload size
-   frame->setPayload(13);
 
 Further study of the :ref:`interfaces_stream_frame` and :ref:`interfaces_stream_buffer` APIs will reveal more 
 advanced methods of access frame and buffer data. 

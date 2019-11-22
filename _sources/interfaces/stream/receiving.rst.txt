@@ -89,8 +89,8 @@ and we use std::copy to move data from the Frame to a data buffer.
             // Acquire lock on frame. Will be release when lock class goes out of scope
             rogue::interfaces::stream::FrameLock lock = frame->lock();
 
-            // Here we get an iterator to the frame data in read mode
-            it = frame->beginRead();
+            // Here we get an iterator to the frame data
+            it = frame->begin();
 
             // Print the values in the first 10 locations
             for (x=0; x < 10; x++) {
@@ -100,7 +100,7 @@ and we use std::copy to move data from the Frame to a data buffer.
 
             // Use std::copy to copy data to a data buffer
             // Here we copy the entire frame payload to the data buffer
-            std::copy(frame->beginRead(), frame->endRead, data);
+            std::copy(frame->begin(), frame->end(), data);
          }
    };
 
@@ -121,10 +121,10 @@ the received Frame to a memory array.
 .. code-block:: c
 
    // Get an iterator to the start of the Frame
-   it = frame->beginRead();
+   it = frame->begin();
 
    // Keep going until we get to the end of the Frame
-   while ( it != frame->endRead() ) {
+   while ( it != frame->end() ) {
 
       // Copy the buffer data
       data = std::copy(it, it->endBuffer(), data);
@@ -140,7 +140,7 @@ they can make use of the fromFrame helper function defined in :ref:`interfaces_s
    uint32_t data32;
    uint8_t  data8;
   
-   it = frame->beginRead(); 
+   it = frame->begin(); 
 
    // Read 64-bits and advance iterator 8 bytes 
    fromFrame(it, 8, &data64); 

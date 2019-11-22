@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Receiving Frames &mdash; Rogue v4.3.0-11-gbad671dd documentation</title>
+  <title>Receiving Frames &mdash; Rogue v4.6.0-1-g382ece2c documentation</title>
   
 
   
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                v4.3.0
+                v4.6.0
               </div>
             
           
@@ -256,8 +256,8 @@ and we use std::copy to move data from the Frame to a data buffer.</p>
          <span class="c1">// Acquire lock on frame. Will be release when lock class goes out of scope</span>
          <span class="n">rogue</span><span class="o">::</span><span class="n">interfaces</span><span class="o">::</span><span class="n">stream</span><span class="o">::</span><span class="n">FrameLock</span> <span class="n">lock</span> <span class="o">=</span> <span class="n">frame</span><span class="o">-&gt;</span><span class="n">lock</span><span class="p">();</span>
 
-         <span class="c1">// Here we get an iterator to the frame data in read mode</span>
-         <span class="n">it</span> <span class="o">=</span> <span class="n">frame</span><span class="o">-&gt;</span><span class="n">beginRead</span><span class="p">();</span>
+         <span class="c1">// Here we get an iterator to the frame data</span>
+         <span class="n">it</span> <span class="o">=</span> <span class="n">frame</span><span class="o">-&gt;</span><span class="n">begin</span><span class="p">();</span>
 
          <span class="c1">// Print the values in the first 10 locations</span>
          <span class="k">for</span> <span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">x</span> <span class="o">&lt;</span> <span class="mi">10</span><span class="p">;</span> <span class="n">x</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
@@ -267,7 +267,7 @@ and we use std::copy to move data from the Frame to a data buffer.</p>
 
          <span class="c1">// Use std::copy to copy data to a data buffer</span>
          <span class="c1">// Here we copy the entire frame payload to the data buffer</span>
-         <span class="n">std</span><span class="o">::</span><span class="n">copy</span><span class="p">(</span><span class="n">frame</span><span class="o">-&gt;</span><span class="n">beginRead</span><span class="p">(),</span> <span class="n">frame</span><span class="o">-&gt;</span><span class="n">endRead</span><span class="p">,</span> <span class="n">data</span><span class="p">);</span>
+         <span class="n">std</span><span class="o">::</span><span class="n">copy</span><span class="p">(</span><span class="n">frame</span><span class="o">-&gt;</span><span class="n">begin</span><span class="p">(),</span> <span class="n">frame</span><span class="o">-&gt;</span><span class="n">end</span><span class="p">(),</span> <span class="n">data</span><span class="p">);</span>
       <span class="p">}</span>
 <span class="p">};</span>
 
@@ -285,10 +285,10 @@ less performant method of copying data byte by byte.</p>
 mechanisms for iterating through each contigous buffer. The following example performs a copy from
 the received Frame to a memory array.</p>
 <div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="c1">// Get an iterator to the start of the Frame</span>
-<span class="n">it</span> <span class="o">=</span> <span class="n">frame</span><span class="o">-&gt;</span><span class="n">beginRead</span><span class="p">();</span>
+<span class="n">it</span> <span class="o">=</span> <span class="n">frame</span><span class="o">-&gt;</span><span class="n">begin</span><span class="p">();</span>
 
 <span class="c1">// Keep going until we get to the end of the Frame</span>
-<span class="k">while</span> <span class="p">(</span> <span class="n">it</span> <span class="o">!=</span> <span class="n">frame</span><span class="o">-&gt;</span><span class="n">endRead</span><span class="p">()</span> <span class="p">)</span> <span class="p">{</span>
+<span class="k">while</span> <span class="p">(</span> <span class="n">it</span> <span class="o">!=</span> <span class="n">frame</span><span class="o">-&gt;</span><span class="n">end</span><span class="p">()</span> <span class="p">)</span> <span class="p">{</span>
 
    <span class="c1">// Copy the buffer data</span>
    <span class="n">data</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">copy</span><span class="p">(</span><span class="n">it</span><span class="p">,</span> <span class="n">it</span><span class="o">-&gt;</span><span class="n">endBuffer</span><span class="p">(),</span> <span class="n">data</span><span class="p">);</span>
@@ -302,7 +302,7 @@ they can make use of the fromFrame helper function defined in <a class="referenc
 <span class="kt">uint32_t</span> <span class="n">data32</span><span class="p">;</span>
 <span class="kt">uint8_t</span>  <span class="n">data8</span><span class="p">;</span>
 
-<span class="n">it</span> <span class="o">=</span> <span class="n">frame</span><span class="o">-&gt;</span><span class="n">beginRead</span><span class="p">();</span>
+<span class="n">it</span> <span class="o">=</span> <span class="n">frame</span><span class="o">-&gt;</span><span class="n">begin</span><span class="p">();</span>
 
 <span class="c1">// Read 64-bits and advance iterator 8 bytes</span>
 <span class="n">fromFrame</span><span class="p">(</span><span class="n">it</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">data64</span><span class="p">);</span>

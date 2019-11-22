@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Custom Module Source &mdash; Rogue v4.3.0-11-gbad671dd documentation</title>
+  <title>Custom Module Source &mdash; Rogue v4.6.0-1-g382ece2c documentation</title>
   
 
   
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                v4.3.0
+                v4.6.0
               </div>
             
           
@@ -298,12 +298,12 @@ class MyCustomMaster : public rogue::interfaces::stream::Master {
          // Here we request a frame capable of holding 100 bytes
          frame = reqFrame(frameSize_,true);
 
+         // Unlike the python API we must now specify the new payload size
+         frame-&gt;setPayload(frameSize_);
+
          // Set an incrementing value to the first 10 locations
          x = 0;
-         for ( it=frame-&gt;beginWrite(); it &lt; frame-&gt;endWrite(); ++it ) *it = x++;
-
-         // Unlink the python API we must now specify the new payload size
-         frame-&gt;setPayload(frameSize_);
+         for ( it=frame-&gt;begin(); it &lt; frame-&gt;end(); ++it ) *it = x++;
 
          //Send frame
          sendFrame(frame);

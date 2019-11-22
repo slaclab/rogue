@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Connecting Streams &mdash; Rogue v4.3.0-11-gbad671dd documentation</title>
+  <title>Connecting Streams &mdash; Rogue v4.6.0-1-g382ece2c documentation</title>
   
 
   
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                v4.3.0
+                v4.6.0
               </div>
             
           
@@ -177,7 +177,7 @@
 <span id="interfaces-stream-connecting"></span><h1>Connecting Streams<a class="headerlink" href="#connecting-streams" title="Permalink to this headline">¶</a></h1>
 <p>The stream interface is made up of a master which is the source of frame data
 and a slave which is a receiver of frame data. Each master can be connected to
-one or more slaves, with one slave connected as the primary slave.  The concept of a
+one or more slaves, with the first slave connected being the primary slave.  The concept of a
 primary slave is important because in most cases it is the slave from which the master
 will request new frames. The primary slave is also the last slave to receive data
 from the master. This is an important distinction when interfacing to a slave which will
@@ -185,43 +185,38 @@ empty the frame when processing the data, such as a DMA driver in zero copy mode
 <p>A stream master and slave are connected using the following command in python:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pyrogue</span>
 
-<span class="n">pyrogue</span><span class="o">.</span><span class="n">streamConnect</span><span class="p">(</span><span class="n">myMaster</span><span class="p">,</span> <span class="n">mySlave</span><span class="p">)</span>
+<span class="n">myMaster</span> <span class="o">&gt;&gt;</span> <span class="n">mySlave</span>
 </pre></div>
 </div>
 <p>A similiar line of code is used to connect a master and slave in c++:</p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;rogue/Helpers.h&gt;</span><span class="cp"></span>
-
-<span class="n">rogueStreamConnect</span><span class="p">(</span><span class="n">myMaster</span><span class="p">,</span> <span class="n">mySlave</span><span class="p">)</span>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="o">*</span><span class="n">myMaster</span> <span class="o">&gt;&gt;</span> <span class="n">mySlave</span>
 </pre></div>
 </div>
 <p>The above command examples attaches the primary slave to the master.</p>
-<p>Additional receivers can be added to a master using a streamTap function. This allows more than
-one Slave to receive data from a Master. Each tapped slave will be passed the frame in turn before
+<p>Additional receivers can be added to a master. This allows more than
+one Slave to receive data from a Master. Each additional slave will be passed the frame in turn before
 it is passed to the primary slave:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pyrogue</span>
 
-<span class="n">pyrogue</span><span class="o">.</span><span class="n">streamTap</span><span class="p">(</span><span class="n">myMaster</span><span class="p">,</span> <span class="n">mySlave</span><span class="p">)</span>
+<span class="c1"># Connections can go in the opposite direction</span>
+<span class="n">mySlave</span> <span class="o">&lt;&lt;</span> <span class="n">myMaster</span>
 </pre></div>
 </div>
 <p>And in C++:</p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;rogue/Helpers.h&gt;</span><span class="cp"></span>
-
-<span class="n">rogueStreamTap</span><span class="p">(</span><span class="n">myMaster</span><span class="p">,</span> <span class="n">mySlave</span><span class="p">)</span>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="o">*</span><span class="n">myMaster</span> <span class="o">&gt;&gt;</span> <span class="n">mySlave</span><span class="p">;</span>
 </pre></div>
 </div>
-<p>In some cases rogue entties can serve as both a stream Master and Slave. This is often the case when
+<p>In some cases rogue entities can serve as both a stream Master and Slave. This is often the case when
 using a network protocol such as UDP or TCP. Two dual purpose enpoints can be connected together
 to create a bi-directional data stream using the following command in python:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pyrogue</span>
 
-<span class="n">pyrogue</span><span class="o">.</span><span class="n">streamConnectBiDir</span><span class="p">(</span><span class="n">enPointA</span><span class="p">,</span> <span class="n">endPointB</span><span class="p">)</span>
+<span class="n">enPointA</span> <span class="o">==</span> <span class="n">endPointB</span>
 </pre></div>
 </div>
-<p>This command sets endPointB as the primary Slave for endPointA at the same time setting endPointA as the
-primary slave for endPointB. A similiar command is available in C++:</p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;rogue/Helpers.h&gt;</span><span class="cp"></span>
-
-<span class="n">rogueStreamConnectBiDir</span><span class="p">(</span><span class="n">endPointA</span><span class="p">,</span> <span class="n">endPointB</span><span class="p">)</span>
+<p>This command adds endPointB as a Slave for endPointA at the same time adding endPointA as a
+slave for endPointB. A similiar command is available in C++:</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="o">*</span><span class="n">endPointA</span> <span class="o">==</span> <span class="n">endPointB</span><span class="p">;</span>
 </pre></div>
 </div>
 </div>

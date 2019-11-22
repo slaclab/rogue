@@ -6,7 +6,7 @@ Connecting Streams
 
 The stream interface is made up of a master which is the source of frame data
 and a slave which is a receiver of frame data. Each master can be connected to 
-one or more slaves, with one slave connected as the primary slave.  The concept of a
+one or more slaves, with the first slave connected being the primary slave.  The concept of a
 primary slave is important because in most cases it is the slave from which the master
 will request new frames. The primary slave is also the last slave to receive data
 from the master. This is an important distinction when interfacing to a slave which will
@@ -18,37 +18,34 @@ A stream master and slave are connected using the following command in python:
 
    import pyrogue
 
-   pyrogue.streamConnect(myMaster, mySlave)
+   myMaster >> mySlave
 
 A similiar line of code is used to connect a master and slave in c++:
 
 .. code-block:: c
 
-   #include <rogue/Helpers.h>
-
-   rogueStreamConnect(myMaster, mySlave)
+   *myMaster >> mySlave
 
 The above command examples attaches the primary slave to the master.
 
-Additional receivers can be added to a master using a streamTap function. This allows more than
-one Slave to receive data from a Master. Each tapped slave will be passed the frame in turn before
+Additional receivers can be added to a master. This allows more than
+one Slave to receive data from a Master. Each additional slave will be passed the frame in turn before
 it is passed to the primary slave:
 
 .. code-block:: python
 
    import pyrogue
 
-   pyrogue.streamTap(myMaster, mySlave)
+   # Connections can go in the opposite direction
+   mySlave << myMaster
 
 And in C++:
 
 .. code-block:: c
 
-   #include <rogue/Helpers.h>
+   *myMaster >> mySlave;
 
-   rogueStreamTap(myMaster, mySlave)
-
-In some cases rogue entties can serve as both a stream Master and Slave. This is often the case when
+In some cases rogue entities can serve as both a stream Master and Slave. This is often the case when
 using a network protocol such as UDP or TCP. Two dual purpose enpoints can be connected together
 to create a bi-directional data stream using the following command in python:
 
@@ -56,14 +53,12 @@ to create a bi-directional data stream using the following command in python:
 
    import pyrogue
 
-   pyrogue.streamConnectBiDir(enPointA, endPointB)
+   enPointA == endPointB
 
-This command sets endPointB as the primary Slave for endPointA at the same time setting endPointA as the
-primary slave for endPointB. A similiar command is available in C++:
+This command adds endPointB as a Slave for endPointA at the same time adding endPointA as a
+slave for endPointB. A similiar command is available in C++:
 
 .. code-block:: c
 
-   #include <rogue/Helpers.h>
-
-   rogueStreamConnectBiDir(endPointA, endPointB)
+   *endPointA == endPointB;
 

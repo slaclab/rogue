@@ -24,7 +24,7 @@ by the :ref:`custom_sourcefile`, :ref:`custom_makefile` and :ref:`custom_wrapper
            self.add(MyWrapper.MyCustomSlave(name="testSlave"))
 
            # Connect master to slave
-           pyrogue.streamConnect(self.testMaster,self.testSlave)
+           self.testMaster >> self.testSlave
 
            # Start the tree
            self.start()
@@ -78,7 +78,7 @@ to epics to allow external control.
            self.add(MyWrapper.MyCustomSlave(name="testSlave"))
 
            # Connect master to slave
-           pyrogue.streamConnect(self.testMaster,self.testSlave)
+           self.testMaster >> self.testSlave
 
            # Start the tree
            self.start()
@@ -200,7 +200,7 @@ to start one or more remote GUIs. That process is described in TBD.
            self.add(MyWrapper.MyCustomSlave(name="testSlave"))
 
            # Connect master to slave
-           pyrogue.streamConnect(self.testMaster,self.testSlave)
+           self.testMaster >> self.testSlave
 
            # Start the tree
            self.start()

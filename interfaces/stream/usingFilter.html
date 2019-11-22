@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Using A Filter &mdash; Rogue v4.3.0-11-gbad671dd documentation</title>
+  <title>Using A Filter &mdash; Rogue v4.6.0-1-g382ece2c documentation</title>
   
 
   
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                v4.3.0
+                v4.6.0
               </div>
             
           
@@ -201,11 +201,8 @@ have a non zero error field. This may be a usefull utlility for non-channelized 
 <span class="c1"># Data destination</span>
 <span class="n">dst</span> <span class="o">=</span> <span class="n">MyCustomSlave</span><span class="p">()</span>
 
-<span class="c1"># Connect the source to the Filter</span>
-<span class="n">pyrogue</span><span class="o">.</span><span class="n">streamConnect</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">filt</span><span class="p">)</span>
-
-<span class="c1"># Connect the filter to the destination</span>
-<span class="n">pyrogue</span><span class="o">.</span><span class="n">streamConnect</span><span class="p">(</span><span class="n">filt</span><span class="p">,</span> <span class="n">dst</span><span class="p">)</span>
+<span class="c1"># Connect the source to the Filter and then to the destination</span>
+<span class="n">src</span> <span class="o">&gt;&gt;</span> <span class="n">filt</span> <span class="o">&gt;&gt;</span> <span class="n">dst</span>
 
 <span class="n">src</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;MyDataFile.bin&quot;</span><span class="p">)</span>
 </pre></div>
@@ -213,7 +210,6 @@ have a non zero error field. This may be a usefull utlility for non-channelized 
 <p>Below is the equivalent code in C++</p>
 <div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;rogue/interfaces/stream/Filter.h&gt;</span><span class="cp"></span>
 <span class="cp">#include</span> <span class="cpf">&lt;rogue/utilities/fileio/StreamReader.h&gt;</span><span class="cp"></span>
-<span class="cp">#include</span> <span class="cpf">&lt;rogue/Helpers.h&gt;</span><span class="cp"></span>
 <span class="cp">#include</span> <span class="cpf">&lt;MyCustomMaster.h&gt;</span><span class="cp"></span>
 <span class="cp">#include</span> <span class="cpf">&lt;MyCustomSlave.h&gt;</span><span class="cp"></span>
 
@@ -226,11 +222,8 @@ have a non zero error field. This may be a usefull utlility for non-channelized 
 <span class="cp"># Data destination</span>
 <span class="n">MyCustomSlavePtr</span> <span class="n">dst</span> <span class="o">=</span> <span class="n">MyCustomSlave</span><span class="o">::</span><span class="n">create</span><span class="p">();</span>
 
-<span class="c1">// Connect the source to the filter</span>
-<span class="n">rogueStreamConnect</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">filt</span><span class="p">);</span>
-
-<span class="c1">// Connect the filter to the destination</span>
-<span class="n">rogueStreamConnect</span><span class="p">(</span><span class="n">filt</span><span class="p">,</span> <span class="n">dst</span><span class="p">);</span>
+<span class="c1">// Connect the source to the filter and then on to the destination</span>
+<span class="o">*</span><span class="p">(</span><span class="o">*</span><span class="n">src</span> <span class="o">&gt;&gt;</span> <span class="n">filt</span><span class="p">)</span> <span class="o">&gt;&gt;</span> <span class="n">dst</span><span class="p">;</span>
 
 <span class="n">src</span><span class="o">-&gt;</span><span class="n">open</span><span class="p">(</span><span class="s">&quot;MyDataFile.bin&quot;</span><span class="p">);</span>
 </pre></div>

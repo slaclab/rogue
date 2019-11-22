@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Connecting Memory Elements &mdash; Rogue v4.3.0-11-gbad671dd documentation</title>
+  <title>Connecting Memory Elements &mdash; Rogue v4.6.0-1-g382ece2c documentation</title>
   
 
   
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                v4.3.0
+                v4.6.0
               </div>
             
           
@@ -176,33 +176,24 @@
 <p>A memory master and slave are connected using the following commands in python:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pyrogue</span>
 
-<span class="c1"># Assume we are crated a memory tree with two masters, masterA and masterB</span>
-<span class="c1"># connected to hubA. We then have hubA and an additional masterC, connected</span>
-<span class="c1"># the a SrpV3 gateway.</span>
+<span class="c1"># Assume we are creating a memory tree with two masters, masterA and masterB</span>
+<span class="c1"># connected to hubA &amp; hubB. We then connect those two hubs to the a SrpV3 gateway.</span>
 
-<span class="c1"># Connect masterA and masterB to hubA</span>
-<span class="n">pyrogue</span><span class="o">.</span><span class="n">busConnect</span><span class="p">(</span><span class="n">masterA</span><span class="p">,</span> <span class="n">hubA</span><span class="p">)</span>
-<span class="n">pyrogue</span><span class="o">.</span><span class="n">busConnect</span><span class="p">(</span><span class="n">masterB</span><span class="p">,</span> <span class="n">hubA</span><span class="p">)</span>
+<span class="c1"># Connect masterA to hubA &amp; hubB to the srpV3 Slave</span>
+<span class="n">masterA</span> <span class="o">&gt;&gt;</span> <span class="n">hubA</span> <span class="o">&gt;&gt;</span> <span class="n">srpV3</span>
 
-<span class="c1"># Connect hubA and masterC to the srpV3 Slave</span>
-<span class="n">pyrogue</span><span class="o">.</span><span class="n">busConnect</span><span class="p">(</span><span class="n">hubA</span><span class="p">,</span> <span class="n">srpv3</span><span class="p">)</span>
-<span class="n">pyrogue</span><span class="o">.</span><span class="n">busConnect</span><span class="p">(</span><span class="n">masterC</span><span class="p">,</span> <span class="n">srpv3</span><span class="p">)</span>
+<span class="c1"># Connections can also go in the reverse order</span>
+<span class="n">srpV3</span> <span class="o">&lt;&lt;</span> <span class="n">hubB</span> <span class="o">&lt;&lt;</span> <span class="n">masterB</span>
 </pre></div>
 </div>
 <p>The equivelent code in C++ is show below:</p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;rogue/Helpers.h&gt;</span><span class="cp"></span>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="c1">// Assume we are creating a memory tree with two masters, masterA and masterB</span>
+<span class="c1">// connected to hubA &amp; hubB. We then connect those two hubs to the a SrpV3 gateway.</span>
 
-<span class="c1">// Assume we are crated a memory tree with two masters, masterA and masterB</span>
-<span class="c1">// connected to hubA. We then have hubA and an additional masterC, connected</span>
-<span class="c1">// the a SrpV3 gateway.</span>
+<span class="o">*</span><span class="p">(</span> <span class="o">*</span><span class="n">masterA</span> <span class="o">&gt;&gt;</span> <span class="n">hubA</span><span class="p">)</span> <span class="o">&gt;&gt;</span> <span class="n">srpV3</span><span class="p">;</span>
 
-<span class="c1">// Connect masterA and masterB to hubA</span>
-<span class="n">rogueBusConnect</span><span class="p">(</span><span class="n">masterA</span><span class="p">,</span> <span class="n">hubA</span><span class="p">)</span>
-<span class="n">rogueBusConnect</span><span class="p">(</span><span class="n">masterB</span><span class="p">,</span> <span class="n">hubA</span><span class="p">)</span>
-
-<span class="c1">// Connect hubA and masterC to the srpV3 Slave</span>
-<span class="n">rogueBusConnect</span><span class="p">(</span><span class="n">hubA</span><span class="p">,</span> <span class="n">srpv3</span><span class="p">)</span>
-<span class="n">rogueBusConnect</span><span class="p">(</span><span class="n">masterC</span><span class="p">,</span> <span class="n">srpv3</span><span class="p">)</span>
+<span class="c1">// Or the reserve</span>
+<span class="o">*</span><span class="p">(</span> <span class="o">*</span><span class="n">srpV3</span> <span class="o">&lt;&lt;</span> <span class="n">hubB</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="n">masterB</span><span class="p">;</span>
 </pre></div>
 </div>
 </div>

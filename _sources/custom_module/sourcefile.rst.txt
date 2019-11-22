@@ -140,12 +140,12 @@ This module is compiled with the :ref:`custom_makefile` described in this sectio
             // Here we request a frame capable of holding 100 bytes
             frame = reqFrame(frameSize_,true);
 
+            // Unlike the python API we must now specify the new payload size
+            frame->setPayload(frameSize_);
+
             // Set an incrementing value to the first 10 locations
             x = 0;
-            for ( it=frame->beginWrite(); it < frame->endWrite(); ++it ) *it = x++;
-
-            // Unlink the python API we must now specify the new payload size
-            frame->setPayload(frameSize_);
+            for ( it=frame->begin(); it < frame->end(); ++it ) *it = x++;
 
             //Send frame
             sendFrame(frame);

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Using The TCP Bridge &mdash; Rogue v4.3.0-11-gbad671dd documentation</title>
+  <title>Using The TCP Bridge &mdash; Rogue v4.6.0-1-g382ece2c documentation</title>
   
 
   
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                v4.3.0
+                v4.6.0
               </div>
             
           
@@ -199,7 +199,7 @@ able to interface with either a Python or C++ client.</p>
 <span class="n">tcp</span> <span class="o">=</span> <span class="n">rogue</span><span class="o">.</span><span class="n">interfaces</span><span class="o">.</span><span class="n">memory</span><span class="o">.</span><span class="n">TcpServer</span><span class="p">(</span><span class="s2">&quot;*&quot;</span><span class="p">,</span><span class="mi">8000</span><span class="p">)</span>
 
 <span class="c1"># Connect the bus</span>
-<span class="n">pyrogue</span><span class="o">.</span><span class="n">busConnect</span><span class="p">(</span><span class="n">tcp</span><span class="p">,</span> <span class="n">srpv3</span><span class="p">)</span>
+<span class="n">tcp</span> <span class="o">&gt;&gt;</span> <span class="n">srpV3</span>
 </pre></div>
 </div>
 </div>
@@ -217,7 +217,7 @@ to interface with either a Python or C++ server.</p>
 <span class="n">tcp</span> <span class="o">=</span> <span class="n">rogue</span><span class="o">.</span><span class="n">interfaces</span><span class="o">.</span><span class="n">memory</span><span class="o">.</span><span class="n">TcpClient</span><span class="p">(</span><span class="s2">&quot;192.168.1.1&quot;</span><span class="p">,</span><span class="mi">8000</span><span class="p">)</span>
 
 <span class="c1"># Connect the bus</span>
-<span class="n">pyrogue</span><span class="o">.</span><span class="n">busConnect</span><span class="p">(</span><span class="n">mst</span><span class="p">,</span> <span class="n">tcp</span><span class="p">)</span>
+<span class="n">mst</span> <span class="o">&gt;&gt;</span> <span class="n">tcp</span>
 </pre></div>
 </div>
 </div>
@@ -227,7 +227,6 @@ to interface with either a Python or C++ server.</p>
 able to interface with either a Python or C++ client.</p>
 <div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;rogue/interfaces/memory/TcpServer.h&gt;</span><span class="cp"></span>
 <span class="cp">#include</span> <span class="cpf">&lt;rogue/protocols/srp/SrpV3.h&gt;</span><span class="cp"></span>
-<span class="cp">#include</span> <span class="cpf">&lt;rogue/Helpers.h&gt;</span><span class="cp"></span>
 
 <span class="c1">// Local memory SrpV3 bridge</span>
 <span class="n">rogue</span><span class="o">::</span><span class="n">protocols</span><span class="o">::</span><span class="n">srp</span><span class="o">::</span><span class="n">SrpV3Ptr</span> <span class="n">srpv3</span> <span class="o">=</span> <span class="n">rogue</span><span class="p">.</span><span class="n">protocols</span><span class="p">.</span><span class="n">srp</span><span class="p">.</span><span class="n">SrpV3</span><span class="o">::</span><span class="n">create</span><span class="p">();</span>
@@ -237,7 +236,7 @@ able to interface with either a Python or C++ client.</p>
 <span class="n">rogue</span><span class="o">::</span><span class="n">interfaces</span><span class="o">::</span><span class="n">memory</span><span class="o">::</span><span class="n">TcpServerPtr</span> <span class="n">tcp</span> <span class="o">=</span> <span class="n">rogue</span><span class="p">.</span><span class="n">interfaces</span><span class="p">.</span><span class="n">memory</span><span class="p">.</span><span class="n">TcpServer</span><span class="o">::</span><span class="n">create</span><span class="p">(</span><span class="s">&quot;*&quot;</span><span class="p">,</span><span class="mi">8000</span><span class="p">);</span>
 
 <span class="c1">// Connect the bus</span>
-<span class="n">rogueBusConnect</span><span class="p">(</span><span class="n">tcp</span><span class="p">,</span> <span class="n">srpv3</span><span class="p">);</span>
+<span class="o">*</span><span class="n">tcp</span> <span class="o">&gt;&gt;</span> <span class="n">srpV3</span><span class="p">;</span>
 </pre></div>
 </div>
 </div>
@@ -246,7 +245,6 @@ able to interface with either a Python or C++ client.</p>
 <p>The following code demonstrates a C++ client with a local memory bus master. The C++ client is able
 to interface with either a Python or C++ server.</p>
 <div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;rogue/interfaces/memory/TcpClient.h&gt;</span><span class="cp"></span>
-<span class="cp">#include</span> <span class="cpf">&lt;rogue/Helpers.h&gt;</span><span class="cp"></span>
 
 <span class="c1">// Memory bus master (from master example)</span>
 <span class="n">MyMasterPtr</span> <span class="n">mst</span> <span class="o">=</span> <span class="n">MyMaster</span><span class="o">::</span><span class="n">create</span><span class="p">();</span>
@@ -255,7 +253,7 @@ to interface with either a Python or C++ server.</p>
 <span class="n">rogue</span><span class="o">::</span><span class="n">interfaces</span><span class="o">::</span><span class="n">memory</span><span class="o">::</span><span class="n">TcpClientPtr</span> <span class="n">tcp</span> <span class="o">=</span> <span class="n">rogue</span><span class="o">::</span><span class="n">interfaces</span><span class="o">::</span><span class="n">memory</span><span class="o">::</span><span class="n">TcpClient</span><span class="o">::</span><span class="n">create</span><span class="p">(</span><span class="s">&quot;192.168.1.1&quot;</span><span class="p">,</span><span class="mi">8000</span><span class="p">);</span>
 
 <span class="c1">// Connect the bus</span>
-<span class="n">rogueBusConnect</span><span class="p">(</span><span class="n">mst</span><span class="p">,</span> <span class="n">tcp</span><span class="p">);</span>
+<span class="o">*</span><span class="n">mst</span> <span class="o">&gt;&gt;</span> <span class="n">tcp</span><span class="p">;</span>
 </pre></div>
 </div>
 </div>

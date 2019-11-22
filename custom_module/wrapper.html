@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Wrapping Custom Module With PyRogue Device &mdash; Rogue v4.3.0-11-gbad671dd documentation</title>
+  <title>Wrapping Custom Module With PyRogue Device &mdash; Rogue v4.6.0-1-g382ece2c documentation</title>
   
 
   
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                v4.3.0
+                v4.6.0
               </div>
             
           
@@ -195,9 +195,14 @@ the output of the <a class="reference internal" href="makefile.html#custom-makef
                                       <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RO&#39;</span><span class="p">,</span> <span class="n">pollInterval</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
                                       <span class="n">localGet</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_mySlave</span><span class="o">.</span><span class="n">getTotalBytes</span><span class="p">))</span>
 
-   <span class="c1"># Method called by streamConnect, streamTap and streamConnectBiDir to access slave</span>
+   <span class="c1"># Method called by streamConnect and streamConnectBiDir to access slave</span>
    <span class="k">def</span> <span class="nf">_getStreamSlave</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mySlave</span>
+
+   <span class="c1"># Support &lt;&lt; operator</span>
+   <span class="k">def</span> <span class="fm">__lshift__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+       <span class="n">pyrogue</span><span class="o">.</span><span class="n">streamConnect</span><span class="p">(</span><span class="n">other</span><span class="p">,</span><span class="bp">self</span><span class="p">)</span>
+       <span class="k">return</span> <span class="n">other</span>
 
 <span class="k">class</span> <span class="nc">MyCustomMaster</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">Device</span><span class="p">):</span>
 
@@ -228,9 +233,14 @@ the output of the <a class="reference internal" href="makefile.html#custom-makef
        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">LocalCommand</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;MyFrameGen&#39;</span><span class="p">,</span><span class="n">description</span><span class="o">=</span><span class="s1">&#39;Generate a single frame&#39;</span><span class="p">,</span>
                                      <span class="n">function</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_myMast</span><span class="o">.</span><span class="n">myFrameGen</span><span class="p">))</span>
 
-   <span class="c1"># Method called by streamConnect, streamTap and streamConnectBiDir to access master</span>
+   <span class="c1"># Method called by streamConnect and streamConnectBiDir to access master</span>
    <span class="k">def</span> <span class="nf">_getStreamMaster</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_myMast</span>
+
+   <span class="c1"># Support &gt;&gt; operator</span>
+   <span class="k">def</span> <span class="fm">__rshift__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+       <span class="n">pyrogue</span><span class="o">.</span><span class="n">streamConnect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">other</span><span class="p">)</span>
+       <span class="k">return</span> <span class="n">other</span>
 </pre></div>
 </div>
 </div>

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Frame &mdash; Rogue v4.3.0-11-gbad671dd documentation</title>
+  <title>Frame &mdash; Rogue v4.6.0-1-g382ece2c documentation</title>
   
 
   
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                v4.3.0
+                v4.6.0
               </div>
             
           
@@ -202,7 +202,7 @@
 <p>The class description is shown below:</p>
 <dl class="class">
 <dt id="_CPPv4N5rogue10interfaces6stream5FrameE">
-<span id="_CPPv3N5rogue10interfaces6stream5FrameE"></span><span id="_CPPv2N5rogue10interfaces6stream5FrameE"></span><span id="rogue::interfaces::stream::Frame"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Frame"></span><em class="property">class </em><code class="sig-name descname">Frame</code> : <em class="property">public</em> std::enable_shared_from_this&lt;rogue::interfaces::stream::<a class="reference internal" href="#_CPPv4N5rogue10interfaces6stream5FrameE" title="rogue::interfaces::stream::Frame">Frame</a>&gt;<a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream5FrameE" title="Permalink to this definition">¶</a><br /></dt>
+<span id="_CPPv3N5rogue10interfaces6stream5FrameE"></span><span id="_CPPv2N5rogue10interfaces6stream5FrameE"></span><span id="rogue::interfaces::stream::Frame"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Frame"></span><em class="property">class </em><code class="sig-name descname">Frame</code> : <em class="property">public</em> rogue::EnableSharedFromThis&lt;rogue::interfaces::stream::<a class="reference internal" href="#_CPPv4N5rogue10interfaces6stream5FrameE" title="rogue::interfaces::stream::Frame">Frame</a>&gt;<a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream5FrameE" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p><a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a> container. </p>
 <p>In the stream interface the <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a> class is a container for moving streaming data through the system. A single <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a> instance exists for each frame of data being transferred. The frame object itself does not contain any data, instead it is a container for one or more blocks of data contained within the <a class="reference internal" href="buffer.html#classrogue_1_1interfaces_1_1stream_1_1Buffer"><span class="std std-ref">Buffer</span></a> class.</p>
 <p>This class is a container for an array of <a class="reference internal" href="buffer.html#classrogue_1_1interfaces_1_1stream_1_1Buffer"><span class="std std-ref">Buffer</span></a> class objects which contain the stream data. A <a class="reference internal" href="frameIterator.html#classrogue_1_1interfaces_1_1stream_1_1FrameIterator"><span class="std std-ref">FrameIterator</span></a> object is used to read and write data from and to the <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a>. </p>
@@ -214,12 +214,6 @@
 <dd><p>Alias for using std::vector&lt;std::shared_ptr&lt;rogue::interfaces::stream::Buffer&gt; &gt;::iterator as <a class="reference internal" href="buffer.html#classrogue_1_1interfaces_1_1stream_1_1Buffer_1a2b3f008693138808f09617dc9c6a1c3c"><span class="std std-ref">Buffer::iterator</span></a>. </p>
 </dd></dl>
 
-<dl class="type">
-<dt id="_CPPv4N5rogue10interfaces6stream5Frame8iteratorE">
-<span id="_CPPv3N5rogue10interfaces6stream5Frame8iteratorE"></span><span id="_CPPv2N5rogue10interfaces6stream5Frame8iteratorE"></span><span id="rogue::interfaces::stream::Frame::iterator"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1af1fd6ef9edc9216ff358c849ace25cb9"></span><em class="property">typedef </em>rogue::interfaces::stream::<a class="reference internal" href="frameIterator.html#_CPPv4N5rogue10interfaces6stream13FrameIteratorE" title="rogue::interfaces::stream::FrameIterator">FrameIterator</a> <code class="sig-name descname">iterator</code><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream5Frame8iteratorE" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>Alias for using <a class="reference internal" href="frameIterator.html#classrogue_1_1interfaces_1_1stream_1_1FrameIterator"><span class="std std-ref">FrameIterator</span></a> as <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Frame_1af1fd6ef9edc9216ff358c849ace25cb9"><span class="std std-ref">Frame::iterator</span></a>. </p>
-</dd></dl>
-
 </div>
 <div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric">Public Functions</p>
@@ -229,21 +223,6 @@
 <dd><p>Lock frame and return a FrameLockPtr object. </p>
 <p>Exposed as <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Frame_1a77f4303b1f63cd0e555db044ec430b3c"><span class="std std-ref">lock()</span></a> to Python <dl class="simple">
 <dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="frameLock.html#classrogue_1_1interfaces_1_1stream_1_1FrameLock"><span class="std std-ref">FrameLock</span></a> pointer (FrameLockPtr) </p>
-</dd>
-</dl>
-</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="_CPPv4N5rogue10interfaces6stream5Frame12appendBufferENSt10shared_ptrIN5rogue10interfaces6stream6BufferEEE">
-<span id="_CPPv3N5rogue10interfaces6stream5Frame12appendBufferENSt10shared_ptrIN5rogue10interfaces6stream6BufferEEE"></span><span id="_CPPv2N5rogue10interfaces6stream5Frame12appendBufferENSt10shared_ptrIN5rogue10interfaces6stream6BufferEEE"></span><span id="rogue::interfaces::stream::Frame::appendBuffer__std::shared_ptr:rogue::interfaces::stream::Buffer:"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1a80975cb7cf9ff70872a19e639f3a0403"></span>std::vector&lt;std::shared_ptr&lt;rogue::interfaces::stream::<a class="reference internal" href="buffer.html#_CPPv4N5rogue10interfaces6stream6BufferE" title="rogue::interfaces::stream::Buffer">Buffer</a>&gt;&gt;::iterator <code class="sig-name descname">appendBuffer</code><span class="sig-paren">(</span>std::shared_ptr&lt;rogue::interfaces::stream::<a class="reference internal" href="buffer.html#_CPPv4N5rogue10interfaces6stream6BufferE" title="rogue::interfaces::stream::Buffer">Buffer</a>&gt; <em>buff</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream5Frame12appendBufferENSt10shared_ptrIN5rogue10interfaces6stream6BufferEEE" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>Add a buffer to end of frame,. </p>
-<p>Not exposed to Python <dl class="simple">
-<dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="buffer.html#classrogue_1_1interfaces_1_1stream_1_1Buffer"><span class="std std-ref">Buffer</span></a> list iterator (<a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Frame_1a89f911ccda4b575a58cb85906692c9b9"><span class="std std-ref">Frame::BufferIterator</span></a>) pointing to the added buffer </p>
-</dd>
-<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">buff</span></code>: The buffer pointer (BufferPtr) to append to the end of the frame </p></li>
-</ul>
 </dd>
 </dl>
 </p>
@@ -266,10 +245,25 @@
 </dd></dl>
 
 <dl class="function">
+<dt id="_CPPv4N5rogue10interfaces6stream5Frame12appendBufferENSt10shared_ptrIN5rogue10interfaces6stream6BufferEEE">
+<span id="_CPPv3N5rogue10interfaces6stream5Frame12appendBufferENSt10shared_ptrIN5rogue10interfaces6stream6BufferEEE"></span><span id="_CPPv2N5rogue10interfaces6stream5Frame12appendBufferENSt10shared_ptrIN5rogue10interfaces6stream6BufferEEE"></span><span id="rogue::interfaces::stream::Frame::appendBuffer__std::shared_ptr:rogue::interfaces::stream::Buffer:"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1a80975cb7cf9ff70872a19e639f3a0403"></span>std::vector&lt;std::shared_ptr&lt;rogue::interfaces::stream::<a class="reference internal" href="buffer.html#_CPPv4N5rogue10interfaces6stream6BufferE" title="rogue::interfaces::stream::Buffer">Buffer</a>&gt;&gt;::iterator <code class="sig-name descname">appendBuffer</code><span class="sig-paren">(</span>std::shared_ptr&lt;rogue::interfaces::stream::<a class="reference internal" href="buffer.html#_CPPv4N5rogue10interfaces6stream6BufferE" title="rogue::interfaces::stream::Buffer">Buffer</a>&gt; <em>buff</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream5Frame12appendBufferENSt10shared_ptrIN5rogue10interfaces6stream6BufferEEE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Add a buffer to end of frame,. </p>
+<p>Not exposed to Python This is for advanced manipulation of the underlying buffers. <dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="buffer.html#classrogue_1_1interfaces_1_1stream_1_1Buffer"><span class="std std-ref">Buffer</span></a> list iterator (<a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Frame_1a89f911ccda4b575a58cb85906692c9b9"><span class="std std-ref">Frame::BufferIterator</span></a>) pointing to the added buffer </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">buff</span></code>: The buffer pointer (BufferPtr) to append to the end of the frame </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
 <dt id="_CPPv4N5rogue10interfaces6stream5Frame11beginBufferEv">
 <span id="_CPPv3N5rogue10interfaces6stream5Frame11beginBufferEv"></span><span id="_CPPv2N5rogue10interfaces6stream5Frame11beginBufferEv"></span><span id="rogue::interfaces::stream::Frame::beginBuffer"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1abed9660b581ae10e4e9f623176843a22"></span>std::vector&lt;std::shared_ptr&lt;rogue::interfaces::stream::<a class="reference internal" href="buffer.html#_CPPv4N5rogue10interfaces6stream6BufferE" title="rogue::interfaces::stream::Buffer">Buffer</a>&gt;&gt;::iterator <code class="sig-name descname">beginBuffer</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream5Frame11beginBufferEv" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Get <a class="reference internal" href="buffer.html#classrogue_1_1interfaces_1_1stream_1_1Buffer"><span class="std std-ref">Buffer</span></a> list begin iterator. </p>
-<p>Not exposed to Python <dl class="simple">
+<p>Not exposed to Python This is for advanced manipulation of the underlying buffers. <dl class="simple">
 <dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="buffer.html#classrogue_1_1interfaces_1_1stream_1_1Buffer"><span class="std std-ref">Buffer</span></a> list iterator (<a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Frame_1a89f911ccda4b575a58cb85906692c9b9"><span class="std std-ref">Frame::BufferIterator</span></a>) pointing to the start of the <a class="reference internal" href="buffer.html#classrogue_1_1interfaces_1_1stream_1_1Buffer"><span class="std std-ref">Buffer</span></a> list </p>
 </dd>
 </dl>
@@ -280,7 +274,7 @@
 <dt id="_CPPv4N5rogue10interfaces6stream5Frame9endBufferEv">
 <span id="_CPPv3N5rogue10interfaces6stream5Frame9endBufferEv"></span><span id="_CPPv2N5rogue10interfaces6stream5Frame9endBufferEv"></span><span id="rogue::interfaces::stream::Frame::endBuffer"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1af7273739aa5c99529a0ec8e4f46cac36"></span>std::vector&lt;std::shared_ptr&lt;rogue::interfaces::stream::<a class="reference internal" href="buffer.html#_CPPv4N5rogue10interfaces6stream6BufferE" title="rogue::interfaces::stream::Buffer">Buffer</a>&gt;&gt;::iterator <code class="sig-name descname">endBuffer</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream5Frame9endBufferEv" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Get <a class="reference internal" href="buffer.html#classrogue_1_1interfaces_1_1stream_1_1Buffer"><span class="std std-ref">Buffer</span></a> list end iterator. </p>
-<p>Not exposed to Python <dl class="simple">
+<p>Not exposed to Python This is for advanced manipulation of the underlying buffers. <dl class="simple">
 <dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="buffer.html#classrogue_1_1interfaces_1_1stream_1_1Buffer"><span class="std std-ref">Buffer</span></a> list iterator (<a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Frame_1a89f911ccda4b575a58cb85906692c9b9"><span class="std std-ref">Frame::BufferIterator</span></a>) pointing to the end of the <a class="reference internal" href="buffer.html#classrogue_1_1interfaces_1_1stream_1_1Buffer"><span class="std std-ref">Buffer</span></a> list </p>
 </dd>
 </dl>
@@ -291,7 +285,7 @@
 <dt id="_CPPv4N5rogue10interfaces6stream5Frame11bufferCountEv">
 <span id="_CPPv3N5rogue10interfaces6stream5Frame11bufferCountEv"></span><span id="_CPPv2N5rogue10interfaces6stream5Frame11bufferCountEv"></span><span id="rogue::interfaces::stream::Frame::bufferCount"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1a72b21b83111b76963f8a0c487df5c154"></span>uint32_t <code class="sig-name descname">bufferCount</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream5Frame11bufferCountEv" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Get <a class="reference internal" href="buffer.html#classrogue_1_1interfaces_1_1stream_1_1Buffer"><span class="std std-ref">Buffer</span></a> list count. </p>
-<p>Not exposed to Python <dl class="simple">
+<p>Not exposed to Python This is for advanced manipulation of the underlying buffers. <dl class="simple">
 <dt><strong>Return</strong></dt><dd><p>Number of buffers in the <a class="reference internal" href="buffer.html#classrogue_1_1interfaces_1_1stream_1_1Buffer"><span class="std std-ref">Buffer</span></a> list </p>
 </dd>
 </dl>
@@ -524,10 +518,10 @@
 </dd></dl>
 
 <dl class="function">
-<dt id="_CPPv4N5rogue10interfaces6stream5Frame9beginReadEv">
-<span id="_CPPv3N5rogue10interfaces6stream5Frame9beginReadEv"></span><span id="_CPPv2N5rogue10interfaces6stream5Frame9beginReadEv"></span><span id="rogue::interfaces::stream::Frame::beginRead"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1a3ce0fb9b3a6bce92a4da65cdc02c6e31"></span>rogue::interfaces::stream::<a class="reference internal" href="frameIterator.html#_CPPv4N5rogue10interfaces6stream13FrameIteratorE" title="rogue::interfaces::stream::FrameIterator">FrameIterator</a> <code class="sig-name descname">beginRead</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream5Frame9beginReadEv" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>Get read start <a class="reference internal" href="frameIterator.html#classrogue_1_1interfaces_1_1stream_1_1FrameIterator"><span class="std std-ref">FrameIterator</span></a>. </p>
-<p>The read start iterator points to the start of the <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a> and operates in read mode. This iterator should not be used for updating the frame.</p>
+<dt id="_CPPv4N5rogue10interfaces6stream5Frame5beginEv">
+<span id="_CPPv3N5rogue10interfaces6stream5Frame5beginEv"></span><span id="_CPPv2N5rogue10interfaces6stream5Frame5beginEv"></span><span id="rogue::interfaces::stream::Frame::begin"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1aaeca1bab583acb86d077803c503eeccb"></span>rogue::interfaces::stream::<a class="reference internal" href="frameIterator.html#_CPPv4N5rogue10interfaces6stream13FrameIteratorE" title="rogue::interfaces::stream::FrameIterator">FrameIterator</a> <code class="sig-name descname">begin</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream5Frame5beginEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Get begin <a class="reference internal" href="frameIterator.html#classrogue_1_1interfaces_1_1stream_1_1FrameIterator"><span class="std std-ref">FrameIterator</span></a>. </p>
+<p>Return an iterator for accessing data within the <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a>. This iterator assumes the payload size of the frame has already been set. This means the frame has either been received already containing data, or the <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Frame_1aaf4d97a4f4ffe2b7803acc9c62758f5d"><span class="std std-ref">setPayload()</span></a> method has been called.</p>
 <p>Not exposed to Python <dl class="simple">
 <dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="frameIterator.html#classrogue_1_1interfaces_1_1stream_1_1FrameIterator"><span class="std std-ref">FrameIterator</span></a> pointing to beginning of payload </p>
 </dd>
@@ -536,36 +530,12 @@
 </dd></dl>
 
 <dl class="function">
-<dt id="_CPPv4N5rogue10interfaces6stream5Frame7endReadEv">
-<span id="_CPPv3N5rogue10interfaces6stream5Frame7endReadEv"></span><span id="_CPPv2N5rogue10interfaces6stream5Frame7endReadEv"></span><span id="rogue::interfaces::stream::Frame::endRead"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1a999963d876be5bd5946fd1f9497611bd"></span>rogue::interfaces::stream::<a class="reference internal" href="frameIterator.html#_CPPv4N5rogue10interfaces6stream13FrameIteratorE" title="rogue::interfaces::stream::FrameIterator">FrameIterator</a> <code class="sig-name descname">endRead</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream5Frame7endReadEv" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>Get read end <a class="reference internal" href="frameIterator.html#classrogue_1_1interfaces_1_1stream_1_1FrameIterator"><span class="std std-ref">FrameIterator</span></a>. </p>
-<p>This iterator is used to detect when the end of the <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a> payload is reached when iterating through the <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a> during a read operation.</p>
+<dt id="_CPPv4N5rogue10interfaces6stream5Frame3endEv">
+<span id="_CPPv3N5rogue10interfaces6stream5Frame3endEv"></span><span id="_CPPv2N5rogue10interfaces6stream5Frame3endEv"></span><span id="rogue::interfaces::stream::Frame::end"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1abd51de2cb75f15e14af25228266d95d4"></span>rogue::interfaces::stream::<a class="reference internal" href="frameIterator.html#_CPPv4N5rogue10interfaces6stream13FrameIteratorE" title="rogue::interfaces::stream::FrameIterator">FrameIterator</a> <code class="sig-name descname">end</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream5Frame3endEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Get end <a class="reference internal" href="frameIterator.html#classrogue_1_1interfaces_1_1stream_1_1FrameIterator"><span class="std std-ref">FrameIterator</span></a>. </p>
+<p>This iterator is used to detect when the end of the <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a> payload is reached when iterating through the <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a>.</p>
 <p>Not exposed to Python <dl class="simple">
 <dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="frameIterator.html#classrogue_1_1interfaces_1_1stream_1_1FrameIterator"><span class="std std-ref">FrameIterator</span></a> read end position </p>
-</dd>
-</dl>
-</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="_CPPv4N5rogue10interfaces6stream5Frame10beginWriteEv">
-<span id="_CPPv3N5rogue10interfaces6stream5Frame10beginWriteEv"></span><span id="_CPPv2N5rogue10interfaces6stream5Frame10beginWriteEv"></span><span id="rogue::interfaces::stream::Frame::beginWrite"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1a5d6b7dd95ee4300853fc13201342daed"></span>rogue::interfaces::stream::<a class="reference internal" href="frameIterator.html#_CPPv4N5rogue10interfaces6stream13FrameIteratorE" title="rogue::interfaces::stream::FrameIterator">FrameIterator</a> <code class="sig-name descname">beginWrite</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream5Frame10beginWriteEv" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>Get write start <a class="reference internal" href="frameIterator.html#classrogue_1_1interfaces_1_1stream_1_1FrameIterator"><span class="std std-ref">FrameIterator</span></a>. </p>
-<p>The write start iterator points to the start of the <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a> and operates in write mode. This iterator should not be used for reading from the frame. Using this iterator to update the frame does not adjust the <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a> payload size.</p>
-<p>Not exposed to Python <dl class="simple">
-<dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="frameIterator.html#classrogue_1_1interfaces_1_1stream_1_1FrameIterator"><span class="std std-ref">FrameIterator</span></a> pointing to beginning of payload </p>
-</dd>
-</dl>
-</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="_CPPv4N5rogue10interfaces6stream5Frame8endWriteEv">
-<span id="_CPPv3N5rogue10interfaces6stream5Frame8endWriteEv"></span><span id="_CPPv2N5rogue10interfaces6stream5Frame8endWriteEv"></span><span id="rogue::interfaces::stream::Frame::endWrite"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1a475dbc60413e797dc8e8e8f649ebf641"></span>rogue::interfaces::stream::<a class="reference internal" href="frameIterator.html#_CPPv4N5rogue10interfaces6stream13FrameIteratorE" title="rogue::interfaces::stream::FrameIterator">FrameIterator</a> <code class="sig-name descname">endWrite</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream5Frame8endWriteEv" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>Get write end <a class="reference internal" href="frameIterator.html#classrogue_1_1interfaces_1_1stream_1_1FrameIterator"><span class="std std-ref">FrameIterator</span></a>. </p>
-<p>This iterator is used to detect when the end of the available frame space is reached when iterator through the frame during a write operation.</p>
-<p>Not exposed to Python <dl class="simple">
-<dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="frameIterator.html#classrogue_1_1interfaces_1_1stream_1_1FrameIterator"><span class="std std-ref">FrameIterator</span></a> write end position </p>
 </dd>
 </dl>
 </p>
@@ -616,7 +586,7 @@
 <dl class="function">
 <dt id="_CPPv4N5rogue10interfaces6stream5Frame5debugEv">
 <span id="_CPPv3N5rogue10interfaces6stream5Frame5debugEv"></span><span id="_CPPv2N5rogue10interfaces6stream5Frame5debugEv"></span><span id="rogue::interfaces::stream::Frame::debug"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1af031fdee7784958fb1bf7b8f35dde7b7"></span>void <code class="sig-name descname">debug</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream5Frame5debugEv" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>Debug <a class="reference internal" href="buffer.html#classrogue_1_1interfaces_1_1stream_1_1Buffer"><span class="std std-ref">Buffer</span></a>. </p>
+<dd><p>Debug <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a>. </p>
 </dd></dl>
 
 </div>

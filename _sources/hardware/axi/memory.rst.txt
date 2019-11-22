@@ -32,7 +32,7 @@ Python AxiMemMap Example
    memMast = MyMemMaster()
 
    # Connect memory master to memory map
-   pyrogue.busConnect(memMast,memMap)
+   memMast >> memMap
 
 C++ AxiMemMap Example
 =====================
@@ -41,7 +41,6 @@ The equivelent code in C++ is show below:
 
 .. code-block:: c
 
-   #include <rogue/Helpers.h>
    #include <rogue/hardware/axi/AxiMemMap.h>
 
    // Create memory mapped AXI interface
@@ -51,5 +50,5 @@ The equivelent code in C++ is show below:
    MyMemMasterPtr memMast = MyMemMaster.create();
 
    // Connect memory master to memory map
-   rogueBusConnect(memMast,memMap);
+   *memMast >> memMap;
 
