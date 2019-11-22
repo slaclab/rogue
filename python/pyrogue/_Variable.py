@@ -482,7 +482,7 @@ class BaseVariable(pr.Node):
             self.setDisp(self._default, write=False)
 
     def _updatePollInterval(self):
-        if self._pollInterval > 0 and self.root is not None and self.root._pollQueue is not None:
+        if self.root is not None and self.root._pollQueue is not None:
             self.root._pollQueue.updatePollInterval(self)
 
     def _finishInit(self):
