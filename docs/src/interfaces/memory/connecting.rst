@@ -19,6 +19,10 @@ A memory master and slave are connected using the following commands in python:
    # Connections can also go in the reverse order
    srpV3 << hubB << masterB
 
+   # Alternatively a helper function can be used
+   pyrogue.streamConnect(masterA, hubA)
+   pyrogue.streamConnect(hubA, srpV3)
+
 The equivelent code in C++ is show below:
 
 .. code-block:: c
@@ -28,5 +32,10 @@ The equivelent code in C++ is show below:
 
    *( *masterA >> hubA) >> srpV3;
 
-   // Or the reserve
+   // Or the reverse
    *( *srpV3 << hubB) << masterB;
+
+   // Alternatively a helper function can be used
+   rogueStreamConnect(masterA, hubA)
+   rogueStreamConnect(hubA, srpV3)
+

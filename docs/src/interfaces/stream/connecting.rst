@@ -20,11 +20,17 @@ A stream master and slave are connected using the following command in python:
 
    myMaster >> mySlave
 
+   # A helper function can also be used
+   pyrogue.streamConnect(myMaster,mySlave)
+
 A similiar line of code is used to connect a master and slave in c++:
 
 .. code-block:: c
 
    *myMaster >> mySlave
+
+   // A helper function can also be used
+   rogueStreamConnect(myMaster,mySlave)
 
 The above command examples attaches the primary slave to the master.
 
@@ -53,7 +59,10 @@ to create a bi-directional data stream using the following command in python:
 
    import pyrogue
 
-   enPointA == endPointB
+   endPointA == endPointB
+
+   # Or using a helper function
+   pyrogue.streamConnectBiDir(endPointA, endPointB)
 
 This command adds endPointB as a Slave for endPointA at the same time adding endPointA as a
 slave for endPointB. A similiar command is available in C++:
@@ -61,4 +70,7 @@ slave for endPointB. A similiar command is available in C++:
 .. code-block:: c
 
    *endPointA == endPointB;
+
+   // Or using a helper function
+   rogueStreamConnectBiDir(endPointA, endPointB)
 
