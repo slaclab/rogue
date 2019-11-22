@@ -86,7 +86,7 @@ class PollQueue(object):
             if not hasattr(var, '_block') or var._block is None:
                 if len(var.dependencies) > 0:
                     for dep in var.dependencies:
-                        if dep.pollInterval == 0 or var.pollInterval < dep.pollInterval:
+                        if var.pollInterval != 0 and (dep.pollInterval == 0 or var.pollInterval < dep.pollInterval):
                             dep.pollInterval = var.pollInterval
 
                 return
@@ -105,11 +105,10 @@ class PollQueue(object):
                 else:
                     # No more variables belong to block entry, can remove it
                     self._entries[var._block].block = None
-                    self._entries.remove(var._block)
+                    del self._entries[var._block]
 
-            # Corner case when 0 is set for a variable not already polled
+            # New entry with non-zero poll interval, pure entry add
             elif var.pollInterval > 0:
-                # Pure entry add
                 self._addEntry(var._block, var.pollInterval)
 
     def _poll(self):
