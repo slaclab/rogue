@@ -17,6 +17,8 @@ import pyrogue as pr
 import rogue.interfaces.stream
 import rogue.interfaces.memory
 
+from collections import OrderedDict as odict
+
 def addLibraryPath(path):
     """
     Append the past string or list of strings to the python library path.
