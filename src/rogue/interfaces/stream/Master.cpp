@@ -65,8 +65,7 @@ ris::FramePtr ris::Master::reqFrame ( uint32_t size, bool zeroCopyEn ) {
    std::lock_guard<std::mutex> lock(slaveMtx_);
 
    if ( slaves_.size() == 0 ) return(defSlave_->acceptReq(size,zeroCopyEn));
-
-   return(slaves_[0]->acceptReq(size,zeroCopyEn));
+   else return(slaves_[0]->acceptReq(size,zeroCopyEn));
 }
 
 //! Push frame to slaves
