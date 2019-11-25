@@ -52,6 +52,9 @@ namespace rogue {
                // Slave mutex
                std::mutex slaveMtx_;
 
+               // Default slave if not connected
+               std::shared_ptr<rogue::interfaces::stream::Slave> defSlave_;
+
             public:
 
                //! Class factory which returns a pointer to a Master object (MasterPtr)
