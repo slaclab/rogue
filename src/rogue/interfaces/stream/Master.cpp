@@ -40,7 +40,9 @@ ris::MasterPtr ris::Master::create () {
 }
 
 //! Creator
-ris::Master::Master() { }
+ris::Master::Master() { 
+   defSlave_ = ris::Slave::create();
+}
 
 //! Destructor
 ris::Master::~Master() { }
@@ -62,10 +64,8 @@ ris::FramePtr ris::Master::reqFrame ( uint32_t size, bool zeroCopyEn ) {
    rogue::GilRelease noGil;
    std::lock_guard<std::mutex> lock(slaveMtx_);
 
-   if ( slaves_.size() == 0 )
-      throw(rogue::GeneralError("Master::reqFrame","Attempt to request frame without Slave"));
-
-   return(slaves_[0]->acceptReq(size,zeroCopyEn));
+   if ( slaves_.size() == 0 ) return(defSlave_->acceptReq(size,zeroCopyEn));
+   else return(slaves_[0]->acceptReq(size,zeroCopyEn));
 }
 
 //! Push frame to slaves
