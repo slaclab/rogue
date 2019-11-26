@@ -503,7 +503,7 @@ void ris::Frame::debug() {
    uint32_t idx = 0;
 
    printf("Frame Info. BufferCount: %i, Size: %i, Available: %i, Payload: %i, Channel: %i, Error: 0x%x, Flags: 0x%x\n", 
-         bufferCount(), getSize(), getAvailable(), getPayload(), getChannel(), getError());
+         bufferCount(), getSize(), getAvailable(), getPayload(), getChannel(), getError(), getFlags());
 
    for (it = buffers_.begin(); it != buffers_.end(); ++it) {
       (*it)->debug(idx);
