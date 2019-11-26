@@ -51,15 +51,29 @@ rha::AxiMemMap::AxiMemMap(std::string path) : rim::Slave(4,0xFFFFFFFF) {
    log_ = rogue::Logging::create("axi.AxiMemMap");
    if ( fd_ < 0 ) 
       throw(rogue::GeneralError::create("AxiMemMap::AxiMemMap", "Failed to open device file: %s",path.c_str()));
+
+   // Start read thread
+   threadEn_ = true;
+   thread_ = new std::thread(&rha::AxiMemMap::runThread, this);
 }
 
 //! Destructor
 rha::AxiMemMap::~AxiMemMap() {
+   rogue::GilRelease noGil;
+   threadEn_ = false;
+   queue_.stop();
+   thread_->join();
    ::close(fd_);
 }
 
 //! Post a transaction
 void rha::AxiMemMap::doTransaction(rim::TransactionPtr tran) {
+   queue_.push(tran);
+}
+
+//! Working Thread
+void rha::AxiMemMap::runThread() {
+   rim::TransactionPtr        tran;
    rim::Transaction::iterator it;
 
    uint32_t count;
@@ -71,36 +85,50 @@ void rha::AxiMemMap::doTransaction(rim::TransactionPtr tran) {
    dataSize = sizeof(uint32_t);
    ptr = (uint8_t *)(&data);
 
-   if ( (tran->size() % dataSize) != 0 ) {
-      tran->error("Invalid transaction size %i, must be an integer number of %i bytes",tran->size(),dataSize);
+   log_->logThreadId();
 
-      return;
-   }
-   count = 0;
-   ret = 0;
+   while(threadEn_) {
+      if ( (tran = queue_.pop()) != NULL ) {
 
-   rogue::GilRelease noGil;
-   rim::TransactionLockPtr lock = tran->lock();
-   it = tran->begin();
+         if ( (tran->size() % dataSize) != 0 ) {
+            tran->error("Invalid transaction size %i, must be an integer number of %i bytes",tran->size(),dataSize);
+            tran.reset();
+            continue;
+         }
 
-   while ( (ret == 0) && (count != tran->size()) ) {
-      if (tran->type() == rim::Write || tran->type() == rim::Post) {
+         count = 0;
+         ret = 0;
 
-         // Assume transaction has a contigous memory block
-         std::memcpy(ptr,it,dataSize);
-         ret = dmaWriteRegister(fd_,tran->address()+count,data);
+         rim::TransactionLockPtr lock = tran->lock();
+
+         if ( tran->expired() ) {
+            log_->warning("Transaction expired. Id=%i",tran->id());
+            tran.reset();
+            continue;
+         }
+
+         it = tran->begin();
+
+         while ( (ret == 0) && (count != tran->size()) ) {
+            if (tran->type() == rim::Write || tran->type() == rim::Post) {
+
+               // Assume transaction has a contigous memory block
+               std::memcpy(ptr,it,dataSize);
+               ret = dmaWriteRegister(fd_,tran->address()+count,data);
+            }
+            else {
+               ret = dmaReadRegister(fd_,tran->address()+count,&data);
+               std::memcpy(it,ptr,dataSize);
+            }
+            count += dataSize;
+            it += dataSize;
+         }
+
+         log_->debug("Transaction id=0x%08x, addr 0x%08x. Size=%i, type=%i, data=0x%08x",tran->id(),tran->address(),tran->size(),tran->type(),data);
+         if ( ret != 0 ) tran->error("Memory transaction failed with error code %i, see driver error codes",ret);
+         else tran->done();
       }
-      else {
-         ret = dmaReadRegister(fd_,tran->address()+count,&data);
-         std::memcpy(it,ptr,dataSize);
-      }
-      count += dataSize;
-      it += dataSize;
    }
-
-   log_->debug("Transaction id=0x%08x, addr 0x%08x. Size=%i, type=%i, data=0x%08x",tran->id(),tran->address(),tran->size(),tran->type(),data);
-   if ( ret != 0 ) tran->error("Memory transaction failed with error code %i, see driver error codes",ret);
-   else tran->done();
 }
 
 void rha::AxiMemMap::setup_python () {

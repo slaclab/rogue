@@ -59,52 +59,82 @@ rh::MemMap::MemMap(uint64_t base, uint32_t size) : rim::Slave(4,0xFFFFFFFF) {
       throw(rogue::GeneralError::create("MemMap::MemMap", "Failed to map memory to user space."));
 
    log_->debug("Created map to 0x%x with size 0x%x", base, size);
+
+   // Start read thread
+   threadEn_ = true;
+   thread_ = new std::thread(&rh::MemMap::runThread, this);
 }
 
 //! Destructor
 rh::MemMap::~MemMap() {
+   rogue::GilRelease noGil;
+   threadEn_ = false;
+   queue_.stop();
+   thread_->join();
    munmap((void *)map_,size_);
    ::close(fd_);
 }
 
 //! Post a transaction
 void rh::MemMap::doTransaction(rim::TransactionPtr tran) {
+   queue_.push(tran);
+}
+
+//! Working Thread
+void rh::MemMap::runThread() {
+   rim::TransactionPtr        tran;
+
    uint32_t * tPtr;
    uint32_t * mPtr;
-   uint32_t   count = 0;
+   uint32_t   count;
 
-   rogue::GilRelease noGil;
-   rim::TransactionLockPtr lock = tran->lock();
+   log_->logThreadId();
 
-   if ( (tran->size() % 4) != 0 ) {
-      tran->error("Invalid transaction size %i, must be an integer number of 4 bytes",tran->size());
-      return;
+   while(threadEn_) {
+      if ( (tran = queue_.pop()) != NULL ) {
+         count = 0;
+
+         rim::TransactionLockPtr lock = tran->lock();
+
+         if ( tran->expired() ) {
+            log_->warning("Transaction expired. Id=%i",tran->id());
+            tran.reset();
+            continue;
+         }
+
+         if ( (tran->size() % 4) != 0 ) {
+            tran->error("Invalid transaction size %i, must be an integer number of 4 bytes",tran->size());
+            tran.reset();
+            continue;
+         }
+
+         // Check that the address is legal
+         if ( (tran->address() + tran->size()) > size_ ) {
+            tran->error("Request transaction to address 0x%x with size %i is out of bounds",tran->address(),tran->size());
+            tran.reset();
+            continue;
+         }
+
+         tPtr = (uint32_t *)tran->begin();
+         mPtr = (uint32_t *)(map_ + tran->address());
+
+         while ( count != tran->size() ) {
+
+            // Write or post
+            if (tran->type() == rim::Write || tran->type() == rim::Post) *mPtr = *tPtr;
+
+            // Read or verify
+            else *tPtr = *mPtr;
+
+            ++mPtr;
+            ++tPtr;
+            count += 4;
+         }
+
+         log_->debug("Transaction id=0x%08x, addr 0x%08x. Size=%i, type=%i",tran->id(),tran->address(),tran->size(),tran->type());
+         tran->done();
+      }
    }
-
-   // Check that the address is legal
-   if ( (tran->address() + tran->size()) > size_ ) {
-      tran->error("Request transaction to address 0x%x with size %i is out of bounds",tran->address(),tran->size());
-      return;
-   }
-
-   tPtr = (uint32_t *)tran->begin();
-   mPtr = (uint32_t *)(map_ + tran->address());
-
-   while ( count != tran->size() ) {
-
-      // Write or post
-      if (tran->type() == rim::Write || tran->type() == rim::Post) *mPtr = *tPtr;
-
-      // Read or verify
-      else *tPtr = *mPtr;
-
-      ++mPtr;
-      ++tPtr;
-      count += 4;
-   }
-
-   log_->debug("Transaction id=0x%08x, addr 0x%08x. Size=%i, type=%i",tran->id(),tran->address(),tran->size(),tran->type());
-   tran->done();
 }
 
 void rh::MemMap::setup_python () {
