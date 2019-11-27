@@ -31,7 +31,7 @@ project (rogue)
 # C/C++
 enable_language(CXX)
 #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x -Wno-deprecated")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wno-deprecated")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -O2 -Wno-deprecated")
 add_definitions(-D__STDC_FORMAT_MACROS)
 
 #####################################
