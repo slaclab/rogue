@@ -12,6 +12,7 @@ import os
 import signal
 import yaml
 import time
+import zipfile
 
 import pyrogue as pr
 import rogue.interfaces.stream
