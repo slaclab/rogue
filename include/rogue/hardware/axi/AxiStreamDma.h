@@ -77,6 +77,12 @@ namespace rogue {
                //! Enable zero copy
                bool zeroCopyEn_;
 
+               //! Return queue
+               rogue::Queue<uint32_t> retQueue_;
+
+               //! Return thold
+               uint32_t retThold_;
+
             public:
 
                //! Class factory which returns a AxiStreamDmaPtr to a newly created AxiMemMap object
