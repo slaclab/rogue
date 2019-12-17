@@ -88,9 +88,9 @@ class RootLogHandler(logging.Handler):
 class Root(rogue.interfaces.stream.Master,pr.Device):
     """
     Class which serves as the root of a tree of nodes.
-    The root is the interface point for tree level access and updats.
+    The root is the interface point for tree level access and updates.
     The root is a stream master which generates frames containing tree
-    configuration and status values. This allows confiuration and status
+    configuration and status values. This allows configuration and status
     to be stored in data files.
     """
 
@@ -182,7 +182,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                  description='Rogue Library Directory'))
 
         self.add(pr.LocalVariable(name='SystemLog', value=SystemLogInit, mode='RO', hidden=True, groups=['NoStream','NoSql','NoState'],
-            description='String containing newline seperated system logic entries'))
+            description='String containing newline separated system logic entries'))
 
         self.add(pr.LocalVariable(name='ForceWrite', value=False, mode='RW', hidden=True,
             description='Configuration Flag To Always Write Non Stale Blocks For WriteAll, LoadConfig and setYaml'))
@@ -292,7 +292,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         if len(kwargs) != 0:
             print("")
             print("==========================================================")
-            print(" Passing startup args in start() method is now depcreated.")
+            print(" Passing startup args in start() method is now deprecated.")
             print(" Startup args should now be passed to the root creator.")
             print("    Example: pyrogue.Root(timeout=1.0, pollEn=True")
             print("==========================================================")
@@ -604,8 +604,13 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         """
         Generate a frame containing all variables values in yaml format.
         A hardware read is not generated before the frame is generated.
-        Vlist can contain an optional list of variale paths to include in the
-        stream. If this list is not NULL only these variables will be included.
+        incGroups is a list of groups that the variable must be a member 
+        of in order to be included in the stream. excGroups is a list of 
+        groups that the variable must not be a member of to include. 
+        excGroups takes precedence over incGroups. If excGroups or 
+        incGroups are None, the default set of stream include and 
+        exclude groups will be used as specified when the Root class was created.
+        By default all variables are included, except for members of the NoStream group.
         """
 
         # Don't send if there are not any Slaves connected
@@ -684,7 +689,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         if isinstance(name,list):
             rawlst = name
 
-        # Passed arg is a comma seperated list of files
+        # Passed arg is a comma separated list of files
         elif ',' in name:
             rawlst = name.split(',')
 
@@ -778,7 +783,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         Writes will be performed as each variable is updated. If set to 
         false a bulk write will be performed after all of the variable updates
         are completed. Bulk writes provide better performance when updating a large
-        quanitty of variables.
+        quantity of variables.
         """
         d = pr.yamlToData(yml)
 
