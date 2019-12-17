@@ -604,11 +604,13 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         """
         Generate a frame containing all variables values in yaml format.
         A hardware read is not generated before the frame is generated.
-        incGroups is a list of groups that the variable must be a member of in 
-        order to be included in the stream. If incGroups=None, all variables are 
-        selected. excGroups is a list of groups that the variable must not be a 
-        member of to include. If excGroups = None, no groups are excluded. 
-        excGroups takes precedence over incGroups.
+        incGroups is a list of groups that the variable must be a member 
+        of in order to be included in the stream. excGroups is a list of 
+        groups that the variable must not be a member of to include. 
+        excGroups takes precedence over incGroups. If excGroups or 
+        incGroups are None, the default set of stream include and 
+        exclude groups will be used as specified when the Root class was created.
+        By default all variables are included, except for members of the NoStream group.
         """
 
         # Don't send if there are not any Slaves connected
