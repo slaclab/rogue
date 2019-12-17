@@ -612,7 +612,7 @@ def _iterateDict(d, keys):
     else:
 
         # Form sliceable list
-        tmpList = [None] * max(d.keys())
+        tmpList = [None] * (max(d.keys())+1)
         for k,v in d.items(): tmpList[k] = v
 
         try:
