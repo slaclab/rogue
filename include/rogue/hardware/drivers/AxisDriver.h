@@ -8,7 +8,7 @@
  * Last update: 2016-08-08
  * ----------------------------------------------------------------------------
  * Description:
- * Defintions and inline functions for interacting with AXIS driver.
+ * Definitions and inline functions for interacting with AXIS driver.
  * ----------------------------------------------------------------------------
  * This file is part of the aes_stream_drivers package. It is subject to 
  * the license terms in the LICENSE.txt file found in the top-level directory 

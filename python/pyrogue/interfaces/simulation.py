@@ -65,7 +65,7 @@ class SideBandSim():
 
     def stop(self):
         with self._lock:
-            self._log.debug('Stopping recv thread')
+            self._log.debug('Stopping receive thread')
             self._run = False
 
     def __enter__(self):
@@ -79,7 +79,7 @@ class SideBandSim():
             # Exit thread when stop() called
             with self._lock:
                 if self._run is False:
-                    self._log.debug('Exiting recv thread')
+                    self._log.debug('Exiting receive thread')
                     return
             
             # Wait for new data

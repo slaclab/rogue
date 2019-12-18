@@ -83,7 +83,7 @@ def streamConnect(source, dest):
     Connect source and destination stream devices.
     source is either a stream master sub class or implements
     the _getStreamMaster call to return a contained master.
-    Similiarly dest is either a stream slave sub class or implements
+    Similarly dest is either a stream slave sub class or implements
     the _getStreamSlave call to return a contained slave.
     """
 
@@ -116,7 +116,7 @@ def streamConnectBiDir(deviceA, deviceB):
     Connect source and destination stream devices.
     source is either a stream master sub class or implements
     the _getStreamMaster call to return a contained master.
-    Similiarly dest is either a stream slave sub class or implements
+    Similarly dest is either a stream slave sub class or implements
     the _getStreamSlave call to return a contained slave.
     """
 
@@ -137,7 +137,7 @@ def busConnect(source,dest):
     memory accesses. 
     source is either a memory master sub class or implements
     the _getMemoryMaster call to return a contained master.
-    Similiarly dest is either a memory slave sub class or implements
+    Similarly dest is either a memory slave sub class or implements
     the _getMemorySlave call to return a contained slave.
     """
 

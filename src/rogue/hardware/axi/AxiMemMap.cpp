@@ -86,7 +86,7 @@ void rha::AxiMemMap::doTransaction(rim::TransactionPtr tran) {
    while ( (ret == 0) && (count != tran->size()) ) {
       if (tran->type() == rim::Write || tran->type() == rim::Post) {
 
-         // Assume transaction has a contigous memory block
+         // Assume transaction has a contiguous memory block
          std::memcpy(ptr,it,dataSize);
          ret = dmaWriteRegister(fd_,tran->address()+count,data);
       }

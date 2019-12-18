@@ -31,25 +31,25 @@ namespace rogue {
 
          //! Memory read transaction
          /**
-          * Exposted to python as rogue.interfaces.memory.Read
+          * Exposed to python as rogue.interfaces.memory.Read
           */
          static const uint32_t Read = 0x1;
 
          //! Memory write transaction
          /**
-          * Exposted to python as rogue.interfaces.memory.Write
+          * Exposed to python as rogue.interfaces.memory.Write
           */
          static const uint32_t Write = 0x2;
 
          //! Memory posted write transaction
          /**
-          * Exposted to python as rogue.interfaces.memory.Post
+          * Exposed to python as rogue.interfaces.memory.Post
           */
          static const uint32_t Post = 0x3;
 
          //! Memory verify readback transaction
          /**
-          * Exposted to python as rogue.interfaces.memory.Verify
+          * Exposed to python as rogue.interfaces.memory.Verify
           */
          static const uint32_t Verify = 0x4;
 

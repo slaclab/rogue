@@ -94,7 +94,7 @@ class Process(PyDMFrame):
 
         fl.addRow('Message:',w)
 
-        # Auto add aditional fields
+        # Auto add additional fields
         noAdd = ['enable','Start','Stop','Running','Progress','Message']
 
         prc = nodeFromAddress(self.channel)

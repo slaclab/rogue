@@ -5,7 +5,7 @@ Additional AxiStreamDma Features
 ================================
 
 The following features are available in the AxiStreamDma class which
-may be neccessary for some operation modes.
+may be necessary for some operation modes.
 
 All of these features are described in detail at :ref:`hardware_axi_axi_stream_dma`.
 
@@ -28,7 +28,7 @@ In C++:
 
    axiStream->setDriverDebug(true);
 
-The debug messages can then be viewed using the dmesg command in linux:
+The debug messages can then be viewed using the dmesg command in Linux:
 
 .. code::
 
@@ -57,7 +57,7 @@ In C++:
 
    axiStream->setZeroCopyEn(false);
 
-Dma Acknowledge
+DMA Acknowledge
 ===============
 
 Some versions of the lower level driver and the underlying hardware will support

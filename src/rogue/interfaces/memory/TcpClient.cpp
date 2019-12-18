@@ -261,7 +261,7 @@ void rim::TcpClient::runThread() {
 
             // Double check transaction
             if ( (addr != tran->address()) || (size != tran->size()) || (type != tran->type()) ) {
-               bridgeLog_->warning("Transaction data mistmatch. Id=%" PRIu32,id);
+               bridgeLog_->warning("Transaction data mismatch. Id=%" PRIu32,id);
                tran->error("Transaction data mismatch in TcpClient");
                for (x=0; x < msgCnt; x++) zmq_msg_close(&(msg[x]));
                continue; // while (1)
@@ -270,7 +270,7 @@ void rim::TcpClient::runThread() {
             // Copy data if read
             if ( type != rim::Write ) {
                if (zmq_msg_size(&(msg[4])) != size) {
-                  bridgeLog_->warning("Transaction size mistmatch. Id=%" PRIu32,id);
+                  bridgeLog_->warning("Transaction size mismatch. Id=%" PRIu32,id);
                   tran->error("Received transaction response did not match header size");
                   for (x=0; x < msgCnt; x++) zmq_msg_close(&(msg[x]));
                   continue; // while (1)

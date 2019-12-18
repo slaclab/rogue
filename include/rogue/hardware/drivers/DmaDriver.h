@@ -6,7 +6,7 @@
  * Created    : 2016-08-08
  * ----------------------------------------------------------------------------
  * Description:
- * Defintions and inline functions for interacting drivers.
+ * Definitions and inline functions for interacting drivers.
  * ----------------------------------------------------------------------------
  * This file is part of the aes_stream_drivers package. It is subject to 
  * the license terms in the LICENSE.txt file found in the top-level directory 

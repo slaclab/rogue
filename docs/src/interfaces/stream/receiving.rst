@@ -7,7 +7,7 @@ Receiving Frames
 Frames are received by a subclass of the :ref:`interfaces_stream_slave` class in rogue.
 This subclass can be created either in python or in c++. In either case a received frame
 results in the execution of the the acceptFrame method in the subclass instance. Python
-and C++ subclasses of the Slave class can be used interchagably, allowing c++ subclasses 
+and C++ subclasses of the Slave class can be used interchangeably, allowing c++ subclasses 
 to receive frames from python masters and python subclasses to receive frames from c++ masters.
 
 Python Slave Subclass
@@ -54,7 +54,7 @@ Implementing a Slave subclass in python is easy, but may result in a lower level
 C++ Slave Subclass
 ==================
 
-Creating a Slave sub-class in c++ is done in a similiar fashion. In order to use a custom
+Creating a Slave sub-class in c++ is done in a similar fashion. In order to use a custom
 c++ Slave subclass, you will need to build it into a c++ python module or into
 a c++ application. See the sections :ref:`custom_module` and :ref:`installing_application`.
 
@@ -94,7 +94,7 @@ and we use std::copy to move data from the Frame to a data buffer.
 
             // Print the values in the first 10 locations
             for (x=0; x < 10; x++) {
-               printf("Loaction %i = 0x%x\n", *it);
+               printf("Location %i = 0x%x\n", *it);
                it++;
             }
 
@@ -108,14 +108,14 @@ and we use std::copy to move data from the Frame to a data buffer.
    typedef std::shared_ptr<MyCustomSlave> MyCustomSlavePtr;
 
 The std::copy call works very well for moving data between two standard C++ iterators. It will
-properly deal with iterators which manage non-contigous buffers, which may be the case when receving
+properly deal with iterators which manage non-contiguous buffers, which may be the case when receiving
 Frames. For example when receiving large data frames from a UDP interface, the incoming data may
 exist within a number of 1500 byte Buffers which may exist at random locations in memory. If we are to 
-use std::copy in this case, it will detect that the passed iterator range is non-contigous, and default to a 
+use std::copy in this case, it will detect that the passed iterator range is non-contiguous, and default to a 
 less performant method of copying data byte by byte.
 
 In order to ensure the best possible performance, the Rogue :ref:`interfaces_stream_frame_iterator` provides
-mechanisms for iterating through each contigous buffer. The following example performs a copy from 
+mechanisms for iterating through each contiguous buffer. The following example performs a copy from 
 the received Frame to a memory array.
 
 .. code-block:: c

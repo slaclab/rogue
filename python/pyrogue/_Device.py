@@ -85,7 +85,7 @@ class EnableVariable(pr.BaseVariable):
                 self._queueUpdate()
 
             # The following concept will trigger enable listeners 
-            # directly. This is cuasing lock contentions in practice
+            # directly. This is causing lock contentions in practice
             # (epics as an example)
 
             #self._doUpdate()
@@ -344,7 +344,7 @@ class Device(pr.Node,rim.Hub):
                     value.readBlocks(recurse=True, checkEach=checkEach)
 
     def checkBlocks(self, recurse=True, variable=None):
-        """Check errors in all blocks and generate variable update nofifications"""
+        """Check errors in all blocks and generate variable update notifications"""
         self._log.debug(f'Calling {self.path}._checkBlocks')
 
         with self.root.updateGroup():
@@ -363,7 +363,7 @@ class Device(pr.Node,rim.Hub):
                             value.checkBlocks(recurse=True)
 
     def writeAndVerifyBlocks(self, force=False, recurse=True, variable=None, checkEach=False):
-        """Perform a write, verify and check. Usefull for committing any stale variables"""
+        """Perform a write, verify and check. Useful for committing any stale variables"""
         self.writeBlocks(force=force, recurse=recurse, variable=variable, checkEach=checkEach)
         self.verifyBlocks(recurse=recurse, variable=variable, checkEach=checkEach)
         self.checkBlocks(recurse=recurse, variable=variable)
@@ -428,7 +428,7 @@ class Device(pr.Node,rim.Hub):
                 elif posted: break
                 self._log.warning("Retrying raw write transaction")
 
-            # If we get here an error has occured
+            # If we get here an error has occurred
             raise pr.MemoryError (name=self.name, address=offset|self.address, msg=self._getError())
         
     def _rawRead(self, offset, numWords=1, base=pr.UInt, stride=4, wordBitSize=32, data=None, tryCount=1):
@@ -449,14 +449,14 @@ class Device(pr.Node,rim.Hub):
                         return [base.fromBytes(ldata[i:i+stride]) for i in range(0, len(ldata), stride)]
                 self._log.warning("Retrying raw read transaction")
                 
-            # If we get here an error has occured
+            # If we get here an error has occurred
             raise pr.MemoryError (name=self.name, address=offset|self.address, msg=self._getError())
 
 
     def _getBlocks(self, variables):
         """
         Get a list of unique blocks from a list of Variables. 
-        The returned dictionary has the block as the key with each block assocaited
+        The returned dictionary has the block as the key with each block associated
         with a list. The first list item is the low byte associated with the variable list,
         the second is the high byte associated with the variable list.
         Variables must belong to this device!

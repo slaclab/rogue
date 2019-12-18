@@ -70,8 +70,8 @@ class RunControl(pr.Device):
 
     def _setRunState(self,value,changed):
         """
-        Set run state. Reimplement in sub-class.
-        Enum of run states can also be overriden.
+        Set run state. Re-implement in sub-class.
+        Enum of run states can also be overridden.
         Underlying run control must update runCount variable.
         """
         if changed:
@@ -86,7 +86,7 @@ class RunControl(pr.Device):
 
     def _setRunRate(self,value):
         """
-        Set run rate. Reimplement in sub-class if neccessary.
+        Set run rate. Re-implement in sub-class if necessary.
         """
         pass
 

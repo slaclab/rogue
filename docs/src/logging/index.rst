@@ -4,7 +4,7 @@
 Logging In Rogue
 ================
 
-The following table are the known logging paths for enetities within Rogue.
+The following table are the known logging paths for entities within Rogue.
 
 +------+--------------------+--------------+--------------------------+
 | Type | Section            | Class        | Log Path                 |

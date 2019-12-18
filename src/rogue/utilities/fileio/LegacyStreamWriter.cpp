@@ -13,7 +13,7 @@
  *    write to a common data file. The data file is a series of banks.
  *    Each bank has a channel and frame flags. The channel is per source and the
  *    lower 24 bits of the frame flags are used as the flags.
- *    The bank is preceeded by 2 - 32-bit headers to indicate bank information
+ *    The bank is proceeded by 2 - 32-bit headers to indicate bank information
  *    and length:
  *
  *       headerA:

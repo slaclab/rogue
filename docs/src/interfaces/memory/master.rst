@@ -6,13 +6,13 @@ Memory Master Example
 
 In most cases the user will take advantage of the pyrogue.RemoteVariable, 
 pyrogue.Device, pyrogue.RemoteCommand and pyrogue.MemoryBlock classes to
-interact with memory busses. In rare cases it may be neccessary to write
+interact with memory buses. In rare cases it may be necessary to write
 custom memory Master modules in Python or C++.
 
-Python and C++ subclasses of the Master class can be used interchagably, 
+Python and C++ subclasses of the Master class can be used interchangeably, 
 allowing c++ Slave subclasses to service memory transactions from python 
 masters and python Slave subclasses to receive service memory transactions 
-initated by c++ masters.
+initiated by c++ masters.
 
 See :ref:`interfaces_memory_master` for more detail on the Master class.
 
@@ -24,7 +24,7 @@ Below is an example class which will initiate a read followed by a write.
     import rogue.interfaces.memory
 
     # Create a subclass of a memory Master
-    # This master will initiate a read from a passed adddress and
+    # This master will initiate a read from a passed address and
     # increment that value at that address by a passed value
     class MyMemMaster(rogue.interfaces.memory.Master):
 
@@ -72,7 +72,7 @@ Below is an example class which will initiate a read followed by a write.
             else:
                 return True
 
-The equivelent code in C++ is show below:
+The equivalent code in C++ is show below:
 
 .. code-block:: c
 
@@ -80,7 +80,7 @@ The equivelent code in C++ is show below:
    #include <rogue/interfaces/memory/Master.h>
 
    // Create a subclass of a memory Master
-   // This master will initiate a read from a passed adddress and
+   // This master will initiate a read from a passed address and
    // increment that value at that address by a passed value
    class MyMemMaster : public rogue::interfaces::memory::Master {
       public:

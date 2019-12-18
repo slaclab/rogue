@@ -77,7 +77,7 @@ namespace rogue {
                //! Get header size
                uint32_t headerSize();
 
-               //! Get begining of header iterator
+               //! Get beginning of header iterator
                rogue::interfaces::stream::FrameIterator beginHeader();
 
                //! Get end of header iterator

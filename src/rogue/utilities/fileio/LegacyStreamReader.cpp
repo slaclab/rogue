@@ -196,7 +196,7 @@ void ruf::LegacyStreamReader::runThread() {
          while ( (err == false) && (size > 0) ) {
             bSize = size;
 
-            // Adjust to buffer size, if neccessary
+            // Adjust to buffer size, if necessary
             if ( bSize > (*it)->getSize() ) bSize = (*it)->getSize();
 
             if ( (ret = read(fd_,(*it)->begin(),bSize)) != bSize) {

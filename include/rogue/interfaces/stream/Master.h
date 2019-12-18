@@ -93,15 +93,15 @@ namespace rogue {
                void addSlave ( std::shared_ptr<rogue::interfaces::stream::Slave> slave );
 
                //! Request new Frame to be allocated by primary Slave
-               /** This method is called to create a new Frame oject. An empty Frame with 
+               /** This method is called to create a new Frame object. An empty Frame with 
                 * the requested payload capacity is create. The Master will forward this
-                * request to the primary Slave oject. The request for a new Frame inclues
+                * request to the primary Slave object. The request for a new Frame includes
                 * a flag which indicates if a zeroCopy frame is allowed. In most cases this
-                * flag can be set to True. Non zero copy frames are requsted if the Master may
+                * flag can be set to True. Non zero copy frames are requested if the Master may
                 * need to transmit the same frame multiple times.
                 *
                 * Exposed as _reqFrame() to Python.
-                * @param size Minimum size for requsted Frame, larger Frame may be allocated
+                * @param size Minimum size for requested Frame, larger Frame may be allocated
                 * @param zeroCopyEn Flag which indicates if a zero copy mode Frame is allowed.
                 * @return Newly allocated Frame pointer (FramePtr)
                 */

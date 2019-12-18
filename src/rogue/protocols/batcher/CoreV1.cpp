@@ -21,7 +21,7 @@
  *       Bits 15:8 = Sequence # for debug
  *    The reset of the width is padded with zeros
  *
- * Frame Tail: Tail size is always equal to the interfae width or 64-bis
+ * Frame Tail: Tail size is always equal to the interface width or 64-bis
  *             whichever is larger. Padded values are 0 (higher bytes).
  *
  *    Word 0:
@@ -220,7 +220,7 @@ bool rpb::CoreV1::processFrame ( ris::FramePtr frame ) {
    }
 
    // Skip the rest of the header, compute remaining frame size
-   beg += (headerSize_-2); // Aready read 2 bytes from frame
+   beg += (headerSize_-2); // Already read 2 bytes from frame
    rem -= headerSize_;
 
    // Set marker to end of frame

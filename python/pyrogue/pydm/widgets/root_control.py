@@ -59,7 +59,7 @@ class RootControl(PyDMFrame):
 
         # Load Config
         # This needs to be changed to the new pydm command interface with the push
-        # button commiting the line edit value
+        # button committing the line edit value
         hb = QHBoxLayout()
         vb.addLayout(hb)
 
@@ -79,7 +79,7 @@ class RootControl(PyDMFrame):
 
         # Save Config
         # This needs to be changed to the new pydm command interface with the push
-        # button commiting the line edit value
+        # button committing the line edit value
         hb = QHBoxLayout()
         vb.addLayout(hb)
 
@@ -99,7 +99,7 @@ class RootControl(PyDMFrame):
 
         # Save State
         # This needs to be changed to the new pydm command interface with the push
-        # button commiting the line edit value
+        # button committing the line edit value
         hb = QHBoxLayout()
         vb.addLayout(hb)
 

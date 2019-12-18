@@ -163,7 +163,7 @@ uint32_t ris::Frame::getPayload() {
 /*
  * Set payload size (not including header)
  * If passed size is less then current, 
- * the frame payload size will be descreased.
+ * the frame payload size will be decreased.
  */
 void ris::Frame::setPayload(uint32_t pSize) {
    ris::Frame::BufferIterator it;
@@ -424,13 +424,13 @@ void ris::Frame::putNumpy ( boost::python::object p, uint32_t offset ) {
 
    // Check that this is a PyArrayObject
    if (! PyArray_Check (obj) ) {
-      throw(rogue::GeneralError("Frame::putNumpy","Object is not a numpy arra"));
+      throw(rogue::GeneralError("Frame::putNumpy","Object is not a numpy array"));
    }
 
 
    // Cast to an array object and check that the numpy array 
-   // data buffer is writeable and contigious
-   // The write routine can only deal with contigious buffers.
+   // data buffer is write-able and contiguous
+   // The write routine can only deal with contiguous buffers.
    PyArrayObject *arr = reinterpret_cast<decltype(arr)>(obj);   
    int          flags = PyArray_FLAGS (arr);
    bool           ctg = flags & (NPY_ARRAY_C_CONTIGUOUS | NPY_ARRAY_F_CONTIGUOUS);

@@ -5,8 +5,8 @@ Using The TCP Bridge
 ====================
 
 The stream TCP bridge classes allows a Rogue stream to be bridged over a TCP network interface. The bridge
-consistans of a server and a client. The server, :ref:`interfaces_stream_tcp_server`, listens for incoming 
-connections on a pair ot TCP ports.  The client, :ref:`interfaces_stream_tcp_client`, connects to the server 
+consists of a server and a client. The server, :ref:`interfaces_stream_tcp_server`, listens for incoming 
+connections on a pair of TCP ports.  The client, :ref:`interfaces_stream_tcp_client`, connects to the server 
 at a specific address. Both ends of the bridge are bi-directional allowing a full duplex stream to be bridged
 between the server and client.
 
