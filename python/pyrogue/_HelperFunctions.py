@@ -178,7 +178,7 @@ def yamlToData(stream='',fName=None):
         elif fName is not None:
             filename = os.path.join(os.path.dirname(fName), rel)
 
-        # File is relative without a base path, assume cwd
+        # File is relative without a base path, assume cwd (Current working directory)
         else:
             filename = node
 
