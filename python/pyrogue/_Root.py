@@ -293,8 +293,8 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
             print("")
             print("==========================================================")
             print(" Passing startup args in start() method is now deprecated.")
-            print(" Startup args should now be passed to the root creator.")
-            print("    Example: pyrogue.Root(timeout=1.0, pollEn=True")
+            print(" Startup args should now be passed to the root creator.   ")
+            print("    Example: pyrogue.Root(timeout=1.0, pollEn=True)       ")
             print("==========================================================")
 
             # Override startup parameters if passed in start()
