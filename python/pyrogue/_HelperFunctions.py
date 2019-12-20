@@ -26,7 +26,7 @@ def addLibraryPath(path):
     Passed strings can either be relative: ../path/to/library
     or absolute: /path/to/library
     """
-    base = os.path.dirname(sys.argv[0])
+    base = os.path.dirname(os.path.realpath(__file__))
 
     # If script was not started with ./
     if base == '': base = '.'
