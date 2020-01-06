@@ -81,7 +81,7 @@ namespace rogue {
             
          };
 
-         // Convienence
+         // Convenience
          typedef std::shared_ptr<rogue::utilities::fileio::LegacyStreamWriter> LegacyStreamWriterPtr;
       }
    }

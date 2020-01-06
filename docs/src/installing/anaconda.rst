@@ -45,7 +45,7 @@ If you already have an anaconda environment that you would like to install Rogue
 
    $ conda install -c tidair-packages -c pydm-tag -c conda-forge -c tidair-tag rogue
 
-The above commands will install the latest version of Rogue from the master branch. If you want to insteall the pre-release version of Rogue, run the following:
+The above commands will install the latest version of Rogue from the master branch. If you want to install the pre-release version of Rogue, run the following:
 
 .. code::
 

@@ -31,10 +31,10 @@ Use the following command to add anaconda to your environment. This can be added
 
    $ source /path/to/my/anaconda3/etc/profile.d/conda.sh
 
-Downloading Rogue & Creating Anaconda Envrionment
+Downloading Rogue & Creating Anaconda Environment
 =================================================
 
-The next step is to download rogue and create a rogue compatable anaconda environment.
+The next step is to download rogue and create a rogue compatible anaconda environment.
 
 .. code::
 

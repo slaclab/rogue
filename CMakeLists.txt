@@ -12,7 +12,7 @@
 # copied, modified, propagated, or distributed except according to the terms 
 # contained in the LICENSE.txt file.
 # ----------------------------------------------------------------------------
-# See notes for compiling on macos under anaconda:
+# See notes for compiling on macros under anaconda:
 #    https://conda.io/docs/user-guide/tasks/build-packages/compiler-tools.html
 
 # Add support for building in conda environment
@@ -104,7 +104,7 @@ find_package(BZip2 QUIET REQUIRED)
 #####################################
 # ZeroMQ
 #####################################
-# First try with Cmake packages
+# First try with cmake packages
 find_package(ZeroMQ QUIET)
 
 # ZeroMQ does not always support cmake, use brute force
@@ -125,7 +125,7 @@ if (NOT ZeroMQ_FOUND)
    # Found it
    if (ZeroMQ_LIBRARY) 
 
-      # Get the base diretory
+      # Get the base directory
       get_filename_component(ZMQ_LIBDIR ${ZeroMQ_LIBRARY} DIRECTORY)
 
       # See if we can find the header in a relative path
@@ -288,7 +288,7 @@ TARGET_LINK_LIBRARIES(rogue-core LINK_PUBLIC ${ZeroMQ_LIBRARY})
 TARGET_LINK_LIBRARIES(rogue-core LINK_PUBLIC ${EPICS_LIBRARIES})
 TARGET_LINK_LIBRARIES(rogue-core LINK_PUBLIC ${BZIP2_LIBRARIES})
 
-# Do not link directly against python in macos
+# Do not link directly against python in mac os
 if (APPLE)
    set_target_properties(rogue-core PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
 else()

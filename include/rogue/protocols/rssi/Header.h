@@ -132,7 +132,7 @@ namespace rogue {
                //! Retransmission Timeout
                uint16_t retransmissionTimeout;
 
-               //! Cumulative Acknowledgement Timeout
+               //! Cumulative Acknowledgment Timeout
                uint16_t cumulativeAckTimeout;
 
                //! NULL Timeout

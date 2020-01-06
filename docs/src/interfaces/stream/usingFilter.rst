@@ -9,7 +9,7 @@ a stream Master which generates channelized Frames. This a rate situation which 
 receiving a stream from a rogue.utilities.StreamReader or from the output of the 
 rogue.protocols.batcher.SplitterV1 objects. The Filter object only passes through frames which
 have a configured channel id. The Frame filter can also be configured to drop frames which
-have a non zero error field. This may be a usefull utlility for non-channelized data as well.
+have a non zero error field. This may be a useful utility for non-channelized data as well.
 
 Filter Example
 ==============

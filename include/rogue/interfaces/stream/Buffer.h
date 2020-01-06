@@ -33,11 +33,11 @@ namespace rogue {
 
          //! Frame buffer
          /** This class is a container for buffers which make up a frame. Each buffer is associated
-          * with a contigous block of memory allocated by an instance of the Pool class.
+          * with a contiguous block of memory allocated by an instance of the Pool class.
           * Each buffer within the frame has a reserved header and tail area to pre-reserve
           * space which may be required by protocol layers. Direct interaction with the Buffer
           * class is an advanced topic, most users will simply use a FrameIterator to access 
-          * Frame and Buffer data. The Buffer class is not vailable in Python.
+          * Frame and Buffer data. The Buffer class is not available in Python.
          */
          class Buffer {
 
@@ -53,7 +53,7 @@ namespace rogue {
                // Meta data used to track this buffer by source
                uint32_t   meta_;
 
-               // Alloc size of buffer, alloc may be greater than raw size due to buffer alloctor
+               // Alloc size of buffer, alloc may be greater than raw size due to buffer allocator
                uint32_t   allocSize_;
 
                // Raw size of buffer, size as requested, alloc may be greater
@@ -82,10 +82,10 @@ namespace rogue {
                // Class factory which returns a BufferPtr
                /* Create a new Buffer with associated data.
                 *
-                * Not exposted to python, Called by Pool class
+                * Not exposed to python, Called by Pool class
                 * data Pointer to raw data block associated with Buffer
                 * meta Meta data to track allocation
-                * size Size of raw data block usuable by Buffer
+                * size Size of raw data block usable by Buffer
                 * alloc Total memory allocated, may be greater than size
                 */
                static std::shared_ptr<rogue::interfaces::stream::Buffer> create (
@@ -133,21 +133,21 @@ namespace rogue {
                void zeroTail();
 
                //! Get beginning buffer iterator
-               /** Get an interator which indicates the start of the
+               /** Get an iterator which indicates the start of the
                 * buffer space, not including the header reservation.
                 * @return Begin buffer iterator
                 */
                uint8_t * begin();
 
                //! Get end buffer iterator
-               /** Get an interator which indicates the end of the the buffer minus
+               /** Get an iterator which indicates the end of the the buffer minus
                 * the tail reservation.
                 * @return End buffer iterator
                 */
                uint8_t * end();
 
                //! Get end payload iterator
-               /** Get an interator which indicates the end of the the payload space. 
+               /** Get an iterator which indicates the end of the the payload space. 
                 * @return End payload iterator
                 */
                uint8_t * endPayload();
@@ -193,7 +193,7 @@ namespace rogue {
                 */
                void adjustPayload(int32_t value);
 
-               //! Set the pyalod size to fill the buffer
+               //! Set the payload size to fill the buffer
                /**This method sets the buffer payload size to fill the buffer,
                 * minus the header and tail reservation.
                 */

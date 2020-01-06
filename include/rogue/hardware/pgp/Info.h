@@ -44,7 +44,7 @@ namespace rogue {
                // Setup class in python
                static void setup_python();
 
-               //! Return buildstring in string format
+               //! Return `build string` in string format
                /** Exposed to python as buildString()
                 */
                std::string buildString();

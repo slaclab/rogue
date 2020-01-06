@@ -32,7 +32,7 @@ namespace rogue {
          //! SRP Cmd
          /*
           * Serves as an interface between memory accesses and streams
-          * carying the SRP protocol. 
+          * carnying the SRP protocol. 
           */
         class Cmd : public rogue::interfaces::stream::Master {
 
@@ -55,7 +55,7 @@ namespace rogue {
 
          };
 
-         // Convienence
+         // Convenience
          typedef std::shared_ptr<rogue::protocols::srp::Cmd> CmdPtr;
       }
    }

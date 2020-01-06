@@ -34,8 +34,8 @@ namespace rogue {
           * when reading data from a Data file using a StreamWReader object. This can also
           * occur when receiving data from a Batcher protocol Frame Splitter. The Filter allows
           * a Slave to be sure it only receives Frame data for a particular channel. The 
-          * Filter oject has a configured channel number and a flag to determine if Frame
-          * ojects with a non-zero error field will be dropped.
+          * Filter object has a configured channel number and a flag to determine if Frame
+          * objects with a non-zero error field will be dropped.
           */
          class Filter : public rogue::interfaces::stream::Master,
                         public rogue::interfaces::stream::Slave {

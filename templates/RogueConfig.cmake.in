@@ -114,7 +114,7 @@ if (NOT ZeroMQ_FOUND)
    # Found it
    if (ZeroMQ_LIBRARY) 
 
-      # Get the base diretory
+      # Get the base directory
       get_filename_component(ZMQ_LIBDIR ${ZeroMQ_LIBRARY} DIRECTORY)
 
       # See if we can find the header in a relative path
@@ -205,7 +205,7 @@ endif()
 # Rogue Include paths
 set(ROGUE_INCLUDE_ONLY @CONF_INCLUDE_DIRS@)
 
-# Rogue librarires
+# Rogue libraries
 set(ROGUE_LIBRARIES_ONLY @CONF_LIBRARIES@)
 
 # Rogue Include paths
@@ -217,7 +217,7 @@ set(ROGUE_INCLUDE_DIRS @CONF_INCLUDE_DIRS@
                        ${BZIP2_INCLUDE_DIR}
                        ${EPICS_INCLUDES})
 
-# Rogue librarires
+# Rogue libraries
 set(ROGUE_LIBRARIES @CONF_LIBRARIES@
                     ${Boost_LIBRARIES}
                     ${PYTHON_LIBRARIES}

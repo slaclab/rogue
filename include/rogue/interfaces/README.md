@@ -3,7 +3,7 @@ libraries for interfaces between major modules.
 
 stream: 
 
-Interfaces which use data streams consisiting of buffer chains.
+Interfaces which use data streams consisting of buffer chains.
 
 memory:
 

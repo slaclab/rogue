@@ -79,7 +79,7 @@ namespace rogue {
                bool waitFrameCount(uint32_t count, uint64_t timeout);
          };
 
-         // Convienence
+         // Convenience
          typedef std::shared_ptr<rogue::utilities::fileio::StreamWriterChannel> StreamWriterChannelPtr;
       }
    }

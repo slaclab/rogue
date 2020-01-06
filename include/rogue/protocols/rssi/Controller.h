@@ -1,4 +1,3 @@
-
 /**
  *-----------------------------------------------------------------------------
  * Title      : RSSI Controller Class
@@ -178,7 +177,7 @@ namespace rogue {
                //! Get Drop Count
                uint32_t getDropCount();
 
-               //! Get Retran Count
+               //! Get Retransmit Count
                uint32_t getRetranCount();
                
                //! Get locBusy

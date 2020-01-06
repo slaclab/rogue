@@ -82,7 +82,7 @@ namespace rogue {
 
 #ifndef NO_PYTHON
 
-      //! Stream slave class, wrapper to enable pyton overload of virtual methods
+      //! Stream slave class, wrapper to enable python overload of virtual methods
       class ZmqClientWrap : 
          public rogue::interfaces::ZmqClient, 
          public boost::python::wrapper<rogue::interfaces::ZmqClient> {

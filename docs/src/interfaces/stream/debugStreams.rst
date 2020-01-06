@@ -20,7 +20,7 @@ between an existing Master and Slave instance.
    # Data source
    src = MyCustomMaster()
 
-   # Data desination
+   # Data destination
    dst = MyCustomMaster()
 
    # Debug Slave

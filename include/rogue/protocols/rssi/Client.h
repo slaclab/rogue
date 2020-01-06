@@ -72,7 +72,7 @@ namespace rogue {
                //! Get Drop Count
                uint32_t getDropCount();
 
-               //! Get Retran Count
+               //! Get Retransmit Count
                uint32_t getRetranCount();
                
                //! Get locBusy
@@ -130,7 +130,7 @@ namespace rogue {
 
          };
 
-         // Convienence
+         // Convenience
          typedef std::shared_ptr<rogue::protocols::rssi::Client> ClientPtr;
 
       }

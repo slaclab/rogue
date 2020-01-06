@@ -41,7 +41,7 @@ namespace rogue {
                //! Create a TcpClient object and return as a TcpClientPtr
                /**The creator takes an address and port. The passed server address can either 
                 * be an IP address or hostname. The stream bridge requires two TCP ports. 
-                * The pased port is the base number of these two ports. A passed value of 8000 
+                * The passed port is the base number of these two ports. A passed value of 8000 
                 * will result in both 8000 and 8001 being used by this bridge.
                 *
                 * Exposed to Python as rogue.interfaces.stream.TcpClient

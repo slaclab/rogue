@@ -8,7 +8,7 @@
  * Last update: 2016-08-08
  * ----------------------------------------------------------------------------
  * Description:
- * Defintions and inline functions for interacting with PGP driver.
+ * Definitions and inline functions for interacting with PGP driver.
  * ----------------------------------------------------------------------------
  * This file is part of the aes_stream_drivers package. It is subject to 
  * the license terms in the LICENSE.txt file found in the top-level directory 
@@ -97,7 +97,7 @@ struct PciStatus {
 //! PGP Lane Status
 struct PgpStatus {
 
-   //! Lane number assocaited with this record
+   //! Lane number associated with this record
    uint32_t lane;
 
    //! Lane loopback status
@@ -160,7 +160,7 @@ struct PgpEvrControl {
    //! Header checking mask, 1 enable bit for each of 4 virtual channels.
    uint32_t  headerMask;
 
-   //! EVR Sync word, 32-bit timing fidicial to transition start/stop on
+   //! EVR Sync word, 32-bit timing fiducial to transition start/stop on
    uint32_t  evrSyncWord;
 
    //! 8-bit timing code to assert run trigger
