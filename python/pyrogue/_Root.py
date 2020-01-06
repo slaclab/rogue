@@ -350,10 +350,11 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
             for key,value in self._nodes.items():
                 value._setTimeout(self._timeout)
 
-        # Server Start
+        # Start ZMQ server if enabled
         if self._serverPort is not None:
             self._zmqServer  = pr.interfaces.ZmqServer(root=self,addr="*",port=self._serverPort)
             self._serverPort = self._zmqServer.port()
+            print("start: Started zmqServer on port %d" % self._serverPort)
 
         # Start sql interface
         if self._sqlUrl is not None:
