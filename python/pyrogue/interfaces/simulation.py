@@ -45,7 +45,7 @@ class SideBandSim():
     def _defaultRecvCb(self, opCode, remData):
         if opCode is not None:
             print(f'Received opCode: {opCode:02x}')
-        if remDataNew is not None:
+        if remData is not None:
             print(f'Received remData: {remData:02x}')
 
     def setRecvCb(self, cbFunc):
