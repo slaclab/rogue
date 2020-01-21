@@ -77,6 +77,7 @@ rh::MemMap::~MemMap() {
 
 //! Post a transaction
 void rh::MemMap::doTransaction(rim::TransactionPtr tran) {
+   rogue::GilRelease noGil;
    queue_.push(tran);
 }
 
