@@ -38,6 +38,10 @@ class PrbsRx(pyrogue.Device):
         if stream is not None:
             pyrogue.streamConnect(stream, self)
             
+        self.add(pyrogue.LocalVariable(name='rxEnable', description='RX Enable', 
+                                       mode='RW', value=True,
+                                       localGet=lambda : self._prbs.getRxEnable(),
+                                       localSet=lambda value: self._prbs.setRxEnable(value)))
 
         self.add(pyrogue.LocalVariable(name='rxErrors', description='RX Error Count',
                                        mode='RO', pollInterval=1, value=0, typeStr='UInt32',

@@ -57,6 +57,7 @@ ru::Prbs::Prbs() {
    rxErrCount_ = 0;
    rxCount_    = 0;
    rxBytes_    = 0;
+   rxEnable_   = true;
    txSeq_      = 0;
    txSize_     = 0;
    txErrCount_ = 0;
@@ -232,6 +233,20 @@ void ru::Prbs::disable() {
    }
 }
 
+
+//! Get rx enable
+bool ru::Prbs::getRxEnable() {
+   return rxEnable_;
+}
+
+//! Set rx enable
+void ru::Prbs::setRxEnable(bool en) {
+   rogue::GilRelease noGil;
+   pMtx_.lock();
+   rxEnable_ = en;
+   pMtx_.unlock();
+}
+
 //! Get RX errors
 uint32_t ru::Prbs::getRxErrors() {
    return(rxErrCount_);
@@ -398,6 +413,9 @@ void ru::Prbs::acceptFrame ( ris::FramePtr frame ) {
    char          debugB[1000];
 
    rogue::GilRelease noGil;
+
+   while (not rxEnable_) usleep(10000);
+
    ris::FrameLockPtr fLock = frame->lock();
    std::lock_guard<std::mutex> lock(pMtx_);
 
