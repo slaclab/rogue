@@ -502,6 +502,8 @@ void ru::Prbs::setup_python() {
       .def("disable",        &ru::Prbs::disable)
       .def("setWidth",       &ru::Prbs::setWidth)
       .def("setTaps",        &ru::Prbs::setTaps)
+      .def("getRxEnable",    &ru::Prbs::getRxEnable)
+      .def("setRxEnable",    &ru::Prbs::setRxEnable)
       .def("getRxErrors",    &ru::Prbs::getRxErrors)
       .def("getRxCount",     &ru::Prbs::getRxCount)
       .def("getRxRate",      &ru::Prbs::getRxRate)
