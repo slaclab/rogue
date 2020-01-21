@@ -135,7 +135,7 @@ namespace rogue {
 
                //! Get expired flag
                /** The expired flag is set by the Master when the Transaction times out
-                * and the Master is no longer wiating for the Transaction to complete.
+                * and the Master is no longer waiting for the Transaction to complete.
                 * Lock must be held before checking the expired status.
                 *
                 * Exposed as expired() to Python
@@ -182,14 +182,14 @@ namespace rogue {
                /** Lock must be held before calling this method. The
                 * error types are defined in Constants.
                 *
-                * Exposted as done() to Python
+                * Exposed as done() to Python
                 */
                void done();
 
                //! Complete transaction with passed error, python interface
                /** Lock must be held before calling this method.
                 *
-                * Exposted as error() to Python
+                * Exposed as error() to Python
                 * @param error Transaction error message
                 */
                void errorPy(std::string error);
@@ -222,7 +222,7 @@ namespace rogue {
 #ifndef NO_PYTHON
 
                //! Method for copying transaction data to Python byte array
-               /** Exposted to Python as getData()
+               /** Exposed to Python as getData()
                 *
                 * The size of the data to be copied is defined by the size of
                 * the passed data buffer.
@@ -232,7 +232,7 @@ namespace rogue {
                void getData ( boost::python::object p, uint32_t offset );
 
                //! Method for copying transaction data from Python byte array
-               /** Exposted to Python as setData()
+               /** Exposed to Python as setData()
                 *
                 * The size of the data to be copied is defined by the size of
                 * the passed data buffer.

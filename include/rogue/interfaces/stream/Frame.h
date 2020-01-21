@@ -76,7 +76,7 @@ namespace rogue {
                // Update buffer size counts
                void updateSizes();
 
-               // Size values dirty flage
+               // Size values dirty flags
                bool sizeDirty_;
 
             protected:
@@ -113,7 +113,7 @@ namespace rogue {
                std::shared_ptr<rogue::interfaces::stream::FrameLock> lock();
 
                //! Append passed frame to the end of this frame.
-               /** Buffers from the passed frame are appened to the end of this frame and
+               /** Buffers from the passed frame are appended to the end of this frame and
                 * will be removed from the source frame.
                 *
                 * Not exposed to Python
@@ -182,7 +182,7 @@ namespace rogue {
 
                //! Get total payload size of the Frame
                /** Exposed as getPayload() to Python
-                * @return Total paylaod bytes in the Frame
+                * @return Total payload bytes in the Frame
                 */
                uint32_t getPayload();
 
@@ -241,13 +241,13 @@ namespace rogue {
                /** The first user value is stored in the lower 8-bits of the flag field.
                 *
                 * Exposed as getFirstuser() to Python
-                * @return 8-bit lirst user value
+                * @return tuser 8-bit first user value
                 */
                uint8_t getFirstUser();
 
                // Set the first user field portion of flags (SSI/Axi-Stream)
                /** Exposed as setFirstUser() to Python
-                * @param fuser 8-bit lirst user value
+                * @param tuser 8-bit first user value
                 */
                void setFirstUser(uint8_t fuser);
 
@@ -255,13 +255,13 @@ namespace rogue {
                /** The last user value is stored in the upper 8-bits of the flag field.
                 *
                 * Exposed as getLastUser() to Python
-                * @return 8-bit last user value
+                * @return tuser 8-bit last user value
                 */
                uint8_t getLastUser();
 
                // Set the last user field portion of flags (SSI/Axi-Stream)
                /** Exposed as setLastUser() to Python
-                * @param luser 8-bit last user value
+                * @param tuser 8-bit last user value
                 */
                void setLastUser(uint8_t fuser);
 
@@ -282,7 +282,7 @@ namespace rogue {
                void setChannel(uint8_t channel);
 
                //! Get error state
-               /** The error value is application specific, depnding on the stream Master
+               /** The error value is application specific, depending on the stream Master
                 * implementation. A non-zero value is considered an error.
                 * 
                 * Exposed as getError() to Python

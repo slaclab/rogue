@@ -78,11 +78,11 @@ namespace rogue {
 
                //! Set debug message size
                /** This method enables debug messages when using the base Slave class
-                * attached as a primary or secondar Slave on a Master. Typically used
+                * attached as a primary or secondary Slave on a Master. Typically used
                 * when attaching a base Slave object for debug purposes.
                 *
                 * Exposed as setDebug() to Python
-                * @param debug Maximum numer of bytes to print in debug message.
+                * @param debug Maximum number of bytes to print in debug message.
                 * @param name Name to included in the debug messages.
                 */
                void setDebug(uint32_t debug, std::string name);
@@ -133,7 +133,7 @@ namespace rogue {
 
 #ifndef NO_PYTHON
 
-         // Stream slave class, wrapper to enable pyton overload of virtual methods
+         // Stream slave class, wrapper to enable python overload of virtual methods
          class SlaveWrap : 
             public rogue::interfaces::stream::Slave, 
             public boost::python::wrapper<rogue::interfaces::stream::Slave> {

@@ -68,7 +68,7 @@ class Process(pr.Device):
             mode='RO',
             value='',
             pollInterval=1.0,
-            description='Process status message. Prefix with Error: if an error occured.'))
+            description='Process status message. Prefix with Error: if an error occurred.'))
 
     def _start(self):
         with self._lock:

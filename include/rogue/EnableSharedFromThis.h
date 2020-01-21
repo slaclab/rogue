@@ -8,7 +8,7 @@
  * Description:
  * This is a common parent class that must be used instead of std::enable_shared_from_this
  * by any Rogue classes that need shared_from_this() functionality. This avoids
- * a weak ptr error when subclassing multiple classes at the python level.
+ * a weak ptr error when sub-classing multiple classes at the python level.
  * ----------------------------------------------------------------------------
  * This file is part of the rogue software platform. It is subject to 
  * the license terms in the LICENSE.txt file found in the top-level directory 

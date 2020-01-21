@@ -8,7 +8,7 @@
  * Last update: 2016-08-08
  * ----------------------------------------------------------------------------
  * Description:
- * Defintions and inline functions for interacting with PGP driver.
+ * Definitions and inline functions for interacting with PGP driver.
  * ----------------------------------------------------------------------------
  * This file is part of the aes_stream_drivers package. It is subject to 
  * the license terms in the LICENSE.txt file found in the top-level directory 
@@ -97,7 +97,7 @@ struct PciStatus {
 //! PGP Lane Status
 struct PgpStatus {
 
-   //! Lane number assocaited with this record
+   //! Lane number associated with this record
    uint32_t lane;
 
    //! Lane loopback status

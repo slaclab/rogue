@@ -175,7 +175,7 @@ class RogueSignalWakeupHandler(QAbstractSocket):
 
     def _readSignal(self):
         # Read the written byte.
-        # Note: readyRead is blocked from occuring again until readData()
+        # Note: readyRead is blocked from occurring again until readData()
         # was called, so call it, even if you don't need the value.
         data = self.readData(1)
         # Emit a Qt signal for convenience

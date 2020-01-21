@@ -168,7 +168,7 @@ void ris::Master::equalsPy ( boost::python::object p ) {
    }
 
    if ( rMst == NULL || rSlv == NULL || lSlv == NULL ) 
-      throw(rogue::GeneralError::create("stream::Master::equalsPy","Attempt to use == with an incompatable stream slave"));
+      throw(rogue::GeneralError::create("stream::Master::equalsPy","Attempt to use == with an incompatible stream slave"));
 
    // Make connections
    addSlave(rSlv);
@@ -196,7 +196,7 @@ bp::object ris::Master::rshiftPy ( bp::object p ) {
    }
 
    if ( slv != NULL ) addSlave(slv);
-   else throw(rogue::GeneralError::create("stream::Master::rshiftPy","Attempt to use >> with incompatable stream slave"));
+   else throw(rogue::GeneralError::create("stream::Master::rshiftPy","Attempt to use >> with incompatible stream slave"));
 
    return p;
 }
@@ -215,7 +215,7 @@ void ris::Master::operator ==(ris::SlavePtr & other) {
    rMst = std::dynamic_pointer_cast<ris::Master>(other);
 
    if ( rMst == NULL || lSlv == NULL ) 
-      throw(rogue::GeneralError::create("stream::Master::equalsPy","Attempt to use == with an incompatable stream slave"));
+      throw(rogue::GeneralError::create("stream::Master::equalsPy","Attempt to use == with an incompatible stream slave"));
 
    rMst->addSlave(lSlv);
    addSlave(other);

@@ -248,10 +248,10 @@ void rpr::Controller::transportRx( ris::FramePtr frame ) {
          nextSeqRx_ = nextSeqRx_ + 1;
          appQueue_.push(head);
 
-         // There are elements in ooo queue
+         // There are elements in ooo (out-of-order) queue
          if ( ! oooQueue_.empty() ) {
 
-            // First remove received sequence number from queue to avoid dupilicates
+            // First remove received sequence number from queue to avoid duplicates
             if ( ( it = oooQueue_.find(head->sequence)) != oooQueue_.end() ) {
                log_->warning("Removed duplicate frame. server=%i, head->sequence=%i, next sequence=%i",
                      server_, head->sequence, nextSeqRx_);
@@ -259,7 +259,7 @@ void rpr::Controller::transportRx( ris::FramePtr frame ) {
                oooQueue_.erase(it);
             }
 
-            // Get next entries from ooo queue if they exist
+            // Get next entries from ooo (out-of-order) queue if they exist
             // This works because max outstanding will never be the full range of ids
             // otherwise this could be stale data from previous ids
             while ( ( it = oooQueue_.find(nextSeqRx_)) != oooQueue_.end() ) {
@@ -285,7 +285,7 @@ void rpr::Controller::transportRx( ris::FramePtr frame ) {
 
       // Add to out of order queue in case things arrive out of order
       // Make sure received sequence is in window. There may be a better way
-      // to do this while hanlding the 8 bit rollover
+      // to do this while handling the 8 bit rollover
       else {
          uint8_t x = nextSeqRx_;
          uint8_t windowEnd = (nextSeqRx_ + curMaxBuffers_ + 1);
@@ -397,7 +397,7 @@ uint32_t rpr::Controller::getDropCount() {
    return(dropCount_);
 }
 
-//! Get Retran Count
+//! Get Retransmit Count
 uint32_t rpr::Controller::getRetranCount() {
    return(retranCount_);
 }

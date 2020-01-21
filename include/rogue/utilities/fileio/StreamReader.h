@@ -96,7 +96,7 @@ namespace rogue {
                bool isActive();
          };
 
-         // Convienence
+         // Convenience
          typedef std::shared_ptr<rogue::utilities::fileio::StreamReader> StreamReaderPtr;
       }
    }

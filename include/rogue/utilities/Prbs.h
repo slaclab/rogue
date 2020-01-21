@@ -202,7 +202,7 @@ namespace rogue {
             void acceptFrame ( std::shared_ptr<rogue::interfaces::stream::Frame> frame );
       };
 
-      // Convienence
+      // Convenience
       typedef std::shared_ptr<rogue::utilities::Prbs> PrbsPtr;
 
    }

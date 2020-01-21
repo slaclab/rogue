@@ -159,7 +159,7 @@ class AxiVersion(pr.Device):
 
         self.add(pr.RemoteVariable(   
             name         = 'DeviceId',
-            description  = 'Device Identification  (configued by generic)',
+            description  = 'Device Identification  (configured by generic)',
             offset       = 0x500,
             bitSize      = 32,
             bitOffset    = 0x00,

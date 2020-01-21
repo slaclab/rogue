@@ -301,7 +301,7 @@ class RemoteBlock(BaseBlock, rim.Master):
                     self._verifyEn = True
                     self._setBits(self._vDataMask,var.bitOffset[x],var.bitSize[x])
 
-        # Check for overlaps by anding exclusive and overmap bit vectors
+        # Check for overlaps by anding exclusive and overlap bit vectors
         for b1, b2 in zip(oleMask, excMask):
             if b1 & b2 != 0:
                 raise MemoryError(name=self.path, address=self.address, msg="Variable bit overlap detected.")

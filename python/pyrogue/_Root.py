@@ -143,7 +143,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         self._sqlExcGroups    = sqlExcGroups
         self._doHeartbeat     = True # Backdoor flag
 
-        # Create log listener to add to systemlog variable
+        # Create log listener to add to SystemLog variable
         formatter = logging.Formatter("%(msg)s")
         handler = RootLogHandler(root=self)
         handler.setLevel(logging.ERROR)
@@ -249,7 +249,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                                  description='Generate a count reset to each device in the tree'))
 
         self.add(pr.LocalCommand(name='ClearLog', function=self._clearLog, hidden=True,
-                                 description='Clear the message log cntained in the SystemLog variable'))
+                                 description='Clear the message log contained in the SystemLog variable'))
 
         self.add(pr.LocalCommand(name='SetYamlConfig', value='', 
                                  function=lambda arg: self.setYaml(yml=arg,
@@ -293,8 +293,8 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
             print("")
             print("==========================================================")
             print(" Passing startup args in start() method is now deprecated.")
-            print(" Startup args should now be passed to the root creator.")
-            print("    Example: pyrogue.Root(timeout=1.0, pollEn=True")
+            print(" Startup args should now be passed to the root creator.   ")
+            print("    Example: pyrogue.Root(timeout=1.0, pollEn=True)       ")
             print("==========================================================")
 
             # Override startup parameters if passed in start()
@@ -350,10 +350,11 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
             for key,value in self._nodes.items():
                 value._setTimeout(self._timeout)
 
-        # Server Start
+        # Start ZMQ server if enabled
         if self._serverPort is not None:
             self._zmqServer  = pr.interfaces.ZmqServer(root=self,addr="*",port=self._serverPort)
             self._serverPort = self._zmqServer.port()
+            print("start: Started zmqServer on port %d" % self._serverPort)
 
         # Start sql interface
         if self._sqlUrl is not None:
@@ -449,7 +450,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
     @contextmanager
     def updateGroup(self):
 
-        # At wtih call
+        # At with call
         self._updateQueue.put(True)
 
         # Return to block within with call
@@ -463,7 +464,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
     @contextmanager
     def pollBlock(self):
 
-        # At wtih call
+        # At with call
         self._pollQueue._blockIncrement()
 
         # Return to block within with call

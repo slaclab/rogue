@@ -1,3 +1,12 @@
+#-----------------------------------------------------------------------------
+# This file is part of the rogue software platform. It is subject to 
+# the license terms in the LICENSE.txt file found in the top-level directory 
+# of this distribution and at: 
+#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
+# No part of the rogue software platform, including this file, may be 
+# copied, modified, propagated, or distributed except according to the terms 
+# contained in the LICENSE.txt file.
+#-----------------------------------------------------------------------------
 import pyrogue as pr
 import rogue.interfaces.memory as rim
 import threading
@@ -47,7 +56,7 @@ class MemoryDevice(pr.Device):
         self._wrValues = odict() # parsed from yaml
         self._verValues = odict()
         self._wrData = odict() # byte arrays written
-        self._verData = odict() # verify data wread back
+        self._verData = odict() # verify the written data 
 
 
     def _buildBlocks(self):
@@ -118,7 +127,7 @@ class MemoryDevice(pr.Device):
             error = self._getError()
             self._clearError()
 
-            # Convert the read verfiy data back to the native type
+            # Convert the read verify data back to the native type
             # Can't do this until waitTransaction is done
             checkValues = odict()
             for offset, ba in self._verValues.items():
