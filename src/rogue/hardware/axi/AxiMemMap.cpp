@@ -68,6 +68,7 @@ rha::AxiMemMap::~AxiMemMap() {
 
 //! Post a transaction
 void rha::AxiMemMap::doTransaction(rim::TransactionPtr tran) {
+   rogue::GilRelease noGil;
    queue_.push(tran);
 }
 
@@ -90,16 +91,16 @@ void rha::AxiMemMap::runThread() {
    while(threadEn_) {
       if ( (tran = queue_.pop()) != NULL ) {
 
-   if ( (tran->size() % dataSize) != 0 ) {
-      tran->error("Invalid transaction size %i, must be an integer number of %i bytes",tran->size(),dataSize);
+         if ( (tran->size() % dataSize) != 0 ) {
+            tran->error("Invalid transaction size %i, must be an integer number of %i bytes",tran->size(),dataSize);
             tran.reset();
             continue;
          }
 
-   count = 0;
-   ret = 0;
+         count = 0;
+         ret = 0;
 
-   rim::TransactionLockPtr lock = tran->lock();
+         rim::TransactionLockPtr lock = tran->lock();
 
          if ( tran->expired() ) {
             log_->warning("Transaction expired. Id=%i",tran->id());
@@ -107,27 +108,27 @@ void rha::AxiMemMap::runThread() {
             continue;
          }
 
-   it = tran->begin();
+         it = tran->begin();
 
-   while ( (ret == 0) && (count != tran->size()) ) {
-      if (tran->type() == rim::Write || tran->type() == rim::Post) {
+         while ( (ret == 0) && (count != tran->size()) ) {
+            if (tran->type() == rim::Write || tran->type() == rim::Post) {
 
-         // Assume transaction has a contiguous memory block
-         std::memcpy(ptr,it,dataSize);
-         ret = dmaWriteRegister(fd_,tran->address()+count,data);
+               // Assume transaction has a contiguous memory block
+               std::memcpy(ptr,it,dataSize);
+               ret = dmaWriteRegister(fd_,tran->address()+count,data);
+            }
+            else {
+               ret = dmaReadRegister(fd_,tran->address()+count,&data);
+               std::memcpy(it,ptr,dataSize);
+            }
+            count += dataSize;
+            it += dataSize;
+         }
+
+         log_->debug("Transaction id=0x%08x, addr 0x%08x. Size=%i, type=%i, data=0x%08x",tran->id(),tran->address(),tran->size(),tran->type(),data);
+         if ( ret != 0 ) tran->error("Memory transaction failed with error code %i, see driver error codes",ret);
+         else tran->done();
       }
-      else {
-         ret = dmaReadRegister(fd_,tran->address()+count,&data);
-         std::memcpy(it,ptr,dataSize);
-      }
-      count += dataSize;
-      it += dataSize;
-   }
-
-   log_->debug("Transaction id=0x%08x, addr 0x%08x. Size=%i, type=%i, data=0x%08x",tran->id(),tran->address(),tran->size(),tran->type(),data);
-   if ( ret != 0 ) tran->error("Memory transaction failed with error code %i, see driver error codes",ret);
-   else tran->done();
-}
    }
 }
 
