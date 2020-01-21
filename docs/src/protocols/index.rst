@@ -4,11 +4,11 @@
 Protocols
 ==========
 
-.. Placeholder for future test
+.. Placeholder for future text
 
 .. toctree::
    :maxdepth: 1
-   :caption: Interfaces:
+   :caption: Protocols:
 
    batcher/index
    epicsV3/index
