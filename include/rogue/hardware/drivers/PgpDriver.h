@@ -146,31 +146,31 @@ struct PgpEvrControl {
    uint32_t  lane;
 
    //! Global EVR enable for all lanes, 1 = enable, 0 = disabled
-   uint32_t  evrEnable;
+   uint32_t  evrEnable;     // Global flag
 
    //! Run trigger enable for this lane, 1 = enable, 0 = disable
-   uint32_t  laneRunMask;
+   uint32_t  laneRunMask;   // 1 = Run trigger enable
 
    //! EVR Sync enable, 1 = start, 0 = stop
-   uint32_t  evrSyncEn;
+   uint32_t  evrSyncEn;     // 1 = Start, 0 = Stop
 
    //! Sync select, 0 = async, 1 = sync for start/stop
-   uint32_t  evrSyncSel;
+   uint32_t  evrSyncSel;    // 0 = async, 1 = sync for start/stop
 
    //! Header checking mask, 1 enable bit for each of 4 virtual channels.
-   uint32_t  headerMask;
+   uint32_t  headerMask;    // 1 = Enable header data checking, one bit per VC (4 bits)
 
-   //! EVR Sync word, 32-bit timing fiducial to transition start/stop on
-   uint32_t  evrSyncWord;
+   //! EVR Sync word, 32-bit timing fidicial to transition start/stop on
+   uint32_t  evrSyncWord;   // fiducial to transition start stop
 
    //! 8-bit timing code to assert run trigger
-   uint32_t  runCode;
+   uint32_t  runCode;       // Run code
 
    //! Delay between timing code reception and assertion of run trigger
-   uint32_t  runDelay;
+   uint32_t  runDelay;      // Run delay
 
    //! 8-bit timing code to assert accept trigger
-   uint32_t  acceptCode;
+   uint32_t  acceptCode;    // Accept code
 
    //! Delay between timing code reception and assertion of accept trigger
    uint32_t  acceptDelay;   // Accept delay
@@ -191,7 +191,7 @@ struct PgpEvrStatus {
    uint32_t  linkUp;
 
    //! EVR running status, 0 = stopped, 1 = running
-   uint32_t  runStatus;
+   uint32_t  runStatus;    // 1 = Running, 0 = Stopped
 
    //! Current distributed timing seconds value
    uint32_t  evrSeconds;
