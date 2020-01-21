@@ -6,7 +6,7 @@
  * Created    : 2016-08-08
  * ----------------------------------------------------------------------------
  * Description:
- * Defintions and inline functions for interacting drivers.
+ * Definitions and inline functions for interacting drivers.
  * ----------------------------------------------------------------------------
  * This file is part of the aes_stream_drivers package. It is subject to 
  * the license terms in the LICENSE.txt file found in the top-level directory 
@@ -411,6 +411,27 @@ static inline ssize_t dmaReadRegister(int32_t fd, uint32_t address, uint32_t *da
    if ( data != NULL ) *data = reg.data;
 
    return(res);
+}
+
+// Return user space mapping to a relative register space 
+static inline void * dmaMapRegister(int32_t fd, off_t offset, uint32_t size) {
+   uint32_t bCount;
+   uint32_t bSize;
+   off_t    intOffset;
+
+   bSize  = ioctl(fd,DMA_Get_Buff_Size,0);
+   bCount = ioctl(fd,DMA_Get_Buff_Count,0);
+
+   intOffset = (bSize * bCount) + offset;
+
+   // Attempt to map
+   return(mmap (0, size, PROT_READ | PROT_WRITE, MAP_SHARED, fd, intOffset));
+}
+
+// Free space mapping to dma buffers
+static inline ssize_t dmaUnMapRegister(int32_t fd, void *ptr, uint32_t size) {
+   munmap (ptr, size);
+   return(0);
 }
 
 #endif

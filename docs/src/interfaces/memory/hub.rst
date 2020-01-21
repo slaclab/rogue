@@ -5,13 +5,13 @@ Memory Hub Example
 ==================
 
 The memory Hub interfaces between an upstream memory Master object and a downstream Memory
-slave oject. The Hub can be used to group Masters together with a common offset, as is done 
+slave object. The Hub can be used to group Masters together with a common offset, as is done 
 in the pyrogue.Device class. It can also be used to manipulate a memory bus transaction.
 
 In this example we service incoming read and write requests and forward them to a memory
 slave which implements a paged memory space. This means there is a write register for the 
 address (0x100), a write register for the write data (0x104), and a read register for 
-read data (0x108). This example is not very effeciant in that it only allows a single 
+read data (0x108). This example is not very efficient in that it only allows a single 
 transaction to be executed at a time.
 
 See :ref:`interfaces_memory_hub` for more detail on the Hub class.
@@ -20,7 +20,7 @@ Python Raw Hub Example
 ======================
 
 Below is an example of creating a raw Hub device which translates memory
-transctions in Python. 
+transactions in Python. 
 
 .. code-block:: python
 
@@ -53,7 +53,7 @@ transctions in Python.
                with transaction.lock():
 
                    # Put address into byte array, we do this because we will
-                   # need to pass it as the data field of a transation later
+                   # need to pass it as the data field of a transaction later
                    # The address the HUB sees is always relative, not absolute
                    addr = transaction.address().to_bytes(4, 'little', signed=False)
 
@@ -120,7 +120,7 @@ Python Device Hub Example
 
 Below is an example of implementing the above example in a Device subclass. This allows 
 the Hub to interact in a standard PyRogue tree. It will have its own base address and
-size in the downstream address map, but expose a seperate upstream address map for
+size in the downstream address map, but expose a separate upstream address map for
 translated transactions. More information about the Device class is included at TBD.
 
 .. code-block:: python
@@ -149,7 +149,7 @@ translated transactions. More information about the Device class is included at 
                              enableDeps=enableDeps, size=12, hubMin=4, hubMax=4)
 
         # Same code from previous section with the exception that the existing Device
-        # lock is used instead of a seperate lock as above.
+        # lock is used instead of a separate lock as above.
         def _doTransaction(self,transaction):
 
             # First lock the memory space to avoid
@@ -187,7 +187,7 @@ C++ Raw Hub Example
 ===================
 
 Below is an example of creating a raw Hub device which translates memory
-transctions in C++.
+transactions in C++.
 
 .. code-block:: c
 
@@ -287,10 +287,10 @@ A few notes on the above examples.
 
 The incoming transaction source thread will be stalled as we wait
 on the downstream transaction to complete. It may be better to queue the transaction and service
-it with a seperate thread. Also in the C++ example the original data buffer is passed to the
+it with a separate thread. Also in the C++ example the original data buffer is passed to the
 new transaction. This requires that the lock be held on the transaction until the downstream
 transaction is complete. Instead it may be better to create a new buffer and copy the data
 as is done in the Python example. See the :ref:`interfaces_memory_slave_ex` example for
-ways to store and later retrive the Transaction record while the downstream transaction is
+ways to store and later retrieve the Transaction record while the downstream transaction is
 in progress.
 

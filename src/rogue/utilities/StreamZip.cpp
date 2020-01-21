@@ -87,7 +87,7 @@ void ru::StreamZip::acceptFrame ( ris::FramePtr frame ) {
       if ( (ret = BZ2_bzCompress(&strm,(done)?BZ_FINISH:BZ_RUN)) == BZ_SEQUENCE_ERROR )
          throw(rogue::GeneralError::create("StreamZip::acceptFrame","Compression runtime error %i",ret));
 
-      // Update read buffer if neccessary
+      // Update read buffer if necessary
       if ( strm.avail_in == 0 && (!done)) {
          if ( ++rBuff != frame->endBuffer()) {
             strm.next_in  = (char *)(*rBuff)->begin();
@@ -96,7 +96,7 @@ void ru::StreamZip::acceptFrame ( ris::FramePtr frame ) {
          else done = true;
       }
 
-      // Update write buffer if neccessary
+      // Update write buffer if necessary
       if ( strm.avail_out == 0 ) {
 
          // We ran out of room, double the frame size, should not happen

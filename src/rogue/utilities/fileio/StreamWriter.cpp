@@ -13,7 +13,7 @@
  *    write to a common data file. The data file is a series of banks.
  *    Each bank has a channel and frame flags. The channel is per source and the
  *    lower 24 bits of the frame flags are used as the flags.
- *    The bank is preceeded by 2 - 32-bit headers to indicate bank information
+ *    The bank is proceeded by 2 - 32-bit headers to indicate bank information
  *    and length:
  *
  *       headerA:
@@ -292,7 +292,7 @@ void ruf::StreamWriter::intWrite(void *data, uint32_t size) {
    if ( (size + currBuffer_) > buffSize_ ) flush();
 
    // Attempted write is larger than buffer, raw write
-   // This is called if bufer is disabled
+   // This is called if buffer is disabled
    if ( size > buffSize_ ) {
       if (write(fd_,data,size) != (int32_t)size) {
          ::close(fd_);

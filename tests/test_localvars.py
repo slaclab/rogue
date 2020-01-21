@@ -1,4 +1,13 @@
 #!/usr/bin/env python3
+#-----------------------------------------------------------------------------
+# This file is part of the rogue software platform. It is subject to
+# the license terms in the LICENSE.txt file found in the top-level directory
+# of this distribution and at:
+#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+# No part of the rogue software platform, including this file, may be
+# copied, modified, propagated, or distributed except according to the terms
+# contained in the LICENSE.txt file.
+#-----------------------------------------------------------------------------
 
 import pyrogue
 
@@ -61,7 +70,7 @@ class myDevice(pyrogue.Device):
             disp=['on', 'off'],
             value=0))
 
-        # Try to define a variable without value, which should riase an exception
+        # Try to define a variable without value, which should raise an exception
         try:
             self.add(pyrogue.LocalVariable(
                 name='var_without_value'))
@@ -137,7 +146,7 @@ def test_local_root():
             if result_enum != test_enum:
                 raise AssertionError('Enum value set to \"{}\", but enum value read back was \"{}\"'.format(test_enum, result_enum))
 
-        # Test RW a link variable holding an scalue value
+        # Test RW a link variable holding an scalar value
         test_value=5.6
         root.myDevice.var_link.set(test_value)
         test_result=root.myDevice.var_link.get()
@@ -157,7 +166,7 @@ def test_local_root():
         if poll_read != poll_set:
             raise AssertionError('Poll Interval was set to {} was was read back as {}'. format(poll_set,poll_read))
 
-        # Verify that minmum and maximum readbacks are correct
+        # Verify that minimum and maximum readbacks are correct
         min_read=root.myDevice.var_with_properties.minimum
         if min_read != min_set:
             raise AssertionError('Minimum was set to {} but was read as {}'.format(min_set, min_read))

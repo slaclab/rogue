@@ -120,7 +120,7 @@ uint32_t rpr::Server::getDropCount() {
    return(cntl_->getDropCount());
 }
 
-//! Get Retran Count
+//! Get Retransmit Count
 uint32_t rpr::Server::getRetranCount() {
    return(cntl_->getRetranCount());
 }

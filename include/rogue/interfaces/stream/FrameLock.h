@@ -32,8 +32,8 @@ namespace rogue {
          /**
           * The FrameLock is a container for holding a lock on Frame data while accessing that
           * data. This lock allows multiple stream Slave objects to read and update Frame data
-          * while ensuring only one thread is updating at a time. The lock is relased when
-          * the FrameLock object is destroyed. The FrameLock oject is never created directly,
+          * while ensuring only one thread is updating at a time. The lock is released when
+          * the FrameLock object is destroyed. The FrameLock object is never created directly,
           * instead it is returned by the Frame::lock() method.
           */
          class FrameLock {

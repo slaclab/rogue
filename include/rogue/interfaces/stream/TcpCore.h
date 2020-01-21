@@ -32,7 +32,7 @@ namespace rogue {
 
          //! Stream TCP Bridge Core
          /** This class implements the core functionality of the TcpClient and TcpServer
-          * classes which implment a Rogue stream bridge over a TCP network. This core
+          * classes which implement a Rogue stream bridge over a TCP network. This core
           * can operation in either client or server mode. The TcpClient and TcpServer
           * classes are thin wrapper which define which mode flag to pass to this base
           * class.
@@ -82,7 +82,7 @@ namespace rogue {
                 * address can either be an IP address or hostname. When running in server
                 * mode the address string defines which network interface the socket server
                 * will listen on. A string of "*" results in all network interfaces being
-                * listened on. The stream bridge requires two TCP ports. The pased port is the 
+                * listened on. The stream bridge requires two TCP ports. The passed port is the 
                 * base number of these two ports. A passed value of 8000 will result in both
                 * 8000 and 8001 being used by this bridge.
                 *

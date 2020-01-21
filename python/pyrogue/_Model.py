@@ -231,7 +231,7 @@ class Fixed(Model):
         self.signed = signed
         self.endianness = endianness
 
-        # Precompute max and min allowable values
+        # Pre-compute max and min allowable values
         if signed:
             self.maxValue = math.pow(2, (bitSize-binPoint))/2-1
             self.minValue = -1.0 * self.maxValue + 1

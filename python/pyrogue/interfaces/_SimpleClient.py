@@ -5,13 +5,13 @@
 # File       : pyrogue/interfaces/_SimpleClient.py
 # Created    : 2017-05-16
 #
-# To use in matlab first you need both the zmq and jsonpickle package in your
-# python insallation:
+# To use in Matlab first you need both the zmq and jsonpickle package in your
+# python installation:
 #
 # > pip install zmq
 # > pip install matlab
 #
-# You then need to set the appropriate flags in matlab to load the zmq module:
+# You then need to set the appropriate flags in Matlab to load the zmq module:
 #
 # >> py.sys.setdlopenflags(int32(bitor(2, 8)));
 #

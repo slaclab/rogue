@@ -22,7 +22,7 @@ enter the text *Ubuntu*. Select the *Ubuntu 18.04* icon (or higher version
 when available) and install the package.
 
 Once installation is complete you can find Ubuntu on the main menu as *Ubuntu 18.04*. A bash text
-window will open with an ubuntu bash prompt.
+window will open with an Ubuntu bash prompt.
 
 After first installation you will want to run the following command to setup 
 the display environment.

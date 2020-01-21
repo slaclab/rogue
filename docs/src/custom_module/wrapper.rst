@@ -4,7 +4,7 @@
 Wrapping Custom Module With PyRogue Device
 ==========================================
 
-The following demonstrates the implemenation of a PyRogue Device wrapper for
+The following demonstrates the implementation of a PyRogue Device wrapper for
 the classes contained within the :ref:`custom_sourcefile`. The variables and commands
 associated with the custom module are exposed to the PyRogue management layer. This
 file can be created as MyWrapper.py and included in the same python directory as
