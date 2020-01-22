@@ -21,6 +21,7 @@
 #include <thread>
 #include <mutex>
 #include <stdint.h>
+#include <rogue/Queue.h>
 #include <rogue/Logging.h>
 
 namespace rogue {
@@ -42,6 +43,15 @@ namespace rogue {
 
                // Logging
                std::shared_ptr<rogue::Logging> log_;
+
+               std::thread* thread_;
+               bool threadEn_;
+
+               //! Thread background
+               void runThread();
+
+               // Queue
+               rogue::Queue<std::shared_ptr<rogue::interfaces::memory::Transaction>> queue_;
 
             public:
 
