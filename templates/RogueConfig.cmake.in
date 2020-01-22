@@ -49,6 +49,7 @@ if ( NOT NO_PYTHON )
    set(BOOST_ROOT:PATHNAME $ENV{BOOST_PATH})
 
    # First try standard suffix for boost
+   message("Looking for boost/python3")
    find_package(Boost 1.58 QUIET COMPONENTS system thread python3)
 
    # Next try boost/python38
@@ -113,7 +114,7 @@ if (NOT ZeroMQ_FOUND)
    # Found it
    if (ZeroMQ_LIBRARY) 
 
-      # Get the base diretory
+      # Get the base directory
       get_filename_component(ZMQ_LIBDIR ${ZeroMQ_LIBRARY} DIRECTORY)
 
       # See if we can find the header in a relative path
@@ -133,52 +134,54 @@ if (NOT ZeroMQ_FOUND)
 endif()
 
 #####################################
-# Optional EPICS V3
+# EPICS V3
 #####################################
 if((NOT NO_PYTHON) AND (NOT NO_EPICS) AND DEFINED ENV{EPICS_BASE})
    set(DO_EPICS_V3 1)
-   set(EPICSV3_BASE_DIR $ENV{EPICS_BASE})
+   set(EPICS_BASE_DIR $ENV{EPICS_BASE})
    if(DEFINED ENV{EPICS_HOST_ARCH})
-       set(EPICSV3_ARCH $ENV{EPICS_HOST_ARCH})
+       set(EPICS_ARCH $ENV{EPICS_HOST_ARCH})
    else()
-       execute_process(COMMAND ${EPICSV3_BASE_DIR}/startup/EpicsHostArch 
-                       OUTPUT_VARIABLE EPICSV3_ARCH OUTPUT_STRIP_TRAILING_WHITESPACE)
-       string(REGEX REPLACE "\n$" "" EPICSV3_ARCH "${EPICSV3_ARCH}")
+       execute_process(COMMAND ${EPICS_BASE_DIR}/startup/EpicsHostArch 
+                       OUTPUT_VARIABLE EPICS_ARCH OUTPUT_STRIP_TRAILING_WHITESPACE)
+       string(REGEX REPLACE "\n$" "" EPICS_ARCH "${EPICS_ARCH}")
    endif()
 
    # PCAS is part of epics before version 4
-   if(DEFINED ENV{EPICS_PCAS_ROOT})
-      set(EPICSV3_PCAS_DIR $ENV{EPICS_PCAS_ROOT})
+   if(EPICS_PCAS_ROOT)
+      set(EPICS_PCAS_DIR ${EPICS_PCAS_ROOT})
+   elseif(DEFINED ENV{EPICS_PCAS_ROOT})
+      set(EPICS_PCAS_DIR $ENV{EPICS_PCAS_ROOT})
    else()
-      set(EPICSV3_PCAS_DIR $ENV{EPICS_BASE})
+      set(EPICS_PCAS_DIR $ENV{EPICS_BASE})
    endif()
 
    # See if we can find the pcas header, may not exist if epics 7 without pcas is installed
-   find_path(E3_TEST_INCLUDE_DIR NAMES casdef.h PATHS ${EPICSV3_PCAS_DIR}/include)
+   find_path(E3_TEST_INCLUDE_DIR NAMES casdef.h PATHS ${EPICS_PCAS_DIR}/include)
    if (NOT E3_TEST_INCLUDE_DIR)
       set(DO_EPICS_V3 0)
    elseif(APPLE)
 
-      set(EPICSV3_INCLUDES  ${EPICSV3_PCAS_DIR}/include
-                            ${EPICSV3_BASE_DIR}/include
-                            ${EPICSV3_BASE_DIR}/include/compiler/gcc 
-                            ${EPICSV3_BASE_DIR}/include/os/Darwin)
+      set(EPICS_INCLUDES    ${EPICS_PCAS_DIR}/include
+                            ${EPICS_BASE_DIR}/include
+                            ${EPICS_BASE_DIR}/include/compiler/gcc 
+                            ${EPICS_BASE_DIR}/include/os/Darwin)
 
-      set(EPICSV3_LIBRARIES ${EPICSV3_PCAS_DIR}/lib/${EPICSV3_ARCH}/libcas.dylib 
-                            ${EPICSV3_PCAS_DIR}/lib/${EPICSV3_ARCH}/libgdd.dylib
-                            ${EPICSV3_BASE_DIR}/lib/${EPICSV3_ARCH}/libca.dylib 
-                            ${EPICSV3_BASE_DIR}/lib/${EPICSV3_ARCH}/libCom.dylib )
+      set(EPICS_LIBRARIES   ${EPICS_PCAS_DIR}/lib/${EPICS_ARCH}/libcas.dylib 
+                            ${EPICS_PCAS_DIR}/lib/${EPICS_ARCH}/libgdd.dylib
+                            ${EPICS_BASE_DIR}/lib/${EPICS_ARCH}/libca.dylib 
+                            ${EPICS_BASE_DIR}/lib/${EPICS_ARCH}/libCom.dylib )
    else()
 
-      set(EPICSV3_INCLUDES  ${EPICSV3_PCAS_DIR}/include
-                            ${EPICSV3_BASE_DIR}/include
-                            ${EPICSV3_BASE_DIR}/include/compiler/gcc 
-                            ${EPICSV3_BASE_DIR}/include/os/Linux)
+      set(EPICS_INCLUDES    ${EPICS_PCAS_DIR}/include
+                            ${EPICS_BASE_DIR}/include
+                            ${EPICS_BASE_DIR}/include/compiler/gcc 
+                            ${EPICS_BASE_DIR}/include/os/Linux)
 
-      set(EPICSV3_LIBRARIES ${EPICSV3_PCAS_DIR}/lib/${EPICSV3_ARCH}/libcas.so 
-                            ${EPICSV3_PCAS_DIR}/lib/${EPICSV3_ARCH}/libgdd.so
-                            ${EPICSV3_BASE_DIR}/lib/${EPICSV3_ARCH}/libca.so 
-                            ${EPICSV3_BASE_DIR}/lib/${EPICSV3_ARCH}/libCom.so )
+      set(EPICS_LIBRARIES   ${EPICS_PCAS_DIR}/lib/${EPICS_ARCH}/libcas.so 
+                            ${EPICS_PCAS_DIR}/lib/${EPICS_ARCH}/libgdd.so
+                            ${EPICS_BASE_DIR}/lib/${EPICS_ARCH}/libca.so 
+                            ${EPICS_BASE_DIR}/lib/${EPICS_ARCH}/libCom.so )
    endif()
 else()
    set(DO_EPICS_V3 0)
@@ -196,13 +199,13 @@ endif()
 # ${ZeroMQ_LIBRARY}
 # ${BZIP2_INCLUDE_DIR}
 # ${BZIP2_LIBRARIES}
-# ${EPICSV3_INCLUDES})
-# ${EPICSV3_LIBRARIES})
+# ${EPICS_INCLUDES})
+# ${EPICS_LIBRARIES})
 
 # Rogue Include paths
 set(ROGUE_INCLUDE_ONLY @CONF_INCLUDE_DIRS@)
 
-# Rogue librarires
+# Rogue libraries
 set(ROGUE_LIBRARIES_ONLY @CONF_LIBRARIES@)
 
 # Rogue Include paths
@@ -212,15 +215,15 @@ set(ROGUE_INCLUDE_DIRS @CONF_INCLUDE_DIRS@
                        ${Python3_NumPy_INCLUDE_DIRS}
                        ${ZeroMQ_INCLUDE_DIR}
                        ${BZIP2_INCLUDE_DIR}
-                       ${EPICSV3_INCLUDES})
+                       ${EPICS_INCLUDES})
 
-# Rogue librarires
+# Rogue libraries
 set(ROGUE_LIBRARIES @CONF_LIBRARIES@
                     ${Boost_LIBRARIES}
                     ${PYTHON_LIBRARIES}
                     ${ZeroMQ_LIBRARY}
                     ${BZIP2_LIBRARIES}
-                    ${EPICSV3_LIBRARIES})
+                    ${EPICS_LIBRARIES})
 
 # Set Version
 set(ROGUE_VERSION @ROGUE_VERSION@)
@@ -252,7 +255,8 @@ endif()
 message("")
 
 if (DO_EPICS_V3)
-   message("-- Found EPICS: ${EPICSV3_PCAS_DIR}")
+   message("-- Found EPICS: ${EPICS_BASE_DIR}")
+   message("-- Found PCAS:  ${EPICS_PCAS_DIR}")
 else()
    message("-- EPICS V3 not included!")
 endif()

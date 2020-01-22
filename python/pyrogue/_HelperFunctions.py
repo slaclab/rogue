@@ -26,7 +26,14 @@ def addLibraryPath(path):
     Passed strings can either be relative: ../path/to/library
     or absolute: /path/to/library
     """
-    base = os.path.dirname(sys.argv[0])
+    if len(sys.argv) == 0:
+        base = os.path.dirname(os.path.realpath(__file__))
+
+    else:
+        base = os.path.dirname(sys.argv[0])
+
+    # If script was not started with ./	    # If script was not started with ./
+    if base == '': base = '.'
 
     # If script was not started with ./
     if base == '': base = '.'
@@ -83,7 +90,7 @@ def streamConnect(source, dest):
     Connect source and destination stream devices.
     source is either a stream master sub class or implements
     the _getStreamMaster call to return a contained master.
-    Similiarly dest is either a stream slave sub class or implements
+    Similarly dest is either a stream slave sub class or implements
     the _getStreamSlave call to return a contained slave.
     """
 
@@ -116,7 +123,7 @@ def streamConnectBiDir(deviceA, deviceB):
     Connect source and destination stream devices.
     source is either a stream master sub class or implements
     the _getStreamMaster call to return a contained master.
-    Similiarly dest is either a stream slave sub class or implements
+    Similarly dest is either a stream slave sub class or implements
     the _getStreamSlave call to return a contained slave.
     """
 
@@ -137,7 +144,7 @@ def busConnect(source,dest):
     memory accesses. 
     source is either a memory master sub class or implements
     the _getMemoryMaster call to return a contained master.
-    Similiarly dest is either a memory slave sub class or implements
+    Similarly dest is either a memory slave sub class or implements
     the _getMemorySlave call to return a contained slave.
     """
 
@@ -178,7 +185,7 @@ def yamlToData(stream='',fName=None):
         elif fName is not None:
             filename = os.path.join(os.path.dirname(fName), rel)
 
-        # File is relative without a base path, assume cwd
+        # File is relative without a base path, assume cwd (Current working directory)
         else:
             filename = node
 

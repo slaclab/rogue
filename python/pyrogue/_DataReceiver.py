@@ -94,7 +94,7 @@ class DataReceiver(pr.Device,ris.Slave):
     def process(self,npArray):
         """ 
         The user can use this method to restructure the numpy array.
-        This may include seperating data, header and other payload sub-fields
+        This may include separating data, header and other payload sub-fields
         The user should track the max refresh rate using the self._lastTime variable.
         """
         doWrite = False

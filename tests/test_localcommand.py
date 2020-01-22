@@ -1,4 +1,13 @@
 #!/usr/bin/env python3
+# ----------------------------------------------------------------------------
+# This file is part of the rogue software platform. It is subject to 
+# the license terms in the LICENSE.txt file found in the top-level directory 
+# of this distribution and at: 
+#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
+# No part of the rogue software platform, including this file, may be 
+# copied, modified, propagated, or distributed except according to the terms 
+# contained in the LICENSE.txt file.
+# ----------------------------------------------------------------------------
 
 from time import time, sleep
 
@@ -14,7 +23,7 @@ class myDevice(pyrogue.Device):
         # This command calls _DelayFunction in the foreground
         self.add(pyrogue.LocalCommand(
             name='cmd_fg',
-            description='Commad running in the foreground',
+            description='Command running in the foreground',
             function=self._DelayFunction))
 
         # This command calls _DelayFunction in the background
@@ -47,7 +56,7 @@ def test_local_cmd():
         end=time()
         duration=end-start
         if duration < delay:
-            raise AssertionError('Comamnd running in foreground returned too soon: '
+            raise AssertionError('Command running in foreground returned too soon: '
                 'delay was set to {} s, and the command took {} s.'.format(delay, duration))
 
         # Test a local command running in the background
@@ -56,7 +65,7 @@ def test_local_cmd():
         end=time()
         duration=end-start
         if duration > delay:
-            raise AssertionError('Comamnd running in background returned too late: '
+            raise AssertionError('Command running in background returned too late: '
                 'delay was set to {} s, and the command took {} s.'.format(delay, duration))
 
 if __name__ == "__main__":

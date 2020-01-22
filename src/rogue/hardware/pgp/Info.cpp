@@ -36,7 +36,7 @@ rhp::InfoPtr rhp::Info::create() {
    return(r);
 }
 
-//! Return buildstring in string format
+//! Return `build string` in string format
 std::string rhp::Info::buildString() {
    return(std::string(buildStamp));
 }

@@ -80,7 +80,7 @@ class UartMemory(rogue.interfaces.memory.Slave):
                         self.serialPort.write(sendString)
                         response = self.readline() #self.serialPort.readline().decode('ASCII')
                         
-                        # If response is empty, a timeout occured
+                        # If response is empty, a timeout occurred
                         if len(response) == 0:
                             transaction.error(f'Empty transaction response (likely timeout) for transaction part {i}: {repr(sendString)}')
                             return
@@ -108,7 +108,7 @@ class UartMemory(rogue.interfaces.memory.Slave):
                         self.serialPort.write(sendString)
                         response = self.readline() #self.serialPort.readline().decode('ASCII')
 
-                        # If response is empty, a timeout occured
+                        # If response is empty, a timeout occurred
                         if len(response) == 0:
                             transaction.error(f'Empty transaction response (likely timeout) for transaction part {i}: {repr(sendString)}')
                             return

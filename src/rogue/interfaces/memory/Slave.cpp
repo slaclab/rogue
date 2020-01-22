@@ -262,7 +262,7 @@ void rim::Slave::lshiftPy ( boost::python::object p ) {
 
    // Success
    if ( mst != NULL ) mst->setSlave(shared_from_this());
-   else throw(rogue::GeneralError::create("memory::Slave::lshiftPy","Attempt to use << operator with incompatable memory master"));
+   else throw(rogue::GeneralError::create("memory::Slave::lshiftPy","Attempt to use << operator with incompatible memory master"));
 }
 
 #endif

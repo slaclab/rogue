@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 #-----------------------------------------------------------------------------
-# Title      : PyRogue PyDM Designer Plugin Load
+# Title      : PyRogue PyDM Designer Plug-in Load
 #-----------------------------------------------------------------------------
 # File       : pyrogue/pydm/rogue_plugin.py
 # Created    : 2019-09-18

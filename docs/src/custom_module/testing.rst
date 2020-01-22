@@ -136,7 +136,7 @@ In the first terminal:
 
 In the second terminal we generate two frames from epics. Commands in
 Rogue are exposed as Variables and a caput will initiate the Command
-executation. Since our MyFrameGen Command does not take an arg we
+execution. Since our MyFrameGen Command does not take an arg we
 pass a value of 0 to keep epics happy.
 
 .. code::
@@ -175,7 +175,7 @@ Testing With A GUI
 ==================
 
 In the last test we will add a locally attached GUI along with EPICS. This will allow
-you to experiment with how bot the GUI and EPICS can manipulate variables in parrallel.
+you to experiment with how bot the GUI and EPICS can manipulate variables in parallel.
 In this test we start the GUI in the main script with the core Rogue. It is also possible
 to start one or more remote GUIs. That process is described in TBD.
 

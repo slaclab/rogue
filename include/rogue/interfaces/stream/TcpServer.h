@@ -42,7 +42,7 @@ namespace rogue {
                /**The creator takes an address and port. The passed address can either be 
                 * an IP address or hostname. The address string  defines which network interface 
                 * the socket server will listen on. A string of "*" results in all network interfaces 
-                * being listened on. The stream bridge requires two TCP ports. The pased port is the 
+                * being listened on. The stream bridge requires two TCP ports. The passed port is the 
                 * base number of these two ports. A passed value of 8000 will result in both
                 * 8000 and 8001 being used by this bridge.
                 *

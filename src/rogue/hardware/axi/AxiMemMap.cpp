@@ -68,6 +68,7 @@ rha::AxiMemMap::~AxiMemMap() {
 
 //! Post a transaction
 void rha::AxiMemMap::doTransaction(rim::TransactionPtr tran) {
+   rogue::GilRelease noGil;
    queue_.push(tran);
 }
 
@@ -112,7 +113,7 @@ void rha::AxiMemMap::runThread() {
          while ( (ret == 0) && (count != tran->size()) ) {
             if (tran->type() == rim::Write || tran->type() == rim::Post) {
 
-               // Assume transaction has a contigous memory block
+               // Assume transaction has a contiguous memory block
                std::memcpy(ptr,it,dataSize);
                ret = dmaWriteRegister(fd_,tran->address()+count,data);
             }

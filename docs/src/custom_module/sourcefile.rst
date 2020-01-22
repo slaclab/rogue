@@ -6,7 +6,7 @@ Custom Module Source
 
 The following is an example source code file for a custom module which implements
 a custom stream transmitter and receiver as described in stream interfaces
-documenation. This source code expands the example to expose status variables
+documentation. This source code expands the example to expose status variables
 to the Python layer. Instructions for wrapping these modules in PyRogue Devices
 are included in :ref:`custom_wrapper`.
 
@@ -57,7 +57,7 @@ This module is compiled with the :ref:`custom_makefile` described in this sectio
             byteCount_  = 0;
          }
 
-         // Receve a frame
+         // Receive a frame
          void acceptFrame ( boost::shared_ptr<rogue::interfaces::stream::Frame> frame ) {
 
             // Acquire lock on frame. Will be release when lock class goes out of scope

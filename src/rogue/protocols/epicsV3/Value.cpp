@@ -147,7 +147,7 @@ void rpe::Value::initGdd(std::string typeStr, bool isEnum, uint32_t count) {
 
    // Unknown type maps to string
    if ( epicsType_ == aitEnumInvalid ) {
-      log_->info("Detected unknow type for %s typeStr=%s. I wil be map to string.", epicsName_.c_str(),typeStr.c_str());
+      log_->info("Detected unknown type for %s typeStr=%s. It will be mapped to a string.", epicsName_.c_str(),typeStr.c_str());
       epicsType_ = aitEnumString;
    }
 

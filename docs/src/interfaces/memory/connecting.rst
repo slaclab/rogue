@@ -19,7 +19,7 @@ A memory master and slave are connected using the following commands in python:
    # Connections can also go in the reverse order
    srpV3 << hubB << masterB
 
-The equivelent code in C++ is show below:
+The equivalent code in C++ is show below:
 
 .. code-block:: c
 

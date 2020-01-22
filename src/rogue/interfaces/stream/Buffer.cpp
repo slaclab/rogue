@@ -93,7 +93,7 @@ void ris::Buffer::adjustHeader(int32_t value) {
    // Make adjustment
    headRoom_ += value;
 
-   // Payload can never be less than headeroom
+   // Payload can never be less than headroom
    if ( payload_ < headRoom_ ) payload_ = headRoom_;
 
    ris::FramePtr tmpPtr;

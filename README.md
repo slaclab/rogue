@@ -6,7 +6,7 @@
 # rogue
 SLAC Python Based Hardware Abstraction &amp; Data Acquisition System
 
-*Current documenation can be found at:*
+*Current documentation can be found at:*
 
    https://slaclab.github.io/rogue/
 
@@ -24,7 +24,7 @@ Instructions for getting and installing Rogue can be found here:
 
 https://slaclab.github.io/rogue/installing/index.html
 
-# Anaconda Quickstart
+# Anaconda Quick-start
 
 The following is how you install the latest released version of Rogue with anaconda. See above linked instructions for more details.
 
@@ -41,4 +41,5 @@ The following is how you install the development version (pre-release) or Rogue 
    $ conda create -n rogue_pre -c tidair-packages -c conda-forge -c pydm-tag -c tidair-dev rogue
 
 ```
+
 

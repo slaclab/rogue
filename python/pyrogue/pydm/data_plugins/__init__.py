@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 #-----------------------------------------------------------------------------
-# Title      : PyRogue PyDM data plugin package
+# Title      : PyRogue PyDM data plug-in package
 #-----------------------------------------------------------------------------
 # File       : pyrogue/pydm/data_plugins/__init__.py
 # Created    : 2019-09-18
