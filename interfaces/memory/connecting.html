@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Connecting Memory Elements &mdash; Rogue v4.7.0-45-gcf223948 documentation</title>
+  <title>Connecting Memory Elements &mdash; Rogue v4.8.0-1-g62034bef documentation</title>
   
 
   
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                v4.7.0
+                v4.8.0
               </div>
             
           
@@ -186,8 +186,8 @@
 <span class="n">srpV3</span> <span class="o">&lt;&lt;</span> <span class="n">hubB</span> <span class="o">&lt;&lt;</span> <span class="n">masterB</span>
 
 <span class="c1"># Alternatively a helper function can be used</span>
-<span class="n">pyrogue</span><span class="o">.</span><span class="n">streamConnect</span><span class="p">(</span><span class="n">masterA</span><span class="p">,</span> <span class="n">hubA</span><span class="p">)</span>
-<span class="n">pyrogue</span><span class="o">.</span><span class="n">streamConnect</span><span class="p">(</span><span class="n">hubA</span><span class="p">,</span> <span class="n">srpV3</span><span class="p">)</span>
+<span class="n">pyrogue</span><span class="o">.</span><span class="n">busConnect</span><span class="p">(</span><span class="n">masterA</span><span class="p">,</span> <span class="n">hubA</span><span class="p">)</span>
+<span class="n">pyrogue</span><span class="o">.</span><span class="n">busConnect</span><span class="p">(</span><span class="n">hubA</span><span class="p">,</span> <span class="n">srpV3</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>The equivalent code in C++ is show below:</p>
@@ -200,8 +200,8 @@
 <span class="o">*</span><span class="p">(</span> <span class="o">*</span><span class="n">srpV3</span> <span class="o">&lt;&lt;</span> <span class="n">hubB</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="n">masterB</span><span class="p">;</span>
 
 <span class="c1">// Alternatively a helper function can be used</span>
-<span class="n">rogueStreamConnect</span><span class="p">(</span><span class="n">masterA</span><span class="p">,</span> <span class="n">hubA</span><span class="p">)</span>
-<span class="n">rogueStreamConnect</span><span class="p">(</span><span class="n">hubA</span><span class="p">,</span> <span class="n">srpV3</span><span class="p">)</span>
+<span class="n">roguebusConnect</span><span class="p">(</span><span class="n">masterA</span><span class="p">,</span> <span class="n">hubA</span><span class="p">)</span>
+<span class="n">roguebusConnect</span><span class="p">(</span><span class="n">hubA</span><span class="p">,</span> <span class="n">srpV3</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>

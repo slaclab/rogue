@@ -20,8 +20,8 @@ A memory master and slave are connected using the following commands in python:
    srpV3 << hubB << masterB
 
    # Alternatively a helper function can be used
-   pyrogue.streamConnect(masterA, hubA)
-   pyrogue.streamConnect(hubA, srpV3)
+   pyrogue.busConnect(masterA, hubA)
+   pyrogue.busConnect(hubA, srpV3)
 The equivalent code in C++ is show below:
 
 
@@ -36,6 +36,6 @@ The equivalent code in C++ is show below:
    *( *srpV3 << hubB) << masterB;
 
    // Alternatively a helper function can be used
-   rogueStreamConnect(masterA, hubA)
-   rogueStreamConnect(hubA, srpV3)
+   roguebusConnect(masterA, hubA)
+   roguebusConnect(hubA, srpV3)
 
