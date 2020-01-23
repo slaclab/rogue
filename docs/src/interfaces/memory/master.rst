@@ -39,7 +39,7 @@ Below is an example class which will initiate a read followed by a write.
             ba = bytearray(4)
 
             # Clear any existing errors
-            self._setError(0)
+            self._clearError()
 
             # Start read transaction from address into bytearray
             # size = 4, byte array offset = 0
@@ -49,7 +49,7 @@ Below is an example class which will initiate a read followed by a write.
             _waitTransaction(id)
 
             # Check transaction result
-            if self._getError() != 0:
+            if self._getError() != "":
                 print("got error")
                 return False
 
@@ -66,7 +66,7 @@ Below is an example class which will initiate a read followed by a write.
             self._waitTransaction(id)
 
             # Check transaction result
-            self.if _getError() != 0:
+            self.if _getError() != "":
                 print("got error")
                 return False
             else:
@@ -102,7 +102,7 @@ The equivalent code in C++ is show below:
             uint32_t id;
 
             // Clear any existing errors
-            this->setError(0);
+            this->clearError();
 
             // Start read transaction, size=4
             id = this->reqTransaction(address, 4, &rValue, rogue::interfaces::memory::Read);
@@ -111,7 +111,7 @@ The equivalent code in C++ is show below:
             this->waitTransaction(id)
 
             // Check transaction result
-            if ( this->getError() != 0 ) {
+            if ( this->getError() != "" ) {
                 printf("got error\n");
                 return false;
             }
@@ -126,7 +126,7 @@ The equivalent code in C++ is show below:
             this->waitTransaction(id)
 
             // Check transaction result
-            if ( this->getError() != 0 ) {
+            if ( this->getError() != "" ) {
                 printf("got error\n");
                 return false;
             } else return true;
