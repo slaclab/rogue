@@ -41,11 +41,8 @@ class UdpRssiPack(pr.Device):
         else:
             self._pack = rogue.protocols.packetizer.Core(enSsi)
 
-        self._udp._setSlave(self._rssi.transport())
-        self._rssi.transport()._setSlave(self._udp)
-
-        self._rssi.application()._setSlave(self._pack.transport())
-        self._pack.transport()._setSlave(self._rssi.application())
+        self._udp == self._rssi.transport()
+        self._rssi.application() == self._pack.transport()
 
         self._rssi.start()
 
@@ -295,6 +292,6 @@ class UdpRssiPack(pr.Device):
         self._rssi.stop()
 
         # This Device may not necessarily be added to a tree
-        # So check if it has a perent first
+        # So check if it has a parent first
         if self.parent is not None:
             self.rssiOpen.get()

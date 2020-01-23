@@ -64,12 +64,12 @@ Python AxiStreamDma Example
 C++ AxiStreamDma Example
 ========================
 
-The equivelent code in C++ is show below:
+The equivalent code in C++ is show below:
 
 .. code-block:: c
 
    #include <rogue/hardware/axi/AxiStreamDma.h>
-   #include <rogue/ptotocols/srp/SrpV3.h>
+   #include <rogue/protocols/srp/SrpV3.h>
 
    // First attach to destination 0 for register traffic, ssi enabled
    rogue::hardware::axi::AxiStreamDmaPtr regChan = rogue::hardware::axi::AxiStreamDma::create("/dev/datadev_0", 0, true);

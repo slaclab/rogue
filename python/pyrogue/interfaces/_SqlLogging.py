@@ -129,12 +129,12 @@ class SqlReader(object):
         self._logTable = sqlalchemy.Table('syslog', self._metadata, autoload=True)
         self._conn = conn
 
-    # Make this more usefull
+    # Make this more useful
     def getVariable(self):
         r = self._conn.execute(sqlalchemy.select([self._varTable]))
         print(r.fetchall())
 
-    # Make this more usefull
+    # Make this more useful
     def getSyslog(self, syslogData):
         r = self._conn.execute(sqlalchemy.select([self._logTable]))
         print(r.fetchall())

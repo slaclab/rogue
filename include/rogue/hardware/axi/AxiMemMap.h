@@ -21,6 +21,7 @@
 #include <thread>
 #include <mutex>
 #include <stdint.h>
+#include <rogue/Queue.h>
 #include <rogue/Logging.h>
 
 namespace rogue {
@@ -32,7 +33,7 @@ namespace rogue {
           * of the AES Stream Drivers device drivers. This bridge allows for read and
           * write transactions to PCI Express boards (using the data_dev driver)
           * or Zynq AXI4 register space (using the rce_memmap driver). The driver
-          * controls which space is availablet to the user. Multiple AxiMemMap classes
+          * controls which space is available to the user. Multiple AxiMemMap classes
           * are allowed to be attached to the driver at the same time.
           */
          class AxiMemMap : public rogue::interfaces::memory::Slave {
@@ -42,6 +43,15 @@ namespace rogue {
 
                // Logging
                std::shared_ptr<rogue::Logging> log_;
+
+               std::thread* thread_;
+               bool threadEn_;
+
+               //! Thread background
+               void runThread();
+
+               // Queue
+               rogue::Queue<std::shared_ptr<rogue::interfaces::memory::Transaction>> queue_;
 
             public:
 

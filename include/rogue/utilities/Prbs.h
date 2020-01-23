@@ -93,6 +93,9 @@ namespace rogue {
             //! Send count
             bool       sendCount_;
 
+            //! Receive enable
+            bool       rxEnable_;
+
             // Stats
             uint32_t lastRxCount_;
             uint32_t lastRxBytes_;
@@ -159,6 +162,12 @@ namespace rogue {
             //! Disable auto generation
             void disable();
 
+            //! Get rx enable
+            bool getRxEnable();
+
+            //! Set rx enable
+            void setRxEnable(bool);
+
             //! Get rx errors
             uint32_t getRxErrors();
 
@@ -202,7 +211,7 @@ namespace rogue {
             void acceptFrame ( std::shared_ptr<rogue::interfaces::stream::Frame> frame );
       };
 
-      // Convienence
+      // Convenience
       typedef std::shared_ptr<rogue::utilities::Prbs> PrbsPtr;
 
    }

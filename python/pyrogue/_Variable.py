@@ -299,7 +299,7 @@ class BaseVariable(pr.Node):
     def addListener(self, listener):
         """
         Add a listener Variable or function to call when variable changes. 
-        This is usefull when chaining variables together. (adc conversions, etc)
+        This is useful when chaining variables together. (ADC conversions, etc)
         The variable and value class are passed as an arg: func(path,varValue)
         """
         if isinstance(listener, BaseVariable):
@@ -482,7 +482,7 @@ class BaseVariable(pr.Node):
             self.setDisp(self._default, write=False)
 
     def _updatePollInterval(self):
-        if self._pollInterval > 0 and self.root is not None and self.root._pollQueue is not None:
+        if self.root is not None and self.root._pollQueue is not None:
             self.root._pollQueue.updatePollInterval(self)
 
     def _finishInit(self):
@@ -821,7 +821,7 @@ class LinkVariable(BaseVariable):
                 self.addDependency(d)
 
     def __getitem__(self, key):
-        # Allow dependencies to be accessed as indicies of self
+        # Allow dependencies to be accessed as indices of self
         return self.dependencies[key]
 
     @pr.expose

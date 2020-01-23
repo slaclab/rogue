@@ -88,9 +88,9 @@ class RootLogHandler(logging.Handler):
 class Root(rogue.interfaces.stream.Master,pr.Device):
     """
     Class which serves as the root of a tree of nodes.
-    The root is the interface point for tree level access and updats.
+    The root is the interface point for tree level access and updates.
     The root is a stream master which generates frames containing tree
-    configuration and status values. This allows confiuration and status
+    configuration and status values. This allows configuration and status
     to be stored in data files.
     """
 
@@ -143,7 +143,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         self._sqlExcGroups    = sqlExcGroups
         self._doHeartbeat     = True # Backdoor flag
 
-        # Create log listener to add to systemlog variable
+        # Create log listener to add to SystemLog variable
         formatter = logging.Formatter("%(msg)s")
         handler = RootLogHandler(root=self)
         handler.setLevel(logging.ERROR)
@@ -182,7 +182,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                  description='Rogue Library Directory'))
 
         self.add(pr.LocalVariable(name='SystemLog', value=SystemLogInit, mode='RO', hidden=True, groups=['NoStream','NoSql','NoState'],
-            description='String containing newline seperated system logic entries'))
+            description='String containing newline separated system logic entries'))
 
         self.add(pr.LocalVariable(name='ForceWrite', value=False, mode='RW', hidden=True,
             description='Configuration Flag To Always Write Non Stale Blocks For WriteAll, LoadConfig and setYaml'))
@@ -249,7 +249,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                                  description='Generate a count reset to each device in the tree'))
 
         self.add(pr.LocalCommand(name='ClearLog', function=self._clearLog, hidden=True,
-                                 description='Clear the message log cntained in the SystemLog variable'))
+                                 description='Clear the message log contained in the SystemLog variable'))
 
         self.add(pr.LocalCommand(name='SetYamlConfig', value='', 
                                  function=lambda arg: self.setYaml(yml=arg,
@@ -292,9 +292,9 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         if len(kwargs) != 0:
             print("")
             print("==========================================================")
-            print(" Passing startup args in start() method is now depcreated.")
-            print(" Startup args should now be passed to the root creator.")
-            print("    Example: pyrogue.Root(timeout=1.0, pollEn=True")
+            print(" Passing startup args in start() method is now deprecated.")
+            print(" Startup args should now be passed to the root creator.   ")
+            print("    Example: pyrogue.Root(timeout=1.0, pollEn=True)       ")
             print("==========================================================")
 
             # Override startup parameters if passed in start()
@@ -350,10 +350,11 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
             for key,value in self._nodes.items():
                 value._setTimeout(self._timeout)
 
-        # Server Start
+        # Start ZMQ server if enabled
         if self._serverPort is not None:
             self._zmqServer  = pr.interfaces.ZmqServer(root=self,addr="*",port=self._serverPort)
             self._serverPort = self._zmqServer.port()
+            print("start: Started zmqServer on port %d" % self._serverPort)
 
         # Start sql interface
         if self._sqlUrl is not None:
@@ -449,7 +450,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
     @contextmanager
     def updateGroup(self):
 
-        # At wtih call
+        # At with call
         self._updateQueue.put(True)
 
         # Return to block within with call
@@ -463,7 +464,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
     @contextmanager
     def pollBlock(self):
 
-        # At wtih call
+        # At with call
         self._pollQueue._blockIncrement()
 
         # Return to block within with call
@@ -515,6 +516,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
             with open(fname,'w') as f:
                 f.write("Path\t")
                 f.write("TypeStr\t")
+                f.write("MemBaseId\t")
                 f.write("Full Address\t")
                 f.write("Device Offset\t")
                 f.write("Mode\t")
@@ -527,6 +529,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                     if v.isinstance(pr.RemoteVariable):
                         f.write("{}\t".format(v.path))
                         f.write("{}\t".format(v.typeStr))
+                        f.write("{}\t".format(v._block.memBaseId))
                         f.write("{:#x}\t".format(v.address))
                         f.write("{:#x}\t".format(v.offset))
                         f.write("{}\t".format(v.mode))
@@ -604,8 +607,13 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         """
         Generate a frame containing all variables values in yaml format.
         A hardware read is not generated before the frame is generated.
-        Vlist can contain an optional list of variale paths to include in the
-        stream. If this list is not NULL only these variables will be included.
+        incGroups is a list of groups that the variable must be a member 
+        of in order to be included in the stream. excGroups is a list of 
+        groups that the variable must not be a member of to include. 
+        excGroups takes precedence over incGroups. If excGroups or 
+        incGroups are None, the default set of stream include and 
+        exclude groups will be used as specified when the Root class was created.
+        By default all variables are included, except for members of the NoStream group.
         """
 
         # Don't send if there are not any Slaves connected
@@ -684,7 +692,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         if isinstance(name,list):
             rawlst = name
 
-        # Passed arg is a comma seperated list of files
+        # Passed arg is a comma separated list of files
         elif ',' in name:
             rawlst = name.split(',')
 
@@ -778,7 +786,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         Writes will be performed as each variable is updated. If set to 
         false a bulk write will be performed after all of the variable updates
         are completed. Bulk writes provide better performance when updating a large
-        quanitty of variables.
+        quantity of variables.
         """
         d = pr.yamlToData(yml)
 

@@ -33,7 +33,7 @@ namespace rogue {
          /** This class provides a bridge between the Rogue stream interface and one
           * of the AES Stream Drivers device drivers. This bridge allows Rogue Frames
           * to be sent and received to PCIE Express boards (using the data_dev driver)
-          * or Zynq ZXI4 FPGA fabrics (using the rce_stream drvier). This interface
+          * or Zynq ZXI4 FPGA fabrics (using the rce_stream driver). This interface
           * will allocate Frame and Buffer objects using memory mapped DMA buffers
           * or from a local memory pool when zero copy mode is disabled or a Frame
           * with is requested with the zero copy flag set to false.
@@ -77,6 +77,12 @@ namespace rogue {
                //! Enable zero copy
                bool zeroCopyEn_;
 
+               //! Return queue
+               rogue::Queue<uint32_t> retQueue_;
+
+               //! Return thold
+               uint32_t retThold_;
+
             public:
 
                //! Class factory which returns a AxiStreamDmaPtr to a newly created AxiMemMap object
@@ -90,7 +96,7 @@ namespace rogue {
                 * lower level hardware.
                 *
                 * The SSI Enable flag determines if the hardware frame follows the SLAC Streaming
-                * itnerface standard. This standard defines a SOF flag in the first user field
+                * interface standard. This standard defines a SOF flag in the first user field
                 * at bit 1 and and EOFE flag in the last user field bit 0.
                 * @param path Path to device. i.e /dev/datadev_0
                 * @param dest Destination index for dma transactions
@@ -112,7 +118,7 @@ namespace rogue {
                //! Set timeout for frame transmits in microseconds
                /** This setting defines how long to wait for the lower level
                 * driver to be ready to send data. The current implementation
-                * will geenrate a warning message after each timeout but will
+                * will generate a warning message after each timeout but will
                 * continue to wait for the driver.
                 *
                 * Exposed to python as SetTimeout()
@@ -124,7 +130,7 @@ namespace rogue {
                /** This function forwards the passed level value as a debug
                 * level to the lower level driver. Current drivers have a single
                 * level of 1, but any positive value will enable debug. Debug
-                * messages can be reviewed using the linux command 'dmesg'
+                * messages can be reviewed using the Linux command 'dmesg'
                 *
                 * Exposed to python as setDriverDebug()
                 * @param level Debug level, >= 1 enabled debug

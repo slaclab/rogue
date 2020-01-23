@@ -61,7 +61,10 @@ rogue::interfaces::ZmqServer::ZmqServer (std::string addr, uint16_t port) {
          if ( res ) break;
       }
    }
-   else res = this->tryConnect();
+   else {
+      this->basePort_ = port;
+      res = this->tryConnect();
+   }
 
    if ( ! res ) {
       if (port == 0) 

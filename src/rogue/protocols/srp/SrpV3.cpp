@@ -193,7 +193,7 @@ void rps::SrpV3::acceptFrame ( ris::FramePtr frame ) {
 
    // Check frame size
    if ( (fSize = frame->getPayload()) < (HeadLen+TailLen) ) {
-      log_->warning("Got undersize frame size = %i",fSize);
+      log_->warning("Got undersized frame size = %i",fSize);
       return; // Invalid frame, drop it
    }
 
@@ -241,7 +241,7 @@ void rps::SrpV3::acceptFrame ( ris::FramePtr frame ) {
    // Check tail
    if ( tail[0] != 0 ) {
       if ( tail[0] & 0x100 ) tran->error("Axi bus timeout detected in hardware");
-      else tran->error("Non zero status message retruned on axi bus in hardware: 0x%x",tail[0]);
+      else tran->error("Non zero status message returned on axi bus in hardware: 0x%x",tail[0]);
       log_->warning("Error detected for ID id=%i, tail=0x%0.8x",id,tail[0]);
       return;
    }

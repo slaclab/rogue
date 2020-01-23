@@ -32,7 +32,7 @@ namespace rogue {
 
          //! Stream Frame FIFO
          /** The stream Fifo object buffers Frame data as it is received from a
-          * Master. It is then passed to the attached Slave objects in an indepdenent
+          * Master. It is then passed to the attached Slave objects in an independent
           * thread. 
           *
           * The Fifo can either store the original data or create a copy of the
@@ -69,7 +69,7 @@ namespace rogue {
                //! Create a Fifo object and return as a FifoPtr
                /** Exposed as rogue.interfaces.stream.Fifo() to Python
                 * @param maxDepth Set to a non-zero value to configured fixed size mode.
-                * @param trimSize Set to a non-zero vaue to limit the amount of data copied.
+                * @param trimSize Set to a non-zero value to limit the amount of data copied.
                 * @param noCopy Set to true to disable Frame copy
                 * @return Fifo object as a FifoPtr
                 */

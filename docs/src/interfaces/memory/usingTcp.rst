@@ -5,8 +5,8 @@ Using The TCP Bridge
 ====================
 
 The memory TCP bridge classes allows a Rogue memory interface to be bridged over a TCP network interface. 
-The bridge consistans of a server and a client. The server, :ref:`interfaces_memory_tcp_server`, listens for 
-incoming connections on a pair ot TCP ports.  The client, :ref:`interfaces_memory_tcp_client`, connects to 
+The bridge consists of a server and a client. The server, :ref:`interfaces_memory_tcp_server`, listens for 
+incoming connections on a pair of TCP ports.  The client, :ref:`interfaces_memory_tcp_client`, connects to 
 the server at a specific address. The client will accept memory bus transactions and forward them to the server.
 
 Python Server

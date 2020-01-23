@@ -62,7 +62,7 @@ rpe::Variable::Variable (std::string epicsName, bp::object p, bool syncRead) : V
    syncRead_ = syncRead;
    setAttr_  = "setDisp";
 
-   // Get type and determe if this is an enum
+   // Get type and determine if this is an enum
    type = std::string(bp::extract<char *>(var_.attr("typeStr")));
    isEnum = std::string(bp::extract<char *>(var_.attr("disp"))) == "enum";
    count = 0;

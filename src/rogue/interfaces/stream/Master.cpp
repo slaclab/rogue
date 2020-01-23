@@ -40,7 +40,9 @@ ris::MasterPtr ris::Master::create () {
 }
 
 //! Creator
-ris::Master::Master() { }
+ris::Master::Master() { 
+   defSlave_ = ris::Slave::create();
+}
 
 //! Destructor
 ris::Master::~Master() { }
@@ -62,10 +64,8 @@ ris::FramePtr ris::Master::reqFrame ( uint32_t size, bool zeroCopyEn ) {
    rogue::GilRelease noGil;
    std::lock_guard<std::mutex> lock(slaveMtx_);
 
-   if ( slaves_.size() == 0 )
-      throw(rogue::GeneralError("Master::reqFrame","Attempt to request frame without Slave"));
-
-   return(slaves_[0]->acceptReq(size,zeroCopyEn));
+   if ( slaves_.size() == 0 ) return(defSlave_->acceptReq(size,zeroCopyEn));
+   else return(slaves_[0]->acceptReq(size,zeroCopyEn));
 }
 
 //! Push frame to slaves
@@ -168,7 +168,7 @@ void ris::Master::equalsPy ( boost::python::object p ) {
    }
 
    if ( rMst == NULL || rSlv == NULL || lSlv == NULL ) 
-      throw(rogue::GeneralError::create("stream::Master::equalsPy","Attempt to use == with an incompatable stream slave"));
+      throw(rogue::GeneralError::create("stream::Master::equalsPy","Attempt to use == with an incompatible stream slave"));
 
    // Make connections
    addSlave(rSlv);
@@ -196,7 +196,7 @@ bp::object ris::Master::rshiftPy ( bp::object p ) {
    }
 
    if ( slv != NULL ) addSlave(slv);
-   else throw(rogue::GeneralError::create("stream::Master::rshiftPy","Attempt to use >> with incompatable stream slave"));
+   else throw(rogue::GeneralError::create("stream::Master::rshiftPy","Attempt to use >> with incompatible stream slave"));
 
    return p;
 }
@@ -215,7 +215,7 @@ void ris::Master::operator ==(ris::SlavePtr & other) {
    rMst = std::dynamic_pointer_cast<ris::Master>(other);
 
    if ( rMst == NULL || lSlv == NULL ) 
-      throw(rogue::GeneralError::create("stream::Master::equalsPy","Attempt to use == with an incompatable stream slave"));
+      throw(rogue::GeneralError::create("stream::Master::equalsPy","Attempt to use == with an incompatible stream slave"));
 
    rMst->addSlave(lSlv);
    addSlave(other);

@@ -22,6 +22,7 @@
 #include <mutex>
 #include <stdint.h>
 #include <rogue/Logging.h>
+#include <rogue/Queue.h>
 
 #define MAP_DEVICE "/dev/mem"
 
@@ -30,7 +31,7 @@ namespace rogue {
 
       //! Raw Memory Map Class
       /** This class provides a bridge between the Rogue memory interface and 
-       * a standard linux /dev/map interface. 
+       * a standard Linux /dev/map interface. 
        */
       class MemMap : public rogue::interfaces::memory::Slave {
 
@@ -45,6 +46,15 @@ namespace rogue {
 
             // Logging
             std::shared_ptr<rogue::Logging> log_;
+
+            std::thread* thread_;
+            bool threadEn_;
+
+            //! Thread background
+            void runThread();
+
+            // Queue
+            rogue::Queue<std::shared_ptr<rogue::interfaces::memory::Transaction>> queue_;
 
          public:
 

@@ -83,7 +83,7 @@ namespace rogue {
                void setTimeout(uint32_t timeout);
          };
 
-         // Convienence
+         // Convenience
          typedef std::shared_ptr<rogue::protocols::udp::Core> CorePtr;
       }
    }

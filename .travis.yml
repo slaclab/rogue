@@ -187,15 +187,15 @@ jobs:
 
       script:
         # Build conda package
-        - travis_wait 45 conda build --debug conda-recipe --output-folder bld-dir -c tidair-packages -c pydm-tag -c conda-forge
+        - travis_wait 60 conda build --debug conda-recipe --output-folder bld-dir -c tidair-packages -c pydm-tag -c conda-forge
 
       after_success:
         # Upload conda package
         - anaconda -t $CONDA_TOKEN upload bld-dir/`echo $TRAVIS_OS_NAME`-64/*.tar.bz2
 
-    - <<: *deploy-conda-stage   # Conda for MacOS
-      os: osx
-      language: ruby  # osx does not support language=python
+    #- <<: *deploy-conda-stage   # Conda for MacOS
+      #os: osx
+      #language: ruby  # osx does not support language=python
 
     # Deploy tagged version stage (deploy_tag)
     - <<: *deploy-docker-stage  # Docker

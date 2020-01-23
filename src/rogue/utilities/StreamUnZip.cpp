@@ -89,14 +89,14 @@ void ru::StreamUnZip::acceptFrame ( ris::FramePtr frame ) {
 
       if ( ret == BZ_STREAM_END ) break;
 
-      // Update read buffer if neccessary
+      // Update read buffer if necessary
       if ( strm.avail_in == 0 ) {
          ++rBuff;
          strm.next_in  = (char *)(*rBuff)->begin();
          strm.avail_in = (*rBuff)->getPayload();
       }
 
-      // Update write buffer if neccessary
+      // Update write buffer if necessary
       if ( strm.avail_out == 0 ) {
 
          // We ran out of room, double the frame size

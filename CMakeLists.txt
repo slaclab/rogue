@@ -12,7 +12,7 @@
 # copied, modified, propagated, or distributed except according to the terms 
 # contained in the LICENSE.txt file.
 # ----------------------------------------------------------------------------
-# See notes for compiling on macos under anaconda:
+# See notes for compiling on macros under anaconda:
 #    https://conda.io/docs/user-guide/tasks/build-packages/compiler-tools.html
 
 # Add support for building in conda environment
@@ -25,12 +25,18 @@ endif()
 cmake_minimum_required(VERSION 3.5)
 include(InstallRequiredSystemLibraries)
 
+# Set default release type
+if (NOT EXISTS ${CMAKE_BINARY_DIR}/CMakeCache.txt)
+  if (NOT CMAKE_BUILD_TYPE)
+    set(CMAKE_BUILD_TYPE "Release" CACHE STRING "" FORCE)
+  endif()
+endif()
+
 # Project name
 project (rogue)
 
 # C/C++
 enable_language(CXX)
-#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x -Wno-deprecated")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wno-deprecated")
 add_definitions(-D__STDC_FORMAT_MACROS)
 
@@ -60,21 +66,31 @@ if ( NOT NO_PYTHON )
    set(BOOST_ROOT:PATHNAME $ENV{BOOST_PATH})
 
    # First try standard suffix for boost
+   message("Looking for boost/python3")
    find_package(Boost 1.58 QUIET COMPONENTS system thread python3)
 
-   # Next try Debian/Ubuntu suffix for boost
+   # Next try boost/python38
    if (NOT Boost_FOUND)
+      message("Looking for boost/python38")
+      find_package(Boost 1.58 QUIET COMPONENTS system thread python38)
+   endif()
+
+   # Next try boost/python37
+   if (NOT Boost_FOUND)
+      message("Looking for boost/python37")
+      find_package(Boost 1.58 QUIET COMPONENTS system thread python37)
+   endif()
+
+   # Next try boost/python-py36
+   if (NOT Boost_FOUND)
+      message("Looking for boost/python-py36")
       find_package(Boost 1.58 QUIET COMPONENTS system thread python-py36)
    endif()
 
-   # Next try Mac with homebrew boost/python36
+   # Next try boost/python36
    if (NOT Boost_FOUND)
+      message("Looking for boost/python36")
       find_package(Boost 1.58 QUIET COMPONENTS system thread python36)
-   endif()
-
-   # Next try anaconda with python 3.7
-   if (NOT Boost_FOUND)
-      find_package(Boost 1.58 QUIET COMPONENTS system thread python37)
    endif()
 
    # Nothing worked
@@ -94,7 +110,7 @@ find_package(BZip2 QUIET REQUIRED)
 #####################################
 # ZeroMQ
 #####################################
-# First try with Cmake packages
+# First try with cmake packages
 find_package(ZeroMQ QUIET)
 
 # ZeroMQ does not always support cmake, use brute force
@@ -115,7 +131,7 @@ if (NOT ZeroMQ_FOUND)
    # Found it
    if (ZeroMQ_LIBRARY) 
 
-      # Get the base diretory
+      # Get the base directory
       get_filename_component(ZMQ_LIBDIR ${ZeroMQ_LIBRARY} DIRECTORY)
 
       # See if we can find the header in a relative path
@@ -139,48 +155,50 @@ endif()
 #####################################
 if((NOT NO_PYTHON) AND (NOT NO_EPICS) AND DEFINED ENV{EPICS_BASE})
    set(DO_EPICS_V3 1)
-   set(EPICSV3_BASE_DIR $ENV{EPICS_BASE})
+   set(EPICS_BASE_DIR $ENV{EPICS_BASE})
    if(DEFINED ENV{EPICS_HOST_ARCH})
-       set(EPICSV3_ARCH $ENV{EPICS_HOST_ARCH})
+       set(EPICS_ARCH $ENV{EPICS_HOST_ARCH})
    else()
-       execute_process(COMMAND ${EPICSV3_BASE_DIR}/startup/EpicsHostArch 
-                       OUTPUT_VARIABLE EPICSV3_ARCH OUTPUT_STRIP_TRAILING_WHITESPACE)
-       string(REGEX REPLACE "\n$" "" EPICSV3_ARCH "${EPICSV3_ARCH}")
+       execute_process(COMMAND ${EPICS_BASE_DIR}/startup/EpicsHostArch 
+                       OUTPUT_VARIABLE EPICS_ARCH OUTPUT_STRIP_TRAILING_WHITESPACE)
+       string(REGEX REPLACE "\n$" "" EPICS_ARCH "${EPICS_ARCH}")
    endif()
 
    # PCAS is part of epics before version 4
-   if(DEFINED ENV{EPICS_PCAS_ROOT})
-      set(EPICSV3_PCAS_DIR $ENV{EPICS_PCAS_ROOT})
+   if(EPICS_PCAS_ROOT)
+      set(EPICS_PCAS_DIR ${EPICS_PCAS_ROOT})
+   elseif(DEFINED ENV{EPICS_PCAS_ROOT})
+      set(EPICS_PCAS_DIR $ENV{EPICS_PCAS_ROOT})
    else()
-      set(EPICSV3_PCAS_DIR $ENV{EPICS_BASE})
+      set(EPICS_PCAS_DIR $ENV{EPICS_BASE})
    endif()
 
    # See if we can find the pcas header, may not exist if epics 7 without pcas is installed
-   find_path(E3_TEST_INCLUDE_DIR NAMES casdef.h PATHS ${EPICSV3_PCAS_DIR}/include)
+   find_path(E3_TEST_INCLUDE_DIR NAMES casdef.h PATHS ${EPICS_PCAS_DIR}/include)
    if (NOT E3_TEST_INCLUDE_DIR)
       set(DO_EPICS_V3 0)
    elseif(APPLE)
 
-      set(EPICSV3_INCLUDES  ${EPICSV3_PCAS_DIR}/include
-                            ${EPICSV3_BASE_DIR}/include
-                            ${EPICSV3_BASE_DIR}/include/compiler/gcc 
-                            ${EPICSV3_BASE_DIR}/include/os/Darwin)
+      set(EPICS_INCLUDES    ${EPICS_PCAS_DIR}/include
+                            ${EPICS_BASE_DIR}/include
+                            ${EPICS_BASE_DIR}/include/compiler/gcc 
+                            ${EPICS_BASE_DIR}/include/os/Darwin)
 
-      set(EPICSV3_LIBRARIES ${EPICSV3_PCAS_DIR}/lib/${EPICSV3_ARCH}/libcas.dylib 
-                            ${EPICSV3_PCAS_DIR}/lib/${EPICSV3_ARCH}/libgdd.dylib
-                            ${EPICSV3_BASE_DIR}/lib/${EPICSV3_ARCH}/libca.dylib 
-                            ${EPICSV3_BASE_DIR}/lib/${EPICSV3_ARCH}/libCom.dylib )
+      set(EPICS_LIBRARIES   ${EPICS_PCAS_DIR}/lib/${EPICS_ARCH}/libcas.dylib 
+                            ${EPICS_PCAS_DIR}/lib/${EPICS_ARCH}/libgdd.dylib
+                            ${EPICS_BASE_DIR}/lib/${EPICS_ARCH}/libca.dylib 
+                            ${EPICS_BASE_DIR}/lib/${EPICS_ARCH}/libCom.dylib )
    else()
 
-      set(EPICSV3_INCLUDES  ${EPICSV3_PCAS_DIR}/include
-                            ${EPICSV3_BASE_DIR}/include
-                            ${EPICSV3_BASE_DIR}/include/compiler/gcc 
-                            ${EPICSV3_BASE_DIR}/include/os/Linux)
+      set(EPICS_INCLUDES    ${EPICS_PCAS_DIR}/include
+                            ${EPICS_BASE_DIR}/include
+                            ${EPICS_BASE_DIR}/include/compiler/gcc 
+                            ${EPICS_BASE_DIR}/include/os/Linux)
 
-      set(EPICSV3_LIBRARIES ${EPICSV3_PCAS_DIR}/lib/${EPICSV3_ARCH}/libcas.so 
-                            ${EPICSV3_PCAS_DIR}/lib/${EPICSV3_ARCH}/libgdd.so
-                            ${EPICSV3_BASE_DIR}/lib/${EPICSV3_ARCH}/libca.so 
-                            ${EPICSV3_BASE_DIR}/lib/${EPICSV3_ARCH}/libCom.so )
+      set(EPICS_LIBRARIES   ${EPICS_PCAS_DIR}/lib/${EPICS_ARCH}/libcas.so 
+                            ${EPICS_PCAS_DIR}/lib/${EPICS_ARCH}/libgdd.so
+                            ${EPICS_BASE_DIR}/lib/${EPICS_ARCH}/libca.so 
+                            ${EPICS_BASE_DIR}/lib/${EPICS_ARCH}/libCom.so )
    endif()
 else()
    set(DO_EPICS_V3 0)
@@ -250,7 +268,7 @@ include_directories(system ${PYTHON_INCLUDE_DIRS})
 include_directories(system ${Python3_NumPy_INCLUDE_DIRS})
 include_directories(system ${ZeroMQ_INCLUDE_DIR})
 include_directories(system ${BZIP2_INCLUDE_DIR})
-include_directories(system ${EPICSV3_INCLUDES})
+include_directories(system ${EPICS_INCLUDES})
 
 if (APPLE)
    SET(CMAKE_SHARED_LIBRARY_SUFFIX ".dylib")
@@ -273,10 +291,10 @@ add_subdirectory(src/rogue)
 # Link rogue core to boost, python and bzip
 TARGET_LINK_LIBRARIES(rogue-core LINK_PUBLIC ${Boost_LIBRARIES})
 TARGET_LINK_LIBRARIES(rogue-core LINK_PUBLIC ${ZeroMQ_LIBRARY})
-TARGET_LINK_LIBRARIES(rogue-core LINK_PUBLIC ${EPICSV3_LIBRARIES})
+TARGET_LINK_LIBRARIES(rogue-core LINK_PUBLIC ${EPICS_LIBRARIES})
 TARGET_LINK_LIBRARIES(rogue-core LINK_PUBLIC ${BZIP2_LIBRARIES})
 
-# Do not link directly against python in macos
+# Do not link directly against python in mac os
 if (APPLE)
    set_target_properties(rogue-core PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
 else()
@@ -421,7 +439,8 @@ endif()
 message("")
 
 if (DO_EPICS_V3)
-   message("-- Found EPICS: ${EPICSV3_PCAS_DIR}")
+   message("-- Found EPICS: ${EPICS_BASE_DIR}")
+   message("-- Found PCAS:  ${EPICS_PCAS_DIR}")
 else()
    message("-- EPICS V3 not included!")
 endif()

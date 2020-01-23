@@ -87,16 +87,16 @@ namespace rogue {
 
                //! Set slave or Hub device
                /** The Master will pass the transaction data to this Slave or Hub device. This
-                * slave may be the lowest level Slave or a Hub which fowards transactions
+                * slave may be the lowest level Slave or a Hub which forwards transactions
                 * on to the lower Slave.
                 *
-                * Exposted to python as _setSlave()
+                * Exposed to python as _setSlave()
                 * @param slave Slave device pointer SlavePtr
                 */
                void setSlave ( std::shared_ptr<rogue::interfaces::memory::Slave> slave );
 
                //! Get next level Slave or Hub device
-               /** Exposted to python as _getSlave()
+               /** Exposed to python as _getSlave()
                 * @return Slave device pointer SlavePtr
                 */
                std::shared_ptr<rogue::interfaces::memory::Slave> getSlave();
@@ -108,7 +108,7 @@ namespace rogue {
                 * allows the system to determine which memory Masters shared the
                 * same address space.
                 *
-                * Exposted to python as _reqSlaveId()
+                * Exposed to python as _reqSlaveId()
                 * @return 32-bit Slave ID
                 */
                uint32_t reqSlaveId();
@@ -117,7 +117,7 @@ namespace rogue {
                /** This function will query the lowest level Slave device to
                 * determine the minimum size for a transaction.
                 *
-                * Exposted to python as _reqMinAccess()
+                * Exposed to python as _reqMinAccess()
                 * @return Minimum transaction size
                 */
                uint32_t reqMinAccess();
@@ -126,7 +126,7 @@ namespace rogue {
                /** This function will query the lowest level Slave device to
                 * determine the maximum size for a transaction.
                 *
-                * Exposted to python as _reqMaxAccess()
+                * Exposed to python as _reqMaxAccess()
                 * @return Maximum transaction size
                 */
                uint32_t reqMaxAccess();
@@ -136,7 +136,7 @@ namespace rogue {
                 * Slave or Hub this Master is attached to. This does not included the local
                 * Master offset.
                 *
-                * Exposted to python as _reqAddress()
+                * Exposed to python as _reqAddress()
                 * @return Address of next layer this Master is attached to
                 */
                uint64_t reqAddress();
@@ -145,7 +145,7 @@ namespace rogue {
                /** This method returns the error value of the last set of transactions initiated
                 * by this master. 
                 *
-                * Exposted to python as _getError()
+                * Exposed to python as _getError()
                 * @return Error value
                 */
                std::string getError();
@@ -153,7 +153,7 @@ namespace rogue {
                //! Clear the error value
                /** This method clears the error value for this master.
                 *
-                * Exposted to python as _clearError()
+                * Exposed to python as _clearError()
                 */
                void clearError();
 
@@ -161,18 +161,18 @@ namespace rogue {
                /** Sets the timeout value for future transactions. THis is the amount of time
                 * to wait for a transaction to complete.
                 *
-                * Exposted to python as _setTimeout()
+                * Exposed to python as _setTimeout()
                 * @param timeout Timeout value
                 */
                void setTimeout(uint64_t timeout);
 
                //! Start a new transaction
                /** This method generates the creation of a Transaction object which is then forwarded
-                * to the lowest level Slave in the memory bus tree. The passed addres is relative
-                * to the next laver in the memory tree. (local offset). More than one transaction
+                * to the lowest level Slave in the memory bus tree. The passed address is relative
+                * to the next layer in the memory tree. (local offset). More than one transaction
                 * can be pending for this Master.
                 *
-                * Not exposted to Python (see reqTransactionPy)
+                * Not exposed to Python (see reqTransactionPy)
                 * @param address Relative 64-bit transaction offset address
                 * @param size Transaction size in bytes
                 * @param data Pointer to data array used for transaction.
@@ -185,11 +185,11 @@ namespace rogue {
 
                //! Python version of reqTransaction. Takes a byte array instead of a data pointer.
                /** This method generates the creation of a Transaction object which is then forwarded
-                * to the lowest level Slave in the memory bus tree. The passed addres is relative
-                * to the next laver in the memory tree. (local offset). More than one transaction
+                * to the lowest level Slave in the memory bus tree. The passed address is relative
+                * to the next layer in the memory tree. (local offset). More than one transaction
                 * can be pending for this Master.
                 *
-                * Exposted to Python as _reqTransaction()
+                * Exposed to Python as _reqTransaction()
                 * @param address Relative 64-bit transaction offset address
                 * @param p Byte array used for transaction data
                 * @param size Transaction size in bytes
@@ -199,24 +199,24 @@ namespace rogue {
                 */
                uint32_t reqTransactionPy(uint64_t address, boost::python::object p, uint32_t size, uint32_t offset, uint32_t type);
 
-               //! Helper function to optmize bit copies between byte arrays.
+               //! Helper function to optimize bit copies between byte arrays.
                /** This method will copy bits between two byte arrays.
                 *
                 * Exposed to python as _copyBits
                 * @param dst Destination Python byte array
-                * @param dstLsb Least signficant bit in destination byte array for copy
+                * @param dstLsb Least significant bit in destination byte array for copy
                 * @param src Source Python byte array
                 * @param srcLsb Least significant bit in source byte array for copy
                 * @param size Number of bits to copy
                 */
                static void copyBits(boost::python::object dst, uint32_t dstLsb, boost::python::object src, uint32_t srcLsb, uint32_t size);
 
-               //! Helper function to optmize bit setting in a byte array.
+               //! Helper function to optimize bit setting in a byte array.
                /** This method will set a range of bits in a byte array
                 *
                 * Exposed to python as _setBits
                 * @param dst Destination Python byte array
-                * @param lsb Least signficant bit in destination byte array for set
+                * @param lsb Least significant bit in destination byte array for set
                 * @param size Number of bits to set
                 */
                static void setBits(boost::python::object dst, uint32_t lsb, uint32_t size);
@@ -226,7 +226,7 @@ namespace rogue {
                 *
                 * Exposed to python as _anyBits
                 * @param src Source Python byte array to check
-                * @param lsb Least signficant bit in source byte array to check
+                * @param lsb Least significant bit in source byte array to check
                 * @param size Number of bits to check
                 */
                static bool anyBits(boost::python::object src, uint32_t lsb, uint32_t size);
@@ -252,7 +252,7 @@ namespace rogue {
                 * Passing an id of zero will wait for all current pending transactions to
                 * complete.
                 *
-                * Exposted as _waitTransaction to Python
+                * Exposed as _waitTransaction to Python
                 * @param id Id of transaction to wait for, 0 to wait for all
                 */
                void waitTransaction(uint32_t id);

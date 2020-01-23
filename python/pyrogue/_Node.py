@@ -84,7 +84,7 @@ class NodeError(Exception):
 
 class Node(object):
     """
-    Class which serves as a managed obect within the pyrogue package. 
+    Class which serves as a managed object within the pyrogue package. 
     Each node has the following public fields:
         name: Global name of object
         description: Description of the object.
@@ -270,7 +270,7 @@ class Node(object):
             raise NodeError('Error adding node with name %s to %s. Name collision.' % 
                              (node.name,self.name))
 
-        # Add some checking for charaters which will make lookups problematic
+        # Add some checking for characters which will make lookups problematic
         if re.match('^[\w_\[\]]+$',node.name) is None:
             self._log.warning('Node {} with one or more special characters will cause lookup errors.'.format(node.name))
 
@@ -569,7 +569,7 @@ class Node(object):
             value[0:1]
             value[*]
             value[:]
-        Variables will only match if their depth matches the passed lookup and wildard:
+        Variables will only match if their depth matches the passed lookup and wildcard:
             value[*] will match a variable named value[1] but not a variable named value[2][3]
             value[*][*] will match a variable named value[2][3].
         """
@@ -611,8 +611,8 @@ def _iterateDict(d, keys):
     # Slice
     else:
 
-        # Form sliceable list
-        tmpList = [None] * max(d.keys())
+        # Form slice-able list
+        tmpList = [None] * (max(d.keys())+1)
         for k,v in d.items(): tmpList[k] = v
 
         try:
@@ -622,7 +622,7 @@ def _iterateDict(d, keys):
 
     for e in subList:
 
-        # Add nodes at this level only if key list has been exausted
+        # Add nodes at this level only if key list has been exhausted
         if len(keys) == 1 and isinstance(e,Node):
             retList.append(e)
 

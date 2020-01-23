@@ -36,10 +36,10 @@ namespace rogue {
          //! Stream pool class
          /** The stream Pool class is responsible for allocating and garbage collecting Frame
           * objects and the Buffer objects they contain. The default mode is to allocate a
-          * Frame with a single Buffer of the requsted sized. Alternatively the Pool class
+          * Frame with a single Buffer of the requested sized. Alternatively the Pool class
           * can operate in fixed buffer size mode. In this mode Buffer objects of a fixed
           * sized are allocated, with a Frame containing enough Buffer to satisfy the original
-          * request. Normally Buffer data is freed when returned back to the Poo class. 
+          * request. Normally Buffer data is freed when returned back to the Pool class. 
           * Alternatively a pool can be enabled if operating in fixed size mode. When a pool
           * is enabled returned buffer data is stored in the pool for later allocation to
           * a new requester. The pool size defines the maximum number of entries to allow in
@@ -101,7 +101,7 @@ namespace rogue {
                /* Method to service a frame request, called by the Master class through
                 * the reqFrame() method. 
                 *
-                * size Minimum size for requsted Frame, larger Frame may be allocated
+                * size Minimum size for requested Frame, larger Frame may be allocated
                 * zeroCopyEn Flag which indicates if a zero copy mode Frame is allowed.
                 * Newly allocated Frame pointer (FramePtr)
                 */
@@ -109,7 +109,7 @@ namespace rogue {
 
                //! Method called to return Buffer data
                /* This method is called by the Buffer desctructor in order to free 
-                * the associated Buffer memory. May be overriden by a subclass to
+                * the associated Buffer memory. May be overridden by a subclass to
                 * change the way the buffer data is returned.
                 * 
                 * @param data Data pointer to release
@@ -165,7 +165,7 @@ namespace rogue {
                 * by a sub-class of Pool.
                 *
                 * Not exposed to Python
-                * @param size Buffer size requsted
+                * @param size Buffer size requested
                 * @param total Pointer to current total size
                 * @return Allocated Buffer pointer as BufferPtr
                 */
@@ -174,10 +174,10 @@ namespace rogue {
                //! Create a Buffer with passed data block
                /** This method is used to create a Buffer with a pre-allocated block of
                 * memory. This can be used when the block of memory is allocated by a
-                * hadware DMA driver. This method is protected to allow it to be called
+                * hardware DMA driver. This method is protected to allow it to be called
                 * by a sub-class of Pool.
                 *
-                * Not exposted to Python
+                * Not exposed to Python
                 * @param data Data pointer to pre-allocated memory block
                 * @param meta Meta data associated with pre-allocated memory block
                 * @param size Usable size of memory block (may be smaller than allocated size)
@@ -190,9 +190,9 @@ namespace rogue {
                                                                                   uint32_t alloc);
 
                //! Decrement Allocation counter
-               /** Called in a sub-class to decerement the allocated byte count
+               /** Called in a sub-class to decrement the allocated byte count
                 * 
-                * Not exposted to Python
+                * Not exposed to Python
                 * @param alloc Amount of memory be de-allocated.
                 */
                void decCounter( uint32_t alloc);

@@ -52,7 +52,7 @@ And in C++:
    *myMaster >> mySlave;
 
 In some cases rogue entities can serve as both a stream Master and Slave. This is often the case when
-using a network protocol such as UDP or TCP. Two dual purpose enpoints can be connected together
+using a network protocol such as UDP or TCP. Two dual purpose endpoints can be connected together
 to create a bi-directional data stream using the following command in python:
 
 .. code-block:: python
@@ -65,7 +65,7 @@ to create a bi-directional data stream using the following command in python:
    pyrogue.streamConnectBiDir(endPointA, endPointB)
 
 This command adds endPointB as a Slave for endPointA at the same time adding endPointA as a
-slave for endPointB. A similiar command is available in C++:
+slave for endPointB. A similar command is available in C++:
 
 .. code-block:: c
 

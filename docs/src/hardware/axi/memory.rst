@@ -37,7 +37,7 @@ Python AxiMemMap Example
 C++ AxiMemMap Example
 =====================
 
-The equivelent code in C++ is show below:
+The equivalent code in C++ is show below:
 
 .. code-block:: c
 

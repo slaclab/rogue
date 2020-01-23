@@ -32,7 +32,7 @@ namespace rogue {
          /** This class implements a TCP bridge between a memory Master and a memory Slave.
           * The client side of the TCP bridge accepts a memory Transaction from an attached
           * master and forwards that Transaction to a remote TcpServer. The server side of the 
-          * TCP bridge implments a memory Master device which executes the memory Transaction 
+          * TCP bridge implements a memory Master device which executes the memory Transaction 
           * to an attached Slave.
           *
           * The TcpClient memory interface will drop transactions when the remote server is not 
@@ -73,7 +73,7 @@ namespace rogue {
                //! Create a TcpClient object and return as a TcpServerPtr
                /**The creator takes an address and port. The passed address is the address of
                 * the remote TcpServer to connect to, and can either be an IP address or hostname. 
-                * The memory bridge requires two TCP ports. The pased port is the 
+                * The memory bridge requires two TCP ports. The passed port is the 
                 * base number of these two ports. A passed value of 8000 will result in both
                 * 8000 and 8001 being used by this bridge.
                 *

@@ -50,7 +50,7 @@ namespace rogue {
             std::shared_ptr<rogue::interfaces::stream::Frame> acceptReq ( uint32_t size, bool zeroCopyEn );
       };
 
-      // Convienence
+      // Convenience
       typedef std::shared_ptr<rogue::utilities::StreamUnZip> StreamUnZipPtr;
    }
 }

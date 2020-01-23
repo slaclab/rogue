@@ -35,7 +35,7 @@ namespace rogue {
          //! SRP SrpV0
          /*
           * Serves as an interface between memory accesses and streams
-          * carying the SRP protocol. 
+          * carnying the SRP protocol. 
           */
          class SrpV0 : public rogue::interfaces::stream::Master,
                        public rogue::interfaces::stream::Slave,
@@ -75,7 +75,7 @@ namespace rogue {
 
          };
 
-         // Convienence
+         // Convenience
          typedef std::shared_ptr<rogue::protocols::srp::SrpV0> SrpV0Ptr;
       }
    }
