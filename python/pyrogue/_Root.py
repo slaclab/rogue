@@ -516,6 +516,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
             with open(fname,'w') as f:
                 f.write("Path\t")
                 f.write("TypeStr\t")
+                f.write("MemBaseId\t")
                 f.write("Full Address\t")
                 f.write("Device Offset\t")
                 f.write("Mode\t")
@@ -528,6 +529,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                     if v.isinstance(pr.RemoteVariable):
                         f.write("{}\t".format(v.path))
                         f.write("{}\t".format(v.typeStr))
+                        f.write("{}\t".format(v._block.memBaseId))
                         f.write("{:#x}\t".format(v.address))
                         f.write("{:#x}\t".format(v.offset))
                         f.write("{}\t".format(v.mode))

@@ -167,6 +167,8 @@ class DummyTree(pyrogue.Root):
 if __name__ == "__main__":
 
     with DummyTree() as dummyTree:
+        dummyTree.saveAddressMap('test.csv')
+
         pyrogue.waitCntrlC()
 
         #import pyrogue.pydm
