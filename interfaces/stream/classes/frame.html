@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Frame &mdash; Rogue v4.6.0-2-g7a70a3ac documentation</title>
+  <title>Frame &mdash; Rogue v4.7.0-45-gcf223948 documentation</title>
   
 
   
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                v4.6.0
+                v4.7.0
               </div>
             
           
@@ -232,7 +232,7 @@
 <dt id="_CPPv4N5rogue10interfaces6stream5Frame11appendFrameENSt10shared_ptrIN5rogue10interfaces6stream5FrameEEE">
 <span id="_CPPv3N5rogue10interfaces6stream5Frame11appendFrameENSt10shared_ptrIN5rogue10interfaces6stream5FrameEEE"></span><span id="_CPPv2N5rogue10interfaces6stream5Frame11appendFrameENSt10shared_ptrIN5rogue10interfaces6stream5FrameEEE"></span><span id="rogue::interfaces::stream::Frame::appendFrame__std::shared_ptr:rogue::interfaces::stream::Frame:"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1a727e017735940558dc1565de2a0632e7"></span>std::vector&lt;std::shared_ptr&lt;rogue::interfaces::stream::<a class="reference internal" href="buffer.html#_CPPv4N5rogue10interfaces6stream6BufferE" title="rogue::interfaces::stream::Buffer">Buffer</a>&gt;&gt;::iterator <code class="sig-name descname">appendFrame</code><span class="sig-paren">(</span>std::shared_ptr&lt;rogue::interfaces::stream::<a class="reference internal" href="#_CPPv4N5rogue10interfaces6stream5FrameE" title="rogue::interfaces::stream::Frame">Frame</a>&gt; <em>frame</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream5Frame11appendFrameENSt10shared_ptrIN5rogue10interfaces6stream5FrameEEE" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Append passed frame to the end of this frame. </p>
-<p>Buffers from the passed frame are appened to the end of this frame and will be removed from the source frame.</p>
+<p>Buffers from the passed frame are appended to the end of this frame and will be removed from the source frame.</p>
 <p>Not exposed to Python <dl class="simple">
 <dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="buffer.html#classrogue_1_1interfaces_1_1stream_1_1Buffer"><span class="std std-ref">Buffer</span></a> list iterator (<a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Frame_1a89f911ccda4b575a58cb85906692c9b9"><span class="std std-ref">Frame::BufferIterator</span></a>) pointing to the first inserted buffer from passed frame </p>
 </dd>
@@ -339,7 +339,7 @@
 <span id="_CPPv3N5rogue10interfaces6stream5Frame10getPayloadEv"></span><span id="_CPPv2N5rogue10interfaces6stream5Frame10getPayloadEv"></span><span id="rogue::interfaces::stream::Frame::getPayload"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1a6de871a21683c12274372162c82512f2"></span>uint32_t <code class="sig-name descname">getPayload</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream5Frame10getPayloadEv" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Get total payload size of the <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a>. </p>
 <p>Exposed as <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Frame_1a6de871a21683c12274372162c82512f2"><span class="std std-ref">getPayload()</span></a> to Python <dl class="simple">
-<dt><strong>Return</strong></dt><dd><p>Total paylaod bytes in the <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a> </p>
+<dt><strong>Return</strong></dt><dd><p>Total payload bytes in the <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a> </p>
 </dd>
 </dl>
 </p>
@@ -430,7 +430,7 @@
 <span id="_CPPv3N5rogue10interfaces6stream5Frame12getFirstUserEv"></span><span id="_CPPv2N5rogue10interfaces6stream5Frame12getFirstUserEv"></span><span id="rogue::interfaces::stream::Frame::getFirstUser"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1acf5caf501e8f998b343e562e5432a946"></span>uint8_t <code class="sig-name descname">getFirstUser</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream5Frame12getFirstUserEv" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>The first user value is stored in the lower 8-bits of the flag field.</p>
 <p>Exposed as getFirstuser() to Python <dl class="simple">
-<dt><strong>Return</strong></dt><dd><p>8-bit lirst user value </p>
+<dt><strong>Return</strong></dt><dd><p>tuser 8-bit first user value </p>
 </dd>
 </dl>
 </p>
@@ -441,7 +441,7 @@
 <span id="_CPPv3N5rogue10interfaces6stream5Frame12setFirstUserE7uint8_t"></span><span id="_CPPv2N5rogue10interfaces6stream5Frame12setFirstUserE7uint8_t"></span><span id="rogue::interfaces::stream::Frame::setFirstUser__uint8_t"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1adc623290ea7a27b565b9e7bb40ebe80a"></span>void <code class="sig-name descname">setFirstUser</code><span class="sig-paren">(</span>uint8_t <em>fuser</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream5Frame12setFirstUserE7uint8_t" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Exposed as <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Frame_1adc623290ea7a27b565b9e7bb40ebe80a"><span class="std std-ref">setFirstUser()</span></a> to Python <dl class="simple">
 <dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">fuser</span></code>: 8-bit lirst user value </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">tuser</span></code>: 8-bit first user value </p></li>
 </ul>
 </dd>
 </dl>
@@ -453,7 +453,7 @@
 <span id="_CPPv3N5rogue10interfaces6stream5Frame11getLastUserEv"></span><span id="_CPPv2N5rogue10interfaces6stream5Frame11getLastUserEv"></span><span id="rogue::interfaces::stream::Frame::getLastUser"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1a85622715941a780db631f9b041ecb6f9"></span>uint8_t <code class="sig-name descname">getLastUser</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream5Frame11getLastUserEv" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>The last user value is stored in the upper 8-bits of the flag field.</p>
 <p>Exposed as <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Frame_1a85622715941a780db631f9b041ecb6f9"><span class="std std-ref">getLastUser()</span></a> to Python <dl class="simple">
-<dt><strong>Return</strong></dt><dd><p>8-bit last user value </p>
+<dt><strong>Return</strong></dt><dd><p>tuser 8-bit last user value </p>
 </dd>
 </dl>
 </p>
@@ -464,7 +464,7 @@
 <span id="_CPPv3N5rogue10interfaces6stream5Frame11setLastUserE7uint8_t"></span><span id="_CPPv2N5rogue10interfaces6stream5Frame11setLastUserE7uint8_t"></span><span id="rogue::interfaces::stream::Frame::setLastUser__uint8_t"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1a31850834a52ecffc85db7dac3d03f540"></span>void <code class="sig-name descname">setLastUser</code><span class="sig-paren">(</span>uint8_t <em>fuser</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream5Frame11setLastUserE7uint8_t" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Exposed as <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Frame_1a31850834a52ecffc85db7dac3d03f540"><span class="std std-ref">setLastUser()</span></a> to Python <dl class="simple">
 <dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">luser</span></code>: 8-bit last user value </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">tuser</span></code>: 8-bit last user value </p></li>
 </ul>
 </dd>
 </dl>
@@ -500,7 +500,7 @@
 <dt id="_CPPv4N5rogue10interfaces6stream5Frame8getErrorEv">
 <span id="_CPPv3N5rogue10interfaces6stream5Frame8getErrorEv"></span><span id="_CPPv2N5rogue10interfaces6stream5Frame8getErrorEv"></span><span id="rogue::interfaces::stream::Frame::getError"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1a7762575ce42e07c04eba9ecd160de55d"></span>uint8_t <code class="sig-name descname">getError</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream5Frame8getErrorEv" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Get error state. </p>
-<p>The error value is application specific, depnding on the stream <a class="reference internal" href="master.html#classrogue_1_1interfaces_1_1stream_1_1Master"><span class="std std-ref">Master</span></a> implementation. A non-zero value is considered an error.</p>
+<p>The error value is application specific, depending on the stream <a class="reference internal" href="master.html#classrogue_1_1interfaces_1_1stream_1_1Master"><span class="std std-ref">Master</span></a> implementation. A non-zero value is considered an error.</p>
 <p>Exposed as <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Frame_1a7762575ce42e07c04eba9ecd160de55d"><span class="std std-ref">getError()</span></a> to Python </p>
 </dd></dl>
 

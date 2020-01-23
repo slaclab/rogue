@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Frame Lock &mdash; Rogue v4.6.0-2-g7a70a3ac documentation</title>
+  <title>Frame Lock &mdash; Rogue v4.7.0-45-gcf223948 documentation</title>
   
 
   
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                v4.6.0
+                v4.7.0
               </div>
             
           
@@ -204,7 +204,7 @@
 <dt id="_CPPv4N5rogue10interfaces6stream9FrameLockE">
 <span id="_CPPv3N5rogue10interfaces6stream9FrameLockE"></span><span id="_CPPv2N5rogue10interfaces6stream9FrameLockE"></span><span id="rogue::interfaces::stream::FrameLock"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1FrameLock"></span><em class="property">class </em><code class="sig-name descname">FrameLock</code><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream9FrameLockE" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p><a class="reference internal" href="frame.html#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a> Lock. </p>
-<p>The <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1FrameLock"><span class="std std-ref">FrameLock</span></a> is a container for holding a lock on <a class="reference internal" href="frame.html#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a> data while accessing that data. This lock allows multiple stream <a class="reference internal" href="slave.html#classrogue_1_1interfaces_1_1stream_1_1Slave"><span class="std std-ref">Slave</span></a> objects to read and update <a class="reference internal" href="frame.html#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a> data while ensuring only one thread is updating at a time. The lock is relased when the <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1FrameLock"><span class="std std-ref">FrameLock</span></a> object is destroyed. The <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1FrameLock"><span class="std std-ref">FrameLock</span></a> oject is never created directly, instead it is returned by the <a class="reference internal" href="frame.html#classrogue_1_1interfaces_1_1stream_1_1Frame_1a77f4303b1f63cd0e555db044ec430b3c"><span class="std std-ref">Frame::lock()</span></a> method. </p>
+<p>The <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1FrameLock"><span class="std std-ref">FrameLock</span></a> is a container for holding a lock on <a class="reference internal" href="frame.html#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a> data while accessing that data. This lock allows multiple stream <a class="reference internal" href="slave.html#classrogue_1_1interfaces_1_1stream_1_1Slave"><span class="std std-ref">Slave</span></a> objects to read and update <a class="reference internal" href="frame.html#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a> data while ensuring only one thread is updating at a time. The lock is released when the <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1FrameLock"><span class="std std-ref">FrameLock</span></a> object is destroyed. The <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1FrameLock"><span class="std std-ref">FrameLock</span></a> object is never created directly, instead it is returned by the <a class="reference internal" href="frame.html#classrogue_1_1interfaces_1_1stream_1_1Frame_1a77f4303b1f63cd0e555db044ec430b3c"><span class="std std-ref">Frame::lock()</span></a> method. </p>
 <div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric">Public Functions</p>
 <dl class="function">

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Buffer &mdash; Rogue v4.6.0-2-g7a70a3ac documentation</title>
+  <title>Buffer &mdash; Rogue v4.7.0-45-gcf223948 documentation</title>
   
 
   
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                v4.6.0
+                v4.7.0
               </div>
             
           
@@ -212,7 +212,7 @@
 <dt id="_CPPv4N5rogue10interfaces6stream6BufferE">
 <span id="_CPPv3N5rogue10interfaces6stream6BufferE"></span><span id="_CPPv2N5rogue10interfaces6stream6BufferE"></span><span id="rogue::interfaces::stream::Buffer"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Buffer"></span><em class="property">class </em><code class="sig-name descname">Buffer</code><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream6BufferE" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p><a class="reference internal" href="frame.html#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a> buffer. </p>
-<p>This class is a container for buffers which make up a frame. Each buffer is associated with a contigous block of memory allocated by an instance of the <a class="reference internal" href="pool.html#classrogue_1_1interfaces_1_1stream_1_1Pool"><span class="std std-ref">Pool</span></a> class. Each buffer within the frame has a reserved header and tail area to pre-reserve space which may be required by protocol layers. Direct interaction with the <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Buffer"><span class="std std-ref">Buffer</span></a> class is an advanced topic, most users will simply use a <a class="reference internal" href="frameIterator.html#classrogue_1_1interfaces_1_1stream_1_1FrameIterator"><span class="std std-ref">FrameIterator</span></a> to access <a class="reference internal" href="frame.html#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a> and <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Buffer"><span class="std std-ref">Buffer</span></a> data. The <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Buffer"><span class="std std-ref">Buffer</span></a> class is not vailable in Python. </p>
+<p>This class is a container for buffers which make up a frame. Each buffer is associated with a contiguous block of memory allocated by an instance of the <a class="reference internal" href="pool.html#classrogue_1_1interfaces_1_1stream_1_1Pool"><span class="std std-ref">Pool</span></a> class. Each buffer within the frame has a reserved header and tail area to pre-reserve space which may be required by protocol layers. Direct interaction with the <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Buffer"><span class="std std-ref">Buffer</span></a> class is an advanced topic, most users will simply use a <a class="reference internal" href="frameIterator.html#classrogue_1_1interfaces_1_1stream_1_1FrameIterator"><span class="std std-ref">FrameIterator</span></a> to access <a class="reference internal" href="frame.html#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a> and <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Buffer"><span class="std std-ref">Buffer</span></a> data. The <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Buffer"><span class="std std-ref">Buffer</span></a> class is not available in Python. </p>
 <div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric">Public Types</p>
 <dl class="type">
@@ -290,7 +290,7 @@
 <dt id="_CPPv4N5rogue10interfaces6stream6Buffer5beginEv">
 <span id="_CPPv3N5rogue10interfaces6stream6Buffer5beginEv"></span><span id="_CPPv2N5rogue10interfaces6stream6Buffer5beginEv"></span><span id="rogue::interfaces::stream::Buffer::begin"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Buffer_1a4947ecae5309f8856af71f858f9c6027"></span>uint8_t *<code class="sig-name descname">begin</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream6Buffer5beginEv" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Get beginning buffer iterator. </p>
-<p>Get an interator which indicates the start of the buffer space, not including the header reservation. <dl class="simple">
+<p>Get an iterator which indicates the start of the buffer space, not including the header reservation. <dl class="simple">
 <dt><strong>Return</strong></dt><dd><p>Begin buffer iterator </p>
 </dd>
 </dl>
@@ -301,7 +301,7 @@
 <dt id="_CPPv4N5rogue10interfaces6stream6Buffer3endEv">
 <span id="_CPPv3N5rogue10interfaces6stream6Buffer3endEv"></span><span id="_CPPv2N5rogue10interfaces6stream6Buffer3endEv"></span><span id="rogue::interfaces::stream::Buffer::end"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Buffer_1ac9673e236ed535ed34f8b62a49bed18f"></span>uint8_t *<code class="sig-name descname">end</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream6Buffer3endEv" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Get end buffer iterator. </p>
-<p>Get an interator which indicates the end of the the buffer minus the tail reservation. <dl class="simple">
+<p>Get an iterator which indicates the end of the the buffer minus the tail reservation. <dl class="simple">
 <dt><strong>Return</strong></dt><dd><p>End buffer iterator </p>
 </dd>
 </dl>
@@ -312,7 +312,7 @@
 <dt id="_CPPv4N5rogue10interfaces6stream6Buffer10endPayloadEv">
 <span id="_CPPv3N5rogue10interfaces6stream6Buffer10endPayloadEv"></span><span id="_CPPv2N5rogue10interfaces6stream6Buffer10endPayloadEv"></span><span id="rogue::interfaces::stream::Buffer::endPayload"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Buffer_1a7b8bdb8a036cd07a37abdc264062674e"></span>uint8_t *<code class="sig-name descname">endPayload</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream6Buffer10endPayloadEv" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Get end payload iterator. </p>
-<p>Get an interator which indicates the end of the the payload space. <dl class="simple">
+<p>Get an iterator which indicates the end of the the payload space. <dl class="simple">
 <dt><strong>Return</strong></dt><dd><p>End payload iterator </p>
 </dd>
 </dl>
@@ -394,7 +394,7 @@
 <dl class="function">
 <dt id="_CPPv4N5rogue10interfaces6stream6Buffer14setPayloadFullEv">
 <span id="_CPPv3N5rogue10interfaces6stream6Buffer14setPayloadFullEv"></span><span id="_CPPv2N5rogue10interfaces6stream6Buffer14setPayloadFullEv"></span><span id="rogue::interfaces::stream::Buffer::setPayloadFull"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Buffer_1af635d4907cefd01f9f3b259ffa7f94bf"></span>void <code class="sig-name descname">setPayloadFull</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream6Buffer14setPayloadFullEv" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>Set the pyalod size to fill the buffer. </p>
+<dd><p>Set the payload size to fill the buffer. </p>
 <p>This method sets the buffer payload size to fill the buffer, minus the header and tail reservation. </p>
 </dd></dl>
 

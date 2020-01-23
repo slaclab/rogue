@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Additional AxiStreamDma Features &mdash; Rogue v4.6.0-2-g7a70a3ac documentation</title>
+  <title>Additional AxiStreamDma Features &mdash; Rogue v4.7.0-45-gcf223948 documentation</title>
   
 
   
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                v4.6.0
+                v4.7.0
               </div>
             
           
@@ -94,7 +94,7 @@
 <li class="toctree-l3 current"><a class="current reference internal" href="#">Additional AxiStreamDma Features</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#kernel-module-debug">Kernel Module Debug</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#zerocopy-enable">ZeroCopy Enable</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#dma-acknowledge">Dma Acknowledge</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#dma-acknowledge">DMA Acknowledge</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#frame-send-timeout">Frame Send Timeout</a></li>
 </ul>
 </li>
@@ -178,7 +178,7 @@
   <div class="section" id="additional-axistreamdma-features">
 <span id="hardware-axi-features"></span><h1>Additional AxiStreamDma Features<a class="headerlink" href="#additional-axistreamdma-features" title="Permalink to this headline">¶</a></h1>
 <p>The following features are available in the AxiStreamDma class which
-may be neccessary for some operation modes.</p>
+may be necessary for some operation modes.</p>
 <p>All of these features are described in detail at <a class="reference internal" href="classes/axiStreamDma.html#hardware-axi-axi-stream-dma"><span class="std std-ref">AxiStreamDma</span></a>.</p>
 <div class="section" id="kernel-module-debug">
 <h2>Kernel Module Debug<a class="headerlink" href="#kernel-module-debug" title="Permalink to this headline">¶</a></h2>
@@ -186,14 +186,14 @@ may be neccessary for some operation modes.</p>
 class have a debugging mode. This can be enabled by the user with the following
 calls:</p>
 <p>In Python:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">axiStream</span><span class="o">.</span><span class="n">setDriverDebug</span><span class="p">(</span><span class="bp">True</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">axiStream</span><span class="o">.</span><span class="n">setDriverDebug</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>In C++:</p>
 <div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="n">axiStream</span><span class="o">-&gt;</span><span class="n">setDriverDebug</span><span class="p">(</span><span class="nb">true</span><span class="p">);</span>
 </pre></div>
 </div>
-<p>The debug messages can then be viewed using the dmesg command in linux:</p>
+<p>The debug messages can then be viewed using the dmesg command in Linux:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ dmesg
 </pre></div>
 </div>
@@ -207,7 +207,7 @@ the zeroCopyEn flag set to false.</p>
 <p>Alternatively the zero copy mode can be disabled globally for all interactions
 with the AxiStreamDma class using the following call:</p>
 <p>In Python:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">axiStream</span><span class="o">.</span><span class="n">setZeroCopyEn</span><span class="p">(</span><span class="bp">False</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">axiStream</span><span class="o">.</span><span class="n">setZeroCopyEn</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>In C++:</p>
@@ -216,7 +216,7 @@ with the AxiStreamDma class using the following call:</p>
 </div>
 </div>
 <div class="section" id="dma-acknowledge">
-<h2>Dma Acknowledge<a class="headerlink" href="#dma-acknowledge" title="Permalink to this headline">¶</a></h2>
+<h2>DMA Acknowledge<a class="headerlink" href="#dma-acknowledge" title="Permalink to this headline">¶</a></h2>
 <p>Some versions of the lower level driver and the underlying hardware will support
 a DMA Acknowledge function which pulses a logic signal in the lower level firmware.
 This was used in some experiments which need more complex handshakes between software

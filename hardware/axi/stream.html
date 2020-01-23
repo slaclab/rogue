@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Using The AxiStreamDma Class &mdash; Rogue v4.6.0-2-g7a70a3ac documentation</title>
+  <title>Using The AxiStreamDma Class &mdash; Rogue v4.7.0-45-gcf223948 documentation</title>
   
 
   
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                v4.6.0
+                v4.7.0
               </div>
             
           
@@ -200,7 +200,7 @@ created in <a class="reference internal" href="../../interfaces/memory/master.ht
 <span class="kn">import</span> <span class="nn">rogue.protocols.srp</span>
 
 <span class="c1"># First attach to destination 0 for register traffic, ssi enabled</span>
-<span class="n">regChan</span> <span class="o">=</span> <span class="n">rogue</span><span class="o">.</span><span class="n">hardware</span><span class="o">.</span><span class="n">axi</span><span class="o">.</span><span class="n">AxiStreamDma</span><span class="p">(</span><span class="s1">&#39;/dev/datadev_0&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="bp">True</span><span class="p">)</span>
+<span class="n">regChan</span> <span class="o">=</span> <span class="n">rogue</span><span class="o">.</span><span class="n">hardware</span><span class="o">.</span><span class="n">axi</span><span class="o">.</span><span class="n">AxiStreamDma</span><span class="p">(</span><span class="s1">&#39;/dev/datadev_0&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
 
 <span class="c1"># Create an SRP engine</span>
 <span class="n">srp</span> <span class="o">=</span> <span class="n">rogue</span><span class="o">.</span><span class="n">protocols</span><span class="o">.</span><span class="n">srp</span><span class="o">.</span><span class="n">SrpV3</span><span class="p">()</span>
@@ -215,7 +215,7 @@ created in <a class="reference internal" href="../../interfaces/memory/master.ht
 <span class="n">memMast</span> <span class="o">&gt;&gt;</span> <span class="n">srp</span>
 
 <span class="c1"># Next attach to destination 1 for data traffic, ssi enabled</span>
-<span class="n">dataChan</span> <span class="o">=</span> <span class="n">rogue</span><span class="o">.</span><span class="n">hardware</span><span class="o">.</span><span class="n">axi</span><span class="o">.</span><span class="n">AxiStreamDma</span><span class="p">(</span><span class="s1">&#39;/dev/datadev_0&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="bp">True</span><span class="p">)</span>
+<span class="n">dataChan</span> <span class="o">=</span> <span class="n">rogue</span><span class="o">.</span><span class="n">hardware</span><span class="o">.</span><span class="n">axi</span><span class="o">.</span><span class="n">AxiStreamDma</span><span class="p">(</span><span class="s1">&#39;/dev/datadev_0&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
 
 <span class="c1"># Create a master</span>
 <span class="n">myMast</span> <span class="o">=</span> <span class="n">MyCustomMaster</span><span class="p">()</span>
@@ -230,9 +230,9 @@ created in <a class="reference internal" href="../../interfaces/memory/master.ht
 </div>
 <div class="section" id="c-axistreamdma-example">
 <h2>C++ AxiStreamDma Example<a class="headerlink" href="#c-axistreamdma-example" title="Permalink to this headline">¶</a></h2>
-<p>The equivelent code in C++ is show below:</p>
+<p>The equivalent code in C++ is show below:</p>
 <div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;rogue/hardware/axi/AxiStreamDma.h&gt;</span><span class="cp"></span>
-<span class="cp">#include</span> <span class="cpf">&lt;rogue/ptotocols/srp/SrpV3.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;rogue/protocols/srp/SrpV3.h&gt;</span><span class="cp"></span>
 
 <span class="c1">// First attach to destination 0 for register traffic, ssi enabled</span>
 <span class="n">rogue</span><span class="o">::</span><span class="n">hardware</span><span class="o">::</span><span class="n">axi</span><span class="o">::</span><span class="n">AxiStreamDmaPtr</span> <span class="n">regChan</span> <span class="o">=</span> <span class="n">rogue</span><span class="o">::</span><span class="n">hardware</span><span class="o">::</span><span class="n">axi</span><span class="o">::</span><span class="n">AxiStreamDma</span><span class="o">::</span><span class="n">create</span><span class="p">(</span><span class="s">&quot;/dev/datadev_0&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="nb">true</span><span class="p">);</span>

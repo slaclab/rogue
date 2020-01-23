@@ -22,8 +22,8 @@ A memory master and slave are connected using the following commands in python:
    # Alternatively a helper function can be used
    pyrogue.streamConnect(masterA, hubA)
    pyrogue.streamConnect(hubA, srpV3)
+The equivalent code in C++ is show below:
 
-The equivelent code in C++ is show below:
 
 .. code-block:: c
 

@@ -6,13 +6,13 @@ Memory Master Example
 
 In most cases the user will take advantage of the pyrogue.RemoteVariable, 
 pyrogue.Device, pyrogue.RemoteCommand and pyrogue.MemoryBlock classes to
-interact with memory busses. In rare cases it may be neccessary to write
+interact with memory buses. In rare cases it may be necessary to write
 custom memory Master modules in Python or C++.
 
-Python and C++ subclasses of the Master class can be used interchagably, 
+Python and C++ subclasses of the Master class can be used interchangeably, 
 allowing c++ Slave subclasses to service memory transactions from python 
 masters and python Slave subclasses to receive service memory transactions 
-initated by c++ masters.
+initiated by c++ masters.
 
 See :ref:`interfaces_memory_master` for more detail on the Master class.
 
@@ -24,7 +24,7 @@ Below is an example class which will initiate a read followed by a write.
     import rogue.interfaces.memory
 
     # Create a subclass of a memory Master
-    # This master will initiate a read from a passed adddress and
+    # This master will initiate a read from a passed address and
     # increment that value at that address by a passed value
     class MyMemMaster(rogue.interfaces.memory.Master):
 
@@ -39,7 +39,7 @@ Below is an example class which will initiate a read followed by a write.
             ba = bytearray(4)
 
             # Clear any existing errors
-            self._setError(0)
+            self._clearError()
 
             # Start read transaction from address into bytearray
             # size = 4, byte array offset = 0
@@ -49,7 +49,7 @@ Below is an example class which will initiate a read followed by a write.
             _waitTransaction(id)
 
             # Check transaction result
-            if self._getError() != 0:
+            if self._getError() != "":
                 print("got error")
                 return False
 
@@ -66,13 +66,13 @@ Below is an example class which will initiate a read followed by a write.
             self._waitTransaction(id)
 
             # Check transaction result
-            self.if _getError() != 0:
+            self.if _getError() != "":
                 print("got error")
                 return False
             else:
                 return True
 
-The equivelent code in C++ is show below:
+The equivalent code in C++ is show below:
 
 .. code-block:: c
 
@@ -80,7 +80,7 @@ The equivelent code in C++ is show below:
    #include <rogue/interfaces/memory/Master.h>
 
    // Create a subclass of a memory Master
-   // This master will initiate a read from a passed adddress and
+   // This master will initiate a read from a passed address and
    // increment that value at that address by a passed value
    class MyMemMaster : public rogue::interfaces::memory::Master {
       public:
@@ -102,7 +102,7 @@ The equivelent code in C++ is show below:
             uint32_t id;
 
             // Clear any existing errors
-            this->setError(0);
+            this->clearError();
 
             // Start read transaction, size=4
             id = this->reqTransaction(address, 4, &rValue, rogue::interfaces::memory::Read);
@@ -111,7 +111,7 @@ The equivelent code in C++ is show below:
             this->waitTransaction(id)
 
             // Check transaction result
-            if ( this->getError() != 0 ) {
+            if ( this->getError() != "" ) {
                 printf("got error\n");
                 return false;
             }
@@ -126,7 +126,7 @@ The equivelent code in C++ is show below:
             this->waitTransaction(id)
 
             // Check transaction result
-            if ( this->getError() != 0 ) {
+            if ( this->getError() != "" ) {
                 printf("got error\n");
                 return false;
             } else return true;

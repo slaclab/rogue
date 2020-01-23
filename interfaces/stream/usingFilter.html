@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Using A Filter &mdash; Rogue v4.6.0-2-g7a70a3ac documentation</title>
+  <title>Using A Filter &mdash; Rogue v4.7.0-45-gcf223948 documentation</title>
   
 
   
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                v4.6.0
+                v4.7.0
               </div>
             
           
@@ -183,7 +183,7 @@ a stream Master which generates channelized Frames. This a rate situation which 
 receiving a stream from a rogue.utilities.StreamReader or from the output of the
 rogue.protocols.batcher.SplitterV1 objects. The Filter object only passes through frames which
 have a configured channel id. The Frame filter can also be configured to drop frames which
-have a non zero error field. This may be a usefull utlility for non-channelized data as well.</p>
+have a non zero error field. This may be a useful utility for non-channelized data as well.</p>
 <div class="section" id="filter-example">
 <h2>Filter Example<a class="headerlink" href="#filter-example" title="Permalink to this headline">¶</a></h2>
 <p>The following python example shows how to read channel 1 data from a data file.</p>
@@ -196,7 +196,7 @@ have a non zero error field. This may be a usefull utlility for non-channelized 
 <span class="n">src</span> <span class="o">=</span> <span class="n">pyrogue</span><span class="o">.</span><span class="n">utilities</span><span class="o">.</span><span class="n">fileio</span><span class="o">.</span><span class="n">StreamReader</span><span class="p">()</span>
 
 <span class="c1"># Filter, channel=1, drop errors</span>
-<span class="n">filt</span> <span class="o">=</span> <span class="n">rogue</span><span class="o">.</span><span class="n">interfaces</span><span class="o">.</span><span class="n">stream</span><span class="o">.</span><span class="n">Filter</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="bp">True</span><span class="p">)</span>
+<span class="n">filt</span> <span class="o">=</span> <span class="n">rogue</span><span class="o">.</span><span class="n">interfaces</span><span class="o">.</span><span class="n">stream</span><span class="o">.</span><span class="n">Filter</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="kc">True</span><span class="p">)</span>
 
 <span class="c1"># Data destination</span>
 <span class="n">dst</span> <span class="o">=</span> <span class="n">MyCustomSlave</span><span class="p">()</span>

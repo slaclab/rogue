@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Sending Frames &mdash; Rogue v4.6.0-2-g7a70a3ac documentation</title>
+  <title>Sending Frames &mdash; Rogue v4.7.0-45-gcf223948 documentation</title>
   
 
   
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                v4.6.0
+                v4.7.0
               </div>
             
           
@@ -189,7 +189,7 @@ use zero copy buffers for the new Frame. If the master intends to re-use the Fra
 multiple times, it will want to disallow the creation of zero copy buffers. A Frame with
 zero copy buffers is usually emptied when it is passed to the primary slave and cannot be
 reused.</p>
-<p>Python and C++ subclasses of the Master class can be used interchagably, allowing c++ subclasses
+<p>Python and C++ subclasses of the Master class can be used interchangeably, allowing c++ subclasses
 to receive Frames from python masters and python subclasses to receive Frames from c++ masters.</p>
 <div class="section" id="python-master-subclass">
 <h2>Python Master Subclass<a class="headerlink" href="#python-master-subclass" title="Permalink to this headline">¶</a></h2>
@@ -210,7 +210,7 @@ to receive Frames from python masters and python subclasses to receive Frames fr
         <span class="c1"># indicating if we can allow zero copy buffers, usually set to true</span>
 
         <span class="c1"># Here we request a frame capable of holding 100 bytes</span>
-        <span class="n">frame</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reqFrame</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="bp">True</span><span class="p">)</span>
+        <span class="n">frame</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reqFrame</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
 
         <span class="c1"># Create a 10 byte array with an incrementing value</span>
         <span class="n">ba</span> <span class="o">=</span> <span class="nb">bytearray</span><span class="p">([</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">)])</span>
@@ -226,7 +226,7 @@ to receive Frames from python masters and python subclasses to receive Frames fr
 
         <span class="c1"># The user may also write to an arbitrary offset, the valid payload</span>
         <span class="c1"># size of the frame is set to the highest index written.</span>
-        <span class="c1"># Locations not explicity written, but below the highest written</span>
+        <span class="c1"># Locations not explicitly written, but below the highest written</span>
         <span class="c1"># index, will be considered valid, but may contain random data</span>
         <span class="n">ba</span> <span class="o">=</span> <span class="nb">bytearray</span><span class="p">([</span><span class="n">i</span><span class="o">*</span><span class="mi">2</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span> <span class="p">(</span><span class="mi">10</span><span class="p">)])</span>
         <span class="n">frame</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">ba</span><span class="p">,</span><span class="mi">50</span><span class="p">)</span>
@@ -244,10 +244,10 @@ to receive Frames from python masters and python subclasses to receive Frames fr
 </div>
 <div class="section" id="c-master-subclass">
 <h2>C++ Master Subclass<a class="headerlink" href="#c-master-subclass" title="Permalink to this headline">¶</a></h2>
-<p>Creating a Master sub-class in c++ is done in a similiar fashion. A new frame is
+<p>Creating a Master sub-class in c++ is done in a similar fashion. A new frame is
 requested just as it is in python and the sendFrame() method is used to pass the
 frame to the connected Slaves. The main difference is that accessing the Frame
-data can be done more directly using an interator.</p>
+data can be done more directly using an iterator.</p>
 <p>In order to use a custom c++ Master subclass, you will need to build it into a c++ python module or into
 a c++ application. See the sections <a class="reference internal" href="../../custom_module/index.html#custom-module"><span class="std std-ref">Creating Custom Modules</span></a> and <a class="reference internal" href="../../installing/application.html#installing-application"><span class="std std-ref">Compiling A Rogue Application</span></a>.</p>
 <p>The example below shows the most direct method for updating data within a frame using
@@ -310,13 +310,13 @@ and we use std::copy to move data from data buffer into the Frame.</p>
 </pre></div>
 </div>
 <p>The std::copy call works very well for moving data between two standard C++ iterators. It will
-properly deal with iterators which manage non-contigous buffers, which may be the case when allocating
+properly deal with iterators which manage non-contiguous buffers, which may be the case when allocating
 new Frames. For example when sending large data frames over a UDP interface, the Slave which allocates the
-buffer may create a Frame consistaing up a number of 1500 byte frames which may exist at random locations
-in memory. If we are to use std::copy in this case, it will detect that the passed iterator range is non-contigous, and default to a less performant method of copying data byte by byte.</p>
+buffer may create a Frame consisting up a number of 1500 byte frames which may exist at random locations
+in memory. If we are to use std::copy in this case, it will detect that the passed iterator range is non-contiguous, and default to a less performant method of copying data byte by byte.</p>
 <p>In order to ensure the best possible performance, the Rogue <a class="reference internal" href="classes/frameIterator.html#interfaces-stream-frame-iterator"><span class="std std-ref">Frame Iterator</span></a> provides
-mechanisms for iterating through each contigous buffer. The following example performs a data copy from
-a passed data buffer into the Rogue frame, ensuring that the most effeciant copy methods are used:</p>
+mechanisms for iterating through each contiguous buffer. The following example performs a data copy from
+a passed data buffer into the Rogue frame, ensuring that the most efficient copy methods are used:</p>
 <div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="kt">uint32_t</span>  <span class="n">size</span><span class="p">;</span>
 <span class="kt">uint8_t</span> <span class="o">*</span> <span class="n">data</span><span class="p">;</span>
 
@@ -332,7 +332,7 @@ a passed data buffer into the Rogue frame, ensuring that the most effeciant copy
 <span class="c1">// Keep going until we get to the end of the Frame, assume the passed data pointer has 100 bytes</span>
 <span class="k">while</span> <span class="p">(</span> <span class="n">it</span> <span class="o">!=</span> <span class="n">frame</span><span class="o">-&gt;</span><span class="n">end</span><span class="p">()</span> <span class="p">)</span> <span class="p">{</span>
 
-   <span class="c1">// The rem buffer method returns the number of bytes left in the current contigous buffer</span>
+   <span class="c1">// The rem buffer method returns the number of bytes left in the current contiguous buffer</span>
    <span class="n">size</span> <span class="o">=</span> <span class="n">it</span><span class="o">-&gt;</span><span class="n">remBuffer</span><span class="p">();</span>
 
    <span class="c1">// Copy size number of bytes, updating both pointers</span>

@@ -5,18 +5,18 @@ Using A Fifo
 ============
 
 A :ref:`interfaces_stream_fifo` object provides an elastic buffer between a stream Master and stream Slave. This can be
-usefull when absorbing flow control situations or providing a point where data Frames can be cleanly
-dropped when the receiver can not keep up with a source. The use of a Fifo can can also be helpfull
+useful when absorbing flow control situations or providing a point where data Frames can be cleanly
+dropped when the receiver can not keep up with a source. The use of a Fifo can can also be helpful
 for tapping stream data for consumption by a slower process which may not be able to keep up with
 the primary path data rate and may not want to consume all of the available data. 
 
 The Fifo has copy mode and trimSize attributes which support the following combinations:
 * noCopy = True and trimSize = 0, original incoming Frames are inserted into the FIfo
-* noCopy = False and trimSize = o, a full copy of the original frame is insThe erted into the Fifo
+* noCopy = False and trimSize = o, a full copy of the original frame is inserted into the Fifo
 * noCopy = False and trimSize != 0, a partial copy of up to trimSize bytes is inserted into the Fifo
 
 Additionally the Fifo has a maxDepth attribute which controls how it buffers data. When maxDepth = 0
-the Fifo size is unlimied and Frames are never dropped. When maxDepth != 0 Frame data is dropped
+the Fifo size is unlimited and Frames are never dropped. When maxDepth != 0 Frame data is dropped
 once the Fifo Frame count reaches the maxDepth size.
 
 In Line Fifo Example

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Custom Module Source &mdash; Rogue v4.6.0-2-g7a70a3ac documentation</title>
+  <title>Custom Module Source &mdash; Rogue v4.7.0-45-gcf223948 documentation</title>
   
 
   
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                v4.6.0
+                v4.7.0
               </div>
             
           
@@ -167,7 +167,7 @@
 <span id="custom-sourcefile"></span><h1>Custom Module Source<a class="headerlink" href="#custom-module-source" title="Permalink to this headline">¶</a></h1>
 <p>The following is an example source code file for a custom module which implements
 a custom stream transmitter and receiver as described in stream interfaces
-documenation. This source code expands the example to expose status variables
+documentation. This source code expands the example to expose status variables
 to the Python layer. Instructions for wrapping these modules in PyRogue Devices
 are included in <a class="reference internal" href="wrapper.html#custom-wrapper"><span class="std std-ref">Wrapping Custom Module With PyRogue Device</span></a>.</p>
 <ul class="simple">
@@ -215,7 +215,7 @@ class MyCustomSlave : public rogue::interfaces::stream::Slave {
          byteCount_  = 0;
       }
 
-      // Receve a frame
+      // Receive a frame
       void acceptFrame ( boost::shared_ptr&lt;rogue::interfaces::stream::Frame&gt; frame ) {
 
          // Acquire lock on frame. Will be release when lock class goes out of scope

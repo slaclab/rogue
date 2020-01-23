@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Transaction &mdash; Rogue v4.6.0-2-g7a70a3ac documentation</title>
+  <title>Transaction &mdash; Rogue v4.7.0-45-gcf223948 documentation</title>
   
 
   
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                v4.6.0
+                v4.7.0
               </div>
             
           
@@ -224,7 +224,7 @@
 <dt id="_CPPv4N5rogue10interfaces6memory11Transaction7expiredEv">
 <span id="_CPPv3N5rogue10interfaces6memory11Transaction7expiredEv"></span><span id="_CPPv2N5rogue10interfaces6memory11Transaction7expiredEv"></span><span id="rogue::interfaces::memory::Transaction::expired"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Transaction_1a35616717f6d15c8978ba296b7fce816c"></span>bool <code class="sig-name descname">expired</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory11Transaction7expiredEv" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Get expired flag. </p>
-<p>The expired flag is set by the <a class="reference internal" href="master.html#classrogue_1_1interfaces_1_1memory_1_1Master"><span class="std std-ref">Master</span></a> when the <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Transaction"><span class="std std-ref">Transaction</span></a> times out and the <a class="reference internal" href="master.html#classrogue_1_1interfaces_1_1memory_1_1Master"><span class="std std-ref">Master</span></a> is no longer wiating for the <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Transaction"><span class="std std-ref">Transaction</span></a> to complete. Lock must be held before checking the expired status.</p>
+<p>The expired flag is set by the <a class="reference internal" href="master.html#classrogue_1_1interfaces_1_1memory_1_1Master"><span class="std std-ref">Master</span></a> when the <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Transaction"><span class="std std-ref">Transaction</span></a> times out and the <a class="reference internal" href="master.html#classrogue_1_1interfaces_1_1memory_1_1Master"><span class="std std-ref">Master</span></a> is no longer waiting for the <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Transaction"><span class="std std-ref">Transaction</span></a> to complete. Lock must be held before checking the expired status.</p>
 <p>Exposed as <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Transaction_1a35616717f6d15c8978ba296b7fce816c"><span class="std std-ref">expired()</span></a> to Python <dl class="simple">
 <dt><strong>Return</strong></dt><dd><p>True if transaction is expired. </p>
 </dd>
@@ -295,7 +295,7 @@
 <span id="_CPPv3N5rogue10interfaces6memory11Transaction4doneEv"></span><span id="_CPPv2N5rogue10interfaces6memory11Transaction4doneEv"></span><span id="rogue::interfaces::memory::Transaction::done"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Transaction_1af6331d51aebb4d0cf07ea55b62de7f21"></span>void <code class="sig-name descname">done</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory11Transaction4doneEv" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Complete transaction without error. </p>
 <p>Lock must be held before calling this method. The error types are defined in Constants.</p>
-<p>Exposted as <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Transaction_1af6331d51aebb4d0cf07ea55b62de7f21"><span class="std std-ref">done()</span></a> to Python </p>
+<p>Exposed as <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Transaction_1af6331d51aebb4d0cf07ea55b62de7f21"><span class="std std-ref">done()</span></a> to Python </p>
 </dd></dl>
 
 <dl class="function">
@@ -303,7 +303,7 @@
 <span id="_CPPv3N5rogue10interfaces6memory11Transaction7errorPyENSt6stringE"></span><span id="_CPPv2N5rogue10interfaces6memory11Transaction7errorPyENSt6stringE"></span><span id="rogue::interfaces::memory::Transaction::errorPy__ss"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Transaction_1acc83400c79ebb69dd1f1ecd6e2fda07d"></span>void <code class="sig-name descname">errorPy</code><span class="sig-paren">(</span>std::string <em>error</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory11Transaction7errorPyENSt6stringE" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Complete transaction with passed error, python interface. </p>
 <p>Lock must be held before calling this method.</p>
-<p>Exposted as <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Transaction_1a9c3f54d3fcfa0766984039b6739629da"><span class="std std-ref">error()</span></a> to Python <dl class="simple">
+<p>Exposed as <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Transaction_1a9c3f54d3fcfa0766984039b6739629da"><span class="std std-ref">error()</span></a> to Python <dl class="simple">
 <dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">error</span></code>: <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Transaction"><span class="std std-ref">Transaction</span></a> error message </p></li>
 </ul>
@@ -354,7 +354,7 @@
 <dt id="_CPPv4N5rogue10interfaces6memory11Transaction7getDataEN5boost6python6objectE8uint32_t">
 <span id="_CPPv3N5rogue10interfaces6memory11Transaction7getDataEN5boost6python6objectE8uint32_t"></span><span id="_CPPv2N5rogue10interfaces6memory11Transaction7getDataEN5boost6python6objectE8uint32_t"></span><span id="rogue::interfaces::memory::Transaction::getData__boost::python::object.uint32_t"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Transaction_1a07bd8bccdcba6384f5976d148ce362ff"></span>void <code class="sig-name descname">getData</code><span class="sig-paren">(</span>boost::python::object <em>p</em>, uint32_t <em>offset</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory11Transaction7getDataEN5boost6python6objectE8uint32_t" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Method for copying transaction data to Python byte array. </p>
-<p>Exposted to Python as <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Transaction_1a07bd8bccdcba6384f5976d148ce362ff"><span class="std std-ref">getData()</span></a></p>
+<p>Exposed to Python as <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Transaction_1a07bd8bccdcba6384f5976d148ce362ff"><span class="std std-ref">getData()</span></a></p>
 <p>The size of the data to be copied is defined by the size of the passed data buffer. <dl class="simple">
 <dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">p</span></code>: Python byte array object </p></li>
@@ -369,7 +369,7 @@
 <dt id="_CPPv4N5rogue10interfaces6memory11Transaction7setDataEN5boost6python6objectE8uint32_t">
 <span id="_CPPv3N5rogue10interfaces6memory11Transaction7setDataEN5boost6python6objectE8uint32_t"></span><span id="_CPPv2N5rogue10interfaces6memory11Transaction7setDataEN5boost6python6objectE8uint32_t"></span><span id="rogue::interfaces::memory::Transaction::setData__boost::python::object.uint32_t"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Transaction_1aba98e4513c63a75e9146807361c6eb75"></span>void <code class="sig-name descname">setData</code><span class="sig-paren">(</span>boost::python::object <em>p</em>, uint32_t <em>offset</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory11Transaction7setDataEN5boost6python6objectE8uint32_t" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Method for copying transaction data from Python byte array. </p>
-<p>Exposted to Python as <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Transaction_1aba98e4513c63a75e9146807361c6eb75"><span class="std std-ref">setData()</span></a></p>
+<p>Exposed to Python as <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Transaction_1aba98e4513c63a75e9146807361c6eb75"><span class="std std-ref">setData()</span></a></p>
 <p>The size of the data to be copied is defined by the size of the passed data buffer. <dl class="simple">
 <dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">p</span></code>: Python byte array object </p></li>

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Memory Master Example &mdash; Rogue v4.6.0-2-g7a70a3ac documentation</title>
+  <title>Memory Master Example &mdash; Rogue v4.7.0-45-gcf223948 documentation</title>
   
 
   
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                v4.6.0
+                v4.7.0
               </div>
             
           
@@ -175,19 +175,19 @@
 <span id="interfaces-memory-master-ex"></span><h1>Memory Master Example<a class="headerlink" href="#memory-master-example" title="Permalink to this headline">¶</a></h1>
 <p>In most cases the user will take advantage of the pyrogue.RemoteVariable,
 pyrogue.Device, pyrogue.RemoteCommand and pyrogue.MemoryBlock classes to
-interact with memory busses. In rare cases it may be neccessary to write
+interact with memory buses. In rare cases it may be necessary to write
 custom memory Master modules in Python or C++.</p>
-<p>Python and C++ subclasses of the Master class can be used interchagably,
+<p>Python and C++ subclasses of the Master class can be used interchangeably,
 allowing c++ Slave subclasses to service memory transactions from python
 masters and python Slave subclasses to receive service memory transactions
-initated by c++ masters.</p>
+initiated by c++ masters.</p>
 <p>See <a class="reference internal" href="classes/master.html#interfaces-memory-master"><span class="std std-ref">Master</span></a> for more detail on the Master class.</p>
 <p>Below is an example class which will initiate a read followed by a write.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pyrogue</span>
 <span class="kn">import</span> <span class="nn">rogue.interfaces.memory</span>
 
 <span class="c1"># Create a subclass of a memory Master</span>
-<span class="c1"># This master will initiate a read from a passed adddress and</span>
+<span class="c1"># This master will initiate a read from a passed address and</span>
 <span class="c1"># increment that value at that address by a passed value</span>
 <span class="k">class</span> <span class="nc">MyMemMaster</span><span class="p">(</span><span class="n">rogue</span><span class="o">.</span><span class="n">interfaces</span><span class="o">.</span><span class="n">memory</span><span class="o">.</span><span class="n">Master</span><span class="p">):</span>
 
@@ -202,7 +202,7 @@ initated by c++ masters.</p>
         <span class="n">ba</span> <span class="o">=</span> <span class="nb">bytearray</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
 
         <span class="c1"># Clear any existing errors</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_setError</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_clearError</span><span class="p">()</span>
 
         <span class="c1"># Start read transaction from address into bytearray</span>
         <span class="c1"># size = 4, byte array offset = 0</span>
@@ -212,14 +212,14 @@ initated by c++ masters.</p>
         <span class="n">_waitTransaction</span><span class="p">(</span><span class="nb">id</span><span class="p">)</span>
 
         <span class="c1"># Check transaction result</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getError</span><span class="p">()</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">print</span><span class="p">(</span><span class="s2">&quot;got error&quot;</span><span class="p">)</span>
-            <span class="k">return</span> <span class="bp">False</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getError</span><span class="p">()</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;got error&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">False</span>
 
         <span class="c1"># Increment value in byte array by passed value</span>
-        <span class="n">oldValue</span> <span class="o">=</span> <span class="nb">int</span><span class="o">.</span><span class="n">from_bytes</span><span class="p">(</span><span class="n">ba</span><span class="p">,</span> <span class="s1">&#39;little&#39;</span><span class="p">,</span> <span class="n">signed</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+        <span class="n">oldValue</span> <span class="o">=</span> <span class="nb">int</span><span class="o">.</span><span class="n">from_bytes</span><span class="p">(</span><span class="n">ba</span><span class="p">,</span> <span class="s1">&#39;little&#39;</span><span class="p">,</span> <span class="n">signed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
         <span class="n">oldvalue</span> <span class="o">+=</span> <span class="n">value</span>
-        <span class="n">ba</span> <span class="o">=</span> <span class="n">oldValue</span><span class="o">.</span><span class="n">to_bytes</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="s1">&#39;little&#39;</span><span class="p">,</span> <span class="n">signed</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+        <span class="n">ba</span> <span class="o">=</span> <span class="n">oldValue</span><span class="o">.</span><span class="n">to_bytes</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="s1">&#39;little&#39;</span><span class="p">,</span> <span class="n">signed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
         <span class="c1"># Start write transaction to address from bytearray</span>
         <span class="c1"># size = 4, byte array offset = 0</span>
@@ -229,19 +229,19 @@ initated by c++ masters.</p>
         <span class="bp">self</span><span class="o">.</span><span class="n">_waitTransaction</span><span class="p">(</span><span class="nb">id</span><span class="p">)</span>
 
         <span class="c1"># Check transaction result</span>
-        <span class="bp">self</span><span class="o">.</span><span class="k">if</span> <span class="n">_getError</span><span class="p">()</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">print</span><span class="p">(</span><span class="s2">&quot;got error&quot;</span><span class="p">)</span>
-            <span class="k">return</span> <span class="bp">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="k">if</span> <span class="n">_getError</span><span class="p">()</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;got error&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">False</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">True</span>
+            <span class="k">return</span> <span class="kc">True</span>
 </pre></div>
 </div>
-<p>The equivelent code in C++ is show below:</p>
+<p>The equivalent code in C++ is show below:</p>
 <div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;rogue/interfaces/memory/Constants.h&gt;</span><span class="cp"></span>
 <span class="cp">#include</span> <span class="cpf">&lt;rogue/interfaces/memory/Master.h&gt;</span><span class="cp"></span>
 
 <span class="c1">// Create a subclass of a memory Master</span>
-<span class="c1">// This master will initiate a read from a passed adddress and</span>
+<span class="c1">// This master will initiate a read from a passed address and</span>
 <span class="c1">// increment that value at that address by a passed value</span>
 <span class="n">class</span> <span class="nl">MyMemMaster</span> <span class="p">:</span> <span class="n">public</span> <span class="n">rogue</span><span class="o">::</span><span class="n">interfaces</span><span class="o">::</span><span class="n">memory</span><span class="o">::</span><span class="n">Master</span> <span class="p">{</span>
    <span class="nl">public</span><span class="p">:</span>
@@ -263,7 +263,7 @@ initated by c++ masters.</p>
          <span class="kt">uint32_t</span> <span class="n">id</span><span class="p">;</span>
 
          <span class="c1">// Clear any existing errors</span>
-         <span class="n">this</span><span class="o">-&gt;</span><span class="n">setError</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+         <span class="n">this</span><span class="o">-&gt;</span><span class="n">clearError</span><span class="p">();</span>
 
          <span class="c1">// Start read transaction, size=4</span>
          <span class="n">id</span> <span class="o">=</span> <span class="n">this</span><span class="o">-&gt;</span><span class="n">reqTransaction</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">rValue</span><span class="p">,</span> <span class="n">rogue</span><span class="o">::</span><span class="n">interfaces</span><span class="o">::</span><span class="n">memory</span><span class="o">::</span><span class="n">Read</span><span class="p">);</span>
@@ -272,7 +272,7 @@ initated by c++ masters.</p>
          <span class="n">this</span><span class="o">-&gt;</span><span class="n">waitTransaction</span><span class="p">(</span><span class="n">id</span><span class="p">)</span>
 
          <span class="c1">// Check transaction result</span>
-         <span class="k">if</span> <span class="p">(</span> <span class="n">this</span><span class="o">-&gt;</span><span class="n">getError</span><span class="p">()</span> <span class="o">!=</span> <span class="mi">0</span> <span class="p">)</span> <span class="p">{</span>
+         <span class="k">if</span> <span class="p">(</span> <span class="n">this</span><span class="o">-&gt;</span><span class="n">getError</span><span class="p">()</span> <span class="o">!=</span> <span class="s">&quot;&quot;</span> <span class="p">)</span> <span class="p">{</span>
              <span class="n">printf</span><span class="p">(</span><span class="s">&quot;got error</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
              <span class="k">return</span> <span class="nb">false</span><span class="p">;</span>
          <span class="p">}</span>
@@ -287,7 +287,7 @@ initated by c++ masters.</p>
          <span class="n">this</span><span class="o">-&gt;</span><span class="n">waitTransaction</span><span class="p">(</span><span class="n">id</span><span class="p">)</span>
 
          <span class="c1">// Check transaction result</span>
-         <span class="k">if</span> <span class="p">(</span> <span class="n">this</span><span class="o">-&gt;</span><span class="n">getError</span><span class="p">()</span> <span class="o">!=</span> <span class="mi">0</span> <span class="p">)</span> <span class="p">{</span>
+         <span class="k">if</span> <span class="p">(</span> <span class="n">this</span><span class="o">-&gt;</span><span class="n">getError</span><span class="p">()</span> <span class="o">!=</span> <span class="s">&quot;&quot;</span> <span class="p">)</span> <span class="p">{</span>
              <span class="n">printf</span><span class="p">(</span><span class="s">&quot;got error</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
              <span class="k">return</span> <span class="nb">false</span><span class="p">;</span>
          <span class="p">}</span> <span class="k">else</span> <span class="k">return</span> <span class="nb">true</span><span class="p">;</span>

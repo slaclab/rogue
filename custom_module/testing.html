@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Testing The Custom Module &mdash; Rogue v4.6.0-2-g7a70a3ac documentation</title>
+  <title>Testing The Custom Module &mdash; Rogue v4.7.0-45-gcf223948 documentation</title>
   
 
   
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                v4.6.0
+                v4.7.0
               </div>
             
           
@@ -201,8 +201,8 @@ by the <a class="reference internal" href="sourcefile.html#custom-sourcefile"><s
     <span class="n">r</span><span class="o">.</span><span class="n">testMaster</span><span class="o">.</span><span class="n">MyFrameGen</span><span class="p">()</span>
 
     <span class="c1"># Display status</span>
-    <span class="k">print</span><span class="p">(</span><span class="s2">&quot;Sent {} bytes in {} frames&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">testMaster</span><span class="o">.</span><span class="n">ByteCount</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span><span class="n">r</span><span class="o">.</span><span class="n">testMaster</span><span class="o">.</span><span class="n">FrameCount</span><span class="o">.</span><span class="n">get</span><span class="p">()))</span>
-    <span class="k">print</span><span class="p">(</span><span class="s2">&quot;Got  {} bytes in {} frames&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">testSlave</span><span class="o">.</span><span class="n">ByteCount</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span><span class="n">r</span><span class="o">.</span><span class="n">testSlave</span><span class="o">.</span><span class="n">FrameCount</span><span class="o">.</span><span class="n">get</span><span class="p">()))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Sent </span><span class="si">{}</span><span class="s2"> bytes in </span><span class="si">{}</span><span class="s2"> frames&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">testMaster</span><span class="o">.</span><span class="n">ByteCount</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span><span class="n">r</span><span class="o">.</span><span class="n">testMaster</span><span class="o">.</span><span class="n">FrameCount</span><span class="o">.</span><span class="n">get</span><span class="p">()))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Got  </span><span class="si">{}</span><span class="s2"> bytes in </span><span class="si">{}</span><span class="s2"> frames&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">testSlave</span><span class="o">.</span><span class="n">ByteCount</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span><span class="n">r</span><span class="o">.</span><span class="n">testSlave</span><span class="o">.</span><span class="n">FrameCount</span><span class="o">.</span><span class="n">get</span><span class="p">()))</span>
 </pre></div>
 </div>
 <p>The output of this python script should be the following (with a different rogue version):</p>
@@ -250,12 +250,12 @@ to epics to allow external control.</p>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
 
 <span class="k">with</span> <span class="n">TestRoot</span><span class="p">()</span> <span class="k">as</span> <span class="n">r</span><span class="p">:</span>
-    <span class="k">print</span><span class="p">(</span><span class="s2">&quot;Running&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Running&quot;</span><span class="p">)</span>
     <span class="k">try</span><span class="p">:</span>
-        <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
             <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
     <span class="k">except</span> <span class="ne">KeyboardInterrupt</span><span class="p">:</span>
-        <span class="k">print</span><span class="p">(</span><span class="s2">&quot;Exiting&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Exiting&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Start the above script and generate frames using epics caput commands. You can also
@@ -290,7 +290,7 @@ Running
 </div>
 <p>In the second terminal we generate two frames from epics. Commands in
 Rogue are exposed as Variables and a caput will initiate the Command
-executation. Since our MyFrameGen Command does not take an arg we
+execution. Since our MyFrameGen Command does not take an arg we
 pass a value of 0 to keep epics happy.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ caget myTest:MyRoot:testMaster:FrameCount
 myTest:MyRoot:testMaster:FrameCount 0
@@ -327,7 +327,7 @@ myTest:MyRoot:testSlave:ByteCount 420
 <div class="section" id="testing-with-a-gui">
 <h2>Testing With A GUI<a class="headerlink" href="#testing-with-a-gui" title="Permalink to this headline">¶</a></h2>
 <p>In the last test we will add a locally attached GUI along with EPICS. This will allow
-you to experiment with how bot the GUI and EPICS can manipulate variables in parrallel.
+you to experiment with how bot the GUI and EPICS can manipulate variables in parallel.
 In this test we start the GUI in the main script with the core Rogue. It is also possible
 to start one or more remote GUIs. That process is described in TBD.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Source for myEpicsGuiTest.py</span>
@@ -365,7 +365,7 @@ to start one or more remote GUIs. That process is described in TBD.</p>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
 
 <span class="k">with</span> <span class="n">TestRoot</span><span class="p">()</span> <span class="k">as</span> <span class="n">r</span><span class="p">:</span>
-    <span class="k">print</span><span class="p">(</span><span class="s2">&quot;Running&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Running&quot;</span><span class="p">)</span>
 
     <span class="c1"># Create GUI</span>
     <span class="n">appTop</span> <span class="o">=</span> <span class="n">pyrogue</span><span class="o">.</span><span class="n">gui</span><span class="o">.</span><span class="n">application</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span>

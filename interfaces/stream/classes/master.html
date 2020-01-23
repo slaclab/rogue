@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Master &mdash; Rogue v4.6.0-2-g7a70a3ac documentation</title>
+  <title>Master &mdash; Rogue v4.7.0-45-gcf223948 documentation</title>
   
 
   
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                v4.6.0
+                v4.7.0
               </div>
             
           
@@ -234,12 +234,12 @@
 <dt id="_CPPv4N5rogue10interfaces6stream6Master8reqFrameE8uint32_tb">
 <span id="_CPPv3N5rogue10interfaces6stream6Master8reqFrameE8uint32_tb"></span><span id="_CPPv2N5rogue10interfaces6stream6Master8reqFrameE8uint32_tb"></span><span id="rogue::interfaces::stream::Master::reqFrame__uint32_t.b"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Master_1a7565399ec765e1093a349de8745a5034"></span>std::shared_ptr&lt;rogue::interfaces::stream::<a class="reference internal" href="frame.html#_CPPv4N5rogue10interfaces6stream5FrameE" title="rogue::interfaces::stream::Frame">Frame</a>&gt; <code class="sig-name descname">reqFrame</code><span class="sig-paren">(</span>uint32_t <em>size</em>, bool <em>zeroCopyEn</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream6Master8reqFrameE8uint32_tb" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Request new <a class="reference internal" href="frame.html#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a> to be allocated by primary <a class="reference internal" href="slave.html#classrogue_1_1interfaces_1_1stream_1_1Slave"><span class="std std-ref">Slave</span></a>. </p>
-<p>This method is called to create a new <a class="reference internal" href="frame.html#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a> oject. An empty <a class="reference internal" href="frame.html#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a> with the requested payload capacity is create. The <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Master"><span class="std std-ref">Master</span></a> will forward this request to the primary <a class="reference internal" href="slave.html#classrogue_1_1interfaces_1_1stream_1_1Slave"><span class="std std-ref">Slave</span></a> oject. The request for a new <a class="reference internal" href="frame.html#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a> inclues a flag which indicates if a zeroCopy frame is allowed. In most cases this flag can be set to True. Non zero copy frames are requsted if the <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Master"><span class="std std-ref">Master</span></a> may need to transmit the same frame multiple times.</p>
+<p>This method is called to create a new <a class="reference internal" href="frame.html#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a> object. An empty <a class="reference internal" href="frame.html#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a> with the requested payload capacity is create. The <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Master"><span class="std std-ref">Master</span></a> will forward this request to the primary <a class="reference internal" href="slave.html#classrogue_1_1interfaces_1_1stream_1_1Slave"><span class="std std-ref">Slave</span></a> object. The request for a new <a class="reference internal" href="frame.html#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a> includes a flag which indicates if a zeroCopy frame is allowed. In most cases this flag can be set to True. Non zero copy frames are requested if the <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Master"><span class="std std-ref">Master</span></a> may need to transmit the same frame multiple times.</p>
 <p>Exposed as _reqFrame() to Python. <dl class="simple">
 <dt><strong>Return</strong></dt><dd><p>Newly allocated <a class="reference internal" href="frame.html#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a> pointer (FramePtr) </p>
 </dd>
 <dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">size</span></code>: Minimum size for requsted <a class="reference internal" href="frame.html#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a>, larger <a class="reference internal" href="frame.html#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a> may be allocated </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">size</span></code>: Minimum size for requested <a class="reference internal" href="frame.html#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a>, larger <a class="reference internal" href="frame.html#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a> may be allocated </p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">zeroCopyEn</span></code>: Flag which indicates if a zero copy mode <a class="reference internal" href="frame.html#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a> is allowed. </p></li>
 </ul>
 </dd>

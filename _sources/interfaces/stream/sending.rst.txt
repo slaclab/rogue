@@ -15,7 +15,7 @@ multiple times, it will want to disallow the creation of zero copy buffers. A Fr
 zero copy buffers is usually emptied when it is passed to the primary slave and cannot be
 reused.
 
-Python and C++ subclasses of the Master class can be used interchagably, allowing c++ subclasses 
+Python and C++ subclasses of the Master class can be used interchangeably, allowing c++ subclasses 
 to receive Frames from python masters and python subclasses to receive Frames from c++ masters.
 
 Python Master Subclass
@@ -57,7 +57,7 @@ Implementing a Master subclass in python is easy, but may result in a lower leve
 
            # The user may also write to an arbitrary offset, the valid payload
            # size of the frame is set to the highest index written. 
-           # Locations not explicity written, but below the highest written
+           # Locations not explicitly written, but below the highest written
            # index, will be considered valid, but may contain random data
            ba = bytearray([i*2 for i in range (10)])
            frame.write(ba,50)
@@ -74,10 +74,10 @@ Implementing a Master subclass in python is easy, but may result in a lower leve
 C++ Master Subclass
 ===================
 
-Creating a Master sub-class in c++ is done in a similiar fashion. A new frame is 
+Creating a Master sub-class in c++ is done in a similar fashion. A new frame is 
 requested just as it is in python and the sendFrame() method is used to pass the
 frame to the connected Slaves. The main difference is that accessing the Frame
-data can be done more directly using an interator. 
+data can be done more directly using an iterator. 
 
 In order to use a custom c++ Master subclass, you will need to build it into a c++ python module or into
 a c++ application. See the sections :ref:`custom_module` and :ref:`installing_application`.
@@ -145,14 +145,14 @@ and we use std::copy to move data from data buffer into the Frame.
 
 
 The std::copy call works very well for moving data between two standard C++ iterators. It will
-properly deal with iterators which manage non-contigous buffers, which may be the case when allocating 
+properly deal with iterators which manage non-contiguous buffers, which may be the case when allocating 
 new Frames. For example when sending large data frames over a UDP interface, the Slave which allocates the 
-buffer may create a Frame consistaing up a number of 1500 byte frames which may exist at random locations
-in memory. If we are to use std::copy in this case, it will detect that the passed iterator range is non-contigous, and default to a less performant method of copying data byte by byte.
+buffer may create a Frame consisting up a number of 1500 byte frames which may exist at random locations
+in memory. If we are to use std::copy in this case, it will detect that the passed iterator range is non-contiguous, and default to a less performant method of copying data byte by byte.
 
 In order to ensure the best possible performance, the Rogue :ref:`interfaces_stream_frame_iterator` provides
-mechanisms for iterating through each contigous buffer. The following example performs a data copy from 
-a passed data buffer into the Rogue frame, ensuring that the most effeciant copy methods are used:
+mechanisms for iterating through each contiguous buffer. The following example performs a data copy from 
+a passed data buffer into the Rogue frame, ensuring that the most efficient copy methods are used:
 
 .. code-block:: c
 
@@ -171,7 +171,7 @@ a passed data buffer into the Rogue frame, ensuring that the most effeciant copy
    // Keep going until we get to the end of the Frame, assume the passed data pointer has 100 bytes
    while ( it != frame->end() ) {
 
-      // The rem buffer method returns the number of bytes left in the current contigous buffer
+      // The rem buffer method returns the number of bytes left in the current contiguous buffer
       size = it->remBuffer();
 
       // Copy size number of bytes, updating both pointers

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Connecting Streams &mdash; Rogue v4.6.0-2-g7a70a3ac documentation</title>
+  <title>Connecting Streams &mdash; Rogue v4.7.0-45-gcf223948 documentation</title>
   
 
   
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                v4.6.0
+                v4.7.0
               </div>
             
           
@@ -213,7 +213,7 @@ it is passed to the primary slave:</p>
 </pre></div>
 </div>
 <p>In some cases rogue entities can serve as both a stream Master and Slave. This is often the case when
-using a network protocol such as UDP or TCP. Two dual purpose enpoints can be connected together
+using a network protocol such as UDP or TCP. Two dual purpose endpoints can be connected together
 to create a bi-directional data stream using the following command in python:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pyrogue</span>
 
@@ -224,7 +224,7 @@ to create a bi-directional data stream using the following command in python:</p
 </pre></div>
 </div>
 <p>This command adds endPointB as a Slave for endPointA at the same time adding endPointA as a
-slave for endPointB. A similiar command is available in C++:</p>
+slave for endPointB. A similar command is available in C++:</p>
 <div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="o">*</span><span class="n">endPointA</span> <span class="o">==</span> <span class="n">endPointB</span><span class="p">;</span>
 
 <span class="c1">// Or using a helper function</span>
